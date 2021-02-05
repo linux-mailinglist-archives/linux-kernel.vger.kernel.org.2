@@ -2,90 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 555E93117AE
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 01:14:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B33F3117AD
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 01:14:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229500AbhBFANY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 19:13:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35224 "EHLO
+        id S229934AbhBFAMx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 19:12:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232478AbhBENGG (ORCPT
+        with ESMTP id S232475AbhBENGG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 5 Feb 2021 08:06:06 -0500
-Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D817C06178B
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 05:05:16 -0800 (PST)
-Received: by mail-qk1-x72f.google.com with SMTP id a12so6696125qkh.10
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 05:05:16 -0800 (PST)
+Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 126E1C0613D6
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 05:05:14 -0800 (PST)
+Received: by mail-qt1-x82e.google.com with SMTP id h16so4818447qth.11
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 05:05:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=MHJsMavE3nujSnxW3LwxOmZw7EFguJmQU/pNqi0G+xI=;
-        b=aMDfbAIFLwP4uP1FRsZWcGK7FHIzEj8ip4FiQPK6ctpA3bml5yjPvhqvazWVsOzEBk
-         wajhqlQvaHgCFdT1nl/xpxc1mzULoGWx06Ns4RRAQBERMwtazx1KZvhWmwMk3fxPVJFP
-         kV1JMyvIV29OgJLsJ7dAiupMuu6aTScFJOondIYf/3H5mKmlAoLY++mJrVpBKJiS5s7W
-         ijKR8tTRYbft0V9oGR8zHk3ZqT3Oj4awoQIXOFd3rfp1D+5P5522+bECxacfhbhDGTM7
-         EWgpQmovHeJBnC0QPEfbg/bxOQEqXTLr5q+InvsU5BfejkczuSNrtWDraf6iM5R/+P81
-         RIug==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=KoL6M6l9RNM0EewcRBWafbibsTr1Ax1UE+SarTxAsR8=;
+        b=n50KaEWl+Syw5ubG+Z6GsS620BPX3hwGK3sN1D08MwSLO2q/9bhljMmAGMUvS7p9yE
+         6SShdGHOWe9d2sb9xCdcL2rJyMj7d54EwHokStdaAEUOagNV6R40ZVjvR0SbskXfXf/t
+         r3UQFXB9s1TUasODXM7G9gty3ZLZmV7HswQyTbDFTP9RPL34cXZJ5qQQGDKLrkdlG3ys
+         hJdGM9ZFefNM1W5R89HEX97qsZV3VrztTISiQJNYETK0zP8kjvvI/kceil6UE+pWZWHA
+         EjgaovnDf1ggNbbOez53uyb+ztC2seQBCLyWxVgYRSiwUWu7664xkk7r59LIvVhisONZ
+         p7sQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=MHJsMavE3nujSnxW3LwxOmZw7EFguJmQU/pNqi0G+xI=;
-        b=PXYjU+EMlx7tTegy/6jrNJLutmpNn4VE8pXxQ6jNh1kOcloZudTWLc2p3cUAfl6qm6
-         o3Q+jSDjroYCwkeaBFak2dGeI1gpBZG6WKyts9E+CnZ9Q4fwzvF7OJAFe1ph3LsR8wR6
-         lqx21A/QHJh8C7/AxzAUZnav0LlduFfkQpnLKcA7gFi+Yxg90DPOtHMEMH/VbR3/RMMB
-         I6aYFA1+GmjHah68SmhXbuCrnXgOjT2XKcTVPf3MDmKIsVGt/eB6VW8lFG+2niMQ6hp/
-         IQvwMlZWmKlxlW1L96IGjLFA6AaINjYcGLU5WN1sIEJBwipUPb6Y6iJ6fGaWtErwvs36
-         JO9g==
-X-Gm-Message-State: AOAM533mHyrgYnxlNpa+JbYZ+pl8aJ30skvxHXM938dJzOqhVV3oz9x7
-        8n1LZ23msOfatFOpSv4yjSk=
-X-Google-Smtp-Source: ABdhPJzESrKrwXVHsctE3NGaG/IC2lbP3Th5GQobMhswX/sILMe3FBMtg0ocebizL/CRAVGrkZXKVg==
-X-Received: by 2002:a37:9d53:: with SMTP id g80mr4055340qke.307.1612530315873;
-        Fri, 05 Feb 2021 05:05:15 -0800 (PST)
-Received: from localhost.localdomain ([138.199.10.106])
-        by smtp.gmail.com with ESMTPSA id k8sm9092945qkk.79.2021.02.05.05.05.10
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=KoL6M6l9RNM0EewcRBWafbibsTr1Ax1UE+SarTxAsR8=;
+        b=OAQHirweUH4Klc5Y2CXp78skJ+CsPAl7xhJiypw26sNKoCTuUoEpi/PqcoOZ6mpv8o
+         dgAJHc6V5aMqeKSu0fo9i/Y2hQ+ZSz9G8jla4dnoGTSfih2ClmFR9Et1w9TdSI3WfJ7o
+         yj50urA/pghRE4uL/FIdd0Vn0eF3mU9vnY+0fylIhi3tznZXFzAL2Xtfvv922OluCDKt
+         aYtfboiEL0jkM1jbYefd2+agz+/FIyE8KbzABj86sIfhO5sZ2BuIv9+pv8u2/Gps8xlo
+         JhHQFAFcXawJHNUpe1vA2VR/+j7gPv8KgmAzAl/76VjbaG0tgJe7TB+kQJW2qWr+zACL
+         CiUg==
+X-Gm-Message-State: AOAM532OgR6OGjeM0pHpALKNUy8YFi7vRDA9D1YMjI/QOSKljsT0YvOK
+        KNnv463obJ/pg+xn1sirlKtXKA==
+X-Google-Smtp-Source: ABdhPJyrPaatnEF3EQoyj/Wy2PZ1KQ7pMnWbi0KMDU4EU41/Go77mUQxNQU85CDc37SPJ/Q6Bs9lIw==
+X-Received: by 2002:aed:3145:: with SMTP id 63mr4062664qtg.189.1612530312637;
+        Fri, 05 Feb 2021 05:05:12 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
+        by smtp.gmail.com with ESMTPSA id e7sm7783668qtj.48.2021.02.05.05.05.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Feb 2021 05:05:14 -0800 (PST)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     bskeggs@redhat.com, airlied@linux.ie, daniel@ffwll.ch,
-        dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: [PATCH] drivers: drm: nouveau: nvkm: Replace a word with a better phonetic word in the file macros.fuc
-Date:   Fri,  5 Feb 2021 18:35:02 +0530
-Message-Id: <20210205130502.1440514-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.30.0
+        Fri, 05 Feb 2021 05:05:12 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1l80nP-003pgK-Ip; Fri, 05 Feb 2021 09:05:11 -0400
+Date:   Fri, 5 Feb 2021 09:05:11 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Lino Sanfilippo <LinoSanfilippo@gmx.de>
+Cc:     peterhuewe@gmx.de, jarkko@kernel.org, stefanb@linux.vnet.ibm.com,
+        James.Bottomley@hansenpartnership.com, stable@vger.kernel.org,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lino Sanfilippo <l.sanfilippo@kunbus.com>
+Subject: Re: [PATCH v3 1/2] tpm: fix reference counting for struct tpm_chip
+Message-ID: <20210205130511.GI4718@ziepe.ca>
+References: <1612482643-11796-1-git-send-email-LinoSanfilippo@gmx.de>
+ <1612482643-11796-2-git-send-email-LinoSanfilippo@gmx.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1612482643-11796-2-git-send-email-LinoSanfilippo@gmx.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Feb 05, 2021 at 12:50:42AM +0100, Lino Sanfilippo wrote:
+> From: Lino Sanfilippo <l.sanfilippo@kunbus.com>
+> 
+> The following sequence of operations results in a refcount warning:
+> 
+> 1. Open device /dev/tpmrm
+> 2. Remove module tpm_tis_spi
+> 3. Write a TPM command to the file descriptor opened at step 1.
+> 
+> WARNING: CPU: 3 PID: 1161 at lib/refcount.c:25 kobject_get+0xa0/0xa4
+> refcount_t: addition on 0; use-after-free.
+> Modules linked in: tpm_tis_spi tpm_tis_core tpm mdio_bcm_unimac brcmfmac
+> sha256_generic libsha256 sha256_arm hci_uart btbcm bluetooth cfg80211 vc4
+> brcmutil ecdh_generic ecc snd_soc_core crc32_arm_ce libaes
+> raspberrypi_hwmon ac97_bus snd_pcm_dmaengine bcm2711_thermal snd_pcm
+> snd_timer genet snd phy_generic soundcore [last unloaded: spi_bcm2835]
+> CPU: 3 PID: 1161 Comm: hold_open Not tainted 5.10.0ls-main-dirty #2
+> Hardware name: BCM2711
+> [<c0410c3c>] (unwind_backtrace) from [<c040b580>] (show_stack+0x10/0x14)
+> [<c040b580>] (show_stack) from [<c1092174>] (dump_stack+0xc4/0xd8)
+> [<c1092174>] (dump_stack) from [<c0445a30>] (__warn+0x104/0x108)
+> [<c0445a30>] (__warn) from [<c0445aa8>] (warn_slowpath_fmt+0x74/0xb8)
+> [<c0445aa8>] (warn_slowpath_fmt) from [<c08435d0>] (kobject_get+0xa0/0xa4)
+> [<c08435d0>] (kobject_get) from [<bf0a715c>] (tpm_try_get_ops+0x14/0x54 [tpm])
+> [<bf0a715c>] (tpm_try_get_ops [tpm]) from [<bf0a7d6c>] (tpm_common_write+0x38/0x60 [tpm])
+> [<bf0a7d6c>] (tpm_common_write [tpm]) from [<c05a7ac0>] (vfs_write+0xc4/0x3c0)
+> [<c05a7ac0>] (vfs_write) from [<c05a7ee4>] (ksys_write+0x58/0xcc)
+> [<c05a7ee4>] (ksys_write) from [<c04001a0>] (ret_fast_syscall+0x0/0x4c)
+> Exception stack(0xc226bfa8 to 0xc226bff0)
+> bfa0:                   00000000 000105b4 00000003 beafe664 00000014 00000000
+> bfc0: 00000000 000105b4 000103f8 00000004 00000000 00000000 b6f9c000 beafe684
+> bfe0: 0000006c beafe648 0001056c b6eb6944
+> 
+> The reason for this warning is the attempt to get the chip->dev reference
+> in tpm_common_write() although the reference counter is already zero.
 
 
-s/fuck/heck/
+> Since commit 8979b02aaf1d ("tpm: Fix reference count to main device") the
+> extra reference used to prevent a premature zero counter is never taken,
+> because the required TPM_CHIP_FLAG_TPM2 flag is never set.
+> 
+> Fix this by removing the flag condition.
+> 
+> Commit fdc915f7f719 ("tpm: expose spaces via a device link /dev/tpmrm<n>")
+> already introduced function tpm_devs_release() to release the extra
+> reference but did not implement the required put on chip->devs that results
+> in the call of this function.
 
+Seems wonky, the devs is just supposed to be a side thing, nothing
+should be using it as a primary reference count for a tpm.
 
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
----
- drivers/gpu/drm/nouveau/nvkm/subdev/pmu/fuc/macros.fuc | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+The bug here is only that tpm_common_open() did not get a kref on the
+chip before putting it in priv and linking it to the fd. See the
+comment before tpm_try_get_ops() indicating the caller must already
+have taken care to ensure the chip is valid.
 
-diff --git a/drivers/gpu/drm/nouveau/nvkm/subdev/pmu/fuc/macros.fuc b/drivers/gpu/drm/nouveau/nvkm/subdev/pmu/fuc/macros.fuc
-index 3737bd27f74e..1407a1b16d95 100644
---- a/drivers/gpu/drm/nouveau/nvkm/subdev/pmu/fuc/macros.fuc
-+++ b/drivers/gpu/drm/nouveau/nvkm/subdev/pmu/fuc/macros.fuc
-@@ -46,7 +46,7 @@
- #define NV_PPWR_INTR_EN_SET_SUBINTR                                  0x00000800
- #define NV_PPWR_INTR_EN_SET_WATCHDOG                                 0x00000002
- #define NV_PPWR_INTR_EN_CLR                                              0x0014
--#define NV_PPWR_INTR_EN_CLR_MASK                    /* fuck i hate envyas */ -1
-+#define NV_PPWR_INTR_EN_CLR_MASK                    /* heck, i hate envyas */ -1
- #define NV_PPWR_INTR_ROUTE                                               0x001c
- #define NV_PPWR_TIMER_LOW                                                0x002c
- #define NV_PPWR_WATCHDOG_TIME                                            0x0034
---
-2.30.0
+This should be all you need to fix the oops:
 
+diff --git a/drivers/char/tpm/tpm-dev-common.c b/drivers/char/tpm/tpm-dev-common.c
+index 1784530b8387bb..1b738dca7fffb5 100644
+--- a/drivers/char/tpm/tpm-dev-common.c
++++ b/drivers/char/tpm/tpm-dev-common.c
+@@ -105,6 +105,7 @@ static void tpm_timeout_work(struct work_struct *work)
+ void tpm_common_open(struct file *file, struct tpm_chip *chip,
+                     struct file_priv *priv, struct tpm_space *space)
+ {
++       get_device(&priv->chip.dev);
+        priv->chip = chip;
+        priv->space = space;
+        priv->response_read = true;
+@@ -261,6 +262,7 @@ void tpm_common_release(struct file *file, struct file_priv *priv)
+        flush_work(&priv->timeout_work);
+        file->private_data = NULL;
+        priv->response_length = 0;
++       put_device(&chip->dev);
+ }
+ 
+ int __init tpm_dev_common_init(void)
+
+> Fix this also by installing an action handler that puts chip->devs as soon
+> as the chip is unregistered.
+> 
+> Fixes: fdc915f7f719 ("tpm: expose spaces via a device link /dev/tpmrm<n>")
+> Fixes: 8979b02aaf1d ("tpm: Fix reference count to main device")
+> Signed-off-by: Lino Sanfilippo <l.sanfilippo@kunbus.com>
+>  drivers/char/tpm/tpm-chip.c       | 18 +++++++++++++++---
+>  drivers/char/tpm/tpm_ftpm_tee.c   |  2 ++
+>  drivers/char/tpm/tpm_vtpm_proxy.c |  1 +
+>  3 files changed, 18 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/char/tpm/tpm-chip.c b/drivers/char/tpm/tpm-chip.c
+> index ddaeceb..3ace199 100644
+> +++ b/drivers/char/tpm/tpm-chip.c
+> @@ -360,8 +360,7 @@ struct tpm_chip *tpm_chip_alloc(struct device *pdev,
+>  	 * while cdevs is in use.  The corresponding put
+>  	 * is in the tpm_devs_release (TPM2 only)
+>  	 */
+> -	if (chip->flags & TPM_CHIP_FLAG_TPM2)
+> -		get_device(&chip->dev);
+> +	get_device(&chip->dev);
+>  
+>  	if (chip->dev_num == 0)
+>  		chip->dev.devt = MKDEV(MISC_MAJOR, TPM_MINOR);
+> @@ -422,8 +421,21 @@ struct tpm_chip *tpmm_chip_alloc(struct device *pdev,
+>  	rc = devm_add_action_or_reset(pdev,
+>  				      (void (*)(void *)) put_device,
+>  				      &chip->dev);
+> -	if (rc)
+> +	if (rc) {
+> +		put_device(&chip->devs);
+>  		return ERR_PTR(rc);
+
+This isn't right read what 'or_reset' does
+
+Jason
