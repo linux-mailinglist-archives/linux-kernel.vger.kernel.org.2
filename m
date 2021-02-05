@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFA3E311543
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 23:32:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C292C31153A
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 23:32:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230111AbhBEW0j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 17:26:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44628 "EHLO mail.kernel.org"
+        id S233139AbhBEWZl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 17:25:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44978 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232827AbhBEOye (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 09:54:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9CD8E65092;
-        Fri,  5 Feb 2021 14:13:47 +0000 (UTC)
+        id S232850AbhBEOyw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 09:54:52 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BEAC9650C3;
+        Fri,  5 Feb 2021 14:14:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612534428;
-        bh=3mxxP0en6Os9zEB1LwKk063zfFdcPS04gqtTpvScRNM=;
+        s=korg; t=1612534493;
+        bh=uzQETzjw8nT8iksAVQnNxCTqHD4pn5w/R5OubRmSggc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QMlIqlELuCv2jhWjeV+dyMUgSw6xJqlyD9X85BNLRtB0z6ZhozQ7sPvX7AMqQlPNv
-         N0GeMRIAJ95odHIuMf607Uz074NDEwNdYoXCZHDUPfFdUgt2GCkpEB+92JwO02Tm1O
-         i5oQ896Szn/LJq53AqU+OluNrfv+247IHyZ702ZU=
+        b=L5rDOUWSUOMCF99MW3zqXOmkso6LGLKr/E6EclZxlnR/zAb/Pgbbc7Fd2KJDgWefi
+         vO48G2ZO+aT47FsaTZiJJqtHK7q7d2q+GxSaGV/+P22BPfD43icsgyE+PthWGYDyiP
+         hrGn2xsH1Xr2NbBRd2Y6kUykE4kjyBqvQLz56jUQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 15/17] objtool: Dont fail on missing symbol table
-Date:   Fri,  5 Feb 2021 15:08:09 +0100
-Message-Id: <20210205140650.427844663@linuxfoundation.org>
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Mark Brown <broonie@kernel.org>,
+        Benjamin Gaignard <benjamin.gaignard@st.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Subject: [PATCH 4.14 06/15] base: core: Remove WARN_ON from link dependencies check
+Date:   Fri,  5 Feb 2021 15:08:51 +0100
+Message-Id: <20210205140649.986802207@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210205140649.825180779@linuxfoundation.org>
-References: <20210205140649.825180779@linuxfoundation.org>
+In-Reply-To: <20210205140649.733510103@linuxfoundation.org>
+References: <20210205140649.733510103@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,51 +43,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Josh Poimboeuf <jpoimboe@redhat.com>
+From: Benjamin Gaignard <benjamin.gaignard@linaro.org>
 
-[ Upstream commit 1d489151e9f9d1647110277ff77282fe4d96d09b ]
+commit e16f4f3e0b7daecd48d4f944ab4147c1a6cb16a8 upstream
 
-Thanks to a recent binutils change which doesn't generate unused
-symbols, it's now possible for thunk_64.o be completely empty without
-CONFIG_PREEMPTION: no text, no data, no symbols.
+In some cases the link between between customer and supplier
+already exist, for example when a device use its parent as a supplier.
+Do not warn about already existing dependencies because device_link_add()
+takes care of this case.
 
-We could edit the Makefile to only build that file when
-CONFIG_PREEMPTION is enabled, but that will likely create confusion
-if/when the thunks end up getting used by some other code again.
+Link: http://lkml.kernel.org/r/20180709111753eucas1p1f32e66fb2f7ea3216097cd72a132355d~-rzycA5Rg0378203782eucas1p1C@eucas1p1.samsung.com
 
-Just ignore it and move on.
-
-Reported-by: Nathan Chancellor <natechancellor@gmail.com>
-Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
-Reviewed-by: Miroslav Benes <mbenes@suse.cz>
-Tested-by: Nathan Chancellor <natechancellor@gmail.com>
-Link: https://github.com/ClangBuiltLinux/linux/issues/1254
-Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Reported-by: Marek Szyprowski <m.szyprowski@samsung.com>
+Reviewed-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Benjamin Gaignard <benjamin.gaignard@st.com>
+Reviewed-by: Rafael J. Wysocki <rafael@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- tools/objtool/elf.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ drivers/base/core.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/tools/objtool/elf.c b/tools/objtool/elf.c
-index b8f3cca8e58b4..264d49fea8142 100644
---- a/tools/objtool/elf.c
-+++ b/tools/objtool/elf.c
-@@ -226,8 +226,11 @@ static int read_symbols(struct elf *elf)
+--- a/drivers/base/core.c
++++ b/drivers/base/core.c
+@@ -109,7 +109,7 @@ static int device_is_dependent(struct de
+ 	struct device_link *link;
+ 	int ret;
  
- 	symtab = find_section_by_name(elf, ".symtab");
- 	if (!symtab) {
--		WARN("missing symbol table");
--		return -1;
-+		/*
-+		 * A missing symbol table is actually possible if it's an empty
-+		 * .o file.  This can happen for thunk_64.o.
-+		 */
-+		return 0;
- 	}
+-	if (WARN_ON(dev == target))
++	if (dev == target)
+ 		return 1;
  
- 	symbols_nr = symtab->sh.sh_size / symtab->sh.sh_entsize;
--- 
-2.27.0
-
+ 	ret = device_for_each_child(dev, target, device_is_dependent);
+@@ -117,7 +117,7 @@ static int device_is_dependent(struct de
+ 		return ret;
+ 
+ 	list_for_each_entry(link, &dev->links.consumers, s_node) {
+-		if (WARN_ON(link->consumer == target))
++		if (link->consumer == target)
+ 			return 1;
+ 
+ 		ret = device_is_dependent(link->consumer, target);
 
 
