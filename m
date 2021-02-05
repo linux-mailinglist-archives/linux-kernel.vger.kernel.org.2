@@ -2,146 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5248731050C
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 07:44:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16FF131051F
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 07:48:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231195AbhBEGok (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 01:44:40 -0500
-Received: from mout01.posteo.de ([185.67.36.65]:45808 "EHLO mout01.posteo.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230415AbhBEGoh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 01:44:37 -0500
-Received: from submission (posteo.de [89.146.220.130]) 
-        by mout01.posteo.de (Postfix) with ESMTPS id 509FA160061
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 07:43:39 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
-        t=1612507419; bh=8zUn+UyozeAseEbIW29rRlgrAkKAcwU7JN9yB32OBVU=;
-        h=Date:From:To:Cc:Subject:From;
-        b=nxK5M0KsURI7H8q7N/u7Z5J40DfSmNln6h/rtHagaUbtb/h3fDvIEHpOyKDQ6Ppxk
-         5BCcMFNUpaQMZx71PIv3eSlcHr1Hsd9NeFXGkWZg5jI5slYy+6wwBwWT2avZql8Wtv
-         aI+Iw0bjBgv5HPfxjAN5gKAza50eCOCktUh1hBUGp4+Aq20GcBqezetx2gQdvVvUwb
-         X8pm0B43c1TcA+tFJ5R7esBcFOz44IqE0fTqopArBLgvW3PWsBdtPtw45KPjyYQreA
-         TA0+TOUFYljkM6ZkAqwVbLku1/ZS9wu4PZur0lWUuHw0SQlKciR2J/hbKY/A4ca4/2
-         WMZpdjYeFI1AA==
-Received: from customer (localhost [127.0.0.1])
-        by submission (posteo.de) with ESMTPSA id 4DX5V03kQNz6tmM;
-        Fri,  5 Feb 2021 07:43:36 +0100 (CET)
-Date:   Fri, 5 Feb 2021 07:43:35 +0100
-From:   Sebastian Fricke <sebastian.fricke@posteo.net>
-To:     Heiko =?utf-8?Q?St=C3=BCbner?= <heiko@sntech.de>
-Cc:     dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        hjc@rock-chips.com, robh+dt@kernel.org,
-        linux-media@vger.kernel.org, dafna.hirschfeld@collabora.com,
-        helen.koike@collabora.com, ezequiel@collabora.com,
-        cmuellner@linux.com
-Subject: Re: [PATCH 0/6] Support second Image Signal Processor on rk3399
-Message-ID: <20210205064335.6c3gs3h3pgvhceku@basti-TUXEDO-Book-XA1510>
-References: <20210202145632.1263136-1-heiko@sntech.de>
- <20210203181422.txbd6kvujlmz4nju@basti-TUXEDO-Book-XA1510>
- <16624224.lhrHg4fidi@diego>
+        id S231403AbhBEGr6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 01:47:58 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:48724 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231312AbhBEGqI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 01:46:08 -0500
+Received: from [222.129.39.10] (helo=[192.168.1.10])
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <aaron.ma@canonical.com>)
+        id 1l7uro-0005gf-Ls; Fri, 05 Feb 2021 06:45:21 +0000
+Subject: Re: [PATCH] xhci-pci: Set AMD Renoir USB controller to D3 when
+ shutdown
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mathias Nyman <mathias.nyman@linux.intel.com>,
+        Alan Stern <stern@rowland.harvard.edu>, lee.jones@linaro.org,
+        peter.chen@nxp.com, USB list <linux-usb@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <20210204051850.64857-1-aaron.ma@canonical.com>
+ <CAAd53p4euFiw7pfDnD2H8oMVeeTqQ_c+wOFDLM2xPccn5MewiA@mail.gmail.com>
+From:   Aaron Ma <aaron.ma@canonical.com>
+Message-ID: <cd4595e6-67da-885c-1a67-6dfd71425b8c@canonical.com>
+Date:   Fri, 5 Feb 2021 14:45:07 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
+In-Reply-To: <CAAd53p4euFiw7pfDnD2H8oMVeeTqQ_c+wOFDLM2xPccn5MewiA@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <16624224.lhrHg4fidi@diego>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey Heiko,
 
-On 03.02.2021 20:54, Heiko Stübner wrote:
->Hi Sebastian,
->
->Am Mittwoch, 3. Februar 2021, 19:14:22 CET schrieb Sebastian Fricke:
->> Hey Heiko,
->>
->> I have tested your patch set on my nanoPC-T4, here is a complete log
->> with:
->> - relevant kernel log entries
->> - system information
->> - media ctl output
->> - sysfs entry information
->>
->> https://paste.debian.net/1183874/
->>
->> Additionally, to your patchset I have applied the following patches:
->> https://github.com/initBasti/Linux_kernel_media_tree_fork/commits/dual_cam_setup
->>
->> And just to not cause confusion the `media_dev` entries come from this
->> unmerged series:
->> https://patchwork.kernel.org/project/linux-media/list/?series=426269
->>
->> I have actually been able to stream with both of my cameras at the same
->> time using the libcamera cam command.
->> I would like to thank you a lot for making this possible.
->
->Thanks for testing a dual camera setup. On my board I could only test
->the second ISP. And really glad it works for you tool :-) .
->
->Out of curiosity, do you also see that green tint in the images the cameras
->produce?
+On 2/5/21 12:27 PM, Kai-Heng Feng wrote:
+> Can you please test the following patch, which should address the root cause:
+> https://lore.kernel.org/linux-acpi/20201201213019.1558738-1-furquan@google.com/
+> 
+> It also helps another AMD laptop on S5:
+> https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1912935
+> 
 
-Yes, I do. Actually, I currently have two forms of a green tint, on my
-OV13850 everything is quite dark and greenish, which is caused by the
-missing 3A algorithms. On my OV4689, I have big patches of the image
-with bright green color and flickering, I investigated if this is
-connected to the 2nd ISP instance, but that doesn't seem to be the case
-as I have the same results when I switch the CSI ports of the cameras.
+No, this patch doesn't help on ThinkPad AMD platform.
 
-I have found another issue, while testing I discovered following
-issue:
-When I start the system with an HDMI monitor connected, then the camera
-on the 2nd port doesn't work. This is probably because the RX/TX is
-reserved as a TX.
-But it made me wonder because if the system has an RX, a TX, and
-an RX/TX, why isn't the pure TX used by the monitor and the
-cameras take RX and RX/TX?
-Or do you think that this is maybe a malfunction of this patch?
+Aaron
 
->
->Thanks
->Heiko
-
-Greetings,
-Sebastian
-
->
->
->> If you like to you can add:
->> Tested-by: Sebastian Fricke <sebastian.fricke@posteo.net>
->>
->> On 02.02.2021 15:56, Heiko Stuebner wrote:
->> >The rk3399 has two ISPs and right now only the first one is usable.
->> >The second ISP is connected to the TXRX dphy on the soc.
->> >
->> >The phy of ISP1 is only accessible through the DSI controller's
->> >io-memory, so this series adds support for simply using the dsi
->> >controller is a phy if needed.
->> >
->> >That solution is needed at least on rk3399 and rk3288 but no-one
->> >has looked at camera support on rk3288 at all, so right now
->> >only implement the rk3399 specifics.
->> >
->> >
->> >Heiko Stuebner (6):
->> >  drm/rockchip: dsi: add own additional pclk handling
->> >  dt-bindings: display: rockchip-dsi: add optional #phy-cells property
->> >  drm/rockchip: dsi: add ability to work as a phy instead of full dsi
->> >  arm64: dts: rockchip: add #phy-cells to mipi-dsi1
->> >  arm64: dts: rockchip: add cif clk-control pinctrl for rk3399
->> >  arm64: dts: rockchip: add isp1 node on rk3399
->> >
->> > .../display/rockchip/dw_mipi_dsi_rockchip.txt |   1 +
->> > arch/arm64/boot/dts/rockchip/rk3399.dtsi      |  39 ++
->> > drivers/gpu/drm/rockchip/Kconfig              |   2 +
->> > .../gpu/drm/rockchip/dw-mipi-dsi-rockchip.c   | 342 ++++++++++++++++++
->> > 4 files changed, 384 insertions(+)
->> >
->>
->
->
->
->
+> We don't need to put bandage on drivers one by one once the patch with
+> alternative approach is in upstream.
+> 
+> Kai-Heng
