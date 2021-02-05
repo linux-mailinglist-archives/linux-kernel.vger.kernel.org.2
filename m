@@ -2,96 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CE46310A7E
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 12:44:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02351310A64
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 12:38:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230088AbhBELnc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 06:43:32 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:11685 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231419AbhBELkI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 06:40:08 -0500
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DXD1F3fFxzlH82;
-        Fri,  5 Feb 2021 19:37:37 +0800 (CST)
-Received: from SWX921481.china.huawei.com (10.126.202.232) by
- DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
- 14.3.498.0; Fri, 5 Feb 2021 19:39:07 +0800
-From:   Barry Song <song.bao.hua@hisilicon.com>
-To:     <m.szyprowski@samsung.com>, <hch@lst.de>, <robin.murphy@arm.com>,
-        <iommu@lists.linux-foundation.org>
-CC:     <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>,
-        Barry Song <song.bao.hua@hisilicon.com>
-Subject: [PATCH v3 1/2] dma-mapping: benchmark: use u8 for reserved field in uAPI structure
-Date:   Sat, 6 Feb 2021 00:33:24 +1300
-Message-ID: <20210205113325.19556-1-song.bao.hua@hisilicon.com>
-X-Mailer: git-send-email 2.21.0.windows.1
+        id S231269AbhBELiU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 06:38:20 -0500
+Received: from marcansoft.com ([212.63.210.85]:43572 "EHLO mail.marcansoft.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231377AbhBELf4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 06:35:56 -0500
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: marcan@marcan.st)
+        by mail.marcansoft.com (Postfix) with ESMTPSA id 3107A41F5F;
+        Fri,  5 Feb 2021 11:35:05 +0000 (UTC)
+To:     soc@kernel.org
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Marc Zyngier <maz@kernel.org>, robh@kernel.org,
+        Arnd Bergmann <arnd@kernel.org>, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, Olof Johansson <olof@lixom.net>,
+        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
+        Stan Skowronek <stan@corellium.com>,
+        Alexander Graf <graf@amazon.com>,
+        Will Deacon <will@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>
+References: <20210204203951.52105-1-marcan@marcan.st>
+From:   Hector Martin 'marcan' <marcan@marcan.st>
+Subject: Re: [PATCH 00/18] Apple M1 SoC platform bring-up
+Message-ID: <d7802d11-ce90-5645-1636-7f75a7a0694f@marcan.st>
+Date:   Fri, 5 Feb 2021 20:35:03 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.126.202.232]
-X-CFilter-Loop: Reflected
+In-Reply-To: <20210204203951.52105-1-marcan@marcan.st>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: es-ES
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The original code put five u32 before a u64 expansion[10] array. Five is
-odd, this will cause trouble in the extension of the structure by adding
-new features. This patch moves to use u8 for reserved field to avoid
-future alignment risk.
-Meanwhile, it also clears the memory of struct map_benchmark in tools,
-otherwise, if users use old version to run on newer kernel, the random
-expansion value will cause side effect on newer kernel.
+On 05/02/2021 05.39, Hector Martin wrote:
+> This series brings up initial support for the Apple M1 SoC, used in the
+> 2020 Mac Mini, MacBook Pro, and MacBook Air models.
 
-Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
----
- kernel/dma/map_benchmark.c                      | 2 +-
- tools/testing/selftests/dma/dma_map_benchmark.c | 4 +++-
- 2 files changed, 4 insertions(+), 2 deletions(-)
+Forgot to CC: a few folks involved in the previous related thread, 
+sorry! Adding them here, hope everyone got the series via the MLs.
 
-diff --git a/kernel/dma/map_benchmark.c b/kernel/dma/map_benchmark.c
-index 1b1b8ff875cb..da95df381483 100644
---- a/kernel/dma/map_benchmark.c
-+++ b/kernel/dma/map_benchmark.c
-@@ -36,7 +36,7 @@ struct map_benchmark {
- 	__s32 node; /* which numa node this benchmark will run on */
- 	__u32 dma_bits; /* DMA addressing capability */
- 	__u32 dma_dir; /* DMA data direction */
--	__u64 expansion[10];	/* For future use */
-+	__u8 expansion[84];	/* For future use */
- };
- 
- struct map_benchmark_data {
-diff --git a/tools/testing/selftests/dma/dma_map_benchmark.c b/tools/testing/selftests/dma/dma_map_benchmark.c
-index 7065163a8388..537d65968c48 100644
---- a/tools/testing/selftests/dma/dma_map_benchmark.c
-+++ b/tools/testing/selftests/dma/dma_map_benchmark.c
-@@ -6,6 +6,7 @@
- #include <fcntl.h>
- #include <stdio.h>
- #include <stdlib.h>
-+#include <string.h>
- #include <unistd.h>
- #include <sys/ioctl.h>
- #include <sys/mman.h>
-@@ -35,7 +36,7 @@ struct map_benchmark {
- 	__s32 node; /* which numa node this benchmark will run on */
- 	__u32 dma_bits; /* DMA addressing capability */
- 	__u32 dma_dir; /* DMA data direction */
--	__u64 expansion[10];	/* For future use */
-+	__u8 expansion[84];	/* For future use */
- };
- 
- int main(int argc, char **argv)
-@@ -102,6 +103,7 @@ int main(int argc, char **argv)
- 		exit(1);
- 	}
- 
-+	memset(&map, 0, sizeof(map));
- 	map.seconds = seconds;
- 	map.threads = threads;
- 	map.node = node;
+v2 will be CCed to everyone else too.
+
 -- 
-2.25.1
-
+Hector Martin "marcan" (marcan@marcan.st)
+Public Key: https://mrcn.st/pub
