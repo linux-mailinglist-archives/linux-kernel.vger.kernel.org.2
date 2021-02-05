@@ -2,174 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70911310E40
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 18:01:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 82C0E310EAB
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 18:29:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233190AbhBEPQ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 10:16:27 -0500
-Received: from relay.sw.ru ([185.231.240.75]:46752 "EHLO relay.sw.ru"
+        id S233272AbhBEPqI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 10:46:08 -0500
+Received: from mga17.intel.com ([192.55.52.151]:44422 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233104AbhBEPFY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 10:05:24 -0500
-Received: from [192.168.15.95]
-        by relay.sw.ru with esmtp (Exim 4.94)
-        (envelope-from <ktkhai@virtuozzo.com>)
-        id 1l82L1-001mbB-TC; Fri, 05 Feb 2021 17:43:59 +0300
-Subject: Re: [v6 PATCH 09/11] mm: vmscan: don't need allocate
- shrinker->nr_deferred for memcg aware shrinkers
-To:     Yang Shi <shy828301@gmail.com>
-Cc:     Roman Gushchin <guro@fb.com>, Vlastimil Babka <vbabka@suse.cz>,
-        Shakeel Butt <shakeelb@google.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20210203172042.800474-1-shy828301@gmail.com>
- <20210203172042.800474-10-shy828301@gmail.com>
- <656865f5-bb56-4f4c-b88d-ec933a042b4c@virtuozzo.com>
- <5e335e4a-1556-e694-8f0b-192d924f99e5@virtuozzo.com>
- <CAHbLzkpy+bg+7HMb5qG_1gocXhkuuxip0Wn9Afu3Tx6-FMoMig@mail.gmail.com>
-From:   Kirill Tkhai <ktkhai@virtuozzo.com>
-Message-ID: <b2509337-cbdf-5981-74ab-2b75361c6d2b@virtuozzo.com>
-Date:   Fri, 5 Feb 2021 17:44:02 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S233105AbhBEPaV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 10:30:21 -0500
+IronPort-SDR: ecTRBCCI/0kQ8xOC7zVbyo36ZjArHoS9lHMN4op5UQx1Fll1pnlhKBhR3a0EIC1GzfU0XoFwZs
+ su56m78q5nVw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9885"; a="161198911"
+X-IronPort-AV: E=Sophos;i="5.81,155,1610438400"; 
+   d="scan'208";a="161198911"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2021 07:16:48 -0800
+IronPort-SDR: q7Q3i9vozj8sDWJ29m98QW/kh6uPo5gdVnuiVSBEnlnVm0Sa/QFVXswC/aPjxw1Gq46ZBttVQF
+ AQTL4mzUhNvg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,155,1610438400"; 
+   d="scan'208";a="358274761"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga007.fm.intel.com with ESMTP; 05 Feb 2021 07:16:45 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1000)
+        id 08F43397; Fri,  5 Feb 2021 17:16:41 +0200 (EET)
+From:   "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+To:     Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     x86@kernel.org, Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        "H . J . Lu" <hjl.tools@gmail.com>,
+        Andi Kleen <ak@linux.intel.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Subject: [RFC 7/9] x86/mm: Handle tagged memory accesses from kernel threads
+Date:   Fri,  5 Feb 2021 18:16:28 +0300
+Message-Id: <20210205151631.43511-9-kirill.shutemov@linux.intel.com>
+X-Mailer: git-send-email 2.30.0
+In-Reply-To: <20210205151631.43511-1-kirill.shutemov@linux.intel.com>
+References: <20210205151631.43511-1-kirill.shutemov@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <CAHbLzkpy+bg+7HMb5qG_1gocXhkuuxip0Wn9Afu3Tx6-FMoMig@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04.02.2021 20:32, Yang Shi wrote:
-> On Thu, Feb 4, 2021 at 2:14 AM Kirill Tkhai <ktkhai@virtuozzo.com> wrote:
->>
->> On 04.02.2021 12:29, Kirill Tkhai wrote:
->>> On 03.02.2021 20:20, Yang Shi wrote:
->>>> Now nr_deferred is available on per memcg level for memcg aware shrinkers, so don't need
->>>> allocate shrinker->nr_deferred for such shrinkers anymore.
->>>>
->>>> The prealloc_memcg_shrinker() would return -ENOSYS if !CONFIG_MEMCG or memcg is disabled
->>>> by kernel command line, then shrinker's SHRINKER_MEMCG_AWARE flag would be cleared.
->>>> This makes the implementation of this patch simpler.
->>>>
->>>> Acked-by: Vlastimil Babka <vbabka@suse.cz>
->>>> Signed-off-by: Yang Shi <shy828301@gmail.com>
->>>> ---
->>>>  mm/vmscan.c | 31 ++++++++++++++++---------------
->>>>  1 file changed, 16 insertions(+), 15 deletions(-)
->>>>
->>>> diff --git a/mm/vmscan.c b/mm/vmscan.c
->>>> index 545422d2aeec..20a35d26ae12 100644
->>>> --- a/mm/vmscan.c
->>>> +++ b/mm/vmscan.c
->>>> @@ -334,6 +334,9 @@ static int prealloc_memcg_shrinker(struct shrinker *shrinker)
->>>>  {
->>>>      int id, ret = -ENOMEM;
->>>>
->>>> +    if (mem_cgroup_disabled())
->>>> +            return -ENOSYS;
->>>> +
->>>>      down_write(&shrinker_rwsem);
->>>>      /* This may call shrinker, so it must use down_read_trylock() */
->>>>      id = idr_alloc(&shrinker_idr, shrinker, 0, 0, GFP_KERNEL);
->>>> @@ -414,7 +417,7 @@ static bool writeback_throttling_sane(struct scan_control *sc)
->>>>  #else
->>>>  static int prealloc_memcg_shrinker(struct shrinker *shrinker)
->>>>  {
->>>> -    return 0;
->>>> +    return -ENOSYS;
->>>>  }
->>>>
->>>>  static void unregister_memcg_shrinker(struct shrinker *shrinker)
->>>> @@ -525,8 +528,18 @@ unsigned long lruvec_lru_size(struct lruvec *lruvec, enum lru_list lru, int zone
->>>>   */
->>>>  int prealloc_shrinker(struct shrinker *shrinker)
->>>>  {
->>>> -    unsigned int size = sizeof(*shrinker->nr_deferred);
->>>> +    unsigned int size;
->>>> +    int err;
->>>> +
->>>> +    if (shrinker->flags & SHRINKER_MEMCG_AWARE) {
->>>> +            err = prealloc_memcg_shrinker(shrinker);
->>>> +            if (err != -ENOSYS)
->>>> +                    return err;
->>>>
->>>> +            shrinker->flags &= ~SHRINKER_MEMCG_AWARE;
->>>> +    }
->>>> +
->>>> +    size = sizeof(*shrinker->nr_deferred);
->>>>      if (shrinker->flags & SHRINKER_NUMA_AWARE)
->>>>              size *= nr_node_ids;
->>>
->>> This may sound surprisingly, but IIRC do_shrink_slab() may be called on early boot
->>> *even before* root_mem_cgroup is allocated. AFAIR, I received syzcaller crash report
->>> because of this, when I was implementing shrinker_maps.
->>>
->>> This is a reason why we don't use shrinker_maps even in case of mem cgroup is not
->>> disabled: we iterate every shrinker of shrinker_list. See check in shrink_slab():
->>>
->>>       if (!mem_cgroup_disabled() && !mem_cgroup_is_root(memcg))
->>>
->>> Possible, we should do the same for nr_deferred: 1)always allocate shrinker->nr_deferred,
->>> 2)use shrinker->nr_deferred in count_nr_deferred() and set_nr_deferred().
->>
->> I looked over my mail box, and I can't find that crash report and conditions to reproduce.
->>
->> Hm, let's remain this as is, and we rework this in case of such early shrinker call is still
->> possible, and there will be a report...
-> 
-> Sure. But I'm wondering how that could happen. On a very small machine?
+When a kernel thread performs memory access on behalf of a process (like
+in async I/O, io_uring, etc.) it has to respect tagging setup of the
+process as user addresses can include tags.
 
-Sorry, but I don't remember. Maybe this case you said. Maybe some self-tests on node boot..
+Normally, LAM setup is per-thread and recorded in thread flags, but for
+this use case we also track LAM setup per-mm. mm->context.lam would
+record LAM that allows the most tag bits among the threads of the mm.
 
->>
->> Reviewed-by: Kirill Tkhai <ktkhai@virtuozzo.com>
->>
->> With only nit:
->>
->>>>
->>>> @@ -534,26 +547,14 @@ int prealloc_shrinker(struct shrinker *shrinker)
->>>>      if (!shrinker->nr_deferred)
->>>>              return -ENOMEM;
->>>>
->>>> -    if (shrinker->flags & SHRINKER_MEMCG_AWARE) {
->>>> -            if (prealloc_memcg_shrinker(shrinker))
->>>> -                    goto free_deferred;
->>>> -    }
->>>>
->>>>      return 0;
->>>> -
->>>> -free_deferred:
->>>> -    kfree(shrinker->nr_deferred);
->>>> -    shrinker->nr_deferred = NULL;
->>>> -    return -ENOMEM;
->>>>  }
->>>>
->>>>  void free_prealloced_shrinker(struct shrinker *shrinker)
->>>>  {
->>>> -    if (!shrinker->nr_deferred)
->>>> -            return;
->>>> -
->>>>      if (shrinker->flags & SHRINKER_MEMCG_AWARE)
->>>> -            unregister_memcg_shrinker(shrinker);
->>>> +            return unregister_memcg_shrinker(shrinker);
->>
->> I've never seen return of void function in linux kernel. I'm not sure this won't confuse people.
-> 
-> Will fix in v7.
-> 
->>
->>>>
->>>>      kfree(shrinker->nr_deferred);
->>>>      shrinker->nr_deferred = NULL;
->>>>
->>>
->>
->>
+The info used by switch_mm_irqs_off() to construct CR3 if the task is
+kernel thread. Thread flags of the kernel thread get updated according
+to mm->context.lam. It allows untagged_addr() to work correctly.
+
+Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+---
+ arch/x86/include/asm/mmu.h |  1 +
+ arch/x86/mm/tlb.c          | 28 ++++++++++++++++++++++++++++
+ 2 files changed, 29 insertions(+)
+
+diff --git a/arch/x86/include/asm/mmu.h b/arch/x86/include/asm/mmu.h
+index 9257667d13c5..fb05d6a11538 100644
+--- a/arch/x86/include/asm/mmu.h
++++ b/arch/x86/include/asm/mmu.h
+@@ -35,6 +35,7 @@ typedef struct {
+ #ifdef CONFIG_X86_64
+ 	/* True if mm supports a task running in 32 bit compatibility mode. */
+ 	unsigned short ia32_compat;
++	u8 lam;
+ #endif
+ 
+ 	struct mutex lock;
+diff --git a/arch/x86/mm/tlb.c b/arch/x86/mm/tlb.c
+index 138d4748aa97..1f9749da12e4 100644
+--- a/arch/x86/mm/tlb.c
++++ b/arch/x86/mm/tlb.c
+@@ -176,6 +176,34 @@ static u8 gen_lam(struct task_struct *tsk, struct mm_struct *mm)
+ 	if (!tsk)
+ 		return LAM_NONE;
+ 
++	if (tsk->flags & PF_KTHREAD) {
++		/*
++		 * For kernel thread use the most permissive LAM
++		 * used by the mm. It's required to handle kernel thread
++		 * memory accesses on behalf of a process.
++		 *
++		 * Adjust thread flags accodringly, so untagged_addr() would
++		 * work correctly.
++		 */
++		switch (mm->context.lam) {
++		case LAM_NONE:
++			clear_thread_flag(TIF_LAM_U48);
++			clear_thread_flag(TIF_LAM_U57);
++			return LAM_NONE;
++		case LAM_U57:
++			clear_thread_flag(TIF_LAM_U48);
++			set_thread_flag(TIF_LAM_U57);
++			return LAM_U57;
++		case LAM_U48:
++			set_thread_flag(TIF_LAM_U48);
++			clear_thread_flag(TIF_LAM_U57);
++			return LAM_U48;
++		default:
++			WARN_ON_ONCE(1);
++			return LAM_NONE;
++		}
++	}
++
+ 	if (test_ti_thread_flag(ti, TIF_LAM_U57))
+ 		return LAM_U57;
+ 	if (test_ti_thread_flag(ti, TIF_LAM_U48))
+-- 
+2.26.2
 
