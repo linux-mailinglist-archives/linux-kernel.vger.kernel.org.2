@@ -2,106 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A0F8310F63
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 19:03:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1662310F6F
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 19:05:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231991AbhBEQUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 11:20:22 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:60350 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233694AbhBEQSE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 11:18:04 -0500
-Received: from [192.168.0.104] (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
-        by linux.microsoft.com (Postfix) with ESMTPSA id B10A620B6C40;
-        Fri,  5 Feb 2021 09:59:45 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com B10A620B6C40
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1612547985;
-        bh=R/hf6T7IfqycaEkvWUWCsy5KS7kYt+/f6lu60uKrZc4=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=VwTrdKn5QuH+ugavR1sYZ5ODTerDlLe18JCTYyCKTjteoD/lFzarEpsTQ4bbioy+G
-         b4IYR48kTdBa6sQRz/NH/HOOJjWJAgaas5xt9LnO9E0hS525NHdqeLiswFlevo0QWi
-         400UzuFEoDfX7Xiyhc8PQTw5A601cG/sMH4Cxwak=
-Subject: Re: [PATCH v2 1/2] ima: Free IMA measurement buffer on error
-To:     Mimi Zohar <zohar@linux.ibm.com>,
-        Greg KH <gregkh@linuxfoundation.org>
-Cc:     bauerman@linux.ibm.com, dmitry.kasatkin@gmail.com,
-        ebiederm@xmission.com, sashal@kernel.org,
-        tyhicks@linux.microsoft.com, linux-integrity@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-References: <20210204174951.25771-1-nramas@linux.microsoft.com>
- <YB0YdqbbdAdbEOQw@kroah.com>
- <7000d128-272e-3654-8480-e46bf7dfad74@linux.microsoft.com>
- <6a5b7a1767265122d21f185c81399692d12191f4.camel@linux.ibm.com>
-From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-Message-ID: <b8573374-86d0-f679-6c9f-a61b2bc6f7ea@linux.microsoft.com>
-Date:   Fri, 5 Feb 2021 09:59:45 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S233718AbhBEQWX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 11:22:23 -0500
+Received: from mga18.intel.com ([134.134.136.126]:57360 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230374AbhBEQTC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 11:19:02 -0500
+IronPort-SDR: xsyp4/dVN4iFhYQCwBJxmKGvLSM7JeNc4F3zqTsXFxy60X9OAfbwrkEbRVCq/ciaqyPZ2r0rcU
+ HtA09LD2jY9A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9886"; a="169141569"
+X-IronPort-AV: E=Sophos;i="5.81,155,1610438400"; 
+   d="scan'208";a="169141569"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2021 10:00:31 -0800
+IronPort-SDR: flCR177ho8xnj0bLEwOjvZcs9Zedun0/6v6kqhP8zw+5aFJY/km3RD+12kLLIkQ1hijsUSVCTq
+ zK9mt3DZSzxA==
+X-IronPort-AV: E=Sophos;i="5.81,155,1610438400"; 
+   d="scan'208";a="434549248"
+Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.212.95.7]) ([10.212.95.7])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2021 10:00:24 -0800
+Subject: Re: [PATCH v19 06/25] x86/cet: Add control-protection fault handler
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>
+References: <20210203225547.32221-1-yu-cheng.yu@intel.com>
+ <20210203225547.32221-7-yu-cheng.yu@intel.com>
+ <20210205135927.GH17488@zn.tnic>
+From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
+Message-ID: <2d829cba-784e-635a-e0c5-a7b334fa9b40@intel.com>
+Date:   Fri, 5 Feb 2021 10:00:21 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-In-Reply-To: <6a5b7a1767265122d21f185c81399692d12191f4.camel@linux.ibm.com>
-Content-Type: text/plain; charset=iso-8859-15; format=flowed
+In-Reply-To: <20210205135927.GH17488@zn.tnic>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/5/21 9:49 AM, Mimi Zohar wrote:
-
-Hi Mimi,
-
-> On Fri, 2021-02-05 at 09:39 -0800, Lakshmi Ramasubramanian wrote:
->> On 2/5/21 2:05 AM, Greg KH wrote:
->>> On Thu, Feb 04, 2021 at 09:49:50AM -0800, Lakshmi Ramasubramanian wrote:
->>>> IMA allocates kernel virtual memory to carry forward the measurement
->>>> list, from the current kernel to the next kernel on kexec system call,
->>>> in ima_add_kexec_buffer() function.  In error code paths this memory
->>>> is not freed resulting in memory leak.
->>>>
->>>> Free the memory allocated for the IMA measurement list in
->>>> the error code paths in ima_add_kexec_buffer() function.
->>>>
->>>> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
->>>> Suggested-by: Tyler Hicks <tyhicks@linux.microsoft.com>
->>>> Fixes: 7b8589cc29e7 ("ima: on soft reboot, save the measurement list")
->>>> ---
->>>>    security/integrity/ima/ima_kexec.c | 1 +
->>>>    1 file changed, 1 insertion(+)
->>>
->>> <formletter>
->>>
->>> This is not the correct way to submit patches for inclusion in the
->>> stable kernel tree.  Please read:
->>>       https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
->>> for how to do this properly.
->>>
->>> </formletter>
->>>
->>
->> Thanks for the info Greg.
->>
->> I will re-submit the two patches in the proper format.
+On 2/5/2021 5:59 AM, Borislav Petkov wrote:
+> On Wed, Feb 03, 2021 at 02:55:28PM -0800, Yu-cheng Yu wrote:
+>> +DEFINE_IDTENTRY_ERRORCODE(exc_control_protection)
+>> +{
+>> +	static DEFINE_RATELIMIT_STATE(rs, DEFAULT_RATELIMIT_INTERVAL,
+>> +				      DEFAULT_RATELIMIT_BURST);
+>> +	struct task_struct *tsk;
+>> +
+>> +	if (!user_mode(regs)) {
+>> +		pr_emerg("PANIC: unexpected kernel control protection fault\n");
+>> +		die("kernel control protection fault", regs, error_code);
+>> +		panic("Machine halted.");
+>> +	}
+>> +
+>> +	cond_local_irq_enable(regs);
+>> +
+>> +	if (!boot_cpu_has(X86_FEATURE_CET))
+>> +		WARN_ONCE(1, "Control protection fault with CET support disabled\n");
+>> +
+>> +	tsk = current;
+>> +	tsk->thread.error_code = error_code;
+>> +	tsk->thread.trap_nr = X86_TRAP_CP;
+>> +
+>> +	if (show_unhandled_signals && unhandled_signal(tsk, SIGSEGV) &&
+>> +	    __ratelimit(&rs)) {
 > 
-> No need.  I'm testing these patches now.  I'm not exactly sure what the
-> problem is.  Stable wasn't Cc'ed.  Is it that you sent the patch
-> directly to Greg or added "Fixes"?
+> I can't find it written down anywhere why the ratelimiting is needed at
+> all?
 > 
-I had not Cced stable, but had "Fixes" tag in the patch.
 
-Fixes: 7b8589cc29e7 ("ima: on soft reboot, save the measurement list")
+The ratelimit here is only for #CP, and its rate is not counted together 
+with other types of faults.  If a task gets here, it will exit.  The 
+only condition the ratelimit will trigger is when multiple tasks hit #CP 
+at once, which is unlikely.  Are you suggesting that we do not need the 
+ratelimit here?
 
-The problem is that the buffer allocated for forwarding the IMA 
-measurement list is not freed - at the end of the kexec call and also in 
-an error path. Please see the patch description for
+Thanks!
 
-[PATCH v2 2/2] ima: Free IMA measurement buffer after kexec syscall
-
-IMA allocates kernel virtual memory to carry forward the measurement
-list, from the current kernel to the next kernel on kexec system call,
-in ima_add_kexec_buffer() function.  This buffer is not freed before
-completing the kexec system call resulting in memory leak.
-
-thanks,
-  -lakshmi
+--
+Yu-cheng
