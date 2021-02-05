@@ -2,194 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3D7A3115C0
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 23:44:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EB5F3115AA
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 23:43:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231638AbhBEWkX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 17:40:23 -0500
-Received: from mail-eopbgr50056.outbound.protection.outlook.com ([40.107.5.56]:31974
-        "EHLO EUR03-VE1-obe.outbound.protection.outlook.com"
+        id S229848AbhBEWiF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 17:38:05 -0500
+Received: from mail-mw2nam10on2136.outbound.protection.outlook.com ([40.107.94.136]:31456
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232812AbhBEOwO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 09:52:14 -0500
+        id S232437AbhBEOww (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 09:52:52 -0500
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ax20WAkTCgTEK/4GeZks9FU8NMpxrjLWkkJlIIDdWbgQml+Dt9vKYxWifzKX9u+VEf3nN5IzBr2jgCUR+WKuxn3YpjsMYmjCA/fVFtSN1DNjafyXcXmt8OadrFR8x4O27kHGrnkFz9CLyea6t8Wl5rFjxW03erRLst3a2a5dhm+PJpNWBBp4wgJdGyk2KWbULh3PqOFSbxdWvm7CIoQ9K5yuAey6BXAM+VwMDobsQTG0XVFddGnc3BJcmriv5m6aN+3xYWnz4uww519kp8RifyG26ZItb4+c9eeEM/wR8/VIvxX1iKfltCiAGSF63eOAfBukdBEHznA0hJ1EXDG9LQ==
+ b=RJuTM8RqXAlNYXb1USiSfbxNmAYrOJjXiPbJdujt3I9oKwu46IeJ2Xir4ileOz9QPVSqYUcpTNTnbUIZ6Uk8eeu0YK4OnWZ2ap2UfsyZu+W/587m9Ejs3ndC52jbuUpVIgfNcgQGXuXfutZWlCWJSgUAEBKYprKTQ2/Cm1ZODliTyDPOLcgSgQM6q54Z/6nJWgnLsZQYJqO+eRqzbtBxxBsGqAGmImo7GD/Z+W2QImXovFQkrQ3aMkPdjeaW05xFbejNFakcQSYjuOHyGgN2/A59Ids1u0A2roxrTZ5YkrpVDomAgwS3uYpgUIrfwPJROJapMpfFSD6Mdw/9miRJCw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=aQn7tNAOwd4VWa1B2iYXIB9jNfOoBh1EbaCIX0dHTSA=;
- b=GVHbE0NjWzzAYxuvYBneOHC+h1uhzMPrTZPA8hKnxQppWIjhiuoYWILmWNQN1mnehh6qyxunSvkIW+F9z0eYQkMhn6IqNA/MDA/hz3IaUFoFka4IvfsDPUqep2fGuXx3jgsxgQjljrPQ52rjHukQnPlSWLHJo4i3TAJ7M0qqtbbfyhj1aLTMP5x6GE5BoxOf8ykOcu3mbTp4RyyYrdJlK/9/ecW2eLjWOtEBx+0+2lT/AQr8UD+i7nnxYKSf+Ga3FT+gPdgMCyECwv7EP1tEYoikjmuUmqPAMT68skyFEtHkwesqzPdwM8XFjQCW8t/ME/6TAgk7i9JSiU69KxZYAw==
+ bh=gDgU8eSttBcDwICX2B+gomwjkfzgJIaFCBfj2k86xjI=;
+ b=dC/sgdXv7on0axrzVqrEjZ5SL/L0JBBIkAkmQ4L7NHpzWdkoKWwiC7j5gQFKZc1Q0kJq7CYqppMRjf00lwqCGz3n80q5/0p6IvVSgA5ynFH0OxnZySsf0Z0/LEp8blWgN3an/SjNam6FgDVfxoItt3xEaj4lpRdE6zhzl7ii2phDCXWGk7BWDPUwsEobRKbLEP6kScoFtDogREdQBuZlw3F/LgEwT9wqJ8a+OQC9nwJTH0Q0R6qNYYYUqdZe5BMVoTOfqOKDi3iIbTKqQsPtIzq9Hdug+dDj5NcwHQngI1p4LHvpkBBCBovPWHAQBqiR0FIdGxoe7bdbe9CJa/uSnQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=kunbus.com; dmarc=pass action=none header.from=kunbus.com;
- dkim=pass header.d=kunbus.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kunbus.com;
- s=selector1;
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=aQn7tNAOwd4VWa1B2iYXIB9jNfOoBh1EbaCIX0dHTSA=;
- b=FYyagFWCy+uiKTU+OY1/iOa/bUp2GAXsK7AMupRExEoA3eYwl3j+wSeBrP4gLWpIjRss7TX/5ApBiyIdL/EZaCQP2qtf7980tOqiwCKReki4/KjmI5KTq+Qp6qAJLqRBJGv/2+TcIXEiMUvsrtosowXHCBqBp1GuLyp6mDvxyss=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=kunbus.com;
-Received: from PR3P193MB0894.EURP193.PROD.OUTLOOK.COM (2603:10a6:102:a0::11)
- by PR3P193MB1117.EURP193.PROD.OUTLOOK.COM (2603:10a6:102:a4::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.23; Fri, 5 Feb
- 2021 14:55:10 +0000
-Received: from PR3P193MB0894.EURP193.PROD.OUTLOOK.COM
- ([fe80::2839:56c8:759b:73]) by PR3P193MB0894.EURP193.PROD.OUTLOOK.COM
- ([fe80::2839:56c8:759b:73%5]) with mapi id 15.20.3784.022; Fri, 5 Feb 2021
- 14:55:10 +0000
-Subject: Re: [PATCH v3 1/2] tpm: fix reference counting for struct tpm_chip
-To:     Jason Gunthorpe <jgg@ziepe.ca>,
-        Lino Sanfilippo <LinoSanfilippo@gmx.de>
-Cc:     peterhuewe@gmx.de, jarkko@kernel.org, stefanb@linux.vnet.ibm.com,
-        James.Bottomley@hansenpartnership.com, stable@vger.kernel.org,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1612482643-11796-1-git-send-email-LinoSanfilippo@gmx.de>
- <1612482643-11796-2-git-send-email-LinoSanfilippo@gmx.de>
- <20210205130511.GI4718@ziepe.ca>
-From:   Lino Sanfilippo <l.sanfilippo@kunbus.com>
-Message-ID: <3b821bf9-0f54-3473-d934-61c0c29f8957@kunbus.com>
-Date:   Fri, 5 Feb 2021 15:55:09 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-In-Reply-To: <20210205130511.GI4718@ziepe.ca>
-Content-Type: text/plain; charset=utf-8
+ bh=gDgU8eSttBcDwICX2B+gomwjkfzgJIaFCBfj2k86xjI=;
+ b=R3x746QijMyysXuCENUxYwZS/Pz9/FGksasmE/a+xPPWdYpmGJ8fwugU3cimLD0jpAyDB61x+ycSq3NAeyib8KXkax+nHgGL7gyKg6q7EpEgIkNjxUxq5r9xcCfRPJ6XgsqJ9OwcUiWVTRAOUVU8GSjV9WI6NdPF7OLB+lvheMc=
+Received: from (2603:10b6:301:7c::11) by
+ MWHPR21MB1546.namprd21.prod.outlook.com (2603:10b6:301:7c::21) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3846.3; Fri, 5 Feb 2021 14:56:37 +0000
+Received: from MWHPR21MB1593.namprd21.prod.outlook.com
+ ([fe80::9c8:94c9:faf1:17c2]) by MWHPR21MB1593.namprd21.prod.outlook.com
+ ([fe80::9c8:94c9:faf1:17c2%9]) with mapi id 15.20.3846.006; Fri, 5 Feb 2021
+ 14:56:36 +0000
+From:   Michael Kelley <mikelley@microsoft.com>
+To:     Sunil Muthuswamy <sunilmut@microsoft.com>,
+        Matheus Castello <matheus@castello.eng.br>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <liuwe@microsoft.com>,
+        Tianyu Lan <Tianyu.Lan@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, vkuznets <vkuznets@redhat.com>
+CC:     KY Srinivasan <kys@microsoft.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v3] x86/Hyper-V: Support for free page reporting
+Thread-Topic: [PATCH v3] x86/Hyper-V: Support for free page reporting
+Thread-Index: Adbkgi7u1VztxegUSBO0uPzYUvP03gWw0bwwACJGkKA=
+Date:   Fri, 5 Feb 2021 14:56:36 +0000
+Message-ID: <MWHPR21MB15937CBA4514849A40D53FAED7B29@MWHPR21MB1593.namprd21.prod.outlook.com>
+References: <SN4PR2101MB0880CA1C933184498DF1F595C0D09@SN4PR2101MB0880.namprd21.prod.outlook.com>
+ <MWHPR21MB159313CE5C5ACEC4F94D8090D7B39@MWHPR21MB1593.namprd21.prod.outlook.com>
+In-Reply-To: <MWHPR21MB159313CE5C5ACEC4F94D8090D7B39@MWHPR21MB1593.namprd21.prod.outlook.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [87.130.101.138]
-X-ClientProxiedBy: AM3PR03CA0068.eurprd03.prod.outlook.com
- (2603:10a6:207:5::26) To PR3P193MB0894.EURP193.PROD.OUTLOOK.COM
- (2603:10a6:102:a0::11)
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2021-02-04T23:35:51Z;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=03e0cf99-fbde-437d-a81b-3887d9699748;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0
+authentication-results: microsoft.com; dkim=none (message not signed)
+ header.d=none;microsoft.com; dmarc=none action=none
+ header.from=microsoft.com;
+x-originating-ip: [24.22.167.197]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 1a12e838-3c25-474a-1579-08d8c9e63c9f
+x-ms-traffictypediagnostic: MWHPR21MB1546:
+x-ms-exchange-transport-forked: True
+x-ld-processed: 72f988bf-86f1-41af-91ab-2d7cd011db47,ExtAddr
+x-microsoft-antispam-prvs: <MWHPR21MB1546AD997B06249C17D3AB84D7B29@MWHPR21MB1546.namprd21.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6790;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: GS3tPu+25CqbpNmAtbpiKiUkjcdN8a4RIwfzL2lYJKqjv9h907P61Sv1hcsPMMFx30eNwq9waOgzZk+KDTgQjB4rSqbb//3A6FM4n3CsSXOQA4kgXXKQhZwa8FF4j0rLdM1yuQFw9a9ZMu5waZRNcJlc/K7xNDXHpxmBw07bvfE/lAILBWDXk8+NqR1pdzMZ3MyTEN3PZusXfMLofUOv2kSlIaXkH9lxS3y8ylv8kIea70rRmZb6LvF8tYaBTjuwdoP38qmwBpNRsUS97KYmXqh1IjXH8fCiewJ+uCbkpJsj8EccGTV7JdEFbw0odXwCrnBHroZZqM2z9Yp8zjjWv47wT2ePOTJ9FBYCj6hW9iY6PZDdUA/zqbcMXqwKI5n02XGcPH/hcoEto/HgOUAWG2dZyRj/rVTTmKyatALy8HXybjb+kvN6I3+cINhGFSsAMqeCGPnhFOx5FHcrwW4JbpvdAOymYX6BJznt6ofaACqIIOggRNgFmSIKtNxUE8Zx08SJYtjzB+AabG3xxsfH3n14VJ4snmhGDUPeD43sSoeF6QRLcMLkMs2d1w7NQX8U
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR21MB1593.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(39860400002)(376002)(136003)(346002)(366004)(7696005)(52536014)(66476007)(82960400001)(8990500004)(71200400001)(83380400001)(82950400001)(4326008)(76116006)(2906002)(66556008)(26005)(5660300002)(186003)(316002)(55016002)(66946007)(9686003)(8676002)(64756008)(6506007)(8936002)(478600001)(33656002)(86362001)(66446008)(110136005)(54906003)(10290500003)(4533004);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?kfaX11yQoy0F/O1K4Pvb/OV2KvGoselz3gD8BnXn5PkycGffkNM1WSDXCHXC?=
+ =?us-ascii?Q?fnzOjK2SUqYkwWkcftQqWgBAtIsnYqHVPGGjTLyuDy0me7YLwA30biGYugZZ?=
+ =?us-ascii?Q?8nvk+w96gfMLxyVe0+x0Nz4/n6Ko5LR2Uj/9FvfulsRwLsZB8UYF68JjsLZ4?=
+ =?us-ascii?Q?uAI9a00wxSrHSCvttiOAM5SuvBRKvzABeW5UGwJBNla0PL5ff8A/eLyHFZJK?=
+ =?us-ascii?Q?y6vTIImti0McWqV2kyYtAjx1drmUoaZqGKKK6CmM5bZvWbUgFTYgzCie3LxT?=
+ =?us-ascii?Q?X/ZOQ0hQ7S4YSXnmC3dcd8KtlBepuxsKmtDE/UEvoFZyvs3DPxhJgxpkzdb5?=
+ =?us-ascii?Q?nYLo5CluOh7dkMmiBGIGfPvgsJNhVUVYdPQP9lrDQ7sVxkSYqKj8OyIsZfbv?=
+ =?us-ascii?Q?Du2m4dGA+01sVvxjTugytI3io37k1ovLzEpNOO/PGMuEovozt+ZOoETg0CxO?=
+ =?us-ascii?Q?Gl1Ntu4jpajPo9hlIbjMXOheBZ79mIpDKgf+gbHwAgVULUN1Y3CK9kIR29kD?=
+ =?us-ascii?Q?O0zJHttn3eg9yRUpbC06kDzCbkmvd8ZZ7+i5PJNl6fi/pGpaK1rEncLAmOgl?=
+ =?us-ascii?Q?Cb27umbz8iUvCsgmbGOXEtbzDBiZrm8+CilMns1qycMnr88YUpMnbohkYp2f?=
+ =?us-ascii?Q?bm12gJQ6om9J4a5ixstHL/JXFCHPtOYNTp0759HxHoJg421PZuAk7lBFVF0k?=
+ =?us-ascii?Q?7bmg05a1LRG3DFOLDhZUKpaQ8S2poWr9RW1CjSuOyiidrH7qpmMC68C3H1mW?=
+ =?us-ascii?Q?JV4swF+efEsz0Qj3AEm5t0v6B0+xd5f4X6n8Er9peuo6dVAFgB17VpqTjpVu?=
+ =?us-ascii?Q?bqiSST7Bu1kFi377qwrR5nuSqSjeIztuAEGx2qklZUWlAh6zZFEGhyiw1bwW?=
+ =?us-ascii?Q?UVaN6g0IiikG5Xaj2A9qbBg5A6rqICJZfj+tY3DSdHKGwGjCma6ThVcW7bzi?=
+ =?us-ascii?Q?KI0FXqmIn21Fj5DwGzspgiHzK/6dO5Rk8E8ivar4ubnE86eCIEGgkIinuXyZ?=
+ =?us-ascii?Q?LsRDxMCtt+bhBX/EKyyIR0+1hd41BNCiSkJQ+IUquuYmO1FN8lkqLcuCYyH8?=
+ =?us-ascii?Q?tzt3uSdUneeQKTgIaeqrSY+ZmOPFq8EPZjQojxiAAQVzcCRzOmSi2acsLD4m?=
+ =?us-ascii?Q?QmAgXd6s65IH8thEHJkH9Dj2ENkEQBmyP6BmqguuHVB8QE6OxOT7oWQXcdQ/?=
+ =?us-ascii?Q?Pg+7Re2o5Puqdml0808WusL/R8gRqKsrEfbJRILiNZtkgr4rwe5spA022V39?=
+ =?us-ascii?Q?hSod3viCKqHv/pfegZqUC4oB4la2y5QQ1hC1giGKt9Unbgxs8DfvKe+RP1E5?=
+ =?us-ascii?Q?sklaI/30klnMXFzEFaA6PA+X?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [172.23.16.111] (87.130.101.138) by AM3PR03CA0068.eurprd03.prod.outlook.com (2603:10a6:207:5::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.17 via Frontend Transport; Fri, 5 Feb 2021 14:55:10 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 90fd9512-d6e4-4242-4d6e-08d8c9e60903
-X-MS-TrafficTypeDiagnostic: PR3P193MB1117:
-X-Microsoft-Antispam-PRVS: <PR3P193MB1117EFFE9947F3B116A09AC2FAB29@PR3P193MB1117.EURP193.PROD.OUTLOOK.COM>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: W0AOYWg/BAPwWY3meOiBodltOwzqu9D5ntF8FD3VovK9Kh6GkFIArW9y6yeHmI5EOjRT1nOeYTjK+OixpOQN4aCuzdsjStV2b89T9yA4yhK0b08JVXv+JuY8Puja7pM66gIAytq/JMwwtg2IzTX1HN4TLJyK81ZiNAXkO8JfLCbtN4UhC8Nus0fvvhbi5d5rX7SM6Q4IPeRzTI6uvoyGkFfaZKZli6E6s6+lXpO1kTKEoqqk46lAsaHFTbKZ3eHQWcXHvxcZj/HLLtnN0ZF8oorwNmqczGXRGCNhMZEBPl+F9BmDGKowtLEUwDThFOaRoV9rx7uo12OyZhhSbpHH3BE1/ufZgGlIgRNbBL4IPbVSUhhbZ0eJdg2gB2Ex+iiZj86HGtxafj+oSKyCLHMC1RNiaBNhm+qeDFMUXjw2HDDjpEIcYf+MaqJC3omD6Iyz1aRyMUMAxDTELPwoVmSwhsMdsKpR/yfTzmyhtqgpMz5mTQU2qBJbY381UpY3SXaoqlPD0Pc3BBiA6uV+BcRQX9K4wl/lFg6PinAFkyv6dIh6QZCUHy1gP31D/pg0nn+ZjH8kIOqbEwJvWhhwjVaAAA7hp6b7/03BFIOldLq9Usk=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PR3P193MB0894.EURP193.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(4636009)(39830400003)(366004)(376002)(346002)(136003)(396003)(8936002)(83380400001)(16576012)(8676002)(26005)(4326008)(31696002)(31686004)(186003)(66476007)(66556008)(66946007)(52116002)(316002)(478600001)(2906002)(956004)(2616005)(6486002)(110136005)(5660300002)(53546011)(86362001)(36756003)(16526019)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?SEpLNlNUeUdaZmtGV20reXYyMmFyQUZMKzNqaHZUaVQ3RXBvSHN1T2YxYWtt?=
- =?utf-8?B?TUQxeFhkMDJtclc5T0p3emtLZDZROUcyN3gzWTVLRFcvMVhwa2x1YjFoaHdH?=
- =?utf-8?B?b1R6Q0UzSUM0Q2FLOHNRVkNhWnoyekp1c0dmRWVZUTNRakwva3M3UUdPcjhw?=
- =?utf-8?B?RHMyMWpnMzBadDAyT3V3ajFvdDNmdzFqbnFJZmVuMHh1cHgvOHV5K085bkxm?=
- =?utf-8?B?OFpnRVNXcUd1QmVwSVV5bzFTQTNvWUI2OGxlN0kxVE5KbzFXLzI2SlllQmxs?=
- =?utf-8?B?M0RsWDJqOSs5QjZvWGZCd3pVemJ6czRQL2lsTXVWQlQ1S0FpRWpqekJ1cDVY?=
- =?utf-8?B?NVRWM1JLQm4yb0d2d2VZSGU4Ti83TlVMdngreVl3NGt0dnV6TzdCdVRDK240?=
- =?utf-8?B?R285L2ppdENqalM2SWk3NjlWY1pQQnIzRENEbW5lMm16cFVKbEZrd1o3eUI0?=
- =?utf-8?B?Sk00cDVZTmIvNzVwTENPVGIzTm1RdnNnZkRIQlBScXRQUi9GblJlMWsxNEtL?=
- =?utf-8?B?L0tXU01nejNDYVN3eWRrQk83bFRBS2FIN0NSYVBJUllOME81KzRJN093d2w5?=
- =?utf-8?B?UnVvdEl2aElYSFl4M3piR1lqU1JKRUU5ZVdSaDhQdCtkcjZyN1JLbG4xUUNV?=
- =?utf-8?B?dXFZRzlKM3J2aWh1Tk03UzFSOUxyTXVKaHJzU09Gc1hBRytoRGlzQ1ZHZGk5?=
- =?utf-8?B?eFNlYXpvNGQ3d2prbXhNblBoOWw3RmhhVjl6Rk9pdXVveEhiNk13QmZ4LzRG?=
- =?utf-8?B?b01mRWthdU12aEtQMGt5cE8xbEpIaXBFL1pyYkNwdjdra3BYZ0Fsa2VFWG4r?=
- =?utf-8?B?QWtKOFZ0Z2NySm1XdlZ3c3BMQXFicUJTNEsvMGI4SG5EMm1icHhuUHRZc2Z5?=
- =?utf-8?B?NzBSRENWRlZNdkoyM1lKd0F0emRMZW1BcHZXcitSOTZITHhnTVRzMUl2cktn?=
- =?utf-8?B?SUFOL3h5RTRlR2hhbGhKRTRDMXpjTUVXaDFuMkNVZnJlR0VqQ2NqVW9peE9B?=
- =?utf-8?B?ZHpOY1l3QW81Vlp1RzUvWFVDdDhtMWRlTE1nRktFWXVWSm9GQVJJc05IRFJQ?=
- =?utf-8?B?ZGt3OS8rQlFsUUZVNDlTR1d6QzBROGRJYThaNkpodUc0SGFQNTJKNkgvakRx?=
- =?utf-8?B?dEcwMnFkbDdrMWJLNS9wK1oxOU9Qc2xHMi8ya1VEWW9aNnBDK09qK21aN1dq?=
- =?utf-8?B?azgrMExUNFBSc0xvVnpwaTcwVzlONStpWTNnUVp3bnl1eUNkV2lqYndWdExS?=
- =?utf-8?B?NytFRGQ2bTU1K0gyRHVzVERqREU3Smt0MThhSjhxYlpCSVVRT1ZwUXVGSUJJ?=
- =?utf-8?B?eDY3V1lOUVJnZUpxQXNVOGZGSXVjTUo1QlJBMEcyNHVZWERVemVDNFdzMW1n?=
- =?utf-8?B?dlAwZkZ1UVdCQ0ZWMzFSeW5rNWdLZFh2cm9MQTJqbm9iRlNrN1BmWTF3Tlcw?=
- =?utf-8?B?MTR1dG5RYXpCOVl2SU5FZXNtMG5Ya3BDdUVHVDVEYW1JczlQTktsZEx6SnMw?=
- =?utf-8?B?TE94Q1JQVGcvN0ZGVGE5amYwZHlQN2NzWFgyY2ZsN2ZNUDV0ODY3SzZiVWsr?=
- =?utf-8?B?S0g3dnFRVkdXWjQrMFJmUS9LT294OFhsT3h1UDVDZTJtay9BNnpJTUEwVm9z?=
- =?utf-8?B?WVN3c2pKL01WM0grR25CWW5SVlhyTkt6TzlxYmNaK0czOVFXQ1g3TDJPRHd1?=
- =?utf-8?B?eWFIaWJzWFNURTlEL2N4bGphMFZXdTRQakVLdE1zSTFGb1JoTi80dFlVYnF2?=
- =?utf-8?Q?712i/lOzWr/JmLbRXwYDuLIeN7CEqvUtlV6V/mV?=
-X-OriginatorOrg: kunbus.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 90fd9512-d6e4-4242-4d6e-08d8c9e60903
-X-MS-Exchange-CrossTenant-AuthSource: PR3P193MB0894.EURP193.PROD.OUTLOOK.COM
+X-OriginatorOrg: microsoft.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Feb 2021 14:55:10.5002
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR21MB1593.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1a12e838-3c25-474a-1579-08d8c9e63c9f
+X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Feb 2021 14:56:36.7776
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: aaa4d814-e659-4b0a-9698-1c671f11520b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: C7aJSbsrn6l1oTJjPL1w6oKzV1tGJYJxsyRYcGXl/SWyB8J1HDEFYGbYvM1I28Wlvz1tgOaszkJoBz9w9AJmXw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PR3P193MB1117
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: kLq0ItSON0/tW2BLDXDXkM3CtviL2uDmnb7HpYLKjsyeLTsroRgCvYFk+inFfRLsRUXHnyPurUHSyPaXwEaEQ9nZhmeY+XPsnRPh9YmvwAk=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR21MB1546
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+From: Michael Kelley <mikelley@microsoft.com> Sent: Thursday, February 4, 2=
+021 3:36 PM
+>=20
+> From: Sunil Muthuswamy <sunilmut@microsoft.com> Sent: Wednesday, January =
+6, 2021
+> 3:21 PM
+> >
+> > Linux has support for free page reporting now (36e66c554b5c) for
+> > virtualized environment. On Hyper-V when virtually backed VMs are
+> > configured, Hyper-V will advertise cold memory discard capability,
+> > when supported. This patch adds the support to hook into the free
+> > page reporting infrastructure and leverage the Hyper-V cold memory
+> > discard hint hypercall to report/free these pages back to the host.
+> >
+> > Signed-off-by: Sunil Muthuswamy <sunilmut@microsoft.com>
+> > Tested-by: Matheus Castello <matheus@castello.eng.br>
+> > ---
+> > In V2:
+> > - Addressed feedback comments
+> > - Added page reporting config option tied to hyper-v balloon config
+> >
+> > In V3:
+> > - Addressed feedback from Vitaly
+> > ---
+> >  arch/x86/hyperv/hv_init.c         | 31 +++++++++++
+> >  arch/x86/kernel/cpu/mshyperv.c    |  6 +-
+> >  drivers/hv/Kconfig                |  1 +
+> >  drivers/hv/hv_balloon.c           | 93 +++++++++++++++++++++++++++++++
+> >  include/asm-generic/hyperv-tlfs.h | 32 ++++++++++-
+> >  include/asm-generic/mshyperv.h    |  2 +
+> >  6 files changed, 162 insertions(+), 3 deletions(-)
+> >
 
-On 05.02.21 14:05, Jason Gunthorpe wrote:
+[snip]
 
->>
->> Commit fdc915f7f719 ("tpm: expose spaces via a device link /dev/tpmrm<n>")
->> already introduced function tpm_devs_release() to release the extra
->> reference but did not implement the required put on chip->devs that results
->> in the call of this function.
-> 
-> Seems wonky, the devs is just supposed to be a side thing, nothing
-> should be using it as a primary reference count for a tpm.
-> 
-> The bug here is only that tpm_common_open() did not get a kref on the
-> chip before putting it in priv and linking it to the fd. See the
-> comment before tpm_try_get_ops() indicating the caller must already
-> have taken care to ensure the chip is valid.
-> 
-> This should be all you need to fix the oops:
-> 
-> diff --git a/drivers/char/tpm/tpm-dev-common.c b/drivers/char/tpm/tpm-dev-common.c
-> index 1784530b8387bb..1b738dca7fffb5 100644
-> --- a/drivers/char/tpm/tpm-dev-common.c
-> +++ b/drivers/char/tpm/tpm-dev-common.c
-> @@ -105,6 +105,7 @@ static void tpm_timeout_work(struct work_struct *work)
->  void tpm_common_open(struct file *file, struct tpm_chip *chip,
->                      struct file_priv *priv, struct tpm_space *space)
->  {
-> +       get_device(&priv->chip.dev);
->         priv->chip = chip;
->         priv->space = space;
->         priv->response_read = true;
+> > +
+> > +	BUILD_BUG_ON(PAGE_REPORTING_CAPACITY > HV_MEMORY_HINT_MAX_GPA_PAGE_RA=
+NGES);
+> > +	dm_device.pr_dev_info.report =3D hv_free_page_report;
+> > +	ret =3D page_reporting_register(&dm_device.pr_dev_info);
+> > +	if (ret < 0) {
+> > +		dm_device.pr_dev_info.report =3D NULL;
+> > +		pr_err("Failed to enable cold memory discard: %d\n", ret);
+> > +	} else {
+> > +		pr_info("Cold memory discard hint enabled\n");
+> > +	}
+>=20
+> Should the above two messages be prefixed with "Hyper-V: "?
 
-This is racy, isnt it? The time between we open the file and we want to grab the
-reference in common_open() the chip can already be unregistered and freed.
+Ignore the above comment.  The lines will get prefixed with
+"hv_balloon:", which is fine.
 
-As a matter of fact this solution was the first thing that came into my mind, too,
-until I noticed the possible race condition. I can only guess that this was what
-James had in mind when he chose to take the extra reference to chip->dev in
-tpm_chip_alloc() instead of common_open(). 
-
-
->> diff --git a/drivers/char/tpm/tpm-chip.c b/drivers/char/tpm/tpm-chip.c
->> index ddaeceb..3ace199 100644
->> +++ b/drivers/char/tpm/tpm-chip.c
->> @@ -360,8 +360,7 @@ struct tpm_chip *tpm_chip_alloc(struct device *pdev,
->>  	 * while cdevs is in use.  The corresponding put
->>  	 * is in the tpm_devs_release (TPM2 only)
->>  	 */
->> -	if (chip->flags & TPM_CHIP_FLAG_TPM2)
->> -		get_device(&chip->dev);
->> +	get_device(&chip->dev);
->>  
->>  	if (chip->dev_num == 0)
->>  		chip->dev.devt = MKDEV(MISC_MAJOR, TPM_MINOR);
->> @@ -422,8 +421,21 @@ struct tpm_chip *tpmm_chip_alloc(struct device *pdev,
->>  	rc = devm_add_action_or_reset(pdev,
->>  				      (void (*)(void *)) put_device,
->>  				      &chip->dev);
->> -	if (rc)
->> +	if (rc) {
->> +		put_device(&chip->devs);
->>  		return ERR_PTR(rc);
-> 
-> This isn't right read what 'or_reset' does
-> 
- 
-In case of failure installing the action handler devm_add_action_or_reset() puts
-chip->dev for us. But we also have put chip->devs since we have retrieved a 
-reference to both chip->dev and chip->devs. Or do I miss something here?
-
-> Jason
-> 
-
-Regards,
-Lino
+Michael
