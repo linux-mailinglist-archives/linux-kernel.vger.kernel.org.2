@@ -2,138 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC1A3310BCC
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 14:29:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EB0E310BB9
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 14:22:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229813AbhBEN3R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 08:29:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37242 "EHLO
+        id S230120AbhBENWB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 08:22:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229751AbhBENPF (ORCPT
+        with ESMTP id S229972AbhBENQi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 08:15:05 -0500
-Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26E3BC06178B;
-        Fri,  5 Feb 2021 05:14:23 -0800 (PST)
-Received: by mail-qk1-x72e.google.com with SMTP id l27so6718661qki.9;
-        Fri, 05 Feb 2021 05:14:23 -0800 (PST)
+        Fri, 5 Feb 2021 08:16:38 -0500
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA125C0617A7
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 05:15:57 -0800 (PST)
+Received: by mail-yb1-xb32.google.com with SMTP id i6so6688851ybq.5
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 05:15:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=0L1NyhlUegaQwi5YXJfbhbjPLPGOMMcTEtEqCRMeLQo=;
-        b=Ab+mRX7NGUMCa4Ff0RZ9wAQEVJmz39Aic4C7DjIGWf+Op10X6vOxpTxon9x3SXdJXj
-         fjx9crJB9YdM8qbo3I/gVE0imVTAwfh04jDdMreOQ/upGurgxRjfOMCCivw6Tmr8Ls+7
-         3LHXjp2PnWIb22c21LE4imL38MZLLLjXTZZyV8NfvognUTNbuVLJfPj634ixLa/3lhGk
-         C2/WZpvTPGDf+gJt4Y5Pq6Wy5EW4QyPghM5tc6ar32ZZ0b7YsUzdFnjFE+htocBdgAni
-         kfx/m2A+SxO1nA+0HCqidSBUlRpGPWkxmasZ90SE1q+tI4LX+33kK+xwoQz53Hu6EE8m
-         lM9A==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=eMddkzoLtzudk6Saw9haOw0jx/RFJpF2riNKCfwuqgA=;
+        b=RF4nwrg/bI2QEh/WsUpLibjI3mQomXHb2vuTc+uJUHticYqHRHVZN4pY7kach2qUP3
+         b2ivhKJ38YAJghUzI2MwT8xBhEbUWyI0TmRmDSecrz6bXz6mpYM7dzVlnIOmK4Z89ffa
+         FfASdFuLG72rqoDVYfG/5MJfikNWmyVgqKX3FHsq+gb0ivvHYmDuabct6s07+8xD2MX1
+         CL+QIU4OwpqVWWzzVusw0VYq912podjjaSzg8cBxTX6i6QyvRR4SWdRbnCRMXta7Z8w0
+         kCqjWhdpHJUMPxBHj764KNf+HLxSGxHKWW3mEP1d3K4yOmwDsN2y2uIGZ/a+iXonm9q6
+         sQ3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=0L1NyhlUegaQwi5YXJfbhbjPLPGOMMcTEtEqCRMeLQo=;
-        b=WT2L8uGVPIBKH4bi5bKwRptae1d9ek1Wmj4b8GpNujIE46YBw7+T6zrfJ0iZc7i3tN
-         +pW8+ZDbu6M4Rh07T8dmrUmB5t8HHqw3fVjSKvll1orHuCp+r1bZ0B5aPrJCMX7tx3/c
-         vdojxTs1kkwdbp09z1KQFs0lViFE6gDWi9aLG/LVjC91eQtgmIVjE15lLhvov9mUuk9K
-         WzsaEEeTpvkzwrXUw/bLvEAnKmcYE+xYq5enjoOnYHKNEumFQNLFrZK9Yv9iaKfgzXOY
-         u5jiJcWCi2ILp5Hwz7yTolVo2HyCj+84Tzwk3rTlkyAyAwPu/rhiCpwowmP/0N9NiLfG
-         lp9A==
-X-Gm-Message-State: AOAM531S1jwp+RA9S20t1hXlC4/ynz/rD207fAuGGMhOkEnlxQO49GNr
-        pNIuKFQvXOIvnxmMVrXYXp40xIRnnkddxQiI
-X-Google-Smtp-Source: ABdhPJwsWlmB1AiB3jXP9gJrDFQpPd8EOrj7UpGafE8Qio3fMyc9tWm1WM9ooD4Ph7ouerDhxjuUHQ==
-X-Received: by 2002:a37:48cd:: with SMTP id v196mr4049717qka.406.1612530862473;
-        Fri, 05 Feb 2021 05:14:22 -0800 (PST)
-Received: from ArchLinux ([138.199.10.106])
-        by smtp.gmail.com with ESMTPSA id 75sm8026451qta.68.2021.02.05.05.14.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Feb 2021 05:14:21 -0800 (PST)
-Date:   Fri, 5 Feb 2021 18:44:12 +0530
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>
-Subject: Re: [PATCH] drivers: cpufreq: Change a word with a word , good one
- in the file powernow-k7.c
-Message-ID: <YB1EpOafQiNjFkxk@ArchLinux>
-Mail-Followup-To: Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>
-References: <20210205125144.1407032-1-unixbhaskar@gmail.com>
- <CAJZ5v0hokLPQML9wWuo9aqcQGZeMc5k9a+fzPKs4mZe5p11_mw@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eMddkzoLtzudk6Saw9haOw0jx/RFJpF2riNKCfwuqgA=;
+        b=NNmmnPXGa03bFow4ya08tTWLtc2nIkIYAmPx/tAx52k8WVBqP6Czh7GVv1v4oRGQF6
+         0hv87xDWApU8A3j2XjKq2HixFPAaFy73ywP7wkx04d/1t1aH+82SpCg4xsth1oacfOcM
+         knsjobf5JrhCDvaK2abTz8eMrMMs0reLa5d5cqcI6I7ms9YnbDRnRrgU2IEqhJb3QAnn
+         7QM6V9hr/kST6jCKvINbbj1cO0Ry84Mj1uE0A3GOnwvUM3jepBnfhSHsTGUTDDLTSIAd
+         zVke/SJmf+VLvIsS7esXjU/K6jgXNae5z6GbKzRoFQ3M3RayO5EhousHUEYsUFZoaORl
+         F1Lg==
+X-Gm-Message-State: AOAM530KwxBkSpq3tompEVrWuSkcYJCKiPbODmL7FessmOqeYOHxwm7X
+        wlQSAY+jABE5vXgOmm9BrCiqU2pVf6u/oMtRVBM/wA==
+X-Google-Smtp-Source: ABdhPJyhGAXEhx3VeGUjX84AVY7g2N8qPiWTR3n4heInBOto2Tcb4lOfLcSIy1g6eC9M61iOlCDdJrlNah6gn/LAJa8=
+X-Received: by 2002:a25:41cb:: with SMTP id o194mr5820275yba.167.1612530956948;
+ Fri, 05 Feb 2021 05:15:56 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="Wsikg3gXRHJ+9JAC"
-Content-Disposition: inline
-In-Reply-To: <CAJZ5v0hokLPQML9wWuo9aqcQGZeMc5k9a+fzPKs4mZe5p11_mw@mail.gmail.com>
+References: <1612426177-6611-1-git-send-email-amit.pundir@linaro.org> <889e6ed8-133a-9416-be3b-5b2a97ea7fbb@somainline.org>
+In-Reply-To: <889e6ed8-133a-9416-be3b-5b2a97ea7fbb@somainline.org>
+From:   Amit Pundir <amit.pundir@linaro.org>
+Date:   Fri, 5 Feb 2021 18:45:21 +0530
+Message-ID: <CAMi1Hd3bgDaqsH+txFVEnBc9dsGbrgic5TK7uq4GwqqkM6seiw@mail.gmail.com>
+Subject: Re: [PATCH v2] arm64: dts: qcom: sdm845-xiaomi-beryllium: Add DSI and
+ panel bits
+To:     Konrad Dybcio <konrad.dybcio@somainline.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        dt <devicetree@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>, phone-devel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Konrad,
 
---Wsikg3gXRHJ+9JAC
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-
-On 14:08 Fri 05 Feb 2021, Rafael J. Wysocki wrote:
->On Fri, Feb 5, 2021 at 1:55 PM Bhaskar Chowdhury <unixbhaskar@gmail.com> wrote:
->>
->>
->>
->> s/fucked/messed/
+On Thu, 4 Feb 2021 at 19:46, Konrad Dybcio <konrad.dybcio@somainline.org> wrote:
 >
->I wouldn't make the changelog so explicit, just say "Use more
->appropriate language" or similar.
+> Hi!
 >
-okay.
->>
->> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
->> ---
->>  drivers/cpufreq/powernow-k7.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/cpufreq/powernow-k7.c b/drivers/cpufreq/powernow-k7.c
->> index 5d515fc34836..2e114fc75e68 100644
->> --- a/drivers/cpufreq/powernow-k7.c
->> +++ b/drivers/cpufreq/powernow-k7.c
->> @@ -574,7 +574,7 @@ static int acer_cpufreq_pst(const struct dmi_system_id *d)
->>  }
->>
->>  /*
->> - * Some Athlon laptops have really fucked PST tables.
->> + * Some Athlon laptops have really messed PST tables.
+> >vreg_l14a_1p88: ldo14 {
+> >+                      regulator-min-microvolt = <1800000>;
+> >+                      regulator-max-microvolt = <1800000>;
 >
->Or even "broken".
+> Should probably be renamed to vreg_l14a_1p8 then.
+
+ack.
+
 >
-Alright!
->>   * A BIOS update is all that can save them.
->>   * Mention this, and disable cpufreq.
->>   */
->> --
->> 2.30.0
->>
+>
+> >+      ports {
+> >+              port@1 {
+> >+                      endpoint {
+> >+                              remote-endpoint = <&tianma_nt36672a_in_0>;
+> >+                              data-lanes = <0 1 2 3>;
+> >+                      };
+> >+              };
+> >+      };
+>
+> The endpoint has a label, you can simply use &dsi0_out {};.
 
---Wsikg3gXRHJ+9JAC
-Content-Type: application/pgp-signature; name="signature.asc"
+I didn't get what you meant there. Care to point to some reference dts
+snippet please?
 
------BEGIN PGP SIGNATURE-----
+>
+> >+              vddpos-supply = <&lab>;
+> >+              vddneg-supply = <&ibb>;
+>
+> With Angelo's latest series [1] merged in, I reckon you should explicitly configure lab/ibb (like in [2]),
+> as wrong settings (which CAN BE SET BY THE BOOTLOADER in some instances!!) can lead to hardware damage.
 
-iQEzBAABCAAdFiEEnwF+nWawchZUPOuwsjqdtxFLKRUFAmAdRKQACgkQsjqdtxFL
-KRUCqwgAz47dSDxX/xmBdaqHgVSZcjGcwTlm484MyacQh4RFByu/goNkYvoWPxtt
-RLn3E9Puy9OUD/JieyVCe3OS8+OO16JeT9belj3YsvOdvTGi7Y6uTq1VdL6porUx
-tF4vZgNclHqIHb2JlH/cK2HCDxPKtcrH1zE4XYo/349a8IMWZfWbEzQ2+D7yh+Je
-PVGyRYl04jqjnF8OL7LO8ZW5sHJMvg9Axeq5HhU4IL3MiHerFYm1tzQeUVtzeb7s
-N6wHPjXY+II2dguf8pN477sTivO/zwCkAr/VVcuHn9xYhpkqjBpZypqPdwhRt9h1
-mlgnR1Vog10YZGBZeMvpwCAKFxAH5w==
-=FnNl
------END PGP SIGNATURE-----
+So iirc in the case of beryllium device, these regulators are pre set
+by the bootloader and I can't find any reference of we
+setting/resetting it explicitly to switch ON the panel and display. So
+far default lab/ibb nodes are working fine for us and I'm hesitant to
+tinker around anything regulator related that can potentially damage
+the hardware. Having said that, I do see lab/ibb nodes being set in
+the downstream dts, with relevant soft-start and discharge-resistor
+properties and I can try switching to that once the new lab/ibb
+changes land upstream.
 
---Wsikg3gXRHJ+9JAC--
+Regards,
+Amit Pundir
+
+
+>
+>
+>
+> Konrad
+>
+> [1] https://lore.kernel.org/linux-arm-msm/20210119174421.226541-1-angelogioacchino.delregno@somainline.org/
+> [2] https://github.com/SoMainline/linux/commit/4f4853b2e252b5f9d03e90119110aac80258fc53
