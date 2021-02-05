@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 745323114A6
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 23:14:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ECCF33114D6
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 23:23:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229715AbhBEWLY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 17:11:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45264 "EHLO mail.kernel.org"
+        id S233165AbhBEWP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 17:15:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44984 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232951AbhBEO5X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 09:57:23 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DA68B65056;
-        Fri,  5 Feb 2021 14:12:23 +0000 (UTC)
+        id S232931AbhBEO5T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 09:57:19 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E047765058;
+        Fri,  5 Feb 2021 14:12:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612534344;
-        bh=0TCr50uaJ/Er9v0M1Rd47FXEfjx301MaEuqIpGUAO5c=;
+        s=korg; t=1612534352;
+        bh=sUCSMGgYb319zNRdR6buytA8eu3g59oCfCt50woq2ZA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nHPoqjt/wHtQ1qF3dhmXsoARC2ZKpmWwVH4dnhhNAgxgBGWuP1aMD0fsEhZO77dcs
-         O0Llk9iEnC+R0BMdfC004HAjreUA+1Q9tzJqP6ZNKKMsimFtzpvKZdqYuX2sbG+QRR
-         CL5TtzuIPqKDnxGC6FV9reXyv0Nyrm4a5V8yPPVk=
+        b=qH+8jweQmF1ScmxlAY4XyZibgZvFvh6Za8CmaxDY5m5k53GVqtyo6hJkgGTwYtb4r
+         Hef/+W1mygKMbcaihiaiWNQblNLbMfYBlX0IPwq6oDDano03VzgmgGirO1G5Bt9jtX
+         jb4uDWegSlyytFViOghKDY/V7JpfX9GTbYhnYGrM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andres Freund <andres@anarazel.de>,
-        Bijan Mottahedeh <bijan.mottahedeh@oracle.com>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 04/32] Revert "Revert "block: end bio with BLK_STS_AGAIN in case of non-mq devs and REQ_NOWAIT""
-Date:   Fri,  5 Feb 2021 15:07:19 +0100
-Message-Id: <20210205140652.538665933@linuxfoundation.org>
+        stable@vger.kernel.org, Catalin Marinas <catalin.marinas@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>
+Subject: [PATCH 5.4 07/32] arm64: Do not pass tagged addresses to __is_lm_address()
+Date:   Fri,  5 Feb 2021 15:07:22 +0100
+Message-Id: <20210205140652.662436384@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210205140652.348864025@linuxfoundation.org>
 References: <20210205140652.348864025@linuxfoundation.org>
@@ -40,42 +42,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From: Catalin Marinas <catalin.marinas@arm.com>
 
-This reverts commit bba91cdba612fbce4f8575c5d94d2b146fb83ea3 which is
-commit b0beb28097fa04177b3769f4bb7a0d0d9c4ae76e upstream.
+commit 91cb2c8b072e00632adf463b78b44f123d46a0fa upstream.
 
-It breaks things in 5.4.y, so let's drop it.
+Commit 519ea6f1c82f ("arm64: Fix kernel address detection of
+__is_lm_address()") fixed the incorrect validation of addresses below
+PAGE_OFFSET. However, it no longer allowed tagged addresses to be passed
+to virt_addr_valid().
 
-Reported-by: Andres Freund <andres@anarazel.de>
-Cc: Bijan Mottahedeh <bijan.mottahedeh@oracle.com>
-CC: Jens Axboe <axboe@kernel.dk>
-Cc: Sasha Levin <sashal@kernel.org>
+Fix this by explicitly resetting the pointer tag prior to invoking
+__is_lm_address(). This is consistent with the __lm_to_phys() macro.
+
+Fixes: 519ea6f1c82f ("arm64: Fix kernel address detection of __is_lm_address()")
+Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
+Acked-by: Ard Biesheuvel <ardb@kernel.org>
+Cc: <stable@vger.kernel.org> # 5.4.x
+Cc: Will Deacon <will@kernel.org>
+Cc: Vincenzo Frascino <vincenzo.frascino@arm.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Link: https://lore.kernel.org/r/20210201190634.22942-2-catalin.marinas@arm.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- block/blk-core.c |   11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+ arch/arm64/include/asm/memory.h |    2 +-
+ arch/arm64/mm/physaddr.c        |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
---- a/block/blk-core.c
-+++ b/block/blk-core.c
-@@ -886,11 +886,14 @@ generic_make_request_checks(struct bio *
- 	}
+--- a/arch/arm64/include/asm/memory.h
++++ b/arch/arm64/include/asm/memory.h
+@@ -332,7 +332,7 @@ static inline void *phys_to_virt(phys_ad
+ #endif /* !CONFIG_SPARSEMEM_VMEMMAP || CONFIG_DEBUG_VIRTUAL */
  
- 	/*
--	 * For a REQ_NOWAIT based request, return -EOPNOTSUPP
--	 * if queue is not a request based queue.
-+	 * Non-mq queues do not honor REQ_NOWAIT, so complete a bio
-+	 * with BLK_STS_AGAIN status in order to catch -EAGAIN and
-+	 * to give a chance to the caller to repeat request gracefully.
- 	 */
--	if ((bio->bi_opf & REQ_NOWAIT) && !queue_is_mq(q))
--		goto not_supported;
-+	if ((bio->bi_opf & REQ_NOWAIT) && !queue_is_mq(q)) {
-+		status = BLK_STS_AGAIN;
-+		goto end_io;
-+	}
+ #define virt_addr_valid(addr)	({					\
+-	__typeof__(addr) __addr = addr;					\
++	__typeof__(addr) __addr = __tag_reset(addr);			\
+ 	__is_lm_address(__addr) && pfn_valid(virt_to_pfn(__addr));	\
+ })
  
- 	if (should_fail_bio(bio))
- 		goto end_io;
+--- a/arch/arm64/mm/physaddr.c
++++ b/arch/arm64/mm/physaddr.c
+@@ -9,7 +9,7 @@
+ 
+ phys_addr_t __virt_to_phys(unsigned long x)
+ {
+-	WARN(!__is_lm_address(x),
++	WARN(!__is_lm_address(__tag_reset(x)),
+ 	     "virt_to_phys used for non-linear address: %pK (%pS)\n",
+ 	      (void *)x,
+ 	      (void *)x);
 
 
