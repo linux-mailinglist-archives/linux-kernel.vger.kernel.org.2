@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 131D63114FB
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 23:23:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4AB73114F9
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 23:23:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233247AbhBEWU7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 17:20:59 -0500
-Received: from mga02.intel.com ([134.134.136.20]:12586 "EHLO mga02.intel.com"
+        id S232787AbhBEWTm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 17:19:42 -0500
+Received: from mga18.intel.com ([134.134.136.126]:49958 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232898AbhBEO4T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 09:56:19 -0500
-IronPort-SDR: ca9WQI2MTjghxo+QMRusvlevDRIFayjUv6gdoJVhzBR+ufasY3lHS8rAc7dC1XpxkLdoCmJwnZ
- KRNOqaUh/zGg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9885"; a="168561523"
+        id S232835AbhBEO4x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 09:56:53 -0500
+IronPort-SDR: tAeTuQuNZSuYzhgCVsgoNIv0TYFuSQ5AvLn2FuQ2IQZDDNUwIJAGxqVOL6ziv9lA3ZYx1piMMX
+ scyStKI/Qt1g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9885"; a="169120207"
 X-IronPort-AV: E=Sophos;i="5.81,155,1610438400"; 
-   d="scan'208";a="168561523"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2021 07:16:45 -0800
-IronPort-SDR: 3eANWtqascL8MdqUIK8RZ6Xvx57XDRQlibPw9uDAxt0iOqF2cUfi6kOP4+Qdm1ncQcV/APWJNP
- L1a3oC5SBZKQ==
+   d="scan'208";a="169120207"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2021 07:16:44 -0800
+IronPort-SDR: ay6IjqaqC9ZS6KBSykKI9lL9o4Wo64XAw//iH9XjDccItbIuOIfc5jkt/2nZeMh0Y53k06VlKc
+ CU6VFfZpCPgw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.81,155,1610438400"; 
-   d="scan'208";a="397474638"
+   d="scan'208";a="416226113"
 Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga007.jf.intel.com with ESMTP; 05 Feb 2021 07:16:42 -0800
+  by fmsmga002.fm.intel.com with ESMTP; 05 Feb 2021 07:16:41 -0800
 Received: by black.fi.intel.com (Postfix, from userid 1000)
-        id A6D56108; Fri,  5 Feb 2021 17:16:40 +0200 (EET)
+        id B3ACE1C4; Fri,  5 Feb 2021 17:16:40 +0200 (EET)
 From:   "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
 To:     Dave Hansen <dave.hansen@linux.intel.com>,
         Andy Lutomirski <luto@kernel.org>,
@@ -40,9 +40,9 @@ Cc:     x86@kernel.org, Andrey Ryabinin <aryabinin@virtuozzo.com>,
         Andi Kleen <ak@linux.intel.com>, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org,
         "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: [RFC 1/9] mm, arm64: Update PR_SET/GET_TAGGED_ADDR_CTRL interface
-Date:   Fri,  5 Feb 2021 18:16:21 +0300
-Message-Id: <20210205151631.43511-2-kirill.shutemov@linux.intel.com>
+Subject: [QEMU] x86: Implement Linear Address Masking support
+Date:   Fri,  5 Feb 2021 18:16:22 +0300
+Message-Id: <20210205151631.43511-3-kirill.shutemov@linux.intel.com>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210205151631.43511-1-kirill.shutemov@linux.intel.com>
 References: <20210205151631.43511-1-kirill.shutemov@linux.intel.com>
@@ -52,347 +52,346 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The interface for enabling tagged addresses is very inflexible. It
-implies tag size and tag shift implemented by ARM TBI.
+Linear Address Masking feature makes CPU ignore some bits of the virtual
+address. These bits can be used to encode metadata.
 
-Rework the interface to accommodate different shifts and tag sizes.
+The feature is enumerated with CPUID.(EAX=07H, ECX=01H):EAX.LAM[bit 26].
 
-PR_SET_TAGGED_ADDR_CTRL now accepts two new arguments:
+CR3.LAM_U57[bit 62] allows to encode 6 bits of metadata in bits 62:57 of
+user pointers.
 
- - nr_bits is pointer to int. The caller specifies the tag size it
-   wants. Kernel updates the value of actual tag size that can be
-   larger.
+CR3.LAM_U48[bit 61] allows to encode 15 bits of metadata in bits 62:48
+of user pointers.
 
- - offset is pointer to int. Kernel returns there a shift of tag in the
-   address.
+CR4.LAM_SUP[bit 28] allows to encode metadata of supervisor pointers.
+If 5-level paging is in use, 6 bits of metadata can be encoded in 62:57.
+For 4-level paging, 15 bits of metadata can be encoded in bits 62:48.
 
-The change doesn't break existing users of the interface: if any of
-these pointers are NULL (as we had before the change), the user expects
-ARM TBI implementation: nr_bits == 8 && offset == 56 as it was implied
-before.
-
-The initial implementation checked that these argument are NULL and the
-change wouldn't not break any legacy users.
-
-If tagging is enabled, GET_TAGGED_ADDR_CTRL would return size of tags
-and offset in the additional arguments.
-
-If tagging is disable, GET_TAGGED_ADDR_CTRL would return the maximum tag
-size in nr_bits.
-
-The selftest is updated accordingly and moved out of arm64-specific
-directory as we going to enable the interface on x86.
-
-As alternative to this approach we could introduce a totally new API and
-leave the legacy one as is. But it would slow down adoption: new
-prctl(2) flag wound need to propogate to the userspace headers.
+QEMU strips address from the metadata bits and gets it to canonical
+shape before handling memory access. It has to be done very early before
+TLB lookup.
 
 Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
 ---
- arch/arm64/include/asm/processor.h            | 12 ++--
- arch/arm64/kernel/process.c                   | 45 ++++++++++++---
- arch/arm64/kernel/ptrace.c                    |  4 +-
- kernel/sys.c                                  | 14 +++--
- .../testing/selftests/arm64/tags/tags_test.c  | 31 ----------
- .../selftests/{arm64 => vm}/tags/.gitignore   |  0
- .../selftests/{arm64 => vm}/tags/Makefile     |  0
- .../{arm64 => vm}/tags/run_tags_test.sh       |  0
- tools/testing/selftests/vm/tags/tags_test.c   | 57 +++++++++++++++++++
- 9 files changed, 113 insertions(+), 50 deletions(-)
- delete mode 100644 tools/testing/selftests/arm64/tags/tags_test.c
- rename tools/testing/selftests/{arm64 => vm}/tags/.gitignore (100%)
- rename tools/testing/selftests/{arm64 => vm}/tags/Makefile (100%)
- rename tools/testing/selftests/{arm64 => vm}/tags/run_tags_test.sh (100%)
- create mode 100644 tools/testing/selftests/vm/tags/tags_test.c
+ accel/tcg/cputlb.c        | 54 +++++++++++++++++++++++----------------
+ include/hw/core/cpu.h     |  1 +
+ target/i386/cpu.c         |  5 ++--
+ target/i386/cpu.h         |  7 +++++
+ target/i386/excp_helper.c | 28 +++++++++++++++++++-
+ target/i386/helper.c      |  2 +-
+ 6 files changed, 71 insertions(+), 26 deletions(-)
 
-diff --git a/arch/arm64/include/asm/processor.h b/arch/arm64/include/asm/processor.h
-index fce8cbecd6bc..77b91e6d3c85 100644
---- a/arch/arm64/include/asm/processor.h
-+++ b/arch/arm64/include/asm/processor.h
-@@ -305,10 +305,14 @@ extern void __init minsigstksz_setup(void);
- 
- #ifdef CONFIG_ARM64_TAGGED_ADDR_ABI
- /* PR_{SET,GET}_TAGGED_ADDR_CTRL prctl */
--long set_tagged_addr_ctrl(struct task_struct *task, unsigned long arg);
--long get_tagged_addr_ctrl(struct task_struct *task);
--#define SET_TAGGED_ADDR_CTRL(arg)	set_tagged_addr_ctrl(current, arg)
--#define GET_TAGGED_ADDR_CTRL()		get_tagged_addr_ctrl(current)
-+long set_tagged_addr_ctrl(struct task_struct *task, unsigned long flags,
-+			  int __user *nr_bits, int __user *offset);
-+long get_tagged_addr_ctrl(struct task_struct *task,
-+			  int __user *nr_bits, int __user *offset);
-+#define SET_TAGGED_ADDR_CTRL(flags, nr_bits, offset)	\
-+	set_tagged_addr_ctrl(current, flags, nr_bits, offset)
-+#define GET_TAGGED_ADDR_CTRL(nr_bits, offset)		\
-+	get_tagged_addr_ctrl(current, nr_bits, offset)
- #endif
- 
- /*
-diff --git a/arch/arm64/kernel/process.c b/arch/arm64/kernel/process.c
-index ed919f633ed8..a3007f80e889 100644
---- a/arch/arm64/kernel/process.c
-+++ b/arch/arm64/kernel/process.c
-@@ -630,15 +630,21 @@ void arch_setup_new_exec(void)
+diff --git a/accel/tcg/cputlb.c b/accel/tcg/cputlb.c
+index 42ab79c1a582..f2d27134474f 100644
+--- a/accel/tcg/cputlb.c
++++ b/accel/tcg/cputlb.c
+@@ -1271,6 +1271,17 @@ static inline ram_addr_t qemu_ram_addr_from_host_nofail(void *ptr)
+     return ram_addr;
  }
  
- #ifdef CONFIG_ARM64_TAGGED_ADDR_ABI
-+
-+#define TBI_TAG_BITS	8
-+#define TBI_TAG_SHIFT	56
-+
- /*
-  * Control the relaxed ABI allowing tagged user addresses into the kernel.
-  */
- static unsigned int tagged_addr_disabled;
- 
--long set_tagged_addr_ctrl(struct task_struct *task, unsigned long arg)
-+long set_tagged_addr_ctrl(struct task_struct *task, unsigned long flags,
-+			  int __user *nr_bits, int __user *offset)
- {
- 	unsigned long valid_mask = PR_TAGGED_ADDR_ENABLE;
- 	struct thread_info *ti = task_thread_info(task);
-+	int val;
- 
- 	if (is_compat_thread(ti))
- 		return -EINVAL;
-@@ -646,25 +652,41 @@ long set_tagged_addr_ctrl(struct task_struct *task, unsigned long arg)
- 	if (system_supports_mte())
- 		valid_mask |= PR_MTE_TCF_MASK | PR_MTE_TAG_MASK;
- 
--	if (arg & ~valid_mask)
-+	if (flags & ~valid_mask)
- 		return -EINVAL;
- 
-+	if (nr_bits) {
-+		if (get_user(val, nr_bits))
-+			return -EFAULT;
-+		if (val > TBI_TAG_BITS || val < 1)
-+			return -EINVAL;
-+	}
-+
- 	/*
- 	 * Do not allow the enabling of the tagged address ABI if globally
- 	 * disabled via sysctl abi.tagged_addr_disabled.
- 	 */
--	if (arg & PR_TAGGED_ADDR_ENABLE && tagged_addr_disabled)
-+	if (flags & PR_TAGGED_ADDR_ENABLE && tagged_addr_disabled)
- 		return -EINVAL;
- 
--	if (set_mte_ctrl(task, arg) != 0)
-+	if (set_mte_ctrl(task, flags) != 0)
- 		return -EINVAL;
- 
--	update_ti_thread_flag(ti, TIF_TAGGED_ADDR, arg & PR_TAGGED_ADDR_ENABLE);
-+	if (flags & PR_TAGGED_ADDR_ENABLE) {
-+		if (nr_bits && put_user(TBI_TAG_BITS, nr_bits))
-+			return -EFAULT;
-+		if (offset && put_user(TBI_TAG_SHIFT, offset))
-+			return -EFAULT;
-+	}
-+
-+	update_ti_thread_flag(ti, TIF_TAGGED_ADDR,
-+			      flags & PR_TAGGED_ADDR_ENABLE);
- 
- 	return 0;
- }
- 
--long get_tagged_addr_ctrl(struct task_struct *task)
-+long get_tagged_addr_ctrl(struct task_struct *task,
-+			  int __user *nr_bits, int __user *offset)
- {
- 	long ret = 0;
- 	struct thread_info *ti = task_thread_info(task);
-@@ -672,8 +694,17 @@ long get_tagged_addr_ctrl(struct task_struct *task)
- 	if (is_compat_thread(ti))
- 		return -EINVAL;
- 
--	if (test_ti_thread_flag(ti, TIF_TAGGED_ADDR))
-+	if (test_ti_thread_flag(ti, TIF_TAGGED_ADDR)) {
- 		ret = PR_TAGGED_ADDR_ENABLE;
-+		if (nr_bits && put_user(TBI_TAG_BITS, nr_bits))
-+			return -EFAULT;
-+		if (offset && put_user(TBI_TAG_SHIFT, offset))
-+			return -EFAULT;
-+	} else {
-+		/* Report maximum tag size */
-+		if (nr_bits && put_user(TBI_TAG_BITS, nr_bits))
-+		    return -EFAULT;
-+	}
- 
- 	ret |= get_mte_ctrl(task);
- 
-diff --git a/arch/arm64/kernel/ptrace.c b/arch/arm64/kernel/ptrace.c
-index f49b349e16a3..3010db7ef93e 100644
---- a/arch/arm64/kernel/ptrace.c
-+++ b/arch/arm64/kernel/ptrace.c
-@@ -1038,7 +1038,7 @@ static int tagged_addr_ctrl_get(struct task_struct *target,
- 				const struct user_regset *regset,
- 				struct membuf to)
- {
--	long ctrl = get_tagged_addr_ctrl(target);
-+	long ctrl = get_tagged_addr_ctrl(target, NULL, NULL);
- 
- 	if (IS_ERR_VALUE(ctrl))
- 		return ctrl;
-@@ -1058,7 +1058,7 @@ static int tagged_addr_ctrl_set(struct task_struct *target, const struct
- 	if (ret)
- 		return ret;
- 
--	return set_tagged_addr_ctrl(target, ctrl);
-+	return set_tagged_addr_ctrl(target, ctrl, NULL, NULL);
- }
- #endif
- 
-diff --git a/kernel/sys.c b/kernel/sys.c
-index a730c03ee607..7e968d8331cc 100644
---- a/kernel/sys.c
-+++ b/kernel/sys.c
-@@ -120,10 +120,10 @@
- # define PAC_RESET_KEYS(a, b)	(-EINVAL)
- #endif
- #ifndef SET_TAGGED_ADDR_CTRL
--# define SET_TAGGED_ADDR_CTRL(a)	(-EINVAL)
-+# define SET_TAGGED_ADDR_CTRL(a, b, c)	(-EINVAL)
- #endif
- #ifndef GET_TAGGED_ADDR_CTRL
--# define GET_TAGGED_ADDR_CTRL()		(-EINVAL)
-+# define GET_TAGGED_ADDR_CTRL(a, b)	(-EINVAL)
- #endif
- 
- /*
-@@ -2498,14 +2498,16 @@ SYSCALL_DEFINE5(prctl, int, option, unsigned long, arg2, unsigned long, arg3,
- 		error = PAC_RESET_KEYS(me, arg2);
- 		break;
- 	case PR_SET_TAGGED_ADDR_CTRL:
--		if (arg3 || arg4 || arg5)
-+		if (arg5)
- 			return -EINVAL;
--		error = SET_TAGGED_ADDR_CTRL(arg2);
-+		error = SET_TAGGED_ADDR_CTRL(arg2, (int __user *)arg3,
-+					     (int __user *)arg4);
- 		break;
- 	case PR_GET_TAGGED_ADDR_CTRL:
--		if (arg2 || arg3 || arg4 || arg5)
-+		if (arg4 || arg5)
- 			return -EINVAL;
--		error = GET_TAGGED_ADDR_CTRL();
-+		error = GET_TAGGED_ADDR_CTRL((int __user *)arg2,
-+					     (int __user *)arg3);
- 		break;
- 	case PR_SET_IO_FLUSHER:
- 		if (!capable(CAP_SYS_RESOURCE))
-diff --git a/tools/testing/selftests/arm64/tags/tags_test.c b/tools/testing/selftests/arm64/tags/tags_test.c
-deleted file mode 100644
-index 5701163460ef..000000000000
---- a/tools/testing/selftests/arm64/tags/tags_test.c
-+++ /dev/null
-@@ -1,31 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0
--
--#include <stdio.h>
--#include <stdlib.h>
--#include <unistd.h>
--#include <stdint.h>
--#include <sys/prctl.h>
--#include <sys/utsname.h>
--
--#define SHIFT_TAG(tag)		((uint64_t)(tag) << 56)
--#define SET_TAG(ptr, tag)	(((uint64_t)(ptr) & ~SHIFT_TAG(0xff)) | \
--					SHIFT_TAG(tag))
--
--int main(void)
--{
--	static int tbi_enabled = 0;
--	unsigned long tag = 0;
--	struct utsname *ptr;
--	int err;
--
--	if (prctl(PR_SET_TAGGED_ADDR_CTRL, PR_TAGGED_ADDR_ENABLE, 0, 0, 0) == 0)
--		tbi_enabled = 1;
--	ptr = (struct utsname *)malloc(sizeof(*ptr));
--	if (tbi_enabled)
--		tag = 0x42;
--	ptr = (struct utsname *)SET_TAG(ptr, tag);
--	err = uname(ptr);
--	free(ptr);
--
--	return err;
--}
-diff --git a/tools/testing/selftests/arm64/tags/.gitignore b/tools/testing/selftests/vm/tags/.gitignore
-similarity index 100%
-rename from tools/testing/selftests/arm64/tags/.gitignore
-rename to tools/testing/selftests/vm/tags/.gitignore
-diff --git a/tools/testing/selftests/arm64/tags/Makefile b/tools/testing/selftests/vm/tags/Makefile
-similarity index 100%
-rename from tools/testing/selftests/arm64/tags/Makefile
-rename to tools/testing/selftests/vm/tags/Makefile
-diff --git a/tools/testing/selftests/arm64/tags/run_tags_test.sh b/tools/testing/selftests/vm/tags/run_tags_test.sh
-similarity index 100%
-rename from tools/testing/selftests/arm64/tags/run_tags_test.sh
-rename to tools/testing/selftests/vm/tags/run_tags_test.sh
-diff --git a/tools/testing/selftests/vm/tags/tags_test.c b/tools/testing/selftests/vm/tags/tags_test.c
-new file mode 100644
-index 000000000000..ec10a409388d
---- /dev/null
-+++ b/tools/testing/selftests/vm/tags/tags_test.c
-@@ -0,0 +1,57 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <unistd.h>
-+#include <stdint.h>
-+#include <sys/prctl.h>
-+#include <sys/utsname.h>
-+
-+static int tag_bits;
-+static int tag_offset;
-+
-+#define SHIFT_TAG(tag)		((uint64_t)(tag) << tag_offset)
-+#define SET_TAG(ptr, tag)	(((uint64_t)(ptr) & ~SHIFT_TAG((1 << tag_bits) - 1)) | SHIFT_TAG(tag))
-+
-+static int max_tag_bits(void)
++static vaddr clean_addr(CPUState *cpu, vaddr addr)
 +{
-+	int nr;
++    CPUClass *cc = CPU_GET_CLASS(cpu);
 +
-+	if (prctl(PR_GET_TAGGED_ADDR_CTRL, 0, 0, 0) < 0)
-+		return 0;
++    if (cc->do_clean_addr) {
++        addr = cc->do_clean_addr(cpu, addr);
++    }
 +
-+	if (prctl(PR_GET_TAGGED_ADDR_CTRL, &nr, 0, 0) < 0)
-+		return 8; /* Assume ARM TBI */
-+
-+	return nr;
++    return addr;
 +}
 +
-+int main(void)
+ /*
+  * Note: tlb_fill() can trigger a resize of the TLB. This means that all of the
+  * caller's prior references to the TLB table (e.g. CPUTLBEntry pointers) must
+@@ -1702,9 +1713,11 @@ bool tlb_plugin_lookup(CPUState *cpu, target_ulong addr, int mmu_idx,
+ 
+ /* Probe for a read-modify-write atomic operation.  Do not allow unaligned
+  * operations, or io operations to proceed.  Return the host address.  */
+-static void *atomic_mmu_lookup(CPUArchState *env, target_ulong addr,
++static void *atomic_mmu_lookup(CPUArchState *env, target_ulong address,
+                                TCGMemOpIdx oi, uintptr_t retaddr)
+ {
++    CPUState *cpu = env_cpu(env);
++    target_ulong addr = clean_addr(cpu, address);
+     size_t mmu_idx = get_mmuidx(oi);
+     uintptr_t index = tlb_index(env, mmu_idx, addr);
+     CPUTLBEntry *tlbe = tlb_entry(env, mmu_idx, addr);
+@@ -1720,8 +1733,7 @@ static void *atomic_mmu_lookup(CPUArchState *env, target_ulong addr,
+     /* Enforce guest required alignment.  */
+     if (unlikely(a_bits > 0 && (addr & ((1 << a_bits) - 1)))) {
+         /* ??? Maybe indicate atomic op to cpu_unaligned_access */
+-        cpu_unaligned_access(env_cpu(env), addr, MMU_DATA_STORE,
+-                             mmu_idx, retaddr);
++        cpu_unaligned_access(cpu, addr, MMU_DATA_STORE, mmu_idx, retaddr);
+     }
+ 
+     /* Enforce qemu required alignment.  */
+@@ -1736,8 +1748,7 @@ static void *atomic_mmu_lookup(CPUArchState *env, target_ulong addr,
+     /* Check TLB entry and enforce page permissions.  */
+     if (!tlb_hit(tlb_addr, addr)) {
+         if (!VICTIM_TLB_HIT(addr_write, addr)) {
+-            tlb_fill(env_cpu(env), addr, 1 << s_bits, MMU_DATA_STORE,
+-                     mmu_idx, retaddr);
++            tlb_fill(cpu, addr, 1 << s_bits, MMU_DATA_STORE, mmu_idx, retaddr);
+             index = tlb_index(env, mmu_idx, addr);
+             tlbe = tlb_entry(env, mmu_idx, addr);
+         }
+@@ -1753,8 +1764,7 @@ static void *atomic_mmu_lookup(CPUArchState *env, target_ulong addr,
+ 
+     /* Let the guest notice RMW on a write-only page.  */
+     if (unlikely(tlbe->addr_read != (tlb_addr & ~TLB_NOTDIRTY))) {
+-        tlb_fill(env_cpu(env), addr, 1 << s_bits, MMU_DATA_LOAD,
+-                 mmu_idx, retaddr);
++        tlb_fill(cpu, addr, 1 << s_bits, MMU_DATA_LOAD, mmu_idx, retaddr);
+         /* Since we don't support reads and writes to different addresses,
+            and we do have the proper page loaded for write, this shouldn't
+            ever return.  But just in case, handle via stop-the-world.  */
+@@ -1764,14 +1774,14 @@ static void *atomic_mmu_lookup(CPUArchState *env, target_ulong addr,
+     hostaddr = (void *)((uintptr_t)addr + tlbe->addend);
+ 
+     if (unlikely(tlb_addr & TLB_NOTDIRTY)) {
+-        notdirty_write(env_cpu(env), addr, 1 << s_bits,
++        notdirty_write(cpu, addr, 1 << s_bits,
+                        &env_tlb(env)->d[mmu_idx].iotlb[index], retaddr);
+     }
+ 
+     return hostaddr;
+ 
+  stop_the_world:
+-    cpu_loop_exit_atomic(env_cpu(env), retaddr);
++    cpu_loop_exit_atomic(cpu, retaddr);
+ }
+ 
+ /*
+@@ -1810,10 +1820,12 @@ load_memop(const void *haddr, MemOp op)
+ }
+ 
+ static inline uint64_t QEMU_ALWAYS_INLINE
+-load_helper(CPUArchState *env, target_ulong addr, TCGMemOpIdx oi,
++load_helper(CPUArchState *env, target_ulong address, TCGMemOpIdx oi,
+             uintptr_t retaddr, MemOp op, bool code_read,
+             FullLoadHelper *full_load)
+ {
++    CPUState *cpu = env_cpu(env);
++    target_ulong addr = clean_addr(cpu, address);
+     uintptr_t mmu_idx = get_mmuidx(oi);
+     uintptr_t index = tlb_index(env, mmu_idx, addr);
+     CPUTLBEntry *entry = tlb_entry(env, mmu_idx, addr);
+@@ -1829,16 +1841,14 @@ load_helper(CPUArchState *env, target_ulong addr, TCGMemOpIdx oi,
+ 
+     /* Handle CPU specific unaligned behaviour */
+     if (addr & ((1 << a_bits) - 1)) {
+-        cpu_unaligned_access(env_cpu(env), addr, access_type,
+-                             mmu_idx, retaddr);
++        cpu_unaligned_access(cpu, addr, access_type, mmu_idx, retaddr);
+     }
+ 
+     /* If the TLB entry is for a different page, reload and try again.  */
+     if (!tlb_hit(tlb_addr, addr)) {
+         if (!victim_tlb_hit(env, mmu_idx, index, tlb_off,
+                             addr & TARGET_PAGE_MASK)) {
+-            tlb_fill(env_cpu(env), addr, size,
+-                     access_type, mmu_idx, retaddr);
++            tlb_fill(cpu, addr, size, access_type, mmu_idx, retaddr);
+             index = tlb_index(env, mmu_idx, addr);
+             entry = tlb_entry(env, mmu_idx, addr);
+         }
+@@ -1861,7 +1871,7 @@ load_helper(CPUArchState *env, target_ulong addr, TCGMemOpIdx oi,
+         /* Handle watchpoints.  */
+         if (unlikely(tlb_addr & TLB_WATCHPOINT)) {
+             /* On watchpoint hit, this will longjmp out.  */
+-            cpu_check_watchpoint(env_cpu(env), addr, size,
++            cpu_check_watchpoint(cpu, addr, size,
+                                  iotlbentry->attrs, BP_MEM_READ, retaddr);
+         }
+ 
+@@ -2341,9 +2351,11 @@ store_helper_unaligned(CPUArchState *env, target_ulong addr, uint64_t val,
+ }
+ 
+ static inline void QEMU_ALWAYS_INLINE
+-store_helper(CPUArchState *env, target_ulong addr, uint64_t val,
++store_helper(CPUArchState *env, target_ulong address, uint64_t val,
+              TCGMemOpIdx oi, uintptr_t retaddr, MemOp op)
+ {
++    CPUState *cpu = env_cpu(env);
++    target_ulong addr = clean_addr(cpu, address);
+     uintptr_t mmu_idx = get_mmuidx(oi);
+     uintptr_t index = tlb_index(env, mmu_idx, addr);
+     CPUTLBEntry *entry = tlb_entry(env, mmu_idx, addr);
+@@ -2355,16 +2367,14 @@ store_helper(CPUArchState *env, target_ulong addr, uint64_t val,
+ 
+     /* Handle CPU specific unaligned behaviour */
+     if (addr & ((1 << a_bits) - 1)) {
+-        cpu_unaligned_access(env_cpu(env), addr, MMU_DATA_STORE,
+-                             mmu_idx, retaddr);
++        cpu_unaligned_access(cpu, addr, MMU_DATA_STORE, mmu_idx, retaddr);
+     }
+ 
+     /* If the TLB entry is for a different page, reload and try again.  */
+     if (!tlb_hit(tlb_addr, addr)) {
+         if (!victim_tlb_hit(env, mmu_idx, index, tlb_off,
+             addr & TARGET_PAGE_MASK)) {
+-            tlb_fill(env_cpu(env), addr, size, MMU_DATA_STORE,
+-                     mmu_idx, retaddr);
++            tlb_fill(cpu, addr, size, MMU_DATA_STORE, mmu_idx, retaddr);
+             index = tlb_index(env, mmu_idx, addr);
+             entry = tlb_entry(env, mmu_idx, addr);
+         }
+@@ -2386,7 +2396,7 @@ store_helper(CPUArchState *env, target_ulong addr, uint64_t val,
+         /* Handle watchpoints.  */
+         if (unlikely(tlb_addr & TLB_WATCHPOINT)) {
+             /* On watchpoint hit, this will longjmp out.  */
+-            cpu_check_watchpoint(env_cpu(env), addr, size,
++            cpu_check_watchpoint(cpu, addr, size,
+                                  iotlbentry->attrs, BP_MEM_WRITE, retaddr);
+         }
+ 
+@@ -2406,7 +2416,7 @@ store_helper(CPUArchState *env, target_ulong addr, uint64_t val,
+ 
+         /* Handle clean RAM pages.  */
+         if (tlb_addr & TLB_NOTDIRTY) {
+-            notdirty_write(env_cpu(env), addr, size, iotlbentry, retaddr);
++            notdirty_write(cpu, addr, size, iotlbentry, retaddr);
+         }
+ 
+         haddr = (void *)((uintptr_t)addr + entry->addend);
+diff --git a/include/hw/core/cpu.h b/include/hw/core/cpu.h
+index 3d92c967fffa..64817bc10f1b 100644
+--- a/include/hw/core/cpu.h
++++ b/include/hw/core/cpu.h
+@@ -171,6 +171,7 @@ struct CPUClass {
+     int reset_dump_flags;
+     bool (*has_work)(CPUState *cpu);
+     void (*do_interrupt)(CPUState *cpu);
++    vaddr (*do_clean_addr)(CPUState *cpu, vaddr addr);
+     void (*do_unaligned_access)(CPUState *cpu, vaddr addr,
+                                 MMUAccessType access_type,
+                                 int mmu_idx, uintptr_t retaddr);
+diff --git a/target/i386/cpu.c b/target/i386/cpu.c
+index 5a8c96072e41..f819f0673103 100644
+--- a/target/i386/cpu.c
++++ b/target/i386/cpu.c
+@@ -666,7 +666,7 @@ static void x86_cpu_vendor_words2str(char *dst, uint32_t vendor1,
+           /* CPUID_7_0_ECX_OSPKE is dynamic */ \
+           CPUID_7_0_ECX_LA57)
+ #define TCG_7_0_EDX_FEATURES 0
+-#define TCG_7_1_EAX_FEATURES 0
++#define TCG_7_1_EAX_FEATURES CPUID_7_1_EAX_LAM
+ #define TCG_APM_FEATURES 0
+ #define TCG_6_EAX_FEATURES CPUID_6_EAX_ARAT
+ #define TCG_XSAVE_FEATURES (CPUID_XSAVE_XSAVEOPT | CPUID_XSAVE_XGETBV1)
+@@ -997,7 +997,7 @@ static FeatureWordInfo feature_word_info[FEATURE_WORDS] = {
+             NULL, NULL, NULL, NULL,
+             NULL, NULL, NULL, NULL,
+             NULL, NULL, NULL, NULL,
+-            NULL, NULL, NULL, NULL,
++            NULL, NULL, "lam", NULL,
+             NULL, NULL, NULL, NULL,
+         },
+         .cpuid = {
+@@ -7290,6 +7290,7 @@ static void x86_cpu_common_class_init(ObjectClass *oc, void *data)
+ #ifdef CONFIG_TCG
+     cc->tcg_initialize = tcg_x86_init;
+     cc->tlb_fill = x86_cpu_tlb_fill;
++    cc->do_clean_addr = x86_cpu_clean_addr;
+ #endif
+     cc->disas_set_info = x86_disas_set_info;
+ 
+diff --git a/target/i386/cpu.h b/target/i386/cpu.h
+index 88e8586f8fb4..f8477e16685d 100644
+--- a/target/i386/cpu.h
++++ b/target/i386/cpu.h
+@@ -229,6 +229,9 @@ typedef enum X86Seg {
+ #define CR0_AM_MASK  (1U << 18)
+ #define CR0_PG_MASK  (1U << 31)
+ 
++#define CR3_LAM_U48  (1ULL << 61)
++#define CR3_LAM_U57  (1ULL << 62)
++
+ #define CR4_VME_MASK  (1U << 0)
+ #define CR4_PVI_MASK  (1U << 1)
+ #define CR4_TSD_MASK  (1U << 2)
+@@ -250,6 +253,7 @@ typedef enum X86Seg {
+ #define CR4_SMEP_MASK   (1U << 20)
+ #define CR4_SMAP_MASK   (1U << 21)
+ #define CR4_PKE_MASK   (1U << 22)
++#define CR4_LAM_SUP    (1U << 28)
+ 
+ #define DR6_BD          (1 << 13)
+ #define DR6_BS          (1 << 14)
+@@ -796,6 +800,8 @@ typedef uint64_t FeatureWordArray[FEATURE_WORDS];
+ 
+ /* AVX512 BFloat16 Instruction */
+ #define CPUID_7_1_EAX_AVX512_BF16       (1U << 5)
++/* Linear Address Masking */
++#define CPUID_7_1_EAX_LAM               (1U << 26)
+ 
+ /* CLZERO instruction */
+ #define CPUID_8000_0008_EBX_CLZERO      (1U << 0)
+@@ -1924,6 +1930,7 @@ bool x86_cpu_tlb_fill(CPUState *cs, vaddr address, int size,
+                       MMUAccessType access_type, int mmu_idx,
+                       bool probe, uintptr_t retaddr);
+ void x86_cpu_set_a20(X86CPU *cpu, int a20_state);
++vaddr x86_cpu_clean_addr(CPUState *cpu, vaddr addr);
+ 
+ #ifndef CONFIG_USER_ONLY
+ static inline int x86_asidx_from_attrs(CPUState *cs, MemTxAttrs attrs)
+diff --git a/target/i386/excp_helper.c b/target/i386/excp_helper.c
+index 191471749fbf..edf8194574b2 100644
+--- a/target/i386/excp_helper.c
++++ b/target/i386/excp_helper.c
+@@ -406,7 +406,7 @@ static int handle_mmu_fault(CPUState *cs, vaddr addr, int size,
+             }
+ 
+             if (la57) {
+-                pml5e_addr = ((env->cr[3] & ~0xfff) +
++                pml5e_addr = ((env->cr[3] & PG_ADDRESS_MASK) +
+                         (((addr >> 48) & 0x1ff) << 3)) & a20_mask;
+                 pml5e_addr = get_hphys(cs, pml5e_addr, MMU_DATA_STORE, NULL);
+                 pml5e = x86_ldq_phys(cs, pml5e_addr);
+@@ -700,3 +700,29 @@ bool x86_cpu_tlb_fill(CPUState *cs, vaddr addr, int size,
+     return true;
+ #endif
+ }
++
++static inline int64_t sign_extend64(uint64_t value, int index)
 +{
-+	static int tags_enabled = 0;
-+	unsigned long tag = 0;
-+	struct utsname *ptr;
-+	int err;
-+
-+	tag_bits = max_tag_bits();
-+
-+	if (tag_bits && !prctl(PR_SET_TAGGED_ADDR_CTRL, PR_TAGGED_ADDR_ENABLE,
-+			       &tag_bits, &tag_offset, 0)) {
-+		tags_enabled = 1;
-+	} else if (tag_bits == 8 && !prctl(PR_SET_TAGGED_ADDR_CTRL,
-+					   PR_TAGGED_ADDR_ENABLE, 0, 0)) {
-+		/* ARM TBI with legacy interface*/
-+		tags_enabled = 1;
-+		tag_offset = 56;
-+	}
-+
-+	ptr = (struct utsname *)malloc(sizeof(*ptr));
-+	if (tags_enabled)
-+		tag = (1UL << tag_bits) - 1;
-+	ptr = (struct utsname *)SET_TAG(ptr, tag);
-+	err = uname(ptr);
-+	printf("Sysname: %s\n", ptr->sysname);
-+	free(ptr);
-+
-+	return err;
++    int shift = 63 - index;
++    return (int64_t)(value << shift) >> shift;
 +}
++
++vaddr x86_cpu_clean_addr(CPUState *cs, vaddr addr)
++{
++    CPUX86State *env = &X86_CPU(cs)->env;
++    bool la57 = env->cr[4] & CR4_LA57_MASK;
++
++    if (addr >> 63) {
++        if (env->cr[4] & CR4_LAM_SUP) {
++            return sign_extend64(addr, la57 ? 56 : 47);
++        }
++    } else {
++        if (env->cr[3] & CR3_LAM_U57) {
++            return sign_extend64(addr, 56);
++        } else if (env->cr[3] & CR3_LAM_U48) {
++            return sign_extend64(addr, 47);
++        }
++    }
++
++    return addr;
++}
+diff --git a/target/i386/helper.c b/target/i386/helper.c
+index 034f46bcc210..6c099443ce13 100644
+--- a/target/i386/helper.c
++++ b/target/i386/helper.c
+@@ -753,7 +753,7 @@ hwaddr x86_cpu_get_phys_page_attrs_debug(CPUState *cs, vaddr addr,
+             }
+ 
+             if (la57) {
+-                pml5e_addr = ((env->cr[3] & ~0xfff) +
++                pml5e_addr = ((env->cr[3] & PG_ADDRESS_MASK) +
+                         (((addr >> 48) & 0x1ff) << 3)) & a20_mask;
+                 pml5e = x86_ldq_phys(cs, pml5e_addr);
+                 if (!(pml5e & PG_PRESENT_MASK)) {
 -- 
 2.26.2
 
