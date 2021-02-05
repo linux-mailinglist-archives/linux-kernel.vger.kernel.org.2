@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B06A311078
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 19:57:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8F83311096
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 20:00:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233488AbhBEROt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 12:14:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54888 "EHLO mail.kernel.org"
+        id S233200AbhBERR4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 12:17:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54522 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233532AbhBEQCZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 11:02:25 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 95B766505E;
-        Fri,  5 Feb 2021 14:12:34 +0000 (UTC)
+        id S233481AbhBEQAH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 11:00:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C38B465072;
+        Fri,  5 Feb 2021 14:13:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612534355;
-        bh=yfv70gwnos9Z7HA1DVypdXAtxcMJb28Q00haM7IyWyI=;
+        s=korg; t=1612534383;
+        bh=vm3Tf6PgpV/aRtwZ30Tdo+AbhfaHVugwMLr19Vq/+6s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JCrPTL72s3EDCqE7Ch1dv+P+j3l0F/uH2ZppJ9Gl8cs/GC1y5oQqPGagjX5+wMGJI
-         iuNLACJSuihhmPgqgrfqDBjj+78PmO8HI2XREL0hJG5U9Ymbrou/sy+ZG63jilCFwk
-         9efkNlRDkxNfiFU9IzGvBr2uoFy/iwpE2L5Vs45k=
+        b=O0IHYjXfVo/P2KRJhMqG/4yeI4U/Xg/dbhvSmaSIhTbHglKjhsvYKDTYAcV4r9DsO
+         lT4ewVRp9UiYsUnxZ40uCsyXjq/LQeWy1ns9O7pGrZxM45ihjBdpDU0+ketBafwUcO
+         dCmYm+Un7lnHi3FbfF7USegeoYLokek24XyshdFo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Enke Chen <enchen@paloaltonetworks.com>,
-        Neal Cardwell <ncardwell@google.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.4 08/32] tcp: make TCP_USER_TIMEOUT accurate for zero window probes
-Date:   Fri,  5 Feb 2021 15:07:23 +0100
-Message-Id: <20210205140652.694199892@linuxfoundation.org>
+        stable@vger.kernel.org,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 32/32] workqueue: Restrict affinity change to rescuer
+Date:   Fri,  5 Feb 2021 15:07:47 +0100
+Message-Id: <20210205140653.708479216@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210205140652.348864025@linuxfoundation.org>
 References: <20210205140652.348864025@linuxfoundation.org>
@@ -41,92 +41,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Enke Chen <enchen@paloaltonetworks.com>
+From: Peter Zijlstra <peterz@infradead.org>
 
-commit 344db93ae3ee69fc137bd6ed89a8ff1bf5b0db08 upstream.
+[ Upstream commit 640f17c82460e9724fd256f0a1f5d99e7ff0bda4 ]
 
-The TCP_USER_TIMEOUT is checked by the 0-window probe timer. As the
-timer has backoff with a max interval of about two minutes, the
-actual timeout for TCP_USER_TIMEOUT can be off by up to two minutes.
+create_worker() will already set the right affinity using
+kthread_bind_mask(), this means only the rescuer will need to change
+it's affinity.
 
-In this patch the TCP_USER_TIMEOUT is made more accurate by taking it
-into account when computing the timer value for the 0-window probes.
+Howveer, while in cpu-hot-unplug a regular task is not allowed to run
+on online&&!active as it would be pushed away quite agressively. We
+need KTHREAD_IS_PER_CPU to survive in that environment.
 
-This patch is similar to and builds on top of the one that made
-TCP_USER_TIMEOUT accurate for RTOs in commit b701a99e431d ("tcp: Add
-tcp_clamp_rto_to_user_timeout() helper to improve accuracy").
+Therefore set the affinity after getting that magic flag.
 
-Fixes: 9721e709fa68 ("tcp: simplify window probe aborting on USER_TIMEOUT")
-Signed-off-by: Enke Chen <enchen@paloaltonetworks.com>
-Reviewed-by: Neal Cardwell <ncardwell@google.com>
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Link: https://lore.kernel.org/r/20210122191306.GA99540@localhost.localdomain
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
+Tested-by: Valentin Schneider <valentin.schneider@arm.com>
+Link: https://lkml.kernel.org/r/20210121103506.826629830@infradead.org
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/net/tcp.h     |    1 +
- net/ipv4/tcp_input.c  |    1 +
- net/ipv4/tcp_output.c |    2 ++
- net/ipv4/tcp_timer.c  |   18 ++++++++++++++++++
- 4 files changed, 22 insertions(+)
+ kernel/workqueue.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
---- a/include/net/tcp.h
-+++ b/include/net/tcp.h
-@@ -619,6 +619,7 @@ static inline void tcp_clear_xmit_timers
+diff --git a/kernel/workqueue.c b/kernel/workqueue.c
+index 28e52657e0930..29c36c0290623 100644
+--- a/kernel/workqueue.c
++++ b/kernel/workqueue.c
+@@ -1847,12 +1847,6 @@ static void worker_attach_to_pool(struct worker *worker,
+ {
+ 	mutex_lock(&wq_pool_attach_mutex);
  
- unsigned int tcp_sync_mss(struct sock *sk, u32 pmtu);
- unsigned int tcp_current_mss(struct sock *sk);
-+u32 tcp_clamp_probe0_to_user_timeout(const struct sock *sk, u32 when);
+-	/*
+-	 * set_cpus_allowed_ptr() will fail if the cpumask doesn't have any
+-	 * online CPUs.  It'll be re-applied when any of the CPUs come up.
+-	 */
+-	set_cpus_allowed_ptr(worker->task, pool->attrs->cpumask);
+-
+ 	/*
+ 	 * The wq_pool_attach_mutex ensures %POOL_DISASSOCIATED remains
+ 	 * stable across this function.  See the comments above the flag
+@@ -1861,6 +1855,9 @@ static void worker_attach_to_pool(struct worker *worker,
+ 	if (pool->flags & POOL_DISASSOCIATED)
+ 		worker->flags |= WORKER_UNBOUND;
  
- /* Bound MSS / TSO packet size with the half of the window */
- static inline int tcp_bound_to_half_wnd(struct tcp_sock *tp, int pktsize)
---- a/net/ipv4/tcp_input.c
-+++ b/net/ipv4/tcp_input.c
-@@ -3295,6 +3295,7 @@ static void tcp_ack_probe(struct sock *s
- 	} else {
- 		unsigned long when = tcp_probe0_when(sk, TCP_RTO_MAX);
++	if (worker->rescue_wq)
++		set_cpus_allowed_ptr(worker->task, pool->attrs->cpumask);
++
+ 	list_add_tail(&worker->node, &pool->workers);
+ 	worker->pool = pool;
  
-+		when = tcp_clamp_probe0_to_user_timeout(sk, when);
- 		tcp_reset_xmit_timer(sk, ICSK_TIME_PROBE0,
- 				     when, TCP_RTO_MAX, NULL);
- 	}
---- a/net/ipv4/tcp_output.c
-+++ b/net/ipv4/tcp_output.c
-@@ -3850,6 +3850,8 @@ void tcp_send_probe0(struct sock *sk)
- 		 */
- 		timeout = TCP_RESOURCE_PROBE_INTERVAL;
- 	}
-+
-+	timeout = tcp_clamp_probe0_to_user_timeout(sk, timeout);
- 	tcp_reset_xmit_timer(sk, ICSK_TIME_PROBE0, timeout, TCP_RTO_MAX, NULL);
- }
- 
---- a/net/ipv4/tcp_timer.c
-+++ b/net/ipv4/tcp_timer.c
-@@ -40,6 +40,24 @@ static u32 tcp_clamp_rto_to_user_timeout
- 	return min_t(u32, icsk->icsk_rto, msecs_to_jiffies(remaining));
- }
- 
-+u32 tcp_clamp_probe0_to_user_timeout(const struct sock *sk, u32 when)
-+{
-+	struct inet_connection_sock *icsk = inet_csk(sk);
-+	u32 remaining;
-+	s32 elapsed;
-+
-+	if (!icsk->icsk_user_timeout || !icsk->icsk_probes_tstamp)
-+		return when;
-+
-+	elapsed = tcp_jiffies32 - icsk->icsk_probes_tstamp;
-+	if (unlikely(elapsed < 0))
-+		elapsed = 0;
-+	remaining = msecs_to_jiffies(icsk->icsk_user_timeout) - elapsed;
-+	remaining = max_t(u32, remaining, TCP_TIMEOUT_MIN);
-+
-+	return min_t(u32, remaining, when);
-+}
-+
- /**
-  *  tcp_write_err() - close socket and save error info
-  *  @sk:  The socket the error has appeared on.
+-- 
+2.27.0
+
 
 
