@@ -2,358 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 785873117C4
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 01:27:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02F713117C3
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 01:27:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231293AbhBFAZm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 19:25:42 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2508 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232173AbhBEMko (ORCPT
+        id S231177AbhBFAZS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 19:25:18 -0500
+Received: from mail-ot1-f43.google.com ([209.85.210.43]:35871 "EHLO
+        mail-ot1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231822AbhBEMoY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 07:40:44 -0500
-Received: from fraeml745-chm.china.huawei.com (unknown [172.18.147.201])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4DXFFy4w5Hz67kKq;
-        Fri,  5 Feb 2021 20:33:42 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml745-chm.china.huawei.com (10.206.15.226) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Fri, 5 Feb 2021 13:40:02 +0100
-Received: from localhost (10.47.29.206) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Fri, 5 Feb 2021
- 12:40:01 +0000
-Date:   Fri, 5 Feb 2021 12:39:15 +0000
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Alexandru Ardelean <ardeleanalex@gmail.com>
-CC:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        "Hennerich, Michael" <Michael.Hennerich@analog.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Nuno =?ISO-8859-1?Q?S=E1?= <nuno.sa@analog.com>,
-        "Bogdan, Dragos" <dragos.bogdan@analog.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH v3 08/11] iio: buffer: wrap all buffer attributes into
- iio_dev_attr
-Message-ID: <20210205123915.000012dc@Huawei.com>
-In-Reply-To: <CA+U=DsrBMd6LmdO_gq3MT21eO2HoO0mbkZjbig600EJ=d4Q3kg@mail.gmail.com>
-References: <20210201145105.20459-1-alexandru.ardelean@analog.com>
-        <20210201145105.20459-9-alexandru.ardelean@analog.com>
-        <20210204182340.00005170@Huawei.com>
-        <CA+U=DsrBMd6LmdO_gq3MT21eO2HoO0mbkZjbig600EJ=d4Q3kg@mail.gmail.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
+        Fri, 5 Feb 2021 07:44:24 -0500
+Received: by mail-ot1-f43.google.com with SMTP id 100so47649otg.3;
+        Fri, 05 Feb 2021 04:44:07 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kuINixcG/J94gESP0yyjqiYb/s22t0ZfSXhCYWQroxI=;
+        b=obWk6BQ5ZMOBvTVEwhhw2CV0CXPgp9UMDgh0DfNmhgjDix25Xr8d3Q0pas1o4AHB8o
+         WeSBMAom7Ycn4cu0bD85Y1zds+su3CFFnmyBEQYrMuuM8gBcf+JY43T88MY9nHUJoS/R
+         YKnAwMq4sspwJhgen28J/G6etP81X0ZjKat3Ou4Z1eUpZSEi/AI+pWtGrVD2AX9jrAPL
+         VwS0NwYQtXu4BuA2BVfP3RkC2TGIH0eqdEn6/RvaBxmDzb5cfk4kYuOkUgFm1CtwX9K/
+         TIXLanEK4hIhbA5yoDPhSFJTaRZyALznXAjRuT1RKG6IkP+rzDoYWfWxECGdxtJqpjV9
+         /7CA==
+X-Gm-Message-State: AOAM531d/KnSre7SqwXX2t9+aQcdpMb89KQt+P8ih0ZZaWwy+0XZ23Qa
+        NyqyFXYszsKns4yD8Yl2eGXqn024rzyD3kwfHjW1mvt5
+X-Google-Smtp-Source: ABdhPJxio/AsWQ4f32FDc+YpO+ird+n+TGH9eAOM0SWxPJMdUTuxRHQMc6kyV2+EPXg80cUrK697FvJtbMZ4n+v1EFY=
+X-Received: by 2002:a9d:7a4a:: with SMTP id z10mr3350757otm.206.1612529022635;
+ Fri, 05 Feb 2021 04:43:42 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.29.206]
-X-ClientProxiedBy: lhreml726-chm.china.huawei.com (10.201.108.77) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+References: <20210125143039.1051912-1-geert+renesas@glider.be>
+In-Reply-To: <20210125143039.1051912-1-geert+renesas@glider.be>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 5 Feb 2021 13:43:28 +0100
+Message-ID: <CAJZ5v0geLBviVW_6LNe0BNymX=PSDfqoukkdz92RNZN5=h3BJg@mail.gmail.com>
+Subject: Re: [PATCH] ntp: Use freezable workqueue for RTC synchronization
+To:     Geert Uytterhoeven <geert+renesas@glider.be>
+Cc:     John Stultz <john.stultz@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Viresh Kumar <vireshk@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        linux-rtc@vger.kernel.org, Linux PM <linux-pm@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 5 Feb 2021 11:17:04 +0200
-Alexandru Ardelean <ardeleanalex@gmail.com> wrote:
+On Tue, Jan 26, 2021 at 6:48 AM Geert Uytterhoeven
+<geert+renesas@glider.be> wrote:
+>
+> The bug fixed by commit e3fab2f3de081e98 ("ntp: Fix RTC synchronization
+> on 32-bit platforms") revealed an underlying issue: RTC synchronization
+> may happen anytime, even while the system is partially suspended.
+>
+> On systems where the RTC is connected to an I2C bus, the I2C bus
+> controller may already or still be suspended, triggering a WARNING
+> during suspend or resume from s2ram:
+>
+>     WARNING: CPU: 0 PID: 124 at drivers/i2c/i2c-core.h:54 __i2c_transfer+0x634/0x680
+>     i2c i2c-6: Transfer while suspended
+>     [...]
+>     Workqueue: events_power_efficient sync_hw_clock
+>     [...]
+>     [<c0738e08>] (__i2c_transfer) from [<c0738eac>] (i2c_transfer+0x58/0xf8)
+>     [<c0738eac>] (i2c_transfer) from [<c065202c>] (regmap_i2c_read+0x58/0x94)
+>     [<c065202c>] (regmap_i2c_read) from [<c064de40>] (_regmap_raw_read+0x19c/0x2f4)
+>     [<c064de40>] (_regmap_raw_read) from [<c064dfdc>] (_regmap_bus_read+0x44/0x68)
+>     [<c064dfdc>] (_regmap_bus_read) from [<c064ccb4>] (_regmap_read+0x84/0x1a4)
+>     [<c064ccb4>] (_regmap_read) from [<c064d334>] (_regmap_update_bits+0xa8/0xf4)
+>     [<c064d334>] (_regmap_update_bits) from [<c064d464>] (_regmap_select_page+0xe4/0x100)
+>     [<c064d464>] (_regmap_select_page) from [<c064d554>] (_regmap_raw_write_impl+0xd4/0x6c4)
+>     [<c064d554>] (_regmap_raw_write_impl) from [<c064ec10>] (_regmap_raw_write+0xd8/0x114)
+>     [<c064ec10>] (_regmap_raw_write) from [<c064eca4>] (regmap_raw_write+0x58/0x7c)
+>     [<c064eca4>] (regmap_raw_write) from [<c064ede0>] (regmap_bulk_write+0x118/0x13c)
+>     [<c064ede0>] (regmap_bulk_write) from [<c073660c>] (da9063_rtc_set_time+0x44/0x8c)
+>     [<c073660c>] (da9063_rtc_set_time) from [<c0734164>] (rtc_set_time+0xc8/0x228)
+>     [<c0734164>] (rtc_set_time) from [<c02abe78>] (sync_hw_clock+0x128/0x1fc)
+>     [<c02abe78>] (sync_hw_clock) from [<c023e6a0>] (process_one_work+0x330/0x550)
+>     [<c023e6a0>] (process_one_work) from [<c023f0a8>] (worker_thread+0x22c/0x2ec)
+>
+> Fix this race condition by using the freezable instead of the normal
+> power-efficient workqueue.
+>
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-> On Thu, Feb 4, 2021 at 8:26 PM Jonathan Cameron
-> <Jonathan.Cameron@huawei.com> wrote:
-> >
-> > On Mon, 1 Feb 2021 16:51:02 +0200
-> > Alexandru Ardelean <alexandru.ardelean@analog.com> wrote:
-> >  
-> > > This change wraps all buffer attributes into iio_dev_attr objects, and
-> > > assigns a reference to the IIO buffer they belong to.
-> > >
-> > > With the addition of multiple IIO buffers per one IIO device, we need a way
-> > > to know which IIO buffer is being enabled/disabled/controlled.
-> > >
-> > > We know that all buffer attributes are device_attributes. So we can wrap
-> > > them with a iio_dev_attr types. In the iio_dev_attr type, we can also hold
-> > > a reference to an IIO buffer.
-> > > So, we end up being able to allocate wrapped attributes for all buffer
-> > > attributes (even the one from other drivers).
-> > >
-> > > The neat part with this mechanism, is that we don't need to add any extra
-> > > cleanup, because these attributes are being added to a dynamic list that
-> > > will get cleaned up via iio_free_chan_devattr_list().  
-> >
-> >  
-> > >
-> > > With this change, the 'buffer->scan_el_dev_attr_list' list is being renamed
-> > > to 'buffer->buffer_attr_list', effectively merging (or finalizing the
-> > > merge) of the buffer/ & scan_elements/ attributes internally.
-> > >
-> > > Accessing these new buffer attributes can now be done via
-> > > 'to_iio_dev_attr(attr)->buffer' inside the show/store handlers.  
-> >
-> > That is going to look a bit odd in any drivers that use it given they
-> > will appear to not be embedded.
-> >
-> > There seem to be very few such attributes from a quick grep, so maybe
-> > we may want to unwind this and change all the types.   Might still need
-> > to set .buffer for some of them though (only applying to new drivers as
-> > clearly current ones don't care!)
-> >
-> > Looking at what they actually are, some perhaps shouldn't have been in the buffer
-> > directory in the first place (with hindsight!).
-> >
-> > Anyhow, aside from that oddity this looks good to me.  
-> 
-> I'm a little vague here.
-> If there is a suggestion for a change, I may have missed it.
+LGTM
 
-It was vague because I wasn't sure if it it made sense :)
-> 
-> I'm a bit vague on the part of "we may want to unwind this and change
-> all the types"
-> Is it referring to something like this patch?
->       https://lore.kernel.org/linux-iio/20210122162529.84978-10-alexandru.ardelean@analog.com/
+Acked-by: Rafael J. Wysocki <rafael@kernel.org>
 
-Exactly, that was what I was wondering about.
-
-> We could do a show/store version that takes an iio_buf_attr or
-> iio_dev_attr parameter.
-> But maybe at a later point?
-> I don't feel it adds much benefit over the current usage of
-> buffer->attrs, because we need to kmalloc these iio_dev_attr anyways
-> to store the reference to the iio_buffer.
-> 
-> I would have liked to get rid of these user/external buffer->attrs.
-> That would have made things easier.
-> 
-> But, it looks like there are several drivers using them.
-> I usually find them by grepping for iio_triggered_buffer_setup_ext
-> It's only 5 drivers that provide these attributes.
-> It used to be a bit easier to find them by grepping
-> iio_buffer_set_attrs(), but I removed that.
-
-We could look at whether some can be brought into the core.  They tend
-to be around hwfifo parameters. Those could be specific to individual
-buffers rather than device wide so at least some of them are correctly
-placed in the buffer directory (I think - I've argued with myself about
-this a few times in the past).
-
-The only oddity we'll get from current approach is callbacks appearing
-to access a container structure that they aren't associated with in the
-driver.  Its the sort of interface that no one would ever realize was
-possible.
-
-Jonathan
-
-> 
-> 
-> >
-> > Jonathan
-> >  
-> > >
-> > > Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
-> > > ---
-> > >  drivers/iio/industrialio-buffer.c | 66 +++++++++++++++++++++----------
-> > >  include/linux/iio/buffer_impl.h   |  4 +-
-> > >  2 files changed, 48 insertions(+), 22 deletions(-)
-> > >
-> > > diff --git a/drivers/iio/industrialio-buffer.c b/drivers/iio/industrialio-buffer.c
-> > > index a525e88b302f..49996bed5f4c 100644
-> > > --- a/drivers/iio/industrialio-buffer.c
-> > > +++ b/drivers/iio/industrialio-buffer.c
-> > > @@ -448,7 +448,7 @@ static int iio_buffer_add_channel_sysfs(struct iio_dev *indio_dev,
-> > >                                    IIO_SEPARATE,
-> > >                                    &indio_dev->dev,
-> > >                                    buffer,
-> > > -                                  &buffer->scan_el_dev_attr_list);
-> > > +                                  &buffer->buffer_attr_list);
-> > >       if (ret)
-> > >               return ret;
-> > >       attrcount++;
-> > > @@ -460,7 +460,7 @@ static int iio_buffer_add_channel_sysfs(struct iio_dev *indio_dev,
-> > >                                    0,
-> > >                                    &indio_dev->dev,
-> > >                                    buffer,
-> > > -                                  &buffer->scan_el_dev_attr_list);
-> > > +                                  &buffer->buffer_attr_list);
-> > >       if (ret)
-> > >               return ret;
-> > >       attrcount++;
-> > > @@ -473,7 +473,7 @@ static int iio_buffer_add_channel_sysfs(struct iio_dev *indio_dev,
-> > >                                            0,
-> > >                                            &indio_dev->dev,
-> > >                                            buffer,
-> > > -                                          &buffer->scan_el_dev_attr_list);
-> > > +                                          &buffer->buffer_attr_list);
-> > >       else
-> > >               ret = __iio_add_chan_devattr("en",
-> > >                                            chan,
-> > > @@ -483,7 +483,7 @@ static int iio_buffer_add_channel_sysfs(struct iio_dev *indio_dev,
-> > >                                            0,
-> > >                                            &indio_dev->dev,
-> > >                                            buffer,
-> > > -                                          &buffer->scan_el_dev_attr_list);
-> > > +                                          &buffer->buffer_attr_list);
-> > >       if (ret)
-> > >               return ret;
-> > >       attrcount++;
-> > > @@ -495,8 +495,7 @@ static ssize_t iio_buffer_read_length(struct device *dev,
-> > >                                     struct device_attribute *attr,
-> > >                                     char *buf)
-> > >  {
-> > > -     struct iio_dev *indio_dev = dev_to_iio_dev(dev);
-> > > -     struct iio_buffer *buffer = indio_dev->buffer;
-> > > +     struct iio_buffer *buffer = to_iio_dev_attr(attr)->buffer;
-> > >
-> > >       return sprintf(buf, "%d\n", buffer->length);
-> > >  }
-> > > @@ -506,7 +505,7 @@ static ssize_t iio_buffer_write_length(struct device *dev,
-> > >                                      const char *buf, size_t len)
-> > >  {
-> > >       struct iio_dev *indio_dev = dev_to_iio_dev(dev);
-> > > -     struct iio_buffer *buffer = indio_dev->buffer;
-> > > +     struct iio_buffer *buffer = to_iio_dev_attr(attr)->buffer;
-> > >       unsigned int val;
-> > >       int ret;
-> > >
-> > > @@ -538,8 +537,7 @@ static ssize_t iio_buffer_show_enable(struct device *dev,
-> > >                                     struct device_attribute *attr,
-> > >                                     char *buf)
-> > >  {
-> > > -     struct iio_dev *indio_dev = dev_to_iio_dev(dev);
-> > > -     struct iio_buffer *buffer = indio_dev->buffer;
-> > > +     struct iio_buffer *buffer = to_iio_dev_attr(attr)->buffer;
-> > >
-> > >       return sprintf(buf, "%d\n", iio_buffer_is_active(buffer));
-> > >  }
-> > > @@ -1154,7 +1152,7 @@ static ssize_t iio_buffer_store_enable(struct device *dev,
-> > >       int ret;
-> > >       bool requested_state;
-> > >       struct iio_dev *indio_dev = dev_to_iio_dev(dev);
-> > > -     struct iio_buffer *buffer = indio_dev->buffer;
-> > > +     struct iio_buffer *buffer = to_iio_dev_attr(attr)->buffer;
-> > >       bool inlist;
-> > >
-> > >       ret = strtobool(buf, &requested_state);
-> > > @@ -1185,8 +1183,7 @@ static ssize_t iio_buffer_show_watermark(struct device *dev,
-> > >                                        struct device_attribute *attr,
-> > >                                        char *buf)
-> > >  {
-> > > -     struct iio_dev *indio_dev = dev_to_iio_dev(dev);
-> > > -     struct iio_buffer *buffer = indio_dev->buffer;
-> > > +     struct iio_buffer *buffer = to_iio_dev_attr(attr)->buffer;
-> > >
-> > >       return sprintf(buf, "%u\n", buffer->watermark);
-> > >  }
-> > > @@ -1197,7 +1194,7 @@ static ssize_t iio_buffer_store_watermark(struct device *dev,
-> > >                                         size_t len)
-> > >  {
-> > >       struct iio_dev *indio_dev = dev_to_iio_dev(dev);
-> > > -     struct iio_buffer *buffer = indio_dev->buffer;
-> > > +     struct iio_buffer *buffer = to_iio_dev_attr(attr)->buffer;
-> > >       unsigned int val;
-> > >       int ret;
-> > >
-> > > @@ -1230,8 +1227,7 @@ static ssize_t iio_dma_show_data_available(struct device *dev,
-> > >                                               struct device_attribute *attr,
-> > >                                               char *buf)
-> > >  {
-> > > -     struct iio_dev *indio_dev = dev_to_iio_dev(dev);
-> > > -     struct iio_buffer *buffer = indio_dev->buffer;
-> > > +     struct iio_buffer *buffer = to_iio_dev_attr(attr)->buffer;
-> > >
-> > >       return sprintf(buf, "%zu\n", iio_buffer_data_available(buffer));
-> > >  }
-> > > @@ -1256,6 +1252,26 @@ static struct attribute *iio_buffer_attrs[] = {
-> > >       &dev_attr_data_available.attr,
-> > >  };
-> > >
-> > > +#define to_dev_attr(_attr) container_of(_attr, struct device_attribute, attr)
-> > > +
-> > > +static struct attribute *iio_buffer_wrap_attr(struct iio_buffer *buffer,
-> > > +                                           struct attribute *attr)
-> > > +{
-> > > +     struct device_attribute *dattr = to_dev_attr(attr);
-> > > +     struct iio_dev_attr *iio_attr;
-> > > +
-> > > +     iio_attr = kzalloc(sizeof(*iio_attr), GFP_KERNEL);
-> > > +     if (!iio_attr)
-> > > +             return NULL;
-> > > +
-> > > +     iio_attr->buffer = buffer;
-> > > +     memcpy(&iio_attr->dev_attr, dattr, sizeof(iio_attr->dev_attr));
-> > > +
-> > > +     list_add(&iio_attr->l, &buffer->buffer_attr_list);
-> > > +
-> > > +     return &iio_attr->dev_attr.attr;
-> > > +}
-> > > +
-> > >  static int iio_buffer_register_legacy_sysfs_groups(struct iio_dev *indio_dev,
-> > >                                                  struct attribute **buffer_attrs,
-> > >                                                  int buffer_attrcount,
-> > > @@ -1331,7 +1347,7 @@ static int __iio_buffer_alloc_sysfs_and_mask(struct iio_buffer *buffer,
-> > >       }
-> > >
-> > >       scan_el_attrcount = 0;
-> > > -     INIT_LIST_HEAD(&buffer->scan_el_dev_attr_list);
-> > > +     INIT_LIST_HEAD(&buffer->buffer_attr_list);
-> > >       channels = indio_dev->channels;
-> > >       if (channels) {
-> > >               /* new magic */
-> > > @@ -1378,9 +1394,19 @@ static int __iio_buffer_alloc_sysfs_and_mask(struct iio_buffer *buffer,
-> > >
-> > >       buffer_attrcount += ARRAY_SIZE(iio_buffer_attrs);
-> > >
-> > > -     attrn = buffer_attrcount;
-> > > +     for (i = 0; i < buffer_attrcount; i++) {
-> > > +             struct attribute *wrapped;
-> > > +
-> > > +             wrapped = iio_buffer_wrap_attr(buffer, attr[i]);
-> > > +             if (!wrapped) {
-> > > +                     ret = -ENOMEM;
-> > > +                     goto error_free_scan_mask;
-> > > +             }
-> > > +             attr[i] = wrapped;
-> > > +     }
-> > >
-> > > -     list_for_each_entry(p, &buffer->scan_el_dev_attr_list, l)
-> > > +     attrn = 0;
-> > > +     list_for_each_entry(p, &buffer->buffer_attr_list, l)
-> > >               attr[attrn++] = &p->dev_attr.attr;
-> > >
-> > >       buffer->buffer_group.name = kasprintf(GFP_KERNEL, "buffer%d", index);
-> > > @@ -1412,7 +1438,7 @@ static int __iio_buffer_alloc_sysfs_and_mask(struct iio_buffer *buffer,
-> > >  error_free_scan_mask:
-> > >       bitmap_free(buffer->scan_mask);
-> > >  error_cleanup_dynamic:
-> > > -     iio_free_chan_devattr_list(&buffer->scan_el_dev_attr_list);
-> > > +     iio_free_chan_devattr_list(&buffer->buffer_attr_list);
-> > >
-> > >       return ret;
-> > >  }
-> > > @@ -1443,7 +1469,7 @@ static void __iio_buffer_free_sysfs_and_mask(struct iio_buffer *buffer)
-> > >       bitmap_free(buffer->scan_mask);
-> > >       kfree(buffer->buffer_group.name);
-> > >       kfree(buffer->buffer_group.attrs);
-> > > -     iio_free_chan_devattr_list(&buffer->scan_el_dev_attr_list);
-> > > +     iio_free_chan_devattr_list(&buffer->buffer_attr_list);
-> > >  }
-> > >
-> > >  void iio_buffer_free_sysfs_and_mask(struct iio_dev *indio_dev)
-> > > diff --git a/include/linux/iio/buffer_impl.h b/include/linux/iio/buffer_impl.h
-> > > index 3e555e58475b..41044320e581 100644
-> > > --- a/include/linux/iio/buffer_impl.h
-> > > +++ b/include/linux/iio/buffer_impl.h
-> > > @@ -97,8 +97,8 @@ struct iio_buffer {
-> > >       /* @scan_timestamp: Does the scan mode include a timestamp. */
-> > >       bool scan_timestamp;
-> > >
-> > > -     /* @scan_el_dev_attr_list: List of scan element related attributes. */
-> > > -     struct list_head scan_el_dev_attr_list;
-> > > +     /* @buffer_attr_list: List of buffer attributes. */
-> > > +     struct list_head buffer_attr_list;
-> > >
-> > >       /*
-> > >        * @buffer_group: Attributes of the new buffer group.  
-> >  
-
+> ---
+>  kernel/time/ntp.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/kernel/time/ntp.c b/kernel/time/ntp.c
+> index 54d52fab201d283e..6310328fe398406a 100644
+> --- a/kernel/time/ntp.c
+> +++ b/kernel/time/ntp.c
+> @@ -502,7 +502,7 @@ static struct hrtimer sync_hrtimer;
+>
+>  static enum hrtimer_restart sync_timer_callback(struct hrtimer *timer)
+>  {
+> -       queue_work(system_power_efficient_wq, &sync_work);
+> +       queue_work(system_freezable_power_efficient_wq, &sync_work);
+>
+>         return HRTIMER_NORESTART;
+>  }
+> @@ -668,7 +668,7 @@ void ntp_notify_cmos_timer(void)
+>          * just a pointless work scheduled.
+>          */
+>         if (ntp_synced() && !hrtimer_is_queued(&sync_hrtimer))
+> -               queue_work(system_power_efficient_wq, &sync_work);
+> +               queue_work(system_freezable_power_efficient_wq, &sync_work);
+>  }
+>
+>  static void __init ntp_init_cmos_sync(void)
+> --
+> 2.25.1
+>
