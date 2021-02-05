@@ -2,96 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FC183105FB
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 08:41:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DBF83105FE
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 08:42:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231514AbhBEHkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 02:40:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49906 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230486AbhBEHkj (ORCPT
+        id S231562AbhBEHle (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 02:41:34 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:21985 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230486AbhBEHla (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 02:40:39 -0500
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89196C0613D6;
-        Thu,  4 Feb 2021 23:39:59 -0800 (PST)
-Received: by mail-yb1-xb2a.google.com with SMTP id i71so5851926ybg.7;
-        Thu, 04 Feb 2021 23:39:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gqGNw4G/NzE+7A2wNT+rbd+x4klWLhZ5onfW19HWXFo=;
-        b=UtAJ2Izq7fvv2wLdL+Q238QDUT0UXkTQGojPeBuW8jZeTv3I7iSpfd0i3oNDHNDZsz
-         mspK3Nhyws3Osm3ia3srJTBAk8WJ4xAlozqMO4L0xrh6dVjgc4iEbm1YzSwce1cC2tde
-         htMYaxTxtsNeN51GUx7rX0Rn3HORZe2RissAiYOvrq3/uPVPJwKym8SXWo0CsVHtoDZU
-         73YZ/kLFc8QTzlxAeTKHfNe4rAOdm2+Ma+2d/YKYuDkQmRiG/0WHF6hF330PnzLfFHqk
-         t/YEVTnjfMp5x+Pltw62JtunJO6R/AhgJnaiLXEEHwLg914WQDm+xdvimGdPx4blb+Dx
-         BsYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gqGNw4G/NzE+7A2wNT+rbd+x4klWLhZ5onfW19HWXFo=;
-        b=trHHRflSAjuzU/3NBnFhPGWPpp2fycT+kHZfAD2IBqtnBxBc6ry882hCgmu2nr/510
-         XP2jbMPf5FpxfYsJSW6hTMGvX1CfG2F6bYvAYAb887AZVxd1ZJhqy64vSq0VM8Asw/B5
-         T93Ee1dAfn6waPKA5B7s/vF8VaT2TQTcdPrb72tVga1jiHoNTe8gjpkY2smBr9iyczRh
-         r/SignIOccjEh0pH5BbbXWZqOkz6H4/8Ai/DYVEtKI3hmyMUq3Qx4rl+V3IG49kl9kuD
-         3aC29tLR70Gh5YP3tBX0++EwHeEchqpTdhJhwqoa1INLolw+X1rw6QN9DCJ01G7fjzMo
-         NwmQ==
-X-Gm-Message-State: AOAM531aUD/GvM6SBQQfWnkbWx0iuqhKrCH3QOVDKnSE0Vv4smVmkgs4
-        nwzYzYLC7OUO4rZPvmVOcBQe0kTo2ckN+SEpCGyaG+DORdRqRw==
-X-Google-Smtp-Source: ABdhPJwprkQQPTa3A3Qjb2rKtEXx/WLgrNN8j2W1vnwCNwfjYMlwGfM8qo7JOih3BfOjIxDXYfzQmSWw5gQOUiiVw4Q=
-X-Received: by 2002:a25:d844:: with SMTP id p65mr4228124ybg.27.1612510798784;
- Thu, 04 Feb 2021 23:39:58 -0800 (PST)
+        Fri, 5 Feb 2021 02:41:30 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612510803;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZrmnAR/vWjWkSNr5ECzQmom8EeDZlq5336FM1xHEIxE=;
+        b=TK8hb+mjgISvu3zdwCEBm7Lpj/wFowXDOFcs6RxY/nh0fHks6UWWv72e9QzEXV5HNEIsVz
+        F+ki9T1EgEXmeEp4vYFwb7RSS7mhw53sS42rUAs9oF5tOnTo6dyQXiuHn2DYRcjhA1Popp
+        +Lx4CVYr89+VGu4byAdMbZTc0tzSoe4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-160-JPRvEA61PgCvKQRcC8jDmw-1; Fri, 05 Feb 2021 02:40:00 -0500
+X-MC-Unique: JPRvEA61PgCvKQRcC8jDmw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B21A5192AB79;
+        Fri,  5 Feb 2021 07:39:58 +0000 (UTC)
+Received: from sirius.home.kraxel.org (ovpn-113-108.ams2.redhat.com [10.36.113.108])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 43F0C62679;
+        Fri,  5 Feb 2021 07:39:58 +0000 (UTC)
+Received: by sirius.home.kraxel.org (Postfix, from userid 1000)
+        id 9947318000B6; Fri,  5 Feb 2021 08:39:56 +0100 (CET)
+Date:   Fri, 5 Feb 2021 08:39:56 +0100
+From:   Gerd Hoffmann <kraxel@redhat.com>
+To:     Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>
+Cc:     dri-devel@lists.freedesktop.org, Huang Rui <ray.huang@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v6 01/10] [hack] silence ttm fini WARNING
+Message-ID: <20210205073956.koeqlzh2suuzitgr@sirius.home.kraxel.org>
+References: <20210204145712.1531203-1-kraxel@redhat.com>
+ <20210204145712.1531203-2-kraxel@redhat.com>
+ <1bb54d72-a9b5-0d9d-6f08-b8f9f4abe421@amd.com>
 MIME-Version: 1.0
-References: <20210204220741.GA920417@kernel.org> <CAEf4BzY-RbXXW-Ajcvq4fziOJ=tMtT7O76SUboHQyULNDkhthw@mail.gmail.com>
- <C359F19F-29BC-4F6D-961A-79BFA47F36A7@gmail.com>
-In-Reply-To: <C359F19F-29BC-4F6D-961A-79BFA47F36A7@gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 4 Feb 2021 23:39:47 -0800
-Message-ID: <CAEf4BzZf_1g13dA1t6rbi1TFttufyGNaU14pPxo9uK-FVArCbQ@mail.gmail.com>
-Subject: Re: ANNOUNCE: pahole v1.20 (gcc11 DWARF5's default, lots of ELF
- sections, BTF)
-To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        dwarves@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Jiri Olsa <jolsa@kernel.org>,
-        Jan Engelhardt <jengelh@inai.de>,
-        Domenico Andreoli <cavok@debian.org>,
-        Matthias Schwarzott <zzam@gentoo.org>,
-        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
-        Mark Wieelard <mjw@redhat.com>,
-        Paul Moore <paul@paul-moore.com>,
-        Ondrej Mosnacek <omosnace@redhat.com>,
-        =?UTF-8?Q?Daniel_P=2E_Berrang=C3=A9?= <berrange@redhat.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Tom Stellard <tstellar@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1bb54d72-a9b5-0d9d-6f08-b8f9f4abe421@amd.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 4, 2021 at 8:34 PM Arnaldo Carvalho de Melo
-<arnaldo.melo@gmail.com> wrote:
->
->
->
-> On February 4, 2021 9:01:51 PM GMT-03:00, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
-> >On Thu, Feb 4, 2021 at 2:09 PM Arnaldo Carvalho de Melo><acme@kernel.org> wrote:
-> >>         The v1.20 release of pahole and its friends is out, mostly
-> >> addressing problems related to gcc 11 defaulting to DWARF5 for -g,
-> >> available at the usual places:
-> >
-> >Great, thanks, Arnaldo! Do you plan to build RPMs soon as well?
->
-> It's in rawhide already, I'll do it for f33, f32 later,
->
+On Thu, Feb 04, 2021 at 03:58:33PM +0100, Christian König wrote:
+> ?
+> 
+> What's the background here?
+> 
+> Christian.
+> 
+> Am 04.02.21 um 15:57 schrieb Gerd Hoffmann:
+> > kobject: '(null)' ((____ptrval____)): is not initialized, yet kobject_put() is being called.
+> > WARNING: CPU: 0 PID: 209 at lib/kobject.c:750 kobject_put+0x3a/0x60
+> > [ ... ]
+> > Call Trace:
+> >   ttm_device_fini+0x133/0x1b0 [ttm]
+> >   qxl_ttm_fini+0x2f/0x40 [qxl]
 
-Do you have a link? I tried to find it, but only see 1.19 so far.
+Happens on driver removal.  Seen with both qxl and bochs (the later
+using vram helpers).
 
-> - Arnaldo
->
-> --
-> Sent from my Android device with K-9 Mail. Please excuse my brevity.
+Testcase: "drmtest --unbind" (https://git.kraxel.org/cgit/drminfo/).
+
+static int try_unbind(int card)
+{
+    char path[256];
+    char *device, *name;
+    int fd;
+
+    snprintf(path, sizeof(path), "/sys/class/drm/card%d/device", card);
+    device = realpath(path, NULL);
+    if (device == NULL) {
+        fprintf(stderr, "%s: can't resolve sysfs device path\n", __func__);
+        return -1;
+    }
+
+    snprintf(path, sizeof(path), "%s/driver/unbind", device);
+    fd = open(path, O_WRONLY);
+    if (fd < 0) {
+        fprintf(stderr, "open %s: %s\n", path, strerror(errno));
+        return -1;
+    }
+
+    name = strrchr(device, '/') + 1;
+    write(fd, name, strlen(name));
+    close(fd);
+    return 0;
+}
+
+take care,
+  Gerd
+
