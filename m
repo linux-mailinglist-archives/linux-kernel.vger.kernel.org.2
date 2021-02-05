@@ -2,110 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1662310F6F
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 19:05:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E59A310F6E
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 19:05:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233718AbhBEQWX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 11:22:23 -0500
-Received: from mga18.intel.com ([134.134.136.126]:57360 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230374AbhBEQTC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 11:19:02 -0500
-IronPort-SDR: xsyp4/dVN4iFhYQCwBJxmKGvLSM7JeNc4F3zqTsXFxy60X9OAfbwrkEbRVCq/ciaqyPZ2r0rcU
- HtA09LD2jY9A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9886"; a="169141569"
-X-IronPort-AV: E=Sophos;i="5.81,155,1610438400"; 
-   d="scan'208";a="169141569"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2021 10:00:31 -0800
-IronPort-SDR: flCR177ho8xnj0bLEwOjvZcs9Zedun0/6v6kqhP8zw+5aFJY/km3RD+12kLLIkQ1hijsUSVCTq
- zK9mt3DZSzxA==
-X-IronPort-AV: E=Sophos;i="5.81,155,1610438400"; 
-   d="scan'208";a="434549248"
-Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.212.95.7]) ([10.212.95.7])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2021 10:00:24 -0800
-Subject: Re: [PATCH v19 06/25] x86/cet: Add control-protection fault handler
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>
-References: <20210203225547.32221-1-yu-cheng.yu@intel.com>
- <20210203225547.32221-7-yu-cheng.yu@intel.com>
- <20210205135927.GH17488@zn.tnic>
-From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
-Message-ID: <2d829cba-784e-635a-e0c5-a7b334fa9b40@intel.com>
-Date:   Fri, 5 Feb 2021 10:00:21 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S233569AbhBEQVb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 11:21:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39446 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233554AbhBEQTH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 11:19:07 -0500
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76E8BC061756
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 10:00:49 -0800 (PST)
+Received: by mail-pf1-x429.google.com with SMTP id f63so4808416pfa.13
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 10:00:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=8qb1CyCQjn/N+1y/YOs2JFjHcLhMQN11acgAoLNGKiQ=;
+        b=VVHaLfLKNyYdA5QhCxSkdfo9vcIXZlgeeExzIcDLdit6Cwz79JwZjnR9mN4wSkzjz4
+         dy0HpQQhUTiQOJD/dH0xmL+h/d6U3IA6hcdJWGCn0DnqZPInxzfyK5Mfoj+7UpAskeHv
+         gJlKMk0UN67uJOO3S6q01Lspk2sEmmBXz0CZ4N3g7jcm7pFR/TugKpafwtQAEdfDhgih
+         kljOAquYcTx+TMj3xOAFzy5MChDZ/zV8uGnHEYxJkbnzpPkkJIwf5EIjFgUFXzxF39rK
+         wajcA0PgmVfz8+eOdZHu/ooY6KtCYHjOQhZxn8CcYmlked0L6nzMXYZ32LBnnrluYOs9
+         Cwqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=8qb1CyCQjn/N+1y/YOs2JFjHcLhMQN11acgAoLNGKiQ=;
+        b=Y3Gchq6p+I4rc6UV3SLEiRPBqm+tHbcVUgcinXs9SZJGmc4CiaPn3C+ltVoAuX77Vp
+         vcadFQkXCINqPQw1isjtl7DhqoJpgvVD3WkPOSUi7J32MhHcBLeJ0F3JBrR7KFWCSMXH
+         6RqHft4Ga0LZqovm/tyKJvId+45vOEB9wLwpCNWGQwDnxzdAnlrMgEQ8MF4tEz4tHVQ+
+         cksl6cDu0/TrudesnW0BkTYgUSQcm5PIZcXjIcSs/7AOmoxRC8nELg2MbLTXGY9JtW8o
+         M7DZ34rEFJfo4NttbEKchOvYrB9+G25C1gaRBsgCZWXlqAG12JN5sz+Bwd88wPNwtqK4
+         PXdw==
+X-Gm-Message-State: AOAM532fpIkzsg5VWTG4GXs/qG6tN1lhncxVBaIntEtfcpnX6REJ/HgJ
+        IGwA22cA5nQvkR2g8JsoKd1AmEV88km9UQ==
+X-Google-Smtp-Source: ABdhPJyqrLSbGinpw8kAw9OAisrZH9ZMhkWsRghDbIat1Imo0jHkgsZrHsOrwJ9ds6qdleA9MfPldQ==
+X-Received: by 2002:a63:2f86:: with SMTP id v128mr5345741pgv.241.1612548048759;
+        Fri, 05 Feb 2021 10:00:48 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:d169:a9f7:513:e5])
+        by smtp.gmail.com with ESMTPSA id w12sm8852108pjq.26.2021.02.05.10.00.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Feb 2021 10:00:48 -0800 (PST)
+Date:   Fri, 5 Feb 2021 10:00:42 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, Jonny Barker <jonny@jonnybarker.com>
+Subject: Re: [GIT PULL] KVM fixes for 5.11-rc7
+Message-ID: <YB2HykY8laADI+Qm@google.com>
+References: <20210205080456.30446-1-pbonzini@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20210205135927.GH17488@zn.tnic>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210205080456.30446-1-pbonzini@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/5/2021 5:59 AM, Borislav Petkov wrote:
-> On Wed, Feb 03, 2021 at 02:55:28PM -0800, Yu-cheng Yu wrote:
->> +DEFINE_IDTENTRY_ERRORCODE(exc_control_protection)
->> +{
->> +	static DEFINE_RATELIMIT_STATE(rs, DEFAULT_RATELIMIT_INTERVAL,
->> +				      DEFAULT_RATELIMIT_BURST);
->> +	struct task_struct *tsk;
->> +
->> +	if (!user_mode(regs)) {
->> +		pr_emerg("PANIC: unexpected kernel control protection fault\n");
->> +		die("kernel control protection fault", regs, error_code);
->> +		panic("Machine halted.");
->> +	}
->> +
->> +	cond_local_irq_enable(regs);
->> +
->> +	if (!boot_cpu_has(X86_FEATURE_CET))
->> +		WARN_ONCE(1, "Control protection fault with CET support disabled\n");
->> +
->> +	tsk = current;
->> +	tsk->thread.error_code = error_code;
->> +	tsk->thread.trap_nr = X86_TRAP_CP;
->> +
->> +	if (show_unhandled_signals && unhandled_signal(tsk, SIGSEGV) &&
->> +	    __ratelimit(&rs)) {
-> 
-> I can't find it written down anywhere why the ratelimiting is needed at
-> all?
-> 
+On Fri, Feb 05, 2021, Paolo Bonzini wrote:
+> Sean Christopherson (3):
+>       KVM: x86: Update emulator context mode if SYSENTER xfers to 64-bit mode
 
-The ratelimit here is only for #CP, and its rate is not counted together 
-with other types of faults.  If a task gets here, it will exit.  The 
-only condition the ratelimit will trigger is when multiple tasks hit #CP 
-at once, which is unlikely.  Are you suggesting that we do not need the 
-ratelimit here?
+Ah, shoot.  Too late now, but this should have been attributed to Jonny, I was
+just shepherding the official patch along and forgot to make Jonny the author.
 
-Thanks!
-
---
-Yu-cheng
+Sorry Jonny :-/
