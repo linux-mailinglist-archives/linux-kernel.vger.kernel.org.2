@@ -2,124 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 763F4310B9E
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 14:14:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B66E310BAE
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 14:19:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229683AbhBENNk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 08:13:40 -0500
-Received: from antares.kleine-koenig.org ([94.130.110.236]:34562 "EHLO
-        antares.kleine-koenig.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231284AbhBENJ7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 08:09:59 -0500
-Received: by antares.kleine-koenig.org (Postfix, from userid 1000)
-        id D67A7AED6A1; Fri,  5 Feb 2021 14:08:50 +0100 (CET)
-From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <uwe@kleine-koenig.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        kvm@vger.kernel.org, David Airlie <airlied@linux.ie>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        Jaroslav Kysela <perex@perex.cz>,
-        Eric Anholt <eric@anholt.net>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig.org@pengutronix.de>, linux-i2c@vger.kernel.org,
-        Jiri Slaby <jirislaby@kernel.org>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-watchdog@vger.kernel.org, linux-rtc@vger.kernel.org,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Takashi Iwai <tiwai@suse.com>,
-        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        linux-serial@vger.kernel.org, linux-input@vger.kernel.org,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Mike Leach <mike.leach@linaro.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        alsa-devel@alsa-project.org,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        coresight@lists.linaro.org, Vladimir Zapolskiy <vz@mleia.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Mark Brown <broonie@kernel.org>,
-        Matt Mackall <mpm@selenic.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        kernel@pengutronix.de, linux-arm-kernel@lists.infradead.org,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Cornelia Huck <cohuck@redhat.com>, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
-        Vinod Koul <vkoul@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        linux-crypto@vger.kernel.org, Daniel Vetter <daniel@ffwll.ch>,
-        Leo Yan <leo.yan@linaro.org>, dmaengine@vger.kernel.org
-Subject: [PATCH] coresight: etm4x: Fix merge resolution for amba rework
-Date:   Fri,  5 Feb 2021 14:08:47 +0100
-Message-Id: <20210205130848.20009-1-uwe@kleine-koenig.org>
-X-Mailer: git-send-email 2.29.2
+        id S230264AbhBENRD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 08:17:03 -0500
+Received: from mail.skyhub.de ([5.9.137.197]:52264 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231290AbhBENMq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 08:12:46 -0500
+Received: from zn.tnic (p200300ec2f0bad00265302c9d3d9d03f.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:ad00:2653:2c9:d3d9:d03f])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 6CF441EC04F2;
+        Fri,  5 Feb 2021 14:11:53 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1612530713;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=3Yqo4dHazii3hqxZNWE1taz5pi6cq6lEokygV43M3LE=;
+        b=CTuQM+W4uV/FkMoqaSbOdgc9LSIlo4mrsoHrw/Hc335bfBj7NR3zAXWPLTweThcQkMb4/8
+        /RSfdKOEBbO/Fs+kaKSOzocXgBCJDvSzhZiixuTDli18R0FZiYyWdI4yniUroOorAtqvlj
+        4vYjrijyR53bkGyTdU8S1vDrZpBx87g=
+Date:   Fri, 5 Feb 2021 14:11:50 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Shiju Jose <shiju.jose@huawei.com>,
+        James Morse <james.morse@arm.com>,
+        "open list:EDAC-CORE" <linux-edac@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Tony Luck <tony.luck@intel.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Robert Richter <rrichter@marvell.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linuxarm@openeuler.org, xuwei5@huawei.com,
+        Jonathan Cameron <jonathan.cameron@huawei.com>,
+        John Garry <john.garry@huawei.com>,
+        tanxiaofei <tanxiaofei@huawei.com>,
+        shameerali.kolothum.thodi@huawei.com, salil.mehta@huawei.com
+Subject: Re: [PATCH v2 1/2] EDAC/ghes: Add EDAC device for reporting the CPU
+ cache errors
+Message-ID: <20210205131150.GF17488@zn.tnic>
+References: <20210129094832.2090-1-shiju.jose@huawei.com>
+ <20210129094832.2090-2-shiju.jose@huawei.com>
+ <CAJZ5v0gZrV9dV4-4GxnzYAUpiHPadtajd+8uBARzRJwdZ6RBhQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAJZ5v0gZrV9dV4-4GxnzYAUpiHPadtajd+8uBARzRJwdZ6RBhQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This was non-trivial to get right because commits
-c23bc382ef0e ("coresight: etm4x: Refactor probing routine") and
-5214b563588e ("coresight: etm4x: Add support for sysreg only devices")
-changed the code flow considerably. With this change the driver can be
-built again.
+On Fri, Feb 05, 2021 at 01:54:04PM +0100, Rafael J. Wysocki wrote:
+> Boris, James, I need your input here.
 
-Fixes: 0573d3fa4864 ("Merge branch 'devel-stable' of git://git.armlinux.org.uk/~rmk/linux-arm into char-misc-next")
-Signed-off-by: Uwe Kleine-König <uwe@kleine-koenig.org>
----
-On Fri, Feb 05, 2021 at 12:07:09PM +0100, Greg Kroah-Hartman wrote:
-> On Fri, Feb 05, 2021 at 11:56:15AM +0100, Uwe Kleine-König wrote:
-> > I didn't compile test, but I'm willing to bet your resolution is wrong.
-> > You have no return statement in etm4_remove_dev() but its return type is
-> > int and etm4_remove_amba() still returns int but should return void.
-> 
-> Can you send a patch to fix this up?
+Gave mine already:
 
-Sure, here it comes. As I'm unsure if you want to squash it into the
-merge or want to keep it separate I crafted a commit message. If you
-prefer squashing feel free to do so.
+https://lkml.kernel.org/r/20210119101655.GD27433@zn.tnic
 
-This change corresponds to the merge resolution I suggested before.
-
-Best regards
-Uwe
-
- drivers/hwtracing/coresight/coresight-etm4x-core.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-index bc55b261af23..c8ecd91e289e 100644
---- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
-+++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-@@ -1906,15 +1906,16 @@ static int __exit etm4_remove_dev(struct etmv4_drvdata *drvdata)
- 	cpus_read_unlock();
- 
- 	coresight_unregister(drvdata->csdev);
-+
-+	return 0;
- }
- 
--static int __exit etm4_remove_amba(struct amba_device *adev)
-+static void __exit etm4_remove_amba(struct amba_device *adev)
- {
- 	struct etmv4_drvdata *drvdata = dev_get_drvdata(&adev->dev);
- 
- 	if (drvdata)
--		return etm4_remove_dev(drvdata);
--	return 0;
-+		etm4_remove_dev(drvdata);
- }
- 
- static int __exit etm4_remove_platform_dev(struct platform_device *pdev)
 -- 
-2.29.2
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
