@@ -2,141 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E58243106D9
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 09:38:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1765E3106DD
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 09:38:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229849AbhBEIhH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 03:37:07 -0500
-Received: from mailout2.samsung.com ([203.254.224.25]:13710 "EHLO
-        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229839AbhBEIgL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 03:36:11 -0500
-Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210205083526epoutp0281a285cf4f4455dbc729fe6c0db5dd6a~gzQ340k1v0971609716epoutp02V
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 08:35:26 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210205083526epoutp0281a285cf4f4455dbc729fe6c0db5dd6a~gzQ340k1v0971609716epoutp02V
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1612514126;
-        bh=roCaxw1TIraQlxmt81EOnbYmX7cIvpUTglhwhX1swBk=;
-        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
-        b=kvsam9xXlvpVx37hXXm6Xdx+VP1MGPiOdPyleW8jx1ZVhRtuhink6hc4yjvVfl3Xt
-         0tKbeUXLIYNXEwZAEsZaXERxFLCMASYCFpL2oozBiAB55FUpJxf8awi6GYjif8JOS3
-         zAJqEPsxRUTEFbfIjeKTfgUMiVG/nvYsQERz+tNA=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-        epcas1p3.samsung.com (KnoxPortal) with ESMTP id
-        20210205083525epcas1p3792c41b7c1d03851811512d93dd9829e~gzQ28xlTJ1051410514epcas1p3I;
-        Fri,  5 Feb 2021 08:35:25 +0000 (GMT)
-Received: from epsmges1p2.samsung.com (unknown [182.195.40.161]) by
-        epsnrtp2.localdomain (Postfix) with ESMTP id 4DX7z06L8jz4x9Px; Fri,  5 Feb
-        2021 08:35:24 +0000 (GMT)
-Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
-        epsmges1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        15.D9.63458.C430D106; Fri,  5 Feb 2021 17:35:24 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas1p3.samsung.com (KnoxPortal) with ESMTPA id
-        20210205083524epcas1p3cd8e72a69a009b698bf9a9dbbb01f9b3~gzQ1noc6_1052610526epcas1p3W;
-        Fri,  5 Feb 2021 08:35:24 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20210205083524epsmtrp1dd2f4c42024662c73cab1fcc30b7dcc7~gzQ1ljHZ40038600386epsmtrp1g;
-        Fri,  5 Feb 2021 08:35:24 +0000 (GMT)
-X-AuditID: b6c32a36-6c9ff7000000f7e2-7f-601d034ce870
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        6F.E9.13470.B430D106; Fri,  5 Feb 2021 17:35:23 +0900 (KST)
-Received: from dh0421hwang01 (unknown [10.253.101.58]) by
-        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20210205083523epsmtip1f77b74b9aaeb2a8d52de1cbf2883974d~gzQ1Uhki-3111031110epsmtip1F;
-        Fri,  5 Feb 2021 08:35:23 +0000 (GMT)
-From:   "DooHyun Hwang" <dh0421.hwang@samsung.com>
-To:     "'Avri Altman'" <Avri.Altman@wdc.com>,
-        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <alim.akhtar@samsung.com>, <jejb@linux.ibm.com>,
-        <martin.petersen@oracle.com>, <stanley.chu@mediatek.com>,
-        <cang@codeaurora.org>, <asutoshd@codeaurora.org>,
-        <beanhuo@micron.com>, <jaegeuk@kernel.org>,
-        <adrian.hunter@intel.com>, <satyat@google.com>
-Cc:     <grant.jung@samsung.com>, <jt77.jang@samsung.com>,
-        <junwoo80.lee@samsung.com>, <jangsub.yi@samsung.com>,
-        <sh043.lee@samsung.com>, <cw9316.lee@samsung.com>,
-        <sh8267.baek@samsung.com>, <wkon.kim@samsung.com>
-In-Reply-To: <DM6PR04MB6575691082B0379B9B238B4EFCB29@DM6PR04MB6575.namprd04.prod.outlook.com>
-Subject: RE: [PATCH] scsi: ufs: print the counter of each event history
-Date:   Fri, 5 Feb 2021 17:35:23 +0900
-Message-ID: <000401d6fb99$d8b77c80$8a267580$@samsung.com>
+        id S229808AbhBEIhm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 03:37:42 -0500
+Received: from mx2.suse.de ([195.135.220.15]:40138 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229508AbhBEIhc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 03:37:32 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1612514205; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=TPEtPSJTJFr+uqHAFw8+/pwPBdso+nWGktyWxW/+4Bk=;
+        b=RyIyP8hptBgLl6GItYcCzNcgE23w04gkI+vhzyGupcf+vAkfOBL3NGDJoMkbwLULc7ZOIn
+        KgXw1u/bFSbp2L2QMKEeMyfURJzyEQieaBdVVcZe5DvlRVdsYV0BXNd/oZSCCN5ElKdFKQ
+        SsPnoVS4Z5uDTEN2uywLQ/P8ZTj2OaA=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 1D250ACBA;
+        Fri,  5 Feb 2021 08:36:45 +0000 (UTC)
+Date:   Fri, 5 Feb 2021 09:36:44 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     hannes@cmpxchg.org, vdavydov.dev@gmail.com,
+        akpm@linux-foundation.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm: memcontrol: remove rcu_read_lock from
+ get_mem_cgroup_from_page
+Message-ID: <YB0DnAlCaQza4Uf9@dhcp22.suse.cz>
+References: <20210205062719.74431-1-songmuchun@bytedance.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQGonOmpGA2Fw1RP91jP5BlOyCodSwIzgKWKAkwINgWqgfuF4A==
-Content-Language: ko
-X-Brightmail-Tracker: H4sIAAAAAAAAA02TfVBUVRjG59x79+4CbV2+4rhgrHeM0lzYZVk4FGCAo1dAJZnGagy4wR1g
-        WnZ39i6SNBFisyAgy0eNupBDGDgCgsOXQK0izYiQfzSQkE6AJsRHSQgmkEntcnPiv+e87++Z
-        533PmSPB3VZImSRDZ+KMOlZLk85E53fblIo4fHOysqJOhQYmm0h092wniWzmG2I0u3qLRNfu
-        nSDQYku9CJ0eNIvQX09bxGiyxYqjwo5KDNX+1ImhrumbYtTz9DiGhnuqSVQ82kWi8/1rGLI0
-        jpEo/+8rBBq5eUOE6jpuA9Q29Jh405MZLj2JMTWtWcy5b2cxprXhBMmU1fYC5rOBqwSz3FJI
-        Mg+n7hBMaXsDYJZaX2IKeouxeJf3tGHpHJvKGeWcLkWfmqFLC6djE5KikzTBSpVCFYpCaLmO
-        zeTC6V1x8YrdGVr7prT8CKvNspfiWZ6nAyLCjPosEydP1/OmcJozpGoNKqXBn2cz+Sxdmn+K
-        PvN1lVIZqLGTydr0r87/ghva8I8umF/NA7exIuAkgVQQrP/nDOHQblQXgMcuZhcBZ7teBLDp
-        fhsQGo8BHFzxfGbIn2/GBMgGYN7CWUI4/AZgd/lJsYMiKSWsvP476dAe1BwGLz7yckA4NQrg
-        6vij9Wwn6n04f+fzdYM7tQd+030ad2iC2goLhorsZolESoXCsUvxjrKUcoUDZybXR8UpX3j5
-        QTUuTCSHq1P1IiErCvYXrpEC4wGrTphxRy6k2pzg1P12QjDsgu1NX4gE7Q7n+tvFgpbBWYv5
-        P10MoKUvQjCXATjcX0IKDTVcXFoCjuFwahts6QkQyltg95MvgRD8PJz/s0TkQCAlhYVmNwHx
-        g+fWlu2I2K594DGXMkBbNyxm3bCYdcMC1v+jagDRAF7kDHxmGserDIEbX7oVrH+B7cFdoOLB
-        gn8fwCSgD0AJTntIWbMs2U2ayh7N4Yz6JGOWluP7gMZ+0+W4zDNFb/9DOlOSShOoVqtRUHBI
-        sEZNe0lZ5d0kNyqNNXEfcpyBMz7zYRInWR5G56qfK6gY95s+vmSg2ywJCfUXLqdumk70laxU
-        Rms/+d4mt03EjPr4TOesKCwDPxzcGpdyb2aodiwk+uqaqnzNwz0s2qNewVvfvuXlne5Wt2NO
-        NxaJDp1KHBxucI2tds01hmY//PWN/AjxuMUy8fFg0LsqU+XIQf7AQurLzhNzT2x7T4mcvUsb
-        O2tm/HyjNNkxtj++3s/nVrSW7jg6wyp2S6w/wsADypHpxtfC3OvKOt7xjTpiLk48vK+9OaZk
-        1WVn5CVJcHOvYp+ca05BJfmbcjbT8ejazrdeSZddH96z/1M+oO9w1bg7Hb0YuZd5oXf5Stpy
-        VewHPy8fKhXVeCcZCA+a4NNZ1XbcyLP/As9B0fGLBAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrGIsWRmVeSWpSXmKPExsWy7bCSnK43s2yCwc475hYnn6xhs3gwbxub
-        xd62E+wWL39eZbM4+LCTxeLT+mWsFjNOtbFa/Pq7nt3iyfpZzBYdWyczWSy6sY3JYsfzM+wW
-        u/42M1lc3jWHzaL7+g42i+XH/zFZ9K++y2bR9Gcfi8W1MydYLZZuvclosfnSNxYHUY/Lfb1M
-        Hgs2lXos3vOSyWPTqk42jwmLDjB6tJzcz+LxfX0Hm8fHp7dYPPq2rGL0+LxJzqP9QDdTAHcU
-        l01Kak5mWWqRvl0CV8bC5Y+YCzYzV6xs02hgvMnUxcjJISFgItH0bh2QzcUhJLCbUWLnok+s
-        EAkZie77e9m7GDmAbGGJw4eLIWpeMkpMe3WEHaSGTcBAYvKxN2wgCRGBH0wSS38uYgVxmAXu
-        M0os2jaVHaLlAaPE5clH2UBaOAViJd7dmgLWLizgLrF75wxmEJtFQEWi/VIXG8g6XgFLibsb
-        AkDCvAKCEidnPmEBsZkFtCV6H7YyQtjyEtvfzmGGuFRB4ufTZWBXiwg4SRzv+McGUSMiMbuz
-        jXkCo/AsJKNmIRk1C8moWUhaFjCyrGKUTC0ozk3PLTYsMMxLLdcrTswtLs1L10vOz93ECE4K
-        Wpo7GLev+qB3iJGJg/EQowQHs5IIb2KbVIIQb0piZVVqUX58UWlOavEhRmkOFiVx3gtdJ+OF
-        BNITS1KzU1MLUotgskwcnFINTB3BV1IyGLL+ylkGG3//wmNc5bHBe7rngyyR/lf5cRP0fr17
-        152VKyksErS7N5dr0c1VW902HPQN2/1zksWeveKuTJ/ZvH6fu//BbeuS+TeOHm6wM1ssxX5r
-        inscx6wDj7lSFK++euBdH6YmczSEm19g3VzxF9vWP/bz29VtueT9lxVHzVQuZ0l9+3xu4kzj
-        d4E/9CICOMKFNr71Pda3grnyVLy9x45tv1YHvJx88PCRK8+VnROtvq2XdhK8v62rclOUYPP6
-        jZnnjB7fi7l55R3b7ok+s2RLnFNz/6z/lSBZrx0wo18w0PHmvzSBvQ/m1yX7s6YJ+jFX/TZJ
-        mRmrN+2S1fPX7N67qpfH3Gc4UqnEUpyRaKjFXFScCACx2D1HeQMAAA==
-X-CMS-MailID: 20210205083524epcas1p3cd8e72a69a009b698bf9a9dbbb01f9b3
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210203102752epcas1p16713d977a1a679cf641894144d8f299d
-References: <CGME20210203102752epcas1p16713d977a1a679cf641894144d8f299d@epcas1p1.samsung.com>
-        <20210203101443.28934-1-dh0421.hwang@samsung.com>
-        <DM6PR04MB6575691082B0379B9B238B4EFCB29@DM6PR04MB6575.namprd04.prod.outlook.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210205062719.74431-1-songmuchun@bytedance.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->>
->> Since only print the recorded event history list, add to print the
->> counter value.
->>
->> Signed-off-by: DooHyun Hwang <dh0421.hwang@samsung.com>
->Reviewed-by: Avri Altman <avri.altman@wdc.com>
->
->Btw, You have the counter now in ufs-debugfs as well.
->
->Thanks,
->Avri
+On Fri 05-02-21 14:27:19, Muchun Song wrote:
+> The get_mem_cgroup_from_page() is called under page lock, so the page
+> memcg cannot be changed under us.
 
-Thank you for your review and information.
+Where is the page lock enforced?
 
-I hope to be able to check the counter value in kernel log as well.
+> Also, css_get is enough because page
+> has a reference to the memcg.
 
-Thank you.
-DooHyun Hwang.
+tryget used to be there to guard against offlined memcg but we have
+concluded this is impossible in this path. tryget stayed there to catch
+some unexpected cases IIRC.
 
+> If we really want to make the get_mem_cgroup_from_page() suitable for
+> arbitrary page, we should use page_memcg_rcu() instead of page_memcg()
+> and call it after rcu_read_lock().
+
+What is the primary motivation to change this code? is the overhead of
+tryget/RCU something that needs optimizing?
+ 
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> ---
+>  mm/memcontrol.c | 9 ++++-----
+>  1 file changed, 4 insertions(+), 5 deletions(-)
+> 
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 87f01bc05d1f..6c7f1ea3955e 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -1063,16 +1063,15 @@ EXPORT_SYMBOL(get_mem_cgroup_from_mm);
+>   */
+>  struct mem_cgroup *get_mem_cgroup_from_page(struct page *page)
+>  {
+> -	struct mem_cgroup *memcg = page_memcg(page);
+> +	struct mem_cgroup *memcg;
+>  
+>  	if (mem_cgroup_disabled())
+>  		return NULL;
+>  
+> -	rcu_read_lock();
+>  	/* Page should not get uncharged and freed memcg under us. */
+> -	if (!memcg || WARN_ON_ONCE(!css_tryget(&memcg->css)))
+> -		memcg = root_mem_cgroup;
+> -	rcu_read_unlock();
+> +	memcg = page_memcg(page) ? : root_mem_cgroup;
+> +	css_get(&memcg->css);
+> +
+>  	return memcg;
+>  }
+>  EXPORT_SYMBOL(get_mem_cgroup_from_page);
+> -- 
+> 2.11.0
+
+-- 
+Michal Hocko
+SUSE Labs
