@@ -2,245 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E15F6311346
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 22:18:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B69A431133F
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 22:16:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233666AbhBEVQ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 16:16:57 -0500
-Received: from so15.mailgun.net ([198.61.254.15]:51752 "EHLO so15.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233101AbhBETDR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 14:03:17 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1612557917; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=3BclvZ99xRNsYy0No6aROEDf6otnaYKYIumBhd5Kht8=; b=p5RoFq1QJGy+J9Sd/dptLXKAJDMcjx2x+M1Q6F60JXvhaoiJodImOG+UG+8mTC0nQwD2Ila8
- zI37Wt4+1ip1Yq2ViqHRFwfpx2beDexMWdKopDDgKNnlfjJRbTK+EWV3u7lfofk1D/fbaFnV
- JnI759lC+I7vniwqvDLyiTtxXFA=
-X-Mailgun-Sending-Ip: 198.61.254.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 601dae430bb8f50fb98af5d8 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 05 Feb 2021 20:44:51
- GMT
-Sender: khsieh=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 81287C43464; Fri,  5 Feb 2021 20:44:50 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from khsieh-linux1.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: khsieh)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id B23E8C433CA;
-        Fri,  5 Feb 2021 20:44:48 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org B23E8C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=khsieh@codeaurora.org
-From:   Kuogee Hsieh <khsieh@codeaurora.org>
-To:     robdclark@gmail.com, sean@poorly.run, swboyd@chromium.org
-Cc:     tanmay@codeaurora.org, abhinavk@codeaurora.org,
-        aravindh@codeaurora.org, khsieh@codeaurora.org, airlied@linux.ie,
-        daniel@ffwll.ch, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/msm/dp: reset dp controller only at boot up and pm_resume
-Date:   Fri,  5 Feb 2021 12:44:38 -0800
-Message-Id: <1612557878-19743-1-git-send-email-khsieh@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        id S233441AbhBEVQV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 16:16:21 -0500
+Received: from mail-ot1-f51.google.com ([209.85.210.51]:39240 "EHLO
+        mail-ot1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231991AbhBETDa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 14:03:30 -0500
+Received: by mail-ot1-f51.google.com with SMTP id d7so5913676otq.6;
+        Fri, 05 Feb 2021 12:45:41 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=RxzEdNszjTydBwDSiQ0N+rau9/NOvPsbDlp/JE7iLN0=;
+        b=p6uWFssBq00/blcUVa8YG8EjBQo3eXfgMkyhmnJZ4JzdRmIkBg1tHFoxEza0nDemhj
+         LyA1yZy2yvvF49QYtV1howgIKVRhk/i8lhmSHBPqL6WBtuz8ecs1X1QgGgmukWvko4ty
+         HokKj9KQWrzd6ZzUeP2TkjMWXVu+aW6DsjmD/xHcJlzncWRregJy3uqf0U2KFAQmw5+9
+         bS4jXpoN86awgrnF1irYQgxIb7jDqfTC/s8qoyvqhh+qYEpVpl/UZEtUuNl7M3cdn/rV
+         9I69UP2hGHaJQQpFPQGz/IV6OD2thCn3d13irHWTPuhxzjR9/lGhOuNfPQ2x1VZm9vXJ
+         ekKg==
+X-Gm-Message-State: AOAM531C0zop+441RO8TvwfrJHanE1W3A1d7qCDmDhdima8gxCYJ7qTL
+        loO1v9pHnfFX8vdbI7JbUg==
+X-Google-Smtp-Source: ABdhPJzfyXuv5KitjkYvUCOHm9SE0/bJEvB60Jlm+gmbAsXJSv2oKsk5L7zAmYSGo2BXBz+hxYi2rw==
+X-Received: by 2002:a9d:a77:: with SMTP id 110mr4776175otg.74.1612557914909;
+        Fri, 05 Feb 2021 12:45:14 -0800 (PST)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id l4sm1989602oou.8.2021.02.05.12.45.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Feb 2021 12:45:13 -0800 (PST)
+Received: (nullmailer pid 3700636 invoked by uid 1000);
+        Fri, 05 Feb 2021 20:45:12 -0000
+Date:   Fri, 5 Feb 2021 14:45:12 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Henry Chen <henryc.chen@mediatek.com>
+Cc:     Georgi Djakov <georgi.djakov@linaro.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Ryan Case <ryandcase@chromium.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Nicolas Boichat <drinkcat@google.com>,
+        Fan Chen <fan.chen@mediatek.com>,
+        James Liao <jamesjj.liao@mediatek.com>,
+        Arvin Wang <arvin.wang@mediatek.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org
+Subject: Re: [PATCH V8 07/12] dt-bindings: interconnect: add MT6873
+ interconnect dt-bindings
+Message-ID: <20210205204512.GA3697049@robh.at.kernel.org>
+References: <1611648234-15043-1-git-send-email-henryc.chen@mediatek.com>
+ <1611648234-15043-8-git-send-email-henryc.chen@mediatek.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1611648234-15043-8-git-send-email-henryc.chen@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DP_SW_RESET is the global SW reset that is used to initialize DP
-controller. If DP_SW_RESET executed during connection setup,
-two HPD related side effects may occurred,
-1) pending HPD interrupts cleared unexpected
-2) re start debounce logic which trigger another interrupt
-This patch only issue DP_SW_RESET at boot up and pm_resume.
-This patch also reinit video_comp before configure dp controller
-to avoid missing VIDEO_READY interrupt.
+On Tue, Jan 26, 2021 at 04:03:49PM +0800, Henry Chen wrote:
+> Add interconnect provider dt-bindings for MT6873.
+> 
+> Signed-off-by: Henry Chen <henryc.chen@mediatek.com>
+> ---
+>  include/dt-bindings/interconnect/mtk,mt6873-emi.h | 41 +++++++++++++++++++++++
+>  1 file changed, 41 insertions(+)
+>  create mode 100644 include/dt-bindings/interconnect/mtk,mt6873-emi.h
 
-Fixes: 9fc418430c65 ("drm/msm/dp: unplug interrupt missed after irq_hpd handler")
-Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
----
- drivers/gpu/drm/msm/dp/dp_ctrl.c    | 22 +++++++++-------------
- drivers/gpu/drm/msm/dp/dp_ctrl.h    |  2 +-
- drivers/gpu/drm/msm/dp/dp_display.c | 14 +++++++-------
- 3 files changed, 17 insertions(+), 21 deletions(-)
+Odd that you put one header in patch 1 and this one separate.
 
-diff --git a/drivers/gpu/drm/msm/dp/dp_ctrl.c b/drivers/gpu/drm/msm/dp/dp_ctrl.c
-index 55b7d0e..f8e75e2 100644
---- a/drivers/gpu/drm/msm/dp/dp_ctrl.c
-+++ b/drivers/gpu/drm/msm/dp/dp_ctrl.c
-@@ -1296,8 +1296,6 @@ static int dp_ctrl_setup_main_link(struct dp_ctrl_private *ctrl,
- 	 * transitioned to PUSH_IDLE. In order to start transmitting
- 	 * a link training pattern, we have to first do soft reset.
- 	 */
--	if (*training_step == DP_TRAINING_1)
--		dp_catalog_ctrl_reset(ctrl->catalog);
- 
- 	ret = dp_ctrl_link_train(ctrl, cr, training_step);
- 
-@@ -1366,7 +1364,7 @@ static int dp_ctrl_enable_stream_clocks(struct dp_ctrl_private *ctrl)
- 	return ret;
- }
- 
--int dp_ctrl_host_init(struct dp_ctrl *dp_ctrl, bool flip)
-+int dp_ctrl_host_init(struct dp_ctrl *dp_ctrl, bool flip, bool reset)
- {
- 	struct dp_ctrl_private *ctrl;
- 	struct dp_io *dp_io;
-@@ -1383,6 +1381,9 @@ int dp_ctrl_host_init(struct dp_ctrl *dp_ctrl, bool flip)
- 
- 	ctrl->dp_ctrl.orientation = flip;
- 
-+	if (reset)
-+		dp_catalog_ctrl_reset(ctrl->catalog);
-+
- 	dp_catalog_ctrl_phy_reset(ctrl->catalog);
- 	phy_init(phy);
- 	dp_catalog_ctrl_enable_irq(ctrl->catalog, true);
-@@ -1492,18 +1493,14 @@ static int dp_ctrl_deinitialize_mainlink(struct dp_ctrl_private *ctrl)
- 	return 0;
- }
- 
--static void dp_ctrl_link_idle_reset(struct dp_ctrl_private *ctrl)
--{
--	dp_ctrl_push_idle(&ctrl->dp_ctrl);
--	dp_catalog_ctrl_reset(ctrl->catalog);
--}
--
- static int dp_ctrl_link_maintenance(struct dp_ctrl_private *ctrl)
- {
- 	int ret = 0;
- 	struct dp_cr_status cr;
- 	int training_step = DP_TRAINING_NONE;
- 
-+	dp_ctrl_push_idle(&ctrl->dp_ctrl);
-+
- 	ctrl->dp_ctrl.pixel_rate = ctrl->panel->dp_mode.drm_mode.clock;
- 
- 	ret = dp_ctrl_setup_main_link(ctrl, &cr, &training_step);
-@@ -1630,7 +1627,6 @@ void dp_ctrl_handle_sink_request(struct dp_ctrl *dp_ctrl)
- 
- 	if (sink_request & DP_TEST_LINK_TRAINING) {
- 		dp_link_send_test_response(ctrl->link);
--		dp_ctrl_link_idle_reset(ctrl);
- 		if (dp_ctrl_link_maintenance(ctrl)) {
- 			DRM_ERROR("LM failed: TEST_LINK_TRAINING\n");
- 			return;
-@@ -1684,7 +1680,7 @@ int dp_ctrl_on_link(struct dp_ctrl *dp_ctrl)
- 			break;
- 		}
- 
--		training_step = DP_TRAINING_1;
-+		training_step = DP_TRAINING_NONE;
- 		rc = dp_ctrl_setup_main_link(ctrl, &cr, &training_step);
- 		if (rc == 0) {
- 			/* training completed successfully */
-@@ -1792,14 +1788,14 @@ int dp_ctrl_on_stream(struct dp_ctrl *dp_ctrl)
- 	 * Set up transfer unit values and set controller state to send
- 	 * video.
- 	 */
-+	reinit_completion(&ctrl->video_comp);
-+
- 	dp_ctrl_configure_source_params(ctrl);
- 
- 	dp_catalog_ctrl_config_msa(ctrl->catalog,
- 		ctrl->link->link_params.rate,
- 		ctrl->dp_ctrl.pixel_rate, dp_ctrl_use_fixed_nvid(ctrl));
- 
--	reinit_completion(&ctrl->video_comp);
--
- 	dp_ctrl_setup_tr_unit(ctrl);
- 
- 	dp_catalog_ctrl_state_ctrl(ctrl->catalog, DP_STATE_CTRL_SEND_VIDEO);
-diff --git a/drivers/gpu/drm/msm/dp/dp_ctrl.h b/drivers/gpu/drm/msm/dp/dp_ctrl.h
-index f60ba93..a836bd3 100644
---- a/drivers/gpu/drm/msm/dp/dp_ctrl.h
-+++ b/drivers/gpu/drm/msm/dp/dp_ctrl.h
-@@ -19,7 +19,7 @@ struct dp_ctrl {
- 	u32 pixel_rate;
- };
- 
--int dp_ctrl_host_init(struct dp_ctrl *dp_ctrl, bool flip);
-+int dp_ctrl_host_init(struct dp_ctrl *dp_ctrl, bool flip, bool reset);
- void dp_ctrl_host_deinit(struct dp_ctrl *dp_ctrl);
- int dp_ctrl_on_link(struct dp_ctrl *dp_ctrl);
- int dp_ctrl_on_stream(struct dp_ctrl *dp_ctrl);
-diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
-index d9216f8..5a39da6 100644
---- a/drivers/gpu/drm/msm/dp/dp_display.c
-+++ b/drivers/gpu/drm/msm/dp/dp_display.c
-@@ -350,7 +350,7 @@ static int dp_display_process_hpd_high(struct dp_display_private *dp)
- 	return rc;
- }
- 
--static void dp_display_host_init(struct dp_display_private *dp)
-+static void dp_display_host_init(struct dp_display_private *dp, int reset)
- {
- 	bool flip = false;
- 
-@@ -365,7 +365,7 @@ static void dp_display_host_init(struct dp_display_private *dp)
- 	dp_display_set_encoder_mode(dp);
- 
- 	dp_power_init(dp->power, flip);
--	dp_ctrl_host_init(dp->ctrl, flip);
-+	dp_ctrl_host_init(dp->ctrl, flip, reset);
- 	dp_aux_init(dp->aux);
- 	dp->core_initialized = true;
- }
-@@ -403,7 +403,7 @@ static int dp_display_usbpd_configure_cb(struct device *dev)
- 		goto end;
- 	}
- 
--	dp_display_host_init(dp);
-+	dp_display_host_init(dp, false);
- 
- 	/*
- 	 * set sink to normal operation mode -- D0
-@@ -700,7 +700,7 @@ static int dp_irq_hpd_handle(struct dp_display_private *dp, u32 data)
- 		return 0;
- 	}
- 
--	if (state == ST_CONNECT_PENDING) {
-+	if (state == ST_CONNECT_PENDING || state == ST_DISCONNECT_PENDING) {
- 		/* wait until ST_CONNECTED */
- 		dp_add_event(dp, EV_IRQ_HPD_INT, 0, 1); /* delay = 1 */
- 		mutex_unlock(&dp->event_mutex);
-@@ -1012,7 +1012,7 @@ int dp_display_get_test_bpp(struct msm_dp *dp)
- static void dp_display_config_hpd(struct dp_display_private *dp)
- {
- 
--	dp_display_host_init(dp);
-+	dp_display_host_init(dp, true);
- 	dp_catalog_ctrl_hpd_config(dp->catalog);
- 
- 	/* Enable interrupt first time
-@@ -1266,7 +1266,7 @@ static int dp_pm_resume(struct device *dev)
- 	dp->hpd_state = ST_DISCONNECTED;
- 
- 	/* turn on dp ctrl/phy */
--	dp_display_host_init(dp);
-+	dp_display_host_init(dp, true);
- 
- 	dp_catalog_ctrl_hpd_config(dp->catalog);
- 
-@@ -1449,7 +1449,7 @@ int msm_dp_display_enable(struct msm_dp *dp, struct drm_encoder *encoder)
- 	state =  dp_display->hpd_state;
- 
- 	if (state == ST_DISPLAY_OFF)
--		dp_display_host_init(dp_display);
-+		dp_display_host_init(dp_display, true);
- 
- 	dp_display_enable(dp_display, 0);
- 
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+> 
+> diff --git a/include/dt-bindings/interconnect/mtk,mt6873-emi.h b/include/dt-bindings/interconnect/mtk,mt6873-emi.h
+> new file mode 100644
+> index 0000000..0b20011
+> --- /dev/null
+> +++ b/include/dt-bindings/interconnect/mtk,mt6873-emi.h
+> @@ -0,0 +1,41 @@
+> +/* SPDX-License-Identifier: GPL-2.0
 
+Don't care about non-GPL users?
+
+> + *
+> + * Copyright (c) 2021 MediaTek Inc.
+> + */
+> +
+> +#ifndef __DT_BINDINGS_INTERCONNECT_MTK_MT6873_EMI_H
+> +#define __DT_BINDINGS_INTERCONNECT_MTK_MT6873_EMI_H
+> +
+> +#define MT6873_SLAVE_DDR_EMI		0
+> +#define MT6873_MASTER_MCUSYS		1
+> +#define MT6873_MASTER_GPUSYS		2
+> +#define MT6873_MASTER_MMSYS		3
+> +#define MT6873_MASTER_MM_VPU		4
+> +#define MT6873_MASTER_MM_DISP		5
+> +#define MT6873_MASTER_MM_VDEC		6
+> +#define MT6873_MASTER_MM_VENC		7
+> +#define MT6873_MASTER_MM_CAM		8
+> +#define MT6873_MASTER_MM_IMG		9
+> +#define MT6873_MASTER_MM_MDP		10
+> +#define MT6873_MASTER_VPUSYS		11
+> +#define MT6873_MASTER_VPU_0		12
+> +#define MT6873_MASTER_VPU_1		13
+> +#define MT6873_MASTER_MDLASYS		14
+> +#define MT6873_MASTER_MDLA_0		15
+> +#define MT6873_MASTER_UFS		16
+> +#define MT6873_MASTER_PCIE		17
+> +#define MT6873_MASTER_USB		18
+> +#define MT6873_MASTER_DBGIF		19
+> +#define MT6873_SLAVE_HRT_DDR_EMI	20
+> +#define MT6873_MASTER_HRT_MMSYS		21
+> +#define MT6873_MASTER_HRT_MM_DISP	22
+> +#define MT6873_MASTER_HRT_MM_VDEC	23
+> +#define MT6873_MASTER_HRT_MM_VENC	24
+> +#define MT6873_MASTER_HRT_MM_CAM	25
+> +#define MT6873_MASTER_HRT_MM_IMG	26
+> +#define MT6873_MASTER_HRT_MM_MDP	27
+> +#define MT6873_MASTER_HRT_DBGIF		28
+> +#define MT6873_MASTER_WIFI		29
+> +#define MT6873_MASTER_BT		30
+> +#define MT6873_MASTER_NETSYS		31
+> +#endif
+> -- 
+> 1.9.1
+> 
