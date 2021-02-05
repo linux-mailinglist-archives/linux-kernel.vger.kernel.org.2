@@ -2,300 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E720A31025F
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 02:46:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8846E310257
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 02:45:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232966AbhBEBqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 20:46:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58850 "EHLO
+        id S232901AbhBEBpS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 20:45:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232927AbhBEBpo (ORCPT
+        with ESMTP id S231650AbhBEBpO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 20:45:44 -0500
-Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59091C06178C
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 17:45:04 -0800 (PST)
-Received: by mail-il1-x12f.google.com with SMTP id y5so4494132ilg.4
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 17:45:04 -0800 (PST)
+        Thu, 4 Feb 2021 20:45:14 -0500
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E06AFC061786
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 17:44:33 -0800 (PST)
+Received: by mail-pj1-x102f.google.com with SMTP id d2so2900187pjs.4
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 17:44:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=BgkMx2UvYXfudgmh2Ybo3NWYwm+nsYCqdg2+vVo3BEM=;
-        b=oH9Pnh3uGpbIIWINvoI3NTRGqv5bN3tgdFqnL5WqMpemQwZ/3z2tLHMPD1QP2wBlHt
-         jPbWcx88dXuIl7IHBG8DwqQYNU1JO4xKOYj5HLmumY2WSdfJETAkFwODUTGPEiqGJHZ1
-         oeQ0vjZghQqx46i2Tmrjuist+LScBZVmFo3JpI2pS/MYV6cIozYCalEZWChx5C7oPnhg
-         f1vcINXUCaZQ5DnBZJ6lFhgO3fFB4DMEN9K0QYxg+fuR5izegDovtEyXvHxkyCar8J/f
-         vgF7Mq8m3OJ9CQLRi8oVyB7wiwbnAwSXq61P27XTYqEOtRwJRCMu/bfP75BCzFksQ8WQ
-         Wu4g==
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=8auo+sSN8LUCz7eHTWD1b9cMbXkiEhCmkanvQ8Grsig=;
+        b=lSP+/pdh3y2lFN9b/qpJuWN5sk4tPHXU9ntDqio/ZXgxGVnag1PzvR9CE1ydFmIOVM
+         qPPvlMfjpO2+bnMbTOz17WgumqEBmNOwD+/igWomlhES5IjUOAge+6DKCcxNQQkHvgOw
+         y0P7o09kg/SWPt9LpPPTCEMOn0YbyIe7It3SlygVh9hg5kCdmfv2xCTISJDtLigGwyPf
+         Qpu1kbvWZHYsLQLKF1IG018wGhaYi3XNOP43+UvJHlcKAdjlNCsYU+8EkmbmbMzfj70i
+         ifVdMyMpDMJU99yhW27hF9FOM+ciH2+/xiQ11E1gvmDXrbTwShUCsiZpuAFpbTnmOIyj
+         WE3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=BgkMx2UvYXfudgmh2Ybo3NWYwm+nsYCqdg2+vVo3BEM=;
-        b=a4nvpJEZx+dgqvIhVdHudc1Siq7eAe1S6y0rEJtirEdqUTIYHL2x0FRMP4zcZ3xMWe
-         f9GqBwgKDOi2yR+7FJRHrExkjxo6cvkR8nR7wd09gO1nziN/T0i3dWRhqGCmLyqkgR9N
-         X1Q6MHn90o6unpsStNcx0Zp03uU0jXQclPBAjDM7BDrDX06f8HktEGwRriZomXb/az44
-         nhzUr+tSCh7qU43hQ/stWr6K+4IBNbIM+CKxORcjL6O0573no1p6LngtwHFyoErposHH
-         ORAyjnSeQgYbO9gZTZIYjnu+4g5wMV6AlfEQ9EmkwKLACRMr+zlqZxyW3kbPP3GT0JR2
-         TDzQ==
-X-Gm-Message-State: AOAM530UUnAgOKD7REXv3yLwO1Rd2zCSEmDxcdIPeU3WI9NGS4UrQaML
-        GLofSWfdxebnanU3nw2MUydFeLX9S/3pytpNwuPZIA==
-X-Google-Smtp-Source: ABdhPJx5cZ45733UIwduqccvYHtyh+iGoi6wDenK4i7Lr/XUWh8fsoyG1SXgr19v3xbjOKHfFCXKhvtYEqgOfWxgmVc=
-X-Received: by 2002:a92:2e0f:: with SMTP id v15mr1851165ile.110.1612489503314;
- Thu, 04 Feb 2021 17:45:03 -0800 (PST)
-MIME-Version: 1.0
-References: <cover.1612398155.git.ashish.kalra@amd.com> <245f84cca80417b490e47da17e711432716e2e06.1612398155.git.ashish.kalra@amd.com>
-In-Reply-To: <245f84cca80417b490e47da17e711432716e2e06.1612398155.git.ashish.kalra@amd.com>
-From:   Steve Rutherford <srutherford@google.com>
-Date:   Thu, 4 Feb 2021 17:44:27 -0800
-Message-ID: <CABayD+ecgZ-fn3kjf+W3dXsAEi6zDO-Pzv1Yvg0SB29C5EHdcw@mail.gmail.com>
-Subject: Re: [PATCH v10 08/16] KVM: X86: Introduce KVM_HC_PAGE_ENC_STATUS hypercall
-To:     Ashish Kalra <Ashish.Kalra@amd.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        =?UTF-8?B?UmFkaW0gS3LEjW3DocWZ?= <rkrcmar@redhat.com>,
-        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        X86 ML <x86@kernel.org>, KVM list <kvm@vger.kernel.org>,
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=8auo+sSN8LUCz7eHTWD1b9cMbXkiEhCmkanvQ8Grsig=;
+        b=MXyiVzBM9lM8OvpnKNZraxdTeJwWkEa4cVfzIYSin+t1AejPxb2SZQM77SrOmYx5fC
+         ckvqcpsbl4WCwl4kz2BYMTBYeTsdjurdfE7yGQ6BFcv2e70w0+S81QT19JvYi6B3ctMb
+         fZtcpfiNGZAyrDfLIRHg+He52cEU1RnCCP7T4MWUvHltXrVdGRGQCyqnfyjMKE2i2DUs
+         SY7Ot2oJiikvGLG0NRFB8UPG2y6ztYEmfzDYBy3V9N6VVuLoIAiraww9oJZgB65BWTqT
+         W6L4qBvMizhp5Y5mTaqVCDqmWCqnFNC/UR5X/YRURZqPKZuz7jFOCFkH6pdfH/fnNZ7p
+         tJGg==
+X-Gm-Message-State: AOAM530tH4U6+CfqeTBSk2QkXj+DazD80YlPbND3sR6e8Brk7rFgH7Vh
+        z4emu0Bu5C0HUWG9RSFEdyA=
+X-Google-Smtp-Source: ABdhPJyhnPOTnyG1gNOgRhrsWsaDbd/taOxvYyyd0yPNXSqaA1gHQyraOSVux35p5H/gRljI1J8vCA==
+X-Received: by 2002:a17:90a:7ace:: with SMTP id b14mr1824677pjl.208.1612489473455;
+        Thu, 04 Feb 2021 17:44:33 -0800 (PST)
+Received: from google.com ([2620:15c:211:201:598:57c0:5d30:3614])
+        by smtp.gmail.com with ESMTPSA id y73sm1675009pfb.17.2021.02.04.17.44.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Feb 2021 17:44:32 -0800 (PST)
+Sender: Minchan Kim <minchan.kim@gmail.com>
+Date:   Thu, 4 Feb 2021 17:44:30 -0800
+From:   Minchan Kim <minchan@kernel.org>
+To:     John Hubbard <jhubbard@nvidia.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        gregkh@linuxfoundation.org, surenb@google.com, joaodias@google.com,
         LKML <linux-kernel@vger.kernel.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Venu Busireddy <venu.busireddy@oracle.com>,
-        Brijesh Singh <brijesh.singh@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        linux-mm <linux-mm@kvack.org>
+Subject: Re: [PATCH] mm: cma: support sysfs
+Message-ID: <YByi/gdaGJeV/+8b@google.com>
+References: <20210203155001.4121868-1-minchan@kernel.org>
+ <7e7c01a7-27fe-00a3-f67f-8bcf9ef3eae9@nvidia.com>
+ <YBxT9XFE6QAQ4T9N@google.com>
+ <cda5547b-0c78-756b-bd0c-f3e534d04bff@nvidia.com>
+ <YByNU4Q7cc7gYwPh@google.com>
+ <87d7ec1f-d892-0491-a2de-3d0feecca647@nvidia.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87d7ec1f-d892-0491-a2de-3d0feecca647@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 3, 2021 at 4:38 PM Ashish Kalra <Ashish.Kalra@amd.com> wrote:
->
-> From: Brijesh Singh <brijesh.singh@amd.com>
->
-> This hypercall is used by the SEV guest to notify a change in the page
-> encryption status to the hypervisor. The hypercall should be invoked
-> only when the encryption attribute is changed from encrypted -> decrypted
-> and vice versa. By default all guest pages are considered encrypted.
->
-> The patch introduces a new shared pages list implemented as a
-> sorted linked list to track the shared/unencrypted regions marked by the
-> guest hypercall.
->
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: "H. Peter Anvin" <hpa@zytor.com>
-> Cc: Paolo Bonzini <pbonzini@redhat.com>
-> Cc: "Radim Kr=C4=8Dm=C3=A1=C5=99" <rkrcmar@redhat.com>
-> Cc: Joerg Roedel <joro@8bytes.org>
-> Cc: Borislav Petkov <bp@suse.de>
-> Cc: Tom Lendacky <thomas.lendacky@amd.com>
-> Cc: x86@kernel.org
-> Cc: kvm@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
-> Co-developed-by: Ashish Kalra <ashish.kalra@amd.com>
-> Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
-> ---
->  Documentation/virt/kvm/hypercalls.rst |  15 +++
->  arch/x86/include/asm/kvm_host.h       |   2 +
->  arch/x86/kvm/svm/sev.c                | 150 ++++++++++++++++++++++++++
->  arch/x86/kvm/svm/svm.c                |   2 +
->  arch/x86/kvm/svm/svm.h                |   5 +
->  arch/x86/kvm/vmx/vmx.c                |   1 +
->  arch/x86/kvm/x86.c                    |   6 ++
->  include/uapi/linux/kvm_para.h         |   1 +
->  8 files changed, 182 insertions(+)
->
-> diff --git a/Documentation/virt/kvm/hypercalls.rst b/Documentation/virt/k=
-vm/hypercalls.rst
-> index ed4fddd364ea..7aff0cebab7c 100644
-> --- a/Documentation/virt/kvm/hypercalls.rst
-> +++ b/Documentation/virt/kvm/hypercalls.rst
-> @@ -169,3 +169,18 @@ a0: destination APIC ID
->
->  :Usage example: When sending a call-function IPI-many to vCPUs, yield if
->                 any of the IPI target vCPUs was preempted.
-> +
-> +
-> +8. KVM_HC_PAGE_ENC_STATUS
-> +-------------------------
-> +:Architecture: x86
-> +:Status: active
-> +:Purpose: Notify the encryption status changes in guest page table (SEV =
-guest)
-> +
-> +a0: the guest physical address of the start page
-> +a1: the number of pages
-> +a2: encryption attribute
-> +
-> +   Where:
-> +       * 1: Encryption attribute is set
-> +       * 0: Encryption attribute is cleared
-> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_h=
-ost.h
-> index 3d6616f6f6ef..2da5f5e2a10e 100644
-> --- a/arch/x86/include/asm/kvm_host.h
-> +++ b/arch/x86/include/asm/kvm_host.h
-> @@ -1301,6 +1301,8 @@ struct kvm_x86_ops {
->         int (*complete_emulated_msr)(struct kvm_vcpu *vcpu, int err);
->
->         void (*vcpu_deliver_sipi_vector)(struct kvm_vcpu *vcpu, u8 vector=
-);
-> +       int (*page_enc_status_hc)(struct kvm *kvm, unsigned long gpa,
-> +                                 unsigned long sz, unsigned long mode);
->  };
->
->  struct kvm_x86_nested_ops {
-> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-> index 25eaf35ba51d..55c628df5155 100644
-> --- a/arch/x86/kvm/svm/sev.c
-> +++ b/arch/x86/kvm/svm/sev.c
-> @@ -45,6 +45,11 @@ struct enc_region {
->         unsigned long size;
->  };
->
-> +struct shared_region {
-> +       struct list_head list;
-> +       unsigned long gfn_start, gfn_end;
-> +};
-> +
->  static int sev_flush_asids(void)
->  {
->         int ret, error =3D 0;
-> @@ -196,6 +201,8 @@ static int sev_guest_init(struct kvm *kvm, struct kvm=
-_sev_cmd *argp)
->         sev->active =3D true;
->         sev->asid =3D asid;
->         INIT_LIST_HEAD(&sev->regions_list);
-> +       INIT_LIST_HEAD(&sev->shared_pages_list);
-> +       sev->shared_pages_list_count =3D 0;
->
->         return 0;
->
-> @@ -1473,6 +1480,148 @@ static int sev_receive_finish(struct kvm *kvm, st=
-ruct kvm_sev_cmd *argp)
->         return ret;
->  }
->
-> +static int remove_shared_region(unsigned long start, unsigned long end,
-> +                               struct list_head *head)
-> +{
-> +       struct shared_region *pos;
-> +
-> +       list_for_each_entry(pos, head, list) {
-> +               if (pos->gfn_start =3D=3D start &&
-> +                   pos->gfn_end =3D=3D end) {
-> +                       list_del(&pos->list);
-> +                       kfree(pos);
-> +                       return -1;
-> +               } else if (start >=3D pos->gfn_start && end <=3D pos->gfn=
-_end) {
-> +                       if (start =3D=3D pos->gfn_start)
-> +                               pos->gfn_start =3D end + 1;
-> +                       else if (end =3D=3D pos->gfn_end)
-> +                               pos->gfn_end =3D start - 1;
-> +                       else {
-> +                               /* Do a de-merge -- split linked list nod=
-es */
-> +                               unsigned long tmp;
-> +                               struct shared_region *shrd_region;
-> +
-> +                               tmp =3D pos->gfn_end;
-> +                               pos->gfn_end =3D start-1;
-> +                               shrd_region =3D kzalloc(sizeof(*shrd_regi=
-on), GFP_KERNEL_ACCOUNT);
-> +                               if (!shrd_region)
-> +                                       return -ENOMEM;
-> +                               shrd_region->gfn_start =3D end + 1;
-> +                               shrd_region->gfn_end =3D tmp;
-> +                               list_add(&shrd_region->list, &pos->list);
-> +                               return 1;
-> +                       }
-> +                       return 0;
-> +               }
-> +       }
+On Thu, Feb 04, 2021 at 04:24:20PM -0800, John Hubbard wrote:
+> On 2/4/21 4:12 PM, Minchan Kim wrote:
+> ...
+> > > > Then, how to know how often CMA API failed?
+> > > 
+> > > Why would you even need to know that, *in addition* to knowing specific
+> > > page allocation numbers that failed? Again, there is no real-world motivation
+> > > cited yet, just "this is good data". Need more stories and support here.
+> > 
+> > Let me give an example.
+> > 
+> > Let' assume we use memory buffer allocation via CMA for bluetooth
+> > enable of  device.
+> > If user clicks the bluetooth button in the phone but fail to allocate
+> > the memory from CMA, user will still see bluetooth button gray.
+> > User would think his touch was not enough powerful so he try clicking
+> > again and fortunately CMA allocation was successful this time and
+> > they will see bluetooh button enabled and could listen the music.
+> > 
+> > Here, product team needs to monitor how often CMA alloc failed so
+> > if the failure ratio is steadily increased than the bar,
+> > it means engineers need to go investigation.
+> > 
+> > Make sense?
+> > 
+> 
+> Yes, except that it raises more questions:
+> 
+> 1) Isn't this just standard allocation failure? Don't you already have a way
+> to track that?
+> 
+> Presumably, having the source code, you can easily deduce that a bluetooth
+> allocation failure goes directly to a CMA allocation failure, right?
+> 
+> Anyway, even though the above is still a little murky, I expect you're right
+> that it's good to have *some* indication, somewhere about CMA behavior...
+> 
+> Thinking about this some more, I wonder if this is really /proc/vmstat sort
+> of data that we're talking about. It seems to fit right in there, yes?
 
-This doesn't handle the case where the region being marked as
-encrypted is larger than than the unencrypted region under
-consideration, which (I believe) can happen with the current kexec
-handling (since it is oblivious to the prior state).
-I would probably break this down into the "five cases": no
-intersection (skip), entry is completely contained (drop), entry
-completely contains the removed region (split), intersect start
-(chop), and intersect end (chop).
-
->
-> +       return 0;
-> +}
-> +
-> +static int add_shared_region(unsigned long start, unsigned long end,
-> +                            struct list_head *shared_pages_list)
-> +{
-> +       struct list_head *head =3D shared_pages_list;
-> +       struct shared_region *shrd_region;
-> +       struct shared_region *pos;
-> +
-> +       if (list_empty(head)) {
-> +               shrd_region =3D kzalloc(sizeof(*shrd_region), GFP_KERNEL_=
-ACCOUNT);
-> +               if (!shrd_region)
-> +                       return -ENOMEM;
-> +               shrd_region->gfn_start =3D start;
-> +               shrd_region->gfn_end =3D end;
-> +               list_add_tail(&shrd_region->list, head);
-> +               return 1;
-> +       }
-> +
-> +       /*
-> +        * Shared pages list is a sorted list in ascending order of
-> +        * guest PA's and also merges consecutive range of guest PA's
-> +        */
-> +       list_for_each_entry(pos, head, list) {
-> +               if (pos->gfn_end < start)
-> +                       continue;
-> +               /* merge consecutive guest PA(s) */
-> +               if (pos->gfn_start <=3D start && pos->gfn_end >=3D start)=
- {
-> +                       pos->gfn_end =3D end;
-
-I'm not sure this correctly avoids having duplicate overlapping
-elements in the list. It also doesn't merge consecutive contiguous
-regions. Current guest implementation should never call the hypercall
-with C=3D0 for the same region twice, without calling with c=3D1 in
-between, but this API should be compatible with that model.
-
-The easiest pattern would probably be to:
-1) find (or insert) the node that will contain the added region.
-2) remove the contents of the added region from the tail (will
-typically do nothing).
-3) merge the head of the tail into the current node, if the end of the
-current node matches the start of that head.
->
-> +                       return 0;
-> +               }
-> +               break;
-> +       }
->
-> +       /*
-> +        * Add a new node, allocate nodes using GFP_KERNEL_ACCOUNT so tha=
-t
-> +        * kernel memory can be tracked/throttled in case a
-> +        * malicious guest makes infinite number of hypercalls to
-> +        * exhaust host kernel memory and cause a DOS attack.
-> +        */
-> +       shrd_region =3D kzalloc(sizeof(*shrd_region), GFP_KERNEL_ACCOUNT)=
-;
-> +       if (!shrd_region)
-> +               return -ENOMEM;
-> +       shrd_region->gfn_start =3D start;
-> +       shrd_region->gfn_end =3D end;
-> +       list_add_tail(&shrd_region->list, &pos->list);
-> +       return 1;
->
-> +}
-> +
-
-Thanks!
-Steve
+Thing is CMA instance are multiple, cma-A, cma-B, cma-C and each of CMA
+heap has own specific scenario. /proc/vmstat could be bloated a lot
+while CMA instance will be increased.
