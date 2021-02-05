@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52E943117F3
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 01:49:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5EF83117F2
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 01:49:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229706AbhBFAtS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 19:49:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52736 "EHLO
+        id S230152AbhBFAtB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 19:49:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229975AbhBEKFM (ORCPT
+        with ESMTP id S230097AbhBEKFM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 5 Feb 2021 05:05:12 -0500
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F29FC061221
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 02:04:01 -0800 (PST)
-Received: by mail-pg1-x52e.google.com with SMTP id c132so4201767pga.3
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 02:04:01 -0800 (PST)
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DD6FC061223
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 02:04:08 -0800 (PST)
+Received: by mail-pj1-x102a.google.com with SMTP id my11so6447076pjb.1
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 02:04:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bytedance-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=IC2QNWrsviuW49vH66X38HKXHrsgTnzDfoKNb+X8LdE=;
-        b=1s/b1HqHxzpBnf2PB93OczXUYXJG6q/GyUoy/kuh8AcVvSYCkk7O1Wjs1Y4f85D596
-         aN9gsFdBWYxz/wG+mjswPfAlgBK2JPjIKR+viON6bYq+FH3/62K058ppH68ihOgauCnS
-         EQWdPDV154cJxO4HFkW80/C/BYnHEpOn60fo8OqbS8gT2X72/5E3u1Jtd5x7W1ocD6Kp
-         +aipViAbOBeROIu2Iefc1njBoyNtjIpE+tVH6+G07k1Q5ICGDnYbGDB+5+M4c+nvLTSY
-         7LcGypSFGy7JMt8UUxrvYEucDYT/3UjtegDSGy+koIrThPRqmF/+Z5L7XA/e0/l2utbY
-         NDIg==
+        bh=S5g3KjTF37TfcHKlT3L6KJoPEPgIVLEViokSkw93MzU=;
+        b=NXRvu6Mnnlo7bgBrUUIn4t4Py1dZWIR+iWJS9IGIJy89jR/CnbPG3INRt2VQqKEoV8
+         vnS/Cg8artOGcsgd1Vb5W0KhHS//WSeUkfEgXw8qBfUeVYrQj+Aig6fVHXGlvH2zBuSL
+         TU4wpoklPl1ieNayE/H/EnvxcmAUrAUiMEs9wHnxZPMlLw8XeEjmtqJfw34O88dNYpSB
+         OSS4wjN3lk3BnVRfM3mFLh25K6f5qrAZ7bvHHW6jy+8/ZTz+kmFIIGI816uwiVMmXMiA
+         4libcPKqHMrOP+xVaijWjRIwqXKtLJSOuaUxofbNn51HcIHcQirXLBQm0Cqai90DBuJE
+         2K/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=IC2QNWrsviuW49vH66X38HKXHrsgTnzDfoKNb+X8LdE=;
-        b=tZEqtrGuRigMQnVIxiJ/BofuY6iwNvrXRGRk4yZaU9+bEq3ijysTTqX8/RoRaczyxa
-         zHtFZdr+22GyX5kPpHfHsPfj5Au2li9vYMbWUG5Jjkuq2UtD+x+eXJlcKybaf8HgkkUF
-         7slhfO41p8ImUF8y3Z1SFzinL8+kIb8q8qU9+e8bC2jHDgJaSIxPY4I30ASjUfb95Jb7
-         gN+iZgi4TIVEAmXgENb99DitBGw1JuCDVTuczpIwB1ibrm1bTg2yKsqfJ6qN6JxGMrSc
-         1tEHfh9ISww0+RGly3zqCy6KlGzHXCl1T1x3L+C0tkoiLHJBOa97M9o60i49ivYUIbfM
-         FMhw==
-X-Gm-Message-State: AOAM530GCQM2WkRPOfphLBrY59Z5bY2tyRHVavPztxYYig6ygMIt9Ter
-        xW/DYVouHoKoBr/Sdc8w9ccpjw==
-X-Google-Smtp-Source: ABdhPJy/VsIsFlwktXzo6Tnx2RQLugENjrdS/2ECxhSWrqiEXLIPa0Q78hUVvA2Q7EpNe/dm6BusPg==
-X-Received: by 2002:a63:c64c:: with SMTP id x12mr3653133pgg.293.1612519440810;
-        Fri, 05 Feb 2021 02:04:00 -0800 (PST)
+        bh=S5g3KjTF37TfcHKlT3L6KJoPEPgIVLEViokSkw93MzU=;
+        b=t2TGpdoZ2nw1Gk3mermV6Zoo9ObokoDQVlUamjdxQUb5duXggIIqGhSCEyQsRCiM5Y
+         L8aIPrxWCKY1PXMPc7ItCRmj40P8gVZWjljelAB6ojqhf51dLQ2JsEfEfEPeEpNl1vz8
+         n54C8KLnZqVihhDt7bDNe+KHlOBqKRnnlXCTZFq6JTnLoMxaUoXYoo7rclCfkvHqPQ0I
+         zd3k8+VU43bJOkbcMuZGGD4E5jcAG0E5ppWaOOCJsBO3MSoMeqS1n35i60avbZ+rvlio
+         0H3zz17Wd7ZDjpq+Mw2+Ezcd0jK4uKiYrf+Y0S9UmkByDjQR7BI5xtmYusJfrIbegblp
+         +5OQ==
+X-Gm-Message-State: AOAM530AtxIE26OvIAhPZP+WzsTrdPls0zKKkSqzv8HH7F3kz+k0gs/z
+        0NLj4/X1qStcYKUeIU3f96Ul1A==
+X-Google-Smtp-Source: ABdhPJxgNSKPC+0Mk1BDOTDZhST6pkHg6VyxZAKvFAFFq3bpv58uknmblJNTXZ18cdNScr+AVMt9yw==
+X-Received: by 2002:a17:90a:468e:: with SMTP id z14mr3576479pjf.174.1612519447834;
+        Fri, 05 Feb 2021 02:04:07 -0800 (PST)
 Received: from C02CC49MMD6R.bytedance.net ([139.177.225.239])
-        by smtp.gmail.com with ESMTPSA id l12sm8142562pjg.54.2021.02.05.02.03.54
+        by smtp.gmail.com with ESMTPSA id l12sm8142562pjg.54.2021.02.05.02.04.01
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 05 Feb 2021 02:04:00 -0800 (PST)
+        Fri, 05 Feb 2021 02:04:07 -0800 (PST)
 From:   Zhimin Feng <fengzhimin@bytedance.com>
 To:     x86@kernel.org, kvm@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc:     pbonzini@redhat.com, seanjc@google.com, vkuznets@redhat.com,
@@ -55,9 +55,9 @@ Cc:     pbonzini@redhat.com, seanjc@google.com, vkuznets@redhat.com,
         tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
         fweisbec@gmail.com, zhouyibo@bytedance.com,
         zhanghaozhong@bytedance.com, Zhimin Feng <fengzhimin@bytedance.com>
-Subject: [RFC: timer passthrough 5/9] KVM: vmx: use tsc_adjust to enable tsc_offset timer passthrough
-Date:   Fri,  5 Feb 2021 18:03:13 +0800
-Message-Id: <20210205100317.24174-6-fengzhimin@bytedance.com>
+Subject: [RFC: timer passthrough 6/9] KVM: vmx: check enable_timer_passth strictly
+Date:   Fri,  5 Feb 2021 18:03:14 +0800
+Message-Id: <20210205100317.24174-7-fengzhimin@bytedance.com>
 X-Mailer: git-send-email 2.24.1 (Apple Git-126)
 In-Reply-To: <20210205100317.24174-1-fengzhimin@bytedance.com>
 References: <20210205100317.24174-1-fengzhimin@bytedance.com>
@@ -67,86 +67,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-when in vm:
-rdtsc = host_tsc * (TSC multiplier) + tsc_offset(<0)
-so when vm write tsc_deadline_msr the value always less than
-tsc stampcounter msr value, the irq never be triggered.
-
-the tsc_adjust msr use as below, host execute
-rdtsc = host_tsc + tsc_adjust
-
-when vmentry, we set the tsc_adjust equal tsc_offset and vmcs
-tsc offset filed equal 0, so the vm execute rdtsc the result like this:
-rdtsc = host_tsc + tsc_adjust + 0
-the tsc_deadline_msr value will equal tsc stampcounter msr and
-the irq will trigger success.
+preemption timer is default disabled
+timer passthrough is default enabled
 
 Signed-off-by: Zhimin Feng <fengzhimin@bytedance.com>
 ---
- arch/x86/include/asm/kvm_host.h |  1 +
- arch/x86/kvm/vmx/vmx.c          | 23 +++++++++++++++++++++++
- 2 files changed, 24 insertions(+)
+ arch/x86/kvm/vmx/vmx.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index be8fc230f7c4..7971c9e755a4 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -534,6 +534,7 @@ struct tick_device {
- struct timer_passth_info {
- 	u64 host_tscd;
- 	bool host_in_tscdeadline;
-+	u64 host_tsc_adjust;
- 	struct clock_event_device *curr_dev;
- 
- 	void (*orig_event_handler)(struct clock_event_device *dev);
 diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index f824ee46e2d3..44b2fd59587e 100644
+index 44b2fd59587e..a12da3cef86d 100644
 --- a/arch/x86/kvm/vmx/vmx.c
 +++ b/arch/x86/kvm/vmx/vmx.c
-@@ -6659,6 +6659,27 @@ static fastpath_t vmx_exit_handlers_fastpath(struct kvm_vcpu *vcpu)
+@@ -126,12 +126,12 @@ module_param(dump_invalid_vmcs, bool, 0644);
  
- bool __vmx_vcpu_run(struct vcpu_vmx *vmx, unsigned long *regs, bool launched);
+ /* Guest_tsc -> host_tsc conversion requires 64-bit division.  */
+ static int __read_mostly cpu_preemption_timer_multi;
+-static bool __read_mostly enable_preemption_timer = 1;
++static bool __read_mostly enable_preemption_timer;
+ #ifdef CONFIG_X86_64
+ module_param_named(preemption_timer, enable_preemption_timer, bool, S_IRUGO);
+ #endif
  
-+static void vmx_adjust_tsc_offset(struct kvm_vcpu *vcpu, bool to_host)
-+{
-+	u64 tsc_adjust;
-+	struct timer_passth_info *local_timer_info;
-+
-+	local_timer_info = &per_cpu(passth_info, smp_processor_id());
-+
-+	if (to_host) {
-+		tsc_adjust = local_timer_info->host_tsc_adjust;
-+		wrmsrl(MSR_IA32_TSC_ADJUST, tsc_adjust);
-+		vmcs_write64(TSC_OFFSET, vcpu->arch.tsc_offset);
-+	} else {
-+		rdmsrl(MSR_IA32_TSC_ADJUST, tsc_adjust);
-+		local_timer_info->host_tsc_adjust = tsc_adjust;
-+
-+		wrmsrl(MSR_IA32_TSC_ADJUST, tsc_adjust + vcpu->arch.tsc_offset);
-+		vmcs_write64(TSC_OFFSET, 0);
-+
-+	}
-+}
-+
- static void vmx_host_lapic_timer_offload(struct kvm_vcpu *vcpu)
- {
- 	struct timer_passth_info *local_timer_info;
-@@ -6690,6 +6711,7 @@ static void vmx_host_lapic_timer_offload(struct kvm_vcpu *vcpu)
- 				PIN_BASED_VMX_PREEMPTION_TIMER);
+-static bool __read_mostly enable_timer_passth;
++static bool __read_mostly enable_timer_passth = 1;
+ #ifdef CONFIG_X86_64
+ module_param_named(timer_passth, enable_timer_passth, bool, 0444);
+ #endif
+@@ -8108,12 +8108,17 @@ static __init int hardware_setup(void)
+ 			enable_preemption_timer = false;
  	}
  
-+	vmx_adjust_tsc_offset(vcpu, false);
- 	wrmsrl(MSR_IA32_TSCDEADLINE, 0);
- 	if (vcpu->arch.tscd > guest_tscl) {
- 		wrmsrl(MSR_IA32_TSCDEADLINE, vcpu->arch.tscd);
-@@ -6711,6 +6733,7 @@ static void vmx_restore_passth_timer(struct kvm_vcpu *vcpu)
- 	u64 guest_tscd;
+-	if (!enable_preemption_timer) {
++	if (!enable_preemption_timer || enable_timer_passth) {
+ 		vmx_x86_ops.set_hv_timer = NULL;
+ 		vmx_x86_ops.cancel_hv_timer = NULL;
+ 		vmx_x86_ops.request_immediate_exit = __kvm_request_immediate_exit;
+ 	}
  
- 	if (vcpu->arch.timer_passth_enable) {
-+		vmx_adjust_tsc_offset(vcpu, true);
- 		local_timer_info = &per_cpu(passth_info, smp_processor_id());
- 		host_tscd = local_timer_info->host_tscd;
- 		rdmsrl(MSR_IA32_TSC_DEADLINE, guest_tscd);
++	if (enable_preemption_timer && enable_timer_passth) {
++		pr_err("cannot enable timer passthrough and preemption timer same timer\n");
++		return -EINVAL;
++	}
++
+ 	kvm_set_posted_intr_wakeup_handler(pi_wakeup_handler);
+ 
+ 	kvm_mce_cap_supported |= MCG_LMCE_P;
 -- 
 2.11.0
 
