@@ -2,64 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFC693117FC
+	by mail.lfdr.de (Postfix) with ESMTP id 396933117FB
 	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 01:56:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231336AbhBFAym (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 19:54:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51030 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230395AbhBEJ7T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 04:59:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F3AD64E2C;
-        Fri,  5 Feb 2021 09:58:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612519118;
-        bh=nV/rbqwWRF8qM4CIyf4ANBmKaUDGONxRBkHMpb/7CR4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=suxX5FVBS+WooJ8axVdYhFfyaX4TTMrJP9y6L6NxvLOb22YUJK1w1qsAyy6vSL1p8
-         WC4DhmtWEfw/bFhWsVLHvEUUYJ6kMLxYk8dbBMSsn+7qONou9MHKzqST1PRylbUKQs
-         Jg9D26ueFHg0n4uFtR7jbEz/yFPmQaDGgHJf8PHU=
-Date:   Fri, 5 Feb 2021 10:58:36 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Shuah Khan <skhan@linuxfoundation.org>
-Cc:     corbet@lwn.net, peterz@infradead.org, keescook@chromium.org,
-        rafael@kernel.org, lenb@kernel.org, james.morse@arm.com,
-        tony.luck@intel.com, bp@alien8.de, devel@driverdev.osuosl.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-acpi@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v3 1/7] seqnum_ops: Introduce Sequence Number Ops
-Message-ID: <YB0WzBnLd+OcpxEE@kroah.com>
-References: <cover.1612314468.git.skhan@linuxfoundation.org>
- <23f6347a7bb9f902babe7351f71b23644035673d.1612314468.git.skhan@linuxfoundation.org>
+        id S231192AbhBFAyG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 19:54:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51826 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230363AbhBEKBA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 05:01:00 -0500
+Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE858C0617A7
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 02:00:01 -0800 (PST)
+Received: by mail-ot1-x329.google.com with SMTP id t25so6351857otc.5
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 02:00:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=+4u7LFNcU9hMwfgLTZmVYDnd+qbrvGiQY6Ud/lubleQ=;
+        b=Sk2sbOl/YGsWHQ642ZxGsgnlPJp90k/MEp96MZd6QxXq2XXoVszajynNlPCU1EgwIp
+         JrYz9Rfexw9ffo4+U+GP1iNsEpA+sPVI+m3dHYB8TlTcsM12z2lC0O1i/PT8lFYQ8t+b
+         Vh8efEXHHiw+rh5OORJRedQ8kYAW8fFgoKVIE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=+4u7LFNcU9hMwfgLTZmVYDnd+qbrvGiQY6Ud/lubleQ=;
+        b=PD/esfDtiUs7oeqvBddrNXhadDKjHhBwgb99A75WqEnl+K1gF+MmTNxcTmvudzM3YI
+         NR8vyn/7UqRwq6p6DSlLvB8OW4P6Cq7rUHNcagr5b0E004CpM8iBaliR9y0VE5bcUamB
+         RW4S7QjE+HxO/U5mn4laQ0anfVSxS/S6YrOX0tBD86gsnTQIwMMtefRCNACRlYIwbvaW
+         U1SKfUjowueLpfpUn8KDdXAHPLYTZS2Zz+IR8dY/bH3Z3l8akuyV03XbL2Ctjxyv98mz
+         FJNn4/61OzWOHQGHIyE7QAYBgCmOi6K+DekIf6w6en3RmGv8T/9k14yTQt6ZRZ0y/SDE
+         RCjQ==
+X-Gm-Message-State: AOAM5330dg4tlzoV8UVV1JKvJci0G4AqYBpdM6Jz2Jxmk9BAAo3aq90k
+        b/1fypj9aratBnaSEFZ/4U6pIAXKPmgN1kPbfFt19A==
+X-Google-Smtp-Source: ABdhPJzbngQ5SL0u3GVHbNMBJfQkQH0+gaX2wZqa80FFqtPMKC8sUU8IKX94LyS+DWVU6cSU7N0JCdCRKNzsiegRDCc=
+X-Received: by 2002:a9d:b85:: with SMTP id 5mr2898890oth.281.1612519201295;
+ Fri, 05 Feb 2021 02:00:01 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <23f6347a7bb9f902babe7351f71b23644035673d.1612314468.git.skhan@linuxfoundation.org>
+References: <20210204165831.2703772-2-daniel.vetter@ffwll.ch>
+ <20210204215019.GA104698@bjorn-Precision-5520> <20210204222407.pkx7wvmcvugdwqdd@pali>
+In-Reply-To: <20210204222407.pkx7wvmcvugdwqdd@pali>
+From:   Daniel Vetter <daniel.vetter@ffwll.ch>
+Date:   Fri, 5 Feb 2021 10:59:50 +0100
+Message-ID: <CAKMK7uFeZpc4oV2GNRdP_EXmYqacg5o3jPegqqaFZZYqqRutFA@mail.gmail.com>
+Subject: Re: [PATCH 1/2] PCI: also set up legacy files only after sysfs init
+To:     =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        Jan Kara <jack@suse.cz>, Kees Cook <keescook@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>, Jason Gunthorpe <jgg@ziepe.ca>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>,
+        "Oliver O'Halloran" <oohall@gmail.com>,
+        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 03, 2021 at 11:11:57AM -0700, Shuah Khan wrote:
-> +static inline u32 seqnum32_inc(struct seqnum32 *seq)
-> +{
-> +	atomic_t val = ATOMIC_INIT(seq->seqnum);
-> +
-> +	seq->seqnum = (u32) atomic_inc_return(&val);
-> +	if (seq->seqnum >= UINT_MAX)
-> +		pr_info("Sequence Number overflow %u detected\n",
-> +			seq->seqnum);
-> +	return seq->seqnum;
+On Thu, Feb 4, 2021 at 11:24 PM Pali Roh=C3=A1r <pali@kernel.org> wrote:
+>
+> On Thursday 04 February 2021 15:50:19 Bjorn Helgaas wrote:
+> > [+cc Oliver, Pali, Krzysztof]
+>
+> Just to note that extending or using sysfs_initialized introduces
+> another race condition into kernel code which results in PCI fatal
+> errors. Details are in email discussion which Bjorn already sent.
 
-As Peter points out, this is doing doing what you think it is doing :(
+Yeah I wondered why this doesn't race, but since the history goes back
+to pre-git times I figured it would have been addressed somehow
+already if it indeed does race.
+-Daniel
 
-Why do you not just have seq->seqnum be a real atomic variable?  Trying
-to switch to/from one like this does not work as there is no
-"atomic-ness" happening here at all.
+> > s/also/Also/ in subject
+> >
+> > On Thu, Feb 04, 2021 at 05:58:30PM +0100, Daniel Vetter wrote:
+> > > We are already doing this for all the regular sysfs files on PCI
+> > > devices, but not yet on the legacy io files on the PCI buses. Thus fa=
+r
+> > > now problem, but in the next patch I want to wire up iomem revoke
+> > > support. That needs the vfs up an running already to make so that
+> > > iomem_get_mapping() works.
+> >
+> > s/now problem/no problem/
+> > s/an running/and running/
+> > s/so that/sure that/ ?
+> >
+> > iomem_get_mapping() doesn't exist; I don't know what that should be.
+> >
+> > > Wire it up exactly like the existing code. Note that
+> > > pci_remove_legacy_files() doesn't need a check since the one for
+> > > pci_bus->legacy_io is sufficient.
+> >
+> > I'm not sure exactly what you mean by "the existing code."  I could
+> > probably figure it out, but it would save time to mention the existing
+> > function here.
+> >
+> > This looks like another instance where we should really apply Oliver's
+> > idea of converting these to attribute_groups [1].
+> >
+> > The cover letter mentions options discussed with Greg in [2], but I
+> > don't think the "sysfs_initialized" hack vs attribute_groups was part
+> > of that discussion.
+> >
+> > It's not absolutely a show-stopper, but it *is* a shame to extend the
+> > sysfs_initialized hack if attribute_groups could do this more cleanly
+> > and help solve more than one issue.
+> >
+> > Bjorn
+> >
+> > [1] https://lore.kernel.org/r/CAOSf1CHss03DBSDO4PmTtMp0tCEu5kScn704ZEwL=
+KGXQzBfqaA@mail.gmail.com
+> > [2] https://lore.kernel.org/dri-devel/CAKMK7uGrdDrbtj0OyzqQc0CGrQwc2F3t=
+FJU9vLfm2jjufAZ5YQ@mail.gmail.com/
+> >
+> > > Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
+> > > Cc: Stephen Rothwell <sfr@canb.auug.org.au>
+> > > Cc: Jason Gunthorpe <jgg@ziepe.ca>
+> > > Cc: Kees Cook <keescook@chromium.org>
+> > > Cc: Dan Williams <dan.j.williams@intel.com>
+> > > Cc: Andrew Morton <akpm@linux-foundation.org>
+> > > Cc: John Hubbard <jhubbard@nvidia.com>
+> > > Cc: J=C3=A9r=C3=B4me Glisse <jglisse@redhat.com>
+> > > Cc: Jan Kara <jack@suse.cz>
+> > > Cc: Dan Williams <dan.j.williams@intel.com>
+> > > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > > Cc: linux-mm@kvack.org
+> > > Cc: linux-arm-kernel@lists.infradead.org
+> > > Cc: linux-samsung-soc@vger.kernel.org
+> > > Cc: linux-media@vger.kernel.org
+> > > Cc: Bjorn Helgaas <bhelgaas@google.com>
+> > > Cc: linux-pci@vger.kernel.org
+> > > ---
+> > >  drivers/pci/pci-sysfs.c | 7 +++++++
+> > >  1 file changed, 7 insertions(+)
+> > >
+> > > diff --git a/drivers/pci/pci-sysfs.c b/drivers/pci/pci-sysfs.c
+> > > index fb072f4b3176..0c45b4f7b214 100644
+> > > --- a/drivers/pci/pci-sysfs.c
+> > > +++ b/drivers/pci/pci-sysfs.c
+> > > @@ -927,6 +927,9 @@ void pci_create_legacy_files(struct pci_bus *b)
+> > >  {
+> > >     int error;
+> > >
+> > > +   if (!sysfs_initialized)
+> > > +           return;
+> > > +
+> > >     b->legacy_io =3D kcalloc(2, sizeof(struct bin_attribute),
+> > >                            GFP_ATOMIC);
+> > >     if (!b->legacy_io)
+> > > @@ -1448,6 +1451,7 @@ void pci_remove_sysfs_dev_files(struct pci_dev =
+*pdev)
+> > >  static int __init pci_sysfs_init(void)
+> > >  {
+> > >     struct pci_dev *pdev =3D NULL;
+> > > +   struct pci_bus *pbus =3D NULL;
+> > >     int retval;
+> > >
+> > >     sysfs_initialized =3D 1;
+> > > @@ -1459,6 +1463,9 @@ static int __init pci_sysfs_init(void)
+> > >             }
+> > >     }
+> > >
+> > > +   while ((pbus =3D pci_find_next_bus(pbus)))
+> > > +           pci_create_legacy_files(pbus);
+> > > +
+> > >     return 0;
+> > >  }
+> > >  late_initcall(pci_sysfs_init);
+> > > --
+> > > 2.30.0
+> > >
+> > >
+> > > _______________________________________________
+> > > linux-arm-kernel mailing list
+> > > linux-arm-kernel@lists.infradead.org
+> > > http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
 
-Oh, and checkpatch should have complained about the extra ' ' in your
-cast :)
 
-thanks,
 
-greg k-h
+--=20
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
