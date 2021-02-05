@@ -2,75 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0AC33115E2
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 23:54:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F372311571
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 23:32:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232109AbhBEWoT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 17:44:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44346 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232880AbhBEOwM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 09:52:12 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6F0DD650DD;
-        Fri,  5 Feb 2021 15:09:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612537749;
-        bh=VgoeamMrRJ/nWoAGLMDwkW2XYYOF+2JWQXt539/V+FU=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=rgQIV9lN4/cV4HP0NGd5D3IUWmZaZmQyBXmjMH7ZmD4mtkgb76HBXVrmCP8MmJl6i
-         6I5PlZDhRd8ZAtdHDEbQrF93FsqLiwxLlQSCOCWftPzUYIm+WtYgLpTd6j8+FBJ3Cc
-         w6A8BsFfflFfwWjn9eYSzdwWH9BdyXhGcIpD2ZyfeoKZdHABaosD1qDqE+lH2Dzvpe
-         YXTXw5yx0FSQbzlHIIKQg/29Y7maQYje4+MvmvNd+yiZsBCz8Ug1xR5KBwDCn1PNPS
-         0zdUrOFTTBwUAg/VO9VIAsM5NUa6U6BF02zYgBQB8sah6cPVgal+gAkRy13U7T91gd
-         YzkMDDKluxoWQ==
-Date:   Fri, 5 Feb 2021 16:09:06 +0100 (CET)
-From:   Jiri Kosina <jikos@kernel.org>
-To:     =?ISO-8859-15?Q?Filipe_La=EDns?= <lains@archlinux.org>
-cc:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        =?ISO-8859-15?Q?Filipe_La=EDns?= <lains@riseup.net>,
-        stable@vger.kernel.org
-Subject: Re: [PATCH v2] HID: logitech-dj: add support for keyboard events in
- eQUAD step 4 Gaming
-In-Reply-To: <20210205143444.1155367-1-lains@archlinux.org>
-Message-ID: <nycvar.YFH.7.76.2102051608550.28696@cbobk.fhfr.pm>
-References: <20210205143444.1155367-1-lains@archlinux.org>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        id S232535AbhBEWb5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 17:31:57 -0500
+Received: from 95-165-96-9.static.spd-mgts.ru ([95.165.96.9]:34318 "EHLO
+        blackbox.su" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232769AbhBEOye (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 09:54:34 -0500
+Received: from metamini.metanet (metamini.metanet [192.168.2.5])
+        by blackbox.su (Postfix) with ESMTP id 69EC7819BF;
+        Fri,  5 Feb 2021 18:09:58 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=blackbox.su; s=mail;
+        t=1612537798; bh=yFRtgztPp2fq5DB0y3un2d4zKag6mvcVdlCDaHCCsRg=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=Y8m0jzS1MrqKY/24sClbU9a5UCLW4iiN4w2pz3km+5N226seWem6T1Z8rVVQL6aVy
+         dO13hPEpaf3+c3S59qZdNzhYE3bLgq31tmFqT/rxVoMYIDu4PCaIw4NIDHhQ+8Jop2
+         0UeGTfsOHNI7YuIz6LahuryKo8ZjAwmnOLMWuTgMcSFoXeQDZ2jNTdiHpf2up8aMJD
+         sm6jDTMy34hGG4mm5O9v2L0z8mcxPLdT/AU+T3zZE50cQtj6aJJdyt8T96aRaD9ccm
+         1Tf3sFSP/k4oS0ffYhboCSaShz8xIDpBTzmEbfh+OMdG9/Wo1Ge83+pnb9QZfr0oQt
+         Kpi4B8plxE+JA==
+From:   Sergej Bauer <sbauer@blackbox.su>
+To:     thesven73@gmail.com
+Cc:     andrew@lunn.ch, Markus.Elfring@web.de, rtgbnm@gmail.com,
+        tharvey@gateworks.com, anders@ronningen.priv.no,
+        sbauer@blackbox.su,
+        Bryan Whitehead <bryan.whitehead@microchip.com>,
+        UNGLinuxDriver@microchip.com (maintainer:MICROCHIP LAN743X ETHERNET
+        DRIVER), "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        netdev@vger.kernel.org (open list:MICROCHIP LAN743X ETHERNET DRIVER),
+        linux-kernel@vger.kernel.org (open list)
+Subject: Re: [PATCH net-next v1 1/6] lan743x: boost performance on cpu archs w/o dma cache snooping
+Date:   Fri,  5 Feb 2021 18:09:35 +0300
+Message-Id: <20210205150936.23010-1-sbauer@blackbox.su>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <CAGngYiUgjsgWYP76NKnrhbQthWbceaiugTFL=UVh_KvDuRhQUw@mail.gmail.com>
+References: <CAGngYiUgjsgWYP76NKnrhbQthWbceaiugTFL=UVh_KvDuRhQUw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 5 Feb 2021, Filipe Laíns wrote:
+On Friday, February 5, 2021 5:07:22 PM MSK you wrote:
+> Hi Sergej,
+> 
+> On Fri, Feb 5, 2021 at 7:44 AM Sergej Bauer <sbauer@blackbox.su> wrote:
+> > Hi Sven
+> > I can confirm great stability improvement after your patch
+> > "lan743x: boost performance on cpu archs w/o dma cache snooping".
+> > 
+> > Test machine is Intel Pentium G4560 3.50GHz
+> > lan743x with rejected virtual phy 'inside'
+> 
+> Interesting, so the speed boost patch seems to improve things even on
+> Intel...
+> 
+> Would you be able to apply and test the multi-buffer patch as well?
+> To do that, you can simply apply patches [2/6] and [3/6] on top of
+> what you already have.
+> 
 
-> From: Filipe Laíns <lains@riseup.net>
-> 
-> In e400071a805d6229223a98899e9da8c6233704a1 I added support for the
-> receiver that comes with the G602 device, but unfortunately I screwed up
-> during testing and it seems the keyboard events were actually not being
-> sent to userspace.
-> This resulted in keyboard events being broken in userspace, please
-> backport the fix.
-> 
-> The receiver uses the normal 0x01 Logitech keyboard report descriptor,
-> as expected, so it is just a matter of flagging it as supported.
-> 
-> Reported in
-> https://github.com/libratbag/libratbag/issues/1124
-> 
-> Fixes: e400071a805d6 ("HID: logitech-dj: add the G602 receiver")
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Filipe Laíns <lains@riseup.net>
-> ---
-> 
-> Changes in v2:
-> - added missing Fixes: anc Cc: tags
+Hi Sven
+Tests after applying patches [2/6] and [3/6] are:
+$ ifmtu eth7 500
+$ sudo test_ber -l eth7 -c 1000 -n 1000000 -f500 --no-conf
+...
+number of sent packets      = 1000000
+number of received packets  = 713288
+number of lost packets = 286712
+number of out of order packets = 0
+number of bit errors   = 0
+total errors detected  = 286712
+bit error rate         = 0.286712
+average speed: 427.8043 Mbit/s
 
-Applied, thanks Filipe.
+$ ifmtu eth7 1500
+$ sudo test_ber -l eth7 -c 1000 -n 1000000 -f500 --no-conf
+...
+number of sent packets      = 1000000
+number of received packets  = 707869
+number of lost packets = 292131
+number of out of order packets = 0
+number of bit errors   = 0
+total errors detected  = 292131
+bit error rate         = 0.292131
+average speed: 431.0163 Mbit/s
 
--- 
-Jiri Kosina
-SUSE Labs
+$ sudo test_ber -l eth7 -c 1000 -n 1000000 -f1500 --no-conf
+...
+number of sent packets      = 1000000
+number of received packets  = 1000000
+number of lost packets = 0
+number of out of order packets = 0
+number of bit errors   = 0
+total errors detected  = 0
+bit error rate         = 0
+average speed: 646.4932 Mbit/s
 
+> Keeping in mind that Bryan has identified an issue with the above
+> patch, which will get fixed in v2. So YMMV.
+I'll perform tests with v2 as well.
