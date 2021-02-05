@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 207CB31140B
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 23:00:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1ADF1311396
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 22:33:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233050AbhBEVz5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 16:55:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45248 "EHLO mail.kernel.org"
+        id S233773AbhBEVaR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 16:30:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45340 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233008AbhBEO7i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 09:59:38 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E6135650BF;
-        Fri,  5 Feb 2021 14:14:46 +0000 (UTC)
+        id S231701AbhBEPAH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 10:00:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A2A9B650B1;
+        Fri,  5 Feb 2021 14:14:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612534487;
-        bh=e1prSTddSkWw/ilWFplrlJELLFrEZbDwcFhS0hiXMZk=;
+        s=korg; t=1612534467;
+        bh=jQ5g/mPKswFOhl93N86AioJj0vO88F8hbPM7rsVHYqc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HND2+G0cTpzRjzffmy43+3EOflH5jaJDSc2E0x1BqGrdgn157Kr/GAetP10FoiDOG
-         qm4YCKqtQn8O+aIDwq02yNMl1XWosgQK1IgWX11+MLIIr88RcX+nshQMvGhC6KX8ij
-         4m2+69yeenMon9Z6BGKqIlp1ByF4YIEsnv8qaMGM=
+        b=2tPPnekNtOJIbP2+WLN+R0OAPJyjYHeaCF5QkxNr5Vd6aNFUnpfRBfMg4FEa2aGMc
+         n5CFB+nxJsoOhUa6Etr3/EMJWK+j58hHuCBM8s4glsekqUxXO9iCoDU7DDyfZEla/e
+         XdMc6Gr7GKUcTNTCbq/4IEHj0pitKFZcgeIro8MU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        syzbot <syzkaller@googlegroups.com>,
-        Cong Wang <cong.wang@bytedance.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH 4.14 04/15] net_sched: reject silly cell_log in qdisc_get_rtab()
-Date:   Fri,  5 Feb 2021 15:08:49 +0100
-Message-Id: <20210205140649.905338362@linuxfoundation.org>
+        stable@vger.kernel.org, Javed Hasan <jhasan@marvell.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 11/15] scsi: libfc: Avoid invoking response handler twice if ep is already completed
+Date:   Fri,  5 Feb 2021 15:08:56 +0100
+Message-Id: <20210205140650.185885343@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210205140649.733510103@linuxfoundation.org>
 References: <20210205140649.733510103@linuxfoundation.org>
@@ -42,65 +40,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+From: Javed Hasan <jhasan@marvell.com>
 
-commit e4bedf48aaa5552bc1f49703abd17606e7e6e82a upstream
+[ Upstream commit b2b0f16fa65e910a3ec8771206bb49ee87a54ac5 ]
 
-iproute2 probably never goes beyond 8 for the cell exponent,
-but stick to the max shift exponent for signed 32bit.
+A race condition exists between the response handler getting called because
+of exchange_mgr_reset() (which clears out all the active XIDs) and the
+response we get via an interrupt.
 
-UBSAN reported:
-UBSAN: shift-out-of-bounds in net/sched/sch_api.c:389:22
-shift exponent 130 is too large for 32-bit type 'int'
-CPU: 1 PID: 8450 Comm: syz-executor586 Not tainted 5.11.0-rc3-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x183/0x22e lib/dump_stack.c:120
- ubsan_epilogue lib/ubsan.c:148 [inline]
- __ubsan_handle_shift_out_of_bounds+0x432/0x4d0 lib/ubsan.c:395
- __detect_linklayer+0x2a9/0x330 net/sched/sch_api.c:389
- qdisc_get_rtab+0x2b5/0x410 net/sched/sch_api.c:435
- cbq_init+0x28f/0x12c0 net/sched/sch_cbq.c:1180
- qdisc_create+0x801/0x1470 net/sched/sch_api.c:1246
- tc_modify_qdisc+0x9e3/0x1fc0 net/sched/sch_api.c:1662
- rtnetlink_rcv_msg+0xb1d/0xe60 net/core/rtnetlink.c:5564
- netlink_rcv_skb+0x1f0/0x460 net/netlink/af_netlink.c:2494
- netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
- netlink_unicast+0x7de/0x9b0 net/netlink/af_netlink.c:1330
- netlink_sendmsg+0xaa6/0xe90 net/netlink/af_netlink.c:1919
- sock_sendmsg_nosec net/socket.c:652 [inline]
- sock_sendmsg net/socket.c:672 [inline]
- ____sys_sendmsg+0x5a2/0x900 net/socket.c:2345
- ___sys_sendmsg net/socket.c:2399 [inline]
- __sys_sendmsg+0x319/0x400 net/socket.c:2432
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
+Sequence of events:
 
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Reported-by: syzbot <syzkaller@googlegroups.com>
-Acked-by: Cong Wang <cong.wang@bytedance.com>
-Link: https://lore.kernel.org/r/20210114160637.1660597-1-eric.dumazet@gmail.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-[sudip: adjust context]
-Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+	 rport ba0200: Port timeout, state PLOGI
+	 rport ba0200: Port entered PLOGI state from PLOGI state
+	 xid 1052: Exchange timer armed : 20000 msecs      xid timer armed here
+	 rport ba0200: Received LOGO request while in state PLOGI
+	 rport ba0200: Delete port
+	 rport ba0200: work event 3
+	 rport ba0200: lld callback ev 3
+	 bnx2fc: rport_event_hdlr: event = 3, port_id = 0xba0200
+	 bnx2fc: ba0200 - rport not created Yet!!
+	 /* Here we reset any outstanding exchanges before
+	 freeing rport using the exch_mgr_reset() */
+	 xid 1052: Exchange timer canceled
+	 /* Here we got two responses for one xid */
+	 xid 1052: invoking resp(), esb 20000000 state 3
+	 xid 1052: invoking resp(), esb 20000000 state 3
+	 xid 1052: fc_rport_plogi_resp() : ep->resp_active 2
+	 xid 1052: fc_rport_plogi_resp() : ep->resp_active 2
+
+Skip the response if the exchange is already completed.
+
+Link: https://lore.kernel.org/r/20201215194731.2326-1-jhasan@marvell.com
+Signed-off-by: Javed Hasan <jhasan@marvell.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/sched/sch_api.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/scsi/libfc/fc_exch.c | 16 ++++++++++++++--
+ 1 file changed, 14 insertions(+), 2 deletions(-)
 
---- a/net/sched/sch_api.c
-+++ b/net/sched/sch_api.c
-@@ -397,7 +397,8 @@ struct qdisc_rate_table *qdisc_get_rtab(
- {
- 	struct qdisc_rate_table *rtab;
+diff --git a/drivers/scsi/libfc/fc_exch.c b/drivers/scsi/libfc/fc_exch.c
+index 6ba257cbc6d94..384458d1f73c3 100644
+--- a/drivers/scsi/libfc/fc_exch.c
++++ b/drivers/scsi/libfc/fc_exch.c
+@@ -1631,8 +1631,13 @@ static void fc_exch_recv_seq_resp(struct fc_exch_mgr *mp, struct fc_frame *fp)
+ 		rc = fc_exch_done_locked(ep);
+ 		WARN_ON(fc_seq_exch(sp) != ep);
+ 		spin_unlock_bh(&ep->ex_lock);
+-		if (!rc)
++		if (!rc) {
+ 			fc_exch_delete(ep);
++		} else {
++			FC_EXCH_DBG(ep, "ep is completed already,"
++					"hence skip calling the resp\n");
++			goto skip_resp;
++		}
+ 	}
  
--	if (tab == NULL || r->rate == 0 || r->cell_log == 0 ||
-+	if (tab == NULL || r->rate == 0 ||
-+	    r->cell_log == 0 || r->cell_log >= 32 ||
- 	    nla_len(tab) != TC_RTAB_SIZE)
- 		return NULL;
+ 	/*
+@@ -1651,6 +1656,7 @@ static void fc_exch_recv_seq_resp(struct fc_exch_mgr *mp, struct fc_frame *fp)
+ 	if (!fc_invoke_resp(ep, sp, fp))
+ 		fc_frame_free(fp);
  
++skip_resp:
+ 	fc_exch_release(ep);
+ 	return;
+ rel:
+@@ -1907,10 +1913,16 @@ static void fc_exch_reset(struct fc_exch *ep)
+ 
+ 	fc_exch_hold(ep);
+ 
+-	if (!rc)
++	if (!rc) {
+ 		fc_exch_delete(ep);
++	} else {
++		FC_EXCH_DBG(ep, "ep is completed already,"
++				"hence skip calling the resp\n");
++		goto skip_resp;
++	}
+ 
+ 	fc_invoke_resp(ep, sp, ERR_PTR(-FC_EX_CLOSED));
++skip_resp:
+ 	fc_seq_set_resp(sp, NULL, ep->arg);
+ 	fc_exch_release(ep);
+ }
+-- 
+2.27.0
+
 
 
