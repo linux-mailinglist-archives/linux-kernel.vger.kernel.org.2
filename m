@@ -2,109 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90340310506
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 07:42:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F1D131050A
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 07:44:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230506AbhBEGl5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 01:41:57 -0500
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:3075 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230090AbhBEGlz (ORCPT
+        id S230516AbhBEGnc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 01:43:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37730 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230191AbhBEGn3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 01:41:55 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B601ce88b0001>; Thu, 04 Feb 2021 22:41:15 -0800
-Received: from [10.2.60.31] (172.20.145.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 5 Feb
- 2021 06:41:15 +0000
-Subject: Re: [PATCH] mm: cma: support sysfs
-To:     Minchan Kim <minchan@kernel.org>
-CC:     Andrew Morton <akpm@linux-foundation.org>,
-        <gregkh@linuxfoundation.org>, <surenb@google.com>,
-        <joaodias@google.com>, LKML <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>
-References: <20210203155001.4121868-1-minchan@kernel.org>
- <7e7c01a7-27fe-00a3-f67f-8bcf9ef3eae9@nvidia.com>
- <YBxT9XFE6QAQ4T9N@google.com>
- <cda5547b-0c78-756b-bd0c-f3e534d04bff@nvidia.com>
- <YByNU4Q7cc7gYwPh@google.com>
- <87d7ec1f-d892-0491-a2de-3d0feecca647@nvidia.com>
- <YByi/gdaGJeV/+8b@google.com>
- <71c4ce84-8be7-49e2-90bd-348762b320b4@nvidia.com>
- <YBzU5uUbwa+QIwBQ@google.com>
- <34110c61-9826-4cbe-8cd4-76f5e7612dbd@nvidia.com>
- <YBzkjh5nnuNiGb6Q@google.com>
-From:   John Hubbard <jhubbard@nvidia.com>
-Message-ID: <f6e41e39-d60b-764d-0af4-8e6977663821@nvidia.com>
-Date:   Thu, 4 Feb 2021 22:41:14 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:85.0) Gecko/20100101
- Thunderbird/85.0
+        Fri, 5 Feb 2021 01:43:29 -0500
+Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8691C061786
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 22:42:45 -0800 (PST)
+Received: by mail-il1-x134.google.com with SMTP id o7so418605ils.2
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 22:42:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0WWy67zxMmAl68pT4mWx5+KJE1GMRdc0d+dtu28TFBI=;
+        b=Jfhjr2phpP+qDRAwu4ZLu4fTjGVlt+XgZp0P2TYfgoa93Za+ulOBLmyv8HTHTPu8RP
+         7cKggLmlwor1d2rGjNOx6rN6e/EGYwfqGYDLb8PcaHM/w2Ex+lCRRRhfjpFMsZzuCfND
+         HrHffV9bDBLXnM9UlajTlNYA+1+0Y/JcYKA3Awjcue5+AOdquiHSbhaEvBG73nFH2gFT
+         aRz3/qXwD0U9tUrwZq8E/Jn8qqFwM941g/p8B+0y8/IbicQ/9ZebtXepm71Ocqyt4lpN
+         yk1yJUHBnbVXsDatr/hkk0yjz4gb59UJSuPEzPSKk5Hq7RGpngcD6CkfU3IbbDnpbqIa
+         rrTg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0WWy67zxMmAl68pT4mWx5+KJE1GMRdc0d+dtu28TFBI=;
+        b=qIYJJG3KM5nr89bc8mQpc5nUo5CFQT96uPOT+AeRqsC2MA1mVG9yJUsM+sO4JBSf7n
+         rShAWxBSbMTa9qTceGOjpYjVq82YDpAzClae9jPgcTscL0psuceoFelEsCF76TlmlCs6
+         OkoG/kVXXoVGZzdI5w4btgIUTrPjiptOrqTBllN2jOu1OYTFZ1ffqhDhN7dM28RxkqDd
+         6TR8IZygyv113N7zCGss9LBgad8Obm6LU2PnUnYOUWTMjaCLJXIcNJHGNLiKwX9a9EOq
+         6H2yWoPhJvuTIxtcFT7xwqQADGxJRKLAptRvURtVfvH7/+xuy4o5LLK09jByJKroJ8YC
+         q9zA==
+X-Gm-Message-State: AOAM533RiO3mZ57GpF1hP0U9/84zDuX4+u6J2vqXdepNvoc0RuBIXUB6
+        Sru0U0p7VQzWSteV26LpdFvuEtGKqDiPtHEQrj8=
+X-Google-Smtp-Source: ABdhPJx+GzW/fMqDQBfo8lZVHKbAFkNg8tsirl2a83iQYndkFrQTpogK0PF/1hfVmbKVxxtBO3tjW/5dzSoJSBTiXk4=
+X-Received: by 2002:a05:6e02:2196:: with SMTP id j22mr2676149ila.64.1612507364077;
+ Thu, 04 Feb 2021 22:42:44 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <YBzkjh5nnuNiGb6Q@google.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1612507275; bh=MVQPZX7CqWSAXEBpuiD9KIrZsqcSefGwB9+cJEmNR/U=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=ZFByrRMHweXhGS7HmqX+9r2j16FGVfJ0523O0aw40mEjjCqf7K2AucMH+RRnQ27JC
-         +LlmYuuFNwD9ITf7dCQVWk0MJcfymXZI6xLvtraTM9qeoSG1fANpW/kXnwNYUhdeIF
-         r57DT+MF6BGpsPTF/EIBscJmobATGHQ4uHuGWmgksjIyUnrYYft9Xdt5jHNMMADFDD
-         OYJKTv1uRf3YFls9HvTopvWDcCIVngeRbJtCtPd3279I7Gn94/XkSMsqxo/hgu+G+l
-         +53SVmSbWrx4re2Zew/yDEHji6Fw2YYXxNPqL4+qJj+iFt07EtqXTy+Wz0CLKRXZ05
-         ze5dYmvkPqx7A==
+References: <CAKXUXMyRAer=0S9pxiRs2iF3pdkU8zW=JZw2a+nJJ30iPLPhCA@mail.gmail.com>
+ <20210128165447.3da0d98e@lwn.net>
+In-Reply-To: <20210128165447.3da0d98e@lwn.net>
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Date:   Fri, 5 Feb 2021 07:42:33 +0100
+Message-ID: <CAKXUXMxxz7Lffre67uYKzuoXgcMXwv_36Od0UCwX50RPc9DkTg@mail.gmail.com>
+Subject: Re: Small student project idea on appropriate integration trees in MAINTAINERS
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     devel@lists.elisa.tech,
+        Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
+        Wolfgang Mauerer <wolfgang.mauerer@oth-regensburg.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Pia Eichinger <pia.eichinger@st.oth-regensburg.de>,
+        =?UTF-8?Q?Ba=C5=9Fak_Erdamar?= <basakerdamar@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/4/21 10:24 PM, Minchan Kim wrote:
-> On Thu, Feb 04, 2021 at 09:49:54PM -0800, John Hubbard wrote:
->> On 2/4/21 9:17 PM, Minchan Kim wrote:
-...
->> # cat vmstat | grep -i cma
->> nr_free_cma 261718
->>
->> # cat meminfo | grep -i cma
->> CmaTotal:        1048576 kB
->> CmaFree:         1046872 kB
->>
->> OK, given that CMA is already in those two locations, maybe we should put
->> this information in one or both of those, yes?
-> 
-> Do you suggest something liks this, for example?
-> 
-> 
-> cat vmstat | grep -i cma
-> cma_a_success	125
-> cma_a_fail	25
-> cma_b_success	130
-> cma_b_fail	156
-> ..
-> cma_f_fail	xxx
-> 
+On Fri, Jan 29, 2021 at 12:54 AM Jonathan Corbet <corbet@lwn.net> wrote:
+>
+> On Fri, 22 Jan 2021 09:22:24 +0100
+> Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
+>
+> > In this project, we can make use of:
+> >
+> > - gitdm [git://git.lwn.net/gitdm.git]: gitdm includes some scripts to
+> > parse MAINTAINERS and obtain the integration tree patch of a commit.
+>
+> Look also at the 'treeplot' tool there, which determines which tree(s)
+> each patch went through and makes pretty (OK, not hugely pretty) pictures
+> from the result.
 
-Yes, approximately. I was wondering if this would suffice at least as a baseline:
+Thanks, we are well aware, and that is a good reminder for Basak and
+me to get our gitdm treeplot patches in shape for proper submission.
 
-cma_alloc_success   125
-cma_alloc_failure   25
+>
+> I suspect you'll find that the tree information is mostly correct.
 
-...and then, to see if more is needed, some questions:
+Your suspicion, which is counter to my hypothesis, makes this
+investigation worthwhile just to see how correct that information
+really is.
 
-a)  Do you know of an upper bound on how many cma areas there can be
-(I think Matthew also asked that)?
+> Developers need to know that to be able to base their patches properly; an
+> incorrect entry would lead to a certain amount of maintainer misery.
+>
 
-b) Is tracking the cma area really as valuable as other possibilities? We can put
-"a few" to "several" items here, so really want to get your very favorite bits of
-information in. If, for example, there can be *lots* of cma areas, then maybe tracking
-by a range of allocation sizes is better...
+Maybe the missing or wrong information in MAINTAINERS or the lack of
+clear recommendation for new developers to a kernel subsystem on which
+integration tree a patch shall apply to is one of the reasons for some
+maintainers' misery.
+
+Let us find someone interested to measure and investigate and then we
+will see...
 
 
-thanks,
--- 
-John Hubbard
-NVIDIA
+Lukas
