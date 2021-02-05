@@ -2,133 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 751EA31025E
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 02:46:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06F3531025C
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 02:46:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232951AbhBEBqB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 20:46:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58810 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231650AbhBEBpl (ORCPT
+        id S232861AbhBEBpu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 20:45:50 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:58750 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S232903AbhBEBpk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 20:45:41 -0500
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65DBCC0613D6
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 17:44:55 -0800 (PST)
-Received: by mail-wr1-x434.google.com with SMTP id a1so5834911wrq.6
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 17:44:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7UMwdaHyyHv0tHFbd3G67+onVWpDFqTXMlcalyPzKs4=;
-        b=H3Jxne9YFSw4SZ0Af2wo1mnJcL6VkMlA7qSuh7l61KB2fSQaIJ8CcdXiUuadI5NAGo
-         0dOJ2Xmj8/cCJOXg7U1GEu8qemNplA2S4CpYvHoFTXnsjw/ODgJar3TiR/dBT0Tii3fv
-         dgFGTmFZXdj8lPLGHVck0FLcmRXte0ls8Yyy8F2uQlh4gpCGaFk3BUkrr3eaOpYGDJ3/
-         7gn3yYqUS2+dshVxaJVdtpZi3wfS5e35doTcIaD+PQbRDGl2BniVy9TaNAMmwAWzS31h
-         A9G5PxzG5lON+vmWFt4N35ZXAymM1ZRfnvpj06aUEX9FpT24bry/WnW8BbFBL15VKVOI
-         cTgw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7UMwdaHyyHv0tHFbd3G67+onVWpDFqTXMlcalyPzKs4=;
-        b=HHUf7jIZ4j7y9/pnW5u+7DiWSMfKJljKYyLQ7G/NwHAK1JmpTvcF65B5NDqjxnL4y5
-         I3SWyKsyszw0hTsHm8B1t6E0nQyLKyf3EDH6kSJ1Me/8PWr6HNahfHYHk9qsOWei3efW
-         DItzN59KFHIrz0wzwUaTdMynNND7Maamj+krx2GywgTtf96j3p/4ziSAe3GH2r1ki6cU
-         Fcq1k7i29D2emQQxbf85/V3WDQj7ytMiYmgju/B17Dk+vzqeWDbzY9WH+STq8piEPSCK
-         pI7VAjVojcUfmNQGwmuysFtD2t355ZK1P/hE8H+3OhvMcw8ePaoD0+82UJGdlsP93e7u
-         CdDQ==
-X-Gm-Message-State: AOAM5307J8zrp4HSp4erd47zu4qIO6nHcpqf9E3D5b/wAEGPzNpSmpVV
-        T/WbQDo4rksatROYxo9+34lv1zlyrq5y/q65+8SQRA==
-X-Google-Smtp-Source: ABdhPJynJ6JrBMa/DQKWCpk0FS7dcRHP2n2WhTiiNNQikExYOU1sXMFDwlWSecS21j+vYcVyZjB4A/DDYkstJDHDhTg=
-X-Received: by 2002:a5d:453b:: with SMTP id j27mr2242917wra.92.1612489493985;
- Thu, 04 Feb 2021 17:44:53 -0800 (PST)
+        Thu, 4 Feb 2021 20:45:40 -0500
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 1151W82i131075;
+        Thu, 4 Feb 2021 20:44:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : from : to : cc
+ : references : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=TIEb3+afSV3AJbVcVj/P0BfDKRQCY1YSyX9SgNW3ix4=;
+ b=dDwHotrsSF5VvqV7PvsYKvUULl87DICuO2j769V0giKVCm0n/FFSRkWcFVOmnbZD0pEG
+ mgoMzSo73iCEavkOydmh0jVC/u6fEr+mu1revCIiOS/hjvpzyxRSRDKbeLx7HvHODQrE
+ Qy+QSarLno+gEEM+VK5H6tpVmCEwbZFvlU1Set/FUVClaSL6kdXW65WP0nUaQ3drHHW3
+ 7eUlXWFJ3FgActOnkTvK31lNFqnbB+ZWlf5zAD6Dv8178IxNi1rz8tw2IpIXYRDVpL9I
+ xdeZqhiCSjPENUoVrewTy4JPtRYFZPNhuSJYpTBHnnkmjy+uu8vZS22PcrDva+eODVgN Dw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 36guxxgvsg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 04 Feb 2021 20:44:50 -0500
+Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 1151WKjL131535;
+        Thu, 4 Feb 2021 20:44:50 -0500
+Received: from ppma03wdc.us.ibm.com (ba.79.3fa9.ip4.static.sl-reverse.com [169.63.121.186])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 36guxxgvs8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 04 Feb 2021 20:44:50 -0500
+Received: from pps.filterd (ppma03wdc.us.ibm.com [127.0.0.1])
+        by ppma03wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 1151gBbG011914;
+        Fri, 5 Feb 2021 01:44:49 GMT
+Received: from b01cxnp22035.gho.pok.ibm.com (b01cxnp22035.gho.pok.ibm.com [9.57.198.25])
+        by ppma03wdc.us.ibm.com with ESMTP id 36f2nxehg1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 05 Feb 2021 01:44:49 +0000
+Received: from b01ledav002.gho.pok.ibm.com (b01ledav002.gho.pok.ibm.com [9.57.199.107])
+        by b01cxnp22035.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1151inLB26018076
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 5 Feb 2021 01:44:49 GMT
+Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 41681124054;
+        Fri,  5 Feb 2021 01:44:49 +0000 (GMT)
+Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2B35A124053;
+        Fri,  5 Feb 2021 01:44:49 +0000 (GMT)
+Received: from sbct-3.pok.ibm.com (unknown [9.47.158.153])
+        by b01ledav002.gho.pok.ibm.com (Postfix) with ESMTP;
+        Fri,  5 Feb 2021 01:44:49 +0000 (GMT)
+Subject: Re: [PATCH v3 1/2] tpm: fix reference counting for struct tpm_chip
+From:   Stefan Berger <stefanb@linux.ibm.com>
+To:     Lino Sanfilippo <LinoSanfilippo@gmx.de>, peterhuewe@gmx.de,
+        jarkko@kernel.org
+Cc:     jgg@ziepe.ca, stefanb@linux.vnet.ibm.com,
+        James.Bottomley@hansenpartnership.com, stable@vger.kernel.org,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lino Sanfilippo <l.sanfilippo@kunbus.com>
+References: <1612482643-11796-1-git-send-email-LinoSanfilippo@gmx.de>
+ <1612482643-11796-2-git-send-email-LinoSanfilippo@gmx.de>
+ <b36db793-9b40-92a8-19ef-4853ea10f775@linux.ibm.com>
+Message-ID: <f5ad4381-773d-b994-51e5-a335ca4b44c3@linux.ibm.com>
+Date:   Thu, 4 Feb 2021 20:44:48 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-References: <20210203155001.4121868-1-minchan@kernel.org> <7e7c01a7-27fe-00a3-f67f-8bcf9ef3eae9@nvidia.com>
- <YBxT9XFE6QAQ4T9N@google.com> <cda5547b-0c78-756b-bd0c-f3e534d04bff@nvidia.com>
- <CAJuCfpG_J_XkaK=1z2oHkTpq7Pw1qvZLKuYrs7aG5b9yVwvEag@mail.gmail.com>
- <CAJuCfpFAsM86cKbBrhZx0WPFH5HGCYW4gK_EPtDU=gnhkiDSPw@mail.gmail.com>
- <9900858e-4d9b-5111-e695-fd2bb7463af9@nvidia.com> <96bc11de-fe47-c7d3-6e61-5a5a5b6d2f4c@nvidia.com>
-In-Reply-To: <96bc11de-fe47-c7d3-6e61-5a5a5b6d2f4c@nvidia.com>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Thu, 4 Feb 2021 17:44:42 -0800
-Message-ID: <CAJuCfpEgx3PqpV40NA+-f8xdXT1Z2FpAiOL+dGihZbommfZEKg@mail.gmail.com>
-Subject: Re: [PATCH] mm: cma: support sysfs
-To:     John Hubbard <jhubbard@nvidia.com>
-Cc:     Minchan Kim <minchan@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        John Dias <joaodias@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <b36db793-9b40-92a8-19ef-4853ea10f775@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-02-04_13:2021-02-04,2021-02-04 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ clxscore=1015 suspectscore=0 adultscore=0 impostorscore=0 spamscore=0
+ phishscore=0 mlxlogscore=999 priorityscore=1501 malwarescore=0 bulkscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102050002
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 4, 2021 at 4:34 PM John Hubbard <jhubbard@nvidia.com> wrote:
+On 2/4/21 7:46 PM, Stefan Berger wrote:
+> On 2/4/21 6:50 PM, Lino Sanfilippo wrote:
+>> From: Lino Sanfilippo <l.sanfilippo@kunbus.com>
+>>
+>> The following sequence of operations results in a refcount warning:
+>>
+>> 1. Open device /dev/tpmrm
+>> 2. Remove module tpm_tis_spi
+>> 3. Write a TPM command to the file descriptor opened at step 1.
+>>
+>> ------------[ cut here ]------------
+>> WARNING: CPU: 3 PID: 1161 at lib/refcount.c:25 kobject_get+0xa0/0xa4
+>> refcount_t: addition on 0; use-after-free.
+>> Modules linked in: tpm_tis_spi tpm_tis_core tpm mdio_bcm_unimac brcmfmac
+>> sha256_generic libsha256 sha256_arm hci_uart btbcm bluetooth cfg80211 
+>> vc4
+>> brcmutil ecdh_generic ecc snd_soc_core crc32_arm_ce libaes
+>> raspberrypi_hwmon ac97_bus snd_pcm_dmaengine bcm2711_thermal snd_pcm
+>> snd_timer genet snd phy_generic soundcore [last unloaded: spi_bcm2835]
+>> CPU: 3 PID: 1161 Comm: hold_open Not tainted 5.10.0ls-main-dirty #2
+>> Hardware name: BCM2711
+>> [<c0410c3c>] (unwind_backtrace) from [<c040b580>] (show_stack+0x10/0x14)
+>> [<c040b580>] (show_stack) from [<c1092174>] (dump_stack+0xc4/0xd8)
+>> [<c1092174>] (dump_stack) from [<c0445a30>] (__warn+0x104/0x108)
+>> [<c0445a30>] (__warn) from [<c0445aa8>] (warn_slowpath_fmt+0x74/0xb8)
+>> [<c0445aa8>] (warn_slowpath_fmt) from [<c08435d0>] 
+>> (kobject_get+0xa0/0xa4)
+>> [<c08435d0>] (kobject_get) from [<bf0a715c>] 
+>> (tpm_try_get_ops+0x14/0x54 [tpm])
+>> [<bf0a715c>] (tpm_try_get_ops [tpm]) from [<bf0a7d6c>] 
+>> (tpm_common_write+0x38/0x60 [tpm])
+>> [<bf0a7d6c>] (tpm_common_write [tpm]) from [<c05a7ac0>] 
+>> (vfs_write+0xc4/0x3c0)
+>> [<c05a7ac0>] (vfs_write) from [<c05a7ee4>] (ksys_write+0x58/0xcc)
+>> [<c05a7ee4>] (ksys_write) from [<c04001a0>] (ret_fast_syscall+0x0/0x4c)
+>> Exception stack(0xc226bfa8 to 0xc226bff0)
+>> bfa0:                   00000000 000105b4 00000003 beafe664 00000014 
+>> 00000000
+>> bfc0: 00000000 000105b4 000103f8 00000004 00000000 00000000 b6f9c000 
+>> beafe684
+>> bfe0: 0000006c beafe648 0001056c b6eb6944
+>> ---[ end trace d4b8409def9b8b1f ]---
+>>
+>> The reason for this warning is the attempt to get the chip->dev 
+>> reference
+>> in tpm_common_write() although the reference counter is already zero.
+>>
+>> Since commit 8979b02aaf1d ("tpm: Fix reference count to main device") 
+>> the
+>> extra reference used to prevent a premature zero counter is never taken,
+>> because the required TPM_CHIP_FLAG_TPM2 flag is never set.
+>>
+>> Fix this by removing the flag condition.
+>>
+>> Commit fdc915f7f719 ("tpm: expose spaces via a device link 
+>> /dev/tpmrm<n>")
+>> already introduced function tpm_devs_release() to release the extra
+>> reference but did not implement the required put on chip->devs that 
+>> results
+>> in the call of this function.
+>>
+>> Fix this also by installing an action handler that puts chip->devs as 
+>> soon
+>> as the chip is unregistered.
+>>
+>> Fixes: fdc915f7f719 ("tpm: expose spaces via a device link 
+>> /dev/tpmrm<n>")
+>> Fixes: 8979b02aaf1d ("tpm: Fix reference count to main device")
+>> Signed-off-by: Lino Sanfilippo <l.sanfilippo@kunbus.com>
 >
-> On 2/4/21 4:25 PM, John Hubbard wrote:
-> > On 2/4/21 3:45 PM, Suren Baghdasaryan wrote:
-> > ...
-> >>>>>> 2) The overall CMA allocation attempts/failures (first two items above) seem
-> >>>>>> an odd pair of things to track. Maybe that is what was easy to track, but I'd
-> >>>>>> vote for just omitting them.
-> >>>>>
-> >>>>> Then, how to know how often CMA API failed?
-> >>>>
-> >>>> Why would you even need to know that, *in addition* to knowing specific
-> >>>> page allocation numbers that failed? Again, there is no real-world motivation
-> >>>> cited yet, just "this is good data". Need more stories and support here.
-> >>>
-> >>> IMHO it would be very useful to see whether there are multiple
-> >>> small-order allocation failures or a few large-order ones, especially
-> >>> for CMA where large allocations are not unusual. For that I believe
-> >>> both alloc_pages_attempt and alloc_pages_fail would be required.
-> >>
-> >> Sorry, I meant to say "both cma_alloc_fail and alloc_pages_fail would
-> >> be required".
-> >
-> > So if you want to know that, the existing items are still a little too indirect
-> > to really get it right. You can only know the average allocation size, by
-> > dividing. Instead, we should provide the allocation size, for each count.
-> >
-> > The limited interface makes this a little awkward, but using zones/ranges could
-> > work: "for this range of allocation sizes, there were the following stats". Or,
-> > some other technique that I haven't thought of (maybe two items per file?) would
-> > be better.
-> >
-> > On the other hand, there's an argument for keeping this minimal and simple. That
-> > would probably lead us to putting in a couple of items into /proc/vmstat, as I
-> > just mentioned in my other response, and calling it good.
+> Tested-by: Stefan Berger <stefanb@linux.ibm.com>
+>
+> Steps:
+>
+> modprobe tpm_vtpm_proxy
+>
+> swtpm chardev --vtpm-proxy --tpm2 --tpmstate dir=./ &
+>
+> exec 100<>/dev/tpmrm1
+>
+> kill -9 <swtpm pid>
+>
+> rmmod tpm_vtpm_proxy
+>
+> exec 100>&-   # fails before, works after   --> great job! :-)
+>
+>
+To clarify: When I tested this I had *both* patches applied. Without the 
+patches I got the null pointer exception in tpm2_del_space(). The 2nd 
+patch alone solves that issue when using the steps above.
 
-True. I was thinking along these lines but per-order counters felt
-like maybe an overkill? I'm all for keeping it simple.
+[  525.647443] [c000000005d3bba0] [c000000000e81d78] 
+mutex_lock+0x28/0x90 (unreliable)
+[  525.647539] [c000000005d3bbd0] [c0080000001f5da0] 
+tpm2_del_space+0x48/0x130 [tpm]
+[  525.647635] [c000000005d3bc20] [c0080000001f56b8] 
+tpmrm_release+0x40/0x70 [tpm]
+[  525.647746] [c000000005d3bc50] [c0000000004bf718] __fput+0xb8/0x340
+[  525.647842] [c000000005d3bca0] [c00000000017def4] 
+task_work_run+0xe4/0x150
+[  525.647930] [c000000005d3bcf0] [c00000000001feb4] 
+do_notify_resume+0x484/0x4f0
+[  525.648023] [c000000005d3bdb0] [c000000000033a64] 
+syscall_exit_prepare+0x1d4/0x330
+[  525.648115] [c000000005d3be20] [c00000000000d96c] 
+system_call_common+0xfc/0x27c
 
->
 
-> ...and remember: if we keep it nice and minimal and clean, we can put it into
-> /proc/vmstat and monitor it.
-
-No objections from me.
-
->
-> And then if a problem shows up, the more complex and advanced debugging data can
-> go into debugfs's CMA area. And you're all set.
->
-> If Android made up some policy not to use debugfs, then:
->
-> a) that probably won't prevent engineers from using it anyway, for advanced debugging,
-> and
->
-> b) If (a) somehow falls short, then we need to talk about what Android's plans are to
-> fill the need. And "fill up sysfs with debugfs items, possibly duplicating some of them,
-> and generally making an unecessary mess, to compensate for not using debugfs" is not
-> my first choice. :)
->
->
-> thanks,
-> --
-> John Hubbard
-> NVIDIA
