@@ -2,104 +2,306 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 770DA31106D
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 19:56:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D4FED31106C
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 19:56:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233433AbhBERMd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 12:12:33 -0500
-Received: from mail.micronovasrl.com ([212.103.203.10]:35984 "EHLO
-        mail.micronovasrl.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231725AbhBEQFW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 11:05:22 -0500
-Received: from mail.micronovasrl.com (mail.micronovasrl.com [127.0.0.1])
-        by mail.micronovasrl.com (Postfix) with ESMTP id A4101B04882
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 18:46:57 +0100 (CET)
-Authentication-Results: mail.micronovasrl.com (amavisd-new); dkim=pass
-        reason="pass (just generated, assumed good)" header.d=micronovasrl.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=micronovasrl.com;
-         h=content-transfer-encoding:content-language:content-type
-        :content-type:in-reply-to:mime-version:user-agent:date:date
-        :message-id:from:from:references:to:subject:subject; s=dkim; t=
-        1612547217; x=1613411218; bh=7P00f57/9R26tDFzPR1XDObGA+7xrXtFmKh
-        cUybzuJE=; b=LzS6wXA7WSiR0I5PyBEXL5yqRYwU5fn+FbYWzuvod758TF1ubSe
-        8pzWApqcKcWVu9pT+NnHWLoBTIg+bE11wvMwN/iFWEY4jxRW4/UUxRlDUukmy1jP
-        3wjbu3ACRtkWzZbPCEPZn4i4Qvz4wHmUN9Wjm3q2s3imbZVEKwP3iZvU=
-X-Virus-Scanned: Debian amavisd-new at mail.micronovasrl.com
-X-Spam-Flag: NO
-X-Spam-Score: -2.085
+        id S233536AbhBERML (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 12:12:11 -0500
+Received: from so15.mailgun.net ([198.61.254.15]:56973 "EHLO so15.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233606AbhBEQMX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 11:12:23 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1612547666; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=GihQ9LYDjowEbBDzOOAmGj6l125OrpUDwG0EebZ3OFI=;
+ b=lO2IHgHgv3Ir/RcN1YJe7kVsibJz9gd/4SevUbYi1O7rSPofMo8Z2vbh3KftAYdWAje36va7
+ 5AOWMg08dd6y8S9JtezhayfD+buzPxxznMBd8A7FSKNwUXcs7bBQhLliUWIPhav4IXPU+ZG1
+ V/Zsbu/GNBVWuWDRDiq79xd1ijM=
+X-Mailgun-Sending-Ip: 198.61.254.15
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 601d862c81f6c45dce632396 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 05 Feb 2021 17:53:48
+ GMT
+Sender: mdalam=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 03231C43464; Fri,  5 Feb 2021 17:53:47 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.085 tagged_above=-10 required=4.5
-        tests=[ALL_TRUSTED=-1, BAYES_00=-1.9, LOTS_OF_MONEY=0.001,
-        MONEY_NOHTML=1.144, NICE_REPLY_A=-0.33]
-        autolearn=no autolearn_force=no
-Received: from mail.micronovasrl.com ([127.0.0.1])
-        by mail.micronovasrl.com (mail.micronovasrl.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id bEksrtJp9Z5D for <linux-kernel@vger.kernel.org>;
-        Fri,  5 Feb 2021 18:46:57 +0100 (CET)
-Received: from [192.168.50.85] (146-241-184-239.dyn.eolo.it [146.241.184.239])
-        by mail.micronovasrl.com (Postfix) with ESMTPSA id 507F9B04671;
-        Fri,  5 Feb 2021 18:46:56 +0100 (CET)
-Subject: Re: [PATCH v3 5/5] serial: 8250_dw: add em485 support
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Heiko Stuebner <heiko@sntech.de>, gregkh@linuxfoundation.org,
-        jslaby@suse.com, matwey.kornilov@gmail.com, lukas@wunner.de,
-        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        christoph.muellner@theobroma-systems.com,
-        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
-References: <20200517215610.2131618-1-heiko@sntech.de>
- <20200517215610.2131618-6-heiko@sntech.de>
- <20200518152103.GI1634618@smile.fi.intel.com>
- <1f7881b5-f900-dbbe-3f8d-f990d2bdf5a7@micronovasrl.com>
- <YBk14xJhIyqTNH/k@smile.fi.intel.com>
-From:   Giulio Benetti <giulio.benetti@micronovasrl.com>
-Message-ID: <9b2a7c4c-2ef1-5198-9aae-83f9fec00289@micronovasrl.com>
-Date:   Fri, 5 Feb 2021 18:46:56 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: mdalam)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 57FCFC43462;
+        Fri,  5 Feb 2021 17:53:46 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <YBk14xJhIyqTNH/k@smile.fi.intel.com>
-Content-Type: text/plain; charset=iso-8859-15; format=flowed
-Content-Language: it
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 05 Feb 2021 23:23:46 +0530
+From:   mdalam@codeaurora.org
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+        boris.brezillon@collabora.com, linux-mtd@lists.infradead.org,
+        linux-kernel@vger.kernel.org, sricharan@codeaurora.org,
+        mdalam=codeaurora.org@codeaurora.org
+Subject: Re: [PATCH V3] mtd: rawnand: qcom: update last code word register
+In-Reply-To: <b46d212665a3054d736de2cae61e209c@codeaurora.org>
+References: <1610251305-20792-1-git-send-email-mdalam@codeaurora.org>
+ <20210128075248.GA31543@thinkpad>
+ <b46d212665a3054d736de2cae61e209c@codeaurora.org>
+Message-ID: <9820142a2f48cf72a1c36929c195749b@codeaurora.org>
+X-Sender: mdalam@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 02/02/2021 12:22, Andy Shevchenko ha scritto:
-> On Tue, Feb 02, 2021 at 01:31:17AM +0100, Giulio Benetti wrote:
->> Il 18/05/2020 17:21, Andy Shevchenko ha scritto:
->>> On Sun, May 17, 2020 at 11:56:10PM +0200, Heiko Stuebner wrote:
->>>> From: Giulio Benetti <giulio.benetti@micronovasrl.com>
->>>>
->>>> Need to use rs485 transceiver so let's use existing em485 485 emulation
->>>> layer on top of 8250.
->>>>
->>>> Add rs485_config callback to port and uses the standard em485 start and
->>>> stop helpers.
->>>
->>> Would it prevent to use native RS485 support?
->>
->> 8250_dw doesn't have a native RS485 support, do you mean using hardware
->> RTS assertion? Anyway at the moment it's not present. This would be the
->> first rs485 support added to 8250_dw.
+On 2021-01-29 10:41, mdalam@codeaurora.org wrote:
+> On 2021-01-28 13:22, Manivannan Sadhasivam wrote:
+>> On Sun, Jan 10, 2021 at 09:31:45AM +0530, Md Sadre Alam wrote:
+>>> From QPIC version 2.0 onwards new register got added to
+>>> read last codeword. This change will update the same.
+>>> 
+>>> For first three code word READ_LOCATION_n register will be
+>>> use.For last code word READ_LOCATION_LAST_CW_n register will be
+>>> use.
+>>> 
+>>> Signed-off-by: Md Sadre Alam <mdalam@codeaurora.org>
+>> 
+>> I gave this patch a try on SDX55 board but not able to resolve an 
+>> issue and
+>> I think it is related to reading the last code word which this patch 
+>> is trying
+>> to address. For my patch on supporting QPIC v2 IP, I tested with 
+>> SDX55-MTP board
+>> and I never hit any issue. But on my new dev board (Telit FN980), 
+>> there seems to
+>> be an issue while populating the partitions and tracing down that bug 
+>> lands me
+>> in copy_last_cw() function.
+>> 
+>> The issue only happens while creating the 3rd partition on Telit board 
+>> whose
+>> size differs when compared with MTP. The board just reboots into QDL 
+>> mode
+>> whenever it tries to read the last code word.
+>> 
+>> Below is the snippet of partition layout:
+>> 
+>> Telit partitions:
+>> 
+>> [    1.082015] 0: sbl offs=0x00000000 size=0x0000000a attr:0x000000ff
+>> [    1.082702] 1: mibib offs=0x0000000a size=0x0000000a 
+>> attr:0x000000ff
+>> [    1.083488] 2: ico offs=0x00000014 size=0x00000014 attr:0x000000ff
+>> [    1.084572] 3: efs2 offs=0x00000028 size=0x0000002c attr:0x000000ff
+>> [    1.085316] 4: tz offs=0x00000054 size=0x00000007 attr:0x000000ff
+>> [    1.086089] 5: tz_devcfg offs=0x0000005b size=0x00000004 
+>> attr:0x000000ff
+>> ....
+>> 
+>> MTP partitions:
+>> 
+>> [    1.573871] 0: sbl offs=0x00000000 size=0x0000000a attr:0x000000ff
+>> [    1.581139] 1: mibib offs=0x0000000a size=0x0000000a 
+>> attr:0x000000ff
+>> [    1.587362] 2: efs2 offs=0x00000014 size=0x0000002c attr:0x000000ff
+>> [    1.593853] 3: tz offs=0x00000040 size=0x00000007 attr:0x000000ff
+>> [    1.599860] 4: tz_devcfg offs=0x00000047 size=0x00000004 
+>> attr:0x000000ff
+>> ...
+>> 
+>> So until I figure this out, please keep this patch on hold!
 > 
-> DW v4.0+ has it.
+>   There was some corner case I missed in V3 patch. I have fixed this
+> in V4 patch.
+>   I have done some tress testing as well with V4 patch on IPQ5018
+> platform using "nand-utils"
+>   and "mtd_test.ko" , Now its working fine. Can you test with V4 patch 
+> once.
 
-I have access to datasheet of DW v3, and I don't have access to hardware
-with DW v4.0v Uart.
-But I could add rs485emu for only UART version < 4.0 and I can find Uart
-version by reading UCV register, would it be acceptable?
-
-Best regards
--- 
-Giulio Benetti
-CTO
-
-MICRONOVA SRL
-Sede: Via A. Niedda 3 - 35010 Vigonza (PD)
-Tel. 049/8931563 - Fax 049/8931346
-Cod.Fiscale - P.IVA 02663420285
-Capitale Sociale ¤ 26.000 i.v.
-Iscritta al Reg. Imprese di Padova N. 02663420285
-Numero R.E.A. 258642
+    ping! Do you need some more info for the V4 patch ?
+>> 
+>> Thanks,
+>> Mani
+>> 
+>>> ---
+>>> [V3]
+>>>  * Added else condition for last code word in update_rw_regs().
+>>>  drivers/mtd/nand/raw/qcom_nandc.c | 84 
+>>> ++++++++++++++++++++++++++++++++-------
+>>>  1 file changed, 70 insertions(+), 14 deletions(-)
+>>> 
+>>> diff --git a/drivers/mtd/nand/raw/qcom_nandc.c 
+>>> b/drivers/mtd/nand/raw/qcom_nandc.c
+>>> index 667e4bf..50ff6e3 100644
+>>> --- a/drivers/mtd/nand/raw/qcom_nandc.c
+>>> +++ b/drivers/mtd/nand/raw/qcom_nandc.c
+>>> @@ -48,6 +48,10 @@
+>>>  #define	NAND_READ_LOCATION_1		0xf24
+>>>  #define	NAND_READ_LOCATION_2		0xf28
+>>>  #define	NAND_READ_LOCATION_3		0xf2c
+>>> +#define	NAND_READ_LOCATION_LAST_CW_0	0xf40
+>>> +#define	NAND_READ_LOCATION_LAST_CW_1	0xf44
+>>> +#define	NAND_READ_LOCATION_LAST_CW_2	0xf48
+>>> +#define	NAND_READ_LOCATION_LAST_CW_3	0xf4c
+>>> 
+>>>  /* dummy register offsets, used by write_reg_dma */
+>>>  #define	NAND_DEV_CMD1_RESTORE		0xdead
+>>> @@ -187,6 +191,12 @@ nandc_set_reg(nandc, 
+>>> NAND_READ_LOCATION_##reg,			\
+>>>  	      ((size) << READ_LOCATION_SIZE) |			\
+>>>  	      ((is_last) << READ_LOCATION_LAST))
+>>> 
+>>> +#define nandc_set_read_loc_last(nandc, reg, offset, size, is_last)	\
+>>> +nandc_set_reg(nandc, NAND_READ_LOCATION_LAST_CW_##reg,			\
+>>> +	      ((offset) << READ_LOCATION_OFFSET) |		\
+>>> +	      ((size) << READ_LOCATION_SIZE) |			\
+>>> +	      ((is_last) << READ_LOCATION_LAST))
+>>> +
+>>>  /*
+>>>   * Returns the actual register address for all NAND_DEV_ registers
+>>>   * (i.e. NAND_DEV_CMD0, NAND_DEV_CMD1, NAND_DEV_CMD2 and 
+>>> NAND_DEV_CMD_VLD)
+>>> @@ -316,6 +326,10 @@ struct nandc_regs {
+>>>  	__le32 read_location1;
+>>>  	__le32 read_location2;
+>>>  	__le32 read_location3;
+>>> +	__le32 read_location_last0;
+>>> +	__le32 read_location_last1;
+>>> +	__le32 read_location_last2;
+>>> +	__le32 read_location_last3;
+>>> 
+>>>  	__le32 erased_cw_detect_cfg_clr;
+>>>  	__le32 erased_cw_detect_cfg_set;
+>>> @@ -644,6 +658,14 @@ static __le32 *offset_to_nandc_reg(struct 
+>>> nandc_regs *regs, int offset)
+>>>  		return &regs->read_location2;
+>>>  	case NAND_READ_LOCATION_3:
+>>>  		return &regs->read_location3;
+>>> +	case NAND_READ_LOCATION_LAST_CW_0:
+>>> +		return &regs->read_location_last0;
+>>> +	case NAND_READ_LOCATION_LAST_CW_1:
+>>> +		return &regs->read_location_last1;
+>>> +	case NAND_READ_LOCATION_LAST_CW_2:
+>>> +		return &regs->read_location_last2;
+>>> +	case NAND_READ_LOCATION_LAST_CW_3:
+>>> +		return &regs->read_location_last3;
+>>>  	default:
+>>>  		return NULL;
+>>>  	}
+>>> @@ -719,9 +741,14 @@ static void update_rw_regs(struct qcom_nand_host 
+>>> *host, int num_cw, bool read)
+>>>  	nandc_set_reg(nandc, NAND_READ_STATUS, host->clrreadstatus);
+>>>  	nandc_set_reg(nandc, NAND_EXEC_CMD, 1);
+>>> 
+>>> -	if (read)
+>>> -		nandc_set_read_loc(nandc, 0, 0, host->use_ecc ?
+>>> -				   host->cw_data : host->cw_size, 1);
+>>> +	if (read) {
+>>> +		if (nandc->props->qpic_v2)
+>>> +			nandc_set_read_loc_last(nandc, 0, 0, host->use_ecc ?
+>>> +					host->cw_data : host->cw_size, 1);
+>>> +		else
+>>> +			nandc_set_read_loc(nandc, 0, 0, host->use_ecc ?
+>>> +					host->cw_data : host->cw_size, 1);
+>>> +	}
+>>>  }
+>>> 
+>>>  /*
+>>> @@ -1096,9 +1123,13 @@ static void config_nand_page_read(struct 
+>>> qcom_nand_controller *nandc)
+>>>  static void
+>>>  config_nand_cw_read(struct qcom_nand_controller *nandc, bool 
+>>> use_ecc)
+>>>  {
+>>> -	if (nandc->props->is_bam)
+>>> +	if (nandc->props->is_bam) {
+>>> +		if (nandc->props->qpic_v2)
+>>> +			write_reg_dma(nandc, NAND_READ_LOCATION_LAST_CW_0,
+>>> +				      1, NAND_BAM_NEXT_SGL);
+>>>  		write_reg_dma(nandc, NAND_READ_LOCATION_0, 4,
+>>>  			      NAND_BAM_NEXT_SGL);
+>>> +	}
+>>> 
+>>>  	write_reg_dma(nandc, NAND_FLASH_CMD, 1, NAND_BAM_NEXT_SGL);
+>>>  	write_reg_dma(nandc, NAND_EXEC_CMD, 1, NAND_BAM_NEXT_SGL);
+>>> @@ -1633,16 +1664,28 @@ qcom_nandc_read_cw_raw(struct mtd_info *mtd, 
+>>> struct nand_chip *chip,
+>>>  	}
+>>> 
+>>>  	if (nandc->props->is_bam) {
+>>> -		nandc_set_read_loc(nandc, 0, read_loc, data_size1, 0);
+>>> +		if (nandc->props->qpic_v2 && cw == (ecc->steps - 1))
+>>> +			nandc_set_read_loc_last(nandc, 0, read_loc, data_size1, 0);
+>>> +		else
+>>> +			nandc_set_read_loc(nandc, 0, read_loc, data_size1, 0);
+>>>  		read_loc += data_size1;
+>>> 
+>>> -		nandc_set_read_loc(nandc, 1, read_loc, oob_size1, 0);
+>>> +		if (nandc->props->qpic_v2 && cw == (ecc->steps - 1))
+>>> +			nandc_set_read_loc_last(nandc, 1, read_loc, oob_size1, 0);
+>>> +		else
+>>> +			nandc_set_read_loc(nandc, 1, read_loc, oob_size1, 0);
+>>>  		read_loc += oob_size1;
+>>> 
+>>> -		nandc_set_read_loc(nandc, 2, read_loc, data_size2, 0);
+>>> +		if (nandc->props->qpic_v2 && cw == (ecc->steps - 1))
+>>> +			nandc_set_read_loc_last(nandc, 2, read_loc, data_size2, 0);
+>>> +		else
+>>> +			nandc_set_read_loc(nandc, 2, read_loc, data_size2, 0);
+>>>  		read_loc += data_size2;
+>>> 
+>>> -		nandc_set_read_loc(nandc, 3, read_loc, oob_size2, 1);
+>>> +		if (nandc->props->qpic_v2 && cw == (ecc->steps - 1))
+>>> +			nandc_set_read_loc_last(nandc, 3, read_loc, oob_size2, 0);
+>>> +		else
+>>> +			nandc_set_read_loc(nandc, 3, read_loc, oob_size2, 1);
+>>>  	}
+>>> 
+>>>  	config_nand_cw_read(nandc, false);
+>>> @@ -1873,14 +1916,27 @@ static int read_page_ecc(struct 
+>>> qcom_nand_host *host, u8 *data_buf,
+>>> 
+>>>  		if (nandc->props->is_bam) {
+>>>  			if (data_buf && oob_buf) {
+>>> -				nandc_set_read_loc(nandc, 0, 0, data_size, 0);
+>>> -				nandc_set_read_loc(nandc, 1, data_size,
+>>> -						   oob_size, 1);
+>>> +				if (nandc->props->qpic_v2 && i == (ecc->steps - 1)) {
+>>> +					nandc_set_read_loc_last(nandc, 0, 0, data_size, 0);
+>>> +					nandc_set_read_loc_last(nandc, 1, data_size,
+>>> +								oob_size, 1);
+>>> +				} else {
+>>> +					nandc_set_read_loc(nandc, 0, 0, data_size, 0);
+>>> +					nandc_set_read_loc(nandc, 1, data_size,
+>>> +							   oob_size, 1);
+>>> +				}
+>>>  			} else if (data_buf) {
+>>> -				nandc_set_read_loc(nandc, 0, 0, data_size, 1);
+>>> +				if (nandc->props->qpic_v2 && i == (ecc->steps - 1))
+>>> +					nandc_set_read_loc_last(nandc, 0, 0, data_size, 1);
+>>> +				else
+>>> +					nandc_set_read_loc(nandc, 0, 0, data_size, 1);
+>>>  			} else {
+>>> -				nandc_set_read_loc(nandc, 0, data_size,
+>>> -						   oob_size, 1);
+>>> +				if (nandc->props->qpic_v2 && i == (ecc->steps - 1))
+>>> +					nandc_set_read_loc_last(nandc, 0, data_size,
+>>> +								oob_size, 1);
+>>> +				else
+>>> +					nandc_set_read_loc(nandc, 0, data_size,
+>>> +							   oob_size, 1);
+>>>  			}
+>>>  		}
+>>> 
+>>> --
+>>> 2.7.4
+>>> 
