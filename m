@@ -2,63 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1352D310571
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 08:08:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00F6F310573
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 08:08:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231327AbhBEHHe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 02:07:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42792 "EHLO
+        id S231345AbhBEHHl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 02:07:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231230AbhBEHHR (ORCPT
+        with ESMTP id S231317AbhBEHHY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 02:07:17 -0500
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C1F3C0613D6
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 23:06:37 -0800 (PST)
-Received: by mail-pf1-x42f.google.com with SMTP id i63so3726318pfg.7
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 23:06:37 -0800 (PST)
+        Fri, 5 Feb 2021 02:07:24 -0500
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03E7CC061786
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 23:06:39 -0800 (PST)
+Received: by mail-pj1-x1032.google.com with SMTP id d2so3272749pjs.4
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 23:06:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
         h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
          :content-transfer-encoding;
-        bh=EWF76HYflOSB1OrBYTPsvdsM7e0I+FAmlSYnAn8ZKQc=;
-        b=ecmHbBQ8yqsVKLhzbA0PGceRRKqh0al5tfdBU+2k1tKH9lOppdOyxzqWfTcEJhArKu
-         hxQxDBdcQP1lzPPsGZBWotsLtToKpaa8jIw+nTlJEmx430J/2gHvapfRjCZ083UzOlSy
-         Nxagae9Va1XnM/S8g8s0wBQED6jpjFj+jdhC0erEolBmihf3CPsVAI5TOLeZoAow20gn
-         mBXaRPd0QY1N+0stmP/HI080xU9rbkUNv1Sw2YXBR3LR94DOxowbeBzoHv+0KtFqhKwU
-         nBsJyOO3UygcMB+hH0mzs2feA+kYeI0rNOizUij/1j3iPEkuj5zbDu1JqGHJLLtCjiv0
-         ukqg==
+        bh=MZ4P6Lw/6UiS8JyJfX3U5rtRFO+IqLNE8qsO+NPVXGk=;
+        b=fjeV+W4m/Dfueub4G9bVMQnTATX1tYc2umM/k2buTydgbNxkOTmz14dNxg9/wi+TaG
+         3R6vlfL+eJiVmyerGorSI9Ot9ISmEGu/a5fp/3Fh+Yi2787Ho3Pj2xUzMysM/BpfJJoE
+         R8S/1IAWO6NNC03LRzIMJ1j/OSXeyRTWttpiiVyVzOJ0BiIGv7+Axyxn7VzFzk82O/al
+         QtmB+UE9IuL7dWKS3GGaoWGSMcfrFFAPwcH39HdHaXSo6QnY1KK7RbYCsnolBpHH2iM9
+         jQXvZGjda+wBfrP8VbfYw0FMQaw59QpSQHNMEFy2VMgLGoPc4p334HZ/uN6+Qru8eZie
+         NdGA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
          :mime-version:content-transfer-encoding;
-        bh=EWF76HYflOSB1OrBYTPsvdsM7e0I+FAmlSYnAn8ZKQc=;
-        b=Q7tFySTgZz4CfZ0O2H60to5PXwa4gtzPb/a7H0lrGonDC862B1V6zaf1IGchC2plCR
-         Y/V+OKevTuUXWJgkxAQnWMVwCwTqiHqmqF0mk7kYP6nfeKVC4nbTk3AOugl4VkqzM137
-         STaeGRB7DUwxs1PjRTVYSCX0Mf8Zg1/BZfcXosljyxfl8omhD4t6C5Z3bYemqwAVb9QQ
-         wFhCuJsSAMMJKkS9Gi3B5a72Twb/ySFAeEOj66zdtpmxSp5fgJBnaw3q2H2qgncPxoQO
-         tLjqTjps7MegAy5e0sjnalCsok35ty72NZj5iwZUMDDCN7U06EFjLFcdIg7bEb3Q1DFD
-         Entg==
-X-Gm-Message-State: AOAM532Fc6M8r92zdHxvO0Lcy7OzhLerjUYyDWsW+z1uBwREiUNJqwpz
-        Csz2G7j64AjyGWj7NZ/47EY0WJt7EckSDf4w
-X-Google-Smtp-Source: ABdhPJylwFkYzxiOHze5TcoGUYtRuKQUb2qZfzxlF6Y+Unn8qBXdovj05IYLlEshzFUrFV2FuDXbiA==
-X-Received: by 2002:a62:ddd1:0:b029:1b7:5651:f6ea with SMTP id w200-20020a62ddd10000b02901b75651f6eamr3231028pff.62.1612508796836;
-        Thu, 04 Feb 2021 23:06:36 -0800 (PST)
+        bh=MZ4P6Lw/6UiS8JyJfX3U5rtRFO+IqLNE8qsO+NPVXGk=;
+        b=tp5fWxP2kiLWBVmjHvbx+I8UBu7IMwnMOjdMXPKhfE+jar3I4nSNQeyTFyr4WAQPZG
+         JR9ttbdVeym+aURoNAAT645e+3bAXBsOsOQeI2LdzGo8gIaPgEW9r5jEn8ar2sxRIJ5t
+         8hCWKWhIxjYBBa6s+1Bo8eL890NrClc/gH93GQ7jHrFNqsh/ovuoZwzU0OzcE8lOsolh
+         IRhBDePfRryMyvwF81+uNgDr3OodGf9d0Bvol5pcCFbGCfAMXiHG+mG3lijBZfNUKLTd
+         VINczH2Bj62umKDpG1PTyeNipom+ppKQTcK3TnDVm81j+WoKW8bvAYwJOCCpcqSIUo55
+         HW/w==
+X-Gm-Message-State: AOAM5303X1zBUqFRGeINzV+sGlxHEq0ZdXVJARG2m6Bm6MOMb3F3W92I
+        uODp2zIa1wf169Sp5Gle9M5WAw==
+X-Google-Smtp-Source: ABdhPJy+i1SyBhBl58mdtGk+jbnEdRYyq/TwOIas1FPrSVUyC1ZHmq30hMp0QYPogXZRl4PpMztVyw==
+X-Received: by 2002:a17:90b:1c0d:: with SMTP id oc13mr2843615pjb.156.1612508798561;
+        Thu, 04 Feb 2021 23:06:38 -0800 (PST)
 Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id l11sm4671266pjh.6.2021.02.04.23.06.35
+        by smtp.gmail.com with ESMTPSA id t15sm7210137pjy.37.2021.02.04.23.06.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Feb 2021 23:06:35 -0800 (PST)
-Date:   Thu, 04 Feb 2021 23:06:35 -0800 (PST)
-X-Google-Original-Date: Thu, 04 Feb 2021 23:03:10 PST (-0800)
-Subject:     Re: [PATCH] RISC-V: Add a non-void return for sbi v02 functions
-In-Reply-To: <20210204052643.1608586-1-atish.patra@wdc.com>
-CC:     linux-kernel@vger.kernel.org, Atish Patra <Atish.Patra@wdc.com>,
-        aou@eecs.berkeley.edu, Anup Patel <Anup.Patel@wdc.com>,
-        wangkefeng.wang@huawei.com, linux-riscv@lists.infradead.org,
-        Paul Walmsley <paul.walmsley@sifive.com>
+        Thu, 04 Feb 2021 23:06:37 -0800 (PST)
+Date:   Thu, 04 Feb 2021 23:06:37 -0800 (PST)
+X-Google-Original-Date: Thu, 04 Feb 2021 23:06:06 PST (-0800)
+Subject:     Re: [PATCH] selftests/vDSO: fix ABI selftest on riscv
+In-Reply-To: <20210204145042.7345-1-tklauser@distanz.ch>
+CC:     Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu,
+        vincenzo.frascino@arm.com, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
 From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     Atish Patra <Atish.Patra@wdc.com>
-Message-ID: <mhng-754d5fdb-23eb-45a0-b167-6bd4f674b6b6@palmerdabbelt-glaptop>
+To:     tklauser@distanz.ch, shuah@kernel.org
+Message-ID: <mhng-1ed0f9e8-84ec-4f2e-ac42-5a608726e2fe@palmerdabbelt-glaptop>
 Mime-Version: 1.0 (MHng)
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
@@ -66,133 +65,95 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 03 Feb 2021 21:26:43 PST (-0800), Atish Patra wrote:
-> SBI v0.2 functions can return an error code from SBI implementation.
-> We are already processing the SBI error code and coverts it to the Linux
-> error code.
+On Thu, 04 Feb 2021 06:50:42 PST (-0800), tklauser@distanz.ch wrote:
+> Only older versions of the RISC-V GCC toolchain define __riscv__. Check
+> for __riscv as well, which is used by newer GCC toolchains. Also set
+> VDSO_32BIT based on __riscv_xlen.
 >
-> Propagate to the error code to the caller as well. As of now, kvm is the
-> only user of these error codes.
+> Before (on riscv64):
 >
-> Signed-off-by: Atish Patra <atish.patra@wdc.com>
+> $ ./vdso_test_abi
+> [vDSO kselftest] VDSO_VERSION: LINUX_4
+> Could not find __vdso_gettimeofday
+> Could not find __vdso_clock_gettime
+> Could not find __vdso_clock_getres
+> clock_id: CLOCK_REALTIME [PASS]
+> Could not find __vdso_clock_gettime
+> Could not find __vdso_clock_getres
+> clock_id: CLOCK_BOOTTIME [PASS]
+> Could not find __vdso_clock_gettime
+> Could not find __vdso_clock_getres
+> clock_id: CLOCK_TAI [PASS]
+> Could not find __vdso_clock_gettime
+> Could not find __vdso_clock_getres
+> clock_id: CLOCK_REALTIME_COARSE [PASS]
+> Could not find __vdso_clock_gettime
+> Could not find __vdso_clock_getres
+> clock_id: CLOCK_MONOTONIC [PASS]
+> Could not find __vdso_clock_gettime
+> Could not find __vdso_clock_getres
+> clock_id: CLOCK_MONOTONIC_RAW [PASS]
+> Could not find __vdso_clock_gettime
+> Could not find __vdso_clock_getres
+> clock_id: CLOCK_MONOTONIC_COARSE [PASS]
+> Could not find __vdso_time
+>
+> After (on riscv32):
+>
+> $ ./vdso_test_abi
+> [vDSO kselftest] VDSO_VERSION: LINUX_4.15
+> The time is 1612449376.015086
+> The time is 1612449376.18340784
+> The resolution is 0 1
+> clock_id: CLOCK_REALTIME [PASS]
+> The time is 774.842586182
+> The resolution is 0 1
+> clock_id: CLOCK_BOOTTIME [PASS]
+> The time is 1612449376.22536565
+> The resolution is 0 1
+> clock_id: CLOCK_TAI [PASS]
+> The time is 1612449376.20885172
+> The resolution is 0 4000000
+> clock_id: CLOCK_REALTIME_COARSE [PASS]
+> The time is 774.845491269
+> The resolution is 0 1
+> clock_id: CLOCK_MONOTONIC [PASS]
+> The time is 774.849534200
+> The resolution is 0 1
+> clock_id: CLOCK_MONOTONIC_RAW [PASS]
+> The time is 774.842139684
+> The resolution is 0 4000000
+> clock_id: CLOCK_MONOTONIC_COARSE [PASS]
+> Could not find __vdso_time
+>
+> Signed-off-by: Tobias Klauser <tklauser@distanz.ch>
 > ---
->  arch/riscv/include/asm/sbi.h | 10 +++++-----
->  arch/riscv/kernel/sbi.c      | 32 ++++++++++++++++----------------
->  2 files changed, 21 insertions(+), 21 deletions(-)
+>  tools/testing/selftests/vDSO/vdso_config.h | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
 >
-> diff --git a/arch/riscv/include/asm/sbi.h b/arch/riscv/include/asm/sbi.h
-> index 1b26ec8e6a15..3e7141a7d11f 100644
-> --- a/arch/riscv/include/asm/sbi.h
-> +++ b/arch/riscv/include/asm/sbi.h
-> @@ -116,13 +116,13 @@ int sbi_console_getchar(void);
->  void sbi_set_timer(uint64_t stime_value);
->  void sbi_shutdown(void);
->  void sbi_clear_ipi(void);
-> -void sbi_send_ipi(const unsigned long *hart_mask);
-> -void sbi_remote_fence_i(const unsigned long *hart_mask);
-> -void sbi_remote_sfence_vma(const unsigned long *hart_mask,
-> +int sbi_send_ipi(const unsigned long *hart_mask);
-> +int sbi_remote_fence_i(const unsigned long *hart_mask);
-> +int sbi_remote_sfence_vma(const unsigned long *hart_mask,
->  			   unsigned long start,
->  			   unsigned long size);
->
-> -void sbi_remote_sfence_vma_asid(const unsigned long *hart_mask,
-> +int sbi_remote_sfence_vma_asid(const unsigned long *hart_mask,
->  				unsigned long start,
->  				unsigned long size,
->  				unsigned long asid);
-> @@ -163,7 +163,7 @@ static inline unsigned long sbi_minor_version(void)
->
->  int sbi_err_map_linux_errno(int err);
->  #else /* CONFIG_RISCV_SBI */
-> -static inline void sbi_remote_fence_i(const unsigned long *hart_mask) {}
-> +static inline int sbi_remote_fence_i(const unsigned long *hart_mask) {}
->  static inline void sbi_init(void) {}
->  #endif /* CONFIG_RISCV_SBI */
->  #endif /* _ASM_RISCV_SBI_H */
-> diff --git a/arch/riscv/kernel/sbi.c b/arch/riscv/kernel/sbi.c
-> index 8d60b2ebcad3..f904af48635d 100644
-> --- a/arch/riscv/kernel/sbi.c
-> +++ b/arch/riscv/kernel/sbi.c
-> @@ -352,7 +352,7 @@ static int __sbi_rfence_v02(int fid, const unsigned long *hart_mask,
->   * sbi_set_timer() - Program the timer for next timer event.
->   * @stime_value: The value after which next timer event should fire.
->   *
-> - * Return: None
-> + * Return: None.
->   */
->  void sbi_set_timer(uint64_t stime_value)
->  {
-> @@ -363,11 +363,11 @@ void sbi_set_timer(uint64_t stime_value)
->   * sbi_send_ipi() - Send an IPI to any hart.
->   * @hart_mask: A cpu mask containing all the target harts.
->   *
-> - * Return: None
-> + * Return: 0 on success, appropriate linux error code otherwise.
->   */
-> -void sbi_send_ipi(const unsigned long *hart_mask)
-> +int sbi_send_ipi(const unsigned long *hart_mask)
->  {
-> -	__sbi_send_ipi(hart_mask);
-> +	return __sbi_send_ipi(hart_mask);
->  }
->  EXPORT_SYMBOL(sbi_send_ipi);
->
-> @@ -375,12 +375,12 @@ EXPORT_SYMBOL(sbi_send_ipi);
->   * sbi_remote_fence_i() - Execute FENCE.I instruction on given remote harts.
->   * @hart_mask: A cpu mask containing all the target harts.
->   *
-> - * Return: None
-> + * Return: 0 on success, appropriate linux error code otherwise.
->   */
-> -void sbi_remote_fence_i(const unsigned long *hart_mask)
-> +int sbi_remote_fence_i(const unsigned long *hart_mask)
->  {
-> -	__sbi_rfence(SBI_EXT_RFENCE_REMOTE_FENCE_I,
-> -		     hart_mask, 0, 0, 0, 0);
-> +	return __sbi_rfence(SBI_EXT_RFENCE_REMOTE_FENCE_I,
-> +			    hart_mask, 0, 0, 0, 0);
->  }
->  EXPORT_SYMBOL(sbi_remote_fence_i);
->
-> @@ -391,14 +391,14 @@ EXPORT_SYMBOL(sbi_remote_fence_i);
->   * @start: Start of the virtual address
->   * @size: Total size of the virtual address range.
->   *
-> - * Return: None
-> + * Return: 0 on success, appropriate linux error code otherwise.
->   */
-> -void sbi_remote_sfence_vma(const unsigned long *hart_mask,
-> +int sbi_remote_sfence_vma(const unsigned long *hart_mask,
->  			   unsigned long start,
->  			   unsigned long size)
->  {
-> -	__sbi_rfence(SBI_EXT_RFENCE_REMOTE_SFENCE_VMA,
-> -		     hart_mask, start, size, 0, 0);
-> +	return __sbi_rfence(SBI_EXT_RFENCE_REMOTE_SFENCE_VMA,
-> +			    hart_mask, start, size, 0, 0);
->  }
->  EXPORT_SYMBOL(sbi_remote_sfence_vma);
->
-> @@ -411,15 +411,15 @@ EXPORT_SYMBOL(sbi_remote_sfence_vma);
->   * @size: Total size of the virtual address range.
->   * @asid: The value of address space identifier (ASID).
->   *
-> - * Return: None
-> + * Return: 0 on success, appropriate linux error code otherwise.
->   */
-> -void sbi_remote_sfence_vma_asid(const unsigned long *hart_mask,
-> +int sbi_remote_sfence_vma_asid(const unsigned long *hart_mask,
->  				unsigned long start,
->  				unsigned long size,
->  				unsigned long asid)
->  {
-> -	__sbi_rfence(SBI_EXT_RFENCE_REMOTE_SFENCE_VMA_ASID,
-> -		     hart_mask, start, size, asid, 0);
-> +	return __sbi_rfence(SBI_EXT_RFENCE_REMOTE_SFENCE_VMA_ASID,
-> +			    hart_mask, start, size, asid, 0);
->  }
->  EXPORT_SYMBOL(sbi_remote_sfence_vma_asid);
+> diff --git a/tools/testing/selftests/vDSO/vdso_config.h b/tools/testing/selftests/vDSO/vdso_config.h
+> index 6a6fe8d4ff55..6188b16827d1 100644
+> --- a/tools/testing/selftests/vDSO/vdso_config.h
+> +++ b/tools/testing/selftests/vDSO/vdso_config.h
+> @@ -47,10 +47,12 @@
+>  #elif defined(__x86_64__)
+>  #define VDSO_VERSION		0
+>  #define VDSO_NAMES		1
+> -#elif defined(__riscv__)
+> +#elif defined(__riscv__) || defined(__riscv)
+>  #define VDSO_VERSION		5
+>  #define VDSO_NAMES		1
+> +#if __riscv_xlen == 32
+>  #define VDSO_32BIT		1
+> +#endif
+>  #else /* nds32 */
+>  #define VDSO_VERSION		4
+>  #define VDSO_NAMES		1
 
-Thanks, this is on for-next.
+Reviewed-by: Palmer Dabbelt <palmerdabbelt@google.com>
+Acked-by: Palmer Dabbelt <palmerdabbelt@google.com>
+
+Not sure if you want this through the RISC-V tree, so I'm leaving it out for
+now and assuming it'll go through a kselftest tree.
+
+Thanks!
