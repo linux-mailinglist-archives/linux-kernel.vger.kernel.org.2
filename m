@@ -2,194 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABC5B31042C
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 05:51:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F510310430
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 05:52:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230106AbhBEEuT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 23:50:19 -0500
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:6552 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229852AbhBEEuR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 23:50:17 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B601cce600001>; Thu, 04 Feb 2021 20:49:36 -0800
-Received: from [10.2.60.31] (172.20.145.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 5 Feb
- 2021 04:49:36 +0000
-Subject: Re: [PATCH v2 3/4] mm/gup: add a range variant of
- unpin_user_pages_dirty_lock()
-To:     Joao Martins <joao.m.martins@oracle.com>, <linux-mm@kvack.org>
-CC:     <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Doug Ledford <dledford@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>
-References: <20210204202500.26474-1-joao.m.martins@oracle.com>
- <20210204202500.26474-4-joao.m.martins@oracle.com>
-From:   John Hubbard <jhubbard@nvidia.com>
-Message-ID: <6376e151-06fc-1e1b-0b30-1592972353ea@nvidia.com>
-Date:   Thu, 4 Feb 2021 20:49:36 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:85.0) Gecko/20100101
- Thunderbird/85.0
+        id S229596AbhBEEvq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 23:51:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46026 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229849AbhBEEvm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 23:51:42 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BF5C561481;
+        Fri,  5 Feb 2021 04:51:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612500661;
+        bh=vJRLWeUh1Mxpx9gsES/hy9gXr/MIHo+q7wald6FOY/o=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=OVBnYPE/2s304hVQWXBqdm8QY/yauVgOmeyp0lXUKEUsMmRQEqWQTiarm1B9oaUzM
+         z3fNKIb8RHfjF00JN8Pe0FUjVTJBRGLodYT7UDVney/9znuJFCQ0iV/O8aguX5mLLl
+         j0CpB+9tJiQSs+reo2ygAU+yy0k+KOsaGA/CNZPs9tShIk+re4JGr19E/XNuye5P5l
+         9kuPjAM1td4zXgJIbU6hKHp1skGxHxci4qN5bcfVB97F3gqjsNzwYxUtV4AjvsnSyh
+         5RmXZo6Qbt4Ic6Cy8At/EvJzZaVFQ3hzNett6KAO2vNpSOLjd6Lbn4nJW7sBcP6hdj
+         yeHT+tzBr2/Gw==
+Date:   Thu, 4 Feb 2021 20:50:59 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Alex Elder <elder@linaro.org>
+Cc:     davem@davemloft.net, elder@kernel.org, evgreen@chromium.org,
+        bjorn.andersson@linaro.org, cpratapa@codeaurora.org,
+        subashab@codeaurora.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next 1/7] net: ipa: restructure a few functions
+Message-ID: <20210204205059.4b218a6d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210203152855.11866-2-elder@linaro.org>
+References: <20210203152855.11866-1-elder@linaro.org>
+        <20210203152855.11866-2-elder@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <20210204202500.26474-4-joao.m.martins@oracle.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1612500576; bh=L4XmPV4/LhWtyabb5k0RK+38d7lFs/eNJZcod012PNM=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=g+GtMvCz6EcwIsEtSNiCCgMAmVvGlbRkEu2ZJEtjFrc07me1K2ZBn5P0YHcdpznVY
-         dYfvAf5//QPlrEJH5ufTin59hPyE5Wx3oslPqxXI3omqWCKeVdNOzI5TqrCEa+6v2S
-         yPETIbxNsR4s0iLVKCgYVgbYDVGw6y56QmiKx/chKn6d7Tnl6US5ThIe1sYGs65Bot
-         kvnNb7qKLw7mXwiQe1fvbsyNN2B9bFmxoeYE/pxtaWR3xNj15siuwlHURU3o2wDP4d
-         z1Z3zDUI3ZY/czu9uvY24huIV3ZQOHlCkn8CWDkR8Zlu/DGXFv6i70L+Levx2p8VI4
-         Xrrhcj7QiGgXA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/4/21 12:24 PM, Joao Martins wrote:
-> Add a unpin_user_page_range_dirty_lock() API which takes a starting page
-> and how many consecutive pages we want to unpin and optionally dirty.
+On Wed,  3 Feb 2021 09:28:49 -0600 Alex Elder wrote:
+> Make __gsi_channel_start() and __gsi_channel_stop() more structurally
+> and semantically similar to each other:
+>   - Restructure __gsi_channel_start() to always return at the end of
+>     the function, similar to the way __gsi_channel_stop() does.
+>   - Move the mutex calls out of gsi_channel_stop_retry() and into
+>     __gsi_channel_stop().
 > 
-> Given that we won't be iterating on a list of changes, change
-> compound_next() to receive a bool, whether to calculate from the starting
-
-Thankfully, that claim is stale and can now be removed from this commit
-description.
-
-> page, or walk the page array. Finally add a separate iterator,
-> for_each_compound_range() that just operate in page ranges as opposed
-> to page array.
+> Restructure gsi_channel_stop() to always return at the end of the
+> function, like gsi_channel_start() does.
 > 
-> For users (like RDMA mr_dereg) where each sg represents a
-> contiguous set of pages, we're able to more efficiently unpin
-> pages without having to supply an array of pages much of what
-> happens today with unpin_user_pages().
-> 
-> Suggested-by: Jason Gunthorpe <jgg@nvidia.com>
-> Signed-off-by: Joao Martins <joao.m.martins@oracle.com>
+> Signed-off-by: Alex Elder <elder@linaro.org>
 > ---
->   include/linux/mm.h |  2 ++
->   mm/gup.c           | 64 ++++++++++++++++++++++++++++++++++++++++++++++
->   2 files changed, 66 insertions(+)
+>  drivers/net/ipa/gsi.c | 45 +++++++++++++++++++++++--------------------
+>  1 file changed, 24 insertions(+), 21 deletions(-)
 > 
-> diff --git a/include/linux/mm.h b/include/linux/mm.h
-> index a608feb0d42e..b76063f7f18a 100644
-> --- a/include/linux/mm.h
-> +++ b/include/linux/mm.h
-> @@ -1265,6 +1265,8 @@ static inline void put_page(struct page *page)
->   void unpin_user_page(struct page *page);
->   void unpin_user_pages_dirty_lock(struct page **pages, unsigned long npages,
->   				 bool make_dirty);
-> +void unpin_user_page_range_dirty_lock(struct page *page, unsigned long npages,
-> +				      bool make_dirty);
->   void unpin_user_pages(struct page **pages, unsigned long npages);
->   
->   /**
-> diff --git a/mm/gup.c b/mm/gup.c
-> index 5a3dd235017a..3426736a01b2 100644
-> --- a/mm/gup.c
-> +++ b/mm/gup.c
-> @@ -215,6 +215,34 @@ void unpin_user_page(struct page *page)
->   }
->   EXPORT_SYMBOL(unpin_user_page);
->   
-> +static inline void range_next(unsigned long i, unsigned long npages,
-> +			      struct page **list, struct page **head,
-> +			      unsigned int *ntails)
-
-Would compound_range_next() be a better name?
-
-> +{
-> +	struct page *next, *page;
-> +	unsigned int nr = 1;
-> +
-> +	if (i >= npages)
-> +		return;
-> +
-> +	npages -= i;
-> +	next = *list + i;
-> +
-> +	page = compound_head(next);
-> +	if (PageCompound(page) && compound_order(page) > 1)
-> +		nr = min_t(unsigned int,
-> +			   page + compound_nr(page) - next, npages);
-
-This pointer arithmetic will involve division. Which may be unnecessarily
-expensive, if there is a way to calculate this with indices instead of
-pointer arithmetic. I'm not sure if there is, off hand, but thought it
-worth mentioning because the point is sometimes overlooked.
-
-> +
-> +	*head = page;
-> +	*ntails = nr;
-> +}
-> +
-> +#define for_each_compound_range(__i, __list, __npages, __head, __ntails) \
-> +	for (__i = 0, \
-> +	     range_next(__i, __npages, __list, &(__head), &(__ntails)); \
-> +	     __i < __npages; __i += __ntails, \
-> +	     range_next(__i, __npages, __list, &(__head), &(__ntails)))
-> +
->   static inline void compound_next(unsigned long i, unsigned long npages,
->   				 struct page **list, struct page **head,
->   				 unsigned int *ntails)
-> @@ -306,6 +334,42 @@ void unpin_user_pages_dirty_lock(struct page **pages, unsigned long npages,
->   }
->   EXPORT_SYMBOL(unpin_user_pages_dirty_lock);
->   
-> +/**
-> + * unpin_user_page_range_dirty_lock() - release and optionally dirty
-> + * gup-pinned page range
-> + *
-> + * @page:  the starting page of a range maybe marked dirty, and definitely released.
-> + * @npages: number of consecutive pages to release.
-> + * @make_dirty: whether to mark the pages dirty
-> + *
-> + * "gup-pinned page range" refers to a range of pages that has had one of the
-> + * get_user_pages() variants called on that page.
-> + *
-> + * For the page ranges defined by [page .. page+npages], make that range (or
-> + * its head pages, if a compound page) dirty, if @make_dirty is true, and if the
-> + * page range was previously listed as clean.
-> + *
-> + * set_page_dirty_lock() is used internally. If instead, set_page_dirty() is
-> + * required, then the caller should a) verify that this is really correct,
-> + * because _lock() is usually required, and b) hand code it:
-> + * set_page_dirty_lock(), unpin_user_page().
-> + *
-> + */
-> +void unpin_user_page_range_dirty_lock(struct page *page, unsigned long npages,
-> +				      bool make_dirty)
-> +{
-> +	unsigned long index;
-> +	struct page *head;
-> +	unsigned int ntails;
-> +
-> +	for_each_compound_range(index, &page, npages, head, ntails) {
-> +		if (make_dirty && !PageDirty(head))
-> +			set_page_dirty_lock(head);
-> +		put_compound_head(head, ntails, FOLL_PIN);
+> diff --git a/drivers/net/ipa/gsi.c b/drivers/net/ipa/gsi.c
+> index 53640447bf123..2671b76ebcfe3 100644
+> --- a/drivers/net/ipa/gsi.c
+> +++ b/drivers/net/ipa/gsi.c
+> @@ -873,17 +873,17 @@ static void gsi_channel_deprogram(struct gsi_channel *channel)
+>  
+>  static int __gsi_channel_start(struct gsi_channel *channel, bool start)
+>  {
+> -	struct gsi *gsi = channel->gsi;
+> -	int ret;
+> +	int ret = 0;
+>  
+> -	if (!start)
+> -		return 0;
+> +	if (start) {
+> +		struct gsi *gsi = channel->gsi;
+>  
+> -	mutex_lock(&gsi->mutex);
+> +		mutex_lock(&gsi->mutex);
+>  
+> -	ret = gsi_channel_start_command(channel);
+> +		ret = gsi_channel_start_command(channel);
+>  
+> -	mutex_unlock(&gsi->mutex);
+> +		mutex_unlock(&gsi->mutex);
 > +	}
-> +}
-> +EXPORT_SYMBOL(unpin_user_page_range_dirty_lock);
+
+nit: I thought just recently Willem pointed out that keeping main flow
+     unindented is considered good style, maybe it doesn't apply here
+     perfectly, but I'd think it still applies. Why have the entire
+     body of the function indented?
+
+>  	return ret;
+>  }
+> @@ -910,11 +910,8 @@ int gsi_channel_start(struct gsi *gsi, u32 channel_id)
+>  static int gsi_channel_stop_retry(struct gsi_channel *channel)
+>  {
+>  	u32 retries = GSI_CHANNEL_STOP_RETRIES;
+> -	struct gsi *gsi = channel->gsi;
+>  	int ret;
+>  
+> -	mutex_lock(&gsi->mutex);
+> -
+>  	do {
+>  		ret = gsi_channel_stop_command(channel);
+>  		if (ret != -EAGAIN)
+> @@ -922,19 +919,26 @@ static int gsi_channel_stop_retry(struct gsi_channel *channel)
+>  		usleep_range(3 * USEC_PER_MSEC, 5 * USEC_PER_MSEC);
+>  	} while (retries--);
+>  
+> -	mutex_unlock(&gsi->mutex);
+> -
+>  	return ret;
+>  }
+>  
+>  static int __gsi_channel_stop(struct gsi_channel *channel, bool stop)
+>  {
+> -	int ret;
+> +	int ret = 0;
+>  
+>  	/* Wait for any underway transactions to complete before stopping. */
+>  	gsi_channel_trans_quiesce(channel);
+>  
+> -	ret = stop ? gsi_channel_stop_retry(channel) : 0;
+> +	if (stop) {
+> +		struct gsi *gsi = channel->gsi;
 > +
->   /**
->    * unpin_user_pages() - release an array of gup-pinned pages.
->    * @pages:  array of pages to be marked dirty and released.
-> 
+> +		mutex_lock(&gsi->mutex);
+> +
+> +		ret = gsi_channel_stop_retry(channel);
+> +
+> +		mutex_unlock(&gsi->mutex);
+> +	}
+> +
+>  	/* Finally, ensure NAPI polling has finished. */
+>  	if (!ret)
+>  		napi_synchronize(&channel->napi);
+> @@ -948,15 +952,14 @@ int gsi_channel_stop(struct gsi *gsi, u32 channel_id)
+>  	struct gsi_channel *channel = &gsi->channel[channel_id];
+>  	int ret;
+>  
+> -	/* Only disable the completion interrupt if stop is successful */
+>  	ret = __gsi_channel_stop(channel, true);
+> -	if (ret)
+> -		return ret;
+> +	if (ret) {
 
-Didn't spot any actual problems with how this works.
+This inverts the logic, right? Is it intentional?
 
-thanks,
--- 
-John Hubbard
-NVIDIA
+> +		/* Disable the completion interrupt and NAPI if successful */
+> +		gsi_irq_ieob_disable_one(gsi, channel->evt_ring_id);
+> +		napi_disable(&channel->napi);
+> +	}
+>  
+> -	gsi_irq_ieob_disable_one(gsi, channel->evt_ring_id);
+> -	napi_disable(&channel->napi);
+> -
+> -	return 0;
+> +	return ret;
+>  }
+>  
+>  /* Reset and reconfigure a channel, (possibly) enabling the doorbell engine */
+
