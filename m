@@ -2,87 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1859310263
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 02:48:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4978F310270
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 02:53:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232989AbhBEBrx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 20:47:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59290 "EHLO
+        id S229570AbhBEBxV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 20:53:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232678AbhBEBrt (ORCPT
+        with ESMTP id S229466AbhBEBxS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 20:47:49 -0500
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEE79C0613D6;
-        Thu,  4 Feb 2021 17:47:08 -0800 (PST)
-Received: by mail-lf1-x12c.google.com with SMTP id q12so7520226lfo.12;
-        Thu, 04 Feb 2021 17:47:08 -0800 (PST)
+        Thu, 4 Feb 2021 20:53:18 -0500
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 905BAC0613D6
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 17:52:38 -0800 (PST)
+Received: by mail-pl1-x62a.google.com with SMTP id b17so2751740plz.6
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 17:52:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HFUlgfa0yv/MLmEQsXGfPFb3G6FL4A5NprSd5CvPpMk=;
-        b=r0yzv6pS19Vm35q0pMRBx8aAia/+6IDUR1k5NL6AYrf79UDYfw6vMbNRN5ecjSlKmx
-         B6eo54PGuK7/ON0tEVH3reuY0J7Cr5FpKy46tt8coqUGsldoRWyUb4ReUJJjVmJsocPR
-         zkDlzn5a/0VknhuBCwp/GGgkzGNaRoSlzXfLCHFQ+PNs7QdNhGp8iN7JgiP6myAZxJ/9
-         kf8gvqmM3KqpYnAsAUmRPWviV/eaOgNinIsseJtJbmx6ucxLiu8TDWdYX++yoh7KyCvN
-         I4l0yiOJfnll0dJMyRNN9OZpDtXqVm6NjvzBfMy+fkoKnlIuIwxKZ23wmg6z05CvAf3h
-         rc6g==
+        d=squareup.com; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=HPlCt/oLMkzfdSzMbmF5TMe9TN1Pemw5Bf1xj8IPkbc=;
+        b=aaG88vmPvUfGM+ENAlspEss54lgXvtTfMg1yw0Ql+KXLOFMxNllsPhTgb5xD5vwMml
+         LKssZfpTlxkEKEnt+aWgG7SwotZi4G0ZYlUJftzq6jjL5Vx49gbNPC9tUaGQPLJ4D7IM
+         hTavVEUW3lsn+B0Lo96JJ73j2/1BsGxN3VgDs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HFUlgfa0yv/MLmEQsXGfPFb3G6FL4A5NprSd5CvPpMk=;
-        b=AOcw7Dcqq3TaVRoXwuUFyDE7TcmZ1GMPils3GQrRu0RcSPYrz0WOg8xO5qU/Ggky4p
-         8TRe6p+AGktWgS93pLHoEiFFQk+atTIY+44D7QRX9gKVtNh0RtsK1+wU56sHVDGqQ44o
-         UQtaozZfRDMn3Iyp0CJfta9ue/3plu4C13yyzjPlkBOSt6QbzfBBPa81mQagxOktUn1z
-         UaoJ/DF9lKCr0iY8tQvXUDxCBo7fkM1AAdZoIYcTwllLe0E8PtrcT97FmShQT3fQ4E48
-         QCPGMOOBYOCWEIMmai01ipCGxmXmLZFAVVFN26LSPnR/TeFVhgZZ8k1WTvaBx/PNZcU6
-         KPMw==
-X-Gm-Message-State: AOAM53331V6JTF6KgeVVzfdwcypkRxeT/dIVTdreAH14zwCV/JRlPZy8
-        pNcdnsId7pAKiGk6+YoZ6oZdnhNR1aS+7WIm9Kw=
-X-Google-Smtp-Source: ABdhPJzN6nDTfTI5N6Ze/d63acaPTf5IvURc4EmTRMRKa0cicEA0x9aDrF8Vv70X+2ElBIPK216DaYBJuex8iam1x9A=
-X-Received: by 2002:a19:787:: with SMTP id 129mr1276232lfh.540.1612489627417;
- Thu, 04 Feb 2021 17:47:07 -0800 (PST)
-MIME-Version: 1.0
-References: <20210205015219.2939361-1-xujia39@huawei.com>
-In-Reply-To: <20210205015219.2939361-1-xujia39@huawei.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 4 Feb 2021 17:46:55 -0800
-Message-ID: <CAADnVQL5NBY2E2iGCYZAeGN5gtcK0uyM1UpDNaZ28Ukrrb8tGA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: clean up for 'const static' in bpf_lsm.c
-To:     Xu Jia <xujia39@huawei.com>
-Cc:     bpf <bpf@vger.kernel.org>, KP Singh <kpsingh@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Florent Revest <revest@chromium.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=HPlCt/oLMkzfdSzMbmF5TMe9TN1Pemw5Bf1xj8IPkbc=;
+        b=UdALLz9oTxQSQnFT4pD8pYOUF+3P/6SNyBqW0uSc8J4JQ/XnxGXon1OsVSnEVX8McL
+         lIGmL4jmXsbNWf/v513Yla37+IOAWOyKpdsyH47WC/zH6PLR//1WxjzUtoiemWTupB2P
+         4MXbTaeHw03Kn1noCJWPlgPGa5LPTwXE/PrkDMJh14dAL1ZW40JEGjqA9hROrcAmc5Hs
+         Gz1Nue3ey0sx0irXN6Kw7SWDwyZf5IlrfEfLa7VY65GHTEzi4L0v9CQA2rt6N6FIFjyd
+         JWb937kLVeYUHXBey4IgtXHTLnkKgeVDk6WoGSlxp0xJz2Gv0TdqId2HhhdBmG/2cJBB
+         TKiA==
+X-Gm-Message-State: AOAM533RWZwdp+bVb2/BLMlJaJnAq9if44WbBezNtiPmaSveRdK2mFGr
+        3KL3uXxCJ/eH6lxQiGO9tMGneA==
+X-Google-Smtp-Source: ABdhPJztxs5hvHnG2TytvQiPpYtx+iVGjsBzbaRXxg+ESnHMEM6gYYE5tWFqg+xsj1ShR/Ew4HAcYg==
+X-Received: by 2002:a17:90a:2ec7:: with SMTP id h7mr1780338pjs.200.1612489958131;
+        Thu, 04 Feb 2021 17:52:38 -0800 (PST)
+Received: from localhost (162-207-206-139.lightspeed.sntcca.sbcglobal.net. [162.207.206.139])
+        by smtp.gmail.com with ESMTPSA id h124sm3327073pfe.216.2021.02.04.17.52.36
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 04 Feb 2021 17:52:37 -0800 (PST)
+From:   Benjamin Li <benl@squareup.com>
+To:     Georgi Djakov <georgi.djakov@linaro.org>,
+        Jun Nie <jun.nie@linaro.org>
+Cc:     kernel@squareup.com, Benjamin Li <benl@squareup.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Georgi Djakov <djakov@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/2] Clean up MSM8939 interconnect driver
+Date:   Thu,  4 Feb 2021 17:52:03 -0800
+Message-Id: <20210205015205.22947-1-benl@squareup.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 4, 2021 at 5:40 PM Xu Jia <xujia39@huawei.com> wrote:
->
-> Prefer 'static const' over 'const static' here
->
-> Signed-off-by: Xu Jia <xujia39@huawei.com>
-> ---
->  kernel/bpf/bpf_lsm.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/kernel/bpf/bpf_lsm.c b/kernel/bpf/bpf_lsm.c
-> index 1622a44d1617..75b1c678d558 100644
-> --- a/kernel/bpf/bpf_lsm.c
-> +++ b/kernel/bpf/bpf_lsm.c
-> @@ -67,7 +67,7 @@ BPF_CALL_2(bpf_bprm_opts_set, struct linux_binprm *, bprm, u64, flags)
->
->  BTF_ID_LIST_SINGLE(bpf_bprm_opts_set_btf_ids, struct, linux_binprm)
->
-> -const static struct bpf_func_proto bpf_bprm_opts_set_proto = {
-> +static const struct bpf_func_proto bpf_bprm_opts_set_proto = {
+Following up on a review comment on commit 6c6fe5d3dc5e ("interconnect: qcom:
+Add MSM8939 interconnect provider driver") to clean up some log pollution.
 
-I totally agree that it's more canonical this way, but I don't think
-such git history noise
-is worth it.
+This is based on icc-next (which appears to contain a refactor commonizing
+functions into icc-rpm.c).
+
+v2:
+- Update commit message to add a full explanation, rather than referencing a
+  previous commit.
+
+Benjamin Li (2):
+  interconnect: qcom: icc-rpm: record slave RPM id in error log
+  interconnect: qcom: msm8939: remove rpm-ids from non-RPM nodes
+
+ drivers/interconnect/qcom/icc-rpm.c |  4 ++--
+ drivers/interconnect/qcom/msm8939.c | 16 ++++++++--------
+ 2 files changed, 10 insertions(+), 10 deletions(-)
+
+-- 
+2.17.1
+
