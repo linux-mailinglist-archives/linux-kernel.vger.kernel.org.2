@@ -2,115 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25DE9311A1F
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 04:33:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18491311A7D
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 04:53:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231920AbhBFDbi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 22:31:38 -0500
-Received: from mail-ot1-f41.google.com ([209.85.210.41]:39655 "EHLO
-        mail-ot1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230226AbhBFCoP (ORCPT
+        id S231794AbhBFDuZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 22:50:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41932 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230289AbhBFCwm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 21:44:15 -0500
-Received: by mail-ot1-f41.google.com with SMTP id d7so6605412otq.6;
-        Fri, 05 Feb 2021 18:43:54 -0800 (PST)
+        Fri, 5 Feb 2021 21:52:42 -0500
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1136AC06178A
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 14:00:49 -0800 (PST)
+Received: by mail-io1-xd32.google.com with SMTP id n201so8697998iod.12
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 14:00:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TjFoIlWrQQ6SMzxidSIU20LEs4MBYZ8U+Hbs2kdSGcY=;
+        b=E3xQASvh1UTu1+ew985C5nGgz+dZqjVwunktw31qnGEZjNfL0hXKiFy796OgliRWeF
+         AM7eZB+peG0BOA6Q31/k/yQy/UlzzkcFDtqmmzlmkXNuDZ0nZexQkVABdzuVCWUFV6xA
+         LSFXFaXdd9Fk9X9vhzetmL0b+meOsrs9iEGB4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=KVxSD1rRrWRAJtG5RDpbzugHIfcqDTvX+OpzCsWnge0=;
-        b=Et2QRdcvhCJGsfrCOtdRnnE7b2kywqKLe3l8qA51K105+qyJto5YsQ/h4g0nAh8ZjY
-         NoCrgDBjnr4O3dC0zW8bb+xkIBPHVVEfAPOXZ+zkv2g5ml1G0LCZ5CWWhBF6qmY6tihQ
-         HuDF1fCBkNpBQt5dNUNtFsr0j+L6j7Qopf7NXSnbOrXLO9XU4ewYHZsvVpT/VSgSGdvl
-         v6G1KWthwvSVLeZvXsAYT2NFo3Oc8YhXrgenJP9kR6TJFk1CoNbCHOZd3IEiyiuznfo/
-         sgXKxAFxKBPlDrLh1Wf0fj5YEstWLOFkeMcTwBclSuLwg8iPn0nZhoUeB9hJF58MCCQO
-         KTaQ==
-X-Gm-Message-State: AOAM530uchXvMvAd6x8KzjMAI0wSinBcckM+W7jItws7I/d5kZXAQd/n
-        kfPi2g3EwSZhtULqx5Kb2inRvXNv/Q==
-X-Google-Smtp-Source: ABdhPJyu7gJrKzV2CHIDzrZf0xO2fwFgHLWzzUYn1r2rXC/7SPUKdVPADz9GDBP6ItA1Y6wElUidrQ==
-X-Received: by 2002:a4a:ce90:: with SMTP id f16mr4998594oos.61.1612562215585;
-        Fri, 05 Feb 2021 13:56:55 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id x187sm2091742oig.3.2021.02.05.13.56.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Feb 2021 13:56:54 -0800 (PST)
-Received: (nullmailer pid 3821562 invoked by uid 1000);
-        Fri, 05 Feb 2021 21:56:53 -0000
-Date:   Fri, 5 Feb 2021 15:56:53 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Andre Przywara <andre.przywara@arm.com>
-Cc:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Samuel Holland <samuel@sholland.org>,
-        Icenowy Zheng <icenowy@aosc.io>,
-        =?iso-8859-1?Q?Cl=E9ment_P=E9ron?= <peron.clem@gmail.com>,
-        Shuosheng Huang <huangshuosheng@allwinnertech.com>,
-        Yangtao Li <tiny.windzz@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-sunxi@googlegroups.com, Lee Jones <lee.jones@linaro.org>,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v5 04/20] dt-bindings: mfd: axp20x: Add AXP305 compatible
- (plus optional IRQ)
-Message-ID: <20210205215653.GA3813445@robh.at.kernel.org>
-References: <20210127172500.13356-1-andre.przywara@arm.com>
- <20210127172500.13356-5-andre.przywara@arm.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TjFoIlWrQQ6SMzxidSIU20LEs4MBYZ8U+Hbs2kdSGcY=;
+        b=XVoM4X6nw1DQH4VhjVE0VbMdNh+5fKiCEfaBLJoC12rybJj1uFBipd1r6WkJW84A6v
+         gx6ZW8CgpD2HRfM7fy1LUE6gaINpJ0eoWi/Kd+wGKEF7y7Dd5bgC9x7rgrTREsAdjYSL
+         6nFtdY2AFPXi2jljcaVeHR+GVds0hfVqDZB8XF/Vg9SGyPiqiUhZDLQsfEReKx6dRoCt
+         7EReNY2QX8zpMEYlu1CM4bt7389Gi1dLiPBH3cclVTNKr6IwEFL1NVXROXdjkl3cMGr0
+         NeVFWyF6/RZHSwyoXdyP017UgUIZ0iZ81h30xFBe7y+rGEqSVm2mXzhez6er4PijkVP+
+         12mQ==
+X-Gm-Message-State: AOAM531+h2fRFNe9Yv8kGjB8FFgKBq8BN4qnDAOAMNUrtHgrYfztxCr/
+        yBIxC/TrAxpW3RKO70CSTFBxrJevSQk7k8TRl1LFEg==
+X-Google-Smtp-Source: ABdhPJzQUJC+nALEv8999zWpWOq1rvvD0E2d2qR4O0M77d01+4sHlR2oV3jrZwnpdiQYYzQs2xGAJc7nwLwmlRRo3rI=
+X-Received: by 2002:a02:84e8:: with SMTP id f95mr7031738jai.4.1612562448532;
+ Fri, 05 Feb 2021 14:00:48 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210127172500.13356-5-andre.przywara@arm.com>
+References: <20201215172435.5388-1-youghand@codeaurora.org>
+ <CACTWRwsM_RJnssBpxDpRSbex4_1T9QDv3+ZT7eLnYsgOgtGFQw@mail.gmail.com> <878s9o6aqa.fsf@codeaurora.org>
+In-Reply-To: <878s9o6aqa.fsf@codeaurora.org>
+From:   Abhishek Kumar <kuabhs@chromium.org>
+Date:   Fri, 5 Feb 2021 14:00:37 -0800
+Message-ID: <CACTWRwuGj-kriu10aOix-McK3G_934E=UMa4KzL0yeqtsJRV3A@mail.gmail.com>
+Subject: Re: [PATCH 3/3] ath10k: Set wiphy flag to trigger sta disconnect on
+ hardware restart
+To:     Kalle Valo <kvalo@codeaurora.org>
+Cc:     Youghandhar Chintala <youghand@codeaurora.org>,
+        netdev <netdev@vger.kernel.org>,
+        Brian Norris <briannorris@chromium.org>,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        ath10k <ath10k@lists.infradead.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Rakesh Pillai <pillair@codeaurora.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 27, 2021 at 05:24:44PM +0000, Andre Przywara wrote:
-> The AXP305 PMIC used in AXP805 seems to be fully compatible to the
-> AXP805 PMIC, so add the proper chain of compatible strings.
-> 
-> Also at least on one board (Orangepi Zero2) there is no interrupt line
-> connected to the CPU, so make the "interrupts" property optional.
-> 
-> Signed-off-by: Andre Przywara <andre.przywara@arm.com>
-> ---
->  Documentation/devicetree/bindings/mfd/axp20x.txt | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/mfd/axp20x.txt b/Documentation/devicetree/bindings/mfd/axp20x.txt
-> index 4991a6415796..4fd748101e3c 100644
-> --- a/Documentation/devicetree/bindings/mfd/axp20x.txt
-> +++ b/Documentation/devicetree/bindings/mfd/axp20x.txt
-> @@ -26,10 +26,10 @@ Required properties:
->      * "x-powers,axp803"
->      * "x-powers,axp806"
->      * "x-powers,axp805", "x-powers,axp806"
-> +    * "x-powers,axp803", "x-powers,axp805", "x-powers,axp806"
+> I'm not sure what you mean. But if you are saying that we should move
+> ath10k_hw_params_list entirely to firmware then that is a huge task as
+> we would need to make changes in every firmware branch, and there are so
+> many different branches that I have lost count. And due to backwards
+> compatibility we still need to have ath10k_hw_params_list in ath10k for
+> few years.
+>
+ Apologies for late reply on this thread. Yes you got me right( to
+move ath10k_hw_params_list entirely to firmware ). I wanted to trigger
+an idea and know what other people's views are, or atleast what are
+the challenges. As you said the task is much bigger with so many
+firmware branches. As long as you feel it is scalable for coming
+years, we should be good.
 
-I don't normally (yet) ask for schema conversions on compatible 
-additions, but this is one of the few remaining compatibles with no 
-schema for allwinner. So a conversion here would be nice. BTW, dtschema 
-now has a better check for this (-m option) without the false positives. 
-I plan to turn on the option soon (doesn't matter for dtbs as they all 
-have lots of warnings, but bindings also get warnings).
+As far as the patch is concerned, it LGTM.
 
-Either way,
+Reviewed-by: Abhishek Kumar <kuabhs@chromium.org>
 
-Acked-by: Rob Herring <robh@kernel.org>
-
-
->      * "x-powers,axp809"
->      * "x-powers,axp813"
->  - reg: The I2C slave address or RSB hardware address for the AXP chip
-> -- interrupts: SoC NMI / GPIO interrupt connected to the PMIC's IRQ pin
->  - interrupt-controller: The PMIC has its own internal IRQs
->  - #interrupt-cells: Should be set to 1
->  
-> @@ -43,6 +43,7 @@ more information:
->  			AXP20x/LDO3: software-based implementation
->  
->  Optional properties:
-> +- interrupts: SoC NMI / GPIO interrupt connected to the PMIC's IRQ pin
->  - x-powers,dcdc-freq: defines the work frequency of DC-DC in KHz
->  		      AXP152/20X: range:  750-1875, Default: 1.5 MHz
->  		      AXP22X/8XX: range: 1800-4050, Default: 3   MHz
-> -- 
-> 2.17.5
-> 
+Thanks
+Abhishek
