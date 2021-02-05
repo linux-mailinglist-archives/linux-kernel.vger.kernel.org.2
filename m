@@ -2,132 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE1BB310937
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 11:36:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A76F31096C
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 11:46:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231508AbhBEKfk convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 5 Feb 2021 05:35:40 -0500
-Received: from szxga01-in.huawei.com ([45.249.212.187]:2575 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231290AbhBEKdO (ORCPT
+        id S231642AbhBEKqJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 05:46:09 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44288 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231475AbhBEKea (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 05:33:14 -0500
-Received: from DGGEMM405-HUB.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4DXBWX44nRzW78d;
-        Fri,  5 Feb 2021 18:30:16 +0800 (CST)
-Received: from dggemi712-chm.china.huawei.com (10.3.20.111) by
- DGGEMM405-HUB.china.huawei.com (10.3.20.213) with Microsoft SMTP Server (TLS)
- id 14.3.498.0; Fri, 5 Feb 2021 18:32:26 +0800
-Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
- dggemi712-chm.china.huawei.com (10.3.20.111) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2106.2; Fri, 5 Feb 2021 18:32:26 +0800
-Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
- dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.2106.006;
- Fri, 5 Feb 2021 18:32:26 +0800
-From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-To:     Christoph Hellwig <hch@lst.de>
-CC:     "m.szyprowski@samsung.com" <m.szyprowski@samsung.com>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linuxarm@openeuler.org" <linuxarm@openeuler.org>
-Subject: RE: [PATCH v2] dma-mapping: benchmark: pretend DMA is transmitting
-Thread-Topic: [PATCH v2] dma-mapping: benchmark: pretend DMA is transmitting
-Thread-Index: AQHW+2OBR5g3s4IewkuPPN58KPwDpapIw5uAgACOkOA=
-Date:   Fri, 5 Feb 2021 10:32:26 +0000
-Message-ID: <e4c784d93cdd41d285bdddb650fb9471@hisilicon.com>
-References: <20210205020035.25340-1-song.bao.hua@hisilicon.com>
- <20210205092113.GA870@lst.de>
-In-Reply-To: <20210205092113.GA870@lst.de>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.126.202.19]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        Fri, 5 Feb 2021 05:34:30 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612521184;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=3tCYr3yMCBn+1cr68bRRYsOLCo+XUlob/DqSt8WXr5I=;
+        b=BkPsdvV8yzFiyKRg+p7sehLdIAwS6O/13dNpKElwSIaK5cPt4kdCUI3DoSW/e7ULneDnX7
+        VOEEcbNkmw54InjsJutDlipla5SjallOVz/Ahp09qrSoynVL4XG96jJZNeuhPrAEGLGJB5
+        ZfWFWcOIL+MqFo/5eT6oMgCE0KTBjaI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-99-O305z5ggNiaNLlETfouo-Q-1; Fri, 05 Feb 2021 05:33:02 -0500
+X-MC-Unique: O305z5ggNiaNLlETfouo-Q-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BE16C107ACF8;
+        Fri,  5 Feb 2021 10:33:00 +0000 (UTC)
+Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1C20919D9F;
+        Fri,  5 Feb 2021 10:33:00 +0000 (UTC)
+From:   Paolo Bonzini <pbonzini@redhat.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     jgg@ziepe.ca, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        dan.j.williams@intel.com
+Subject: [PATCH 0/2] KVM: do not assume PTE is writable after follow_pfn
+Date:   Fri,  5 Feb 2021 05:32:57 -0500
+Message-Id: <20210205103259.42866-1-pbonzini@redhat.com>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This series is the first step towards fixing KVM's usage of follow_pfn.
+The immediate fix here is that KVM is not checking the writability of
+the PFN, which actually dates back to way before the introduction of
+follow_pfn in commit add6a0cd1c5b ("KVM: MMU: try to fix up page faults
+before giving up", 2016-07-05).  There are more changes needed to
+invalidate gfn-to-pfn caches from MMU notifiers, but this issue will
+be tackled later.
+
+A more fundamental issue however is that the follow_pfn function is
+basically impossible to use correctly.  Almost all users for example
+are assuming that the page is writable; KVM was not alone in this
+mistake.  follow_pte, despite not being exported for modules, is a
+far saner API.  Therefore, patch 1 simplifies follow_pte a bit and
+makes it available to modules.
+
+Please review and possibly ack for inclusion in the KVM tree,
+thanks!
+
+Paolo
 
 
-> -----Original Message-----
-> From: Christoph Hellwig [mailto:hch@lst.de]
-> Sent: Friday, February 5, 2021 10:21 PM
-> To: Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>
-> Cc: m.szyprowski@samsung.com; hch@lst.de; robin.murphy@arm.com;
-> iommu@lists.linux-foundation.org; linux-kernel@vger.kernel.org;
-> linuxarm@openeuler.org
-> Subject: Re: [PATCH v2] dma-mapping: benchmark: pretend DMA is transmitting
-> 
-> On Fri, Feb 05, 2021 at 03:00:35PM +1300, Barry Song wrote:
-> > +	__u32 dma_trans_ns; /* time for DMA transmission in ns */
-> >  	__u64 expansion[10];	/* For future use */
-> 
-> We need to keep the struct size, so the expansion field needs to
-> shrink by the equivalent amount of data that is added in dma_trans_ns.
+Paolo Bonzini (2):
+  mm: provide a sane PTE walking API for modules
+  KVM: do not assume PTE is writable after follow_pfn
 
-Unfortunately I didn't put a rsv u32 field after dma_dir
-in the original patch.
-There were five 32bits data before expansion[]:
+ arch/s390/pci/pci_mmio.c |  2 +-
+ fs/dax.c                 |  5 +++--
+ include/linux/mm.h       |  6 ++++--
+ mm/memory.c              | 35 ++++++++++++++++++++++++++++++-----
+ virt/kvm/kvm_main.c      | 15 ++++++++++++---
+ 5 files changed, 50 insertions(+), 13 deletions(-)
 
-struct map_benchmark {
-	__u64 avg_map_100ns; /* average map latency in 100ns */
-	__u64 map_stddev; /* standard deviation of map latency */
-	__u64 avg_unmap_100ns; /* as above */
-	__u64 unmap_stddev;
-	__u32 threads; /* how many threads will do map/unmap in parallel */
-	__u32 seconds; /* how long the test will last */
-	__s32 node; /* which numa node this benchmark will run on */
-	__u32 dma_bits; /* DMA addressing capability */
-	__u32 dma_dir; /* DMA data direction */
-	__u64 expansion[10];	/* For future use */
-};
+-- 
+2.26.2
 
-My bad. That was really silly. I should have done the below from
-the first beginning:
-struct map_benchmark {
-	__u64 avg_map_100ns; /* average map latency in 100ns */
-	__u64 map_stddev; /* standard deviation of map latency */
-	__u64 avg_unmap_100ns; /* as above */
-	__u64 unmap_stddev;
-	__u32 threads; /* how many threads will do map/unmap in parallel */
-	__u32 seconds; /* how long the test will last */
-	__s32 node; /* which numa node this benchmark will run on */
-	__u32 dma_bits; /* DMA addressing capability */
-	__u32 dma_dir; /* DMA data direction */
-	__u32 rsv;
-	__u64 expansion[10];	/* For future use */
-};
-
-So on 64bit system, this patch doesn't change the length of struct
-as the new added u32 just fill the gap between dma_dir and expansion.
-
-For 32bit system, this patch increases 4 bytes in the length.
-
-I can keep the struct size unchanged by changing the struct to
-
-struct map_benchmark {
-	__u64 avg_map_100ns; /* average map latency in 100ns */
-	__u64 map_stddev; /* standard deviation of map latency */
-	__u64 avg_unmap_100ns; /* as above */
-	__u64 unmap_stddev;
-	__u32 threads; /* how many threads will do map/unmap in parallel */
-	__u32 seconds; /* how long the test will last */
-	__s32 node; /* which numa node this benchmark will run on */
-	__u32 dma_bits; /* DMA addressing capability */
-	__u32 dma_dir; /* DMA data direction */
-	__u32 dma_trans_ns; /* time for DMA transmission in ns */
-
-	__u32 exp; /* For future use */
-	__u64 expansion[9];	/* For future use */
-};
-
-But the code is really ugly now.
-
-Thanks
-Barry
