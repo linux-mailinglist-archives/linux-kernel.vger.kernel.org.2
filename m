@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73283311099
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 20:00:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B06A311078
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 19:57:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233721AbhBERSJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 12:18:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54526 "EHLO mail.kernel.org"
+        id S233488AbhBEROt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 12:14:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54888 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233482AbhBEQAH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 11:00:07 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 070B66503C;
-        Fri,  5 Feb 2021 14:11:46 +0000 (UTC)
+        id S233532AbhBEQCZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 11:02:25 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 95B766505E;
+        Fri,  5 Feb 2021 14:12:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612534307;
-        bh=t/pRD0D2VtWuFJI/OCF5Ez6vMZ52nRnx6eXiedynaR4=;
+        s=korg; t=1612534355;
+        bh=yfv70gwnos9Z7HA1DVypdXAtxcMJb28Q00haM7IyWyI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=f5msCzELyEDgCcUEXLLE2w13JUNMMD9KWN49JcogXlGwqOgzKe0PflBVwJJZKtQUQ
-         UAJeR+D/4Yf8TLAMjOe+yE7CaHaT4i9NvpFICmznXAkjoa3UwFNkezlZhG2Swk+OnG
-         sQCCEcnWhYDNLY5ZgnSA/OZDgeb1M5RjtQaYe5cI=
+        b=JCrPTL72s3EDCqE7Ch1dv+P+j3l0F/uH2ZppJ9Gl8cs/GC1y5oQqPGagjX5+wMGJI
+         iuNLACJSuihhmPgqgrfqDBjj+78PmO8HI2XREL0hJG5U9Ymbrou/sy+ZG63jilCFwk
+         9efkNlRDkxNfiFU9IzGvBr2uoFy/iwpE2L5Vs45k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Brian King <brking@linux.vnet.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 35/57] scsi: ibmvfc: Set default timeout to avoid crash during migration
-Date:   Fri,  5 Feb 2021 15:07:01 +0100
-Message-Id: <20210205140657.471837264@linuxfoundation.org>
+        stable@vger.kernel.org, Enke Chen <enchen@paloaltonetworks.com>,
+        Neal Cardwell <ncardwell@google.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 5.4 08/32] tcp: make TCP_USER_TIMEOUT accurate for zero window probes
+Date:   Fri,  5 Feb 2021 15:07:23 +0100
+Message-Id: <20210205140652.694199892@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210205140655.982616732@linuxfoundation.org>
-References: <20210205140655.982616732@linuxfoundation.org>
+In-Reply-To: <20210205140652.348864025@linuxfoundation.org>
+References: <20210205140652.348864025@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,85 +41,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Brian King <brking@linux.vnet.ibm.com>
+From: Enke Chen <enchen@paloaltonetworks.com>
 
-[ Upstream commit 764907293edc1af7ac857389af9dc858944f53dc ]
+commit 344db93ae3ee69fc137bd6ed89a8ff1bf5b0db08 upstream.
 
-While testing live partition mobility, we have observed occasional crashes
-of the Linux partition. What we've seen is that during the live migration,
-for specific configurations with large amounts of memory, slow network
-links, and workloads that are changing memory a lot, the partition can end
-up being suspended for 30 seconds or longer. This resulted in the following
-scenario:
+The TCP_USER_TIMEOUT is checked by the 0-window probe timer. As the
+timer has backoff with a max interval of about two minutes, the
+actual timeout for TCP_USER_TIMEOUT can be off by up to two minutes.
 
-CPU 0                          CPU 1
--------------------------------  ----------------------------------
-scsi_queue_rq                    migration_store
- -> blk_mq_start_request          -> rtas_ibm_suspend_me
-  -> blk_add_timer                 -> on_each_cpu(rtas_percpu_suspend_me
-              _______________________________________V
-             |
-             V
-    -> IPI from CPU 1
-     -> rtas_percpu_suspend_me
-                                     -> __rtas_suspend_last_cpu
+In this patch the TCP_USER_TIMEOUT is made more accurate by taking it
+into account when computing the timer value for the 0-window probes.
 
--- Linux partition suspended for > 30 seconds --
-                                      -> for_each_online_cpu(cpu)
-                                           plpar_hcall_norets(H_PROD
- -> scsi_dispatch_cmd
-                                      -> scsi_times_out
-                                       -> scsi_abort_command
-                                        -> queue_delayed_work
-  -> ibmvfc_queuecommand_lck
-   -> ibmvfc_send_event
-    -> ibmvfc_send_crq
-     - returns H_CLOSED
-   <- returns SCSI_MLQUEUE_HOST_BUSY
--> __blk_mq_requeue_request
+This patch is similar to and builds on top of the one that made
+TCP_USER_TIMEOUT accurate for RTOs in commit b701a99e431d ("tcp: Add
+tcp_clamp_rto_to_user_timeout() helper to improve accuracy").
 
-                                      -> scmd_eh_abort_handler
-                                       -> scsi_try_to_abort_cmd
-                                         - returns SUCCESS
-                                       -> scsi_queue_insert
-
-Normally, the SCMD_STATE_COMPLETE bit would protect against the command
-completion and the timeout, but that doesn't work here, since we don't
-check that at all in the SCSI_MLQUEUE_HOST_BUSY path.
-
-In this case we end up calling scsi_queue_insert on a request that has
-already been queued, or possibly even freed, and we crash.
-
-The patch below simply increases the default I/O timeout to avoid this race
-condition. This is also the timeout value that nearly all IBM SAN storage
-recommends setting as the default value.
-
-Link: https://lore.kernel.org/r/1610463998-19791-1-git-send-email-brking@linux.vnet.ibm.com
-Signed-off-by: Brian King <brking@linux.vnet.ibm.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 9721e709fa68 ("tcp: simplify window probe aborting on USER_TIMEOUT")
+Signed-off-by: Enke Chen <enchen@paloaltonetworks.com>
+Reviewed-by: Neal Cardwell <ncardwell@google.com>
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Link: https://lore.kernel.org/r/20210122191306.GA99540@localhost.localdomain
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/scsi/ibmvscsi/ibmvfc.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ include/net/tcp.h     |    1 +
+ net/ipv4/tcp_input.c  |    1 +
+ net/ipv4/tcp_output.c |    2 ++
+ net/ipv4/tcp_timer.c  |   18 ++++++++++++++++++
+ 4 files changed, 22 insertions(+)
 
-diff --git a/drivers/scsi/ibmvscsi/ibmvfc.c b/drivers/scsi/ibmvscsi/ibmvfc.c
-index 070cf516b98fe..57c9a71fa33a7 100644
---- a/drivers/scsi/ibmvscsi/ibmvfc.c
-+++ b/drivers/scsi/ibmvscsi/ibmvfc.c
-@@ -2957,8 +2957,10 @@ static int ibmvfc_slave_configure(struct scsi_device *sdev)
- 	unsigned long flags = 0;
+--- a/include/net/tcp.h
++++ b/include/net/tcp.h
+@@ -619,6 +619,7 @@ static inline void tcp_clear_xmit_timers
  
- 	spin_lock_irqsave(shost->host_lock, flags);
--	if (sdev->type == TYPE_DISK)
-+	if (sdev->type == TYPE_DISK) {
- 		sdev->allow_restart = 1;
-+		blk_queue_rq_timeout(sdev->request_queue, 120 * HZ);
-+	}
- 	spin_unlock_irqrestore(shost->host_lock, flags);
- 	return 0;
+ unsigned int tcp_sync_mss(struct sock *sk, u32 pmtu);
+ unsigned int tcp_current_mss(struct sock *sk);
++u32 tcp_clamp_probe0_to_user_timeout(const struct sock *sk, u32 when);
+ 
+ /* Bound MSS / TSO packet size with the half of the window */
+ static inline int tcp_bound_to_half_wnd(struct tcp_sock *tp, int pktsize)
+--- a/net/ipv4/tcp_input.c
++++ b/net/ipv4/tcp_input.c
+@@ -3295,6 +3295,7 @@ static void tcp_ack_probe(struct sock *s
+ 	} else {
+ 		unsigned long when = tcp_probe0_when(sk, TCP_RTO_MAX);
+ 
++		when = tcp_clamp_probe0_to_user_timeout(sk, when);
+ 		tcp_reset_xmit_timer(sk, ICSK_TIME_PROBE0,
+ 				     when, TCP_RTO_MAX, NULL);
+ 	}
+--- a/net/ipv4/tcp_output.c
++++ b/net/ipv4/tcp_output.c
+@@ -3850,6 +3850,8 @@ void tcp_send_probe0(struct sock *sk)
+ 		 */
+ 		timeout = TCP_RESOURCE_PROBE_INTERVAL;
+ 	}
++
++	timeout = tcp_clamp_probe0_to_user_timeout(sk, timeout);
+ 	tcp_reset_xmit_timer(sk, ICSK_TIME_PROBE0, timeout, TCP_RTO_MAX, NULL);
  }
--- 
-2.27.0
-
+ 
+--- a/net/ipv4/tcp_timer.c
++++ b/net/ipv4/tcp_timer.c
+@@ -40,6 +40,24 @@ static u32 tcp_clamp_rto_to_user_timeout
+ 	return min_t(u32, icsk->icsk_rto, msecs_to_jiffies(remaining));
+ }
+ 
++u32 tcp_clamp_probe0_to_user_timeout(const struct sock *sk, u32 when)
++{
++	struct inet_connection_sock *icsk = inet_csk(sk);
++	u32 remaining;
++	s32 elapsed;
++
++	if (!icsk->icsk_user_timeout || !icsk->icsk_probes_tstamp)
++		return when;
++
++	elapsed = tcp_jiffies32 - icsk->icsk_probes_tstamp;
++	if (unlikely(elapsed < 0))
++		elapsed = 0;
++	remaining = msecs_to_jiffies(icsk->icsk_user_timeout) - elapsed;
++	remaining = max_t(u32, remaining, TCP_TIMEOUT_MIN);
++
++	return min_t(u32, remaining, when);
++}
++
+ /**
+  *  tcp_write_err() - close socket and save error info
+  *  @sk:  The socket the error has appeared on.
 
 
