@@ -2,84 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1406310A00
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 12:14:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE506310A1C
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 12:19:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230256AbhBELLt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 06:11:49 -0500
-Received: from mail-lf1-f52.google.com ([209.85.167.52]:43852 "EHLO
-        mail-lf1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232008AbhBELJ1 (ORCPT
+        id S230000AbhBELTA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 06:19:00 -0500
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:40841 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232021AbhBELKh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 06:09:27 -0500
-Received: by mail-lf1-f52.google.com with SMTP id d3so9267738lfg.10
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 03:09:11 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tmQbZfgniFPVo4cnL/FxCHbKgto6MyJ0Gub2LwVH6po=;
-        b=QMvxP+GsgxdnW3Y2Kh8inaWNXQ0Bdhpjl+hDWVsZw1ZJLIj0uKBb2PCAtEhFFZhaqq
-         xjeS8SAz6TUCndupnowwxVgkiYQdsONtkEGfV9Kmhyj7SukERZ+JyeCljmvAHXsSaVzr
-         N7oxTK7WUGbRvz5Zdz0jp62S3gbivI+cQbjFjBKBU29569pJMMf4DcnmdJCTxkwBCUbS
-         hH/YsDax7NDfMh6nXps6vljMqOKwR9Xl8x/8kcDizQg03esx3Tc2XwXMVtcTBNaxnKIP
-         2t55SUiJs/vJK6V3bj2enEXvpLhje/vFt2GVM5aJhp6ZOM7jZlppAs3FMB9vzzYhPGN2
-         lxwg==
-X-Gm-Message-State: AOAM532Y2GAYeNcwvgOVfD8Jj2xlpdNUyiwBfKpA5jh8gWjDAdqtvLvY
-        K/n06iRiLR8QfEReO9yFNOgfXkMeiiJLHxQ/508=
-X-Google-Smtp-Source: ABdhPJwqAmIpzzYLK1lns2ycHWwolOvAiNiqr0QY76s/MaW44h4mT0jP66JbAsSY15h0xu3Pyo9UgLfHyI2zaJ9ZUxw=
-X-Received: by 2002:a05:6512:2342:: with SMTP id p2mr2270439lfu.509.1612523324921;
- Fri, 05 Feb 2021 03:08:44 -0800 (PST)
+        Fri, 5 Feb 2021 06:10:37 -0500
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 115ApxOY025610;
+        Fri, 5 Feb 2021 12:09:44 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=selector1;
+ bh=YeuxeCKivkO4bocM+bAAWh+MLssKuYcIKxZRPYP51Pc=;
+ b=D1ABM/7ZaDtBB5YphD51ZytOi+x98oEaMOSsu/TVw3A6dnunWyNxzRbXelAZ9CSx6e2/
+ As+hwLf3r5JFUGmt1MYOoPPy9A65JGTQMILveQENnFe7IueqWtnZl5GZmsaSceuTKqxM
+ WdDaXY7URtboPnuW3bckr+1Et6csdhee7cx2JR7Q8x7Vvj7RmE8OkgscTyQb3NIXxsws
+ Z1Pq6XQZ9+n2GcYpVH92q0lF0myvU7R3HUrhg/tCzJxjc8xprcoPIhRpTWn+LzcoVJHh
+ kAO8jriuOskn8pKV1NXdHDUOpEfnEHmPhPRE/VJrCSlmPmg3uOyS23hltlqPcvXBQbCc LQ== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 36d0fse9j3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 05 Feb 2021 12:09:44 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 1618D10002A;
+        Fri,  5 Feb 2021 12:09:44 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 04CA8229F3C;
+        Fri,  5 Feb 2021 12:09:44 +0100 (CET)
+Received: from localhost (10.75.127.51) by SFHDAG2NODE3.st.com (10.75.127.6)
+ with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 5 Feb 2021 12:09:43
+ +0100
+From:   Alain Volmat <alain.volmat@foss.st.com>
+To:     <broonie@kernel.org>, <amelie.delaunay@foss.st.com>
+CC:     <mcoquelin.stm32@gmail.com>, <alexandre.torgue@foss.st.com>,
+        <linux-spi@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <fabrice.gasnier@foss.st.com>,
+        <alain.volmat@foss.st.com>
+Subject: [PATCH 0/8] spi: stm32: fix and enhancements for spi-stm32
+Date:   Fri, 5 Feb 2021 12:08:54 +0100
+Message-ID: <1612523342-10466-1-git-send-email-alain.volmat@foss.st.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-References: <1612296553-21962-1-git-send-email-kan.liang@linux.intel.com> <1612296553-21962-7-git-send-email-kan.liang@linux.intel.com>
-In-Reply-To: <1612296553-21962-7-git-send-email-kan.liang@linux.intel.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Fri, 5 Feb 2021 20:08:33 +0900
-Message-ID: <CAM9d7chGxZc0MA4nqVeJRDXLEzWsQ-ceJ+xgMVmEbQbDVDf72w@mail.gmail.com>
-Subject: Re: [PATCH 6/9] perf report: Support instruction latency
-To:     Kan Liang <kan.liang@linux.intel.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Stephane Eranian <eranian@google.com>,
-        Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>,
-        Yao Jin <yao.jin@linux.intel.com>, maddy@linux.vnet.ibm.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.51]
+X-ClientProxiedBy: SFHDAG2NODE3.st.com (10.75.127.6) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-02-05_06:2021-02-05,2021-02-05 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 3, 2021 at 5:14 AM <kan.liang@linux.intel.com> wrote:
->
-> From: Kan Liang <kan.liang@linux.intel.com>
->
-> The instruction latency information can be recorded on some platforms,
-> e.g., the Intel Sapphire Rapids server. With both memory latency
-> (weight) and the new instruction latency information, users can easily
-> locate the expensive load instructions, and also understand the time
-> spent in different stages. The users can optimize their applications
-> in different pipeline stages.
->
-> The 'weight' field is shared among different architectures. Reusing the
-> 'weight' field may impacts other architectures. Add a new field to store
-> the instruction latency.
->
-> Like the 'weight' support, introduce a 'ins_lat' for the global
-> instruction latency, and a 'local_ins_lat' for the local instruction
-> latency version.
+The serie provides a fix for the spi-stm32 driver, allowing to properly
+handle 0 byte transfer (and thus being able to run spi-loopback-test).
 
-Could you please clarify the difference between the global latency
-and the local latency?
+In addition to that, important enhancements are implemented, among them,
+supporting transfer larger that what the IP can setup in one go or
+allowing to use the SPI bus without cs_gpio.
 
-Thanks,
-Namhyung
+Alain Volmat (5):
+  spi: stm32: properly handle 0 byte transfer
+  spi: stm32: do not mandate cs_gpio
+  spi: stm32h7: ensure message are smaller than max size
+  spi: stm32: defer probe for reset
+  spi: stm32: make spurious and overrun interrupts visible
 
+Amelie Delaunay (2):
+  spi: stm32: use bitfield macros
+  spi: stm32h7: replace private SPI_1HZ_NS with NSEC_PER_SEC
 
->
-> Add new sort functions, INSTR Latency and Local INSTR Latency,
-> accordingly.
->
-> Add local_ins_lat to the default_mem_sort_order[].
->
-> Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+Etienne Carriere (1):
+  spi: stm32: driver uses reset controller only at init
+
+ drivers/spi/spi-stm32.c | 116 +++++++++++++++++++---------------------
+ 1 file changed, 54 insertions(+), 62 deletions(-)
+
+-- 
+2.17.1
+
