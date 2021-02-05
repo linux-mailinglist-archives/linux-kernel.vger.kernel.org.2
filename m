@@ -2,83 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2D77310FDB
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 19:28:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 195D4310FDF
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 19:28:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233372AbhBEQpC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 11:45:02 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:49314 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232480AbhBEQkq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 11:40:46 -0500
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1612549345;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=A/92HZX/dfq8HitTi96rT9xpyPXwLeFFh5msh9r7w3M=;
-        b=xTa6MR6TWhzRBiCd8owrpvBt5Ol9ja/HgNJ7nMOWv3qLuEdUF9njJiUTcKJ8XOgcFymgvJ
-        1lAIE8/bZN0wevXmS1HJ6PMubH9K9VxrkTSwvMGBAs31+3hpakqwgFZTlifxDGJsBPCL0T
-        JozrnuXo1/zWR1Y9YPYl0HidATPrkT/LQZG4Gkvws5Jq3KTWnxaWBnwVZXJWDy574gppE/
-        rb93w6ifaEfdJILRPUKW4GtONjhrA2BwbfLkPr4OETng28msl47S91z4Mz7te+D58iRfIr
-        g6MbTNBrme/dsOAkOfe70OPfuigEz89AVTsuql7EO4E3zlY13LO3wrbRvzhy2A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1612549345;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=A/92HZX/dfq8HitTi96rT9xpyPXwLeFFh5msh9r7w3M=;
-        b=KELeB1gc4swIE8rIFG/rjCM4PbIjRuguODKp/CflGVaA84bhjtpGAdNmdhzCaXzghc9ZoQ
-        suAZNhQV2+x7JQCw==
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Zhimin Feng <fengzhimin@bytedance.com>
-Cc:     x86@kernel.org, kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        pbonzini@redhat.com, seanjc@google.com, vkuznets@redhat.com,
-        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
-        mingo@redhat.com, bp@alien8.de, hpa@zytor.com, fweisbec@gmail.com,
-        zhouyibo@bytedance.com, zhanghaozhong@bytedance.com
-Subject: Re: [RFC: timer passthrough 5/9] KVM: vmx: use tsc_adjust to enable tsc_offset timer passthrough
-In-Reply-To: <YB09f5oJ+sP9hiy6@hirez.programming.kicks-ass.net>
-References: <20210205100317.24174-1-fengzhimin@bytedance.com> <20210205100317.24174-6-fengzhimin@bytedance.com> <YB09f5oJ+sP9hiy6@hirez.programming.kicks-ass.net>
-Date:   Fri, 05 Feb 2021 19:22:24 +0100
-Message-ID: <87blcy8jdr.fsf@nanos.tec.linutronix.de>
+        id S233543AbhBEQpx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 11:45:53 -0500
+Received: from mga02.intel.com ([134.134.136.20]:21954 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233256AbhBEQnj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 11:43:39 -0500
+IronPort-SDR: 8LnX1ddanVWvU8AnSj+ulG0s7GAMYdBS5s4LlwJKw1ExeEr1xvc29kL+vySOX+6DbE1VcmisfZ
+ KFE8Kw4x5FVA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9886"; a="168589030"
+X-IronPort-AV: E=Sophos;i="5.81,155,1610438400"; 
+   d="scan'208";a="168589030"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2021 10:25:37 -0800
+IronPort-SDR: v2Vegu0BUHECOu6lKImg7NCJXEFAZaxjkBeCgqFiYpdXRYHZyEyRm9sqVMs0GXmzmnvlQjyjUM
+ V2wgIa/1pAvw==
+X-IronPort-AV: E=Sophos;i="5.81,155,1610438400"; 
+   d="scan'208";a="373528676"
+Received: from rhweight-mobl2.amr.corp.intel.com (HELO rhweight-mobl2.ra.intel.com) ([10.212.156.207])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2021 10:25:36 -0800
+From:   Russ Weight <russell.h.weight@intel.com>
+To:     mdf@kernel.org, linux-fpga@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     trix@redhat.com, lgoncalv@redhat.com, yilun.xu@intel.com,
+        hao.wu@intel.com, matthew.gerlach@intel.com,
+        Russ Weight <russell.h.weight@intel.com>,
+        Matthew Gerlach <matthew.gerlach@linux.intel.com>
+Subject: [PATCH v5 1/1] fpga: dfl: afu: harden port enable logic
+Date:   Fri,  5 Feb 2021 10:25:21 -0800
+Message-Id: <20210205182521.275887-1-russell.h.weight@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 05 2021 at 13:43, Peter Zijlstra wrote:
-> On Fri, Feb 05, 2021 at 06:03:13PM +0800, Zhimin Feng wrote:
->> +static void vmx_adjust_tsc_offset(struct kvm_vcpu *vcpu, bool to_host)
->> +{
->> +	u64 tsc_adjust;
->> +	struct timer_passth_info *local_timer_info;
->> +
->> +	local_timer_info = &per_cpu(passth_info, smp_processor_id());
->> +
->> +	if (to_host) {
->> +		tsc_adjust = local_timer_info->host_tsc_adjust;
->> +		wrmsrl(MSR_IA32_TSC_ADJUST, tsc_adjust);
->> +		vmcs_write64(TSC_OFFSET, vcpu->arch.tsc_offset);
->> +	} else {
->> +		rdmsrl(MSR_IA32_TSC_ADJUST, tsc_adjust);
->> +		local_timer_info->host_tsc_adjust = tsc_adjust;
->> +
->> +		wrmsrl(MSR_IA32_TSC_ADJUST, tsc_adjust + vcpu->arch.tsc_offset);
->> +		vmcs_write64(TSC_OFFSET, 0);
->> +	}
->> +}
->
-> NAK
->
-> This wrecks the host TSC value, any host code between this and actually
-> entering that VM will observe batshit time.
+Port enable is not complete until ACK = 0. Change
+__afu_port_enable() to guarantee that the enable process
+is complete by polling for ACK == 0.
 
-VMCS TSC offset is there for a reason...
+Reviewed-by: Tom Rix <trix@redhat.com>
+Reviewed-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
+Signed-off-by: Russ Weight <russell.h.weight@intel.com>
+---
+v5:
+  - Added Reviewed-by tag to commit message
+v4:
+  - Added a dev_warn() call for the -EINVAL case of afu_port_err_clear()
+  - Modified dev_err() message in __afu_port_disable() to say "disable"
+    instead of "reset"
+v3:
+  - afu_port_err_clear() changed to prioritize port_enable failure over
+    other a detected mismatch in port errors.
+  - reorganized code in port_reset() to be more readable.
+v2:
+  - Fixed typo in commit message
+---
+ drivers/fpga/dfl-afu-error.c | 10 ++++++----
+ drivers/fpga/dfl-afu-main.c  | 33 +++++++++++++++++++++++----------
+ drivers/fpga/dfl-afu.h       |  2 +-
+ 3 files changed, 30 insertions(+), 15 deletions(-)
 
-Thanks,
+diff --git a/drivers/fpga/dfl-afu-error.c b/drivers/fpga/dfl-afu-error.c
+index c4691187cca9..601e599fc33d 100644
+--- a/drivers/fpga/dfl-afu-error.c
++++ b/drivers/fpga/dfl-afu-error.c
+@@ -52,7 +52,7 @@ static int afu_port_err_clear(struct device *dev, u64 err)
+ 	struct dfl_feature_platform_data *pdata = dev_get_platdata(dev);
+ 	struct platform_device *pdev = to_platform_device(dev);
+ 	void __iomem *base_err, *base_hdr;
+-	int ret = -EBUSY;
++	int enable_ret = 0, ret = -EBUSY;
+ 	u64 v;
+ 
+ 	base_err = dfl_get_feature_ioaddr_by_id(dev, PORT_FEATURE_ID_ERROR);
+@@ -96,18 +96,20 @@ static int afu_port_err_clear(struct device *dev, u64 err)
+ 		v = readq(base_err + PORT_FIRST_ERROR);
+ 		writeq(v, base_err + PORT_FIRST_ERROR);
+ 	} else {
++		dev_warn(dev, "__func__: received 0x%llx, expected 0x%llx\n",
++			 v, err);
+ 		ret = -EINVAL;
+ 	}
+ 
+ 	/* Clear mask */
+ 	__afu_port_err_mask(dev, false);
+ 
+-	/* Enable the Port by clear the reset */
+-	__afu_port_enable(pdev);
++	/* Enable the Port by clearing the reset */
++	enable_ret = __afu_port_enable(pdev);
+ 
+ done:
+ 	mutex_unlock(&pdata->lock);
+-	return ret;
++	return enable_ret ? enable_ret : ret;
+ }
+ 
+ static ssize_t errors_show(struct device *dev, struct device_attribute *attr,
+diff --git a/drivers/fpga/dfl-afu-main.c b/drivers/fpga/dfl-afu-main.c
+index 753cda4b2568..77dadaae5b8f 100644
+--- a/drivers/fpga/dfl-afu-main.c
++++ b/drivers/fpga/dfl-afu-main.c
+@@ -21,6 +21,9 @@
+ 
+ #include "dfl-afu.h"
+ 
++#define RST_POLL_INVL 10 /* us */
++#define RST_POLL_TIMEOUT 1000 /* us */
++
+ /**
+  * __afu_port_enable - enable a port by clear reset
+  * @pdev: port platform device.
+@@ -32,7 +35,7 @@
+  *
+  * The caller needs to hold lock for protection.
+  */
+-void __afu_port_enable(struct platform_device *pdev)
++int __afu_port_enable(struct platform_device *pdev)
+ {
+ 	struct dfl_feature_platform_data *pdata = dev_get_platdata(&pdev->dev);
+ 	void __iomem *base;
+@@ -41,7 +44,7 @@ void __afu_port_enable(struct platform_device *pdev)
+ 	WARN_ON(!pdata->disable_count);
+ 
+ 	if (--pdata->disable_count != 0)
+-		return;
++		return 0;
+ 
+ 	base = dfl_get_feature_ioaddr_by_id(&pdev->dev, PORT_FEATURE_ID_HEADER);
+ 
+@@ -49,10 +52,20 @@ void __afu_port_enable(struct platform_device *pdev)
+ 	v = readq(base + PORT_HDR_CTRL);
+ 	v &= ~PORT_CTRL_SFTRST;
+ 	writeq(v, base + PORT_HDR_CTRL);
+-}
+ 
+-#define RST_POLL_INVL 10 /* us */
+-#define RST_POLL_TIMEOUT 1000 /* us */
++	/*
++	 * HW clears the ack bit to indicate that the port is fully out
++	 * of reset.
++	 */
++	if (readq_poll_timeout(base + PORT_HDR_CTRL, v,
++			       !(v & PORT_CTRL_SFTRST_ACK),
++			       RST_POLL_INVL, RST_POLL_TIMEOUT)) {
++		dev_err(&pdev->dev, "timeout, failure to enable device\n");
++		return -ETIMEDOUT;
++	}
++
++	return 0;
++}
+ 
+ /**
+  * __afu_port_disable - disable a port by hold reset
+@@ -86,7 +99,7 @@ int __afu_port_disable(struct platform_device *pdev)
+ 	if (readq_poll_timeout(base + PORT_HDR_CTRL, v,
+ 			       v & PORT_CTRL_SFTRST_ACK,
+ 			       RST_POLL_INVL, RST_POLL_TIMEOUT)) {
+-		dev_err(&pdev->dev, "timeout, fail to reset device\n");
++		dev_err(&pdev->dev, "timeout, failure to disable device\n");
+ 		return -ETIMEDOUT;
+ 	}
+ 
+@@ -111,9 +124,9 @@ static int __port_reset(struct platform_device *pdev)
+ 
+ 	ret = __afu_port_disable(pdev);
+ 	if (!ret)
+-		__afu_port_enable(pdev);
++		return ret;
+ 
+-	return ret;
++	return __afu_port_enable(pdev);
+ }
+ 
+ static int port_reset(struct platform_device *pdev)
+@@ -872,11 +885,11 @@ static int afu_dev_destroy(struct platform_device *pdev)
+ static int port_enable_set(struct platform_device *pdev, bool enable)
+ {
+ 	struct dfl_feature_platform_data *pdata = dev_get_platdata(&pdev->dev);
+-	int ret = 0;
++	int ret;
+ 
+ 	mutex_lock(&pdata->lock);
+ 	if (enable)
+-		__afu_port_enable(pdev);
++		ret = __afu_port_enable(pdev);
+ 	else
+ 		ret = __afu_port_disable(pdev);
+ 	mutex_unlock(&pdata->lock);
+diff --git a/drivers/fpga/dfl-afu.h b/drivers/fpga/dfl-afu.h
+index 576e94960086..e5020e2b1f3d 100644
+--- a/drivers/fpga/dfl-afu.h
++++ b/drivers/fpga/dfl-afu.h
+@@ -80,7 +80,7 @@ struct dfl_afu {
+ };
+ 
+ /* hold pdata->lock when call __afu_port_enable/disable */
+-void __afu_port_enable(struct platform_device *pdev);
++int __afu_port_enable(struct platform_device *pdev);
+ int __afu_port_disable(struct platform_device *pdev);
+ 
+ void afu_mmio_region_init(struct dfl_feature_platform_data *pdata);
+-- 
+2.25.1
 
-        tglx
