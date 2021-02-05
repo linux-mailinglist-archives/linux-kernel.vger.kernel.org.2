@@ -2,92 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6028B310283
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 03:02:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 413D3310293
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 03:08:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229849AbhBECCS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 21:02:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34136 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229789AbhBECCO (ORCPT
+        id S229777AbhBECH1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 21:07:27 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:12400 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229496AbhBECHU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 21:02:14 -0500
-Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [IPv6:2607:fcd0:100:8a00::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B320CC0613D6;
-        Thu,  4 Feb 2021 18:01:34 -0800 (PST)
-Received: from localhost (localhost [127.0.0.1])
-        by bedivere.hansenpartnership.com (Postfix) with ESMTP id 56F1612806F8;
-        Thu,  4 Feb 2021 18:01:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1612490492;
-        bh=D07B0G2Q3u5JuWGOyZqEqTnrtgfD1PaA3n45mlDA+l8=;
-        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-        b=mJPaUj42P4gcs1KP+2iN22vzTXRG/SiTFJmlrK7FwgbqjEd/ftmZ1fSfjo9TH+IYB
-         zKzYgwNAKpICjmdEb80exJZFGx2v9J7ux4/j8rg4KOmqdwHaGSlSyBSNqxWAe3fCMP
-         QWhMFD0U2Nu2W8/RcbWfDyKNqa/1VOsvJwFoW9T0=
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
-        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id AEzeM8bIVfkt; Thu,  4 Feb 2021 18:01:32 -0800 (PST)
-Received: from jarvis.int.hansenpartnership.com (unknown [IPv6:2601:600:8280:66d1::c447])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id A3D2112806A9;
-        Thu,  4 Feb 2021 18:01:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1612490492;
-        bh=D07B0G2Q3u5JuWGOyZqEqTnrtgfD1PaA3n45mlDA+l8=;
-        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-        b=mJPaUj42P4gcs1KP+2iN22vzTXRG/SiTFJmlrK7FwgbqjEd/ftmZ1fSfjo9TH+IYB
-         zKzYgwNAKpICjmdEb80exJZFGx2v9J7ux4/j8rg4KOmqdwHaGSlSyBSNqxWAe3fCMP
-         QWhMFD0U2Nu2W8/RcbWfDyKNqa/1VOsvJwFoW9T0=
-Message-ID: <78f6bc5799c744dc3fdb2f508549cedf76ac1c1d.camel@HansenPartnership.com>
-Subject: Re: [PATCH v3 1/2] tpm: fix reference counting for struct tpm_chip
-From:   James Bottomley <James.Bottomley@HansenPartnership.com>
-To:     Stefan Berger <stefanb@linux.ibm.com>,
-        Lino Sanfilippo <LinoSanfilippo@gmx.de>, peterhuewe@gmx.de,
-        jarkko@kernel.org
-Cc:     jgg@ziepe.ca, stefanb@linux.vnet.ibm.com, stable@vger.kernel.org,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lino Sanfilippo <l.sanfilippo@kunbus.com>
-Date:   Thu, 04 Feb 2021 18:01:30 -0800
-In-Reply-To: <f5ad4381-773d-b994-51e5-a335ca4b44c3@linux.ibm.com>
-References: <1612482643-11796-1-git-send-email-LinoSanfilippo@gmx.de>
-         <1612482643-11796-2-git-send-email-LinoSanfilippo@gmx.de>
-         <b36db793-9b40-92a8-19ef-4853ea10f775@linux.ibm.com>
-         <f5ad4381-773d-b994-51e5-a335ca4b44c3@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+        Thu, 4 Feb 2021 21:07:20 -0500
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4DWzJp5XJzz7g2w;
+        Fri,  5 Feb 2021 10:05:14 +0800 (CST)
+Received: from localhost.localdomain (10.67.165.24) by
+ DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
+ 14.3.498.0; Fri, 5 Feb 2021 10:06:23 +0800
+From:   Xiaofei Tan <tanxiaofei@huawei.com>
+To:     <bhelgaas@google.com>,
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        <sean.v.kelley@intel.com>, <Jonathan.Cameron@huawei.com>,
+        <refactormyself@gmail.com>
+CC:     Xiaofei Tan <tanxiaofei@huawei.com>, <linux-pci@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>
+Subject: [PATCH v2] PCI/AER: Change to use helper pcie_aer_is_native() in some places
+Date:   Fri, 5 Feb 2021 10:04:08 +0800
+Message-ID: <1612490648-44817-1-git-send-email-tanxiaofei@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.67.165.24]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-02-04 at 20:44 -0500, Stefan Berger wrote:
-> To clarify: When I tested this I had *both* patches applied. Without
-> the patches I got the null pointer exception in tpm2_del_space(). The
-> 2nd patch alone solves that issue when using the steps above.
+Use helper function pcie_aer_is_native() in some places to keep
+the code tidy. No function changes.
 
+Signed-off-by: Xiaofei Tan <tanxiaofei@huawei.com>
+Reviewed-by: Krzysztof Wilczyński <kw@linux.com>
 
-Yes, I can't confirm the bug either.  I only have lpc tis devices, so
-it could be something to do with spi, but when I do
+---
+Changes from v1 to v2:
+- Add the fix suggested by Krzysztof.
+---
+ drivers/pci/pcie/aer.c          | 4 ++--
+ drivers/pci/pcie/err.c          | 2 +-
+ drivers/pci/pcie/portdrv_core.c | 3 +--
+ 3 files changed, 4 insertions(+), 5 deletions(-)
 
-python3 in one shell
-
->>> fd = open("/dev/tpmrm0", "wb")
-
-do rmmod tpm_tis in another shell
-
->>> buf = bytearray(20)
->>> fd.write(buf)
-20
-
-so I don't see the oops you see on write.  However
-
->>> fd.close()
-
-And it oopses here in tpm2_del_space
-
-James
-
+diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c
+index 77b0f2c..03212d0 100644
+--- a/drivers/pci/pcie/aer.c
++++ b/drivers/pci/pcie/aer.c
+@@ -1397,7 +1397,7 @@ static pci_ers_result_t aer_root_reset(struct pci_dev *dev)
+ 	 */
+ 	aer = root ? root->aer_cap : 0;
+ 
+-	if ((host->native_aer || pcie_ports_native) && aer) {
++	if (pcie_aer_is_native(dev) && aer) {
+ 		/* Disable Root's interrupt in response to error messages */
+ 		pci_read_config_dword(root, aer + PCI_ERR_ROOT_COMMAND, &reg32);
+ 		reg32 &= ~ROOT_PORT_INTR_ON_MESG_MASK;
+@@ -1417,7 +1417,7 @@ static pci_ers_result_t aer_root_reset(struct pci_dev *dev)
+ 		pci_info(dev, "Root Port link has been reset (%d)\n", rc);
+ 	}
+ 
+-	if ((host->native_aer || pcie_ports_native) && aer) {
++	if (pcie_aer_is_native(dev) && aer) {
+ 		/* Clear Root Error Status */
+ 		pci_read_config_dword(root, aer + PCI_ERR_ROOT_STATUS, &reg32);
+ 		pci_write_config_dword(root, aer + PCI_ERR_ROOT_STATUS, reg32);
+diff --git a/drivers/pci/pcie/err.c b/drivers/pci/pcie/err.c
+index 510f31f..1d6cfb9 100644
+--- a/drivers/pci/pcie/err.c
++++ b/drivers/pci/pcie/err.c
+@@ -237,7 +237,7 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
+ 	 * this status.  In that case, the signaling device may not even be
+ 	 * visible to the OS.
+ 	 */
+-	if (host->native_aer || pcie_ports_native) {
++	if (pcie_aer_is_native(dev)) {
+ 		pcie_clear_device_status(bridge);
+ 		pci_aer_clear_nonfatal_status(bridge);
+ 	}
+diff --git a/drivers/pci/pcie/portdrv_core.c b/drivers/pci/pcie/portdrv_core.c
+index e1fed664..3b3743e 100644
+--- a/drivers/pci/pcie/portdrv_core.c
++++ b/drivers/pci/pcie/portdrv_core.c
+@@ -221,8 +221,7 @@ static int get_port_device_capability(struct pci_dev *dev)
+ 	}
+ 
+ #ifdef CONFIG_PCIEAER
+-	if (dev->aer_cap && pci_aer_available() &&
+-	    (pcie_ports_native || host->native_aer)) {
++	if (pci_aer_available() && pcie_aer_is_native(dev)) {
+ 		services |= PCIE_PORT_SERVICE_AER;
+ 
+ 		/*
+-- 
+2.8.1
 
