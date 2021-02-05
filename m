@@ -2,194 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 122E0310473
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 06:20:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46938310475
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 06:20:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230191AbhBEFTZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 00:19:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48006 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229998AbhBEFTP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 00:19:15 -0500
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A136C0613D6
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 21:18:30 -0800 (PST)
-Received: by mail-yb1-xb2b.google.com with SMTP id k4so5585925ybp.6
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 21:18:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=lgOzo6AA5TXNIkBKlwLQRgO7wuH9dEiOWALI05+ya+s=;
-        b=NAjY1FvXNmUGUqI5ruw3fTkPLusc6/BtV63R1Ran0vMCGY6MURS28Krjx/21j8FPuy
-         N0flzcI/QoXFrpAedwhwSYdn4ARhraxpebOzmm7bOZX0A0p0c9TdKFm6mDsNo95+039r
-         6ze8c8K/W3WnRLu90amNei5xMtMVzDQbM0dQQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=lgOzo6AA5TXNIkBKlwLQRgO7wuH9dEiOWALI05+ya+s=;
-        b=TLZOAvLbW5gd+L+F50MELWIvOLQqDtJG5BI4GQ3tWGJzxdxYCNvJ5S/s8HM7v1Yr3i
-         6hPUdyVZWAMrCD/8RgAQDHgQxZy66Iu/O+7JXwln1NacORYtET5P/e8UJ2ebmUJn5Qul
-         DJdnvuQIE1DHONQLBLop/O6xfi0pUebeu1aFPdDx1IZeLVlyoj8lmPQzfdX0+0l2L2ld
-         j5f8U3JDtfNUz5FYaA7rlvkzFQSdoTas4bATf6kv1A8JsQnffSFB1QS6iE4lci+X0vXI
-         +1QDieYTVDmhdHW+nqS8UF9NTCU0eJoQKYhK97sGrv1r6NAZ7jKC5oh3/BFqtQMJ0sZ9
-         zBYQ==
-X-Gm-Message-State: AOAM530A19trKjF1B1opxaekYTtn9hmBT7xzmky2uGz0dMRYcDtHa68w
-        df16Rkf/BtZ7+B4XjP9PvZ7rbNj5RAE5G5aVQYIUsw==
-X-Google-Smtp-Source: ABdhPJy/Dx6JrLpBx8VlbMaJA6d4oUUMF+XjSPFkmLacUYDtzQGWIKeD1y2Kdkfjs0iYFqc+ffAcW4a1c6K401rcSlU=
-X-Received: by 2002:a25:da41:: with SMTP id n62mr3671777ybf.155.1612502309147;
- Thu, 04 Feb 2021 21:18:29 -0800 (PST)
+        id S230510AbhBEFUU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 00:20:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48892 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229998AbhBEFUQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 00:20:16 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DFE8964F95;
+        Fri,  5 Feb 2021 05:19:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612502375;
+        bh=Rc7JFa9kHYs+RTNR+WUqvFno9qYZVURcaFIbZ2p2p5Q=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ipkJyq6BfUdCmou5iYyr77dc6zf3tF+6Cd8CfHw5Wi4EB7J2mWXJarv7snU5pKK4P
+         p5gpkIYQ560dLaslca/BhraXy7J18UyVeBQ7p/cTCAPJDQJ91xkuF34hqxNrtyC4qT
+         Z8Ly3jL8BQGh0a15bV/G8les27oMJCgF21eN+KzJo+q/0Bqwqv0AxF5GP/fhaDanwN
+         aTc3UPXsEKtR9Zp7B3gOk1FxRGP9rHw3krkk4tJmvCOlsK5hdwgmwB+bYTuqEeY8a0
+         WGVHlLsBxpQtDh8pnCS8JJNubXCDgeEXl4g4zNsZod4uDHNrY8rDPdhDCxSKcRQDaP
+         ZmPk9GhtdsXAg==
+Date:   Thu, 4 Feb 2021 21:19:34 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Vadym Kochan <vadym.kochan@plvision.eu>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Oleksandr Mazur <oleksandr.mazur@plvision.eu>,
+        Serhiy Boiko <serhiy.boiko@plvision.eu>,
+        Serhiy Pshyk <serhiy.pshyk@plvision.eu>,
+        Volodymyr Mytnyk <volodymyr.mytnyk@plvision.eu>,
+        Taras Chornyi <taras.chornyi@plvision.eu>,
+        netdev@vger.kernel.org, Mickey Rachamim <mickeyr@marvell.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next 7/7] net: marvell: prestera: fix port event
+ handling on init
+Message-ID: <20210204211934.273e54bf@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210203165458.28717-8-vadym.kochan@plvision.eu>
+References: <20210203165458.28717-1-vadym.kochan@plvision.eu>
+        <20210203165458.28717-8-vadym.kochan@plvision.eu>
 MIME-Version: 1.0
-References: <20200923121320.v3.1.I8693156f555875e5c8342e86ab37ce968dfdd277@changeid>
- <20200923121320.v3.2.Ided0ab0808c4908238bd2eb9ebb6ffb2c9312789@changeid>
- <YBh9HvbIRF4zd+AK@intel.com> <2a7c2edc-b83c-dccf-487d-1415b4bc23ff@xs4all.nl>
-In-Reply-To: <2a7c2edc-b83c-dccf-487d-1415b4bc23ff@xs4all.nl>
-From:   Sam McNally <sammc@chromium.org>
-Date:   Fri, 5 Feb 2021 16:17:51 +1100
-Message-ID: <CAJqEsoCOJmS5aVb5du09tXUi7UUKVBQDPe5KTdcBiDr8A7kSYA@mail.gmail.com>
-Subject: Re: [PATCH v3 2/4] drm_dp_mst_topology: use correct AUX channel
-To:     Hans Verkuil <hverkuil@xs4all.nl>
-Cc:     =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Hans Verkuil <hans.verkuil@cisco.com>,
-        dri-devel@lists.freedesktop.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 4 Feb 2021 at 21:19, Hans Verkuil <hverkuil@xs4all.nl> wrote:
->
-> On 01/02/2021 23:13, Ville Syrj=C3=A4l=C3=A4 wrote:
-> > On Wed, Sep 23, 2020 at 12:13:53PM +1000, Sam McNally wrote:
-> >> From: Hans Verkuil <hans.verkuil@cisco.com>
-> >>
-> >> For adapters behind an MST hub use the correct AUX channel.
-> >>
-> >> Signed-off-by: Hans Verkuil <hans.verkuil@cisco.com>
-> >> [sammc@chromium.org: rebased, removing redundant changes]
-> >> Signed-off-by: Sam McNally <sammc@chromium.org>
-> >> ---
-> >>
-> >> (no changes since v1)
-> >>
-> >>  drivers/gpu/drm/drm_dp_mst_topology.c | 36 ++++++++++++++++++++++++++=
-+
-> >>  1 file changed, 36 insertions(+)
-> >>
-> >> diff --git a/drivers/gpu/drm/drm_dp_mst_topology.c b/drivers/gpu/drm/d=
-rm_dp_mst_topology.c
-> >> index 15b6cc39a754..0d753201adbd 100644
-> >> --- a/drivers/gpu/drm/drm_dp_mst_topology.c
-> >> +++ b/drivers/gpu/drm/drm_dp_mst_topology.c
-> >> @@ -2255,6 +2255,9 @@ drm_dp_mst_topology_unlink_port(struct drm_dp_ms=
-t_topology_mgr *mgr,
-> >>      drm_dp_mst_topology_put_port(port);
-> >>  }
-> >>
-> >> +static ssize_t
-> >> +drm_dp_mst_aux_transfer(struct drm_dp_aux *aux, struct drm_dp_aux_msg=
- *msg);
-> >> +
-> >>  static struct drm_dp_mst_port *
-> >>  drm_dp_mst_add_port(struct drm_device *dev,
-> >>                  struct drm_dp_mst_topology_mgr *mgr,
-> >> @@ -2271,9 +2274,13 @@ drm_dp_mst_add_port(struct drm_device *dev,
-> >>      port->port_num =3D port_number;
-> >>      port->mgr =3D mgr;
-> >>      port->aux.name =3D "DPMST";
-> >> +    mutex_init(&port->aux.hw_mutex);
-> >> +    mutex_init(&port->aux.cec.lock);
-> >>      port->aux.dev =3D dev->dev;
-> >>      port->aux.is_remote =3D true;
-> >>
-> >> +    port->aux.transfer =3D drm_dp_mst_aux_transfer;
-> >> +
-> >
-> > This was supposed to be handled via higher levels checking for
-> > is_remote=3D=3Dtrue.
->
-> Ah, I suspect this patch can be dropped entirely: it predates commit 2f22=
-1a5efed4
-> ("drm/dp_mst: Add MST support to DP DPCD R/W functions").
->
-> It looks like that commit basically solved what this older patch attempts=
- to do
-> as well.
->
-> Sam, can you test if it works without this patch?
+On Wed,  3 Feb 2021 18:54:58 +0200 Vadym Kochan wrote:
+> For some reason there might be a crash during ports creation if port
+> events are handling at the same time  because fw may send initial
+> port event with down state.
+> 
+> The crash points to cancel_delayed_work() which is called when port went
+> is down.  Currently I did not find out the real cause of the issue, so
+> fixed it by cancel port stats work only if previous port's state was up
+> & runnig.
 
-It almost just works; drm_dp_cec uses whether aux.transfer is non-null
-to filter out non-DP connectors. Using aux.is_remote as another signal
-indicating a DP connector seems plausible. We can drop this patch.
-Thanks all!
->
-> Regards,
->
->         Hans
->
-> >
-> >>      /* initialize the MST downstream port's AUX crc work queue */
-> >>      drm_dp_remote_aux_init(&port->aux);
-> >>
-> >> @@ -3503,6 +3510,35 @@ static int drm_dp_send_up_ack_reply(struct drm_=
-dp_mst_topology_mgr *mgr,
-> >>      return 0;
-> >>  }
-> >>
-> >> +static ssize_t
-> >> +drm_dp_mst_aux_transfer(struct drm_dp_aux *aux, struct drm_dp_aux_msg=
- *msg)
-> >> +{
-> >> +    struct drm_dp_mst_port *port =3D
-> >> +            container_of(aux, struct drm_dp_mst_port, aux);
-> >> +    int ret;
-> >> +
-> >> +    switch (msg->request & ~DP_AUX_I2C_MOT) {
-> >> +    case DP_AUX_NATIVE_WRITE:
-> >> +    case DP_AUX_I2C_WRITE:
-> >> +    case DP_AUX_I2C_WRITE_STATUS_UPDATE:
-> >> +            ret =3D drm_dp_send_dpcd_write(port->mgr, port, msg->addr=
-ess,
-> >> +                                         msg->size, msg->buffer);
-> >
-> > That doesn't make sense to me. I2c writes and DPCD writes
-> > are definitely not the same thing.
-> >
-> > aux->transfer is a very low level thing. I don't think it's the
-> > correct level of abstraction for sideband.
-> >
-> >> +            break;
-> >> +
-> >> +    case DP_AUX_NATIVE_READ:
-> >> +    case DP_AUX_I2C_READ:
-> >> +            ret =3D drm_dp_send_dpcd_read(port->mgr, port, msg->addre=
-ss,
-> >> +                                        msg->size, msg->buffer);
-> >> +            break;
-> >> +
-> >> +    default:
-> >> +            ret =3D -EINVAL;
-> >> +            break;
-> >> +    }
-> >> +
-> >> +    return ret;
-> >> +}
-> >> +
-> >>  static int drm_dp_get_vc_payload_bw(u8 dp_link_bw, u8  dp_link_count)
-> >>  {
-> >>      if (dp_link_bw =3D=3D 0 || dp_link_count =3D=3D 0)
-> >> --
-> >> 2.28.0.681.g6f77f65b4e-goog
-> >>
-> >> _______________________________________________
-> >> dri-devel mailing list
-> >> dri-devel@lists.freedesktop.org
-> >> https://lists.freedesktop.org/mailman/listinfo/dri-devel
-> >
->
+Maybe you just need to move the DELAYED_WORK_INIT() earlier?
+Not sure why it's at the end of prestera_port_create(), it 
+just initializes some fields.
+
+> [   28.489791] Call trace:
+> [   28.492259]  get_work_pool+0x48/0x60
+> [   28.495874]  cancel_delayed_work+0x38/0xb0
+> [   28.500011]  prestera_port_handle_event+0x90/0xa0 [prestera]
+> [   28.505743]  prestera_evt_recv+0x98/0xe0 [prestera]
+> [   28.510683]  prestera_fw_evt_work_fn+0x180/0x228 [prestera_pci]
+> [   28.516660]  process_one_work+0x1e8/0x360
+> [   28.520710]  worker_thread+0x44/0x480
+> [   28.524412]  kthread+0x154/0x160
+> [   28.527670]  ret_from_fork+0x10/0x38
+> [   28.531290] Code: a8c17bfd d50323bf d65f03c0 9278dc21 (f9400020)
+> [   28.537429] ---[ end trace 5eced933df3a080b ]---
+> 
+> Signed-off-by: Vadym Kochan <vadym.kochan@plvision.eu>
+> ---
+>  drivers/net/ethernet/marvell/prestera/prestera_main.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/ethernet/marvell/prestera/prestera_main.c b/drivers/net/ethernet/marvell/prestera/prestera_main.c
+> index 39465e65d09b..122324dae47d 100644
+> --- a/drivers/net/ethernet/marvell/prestera/prestera_main.c
+> +++ b/drivers/net/ethernet/marvell/prestera/prestera_main.c
+> @@ -433,7 +433,8 @@ static void prestera_port_handle_event(struct prestera_switch *sw,
+>  			netif_carrier_on(port->dev);
+>  			if (!delayed_work_pending(caching_dw))
+>  				queue_delayed_work(prestera_wq, caching_dw, 0);
+> -		} else {
+> +		} else if (netif_running(port->dev) &&
+> +			   netif_carrier_ok(port->dev)) {
+>  			netif_carrier_off(port->dev);
+>  			if (delayed_work_pending(caching_dw))
+>  				cancel_delayed_work(caching_dw);
+
