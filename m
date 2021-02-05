@@ -2,124 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BF113107C6
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 10:27:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29F2A3107CB
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 10:27:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230245AbhBEJYm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 04:24:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42796 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229934AbhBEJVE (ORCPT
+        id S229823AbhBEJ0C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 04:26:02 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55191 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230347AbhBEJWK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 04:21:04 -0500
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFB07C0613D6;
-        Fri,  5 Feb 2021 01:20:44 -0800 (PST)
-Received: by mail-pj1-x1035.google.com with SMTP id d2so3438389pjs.4;
-        Fri, 05 Feb 2021 01:20:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=U6dWRiyrIbPA57yDDAstPw73ZY/dCSiR50oKzjx/H6g=;
-        b=HSa2DSSMZS+e+scFXZu0NDFNcryeuP7Aes44vX2eicn4LJOzoDW4pE4magZtPxVZum
-         XduPEeGVtNA0SLvbcmAkktQYYSJ6iNy9AFFRm0DCGM0qtc7RXLY6tkBBeBM4tCX9LKmS
-         3hu4orweIDyaCxc42NDaPbVyQ3TZoHRHGK/PnemFRGbOO2QdjVKjq2UF0BqC1BTYW+VC
-         xmPE+jZXWH6vkGgG+6WjhjacANCagFitJH4M6DKRoBnHiWOrMSvj8Z42wS2v966HMwB4
-         fGvfsTR1vLFZkD9D6t2AZ0YkBu60DoKza1WUOnBrT8IHQKjCAAOqtmhdrSv0jRo1dT38
-         FGlw==
+        Fri, 5 Feb 2021 04:22:10 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612516844;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Ay95j8ZOJweqoeSHjCRRFfGdbMEYx6rMAyvOQfQnfuI=;
+        b=FKoPzjkp4F1YI9wMBorzWhFqLSsRw9Nut9SQZbP8uEuuDowm9sY1lDEr046QN/W+8A6aZX
+        svPEKQ+Tk9rPIRHoBEexhGQSxXjNNvvASkeg2XeOmiNKGiHOTGlSYcfFBXvRcRSmBUM24u
+        j9UPL/MuoncgeJ5jdJSjtU1PX1m5O1w=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-439-cASRuG3NMyOI1Vp8RPE04g-1; Fri, 05 Feb 2021 04:20:42 -0500
+X-MC-Unique: cASRuG3NMyOI1Vp8RPE04g-1
+Received: by mail-ej1-f69.google.com with SMTP id yc4so6384416ejb.2
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 01:20:42 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=U6dWRiyrIbPA57yDDAstPw73ZY/dCSiR50oKzjx/H6g=;
-        b=tQ+4xpD72F7mLLOIWSGAfXrj3gqCG890yhNeGUMKSkhm0ds5qjO5wEgNCBIo3xGXiN
-         A4Jt4klhk+OK+Z9FuYjqHSmwSuNx8AJ25p/XI3oh810LRh1C7CLF15aJ0eEBgmO0wCIW
-         JpHaQ+UbVIdOj1L+ELlk94tV/2FUwnit+bQrWlrSnNS2DG0k/PuIS3mbTiJXFxgWu6sC
-         VbZ2bWIPbRttyGmO/i0p9X4b++Z4RVC9ta4ElKlnkMPua3vrjQ7j+tkLZAFVHjgoiGPb
-         MawQSu4VNfYfQ8YGcORZNLR1wk61JNTnJD4IWYgbgqHUpt2+CxY0DFhg8TG2UjcP5T+B
-         5n1Q==
-X-Gm-Message-State: AOAM531q2cUh9NxBmBnAqoh6YkKcJs0Z8h0PJ952+gBxDP8tugaQkWB2
-        QX1ft5py+Qy6YXNuOIO+iUMsIbz+GeDMKQeTc7g=
-X-Google-Smtp-Source: ABdhPJwG1sbba1GA71Z/ZsoLV0AXeXnT/scifzyZ8m25RVsPHbBrHLFRH2dadY60zQ8rJtTGlKMxsg==
-X-Received: by 2002:a17:90a:ba87:: with SMTP id t7mr3163335pjr.184.1612516844327;
-        Fri, 05 Feb 2021 01:20:44 -0800 (PST)
-Received: from localhost ([103.200.106.135])
-        by smtp.gmail.com with ESMTPSA id f15sm7768722pja.24.2021.02.05.01.20.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Feb 2021 01:20:43 -0800 (PST)
-Date:   Fri, 5 Feb 2021 14:50:32 +0530
-From:   Amey Narkhede <ameynarkhede02@gmail.com>
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     netdev@vger.kernel.org, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: qlge/qlge_main: Use min_t instead of min
-Message-ID: <20210205092032.3cyymzvkp5nkiok3@archlinux>
-References: <20210204215451.69928-1-ameynarkhede02@gmail.com>
- <20210204225844.GA431671@localhost>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Ay95j8ZOJweqoeSHjCRRFfGdbMEYx6rMAyvOQfQnfuI=;
+        b=Xz/5V8QlBE6A54dvsrPfgAY5nvhjaHk+mGUjsxx8Tg57IVkDfLiHamzjDvMnt7OLty
+         95qe0cfd4QT728SMSEn17dxJMtob3H7n3+B/qumtkqNmG6sOIZwHic/o5VThTcRTo5MD
+         0fK+tskaFlWnnyD7Y1tysrOFwred6x4t6GPiYVdSszivfNUy500TkwVVAi0aYKPx3mB5
+         HqX6+U/fvUtyrmZgngNyvIlMn7HRGll587qnZeoXXv84gxsLYjf/WpDBJZ9vsMebF3/n
+         bOcHQTt835F5Hib7aTtaKf4XNFJQniy0f3F6/aF2QcwihKLvD5F486xIEsll+dcvKi1d
+         Q9wQ==
+X-Gm-Message-State: AOAM5311aeU64FCDaNWxyTfyb1TdZL2ESVm3xIryG2gV9lINcD1EGtAi
+        6mvhSMxy3Gl/GiMFbtYuGlt1cy940Xc3mGEZdC9/saW95VkhS5ra3+/XL1+pB6dPpWPs47iEvFB
+        dxnMHiWNFT5+GUeswPSV04NRiEt+WCCHOn/Ekr1WL58enpRdjDuCLEYOzZrGsFDfsBpnvctbfdo
+        jJ
+X-Received: by 2002:aa7:cc98:: with SMTP id p24mr2753580edt.126.1612516841250;
+        Fri, 05 Feb 2021 01:20:41 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzU95X6x/jd0HaI7sckA1in5gXTVMvQUyFgo4kCKOezCNFIpUz++OHiVuzTw7O1f+9VUnnSIA==
+X-Received: by 2002:aa7:cc98:: with SMTP id p24mr2753556edt.126.1612516840979;
+        Fri, 05 Feb 2021 01:20:40 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id u23sm3713829edt.87.2021.02.05.01.20.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 05 Feb 2021 01:20:39 -0800 (PST)
+Subject: Re: [PATCH v4 4/5] KVM: MMU: Add support for PKS emulation
+To:     Chenyi Qiang <chenyi.qiang@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Xiaoyao Li <xiaoyao.li@intel.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210205083706.14146-1-chenyi.qiang@intel.com>
+ <20210205083706.14146-5-chenyi.qiang@intel.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <dabceac5-876f-a145-fffc-73df917fa1ce@redhat.com>
+Date:   Fri, 5 Feb 2021 10:20:38 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="ueodtozohea73jpb"
-Content-Disposition: inline
-In-Reply-To: <20210204225844.GA431671@localhost>
+In-Reply-To: <20210205083706.14146-5-chenyi.qiang@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 05/02/21 09:37, Chenyi Qiang wrote:
+> |In addition to the pkey check for user pages, advertise pkr_mask also 
+> to cache the conditions where protection key checks for supervisor pages 
+> are needed. Add CR4_PKS in mmu_role_bits to track the pkr_mask update on 
+> a per-mmu basis. In original cache conditions of pkr_mask, U/S bit in 
+> page tables is a judgement condition and replace the PFEC.RSVD in page 
+> fault error code to form the index of 16 domains. PKS support would 
+> extend the U/S bits (if U/S=0, PKS check required). It adds an 
+> additional check for cr4_pke/cr4_pks to ensure the necessity and 
+> distinguish PKU and PKS from each other. |
 
---ueodtozohea73jpb
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Slight changes to the commit message:
 
-On 21/02/04 03:58PM, Nathan Chancellor wrote:
-> On Fri, Feb 05, 2021 at 03:24:51AM +0530, ameynarkhede02@gmail.com wrote:
-> > From: Amey Narkhede <ameynarkhede02@gmail.com>
-> >
-> > Use min_t instead of min function in qlge/qlge_main.c
-> > Fixes following checkpatch.pl warning:
-> > WARNING: min() should probably be min_t(int, MAX_CPUS, num_online_cpus())
-> >
-> > Signed-off-by: Amey Narkhede <ameynarkhede02@gmail.com>
-> > ---
-> >  drivers/staging/qlge/qlge_main.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/staging/qlge/qlge_main.c b/drivers/staging/qlge/qlge_main.c
-> > index 402edaeff..29606d1eb 100644
-> > --- a/drivers/staging/qlge/qlge_main.c
-> > +++ b/drivers/staging/qlge/qlge_main.c
-> > @@ -3938,7 +3938,7 @@ static int ql_configure_rings(struct ql_adapter *qdev)
-> >  	int i;
-> >  	struct rx_ring *rx_ring;
-> >  	struct tx_ring *tx_ring;
-> > -	int cpu_cnt = min(MAX_CPUS, (int)num_online_cpus());
-> > +	int cpu_cnt = min_t(int, MAX_CPUS, (int)num_online_cpus());
->
-> You should remove the cast on num_online_cpus() like checkpatch
-> suggests. min_t adds the cast to int on both of the inputs for you.
->
-Thanks. Fixed in v2
+   Up until now, pkr_mask had 0 bits for supervisor pages (the U/S bit in
+   page tables replaces the PFEC.RSVD in page fault error code).
+   For PKS support, fill in the bits using the same algorithm used for
+   user mode pages, but with CR4.PKE replaced by CR4.PKS.  Because of
+   this change, CR4.PKS must also be included in the MMU role.
 
-Amey
+Paolo
 
---ueodtozohea73jpb
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEE6H5dELF7r4AXEH5hLybaax94G/8FAmAdDeAACgkQLybaax94
-G//LZQ//YzFyc1n4oGkSaJGiso13StX9yKhtHGF4+kH2iRzT6Et4/eJTZwnOCuzn
-XBMT0agwZFIBVlupnHi92uz8YwCPbmKmcLrWZAlO61XW65ITRjcdpw2N4GF/yOc8
-uAr74KvXLMmX9CKACUvaRGkVvu1eKuy6bFAMvbKxNUgwI1NvMJzLc2h+sD8dMk5p
-xPIG0wte9VXvbD9U+bWDeBdhlXKoAR8LPv/NmOy1NEzQ2Y33AXkGHenOQEPHGjGP
-MmeMj3lIiBH1Tohu+NJ7Yk3VqCc3d4Rtei/WueQ8EDsAvO1dzKRhhhnzR8Edty+N
-xGTNgSIL28HYOaW+3noiWhTbJHghmQp+3Nt3fdADU2avcs4l+WigfIm1gtlH/azT
-sar5v1rzmRSsJE+spCOuQ6YqXOguwspcpkQij/uEhy4+ASk1Xc/BhPVhFzycgtI/
-etH2+wqN591qPA3hvNqyVYfAb8ySC4iLYRYtBfxolNBZrIrLBiBiC4y4Jr+sfIlX
-dMAlEcFW9T5zjmZTO66Jtcz7Iz1ZI2HDzy0dVjUJCwVJVE0h9yq9NLShHg0KNhcH
-s+qS+RVbz6xPpxWKZkCkp5aLrk29t2HtTjPCy2++bGL40OskoF4QXfD/AGPhGj0G
-oFCdFONyUMkMMDnoYqp8RhpSUnhwKNy1MYqvbCz2fhZv0vXAitk=
-=r0ZT
------END PGP SIGNATURE-----
-
---ueodtozohea73jpb--
