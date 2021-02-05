@@ -2,115 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ADAF3108DE
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 11:21:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD3BA310907
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 11:28:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231322AbhBEKS6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 05:18:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55060 "EHLO
+        id S231314AbhBEK0l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 05:26:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231256AbhBEKP2 (ORCPT
+        with ESMTP id S231178AbhBEKSI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 05:15:28 -0500
-Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CD54C0613D6
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 02:14:47 -0800 (PST)
-Received: by mail-io1-xd31.google.com with SMTP id n201so6420630iod.12
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 02:14:47 -0800 (PST)
+        Fri, 5 Feb 2021 05:18:08 -0500
+Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEE3DC061793
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 02:16:11 -0800 (PST)
+Received: by mail-oi1-x22e.google.com with SMTP id u66so4981846oig.9
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 02:16:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=ffwll.ch; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=w+/kEe1Bmcdr9lG9N+AIixjjPvoTCuRotm37ECiHk3I=;
-        b=SzI+qVqSZY6w76mb2V6J28cSeezGP5UrYHGt/7PK+kEb559IFKqaooGrWc1ZsOhmRZ
-         zHWn36gqyAItMNXWY7aB9k15NvJHvV0wAsUZbYTzI/7iV9jCgkrwJTUYTCeqmjy3TUaX
-         1acWRwGfTEte7kGO05QwwCIwDL/61KKO/8Y3+ZWSyxS3cAydnT7zkkB2UH2kuVecToV1
-         /TZU/eOEAnNRuC4mI3dft+hO2B7BzRGiQrU2AZAzlX/UGhQOU4Oq7Ctl1Jqhofvtn3mm
-         72TuIs2XOfppP57+d9fzQ8dgUe0ZT/4sVsuzZCuBokB9yuheHdpYWZdUtpqrBQ+yKHZm
-         GKeA==
+         :cc:content-transfer-encoding;
+        bh=2yuIYIxM1r0vjPBHPxM2y+AxnaXi3F039H0I6fPXB2Y=;
+        b=A9phunMoX2b9Gt5n9T0V20jIQdwPW9aWuFUt+j26fGARowppocLfwynGYKZKR1TvHP
+         oDYM6GO84zr2GTWpNTRjpDKbTn3MIDB8fM+hrnpLGfiUf/l+iVMugdoRIPgQX8kZ1Hta
+         jlDlzgJ4kNiRVRoNbZAav0p3u3jbhCwhdDh2k=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=w+/kEe1Bmcdr9lG9N+AIixjjPvoTCuRotm37ECiHk3I=;
-        b=B8T6krXK7uHAUunOmdCUUlSUe1nUqF+wNsY5p0rL/7912NZKK57/jyPWUKQQYo953f
-         7DXsCoz5ZyUq9/3XQ6bydTAJUWh/5aGVjzlPMLKUyK4vmbjSTrryEytyNkV6RJ8FVYnG
-         taNMFLwRUENFw8jNI/TkoKQ6O1QXjPJyDZ8t33xfVuOwyM2n5qqWet86dTkT8Uui/GS4
-         YzIyncurMHrNILIL3g6K1MJ8qpBkO4lCWs4qzDM7yfzNMBBcIAlMq5VnW1H67+MFnY6W
-         6UyPmdp5BjQ96WhEguKpyBcQJldoE4/liswZvlxx+NFd6oCHQZTVhkLXDtUZlDlXbKhD
-         WoiQ==
-X-Gm-Message-State: AOAM533zMS/+AO2w5XgbKqES2ysKw2r7kVCqJ1p97x5K8UN8UdmudBb3
-        6wq2n/L9a550Fkw9IKtYNLY1uHzShjyEx24YGWM=
-X-Google-Smtp-Source: ABdhPJzwcW4kjducUDD0flJG4k+9zT5EQW8zfbVSzfa7EizYXX0+zJG5oN7VG2KZ0mvCJzbe35vRwV28QX73vjaazVM=
-X-Received: by 2002:a02:449:: with SMTP id 70mr4051139jab.137.1612520086618;
- Fri, 05 Feb 2021 02:14:46 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=2yuIYIxM1r0vjPBHPxM2y+AxnaXi3F039H0I6fPXB2Y=;
+        b=L/dvkCJwioBEUqB+c9OFHBf89PtepDYinvDRFW5wxluRcWkUcPGHCQgGrldG9ZE1hl
+         i5WXSEv4FXjAUTZPfEpUCw7168hWmiMWuTbZNkUBEr8W0g+vXLiP+FT2t4ppScizGPu4
+         nPjyhFF0maHy1rZXp+jpmwbR5MjXQfAFamGnHY+ZfZf3Ws+4HWAZ+pw4TZV90p9g3Dma
+         5N0PUbpibnOh1VpDxxZ+So+2Mz2KQabg4IZLIyuCcIdPs2IN/FUYDoBq/8U2Ydw97wYN
+         iEK4/w/joDnPXN3urCIC3buEJXiKfbKY3EpRFTrKN/KF8i0+U4ul3546xoJG404lwIwc
+         8s2A==
+X-Gm-Message-State: AOAM531Hedgb2Z85pACkr0JA+hZrRO2u+C7i0s8t7AqcrTODFs4Hfzjs
+        SB9nQ6eOYNUB9oFzqCm7btA++qyFlpm/brljdU/ysg==
+X-Google-Smtp-Source: ABdhPJyS7NBg6dpmgk+Mh+fuNgultS8ddwgsrdcEebMQvTNVbqaUOfhJ/OSI2TaI7qoinESzj+/7j2RvKfsoe9fAFGc=
+X-Received: by 2002:aca:df42:: with SMTP id w63mr2582638oig.128.1612520171119;
+ Fri, 05 Feb 2021 02:16:11 -0800 (PST)
 MIME-Version: 1.0
-References: <20210204204903.350275743@linutronix.de> <20210204211155.214169844@linutronix.de>
-In-Reply-To: <20210204211155.214169844@linutronix.de>
-From:   Lai Jiangshan <jiangshanlai+lkml@gmail.com>
-Date:   Fri, 5 Feb 2021 18:14:35 +0800
-Message-ID: <CAJhGHyDF-wuK0Q0RZ9mDTo19rayA-jjJ1SGp2-1TS_d5-eHDzw@mail.gmail.com>
-Subject: Re: [patch 11/12] softirq: Allow inlining do_softirq_own_stack()
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Kees Cook <keescook@chromium.org>
+References: <20210204165831.2703772-2-daniel.vetter@ffwll.ch>
+ <20210204215019.GA104698@bjorn-Precision-5520> <20210204222407.pkx7wvmcvugdwqdd@pali>
+ <CAKMK7uFeZpc4oV2GNRdP_EXmYqacg5o3jPegqqaFZZYqqRutFA@mail.gmail.com> <20210205100449.w2vzqozgnolxqh4h@pali>
+In-Reply-To: <20210205100449.w2vzqozgnolxqh4h@pali>
+From:   Daniel Vetter <daniel.vetter@ffwll.ch>
+Date:   Fri, 5 Feb 2021 11:16:00 +0100
+Message-ID: <CAKMK7uG9NsEzFfapZa4KF6sw0=CuD6Pyk5=7WhjxgFBut4uJkw@mail.gmail.com>
+Subject: Re: [PATCH 1/2] PCI: also set up legacy files only after sysfs init
+To:     =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        Jan Kara <jack@suse.cz>, Kees Cook <keescook@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>, Jason Gunthorpe <jgg@ziepe.ca>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>,
+        "Oliver O'Halloran" <oohall@gmail.com>,
+        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 5, 2021 at 10:04 AM Thomas Gleixner <tglx@linutronix.de> wrote:
+On Fri, Feb 5, 2021 at 11:04 AM Pali Roh=C3=A1r <pali@kernel.org> wrote:
 >
-> The function to switch to the irq stack on x86 is now minimal and there is
-> only a single caller. Allow the stack switch to be inlined.
+> On Friday 05 February 2021 10:59:50 Daniel Vetter wrote:
+> > On Thu, Feb 4, 2021 at 11:24 PM Pali Roh=C3=A1r <pali@kernel.org> wrote=
+:
+> > >
+> > > On Thursday 04 February 2021 15:50:19 Bjorn Helgaas wrote:
+> > > > [+cc Oliver, Pali, Krzysztof]
+> > >
+> > > Just to note that extending or using sysfs_initialized introduces
+> > > another race condition into kernel code which results in PCI fatal
+> > > errors. Details are in email discussion which Bjorn already sent.
+> >
+> > Yeah I wondered why this doesn't race.
 >
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> ---
->  include/linux/interrupt.h |    2 ++
->  kernel/softirq.c          |    4 ++++
->  2 files changed, 6 insertions(+)
->
-> --- a/include/linux/interrupt.h
-> +++ b/include/linux/interrupt.h
-> @@ -570,7 +570,9 @@ asmlinkage void do_softirq(void);
->  asmlinkage void __do_softirq(void);
->
->  #ifdef __ARCH_HAS_DO_SOFTIRQ
-> +# ifndef __ARCH_HAS_DO_SOFTIRQ_INLINE
->  void do_softirq_own_stack(void);
-> +# endif
->  #else
->  static inline void do_softirq_own_stack(void)
->  {
+> It races, but with smaller probability. I have not seen this race
+> condition on x86. But I was able to reproduce it with native PCIe
+> drivers on ARM64 (Marvell Armada 3720; pci-aardvark). In mentioned
+> discussion I wrote when this race condition happen. But I understand
+> that it is hard to simulate it.
 
-Hello
+btw I looked at your patch, and isn't that just reducing the race window?
 
-This patch and the next patch have three "#if[n]def" with
-__ARCH_HAS_DO_SOFTIRQ_INLINE and this one is nested in
-__ARCH_HAS_DO_SOFTIRQ.
+I think we have a very similar problem in drm, where the
+drm_dev_register() for the overall device (which also registers all
+drm_connector) can race with the hotplug of an individual connector in
+drm_connector_register() which is hotplugged at runtime.
 
-I wonder if we can use __ARCH_HAS_DO_SOFTIRQ only.
+I went with a per-connector registered boolean + a lock to make sure
+that really only one of the two call paths can end up registering the
+connector. Part of registering connectors is setting up sysfs files,
+so I think it's exactly the same problem as here.
 
-For example, we can move "void do_softirq_own_stack(void);" to around
-the code where __ARCH_HAS_DO_SOFTIRQ are defined in very ARCHs.
-(And for x86, do_softirq_own_stack() is a macro instead of function
-declaration as next patch shows)
+Cheers, Daniel
 
-Thanks
-Lai
-
-> --- a/kernel/softirq.c
-> +++ b/kernel/softirq.c
-> @@ -26,6 +26,10 @@
->  #include <linux/tick.h>
->  #include <linux/irq.h>
 >
-> +#ifdef __ARCH_HAS_DO_SOFTIRQ_INLINE
-> +# include <asm/irq_stack.h>
-> +#endif
-> +
->  #define CREATE_TRACE_POINTS
->  #include <trace/events/irq.h>
->
->
+> > but since the history goes back
+> > to pre-git times I figured it would have been addressed somehow
+> > already if it indeed does race.
+> > -Daniel
+> >
+> > > > s/also/Also/ in subject
+> > > >
+> > > > On Thu, Feb 04, 2021 at 05:58:30PM +0100, Daniel Vetter wrote:
+> > > > > We are already doing this for all the regular sysfs files on PCI
+> > > > > devices, but not yet on the legacy io files on the PCI buses. Thu=
+s far
+> > > > > now problem, but in the next patch I want to wire up iomem revoke
+> > > > > support. That needs the vfs up an running already to make so that
+> > > > > iomem_get_mapping() works.
+> > > >
+> > > > s/now problem/no problem/
+> > > > s/an running/and running/
+> > > > s/so that/sure that/ ?
+> > > >
+> > > > iomem_get_mapping() doesn't exist; I don't know what that should be=
+.
+> > > >
+> > > > > Wire it up exactly like the existing code. Note that
+> > > > > pci_remove_legacy_files() doesn't need a check since the one for
+> > > > > pci_bus->legacy_io is sufficient.
+> > > >
+> > > > I'm not sure exactly what you mean by "the existing code."  I could
+> > > > probably figure it out, but it would save time to mention the exist=
+ing
+> > > > function here.
+> > > >
+> > > > This looks like another instance where we should really apply Olive=
+r's
+> > > > idea of converting these to attribute_groups [1].
+> > > >
+> > > > The cover letter mentions options discussed with Greg in [2], but I
+> > > > don't think the "sysfs_initialized" hack vs attribute_groups was pa=
+rt
+> > > > of that discussion.
+> > > >
+> > > > It's not absolutely a show-stopper, but it *is* a shame to extend t=
+he
+> > > > sysfs_initialized hack if attribute_groups could do this more clean=
+ly
+> > > > and help solve more than one issue.
+> > > >
+> > > > Bjorn
+> > > >
+> > > > [1] https://lore.kernel.org/r/CAOSf1CHss03DBSDO4PmTtMp0tCEu5kScn704=
+ZEwLKGXQzBfqaA@mail.gmail.com
+> > > > [2] https://lore.kernel.org/dri-devel/CAKMK7uGrdDrbtj0OyzqQc0CGrQwc=
+2F3tFJU9vLfm2jjufAZ5YQ@mail.gmail.com/
+> > > >
+> > > > > Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
+> > > > > Cc: Stephen Rothwell <sfr@canb.auug.org.au>
+> > > > > Cc: Jason Gunthorpe <jgg@ziepe.ca>
+> > > > > Cc: Kees Cook <keescook@chromium.org>
+> > > > > Cc: Dan Williams <dan.j.williams@intel.com>
+> > > > > Cc: Andrew Morton <akpm@linux-foundation.org>
+> > > > > Cc: John Hubbard <jhubbard@nvidia.com>
+> > > > > Cc: J=C3=A9r=C3=B4me Glisse <jglisse@redhat.com>
+> > > > > Cc: Jan Kara <jack@suse.cz>
+> > > > > Cc: Dan Williams <dan.j.williams@intel.com>
+> > > > > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > > > > Cc: linux-mm@kvack.org
+> > > > > Cc: linux-arm-kernel@lists.infradead.org
+> > > > > Cc: linux-samsung-soc@vger.kernel.org
+> > > > > Cc: linux-media@vger.kernel.org
+> > > > > Cc: Bjorn Helgaas <bhelgaas@google.com>
+> > > > > Cc: linux-pci@vger.kernel.org
+> > > > > ---
+> > > > >  drivers/pci/pci-sysfs.c | 7 +++++++
+> > > > >  1 file changed, 7 insertions(+)
+> > > > >
+> > > > > diff --git a/drivers/pci/pci-sysfs.c b/drivers/pci/pci-sysfs.c
+> > > > > index fb072f4b3176..0c45b4f7b214 100644
+> > > > > --- a/drivers/pci/pci-sysfs.c
+> > > > > +++ b/drivers/pci/pci-sysfs.c
+> > > > > @@ -927,6 +927,9 @@ void pci_create_legacy_files(struct pci_bus *=
+b)
+> > > > >  {
+> > > > >     int error;
+> > > > >
+> > > > > +   if (!sysfs_initialized)
+> > > > > +           return;
+> > > > > +
+> > > > >     b->legacy_io =3D kcalloc(2, sizeof(struct bin_attribute),
+> > > > >                            GFP_ATOMIC);
+> > > > >     if (!b->legacy_io)
+> > > > > @@ -1448,6 +1451,7 @@ void pci_remove_sysfs_dev_files(struct pci_=
+dev *pdev)
+> > > > >  static int __init pci_sysfs_init(void)
+> > > > >  {
+> > > > >     struct pci_dev *pdev =3D NULL;
+> > > > > +   struct pci_bus *pbus =3D NULL;
+> > > > >     int retval;
+> > > > >
+> > > > >     sysfs_initialized =3D 1;
+> > > > > @@ -1459,6 +1463,9 @@ static int __init pci_sysfs_init(void)
+> > > > >             }
+> > > > >     }
+> > > > >
+> > > > > +   while ((pbus =3D pci_find_next_bus(pbus)))
+> > > > > +           pci_create_legacy_files(pbus);
+> > > > > +
+> > > > >     return 0;
+> > > > >  }
+> > > > >  late_initcall(pci_sysfs_init);
+> > > > > --
+> > > > > 2.30.0
+> > > > >
+> > > > >
+> > > > > _______________________________________________
+> > > > > linux-arm-kernel mailing list
+> > > > > linux-arm-kernel@lists.infradead.org
+> > > > > http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+> >
+> >
+> >
+> > --
+> > Daniel Vetter
+> > Software Engineer, Intel Corporation
+> > http://blog.ffwll.ch
+
+
+
+--=20
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
