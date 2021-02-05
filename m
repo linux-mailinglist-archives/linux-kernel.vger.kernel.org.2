@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ADF1311396
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 22:33:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED8AA31140F
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 23:00:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233773AbhBEVaR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 16:30:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45340 "EHLO mail.kernel.org"
+        id S232480AbhBEV5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 16:57:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45264 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231701AbhBEPAH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 10:00:07 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A2A9B650B1;
-        Fri,  5 Feb 2021 14:14:26 +0000 (UTC)
+        id S233007AbhBEO7i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 09:59:38 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 68817650B5;
+        Fri,  5 Feb 2021 14:14:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612534467;
-        bh=jQ5g/mPKswFOhl93N86AioJj0vO88F8hbPM7rsVHYqc=;
+        s=korg; t=1612534473;
+        bh=YRUUqm23s/ETZbX9vU/encIPO1XYTTBMD0pNKS+yxzo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2tPPnekNtOJIbP2+WLN+R0OAPJyjYHeaCF5QkxNr5Vd6aNFUnpfRBfMg4FEa2aGMc
-         n5CFB+nxJsoOhUa6Etr3/EMJWK+j58hHuCBM8s4glsekqUxXO9iCoDU7DDyfZEla/e
-         XdMc6Gr7GKUcTNTCbq/4IEHj0pitKFZcgeIro8MU=
+        b=IYvl0zBfSxOvmlzC0K2fqiLlTc8Fiax8D4pxfzkD+69KBwpvYpkx9IADJMCsHGOkf
+         +jYZoMGHD9Yk4NPSsqO0lxW0Lo+apc1SygKBCEE42i81PMpH/BwNpllWGqw5AwGe9H
+         r+lyQZPtkWUuP0DeC8Rs/RK+IpHHZW5whiDOLovM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Javed Hasan <jhasan@marvell.com>,
+        stable@vger.kernel.org, Brian King <brking@linux.vnet.ibm.com>,
         "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 11/15] scsi: libfc: Avoid invoking response handler twice if ep is already completed
-Date:   Fri,  5 Feb 2021 15:08:56 +0100
-Message-Id: <20210205140650.185885343@linuxfoundation.org>
+Subject: [PATCH 4.14 13/15] scsi: ibmvfc: Set default timeout to avoid crash during migration
+Date:   Fri,  5 Feb 2021 15:08:58 +0100
+Message-Id: <20210205140650.268544540@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210205140649.733510103@linuxfoundation.org>
 References: <20210205140649.733510103@linuxfoundation.org>
@@ -40,88 +40,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Javed Hasan <jhasan@marvell.com>
+From: Brian King <brking@linux.vnet.ibm.com>
 
-[ Upstream commit b2b0f16fa65e910a3ec8771206bb49ee87a54ac5 ]
+[ Upstream commit 764907293edc1af7ac857389af9dc858944f53dc ]
 
-A race condition exists between the response handler getting called because
-of exchange_mgr_reset() (which clears out all the active XIDs) and the
-response we get via an interrupt.
+While testing live partition mobility, we have observed occasional crashes
+of the Linux partition. What we've seen is that during the live migration,
+for specific configurations with large amounts of memory, slow network
+links, and workloads that are changing memory a lot, the partition can end
+up being suspended for 30 seconds or longer. This resulted in the following
+scenario:
 
-Sequence of events:
+CPU 0                          CPU 1
+-------------------------------  ----------------------------------
+scsi_queue_rq                    migration_store
+ -> blk_mq_start_request          -> rtas_ibm_suspend_me
+  -> blk_add_timer                 -> on_each_cpu(rtas_percpu_suspend_me
+              _______________________________________V
+             |
+             V
+    -> IPI from CPU 1
+     -> rtas_percpu_suspend_me
+                                     -> __rtas_suspend_last_cpu
 
-	 rport ba0200: Port timeout, state PLOGI
-	 rport ba0200: Port entered PLOGI state from PLOGI state
-	 xid 1052: Exchange timer armed : 20000 msecs      xid timer armed here
-	 rport ba0200: Received LOGO request while in state PLOGI
-	 rport ba0200: Delete port
-	 rport ba0200: work event 3
-	 rport ba0200: lld callback ev 3
-	 bnx2fc: rport_event_hdlr: event = 3, port_id = 0xba0200
-	 bnx2fc: ba0200 - rport not created Yet!!
-	 /* Here we reset any outstanding exchanges before
-	 freeing rport using the exch_mgr_reset() */
-	 xid 1052: Exchange timer canceled
-	 /* Here we got two responses for one xid */
-	 xid 1052: invoking resp(), esb 20000000 state 3
-	 xid 1052: invoking resp(), esb 20000000 state 3
-	 xid 1052: fc_rport_plogi_resp() : ep->resp_active 2
-	 xid 1052: fc_rport_plogi_resp() : ep->resp_active 2
+-- Linux partition suspended for > 30 seconds --
+                                      -> for_each_online_cpu(cpu)
+                                           plpar_hcall_norets(H_PROD
+ -> scsi_dispatch_cmd
+                                      -> scsi_times_out
+                                       -> scsi_abort_command
+                                        -> queue_delayed_work
+  -> ibmvfc_queuecommand_lck
+   -> ibmvfc_send_event
+    -> ibmvfc_send_crq
+     - returns H_CLOSED
+   <- returns SCSI_MLQUEUE_HOST_BUSY
+-> __blk_mq_requeue_request
 
-Skip the response if the exchange is already completed.
+                                      -> scmd_eh_abort_handler
+                                       -> scsi_try_to_abort_cmd
+                                         - returns SUCCESS
+                                       -> scsi_queue_insert
 
-Link: https://lore.kernel.org/r/20201215194731.2326-1-jhasan@marvell.com
-Signed-off-by: Javed Hasan <jhasan@marvell.com>
+Normally, the SCMD_STATE_COMPLETE bit would protect against the command
+completion and the timeout, but that doesn't work here, since we don't
+check that at all in the SCSI_MLQUEUE_HOST_BUSY path.
+
+In this case we end up calling scsi_queue_insert on a request that has
+already been queued, or possibly even freed, and we crash.
+
+The patch below simply increases the default I/O timeout to avoid this race
+condition. This is also the timeout value that nearly all IBM SAN storage
+recommends setting as the default value.
+
+Link: https://lore.kernel.org/r/1610463998-19791-1-git-send-email-brking@linux.vnet.ibm.com
+Signed-off-by: Brian King <brking@linux.vnet.ibm.com>
 Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/libfc/fc_exch.c | 16 ++++++++++++++--
- 1 file changed, 14 insertions(+), 2 deletions(-)
+ drivers/scsi/ibmvscsi/ibmvfc.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/libfc/fc_exch.c b/drivers/scsi/libfc/fc_exch.c
-index 6ba257cbc6d94..384458d1f73c3 100644
---- a/drivers/scsi/libfc/fc_exch.c
-+++ b/drivers/scsi/libfc/fc_exch.c
-@@ -1631,8 +1631,13 @@ static void fc_exch_recv_seq_resp(struct fc_exch_mgr *mp, struct fc_frame *fp)
- 		rc = fc_exch_done_locked(ep);
- 		WARN_ON(fc_seq_exch(sp) != ep);
- 		spin_unlock_bh(&ep->ex_lock);
--		if (!rc)
-+		if (!rc) {
- 			fc_exch_delete(ep);
-+		} else {
-+			FC_EXCH_DBG(ep, "ep is completed already,"
-+					"hence skip calling the resp\n");
-+			goto skip_resp;
-+		}
- 	}
+diff --git a/drivers/scsi/ibmvscsi/ibmvfc.c b/drivers/scsi/ibmvscsi/ibmvfc.c
+index dbacd9830d3df..460014ded14de 100644
+--- a/drivers/scsi/ibmvscsi/ibmvfc.c
++++ b/drivers/scsi/ibmvscsi/ibmvfc.c
+@@ -2891,8 +2891,10 @@ static int ibmvfc_slave_configure(struct scsi_device *sdev)
+ 	unsigned long flags = 0;
  
- 	/*
-@@ -1651,6 +1656,7 @@ static void fc_exch_recv_seq_resp(struct fc_exch_mgr *mp, struct fc_frame *fp)
- 	if (!fc_invoke_resp(ep, sp, fp))
- 		fc_frame_free(fp);
- 
-+skip_resp:
- 	fc_exch_release(ep);
- 	return;
- rel:
-@@ -1907,10 +1913,16 @@ static void fc_exch_reset(struct fc_exch *ep)
- 
- 	fc_exch_hold(ep);
- 
--	if (!rc)
-+	if (!rc) {
- 		fc_exch_delete(ep);
-+	} else {
-+		FC_EXCH_DBG(ep, "ep is completed already,"
-+				"hence skip calling the resp\n");
-+		goto skip_resp;
+ 	spin_lock_irqsave(shost->host_lock, flags);
+-	if (sdev->type == TYPE_DISK)
++	if (sdev->type == TYPE_DISK) {
+ 		sdev->allow_restart = 1;
++		blk_queue_rq_timeout(sdev->request_queue, 120 * HZ);
 +	}
- 
- 	fc_invoke_resp(ep, sp, ERR_PTR(-FC_EX_CLOSED));
-+skip_resp:
- 	fc_seq_set_resp(sp, NULL, ep->arg);
- 	fc_exch_release(ep);
+ 	spin_unlock_irqrestore(shost->host_lock, flags);
+ 	return 0;
  }
 -- 
 2.27.0
