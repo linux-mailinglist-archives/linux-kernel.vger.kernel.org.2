@@ -2,125 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82C0E310EAB
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 18:29:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3B11310E4D
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 18:07:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233272AbhBEPqI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 10:46:08 -0500
-Received: from mga17.intel.com ([192.55.52.151]:44422 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233105AbhBEPaV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 10:30:21 -0500
-IronPort-SDR: ecTRBCCI/0kQ8xOC7zVbyo36ZjArHoS9lHMN4op5UQx1Fll1pnlhKBhR3a0EIC1GzfU0XoFwZs
- su56m78q5nVw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9885"; a="161198911"
-X-IronPort-AV: E=Sophos;i="5.81,155,1610438400"; 
-   d="scan'208";a="161198911"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2021 07:16:48 -0800
-IronPort-SDR: q7Q3i9vozj8sDWJ29m98QW/kh6uPo5gdVnuiVSBEnlnVm0Sa/QFVXswC/aPjxw1Gq46ZBttVQF
- AQTL4mzUhNvg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,155,1610438400"; 
-   d="scan'208";a="358274761"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga007.fm.intel.com with ESMTP; 05 Feb 2021 07:16:45 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1000)
-        id 08F43397; Fri,  5 Feb 2021 17:16:41 +0200 (EET)
-From:   "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-To:     Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     x86@kernel.org, Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        "H . J . Lu" <hjl.tools@gmail.com>,
-        Andi Kleen <ak@linux.intel.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: [RFC 7/9] x86/mm: Handle tagged memory accesses from kernel threads
-Date:   Fri,  5 Feb 2021 18:16:28 +0300
-Message-Id: <20210205151631.43511-9-kirill.shutemov@linux.intel.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210205151631.43511-1-kirill.shutemov@linux.intel.com>
-References: <20210205151631.43511-1-kirill.shutemov@linux.intel.com>
+        id S233025AbhBEPR1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 10:17:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50732 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233105AbhBEPFW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 10:05:22 -0500
+Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72EC3C06178C
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 08:42:51 -0800 (PST)
+Received: by mail-qt1-x82e.google.com with SMTP id h16so5365207qth.11
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 08:42:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=l6bMebmyF7buTXvOysPq9zxDkYGESwfJ+0swCeCd7qY=;
+        b=SLM0C0UtOrbH5D6Y12E44XNcLTp5In6MXuIIDpnaG6XfEdHOyzT/poNGK0J4014eSk
+         hf8G3B9Ibe/inStw2s/Hs8eXX9iyzLaoUFLD5FSmTAzj2WRU+XG+1b7TI8RUech0Uo8E
+         LiAZcHUmS4URAHi0S4uH/vFIvgDvjslnOw/Fk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=l6bMebmyF7buTXvOysPq9zxDkYGESwfJ+0swCeCd7qY=;
+        b=aEHatizZqRWDPn6uJiZ9/iREaLNyjMUKGbMT4lPpBasfncImxSMSfwsXAciot+Vdjy
+         VdXE1OG8Ux9eKQ/zGnh1FoepNnhGLpi5Rx310W5jvVXOI34S4IDC2KEeGdM724AS6VpM
+         0odQZOxpFF+De16/plsGuukm3i0onu7+hwZKCEbkc+QS45koH6mjiScV59owrHuHan/i
+         dnW87EhNBecmgeGeR5ONKl3H/JkDT+XuFKF1UNMlk9ohHDEof45c55d05Q/DeeRkpBm1
+         X9tXDGoBm091rhwDGUmIXtC0R5zDULVmeCyOKz0qR0m1ylygweMkQrV4PSX65Jfd0HWX
+         MNQQ==
+X-Gm-Message-State: AOAM533f/tLgW/7D/0Z1CP0AUZD3Mi0DMy4UpPgZDVIGc4mS2oW/Se/u
+        K+KkdrKZtWqhXbz8OqkLbLcqpA==
+X-Google-Smtp-Source: ABdhPJzpEMIMdDQrKEN0KuwLjSGPEKvKGCfFKihudOnFN41anZ7SJ/VY75puRM8ZI8fDPNXq37GzfA==
+X-Received: by 2002:ac8:554d:: with SMTP id o13mr5106886qtr.55.1612543370667;
+        Fri, 05 Feb 2021 08:42:50 -0800 (PST)
+Received: from localhost ([2620:15c:6:411:7d0b:8b50:779:2056])
+        by smtp.gmail.com with ESMTPSA id q6sm9446577qkd.41.2021.02.05.08.42.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Feb 2021 08:42:49 -0800 (PST)
+Date:   Fri, 5 Feb 2021 11:42:49 -0500
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
+        Julien Desfossez <jdesfossez@digitalocean.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Aaron Lu <aaron.lwe@gmail.com>,
+        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
+        linux-kernel@vger.kernel.org, mingo@kernel.org,
+        torvalds@linux-foundation.org, fweisbec@gmail.com,
+        keescook@chromium.org, kerrnel@google.com,
+        Phil Auld <pauld@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
+        Chen Yu <yu.c.chen@intel.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Agata Gruza <agata.gruza@intel.com>,
+        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
+        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
+        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
+        benbjiang@tencent.com,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
+        Dhaval Giani <dhaval.giani@oracle.com>,
+        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
+        chris.hyser@oracle.com, Ben Segall <bsegall@google.com>,
+        Josh Don <joshdon@google.com>, Hao Luo <haoluo@google.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>
+Subject: Re: [PATCH v10 2/5] sched: CGroup tagging interface for core
+ scheduling
+Message-ID: <YB11iXuitK96KbCO@google.com>
+References: <20210123011704.1901835-1-joel@joelfernandes.org>
+ <20210123011704.1901835-3-joel@joelfernandes.org>
+ <YBrUgxLfjcpjwgo6@hirez.programming.kicks-ass.net>
+ <YBv93iXqI8UTw9tD@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YBv93iXqI8UTw9tD@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When a kernel thread performs memory access on behalf of a process (like
-in async I/O, io_uring, etc.) it has to respect tagging setup of the
-process as user addresses can include tags.
+Hi Peter,
 
-Normally, LAM setup is per-thread and recorded in thread flags, but for
-this use case we also track LAM setup per-mm. mm->context.lam would
-record LAM that allows the most tag bits among the threads of the mm.
+On Thu, Feb 04, 2021 at 02:59:58PM +0100, Peter Zijlstra wrote:
+> On Wed, Feb 03, 2021 at 05:51:15PM +0100, Peter Zijlstra wrote:
+> > 
+> > I'm slowly starting to go through this...
+> > 
+> > On Fri, Jan 22, 2021 at 08:17:01PM -0500, Joel Fernandes (Google) wrote:
+> > > +static bool sched_core_empty(struct rq *rq)
+> > > +{
+> > > +	return RB_EMPTY_ROOT(&rq->core_tree);
+> > > +}
+> > > +
+> > > +static struct task_struct *sched_core_first(struct rq *rq)
+> > > +{
+> > > +	struct task_struct *task;
+> > > +
+> > > +	task = container_of(rb_first(&rq->core_tree), struct task_struct, core_node);
+> > > +	return task;
+> > > +}
+> > 
+> > AFAICT you can do with:
+> > 
+> > static struct task_struct *sched_core_any(struct rq *rq)
+> > {
+> > 	return rb_entry(rq->core_tree.rb_node, struct task_struct, code_node);
+> > }
+> > 
+> > > +static void sched_core_flush(int cpu)
+> > > +{
+> > > +	struct rq *rq = cpu_rq(cpu);
+> > > +	struct task_struct *task;
+> > > +
+> > > +	while (!sched_core_empty(rq)) {
+> > > +		task = sched_core_first(rq);
+> > > +		rb_erase(&task->core_node, &rq->core_tree);
+> > > +		RB_CLEAR_NODE(&task->core_node);
+> > > +	}
+> > > +	rq->core->core_task_seq++;
+> > > +}
+> > 
+> > However,
+> > 
+> > > +	for_each_possible_cpu(cpu) {
+> > > +		struct rq *rq = cpu_rq(cpu);
+> > > +
+> > > +		WARN_ON_ONCE(enabled == rq->core_enabled);
+> > > +
+> > > +		if (!enabled || (enabled && cpumask_weight(cpu_smt_mask(cpu)) >= 2)) {
+> > > +			/*
+> > > +			 * All active and migrating tasks will have already
+> > > +			 * been removed from core queue when we clear the
+> > > +			 * cgroup tags. However, dying tasks could still be
+> > > +			 * left in core queue. Flush them here.
+> > > +			 */
+> > > +			if (!enabled)
+> > > +				sched_core_flush(cpu);
+> > > +
+> > > +			rq->core_enabled = enabled;
+> > > +		}
+> > > +	}
+> > 
+> > I'm not sure I understand. Is the problem that we're still schedulable
+> > during do_exit() after cgroup_exit() ?
 
-The info used by switch_mm_irqs_off() to construct CR3 if the task is
-kernel thread. Thread flags of the kernel thread get updated according
-to mm->context.lam. It allows untagged_addr() to work correctly.
+Yes, exactly. Tim had written this code in the original patches and it
+carried (I was not involved at that time). IIRC, the issue is the exit will
+race with core scheduling being disabled. Even after core sched is disabled,
+it will still exist in the core rb tree and needs to be removed. Otherwise it
+causes crashes.
 
-Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
----
- arch/x86/include/asm/mmu.h |  1 +
- arch/x86/mm/tlb.c          | 28 ++++++++++++++++++++++++++++
- 2 files changed, 29 insertions(+)
+> It could be argued that when we
+> > leave the cgroup there, we should definitely leave the tag group too.
+> 
+> That is, did you forget to implement cpu_cgroup_exit()?
 
-diff --git a/arch/x86/include/asm/mmu.h b/arch/x86/include/asm/mmu.h
-index 9257667d13c5..fb05d6a11538 100644
---- a/arch/x86/include/asm/mmu.h
-+++ b/arch/x86/include/asm/mmu.h
-@@ -35,6 +35,7 @@ typedef struct {
- #ifdef CONFIG_X86_64
- 	/* True if mm supports a task running in 32 bit compatibility mode. */
- 	unsigned short ia32_compat;
-+	u8 lam;
- #endif
- 
- 	struct mutex lock;
-diff --git a/arch/x86/mm/tlb.c b/arch/x86/mm/tlb.c
-index 138d4748aa97..1f9749da12e4 100644
---- a/arch/x86/mm/tlb.c
-+++ b/arch/x86/mm/tlb.c
-@@ -176,6 +176,34 @@ static u8 gen_lam(struct task_struct *tsk, struct mm_struct *mm)
- 	if (!tsk)
- 		return LAM_NONE;
- 
-+	if (tsk->flags & PF_KTHREAD) {
-+		/*
-+		 * For kernel thread use the most permissive LAM
-+		 * used by the mm. It's required to handle kernel thread
-+		 * memory accesses on behalf of a process.
-+		 *
-+		 * Adjust thread flags accodringly, so untagged_addr() would
-+		 * work correctly.
-+		 */
-+		switch (mm->context.lam) {
-+		case LAM_NONE:
-+			clear_thread_flag(TIF_LAM_U48);
-+			clear_thread_flag(TIF_LAM_U57);
-+			return LAM_NONE;
-+		case LAM_U57:
-+			clear_thread_flag(TIF_LAM_U48);
-+			set_thread_flag(TIF_LAM_U57);
-+			return LAM_U57;
-+		case LAM_U48:
-+			set_thread_flag(TIF_LAM_U48);
-+			clear_thread_flag(TIF_LAM_U57);
-+			return LAM_U48;
-+		default:
-+			WARN_ON_ONCE(1);
-+			return LAM_NONE;
-+		}
-+	}
-+
- 	if (test_ti_thread_flag(ti, TIF_LAM_U57))
- 		return LAM_U57;
- 	if (test_ti_thread_flag(ti, TIF_LAM_U48))
--- 
-2.26.2
+Yes, I think it is better to implement it in cpu_cgroup_exit().
+
+thanks,
+
+ - Joel
 
