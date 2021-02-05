@@ -2,160 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0AF431164E
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 00:02:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61EFF31167E
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 00:19:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232298AbhBEXBg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 18:01:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44714 "EHLO
+        id S231555AbhBEXCl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 18:02:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232674AbhBEOhh (ORCPT
+        with ESMTP id S232773AbhBEOhh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 5 Feb 2021 09:37:37 -0500
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9596C06178B;
-        Fri,  5 Feb 2021 08:15:26 -0800 (PST)
-Received: by mail-wm1-x330.google.com with SMTP id 190so6476734wmz.0;
-        Fri, 05 Feb 2021 08:15:26 -0800 (PST)
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 533B9C061225
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 08:15:34 -0800 (PST)
+Received: by mail-pg1-x52c.google.com with SMTP id n10so4850611pgl.10
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 08:15:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=mACicL3rE+Kh0IehlID0L8VuwnVf9CB87E6ZMKmgukU=;
-        b=PBL7qppo0ij8tdwx68ivvnBR12W0uA9PnbUlNDF4iPl4aRGOW1Ux+UrVSXDgpyQbwS
-         mKa+pmVe9gZg7WNyuaI6m7hb066N+EWYyvPBqSCV2a8FrDWBJ5/QPUI1aUI0LquSL+Uz
-         XvljK1qhu1BLFIU0x5P4JmHKsOsAKlEe12MH6CNW+8yZWGj1SZp7iD4KqlXtzGiyEWw7
-         4BFW5Cdbl+CybT3K0UHwVJ/xSnZA8U1furIBoE6S/pBcp+urgpC7VbZMCxXjmgFCnnLo
-         xJZ7yuOH0tGOvEw6EYIuKaDVtyu+jZfJOpM95hYkY442HOmOSJa2zrNbTyukwfhE3MQf
-         AfAg==
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=FTPh7oL8EmAIBxBRU2UBLoT6Jy/Icksa/rE3mlaA1mM=;
+        b=cLrjPxBpGlaQNbmOEsfdJJzZMIp5F/CeTpQFaq97QruHEFUQ5yarW4BHlIsFKSf469
+         QwxOtJtigpkm/z2uORLubYRRROLuy/Zi2Ue0q42XAWY/Dbi/PteR0YcsToI07JmBGV/Q
+         eYHDpf+qwIS1PzsWiQVu0m+CdW6auQuQKrQzT+K7h6AZ0evOqL15+Hl9Ybc5UObkqN2r
+         eYZqpjgUEMIlMtOyEQAkRzjmS6shAatT351egzzl+UHox5ifwQWdA59j13TLdgYmviMQ
+         7QGW9P7ozeYAuiObNywhHFGc/UEFxlNpQx/huM65SK5Sp0znmy7DbdaH4BGiFoUys4/w
+         gvaw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=mACicL3rE+Kh0IehlID0L8VuwnVf9CB87E6ZMKmgukU=;
-        b=Cdbyi745bIGCN572JfZyTNP32Xl+pvZ7YUnE2309IDVGxpU9dKSCdHWo9+nRy5BLkG
-         IIbZkH8Oj9xbdHfMocidQtr2oJSCJzw8D2xhPz0KyvBJkYtvm/hM4X9VvSA2ZfjUCtPB
-         QFUYhUkZrl056imL9ukCb2agO1noAiVJ6N6UT9nvhhnJFI7NsoiRaDXnn8EeQKGqTWr9
-         66X06liIVkqGcZVBlxJD7YfzaYQ7lDLhN7cqOkrZWo9MVDgE9UxRaPusu5UAUXZTA6SA
-         WYB8mGjwUQL2E5A0YT3ELT1SdIecFZyazDDaowa2AtyEII53ndWTFnwJukk6IoT4SbF/
-         GauQ==
-X-Gm-Message-State: AOAM533gaqHv/LPYszVI/L5d3rRRYlz0qjQEWtqQCq27cPBqXLz1wgA4
-        BI2Xy0uZkAB9a7aXNb21CQk=
-X-Google-Smtp-Source: ABdhPJx8X8W0cynwZXl8aKAQ163MTMwsU5DJ+VhIRSM5tIIit2yHBlZDBooRC5fOiOG/QM2ZOpSqDg==
-X-Received: by 2002:a1c:32c4:: with SMTP id y187mr4261470wmy.120.1612541725495;
-        Fri, 05 Feb 2021 08:15:25 -0800 (PST)
-Received: from localhost ([62.96.65.119])
-        by smtp.gmail.com with ESMTPSA id h15sm13085203wrt.10.2021.02.05.08.15.22
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=FTPh7oL8EmAIBxBRU2UBLoT6Jy/Icksa/rE3mlaA1mM=;
+        b=G8f1lI2j/H8P4dSKjtiv15XfLNdkV5nbXlyHdQRaQCCMkrbrJFI+4p3HV90Lu+xQYU
+         0w7O8lK3U44CLbx0v2/+A3kuaTOx5T76xldA025F0pz+80xDmg/Oynsjl340pq+NZJSE
+         7JBln9wYepur3XyjyiyMkIIyKb9pu3mFdg1gOjV3/ZalRb6QZAC7j74sQ9B6lKrmLsc3
+         zStSNwBgh0rklhz2ugTSmlZTnyEGOiOx0/L0LuGpwTn5tsmZBpq3Vx14dqDVy2MN1ZoO
+         0hpHCshAOlhMyPBNUXXz35xqNJFGW8VthoIpomJ14CNtro3POfGQSS8dWaoeuwX45by5
+         VIQQ==
+X-Gm-Message-State: AOAM532k4tYr3wH4Rrq/lB4pWNC9nN6FOAp5Rnwsc9eg93I41ZGppb7r
+        j0oyoEUaber3XEdMifg1oc8=
+X-Google-Smtp-Source: ABdhPJycEKcf89NcaDzn9SbFfxdRzh67XFybri5aMzom9GFAxSRMGwzh+T7VgSdwl0REkw1U1otOag==
+X-Received: by 2002:a65:4d4f:: with SMTP id j15mr5165087pgt.290.1612541733852;
+        Fri, 05 Feb 2021 08:15:33 -0800 (PST)
+Received: from google.com ([2620:15c:211:201:708b:34cf:3e70:176d])
+        by smtp.gmail.com with ESMTPSA id r20sm10661949pgb.3.2021.02.05.08.15.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Feb 2021 08:15:23 -0800 (PST)
-Date:   Fri, 5 Feb 2021 17:15:21 +0100
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     gregkh@linuxfoundation.org, kishon@ti.com, mturquette@baylibre.com,
-        sboyd@kernel.org
-Cc:     JC Kuo <jckuo@nvidia.com>, robh@kernel.org, jonathanh@nvidia.com,
-        linux-tegra@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        nkristam@nvidia.com, linux-clk@vger.kernel.org
-Subject: Re: [PATCH v7 00/14] Tegra XHCI controller ELPG support
-Message-ID: <YB1vGTt0ufzsYBgo@ulmo>
-References: <20210120073414.69208-1-jckuo@nvidia.com>
+        Fri, 05 Feb 2021 08:15:32 -0800 (PST)
+Sender: Minchan Kim <minchan.kim@gmail.com>
+Date:   Fri, 5 Feb 2021 08:15:30 -0800
+From:   Minchan Kim <minchan@kernel.org>
+To:     John Hubbard <jhubbard@nvidia.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        gregkh@linuxfoundation.org, surenb@google.com, joaodias@google.com,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>
+Subject: Re: [PATCH] mm: cma: support sysfs
+Message-ID: <YB1vIrgI9S/5CDxL@google.com>
+References: <YBxT9XFE6QAQ4T9N@google.com>
+ <cda5547b-0c78-756b-bd0c-f3e534d04bff@nvidia.com>
+ <YByNU4Q7cc7gYwPh@google.com>
+ <87d7ec1f-d892-0491-a2de-3d0feecca647@nvidia.com>
+ <YByi/gdaGJeV/+8b@google.com>
+ <71c4ce84-8be7-49e2-90bd-348762b320b4@nvidia.com>
+ <YBzU5uUbwa+QIwBQ@google.com>
+ <34110c61-9826-4cbe-8cd4-76f5e7612dbd@nvidia.com>
+ <YBzkjh5nnuNiGb6Q@google.com>
+ <f6e41e39-d60b-764d-0af4-8e6977663821@nvidia.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="zgswFb86aj1T/vHg"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210120073414.69208-1-jckuo@nvidia.com>
-User-Agent: Mutt/2.0.5 (da5e3282) (2021-01-21)
+In-Reply-To: <f6e41e39-d60b-764d-0af4-8e6977663821@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Feb 04, 2021 at 10:41:14PM -0800, John Hubbard wrote:
+> On 2/4/21 10:24 PM, Minchan Kim wrote:
+> > On Thu, Feb 04, 2021 at 09:49:54PM -0800, John Hubbard wrote:
+> > > On 2/4/21 9:17 PM, Minchan Kim wrote:
+> ...
+> > > # cat vmstat | grep -i cma
+> > > nr_free_cma 261718
+> > > 
+> > > # cat meminfo | grep -i cma
+> > > CmaTotal:        1048576 kB
+> > > CmaFree:         1046872 kB
+> > > 
+> > > OK, given that CMA is already in those two locations, maybe we should put
+> > > this information in one or both of those, yes?
+> > 
+> > Do you suggest something liks this, for example?
+> > 
+> > 
+> > cat vmstat | grep -i cma
+> > cma_a_success	125
+> > cma_a_fail	25
+> > cma_b_success	130
+> > cma_b_fail	156
+> > ..
+> > cma_f_fail	xxx
+> > 
+> 
+> Yes, approximately. I was wondering if this would suffice at least as a baseline:
+> 
+> cma_alloc_success   125
+> cma_alloc_failure   25
 
---zgswFb86aj1T/vHg
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+IMO, regardless of the my patch, it would be good to have such statistics
+in that CMA was born to replace carved out memory with dynamic allocation
+ideally for memory efficiency ideally so failure should regard critical
+so admin could notice it how the system is hurt.
 
-On Wed, Jan 20, 2021 at 03:34:00PM +0800, JC Kuo wrote:
-> Tegra XHCI controler can be placed in ELPG (Engine Level PowerGated)
-> state for power saving when all of the connected USB devices are in
-> suspended state. This patch series includes clk, phy and pmc changes
-> that are required for properly place controller in ELPG and bring
-> controller out of ELPG.
->=20
-> JC Kuo (14):
->   clk: tegra: Add PLLE HW power sequencer control
->   clk: tegra: Don't enable PLLE HW sequencer at init
->   phy: tegra: xusb: Move usb3 port init for Tegra210
->   phy: tegra: xusb: Rearrange UPHY init on Tegra210
->   phy: tegra: xusb: Add Tegra210 lane_iddq operation
->   phy: tegra: xusb: Add sleepwalk and suspend/resume
->   soc/tegra: pmc: Provide USB sleepwalk register map
->   arm64: tegra210: XUSB PADCTL add "nvidia,pmc" prop
->   dt-bindings: phy: tegra-xusb: Add nvidia,pmc prop
->   phy: tegra: xusb: Add wake/sleepwalk for Tegra210
->   phy: tegra: xusb: Tegra210 host mode VBUS control
->   phy: tegra: xusb: Add wake/sleepwalk for Tegra186
->   usb: host: xhci-tegra: Unlink power domain devices
->   xhci: tegra: Enable ELPG for runtime/system PM
->=20
->  .../phy/nvidia,tegra124-xusb-padctl.txt       |    1 +
->  arch/arm64/boot/dts/nvidia/tegra210.dtsi      |    1 +
->  drivers/clk/tegra/clk-pll.c                   |   12 -
->  drivers/clk/tegra/clk-tegra210.c              |   53 +-
->  drivers/phy/tegra/xusb-tegra186.c             |  558 ++++-
->  drivers/phy/tegra/xusb-tegra210.c             | 1889 +++++++++++++----
->  drivers/phy/tegra/xusb.c                      |   92 +-
->  drivers/phy/tegra/xusb.h                      |   22 +-
->  drivers/soc/tegra/pmc.c                       |   94 +
->  drivers/usb/host/xhci-tegra.c                 |  613 ++++--
->  include/linux/clk/tegra.h                     |    4 +-
->  include/linux/phy/tegra/xusb.h                |   10 +-
->  12 files changed, 2784 insertions(+), 565 deletions(-)
->=20
-> v5 "phy: tegra: xusb: tegra210: Do not reset UPHY PLL" is moved
-> into v6 "phy: tegra: xusb: Rearrange UPHY init on Tegra210"
+Anyway, it's not enough for me and orthgonal with my goal.
 
-Mike, Stephen,
+> 
+> ...and then, to see if more is needed, some questions:
+> 
+> a)  Do you know of an upper bound on how many cma areas there can be
+> (I think Matthew also asked that)?
 
-could you guys take a look at the two clk patches here and give an
-Acked-by? There's build-time dependencies throughout the series, so it'd
-be good if they can all go through either the PHY or USB trees.
+There is no upper bound since it's configurable.
 
-Kishon, Greg,
+> 
+> b) Is tracking the cma area really as valuable as other possibilities? We can put
+> "a few" to "several" items here, so really want to get your very favorite bits of
+> information in. If, for example, there can be *lots* of cma areas, then maybe tracking
 
-any comments on these patches? Unfortunately, the USB patches in this
-series have a build-time dependency on the PHY patches, so this should
-all go through one tree. Since this all culminates in the XHCI driver,
-merging this through the USB tree might be best, provided that Kishon
-provides his Acked-by on the PHY patches.
+At this moment, allocation/failure for each CMA area since they have
+particular own usecase, which makes me easy to keep which module will
+be affected. I think it is very useful per-CMA statistics as minimum
+code change so I want to enable it by default under CONFIG_CMA && CONFIG_SYSFS.
 
-Alternatively, I can create a set of branches with the correct
-dependencies and send out pull requests for the three subsystems if
-that's preferrable.
+> by a range of allocation sizes is better...
 
-Let me know how you want to handle these.
+I takes your suggestion something like this.
 
-Thanks,
-Thierry
+[alloc_range] could be order or range by interval
 
---zgswFb86aj1T/vHg
-Content-Type: application/pgp-signature; name="signature.asc"
+/sys/kernel/mm/cma/cma-A/[alloc_range]/success
+/sys/kernel/mm/cma/cma-A/[alloc_range]/fail
+..
+..
+/sys/kernel/mm/cma/cma-Z/[alloc_range]/success
+/sys/kernel/mm/cma/cma-Z/[alloc_range]/fail
 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmAdbxUACgkQ3SOs138+
-s6HPWA//bsqVHuTYuYpOfFyr9+CAEKLUWRjjySBwjp2J0wzqbpAm1VJZqxGyCP2n
-C1rHW7FNBhXcH1fy68JWC9fovri9TtEXmmNusF4BPnnqacJeQ8FpGKxVi7wqlzBf
-FgkqEdFWbtjVY+Pb9roDzEI3pp6V0dN2133j/9Z278ushVoPg21eqPnY2mAnOZBQ
-lyU9JIEbR3Zos1fb9/Hhi2vNhk4sbJsviktAi/OYmFj2NlDGHxg8JMHA7Xk8e5P6
-9MuFqxclirj7bwhkRgCH/BmiHqhO1rmLhGi+Hfrd/VKDeF9srcY8J5eAUHRtaibt
-bg9tCbnLk4dN/JXAZgTly4obqxx2WayLZhxXuG18otd0sX9vis+dFnO/dw78TVET
-Nmm3zUcqvSvA0X/pEH9ijC7YT3lbpcWvVnCuRCjJt8FF4O0ecXUyqqA2wIRd4+I5
-7xPkIubuvOZsERheGrQoTSlD43Yt8ky/IiyNz3z/RNa4uj5DxK90BpXQtppr3lE3
-PKngxHkeeAm3DTstpr1z4IAglFuOnhh7H9Cc/leD3mnJDfwzs7qp9cTg0Lg50V4V
-dukwQV06CFWWA+TpyJkRjrBJw2Tw6pnFALrWzeT61Zg9KsoAVcTZI4so+BjaEPPg
-MsGzpg0gcHVGdFzfAI1LU/MuFDdkZwQ4Rtjv28ZAko7NcR7eoUQ=
-=+est
------END PGP SIGNATURE-----
-
---zgswFb86aj1T/vHg--
+I agree it would be also useful but I'd like to enable it under
+CONFIG_CMA_SYSFS_ALLOC_RANGE as separate patchset.
