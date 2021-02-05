@@ -2,272 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CCFE31037B
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 04:23:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7217031037E
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 04:23:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230165AbhBEDVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 22:21:54 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48928 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229706AbhBEDVx (ORCPT
+        id S230205AbhBEDWT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 22:22:19 -0500
+Received: from mail-lj1-f177.google.com ([209.85.208.177]:34445 "EHLO
+        mail-lj1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229717AbhBEDWR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 22:21:53 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612495225;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Cn2ONu1FukrWGtswjFQszGnfs2KLfPIjCZoaoca5e5I=;
-        b=RjPGjs+LmEfMgY/wKlE1Q1DKA6bNN3xekMRnVl9ZiHfzpcN/mT4r/IPEqXGyFr9ynye0+T
-        BVh7RRunLgLndilkw3lO0eJZ8z4UjCAzq2/CevL+yTbVrv61LQlnkJNJbiFzey/QHSJSw7
-        vUWlylGvEH34h4QTWHxtTL8RsSqW8hE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-429-3pKCSlWEMg6dxzIFWl2cpw-1; Thu, 04 Feb 2021 22:20:23 -0500
-X-MC-Unique: 3pKCSlWEMg6dxzIFWl2cpw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F27B591271;
-        Fri,  5 Feb 2021 03:20:21 +0000 (UTC)
-Received: from [10.72.12.112] (ovpn-12-112.pek2.redhat.com [10.72.12.112])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 495135C1B4;
-        Fri,  5 Feb 2021 03:20:13 +0000 (UTC)
-Subject: Re: [PATCH v3 08/13] vdpa: add return value to get_config/set_config
- callbacks
-To:     Stefano Garzarella <sgarzare@redhat.com>,
-        virtualization@lists.linux-foundation.org
-Cc:     Xie Yongji <xieyongji@bytedance.com>, kvm@vger.kernel.org,
-        Laurent Vivier <lvivier@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Max Gurtovoy <mgurtovoy@nvidia.com>,
-        linux-kernel@vger.kernel.org, "Michael S. Tsirkin" <mst@redhat.com>
-References: <20210204172230.85853-1-sgarzare@redhat.com>
- <20210204172230.85853-9-sgarzare@redhat.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <fe6d02be-b6f9-b07f-a86b-97912dddffdc@redhat.com>
-Date:   Fri, 5 Feb 2021 11:20:11 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 4 Feb 2021 22:22:17 -0500
+Received: by mail-lj1-f177.google.com with SMTP id r23so4162421ljh.1;
+        Thu, 04 Feb 2021 19:22:00 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3pb9e/xdQGDLFkoDNDeMMQMJFh8zeB5fbZnoZcPjiLU=;
+        b=HNF4U/3jJpJEvbUXSkwVO2nVEDCVX/xjyfXt52EKcMpDrJwpr/OJ0Z6QwyrntuRf5f
+         Hu8Az71hL9wKH1/rCX4Gf7xfDgjP+EkX6dmr3JxMGMXZF8c0Es5owKPd1UU28YnkNT66
+         JAjXkJB/jffSh9/mxxM7g3b9t0xAEB8Aoci1u5Eewop5sX/a6cszRbNMvLLeU3zaMGOb
+         m75b0g0t2ypg9wyxlDhsGaAicuUs/ZrhvC7O29pemXgTLPPAFZWb9CmOtdG7N8PpfgAb
+         nkksGGZpAAtrCUs2RwU9EuprGdvqgC8Pckb7aEY7YHfbJ0SDVZB5bv/nfZujLL41vAFa
+         90CQ==
+X-Gm-Message-State: AOAM532vN2Ky/U0S2/liHhYaWWUZxDedIjcW6sBCrG1MixaddnnmzqoH
+        JwNwlOSwA7wOAvLLOOjBh/aVRBZw4W12oQ==
+X-Google-Smtp-Source: ABdhPJxIUiSXSPPUGK+SL9OT+ggBm3BU/XF3cJkBvDmI6NNBgUGx3AZDH6JB/7r3SOHEnl4yJMV/og==
+X-Received: by 2002:a2e:980a:: with SMTP id a10mr1461010ljj.280.1612495294185;
+        Thu, 04 Feb 2021 19:21:34 -0800 (PST)
+Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com. [209.85.208.182])
+        by smtp.gmail.com with ESMTPSA id l9sm828446lfk.76.2021.02.04.19.21.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Feb 2021 19:21:33 -0800 (PST)
+Received: by mail-lj1-f182.google.com with SMTP id e18so6006805lja.12;
+        Thu, 04 Feb 2021 19:21:33 -0800 (PST)
+X-Received: by 2002:a2e:9d04:: with SMTP id t4mr1458674lji.56.1612495293179;
+ Thu, 04 Feb 2021 19:21:33 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210204172230.85853-9-sgarzare@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+References: <20210204184710.1880895-1-jernej.skrabec@siol.net> <20210204184710.1880895-3-jernej.skrabec@siol.net>
+In-Reply-To: <20210204184710.1880895-3-jernej.skrabec@siol.net>
+From:   Chen-Yu Tsai <wens@csie.org>
+Date:   Fri, 5 Feb 2021 11:21:22 +0800
+X-Gmail-Original-Message-ID: <CAGb2v64qww4pFwMVrY5UpHOQtM43Q0VPx=3PwJGbB5Oh0qnx=w@mail.gmail.com>
+Message-ID: <CAGb2v64qww4pFwMVrY5UpHOQtM43Q0VPx=3PwJGbB5Oh0qnx=w@mail.gmail.com>
+Subject: Re: [PATCH 2/5] drm/sun4i: tcon: set sync polarity for tcon1 channel
+To:     Jernej Skrabec <jernej.skrabec@siol.net>
+Cc:     Maxime Ripard <mripard@kernel.org>,
+        Mike Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-sunxi <linux-sunxi@googlegroups.com>,
+        Andre Heider <a.heider@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 2021/2/5 上午1:22, Stefano Garzarella wrote:
-> All implementations of these callbacks already validate inputs.
+On Fri, Feb 5, 2021 at 2:48 AM Jernej Skrabec <jernej.skrabec@siol.net> wrote:
 >
-> Let's return an error from these callbacks, so the caller doesn't
-> need to validate the input anymore.
+> Channel 1 has polarity bits for vsync and hsync signals but driver never
+> sets them. It turns out that with pre-HDMI2 controllers seemingly there
+> is no issue if polarity is not set. However, with HDMI2 controllers
+> (H6) there often comes to de-synchronization due to phase shift. This
+> causes flickering screen. It's safe to assume that similar issues might
+> happen also with pre-HDMI2 controllers.
 >
-> We update all implementations to return -EINVAL in case of invalid
-> input.
+> Solve issue with setting vsync and hsync polarity. Note that display
+> stacks with tcon top have polarity bits actually in tcon0 polarity
+> register.
 >
-> Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
+> Fixes: 9026e0d122ac ("drm: Add Allwinner A10 Display Engine support")
+> Tested-by: Andre Heider <a.heider@gmail.com>
+> Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
 > ---
->   include/linux/vdpa.h              | 18 ++++++++++--------
->   drivers/vdpa/ifcvf/ifcvf_main.c   | 24 ++++++++++++++++--------
->   drivers/vdpa/mlx5/net/mlx5_vnet.c | 17 +++++++++++------
->   drivers/vdpa/vdpa_sim/vdpa_sim.c  | 16 ++++++++++------
->   4 files changed, 47 insertions(+), 28 deletions(-)
+>  drivers/gpu/drm/sun4i/sun4i_tcon.c | 24 ++++++++++++++++++++++++
+>  drivers/gpu/drm/sun4i/sun4i_tcon.h |  5 +++++
+>  2 files changed, 29 insertions(+)
 >
-> diff --git a/include/linux/vdpa.h b/include/linux/vdpa.h
-> index 4ab5494503a8..0e0cbd5fb41b 100644
-> --- a/include/linux/vdpa.h
-> +++ b/include/linux/vdpa.h
-> @@ -157,6 +157,7 @@ struct vdpa_iova_range {
->    *				@buf: buffer used to read to
->    *				@len: the length to read from
->    *				configuration space
-> + *				Returns integer: success (0) or error (< 0)
->    * @set_config:			Write to device specific configuration space
->    *				@vdev: vdpa device
->    *				@offset: offset from the beginning of
-> @@ -164,6 +165,7 @@ struct vdpa_iova_range {
->    *				@buf: buffer used to write from
->    *				@len: the length to write to
->    *				configuration space
-> + *				Returns integer: success (0) or error (< 0)
->    * @get_generation:		Get device config generation (optional)
->    *				@vdev: vdpa device
->    *				Returns u32: device generation
-> @@ -231,10 +233,10 @@ struct vdpa_config_ops {
->   	u32 (*get_vendor_id)(struct vdpa_device *vdev);
->   	u8 (*get_status)(struct vdpa_device *vdev);
->   	void (*set_status)(struct vdpa_device *vdev, u8 status);
-> -	void (*get_config)(struct vdpa_device *vdev, unsigned int offset,
-> -			   void *buf, unsigned int len);
-> -	void (*set_config)(struct vdpa_device *vdev, unsigned int offset,
-> -			   const void *buf, unsigned int len);
-> +	int (*get_config)(struct vdpa_device *vdev, unsigned int offset,
-> +			  void *buf, unsigned int len);
-> +	int (*set_config)(struct vdpa_device *vdev, unsigned int offset,
-> +			  const void *buf, unsigned int len);
->   	u32 (*get_generation)(struct vdpa_device *vdev);
->   	struct vdpa_iova_range (*get_iova_range)(struct vdpa_device *vdev);
->   
-> @@ -329,8 +331,8 @@ static inline int vdpa_set_features(struct vdpa_device *vdev, u64 features)
->   }
->   
->   
-> -static inline void vdpa_get_config(struct vdpa_device *vdev, unsigned offset,
-> -				   void *buf, unsigned int len)
-> +static inline int vdpa_get_config(struct vdpa_device *vdev, unsigned offset,
-> +				  void *buf, unsigned int len)
->   {
->           const struct vdpa_config_ops *ops = vdev->config;
->   
-> @@ -339,8 +341,8 @@ static inline void vdpa_get_config(struct vdpa_device *vdev, unsigned offset,
->   	 * If it does happen we assume a legacy guest.
->   	 */
->   	if (!vdev->features_valid)
-> -		vdpa_set_features(vdev, 0);
-> -	ops->get_config(vdev, offset, buf, len);
-> +		return vdpa_set_features(vdev, 0);
-> +	return ops->get_config(vdev, offset, buf, len);
->   }
->   
->   /**
-> diff --git a/drivers/vdpa/ifcvf/ifcvf_main.c b/drivers/vdpa/ifcvf/ifcvf_main.c
-> index 7c8bbfcf6c3e..f5e6a90d8114 100644
-> --- a/drivers/vdpa/ifcvf/ifcvf_main.c
-> +++ b/drivers/vdpa/ifcvf/ifcvf_main.c
-> @@ -332,24 +332,32 @@ static u32 ifcvf_vdpa_get_vq_align(struct vdpa_device *vdpa_dev)
->   	return IFCVF_QUEUE_ALIGNMENT;
->   }
->   
-> -static void ifcvf_vdpa_get_config(struct vdpa_device *vdpa_dev,
-> -				  unsigned int offset,
-> -				  void *buf, unsigned int len)
-> +static int ifcvf_vdpa_get_config(struct vdpa_device *vdpa_dev,
-> +				 unsigned int offset,
-> +				 void *buf, unsigned int len)
->   {
->   	struct ifcvf_hw *vf = vdpa_to_vf(vdpa_dev);
->   
-> -	WARN_ON(offset + len > sizeof(struct virtio_net_config));
-> +	if (offset + len > sizeof(struct virtio_net_config))
-> +		return -EINVAL;
+> diff --git a/drivers/gpu/drm/sun4i/sun4i_tcon.c b/drivers/gpu/drm/sun4i/sun4i_tcon.c
+> index 6b9af4c08cd6..0d132dae58c0 100644
+> --- a/drivers/gpu/drm/sun4i/sun4i_tcon.c
+> +++ b/drivers/gpu/drm/sun4i/sun4i_tcon.c
+> @@ -672,6 +672,29 @@ static void sun4i_tcon1_mode_set(struct sun4i_tcon *tcon,
+>                      SUN4I_TCON1_BASIC5_V_SYNC(vsync) |
+>                      SUN4I_TCON1_BASIC5_H_SYNC(hsync));
+>
+> +       /* Setup the polarity of sync signals */
+> +       if (tcon->quirks->polarity_in_ch0) {
+> +               val = 0;
 > +
->   	ifcvf_read_net_config(vf, offset, buf, len);
+> +               if (mode->flags & DRM_MODE_FLAG_PHSYNC)
+> +                       val |= SUN4I_TCON0_IO_POL_HSYNC_POSITIVE;
 > +
-> +	return 0;
->   }
->   
-> -static void ifcvf_vdpa_set_config(struct vdpa_device *vdpa_dev,
-> -				  unsigned int offset, const void *buf,
-> -				  unsigned int len)
-> +static int ifcvf_vdpa_set_config(struct vdpa_device *vdpa_dev,
-> +				 unsigned int offset, const void *buf,
-> +				 unsigned int len)
->   {
->   	struct ifcvf_hw *vf = vdpa_to_vf(vdpa_dev);
->   
-> -	WARN_ON(offset + len > sizeof(struct virtio_net_config));
-> +	if (offset + len > sizeof(struct virtio_net_config))
-> +		return -EINVAL;
+> +               if (mode->flags & DRM_MODE_FLAG_PVSYNC)
+> +                       val |= SUN4I_TCON0_IO_POL_VSYNC_POSITIVE;
 > +
->   	ifcvf_write_net_config(vf, offset, buf, len);
-> +
-> +	return 0;
->   }
->   
->   static void ifcvf_vdpa_set_config_cb(struct vdpa_device *vdpa_dev,
-> diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> index 029822060017..9323b5ff7988 100644
-> --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> @@ -1796,20 +1796,25 @@ static void mlx5_vdpa_set_status(struct vdpa_device *vdev, u8 status)
->   	ndev->mvdev.status |= VIRTIO_CONFIG_S_FAILED;
->   }
->   
-> -static void mlx5_vdpa_get_config(struct vdpa_device *vdev, unsigned int offset, void *buf,
-> -				 unsigned int len)
-> +static int mlx5_vdpa_get_config(struct vdpa_device *vdev, unsigned int offset, void *buf,
-> +				unsigned int len)
->   {
->   	struct mlx5_vdpa_dev *mvdev = to_mvdev(vdev);
->   	struct mlx5_vdpa_net *ndev = to_mlx5_vdpa_ndev(mvdev);
->   
-> -	if (offset + len < sizeof(struct virtio_net_config))
-> -		memcpy(buf, (u8 *)&ndev->config + offset, len);
-> +	if (offset + len > sizeof(struct virtio_net_config))
-> +		return -EINVAL;
+> +               regmap_write(tcon->regs, SUN4I_TCON0_IO_POL_REG, val);
+> +       } else {
+> +               val = SUN4I_TCON1_IO_POL_UNKNOWN;
 
+I think a comment for the origin of this is warranted.
 
-It looks to me we should use ">=" here?
+Otherwise,
 
-Thanks
-
+Reviewed-by: Chen-Yu Tsai <wens@csie.org>
 
 > +
-> +	memcpy(buf, (u8 *)&ndev->config + offset, len);
+> +               if (mode->flags & DRM_MODE_FLAG_PHSYNC)
+> +                       val |= SUN4I_TCON1_IO_POL_HSYNC_POSITIVE;
 > +
-> +	return 0
->   }
->   
-> -static void mlx5_vdpa_set_config(struct vdpa_device *vdev, unsigned int offset, const void *buf,
-> -				 unsigned int len)
-> +static int mlx5_vdpa_set_config(struct vdpa_device *vdev, unsigned int offset, const void *buf,
-> +				unsigned int len)
->   {
->   	/* not supported */
-> +	return 0;
->   }
->   
->   static u32 mlx5_vdpa_get_generation(struct vdpa_device *vdev)
-> diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim.c b/drivers/vdpa/vdpa_sim/vdpa_sim.c
-> index a7aeb5d01c3e..3808b01ac703 100644
-> --- a/drivers/vdpa/vdpa_sim/vdpa_sim.c
-> +++ b/drivers/vdpa/vdpa_sim/vdpa_sim.c
-> @@ -462,32 +462,36 @@ static void vdpasim_set_status(struct vdpa_device *vdpa, u8 status)
->   	spin_unlock(&vdpasim->lock);
->   }
->   
-> -static void vdpasim_get_config(struct vdpa_device *vdpa, unsigned int offset,
-> -			     void *buf, unsigned int len)
-> +static int vdpasim_get_config(struct vdpa_device *vdpa, unsigned int offset,
-> +			      void *buf, unsigned int len)
->   {
->   	struct vdpasim *vdpasim = vdpa_to_sim(vdpa);
->   
->   	if (offset + len > vdpasim->dev_attr.config_size)
-> -		return;
-> +		return -EINVAL;
->   
->   	if (vdpasim->dev_attr.get_config)
->   		vdpasim->dev_attr.get_config(vdpasim, vdpasim->config);
->   
->   	memcpy(buf, vdpasim->config + offset, len);
+> +               if (mode->flags & DRM_MODE_FLAG_PVSYNC)
+> +                       val |= SUN4I_TCON1_IO_POL_VSYNC_POSITIVE;
 > +
-> +	return 0;
->   }
->   
-> -static void vdpasim_set_config(struct vdpa_device *vdpa, unsigned int offset,
-> -			     const void *buf, unsigned int len)
-> +static int vdpasim_set_config(struct vdpa_device *vdpa, unsigned int offset,
-> +			      const void *buf, unsigned int len)
->   {
->   	struct vdpasim *vdpasim = vdpa_to_sim(vdpa);
->   
->   	if (offset + len > vdpasim->dev_attr.config_size)
-> -		return;
-> +		return -EINVAL;
->   
->   	memcpy(vdpasim->config + offset, buf, len);
->   
->   	if (vdpasim->dev_attr.set_config)
->   		vdpasim->dev_attr.set_config(vdpasim, vdpasim->config);
+> +               regmap_write(tcon->regs, SUN4I_TCON1_IO_POL_REG, val);
+> +       }
 > +
-> +	return 0;
->   }
->   
->   static u32 vdpasim_get_generation(struct vdpa_device *vdpa)
-
+>         /* Map output pins to channel 1 */
+>         regmap_update_bits(tcon->regs, SUN4I_TCON_GCTL_REG,
+>                            SUN4I_TCON_GCTL_IOMAP_MASK,
+> @@ -1500,6 +1523,7 @@ static const struct sun4i_tcon_quirks sun8i_a83t_tv_quirks = {
+>
+>  static const struct sun4i_tcon_quirks sun8i_r40_tv_quirks = {
+>         .has_channel_1          = true,
+> +       .polarity_in_ch0        = true,
+>         .set_mux                = sun8i_r40_tcon_tv_set_mux,
+>  };
+>
+> diff --git a/drivers/gpu/drm/sun4i/sun4i_tcon.h b/drivers/gpu/drm/sun4i/sun4i_tcon.h
+> index c5ac1b02482c..b504fb2d3de5 100644
+> --- a/drivers/gpu/drm/sun4i/sun4i_tcon.h
+> +++ b/drivers/gpu/drm/sun4i/sun4i_tcon.h
+> @@ -154,6 +154,10 @@
+>  #define SUN4I_TCON1_BASIC5_V_SYNC(height)              (((height) - 1) & 0x3ff)
+>
+>  #define SUN4I_TCON1_IO_POL_REG                 0xf0
+> +#define SUN4I_TCON1_IO_POL_UNKNOWN                     BIT(26)
+> +#define SUN4I_TCON1_IO_POL_HSYNC_POSITIVE              BIT(25)
+> +#define SUN4I_TCON1_IO_POL_VSYNC_POSITIVE              BIT(24)
+> +
+>  #define SUN4I_TCON1_IO_TRI_REG                 0xf4
+>
+>  #define SUN4I_TCON_ECC_FIFO_REG                        0xf8
+> @@ -236,6 +240,7 @@ struct sun4i_tcon_quirks {
+>         bool    needs_de_be_mux; /* sun6i needs mux to select backend */
+>         bool    needs_edp_reset; /* a80 edp reset needed for tcon0 access */
+>         bool    supports_lvds;   /* Does the TCON support an LVDS output? */
+> +       bool    polarity_in_ch0; /* some tcon1 channels have polarity bits in tcon0 pol register */
+>         u8      dclk_min_div;   /* minimum divider for TCON0 DCLK */
+>
+>         /* callback to handle tcon muxing options */
+> --
+> 2.30.0
+>
