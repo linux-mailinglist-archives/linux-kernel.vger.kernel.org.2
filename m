@@ -2,667 +2,358 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19F5B3117C5
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 01:27:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 785873117C4
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 01:27:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229927AbhBFA0b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 19:26:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56766 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232113AbhBEMei (ORCPT
+        id S231293AbhBFAZm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 19:25:42 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2508 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232173AbhBEMko (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 07:34:38 -0500
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27AE9C06178B
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 04:33:58 -0800 (PST)
-Received: by mail-pf1-x435.google.com with SMTP id t29so4215484pfg.11
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 04:33:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=I2E4Oo3zZwZS1xXt4ElK2cusqWvYrT+QzdM6VM3ja60=;
-        b=sWdtt9kTl72YfMvF2hhWcA9fTooqJ2s7C6Bt13J4xOA72q46Ti5iCYlUnv9bgg96/B
-         rIhWdkubeyXxT13PbMX7WWReF5YOhMFuJGFDRPZLoY1y3fm8MP5wYk5Z+U8W7Ys+RTZc
-         Wv54kbWkV4ku7fpBfGvo1S8XHpiLK/ebRs43w8OB7hKobz7t5speQigCryGKM2lsC8Ot
-         zI4lmA80sKdNODxBkLDTqQQ97FGFyuDJ5NvGZ+cssRA9z2oX1hs7uHVNNm0ZY06kYXZ5
-         p59BS+IpmVQohvHOkTNcZPNA232BPifUvOcK/XJU9UI1pg4cl+fe+1HK035B5Zk0npmu
-         Ebbg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=I2E4Oo3zZwZS1xXt4ElK2cusqWvYrT+QzdM6VM3ja60=;
-        b=J3NYaGT4hzj0MEjbpIBQnwEFSf30a0UEGBgjixVopeFDuj6O8G7ueiqJh0ervG26qy
-         a/avrbARKw4Xvf0FPdtlE7pWdTzJhyRly4Ydmx8XgXYuDi97XtVHuN6mk9TPTiHklzKV
-         G7zl6dmxTeCDuLoyXtkG/FpoSkq/SIFQvRHoCDEAej81dPBmRxcwkslLhAKMh59dUWxC
-         11+6RDWBR0rKjDO3k03/Q38h08w2uw4avtzoTyc0/n9hNEAvKi0I3tvCcoUjIAJ3ElMI
-         i0yAGjgf1FNeJw8XpoimB83Mh7KZl+CghpPvo3Gp7MvDduWV3QsQTT+rYZNhCDIyR9ZA
-         Rncg==
-X-Gm-Message-State: AOAM533XsyxrGp95XM3Nlz7c9kGOlFHMq9s4p/cnKCzrD0ZVHuK5vOqe
-        kgSiIgn1a/RrGHMu4nSEkrY3dtLvpGb5lZLwcyDkNg==
-X-Google-Smtp-Source: ABdhPJyVmrjr+Jj0mGlXE+EqnwdGDrYdhZzHZXN2p1gz9On1LrLbQ6eOfjEsQpy3o+JfRF6xU+HHFXWE2Qqb579Hmlk=
-X-Received: by 2002:a63:f953:: with SMTP id q19mr4172172pgk.120.1612528437477;
- Fri, 05 Feb 2021 04:33:57 -0800 (PST)
+        Fri, 5 Feb 2021 07:40:44 -0500
+Received: from fraeml745-chm.china.huawei.com (unknown [172.18.147.201])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4DXFFy4w5Hz67kKq;
+        Fri,  5 Feb 2021 20:33:42 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml745-chm.china.huawei.com (10.206.15.226) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Fri, 5 Feb 2021 13:40:02 +0100
+Received: from localhost (10.47.29.206) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Fri, 5 Feb 2021
+ 12:40:01 +0000
+Date:   Fri, 5 Feb 2021 12:39:15 +0000
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Alexandru Ardelean <ardeleanalex@gmail.com>
+CC:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        "Hennerich, Michael" <Michael.Hennerich@analog.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Nuno =?ISO-8859-1?Q?S=E1?= <nuno.sa@analog.com>,
+        "Bogdan, Dragos" <dragos.bogdan@analog.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH v3 08/11] iio: buffer: wrap all buffer attributes into
+ iio_dev_attr
+Message-ID: <20210205123915.000012dc@Huawei.com>
+In-Reply-To: <CA+U=DsrBMd6LmdO_gq3MT21eO2HoO0mbkZjbig600EJ=d4Q3kg@mail.gmail.com>
+References: <20210201145105.20459-1-alexandru.ardelean@analog.com>
+        <20210201145105.20459-9-alexandru.ardelean@analog.com>
+        <20210204182340.00005170@Huawei.com>
+        <CA+U=DsrBMd6LmdO_gq3MT21eO2HoO0mbkZjbig600EJ=d4Q3kg@mail.gmail.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-References: <cover.1611802321.git.xji@analogixsemi.com> <49fc9c62026988d7adc2eb7e4d1f6a3bffe0b66c.1611802321.git.xji@analogixsemi.com>
-In-Reply-To: <49fc9c62026988d7adc2eb7e4d1f6a3bffe0b66c.1611802321.git.xji@analogixsemi.com>
-From:   Robert Foss <robert.foss@linaro.org>
-Date:   Fri, 5 Feb 2021 13:33:46 +0100
-Message-ID: <CAG3jFys3GnPOfnsMjcd_7BfEuAQyb2VJfA2uuxpQ=Qf+2rXvhw@mail.gmail.com>
-Subject: Re: [PATCH v4 3/3] drm/bridge: anx7625: add MIPI DPI input feature support
-To:     Xin Ji <xji@analogixsemi.com>
-Cc:     Nicolas Boichat <drinkcat@google.com>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>, Torsten Duwe <duwe@lst.de>,
-        Vasily Khoruzhick <anarsoul@gmail.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Sheng Pan <span@analogixsemi.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        devel@driverdev.osuosl.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.29.206]
+X-ClientProxiedBy: lhreml726-chm.china.huawei.com (10.201.108.77) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey Xin,
+On Fri, 5 Feb 2021 11:17:04 +0200
+Alexandru Ardelean <ardeleanalex@gmail.com> wrote:
 
-On Thu, 28 Jan 2021 at 04:12, Xin Ji <xji@analogixsemi.com> wrote:
->
-> Add MIPI rx DPI input support
->
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Xin Ji <xji@analogixsemi.com>
-> ---
->  drivers/gpu/drm/bridge/analogix/anx7625.c | 326 ++++++++++++++++++++++++------
->  drivers/gpu/drm/bridge/analogix/anx7625.h |  20 +-
->  2 files changed, 285 insertions(+), 61 deletions(-)
->
-> diff --git a/drivers/gpu/drm/bridge/analogix/anx7625.c b/drivers/gpu/drm/bridge/analogix/anx7625.c
-> index 04536cc..628ae43 100644
-> --- a/drivers/gpu/drm/bridge/analogix/anx7625.c
-> +++ b/drivers/gpu/drm/bridge/analogix/anx7625.c
-> @@ -150,18 +150,18 @@ static int anx7625_write_and(struct anx7625_data *ctx,
->         return anx7625_reg_write(ctx, client, offset, (val & (mask)));
->  }
->
-> -static int anx7625_write_and_or(struct anx7625_data *ctx,
-> -                               struct i2c_client *client,
-> -                               u8 offset, u8 and_mask, u8 or_mask)
-> +static int anx7625_config_bit_matrix(struct anx7625_data *ctx)
->  {
-> -       int val;
-> +       int i, ret;
->
-> -       val = anx7625_reg_read(ctx, client, offset);
-> -       if (val < 0)
-> -               return val;
-> +       ret = anx7625_write_or(ctx, ctx->i2c.tx_p2_client,
-> +                              AUDIO_CONTROL_REGISTER, 0x80);
-> +       for (i = 0; i < 13; i++)
-> +               ret |= anx7625_reg_write(ctx, ctx->i2c.tx_p2_client,
-> +                                        VIDEO_BIT_MATRIX_12 + i,
-> +                                        0x18 + i);
->
-> -       return anx7625_reg_write(ctx, client,
-> -                                offset, (val & and_mask) | (or_mask));
-> +       return ret;
->  }
->
->  static int anx7625_read_ctrl_status_p0(struct anx7625_data *ctx)
-> @@ -195,6 +195,60 @@ static int wait_aux_op_finish(struct anx7625_data *ctx)
->         return 0;
->  }
->
-> +static int anx7625_aux_dpcd_read(struct anx7625_data *ctx,
-> +                                u8 addrh, u8 addrm, u8 addrl,
-> +                                u8 len, u8 *buf)
-> +{
-> +       struct device *dev = &ctx->client->dev;
-> +       int ret;
-> +       u8 cmd;
-> +
-> +       if (len > MAX_DPCD_BUFFER_SIZE) {
-> +               DRM_DEV_ERROR(dev, "exceed aux buffer len.\n");
-> +               return -EINVAL;
-> +       }
-> +
-> +       cmd = ((len - 1) << 4) | 0x09;
-> +
-> +       /* Set command and length */
-> +       ret = anx7625_reg_write(ctx, ctx->i2c.rx_p0_client,
-> +                               AP_AUX_COMMAND, cmd);
-> +
-> +       /* Set aux access address */
-> +       ret |= anx7625_reg_write(ctx, ctx->i2c.rx_p0_client,
-> +                                AP_AUX_ADDR_7_0, addrl);
-> +       ret |= anx7625_reg_write(ctx, ctx->i2c.rx_p0_client,
-> +                                AP_AUX_ADDR_15_8, addrm);
-> +       ret |= anx7625_write_and(ctx, ctx->i2c.rx_p0_client,
-> +                                AP_AUX_ADDR_19_16, addrh);
-> +
-> +       /* Enable aux access */
-> +       ret |= anx7625_write_or(ctx, ctx->i2c.rx_p0_client,
-> +                               AP_AUX_CTRL_STATUS, AP_AUX_CTRL_OP_EN);
-> +
-> +       if (ret < 0) {
-> +               DRM_DEV_ERROR(dev, "cannot access aux related register.\n");
-> +               return -EIO;
-> +       }
-> +
-> +       usleep_range(2000, 2100);
-> +
-> +       ret = wait_aux_op_finish(ctx);
-> +       if (ret) {
-> +               DRM_DEV_ERROR(dev, "aux IO error: wait aux op finish.\n");
-> +               return ret;
-> +       }
-> +
-> +       ret = anx7625_reg_block_read(ctx, ctx->i2c.rx_p0_client,
-> +                                    AP_AUX_BUFF_START, len, buf);
-> +       if (ret < 0) {
-> +               DRM_DEV_ERROR(dev, "read dpcd register failed\n");
-> +               return -EIO;
-> +       }
-> +
-> +       return 0;
-> +}
-> +
->  static int anx7625_video_mute_control(struct anx7625_data *ctx,
->                                       u8 status)
->  {
-> @@ -219,38 +273,6 @@ static int anx7625_video_mute_control(struct anx7625_data *ctx,
->         return ret;
->  }
->
-> -static int anx7625_config_audio_input(struct anx7625_data *ctx)
-> -{
-> -       struct device *dev = &ctx->client->dev;
-> -       int ret;
-> -
-> -       /* Channel num */
-> -       ret = anx7625_reg_write(ctx, ctx->i2c.tx_p2_client,
-> -                               AUDIO_CHANNEL_STATUS_6, I2S_CH_2 << 5);
-> -
-> -       /* FS */
-> -       ret |= anx7625_write_and_or(ctx, ctx->i2c.tx_p2_client,
-> -                                   AUDIO_CHANNEL_STATUS_4,
-> -                                   0xf0, AUDIO_FS_48K);
-> -       /* Word length */
-> -       ret |= anx7625_write_and_or(ctx, ctx->i2c.tx_p2_client,
-> -                                   AUDIO_CHANNEL_STATUS_5,
-> -                                   0xf0, AUDIO_W_LEN_24_24MAX);
-> -       /* I2S */
-> -       ret |= anx7625_write_or(ctx, ctx->i2c.tx_p2_client,
-> -                               AUDIO_CHANNEL_STATUS_6, I2S_SLAVE_MODE);
-> -       ret |= anx7625_write_and(ctx, ctx->i2c.tx_p2_client,
-> -                                AUDIO_CONTROL_REGISTER, ~TDM_TIMING_MODE);
-> -       /* Audio change flag */
-> -       ret |= anx7625_write_or(ctx, ctx->i2c.rx_p0_client,
-> -                               AP_AV_STATUS, AP_AUDIO_CHG);
-> -
-> -       if (ret < 0)
-> -               DRM_DEV_ERROR(dev, "fail to config audio.\n");
-> -
-> -       return ret;
-> -}
-> -
->  /* Reduction of fraction a/b */
->  static void anx7625_reduction_of_a_fraction(unsigned long *a, unsigned long *b)
->  {
-> @@ -410,7 +432,7 @@ static int anx7625_dsi_video_timing_config(struct anx7625_data *ctx)
->         ret |= anx7625_write_and(ctx, ctx->i2c.rx_p1_client,
->                         MIPI_LANE_CTRL_0, 0xfc);
->         ret |= anx7625_write_or(ctx, ctx->i2c.rx_p1_client,
-> -                               MIPI_LANE_CTRL_0, 3);
-> +                               MIPI_LANE_CTRL_0, ctx->pdata.mipi_lanes - 1);
+> On Thu, Feb 4, 2021 at 8:26 PM Jonathan Cameron
+> <Jonathan.Cameron@huawei.com> wrote:
+> >
+> > On Mon, 1 Feb 2021 16:51:02 +0200
+> > Alexandru Ardelean <alexandru.ardelean@analog.com> wrote:
+> >  
+> > > This change wraps all buffer attributes into iio_dev_attr objects, and
+> > > assigns a reference to the IIO buffer they belong to.
+> > >
+> > > With the addition of multiple IIO buffers per one IIO device, we need a way
+> > > to know which IIO buffer is being enabled/disabled/controlled.
+> > >
+> > > We know that all buffer attributes are device_attributes. So we can wrap
+> > > them with a iio_dev_attr types. In the iio_dev_attr type, we can also hold
+> > > a reference to an IIO buffer.
+> > > So, we end up being able to allocate wrapped attributes for all buffer
+> > > attributes (even the one from other drivers).
+> > >
+> > > The neat part with this mechanism, is that we don't need to add any extra
+> > > cleanup, because these attributes are being added to a dynamic list that
+> > > will get cleaned up via iio_free_chan_devattr_list().  
+> >
+> >  
+> > >
+> > > With this change, the 'buffer->scan_el_dev_attr_list' list is being renamed
+> > > to 'buffer->buffer_attr_list', effectively merging (or finalizing the
+> > > merge) of the buffer/ & scan_elements/ attributes internally.
+> > >
+> > > Accessing these new buffer attributes can now be done via
+> > > 'to_iio_dev_attr(attr)->buffer' inside the show/store handlers.  
+> >
+> > That is going to look a bit odd in any drivers that use it given they
+> > will appear to not be embedded.
+> >
+> > There seem to be very few such attributes from a quick grep, so maybe
+> > we may want to unwind this and change all the types.   Might still need
+> > to set .buffer for some of them though (only applying to new drivers as
+> > clearly current ones don't care!)
+> >
+> > Looking at what they actually are, some perhaps shouldn't have been in the buffer
+> > directory in the first place (with hindsight!).
+> >
+> > Anyhow, aside from that oddity this looks good to me.  
+> 
+> I'm a little vague here.
+> If there is a suggestion for a change, I may have missed it.
 
-Is this mipi_lanes change independent of the rest of this patch?
-If so, extract it to a seperate patch.
+It was vague because I wasn't sure if it it made sense :)
+> 
+> I'm a bit vague on the part of "we may want to unwind this and change
+> all the types"
+> Is it referring to something like this patch?
+>       https://lore.kernel.org/linux-iio/20210122162529.84978-10-alexandru.ardelean@analog.com/
 
->
->         /* Htotal */
->         htotal = ctx->dt.hactive.min + ctx->dt.hfront_porch.min +
-> @@ -595,6 +617,101 @@ static int anx7625_dsi_config(struct anx7625_data *ctx)
->         return ret;
->  }
->
-> +static int anx7625_api_dpi_config(struct anx7625_data *ctx)
-> +{
-> +       struct device *dev = &ctx->client->dev;
-> +       u16 freq = ctx->dt.pixelclock.min / 1000;
-> +       int ret;
-> +
-> +       /* configure pixel clock */
-> +       ret = anx7625_reg_write(ctx, ctx->i2c.rx_p0_client,
-> +                               PIXEL_CLOCK_L, freq & 0xFF);
-> +       ret |= anx7625_reg_write(ctx, ctx->i2c.rx_p0_client,
-> +                                PIXEL_CLOCK_H, (freq >> 8));
-> +
-> +       /* set DPI mode */
-> +       /* set to DPI PLL module sel */
-> +       ret |= anx7625_reg_write(ctx, ctx->i2c.rx_p1_client,
-> +                                MIPI_DIGITAL_PLL_9, 0x20);
-> +       /* power down MIPI */
-> +       ret |= anx7625_reg_write(ctx, ctx->i2c.rx_p1_client,
-> +                                MIPI_LANE_CTRL_10, 0x08);
-> +       /* enable DPI mode */
-> +       ret |= anx7625_reg_write(ctx, ctx->i2c.rx_p1_client,
-> +                                MIPI_DIGITAL_PLL_18, 0x1C);
-> +       /* set first edge */
-> +       ret |= anx7625_reg_write(ctx, ctx->i2c.tx_p2_client,
-> +                                VIDEO_CONTROL_0, 0x06);
-> +       if (ret < 0)
-> +               DRM_DEV_ERROR(dev, "IO error : dpi phy set failed.\n");
-> +
-> +       return ret;
-> +}
-> +
-> +static int anx7625_dpi_config(struct anx7625_data *ctx)
-> +{
-> +       struct device *dev = &ctx->client->dev;
-> +       int ret;
-> +
-> +       DRM_DEV_DEBUG_DRIVER(dev, "config dpi\n");
-> +
-> +       /* DSC disable */
-> +       ret = anx7625_write_and(ctx, ctx->i2c.rx_p0_client,
-> +                               R_DSC_CTRL_0, ~DSC_EN);
-> +       if (ret < 0) {
-> +               DRM_DEV_ERROR(dev, "IO error : disable dsc failed.\n");
-> +               return ret;
-> +       }
-> +
-> +       ret = anx7625_config_bit_matrix(ctx);
-> +       if (ret < 0) {
-> +               DRM_DEV_ERROR(dev, "config bit matrix failed.\n");
-> +               return ret;
-> +       }
-> +
-> +       ret = anx7625_api_dpi_config(ctx);
-> +       if (ret < 0) {
-> +               DRM_DEV_ERROR(dev, "mipi phy(dpi) setup failed.\n");
-> +               return ret;
-> +       }
-> +
-> +       /* set MIPI RX EN */
-> +       ret = anx7625_write_or(ctx, ctx->i2c.rx_p0_client,
-> +                              AP_AV_STATUS, AP_MIPI_RX_EN);
-> +       /* clear mute flag */
-> +       ret |= anx7625_write_and(ctx, ctx->i2c.rx_p0_client,
-> +                                AP_AV_STATUS, (u8)~AP_MIPI_MUTE);
-> +       if (ret < 0)
-> +               DRM_DEV_ERROR(dev, "IO error : enable mipi rx failed.\n");
-> +
-> +       return ret;
-> +}
-> +
-> +static int anx7625_hdcp_setting(struct anx7625_data *ctx)
-> +{
-> +       u8 bcap;
-> +       struct device *dev = &ctx->client->dev;
-> +
-> +       if (!ctx->pdata.hdcp_support || !ctx->hdcp_en) {
-> +               DRM_DEV_DEBUG_DRIVER(dev, "hdcp_support(%d), hdcp_en(%d)\n",
-> +                                    ctx->pdata.hdcp_support, ctx->hdcp_en);
-> +               DRM_DEV_DEBUG_DRIVER(dev, "disable HDCP by config\n");
-> +               return anx7625_write_and(ctx, ctx->i2c.rx_p1_client,
-> +                                        0xee, 0x9f);
-> +       }
-> +
-> +       anx7625_aux_dpcd_read(ctx, 0x06, 0x80, 0x28, 1, &bcap);
-> +       if (!(bcap & 0x01)) {
-> +               DRM_WARN("downstream not support HDCP 1.4, cap(%x).\n", bcap);
-> +               return anx7625_write_and(ctx, ctx->i2c.rx_p1_client,
-> +                                        0xee, 0x9f);
-> +       }
-> +
-> +       DRM_DEV_DEBUG_DRIVER(dev, "enable HDCP 1.4\n");
-> +
-> +       return anx7625_write_or(ctx, ctx->i2c.rx_p1_client, 0xee, 0x20);
-> +}
+Exactly, that was what I was wondering about.
 
-Is the HDCP support change independent of the rest of this patch?
-If so, extract it to a seperate patch.
+> We could do a show/store version that takes an iio_buf_attr or
+> iio_dev_attr parameter.
+> But maybe at a later point?
+> I don't feel it adds much benefit over the current usage of
+> buffer->attrs, because we need to kmalloc these iio_dev_attr anyways
+> to store the reference to the iio_buffer.
+> 
+> I would have liked to get rid of these user/external buffer->attrs.
+> That would have made things easier.
+> 
+> But, it looks like there are several drivers using them.
+> I usually find them by grepping for iio_triggered_buffer_setup_ext
+> It's only 5 drivers that provide these attributes.
+> It used to be a bit easier to find them by grepping
+> iio_buffer_set_attrs(), but I removed that.
 
-> +
->  static void anx7625_dp_start(struct anx7625_data *ctx)
->  {
->         int ret;
-> @@ -605,9 +722,13 @@ static void anx7625_dp_start(struct anx7625_data *ctx)
->                 return;
->         }
->
-> -       anx7625_config_audio_input(ctx);
-> +       /* HDCP config */
-> +       anx7625_hdcp_setting(ctx);
->
-> -       ret = anx7625_dsi_config(ctx);
-> +       if (ctx->pdata.is_dpi)
-> +               ret = anx7625_dpi_config(ctx);
-> +       else
-> +               ret = anx7625_dsi_config(ctx);
->
->         if (ret < 0)
->                 DRM_DEV_ERROR(dev, "MIPI phy setup error.\n");
-> @@ -688,8 +809,7 @@ static int sp_tx_get_edid_block(struct anx7625_data *ctx)
->         return c;
->  }
->
-> -static int edid_read(struct anx7625_data *ctx,
-> -                    u8 offset, u8 *pblock_buf)
-> +static int edid_read(struct anx7625_data *ctx, u8 offset, u8 *pblock_buf)
+We could look at whether some can be brought into the core.  They tend
+to be around hwfifo parameters. Those could be specific to individual
+buffers rather than device wide so at least some of them are correctly
+placed in the buffer directory (I think - I've argued with myself about
+this a few times in the past).
 
-No functional change here, let's try to maintain the 'git blame'
-history instead.
+The only oddity we'll get from current approach is callbacks appearing
+to access a container structure that they aren't associated with in the
+driver.  Its the sort of interface that no one would ever realize was
+possible.
 
+Jonathan
 
->  {
->         int ret, cnt;
->         struct device *dev = &ctx->client->dev;
-> @@ -992,8 +1112,9 @@ static void anx7625_chip_control(struct anx7625_data *ctx, int state)
->
->         if (state) {
->                 atomic_inc(&ctx->power_status);
-> -               if (atomic_read(&ctx->power_status) == 1)
-> +               if (atomic_read(&ctx->power_status) == 1) {
->                         anx7625_power_on_init(ctx);
-> +               }
+> 
+> 
+> >
+> > Jonathan
+> >  
+> > >
+> > > Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+> > > ---
+> > >  drivers/iio/industrialio-buffer.c | 66 +++++++++++++++++++++----------
+> > >  include/linux/iio/buffer_impl.h   |  4 +-
+> > >  2 files changed, 48 insertions(+), 22 deletions(-)
+> > >
+> > > diff --git a/drivers/iio/industrialio-buffer.c b/drivers/iio/industrialio-buffer.c
+> > > index a525e88b302f..49996bed5f4c 100644
+> > > --- a/drivers/iio/industrialio-buffer.c
+> > > +++ b/drivers/iio/industrialio-buffer.c
+> > > @@ -448,7 +448,7 @@ static int iio_buffer_add_channel_sysfs(struct iio_dev *indio_dev,
+> > >                                    IIO_SEPARATE,
+> > >                                    &indio_dev->dev,
+> > >                                    buffer,
+> > > -                                  &buffer->scan_el_dev_attr_list);
+> > > +                                  &buffer->buffer_attr_list);
+> > >       if (ret)
+> > >               return ret;
+> > >       attrcount++;
+> > > @@ -460,7 +460,7 @@ static int iio_buffer_add_channel_sysfs(struct iio_dev *indio_dev,
+> > >                                    0,
+> > >                                    &indio_dev->dev,
+> > >                                    buffer,
+> > > -                                  &buffer->scan_el_dev_attr_list);
+> > > +                                  &buffer->buffer_attr_list);
+> > >       if (ret)
+> > >               return ret;
+> > >       attrcount++;
+> > > @@ -473,7 +473,7 @@ static int iio_buffer_add_channel_sysfs(struct iio_dev *indio_dev,
+> > >                                            0,
+> > >                                            &indio_dev->dev,
+> > >                                            buffer,
+> > > -                                          &buffer->scan_el_dev_attr_list);
+> > > +                                          &buffer->buffer_attr_list);
+> > >       else
+> > >               ret = __iio_add_chan_devattr("en",
+> > >                                            chan,
+> > > @@ -483,7 +483,7 @@ static int iio_buffer_add_channel_sysfs(struct iio_dev *indio_dev,
+> > >                                            0,
+> > >                                            &indio_dev->dev,
+> > >                                            buffer,
+> > > -                                          &buffer->scan_el_dev_attr_list);
+> > > +                                          &buffer->buffer_attr_list);
+> > >       if (ret)
+> > >               return ret;
+> > >       attrcount++;
+> > > @@ -495,8 +495,7 @@ static ssize_t iio_buffer_read_length(struct device *dev,
+> > >                                     struct device_attribute *attr,
+> > >                                     char *buf)
+> > >  {
+> > > -     struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+> > > -     struct iio_buffer *buffer = indio_dev->buffer;
+> > > +     struct iio_buffer *buffer = to_iio_dev_attr(attr)->buffer;
+> > >
+> > >       return sprintf(buf, "%d\n", buffer->length);
+> > >  }
+> > > @@ -506,7 +505,7 @@ static ssize_t iio_buffer_write_length(struct device *dev,
+> > >                                      const char *buf, size_t len)
+> > >  {
+> > >       struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+> > > -     struct iio_buffer *buffer = indio_dev->buffer;
+> > > +     struct iio_buffer *buffer = to_iio_dev_attr(attr)->buffer;
+> > >       unsigned int val;
+> > >       int ret;
+> > >
+> > > @@ -538,8 +537,7 @@ static ssize_t iio_buffer_show_enable(struct device *dev,
+> > >                                     struct device_attribute *attr,
+> > >                                     char *buf)
+> > >  {
+> > > -     struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+> > > -     struct iio_buffer *buffer = indio_dev->buffer;
+> > > +     struct iio_buffer *buffer = to_iio_dev_attr(attr)->buffer;
+> > >
+> > >       return sprintf(buf, "%d\n", iio_buffer_is_active(buffer));
+> > >  }
+> > > @@ -1154,7 +1152,7 @@ static ssize_t iio_buffer_store_enable(struct device *dev,
+> > >       int ret;
+> > >       bool requested_state;
+> > >       struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+> > > -     struct iio_buffer *buffer = indio_dev->buffer;
+> > > +     struct iio_buffer *buffer = to_iio_dev_attr(attr)->buffer;
+> > >       bool inlist;
+> > >
+> > >       ret = strtobool(buf, &requested_state);
+> > > @@ -1185,8 +1183,7 @@ static ssize_t iio_buffer_show_watermark(struct device *dev,
+> > >                                        struct device_attribute *attr,
+> > >                                        char *buf)
+> > >  {
+> > > -     struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+> > > -     struct iio_buffer *buffer = indio_dev->buffer;
+> > > +     struct iio_buffer *buffer = to_iio_dev_attr(attr)->buffer;
+> > >
+> > >       return sprintf(buf, "%u\n", buffer->watermark);
+> > >  }
+> > > @@ -1197,7 +1194,7 @@ static ssize_t iio_buffer_store_watermark(struct device *dev,
+> > >                                         size_t len)
+> > >  {
+> > >       struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+> > > -     struct iio_buffer *buffer = indio_dev->buffer;
+> > > +     struct iio_buffer *buffer = to_iio_dev_attr(attr)->buffer;
+> > >       unsigned int val;
+> > >       int ret;
+> > >
+> > > @@ -1230,8 +1227,7 @@ static ssize_t iio_dma_show_data_available(struct device *dev,
+> > >                                               struct device_attribute *attr,
+> > >                                               char *buf)
+> > >  {
+> > > -     struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+> > > -     struct iio_buffer *buffer = indio_dev->buffer;
+> > > +     struct iio_buffer *buffer = to_iio_dev_attr(attr)->buffer;
+> > >
+> > >       return sprintf(buf, "%zu\n", iio_buffer_data_available(buffer));
+> > >  }
+> > > @@ -1256,6 +1252,26 @@ static struct attribute *iio_buffer_attrs[] = {
+> > >       &dev_attr_data_available.attr,
+> > >  };
+> > >
+> > > +#define to_dev_attr(_attr) container_of(_attr, struct device_attribute, attr)
+> > > +
+> > > +static struct attribute *iio_buffer_wrap_attr(struct iio_buffer *buffer,
+> > > +                                           struct attribute *attr)
+> > > +{
+> > > +     struct device_attribute *dattr = to_dev_attr(attr);
+> > > +     struct iio_dev_attr *iio_attr;
+> > > +
+> > > +     iio_attr = kzalloc(sizeof(*iio_attr), GFP_KERNEL);
+> > > +     if (!iio_attr)
+> > > +             return NULL;
+> > > +
+> > > +     iio_attr->buffer = buffer;
+> > > +     memcpy(&iio_attr->dev_attr, dattr, sizeof(iio_attr->dev_attr));
+> > > +
+> > > +     list_add(&iio_attr->l, &buffer->buffer_attr_list);
+> > > +
+> > > +     return &iio_attr->dev_attr.attr;
+> > > +}
+> > > +
+> > >  static int iio_buffer_register_legacy_sysfs_groups(struct iio_dev *indio_dev,
+> > >                                                  struct attribute **buffer_attrs,
+> > >                                                  int buffer_attrcount,
+> > > @@ -1331,7 +1347,7 @@ static int __iio_buffer_alloc_sysfs_and_mask(struct iio_buffer *buffer,
+> > >       }
+> > >
+> > >       scan_el_attrcount = 0;
+> > > -     INIT_LIST_HEAD(&buffer->scan_el_dev_attr_list);
+> > > +     INIT_LIST_HEAD(&buffer->buffer_attr_list);
+> > >       channels = indio_dev->channels;
+> > >       if (channels) {
+> > >               /* new magic */
+> > > @@ -1378,9 +1394,19 @@ static int __iio_buffer_alloc_sysfs_and_mask(struct iio_buffer *buffer,
+> > >
+> > >       buffer_attrcount += ARRAY_SIZE(iio_buffer_attrs);
+> > >
+> > > -     attrn = buffer_attrcount;
+> > > +     for (i = 0; i < buffer_attrcount; i++) {
+> > > +             struct attribute *wrapped;
+> > > +
+> > > +             wrapped = iio_buffer_wrap_attr(buffer, attr[i]);
+> > > +             if (!wrapped) {
+> > > +                     ret = -ENOMEM;
+> > > +                     goto error_free_scan_mask;
+> > > +             }
+> > > +             attr[i] = wrapped;
+> > > +     }
+> > >
+> > > -     list_for_each_entry(p, &buffer->scan_el_dev_attr_list, l)
+> > > +     attrn = 0;
+> > > +     list_for_each_entry(p, &buffer->buffer_attr_list, l)
+> > >               attr[attrn++] = &p->dev_attr.attr;
+> > >
+> > >       buffer->buffer_group.name = kasprintf(GFP_KERNEL, "buffer%d", index);
+> > > @@ -1412,7 +1438,7 @@ static int __iio_buffer_alloc_sysfs_and_mask(struct iio_buffer *buffer,
+> > >  error_free_scan_mask:
+> > >       bitmap_free(buffer->scan_mask);
+> > >  error_cleanup_dynamic:
+> > > -     iio_free_chan_devattr_list(&buffer->scan_el_dev_attr_list);
+> > > +     iio_free_chan_devattr_list(&buffer->buffer_attr_list);
+> > >
+> > >       return ret;
+> > >  }
+> > > @@ -1443,7 +1469,7 @@ static void __iio_buffer_free_sysfs_and_mask(struct iio_buffer *buffer)
+> > >       bitmap_free(buffer->scan_mask);
+> > >       kfree(buffer->buffer_group.name);
+> > >       kfree(buffer->buffer_group.attrs);
+> > > -     iio_free_chan_devattr_list(&buffer->scan_el_dev_attr_list);
+> > > +     iio_free_chan_devattr_list(&buffer->buffer_attr_list);
+> > >  }
+> > >
+> > >  void iio_buffer_free_sysfs_and_mask(struct iio_dev *indio_dev)
+> > > diff --git a/include/linux/iio/buffer_impl.h b/include/linux/iio/buffer_impl.h
+> > > index 3e555e58475b..41044320e581 100644
+> > > --- a/include/linux/iio/buffer_impl.h
+> > > +++ b/include/linux/iio/buffer_impl.h
+> > > @@ -97,8 +97,8 @@ struct iio_buffer {
+> > >       /* @scan_timestamp: Does the scan mode include a timestamp. */
+> > >       bool scan_timestamp;
+> > >
+> > > -     /* @scan_el_dev_attr_list: List of scan element related attributes. */
+> > > -     struct list_head scan_el_dev_attr_list;
+> > > +     /* @buffer_attr_list: List of buffer attributes. */
+> > > +     struct list_head buffer_attr_list;
+> > >
+> > >       /*
+> > >        * @buffer_group: Attributes of the new buffer group.  
+> >  
 
-This too is not a functional change, and the previous format preferred
-by the style guide.
-
->         } else {
->                 if (atomic_read(&ctx->power_status)) {
->                         atomic_dec(&ctx->power_status);
-> @@ -1051,6 +1172,7 @@ static void anx7625_start_dp_work(struct anx7625_data *ctx)
->                 return;
->         }
->
-> +       ctx->hpd_status = 1;
->         ctx->hpd_high_cnt++;
->
->         /* Not support HDCP */
-> @@ -1060,8 +1182,10 @@ static void anx7625_start_dp_work(struct anx7625_data *ctx)
->         ret |= anx7625_write_or(ctx, ctx->i2c.rx_p1_client, 0xec, 0x10);
->         /* Interrupt for DRM */
->         ret |= anx7625_write_or(ctx, ctx->i2c.rx_p1_client, 0xff, 0x01);
-> -       if (ret < 0)
-> +       if (ret < 0) {
-> +               DRM_DEV_ERROR(dev, "fail to setting HDCP/auth\n");
->                 return;
-> +       }
->
->         ret = anx7625_reg_read(ctx, ctx->i2c.rx_p1_client, 0x86);
->         if (ret < 0)
-> @@ -1080,6 +1204,10 @@ static void anx7625_hpd_polling(struct anx7625_data *ctx)
->         int ret, val;
->         struct device *dev = &ctx->client->dev;
->
-> +       /* Interrupt mode, no need poll HPD status, just return */
-> +       if (ctx->pdata.intp_irq)
-> +               return;
-> +
->         if (atomic_read(&ctx->power_status) != 1) {
->                 DRM_DEV_DEBUG_DRIVER(dev, "No need to poling HPD status.\n");
->                 return;
-> @@ -1130,6 +1258,21 @@ static void anx7625_remove_edid(struct anx7625_data *ctx)
->         ctx->slimport_edid_p.edid_block_num = -1;
->  }
->
-> +static void anx7625_dp_adjust_swing(struct anx7625_data *ctx)
-> +{
-> +       int i;
-> +
-> +       for (i = 0; i < ctx->pdata.dp_lane0_swing_reg_cnt; i++)
-> +               anx7625_reg_write(ctx, ctx->i2c.tx_p1_client,
-> +                                 DP_TX_LANE0_SWING_REG0 + i,
-> +                                 ctx->pdata.lane0_reg_data[i] & 0xFF);
-> +
-> +       for (i = 0; i < ctx->pdata.dp_lane1_swing_reg_cnt; i++)
-> +               anx7625_reg_write(ctx, ctx->i2c.tx_p1_client,
-> +                                 DP_TX_LANE1_SWING_REG0 + i,
-> +                                 ctx->pdata.lane1_reg_data[i] & 0xFF);
-> +}
-> +
->  static void dp_hpd_change_handler(struct anx7625_data *ctx, bool on)
->  {
->         struct device *dev = &ctx->client->dev;
-> @@ -1145,9 +1288,8 @@ static void dp_hpd_change_handler(struct anx7625_data *ctx, bool on)
->         } else {
->                 DRM_DEV_DEBUG_DRIVER(dev, " HPD high\n");
->                 anx7625_start_dp_work(ctx);
-> +               anx7625_dp_adjust_swing(ctx);
->         }
-> -
-> -       ctx->hpd_status = 1;
->  }
->
->  static int anx7625_hpd_change_detect(struct anx7625_data *ctx)
-> @@ -1224,20 +1366,69 @@ static irqreturn_t anx7625_intr_hpd_isr(int irq, void *data)
->         return IRQ_HANDLED;
->  }
->
-> +static int anx7625_get_swing_setting(struct device *dev,
-> +                                    struct anx7625_platform_data *pdata)
-> +{
-> +       int num_regs;
-> +
-> +       if (of_get_property(dev->of_node,
-> +                           "analogix,lane0-swing", &num_regs)) {
-> +               if (num_regs > DP_TX_SWING_REG_CNT)
-> +                       num_regs = DP_TX_SWING_REG_CNT;
-> +
-> +               pdata->dp_lane0_swing_reg_cnt = num_regs;
-> +               of_property_read_u32_array(dev->of_node, "analogix,lane0-swing",
-> +                                          pdata->lane0_reg_data, num_regs);
-> +       }
-> +
-> +       if (of_get_property(dev->of_node,
-> +                           "analogix,lane1-swing", &num_regs)) {
-> +               if (num_regs > DP_TX_SWING_REG_CNT)
-> +                       num_regs = DP_TX_SWING_REG_CNT;
-> +
-> +               pdata->dp_lane1_swing_reg_cnt = num_regs;
-> +               of_property_read_u32_array(dev->of_node, "analogix,lane1-swing",
-> +                                          pdata->lane1_reg_data, num_regs);
-> +       }
-> +
-> +       return 0;
-> +}
-> +
->  static int anx7625_parse_dt(struct device *dev,
->                             struct anx7625_platform_data *pdata)
->  {
->         struct device_node *np = dev->of_node;
->         struct drm_panel *panel;
->         int ret;
-> +       int bus_type;
-> +
-> +       anx7625_get_swing_setting(dev, pdata);
->
-> +       pdata->is_dpi = 1; /* default dpi mode */
->         pdata->mipi_host_node = of_graph_get_remote_node(np, 0, 0);
->         if (!pdata->mipi_host_node) {
->                 DRM_DEV_ERROR(dev, "fail to get internal panel.\n");
->                 return -ENODEV;
->         }
->
-> -       DRM_DEV_DEBUG_DRIVER(dev, "found dsi host node.\n");
-> +       if (of_property_read_u32(pdata->mipi_host_node, "bus-type", &bus_type))
-> +               bus_type = 0;
-> +
-> +       if (bus_type == 5) /* bus type is Parallel(DSI) */
-> +               pdata->is_dpi = 0;
-> +
-> +       pdata->mipi_lanes = of_property_count_u32_elems(pdata->mipi_host_node,
-> +                                                       "data-lanes");
-> +       if (pdata->mipi_lanes > MAX_LANES_SUPPORT || pdata->mipi_lanes <= 0)
-> +               pdata->mipi_lanes = MAX_LANES_SUPPORT;
-> +
-
-Is this mipi_lanes change independent of the rest of this patch?
-If so, extract it to a seperate patch.
-
-> +       if (pdata->is_dpi)
-> +               DRM_DEV_DEBUG_DRIVER(dev, "found MIPI DPI host node.\n");
-> +       else
-> +               DRM_DEV_DEBUG_DRIVER(dev, "found MIPI DSI host node.\n");
-> +
-> +       if (of_property_read_bool(np, "analogix,hdcp-support"))
-> +               pdata->hdcp_support = 1;
-
-Extract hdcp_support change to separate patch.
-
->
->         ret = drm_of_find_panel_or_bridge(np, 1, 0, &panel, NULL);
->         if (ret < 0) {
-> @@ -1300,9 +1491,13 @@ static enum drm_connector_status anx7625_sink_detect(struct anx7625_data *ctx)
->  {
->         struct device *dev = &ctx->client->dev;
->
-> -       DRM_DEV_DEBUG_DRIVER(dev, "sink detect, return connected\n");
-> +       DRM_DEV_DEBUG_DRIVER(dev, "sink detect\n");
-> +
-> +       if (ctx->pdata.panel_bridge)
-> +               return connector_status_connected;
->
-> -       return connector_status_connected;
-> +       return ctx->hpd_status ? connector_status_connected :
-> +                                    connector_status_disconnected;
->  }
->
->  static int anx7625_attach_dsi(struct anx7625_data *ctx)
-> @@ -1330,7 +1525,7 @@ static int anx7625_attach_dsi(struct anx7625_data *ctx)
->                 return -EINVAL;
->         }
->
-> -       dsi->lanes = 4;
-> +       dsi->lanes = ctx->pdata.mipi_lanes;
-
-Extract mipi_lanes change to separate patch.
-
->         dsi->format = MIPI_DSI_FMT_RGB888;
->         dsi->mode_flags = MIPI_DSI_MODE_VIDEO   |
->                 MIPI_DSI_MODE_VIDEO_SYNC_PULSE  |
-> @@ -1376,10 +1571,12 @@ static int anx7625_bridge_attach(struct drm_bridge *bridge,
->                 return -ENODEV;
->         }
->
-> -       err = anx7625_attach_dsi(ctx);
-> -       if (err) {
-> -               DRM_DEV_ERROR(dev, "Fail to attach to dsi : %d\n", err);
-> -               return err;
-> +       if (!ctx->pdata.is_dpi) {
-> +               err = anx7625_attach_dsi(ctx);
-> +               if (err) {
-> +                       DRM_DEV_ERROR(dev, "Fail to attach to dsi : %d\n", err);
-> +                       return err;
-> +               }
->         }
->
->         if (ctx->pdata.panel_bridge) {
-> @@ -1478,6 +1675,10 @@ static bool anx7625_bridge_mode_fixup(struct drm_bridge *bridge,
->
->         DRM_DEV_DEBUG_DRIVER(dev, "drm mode fixup set\n");
->
-> +       /* No need fixup for external monitor */
-> +       if (!ctx->pdata.panel_bridge)
-> +               return true;
-> +
->         hsync = mode->hsync_end - mode->hsync_start;
->         hfp = mode->hsync_start - mode->hdisplay;
->         hbp = mode->htotal - mode->hsync_end;
-> @@ -1786,8 +1987,13 @@ static int anx7625_i2c_probe(struct i2c_client *client,
->
->         platform->bridge.funcs = &anx7625_bridge_funcs;
->         platform->bridge.of_node = client->dev.of_node;
-> -       platform->bridge.ops = DRM_BRIDGE_OP_EDID | DRM_BRIDGE_OP_HPD;
-> -       platform->bridge.type = DRM_MODE_CONNECTOR_eDP;
-> +       platform->bridge.ops = DRM_BRIDGE_OP_EDID;
-> +       if (!platform->pdata.panel_bridge)
-> +               platform->bridge.ops |= DRM_BRIDGE_OP_HPD |
-> +                                       DRM_BRIDGE_OP_DETECT;
-> +       platform->bridge.type = platform->pdata.panel_bridge ?
-> +                                   DRM_MODE_CONNECTOR_eDP :
-> +                                   DRM_MODE_CONNECTOR_DisplayPort;
->         drm_bridge_add(&platform->bridge);
->
->         DRM_DEV_DEBUG_DRIVER(dev, "probe done\n");
-> diff --git a/drivers/gpu/drm/bridge/analogix/anx7625.h b/drivers/gpu/drm/bridge/analogix/anx7625.h
-> index 193ad86..127081e 100644
-> --- a/drivers/gpu/drm/bridge/analogix/anx7625.h
-> +++ b/drivers/gpu/drm/bridge/analogix/anx7625.h
-> @@ -141,12 +141,20 @@
->  #define  HORIZONTAL_BACK_PORCH_H      0x22  /* Bit[7:4] are reserved */
->
->  /******** END of I2C Address 0x72 *********/
-> +
-> +/***************************************************************/
-> +/* Register definition of device address 0x7a */
-> +#define DP_TX_SWING_REG_CNT            0x14
-> +#define DP_TX_LANE0_SWING_REG0         0x00
-> +#define DP_TX_LANE1_SWING_REG0         0x14
-> +/******** END of I2C Address 0x7a *********/
-> +
->  /***************************************************************/
->  /* Register definition of device address 0x7e */
->
->  #define  I2C_ADDR_7E_FLASH_CONTROLLER  0x7E
->
-> -#define FLASH_LOAD_STA 0x05
-> +#define FLASH_LOAD_STA          0x05
->  #define FLASH_LOAD_STA_CHK     BIT(7)
->
->  #define  XTAL_FRQ_SEL    0x3F
-> @@ -347,11 +355,20 @@ struct s_edid_data {
->
->  /***************** Display End *****************/
->
-> +#define MAX_LANES_SUPPORT      4
-> +
->  struct anx7625_platform_data {
->         struct gpio_desc *gpio_p_on;
->         struct gpio_desc *gpio_reset;
->         struct drm_bridge *panel_bridge;
->         int intp_irq;
-> +       int is_dpi;
-> +       int mipi_lanes;
-
-Extract mipi_lanes change to separate patch.
-
-> +       int hdcp_support;
-
-Extract hdcp_support change to separate patch.
-
-> +       int dp_lane0_swing_reg_cnt;
-> +       int lane0_reg_data[DP_TX_SWING_REG_CNT];
-> +       int dp_lane1_swing_reg_cnt;
-> +       int lane1_reg_data[DP_TX_SWING_REG_CNT];
->         u32 low_power_mode;
->         struct device_node *mipi_host_node;
->  };
-> @@ -371,6 +388,7 @@ struct anx7625_data {
->         atomic_t power_status;
->         int hpd_status;
->         int hpd_high_cnt;
-> +       int hdcp_en;
-
-Extract hdcp_support change to separate patch.
-
->         /* Lock for work queue */
->         struct mutex lock;
->         struct i2c_client *client;
-> --
-> 2.7.4
->
