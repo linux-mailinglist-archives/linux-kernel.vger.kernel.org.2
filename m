@@ -2,101 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7132E3116DF
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 00:22:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 562603116F7
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 00:22:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231725AbhBEXTJ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 5 Feb 2021 18:19:09 -0500
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:24526 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231571AbhBEO1w (ORCPT
+        id S232223AbhBEXVw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 18:21:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41520 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232598AbhBEOZQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 09:27:52 -0500
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-270-8he-aNJfMmyMpb8HPVFbEw-1; Fri, 05 Feb 2021 15:31:26 +0000
-X-MC-Unique: 8he-aNJfMmyMpb8HPVFbEw-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Fri, 5 Feb 2021 15:31:19 +0000
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Fri, 5 Feb 2021 15:31:19 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Arnd Bergmann' <arnd@kernel.org>,
-        Christian Lamparter <chunkeey@googlemail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-CC:     Arnd Bergmann <arnd@arndb.de>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] carl9170: fix struct alignment conflict
-Thread-Topic: [PATCH] carl9170: fix struct alignment conflict
-Thread-Index: AQHW+xSTHrCr5fMAo0K1NzKrRUoyIapJsAIQ
-Date:   Fri, 5 Feb 2021 15:31:19 +0000
-Message-ID: <8e03db0fb69f4df5ad3cb24695055728@AcuMS.aculab.com>
-References: <20210204162926.3262598-1-arnd@kernel.org>
-In-Reply-To: <20210204162926.3262598-1-arnd@kernel.org>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Fri, 5 Feb 2021 09:25:16 -0500
+Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BB1FC061797;
+        Fri,  5 Feb 2021 08:03:23 -0800 (PST)
+Received: by mail-oi1-x22c.google.com with SMTP id n7so7901695oic.11;
+        Fri, 05 Feb 2021 08:03:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=FVdQ5ukkP9/XbYX/8CVztmsEIJMufgkJkRC2gxyWHPI=;
+        b=iC4JrNHZTN8cnhAfbFpXAv6CrFup/sVyTxWB7UeMqnn+hr1kvuuCSI8K3p2ARted3u
+         59LNcUye0Sy0/hKfpUXWC82aIyZwK8dCGo5zBKK++Nj01iZFkMSbMGPm356DrQKJRz1r
+         +AV6IgEH03dFHV2pGfYjGATnvdelNkX17KWcEdLdC0esiq307LeLHH2TZEirXbbape4e
+         5YobvlpVcF4g3OOFXMPnzLx6GlD9LbzjGMZWwGVh+C/NJdCdqTjx8Ve6LZsdxp7M9Don
+         piF1R2oOaNnqfbNVg6svIWto6ew7TKfXoi45NqqXNLygS8/z+tHJqKAluNwbRb8tzXnh
+         PK+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=FVdQ5ukkP9/XbYX/8CVztmsEIJMufgkJkRC2gxyWHPI=;
+        b=AA83PO6GF+GEVH3eFNc7ma3qgWct6qwxMlvT8EnXhyexnvO8B5sLJy/xlHt1xqJOJu
+         sRjX50U93Sv7FhLBV/o2TMEk5E2F7kW0kqhOf+SG+hMnseX5zBW8LTmrve4WA5llPvdZ
+         NIXilpvO9qHh6zwySc8A36WmGy6KRXE4Da7EHR784i0B+5AInoDWT2NWRyDgIonmwxJK
+         VvddfpIPaFueWWk2A6tADM79fL/wZET2ntHsvA07m543C8DXdF0+trdonZHO+CZxz+jG
+         ZvvWu4E7rcdDluB23R3BeMGoaKktObsK+XwqMxLuhDnwZbLcVpHVoXU6RoWNgVwDJ5gT
+         gC7w==
+X-Gm-Message-State: AOAM533qsHsYyD1N953i4f2G0SVbJVqtdIxDGVrKq41knRp9iNIp0p/n
+        TIlI6IySehmMYoGXEyWngh+AoWagzeez06lW5pCpTjtL6FU=
+X-Google-Smtp-Source: ABdhPJy6jCzEz03JnQXVhbqT+cuIUDmp9ZKy2c51bvVOq36mVzOPREDPhQTk2WphtOI6JFjfXJn66s2Kn9PDiuB374M=
+X-Received: by 2002:a05:6808:1290:: with SMTP id a16mr3368879oiw.161.1612539418567;
+ Fri, 05 Feb 2021 07:36:58 -0800 (PST)
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+References: <20210205045217.552927-1-enbyamy@gmail.com> <20210205131910.GJ1993@twin.jikos.cz>
+In-Reply-To: <20210205131910.GJ1993@twin.jikos.cz>
+From:   Amy Parker <enbyamy@gmail.com>
+Date:   Fri, 5 Feb 2021 07:36:47 -0800
+Message-ID: <CAE1WUT4az3ZZ8OU2AS2xxi9h1TbW958ivNXr53jinqHK5vuzMg@mail.gmail.com>
+Subject: Re: [PATCH 0/3] fs/efs: Follow kernel style guide
+To:     dsterba@suse.cz, Amy Parker <enbyamy@gmail.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann
-> Sent: 04 February 2021 16:29
-> 
-> Multiple structures in the carl9170 driver have alignment
-> impossible alignment constraints that gcc warns about when
-> building with 'make W=1':
-> 
-> drivers/net/wireless/ath/carl9170/fwcmd.h:243:2: warning: alignment 1 of 'union <anonymous>' is less
-> than 4 [-Wpacked-not-aligned]
-> drivers/net/wireless/ath/carl9170/wlan.h:373:1: warning: alignment 1 of 'struct
-> ar9170_rx_frame_single' is less than 2 [-Wpacked-not-aligned]
-> 
-> In the carl9170_cmd structure, multiple members that have an explicit
-> alignment requirement of four bytes are added into a union with explicit
-> byte alignment, but this in turn is part of a structure that also has
-> four-byte alignment.
-> 
-> In the wlan.h header, multiple structures contain a ieee80211_hdr member
-> that is required to be two-byte aligned to avoid alignmnet faults when
-> processing network headers, but all members are forced to be byte-aligned
-> using the __packed tag at the end of the struct definition.
-> 
-> In both cases, leaving out the packing does not change the internal
-> layout of the structure but changes the alignment constraint of the
-> structure itself.
-> 
-> Change all affected structures to only apply packing where it does
-> not violate the alignment requirement of the contained structure.
+On Fri, Feb 5, 2021 at 5:1 AM David Sterba <dsterba@suse.cz> wrote:
+>
+> On Thu, Feb 04, 2021 at 08:52:14PM -0800, Amy Parker wrote:
+> > As the EFS driver is old and non-maintained,
+>
+> Is anybody using EFS on current kernels? There's not much point updating
+> it to current coding style, deleting fs/efs is probably the best option.
+>
 
-I think I'd add compile-time assert that some of these structures
-are exactly the expected size.
-Then look at removing the outer packed/aligned attributes
-and just putting the attribute on the 16/32 bit member(s)
-that themselves might be misaligned.
-Much the way that the 32bit aligned 64bit values are handled
-in the x86 compat code in x86-64.
+Wouldn't be surprised if there's a few systems out there that haven't
+migrated at all.
 
-	David
+> The EFS name is common for several filesystems, not to be confused with
+> eg.  Encrypted File System. In linux it's the IRIX version, check
+> Kconfig, and you could hardly find the utilities to create such
+> filesystem.
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+Ah yep, good point.
 
+   -Amy IP
