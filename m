@@ -2,655 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 228BB311892
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 03:44:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CEC53311916
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 03:55:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231639AbhBFClM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 21:41:12 -0500
-Received: from mga09.intel.com ([134.134.136.24]:27691 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230071AbhBFCcj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 21:32:39 -0500
-IronPort-SDR: aQSXEU5H6prbzWooyT8BrGQLaYRZSvcOFLQElGvETSNfaQDxdcoT6SQ5KJtXkqV5PXevpeAXoJ
- c/uOFpGZSIJQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9886"; a="181646221"
-X-IronPort-AV: E=Sophos;i="5.81,156,1610438400"; 
-   d="scan'208";a="181646221"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2021 14:52:09 -0800
-IronPort-SDR: TkxnrmIWPzEtyCmOXj72I+lKjjevBp0e0Iz65R1/+j+O8kSrBRFrg1TBim7BESqo65OYSPRDse
- cgHCohRvoU3Q==
-X-IronPort-AV: E=Sophos;i="5.81,156,1610438400"; 
-   d="scan'208";a="360577863"
-Received: from smtp.ostc.intel.com ([10.54.29.231])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2021 14:52:09 -0800
-Received: from mtg-dev.jf.intel.com (mtg-dev.jf.intel.com [10.54.74.10])
-        by smtp.ostc.intel.com (Postfix) with ESMTP id 7D8026371;
-        Fri,  5 Feb 2021 14:52:09 -0800 (PST)
-Received: by mtg-dev.jf.intel.com (Postfix, from userid 1000)
-        id 71E9D36361C; Fri,  5 Feb 2021 14:52:09 -0800 (PST)
-From:   mgross@linux.intel.com
-To:     markgross@kernel.org, mgross@linux.intel.com, arnd@arndb.de,
-        bp@suse.de, damien.lemoal@wdc.com, dragan.cvetic@xilinx.com,
-        gregkh@linuxfoundation.org, corbet@lwn.net,
-        palmerdabbelt@google.com, paul.walmsley@sifive.com,
-        peng.fan@nxp.com, robh+dt@kernel.org, shawnguo@kernel.org,
-        jassisinghbrar@gmail.com
-Cc:     linux-kernel@vger.kernel.org,
-        "C, Udhayakumar" <udhayakumar.c@intel.com>
-Subject: [PATCH v5 30/34] misc:intel_tsens: Intel Keem Bay tsens driver.
-Date:   Fri,  5 Feb 2021 14:52:00 -0800
-Message-Id: <20210205225204.32902-31-mgross@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210205225204.32902-1-mgross@linux.intel.com>
-References: <20210205225204.32902-1-mgross@linux.intel.com>
+        id S231877AbhBFCya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 21:54:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37358 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231204AbhBFCfl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 21:35:41 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6B8EC08ECB3;
+        Fri,  5 Feb 2021 15:02:46 -0800 (PST)
+Date:   Fri, 05 Feb 2021 23:02:03 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1612566124;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=1LOsQTwDP/ai7UXsadQ+J88AwnIFE80vqMo3/CzfP0k=;
+        b=r+dZDM0H/Z5a7svUXVoAUmCMB/DvfYBc7CHX9JiyoNudDBr9WfXuAp1fd1QS6otO6n819X
+        Lw3+GTBZf+59NJ9l23SVT67yBuzj59k64zfN9ao3tbBM65EvnZRG/ztPKs+gLP1/K3P13L
+        EDMFfy0wy33W0Pjq4U5lcN8qZGv6jJ0g1e7+znKAY2cmMQYurrA0WUq35KWaHFObcLZd02
+        Y1vUywEsMmkuaQfDUjCknMUC8u8N3Z8ZP/GGaFSFKxFzNqmMFkDOL0QIFQr5ZC0Mc9W8Pb
+        4MH7xpZEWi/oHoucUbUW7yUHR2b488f1n/jchkO3+WVQYxLbQ/BRcpNEV4pelQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1612566124;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=1LOsQTwDP/ai7UXsadQ+J88AwnIFE80vqMo3/CzfP0k=;
+        b=CiSli1pMSWPurGrkRABIZcxegPwuI0ALwDOP963m3aAInIYIWNZQy2CnxCAeJ1XVIhzhM0
+        6KI0VyF7/WwtGjAQ==
+From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: sched/urgent] Revert "lib: Restrict cpumask_local_spread to
+ houskeeping CPUs"
+Cc:     Robin Murphy <robin.murphy@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Nitesh Narayan Lal <nitesh@redhat.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>, abelits@marvell.com,
+        davem@davemloft.net, x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <87y2g26tnt.fsf@nanos.tec.linutronix.de>
+References: <87y2g26tnt.fsf@nanos.tec.linutronix.de>
+MIME-Version: 1.0
+Message-ID: <161256612371.23325.1950977719055014944.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "C, Udhayakumar" <udhayakumar.c@intel.com>
+The following commit has been merged into the sched/urgent branch of tip:
 
-Add keembey_thermal driver to expose on chip temperature
-sensors, and register call back functions for periodic sampling.
+Commit-ID:     2452483d9546de1c540f330469dc4042ff089731
+Gitweb:        https://git.kernel.org/tip/2452483d9546de1c540f330469dc4042ff089731
+Author:        Thomas Gleixner <tglx@linutronix.de>
+AuthorDate:    Fri, 05 Feb 2021 23:28:29 +01:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Fri, 05 Feb 2021 23:28:29 +01:00
 
-This driver does following:
-* Reads temperature data from on chip sensors present in Keem Bay
-  platform.
-* Registers callback function to intel tsens driver for sampling
-  temperature values periodically.
-* Decode the raw values from registers to Celsius.
+Revert "lib: Restrict cpumask_local_spread to houskeeping CPUs"
 
-Acked-by: mark gross <mgross@linux.intel.com>
-Signed-off-by: C Udhayakumar <udhayakumar.c@intel.com>
-Signed-off-by: Mark Gross <mgross@linux.intel.com>
+This reverts commit 1abdfe706a579a702799fce465bceb9fb01d407c.
+
+This change is broken and not solving any problem it claims to solve.
+
+Robin reported that cpumask_local_spread() now returns any cpu out of
+cpu_possible_mask in case that NOHZ_FULL is disabled (runtime or compile
+time). It can also return any offline or not-present CPU in the
+housekeeping mask. Before that it was returning a CPU out of
+online_cpu_mask.
+
+While the function is racy against CPU hotplug if the caller does not
+protect against it, the actual use cases are not caring much about it as
+they use it mostly as hint for:
+
+ - the user space affinity hint which is unused by the kernel
+ - memory node selection which is just suboptimal
+ - network queue affinity which might fail but is handled gracefully
+
+But the occasional fail vs. hotplug is very different from returning
+anything from possible_cpu_mask which can have a large amount of offline
+CPUs obviously.
+
+The changelog of the commit claims:
+
+ "The current implementation of cpumask_local_spread() does not respect
+  the isolated CPUs, i.e., even if a CPU has been isolated for Real-Time
+  task, it will return it to the caller for pinning of its IRQ
+  threads. Having these unwanted IRQ threads on an isolated CPU adds up
+  to a latency overhead."
+
+The only correct part of this changelog is:
+
+ "The current implementation of cpumask_local_spread() does not respect
+  the isolated CPUs."
+
+Everything else is just disjunct from reality.
+
+Reported-by: Robin Murphy <robin.murphy@arm.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Cc: Nitesh Narayan Lal <nitesh@redhat.com>
+Cc: Marcelo Tosatti <mtosatti@redhat.com>
+Cc: abelits@marvell.com
+Cc: davem@davemloft.net
+Link: https://lore.kernel.org/r/87y2g26tnt.fsf@nanos.tec.linutronix.de
 ---
- drivers/misc/intel_tsens/Kconfig           |  12 +
- drivers/misc/intel_tsens/Makefile          |   1 +
- drivers/misc/intel_tsens/keembay_thermal.c | 169 ++++++++++
- drivers/misc/intel_tsens/keembay_tsens.h   | 366 +++++++++++++++++++++
- 4 files changed, 548 insertions(+)
- create mode 100644 drivers/misc/intel_tsens/keembay_thermal.c
- create mode 100644 drivers/misc/intel_tsens/keembay_tsens.h
+ lib/cpumask.c | 16 +++++-----------
+ 1 file changed, 5 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/misc/intel_tsens/Kconfig b/drivers/misc/intel_tsens/Kconfig
-index be8d27e81864..5cfe6b4004e5 100644
---- a/drivers/misc/intel_tsens/Kconfig
-+++ b/drivers/misc/intel_tsens/Kconfig
-@@ -28,6 +28,18 @@ config INTEL_TSENS_I2C_SLAVE
- 	  Say Y if using a processor that includes the Intel VPU such as
- 	  Keem Bay.  If unsure, say N.
+diff --git a/lib/cpumask.c b/lib/cpumask.c
+index 3592402..c3c76b8 100644
+--- a/lib/cpumask.c
++++ b/lib/cpumask.c
+@@ -6,7 +6,6 @@
+ #include <linux/export.h>
+ #include <linux/memblock.h>
+ #include <linux/numa.h>
+-#include <linux/sched/isolation.h>
  
-+config KEEMBAY_THERMAL
-+	tristate "Temperature sensor driver for intel Keem Bay"
-+	depends on INTEL_TSENS_LOCAL_HOST && ARCH_KEEMBAY
-+	help
-+	  Enable this option if you want to have support for Keem Bay
-+	  thermal management sensors.
-+
-+	  This driver is used for reading onchip temperature sensor
-+	  values from Keem Bay SoC.
-+	  Say Y if using a processor that includes the Intel VPU such as
-+	  Keem Bay.  If unsure, say N.
-+
- config INTEL_TSENS_IA_HOST
- 	tristate "Temperature sensor driver for intel tsens remote host"
- 	depends on I2C && THERMAL
-diff --git a/drivers/misc/intel_tsens/Makefile b/drivers/misc/intel_tsens/Makefile
-index f6f41bbca80c..00f63c2d5b2f 100644
---- a/drivers/misc/intel_tsens/Makefile
-+++ b/drivers/misc/intel_tsens/Makefile
-@@ -7,3 +7,4 @@
- obj-$(CONFIG_INTEL_TSENS_LOCAL_HOST)	+= intel_tsens_thermal.o
- obj-$(CONFIG_INTEL_TSENS_I2C_SLAVE)	+= intel_tsens_i2c.o
- obj-$(CONFIG_INTEL_TSENS_IA_HOST)	+= intel_tsens_host.o
-+obj-$(CONFIG_KEEMBAY_THERMAL)		+= keembay_thermal.o
-diff --git a/drivers/misc/intel_tsens/keembay_thermal.c b/drivers/misc/intel_tsens/keembay_thermal.c
-new file mode 100644
-index 000000000000..d6c8fa8fc3aa
---- /dev/null
-+++ b/drivers/misc/intel_tsens/keembay_thermal.c
-@@ -0,0 +1,169 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ *
-+ * Intel Keem Bay thermal Driver
-+ *
-+ * Copyright (C) 2020 Intel Corporation
-+ *
-+ */
-+
-+#include <linux/clk.h>
-+#include <linux/delay.h>
-+#include <linux/device.h>
-+#include <linux/err.h>
-+#include <linux/io.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/platform_device.h>
-+#include <linux/slab.h>
-+#include <linux/thermal.h>
-+#include "intel_tsens_thermal.h"
-+#include "keembay_tsens.h"
-+
-+struct keembay_thermal_priv {
-+	const char *name;
-+	void __iomem *base_addr;
-+	/* sensor lock*/
-+	spinlock_t lock;
-+	int current_temp[KEEMBAY_SENSOR_MAX];
-+	struct intel_tsens_plat_data *plat_data;
-+};
-+
-+static void kmb_sensor_read_temp(void __iomem *regs_val,
-+				 int offset,
-+				 int sample_valid_mask,
-+				 int sample_value,
-+				 int bit_shift,
-+				 int *temp)
-+{
-+	int reg_val, kmb_raw_index;
-+
-+	/* clear the bit of TSENS_EN and re-enable again */
-+	iowrite32(0x00, regs_val + AON_TSENS_CFG);
-+	iowrite32(CFG_MASK_MANUAL, regs_val + AON_TSENS_CFG);
-+	reg_val = ioread32(regs_val + offset);
-+	if (reg_val & sample_valid_mask) {
-+		reg_val = (reg_val >> bit_shift) & sample_value;
-+		kmb_raw_index = reg_val - KEEMBAY_SENSOR_BASE_TEMP;
-+		if (kmb_raw_index < 0)
-+			reg_val = raw_kmb[0];
-+		else if (kmb_raw_index > (raw_kmb_size - 1))
-+			reg_val = raw_kmb[raw_kmb_size - 1];
-+		else
-+			reg_val = raw_kmb[kmb_raw_index];
-+		*temp = reg_val;
-+	} else {
-+		*temp = -255;
-+	}
-+}
-+
-+/*The lock is assumed to be held by the caller.*/
-+static int keembay_get_temp(struct platform_device *pdev, int type, int *temp)
-+{
-+	struct keembay_thermal_priv *priv = platform_get_drvdata(pdev);
-+
-+	spin_lock(&priv->lock);
-+	switch (type) {
-+	case KEEMBAY_SENSOR_MSS:
-+		kmb_sensor_read_temp(priv->base_addr,
-+				     AON_TSENS_DATA0,
-+				     MSS_T_SAMPLE_VALID,
-+				     MSS_T_SAMPLE,
-+				     MSS_BIT_SHIFT,
-+				     temp);
-+		priv->current_temp[KEEMBAY_SENSOR_MSS] = *temp;
-+		break;
-+
-+	case KEEMBAY_SENSOR_CSS:
-+		kmb_sensor_read_temp(priv->base_addr,
-+				     AON_TSENS_DATA0,
-+				     CSS_T_SAMPLE_VALID,
-+				     CSS_T_SAMPLE,
-+				     CSS_BIT_SHIFT,
-+				     temp);
-+		priv->current_temp[KEEMBAY_SENSOR_CSS] = *temp;
-+		break;
-+
-+	case KEEMBAY_SENSOR_NCE:
-+	{
-+		int nce0, nce1;
-+
-+		kmb_sensor_read_temp(priv->base_addr,
-+				     AON_TSENS_DATA1,
-+				     NCE0_T_SAMPLE_VALID,
-+				     NCE0_T_SAMPLE,
-+				     NCE0_BIT_SHIFT,
-+				     &nce0);
-+		kmb_sensor_read_temp(priv->base_addr,
-+				     AON_TSENS_DATA1,
-+				     NCE1_T_SAMPLE_VALID,
-+				     NCE1_T_SAMPLE,
-+				     NCE1_BIT_SHIFT,
-+				     &nce1);
-+		*temp = max(nce0, nce1);
-+		priv->current_temp[KEEMBAY_SENSOR_NCE] = *temp;
-+	}
-+		break;
-+
-+	case KEEMBAY_SENSOR_SOC:
-+	{
-+		int i;
-+
-+		*temp = 0;
-+		for (i = 0; i < KEEMBAY_SENSOR_MAX; i++)
-+			*temp = max(*temp, priv->current_temp[i]);
-+	}
-+		break;
-+
-+	default:
-+		break;
-+	}
-+	spin_unlock(&priv->lock);
-+
-+	return 0;
-+}
-+
-+static int keembay_thermal_probe(struct platform_device *pdev)
-+{
-+	struct intel_tsens_plat_data *plat_data;
-+	struct keembay_thermal_priv *priv;
-+
-+	plat_data = pdev->dev.platform_data;
-+	if (!plat_data) {
-+		dev_err(&pdev->dev, "Platform data not found\n");
-+		return -EINVAL;
-+	}
-+	if (!plat_data->base_addr)
-+		return -EINVAL;
-+
-+	priv = devm_kzalloc(&pdev->dev,
-+			    sizeof(struct keembay_thermal_priv),
-+			    GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
-+	priv->name = plat_data->name;
-+	priv->base_addr = plat_data->base_addr;
-+	priv->plat_data = plat_data;
-+	plat_data->get_temp = keembay_get_temp;
-+	spin_lock_init(&priv->lock);
-+	platform_set_drvdata(pdev, priv);
-+	dev_info(&pdev->dev, "Thermal driver loaded for %s\n",
-+		 plat_data->name);
-+	return 0;
-+}
-+
-+static struct platform_driver keembay_thermal_driver = {
-+	.probe = keembay_thermal_probe,
-+	.driver = {
-+		.name = "intel,keembay_thermal",
-+	},
-+};
-+
-+module_platform_driver(keembay_thermal_driver);
-+
-+MODULE_DESCRIPTION("Keem Bay Thermal Driver");
-+MODULE_AUTHOR("Sandeep Singh <sandeep1.singh@intel.com>");
-+MODULE_AUTHOR("Raja Subramanian, Lakshmi Bai <lakshmi.bai.raja.subramanian@intel.com>");
-+MODULE_AUTHOR("Udhayakumar C <udhayakumar.c@intel.com>");
-+MODULE_LICENSE("GPL v2");
-diff --git a/drivers/misc/intel_tsens/keembay_tsens.h b/drivers/misc/intel_tsens/keembay_tsens.h
-new file mode 100644
-index 000000000000..e9b927a31e22
---- /dev/null
-+++ b/drivers/misc/intel_tsens/keembay_tsens.h
-@@ -0,0 +1,366 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+/*
-+ *
-+ * Intel Keem Bay thermal Driver
-+ *
-+ * Copyright (C) 2020 Intel Corporation
-+ *
-+ */
-+
-+#ifndef _LINUX_KEEMBAY_TSENS_H
-+#define _LINUX_KEEMBAY_TSENS_H
-+
-+#include <linux/thermal.h>
-+
-+/* Register values for keembay temperature (PVT Sensor) */
-+#define AON_TSENS_TRIM0_CFG		0x0030
-+#define AON_TSENS_TRIM1_CFG		0x0034
-+#define AON_TSENS_CFG			0x0038
-+#define AON_TSENS_INT0			0x203c
-+#define AON_TSENS_INT1			0x2040
-+#define AON_TSENS_IRQ_CLEAR		0x0044
-+#define AON_TSENS_DATA0			0x0048
-+#define MSS_T_SAMPLE_VALID		0x80000000
-+#define MSS_T_SAMPLE			0x3ff
-+#define CSS_T_SAMPLE_VALID		0x8000
-+#define CSS_T_SAMPLE			0x3ff
-+#define NCE1_T_SAMPLE_VALID		0x80000000
-+#define NCE1_T_SAMPLE			0x3ff
-+#define NCE0_T_SAMPLE_VALID		0x8000
-+#define NCE0_T_SAMPLE			0x3ff
-+#define AON_TSENS_DATA1			0x004c
-+#define AON_INTERFACE			0x20260000
-+/* Bit shift for registers*/
-+#define MSS_BIT_SHIFT			16
-+#define CSS_BIT_SHIFT			0
-+#define NCE0_BIT_SHIFT			0
-+#define NCE1_BIT_SHIFT			16
-+/* mask values for config register */
-+#define CFG_MASK_AUTO			0x80ff //(auto configuration)
-+#define CFG_IRQ_MASK			0x8fff
-+#define CFG_MASK_MANUAL		0x000f // TSENS_EN (manual config)
-+
-+/**
-+ * KEEMBAY_SENSOR_MSS - Media subsystem junction temperature.
-+ * KEEMBAY_SENSOR_CSS - Compute subsystem junction temperature.
-+ * KEEMBAY_SENSOR_NCE - Neural computing engine junction temperature.
-+ *			For NCE two sensors are available in kemmaby paltform,
-+ *			maximum temperature of these two sensors will be
-+ *			returned as NCE temperature.
-+ * KEEMBAY_SENSOR_SOC - Soc temperature.
-+ *			Maximum of MSS, CSS and NCE would be returned as
-+ *			SOC temperature.
-+ */
-+enum keembay_thermal_sensor_en {
-+	KEEMBAY_SENSOR_MSS,
-+	KEEMBAY_SENSOR_CSS,
-+	KEEMBAY_SENSOR_NCE,
-+	KEEMBAY_SENSOR_SOC,
-+	KEEMBAY_SENSOR_MAX
-+};
-+
-+#define KEEMBAY_SENSOR_BASE_TEMP 27
-+
-+static const int raw_kmb[] = {
-+39956,  -39637, -39319, -39001, -38684,
-+
-+38367,  -38050, -37734, -37418, -37103,
-+
-+36787,  -36472, -36158, -35844, -35530,
-+
-+35216,  -34903, -34590, -34278, -33966,
-+
-+33654,  -33343, -33032, -32721, -32411,
-+
-+32101,  -31791, -31482, -31173, -30864,
-+
-+30556,  -30248, -29940, -29633, -29326,
-+
-+29020,  -28713, -28407, -28102, -27797,
-+
-+27492,  -27187, -26883, -26579, -26276,
-+
-+25973,  -25670, -25367, -25065, -24763,
-+
-+24462,  -24160, -23860, -23559, -23259,
-+
-+22959,  -22660, -22360, -22062, -21763,
-+
-+21465,  -21167, -20869, -20572, -20275,
-+
-+19979,  -19683, -19387, -19091, -18796,
-+
-+18501,  -18206, -17912, -17618, -17325,
-+
-+-17031, -16738,  -16446, -16153, -15861,
-+
-+-15570, -15278,  -14987, -14697, -14406,
-+
-+-14116, -13826,  -13537, -13248, -12959,
-+
-+-12670, -12382,  -12094, -11807, -11520,
-+
-+-11233, -10946,  -10660, -10374, -10088,
-+
-+-9803, -9518, -9233, -8949, -8665,
-+
-+-8381, -8097, -7814, -7531, -7249,
-+
-+-6967, -6685, -6403, -6122, -5841,
-+
-+-5560, -5279, -4999, -4720, -4440,
-+
-+-4161, -3882, -3603, -3325, -3047,
-+
-+-2770, -2492, -2215, -1938, -1662,
-+
-+-1386, -1110, -834, -559, -284,
-+
-+-9, 265, 539, 813, 1086,
-+
-+1360, 1633, 1905, 2177, 2449,
-+
-+2721, 2993, 3264, 3535, 3805,
-+
-+4075, 4345, 4615, 4884, 5153,
-+
-+5422, 5691, 5959, 6227, 6495,
-+
-+6762, 7029, 7296, 7562, 7829,
-+
-+8095, 8360, 8626, 8891, 9155,
-+
-+9420, 9684, 9948, 10212, 10475,
-+
-+10738, 11001, 11264, 11526, 11788,
-+
-+12049, 12311, 12572, 12833, 13093,
-+
-+13354, 13614, 13874, 14133, 14392,
-+
-+14651, 14910, 15168, 15426, 15684,
-+
-+15942, 16199, 16456, 16713, 16969,
-+
-+17225, 17481, 17737, 17992, 18247,
-+
-+18502, 18757, 19011, 19265, 19519,
-+
-+19772, 20025, 20278, 20531, 20784,
-+
-+21036, 21288, 21539, 21791, 22042,
-+
-+22292, 22543, 22793, 23043, 23293,
-+
-+23543, 23792, 24041, 24290, 24538,
-+
-+24786, 25034, 25282, 25529, 25776,
-+
-+26023, 26270, 26516, 26763, 27008,
-+
-+27254, 27499, 27745, 27989, 28234,
-+
-+28478, 28722, 28966, 29210, 29453,
-+
-+29696, 29939, 30182, 30424, 30666,
-+
-+30908, 31149, 31391, 31632, 31873,
-+
-+32113, 32353, 32593, 32833, 33073,
-+
-+33312, 33551, 33790, 34029, 34267,
-+
-+34505, 34743, 34980, 35218, 35455,
-+
-+35692, 35928, 36165, 36401, 36637,
-+
-+36872, 37108, 37343, 37578, 37813,
-+
-+38047, 38281, 38515, 38749, 38982,
-+
-+39216, 39448, 39681, 39914, 40146,
-+
-+40378, 40610, 40841, 41073, 41304,
-+
-+41535, 41765, 41996, 42226, 42456,
-+
-+42686, 42915, 43144, 43373, 43602,
-+
-+43830, 44059, 44287, 44515, 44742,
-+
-+44970, 45197, 45424, 45650, 45877,
-+
-+46103, 46329, 46555, 46780, 47006,
-+
-+47231, 47456, 47680, 47905, 48129,
-+
-+48353, 48576, 48800,  49023, 49246,
-+
-+49469, 49692, 49914,  50136, 50358,
-+
-+50580, 50801, 51023,  51244, 51464,
-+
-+51685, 51905, 52126,  52346, 52565,
-+
-+52785, 53004, 53223,  53442, 53661,
-+
-+53879, 54097, 54315,  54533, 54750,
-+
-+54968, 55185, 55402,  55618, 55835,
-+
-+56051, 56267, 56483,  56699, 56914,
-+
-+57129, 57344, 57559,  57773, 57988,
-+
-+58202, 58416, 58630,  58843, 59056,
-+
-+59269, 59482, 59695,  59907, 60120,
-+
-+60332, 60543, 60755,  60966, 61178,
-+
-+61389, 61599, 61810,  62020, 62231,
-+
-+62440, 62650, 62860,  63069, 63278,
-+
-+63487, 63696, 63904,  64113, 64321,
-+
-+64529, 64737, 64944,  65151, 65358,
-+
-+65565, 65772, 65979,  66185, 66391,
-+
-+66597, 66803, 67008, 67213, 67419,
-+
-+67624, 67828, 68033, 68237, 68441,
-+
-+68645, 68849, 69052, 69256, 69459,
-+
-+69662, 69865, 70067, 70270, 70472,
-+
-+70674, 70876, 71077, 71279, 71480,
-+
-+71681, 71882, 72082, 72283, 72483,
-+
-+72683, 72883, 73083, 73282, 73481,
-+
-+73680, 73879, 74078, 74277, 74475,
-+
-+74673, 74871, 75069, 75266, 75464,
-+
-+75661, 75858, 76055, 76252, 76448,
-+
-+76644, 76841, 77037, 77232, 77428,
-+
-+77623, 77818, 78013, 78208, 78403,
-+
-+78597, 78792, 78986, 79180, 79373,
-+
-+79567, 79760, 79953, 80146, 80339,
-+
-+80532, 80724, 80917, 81109, 81301,
-+
-+81492, 81684, 81875, 82066, 82258,
-+
-+82448, 82639, 82830, 83020, 83210,
-+
-+83400, 83590, 83779, 83969, 84158,
-+
-+84347, 84536, 84725, 84913, 85102,
-+
-+85290, 85478, 85666, 85854, 86041,
-+
-+86228, 86416, 86603, 86789, 86976,
-+
-+87163, 87349, 87535, 87721, 87907,
-+
-+88092, 88278, 88463, 88648, 88833,
-+
-+89018, 89203, 89387, 89571, 89755,
-+
-+89939, 90123, 90307, 90490, 90674,
-+
-+90857, 91040, 91222, 91405, 91587,
-+
-+91770, 91952, 92134, 92315, 92497,
-+
-+92679, 92860, 93041, 93222, 93403,
-+
-+93583, 93764, 93944, 94124, 94304,
-+
-+94484, 94664, 94843, 95023, 95202,
-+
-+95381, 95560, 95738, 95917, 96095,
-+
-+96273, 96451, 96629, 96807, 96985,
-+
-+97162, 97339, 97516, 97693, 97870,
-+
-+98047, 98223, 98399, 98576, 98752,
-+
-+98927, 99103, 99279, 99454, 99629,
-+
-+99804, 99979, 100154, 100328, 100503,
-+
-+100677, 100851, 101025, 101199, 101373,
-+
-+101546, 101720, 101893, 102066, 102239,
-+
-+102411, 102584, 102756, 102929, 103101,
-+
-+103273, 103445, 103616, 103788, 103959,
-+
-+104130, 104302, 104472, 104643, 104814,
-+
-+104984, 105155, 105325, 105495, 105665,
-+
-+105835, 106004, 106174, 106343, 106512,
-+
-+106681, 106850, 107019, 107187, 107355,
-+
-+107524, 107692, 107860, 108028, 108195,
-+
-+108363, 108530, 108697, 108865, 109031,
-+
-+109198, 109365, 109531, 109698, 109864,
-+
-+110030, 110196, 110362, 110528, 110693,
-+
-+110858, 111024, 111189, 111354, 111518,
-+
-+111683, 111848, 112012, 112176, 112340,
-+
-+112504, 112668, 112832, 112995, 113159,
-+
-+113322, 113485, 113648, 113811, 113973,
-+
-+114136, 114298, 114461, 114623, 114785,
-+
-+114947, 115108, 115270, 115431, 115593,
-+
-+115754, 115915, 116076, 116236, 116397,
-+
-+116558, 116718, 116878, 117038, 117198,
-+
-+117358, 117518, 117677, 117836, 117996,
-+
-+118155, 118314, 118473, 118631, 118790,
-+
-+118948, 119107, 119265, 119423, 119581,
-+
-+119739, 119896, 120054, 120211, 120368,
-+
-+120525, 120682, 120839, 120996, 121153,
-+
-+121309, 121465, 121622, 121778, 121934,
-+
-+122089, 122245, 122400, 122556, 122711,
-+
-+122866, 123021, 123176, 123331, 123486,
-+
-+123640, 123794, 123949, 124103, 124257,
-+
-+124411, 124564, 124718, 124871, 125025,
-+};
-+
-+static int raw_kmb_size = sizeof(raw_kmb) / sizeof(int);
-+
-+#endif /* _LINUX_KEEMBAY_TSENS_H */
--- 
-2.17.1
-
+ /**
+  * cpumask_next - get the next cpu in a cpumask
+@@ -206,27 +205,22 @@ void __init free_bootmem_cpumask_var(cpumask_var_t mask)
+  */
+ unsigned int cpumask_local_spread(unsigned int i, int node)
+ {
+-	int cpu, hk_flags;
+-	const struct cpumask *mask;
++	int cpu;
+ 
+-	hk_flags = HK_FLAG_DOMAIN | HK_FLAG_MANAGED_IRQ;
+-	mask = housekeeping_cpumask(hk_flags);
+ 	/* Wrap: we always want a cpu. */
+-	i %= cpumask_weight(mask);
++	i %= num_online_cpus();
+ 
+ 	if (node == NUMA_NO_NODE) {
+-		for_each_cpu(cpu, mask) {
++		for_each_cpu(cpu, cpu_online_mask)
+ 			if (i-- == 0)
+ 				return cpu;
+-		}
+ 	} else {
+ 		/* NUMA first. */
+-		for_each_cpu_and(cpu, cpumask_of_node(node), mask) {
++		for_each_cpu_and(cpu, cpumask_of_node(node), cpu_online_mask)
+ 			if (i-- == 0)
+ 				return cpu;
+-		}
+ 
+-		for_each_cpu(cpu, mask) {
++		for_each_cpu(cpu, cpu_online_mask) {
+ 			/* Skip NUMA nodes, done above. */
+ 			if (cpumask_test_cpu(cpu, cpumask_of_node(node)))
+ 				continue;
