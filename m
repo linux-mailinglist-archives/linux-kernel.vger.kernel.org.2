@@ -2,95 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 813843104FD
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 07:35:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80E473104FF
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 07:35:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230506AbhBEGdt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 01:33:49 -0500
-Received: from mga05.intel.com ([192.55.52.43]:29930 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230402AbhBEGdr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 01:33:47 -0500
-IronPort-SDR: qnNaDrF8UB8RD7ZE6BLf1Rgftme2ELbStYCrQp/sllGShu67SIxdRZFbTSFzz8naTKSHbmzN5L
- 6hzMHnQx5WQA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9885"; a="266215567"
-X-IronPort-AV: E=Sophos;i="5.81,154,1610438400"; 
-   d="scan'208";a="266215567"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Feb 2021 22:33:05 -0800
-IronPort-SDR: 5QfnJPgBPwLYURmVJG9624ZfaSoOmSNsiNY3rSMbMcI1YTUQkNSOc2mWz/cFGjTYTCMeLbDRby
- buv6rtcVoL/w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,154,1610438400"; 
-   d="scan'208";a="357588302"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.149]) ([10.237.72.149])
-  by orsmga003.jf.intel.com with ESMTP; 04 Feb 2021 22:33:01 -0800
-Subject: Re: [PATCH 2/2] mmc: mmc_test: use erase_arg for mmc_erase command
-To:     yann.gautier@foss.st.com, ulf.hansson@linaro.org
-Cc:     linux@armlinux.org.uk, linus.walleij@linaro.org,
-        ludovic.barre@foss.st.com, per.forlin@linaro.org,
-        huyue2@yulong.com, wsa+renesas@sang-engineering.com,
-        vbadigan@codeaurora.org, p.zabel@pengutronix.de, marex@denx.de,
-        swboyd@chromium.org, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210204120547.15381-1-yann.gautier@foss.st.com>
- <20210204120547.15381-3-yann.gautier@foss.st.com>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <c1531549-29da-25dc-cada-f61edbc5f2fd@intel.com>
-Date:   Fri, 5 Feb 2021 08:33:04 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
-MIME-Version: 1.0
-In-Reply-To: <20210204120547.15381-3-yann.gautier@foss.st.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S231145AbhBEGev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 01:34:51 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:38320 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229492AbhBEGer (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 01:34:47 -0500
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxGdTY5hxgfCAFAA--.6423S2;
+        Fri, 05 Feb 2021 14:34:00 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Shuah Khan <shuah@kernel.org>
+Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] selftests: breakpoints: Use correct error messages in breakpoint_test_arm64.c
+Date:   Fri,  5 Feb 2021 14:33:59 +0800
+Message-Id: <1612506839-27225-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9AxGdTY5hxgfCAFAA--.6423S2
+X-Coremail-Antispam: 1UD129KBjvdXoW7Xr47Cry8Kr4xAryfJF18Xwb_yoWkZFgEka
+        43tw4DCFWDJryDA3W3WwnxAFykGa13uF42qrW3tF9xCr47Ka45tFWkCF1kZF1Sg3yYg39F
+        y3WqkrWavr1rJjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb2xYjsxI4VWDJwAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I
+        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
+        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0
+        cI8IcVCY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I
+        8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
+        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVW8JVWxJw
+        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lc2xSY4AK67AK6r47MxAIw28I
+        cxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2
+        IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUXVWUAwCIc40Y0x0EwIxGrwCI
+        42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42
+        IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E
+        87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUsjg4DUUUU
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/02/21 2:05 pm, yann.gautier@foss.st.com wrote:
-> From: Yann Gautier <yann.gautier@foss.st.com>
-> 
-> Since [1], the erase argument for mmc_erase() function is saved in
-> erase_arg field of card structure. It is preferable to use it instead of
-> hard-coded MMC_SECURE_ERASE_ARG, which from eMMC 4.51 spec is not
-> recommended:
-> "6.6.16 Secure Erase
-> NOTE Secure Erase is included for backwards compatibility. New system
-> level implementations (based on v4.51 devices and beyond) should use
-> Erase combined with Sanitize instead of secure erase."
-> 
->  [1] commit 01904ff77676 ("mmc: core: Calculate the discard arg only once")
-> 
+When call ptrace(PTRACE_CONT, ...) failed, use correct error messages.
 
-Did you experience an issue because of this?  You could add that to the
-commit message.
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+---
+ tools/testing/selftests/breakpoints/breakpoint_test_arm64.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-There does not seem to be a need for secure erase, so:
-
-Acked-by: Adrian Hunter <adrian.hunter@intel.com>
-
-
-> Signed-off-by: Yann Gautier <yann.gautier@foss.st.com>
-> ---
->  drivers/mmc/core/mmc_test.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mmc/core/mmc_test.c b/drivers/mmc/core/mmc_test.c
-> index 39a478874ca3..63524551a13a 100644
-> --- a/drivers/mmc/core/mmc_test.c
-> +++ b/drivers/mmc/core/mmc_test.c
-> @@ -2110,7 +2110,7 @@ static int mmc_test_rw_multiple(struct mmc_test_card *test,
->  	if (mmc_can_erase(test->card) &&
->  	    tdata->prepare & MMC_TEST_PREP_ERASE) {
->  		ret = mmc_erase(test->card, dev_addr,
-> -				size / 512, MMC_SECURE_ERASE_ARG);
-> +				size / 512, test->card->erase_arg);
->  		if (ret)
->  			ret = mmc_erase(test->card, dev_addr,
->  					size / 512, MMC_ERASE_ARG);
-> 
+diff --git a/tools/testing/selftests/breakpoints/breakpoint_test_arm64.c b/tools/testing/selftests/breakpoints/breakpoint_test_arm64.c
+index ad41ea6..e704181 100644
+--- a/tools/testing/selftests/breakpoints/breakpoint_test_arm64.c
++++ b/tools/testing/selftests/breakpoints/breakpoint_test_arm64.c
+@@ -145,7 +145,7 @@ static bool run_test(int wr_size, int wp_size, int wr, int wp)
+ 
+ 	if (ptrace(PTRACE_CONT, pid, NULL, NULL) < 0) {
+ 		ksft_print_msg(
+-			"ptrace(PTRACE_SINGLESTEP) failed: %s\n",
++			"ptrace(PTRACE_CONT) failed: %s\n",
+ 			strerror(errno));
+ 		return false;
+ 	}
+@@ -159,7 +159,7 @@ static bool run_test(int wr_size, int wp_size, int wr, int wp)
+ 	}
+ 	alarm(0);
+ 	if (WIFEXITED(status)) {
+-		ksft_print_msg("child did not single-step\n");
++		ksft_print_msg("child exited prematurely\n");
+ 		return false;
+ 	}
+ 	if (!WIFSTOPPED(status)) {
+-- 
+2.1.0
 
