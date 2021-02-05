@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01E2D3114EE
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 23:23:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 745323114A6
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 23:14:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233210AbhBEWSv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 17:18:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44976 "EHLO mail.kernel.org"
+        id S229715AbhBEWLY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 17:11:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45264 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232929AbhBEO5T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 09:57:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DB11164E2E;
-        Fri,  5 Feb 2021 14:11:15 +0000 (UTC)
+        id S232951AbhBEO5X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 09:57:23 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DA68B65056;
+        Fri,  5 Feb 2021 14:12:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612534276;
-        bh=WitU+AQ52xquQh8NwEkFztfaVuHRXAQtbpcpl/piX3Y=;
+        s=korg; t=1612534344;
+        bh=0TCr50uaJ/Er9v0M1Rd47FXEfjx301MaEuqIpGUAO5c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YAyAVRtBQHGcZWvQj0k3XlDHMXp7YdM7ecrbMRRI2/DKcOEiapQT+dkhwjdh2PDFX
-         IZW8JpFYbAwWoFq+MZ23g1vLM85WD/GlM4wqsk30PJ3BDj+CVC/L7m07VDA1sisVy1
-         PysqLiMjhdMNU90CdIBBszjrIXwGt9FCJVfdwmsg=
+        b=nHPoqjt/wHtQ1qF3dhmXsoARC2ZKpmWwVH4dnhhNAgxgBGWuP1aMD0fsEhZO77dcs
+         O0Llk9iEnC+R0BMdfC004HAjreUA+1Q9tzJqP6ZNKKMsimFtzpvKZdqYuX2sbG+QRR
+         CL5TtzuIPqKDnxGC6FV9reXyv0Nyrm4a5V8yPPVk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ofir Bitton <obitton@habana.ai>,
-        Oded Gabbay <ogabbay@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 51/57] habanalabs: zero pci counters packet before submit to FW
-Date:   Fri,  5 Feb 2021 15:07:17 +0100
-Message-Id: <20210205140658.171836974@linuxfoundation.org>
+        stable@vger.kernel.org, Andres Freund <andres@anarazel.de>,
+        Bijan Mottahedeh <bijan.mottahedeh@oracle.com>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 04/32] Revert "Revert "block: end bio with BLK_STS_AGAIN in case of non-mq devs and REQ_NOWAIT""
+Date:   Fri,  5 Feb 2021 15:07:19 +0100
+Message-Id: <20210205140652.538665933@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210205140655.982616732@linuxfoundation.org>
-References: <20210205140655.982616732@linuxfoundation.org>
+In-Reply-To: <20210205140652.348864025@linuxfoundation.org>
+References: <20210205140652.348864025@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,46 +40,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ofir Bitton <obitton@habana.ai>
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-[ Upstream commit 9354f1b421f76f8368be13954f87d07bcbd6fffe ]
+This reverts commit bba91cdba612fbce4f8575c5d94d2b146fb83ea3 which is
+commit b0beb28097fa04177b3769f4bb7a0d0d9c4ae76e upstream.
 
-Driver does not zero some pci counters packets before sending
-to FW. This causes an out of sync PI/CI between driver and FW.
+It breaks things in 5.4.y, so let's drop it.
 
-Signed-off-by: Ofir Bitton <obitton@habana.ai>
-Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
-Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Reported-by: Andres Freund <andres@anarazel.de>
+Cc: Bijan Mottahedeh <bijan.mottahedeh@oracle.com>
+CC: Jens Axboe <axboe@kernel.dk>
+Cc: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/misc/habanalabs/common/firmware_if.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ block/blk-core.c |   11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/misc/habanalabs/common/firmware_if.c b/drivers/misc/habanalabs/common/firmware_if.c
-index cd41c7ceb0e78..13c6eebd4fa63 100644
---- a/drivers/misc/habanalabs/common/firmware_if.c
-+++ b/drivers/misc/habanalabs/common/firmware_if.c
-@@ -385,6 +385,10 @@ int hl_fw_cpucp_pci_counters_get(struct hl_device *hdev,
+--- a/block/blk-core.c
++++ b/block/blk-core.c
+@@ -886,11 +886,14 @@ generic_make_request_checks(struct bio *
  	}
- 	counters->rx_throughput = result;
  
-+	memset(&pkt, 0, sizeof(pkt));
-+	pkt.ctl = cpu_to_le32(CPUCP_PACKET_PCIE_THROUGHPUT_GET <<
-+			CPUCP_PKT_CTL_OPCODE_SHIFT);
-+
- 	/* Fetch PCI tx counter */
- 	pkt.index = cpu_to_le32(cpucp_pcie_throughput_tx);
- 	rc = hdev->asic_funcs->send_cpu_message(hdev, (u32 *) &pkt, sizeof(pkt),
-@@ -397,6 +401,7 @@ int hl_fw_cpucp_pci_counters_get(struct hl_device *hdev,
- 	counters->tx_throughput = result;
+ 	/*
+-	 * For a REQ_NOWAIT based request, return -EOPNOTSUPP
+-	 * if queue is not a request based queue.
++	 * Non-mq queues do not honor REQ_NOWAIT, so complete a bio
++	 * with BLK_STS_AGAIN status in order to catch -EAGAIN and
++	 * to give a chance to the caller to repeat request gracefully.
+ 	 */
+-	if ((bio->bi_opf & REQ_NOWAIT) && !queue_is_mq(q))
+-		goto not_supported;
++	if ((bio->bi_opf & REQ_NOWAIT) && !queue_is_mq(q)) {
++		status = BLK_STS_AGAIN;
++		goto end_io;
++	}
  
- 	/* Fetch PCI replay counter */
-+	memset(&pkt, 0, sizeof(pkt));
- 	pkt.ctl = cpu_to_le32(CPUCP_PACKET_PCIE_REPLAY_CNT_GET <<
- 			CPUCP_PKT_CTL_OPCODE_SHIFT);
- 
--- 
-2.27.0
-
+ 	if (should_fail_bio(bio))
+ 		goto end_io;
 
 
