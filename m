@@ -2,82 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5E3C311774
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 00:51:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BD1A311776
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 00:53:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231557AbhBEXvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 18:51:03 -0500
-Received: from mx2.suse.de ([195.135.220.15]:42534 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232374AbhBEOQJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 09:16:09 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 46DE7B126;
-        Fri,  5 Feb 2021 15:36:34 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 8C5D4DA6E9; Fri,  5 Feb 2021 16:34:42 +0100 (CET)
-Date:   Fri, 5 Feb 2021 16:34:41 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Ira Weiny <ira.weiny@intel.com>
-Cc:     dsterba@suse.cz, clm@fb.com, josef@toxicpanda.com,
-        dsterba@suse.com, Miao Xie <miaox@cn.fujitsu.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH] fs/btrfs: Fix raid6 qstripe kmap'ing
-Message-ID: <20210205153441.GK1993@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Ira Weiny <ira.weiny@intel.com>,
-        clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
-        Miao Xie <miaox@cn.fujitsu.com>, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-References: <20210128061503.1496847-1-ira.weiny@intel.com>
- <20210203155648.GE1993@suse.cz>
- <20210204152608.GF1993@suse.cz>
- <20210205035236.GB5033@iweiny-DESK2.sc.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210205035236.GB5033@iweiny-DESK2.sc.intel.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+        id S229590AbhBEXvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 18:51:48 -0500
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:51762 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232131AbhBEOOr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 09:14:47 -0500
+Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
+  by alexa-out.qualcomm.com with ESMTP; 05 Feb 2021 07:37:44 -0800
+X-QCInternal: smtphost
+Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
+  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 05 Feb 2021 07:37:42 -0800
+X-QCInternal: smtphost
+Received: from gubbaven-linux.qualcomm.com ([10.206.64.32])
+  by ironmsg02-blr.qualcomm.com with ESMTP; 05 Feb 2021 21:07:18 +0530
+Received: by gubbaven-linux.qualcomm.com (Postfix, from userid 2365015)
+        id 3161A21E01; Fri,  5 Feb 2021 21:07:18 +0530 (IST)
+From:   Venkata Lakshmi Narayana Gubba <gubbaven@codeaurora.org>
+To:     marcel@holtmann.org, johan.hedberg@gmail.com
+Cc:     mka@chromium.org, linux-kernel@vger.kernel.org,
+        linux-bluetooth@vger.kernel.org, hemantg@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, bgodavar@codeaurora.org,
+        rjliao@codeaurora.org, hbandi@codeaurora.org,
+        abhishekpandit@chromium.org,
+        Venkata Lakshmi Narayana Gubba <gubbaven@codeaurora.org>
+Subject: [PATCH v1] Bluetooth: hci_qca:Fixed issue during suspend
+Date:   Fri,  5 Feb 2021 21:07:16 +0530
+Message-Id: <1612539436-8498-1-git-send-email-gubbaven@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 04, 2021 at 07:52:36PM -0800, Ira Weiny wrote:
-> On Thu, Feb 04, 2021 at 04:26:08PM +0100, David Sterba wrote:
-> > On Wed, Feb 03, 2021 at 04:56:48PM +0100, David Sterba wrote:
-> > > On Wed, Jan 27, 2021 at 10:15:03PM -0800, ira.weiny@intel.com wrote:
-> > > > From: Ira Weiny <ira.weiny@intel.com>
-> > > Changelog is good, thanks. I've added stable tags as the missing unmap
-> > > is a potential problem.
-> > 
-> > There are lots of tests faling, stack traces like below. I haven't seen
-> > anything obvious in the patch so that needs a closer look and for the
-> > time being I can't add the patch to for-next.
-> 
-> :-(
-> 
-> I think I may have been off by 1 on the raid6 kmap...
-> 
-> Something like this should fix it...
-> 
-> diff --git a/fs/btrfs/raid56.c b/fs/btrfs/raid56.c
-> index b8a39dad0f00..dbf52f1a379d 100644
-> --- a/fs/btrfs/raid56.c
-> +++ b/fs/btrfs/raid56.c
-> @@ -2370,7 +2370,7 @@ static noinline void finish_parity_scrub(struct btrfs_raid_bio *rbio,
->                         goto cleanup;
->                 }
->                 SetPageUptodate(q_page);
-> -               pointers[rbio->real_stripes] = kmap(q_page);
-> +               pointers[rbio->real_stripes - 1] = kmap(q_page);
+If BT SoC is running with ROM FW then just return in
+qca_suspend function as ROM FW does not support
+in-band sleep.
 
-Oh right and tests agree it works.
+Fixes: 2be43abac5a8 ("Bluetooth: hci_qca: Wait for timeout during suspend")
+Signed-off-by: Venkata Lakshmi Narayana Gubba <gubbaven@codeaurora.org>
+---
+ drivers/bluetooth/hci_qca.c | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
->         }
->  
->         atomic_set(&rbio->error, 0);
-> 
-> Let me roll a new version.
+diff --git a/drivers/bluetooth/hci_qca.c b/drivers/bluetooth/hci_qca.c
+index ff2fb68..de36af6 100644
+--- a/drivers/bluetooth/hci_qca.c
++++ b/drivers/bluetooth/hci_qca.c
+@@ -77,7 +77,8 @@ enum qca_flags {
+ 	QCA_MEMDUMP_COLLECTION,
+ 	QCA_HW_ERROR_EVENT,
+ 	QCA_SSR_TRIGGERED,
+-	QCA_BT_OFF
++	QCA_BT_OFF,
++	QCA_ROM_FW
+ };
+ 
+ enum qca_capabilities {
+@@ -1664,6 +1665,7 @@ static int qca_setup(struct hci_uart *hu)
+ 	if (ret)
+ 		return ret;
+ 
++	clear_bit(QCA_ROM_FW, &qca->flags);
+ 	/* Patch downloading has to be done without IBS mode */
+ 	set_bit(QCA_IBS_DISABLED, &qca->flags);
+ 
+@@ -1721,12 +1723,14 @@ static int qca_setup(struct hci_uart *hu)
+ 		hu->hdev->cmd_timeout = qca_cmd_timeout;
+ 	} else if (ret == -ENOENT) {
+ 		/* No patch/nvm-config found, run with original fw/config */
++		set_bit(QCA_ROM_FW, &qca->flags);
+ 		ret = 0;
+ 	} else if (ret == -EAGAIN) {
+ 		/*
+ 		 * Userspace firmware loader will return -EAGAIN in case no
+ 		 * patch/nvm-config is found, so run with original fw/config.
+ 		 */
++		set_bit(QCA_ROM_FW, &qca->flags);
+ 		ret = 0;
+ 	}
+ 
+@@ -2103,6 +2107,12 @@ static int __maybe_unused qca_suspend(struct device *dev)
+ 
+ 	set_bit(QCA_SUSPENDING, &qca->flags);
+ 
++	/* if BT SoC is running with default firmware then it does not
++	 * support in-band sleep
++	 */
++	if (test_bit(QCA_ROM_FW, &qca->flags))
++		return 0;
++
+ 	/* During SSR after memory dump collection, controller will be
+ 	 * powered off and then powered on.If controller is powered off
+ 	 * during SSR then we should wait until SSR is completed.
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
+of Code Aurora Forum, hosted by The Linux Foundation
 
-No need to, I'll fold the fixup. Thanks.
