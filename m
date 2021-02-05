@@ -2,113 +2,285 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1747C310C34
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 14:53:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7863310C40
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 14:55:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231524AbhBENwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 08:52:07 -0500
-Received: from mga05.intel.com ([192.55.52.43]:15641 "EHLO mga05.intel.com"
+        id S231635AbhBENyc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 08:54:32 -0500
+Received: from mail.hallyn.com ([178.63.66.53]:47424 "EHLO mail.hallyn.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231449AbhBENsO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 08:48:14 -0500
-IronPort-SDR: VhsCdSkz5nl2OhlnVTwR6p1AxrMnCskjHnyx/grJ5Y0W4CUjxZSu9EWENgqv90/fnfLB2oPTqU
- ZiwC52/bVjKQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9885"; a="266261858"
-X-IronPort-AV: E=Sophos;i="5.81,154,1610438400"; 
-   d="scan'208";a="266261858"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2021 05:46:02 -0800
-IronPort-SDR: DoTquzvhTq1CvAtbZbu34YKcrxqL0urd3JEIlGJA+/8eofvvXYPZly4DXny7ENvBwEsC49H7Bc
- P5Mw3hx2nZ1w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,154,1610438400"; 
-   d="scan'208";a="373396890"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga002.jf.intel.com with ESMTP; 05 Feb 2021 05:46:01 -0800
-Received: from [10.254.80.1] (kliang2-MOBL.ccr.corp.intel.com [10.254.80.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by linux.intel.com (Postfix) with ESMTPS id 703AB580689;
-        Fri,  5 Feb 2021 05:46:00 -0800 (PST)
-Subject: Re: [PATCH V3 1/5] perf/core: Add PERF_SAMPLE_WEIGHT_STRUCT
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>,
-        Yao Jin <yao.jin@linux.intel.com>,
-        Michael Ellerman <mpe@ellerman.id.au>, maddy@linux.vnet.ibm.com
-References: <1611873611-156687-1-git-send-email-kan.liang@linux.intel.com>
- <1611873611-156687-2-git-send-email-kan.liang@linux.intel.com>
- <b970c739-6783-34d6-8676-44632c7c9428@linux.intel.com>
- <CAM9d7chzwnmSeKydv0Fb_iopcuMZxRsx2mZ66uVwcu_RMw+Vyg@mail.gmail.com>
- <4723a1de-9caa-e192-7b0d-8aced00b8f50@linux.intel.com>
- <CAM9d7ciaCgebmGd98GrngY-he6LGwKeFKJeCqyTBnJ30-tSghQ@mail.gmail.com>
-From:   "Liang, Kan" <kan.liang@linux.intel.com>
-Message-ID: <8d8b7323-7e99-b8c6-fbc1-813ecff0e844@linux.intel.com>
-Date:   Fri, 5 Feb 2021 08:45:59 -0500
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S231284AbhBENvV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 08:51:21 -0500
+Received: by mail.hallyn.com (Postfix, from userid 1001)
+        id 0FC0F283; Fri,  5 Feb 2021 07:48:58 -0600 (CST)
+Date:   Fri, 5 Feb 2021 07:48:58 -0600
+From:   "Serge E. Hallyn" <serge@hallyn.com>
+To:     =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>
+Cc:     James Morris <jmorris@namei.org>, Jann Horn <jannh@google.com>,
+        "Serge E . Hallyn" <serge@hallyn.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Jeff Dike <jdike@addtoit.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Richard Weinberger <richard@nod.at>,
+        Shuah Khan <shuah@kernel.org>,
+        Vincent Dagonneau <vincent.dagonneau@ssi.gouv.fr>,
+        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        linux-security-module@vger.kernel.org, x86@kernel.org,
+        =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@linux.microsoft.com>
+Subject: Re: [PATCH v28 04/12] landlock: Add ptrace restrictions
+Message-ID: <20210205134857.GA17981@mail.hallyn.com>
+References: <20210202162710.657398-1-mic@digikod.net>
+ <20210202162710.657398-5-mic@digikod.net>
 MIME-Version: 1.0
-In-Reply-To: <CAM9d7ciaCgebmGd98GrngY-he6LGwKeFKJeCqyTBnJ30-tSghQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210202162710.657398-5-mic@digikod.net>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2/5/2021 5:43 AM, Namhyung Kim wrote:
-> On Fri, Feb 5, 2021 at 12:24 AM Liang, Kan <kan.liang@linux.intel.com> wrote:
->>
->> On 2/4/2021 9:00 AM, Namhyung Kim wrote:
->>> Hi Kan,
->>>
->>> On Sat, Jan 30, 2021 at 2:25 AM Liang, Kan <kan.liang@linux.intel.com> wrote:
->>> [SNIP]
->>>> diff --git a/include/uapi/linux/perf_event.h
->>>> b/include/uapi/linux/perf_event.h
->>>> index b15e344..c50718a 100644
->>>> --- a/include/uapi/linux/perf_event.h
->>>> +++ b/include/uapi/linux/perf_event.h
->>>> @@ -145,12 +145,14 @@ enum perf_event_sample_format {
->>>>           PERF_SAMPLE_CGROUP                      = 1U << 21,
->>>>           PERF_SAMPLE_DATA_PAGE_SIZE              = 1U << 22,
->>>>           PERF_SAMPLE_CODE_PAGE_SIZE              = 1U << 23,
->>>> +       PERF_SAMPLE_WEIGHT_STRUCT               = 1U << 24,
->>>>
->>>> -       PERF_SAMPLE_MAX = 1U << 24,             /* non-ABI */
->>>> +       PERF_SAMPLE_MAX = 1U << 25,             /* non-ABI */
->>>>
->>>>           __PERF_SAMPLE_CALLCHAIN_EARLY           = 1ULL << 63, /* non-ABI; internal use */
->>>>     };
->>>>
->>>> +#define PERF_SAMPLE_WEIGHT_TYPE        (PERF_SAMPLE_WEIGHT |
->>>> PERF_SAMPLE_WEIGHT_STRUCT)
->>>
->>> I'm not sure you want to expose it in the uapi header as it's not
->>> intended to be used IMHO.
->>>
->>
->> I'm not sure I understood, but it's indeed used in the tool patch set.
->>
->> https://lore.kernel.org/lkml/1612296553-21962-6-git-send-email-kan.liang@linux.intel.com/
+On Tue, Feb 02, 2021 at 05:27:02PM +0100, Mickaël Salaün wrote:
+> From: Mickaël Salaün <mic@linux.microsoft.com>
 > 
-> Well, it's not a big deal.. but I just worried if some users might do
+> Using ptrace(2) and related debug features on a target process can lead
+> to a privilege escalation.  Indeed, ptrace(2) can be used by an attacker
+> to impersonate another task and to remain undetected while performing
+> malicious activities.  Thanks to  ptrace_may_access(), various part of
+> the kernel can check if a tracer is more privileged than a tracee.
 > 
->    event.attr.sample_type = PERF_SAMPLE_WEIGHT_TYPE;
+> A landlocked process has fewer privileges than a non-landlocked process
+> and must then be subject to additional restrictions when manipulating
+> processes. To be allowed to use ptrace(2) and related syscalls on a
+> target process, a landlocked process must have a subset of the target
+> process's rules (i.e. the tracee must be in a sub-domain of the tracer).
 > 
+> Cc: James Morris <jmorris@namei.org>
+> Cc: Kees Cook <keescook@chromium.org>
+> Cc: Serge E. Hallyn <serge@hallyn.com>
 
-Yes, it's possible. For this case, Kernel returns -EINVAL.
+Acked-by: Serge Hallyn <serge@hallyn.com>
 
-Actually, even without the macro, users may still set PERF_SAMPLE_WEIGHT 
-| PERF_SAMPLE_WEIGHT_STRUCT manually. We cannot control what a user 
-sets. I don't think it's a problem as long as the kernel can handle it 
-properly.
+Thanks, I appreciate that things are well named and easy to reason
+about.
 
-Thanks,
-Kan
+> Signed-off-by: Mickaël Salaün <mic@linux.microsoft.com>
+> Reviewed-by: Jann Horn <jannh@google.com>
+> ---
+> 
+> Changes since v25:
+> * Rename function to landlock_add_ptrace_hooks().
+> 
+> Changes since v22:
+> * Add Reviewed-by: Jann Horn <jannh@google.com>
+> 
+> Changes since v21:
+> * Fix copyright dates.
+> 
+> Changes since v14:
+> * Constify variables.
+> 
+> Changes since v13:
+> * Make the ptrace restriction mandatory, like in the v10.
+> * Remove the eBPF dependency.
+> 
+> Previous changes:
+> https://lore.kernel.org/lkml/20191104172146.30797-5-mic@digikod.net/
+> ---
+>  security/landlock/Makefile |   2 +-
+>  security/landlock/ptrace.c | 120 +++++++++++++++++++++++++++++++++++++
+>  security/landlock/ptrace.h |  14 +++++
+>  security/landlock/setup.c  |   2 +
+>  4 files changed, 137 insertions(+), 1 deletion(-)
+>  create mode 100644 security/landlock/ptrace.c
+>  create mode 100644 security/landlock/ptrace.h
+> 
+> diff --git a/security/landlock/Makefile b/security/landlock/Makefile
+> index 041ea242e627..f1d1eb72fa76 100644
+> --- a/security/landlock/Makefile
+> +++ b/security/landlock/Makefile
+> @@ -1,4 +1,4 @@
+>  obj-$(CONFIG_SECURITY_LANDLOCK) := landlock.o
+>  
+>  landlock-y := setup.o object.o ruleset.o \
+> -	cred.o
+> +	cred.o ptrace.o
+> diff --git a/security/landlock/ptrace.c b/security/landlock/ptrace.c
+> new file mode 100644
+> index 000000000000..f55b82446de2
+> --- /dev/null
+> +++ b/security/landlock/ptrace.c
+> @@ -0,0 +1,120 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Landlock LSM - Ptrace hooks
+> + *
+> + * Copyright © 2017-2020 Mickaël Salaün <mic@digikod.net>
+> + * Copyright © 2019-2020 ANSSI
+> + */
+> +
+> +#include <asm/current.h>
+> +#include <linux/cred.h>
+> +#include <linux/errno.h>
+> +#include <linux/kernel.h>
+> +#include <linux/lsm_hooks.h>
+> +#include <linux/rcupdate.h>
+> +#include <linux/sched.h>
+> +
+> +#include "common.h"
+> +#include "cred.h"
+> +#include "ptrace.h"
+> +#include "ruleset.h"
+> +#include "setup.h"
+> +
+> +/**
+> + * domain_scope_le - Checks domain ordering for scoped ptrace
+> + *
+> + * @parent: Parent domain.
+> + * @child: Potential child of @parent.
+> + *
+> + * Checks if the @parent domain is less or equal to (i.e. an ancestor, which
+> + * means a subset of) the @child domain.
+> + */
+> +static bool domain_scope_le(const struct landlock_ruleset *const parent,
+> +		const struct landlock_ruleset *const child)
+> +{
+> +	const struct landlock_hierarchy *walker;
+> +
+> +	if (!parent)
+> +		return true;
+> +	if (!child)
+> +		return false;
+> +	for (walker = child->hierarchy; walker; walker = walker->parent) {
+> +		if (walker == parent->hierarchy)
+> +			/* @parent is in the scoped hierarchy of @child. */
+> +			return true;
+> +	}
+> +	/* There is no relationship between @parent and @child. */
+> +	return false;
+> +}
+> +
+> +static bool task_is_scoped(const struct task_struct *const parent,
+> +		const struct task_struct *const child)
+> +{
+> +	bool is_scoped;
+> +	const struct landlock_ruleset *dom_parent, *dom_child;
+> +
+> +	rcu_read_lock();
+> +	dom_parent = landlock_get_task_domain(parent);
+> +	dom_child = landlock_get_task_domain(child);
+> +	is_scoped = domain_scope_le(dom_parent, dom_child);
+> +	rcu_read_unlock();
+> +	return is_scoped;
+> +}
+> +
+> +static int task_ptrace(const struct task_struct *const parent,
+> +		const struct task_struct *const child)
+> +{
+> +	/* Quick return for non-landlocked tasks. */
+> +	if (!landlocked(parent))
+> +		return 0;
+> +	if (task_is_scoped(parent, child))
+> +		return 0;
+> +	return -EPERM;
+> +}
+> +
+> +/**
+> + * hook_ptrace_access_check - Determines whether the current process may access
+> + *			      another
+> + *
+> + * @child: Process to be accessed.
+> + * @mode: Mode of attachment.
+> + *
+> + * If the current task has Landlock rules, then the child must have at least
+> + * the same rules.  Else denied.
+> + *
+> + * Determines whether a process may access another, returning 0 if permission
+> + * granted, -errno if denied.
+> + */
+> +static int hook_ptrace_access_check(struct task_struct *const child,
+> +		const unsigned int mode)
+> +{
+> +	return task_ptrace(current, child);
+> +}
+> +
+> +/**
+> + * hook_ptrace_traceme - Determines whether another process may trace the
+> + *			 current one
+> + *
+> + * @parent: Task proposed to be the tracer.
+> + *
+> + * If the parent has Landlock rules, then the current task must have the same
+> + * or more rules.  Else denied.
+> + *
+> + * Determines whether the nominated task is permitted to trace the current
+> + * process, returning 0 if permission is granted, -errno if denied.
+> + */
+> +static int hook_ptrace_traceme(struct task_struct *const parent)
+> +{
+> +	return task_ptrace(parent, current);
+> +}
+> +
+> +static struct security_hook_list landlock_hooks[] __lsm_ro_after_init = {
+> +	LSM_HOOK_INIT(ptrace_access_check, hook_ptrace_access_check),
+> +	LSM_HOOK_INIT(ptrace_traceme, hook_ptrace_traceme),
+> +};
+> +
+> +__init void landlock_add_ptrace_hooks(void)
+> +{
+> +	security_add_hooks(landlock_hooks, ARRAY_SIZE(landlock_hooks),
+> +			LANDLOCK_NAME);
+> +}
+> diff --git a/security/landlock/ptrace.h b/security/landlock/ptrace.h
+> new file mode 100644
+> index 000000000000..265b220ae3bf
+> --- /dev/null
+> +++ b/security/landlock/ptrace.h
+> @@ -0,0 +1,14 @@
+> +/* SPDX-License-Identifier: GPL-2.0-only */
+> +/*
+> + * Landlock LSM - Ptrace hooks
+> + *
+> + * Copyright © 2017-2019 Mickaël Salaün <mic@digikod.net>
+> + * Copyright © 2019 ANSSI
+> + */
+> +
+> +#ifndef _SECURITY_LANDLOCK_PTRACE_H
+> +#define _SECURITY_LANDLOCK_PTRACE_H
+> +
+> +__init void landlock_add_ptrace_hooks(void);
+> +
+> +#endif /* _SECURITY_LANDLOCK_PTRACE_H */
+> diff --git a/security/landlock/setup.c b/security/landlock/setup.c
+> index 8661112fb238..a5d6ef334991 100644
+> --- a/security/landlock/setup.c
+> +++ b/security/landlock/setup.c
+> @@ -11,6 +11,7 @@
+>  
+>  #include "common.h"
+>  #include "cred.h"
+> +#include "ptrace.h"
+>  #include "setup.h"
+>  
+>  struct lsm_blob_sizes landlock_blob_sizes __lsm_ro_after_init = {
+> @@ -20,6 +21,7 @@ struct lsm_blob_sizes landlock_blob_sizes __lsm_ro_after_init = {
+>  static int __init landlock_init(void)
+>  {
+>  	landlock_add_cred_hooks();
+> +	landlock_add_ptrace_hooks();
+>  	pr_info("Up and running.\n");
+>  	return 0;
+>  }
+> -- 
+> 2.30.0
