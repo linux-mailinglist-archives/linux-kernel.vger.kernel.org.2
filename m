@@ -2,89 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04876310B8E
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 14:10:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49268310B90
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 14:12:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230388AbhBENI3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 08:08:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34210 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232450AbhBENBc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 08:01:32 -0500
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E288AC0613D6
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 05:00:32 -0800 (PST)
-Received: by mail-qk1-x72a.google.com with SMTP id l27so6675893qki.9
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 05:00:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=DBV1D6Ulmmeg0XD410dqPaIFfUR1ad9jwk0fJwumF/4=;
-        b=UYtLnPaRPURQD2DV0MRGsjizexD0di8ASLpoteP2KvUtIa3WtJkzw+uDkUpdlNI+kq
-         +X7UpeuknA84xI9v6BUp87wROVah7IGgRlHubZk+wnFfTpzeuxiOHyKIcKsriAt1uGFH
-         X4nkvLhYNqllZGeFXQReMtjWS6/L7gQMXhiQv1hKdgnLmZQLK3gjfv8V6QYbmkssXMfW
-         4MPf+vSDbkkhsG2lFij1yoIc0/7G7xHu1Qpvv/aesnC1S6l2lrcDL2gjqW4PADahL2tg
-         WoBmA0kZARzwHjKyEgMMqlgLkPlihCRv9RKlQjswMZMIrXRz/qMWTXIRBrCT47kSlqjb
-         71dw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=DBV1D6Ulmmeg0XD410dqPaIFfUR1ad9jwk0fJwumF/4=;
-        b=RKOJo4kv2/HPe7DR+rYvpaKMUsYaxmYt8MbQK9yWgfaw1M02dzUxlYNMQG6BFITXf+
-         D/i/bd5IuKd3lHgwRKxbOAIma/pj8vu0hiGDwruTYTUiFG8i5Q9jIlySK0oZp33auLYk
-         1ph+F3olliUtfI4VP0LWOQw/vWpACDigUdQJOkYogRPhh77rflSv3pNqUMTsPkoXwFFX
-         kKI2gDwIk++m3qtrZLOY9lE92b9Oq2QL8YNwKVl6w1qtcmZgfk3Gny6bkj9SOuxf/Ctv
-         16u2J9VSLi0YitSjt1wsf2ZO8HyQoLk9XQPLo6IGbDouJggfq0O3JAcBltk3+pkISfuK
-         q79g==
-X-Gm-Message-State: AOAM531c2Ud6FKaC8qvR3dMpuzoEyAAPbrzCS62qKusuB3irH5cgxDQu
-        4hRd04ERxL1hCxfkO7CUXkM=
-X-Google-Smtp-Source: ABdhPJxrie2UTeqqCE3Vg2D6+dzvEjZzeCzQ3MZFPzh0FksJ4UhzYpjj+t7cqcWPQCb8/suSjM8GHQ==
-X-Received: by 2002:a37:8cd:: with SMTP id 196mr3940194qki.434.1612530032227;
-        Fri, 05 Feb 2021 05:00:32 -0800 (PST)
-Received: from localhost.localdomain ([138.199.10.106])
-        by smtp.gmail.com with ESMTPSA id 17sm9481367qtu.23.2021.02.05.05.00.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Feb 2021 05:00:31 -0800 (PST)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     bskeggs@redhat.com, airlied@linux.ie, daniel@ffwll.ch,
-        dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
+        id S231269AbhBENK1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 08:10:27 -0500
+Received: from mx2.suse.de ([195.135.220.15]:41872 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232080AbhBENFN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 08:05:13 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 0FCAEACD4;
+        Fri,  5 Feb 2021 13:03:58 +0000 (UTC)
+Subject: Re: [PATCH] mm/slub: embed __slab_alloc to its caller
+To:     Abel Wu <abel.w@icloud.com>, Christoph Lameter <cl@linux.com>
+Cc:     Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        hewenliang4@huawei.com, wuyun.wu@huawei.com, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org
-Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: [PATCH] drivers: gpu: drm: nouveau: Change not good word with a good one in the file init.c
-Date:   Fri,  5 Feb 2021 18:30:17 +0530
-Message-Id: <20210205130017.1429442-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.30.0
+References: <20210202080515.2689-1-abel.w@icloud.com>
+ <alpine.DEB.2.22.394.2102021009470.50959@www.lameter.com>
+ <9A811B32-6E3D-4FE1-98A5-A7922C32CDB4@icloud.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <30743bfa-fbbb-c091-3b6e-dc24975fc6c3@suse.cz>
+Date:   Fri, 5 Feb 2021 14:03:57 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <9A811B32-6E3D-4FE1-98A5-A7922C32CDB4@icloud.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2/3/21 2:41 AM, Abel Wu wrote:
+>> On Feb 2, 2021, at 6:11 PM, Christoph Lameter <cl@linux.com> wrote:
+>> 
+>> On Tue, 2 Feb 2021, Abel Wu wrote:
+>> 
+>>> Since slab_alloc_node() is the only caller of __slab_alloc(), embed
+>>> __slab_alloc() to its caller to save function call overhead. This
+>>> will also expand the caller's code block size a bit, but hackbench
+>>> tests on both host and guest didn't show a difference w/ or w/o
+>>> this patch.
+>> 
+>> slab_alloc_node is an always_inline function. It is intentional that only
+>> the fast path was inlined and not the slow path.
+> 
+> Oh I got it. Thanks for your excellent explanation.
 
+BTW, there's a script in the Linux source to nicely see the effect of such changes:
 
-s/fucking/messing/
+./scripts/bloat-o-meter slub.o.before mm/slub.o
+add/remove: 0/1 grow/shrink: 9/0 up/down: 1660/-1130 (530)
+Function                                     old     new   delta
+__slab_alloc                                 127    1130   +1003
+__kmalloc_track_caller                       877     965     +88
+__kmalloc                                    878     966     +88
+kmem_cache_alloc                             778     862     +84
+__kmalloc_node_track_caller                  996    1080     +84
+kmem_cache_alloc_node_trace                  813     896     +83
+kmem_cache_alloc_node                        800     881     +81
+kmem_cache_alloc_trace                       786     862     +76
+__kmalloc_node                               998    1071     +73
+___slab_alloc                               1130       -   -1130
+Total: Before=57782, After=58312, chg +0.92%
 
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
----
- drivers/gpu/drm/nouveau/nvkm/subdev/bios/init.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/gpu/drm/nouveau/nvkm/subdev/bios/init.c b/drivers/gpu/drm/nouveau/nvkm/subdev/bios/init.c
-index 9de74f41dcd2..bc2a55a82171 100644
---- a/drivers/gpu/drm/nouveau/nvkm/subdev/bios/init.c
-+++ b/drivers/gpu/drm/nouveau/nvkm/subdev/bios/init.c
-@@ -446,7 +446,7 @@ init_ram_restrict(struct nvbios_init *init)
- {
- 	/* This appears to be the behaviour of the VBIOS parser, and *is*
- 	 * important to cache the NV_PEXTDEV_BOOT0 on later chipsets to
--	 * avoid fucking up the memory controller (somehow) by reading it
-+	 * avoid messing up the memory controller (somehow) by reading it
- 	 * on every INIT_RAM_RESTRICT_ZM_GROUP opcode.
- 	 *
- 	 * Preserving the non-caching behaviour on earlier chipsets just
---
-2.30.0
-
+And yeah, bloating all the entry points wouldn't be nice.
+Thanks,
+Vlastimil
