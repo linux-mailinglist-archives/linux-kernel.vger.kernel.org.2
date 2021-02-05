@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3F99311616
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 23:55:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFA3E311543
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 23:32:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231580AbhBEWud (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 17:50:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43568 "EHLO mail.kernel.org"
+        id S230111AbhBEW0j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 17:26:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44628 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232297AbhBEOqA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 09:46:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 940BB650A6;
-        Fri,  5 Feb 2021 14:14:12 +0000 (UTC)
+        id S232827AbhBEOye (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 09:54:34 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9CD8E65092;
+        Fri,  5 Feb 2021 14:13:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612534453;
-        bh=f9HnJlx8Ydx0o3nuPmJvAbSPMqI+d07aH4Z9ucNyuqQ=;
+        s=korg; t=1612534428;
+        bh=3mxxP0en6Os9zEB1LwKk063zfFdcPS04gqtTpvScRNM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xEsFiBv34pCgZPyH+QoXHXHSNQ8zBZpFig5ctIZXF0+gJAH2WISegRFYDrY+3KAJW
-         CMRW6rpC7E3eoZ/l/tj4PucGcQ1H6QZu7zgoq09Qk3EFGbzGPM0FWIilSO3WfeGL2Y
-         F57uFyZdX4Bg1s8ehVN4/vUXL+r4af7KA3sVUxS8=
+        b=QMlIqlELuCv2jhWjeV+dyMUgSw6xJqlyD9X85BNLRtB0z6ZhozQ7sPvX7AMqQlPNv
+         N0GeMRIAJ95odHIuMf607Uz074NDEwNdYoXCZHDUPfFdUgt2GCkpEB+92JwO02Tm1O
+         i5oQ896Szn/LJq53AqU+OluNrfv+247IHyZ702ZU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arnold Gozum <arngozum@gmail.com>,
-        Hans de Goede <hdegoede@redhat.com>,
+        stable@vger.kernel.org,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 08/17] platform/x86: intel-vbtn: Support for tablet mode on Dell Inspiron 7352
-Date:   Fri,  5 Feb 2021 15:08:02 +0100
-Message-Id: <20210205140650.154725961@linuxfoundation.org>
+Subject: [PATCH 4.19 15/17] objtool: Dont fail on missing symbol table
+Date:   Fri,  5 Feb 2021 15:08:09 +0100
+Message-Id: <20210205140650.427844663@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210205140649.825180779@linuxfoundation.org>
 References: <20210205140649.825180779@linuxfoundation.org>
@@ -40,38 +42,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnold Gozum <arngozum@gmail.com>
+From: Josh Poimboeuf <jpoimboe@redhat.com>
 
-[ Upstream commit fcd38f178b785623c0325958225744f0d8a075c0 ]
+[ Upstream commit 1d489151e9f9d1647110277ff77282fe4d96d09b ]
 
-The Dell Inspiron 7352 is a 2-in-1 model that has chassis-type "Notebook".
-Add this model to the dmi_switches_allow_list.
+Thanks to a recent binutils change which doesn't generate unused
+symbols, it's now possible for thunk_64.o be completely empty without
+CONFIG_PREEMPTION: no text, no data, no symbols.
 
-Signed-off-by: Arnold Gozum <arngozum@gmail.com>
-Link: https://lore.kernel.org/r/20201226205307.249659-1-arngozum@gmail.com
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+We could edit the Makefile to only build that file when
+CONFIG_PREEMPTION is enabled, but that will likely create confusion
+if/when the thunks end up getting used by some other code again.
+
+Just ignore it and move on.
+
+Reported-by: Nathan Chancellor <natechancellor@gmail.com>
+Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
+Reviewed-by: Miroslav Benes <mbenes@suse.cz>
+Tested-by: Nathan Chancellor <natechancellor@gmail.com>
+Link: https://github.com/ClangBuiltLinux/linux/issues/1254
+Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/platform/x86/intel-vbtn.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ tools/objtool/elf.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/platform/x86/intel-vbtn.c b/drivers/platform/x86/intel-vbtn.c
-index f5774372c3871..cf8587f96fc45 100644
---- a/drivers/platform/x86/intel-vbtn.c
-+++ b/drivers/platform/x86/intel-vbtn.c
-@@ -203,6 +203,12 @@ static const struct dmi_system_id dmi_switches_allow_list[] = {
- 			DMI_MATCH(DMI_PRODUCT_NAME, "Switch SA5-271"),
- 		},
- 	},
-+	{
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "Inspiron 7352"),
-+		},
-+	},
- 	{} /* Array terminator */
- };
+diff --git a/tools/objtool/elf.c b/tools/objtool/elf.c
+index b8f3cca8e58b4..264d49fea8142 100644
+--- a/tools/objtool/elf.c
++++ b/tools/objtool/elf.c
+@@ -226,8 +226,11 @@ static int read_symbols(struct elf *elf)
  
+ 	symtab = find_section_by_name(elf, ".symtab");
+ 	if (!symtab) {
+-		WARN("missing symbol table");
+-		return -1;
++		/*
++		 * A missing symbol table is actually possible if it's an empty
++		 * .o file.  This can happen for thunk_64.o.
++		 */
++		return 0;
+ 	}
+ 
+ 	symbols_nr = symtab->sh.sh_size / symtab->sh.sh_entsize;
 -- 
 2.27.0
 
