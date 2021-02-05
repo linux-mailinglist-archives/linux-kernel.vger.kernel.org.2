@@ -2,96 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB2F93118CE
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 03:50:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EEA93118EB
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 03:52:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231908AbhBFCqw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 21:46:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37362 "EHLO
+        id S231437AbhBFCtz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 21:49:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231205AbhBFCfl (ORCPT
+        with ESMTP id S231268AbhBFCgH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 21:35:41 -0500
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB1FFC08ED8A
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 15:42:46 -0800 (PST)
-Received: by mail-pf1-x434.google.com with SMTP id x23so3851883pfn.6
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 15:42:46 -0800 (PST)
+        Fri, 5 Feb 2021 21:36:07 -0500
+Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1AC2C08ED83
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 15:53:09 -0800 (PST)
+Received: by mail-qt1-x849.google.com with SMTP id t5so6498047qti.5
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 15:53:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=yeCMNeiz4/N/4CmycM03VrWoQHeIEnKdm63IdnFSFvs=;
-        b=G6F+1RVEiF9GM0EvHs2dMwOril+1HpHQtrFxawa7jaZsGtTExqadaxFSbWns/QlQE7
-         sBGOMYGgUG5u3thx4BD4mf7OQc34PE/NIDLjZWr6hDvTotPZRVdy08k4MsY6IXQFjhhH
-         E6BMuqGZLqeJLpA3TFUPvdX8Ca1ZD6cRP9l3x07jEq/wS3GFBdPiBoDd8DDa80A1haUq
-         HlqulMhUZzwPfJTGwPlKv6AkEfPoB+pB/xsrIFOaHZKIa313ecpWuy8DijhAzNH3phFK
-         re793AhwZx0SZix6qReN+ocgon8HPMWIZmLyxwGLZUZiBP1xfx9t1eH9FyuRbSxZdyC2
-         6rvA==
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=PlLvWoFhODO77w3ySrXmuuL5rJilH/MWtzg1pEDHD8w=;
+        b=JJKJgboeEwzxTaXxx/Y72B6j1XTrlBMj6s2nfEKuv8ndl6+MugSjSiMoE9qr7IZ1VG
+         juAdNNPQJeggx3Id04EbFlKX2Nuz6TeSO3xvLSoLQFEDJ6lxs0fCJLBg0ksb7lWpnHc8
+         FElOgdQPVutn/y11DQ/SNqp/6NG++Rmn0wYP/ZXr2OcSMClPzv5Wr9eccbgGVNsEUy/z
+         v6L/hZ/3nlHRseHq6t5qgth+HYzUODolngqx9n6/agITdMVxcTDWOGMpz27tbuOCeniX
+         qJupal0tEBKEIR4ZI8BkoDEnY/lA80MI7z+OW+Qu0Jxav/nUL1Z+EmOHBvePEUpOn69h
+         wSVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=yeCMNeiz4/N/4CmycM03VrWoQHeIEnKdm63IdnFSFvs=;
-        b=JligajI5I87OZFztVablVS+7yPNstFfRTpK2cTjIcjq1hNOHIUcZOq5/cdEjMCD6fy
-         ogS+BU4t7jyuCZ/UlF48yEUo1xlpJ2Dk0fZMhh6CqiQbh9wgOuCSNLUcgXoXRY6LE59E
-         vgBpnxD5/sEWPTVW6uJvzuCGKz1/we0ILPVU26jrIgFAOSNbLWYFxJvOWehADZ15mQZe
-         /7vpje4qVASj2xbTlLUJdu9fIfOwI/ap4co6bMWP/ykekh5CATDcfQHzq+51O9yBE+NV
-         4rhfzcuH0OvrsQwi2ddS8+tHv9/dggnNmex4IzDFxFLbjWCwknmfioDbIJ1IxTZJgYD6
-         ARMg==
-X-Gm-Message-State: AOAM532NJBw2poBLQLuifP1qXGds28DjIpTk8SLGDOspuNnaDBE7QwQT
-        paWyfj2HihPxmclJK0EEGmjhgUK1ype7vA==
-X-Google-Smtp-Source: ABdhPJzs8rXXmJEdRIkq9J09L1nx4tZPgQN4YOHvffjK/M7T22mxg2Cy2BpFO09s0ByCzzarfOKUwQ==
-X-Received: by 2002:a62:ea14:0:b029:1bf:f580:3375 with SMTP id t20-20020a62ea140000b02901bff5803375mr6901014pfh.53.1612568566171;
-        Fri, 05 Feb 2021 15:42:46 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:d169:a9f7:513:e5])
-        by smtp.gmail.com with ESMTPSA id k11sm9982981pfc.22.2021.02.05.15.42.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Feb 2021 15:42:45 -0800 (PST)
-Date:   Fri, 5 Feb 2021 15:42:39 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Ben Gardon <bgardon@google.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Peter Xu <peterx@redhat.com>, Peter Shier <pshier@google.com>,
-        Peter Feiner <pfeiner@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
-Subject: Re: [PATCH v2 13/28] KVM: x86/mmu: Ensure forward progress when
- yielding in TDP MMU iter
-Message-ID: <YB3X753GYXQMXYfY@google.com>
-References: <20210202185734.1680553-1-bgardon@google.com>
- <20210202185734.1680553-14-bgardon@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210202185734.1680553-14-bgardon@google.com>
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=PlLvWoFhODO77w3ySrXmuuL5rJilH/MWtzg1pEDHD8w=;
+        b=DZ4QpJP7HuhzW+GpGWkz422s42btbJdcSPu2RT67Dva8m3vvEOxX7PHd+iAUo8QY/6
+         iw71tOxoTerV+Dzr+ZR7ogLSlaiBkn3pJQ/AhZdSyxbxnO7xtzK33GP9A063ErkEPIeb
+         yEKa7I8z3IYs4dylh+P5sGjY0ahpD4kMz1LW2+3lNqV/UtAM9/VYtsEdgvhpuy+kxO1w
+         d031nESXvVRU37UaC2OSPx/CuODrWldVKyNc7fVjsmTpqN2sTbXDJRV2CPyr04w/fMqc
+         QmvJCow1sPrO0f/jC8df3aV+vqZJOqEG2it41JntJMRyR6u39dLjqvTjxoHweaAxrTXO
+         BFjQ==
+X-Gm-Message-State: AOAM530zHW8cs+NXoPehL7CgdHdlwLML4KSqzxIFBcpmFm7iWoyF0R3t
+        Or6l80+yaZsuEm+cdvoHTQAYrHQ8lEUnRQ==
+X-Google-Smtp-Source: ABdhPJwzCp+US9JJsnl1rBEeytyUhiYnpXlctiBEL2qaUvUkFr+i4rqQM3Sq1hx+QHRXccPLre1fGb3NIxu9Lw==
+Sender: "dlatypov via sendgmr" <dlatypov@dlatypov.svl.corp.google.com>
+X-Received: from dlatypov.svl.corp.google.com ([2620:15c:2cd:202:a8b1:128a:69fa:86fb])
+ (user=dlatypov job=sendgmr) by 2002:a05:6214:1348:: with SMTP id
+ b8mr6970824qvw.26.1612569188987; Fri, 05 Feb 2021 15:53:08 -0800 (PST)
+Date:   Fri,  5 Feb 2021 15:53:00 -0800
+Message-Id: <20210205235302.2022784-1-dlatypov@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.0.478.g8a0d178c01-goog
+Subject: [PATCH v2 0/2] kunit: fail tests on UBSAN errors
+From:   Daniel Latypov <dlatypov@google.com>
+To:     brendanhiggins@google.com, davidgow@google.com
+Cc:     alan.maguire@oracle.com, linux-kernel@vger.kernel.org,
+        kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
+        skhan@linuxfoundation.org, Daniel Latypov <dlatypov@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 02, 2021, Ben Gardon wrote:
-> @@ -505,8 +516,8 @@ static bool zap_gfn_range(struct kvm *kvm, struct kvm_mmu_page *root,
->  
->  		tdp_mmu_set_spte(kvm, &iter, 0);
->  
-> -		flush_needed = !can_yield ||
-> -			       !tdp_mmu_iter_cond_resched(kvm, &iter, true);
-> +		flush_needed = !(can_yield &&
-> +				 tdp_mmu_iter_cond_resched(kvm, &iter, true));
+v1 by Uriel is here: [1].
+Since it's been a while, I've dropped the Reviewed-By's.
 
-Unnecessary change to convert perfectly readable code into an abomination :-D
+It depended on commit 83c4e7a0363b ("KUnit: KASAN Integration") which
+hadn't been merged yet, so that caused some kerfuffle with applying them
+previously and the series was reverted.
 
-No need to "fix", it goes aways in the next patch anyways, I just wanted to
-complain.
+This revives the series but makes the kunit_fail_current_test() function
+take a format string and logs the file and line number of the failing
+code, addressing Alan Maguire's comments on the previous version.
 
->  	}
->  	return flush_needed;
->  }
-> -- 
-> 2.30.0.365.g02bc693789-goog
-> 
+As a result, the patch that makes UBSAN errors was tweaked slightly to
+include an error message.
+
+[1] https://lore.kernel.org/linux-kselftest/20200806174326.3577537-1-urielguajardojr@gmail.com/
+
+Uriel Guajardo (2):
+  kunit: support failure from dynamic analysis tools
+  kunit: ubsan integration
+
+ include/kunit/test-bug.h | 30 ++++++++++++++++++++++++++++++
+ lib/kunit/test.c         | 36 ++++++++++++++++++++++++++++++++----
+ lib/ubsan.c              |  3 +++
+ 3 files changed, 65 insertions(+), 4 deletions(-)
+ create mode 100644 include/kunit/test-bug.h
+
+
+base-commit: 1e0d27fce010b0a4a9e595506b6ede75934c31be
+-- 
+2.30.0.478.g8a0d178c01-goog
+
