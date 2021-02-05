@@ -2,68 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FBCB310794
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 10:19:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1F3B310796
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 10:19:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229558AbhBEJRe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 04:17:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:32870 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229650AbhBEJOi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 04:14:38 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 53C1364F87;
-        Fri,  5 Feb 2021 09:13:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612516437;
-        bh=g7qqE/LjRr2SK/zPFKonfwnMqNYdpQUw1Z/J54Z5cEg=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=Cm1eri8I9kgCAimFEfhI3wfbH05FN4iadZ2sHQ1rGwU6VqUVSer0mB1oQedn8WPTg
-         8wUthbV5RAvIvcQwRNWdEzNYcdH6q5qNy8mdfJPJqVLpw489CD6VsyfPbzTZSGQ/AB
-         B3xX21I1+2YtKLvD6e0VHwGT2iJjEY2GehhIIMDjzaBSWSVRMSwBViHjymSNEDVYy7
-         q1zssbVFqDVsGgm2rMyEwprgiBTybA2NS7KH6i06c2B/EL0ce55a7A5IncX5JvV9eq
-         e7yS9bXFBYHCTD+icXtI6B57E77v9lOh1e/TUq/mx5nG05KOjGwRynaNvTbmQgqfwe
-         XhvlRviYFazEg==
-Date:   Fri, 5 Feb 2021 10:13:54 +0100 (CET)
-From:   Jiri Kosina <jikos@kernel.org>
-To:     Colin King <colin.king@canonical.com>
-cc:     Hans de Goede <hdegoede@redhat.com>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        linux-input@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] HID: lg-g15: make a const array static, makes object
- smaller
-In-Reply-To: <20210204172748.107406-1-colin.king@canonical.com>
-Message-ID: <nycvar.YFH.7.76.2102051013440.28696@cbobk.fhfr.pm>
-References: <20210204172748.107406-1-colin.king@canonical.com>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        id S230311AbhBEJST (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 04:18:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41950 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230094AbhBEJPI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 04:15:08 -0500
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFAA1C06178B
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 01:14:27 -0800 (PST)
+Received: by mail-pl1-x631.google.com with SMTP id s15so3234297plr.9
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 01:14:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=hF9qEuN0t60aQwKqM2EZNImZ2qgd4dzTdPhlz4GhOnQ=;
+        b=baG+mICmSRFGZPpmbX/z/Q4npvhOxgihshME85DpDK2T0FDiP7iS/B3GDOrt6gJxVZ
+         FZtI11V//62Tp1qEsLtjEMoYU3iXL2YKkyckgA4PUsQIMK+XKon9U4sIWjCmgEvzoTb0
+         TzEgzdfvMHxlSrzrD7Gc/Bvh1lCla/shieQ/Tn3wQlCWHrd1oIB5ajwVjGMRjE2pxw0E
+         I3C/2bRtZcqghfKMZCQjcBulO8O7VO2I02wJWYUH8HN15LGZvYLrl5OyeGHMP5lkxU3X
+         DZijxN0r3GKjXbNrsx2DM4daqIiIXsQp+JhPVhvE7LFBtyB2y6sHrcf965+pSgDCdN2f
+         j4uQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=hF9qEuN0t60aQwKqM2EZNImZ2qgd4dzTdPhlz4GhOnQ=;
+        b=ac7GPk9ayoGqNPnI1lDj+8kDNhw0le1+DSE5DVYbu5f4jm1NHnFW/zJTe9uDWoruHw
+         Eck4iQVBxeo7yLnR6jw5TRdmxxJnH57VHJg1nNdKVmrfY3+SlrINjp3m1BqkJv6XVETg
+         LBso7g4qA8cTwMvQbDtF1ct1kR5N/xq/t4vd1bhBGT1DlRxP7Z4GuEs9fTerFm92MMVk
+         gE8pRtv0ay+fsfCt1RutHy0y+uTN7EtpZOOoqRXESQMS6GTCXGpb0i+ePwL7fZVSiP8s
+         c+VIs5dqAJqp9vxn7QajHXQNZhZYTA7JIS5sgGUlc80I/9BNgI0m2WJD7RSccjR2Den1
+         gCxg==
+X-Gm-Message-State: AOAM531XCj8iyvltqivgqoEkEb+iv6KAZ8DOHWBb14CvUeyJ20UyHaiK
+        Pwcz1eTsyhtMNy+3G3o3vREfXw==
+X-Google-Smtp-Source: ABdhPJzMZUYleeQSiIhOFPG2P/DidutEB3glNkXsbtPLIAjr9ajmQIPI/We0jC/1sgmvuqkqgZmNaQ==
+X-Received: by 2002:a17:90a:7c45:: with SMTP id e5mr3198293pjl.170.1612516467392;
+        Fri, 05 Feb 2021 01:14:27 -0800 (PST)
+Received: from localhost ([122.172.59.240])
+        by smtp.gmail.com with ESMTPSA id j3sm7721155pjs.50.2021.02.05.01.14.26
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 05 Feb 2021 01:14:26 -0800 (PST)
+Date:   Fri, 5 Feb 2021 14:44:24 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Ionela Voinescu <ionela.voinescu@arm.com>
+Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-pm@vger.kernel.org, Sudeep Holla <sudeep.holla@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH V3 1/2] topology: Allow multiple entities to provide
+ sched_freq_tick() callback
+Message-ID: <20210205091424.3od3tme3f7mh7ebp@vireshk-i7>
+References: <cover.1611829953.git.viresh.kumar@linaro.org>
+ <d398729676f3d2b0d2ab024a2c9ea6e9ee1d0dca.1611829953.git.viresh.kumar@linaro.org>
+ <20210203114521.GA6380@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210203114521.GA6380@arm.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 4 Feb 2021, Colin King wrote:
+On 03-02-21, 11:45, Ionela Voinescu wrote:
+> Therefore, I think system level invariance management (checks and
+> call to rebuild_sched_domains_energy()) also needs to move from arm64
+> code to arch_topology code.
 
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> Don't populate the const array led_names on the stack but instead make
-> it static. Makes the object code smaller by 79 bytes:
-> 
-> Before:
->    text	   data	    bss	    dec	    hex	filename
->   19686	   7952	    256	  27894	   6cf6	drivers/hid/hid-lg-g15.o
-> 
-> After:
->    text	   data	    bss	    dec	    hex	filename
->   19543	   8016	    256	  27815	   6ca7	drivers/hid/hid-lg-g15.o
-> 
-> (gcc version 10.2.0)
-> 
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Here is the 3rd patch of this series then :)
 
-Applied.
+From: Viresh Kumar <viresh.kumar@linaro.org>
+Date: Fri, 5 Feb 2021 13:31:53 +0530
+Subject: [PATCH] drivers: arch_topology: rebuild sched domains on invariance
+ change
+
+We already do this for the arm64, move it to arch_topology.c as we
+manage all sched_freq_tick sources here now.
+
+Reported-by: Ionela Voinescu <ionela.voinescu@arm.com>
+Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+---
+ arch/arm64/kernel/topology.c | 16 ----------------
+ drivers/base/arch_topology.c | 22 ++++++++++++++++++++++
+ 2 files changed, 22 insertions(+), 16 deletions(-)
+
+diff --git a/arch/arm64/kernel/topology.c b/arch/arm64/kernel/topology.c
+index 1e47dfd465f8..47fca7376c93 100644
+--- a/arch/arm64/kernel/topology.c
++++ b/arch/arm64/kernel/topology.c
+@@ -240,7 +240,6 @@ static struct scale_freq_data amu_sfd = {
+ 
+ static void amu_fie_setup(const struct cpumask *cpus)
+ {
+-	bool invariant;
+ 	int cpu;
+ 
+ 	/* We are already set since the last insmod of cpufreq driver */
+@@ -257,25 +256,10 @@ static void amu_fie_setup(const struct cpumask *cpus)
+ 
+ 	cpumask_or(amu_fie_cpus, amu_fie_cpus, cpus);
+ 
+-	invariant = topology_scale_freq_invariant();
+-
+-	/* We aren't fully invariant yet */
+-	if (!invariant && !cpumask_equal(amu_fie_cpus, cpu_present_mask))
+-		return;
+-
+ 	topology_set_scale_freq_source(&amu_sfd, amu_fie_cpus);
+ 
+ 	pr_debug("CPUs[%*pbl]: counters will be used for FIE.",
+ 		 cpumask_pr_args(cpus));
+-
+-	/*
+-	 * Task scheduler behavior depends on frequency invariance support,
+-	 * either cpufreq or counter driven. If the support status changes as
+-	 * a result of counter initialisation and use, retrigger the build of
+-	 * scheduling domains to ensure the information is propagated properly.
+-	 */
+-	if (!invariant)
+-		rebuild_sched_domains_energy();
+ }
+ 
+ static int init_amu_fie_callback(struct notifier_block *nb, unsigned long val,
+diff --git a/drivers/base/arch_topology.c b/drivers/base/arch_topology.c
+index 20b511949cd8..3631877f4440 100644
+--- a/drivers/base/arch_topology.c
++++ b/drivers/base/arch_topology.c
+@@ -23,6 +23,7 @@
+ 
+ static DEFINE_PER_CPU(struct scale_freq_data *, sft_data);
+ static struct cpumask scale_freq_counters_mask;
++static bool scale_freq_invariant;
+ 
+ static bool supports_scale_freq_counters(const struct cpumask *cpus)
+ {
+@@ -35,6 +36,23 @@ bool topology_scale_freq_invariant(void)
+ 	       supports_scale_freq_counters(cpu_online_mask);
+ }
+ 
++static void update_scale_freq_invariant(bool status)
++{
++	if (scale_freq_invariant == status)
++		return;
++
++	/*
++	 * Task scheduler behavior depends on frequency invariance support,
++	 * either cpufreq or counter driven. If the support status changes as
++	 * a result of counter initialisation and use, retrigger the build of
++	 * scheduling domains to ensure the information is propagated properly.
++	 */
++	if (topology_scale_freq_invariant() == status) {
++		scale_freq_invariant = status;
++		rebuild_sched_domains_energy();
++	}
++}
++
+ void topology_set_scale_freq_source(struct scale_freq_data *data,
+ 				    const struct cpumask *cpus)
+ {
+@@ -50,6 +68,8 @@ void topology_set_scale_freq_source(struct scale_freq_data *data,
+ 			cpumask_set_cpu(cpu, &scale_freq_counters_mask);
+ 		}
+ 	}
++
++	update_scale_freq_invariant(true);
+ }
+ EXPORT_SYMBOL_GPL(topology_set_scale_freq_source);
+ 
+@@ -67,6 +87,8 @@ void topology_clear_scale_freq_source(enum scale_freq_source source,
+ 			cpumask_clear_cpu(cpu, &scale_freq_counters_mask);
+ 		}
+ 	}
++
++	update_scale_freq_invariant(false);
+ }
+ EXPORT_SYMBOL_GPL(topology_clear_scale_freq_source);
+ 
+-- 
+2.25.0.rc1.19.g042ed3e048af
 
 -- 
-Jiri Kosina
-SUSE Labs
-
+viresh
