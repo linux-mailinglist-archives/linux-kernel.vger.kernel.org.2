@@ -2,126 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13F353111EB
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 21:09:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65EC73111DC
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 21:06:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233096AbhBESYu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 13:24:50 -0500
-Received: from mail-il1-f197.google.com ([209.85.166.197]:49752 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233156AbhBEPTe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 10:19:34 -0500
-Received: by mail-il1-f197.google.com with SMTP id q3so6803997ilv.16
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 09:00:47 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=mSqK5+HT7sF9c5heDYaZYEXceuBiqepNDhzdp3OgxoU=;
-        b=lPMstwP/ybCBIAN14a8TXjWwjClRkvOuzl+7ULHMCsGCu1BKIGb0OmsxkfDZIzeUb+
-         9QOIi43+TfXZNu+T2NRFX9PoeAHFL4EkNwsO6g9bplbHCyj7QYatZkIaIk17R0u5O5dl
-         7458yS0R9UY08GmDTziM9sCROLAuhVLEstMzSXPXdqsLMdJ+cuCE6uerJd2rKC4M2ci+
-         QoqTg0pySIg7h8bOeshomY+q+5d8Z/DBdRpF03p9eCSc13yyfq50tr7TQcI3kzDuKfP5
-         nL69zv1Qaksw9tHkhedurb0Dlv2vMcEzcDl+N+VPGuNsoUr17QWhe5GfWWnhNy11ssFp
-         n1rw==
-X-Gm-Message-State: AOAM531SXzKOBiq3lT2ADI3maWAZJ97qUjEf77wbh9KrYWOTwnY8gDfD
-        DYSEFNlaXHvJHPZ0tlZJ5ZoA6Un+clRht7/sU4k0ALSzRXWH
-X-Google-Smtp-Source: ABdhPJzcJAj7a4ZLnxPRZwGXbaooH+OhaU4VrOI8vwAMCHaHgw4iYhWXgDWk19VBbEgadrXM4kIm6TAuaydgwH3eWlWh0wlBTxhi
+        id S233645AbhBESWM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 13:22:12 -0500
+Received: from mga12.intel.com ([192.55.52.136]:12920 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233194AbhBEPTg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 10:19:36 -0500
+IronPort-SDR: E+6cNZntzTkqJqklPGZI7URf2unAPQ6UksTpqxu720fxC3ikFWMq+DE/iB+2RWw+LtrPgJ12NC
+ RVSI8RyDFDxg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9885"; a="160617116"
+X-IronPort-AV: E=Sophos;i="5.81,155,1610438400"; 
+   d="scan'208";a="160617116"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2021 09:00:33 -0800
+IronPort-SDR: dXzCx5U6Xk5bWVQGNxHAMg0SBqC2Q+19yJAtpsRfaY8QeMHf/bUivHNyXfrjA85IhS172+SbLC
+ urA3jfCsB2Qg==
+X-IronPort-AV: E=Sophos;i="5.81,155,1610438400"; 
+   d="scan'208";a="373464871"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2021 09:00:33 -0800
+From:   ira.weiny@intel.com
+To:     Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     Ira Weiny <ira.weiny@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Jethro Beekman <jethro@fortanix.com>,
+        linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org
+Subject: [PATCH v4] x86: Remove unnecessary kmap() from sgx_ioc_enclave_init()
+Date:   Fri,  5 Feb 2021 09:00:30 -0800
+Message-Id: <20210205170030.856723-1-ira.weiny@intel.com>
+X-Mailer: git-send-email 2.28.0.rc0.12.gb6a658bd00c9
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1c8d:: with SMTP id w13mr4642881ill.301.1612544421561;
- Fri, 05 Feb 2021 09:00:21 -0800 (PST)
-Date:   Fri, 05 Feb 2021 09:00:21 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000006e8af605ba99c1af@google.com>
-Subject: KCSAN: data-race in blk_stat_add / blk_stat_timer_fn (5)
-From:   syzbot <syzbot+2b6452167d85a022bc6f@syzkaller.appspotmail.com>
-To:     axboe@kernel.dk, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+From: Ira Weiny <ira.weiny@intel.com>
 
-syzbot found the following issue on:
+kmap is inefficient and we are trying to reduce the usage in the kernel.
+There is no readily apparent reason why initp_page needs to be allocated
+and kmap'ed() but sigstruct needs to be page aligned and token
+512 byte aligned.
 
-HEAD commit:    2ab38c17 mailmap: remove the "repo-abbrev" comment
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=130e19b4d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=38728258f37833e3
-dashboard link: https://syzkaller.appspot.com/bug?extid=2b6452167d85a022bc6f
-compiler:       clang version 12.0.0 (https://github.com/llvm/llvm-project.git 913f6005669cfb590c99865a90bc51ed0983d09d)
+kmalloc() can give us this alignment but we need to allocate PAGE_SIZE
+bytes to do so.  Rather than change this kmap() to kmap_local_page() use
+kmalloc() instead.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+Remove the alloc_page()/kmap() and replace with kmalloc(PAGE_SIZE, ...)
+to get a page aligned kernel address to use.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+2b6452167d85a022bc6f@syzkaller.appspotmail.com
+In addition add a comment to document the alignment requirements so that
+others like myself don't attempt to 'fix' this again.
 
-==================================================================
-BUG: KCSAN: data-race in blk_stat_add / blk_stat_timer_fn
-
-write to 0xffffe8ffffd35c80 of 8 bytes by interrupt on cpu 0:
- blk_rq_stat_init block/blk-stat.c:24 [inline]
- blk_stat_timer_fn+0x349/0x410 block/blk-stat.c:95
- call_timer_fn+0x2e/0x240 kernel/time/timer.c:1417
- expire_timers+0x116/0x260 kernel/time/timer.c:1462
- __run_timers+0x338/0x3d0 kernel/time/timer.c:1731
- run_timer_softirq+0x19/0x30 kernel/time/timer.c:1744
- __do_softirq+0x13c/0x2c3 kernel/softirq.c:343
- asm_call_irq_on_stack+0xf/0x20
- __run_on_irqstack arch/x86/include/asm/irq_stack.h:26 [inline]
- run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:77 [inline]
- do_softirq_own_stack+0x32/0x40 arch/x86/kernel/irq_64.c:77
- invoke_softirq kernel/softirq.c:226 [inline]
- __irq_exit_rcu+0xb4/0xc0 kernel/softirq.c:420
- sysvec_apic_timer_interrupt+0x74/0x90 arch/x86/kernel/apic/apic.c:1096
- asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:628
-
-read to 0xffffe8ffffd35c80 of 8 bytes by interrupt on cpu 1:
- blk_rq_stat_add block/blk-stat.c:46 [inline]
- blk_stat_add+0x13d/0x230 block/blk-stat.c:74
- __blk_mq_end_request+0x142/0x230 block/blk-mq.c:546
- scsi_end_request+0x2a6/0x470 drivers/scsi/scsi_lib.c:604
- scsi_io_completion+0x104/0xfb0 drivers/scsi/scsi_lib.c:969
- scsi_finish_command+0x263/0x2b0 drivers/scsi/scsi.c:214
- scsi_softirq_done+0xdf/0x440 drivers/scsi/scsi_lib.c:1449
- blk_done_softirq+0x145/0x190 block/blk-mq.c:588
- __do_softirq+0x13c/0x2c3 kernel/softirq.c:343
- asm_call_irq_on_stack+0xf/0x20
- __run_on_irqstack arch/x86/include/asm/irq_stack.h:26 [inline]
- run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:77 [inline]
- do_softirq_own_stack+0x32/0x40 arch/x86/kernel/irq_64.c:77
- invoke_softirq kernel/softirq.c:226 [inline]
- __irq_exit_rcu+0xb4/0xc0 kernel/softirq.c:420
- common_interrupt+0xb5/0x130 arch/x86/kernel/irq.c:239
- asm_common_interrupt+0x1e/0x40 arch/x86/include/asm/idtentry.h:619
- check_access kernel/kcsan/core.c:633 [inline]
- __tsan_read1+0x156/0x180 kernel/kcsan/core.c:839
- tomoyo_get_mode security/tomoyo/util.c:1003 [inline]
- tomoyo_init_request_info+0xfc/0x160 security/tomoyo/util.c:1031
- tomoyo_path_perm+0x8b/0x330 security/tomoyo/file.c:815
- tomoyo_inode_getattr+0x18/0x20 security/tomoyo/tomoyo.c:123
- security_inode_getattr+0x7f/0xd0 security/security.c:1280
- vfs_getattr fs/stat.c:121 [inline]
- vfs_fstat+0x45/0x390 fs/stat.c:146
- __do_sys_newfstat fs/stat.c:386 [inline]
- __se_sys_newfstat+0x35/0x240 fs/stat.c:383
- __x64_sys_newfstat+0x2d/0x40 fs/stat.c:383
- do_syscall_64+0x39/0x80 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-Reported by Kernel Concurrency Sanitizer on:
-CPU: 1 PID: 18199 Comm: modprobe Not tainted 5.11.0-rc5-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-==================================================================
-
+Cc: Dave Hansen <dave.hansen@intel.com>
+Cc: Sean Christopherson <seanjc@google.com>
+Cc: Jethro Beekman <jethro@fortanix.com>
+Signed-off-by: Ira Weiny <ira.weiny@intel.com>
 
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+Changes from v3[3]:
+	Remove BUILD_BUG_ONs
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Changes from v2[2]:
+        When allocating a power of 2 size kmalloc() now guarantees the
+        alignment of the respective size.  So go back to using kmalloc() but
+        with a PAGE_SIZE allocation to get the alignment.  This also follows
+        the pattern in sgx_ioc_enclave_create()
+
+Changes from v1[1]:
+	Use page_address() instead of kcmalloc() to ensure sigstruct is
+	page aligned
+	Use BUILD_BUG_ON to ensure token and sigstruct don't collide.
+
+[1] https://lore.kernel.org/lkml/20210129001459.1538805-1-ira.weiny@intel.com/
+[2] https://lore.kernel.org/lkml/20210202013725.3514671-1-ira.weiny@intel.com/
+[3] https://lore.kernel.org/lkml/20210205050850.GC5033@iweiny-DESK2.sc.intel.com/#t
+---
+ arch/x86/kernel/cpu/sgx/ioctl.c | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
+
+diff --git a/arch/x86/kernel/cpu/sgx/ioctl.c b/arch/x86/kernel/cpu/sgx/ioctl.c
+index 90a5caf76939..38e540de5e2a 100644
+--- a/arch/x86/kernel/cpu/sgx/ioctl.c
++++ b/arch/x86/kernel/cpu/sgx/ioctl.c
+@@ -604,7 +604,6 @@ static long sgx_ioc_enclave_init(struct sgx_encl *encl, void __user *arg)
+ {
+ 	struct sgx_sigstruct *sigstruct;
+ 	struct sgx_enclave_init init_arg;
+-	struct page *initp_page;
+ 	void *token;
+ 	int ret;
+ 
+@@ -615,11 +614,14 @@ static long sgx_ioc_enclave_init(struct sgx_encl *encl, void __user *arg)
+ 	if (copy_from_user(&init_arg, arg, sizeof(init_arg)))
+ 		return -EFAULT;
+ 
+-	initp_page = alloc_page(GFP_KERNEL);
+-	if (!initp_page)
++	/*
++	 * sigstruct must be on a page boundry and token on a 512 byte boundry
++	 * kmalloc() gives us this alignment when allocating PAGE_SIZE bytes
++	 */
++	sigstruct = kmalloc(PAGE_SIZE, GFP_KERNEL);
++	if (!sigstruct)
+ 		return -ENOMEM;
+ 
+-	sigstruct = kmap(initp_page);
+ 	token = (void *)((unsigned long)sigstruct + PAGE_SIZE / 2);
+ 	memset(token, 0, SGX_LAUNCH_TOKEN_SIZE);
+ 
+@@ -645,8 +647,7 @@ static long sgx_ioc_enclave_init(struct sgx_encl *encl, void __user *arg)
+ 	ret = sgx_encl_init(encl, sigstruct, token);
+ 
+ out:
+-	kunmap(initp_page);
+-	__free_page(initp_page);
++	kfree(sigstruct);
+ 	return ret;
+ }
+ 
+-- 
+2.28.0.rc0.12.gb6a658bd00c9
+
