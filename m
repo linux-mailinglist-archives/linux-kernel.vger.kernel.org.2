@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 461673115FF
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 23:55:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21FDA311546
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 23:32:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229774AbhBEWrq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 17:47:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43556 "EHLO mail.kernel.org"
+        id S229581AbhBEW1l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 17:27:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44684 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232667AbhBEOqB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 09:46:01 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F074B6501E;
-        Fri,  5 Feb 2021 14:11:03 +0000 (UTC)
+        id S232837AbhBEOye (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 09:54:34 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BC31465028;
+        Fri,  5 Feb 2021 14:11:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612534264;
-        bh=jACWJz6Nk2u/sLRMTN/5d6vcBj/D6MhMkOCpoCc3DIo=;
+        s=korg; t=1612534296;
+        bh=Vc+XaFPpPgaKd/O8Zcj/k/f9jRzHIKNPTFM6D9De5Ys=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zXNnUijdL2/yuZprzATB/pUkZY7bbfeH1w30imrPz0lNPu+5fXsOiHKIxN6ufXgEu
-         TMSIqdbEh+oUUbHtmAvDlryTJfVT/5BgHl0AGSwZYGRmWIXCvVoYINfN8cZJ9YPb7y
-         B5zDtwZsf20I5lSW5GpzR7U2ZBfTm4p62v8P5Ttg=
+        b=f4bGe+HiPIrSHCiruTncsok8iYuOQ12E8M2bl0pc3sRlthIaShtubZw4Ct41K+vP+
+         B9i8vpMpzJN5a3uGHRDl10MBkF0vSLEF+Hs7aTFJ9phDhUhnpJvanqTgTQ/hRfA/DW
+         bPhZtgKtqw2ALdQBremAacIp1g/UAnl8TibPJhIU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
-        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 30/57] ALSA: hda: Add AlderLake-P PCI ID and HDMI codec vid
-Date:   Fri,  5 Feb 2021 15:06:56 +0100
-Message-Id: <20210205140657.260430811@linuxfoundation.org>
+        stable@vger.kernel.org, Arnd Bergmann <arnd@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 31/57] objtool: Dont add empty symbols to the rbtree
+Date:   Fri,  5 Feb 2021 15:06:57 +0100
+Message-Id: <20210205140657.300782881@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210205140655.982616732@linuxfoundation.org>
 References: <20210205140655.982616732@linuxfoundation.org>
@@ -43,50 +41,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+From: Josh Poimboeuf <jpoimboe@redhat.com>
 
-[ Upstream commit 5e941fc033e411118fb3a7d9e0b97f8cf702cd39 ]
+[ Upstream commit a2e38dffcd93541914aba52b30c6a52acca35201 ]
 
-Add HD Audio PCI ID and HDMI codec vendor ID for Intel AlderLake-P.
+Building with the Clang assembler shows the following warning:
 
-Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-Link: https://lore.kernel.org/r/20210113155629.4097057-1-kai.vehmanen@linux.intel.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+  arch/x86/kernel/ftrace_64.o: warning: objtool: missing symbol for insn at offset 0x16
+
+The Clang assembler strips section symbols.  That ends up giving
+objtool's find_func_containing() much more test coverage than normal.
+Turns out, find_func_containing() doesn't work so well for overlapping
+symbols:
+
+     2: 000000000000000e     0 NOTYPE  LOCAL  DEFAULT    2 fgraph_trace
+     3: 000000000000000f     0 NOTYPE  LOCAL  DEFAULT    2 trace
+     4: 0000000000000000   165 FUNC    GLOBAL DEFAULT    2 __fentry__
+     5: 000000000000000e     0 NOTYPE  GLOBAL DEFAULT    2 ftrace_stub
+
+The zero-length NOTYPE symbols are inside __fentry__(), confusing the
+rbtree search for any __fentry__() offset coming after a NOTYPE.
+
+Try to avoid this problem by not adding zero-length symbols to the
+rbtree.  They're rare and aren't needed in the rbtree anyway.
+
+One caveat, this actually might not end up being the right fix.
+Non-empty overlapping symbols, if they exist, could have the same
+problem.  But that would need bigger changes, let's see if we can get
+away with the easy fix for now.
+
+Reported-by: Arnd Bergmann <arnd@kernel.org>
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/hda/hda_intel.c  | 3 +++
- sound/pci/hda/patch_hdmi.c | 1 +
- 2 files changed, 4 insertions(+)
+ tools/objtool/elf.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index 770ad25f1907c..246d660164691 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -2507,6 +2507,9 @@ static const struct pci_device_id azx_ids[] = {
- 	/* Alderlake-S */
- 	{ PCI_DEVICE(0x8086, 0x7ad0),
- 	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE},
-+	/* Alderlake-P */
-+	{ PCI_DEVICE(0x8086, 0x51c8),
-+	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE},
- 	/* Elkhart Lake */
- 	{ PCI_DEVICE(0x8086, 0x4b55),
- 	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE},
-diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-index d12b4799c3cb7..dc1ab4fc93a5b 100644
---- a/sound/pci/hda/patch_hdmi.c
-+++ b/sound/pci/hda/patch_hdmi.c
-@@ -4349,6 +4349,7 @@ HDA_CODEC_ENTRY(0x8086280f, "Icelake HDMI",	patch_i915_icl_hdmi),
- HDA_CODEC_ENTRY(0x80862812, "Tigerlake HDMI",	patch_i915_tgl_hdmi),
- HDA_CODEC_ENTRY(0x80862814, "DG1 HDMI",	patch_i915_tgl_hdmi),
- HDA_CODEC_ENTRY(0x80862815, "Alderlake HDMI",	patch_i915_tgl_hdmi),
-+HDA_CODEC_ENTRY(0x8086281c, "Alderlake-P HDMI", patch_i915_tgl_hdmi),
- HDA_CODEC_ENTRY(0x80862816, "Rocketlake HDMI",	patch_i915_tgl_hdmi),
- HDA_CODEC_ENTRY(0x8086281a, "Jasperlake HDMI",	patch_i915_icl_hdmi),
- HDA_CODEC_ENTRY(0x8086281b, "Elkhartlake HDMI",	patch_i915_icl_hdmi),
+diff --git a/tools/objtool/elf.c b/tools/objtool/elf.c
+index 9452cfb01ef19..f4f3e8d995930 100644
+--- a/tools/objtool/elf.c
++++ b/tools/objtool/elf.c
+@@ -425,6 +425,13 @@ static int read_symbols(struct elf *elf)
+ 		list_add(&sym->list, entry);
+ 		elf_hash_add(elf->symbol_hash, &sym->hash, sym->idx);
+ 		elf_hash_add(elf->symbol_name_hash, &sym->name_hash, str_hash(sym->name));
++
++		/*
++		 * Don't store empty STT_NOTYPE symbols in the rbtree.  They
++		 * can exist within a function, confusing the sorting.
++		 */
++		if (!sym->len)
++			rb_erase(&sym->node, &sym->sec->symbol_tree);
+ 	}
+ 
+ 	if (stats)
 -- 
 2.27.0
 
