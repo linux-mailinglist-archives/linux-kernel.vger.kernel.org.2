@@ -2,208 +2,262 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8AF0310256
+	by mail.lfdr.de (Postfix) with ESMTP id 1EDE1310255
 	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 02:45:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232884AbhBEBpC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 20:45:02 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59761 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231650AbhBEBpA (ORCPT
+        id S232871AbhBEBoo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 20:44:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58622 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231650AbhBEBon (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 20:45:00 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612489413;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4gmKyOKs+UNMlatEK5Udmfiip3bQql1jRbCQJCWFfmk=;
-        b=IqO9XrrejvIdCCWD+u5M2jWhwUv3TMVmp81KVIIdQGgLh+tNPxjo98h5mtVIPa+uaSM5Rg
-        yQ9PqUVts8YLKhoGpPBci9apvlIDofAtkyadePKCkUY7I8OL5p3kXtUo+7JLtIfR7BZICF
-        3zjS/vT95x/7/106G8lFfH64GUqedIo=
-Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
- [209.85.222.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-199-aAsXL1NqOuGZcrT4GviSoQ-1; Thu, 04 Feb 2021 20:43:32 -0500
-X-MC-Unique: aAsXL1NqOuGZcrT4GviSoQ-1
-Received: by mail-qk1-f197.google.com with SMTP id 70so4426060qkh.4
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 17:43:32 -0800 (PST)
+        Thu, 4 Feb 2021 20:44:43 -0500
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65163C0613D6
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 17:44:02 -0800 (PST)
+Received: by mail-ed1-x532.google.com with SMTP id s11so6845064edd.5
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 17:44:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc
+         :content-transfer-encoding;
+        bh=WEHMSZIy6ul6MahYj9RsQ6f+Nc3iqCoCYk4MH9tcDmM=;
+        b=Hk21NzawTxmPOOtq0p+YazWOIH9M5/gRHEoUxVRhtzL5lySHTPhyjagrugC2QOpg0X
+         wEGyLmEyW0/v3m3uY/VjIl8AgDafnL2im93QXJBDWSJ7Pl2TxtNEEW0Rx5QqSrCnXfZ3
+         5UMGZ3kCjqZ7cduEsETruyQOcQnQaJEuTeNVSyzfgUedv89M8pM05MWVPOah99qDtXzd
+         PqKEsMp1tKWoBoVE8IsH1KJV/jrhUav5MJvGNzwaatSNO80fRueir/f0O3Vimdrnmgqz
+         M1eAPFADIqO6gM4Z4L2EN+ey+y2hdxiqVUhJWi5auxkYmV4tDFqo7oGvek2c4eF1rUyS
+         p2RA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4gmKyOKs+UNMlatEK5Udmfiip3bQql1jRbCQJCWFfmk=;
-        b=pS/FL/Rgs/CToBQ/OtnRPKftvsVSLH19trUvLEyIDGfVHd343o80aTA7Z1alzTyRvm
-         BaPz3w6QPHgZ9FuI79VVod3RmCQK4hrmljDGuQbf4z8Gz0l18hXpJuxxNfF+Mn02BtSU
-         tNbIxmOS6MG/Mdp4TaMhaZL9PoLzZ4iNFGZuSId7ODnY+S8M+k4EE+Jwi0dcJ941vQ1V
-         4EiMXLzwZFJX4R6zCjLA9ljQp/ehBnZwsZFhiNuDtr9cQLHnXrvtp2rcdMYXJuEo6PkX
-         UB9Ni0K70/jbuHK6KksyppmNtR8DoJ18RU+03syOkEppnZUF0hRstqG/RgvG75NsDfye
-         bP7A==
-X-Gm-Message-State: AOAM530iV1/969lHzxY52q0bBs3f9an7PhA0CitAKsBKYAzY99bdkSAE
-        C5yBRWN+M7mIGVrICUN6rRoLfaVarCOudKasLlAr3HOIc63zyQlKo21s5c9THZqIGYrwf7NAyDo
-        mqGMAXIi9b5xVwQnGNca0CnvA
-X-Received: by 2002:ac8:1283:: with SMTP id y3mr2363235qti.328.1612489411597;
-        Thu, 04 Feb 2021 17:43:31 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzMkXQJ7T8Fbl7lpWdsejP8eakfPGlddlfc7TkS0SS+QjWdyIgC+nzEuSRkH0w5pwMpSJlDPg==
-X-Received: by 2002:ac8:1283:: with SMTP id y3mr2363215qti.328.1612489411322;
-        Thu, 04 Feb 2021 17:43:31 -0800 (PST)
-Received: from xz-x1 (bras-vprn-toroon474qw-lp130-20-174-93-89-182.dsl.bell.ca. [174.93.89.182])
-        by smtp.gmail.com with ESMTPSA id o10sm6386855qtg.37.2021.02.04.17.43.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Feb 2021 17:43:30 -0800 (PST)
-Date:   Thu, 4 Feb 2021 20:43:28 -0500
-From:   Peter Xu <peterx@redhat.com>
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Kirill Shutemov <kirill@shutemov.name>,
-        Wei Zhang <wzam@amazon.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Gal Pressman <galpress@amazon.com>, Jan Kara <jack@suse.cz>,
-        Jann Horn <jannh@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH v2 4/4] hugetlb: Do early cow when page pinned on src mm
-Message-ID: <20210205014328.GW6468@xz-x1>
-References: <20210204145033.136755-1-peterx@redhat.com>
- <20210204145033.136755-5-peterx@redhat.com>
- <d45d4ce3-f386-708b-0f7a-4950df6721d9@oracle.com>
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc
+         :content-transfer-encoding;
+        bh=WEHMSZIy6ul6MahYj9RsQ6f+Nc3iqCoCYk4MH9tcDmM=;
+        b=kGXF3YCUnU44017SEMqw09iXtTrWRG/iA7Kt0zb4xup9j9maJcZKr4Q7GnW/4TLMVC
+         xHMEX6NAOF41mblFd7kVRl/AHgADTOW6+v9A3ckl+G155F0D5l74MLbg9yAyfr7iCdKf
+         jXwwAKU9pkRouFFwjQllswRY0hNj0ivjTUbu3G1aD0VNaJesBmDfwbDSb/K6/NXkVXjq
+         XxV+uFX8SX8VwxFkenq/tjsauVc3RvJPhDJpQH57d+1a2lp2TCqMolQLUkkFcQFrOaj6
+         7F80Ok6cksJjFgeQejpsE31nY0L9JXSNJEXKhgPi9cQLI73HVpJUesNauSPm7lArCH8q
+         U7+A==
+X-Gm-Message-State: AOAM533R/DmnPsuhhuLteD9DYbQmBpzZxQLozxSwTann/11y0HxMnNMB
+        4mxVssOCu0kDw6sss9eu5Scq1v1aQ/9prXIxrxk=
+X-Google-Smtp-Source: ABdhPJz07QIrg7CdCVAiaFplMVdOuWYkaaYNMzbANPgteyWe03ORNcU1ESe67H537FgIOLra29N7Px1bu9YmL3y3Wng=
+X-Received: by 2002:aa7:ce93:: with SMTP id y19mr1282161edv.119.1612489441020;
+ Thu, 04 Feb 2021 17:44:01 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <d45d4ce3-f386-708b-0f7a-4950df6721d9@oracle.com>
+From:   Dave Airlie <airlied@gmail.com>
+Date:   Fri, 5 Feb 2021 11:43:49 +1000
+Message-ID: <CAPM=9twvv9LRSTW4t_Q=OLfei1DsXn-fsjO8ad3cSsZ3KeDNhQ@mail.gmail.com>
+Subject: [git pull] drm fixes for 5.11-rc7
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 04, 2021 at 03:25:37PM -0800, Mike Kravetz wrote:
-> On 2/4/21 6:50 AM, Peter Xu wrote:
-> > This is the last missing piece of the COW-during-fork effort when there're
-> > pinned pages found.  One can reference 70e806e4e645 ("mm: Do early cow for
-> > pinned pages during fork() for ptes", 2020-09-27) for more information, since
-> > we do similar things here rather than pte this time, but just for hugetlb.
-> > 
-> > Signed-off-by: Peter Xu <peterx@redhat.com>
-> > ---
-> >  mm/hugetlb.c | 61 +++++++++++++++++++++++++++++++++++++++++++++++-----
-> >  1 file changed, 56 insertions(+), 5 deletions(-)
-> > 
-> > diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> > index 9e6ea96bf33b..5793936e00ef 100644
-> > --- a/mm/hugetlb.c
-> > +++ b/mm/hugetlb.c
-> > @@ -3734,11 +3734,27 @@ static bool is_hugetlb_entry_hwpoisoned(pte_t pte)
-> >  		return false;
-> >  }
-> >  
-> > +static void
-> > +hugetlb_copy_page(struct vm_area_struct *vma, pte_t *ptep, unsigned long addr,
-> > +		  struct page *old_page, struct page *new_page)
-> > +{
-> > +	struct hstate *h = hstate_vma(vma);
-> > +	unsigned int psize = pages_per_huge_page(h);
-> > +
-> > +	copy_user_huge_page(new_page, old_page, addr, vma, psize);
-> 
-> copy_user_huge_page calls cond_resched() and has might_sleep().  Imagine
-> the time it takes to copy 1G.  Usually called without holding locks, but
-> this new code is calling it with ptl locks held.  The copy should be done
-> outside the ptl, but you will need the ptl to update the pte/rmap.  So,
-> doing all this within one neat helper like this may not be possible.
+Hi Linus,
 
-Right, I'll move the copy outside, thanks for spotting this.
+Fixes for rc7, bit bigger than I'd like at this stage, but most of the
+i915 stuff and some amdgpu is destined for staging and I'd rather not
+hold it up, the i915 changes also pulled in a few precusor code
+movement patches to make things cleaner, but nothing seems that
+horrible, and I've checked over all of it.
 
-> 
-> > +	__SetPageUptodate(new_page);
-> > +	ClearPagePrivate(new_page);
-> > +	set_page_huge_active(new_page);
-> 
-> Code to replace the above ClearPagePrivate and set_page_huge_active is
-> in Andrew's tree.  With changes in Andrew's tree, this would be:
-> 
-> 	ClearHPageRestoreReserve(new_page);
-> 	SetHPageMigratable(new_page);
+Otherwise there is a nouveau dma-api warning regression, and a ttm
+page allocation warning fix,
+and some fixes for a bridge chip,
 
-Indeed these names are much better than using the default ones.  At the
-meantime I'll rebase to linux-next/akpm.  Sorry it's always not easy for me to
-find the right branch...
+Dave.
 
-> 
-> Ideally, the SetHPageMigratable would be done after the set_pte and add_rmap
-> so the page does not get migrated before these operations.  However, this
-> can not happen since we are holding the ptl.  So, no problem here.  If code
-> is restructured to call copy_user_huge_page outside ptl, keep this in mind.
-> 
-> Also, technically ClearHPageRestoreReserve is not needed as it would not be
-> set by alloc_huge_page because we did not consume a reserve.  However, better
-> to leave in place in case someone wants to use helper for something else.
+drm-fixes-2021-02-05-1:
+drm fixes for 5.11-rc7
 
-OK, I'll keep it for clearness.
+ttm:
+- fix huge page warning regression
 
-> 
-> > +	set_huge_pte_at(vma->vm_mm, addr, ptep, make_huge_pte(vma, new_page, 1));
-> > +	hugepage_add_new_anon_rmap(new_page, vma, addr);
-> > +	hugetlb_count_add(psize, vma->vm_mm);
-> > +}
-> > +
-> >  int copy_hugetlb_page_range(struct mm_struct *dst, struct mm_struct *src,
-> >  			    struct vm_area_struct *vma)
-> >  {
-> >  	pte_t *src_pte, *dst_pte, entry, dst_entry;
-> > -	struct page *ptepage;
-> > +	struct page *ptepage, *prealloc = NULL;
-> >  	unsigned long addr;
-> >  	int cow;
-> >  	struct hstate *h = hstate_vma(vma);
-> > @@ -3787,7 +3803,7 @@ int copy_hugetlb_page_range(struct mm_struct *dst, struct mm_struct *src,
-> >  		dst_entry = huge_ptep_get(dst_pte);
-> >  		if ((dst_pte == src_pte) || !huge_pte_none(dst_entry))
-> >  			continue;
-> > -
-> > +again:
-> >  		dst_ptl = huge_pte_lock(h, dst, dst_pte);
-> >  		src_ptl = huge_pte_lockptr(h, src, src_pte);
-> >  		spin_lock_nested(src_ptl, SINGLE_DEPTH_NESTING);
+i915:
+- Skip vswing programming for TBT
+- Power up combo PHY lanes for HDMI
+- Fix double YUV range correction on HDR planes
+- Fix the MST PBN divider calculation
+- Fix LTTPR vswing/pre-emp setting in non-transparent mode
+- Move the breadcrumb to the signaler if completed upon cancel
+- Close race between enable_breadcrumbs and cancel_breadcrumbs
+- Drop lru bumping on display unpinning
 
-Side question: Mike, do you know why we need this lock_nested()?  Could the src
-lock be taken due to any reason already?  It confused me when I read the chunk.
+amdgpu:
+- Fix retry in gem create
+- Vangogh fixes
+- Fix for display from shared buffers
+- Various display fixes
 
-> > @@ -3816,6 +3832,39 @@ int copy_hugetlb_page_range(struct mm_struct *dst, struct mm_struct *src,
-> >  			}
-> >  			set_huge_swap_pte_at(dst, addr, dst_pte, entry, sz);
-> >  		} else {
-> > +			entry = huge_ptep_get(src_pte);
-> > +			ptepage = pte_page(entry);
-> > +			get_page(ptepage);
-> > +
-> > +			/*
-> > +			 * This is a rare case where we see pinned hugetlb
-> > +			 * pages while they're prone to COW.  We need to do the
-> > +			 * COW earlier during fork.
-> > +			 *
-> > +			 * When pre-allocating the page we need to be without
-> > +			 * all the locks since we could sleep when allocate.
-> > +			 */
-> > +			if (unlikely(page_needs_cow_for_dma(vma, ptepage))) {
-> > +				if (!prealloc) {
-> > +					put_page(ptepage);
-> > +					spin_unlock(src_ptl);
-> > +					spin_unlock(dst_ptl);
-> > +					prealloc = alloc_huge_page(vma, addr, 1);
-> > +					if (!prealloc) {
-> 
-> alloc_huge_page will return error codes, so you need to check IS_ERR(prealloc)
-> not just NULL.
+amdkfd:
+- Fix regression in buffer free
 
-Definitely, I'll fix.
+nouveau:
+- fix DMA API warning regression
 
-Thanks,
+drm/bridge/lontium-lt9611uxc:
+- EDID fixes
+- Don't handle hotplug events in IRQ handler
+The following changes since commit 1048ba83fb1c00cd24172e23e8263972f6b5d9ac=
+:
 
--- 
-Peter Xu
+  Linux 5.11-rc6 (2021-01-31 13:50:09 -0800)
 
+are available in the Git repository at:
+
+  git://anongit.freedesktop.org/drm/drm tags/drm-fixes-2021-02-05-1
+
+for you to fetch changes up to 59854811c08cfbdf52d79231666e7c07c46ff338:
+
+  Merge tag 'drm-intel-fixes-2021-02-04' of
+git://anongit.freedesktop.org/drm/drm-intel into drm-fixes (2021-02-05
+11:03:28 +1000)
+
+----------------------------------------------------------------
+drm fixes for 5.11-rc7
+
+ttm:
+- fix huge page warning regression
+
+i915:
+- Skip vswing programming for TBT
+- Power up combo PHY lanes for HDMI
+- Fix double YUV range correction on HDR planes
+- Fix the MST PBN divider calculation
+- Fix LTTPR vswing/pre-emp setting in non-transparent mode
+- Move the breadcrumb to the signaler if completed upon cancel
+- Close race between enable_breadcrumbs and cancel_breadcrumbs
+- Drop lru bumping on display unpinning
+
+amdgpu:
+- Fix retry in gem create
+- Vangogh fixes
+- Fix for display from shared buffers
+- Various display fixes
+
+amdkfd:
+- Fix regression in buffer free
+
+nouveau:
+- fix DMA API warning regression
+
+drm/bridge/lontium-lt9611uxc:
+- EDID fixes
+- Don't handle hotplug events in IRQ handler
+
+----------------------------------------------------------------
+Andres Calderon Jaramillo (1):
+      drm/i915/display: Prevent double YUV range correction on HDR planes
+
+Bhawanpreet Lakha (1):
+      drm/amd/display: reuse current context instead of recreating one
+
+Chris Wilson (3):
+      drm/i915/gt: Move the breadcrumb to the signaler if completed upon ca=
+ncel
+      drm/i915/gt: Close race between enable_breadcrumbs and cancel_breadcr=
+umbs
+      drm/i915/gem: Drop lru bumping on display unpinning
+
+Christian K=C3=B6nig (1):
+      drm/amdgpu: enable freesync for A+A configs
+
+Dave Airlie (4):
+      drm/nouveau: fix dma syncing warning with debugging on.
+      Merge tag 'drm-misc-fixes-2021-02-02' of
+git://anongit.freedesktop.org/drm/drm-misc into drm-fixes
+      Merge tag 'amd-drm-fixes-5.11-2021-02-03' of
+https://gitlab.freedesktop.org/agd5f/linux into drm-fixes
+      Merge tag 'drm-intel-fixes-2021-02-04' of
+git://anongit.freedesktop.org/drm/drm-intel into drm-fixes
+
+Dmitry Baryshkov (3):
+      drm/bridge/lontium-lt9611uxc: fix waiting for EDID to become availabl=
+e
+      drm/bridge/lontium-lt9611uxc: fix get_edid return code
+      drm/bridge/lontium-lt9611uxc: move HPD notification out of IRQ handle=
+r
+
+George Shen (1):
+      drm/amd/display: Fix DPCD translation for LTTPR AUX_RD_INTERVAL
+
+Huang Rui (2):
+      drm/amdgpu: fix the issue that retry constantly once the buffer
+is oversize
+      drm/amdkfd: fix null pointer panic while free buffer in kfd
+
+Imre Deak (4):
+      drm/dp/mst: Export drm_dp_get_vc_payload_bw()
+      drm/i915: Fix the MST PBN divider calculation
+      drm/i915/dp: Move intel_dp_set_signal_levels() to intel_dp_link_train=
+ing.c
+      drm/i915/dp: Fix LTTPR vswing/pre-emp setting in non-transparent mode
+
+Michel D=C3=A4nzer (1):
+      drm/ttm: Use __GFP_NOWARN for huge pages in ttm_pool_alloc_page
+
+Mikita Lipski (1):
+      drm/amd/display: Release DSC before acquiring
+
+Stylon Wang (1):
+      drm/amd/display: Revert "Fix EDID parsing after resume from suspend"
+
+Sung Lee (1):
+      drm/amd/display: Add more Clock Sources to DCN2.1
+
+Victor Lu (3):
+      drm/amd/display: Fix dc_sink kref count in emulated_link_detect
+      drm/amd/display: Free atomic state after drm_atomic_commit
+      drm/amd/display: Decrement refcount of dc_sink before reassignment
+
+Ville Syrj=C3=A4l=C3=A4 (3):
+      drm/i915: Skip vswing programming for TBT
+      drm/i915: Extract intel_ddi_power_up_lanes()
+      drm/i915: Power up combo PHY lanes for for HDMI as well
+
+Xiaojian Du (1):
+      drm/amd/pm: fill in the data member of v2 gpu metrics table for vango=
+gh
+
+chen gong (1):
+      drm/amdgpu/gfx10: update CGTS_TCC_DISABLE and
+CGTS_USER_TCC_DISABLE register offsets for VGH
+
+ drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gpuvm.c   | 16 ++----
+ drivers/gpu/drm/amd/amdgpu/amdgpu_display.c        |  8 ++-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_gem.c            |  2 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_object.c         |  2 +-
+ drivers/gpu/drm/amd/amdgpu/gfx_v10_0.c             | 18 +++++-
+ drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c  | 47 +++++++---------
+ .../amd/display/amdgpu_dm/amdgpu_dm_mst_types.c    |  6 +-
+ drivers/gpu/drm/amd/display/dc/core/dc.c           | 27 ++++++---
+ drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c   |  6 +-
+ drivers/gpu/drm/amd/display/dc/dc_stream.h         |  3 +-
+ .../gpu/drm/amd/display/dc/dcn21/dcn21_resource.c  | 10 ++++
+ drivers/gpu/drm/amd/pm/swsmu/smu11/vangogh_ppt.c   |  3 +
+ drivers/gpu/drm/bridge/lontium-lt9611uxc.c         | 57 +++++++++++++++---=
+-
+ drivers/gpu/drm/drm_dp_mst_topology.c              | 24 ++++++--
+ drivers/gpu/drm/i915/display/intel_ddi.c           | 43 ++++++++------
+ drivers/gpu/drm/i915/display/intel_display.c       |  9 ++-
+ drivers/gpu/drm/i915/display/intel_dp.c            | 20 +------
+ drivers/gpu/drm/i915/display/intel_dp.h            |  3 -
+ .../gpu/drm/i915/display/intel_dp_link_training.c  | 25 ++++++++-
+ .../gpu/drm/i915/display/intel_dp_link_training.h  |  3 +
+ drivers/gpu/drm/i915/display/intel_dp_mst.c        |  4 +-
+ drivers/gpu/drm/i915/display/intel_overlay.c       |  4 +-
+ drivers/gpu/drm/i915/display/intel_sprite.c        | 65 ++++--------------=
+----
+ drivers/gpu/drm/i915/gem/i915_gem_domain.c         | 45 ---------------
+ drivers/gpu/drm/i915/gem/i915_gem_object.h         |  1 -
+ drivers/gpu/drm/i915/gt/intel_breadcrumbs.c        | 47 +++++++++-------
+ drivers/gpu/drm/nouveau/nouveau_bo.c               | 35 ++++++++++--
+ drivers/gpu/drm/ttm/ttm_pool.c                     |  2 +-
+ include/drm/drm_dp_mst_helper.h                    |  1 +
+ 29 files changed, 285 insertions(+), 251 deletions(-)
