@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1196311AD9
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 05:26:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31B59311ADA
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 05:27:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230206AbhBFE0S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 23:26:18 -0500
-Received: from mga14.intel.com ([192.55.52.115]:62425 "EHLO mga14.intel.com"
+        id S230165AbhBFE04 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 23:26:56 -0500
+Received: from mga14.intel.com ([192.55.52.115]:62437 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232004AbhBFDQJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 22:16:09 -0500
-IronPort-SDR: EBKybE3T+eslGI6UTWNSaEp6AYH5CpcKtAA3eaw2WJGZwwx2GjUldvH9Rzw8JQDxMAG9WhJQFG
- g3YKX8MyfCtw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9886"; a="180722549"
+        id S232031AbhBFDQO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 22:16:14 -0500
+IronPort-SDR: iWHhJAegkFcvDKA0cc91iX0FV5o1pwF0ViZFsjpXRo0nokP40JLc3+vroaavV+jlPrfY5ysndL
+ fqvAKNPkOq4g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9886"; a="180722558"
 X-IronPort-AV: E=Sophos;i="5.81,156,1610438400"; 
-   d="scan'208";a="180722549"
+   d="scan'208";a="180722558"
 Received: from orsmga002.jf.intel.com ([10.7.209.21])
   by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2021 14:52:09 -0800
-IronPort-SDR: ERBZkbAC75SJndi3R+r3VutkrMlkyqJ5zBTf8Yn/EvNhxrX2Cw6sxFcBMA1pvW1rDmL76ZLQd7
- xn+gsKWQZXsQ==
+IronPort-SDR: UJRC9TveRWPCenDNnqH0w0Zt5oBF6MwnPhyviKZXwnpZMB3t5pKdxXXta+ptSi4oa0/W8mbRBP
+ BRMhNc93w1wQ==
 X-IronPort-AV: E=Sophos;i="5.81,156,1610438400"; 
-   d="scan'208";a="373544296"
+   d="scan'208";a="373544300"
 Received: from smtp.ostc.intel.com ([10.54.29.231])
   by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2021 14:52:09 -0800
 Received: from mtg-dev.jf.intel.com (mtg-dev.jf.intel.com [10.54.74.10])
-        by smtp.ostc.intel.com (Postfix) with ESMTP id 26604636D;
+        by smtp.ostc.intel.com (Postfix) with ESMTP id 8AC166371;
         Fri,  5 Feb 2021 14:52:09 -0800 (PST)
 Received: by mtg-dev.jf.intel.com (Postfix, from userid 1000)
-        id 19DCA3635F1; Fri,  5 Feb 2021 14:52:09 -0800 (PST)
+        id 7E94136361E; Fri,  5 Feb 2021 14:52:09 -0800 (PST)
 From:   mgross@linux.intel.com
 To:     markgross@kernel.org, mgross@linux.intel.com, arnd@arndb.de,
         bp@suse.de, damien.lemoal@wdc.com, dragan.cvetic@xilinx.com,
@@ -36,10 +36,11 @@ To:     markgross@kernel.org, mgross@linux.intel.com, arnd@arndb.de,
         palmerdabbelt@google.com, paul.walmsley@sifive.com,
         peng.fan@nxp.com, robh+dt@kernel.org, shawnguo@kernel.org,
         jassisinghbrar@gmail.com
-Cc:     linux-kernel@vger.kernel.org, Seamus Kelly <seamus.kelly@intel.com>
-Subject: [PATCH v5 23/34] xlink-core: add async channel and events
-Date:   Fri,  5 Feb 2021 14:51:53 -0800
-Message-Id: <20210205225204.32902-24-mgross@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Ramya P Karanth <ramya.p.karanth@intel.com>
+Subject: [PATCH v5 31/34] Intel Keem Bay XLink SMBus driver
+Date:   Fri,  5 Feb 2021 14:52:01 -0800
+Message-Id: <20210205225204.32902-32-mgross@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210205225204.32902-1-mgross@linux.intel.com>
 References: <20210205225204.32902-1-mgross@linux.intel.com>
@@ -47,1554 +48,657 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Seamus Kelly <seamus.kelly@intel.com>
+From: Ramya P Karanth <ramya.p.karanth@intel.com>
 
-Enable asynchronous channel and event communication.
+Adds XLink SMBus driver for Intel Keem Bay SoC.
 
-    Add APIs:
-            data ready callback:
-			The xLink Data Ready Callback function is used to
-			register a callback function that is invoked when data
-			is ready to be read from a channel
-            data consumed callback:
-			The xLink Data Consumed Callback function is used to
-			register a callback function that is invoked when data
-			is consumed by the peer node on a channel
-    Add event notification handling including APIs:
-            register device event:
-			The xLink Register Device Event function is used to
-			register a callback for notification of certain system
-			events. Currently XLink supports 4 such events [0-3]
-			whose meaning is system dependent.  Registering for an
-			event means that the callback will be called when the
-			event occurs with 2 parameters the sw_device_id of the
-			device that triggered the event and the event number [0-3]
-            unregister device event
-			The xLink Unregister Device Event function is used to
-			unregister events that have previously been registered
-			by register device event API
+Xlink-smbus driver is a logical SMBus adapter which uses Xlink
+(xlink-pcie) protocol as an interface. Keem Bay(s) vision accelerators
+are connected  to the server via PCI interface. The Server needs to know
+the temperature of the Soc and the source to get the temperature can be
+either on board sensors or on chip sensors. The sensors are ideally
+connected over i2c bus of the Soc and the server does not have access to
+sensors present in the PCB. With this xlink-smbus interfaces, server
+access the on board/on chip sensors via xlink smbus adapter.
 
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Reviewed-by: Mark Gross <mgross@linux.intel.com>
+Signed-off-by: Ramya P Karanth <ramya.p.karanth@intel.com>
 Signed-off-by: Mark Gross <mgross@linux.intel.com>
-Signed-off-by: Seamus Kelly <seamus.kelly@intel.com>
 ---
- drivers/misc/xlink-core/xlink-core.c        | 497 ++++++++++++++++----
- drivers/misc/xlink-core/xlink-core.h        |  11 +-
- drivers/misc/xlink-core/xlink-defs.h        |   6 +-
- drivers/misc/xlink-core/xlink-dispatcher.c  |  53 +--
- drivers/misc/xlink-core/xlink-ioctl.c       | 146 +++++-
- drivers/misc/xlink-core/xlink-ioctl.h       |   6 +
- drivers/misc/xlink-core/xlink-multiplexer.c | 176 +++++--
- drivers/misc/xlink-core/xlink-platform.c    |  27 ++
- include/linux/xlink.h                       |  15 +-
- 9 files changed, 757 insertions(+), 180 deletions(-)
+ Documentation/i2c/busses/index.rst            |   1 +
+ .../i2c/busses/intel-xlink-smbus.rst          |  71 +++
+ drivers/misc/Kconfig                          |   1 +
+ drivers/misc/Makefile                         |   1 +
+ drivers/misc/xlink-smbus/Kconfig              |  26 +
+ drivers/misc/xlink-smbus/Makefile             |   5 +
+ drivers/misc/xlink-smbus/xlink-smbus.c        | 467 ++++++++++++++++++
+ 7 files changed, 572 insertions(+)
+ create mode 100644 Documentation/i2c/busses/intel-xlink-smbus.rst
+ create mode 100644 drivers/misc/xlink-smbus/Kconfig
+ create mode 100644 drivers/misc/xlink-smbus/Makefile
+ create mode 100644 drivers/misc/xlink-smbus/xlink-smbus.c
 
-diff --git a/drivers/misc/xlink-core/xlink-core.c b/drivers/misc/xlink-core/xlink-core.c
-index d0a3f98d16af..23c0025f6f0d 100644
---- a/drivers/misc/xlink-core/xlink-core.c
-+++ b/drivers/misc/xlink-core/xlink-core.c
-@@ -55,6 +55,8 @@ static struct cdev xlink_cdev;
- 
- static long xlink_ioctl(struct file *file, unsigned int cmd, unsigned long arg);
- 
-+static struct mutex dev_event_lock;
+diff --git a/Documentation/i2c/busses/index.rst b/Documentation/i2c/busses/index.rst
+index 5e4077b08d86..6ce4a740f616 100644
+--- a/Documentation/i2c/busses/index.rst
++++ b/Documentation/i2c/busses/index.rst
+@@ -29,4 +29,5 @@ I2C Bus Drivers
+    i2c-taos-evm
+    i2c-viapro
+    i2c-via
++   intel-xlink-smbus.rst
+    scx200_acb
+diff --git a/Documentation/i2c/busses/intel-xlink-smbus.rst b/Documentation/i2c/busses/intel-xlink-smbus.rst
+new file mode 100644
+index 000000000000..ab87d18051b4
+--- /dev/null
++++ b/Documentation/i2c/busses/intel-xlink-smbus.rst
+@@ -0,0 +1,71 @@
++.. SPDX-License-Identifier: GPL-2.0
 +
- static const struct file_operations fops = {
- 		.owner		= THIS_MODULE,
- 		.unlocked_ioctl = xlink_ioctl,
-@@ -66,14 +68,75 @@ struct xlink_link {
- 	struct kref refcount;
- };
- 
-+struct xlink_attr {
-+	unsigned long value;
-+	u32 sw_dev_id;
-+};
++==========================
++Kernel driver: xlink_smbus
++==========================
 +
- struct keembay_xlink_dev {
- 	struct platform_device *pdev;
- 	struct xlink_link links[XLINK_MAX_CONNECTIONS];
- 	u32 nmb_connected_links;
- 	struct mutex lock;  // protect access to xlink_dev
-+	struct xlink_attr eventx[4];
-+};
++Supported chips:
++  * Intel Edge.AI Computer Vision platforms: Keem Bay
 +
-+struct event_info {
-+	struct list_head list;
-+	u32 sw_device_id;
-+	u32 event_type;
-+	u32 user_flag;
-+	xlink_device_event_cb event_notif_fn;
- };
- 
--static u8 volbuf[XLINK_MAX_BUF_SIZE]; // buffer for volatile transactions
-+// sysfs attribute functions
++  Sufix: Bay
 +
-+static ssize_t eventx_show(struct device *dev, struct device_attribute *attr,
-+			   int index, char *buf)
-+{
-+	struct keembay_xlink_dev *xlink_dev = dev_get_drvdata(dev);
-+	struct xlink_attr *a = &xlink_dev->eventx[index];
++  Slave address: The address is selectable by device-tree. (TBD)
 +
-+	return sysfs_emit(buf, "0x%x 0x%lx\n", a->sw_dev_id, a->value);
-+}
++Authors:
++    - Raja Subramanian, Lakshmi Bai <lakshmi.bai.raja.subramanian@intel.com>
++    - Thalaiappan, Rathina <rathina.thalaiappan@intel.com>
++    - Karanth, Ramya P <ramya.p.karanth@intel.com>
 +
-+static ssize_t event0_show(struct device *dev, struct device_attribute *attr, char *buf)
-+{
-+	return eventx_show(dev, attr, 0, buf);
-+}
++Description
++===========
++The Intel Edge.AI Computer Vision platforms have to be monitored using platform
++devices like sensors, fan controller, IO expander etc. Some of these devices
++are memory mapped and some are i2c based. Either of these devices are not
++directly accessible to the host.
 +
-+static ssize_t event1_show(struct device *dev, struct device_attribute *attr, char *buf)
-+{
-+	return eventx_show(dev, attr, 1, buf);
-+}
++The host here refers to the server to which the vision accelerators are
++connected over PCIe Interface. The Host needs to do a consolidated action based
++on the parameters of platform devices. In general, most of the standard devices
++(includes sensors, fan controller, IO expander etc) are I2C/SMBus based and are
++used to provide the status of the accelerator. Standard drivers for these
++devices are available based on i2c/smbus APIs.
 +
-+static ssize_t event2_show(struct device *dev, struct device_attribute *attr, char *buf)
-+{
-+	return eventx_show(dev, attr, 2, buf);
-+}
++Instead of changing the sensor drivers to adapt to PCIe interface, a generic
++i2c adapter "xlink-smbus" which underneath uses xlink as physical medium is
++used. With xlink-smbus, the drivers for the platform devices doesn't need to
++undergo any interface change.
 +
-+static ssize_t event3_show(struct device *dev, struct device_attribute *attr, char *buf)
-+{
-+	return eventx_show(dev, attr, 3, buf);
-+}
++High-level architecture
++=======================
 +
-+static DEVICE_ATTR_RO(event0);
-+static DEVICE_ATTR_RO(event1);
-+static DEVICE_ATTR_RO(event2);
-+static DEVICE_ATTR_RO(event3);
-+static struct attribute *xlink_sysfs_entries[] = {
-+	&dev_attr_event0.attr,
-+	&dev_attr_event1.attr,
-+	&dev_attr_event2.attr,
-+	&dev_attr_event3.attr,
-+	NULL,
-+};
++Accessing Onchip devices::
 +
-+static const struct attribute_group xlink_sysfs_group = {
-+	.attrs = xlink_sysfs_entries,
-+};
++        -------------------                     -------------------
++        |   Remote Host   |                     |   Local Host    |
++        |   IA CPU        |                     | Vision platforms|
++        -------------------                     -------------------
++        |     Onchip      |                     |    i2c slave    | ==> Access the device
++        |  sensor driver  |                     |    handler      | ==> which is mmio based
++        -------------------                     -------------------
++        |Intel XLINK_SMBUS|                     |Intel XLINK_SMBUS|
++        |     adpater     |                     |     adapter     |
++        |    (Master)     |                     |   (I2C_SLAVE)   |
++        -------------------                     -------------------
++        |      XLINK      |    <==========>     |     XLINK       |
++        -------------------        PCIE         -------------------
 +
-+static struct event_info ev_info;
- 
- /*
-  * global variable pointing to our xlink device.
-@@ -207,7 +270,14 @@ static int kmb_xlink_probe(struct platform_device *pdev)
- 		dev_info(&pdev->dev, "Cannot add the device to the system\n");
- 		goto r_class;
- 	}
-+	INIT_LIST_HEAD(&ev_info.list);
- 
-+	rc = devm_device_add_group(&pdev->dev, &xlink_sysfs_group);
-+	if (rc) {
-+		dev_err(&pdev->dev, "failed to create sysfs entries: %d\n", rc);
-+		return rc;
-+	}
-+	mutex_init(&dev_event_lock);
- 	return 0;
- 
- r_device:
-@@ -231,7 +301,6 @@ static int kmb_xlink_remove(struct platform_device *pdev)
- 	rc = xlink_multiplexer_destroy();
- 	if (rc != X_LINK_SUCCESS)
- 		pr_err("Multiplexer destroy failed\n");
--	// stop dispatchers and destroy
- 	rc = xlink_dispatcher_destroy();
- 	if (rc != X_LINK_SUCCESS)
- 		pr_err("Dispatcher destroy failed\n");
-@@ -251,7 +320,6 @@ static int kmb_xlink_remove(struct platform_device *pdev)
-  * IOCTL function for User Space access to xlink kernel functions
-  *
-  */
--
- static long xlink_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
- {
- 	int rc;
-@@ -263,6 +331,12 @@ static long xlink_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
- 	case XL_OPEN_CHANNEL:
- 		rc = ioctl_open_channel(arg);
- 		break;
-+	case XL_DATA_READY_CALLBACK:
-+		rc = ioctl_data_ready_callback(arg);
-+		break;
-+	case XL_DATA_CONSUMED_CALLBACK:
-+		rc = ioctl_data_consumed_callback(arg);
-+		break;
- 	case XL_READ_DATA:
- 		rc = ioctl_read_data(arg);
- 		break;
-@@ -275,6 +349,9 @@ static long xlink_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
- 	case XL_WRITE_VOLATILE:
- 		rc = ioctl_write_volatile_data(arg);
- 		break;
-+	case XL_WRITE_CONTROL_DATA:
-+		rc = ioctl_write_control_data(arg);
-+		break;
- 	case XL_RELEASE_DATA:
- 		rc = ioctl_release_data(arg);
- 		break;
-@@ -285,10 +362,10 @@ static long xlink_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
- 		rc = ioctl_start_vpu(arg);
- 		break;
- 	case XL_STOP_VPU:
--		rc = xlink_stop_vpu();
-+		rc = ioctl_stop_vpu();
- 		break;
- 	case XL_RESET_VPU:
--		rc = xlink_stop_vpu();
-+		rc = ioctl_stop_vpu();
- 		break;
- 	case XL_DISCONNECT:
- 		rc = ioctl_disconnect(arg);
-@@ -314,6 +391,12 @@ static long xlink_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
- 	case XL_SET_DEVICE_MODE:
- 		rc = ioctl_set_device_mode(arg);
- 		break;
-+	case XL_REGISTER_DEV_EVENT:
-+		rc = ioctl_register_device_event(arg);
-+		break;
-+	case XL_UNREGISTER_DEV_EVENT:
-+		rc = ioctl_unregister_device_event(arg);
-+		break;
- 	}
- 	if (rc)
- 		return -EIO;
-@@ -387,14 +470,12 @@ enum xlink_error xlink_connect(struct xlink_handle *handle)
- 		xlink->nmb_connected_links++;
- 		kref_init(&link->refcount);
- 		if (interface != IPC_INTERFACE) {
--			// start dispatcher
- 			rc = xlink_dispatcher_start(link->id, &link->handle);
- 			if (rc) {
- 				pr_err("dispatcher start failed\n");
- 				goto r_cleanup;
- 			}
- 		}
--		// initialize multiplexer connection
- 		rc = xlink_multiplexer_connect(link->id);
- 		if (rc) {
- 			pr_err("multiplexer connect failed\n");
-@@ -405,7 +486,6 @@ enum xlink_error xlink_connect(struct xlink_handle *handle)
- 			link->handle.dev_type,
- 			xlink->nmb_connected_links);
- 	} else {
--		// already connected
- 		pr_info("dev 0x%x ALREADY connected - dev_type %d\n",
- 			link->handle.sw_device_id,
- 			link->handle.dev_type);
-@@ -413,7 +493,6 @@ enum xlink_error xlink_connect(struct xlink_handle *handle)
- 		*handle = link->handle;
- 	}
- 	mutex_unlock(&xlink->lock);
--	// TODO: implement ping
- 	return X_LINK_SUCCESS;
- 
- r_cleanup:
-@@ -423,64 +502,109 @@ enum xlink_error xlink_connect(struct xlink_handle *handle)
- }
- EXPORT_SYMBOL_GPL(xlink_connect);
- 
--enum xlink_error xlink_open_channel(struct xlink_handle *handle,
--				    u16 chan, enum xlink_opmode mode,
--				    u32 data_size, u32 timeout)
-+enum xlink_error xlink_data_available_event(struct xlink_handle *handle,
-+					    u16 chan,
-+					    xlink_event data_available_event)
- {
- 	struct xlink_event *event;
- 	struct xlink_link *link;
--	int event_queued = 0;
- 	enum xlink_error rc;
-+	int event_queued = 0;
-+	char origin = 'K';
- 
- 	if (!xlink || !handle)
- 		return X_LINK_ERROR;
- 
-+	if (CHANNEL_USER_BIT_IS_SET(chan))
-+		origin  = 'U';     // function called from user space
-+	CHANNEL_CLEAR_USER_BIT(chan);  // restore proper channel value
++Accessing Onboard devices::
 +
- 	link = get_link_by_sw_device_id(handle->sw_device_id);
- 	if (!link)
- 		return X_LINK_ERROR;
--
--	event = xlink_create_event(link->id, XLINK_OPEN_CHANNEL_REQ,
--				   &link->handle, chan, data_size, timeout);
-+	event = xlink_create_event(link->id, XLINK_DATA_READY_CALLBACK_REQ,
-+				   &link->handle, chan, 0, 0);
- 	if (!event)
- 		return X_LINK_ERROR;
--
--	event->data = (void *)mode;
-+	event->data = data_available_event;
-+	event->callback_origin = origin;
-+	if (!data_available_event)
-+		event->calling_pid = NULL; // disable callbacks on this channel
-+	else
-+		event->calling_pid = current;
- 	rc = xlink_multiplexer_tx(event, &event_queued);
- 	if (!event_queued)
- 		xlink_destroy_event(event);
- 	return rc;
- }
--EXPORT_SYMBOL_GPL(xlink_open_channel);
--
--enum xlink_error xlink_close_channel(struct xlink_handle *handle,
--				     u16 chan)
-+EXPORT_SYMBOL_GPL(xlink_data_available_event);
-+enum xlink_error xlink_data_consumed_event(struct xlink_handle *handle,
-+					   u16 chan,
-+					   xlink_event data_consumed_event)
- {
- 	struct xlink_event *event;
- 	struct xlink_link *link;
- 	enum xlink_error rc;
- 	int event_queued = 0;
-+	char origin = 'K';
- 
- 	if (!xlink || !handle)
- 		return X_LINK_ERROR;
- 
-+	if (CHANNEL_USER_BIT_IS_SET(chan))
-+		origin  = 'U';     // function called from user space
-+	CHANNEL_CLEAR_USER_BIT(chan);  // restore proper channel value
++        -------------------                     ----------------------
++        |   Remote Host   |                     |     Local Host     |
++        |   IA CPU        |                     |  Vision platforms  |
++        -------------------                     ----------------------
++        |    On board     |                     |      i2c smbus     | ==> Access the device
++        |  sensor driver  |                     |   xfer [synopsys]  | ==> which is on i2c bus
++        -------------------                     ----------------------
++        |Intel XLINK_SMBUS|                     | Intel XLINK_SMBUS  |
++        |     adpater     |                     |       adapter      |
++        |    (Master)     |                     |(SMBUS_PROXY Master)|
++        -------------------                     ----------------------
++        |      XLINK      |    <==========>     |        XLINK       |
++        -------------------        PCIE         ----------------------
+diff --git a/drivers/misc/Kconfig b/drivers/misc/Kconfig
+index aed3ef61897c..f6229dd8ba9e 100644
+--- a/drivers/misc/Kconfig
++++ b/drivers/misc/Kconfig
+@@ -486,4 +486,5 @@ source "drivers/misc/xlink-ipc/Kconfig"
+ source "drivers/misc/xlink-core/Kconfig"
+ source "drivers/misc/vpumgr/Kconfig"
+ source "drivers/misc/intel_tsens/Kconfig"
++source "drivers/misc/xlink-smbus/Kconfig"
+ endmenu
+diff --git a/drivers/misc/Makefile b/drivers/misc/Makefile
+index c08502b22778..0ed8a62cbb20 100644
+--- a/drivers/misc/Makefile
++++ b/drivers/misc/Makefile
+@@ -62,3 +62,4 @@ obj-$(CONFIG_XLINK_IPC)		+= xlink-ipc/
+ obj-$(CONFIG_XLINK_CORE)	+= xlink-core/
+ obj-$(CONFIG_VPUMGR)		+= vpumgr/
+ obj-y                           += intel_tsens/
++obj-$(CONFIG_XLINK_SMBUS)	+= xlink-smbus/
+diff --git a/drivers/misc/xlink-smbus/Kconfig b/drivers/misc/xlink-smbus/Kconfig
+new file mode 100644
+index 000000000000..e6cdf8b9a096
+--- /dev/null
++++ b/drivers/misc/xlink-smbus/Kconfig
+@@ -0,0 +1,26 @@
++# Copyright (C) 2020 Intel Corporation
++# SPDX-License-Identifier: GPL-2.0-only
 +
- 	link = get_link_by_sw_device_id(handle->sw_device_id);
- 	if (!link)
- 		return X_LINK_ERROR;
--
--	event = xlink_create_event(link->id, XLINK_CLOSE_CHANNEL_REQ,
-+	event = xlink_create_event(link->id, XLINK_DATA_CONSUMED_CALLBACK_REQ,
- 				   &link->handle, chan, 0, 0);
- 	if (!event)
- 		return X_LINK_ERROR;
-+	event->data = data_consumed_event;
-+	event->callback_origin = origin;
-+	if (!data_consumed_event)
-+		event->calling_pid = NULL; // disable callbacks on this channel
-+	else
-+		event->calling_pid = current;
-+	rc = xlink_multiplexer_tx(event, &event_queued);
-+	if (!event_queued)
-+		xlink_destroy_event(event);
-+	return rc;
-+}
-+EXPORT_SYMBOL_GPL(xlink_data_consumed_event);
-+enum xlink_error xlink_open_channel(struct xlink_handle *handle,
-+				    u16 chan, enum xlink_opmode mode,
-+				    u32 data_size, u32 timeout)
-+{
-+	struct xlink_event *event;
-+	struct xlink_link *link;
-+	int event_queued = 0;
-+	enum xlink_error rc;
++config XLINK_SMBUS
++	tristate "Enable smbus interface over Xlink PCIe"
++	depends on XLINK_CORE
++	depends on HDDL_DEVICE_CLIENT || HDDL_DEVICE_SERVER
++	help
++	 Enable xlink-pcie as i2c adapter both slave and master. The server
++	 (Remote Host) will use this interface to get sensor data from the soc
++	 (vision accelerator - Local Host) which is connected over PCIe.
++	 This driver is loaded on both Remote Host and Local Host.
++	 Select M to compile the driver as a module, name is xlink-smbus.
++	 If unsure, select N.
 +
-+	if (!xlink || !handle)
-+		return X_LINK_ERROR;
 +
-+	link = get_link_by_sw_device_id(handle->sw_device_id);
-+	if (!link)
-+		return X_LINK_ERROR;
++config XLINK_SMBUS_PROXY
++	tristate "Enable SMBUS adapter as proxy for I2C controller"
++	depends on XLINK_CORE
++	depends on XLINK_SMBUS
++	help
++	 Enable this config when SMBUS adapter is acting as proxy for
++	 another I2C controller.
++	 Select M or Y if building for Intel Vision Processing Unit (VPU)
++	 Local Host core.
++	 Select N, if building for a Remote Host kernel.
+diff --git a/drivers/misc/xlink-smbus/Makefile b/drivers/misc/xlink-smbus/Makefile
+new file mode 100644
+index 000000000000..27369dfa488c
+--- /dev/null
++++ b/drivers/misc/xlink-smbus/Makefile
+@@ -0,0 +1,5 @@
++# Copyright (C) 2020 Intel Corporation
++# SPDX-License-Identifier: GPL-2.0-only
++#     Makefile for Xlink SMBus
++#
++obj-$(CONFIG_XLINK_SMBUS) += xlink-smbus.o
+diff --git a/drivers/misc/xlink-smbus/xlink-smbus.c b/drivers/misc/xlink-smbus/xlink-smbus.c
+new file mode 100644
+index 000000000000..fc652e6c96bb
+--- /dev/null
++++ b/drivers/misc/xlink-smbus/xlink-smbus.c
+@@ -0,0 +1,467 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Intel Xlink SMBus Driver
++ *
++ * Copyright (C) 2020 Intel Corporation
++ */
 +
-+	event = xlink_create_event(link->id, XLINK_OPEN_CHANNEL_REQ,
-+				   &link->handle, chan, data_size, timeout);
-+	if (!event)
-+		return X_LINK_ERROR;
- 
-+	event->data = (void *)mode;
- 	rc = xlink_multiplexer_tx(event, &event_queued);
- 	if (!event_queued)
- 		xlink_destroy_event(event);
- 	return rc;
- }
--EXPORT_SYMBOL_GPL(xlink_close_channel);
-+EXPORT_SYMBOL_GPL(xlink_open_channel);
- 
--enum xlink_error xlink_write_data(struct xlink_handle *handle,
--				  u16 chan, u8 const *pmessage, u32 size)
-+enum xlink_error xlink_close_channel(struct xlink_handle *handle,
-+				     u16 chan)
- {
- 	struct xlink_event *event;
- 	struct xlink_link *link;
-@@ -490,38 +614,26 @@ enum xlink_error xlink_write_data(struct xlink_handle *handle,
- 	if (!xlink || !handle)
- 		return X_LINK_ERROR;
- 
--	if (size > XLINK_MAX_DATA_SIZE)
--		return X_LINK_ERROR;
--
- 	link = get_link_by_sw_device_id(handle->sw_device_id);
- 	if (!link)
- 		return X_LINK_ERROR;
- 
--	event = xlink_create_event(link->id, XLINK_WRITE_REQ, &link->handle,
--				   chan, size, 0);
-+	event = xlink_create_event(link->id, XLINK_CLOSE_CHANNEL_REQ,
-+				   &link->handle, chan, 0, 0);
- 	if (!event)
- 		return X_LINK_ERROR;
- 
--	if (chan < XLINK_IPC_MAX_CHANNELS &&
--	    event->interface == IPC_INTERFACE) {
--		/* only passing message address across IPC interface */
--		event->data = &pmessage;
--		rc = xlink_multiplexer_tx(event, &event_queued);
-+	rc = xlink_multiplexer_tx(event, &event_queued);
-+	if (!event_queued)
- 		xlink_destroy_event(event);
--	} else {
--		event->data = (u8 *)pmessage;
--		event->paddr = 0;
--		rc = xlink_multiplexer_tx(event, &event_queued);
--		if (!event_queued)
--			xlink_destroy_event(event);
--	}
-+
- 	return rc;
- }
--EXPORT_SYMBOL_GPL(xlink_write_data);
-+EXPORT_SYMBOL_GPL(xlink_close_channel);
- 
--enum xlink_error xlink_write_data_user(struct xlink_handle *handle,
--				       u16 chan, u8 const *pmessage,
--				       u32 size)
-+static enum xlink_error do_xlink_write_data(struct xlink_handle *handle,
-+					    u16 chan, u8 const *pmessage,
-+					    u32 size, u32 user_flag)
- {
- 	struct xlink_event *event;
- 	struct xlink_link *link;
-@@ -544,48 +656,78 @@ enum xlink_error xlink_write_data_user(struct xlink_handle *handle,
- 				   chan, size, 0);
- 	if (!event)
- 		return X_LINK_ERROR;
--	event->user_data = 1;
-+	event->user_data = user_flag;
- 
- 	if (chan < XLINK_IPC_MAX_CHANNELS &&
- 	    event->interface == IPC_INTERFACE) {
- 		/* only passing message address across IPC interface */
--		if (get_user(addr, (u32 __user *)pmessage)) {
--			xlink_destroy_event(event);
--			return X_LINK_ERROR;
-+		if (user_flag) {
-+			if (get_user(addr, (u32 __user *)pmessage)) {
-+				xlink_destroy_event(event);
-+				return X_LINK_ERROR;
-+			}
-+			event->data = &addr;
-+		} else {
-+			event->data = &pmessage;
- 		}
--		event->data = &addr;
- 		rc = xlink_multiplexer_tx(event, &event_queued);
- 		xlink_destroy_event(event);
- 	} else {
--		event->data = xlink_platform_allocate(&xlink->pdev->dev, &paddr,
--						      size,
--						      XLINK_PACKET_ALIGNMENT,
--						      XLINK_NORMAL_MEMORY);
--		if (!event->data) {
--			xlink_destroy_event(event);
--			return X_LINK_ERROR;
--		}
--		if (copy_from_user(event->data, (void __user *)pmessage, size)) {
--			xlink_platform_deallocate(&xlink->pdev->dev,
--						  event->data, paddr, size,
--						  XLINK_PACKET_ALIGNMENT,
--						  XLINK_NORMAL_MEMORY);
--			xlink_destroy_event(event);
--			return X_LINK_ERROR;
-+		if (user_flag) {
-+			event->data = xlink_platform_allocate(&xlink->pdev->dev, &paddr,
-+							      size,
-+							      XLINK_PACKET_ALIGNMENT,
-+							      XLINK_NORMAL_MEMORY);
-+			if (!event->data) {
-+				xlink_destroy_event(event);
-+				return X_LINK_ERROR;
-+			}
-+			if (copy_from_user(event->data, (void __user *)pmessage, size)) {
-+				xlink_platform_deallocate(&xlink->pdev->dev,
-+							  event->data, paddr, size,
-+							  XLINK_PACKET_ALIGNMENT,
-+							  XLINK_NORMAL_MEMORY);
-+				xlink_destroy_event(event);
-+				return X_LINK_ERROR;
-+			}
-+			event->paddr = paddr;
-+		} else {
-+			event->data = (u8 *)pmessage;
-+			event->paddr = 0;
- 		}
--		event->paddr = paddr;
- 		rc = xlink_multiplexer_tx(event, &event_queued);
- 		if (!event_queued) {
--			xlink_platform_deallocate(&xlink->pdev->dev,
--						  event->data, paddr, size,
--						  XLINK_PACKET_ALIGNMENT,
--						  XLINK_NORMAL_MEMORY);
-+			if (user_flag) {
-+				xlink_platform_deallocate(&xlink->pdev->dev,
-+							  event->data, paddr, size,
-+							  XLINK_PACKET_ALIGNMENT,
-+							  XLINK_NORMAL_MEMORY);
-+			}
- 			xlink_destroy_event(event);
- 		}
- 	}
- 	return rc;
- }
- 
-+enum xlink_error xlink_write_data(struct xlink_handle *handle,
-+				  u16 chan, u8 const *pmessage, u32 size)
-+{
-+	enum xlink_error rc = 0;
-+
-+	rc = do_xlink_write_data(handle, chan, pmessage, size, 0);
-+	return rc;
-+}
-+EXPORT_SYMBOL_GPL(xlink_write_data);
-+
-+enum xlink_error xlink_write_data_user(struct xlink_handle *handle,
-+				       u16 chan, u8 const *pmessage, u32 size)
-+{
-+	enum xlink_error rc = 0;
-+
-+	rc = do_xlink_write_data(handle, chan, pmessage, size, 1);
-+	return rc;
-+}
-+
- enum xlink_error xlink_write_control_data(struct xlink_handle *handle,
- 					  u16 chan, u8 const *pmessage,
- 					  u32 size)
-@@ -614,16 +756,7 @@ enum xlink_error xlink_write_control_data(struct xlink_handle *handle,
- }
- EXPORT_SYMBOL_GPL(xlink_write_control_data);
- 
--enum xlink_error xlink_write_volatile(struct xlink_handle *handle,
--				      u16 chan, u8 const *message, u32 size)
--{
--	enum xlink_error rc = 0;
--
--	rc = do_xlink_write_volatile(handle, chan, message, size, 0);
--	return rc;
--}
--
--enum xlink_error do_xlink_write_volatile(struct xlink_handle *handle,
-+static enum xlink_error do_xlink_write_volatile(struct xlink_handle *handle,
- 					 u16 chan, u8 const *message,
- 					 u32 size, u32 user_flag)
- {
-@@ -668,6 +801,26 @@ enum xlink_error do_xlink_write_volatile(struct xlink_handle *handle,
- 	return rc;
- }
- 
-+enum xlink_error xlink_write_volatile_user(struct xlink_handle *handle,
-+					   u16 chan, u8 const *message,
-+					   u32 size)
-+{
-+	enum xlink_error rc = 0;
-+
-+	rc = do_xlink_write_volatile(handle, chan, message, size, 1);
-+	return rc;
-+}
-+
-+enum xlink_error xlink_write_volatile(struct xlink_handle *handle,
-+				      u16 chan, u8 const *message, u32 size)
-+{
-+	enum xlink_error rc = 0;
-+
-+	rc = do_xlink_write_volatile(handle, chan, message, size, 0);
-+	return rc;
-+}
-+EXPORT_SYMBOL_GPL(xlink_write_volatile);
-+
- enum xlink_error xlink_read_data(struct xlink_handle *handle,
- 				 u16 chan, u8 **pmessage, u32 *size)
- {
-@@ -757,8 +910,8 @@ EXPORT_SYMBOL_GPL(xlink_release_data);
- enum xlink_error xlink_disconnect(struct xlink_handle *handle)
- {
- 	struct xlink_link *link;
--	int interface = NULL_INTERFACE;
--	enum xlink_error rc = X_LINK_ERROR;
-+	int interface;
-+	enum xlink_error rc = 0;
- 
- 	if (!xlink || !handle)
- 		return X_LINK_ERROR;
-@@ -767,7 +920,6 @@ enum xlink_error xlink_disconnect(struct xlink_handle *handle)
- 	if (!link)
- 		return X_LINK_ERROR;
- 
--	// decrement refcount, if count is 0 lock mutex and disconnect
- 	if (kref_put_mutex(&link->refcount, release_after_kref_put,
- 			   &xlink->lock)) {
- 		// stop dispatcher
-@@ -946,6 +1098,179 @@ enum xlink_error xlink_get_device_mode(struct xlink_handle *handle,
- 	return rc;
- }
- EXPORT_SYMBOL_GPL(xlink_get_device_mode);
-+
-+static int xlink_device_event_handler(u32 sw_device_id, u32 event_type)
-+{
-+	struct event_info *events = NULL;
-+	xlink_device_event_cb event_cb;
-+	bool found = false;
-+	char event_attr[7];
-+
-+	mutex_lock(&dev_event_lock);
-+	// find sw_device_id, event_type in list
-+	list_for_each_entry(events, &ev_info.list, list) {
-+		if (events) {
-+			if (events->sw_device_id == sw_device_id &&
-+			    events->event_type == event_type) {
-+				event_cb = events->event_notif_fn;
-+				found = true;
-+				break;
-+			}
-+		}
-+	}
-+	if (found) {
-+		if (events->user_flag) {
-+			xlink->eventx[events->event_type].value = events->event_type;
-+			xlink->eventx[events->event_type].sw_dev_id = sw_device_id;
-+			sprintf(event_attr, "event%d", events->event_type);
-+			sysfs_notify(&xlink->pdev->dev.kobj, NULL, event_attr);
-+		} else {
-+			if (event_cb) {
-+				event_cb(sw_device_id, event_type);
-+			} else {
-+				pr_info("No callback found for sw_device_id : 0x%x event type %d\n",
-+					sw_device_id, event_type);
-+				mutex_unlock(&dev_event_lock);
-+				return X_LINK_ERROR;
-+			}
-+		}
-+		pr_info("sysfs_notify event %d swdev_id %xs\n",
-+			events->event_type, sw_device_id);
-+	}
-+	mutex_unlock(&dev_event_lock);
-+return X_LINK_SUCCESS;
-+}
-+
-+static bool event_registered(u32 sw_dev_id, u32 event)
-+{
-+	struct event_info *events = NULL;
-+
-+	list_for_each_entry(events, &ev_info.list, list) {
-+		if (events) {
-+			if (events->sw_device_id == sw_dev_id &&
-+			    events->event_type == event) {
-+				return true;
-+			}
-+		}
-+	}
-+return false;
-+}
-+
-+static enum xlink_error do_xlink_register_device_event(struct xlink_handle *handle,
-+						       u32 *event_list,
-+						       u32 num_events,
-+						       xlink_device_event_cb event_notif_fn,
-+						       u32 user_flag)
-+{
-+	struct event_info *events;
-+	u32 interface;
-+	u32 event;
-+	int i;
-+
-+	if (num_events < 0 || num_events >= NUM_REG_EVENTS)
-+		return X_LINK_ERROR;
-+	for (i = 0; i < num_events; i++) {
-+		events = kzalloc(sizeof(*events), GFP_KERNEL);
-+		if (!events)
-+			return X_LINK_ERROR;
-+		event = *event_list;
-+		events->sw_device_id = handle->sw_device_id;
-+		events->event_notif_fn = event_notif_fn;
-+		events->event_type = *event_list++;
-+		events->user_flag = user_flag;
-+		if (user_flag) {
-+			/* only add to list once if userspace */
-+			/* xlink userspace handles multi process callbacks */
-+			if (event_registered(handle->sw_device_id, event)) {
-+				pr_info("xlink-core: Event 0x%x - %d already registered\n",
-+					handle->sw_device_id, event);
-+				kfree(events);
-+				continue;
-+			}
-+		}
-+		pr_info("xlink-core:Events: sw_device_id 0x%x event %d fn %p user_flag %d\n",
-+			events->sw_device_id, events->event_type,
-+			events->event_notif_fn, events->user_flag);
-+		list_add_tail(&events->list, &ev_info.list);
-+	}
-+	interface = get_interface_from_sw_device_id(handle->sw_device_id);
-+	if (interface == NULL_INTERFACE)
-+		return X_LINK_ERROR;
-+	xlink_platform_register_for_events(interface, handle->sw_device_id,
-+					   xlink_device_event_handler);
-+	return X_LINK_SUCCESS;
-+}
-+
-+enum xlink_error xlink_register_device_event_user(struct xlink_handle *handle,
-+						  u32 *event_list, u32 num_events,
-+						  xlink_device_event_cb event_notif_fn)
-+{
-+	enum xlink_error rc;
-+
-+	rc = do_xlink_register_device_event(handle, event_list, num_events,
-+					    event_notif_fn, 1);
-+	return rc;
-+}
-+
-+enum xlink_error xlink_register_device_event(struct xlink_handle *handle,
-+					     u32 *event_list, u32 num_events,
-+					     xlink_device_event_cb event_notif_fn)
-+{
-+	enum xlink_error rc;
-+
-+	rc = do_xlink_register_device_event(handle, event_list, num_events,
-+					    event_notif_fn, 0);
-+	return rc;
-+}
-+EXPORT_SYMBOL_GPL(xlink_register_device_event);
-+
-+enum xlink_error xlink_unregister_device_event(struct xlink_handle *handle,
-+					       u32 *event_list,
-+					       u32 num_events)
-+{
-+	struct event_info *events = NULL;
-+	u32 interface;
-+	int found = 0;
-+	int count = 0;
-+	int i;
-+
-+	if (num_events < 0 || num_events >= NUM_REG_EVENTS)
-+		return X_LINK_ERROR;
-+	for (i = 0; i < num_events; i++) {
-+		list_for_each_entry(events, &ev_info.list, list) {
-+			if (events->sw_device_id == handle->sw_device_id &&
-+			    events->event_type == event_list[i]) {
-+				found = 1;
-+				break;
-+			}
-+		}
-+		if (!events || !found)
-+			return X_LINK_ERROR;
-+		pr_info("removing event %d for sw_device_id 0x%x\n",
-+			events->event_type, events->sw_device_id);
-+		list_del(&events->list);
-+		kfree(events);
-+	}
-+	// check if any events left for this sw_device_id
-+	// are still registered ( in list )
-+	list_for_each_entry(events, &ev_info.list, list) {
-+		if (events) {
-+			if (events->sw_device_id == handle->sw_device_id) {
-+				count++;
-+				break;
-+			}
-+		}
-+	}
-+	if (count == 0) {
-+		interface = get_interface_from_sw_device_id(handle->sw_device_id);
-+		if (interface == NULL_INTERFACE)
-+			return X_LINK_ERROR;
-+		xlink_platform_unregister_for_events(interface, handle->sw_device_id);
-+	}
-+	return X_LINK_SUCCESS;
-+}
-+EXPORT_SYMBOL_GPL(xlink_unregister_device_event);
-+
- /* Device tree driver match. */
- static const struct of_device_id kmb_xlink_of_match[] = {
- 	{
-diff --git a/drivers/misc/xlink-core/xlink-core.h b/drivers/misc/xlink-core/xlink-core.h
-index 5ba7ac653bf7..ee10058a15ac 100644
---- a/drivers/misc/xlink-core/xlink-core.h
-+++ b/drivers/misc/xlink-core/xlink-core.h
-@@ -12,11 +12,14 @@
- 
- #define NUM_REG_EVENTS 4
- 
--enum xlink_error do_xlink_write_volatile(struct xlink_handle *handle,
--					 u16 chan, u8 const *message,
--					 u32 size, u32 user_flag);
--
- enum xlink_error xlink_write_data_user(struct xlink_handle *handle,
- 				       u16 chan, u8 const *pmessage,
- 				       u32 size);
-+enum xlink_error xlink_register_device_event_user(struct xlink_handle *handle,
-+						  u32 *event_list,
-+						  u32 num_events,
-+						  xlink_device_event_cb event_notif_fn);
-+enum xlink_error xlink_write_volatile_user(struct xlink_handle *handle,
-+					   u16 chan, u8 const *message,
-+					   u32 size);
- #endif /* XLINK_CORE_H_ */
-diff --git a/drivers/misc/xlink-core/xlink-defs.h b/drivers/misc/xlink-core/xlink-defs.h
-index 8985f6631175..81aa3bfffcd3 100644
---- a/drivers/misc/xlink-core/xlink-defs.h
-+++ b/drivers/misc/xlink-core/xlink-defs.h
-@@ -35,7 +35,7 @@
- #define CONTROL_CHANNEL_TIMEOUT_MS	0U	// wait indefinitely
- #define SIGXLNK				44	// signal XLink uses for callback signalling
- 
--#define UNUSED(x) (void)(x)
-+#define UNUSED(x) ((void)(x))
- 
- // the end of the IPC channel range (starting at zero)
- #define XLINK_IPC_MAX_CHANNELS	1024
-@@ -102,6 +102,8 @@ enum xlink_event_type {
- 	XLINK_CLOSE_CHANNEL_REQ,
- 	XLINK_PING_REQ,
- 	XLINK_WRITE_CONTROL_REQ,
-+	XLINK_DATA_READY_CALLBACK_REQ,
-+	XLINK_DATA_CONSUMED_CALLBACK_REQ,
- 	XLINK_REQ_LAST,
- 	// response events
- 	XLINK_WRITE_RESP = 0x10,
-@@ -113,6 +115,8 @@ enum xlink_event_type {
- 	XLINK_CLOSE_CHANNEL_RESP,
- 	XLINK_PING_RESP,
- 	XLINK_WRITE_CONTROL_RESP,
-+	XLINK_DATA_READY_CALLBACK_RESP,
-+	XLINK_DATA_CONSUMED_CALLBACK_RESP,
- 	XLINK_RESP_LAST,
- };
- 
-diff --git a/drivers/misc/xlink-core/xlink-dispatcher.c b/drivers/misc/xlink-core/xlink-dispatcher.c
-index 11ef8e4110ca..bc2f184488ac 100644
---- a/drivers/misc/xlink-core/xlink-dispatcher.c
-+++ b/drivers/misc/xlink-core/xlink-dispatcher.c
-@@ -5,18 +5,18 @@
-  * Copyright (C) 2018-2019 Intel Corporation
-  *
-  */
--#include <linux/init.h>
--#include <linux/module.h>
-+#include <linux/completion.h>
- #include <linux/device.h>
++#include <linux/hddl_device.h>
++#include <linux/i2c.h>
 +#include <linux/init.h>
- #include <linux/kernel.h>
--#include <linux/slab.h>
- #include <linux/kthread.h>
- #include <linux/list.h>
--#include <linux/semaphore.h>
++#include <linux/kernel.h>
++#include <linux/kmod.h>
++#include <linux/kthread.h>
 +#include <linux/module.h>
- #include <linux/mutex.h>
--#include <linux/completion.h>
--#include <linux/sched/signal.h>
- #include <linux/platform_device.h>
-+#include <linux/sched/signal.h>
-+#include <linux/semaphore.h>
++#include <linux/platform_device.h>
 +#include <linux/slab.h>
- 
- #include "xlink-dispatcher.h"
- #include "xlink-multiplexer.h"
-@@ -34,18 +34,18 @@ enum dispatcher_state {
- 
- /* queue for dispatcher tx thread event handling */
- struct event_queue {
-+	struct list_head head;	/* head of event linked list */
- 	u32 count;		/* number of events in the queue */
- 	u32 capacity;		/* capacity of events in the queue */
--	struct list_head head;	/* head of event linked list */
- 	struct mutex lock;	/* locks queue while accessing */
- };
- 
- /* dispatcher servicing a single link to a device */
- struct dispatcher {
- 	u32 link_id;			/* id of link being serviced */
-+	int interface;			/* underlying interface of link */
- 	enum dispatcher_state state;	/* state of the dispatcher */
- 	struct xlink_handle *handle;	/* xlink device handle */
--	int interface;			/* underlying interface of link */
- 	struct task_struct *rxthread;	/* kthread servicing rx */
- 	struct task_struct *txthread;	/* kthread servicing tx */
- 	struct event_queue queue;	/* xlink event queue */
-@@ -82,7 +82,7 @@ static struct dispatcher *get_dispatcher_by_id(u32 id)
- 
- static u32 event_generate_id(void)
- {
--	static u32 id = 0xa; // TODO: temporary solution
-+	static u32 id = 0xa;
- 
- 	return id++;
- }
-@@ -142,9 +142,6 @@ static int dispatcher_event_send(struct xlink_event *event)
- 	size_t event_header_size = sizeof(event->header);
- 	int rc;
- 
--	// write event header
--	// printk(KERN_DEBUG "Sending event: type = 0x%x, id = 0x%x\n",
--			// event->header.type, event->header.id);
- 	rc = xlink_platform_write(event->interface,
- 				  event->handle->sw_device_id, &event->header,
- 				  &event_header_size, event->header.timeout, NULL);
-@@ -159,8 +156,10 @@ static int dispatcher_event_send(struct xlink_event *event)
- 					  event->handle->sw_device_id, event->data,
- 					  &event->header.size, event->header.timeout,
- 					  NULL);
--		if (rc)
-+		if (rc) {
- 			pr_err("Write data failed %d\n", rc);
-+			return rc;
++#include <linux/stddef.h>
++#include <linux/time.h>
++#include <linux/xlink.h>
++
++struct xlink_msg {
++	u16			addr;
++	u16			flags;
++	u8			read_write;
++	u8			command;
++	u16			padding;
++	u32			protocol;
++	union i2c_smbus_data	data;
++	s32			status;
++	struct list_head	node;
++};
++
++struct xlink_adapter_data {
++	struct	xlink_handle *xhandle;
++	struct	completion work;
++	struct	task_struct *task_recv;
++	struct	i2c_client *slave;
++	struct	list_head head;
++	struct	i2c_adapter *adap;
++	u32     channel;
++};
++
++#if defined(CONFIG_XLINK_SMBUS_PROXY)
++/*
++ * PROXY the commands using existing adapter
++ * I2C2 is fixed for Keem Bay, it has all sensors connected
++ */
++#define proxy_i2c_adapter_info() i2c_get_adapter(2)
++#else
++/*
++ * This is an adapter by itself
++ * It doesn't proxy transfer on another adapter
++ */
++#define proxy_i2c_adapter_info() ((void *)0)
++#endif
++
++#if IS_ENABLED(CONFIG_I2C_SLAVE)
++/*
++ * The complete slave protocol is implemented in one shot here as
++ * the whole chunk of data is transferred or received via xlink,
++ * not byte-by-byte
++ * Refer https://lwn.net/Articles/640346/ for protocol
++ */
++static s32 handle_slave_mode(struct i2c_client *slave, struct xlink_msg *msg)
++{
++	struct device *dev = &slave->dev;
++	u8 temp;
++
++	/* Send the command as first write */
++	i2c_slave_event(slave, I2C_SLAVE_WRITE_REQUESTED, NULL);
++	i2c_slave_event(slave, I2C_SLAVE_WRITE_RECEIVED, &msg->command);
++
++	/* Now handle specifics to read/write */
++	if (msg->read_write == I2C_SMBUS_WRITE) {
++		if (msg->protocol == I2C_SMBUS_BYTE_DATA) {
++			i2c_slave_event(slave, I2C_SLAVE_WRITE_RECEIVED,
++					&msg->data.byte);
++		} else if (msg->protocol == I2C_SMBUS_WORD_DATA) {
++			temp = msg->data.word & 0xFF;
++			i2c_slave_event(slave,
++					I2C_SLAVE_WRITE_RECEIVED,
++					&temp);
++			temp = (msg->data.word >> 8) & 0xFF;
++			i2c_slave_event(slave,
++					I2C_SLAVE_WRITE_RECEIVED,
++					&temp);
++		} else if (msg->protocol == I2C_SMBUS_BLOCK_DATA) {
++			int i;
++
++			if (msg->data.block[0] > I2C_SMBUS_BLOCK_MAX)
++				return -EPROTO;
++
++			for (i = 1; (i < msg->data.block[0] ||
++				     i <= I2C_SMBUS_BLOCK_MAX); ++i) {
++				i2c_slave_event(slave,
++						I2C_SLAVE_WRITE_RECEIVED,
++						&msg->data.block[i]);
++			}
++		} else {
++			dev_err(dev,
++				"unknown protocol (%d) received in %s\n",
++				msg->protocol,
++				__func__
++				);
++			return -EOPNOTSUPP;
 +		}
- 		if (event->user_data == 1) {
- 			if (event->paddr != 0) {
- 				xlink_platform_deallocate(xlinkd->dev,
-@@ -187,7 +186,6 @@ static int xlink_dispatcher_rxthread(void *context)
- 	size_t size;
- 	int rc;
- 
--	// printk(KERN_DEBUG "dispatcher rxthread started\n");
- 	event = xlink_create_event(disp->link_id, 0, disp->handle, 0, 0, 0);
- 	if (!event)
- 		return -1;
-@@ -214,7 +212,6 @@ static int xlink_dispatcher_rxthread(void *context)
- 			}
- 		}
- 	}
--	// printk(KERN_INFO "dispatcher rxthread stopped\n");
- 	complete(&disp->rx_done);
- 	do_exit(0);
- 	return 0;
-@@ -225,7 +222,6 @@ static int xlink_dispatcher_txthread(void *context)
- 	struct dispatcher *disp = (struct dispatcher *)context;
- 	struct xlink_event *event;
- 
--	// printk(KERN_DEBUG "dispatcher txthread started\n");
- 	allow_signal(SIGTERM); // allow thread termination while waiting on sem
- 	complete(&disp->tx_done);
- 	while (!kthread_should_stop()) {
-@@ -236,7 +232,6 @@ static int xlink_dispatcher_txthread(void *context)
- 		dispatcher_event_send(event);
- 		xlink_destroy_event(event); // free handled event
- 	}
--	// printk(KERN_INFO "dispatcher txthread stopped\n");
- 	complete(&disp->tx_done);
- 	do_exit(0);
- 	return 0;
-@@ -250,6 +245,7 @@ static int xlink_dispatcher_txthread(void *context)
- enum xlink_error xlink_dispatcher_init(void *dev)
- {
- 	struct platform_device *plat_dev = (struct platform_device *)dev;
-+	struct dispatcher *dsp;
- 	int i;
- 
- 	xlinkd = kzalloc(sizeof(*xlinkd), GFP_KERNEL);
-@@ -258,16 +254,16 @@ enum xlink_error xlink_dispatcher_init(void *dev)
- 
- 	xlinkd->dev = &plat_dev->dev;
- 	for (i = 0; i < XLINK_MAX_CONNECTIONS; i++) {
--		xlinkd->dispatchers[i].link_id = i;
--		sema_init(&xlinkd->dispatchers[i].event_sem, 0);
--		init_completion(&xlinkd->dispatchers[i].rx_done);
--		init_completion(&xlinkd->dispatchers[i].tx_done);
--		INIT_LIST_HEAD(&xlinkd->dispatchers[i].queue.head);
--		mutex_init(&xlinkd->dispatchers[i].queue.lock);
--		xlinkd->dispatchers[i].queue.count = 0;
--		xlinkd->dispatchers[i].queue.capacity =
--				XLINK_EVENT_QUEUE_CAPACITY;
--		xlinkd->dispatchers[i].state = XLINK_DISPATCHER_INIT;
-+		dsp = &xlinkd->dispatchers[i];
-+		dsp->link_id = i;
-+		sema_init(&dsp->event_sem, 0);
-+		init_completion(&dsp->rx_done);
-+		init_completion(&dsp->tx_done);
-+		INIT_LIST_HEAD(&dsp->queue.head);
-+		mutex_init(&dsp->queue.lock);
-+		dsp->queue.count = 0;
-+		dsp->queue.capacity = XLINK_EVENT_QUEUE_CAPACITY;
-+		dsp->state = XLINK_DISPATCHER_INIT;
- 	}
- 	mutex_init(&xlinkd->lock);
- 
-@@ -329,7 +325,7 @@ enum xlink_error xlink_dispatcher_event_add(enum xlink_event_origin origin,
- 	struct dispatcher *disp;
- 	int rc;
- 
--	// get dispatcher by handle
-+	// get dispatcher by link id
- 	disp = get_dispatcher_by_id(event->link_id);
- 	if (!disp)
- 		return X_LINK_ERROR;
-@@ -433,7 +429,6 @@ enum xlink_error xlink_dispatcher_destroy(void)
- 			}
- 			xlink_destroy_event(event);
- 		}
--		// destroy dispatcher
- 		mutex_destroy(&disp->queue.lock);
- 	}
- 	mutex_destroy(&xlinkd->lock);
-diff --git a/drivers/misc/xlink-core/xlink-ioctl.c b/drivers/misc/xlink-core/xlink-ioctl.c
-index 90947bbccfed..7822a7b35bb6 100644
---- a/drivers/misc/xlink-core/xlink-ioctl.c
-+++ b/drivers/misc/xlink-core/xlink-ioctl.c
-@@ -28,15 +28,6 @@ static int copy_result_to_user(u32 *where, int rc)
- 	return rc;
- }
- 
--static enum xlink_error xlink_write_volatile_user(struct xlink_handle *handle,
--						  u16 chan, u8 const *message, u32 size)
--{
--	enum xlink_error rc = 0;
--
--	rc = do_xlink_write_volatile(handle, chan, message, size, 1);
--	return rc;
--}
--
- int ioctl_connect(unsigned long arg)
- {
- 	struct xlink_handle	devh	= {};
-@@ -158,6 +149,28 @@ int ioctl_write_data(unsigned long arg)
- 	return copy_result_to_user(wr.return_code, rc);
- }
- 
-+int ioctl_write_control_data(unsigned long arg)
-+{
-+	struct xlink_handle	devh	= {};
-+	struct xlinkwritedata	wr	= {};
-+	u8 volbuf[XLINK_MAX_BUF_SIZE];
-+	int rc = 0;
++	} else {
++		if (msg->protocol == I2C_SMBUS_BYTE_DATA) {
++			i2c_slave_event(slave,
++					I2C_SLAVE_READ_REQUESTED,
++					&msg->data.byte);
++		} else if (msg->protocol == I2C_SMBUS_WORD_DATA) {
++			i2c_slave_event(slave,
++					I2C_SLAVE_READ_REQUESTED,
++					&temp);
++			msg->data.word = temp << 8;
++			i2c_slave_event(slave,
++					I2C_SLAVE_READ_REQUESTED,
++					&temp);
++			msg->data.word |= temp;
++		} else if (msg->protocol == I2C_SMBUS_BLOCK_DATA) {
++			int i;
 +
-+	if (copy_from_user(&wr, (void __user *)arg,
-+			   sizeof(struct xlinkwritedata)))
-+		return -EFAULT;
-+	if (copy_from_user(&devh, (void __user *)wr.handle,
-+			   sizeof(struct xlink_handle)))
-+		return -EFAULT;
-+	if (wr.size > XLINK_MAX_CONTROL_DATA_SIZE)
-+		return -EFAULT;
-+	if (copy_from_user(volbuf, (void __user *)wr.pmessage, wr.size))
-+		return -EFAULT;
-+	rc = xlink_write_control_data(&devh, wr.chan, volbuf, wr.size);
++			if (msg->data.block[0] > I2C_SMBUS_BLOCK_MAX)
++				return -EPROTO;
 +
-+	return copy_result_to_user(wr.return_code, rc);
++			for (i = 1; (i < msg->data.block[0] ||
++				     i <= I2C_SMBUS_BLOCK_MAX); ++i) {
++				i2c_slave_event(slave,
++						I2C_SLAVE_READ_REQUESTED,
++						&msg->data.block[i]);
++			}
++		} else {
++			dev_err(dev,
++				"unknown protocol (%d) received in %s\n",
++				msg->protocol,
++				__func__);
++			return -EOPNOTSUPP;
++		}
++		i2c_slave_event(slave, I2C_SLAVE_READ_PROCESSED, &temp);
++	}
++	i2c_slave_event(slave, I2C_SLAVE_STOP, NULL);
++	return 0;
 +}
++#endif /* CONFIG_I2C_SLAVE */
 +
- int ioctl_write_volatile_data(unsigned long arg)
- {
- 	struct xlink_handle	devh	= {};
-@@ -242,6 +255,14 @@ int ioctl_start_vpu(unsigned long arg)
- 	return copy_result_to_user(startvpu.return_code, rc);
- }
- 
-+int ioctl_stop_vpu(void)
++static s32 xlink_smbus_xfer(struct i2c_adapter *adap, u16 addr,
++			    unsigned short flags, char read_write,
++			    u8 command, int protocol,
++			    union i2c_smbus_data *data)
 +{
-+	int rc = 0;
++	struct xlink_adapter_data *adapt_data = NULL;
++	struct device *dev = NULL;
++	struct xlink_msg tx_msg, *rx_msg;
++	enum xlink_error xerr;
++	s32 rc = 0;
 +
-+	rc = xlink_stop_vpu();
++	if (!adap)
++		return -ENODEV;
++	adapt_data = i2c_get_adapdata(adap);
++	dev = &adapt_data->adap->dev;
++
++	if (!data)
++		return -EINVAL;
++
++	tx_msg.addr = addr;
++	tx_msg.flags = flags;
++	tx_msg.read_write = read_write;
++	tx_msg.command = command;
++	tx_msg.protocol = protocol;
++	tx_msg.data = *data;
++	tx_msg.status = 0;
++
++	xerr = xlink_write_data(adapt_data->xhandle, adapt_data->channel,
++				(u8 *)&tx_msg,
++				sizeof(struct xlink_msg));
++
++	if (xerr != X_LINK_SUCCESS) {
++		dev_err_ratelimited(dev,
++				    "xlink_write_data failed (%d) dropping packet.\n",
++				    xerr);
++		return -EIO;
++	}
++
++	/*
++	 * wait for getting the response from the peer host device
++	 * message is received by xlinki2c_receive_thread
++	 * and notified here through completion trigger
++	 */
++	if (wait_for_completion_interruptible_timeout(&adapt_data->work,
++						      4 * HZ) > 0) {
++		rx_msg = list_first_entry(&adapt_data->head,
++					  struct xlink_msg,
++					  node);
++		list_del(&rx_msg->node);
++
++		/* Update the data and status from the xlink message received */
++		*data = rx_msg->data;
++		rc = rx_msg->status;
++
++		/* free the response received from Proxy */
++		kfree(rx_msg);
++	} else {
++		WARN_ONCE(1, "VPU not responding");
++		rc = -ETIMEDOUT;
++	}
++
 +	return rc;
 +}
 +
- int ioctl_disconnect(unsigned long arg)
- {
- 	struct xlink_handle	devh	= {};
-@@ -424,3 +445,110 @@ int ioctl_set_device_mode(unsigned long arg)
- 
- 	return copy_result_to_user(devm.return_code, rc);
- }
-+
-+int ioctl_register_device_event(unsigned long arg)
++static int xlinki2c_receive_thread(void *param)
 +{
-+	struct xlink_handle	devh	= {};
-+	struct xlinkregdevevent	regdevevent = {};
-+	u32 num_events = 0;
-+	u32 *ev_list;
-+	int rc = 0;
++	struct xlink_adapter_data *adapt_data = param;
++	struct device *dev = &adapt_data->adap->dev;
++	struct i2c_adapter *adap;
++	enum xlink_error xerr;
++	struct xlink_msg *msg;
++	u32 size;
 +
-+	if (copy_from_user(&regdevevent, (void __user *)arg,
-+			   sizeof(struct xlinkregdevevent)))
-+		return -EFAULT;
-+	if (copy_from_user(&devh, (void __user *)regdevevent.handle,
-+			   sizeof(struct xlink_handle)))
-+		return -EFAULT;
-+	num_events = regdevevent.num_events;
-+	if (num_events > 0 && num_events <= NUM_REG_EVENTS) {
-+		ev_list = kzalloc((num_events * sizeof(u32)), GFP_KERNEL);
-+		if (ev_list) {
-+			if (copy_from_user(ev_list,
-+					   (void __user *)regdevevent.event_list,
-+					   (num_events * sizeof(u32)))) {
-+				kfree(ev_list);
-+				return -EFAULT;
++	while (!kthread_should_stop()) {
++		/* msg will be freed in this context or other */
++		msg = kzalloc(sizeof(*msg), GFP_KERNEL);
++		if (!msg)
++			return -ENOMEM;
++
++		/* Wait to receive xlink message from the peer device */
++		xerr = xlink_read_data_to_buffer(adapt_data->xhandle,
++						 adapt_data->channel,
++						 (uint8_t *)msg, &size);
++		if (xerr != X_LINK_SUCCESS) {
++			if (xerr != X_LINK_TIMEOUT) {
++				dev_warn_ratelimited(dev,
++						     "[%d] Error (%d) dropping packet.\n",
++						     adapt_data->adap->nr, xerr);
 +			}
-+			rc = xlink_register_device_event_user(&devh,
-+							      ev_list,
-+							      num_events,
-+							      NULL);
-+			kfree(ev_list);
-+		} else {
-+			rc = X_LINK_ERROR;
++			kfree(msg);
++			continue;
 +		}
-+	} else {
-+		rc = X_LINK_ERROR;
-+	}
++		xlink_release_data(adapt_data->xhandle, adapt_data->channel,
++				   NULL);
++		adap = proxy_i2c_adapter_info();
 +
-+	return copy_result_to_user(regdevevent.return_code, rc);
-+}
-+
-+int ioctl_unregister_device_event(unsigned long arg)
-+{
-+	struct xlink_handle	devh	= {};
-+	struct xlinkregdevevent	regdevevent = {};
-+	u32 num_events = 0;
-+	u32 *ev_list;
-+	int rc = 0;
-+
-+	if (copy_from_user(&regdevevent, (void __user *)arg,
-+			   sizeof(struct xlinkregdevevent)))
-+		return -EFAULT;
-+	if (copy_from_user(&devh, (void __user *)regdevevent.handle,
-+			   sizeof(struct xlink_handle)))
-+		return -EFAULT;
-+	num_events = regdevevent.num_events;
-+	if (num_events <= NUM_REG_EVENTS) {
-+		ev_list = kzalloc((num_events * sizeof(u32)), GFP_KERNEL);
-+		if (copy_from_user(ev_list,
-+				   (void __user *)regdevevent.event_list,
-+				   (num_events * sizeof(u32)))) {
-+			kfree(ev_list);
-+			return -EFAULT;
-+		}
-+		rc = xlink_unregister_device_event(&devh, ev_list, num_events);
-+		kfree(ev_list);
-+	} else {
-+		rc = X_LINK_ERROR;
-+	}
-+
-+	return copy_result_to_user(regdevevent.return_code, rc);
-+}
-+
-+int ioctl_data_ready_callback(unsigned long arg)
-+{
-+	struct xlink_handle	devh	= {};
-+	struct xlinkcallback	cb	= {};
-+	int rc = 0;
-+
-+	if (copy_from_user(&cb, (void __user *)arg,
-+			   sizeof(struct xlinkcallback)))
-+		return -EFAULT;
-+	if (copy_from_user(&devh, (void __user *)cb.handle,
-+			   sizeof(struct xlink_handle)))
-+		return -EFAULT;
-+	CHANNEL_SET_USER_BIT(cb.chan); // set MSbit for user space call
-+	rc = xlink_data_available_event(&devh, cb.chan, cb.callback);
-+
-+	return copy_result_to_user(cb.return_code, rc);
-+}
-+
-+int ioctl_data_consumed_callback(unsigned long arg)
-+{
-+	struct xlink_handle	devh	= {};
-+	struct xlinkcallback	cb	= {};
-+	int rc = 0;
-+
-+	if (copy_from_user(&cb, (void __user *)arg,
-+			   sizeof(struct xlinkcallback)))
-+		return -EFAULT;
-+	if (copy_from_user(&devh, (void __user *)cb.handle,
-+			   sizeof(struct xlink_handle)))
-+		return -EFAULT;
-+	CHANNEL_SET_USER_BIT(cb.chan); // set MSbit for user space call
-+	rc = xlink_data_consumed_event(&devh, cb.chan, cb.callback);
-+
-+	return copy_result_to_user(cb.return_code, rc);
-+}
-diff --git a/drivers/misc/xlink-core/xlink-ioctl.h b/drivers/misc/xlink-core/xlink-ioctl.h
-index d016d8418f30..7818b676d488 100644
---- a/drivers/misc/xlink-core/xlink-ioctl.h
-+++ b/drivers/misc/xlink-core/xlink-ioctl.h
-@@ -14,10 +14,12 @@ int ioctl_open_channel(unsigned long arg);
- int ioctl_read_data(unsigned long arg);
- int ioctl_read_to_buffer(unsigned long arg);
- int ioctl_write_data(unsigned long arg);
-+int ioctl_write_control_data(unsigned long arg);
- int ioctl_write_volatile_data(unsigned long arg);
- int ioctl_release_data(unsigned long arg);
- int ioctl_close_channel(unsigned long arg);
- int ioctl_start_vpu(unsigned long arg);
-+int ioctl_stop_vpu(void);
- int ioctl_disconnect(unsigned long arg);
- int ioctl_get_device_name(unsigned long arg);
- int ioctl_get_device_list(unsigned long arg);
-@@ -26,5 +28,9 @@ int ioctl_boot_device(unsigned long arg);
- int ioctl_reset_device(unsigned long arg);
- int ioctl_get_device_mode(unsigned long arg);
- int ioctl_set_device_mode(unsigned long arg);
-+int ioctl_register_device_event(unsigned long arg);
-+int ioctl_unregister_device_event(unsigned long arg);
-+int ioctl_data_ready_callback(unsigned long arg);
-+int ioctl_data_consumed_callback(unsigned long arg);
- 
- #endif /* XLINK_IOCTL_H_ */
-diff --git a/drivers/misc/xlink-core/xlink-multiplexer.c b/drivers/misc/xlink-core/xlink-multiplexer.c
-index 48451dc30712..e09458b62c45 100644
---- a/drivers/misc/xlink-core/xlink-multiplexer.c
-+++ b/drivers/misc/xlink-core/xlink-multiplexer.c
-@@ -115,6 +115,38 @@ static struct xlink_multiplexer *xmux;
-  *
-  */
- 
-+static enum xlink_error run_callback(struct open_channel *opchan,
-+				     void *callback, struct task_struct *pid)
-+{
-+	enum xlink_error rc = X_LINK_SUCCESS;
-+	struct kernel_siginfo info;
-+	void (*func)(int chan);
-+	int ret;
-+
-+	if (opchan->callback_origin == 'U') { // user-space origin
-+		if (pid) {
-+			memset(&info, 0, sizeof(struct kernel_siginfo));
-+			info.si_signo = SIGXLNK;
-+			info.si_code = SI_QUEUE;
-+			info.si_errno = opchan->id;
-+			info.si_ptr = (void __user *)callback;
-+			ret = send_sig_info(SIGXLNK, &info, pid);
-+			if (ret < 0) {
-+				pr_err("Unable to send signal %d\n", ret);
-+				rc = X_LINK_ERROR;
++		if (adap) {
++#if IS_ENABLED(CONFIG_I2C_SLAVE)
++			if (adapt_data->slave) {
++				msg->status = handle_slave_mode
++					(adapt_data->slave, msg);
++				goto send_resp;
 +			}
++#endif
++			/*
++			 * This is a proxy for an existing adapter.
++			 * call the local adapter to receive the data
++			 * from the hardware.
++			 */
++			msg->status = i2c_smbus_xfer(adap,
++						     msg->addr,
++						     msg->flags,
++						     msg->read_write,
++						     msg->command,
++						     msg->protocol,
++						     &msg->data);
++
++			/*
++			 * Send back the complete message that
++			 * carries status, back to sender which is
++			 * waiting on xlinki2c_receive_thread
++			 */
++#if IS_ENABLED(CONFIG_I2C_SLAVE)
++send_resp:
++#endif
++			xlink_write_data(adapt_data->xhandle,
++					 adapt_data->channel, (u8 *)msg,
++					 sizeof(struct xlink_msg));
++			kfree(msg);
 +		} else {
-+			pr_err("CHAN 0x%x -- calling_pid == NULL\n",
-+			       opchan->id);
-+			rc = X_LINK_ERROR;
++			/*
++			 * This is an adapter on its own.
++			 * Receives the status and data over xlink (msg).
++			 * Indicate the data received to the component
++			 * which is waiting in xlink_smbus_xfer
++			 */
++			list_add_tail(&msg->node, &adapt_data->head);
++			complete(&adapt_data->work);
 +		}
-+	} else { // kernel origin
-+		func = callback;
-+		func(opchan->id);
++	} /* thread loop */
++	dev_dbg(dev, "[%d] %s stopped\n", adapt_data->adap->nr, __func__);
++
++	return 0;
++}
++
++static inline u32 xlink_smbus_func(struct i2c_adapter *adapter)
++{
++	u32 func = I2C_FUNC_SMBUS_QUICK | I2C_FUNC_SMBUS_BYTE |
++		I2C_FUNC_SMBUS_BYTE_DATA | I2C_FUNC_SMBUS_WORD_DATA |
++		I2C_FUNC_SMBUS_BLOCK_DATA;
++
++	return func;
++}
++
++#if IS_ENABLED(CONFIG_I2C_SLAVE)
++
++/*
++ * This will be called when slave client driver
++ * register itself to an adapter
++ */
++static int xlink_smbus_reg_slave(struct i2c_client *slave)
++{
++	struct xlink_adapter_data *adapt_data =
++				i2c_get_adapdata(slave->adapter);
++
++	adapt_data->slave = slave;
++
++	return 0;
++}
++
++static int xlink_smbus_unreg_slave(struct i2c_client *slave)
++{
++	struct xlink_adapter_data *adapt_data =
++				i2c_get_adapdata(slave->adapter);
++
++	adapt_data->slave = NULL;
++
++	return 0;
++}
++#endif
++
++static struct i2c_algorithm xlink_algorithm = {
++	.smbus_xfer     = xlink_smbus_xfer,
++	.functionality  = xlink_smbus_func,
++#if IS_ENABLED(CONFIG_I2C_SLAVE)
++	.reg_slave      = xlink_smbus_reg_slave,
++	.unreg_slave    = xlink_smbus_unreg_slave,
++#endif
++};
++
++static int xlink_i2c_probe(struct platform_device *pdev)
++{
++	struct intel_hddl_clients *c = pdev->dev.platform_data;
++	struct xlink_handle *devhandle = &c->xlink_dev;
++	struct xlink_adapter_data *adapt_data;
++	struct device *dev = &pdev->dev;
++	struct i2c_adapter *adap;
++	u32 rc;
++
++	dev_dbg(dev, "Registering xlink SMBus adapter...\n");
++
++	adap = kzalloc(sizeof(*adap), GFP_KERNEL);
++	if (!adap)
++		return -ENOMEM;
++
++	c->adap[pdev->id & 0x3] = adap;
++	memset(adap, 0, sizeof(struct i2c_adapter));
++	adap->owner  = THIS_MODULE;
++	adap->algo   = &xlink_algorithm;
++	strcpy(adap->name, "xlink adapter");
++	platform_set_drvdata(pdev, adap);
++
++	adapt_data = kzalloc(sizeof(*adapt_data), GFP_KERNEL);
++	if (!adapt_data) {
++		kfree(adap);
++		return -ENOMEM;
 +	}
++
++	init_completion(&adapt_data->work);
++
++	INIT_LIST_HEAD(&adapt_data->head);
++	adapt_data->channel = c->xlink_i2c_ch[pdev->id & 0x3];
++	adapt_data->xhandle = devhandle;
++	adapt_data->adap = adap;
++
++	rc = xlink_open_channel(devhandle,
++				adapt_data->channel,
++				RXB_TXB,  /* mode */
++				64 * 1024,
++				100);  /* timeout */
++	if (rc != X_LINK_SUCCESS) {
++		dev_err(dev, "xlink_open_channel failed[%d][%d][%p]\n", rc,
++			adapt_data->channel,
++			adapt_data->xhandle);
++		goto err_kfree;
++	}
++
++	i2c_set_adapdata(adap, adapt_data);
++
++	rc = i2c_add_adapter(adap);
++	if (rc)
++		goto err_exit;
++
++	/* Create receiver thread */
++	adapt_data->task_recv = kthread_run(xlinki2c_receive_thread,
++					    adapt_data,
++					    "xlinki2c_receive_thread");
++	if (!adapt_data->task_recv) {
++		dev_err(dev, "%s Thread creation failed", __func__);
++		i2c_del_adapter(adapt_data->adap);
++		goto err_exit;
++	}
++	return 0;
++
++err_exit:
++	xlink_close_channel(adapt_data->xhandle, adapt_data->channel);
++err_kfree:
++	kfree(adap);
++	kfree(adapt_data);
 +	return rc;
 +}
 +
- static inline int chan_is_non_blocking_read(struct open_channel *opchan)
- {
- 	if (opchan->chan->mode == RXN_TXN || opchan->chan->mode == RXN_TXB)
-@@ -151,7 +183,7 @@ static int is_channel_for_device(u16 chan, u32 sw_device_id,
- 				 enum xlink_dev_type dev_type)
- {
- 	struct xlink_channel_type const *chan_type = get_channel_type(chan);
--	int interface = NULL_INTERFACE;
-+	int interface;
- 
- 	if (chan_type) {
- 		interface = get_interface_from_sw_device_id(sw_device_id);
-@@ -181,13 +213,9 @@ static int is_enough_space_in_channel(struct open_channel *opchan,
- 		}
- 	}
- 	if (opchan->tx_up_limit == 1) {
--		if ((opchan->tx_fill_level + size)
--				< ((opchan->chan->size / 100) * THR_LWR)) {
--			opchan->tx_up_limit = 0;
--			return 1;
--		} else {
-+		if ((opchan->tx_fill_level + size) >=
-+		   ((opchan->chan->size / 100) * THR_LWR))
- 			return 0;
--		}
- 	}
- 	return 1;
- }
-@@ -231,6 +259,8 @@ static int add_packet_to_channel(struct open_channel *opchan,
- 		list_add_tail(&pkt->list, &queue->head);
- 		queue->count++;
- 		opchan->rx_fill_level += pkt->length;
-+	} else {
-+		return X_LINK_ERROR;
- 	}
- 	return X_LINK_SUCCESS;
- }
-@@ -262,9 +292,11 @@ static int release_packet_from_channel(struct open_channel *opchan,
- 	} else {
- 		// find packet in channel rx queue
- 		list_for_each_entry(pkt, &queue->head, list) {
--			if (pkt->data == addr) {
--				packet_found = 1;
--				break;
-+			if (pkt) {
-+				if (pkt->data == addr) {
-+					packet_found = 1;
-+					break;
-+				}
- 			}
- 		}
- 	}
-@@ -629,16 +661,46 @@ enum xlink_error xlink_multiplexer_tx(struct xlink_event *event,
- 			}
- 		} else if (xmux->channels[link_id][chan].status == CHAN_OPEN_PEER) {
- 			/* channel already open */
--			xmux->channels[link_id][chan].status = CHAN_OPEN; // opened locally
--			xmux->channels[link_id][chan].size = event->header.size;
--			xmux->channels[link_id][chan].timeout = event->header.timeout;
--			xmux->channels[link_id][chan].mode = (uintptr_t)event->data;
- 			rc = multiplexer_open_channel(link_id, chan);
-+			if (rc == X_LINK_SUCCESS) {
-+				struct channel *xchan = &xmux->channels[link_id][chan];
-+
-+				xchan->status	= CHAN_OPEN; // opened locally
-+				xchan->size	= event->header.size;
-+				xchan->timeout	= event->header.timeout;
-+				xchan->mode	= (uintptr_t)event->data;
-+			}
- 		} else {
- 			/* channel already open */
- 			rc = X_LINK_ALREADY_OPEN;
- 		}
- 		break;
-+	case XLINK_DATA_READY_CALLBACK_REQ:
-+		opchan = get_channel(link_id, chan);
-+		if (!opchan) {
-+			rc = X_LINK_COMMUNICATION_FAIL;
-+		} else {
-+			opchan->ready_callback = event->data;
-+			opchan->ready_calling_pid = event->calling_pid;
-+			opchan->callback_origin = event->callback_origin;
-+			pr_info("xlink ready callback process registered - %lx chan %d\n",
-+				(uintptr_t)event->calling_pid, chan);
-+			release_channel(opchan);
-+		}
-+		break;
-+	case XLINK_DATA_CONSUMED_CALLBACK_REQ:
-+		opchan = get_channel(link_id, chan);
-+		if (!opchan) {
-+			rc = X_LINK_COMMUNICATION_FAIL;
-+		} else {
-+			opchan->consumed_callback = event->data;
-+			opchan->consumed_calling_pid = event->calling_pid;
-+			opchan->callback_origin = event->callback_origin;
-+			pr_info("xlink consumed callback process registered - %lx chan %d\n",
-+				(uintptr_t)event->calling_pid, chan);
-+			release_channel(opchan);
-+		}
-+		break;
- 	case XLINK_CLOSE_CHANNEL_REQ:
- 		if (xmux->channels[link_id][chan].status == CHAN_OPEN) {
- 			opchan = get_channel(link_id, chan);
-@@ -709,7 +771,8 @@ enum xlink_error xlink_multiplexer_rx(struct xlink_event *event)
- 							  XLINK_PACKET_ALIGNMENT,
- 							  XLINK_NORMAL_MEMORY);
- 			} else {
--				pr_err("Fatal error: can't allocate memory in line:%d func:%s\n", __LINE__, __func__);
-+				pr_err("Fatal error: can't allocate memory in line:%d func:%s\n",
-+				       __LINE__, __func__);
- 			}
- 			rc = X_LINK_COMMUNICATION_FAIL;
- 		} else {
-@@ -754,6 +817,14 @@ enum xlink_error xlink_multiplexer_rx(struct xlink_event *event)
- 				xlink_dispatcher_event_add(EVENT_RX, event);
- 				//complete regardless of mode/timeout
- 				complete(&opchan->pkt_available);
-+				// run callback
-+				if (xmux->channels[link_id][chan].status == CHAN_OPEN &&
-+				    chan_is_non_blocking_read(opchan) &&
-+				    opchan->ready_callback) {
-+					rc = run_callback(opchan, opchan->ready_callback,
-+							  opchan->ready_calling_pid);
-+					break;
-+				}
- 			} else {
- 				// failed to allocate buffer
- 				rc = X_LINK_ERROR;
-@@ -813,6 +884,13 @@ enum xlink_error xlink_multiplexer_rx(struct xlink_event *event)
- 		xlink_dispatcher_event_add(EVENT_RX, event);
- 		//complete regardless of mode/timeout
- 		complete(&opchan->pkt_consumed);
-+		// run callback
-+		if (xmux->channels[link_id][chan].status == CHAN_OPEN &&
-+		    chan_is_non_blocking_write(opchan) &&
-+		    opchan->consumed_callback) {
-+			rc = run_callback(opchan, opchan->consumed_callback,
-+					  opchan->consumed_calling_pid);
-+		}
- 		release_channel(opchan);
- 		break;
- 	case XLINK_RELEASE_REQ:
-@@ -838,47 +916,47 @@ enum xlink_error xlink_multiplexer_rx(struct xlink_event *event)
- 			rc = multiplexer_open_channel(link_id, chan);
- 			if (rc) {
- 				rc = X_LINK_ERROR;
--			} else {
--				opchan = get_channel(link_id, chan);
--				if (!opchan) {
--					rc = X_LINK_COMMUNICATION_FAIL;
--				} else {
--					xmux->channels[link_id][chan].status = CHAN_OPEN_PEER;
--					complete(&opchan->opened);
--					passthru_event = xlink_create_event(link_id,
--									    XLINK_OPEN_CHANNEL_RESP,
--									    event->handle,
--									    chan,
--									    0,
--									    opchan->chan->timeout);
--					if (!passthru_event) {
--						rc = X_LINK_ERROR;
--						release_channel(opchan);
--						break;
--					}
--					xlink_dispatcher_event_add(EVENT_RX,
--								   passthru_event);
--				}
-+				break;
-+			}
-+			opchan = get_channel(link_id, chan);
-+			if (!opchan) {
-+				rc = X_LINK_COMMUNICATION_FAIL;
-+				break;
-+			}
-+			xmux->channels[link_id][chan].status = CHAN_OPEN_PEER;
-+			complete(&opchan->opened);
-+			passthru_event = xlink_create_event(link_id,
-+							    XLINK_OPEN_CHANNEL_RESP,
-+							    event->handle,
-+							    chan,
-+							    0,
-+							    opchan->chan->timeout);
-+			if (!passthru_event) {
-+				rc = X_LINK_ERROR;
- 				release_channel(opchan);
-+				break;
- 			}
-+			xlink_dispatcher_event_add(EVENT_RX,
-+						   passthru_event);
-+			release_channel(opchan);
- 		} else {
- 			/* channel already open */
- 			opchan = get_channel(link_id, chan);
- 			if (!opchan) {
- 				rc = X_LINK_COMMUNICATION_FAIL;
--			} else {
--				passthru_event = xlink_create_event(link_id,
--								    XLINK_OPEN_CHANNEL_RESP,
--								    event->handle,
--								    chan, 0, 0);
--				if (!passthru_event) {
--					release_channel(opchan);
--					rc = X_LINK_ERROR;
--					break;
--				}
--				xlink_dispatcher_event_add(EVENT_RX,
--							   passthru_event);
-+				break;
-+			}
-+			passthru_event = xlink_create_event(link_id,
-+							    XLINK_OPEN_CHANNEL_RESP,
-+							    event->handle,
-+							    chan, 0, 0);
-+			if (!passthru_event) {
-+				release_channel(opchan);
-+				rc = X_LINK_ERROR;
-+				break;
- 			}
-+			xlink_dispatcher_event_add(EVENT_RX,
-+						   passthru_event);
- 			release_channel(opchan);
- 		}
- 		rc = xlink_passthrough(event);
-@@ -930,7 +1008,7 @@ enum xlink_error xlink_passthrough(struct xlink_event *event)
- #ifdef CONFIG_XLINK_LOCAL_HOST
- 	struct xlink_ipc_context ipc = {0};
- 	phys_addr_t physaddr = 0;
--	dma_addr_t vpuaddr = 0;
-+	static dma_addr_t vpuaddr;
- 	u32 timeout = 0;
- 	u32 link_id;
- 	u16 chan;
-diff --git a/drivers/misc/xlink-core/xlink-platform.c b/drivers/misc/xlink-core/xlink-platform.c
-index 56eb8da28a5f..b0076cb3671d 100644
---- a/drivers/misc/xlink-core/xlink-platform.c
-+++ b/drivers/misc/xlink-core/xlink-platform.c
-@@ -56,6 +56,11 @@ static inline int xlink_ipc_close_channel(u32 sw_device_id,
- 					  u32 channel)
- { return -1; }
- 
-+static inline int xlink_ipc_register_for_events(u32 sw_device_id,
-+						int (*callback)(u32 sw_device_id, u32 event))
-+{ return -1; }
-+static inline int xlink_ipc_unregister_for_events(u32 sw_device_id)
-+{ return -1; }
- #endif /* CONFIG_XLINK_LOCAL_HOST */
- 
- /*
-@@ -95,6 +100,13 @@ static int (*open_chan_fcts[NMB_OF_INTERFACES])(u32, u32) = {
- 
- static int (*close_chan_fcts[NMB_OF_INTERFACES])(u32, u32) = {
- 		xlink_ipc_close_channel, NULL, NULL, NULL};
-+static int (*register_for_events_fcts[NMB_OF_INTERFACES])(u32,
-+						   int (*callback)(u32 sw_device_id, u32 event)) = {
-+								   xlink_ipc_register_for_events,
-+								   xlink_pcie_register_device_event,
-+								   NULL, NULL};
-+static int (*unregister_for_events_fcts[NMB_OF_INTERFACES])(u32) = {
-+		xlink_ipc_unregister_for_events, xlink_pcie_unregister_device_event, NULL, NULL};
- 
- /*
-  * xlink low-level driver interface
-@@ -207,6 +219,21 @@ int xlink_platform_close_channel(u32 interface, u32 sw_device_id,
- 	return close_chan_fcts[interface](sw_device_id, channel);
- }
- 
-+int xlink_platform_register_for_events(u32 interface, u32 sw_device_id,
-+				       xlink_device_event_cb event_notif_fn)
++static int xlink_i2c_remove(struct platform_device *pdev)
 +{
-+	if (interface >= NMB_OF_INTERFACES || !register_for_events_fcts[interface])
-+		return -1;
-+	return register_for_events_fcts[interface](sw_device_id, event_notif_fn);
++	struct i2c_adapter *adap = platform_get_drvdata(pdev);
++	struct xlink_adapter_data *adapt_data = i2c_get_adapdata(adap);
++
++	kthread_stop(adapt_data->task_recv);
++
++	dev_info(&adap->dev, "Delete the adapter[%d]\n", adap->nr);
++	/* Close the channel and disconnect */
++	xlink_close_channel(adapt_data->xhandle, adapt_data->channel);
++	/* This will block the dynamic registration */
++	i2c_del_adapter(adapt_data->adap);
++	kfree(adapt_data);
++
++	return 0;
 +}
 +
-+int xlink_platform_unregister_for_events(u32 interface, u32 sw_device_id)
++static struct platform_driver xlink_i2c_driver = {
++	.probe = xlink_i2c_probe,
++	.remove = xlink_i2c_remove,
++	.driver = {
++		.name   = "i2c_xlink"
++	}
++};
++
++/* Define the xlink debug device structures to be used with dev_dbg() et al */
++
++static struct device_driver dbg_name = {
++		.name = "xlink_i2c_dbg"
++};
++
++static struct device dbg_subname = {
++		.init_name = "xlink_i2c_dbg",
++		.driver = &dbg_name
++};
++
++static struct device *dbgxi2c = &dbg_subname;
++
++static void __exit xlink_adapter_exit(void)
 +{
-+	if (interface >= NMB_OF_INTERFACES || !unregister_for_events_fcts[interface])
-+		return -1;
-+	return unregister_for_events_fcts[interface](sw_device_id);
++	dev_dbg(dbgxi2c, "Unloading XLink I2C module...\n");
++	platform_driver_unregister(&xlink_i2c_driver);
 +}
 +
- void *xlink_platform_allocate(struct device *dev, dma_addr_t *handle,
- 			      u32 size, u32 alignment,
- 			      enum xlink_memory_region region)
-diff --git a/include/linux/xlink.h b/include/linux/xlink.h
-index b00dbc719530..ac196ff85469 100644
---- a/include/linux/xlink.h
-+++ b/include/linux/xlink.h
-@@ -70,6 +70,12 @@ enum xlink_error xlink_open_channel(struct xlink_handle *handle,
- 				    u16 chan, enum xlink_opmode mode,
- 				    u32 data_size, u32 timeout);
- 
-+enum xlink_error xlink_data_available_event(struct xlink_handle *handle,
-+					    u16 chan,
-+					    xlink_event data_available_event);
-+enum xlink_error xlink_data_consumed_event(struct xlink_handle *handle,
-+					   u16 chan,
-+					   xlink_event data_consumed_event);
- enum xlink_error xlink_close_channel(struct xlink_handle *handle, u16 chan);
- 
- enum xlink_error xlink_write_data(struct xlink_handle *handle,
-@@ -113,9 +119,14 @@ enum xlink_error xlink_set_device_mode(struct xlink_handle *handle,
- enum xlink_error xlink_get_device_mode(struct xlink_handle *handle,
- 				       enum xlink_device_power_mode *power_mode);
- 
--enum xlink_error xlink_start_vpu(char *filename); /* depreciated */
-+enum xlink_error xlink_register_device_event(struct xlink_handle *handle,
-+					     u32 *event_list, u32 num_events,
-+					     xlink_device_event_cb event_notif_fn);
-+enum xlink_error xlink_unregister_device_event(struct xlink_handle *handle,
-+					       u32 *event_list, u32 num_events);
-+enum xlink_error xlink_start_vpu(char *filename); /* deprecated */
- 
--enum xlink_error xlink_stop_vpu(void); /* depreciated */
-+enum xlink_error xlink_stop_vpu(void); /* deprecated */
- 
- /* API functions to be implemented
-  *
++static int __init xlink_adapter_init(void)
++{
++	dev_dbg(dbgxi2c, "Loading XLink I2C module...\n");
++	platform_driver_register(&xlink_i2c_driver);
++	return 0;
++}
++
++module_init(xlink_adapter_init);
++module_exit(xlink_adapter_exit);
++
++MODULE_AUTHOR("Raja Subramanian, Lakshmi Bai <lakshmi.bai.raja.subramanian@intel.com>");
++MODULE_AUTHOR("Thalaiappan, Rathina <rathina.thalaiappan@intel.com>");
++MODULE_AUTHOR("Karanth, Ramya P <ramya.p.karanth@intel.com>");
++MODULE_DESCRIPTION("xlink i2c adapter");
++MODULE_LICENSE("GPL");
 -- 
 2.17.1
 
