@@ -2,226 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5C6E311273
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 21:30:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 959C831127C
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 21:30:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233630AbhBESov (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 13:44:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42038 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233758AbhBESmc (ORCPT
+        id S233685AbhBESrO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 13:47:14 -0500
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:6680 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233360AbhBESoL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 13:42:32 -0500
-Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 370A0C0617A7
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 12:22:37 -0800 (PST)
-Received: by mail-pg1-x549.google.com with SMTP id j37so5888932pgb.9
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 12:22:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=Ac6X1Rdkx1EJk+C0lhpfh2FkmSOBw6HTNuqApzD6R7U=;
-        b=UzSV3/EypNuCGey4dBevN4B9QElBYrTy37arbLthKlOL5mdUZciKGGW8ytYnIEpP+0
-         UxotsxAOV5KrMxzU3yUTxpnJMOwNusS/wjoce4+l4dSawJbKa+7zaPd0OIRSkIuvId5j
-         2sQM8INE1pKeK5al/NUG4neoFgPeU+3pdbV3JBF3Rt5aSayFwWDdn1wKtNM+C9tUO6ST
-         on+gQusutR7C3NRMWU98KlrJEYb5sfpMT/H7meBzCpZArjG/NDB+ZgwK5gC2CafEANhd
-         xe7xRUOB5XXpMsiUfnXtTVAUZ6SvabzCbPLek8slPKQB7H0WgEW7cZbSA9sEdw0I5h4J
-         zSUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=Ac6X1Rdkx1EJk+C0lhpfh2FkmSOBw6HTNuqApzD6R7U=;
-        b=cC5xB/mB4YYIs4LRJIK/KKaKY37M4HAAo2QSMa6DoWRWnz4OnuQwfrv6/DNUWh95Cv
-         hHxBm5xvR5xmkb0vv21B2Pw9qzlgUqcL/Ek0g116qsfEuyp98eyTtZD3fNJHVUtrmh/N
-         MmTYJ6NFo0MN8u2nH0CnCGIRQguToaD8jHtV//4rFI1ws5W33QBpkyJcXmGtnItTosrO
-         BFoCm67aZj5+xMSLM0zatmxBTpavZcdGqG7c4CMHfcix/733JmGfnAXA4ADs7ryGKG0w
-         sv4A+EDTWz+ZHDxM4PxtyncQgTQ9K0kzSlaSOZRrohV/OhpFxWvCSTN6vDuTq2dialzy
-         gRuw==
-X-Gm-Message-State: AOAM53280KKtctFxobX/BhaUB3ommZpJhP6K+1n0eUzUkQy5bhAYFQw2
-        WaNPD6K8Y+CVLmDwO75nWWMwv29Ody/Y8KofaKc=
-X-Google-Smtp-Source: ABdhPJxKh/M3AiD4pbSDUAyNP03bBwmcbR5fWfCUCO/5MaLxzgNWsK0DiAd891V0eV2tNKuDGDYdyUoh1aDCl+CQtAE=
-Sender: "ndesaulniers via sendgmr" 
-        <ndesaulniers@ndesaulniers1.mtv.corp.google.com>
-X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:fce9:1439:f67f:bf26])
- (user=ndesaulniers job=sendgmr) by 2002:a17:90a:8d83:: with SMTP id
- d3mr547398pjo.0.1612556556283; Fri, 05 Feb 2021 12:22:36 -0800 (PST)
-Date:   Fri,  5 Feb 2021 12:22:20 -0800
-In-Reply-To: <20210205202220.2748551-1-ndesaulniers@google.com>
-Message-Id: <20210205202220.2748551-4-ndesaulniers@google.com>
-Mime-Version: 1.0
-References: <20210205202220.2748551-1-ndesaulniers@google.com>
-X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
-Subject: [PATCH v9 3/3] Kconfig: allow explicit opt in to DWARF v5
-From:   Nick Desaulniers <ndesaulniers@google.com>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Nathan Chancellor <natechancellor@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
-        linux-kbuild@vger.kernel.org, linux-arch@vger.kernel.org,
-        Jakub Jelinek <jakub@redhat.com>,
-        Fangrui Song <maskray@google.com>,
-        Caroline Tice <cmtice@google.com>,
-        Nick Clifton <nickc@redhat.com>, Yonghong Song <yhs@fb.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Chris Murphy <bugzilla@colorremedies.com>,
-        Mark Wielaard <mark@klomp.org>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Fri, 5 Feb 2021 13:44:11 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B601da9d10002>; Fri, 05 Feb 2021 12:25:53 -0800
+Received: from MacBook-Pro-10.local (172.20.145.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 5 Feb
+ 2021 20:25:52 +0000
+Subject: Re: [PATCH] mm: cma: support sysfs
+To:     Minchan Kim <minchan@kernel.org>
+CC:     Andrew Morton <akpm@linux-foundation.org>,
+        <gregkh@linuxfoundation.org>, <surenb@google.com>,
+        <joaodias@google.com>, LKML <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>
+References: <YBxT9XFE6QAQ4T9N@google.com>
+ <cda5547b-0c78-756b-bd0c-f3e534d04bff@nvidia.com>
+ <YByNU4Q7cc7gYwPh@google.com>
+ <87d7ec1f-d892-0491-a2de-3d0feecca647@nvidia.com>
+ <YByi/gdaGJeV/+8b@google.com>
+ <71c4ce84-8be7-49e2-90bd-348762b320b4@nvidia.com>
+ <YBzU5uUbwa+QIwBQ@google.com>
+ <34110c61-9826-4cbe-8cd4-76f5e7612dbd@nvidia.com>
+ <YBzkjh5nnuNiGb6Q@google.com>
+ <f6e41e39-d60b-764d-0af4-8e6977663821@nvidia.com>
+ <YB1vIrgI9S/5CDxL@google.com>
+From:   John Hubbard <jhubbard@nvidia.com>
+Message-ID: <269689b7-3b6d-55dc-9044-fbf2984089ab@nvidia.com>
+Date:   Fri, 5 Feb 2021 12:25:52 -0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
+ Gecko/20100101 Thunderbird/78.7.0
+MIME-Version: 1.0
+In-Reply-To: <YB1vIrgI9S/5CDxL@google.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1612556753; bh=6fsyhZcd71U4H2BxWCOPPFCmqtBnPJFkdr9hQzt2OwU=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=OO+F2OK+tpmFx4B/VUsgnC0WloZgjySN7FUoVutQthptowUQSevdw8lGwmgTA68aw
+         kWrFVSqyiDu2SA8bza6156pP7QEFYuo3EYf1CCrf2dawuMGo+m2rRl2ofvA7MfJhq5
+         7P5Ia7fpe93krO1EHPuqbkne0TZ5CpxVH4y/tyQIBlazynQpEPzWhPEoQv40Ff2f5Y
+         q/4NRlUQoHv1E5pijY0WdHrSw349E8+BbXIccp19yXwmm4UVnIB8lV4i15QAb/EvVG
+         lT+77f7URYq6SRqlot3r7MNMjnCkJW3TALXURELJPiDQoWH07/NKIhNb98q8gDF48X
+         bUmsW9EOpPGsQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DWARF v5 is the latest standard of the DWARF debug info format. GCC 11
-will change the implicit default DWARF version, if left unspecified, to
-DWARF v5.
+On 2/5/21 8:15 AM, Minchan Kim wrote:
+...
+>> Yes, approximately. I was wondering if this would suffice at least as a baseline:
+>>
+>> cma_alloc_success   125
+>> cma_alloc_failure   25
+> 
+> IMO, regardless of the my patch, it would be good to have such statistics
+> in that CMA was born to replace carved out memory with dynamic allocation
+> ideally for memory efficiency ideally so failure should regard critical
+> so admin could notice it how the system is hurt.
 
-Allow users of Clang and older versions of GCC that have not changed the
-implicit default DWARF version to DWARF v5 to opt in. This can help
-testing consumers of DWARF debug info in preparation of v5 becoming more
-widespread, as well as result in significant binary size savings of the
-pre-stripped vmlinux image.
+Right. So CMA failures are useful for the admin to see, understood.
 
-DWARF5 wins significantly in terms of size when mixed with compression
-(CONFIG_DEBUG_INFO_COMPRESSED).
+> 
+> Anyway, it's not enough for me and orthgonal with my goal.
+> 
 
-363M    vmlinux.clang12.dwarf5.compressed
-434M    vmlinux.clang12.dwarf4.compressed
-439M    vmlinux.clang12.dwarf2.compressed
-457M    vmlinux.clang12.dwarf5
-536M    vmlinux.clang12.dwarf4
-548M    vmlinux.clang12.dwarf2
+OK. But...what *is* your goal, and why is this useless (that's what
+orthogonal really means here) for your goal?
 
-515M    vmlinux.gcc10.2.dwarf5.compressed
-599M    vmlinux.gcc10.2.dwarf4.compressed
-624M    vmlinux.gcc10.2.dwarf2.compressed
-630M    vmlinux.gcc10.2.dwarf5
-765M    vmlinux.gcc10.2.dwarf4
-809M    vmlinux.gcc10.2.dwarf2
+Also, would you be willing to try out something simple first,
+such as providing indication that cma is active and it's overall success
+rate, like this:
 
-Though the quality of debug info is harder to quantify; size is not a
-proxy for quality.
+/proc/vmstat:
 
-Jakub notes:
-  One thing is GCC DWARF-5 support, that is whether the compiler will
-  support -gdwarf-5 flag, and that support should be there from GCC 7
-  onwards.
+cma_alloc_success   125
+cma_alloc_failure   25
 
-  All [GCC] 5.1 - 6.x did was start accepting -gdwarf-5 as experimental
-  option that enabled some small DWARF subset (initially only a few
-  DW_LANG_* codes newly added to DWARF5 drafts).  Only GCC 7 (released
-  after DWARF 5 has been finalized) started emitting DWARF5 section
-  headers and got most of the DWARF5 changes in...
+...or is the only way to provide the more detailed items, complete with
+per-CMA details, in a non-debugfs location?
 
-  Another separate thing is whether the assembler does support
-  the -gdwarf-5 option (i.e. if you can compile assembler files
-  with -Wa,-gdwarf-5) ... That option is about whether the assembler
-  will emit DWARF5 or DWARF2 .debug_line.  It is fine to compile C sources
-  with -gdwarf-5 and use DWARF2 .debug_line for assembler files if as
-  doesn't support it.
 
-Version check GCC so that we don't need to worry about the difference in
-command line args between GNU readelf and llvm-readelf/llvm-dwarfdump to
-validate the DWARF Version in the assembler feature detection script.
+>>
+>> ...and then, to see if more is needed, some questions:
+>>
+>> a)  Do you know of an upper bound on how many cma areas there can be
+>> (I think Matthew also asked that)?
+> 
+> There is no upper bound since it's configurable.
+> 
 
-Most issues with clang produced assembler were fixed in binutils 2.35.1,
-but 2.35.2 fixed issues related to requiring the flag -Wa,-gdwarf-5
-explicitly. The added shell script test checks for the latter, and is
-only required when using clang without its integrated assembler, though
-we use for clang regardless as we do not yet have a way to query the
-assembler from Kconfig.
+OK, thanks,so that pretty much rules out putting per-cma details into
+anything other than a directory or something like it.
 
-Disabled for now if CONFIG_DEBUG_INFO_BTF is set; pahole doesn't yet
-recognize the new additions to the DWARF debug info.
+>>
+>> b) Is tracking the cma area really as valuable as other possibilities? We can put
+>> "a few" to "several" items here, so really want to get your very favorite bits of
+>> information in. If, for example, there can be *lots* of cma areas, then maybe tracking
+> 
+> At this moment, allocation/failure for each CMA area since they have
+> particular own usecase, which makes me easy to keep which module will
+> be affected. I think it is very useful per-CMA statistics as minimum
+> code change so I want to enable it by default under CONFIG_CMA && CONFIG_SYSFS.
+> 
+>> by a range of allocation sizes is better...
+> 
+> I takes your suggestion something like this.
+> 
+> [alloc_range] could be order or range by interval
+> 
+> /sys/kernel/mm/cma/cma-A/[alloc_range]/success
+> /sys/kernel/mm/cma/cma-A/[alloc_range]/fail
+> ..
+> ..
+> /sys/kernel/mm/cma/cma-Z/[alloc_range]/success
+> /sys/kernel/mm/cma/cma-Z/[alloc_range]/fail
 
-This only modifies the DWARF version emitted by the compiler, not the
-assembler.
+Actually, I meant, "ranges instead of cma areas", like this:
 
-The DWARF version of a binary can be validated with:
-$ llvm-dwarfdump <object file> | head -n 4 | grep version
-or
-$ readelf --debug-dump=info <object file> 2>/dev/null | grep Version
+/<path-to-cma-data/[alloc_range_1]/success
+/<path-to-cma-data/[alloc_range_1]/fail
+/<path-to-cma-data/[alloc_range_2]/success
+/<path-to-cma-data/[alloc_range_2]/fail
+...
+/<path-to-cma-data/[alloc_range_max]/success
+/<path-to-cma-data/[alloc_range_max]/fail
 
-Parts of the tree don't reuse DEBUG_CFLAGS as they should; such cleanup
-is left as a follow up.
+The idea is that knowing the allocation sizes that succeeded
+and failed is maybe even more interesting and useful than
+knowing the cma area that contains them.
 
-Link: http://www.dwarfstd.org/doc/DWARF5.pdf
-Link: https://bugzilla.redhat.com/show_bug.cgi?id=1922707
-Reported-by: Sedat Dilek <sedat.dilek@gmail.com>
-Suggested-by: Arvind Sankar <nivedita@alum.mit.edu>
-Suggested-by: Caroline Tice <cmtice@google.com>
-Suggested-by: Fangrui Song <maskray@google.com>
-Suggested-by: Jakub Jelinek <jakub@redhat.com>
-Suggested-by: Masahiro Yamada <masahiroy@kernel.org>
-Suggested-by: Nathan Chancellor <natechancellor@gmail.com>
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
----
- Makefile                       |  1 +
- lib/Kconfig.debug              | 18 ++++++++++++++++++
- scripts/test_dwarf5_support.sh |  8 ++++++++
- 3 files changed, 27 insertions(+)
- create mode 100755 scripts/test_dwarf5_support.sh
+> 
+> I agree it would be also useful but I'd like to enable it under
+> CONFIG_CMA_SYSFS_ALLOC_RANGE as separate patchset.
+> 
 
-diff --git a/Makefile b/Makefile
-index a7eee28dd091..a85535eb6a7d 100644
---- a/Makefile
-+++ b/Makefile
-@@ -831,6 +831,7 @@ endif
- 
- ifndef CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT
- dwarf-version-$(CONFIG_DEBUG_INFO_DWARF4) := 4
-+dwarf-version-$(CONFIG_DEBUG_INFO_DWARF5) := 5
- DEBUG_CFLAGS	+= -gdwarf-$(dwarf-version-y)
- endif
- 
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index 3ac450346dbe..c85d82d3c6ef 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -282,6 +282,24 @@ config DEBUG_INFO_DWARF4
- 	  newer revisions of DWARF, you may wish to choose this or have your
- 	  config select this.
- 
-+config DEBUG_INFO_DWARF5
-+	bool "Generate DWARF Version 5 debuginfo"
-+	depends on GCC_VERSION >= 50000 || CC_IS_CLANG
-+	depends on CC_IS_GCC || $(success,$(srctree)/scripts/test_dwarf5_support.sh $(CC) $(CLANG_FLAGS))
-+	depends on !DEBUG_INFO_BTF
-+	help
-+	  Generate DWARF v5 debug info. Requires binutils 2.35.2, gcc 5.0+ (gcc
-+	  5.0+ accepts the -gdwarf-5 flag but only had partial support for some
-+	  draft features until 7.0), and gdb 8.0+.
-+
-+	  Changes to the structure of debug info in Version 5 allow for around
-+	  15-18% savings in resulting image and debug info section sizes as
-+	  compared to DWARF Version 4. DWARF Version 5 standardizes previous
-+	  extensions such as accelerators for symbol indexing and the format
-+	  for fission (.dwo/.dwp) files. Users may not want to select this
-+	  config if they rely on tooling that has not yet been updated to
-+	  support DWARF Version 5.
-+
- endchoice # "DWARF version"
- 
- config DEBUG_INFO_BTF
-diff --git a/scripts/test_dwarf5_support.sh b/scripts/test_dwarf5_support.sh
-new file mode 100755
-index 000000000000..c46e2456b47a
---- /dev/null
-+++ b/scripts/test_dwarf5_support.sh
-@@ -0,0 +1,8 @@
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0
-+
-+# Test that the assembler doesn't need -Wa,-gdwarf-5 when presented with DWARF
-+# v5 input, such as `.file 0` and `md5 0x00`. Should be fixed in GNU binutils
-+# 2.35.2. https://sourceware.org/bugzilla/show_bug.cgi?id=25611
-+echo '.file 0 "filename" md5 0x7a0b65214090b6693bd1dc24dd248245' | \
-+  $* -gdwarf-5 -Wno-unused-command-line-argument -c -x assembler -o /dev/null -
+I will stop harassing you very soon, just want to bottom out on
+understanding the real goals first. :)
+
+thanks,
 -- 
-2.30.0.365.g02bc693789-goog
-
+John Hubbard
+NVIDIA
