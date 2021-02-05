@@ -2,113 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 144DE3109CA
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 12:07:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD2213109CF
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 12:07:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231968AbhBELFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 06:05:51 -0500
-Received: from mail-lj1-f180.google.com ([209.85.208.180]:36543 "EHLO
-        mail-lj1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231439AbhBELDA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 06:03:00 -0500
-Received: by mail-lj1-f180.google.com with SMTP id l12so7256557ljc.3
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 03:02:44 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9FZ7JiIRGalR06B1jY8cCbXb/IG0NVBGBAKRBdfVP0k=;
-        b=cgXJB0uSCBk55V/+pkc3riIa1yfqHxtozakwUYaYWhL/U3SlH3NNrNiGkPIreYHSq/
-         qdjEoWI2dsRvnxYxlkQ/L0+zsh6++3plMgwk83F1gJHE0GyWwec9De8y0QDhiz9pOT0O
-         QvglJnrjjIz513/uxlxYPp83ytjtD72lc2Hk6EKoYBkj9nPfwA1iLLWwxXs0hlreuHcz
-         Ta36hHsdaXTNDLsumnR+IYSaLB6cry4ehD7xv0IdybJhef26L0xjdMXYbG5mzPivqMo+
-         lA72aLDjsGJ1zxPfFy2JJO89SEsZxRAD1Nyyj6n7xKCmonAgG/wkHK2RmPRbh9XdHzZY
-         4XOw==
-X-Gm-Message-State: AOAM5318wygL4PYXSrflsdrwSktGMn57oFw27VtyhNhyf3sZLXcaAaWM
-        p5IVIMWJ0wAGNJemFoQ9Y1OfgyusEHHrF7+bOgw=
-X-Google-Smtp-Source: ABdhPJwqrKD0kuGPMAgsgWB/zCaPIwiAlfnMsG5FSWsCsAnIQZ4qZjW9w0t2S2PcVchHtoWSUwc7+0DGzOTSiQpsv8E=
-X-Received: by 2002:a2e:90c9:: with SMTP id o9mr2323331ljg.26.1612522938534;
- Fri, 05 Feb 2021 03:02:18 -0800 (PST)
+        id S231983AbhBELGQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 06:06:16 -0500
+Received: from foss.arm.com ([217.140.110.172]:55830 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231757AbhBELDY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 06:03:24 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5A4E1D6E;
+        Fri,  5 Feb 2021 03:02:34 -0800 (PST)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 574763F73B;
+        Fri,  5 Feb 2021 03:02:32 -0800 (PST)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Qais Yousef <qais.yousef@arm.com>
+Cc:     linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@kernel.org,
+        bigeasy@linutronix.de, swood@redhat.com, peterz@infradead.org,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, vincent.donnefort@arm.com,
+        tj@kernel.org
+Subject: Re: [RFC PATCH] sched/core: Fix premature p->migration_pending completion
+In-Reply-To: <20210204153040.qqkoa5sjztqeskoc@e107158-lin>
+References: <20210127193035.13789-1-valentin.schneider@arm.com> <20210203172344.uzq2iod4g46ffame@e107158-lin> <jhjft2d2d1f.mognet@arm.com> <20210204153040.qqkoa5sjztqeskoc@e107158-lin>
+User-Agent: Notmuch/0.21 (http://notmuchmail.org) Emacs/26.3 (x86_64-pc-linux-gnu)
+Date:   Fri, 05 Feb 2021 11:02:27 +0000
+Message-ID: <jhj1rdu3hh8.mognet@arm.com>
 MIME-Version: 1.0
-References: <1612296553-21962-1-git-send-email-kan.liang@linux.intel.com> <1612296553-21962-4-git-send-email-kan.liang@linux.intel.com>
-In-Reply-To: <1612296553-21962-4-git-send-email-kan.liang@linux.intel.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Fri, 5 Feb 2021 20:02:06 +0900
-Message-ID: <CAM9d7cj-q_-+98o-VH02WhC+wcJ44bAG8ZyV1UFN7ATT7Lxn6w@mail.gmail.com>
-Subject: Re: [PATCH 3/9] perf tools: Support data block and addr block
-To:     Kan Liang <kan.liang@linux.intel.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Stephane Eranian <eranian@google.com>,
-        Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>,
-        Yao Jin <yao.jin@linux.intel.com>, maddy@linux.vnet.ibm.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 3, 2021 at 5:14 AM <kan.liang@linux.intel.com> wrote:
+On 04/02/21 15:30, Qais Yousef wrote:
+> On 02/03/21 18:59, Valentin Schneider wrote:
+>> On 03/02/21 17:23, Qais Yousef wrote:
+>> > On 01/27/21 19:30, Valentin Schneider wrote:
+>> >>   Initial conditions:
+>> >>     victim.cpus_mask = {CPU0, CPU1}
+>> >>
+>> >>   CPU0                             CPU1                             CPU<don't care>
+>> >>
+>> >>   switch_to(victim)
+>> >>                                                               set_cpus_allowed(victim, {CPU1})
+>> >>                                                                 kick CPU0 migration_cpu_stop({.dest_cpu = CPU1})
+>> >>   switch_to(stopper/0)
+>> >>                                                               // e.g. CFS load balance
+>> >>                                                               move_queued_task(CPU0, victim, CPU1);
+>> >>                              switch_to(victim)
+>> >>                                                               set_cpus_allowed(victim, {CPU0});
+>> >>                                                                 task_rq_unlock();
+>> >>   migration_cpu_stop(dest_cpu=CPU1)
+>> >
+>> > This migration stop is due to set_cpus_allowed(victim, {CPU1}), right?
+>> >
+>>
+>> Right
+>>
+>> >>     task_rq(p) != rq && pending
+>> >>       kick CPU1 migration_cpu_stop({.dest_cpu = CPU1})
+>> >>
+>> >>                              switch_to(stopper/1)
+>> >>                              migration_cpu_stop(dest_cpu=CPU1)
+>> >
+>> > And this migration stop is due to set_cpus_allowed(victim, {CPU0}), right?
+>> >
+>>
+>> Nein! This is a retriggering of the "current" stopper (triggered by
+>> set_cpus_allowed(victim, {CPU1})), see the tail of that
+>>
+>>   else if (dest_cpu < 0 || pending)
+>>
+>> branch in migration_cpu_stop(), is what I'm trying to hint at with that
+>>
+>> task_rq(p) != rq && pending
 >
-> From: Kan Liang <kan.liang@linux.intel.com>
+> Okay I see. But AFAIU, the work will be queued in order. So we should first
+> handle the set_cpus_allowed_ptr(victim, {CPU0}) before the retrigger, no?
 >
-> Two new data source fields, to indicate the block reasons of a load
-> instruction, are introduced on the Intel Sapphire Rapids server. The
-> fields can be used by the memory profiling.
+> So I see migration_cpu_stop() running 3 times
 >
-> Add a new sort function, SORT_MEM_BLOCKED, for the two fields.
+>       1. because of set_cpus_allowed(victim, {CPU1}) on CPU0
+>       2. because of set_cpus_allowed(victim, {CPU0}) on CPU1
+>       3. because of retrigger of '1' on CPU0
 >
-> For the previous platforms or the block reason is unknown, print "N/A"
-> for the block reason.
->
-> Add blocked as a default mem sort key for perf report and
-> perf mem report.
->
-> Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
-> ---
-[SNIP]
-> +int perf_mem__blk_scnprintf(char *out, size_t sz, struct mem_info *mem_info)
-> +{
-> +       size_t l = 0;
-> +       u64 mask = PERF_MEM_BLK_NA;
-> +
-> +       sz -= 1; /* -1 for null termination */
-> +       out[0] = '\0';
-> +
-> +       if (mem_info)
-> +               mask = mem_info->data_src.mem_blk;
-> +
-> +       if (!mask || (mask & PERF_MEM_BLK_NA)) {
-> +               l += scnprintf(out + l, sz - l, " N/A");
-> +               return l;
-> +       }
-> +       if (mask & PERF_MEM_BLK_DATA)
-> +               l += scnprintf(out + l, sz - l, " Data");
-> +       if (mask & PERF_MEM_BLK_ADDR)
-> +               l += scnprintf(out + l, sz - l, " Addr");
 
-So this means it's possible to have BLK_DATA and BLK_ADDR
-together and in that case it'll print "DataAddr", right?
+On that 'CPU<don't care>' lane, I intentionally included task_rq_unlock()
+but not 'kick CPU1 migration_cpu_stop({.dest_cpu = CPU0})'. IOW, there is
+nothing in that trace that queues a stopper work for 2. - it *will* happen
+at some point, but harm will already have been done.
 
-Thanks,
-Namhyung
-
-
-> +
-> +       return l;
-> +}
-> +
->  int perf_script__meminfo_scnprintf(char *out, size_t sz, struct mem_info *mem_info)
->  {
->         int i = 0;
-> @@ -348,6 +371,8 @@ int perf_script__meminfo_scnprintf(char *out, size_t sz, struct mem_info *mem_in
->         i += perf_mem__tlb_scnprintf(out + i, sz - i, mem_info);
->         i += scnprintf(out + i, sz - i, "|LCK ");
->         i += perf_mem__lck_scnprintf(out + i, sz - i, mem_info);
-> +       i += scnprintf(out + i, sz - i, "|BLK ");
-> +       i += perf_mem__blk_scnprintf(out + i, sz - i, mem_info);
->
->         return i;
->  }
+The migrate_task_to() example is potentially worse, because it doesn't rely
+on which stopper work gets enqueued first - only that an extra affinity
+change happens before the first stopper work grabs the pi_lock and completes.
