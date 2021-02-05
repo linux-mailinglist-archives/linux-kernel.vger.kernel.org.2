@@ -2,204 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C41CC3117A6
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 01:11:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE4913117A4
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 01:11:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230413AbhBFAJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 19:09:50 -0500
-Received: from mga09.intel.com ([134.134.136.24]:26783 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229522AbhBEN2w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 08:28:52 -0500
-IronPort-SDR: ftTHK/sOTyQ9MPA2pdg9ieH5kDU4lolvjPcKtw9jtMx5ECbHnvj2BdXHzE0+7Ls1yMhxZwbjU9
- 5MyJteJAwjeQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9885"; a="181578729"
-X-IronPort-AV: E=Sophos;i="5.81,154,1610438400"; 
-   d="scan'208";a="181578729"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2021 05:25:01 -0800
-IronPort-SDR: RpsqP7/ztACPjxsOHS3FQ9XjZLHVCCAvCC+t5NWps+rak3kd8IjSyGTSdAyU9NeIQUi4UOi4jF
- CbskbWWBIORw==
-X-IronPort-AV: E=Sophos;i="5.81,154,1610438400"; 
-   d="scan'208";a="581148954"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2021 05:24:58 -0800
-Received: from punajuuri.localdomain (punajuuri.localdomain [192.168.240.130])
-        by paasikivi.fi.intel.com (Postfix) with ESMTP id A8082213E5;
-        Fri,  5 Feb 2021 15:24:51 +0200 (EET)
-Received: from sailus by punajuuri.localdomain with local (Exim 4.92)
-        (envelope-from <sakari.ailus@linux.intel.com>)
-        id 1l816f-0005GU-F0; Fri, 05 Feb 2021 15:25:05 +0200
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     linux-i2c@vger.kernel.org
-Cc:     Wolfram Sang <wsa@the-dreams.de>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        rajmohan.mani@intel.com, Tomasz Figa <tfiga@chromium.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Bingbu Cao <bingbu.cao@intel.com>,
-        Chiranjeevi Rapolu <chiranjeevi.rapolu@intel.com>,
-        Hyungwoo Yang <hyungwoo.yang@intel.com>,
-        linux-media@vger.kernel.org
-Subject: [PATCH v10 6/7] media: i2c: imx319: Support probe while the device is off
-Date:   Fri,  5 Feb 2021 15:25:04 +0200
-Message-Id: <20210205132505.20173-7-sakari.ailus@linux.intel.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210205132505.20173-1-sakari.ailus@linux.intel.com>
-References: <20210205132505.20173-1-sakari.ailus@linux.intel.com>
+        id S230315AbhBFAIu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 19:08:50 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:48238 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229492AbhBEN3x (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 08:29:53 -0500
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 115D6PKp074327;
+        Fri, 5 Feb 2021 08:29:05 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=ds+uLYaHve6zEahUCo8fIlAL1PPupRZhe0r78y3kncc=;
+ b=lswSdBWx9NxY2gYbUsarGcZeyAeaDj2IeNwgSqzuclw/mBS8A3idQT5Tf1br4WmDqBO9
+ 0s+iylhgYY7HEUH2WPSmr8rh8lmnlvjSO3T3wCQ0pZhd0K3oljttdF2s4OBNIfZk1E20
+ HjQXJdfXk4mwDQlwm5+TnzablQOhi2+pnVWfGfDsU9pUVdQXgeK6L1g/r4qDgwJ0JEKx
+ 1Wtb/AWAAVB3YGNGbHkEH7rXzQH6UiP0fpHdFaIparh4QoqtRpzxSRPD3BAd2b0u7aG9
+ MS3nnDbS+KITSc7ErBG5xts5+3jU5ZrbsBQ+A9RbNeg2EaS6PXW2WnAYotME6UkqguJK vQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 36h69998j9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 05 Feb 2021 08:29:05 -0500
+Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 115DKjPf140394;
+        Fri, 5 Feb 2021 08:29:05 -0500
+Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 36h69998hx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 05 Feb 2021 08:29:04 -0500
+Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
+        by ppma03dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 115DMCVs006503;
+        Fri, 5 Feb 2021 13:29:04 GMT
+Received: from b01cxnp23032.gho.pok.ibm.com (b01cxnp23032.gho.pok.ibm.com [9.57.198.27])
+        by ppma03dal.us.ibm.com with ESMTP id 36f3kw06d7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 05 Feb 2021 13:29:04 +0000
+Received: from b01ledav002.gho.pok.ibm.com (b01ledav002.gho.pok.ibm.com [9.57.199.107])
+        by b01cxnp23032.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 115DT3st30146980
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 5 Feb 2021 13:29:03 GMT
+Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7E9A6124053;
+        Fri,  5 Feb 2021 13:29:03 +0000 (GMT)
+Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6AD92124052;
+        Fri,  5 Feb 2021 13:29:03 +0000 (GMT)
+Received: from sbct-3.pok.ibm.com (unknown [9.47.158.153])
+        by b01ledav002.gho.pok.ibm.com (Postfix) with ESMTP;
+        Fri,  5 Feb 2021 13:29:03 +0000 (GMT)
+Subject: Re: [PATCH v3 1/2] tpm: fix reference counting for struct tpm_chip
+To:     James Bottomley <James.Bottomley@HansenPartnership.com>,
+        Lino Sanfilippo <LinoSanfilippo@gmx.de>, peterhuewe@gmx.de,
+        jarkko@kernel.org
+Cc:     jgg@ziepe.ca, stefanb@linux.vnet.ibm.com, stable@vger.kernel.org,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lino Sanfilippo <l.sanfilippo@kunbus.com>
+References: <1612482643-11796-1-git-send-email-LinoSanfilippo@gmx.de>
+ <1612482643-11796-2-git-send-email-LinoSanfilippo@gmx.de>
+ <b36db793-9b40-92a8-19ef-4853ea10f775@linux.ibm.com>
+ <f5ad4381-773d-b994-51e5-a335ca4b44c3@linux.ibm.com>
+ <78f6bc5799c744dc3fdb2f508549cedf76ac1c1d.camel@HansenPartnership.com>
+From:   Stefan Berger <stefanb@linux.ibm.com>
+Message-ID: <db1bb1ab-b2d6-cd4b-9908-b471b8cc7df5@linux.ibm.com>
+Date:   Fri, 5 Feb 2021 08:29:03 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
+In-Reply-To: <78f6bc5799c744dc3fdb2f508549cedf76ac1c1d.camel@HansenPartnership.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-02-05_07:2021-02-05,2021-02-05 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 malwarescore=0
+ mlxlogscore=840 adultscore=0 lowpriorityscore=0 impostorscore=0
+ phishscore=0 priorityscore=1501 suspectscore=0 mlxscore=0 clxscore=1015
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102050084
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rajmohan Mani <rajmohan.mani@intel.com>
+On 2/4/21 9:01 PM, James Bottomley wrote:
+> On Thu, 2021-02-04 at 20:44 -0500, Stefan Berger wrote:
+>> To clarify: When I tested this I had *both* patches applied. Without
+>> the patches I got the null pointer exception in tpm2_del_space(). The
+>> 2nd patch alone solves that issue when using the steps above.
+>
+> Yes, I can't confirm the bug either.  I only have lpc tis devices, so
+> it could be something to do with spi, but when I do
 
-Tell ACPI device PM code that the driver supports the device being powered
-off when the driver's probe function is entered.
 
-Signed-off-by: Rajmohan Mani <rajmohan.mani@intel.com>
-Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
-Reviewed-by: Tomasz Figa <tfiga@chromium.org>
-Reviewed-by: Bingbu Cao <bingbu.cao@intel.com>
----
- drivers/media/i2c/imx319.c | 72 +++++++++++++++++++++++---------------
- 1 file changed, 44 insertions(+), 28 deletions(-)
+I can confirm this bug:
 
-diff --git a/drivers/media/i2c/imx319.c b/drivers/media/i2c/imx319.c
-index 8473c0bbb35d6..e0b22e9318fed 100644
---- a/drivers/media/i2c/imx319.c
-+++ b/drivers/media/i2c/imx319.c
-@@ -140,6 +140,8 @@ struct imx319 {
- 
- 	/* Streaming on/off */
- 	bool streaming;
-+	/* True if the device has been identified */
-+	bool identified;
- };
- 
- static const struct imx319_reg imx319_global_regs[] = {
-@@ -2084,6 +2086,31 @@ imx319_set_pad_format(struct v4l2_subdev *sd,
- 	return 0;
- }
- 
-+/* Verify chip ID */
-+static int imx319_identify_module(struct imx319 *imx319)
-+{
-+	struct i2c_client *client = v4l2_get_subdevdata(&imx319->sd);
-+	int ret;
-+	u32 val;
-+
-+	if (imx319->identified)
-+		return 0;
-+
-+	ret = imx319_read_reg(imx319, IMX319_REG_CHIP_ID, 2, &val);
-+	if (ret)
-+		return ret;
-+
-+	if (val != IMX319_CHIP_ID) {
-+		dev_err(&client->dev, "chip id mismatch: %x!=%x",
-+			IMX319_CHIP_ID, val);
-+		return -EIO;
-+	}
-+
-+	imx319->identified = true;
-+
-+	return 0;
-+}
-+
- /* Start streaming */
- static int imx319_start_streaming(struct imx319 *imx319)
- {
-@@ -2091,6 +2118,10 @@ static int imx319_start_streaming(struct imx319 *imx319)
- 	const struct imx319_reg_list *reg_list;
- 	int ret;
- 
-+	ret = imx319_identify_module(imx319);
-+	if (ret)
-+		return ret;
-+
- 	/* Global Setting */
- 	reg_list = &imx319_global_setting;
- 	ret = imx319_write_regs(imx319, reg_list->regs, reg_list->num_of_regs);
-@@ -2208,26 +2239,6 @@ static int __maybe_unused imx319_resume(struct device *dev)
- 	return ret;
- }
- 
--/* Verify chip ID */
--static int imx319_identify_module(struct imx319 *imx319)
--{
--	struct i2c_client *client = v4l2_get_subdevdata(&imx319->sd);
--	int ret;
--	u32 val;
--
--	ret = imx319_read_reg(imx319, IMX319_REG_CHIP_ID, 2, &val);
--	if (ret)
--		return ret;
--
--	if (val != IMX319_CHIP_ID) {
--		dev_err(&client->dev, "chip id mismatch: %x!=%x",
--			IMX319_CHIP_ID, val);
--		return -EIO;
--	}
--
--	return 0;
--}
--
- static const struct v4l2_subdev_core_ops imx319_subdev_core_ops = {
- 	.subscribe_event = v4l2_ctrl_subdev_subscribe_event,
- 	.unsubscribe_event = v4l2_event_subdev_unsubscribe,
-@@ -2422,6 +2433,7 @@ static struct imx319_hwcfg *imx319_get_hwcfg(struct device *dev)
- static int imx319_probe(struct i2c_client *client)
- {
- 	struct imx319 *imx319;
-+	bool low_power;
- 	int ret;
- 	u32 i;
- 
-@@ -2434,11 +2446,14 @@ static int imx319_probe(struct i2c_client *client)
- 	/* Initialize subdev */
- 	v4l2_i2c_subdev_init(&imx319->sd, client, &imx319_subdev_ops);
- 
--	/* Check module identity */
--	ret = imx319_identify_module(imx319);
--	if (ret) {
--		dev_err(&client->dev, "failed to find sensor: %d", ret);
--		goto error_probe;
-+	low_power = acpi_dev_state_low_power(&client->dev);
-+	if (!low_power) {
-+		/* Check module identity */
-+		ret = imx319_identify_module(imx319);
-+		if (ret) {
-+			dev_err(&client->dev, "failed to find sensor: %d", ret);
-+			goto error_probe;
-+		}
- 	}
- 
- 	imx319->hwcfg = imx319_get_hwcfg(&client->dev);
-@@ -2491,10 +2506,10 @@ static int imx319_probe(struct i2c_client *client)
- 		goto error_media_entity;
- 
- 	/*
--	 * Device is already turned on by i2c-core with ACPI domain PM.
--	 * Enable runtime PM and turn off the device.
-+	 * Don't set the device's state to active if it's in a low power state.
- 	 */
--	pm_runtime_set_active(&client->dev);
-+	if (!low_power)
-+		pm_runtime_set_active(&client->dev);
- 	pm_runtime_enable(&client->dev);
- 	pm_runtime_idle(&client->dev);
- 
-@@ -2547,6 +2562,7 @@ static struct i2c_driver imx319_i2c_driver = {
- 	},
- 	.probe_new = imx319_probe,
- 	.remove = imx319_remove,
-+	.flags = I2C_DRV_FL_ALLOW_LOW_POWER_PROBE,
- };
- module_i2c_driver(imx319_i2c_driver);
- 
--- 
-2.20.1
+insmod /usr/lib/modules/5.10.0+/extra/tpm.ko ; insmod 
+/usr/lib/modules/5.10.0+/extra/tpm_vtpm_proxy.ko
+
+swtpm chardev --vtpm-proxy --tpm2 --tpmstate dir=./ &
+
+exec 100<>/dev/tpmrm0
+
+kill -9 <swtpm pid>
+
+rmmod tpm_vtpm_proxy
+
+echo -en '\x80\x01\x00\x00\x00\x0c\x00\x00\x01\x44\x00\x00' >&100
+
+
+[  167.289390] [c000000015d6fb60] [c0000000007d3ac0] 
+refcount_warn_saturate+0x210/0x230 (unreliable)
+[  167.290392] [c000000015d6fbc0] [c000000000831328] kobject_put+0x1b8/0x2e0
+[  167.291398] [c000000015d6fc50] [c000000000955548] put_device+0x28/0x40
+[  167.292409] [c000000015d6fc70] [c0080000008609a8] 
+tpm_try_get_ops+0xb0/0x100 [tpm]
+[  167.293417] [c000000015d6fcb0] [c008000000861864] 
+tpm_common_write+0x15c/0x250 [tpm]
+[  167.294429] [c000000015d6fd20] [c0000000004be190] vfs_write+0xf0/0x380
+[  167.295437] [c000000015d6fd70] [c0000000004be6c8] ksys_write+0x78/0x130
+[  167.296450] [c000000015d6fdc0] [c00000000003377c] 
+system_call_exception+0x15c/0x270
+[  167.297461] [c000000015d6fe20] [c00000000000d960] 
+system_call_common+0xf0/0x27c
+
+With this patch applied this error here is gone. Just have make sure to 
+replace tpm.ko and tpm_vtpm_proxy.ko, not just the latter.
+
+So my Tested-By is good for both patches.
+
+
+    Stefan
 
