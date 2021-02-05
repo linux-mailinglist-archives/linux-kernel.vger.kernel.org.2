@@ -2,302 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B53C310250
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 02:40:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8AF0310256
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 02:45:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232839AbhBEBjz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 20:39:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57594 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232564AbhBEBjx (ORCPT
+        id S232884AbhBEBpC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 20:45:02 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59761 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231650AbhBEBpA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 20:39:53 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27B43C0613D6
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 17:39:13 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id e62so5234945yba.5
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 17:39:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=Ou7Twm7dwyYgMW0x+HwD1Y+xevZetv77gEBdmsc8Q94=;
-        b=GdNa1rPNpTl4tPRjWrN0WbarZpUsCoJ0JD5+A6kbfmK7LL6OyW7mRZjVCwkeIDXwxF
-         +HkfDVVwxtbD98uC2IyJRArEAIwYSbWvMR9MfS/z6vQA9TU7eVY6tyxGfr75wfKutZRi
-         CsOpeFmS8Xb3yNINQqmnPxVs1nFD7jsjm7GDoPXVoCMQb1ZxCdUMOJYDhwKLeuNFBPqy
-         Nq5oiA/kcUmQ+kH518zWlKqesafA17Khqu35kVxHIc9I5lIGka7suX/V3IxN59UqLEP6
-         f4Lht+1brN6UijoQZO82LCpzq85RyvhA6hEfelDJDwopdaUhH5LMkM4c6tNx6BB7CRE4
-         74fw==
+        Thu, 4 Feb 2021 20:45:00 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612489413;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4gmKyOKs+UNMlatEK5Udmfiip3bQql1jRbCQJCWFfmk=;
+        b=IqO9XrrejvIdCCWD+u5M2jWhwUv3TMVmp81KVIIdQGgLh+tNPxjo98h5mtVIPa+uaSM5Rg
+        yQ9PqUVts8YLKhoGpPBci9apvlIDofAtkyadePKCkUY7I8OL5p3kXtUo+7JLtIfR7BZICF
+        3zjS/vT95x/7/106G8lFfH64GUqedIo=
+Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
+ [209.85.222.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-199-aAsXL1NqOuGZcrT4GviSoQ-1; Thu, 04 Feb 2021 20:43:32 -0500
+X-MC-Unique: aAsXL1NqOuGZcrT4GviSoQ-1
+Received: by mail-qk1-f197.google.com with SMTP id 70so4426060qkh.4
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 17:43:32 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=Ou7Twm7dwyYgMW0x+HwD1Y+xevZetv77gEBdmsc8Q94=;
-        b=jyrmCMRDiTGLmtMMRyg5aPyfUrx3+JZkcqr7glrq7Qif1QQKSQJL2PU7qv9oKWs7P9
-         MDQ1npeWjsgfocLgshKcib5X8g5CwF5HyijUtT1qlBHnIg9OZSeBpYi80/d7xDVer/e6
-         9hGDX7O2YXtL2YaoIcWJgMeq3q4e6dJ545MTbvAP/gZBLk/8kXurNnyYqffg5ev9QfGa
-         DrjqPv3im2imCLbfuBKXhWY0+iAPJf5E8hpSmLnGA4HhoSqiIbYin8Yxb2yOCtqhHMDa
-         /Itkf6KB7F2OvC+Opx+uz0bf9J1P6B41IZKhpY7RInsydJ5d5FpgOy1Q+nGXyn1kytmm
-         Etpw==
-X-Gm-Message-State: AOAM531v1SzJN3Cw+yAZk79YIGIPY4lG8ya8z3QJ+M7Kxp+OhajW5pDw
-        Lj4c0MAmqliZ7hYLIkJqpFf1Yb3jz2HUBEY=
-X-Google-Smtp-Source: ABdhPJwj7X2s1/xbe3xohNzr9Ptz5AxLQPaNiOaF1tsFcQ1kWCt6sqIne4ediHnc/osBUMb9yoeuPQqXAYMgRu0=
-Sender: "saravanak via sendgmr" <saravanak@saravanak.san.corp.google.com>
-X-Received: from saravanak.san.corp.google.com ([2620:15c:2d:3:8475:2f1d:e8b4:f65a])
- (user=saravanak job=sendgmr) by 2002:a25:2f55:: with SMTP id
- v82mr2711812ybv.481.1612489152344; Thu, 04 Feb 2021 17:39:12 -0800 (PST)
-Date:   Thu,  4 Feb 2021 17:38:46 -0800
-Message-Id: <20210205013847.1736929-1-saravanak@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
-Subject: [PATCH v3] ARM: imx: avic: Convert to using IRQCHIP_DECLARE
-From:   Saravana Kannan <saravanak@google.com>
-To:     Russell King <linux@armlinux.org.uk>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Saravana Kannan <saravanak@google.com>
-Cc:     Martin Kaiser <martin@kaiser.cx>, kernel-team@android.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=4gmKyOKs+UNMlatEK5Udmfiip3bQql1jRbCQJCWFfmk=;
+        b=pS/FL/Rgs/CToBQ/OtnRPKftvsVSLH19trUvLEyIDGfVHd343o80aTA7Z1alzTyRvm
+         BaPz3w6QPHgZ9FuI79VVod3RmCQK4hrmljDGuQbf4z8Gz0l18hXpJuxxNfF+Mn02BtSU
+         tNbIxmOS6MG/Mdp4TaMhaZL9PoLzZ4iNFGZuSId7ODnY+S8M+k4EE+Jwi0dcJ941vQ1V
+         4EiMXLzwZFJX4R6zCjLA9ljQp/ehBnZwsZFhiNuDtr9cQLHnXrvtp2rcdMYXJuEo6PkX
+         UB9Ni0K70/jbuHK6KksyppmNtR8DoJ18RU+03syOkEppnZUF0hRstqG/RgvG75NsDfye
+         bP7A==
+X-Gm-Message-State: AOAM530iV1/969lHzxY52q0bBs3f9an7PhA0CitAKsBKYAzY99bdkSAE
+        C5yBRWN+M7mIGVrICUN6rRoLfaVarCOudKasLlAr3HOIc63zyQlKo21s5c9THZqIGYrwf7NAyDo
+        mqGMAXIi9b5xVwQnGNca0CnvA
+X-Received: by 2002:ac8:1283:: with SMTP id y3mr2363235qti.328.1612489411597;
+        Thu, 04 Feb 2021 17:43:31 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzMkXQJ7T8Fbl7lpWdsejP8eakfPGlddlfc7TkS0SS+QjWdyIgC+nzEuSRkH0w5pwMpSJlDPg==
+X-Received: by 2002:ac8:1283:: with SMTP id y3mr2363215qti.328.1612489411322;
+        Thu, 04 Feb 2021 17:43:31 -0800 (PST)
+Received: from xz-x1 (bras-vprn-toroon474qw-lp130-20-174-93-89-182.dsl.bell.ca. [174.93.89.182])
+        by smtp.gmail.com with ESMTPSA id o10sm6386855qtg.37.2021.02.04.17.43.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Feb 2021 17:43:30 -0800 (PST)
+Date:   Thu, 4 Feb 2021 20:43:28 -0500
+From:   Peter Xu <peterx@redhat.com>
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Kirill Shutemov <kirill@shutemov.name>,
+        Wei Zhang <wzam@amazon.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Gal Pressman <galpress@amazon.com>, Jan Kara <jack@suse.cz>,
+        Jann Horn <jannh@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v2 4/4] hugetlb: Do early cow when page pinned on src mm
+Message-ID: <20210205014328.GW6468@xz-x1>
+References: <20210204145033.136755-1-peterx@redhat.com>
+ <20210204145033.136755-5-peterx@redhat.com>
+ <d45d4ce3-f386-708b-0f7a-4950df6721d9@oracle.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <d45d4ce3-f386-708b-0f7a-4950df6721d9@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Using IRQCHIP_DECLARE lets fw_devlink know that it should not wait for
-these interrupt controllers to be populated as struct devices. Without
-this change, fw_devlink=on will make the consumers of these interrupt
-controllers wait for the struct device to be added and thereby block the
-consumers' probes forever. Converting to IRQCHIP_DECLARE addresses boot
-issues on imx25 with fw_devlink=on that were reported by Martin.
+On Thu, Feb 04, 2021 at 03:25:37PM -0800, Mike Kravetz wrote:
+> On 2/4/21 6:50 AM, Peter Xu wrote:
+> > This is the last missing piece of the COW-during-fork effort when there're
+> > pinned pages found.  One can reference 70e806e4e645 ("mm: Do early cow for
+> > pinned pages during fork() for ptes", 2020-09-27) for more information, since
+> > we do similar things here rather than pte this time, but just for hugetlb.
+> > 
+> > Signed-off-by: Peter Xu <peterx@redhat.com>
+> > ---
+> >  mm/hugetlb.c | 61 +++++++++++++++++++++++++++++++++++++++++++++++-----
+> >  1 file changed, 56 insertions(+), 5 deletions(-)
+> > 
+> > diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> > index 9e6ea96bf33b..5793936e00ef 100644
+> > --- a/mm/hugetlb.c
+> > +++ b/mm/hugetlb.c
+> > @@ -3734,11 +3734,27 @@ static bool is_hugetlb_entry_hwpoisoned(pte_t pte)
+> >  		return false;
+> >  }
+> >  
+> > +static void
+> > +hugetlb_copy_page(struct vm_area_struct *vma, pte_t *ptep, unsigned long addr,
+> > +		  struct page *old_page, struct page *new_page)
+> > +{
+> > +	struct hstate *h = hstate_vma(vma);
+> > +	unsigned int psize = pages_per_huge_page(h);
+> > +
+> > +	copy_user_huge_page(new_page, old_page, addr, vma, psize);
+> 
+> copy_user_huge_page calls cond_resched() and has might_sleep().  Imagine
+> the time it takes to copy 1G.  Usually called without holding locks, but
+> this new code is calling it with ptl locks held.  The copy should be done
+> outside the ptl, but you will need the ptl to update the pte/rmap.  So,
+> doing all this within one neat helper like this may not be possible.
 
-This also removes a lot of boilerplate code.
+Right, I'll move the copy outside, thanks for spotting this.
 
-Fixes: e590474768f1 ("driver core: Set fw_devlink=on by default")
-Reported-by: Martin Kaiser <martin@kaiser.cx>
-Signed-off-by: Saravana Kannan <saravanak@google.com>
-Tested-by: Martin Kaiser <martin@kaiser.cx>
----
+> 
+> > +	__SetPageUptodate(new_page);
+> > +	ClearPagePrivate(new_page);
+> > +	set_page_huge_active(new_page);
+> 
+> Code to replace the above ClearPagePrivate and set_page_huge_active is
+> in Andrew's tree.  With changes in Andrew's tree, this would be:
+> 
+> 	ClearHPageRestoreReserve(new_page);
+> 	SetHPageMigratable(new_page);
 
-v1 -> v2:
-- Fixed compatible string
-- Added Tested-by
+Indeed these names are much better than using the default ones.  At the
+meantime I'll rebase to linux-next/akpm.  Sorry it's always not easy for me to
+find the right branch...
 
-v2 -> v3:
-- Improved commit text
+> 
+> Ideally, the SetHPageMigratable would be done after the set_pte and add_rmap
+> so the page does not get migrated before these operations.  However, this
+> can not happen since we are holding the ptl.  So, no problem here.  If code
+> is restructured to call copy_user_huge_page outside ptl, keep this in mind.
+> 
+> Also, technically ClearHPageRestoreReserve is not needed as it would not be
+> set by alloc_huge_page because we did not consume a reserve.  However, better
+> to leave in place in case someone wants to use helper for something else.
 
- arch/arm/mach-imx/avic.c       | 16 +++++++++++++++-
- arch/arm/mach-imx/common.h     |  1 -
- arch/arm/mach-imx/mach-imx1.c  | 11 -----------
- arch/arm/mach-imx/mach-imx25.c | 12 ------------
- arch/arm/mach-imx/mach-imx27.c | 12 ------------
- arch/arm/mach-imx/mach-imx31.c |  1 -
- arch/arm/mach-imx/mach-imx35.c |  1 -
- arch/arm/mach-imx/mm-imx3.c    | 24 ------------------------
- 8 files changed, 15 insertions(+), 63 deletions(-)
+OK, I'll keep it for clearness.
 
-diff --git a/arch/arm/mach-imx/avic.c b/arch/arm/mach-imx/avic.c
-index 322caa21bcb3..21bce4049cec 100644
---- a/arch/arm/mach-imx/avic.c
-+++ b/arch/arm/mach-imx/avic.c
-@@ -7,6 +7,7 @@
- #include <linux/module.h>
- #include <linux/irq.h>
- #include <linux/irqdomain.h>
-+#include <linux/irqchip.h>
- #include <linux/io.h>
- #include <linux/of.h>
- #include <linux/of_address.h>
-@@ -162,7 +163,7 @@ static void __exception_irq_entry avic_handle_irq(struct pt_regs *regs)
-  * interrupts. It registers the interrupt enable and disable functions
-  * to the kernel for each interrupt source.
-  */
--void __init mxc_init_irq(void __iomem *irqbase)
-+static void __init mxc_init_irq(void __iomem *irqbase)
- {
- 	struct device_node *np;
- 	int irq_base;
-@@ -220,3 +221,16 @@ void __init mxc_init_irq(void __iomem *irqbase)
- 
- 	printk(KERN_INFO "MXC IRQ initialized\n");
- }
-+
-+static int __init imx_avic_init(struct device_node *node,
-+			       struct device_node *parent)
-+{
-+	void __iomem *avic_base;
-+
-+	avic_base = of_iomap(node, 0);
-+	BUG_ON(!avic_base);
-+	mxc_init_irq(avic_base);
-+	return 0;
-+}
-+
-+IRQCHIP_DECLARE(imx_avic, "fsl,avic", imx_avic_init);
-diff --git a/arch/arm/mach-imx/common.h b/arch/arm/mach-imx/common.h
-index 2d76e2c6c99e..e988b0978a42 100644
---- a/arch/arm/mach-imx/common.h
-+++ b/arch/arm/mach-imx/common.h
-@@ -22,7 +22,6 @@ void mx35_map_io(void);
- void imx21_init_early(void);
- void imx31_init_early(void);
- void imx35_init_early(void);
--void mxc_init_irq(void __iomem *);
- void mx31_init_irq(void);
- void mx35_init_irq(void);
- void mxc_set_cpu_type(unsigned int type);
-diff --git a/arch/arm/mach-imx/mach-imx1.c b/arch/arm/mach-imx/mach-imx1.c
-index 32df3b8012f9..8eca92d66a2e 100644
---- a/arch/arm/mach-imx/mach-imx1.c
-+++ b/arch/arm/mach-imx/mach-imx1.c
-@@ -17,16 +17,6 @@ static void __init imx1_init_early(void)
- 	mxc_set_cpu_type(MXC_CPU_MX1);
- }
- 
--static void __init imx1_init_irq(void)
--{
--	void __iomem *avic_addr;
--
--	avic_addr = ioremap(MX1_AVIC_ADDR, SZ_4K);
--	WARN_ON(!avic_addr);
--
--	mxc_init_irq(avic_addr);
--}
--
- static const char * const imx1_dt_board_compat[] __initconst = {
- 	"fsl,imx1",
- 	NULL
-@@ -34,7 +24,6 @@ static const char * const imx1_dt_board_compat[] __initconst = {
- 
- DT_MACHINE_START(IMX1_DT, "Freescale i.MX1 (Device Tree Support)")
- 	.init_early	= imx1_init_early,
--	.init_irq	= imx1_init_irq,
- 	.dt_compat	= imx1_dt_board_compat,
- 	.restart	= mxc_restart,
- MACHINE_END
-diff --git a/arch/arm/mach-imx/mach-imx25.c b/arch/arm/mach-imx/mach-imx25.c
-index 95de48a1aa7d..51927bd08aef 100644
---- a/arch/arm/mach-imx/mach-imx25.c
-+++ b/arch/arm/mach-imx/mach-imx25.c
-@@ -22,17 +22,6 @@ static void __init imx25_dt_init(void)
- 	imx_aips_allow_unprivileged_access("fsl,imx25-aips");
- }
- 
--static void __init mx25_init_irq(void)
--{
--	struct device_node *np;
--	void __iomem *avic_base;
--
--	np = of_find_compatible_node(NULL, NULL, "fsl,avic");
--	avic_base = of_iomap(np, 0);
--	BUG_ON(!avic_base);
--	mxc_init_irq(avic_base);
--}
--
- static const char * const imx25_dt_board_compat[] __initconst = {
- 	"fsl,imx25",
- 	NULL
-@@ -42,6 +31,5 @@ DT_MACHINE_START(IMX25_DT, "Freescale i.MX25 (Device Tree Support)")
- 	.init_early	= imx25_init_early,
- 	.init_machine	= imx25_dt_init,
- 	.init_late      = imx25_pm_init,
--	.init_irq	= mx25_init_irq,
- 	.dt_compat	= imx25_dt_board_compat,
- MACHINE_END
-diff --git a/arch/arm/mach-imx/mach-imx27.c b/arch/arm/mach-imx/mach-imx27.c
-index 262422a9c196..e325c9468105 100644
---- a/arch/arm/mach-imx/mach-imx27.c
-+++ b/arch/arm/mach-imx/mach-imx27.c
-@@ -56,17 +56,6 @@ static void __init imx27_init_early(void)
- 	mxc_set_cpu_type(MXC_CPU_MX27);
- }
- 
--static void __init mx27_init_irq(void)
--{
--	void __iomem *avic_base;
--	struct device_node *np;
--
--	np = of_find_compatible_node(NULL, NULL, "fsl,avic");
--	avic_base = of_iomap(np, 0);
--	BUG_ON(!avic_base);
--	mxc_init_irq(avic_base);
--}
--
- static const char * const imx27_dt_board_compat[] __initconst = {
- 	"fsl,imx27",
- 	NULL
-@@ -75,7 +64,6 @@ static const char * const imx27_dt_board_compat[] __initconst = {
- DT_MACHINE_START(IMX27_DT, "Freescale i.MX27 (Device Tree Support)")
- 	.map_io		= mx27_map_io,
- 	.init_early	= imx27_init_early,
--	.init_irq	= mx27_init_irq,
- 	.init_late	= imx27_pm_init,
- 	.dt_compat	= imx27_dt_board_compat,
- MACHINE_END
-diff --git a/arch/arm/mach-imx/mach-imx31.c b/arch/arm/mach-imx/mach-imx31.c
-index dc69dfe600df..e9a1092b6093 100644
---- a/arch/arm/mach-imx/mach-imx31.c
-+++ b/arch/arm/mach-imx/mach-imx31.c
-@@ -14,6 +14,5 @@ static const char * const imx31_dt_board_compat[] __initconst = {
- DT_MACHINE_START(IMX31_DT, "Freescale i.MX31 (Device Tree Support)")
- 	.map_io		= mx31_map_io,
- 	.init_early	= imx31_init_early,
--	.init_irq	= mx31_init_irq,
- 	.dt_compat	= imx31_dt_board_compat,
- MACHINE_END
-diff --git a/arch/arm/mach-imx/mach-imx35.c b/arch/arm/mach-imx/mach-imx35.c
-index ec5c3068715c..0fc08218b77d 100644
---- a/arch/arm/mach-imx/mach-imx35.c
-+++ b/arch/arm/mach-imx/mach-imx35.c
-@@ -27,6 +27,5 @@ DT_MACHINE_START(IMX35_DT, "Freescale i.MX35 (Device Tree Support)")
- 	.l2c_aux_mask	= ~0,
- 	.map_io		= mx35_map_io,
- 	.init_early	= imx35_init_early,
--	.init_irq	= mx35_init_irq,
- 	.dt_compat	= imx35_dt_board_compat,
- MACHINE_END
-diff --git a/arch/arm/mach-imx/mm-imx3.c b/arch/arm/mach-imx/mm-imx3.c
-index 5056438e5b42..28db97289ee8 100644
---- a/arch/arm/mach-imx/mm-imx3.c
-+++ b/arch/arm/mach-imx/mm-imx3.c
-@@ -109,18 +109,6 @@ void __init imx31_init_early(void)
- 	mx3_ccm_base = of_iomap(np, 0);
- 	BUG_ON(!mx3_ccm_base);
- }
--
--void __init mx31_init_irq(void)
--{
--	void __iomem *avic_base;
--	struct device_node *np;
--
--	np = of_find_compatible_node(NULL, NULL, "fsl,imx31-avic");
--	avic_base = of_iomap(np, 0);
--	BUG_ON(!avic_base);
--
--	mxc_init_irq(avic_base);
--}
- #endif /* ifdef CONFIG_SOC_IMX31 */
- 
- #ifdef CONFIG_SOC_IMX35
-@@ -158,16 +146,4 @@ void __init imx35_init_early(void)
- 	mx3_ccm_base = of_iomap(np, 0);
- 	BUG_ON(!mx3_ccm_base);
- }
--
--void __init mx35_init_irq(void)
--{
--	void __iomem *avic_base;
--	struct device_node *np;
--
--	np = of_find_compatible_node(NULL, NULL, "fsl,imx35-avic");
--	avic_base = of_iomap(np, 0);
--	BUG_ON(!avic_base);
--
--	mxc_init_irq(avic_base);
--}
- #endif /* ifdef CONFIG_SOC_IMX35 */
+> 
+> > +	set_huge_pte_at(vma->vm_mm, addr, ptep, make_huge_pte(vma, new_page, 1));
+> > +	hugepage_add_new_anon_rmap(new_page, vma, addr);
+> > +	hugetlb_count_add(psize, vma->vm_mm);
+> > +}
+> > +
+> >  int copy_hugetlb_page_range(struct mm_struct *dst, struct mm_struct *src,
+> >  			    struct vm_area_struct *vma)
+> >  {
+> >  	pte_t *src_pte, *dst_pte, entry, dst_entry;
+> > -	struct page *ptepage;
+> > +	struct page *ptepage, *prealloc = NULL;
+> >  	unsigned long addr;
+> >  	int cow;
+> >  	struct hstate *h = hstate_vma(vma);
+> > @@ -3787,7 +3803,7 @@ int copy_hugetlb_page_range(struct mm_struct *dst, struct mm_struct *src,
+> >  		dst_entry = huge_ptep_get(dst_pte);
+> >  		if ((dst_pte == src_pte) || !huge_pte_none(dst_entry))
+> >  			continue;
+> > -
+> > +again:
+> >  		dst_ptl = huge_pte_lock(h, dst, dst_pte);
+> >  		src_ptl = huge_pte_lockptr(h, src, src_pte);
+> >  		spin_lock_nested(src_ptl, SINGLE_DEPTH_NESTING);
+
+Side question: Mike, do you know why we need this lock_nested()?  Could the src
+lock be taken due to any reason already?  It confused me when I read the chunk.
+
+> > @@ -3816,6 +3832,39 @@ int copy_hugetlb_page_range(struct mm_struct *dst, struct mm_struct *src,
+> >  			}
+> >  			set_huge_swap_pte_at(dst, addr, dst_pte, entry, sz);
+> >  		} else {
+> > +			entry = huge_ptep_get(src_pte);
+> > +			ptepage = pte_page(entry);
+> > +			get_page(ptepage);
+> > +
+> > +			/*
+> > +			 * This is a rare case where we see pinned hugetlb
+> > +			 * pages while they're prone to COW.  We need to do the
+> > +			 * COW earlier during fork.
+> > +			 *
+> > +			 * When pre-allocating the page we need to be without
+> > +			 * all the locks since we could sleep when allocate.
+> > +			 */
+> > +			if (unlikely(page_needs_cow_for_dma(vma, ptepage))) {
+> > +				if (!prealloc) {
+> > +					put_page(ptepage);
+> > +					spin_unlock(src_ptl);
+> > +					spin_unlock(dst_ptl);
+> > +					prealloc = alloc_huge_page(vma, addr, 1);
+> > +					if (!prealloc) {
+> 
+> alloc_huge_page will return error codes, so you need to check IS_ERR(prealloc)
+> not just NULL.
+
+Definitely, I'll fix.
+
+Thanks,
+
 -- 
-2.30.0.365.g02bc693789-goog
+Peter Xu
 
