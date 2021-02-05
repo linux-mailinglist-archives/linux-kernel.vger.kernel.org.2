@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C773F31146D
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 23:07:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB1D73114A0
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 23:14:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233121AbhBEWFr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 17:05:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45340 "EHLO mail.kernel.org"
+        id S231612AbhBEWKJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 17:10:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45246 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229808AbhBEO5g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 09:57:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 32BFE64FEA;
-        Fri,  5 Feb 2021 14:10:24 +0000 (UTC)
+        id S232940AbhBEO5X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 09:57:23 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A820F64FD9;
+        Fri,  5 Feb 2021 14:09:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612534224;
-        bh=Cj/B1VP4Nq9rLzQuLhmLU1FGWwvS+ujJdZzf7lCA0VQ=;
+        s=korg; t=1612534182;
+        bh=jiTbbQFzXUI+nXEB89xV88YHpq32rJvlMvL+kD8fmnQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sUkVVOmGPGwyU1gddlOO4GfZf1EcjO3v/RkOukN2hMImX3GFB7T7vER/cP1MWvhab
-         Q6eOCK2VmWtDecLEb0sZaY8FemTv778XH8Ne2w7AIaD9F3qQ/VdKBy/atAqTjLMSH0
-         6mX/sByozjsj8vjMG/weYJJ3zehVwEqhdnFh4KZM=
+        b=y2/kevLxAabWQ6YMFkDbeGvuNFBY9HycslbBIvpBHwIrr/Cj2TwPfccuA6fwl2kNr
+         UsTMe9OUaNZ3vT50+81ViIXWvGuL6hs0Ibt/lI12ADxuRMFtkcsbbmqfMU9VuVjE3G
+         I7lz8U+yy6My59Rcz23UJlaiBoUxt44UrrV6Rbs4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Petr Machata <petrm@nvidia.com>,
-        Rasmus Villemoes <rasmus.villemoes@prevas.dk>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.10 08/57] net: switchdev: dont set port_obj_info->handled true when -EOPNOTSUPP
-Date:   Fri,  5 Feb 2021 15:06:34 +0100
-Message-Id: <20210205140656.336002214@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 19/57] tools/power/x86/intel-speed-select: Set scaling_max_freq to base_frequency
+Date:   Fri,  5 Feb 2021 15:06:45 +0100
+Message-Id: <20210205140656.800398922@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210205140655.982616732@linuxfoundation.org>
 References: <20210205140655.982616732@linuxfoundation.org>
@@ -40,97 +41,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
+From: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
 
-commit 20776b465c0c249f5e5b5b4fe077cd24ef1cda86 upstream.
+[ Upstream commit f981dc171c04c6cf5a35c712543b231ebf805832 ]
 
-It's not true that switchdev_port_obj_notify() only inspects the
-->handled field of "struct switchdev_notifier_port_obj_info" if
-call_switchdev_blocking_notifiers() returns 0 - there's a WARN_ON()
-triggering for a non-zero return combined with ->handled not being
-true. But the real problem here is that -EOPNOTSUPP is not being
-properly handled.
+When BIOS disables turbo, The scaling_max_freq in cpufreq sysfs will be
+limited to config level 0 base frequency. But when user selects a higher
+config levels, this will result in higher base frequency. But since
+scaling_max_freq is still old base frequency, the performance will still
+be limited. So when the turbo is disabled and cpufreq base_frequency is
+higher than scaling_max_freq, update the scaling_max_freq to the
+base_frequency.
 
-The wrapper functions switchdev_handle_port_obj_add() et al change a
-return value of -EOPNOTSUPP to 0, and the treatment of ->handled in
-switchdev_port_obj_notify() seems to be designed to change that back
-to -EOPNOTSUPP in case nobody actually acted on the notifier (i.e.,
-everybody returned -EOPNOTSUPP).
-
-Currently, as soon as some device down the stack passes the check_cb()
-check, ->handled gets set to true, which means that
-switchdev_port_obj_notify() cannot actually ever return -EOPNOTSUPP.
-
-This, for example, means that the detection of hardware offload
-support in the MRP code is broken: switchdev_port_obj_add() used by
-br_mrp_switchdev_send_ring_test() always returns 0, so since the MRP
-code thinks the generation of MRP test frames has been offloaded, no
-such frames are actually put on the wire. Similarly,
-br_mrp_switchdev_set_ring_role() also always returns 0, causing
-mrp->ring_role_offloaded to be set to 1.
-
-To fix this, continue to set ->handled true if any callback returns
-success or any error distinct from -EOPNOTSUPP. But if all the
-callbacks return -EOPNOTSUPP, make sure that ->handled stays false, so
-the logic in switchdev_port_obj_notify() can propagate that
-information.
-
-Fixes: 9a9f26e8f7ea ("bridge: mrp: Connect MRP API with the switchdev API")
-Fixes: f30f0601eb93 ("switchdev: Add helpers to aid traversal through lower devices")
-Reviewed-by: Petr Machata <petrm@nvidia.com>
-Signed-off-by: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
-Link: https://lore.kernel.org/r/20210125124116.102928-1-rasmus.villemoes@prevas.dk
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Link: https://lore.kernel.org/r/20201221071859.2783957-2-srinivas.pandruvada@linux.intel.com
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/switchdev/switchdev.c |   23 +++++++++++++----------
- 1 file changed, 13 insertions(+), 10 deletions(-)
+ .../x86/intel-speed-select/isst-config.c      | 21 +++++++++++++++++++
+ 1 file changed, 21 insertions(+)
 
---- a/net/switchdev/switchdev.c
-+++ b/net/switchdev/switchdev.c
-@@ -460,10 +460,11 @@ static int __switchdev_handle_port_obj_a
- 	extack = switchdev_notifier_info_to_extack(&port_obj_info->info);
+diff --git a/tools/power/x86/intel-speed-select/isst-config.c b/tools/power/x86/intel-speed-select/isst-config.c
+index cd089a5058594..97755f35d9910 100644
+--- a/tools/power/x86/intel-speed-select/isst-config.c
++++ b/tools/power/x86/intel-speed-select/isst-config.c
+@@ -1245,6 +1245,8 @@ static void dump_isst_config(int arg)
+ 	isst_ctdp_display_information_end(outf);
+ }
  
- 	if (check_cb(dev)) {
--		/* This flag is only checked if the return value is success. */
--		port_obj_info->handled = true;
--		return add_cb(dev, port_obj_info->obj, port_obj_info->trans,
--			      extack);
-+		err = add_cb(dev, port_obj_info->obj, port_obj_info->trans,
-+			     extack);
-+		if (err != -EOPNOTSUPP)
-+			port_obj_info->handled = true;
-+		return err;
- 	}
++static void adjust_scaling_max_from_base_freq(int cpu);
++
+ static void set_tdp_level_for_cpu(int cpu, void *arg1, void *arg2, void *arg3,
+ 				  void *arg4)
+ {
+@@ -1263,6 +1265,9 @@ static void set_tdp_level_for_cpu(int cpu, void *arg1, void *arg2, void *arg3,
+ 			int pkg_id = get_physical_package_id(cpu);
+ 			int die_id = get_physical_die_id(cpu);
  
- 	/* Switch ports might be stacked under e.g. a LAG. Ignore the
-@@ -515,9 +516,10 @@ static int __switchdev_handle_port_obj_d
- 	int err = -EOPNOTSUPP;
++			/* Wait for updated base frequencies */
++			usleep(2000);
++
+ 			fprintf(stderr, "Option is set to online/offline\n");
+ 			ctdp_level.core_cpumask_size =
+ 				alloc_cpu_set(&ctdp_level.core_cpumask);
+@@ -1279,6 +1284,7 @@ static void set_tdp_level_for_cpu(int cpu, void *arg1, void *arg2, void *arg3,
+ 					if (CPU_ISSET_S(i, ctdp_level.core_cpumask_size, ctdp_level.core_cpumask)) {
+ 						fprintf(stderr, "online cpu %d\n", i);
+ 						set_cpu_online_offline(i, 1);
++						adjust_scaling_max_from_base_freq(i);
+ 					} else {
+ 						fprintf(stderr, "offline cpu %d\n", i);
+ 						set_cpu_online_offline(i, 0);
+@@ -1436,6 +1442,21 @@ static int set_cpufreq_scaling_min_max(int cpu, int max, int freq)
+ 	return 0;
+ }
  
- 	if (check_cb(dev)) {
--		/* This flag is only checked if the return value is success. */
--		port_obj_info->handled = true;
--		return del_cb(dev, port_obj_info->obj);
-+		err = del_cb(dev, port_obj_info->obj);
-+		if (err != -EOPNOTSUPP)
-+			port_obj_info->handled = true;
-+		return err;
- 	}
- 
- 	/* Switch ports might be stacked under e.g. a LAG. Ignore the
-@@ -568,9 +570,10 @@ static int __switchdev_handle_port_attr_
- 	int err = -EOPNOTSUPP;
- 
- 	if (check_cb(dev)) {
--		port_attr_info->handled = true;
--		return set_cb(dev, port_attr_info->attr,
--			      port_attr_info->trans);
-+		err = set_cb(dev, port_attr_info->attr, port_attr_info->trans);
-+		if (err != -EOPNOTSUPP)
-+			port_attr_info->handled = true;
-+		return err;
- 	}
- 
- 	/* Switch ports might be stacked under e.g. a LAG. Ignore the
++static int no_turbo(void)
++{
++	return parse_int_file(0, "/sys/devices/system/cpu/intel_pstate/no_turbo");
++}
++
++static void adjust_scaling_max_from_base_freq(int cpu)
++{
++	int base_freq, scaling_max_freq;
++
++	scaling_max_freq = parse_int_file(0, "/sys/devices/system/cpu/cpu%d/cpufreq/scaling_max_freq", cpu);
++	base_freq = get_cpufreq_base_freq(cpu);
++	if (scaling_max_freq < base_freq || no_turbo())
++		set_cpufreq_scaling_min_max(cpu, 1, base_freq);
++}
++
+ static int set_clx_pbf_cpufreq_scaling_min_max(int cpu)
+ {
+ 	struct isst_pkg_ctdp_level_info *ctdp_level;
+-- 
+2.27.0
+
 
 
