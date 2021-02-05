@@ -2,113 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 165A83110B8
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 20:08:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9841A3110A8
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 20:04:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233482AbhBERZT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 12:25:19 -0500
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:47617 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233728AbhBERSa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 12:18:30 -0500
-Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 115IpxT5022513;
-        Fri, 5 Feb 2021 19:59:49 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=selector1;
- bh=rpRVpeMqY05scC8ONlNNaolclDZcKJC+t70jj36hAoE=;
- b=f1V0IYOOI24Pt7bgd2jRMqxC0ko9o/lBf26YJQsx8R8BYVRS1S9vZ1XNZx/q0DqCNtX3
- sRB0S5EgNWpQ3rfP+2KHcYESr74+M9aPG6E7Q++NXzL14w4G7jcZCnaPWnvM3q1LCYgb
- LtTUjWv3zJpvD5KIX25D1okxQEfbpDEdJZZqWGbm42kOMD3kkJJKnYMZm16XUlhCtdJR
- 0+RbSufwwQZoaEc4/Ea3jq9ZaAQi/xNf4QkMCp81tzD/Q0EoHVqoHo8izzDIbslP1Fmn
- vPX9eGiviPQ8nNyorhmro/T/QCJVigkGPJ+Z2/gTDWGV61IObAIgivbSyTsiGVCvQad/ 0w== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 36d0fsgjqt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 05 Feb 2021 19:59:48 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 9160510002A;
-        Fri,  5 Feb 2021 19:59:48 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 863282C38D3;
-        Fri,  5 Feb 2021 19:59:48 +0100 (CET)
-Received: from localhost (10.75.127.47) by SFHDAG2NODE3.st.com (10.75.127.6)
- with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 5 Feb 2021 19:59:48
- +0100
-From:   Alain Volmat <alain.volmat@foss.st.com>
-To:     <broonie@kernel.org>, <amelie.delaunay@foss.st.com>
-CC:     <mcoquelin.stm32@gmail.com>, <alexandre.torgue@foss.st.com>,
-        <linux-spi@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <fabrice.gasnier@foss.st.com>,
-        <alain.volmat@foss.st.com>
-Subject: [PATCH v2 8/8] spi: stm32: make spurious and overrun interrupts visible
-Date:   Fri, 5 Feb 2021 19:59:32 +0100
-Message-ID: <1612551572-495-9-git-send-email-alain.volmat@foss.st.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1612551572-495-1-git-send-email-alain.volmat@foss.st.com>
-References: <1612551572-495-1-git-send-email-alain.volmat@foss.st.com>
+        id S231493AbhBERVa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 12:21:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51204 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233730AbhBERS2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 12:18:28 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 75F1864DDD;
+        Fri,  5 Feb 2021 19:00:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612551608;
+        bh=bZuXQy1PiGC0sOhNm3CFAA7NXZxxgKQLuFfDc0NALKo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=t1ppFdNTYUUdVL9i1c3gehAV+Uj3jluSIWB7Nwe0zR4Cs2wAgMxnPEuJPgSF3f/Hk
+         42v1g+rj01vUAVTCncgfkcL+PJ0vCUQ9qb2K6qdU8QtF5xG3+lrzH2zFzC2UZeqiX+
+         MeXrQnKWWgnz9oDmA+rOfo1PU1tkKdUVkaXMvVNsJjjTIOWKvPG/JcdXfXZP932wQE
+         YV3UBe65wWJ9g72kc6+0gLBEy5TyL1kUCuqL9uzUG7KzJaQEvp/zHogoDfsbCr2mH4
+         TfLDPnx1B8M/1iaoELpvwabLuhv0ev+fJHhf+srZPZ55SenLIIoKo1+8/0PEA2nboS
+         Bo1GvzfVPaTvg==
+Date:   Fri, 5 Feb 2021 12:00:05 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Arnd Bergmann <arnd@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Brian Geffon <bgeffon@google.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: Re: [PATCH] mm/mremap: fix BUILD_BUG_ON() error in get_extent
+Message-ID: <20210205190005.GB461042@localhost>
+References: <20201230154104.522605-1-arnd@kernel.org>
+ <20210112191634.GA1587546@ubuntu-m3-large-x86>
+ <20210203184840.GA1711681@localhost>
+ <202102031202.F0AEC4A7@keescook>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.47]
-X-ClientProxiedBy: SFHDAG1NODE1.st.com (10.75.127.1) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-02-05_10:2021-02-05,2021-02-05 signatures=0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202102031202.F0AEC4A7@keescook>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We do not expect to receive spurious interrupts so rise a warning
-if it happens.
+On Wed, Feb 03, 2021 at 12:03:07PM -0800, Kees Cook wrote:
+> On Wed, Feb 03, 2021 at 11:48:40AM -0700, Nathan Chancellor wrote:
+> > On Tue, Jan 12, 2021 at 12:16:34PM -0700, Nathan Chancellor wrote:
+> > > On Wed, Dec 30, 2020 at 04:40:40PM +0100, Arnd Bergmann wrote:
+> > > > From: Arnd Bergmann <arnd@arndb.de>
+> > > > 
+> > > > clang cannt evaluate this function argument at compile time
+> > > > when the function is not inlined, which leads to a link
+> > > > time failure:
+> > > > 
+> > > > ld.lld: error: undefined symbol: __compiletime_assert_414
+> > > > >>> referenced by mremap.c
+> > > > >>>               mremap.o:(get_extent) in archive mm/built-in.a
+> > > > 
+> > > > Mark the function as __always_inline to avoid it.
+> > > > 
+> > > > Fixes: 9ad9718bfa41 ("mm/mremap: calculate extent in one place")
+> > > > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> > > 
+> > > I would like to see some movement on getting this fixed in 5.11. As it
+> > > stands, this is one of three __compiletime_assert references with
+> > > CONFIG_UBSAN_UNSIGNED_OVERFLOW. If we want to keep the BUILD_BUG()
+> > > around, I think this is fine. Alternatively, turning it into a runtime
+> > > check would be fine too.
+> > > 
+> > > Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
+> > 
+> > Ping? It is pretty late into the 5.11 cycle and this is still broken.
+> 
+> I think we should just do the __always_inline. Who can take this?
 
-RX overrun is an error condition that signals a corrupted RX
-stream both in dma and in irq modes. Report the error and
-abort the transfer in either cases.
+This should probably go through -mm, unless we get an ack then Nick and
+I could take it.
 
-Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
----
-v2: identical to v1
+> > 
+> > Cheers,
+> > Nathan
+> > 
+> > > > ---
+> > > >  mm/mremap.c | 5 +++--
+> > > >  1 file changed, 3 insertions(+), 2 deletions(-)
+> > > > 
+> > > > diff --git a/mm/mremap.c b/mm/mremap.c
+> > > > index c5590afe7165..1cb464a07184 100644
+> > > > --- a/mm/mremap.c
+> > > > +++ b/mm/mremap.c
+> > > > @@ -336,8 +336,9 @@ enum pgt_entry {
+> > > >   * valid. Else returns a smaller extent bounded by the end of the source and
+> > > >   * destination pgt_entry.
+> > > >   */
+> > > > -static unsigned long get_extent(enum pgt_entry entry, unsigned long old_addr,
+> > > > -			unsigned long old_end, unsigned long new_addr)
+> > > > +static __always_inline unsigned long get_extent(enum pgt_entry entry,
+> > > > +			unsigned long old_addr, unsigned long old_end,
+> > > > +			unsigned long new_addr)
+> > > >  {
+> > > >  	unsigned long next, extent, mask, size;
+> > > >  
+> > > > -- 
+> > > > 2.29.2
+> > >  
+> 
 
- drivers/spi/spi-stm32.c | 15 ++++-----------
- 1 file changed, 4 insertions(+), 11 deletions(-)
-
-diff --git a/drivers/spi/spi-stm32.c b/drivers/spi/spi-stm32.c
-index f3a4ff60ac4b..25c076461011 100644
---- a/drivers/spi/spi-stm32.c
-+++ b/drivers/spi/spi-stm32.c
-@@ -895,8 +895,8 @@ static irqreturn_t stm32h7_spi_irq_thread(int irq, void *dev_id)
- 		mask |= STM32H7_SPI_SR_RXP;
- 
- 	if (!(sr & mask)) {
--		dev_dbg(spi->dev, "spurious IT (sr=0x%08x, ier=0x%08x)\n",
--			sr, ier);
-+		dev_warn(spi->dev, "spurious IT (sr=0x%08x, ier=0x%08x)\n",
-+			 sr, ier);
- 		spin_unlock_irqrestore(&spi->lock, flags);
- 		return IRQ_NONE;
- 	}
-@@ -923,15 +923,8 @@ static irqreturn_t stm32h7_spi_irq_thread(int irq, void *dev_id)
- 	}
- 
- 	if (sr & STM32H7_SPI_SR_OVR) {
--		dev_warn(spi->dev, "Overrun: received value discarded\n");
--		if (!spi->cur_usedma && (spi->rx_buf && (spi->rx_len > 0)))
--			stm32h7_spi_read_rxfifo(spi, false);
--		/*
--		 * If overrun is detected while using DMA, it means that
--		 * something went wrong, so stop the current transfer
--		 */
--		if (spi->cur_usedma)
--			end = true;
-+		dev_err(spi->dev, "Overrun: RX data lost\n");
-+		end = true;
- 	}
- 
- 	if (sr & STM32H7_SPI_SR_EOT) {
--- 
-2.17.1
-
+Cheers,
+Nathan
