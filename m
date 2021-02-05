@@ -2,236 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED11F311639
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 00:00:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2927D3115F0
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 23:55:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231302AbhBEW6m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 17:58:42 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:57689 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229783AbhBEOlS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 09:41:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612541917;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=OO/Z9Pbt3ecs88CwJUi87r2qp3LeYfy2PFUUcweybu4=;
-        b=LaE9WMomg7O8+qc/pEbruBstnc/YHzF9/5gybqpbBvsCVMr5U5fwTQ1vpud1/Fe7nK6lok
-        fBqFYu51Lct82JJiVcIo/vp1rWQFEGp3Oda4Jl5gJ/QzcZaEzs45mxsGS9WvpjaluMDZmV
-        cXTuxVYGIOiZpdEhwt3uj5a8q5GvyYY=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-513-cOL90i63MX6rcIAp-XTU5w-1; Fri, 05 Feb 2021 09:17:58 -0500
-X-MC-Unique: cOL90i63MX6rcIAp-XTU5w-1
-Received: by mail-wr1-f70.google.com with SMTP id s18so5414843wrf.0
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 06:17:58 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=OO/Z9Pbt3ecs88CwJUi87r2qp3LeYfy2PFUUcweybu4=;
-        b=C0/h1oTo1AqDTWDHFqPjej7+NjSbZNwePeBPz59RwINnJzk6YiLbov9F2wP5w09WOo
-         e8jomNw3uN5JAyuivCez7PocSjg09Me6WiRrn2Olc1iU8psv7GZXHAjKwnWNfD40U8Hc
-         UMjIeIDw3oyn9Ei1PbORUGYNUEUJcczMo0WHXUlAzxf8y0VmxNjFUluT6Q3hxkgjuqUe
-         W304HOxG8bmh94J77cO29cymr7lvllKc8SSfwIPYeh3STMEoe1nLPdbBkz1FW9TS73E6
-         rn9QZnl4YvJwjAGiN5XJgxqHx1Ath7e6Cz3+hUs10V4imdtVgjFQBjh1diMnOwWLl3FU
-         cGkw==
-X-Gm-Message-State: AOAM533RqmmGvfj0xQu/RTlrEU3qcEFNnxUJs74Wef6v7WPaFpmnA3by
-        RuqlDFZi5ZeFYC20re3o81IbZi1qTys7tfJ+3Y/U2cItBw90CroNgJ+z5r3hXaqeSm34HPYo7HT
-        iLp1bvA5aWjZfVWgZl5ALxr6t
-X-Received: by 2002:a5d:6b47:: with SMTP id x7mr5469512wrw.170.1612534677385;
-        Fri, 05 Feb 2021 06:17:57 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzhXbMuzW+9lf4mHkd5Twhn2KBAz8ru70DzypAHZB3/V1aKyI0GBYXHQZ9Aqaw239oEpTOgNw==
-X-Received: by 2002:a5d:6b47:: with SMTP id x7mr5469488wrw.170.1612534677136;
-        Fri, 05 Feb 2021 06:17:57 -0800 (PST)
-Received: from steredhat (host-79-34-249-199.business.telecomitalia.it. [79.34.249.199])
-        by smtp.gmail.com with ESMTPSA id n9sm12749550wrq.41.2021.02.05.06.17.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Feb 2021 06:17:56 -0800 (PST)
-Date:   Fri, 5 Feb 2021 15:17:54 +0100
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Jason Wang <jasowang@redhat.com>, Eli Cohen <elic@nvidia.com>,
-        virtualization@lists.linux-foundation.org,
-        Xie Yongji <xieyongji@bytedance.com>, kvm@vger.kernel.org,
-        Laurent Vivier <lvivier@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Max Gurtovoy <mgurtovoy@nvidia.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 08/13] vdpa: add return value to get_config/set_config
- callbacks
-Message-ID: <20210205141754.cyp4q77cqrj4xx7p@steredhat>
-References: <20210204172230.85853-1-sgarzare@redhat.com>
- <20210204172230.85853-9-sgarzare@redhat.com>
- <fe6d02be-b6f9-b07f-a86b-97912dddffdc@redhat.com>
- <20210205084847.d4pkqq2sbqs3p53r@steredhat>
- <20210205091123-mutt-send-email-mst@kernel.org>
+        id S233167AbhBEWqE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 17:46:04 -0500
+Received: from mga12.intel.com ([192.55.52.136]:10344 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232383AbhBEOwL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 09:52:11 -0500
+IronPort-SDR: fbow1SMS9mnoBCZ8GswElMHBZJsSnWoS4gsEUnFXzRLOL1jurmc22naBE0JqKf+QPYTOXSU0/Y
+ CEcP08WQzAIA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9885"; a="160595538"
+X-IronPort-AV: E=Sophos;i="5.81,155,1610438400"; 
+   d="scan'208";a="160595538"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2021 06:20:06 -0800
+IronPort-SDR: bJv9HjO06iK3CnORcnUqhd/OCT5yH1n20ago7+MetwsPjFUjOHaWLAn6glEntGlOvPxRhkJ+P/
+ d0PWVU8iDrCw==
+X-IronPort-AV: E=Sophos;i="5.81,155,1610438400"; 
+   d="scan'208";a="484205707"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2021 06:20:03 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1l81xo-002Any-MC; Fri, 05 Feb 2021 16:20:00 +0200
+Date:   Fri, 5 Feb 2021 16:20:00 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Eric Tremblay <etremblay@distech-controls.com>
+Cc:     gregkh@linuxfoundation.org, jslaby@suse.com,
+        matwey.kornilov@gmail.com, giulio.benetti@micronovasrl.com,
+        lukas@wunner.de, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        christoph.muellner@theobroma-systems.com, heiko@sntech.de,
+        heiko.stuebner@theobroma-systems.com
+Subject: Re: [PATCH v2 0/3] Handle UART without interrupt on TEMT using em485
+Message-ID: <YB1UEHEPVQCAjsMO@smile.fi.intel.com>
+References: <20210204161158.643-1-etremblay@distech-controls.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210205091123-mutt-send-email-mst@kernel.org>
+In-Reply-To: <20210204161158.643-1-etremblay@distech-controls.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 05, 2021 at 09:11:26AM -0500, Michael S. Tsirkin wrote:
->On Fri, Feb 05, 2021 at 09:48:47AM +0100, Stefano Garzarella wrote:
->> Adding Eli in the loop.
->>
->> On Fri, Feb 05, 2021 at 11:20:11AM +0800, Jason Wang wrote:
->> >
->> > On 2021/2/5 上午1:22, Stefano Garzarella wrote:
->> > > All implementations of these callbacks already validate inputs.
->> > >
->> > > Let's return an error from these callbacks, so the caller doesn't
->> > > need to validate the input anymore.
->> > >
->> > > We update all implementations to return -EINVAL in case of invalid
->> > > input.
->> > >
->> > > Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
->> > > ---
->> > >  include/linux/vdpa.h              | 18 ++++++++++--------
->> > >  drivers/vdpa/ifcvf/ifcvf_main.c   | 24 ++++++++++++++++--------
->> > >  drivers/vdpa/mlx5/net/mlx5_vnet.c | 17 +++++++++++------
->> > >  drivers/vdpa/vdpa_sim/vdpa_sim.c  | 16 ++++++++++------
->> > >  4 files changed, 47 insertions(+), 28 deletions(-)
->> > >
->> > > diff --git a/include/linux/vdpa.h b/include/linux/vdpa.h
->> > > index 4ab5494503a8..0e0cbd5fb41b 100644
->> > > --- a/include/linux/vdpa.h
->> > > +++ b/include/linux/vdpa.h
->> > > @@ -157,6 +157,7 @@ struct vdpa_iova_range {
->> > >   *				@buf: buffer used to read to
->> > >   *				@len: the length to read from
->> > >   *				configuration space
->> > > + *				Returns integer: success (0) or error (< 0)
->> > >   * @set_config:			Write to device specific configuration space
->> > >   *				@vdev: vdpa device
->> > >   *				@offset: offset from the beginning of
->> > > @@ -164,6 +165,7 @@ struct vdpa_iova_range {
->> > >   *				@buf: buffer used to write from
->> > >   *				@len: the length to write to
->> > >   *				configuration space
->> > > + *				Returns integer: success (0) or error (< 0)
->> > >   * @get_generation:		Get device config generation (optional)
->> > >   *				@vdev: vdpa device
->> > >   *				Returns u32: device generation
->> > > @@ -231,10 +233,10 @@ struct vdpa_config_ops {
->> > >  	u32 (*get_vendor_id)(struct vdpa_device *vdev);
->> > >  	u8 (*get_status)(struct vdpa_device *vdev);
->> > >  	void (*set_status)(struct vdpa_device *vdev, u8 status);
->> > > -	void (*get_config)(struct vdpa_device *vdev, unsigned int offset,
->> > > -			   void *buf, unsigned int len);
->> > > -	void (*set_config)(struct vdpa_device *vdev, unsigned int offset,
->> > > -			   const void *buf, unsigned int len);
->> > > +	int (*get_config)(struct vdpa_device *vdev, unsigned int offset,
->> > > +			  void *buf, unsigned int len);
->> > > +	int (*set_config)(struct vdpa_device *vdev, unsigned int offset,
->> > > +			  const void *buf, unsigned int len);
->> > >  	u32 (*get_generation)(struct vdpa_device *vdev);
->> > >  	struct vdpa_iova_range (*get_iova_range)(struct vdpa_device *vdev);
->> > > @@ -329,8 +331,8 @@ static inline int vdpa_set_features(struct vdpa_device *vdev, u64 features)
->> > >  }
->> > > -static inline void vdpa_get_config(struct vdpa_device *vdev, unsigned offset,
->> > > -				   void *buf, unsigned int len)
->> > > +static inline int vdpa_get_config(struct vdpa_device *vdev, unsigned offset,
->> > > +				  void *buf, unsigned int len)
->> > >  {
->> > >          const struct vdpa_config_ops *ops = vdev->config;
->> > > @@ -339,8 +341,8 @@ static inline void vdpa_get_config(struct vdpa_device *vdev, unsigned offset,
->> > >  	 * If it does happen we assume a legacy guest.
->> > >  	 */
->> > >  	if (!vdev->features_valid)
->> > > -		vdpa_set_features(vdev, 0);
->> > > -	ops->get_config(vdev, offset, buf, len);
->> > > +		return vdpa_set_features(vdev, 0);
->> > > +	return ops->get_config(vdev, offset, buf, len);
->> > >  }
->> > >  /**
->> > > diff --git a/drivers/vdpa/ifcvf/ifcvf_main.c b/drivers/vdpa/ifcvf/ifcvf_main.c
->> > > index 7c8bbfcf6c3e..f5e6a90d8114 100644
->> > > --- a/drivers/vdpa/ifcvf/ifcvf_main.c
->> > > +++ b/drivers/vdpa/ifcvf/ifcvf_main.c
->> > > @@ -332,24 +332,32 @@ static u32 ifcvf_vdpa_get_vq_align(struct vdpa_device *vdpa_dev)
->> > >  	return IFCVF_QUEUE_ALIGNMENT;
->> > >  }
->> > > -static void ifcvf_vdpa_get_config(struct vdpa_device *vdpa_dev,
->> > > -				  unsigned int offset,
->> > > -				  void *buf, unsigned int len)
->> > > +static int ifcvf_vdpa_get_config(struct vdpa_device *vdpa_dev,
->> > > +				 unsigned int offset,
->> > > +				 void *buf, unsigned int len)
->> > >  {
->> > >  	struct ifcvf_hw *vf = vdpa_to_vf(vdpa_dev);
->> > > -	WARN_ON(offset + len > sizeof(struct virtio_net_config));
->> > > +	if (offset + len > sizeof(struct virtio_net_config))
->> > > +		return -EINVAL;
->> > > +
->> > >  	ifcvf_read_net_config(vf, offset, buf, len);
->> > > +
->> > > +	return 0;
->> > >  }
->> > > -static void ifcvf_vdpa_set_config(struct vdpa_device *vdpa_dev,
->> > > -				  unsigned int offset, const void *buf,
->> > > -				  unsigned int len)
->> > > +static int ifcvf_vdpa_set_config(struct vdpa_device *vdpa_dev,
->> > > +				 unsigned int offset, const void *buf,
->> > > +				 unsigned int len)
->> > >  {
->> > >  	struct ifcvf_hw *vf = vdpa_to_vf(vdpa_dev);
->> > > -	WARN_ON(offset + len > sizeof(struct virtio_net_config));
->> > > +	if (offset + len > sizeof(struct virtio_net_config))
->> > > +		return -EINVAL;
->> > > +
->> > >  	ifcvf_write_net_config(vf, offset, buf, len);
->> > > +
->> > > +	return 0;
->> > >  }
->> > >  static void ifcvf_vdpa_set_config_cb(struct vdpa_device *vdpa_dev,
->> > > diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
->> > > index 029822060017..9323b5ff7988 100644
->> > > --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
->> > > +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
->> > > @@ -1796,20 +1796,25 @@ static void mlx5_vdpa_set_status(struct vdpa_device *vdev, u8 status)
->> > >  	ndev->mvdev.status |= VIRTIO_CONFIG_S_FAILED;
->> > >  }
->> > > -static void mlx5_vdpa_get_config(struct vdpa_device *vdev, unsigned int offset, void *buf,
->> > > -				 unsigned int len)
->> > > +static int mlx5_vdpa_get_config(struct vdpa_device *vdev, unsigned int offset, void *buf,
->> > > +				unsigned int len)
->> > >  {
->> > >  	struct mlx5_vdpa_dev *mvdev = to_mvdev(vdev);
->> > >  	struct mlx5_vdpa_net *ndev = to_mlx5_vdpa_ndev(mvdev);
->> > > -	if (offset + len < sizeof(struct virtio_net_config))
->> > > -		memcpy(buf, (u8 *)&ndev->config + offset, len);
->> > > +	if (offset + len > sizeof(struct virtio_net_config))
->> > > +		return -EINVAL;
->> >
->> >
->> > It looks to me we should use ">=" here?
->>
->>
->> Ehmm, I think it was wrong before this patch. If 'offset + len' is equal to
->> 'sizeof(struct virtio_net_config)', should be okay to copy, no?
->>
->> I think it's one of the rare cases where the copy and paste went well :-)
->>
->> Should I fix this in a separate patch?
->>
->> Thanks,
->> Stefano
->
->Sure.
->
+On Thu, Feb 04, 2021 at 11:11:55AM -0500, Eric Tremblay wrote:
+> Thanks everyone for the comments. I apply most of the comments on version 1
+> but there is still a pending point with the Jiri comment about the safety of:
+> struct tty_struct *tty = p->port.state->port.tty;
+> I thought about adding a check with tty_port_initialized() before accessing
+> the pointer, but I saw some other places where that same pointer is accessed
+> without further protection, at least from what I see.
 
-I'll do it.
+Thanks for the update. Unfortunately I'm a bit busy with other prioritized
+stuff, but I will review this next week.
 
-Thanks,
-Stefano
+> Changes from v1 to v2:
+> - Use UART_CAP_NOTEMT instead of UART_CAP_TEMT
+> - Use some predefined macro to reduce magicness
+> - Reset active_timer in temt timer handler
+> - add uart_get_byte_size
+> - set UART_CAP_NOTEMT in uart_config for PORT_16550A_FSL64
+> - Improve commit messages
+> - Improve grammar and spelling
+> - Add Giulio and Heiko SoB to reflect previous work
+> 
+> Eric Tremblay (3):
+>   serial: 8250: Handle UART without interrupt on TEMT using em485
+>   serial: 8250: Add UART_CAP_NOTEMT on PORT_16550A_FSL64
+>   serial: 8250: add compatible for fsl,16550-FIFO64
+> 
+>  drivers/tty/serial/8250/8250.h      |  1 +
+>  drivers/tty/serial/8250/8250_of.c   |  2 +
+>  drivers/tty/serial/8250/8250_port.c | 68 ++++++++++++++++++++++++++++-
+>  drivers/tty/serial/serial_core.c    | 29 ++++++++----
+>  include/linux/serial_8250.h         |  2 +
+>  include/linux/serial_core.h         |  2 +
+>  6 files changed, 94 insertions(+), 10 deletions(-)
+> 
+> -- 
+> 2.17.1
+> 
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
 
