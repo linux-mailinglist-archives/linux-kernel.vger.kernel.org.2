@@ -2,78 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 562603116F7
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 00:22:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DB9D3116C2
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 00:19:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232223AbhBEXVw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 18:21:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41520 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232598AbhBEOZQ (ORCPT
+        id S231944AbhBEXMI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 18:12:08 -0500
+Received: from mail-ot1-f51.google.com ([209.85.210.51]:39825 "EHLO
+        mail-ot1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232647AbhBEObN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 09:25:16 -0500
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BB1FC061797;
-        Fri,  5 Feb 2021 08:03:23 -0800 (PST)
-Received: by mail-oi1-x22c.google.com with SMTP id n7so7901695oic.11;
-        Fri, 05 Feb 2021 08:03:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=FVdQ5ukkP9/XbYX/8CVztmsEIJMufgkJkRC2gxyWHPI=;
-        b=iC4JrNHZTN8cnhAfbFpXAv6CrFup/sVyTxWB7UeMqnn+hr1kvuuCSI8K3p2ARted3u
-         59LNcUye0Sy0/hKfpUXWC82aIyZwK8dCGo5zBKK++Nj01iZFkMSbMGPm356DrQKJRz1r
-         +AV6IgEH03dFHV2pGfYjGATnvdelNkX17KWcEdLdC0esiq307LeLHH2TZEirXbbape4e
-         5YobvlpVcF4g3OOFXMPnzLx6GlD9LbzjGMZWwGVh+C/NJdCdqTjx8Ve6LZsdxp7M9Don
-         piF1R2oOaNnqfbNVg6svIWto6ew7TKfXoi45NqqXNLygS8/z+tHJqKAluNwbRb8tzXnh
-         PK+A==
+        Fri, 5 Feb 2021 09:31:13 -0500
+Received: by mail-ot1-f51.google.com with SMTP id d7so5083938otq.6;
+        Fri, 05 Feb 2021 08:08:27 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=FVdQ5ukkP9/XbYX/8CVztmsEIJMufgkJkRC2gxyWHPI=;
-        b=AA83PO6GF+GEVH3eFNc7ma3qgWct6qwxMlvT8EnXhyexnvO8B5sLJy/xlHt1xqJOJu
-         sRjX50U93Sv7FhLBV/o2TMEk5E2F7kW0kqhOf+SG+hMnseX5zBW8LTmrve4WA5llPvdZ
-         NIXilpvO9qHh6zwySc8A36WmGy6KRXE4Da7EHR784i0B+5AInoDWT2NWRyDgIonmwxJK
-         VvddfpIPaFueWWk2A6tADM79fL/wZET2ntHsvA07m543C8DXdF0+trdonZHO+CZxz+jG
-         ZvvWu4E7rcdDluB23R3BeMGoaKktObsK+XwqMxLuhDnwZbLcVpHVoXU6RoWNgVwDJ5gT
-         gC7w==
-X-Gm-Message-State: AOAM533qsHsYyD1N953i4f2G0SVbJVqtdIxDGVrKq41knRp9iNIp0p/n
-        TIlI6IySehmMYoGXEyWngh+AoWagzeez06lW5pCpTjtL6FU=
-X-Google-Smtp-Source: ABdhPJy6jCzEz03JnQXVhbqT+cuIUDmp9ZKy2c51bvVOq36mVzOPREDPhQTk2WphtOI6JFjfXJn66s2Kn9PDiuB374M=
-X-Received: by 2002:a05:6808:1290:: with SMTP id a16mr3368879oiw.161.1612539418567;
- Fri, 05 Feb 2021 07:36:58 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=5BRKM6m1G8jCHmWPk/p4NoJLu5lrM6XNxY2Am/U+Ay4=;
+        b=SD0+wAFS1Pagj62rapulYqoZGGKeggbDwDqPjT1JHAko94Z5SnuYicW+ANWebw136C
+         dnZOYs9SAaNspjfZGA++x0tg2aucHeHpe2kCDYC6PLp1dEtBK0LI36cU0CDxG6PqOQBA
+         WS7/khkZO0ufkCg2o9TVsK1SbiSGHuE77dp1zZqkC0FS9t2ctMT43ois7Hl9XPb3UDy3
+         0St2UFlzV/McEPXI43jB6YgEMDXVfAEzLf56oGw4sZnfa7VC5HnGehgquGsv8KV5BGUY
+         tUBW55wLC9UGXvoaSuS7aYbIa00hBZ5Trgw5Q1gxbdc7G06S+2nwGygCWI+r2hNFVjnw
+         vT5A==
+X-Gm-Message-State: AOAM531p0GSvwWhR63k2uCC83rNwWG3nIcHMVl/+WqluMPi7Z0DWfehz
+        q4So7w4Ehf3riHLateW/6tRJfE6wTg==
+X-Google-Smtp-Source: ABdhPJzgpseoww0GbKtxA4oUNmoyVQDNbUB9bioWqchv0MrmT+y8lv8T9HoSpmnszZsFRwkafoxDTg==
+X-Received: by 2002:a05:6830:1410:: with SMTP id v16mr3556521otp.347.1612539519314;
+        Fri, 05 Feb 2021 07:38:39 -0800 (PST)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id y66sm971759oig.46.2021.02.05.07.38.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Feb 2021 07:38:38 -0800 (PST)
+Received: (nullmailer pid 3112099 invoked by uid 1000);
+        Fri, 05 Feb 2021 15:38:37 -0000
+Date:   Fri, 5 Feb 2021 09:38:37 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Michal Simek <michal.simek@xilinx.com>
+Cc:     linux-kernel@vger.kernel.org, monstr@monstr.eu, git@xilinx.com,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-usb@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: dwc3-xilinx: Add missing comma in example
+Message-ID: <20210205153837.GA3108557@robh.at.kernel.org>
+References: <8fa5edcaa6b93859cfda97d080aad378e89c1b44.1611232967.git.michal.simek@xilinx.com>
 MIME-Version: 1.0
-References: <20210205045217.552927-1-enbyamy@gmail.com> <20210205131910.GJ1993@twin.jikos.cz>
-In-Reply-To: <20210205131910.GJ1993@twin.jikos.cz>
-From:   Amy Parker <enbyamy@gmail.com>
-Date:   Fri, 5 Feb 2021 07:36:47 -0800
-Message-ID: <CAE1WUT4az3ZZ8OU2AS2xxi9h1TbW958ivNXr53jinqHK5vuzMg@mail.gmail.com>
-Subject: Re: [PATCH 0/3] fs/efs: Follow kernel style guide
-To:     dsterba@suse.cz, Amy Parker <enbyamy@gmail.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8fa5edcaa6b93859cfda97d080aad378e89c1b44.1611232967.git.michal.simek@xilinx.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 5, 2021 at 5:1 AM David Sterba <dsterba@suse.cz> wrote:
->
-> On Thu, Feb 04, 2021 at 08:52:14PM -0800, Amy Parker wrote:
-> > As the EFS driver is old and non-maintained,
->
-> Is anybody using EFS on current kernels? There's not much point updating
-> it to current coding style, deleting fs/efs is probably the best option.
->
+On Thu, Jan 21, 2021 at 01:42:49PM +0100, Michal Simek wrote:
+> Trivial example fix.
 
-Wouldn't be surprised if there's a few systems out there that haven't
-migrated at all.
+I see this is already applied, but in the future please convert to 
+schema rather than doing trivial fixes.
 
-> The EFS name is common for several filesystems, not to be confused with
-> eg.  Encrypted File System. In linux it's the IRIX version, check
-> Kconfig, and you could hardly find the utilities to create such
-> filesystem.
-
-Ah yep, good point.
-
-   -Amy IP
+> 
+> Signed-off-by: Michal Simek <michal.simek@xilinx.com>
+> ---
+> 
+>  Documentation/devicetree/bindings/usb/dwc3-xilinx.txt | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/usb/dwc3-xilinx.txt b/Documentation/devicetree/bindings/usb/dwc3-xilinx.txt
+> index 4aae5b2cef56..a668f43bedf5 100644
+> --- a/Documentation/devicetree/bindings/usb/dwc3-xilinx.txt
+> +++ b/Documentation/devicetree/bindings/usb/dwc3-xilinx.txt
+> @@ -19,7 +19,7 @@ Example device node:
+>  			#address-cells = <0x2>;
+>  			#size-cells = <0x1>;
+>  			compatible = "xlnx,zynqmp-dwc3";
+> -			clock-names = "bus_clk" "ref_clk";
+> +			clock-names = "bus_clk", "ref_clk";
+>  			clocks = <&clk125>, <&clk125>;
+>  			ranges;
+>  
+> -- 
+> 2.30.0
+> 
