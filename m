@@ -2,169 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5738D3117AA
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 01:11:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 555E93117AE
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 01:14:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231635AbhBFALF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 19:11:05 -0500
-Received: from mail-03.mail-europe.com ([91.134.188.129]:41628 "EHLO
-        mail-03.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229843AbhBENIb (ORCPT
+        id S229500AbhBFANY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 19:13:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35224 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232478AbhBENGG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 08:08:31 -0500
-Date:   Fri, 05 Feb 2021 13:03:19 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1612530205; bh=3j2lZ80aPDVQbBRbqSe5SVXT7GRlnN8V+70zH4XgnmM=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=H9hZFvGT+/344ukLx5zy3I4NISCOySc0Ws1ms2hJdrnqrYiLjy6zcTNZKPj7zwTnU
-         YD6VaGXQJVW5BcsGWU+iuw/Na/HotIZNLsLy5pDQLSOLu6SHPbcBC7x+Ab/LSAfIq4
-         06mQkqj+H+gVk9V98PtID5ofbe70FNZRxDrajglGNf6EhBeCMRWSzkErmbkB8VhkeH
-         i8uM+RzswqcU4BtWcIKFMN39GNpk+yEoETpXglw4s3TT8+vcmUiiU7MYkpBHif4Qpp
-         2nNRBhT/l593T0p8PDSqIoB33zapVODlGnQipF6Wg5lph3El9/FMjAKy5xH/J5r/rf
-         oFYqgz3STfVlQ==
-To:     Eric Dumazet <edumazet@google.com>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     Alexander Lobakin <alobakin@pm.me>,
-        Saeed Mahameed <saeed@kernel.org>,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        John Sperbeck <jsperbeck@google.com>,
-        Jian Yang <jianyang@google.com>,
-        Maxim Mikityanskiy <maximmi@mellanox.com>,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        Edward Cree <ecree@solarflare.com>, netdev@vger.kernel.org,
+        Fri, 5 Feb 2021 08:06:06 -0500
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D817C06178B
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 05:05:16 -0800 (PST)
+Received: by mail-qk1-x72f.google.com with SMTP id a12so6696125qkh.10
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 05:05:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MHJsMavE3nujSnxW3LwxOmZw7EFguJmQU/pNqi0G+xI=;
+        b=aMDfbAIFLwP4uP1FRsZWcGK7FHIzEj8ip4FiQPK6ctpA3bml5yjPvhqvazWVsOzEBk
+         wajhqlQvaHgCFdT1nl/xpxc1mzULoGWx06Ns4RRAQBERMwtazx1KZvhWmwMk3fxPVJFP
+         kV1JMyvIV29OgJLsJ7dAiupMuu6aTScFJOondIYf/3H5mKmlAoLY++mJrVpBKJiS5s7W
+         ijKR8tTRYbft0V9oGR8zHk3ZqT3Oj4awoQIXOFd3rfp1D+5P5522+bECxacfhbhDGTM7
+         EWgpQmovHeJBnC0QPEfbg/bxOQEqXTLr5q+InvsU5BfejkczuSNrtWDraf6iM5R/+P81
+         RIug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MHJsMavE3nujSnxW3LwxOmZw7EFguJmQU/pNqi0G+xI=;
+        b=PXYjU+EMlx7tTegy/6jrNJLutmpNn4VE8pXxQ6jNh1kOcloZudTWLc2p3cUAfl6qm6
+         o3Q+jSDjroYCwkeaBFak2dGeI1gpBZG6WKyts9E+CnZ9Q4fwzvF7OJAFe1ph3LsR8wR6
+         lqx21A/QHJh8C7/AxzAUZnav0LlduFfkQpnLKcA7gFi+Yxg90DPOtHMEMH/VbR3/RMMB
+         I6aYFA1+GmjHah68SmhXbuCrnXgOjT2XKcTVPf3MDmKIsVGt/eB6VW8lFG+2niMQ6hp/
+         IQvwMlZWmKlxlW1L96IGjLFA6AaINjYcGLU5WN1sIEJBwipUPb6Y6iJ6fGaWtErwvs36
+         JO9g==
+X-Gm-Message-State: AOAM533mHyrgYnxlNpa+JbYZ+pl8aJ30skvxHXM938dJzOqhVV3oz9x7
+        8n1LZ23msOfatFOpSv4yjSk=
+X-Google-Smtp-Source: ABdhPJzESrKrwXVHsctE3NGaG/IC2lbP3Th5GQobMhswX/sILMe3FBMtg0ocebizL/CRAVGrkZXKVg==
+X-Received: by 2002:a37:9d53:: with SMTP id g80mr4055340qke.307.1612530315873;
+        Fri, 05 Feb 2021 05:05:15 -0800 (PST)
+Received: from localhost.localdomain ([138.199.10.106])
+        by smtp.gmail.com with ESMTPSA id k8sm9092945qkk.79.2021.02.05.05.05.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Feb 2021 05:05:14 -0800 (PST)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     bskeggs@redhat.com, airlied@linux.ie, daniel@ffwll.ch,
+        dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
         linux-kernel@vger.kernel.org
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: Re: [PATCH net] net: gro: do not keep too many GRO packets in napi->rx_list
-Message-ID: <20210205130238.5741-1-alobakin@pm.me>
-In-Reply-To: <CANn89iJ4ki9m6ne0W72QZuSJsBvrv9BMf9Me5hL9gw2tUnHhWg@mail.gmail.com>
-References: <20210204213146.4192368-1-eric.dumazet@gmail.com> <dbad0731e30c920cf4ab3458dfce3c73060e917c.camel@kernel.org> <CANn89iJ4ki9m6ne0W72QZuSJsBvrv9BMf9Me5hL9gw2tUnHhWg@mail.gmail.com>
+Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: [PATCH] drivers: drm: nouveau: nvkm: Replace a word with a better phonetic word in the file macros.fuc
+Date:   Fri,  5 Feb 2021 18:35:02 +0530
+Message-Id: <20210205130502.1440514-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
-Date: Thu, 4 Feb 2021 23:44:17 +0100
 
-> On Thu, Feb 4, 2021 at 11:14 PM Saeed Mahameed <saeed@kernel.org> wrote:
-> >
-> > On Thu, 2021-02-04 at 13:31 -0800, Eric Dumazet wrote:
-> > > From: Eric Dumazet <edumazet@google.com>
-> > >
-> > > Commit c80794323e82 ("net: Fix packet reordering caused by GRO and
-> > > listified RX cooperation") had the unfortunate effect of adding
-> > > latencies in common workloads.
-> > >
-> > > Before the patch, GRO packets were immediately passed to
-> > > upper stacks.
-> > >
-> > > After the patch, we can accumulate quite a lot of GRO
-> > > packets (depdending on NAPI budget).
-> > >
-> >
-> > Why napi budget ? looking at the code it seems to be more related to
-> > MAX_GRO_SKBS * gro_normal_batch, since we are counting GRO SKBs as 1
->
->
-> Simply because we call gro_normal_list() from napi_poll(),
->
-> So we flush the napi rx_list every 64 packets under stress.(assuming
-> NIC driver uses NAPI_POLL_WEIGHT),
-> or more often if napi_complete_done() is called if the budget was not exh=
-austed.
 
-Saeed,
+s/fuck/heck/
 
-Eric means that if we have e.g. 8 GRO packets with 8 segs each, then
-rx_list will be flushed only after processing of 64 ingress frames.
 
-> GRO always has been able to keep MAX_GRO_SKBS in its layer, but no recent=
- patch
-> has changed this part.
->
->
-> >
-> >
-> > but maybe i am missing some information about the actual issue you are
-> > hitting.
->
->
-> Well, the issue is precisely described in the changelog.
->
-> >
-> >
-> > > My fix is counting in napi->rx_count number of segments
-> > > instead of number of logical packets.
-> > >
-> > > Fixes: c80794323e82 ("net: Fix packet reordering caused by GRO and
-> > > listified RX cooperation")
-> > > Signed-off-by: Eric Dumazet <edumazet@google.com>
-> > > Bisected-by: John Sperbeck <jsperbeck@google.com>
-> > > Tested-by: Jian Yang <jianyang@google.com>
-> > > Cc: Maxim Mikityanskiy <maximmi@mellanox.com>
-> > > Cc: Alexander Lobakin <alobakin@dlink.ru>
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+ drivers/gpu/drm/nouveau/nvkm/subdev/pmu/fuc/macros.fuc | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-It's strange why mailmap didn't pick up my active email at pm.me.
-
-Anyways, this fix is correct for me. It restores the original Edward's
-logics, but without spurious out-of-order deliveries.
-Moreover, the pre-patch behaviour can easily be achieved by increasing
-net.core.gro_normal_batch if needed.
-
-Thanks!
-
-Reviewed-by: Alexander Lobakin <alobakin@pm.me>
-
-> > > Cc: Saeed Mahameed <saeedm@mellanox.com>
-> > > Cc: Edward Cree <ecree@solarflare.com>
-> > > ---
-> > >  net/core/dev.c | 11 ++++++-----
-> > >  1 file changed, 6 insertions(+), 5 deletions(-)
-> > >
-> > > diff --git a/net/core/dev.c b/net/core/dev.c
-> > > index
-> > > a979b86dbacda9dfe31dd8b269024f7f0f5a8ef1..449b45b843d40ece7dd1e2ed6a5
-> > > 996ee1db9f591 100644
-> > > --- a/net/core/dev.c
-> > > +++ b/net/core/dev.c
-> > > @@ -5735,10 +5735,11 @@ static void gro_normal_list(struct
-> > > napi_struct *napi)
-> > >  /* Queue one GRO_NORMAL SKB up for list processing. If batch size
-> > > exceeded,
-> > >   * pass the whole batch up to the stack.
-> > >   */
-> > > -static void gro_normal_one(struct napi_struct *napi, struct sk_buff
-> > > *skb)
-> > > +static void gro_normal_one(struct napi_struct *napi, struct sk_buff
-> > > *skb, int segs)
-> > >  {
-> > >         list_add_tail(&skb->list, &napi->rx_list);
-> > > -       if (++napi->rx_count >=3D gro_normal_batch)
-> > > +       napi->rx_count +=3D segs;
-> > > +       if (napi->rx_count >=3D gro_normal_batch)
-> > >                 gro_normal_list(napi);
-> > >  }
-> > >
-> > > @@ -5777,7 +5778,7 @@ static int napi_gro_complete(struct napi_struct
-> > > *napi, struct sk_buff *skb)
-> > >         }
-> > >
-> > >  out:
-> > > -       gro_normal_one(napi, skb);
-> > > +       gro_normal_one(napi, skb, NAPI_GRO_CB(skb)->count);
-> >
-> > Seems correct to me,
-> >
-> > Reviewed-by: Saeed Mahameed <saeedm@nvidia.com>
-
-Al
+diff --git a/drivers/gpu/drm/nouveau/nvkm/subdev/pmu/fuc/macros.fuc b/drivers/gpu/drm/nouveau/nvkm/subdev/pmu/fuc/macros.fuc
+index 3737bd27f74e..1407a1b16d95 100644
+--- a/drivers/gpu/drm/nouveau/nvkm/subdev/pmu/fuc/macros.fuc
++++ b/drivers/gpu/drm/nouveau/nvkm/subdev/pmu/fuc/macros.fuc
+@@ -46,7 +46,7 @@
+ #define NV_PPWR_INTR_EN_SET_SUBINTR                                  0x00000800
+ #define NV_PPWR_INTR_EN_SET_WATCHDOG                                 0x00000002
+ #define NV_PPWR_INTR_EN_CLR                                              0x0014
+-#define NV_PPWR_INTR_EN_CLR_MASK                    /* fuck i hate envyas */ -1
++#define NV_PPWR_INTR_EN_CLR_MASK                    /* heck, i hate envyas */ -1
+ #define NV_PPWR_INTR_ROUTE                                               0x001c
+ #define NV_PPWR_TIMER_LOW                                                0x002c
+ #define NV_PPWR_WATCHDOG_TIME                                            0x0034
+--
+2.30.0
 
