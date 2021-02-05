@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 808E93114A4
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 23:14:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C773F31146D
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 23:07:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233141AbhBEWLA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 17:11:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45260 "EHLO mail.kernel.org"
+        id S233121AbhBEWFr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 17:05:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45340 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232949AbhBEO5X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 09:57:23 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 546E764FDA;
-        Fri,  5 Feb 2021 14:09:44 +0000 (UTC)
+        id S229808AbhBEO5g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 09:57:36 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 32BFE64FEA;
+        Fri,  5 Feb 2021 14:10:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612534184;
-        bh=/jT03iU8e3RCMNSGFPR4OncNl7bchRx4KJSjWsLdaYs=;
+        s=korg; t=1612534224;
+        bh=Cj/B1VP4Nq9rLzQuLhmLU1FGWwvS+ujJdZzf7lCA0VQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rlcUVCVjg9emOhqVzIW4RVrrrNocMSuQMrcm4QtJshvNHfZEDizi1KdfxOlGmCgcd
-         qZRcrO3RYCIoncv2OZV0hhYFBcnl0epLNtgeQEtN3UwnTRHKkKpQ2EHc9rJJScFFWQ
-         DboY7nhyuvwyDonBjAW+74LVq13/1H6R1XioSfcI=
+        b=sUkVVOmGPGwyU1gddlOO4GfZf1EcjO3v/RkOukN2hMImX3GFB7T7vER/cP1MWvhab
+         Q6eOCK2VmWtDecLEb0sZaY8FemTv778XH8Ne2w7AIaD9F3qQ/VdKBy/atAqTjLMSH0
+         6mX/sByozjsj8vjMG/weYJJ3zehVwEqhdnFh4KZM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pan Bian <bianpan2016@163.com>,
+        stable@vger.kernel.org, Petr Machata <petrm@nvidia.com>,
+        Rasmus Villemoes <rasmus.villemoes@prevas.dk>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.10 02/57] net: stmmac: dwmac-intel-plat: remove config data on error
-Date:   Fri,  5 Feb 2021 15:06:28 +0100
-Message-Id: <20210205140656.086491456@linuxfoundation.org>
+Subject: [PATCH 5.10 08/57] net: switchdev: dont set port_obj_info->handled true when -EOPNOTSUPP
+Date:   Fri,  5 Feb 2021 15:06:34 +0100
+Message-Id: <20210205140656.336002214@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210205140655.982616732@linuxfoundation.org>
 References: <20210205140655.982616732@linuxfoundation.org>
@@ -39,45 +40,97 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pan Bian <bianpan2016@163.com>
+From: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
 
-commit 3765d86ffcd346913c372d69cdc05dc8d56119ac upstream.
+commit 20776b465c0c249f5e5b5b4fe077cd24ef1cda86 upstream.
 
-Remove the config data when rate setting fails.
+It's not true that switchdev_port_obj_notify() only inspects the
+->handled field of "struct switchdev_notifier_port_obj_info" if
+call_switchdev_blocking_notifiers() returns 0 - there's a WARN_ON()
+triggering for a non-zero return combined with ->handled not being
+true. But the real problem here is that -EOPNOTSUPP is not being
+properly handled.
 
-Fixes: 9efc9b2b04c7 ("net: stmmac: Add dwmac-intel-plat for GBE driver")
-Signed-off-by: Pan Bian <bianpan2016@163.com>
-Link: https://lore.kernel.org/r/20210120110745.36412-1-bianpan2016@163.com
+The wrapper functions switchdev_handle_port_obj_add() et al change a
+return value of -EOPNOTSUPP to 0, and the treatment of ->handled in
+switchdev_port_obj_notify() seems to be designed to change that back
+to -EOPNOTSUPP in case nobody actually acted on the notifier (i.e.,
+everybody returned -EOPNOTSUPP).
+
+Currently, as soon as some device down the stack passes the check_cb()
+check, ->handled gets set to true, which means that
+switchdev_port_obj_notify() cannot actually ever return -EOPNOTSUPP.
+
+This, for example, means that the detection of hardware offload
+support in the MRP code is broken: switchdev_port_obj_add() used by
+br_mrp_switchdev_send_ring_test() always returns 0, so since the MRP
+code thinks the generation of MRP test frames has been offloaded, no
+such frames are actually put on the wire. Similarly,
+br_mrp_switchdev_set_ring_role() also always returns 0, causing
+mrp->ring_role_offloaded to be set to 1.
+
+To fix this, continue to set ->handled true if any callback returns
+success or any error distinct from -EOPNOTSUPP. But if all the
+callbacks return -EOPNOTSUPP, make sure that ->handled stays false, so
+the logic in switchdev_port_obj_notify() can propagate that
+information.
+
+Fixes: 9a9f26e8f7ea ("bridge: mrp: Connect MRP API with the switchdev API")
+Fixes: f30f0601eb93 ("switchdev: Add helpers to aid traversal through lower devices")
+Reviewed-by: Petr Machata <petrm@nvidia.com>
+Signed-off-by: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
+Link: https://lore.kernel.org/r/20210125124116.102928-1-rasmus.villemoes@prevas.dk
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/stmicro/stmmac/dwmac-intel-plat.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ net/switchdev/switchdev.c |   23 +++++++++++++----------
+ 1 file changed, 13 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel-plat.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel-plat.c
-index 82b1c7a5a7a9..ba0e4d2b256a 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel-plat.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel-plat.c
-@@ -129,7 +129,7 @@ static int intel_eth_plat_probe(struct platform_device *pdev)
- 				if (ret) {
- 					dev_err(&pdev->dev,
- 						"Failed to set tx_clk\n");
--					return ret;
-+					goto err_remove_config_dt;
- 				}
- 			}
- 		}
-@@ -143,7 +143,7 @@ static int intel_eth_plat_probe(struct platform_device *pdev)
- 			if (ret) {
- 				dev_err(&pdev->dev,
- 					"Failed to set clk_ptp_ref\n");
--				return ret;
-+				goto err_remove_config_dt;
- 			}
- 		}
+--- a/net/switchdev/switchdev.c
++++ b/net/switchdev/switchdev.c
+@@ -460,10 +460,11 @@ static int __switchdev_handle_port_obj_a
+ 	extack = switchdev_notifier_info_to_extack(&port_obj_info->info);
+ 
+ 	if (check_cb(dev)) {
+-		/* This flag is only checked if the return value is success. */
+-		port_obj_info->handled = true;
+-		return add_cb(dev, port_obj_info->obj, port_obj_info->trans,
+-			      extack);
++		err = add_cb(dev, port_obj_info->obj, port_obj_info->trans,
++			     extack);
++		if (err != -EOPNOTSUPP)
++			port_obj_info->handled = true;
++		return err;
  	}
--- 
-2.30.0
-
+ 
+ 	/* Switch ports might be stacked under e.g. a LAG. Ignore the
+@@ -515,9 +516,10 @@ static int __switchdev_handle_port_obj_d
+ 	int err = -EOPNOTSUPP;
+ 
+ 	if (check_cb(dev)) {
+-		/* This flag is only checked if the return value is success. */
+-		port_obj_info->handled = true;
+-		return del_cb(dev, port_obj_info->obj);
++		err = del_cb(dev, port_obj_info->obj);
++		if (err != -EOPNOTSUPP)
++			port_obj_info->handled = true;
++		return err;
+ 	}
+ 
+ 	/* Switch ports might be stacked under e.g. a LAG. Ignore the
+@@ -568,9 +570,10 @@ static int __switchdev_handle_port_attr_
+ 	int err = -EOPNOTSUPP;
+ 
+ 	if (check_cb(dev)) {
+-		port_attr_info->handled = true;
+-		return set_cb(dev, port_attr_info->attr,
+-			      port_attr_info->trans);
++		err = set_cb(dev, port_attr_info->attr, port_attr_info->trans);
++		if (err != -EOPNOTSUPP)
++			port_attr_info->handled = true;
++		return err;
+ 	}
+ 
+ 	/* Switch ports might be stacked under e.g. a LAG. Ignore the
 
 
