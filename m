@@ -2,32 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6C613114BD
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 23:14:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C753931141D
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 23:01:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231591AbhBEWNr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 17:13:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44986 "EHLO mail.kernel.org"
+        id S233003AbhBEWAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 17:00:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44974 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232937AbhBEO5T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 09:57:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C836B64FDE;
-        Fri,  5 Feb 2021 14:09:55 +0000 (UTC)
+        id S233002AbhBEO70 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 09:59:26 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 99A3A65044;
+        Fri,  5 Feb 2021 14:11:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612534196;
-        bh=f8H6f5ryS0R55IIGx+krgZyIAR/f6vQiAqxDJbIVdYg=;
+        s=korg; t=1612534316;
+        bh=0Y+Ws3COArS+NyJ+wxC+vkH7w0LMbrLFHRB07k5dsik=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=v1rHChooxDiGNlJDdowdiI7vpr5pGWvXzvrpKxt9wB95DdWaz8lWWVLDfb1MKkxzo
-         QrEO7GTf1zYxBQyJKKOpIxrbboLR0VAH2kE0SHwUX86CkvBAMhIpkLorsK0pHh+yA6
-         EDzHRWjE8vhRIIzjj5ZahY4B+ipgIwAU1ER/rbeI=
+        b=HEw8Cqcxtznv0NSDPg3664bw/emxMilOEKq0pa+j7zxJGOjEaL5ZlYsPvRhflHOU2
+         nlVxRfgF2cUsl2IfJScSdPyf7N44p41ZhS+os0j522zizdPJy3SWtXTs6O8cIj4EBl
+         X0EWZx+fRZHdh7LpNbhcW84YO9r1L2nPKAwK1fiw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Oded Gabbay <ogabbay@kernel.org>,
+        stable@vger.kernel.org, Karan Tilak Kumar <kartilak@cisco.com>,
+        Dinghao Liu <dinghao.liu@zju.edu.cn>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 23/57] habanalabs: fix dma_addr passed to dma_mmap_coherent
-Date:   Fri,  5 Feb 2021 15:06:49 +0100
-Message-Id: <20210205140656.968808985@linuxfoundation.org>
+Subject: [PATCH 5.10 28/57] scsi: fnic: Fix memleak in vnic_dev_init_devcmd2
+Date:   Fri,  5 Feb 2021 15:06:54 +0100
+Message-Id: <20210205140657.181239841@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210205140655.982616732@linuxfoundation.org>
 References: <20210205140655.982616732@linuxfoundation.org>
@@ -39,54 +41,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Oded Gabbay <ogabbay@kernel.org>
+From: Dinghao Liu <dinghao.liu@zju.edu.cn>
 
-[ Upstream commit a9d4ef643430d638de1910377f50e0d492d85a43 ]
+[ Upstream commit d6e3ae76728ccde49271d9f5acfebbea0c5625a3 ]
 
-When doing dma_alloc_coherent in the driver, we add a certain hard-coded
-offset to the DMA address before returning to the callee function. This
-offset is needed when our device use this DMA address to perform
-outbound transactions to the host.
+When ioread32() returns 0xFFFFFFFF, we should execute cleanup functions
+like other error handling paths before returning.
 
-However, if we want to map the DMA'able memory to the user via
-dma_mmap_coherent(), we need to pass the original dma address, without
-this offset. Otherwise, we will get erronouos mapping.
-
-Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
+Link: https://lore.kernel.org/r/20201225083520.22015-1-dinghao.liu@zju.edu.cn
+Acked-by: Karan Tilak Kumar <kartilak@cisco.com>
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/misc/habanalabs/gaudi/gaudi.c | 3 ++-
- drivers/misc/habanalabs/goya/goya.c   | 3 ++-
- 2 files changed, 4 insertions(+), 2 deletions(-)
+ drivers/scsi/fnic/vnic_dev.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/misc/habanalabs/gaudi/gaudi.c b/drivers/misc/habanalabs/gaudi/gaudi.c
-index ed1bd41262ecd..68f661aca3ff2 100644
---- a/drivers/misc/habanalabs/gaudi/gaudi.c
-+++ b/drivers/misc/habanalabs/gaudi/gaudi.c
-@@ -3119,7 +3119,8 @@ static int gaudi_cb_mmap(struct hl_device *hdev, struct vm_area_struct *vma,
- 	vma->vm_flags |= VM_IO | VM_PFNMAP | VM_DONTEXPAND | VM_DONTDUMP |
- 			VM_DONTCOPY | VM_NORESERVE;
+diff --git a/drivers/scsi/fnic/vnic_dev.c b/drivers/scsi/fnic/vnic_dev.c
+index a2beee6e09f06..5988c300cc82e 100644
+--- a/drivers/scsi/fnic/vnic_dev.c
++++ b/drivers/scsi/fnic/vnic_dev.c
+@@ -444,7 +444,8 @@ static int vnic_dev_init_devcmd2(struct vnic_dev *vdev)
+ 	fetch_index = ioread32(&vdev->devcmd2->wq.ctrl->fetch_index);
+ 	if (fetch_index == 0xFFFFFFFF) { /* check for hardware gone  */
+ 		pr_err("error in devcmd2 init");
+-		return -ENODEV;
++		err = -ENODEV;
++		goto err_free_wq;
+ 	}
  
--	rc = dma_mmap_coherent(hdev->dev, vma, cpu_addr, dma_addr, size);
-+	rc = dma_mmap_coherent(hdev->dev, vma, cpu_addr,
-+				(dma_addr - HOST_PHYS_BASE), size);
- 	if (rc)
- 		dev_err(hdev->dev, "dma_mmap_coherent error %d", rc);
+ 	/*
+@@ -460,7 +461,7 @@ static int vnic_dev_init_devcmd2(struct vnic_dev *vdev)
+ 	err = vnic_dev_alloc_desc_ring(vdev, &vdev->devcmd2->results_ring,
+ 			DEVCMD2_RING_SIZE, DEVCMD2_DESC_SIZE);
+ 	if (err)
+-		goto err_free_wq;
++		goto err_disable_wq;
  
-diff --git a/drivers/misc/habanalabs/goya/goya.c b/drivers/misc/habanalabs/goya/goya.c
-index 235d47b2420f5..986ed3c072088 100644
---- a/drivers/misc/habanalabs/goya/goya.c
-+++ b/drivers/misc/habanalabs/goya/goya.c
-@@ -2675,7 +2675,8 @@ static int goya_cb_mmap(struct hl_device *hdev, struct vm_area_struct *vma,
- 	vma->vm_flags |= VM_IO | VM_PFNMAP | VM_DONTEXPAND | VM_DONTDUMP |
- 			VM_DONTCOPY | VM_NORESERVE;
+ 	vdev->devcmd2->result =
+ 		(struct devcmd2_result *) vdev->devcmd2->results_ring.descs;
+@@ -481,8 +482,9 @@ static int vnic_dev_init_devcmd2(struct vnic_dev *vdev)
  
--	rc = dma_mmap_coherent(hdev->dev, vma, cpu_addr, dma_addr, size);
-+	rc = dma_mmap_coherent(hdev->dev, vma, cpu_addr,
-+				(dma_addr - HOST_PHYS_BASE), size);
- 	if (rc)
- 		dev_err(hdev->dev, "dma_mmap_coherent error %d", rc);
- 
+ err_free_desc_ring:
+ 	vnic_dev_free_desc_ring(vdev, &vdev->devcmd2->results_ring);
+-err_free_wq:
++err_disable_wq:
+ 	vnic_wq_disable(&vdev->devcmd2->wq);
++err_free_wq:
+ 	vnic_wq_free(&vdev->devcmd2->wq);
+ err_free_devcmd2:
+ 	kfree(vdev->devcmd2);
 -- 
 2.27.0
 
