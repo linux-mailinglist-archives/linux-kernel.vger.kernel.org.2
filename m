@@ -2,222 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C03E13116AB
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 00:19:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 388D431169E
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 00:19:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231330AbhBEXJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 18:09:57 -0500
-Received: from wout4-smtp.messagingengine.com ([64.147.123.20]:44351 "EHLO
-        wout4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232710AbhBEOeG (ORCPT
+        id S229881AbhBEXH4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 18:07:56 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54325 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232027AbhBEOfO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 09:34:06 -0500
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.west.internal (Postfix) with ESMTP id A71127DA;
-        Fri,  5 Feb 2021 11:12:01 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Fri, 05 Feb 2021 11:12:02 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:content-transfer-encoding:in-reply-to; s=fm2; bh=P
-        RZqKf7lsxMpUiRCiHe2f26y9RuSEPh83D4t+a5YnDI=; b=O9WE39yuJimMdhmEK
-        Oh7kP+0ctQ0BbS0Gzg4CCtNU/EhOTAM6VDNVnPpgeYLyO8QEZKBGETWjAWIKRz5u
-        C8b+PXuwuFo9hCGjnG90rL66U93CxIa7kVQKdd1kkCwuYrKciEY9kwFrg9I9dJ7d
-        70STTT7wbu122UYlDN3l45xNpJRZ4Fixo4uDcKbAXnjE7/Dx58sauRbq54dWPHxk
-        1tFe00BJHBCnYq3i94K/Y4jM9GdvSXm5JoN7X1K1wjiIfLHniU5kHMgYlA6Hvgrl
-        F6Yn6qgkaXHMHg0sk7ALhwNH7wJKfiiVubWshmgwBM5xTXwIg3EH8iST+4BaELTl
-        FAGrw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm2; bh=PRZqKf7lsxMpUiRCiHe2f26y9RuSEPh83D4t+a5Yn
-        DI=; b=HvZ4TyXYoBJjChzAjp3LsoVIFGD5X20D5V/Q8mPiaKvWHBr+VF7EOMRyW
-        0MTbwiPPFOWxysTHf0lsgX+dT7i49w4BDjrWDbJjAQb8ECqNXDL9RjBKf0iN4e+g
-        vvvNoUXUGfL5gDimuQwOX6Aer4FoKo1wh8TELN9wkeVQh7+Bvv3mShB3GLG/3Cdg
-        H5bMTkPWZctNEh70RvxZNO5BC82SSL/TuVtDz2OQspGctBzPBjJI2B6e3dMv1sVz
-        3PWOdRxkcgZEfo9jCehUFXeowOqIiSfe1mbhRUMGOPdeFh0bJvvgd1gZl0FG8sLS
-        rlqXxXXg9CCoAFct6laH5k2S7GExg==
-X-ME-Sender: <xms:UG4dYFwmsp1RaDLckf2VZIU-JwkMHrvybMRk1-7W1bKvZampdLjPCw>
-    <xme:UG4dYFN-lsDLS8uvU77R3udQ7S4ARSz2vHg4jv8oTEx0Qp2kcxYRkFIP6WvL5cJ0k
-    oVJu59QP20alFCQiGQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrgeeigdejudcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecunecujfgurhepfffhvffukfhfgggtugfgjgesthhqre
-    dttddtjeenucfhrhhomhepofgrgihimhgvucftihhprghrugcuoehmrgigihhmvgestggv
-    rhhnohdrthgvtghhqeenucggtffrrghtthgvrhhnpefgjeejkeejtddtteehtdefleetfe
-    ffuddvvedvhfdtieduteeljeegleeffeeuvdenucfkphepledtrdekledrieekrdejieen
-    ucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehmrgigih
-    hmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:UG4dYMNQO0U0KI1IxfR8IgNIw_avqnycneeuA7m_S7058DnF3FOJkQ>
-    <xmx:UG4dYPSBPxQIQI4849S5dE9nJB2k6lMebff34WHqaweaPsNTpybeuQ>
-    <xmx:UG4dYGCWuiH4HEdCR1a_Ifw98FBxQ5qGqERdgNfz9XEQJ6S_yeLdFw>
-    <xmx:UW4dYBdSqng_4wvBTrT9OO2eSjIJ1hL3ntUY0TrsiK3smG1qFJFqQg>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 7848324005A;
-        Fri,  5 Feb 2021 11:12:00 -0500 (EST)
-Date:   Fri, 5 Feb 2021 17:11:58 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     =?utf-8?B?54+t5rab?= <fengzheng923@gmail.com>
-Cc:     thierry.reding@gmail.com,
-        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, wens@csie.org,
-        linux-kernel@vger.kernel.org, linux-pwm@vger.kernel.org
-Subject: Re: [PATCH v2] pwm: sunxi: Add Allwinner SoC PWM controller driver
-Message-ID: <20210205161158.gqinjayxcihtiofe@gilmour>
-References: <20210203125317.1975-1-fengzheng923@gmail.com>
- <20210203154628.infi5jnlofdrysvs@gilmour>
- <CAE=m61-oXn8CkzUpSxkuS-gLkxjwd8wSeL42Q5T+27_V89xgNw@mail.gmail.com>
+        Fri, 5 Feb 2021 09:35:14 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612541552;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=3TsJGd0+8Rr5FyrVFN0YQ1LVOoJ9uc/e+iMpGoDsN6c=;
+        b=EAdzdZqAMZOP8xdDPHP5YEiKva4TlKW0xFgjcsgAkjGx/UifIOi6CH019ex8TYKwaiAAcG
+        b56xob6BH31UEpYc718x0C1Pbdnst2kCK/2plyIdV3NtfNx9+sXzlPgzBHMC8SrfyiOeLx
+        RAeC/3kiSDSwGXjK3UI07U4ybBazk2Q=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-167-h5tM4UstNoKPRL5aLC_cUg-1; Fri, 05 Feb 2021 11:12:30 -0500
+X-MC-Unique: h5tM4UstNoKPRL5aLC_cUg-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 888EF80402C;
+        Fri,  5 Feb 2021 16:12:29 +0000 (UTC)
+Received: from [10.36.113.156] (ovpn-113-156.ams2.redhat.com [10.36.113.156])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 3D86919C47;
+        Fri,  5 Feb 2021 16:12:28 +0000 (UTC)
+Subject: Re: [PATCH] mm/hugetlb: use helper huge_page_size() to simplify the
+ hugetlb_vm_op_pagesize()
+To:     Miaohe Lin <linmiaohe@huawei.com>, akpm@linux-foundation.org,
+        mike.kravetz@oracle.com
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20210205092209.16024-1-linmiaohe@huawei.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <2743477c-a256-0295-884d-5354c634508d@redhat.com>
+Date:   Fri, 5 Feb 2021 17:12:27 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <CAE=m61-oXn8CkzUpSxkuS-gLkxjwd8wSeL42Q5T+27_V89xgNw@mail.gmail.com>
+In-Reply-To: <20210205092209.16024-1-linmiaohe@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 05.02.21 10:22, Miaohe Lin wrote:
+> We can use helper huge_page_size() to get the size of the pages allocated
+> when backing a VMA directly to make the code more simplified.
+> 
+> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+> ---
+>   mm/hugetlb.c | 4 +---
+>   1 file changed, 1 insertion(+), 3 deletions(-)
+> 
+> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> index 18628f8dbfb0..3eea2a34d9f5 100644
+> --- a/mm/hugetlb.c
+> +++ b/mm/hugetlb.c
+> @@ -3647,9 +3647,7 @@ static int hugetlb_vm_op_split(struct vm_area_struct *vma, unsigned long addr)
+>   
+>   static unsigned long hugetlb_vm_op_pagesize(struct vm_area_struct *vma)
+>   {
+> -	struct hstate *hstate = hstate_vma(vma);
+> -
+> -	return 1UL << huge_page_shift(hstate);
+> +	return huge_page_size(hstate_vma(vma));
+>   }
 
-On Thu, Feb 04, 2021 at 11:47:34AM +0800, =E7=8F=AD=E6=B6=9B wrote:
-> Maxime Ripard <maxime@cerno.tech> =E4=BA=8E2021=E5=B9=B42=E6=9C=883=E6=97=
-=A5=E5=91=A8=E4=B8=89 =E4=B8=8B=E5=8D=8811:46=E5=86=99=E9=81=93=EF=BC=9A
->=20
-> > Hi,
-> >
-> > On Wed, Feb 03, 2021 at 08:53:17PM +0800, Ban Tao wrote:
-> > > From: Ban Tao <fengzheng923@gmail.com>
-> > >
-> > > The Allwinner R818, A133, R329, V536 and V833 has a new PWM controller
-> > > IP compared to the older Allwinner SoCs.
-> > >
-> > > Signed-off-by: Ban Tao <fengzheng923@gmail.com>
-> >
-> > Thanks for your patch. There's a bunch of warnings reported by
-> > checkpatch --strict, they should be addressed.
-> >
-> > > ---
-> > > v1->v2:
-> > > 1.delete unnecessary code.
-> > > 2.using a named define for some constants.
-> > > 3.Add comment in sun50i_pwm_config function.
-> > > 4.using dev_err_probe() for error handling.
-> > > 5.disable the clock after pwmchip_remove().
-> > > ---
-> > >  MAINTAINERS              |   6 +
-> > >  drivers/pwm/Kconfig      |  11 ++
-> > >  drivers/pwm/Makefile     |   1 +
-> > >  drivers/pwm/pwm-sun50i.c | 348 +++++++++++++++++++++++++++++++++++++=
-++
-> > >  4 files changed, 366 insertions(+)
-> > >  create mode 100644 drivers/pwm/pwm-sun50i.c
-> > >
-> > > diff --git a/MAINTAINERS b/MAINTAINERS
-> > > index e73636b75f29..d33cf1b69b43 100644
-> > > --- a/MAINTAINERS
-> > > +++ b/MAINTAINERS
-> > > @@ -737,6 +737,12 @@ L:       linux-media@vger.kernel.org
-> > >  S:   Maintained
-> > >  F:   drivers/staging/media/sunxi/cedrus/
-> > >
-> > > +ALLWINNER PWM DRIVER
-> > > +M:   Ban Tao <fengzheng923@gmail.com>
-> > > +L:   linux-pwm@vger.kernel.org
-> > > +S:   Maintained
-> > > +F:   drivers/pwm/pwm-sun50i.c
-> > > +
-> > >  ALPHA PORT
-> > >  M:   Richard Henderson <rth@twiddle.net>
-> > >  M:   Ivan Kokshaysky <ink@jurassic.park.msu.ru>
-> > > diff --git a/drivers/pwm/Kconfig b/drivers/pwm/Kconfig
-> > > index 9a4f66ae8070..17635a8f2ed3 100644
-> > > --- a/drivers/pwm/Kconfig
-> > > +++ b/drivers/pwm/Kconfig
-> > > @@ -552,6 +552,17 @@ config PWM_SUN4I
-> > >         To compile this driver as a module, choose M here: the module
-> > >         will be called pwm-sun4i.
-> > >
-> > > +config PWM_SUN50I
-> > > +     tristate "Allwinner enhanced PWM support"
-> > > +     depends on ARCH_SUNXI || COMPILE_TEST
-> > > +     depends on HAS_IOMEM && COMMON_CLK
-> > > +     help
-> > > +       Enhanced PWM framework driver for Allwinner R818, A133, R329,
-> > > +       V536 and V833 SoCs.
-> > > +
-> > > +       To compile this driver as a module, choose M here: the module
-> > > +       will be called pwm-sun50i.
-> > > +
-> >
-> > Even though it's unfortunate, there's a bunch of other SoCs part of the
-> > sun50i family that are supported by the sun4i driver.
-> >
-> > Which SoC introduced that new design? It's usually the name we pick up
-> > then.
-> >
->=20
-> In fact, some SoCs has not been supported by the sun4i driver, such as v8=
-33,
-> v536, r818, a133 and r329.
-> v833 and v536 are part of the sun8i family, but r818, a133 and r329 are
-> part of the sun50i family.
+Maybe it makes sense to squash all of these individual patches you send 
+that do the same things/perform the same cleanups. Shouldn't be to hard 
+to identify all these cases using simple "git grep".
 
-Indeed, I missed that sorry.=20
+Makes life of reviewers and maintainers easier ...
 
-> So,I'm confused, how do choose the name of this driver?
 
-Just go for the earliest SoC that introduced that design. What was the
-first SoC to use it?
+-- 
+Thanks,
 
-> > > +static const struct sun50i_pwm_data sun8i_pwm_data_c9 =3D {
-> > > +     .npwm =3D 9,
-> > > +};
-> > > +
-> > > +static const struct sun50i_pwm_data sun50i_pwm_data_c16 =3D {
-> > > +     .npwm =3D 16,
-> > > +};
-> > > +
-> > > +static const struct of_device_id sun50i_pwm_dt_ids[] =3D {
-> > > +     {
-> > > +             .compatible =3D "allwinner,sun8i-v833-pwm",
-> > > +             .data =3D &sun8i_pwm_data_c9,
-> > > +     }, {
-> > > +             .compatible =3D "allwinner,sun8i-v536-pwm",
-> > > +             .data =3D &sun8i_pwm_data_c9,
-> > > +     }, {
-> > > +             .compatible =3D "allwinner,sun50i-r818-pwm",
-> > > +             .data =3D &sun50i_pwm_data_c16,
-> > > +     }, {
-> > > +             .compatible =3D "allwinner,sun50i-a133-pwm",
-> > > +             .data =3D &sun50i_pwm_data_c16,
-> > > +     }, {
-> > > +             .compatible =3D "allwinner,sun50i-r329-pwm",
-> > > +             .data =3D &sun8i_pwm_data_c9,
-> > > +     }, {
-> > > +             /* sentinel */
-> > > +     },
-> > > +};
-> > > +MODULE_DEVICE_TABLE(of, sun50i_pwm_dt_ids);
-> >
-> > What are the differences between all these SoCs? If there's none between
-> > the v833, v536 and R329, and between the r818 and the A133, you should
-> > use the same compatible.
->=20
-> Compared with the sun4i driver, this patch is a completely different PWM =
-IP
-> controller.
+David / dhildenb
 
-Sure, I didn't mean to compare it to sun4i. What I meant was that as far
-as these struct goes, the A133 and the R818 look to have the same PWM
-controller. Just like the v833, v536 and R329.
-
-If the PWM controllers are indeed identical across those SoCs, you can
-just use two compatibles, one for the PWM with 9 channels (again, the
-earliest SoC among the V833, v536 and r329), and one for the PWM with 16
-channels.
-
-None of those SoCs are supported at the moment in Linux though, so it
-would make more sense to support them first before adding a new driver
-for those SoCs, it's gonna be dead code otherwise.
-
-Maxime
