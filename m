@@ -2,105 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BCE1310176
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 01:18:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3443310185
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 01:19:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231721AbhBEAQO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 19:16:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39582 "EHLO
+        id S231856AbhBEATY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 19:19:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231366AbhBEAQJ (ORCPT
+        with ESMTP id S231840AbhBEATS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 19:16:09 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC796C0613D6;
-        Thu,  4 Feb 2021 16:15:28 -0800 (PST)
+        Thu, 4 Feb 2021 19:19:18 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 946C0C0613D6
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 16:18:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=UMFNjYapoD8y9Zb2loJ5hYIa9ykCl8ZDwdjgDf7L2RQ=; b=rk9CyHLligNgqgIOcRfByDlu1B
-        GMvRQ3EIJwV2uwY3tFQMq8n9QCQQIVJiZpYfHMFagxFt63zWfTTVkPYxJ7OCyMrUdpD6LZHMlcy9e
-        04+qWbF/Qg/Z/vKnitFgG5QH3x0oqh4jsGI3JVL4oXzXkJPLy7WJyKstKPWIeKvghN9yYaPQ6PqXQ
-        QwFY4Km1a56wwke0QV/IDl42GqWGNTZanpSrRfpcirhYhDpW9mRbvLoUlZh/7vRlg0vH2H583Z92H
-        9L6D+e2+Z/nRPT2lVqgJJ6U/Tx//j5XpK7ALU/hQD22ue1/8fzmkhAO6h4cVVc2Jo10e/Qhe1UlSx
-        fSzAP4pQ==;
-Received: from [2601:1c0:6280:3f0::aec2]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l7omT-0008HR-AH; Fri, 05 Feb 2021 00:15:25 +0000
-Subject: Re: [PATCH v2 2/2] dmabuf: Add dmabuf inode number to /proc/*/fdinfo
-To:     Kalesh Singh <kaleshsingh@google.com>
-Cc:     jannh@google.com, jeffv@google.com, keescook@chromium.org,
-        surenb@google.com, minchan@kernel.org, hridya@google.com,
-        kernel-team@android.com, Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexey Gladkov <gladkov.alexey@gmail.com>,
-        Michel Lespinasse <walken@google.com>,
-        Bernd Edlinger <bernd.edlinger@hotmail.de>,
-        Andrei Vagin <avagin@gmail.com>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-References: <20210204232854.451676-1-kaleshsingh@google.com>
- <20210204232854.451676-2-kaleshsingh@google.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <4e71615b-bdc9-bd5f-ffe3-25f50ce5b882@infradead.org>
-Date:   Thu, 4 Feb 2021 16:15:17 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=3qiwTtiRexNU06q9SlH9uc4782jDzsHVPuIDd7Pu/Gc=; b=t/MouobXLK03vbm6TokVYmHCr
+        DyN93cPvDOsTnuVgFGtJW2obPq6+Ym6CxVCKzguqWcvpbrf4Glsn+7iXeWe3uO3fzFJ3P+j+K1k+1
+        61PMIo3XpFqOaQa7NX30VSOhtOEQmh53ru+rsQ0MiiLgbq02i7/uZdt+YcTaK/NuVEtAmgo29kS7s
+        Te7mlDF2BqmEOX+4U63KIEsuvP7bgTNBnjfo2q5KVvVR2aOVyBHIMVCkWiSP18zP+pO27U4YvAXH9
+        dUXqkUwSQXqlL0bqEJ5tLOuZB3VTjgiBksmYtlvw1soOFW0ARQXrVYVSoe+hxsygMA9X2t6Qduiwv
+        CBiOD/WhQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:39302)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1l7opW-0007CJ-Gr; Fri, 05 Feb 2021 00:18:34 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1l7opV-0005eC-7k; Fri, 05 Feb 2021 00:18:33 +0000
+Date:   Fri, 5 Feb 2021 00:18:33 +0000
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Giancarlo Ferrari <giancarlo.ferrari89@gmail.com>
+Cc:     Mark Rutland <mark.rutland@arm.com>, linux-kernel@vger.kernel.org,
+        penberg@kernel.org, geert@linux-m68k.org, rppt@kernel.org,
+        akpm@linux-foundation.org, linux-arm-kernel@lists.infradead.org,
+        giancarlo.ferrari@nokia.com
+Subject: Re: [PATCH] ARM: kexec: Fix panic after TLB are invalidated
+Message-ID: <20210205001833.GE1463@shell.armlinux.org.uk>
+References: <1612140296-12546-1-git-send-email-giancarlo.ferrari89@gmail.com>
+ <20210201124720.GA66060@C02TD0UTHF1T.local>
+ <20210201130344.GF1463@shell.armlinux.org.uk>
+ <20210201135714.GB66060@C02TD0UTHF1T.local>
+ <20210201160838.GH1463@shell.armlinux.org.uk>
+ <20210201200734.GC15399@p4>
+ <20210201201633.GJ1463@shell.armlinux.org.uk>
+ <20210201202742.GA17243@p4>
+ <20210204234841.GA19339@p4>
 MIME-Version: 1.0
-In-Reply-To: <20210204232854.451676-2-kaleshsingh@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210204234841.GA19339@p4>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/4/21 3:28 PM, Kalesh Singh wrote:
-> If a FD refers to a DMA buffer add the DMA buffer inode number to
-> /proc/<pid>/fdinfo/<FD> and /proc/<pid>/task/<tid>/fdindo/<FD>.
-> 
-> The dmabuf inode number allows userspace to uniquely identify the buffer
-> and avoids a dependency on /proc/<pid>/fd/* when accounting per-process
-> DMA buffer sizes.
-> 
-> Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
-> ---
+On Thu, Feb 04, 2021 at 11:48:42PM +0000, Giancarlo Ferrari wrote:
+> Can I ask about having it integrated ?
 
-Hi,
-Please document this change in
-Documentation/filesystems/proc.rst.
+Thanks for testing. Are you willing for me to add:
 
-Thanks.
+Tested-by: Giancarlo Ferrari <giancarlo.ferrari89@gmail.com>
 
-> 
-> Changes in v2: 
->   - Update patch desciption
-> 
->  drivers/dma-buf/dma-buf.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
-> index 9ad6397aaa97..d869099ede83 100644
-> --- a/drivers/dma-buf/dma-buf.c
-> +++ b/drivers/dma-buf/dma-buf.c
-> @@ -414,6 +414,7 @@ static void dma_buf_show_fdinfo(struct seq_file *m, struct file *file)
->  {
->  	struct dma_buf *dmabuf = file->private_data;
->  
-> +	seq_printf(m, "dmabuf_inode_no:\t%lu\n", file_inode(file)->i_ino);
->  	seq_printf(m, "size:\t%zu\n", dmabuf->size);
->  	/* Don't count the temporary reference taken inside procfs seq_show */
->  	seq_printf(m, "count:\t%ld\n", file_count(dmabuf->file) - 1);
-> 
+to the commit log?
 
+I can move it into the fixes branch which I want to send to Linus by
+Saturday at the very latest.
 
 -- 
-~Randy
-
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
