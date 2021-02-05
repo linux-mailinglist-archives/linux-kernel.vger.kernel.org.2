@@ -2,92 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE6943111AE
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 21:01:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F1753111DA
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 21:06:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233103AbhBESR3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 13:17:29 -0500
-Received: from foss.arm.com ([217.140.110.172]:36746 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233104AbhBEPU3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 10:20:29 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 27E7731B;
-        Fri,  5 Feb 2021 08:51:20 -0800 (PST)
-Received: from [10.37.8.15] (unknown [10.37.8.15])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5420C3F718;
-        Fri,  5 Feb 2021 08:51:18 -0800 (PST)
-Subject: Re: [PATCH v11 2/5] kasan: Add KASAN mode kernel parameter
-To:     Will Deacon <will@kernel.org>
-Cc:     Andrey Konovalov <andreyknvl@google.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>
-References: <20210130165225.54047-1-vincenzo.frascino@arm.com>
- <20210130165225.54047-3-vincenzo.frascino@arm.com>
- <CAAeHK+y=t4c5FfVx3r3Rvwg3GTYN_q1xme=mwk51hgQfJX9MZw@mail.gmail.com>
- <CAAeHK+wdPDZkUSu+q1zb=YWxVD68mXqde9c+gYB4bb=zCsvbZw@mail.gmail.com>
- <96163fa8-c093-8c2f-e085-8c2148882748@arm.com>
- <20210205164822.GB22665@willie-the-truck>
-From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
-Message-ID: <2d039894-708d-6bac-df45-fc68098c2ce9@arm.com>
-Date:   Fri, 5 Feb 2021 16:55:19 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S233409AbhBESVL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 13:21:11 -0500
+Received: from 95-165-96-9.static.spd-mgts.ru ([95.165.96.9]:37920 "EHLO
+        blackbox.su" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232956AbhBEPTi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 10:19:38 -0500
+Received: from metabook.localnet (metabook.metanet [192.168.2.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by blackbox.su (Postfix) with ESMTPSA id C7CC482F55;
+        Fri,  5 Feb 2021 20:01:01 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=blackbox.su; s=mail;
+        t=1612544461; bh=8d8pym2XIrk7WkGR4fNOkdwFEs3C+isJyx94BLKbO9E=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=NyGPq26wY9ROwjybDXexHkEG9WrPo8sXFAT8Qf2drMN8C2TGnzWJKfFbiv7kl5GYt
+         gk1bWhviOobmpG1WjncBxew6T1UcETxwvZvaKOM33TypT6VZYQZoQpasHxa/NLI6J4
+         UbdQCrPpr1xAlMcbGPDNbR6QuEHfawHL+Qx6YjjgALxbT3GGiyLUa9UHvRhXne+06L
+         +HggHUSP2JAPLa7C5m4TdBwVKiXzteU4MMK53OWPC4NvdZDArSVqlvfTP7DZq+Bucr
+         xNgOmb2vRIOhV4FMwfOGXuCHhSfTWJFsU35j14xtREY0A4fyubKA8N9QdYsNzwvrf7
+         nirLMTJfFkevA==
+From:   Sergej Bauer <sbauer@blackbox.su>
+To:     Sven Van Asbroeck <thesven73@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>, Markus.Elfring@web.de,
+        Alexey Denisov <rtgbnm@gmail.com>,
+        Tim Harvey <tharvey@gateworks.com>,
+        Anders =?ISO-8859-1?Q?R=F8nningen?= <anders@ronningen.priv.no>,
+        Bryan Whitehead <bryan.whitehead@microchip.com>,
+        "maintainer:MICROCHIP LAN743X ETHERNET DRIVER" 
+        <UNGLinuxDriver@microchip.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "open list:MICROCHIP LAN743X ETHERNET DRIVER" 
+        <netdev@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next v1 1/6] lan743x: boost performance on cpu archs w/o dma cache snooping
+Date:   Fri, 05 Feb 2021 19:59:55 +0300
+Message-ID: <2417165.5kqOOugWi4@metabook>
+In-Reply-To: <CAGngYiUwzzmF2iPyBmrWBW_Oe=ffNbpxrZSyyQ6U_kLmNV56xg@mail.gmail.com>
+References: <CAGngYiUgjsgWYP76NKnrhbQthWbceaiugTFL=UVh_KvDuRhQUw@mail.gmail.com> <20210205150936.23010-1-sbauer@blackbox.su> <CAGngYiUwzzmF2iPyBmrWBW_Oe=ffNbpxrZSyyQ6U_kLmNV56xg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210205164822.GB22665@willie-the-truck>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2/5/21 4:48 PM, Will Deacon wrote:
-> On Fri, Feb 05, 2021 at 04:00:07PM +0000, Vincenzo Frascino wrote:
->>
->>
->> On 2/5/21 3:49 PM, Andrey Konovalov wrote:
->>> On Mon, Feb 1, 2021 at 9:04 PM Andrey Konovalov <andreyknvl@google.com> wrote:
->>>>
->>>> On Sat, Jan 30, 2021 at 5:52 PM Vincenzo Frascino
->>>> <vincenzo.frascino@arm.com> wrote:
->>>>>
->>>>> @@ -45,6 +52,9 @@ static enum kasan_arg_fault kasan_arg_fault __ro_after_init;
->>>>>  DEFINE_STATIC_KEY_FALSE(kasan_flag_enabled);
->>>>>  EXPORT_SYMBOL(kasan_flag_enabled);
->>>>>
->>>>> +/* Whether the asynchronous mode is enabled. */
->>>>> +bool kasan_flag_async __ro_after_init;
->>>>
->>>> Just noticed that we need EXPORT_SYMBOL(kasan_flag_async) here.
->>>
->>> Hi Vincenzo,
->>>
->>> If you post a new version of this series, please include
->>> EXPORT_SYMBOL(kasan_flag_async).
->>>
->>
->> I can do that, no problem.
+sOn Friday, February 5, 2021 7:39:40 PM MSK Sven Van Asbroeck wrote:
+> Hi Sergej,
 > 
-> EXPORT_SYMBOL_GPL, please :)
+> On Fri, Feb 5, 2021 at 10:09 AM Sergej Bauer <sbauer@blackbox.su> wrote:
+> > Tests after applying patches [2/6] and [3/6] are:
+> > $ ifmtu eth7 500
+> > $ sudo test_ber -l eth7 -c 1000 -n 1000000 -f500 --no-conf
 > 
+> Thank you! Is there a way for me to run test_ber myself?
+> Is this a standard, or a bespoke testing tool?
+It's kind of bespoke... A part of framework to assist HW guys in developing
+PHY-device. But the project is finished, so I could ask for permission to send
+the source to you.
 
-Thanks Will, I will :)
 
-> Will
-> 
 
--- 
-Regards,
-Vincenzo
