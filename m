@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64D2E3114C4
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 23:14:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 212FA3114FA
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 23:23:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229754AbhBEWO0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 17:14:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45248 "EHLO mail.kernel.org"
+        id S233222AbhBEWUp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 17:20:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44974 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232944AbhBEO5W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 09:57:22 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 58224650A8;
-        Fri,  5 Feb 2021 14:14:15 +0000 (UTC)
+        id S232927AbhBEO5J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 09:57:09 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6614865094;
+        Fri,  5 Feb 2021 14:13:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612534455;
-        bh=JXCJZcl66ixQybG6dmg/1B/pvt+2Fo8FaQVC0VvKUTI=;
+        s=korg; t=1612534431;
+        bh=CV+N50vR0wXZUYWyuvQ9Ue+mTRaVX7Jh7HwUsT/Z5q4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ex9f97djvhhV+cfa9VMj+oL7ldl8xiLnGarcKBEvOUzTIfnXySjvGjivbS3Xm6HEp
-         Vq5rm0jFWr5ABzjtjBbxraNX6ispZLOQCG9WdVaIQQuJ8asK80AouSwtznu4MhzD/9
-         DCbpI4dSGbgJT8Ulpmj3dBBBis3j8vEsdmyw7AWg=
+        b=KNe+/toGw/KvN4gjny33+HcXPUpAJBb3Y9M+Tr1eJKokwsWlABrtczBRXfeRVsV6x
+         W2XQWFiEGH0+1ielUtPrXcoCGqpysKnFDGIitf/jCe/eOvxJE8RYTbgFLPyJtXJ65L
+         ct6//0HAjmeVzoznrpJh2edrHAXxHGzq3nq1HNZs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        stable@vger.kernel.org,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
+        Valentin Schneider <valentin.schneider@arm.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 09/17] x86: __always_inline __{rd,wr}msr()
-Date:   Fri,  5 Feb 2021 15:08:03 +0100
-Message-Id: <20210205140650.188596445@linuxfoundation.org>
+Subject: [PATCH 4.19 16/17] kthread: Extract KTHREAD_IS_PER_CPU
+Date:   Fri,  5 Feb 2021 15:08:10 +0100
+Message-Id: <20210205140650.464297049@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210205140649.825180779@linuxfoundation.org>
 References: <20210205140649.825180779@linuxfoundation.org>
@@ -43,44 +43,107 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Peter Zijlstra <peterz@infradead.org>
 
-[ Upstream commit 66a425011c61e71560c234492d204e83cfb73d1d ]
+[ Upstream commit ac687e6e8c26181a33270efd1a2e2241377924b0 ]
 
-When the compiler choses to not inline the trivial MSR helpers:
+There is a need to distinguish geniune per-cpu kthreads from kthreads
+that happen to have a single CPU affinity.
 
-  vmlinux.o: warning: objtool: __sev_es_nmi_complete()+0xce: call to __wrmsr.constprop.14() leaves .noinstr.text section
+Geniune per-cpu kthreads are kthreads that are CPU affine for
+correctness, these will obviously have PF_KTHREAD set, but must also
+have PF_NO_SETAFFINITY set, lest userspace modify their affinity and
+ruins things.
 
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
+However, these two things are not sufficient, PF_NO_SETAFFINITY is
+also set on other tasks that have their affinities controlled through
+other means, like for instance workqueues.
+
+Therefore another bit is needed; it turns out kthread_create_per_cpu()
+already has such a bit: KTHREAD_IS_PER_CPU, which is used to make
+kthread_park()/kthread_unpark() work correctly.
+
+Expose this flag and remove the implicit setting of it from
+kthread_create_on_cpu(); the io_uring usage of it seems dubious at
+best.
+
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
-Link: https://lore.kernel.org/r/X/bf3gV+BW7kGEsB@hirez.programming.kicks-ass.net
+Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
+Tested-by: Valentin Schneider <valentin.schneider@arm.com>
+Link: https://lkml.kernel.org/r/20210121103506.557620262@infradead.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/include/asm/msr.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ include/linux/kthread.h |  3 +++
+ kernel/kthread.c        | 27 ++++++++++++++++++++++++++-
+ kernel/smpboot.c        |  1 +
+ 3 files changed, 30 insertions(+), 1 deletion(-)
 
-diff --git a/arch/x86/include/asm/msr.h b/arch/x86/include/asm/msr.h
-index 04addd6e0a4a2..2571e2017a8bb 100644
---- a/arch/x86/include/asm/msr.h
-+++ b/arch/x86/include/asm/msr.h
-@@ -88,7 +88,7 @@ static inline void do_trace_rdpmc(unsigned int msr, u64 val, int failed) {}
-  * think of extending them - you will be slapped with a stinking trout or a frozen
-  * shark will reach you, wherever you are! You've been warned.
-  */
--static inline unsigned long long notrace __rdmsr(unsigned int msr)
-+static __always_inline unsigned long long __rdmsr(unsigned int msr)
- {
- 	DECLARE_ARGS(val, low, high);
+diff --git a/include/linux/kthread.h b/include/linux/kthread.h
+index c1961761311db..72308c38e06c4 100644
+--- a/include/linux/kthread.h
++++ b/include/linux/kthread.h
+@@ -32,6 +32,9 @@ struct task_struct *kthread_create_on_cpu(int (*threadfn)(void *data),
+ 					  unsigned int cpu,
+ 					  const char *namefmt);
  
-@@ -100,7 +100,7 @@ static inline unsigned long long notrace __rdmsr(unsigned int msr)
- 	return EAX_EDX_VAL(val, low, high);
++void kthread_set_per_cpu(struct task_struct *k, int cpu);
++bool kthread_is_per_cpu(struct task_struct *k);
++
+ /**
+  * kthread_run - create and wake a thread.
+  * @threadfn: the function to run until signal_pending(current).
+diff --git a/kernel/kthread.c b/kernel/kthread.c
+index 2eed853ab9cc5..81abfac351272 100644
+--- a/kernel/kthread.c
++++ b/kernel/kthread.c
+@@ -460,11 +460,36 @@ struct task_struct *kthread_create_on_cpu(int (*threadfn)(void *data),
+ 		return p;
+ 	kthread_bind(p, cpu);
+ 	/* CPU hotplug need to bind once again when unparking the thread. */
+-	set_bit(KTHREAD_IS_PER_CPU, &to_kthread(p)->flags);
+ 	to_kthread(p)->cpu = cpu;
+ 	return p;
  }
  
--static inline void notrace __wrmsr(unsigned int msr, u32 low, u32 high)
-+static __always_inline void __wrmsr(unsigned int msr, u32 low, u32 high)
- {
- 	asm volatile("1: wrmsr\n"
- 		     "2:\n"
++void kthread_set_per_cpu(struct task_struct *k, int cpu)
++{
++	struct kthread *kthread = to_kthread(k);
++	if (!kthread)
++		return;
++
++	WARN_ON_ONCE(!(k->flags & PF_NO_SETAFFINITY));
++
++	if (cpu < 0) {
++		clear_bit(KTHREAD_IS_PER_CPU, &kthread->flags);
++		return;
++	}
++
++	kthread->cpu = cpu;
++	set_bit(KTHREAD_IS_PER_CPU, &kthread->flags);
++}
++
++bool kthread_is_per_cpu(struct task_struct *k)
++{
++	struct kthread *kthread = to_kthread(k);
++	if (!kthread)
++		return false;
++
++	return test_bit(KTHREAD_IS_PER_CPU, &kthread->flags);
++}
++
+ /**
+  * kthread_unpark - unpark a thread created by kthread_create().
+  * @k:		thread created by kthread_create().
+diff --git a/kernel/smpboot.c b/kernel/smpboot.c
+index c230c2dd48e19..84c16654d8598 100644
+--- a/kernel/smpboot.c
++++ b/kernel/smpboot.c
+@@ -187,6 +187,7 @@ __smpboot_create_thread(struct smp_hotplug_thread *ht, unsigned int cpu)
+ 		kfree(td);
+ 		return PTR_ERR(tsk);
+ 	}
++	kthread_set_per_cpu(tsk, cpu);
+ 	/*
+ 	 * Park the thread so that it could start right on the CPU
+ 	 * when it is available.
 -- 
 2.27.0
 
