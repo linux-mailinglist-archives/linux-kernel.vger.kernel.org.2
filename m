@@ -2,150 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1425310E39
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 17:58:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA3D8310DF7
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 17:37:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233083AbhBEPLQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 10:11:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46006 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233071AbhBEPC3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 10:02:29 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 15F17650B9;
-        Fri,  5 Feb 2021 14:14:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612534478;
-        bh=Odyxa63MXuG7WjkuLwF8TZAevmechkqZY24cr0WpRMU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=usv4cYtfCi8Ckj+zN/5VvcrOxtYrFPCITKWbmYcAYHBP+zbh5yGQO0I0dZb+RRNmq
-         cWxYQ8Z+crnDo1GJCWU9IQcoqvJ6ArUkaRE0xZceSsVc3sRy5+Vp/F5sXXGZcsht/Z
-         +i+mW0R9Iko4fvkFfUcz+3+r1feFWdyChhOyvQGg=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 15/15] kthread: Extract KTHREAD_IS_PER_CPU
-Date:   Fri,  5 Feb 2021 15:09:00 +0100
-Message-Id: <20210205140650.351126636@linuxfoundation.org>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210205140649.733510103@linuxfoundation.org>
-References: <20210205140649.733510103@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S232977AbhBEO5w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 09:57:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47624 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231749AbhBEOwd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 09:52:33 -0500
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EE7BC061786;
+        Fri,  5 Feb 2021 08:31:03 -0800 (PST)
+Received: by mail-qk1-x72d.google.com with SMTP id u20so7435320qku.7;
+        Fri, 05 Feb 2021 08:31:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=79c3C5DFNJ8WA8GjidhCQlz0ze6LMsMDakYhczjboWk=;
+        b=IYWurr9pqj0rjJmEfMg1YrQWHhA/HUTt5Jo8vEy75RWmPmgdpgkgICp/PVBHuTtFGo
+         md6JRzrGd/vigb2Jq/ogGh11jr+KA/CwmAMH7/Z2l8xQkQRTLle7x31F0BNqOc1Rs/bp
+         PkyiGNKCxbKqn9jWReL0X9MyBqkSUAhnBtppt6o0jnPXJKmzdxyDhMGS5tfLDe7D6YR3
+         CmU8lPuze4Fo59V8oXSukcRTBTN5ptw9hNdWTtU+uoDtQmtsqrxGinfdptMdJHr/hSls
+         YrMMk4BtpJWIbdr/dUYmUe4eFgo5iaoQlCF4Y3R+WAblZWnMFLaMYQyrjRSoUJgGmdgc
+         tenQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=79c3C5DFNJ8WA8GjidhCQlz0ze6LMsMDakYhczjboWk=;
+        b=fLxbVKXSp2Tzm3qy0H+1+Sneal5Hsilye2yZH0yHjPTsx7ClGmC5IX52GvV+QucXkl
+         2/J15Fr13TYy5nnPOycXtLLNPLxuWcW5sJCxueA8FWzKRXY+LnyxPzkjDzJsfoHczZWe
+         9jQg/86JgmWkmlhWG8HK0cdh6BKZyDZN6+njtMB8l//XzrX9iYMMqk7lq6/k67qVGYd5
+         SfWnEKDcF1QnCO1XgIQGQ/BiamK3af24UKc64150LC5d0wrOu1h2FC8yiHMO5M5dHf02
+         FpIJyszNKXSz8LAGK7y9yoqO/yTOHdY5DmZoRFDUdXq6mijepVIWuIvcZvBJS6yJ+1t3
+         mH/w==
+X-Gm-Message-State: AOAM533pasKJ4qGcw3H8VQjd3GB1zCzBm8uHG3OMsstzW9V5BxYiulcU
+        8mkuR4pXaxiTy5CMWaFEWsW1u+kTFZyPuQ==
+X-Google-Smtp-Source: ABdhPJwi3k/qRogPYiAooPeQqFkqdDdgJr4zFAL/3iyry38WNQnlvXREfylR4C/P/ldJDnwQLF8IHQ==
+X-Received: by 2002:ac8:7757:: with SMTP id g23mr4383003qtu.305.1612535564872;
+        Fri, 05 Feb 2021 06:32:44 -0800 (PST)
+Received: from horizon.localdomain ([177.220.174.167])
+        by smtp.gmail.com with ESMTPSA id p188sm9477098qkf.89.2021.02.05.06.32.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Feb 2021 06:32:43 -0800 (PST)
+Received: by horizon.localdomain (Postfix, from userid 1000)
+        id B2339C147D; Fri,  5 Feb 2021 11:32:40 -0300 (-03)
+Date:   Fri, 5 Feb 2021 11:32:40 -0300
+From:   Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
+To:     NeilBrown <neilb@suse.de>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Vlad Yasevich <vyasevich@gmail.com>,
+        Neil Horman <nhorman@tuxdriver.com>,
+        Xin Long <lucien.xin@gmail.com>, linux-kernel@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-sctp@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH 3/3] net: fix iteration for sctp transport seq_files
+Message-ID: <20210205143240.GA3406@horizon.localdomain>
+References: <161248518659.21478.2484341937387294998.stgit@noble1>
+ <161248539022.21478.17038123892954492263.stgit@noble1>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <161248539022.21478.17038123892954492263.stgit@noble1>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Zijlstra <peterz@infradead.org>
+On Fri, Feb 05, 2021 at 11:36:30AM +1100, NeilBrown wrote:
+> The sctp transport seq_file iterators take a reference to the transport
+> in the ->start and ->next functions and releases the reference in the
+> ->show function.  The preferred handling for such resources is to
+> release them in the subsequent ->next or ->stop function call.
+> 
+> Since Commit 1f4aace60b0e ("fs/seq_file.c: simplify seq_file iteration
+> code and interface") there is no guarantee that ->show will be called
+> after ->next, so this function can now leak references.
+> 
+> So move the sctp_transport_put() call to ->next and ->stop.
+> 
+> Fixes: 1f4aace60b0e ("fs/seq_file.c: simplify seq_file iteration code and interface")
+> Reported-by: Xin Long <lucien.xin@gmail.com>
+> Signed-off-by: NeilBrown <neilb@suse.de>
 
-[ Upstream commit ac687e6e8c26181a33270efd1a2e2241377924b0 ]
-
-There is a need to distinguish geniune per-cpu kthreads from kthreads
-that happen to have a single CPU affinity.
-
-Geniune per-cpu kthreads are kthreads that are CPU affine for
-correctness, these will obviously have PF_KTHREAD set, but must also
-have PF_NO_SETAFFINITY set, lest userspace modify their affinity and
-ruins things.
-
-However, these two things are not sufficient, PF_NO_SETAFFINITY is
-also set on other tasks that have their affinities controlled through
-other means, like for instance workqueues.
-
-Therefore another bit is needed; it turns out kthread_create_per_cpu()
-already has such a bit: KTHREAD_IS_PER_CPU, which is used to make
-kthread_park()/kthread_unpark() work correctly.
-
-Expose this flag and remove the implicit setting of it from
-kthread_create_on_cpu(); the io_uring usage of it seems dubious at
-best.
-
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
-Tested-by: Valentin Schneider <valentin.schneider@arm.com>
-Link: https://lkml.kernel.org/r/20210121103506.557620262@infradead.org
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- include/linux/kthread.h |  3 +++
- kernel/kthread.c        | 27 ++++++++++++++++++++++++++-
- kernel/smpboot.c        |  1 +
- 3 files changed, 30 insertions(+), 1 deletion(-)
-
-diff --git a/include/linux/kthread.h b/include/linux/kthread.h
-index 4e26609c77d41..eb305353f20fa 100644
---- a/include/linux/kthread.h
-+++ b/include/linux/kthread.h
-@@ -31,6 +31,9 @@ struct task_struct *kthread_create_on_cpu(int (*threadfn)(void *data),
- 					  unsigned int cpu,
- 					  const char *namefmt);
- 
-+void kthread_set_per_cpu(struct task_struct *k, int cpu);
-+bool kthread_is_per_cpu(struct task_struct *k);
-+
- /**
-  * kthread_run - create and wake a thread.
-  * @threadfn: the function to run until signal_pending(current).
-diff --git a/kernel/kthread.c b/kernel/kthread.c
-index bd58765d75e76..fd6f9322312aa 100644
---- a/kernel/kthread.c
-+++ b/kernel/kthread.c
-@@ -433,11 +433,36 @@ struct task_struct *kthread_create_on_cpu(int (*threadfn)(void *data),
- 		return p;
- 	kthread_bind(p, cpu);
- 	/* CPU hotplug need to bind once again when unparking the thread. */
--	set_bit(KTHREAD_IS_PER_CPU, &to_kthread(p)->flags);
- 	to_kthread(p)->cpu = cpu;
- 	return p;
- }
- 
-+void kthread_set_per_cpu(struct task_struct *k, int cpu)
-+{
-+	struct kthread *kthread = to_kthread(k);
-+	if (!kthread)
-+		return;
-+
-+	WARN_ON_ONCE(!(k->flags & PF_NO_SETAFFINITY));
-+
-+	if (cpu < 0) {
-+		clear_bit(KTHREAD_IS_PER_CPU, &kthread->flags);
-+		return;
-+	}
-+
-+	kthread->cpu = cpu;
-+	set_bit(KTHREAD_IS_PER_CPU, &kthread->flags);
-+}
-+
-+bool kthread_is_per_cpu(struct task_struct *k)
-+{
-+	struct kthread *kthread = to_kthread(k);
-+	if (!kthread)
-+		return false;
-+
-+	return test_bit(KTHREAD_IS_PER_CPU, &kthread->flags);
-+}
-+
- /**
-  * kthread_unpark - unpark a thread created by kthread_create().
-  * @k:		thread created by kthread_create().
-diff --git a/kernel/smpboot.c b/kernel/smpboot.c
-index 5043e7433f4b1..eeb7f8e9cce37 100644
---- a/kernel/smpboot.c
-+++ b/kernel/smpboot.c
-@@ -187,6 +187,7 @@ __smpboot_create_thread(struct smp_hotplug_thread *ht, unsigned int cpu)
- 		kfree(td);
- 		return PTR_ERR(tsk);
- 	}
-+	kthread_set_per_cpu(tsk, cpu);
- 	/*
- 	 * Park the thread so that it could start right on the CPU
- 	 * when it is available.
--- 
-2.27.0
-
-
-
+Acked-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
