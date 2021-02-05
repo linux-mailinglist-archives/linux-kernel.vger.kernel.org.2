@@ -2,121 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA551310B38
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 13:43:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9462310B39
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 13:43:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232231AbhBEMl6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 07:41:58 -0500
-Received: from lb3-smtp-cloud8.xs4all.net ([194.109.24.29]:36099 "EHLO
-        lb3-smtp-cloud8.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232211AbhBEMhv (ORCPT
+        id S231784AbhBEMmk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 07:42:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57488 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231344AbhBEMiB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 07:37:51 -0500
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud8.xs4all.net with ESMTPA
-        id 80LrlPGHgW4yN80Lvlf72h; Fri, 05 Feb 2021 13:36:49 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1612528609; bh=X7AUlzMRr1DovluaYxfaTiDxq+O8eKwCa1Oxs82UaaA=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=TN/YBhXv7WU6z+lq9Vcphsa8oqJlNX/ApDMeLmwupESMadNKsoXPqSqVKgw45lVqV
-         iCblEqNoMRpJhWw9+FzukgGyqye09wyRmgqYKsmo7KBxLUIoefeZj0gshOi/30YU7N
-         tqBSWE3qaKTXYbBDQKvOoMpDNfE5o8sGqvgaqvd32Uibiwhodnxe829s4U2CCcHe6q
-         V+w2sdTRJzdjAg9/k7jBp/0HHU6rLFoCjSpqCkDtCKZtXsgqnYCcO8w5hm41pscT9v
-         qv/qz9gPcjKoYHgiO4Vz2xL1JE9cT5F3Pb5O0I+jeXXH39MR6Iv2Vlx2VcYv5lYjL9
-         wer/nAOJTYsZw==
-Subject: Re: [PATCH] media: pwc: Fix the URB buffer allocation
-To:     Takashi Iwai <tiwai@suse.de>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Matwey V. Kornilov" <matwey@sai.msu.ru>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Robert Foss <robert.foss@linaro.org>
-References: <20210121202855.17400-1-tiwai@suse.de>
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-Message-ID: <7afd0612-de36-60b1-6650-6f8de24a7145@xs4all.nl>
-Date:   Fri, 5 Feb 2021 13:36:43 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Fri, 5 Feb 2021 07:38:01 -0500
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27B70C06178B;
+        Fri,  5 Feb 2021 04:37:20 -0800 (PST)
+Received: by mail-qk1-x735.google.com with SMTP id 19so6659330qkh.3;
+        Fri, 05 Feb 2021 04:37:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=P//4NsTzgdVvgNpoG0rL3BUt1lW6VkCnGY/CD9Nmt9U=;
+        b=cma7FhwM++XEoZhbabUkCXjz6SJsR+hhT5F4ophOX2sl4ZL2abcmgJv+gOQP36KxI6
+         SDTmJpuJ0wYv0Rz0OqZW6RBOAmb687Q6/LV8tbKy5c/qGjWRsZuVdU5kit6G0qMYblSh
+         7lVj358poJfT2Xze9hvNbZ+YUNMLa8AIE9f7VaDD+m+0w9gngk6bWFI42OQ4Ld+gGM9Y
+         oJs1noz1m7A4ShgAeFY3PAapFtWcdQoxMo8UHSTUlEp4aCSyGz2OTzRp1KHy9oYkYaTC
+         fZ7XMmdYgItrqcXmuqzOTu8Kyw37LZ6E+EjxAzY/C1MZKYr5zOKce1QW3b7yrIRpUQCx
+         funw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=P//4NsTzgdVvgNpoG0rL3BUt1lW6VkCnGY/CD9Nmt9U=;
+        b=Aii1BMr4zKlJz0ZghalZ2bT9rc4dSBZnMgKNfUL+wJRZVSbiHcdsIT6ThpFrBvsPSM
+         o9zxxoxUsgTIZWjkXfSiu4/jKN1tz4CUb981oxKd+1E2jar9YuYALxoKGTgsZDiF2Ch5
+         6VrwTK8j0AN9MCzRQqufc0P6+0vKWrXeA6V0959g21xArf/EPTMNqW3kxdU2Uaq3YQJe
+         grOqkCuM/aLlF/76kbhv5w3I2MjSmEDJLIIYNoYXBGWLqqz8FBN1mOTNb2HpKqC26FZl
+         MHnaJLWztLCtq0IBA8muzoRkbNu3U5Pl7KPeu3+Ex8fPzQ9Wmq7AJlCMEMliYsXdrPiE
+         saLg==
+X-Gm-Message-State: AOAM530e2phX7FavAEq656ixDMa63TDAz5v0mxiyiDy/o70kNxCWOpd3
+        pRnLXhZMxVO0xjTuSObhf5o=
+X-Google-Smtp-Source: ABdhPJyRWVNKDoTPM4TQIKHB6RyFzf5Ar26jCLPXxTwMDArR3BL4YA3poNjcyHELjoh/L3MO78RRSw==
+X-Received: by 2002:a05:620a:9c3:: with SMTP id y3mr3867775qky.327.1612528639469;
+        Fri, 05 Feb 2021 04:37:19 -0800 (PST)
+Received: from localhost.localdomain ([138.199.10.106])
+        by smtp.gmail.com with ESMTPSA id v19sm8688002qkj.48.2021.02.05.04.37.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Feb 2021 04:37:17 -0800 (PST)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     davem@davemloft.net, linux-ide@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: [PATCH] drivers: ide: Fixed a word by replacing a word in the file cmd640.c
+Date:   Fri,  5 Feb 2021 18:07:06 +0530
+Message-Id: <20210205123706.1375902-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-In-Reply-To: <20210121202855.17400-1-tiwai@suse.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfNni1PzcY5QQKQ1vzLfTGSB3xjdcckM81Ko2YP7j1bDGRUy6af1amaFbaOuhPsNlUN6i59hzoIvp18hOZCYvj9OmnINLw2saXBQ7ot4EqbISqYsEayty
- GHT21BGpqg9CuehY0ZFRwpX5nPExjAVhVjgXzjh7LaNIni0xRv59HyWNMUc/YGqSY4N4Whm8GW3bwMWSWsNY4Q0nZERfJdPMHgO43HyGoIwtzEl34KxzQQ4h
- G6gDq7Zkx0tkCCLuyk9cCHx9frfqlxt3CHC+8wF/U6egYTWvB2r+TEn7HEE6h5qMyNpUBR7U8ye1CSrb0x/ZL9RhfOyXuXQzVTLyXTV91C/TrsTj03tBwUMR
- WoeqBjUDxByLblOiAVXfGzgYkY8CAQ==
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Takashi,
 
-Thank you for this patch, but it clashes with another patch trying to do the same thing
-that has already been merged in our tree:
+s/fucked/spoils/
 
-https://patchwork.linuxtv.org/project/linux-media/patch/20210104170007.20625-1-matwey@sai.msu.ru/
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+ drivers/ide/cmd640.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I do prefer your patch over the one already merged since it is a bit simpler, but
-shouldn't the calls to dma_sync_single_for_cpu() and dma_sync_single_for_device()
-in pwc-if.c also use urb->dev->bus->controller?
-
-Also, Matwey's patch uses urb->dev->bus->sysdev instead of urb->dev->bus->controller.
-How does 'sysdev' relate to 'controller'? I think 'controller' is the right device to
-use, but either seems to work when I test it with my pwc webcam.
-
-Andrew, your patch:
-
-https://patchwork.linuxtv.org/project/linux-media/patch/20210204232851.1020416-1-andrew@lunn.ch/
-
-is effectively identical to Takashi's, so I'll mark your patch as Obsoleted.
-Just so you know :-)
-
-Regards,
-
-	Hans
-
-On 21/01/2021 21:28, Takashi Iwai wrote:
-> The URB buffer allocation of pwc driver involves with the
-> dma_map_single(), and it needs to pass the right device.  Currently it
-> passes usb_device.dev, but it's no real device that manages the DMA.
-> Since the passed device has no DMA mask set up, now the pwc driver
-> hits the WARN_ON_ONCE() check in dma_map_page_attrs() (that was
-> introduced in 5.10), resulting in an error at URB allocations.
-> Eventually this ended up with the black output.
-> 
-> This patch fixes the bug by passing the proper device, the bus
-> controller, to make the URB allocation and map working again.
-> 
-> BugLink: https://bugzilla.suse.com/show_bug.cgi?id=1181133
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> ---
->  drivers/media/usb/pwc/pwc-if.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/media/usb/pwc/pwc-if.c b/drivers/media/usb/pwc/pwc-if.c
-> index 61869636ec61..d771160bb168 100644
-> --- a/drivers/media/usb/pwc/pwc-if.c
-> +++ b/drivers/media/usb/pwc/pwc-if.c
-> @@ -461,7 +461,7 @@ static int pwc_isoc_init(struct pwc_device *pdev)
->  		urb->pipe = usb_rcvisocpipe(udev, pdev->vendpoint);
->  		urb->transfer_flags = URB_ISO_ASAP | URB_NO_TRANSFER_DMA_MAP;
->  		urb->transfer_buffer_length = ISO_BUFFER_SIZE;
-> -		urb->transfer_buffer = pwc_alloc_urb_buffer(&udev->dev,
-> +		urb->transfer_buffer = pwc_alloc_urb_buffer(udev->bus->controller,
->  							    urb->transfer_buffer_length,
->  							    &urb->transfer_dma);
->  		if (urb->transfer_buffer == NULL) {
-> @@ -524,7 +524,7 @@ static void pwc_iso_free(struct pwc_device *pdev)
->  		if (urb) {
->  			PWC_DEBUG_MEMORY("Freeing URB\n");
->  			if (urb->transfer_buffer)
-> -				pwc_free_urb_buffer(&urb->dev->dev,
-> +				pwc_free_urb_buffer(urb->dev->bus->controller,
->  						    urb->transfer_buffer_length,
->  						    urb->transfer_buffer,
->  						    urb->transfer_dma);
-> 
+diff --git a/drivers/ide/cmd640.c b/drivers/ide/cmd640.c
+index f48decb9fac4..ac926653b826 100644
+--- a/drivers/ide/cmd640.c
++++ b/drivers/ide/cmd640.c
+@@ -12,7 +12,7 @@
+  *  This file provides support for the advanced features and bugs
+  *  of IDE interfaces using the CMD Technologies 0640 IDE interface chip.
+  *
+- *  These chips are basically fucked by design, and getting this driver
++ *  These chips are basically spoils by design, and getting this driver
+  *  to work on every motherboard design that uses this screwed chip seems
+  *  bloody well impossible.  However, we're still trying.
+  *
+--
+2.30.0
 
