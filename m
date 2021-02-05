@@ -2,308 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A47F3108E0
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 11:21:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 959663108CE
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 11:17:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229753AbhBEKU0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 05:20:26 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:12439 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230281AbhBEKOZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 05:14:25 -0500
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4DXB6h6g13zjJ6C;
-        Fri,  5 Feb 2021 18:12:12 +0800 (CST)
-Received: from huawei.com (10.67.165.24) by DGGEMS407-HUB.china.huawei.com
- (10.3.19.207) with Microsoft SMTP Server id 14.3.498.0; Fri, 5 Feb 2021
- 18:13:11 +0800
-From:   Longfang Liu <liulongfang@huawei.com>
-To:     <herbert@gondor.apana.org.au>, <wangzhou1@hisilicon.com>,
-        <xuzaibo@huawei.com>
-CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH 2/3] crypto: hisilicon/sec - fixes some driver coding style
-Date:   Fri, 5 Feb 2021 18:10:56 +0800
-Message-ID: <1612519857-30714-3-git-send-email-liulongfang@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1612519857-30714-1-git-send-email-liulongfang@huawei.com>
-References: <1612519857-30714-1-git-send-email-liulongfang@huawei.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+        id S231265AbhBEKQC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 05:16:02 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:40726 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230322AbhBEKMQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 05:12:16 -0500
+Received: from loongson.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxadXPGR1gjT0FAA--.6705S2;
+        Fri, 05 Feb 2021 18:11:28 +0800 (CST)
+From:   Jinyang He <hejinyang@loongson.cn>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     Huacai Chen <chenhuacai@kernel.org>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 1/2] MIPS: relocatable: Provide kaslr_offset() to get the kernel offset
+Date:   Fri,  5 Feb 2021 18:11:21 +0800
+Message-Id: <1612519882-16480-1-git-send-email-hejinyang@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9AxadXPGR1gjT0FAA--.6705S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7tFW5AFWfZFy5Ary5GFW5GFg_yoW5JF1kpa
+        n7A3WkGrsFgrWUArZ5A34kurW3Gw4DWrWagFsFkw1rZ3ZIqF1UJ3Z5WrsrXrWjqFy0gF4I
+        va4Yqr42vw4qy3JanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkFb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I
+        8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
+        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1Y6r17McIj6I8E87Iv67AKxVWxJVW8Jr
+        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxkIecxEwVAFwVW8twCF04k2
+        0xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI
+        8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41l
+        IxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIx
+        AIcVCF04k26cxKx2IYs7xG6r4j6FyUMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2
+        jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07bnMa5UUUUU=
+X-CM-SenderInfo: pkhmx0p1dqwqxorr0wxvrqhubq/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-cleanup static check errors for SEC
+Provide kaslr_offset() to get the kernel offset when KASLR is enabled.
+Error may occur before update_kaslr_offset(), so put it at the end of
+the offset branch.
 
-Signed-off-by: Longfang Liu <liulongfang@huawei.com>
+Fixes: a307a4ce9ecd ("MIPS: Loongson64: Add KASLR support")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Jinyang He <hejinyang@loongson.cn>
 ---
- drivers/crypto/hisilicon/sec2/sec_main.c | 131 ++++++++++++++++++-------------
- 1 file changed, 76 insertions(+), 55 deletions(-)
+ arch/mips/include/asm/page.h |  6 ++++++
+ arch/mips/kernel/relocate.c  | 10 ++++++++++
+ arch/mips/kernel/setup.c     |  3 +++
+ 3 files changed, 19 insertions(+)
 
-diff --git a/drivers/crypto/hisilicon/sec2/sec_main.c b/drivers/crypto/hisilicon/sec2/sec_main.c
-index 4809c19..65bb46a 100644
---- a/drivers/crypto/hisilicon/sec2/sec_main.c
-+++ b/drivers/crypto/hisilicon/sec2/sec_main.c
-@@ -35,15 +35,13 @@
- #define SEC_CTX_Q_NUM_MAX		32
+diff --git a/arch/mips/include/asm/page.h b/arch/mips/include/asm/page.h
+index 6a77bc4..74082e3 100644
+--- a/arch/mips/include/asm/page.h
++++ b/arch/mips/include/asm/page.h
+@@ -255,6 +255,12 @@ extern bool __virt_addr_valid(const volatile void *kaddr);
  
- #define SEC_CTRL_CNT_CLR_CE		0x301120
--#define SEC_CTRL_CNT_CLR_CE_BIT		BIT(0)
--#define SEC_ENGINE_PF_CFG_OFF		0x300000
--#define SEC_ACC_COMMON_REG_OFF		0x1000
-+#define SEC_CTRL_CNT_CLR_CE_BIT	BIT(0)
- #define SEC_CORE_INT_SOURCE		0x301010
- #define SEC_CORE_INT_MASK		0x301000
- #define SEC_CORE_INT_STATUS		0x301008
- #define SEC_CORE_SRAM_ECC_ERR_INFO	0x301C14
--#define SEC_ECC_NUM(err)			(((err) >> 16) & 0xFF)
--#define SEC_ECC_ADDR(err)			((err) >> 0)
-+#define SEC_ECC_NUM			16
-+#define SEC_ECC_MASH			0xFF
- #define SEC_CORE_INT_DISABLE		0x0
- #define SEC_CORE_INT_ENABLE		0x1ff
- #define SEC_CORE_INT_CLEAR		0x1ff
-@@ -55,23 +53,23 @@
- #define SEC_RAS_CE_ENB_MSK		0x88
- #define SEC_RAS_FE_ENB_MSK		0x0
- #define SEC_RAS_NFE_ENB_MSK		0x177
--#define SEC_RAS_DISABLE			0x0
--#define SEC_MEM_START_INIT_REG		0x0100
--#define SEC_MEM_INIT_DONE_REG		0x0104
-+#define SEC_RAS_DISABLE		0x0
-+#define SEC_MEM_START_INIT_REG	0x301100
-+#define SEC_MEM_INIT_DONE_REG		0x301104
+ #define VM_DATA_DEFAULT_FLAGS	VM_DATA_FLAGS_TSK_EXEC
  
--#define SEC_CONTROL_REG			0x0200
-+#define SEC_CONTROL_REG		0x301200
- #define SEC_TRNG_EN_SHIFT		8
- #define SEC_CLK_GATE_ENABLE		BIT(3)
- #define SEC_CLK_GATE_DISABLE		(~BIT(3))
- #define SEC_AXI_SHUTDOWN_ENABLE	BIT(12)
- #define SEC_AXI_SHUTDOWN_DISABLE	0xFFFFEFFF
++extern unsigned long __kaslr_offset;
++static inline unsigned long kaslr_offset(void)
++{
++	return __kaslr_offset;
++}
++
+ #include <asm-generic/memory_model.h>
+ #include <asm-generic/getorder.h>
  
--#define SEC_INTERFACE_USER_CTRL0_REG	0x0220
--#define SEC_INTERFACE_USER_CTRL1_REG	0x0224
--#define SEC_SAA_EN_REG					0x0270
--#define SEC_BD_ERR_CHK_EN_REG0		0x0380
--#define SEC_BD_ERR_CHK_EN_REG1		0x0384
--#define SEC_BD_ERR_CHK_EN_REG3		0x038c
-+#define SEC_INTERFACE_USER_CTRL0_REG	0x301220
-+#define SEC_INTERFACE_USER_CTRL1_REG	0x301224
-+#define SEC_SAA_EN_REG			0x301270
-+#define SEC_BD_ERR_CHK_EN_REG0		0x301380
-+#define SEC_BD_ERR_CHK_EN_REG1		0x301384
-+#define SEC_BD_ERR_CHK_EN_REG3		0x30138c
- 
- #define SEC_USER0_SMMU_NORMAL		(BIT(23) | BIT(15))
- #define SEC_USER1_SMMU_NORMAL		(BIT(31) | BIT(23) | BIT(15) | BIT(7))
-@@ -95,9 +93,6 @@
- #define SEC_SQE_MASK_OFFSET		64
- #define SEC_SQE_MASK_LEN		48
- 
--#define SEC_ADDR(qm, offset) ((qm)->io_base + (offset) + \
--			     SEC_ENGINE_PF_CFG_OFF + SEC_ACC_COMMON_REG_OFF)
--
- struct sec_hw_error {
- 	u32 int_msk;
- 	const char *msg;
-@@ -117,16 +112,43 @@ static struct hisi_qm_list sec_devices = {
- };
- 
- static const struct sec_hw_error sec_hw_errors[] = {
--	{.int_msk = BIT(0), .msg = "sec_axi_rresp_err_rint"},
--	{.int_msk = BIT(1), .msg = "sec_axi_bresp_err_rint"},
--	{.int_msk = BIT(2), .msg = "sec_ecc_2bit_err_rint"},
--	{.int_msk = BIT(3), .msg = "sec_ecc_1bit_err_rint"},
--	{.int_msk = BIT(4), .msg = "sec_req_trng_timeout_rint"},
--	{.int_msk = BIT(5), .msg = "sec_fsm_hbeat_rint"},
--	{.int_msk = BIT(6), .msg = "sec_channel_req_rng_timeout_rint"},
--	{.int_msk = BIT(7), .msg = "sec_bd_err_rint"},
--	{.int_msk = BIT(8), .msg = "sec_chain_buff_err_rint"},
--	{ /* sentinel */ }
-+	{
-+		.int_msk = BIT(0),
-+		.msg = "sec_axi_rresp_err_rint"
-+	},
-+	{
-+		.int_msk = BIT(1),
-+		.msg = "sec_axi_bresp_err_rint"
-+	},
-+	{
-+		.int_msk = BIT(2),
-+		.msg = "sec_ecc_2bit_err_rint"
-+	},
-+	{
-+		.int_msk = BIT(3),
-+		.msg = "sec_ecc_1bit_err_rint"
-+	},
-+	{
-+		.int_msk = BIT(4),
-+		.msg = "sec_req_trng_timeout_rint"
-+	},
-+	{
-+		.int_msk = BIT(5),
-+		.msg = "sec_fsm_hbeat_rint"
-+	},
-+	{
-+		.int_msk = BIT(6),
-+		.msg = "sec_channel_req_rng_timeout_rint"
-+	},
-+	{
-+		.int_msk = BIT(7),
-+		.msg = "sec_bd_err_rint"
-+	},
-+	{
-+		.int_msk = BIT(8),
-+		.msg = "sec_chain_buff_err_rint"
-+	},
-+	{}
- };
- 
- static const char * const sec_dbg_file_name[] = {
-@@ -277,9 +299,7 @@ static u8 sec_get_endian(struct hisi_qm *qm)
- 				    "cannot access a register in VF!\n");
- 		return SEC_LE;
- 	}
--	reg = readl_relaxed(qm->io_base + SEC_ENGINE_PF_CFG_OFF +
--			    SEC_ACC_COMMON_REG_OFF + SEC_CONTROL_REG);
--
-+	reg = readl_relaxed(qm->io_base + SEC_CONTROL_REG);
- 	/* BD little endian mode */
- 	if (!(reg & BIT(0)))
- 		return SEC_LE;
-@@ -299,13 +319,13 @@ static int sec_engine_init(struct hisi_qm *qm)
- 	u32 reg;
- 
- 	/* disable clock gate control */
--	reg = readl_relaxed(SEC_ADDR(qm, SEC_CONTROL_REG));
-+	reg = readl_relaxed(qm->io_base + SEC_CONTROL_REG);
- 	reg &= SEC_CLK_GATE_DISABLE;
--	writel_relaxed(reg, SEC_ADDR(qm, SEC_CONTROL_REG));
-+	writel_relaxed(reg, qm->io_base + SEC_CONTROL_REG);
- 
--	writel_relaxed(0x1, SEC_ADDR(qm, SEC_MEM_START_INIT_REG));
-+	writel_relaxed(0x1, qm->io_base + SEC_MEM_START_INIT_REG);
- 
--	ret = readl_relaxed_poll_timeout(SEC_ADDR(qm, SEC_MEM_INIT_DONE_REG),
-+	ret = readl_relaxed_poll_timeout(qm->io_base + SEC_MEM_INIT_DONE_REG,
- 					 reg, reg & 0x1, SEC_DELAY_10_US,
- 					 SEC_POLL_TIMEOUT_US);
- 	if (ret) {
-@@ -313,40 +333,40 @@ static int sec_engine_init(struct hisi_qm *qm)
- 		return ret;
- 	}
- 
--	reg = readl_relaxed(SEC_ADDR(qm, SEC_CONTROL_REG));
-+	reg = readl_relaxed(qm->io_base + SEC_CONTROL_REG);
- 	reg |= (0x1 << SEC_TRNG_EN_SHIFT);
--	writel_relaxed(reg, SEC_ADDR(qm, SEC_CONTROL_REG));
-+	writel_relaxed(reg, qm->io_base + SEC_CONTROL_REG);
- 
--	reg = readl_relaxed(SEC_ADDR(qm, SEC_INTERFACE_USER_CTRL0_REG));
-+	reg = readl_relaxed(qm->io_base + SEC_INTERFACE_USER_CTRL0_REG);
- 	reg |= SEC_USER0_SMMU_NORMAL;
--	writel_relaxed(reg, SEC_ADDR(qm, SEC_INTERFACE_USER_CTRL0_REG));
-+	writel_relaxed(reg, qm->io_base + SEC_INTERFACE_USER_CTRL0_REG);
- 
--	reg = readl_relaxed(SEC_ADDR(qm, SEC_INTERFACE_USER_CTRL1_REG));
-+	reg = readl_relaxed(qm->io_base + SEC_INTERFACE_USER_CTRL1_REG);
- 	reg &= SEC_USER1_SMMU_MASK;
- 	if (qm->use_sva)
- 		reg |= SEC_USER1_SMMU_SVA;
- 	else
- 		reg |= SEC_USER1_SMMU_NORMAL;
--	writel_relaxed(reg, SEC_ADDR(qm, SEC_INTERFACE_USER_CTRL1_REG));
-+	writel_relaxed(reg, qm->io_base + SEC_INTERFACE_USER_CTRL1_REG);
- 
- 	writel(SEC_SINGLE_PORT_MAX_TRANS,
- 	       qm->io_base + AM_CFG_SINGLE_PORT_MAX_TRANS);
- 
--	writel(SEC_SAA_ENABLE, SEC_ADDR(qm, SEC_SAA_EN_REG));
-+	writel(SEC_SAA_ENABLE, qm->io_base + SEC_SAA_EN_REG);
- 
- 	/* Enable sm4 extra mode, as ctr/ecb */
- 	writel_relaxed(SEC_BD_ERR_CHK_EN0,
--		       SEC_ADDR(qm, SEC_BD_ERR_CHK_EN_REG0));
-+		       qm->io_base + SEC_BD_ERR_CHK_EN_REG0);
- 	/* Enable sm4 xts mode multiple iv */
- 	writel_relaxed(SEC_BD_ERR_CHK_EN1,
--		       SEC_ADDR(qm, SEC_BD_ERR_CHK_EN_REG1));
-+		       qm->io_base + SEC_BD_ERR_CHK_EN_REG1);
- 	writel_relaxed(SEC_BD_ERR_CHK_EN3,
--		       SEC_ADDR(qm, SEC_BD_ERR_CHK_EN_REG3));
-+		       qm->io_base + SEC_BD_ERR_CHK_EN_REG3);
- 
- 	/* config endian */
--	reg = readl_relaxed(SEC_ADDR(qm, SEC_CONTROL_REG));
-+	reg = readl_relaxed(qm->io_base + SEC_CONTROL_REG);
- 	reg |= sec_get_endian(qm);
--	writel_relaxed(reg, SEC_ADDR(qm, SEC_CONTROL_REG));
-+	writel_relaxed(reg, qm->io_base + SEC_CONTROL_REG);
- 
- 	return 0;
- }
-@@ -406,7 +426,7 @@ static void sec_hw_error_enable(struct hisi_qm *qm)
- 		return;
- 	}
- 
--	val = readl(SEC_ADDR(qm, SEC_CONTROL_REG));
-+	val = readl(qm->io_base + SEC_CONTROL_REG);
- 
- 	/* clear SEC hw error source if having */
- 	writel(SEC_CORE_INT_CLEAR, qm->io_base + SEC_CORE_INT_SOURCE);
-@@ -422,14 +442,14 @@ static void sec_hw_error_enable(struct hisi_qm *qm)
- 	/* enable SEC block master OOO when m-bit error occur */
- 	val = val | SEC_AXI_SHUTDOWN_ENABLE;
- 
--	writel(val, SEC_ADDR(qm, SEC_CONTROL_REG));
-+	writel(val, qm->io_base + SEC_CONTROL_REG);
+diff --git a/arch/mips/kernel/relocate.c b/arch/mips/kernel/relocate.c
+index c643c81..95abb9c 100644
+--- a/arch/mips/kernel/relocate.c
++++ b/arch/mips/kernel/relocate.c
+@@ -300,6 +300,13 @@ static inline int __init relocation_addr_valid(void *loc_new)
+ 	return 1;
  }
  
- static void sec_hw_error_disable(struct hisi_qm *qm)
++static inline void __init update_kaslr_offset(unsigned long *addr, long offset)
++{
++	unsigned long *new_addr = (unsigned long *)RELOCATED(addr);
++
++	*new_addr = (unsigned long)offset;
++}
++
+ #if defined(CONFIG_USE_OF)
+ void __weak *plat_get_fdt(void)
  {
- 	u32 val;
+@@ -410,6 +417,9 @@ void *__init relocate_kernel(void)
  
--	val = readl(SEC_ADDR(qm, SEC_CONTROL_REG));
-+	val = readl(qm->io_base + SEC_CONTROL_REG);
+ 		/* Return the new kernel's entry point */
+ 		kernel_entry = RELOCATED(start_kernel);
++
++		/* Error may occur before, so keep it at last */
++		update_kaslr_offset(&__kaslr_offset, offset);
+ 	}
+ out:
+ 	return kernel_entry;
+diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
+index 3785c72..03c896f 100644
+--- a/arch/mips/kernel/setup.c
++++ b/arch/mips/kernel/setup.c
+@@ -84,6 +84,9 @@ static struct resource code_resource = { .name = "Kernel code", };
+ static struct resource data_resource = { .name = "Kernel data", };
+ static struct resource bss_resource = { .name = "Kernel bss", };
  
- 	/* disable RAS int */
- 	writel(SEC_RAS_DISABLE, qm->io_base + SEC_RAS_CE_REG);
-@@ -442,7 +462,7 @@ static void sec_hw_error_disable(struct hisi_qm *qm)
- 	/* disable SEC block master OOO when m-bit error occur */
- 	val = val & SEC_AXI_SHUTDOWN_DISABLE;
++unsigned long __kaslr_offset __ro_after_init;
++EXPORT_SYMBOL(__kaslr_offset);
++
+ static void *detect_magic __initdata = detect_memory_region;
  
--	writel(val, SEC_ADDR(qm, SEC_CONTROL_REG));
-+	writel(val, qm->io_base + SEC_CONTROL_REG);
- }
- 
- static u32 sec_current_qm_read(struct sec_debug_file *file)
-@@ -712,7 +732,8 @@ static void sec_log_hw_error(struct hisi_qm *qm, u32 err_sts)
- 				err_val = readl(qm->io_base +
- 						SEC_CORE_SRAM_ECC_ERR_INFO);
- 				dev_err(dev, "multi ecc sram num=0x%x\n",
--						SEC_ECC_NUM(err_val));
-+						((err_val) >> SEC_ECC_NUM) &
-+						SEC_ECC_MASH);
- 			}
- 		}
- 		errs++;
-@@ -733,9 +754,9 @@ static void sec_open_axi_master_ooo(struct hisi_qm *qm)
- {
- 	u32 val;
- 
--	val = readl(SEC_ADDR(qm, SEC_CONTROL_REG));
--	writel(val & SEC_AXI_SHUTDOWN_DISABLE, SEC_ADDR(qm, SEC_CONTROL_REG));
--	writel(val | SEC_AXI_SHUTDOWN_ENABLE, SEC_ADDR(qm, SEC_CONTROL_REG));
-+	val = readl(qm->io_base + SEC_CONTROL_REG);
-+	writel(val & SEC_AXI_SHUTDOWN_DISABLE, qm->io_base + SEC_CONTROL_REG);
-+	writel(val | SEC_AXI_SHUTDOWN_ENABLE, qm->io_base + SEC_CONTROL_REG);
- }
- 
- static const struct hisi_qm_err_ini sec_err_ini = {
+ #ifdef CONFIG_MIPS_AUTO_PFN_OFFSET
 -- 
-2.8.1
+2.1.0
 
