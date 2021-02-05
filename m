@@ -2,119 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F107310B34
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 13:41:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA551310B38
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 13:43:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232045AbhBEMkE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 07:40:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57054 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232173AbhBEMgI (ORCPT
+        id S232231AbhBEMl6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 07:41:58 -0500
+Received: from lb3-smtp-cloud8.xs4all.net ([194.109.24.29]:36099 "EHLO
+        lb3-smtp-cloud8.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232211AbhBEMhv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 07:36:08 -0500
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84E38C061794;
-        Fri,  5 Feb 2021 04:35:18 -0800 (PST)
-Received: by mail-ej1-x62a.google.com with SMTP id y9so11653112ejp.10;
-        Fri, 05 Feb 2021 04:35:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=AT0z2+krtagF9TnHeGWlw7h1FxBZRAw3QiEktEHlnNw=;
-        b=Jk9mvWt4iT+vlWdSI+yLyj6+Ye8L3lul0SPLiF0RhYlB4XV6J9kWWbMzJdJ9MzCXVF
-         f6WCZLIh+zVQfLvKE5SFgl4U4lyqWI+WmVj64UjAs7OchIEMCyC/KCJ6TbvNvfTU90kE
-         pOK4e+WoJcv07Hml6+s7CTl0TX3Ch/ZnEj149Bc7HY+vyKG5/WrJoKyXi9dWplsqJ8s2
-         nZHeaJN8bEnymInlRuy/q/9kk8jov7WK4i1YSQm1/mehKJWSyOkmbBcK6g9wrkIFuZfl
-         YfLweTIhgAO2RdWK1McCZDrLFZgiWA0KYVWjsWPrg+VKuOv1sVAhaxCJwOob4BVj7zqv
-         AwXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=AT0z2+krtagF9TnHeGWlw7h1FxBZRAw3QiEktEHlnNw=;
-        b=XJlXAG2SDOTOuSHkKyGVFuEe5PeNkdyGlX/2/NPO4p1LLUB79A2UKmhrisMBmbUp8w
-         FI83VTF20SdjCeIWdBO9QN02UiC2kICsB8Z+m8y0dkL1mg/XkkSB5JPzigx9xwAP35D+
-         xmzGyMAj1wczr0kMtjxCl8e2iaMizPbqGViFWhaKbchVgwT1Pkvsk3VA/39vemBzj05I
-         0m/wLQlPpq81HxobelQvGB+TdSlbLLRwa29Lp/bB8miL/mwBQMHp/J1nhocFTFvCtuf0
-         uwREO/0puJlfyzlwtFCbd17zMQizKt51uLzvqj8OPDlh0Ft2mdTT7/dTI2N72zdYzgFQ
-         wbVQ==
-X-Gm-Message-State: AOAM533ZihxQsGXMBm5AWBJ/QHOOMVn+527Gh7nNvTbj2plOqlWP1NIO
-        xFKGmG2rTFw/1SZjVGE6AlA=
-X-Google-Smtp-Source: ABdhPJzlBMhP/pbPIFtQfhc+wcXoLvUszfFvT+56V+qRq5QrCOcOncp/bTQGjCbiW6HtKt0i6sP7qA==
-X-Received: by 2002:a17:906:3e96:: with SMTP id a22mr3859367ejj.144.1612528515950;
-        Fri, 05 Feb 2021 04:35:15 -0800 (PST)
-Received: from ubuntu-laptop (ip5f5bee1b.dynamic.kabel-deutschland.de. [95.91.238.27])
-        by smtp.googlemail.com with ESMTPSA id c27sm752270eja.104.2021.02.05.04.35.14
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 05 Feb 2021 04:35:15 -0800 (PST)
-Message-ID: <b6a8652c00411e3f71d33e7a6322f49eb5701039.camel@gmail.com>
-Subject: Re: [PATCH v19 3/3] scsi: ufs: Prepare HPB read for cached
- sub-region
-From:   Bean Huo <huobean@gmail.com>
-To:     Can Guo <cang@codeaurora.org>, daejun7.park@samsung.com
-Cc:     Greg KH <gregkh@linuxfoundation.org>, avri.altman@wdc.com,
-        jejb@linux.ibm.com, martin.petersen@oracle.com,
-        asutoshd@codeaurora.org, stanley.chu@mediatek.com,
-        bvanassche@acm.org, ALIM AKHTAR <alim.akhtar@samsung.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        BoRam Shin <boram.shin@samsung.com>,
-        SEUNGUK SHIN <seunguk.shin@samsung.com>
-Date:   Fri, 05 Feb 2021 13:35:13 +0100
-In-Reply-To: <7f25ccb1d857131baa1c0424c4542e33@codeaurora.org>
-References: <20210129052848epcms2p6e5797efd94e6282b76ad9ae6c99e3ab5@epcms2p6>
-         <CGME20210129052848epcms2p6e5797efd94e6282b76ad9ae6c99e3ab5@epcms2p5>
-         <20210129053042epcms2p538e7fa396c3c2104594c44e48be53eb8@epcms2p5>
-         <7f25ccb1d857131baa1c0424c4542e33@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
+        Fri, 5 Feb 2021 07:37:51 -0500
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud8.xs4all.net with ESMTPA
+        id 80LrlPGHgW4yN80Lvlf72h; Fri, 05 Feb 2021 13:36:49 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1612528609; bh=X7AUlzMRr1DovluaYxfaTiDxq+O8eKwCa1Oxs82UaaA=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=TN/YBhXv7WU6z+lq9Vcphsa8oqJlNX/ApDMeLmwupESMadNKsoXPqSqVKgw45lVqV
+         iCblEqNoMRpJhWw9+FzukgGyqye09wyRmgqYKsmo7KBxLUIoefeZj0gshOi/30YU7N
+         tqBSWE3qaKTXYbBDQKvOoMpDNfE5o8sGqvgaqvd32Uibiwhodnxe829s4U2CCcHe6q
+         V+w2sdTRJzdjAg9/k7jBp/0HHU6rLFoCjSpqCkDtCKZtXsgqnYCcO8w5hm41pscT9v
+         qv/qz9gPcjKoYHgiO4Vz2xL1JE9cT5F3Pb5O0I+jeXXH39MR6Iv2Vlx2VcYv5lYjL9
+         wer/nAOJTYsZw==
+Subject: Re: [PATCH] media: pwc: Fix the URB buffer allocation
+To:     Takashi Iwai <tiwai@suse.de>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Matwey V. Kornilov" <matwey@sai.msu.ru>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Robert Foss <robert.foss@linaro.org>
+References: <20210121202855.17400-1-tiwai@suse.de>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Message-ID: <7afd0612-de36-60b1-6650-6f8de24a7145@xs4all.nl>
+Date:   Fri, 5 Feb 2021 13:36:43 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
+MIME-Version: 1.0
+In-Reply-To: <20210121202855.17400-1-tiwai@suse.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfNni1PzcY5QQKQ1vzLfTGSB3xjdcckM81Ko2YP7j1bDGRUy6af1amaFbaOuhPsNlUN6i59hzoIvp18hOZCYvj9OmnINLw2saXBQ7ot4EqbISqYsEayty
+ GHT21BGpqg9CuehY0ZFRwpX5nPExjAVhVjgXzjh7LaNIni0xRv59HyWNMUc/YGqSY4N4Whm8GW3bwMWSWsNY4Q0nZERfJdPMHgO43HyGoIwtzEl34KxzQQ4h
+ G6gDq7Zkx0tkCCLuyk9cCHx9frfqlxt3CHC+8wF/U6egYTWvB2r+TEn7HEE6h5qMyNpUBR7U8ye1CSrb0x/ZL9RhfOyXuXQzVTLyXTV91C/TrsTj03tBwUMR
+ WoeqBjUDxByLblOiAVXfGzgYkY8CAQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-02-05 at 11:29 +0800, Can Guo wrote:
-> > +     *rgn_idx = lpn >> hpb->entries_per_rgn_shift;
-> > +     rgn_offset = lpn & hpb->entries_per_rgn_mask;
-> > +     *srgn_idx = rgn_offset >> hpb->entries_per_srgn_shift;
-> > +     *offset = rgn_offset & hpb->entries_per_srgn_mask;
-> > +}
-> > +
-> > +static void
-> > +ufshpb_set_hpb_read_to_upiu(struct ufshpb_lu *hpb, struct
-> > ufshcd_lrb 
-> > *lrbp,
-> > +                               u32 lpn, u64 ppn,  unsigned int
-> > transfer_len)
-> > +{
-> > +     unsigned char *cdb = lrbp->cmd->cmnd;
-> > +
-> > +     cdb[0] = UFSHPB_READ;
-> > +
-> > +     put_unaligned_be64(ppn, &cdb[6]);
+Hi Takashi,
+
+Thank you for this patch, but it clashes with another patch trying to do the same thing
+that has already been merged in our tree:
+
+https://patchwork.linuxtv.org/project/linux-media/patch/20210104170007.20625-1-matwey@sai.msu.ru/
+
+I do prefer your patch over the one already merged since it is a bit simpler, but
+shouldn't the calls to dma_sync_single_for_cpu() and dma_sync_single_for_device()
+in pwc-if.c also use urb->dev->bus->controller?
+
+Also, Matwey's patch uses urb->dev->bus->sysdev instead of urb->dev->bus->controller.
+How does 'sysdev' relate to 'controller'? I think 'controller' is the right device to
+use, but either seems to work when I test it with my pwc webcam.
+
+Andrew, your patch:
+
+https://patchwork.linuxtv.org/project/linux-media/patch/20210204232851.1020416-1-andrew@lunn.ch/
+
+is effectively identical to Takashi's, so I'll mark your patch as Obsoleted.
+Just so you know :-)
+
+Regards,
+
+	Hans
+
+On 21/01/2021 21:28, Takashi Iwai wrote:
+> The URB buffer allocation of pwc driver involves with the
+> dma_map_single(), and it needs to pass the right device.  Currently it
+> passes usb_device.dev, but it's no real device that manages the DMA.
+> Since the passed device has no DMA mask set up, now the pwc driver
+> hits the WARN_ON_ONCE() check in dma_map_page_attrs() (that was
+> introduced in 5.10), resulting in an error at URB allocations.
+> Eventually this ended up with the black output.
 > 
-> You are assuming the HPB entries read out by "HPB Read Buffer" cmd
-> are 
-> in Little
-> Endian, which is why you are using put_unaligned_be64 here. However, 
-> this assumption
-> is not right for all the other flash vendors - HPB entries read out
-> by 
-> "HPB Read Buffer"
-> cmd may come in Big Endian, if so, their random read performance are 
-> screwed.
-
-For this question, it is very hard to make a correct format since the
-Spec doesn't give a clear definition. Should we have a default format,
-if there is conflict, and then add quirk or add a vendor-specific
-table?
-
-Hi Avri
-Do you have a good idea?
-
-Bean
+> This patch fixes the bug by passing the proper device, the bus
+> controller, to make the URB allocation and map working again.
+> 
+> BugLink: https://bugzilla.suse.com/show_bug.cgi?id=1181133
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> ---
+>  drivers/media/usb/pwc/pwc-if.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/media/usb/pwc/pwc-if.c b/drivers/media/usb/pwc/pwc-if.c
+> index 61869636ec61..d771160bb168 100644
+> --- a/drivers/media/usb/pwc/pwc-if.c
+> +++ b/drivers/media/usb/pwc/pwc-if.c
+> @@ -461,7 +461,7 @@ static int pwc_isoc_init(struct pwc_device *pdev)
+>  		urb->pipe = usb_rcvisocpipe(udev, pdev->vendpoint);
+>  		urb->transfer_flags = URB_ISO_ASAP | URB_NO_TRANSFER_DMA_MAP;
+>  		urb->transfer_buffer_length = ISO_BUFFER_SIZE;
+> -		urb->transfer_buffer = pwc_alloc_urb_buffer(&udev->dev,
+> +		urb->transfer_buffer = pwc_alloc_urb_buffer(udev->bus->controller,
+>  							    urb->transfer_buffer_length,
+>  							    &urb->transfer_dma);
+>  		if (urb->transfer_buffer == NULL) {
+> @@ -524,7 +524,7 @@ static void pwc_iso_free(struct pwc_device *pdev)
+>  		if (urb) {
+>  			PWC_DEBUG_MEMORY("Freeing URB\n");
+>  			if (urb->transfer_buffer)
+> -				pwc_free_urb_buffer(&urb->dev->dev,
+> +				pwc_free_urb_buffer(urb->dev->bus->controller,
+>  						    urb->transfer_buffer_length,
+>  						    urb->transfer_buffer,
+>  						    urb->transfer_dma);
+> 
 
