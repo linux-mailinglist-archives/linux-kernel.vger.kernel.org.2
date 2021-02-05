@@ -2,131 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3122A310DAA
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 17:13:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4FCD310DAD
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 17:13:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232690AbhBEOdB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 09:33:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41680 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232589AbhBEO2N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 09:28:13 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6922365013;
-        Fri,  5 Feb 2021 14:10:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612534248;
-        bh=9erNqEszCSdiqeuy4x4zFS4PPl6fhA4J97iiuei19+M=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=k/SX+qsbYZdd5h93+5vDwuVYpCQRyhFJxfoORIcXtHifQT6APTXiJW+fQmbJ91pyd
-         ArCtVQQMVPcZq5L0M7pspRcw/H9J4bZpEgIwbmtFYHt6vbbhNtO+Pdi6hSqS60mOVE
-         I0utAjRyfDU18wynJ2hMijf7hKhyisUV7N/xEiu4=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Klaus Jensen <k.jensen@samsung.com>,
-        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 42/57] nvme-pci: allow use of cmb on v1.4 controllers
-Date:   Fri,  5 Feb 2021 15:07:08 +0100
-Message-Id: <20210205140657.782495653@linuxfoundation.org>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210205140655.982616732@linuxfoundation.org>
-References: <20210205140655.982616732@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S232711AbhBEOeD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 09:34:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43068 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232643AbhBEOap (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 09:30:45 -0500
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFD95C06178A;
+        Fri,  5 Feb 2021 06:07:34 -0800 (PST)
+Received: by mail-wr1-x431.google.com with SMTP id d16so7766593wro.11;
+        Fri, 05 Feb 2021 06:07:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tGuuL40sGcfgrloxWuU/Mr8s8X8BV6lQEs2pAh9D2YE=;
+        b=l/dzw7ifuNU24tZ6TXySAhV2vGO0CPg+7/Et9s1SxjCL4d9Nl33+Rw0jIimvXgRn+z
+         zDakgbxfwnjVO3AwcCqEc3VarFa1CBpq5/P0OsYi1NBVx3qXExOIxjGFSHtYSh68gMS4
+         Eve2H+tgiVQbHqWXyFfi3uzMbDy53BMdiIwFAM+0v+dlumZp9R1MMb3nhMwQy0vpGujS
+         XfYem9f7CG3lpYESGx0xVQntrt2mQJ0F3+TEJdhIE3p+HR0bH9ssiG73G4bSAgPKHh8H
+         ZbTkH5qjthgrh3GTKmk+WU7bLOFin0A79HZVM2SjlxTKJyBvvlxZEV42Lz++2tgyy7er
+         /Ajg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tGuuL40sGcfgrloxWuU/Mr8s8X8BV6lQEs2pAh9D2YE=;
+        b=HOOv/Th4CfiGJHkGbcdSKTMUdxyw5KSQlTxCVY0k+mGXr1oZEQsHBxE6ZwhlqekkdZ
+         ai8z+G9M7pIowAJHmuIG0jcMoZhq5EeK3hjlIbmWICYkiYP/nOFj9AxMxs0gtRexbYzg
+         uU7fBO2pfiJlxthykzrl9g/qCVXI6HT9q8N37ZwgJqiDSobgQ6eq5dnF4WqY7/G3b0mT
+         FkdSoInORjAOlid7UlwrR3iMg/g/wIy7aAicnhTUAecy/dRLDAdhS1tFvAscQ5286uwu
+         rvmMsWeY6r0y+d3DBaD9N1wfqYfDi9qr6tBCrPjVAKVE3SrL1hoFeXnEtmo1mFG/0lEN
+         R+Gg==
+X-Gm-Message-State: AOAM531MNn9WhDbLuuaY0myS1OOXRXu0aaXW6jek3z+2yTwyiaYYmdI6
+        TCM4sRn2VXecFzmsJqqwX26B1g1NKk79/My2COc=
+X-Google-Smtp-Source: ABdhPJz4c68iFt9emmCQCVE0NR6e5E0nuYYE7jDU6v3EZxjkge8aiiZNM7kql3sdPgVZ3CNhBKMRjiUgediRb51E9+U=
+X-Received: by 2002:a5d:60c6:: with SMTP id x6mr5108680wrt.85.1612534053076;
+ Fri, 05 Feb 2021 06:07:33 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20210129195240.31871-2-TheSven73@gmail.com> <20210205124419.8575-1-sbauer@blackbox.su>
+In-Reply-To: <20210205124419.8575-1-sbauer@blackbox.su>
+From:   Sven Van Asbroeck <thesven73@gmail.com>
+Date:   Fri, 5 Feb 2021 09:07:22 -0500
+Message-ID: <CAGngYiUgjsgWYP76NKnrhbQthWbceaiugTFL=UVh_KvDuRhQUw@mail.gmail.com>
+Subject: Re: [PATCH net-next v1 1/6] lan743x: boost performance on cpu archs
+ w/o dma cache snooping
+To:     Sergej Bauer <sbauer@blackbox.su>
+Cc:     Andrew Lunn <andrew@lunn.ch>, Markus.Elfring@web.de,
+        Alexey Denisov <rtgbnm@gmail.com>,
+        Tim Harvey <tharvey@gateworks.com>,
+        =?UTF-8?Q?Anders_R=C3=B8nningen?= <anders@ronningen.priv.no>,
+        Bryan Whitehead <bryan.whitehead@microchip.com>,
+        "maintainer:MICROCHIP LAN743X ETHERNET DRIVER" 
+        <UNGLinuxDriver@microchip.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "open list:MICROCHIP LAN743X ETHERNET DRIVER" 
+        <netdev@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Klaus Jensen <k.jensen@samsung.com>
+Hi Sergej,
 
-[ Upstream commit 20d3bb92e84d417b0494a3b6867f0c86713db257 ]
+On Fri, Feb 5, 2021 at 7:44 AM Sergej Bauer <sbauer@blackbox.su> wrote:
+>
+> Hi Sven
+> I can confirm great stability improvement after your patch
+> "lan743x: boost performance on cpu archs w/o dma cache snooping".
+>
+> Test machine is Intel Pentium G4560 3.50GHz
+> lan743x with rejected virtual phy 'inside'
 
-Since NVMe v1.4 the Controller Memory Buffer must be explicitly enabled
-by the host.
+Interesting, so the speed boost patch seems to improve things even on Intel...
 
-Signed-off-by: Klaus Jensen <k.jensen@samsung.com>
-[hch: avoid a local variable and add a comment]
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/nvme/host/pci.c | 14 ++++++++++++++
- include/linux/nvme.h    |  6 ++++++
- 2 files changed, 20 insertions(+)
+Would you be able to apply and test the multi-buffer patch as well?
+To do that, you can simply apply patches [2/6] and [3/6] on top of
+what you already have.
 
-diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
-index 77f615568194d..a3486c1c27f0c 100644
---- a/drivers/nvme/host/pci.c
-+++ b/drivers/nvme/host/pci.c
-@@ -23,6 +23,7 @@
- #include <linux/t10-pi.h>
- #include <linux/types.h>
- #include <linux/io-64-nonatomic-lo-hi.h>
-+#include <linux/io-64-nonatomic-hi-lo.h>
- #include <linux/sed-opal.h>
- #include <linux/pci-p2pdma.h>
- 
-@@ -1825,6 +1826,9 @@ static void nvme_map_cmb(struct nvme_dev *dev)
- 	if (dev->cmb_size)
- 		return;
- 
-+	if (NVME_CAP_CMBS(dev->ctrl.cap))
-+		writel(NVME_CMBMSC_CRE, dev->bar + NVME_REG_CMBMSC);
-+
- 	dev->cmbsz = readl(dev->bar + NVME_REG_CMBSZ);
- 	if (!dev->cmbsz)
- 		return;
-@@ -1838,6 +1842,16 @@ static void nvme_map_cmb(struct nvme_dev *dev)
- 	if (offset > bar_size)
- 		return;
- 
-+	/*
-+	 * Tell the controller about the host side address mapping the CMB,
-+	 * and enable CMB decoding for the NVMe 1.4+ scheme:
-+	 */
-+	if (NVME_CAP_CMBS(dev->ctrl.cap)) {
-+		hi_lo_writeq(NVME_CMBMSC_CRE | NVME_CMBMSC_CMSE |
-+			     (pci_bus_address(pdev, bar) + offset),
-+			     dev->bar + NVME_REG_CMBMSC);
-+	}
-+
- 	/*
- 	 * Controllers may support a CMB size larger than their BAR,
- 	 * for example, due to being behind a bridge. Reduce the CMB to
-diff --git a/include/linux/nvme.h b/include/linux/nvme.h
-index d925359976873..bfed36e342ccb 100644
---- a/include/linux/nvme.h
-+++ b/include/linux/nvme.h
-@@ -116,6 +116,9 @@ enum {
- 	NVME_REG_BPMBL	= 0x0048,	/* Boot Partition Memory Buffer
- 					 * Location
- 					 */
-+	NVME_REG_CMBMSC = 0x0050,	/* Controller Memory Buffer Memory
-+					 * Space Control
-+					 */
- 	NVME_REG_PMRCAP	= 0x0e00,	/* Persistent Memory Capabilities */
- 	NVME_REG_PMRCTL	= 0x0e04,	/* Persistent Memory Region Control */
- 	NVME_REG_PMRSTS	= 0x0e08,	/* Persistent Memory Region Status */
-@@ -135,6 +138,7 @@ enum {
- #define NVME_CAP_CSS(cap)	(((cap) >> 37) & 0xff)
- #define NVME_CAP_MPSMIN(cap)	(((cap) >> 48) & 0xf)
- #define NVME_CAP_MPSMAX(cap)	(((cap) >> 52) & 0xf)
-+#define NVME_CAP_CMBS(cap)	(((cap) >> 57) & 0x1)
- 
- #define NVME_CMB_BIR(cmbloc)	((cmbloc) & 0x7)
- #define NVME_CMB_OFST(cmbloc)	(((cmbloc) >> 12) & 0xfffff)
-@@ -192,6 +196,8 @@ enum {
- 	NVME_CSTS_SHST_OCCUR	= 1 << 2,
- 	NVME_CSTS_SHST_CMPLT	= 2 << 2,
- 	NVME_CSTS_SHST_MASK	= 3 << 2,
-+	NVME_CMBMSC_CRE		= 1 << 0,
-+	NVME_CMBMSC_CMSE	= 1 << 1,
- };
- 
- struct nvme_id_power_state {
--- 
-2.27.0
-
-
-
+Keeping in mind that Bryan has identified an issue with the above
+patch, which will get fixed in v2. So YMMV.
