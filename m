@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1545311025
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 19:42:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0D7F31101F
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 19:42:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229988AbhBEQ7Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 11:59:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45114 "EHLO
+        id S233588AbhBEQ6R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 11:58:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233699AbhBEQrb (ORCPT
+        with ESMTP id S233708AbhBEQru (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 11:47:31 -0500
-Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 154B1C061221
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 10:28:29 -0800 (PST)
-Received: by mail-qt1-x829.google.com with SMTP id r20so5693632qtm.3
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 10:28:29 -0800 (PST)
+        Fri, 5 Feb 2021 11:47:50 -0500
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7318BC061222
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 10:28:30 -0800 (PST)
+Received: by mail-qk1-x72f.google.com with SMTP id n15so7849141qkh.8
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 10:28:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=t4R65KE0u5JIY01fjm4wgVu+gu5q/lvBl+LPH4oeHXQ=;
-        b=2GoTFtEowqrMcE/2JXvhPu/VJNSggY8k2YXKw+oBnF8qVqSj6nFZJeXkZSmQvh8Chb
-         iKccOdyZsvW9v8jznhdC39v/OqbplLGxQ115ICBCsWhCh6GUT5AItWlGkMnzetbPVRL4
-         VlU94D2Rl6GaGRw4lAd6FsE25kmQ7ni7w3piepIbRGd4Jts5HY0bjVyLY1Mer5oD7HHr
-         tN3uEwpoJoGGutOMcv2OHRj9Yw2D8DxYUTpqeFsShqs6/jsKScTJxsrn6XlRoYE9R85e
-         35x/epOpQ3YVQmPBd9A3QMw5J03QfaPF6YSrE2LfOJkkOZzB+3UoHW/aBkLkQEMw6b20
-         9KSw==
+        bh=cyRE6cACCpenz5S22wUDNGiEebDEXlsVuxUU66sedEg=;
+        b=icEoG5fvED4gxDkodWySfEiJNdvHYTrXwyvRJR/NMlNgXGomJfFsLQ0X1Z7EzQefwS
+         rfW+aNcKIIETp0qQ7BgaL+bHxz9JDwG8D0DQ7OfBTQMxsMX1PKR5GEDlskiULC37oHzk
+         snxN/HmpVBXYD1Azekn8O3eQqv9R8NTKfz3zGLkjSAnFLNp0F5ChuS6QLvZs+NwzrOXa
+         MTt6ZuHZmnFc/5tqEtOoAJV4yDeMqaNNC3TDVMuNTyayv8+BojubGAjU9FECgFSvq0Rv
+         itLqqfmn0+w1v9I4LLhobur8A2NlT6lqld3Lz3oem56U7oDrlQVEEyGhxQWCkJGnDPAB
+         gMwQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=t4R65KE0u5JIY01fjm4wgVu+gu5q/lvBl+LPH4oeHXQ=;
-        b=lbNuEiZ5BC+lV1FhPdYindbyG1KECkZYmvqQP+Ik+P9DVDmA53F8Ir6Dizd+HJZL/J
-         Ddx3hdm9XY3vDfrIOuzBSd8rqRhgAT4CTQRLfWoYpEq/EsNJhK07qymIxD522F8jZzEx
-         QMW8Ot23eWE26W5pSn4/fiHcvqQoacmIrFP5NHCpyyPmqreyP+QOiehhcWHjz3lR9RZK
-         gdUeNZnCPWVzCc5l+8hBS3CgazECYjwsxIcxbu1SRZFyc9UcTYUP1h7ioeqm2JnnBgoJ
-         bcSZZRg8ylecUuEVrAhKoG+/6I/AHBZocMoPqT7aJUlR366iYGS1RK6m7kHbo+dzUTbO
-         jZXg==
-X-Gm-Message-State: AOAM533TukD2JL8wo7Kpcos46mU9kw1HnIc2EAs8yWn17Cp7DOOPEZ8S
-        a83Q7Ns9mr2BIe5plKeH9w2gAA==
-X-Google-Smtp-Source: ABdhPJxskLL12QuPeM80alts2Ieohd4DWn8gwtbIQhntDTTUcKmLwiiV5MLgVvq2UCooCL7jTMQRbg==
-X-Received: by 2002:aed:2090:: with SMTP id 16mr5283187qtb.265.1612549708373;
-        Fri, 05 Feb 2021 10:28:28 -0800 (PST)
+        bh=cyRE6cACCpenz5S22wUDNGiEebDEXlsVuxUU66sedEg=;
+        b=G6xp58m/pZNd7gsn3yQ+s7POmfYxESKRaP95kjxFgiysZRqwR/ddWJMF4aoPwpPwL5
+         Cce6aZit2pW4RKEntxIsSjbfzXWUt4wFP5e9AOa83HtsSZlnUVh1qHYo7zQr+OTb5KKe
+         Iljdk+rh56u6WIXbffTUbrgHxmVpfDYHZiN8hpYn/oHRjrgnU4XEkq2jLPvA9PC0QhM2
+         /MjKtLimtSC262dsJT4lnIUvDPB5XMao59kghTq3aSGnpL/5w/o3lUP6Bd/fO1KGT0NI
+         GCEYIZpBDuShxafu1hK44BZgH2RTQxiy1ISI+WAu5DTqgJ7+Gyz2xWOKmM5daY4OlK2M
+         vEog==
+X-Gm-Message-State: AOAM531fQgAz4W7PUghBgMVJJbc+qGSlxqJgj7O6kvegIcJTMlDVt1Az
+        Ltd5LKr9zD4gZJE7RHHYt84PMLuc27fSLg==
+X-Google-Smtp-Source: ABdhPJwxx/7nrxQH2xMQl9OF2NmblRhnJXqu1V7GG+uDZJC69P0ViHX8NU//3iSmLG2aZEYjiC0NyA==
+X-Received: by 2002:a05:620a:2226:: with SMTP id n6mr5435497qkh.193.1612549709755;
+        Fri, 05 Feb 2021 10:28:29 -0800 (PST)
 Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
-        by smtp.gmail.com with ESMTPSA id h5sm9029066qti.22.2021.02.05.10.28.27
+        by smtp.gmail.com with ESMTPSA id 2sm9983861qkf.97.2021.02.05.10.28.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Feb 2021 10:28:27 -0800 (PST)
+        Fri, 05 Feb 2021 10:28:29 -0800 (PST)
 From:   Johannes Weiner <hannes@cmpxchg.org>
 To:     Andrew Morton <akpm@linux-foundation.org>,
         Tejun Heo <tj@kernel.org>
@@ -55,9 +55,9 @@ Cc:     Michal Hocko <mhocko@suse.com>, Roman Gushchin <guro@fb.com>,
         Shakeel Butt <shakeelb@google.com>, linux-mm@kvack.org,
         cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
         kernel-team@fb.com
-Subject: [PATCH 2/8] mm: memcontrol: kill mem_cgroup_nodeinfo()
-Date:   Fri,  5 Feb 2021 13:28:00 -0500
-Message-Id: <20210205182806.17220-3-hannes@cmpxchg.org>
+Subject: [PATCH 3/8] mm: memcontrol: privatize memcg_page_state query functions
+Date:   Fri,  5 Feb 2021 13:28:01 -0500
+Message-Id: <20210205182806.17220-4-hannes@cmpxchg.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210205182806.17220-1-hannes@cmpxchg.org>
 References: <20210205182806.17220-1-hannes@cmpxchg.org>
@@ -67,136 +67,123 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-No need to encapsulate a simple struct member access.
+There are no users outside of the memory controller itself. The rest
+of the kernel cares either about node or lruvec stats.
 
 Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
 Reviewed-by: Shakeel Butt <shakeelb@google.com>
 Reviewed-by: Roman Gushchin <guro@fb.com>
 Acked-by: Michal Hocko <mhocko@suse.com>
 ---
- include/linux/memcontrol.h |  8 +-------
- mm/memcontrol.c            | 21 +++++++++++----------
- 2 files changed, 12 insertions(+), 17 deletions(-)
+ include/linux/memcontrol.h | 44 --------------------------------------
+ mm/memcontrol.c            | 32 +++++++++++++++++++++++++++
+ 2 files changed, 32 insertions(+), 44 deletions(-)
 
 diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index 7a38a1517a05..c7f387a6233e 100644
+index c7f387a6233e..20ecdfae3289 100644
 --- a/include/linux/memcontrol.h
 +++ b/include/linux/memcontrol.h
-@@ -602,12 +602,6 @@ void mem_cgroup_uncharge_list(struct list_head *page_list);
+@@ -867,39 +867,6 @@ struct mem_cgroup *lock_page_memcg(struct page *page);
+ void __unlock_page_memcg(struct mem_cgroup *memcg);
+ void unlock_page_memcg(struct page *page);
  
- void mem_cgroup_migrate(struct page *oldpage, struct page *newpage);
- 
--static struct mem_cgroup_per_node *
--mem_cgroup_nodeinfo(struct mem_cgroup *memcg, int nid)
+-/*
+- * idx can be of type enum memcg_stat_item or node_stat_item.
+- * Keep in sync with memcg_exact_page_state().
+- */
+-static inline unsigned long memcg_page_state(struct mem_cgroup *memcg, int idx)
 -{
--	return memcg->nodeinfo[nid];
+-	long x = atomic_long_read(&memcg->vmstats[idx]);
+-#ifdef CONFIG_SMP
+-	if (x < 0)
+-		x = 0;
+-#endif
+-	return x;
 -}
 -
- /**
-  * mem_cgroup_lruvec - get the lru list vector for a memcg & node
-  * @memcg: memcg of the wanted lruvec
-@@ -631,7 +625,7 @@ static inline struct lruvec *mem_cgroup_lruvec(struct mem_cgroup *memcg,
- 	if (!memcg)
- 		memcg = root_mem_cgroup;
+-/*
+- * idx can be of type enum memcg_stat_item or node_stat_item.
+- * Keep in sync with memcg_exact_page_state().
+- */
+-static inline unsigned long memcg_page_state_local(struct mem_cgroup *memcg,
+-						   int idx)
+-{
+-	long x = 0;
+-	int cpu;
+-
+-	for_each_possible_cpu(cpu)
+-		x += per_cpu(memcg->vmstats_local->stat[idx], cpu);
+-#ifdef CONFIG_SMP
+-	if (x < 0)
+-		x = 0;
+-#endif
+-	return x;
+-}
+-
+ void __mod_memcg_state(struct mem_cgroup *memcg, int idx, int val);
  
--	mz = mem_cgroup_nodeinfo(memcg, pgdat->node_id);
-+	mz = memcg->nodeinfo[pgdat->node_id];
- 	lruvec = &mz->lruvec;
- out:
- 	/*
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 8120d565dd79..7e05a4ebf80f 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -414,13 +414,14 @@ static int memcg_expand_one_shrinker_map(struct mem_cgroup *memcg,
- 					 int size, int old_size)
+ /* idx can be of type enum memcg_stat_item or node_stat_item */
+@@ -1337,17 +1304,6 @@ static inline void mem_cgroup_print_oom_group(struct mem_cgroup *memcg)
  {
- 	struct memcg_shrinker_map *new, *old;
-+	struct mem_cgroup_per_node *pn;
- 	int nid;
- 
- 	lockdep_assert_held(&memcg_shrinker_map_mutex);
- 
- 	for_each_node(nid) {
--		old = rcu_dereference_protected(
--			mem_cgroup_nodeinfo(memcg, nid)->shrinker_map, true);
-+		pn = memcg->nodeinfo[nid];
-+		old = rcu_dereference_protected(pn->shrinker_map, true);
- 		/* Not yet online memcg */
- 		if (!old)
- 			return 0;
-@@ -433,7 +434,7 @@ static int memcg_expand_one_shrinker_map(struct mem_cgroup *memcg,
- 		memset(new->map, (int)0xff, old_size);
- 		memset((void *)new->map + old_size, 0, size - old_size);
- 
--		rcu_assign_pointer(memcg->nodeinfo[nid]->shrinker_map, new);
-+		rcu_assign_pointer(pn->shrinker_map, new);
- 		call_rcu(&old->rcu, memcg_free_shrinker_map_rcu);
- 	}
- 
-@@ -450,7 +451,7 @@ static void memcg_free_shrinker_maps(struct mem_cgroup *memcg)
- 		return;
- 
- 	for_each_node(nid) {
--		pn = mem_cgroup_nodeinfo(memcg, nid);
-+		pn = memcg->nodeinfo[nid];
- 		map = rcu_dereference_protected(pn->shrinker_map, true);
- 		kvfree(map);
- 		rcu_assign_pointer(pn->shrinker_map, NULL);
-@@ -713,7 +714,7 @@ static void mem_cgroup_remove_from_trees(struct mem_cgroup *memcg)
- 	int nid;
- 
- 	for_each_node(nid) {
--		mz = mem_cgroup_nodeinfo(memcg, nid);
-+		mz = memcg->nodeinfo[nid];
- 		mctz = soft_limit_tree_node(nid);
- 		if (mctz)
- 			mem_cgroup_remove_exceeded(mz, mctz);
-@@ -796,7 +797,7 @@ parent_nodeinfo(struct mem_cgroup_per_node *pn, int nid)
- 	parent = parent_mem_cgroup(pn->memcg);
- 	if (!parent)
- 		return NULL;
--	return mem_cgroup_nodeinfo(parent, nid);
-+	return parent->nodeinfo[nid];
  }
  
- void __mod_memcg_lruvec_state(struct lruvec *lruvec, enum node_stat_item idx,
-@@ -1163,7 +1164,7 @@ struct mem_cgroup *mem_cgroup_iter(struct mem_cgroup *root,
- 	if (reclaim) {
- 		struct mem_cgroup_per_node *mz;
+-static inline unsigned long memcg_page_state(struct mem_cgroup *memcg, int idx)
+-{
+-	return 0;
+-}
+-
+-static inline unsigned long memcg_page_state_local(struct mem_cgroup *memcg,
+-						   int idx)
+-{
+-	return 0;
+-}
+-
+ static inline void __mod_memcg_state(struct mem_cgroup *memcg,
+ 				     int idx,
+ 				     int nr)
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 7e05a4ebf80f..2f97cb4cef6d 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -789,6 +789,38 @@ void __mod_memcg_state(struct mem_cgroup *memcg, int idx, int val)
+ 	__this_cpu_write(memcg->vmstats_percpu->stat[idx], x);
+ }
  
--		mz = mem_cgroup_nodeinfo(root, reclaim->pgdat->node_id);
-+		mz = root->nodeinfo[reclaim->pgdat->node_id];
- 		iter = &mz->iter;
- 
- 		if (prev && reclaim->generation != iter->generation)
-@@ -1265,7 +1266,7 @@ static void __invalidate_reclaim_iterators(struct mem_cgroup *from,
- 	int nid;
- 
- 	for_each_node(nid) {
--		mz = mem_cgroup_nodeinfo(from, nid);
-+		mz = from->nodeinfo[nid];
- 		iter = &mz->iter;
- 		cmpxchg(&iter->position, dead_memcg, NULL);
- 	}
-@@ -2438,7 +2439,7 @@ static int memcg_hotplug_cpu_dead(unsigned int cpu)
- 				struct mem_cgroup_per_node *pn;
- 				long x;
- 
--				pn = mem_cgroup_nodeinfo(memcg, nid);
-+				pn = memcg->nodeinfo[nid];
- 				lstatc = per_cpu_ptr(pn->lruvec_stat_cpu, cpu);
- 
- 				x = lstatc->count[i];
-@@ -4145,7 +4146,7 @@ static int memcg_stat_show(struct seq_file *m, void *v)
- 		unsigned long file_cost = 0;
- 
- 		for_each_online_pgdat(pgdat) {
--			mz = mem_cgroup_nodeinfo(memcg, pgdat->node_id);
-+			mz = memcg->nodeinfo[pgdat->node_id];
- 
- 			anon_cost += mz->lruvec.anon_cost;
- 			file_cost += mz->lruvec.file_cost;
++/*
++ * idx can be of type enum memcg_stat_item or node_stat_item.
++ * Keep in sync with memcg_exact_page_state().
++ */
++static unsigned long memcg_page_state(struct mem_cgroup *memcg, int idx)
++{
++	long x = atomic_long_read(&memcg->vmstats[idx]);
++#ifdef CONFIG_SMP
++	if (x < 0)
++		x = 0;
++#endif
++	return x;
++}
++
++/*
++ * idx can be of type enum memcg_stat_item or node_stat_item.
++ * Keep in sync with memcg_exact_page_state().
++ */
++static unsigned long memcg_page_state_local(struct mem_cgroup *memcg, int idx)
++{
++	long x = 0;
++	int cpu;
++
++	for_each_possible_cpu(cpu)
++		x += per_cpu(memcg->vmstats_local->stat[idx], cpu);
++#ifdef CONFIG_SMP
++	if (x < 0)
++		x = 0;
++#endif
++	return x;
++}
++
+ static struct mem_cgroup_per_node *
+ parent_nodeinfo(struct mem_cgroup_per_node *pn, int nid)
+ {
 -- 
 2.30.0
 
