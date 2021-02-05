@@ -2,72 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C118B31041E
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 05:39:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35831310425
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 05:43:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230087AbhBEEir (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 23:38:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39378 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229586AbhBEEip (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 23:38:45 -0500
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F85AC0613D6;
-        Thu,  4 Feb 2021 20:38:05 -0800 (PST)
-Received: by mail-ot1-x32e.google.com with SMTP id k25so3617055otb.4;
-        Thu, 04 Feb 2021 20:38:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=gXJkzkVbLeHT96SiJVJ5L6nwS8dlabVVFuYGhFlSHBI=;
-        b=DB3QCxj44EwrtjXYUT8hkpTiTWDzKIhr+3JjmRYVwVVXSL/EwCBfu/sZeBvXmxHJ1i
-         XF6AxvJ4JdY3n3p3BKHY3Yd8OwKtgYAfzjKPpr58AcOaPByUVC/SDMtP8ul3y1FoAGLJ
-         kcUjJw1lnrhRb/xvBw6Z0NPhYeYAJevkjJ+zhKAszu2fDxV/0B4VbkV8u+5n0PXHMLig
-         HYv9dRDywE4xSz5RT4tQNF3qurh4WaZpjPaXFzbtPtI6cu3ARzRqf0TN3X/jjKge3You
-         wNCxPKx50rg9Frqn0O/fXGNwmxzVlc8DtE05Gk9Hc4x0PlfMol403yrfILfCEEVMUAIP
-         X+hg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=gXJkzkVbLeHT96SiJVJ5L6nwS8dlabVVFuYGhFlSHBI=;
-        b=f9fOxunRzAo33Fl4yOOHJUjIIbezNwuUZW4+OD/oiqt+csH5RuICA6FSFWlVewh/O2
-         fyqYq0iF27fIU35uadQkX5uNV95FkIDHrsC4htJk2XPPHbpUfAb+LZmZ8uLV5omCQowO
-         lhGM88TG+EmgX5aMHdknILy0XqDFqDDY3Lkec1PL/0Gj6A5TBjfII3fHRpy1asFkE9Ug
-         8Wv0xtoB4tnEK2yuRNlrjIIb6i87Jf6+7wnUJmDzcU8bmLsmv/lwq+Gy3erjy3x51zTQ
-         N3XFpAfq2o/3Nx+xe7x8rIFLkmmTlLlmBtx/m7SOZstxIvzQUOgH1hANi3KEOfBDGhtK
-         d6ow==
-X-Gm-Message-State: AOAM531XvITa1Mmdx2UYs6lq2SxyL9DY9UOP1JBY1JnpkLCGZbonb505
-        QmdKxBwL3leVHP8Y7QRh1IQ=
-X-Google-Smtp-Source: ABdhPJw2EB4BjSAqQzyQsTa1F4sGj4q4K0o0I0NE7bu+EUzdik5rPnzJ6I9i5HRpeBNwfv2UGoeH7Q==
-X-Received: by 2002:a9d:5f12:: with SMTP id f18mr2106169oti.282.1612499883953;
-        Thu, 04 Feb 2021 20:38:03 -0800 (PST)
-Received: from Davids-MacBook-Pro.local ([8.48.134.50])
-        by smtp.googlemail.com with ESMTPSA id a76sm1620888oib.45.2021.02.04.20.38.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Feb 2021 20:38:02 -0800 (PST)
-Subject: Re: [PATCH iproute2-next V3] devlink: add support for port params
- get/set
-To:     Oleksandr Mazur <oleksandr.mazur@plvision.eu>,
-        netdev@vger.kernel.org
-Cc:     jiri@nvidia.com, davem@davemloft.net, linux-kernel@vger.kernel.org,
-        kuba@kernel.org, Parav Pandit <parav@nvidia.com>
-References: <20210202130445.5950-1-oleksandr.mazur@plvision.eu>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <b5a428af-80c9-0a27-e054-ddf1ff87b399@gmail.com>
-Date:   Thu, 4 Feb 2021 21:38:01 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
- Gecko/20100101 Thunderbird/78.7.0
+        id S230296AbhBEEmh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 23:42:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45420 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229927AbhBEEmc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 23:42:32 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E446064F92;
+        Fri,  5 Feb 2021 04:41:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612500111;
+        bh=Vg4ZFn3/Am2ZxSTiMr/3rsk4nYhXC1sB0da4Z9W77PY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bYrjrlQ18rs/fLsoio/8dokt39K7iUOWb6VLBhMw+oxHpQ8cvy9SCeiVDC1q07/uS
+         /TsiUb+HutPQy01jlPs+wyF/ba/CqipoSzjXSRyTkJDHzBJpyN1J7Tm3DA5B+TAFPK
+         U58xbqTFx9146+5d/Iie9OXeqI64Lf5xVg7DFVEAOEev0VYd4RT7zbuEY/Ggbr6edN
+         At/WrP3IjzJ7STgyX+io0hjbppHsTvpYku9OMQrsTUu/f70DCaJRPZUGkVYVuLu2rn
+         1oao+ZW0Oj/cdXzdqeXmB51lAee67O2p9Jg8aa2pLuMPTBXT4GIQklTVPke1jvRoDm
+         c5X2IsMjaE5tg==
+Date:   Fri, 5 Feb 2021 10:11:47 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Jack Pham <jackp@codeaurora.org>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/6] arm64: dts: qcom: sm8350: add USB and PHY device
+ nodes
+Message-ID: <20210205044147.GE2656@vkoul-mobl.Dlink>
+References: <20210204170907.63545-1-vkoul@kernel.org>
+ <20210204170907.63545-3-vkoul@kernel.org>
+ <20210204180552.GA25531@jackp-linux.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <20210202130445.5950-1-oleksandr.mazur@plvision.eu>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210204180552.GA25531@jackp-linux.qualcomm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jiri/Parav: does this look ok to you?
+Hello Jack,
+
+On 04-02-21, 10:05, Jack Pham wrote:
+> On Thu, Feb 04, 2021 at 10:39:03PM +0530, Vinod Koul wrote:
+> > From: Jack Pham <jackp@codeaurora.org>
+
+> > +
+> > +			resets = <&gcc 20>;
+> 
+> Shouldn't this (and all the other gcc phandles below) use the
+> dt-bindings macros from here?
+> https://patchwork.kernel.org/project/linux-arm-msm/patch/20210118044321.2571775-5-vkoul@kernel.org/
+
+Ideally yes but it would cause build failure on qcom tree and the header
+is not available here. I have a patch [1] to convert all numbers to enum
+values which would be sent once header is in qcom tree (after next merge
+window)..
+
+This way we could get SM8350 booting to shell with basic things on next
+rc1 rather than wait for 2 cycles.
+
+Thanks
+-- 
+~Vinod
