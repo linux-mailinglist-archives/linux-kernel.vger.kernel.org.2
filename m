@@ -2,252 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95F113116DD
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 00:20:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 81F5E311688
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 00:19:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231259AbhBEXSR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 18:18:17 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:36122 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232568AbhBEO2A (ORCPT
+        id S231899AbhBEXDt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 18:03:49 -0500
+Received: from mail-il1-f197.google.com ([209.85.166.197]:54525 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232676AbhBEOgO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 09:28:00 -0500
-Received: from mail-lj1-f199.google.com ([209.85.208.199])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <kai.heng.feng@canonical.com>)
-        id 1l82rh-0001U0-Ky
-        for linux-kernel@vger.kernel.org; Fri, 05 Feb 2021 15:17:45 +0000
-Received: by mail-lj1-f199.google.com with SMTP id k20so5666030ljk.19
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 07:17:45 -0800 (PST)
+        Fri, 5 Feb 2021 09:36:14 -0500
+Received: by mail-il1-f197.google.com with SMTP id s4so6664919ilt.21
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 08:14:44 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dcCnqRmAjchBIWgopIMyFLGi9ScvcHWbPb+SJE+igpM=;
-        b=cmfjWj6oRL6/IrA9pFkBuCQoDwTmZLgh1++dwju54uApBWycZEcZz3ywlvLExv2URw
-         Glvk68eo1CorLxUtdMFT3K+2Qqy1YGJVr4cegX/Ty8x3UOiwdDbXhQ/E7nQWJUSHfQlM
-         ye5UxfmnJlcU93O+nEbgpu/9RvD5OCnC+rG5fcoUAwV+2wfhoLUmx2S9bdnBzWhrI8zy
-         UnQu6i47KdRxLo1mlxvK5K+W00rvwLL0YYV8ooJLDqChbWX3mndl8HwRH9hKdGeHPIHv
-         DlJQdeUDYN1MhANAXRV5dVfijZdBhgPAds4yuDhkqCt4H0O3uGz/mwP2b3ugx2Ti2lqQ
-         TiQw==
-X-Gm-Message-State: AOAM532ac79LNYAGG70QvwzF85ieKJYBd9t7wXW66jvM86FKDuhbrI0u
-        td1LoykD4iZPHcbU8t8K2GHY9sNvI5rR2Zh+YMdh+Xc617cHf7JSdAYtADYMgpLxDi0RgzojQbI
-        TwERBbk0SkwZ/HckecMD7VgP1zrNjOnCIHtPgJg9V7laJYYYHU+3nfJFSDw==
-X-Received: by 2002:a05:6512:b1b:: with SMTP id w27mr2804654lfu.10.1612538264925;
-        Fri, 05 Feb 2021 07:17:44 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJz5QyAS3LZdIX9zgOlKqJK+3Kk/KaMBVgPAN6AecD1AaQ3iNETAz2J330gd48lhk7j86RlOtJgcLN1IWOOKMQw=
-X-Received: by 2002:a05:6512:b1b:: with SMTP id w27mr2804637lfu.10.1612538264573;
- Fri, 05 Feb 2021 07:17:44 -0800 (PST)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=QLMdobwI21unXJ8AaGTczEYpBIwx778vxux7MxwfKw0=;
+        b=e+heyHDs2aQVry7e2VF+dzooNiL7dz+odDKWe+lxVF9jbLUb4Dnp2r4h6J+wL28GS+
+         IwPKh4ZTpRIDfhv7mXR4vmq6O4XPkG7dh6Dy+Rs/zRbdROUQ4iq3TRvBlaqBnZLpqgB3
+         kEeMhU7rH7Jz0LORDbcwT+EWRa10NH64i3bbIjwp8hzWt1kohHkFY2YhnsMrfICK5Plj
+         je6p1Ush6tOjirQs/9PM6lsEJp6J/6rB7WW3m/ra6U5jkH1wM0McKC9Lb+dR87x2CU+g
+         JDV5V7Kw8rHIOoOIBagrbDd69Bu/rx2NOdK574lkNtgQA5FHZ+B+PQIoE+eMEIRVpjly
+         Gk0w==
+X-Gm-Message-State: AOAM533iRCJGhPLIGGNeSEK0G5CIorhbIG+XS8xMcGf9JrUTK6MKFGbG
+        OByRRYbN3LZQrFEDkmB0kGYPq+8LmWE2KedUhuaRuxmMADi1
+X-Google-Smtp-Source: ABdhPJyTtj4JqxehYsbh8pCYlMZ6/g0siakHPFrYyRm/sexT0ghMwTNzvGcpEC0Nkz3MBf7DcpcR+YRs+wRZI/JNemcN6W8vEBul
 MIME-Version: 1.0
-References: <CAAd53p7FfRCgfC5dGL3HyP+rbVtR2VCfMPYBBvJ=-DFCWFeVPA@mail.gmail.com>
- <20210204232758.GA125392@bjorn-Precision-5520>
-In-Reply-To: <20210204232758.GA125392@bjorn-Precision-5520>
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-Date:   Fri, 5 Feb 2021 23:17:32 +0800
-Message-ID: <CAAd53p6VN0ejKHcTRgj8mZ_iApR=KogpVZ-HkvdoZbJ=Yue98g@mail.gmail.com>
-Subject: Re: [PATCH 1/2] PCI/AER: Disable AER interrupt during suspend
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Russell Currey <ruscur@russell.cc>,
-        "Oliver O'Halloran" <oohall@gmail.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Lalithambika Krishnakumar <lalithambika.krishnakumar@intel.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Joerg Roedel <jroedel@suse.de>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        "open list:PCI ENHANCED ERROR HANDLING (EEH) FOR POWERPC" 
-        <linuxppc-dev@lists.ozlabs.org>,
-        "open list:PCI SUBSYSTEM" <linux-pci@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
+X-Received: by 2002:a05:6e02:1d88:: with SMTP id h8mr3911422ila.43.1612538416459;
+ Fri, 05 Feb 2021 07:20:16 -0800 (PST)
+Date:   Fri, 05 Feb 2021 07:20:16 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000007ff56205ba985b60@google.com>
+Subject: general protection fault in vmx_vcpu_run (2)
+From:   syzbot <syzbot+42a71c84ef04577f1aef@syzkaller.appspotmail.com>
+To:     bp@alien8.de, hpa@zytor.com, jmattson@google.com, joro@8bytes.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mingo@redhat.com, pbonzini@redhat.com, seanjc@google.com,
+        syzkaller-bugs@googlegroups.com, tglx@linutronix.de,
+        vkuznets@redhat.com, wanpengli@tencent.com, x86@kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 5, 2021 at 7:28 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
->
-> [+cc Alex]
->
-> On Thu, Jan 28, 2021 at 12:09:37PM +0800, Kai-Heng Feng wrote:
-> > On Thu, Jan 28, 2021 at 4:51 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
-> > > On Thu, Jan 28, 2021 at 01:31:00AM +0800, Kai-Heng Feng wrote:
-> > > > Commit 50310600ebda ("iommu/vt-d: Enable PCI ACS for platform opt in
-> > > > hint") enables ACS, and some platforms lose its NVMe after resume from
-> > > > firmware:
-> > > > [   50.947816] pcieport 0000:00:1b.0: DPC: containment event, status:0x1f01 source:0x0000
-> > > > [   50.947817] pcieport 0000:00:1b.0: DPC: unmasked uncorrectable error detected
-> > > > [   50.947829] pcieport 0000:00:1b.0: PCIe Bus Error: severity=Uncorrected (Non-Fatal), type=Transaction Layer, (Receiver ID)
-> > > > [   50.947830] pcieport 0000:00:1b.0:   device [8086:06ac] error status/mask=00200000/00010000
-> > > > [   50.947831] pcieport 0000:00:1b.0:    [21] ACSViol                (First)
-> > > > [   50.947841] pcieport 0000:00:1b.0: AER: broadcast error_detected message
-> > > > [   50.947843] nvme nvme0: frozen state error detected, reset controller
-> > > >
-> > > > It happens right after ACS gets enabled during resume.
-> > > >
-> > > > To prevent that from happening, disable AER interrupt and enable it on
-> > > > system suspend and resume, respectively.
-> > >
-> > > Lots of questions here.  Maybe this is what we'll end up doing, but I
-> > > am curious about why the error is reported in the first place.
-> > >
-> > > Is this a consequence of the link going down and back up?
-> >
-> > Could be. From the observations, it only happens when firmware suspend
-> > (S3) is used.
-> > Maybe it happens when it's gets powered up, but I don't have equipment
-> > to debug at hardware level.
-> >
-> > If we use non-firmware suspend method, enabling ACS after resume won't
-> > trip AER and DPC.
-> >
-> > > Is it consequence of the device doing a DMA when it shouldn't?
-> >
-> > If it's doing DMA while suspending, the same error should also happen
-> > after NVMe is suspended and before PCIe port suspending.
-> > Furthermore, if non-firmware suspend method is used, there's so such
-> > issue, so less likely to be any DMA operation.
-> >
-> > > Are we doing something in the wrong order during suspend?  Or maybe
-> > > resume, since I assume the error is reported during resume?
-> >
-> > Yes the error is reported during resume. The suspend/resume order
-> > seems fine as non-firmware suspend doesn't have this issue.
->
-> I really feel like we need a better understanding of what's going on
-> here.  Disabling the AER interrupt is like closing our eyes and
-> pretending that because we don't see it, it didn't happen.
->
-> An ACS error is triggered by a DMA, right?  I'm assuming an MMIO
-> access from the CPU wouldn't trigger this error.  And it sounds like
-> the error is triggered before we even start running the driver after
-> resume.
->
-> If we're powering up an NVMe device from D3cold and it DMAs before the
-> driver touches it, something would be seriously broken.  I doubt
-> that's what's happening.  Maybe a device could resume some previously
-> programmed DMA after powering up from D3hot.
+Hello,
 
-I am not that familiar with PCIe ACS/AER/DPC, so I can't really answer
-questions you raised.
-PCIe spec doesn't say the suspend/resume order is also not helping here.
+syzbot found the following issue on:
 
-However, I really think it's a system firmware issue.
-I've seen some suspend-to-idle platforms with NVMe can reach D3cold,
-those are unaffected.
+HEAD commit:    aa2b8820 Add linux-next specific files for 20210205
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=13d27b54d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=15c41e44a64aa1a5
+dashboard link: https://syzkaller.appspot.com/bug?extid=42a71c84ef04577f1aef
 
->
-> Or maybe the error occurred on suspend, like if the device wasn't
-> quiesced or something, but we didn't notice it until resume?  The
-> AER error status bits are RW1CS, which means they can be preserved
-> across hot/warm/cold resets.
->
-> Can you instrument the code to see whether the AER error status bit is
-> set before enabling ACS?  I'm not sure that merely enabling ACS (I
-> assume you mean pci_std_enable_acs(), where we write PCI_ACS_CTRL)
-> should cause an interrupt for a previously-logged error.  I suspect
-> that could happen when enabling *AER*, but I wouldn't think it would
-> happen when enabling *ACS*.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-Diff to print AER status:
-https://bugzilla.kernel.org/show_bug.cgi?id=209149#c11
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+42a71c84ef04577f1aef@syzkaller.appspotmail.com
 
-And dmesg:
-https://bugzilla.kernel.org/show_bug.cgi?id=209149#c12
+general protection fault, probably for non-canonical address 0xdffffc0000001e26: 0000 [#1] PREEMPT SMP KASAN
+KASAN: probably user-memory-access in range [0x000000000000f130-0x000000000000f137]
+CPU: 0 PID: 18290 Comm: syz-executor.0 Not tainted 5.11.0-rc6-next-20210205-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:atomic_switch_perf_msrs arch/x86/kvm/vmx/vmx.c:6527 [inline]
+RIP: 0010:vmx_vcpu_run+0x538/0x2740 arch/x86/kvm/vmx/vmx.c:6698
+Code: 8a 55 00 39 eb 0f 8d fd 00 00 00 e8 42 85 55 00 48 8b 0c 24 48 63 c3 48 8d 04 40 48 8d 2c c1 48 8d 7d 08 48 89 f8 48 c1 e8 03 <42> 80 3c 38 00 0f 85 05 1d 00 00 48 8d 7d 10 4c 8b 6d 08 48 89 f8
+RSP: 0018:ffffc9000238fb00 EFLAGS: 00010003
+RAX: 0000000000001e26 RBX: 0000000000000000 RCX: 000000000000f12e
+RDX: 0000000000040000 RSI: ffffffff811d679e RDI: 000000000000f136
+RBP: 000000000000f12e R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffff811d675e R11: 0000000000000000 R12: ffff88806d8ba4d0
+R13: ffff88806d8ba520 R14: ffff88806d8b8000 R15: dffffc0000000000
+FS:  00007f1a30eaf700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f1a30ece6b8 CR3: 000000001c387000 CR4: 00000000001526f0
+Call Trace:
+ vcpu_enter_guest+0x103d/0x3f90 arch/x86/kvm/x86.c:9015
+ vcpu_run arch/x86/kvm/x86.c:9155 [inline]
+ kvm_arch_vcpu_ioctl_run+0x440/0x1980 arch/x86/kvm/x86.c:9382
+ kvm_vcpu_ioctl+0x467/0xd90 arch/x86/kvm/../../../virt/kvm/kvm_main.c:3283
+ vfs_ioctl fs/ioctl.c:48 [inline]
+ __do_sys_ioctl fs/ioctl.c:753 [inline]
+ __se_sys_ioctl fs/ioctl.c:739 [inline]
+ __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:739
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x465b09
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f1a30eaf188 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 000000000056c008 RCX: 0000000000465b09
+RDX: 0000000000000000 RSI: 000000000000ae80 RDI: 0000000000000007
+RBP: 00000000004b069f R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056c008
+R13: 00007ffde3d7a22f R14: 00007f1a30eaf300 R15: 0000000000022000
+Modules linked in:
+---[ end trace 7085899e9678fd16 ]---
+RIP: 0010:atomic_switch_perf_msrs arch/x86/kvm/vmx/vmx.c:6527 [inline]
+RIP: 0010:vmx_vcpu_run+0x538/0x2740 arch/x86/kvm/vmx/vmx.c:6698
+Code: 8a 55 00 39 eb 0f 8d fd 00 00 00 e8 42 85 55 00 48 8b 0c 24 48 63 c3 48 8d 04 40 48 8d 2c c1 48 8d 7d 08 48 89 f8 48 c1 e8 03 <42> 80 3c 38 00 0f 85 05 1d 00 00 48 8d 7d 10 4c 8b 6d 08 48 89 f8
+RSP: 0018:ffffc9000238fb00 EFLAGS: 00010003
+RAX: 0000000000001e26 RBX: 0000000000000000 RCX: 000000000000f12e
+RDX: 0000000000040000 RSI: ffffffff811d679e RDI: 000000000000f136
+RBP: 000000000000f12e R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffff811d675e R11: 0000000000000000 R12: ffff88806d8ba4d0
+R13: ffff88806d8ba520 R14: ffff88806d8b8000 R15: dffffc0000000000
+FS:  00007f1a30eaf700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f1a30ece6b8 CR3: 000000001c387000 CR4: 00000000001526f0
 
-Looks like the read before suspend and after resume are both fine.
 
->
-> Does this error happen on multiple machines from different vendors?
-> Wondering if it could be a BIOS issue, e.g., BIOS not cleaning up
-> after it did something to cause an error.
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-AFAIK, systems from both HP and Dell are affected.
-I was told that the reference platform from Intel is using
-suspend-to-idle, but vendors changed the sleep method to S3 to have
-lower power consumption to pass regulation.
-
-Kai-Heng
-
->
-> > > If we *do* take the error, why doesn't DPC recovery work?
-> >
-> > It works for the root port, but not for the NVMe drive:
-> > [   50.947816] pcieport 0000:00:1b.0: DPC: containment event,
-> > status:0x1f01 source:0x0000
-> > [   50.947817] pcieport 0000:00:1b.0: DPC: unmasked uncorrectable error detected
-> > [   50.947829] pcieport 0000:00:1b.0: PCIe Bus Error:
-> > severity=Uncorrected (Non-Fatal), type=Transaction Layer, (Receiver
-> > ID)
-> > [   50.947830] pcieport 0000:00:1b.0:   device [8086:06ac] error
-> > status/mask=00200000/00010000
-> > [   50.947831] pcieport 0000:00:1b.0:    [21] ACSViol                (First)
-> > [   50.947841] pcieport 0000:00:1b.0: AER: broadcast error_detected message
-> > [   50.947843] nvme nvme0: frozen state error detected, reset controller
-> > [   50.948400] ACPI: EC: event unblocked
-> > [   50.948432] xhci_hcd 0000:00:14.0: PME# disabled
-> > [   50.948444] xhci_hcd 0000:00:14.0: enabling bus mastering
-> > [   50.949056] pcieport 0000:00:1b.0: PME# disabled
-> > [   50.949068] pcieport 0000:00:1c.0: PME# disabled
-> > [   50.949416] e1000e 0000:00:1f.6: PME# disabled
-> > [   50.949463] e1000e 0000:00:1f.6: enabling bus mastering
-> > [   50.951606] sd 0:0:0:0: [sda] Starting disk
-> > [   50.951610] nvme 0000:01:00.0: can't change power state from D3hot
-> > to D0 (config space inaccessible)
-> > [   50.951730] nvme nvme0: Removing after probe failure status: -19
-> > [   50.952360] nvme nvme0: failed to set APST feature (-19)
-> > [   50.971136] snd_hda_intel 0000:00:1f.3: PME# disabled
-> > [   51.089330] pcieport 0000:00:1b.0: AER: broadcast resume message
-> > [   51.089345] pcieport 0000:00:1b.0: AER: device recovery successful
-> >
-> > But I think why recovery doesn't work for NVMe is for another discussion...
-> >
-> > Kai-Heng
-> >
-> > >
-> > > > Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=209149
-> > > > Fixes: 50310600ebda ("iommu/vt-d: Enable PCI ACS for platform opt in hint")
-> > > > Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-> > > > ---
-> > > >  drivers/pci/pcie/aer.c | 18 ++++++++++++++++++
-> > > >  1 file changed, 18 insertions(+)
-> > > >
-> > > > diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c
-> > > > index 77b0f2c45bc0..0e9a85530ae6 100644
-> > > > --- a/drivers/pci/pcie/aer.c
-> > > > +++ b/drivers/pci/pcie/aer.c
-> > > > @@ -1365,6 +1365,22 @@ static int aer_probe(struct pcie_device *dev)
-> > > >       return 0;
-> > > >  }
-> > > >
-> > > > +static int aer_suspend(struct pcie_device *dev)
-> > > > +{
-> > > > +     struct aer_rpc *rpc = get_service_data(dev);
-> > > > +
-> > > > +     aer_disable_rootport(rpc);
-> > > > +     return 0;
-> > > > +}
-> > > > +
-> > > > +static int aer_resume(struct pcie_device *dev)
-> > > > +{
-> > > > +     struct aer_rpc *rpc = get_service_data(dev);
-> > > > +
-> > > > +     aer_enable_rootport(rpc);
-> > > > +     return 0;
-> > > > +}
-> > > > +
-> > > >  /**
-> > > >   * aer_root_reset - reset Root Port hierarchy, RCEC, or RCiEP
-> > > >   * @dev: pointer to Root Port, RCEC, or RCiEP
-> > > > @@ -1437,6 +1453,8 @@ static struct pcie_port_service_driver aerdriver = {
-> > > >       .service        = PCIE_PORT_SERVICE_AER,
-> > > >
-> > > >       .probe          = aer_probe,
-> > > > +     .suspend        = aer_suspend,
-> > > > +     .resume         = aer_resume,
-> > > >       .remove         = aer_remove,
-> > > >  };
-> > > >
-> > > > --
-> > > > 2.29.2
-> > > >
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
