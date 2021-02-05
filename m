@@ -2,94 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB97A31036F
+	by mail.lfdr.de (Postfix) with ESMTP id 7A61531036E
 	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 04:19:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230027AbhBEDTu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 22:19:50 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54934 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229766AbhBEDTt (ORCPT
+        id S229978AbhBEDT1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 22:19:27 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:18130 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229772AbhBEDTY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 22:19:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612495102;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=8f5YNAREUXRNKxTFWHdq8ACl9JhrFD9o9V+DNNSV58o=;
-        b=gOwI6/K7Lzb82sSLrwkb9pGrZ44AFsDGhpL6CrhVS2isqYr1c6Slir/2J/yf65SGus3Mw+
-        5klcFXA5XOUL0zS5jT4pSx/XkQboxeSwyWyhIoXoUqdsH2oRKl538cPdfZ7440yzxnpXAm
-        6sNhAmjlE8YXM7sxPt7qvAPITYW5k7o=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-565-JOAVM-QBOKGtssQ-ddjj_Q-1; Thu, 04 Feb 2021 22:18:20 -0500
-X-MC-Unique: JOAVM-QBOKGtssQ-ddjj_Q-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7B0CC91271;
-        Fri,  5 Feb 2021 03:18:19 +0000 (UTC)
-Received: from [10.72.12.112] (ovpn-12-112.pek2.redhat.com [10.72.12.112])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 2AB4972F81;
-        Fri,  5 Feb 2021 03:18:08 +0000 (UTC)
-Subject: Re: [PATCH v3 03/13] vringh: reset kiov 'consumed' field in
- __vringh_iov()
-To:     Stefano Garzarella <sgarzare@redhat.com>,
-        virtualization@lists.linux-foundation.org
-Cc:     Xie Yongji <xieyongji@bytedance.com>, kvm@vger.kernel.org,
-        Laurent Vivier <lvivier@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Max Gurtovoy <mgurtovoy@nvidia.com>,
-        linux-kernel@vger.kernel.org, "Michael S. Tsirkin" <mst@redhat.com>
-References: <20210204172230.85853-1-sgarzare@redhat.com>
- <20210204172230.85853-4-sgarzare@redhat.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <1a8f925a-13ea-a04e-1130-690fb0886bcd@redhat.com>
-Date:   Fri, 5 Feb 2021 11:18:07 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 4 Feb 2021 22:19:24 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B601cb9130000>; Thu, 04 Feb 2021 19:18:43 -0800
+Received: from HQMAIL105.nvidia.com (172.20.187.12) by HQMAIL111.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 5 Feb
+ 2021 03:18:43 +0000
+Received: from sandstorm.attlocal.net (172.20.145.6) by mail.nvidia.com
+ (172.20.187.12) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
+ Transport; Fri, 5 Feb 2021 03:18:43 +0000
+From:   John Hubbard <jhubbard@nvidia.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+CC:     <linux-xfs@vger.kernel.org>,
+        Linux Next <linux-next@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        "Brian Foster" <bfoster@redhat.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        Allison Henderson <allison.henderson@oracle.com>
+Subject: [PATCH] xfs: fix unused variable build warning in xfs_log.c
+Date:   Thu, 4 Feb 2021 19:18:14 -0800
+Message-ID: <20210205031814.414649-1-jhubbard@nvidia.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-In-Reply-To: <20210204172230.85853-4-sgarzare@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+X-NVConfidentiality: public
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1612495123; bh=ASnYnjm4ba2tgEUkk1b0klQ5FfM48WwNnO1q6DJgM1c=;
+        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:MIME-Version:
+         X-NVConfidentiality:Content-Transfer-Encoding:Content-Type;
+        b=SL4/B2oMY4KpQU9uD3g6V1R6HO00UTizJybPXf7jx0BGfgUyiofPP8/aW+P0LZ4Lx
+         R/FqZ8FwdgYv7F8tu4lz139P63b9cqZqYPJJ7ht0YZf6ydJ8AmYxDZkQMeqiuOFETo
+         8BmwfeOJPxnRPWfLvzfDz3l86fEABAExGzenMMqnTo6oI0rSrqPjbAyd2OAUyJhE3F
+         +dh4Z8mtcbJeBOxdsIpbzH+o1xSXvryzCyZ8V/uUOWVaqxHXFy7ra0s0RxRO+LKkwN
+         cYqMmDJG8yuKrq6fmQDfleUgvC2MfSwerZiIH6fw+bpSvgAZ9Dtr2Ry2ZSyDpoNeLz
+         irz+1iu3ooFHg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Delete the unused "log" variable in xfs_log_cover().
 
-On 2021/2/5 上午1:22, Stefano Garzarella wrote:
-> __vringh_iov() overwrites the contents of riov and wiov, in fact it
-> resets the 'i' and 'used' fields, but also the 'consumed' field should
-> be reset to avoid an inconsistent state.
->
-> Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
-> ---
->   drivers/vhost/vringh.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
+Fixes: 303591a0a9473 ("xfs: cover the log during log quiesce")
+Cc: Brian Foster <bfoster@redhat.com>
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: Darrick J. Wong <djwong@kernel.org>
+Cc: Allison Henderson <allison.henderson@oracle.com>
+Signed-off-by: John Hubbard <jhubbard@nvidia.com>
+---
+Hi,
 
+I just ran into this on today's linux-next, so here you go!
 
-Acked-by: Jason Wang <jasowang@redhat.com>
+thanks,
+John Hubbard
+NVIDIA
 
+ fs/xfs/xfs_log.c | 1 -
+ 1 file changed, 1 deletion(-)
 
->
-> diff --git a/drivers/vhost/vringh.c b/drivers/vhost/vringh.c
-> index f68122705719..bee63d68201a 100644
-> --- a/drivers/vhost/vringh.c
-> +++ b/drivers/vhost/vringh.c
-> @@ -290,9 +290,9 @@ __vringh_iov(struct vringh *vrh, u16 i,
->   		return -EINVAL;
->   
->   	if (riov)
-> -		riov->i = riov->used = 0;
-> +		riov->i = riov->used = riov->consumed = 0;
->   	if (wiov)
-> -		wiov->i = wiov->used = 0;
-> +		wiov->i = wiov->used = wiov->consumed = 0;
->   
->   	for (;;) {
->   		void *addr;
+diff --git a/fs/xfs/xfs_log.c b/fs/xfs/xfs_log.c
+index 58699881c100..5a9cca3f7cbf 100644
+--- a/fs/xfs/xfs_log.c
++++ b/fs/xfs/xfs_log.c
+@@ -1108,7 +1108,6 @@ static int
+ xfs_log_cover(
+ 	struct xfs_mount	*mp)
+ {
+-	struct xlog		*log =3D mp->m_log;
+ 	int			error =3D 0;
+ 	bool			need_covered;
+=20
+
+base-commit: 0e2c50f40b7ffb73a039157f7c38495c6d99e86f
+--=20
+2.30.0
 
