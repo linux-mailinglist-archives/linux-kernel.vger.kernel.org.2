@@ -2,193 +2,346 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 927F73105E6
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 08:32:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DDD2B3105EB
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 08:34:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231561AbhBEHbk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 02:31:40 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:11682 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231394AbhBEHbU (ORCPT
+        id S231430AbhBEHdp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 02:33:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48428 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231269AbhBEHdj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 02:31:20 -0500
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DX6V65LCfzlH7G;
-        Fri,  5 Feb 2021 15:28:46 +0800 (CST)
-Received: from [10.174.179.241] (10.174.179.241) by
- DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
- 14.3.498.0; Fri, 5 Feb 2021 15:30:18 +0800
-Subject: Re: [PATCH v14 7/8] mm: hugetlb: gather discrete indexes of tail page
-To:     Muchun Song <songmuchun@bytedance.com>
-CC:     <duanxiongchun@bytedance.com>, <linux-doc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
-        <linux-fsdevel@vger.kernel.org>, <corbet@lwn.net>,
-        <mike.kravetz@oracle.com>, <tglx@linutronix.de>,
-        <mingo@redhat.com>, <bp@alien8.de>, <x86@kernel.org>,
-        <hpa@zytor.com>, <dave.hansen@linux.intel.com>, <luto@kernel.org>,
-        <peterz@infradead.org>, <viro@zeniv.linux.org.uk>,
-        <akpm@linux-foundation.org>, <paulmck@kernel.org>,
-        <mchehab+huawei@kernel.org>, <pawan.kumar.gupta@linux.intel.com>,
-        <rdunlap@infradead.org>, <oneukum@suse.com>,
-        <anshuman.khandual@arm.com>, <jroedel@suse.de>,
-        <almasrymina@google.com>, <rientjes@google.com>,
-        <willy@infradead.org>, <osalvador@suse.de>, <mhocko@suse.com>,
-        <song.bao.hua@hisilicon.com>, <david@redhat.com>,
-        <naoya.horiguchi@nec.com>
-References: <20210204035043.36609-1-songmuchun@bytedance.com>
- <20210204035043.36609-8-songmuchun@bytedance.com>
-From:   Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <1312358b-f065-4525-bbdf-25d011c72395@huawei.com>
-Date:   Fri, 5 Feb 2021 15:30:17 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Fri, 5 Feb 2021 02:33:39 -0500
+Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C978C061786;
+        Thu,  4 Feb 2021 23:32:59 -0800 (PST)
+Received: by mail-io1-xd29.google.com with SMTP id u20so6043401iot.9;
+        Thu, 04 Feb 2021 23:32:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=NZtkZTl2ownzOgEuKOxJfnob0pUywNPX3usqWZvbdCU=;
+        b=CBuYTaq3+2mJADNMa/CMVv+TF0GbtixoEbVWR8KgYRIZT/G/6FJX+1bWmmiqY7bWWQ
+         odVh5UbCYuFw7WVKNDYDwzZqCmzHoTJ0U7dQ1xWo9E1Ja3yDAPj5sBiuwcEUPNJCZeqN
+         BWlMqq8GrHmC2Dd54wDseATdu4q3HT3NuIeS5eR3DDoemMxHymeJajOO//1hB0ShRVIr
+         ZRHqagpDQC75QUItTAtdt3kCNewyY1OzBBjLQnwsqRHtHCohedrCOb2xgBxUt6tml1rJ
+         L/A5E7Q59rAoDNXjDpYYQnI90JwwUr15gDgcuGP/G8IVfPgrNRy9t2Cyscp3zBpUyJgf
+         CaAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NZtkZTl2ownzOgEuKOxJfnob0pUywNPX3usqWZvbdCU=;
+        b=ETwM4hjASRoRjZfChIXv0irTtGSF1pzLdNrkPq7eUxcBG+ltHDfgrS8xUnxOcHQkUt
+         Tp8WIG+vMWuQ9xaeGvXJLb+X6fcgyjwTSR6VjJlpmzrNwtABvvUgEoc7Nn40G/4bOLcn
+         4UNi9GpSw1JzlDuPmdn4YiWVBmTIp99ze6mg7pCokwt6TqJSRckVT6rMH+KJFUO3p7U4
+         H0j2ltAWJKEkn2URieDlt1088LitgrWCD1mKhj04B79Zk2+Ny4byQ8RrhZLPf1vrGyBA
+         787Dq4BbaTGFq43Zi5ON4zijRpN37bYgjgCZV2bcVBAe0dvuh9Fya73/xAL9DhB9gky5
+         wWew==
+X-Gm-Message-State: AOAM530eiGs6H7fq4rnxOZIjJlHSlGmdZuCi6BmbyD5QkevqBxzgRMXo
+        g5Aa3AXIvX7hmxqoWDjgtQ1xs5EWBYngsepG6gQ=
+X-Google-Smtp-Source: ABdhPJy0oHvqrBAsRMJ45knWC9kcmpHiWPOz46a4Mo2FuPMPLqQwhMSklXGim60WA+zYIxNibYAXcFAOX/ygM4hDhFU=
+X-Received: by 2002:a02:3b6c:: with SMTP id i44mr3574293jaf.91.1612510378891;
+ Thu, 04 Feb 2021 23:32:58 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210204035043.36609-8-songmuchun@bytedance.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.179.241]
-X-CFilter-Loop: Reflected
+References: <20210201145105.20459-1-alexandru.ardelean@analog.com>
+ <20210201145105.20459-5-alexandru.ardelean@analog.com> <20210204173214.00000fb9@Huawei.com>
+In-Reply-To: <20210204173214.00000fb9@Huawei.com>
+From:   Alexandru Ardelean <ardeleanalex@gmail.com>
+Date:   Fri, 5 Feb 2021 09:32:47 +0200
+Message-ID: <CA+U=DsqJ3qgVva_CNDyrwWUbCVjvqp=NmOYALVF_OmBxc6o9iQ@mail.gmail.com>
+Subject: Re: [PATCH v3 04/11] iio: core: rework iio device group creation
+To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        "Hennerich, Michael" <Michael.Hennerich@analog.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        =?UTF-8?B?TnVubyBTw6E=?= <nuno.sa@analog.com>,
+        "Bogdan, Dragos" <dragos.bogdan@analog.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/2/4 11:50, Muchun Song wrote:
-> For HugeTLB page, there are more metadata to save in the struct page.
-> But the head struct page cannot meet our needs, so we have to abuse
-> other tail struct page to store the metadata. In order to avoid
-> conflicts caused by subsequent use of more tail struct pages, we can
-> gather these discrete indexes of tail struct page. In this case, it
-> will be easier to add a new tail page index later.
-> 
-> There are only (RESERVE_VMEMMAP_SIZE / sizeof(struct page)) struct
-> page structs that can be used when CONFIG_HUGETLB_PAGE_FREE_VMEMMAP,
-> so add a BUILD_BUG_ON to catch invalid usage of the tail struct page.
-> 
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> Reviewed-by: Oscar Salvador <osalvador@suse.de>
+On Thu, Feb 4, 2021 at 7:39 PM Jonathan Cameron
+<Jonathan.Cameron@huawei.com> wrote:
+>
+> On Mon, 1 Feb 2021 16:50:58 +0200
+> Alexandru Ardelean <alexandru.ardelean@analog.com> wrote:
+>
+> > Up until now, the device groups that an IIO device had were limited to 6.
+> > Two of these groups would account for buffer attributes (the buffer/ and
+> > scan_elements/ directories).
+> >
+> > Since we want to add multiple buffers per IIO device, this number may not
+> > be enough, when adding a second buffer. So, this change reallocates the
+> > groups array whenever an IIO device group is added, via a
+> > iio_device_register_sysfs_group() helper.
+> >
+> > This also means that the groups array should be assigned to
+> > 'indio_dev.dev.groups' really late, right before {cdev_}device_add() is
+> > called to do the entire setup.
+> > And we also must take care to free this array when the sysfs resources are
+> > being cleaned up.
+> >
+> > With this change we can also move the 'groups' & 'groupcounter' fields to
+> > the iio_dev_opaque object. Up until now, this didn't make a whole lot of
+> > sense (especially since we weren't sure how multibuffer support would look
+> > like in the end).
+> > But doing it now kills one birds with one stone.
+> >
+> > An alternative, would be to add a configurable Kconfig symbol
+> > CONFIG_IIO_MAX_BUFFERS_PER_DEVICE (or something like that) and compute a
+> > static maximum of the groups we can support per IIO device. But that would
+> > probably annoy a few people since that would make the system less
+> > configurable.
+> >
+> > Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+> Nice change irrespective of the rest of the series needing it.
+>
+> Few comments below.
+>
+> Jonathan
+>
+> > ---
+> >  drivers/iio/iio_core.h             |  3 +++
+> >  drivers/iio/industrialio-buffer.c  | 12 +++++++++--
+> >  drivers/iio/industrialio-core.c    | 32 +++++++++++++++++++++++++++---
+> >  drivers/iio/industrialio-event.c   |  5 ++++-
+> >  drivers/iio/industrialio-trigger.c |  6 ++----
+> >  include/linux/iio/iio-opaque.h     |  4 ++++
+> >  include/linux/iio/iio.h            |  5 -----
+> >  7 files changed, 52 insertions(+), 15 deletions(-)
+> >
+> > diff --git a/drivers/iio/iio_core.h b/drivers/iio/iio_core.h
+> > index fced02cadcc3..7d5b179c1fe7 100644
+> > --- a/drivers/iio/iio_core.h
+> > +++ b/drivers/iio/iio_core.h
+> > @@ -46,6 +46,9 @@ int __iio_add_chan_devattr(const char *postfix,
+> >                          struct list_head *attr_list);
+> >  void iio_free_chan_devattr_list(struct list_head *attr_list);
+> >
+> > +int iio_device_register_sysfs_group(struct iio_dev *indio_dev,
+> > +                                 const struct attribute_group *group);
+> > +
+> >  ssize_t iio_format_value(char *buf, unsigned int type, int size, int *vals);
+> >
+> >  /* Event interface flags */
+> > diff --git a/drivers/iio/industrialio-buffer.c b/drivers/iio/industrialio-buffer.c
+> > index 2f7426a2f47c..cc846988fdb9 100644
+> > --- a/drivers/iio/industrialio-buffer.c
+> > +++ b/drivers/iio/industrialio-buffer.c
+> > @@ -1287,7 +1287,9 @@ static int __iio_buffer_alloc_sysfs_and_mask(struct iio_buffer *buffer,
+> >       buffer->buffer_group.name = "buffer";
+> >       buffer->buffer_group.attrs = attr;
+> >
+> > -     indio_dev->groups[indio_dev->groupcounter++] = &buffer->buffer_group;
+> > +     ret = iio_device_register_sysfs_group(indio_dev, &buffer->buffer_group);
+> > +     if (ret)
+> > +             goto error_free_buffer_attrs;
+> >
+> >       attrcount = 0;
+> >       INIT_LIST_HEAD(&buffer->scan_el_dev_attr_list);
+> > @@ -1330,14 +1332,20 @@ static int __iio_buffer_alloc_sysfs_and_mask(struct iio_buffer *buffer,
+> >
+> >       list_for_each_entry(p, &buffer->scan_el_dev_attr_list, l)
+> >               buffer->scan_el_group.attrs[attrn++] = &p->dev_attr.attr;
+> > -     indio_dev->groups[indio_dev->groupcounter++] = &buffer->scan_el_group;
+> > +
+> > +     ret = iio_device_register_sysfs_group(indio_dev, &buffer->scan_el_group);
+> > +     if (ret)
+> > +             goto error_free_scan_el_attrs;
+> >
+> >       return 0;
+> >
+> > +error_free_scan_el_attrs:
+> > +     kfree(buffer->scan_el_group.attrs);
+> >  error_free_scan_mask:
+> >       bitmap_free(buffer->scan_mask);
+> >  error_cleanup_dynamic:
+> >       iio_free_chan_devattr_list(&buffer->scan_el_dev_attr_list);
+> > +error_free_buffer_attrs:
+> >       kfree(buffer->buffer_group.attrs);
+> >
+> >       return ret;
+> > diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
+> > index 0a6fd299a978..ccd7aaff6d13 100644
+> > --- a/drivers/iio/industrialio-core.c
+> > +++ b/drivers/iio/industrialio-core.c
+> > @@ -1452,6 +1452,25 @@ static ssize_t iio_store_timestamp_clock(struct device *dev,
+> >       return len;
+> >  }
+> >
+> > +int iio_device_register_sysfs_group(struct iio_dev *indio_dev,
+> > +                                 const struct attribute_group *group)
+> > +{
+> > +     struct iio_dev_opaque *iio_dev_opaque = to_iio_dev_opaque(indio_dev);
+> > +     const struct attribute_group **new, **old = iio_dev_opaque->groups;
+> > +     unsigned int cnt = iio_dev_opaque->groupcounter;
+> > +
+> > +     new = krealloc(old, sizeof(*new) * (cnt + 2), GFP_KERNEL);
+> > +     if (!new)
+> > +             return -ENOMEM;
+> > +
+> > +     new[iio_dev_opaque->groupcounter++] = group;
+> > +     new[iio_dev_opaque->groupcounter] = NULL;
+> > +
+> > +     iio_dev_opaque->groups = new;
+> > +
+> > +     return 0;
+> > +}
+> > +
+> >  static DEVICE_ATTR(current_timestamp_clock, S_IRUGO | S_IWUSR,
+> >                  iio_show_timestamp_clock, iio_store_timestamp_clock);
+> >
+> > @@ -1525,8 +1544,10 @@ static int iio_device_register_sysfs(struct iio_dev *indio_dev)
+> >       if (clk)
+> >               iio_dev_opaque->chan_attr_group.attrs[attrn++] = clk;
+> >
+> > -     indio_dev->groups[indio_dev->groupcounter++] =
+> > -             &iio_dev_opaque->chan_attr_group;
+> > +     ret = iio_device_register_sysfs_group(indio_dev,
+> > +                                           &iio_dev_opaque->chan_attr_group);
+> > +     if (ret)
+> > +             goto error_clear_attrs;
+> >
+> >       return 0;
+> >
+> > @@ -1543,6 +1564,9 @@ static void iio_device_unregister_sysfs(struct iio_dev *indio_dev)
+> >       iio_free_chan_devattr_list(&iio_dev_opaque->channel_attr_list);
+> >       kfree(iio_dev_opaque->chan_attr_group.attrs);
+> >       iio_dev_opaque->chan_attr_group.attrs = NULL;
+> > +     kfree(iio_dev_opaque->groups);
+> > +     iio_dev_opaque->groups = NULL;
+> I can see you are matching style above, but right now I can't see why
+> we set chan_attr_group.attrs = NULL
+> or this new case.
+>
+> > +     iio_dev_opaque->groupcounter = 0;
+>
+> or indeed groupcounter.
 
-Thanks.
-Reviewed-by: Miaohe Lin <linmiaohe@huawei.com>
+I'll remove this.
+At some point I was maybe thinking that iio_device_unregister_sysfs()
+might be called to unregister and re-register.
+But we're nowhere close to that.
+And I had nothing in mind to do something similar.
+Just that the name suggested that this might be an idea.
 
-> ---
->  include/linux/hugetlb.h        | 20 ++++++++++++++++++--
->  include/linux/hugetlb_cgroup.h | 19 +++++++++++--------
->  mm/hugetlb_vmemmap.c           |  8 ++++++++
->  3 files changed, 37 insertions(+), 10 deletions(-)
-> 
-> diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
-> index 775aea53669a..822ab2f5542a 100644
-> --- a/include/linux/hugetlb.h
-> +++ b/include/linux/hugetlb.h
-> @@ -28,6 +28,22 @@ typedef struct { unsigned long pd; } hugepd_t;
->  #include <linux/shm.h>
->  #include <asm/tlbflush.h>
->  
-> +/*
-> + * For HugeTLB page, there are more metadata to save in the struct page. But
-> + * the head struct page cannot meet our needs, so we have to abuse other tail
-> + * struct page to store the metadata. In order to avoid conflicts caused by
-> + * subsequent use of more tail struct pages, we gather these discrete indexes
-> + * of tail struct page here.
-> + */
-> +enum {
-> +	SUBPAGE_INDEX_SUBPOOL = 1,	/* reuse page->private */
-> +#ifdef CONFIG_CGROUP_HUGETLB
-> +	SUBPAGE_INDEX_CGROUP,		/* reuse page->private */
-> +	SUBPAGE_INDEX_CGROUP_RSVD,	/* reuse page->private */
-> +#endif
-> +	NR_USED_SUBPAGE,
-> +};
-> +
->  struct hugepage_subpool {
->  	spinlock_t lock;
->  	long count;
-> @@ -607,13 +623,13 @@ extern unsigned int default_hstate_idx;
->   */
->  static inline struct hugepage_subpool *hugetlb_page_subpool(struct page *hpage)
->  {
-> -	return (struct hugepage_subpool *)(hpage+1)->private;
-> +	return (void *)page_private(hpage + SUBPAGE_INDEX_SUBPOOL);
->  }
->  
->  static inline void hugetlb_set_page_subpool(struct page *hpage,
->  					struct hugepage_subpool *subpool)
->  {
-> -	set_page_private(hpage+1, (unsigned long)subpool);
-> +	set_page_private(hpage + SUBPAGE_INDEX_SUBPOOL, (unsigned long)subpool);
->  }
->  
->  static inline struct hstate *hstate_file(struct file *f)
-> diff --git a/include/linux/hugetlb_cgroup.h b/include/linux/hugetlb_cgroup.h
-> index 2ad6e92f124a..c0cae6a704f2 100644
-> --- a/include/linux/hugetlb_cgroup.h
-> +++ b/include/linux/hugetlb_cgroup.h
-> @@ -21,15 +21,16 @@ struct hugetlb_cgroup;
->  struct resv_map;
->  struct file_region;
->  
-> +#ifdef CONFIG_CGROUP_HUGETLB
->  /*
->   * Minimum page order trackable by hugetlb cgroup.
->   * At least 4 pages are necessary for all the tracking information.
-> - * The second tail page (hpage[2]) is the fault usage cgroup.
-> - * The third tail page (hpage[3]) is the reservation usage cgroup.
-> + * The second tail page (hpage[SUBPAGE_INDEX_CGROUP]) is the fault
-> + * usage cgroup. The third tail page (hpage[SUBPAGE_INDEX_CGROUP_RSVD])
-> + * is the reservation usage cgroup.
->   */
-> -#define HUGETLB_CGROUP_MIN_ORDER	2
-> +#define HUGETLB_CGROUP_MIN_ORDER	order_base_2(NR_USED_SUBPAGE)
->  
-> -#ifdef CONFIG_CGROUP_HUGETLB
->  enum hugetlb_memory_event {
->  	HUGETLB_MAX,
->  	HUGETLB_NR_MEMORY_EVENTS,
-> @@ -66,9 +67,9 @@ __hugetlb_cgroup_from_page(struct page *page, bool rsvd)
->  	if (compound_order(page) < HUGETLB_CGROUP_MIN_ORDER)
->  		return NULL;
->  	if (rsvd)
-> -		return (struct hugetlb_cgroup *)page[3].private;
-> +		return (void *)page_private(page + SUBPAGE_INDEX_CGROUP_RSVD);
->  	else
-> -		return (struct hugetlb_cgroup *)page[2].private;
-> +		return (void *)page_private(page + SUBPAGE_INDEX_CGROUP);
->  }
->  
->  static inline struct hugetlb_cgroup *hugetlb_cgroup_from_page(struct page *page)
-> @@ -90,9 +91,11 @@ static inline int __set_hugetlb_cgroup(struct page *page,
->  	if (compound_order(page) < HUGETLB_CGROUP_MIN_ORDER)
->  		return -1;
->  	if (rsvd)
-> -		page[3].private = (unsigned long)h_cg;
-> +		set_page_private(page + SUBPAGE_INDEX_CGROUP_RSVD,
-> +				 (unsigned long)h_cg);
->  	else
-> -		page[2].private = (unsigned long)h_cg;
-> +		set_page_private(page + SUBPAGE_INDEX_CGROUP,
-> +				 (unsigned long)h_cg);
->  	return 0;
->  }
->  
-> diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
-> index 36ebd677e606..8efad9978821 100644
-> --- a/mm/hugetlb_vmemmap.c
-> +++ b/mm/hugetlb_vmemmap.c
-> @@ -272,6 +272,14 @@ void __init hugetlb_vmemmap_init(struct hstate *h)
->  	unsigned int nr_pages = pages_per_huge_page(h);
->  	unsigned int vmemmap_pages;
->  
-> +	/*
-> +	 * There are only (RESERVE_VMEMMAP_SIZE / sizeof(struct page)) struct
-> +	 * page structs that can be used when CONFIG_HUGETLB_PAGE_FREE_VMEMMAP,
-> +	 * so add a BUILD_BUG_ON to catch invalid usage of the tail struct page.
-> +	 */
-> +	BUILD_BUG_ON(NR_USED_SUBPAGE >=
-> +		     RESERVE_VMEMMAP_SIZE / sizeof(struct page));
-> +
->  	if (!hugetlb_free_vmemmap_enabled)
->  		return;
->  
-> 
+>
+> >  }
+> >
+> >  static void iio_dev_release(struct device *device)
+> > @@ -1592,7 +1616,6 @@ struct iio_dev *iio_device_alloc(struct device *parent, int sizeof_priv)
+> >               ALIGN(sizeof(struct iio_dev_opaque), IIO_ALIGN);
+> >
+> >       dev->dev.parent = parent;
+> > -     dev->dev.groups = dev->groups;
+>
+> Hohum. Nothing to do with this patch but not sure why the iio_dev is called dev here...
+> I (or someone else) should fix that at somepoint after this is in place as it confused me.
 
+I also noticed this a while ago and wanted to fix it.
+But with other patches to work on, I defered it, also because some of
+them were overlapping.
+Maybe I can squeeze this at the end of this series.
+
+>
+>
+> >       dev->dev.type = &iio_device_type;
+> >       dev->dev.bus = &iio_bus_type;
+> >       device_initialize(&dev->dev);
+> > @@ -1853,6 +1876,9 @@ int __iio_device_register(struct iio_dev *indio_dev, struct module *this_mod)
+> >               indio_dev->chrdev.owner = this_mod;
+> >       }
+> >
+> > +     /* assign device groups now; they should be all registered now */
+> > +     indio_dev->dev.groups = iio_dev_opaque->groups;
+> > +
+> >       ret = cdev_device_add(&indio_dev->chrdev, &indio_dev->dev);
+> >       if (ret < 0)
+> >               goto error_unreg_eventset;
+> > diff --git a/drivers/iio/industrialio-event.c b/drivers/iio/industrialio-event.c
+> > index 7e532117ac55..ea8947cc21e4 100644
+> > --- a/drivers/iio/industrialio-event.c
+> > +++ b/drivers/iio/industrialio-event.c
+> > @@ -544,7 +544,10 @@ int iio_device_register_eventset(struct iio_dev *indio_dev)
+> >       /* Add all elements from the list. */
+> >       list_for_each_entry(p, &ev_int->dev_attr_list, l)
+> >               ev_int->group.attrs[attrn++] = &p->dev_attr.attr;
+> > -     indio_dev->groups[indio_dev->groupcounter++] = &ev_int->group;
+> > +
+> > +     ret = iio_device_register_sysfs_group(indio_dev, &ev_int->group);
+> > +     if (ret)
+> > +             goto error_free_setup_event_lines;
+> >
+> >       ev_int->ioctl_handler.ioctl = iio_event_ioctl;
+> >       iio_device_ioctl_handler_register(&iio_dev_opaque->indio_dev,
+> > diff --git a/drivers/iio/industrialio-trigger.c b/drivers/iio/industrialio-trigger.c
+> > index 438d5012e8b8..a035d5c2a445 100644
+> > --- a/drivers/iio/industrialio-trigger.c
+> > +++ b/drivers/iio/industrialio-trigger.c
+> > @@ -694,10 +694,8 @@ EXPORT_SYMBOL(iio_trigger_validate_own_device);
+> >
+> >  int iio_device_register_trigger_consumer(struct iio_dev *indio_dev)
+> >  {
+> > -     indio_dev->groups[indio_dev->groupcounter++] =
+> > -             &iio_trigger_consumer_attr_group;
+> > -
+> > -     return 0;
+> > +     return iio_device_register_sysfs_group(indio_dev,
+> > +                                            &iio_trigger_consumer_attr_group);
+> >  }
+> >
+> >  void iio_device_unregister_trigger_consumer(struct iio_dev *indio_dev)
+> > diff --git a/include/linux/iio/iio-opaque.h b/include/linux/iio/iio-opaque.h
+> > index 07c5a8e52ca8..8ba13a5c7af6 100644
+> > --- a/include/linux/iio/iio-opaque.h
+> > +++ b/include/linux/iio/iio-opaque.h
+> > @@ -12,6 +12,8 @@
+> >   *                           attributes
+> >   * @chan_attr_group:         group for all attrs in base directory
+> >   * @ioctl_handlers:          ioctl handlers registered with the core handler
+> > + * @groups:                  attribute groups
+> > + * @groupcounter:            index of next attribute group
+> >   * @debugfs_dentry:          device specific debugfs dentry
+> >   * @cached_reg_addr:         cached register address for debugfs reads
+> >   * @read_buf:                        read buffer to be used for the initial reg read
+> > @@ -24,6 +26,8 @@ struct iio_dev_opaque {
+> >       struct list_head                channel_attr_list;
+> >       struct attribute_group          chan_attr_group;
+> >       struct list_head                ioctl_handlers;
+> > +     const struct attribute_group    **groups;
+> > +     int                             groupcounter;
+> >  #if defined(CONFIG_DEBUG_FS)
+> >       struct dentry                   *debugfs_dentry;
+> >       unsigned                        cached_reg_addr;
+> > diff --git a/include/linux/iio/iio.h b/include/linux/iio/iio.h
+> > index e4a9822e6495..f8585d01fc76 100644
+> > --- a/include/linux/iio/iio.h
+> > +++ b/include/linux/iio/iio.h
+> > @@ -518,8 +518,6 @@ struct iio_buffer_setup_ops {
+> >   * @setup_ops:               [DRIVER] callbacks to call before and after buffer
+> >   *                   enable/disable
+> >   * @chrdev:          [INTERN] associated character device
+> > - * @groups:          [INTERN] attribute groups
+> > - * @groupcounter:    [INTERN] index of next attribute group
+> >   * @flags:           [INTERN] file ops related flags including busy flag.
+> >   * @priv:            [DRIVER] reference to driver's private information
+> >   *                   **MUST** be accessed **ONLY** via iio_priv() helper
+> > @@ -556,9 +554,6 @@ struct iio_dev {
+> >       struct mutex                    info_exist_lock;
+> >       const struct iio_buffer_setup_ops       *setup_ops;
+> >       struct cdev                     chrdev;
+> > -#define IIO_MAX_GROUPS 6
+> > -     const struct attribute_group    *groups[IIO_MAX_GROUPS + 1];
+> > -     int                             groupcounter;
+> >
+> >       unsigned long                   flags;
+> >       void                            *priv;
+>
