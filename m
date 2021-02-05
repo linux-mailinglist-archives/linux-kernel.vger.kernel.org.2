@@ -2,168 +2,667 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69A103117C6
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 01:28:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19F5B3117C5
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 01:27:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230383AbhBFA1I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 19:27:08 -0500
-Received: from mail-am6eur05on2099.outbound.protection.outlook.com ([40.107.22.99]:1249
-        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231923AbhBEMcC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 07:32:02 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MruZej0/ZMefIzdVm/vbawgxpKe8yOV5fAV5TiC6dOPxYsrXtbbPX7RqrRubY4R0vW5s5KM84NpPj2X6m5g+BwMFDm8scgTtfUS2uNyGSEx6iPxaubDWHYzHnU7uTrT7d6d+FT8+5Brr/k4aayfCkmFDzZOgUwv8wPKIZvH54eLZBjnRiMdl019r4H6xjcnfVAlS+6HhR07+9i0PSKCw2WU5WeHUTlEgeepx7XWX26xyQKP6w/q5407519MztEDvmPgsZm627MoQ+glsxblXRXTDjkYairWqfVWVoiNc+fG+egw69MvExzby6zyLMjbPy8awIw40G3ZTQDKb+UHPYA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Umi0OM7cgEp5EA6EJ4XSQ4zIm8lADURhrHDBevQaOBo=;
- b=nH3pLYdMdM6l2KUiTZIDXzMEmVjqRw35dvkixcb8JrhcfuAbqme7t8PBhW3B5A/9y4BKGr6QzWB6FqRc/abQdFoKejZF1jcJ7JOv4i157I2LKk/OQHAdePFM/wUA1kgbRzZCF+reRZQjRg3RXmWmhlQTWJCnj0C0wpoh17T0XRuGl2h7tesE1NldeLPiXBhAjNvMYfDSCEBCGpMcjWtq79Yczs6DaejMI9NJWNKBECh2wibPCRIerZcs3kJPIsei+iV8VeyrbQ1+KF4eUio7jzkfjN/l57P97rMW2+xUte+W6ptWMTdHsT5YudvbFSNxhBnpr4KyK2DzTxEUPhm+JA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=plvision.eu; dmarc=pass action=none header.from=plvision.eu;
- dkim=pass header.d=plvision.eu; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plvision.eu;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Umi0OM7cgEp5EA6EJ4XSQ4zIm8lADURhrHDBevQaOBo=;
- b=mXGFcjHq55mMXYcf0r6rpBF2BZNT2BcoGE7WUU3hvQxbmU5Tfao+VxlTFLKjoHHGQzOYDctu0+LOdaQ7Pnn5qwETlfVvMEtkRg9fxUZ3rvsXpVoB7OJ646qTS6hX7jqyjG+H3muwMaiwZ4xir/W2t53EEPtq4RrSEkx2hbNY/h8=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=plvision.eu;
-Received: from HE1P190MB0539.EURP190.PROD.OUTLOOK.COM (2603:10a6:7:56::28) by
- HE1P190MB0219.EURP190.PROD.OUTLOOK.COM (2603:10a6:3:ce::8) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3825.24; Fri, 5 Feb 2021 12:31:10 +0000
-Received: from HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
- ([fe80::bc8b:6638:a839:2a8f]) by HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
- ([fe80::bc8b:6638:a839:2a8f%5]) with mapi id 15.20.3805.023; Fri, 5 Feb 2021
- 12:31:10 +0000
-Date:   Fri, 5 Feb 2021 14:31:07 +0200
-From:   Vadym Kochan <vadym.kochan@plvision.eu>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Oleksandr Mazur <oleksandr.mazur@plvision.eu>,
-        Serhiy Boiko <serhiy.boiko@plvision.eu>,
-        Serhiy Pshyk <serhiy.pshyk@plvision.eu>,
-        Volodymyr Mytnyk <volodymyr.mytnyk@plvision.eu>,
-        Taras Chornyi <taras.chornyi@plvision.eu>,
-        netdev@vger.kernel.org, Mickey Rachamim <mickeyr@marvell.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 7/7] net: marvell: prestera: fix port event
- handling on init
-Message-ID: <20210205123107.GD19627@plvision.eu>
-References: <20210203165458.28717-1-vadym.kochan@plvision.eu>
- <20210203165458.28717-8-vadym.kochan@plvision.eu>
- <20210204211934.273e54bf@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210204211934.273e54bf@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Originating-IP: [217.20.186.93]
-X-ClientProxiedBy: AM6P194CA0059.EURP194.PROD.OUTLOOK.COM
- (2603:10a6:209:84::36) To HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
- (2603:10a6:7:56::28)
+        id S229927AbhBFA0b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 19:26:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56766 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232113AbhBEMei (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 07:34:38 -0500
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27AE9C06178B
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 04:33:58 -0800 (PST)
+Received: by mail-pf1-x435.google.com with SMTP id t29so4215484pfg.11
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 04:33:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=I2E4Oo3zZwZS1xXt4ElK2cusqWvYrT+QzdM6VM3ja60=;
+        b=sWdtt9kTl72YfMvF2hhWcA9fTooqJ2s7C6Bt13J4xOA72q46Ti5iCYlUnv9bgg96/B
+         rIhWdkubeyXxT13PbMX7WWReF5YOhMFuJGFDRPZLoY1y3fm8MP5wYk5Z+U8W7Ys+RTZc
+         Wv54kbWkV4ku7fpBfGvo1S8XHpiLK/ebRs43w8OB7hKobz7t5speQigCryGKM2lsC8Ot
+         zI4lmA80sKdNODxBkLDTqQQ97FGFyuDJ5NvGZ+cssRA9z2oX1hs7uHVNNm0ZY06kYXZ5
+         p59BS+IpmVQohvHOkTNcZPNA232BPifUvOcK/XJU9UI1pg4cl+fe+1HK035B5Zk0npmu
+         Ebbg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=I2E4Oo3zZwZS1xXt4ElK2cusqWvYrT+QzdM6VM3ja60=;
+        b=J3NYaGT4hzj0MEjbpIBQnwEFSf30a0UEGBgjixVopeFDuj6O8G7ueiqJh0ervG26qy
+         a/avrbARKw4Xvf0FPdtlE7pWdTzJhyRly4Ydmx8XgXYuDi97XtVHuN6mk9TPTiHklzKV
+         G7zl6dmxTeCDuLoyXtkG/FpoSkq/SIFQvRHoCDEAej81dPBmRxcwkslLhAKMh59dUWxC
+         11+6RDWBR0rKjDO3k03/Q38h08w2uw4avtzoTyc0/n9hNEAvKi0I3tvCcoUjIAJ3ElMI
+         i0yAGjgf1FNeJw8XpoimB83Mh7KZl+CghpPvo3Gp7MvDduWV3QsQTT+rYZNhCDIyR9ZA
+         Rncg==
+X-Gm-Message-State: AOAM533XsyxrGp95XM3Nlz7c9kGOlFHMq9s4p/cnKCzrD0ZVHuK5vOqe
+        kgSiIgn1a/RrGHMu4nSEkrY3dtLvpGb5lZLwcyDkNg==
+X-Google-Smtp-Source: ABdhPJyVmrjr+Jj0mGlXE+EqnwdGDrYdhZzHZXN2p1gz9On1LrLbQ6eOfjEsQpy3o+JfRF6xU+HHFXWE2Qqb579Hmlk=
+X-Received: by 2002:a63:f953:: with SMTP id q19mr4172172pgk.120.1612528437477;
+ Fri, 05 Feb 2021 04:33:57 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from plvision.eu (217.20.186.93) by AM6P194CA0059.EURP194.PROD.OUTLOOK.COM (2603:10a6:209:84::36) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.19 via Frontend Transport; Fri, 5 Feb 2021 12:31:09 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 0cb878b7-7983-4395-5fea-08d8c9d1eafe
-X-MS-TrafficTypeDiagnostic: HE1P190MB0219:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <HE1P190MB0219B1F7DB869EC8BBFC568195B29@HE1P190MB0219.EURP190.PROD.OUTLOOK.COM>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: GSvnW5MvSjRO8rkUFyJ/RTRvKBY+xKtorAPgSMeLP7wtmfy1434goSpzwGJl+N+zkX/2hLky/4dhpbkBSXZvOEEau6GB7GRGxertDDR60Yk74xXWKpkMjMT0J1cHUvqjQu+v1qe6uG6OCsFv8iMOKZRz4CsSiA0fBazybhmCwTIgTvj4WJj4Qic7LFnWP63Xt4TrxkY1EuGALiMmPvPnl/8t3E4JiKv01Hbu+OWEUxSBb7RQAGzdStsxF3XF92QF2c5HsvC1CXh9ltVdVxyGXgwUUjFYVnTlLFAcdfXtXkMD4CA3mu70ZwhIC4d24CMjNDaLH53grqPDXNkBuoQFobnDEKuuobOgWOwSm9etYY6VZpj68BEcTlfGCZ99fN2bT3cXcCnil8ieGpVVzn/n5WGiRcyo3Z05d7lA/UOPuUPDIIR0wyEPnxF591VoUxeguMli/HmlQ481vnG+raR3nODqgEuEA5ukDF7JJnSzFTfo+zPlwWOcdnRRdgI6nEj9QwyABMlmOVZcK2UNXxO23g==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1P190MB0539.EURP190.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(376002)(39830400003)(346002)(396003)(366004)(136003)(86362001)(2616005)(186003)(956004)(44832011)(6916009)(54906003)(16526019)(83380400001)(316002)(478600001)(7696005)(66946007)(52116002)(8676002)(55016002)(26005)(36756003)(66476007)(66556008)(8886007)(33656002)(5660300002)(4326008)(2906002)(8936002)(1076003);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?3k0sH1A4ymDeL6IjakHpsCqcYMQVnx96/U3eNHWDWvI8yT7n7OKYHxDLsog9?=
- =?us-ascii?Q?j2ngZo3CCf/LtPWBtOkLTkWcp/TliFQND44qAEvR1HQtGIvQZWAsTG3OsN68?=
- =?us-ascii?Q?KVG6SlKGDwRX+F5cxbW7OCj0TjfszJP8lObu7fT5x94TrzuqBafL3xwPNmgQ?=
- =?us-ascii?Q?fKw5iNf0ZRK7bAsUDe0A30wRCOxAGU9QKTC/2gzi7rkE5TwrO9qw/8uoBxyh?=
- =?us-ascii?Q?SND6CADkKaAjIuK0cBjvQws7xx3r2X51NAomkBV+LmVMdGv4Jei00YxRNXy6?=
- =?us-ascii?Q?kc07HxZ6rrIukm99dfDd7rBjqaIPfBfVqpymFBGX3g/8U59xBS1b6sAy6TQn?=
- =?us-ascii?Q?hOmFYQXSW5CNlB93p/i2PXNrWsM+c0IE9Hegi08/H7c5MT8g88fb0rM6aBUh?=
- =?us-ascii?Q?uaTjw+RxgreZ2APsi9/1X3WoaM+j8eIfk0fClUvF8rARJr+9RwrCE5+Dc/S7?=
- =?us-ascii?Q?cXRJW5fUsSp6Ho/7HAPDZxyztBpQB9cH2J0NPHwV90iP5VHDYh5MvJNqhPYf?=
- =?us-ascii?Q?FKT0MpQPw2Ptv1vtkATA6Ut1P81pQd3YwD1ZhbUrJkgRGhsWy/0NSR2zItAW?=
- =?us-ascii?Q?MNeyg3BOMOpEtpRVT8gZeovoSX/RKcWwFsTducilhmW1e4//S3wpx/KToTMe?=
- =?us-ascii?Q?jsa4OmroY2mGDlOkqEosfaxSDjrBmwgRWwWGyiP3Zqe6HsmI5MrB8+lP4KjZ?=
- =?us-ascii?Q?TjcICdSQjlFSnEC22vPVcXyva1FyJu2e/F4Pd9WsXNz0uYHvc8/NJJHbg72W?=
- =?us-ascii?Q?vCmnv9hI+SFCJSgZKv1wrDowzb1x4MG4DL7puGoeMCCPVHlzpUREWbxr/Ys+?=
- =?us-ascii?Q?ycSLKi1saIWJh7gqTpYWBA4UHNl3I4U3V+INaeo4P9RxUtfR9IoOqb22C58m?=
- =?us-ascii?Q?xiluhI7N4y2j3eTv5yqeUkql3la3jZpJnkZ94zzJzhLaFR+vC03fsVQn4w7+?=
- =?us-ascii?Q?nE2kM2cft2NnkKszFtMnmibf2Yi0/7ziveQWQOoNytlR6nO1jsnXIb+LYPLe?=
- =?us-ascii?Q?Ypk7EPTI4hU6MG2mnHG0TQjHmQ65KM8lXROnfrPrtdeZtUv6TaTJdwEjXwfL?=
- =?us-ascii?Q?VtwTdljnppsm2wCnskrlBjX14Ix41y8mg3t15iavS6JhOX7mNaOJzbMCDlwc?=
- =?us-ascii?Q?ghFbLbwsP9E+BJ2DPAif8sG7svI4HHhc4d/4m/b4zE8OzI+Rc1xAPfMuDUgO?=
- =?us-ascii?Q?gu/5cyvNVDKIHTdsP1O9JiKrS3YYACqP7nm8SzXalwmHOJfj+e61EW9zykEL?=
- =?us-ascii?Q?MYmXOaXtTKM6cLpo8w+A6l54dLgtwG5/IAN8xml8C3eGFwzu0T0DEEb2In0K?=
- =?us-ascii?Q?hfpsmTw2LfnzE/wJw+5ywYVV?=
-X-OriginatorOrg: plvision.eu
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0cb878b7-7983-4395-5fea-08d8c9d1eafe
-X-MS-Exchange-CrossTenant-AuthSource: HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Feb 2021 12:31:10.5329
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 03707b74-30f3-46b6-a0e0-ff0a7438c9c4
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: uPhPkhZ9GioPSCMScB6jGDMIW9uKYHKomSd1duG1U7uDoa+VRDHU7e6TydlUCPh6ncnQlgY58zGoQLxQOxSDPXr7LiAw8rnXd97RtPXfHVw=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1P190MB0219
+References: <cover.1611802321.git.xji@analogixsemi.com> <49fc9c62026988d7adc2eb7e4d1f6a3bffe0b66c.1611802321.git.xji@analogixsemi.com>
+In-Reply-To: <49fc9c62026988d7adc2eb7e4d1f6a3bffe0b66c.1611802321.git.xji@analogixsemi.com>
+From:   Robert Foss <robert.foss@linaro.org>
+Date:   Fri, 5 Feb 2021 13:33:46 +0100
+Message-ID: <CAG3jFys3GnPOfnsMjcd_7BfEuAQyb2VJfA2uuxpQ=Qf+2rXvhw@mail.gmail.com>
+Subject: Re: [PATCH v4 3/3] drm/bridge: anx7625: add MIPI DPI input feature support
+To:     Xin Ji <xji@analogixsemi.com>
+Cc:     Nicolas Boichat <drinkcat@google.com>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>, Torsten Duwe <duwe@lst.de>,
+        Vasily Khoruzhick <anarsoul@gmail.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Sheng Pan <span@analogixsemi.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        devel@driverdev.osuosl.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jakub,
+Hey Xin,
 
-On Thu, Feb 04, 2021 at 09:19:34PM -0800, Jakub Kicinski wrote:
-> On Wed,  3 Feb 2021 18:54:58 +0200 Vadym Kochan wrote:
-> > For some reason there might be a crash during ports creation if port
-> > events are handling at the same time  because fw may send initial
-> > port event with down state.
-> > 
-> > The crash points to cancel_delayed_work() which is called when port went
-> > is down.  Currently I did not find out the real cause of the issue, so
-> > fixed it by cancel port stats work only if previous port's state was up
-> > & runnig.
-> 
-> Maybe you just need to move the DELAYED_WORK_INIT() earlier?
-> Not sure why it's at the end of prestera_port_create(), it 
-> just initializes some fields.
-> 
+On Thu, 28 Jan 2021 at 04:12, Xin Ji <xji@analogixsemi.com> wrote:
+>
+> Add MIPI rx DPI input support
+>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Xin Ji <xji@analogixsemi.com>
+> ---
+>  drivers/gpu/drm/bridge/analogix/anx7625.c | 326 ++++++++++++++++++++++++------
+>  drivers/gpu/drm/bridge/analogix/anx7625.h |  20 +-
+>  2 files changed, 285 insertions(+), 61 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/bridge/analogix/anx7625.c b/drivers/gpu/drm/bridge/analogix/anx7625.c
+> index 04536cc..628ae43 100644
+> --- a/drivers/gpu/drm/bridge/analogix/anx7625.c
+> +++ b/drivers/gpu/drm/bridge/analogix/anx7625.c
+> @@ -150,18 +150,18 @@ static int anx7625_write_and(struct anx7625_data *ctx,
+>         return anx7625_reg_write(ctx, client, offset, (val & (mask)));
+>  }
+>
+> -static int anx7625_write_and_or(struct anx7625_data *ctx,
+> -                               struct i2c_client *client,
+> -                               u8 offset, u8 and_mask, u8 or_mask)
+> +static int anx7625_config_bit_matrix(struct anx7625_data *ctx)
+>  {
+> -       int val;
+> +       int i, ret;
+>
+> -       val = anx7625_reg_read(ctx, client, offset);
+> -       if (val < 0)
+> -               return val;
+> +       ret = anx7625_write_or(ctx, ctx->i2c.tx_p2_client,
+> +                              AUDIO_CONTROL_REGISTER, 0x80);
+> +       for (i = 0; i < 13; i++)
+> +               ret |= anx7625_reg_write(ctx, ctx->i2c.tx_p2_client,
+> +                                        VIDEO_BIT_MATRIX_12 + i,
+> +                                        0x18 + i);
+>
+> -       return anx7625_reg_write(ctx, client,
+> -                                offset, (val & and_mask) | (or_mask));
+> +       return ret;
+>  }
+>
+>  static int anx7625_read_ctrl_status_p0(struct anx7625_data *ctx)
+> @@ -195,6 +195,60 @@ static int wait_aux_op_finish(struct anx7625_data *ctx)
+>         return 0;
+>  }
+>
+> +static int anx7625_aux_dpcd_read(struct anx7625_data *ctx,
+> +                                u8 addrh, u8 addrm, u8 addrl,
+> +                                u8 len, u8 *buf)
+> +{
+> +       struct device *dev = &ctx->client->dev;
+> +       int ret;
+> +       u8 cmd;
+> +
+> +       if (len > MAX_DPCD_BUFFER_SIZE) {
+> +               DRM_DEV_ERROR(dev, "exceed aux buffer len.\n");
+> +               return -EINVAL;
+> +       }
+> +
+> +       cmd = ((len - 1) << 4) | 0x09;
+> +
+> +       /* Set command and length */
+> +       ret = anx7625_reg_write(ctx, ctx->i2c.rx_p0_client,
+> +                               AP_AUX_COMMAND, cmd);
+> +
+> +       /* Set aux access address */
+> +       ret |= anx7625_reg_write(ctx, ctx->i2c.rx_p0_client,
+> +                                AP_AUX_ADDR_7_0, addrl);
+> +       ret |= anx7625_reg_write(ctx, ctx->i2c.rx_p0_client,
+> +                                AP_AUX_ADDR_15_8, addrm);
+> +       ret |= anx7625_write_and(ctx, ctx->i2c.rx_p0_client,
+> +                                AP_AUX_ADDR_19_16, addrh);
+> +
+> +       /* Enable aux access */
+> +       ret |= anx7625_write_or(ctx, ctx->i2c.rx_p0_client,
+> +                               AP_AUX_CTRL_STATUS, AP_AUX_CTRL_OP_EN);
+> +
+> +       if (ret < 0) {
+> +               DRM_DEV_ERROR(dev, "cannot access aux related register.\n");
+> +               return -EIO;
+> +       }
+> +
+> +       usleep_range(2000, 2100);
+> +
+> +       ret = wait_aux_op_finish(ctx);
+> +       if (ret) {
+> +               DRM_DEV_ERROR(dev, "aux IO error: wait aux op finish.\n");
+> +               return ret;
+> +       }
+> +
+> +       ret = anx7625_reg_block_read(ctx, ctx->i2c.rx_p0_client,
+> +                                    AP_AUX_BUFF_START, len, buf);
+> +       if (ret < 0) {
+> +               DRM_DEV_ERROR(dev, "read dpcd register failed\n");
+> +               return -EIO;
+> +       }
+> +
+> +       return 0;
+> +}
+> +
+>  static int anx7625_video_mute_control(struct anx7625_data *ctx,
+>                                       u8 status)
+>  {
+> @@ -219,38 +273,6 @@ static int anx7625_video_mute_control(struct anx7625_data *ctx,
+>         return ret;
+>  }
+>
+> -static int anx7625_config_audio_input(struct anx7625_data *ctx)
+> -{
+> -       struct device *dev = &ctx->client->dev;
+> -       int ret;
+> -
+> -       /* Channel num */
+> -       ret = anx7625_reg_write(ctx, ctx->i2c.tx_p2_client,
+> -                               AUDIO_CHANNEL_STATUS_6, I2S_CH_2 << 5);
+> -
+> -       /* FS */
+> -       ret |= anx7625_write_and_or(ctx, ctx->i2c.tx_p2_client,
+> -                                   AUDIO_CHANNEL_STATUS_4,
+> -                                   0xf0, AUDIO_FS_48K);
+> -       /* Word length */
+> -       ret |= anx7625_write_and_or(ctx, ctx->i2c.tx_p2_client,
+> -                                   AUDIO_CHANNEL_STATUS_5,
+> -                                   0xf0, AUDIO_W_LEN_24_24MAX);
+> -       /* I2S */
+> -       ret |= anx7625_write_or(ctx, ctx->i2c.tx_p2_client,
+> -                               AUDIO_CHANNEL_STATUS_6, I2S_SLAVE_MODE);
+> -       ret |= anx7625_write_and(ctx, ctx->i2c.tx_p2_client,
+> -                                AUDIO_CONTROL_REGISTER, ~TDM_TIMING_MODE);
+> -       /* Audio change flag */
+> -       ret |= anx7625_write_or(ctx, ctx->i2c.rx_p0_client,
+> -                               AP_AV_STATUS, AP_AUDIO_CHG);
+> -
+> -       if (ret < 0)
+> -               DRM_DEV_ERROR(dev, "fail to config audio.\n");
+> -
+> -       return ret;
+> -}
+> -
+>  /* Reduction of fraction a/b */
+>  static void anx7625_reduction_of_a_fraction(unsigned long *a, unsigned long *b)
+>  {
+> @@ -410,7 +432,7 @@ static int anx7625_dsi_video_timing_config(struct anx7625_data *ctx)
+>         ret |= anx7625_write_and(ctx, ctx->i2c.rx_p1_client,
+>                         MIPI_LANE_CTRL_0, 0xfc);
+>         ret |= anx7625_write_or(ctx, ctx->i2c.rx_p1_client,
+> -                               MIPI_LANE_CTRL_0, 3);
+> +                               MIPI_LANE_CTRL_0, ctx->pdata.mipi_lanes - 1);
 
-Thanks for suggestion, but it does not help. Will try to find-out the
-real root cause but this is the only fix I 'v came up.
+Is this mipi_lanes change independent of the rest of this patch?
+If so, extract it to a seperate patch.
 
-> > [   28.489791] Call trace:
-> > [   28.492259]  get_work_pool+0x48/0x60
-> > [   28.495874]  cancel_delayed_work+0x38/0xb0
-> > [   28.500011]  prestera_port_handle_event+0x90/0xa0 [prestera]
-> > [   28.505743]  prestera_evt_recv+0x98/0xe0 [prestera]
-> > [   28.510683]  prestera_fw_evt_work_fn+0x180/0x228 [prestera_pci]
-> > [   28.516660]  process_one_work+0x1e8/0x360
-> > [   28.520710]  worker_thread+0x44/0x480
-> > [   28.524412]  kthread+0x154/0x160
-> > [   28.527670]  ret_from_fork+0x10/0x38
-> > [   28.531290] Code: a8c17bfd d50323bf d65f03c0 9278dc21 (f9400020)
-> > [   28.537429] ---[ end trace 5eced933df3a080b ]---
-> > 
-> > Signed-off-by: Vadym Kochan <vadym.kochan@plvision.eu>
-> > ---
-> >  drivers/net/ethernet/marvell/prestera/prestera_main.c | 3 ++-
-> >  1 file changed, 2 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/net/ethernet/marvell/prestera/prestera_main.c b/drivers/net/ethernet/marvell/prestera/prestera_main.c
-> > index 39465e65d09b..122324dae47d 100644
-> > --- a/drivers/net/ethernet/marvell/prestera/prestera_main.c
-> > +++ b/drivers/net/ethernet/marvell/prestera/prestera_main.c
-> > @@ -433,7 +433,8 @@ static void prestera_port_handle_event(struct prestera_switch *sw,
-> >  			netif_carrier_on(port->dev);
-> >  			if (!delayed_work_pending(caching_dw))
-> >  				queue_delayed_work(prestera_wq, caching_dw, 0);
-> > -		} else {
-> > +		} else if (netif_running(port->dev) &&
-> > +			   netif_carrier_ok(port->dev)) {
-> >  			netif_carrier_off(port->dev);
-> >  			if (delayed_work_pending(caching_dw))
-> >  				cancel_delayed_work(caching_dw);
-> 
+>
+>         /* Htotal */
+>         htotal = ctx->dt.hactive.min + ctx->dt.hfront_porch.min +
+> @@ -595,6 +617,101 @@ static int anx7625_dsi_config(struct anx7625_data *ctx)
+>         return ret;
+>  }
+>
+> +static int anx7625_api_dpi_config(struct anx7625_data *ctx)
+> +{
+> +       struct device *dev = &ctx->client->dev;
+> +       u16 freq = ctx->dt.pixelclock.min / 1000;
+> +       int ret;
+> +
+> +       /* configure pixel clock */
+> +       ret = anx7625_reg_write(ctx, ctx->i2c.rx_p0_client,
+> +                               PIXEL_CLOCK_L, freq & 0xFF);
+> +       ret |= anx7625_reg_write(ctx, ctx->i2c.rx_p0_client,
+> +                                PIXEL_CLOCK_H, (freq >> 8));
+> +
+> +       /* set DPI mode */
+> +       /* set to DPI PLL module sel */
+> +       ret |= anx7625_reg_write(ctx, ctx->i2c.rx_p1_client,
+> +                                MIPI_DIGITAL_PLL_9, 0x20);
+> +       /* power down MIPI */
+> +       ret |= anx7625_reg_write(ctx, ctx->i2c.rx_p1_client,
+> +                                MIPI_LANE_CTRL_10, 0x08);
+> +       /* enable DPI mode */
+> +       ret |= anx7625_reg_write(ctx, ctx->i2c.rx_p1_client,
+> +                                MIPI_DIGITAL_PLL_18, 0x1C);
+> +       /* set first edge */
+> +       ret |= anx7625_reg_write(ctx, ctx->i2c.tx_p2_client,
+> +                                VIDEO_CONTROL_0, 0x06);
+> +       if (ret < 0)
+> +               DRM_DEV_ERROR(dev, "IO error : dpi phy set failed.\n");
+> +
+> +       return ret;
+> +}
+> +
+> +static int anx7625_dpi_config(struct anx7625_data *ctx)
+> +{
+> +       struct device *dev = &ctx->client->dev;
+> +       int ret;
+> +
+> +       DRM_DEV_DEBUG_DRIVER(dev, "config dpi\n");
+> +
+> +       /* DSC disable */
+> +       ret = anx7625_write_and(ctx, ctx->i2c.rx_p0_client,
+> +                               R_DSC_CTRL_0, ~DSC_EN);
+> +       if (ret < 0) {
+> +               DRM_DEV_ERROR(dev, "IO error : disable dsc failed.\n");
+> +               return ret;
+> +       }
+> +
+> +       ret = anx7625_config_bit_matrix(ctx);
+> +       if (ret < 0) {
+> +               DRM_DEV_ERROR(dev, "config bit matrix failed.\n");
+> +               return ret;
+> +       }
+> +
+> +       ret = anx7625_api_dpi_config(ctx);
+> +       if (ret < 0) {
+> +               DRM_DEV_ERROR(dev, "mipi phy(dpi) setup failed.\n");
+> +               return ret;
+> +       }
+> +
+> +       /* set MIPI RX EN */
+> +       ret = anx7625_write_or(ctx, ctx->i2c.rx_p0_client,
+> +                              AP_AV_STATUS, AP_MIPI_RX_EN);
+> +       /* clear mute flag */
+> +       ret |= anx7625_write_and(ctx, ctx->i2c.rx_p0_client,
+> +                                AP_AV_STATUS, (u8)~AP_MIPI_MUTE);
+> +       if (ret < 0)
+> +               DRM_DEV_ERROR(dev, "IO error : enable mipi rx failed.\n");
+> +
+> +       return ret;
+> +}
+> +
+> +static int anx7625_hdcp_setting(struct anx7625_data *ctx)
+> +{
+> +       u8 bcap;
+> +       struct device *dev = &ctx->client->dev;
+> +
+> +       if (!ctx->pdata.hdcp_support || !ctx->hdcp_en) {
+> +               DRM_DEV_DEBUG_DRIVER(dev, "hdcp_support(%d), hdcp_en(%d)\n",
+> +                                    ctx->pdata.hdcp_support, ctx->hdcp_en);
+> +               DRM_DEV_DEBUG_DRIVER(dev, "disable HDCP by config\n");
+> +               return anx7625_write_and(ctx, ctx->i2c.rx_p1_client,
+> +                                        0xee, 0x9f);
+> +       }
+> +
+> +       anx7625_aux_dpcd_read(ctx, 0x06, 0x80, 0x28, 1, &bcap);
+> +       if (!(bcap & 0x01)) {
+> +               DRM_WARN("downstream not support HDCP 1.4, cap(%x).\n", bcap);
+> +               return anx7625_write_and(ctx, ctx->i2c.rx_p1_client,
+> +                                        0xee, 0x9f);
+> +       }
+> +
+> +       DRM_DEV_DEBUG_DRIVER(dev, "enable HDCP 1.4\n");
+> +
+> +       return anx7625_write_or(ctx, ctx->i2c.rx_p1_client, 0xee, 0x20);
+> +}
+
+Is the HDCP support change independent of the rest of this patch?
+If so, extract it to a seperate patch.
+
+> +
+>  static void anx7625_dp_start(struct anx7625_data *ctx)
+>  {
+>         int ret;
+> @@ -605,9 +722,13 @@ static void anx7625_dp_start(struct anx7625_data *ctx)
+>                 return;
+>         }
+>
+> -       anx7625_config_audio_input(ctx);
+> +       /* HDCP config */
+> +       anx7625_hdcp_setting(ctx);
+>
+> -       ret = anx7625_dsi_config(ctx);
+> +       if (ctx->pdata.is_dpi)
+> +               ret = anx7625_dpi_config(ctx);
+> +       else
+> +               ret = anx7625_dsi_config(ctx);
+>
+>         if (ret < 0)
+>                 DRM_DEV_ERROR(dev, "MIPI phy setup error.\n");
+> @@ -688,8 +809,7 @@ static int sp_tx_get_edid_block(struct anx7625_data *ctx)
+>         return c;
+>  }
+>
+> -static int edid_read(struct anx7625_data *ctx,
+> -                    u8 offset, u8 *pblock_buf)
+> +static int edid_read(struct anx7625_data *ctx, u8 offset, u8 *pblock_buf)
+
+No functional change here, let's try to maintain the 'git blame'
+history instead.
+
+
+>  {
+>         int ret, cnt;
+>         struct device *dev = &ctx->client->dev;
+> @@ -992,8 +1112,9 @@ static void anx7625_chip_control(struct anx7625_data *ctx, int state)
+>
+>         if (state) {
+>                 atomic_inc(&ctx->power_status);
+> -               if (atomic_read(&ctx->power_status) == 1)
+> +               if (atomic_read(&ctx->power_status) == 1) {
+>                         anx7625_power_on_init(ctx);
+> +               }
+
+This too is not a functional change, and the previous format preferred
+by the style guide.
+
+>         } else {
+>                 if (atomic_read(&ctx->power_status)) {
+>                         atomic_dec(&ctx->power_status);
+> @@ -1051,6 +1172,7 @@ static void anx7625_start_dp_work(struct anx7625_data *ctx)
+>                 return;
+>         }
+>
+> +       ctx->hpd_status = 1;
+>         ctx->hpd_high_cnt++;
+>
+>         /* Not support HDCP */
+> @@ -1060,8 +1182,10 @@ static void anx7625_start_dp_work(struct anx7625_data *ctx)
+>         ret |= anx7625_write_or(ctx, ctx->i2c.rx_p1_client, 0xec, 0x10);
+>         /* Interrupt for DRM */
+>         ret |= anx7625_write_or(ctx, ctx->i2c.rx_p1_client, 0xff, 0x01);
+> -       if (ret < 0)
+> +       if (ret < 0) {
+> +               DRM_DEV_ERROR(dev, "fail to setting HDCP/auth\n");
+>                 return;
+> +       }
+>
+>         ret = anx7625_reg_read(ctx, ctx->i2c.rx_p1_client, 0x86);
+>         if (ret < 0)
+> @@ -1080,6 +1204,10 @@ static void anx7625_hpd_polling(struct anx7625_data *ctx)
+>         int ret, val;
+>         struct device *dev = &ctx->client->dev;
+>
+> +       /* Interrupt mode, no need poll HPD status, just return */
+> +       if (ctx->pdata.intp_irq)
+> +               return;
+> +
+>         if (atomic_read(&ctx->power_status) != 1) {
+>                 DRM_DEV_DEBUG_DRIVER(dev, "No need to poling HPD status.\n");
+>                 return;
+> @@ -1130,6 +1258,21 @@ static void anx7625_remove_edid(struct anx7625_data *ctx)
+>         ctx->slimport_edid_p.edid_block_num = -1;
+>  }
+>
+> +static void anx7625_dp_adjust_swing(struct anx7625_data *ctx)
+> +{
+> +       int i;
+> +
+> +       for (i = 0; i < ctx->pdata.dp_lane0_swing_reg_cnt; i++)
+> +               anx7625_reg_write(ctx, ctx->i2c.tx_p1_client,
+> +                                 DP_TX_LANE0_SWING_REG0 + i,
+> +                                 ctx->pdata.lane0_reg_data[i] & 0xFF);
+> +
+> +       for (i = 0; i < ctx->pdata.dp_lane1_swing_reg_cnt; i++)
+> +               anx7625_reg_write(ctx, ctx->i2c.tx_p1_client,
+> +                                 DP_TX_LANE1_SWING_REG0 + i,
+> +                                 ctx->pdata.lane1_reg_data[i] & 0xFF);
+> +}
+> +
+>  static void dp_hpd_change_handler(struct anx7625_data *ctx, bool on)
+>  {
+>         struct device *dev = &ctx->client->dev;
+> @@ -1145,9 +1288,8 @@ static void dp_hpd_change_handler(struct anx7625_data *ctx, bool on)
+>         } else {
+>                 DRM_DEV_DEBUG_DRIVER(dev, " HPD high\n");
+>                 anx7625_start_dp_work(ctx);
+> +               anx7625_dp_adjust_swing(ctx);
+>         }
+> -
+> -       ctx->hpd_status = 1;
+>  }
+>
+>  static int anx7625_hpd_change_detect(struct anx7625_data *ctx)
+> @@ -1224,20 +1366,69 @@ static irqreturn_t anx7625_intr_hpd_isr(int irq, void *data)
+>         return IRQ_HANDLED;
+>  }
+>
+> +static int anx7625_get_swing_setting(struct device *dev,
+> +                                    struct anx7625_platform_data *pdata)
+> +{
+> +       int num_regs;
+> +
+> +       if (of_get_property(dev->of_node,
+> +                           "analogix,lane0-swing", &num_regs)) {
+> +               if (num_regs > DP_TX_SWING_REG_CNT)
+> +                       num_regs = DP_TX_SWING_REG_CNT;
+> +
+> +               pdata->dp_lane0_swing_reg_cnt = num_regs;
+> +               of_property_read_u32_array(dev->of_node, "analogix,lane0-swing",
+> +                                          pdata->lane0_reg_data, num_regs);
+> +       }
+> +
+> +       if (of_get_property(dev->of_node,
+> +                           "analogix,lane1-swing", &num_regs)) {
+> +               if (num_regs > DP_TX_SWING_REG_CNT)
+> +                       num_regs = DP_TX_SWING_REG_CNT;
+> +
+> +               pdata->dp_lane1_swing_reg_cnt = num_regs;
+> +               of_property_read_u32_array(dev->of_node, "analogix,lane1-swing",
+> +                                          pdata->lane1_reg_data, num_regs);
+> +       }
+> +
+> +       return 0;
+> +}
+> +
+>  static int anx7625_parse_dt(struct device *dev,
+>                             struct anx7625_platform_data *pdata)
+>  {
+>         struct device_node *np = dev->of_node;
+>         struct drm_panel *panel;
+>         int ret;
+> +       int bus_type;
+> +
+> +       anx7625_get_swing_setting(dev, pdata);
+>
+> +       pdata->is_dpi = 1; /* default dpi mode */
+>         pdata->mipi_host_node = of_graph_get_remote_node(np, 0, 0);
+>         if (!pdata->mipi_host_node) {
+>                 DRM_DEV_ERROR(dev, "fail to get internal panel.\n");
+>                 return -ENODEV;
+>         }
+>
+> -       DRM_DEV_DEBUG_DRIVER(dev, "found dsi host node.\n");
+> +       if (of_property_read_u32(pdata->mipi_host_node, "bus-type", &bus_type))
+> +               bus_type = 0;
+> +
+> +       if (bus_type == 5) /* bus type is Parallel(DSI) */
+> +               pdata->is_dpi = 0;
+> +
+> +       pdata->mipi_lanes = of_property_count_u32_elems(pdata->mipi_host_node,
+> +                                                       "data-lanes");
+> +       if (pdata->mipi_lanes > MAX_LANES_SUPPORT || pdata->mipi_lanes <= 0)
+> +               pdata->mipi_lanes = MAX_LANES_SUPPORT;
+> +
+
+Is this mipi_lanes change independent of the rest of this patch?
+If so, extract it to a seperate patch.
+
+> +       if (pdata->is_dpi)
+> +               DRM_DEV_DEBUG_DRIVER(dev, "found MIPI DPI host node.\n");
+> +       else
+> +               DRM_DEV_DEBUG_DRIVER(dev, "found MIPI DSI host node.\n");
+> +
+> +       if (of_property_read_bool(np, "analogix,hdcp-support"))
+> +               pdata->hdcp_support = 1;
+
+Extract hdcp_support change to separate patch.
+
+>
+>         ret = drm_of_find_panel_or_bridge(np, 1, 0, &panel, NULL);
+>         if (ret < 0) {
+> @@ -1300,9 +1491,13 @@ static enum drm_connector_status anx7625_sink_detect(struct anx7625_data *ctx)
+>  {
+>         struct device *dev = &ctx->client->dev;
+>
+> -       DRM_DEV_DEBUG_DRIVER(dev, "sink detect, return connected\n");
+> +       DRM_DEV_DEBUG_DRIVER(dev, "sink detect\n");
+> +
+> +       if (ctx->pdata.panel_bridge)
+> +               return connector_status_connected;
+>
+> -       return connector_status_connected;
+> +       return ctx->hpd_status ? connector_status_connected :
+> +                                    connector_status_disconnected;
+>  }
+>
+>  static int anx7625_attach_dsi(struct anx7625_data *ctx)
+> @@ -1330,7 +1525,7 @@ static int anx7625_attach_dsi(struct anx7625_data *ctx)
+>                 return -EINVAL;
+>         }
+>
+> -       dsi->lanes = 4;
+> +       dsi->lanes = ctx->pdata.mipi_lanes;
+
+Extract mipi_lanes change to separate patch.
+
+>         dsi->format = MIPI_DSI_FMT_RGB888;
+>         dsi->mode_flags = MIPI_DSI_MODE_VIDEO   |
+>                 MIPI_DSI_MODE_VIDEO_SYNC_PULSE  |
+> @@ -1376,10 +1571,12 @@ static int anx7625_bridge_attach(struct drm_bridge *bridge,
+>                 return -ENODEV;
+>         }
+>
+> -       err = anx7625_attach_dsi(ctx);
+> -       if (err) {
+> -               DRM_DEV_ERROR(dev, "Fail to attach to dsi : %d\n", err);
+> -               return err;
+> +       if (!ctx->pdata.is_dpi) {
+> +               err = anx7625_attach_dsi(ctx);
+> +               if (err) {
+> +                       DRM_DEV_ERROR(dev, "Fail to attach to dsi : %d\n", err);
+> +                       return err;
+> +               }
+>         }
+>
+>         if (ctx->pdata.panel_bridge) {
+> @@ -1478,6 +1675,10 @@ static bool anx7625_bridge_mode_fixup(struct drm_bridge *bridge,
+>
+>         DRM_DEV_DEBUG_DRIVER(dev, "drm mode fixup set\n");
+>
+> +       /* No need fixup for external monitor */
+> +       if (!ctx->pdata.panel_bridge)
+> +               return true;
+> +
+>         hsync = mode->hsync_end - mode->hsync_start;
+>         hfp = mode->hsync_start - mode->hdisplay;
+>         hbp = mode->htotal - mode->hsync_end;
+> @@ -1786,8 +1987,13 @@ static int anx7625_i2c_probe(struct i2c_client *client,
+>
+>         platform->bridge.funcs = &anx7625_bridge_funcs;
+>         platform->bridge.of_node = client->dev.of_node;
+> -       platform->bridge.ops = DRM_BRIDGE_OP_EDID | DRM_BRIDGE_OP_HPD;
+> -       platform->bridge.type = DRM_MODE_CONNECTOR_eDP;
+> +       platform->bridge.ops = DRM_BRIDGE_OP_EDID;
+> +       if (!platform->pdata.panel_bridge)
+> +               platform->bridge.ops |= DRM_BRIDGE_OP_HPD |
+> +                                       DRM_BRIDGE_OP_DETECT;
+> +       platform->bridge.type = platform->pdata.panel_bridge ?
+> +                                   DRM_MODE_CONNECTOR_eDP :
+> +                                   DRM_MODE_CONNECTOR_DisplayPort;
+>         drm_bridge_add(&platform->bridge);
+>
+>         DRM_DEV_DEBUG_DRIVER(dev, "probe done\n");
+> diff --git a/drivers/gpu/drm/bridge/analogix/anx7625.h b/drivers/gpu/drm/bridge/analogix/anx7625.h
+> index 193ad86..127081e 100644
+> --- a/drivers/gpu/drm/bridge/analogix/anx7625.h
+> +++ b/drivers/gpu/drm/bridge/analogix/anx7625.h
+> @@ -141,12 +141,20 @@
+>  #define  HORIZONTAL_BACK_PORCH_H      0x22  /* Bit[7:4] are reserved */
+>
+>  /******** END of I2C Address 0x72 *********/
+> +
+> +/***************************************************************/
+> +/* Register definition of device address 0x7a */
+> +#define DP_TX_SWING_REG_CNT            0x14
+> +#define DP_TX_LANE0_SWING_REG0         0x00
+> +#define DP_TX_LANE1_SWING_REG0         0x14
+> +/******** END of I2C Address 0x7a *********/
+> +
+>  /***************************************************************/
+>  /* Register definition of device address 0x7e */
+>
+>  #define  I2C_ADDR_7E_FLASH_CONTROLLER  0x7E
+>
+> -#define FLASH_LOAD_STA 0x05
+> +#define FLASH_LOAD_STA          0x05
+>  #define FLASH_LOAD_STA_CHK     BIT(7)
+>
+>  #define  XTAL_FRQ_SEL    0x3F
+> @@ -347,11 +355,20 @@ struct s_edid_data {
+>
+>  /***************** Display End *****************/
+>
+> +#define MAX_LANES_SUPPORT      4
+> +
+>  struct anx7625_platform_data {
+>         struct gpio_desc *gpio_p_on;
+>         struct gpio_desc *gpio_reset;
+>         struct drm_bridge *panel_bridge;
+>         int intp_irq;
+> +       int is_dpi;
+> +       int mipi_lanes;
+
+Extract mipi_lanes change to separate patch.
+
+> +       int hdcp_support;
+
+Extract hdcp_support change to separate patch.
+
+> +       int dp_lane0_swing_reg_cnt;
+> +       int lane0_reg_data[DP_TX_SWING_REG_CNT];
+> +       int dp_lane1_swing_reg_cnt;
+> +       int lane1_reg_data[DP_TX_SWING_REG_CNT];
+>         u32 low_power_mode;
+>         struct device_node *mipi_host_node;
+>  };
+> @@ -371,6 +388,7 @@ struct anx7625_data {
+>         atomic_t power_status;
+>         int hpd_status;
+>         int hpd_high_cnt;
+> +       int hdcp_en;
+
+Extract hdcp_support change to separate patch.
+
+>         /* Lock for work queue */
+>         struct mutex lock;
+>         struct i2c_client *client;
+> --
+> 2.7.4
+>
