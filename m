@@ -2,72 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E52D3102CE
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 03:33:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84CB83102E0
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 03:38:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230073AbhBECav (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 21:30:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45214 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229788AbhBECas (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 21:30:48 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id DD5EF64E27;
-        Fri,  5 Feb 2021 02:30:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612492207;
-        bh=wfqIdPgsn3NSemVys0jN0dRitrW+MiDaTu7Ise2p/Ig=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=jOldxq+PZmpGnqh0evk453lc4cWeQraVez3kLdLbIOiWC08C62h29uQZdMt+bGHTt
-         rOhOYX4J2h9+s8xe+rrUu6mel07YDWbioet74hu+TPGokNBfEuDDUrugwgSF/s9KVo
-         Ca1yCPu12m64DEEEqqfS0i03rovvdiN4skSz6QlEuMA7ihliP3fgY635ih6BEMyif7
-         2WzxldC7JEzCz5nPts4un1tS4orK3UY9HMKiUH6DOgzLE3RwsM8hI4RSpWz5+mqZuM
-         dR6IkedftbBu9tZrZVUELCvIH17+MmUcUhL9OAv9E8ERnTPcPNOJbWWVkn1E25O/NW
-         XlJJXYclJwGeg==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id D3EBA609F1;
-        Fri,  5 Feb 2021 02:30:07 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S229984AbhBEChl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 21:37:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41728 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229484AbhBEChi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 21:37:38 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DD33C0613D6;
+        Thu,  4 Feb 2021 18:36:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=ciHjs+jRrxK7UOBz+1nbSJbYdNtvt9f7zqlIzJkiFvs=; b=hnpcq40Tto7xSO201H6yoUJZQW
+        7+k0d0rFKmVmR4ELTYvU2IVB/Jo/q0YQ81rwoDxA31OcpKEMQq4r3XNUjDJ8NkiFsecwwmLbqLB2S
+        nNUjI2aLKw1aYyjpkFt5uLbCZ26ynXK0n17tqcq5T0DEvT859URB4Tgp5f63PBdQhyEqINdMxjVqi
+        gjtzh660wsK2aprk5pKQ8XPMRwuhnNGxlivsyXAJfdlY9yxLNaEwJMic8bpcq5K6K+KlTGH+l8ChV
+        vZ1+x0mMOmMRGJ+mbOTVFIFT8jm7O3SR4Z3h651a4pLq+EoO1+xjgakzxTOBul4M79Ii9m0H+30n2
+        G89HxS0A==;
+Received: from [2601:1c0:6280:3f0::aec2]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1l7qzN-0008VE-Go; Fri, 05 Feb 2021 02:36:53 +0000
+Subject: Re: [PATCH v3 2/2] dmabuf: Add dmabuf inode number to /proc/*/fdinfo
+To:     Kalesh Singh <kaleshsingh@google.com>
+Cc:     jannh@google.com, jeffv@google.com, keescook@chromium.org,
+        surenb@google.com, minchan@kernel.org, hridya@google.com,
+        kernel-team@android.com, Alexey Dobriyan <adobriyan@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Alexey Gladkov <gladkov.alexey@gmail.com>,
+        Anand K Mistry <amistry@google.com>,
+        NeilBrown <neilb@suse.de>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Michel Lespinasse <walken@google.com>,
+        Bernd Edlinger <bernd.edlinger@hotmail.de>,
+        Andrei Vagin <avagin@gmail.com>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org
+References: <20210205022328.481524-1-kaleshsingh@google.com>
+ <20210205022328.481524-2-kaleshsingh@google.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <b2d08c27-ae9b-16ed-3500-a4a724d563ef@infradead.org>
+Date:   Thu, 4 Feb 2021 18:36:43 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next 1/2] net: add EXPORT_INDIRECT_CALLABLE wrapper
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161249220786.5682.17535599509541721272.git-patchwork-notify@kernel.org>
-Date:   Fri, 05 Feb 2021 02:30:07 +0000
-References: <20210204181839.558951-1-brianvv@google.com>
-In-Reply-To: <20210204181839.558951-1-brianvv@google.com>
-To:     Brian Vazquez <brianvv@google.com>
-Cc:     brianvv.kernel@gmail.com, edumazet@google.com, davem@davemloft.net,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        sfr@canb.auug.org.au
+In-Reply-To: <20210205022328.481524-2-kaleshsingh@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
-
-This series was applied to netdev/net-next.git (refs/heads/master):
-
-On Thu,  4 Feb 2021 18:18:38 +0000 you wrote:
-> When a static function is annotated with INDIRECT_CALLABLE_SCOPE and
-> CONFIG_RETPOLINE is set, the static keyword is removed. Sometimes the
-> function needs to be exported but EXPORT_SYMBOL can't be used because if
-> CONFIG_RETPOLINE is not set, we will attempt to export a static symbol.
+On 2/4/21 6:23 PM, Kalesh Singh wrote:
+> If a FD refers to a DMA buffer add the DMA buffer inode number to
+> /proc/<pid>/fdinfo/<FD> and /proc/<pid>/task/<tid>/fdindo/<FD>.
 > 
-> This patch introduces a new indirect call wrapper:
-> EXPORT_INDIRECT_CALLABLE. This basically does EXPORT_SYMBOL when
-> CONFIG_RETPOLINE is set, but does nothing when it's not.
+> The dmabuf inode number allows userspace to uniquely identify the buffer
+> and avoids a dependency on /proc/<pid>/fd/* when accounting per-process
+> DMA buffer sizes.
 > 
-> [...]
+> Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
+> ---
+> Changes in v3:
+>   - Add documentation in proc.rst
 
-Here is the summary with links:
-  - [net-next,1/2] net: add EXPORT_INDIRECT_CALLABLE wrapper
-    https://git.kernel.org/netdev/net-next/c/0053859496ba
-  - [net-next,2/2] net: fix building errors on powerpc when CONFIG_RETPOLINE is not set
-    https://git.kernel.org/netdev/net-next/c/9c97921a51a0
+Hi,
+Thanks for the doc update.
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+> Changes in v2:
+>   - Update patch description
+> 
+>  Documentation/filesystems/proc.rst | 17 +++++++++++++++++
+>  drivers/dma-buf/dma-buf.c          |  1 +
+>  2 files changed, 18 insertions(+)
+> 
 
+Acked-by: Randy Dunlap <rdunlap@infradead.org> # for Documentation/filesystems/proc.rst
+
+
+-- 
+~Randy
 
