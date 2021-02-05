@@ -2,139 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AD90311723
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 00:34:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E14A0311731
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 00:38:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230379AbhBEXa4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 18:30:56 -0500
-Received: from mail-il1-f198.google.com ([209.85.166.198]:48514 "EHLO
-        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231327AbhBEOXL (ORCPT
+        id S231199AbhBEXgO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 18:36:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41254 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232161AbhBEOVm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 09:23:11 -0500
-Received: by mail-il1-f198.google.com with SMTP id n12so6650298ili.15
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 08:01:41 -0800 (PST)
+        Fri, 5 Feb 2021 09:21:42 -0500
+Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C50BC0617A7
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 07:59:18 -0800 (PST)
+Received: by mail-il1-x129.google.com with SMTP id q9so6260808ilo.1
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 07:59:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=b3zypKCzWyxay+UIu/YEc9Osf3cOdr0Kv47aU++eg2A=;
+        b=wHMwWR7atLxSylIAhPsg+XbGgy2ngza9cJiVuoTVVSRT0VYoznd3z5oa6u2NIK+423
+         7ruKeIDQbtM7op5nTyQZmCjfIzSe2FJ2ZGzZp9qJtXTFOCDKC7YrV6YS1G+qT47ZCsEG
+         yImFk7Z9WJdF99Z+PUzvlKEs+JTVCt7Ex3+iEc0Qw2h6zz/IN0CbNAY3178P1ufzwFHY
+         2+mmqmYvTt/v2G9im0KE5xrUkTPqEuSwz1sduaV6b+TdaveBM45BWwxE2wq0IMMvINFJ
+         Rn1jEa/YEN/wxt3xacyQMoyZFfx4F+KqRIkPAfe57u6t+tXRoUuhAllT1IDUT4MHIqH2
+         ONPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=N+Wsjqc3t3p+ezblFEPz3GEu/sbc+fG3bNjtE6lA99s=;
-        b=CLWwCX/IkwQjnflxV0jXAJ/pfluiPEcPtUOHOocoQcucvc23piJfcUfXbOsOJdw7lK
-         djK5C6kHQBCLcMbkXTfRAKyokIShleMxgcCjwbXMh2fBq1SAyXtYDf/xvxDhupPUEqAI
-         7nL6XuVSSqb+CiIbo25Loi8W81DQt+s7n9jLJW73DGG34aXC0TwT1FtAfokwz80B0txm
-         Xn01ZE1oQ94xvbUFIOOctIw3Rr/mKOqifjXLmo7mznogDwfp2LJMb/IV4QgH4m2hQ+6Q
-         wQ7MUS4XeOmwn/Uf95YS1Ix4/wDMsT808e3yKlem4PynP/mn5nlnIXA/qXG0V9wZn2OX
-         MLPA==
-X-Gm-Message-State: AOAM533nIjoDTP7+z6LKDF++1uR2FpZX870gW2OyXK+j8nJv1EKU2Sva
-        MEbx/qgkMtB3PQ3FnhqMBBXALmgyOH4PrBbZUL7pRGzQR4c9
-X-Google-Smtp-Source: ABdhPJxlSUOro/sF2to+ho9SVlB1eUNTr2BhrF6+fyViUGz0xVMgoV+bUkmwrXReTd3jphTZwVBkmZ8ODYi42qE0Cdcra/4/cskD
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=b3zypKCzWyxay+UIu/YEc9Osf3cOdr0Kv47aU++eg2A=;
+        b=I/bQdm3xdtNGgk0rvbwwavMFLj572S3fK+l/mlWd/FCWHW3ps1x+tEto3kEEIwX97O
+         TFTQCqBVNda+Um39LxzOv9y4crNl5as6FTD1DxyNabhMhbDqaTQiN12wh1HsXekb6D6c
+         EySpJ9TYjwxdGUwmkDrn2qBqJxtOVTiNalXTqEUDJup/TNPtxHnbz20RlwyrnXGZKHAI
+         axbBW7S/XzY4uI8xA2Cn70N+EtBsy4XCLK0G79MnPhArCa5f1bqef9p3zrqy90LtvwFc
+         q5+gGVXdp4Q62t/R+2RFSXrvPLnnvNaCmxWZDvPIT0g05Qb7KWgF18tvOoXGPED+rE47
+         ZmVQ==
+X-Gm-Message-State: AOAM532NBzpbRRQCg0wVxKccEPREtLyF/5OcJ7mtzTEgm0KZDulOi8Xf
+        F9VBKqPFyy3MpV1ywGXIdd0n5gisoAfn4qIzyYANch3EcN9Ps8Uo
+X-Google-Smtp-Source: ABdhPJxe5vVd/CExVuPqdcTkzVFPRKKdBfU/HunhfInTRU8aAUoq7Spk84lhtpbSN+V7AcZIdO4t/9CQJ0/PFYf74d8=
+X-Received: by 2002:a92:d3c7:: with SMTP id c7mr3834270ilh.137.1612534233334;
+ Fri, 05 Feb 2021 06:10:33 -0800 (PST)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:b4d:: with SMTP id f13mr3910658ilu.138.1612534218814;
- Fri, 05 Feb 2021 06:10:18 -0800 (PST)
-Date:   Fri, 05 Feb 2021 06:10:18 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000004cfe9f05ba976125@google.com>
-Subject: WARNING in mc1NUM_get_time
-From:   syzbot <syzbot+975f176f83908ae98694@syzkaller.appspotmail.com>
-To:     a.zummo@towertech.it, alexandre.belloni@bootlin.com,
-        linux-kernel@vger.kernel.org, linux-rtc@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
+References: <20210204213146.4192368-1-eric.dumazet@gmail.com>
+ <dbad0731e30c920cf4ab3458dfce3c73060e917c.camel@kernel.org>
+ <CANn89iJ4ki9m6ne0W72QZuSJsBvrv9BMf9Me5hL9gw2tUnHhWg@mail.gmail.com> <20210205130238.5741-1-alobakin@pm.me>
+In-Reply-To: <20210205130238.5741-1-alobakin@pm.me>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Fri, 5 Feb 2021 15:10:21 +0100
+Message-ID: <CANn89i+Rpxw__Yexvcaga5aQ84CjqAzPZ6FyaO4Ua1yWhB069w@mail.gmail.com>
+Subject: Re: [PATCH net] net: gro: do not keep too many GRO packets in napi->rx_list
+To:     Alexander Lobakin <alobakin@pm.me>
+Cc:     Saeed Mahameed <saeed@kernel.org>,
+        Eric Dumazet <eric.dumazet@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        John Sperbeck <jsperbeck@google.com>,
+        Jian Yang <jianyang@google.com>,
+        Maxim Mikityanskiy <maximmi@mellanox.com>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        Edward Cree <ecree@solarflare.com>,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Fri, Feb 5, 2021 at 2:03 PM Alexander Lobakin <alobakin@pm.me> wrote:
+>
 
-syzbot found the following issue on:
+>
+> It's strange why mailmap didn't pick up my active email at pm.me.
 
-HEAD commit:    dd86e7fa Merge tag 'pci-v5.11-fixes-2' of git://git.kernel..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=147f29c4d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=e83e68d0a6aba5f6
-dashboard link: https://syzkaller.appspot.com/bug?extid=975f176f83908ae98694
+I took the signatures from c80794323e82, I CCed all people involved in
+this recent patch.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+It is very rare I use scripts/get_maintainer.pl since it tends to be noisy.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+975f176f83908ae98694@syzkaller.appspotmail.com
+>
+> Anyways, this fix is correct for me. It restores the original Edward's
+> logics, but without spurious out-of-order deliveries.
+> Moreover, the pre-patch behaviour can easily be achieved by increasing
+> net.core.gro_normal_batch if needed.
+>
+> Thanks!
+>
+> Reviewed-by: Alexander Lobakin <alobakin@pm.me>
+>
 
-------------[ cut here ]------------
-WARNING: CPU: 2 PID: 11674 at drivers/rtc/rtc-mc146818-lib.c:25 mc146818_get_time+0x665/0x860 drivers/rtc/rtc-mc146818-lib.c:25
-Modules linked in:
-CPU: 2 PID: 11674 Comm: syz-executor.2 Not tainted 5.11.0-rc6-syzkaller #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-2 04/01/2014
-RIP: 0010:mc146818_get_time+0x665/0x860 drivers/rtc/rtc-mc146818-lib.c:25
-Code: eb 4e e8 4e 49 c9 fb 4c 89 e6 48 c7 c7 e0 6b b9 8b e8 0f 4f 54 03 bf 58 89 41 00 e8 75 a9 33 fe e9 d5 f9 ff ff e8 2b 49 c9 fb <0f> 0b 48 c7 c7 e0 6b b9 8b 4c 89 e6 45 31 e4 e8 e7 4e 54 03 ba 24
-RSP: 0018:ffffc90000560d68 EFLAGS: 00010046
-RAX: 0000000080010002 RBX: dffffc0000000000 RCX: 0000000000000000
-RDX: ffff88806feaa3c0 RSI: ffffffff85a98a65 RDI: 0000000000000003
-RBP: ffffc90000560e00 R08: 0000000000000001 R09: 0000000000000022
-R10: ffffffff85a98462 R11: 0000000000000000 R12: 0000000000000046
-R13: 0000000000000022 R14: ffffc90000560f18 R15: ffff888010dd8000
-FS:  0000000000000000(0000) GS:ffff88802cc00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000002c99708 CR3: 0000000066e59000 CR4: 0000000000150ee0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <IRQ>
- hpet_rtc_interrupt+0x2b0/0x380 arch/x86/kernel/hpet.c:1358
- __handle_irq_event_percpu+0x303/0x8f0 kernel/irq/handle.c:156
- handle_irq_event_percpu kernel/irq/handle.c:196 [inline]
- handle_irq_event+0x102/0x290 kernel/irq/handle.c:213
- handle_edge_irq+0x25f/0xd00 kernel/irq/chip.c:819
- asm_call_irq_on_stack+0xf/0x20
- </IRQ>
- __run_irq_on_irqstack arch/x86/include/asm/irq_stack.h:48 [inline]
- run_irq_on_irqstack_cond arch/x86/include/asm/irq_stack.h:101 [inline]
- handle_irq arch/x86/kernel/irq.c:230 [inline]
- __common_interrupt arch/x86/kernel/irq.c:249 [inline]
- common_interrupt+0x120/0x200 arch/x86/kernel/irq.c:239
- asm_common_interrupt+0x1e/0x40 arch/x86/include/asm/idtentry.h:620
-RIP: 0010:lock_release+0x3d5/0x710 kernel/locking/lockdep.c:5450
-Code: 15 02 00 00 48 c7 c7 a0 aa 4b 89 e8 f5 ac a2 07 b8 ff ff ff ff 65 0f c1 05 78 2f a9 7e 83 f8 01 0f 85 67 01 00 00 ff 34 24 9d <48> b8 00 00 00 00 00 fc ff df 48 01 c5 48 c7 45 00 00 00 00 00 c7
-RSP: 0018:ffffc90001d076d0 EFLAGS: 00000246
-RAX: 0000000000000001 RBX: 07b81204c4a70325 RCX: ffffc90001d07720
-RDX: 1ffff1100dfd55a7 RSI: 0000000000000001 RDI: 0000000000000000
-RBP: 1ffff920003a0edc R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000001 R11: 0000000000000000 R12: 0000000000000001
-R13: 0000000000000002 R14: ffff88806feaad40 R15: ffff88806feaa3c0
- zap_pte_range mm/memory.c:1264 [inline]
- zap_pmd_range mm/memory.c:1368 [inline]
- zap_pud_range mm/memory.c:1397 [inline]
- zap_p4d_range mm/memory.c:1418 [inline]
- unmap_page_range+0xe30/0x2640 mm/memory.c:1439
- unmap_single_vma+0x198/0x300 mm/memory.c:1484
- unmap_vmas+0x168/0x2e0 mm/memory.c:1516
- exit_mmap+0x2b1/0x5a0 mm/mmap.c:3220
- __mmput+0x122/0x470 kernel/fork.c:1082
- mmput+0x53/0x60 kernel/fork.c:1103
- exit_mm kernel/exit.c:501 [inline]
- do_exit+0xb6a/0x2ae0 kernel/exit.c:812
- do_group_exit+0x125/0x310 kernel/exit.c:922
- get_signal+0x427/0x20f0 kernel/signal.c:2773
- arch_do_signal_or_restart+0x2a8/0x1eb0 arch/x86/kernel/signal.c:811
- handle_signal_work kernel/entry/common.c:147 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:171 [inline]
- exit_to_user_mode_prepare+0x148/0x250 kernel/entry/common.c:201
- __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
- syscall_exit_to_user_mode+0x19/0x50 kernel/entry/common.c:302
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x465b09
-Code: Unable to access opcode bytes at RIP 0x465adf.
-RSP: 002b:00007f665e7a5218 EFLAGS: 00000246 ORIG_RAX: 00000000000000ca
-RAX: fffffffffffffe00 RBX: 000000000056bf68 RCX: 0000000000465b09
-RDX: 0000000000000000 RSI: 0000000000000080 RDI: 000000000056bf68
-RBP: 000000000056bf60 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf6c
-R13: 00007ffeb1baab0f R14: 00007f665e7a5300 R15: 0000000000022000
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Thanks.
