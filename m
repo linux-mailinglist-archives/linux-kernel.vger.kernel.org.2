@@ -2,89 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05E47310B4A
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 13:47:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FD64310B50
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 13:49:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232250AbhBEMp3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 07:45:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58506 "EHLO
+        id S232239AbhBEMri (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 07:47:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232166AbhBEMms (ORCPT
+        with ESMTP id S232230AbhBEMos (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 07:42:48 -0500
-Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EEEEC0613D6
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 04:42:08 -0800 (PST)
-Received: by mail-qt1-x835.google.com with SMTP id h16so4771817qth.11
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 04:42:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=RPdHT5qVHokClqjxnwYMrxKV50moL7VSDU0O/jdeoaM=;
-        b=Ee4TP4KLDZtCOIEMr7sg+xigoPSBTMO8gdcbWQaPa/4sXRQLdyWbeAa7U8rm859lql
-         ghD7WI1nbWZ1rE88ZgKUamr7g408Uhpn9Rmeb4hKq0r0Lk6s8i30g3I8spN/cq+1e2Ii
-         +OrJ1nil3LkoFC+ceNPQOoYxCAfn4kCMlW8etKOgscUIQkgurNQ1Aabbgy/b/gSuPw4E
-         kVgbb4Lf2Eszg3psct6P4D8oZVOVwQcnn5Y+mCmzP/u2DN66YGVDpN/yKATXvPHMnABM
-         qnVscY/td9dfN8TOmNeDOfae2iNqfEq57j/4NMZjQFvGnKkRkX2MXHc9JOuZlkp9fKpZ
-         7Z7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=RPdHT5qVHokClqjxnwYMrxKV50moL7VSDU0O/jdeoaM=;
-        b=Z0QEwmRMd61SVYt/Xs9yzagA2Ma365ytjBewHd93b/3jrItMFzsmVgqA0UuWYoLVsq
-         r9hOdQpc5sRwCpuJ9dtvlIPb4HUB9Asxb9V9LeZIWhg6f11Yw1zSWB2fWOvYaqz3DlMd
-         eocPuu/16CY89vcuqX9/NsmDETvrGq36ky42Dg49iSAEX232IYsZMQrLbEZqGUrp05Rj
-         jKXqSVqUCZMJM17jcDBUFCf5G06bXsfN+WDO4RK8uWDoBHFBbgx5fwij31oZdDBirqs9
-         caRm/4dw3dFQQoJ9SrcZPxnGdRUjw8kcn9QJKd+Rampyo9Y531RDZt4+YFTrSH0dCpZ2
-         yr3A==
-X-Gm-Message-State: AOAM530oB9870VAKx3JoqddqFbfz64oUp7aFrTF2sIrptYiVyQTuB6rz
-        LUWrCMmE1b3QSo5pqhxAuTQ=
-X-Google-Smtp-Source: ABdhPJzz+lA92PzR/BQJBWs1XArV7VCGbWoxtkaMAi0Y15HQWmKCcBZdL4w2fKOmuJYjFvbsZS9/6w==
-X-Received: by 2002:a05:622a:20c:: with SMTP id b12mr4095432qtx.208.1612528927867;
-        Fri, 05 Feb 2021 04:42:07 -0800 (PST)
-Received: from localhost.localdomain ([138.199.10.106])
-        by smtp.gmail.com with ESMTPSA id y68sm8385707qkb.132.2021.02.05.04.42.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Feb 2021 04:42:07 -0800 (PST)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: [PATCH] drivers: mtd: Better word replace a not so good word in the file mtd_blkdevs.c
-Date:   Fri,  5 Feb 2021 18:11:51 +0530
-Message-Id: <20210205124151.1386271-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.30.0
+        Fri, 5 Feb 2021 07:44:48 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93F5EC061786;
+        Fri,  5 Feb 2021 04:44:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=reHVvWwUiUHiQPTU6j13brcAJoLO5jQM1ry2BytMqcc=; b=R1n4RV0vyJLbTuLFpIHymRStJl
+        5gXDHW7EV+qn5DUve5kWhRtCEFJesHQp6Mk93U8/4/NUJPxDlOyQ+v3nvck4nZSO63/mM7DU6e1nt
+        f8VRFzRH5eLU51bByKx1jGrdBVTi7QsKLM+pqEYfQpOVRnEQ6aeQiLyDyorhJdgHOlZiTObWb6GH9
+        dZvjWBd5fpuYs9LZ8HutjAPCriMnEKv9eFpzVagqUl/Yy4krv2MUKhDtvRINJPOcAWooVUhX17MGj
+        t8+G/HTfp7JKl6LTtiYLTy0QbR/Q1pxBOmmrkv6b0uuiN7dmqndKs0rA0tYL1bxMc0RnQmQVWSipf
+        um3+K48A==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1l80Se-002ISd-K2; Fri, 05 Feb 2021 12:43:45 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 29A623012DF;
+        Fri,  5 Feb 2021 13:43:43 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 146892BC43FEE; Fri,  5 Feb 2021 13:43:43 +0100 (CET)
+Date:   Fri, 5 Feb 2021 13:43:43 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Zhimin Feng <fengzhimin@bytedance.com>
+Cc:     x86@kernel.org, kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        pbonzini@redhat.com, seanjc@google.com, vkuznets@redhat.com,
+        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
+        fweisbec@gmail.com, zhouyibo@bytedance.com,
+        zhanghaozhong@bytedance.com
+Subject: Re: [RFC: timer passthrough 5/9] KVM: vmx: use tsc_adjust to enable
+ tsc_offset timer passthrough
+Message-ID: <YB09f5oJ+sP9hiy6@hirez.programming.kicks-ass.net>
+References: <20210205100317.24174-1-fengzhimin@bytedance.com>
+ <20210205100317.24174-6-fengzhimin@bytedance.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210205100317.24174-6-fengzhimin@bytedance.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Feb 05, 2021 at 06:03:13PM +0800, Zhimin Feng wrote:
+> when in vm:
+> rdtsc = host_tsc * (TSC multiplier) + tsc_offset(<0)
+> so when vm write tsc_deadline_msr the value always less than
+> tsc stampcounter msr value, the irq never be triggered.
+> 
+> the tsc_adjust msr use as below, host execute
+> rdtsc = host_tsc + tsc_adjust
+> 
+> when vmentry, we set the tsc_adjust equal tsc_offset and vmcs
+> tsc offset filed equal 0, so the vm execute rdtsc the result like this:
+> rdtsc = host_tsc + tsc_adjust + 0
+> the tsc_deadline_msr value will equal tsc stampcounter msr and
+> the irq will trigger success.
 
+That above is unintelligible..
 
-s/fucking/invite/
+> +static void vmx_adjust_tsc_offset(struct kvm_vcpu *vcpu, bool to_host)
+> +{
+> +	u64 tsc_adjust;
+> +	struct timer_passth_info *local_timer_info;
+> +
+> +	local_timer_info = &per_cpu(passth_info, smp_processor_id());
+> +
+> +	if (to_host) {
+> +		tsc_adjust = local_timer_info->host_tsc_adjust;
+> +		wrmsrl(MSR_IA32_TSC_ADJUST, tsc_adjust);
+> +		vmcs_write64(TSC_OFFSET, vcpu->arch.tsc_offset);
+> +	} else {
+> +		rdmsrl(MSR_IA32_TSC_ADJUST, tsc_adjust);
+> +		local_timer_info->host_tsc_adjust = tsc_adjust;
+> +
+> +		wrmsrl(MSR_IA32_TSC_ADJUST, tsc_adjust + vcpu->arch.tsc_offset);
+> +		vmcs_write64(TSC_OFFSET, 0);
+> +	}
+> +}
 
+NAK
 
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
----
- drivers/mtd/mtd_blkdevs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/mtd_blkdevs.c b/drivers/mtd/mtd_blkdevs.c
-index fb8e12d590a1..756a0995e474 100644
---- a/drivers/mtd/mtd_blkdevs.c
-+++ b/drivers/mtd/mtd_blkdevs.c
-@@ -523,7 +523,7 @@ int register_mtd_blktrans(struct mtd_blktrans_ops *tr)
- 	int ret;
-
- 	/* Register the notifier if/when the first device type is
--	   registered, to prevent the link/init ordering from fucking
-+	   registered, to prevent the link/init ordering from invite
- 	   us over. */
- 	if (!blktrans_notifier.list.next)
- 		register_mtd_user(&blktrans_notifier);
---
-2.30.0
-
+This wrecks the host TSC value, any host code between this and actually
+entering that VM will observe batshit time.
