@@ -2,103 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DD693101AD
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 01:34:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 039AF3101B2
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 01:35:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231952AbhBEAdn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 19:33:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43330 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231721AbhBEAdl (ORCPT
+        id S232011AbhBEAe4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 19:34:56 -0500
+Received: from bedivere.hansenpartnership.com ([96.44.175.130]:41570 "EHLO
+        bedivere.hansenpartnership.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231913AbhBEAex (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 19:33:41 -0500
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BE83C06178A
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 16:33:01 -0800 (PST)
-Received: by mail-ot1-x32a.google.com with SMTP id s107so5293217otb.8
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 16:33:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=INZS2fcuimT0BXnMq8wYD1LULx5Le1EEbf7IEopNLx0=;
-        b=Pv74m91J/MtiUsZhXSjhl3my4w3thPaYR/MPZIMvXAMCn0QR2O6r43RUadSSK58EN3
-         +2f9MWi1GFc6oIXwAVYJUaPYkqeZ/A7bzOYrRvu5mxHMDrlOtoR9KOtRRG0Ac9QNJ5rz
-         hX//0EnqtlsOTGkHnc1iZjERuIb2qDv2K/S/VnKDTY02ALSDpG8c3UdTi1u2y/87AHJP
-         Myv50khfW6HYd+YlL3CVKj2KVObEvNQYOSF4uBvyYjf9ao45bE2msxy5ly7g91ykBP0l
-         jMHhw/2TDgYLsscEHOTVDMzrd1r3STaY7YliD7kTrj0LVzRZmIWFJxnkJyeNt6q4EN1D
-         DIlw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=INZS2fcuimT0BXnMq8wYD1LULx5Le1EEbf7IEopNLx0=;
-        b=TpmKDxwrGrUWvx8ZKRklUEHtUIfNo5K4fNyxIL6VmgJCXRFH9QKtY0YQGrtPOQa8HW
-         SYMqBa5o33AdyPoOsJK2JGKaLeZOi5U8qVo+2bXNGKp8CrYMjFnwPOkTRMJqXS0es3DN
-         ZZnAOH+AvWsHe6wtNTqyI0E1zd7ncQOX4pDomZgQigm+9xRQvdhPbVPCuKsvhLfVeaxG
-         Cc0Fh306+DYidj+Ayvs23zFD1BZuGotL8ecSNWrNoTOAuvQKetj0OsyznRckpQiY/dYc
-         x8gFM+rGcrFy26pWu4aQs+WLnGYmdg/qZ4Ku87AD7pXTVa21z8fcmPfD+hE+YbstOQ+/
-         Bgdw==
-X-Gm-Message-State: AOAM530Ag9qq2AZT5lby6yjc1rNONVogvdHvZB7BqijwqAc0e1T70JIj
-        ypPE06vwV8EUI3By7f19PGqpGu/EKz/AQg==
-X-Google-Smtp-Source: ABdhPJwLG022odMeuq1rlEptv1hjr7dnJyTECz8kl+dG8Q4j+1Z0/fOjUSMTl0P+MGwjskTQkpG/VQ==
-X-Received: by 2002:a9d:4c8b:: with SMTP id m11mr1492842otf.319.1612485180362;
-        Thu, 04 Feb 2021 16:33:00 -0800 (PST)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id p67sm688791oih.21.2021.02.04.16.32.59
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Thu, 04 Feb 2021 16:32:59 -0800 (PST)
-Date:   Thu, 4 Feb 2021 16:32:38 -0800 (PST)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Michal Hocko <mhocko@suse.com>
-cc:     Christian Koenig <christian.koenig@amd.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: Possible deny of service with memfd_create()
-In-Reply-To: <YBwrGNS+Q4JMpuom@dhcp22.suse.cz>
-Message-ID: <alpine.LSU.2.11.2102041627040.2796@eggly.anvils>
-References: <e7e6231d-8cf9-80a6-7459-5fec9ee547ba@amd.com> <YBwrGNS+Q4JMpuom@dhcp22.suse.cz>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        Thu, 4 Feb 2021 19:34:53 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by bedivere.hansenpartnership.com (Postfix) with ESMTP id 5131B1280945;
+        Thu,  4 Feb 2021 16:34:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=hansenpartnership.com; s=20151216; t=1612485252;
+        bh=ao1tCVbyRaFXodmCECuczSLWDQt1/Kn3kiGuUAeu38Y=;
+        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
+        b=pI/DlmMU8rlca1wgwBn9ISSeG91HbyGhtzrDznsum3fC3/kciuTEm+DS7bNREbSO4
+         kq1stgXIMkcZqWzZccu2CYTce+zcbfH5SG6wV/L6jfbtbVF5l005qapo/gbf//zhij
+         IIUHAAs67roxSRXM988T/gC2b2M7Gb8o8d6du/6s=
+Received: from bedivere.hansenpartnership.com ([127.0.0.1])
+        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id jNbf3Z_B-f4N; Thu,  4 Feb 2021 16:34:12 -0800 (PST)
+Received: from jarvis.int.hansenpartnership.com (unknown [IPv6:2601:600:8280:66d1::c447])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id AD6D41280935;
+        Thu,  4 Feb 2021 16:34:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=hansenpartnership.com; s=20151216; t=1612485252;
+        bh=ao1tCVbyRaFXodmCECuczSLWDQt1/Kn3kiGuUAeu38Y=;
+        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
+        b=pI/DlmMU8rlca1wgwBn9ISSeG91HbyGhtzrDznsum3fC3/kciuTEm+DS7bNREbSO4
+         kq1stgXIMkcZqWzZccu2CYTce+zcbfH5SG6wV/L6jfbtbVF5l005qapo/gbf//zhij
+         IIUHAAs67roxSRXM988T/gC2b2M7Gb8o8d6du/6s=
+Message-ID: <7308e5e9f51501bd92cced8f28ff6130c976b3ed.camel@HansenPartnership.com>
+Subject: Re: [PATCH v3 2/2] tpm: in tpm2_del_space check if ops pointer is
+ still valid
+From:   James Bottomley <James.Bottomley@HansenPartnership.com>
+To:     Lino Sanfilippo <LinoSanfilippo@gmx.de>, peterhuewe@gmx.de,
+        jarkko@kernel.org
+Cc:     jgg@ziepe.ca, stefanb@linux.vnet.ibm.com, stable@vger.kernel.org,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lino Sanfilippo <l.sanfilippo@kunbus.com>
+Date:   Thu, 04 Feb 2021 16:34:11 -0800
+In-Reply-To: <1612482643-11796-3-git-send-email-LinoSanfilippo@gmx.de>
+References: <1612482643-11796-1-git-send-email-LinoSanfilippo@gmx.de>
+         <1612482643-11796-3-git-send-email-LinoSanfilippo@gmx.de>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 4 Feb 2021, Michal Hocko wrote:
-> On Thu 04-02-21 17:32:20, Christian Koenig wrote:
-> > Hi Michal,
-> > 
-> > as requested in the other mail thread the following sample code gets my test
-> > system down within seconds.
-> > 
-> > The issue is that the memory allocated for the file descriptor is not
-> > accounted to the process allocating it, so the OOM killer pics whatever
-> > process it things is good but never my small test program.
-> > 
-> > Since memfd_create() doesn't need any special permission this is a rather
-> > nice deny of service and as far as I can see also works with a standard
-> > Ubuntu 5.4.0-65-generic kernel.
+On Fri, 2021-02-05 at 00:50 +0100, Lino Sanfilippo wrote:
+> From: Lino Sanfilippo <l.sanfilippo@kunbus.com>
 > 
-> Thanks for following up. This is really nasty but now that I am looking
-> at it more closely, this is not really different from tmpfs in general.
-> You are free to create files and eat the memory without being accounted
-> for that memory because that is not seen as your memory from the sysstem
-> POV. You would have to map that memory to be part of your rss.
+> In tpm2_del_space() chip->ops is used for flushing the sessions.
+> However
+> this function may be called after tpm_chip_unregister() which sets
+> the chip->ops pointer to NULL.
+> Avoid a possible NULL pointer dereference by checking if chip->ops is
+> still
+> valid before accessing it.
 > 
-> The only existing protection right now is to use memoery cgroup
-> controller because the tmpfs memory is accounted to the process which
-> faults the memory in (or write to the file).
+> Fixes: a3fbfae82b4c ("tpm: take TPM chip power gating out of
+> tpm_transmit()")
+> Signed-off-by: Lino Sanfilippo <l.sanfilippo@kunbus.com>
+> ---
+>  drivers/char/tpm/tpm2-space.c | 15 ++++++++++-----
+>  1 file changed, 10 insertions(+), 5 deletions(-)
 > 
-> I am not sure there is a good way to handle this in general
-> unfortunatelly. Shmem is is just tricky (e.g. how to you deal with left
-> overs after the fd is closed?). Maybe memfd_create can be more clever
-> and account memory to all owners of the fd but even that sounds far from
-> trivial from the accounting POV. It is true that tmpfs can at least
-> control who can write to it which is not the case for memfd but then we
-> hit the backward compatibility wall.
+> diff --git a/drivers/char/tpm/tpm2-space.c b/drivers/char/tpm/tpm2-
+> space.c
+> index 784b8b3..9a29a40 100644
+> --- a/drivers/char/tpm/tpm2-space.c
+> +++ b/drivers/char/tpm/tpm2-space.c
+> @@ -58,12 +58,17 @@ int tpm2_init_space(struct tpm_space *space,
+> unsigned int buf_size)
+>  
+>  void tpm2_del_space(struct tpm_chip *chip, struct tpm_space *space)
+>  {
+> -	mutex_lock(&chip->tpm_mutex);
+> -	if (!tpm_chip_start(chip)) {
+> -		tpm2_flush_sessions(chip, space);
+> -		tpm_chip_stop(chip);
+> +	down_read(&chip->ops_sem);
+> +	if (chip->ops) {
+> +		mutex_lock(&chip->tpm_mutex);
+> +		if (!tpm_chip_start(chip)) {
+> +			tpm2_flush_sessions(chip, space);
+> +			tpm_chip_stop(chip);
+> +		}
+> +		mutex_unlock(&chip->tpm_mutex);
+>  	}
+> -	mutex_unlock(&chip->tpm_mutex);
+> +	up_read(&chip->ops_sem);
+> +
+>  	kfree(space->context_buf);
+>  	kfree(space->session_buf);
+>  }
 
-Yes, no solution satisfactory, and memcg best, but don't forget
-echo 2 >/proc/sys/vm/overcommit_memory
 
-Hugh
+Actually, this still isn't right.  As I said to the last person who
+reported this, we should be doing a get/put on the ops, not rolling our
+own here:
+
+https://lore.kernel.org/linux-integrity/e7566e1e48f5be9dca034b4bfb67683b5d3cb88f.camel@HansenPartnership.com/
+
+The reporter went silent before we could get this tested, but could you
+try, please, because your patch is still hand rolling the ops get/put,
+just slightly better than it had been done previously.
+
+James
+
+
+
+
