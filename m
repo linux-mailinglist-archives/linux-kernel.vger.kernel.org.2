@@ -2,148 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEC903110A0
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 20:02:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B6223110A1
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 20:02:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229558AbhBERTJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 12:19:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51812 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233041AbhBERQl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 12:16:41 -0500
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DEA4C061756;
-        Fri,  5 Feb 2021 10:58:23 -0800 (PST)
-Received: by mail-pj1-x1030.google.com with SMTP id g15so4343804pjd.2;
-        Fri, 05 Feb 2021 10:58:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=oStFooJPSyUUPaehiSFgmVTUpU7SYl2th8Aozvagcww=;
-        b=ItJfVIaS/zVvcDySM5ApBDGERunskRhZ3z4O5TXYHyiSpMzUgrJX6WwfClue2kx3Lb
-         Iwr2Q2pLa4Dza8Uff/8DLU0E9nIaoLYGSNRAD6FYdZ4sd3NHC1SQFU8Grb4KQLGlvB3N
-         UxXj1L1A45RefWcslfKPfH43PVjvpsmHbAz4mTKH4qqdvKYjSKaAi8qv4F0QtyMFIN0n
-         R0CGBO0eYcSNT3f5V5UhdBA8hs+yhJ9swzpWm3eeuGg5ydqUZ0rVzlPiqwcg7T9/1itn
-         3QiK73GGY+pvbVp7V3Q+keN6lvy1aaceeB1fOAgFlVVkMp6wYIYe5YqedV7Bs0I2uYUg
-         t0dw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=oStFooJPSyUUPaehiSFgmVTUpU7SYl2th8Aozvagcww=;
-        b=KvjP0cIMNOKvbRMjGMQ2fjIGwMnLlME2lZk43HOzVP9RJlosiN2OASU40BUiVzk7Y5
-         jKhypH4CIfgqe7wEgOfascObAj0GPn9JiXrp6Aua999LlKKi7db4Zu/HTSp6PaxcDHVi
-         2mnbA4VgZk3UnuXTvHd5hP93/ekaY0HoyCv9kkby1sx2nL9fmj8o4qh5M/tMYQ4TXEdi
-         +74LWe0x7cj1GQAc7PfWnGRNU6UdwMP25z41ABZXMRB23jSonMzB/hix+VCqVoMMBtgW
-         JS8rW7dItlBETOlqTsySX+Kjnw0KCpXTWsl4UMIcZP+ElRibExDtnSY5ClANloTR0VB6
-         qK8Q==
-X-Gm-Message-State: AOAM531Urc7UEDbA1VQfQ4Dhzr9s7xD7BntXMn57F76KhrOFuW3sgxiA
-        Iq9RGy6iBvRjv3CVZlpdFM+lH66sCFNd17OfKcU=
-X-Google-Smtp-Source: ABdhPJw2fpaymWsQn8Lz4ksHt2GmzoGTUAPbpEI7vmF/Pxo1GqyI2pPVxQVzpfj/xlLogFp/04RgxKKeuo5zxeRUUU4=
-X-Received: by 2002:a17:902:b190:b029:df:fff2:c345 with SMTP id
- s16-20020a170902b190b02900dffff2c345mr5119652plr.17.1612551503103; Fri, 05
- Feb 2021 10:58:23 -0800 (PST)
-MIME-Version: 1.0
-References: <20210122154300.7628-1-calvin.johnson@oss.nxp.com>
- <20210122154300.7628-8-calvin.johnson@oss.nxp.com> <20210205172518.GA18214@lsv03152.swis.in-blr01.nxp.com>
- <CAHp75VdX2gZbt-eYp31wg0r+yih8omGxcTf6cMyhxjMZZYzFuQ@mail.gmail.com> <CAHp75VdEjNhj5oQTqnnOhnibBAa2CoHf1PAvJi57X0d-6LC3NQ@mail.gmail.com>
-In-Reply-To: <CAHp75VdEjNhj5oQTqnnOhnibBAa2CoHf1PAvJi57X0d-6LC3NQ@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Fri, 5 Feb 2021 20:58:06 +0200
-Message-ID: <CAHp75VcVPfgA-WS+gAH6ugrzaU9_nhRcg0pC07x7XcBha55bPg@mail.gmail.com>
-Subject: Re: [net-next PATCH v4 07/15] net: mdiobus: Introduce fwnode_mdiobus_register_phy()
-To:     Calvin Johnson <calvin.johnson@oss.nxp.com>
-Cc:     Grant Likely <grant.likely@arm.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Jeremy Linton <jeremy.linton@arm.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        Cristi Sovaiala <cristian.sovaiala@nxp.com>,
-        Florin Laurentiu Chiculita <florinlaurentiu.chiculita@nxp.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Madalin Bucur <madalin.bucur@oss.nxp.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Pieter Jansen Van Vuuren <pieter.jansenvv@bamboosystems.io>,
-        Jon <jon@solid-run.com>, Saravana Kannan <saravanak@google.com>,
+        id S233483AbhBERTd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 12:19:33 -0500
+Received: from mga02.intel.com ([134.134.136.20]:24891 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233564AbhBERQy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 12:16:54 -0500
+IronPort-SDR: uXqif6S7nFNP1YbwXUbPJGKLg83JpJKf+fKoBGiS3T6/UlSQ2xqGCWmlLGfIhKf27wo2Gqlm+N
+ +Qve09QkS3rA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9886"; a="168593699"
+X-IronPort-AV: E=Sophos;i="5.81,155,1610438400"; 
+   d="scan'208";a="168593699"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2021 10:58:36 -0800
+IronPort-SDR: PKLSDoZriGTUaK7SMMGmhgy19dl1PLEvCUb5ekv5liqF4kTxmJEPaL5VV0T3jMRlLQvtxk1XlD
+ jqrZlu7DH/0w==
+X-IronPort-AV: E=Sophos;i="5.81,155,1610438400"; 
+   d="scan'208";a="357790568"
+Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.212.95.7]) ([10.212.95.7])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2021 10:58:34 -0800
+Subject: Re: [PATCH v19 08/25] x86/mm: Introduce _PAGE_COW
+To:     Kees Cook <keescook@chromium.org>
+Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
         Randy Dunlap <rdunlap@infradead.org>,
-        "linux.cj" <linux.cj@gmail.com>,
-        Diana Madalina Craciun <diana.craciun@nxp.com>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        devicetree <devicetree@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>
+References: <20210203225547.32221-1-yu-cheng.yu@intel.com>
+ <20210203225547.32221-9-yu-cheng.yu@intel.com>
+ <202102041215.B54FCA552F@keescook>
+From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
+Message-ID: <21b1e325-a17d-c859-973d-de66c1401f19@intel.com>
+Date:   Fri, 5 Feb 2021 10:58:33 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
+MIME-Version: 1.0
+In-Reply-To: <202102041215.B54FCA552F@keescook>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 5, 2021 at 8:41 PM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
-> On Fri, Feb 5, 2021 at 8:25 PM Andy Shevchenko
-> <andy.shevchenko@gmail.com> wrote:
-> > On Fri, Feb 5, 2021 at 7:25 PM Calvin Johnson
-> > <calvin.johnson@oss.nxp.com> wrote:
-> > > On Fri, Jan 22, 2021 at 09:12:52PM +0530, Calvin Johnson wrote:
-> >
-> > ...
-> >
-> > > > +     rc = fwnode_property_match_string(child, "compatible", "ethernet-phy-ieee802.3-c45");
-> > > With ACPI, I'm facing some problem with fwnode_property_match_string(). It is
-> > > unable to detect the compatible string and returns -EPROTO.
-> > >
-> > > ACPI node for PHY4 is as below:
-> > >
-> > >  Device(PHY4) {
-> > >     Name (_ADR, 0x4)
-> > >     Name(_CRS, ResourceTemplate() {
-> > >     Interrupt(ResourceConsumer, Level, ActiveHigh, Shared)
-> > >     {
-> > >       AQR_PHY4_IT
-> > >     }
-> > >     }) // end of _CRS for PHY4
-> > >     Name (_DSD, Package () {
-> > >       ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
-> > >         Package () {
->
-> > >           Package () {"compatible", "ethernet-phy-ieee802.3-c45"}
->
-> I guess converting this to
->            Package () {"compatible", Package() {"ethernet-phy-ieee802.3-c45"}}
-> will solve it.
+On 2/4/2021 12:19 PM, Kees Cook wrote:
+> On Wed, Feb 03, 2021 at 02:55:30PM -0800, Yu-cheng Yu wrote:
+>> There is essentially no room left in the x86 hardware PTEs on some OSes
+>> (not Linux).  That left the hardware architects looking for a way to
+>> represent a new memory type (shadow stack) within the existing bits.
+>> They chose to repurpose a lightly-used state: Write=0, Dirty=1.
+>>
+>> The reason it's lightly used is that Dirty=1 is normally set by hardware
+>> and cannot normally be set by hardware on a Write=0 PTE.  Software must
+>> normally be involved to create one of these PTEs, so software can simply
+>> opt to not create them.
+>>
+>> In places where Linux normally creates Write=0, Dirty=1, it can use the
+>> software-defined _PAGE_COW in place of the hardware _PAGE_DIRTY.  In other
+>> words, whenever Linux needs to create Write=0, Dirty=1, it instead creates
+>> Write=0, Cow=1, except for shadow stack, which is Write=0, Dirty=1.  This
+>> clearly separates shadow stack from other data, and results in the
+>> following:
+>>
+>> (a) A modified, copy-on-write (COW) page: (Write=0, Cow=1)
+>> (b) A R/O page that has been COW'ed: (Write=0, Cow=1)
+>>      The user page is in a R/O VMA, and get_user_pages() needs a writable
+>>      copy.  The page fault handler creates a copy of the page and sets
+>>      the new copy's PTE as Write=0 and Cow=1.
+>> (c) A shadow stack PTE: (Write=0, Dirty=1)
+>> (d) A shared shadow stack PTE: (Write=0, Cow=1)
+>>      When a shadow stack page is being shared among processes (this happens
+>>      at fork()), its PTE is made Dirty=0, so the next shadow stack access
+>>      causes a fault, and the page is duplicated and Dirty=1 is set again.
+>>      This is the COW equivalent for shadow stack pages, even though it's
+>>      copy-on-access rather than copy-on-write.
+>> (e) A page where the processor observed a Write=1 PTE, started a write, set
+>>      Dirty=1, but then observed a Write=0 PTE.  That's possible today, but
+>>      will not happen on processors that support shadow stack.
+> 
+> What happens for "e" with/without CET? It sounds like direct writes to
+> such pages will be (correctly) rejected by the MMU?
+> 
+>>
+>> Define _PAGE_COW and update pte_*() helpers and apply the same changes to
+>> pmd and pud.
+>>
+>> After this, there are six free bits left in the 64-bit PTE, and no more
+>> free bits in the 32-bit PTE (except for PAE) and Shadow Stack is not
+>> implemented for the 32-bit kernel.
+> 
+> Are there selftests to validate this change?
+> 
 
-For the record, it doesn't mean there is no bug in the code. DT treats
-a single string as an array, but ACPI doesn't.
-And this is specific to _match_string() because it has two passes. And
-the first one fails.
-While reading a single string as an array of 1 element will work I believe.
+I have some tests to verify, for example,
 
-> > >        }
->
-> > >     })
-> > >   } // end of PHY4
-> > >
-> > >  What is see is that in acpi_data_get_property(),
-> > > propvalue->type = 0x2(ACPI_TYPE_STRING) and type = 0x4(ACPI_TYPE_PACKAGE).
-> > >
-> > > Any help please?
-> > >
-> > > fwnode_property_match_string() works fine for DT.
-> >
-> > Can you show the DT node which works and also input for the
-> > )match_string() (i.o.w what exactly you are trying to match with)?
+- After clone(), shadow stack pages are indeed copy-on-write,
+- Shadow stack pages (i.e. Write=0, Dirty=1) cannot be directly written to,
+- Shadow stack guard pages exist.
 
+These tests are now on github, but kind of messy.  I can gradually clean 
+up them and submit as selftests separately.
 
--- 
-With Best Regards,
-Andy Shevchenko
+If you are asking for the detection of the potential hardware issue 
+(that Dave Hansen talked about), then maybe we need to detect it from 
+the kernel.
+
+> I think it might be useful to more clearly describe what is considered
+> "dirty" and "writeable" in comments above the pte_helpers.
+> 
+
+Yes, I will update it.  Thanks!
+
+[...]
