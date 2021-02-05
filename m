@@ -2,289 +2,386 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BC373117B4
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 01:17:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B67D83117B5
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 01:17:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231403AbhBFAP7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 19:15:59 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:23242 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S232402AbhBEM5r (ORCPT
+        id S229684AbhBFAQn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 19:16:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33596 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231961AbhBEM6Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 07:57:47 -0500
-Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 115ChbGs184882;
-        Fri, 5 Feb 2021 07:56:59 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=GuKnSk6zgz6x3RRwM1PuFt1p4xUh+BgE7xXxBuGDMwo=;
- b=a64uTI5+QrU6b3uY/JRa5eO8Im6Ol/27palTJjlZD5Xpyh0bz7JZZxCps0eG/TgKlomu
- i0v4ktKiMw5hXdjAIwHGQsWWIS/xWKXMFlalMZ6KIyXF+LCvIYXXjehWibsj6YmbLlSb
- Kujo0A1utvK8QjsNgzuk+yDcrjq8Vo/I8Z6dBfADOxA4QiAFS4iURm0f/jaItxgx8SWW
- X1GJcZ0s+G0axMeNFn24lPTdIj8TO5+ciIevyMGM+WcZfLf8AeTYw2Nnjdp6vaXyvaQf
- azxGi9Bl9GQ2TylV4vOnY6EdmwKffH6sHxWTSHM1IT1f2vDJrgl4AmtKTruoeDhCRkUA 5w== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 36h6998b1x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 05 Feb 2021 07:56:59 -0500
-Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 115ChtEa186171;
-        Fri, 5 Feb 2021 07:56:58 -0500
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 36h6998b14-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 05 Feb 2021 07:56:58 -0500
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 115CWqU6019693;
-        Fri, 5 Feb 2021 12:56:56 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma04ams.nl.ibm.com with ESMTP id 36cy38nx2s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 05 Feb 2021 12:56:56 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 115Cusos41026016
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 5 Feb 2021 12:56:54 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EDBA1AE053;
-        Fri,  5 Feb 2021 12:56:53 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8BD83AE051;
-        Fri,  5 Feb 2021 12:56:53 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.145.52.212])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri,  5 Feb 2021 12:56:53 +0000 (GMT)
-Subject: Re: [PATCH v2 1/2] s390/kvm: extend kvm_s390_shadow_fault to return
- entry pointer
-To:     Claudio Imbrenda <imbrenda@linux.ibm.com>
-Cc:     linux-kernel@vger.kernel.org, borntraeger@de.ibm.com,
-        david@redhat.com, kvm@vger.kernel.org, linux-s390@vger.kernel.org,
-        stable@vger.kernel.org
-References: <20210202180028.876888-1-imbrenda@linux.ibm.com>
- <20210202180028.876888-2-imbrenda@linux.ibm.com>
- <16522b25-a590-fbc4-0eb6-3537d8032577@linux.ibm.com>
- <20210205131555.0b4f32d1@ibm-vm>
-From:   Janosch Frank <frankja@linux.ibm.com>
-Message-ID: <9eb63005-a11f-a56a-d7e1-c65dd9e8d9a2@linux.ibm.com>
-Date:   Fri, 5 Feb 2021 13:56:53 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Fri, 5 Feb 2021 07:58:25 -0500
+Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA1FAC0613D6;
+        Fri,  5 Feb 2021 04:57:40 -0800 (PST)
+Received: by mail-io1-xd36.google.com with SMTP id n2so6928299iom.7;
+        Fri, 05 Feb 2021 04:57:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0RR05Z4k0vMYvmm56rl/V1Apo3w8il/yUemMvO7gxfs=;
+        b=amutLEJ/aHnZm5IyuhCrWYred06eWi9DVCNqmxDnQgrEI7m5A4DpAFNZNeMJhL919Z
+         Aopz3XX/enaZZ1DcYbl7PA3GrjU30tpODnpGrrgekG3euuDP9TfRPSxLppSdGnv7uV1g
+         HuRbUDvFp2z22zMErHw//6D9zOblCvGEGjGzJEYiMiHaaAeU74hxwCn5EUNZdqein87g
+         RN+mt8j2+b39MQpF7U+jsGUL6Y5lMXdfrF+M3JYfbOzgDInMMRQIKhfMs0n/Riqw/mjT
+         g31UivF3CAH3urGpQyOUOifF8oYDQvJoEcOBBu82OInpcg6bs3RJstCTOVwotaiuHOmo
+         EtAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0RR05Z4k0vMYvmm56rl/V1Apo3w8il/yUemMvO7gxfs=;
+        b=spu76jUSyef3Qs7k9aeE9YByUzs3i/61N+XQPM4UnkUzgCjrkgEFMLWH/KPDHANnB4
+         wS0jit41kEgsI6rB4COKz5Km5ZjYsON/XgUaYnxhNzulXO8ov9DBg2bHysbOZvzeakGw
+         1WC5ZTOxNWQCyx9xHotw34s0L0PjGrAgSkUY+aPesCb1nzMof0YSrdU+6UZg2MJhXfBA
+         kVc5xV15I5PERaTIgkZ725xmNtjrLroXDHoIavSJNvkHb/1fBHrB+Q01CY+ZSO6Bwxyf
+         LF42kJJCzJxzSG05kkRmf7KdlqoE9GzLEOkeuppL90CxXbNmMQr+MfA33Dp8pAPymJdT
+         yqGA==
+X-Gm-Message-State: AOAM531hKip4f4iujlzAHmBC+yabrZMwZSIY72QkCyGmgWFuru0/WBcS
+        HvpBhBogpimunM/IGg37A0WYBLQ8CC0Oe78sL6s=
+X-Google-Smtp-Source: ABdhPJy74p92XgT8ySDtdx0i06ToVsYK8qt63gJ64u62/uz+CzEcBOiS8V8aXhMbRlslM8GSgr6kn/XUl2YfyEUveUQ=
+X-Received: by 2002:a5d:9143:: with SMTP id y3mr4090624ioq.98.1612529860066;
+ Fri, 05 Feb 2021 04:57:40 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210205131555.0b4f32d1@ibm-vm>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-02-05_07:2021-02-05,2021-02-05 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 malwarescore=0
- mlxlogscore=999 adultscore=0 lowpriorityscore=0 impostorscore=0
- phishscore=0 priorityscore=1501 suspectscore=0 mlxscore=0 clxscore=1015
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102050083
+References: <20210201145105.20459-1-alexandru.ardelean@analog.com>
+ <20210201145105.20459-9-alexandru.ardelean@analog.com> <20210204182340.00005170@Huawei.com>
+ <CA+U=DsrBMd6LmdO_gq3MT21eO2HoO0mbkZjbig600EJ=d4Q3kg@mail.gmail.com> <20210205123915.000012dc@Huawei.com>
+In-Reply-To: <20210205123915.000012dc@Huawei.com>
+From:   Alexandru Ardelean <ardeleanalex@gmail.com>
+Date:   Fri, 5 Feb 2021 14:57:29 +0200
+Message-ID: <CA+U=Dsqez7LW6vKycagZanQNcB6+3efzJChDAhaaNX1C5F7Seg@mail.gmail.com>
+Subject: Re: [PATCH v3 08/11] iio: buffer: wrap all buffer attributes into iio_dev_attr
+To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        "Hennerich, Michael" <Michael.Hennerich@analog.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        =?UTF-8?B?TnVubyBTw6E=?= <nuno.sa@analog.com>,
+        "Bogdan, Dragos" <dragos.bogdan@analog.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/5/21 1:15 PM, Claudio Imbrenda wrote:
-> On Thu, 4 Feb 2021 17:34:00 +0100
-> Janosch Frank <frankja@linux.ibm.com> wrote:
-> 
->> On 2/2/21 7:00 PM, Claudio Imbrenda wrote:
->>> Extend kvm_s390_shadow_fault to return the pointer to the valid leaf
->>> DAT table entry, or to the invalid entry.
->>>
->>> Also return some flags in the lower bits of the address:
->>> DAT_PROT: indicates that DAT protection applies because of the
->>>           protection bit in the segment (or, if EDAT, region) tables
->>> NOT_PTE: indicates that the address of the DAT table entry returned
->>>          does not refer to a PTE, but to a segment or region table.
->>>
->>> Signed-off-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
->>> Cc: stable@vger.kernel.org
->>> ---
->>>  arch/s390/kvm/gaccess.c | 26 ++++++++++++++++++++++----
->>>  arch/s390/kvm/gaccess.h |  5 ++++-
->>>  arch/s390/kvm/vsie.c    |  8 ++++----
->>>  3 files changed, 30 insertions(+), 9 deletions(-)
->>>
->>> diff --git a/arch/s390/kvm/gaccess.c b/arch/s390/kvm/gaccess.c
->>> index 6d6b57059493..2d7bcbfb185e 100644
->>> --- a/arch/s390/kvm/gaccess.c
->>> +++ b/arch/s390/kvm/gaccess.c
->>> @@ -1034,6 +1034,7 @@ static int kvm_s390_shadow_tables(struct gmap
->>> *sg, unsigned long saddr, rfte.val = ptr;
->>>  			goto shadow_r2t;
->>>  		}
->>> +		*pgt = ptr + vaddr.rfx * 8;  
->>
->> So pgt either is a table entry if rc > 0 or a pointer to the first pte
->> on rc == 0 after this change?
-> 
-> yes
-> 
->> Hrm, if it is really based on RCs than I might be able to come to
->> terms with having two things in a ptr with the name pgt. But it needs
->> a comment change.
-> 
-> will do.
-> 
->>>  		rc = gmap_read_table(parent, ptr + vaddr.rfx * 8,
->>> &rfte.val); if (rc)
->>>  			return rc;
->>> @@ -1060,6 +1061,7 @@ static int kvm_s390_shadow_tables(struct gmap
->>> *sg, unsigned long saddr, rste.val = ptr;
->>>  			goto shadow_r3t;
->>>  		}
->>> +		*pgt = ptr + vaddr.rsx * 8;
->>>  		rc = gmap_read_table(parent, ptr + vaddr.rsx * 8,
->>> &rste.val); if (rc)
->>>  			return rc;
->>> @@ -1087,6 +1089,7 @@ static int kvm_s390_shadow_tables(struct gmap
->>> *sg, unsigned long saddr, rtte.val = ptr;
->>>  			goto shadow_sgt;
->>>  		}
->>> +		*pgt = ptr + vaddr.rtx * 8;
->>>  		rc = gmap_read_table(parent, ptr + vaddr.rtx * 8,
->>> &rtte.val); if (rc)
->>>  			return rc;
->>> @@ -1123,6 +1126,7 @@ static int kvm_s390_shadow_tables(struct gmap
->>> *sg, unsigned long saddr, ste.val = ptr;
->>>  			goto shadow_pgt;
->>>  		}
->>> +		*pgt = ptr + vaddr.sx * 8;
->>>  		rc = gmap_read_table(parent, ptr + vaddr.sx * 8,
->>> &ste.val); if (rc)
->>>  			return rc;
->>> @@ -1157,6 +1161,8 @@ static int kvm_s390_shadow_tables(struct gmap
->>> *sg, unsigned long saddr,
->>>   * @vcpu: virtual cpu
->>>   * @sg: pointer to the shadow guest address space structure
->>>   * @saddr: faulting address in the shadow gmap
->>> + * @pteptr: will contain the address of the faulting DAT table
->>> entry, or of
->>> + *          the valid leaf, plus some flags  
->>
->> pteptr is not the right name if it can be two things
-> 
-> it cannot be two things there, kvm_s390_shadow_fault always returns a
-> DAT _entry_ (pte, segment, region).
+On Fri, Feb 5, 2021 at 2:40 PM Jonathan Cameron
+<Jonathan.Cameron@huawei.com> wrote:
+>
+> On Fri, 5 Feb 2021 11:17:04 +0200
+> Alexandru Ardelean <ardeleanalex@gmail.com> wrote:
+>
+> > On Thu, Feb 4, 2021 at 8:26 PM Jonathan Cameron
+> > <Jonathan.Cameron@huawei.com> wrote:
+> > >
+> > > On Mon, 1 Feb 2021 16:51:02 +0200
+> > > Alexandru Ardelean <alexandru.ardelean@analog.com> wrote:
+> > >
+> > > > This change wraps all buffer attributes into iio_dev_attr objects, and
+> > > > assigns a reference to the IIO buffer they belong to.
+> > > >
+> > > > With the addition of multiple IIO buffers per one IIO device, we need a way
+> > > > to know which IIO buffer is being enabled/disabled/controlled.
+> > > >
+> > > > We know that all buffer attributes are device_attributes. So we can wrap
+> > > > them with a iio_dev_attr types. In the iio_dev_attr type, we can also hold
+> > > > a reference to an IIO buffer.
+> > > > So, we end up being able to allocate wrapped attributes for all buffer
+> > > > attributes (even the one from other drivers).
+> > > >
+> > > > The neat part with this mechanism, is that we don't need to add any extra
+> > > > cleanup, because these attributes are being added to a dynamic list that
+> > > > will get cleaned up via iio_free_chan_devattr_list().
+> > >
+> > >
+> > > >
+> > > > With this change, the 'buffer->scan_el_dev_attr_list' list is being renamed
+> > > > to 'buffer->buffer_attr_list', effectively merging (or finalizing the
+> > > > merge) of the buffer/ & scan_elements/ attributes internally.
+> > > >
+> > > > Accessing these new buffer attributes can now be done via
+> > > > 'to_iio_dev_attr(attr)->buffer' inside the show/store handlers.
+> > >
+> > > That is going to look a bit odd in any drivers that use it given they
+> > > will appear to not be embedded.
+> > >
+> > > There seem to be very few such attributes from a quick grep, so maybe
+> > > we may want to unwind this and change all the types.   Might still need
+> > > to set .buffer for some of them though (only applying to new drivers as
+> > > clearly current ones don't care!)
+> > >
+> > > Looking at what they actually are, some perhaps shouldn't have been in the buffer
+> > > directory in the first place (with hindsight!).
+> > >
+> > > Anyhow, aside from that oddity this looks good to me.
+> >
+> > I'm a little vague here.
+> > If there is a suggestion for a change, I may have missed it.
+>
+> It was vague because I wasn't sure if it it made sense :)
+> >
+> > I'm a bit vague on the part of "we may want to unwind this and change
+> > all the types"
+> > Is it referring to something like this patch?
+> >       https://lore.kernel.org/linux-iio/20210122162529.84978-10-alexandru.ardelean@analog.com/
+>
+> Exactly, that was what I was wondering about.
 
-And that's exactly what I meant, it's not a pteptr i.e. not a (pte_t *)
-as the name would suggest.
+So, from a perspective of API for drivers, it would probably make
+sense to have those sort of store/show hook types.
+But I am leaning towards maybe moving the HW fifo stuff into IIO core somehow.
+Which would make these [new] store/show hooks unneeded [for now at least].
 
+>
+> > We could do a show/store version that takes an iio_buf_attr or
+> > iio_dev_attr parameter.
+> > But maybe at a later point?
+> > I don't feel it adds much benefit over the current usage of
+> > buffer->attrs, because we need to kmalloc these iio_dev_attr anyways
+> > to store the reference to the iio_buffer.
+> >
+> > I would have liked to get rid of these user/external buffer->attrs.
+> > That would have made things easier.
+> >
+> > But, it looks like there are several drivers using them.
+> > I usually find them by grepping for iio_triggered_buffer_setup_ext
+> > It's only 5 drivers that provide these attributes.
+> > It used to be a bit easier to find them by grepping
+> > iio_buffer_set_attrs(), but I removed that.
+>
+> We could look at whether some can be brought into the core.  They tend
+> to be around hwfifo parameters. Those could be specific to individual
+> buffers rather than device wide so at least some of them are correctly
+> placed in the buffer directory (I think - I've argued with myself about
+> this a few times in the past).
 
-> 
->>>   *
->>>   * Returns: - 0 if the shadow fault was successfully resolved
->>>   *	    - > 0 (pgm exception code) on exceptions while
->>> faulting @@ -1165,11 +1171,11 @@ static int
->>> kvm_s390_shadow_tables(struct gmap *sg, unsigned long saddr,
->>>   *	    - -ENOMEM if out of memory
->>>   */
->>>  int kvm_s390_shadow_fault(struct kvm_vcpu *vcpu, struct gmap *sg,
->>> -			  unsigned long saddr)
->>> +			  unsigned long saddr, unsigned long
->>> *pteptr) {
->>>  	union vaddress vaddr;
->>>  	union page_table_entry pte;
->>> -	unsigned long pgt;
->>> +	unsigned long pgt = 0;
->>>  	int dat_protection, fake;
->>>  	int rc;
->>>  
->>> @@ -1191,8 +1197,20 @@ int kvm_s390_shadow_fault(struct kvm_vcpu
->>> *vcpu, struct gmap *sg, pte.val = pgt + vaddr.px * PAGE_SIZE;
->>>  		goto shadow_page;
->>>  	}
->>> -	if (!rc)
->>> -		rc = gmap_read_table(sg->parent, pgt + vaddr.px *
->>> 8, &pte.val); +
->>> +	switch (rc) {
->>> +	case PGM_SEGMENT_TRANSLATION:
->>> +	case PGM_REGION_THIRD_TRANS:
->>> +	case PGM_REGION_SECOND_TRANS:
->>> +	case PGM_REGION_FIRST_TRANS:
->>> +		pgt |= NOT_PTE;  
->>
->> GACC_TRANSL_ENTRY_INV ?
-> 
-> no, this is only for non-pte entries
-> 
->>> +		break;
->>> +	case 0:
->>> +		pgt += vaddr.px * 8;
->>> +		rc = gmap_read_table(sg->parent, pgt, &pte.val);
->>> +	}
->>> +	if (*pteptr)
->>> +		*pteptr = pgt | dat_protection * DAT_PROT;
->>>  	if (!rc && pte.i)
->>>  		rc = PGM_PAGE_TRANSLATION;
->>>  	if (!rc && pte.z)
->>> diff --git a/arch/s390/kvm/gaccess.h b/arch/s390/kvm/gaccess.h
->>> index f4c51756c462..66a6e2cec97a 100644
->>> --- a/arch/s390/kvm/gaccess.h
->>> +++ b/arch/s390/kvm/gaccess.h
->>> @@ -359,7 +359,10 @@ void ipte_unlock(struct kvm_vcpu *vcpu);
->>>  int ipte_lock_held(struct kvm_vcpu *vcpu);
->>>  int kvm_s390_check_low_addr_prot_real(struct kvm_vcpu *vcpu,
->>> unsigned long gra); 
->>> +#define DAT_PROT 2  
->>
->> GACC_TRANSL_ENTRY_PROT
-> 
-> this is also only for non-pte entries
-> 
->>> +#define NOT_PTE 4
->>> +
->>>  int kvm_s390_shadow_fault(struct kvm_vcpu *vcpu, struct gmap
->>> *shadow,
->>> -			  unsigned long saddr);
->>> +			  unsigned long saddr, unsigned long
->>> *pteptr); 
->>>  #endif /* __KVM_S390_GACCESS_H */
->>> diff --git a/arch/s390/kvm/vsie.c b/arch/s390/kvm/vsie.c
->>> index c5d0a58b2c29..7db022141db3 100644
->>> --- a/arch/s390/kvm/vsie.c
->>> +++ b/arch/s390/kvm/vsie.c
->>> @@ -619,10 +619,10 @@ static int map_prefix(struct kvm_vcpu *vcpu,
->>> struct vsie_page *vsie_page) /* with mso/msl, the prefix lies at
->>> offset *mso* */ prefix += scb_s->mso;
->>>  
->>> -	rc = kvm_s390_shadow_fault(vcpu, vsie_page->gmap, prefix);
->>> +	rc = kvm_s390_shadow_fault(vcpu, vsie_page->gmap, prefix,
->>> NULL); if (!rc && (scb_s->ecb & ECB_TE))
->>>  		rc = kvm_s390_shadow_fault(vcpu, vsie_page->gmap,
->>> -					   prefix + PAGE_SIZE);
->>> +					   prefix + PAGE_SIZE,
->>> NULL); /*
->>>  	 * We don't have to mprotect, we will be called for all
->>> unshadows.
->>>  	 * SIE will detect if protection applies and trigger a
->>> validity. @@ -913,7 +913,7 @@ static int handle_fault(struct
->>> kvm_vcpu *vcpu, struct vsie_page *vsie_page)
->>> current->thread.gmap_addr, 1); 
->>>  	rc = kvm_s390_shadow_fault(vcpu, vsie_page->gmap,
->>> -				   current->thread.gmap_addr);
->>> +				   current->thread.gmap_addr,
->>> NULL); if (rc > 0) {
->>>  		rc = inject_fault(vcpu, rc,
->>>  				  current->thread.gmap_addr,
->>> @@ -935,7 +935,7 @@ static void handle_last_fault(struct kvm_vcpu
->>> *vcpu, {
->>>  	if (vsie_page->fault_addr)
->>>  		kvm_s390_shadow_fault(vcpu, vsie_page->gmap,
->>> -				      vsie_page->fault_addr);
->>> +				      vsie_page->fault_addr,
->>> NULL);  
->>
->> Ok
->>
->>>  	vsie_page->fault_addr = 0;
->>>  }
->>>  
->>>   
->>
-> 
+I think they could be brought into core.
+But they would take some time (because of testing)
+These HW Fifo attributes were copied around between drivers and ended
+being the same.
+So, some IIO core logic would make sense. It's 5 drivers now.
 
+>
+> The only oddity we'll get from current approach is callbacks appearing
+> to access a container structure that they aren't associated with in the
+> driver.  Its the sort of interface that no one would ever realize was
+> possible.
+>
+> Jonathan
+>
+> >
+> >
+> > >
+> > > Jonathan
+> > >
+> > > >
+> > > > Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+> > > > ---
+> > > >  drivers/iio/industrialio-buffer.c | 66 +++++++++++++++++++++----------
+> > > >  include/linux/iio/buffer_impl.h   |  4 +-
+> > > >  2 files changed, 48 insertions(+), 22 deletions(-)
+> > > >
+> > > > diff --git a/drivers/iio/industrialio-buffer.c b/drivers/iio/industrialio-buffer.c
+> > > > index a525e88b302f..49996bed5f4c 100644
+> > > > --- a/drivers/iio/industrialio-buffer.c
+> > > > +++ b/drivers/iio/industrialio-buffer.c
+> > > > @@ -448,7 +448,7 @@ static int iio_buffer_add_channel_sysfs(struct iio_dev *indio_dev,
+> > > >                                    IIO_SEPARATE,
+> > > >                                    &indio_dev->dev,
+> > > >                                    buffer,
+> > > > -                                  &buffer->scan_el_dev_attr_list);
+> > > > +                                  &buffer->buffer_attr_list);
+> > > >       if (ret)
+> > > >               return ret;
+> > > >       attrcount++;
+> > > > @@ -460,7 +460,7 @@ static int iio_buffer_add_channel_sysfs(struct iio_dev *indio_dev,
+> > > >                                    0,
+> > > >                                    &indio_dev->dev,
+> > > >                                    buffer,
+> > > > -                                  &buffer->scan_el_dev_attr_list);
+> > > > +                                  &buffer->buffer_attr_list);
+> > > >       if (ret)
+> > > >               return ret;
+> > > >       attrcount++;
+> > > > @@ -473,7 +473,7 @@ static int iio_buffer_add_channel_sysfs(struct iio_dev *indio_dev,
+> > > >                                            0,
+> > > >                                            &indio_dev->dev,
+> > > >                                            buffer,
+> > > > -                                          &buffer->scan_el_dev_attr_list);
+> > > > +                                          &buffer->buffer_attr_list);
+> > > >       else
+> > > >               ret = __iio_add_chan_devattr("en",
+> > > >                                            chan,
+> > > > @@ -483,7 +483,7 @@ static int iio_buffer_add_channel_sysfs(struct iio_dev *indio_dev,
+> > > >                                            0,
+> > > >                                            &indio_dev->dev,
+> > > >                                            buffer,
+> > > > -                                          &buffer->scan_el_dev_attr_list);
+> > > > +                                          &buffer->buffer_attr_list);
+> > > >       if (ret)
+> > > >               return ret;
+> > > >       attrcount++;
+> > > > @@ -495,8 +495,7 @@ static ssize_t iio_buffer_read_length(struct device *dev,
+> > > >                                     struct device_attribute *attr,
+> > > >                                     char *buf)
+> > > >  {
+> > > > -     struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+> > > > -     struct iio_buffer *buffer = indio_dev->buffer;
+> > > > +     struct iio_buffer *buffer = to_iio_dev_attr(attr)->buffer;
+> > > >
+> > > >       return sprintf(buf, "%d\n", buffer->length);
+> > > >  }
+> > > > @@ -506,7 +505,7 @@ static ssize_t iio_buffer_write_length(struct device *dev,
+> > > >                                      const char *buf, size_t len)
+> > > >  {
+> > > >       struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+> > > > -     struct iio_buffer *buffer = indio_dev->buffer;
+> > > > +     struct iio_buffer *buffer = to_iio_dev_attr(attr)->buffer;
+> > > >       unsigned int val;
+> > > >       int ret;
+> > > >
+> > > > @@ -538,8 +537,7 @@ static ssize_t iio_buffer_show_enable(struct device *dev,
+> > > >                                     struct device_attribute *attr,
+> > > >                                     char *buf)
+> > > >  {
+> > > > -     struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+> > > > -     struct iio_buffer *buffer = indio_dev->buffer;
+> > > > +     struct iio_buffer *buffer = to_iio_dev_attr(attr)->buffer;
+> > > >
+> > > >       return sprintf(buf, "%d\n", iio_buffer_is_active(buffer));
+> > > >  }
+> > > > @@ -1154,7 +1152,7 @@ static ssize_t iio_buffer_store_enable(struct device *dev,
+> > > >       int ret;
+> > > >       bool requested_state;
+> > > >       struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+> > > > -     struct iio_buffer *buffer = indio_dev->buffer;
+> > > > +     struct iio_buffer *buffer = to_iio_dev_attr(attr)->buffer;
+> > > >       bool inlist;
+> > > >
+> > > >       ret = strtobool(buf, &requested_state);
+> > > > @@ -1185,8 +1183,7 @@ static ssize_t iio_buffer_show_watermark(struct device *dev,
+> > > >                                        struct device_attribute *attr,
+> > > >                                        char *buf)
+> > > >  {
+> > > > -     struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+> > > > -     struct iio_buffer *buffer = indio_dev->buffer;
+> > > > +     struct iio_buffer *buffer = to_iio_dev_attr(attr)->buffer;
+> > > >
+> > > >       return sprintf(buf, "%u\n", buffer->watermark);
+> > > >  }
+> > > > @@ -1197,7 +1194,7 @@ static ssize_t iio_buffer_store_watermark(struct device *dev,
+> > > >                                         size_t len)
+> > > >  {
+> > > >       struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+> > > > -     struct iio_buffer *buffer = indio_dev->buffer;
+> > > > +     struct iio_buffer *buffer = to_iio_dev_attr(attr)->buffer;
+> > > >       unsigned int val;
+> > > >       int ret;
+> > > >
+> > > > @@ -1230,8 +1227,7 @@ static ssize_t iio_dma_show_data_available(struct device *dev,
+> > > >                                               struct device_attribute *attr,
+> > > >                                               char *buf)
+> > > >  {
+> > > > -     struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+> > > > -     struct iio_buffer *buffer = indio_dev->buffer;
+> > > > +     struct iio_buffer *buffer = to_iio_dev_attr(attr)->buffer;
+> > > >
+> > > >       return sprintf(buf, "%zu\n", iio_buffer_data_available(buffer));
+> > > >  }
+> > > > @@ -1256,6 +1252,26 @@ static struct attribute *iio_buffer_attrs[] = {
+> > > >       &dev_attr_data_available.attr,
+> > > >  };
+> > > >
+> > > > +#define to_dev_attr(_attr) container_of(_attr, struct device_attribute, attr)
+> > > > +
+> > > > +static struct attribute *iio_buffer_wrap_attr(struct iio_buffer *buffer,
+> > > > +                                           struct attribute *attr)
+> > > > +{
+> > > > +     struct device_attribute *dattr = to_dev_attr(attr);
+> > > > +     struct iio_dev_attr *iio_attr;
+> > > > +
+> > > > +     iio_attr = kzalloc(sizeof(*iio_attr), GFP_KERNEL);
+> > > > +     if (!iio_attr)
+> > > > +             return NULL;
+> > > > +
+> > > > +     iio_attr->buffer = buffer;
+> > > > +     memcpy(&iio_attr->dev_attr, dattr, sizeof(iio_attr->dev_attr));
+> > > > +
+> > > > +     list_add(&iio_attr->l, &buffer->buffer_attr_list);
+> > > > +
+> > > > +     return &iio_attr->dev_attr.attr;
+> > > > +}
+> > > > +
+> > > >  static int iio_buffer_register_legacy_sysfs_groups(struct iio_dev *indio_dev,
+> > > >                                                  struct attribute **buffer_attrs,
+> > > >                                                  int buffer_attrcount,
+> > > > @@ -1331,7 +1347,7 @@ static int __iio_buffer_alloc_sysfs_and_mask(struct iio_buffer *buffer,
+> > > >       }
+> > > >
+> > > >       scan_el_attrcount = 0;
+> > > > -     INIT_LIST_HEAD(&buffer->scan_el_dev_attr_list);
+> > > > +     INIT_LIST_HEAD(&buffer->buffer_attr_list);
+> > > >       channels = indio_dev->channels;
+> > > >       if (channels) {
+> > > >               /* new magic */
+> > > > @@ -1378,9 +1394,19 @@ static int __iio_buffer_alloc_sysfs_and_mask(struct iio_buffer *buffer,
+> > > >
+> > > >       buffer_attrcount += ARRAY_SIZE(iio_buffer_attrs);
+> > > >
+> > > > -     attrn = buffer_attrcount;
+> > > > +     for (i = 0; i < buffer_attrcount; i++) {
+> > > > +             struct attribute *wrapped;
+> > > > +
+> > > > +             wrapped = iio_buffer_wrap_attr(buffer, attr[i]);
+> > > > +             if (!wrapped) {
+> > > > +                     ret = -ENOMEM;
+> > > > +                     goto error_free_scan_mask;
+> > > > +             }
+> > > > +             attr[i] = wrapped;
+> > > > +     }
+> > > >
+> > > > -     list_for_each_entry(p, &buffer->scan_el_dev_attr_list, l)
+> > > > +     attrn = 0;
+> > > > +     list_for_each_entry(p, &buffer->buffer_attr_list, l)
+> > > >               attr[attrn++] = &p->dev_attr.attr;
+> > > >
+> > > >       buffer->buffer_group.name = kasprintf(GFP_KERNEL, "buffer%d", index);
+> > > > @@ -1412,7 +1438,7 @@ static int __iio_buffer_alloc_sysfs_and_mask(struct iio_buffer *buffer,
+> > > >  error_free_scan_mask:
+> > > >       bitmap_free(buffer->scan_mask);
+> > > >  error_cleanup_dynamic:
+> > > > -     iio_free_chan_devattr_list(&buffer->scan_el_dev_attr_list);
+> > > > +     iio_free_chan_devattr_list(&buffer->buffer_attr_list);
+> > > >
+> > > >       return ret;
+> > > >  }
+> > > > @@ -1443,7 +1469,7 @@ static void __iio_buffer_free_sysfs_and_mask(struct iio_buffer *buffer)
+> > > >       bitmap_free(buffer->scan_mask);
+> > > >       kfree(buffer->buffer_group.name);
+> > > >       kfree(buffer->buffer_group.attrs);
+> > > > -     iio_free_chan_devattr_list(&buffer->scan_el_dev_attr_list);
+> > > > +     iio_free_chan_devattr_list(&buffer->buffer_attr_list);
+> > > >  }
+> > > >
+> > > >  void iio_buffer_free_sysfs_and_mask(struct iio_dev *indio_dev)
+> > > > diff --git a/include/linux/iio/buffer_impl.h b/include/linux/iio/buffer_impl.h
+> > > > index 3e555e58475b..41044320e581 100644
+> > > > --- a/include/linux/iio/buffer_impl.h
+> > > > +++ b/include/linux/iio/buffer_impl.h
+> > > > @@ -97,8 +97,8 @@ struct iio_buffer {
+> > > >       /* @scan_timestamp: Does the scan mode include a timestamp. */
+> > > >       bool scan_timestamp;
+> > > >
+> > > > -     /* @scan_el_dev_attr_list: List of scan element related attributes. */
+> > > > -     struct list_head scan_el_dev_attr_list;
+> > > > +     /* @buffer_attr_list: List of buffer attributes. */
+> > > > +     struct list_head buffer_attr_list;
+> > > >
+> > > >       /*
+> > > >        * @buffer_group: Attributes of the new buffer group.
+> > >
+>
