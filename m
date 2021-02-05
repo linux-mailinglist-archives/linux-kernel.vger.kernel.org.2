@@ -2,129 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0EDB311772
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 00:51:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D40F31173B
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 00:41:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231144AbhBEXuf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 18:50:35 -0500
-Received: from mail.archlinux.org ([95.216.189.61]:43238 "EHLO
-        mail.archlinux.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232425AbhBEOQ3 (ORCPT
+        id S231147AbhBEXkj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 18:40:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40398 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232533AbhBEOUK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 09:16:29 -0500
-Received: from [IPv6:2001:8a0:f24a:dd00:4cf5:7496:69c2:e329] (unknown [IPv6:2001:8a0:f24a:dd00:4cf5:7496:69c2:e329])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: ffy00)
-        by mail.archlinux.org (Postfix) with ESMTPSA id 5474D3C79A4;
-        Fri,  5 Feb 2021 14:36:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=archlinux.org;
-        s=dkim-rsa; t=1612535769;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=BdcXeBS9qmlteXxnHhvqawgjzqYPg8DsWN42PLeY9Uw=;
-        b=SKdb0TY3NI1ktIS1bXV/VyeImO251PIuFlomMzudJzF8MDhG9MdrXsppS62EYl6vIueIlD
-        lowAbALkjsVNBh3R0hbTQgtrlRGIXDOIzRVzitFzUdR+ZbWlH6zFLuL4q9Yk8godUGN7iY
-        qQv1841GvBeVyIXqWLust8zg+A2L/E3O03lVDed/LBY9iixDwdrP9giw/MjfeYcwYWIQF4
-        5RhMx5LryNcpkY5gRXAjituzuTdaKe6Z8lu88lyrZpj1i0cEtkt52Z/rNBaFuqiD4Wk4jh
-        cHJlx8+yXqTmBNDj4WhDNaZ1J98bC0NlGyvZPqwxI6qii6U4olVT22ljnpGMGDSpY7Bmb7
-        2kxlcOvNZmsUxCnfTXcT60bVCOcHl3K2BMnaTKWdHbsu/F1nf1AE/YBx4BoUDEHerAvrXj
-        vPDFa04b6oXoa2vKFTNyc9b0+gmsLx05f8g3xUs8Nhu3YpR6oMyyxsTTpPJvWO/wltZTK0
-        62I01TekKTq+yj0kSX1wBwO+Wolh0lfhEqAhry1MEGoIIxz27nK9BLtF7on63c1CkV9wM/
-        aISUJy/3Qn+Q4o9fazqx52rBi7apO71gPqWmcu0p11FdSwmKi59wyIngsHloxBVgpYCrZt
-        6i+jmw3krTPWcmv5DMbwfKK9ccoG5gkzeTn70WqoTxceRNfx/pjh4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=archlinux.org;
-        s=dkim-ed25519; t=1612535769;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=BdcXeBS9qmlteXxnHhvqawgjzqYPg8DsWN42PLeY9Uw=;
-        b=ScRsbG7dsJuiG9yEt4pgaqc5RIZVQRXKXsBZKahEHzphpHPG5L+JkImc2rDMSkNrMZCF6U
-        Ysl0v6g7G+6AfPAA==
-Message-ID: <a80853410f48a7d29541c155bca1341bdd24a671.camel@archlinux.org>
-Subject: Re: [PATCH] HID: logitech-dj: add support for keyboard events in
- eQUAD step 4 Gaming
-From:   Filipe =?ISO-8859-1?Q?La=EDns?= <lains@archlinux.org>
-To:     Jiri Kosina <jikos@kernel.org>
-Cc:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <nycvar.YFH.7.76.2102051018370.28696@cbobk.fhfr.pm>
-References: <20210130191027.1225465-1-lains@archlinux.org>
-         <nycvar.YFH.7.76.2102051018370.28696@cbobk.fhfr.pm>
-Organization: Archlinux
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-k0whzotyicswfAMqfQHg"
-Date:   Fri, 05 Feb 2021 14:36:07 +0000
+        Fri, 5 Feb 2021 09:20:10 -0500
+Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8D5EC061D7C
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 07:57:01 -0800 (PST)
+Received: by mail-oi1-x229.google.com with SMTP id k204so6330818oih.3
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 07:57:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=KW2YxiWoUuY8qaPcgZBtVIfE9G2SZ880I/V6+RY2NjM=;
+        b=N12CL2qYs6a2FVeLxgBeR7Lp6MiE/N/1gLXkEYnhRuu3M9cI27p9vE7lykcsRajlC6
+         6f4FgBPO/JkI9yH9elY1krGGqcHBGI/Fbkgmhx9LPNDseJHpRGdbwobkatdN1lCFDEmh
+         GTwKZvr3KVeb8r6H0/ex4pFx9ly444yQ+hQXfJeQdG8Rim+UI4YKIEiCjWyqmpCpsRyE
+         146uy6CySZ7TbOzgd/YiVDEFgYMV9FExjiAM0xokhhVn0LlGYvsAWegwEKf/M11M90O7
+         QjtKPsrdqZMgQTOqWdJKfCZJq4krA6mBMoQEYnRmsw6H7ngZEt/tcqcukTaBpjriEwRq
+         xDXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=KW2YxiWoUuY8qaPcgZBtVIfE9G2SZ880I/V6+RY2NjM=;
+        b=a7HW5Z2v6xX3UUSfN4S0mZ57PptEL0kc4HslnF+BDpU86sYl0rg0A6ntMzYIrX2t02
+         3cKhO1YuHFFq6N7mHF6IIsJoiDK/2II8H45qUSczjdFl8lXG/1Glczxv0rTcKDqkf9Mr
+         uJQWZyq1+aJo1XzH92D+3TCDftD+VrDSBYGJ5cTIiB852FI3qa2mFggfLlkWrO3ExyZ6
+         C6w5EAOrMS89EJwPPsF3cGHubQAuHcHGvQ22SEJgpbZytaKSfnrtzIUGDS9gnflYQtYe
+         kXG3MzYso08i31YTyjStLxYukXaZa4gjuberyENYpUfnknq6gMiHfxWWnKUr1Nk4eO2T
+         zEsA==
+X-Gm-Message-State: AOAM532yiaBaS4yGLzfrBL7McjiUWB83wmr4aqBrBsnRA18GusRirhQI
+        jN6W++1zUJrShszwGGO5deP8Gg+JB44=
+X-Google-Smtp-Source: ABdhPJwxnLX0P2jLQp2TSikWJzseQNTQ/Sl3m2VTSjQp4jJO0x9Nl9kpAg+2awirDD+ZiHXJCIQ08Q==
+X-Received: by 2002:a17:90b:4c8c:: with SMTP id my12mr4290989pjb.29.1612536200978;
+        Fri, 05 Feb 2021 06:43:20 -0800 (PST)
+Received: from localhost (g186.222-224-165.ppp.wakwak.ne.jp. [222.224.165.186])
+        by smtp.gmail.com with ESMTPSA id g22sm9582305pfu.200.2021.02.05.06.43.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Feb 2021 06:43:20 -0800 (PST)
+Date:   Fri, 5 Feb 2021 23:43:17 +0900
+From:   Stafford Horne <shorne@gmail.com>
+To:     Jan Henrik Weinstock <jan.weinstock@rwth-aachen.de>
+Cc:     geert@linux-m68k.org, jonas@southpole.se,
+        stefan.kristiansson@saunalahti.fi, openrisc@lists.librecores.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] openrisc: use device tree to determine present cpus
+Message-ID: <20210205144317.GK2002709@lianli.shorne-pla.net>
+References: <0b26eda7-229d-3dc9-f2ae-19b9212fb0ea@rwth-aachen.de>
+ <20210129221643.GZ2002709@lianli.shorne-pla.net>
+ <2a018afc-d797-3a91-ffab-e55ae3b0a795@rwth-aachen.de>
+ <20210130230310.GC2002709@lianli.shorne-pla.net>
+ <d9f4aafc-4d65-38b0-dde0-5e155836aee1@rwth-aachen.de>
+ <20210131212752.GG2002709@lianli.shorne-pla.net>
+ <6dbc27f8-5261-59c5-acba-70f6c6a74ba1@rwth-aachen.de>
 MIME-Version: 1.0
-User-Agent: Evolution 3.38.3 
-Authentication-Results: mail.archlinux.org;
-        auth=pass smtp.auth=ffy00 smtp.mailfrom=lains@archlinux.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6dbc27f8-5261-59c5-acba-70f6c6a74ba1@rwth-aachen.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Feb 01, 2021 at 12:49:31PM +0100, Jan Henrik Weinstock wrote:
+> Use the device tree to determine the present cpus instead of assuming all
+> CONFIG_NRCPUS are actually present in the system.
+> 
+> Signed-off-by: Jan Henrik Weinstock <jan.weinstock@rwth-aachen.de>
 
---=-k0whzotyicswfAMqfQHg
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Hi Jan,
 
-On Fri, 2021-02-05 at 10:18 +0100, Jiri Kosina wrote:
-> On Sat, 30 Jan 2021, Filipe La=C3=ADns wrote:
->=20
-> > From: Filipe La=C3=ADns <lains@riseup.net>
-> >=20
-> > In e400071a805d6229223a98899e9da8c6233704a1 I added support for the
-> > receiver that comes with the G602 device, but unfortunately I screwed u=
-p
-> > during testing and it seems the keyboard events were actually not being
-> > sent to userspace.
-> > This resulted in keyboard events being broken in userspace, please
-> > backport the fix.
-> >=20
-> > The receiver uses the normal 0x01 Logitech keyboard report descriptor,
-> > as expected, so it is just a matter of flagging it as supported.
-> >=20
-> > Reported in
-> > https://github.com/libratbag/libratbag/issues/1124
-> >=20
-> > Signed-off-by: Filipe La=C3=ADns <lains@riseup.net>
->=20
-> Given this is a regression, could you please add proper Fixes: and Cc:=
-=20
-> stable tags?
->=20
-> Thank you,
->=20
+I cannot apply this patch, it seems you somehow sent it signed as a multipart
+message via Thunderbird.
 
-Done :)
-Sorry about that, I am not yet familiarized with all steps of the workflow.
+This causes errors when trying to apply, even after I tried to manually fix the
+patch mail:
 
-Cheers,
-Filipe La=C3=ADns
+    Applying: openrisc: use device tree to determine present cpus
+    error: sha1 information is lacking or useless (arch/openrisc/kernel/smp.c).
+    error: could not build fake ancestor
+    Patch failed at 0001 openrisc: use device tree to determine present cpus
 
---=-k0whzotyicswfAMqfQHg
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
+Can you send this using 'git send-email?'
 
------BEGIN PGP SIGNATURE-----
+If not I can get it applied with some work, otherwise you can point me to a git
+repo which I can pull it from.
 
-iQIzBAABCAAdFiEE0jW0leqs33gyftiw+JPGdIFqqV0FAmAdV9cACgkQ+JPGdIFq
-qV1VBg//STnnbEKSewk1aaAAqd1Z/FWysoLF2bMHMv2Q4AORetDU+oYmE/zNY0fR
-+DpspflqBfk9O1T7THJia5bHm0/bWEAu+dXGgRyJuAfof1CFJJxxs0dZn+V3Pkuh
-oauYl2+Ee20K4cbahKOnxaYNaAnh3GOa3ssxA8YLCaaYrRgR9Jf5N9jXnCSp8yGo
-X828i2u6+joOFhdcWhnzFRDC0lPEyLJoNdD/gcibfDk1b2GjtCfWAHgLO5P8d0xb
-VaViRfIhF6r5971Uh8xHCVvCATKJX9qSlAQXEX9oPtfWLUYeAZarQSVJ3yH9Sl05
-YNA/sOfnIrCKvx86eBPoFugbuVSzI0d+JzldBqPUnh1oOPOmTw4qm7hjkECl3et8
-iK0ZWYdzTd2HNN9RIxtSKT4SDuMi9HKGLwValJf5Z5yOc/nMGpg1NgaVsCBry/+1
-3ZPnTVu3gSZp8h+vN4eIRtdHuhCA+QahqCa9D58P8o0LAQy4uUSxyhhlJSa1908a
-+0Y7cYdKcOQlgEbj9vubdmvLfhucCSpjTsj4HaWVz+BnlYNy9yOSTpP8ZcbZGf9O
-pHoNLwJNZJzrSVxfhSJiM2ZXusW59xjX/s0Ilw/Z9GpPSmcFVCzf7FY07V5crrwO
-LA0vBZxxlOAwX2EnUV8FNEV7ITrivGxs429yP+bfimaTilD/Dqg=
-=6fgA
------END PGP SIGNATURE-----
-
---=-k0whzotyicswfAMqfQHg--
-
+-Stafford
