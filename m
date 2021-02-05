@@ -2,93 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E054310A88
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 12:46:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BBCF1310A8D
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 12:46:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231344AbhBELpj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 06:45:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45320 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230073AbhBELlS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 06:41:18 -0500
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51CE9C0617A7;
-        Fri,  5 Feb 2021 03:40:38 -0800 (PST)
-Received: by mail-ed1-x52f.google.com with SMTP id df22so8509856edb.1;
-        Fri, 05 Feb 2021 03:40:38 -0800 (PST)
+        id S231445AbhBELqI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 06:46:08 -0500
+Received: from mail-dm6nam10on2135.outbound.protection.outlook.com ([40.107.93.135]:27712
+        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231400AbhBELl4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 06:41:56 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=D1aE44Tl7knKV8t31D1vy8VIwQGLLtbu8SlASzKuSXhpL9sm3WQE2DIKe+MNJDmgRKpm1YgSg0ZaU3t8+S9mx66p8esuyULhWImG275tIXydX9ozAb6B9oA33GIGROGUpIN1DvhW3q2Oxf/SOxWSkVVl0UTa7yebfzWdCkUagqm8KO5Ji08513XfVeAN4dq+P7g0DHQ37ti3WZFM4rjYzqhPM60IVgMptkyObGHTsJs5Y9pZjqotsP43efOq8ACPvWnRGlYXtkqVYZFSYyna7EZWDoSqIfiilXhCe2snnA+FRhNJss26KeXEadGx+0inie0tSAC07GQRRUWc/J0aCA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=OWtteU3sm8XOgVI+PxmO6tn20zmqgORGi8ey9s8IUSE=;
+ b=mNd0HyEC3Yj6MlKIx0Rjqb8gYZEHeldNWLBrOe8Nfur/AkemJBx1SOz3+goB0I70cMRZyqncbZlS84leJD6Tl6tvZhzlYaQV7smOCm2xaSjWKg02/pFy2ZjdZzAlkUpctjggTgSACDQOodooyQoeMnG5Fpm5duCUMnBVCWXWJRfhPt1qeDAOrXbCUaxtFF7sC1SSJJzrXixTVphg153hg8SL/A7cmHmI6jlDd0vTq0UIa9178Bz4asS6kjvPiD4aCv+ZmAqxPX/NiSfyNexMEwTcL/oEzR5FEkp9ID56HVzRvJpOx8ZcxTWZIrPhOewTFGqqnl5KXJnMpKLGgl2VWQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=analogixsemi.com; dmarc=pass action=none
+ header.from=analogixsemi.com; dkim=pass header.d=analogixsemi.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=VKpw+TGxcSonBmJvYVbjnLKEXkavUls9cDkglgeREzs=;
-        b=O3iPYbX4hg0w4sjb5uql2pazoXLBRhd3nlnGtE0Z6MRxETQ9aAo04oAycLYKf7DxoS
-         Lp5IIHOM4Hs2AzazeNugfLCd7tV6c8IspQyFEHBo2aXNcAaHmC+uPaiF/lqFHN5d4gMc
-         p93QTmDSZNOoPj1Y2B7DoJKkmjV4lYoLxNSJyGBknoswt7ZOs9UQvU8MjyJo2/H24edG
-         NKR/7E29vD4TuX3bKdDJQvqKPD93QFoKUApHc4L20EzqtvScZBvqnaEBiPLeTmR3QprI
-         qXwUdPEBPowIM/FkWCwBSswuoXdKmchZoK3JvYrylAwHdwkYlfVCGrbHPkiHsrnC5ZVf
-         nfUg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=VKpw+TGxcSonBmJvYVbjnLKEXkavUls9cDkglgeREzs=;
-        b=KUlJQxrCr2GEubgupV+nPEaCeck6ggS8ud65t6XvB3EmFRBI+ZomwkTogR4YVqGVpu
-         mB1o0UQirmwyv7bBTudRsn1KnmXTbgloSCqighXv3HIKv57lo/LZyohK0RQR3TjkhXN+
-         Jz4rrxaeYA9rrAUVdT9tWIuduNNqfW6MQAnjXhbm/RwAEINkFMUH9BWnQSz1ep2FMArs
-         K2Y14DJs1dOhXLms6EP4YhUU3tAq7ITtjb4wYKytvoj342z/HwUD6IcTL3idGO717ctY
-         sSNZLZ0s/9UuD69g8cI+pUcv3avbILPKscHLngYdULXWkjfaaQ5SUzUhKXDNXu4Zrgmm
-         B0OA==
-X-Gm-Message-State: AOAM530Q8VctpeNwMX8d+uZXvLgfiUM7jDqTgbKv/AXK3zoB+FxROLLB
-        vMr7tNXe2P0DbF6ei4YRkM3UHkBh4+w=
-X-Google-Smtp-Source: ABdhPJxS81UgtOu9TvukRpaKhut4UQ+qD1CMdOAim5WvZkmqsRE4OZy3Di8ETppRgpphBwWKyT4jgA==
-X-Received: by 2002:aa7:c7d8:: with SMTP id o24mr3160923eds.121.1612525237159;
-        Fri, 05 Feb 2021 03:40:37 -0800 (PST)
-Received: from debian.home (81-204-249-205.fixed.kpn.net. [81.204.249.205])
-        by smtp.gmail.com with ESMTPSA id o4sm3883476edw.78.2021.02.05.03.40.36
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 05 Feb 2021 03:40:36 -0800 (PST)
-From:   Johan Jonker <jbx6244@gmail.com>
-To:     heiko@sntech.de
-Cc:     robh+dt@kernel.org, gregkh@linuxfoundation.org, balbi@kernel.org,
-        linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 8/8] dts64: rockchip: enable dwc3 usb for A95X Z2
-Date:   Fri,  5 Feb 2021 12:40:11 +0100
-Message-Id: <20210205114011.10381-8-jbx6244@gmail.com>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20210205114011.10381-1-jbx6244@gmail.com>
-References: <20210205114011.10381-1-jbx6244@gmail.com>
+ d=Analogixsemi.onmicrosoft.com; s=selector2-Analogixsemi-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=OWtteU3sm8XOgVI+PxmO6tn20zmqgORGi8ey9s8IUSE=;
+ b=va9hGZwEu6WlMi8CGcK+v/s2lb0EesFnergUhNQRFEC9a6mzE2kgfjjy8iuWQqBYGb+qgzt/OnzEArkofohbGyxK6mGZMoN7YZkM4kGWThQzZULxka+7bou4UiDqGpd5ADDRioc1pm9OWjoqTTLL9il/eCvze7nDwDw2GJyqqEs=
+Authentication-Results: driverdev.osuosl.org; dkim=none (message not signed)
+ header.d=none;driverdev.osuosl.org; dmarc=none action=none
+ header.from=analogixsemi.com;
+Received: from BY5PR04MB6739.namprd04.prod.outlook.com (10.186.134.72) by
+ BYAPR04MB3927.namprd04.prod.outlook.com (52.135.217.145) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3763.14; Fri, 5 Feb 2021 11:40:45 +0000
+Received: from BY5PR04MB6739.namprd04.prod.outlook.com
+ ([fe80::6481:f617:8105:491f]) by BY5PR04MB6739.namprd04.prod.outlook.com
+ ([fe80::6481:f617:8105:491f%2]) with mapi id 15.20.3825.020; Fri, 5 Feb 2021
+ 11:40:45 +0000
+Date:   Fri, 5 Feb 2021 19:40:33 +0800
+From:   Xin Ji <xji@analogixsemi.com>
+To:     Robert Foss <robert.foss@linaro.org>
+Cc:     Nicolas Boichat <drinkcat@google.com>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>, Torsten Duwe <duwe@lst.de>,
+        Vasily Khoruzhick <anarsoul@gmail.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Sheng Pan <span@analogixsemi.com>,
+        Bernie Liang <bliang@analogixsemi.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        devel@driverdev.osuosl.org
+Subject: Re: [PATCH v4 2/3] drm/bridge: anx7625: fix not correct return value
+Message-ID: <20210205114033.GC18836@zhaomy-pc>
+References: <cover.1611802321.git.xji@analogixsemi.com>
+ <23b62a447364a9047f0b1b144557e8d95f6ad7f7.1611802321.git.xji@analogixsemi.com>
+ <CAG3jFyuAixFQ0L_2zw_8Ze3cF11PFMm-sN6ZQR7=opEjWV1nNw@mail.gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAG3jFyuAixFQ0L_2zw_8Ze3cF11PFMm-sN6ZQR7=opEjWV1nNw@mail.gmail.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Originating-IP: [61.148.116.10]
+X-ClientProxiedBy: HK2PR02CA0219.apcprd02.prod.outlook.com
+ (2603:1096:201:20::31) To BY5PR04MB6739.namprd04.prod.outlook.com
+ (2603:10b6:a03:229::8)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from zhaomy-pc (61.148.116.10) by HK2PR02CA0219.apcprd02.prod.outlook.com (2603:1096:201:20::31) with Microsoft SMTP Server (version=TLS1_0, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA) id 15.20.3825.21 via Frontend Transport; Fri, 5 Feb 2021 11:40:44 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 3d5ab96c-2731-46f6-7f70-08d8c9cadfed
+X-MS-TrafficTypeDiagnostic: BYAPR04MB3927:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR04MB39278E1213355DE0770E9912C7B29@BYAPR04MB3927.namprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: HkZ2hhzgvicYOznIVfk1NYkvXVBViwsm1ekR1hh64dldEfe/uih2DNh0OspQgZgiEucT9smEsNdGW7Q86yM7wkZidr7PSnD7lzW7ep6xLgYy+uE9qyQn3SSLlsaZaV4RGIO4wXFnbKng/FO9zB0or6/A0/bAfMP3v3bShdggPIwnX34afOlqBsKmspiHCKBoL0yeHam/KHwet65VfHihK7MLGS19ObbvWRBqV+0qAnUlS7HdNf09r0OnaiHmh7H+2LZU16IaJ1KbNDq97JUfbg33UOZGYtxKpWQqzlNehGhcHSypruvmtwlyjE6vIWgS6Wqgu4Yst8Z9kEWYXQ+jBz9DuBI7bboSaUoCxPCJR8pOGpXci7mtdD/xS0VQB2wma+A9vGmAo5EY3iAtU7OzqeXvJQzAWcgWlf9Lrge7qB97MAgT9nonvuJaRVL/5wLXIBfI+Ji+yge0CMBmTiR4lTM+R4Wgor+yQsCL0nh+EW4SdCx4owFMYUnk947sePf8kQ7mf0s/pLBVuq1R8jcI/UvcIMI3uvYCzv4VNDBlATuQSC55WgLJ0H/on2+H+JGGXX1ZVa/sSEk8JVN0fTRO8w==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR04MB6739.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(39840400004)(346002)(366004)(396003)(136003)(66476007)(52116002)(4326008)(6666004)(33656002)(54906003)(83380400001)(316002)(956004)(66556008)(186003)(66946007)(2906002)(5660300002)(26005)(9686003)(1076003)(8676002)(16526019)(33716001)(86362001)(478600001)(8936002)(6916009)(6496006)(7416002)(55016002)(16060500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?VpnDkdHNL4mGhFJjQb4CNkyzO2IE/ZL1mqsJWjTPH87NocNwVJu/S+6CV9iQ?=
+ =?us-ascii?Q?wgpBFqGdpjpqwihZ0HhgFxVxTXgiIzJdvBKnPwdOoTRv8JJttLLuup7LJjiB?=
+ =?us-ascii?Q?HK/y5o4+31SS1lkLtfpZVMhLZyjg7WjYeKmNbT5Jdeqxr7r/dykLQwZzLGsI?=
+ =?us-ascii?Q?vqnfU3fLUVpEglSsqCFja9/TxTUzo2KlydlAgzRVi991IrvRidgh/ViLxUPN?=
+ =?us-ascii?Q?vu439x0Z6ru/ty4rQK69etjieGRp2ugkz3RXLmjfxsiykvDFqQM53x680B7R?=
+ =?us-ascii?Q?cHPkZxGLgPvGpHD0lEun5FI+LTsKQ3rzcBAMgqQLhenzli6lmKsOqWdBth0/?=
+ =?us-ascii?Q?TXAwUefxijndb6PzoENph4Ge8KdtNUP/JbZVsmrcbzhjgHJvSaOT5DosJqZ/?=
+ =?us-ascii?Q?OopdHia8H9lavazXLwMWxGnlTz4Z+Fhs/ZnQA21gfEtxb9Yee/pxR1MrYnKr?=
+ =?us-ascii?Q?CNxURc9xVcJPssq2+UHZ/Luj4rRlJgZbIMrDkazTk7oM+JVB4Jj+zpfbsF+U?=
+ =?us-ascii?Q?SPbQOFcglYqPmryeM4WvMFQQMIYAjlZ3Zld70+6SFl1NhY2upkXm5yGCpFUV?=
+ =?us-ascii?Q?gdNcg13tX5pQL6kPMk6TcMTeXg5GHDgzLqNvu42DqjcuHabgbfM9EouGqEQv?=
+ =?us-ascii?Q?HPjqZwxPtT9Jvz7AALodMCUDLVOf5CryAKgX9yWk8Nsl6XJ5Yl/CNAGFzRwr?=
+ =?us-ascii?Q?zfyiwUcM+h27zrvUx9uH9B3A/oYrUs885yUHg4981pLppNa6ZFbFHM6INfmA?=
+ =?us-ascii?Q?ll4Q5zrvDMr9iqPny+ujPlXbecGsdaGb3HvyGQ6tR/DilaFAbCBqBWPEhCoK?=
+ =?us-ascii?Q?0LHFsKIeH5YEVdHbmzMiVXASKPP6ZlCeKmszmDhmvNKxuvFdNEoFWsOymBLB?=
+ =?us-ascii?Q?AXjK0/eOaOmXbHJUh99DeGiseW8FewHyMZ/JXzGamzpjAJaD9+7D4XejfYLa?=
+ =?us-ascii?Q?O/ckTENi1+WXGoChQju/2J9vN+SyMqCboM2YmCqGTpICK2oiOQWtzQQL0wEg?=
+ =?us-ascii?Q?UGhEhHDHc5Zt0Be24xOBoRZKxhzF+qx5oDUv4WJbAerlLasquKrA2zikdKpB?=
+ =?us-ascii?Q?PZnFz/waSulKgLMaNGdcPHvFRTVhr7gBVzR13kX4pOZGpB6Mt5EsK7ajr63u?=
+ =?us-ascii?Q?ORF+n91t9ocVX4gJe8DDFLZ2a/xJeDoV+sPG5W5shBqaUt5Kh7XzSkl2vsw2?=
+ =?us-ascii?Q?CWhsiBMxJqSwuny5aED5oVX5XgxWzz/SJrrxssNASVFmedY15Ap2YAWMUWwN?=
+ =?us-ascii?Q?Hi9tzxCd2+aeMyYMLRbmfpkhnVh0NsmksytgpeRLA96ZbXYgtNQNOF4VYL9b?=
+ =?us-ascii?Q?fsAeProg1VK1jNgq8sjeusUx?=
+X-OriginatorOrg: analogixsemi.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3d5ab96c-2731-46f6-7f70-08d8c9cadfed
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR04MB6739.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Feb 2021 11:40:45.2874
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: b099b0b4-f26c-4cf5-9a0f-d5be9acab205
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: /TUiP025LTV9gp2LY7q+8tVEJMbzbuJnMXjGK76ciyMMNdEaoQOmgaoqlja3WBvRCMjMIFh6neM/ktv1CS6jHA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR04MB3927
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable dwc3 usb for A95X Z2.
-
-Signed-off-by: Johan Jonker <jbx6244@gmail.com>
----
-Changed V2:
-  remove node wrapper
----
- arch/arm64/boot/dts/rockchip/rk3318-a95x-z2.dts | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/rockchip/rk3318-a95x-z2.dts b/arch/arm64/boot/dts/rockchip/rk3318-a95x-z2.dts
-index 30c73ef25..e71870768 100644
---- a/arch/arm64/boot/dts/rockchip/rk3318-a95x-z2.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3318-a95x-z2.dts
-@@ -357,6 +357,11 @@
- 	status = "okay";
- };
- 
-+&usbdrd3 {
-+	dr_mode = "host";
-+	status = "okay";
-+};
-+
- &usb_host0_ehci {
- 	status = "okay";
- };
--- 
-2.11.0
-
+On Thu, Feb 04, 2021 at 01:28:30PM +0100, Robert Foss wrote:
+> Hi Xin,
+> 
+> On Thu, 28 Jan 2021 at 04:12, Xin Ji <xji@analogixsemi.com> wrote:
+> >
+> > At some time, the original code may return non zero value, force return 0
+> > if operation finished
+> 
+> Missing "." at end of line.
+Hi Rob, OK, thanks, I'll add it in the next series.
+Thanks,
+Xin
+> 
+> Other than that, this patch looks fine. Feel free to add my r-b.
+> Reviewed-by: Robert Foss <robert.foss@linaro.org>
+> 
+> >
+> > Signed-off-by: Xin Ji <xji@analogixsemi.com>
+> > ---
+> >  drivers/gpu/drm/bridge/analogix/anx7625.c | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/drivers/gpu/drm/bridge/analogix/anx7625.c b/drivers/gpu/drm/bridge/analogix/anx7625.c
+> > index 65cc059..04536cc 100644
+> > --- a/drivers/gpu/drm/bridge/analogix/anx7625.c
+> > +++ b/drivers/gpu/drm/bridge/analogix/anx7625.c
+> > @@ -189,10 +189,10 @@ static int wait_aux_op_finish(struct anx7625_data *ctx)
+> >                                AP_AUX_CTRL_STATUS);
+> >         if (val < 0 || (val & 0x0F)) {
+> >                 DRM_DEV_ERROR(dev, "aux status %02x\n", val);
+> > -               val = -EIO;
+> > +               return -EIO;
+> >         }
+> >
+> > -       return val;
+> > +       return 0;
+> >  }
+> >
+> >  static int anx7625_video_mute_control(struct anx7625_data *ctx,
+> > --
+> > 2.7.4
+> >
