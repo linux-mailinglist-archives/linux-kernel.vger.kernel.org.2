@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C33A31159D
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 23:43:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6347B3115F4
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 23:55:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232682AbhBEWgB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 17:36:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44682 "EHLO mail.kernel.org"
+        id S230160AbhBEWqj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 17:46:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43562 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232840AbhBEOyd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 09:54:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 139BF65048;
-        Fri,  5 Feb 2021 14:12:03 +0000 (UTC)
+        id S232406AbhBEOqB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 09:46:01 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F26966507A;
+        Fri,  5 Feb 2021 14:13:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612534324;
-        bh=LL5abwxLlE5Zl9tvTdkf45Ng75eLP9spXen9DvmimIc=;
+        s=korg; t=1612534391;
+        bh=Y+ixUP1Ec25lKYwt/7pjnJG/ADSoVOxNvnDCOXgwmNg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AtwdZiV8Ki4w3CtUneIam5Xb/ffdy8Z3Fy9/huDQfC0vakgqmb+SfuD24Vm8RA6c7
-         /1xipsY8hKE+H7hf4a1JCV5YNcX5Y4aVjGPcEwfbOQrbPT2L81I9H0XPlFRQWSHZLz
-         0lbeXH086gBsrET+uJL4j+M8s4mQUr5pn/erb0/0=
+        b=teZ/P5gKoV6brzr6osbe1olqLYo7IYlOmMf1qfk3NU0Lznzqaxj+HULVU0SO7QCUh
+         s1Wk1VFb3V7rLUd2z/QvF3WbhYmIT8AflmqMcpP1cef8xbMfAiaTUY6yP86hflTJa2
+         P9Be7tKGevH4VcUZ+Fr2pQoC7i06SMuiYMiFg3Cc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        ethanwu <ethanwu@synology.com>, David Sterba <dsterba@suse.com>
-Subject: [PATCH 5.4 11/32] btrfs: backref, only search backref entries from leaves of the same root
-Date:   Fri,  5 Feb 2021 15:07:26 +0100
-Message-Id: <20210205140652.826044858@linuxfoundation.org>
+        stable@vger.kernel.org, Karan Tilak Kumar <kartilak@cisco.com>,
+        Dinghao Liu <dinghao.liu@zju.edu.cn>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 20/32] scsi: fnic: Fix memleak in vnic_dev_init_devcmd2
+Date:   Fri,  5 Feb 2021 15:07:35 +0100
+Message-Id: <20210205140653.212222311@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210205140652.348864025@linuxfoundation.org>
 References: <20210205140652.348864025@linuxfoundation.org>
@@ -40,55 +41,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: ethanwu <ethanwu@synology.com>
+From: Dinghao Liu <dinghao.liu@zju.edu.cn>
 
-commit cfc0eed0ec89db7c4a8d461174cabfaa4a0912c7 upstream.
+[ Upstream commit d6e3ae76728ccde49271d9f5acfebbea0c5625a3 ]
 
-We could have some nodes/leaves in subvolume whose owner are not the
-that subvolume. In this way, when we resolve normal backrefs of that
-subvolume, we should avoid collecting those references from these blocks.
+When ioread32() returns 0xFFFFFFFF, we should execute cleanup functions
+like other error handling paths before returning.
 
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Signed-off-by: ethanwu <ethanwu@synology.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Link: https://lore.kernel.org/r/20201225083520.22015-1-dinghao.liu@zju.edu.cn
+Acked-by: Karan Tilak Kumar <kartilak@cisco.com>
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/backref.c |   12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
+ drivers/scsi/fnic/vnic_dev.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
---- a/fs/btrfs/backref.c
-+++ b/fs/btrfs/backref.c
-@@ -443,11 +443,14 @@ static int add_all_parents(struct btrfs_
- 	 *    slot == nritems.
- 	 * 2. We are searching for normal backref but bytenr of this leaf
- 	 *    matches shared data backref
-+	 * 3. The leaf owner is not equal to the root we are searching
-+	 *
- 	 * For these cases, go to the next leaf before we continue.
- 	 */
- 	eb = path->nodes[0];
- 	if (path->slots[0] >= btrfs_header_nritems(eb) ||
--	    is_shared_data_backref(preftrees, eb->start)) {
-+	    is_shared_data_backref(preftrees, eb->start) ||
-+	    ref->root_id != btrfs_header_owner(eb)) {
- 		if (time_seq == SEQ_LAST)
- 			ret = btrfs_next_leaf(root, path);
- 		else
-@@ -466,9 +469,12 @@ static int add_all_parents(struct btrfs_
+diff --git a/drivers/scsi/fnic/vnic_dev.c b/drivers/scsi/fnic/vnic_dev.c
+index 522636e946282..c8bf8c7ada6a7 100644
+--- a/drivers/scsi/fnic/vnic_dev.c
++++ b/drivers/scsi/fnic/vnic_dev.c
+@@ -444,7 +444,8 @@ int vnic_dev_init_devcmd2(struct vnic_dev *vdev)
+ 	fetch_index = ioread32(&vdev->devcmd2->wq.ctrl->fetch_index);
+ 	if (fetch_index == 0xFFFFFFFF) { /* check for hardware gone  */
+ 		pr_err("error in devcmd2 init");
+-		return -ENODEV;
++		err = -ENODEV;
++		goto err_free_wq;
+ 	}
  
- 		/*
- 		 * We are searching for normal backref but bytenr of this leaf
--		 * matches shared data backref.
-+		 * matches shared data backref, OR
-+		 * the leaf owner is not equal to the root we are searching for
- 		 */
--		if (slot == 0 && is_shared_data_backref(preftrees, eb->start)) {
-+		if (slot == 0 &&
-+		    (is_shared_data_backref(preftrees, eb->start) ||
-+		     ref->root_id != btrfs_header_owner(eb))) {
- 			if (time_seq == SEQ_LAST)
- 				ret = btrfs_next_leaf(root, path);
- 			else
+ 	/*
+@@ -460,7 +461,7 @@ int vnic_dev_init_devcmd2(struct vnic_dev *vdev)
+ 	err = vnic_dev_alloc_desc_ring(vdev, &vdev->devcmd2->results_ring,
+ 			DEVCMD2_RING_SIZE, DEVCMD2_DESC_SIZE);
+ 	if (err)
+-		goto err_free_wq;
++		goto err_disable_wq;
+ 
+ 	vdev->devcmd2->result =
+ 		(struct devcmd2_result *) vdev->devcmd2->results_ring.descs;
+@@ -481,8 +482,9 @@ int vnic_dev_init_devcmd2(struct vnic_dev *vdev)
+ 
+ err_free_desc_ring:
+ 	vnic_dev_free_desc_ring(vdev, &vdev->devcmd2->results_ring);
+-err_free_wq:
++err_disable_wq:
+ 	vnic_wq_disable(&vdev->devcmd2->wq);
++err_free_wq:
+ 	vnic_wq_free(&vdev->devcmd2->wq);
+ err_free_devcmd2:
+ 	kfree(vdev->devcmd2);
+-- 
+2.27.0
+
 
 
