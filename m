@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 761713110C9
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 20:12:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF1BA3110C8
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 20:12:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233585AbhBER2x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 12:28:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54518 "EHLO mail.kernel.org"
+        id S233560AbhBER2X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 12:28:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54516 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233480AbhBEQAH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S233478AbhBEQAH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 5 Feb 2021 11:00:07 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 13D9964FE2;
-        Fri,  5 Feb 2021 14:10:06 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1520765053;
+        Fri,  5 Feb 2021 14:12:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612534207;
-        bh=LNGWqYpA7l/BONierlFYpiJfrjAGTnboreHJTsYSzyE=;
+        s=korg; t=1612534341;
+        bh=0Jg9HhX2wgLDjUo+HzKXXr/haumhWqdQR9muR8xmCak=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jFNS+unxfHBJrlMyMeCMB+5VxgFqBK4o7lfDtotPF+mvy3J2mEk4CHj9074M/P0fl
-         nVHzRDUOD1x7ZJZYZSjhS4stbA0MrXh+AloXPsNS0fIE3Mlx8EyTu/jFiypYK7XKjq
-         vevDa9GddW+oDgsczckMj4hz4rVWJ1u1YxZNUlVo=
+        b=eNv7CtOQpW5SprQU1Ujk5Mm3V+Rzy5H5d03cuFicQFZwhrFwah0tgote2X9VfMuC8
+         AuagyGrWNV204hQPtMjU/D45QREhSHXafh6FIlpP891YXDsAFLzfHOUfFebC+2VJEo
+         p1U8TAeSC72utiIuzk0AYdFav63qvr2vqt+6SXKE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Javed Hasan <jhasan@marvell.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 27/57] scsi: libfc: Avoid invoking response handler twice if ep is already completed
-Date:   Fri,  5 Feb 2021 15:06:53 +0100
-Message-Id: <20210205140657.137294776@linuxfoundation.org>
+        stable@vger.kernel.org, Lijun Pan <ljp@linux.ibm.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 5.4 03/32] ibmvnic: Ensure that CRQ entry read are correctly ordered
+Date:   Fri,  5 Feb 2021 15:07:18 +0100
+Message-Id: <20210205140652.499953112@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210205140655.982616732@linuxfoundation.org>
-References: <20210205140655.982616732@linuxfoundation.org>
+In-Reply-To: <20210205140652.348864025@linuxfoundation.org>
+References: <20210205140652.348864025@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,91 +39,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Javed Hasan <jhasan@marvell.com>
+From: Lijun Pan <ljp@linux.ibm.com>
 
-[ Upstream commit b2b0f16fa65e910a3ec8771206bb49ee87a54ac5 ]
+commit e41aec79e62fa50f940cf222d1e9577f14e149dc upstream.
 
-A race condition exists between the response handler getting called because
-of exchange_mgr_reset() (which clears out all the active XIDs) and the
-response we get via an interrupt.
+Ensure that received Command-Response Queue (CRQ) entries are
+properly read in order by the driver. dma_rmb barrier has
+been added before accessing the CRQ descriptor to ensure
+the entire descriptor is read before processing.
 
-Sequence of events:
-
-	 rport ba0200: Port timeout, state PLOGI
-	 rport ba0200: Port entered PLOGI state from PLOGI state
-	 xid 1052: Exchange timer armed : 20000 msecs      xid timer armed here
-	 rport ba0200: Received LOGO request while in state PLOGI
-	 rport ba0200: Delete port
-	 rport ba0200: work event 3
-	 rport ba0200: lld callback ev 3
-	 bnx2fc: rport_event_hdlr: event = 3, port_id = 0xba0200
-	 bnx2fc: ba0200 - rport not created Yet!!
-	 /* Here we reset any outstanding exchanges before
-	 freeing rport using the exch_mgr_reset() */
-	 xid 1052: Exchange timer canceled
-	 /* Here we got two responses for one xid */
-	 xid 1052: invoking resp(), esb 20000000 state 3
-	 xid 1052: invoking resp(), esb 20000000 state 3
-	 xid 1052: fc_rport_plogi_resp() : ep->resp_active 2
-	 xid 1052: fc_rport_plogi_resp() : ep->resp_active 2
-
-Skip the response if the exchange is already completed.
-
-Link: https://lore.kernel.org/r/20201215194731.2326-1-jhasan@marvell.com
-Signed-off-by: Javed Hasan <jhasan@marvell.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 032c5e82847a ("Driver for IBM System i/p VNIC protocol")
+Signed-off-by: Lijun Pan <ljp@linux.ibm.com>
+Link: https://lore.kernel.org/r/20210128013442.88319-1-ljp@linux.ibm.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/scsi/libfc/fc_exch.c | 16 ++++++++++++++--
- 1 file changed, 14 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/ibm/ibmvnic.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/drivers/scsi/libfc/fc_exch.c b/drivers/scsi/libfc/fc_exch.c
-index 96a2952cf626b..a50f1eef0e0cd 100644
---- a/drivers/scsi/libfc/fc_exch.c
-+++ b/drivers/scsi/libfc/fc_exch.c
-@@ -1624,8 +1624,13 @@ static void fc_exch_recv_seq_resp(struct fc_exch_mgr *mp, struct fc_frame *fp)
- 		rc = fc_exch_done_locked(ep);
- 		WARN_ON(fc_seq_exch(sp) != ep);
- 		spin_unlock_bh(&ep->ex_lock);
--		if (!rc)
-+		if (!rc) {
- 			fc_exch_delete(ep);
-+		} else {
-+			FC_EXCH_DBG(ep, "ep is completed already,"
-+					"hence skip calling the resp\n");
-+			goto skip_resp;
-+		}
- 	}
- 
- 	/*
-@@ -1644,6 +1649,7 @@ static void fc_exch_recv_seq_resp(struct fc_exch_mgr *mp, struct fc_frame *fp)
- 	if (!fc_invoke_resp(ep, sp, fp))
- 		fc_frame_free(fp);
- 
-+skip_resp:
- 	fc_exch_release(ep);
- 	return;
- rel:
-@@ -1900,10 +1906,16 @@ static void fc_exch_reset(struct fc_exch *ep)
- 
- 	fc_exch_hold(ep);
- 
--	if (!rc)
-+	if (!rc) {
- 		fc_exch_delete(ep);
-+	} else {
-+		FC_EXCH_DBG(ep, "ep is completed already,"
-+				"hence skip calling the resp\n");
-+		goto skip_resp;
-+	}
- 
- 	fc_invoke_resp(ep, sp, ERR_PTR(-FC_EX_CLOSED));
-+skip_resp:
- 	fc_seq_set_resp(sp, NULL, ep->arg);
- 	fc_exch_release(ep);
- }
--- 
-2.27.0
-
+--- a/drivers/net/ethernet/ibm/ibmvnic.c
++++ b/drivers/net/ethernet/ibm/ibmvnic.c
+@@ -4752,6 +4752,12 @@ static void ibmvnic_tasklet(void *data)
+ 	while (!done) {
+ 		/* Pull all the valid messages off the CRQ */
+ 		while ((crq = ibmvnic_next_crq(adapter)) != NULL) {
++			/* This barrier makes sure ibmvnic_next_crq()'s
++			 * crq->generic.first & IBMVNIC_CRQ_CMD_RSP is loaded
++			 * before ibmvnic_handle_crq()'s
++			 * switch(gen_crq->first) and switch(gen_crq->cmd).
++			 */
++			dma_rmb();
+ 			ibmvnic_handle_crq(crq, adapter);
+ 			crq->generic.first = 0;
+ 		}
 
 
