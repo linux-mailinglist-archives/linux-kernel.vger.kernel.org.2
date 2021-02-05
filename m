@@ -2,144 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8186F3102C1
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 03:27:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 710FF3102C3
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 03:27:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229917AbhBECZF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 21:25:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39038 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229788AbhBECY6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 21:24:58 -0500
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47311C061793
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 18:24:18 -0800 (PST)
-Received: by mail-qv1-xf49.google.com with SMTP id k18so3781327qvj.15
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 18:24:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:cc;
-        bh=6d9ABw+2MMja8w+m/Ge5BEthUdZ4QJrI2VfEHE0lgZM=;
-        b=Wc16uuiBzr8uRjh+FFc3aIVuYhA4o0xASF2SZxYJnSmlvoMBSrBe3o+TwZR3i71wu/
-         fqI4C+NddGfKrN79A8uKvB/q6omI/GP9hEtW/sg69RyL3/2WcO4gxwzosiUilwevKO40
-         W9GedpIGi4x2wd5wgj4dMTWcXsvW6I8ncM32cwEbWi8ZNJnCsROyGUBiIZhNqKZXGMjO
-         /EVsU2QqlGJReEo8F1Rg79kqGShzlt0flDZIvLOZWrIW0e54pnTDADWfK6X72sHXMBFE
-         PzRiVNGkqfISNW+tz/s/6UL65wp2v17Qg95lrHV9rWpeAfNgdamhTwR58a+JTd0plkzx
-         Racg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:cc;
-        bh=6d9ABw+2MMja8w+m/Ge5BEthUdZ4QJrI2VfEHE0lgZM=;
-        b=Y0XPpbDPtafS83Pid6ldimvhzyKLV22Nre0gMKFR3EQJi89+WhvwNORcNPAv/bDBBm
-         LhebheyFVao9OjwDnBs4MsSC3nKWHSS657D38VZfGTWAzZ9ebJpaYWZwdrMIvnS6r21E
-         7pZIPf5vZ6PQ/rOCHvVQ8gAu8HOGFV7W2+NDwJLZC25Jl3Y7E9GfKaZWnbjQ4pOpMpp3
-         IJi1Wb3jWVEC+kYc6F4ayjNRej6xghbG0vCSvAgFAxKX+8XZg/4sJX1BxoxW9zIOwlRW
-         1c17XA0RmvYnSVESJygvqYjU9ZWiXgdWkI7k7p8+vxv5ocqnxDCNxP+5zVJmkBU18Jri
-         47AQ==
-X-Gm-Message-State: AOAM531AQPg5SK4R+uF2qd2bCW4xgmTOUm95DIAVefegDu2yrin9Auu0
-        VKx5yShRVvtQDZBewOfo83otujjgYp5Br0PbYg==
-X-Google-Smtp-Source: ABdhPJw8Yeorck2XB7ovp4pfEx707riZ2xycBS0Z28A1vOhEhNyxFRWBW6rhdYjGLZma2NqW8dSu+H8zYFEZQD05eA==
-Sender: "kaleshsingh via sendgmr" <kaleshsingh@kaleshsingh.c.googlers.com>
-X-Received: from kaleshsingh.c.googlers.com ([fda3:e722:ac3:10:14:4d90:c0a8:2145])
- (user=kaleshsingh job=sendgmr) by 2002:ad4:5606:: with SMTP id
- ca6mr2501087qvb.1.1612491857373; Thu, 04 Feb 2021 18:24:17 -0800 (PST)
-Date:   Fri,  5 Feb 2021 02:23:20 +0000
-In-Reply-To: <20210205022328.481524-1-kaleshsingh@google.com>
-Message-Id: <20210205022328.481524-2-kaleshsingh@google.com>
-Mime-Version: 1.0
-References: <20210205022328.481524-1-kaleshsingh@google.com>
-X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
-Subject: [PATCH v3 2/2] dmabuf: Add dmabuf inode number to /proc/*/fdinfo
-From:   Kalesh Singh <kaleshsingh@google.com>
-Cc:     jannh@google.com, jeffv@google.com, keescook@chromium.org,
-        surenb@google.com, minchan@kernel.org, hridya@google.com,
-        kernel-team@android.com, Kalesh Singh <kaleshsingh@google.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        "=?UTF-8?q?Christian=20K=C3=B6nig?=" <christian.koenig@amd.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Alexey Gladkov <gladkov.alexey@gmail.com>,
-        Anand K Mistry <amistry@google.com>,
-        NeilBrown <neilb@suse.de>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Michel Lespinasse <walken@google.com>,
-        Bernd Edlinger <bernd.edlinger@hotmail.de>,
-        Andrei Vagin <avagin@gmail.com>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org
-Content-Type: text/plain; charset="UTF-8"
-To:     unlisted-recipients:; (no To-header on input)
+        id S230002AbhBEC05 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 21:26:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44464 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229788AbhBEC0y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 21:26:54 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6BA5C64FA7;
+        Fri,  5 Feb 2021 02:26:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612491974;
+        bh=Tt7fPc2aMv6Er+p4iAbI7zx3LAvEwfWk/aglb/uCJF0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Uhhu5yC6OAfecCy8KlhxDFImgVpp7fiCSFdORm+7/o4Pt31v2K2BfUY7znpnXhhzg
+         oWyCuw5Tg0tnlVaTtsm6ixvVSBO2wCyMuael3yHAkbjZc8tvYQTlI3YWkE5akBlHYP
+         0l6r9zvr18ZA305g20MaM/QD6a+Tw1GRNROOo7dq4p+t1ryNt1VhPaM8b+lcMaTR4H
+         EWVAaGMesb+ThsdujDASOrkXeY9SBebQHN72ebF1oKmAyIZr8PYU1mURp8BziRn6ya
+         VVCDOAvTc1QK5wG5wbS+n/MxvsU1EsFLpgYb2WpbasIQLK/NMPAMDnWPgceCt099WK
+         gb2DBXXRZ/Qcg==
+Date:   Fri, 5 Feb 2021 04:26:05 +0200
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Sean Christopherson <seanjc@google.com>,
+        Borislav Petkov <bp@suse.de>, linux-sgx@vger.kernel.org,
+        Daniel Vetter <daniel.vetter@intel.com>
+Subject: Re: [PATCH] x86/sgx: Drop racy follow_pfn check
+Message-ID: <YBysvZ3NcmsT4IHK@kernel.org>
+References: <20210204184519.2809313-1-daniel.vetter@ffwll.ch>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210204184519.2809313-1-daniel.vetter@ffwll.ch>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If a FD refers to a DMA buffer add the DMA buffer inode number to
-/proc/<pid>/fdinfo/<FD> and /proc/<pid>/task/<tid>/fdindo/<FD>.
+On Thu, Feb 04, 2021 at 07:45:19PM +0100, Daniel Vetter wrote:
+> PTE insertion is fundamentally racy, and this check doesn't do
+> anything useful. Quoting Sean:
+> 
+> "Yeah, it can be whacked.  The original, never-upstreamed code asserted that the
+> resolved PFN matched the PFN being installed by the fault handler as a sanity
+> check on the SGX driver's EPC management.  The WARN assertion got dropped for
+> whatever reason, leaving that useless chunk."
 
-The dmabuf inode number allows userspace to uniquely identify the buffer
-and avoids a dependency on /proc/<pid>/fd/* when accounting per-process
-DMA buffer sizes.
+Love the "whatever reason" part :-)
 
-Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
----
-Changes in v3:
-  - Add documentation in proc.rst
-Changes in v2:
-  - Update patch description
+Shame, I was *going to* rip this off maybe around iteration v40. I have
+no idea why I did not. Even backtraced years old email threads from lore.
+Probably just forgot to remove it.
 
- Documentation/filesystems/proc.rst | 17 +++++++++++++++++
- drivers/dma-buf/dma-buf.c          |  1 +
- 2 files changed, 18 insertions(+)
+So, yeah, I fully agree removing it.
 
-diff --git a/Documentation/filesystems/proc.rst b/Documentation/filesystems/proc.rst
-index 2fa69f710e2a..fdd38676f57f 100644
---- a/Documentation/filesystems/proc.rst
-+++ b/Documentation/filesystems/proc.rst
-@@ -2031,6 +2031,23 @@ details]. 'it_value' is remaining time until the timer expiration.
- with TIMER_ABSTIME option which will be shown in 'settime flags', but 'it_value'
- still exhibits timer's remaining time.
- 
-+DMA Buffer files
-+~~~~~~~~~~~~~~~~
-+
-+::
-+
-+	pos:	0
-+	flags:	04002
-+	mnt_id:	9
-+	dmabuf_inode_no: 63107
-+	size:   32768
-+	count:  2
-+	exp_name:  system-heap
-+
-+where 'dmabuf_inode_no' is the unique inode number of the DMA buffer file.
-+'size' is the size of the DMA buffer in bytes. 'count' is the file count of
-+the DMA buffer file. 'exp_name' is the name of the DMA buffer exporter.
-+
- 3.9	/proc/<pid>/map_files - Information about memory mapped files
- ---------------------------------------------------------------------
- This directory contains symbolic links which represent memory mapped files
-diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
-index 9ad6397aaa97..d869099ede83 100644
---- a/drivers/dma-buf/dma-buf.c
-+++ b/drivers/dma-buf/dma-buf.c
-@@ -414,6 +414,7 @@ static void dma_buf_show_fdinfo(struct seq_file *m, struct file *file)
- {
- 	struct dma_buf *dmabuf = file->private_data;
- 
-+	seq_printf(m, "dmabuf_inode_no:\t%lu\n", file_inode(file)->i_ino);
- 	seq_printf(m, "size:\t%zu\n", dmabuf->size);
- 	/* Don't count the temporary reference taken inside procfs seq_show */
- 	seq_printf(m, "count:\t%ld\n", file_count(dmabuf->file) - 1);
--- 
-2.30.0.478.g8a0d178c01-goog
+Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
 
+> Jason stumbled over this as a new user of follow_pfn, and I'm trying
+> to get rid of unsafe callers of that function so it can be locked down
+> further.
+> 
+> This is independent prep work for the referenced patch series.
+
+Apologies, consider it my bad...
+
+/Jarkko
+
+> 
+> References: https://lore.kernel.org/dri-devel/20201127164131.2244124-1-daniel.vetter@ffwll.ch/
+> Reported-by: Jason Gunthorpe <jgg@ziepe.ca>
+> Cc: Jason Gunthorpe <jgg@ziepe.ca>
+> Cc: Sean Christopherson <seanjc@google.com>
+> Fixes: 947c6e11fa43 ("x86/sgx: Add ptrace() support for the SGX driver")
+> Cc: Jarkko Sakkinen <jarkko@kernel.org>
+> Cc: Borislav Petkov <bp@suse.de>
+> Cc: linux-sgx@vger.kernel.org
+> Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
+> ---
+>  arch/x86/kernel/cpu/sgx/encl.c | 8 --------
+>  1 file changed, 8 deletions(-)
+> 
+> diff --git a/arch/x86/kernel/cpu/sgx/encl.c b/arch/x86/kernel/cpu/sgx/encl.c
+> index ee50a5010277..20a2dd5ba2b4 100644
+> --- a/arch/x86/kernel/cpu/sgx/encl.c
+> +++ b/arch/x86/kernel/cpu/sgx/encl.c
+> @@ -141,7 +141,6 @@ static vm_fault_t sgx_vma_fault(struct vm_fault *vmf)
+>  	struct sgx_encl_page *entry;
+>  	unsigned long phys_addr;
+>  	struct sgx_encl *encl;
+> -	unsigned long pfn;
+>  	vm_fault_t ret;
+>  
+>  	encl = vma->vm_private_data;
+> @@ -168,13 +167,6 @@ static vm_fault_t sgx_vma_fault(struct vm_fault *vmf)
+>  
+>  	phys_addr = sgx_get_epc_phys_addr(entry->epc_page);
+>  
+> -	/* Check if another thread got here first to insert the PTE. */
+> -	if (!follow_pfn(vma, addr, &pfn)) {
+> -		mutex_unlock(&encl->lock);
+> -
+> -		return VM_FAULT_NOPAGE;
+> -	}
+> -
+>  	ret = vmf_insert_pfn(vma, addr, PFN_DOWN(phys_addr));
+>  	if (ret != VM_FAULT_NOPAGE) {
+>  		mutex_unlock(&encl->lock);
+> -- 
+> 2.30.0
+> 
+> 
