@@ -2,69 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89C75311A7E
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 04:53:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33AF6311A39
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 04:36:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232245AbhBFDuw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 22:50:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39752 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231221AbhBFCvz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 21:51:55 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 04C2264F51;
-        Fri,  5 Feb 2021 22:35:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1612564551;
-        bh=/d7hyScWKy7rmoffTYVW8U8Hr6uQSMMsfR6pwjRMA6Y=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=eI5GH/v34mz5bxoyj0tyMgr4duFyxIKSgiuDVYXwI0Mw6RZO9YyoC/wwf+APLDn/D
-         IUIpI6af6qVqQQlAjixLznBHAhUVPlrFMgKED2ySuO/WFx18j1mpfLtq/bSUahZSEp
-         UqllQfm9SeE3k2A209qzOLjDabtsY7t9zsRpyV7w=
-Date:   Fri, 5 Feb 2021 14:35:50 -0800
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     NeilBrown <neilb@suse.de>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Xin Long <lucien.xin@gmail.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vlad Yasevich <vyasevich@gmail.com>,
-        Neil Horman <nhorman@tuxdriver.com>,
-        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-sctp@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH 0/3] Fix some seq_file users that were recently broken
-Message-Id: <20210205143550.58d3530918459eafa918ad0c@linux-foundation.org>
-In-Reply-To: <161248518659.21478.2484341937387294998.stgit@noble1>
-References: <161248518659.21478.2484341937387294998.stgit@noble1>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S231790AbhBFDgW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 22:36:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38854 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231533AbhBFCks (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 21:40:48 -0500
+Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A330C08ECA9;
+        Fri,  5 Feb 2021 14:37:58 -0800 (PST)
+Received: by mail-qt1-x82a.google.com with SMTP id s11so2429280qtq.10;
+        Fri, 05 Feb 2021 14:37:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6IKJbad5BZA4QttxVsCgM6KQ4YVmE8DBAtfOewHjiuE=;
+        b=kkrPCAlnHU69A5WtArRJvMpmJ8XdLCyaU9hUZpIDeRpyOT7xe7VTNcd20m5Owd2bLn
+         3NmdjdFkNU++JRFE8sfTRmdEvc6ONDpPKYAoDyvZMTQy4OBSjTQxsRqRgUJ2PdthQbAC
+         tScB4A7IQvnBObx8NnM2yx88NnXwRFT6HwmPcAt/VtajuQ5oXLjody8A3IM1phjH12bL
+         mFQPYja47/T54k02/RojavyclmUs2n7KJiqXEUYqc6Pe+4JhiMxoOqoeuyw7SR1fU6i2
+         z1VU+dQbg4tQqHGZZMxMsbdehy+yWhrrhWZdUJKJIFwrsTxFOq+VYhSbrtfXWXp646+6
+         geYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6IKJbad5BZA4QttxVsCgM6KQ4YVmE8DBAtfOewHjiuE=;
+        b=U3ePiJeZqU7LTwvZytjrYJEz3ygLK+S6ebymeyn56e61OgA7oCzlNMROGJkMnAzG+w
+         YwqWkx7JCWxIZdpdx9NIPSJxcq46+3uSZHYzsbbeBFSSTni03KqF4YiA3UOzxTCeDMdw
+         dWdGhbXz3dBhO8mbOygXPH0dgTobx6ZY0m0aE4OAoGKaYMSWi881uqyR3Bo1QY68RqAG
+         8CeHqxfOsY7vyIE4i8R9y5QRL4ToAK12rtOBBUCgGdipTUaGOSlygrRUAAK0o5d2E7Q0
+         beVSefHHj2cIf83Tos4tDKmIZUR67woBOGEVBWMb/FQeDgOQSKsRwLUF+qS1qYie813l
+         vfZg==
+X-Gm-Message-State: AOAM532aOFJdrSo8vK9a4MULS1OwR5zgzKUNO8gqwn2bZeMEjHl4RUT0
+        6I/VcarrtPL5O/wz5Iwx0gi0/YRdD5hW7j9f4+Z67VDZ
+X-Google-Smtp-Source: ABdhPJwMxePDpR78n8sUb+VjbYtGhiOZYqSlvkzLop8R8CJm5MdX0a169znS7XzAIHKAbGJYt0LSQAvVJuZcAlRVt6Y=
+X-Received: by 2002:ac8:7511:: with SMTP id u17mr6168541qtq.285.1612564677456;
+ Fri, 05 Feb 2021 14:37:57 -0800 (PST)
+MIME-Version: 1.0
+References: <20210205045217.552927-1-enbyamy@gmail.com> <20210205131910.GJ1993@twin.jikos.cz>
+ <CAE1WUT4az3ZZ8OU2AS2xxi9h1TbW958ivNXr53jinqHK5vuzMg@mail.gmail.com>
+In-Reply-To: <CAE1WUT4az3ZZ8OU2AS2xxi9h1TbW958ivNXr53jinqHK5vuzMg@mail.gmail.com>
+From:   Richard Weinberger <richard.weinberger@gmail.com>
+Date:   Fri, 5 Feb 2021 23:37:46 +0100
+Message-ID: <CAFLxGvz0ZnTs1B7v3R+Zefd5BhE9ximFpgKL8zRmGfOdBrsVfw@mail.gmail.com>
+Subject: Re: [PATCH 0/3] fs/efs: Follow kernel style guide
+To:     Amy Parker <enbyamy@gmail.com>
+Cc:     dsterba@suse.cz, linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 05 Feb 2021 11:36:30 +1100 NeilBrown <neilb@suse.de> wrote:
+On Fri, Feb 5, 2021 at 11:26 PM Amy Parker <enbyamy@gmail.com> wrote:
+>
+> On Fri, Feb 5, 2021 at 5:1 AM David Sterba <dsterba@suse.cz> wrote:
+> >
+> > On Thu, Feb 04, 2021 at 08:52:14PM -0800, Amy Parker wrote:
+> > > As the EFS driver is old and non-maintained,
+> >
+> > Is anybody using EFS on current kernels? There's not much point updating
+> > it to current coding style, deleting fs/efs is probably the best option.
+> >
+>
+> Wouldn't be surprised if there's a few systems out there that haven't
+> migrated at all.
 
-> A recent change to seq_file broke some users which were using seq_file
-> in a non-"standard" way ...  though the "standard" isn't documented, so
-> they can be excused.  The result is a possible leak - of memory in one
-> case, of references to a 'transport' in the other.
-> 
-> These three patches:
->  1/ document and explain the problem
->  2/ fix the problem user in x86
->  3/ fix the problem user in net/sctp
-> 
+Before ripping it from the kernel source you could do a FUSE port of EFS.
+That way old filesystems can still get used on Linux.
 
-1f4aace60b0e ("fs/seq_file.c: simplify seq_file iteration code and
-interface") was August 2018, so I don't think "recent" applies here?
-
-I didn't look closely, but it appears that the sctp procfs file is
-world-readable.  So we gave unprivileged userspace the ability to leak
-kernel memory?
-
-So I'm thinking that we aim for 5.12-rc1 on all three patches with a cc:stable?
+-- 
+Thanks,
+//richard
