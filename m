@@ -2,240 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A4B231124E
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 21:23:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C685F31125D
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 21:26:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233136AbhBESlE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 13:41:04 -0500
-Received: from mail-io1-f69.google.com ([209.85.166.69]:55738 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233633AbhBEShj (ORCPT
+        id S229608AbhBESli (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 13:41:38 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:43358 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232871AbhBESkW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 13:37:39 -0500
-Received: by mail-io1-f69.google.com with SMTP id a2so7239887iod.22
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 12:19:46 -0800 (PST)
+        Fri, 5 Feb 2021 13:40:22 -0500
+Received: from mail-oo1-f69.google.com ([209.85.161.69])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <seth.forshee@canonical.com>)
+        id 1l87cA-0006NN-Gn
+        for linux-kernel@vger.kernel.org; Fri, 05 Feb 2021 20:22:02 +0000
+Received: by mail-oo1-f69.google.com with SMTP id r17so4217989ooq.6
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 12:22:02 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=T3suVCmHiaNgyLyS4n8q7U68O2519AAWDFtJ3PVYJQQ=;
-        b=kX2+lnb+04a/TgPK+kuVkhb5u71eTsozN0K6ZxhuMmdn4bQAbSntuaKJjdTwkX1QA5
-         2c/VAVC+a2RY9/774nrDZSqL0r4GHzj/ilGKnhRWPqVUOK8y+5XCRFGXJbLbCYqt+sJ5
-         brkZfuM8T+DfKseKZtOy9xshfCbmKYeKS/CRSP1Q7JxeXOWSNItQz45ey6n24PVTx1pe
-         GJH+kIbihOZeaKIVS+loxmx3cLvnmOQzqiB+OWMnagQOrzsMqKwBmLoF0VCAjQnMPOgQ
-         YzL7KXLOYoDktQz6/348r7THzoaasulP37QBRtmpogCIhuo5TOfnj30x7sSVfhhdeXxf
-         X+wQ==
-X-Gm-Message-State: AOAM530mWeWd5GTjn25Dce8zCo0AbHwZsxWXjDX0QyJTX1TReNH8pUjl
-        raKQoTN9aL/IdQtxOnSNWIlG9TSxAEsL6Ne4eNX/O/741icJ
-X-Google-Smtp-Source: ABdhPJzAi4IZUkJnp77Csi+1vI54mssCEI+KZg39fFMpJ0uRt6VHUEmvCspsySC9O8u1kQjBdcBD+XIi/E9ITxXZV6AUaZ/ulQEs
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0bw6oVJwOT2t9qNI5fK7SsA/zUrGWqj0vb55juGkY3Q=;
+        b=T8qvT4ekU+f+hbhcX8cW+F0qJ18uyEfwUWgikmsTWXIJdq7TrYM9I94GnLkLJnAzFT
+         AGwUO6Fs5L10LxSzzAlUq1GyRicNV5XrimY+Y03lDxTJV2dq2fwQi8Cgav1SXFgCAOOT
+         AbTFuww5tvrELikZ8aiTvDeNkBg69y9voZqy9IQAUyi0KFppE4ogwtWsV3W6eKlQm53z
+         5fKHdGvhW2kusjNOfZ4Yo7DW02vB7mBudncFty+XonvHu/KGWt8aDLlU4X+eGvDA8wUn
+         GPDQUlo39zkvsM3o7tRazEYuO5VfjS/ATZlWogTigjPTCbNTCOP8jZZdj1XO/sqgIavc
+         0dMA==
+X-Gm-Message-State: AOAM531WJ5NjHKefSrTbmhDIQIfUn72L/u/rFxGh18hUqQNOJzfBv610
+        aYgtgoeFSoqbltTpHgAwR5f50RtYCuQ27MlfAsRMA/d+yxa3YFLGx+RlIMlwsc+T23aJ7lOjttg
+        4epWtjFSs/xO/c3Af8is221xUoXIgeeijeEjBFyd1Lw==
+X-Received: by 2002:a9d:4e8d:: with SMTP id v13mr4872233otk.12.1612556521520;
+        Fri, 05 Feb 2021 12:22:01 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzeRYO0Gii1AiiU6vwb6xkD5hVvY7rrtIc7AlQKKKr/BBUQ9P2nvMQroMv9GQCIOuiVz/HXyw==
+X-Received: by 2002:a9d:4e8d:: with SMTP id v13mr4872214otk.12.1612556521299;
+        Fri, 05 Feb 2021 12:22:01 -0800 (PST)
+Received: from localhost ([2605:a601:ac0f:820:2b7:eb67:ff8d:8b15])
+        by smtp.gmail.com with ESMTPSA id y24sm2018025oos.44.2021.02.05.12.22.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Feb 2021 12:22:00 -0800 (PST)
+From:   Seth Forshee <seth.forshee@canonical.com>
+To:     Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Chris Down <chris@chrisdown.name>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] tmpfs: Don't use 64-bit inodes by defulat with 32-bit ino_t
+Date:   Fri,  5 Feb 2021 14:21:59 -0600
+Message-Id: <20210205202159.505612-1-seth.forshee@canonical.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1b0c:: with SMTP id i12mr5381748ilv.200.1612556361467;
- Fri, 05 Feb 2021 12:19:21 -0800 (PST)
-Date:   Fri, 05 Feb 2021 12:19:21 -0800
-In-Reply-To: <0000000000000c8bdd05ba6e12b1@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000001b114705ba9c8931@google.com>
-Subject: Re: WARNING: held lock freed in uprobe_unregister
-From:   syzbot <syzbot+acc3353d66960200ec63@syzkaller.appspotmail.com>
-To:     acme@kernel.org, alexander.shishkin@linux.intel.com,
-        jolsa@redhat.com, linux-kernel@vger.kernel.org,
-        mark.rutland@arm.com, mingo@redhat.com, namhyung@kernel.org,
-        peterz@infradead.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+Currently there seems to be an assumption in tmpfs that 64-bit
+architectures also have a 64-bit ino_t. This is not true; s390 at
+least has a 32-bit ino_t. With CONFIG_TMPFS_INODE64=y tmpfs
+mounts will get 64-bit inode numbers and display "inode64" in the
+mount options, but passing the "inode64" mount option will fail.
+This leads to the following behavior:
 
-HEAD commit:    aa2b8820 Add linux-next specific files for 20210205
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=10d455bf500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=15c41e44a64aa1a5
-dashboard link: https://syzkaller.appspot.com/bug?extid=acc3353d66960200ec63
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13797f80d00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=149b8c18d00000
+ # mkdir mnt
+ # mount -t tmpfs nodev mnt
+ # mount -o remount,rw mnt
+ mount: /home/ubuntu/mnt: mount point not mounted or bad option.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+acc3353d66960200ec63@syzkaller.appspotmail.com
+As mount sees "inode64" in the mount options and thus passes it
+in the options for the remount.
 
-=========================
-WARNING: held lock freed!
-5.11.0-rc6-next-20210205-syzkaller #0 Not tainted
--------------------------
-syz-executor146/8424 is freeing memory ffff888014c83800-ffff888014c839ff, with a lock still held there!
-ffff888014c83890 (&uprobe->register_rwsem){+.+.}-{3:3}, at: uprobe_unregister+0x37/0x70 kernel/events/uprobes.c:1115
-2 locks held by syz-executor146/8424:
- #0: ffffffff8bfe1328 (event_mutex){+.+.}-{3:3}, at: perf_uprobe_destroy+0x23/0x130 kernel/trace/trace_event_perf.c:347
- #1: ffff888014c83890 (&uprobe->register_rwsem){+.+.}-{3:3}, at: uprobe_unregister+0x37/0x70 kernel/events/uprobes.c:1115
+Ideally CONFIG_TMPFS_INODE64 would depend on sizeof(ino_t) < 8,
+but I don't think it's possible to test for this (potentially
+CONFIG_ARCH_HAS_64BIT_INO_T or similar could be added, but I'm
+not sure whether or not that is wanted). So fix this by simply
+refusing to honor the CONFIG_TMPFS_INODE64 setting when
+sizeof(ino_t) < 8.
 
-stack backtrace:
-CPU: 0 PID: 8424 Comm: syz-executor146 Not tainted 5.11.0-rc6-next-20210205-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:120
- print_freed_lock_bug kernel/locking/lockdep.c:6256 [inline]
- debug_check_no_locks_freed.cold+0x9d/0xa9 kernel/locking/lockdep.c:6289
- slab_free_hook mm/slub.c:1549 [inline]
- slab_free_freelist_hook+0xd8/0x1d0 mm/slub.c:1600
- slab_free mm/slub.c:3161 [inline]
- kfree+0xe5/0x7b0 mm/slub.c:4202
- put_uprobe kernel/events/uprobes.c:612 [inline]
- put_uprobe+0x13b/0x190 kernel/events/uprobes.c:601
- delete_uprobe kernel/events/uprobes.c:947 [inline]
- __uprobe_unregister+0x1e5/0x260 kernel/events/uprobes.c:1098
- uprobe_unregister+0x42/0x70 kernel/events/uprobes.c:1116
- __probe_event_disable+0x11e/0x240 kernel/trace/trace_uprobe.c:1084
- probe_event_disable+0x155/0x1c0 kernel/trace/trace_uprobe.c:1171
- trace_uprobe_register+0x45a/0x880 kernel/trace/trace_uprobe.c:1459
- perf_trace_event_unreg.isra.0+0xac/0x250 kernel/trace/trace_event_perf.c:162
- perf_uprobe_destroy+0xbb/0x130 kernel/trace/trace_event_perf.c:349
- _free_event+0x2ee/0x1380 kernel/events/core.c:4830
- put_event kernel/events/core.c:4924 [inline]
- perf_event_release_kernel+0xa24/0xe00 kernel/events/core.c:5039
- perf_release+0x33/0x40 kernel/events/core.c:5049
- __fput+0x283/0x920 fs/file_table.c:280
- task_work_run+0xdd/0x190 kernel/task_work.c:140
- exit_task_work include/linux/task_work.h:30 [inline]
- do_exit+0xc5c/0x2ae0 kernel/exit.c:825
- do_group_exit+0x125/0x310 kernel/exit.c:922
- __do_sys_exit_group kernel/exit.c:933 [inline]
- __se_sys_exit_group kernel/exit.c:931 [inline]
- __x64_sys_exit_group+0x3a/0x50 kernel/exit.c:931
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x43db19
-Code: Unable to access opcode bytes at RIP 0x43daef.
-RSP: 002b:00007ffd9444ab48 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
-RAX: ffffffffffffffda RBX: 00000000004ae230 RCX: 000000000043db19
-RDX: 000000000000003c RSI: 00000000000000e7 RDI: 0000000000000000
-RBP: 0000000000000000 R08: ffffffffffffffc0 R09: 0000000000000000
-R10: 00000000ffffffff R11: 0000000000000246 R12: 00000000004ae230
-R13: 0000000000000001 R14: 0000000000000000 R15: 0000000000000001
-==================================================================
-BUG: KASAN: use-after-free in __up_write kernel/locking/rwsem.c:1311 [inline]
-BUG: KASAN: use-after-free in up_write+0x488/0x560 kernel/locking/rwsem.c:1459
-Read of size 8 at addr ffff888014c83888 by task syz-executor146/8424
+Fixes: ea3271f7196c ("tmpfs: support 64-bit inums per-sb")
+Signed-off-by: Seth Forshee <seth.forshee@canonical.com>
+---
+ mm/shmem.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-CPU: 0 PID: 8424 Comm: syz-executor146 Not tainted 5.11.0-rc6-next-20210205-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:120
- print_address_description.constprop.0.cold+0x5b/0x2f8 mm/kasan/report.c:232
- __kasan_report mm/kasan/report.c:399 [inline]
- kasan_report.cold+0x7c/0xd8 mm/kasan/report.c:416
- __up_write kernel/locking/rwsem.c:1311 [inline]
- up_write+0x488/0x560 kernel/locking/rwsem.c:1459
- uprobe_unregister+0x4a/0x70 kernel/events/uprobes.c:1117
- __probe_event_disable+0x11e/0x240 kernel/trace/trace_uprobe.c:1084
- probe_event_disable+0x155/0x1c0 kernel/trace/trace_uprobe.c:1171
- trace_uprobe_register+0x45a/0x880 kernel/trace/trace_uprobe.c:1459
- perf_trace_event_unreg.isra.0+0xac/0x250 kernel/trace/trace_event_perf.c:162
- perf_uprobe_destroy+0xbb/0x130 kernel/trace/trace_event_perf.c:349
- _free_event+0x2ee/0x1380 kernel/events/core.c:4830
- put_event kernel/events/core.c:4924 [inline]
- perf_event_release_kernel+0xa24/0xe00 kernel/events/core.c:5039
- perf_release+0x33/0x40 kernel/events/core.c:5049
- __fput+0x283/0x920 fs/file_table.c:280
- task_work_run+0xdd/0x190 kernel/task_work.c:140
- exit_task_work include/linux/task_work.h:30 [inline]
- do_exit+0xc5c/0x2ae0 kernel/exit.c:825
- do_group_exit+0x125/0x310 kernel/exit.c:922
- __do_sys_exit_group kernel/exit.c:933 [inline]
- __se_sys_exit_group kernel/exit.c:931 [inline]
- __x64_sys_exit_group+0x3a/0x50 kernel/exit.c:931
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x43db19
-Code: Unable to access opcode bytes at RIP 0x43daef.
-RSP: 002b:00007ffd9444ab48 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
-RAX: ffffffffffffffda RBX: 00000000004ae230 RCX: 000000000043db19
-RDX: 000000000000003c RSI: 00000000000000e7 RDI: 0000000000000000
-RBP: 0000000000000000 R08: ffffffffffffffc0 R09: 0000000000000000
-R10: 00000000ffffffff R11: 0000000000000246 R12: 00000000004ae230
-R13: 0000000000000001 R14: 0000000000000000 R15: 0000000000000001
-
-Allocated by task 8424:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
- kasan_set_track mm/kasan/common.c:46 [inline]
- set_alloc_info mm/kasan/common.c:403 [inline]
- ____kasan_kmalloc mm/kasan/common.c:434 [inline]
- ____kasan_kmalloc.constprop.0+0xa0/0xd0 mm/kasan/common.c:406
- kmalloc include/linux/slab.h:556 [inline]
- kzalloc include/linux/slab.h:686 [inline]
- alloc_uprobe kernel/events/uprobes.c:731 [inline]
- __uprobe_register+0x19c/0x850 kernel/events/uprobes.c:1167
- trace_uprobe_enable kernel/trace/trace_uprobe.c:1063 [inline]
- probe_event_enable+0x441/0xa00 kernel/trace/trace_uprobe.c:1129
- trace_uprobe_register+0x443/0x880 kernel/trace/trace_uprobe.c:1456
- perf_trace_event_reg kernel/trace/trace_event_perf.c:129 [inline]
- perf_trace_event_init+0x549/0xa20 kernel/trace/trace_event_perf.c:204
- perf_uprobe_init+0x16f/0x210 kernel/trace/trace_event_perf.c:336
- perf_uprobe_event_init+0xff/0x1c0 kernel/events/core.c:9721
- perf_try_init_event+0x12a/0x560 kernel/events/core.c:11038
- perf_init_event kernel/events/core.c:11090 [inline]
- perf_event_alloc.part.0+0xe3b/0x3960 kernel/events/core.c:11370
- perf_event_alloc kernel/events/core.c:11749 [inline]
- __do_sys_perf_event_open+0x647/0x2e60 kernel/events/core.c:11847
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-Freed by task 8424:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
- kasan_set_track+0x1c/0x30 mm/kasan/common.c:46
- kasan_set_free_info+0x20/0x30 mm/kasan/generic.c:357
- ____kasan_slab_free.part.0+0xe1/0x110 mm/kasan/common.c:364
- kasan_slab_free include/linux/kasan.h:191 [inline]
- slab_free_hook mm/slub.c:1562 [inline]
- slab_free_freelist_hook+0x82/0x1d0 mm/slub.c:1600
- slab_free mm/slub.c:3161 [inline]
- kfree+0xe5/0x7b0 mm/slub.c:4202
- put_uprobe kernel/events/uprobes.c:612 [inline]
- put_uprobe+0x13b/0x190 kernel/events/uprobes.c:601
- delete_uprobe kernel/events/uprobes.c:947 [inline]
- __uprobe_unregister+0x1e5/0x260 kernel/events/uprobes.c:1098
- uprobe_unregister+0x42/0x70 kernel/events/uprobes.c:1116
- __probe_event_disable+0x11e/0x240 kernel/trace/trace_uprobe.c:1084
- probe_event_disable+0x155/0x1c0 kernel/trace/trace_uprobe.c:1171
- trace_uprobe_register+0x45a/0x880 kernel/trace/trace_uprobe.c:1459
- perf_trace_event_unreg.isra.0+0xac/0x250 kernel/trace/trace_event_perf.c:162
- perf_uprobe_destroy+0xbb/0x130 kernel/trace/trace_event_perf.c:349
- _free_event+0x2ee/0x1380 kernel/events/core.c:4830
- put_event kernel/events/core.c:4924 [inline]
- perf_event_release_kernel+0xa24/0xe00 kernel/events/core.c:5039
- perf_release+0x33/0x40 kernel/events/core.c:5049
- __fput+0x283/0x920 fs/file_table.c:280
- task_work_run+0xdd/0x190 kernel/task_work.c:140
- exit_task_work include/linux/task_work.h:30 [inline]
- do_exit+0xc5c/0x2ae0 kernel/exit.c:825
- do_group_exit+0x125/0x310 kernel/exit.c:922
- __do_sys_exit_group kernel/exit.c:933 [inline]
- __se_sys_exit_group kernel/exit.c:931 [inline]
- __x64_sys_exit_group+0x3a/0x50 kernel/exit.c:931
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-The buggy address belongs to the object at ffff888014c83800
- which belongs to the cache kmalloc-512 of size 512
-The buggy address is located 136 bytes inside of
- 512-byte region [ffff888014c83800, ffff888014c83a00)
-The buggy address belongs to the page:
-page:0000000084dcae2b refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x14c82
-head:0000000084dcae2b order:1 compound_mapcount:0
-flags: 0xfff00000010200(slab|head)
-raw: 00fff00000010200 0000000000000000 0000000600000001 ffff888010841c80
-raw: 0000000000000000 0000000080080008 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-
-Memory state around the buggy address:
- ffff888014c83780: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
- ffff888014c83800: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->ffff888014c83880: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                      ^
- ffff888014c83900: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff888014c83980: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-==================================================================
+diff --git a/mm/shmem.c b/mm/shmem.c
+index 7c6b6d8f6c39..efde42acdc7a 100644
+--- a/mm/shmem.c
++++ b/mm/shmem.c
+@@ -3733,7 +3733,7 @@ static int shmem_fill_super(struct super_block *sb, struct fs_context *fc)
+ 			ctx->blocks = shmem_default_max_blocks();
+ 		if (!(ctx->seen & SHMEM_SEEN_INODES))
+ 			ctx->inodes = shmem_default_max_inodes();
+-		if (!(ctx->seen & SHMEM_SEEN_INUMS))
++		if (!(ctx->seen & SHMEM_SEEN_INUMS) && sizeof(ino_t) >= 8)
+ 			ctx->full_inums = IS_ENABLED(CONFIG_TMPFS_INODE64);
+ 	} else {
+ 		sb->s_flags |= SB_NOUSER;
+-- 
+2.29.2
 
