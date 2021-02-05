@@ -2,140 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 696B7310BCA
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 14:29:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9543B310BF2
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 14:39:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229706AbhBEN2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 08:28:55 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:47858 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229879AbhBENZF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 08:25:05 -0500
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1612531452;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=J/3yerF5L2cPlk596EcDC37nOUSMAy2bZjQXckOvPDo=;
-        b=jvcCedn6AGpR05lGyWRA1Ec4bWfResJEOuuw0/6uc8jF9bV6cKYrExyn6LOFKRescj8kP8
-        2aGAb5estwj6R1SdQsrbdnbYxYNfR5Pm74U/fdYTks2ohhvjq7PrEV6UbO/L6dnYo5KuGX
-        5+mw/27dTHbC+8sZvKgDZS+5kAL1bi6GI1fBZDIxrIrCit+2aa3NqqQ6zpShvlpG6G960j
-        7/bL6rhdHFZ9wRFjthT+K2lplJSz+dfN3HEy9KeVjFUl93iQ+h2AVY4+YpdLj0DfpsiyTa
-        BUeEGLadkfyLn9jorxmycFgU7fihOCUukAtVJwz7YR4xD+JDctAdcDCXLs1rDQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1612531452;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=J/3yerF5L2cPlk596EcDC37nOUSMAy2bZjQXckOvPDo=;
-        b=F2kO42cknuUiT4eiffaA/G6qVzh8Mn10m7GKC+ErmlbFQxMspEs7b1a80rFvZ9Hg9mOj9A
-        idoRfKJpAeyoyOBw==
-To:     Uros Bizjak <ubizjak@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Kees Cook <keescook@chromium.org>
-Subject: Re: [patch 05/12] x86/irq: Provide macro for inlining irq stack switching
-In-Reply-To: <CAFULd4agX8oOyoHWVu=HKNcegVJNuv2Z6JKwg4mZqUESSWTuVw@mail.gmail.com>
-References: <CAFULd4agX8oOyoHWVu=HKNcegVJNuv2Z6JKwg4mZqUESSWTuVw@mail.gmail.com>
-Date:   Fri, 05 Feb 2021 14:24:12 +0100
-Message-ID: <87wnvm8x6r.fsf@nanos.tec.linutronix.de>
+        id S230475AbhBENhQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 08:37:16 -0500
+Received: from mga12.intel.com ([192.55.52.136]:60933 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229983AbhBENcR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 08:32:17 -0500
+IronPort-SDR: Nwo79IGYWACtfeBduVxN6zwVZzOXTf3WM5iRVIIG6BCkbMQc3r/Dwm7xEGv0qNiZPuxauOKNCG
+ +X4CYvTJkJ+w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9885"; a="160589442"
+X-IronPort-AV: E=Sophos;i="5.81,154,1610438400"; 
+   d="scan'208";a="160589442"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2021 05:24:57 -0800
+IronPort-SDR: 3bagWk4ieSh14Im4ioZBhHx7ofbCZFl1vELks+rDk6fQj6QdMIrEGvtzwLd6ZjUTYSPi/25Yno
+ lOM/DDvfizCQ==
+X-IronPort-AV: E=Sophos;i="5.81,154,1610438400"; 
+   d="scan'208";a="373390605"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2021 05:24:53 -0800
+Received: from punajuuri.localdomain (punajuuri.localdomain [192.168.240.130])
+        by paasikivi.fi.intel.com (Postfix) with ESMTP id 7F8AA20168;
+        Fri,  5 Feb 2021 15:24:51 +0200 (EET)
+Received: from sailus by punajuuri.localdomain with local (Exim 4.92)
+        (envelope-from <sakari.ailus@linux.intel.com>)
+        id 1l816f-0005GC-7e; Fri, 05 Feb 2021 15:25:05 +0200
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     linux-i2c@vger.kernel.org
+Cc:     Wolfram Sang <wsa@the-dreams.de>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        rajmohan.mani@intel.com, Tomasz Figa <tfiga@chromium.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Bingbu Cao <bingbu.cao@intel.com>,
+        Chiranjeevi Rapolu <chiranjeevi.rapolu@intel.com>,
+        Hyungwoo Yang <hyungwoo.yang@intel.com>,
+        linux-media@vger.kernel.org
+Subject: [PATCH v10 0/7] Support running driver's probe for a device powered off
+Date:   Fri,  5 Feb 2021 15:24:58 +0200
+Message-Id: <20210205132505.20173-1-sakari.ailus@linux.intel.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Uros,
+Hello everyone,
 
-On Fri, Feb 05 2021 at 12:03, Uros Bizjak wrote:
+These patches enable calling (and finishing) a driver's probe function
+without powering on the respective device on busses where the practice is
+to power on the device for probe. While it generally is a driver's job to
+check the that the device is there, there are cases where it might be
+undesirable. (In this case it stems from a combination of hardware design
+and user expectations; see below.) The downside with this change is that
+if there is something wrong with the device, it will only be found at the
+time the device is used. In this case (the camera sensors + EEPROM in a
+sensor) I don't see any tangible harm from that though.
 
-can you please fix your mail client to generate at least the 'In-Reply-to:'
-header? Lacking that header breaks threading on lore:
+An indication both from the driver and the firmware is required to allow
+the device's power state to remain off during probe (see the second patch).
 
-        https://lore.kernel.org/lkml/20210204204903.350275743@linutronix.de/
 
-Your mail is missing there. Ideally it also emits 'References'.
+The use case is such that there is a privacy LED next to an integrated
+user-facing laptop camera, and this LED is there to signal the user that
+the camera is recording a video or capturing images. That LED also happens
+to be wired to one of the power supplies of the camera, so whenever you
+power on the camera, the LED will be lit, whether images are captured from
+the camera --- or not. There's no way to implement this differently
+without additional software control (allowing of which is itself a
+hardware design decision) on most CSI-2-connected camera sensors as they
+simply have no pin to signal the camera streaming state.
 
-> #define __call_on_irqstack(func, asm_call, constr...) \
-> +{ \
-> + register void *tos asm("r11"); \
-> + \
-> + tos = ((void *)__this_cpu_read(hardirq_stack_ptr)); \
-> + \
-> + asm_inline volatile( \
-> + "movq %%rsp, (%[__tos]) \n" \
-> + "movq %[__tos], %%rsp \n" \
-> + \
-> + asm_call \
-> + \
-> + "popq %%rsp \n" \
-> + \
-> + : "+r" (tos) IRQSTACK_CALL_CONSTRAINT \
->
-> Please note that GCC documents "U" register constraint that can be
-> used here instead of declaring hard register in the variable
-> declaration:
->
->     'U'
->          The call-clobbered integer registers.
+This is also what happens during driver probe: the camera will be powered
+on by the I²C subsystem calling dev_pm_domain_attach() and the device is
+already powered on when the driver's own probe function is called. To the
+user this visible during the boot process as a blink of the privacy LED,
+suggesting that the camera is recording without the user having used an
+application to do that. From the end user's point of view the behaviour is
+not expected and for someone unfamiliar with internal workings of a
+computer surely seems quite suspicious --- even if images are not being
+actually captured.
 
-That's not really helpful because clang does not support 'U'.
+I've tested these on linux-next master.
 
-> + : [__func] "i" (func), [__tos] "r" (tos) constr \
->
-> There is no need to declare "tos" as read operand again, it is already
-> declared above as readwrite (+) operand.
+since v9 <URL:https://lore.kernel.org/linux-acpi/CAJZ5v0jjgy2KXOw5pyshvaEVzLctu4jsgYK1+YDA+8sZfp-6mw@mail.gmail.com/T/#m003f56b33350772364b1f5c832e9025677107933>:
 
-It makes clang builds fail.
+- Use _DSE object designed for the very purpose of designating intended
+  device probe power state instead of _PRE.
 
-> Considering that (according to the above documentation) it is
-> necessary to list all input registers that pass function arguments,
-> the compiler is free to allocate any remaining register from "U"
-> register class, not only r11. Using an earlyclobber modifier prevents
-> the compiler from allocating a register that carries input argument,
-> so:
->
-> : [__tos] "+&U" (tos) IRQSTACK_CALL_CONSTRAINT \
-> : [__func] "i" (func) constr \
->
-> could be used.
+- Rework documentation to reflect the property to _DSE changes (missed in
+  v9).
 
-See above. Without the U constraint we can't rely on the compiler to do
-the right thing without the explicit register asm("r11"); And even with
-'U' we need to enforce that there is only one U register left to use.
+- Put maximum device enumeration power state in struct acpi_device_power,
+  instead of a flag in struct acpi_device_power_flags. The default is
+  ACPI_STATE_D0.
 
-The problem is that the compiler does not know about the call. So we
-need to ensure via the clobbers and input/output arguments that it can't
-use any of the callee clobbered registers accross the inline asm.
+- i2c_acpi_allow_low_power_probe() now returns true if the desired power
+  state is greater or equal to the current device power state.
 
-With
+- Rename local variable low_power as off_during_probe.
 
-        void *tos = this_cpu_read(...);
+since v8 <URL:https://lore.kernel.org/patchwork/cover/1300068/>:
 
-        : "cc", .... "r9", "r10"
+- Make use of ACPI _PRE object instead of a _DSD property (new patch,
+  1st), align documentation with that.
 
-the compiler could still use "r11" for some other stuff and stick tos
-into a callee saved register, e.g. r15. If the called function then
-clobbers "r11" everything goes south.
+- Added a blank line.
 
-There is no point in being extra smart here. The functions have no
-register pressure as they are small so enforcing the register allocation
-is not restricting the compiler freedom to much. But it ensures that the
-compiler can't do anything subtly wrong which would end up being a hard
-to debug disaster.
+- Rebased on current linux-next master.
 
-> Also note that functions with variable arguments pass information
-> about the number of vector registers used in %rax, so %rax should be
-> listed as input argument in this case. But this should be of no issue
-> here.
+since v7 <URL:https://lore.kernel.org/linux-acpi/20200901210333.8462-1-sakari.ailus@linux.intel.com/>:
 
-That's really irrelevant as it's a very narrow use case for functions
-with 0..2 arguments.
+- Reorder documentation patch right after the implemenation in the I²C
+  framework.
 
-Thanks,
+- Rename allow-low-power-probe property as i2c-allow-low-power-probe.
 
-        tglx
+- Remove extra "property" from the description of the
+  i2c-allow-low-power-probe property and mention it's a device property.
 
+- Add an example to the documentation and refer to the _DSD property spec.
+
+since v6 <URL:https://lore.kernel.org/linux-acpi/20200826115432.6103-1-sakari.ailus@linux.intel.com/>:
+
+- Use u32 for the flags field in struct i2c_driver.
+
+- Use acpi_dev_get_property to read the allow-low-power-probe property.
+
+since v5 <URL:https://lore.kernel.org/linux-acpi/20200810142747.12400-1-sakari.ailus@linux.intel.com/>:
+
+- Identify sensors when they're first powered on. In previous versions, if
+  this wasn't in probe, it was not done at all.
+
+- Return allow_low_power_probe() only for ACPI devices, i.e. OF systems
+  are not affected by these changes.
+
+- Document that I2C_DRV_FL_ALLOW_LOW_POWER_PROBE flag only applies to ACPI
+  drivers.
+
+- Fix extra regulator_disable in at24 driver's remove function when the
+  device was already in low power state.
+
+since v4 <URL:https://lore.kernel.org/linux-acpi/20200121134157.20396-1-sakari.ailus@linux.intel.com/>:
+
+- Rename "probe-low-power" property as "allow-low-power-probe". This is
+  taken into account in function and file naming, too.
+
+- Turn probe_low_power field in struct i2c_driver into flags field.
+
+- Rebase on Wolfram's i2c/for-next branch that contains the removal of the
+  support for disabling I²C core IRQ mappings (commit
+  0c2a34937f7e4c4776bb261114c475392da2355c).
+
+- Change wording for "allow-low-power-probe" property in ACPI
+  documentation.
+
+since v3 <URL:https://lore.kernel.org/linux-acpi/20200109154529.19484-1-sakari.ailus@linux.intel.com/T/#t>:
+
+- Rework the 2nd patch based on Rafael's comments
+
+	- Rework description of the ACPI low power state helper function,
+	  according to Rafael's text.
+
+	- Rename and rework the same function as
+	  acpi_dev_state_low_power().
+
+	- Reflect the changes in commit message as well.
+
+- Added a patch to document the probe-low-power _DSD property.
+
+since v2 <URL:https://patchwork.kernel.org/cover/11114255/>:
+
+- Remove extra CONFIG_PM ifdefs; these are not needed.
+
+- Move the checks for power state hints from drivers/base/dd.c to
+  drivers/i2c/i2c-base-core.c; these are I²C devices anyway.
+
+- Move the probe_low_power field from struct device_driver to struct
+  i2c_driver.
+
+since v1:
+
+- Rename probe_powered_off struct device field as probe_low_power and
+  reflect the similar naming to the patches overall.
+
+- Work with CONFIG_PM disabled, too.
+
+Rajmohan Mani (1):
+  media: i2c: imx319: Support probe while the device is off
+
+Sakari Ailus (6):
+  ACPI: scan: Obtain device's desired enumeration power state
+  i2c: Allow an ACPI driver to manage the device's power state during
+    probe
+  Documentation: ACPI: Document _DSE object usage for enum power state
+  ACPI: Add a convenience function to tell a device is in low power
+    state
+  ov5670: Support probe whilst the device is in a low power state
+  at24: Support probing while off
+
+ Documentation/firmware-guide/acpi/index.rst   |  1 +
+ .../firmware-guide/acpi/low-power-probe.rst   | 69 +++++++++++++++++
+ drivers/acpi/device_pm.c                      | 23 ++++++
+ drivers/acpi/scan.c                           |  4 +
+ drivers/i2c/i2c-core-acpi.c                   | 10 +++
+ drivers/i2c/i2c-core-base.c                   |  9 ++-
+ drivers/media/i2c/imx319.c                    | 72 +++++++++++-------
+ drivers/media/i2c/ov5670.c                    | 76 +++++++++++--------
+ drivers/misc/eeprom/at24.c                    | 43 ++++++-----
+ include/acpi/acpi_bus.h                       |  1 +
+ include/linux/acpi.h                          |  6 ++
+ include/linux/i2c.h                           | 19 +++++
+ 12 files changed, 255 insertions(+), 78 deletions(-)
+ create mode 100644 Documentation/firmware-guide/acpi/low-power-probe.rst
+
+-- 
+2.20.1
 
