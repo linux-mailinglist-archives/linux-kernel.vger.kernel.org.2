@@ -2,218 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 548F73117A1
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 01:08:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D150C311797
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 01:07:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229562AbhBFAIb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 19:08:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42142 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230286AbhBENhr (ORCPT
+        id S231393AbhBFAF2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 19:05:28 -0500
+Received: from mail-40134.protonmail.ch ([185.70.40.134]:11795 "EHLO
+        mail-40134.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231132AbhBENiO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 08:37:47 -0500
-Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6BA2C061797
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 05:37:06 -0800 (PST)
-Received: by mail-il1-x132.google.com with SMTP id z18so5811232ile.9
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 05:37:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=zJIqK4oiGxD4mA82lsvyaEI4gUPeF1VfFpQthFbJ0uQ=;
-        b=XZ9IiNE48Aran2h3YLooLj/xyuGoN0yF/jjYVvnW+tjTsJbL7JGksIB22cRKrR5ZeG
-         aQ9MN9xH+yp2YHiyXy7Wvyayl7MhgqVeIWeAHlWBVLZ2g69qzPN8QjS0ry3Avk87kmbE
-         mrS0Hmmx0vl+JNGq4zbWfS9gY5GZd9yB+fl8w/ztqYfULriPkzRSw0Jm8k7GBUqULgQP
-         STmmB/bu+L88jSve1erdk+ZGfjq+gsXFfp1dl+CaD0RuA6Ng6JdyZzaSyJuk+chuB+F6
-         e5qs83YQnuKRJ+ryLWyy5XwH7ksZV22NIBXxCYOWvQ6S7en6guxybxZYA0R+u2G2AnH/
-         ZBCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=zJIqK4oiGxD4mA82lsvyaEI4gUPeF1VfFpQthFbJ0uQ=;
-        b=F9kMzmPJFmqxAfnv/JbIlfVO4/Uyqgs5YTfYIycJ49GtGFjVk3s8jlnE/QoEI7J+D/
-         eqONe3I/rLSzWdINtF+Szpznem35oXbg9b7sMwclYF6UWZTAFHePTIDV3AM8JkTO5Ddb
-         wYNM1z0fyfMii5i7r1av5GMTPSAJ/3EoIslIDBG2O+XNIg4i1oScZM0yIjHuwaBwgm3k
-         h1u9ERYNJqyiYIwAnr2NLGRy1ymso+2tU90L7aK26ghIzgH3udBEVsVXhaqgKB9Rx5Fy
-         5eev724CUx0SI5Rtx9Jsvnnzg0VcKyYgq9LHDZP+akG1cuU+UTSPUye9RrBBtAIWXWg2
-         QZDA==
-X-Gm-Message-State: AOAM531AWGw0DuW1xDzuF6gsivwJmrS9DZiqlrO4hylvizrEUspFK7Dn
-        1Wsv8IHF7FFLGmnxdteUIoQJEipQl3A6RA==
-X-Google-Smtp-Source: ABdhPJwpLa4r6HWRIEy2ZuEJNr9XksrmXLFLgY9dF31jisYPBENUoWZIwHhCExxrIxl/sgXkgjR3hA==
-X-Received: by 2002:a05:6e02:20ca:: with SMTP id 10mr3950429ilq.14.1612532225956;
-        Fri, 05 Feb 2021 05:37:05 -0800 (PST)
-Received: from [172.22.22.26] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.googlemail.com with ESMTPSA id l7sm4206824ils.48.2021.02.05.05.37.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 05 Feb 2021 05:37:05 -0800 (PST)
-Subject: Re: [PATCH net-next 1/7] net: ipa: restructure a few functions
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     davem@davemloft.net, elder@kernel.org, evgreen@chromium.org,
-        bjorn.andersson@linaro.org, cpratapa@codeaurora.org,
-        subashab@codeaurora.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210203152855.11866-1-elder@linaro.org>
- <20210203152855.11866-2-elder@linaro.org>
- <20210204205059.4b218a6d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Alex Elder <elder@linaro.org>
-Message-ID: <2946916e-9f1d-b73a-72b1-5f4ce8b2cc6c@linaro.org>
-Date:   Fri, 5 Feb 2021 07:37:04 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        Fri, 5 Feb 2021 08:38:14 -0500
+Date:   Fri, 05 Feb 2021 13:37:09 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1612532238; bh=OBFEzz93Vl35M+p2va/+PXuqqyUJ0bnsvwDFk5CFKFg=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=W14TcdJRrIONjTc8Qz3R/TWDExO7qFXQEdVg0vSpB5so72lAAjsmVFccACK+sTytF
+         DlLJJf4HYct14at6CyTvrP1LRTdx1tCQ4j1HFF8W00VL+BzEnbUmbAhacEdyLgOUsU
+         GAqfLaYhuEACSSWTOkwDIOxoCSEOutc4FTGugp8zcjMmP/KCKWwy6EPKoL16/op2cD
+         ytSNpQErXNHqTJMCBxh/FnRpG1lqQWgK1tQ12OffHRkQe5cveBStxrjbjNCCTtBQpE
+         Op26EdFdYgueMlRRPiaUOittnqz4lDdFS41x0lCISdAmzdqj63OV8Ka7XaDOKXK2tb
+         CLzawZ3IOtkgA==
+To:     Arnd Bergmann <arnd@kernel.org>
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     Alexander Lobakin <alobakin@pm.me>,
+        Krzysztof Adamski <krzysztof.adamski@nokia.com>,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
+        Baruch Siach <baruch@tkos.co.il>,
+        Russell King <linux@armlinux.org.uk>,
+        Daniel Tang <dt.tangr@gmail.com>,
+        =?utf-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+        Jamie Iles <jamie@jamieiles.com>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Jonas Jensen <jonas.jensen@gmail.com>,
+        Marc Gonzalez <marc.w.gonzalez@free.fr>,
+        Hartley Sweeten <hsweeten@visionengravers.com>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Shawn Guo <shawnguo@kernel.org>, Alex Elder <elder@linaro.org>,
+        Alexander Shiyan <shc_work@mail.ru>,
+        Koen Vandeputte <koen.vandeputte@ncentric.com>,
+        Hans Ulli Kroll <ulli.kroll@googlemail.com>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        Wei Xu <xuwei5@hisilicon.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Mark Salter <msalter@redhat.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: Re: Old platforms: bring out your dead
+Message-ID: <20210205133614.8082-1-alobakin@pm.me>
+In-Reply-To: <CAK8P3a2VW8T+yYUG1pn1yR-5eU4jJXe1+M_ot6DAvfr2KyXCzQ@mail.gmail.com>
+References: <CAK8P3a2VW8T+yYUG1pn1yR-5eU4jJXe1+M_ot6DAvfr2KyXCzQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210204205059.4b218a6d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/4/21 10:50 PM, Jakub Kicinski wrote:
-> On Wed,  3 Feb 2021 09:28:49 -0600 Alex Elder wrote:
->> Make __gsi_channel_start() and __gsi_channel_stop() more structurally
->> and semantically similar to each other:
->>   - Restructure __gsi_channel_start() to always return at the end of
->>     the function, similar to the way __gsi_channel_stop() does.
->>   - Move the mutex calls out of gsi_channel_stop_retry() and into
->>     __gsi_channel_stop().
->>
->> Restructure gsi_channel_stop() to always return at the end of the
->> function, like gsi_channel_start() does.
->>
->> Signed-off-by: Alex Elder <elder@linaro.org>
->> ---
->>  drivers/net/ipa/gsi.c | 45 +++++++++++++++++++++++--------------------
->>  1 file changed, 24 insertions(+), 21 deletions(-)
->>
->> diff --git a/drivers/net/ipa/gsi.c b/drivers/net/ipa/gsi.c
->> index 53640447bf123..2671b76ebcfe3 100644
->> --- a/drivers/net/ipa/gsi.c
->> +++ b/drivers/net/ipa/gsi.c
->> @@ -873,17 +873,17 @@ static void gsi_channel_deprogram(struct gsi_channel *channel)
->>  
->>  static int __gsi_channel_start(struct gsi_channel *channel, bool start)
->>  {
->> -	struct gsi *gsi = channel->gsi;
->> -	int ret;
->> +	int ret = 0;
->>  
->> -	if (!start)
->> -		return 0;
->> +	if (start) {
->> +		struct gsi *gsi = channel->gsi;
->>  
->> -	mutex_lock(&gsi->mutex);
->> +		mutex_lock(&gsi->mutex);
->>  
->> -	ret = gsi_channel_start_command(channel);
->> +		ret = gsi_channel_start_command(channel);
->>  
->> -	mutex_unlock(&gsi->mutex);
->> +		mutex_unlock(&gsi->mutex);
->> +	}
-> 
-> nit: I thought just recently Willem pointed out that keeping main flow
->      unindented is considered good style, maybe it doesn't apply here
->      perfectly, but I'd think it still applies. Why have the entire
->      body of the function indented?
+From: Arnd Bergmann <arnd@kernel.org>
+Date: Fri, 8 Jan 2021 23:55:06 +0100
 
-I *like* keeping the main flow un-indented (the way
-it was).
+> After v5.10 was officially declared an LTS kernel, I had a look around
+> the Arm platforms that look like they have not seen any patches from
+> their maintainers or users that are actually running the hardware for
+> at least five years (2015 or earlier). I made some statistics and lists
+> for my lwn.net article last year [1], so I'd thought I'd share a summary
+> here for discussion about what we should remove. As I found three
+> years ago when I removed several CPU architectures, it makes sense
+> to do this in bulk, to simplify a scripted search for device drivers, hea=
+der
+> files and Kconfig options that become unused in the process.
+>=20
+> This is probably a mix of platforms that are completely unused and
+> those that just work, but I have no good way of knowing which one
+> it is. Without hearing back about these, I'd propose removing all of
+> these:
+>=20
+> * asm9260 -- added in 2014, no notable changes after 2015
+> * axxia -- added in 2014, no notable changes after 2015
+> * bcm/kona -- added in 2013, no notable changes after 2014
+> * digicolor -- added in 2014, no notable changes after 2015
+> * dove -- added in 2009, obsoleted by mach-mvebu in 2015
+> * efm32 -- added in 2011, first Cortex-M, no notable changes after 2013
+> * nspire -- added in 2013, no notable changes after 2015
+> * picoxcell -- added in 2011, already queued for removal
+> * prima2 -- added in 20111, no notable changes since 2015
+> * spear -- added in 2010, no notable changes since 2015
+> * tango -- added in 2015, sporadic changes until 2017, but abandoned
+> * u300 -- added in 2009, no notable changes since 2013
+> * vt8500 -- added in 2010, no notable changes since 2014
+> * zx --added in 2015 for both 32, 2017 for 64 bit, no notable changes
+>=20
+> If any of the above are not dead yet[2], please let me know,
+> and we'll keep them.
+>=20
+> Then there are ARM platforms that are old but have still seen some work
+> in the past years. If I hear nothing, these will all stay, but if maintai=
+ners
+> may want to drop them anyway, I can help with that:
+>=20
+> * clps711x -- prehistoric, converted to multiplatform+DT in 2016, no
+> changes since
+> * cns3xxx -- added in 2010, last fixed in 2019, probably no users left
+> * ep93xx -- added in 2006, LinusW still working on it, any users left?
+> * footbridge -- added in prehistory, stable since ~2013, rmk and LinusW h=
+ave one
+> * gemini -- added in 2009, LinusW still working on it
+> * hisi (hip01/hip05) -- servers added in 2013, replaced with arm64 in 201=
+6
+> * highbank -- added in 2011, no changes after 2015, but Andre still uses =
+it
+> * iop32x -- added in 2006, no notable changes other than my cleanup, but
+>   I think there are still users
+> * ixp4xx -- prehistoric, but LinusW and I are still working on it
+> * lpc18xx -- added in 2015, new dts in 2018, but few other changes
+> * lpc32xx -- added in 2010, multiplatform 2019, hardware is EOL
+> * mmp -- added in 2009, DT support is active, but board files might go
+> * moxart -- added in 2013, last Tested-by in 2017
+> * mv78xx0 -- added in 2008, mostly stale but still users
+>   (https://github.com/1000001101000/Debian_on_Buffalo)
+> * nomadik -- added in 2009, LinusW keeps fixing it, probably no other use=
+rs
+> * oxnas -- added in 2016, but already old then, few changes later
+> * pxa -- prehistoric, but a few boards may still have users
+> * rpc -- prehistoric, but I think Russell still uses his machine
+> * sa1100 -- prehistoric, but rmk and LinusW sporadically working in it
+>=20
+> I also looked at non-ARM platforms while preparing for my article. Some o=
+f
+> these look like they are no longer actively maintained or used, but I'm n=
+ot
+> doing anything about those unless the maintainers would like me to:
+>=20
+> * h8300: Steven Rostedt has repeatedly asked about it to be removed
+>    or fixed in 2020 with no reply. This was killed before in 2013, added =
+back
+>    in 2015 but has been mostly stale again since 2016
+> * c6x: Added in 2011, this has seen very few updates since, but
+>     Mark still Acks patches when they come. Like most other DSP platforms=
+,
+>     the model of running Linux on a DSP appears to have been obsoleted
+>     by using Linux on ARM with on-chip DSP cores running bare-metal code.
+> * sparc/sun4m: A patch for removing 32-bit Sun sparc support (not LEON)
+>    is currently under review
+> * powerpc/cell: I'm the maintainer and I promised to send a patch to remo=
+ve it.
+>    it's in my backlog but I will get to it. This is separate from PS3,
+> which is actively
+>    maintained and used; spufs will move to ps3
+> * powerpc/chrp (32-bit rs6000, pegasos2): last updated in 2009
+> * powerpc/amigaone: last updated in 2009
+> * powerpc/maple: last updated in 2011
+> * m68k/{apollo,hp300,sun3,q40} these are all presumably dead and have not
+>    seen updates in many years (atari/amiga/mac and coldfire are very much
+>    alive)
+> * mips/jazz: last updated in 2007
+> * mips/cobalt: last updated in 2010
+>=20
+> There might be some value in dropping old CPU support on architectures
+> and platforms that are almost exclusively used with more modern CPUs.
+> If there are only few users, those can still keep using v5.10 or v5.4 sta=
+ble
+> kernels for a few more years. Again, I'm not doing anything about them,
+> except mention them since I did the research.
+> These are the oldest one by architecture, and they may have reached
+> their best-served-by-date:
+>=20
+> * 80486SX/DX: 80386 CPUs were dropped in 2012, and there are
+>   indications that 486 have no users either on recent kernels.
+>   There is still the Vortex86 family of SoCs, and the oldest of those wer=
+e
+>   486SX-class, but all the modern ones are 586-class.
+> * Alpha 2106x: First generation that lacks some of the later features.
+>   Since all Alphas are ancient by now, it's hard to tell whether these ha=
+ve
+>   any fewer users.
+> * IA64 Merced: first generation Itanium (2001) was quickly replaced by
+>   Itanium II in 2002.
+> * MIPS R3000/TX39xx: 32-bit MIPS-II generation, mostly superseded by
+>   64-bit MIPS-III (R4000 and higher) starting in 1991. arch/mips still
+>   supports these in DECstation and Toshiba Txx9, but it appears that most
+>   of those machines are of the 64-bit kind. Later MIPS32 such as 4Kc and
+>   later are rather different and widely used.
 
-It's a little funny, because one of my motivations for
-doing it this way was how I interpreted the comment
-from Willem (and echoed by you).  He said, "...easier
-to parse when the normal control flow is linear and
-the error path takes a branch (or goto, if reused)."
-And now that I read it again, I see that's what he
-was saying.
+I still have some devboards with a 32-bit R3000-like CPU :S
+v5.11-rc6 works well on them.
 
-But the way I interpreted it was "don't return early
-for the success case," because that's what the code
-in question that elicited that comment was doing.
+> * PowerPC 601 (from 1992) just got removed, later 60x, 4xx, 8xx etc
+>   are apparently all still used.
+> * SuperH SH-2: We discussed removing SH-2 (not J2 or SH-4)
+>   support in the past, I don't think there were any objections, but
+>   nobody submitted a patch.
+> * 68000/68328 (Dragonball): these are less capable than the
+>   68020+ or the Coldfire MCF5xxx line and similar to the 68360
+>   that was removed in 2016.
+>=20
+>         Arnd
+>=20
+> [1] https://lwn.net/Articles/838807/
+> [2] https://www.youtube.com/watch?v=3DJdf5EXo6I68
 
-In any case I concur with your comment and prefer the
-code the other way.  I will post v2 that will fix this,
-both here and in __gsi_channel_start().
-
-Thanks.
-
-					-Alex
-
-> 
->>  	return ret;
->>  }
->> @@ -910,11 +910,8 @@ int gsi_channel_start(struct gsi *gsi, u32 channel_id)
->>  static int gsi_channel_stop_retry(struct gsi_channel *channel)
->>  {
->>  	u32 retries = GSI_CHANNEL_STOP_RETRIES;
->> -	struct gsi *gsi = channel->gsi;
->>  	int ret;
->>  
->> -	mutex_lock(&gsi->mutex);
->> -
->>  	do {
->>  		ret = gsi_channel_stop_command(channel);
->>  		if (ret != -EAGAIN)
->> @@ -922,19 +919,26 @@ static int gsi_channel_stop_retry(struct gsi_channel *channel)
->>  		usleep_range(3 * USEC_PER_MSEC, 5 * USEC_PER_MSEC);
->>  	} while (retries--);
->>  
->> -	mutex_unlock(&gsi->mutex);
->> -
->>  	return ret;
->>  }
->>  
->>  static int __gsi_channel_stop(struct gsi_channel *channel, bool stop)
->>  {
->> -	int ret;
->> +	int ret = 0;
->>  
->>  	/* Wait for any underway transactions to complete before stopping. */
->>  	gsi_channel_trans_quiesce(channel);
->>  
->> -	ret = stop ? gsi_channel_stop_retry(channel) : 0;
->> +	if (stop) {
->> +		struct gsi *gsi = channel->gsi;
->> +
->> +		mutex_lock(&gsi->mutex);
->> +
->> +		ret = gsi_channel_stop_retry(channel);
->> +
->> +		mutex_unlock(&gsi->mutex);
->> +	}
->> +
->>  	/* Finally, ensure NAPI polling has finished. */
->>  	if (!ret)
->>  		napi_synchronize(&channel->napi);
->> @@ -948,15 +952,14 @@ int gsi_channel_stop(struct gsi *gsi, u32 channel_id)
->>  	struct gsi_channel *channel = &gsi->channel[channel_id];
->>  	int ret;
->>  
->> -	/* Only disable the completion interrupt if stop is successful */
->>  	ret = __gsi_channel_stop(channel, true);
->> -	if (ret)
->> -		return ret;
->> +	if (ret) {
-> 
-> This inverts the logic, right? Is it intentional?
-> 
->> +		/* Disable the completion interrupt and NAPI if successful */
->> +		gsi_irq_ieob_disable_one(gsi, channel->evt_ring_id);
->> +		napi_disable(&channel->napi);
->> +	}
->>  
->> -	gsi_irq_ieob_disable_one(gsi, channel->evt_ring_id);
->> -	napi_disable(&channel->napi);
->> -
->> -	return 0;
->> +	return ret;
->>  }
->>  
->>  /* Reset and reconfigure a channel, (possibly) enabling the doorbell engine */
-> 
+Thanks,
+Al
 
