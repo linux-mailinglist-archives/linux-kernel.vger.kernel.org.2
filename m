@@ -2,361 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61393311324
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 22:11:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F7FA311318
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 22:08:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233708AbhBEVKo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 16:10:44 -0500
-Received: from mga03.intel.com ([134.134.136.65]:37605 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231258AbhBETLy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 14:11:54 -0500
-IronPort-SDR: ZEkPSrGNuHFQMhZI7fKRbJg/+Jsqkz+dbvthuR3XXkx9Yjc2JIsKa1Td6+ADDOtlOt178zmBBf
- PyHN40eTo0Tg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9886"; a="181551551"
-X-IronPort-AV: E=Sophos;i="5.81,156,1610438400"; 
-   d="scan'208";a="181551551"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2021 12:53:39 -0800
-IronPort-SDR: ciJu/jukbZ2x70DZn4RggD5Af3iy+htFDTKKOgykpck1Gs5e0d3UI8KVZSQH3ER/BHZXZKX+5J
- t0IcmRCVOPKw==
-X-IronPort-AV: E=Sophos;i="5.81,156,1610438400"; 
-   d="scan'208";a="373680486"
-Received: from djiang5-desk3.ch.intel.com ([143.182.136.137])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2021 12:53:38 -0800
-Subject: [PATCH v5 07/14] vfio/mdev: idxd: add 1dwq-v1 mdev type
-From:   Dave Jiang <dave.jiang@intel.com>
-To:     alex.williamson@redhat.com, kwankhede@nvidia.com,
-        tglx@linutronix.de, vkoul@kernel.org
-Cc:     megha.dey@intel.com, jacob.jun.pan@intel.com, ashok.raj@intel.com,
-        jgg@mellanox.com, yi.l.liu@intel.com, baolu.lu@intel.com,
-        kevin.tian@intel.com, sanjay.k.kumar@intel.com,
-        tony.luck@intel.com, dan.j.williams@intel.com,
-        eric.auger@redhat.com, parav@mellanox.com, netanelg@mellanox.com,
-        shahafs@mellanox.com, pbonzini@redhat.com,
-        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Date:   Fri, 05 Feb 2021 13:53:37 -0700
-Message-ID: <161255841792.339900.13314425685185083794.stgit@djiang5-desk3.ch.intel.com>
-In-Reply-To: <161255810396.339900.7646244556839438765.stgit@djiang5-desk3.ch.intel.com>
-References: <161255810396.339900.7646244556839438765.stgit@djiang5-desk3.ch.intel.com>
-User-Agent: StGit/0.23-29-ga622f1
+        id S233732AbhBEVHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 16:07:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48370 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233478AbhBETMH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 14:12:07 -0500
+Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2098EC06174A
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 12:53:52 -0800 (PST)
+Received: by mail-ot1-x32b.google.com with SMTP id e5so1361505otb.11
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 12:53:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5PRi5FG8/+JWu+jWzUkXoHnN4JWoS4p+oSPjz4dHX4E=;
+        b=OASnDCXTrffqrxPZSX+X2BoOBJSJeWYxtAIhsNCtVNhz5gMXxmVx/jYGnsUN9nnJuN
+         vhfjMJNVrRb2wgVEK4+xSY1vgWYsPum4Jw0tHUrjZI6XNfx7htArAF/NC/hE/qfZg0zE
+         Q6EogytHRY9X2yLHj2BIhrsaED0mM8FE6XIoc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5PRi5FG8/+JWu+jWzUkXoHnN4JWoS4p+oSPjz4dHX4E=;
+        b=NUTp1xyrUFNMlokGmgiW3YThJzHESoMXgD4ug6wUZPyK9FB/wk47XxDar55UtBKZ5C
+         Hv92PCRNfBtT219UXIToEdafpDsvuCSvYz8BNLfZAfRzOd31j5YZ8rseDRQfghFWg394
+         Up66mppNywWGcMeMUbkUZ4RHOHu0CpM2sb2zz2GGsW8y25xNVoD5uPZXIj/YGBUm3LiA
+         ybdfyYGVMHDbcgtykDaKA3Wk2J1L8n0Y3bvI6+0LdTctDnCAjiWMq0rBCwFfUkHBnNde
+         69jzcdxWIOtW+pywNbBfq5JTym11qKqhY2Qi7vnfDMCN7IMq9gGfGtxvPKhu5Upxbv44
+         oBeg==
+X-Gm-Message-State: AOAM5304EkssIKZ3mmx/5zOPXOQMCUpmKWDhVq8hUylxsDjtY+Te++bM
+        lwGizLH8OzICXaZkcYj2z2lf7JENDxwxQqL9BTuJtQ==
+X-Google-Smtp-Source: ABdhPJzg/0sRpmAYdxePGbdJtZika7yemD79/03eRrmz2fmH3+4sjo2UBY/XCbjTjR0SqL2Ey0KOyRS9uFFIs7Vpmkg=
+X-Received: by 2002:a9d:b85:: with SMTP id 5mr4848871oth.281.1612558431545;
+ Fri, 05 Feb 2021 12:53:51 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+References: <20210205163752.11932-1-chris@chris-wilson.co.uk> <202102051030.1AF01772D@keescook>
+In-Reply-To: <202102051030.1AF01772D@keescook>
+From:   Daniel Vetter <daniel@ffwll.ch>
+Date:   Fri, 5 Feb 2021 21:53:40 +0100
+Message-ID: <CAKMK7uHnOA9CuRxcKkcqG8duOw_3dZobkThcV7Q_swMXVoLCkQ@mail.gmail.com>
+Subject: Re: [PATCH] kernel: Expose SYS_kcmp by default
+To:     Kees Cook <keescook@chromium.org>,
+        "airlied@gmail.com" <airlied@gmail.com>
+Cc:     Chris Wilson <chris@chris-wilson.co.uk>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        intel-gfx <intel-gfx@lists.freedesktop.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Jann Horn <jannh@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add mdev device type "1dwq-v1" support code. 1dwq-v1 is defined as a
-single DSA gen1 dedicated WQ. This WQ cannot be shared between guests. The
-guest also cannot change any WQ configuration.
+On Fri, Feb 5, 2021 at 7:37 PM Kees Cook <keescook@chromium.org> wrote:
+>
+> On Fri, Feb 05, 2021 at 04:37:52PM +0000, Chris Wilson wrote:
+> > Userspace has discovered the functionality offered by SYS_kcmp and has
+> > started to depend upon it. In particular, Mesa uses SYS_kcmp for
+> > os_same_file_description() in order to identify when two fd (e.g. device
+> > or dmabuf) point to the same struct file. Since they depend on it for
+> > core functionality, lift SYS_kcmp out of the non-default
+> > CONFIG_CHECKPOINT_RESTORE into the selectable syscall category.
+> >
+> > Signed-off-by: Chris Wilson <chris@chris-wilson.co.uk>
+> > Cc: Kees Cook <keescook@chromium.org>
+> > Cc: Andy Lutomirski <luto@amacapital.net>
+> > Cc: Will Drewry <wad@chromium.org>
+> > Cc: Andrew Morton <akpm@linux-foundation.org>
+> > Cc: Dave Airlie <airlied@gmail.com>
+> > Cc: Daniel Vetter <daniel@ffwll.ch>
+> > Cc: Lucas Stach <l.stach@pengutronix.de>
+> > ---
+> >  init/Kconfig                                  | 11 +++++++++++
+> >  kernel/Makefile                               |  2 +-
+> >  tools/testing/selftests/seccomp/seccomp_bpf.c |  2 +-
+> >  3 files changed, 13 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/init/Kconfig b/init/Kconfig
+> > index b77c60f8b963..f62fca13ac5b 100644
+> > --- a/init/Kconfig
+> > +++ b/init/Kconfig
+> > @@ -1194,6 +1194,7 @@ endif # NAMESPACES
+> >  config CHECKPOINT_RESTORE
+> >       bool "Checkpoint/restore support"
+> >       select PROC_CHILDREN
+> > +     select KCMP
+> >       default n
+> >       help
+> >         Enables additional kernel features in a sake of checkpoint/restore.
+> > @@ -1737,6 +1738,16 @@ config ARCH_HAS_MEMBARRIER_CALLBACKS
+> >  config ARCH_HAS_MEMBARRIER_SYNC_CORE
+> >       bool
+> >
+> > +config KCMP
+> > +     bool "Enable kcmp() system call" if EXPERT
+> > +     default y
+>
+> I would expect this to be not default-y, especially if
+> CHECKPOINT_RESTORE does a "select" on it.
+>
+> This is a really powerful syscall, but it is bounded by ptrace access
+> controls, and uses pointer address obfuscation, so it may be okay to
+> expose this. As it is, at least Ubuntu already has
+> CONFIG_CHECKPOINT_RESTORE, so really, there's probably not much
+> difference on exposure.
+>
+> So, if you drop the "default y", I'm fine with this.
 
-Signed-off-by: Dave Jiang <dave.jiang@intel.com>
----
- drivers/dma/idxd/sysfs.c      |    1 
- drivers/vfio/mdev/idxd/mdev.c |  216 +++++++++++++++++++++++++++++++++++++++--
- 2 files changed, 207 insertions(+), 10 deletions(-)
+It was maybe stupid, but our userspace started relying on fd
+comaprison through sys_kcomp. So for better or worse, if you want to
+run the mesa3d gl/vk stacks, you need this. Was maybe not the brighest
+ideas, but since enough distros had this enabled by defaults, it
+wasn't really discovered, and now we're shipping this everywhere.
 
-diff --git a/drivers/dma/idxd/sysfs.c b/drivers/dma/idxd/sysfs.c
-index 13d20cbd4cf6..d985a0ac23d9 100644
---- a/drivers/dma/idxd/sysfs.c
-+++ b/drivers/dma/idxd/sysfs.c
-@@ -84,6 +84,7 @@ inline bool is_idxd_wq_mdev(struct idxd_wq *wq)
- {
- 	return wq->type == IDXD_WQT_MDEV ? true : false;
- }
-+EXPORT_SYMBOL_GPL(is_idxd_wq_mdev);
- 
- static int idxd_config_bus_match(struct device *dev,
- 				 struct device_driver *drv)
-diff --git a/drivers/vfio/mdev/idxd/mdev.c b/drivers/vfio/mdev/idxd/mdev.c
-index 384ba5d6bc2b..7529396f3812 100644
---- a/drivers/vfio/mdev/idxd/mdev.c
-+++ b/drivers/vfio/mdev/idxd/mdev.c
-@@ -46,6 +46,9 @@ static u64 idxd_pci_config[] = {
- 	0x0000000000000000ULL,
- };
- 
-+static char idxd_dsa_1dwq_name[IDXD_MDEV_NAME_LEN];
-+static char idxd_iax_1dwq_name[IDXD_MDEV_NAME_LEN];
-+
- static int idxd_vdcm_set_irqs(struct vdcm_idxd *vidxd, uint32_t flags, unsigned int index,
- 			      unsigned int start, unsigned int count, void *data);
- 
-@@ -144,21 +147,70 @@ static void idxd_vdcm_release(struct mdev_device *mdev)
- 	mutex_unlock(&vidxd->dev_lock);
- }
- 
-+static struct idxd_wq *find_any_dwq(struct idxd_device *idxd, struct vdcm_idxd_type *type)
-+{
-+	int i;
-+	struct idxd_wq *wq;
-+	unsigned long flags;
-+
-+	switch (type->type) {
-+	case IDXD_MDEV_TYPE_DSA_1_DWQ:
-+		if (idxd->type != IDXD_TYPE_DSA)
-+			return NULL;
-+		break;
-+	case IDXD_MDEV_TYPE_IAX_1_DWQ:
-+		if (idxd->type != IDXD_TYPE_IAX)
-+			return NULL;
-+		break;
-+	default:
-+		return NULL;
-+	}
-+
-+	spin_lock_irqsave(&idxd->dev_lock, flags);
-+	for (i = 0; i < idxd->max_wqs; i++) {
-+		wq = &idxd->wqs[i];
-+
-+		if (wq->state != IDXD_WQ_ENABLED)
-+			continue;
-+
-+		if (!wq_dedicated(wq))
-+			continue;
-+
-+		if (idxd_wq_refcount(wq) != 0)
-+			continue;
-+
-+		spin_unlock_irqrestore(&idxd->dev_lock, flags);
-+		mutex_lock(&wq->wq_lock);
-+		if (idxd_wq_refcount(wq)) {
-+			spin_lock_irqsave(&idxd->dev_lock, flags);
-+			continue;
-+		}
-+
-+		idxd_wq_get(wq);
-+		mutex_unlock(&wq->wq_lock);
-+		return wq;
-+	}
-+
-+	spin_unlock_irqrestore(&idxd->dev_lock, flags);
-+	return NULL;
-+}
-+
- static struct vdcm_idxd *vdcm_vidxd_create(struct idxd_device *idxd, struct mdev_device *mdev,
- 					   struct vdcm_idxd_type *type)
- {
- 	struct vdcm_idxd *vidxd;
- 	struct idxd_wq *wq = NULL;
--	int i;
--
--	/* PLACEHOLDER, wq matching comes later */
-+	int i, rc;
- 
-+	wq = find_any_dwq(idxd, type);
- 	if (!wq)
- 		return ERR_PTR(-ENODEV);
- 
- 	vidxd = kzalloc(sizeof(*vidxd), GFP_KERNEL);
--	if (!vidxd)
--		return ERR_PTR(-ENOMEM);
-+	if (!vidxd) {
-+		rc = -ENOMEM;
-+		goto err;
-+	}
- 
- 	mutex_init(&vidxd->dev_lock);
- 	vidxd->idxd = idxd;
-@@ -169,9 +221,6 @@ static struct vdcm_idxd *vdcm_vidxd_create(struct idxd_device *idxd, struct mdev
- 	vidxd->num_wqs = VIDXD_MAX_WQS;
- 
- 	idxd_vdcm_init(vidxd);
--	mutex_lock(&wq->wq_lock);
--	idxd_wq_get(wq);
--	mutex_unlock(&wq->wq_lock);
- 
- 	for (i = 0; i < VIDXD_MAX_MSIX_ENTRIES; i++) {
- 		vidxd->irq_entries[i].vidxd = vidxd;
-@@ -179,9 +228,24 @@ static struct vdcm_idxd *vdcm_vidxd_create(struct idxd_device *idxd, struct mdev
- 	}
- 
- 	return vidxd;
-+
-+ err:
-+	mutex_lock(&wq->wq_lock);
-+	idxd_wq_put(wq);
-+	mutex_unlock(&wq->wq_lock);
-+	return ERR_PTR(rc);
- }
- 
--static struct vdcm_idxd_type idxd_mdev_types[IDXD_MDEV_TYPES];
-+static struct vdcm_idxd_type idxd_mdev_types[IDXD_MDEV_TYPES] = {
-+	{
-+		.name = idxd_dsa_1dwq_name,
-+		.type = IDXD_MDEV_TYPE_DSA_1_DWQ,
-+	},
-+	{
-+		.name = idxd_iax_1dwq_name,
-+		.type = IDXD_MDEV_TYPE_IAX_1_DWQ,
-+	},
-+};
- 
- static struct vdcm_idxd_type *idxd_vdcm_find_vidxd_type(struct device *dev,
- 							const char *name)
-@@ -965,7 +1029,94 @@ static long idxd_vdcm_ioctl(struct mdev_device *mdev, unsigned int cmd,
- 	return rc;
- }
- 
--static const struct mdev_parent_ops idxd_vdcm_ops = {
-+static ssize_t name_show(struct kobject *kobj, struct device *dev, char *buf)
-+{
-+	struct vdcm_idxd_type *type;
-+
-+	type = idxd_vdcm_find_vidxd_type(dev, kobject_name(kobj));
-+
-+	if (type)
-+		return sprintf(buf, "%s\n", type->name);
-+
-+	return -EINVAL;
-+}
-+static MDEV_TYPE_ATTR_RO(name);
-+
-+static int find_available_mdev_instances(struct idxd_device *idxd, struct vdcm_idxd_type *type)
-+{
-+	int count = 0, i;
-+	unsigned long flags;
-+
-+	switch (type->type) {
-+	case IDXD_MDEV_TYPE_DSA_1_DWQ:
-+		if (idxd->type != IDXD_TYPE_DSA)
-+			return 0;
-+		break;
-+	case IDXD_MDEV_TYPE_IAX_1_DWQ:
-+		if (idxd->type != IDXD_TYPE_IAX)
-+			return 0;
-+		break;
-+	default:
-+		return 0;
-+	}
-+
-+	spin_lock_irqsave(&idxd->dev_lock, flags);
-+	for (i = 0; i < idxd->max_wqs; i++) {
-+		struct idxd_wq *wq;
-+
-+		wq = &idxd->wqs[i];
-+		if (!is_idxd_wq_mdev(wq) || !wq_dedicated(wq) || idxd_wq_refcount(wq))
-+			continue;
-+
-+		count++;
-+	}
-+	spin_unlock_irqrestore(&idxd->dev_lock, flags);
-+
-+	return count;
-+}
-+
-+static ssize_t available_instances_show(struct kobject *kobj,
-+					struct device *dev, char *buf)
-+{
-+	int count;
-+	struct idxd_device *idxd = dev_get_drvdata(dev);
-+	struct vdcm_idxd_type *type;
-+
-+	type = idxd_vdcm_find_vidxd_type(dev, kobject_name(kobj));
-+	if (!type)
-+		return -EINVAL;
-+
-+	count = find_available_mdev_instances(idxd, type);
-+
-+	return sprintf(buf, "%d\n", count);
-+}
-+static MDEV_TYPE_ATTR_RO(available_instances);
-+
-+static ssize_t device_api_show(struct kobject *kobj, struct device *dev,
-+			       char *buf)
-+{
-+	return sprintf(buf, "%s\n", VFIO_DEVICE_API_PCI_STRING);
-+}
-+static MDEV_TYPE_ATTR_RO(device_api);
-+
-+static struct attribute *idxd_mdev_types_attrs[] = {
-+	&mdev_type_attr_name.attr,
-+	&mdev_type_attr_device_api.attr,
-+	&mdev_type_attr_available_instances.attr,
-+	NULL,
-+};
-+
-+static struct attribute_group idxd_mdev_type_dsa_group0 = {
-+	.name = idxd_dsa_1dwq_name,
-+	.attrs = idxd_mdev_types_attrs,
-+};
-+
-+static struct attribute_group idxd_mdev_type_iax_group0 = {
-+	.name = idxd_iax_1dwq_name,
-+	.attrs = idxd_mdev_types_attrs,
-+};
-+
-+static struct mdev_parent_ops idxd_vdcm_ops = {
- 	.create			= idxd_vdcm_create,
- 	.remove			= idxd_vdcm_remove,
- 	.open			= idxd_vdcm_open,
-@@ -976,6 +1127,43 @@ static const struct mdev_parent_ops idxd_vdcm_ops = {
- 	.ioctl			= idxd_vdcm_ioctl,
- };
- 
-+/* Set the mdev type version to the hardware version supported */
-+static void init_mdev_1dwq_name(struct idxd_device *idxd)
-+{
-+	unsigned int version;
-+
-+	version = (idxd->hw.version & GENMASK(15, 8)) >> 8;
-+	if (idxd->type == IDXD_TYPE_DSA && strlen(idxd_dsa_1dwq_name) == 0)
-+		sprintf(idxd_dsa_1dwq_name, "dsa-1dwq-v%u", version);
-+	else if (idxd->type == IDXD_TYPE_IAX && strlen(idxd_iax_1dwq_name) == 0)
-+		sprintf(idxd_iax_1dwq_name, "iax-1dwq-v%u", version);
-+}
-+
-+static int alloc_supported_types(struct idxd_device *idxd)
-+{
-+	struct attribute_group **idxd_mdev_type_groups;
-+
-+	idxd_mdev_type_groups = kcalloc(2, sizeof(struct attribute_group *), GFP_KERNEL);
-+	if (!idxd_mdev_type_groups)
-+		return -ENOMEM;
-+
-+	switch (idxd->type) {
-+	case IDXD_TYPE_DSA:
-+		idxd_mdev_type_groups[0] = &idxd_mdev_type_dsa_group0;
-+		break;
-+	case IDXD_TYPE_IAX:
-+		idxd_mdev_type_groups[0] = &idxd_mdev_type_iax_group0;
-+		break;
-+	case IDXD_TYPE_UNKNOWN:
-+	default:
-+		return -ENODEV;
-+	}
-+
-+	idxd_vdcm_ops.supported_type_groups = idxd_mdev_type_groups;
-+
-+	return 0;
-+}
-+
- int idxd_mdev_host_init(struct idxd_device *idxd)
- {
- 	struct device *dev = &idxd->pdev->dev;
-@@ -984,6 +1172,11 @@ int idxd_mdev_host_init(struct idxd_device *idxd)
- 	if (!test_bit(IDXD_FLAG_IMS_SUPPORTED, &idxd->flags))
- 		return -EOPNOTSUPP;
- 
-+	init_mdev_1dwq_name(idxd);
-+	rc = alloc_supported_types(idxd);
-+	if (rc < 0)
-+		return rc;
-+
- 	if (iommu_dev_has_feature(dev, IOMMU_DEV_FEAT_AUX)) {
- 		rc = iommu_dev_enable_feature(dev, IOMMU_DEV_FEAT_AUX);
- 		if (rc < 0) {
-@@ -1010,6 +1203,9 @@ void idxd_mdev_host_release(struct idxd_device *idxd)
- 			dev_warn(dev, "Failed to disable aux-domain: %d\n",
- 				 rc);
- 	}
-+
-+	kfree(idxd_vdcm_ops.supported_type_groups);
-+	idxd_vdcm_ops.supported_type_groups = NULL;
- }
- 
- static int idxd_mdev_aux_probe(struct auxiliary_device *auxdev,
+Ofc we can leave the default n, but the select if CONFIG_DRM is
+unfortunately needed I think. For that part:
+
+Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+
+Also adding Dave Airlie for his take.
+-Daniel
+
+>
+> -Kees
+>
+> > +     help
+> > +       Enable the file descriptor comparison system call. It provides
+> > +       user-space with the ability to compare two fd to see if they
+> > +       point to the same file, and check other attributes.
+> > +
+> > +       If unsure, say Y.
+> > +
+> >  config RSEQ
+> >       bool "Enable rseq() system call" if EXPERT
+> >       default y
+> > diff --git a/kernel/Makefile b/kernel/Makefile
+> > index aa7368c7eabf..320f1f3941b7 100644
+> > --- a/kernel/Makefile
+> > +++ b/kernel/Makefile
+> > @@ -51,7 +51,7 @@ obj-y += livepatch/
+> >  obj-y += dma/
+> >  obj-y += entry/
+> >
+> > -obj-$(CONFIG_CHECKPOINT_RESTORE) += kcmp.o
+> > +obj-$(CONFIG_KCMP) += kcmp.o
+> >  obj-$(CONFIG_FREEZER) += freezer.o
+> >  obj-$(CONFIG_PROFILING) += profile.o
+> >  obj-$(CONFIG_STACKTRACE) += stacktrace.o
+> > diff --git a/tools/testing/selftests/seccomp/seccomp_bpf.c b/tools/testing/selftests/seccomp/seccomp_bpf.c
+> > index 26c72f2b61b1..1b6c7d33c4ff 100644
+> > --- a/tools/testing/selftests/seccomp/seccomp_bpf.c
+> > +++ b/tools/testing/selftests/seccomp/seccomp_bpf.c
+> > @@ -315,7 +315,7 @@ TEST(kcmp)
+> >       ret = __filecmp(getpid(), getpid(), 1, 1);
+> >       EXPECT_EQ(ret, 0);
+> >       if (ret != 0 && errno == ENOSYS)
+> > -             SKIP(return, "Kernel does not support kcmp() (missing CONFIG_CHECKPOINT_RESTORE?)");
+> > +             SKIP(return, "Kernel does not support kcmp() (missing CONFIG_KCMP?)");
+> >  }
+> >
+> >  TEST(mode_strict_support)
+> > --
+> > 2.20.1
+> >
+>
+> --
+> Kees Cook
 
 
+
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
