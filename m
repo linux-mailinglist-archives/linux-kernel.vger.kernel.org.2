@@ -2,150 +2,302 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19F8931026A
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 02:51:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B53C310250
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 02:40:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233016AbhBEBuB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 20:50:01 -0500
-Received: from mailout4.samsung.com ([203.254.224.34]:18970 "EHLO
-        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229590AbhBEBt6 (ORCPT
+        id S232839AbhBEBjz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 20:39:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57594 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232564AbhBEBjx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 20:49:58 -0500
-Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210205014914epoutp04c743b897aac5d3db49cc0da36a99ab9e~gtuNqsgqb3209632096epoutp04S
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 01:49:14 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210205014914epoutp04c743b897aac5d3db49cc0da36a99ab9e~gtuNqsgqb3209632096epoutp04S
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1612489754;
-        bh=zBlATRvYraRdAaJGrKEnqYtMnm/p4bFoVfSg53NqXac=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Gs8sYTye/5T2GvL9cOWG363cbS++PQ338yXARUFpnA6GgY24rCoYYSn3XQ7fzh/Go
-         79kcrd36ozgwkFa/2Pf38Kvs1t4oYr+BKXyy9c/jTm3I9WUodQVo5L8Wvf+BqV3Dp6
-         Zc88c8JUYwmDiY6RrqgIMYz4ZugB3keAXmwVSRKE=
-Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
-        epcas1p3.samsung.com (KnoxPortal) with ESMTP id
-        20210205014913epcas1p37bc49ec7611462940f04a7f86b146ea2~gtuM_-k381527315273epcas1p3L;
-        Fri,  5 Feb 2021 01:49:13 +0000 (GMT)
-Received: from epsmges1p5.samsung.com (unknown [182.195.40.163]) by
-        epsnrtp3.localdomain (Postfix) with ESMTP id 4DWyyH1vQ8z4x9Q9; Fri,  5 Feb
-        2021 01:49:11 +0000 (GMT)
-Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
-        epsmges1p5.samsung.com (Symantec Messaging Gateway) with SMTP id
-        08.AE.09577.714AC106; Fri,  5 Feb 2021 10:49:11 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas1p3.samsung.com (KnoxPortal) with ESMTPA id
-        20210205014910epcas1p3bcaa909ace0684150973ccc3a35bb0de~gtuJ44pAx1526515265epcas1p3B;
-        Fri,  5 Feb 2021 01:49:10 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20210205014910epsmtrp255cb99957ee22a6dc5d543baad0532b9~gtuJ2FcS92849228492epsmtrp2o;
-        Fri,  5 Feb 2021 01:49:10 +0000 (GMT)
-X-AuditID: b6c32a39-c13ff70000002569-c8-601ca417bf35
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        EC.E8.13470.614AC106; Fri,  5 Feb 2021 10:49:10 +0900 (KST)
-Received: from localhost.localdomain (unknown [10.253.101.61]) by
-        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20210205014910epsmtip2e954d452f0c93b43abedb0d53cdaac1d~gtuJkHrar0106301063epsmtip2B;
-        Fri,  5 Feb 2021 01:49:09 +0000 (GMT)
-From:   DooHyun Hwang <dh0421.hwang@samsung.com>
-To:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        alim.akhtar@samsung.com, avri.altman@wdc.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, stanley.chu@mediatek.com,
-        cang@codeaurora.org, asutoshd@codeaurora.org, beanhuo@micron.com,
-        jaegeuk@kernel.org, adrian.hunter@intel.com, satyat@google.com
-Cc:     grant.jung@samsung.com, jt77.jang@samsung.com,
-        junwoo80.lee@samsung.com, jangsub.yi@samsung.com,
-        sh043.lee@samsung.com, cw9316.lee@samsung.com,
-        sh8267.baek@samsung.com, wkon.kim@samsung.com,
-        DooHyun Hwang <dh0421.hwang@samsung.com>
-Subject: [PATCH 3/3] scsi: ufs: reset the ufs device before link startup
- retry
-Date:   Fri,  5 Feb 2021 10:36:33 +0900
-Message-Id: <20210205013633.16243-3-dh0421.hwang@samsung.com>
-X-Mailer: git-send-email 2.29.0
-In-Reply-To: <20210205013633.16243-1-dh0421.hwang@samsung.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Tf0xbVRTHc1/b15at81kG3CBiV52RKbQFSi8TGozgno5kGKNZnAYe8ELZ
-        SltbujCTIb9SYWWjZIubVTbY+KFMaGCAiFB+LUINYfzYGJsYfoQFgTFHy4ZzwGx5LPLf95z7
-        Oeebc+69PJZwBffnpWsyab2GUotxL3ZLb5Ak2K8yIEn6MIeLHLM/4WjqYguOOkz9XDT/5BaO
-        uqeL2Mhpq+agC7+bOMg+5uCif9dtXDRrs7JQYfNZDF0eb8FQ69wAF7Wt52NotO17HJlvt+Ko
-        pm8DQyVX/8RR3pqdjcYG+jmoqvkOQNdGHrNjfMnRM6cxsrzRSF5pn8fIxtoinLRc7gJkgaOT
-        Ta7aCnFy+d5dNnmmqRaQrsZA8usuM5aw41N1lIqmUmm9iNakaFPTNWnR4oMfJb6bKI+QyoJl
-        kUghFmmoDDpaHBufEPxeuto9rlh0nFIb3akEymAQS5RReq0xkxaptIbMaDGtS1XrZFJdiIHK
-        MBg1aSEp2oz9Mqk0VO4mk9Sq3vtv63K5WUO3snPAIOcU4PMgEQ6HbqyzTwEvnpBoBdA1/QOH
-        CZwA2tongYcSEo8BnKgSPa/oGjmNM1AHgGfn/tkKXABa/jJv9sWJENh+unaz1W7CjsGJHzsx
-        T8AilgGsuLuIeyhvIgHWFIxverCJvXDo6bNNLSCiYdOgk834vQLXJotZHs0nlLCi6BnOMC9C
-        x7ezmwzLzeQ3f8fyGEAinw8r8pYBUxwLR5oucBntDRf6mra0P3Q96MAZbQawpEfJFFsAHO0r
-        3joIg06Xy92I53YIgrY2CZPeA395WgYY413wwaNijgeBhAAWmoQM8jq8srHqRrhuHQBzdzBZ
-        Ev5dUgCYZZUCOPzHBNcCRNZt01i3TWP937ccsGqBL60zZKTRBplOvv2CG8Hm898X2QrOLz0M
-        6QEYD/QAyGOJdwsok3+SUJBKnfiS1msT9UY1begBcveuS1n+Pila9//RZCbK5KFhYWEoPEIR
-        IQ8T+wmSpVOJQiKNyqSP0bSO1j+vw3h8/xxMci+tev34JQV3WHl/ytxZdvHqzJIk6w27T7/9
-        egy//ue4iMInoZdqDmc3KxoD6s+PHbNvLMxQQso4Lap6s9qrZ+7EufG3hqzDUQdNfPlA7iAr
-        np0suen3/kj8yp6cgKMnBYuxpqCjwmli1XLgcPXancDuEtURsDbUsMaxFs28Q6ZIKuv6w1Xe
-        vyZ/oszbWdk5pZX5+jx6ba6sNpCo65c4cus+dnwlW/zAEWdpiD03Kbt26KWljV1Ft1UB+U5B
-        zqHeDw8kiFdEys9+i5FkHTn5Ramx++Xc67zyFz6fC3zVGdmxV3EzfEFR0acqnvbyrs82yxUz
-        IQvdO7/Zf4OOa2roGpwXsw0qSraPpTdQ/wGCc9wohwQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrLIsWRmVeSWpSXmKPExsWy7bCSvK7YEpkEg2vd/BYnn6xhs3gwbxub
-        xd62E+wWL39eZbM4+LCTxeLT+mWsFjNOtbFa7Lt2kt3i19/17BZP1s9itujYOpnJYtGNbUwW
-        O56fYbfY9beZyeLyrjlsFt3Xd7BZLD/+j8mif/VdNoumP/tYLK6dOcFqsXTrTUaLzZe+sTiI
-        eVzu62XyWLCp1GPxnpdMHptWdbJ5TFh0gNGj5eR+Fo/v6zvYPD4+vcXi0bdlFaPH501yHu0H
-        upkCuKO4bFJSczLLUov07RK4Mg6/sS5oZK+4cLWugfEcaxcjJ4eEgInEgUu9bCC2kMBuRomH
-        L8Qg4jIS3ff3sncxcgDZwhKHDxd3MXIBlXxklFjw+CNYL5uAnsSe3lWsIAkRgXNMErfnLWEE
-        cZgFfjNKTPrRzA5SJSzgJzF91XNmEJtFQFXiwu//jCA2r4CtxJZzn1ggtslL/LnfA1bDKWAn
-        sbDzP9RFthJHnq2GqheUODnzCVg9M1B989bZzBMYBWYhSc1CklrAyLSKUTK1oDg3PbfYsMAw
-        L7Vcrzgxt7g0L10vOT93EyM4RrU0dzBuX/VB7xAjEwfjIUYJDmYlEd7ENqkEId6UxMqq1KL8
-        +KLSnNTiQ4zSHCxK4rwXuk7GCwmkJ5akZqemFqQWwWSZODilGphcf7T9+mbPdJrTcoq97PN/
-        2hrTL9323/LhXb9gbUxXvz/3o/nnaisOnKpTOvphU5h9c8QpXTvG6vlXLt+VfbFMe/v8nXxP
-        8nxlUkWEJHdm7EnI4KhbtPz6X81GdvmLL8padxxMqr63/47j44eO9w/9Z71csfjPUa9vm++v
-        3burtNTvmlbfXZ9zDr9nKv+dV3k0+o6tseiZikcT0lVW5B7t0/A3+n+p/Jwn+4zvt1Z9sIgJ
-        2xlyt/Aoa+nBmw8yn/o7nPoXezK5Jet2WJ1w2+2+1POHP2REr39qxmCx3yD57OXZtZG9a5uf
-        vJ38qUst/EqpXH1EUZD0z7vbVX4pK3NJvF3vped0zOlS4T016acaSizFGYmGWsxFxYkALheC
-        xEADAAA=
-X-CMS-MailID: 20210205014910epcas1p3bcaa909ace0684150973ccc3a35bb0de
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210205014910epcas1p3bcaa909ace0684150973ccc3a35bb0de
-References: <20210205013633.16243-1-dh0421.hwang@samsung.com>
-        <CGME20210205014910epcas1p3bcaa909ace0684150973ccc3a35bb0de@epcas1p3.samsung.com>
+        Thu, 4 Feb 2021 20:39:53 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27B43C0613D6
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 17:39:13 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id e62so5234945yba.5
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 17:39:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=Ou7Twm7dwyYgMW0x+HwD1Y+xevZetv77gEBdmsc8Q94=;
+        b=GdNa1rPNpTl4tPRjWrN0WbarZpUsCoJ0JD5+A6kbfmK7LL6OyW7mRZjVCwkeIDXwxF
+         +HkfDVVwxtbD98uC2IyJRArEAIwYSbWvMR9MfS/z6vQA9TU7eVY6tyxGfr75wfKutZRi
+         CsOpeFmS8Xb3yNINQqmnPxVs1nFD7jsjm7GDoPXVoCMQb1ZxCdUMOJYDhwKLeuNFBPqy
+         Nq5oiA/kcUmQ+kH518zWlKqesafA17Khqu35kVxHIc9I5lIGka7suX/V3IxN59UqLEP6
+         f4Lht+1brN6UijoQZO82LCpzq85RyvhA6hEfelDJDwopdaUhH5LMkM4c6tNx6BB7CRE4
+         74fw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=Ou7Twm7dwyYgMW0x+HwD1Y+xevZetv77gEBdmsc8Q94=;
+        b=jyrmCMRDiTGLmtMMRyg5aPyfUrx3+JZkcqr7glrq7Qif1QQKSQJL2PU7qv9oKWs7P9
+         MDQ1npeWjsgfocLgshKcib5X8g5CwF5HyijUtT1qlBHnIg9OZSeBpYi80/d7xDVer/e6
+         9hGDX7O2YXtL2YaoIcWJgMeq3q4e6dJ545MTbvAP/gZBLk/8kXurNnyYqffg5ev9QfGa
+         DrjqPv3im2imCLbfuBKXhWY0+iAPJf5E8hpSmLnGA4HhoSqiIbYin8Yxb2yOCtqhHMDa
+         /Itkf6KB7F2OvC+Opx+uz0bf9J1P6B41IZKhpY7RInsydJ5d5FpgOy1Q+nGXyn1kytmm
+         Etpw==
+X-Gm-Message-State: AOAM531v1SzJN3Cw+yAZk79YIGIPY4lG8ya8z3QJ+M7Kxp+OhajW5pDw
+        Lj4c0MAmqliZ7hYLIkJqpFf1Yb3jz2HUBEY=
+X-Google-Smtp-Source: ABdhPJwj7X2s1/xbe3xohNzr9Ptz5AxLQPaNiOaF1tsFcQ1kWCt6sqIne4ediHnc/osBUMb9yoeuPQqXAYMgRu0=
+Sender: "saravanak via sendgmr" <saravanak@saravanak.san.corp.google.com>
+X-Received: from saravanak.san.corp.google.com ([2620:15c:2d:3:8475:2f1d:e8b4:f65a])
+ (user=saravanak job=sendgmr) by 2002:a25:2f55:: with SMTP id
+ v82mr2711812ybv.481.1612489152344; Thu, 04 Feb 2021 17:39:12 -0800 (PST)
+Date:   Thu,  4 Feb 2021 17:38:46 -0800
+Message-Id: <20210205013847.1736929-1-saravanak@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
+Subject: [PATCH v3] ARM: imx: avic: Convert to using IRQCHIP_DECLARE
+From:   Saravana Kannan <saravanak@google.com>
+To:     Russell King <linux@armlinux.org.uk>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Saravana Kannan <saravanak@google.com>
+Cc:     Martin Kaiser <martin@kaiser.cx>, kernel-team@android.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If the link startup command fails, trigger hardware reset to reset
-the UFS device before link startup retry.
+Using IRQCHIP_DECLARE lets fw_devlink know that it should not wait for
+these interrupt controllers to be populated as struct devices. Without
+this change, fw_devlink=on will make the consumers of these interrupt
+controllers wait for the struct device to be added and thereby block the
+consumers' probes forever. Converting to IRQCHIP_DECLARE addresses boot
+issues on imx25 with fw_devlink=on that were reported by Martin.
 
-Signed-off-by: DooHyun Hwang <dh0421.hwang@samsung.com>
+This also removes a lot of boilerplate code.
+
+Fixes: e590474768f1 ("driver core: Set fw_devlink=on by default")
+Reported-by: Martin Kaiser <martin@kaiser.cx>
+Signed-off-by: Saravana Kannan <saravanak@google.com>
+Tested-by: Martin Kaiser <martin@kaiser.cx>
 ---
- drivers/scsi/ufs/ufshcd.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
 
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index 32cb3b0dcbcf..a87e98631a72 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -4644,7 +4644,15 @@ static int ufshcd_link_startup(struct ufs_hba *hba)
- 				       (u32)ret);
+v1 -> v2:
+- Fixed compatible string
+- Added Tested-by
+
+v2 -> v3:
+- Improved commit text
+
+ arch/arm/mach-imx/avic.c       | 16 +++++++++++++++-
+ arch/arm/mach-imx/common.h     |  1 -
+ arch/arm/mach-imx/mach-imx1.c  | 11 -----------
+ arch/arm/mach-imx/mach-imx25.c | 12 ------------
+ arch/arm/mach-imx/mach-imx27.c | 12 ------------
+ arch/arm/mach-imx/mach-imx31.c |  1 -
+ arch/arm/mach-imx/mach-imx35.c |  1 -
+ arch/arm/mach-imx/mm-imx3.c    | 24 ------------------------
+ 8 files changed, 15 insertions(+), 63 deletions(-)
+
+diff --git a/arch/arm/mach-imx/avic.c b/arch/arm/mach-imx/avic.c
+index 322caa21bcb3..21bce4049cec 100644
+--- a/arch/arm/mach-imx/avic.c
++++ b/arch/arm/mach-imx/avic.c
+@@ -7,6 +7,7 @@
+ #include <linux/module.h>
+ #include <linux/irq.h>
+ #include <linux/irqdomain.h>
++#include <linux/irqchip.h>
+ #include <linux/io.h>
+ #include <linux/of.h>
+ #include <linux/of_address.h>
+@@ -162,7 +163,7 @@ static void __exception_irq_entry avic_handle_irq(struct pt_regs *regs)
+  * interrupts. It registers the interrupt enable and disable functions
+  * to the kernel for each interrupt source.
+  */
+-void __init mxc_init_irq(void __iomem *irqbase)
++static void __init mxc_init_irq(void __iomem *irqbase)
+ {
+ 	struct device_node *np;
+ 	int irq_base;
+@@ -220,3 +221,16 @@ void __init mxc_init_irq(void __iomem *irqbase)
  
- 		if (link_startup_again) {
-+			int err = 0;
+ 	printk(KERN_INFO "MXC IRQ initialized\n");
+ }
 +
- 			link_startup_again = false;
++static int __init imx_avic_init(struct device_node *node,
++			       struct device_node *parent)
++{
++	void __iomem *avic_base;
 +
-+			/* Reset the attached device before retrying */
-+			err = ufshcd_vops_device_reset(hba);
-+			if (err && (err != -EOPNOTSUPP))
-+				ufshcd_update_evt_hist(hba, UFS_EVT_DEV_RESET, err);
++	avic_base = of_iomap(node, 0);
++	BUG_ON(!avic_base);
++	mxc_init_irq(avic_base);
++	return 0;
++}
 +
- 			retries = DME_LINKSTARTUP_RETRIES;
- 			goto link_startup;
- 		}
++IRQCHIP_DECLARE(imx_avic, "fsl,avic", imx_avic_init);
+diff --git a/arch/arm/mach-imx/common.h b/arch/arm/mach-imx/common.h
+index 2d76e2c6c99e..e988b0978a42 100644
+--- a/arch/arm/mach-imx/common.h
++++ b/arch/arm/mach-imx/common.h
+@@ -22,7 +22,6 @@ void mx35_map_io(void);
+ void imx21_init_early(void);
+ void imx31_init_early(void);
+ void imx35_init_early(void);
+-void mxc_init_irq(void __iomem *);
+ void mx31_init_irq(void);
+ void mx35_init_irq(void);
+ void mxc_set_cpu_type(unsigned int type);
+diff --git a/arch/arm/mach-imx/mach-imx1.c b/arch/arm/mach-imx/mach-imx1.c
+index 32df3b8012f9..8eca92d66a2e 100644
+--- a/arch/arm/mach-imx/mach-imx1.c
++++ b/arch/arm/mach-imx/mach-imx1.c
+@@ -17,16 +17,6 @@ static void __init imx1_init_early(void)
+ 	mxc_set_cpu_type(MXC_CPU_MX1);
+ }
+ 
+-static void __init imx1_init_irq(void)
+-{
+-	void __iomem *avic_addr;
+-
+-	avic_addr = ioremap(MX1_AVIC_ADDR, SZ_4K);
+-	WARN_ON(!avic_addr);
+-
+-	mxc_init_irq(avic_addr);
+-}
+-
+ static const char * const imx1_dt_board_compat[] __initconst = {
+ 	"fsl,imx1",
+ 	NULL
+@@ -34,7 +24,6 @@ static const char * const imx1_dt_board_compat[] __initconst = {
+ 
+ DT_MACHINE_START(IMX1_DT, "Freescale i.MX1 (Device Tree Support)")
+ 	.init_early	= imx1_init_early,
+-	.init_irq	= imx1_init_irq,
+ 	.dt_compat	= imx1_dt_board_compat,
+ 	.restart	= mxc_restart,
+ MACHINE_END
+diff --git a/arch/arm/mach-imx/mach-imx25.c b/arch/arm/mach-imx/mach-imx25.c
+index 95de48a1aa7d..51927bd08aef 100644
+--- a/arch/arm/mach-imx/mach-imx25.c
++++ b/arch/arm/mach-imx/mach-imx25.c
+@@ -22,17 +22,6 @@ static void __init imx25_dt_init(void)
+ 	imx_aips_allow_unprivileged_access("fsl,imx25-aips");
+ }
+ 
+-static void __init mx25_init_irq(void)
+-{
+-	struct device_node *np;
+-	void __iomem *avic_base;
+-
+-	np = of_find_compatible_node(NULL, NULL, "fsl,avic");
+-	avic_base = of_iomap(np, 0);
+-	BUG_ON(!avic_base);
+-	mxc_init_irq(avic_base);
+-}
+-
+ static const char * const imx25_dt_board_compat[] __initconst = {
+ 	"fsl,imx25",
+ 	NULL
+@@ -42,6 +31,5 @@ DT_MACHINE_START(IMX25_DT, "Freescale i.MX25 (Device Tree Support)")
+ 	.init_early	= imx25_init_early,
+ 	.init_machine	= imx25_dt_init,
+ 	.init_late      = imx25_pm_init,
+-	.init_irq	= mx25_init_irq,
+ 	.dt_compat	= imx25_dt_board_compat,
+ MACHINE_END
+diff --git a/arch/arm/mach-imx/mach-imx27.c b/arch/arm/mach-imx/mach-imx27.c
+index 262422a9c196..e325c9468105 100644
+--- a/arch/arm/mach-imx/mach-imx27.c
++++ b/arch/arm/mach-imx/mach-imx27.c
+@@ -56,17 +56,6 @@ static void __init imx27_init_early(void)
+ 	mxc_set_cpu_type(MXC_CPU_MX27);
+ }
+ 
+-static void __init mx27_init_irq(void)
+-{
+-	void __iomem *avic_base;
+-	struct device_node *np;
+-
+-	np = of_find_compatible_node(NULL, NULL, "fsl,avic");
+-	avic_base = of_iomap(np, 0);
+-	BUG_ON(!avic_base);
+-	mxc_init_irq(avic_base);
+-}
+-
+ static const char * const imx27_dt_board_compat[] __initconst = {
+ 	"fsl,imx27",
+ 	NULL
+@@ -75,7 +64,6 @@ static const char * const imx27_dt_board_compat[] __initconst = {
+ DT_MACHINE_START(IMX27_DT, "Freescale i.MX27 (Device Tree Support)")
+ 	.map_io		= mx27_map_io,
+ 	.init_early	= imx27_init_early,
+-	.init_irq	= mx27_init_irq,
+ 	.init_late	= imx27_pm_init,
+ 	.dt_compat	= imx27_dt_board_compat,
+ MACHINE_END
+diff --git a/arch/arm/mach-imx/mach-imx31.c b/arch/arm/mach-imx/mach-imx31.c
+index dc69dfe600df..e9a1092b6093 100644
+--- a/arch/arm/mach-imx/mach-imx31.c
++++ b/arch/arm/mach-imx/mach-imx31.c
+@@ -14,6 +14,5 @@ static const char * const imx31_dt_board_compat[] __initconst = {
+ DT_MACHINE_START(IMX31_DT, "Freescale i.MX31 (Device Tree Support)")
+ 	.map_io		= mx31_map_io,
+ 	.init_early	= imx31_init_early,
+-	.init_irq	= mx31_init_irq,
+ 	.dt_compat	= imx31_dt_board_compat,
+ MACHINE_END
+diff --git a/arch/arm/mach-imx/mach-imx35.c b/arch/arm/mach-imx/mach-imx35.c
+index ec5c3068715c..0fc08218b77d 100644
+--- a/arch/arm/mach-imx/mach-imx35.c
++++ b/arch/arm/mach-imx/mach-imx35.c
+@@ -27,6 +27,5 @@ DT_MACHINE_START(IMX35_DT, "Freescale i.MX35 (Device Tree Support)")
+ 	.l2c_aux_mask	= ~0,
+ 	.map_io		= mx35_map_io,
+ 	.init_early	= imx35_init_early,
+-	.init_irq	= mx35_init_irq,
+ 	.dt_compat	= imx35_dt_board_compat,
+ MACHINE_END
+diff --git a/arch/arm/mach-imx/mm-imx3.c b/arch/arm/mach-imx/mm-imx3.c
+index 5056438e5b42..28db97289ee8 100644
+--- a/arch/arm/mach-imx/mm-imx3.c
++++ b/arch/arm/mach-imx/mm-imx3.c
+@@ -109,18 +109,6 @@ void __init imx31_init_early(void)
+ 	mx3_ccm_base = of_iomap(np, 0);
+ 	BUG_ON(!mx3_ccm_base);
+ }
+-
+-void __init mx31_init_irq(void)
+-{
+-	void __iomem *avic_base;
+-	struct device_node *np;
+-
+-	np = of_find_compatible_node(NULL, NULL, "fsl,imx31-avic");
+-	avic_base = of_iomap(np, 0);
+-	BUG_ON(!avic_base);
+-
+-	mxc_init_irq(avic_base);
+-}
+ #endif /* ifdef CONFIG_SOC_IMX31 */
+ 
+ #ifdef CONFIG_SOC_IMX35
+@@ -158,16 +146,4 @@ void __init imx35_init_early(void)
+ 	mx3_ccm_base = of_iomap(np, 0);
+ 	BUG_ON(!mx3_ccm_base);
+ }
+-
+-void __init mx35_init_irq(void)
+-{
+-	void __iomem *avic_base;
+-	struct device_node *np;
+-
+-	np = of_find_compatible_node(NULL, NULL, "fsl,imx35-avic");
+-	avic_base = of_iomap(np, 0);
+-	BUG_ON(!avic_base);
+-
+-	mxc_init_irq(avic_base);
+-}
+ #endif /* ifdef CONFIG_SOC_IMX35 */
 -- 
-2.29.0
+2.30.0.365.g02bc693789-goog
 
