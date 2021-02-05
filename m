@@ -2,122 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84312310905
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 11:28:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 36D4C3108F3
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 11:24:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230088AbhBEK0B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 05:26:01 -0500
-Received: from mail-oo1-f43.google.com ([209.85.161.43]:33852 "EHLO
-        mail-oo1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231253AbhBEKSC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 05:18:02 -0500
-Received: by mail-oo1-f43.google.com with SMTP id x23so1491746oop.1;
-        Fri, 05 Feb 2021 02:17:47 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=l72BMIb3zhzzE8Mc2vCdYcqGUh+JciNiU1J70+nqoJI=;
-        b=lSKuaFzPlqrvQkHbpvlXBeh3i+1FF9i5QtYM8s97XUnj2stya8f/r+i8G64MXk8vee
-         LfYBbfrkTDnR4u93qoveoxOJAgf6mkucbqfHux41scYt56aU8g6JX/vAZy66kJIn3gNw
-         lGh6Iz3t38KGFx/O0MiiagpxlVAm22Af/QGE0Y0X5oKaQEZnWEQ9RGnOzJ02e8HeoXES
-         iSczVQHwIoYI/3NPe9kfAYAf544fB9FoMOgrvexH/EqPAZqXbumEiPEcQBtivQTtx3lF
-         ar5obKOZ2v8av4d5Vs+piqgkEYOIgnQzvidy0BAGZH7wuPMPsAtafO9fh2sbxy6Nq1V0
-         BdOg==
-X-Gm-Message-State: AOAM531L2E/xj+CPGvX7JhIJJG+UAOLKBErmFjhjJcJtulms7MDXLqTS
-        yehTP8yIY0VaeQUx97vETNd+AMNGBX2n2URNCrk=
-X-Google-Smtp-Source: ABdhPJygXWRTFA7m8W3rDa/nNXZsqdUMOa+4wi/8Xobw0G4luRVdhEzx1c9WHF/DD7QSyQ2KNLJAi78q7X63Idf+eDg=
-X-Received: by 2002:a4a:e6d2:: with SMTP id v18mr2910653oot.40.1612520241833;
- Fri, 05 Feb 2021 02:17:21 -0800 (PST)
+        id S231351AbhBEKXN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 05:23:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54648 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231328AbhBEKTb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 05:19:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CEC5A64FED;
+        Fri,  5 Feb 2021 10:18:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1612520300;
+        bh=s6zOJkZnJEbm1xu0sX2TF5RgsugvUfGcTGQRbF8fYFQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=l8kKbOl3cDdM3E0eg11Cb78ojX1U42q1MLOpEbO9ohJ6ZsUhbIINgE9AGpi57xg07
+         nrjjNaNlf57dKR3WfAKi/M4HzTfRDGroizd8ACmJPeidm7+lvaabIXe7cQPaeWn9o/
+         A7dwUkMkXN6n1qunw/7DRnw+YFcS0Z5Mmkh9/ecc=
+Date:   Fri, 5 Feb 2021 11:18:17 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Cc:     Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        linux-fbdev@vger.kernel.org,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        kvm@vger.kernel.org,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org,
+        Jaroslav Kysela <perex@perex.cz>,
+        Eric Anholt <eric@anholt.net>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig.org@pengutronix.de>, linux-i2c@vger.kernel.org,
+        linux-spi@vger.kernel.org, Jiri Slaby <jirislaby@kernel.org>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-watchdog@vger.kernel.org, linux-rtc@vger.kernel.org,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        David Airlie <airlied@linux.ie>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        linux-serial@vger.kernel.org, linux-input@vger.kernel.org,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Mike Leach <mike.leach@linaro.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        coresight@lists.linaro.org, Vladimir Zapolskiy <vz@mleia.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Mark Brown <broonie@kernel.org>,
+        Matt Mackall <mpm@selenic.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        kernel@pengutronix.de, linux-arm-kernel@lists.infradead.org,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Cornelia Huck <cohuck@redhat.com>, linux-mmc@vger.kernel.org,
+        Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org,
+        Vinod Koul <vkoul@kernel.org>, linux-crypto@vger.kernel.org,
+        Daniel Vetter <daniel@ffwll.ch>, Leo Yan <leo.yan@linaro.org>,
+        dmaengine@vger.kernel.org
+Subject: Re: [GIT PULL] immutable branch for amba changes targeting v5.12-rc1
+Message-ID: <YB0baUzgvpd+EoO6@kroah.com>
+References: <20210126165835.687514-1-u.kleine-koenig@pengutronix.de>
+ <20210202135350.36nj3dmcoq3t7gcf@pengutronix.de>
+ <YBlcTXlxemmC2lgr@kroah.com>
+ <20210204165224.GA1463@shell.armlinux.org.uk>
+ <YBwnUrQqlAz2LDPI@kroah.com>
+ <20210204165951.GB1463@shell.armlinux.org.uk>
+ <20210204181551.ethtuzm65flujmwe@pengutronix.de>
+ <20210205093744.kr4rc7yvfiq6wimq@pengutronix.de>
 MIME-Version: 1.0
-References: <cover.1611904394.git.viresh.kumar@linaro.org> <434ba2467dd0cd011565625aeb3450650afe0aae.1611904394.git.viresh.kumar@linaro.org>
- <CAMuHMdVp0vGMqoEoP9A7Y7-ph-DYUWdddtChdq_eZcROYTBMHg@mail.gmail.com>
- <20210205092507.fdxotdjlq5rjs2yh@vireshk-i7> <CAMuHMdWUMcMcJxnC+oML8P0+r72_+d6RWGY50dOWCUECdJGWPA@mail.gmail.com>
- <20210205095545.woevnkxg3ar7ctys@vireshk-i7>
-In-Reply-To: <20210205095545.woevnkxg3ar7ctys@vireshk-i7>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 5 Feb 2021 11:17:10 +0100
-Message-ID: <CAMuHMdXKT3LD3ojMJEg-oHsEKO5TN5P1BTJMyf2fYkhnC8PU=Q@mail.gmail.com>
-Subject: Re: [PATCH V7 4/6] kbuild: Add support to build overlays (%.dtbo)
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Frank Rowand <frowand.list@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        anmar.oueja@linaro.org, Bill Mills <bill.mills@linaro.org>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-kbuild <linux-kbuild@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210205093744.kr4rc7yvfiq6wimq@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Viresh,
+On Fri, Feb 05, 2021 at 10:37:44AM +0100, Uwe Kleine-König wrote:
+> Hello Russell, hello Greg,
+> 
+> On Thu, Feb 04, 2021 at 07:15:51PM +0100, Uwe Kleine-König wrote:
+> > On Thu, Feb 04, 2021 at 04:59:51PM +0000, Russell King - ARM Linux admin wrote:
+> > > On Thu, Feb 04, 2021 at 05:56:50PM +0100, Greg Kroah-Hartman wrote:
+> > > > On Thu, Feb 04, 2021 at 04:52:24PM +0000, Russell King - ARM Linux admin wrote:
+> > > > > On Tue, Feb 02, 2021 at 03:06:05PM +0100, Greg Kroah-Hartman wrote:
+> > > > > > I'm glad to take this through my char/misc tree, as that's where the
+> > > > > > other coresight changes flow through.  So if no one else objects, I will
+> > > > > > do so...
+> > > > > 
+> > > > > Greg, did you end up pulling this after all? If not, Uwe produced a v2.
+> > > > > I haven't merged v2 yet as I don't know what you've done.
+> > > > 
+> > > > I thought you merged this?
+> > > 
+> > > I took v1, and put it in a branch I've promised in the past not to
+> > > rebase/rewind. Uwe is now asking for me to take a v2 or apply a patch
+> > > on top.
+> > > 
+> > > The only reason to produce an "immutable" branch is if it's the basis
+> > > for some dependent work and you need that branch merged into other
+> > > people's trees... so the whole "lets produce a v2" is really odd
+> > > workflow... I'm confused about what I should do, and who has to be
+> > > informed which option I take.
+> > > 
+> > > I'm rather lost here too.
+> > 
+> > Sorry to have cause this confusion. After I saw that my initial tag
+> > missed to adapt a driver I wanted to make it easy for you to fix the
+> > situation.
+> > So I created a patch to fix it and created a second tag with the patch
+> > squashed in. Obviously only one of them have to be picked and I hoped
+> > you (= Russell + Greg) would agree which option to pick.
+> > 
+> > My preference would be if you both pick up v2 of the tag to yield a
+> > history that is bisectable without build problems, but if Russell (who
+> > already picked up the broken tag) considers his tree immutable and so
+> > isn't willing to rebase, then picking up the patch is the way to go.
+> 
+> OK, the current state is that Russell applied the patch fixing
+> drivers/mailbox/arm_mhuv2.c on top of merging my first tag.
+> 
+> So the way forward now is that Greg pulls
+> 
+> 	git://git.armlinux.org.uk/~rmk/linux-arm.git devel-stable
+> 
+> which currently points to 
+> 
+> 	860660fd829e ("ARM: 9055/1: mailbox: arm_mhuv2: make remove callback return void")
+> 
+> , into his tree that contains the hwtracing changes that conflict with my
+> changes. @Greg: Is this good enough, or do you require a dedicated tag
+> to pull that?
+> 
+> I think these conflicting hwtracing changes are not yet in any of Greg's
+> trees (at least they are not in next).
+> 
+> When I pull
+> 
+> 	https://git.kernel.org/pub/scm/linux/kernel/git/coresight/linux.git next
+> 
+> (currently pointing to 4e73ff249184 ("coresight: etm4x: Handle accesses
+> to TRCSTALLCTLR")) into 860660fd829e, I get a conflict in
+> drivers/hwtracing/coresight/coresight-etm4x-core.c as expected. My
+> resolution looks as follows:
 
-On Fri, Feb 5, 2021 at 10:55 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
-> On 05-02-21, 10:41, Geert Uytterhoeven wrote:
-> > On Fri, Feb 5, 2021 at 10:25 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
-> > > On 05-02-21, 10:02, Geert Uytterhoeven wrote:
-> > > > Thanks for your patch
-> > > > (which I only noticed because it appeared in dt-rh/for-next ;-)
-> > > >
-> > > > On Fri, Jan 29, 2021 at 8:31 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
-> > > > > Add support for building DT overlays (%.dtbo). The overlay's source file
-> > > > > will have the usual extension, i.e. .dts, though the blob will have
-> > > >
-> > > > Why use .dts and not .dtso for overlays?
-> > > > Because you originally (until v5) had a single rule for building .dtb
-> > > > and .dtbo files?
-> > >
-> > > I am fine with doing that as well if Rob and David agree to it. Rob
-> > > did suggest that at one point but we didn't do much about it later on
-> > > for some reason.
-> > >
-> > > FWIW, this will also require a change in the DTC compiler.
-> >
-> > Care to explain why? I've been using .dtsi for ages in
-> > https://git.kernel.org/pub/scm/linux/kernel/git/geert/renesas-drivers.git/log/?h=topic/renesas-overlays
->
-> I don't see you building them anywhere, they aren't added to the
-> Makefile ever. What am I missing ?
->
-> actually none of the dtso's were added to any makefile in that branch.
+Ok, my resolution looked a bit different.
 
-E.g. "ARM: dts: Build all overlays if OF_OVERLAY=y"?
-https://git.kernel.org/pub/scm/linux/kernel/git/geert/renesas-drivers.git/commit/?h=topic/renesas-overlays&id=597ee90971687a45678cca8d16bf624d174a99eb
+Can you pull my char-misc-testing branch and verify I got this all
+pulled in correctly?
 
-> Anyway, the DTC needs to know how to treat the dtso format and it will
-> error out currently with unknown format kind of errors.
->
-> Below email [1] have some information on the kind of changes required
-> here. Also note that we had to do similar changes for dtbo earlier
-> [2].
->
-> --
-> viresh
->
-> [1] https://lore.kernel.org/lkml/CAK7LNASViCOTGR7yDTfh0O+PAu+X-P2NwdY4oPMuXrr51awafA@mail.gmail.com/
+thanks,
 
--@ is handled by "kbuild: Enable DT symbols when CONFIG_OF_OVERLAY is used"
-https://git.kernel.org/pub/scm/linux/kernel/git/geert/renesas-drivers.git/commit/?h=topic/renesas-overlays&id=91e9d998514f3743125a707013a30d5f83054579
-
-> [2] https://lore.kernel.org/lkml/30fd0e5f2156665c713cf191c5fea9a5548360c0.1609926856.git.viresh.kumar@linaro.org/
-
-I never had a need for those changes to dtc. .dtso/.dtbo work fine regardless.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+greg k-h
