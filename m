@@ -2,417 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C489310394
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 04:31:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C61F4310397
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 04:31:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230174AbhBEDas (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 22:30:48 -0500
-Received: from mail29.static.mailgun.info ([104.130.122.29]:64177 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230094AbhBEDaq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 22:30:46 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1612495821; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=7de4pU8VCrgKgb2uIrThFD75eGaIhnDm2vVGX2AEyBs=;
- b=ILAViHSEl778s7TRffDWLz/xZGa8OshKyUzvvLWIcxSRAP9KUnXtVwOBnbvYwgo4/llsSW4i
- YUFn53fcAJg1+j4aOke/D95Ljb4VCZFVnxP66SKtiHwUjyVEEflMYReJJ+WaW38fdm6lj2vz
- O+ctXgcBTO/2XeFRI2SVZhJERd4=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 601cbbb081f6c45dcec6a17e (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 05 Feb 2021 03:29:52
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id D3E46C43469; Fri,  5 Feb 2021 03:29:50 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 92099C433CA;
-        Fri,  5 Feb 2021 03:29:48 +0000 (UTC)
+        id S230186AbhBEDbO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 22:31:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35944 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229987AbhBEDbM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 22:31:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7622464DE9;
+        Fri,  5 Feb 2021 03:30:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612495831;
+        bh=YrnJlDPd8sRkbI4GL0GqRMYmTyTpnNvvG+lac6F9V/Y=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ohybSbE8a4cofvH7Y+2h62Bs65embXZ/zkbaOJ+5zN4JVJe9Mj8NM9V8uqr1tHgLe
+         6nCGRtrWIXzX4Hx9NRkWKoVfK3kgREwoLK9+JWGx7KF93/jISDGeR0A+4R2Plo393a
+         6iBnKTF6UKVlBjDbQ8rW84Y+3lflr6mM/sHS9vZ5ghLOr0copawfrU/soMz+KGyrX6
+         N29u+1PcaYtI7hZSpl68thX84OXXy2UfKSMk91V3JY+piv5qefBYc19QoU/hMegdf0
+         h5ayYcQmDopXDK6Wjw334A+AXYMVfg5O0SsZ7nu9rusqpqH/yg1yob1DVynCGOzjJL
+         oZN2VCfxdVfGA==
+Date:   Thu, 4 Feb 2021 19:30:30 -0800
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     John Hubbard <jhubbard@nvidia.com>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>, linux-xfs@vger.kernel.org,
+        Linux Next <linux-next@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Brian Foster <bfoster@redhat.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Allison Henderson <allison.henderson@oracle.com>
+Subject: Re: [PATCH] xfs: fix unused variable build warning in xfs_log.c
+Message-ID: <20210205033030.GL7193@magnolia>
+References: <20210205031814.414649-1-jhubbard@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 05 Feb 2021 11:29:48 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     daejun7.park@samsung.com
-Cc:     Greg KH <gregkh@linuxfoundation.org>, avri.altman@wdc.com,
-        jejb@linux.ibm.com, martin.petersen@oracle.com,
-        asutoshd@codeaurora.org, stanley.chu@mediatek.com,
-        huobean@gmail.com, bvanassche@acm.org,
-        ALIM AKHTAR <alim.akhtar@samsung.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        BoRam Shin <boram.shin@samsung.com>,
-        SEUNGUK SHIN <seunguk.shin@samsung.com>
-Subject: Re: [PATCH v19 3/3] scsi: ufs: Prepare HPB read for cached sub-region
-In-Reply-To: <20210129053042epcms2p538e7fa396c3c2104594c44e48be53eb8@epcms2p5>
-References: <20210129052848epcms2p6e5797efd94e6282b76ad9ae6c99e3ab5@epcms2p6>
- <CGME20210129052848epcms2p6e5797efd94e6282b76ad9ae6c99e3ab5@epcms2p5>
- <20210129053042epcms2p538e7fa396c3c2104594c44e48be53eb8@epcms2p5>
-Message-ID: <7f25ccb1d857131baa1c0424c4542e33@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210205031814.414649-1-jhubbard@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-29 13:30, Daejun Park wrote:
-> This patch changes the read I/O to the HPB read I/O.
+On Thu, Feb 04, 2021 at 07:18:14PM -0800, John Hubbard wrote:
+> Delete the unused "log" variable in xfs_log_cover().
 > 
-> If the logical address of the read I/O belongs to active sub-region, 
-> the
-> HPB driver modifies the read I/O command to HPB read. It modifies the 
-> UPIU
-> command of UFS instead of modifying the existing SCSI command.
-> 
-> In the HPB version 1.0, the maximum read I/O size that can be converted 
-> to
-> HPB read is 4KB.
-> 
-> The dirty map of the active sub-region prevents an incorrect HPB read 
-> that
-> has stale physical page number which is updated by previous write I/O.
-> 
-> Reviewed-by: Can Guo <cang@codeaurora.org>
-> Reviewed-by: Bart Van Assche <bvanassche@acm.org>
-> Acked-by: Avri Altman <Avri.Altman@wdc.com>
-> Tested-by: Bean Huo <beanhuo@micron.com>
-> Signed-off-by: Daejun Park <daejun7.park@samsung.com>
+> Fixes: 303591a0a9473 ("xfs: cover the log during log quiesce")
+> Cc: Brian Foster <bfoster@redhat.com>
+> Cc: Christoph Hellwig <hch@lst.de>
+> Cc: Darrick J. Wong <djwong@kernel.org>
+> Cc: Allison Henderson <allison.henderson@oracle.com>
+> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
 > ---
->  drivers/scsi/ufs/ufshcd.c |   2 +
->  drivers/scsi/ufs/ufshpb.c | 234 ++++++++++++++++++++++++++++++++++++++
->  drivers/scsi/ufs/ufshpb.h |   2 +
->  3 files changed, 238 insertions(+)
+> Hi,
 > 
-> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-> index 52e48de8d27c..37cb343e9ec1 100644
-> --- a/drivers/scsi/ufs/ufshcd.c
-> +++ b/drivers/scsi/ufs/ufshcd.c
-> @@ -2653,6 +2653,8 @@ static int ufshcd_queuecommand(struct Scsi_Host
-> *host, struct scsi_cmnd *cmd)
+> I just ran into this on today's linux-next, so here you go!
+
+Thanks for the tipoff, I just realized with horror that I got the git
+push wrong and never actually updated xfs-linux.git#for-next.  This (and
+all the other gcc warnings) are fixed in "xfs-for-next" which ... is not
+for-next.
+
+Sigh.....  so much for trying to get things in for testing. :(
+
+--D
+
 > 
->  	lrbp->req_abort_skip = false;
+> thanks,
+> John Hubbard
+> NVIDIA
 > 
-> +	ufshpb_prep(hba, lrbp);
-> +
->  	ufshcd_comp_scsi_upiu(hba, lrbp);
+>  fs/xfs/xfs_log.c | 1 -
+>  1 file changed, 1 deletion(-)
 > 
->  	err = ufshcd_map_sg(hba, lrbp);
-> diff --git a/drivers/scsi/ufs/ufshpb.c b/drivers/scsi/ufs/ufshpb.c
-> index 48edfdd0f606..73e7b3ed04a4 100644
-> --- a/drivers/scsi/ufs/ufshpb.c
-> +++ b/drivers/scsi/ufs/ufshpb.c
-> @@ -31,6 +31,29 @@ bool ufshpb_is_allowed(struct ufs_hba *hba)
->  	return !(hba->ufshpb_dev.hpb_disabled);
->  }
-> 
-> +static int ufshpb_is_valid_srgn(struct ufshpb_region *rgn,
-> +			     struct ufshpb_subregion *srgn)
-> +{
-> +	return rgn->rgn_state != HPB_RGN_INACTIVE &&
-> +		srgn->srgn_state == HPB_SRGN_VALID;
-> +}
-> +
-> +static bool ufshpb_is_read_cmd(struct scsi_cmnd *cmd)
-> +{
-> +	return req_op(cmd->request) == REQ_OP_READ;
-> +}
-> +
-> +static bool ufshpb_is_write_or_discard_cmd(struct scsi_cmnd *cmd)
-> +{
-> +	return op_is_write(req_op(cmd->request)) ||
-> +	       op_is_discard(req_op(cmd->request));
-> +}
-> +
-> +static bool ufshpb_is_support_chunk(int transfer_len)
-> +{
-> +	return transfer_len <= HPB_MULTI_CHUNK_HIGH;
-> +}
-> +
->  static bool ufshpb_is_general_lun(int lun)
+> diff --git a/fs/xfs/xfs_log.c b/fs/xfs/xfs_log.c
+> index 58699881c100..5a9cca3f7cbf 100644
+> --- a/fs/xfs/xfs_log.c
+> +++ b/fs/xfs/xfs_log.c
+> @@ -1108,7 +1108,6 @@ static int
+>  xfs_log_cover(
+>  	struct xfs_mount	*mp)
 >  {
->  	return lun < UFS_UPIU_MAX_UNIT_NUM_ID;
-> @@ -98,6 +121,217 @@ static void ufshpb_set_state(struct ufshpb_lu
-> *hpb, int state)
->  	atomic_set(&hpb->hpb_state, state);
->  }
+> -	struct xlog		*log = mp->m_log;
+>  	int			error = 0;
+>  	bool			need_covered;
+>  
 > 
-> +static void ufshpb_set_ppn_dirty(struct ufshpb_lu *hpb, int rgn_idx,
-> +			     int srgn_idx, int srgn_offset, int cnt)
-> +{
-> +	struct ufshpb_region *rgn;
-> +	struct ufshpb_subregion *srgn;
-> +	int set_bit_len;
-> +	int bitmap_len = hpb->entries_per_srgn;
-> +
-> +next_srgn:
-> +	rgn = hpb->rgn_tbl + rgn_idx;
-> +	srgn = rgn->srgn_tbl + srgn_idx;
-> +
-> +	if ((srgn_offset + cnt) > bitmap_len)
-> +		set_bit_len = bitmap_len - srgn_offset;
-> +	else
-> +		set_bit_len = cnt;
-> +
-> +	if (rgn->rgn_state != HPB_RGN_INACTIVE &&
-> +	    srgn->srgn_state == HPB_SRGN_VALID)
-> +		bitmap_set(srgn->mctx->ppn_dirty, srgn_offset, set_bit_len);
-> +
-> +	srgn_offset = 0;
-> +	if (++srgn_idx == hpb->srgns_per_rgn) {
-> +		srgn_idx = 0;
-> +		rgn_idx++;
-> +	}
-> +
-> +	cnt -= set_bit_len;
-> +	if (cnt > 0)
-> +		goto next_srgn;
-> +
-> +	WARN_ON(cnt < 0);
-> +}
-> +
-> +static bool ufshpb_test_ppn_dirty(struct ufshpb_lu *hpb, int rgn_idx,
-> +				   int srgn_idx, int srgn_offset, int cnt)
-> +{
-> +	struct ufshpb_region *rgn;
-> +	struct ufshpb_subregion *srgn;
-> +	int bitmap_len = hpb->entries_per_srgn;
-> +	int bit_len;
-> +
-> +next_srgn:
-> +	rgn = hpb->rgn_tbl + rgn_idx;
-> +	srgn = rgn->srgn_tbl + srgn_idx;
-> +
-> +	if (!ufshpb_is_valid_srgn(rgn, srgn))
-> +		return true;
-> +
-> +	/*
-> +	 * If the region state is active, mctx must be allocated.
-> +	 * In this case, check whether the region is evicted or
-> +	 * mctx allcation fail.
-> +	 */
-> +	WARN_ON(!srgn->mctx);
-> +
-> +	if ((srgn_offset + cnt) > bitmap_len)
-> +		bit_len = bitmap_len - srgn_offset;
-> +	else
-> +		bit_len = cnt;
-> +
-> +	if (find_next_bit(srgn->mctx->ppn_dirty,
-> +			  bit_len, srgn_offset) >= srgn_offset)
-> +		return true;
-> +
-> +	srgn_offset = 0;
-> +	if (++srgn_idx == hpb->srgns_per_rgn) {
-> +		srgn_idx = 0;
-> +		rgn_idx++;
-> +	}
-> +
-> +	cnt -= bit_len;
-> +	if (cnt > 0)
-> +		goto next_srgn;
-> +
-> +	return false;
-> +}
-> +
-> +static u64 ufshpb_get_ppn(struct ufshpb_lu *hpb,
-> +			  struct ufshpb_map_ctx *mctx, int pos, int *error)
-> +{
-> +	u64 *ppn_table;
-> +	struct page *page;
-> +	int index, offset;
-> +
-> +	index = pos / (PAGE_SIZE / HPB_ENTRY_SIZE);
-> +	offset = pos % (PAGE_SIZE / HPB_ENTRY_SIZE);
-> +
-> +	page = mctx->m_page[index];
-> +	if (unlikely(!page)) {
-> +		*error = -ENOMEM;
-> +		dev_err(&hpb->sdev_ufs_lu->sdev_dev,
-> +			"error. cannot find page in mctx\n");
-> +		return 0;
-> +	}
-> +
-> +	ppn_table = page_address(page);
-> +	if (unlikely(!ppn_table)) {
-> +		*error = -ENOMEM;
-> +		dev_err(&hpb->sdev_ufs_lu->sdev_dev,
-> +			"error. cannot get ppn_table\n");
-> +		return 0;
-> +	}
-> +
-> +	return ppn_table[offset];
-> +}
-> +
-> +static void
-> +ufshpb_get_pos_from_lpn(struct ufshpb_lu *hpb, unsigned long lpn, int 
-> *rgn_idx,
-> +			int *srgn_idx, int *offset)
-> +{
-> +	int rgn_offset;
-> +
-> +	*rgn_idx = lpn >> hpb->entries_per_rgn_shift;
-> +	rgn_offset = lpn & hpb->entries_per_rgn_mask;
-> +	*srgn_idx = rgn_offset >> hpb->entries_per_srgn_shift;
-> +	*offset = rgn_offset & hpb->entries_per_srgn_mask;
-> +}
-> +
-> +static void
-> +ufshpb_set_hpb_read_to_upiu(struct ufshpb_lu *hpb, struct ufshcd_lrb 
-> *lrbp,
-> +				  u32 lpn, u64 ppn,  unsigned int transfer_len)
-> +{
-> +	unsigned char *cdb = lrbp->cmd->cmnd;
-> +
-> +	cdb[0] = UFSHPB_READ;
-> +
-> +	put_unaligned_be64(ppn, &cdb[6]);
-
-You are assuming the HPB entries read out by "HPB Read Buffer" cmd are 
-in Little
-Endian, which is why you are using put_unaligned_be64 here. However, 
-this assumption
-is not right for all the other flash vendors - HPB entries read out by 
-"HPB Read Buffer"
-cmd may come in Big Endian, if so, their random read performance are 
-screwed.
-
-Actually, I have seen at least two flash vendors acting so. I had to 
-modify this line
-to get the code work properly on my setups.
-
-Meanwhile, in your cover letter, you mentioned that the performance data 
-is collected
-on a UFS2.1 device. Please re-collect the data on a real UFS3.1 device 
-and let me
-know the part number. Otherwise, the data is not quite convincing to us.
-
-Regards,
-Can Guo.
-
-> +	cdb[14] = transfer_len;
-> +
-> +	lrbp->cmd->cmd_len = UFS_CDB_SIZE;
-> +}
-> +
-> +/*
-> + * This function will set up HPB read command using host-side L2P map 
-> data.
-> + * In HPB v1.0, maximum size of HPB read command is 4KB.
-> + */
-> +void ufshpb_prep(struct ufs_hba *hba, struct ufshcd_lrb *lrbp)
-> +{
-> +	struct ufshpb_lu *hpb;
-> +	struct ufshpb_region *rgn;
-> +	struct ufshpb_subregion *srgn;
-> +	struct scsi_cmnd *cmd = lrbp->cmd;
-> +	u32 lpn;
-> +	u64 ppn;
-> +	unsigned long flags;
-> +	int transfer_len, rgn_idx, srgn_idx, srgn_offset;
-> +	int err = 0;
-> +
-> +	hpb = ufshpb_get_hpb_data(cmd->device);
-> +	if (!hpb)
-> +		return;
-> +
-> +	if (ufshpb_get_state(hpb) != HPB_PRESENT) {
-> +		dev_notice(&hpb->sdev_ufs_lu->sdev_dev,
-> +			   "%s: ufshpb state is not PRESENT", __func__);
-> +		return;
-> +	}
-> +
-> +	if (!ufshpb_is_write_or_discard_cmd(cmd) &&
-> +	    !ufshpb_is_read_cmd(cmd))
-> +		return;
-> +
-> +	transfer_len = sectors_to_logical(cmd->device, 
-> blk_rq_sectors(cmd->request));
-> +	if (unlikely(!transfer_len))
-> +		return;
-> +
-> +	lpn = sectors_to_logical(cmd->device, blk_rq_pos(cmd->request));
-> +	ufshpb_get_pos_from_lpn(hpb, lpn, &rgn_idx, &srgn_idx, &srgn_offset);
-> +	rgn = hpb->rgn_tbl + rgn_idx;
-> +	srgn = rgn->srgn_tbl + srgn_idx;
-> +
-> +	/* If command type is WRITE or DISCARD, set bitmap as drity */
-> +	if (ufshpb_is_write_or_discard_cmd(cmd)) {
-> +		spin_lock_irqsave(&hpb->rgn_state_lock, flags);
-> +		ufshpb_set_ppn_dirty(hpb, rgn_idx, srgn_idx, srgn_offset,
-> +				 transfer_len);
-> +		spin_unlock_irqrestore(&hpb->rgn_state_lock, flags);
-> +		return;
-> +	}
-> +
-> +	if (!ufshpb_is_support_chunk(transfer_len))
-> +		return;
-> +
-> +	spin_lock_irqsave(&hpb->rgn_state_lock, flags);
-> +	if (ufshpb_test_ppn_dirty(hpb, rgn_idx, srgn_idx, srgn_offset,
-> +				   transfer_len)) {
-> +		hpb->stats.miss_cnt++;
-> +		spin_unlock_irqrestore(&hpb->rgn_state_lock, flags);
-> +		return;
-> +	}
-> +
-> +	ppn = ufshpb_get_ppn(hpb, srgn->mctx, srgn_offset, &err);
-> +	spin_unlock_irqrestore(&hpb->rgn_state_lock, flags);
-> +	if (unlikely(err)) {
-> +		/*
-> +		 * In this case, the region state is active,
-> +		 * but the ppn table is not allocated.
-> +		 * Make sure that ppn table must be allocated on
-> +		 * active state.
-> +		 */
-> +		WARN_ON(true);
-> +		dev_err(hba->dev, "ufshpb_get_ppn failed. err %d\n", err);
-> +		return;
-> +	}
-> +
-> +	ufshpb_set_hpb_read_to_upiu(hpb, lrbp, lpn, ppn, transfer_len);
-> +
-> +	hpb->stats.hit_cnt++;
-> +}
-> +
->  static struct ufshpb_req *ufshpb_get_map_req(struct ufshpb_lu *hpb,
->  					     struct ufshpb_subregion *srgn)
->  {
-> diff --git a/drivers/scsi/ufs/ufshpb.h b/drivers/scsi/ufs/ufshpb.h
-> index e40b016971ac..2c43a03b66b6 100644
-> --- a/drivers/scsi/ufs/ufshpb.h
-> +++ b/drivers/scsi/ufs/ufshpb.h
-> @@ -198,6 +198,7 @@ struct ufs_hba;
->  struct ufshcd_lrb;
+> base-commit: 0e2c50f40b7ffb73a039157f7c38495c6d99e86f
+> -- 
+> 2.30.0
 > 
->  #ifndef CONFIG_SCSI_UFS_HPB
-> +static void ufshpb_prep(struct ufs_hba *hba, struct ufshcd_lrb *lrbp) 
-> {}
->  static void ufshpb_rsp_upiu(struct ufs_hba *hba, struct ufshcd_lrb 
-> *lrbp) {}
->  static void ufshpb_resume(struct ufs_hba *hba) {}
->  static void ufshpb_suspend(struct ufs_hba *hba) {}
-> @@ -211,6 +212,7 @@ static bool ufshpb_is_allowed(struct ufs_hba *hba)
-> { return false; }
->  static void ufshpb_get_geo_info(struct ufs_hba *hba, u8 *geo_buf) {}
->  static void ufshpb_get_dev_info(struct ufs_hba *hba, u8 *desc_buf) {}
->  #else
-> +void ufshpb_prep(struct ufs_hba *hba, struct ufshcd_lrb *lrbp);
->  void ufshpb_rsp_upiu(struct ufs_hba *hba, struct ufshcd_lrb *lrbp);
->  void ufshpb_resume(struct ufs_hba *hba);
->  void ufshpb_suspend(struct ufs_hba *hba);
