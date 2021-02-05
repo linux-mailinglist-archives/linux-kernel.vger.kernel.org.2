@@ -2,32 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DD0C311567
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 23:32:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B14BA31153C
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 23:32:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232856AbhBEWaj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 17:30:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44680 "EHLO mail.kernel.org"
+        id S233184AbhBEWZt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 17:25:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44988 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232831AbhBEOye (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 09:54:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0133565097;
-        Fri,  5 Feb 2021 14:13:55 +0000 (UTC)
+        id S232856AbhBEOyx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 09:54:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8555F650A2;
+        Fri,  5 Feb 2021 14:14:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612534436;
-        bh=1v/J7WfRNwOGWIxtOOlAxyprU/btXSoTrHhjPs3JUYU=;
+        s=korg; t=1612534450;
+        bh=EEAfMC++y4ap500raPhjinSbwnP9yMeloiQp2YQhUd0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=c31voOwhd3SShCmhnnoYHDn7GhpQAb/CnLf1Q1jEfXxo++Nyp4xHFkBHz7eMZ8wpg
-         kKMqoxfazOJTooZr1j/ixTrkLH2L2h3wg1elY/WWibfhZpL/QoqOdzaMjXNiKNCtKn
-         yklEHttP6WOp4jDwxY74lAr/fEx1Tbd4Q8I1rb5U=
+        b=mpeEHJArfbSB0eDOA892jqzQabbYTp3tAVkiaDWFGEgD5DjNvrAHHsyatnr2bGO+f
+         SJgSZv+TBhJsCHTG+aMGXKGaa285AH/T2xwZcm7liUAjGux1fzsTPUHH4c/g//xVTq
+         RaQSH3jnIeS0ZtSOrvaknVNQSD3wD1++JyTrvPtk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lijun Pan <ljp@linux.ibm.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.19 02/17] ibmvnic: Ensure that CRQ entry read are correctly ordered
-Date:   Fri,  5 Feb 2021 15:07:56 +0100
-Message-Id: <20210205140649.916232560@linuxfoundation.org>
+        stable@vger.kernel.org, Bastien Nocera <hadess@hadess.net>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 07/17] platform/x86: touchscreen_dmi: Add swap-x-y quirk for Goodix touchscreen on Estar Beauty HD tablet
+Date:   Fri,  5 Feb 2021 15:08:01 +0100
+Message-Id: <20210205140650.115033807@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210205140649.825180779@linuxfoundation.org>
 References: <20210205140649.825180779@linuxfoundation.org>
@@ -39,38 +41,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lijun Pan <ljp@linux.ibm.com>
+From: Hans de Goede <hdegoede@redhat.com>
 
-commit e41aec79e62fa50f940cf222d1e9577f14e149dc upstream.
+[ Upstream commit 46c54cf2706122c37497896d56d67b0c0aca2ede ]
 
-Ensure that received Command-Response Queue (CRQ) entries are
-properly read in order by the driver. dma_rmb barrier has
-been added before accessing the CRQ descriptor to ensure
-the entire descriptor is read before processing.
+The Estar Beauty HD (MID 7316R) tablet uses a Goodix touchscreen,
+with the X and Y coordinates swapped compared to the LCD panel.
 
-Fixes: 032c5e82847a ("Driver for IBM System i/p VNIC protocol")
-Signed-off-by: Lijun Pan <ljp@linux.ibm.com>
-Link: https://lore.kernel.org/r/20210128013442.88319-1-ljp@linux.ibm.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Add a touchscreen_dmi entry for this adding a "touchscreen-swapped-x-y"
+device-property to the i2c-client instantiated for this device before
+the driver binds.
+
+This is the first entry of a Goodix touchscreen to touchscreen_dmi.c,
+so far DMI quirks for Goodix touchscreen's have been added directly
+to drivers/input/touchscreen/goodix.c. Currently there are 3
+DMI tables in goodix.c:
+1. rotated_screen[] for devices where the touchscreen is rotated
+   180 degrees vs the LCD panel
+2. inverted_x_screen[] for devices where the X axis is inverted
+3. nine_bytes_report[] for devices which use a non standard touch
+   report size
+
+Arguably only 3. really needs to be inside the driver and the other
+2 cases are better handled through the generic touchscreen DMI quirk
+mechanism from touchscreen_dmi.c, which allows adding device-props to
+any i2c-client. Esp. now that goodix.c is using the generic
+touchscreen_properties code.
+
+Alternative to the approach from this patch we could add a 4th
+dmi_system_id table for devices with swapped-x-y axis to goodix.c,
+but that seems undesirable.
+
+Cc: Bastien Nocera <hadess@hadess.net>
+Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Link: https://lore.kernel.org/r/20201224135158.10976-1-hdegoede@redhat.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/ibm/ibmvnic.c |    6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/platform/x86/touchscreen_dmi.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
---- a/drivers/net/ethernet/ibm/ibmvnic.c
-+++ b/drivers/net/ethernet/ibm/ibmvnic.c
-@@ -4434,6 +4434,12 @@ static void ibmvnic_tasklet(void *data)
- 	while (!done) {
- 		/* Pull all the valid messages off the CRQ */
- 		while ((crq = ibmvnic_next_crq(adapter)) != NULL) {
-+			/* This barrier makes sure ibmvnic_next_crq()'s
-+			 * crq->generic.first & IBMVNIC_CRQ_CMD_RSP is loaded
-+			 * before ibmvnic_handle_crq()'s
-+			 * switch(gen_crq->first) and switch(gen_crq->cmd).
-+			 */
-+			dma_rmb();
- 			ibmvnic_handle_crq(crq, adapter);
- 			crq->generic.first = 0;
- 		}
+diff --git a/drivers/platform/x86/touchscreen_dmi.c b/drivers/platform/x86/touchscreen_dmi.c
+index cb204f9734913..f122a0263a1ba 100644
+--- a/drivers/platform/x86/touchscreen_dmi.c
++++ b/drivers/platform/x86/touchscreen_dmi.c
+@@ -163,6 +163,16 @@ static const struct ts_dmi_data digma_citi_e200_data = {
+ 	.properties	= digma_citi_e200_props,
+ };
+ 
++static const struct property_entry estar_beauty_hd_props[] = {
++	PROPERTY_ENTRY_BOOL("touchscreen-swapped-x-y"),
++	{ }
++};
++
++static const struct ts_dmi_data estar_beauty_hd_data = {
++	.acpi_name	= "GDIX1001:00",
++	.properties	= estar_beauty_hd_props,
++};
++
+ static const struct property_entry gp_electronic_t701_props[] = {
+ 	PROPERTY_ENTRY_U32("touchscreen-size-x", 960),
+ 	PROPERTY_ENTRY_U32("touchscreen-size-y", 640),
+@@ -501,6 +511,14 @@ static const struct dmi_system_id touchscreen_dmi_table[] = {
+ 			DMI_MATCH(DMI_BOARD_NAME, "Cherry Trail CR"),
+ 		},
+ 	},
++	{
++		/* Estar Beauty HD (MID 7316R) */
++		.driver_data = (void *)&estar_beauty_hd_data,
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Estar"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "eSTAR BEAUTY HD Intel Quad core"),
++		},
++	},
+ 	{
+ 		/* GP-electronic T701 */
+ 		.driver_data = (void *)&gp_electronic_t701_data,
+-- 
+2.27.0
+
 
 
