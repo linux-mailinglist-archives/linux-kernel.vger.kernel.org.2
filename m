@@ -2,92 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29ED331068D
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 09:23:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18DD731068F
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 09:23:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231732AbhBEIVj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 03:21:39 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:23494 "EHLO
+        id S231720AbhBEIWW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 03:22:22 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:31464 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231654AbhBEIVg (ORCPT
+        by vger.kernel.org with ESMTP id S230497AbhBEIWS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 03:21:36 -0500
+        Fri, 5 Feb 2021 03:22:18 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612513209;
+        s=mimecast20190719; t=1612513252;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=4Uv+kUPnBdvnVYh3bEPMtMV4L9Cn+q9TAxrYe42PIQs=;
-        b=chp6LRzcWiT1u3vQwwWxi4DJZIGoGll0CIb59qkgi9RgTlzYRRmulaaphDT4EPxQkJ0in+
-        TvEvZmda+WZJKbpDZkqG/GrincxAomE8+Y4USMkatibbweqf0yS5gRKRsVb3n5FWqHwLAx
-        xnnMOflDkfY5ithlo7EjvIDok3WvSIc=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-594-5590w6QrPFWW14-VX9WkjQ-1; Fri, 05 Feb 2021 03:20:08 -0500
-X-MC-Unique: 5590w6QrPFWW14-VX9WkjQ-1
-Received: by mail-ej1-f71.google.com with SMTP id jg11so6303534ejc.23
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 00:20:07 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=4Uv+kUPnBdvnVYh3bEPMtMV4L9Cn+q9TAxrYe42PIQs=;
-        b=XI7TVkw7rCKwD6pcyxaw/afqNcrq4LTEEucYM2jbgeEy7pLgj6YwA0CG9TiHG/6MOL
-         iJ+j4STmfWa3En2DXE0s4D366DGvVbUmIJJHqbf5S5Mm9knZLCZELIgaZ1ocDyNyzOR/
-         QirCmzTCw/w1xnIkSYX+t0XLlawS/tmMA+V9ohjhi/GGoC/D7QTyNABS/Qx7TvjnlP21
-         sHWuqFL8aJgyl0pem9NCiltJHiKNEYGs+kYG002J44P6riah6W3R2QqJa+v0s8hH1Emy
-         ioRE+3mu2k11kmRX1FKqchtNoi1DMHyRtWsvtcVkqPSwUbkk6fst+KDF1q++CyQkCi9B
-         iTtA==
-X-Gm-Message-State: AOAM530WBLxEzUtisfpEojbuAIJhCDODqyBI3O1v2nJJYL6XLWtSszTZ
-        jybWE3ekANDYTn6N+T81qCMLaSNKYNM2lPbFxY8svrLbvQ+diPKxk9dAP/Yr3lTb17AlvkFk5SH
-        B7jOhnwe1mu5PZApVDK3eZu9Jcprw9t4oK2ksrKU3XfMhZ/qgxyp7nyf08HtUJNoI8A+5Q/mEvJ
-        jR
-X-Received: by 2002:a17:906:f0d0:: with SMTP id dk16mr2939197ejb.533.1612513206412;
-        Fri, 05 Feb 2021 00:20:06 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwMVVf1obQXHw/e9a7PJpU5nRu5b+AplJxWzLRKwZr5NAsLfILIeAEFVEcgHGFzDYLhTaq6Mw==
-X-Received: by 2002:a17:906:f0d0:: with SMTP id dk16mr2939165ejb.533.1612513206159;
-        Fri, 05 Feb 2021 00:20:06 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id a10sm3642992ejk.75.2021.02.05.00.20.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 05 Feb 2021 00:20:05 -0800 (PST)
-Subject: Re: [PATCH 0/9] KVM: x86: Move common exit handlers to x86.c
-To:     Sean Christopherson <seanjc@google.com>,
-        Jiri Kosina <trivial@kernel.org>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210205005750.3841462-1-seanjc@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <a4eef9d7-a510-048e-df3d-f2f87ac77c3b@redhat.com>
-Date:   Fri, 5 Feb 2021 09:20:00 +0100
+        bh=EeBF5bycuJCMZzkkGmudP+Cph0B7XaVDWKDDmeU89sk=;
+        b=W++mGzvmpWwH3B/Sis6jIzMNNPsQyINo23PrO7VewKwuHXw8YQCeYukMVFT6pCwud9oZXW
+        FjUy8kfo81o6nnLB2XLsKHDIuLe6Z2DyN8FaiMh61mkvPBw77Jloq1hIbJX4F/tzB0v9Da
+        LUe+A9pilY6cFwkkqsDpQC65Ft2eRLY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-568-bodImPgyO6i9pzDC4fIUgg-1; Fri, 05 Feb 2021 03:20:48 -0500
+X-MC-Unique: bodImPgyO6i9pzDC4fIUgg-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 47C9A8030D1;
+        Fri,  5 Feb 2021 08:20:46 +0000 (UTC)
+Received: from [10.36.113.156] (ovpn-113-156.ams2.redhat.com [10.36.113.156])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E754A1971C;
+        Fri,  5 Feb 2021 08:20:43 +0000 (UTC)
+Subject: Re: [RFC 2/3] arm64/hugetlb: Enable HUGETLB_PAGE_SIZE_VARIABLE
+To:     Anshuman Khandual <anshuman.khandual@arm.com>, linux-mm@kvack.org,
+        linux-arm-kernel@lists.infradead.org, catalin.marinas@arm.com,
+        akpm@linux-foundation.org
+Cc:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Christoph Hellwig <hch@lst.de>,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+References: <1612422084-30429-1-git-send-email-anshuman.khandual@arm.com>
+ <1612422084-30429-3-git-send-email-anshuman.khandual@arm.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <616578ec-8a61-ce0a-a467-50915b3a9967@redhat.com>
+Date:   Fri, 5 Feb 2021 09:20:42 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-In-Reply-To: <20210205005750.3841462-1-seanjc@google.com>
+In-Reply-To: <1612422084-30429-3-git-send-email-anshuman.khandual@arm.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/02/21 01:57, Sean Christopherson wrote:
-> Paolo, I based this on kvm/queue under the assumption it can all wait until
-> 5.13.  I don't think there's anything urgent here, and the conflicts with
-> the stuff in kvm/nested-svm are annoying.  Let me know if you want me to
-> rebase anything/all to get something into 5.12, I know 5.12 is a little
-> light on x86 changes :-D.
+On 04.02.21 08:01, Anshuman Khandual wrote:
+> MAX_ORDER which invariably depends on FORCE_MAX_ZONEORDER can be a variable
+> for a given page size, depending on whether TRANSPARENT_HUGEPAGE is enabled
+> or not. In certain page size and THP combinations HUGETLB_PAGE_ORDER can be
+> greater than MAX_ORDER, making it unusable as pageblock_order.
 
-Yes, we can make it wait for 5.13.
+Just so I understand correctly, this does not imply that we have THP 
+that exceed the pageblock size / MAX_ORDER size, correct?
 
-I'm thinking also of taking the occasion to split x86.c further.  But I 
-think it's better to move the ioctl interfaces out of x86.c, so for the 
-purpose of this series it is okay to add more stuff to that file.
 
-Paolo
+> 
+> This enables HUGETLB_PAGE_SIZE_VARIABLE making pageblock_order a variable
+> rather than the compile time constant HUGETLB_PAGE_ORDER which could break
+> MAX_ORDER rule for certain configurations.
+> 
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-kernel@vger.kernel.org
+> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> ---
+>   arch/arm64/Kconfig | 4 ++++
+>   1 file changed, 4 insertions(+)
+> 
+> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+> index 175914f2f340..c4acf8230f20 100644
+> --- a/arch/arm64/Kconfig
+> +++ b/arch/arm64/Kconfig
+> @@ -1918,6 +1918,10 @@ config ARCH_ENABLE_THP_MIGRATION
+>   	def_bool y
+>   	depends on TRANSPARENT_HUGEPAGE
+>   
+> +config HUGETLB_PAGE_SIZE_VARIABLE
+> +	def_bool y
+> +	depends on HUGETLB_PAGE
+> +
+>   menu "Power management options"
+>   
+>   source "kernel/power/Kconfig"
+> 
+
+
+-- 
+Thanks,
+
+David / dhildenb
 
