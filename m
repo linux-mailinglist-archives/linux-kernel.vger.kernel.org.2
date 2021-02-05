@@ -2,163 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17D9231159F
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 23:43:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4B9C3115CD
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 23:44:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232948AbhBEWgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 17:36:21 -0500
-Received: from mga14.intel.com ([192.55.52.115]:7848 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232807AbhBEOyV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 09:54:21 -0500
-IronPort-SDR: ptJXR1pSBpuzil/MBxwE/tz/2JqtOcWtUGMP0s4UTsm56tFQT82eNIOp9ZLhxOU8ItqvR1HCf+
- 3z4s6vnRJT+A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9885"; a="180679130"
-X-IronPort-AV: E=Sophos;i="5.81,155,1610438400"; 
-   d="scan'208";a="180679130"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2021 08:32:03 -0800
-IronPort-SDR: glgTqKkWp62TU5ZtepZTDnsjqW229K7qF4sJ4A56n+GHeII9j8+6ASA7HzkGxaq4tgMowsQfOe
- kVakvuDiK9tg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,155,1610438400"; 
-   d="scan'208";a="393927332"
-Received: from chang-linux-3.sc.intel.com ([172.25.66.175])
-  by orsmga008.jf.intel.com with ESMTP; 05 Feb 2021 08:31:56 -0800
-From:   "Chang S. Bae" <chang.seok.bae@intel.com>
-To:     bp@suse.de, x86@kernel.org
-Cc:     luto@kernel.org, mingo@kernel.org, tglx@linutronix.de,
-        len.brown@intel.com, dave.hansen@intel.com,
-        ravi.v.shankar@intel.com, linux-kernel@vger.kernel.org,
-        chang.seok.bae@intel.com, Dave Hansen <dave.hansen@linux.intel.com>
-Subject: [PATCH v2] x86/fpu: Use consistent test for X86_FEATURE_XSAVES
-Date:   Fri,  5 Feb 2021 08:27:14 -0800
-Message-Id: <20210205162714.5580-1-chang.seok.bae@intel.com>
-X-Mailer: git-send-email 2.17.1
+        id S230126AbhBEWmC convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 5 Feb 2021 17:42:02 -0500
+Received: from mail-lj1-f175.google.com ([209.85.208.175]:34799 "EHLO
+        mail-lj1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232867AbhBEOwN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 09:52:13 -0500
+Received: by mail-lj1-f175.google.com with SMTP id r23so6554074ljh.1;
+        Fri, 05 Feb 2021 08:29:03 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=A18d3pB/vKIfoZwd9hT2XkXbAHUUomY9AFW5el5Iv+w=;
+        b=COccijSbZV49z6LlD6DtI7x5lPS78Okeiq6mgyvDdfVfsRgwyzdnNLsG0hzQTwA0Tu
+         LO9iQRNXky7Hs3QysaXq0SteYMCMkC5TcQX64q0wElpnSgKeZBIDePcrJnqd41GOXFQ4
+         +Xk/iz3Pf0kyUyVIe01nMuuwfmQya1p/H4+TCc1cXdaj0GDpCOQMSsK11B9a7FJFX3Dt
+         4KdQuGcPPqNhmDb4HW7Rs5nWzV0NTH3b6T8EKtMlDGmgVtrm8rUl2m0n7r9r6OaFL+Ho
+         D2Nct1UuT++NiI5uc8ieRHZD/uQjG9DTDCwwFEH6/yHylLlPrfULRswa/jkkCP9EICta
+         kkJw==
+X-Gm-Message-State: AOAM5314JMAIuqVKIne7esYtpwr8mldGBoH4H/cwPngGNbAXmo+VTNYf
+        kP3GfZ1KlJ6WnBp73HjA5A8Kx0tJPckm5Q==
+X-Google-Smtp-Source: ABdhPJyJHuWobwgoL1MVjyLwpreKdIlLFs3kDud9Hy1JbAj2dVTgtBspGivH7qAPt9N2dG2YBGTC+A==
+X-Received: by 2002:a2e:3317:: with SMTP id d23mr3247853ljc.199.1612542515444;
+        Fri, 05 Feb 2021 08:28:35 -0800 (PST)
+Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com. [209.85.208.179])
+        by smtp.gmail.com with ESMTPSA id o8sm1036010lft.213.2021.02.05.08.28.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 05 Feb 2021 08:28:35 -0800 (PST)
+Received: by mail-lj1-f179.google.com with SMTP id a25so8497193ljn.0;
+        Fri, 05 Feb 2021 08:28:34 -0800 (PST)
+X-Received: by 2002:a2e:9d04:: with SMTP id t4mr3147625lji.56.1612542514337;
+ Fri, 05 Feb 2021 08:28:34 -0800 (PST)
+MIME-Version: 1.0
+References: <20210204184710.1880895-1-jernej.skrabec@siol.net>
+ <CAGb2v64qww4pFwMVrY5UpHOQtM43Q0VPx=3PwJGbB5Oh0qnx=w@mail.gmail.com>
+ <20210205160130.ccp7jfcaa5hgyekb@gilmour> <2156838.FvJGUiYDvf@kista>
+In-Reply-To: <2156838.FvJGUiYDvf@kista>
+From:   Chen-Yu Tsai <wens@csie.org>
+Date:   Sat, 6 Feb 2021 00:28:23 +0800
+X-Gmail-Original-Message-ID: <CAGb2v65cZ7DXzcPzt8ER1ucwhbhTOc0-mCCye3eK-ZgP3a6ivA@mail.gmail.com>
+Message-ID: <CAGb2v65cZ7DXzcPzt8ER1ucwhbhTOc0-mCCye3eK-ZgP3a6ivA@mail.gmail.com>
+Subject: Re: Re: [PATCH 2/5] drm/sun4i: tcon: set sync polarity for tcon1 channel
+To:     =?UTF-8?Q?Jernej_=C5=A0krabec?= <jernej.skrabec@siol.net>
+Cc:     Maxime Ripard <maxime@cerno.tech>,
+        Mike Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-sunxi <linux-sunxi@googlegroups.com>,
+        Andre Heider <a.heider@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When XSAVES is present, the kernel always takes advantage of it, and XSAVES
-always uses the compacted format.
+On Sat, Feb 6, 2021 at 12:21 AM Jernej Škrabec <jernej.skrabec@siol.net> wrote:
+>
+> Dne petek, 05. februar 2021 ob 17:01:30 CET je Maxime Ripard napisal(a):
+> > On Fri, Feb 05, 2021 at 11:21:22AM +0800, Chen-Yu Tsai wrote:
+> > > On Fri, Feb 5, 2021 at 2:48 AM Jernej Skrabec <jernej.skrabec@siol.net>
+> wrote:
+> > > >
+> > > > Channel 1 has polarity bits for vsync and hsync signals but driver never
+> > > > sets them. It turns out that with pre-HDMI2 controllers seemingly there
+> > > > is no issue if polarity is not set. However, with HDMI2 controllers
+> > > > (H6) there often comes to de-synchronization due to phase shift. This
+> > > > causes flickering screen. It's safe to assume that similar issues might
+> > > > happen also with pre-HDMI2 controllers.
+> > > >
+> > > > Solve issue with setting vsync and hsync polarity. Note that display
+> > > > stacks with tcon top have polarity bits actually in tcon0 polarity
+> > > > register.
+> > > >
+> > > > Fixes: 9026e0d122ac ("drm: Add Allwinner A10 Display Engine support")
+> > > > Tested-by: Andre Heider <a.heider@gmail.com>
+> > > > Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
+> > > > ---
+> > > >  drivers/gpu/drm/sun4i/sun4i_tcon.c | 24 ++++++++++++++++++++++++
+> > > >  drivers/gpu/drm/sun4i/sun4i_tcon.h |  5 +++++
+> > > >  2 files changed, 29 insertions(+)
+> > > >
+> > > > diff --git a/drivers/gpu/drm/sun4i/sun4i_tcon.c b/drivers/gpu/drm/sun4i/
+> sun4i_tcon.c
+> > > > index 6b9af4c08cd6..0d132dae58c0 100644
+> > > > --- a/drivers/gpu/drm/sun4i/sun4i_tcon.c
+> > > > +++ b/drivers/gpu/drm/sun4i/sun4i_tcon.c
+> > > > @@ -672,6 +672,29 @@ static void sun4i_tcon1_mode_set(struct sun4i_tcon
+> *tcon,
+> > > >                      SUN4I_TCON1_BASIC5_V_SYNC(vsync) |
+> > > >                      SUN4I_TCON1_BASIC5_H_SYNC(hsync));
+> > > >
+> > > > +       /* Setup the polarity of sync signals */
+> > > > +       if (tcon->quirks->polarity_in_ch0) {
+> > > > +               val = 0;
+> > > > +
+> > > > +               if (mode->flags & DRM_MODE_FLAG_PHSYNC)
+> > > > +                       val |= SUN4I_TCON0_IO_POL_HSYNC_POSITIVE;
+> > > > +
+> > > > +               if (mode->flags & DRM_MODE_FLAG_PVSYNC)
+> > > > +                       val |= SUN4I_TCON0_IO_POL_VSYNC_POSITIVE;
+> > > > +
+> > > > +               regmap_write(tcon->regs, SUN4I_TCON0_IO_POL_REG, val);
+> > > > +       } else {
+> > > > +               val = SUN4I_TCON1_IO_POL_UNKNOWN;
+> > >
+> > > I think a comment for the origin of this is warranted.
+> >
+> > If it's anything like TCON0, it's the pixel clock polarity
+>
+> Hard to say, DW HDMI controller has "data enable" polarity along hsync and
+> vsync. It could be either or none of those.
+>
+> What should I write in comment? BSP drivers and documentation use only generic
+> names like io2_inv.
 
-The helper function using_compacted_format() implies that using the
-compacted format may be possible without XSAVES (say by using XSAVEC), but
-that is not possible here, so delete that confusing helper and simply check
-the feature in the first place -- if XSAVES is available or not.
+Just say that we don't know exactly what it is, but it is required for things
+to work properly? Would be interesting to know what happens if you don't set
+this bit, but do set VSYNC/HSYNC polarity properly.
 
-Cleanup only. No functional change.
-
-Signed-off-by: Chang S. Bae <chang.seok.bae@intel.com>
-Reviewed-by: Len Brown <len.brown@intel.com>
-Cc: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: Borislav Petkov <bp@suse.de>
-Cc: linux-kernel@vger.kernel.org
-Cc: x86@kernel.org
----
-Changes from v1:
-* Added comments (Dave Hansen)
-* Updated the changelog (Borislav Petkov)
----
- arch/x86/include/asm/fpu/xstate.h |  1 -
- arch/x86/kernel/fpu/regset.c      |  6 ++++--
- arch/x86/kernel/fpu/signal.c      |  3 ++-
- arch/x86/kernel/fpu/xstate.c      | 18 ++----------------
- 4 files changed, 8 insertions(+), 20 deletions(-)
-
-diff --git a/arch/x86/include/asm/fpu/xstate.h b/arch/x86/include/asm/fpu/xstate.h
-index 47a92232d595..96c43380b8c2 100644
---- a/arch/x86/include/asm/fpu/xstate.h
-+++ b/arch/x86/include/asm/fpu/xstate.h
-@@ -102,7 +102,6 @@ extern void __init update_regset_xstate_info(unsigned int size,
- 
- void *get_xsave_addr(struct xregs_state *xsave, int xfeature_nr);
- const void *get_xsave_field_ptr(int xfeature_nr);
--int using_compacted_format(void);
- int xfeature_size(int xfeature_nr);
- struct membuf;
- void copy_xstate_to_kernel(struct membuf to, struct xregs_state *xsave);
-diff --git a/arch/x86/kernel/fpu/regset.c b/arch/x86/kernel/fpu/regset.c
-index c413756ba89f..c999b9e5b3a1 100644
---- a/arch/x86/kernel/fpu/regset.c
-+++ b/arch/x86/kernel/fpu/regset.c
-@@ -84,7 +84,8 @@ int xstateregs_get(struct task_struct *target, const struct user_regset *regset,
- 
- 	fpu__prepare_read(fpu);
- 
--	if (using_compacted_format()) {
-+	/* The XSAVES compacted format must be copied one state at a time. */
-+	if (boot_cpu_has(X86_FEATURE_XSAVES)) {
- 		copy_xstate_to_kernel(to, xsave);
- 		return 0;
- 	} else {
-@@ -124,7 +125,8 @@ int xstateregs_set(struct task_struct *target, const struct user_regset *regset,
- 
- 	fpu__prepare_write(fpu);
- 
--	if (using_compacted_format()) {
-+	/* The XSAVES compacted format must be copied one state at a time. */
-+	if (boot_cpu_has(X86_FEATURE_XSAVES)) {
- 		if (kbuf)
- 			ret = copy_kernel_to_xstate(xsave, kbuf);
- 		else
-diff --git a/arch/x86/kernel/fpu/signal.c b/arch/x86/kernel/fpu/signal.c
-index a4ec65317a7f..761324a31e5c 100644
---- a/arch/x86/kernel/fpu/signal.c
-+++ b/arch/x86/kernel/fpu/signal.c
-@@ -405,7 +405,8 @@ static int __fpu__restore_sig(void __user *buf, void __user *buf_fx, int size)
- 	if (use_xsave() && !fx_only) {
- 		u64 init_bv = xfeatures_mask_user() & ~user_xfeatures;
- 
--		if (using_compacted_format()) {
-+		/* The XSAVES compacted format must be copied one state at a time. */
-+		if (boot_cpu_has(X86_FEATURE_XSAVES)) {
- 			ret = copy_user_to_xstate(&fpu->state.xsave, buf_fx);
- 		} else {
- 			ret = __copy_from_user(&fpu->state.xsave, buf_fx, state_size);
-diff --git a/arch/x86/kernel/fpu/xstate.c b/arch/x86/kernel/fpu/xstate.c
-index 683749b80ae2..0e5fa511f0a1 100644
---- a/arch/x86/kernel/fpu/xstate.c
-+++ b/arch/x86/kernel/fpu/xstate.c
-@@ -500,20 +500,6 @@ int xfeature_size(int xfeature_nr)
- 	return eax;
- }
- 
--/*
-- * 'XSAVES' implies two different things:
-- * 1. saving of supervisor/system state
-- * 2. using the compacted format
-- *
-- * Use this function when dealing with the compacted format so
-- * that it is obvious which aspect of 'XSAVES' is being handled
-- * by the calling code.
-- */
--int using_compacted_format(void)
--{
--	return boot_cpu_has(X86_FEATURE_XSAVES);
--}
--
- /* Validate an xstate header supplied by userspace (ptrace or sigreturn) */
- int validate_user_xstate_header(const struct xstate_header *hdr)
- {
-@@ -634,7 +620,7 @@ static void do_extra_xstate_size_checks(void)
- 		 * Supervisor state components can be managed only by
- 		 * XSAVES, which is compacted-format only.
- 		 */
--		if (!using_compacted_format())
-+		if (!boot_cpu_has(X86_FEATURE_XSAVES))
- 			XSTATE_WARN_ON(xfeature_is_supervisor(i));
- 
- 		/* Align from the end of the previous feature */
-@@ -646,7 +632,7 @@ static void do_extra_xstate_size_checks(void)
- 		 * them for being ordered (increasing offsets) in
- 		 * setup_xstate_features().
- 		 */
--		if (!using_compacted_format())
-+		if (!boot_cpu_has(X86_FEATURE_XSAVES))
- 			paranoid_xstate_size = xfeature_uncompacted_offset(i);
- 		/*
- 		 * The compacted-format offset always depends on where
--- 
-2.17.1
-
+ChenYu
