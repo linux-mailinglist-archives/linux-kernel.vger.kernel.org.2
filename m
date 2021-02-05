@@ -2,259 +2,348 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F7063106A3
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 09:28:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0BD43106AF
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 09:30:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229734AbhBEI1g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 03:27:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59948 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229691AbhBEI1a (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 03:27:30 -0500
-Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1328C0613D6;
-        Fri,  5 Feb 2021 00:26:50 -0800 (PST)
-Received: by mail-io1-xd34.google.com with SMTP id n14so6228166iog.3;
-        Fri, 05 Feb 2021 00:26:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Z0Gm8u2TMhBz/YCAe+pp9wro9BJ8jYFwFo8FlNQSJoI=;
-        b=oMNVSNOZyGvv07CcK+taZmULiang1+bklyyyewwT198brr7qyEZbmo24VeU7rC0LfY
-         oo1t2KP3oKiXaAOKPttUlo+Qh0uiZ1JOoRyZuAgwFJYIX9jaKnb/f/FhqhNwhZ3NO+KI
-         nlsLpqfSWHmad4vHGGsgNWGV1MQngDWvri4yjWNOtCd+ZOn20zldzc27fOfPFr6LJTPZ
-         XssBMf7mHvFmCml0MF3YgcKdL8IucT9BAJj6A6sVFkvaBksjNTR2lIi110yruPesd1by
-         U+vXTcPV5gAZEjgWcZ4AdkG8q03QGAJiAwgcZY7qm31AciDMAOUi228tGbC+vTSnwchB
-         W1fg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Z0Gm8u2TMhBz/YCAe+pp9wro9BJ8jYFwFo8FlNQSJoI=;
-        b=X+4x3WW8c6Lrb72+9tiMYlLsjRGStvZPF/y8T6dhKtOugLMH2n3b/rD/V7cfJPFrMB
-         UXPXFvyaICQSK/h7kguiO4YyFWjdiei9PQkWUaKng9gC37QSasUfF1HRtKedcla9vWTo
-         jBaIJ97STTWF+8T7Ubq6nZuAoViXjfyAalN4TQfCJlPGOnaeB2heH/WKhUJHETLTu5pY
-         Mv6wXVTZLpgMUvmn1EW6HPnYtrt31RjXwd7yBvWY3smIlWQnvWUFHeyEQs6j+7AXaa+a
-         aX4lGfNsmGc5L8g1e6lSfQ/NUsVDBWqq/LrvYZlDcyPYQTUayTmWZzQXc8nV14ksMfa4
-         Xapg==
-X-Gm-Message-State: AOAM532P2LROdeMYH6lGk1RbBhbHQW79lyuU+XTC5ejjq9ZuLmDLG2Fy
-        bQ6aJ6DjjjUdSaKW5nSkOY6Z9QSiJADyUb7lQeM=
-X-Google-Smtp-Source: ABdhPJx/7S6ngUSZt+lhev2lxyfban1H04P3gyM5ctHEpKB7iEd1QnjQwA/cAK/IAK5dVcXtBF6hW5yVJkAuXRZ3y5U=
-X-Received: by 2002:a02:3f62:: with SMTP id c34mr3877574jaf.16.1612513608749;
- Fri, 05 Feb 2021 00:26:48 -0800 (PST)
+        id S229587AbhBEI3s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 03:29:48 -0500
+Received: from mail-mw2nam08on2046.outbound.protection.outlook.com ([40.107.101.46]:59580
+        "EHLO NAM04-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229492AbhBEI3k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 03:29:40 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gaSdwLpVxQZVb6ptEcXHBuFaQBoObnYNkRw/8Z4bE0ahRi7jnvF947TofScnkwwiHT0f8BCsJuoHSdRxRe4IVawLsCf2T+LIVm2p5eQjNdNU1AK7UQZij/baQlLiQof/Td1H+Z4hRlQ00jvEV1l3OZJRfwfB0oJvTLoMe8JNZxRTUuQu+m9uzfsZbSQM3YAClMaOeOViQicctXIVhlFbBSCFHlRAe6U0KNIDcUp8emnh2naghzB4jNzPkas0OYmp3ZWXkifEkryqXjuJiu2NnHz3/e5CjCLUpGE5ooN4n5cuWuk9ZWs9Sm0uI5miPznNcYk51F23acrY/Y1U7wHRoA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=QzINmfy8dPo2ojH3jon8BRNtk7Db/nPHGeuPcQm8H0Y=;
+ b=TN4RJTt1QDSXuyR48dWFNiwqs16WAcmAErC+tZmiL12FV7dIW60Rb+owxhzZF4qfzD+dO/lqmyOSNglYhAbGK7X3j8unyLu18JrnfqQh70FxFXv1AvPSM0DPx1ol8IuOXz2hQ5sINKjy+U7KhQVF8vvYczdmqy/ZF7YkyhUte0zBFLenlSaXnrE2j6c3IU/PjehR3pw6p1WI1+IuB3f6O0hcidLV1DbdLByVrGY6YOdCiHTe/LvPiAVQOcK8U6nrjSkD+Uw+h7un8pdb7sCX4z0Jqphp9oPSBCY8WojwbOdNF213Co/2OJD1Ghkwwqoz8ngMDnTsnp45FTwW11tn1Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=QzINmfy8dPo2ojH3jon8BRNtk7Db/nPHGeuPcQm8H0Y=;
+ b=FRzda2g/Y0sxFC0SHMWbZtklJ/COWHECPbGXx0b35PuHbJKrDRa9TP5H/qz03WIYr4iKvo8GiLToObl3KfgEZkJHlGbNwdvg6XTwVrTxfa5LrbjLErL8LTRy71G9uDDVMDkrcPutZuYKi/tahY71uxoHUKJYf8V3OUWgdPT3nvA=
+Authentication-Results: lists.freedesktop.org; dkim=none (message not signed)
+ header.d=none;lists.freedesktop.org; dmarc=none action=none
+ header.from=amd.com;
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
+ by BL0PR12MB2579.namprd12.prod.outlook.com (2603:10b6:207:4d::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.24; Fri, 5 Feb
+ 2021 08:28:46 +0000
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::c1ff:dcf1:9536:a1f2]) by MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::c1ff:dcf1:9536:a1f2%2]) with mapi id 15.20.3825.023; Fri, 5 Feb 2021
+ 08:28:46 +0000
+Subject: Re: [RFC][PATCH v6 3/7] drm: ttm_pool: Rework ttm_pool_free_page to
+ allow us to use it as a function pointer
+To:     John Stultz <john.stultz@linaro.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Cc:     Daniel Vetter <daniel@ffwll.ch>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Liam Mark <lmark@codeaurora.org>,
+        Chris Goldsworthy <cgoldswo@codeaurora.org>,
+        Laura Abbott <labbott@kernel.org>,
+        Brian Starkey <Brian.Starkey@arm.com>,
+        Hridya Valsaraju <hridya@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Sandeep Patil <sspatil@google.com>,
+        Daniel Mentz <danielmentz@google.com>,
+        =?UTF-8?Q?=c3=98rjan_Eide?= <orjan.eide@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Simon Ser <contact@emersion.fr>,
+        James Jones <jajones@nvidia.com>, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+References: <20210205080621.3102035-1-john.stultz@linaro.org>
+ <20210205080621.3102035-4-john.stultz@linaro.org>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
+Message-ID: <8a4cacb7-3042-53c7-02fe-de18cc49fc0e@amd.com>
+Date:   Fri, 5 Feb 2021 09:28:39 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+In-Reply-To: <20210205080621.3102035-4-john.stultz@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [2a02:908:1252:fb60:be8a:bd56:1f94:86e7]
+X-ClientProxiedBy: AM0PR06CA0106.eurprd06.prod.outlook.com
+ (2603:10a6:208:fa::47) To MN2PR12MB3775.namprd12.prod.outlook.com
+ (2603:10b6:208:159::19)
 MIME-Version: 1.0
-References: <20210201145105.20459-1-alexandru.ardelean@analog.com>
- <20210201145105.20459-8-alexandru.ardelean@analog.com> <20210204180926.00005e4c@Huawei.com>
-In-Reply-To: <20210204180926.00005e4c@Huawei.com>
-From:   Alexandru Ardelean <ardeleanalex@gmail.com>
-Date:   Fri, 5 Feb 2021 10:26:32 +0200
-Message-ID: <CA+U=Dsq34ixRT71qD8ZTR7MQ7NDgDZV2EJ+3gT=QQ8wBz4GiGA@mail.gmail.com>
-Subject: Re: [PATCH v3 07/11] iio: add reference to iio buffer on iio_dev_attr
-To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        "Hennerich, Michael" <Michael.Hennerich@analog.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        =?UTF-8?B?TnVubyBTw6E=?= <nuno.sa@analog.com>,
-        "Bogdan, Dragos" <dragos.bogdan@analog.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2a02:908:1252:fb60:be8a:bd56:1f94:86e7] (2a02:908:1252:fb60:be8a:bd56:1f94:86e7) by AM0PR06CA0106.eurprd06.prod.outlook.com (2603:10a6:208:fa::47) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.20 via Frontend Transport; Fri, 5 Feb 2021 08:28:43 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 8a9fdd33-e6e3-41dc-bbf5-08d8c9b00e2b
+X-MS-TrafficTypeDiagnostic: BL0PR12MB2579:
+X-Microsoft-Antispam-PRVS: <BL0PR12MB25797888A5FAA4303B00716E83B29@BL0PR12MB2579.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: vSYazm+AQ/0On5BHguGWNX6BUAXq0x/76vHw9L8qaOB2rtaRoyGDyFufVYh/gmxVGEE3m/sXFRAtgaSsyVPlpp/FRzMm6MUfZFZHuKMQa0qVUVhSbvn9fOfZThba0NnS2iEFTV641ronut7/KVWLaC8BpQEnbq8BvBGpGtrpjvdHbTSMQFKrF6MwXmslc+lKzNr66m8cZw5XtukeObpgynIBg15YoMDJ7xa4xo53cztUc66CjQv0svPdZWOgXc2UwXQ27R4IQlO71QxBPsJrQ9nJ/yenOh/5oc1Ych54x9sOMZW0qwGnYqxKi/BTeJYq4W1lLhIl1FsyGF11Snm/Usn12gRo49iKlXI3PjlcdDvAYY3wJGbK81vk+VztbWdYWkxxY3IWJuuf1jwiqVAOeB1HrNTVZp3BtiY7yROf5Zx9bIUM3jcE8fbgD7PrT5VBSWDsfxUusC8T6NfU3JGQjgL20Z0OJ1Dv0YAdRcIBhhUaS0GFRE2BSVPU2thdM+TC/2fFmjl2zB2tDXGXjLW4QSXSJI+BCkG+hurmJmLHFuxEnC6UJ2tzBvmPx0qmhfeiLBad1HgyzRAKy/gPz478hu1U5exCxrn0F0SslBSJuXY=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(366004)(396003)(346002)(136003)(376002)(66556008)(66946007)(36756003)(6486002)(7416002)(86362001)(186003)(16526019)(6666004)(478600001)(2616005)(4326008)(2906002)(31686004)(110136005)(83380400001)(54906003)(66476007)(5660300002)(8676002)(316002)(52116002)(8936002)(31696002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?U2hDQ2ZmTm5vcGZFd0pPOElyb1dIbnJUTytLdHBBTm5nelRYcXVUai8wV3BP?=
+ =?utf-8?B?M1RaVzhyQUZqSzh6NFVhTFBGclhoSGJ6cWRpM2Y1clFTWFhqaTJFbmczSUh2?=
+ =?utf-8?B?MWxwbTR4L2IvVHdmTTVySmpBcTBUV2ZYS0pEaVhWTXFSNVczR1UvdUNFRGZs?=
+ =?utf-8?B?bTRucTFGamZrb2I5dE9ZZU5zVzk2Y0Z5MHhSL1lsdUJ3bFlTUStPVWFza0RF?=
+ =?utf-8?B?Z2pqUy9xWHJPdkM5RlNlMkphM3lWbUlMblcyUnYwMjdjN1AyZXp6SURSUlVk?=
+ =?utf-8?B?SFJndXRqSTJtLzBlMGI1ZkJuZEEyQ0tqREtCcU5yZ3A3K1V2T2p2S2lBTjQ2?=
+ =?utf-8?B?OWZUN1F4aldZaHhLakFCV2h3MmRnaGtwWmVKcmZYMlJqbm1aMnVVVGZaa21n?=
+ =?utf-8?B?cng2aDFaQjkxUVhjcW93UnprMkVtU3ozYW5RYjlNenRQQ2lkeFpJSVBkZVIw?=
+ =?utf-8?B?ajAzLzV3SzJrdzhSNlV1cS9OZXVJaEFSTzg1am1MU0J0NmJsZlRXQm5nNlpo?=
+ =?utf-8?B?c1NBanJXanZGUDd6VGlMZjZhS2FTOXhRemdqWkg0anpnc3VqWmpPR1JSRGRP?=
+ =?utf-8?B?YzFPSGFjZW14OEVXR0xxM2RkbzF1RWtUM0lQTHQxbUZFQ3hIMTNRdTBSQi9W?=
+ =?utf-8?B?YnBrTTZ4Yy9IemJ0czJDREJNc3oyR29WYXlqb1dNRFFUOXAxSHBLeW4yaXlq?=
+ =?utf-8?B?ZmxNVTJvOEErL1FPeHVFUEYwaHBkT0RZeW93dTVVeEJrb1Baelg1SXNXNUlv?=
+ =?utf-8?B?MCtTNXh4NExzc01LVk10M2JQdUg3b1QwRVB5RDJHR0hWN0VmNlowQStRUng3?=
+ =?utf-8?B?RzJDWDJuWjZsaDB3TU9ESVZESE9LOUFkcjVVUU12Qy8xWnhnWjN3Z0VFNmU5?=
+ =?utf-8?B?U1FpMDZYMVV2aVFhdDZSaGErZFlVWUpyN1FtWmdKYk5EM1V3UjBmYTY5S0o4?=
+ =?utf-8?B?OG5aTmxZaUtTdkJ1RTFKdmdOZTBnMHdsaDAzUEZHbVR3MTVWb1YxT0lpT1Ur?=
+ =?utf-8?B?ZmFrR1lia0dac0VDaEQzZnl4TTZPcEZBcDZYVS9IUFpvNThuU0dJZDZTK1FU?=
+ =?utf-8?B?akloWkRWcjMvTHVDVWE3MzRHb2l5ZzRSZldhS1NWampReDNaY1ZJbUlCUkVv?=
+ =?utf-8?B?YnZHRERLbDRGd2VsTU5idmVoTFQzcURKWG1Ddkg2NnR0aklKNWVvdkY1UXdp?=
+ =?utf-8?B?Y3N0VjM4ZkZlanFodG9WUFhacGQwUEZmaXBETUFpYXQ4dVhZZHNzbUpGMjg3?=
+ =?utf-8?B?RFYxakJaNFcyb05IcHhqVHFhUEVmT0tHeitBYjMzdWhTQXRRbW5YNUZjYzhE?=
+ =?utf-8?B?VGd3bW5iUnNtQkVBWWQzbWo3alhUZEE3WFU0WkVOendPOHp3WW14MHhXVnFk?=
+ =?utf-8?B?SEpNUGF2RTVtRkdGMnNoa08wUkdkWmlQYW9MeXpaKzJkb1dYMVM1R3VRQUpm?=
+ =?utf-8?B?OXltTGxkeVl6Skp4RG1FY3RDejgwUDdGNjNmVU94RnpiTE5HYXk3MGxQUmZD?=
+ =?utf-8?B?bXQyVmM0RHVYRjA5ZUgyQUJnMXQrK2lnWS9XaGJFUHNUWEkzNThacVl3d21U?=
+ =?utf-8?B?ODU5akRtbkZ5dmNrRFoyQ0hlYWd4QXJLczNBYmQxdDlFUDFvZXdMWTlRSm5E?=
+ =?utf-8?B?cWJaTWc2OEtvUHhXRUNKWWhZaG1YZE54S05ERUV5eHRIa3F5K3VvMExoRWtJ?=
+ =?utf-8?B?UWRYM0hEbTZtYVdBRFE4S1AwNVB4clIzQkhSSm9VaVBVenJwejB1ZFJRMTc5?=
+ =?utf-8?B?aHJxbCs1RXlzbHFhSXJLV1RHd1U2dllTeUVIRFNMc0liTzBIV09NU1BwMEF3?=
+ =?utf-8?B?U0FYQ0tkQVlXQ0hlZmR2YzdTMFVwajZhTkZUSHVUK3EwU0ZSZnl4OXpaV0tz?=
+ =?utf-8?Q?GFbdPHKag4I9B?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8a9fdd33-e6e3-41dc-bbf5-08d8c9b00e2b
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Feb 2021 08:28:46.4737
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: XslRLQjy+h+YdUKGSKtTQKuhs/4qpOz5lTOquBhC544IJr9qTTxzXW/LJPFY+0pj
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB2579
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 4, 2021 at 8:16 PM Jonathan Cameron
-<Jonathan.Cameron@huawei.com> wrote:
->
-> On Mon, 1 Feb 2021 16:51:01 +0200
-> Alexandru Ardelean <alexandru.ardelean@analog.com> wrote:
->
-> > This change adds a reference to a 'struct iio_buffer' object on the
-> > iio_dev_attr object. This way, we can use the created iio_dev_attr objects
-> > on per-buffer basis (since they're allocated anyway).
-> >
-> > A minor downside of this change is that the number of parameters on
-> > __iio_add_chan_devattr() grows by 1. This looks like it could do with a bit
-> > of a re-think.
->
-> Could use a bit of macro magic or static inline to keep the old
-> version set of parameter and have __iio_add_chan_devattr_with_buf
-> or similar.  I'm not sure I'd bother given we don't have that many callers.
+Am 05.02.21 um 09:06 schrieb John Stultz:
+> This refactors ttm_pool_free_page(), and by adding extra entries
+> to ttm_pool_page_dat, we then use it for all allocations, which
+> allows us to simplify the arguments needed to be passed to
+> ttm_pool_free_page().
 
-If there isn't a strong opinion to add the
-__iio_add_chan_devattr_with_buf() version + macro/inline magic, I'd
-probably not do it.
-In terms of patch-noise, it's not considerably better, and not
-necessarily worse.
+This is a clear NAK since the peer page data is just a workaround for 
+the DMA-API hack to grab pages from there.
 
-When I was thinking about the re-think of __iio_add_chan_devattr, I
-was thinking of a way to maybe re-architect this.
-Maybe, add some {device_}attribute that act as template [at least for
-the R/W functions].
-This definitely needs some thinking to make it clean and nice.
+Adding this to all pages would increase the memory footprint drastically.
+
+christian.
 
 >
-> >
-> > Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
-> > ---
-> >  drivers/iio/iio_core.h            | 2 ++
-> >  drivers/iio/industrialio-buffer.c | 4 ++++
-> >  drivers/iio/industrialio-core.c   | 6 ++++++
-> >  drivers/iio/industrialio-event.c  | 1 +
-> >  include/linux/iio/sysfs.h         | 3 +++
-> >  5 files changed, 16 insertions(+)
-> >
-> > diff --git a/drivers/iio/iio_core.h b/drivers/iio/iio_core.h
-> > index 7d5b179c1fe7..731f5170d5b9 100644
-> > --- a/drivers/iio/iio_core.h
-> > +++ b/drivers/iio/iio_core.h
-> > @@ -12,6 +12,7 @@
-> >  #include <linux/kernel.h>
-> >  #include <linux/device.h>
-> >
-> > +struct iio_buffer;
-> >  struct iio_chan_spec;
-> >  struct iio_dev;
-> >
-> > @@ -43,6 +44,7 @@ int __iio_add_chan_devattr(const char *postfix,
-> >                          u64 mask,
-> >                          enum iio_shared_by shared_by,
-> >                          struct device *dev,
-> > +                        struct iio_buffer *buffer,
-> >                          struct list_head *attr_list);
-> >  void iio_free_chan_devattr_list(struct list_head *attr_list);
-> >
-> > diff --git a/drivers/iio/industrialio-buffer.c b/drivers/iio/industrialio-buffer.c
-> > index f82decf92b7c..a525e88b302f 100644
-> > --- a/drivers/iio/industrialio-buffer.c
-> > +++ b/drivers/iio/industrialio-buffer.c
+> This is critical for allowing the free function to be called
+> by the sharable drm_page_pool logic.
 >
-> > @@ -447,6 +447,7 @@ static int iio_buffer_add_channel_sysfs(struct iio_dev *indio_dev,
-> >                                    0,
-> >                                    IIO_SEPARATE,
-> >                                    &indio_dev->dev,
-> > +                                  buffer,
-> >                                    &buffer->scan_el_dev_attr_list);
-> >       if (ret)
-> >               return ret;
-> > @@ -458,6 +459,7 @@ static int iio_buffer_add_channel_sysfs(struct iio_dev *indio_dev,
-> >                                    0,
-> >                                    0,
-> >                                    &indio_dev->dev,
-> > +                                  buffer,
-> >                                    &buffer->scan_el_dev_attr_list);
-> >       if (ret)
-> >               return ret;
-> > @@ -470,6 +472,7 @@ static int iio_buffer_add_channel_sysfs(struct iio_dev *indio_dev,
-> >                                            chan->scan_index,
-> >                                            0,
-> >                                            &indio_dev->dev,
-> > +                                          buffer,
-> >                                            &buffer->scan_el_dev_attr_list);
-> >       else
-> >               ret = __iio_add_chan_devattr("en",
-> > @@ -479,6 +482,7 @@ static int iio_buffer_add_channel_sysfs(struct iio_dev *indio_dev,
-> >                                            chan->scan_index,
-> >                                            0,
-> >                                            &indio_dev->dev,
-> > +                                          buffer,
-> >                                            &buffer->scan_el_dev_attr_list);
-> >       if (ret)
-> >               return ret;
-> > diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
-> > index ccd7aaff6d13..c68130885d83 100644
-> > --- a/drivers/iio/industrialio-core.c
-> > +++ b/drivers/iio/industrialio-core.c
-> > @@ -1114,6 +1114,7 @@ int __iio_add_chan_devattr(const char *postfix,
-> >                          u64 mask,
-> >                          enum iio_shared_by shared_by,
-> >                          struct device *dev,
-> > +                        struct iio_buffer *buffer,
-> >                          struct list_head *attr_list)
-> >  {
-> >       int ret;
-> > @@ -1129,6 +1130,7 @@ int __iio_add_chan_devattr(const char *postfix,
-> >               goto error_iio_dev_attr_free;
-> >       iio_attr->c = chan;
-> >       iio_attr->address = mask;
-> > +     iio_attr->buffer = buffer;
-> >       list_for_each_entry(t, attr_list, l)
-> >               if (strcmp(t->dev_attr.attr.name,
-> >                          iio_attr->dev_attr.attr.name) == 0) {
-> > @@ -1165,6 +1167,7 @@ static int iio_device_add_channel_label(struct iio_dev *indio_dev,
-> >                                    0,
-> >                                    IIO_SEPARATE,
-> >                                    &indio_dev->dev,
-> > +                                  NULL,
-> >                                    &iio_dev_opaque->channel_attr_list);
-> >       if (ret < 0)
-> >               return ret;
-> > @@ -1190,6 +1193,7 @@ static int iio_device_add_info_mask_type(struct iio_dev *indio_dev,
-> >                                            i,
-> >                                            shared_by,
-> >                                            &indio_dev->dev,
-> > +                                          NULL,
-> >                                            &iio_dev_opaque->channel_attr_list);
-> >               if ((ret == -EBUSY) && (shared_by != IIO_SEPARATE))
-> >                       continue;
-> > @@ -1226,6 +1230,7 @@ static int iio_device_add_info_mask_type_avail(struct iio_dev *indio_dev,
-> >                                            i,
-> >                                            shared_by,
-> >                                            &indio_dev->dev,
-> > +                                          NULL,
-> >                                            &iio_dev_opaque->channel_attr_list);
-> >               kfree(avail_postfix);
-> >               if ((ret == -EBUSY) && (shared_by != IIO_SEPARATE))
-> > @@ -1322,6 +1327,7 @@ static int iio_device_add_channel_sysfs(struct iio_dev *indio_dev,
-> >                                       i,
-> >                                       ext_info->shared,
-> >                                       &indio_dev->dev,
-> > +                                     NULL,
-> >                                       &iio_dev_opaque->channel_attr_list);
-> >                       i++;
-> >                       if (ret == -EBUSY && ext_info->shared)
-> > diff --git a/drivers/iio/industrialio-event.c b/drivers/iio/industrialio-event.c
-> > index ea8947cc21e4..a30e289fc362 100644
-> > --- a/drivers/iio/industrialio-event.c
-> > +++ b/drivers/iio/industrialio-event.c
-> > @@ -385,6 +385,7 @@ static int iio_device_add_event(struct iio_dev *indio_dev,
-> >
-> >               ret = __iio_add_chan_devattr(postfix, chan, show, store,
-> >                        (i << 16) | spec_index, shared_by, &indio_dev->dev,
-> > +                      NULL,
-> >                       &iio_dev_opaque->event_interface->dev_attr_list);
-> >               kfree(postfix);
-> >
-> > diff --git a/include/linux/iio/sysfs.h b/include/linux/iio/sysfs.h
-> > index b532c875bc24..e51fba66de4b 100644
-> > --- a/include/linux/iio/sysfs.h
-> > +++ b/include/linux/iio/sysfs.h
-> > @@ -9,6 +9,7 @@
-> >  #ifndef _INDUSTRIAL_IO_SYSFS_H_
-> >  #define _INDUSTRIAL_IO_SYSFS_H_
-> >
-> > +struct iio_buffer;
-> >  struct iio_chan_spec;
-> >
-> >  /**
-> > @@ -17,12 +18,14 @@ struct iio_chan_spec;
-> >   * @address: associated register address
-> >   * @l:               list head for maintaining list of dynamically created attrs
-> >   * @c:               specification for the underlying channel
-> > + * @buffer:  the IIO buffer to which this attribute belongs to (if any)
-> >   */
-> >  struct iio_dev_attr {
-> >       struct device_attribute dev_attr;
-> >       u64 address;
-> >       struct list_head l;
-> >       struct iio_chan_spec const *c;
-> > +     struct iio_buffer *buffer;
-> >  };
-> >
-> >  #define to_iio_dev_attr(_dev_attr)                           \
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: Christian Koenig <christian.koenig@amd.com>
+> Cc: Sumit Semwal <sumit.semwal@linaro.org>
+> Cc: Liam Mark <lmark@codeaurora.org>
+> Cc: Chris Goldsworthy <cgoldswo@codeaurora.org>
+> Cc: Laura Abbott <labbott@kernel.org>
+> Cc: Brian Starkey <Brian.Starkey@arm.com>
+> Cc: Hridya Valsaraju <hridya@google.com>
+> Cc: Suren Baghdasaryan <surenb@google.com>
+> Cc: Sandeep Patil <sspatil@google.com>
+> Cc: Daniel Mentz <danielmentz@google.com>
+> Cc: Ørjan Eide <orjan.eide@arm.com>
+> Cc: Robin Murphy <robin.murphy@arm.com>
+> Cc: Ezequiel Garcia <ezequiel@collabora.com>
+> Cc: Simon Ser <contact@emersion.fr>
+> Cc: James Jones <jajones@nvidia.com>
+> Cc: linux-media@vger.kernel.org
+> Cc: dri-devel@lists.freedesktop.org
+> Signed-off-by: John Stultz <john.stultz@linaro.org>
+> ---
+>   drivers/gpu/drm/ttm/ttm_pool.c | 60 ++++++++++++++++++----------------
+>   1 file changed, 32 insertions(+), 28 deletions(-)
 >
+> diff --git a/drivers/gpu/drm/ttm/ttm_pool.c b/drivers/gpu/drm/ttm/ttm_pool.c
+> index c0274e256be3..eca36678f967 100644
+> --- a/drivers/gpu/drm/ttm/ttm_pool.c
+> +++ b/drivers/gpu/drm/ttm/ttm_pool.c
+> @@ -44,10 +44,14 @@
+>   /**
+>    * struct ttm_pool_page_dat - Helper object for coherent DMA mappings
+>    *
+> + * @pool: ttm_pool pointer the page was allocated by
+> + * @caching: the caching value the allocated page was configured for
+>    * @addr: original DMA address returned for the mapping
+>    * @vaddr: original vaddr return for the mapping and order in the lower bits
+>    */
+>   struct ttm_pool_page_dat {
+> +	struct ttm_pool *pool;
+> +	enum ttm_caching caching;
+>   	dma_addr_t addr;
+>   	unsigned long vaddr;
+>   };
+> @@ -71,13 +75,20 @@ static struct shrinker mm_shrinker;
+>   
+>   /* Allocate pages of size 1 << order with the given gfp_flags */
+>   static struct page *ttm_pool_alloc_page(struct ttm_pool *pool, gfp_t gfp_flags,
+> -					unsigned int order)
+> +					unsigned int order, enum ttm_caching caching)
+>   {
+>   	unsigned long attr = DMA_ATTR_FORCE_CONTIGUOUS;
+>   	struct ttm_pool_page_dat *dat;
+>   	struct page *p;
+>   	void *vaddr;
+>   
+> +	dat = kmalloc(sizeof(*dat), GFP_KERNEL);
+> +	if (!dat)
+> +		return NULL;
+> +
+> +	dat->pool = pool;
+> +	dat->caching = caching;
+> +
+>   	/* Don't set the __GFP_COMP flag for higher order allocations.
+>   	 * Mapping pages directly into an userspace process and calling
+>   	 * put_page() on a TTM allocated page is illegal.
+> @@ -88,15 +99,13 @@ static struct page *ttm_pool_alloc_page(struct ttm_pool *pool, gfp_t gfp_flags,
+>   
+>   	if (!pool->use_dma_alloc) {
+>   		p = alloc_pages(gfp_flags, order);
+> -		if (p)
+> -			p->private = order;
+> +		if (!p)
+> +			goto error_free;
+> +		dat->vaddr = order;
+> +		p->private = (unsigned long)dat;
+>   		return p;
+>   	}
+>   
+> -	dat = kmalloc(sizeof(*dat), GFP_KERNEL);
+> -	if (!dat)
+> -		return NULL;
+> -
+>   	if (order)
+>   		attr |= DMA_ATTR_NO_WARN;
+>   
+> @@ -123,34 +132,34 @@ static struct page *ttm_pool_alloc_page(struct ttm_pool *pool, gfp_t gfp_flags,
+>   }
+>   
+>   /* Reset the caching and pages of size 1 << order */
+> -static void ttm_pool_free_page(struct ttm_pool *pool, enum ttm_caching caching,
+> -			       unsigned int order, struct page *p)
+> +static int ttm_pool_free_page(struct page *p, unsigned int order)
+>   {
+>   	unsigned long attr = DMA_ATTR_FORCE_CONTIGUOUS;
+> -	struct ttm_pool_page_dat *dat;
+> +	struct ttm_pool_page_dat *dat = (void *)p->private;
+>   	void *vaddr;
+>   
+>   #ifdef CONFIG_X86
+>   	/* We don't care that set_pages_wb is inefficient here. This is only
+>   	 * used when we have to shrink and CPU overhead is irrelevant then.
+>   	 */
+> -	if (caching != ttm_cached && !PageHighMem(p))
+> +	if (dat->caching != ttm_cached && !PageHighMem(p))
+>   		set_pages_wb(p, 1 << order);
+>   #endif
+>   
+> -	if (!pool || !pool->use_dma_alloc) {
+> +	if (!dat->pool || !dat->pool->use_dma_alloc) {
+>   		__free_pages(p, order);
+> -		return;
+> +		goto out;
+>   	}
+>   
+>   	if (order)
+>   		attr |= DMA_ATTR_NO_WARN;
+>   
+> -	dat = (void *)p->private;
+>   	vaddr = (void *)(dat->vaddr & PAGE_MASK);
+> -	dma_free_attrs(pool->dev, (1UL << order) * PAGE_SIZE, vaddr, dat->addr,
+> +	dma_free_attrs(dat->pool->dev, (1UL << order) * PAGE_SIZE, vaddr, dat->addr,
+>   		       attr);
+> +out:
+>   	kfree(dat);
+> +	return 1 << order;
+>   }
+>   
+>   /* Apply a new caching to an array of pages */
+> @@ -264,7 +273,7 @@ static void ttm_pool_type_fini(struct ttm_pool_type *pt)
+>   	mutex_unlock(&shrinker_lock);
+>   
+>   	list_for_each_entry_safe(p, tmp, &pt->pages, lru)
+> -		ttm_pool_free_page(pt->pool, pt->caching, pt->order, p);
+> +		ttm_pool_free_page(p, pt->order);
+>   }
+>   
+>   /* Return the pool_type to use for the given caching and order */
+> @@ -307,7 +316,7 @@ static unsigned int ttm_pool_shrink(void)
+>   
+>   	p = ttm_pool_type_take(pt);
+>   	if (p) {
+> -		ttm_pool_free_page(pt->pool, pt->caching, pt->order, p);
+> +		ttm_pool_free_page(p, pt->order);
+>   		num_freed = 1 << pt->order;
+>   	} else {
+>   		num_freed = 0;
+> @@ -322,13 +331,9 @@ static unsigned int ttm_pool_shrink(void)
+>   /* Return the allocation order based for a page */
+>   static unsigned int ttm_pool_page_order(struct ttm_pool *pool, struct page *p)
+>   {
+> -	if (pool->use_dma_alloc) {
+> -		struct ttm_pool_page_dat *dat = (void *)p->private;
+> -
+> -		return dat->vaddr & ~PAGE_MASK;
+> -	}
+> +	struct ttm_pool_page_dat *dat = (void *)p->private;
+>   
+> -	return p->private;
+> +	return dat->vaddr & ~PAGE_MASK;
+>   }
+>   
+>   /**
+> @@ -379,7 +384,7 @@ int ttm_pool_alloc(struct ttm_pool *pool, struct ttm_tt *tt,
+>   		if (p) {
+>   			apply_caching = true;
+>   		} else {
+> -			p = ttm_pool_alloc_page(pool, gfp_flags, order);
+> +			p = ttm_pool_alloc_page(pool, gfp_flags, order, tt->caching);
+>   			if (p && PageHighMem(p))
+>   				apply_caching = true;
+>   		}
+> @@ -428,13 +433,13 @@ int ttm_pool_alloc(struct ttm_pool *pool, struct ttm_tt *tt,
+>   	ttm_mem_global_free_page(&ttm_mem_glob, p, (1 << order) * PAGE_SIZE);
+>   
+>   error_free_page:
+> -	ttm_pool_free_page(pool, tt->caching, order, p);
+> +	ttm_pool_free_page(p, order);
+>   
+>   error_free_all:
+>   	num_pages = tt->num_pages - num_pages;
+>   	for (i = 0; i < num_pages; ) {
+>   		order = ttm_pool_page_order(pool, tt->pages[i]);
+> -		ttm_pool_free_page(pool, tt->caching, order, tt->pages[i]);
+> +		ttm_pool_free_page(tt->pages[i], order);
+>   		i += 1 << order;
+>   	}
+>   
+> @@ -470,8 +475,7 @@ void ttm_pool_free(struct ttm_pool *pool, struct ttm_tt *tt)
+>   		if (pt)
+>   			ttm_pool_type_give(pt, tt->pages[i]);
+>   		else
+> -			ttm_pool_free_page(pool, tt->caching, order,
+> -					   tt->pages[i]);
+> +			ttm_pool_free_page(tt->pages[i], order);
+>   
+>   		i += num_pages;
+>   	}
+
