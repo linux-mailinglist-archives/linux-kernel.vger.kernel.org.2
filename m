@@ -2,217 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2D71311739
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 00:41:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 761BA311737
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 00:41:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230009AbhBEXj6 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 5 Feb 2021 18:39:58 -0500
-Received: from gloria.sntech.de ([185.11.138.130]:44268 "EHLO gloria.sntech.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231708AbhBEOUM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 09:20:12 -0500
-Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=diego.localnet)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1l82Wb-0002S7-Fm; Fri, 05 Feb 2021 15:55:57 +0100
-From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
-To:     Sebastian Fricke <sebastian.fricke@posteo.net>
-Cc:     dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        hjc@rock-chips.com, robh+dt@kernel.org,
-        linux-media@vger.kernel.org, dafna.hirschfeld@collabora.com,
-        helen.koike@collabora.com, ezequiel@collabora.com,
-        cmuellner@linux.com
-Subject: Re: [PATCH 0/6] Support second Image Signal Processor on rk3399
-Date:   Fri, 05 Feb 2021 15:55:56 +0100
-Message-ID: <5860385.iIbC2pHGDl@diego>
-In-Reply-To: <5271305.e9J7NaK4W3@diego>
-References: <20210202145632.1263136-1-heiko@sntech.de> <20210205064335.6c3gs3h3pgvhceku@basti-TUXEDO-Book-XA1510> <5271305.e9J7NaK4W3@diego>
+        id S229529AbhBEXii (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 18:38:38 -0500
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:36568 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231710AbhBEOUL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 09:20:11 -0500
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 115EpMwn029624;
+        Fri, 5 Feb 2021 15:58:12 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=K2IpOPO6ClARdSjmSkkgxNEu1UWz7Lz6ahJgJgHk+gA=;
+ b=QceFg4C0e8V4+jciH7pFCOiF5qdd/YicfYswp7k5N40Xa/wntSfdm/529T0uelU4KiOQ
+ 5pwuYdNMPURUyj3Fd1r3hmR6s/1ScXRBxwOtu+4kj1mX8mnDSe4mpcc8vS37kBA/+Ymp
+ 5lXzylnFbLs0fuGYhNLx0BM/+ZaQCWXmF4gUtBi413LgBk3nS8GNIRipXWoAZujLkkDx
+ 8GTDMTCyZg2J2dxwTH8qbXPX1u4+N59panQFAoCujY47LojUiirgR2ybCd2rviffVOJu
+ JGECeCoUM4v7LV4U/4xrmO9dqIISHitcjiwqUrP1+q6+HMaAvYHx75qx51MRFceUw/lS TQ== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 36h1kear9a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 05 Feb 2021 15:58:12 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id B248310002A;
+        Fri,  5 Feb 2021 15:58:11 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 9C5942402B9;
+        Fri,  5 Feb 2021 15:58:11 +0100 (CET)
+Received: from lmecxl1060.lme.st.com (10.75.127.47) by SFHDAG2NODE3.st.com
+ (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 5 Feb
+ 2021 15:58:10 +0100
+Subject: Re: [PATCH 1/5] i2c: stm32f7: fix configuration of the digital filter
+To:     Alain Volmat <alain.volmat@foss.st.com>, <wsa@kernel.org>,
+        <robh+dt@kernel.org>
+CC:     <mark.rutland@arm.com>, <mcoquelin.stm32@gmail.com>,
+        <alexandre.torgue@foss.st.com>, <linux-i2c@vger.kernel.org>,
+        <devicetree@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <fabrice.gasnier@foss.st.com>
+References: <1612515104-838-1-git-send-email-alain.volmat@foss.st.com>
+ <1612515104-838-2-git-send-email-alain.volmat@foss.st.com>
+From:   Pierre Yves MORDRET <pierre-yves.mordret@foss.st.com>
+Message-ID: <350e3fe2-e23a-6b6b-c513-276ce9fb6631@foss.st.com>
+Date:   Fri, 5 Feb 2021 15:58:10 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset="iso-8859-1"
+In-Reply-To: <1612515104-838-2-git-send-email-alain.volmat@foss.st.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.47]
+X-ClientProxiedBy: SFHDAG3NODE3.st.com (10.75.127.9) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-02-05_09:2021-02-05,2021-02-05 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sebastian,
+Hello all
 
-I did some tests myself today as well and can confirm your
-hdmi related finding - at least when plugged in on boot.
+Looks good to me
 
-I tried some combinations of camera vs. hdmi and it seems
-really only when hdmi is plugged in on boot
+Signed-off-by: Pierre-Yves MORDRET <pierre-yves.mordret@foss.st.com>
 
-(1)
-- boot
-- camera
---> works
+Regards
 
-(2)
-- boot
-- camera
-- hdmi plugged in
-- hdmi works
-- camera
---> works
-
-(3)
-- hdmi plugged in
-- boot
-- hdmi works
-- camera
---> camera doesn't work
-
-(4)
-- boot
-- hdmi plugged in
-- hdmi works
-- camera
--> camera works
-
-
-With a bit of brute-force [0] it seems the camera also works again even
-with hdmi connected on boot. So conclusion would be that some clock
-is misbehaving.
-
-Now we'll "only" need to find out which one that is.
-
-
-Heiko
-
-
-[0]
-Don't disable any clock gates
-
-diff --git a/drivers/clk/clk-gate.c b/drivers/clk/clk-gate.c
-index 070dc47e95a1..8daf1fc3388c 100644
---- a/drivers/clk/clk-gate.c
-+++ b/drivers/clk/clk-gate.c
-@@ -61,6 +61,9 @@ static void clk_gate_endisable(struct clk_hw *hw, int enable)
- 
-        set ^= enable;
- 
-+if (!enable)
-+return;
-+
-        if (gate->lock)
-                spin_lock_irqsave(gate->lock, flags);
-        else
-
-
-
-Am Freitag, 5. Februar 2021, 09:15:47 CET schrieb Heiko Stübner:
-> Hi Sebastian,
+On 2/5/21 9:51 AM, Alain Volmat wrote:
+> The digital filter related computation are present in the driver
+> however the programming of the filter within the IP is missing.
+> The maximum value for the DNF is wrong and should be 15 instead of 16.
 > 
-> Am Freitag, 5. Februar 2021, 07:43:35 CET schrieb Sebastian Fricke:
-> > On 03.02.2021 20:54, Heiko Stübner wrote:
-> > >Am Mittwoch, 3. Februar 2021, 19:14:22 CET schrieb Sebastian Fricke:
-> > >> I have tested your patch set on my nanoPC-T4, here is a complete log
-> > >> with:
-> > >> - relevant kernel log entries
-> > >> - system information
-> > >> - media ctl output
-> > >> - sysfs entry information
-> > >>
-> > >> https://paste.debian.net/1183874/
-> > >>
-> > >> Additionally, to your patchset I have applied the following patches:
-> > >> https://github.com/initBasti/Linux_kernel_media_tree_fork/commits/dual_cam_setup
-> > >>
-> > >> And just to not cause confusion the `media_dev` entries come from this
-> > >> unmerged series:
-> > >> https://patchwork.kernel.org/project/linux-media/list/?series=426269
-> > >>
-> > >> I have actually been able to stream with both of my cameras at the same
-> > >> time using the libcamera cam command.
-> > >> I would like to thank you a lot for making this possible.
-> > >
-> > >Thanks for testing a dual camera setup. On my board I could only test
-> > >the second ISP. And really glad it works for you tool :-) .
-> > >
-> > >Out of curiosity, do you also see that green tint in the images the cameras
-> > >produce?
-> > 
-> > Yes, I do. Actually, I currently have two forms of a green tint, on my
-> > OV13850 everything is quite dark and greenish, which is caused by the
-> > missing 3A algorithms. On my OV4689, I have big patches of the image
-> > with bright green color and flickering, I investigated if this is
-> > connected to the 2nd ISP instance, but that doesn't seem to be the case
-> > as I have the same results when I switch the CSI ports of the cameras.
-> > 
-> > I have found another issue, while testing I discovered following
-> > issue:
-> > When I start the system with an HDMI monitor connected, then the camera
-> > on the 2nd port doesn't work. This is probably because the RX/TX is
-> > reserved as a TX.
-> > But it made me wonder because if the system has an RX, a TX, and
-> > an RX/TX, why isn't the pure TX used by the monitor and the
-> > cameras take RX and RX/TX?
-> > Or do you think that this is maybe a malfunction of this patch?
+> Fixes: aeb068c57214 ("i2c: i2c-stm32f7: add driver")
 > 
-> I don't think it is an issue with this specific series, but still puzzling.
+> Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+> ---
+>  drivers/i2c/busses/i2c-stm32f7.c | 11 ++++++++++-
+>  1 file changed, 10 insertions(+), 1 deletion(-)
 > 
-> I.e. the DPHYs are actually only relevant to the DSI controllers,
-> with TX0 being connected to DSI0 and TX1RX1 being connected
-> to DSI1. So having an hdmi display _in theory_ shouldn't matter at all.
-> 
-> Out of curiosity what happens, when you boot without hdmi connected
-> turn on the cameras, connect the hdmi after this, try the cameras again?
-> 
-> 
-> Heiko
-> 
-> > 
-> > >
-> > >Thanks
-> > >Heiko
-> > 
-> > Greetings,
-> > Sebastian
-> > 
-> > >
-> > >
-> > >> If you like to you can add:
-> > >> Tested-by: Sebastian Fricke <sebastian.fricke@posteo.net>
-> > >>
-> > >> On 02.02.2021 15:56, Heiko Stuebner wrote:
-> > >> >The rk3399 has two ISPs and right now only the first one is usable.
-> > >> >The second ISP is connected to the TXRX dphy on the soc.
-> > >> >
-> > >> >The phy of ISP1 is only accessible through the DSI controller's
-> > >> >io-memory, so this series adds support for simply using the dsi
-> > >> >controller is a phy if needed.
-> > >> >
-> > >> >That solution is needed at least on rk3399 and rk3288 but no-one
-> > >> >has looked at camera support on rk3288 at all, so right now
-> > >> >only implement the rk3399 specifics.
-> > >> >
-> > >> >
-> > >> >Heiko Stuebner (6):
-> > >> >  drm/rockchip: dsi: add own additional pclk handling
-> > >> >  dt-bindings: display: rockchip-dsi: add optional #phy-cells property
-> > >> >  drm/rockchip: dsi: add ability to work as a phy instead of full dsi
-> > >> >  arm64: dts: rockchip: add #phy-cells to mipi-dsi1
-> > >> >  arm64: dts: rockchip: add cif clk-control pinctrl for rk3399
-> > >> >  arm64: dts: rockchip: add isp1 node on rk3399
-> > >> >
-> > >> > .../display/rockchip/dw_mipi_dsi_rockchip.txt |   1 +
-> > >> > arch/arm64/boot/dts/rockchip/rk3399.dtsi      |  39 ++
-> > >> > drivers/gpu/drm/rockchip/Kconfig              |   2 +
-> > >> > .../gpu/drm/rockchip/dw-mipi-dsi-rockchip.c   | 342 ++++++++++++++++++
-> > >> > 4 files changed, 384 insertions(+)
-> > >> >
-> > >>
-> > >
-> > >
-> > >
-> > >
-> > 
-> 
+> diff --git a/drivers/i2c/busses/i2c-stm32f7.c b/drivers/i2c/busses/i2c-stm32f7.c
+> index 9aa8e65b511e..473fbe144b7e 100644
+> --- a/drivers/i2c/busses/i2c-stm32f7.c
+> +++ b/drivers/i2c/busses/i2c-stm32f7.c
+> @@ -57,6 +57,8 @@
+>  #define STM32F7_I2C_CR1_RXDMAEN			BIT(15)
+>  #define STM32F7_I2C_CR1_TXDMAEN			BIT(14)
+>  #define STM32F7_I2C_CR1_ANFOFF			BIT(12)
+> +#define STM32F7_I2C_CR1_DNF_MASK		GENMASK(11, 8)
+> +#define STM32F7_I2C_CR1_DNF(n)			(((n) & 0xf) << 8)
+>  #define STM32F7_I2C_CR1_ERRIE			BIT(7)
+>  #define STM32F7_I2C_CR1_TCIE			BIT(6)
+>  #define STM32F7_I2C_CR1_STOPIE			BIT(5)
+> @@ -160,7 +162,7 @@ enum {
+>  };
+>  
+>  #define STM32F7_I2C_DNF_DEFAULT			0
+> -#define STM32F7_I2C_DNF_MAX			16
+> +#define STM32F7_I2C_DNF_MAX			15
+>  
+>  #define STM32F7_I2C_ANALOG_FILTER_ENABLE	1
+>  #define STM32F7_I2C_ANALOG_FILTER_DELAY_MIN	50	/* ns */
+> @@ -725,6 +727,13 @@ static void stm32f7_i2c_hw_config(struct stm32f7_i2c_dev *i2c_dev)
+>  	else
+>  		stm32f7_i2c_set_bits(i2c_dev->base + STM32F7_I2C_CR1,
+>  				     STM32F7_I2C_CR1_ANFOFF);
+> +
+> +	/* Program the Digital Filter */
+> +	stm32f7_i2c_clr_bits(i2c_dev->base + STM32F7_I2C_CR1,
+> +			     STM32F7_I2C_CR1_DNF_MASK);
+> +	stm32f7_i2c_set_bits(i2c_dev->base + STM32F7_I2C_CR1,
+> +			     STM32F7_I2C_CR1_DNF(i2c_dev->setup.dnf));
+> +
+>  	stm32f7_i2c_set_bits(i2c_dev->base + STM32F7_I2C_CR1,
+>  			     STM32F7_I2C_CR1_PE);
+>  }
 > 
 
-
-
-
+-- 
+--
+~ Py MORDRET
+--
