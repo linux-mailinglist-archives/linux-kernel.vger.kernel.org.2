@@ -2,94 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E14A0311731
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 00:38:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0EDB311772
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 00:51:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231199AbhBEXgO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 18:36:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41254 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232161AbhBEOVm (ORCPT
+        id S231144AbhBEXuf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 18:50:35 -0500
+Received: from mail.archlinux.org ([95.216.189.61]:43238 "EHLO
+        mail.archlinux.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232425AbhBEOQ3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 09:21:42 -0500
-Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C50BC0617A7
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 07:59:18 -0800 (PST)
-Received: by mail-il1-x129.google.com with SMTP id q9so6260808ilo.1
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 07:59:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=b3zypKCzWyxay+UIu/YEc9Osf3cOdr0Kv47aU++eg2A=;
-        b=wHMwWR7atLxSylIAhPsg+XbGgy2ngza9cJiVuoTVVSRT0VYoznd3z5oa6u2NIK+423
-         7ruKeIDQbtM7op5nTyQZmCjfIzSe2FJ2ZGzZp9qJtXTFOCDKC7YrV6YS1G+qT47ZCsEG
-         yImFk7Z9WJdF99Z+PUzvlKEs+JTVCt7Ex3+iEc0Qw2h6zz/IN0CbNAY3178P1ufzwFHY
-         2+mmqmYvTt/v2G9im0KE5xrUkTPqEuSwz1sduaV6b+TdaveBM45BWwxE2wq0IMMvINFJ
-         Rn1jEa/YEN/wxt3xacyQMoyZFfx4F+KqRIkPAfe57u6t+tXRoUuhAllT1IDUT4MHIqH2
-         ONPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=b3zypKCzWyxay+UIu/YEc9Osf3cOdr0Kv47aU++eg2A=;
-        b=I/bQdm3xdtNGgk0rvbwwavMFLj572S3fK+l/mlWd/FCWHW3ps1x+tEto3kEEIwX97O
-         TFTQCqBVNda+Um39LxzOv9y4crNl5as6FTD1DxyNabhMhbDqaTQiN12wh1HsXekb6D6c
-         EySpJ9TYjwxdGUwmkDrn2qBqJxtOVTiNalXTqEUDJup/TNPtxHnbz20RlwyrnXGZKHAI
-         axbBW7S/XzY4uI8xA2Cn70N+EtBsy4XCLK0G79MnPhArCa5f1bqef9p3zrqy90LtvwFc
-         q5+gGVXdp4Q62t/R+2RFSXrvPLnnvNaCmxWZDvPIT0g05Qb7KWgF18tvOoXGPED+rE47
-         ZmVQ==
-X-Gm-Message-State: AOAM532NBzpbRRQCg0wVxKccEPREtLyF/5OcJ7mtzTEgm0KZDulOi8Xf
-        F9VBKqPFyy3MpV1ywGXIdd0n5gisoAfn4qIzyYANch3EcN9Ps8Uo
-X-Google-Smtp-Source: ABdhPJxe5vVd/CExVuPqdcTkzVFPRKKdBfU/HunhfInTRU8aAUoq7Spk84lhtpbSN+V7AcZIdO4t/9CQJ0/PFYf74d8=
-X-Received: by 2002:a92:d3c7:: with SMTP id c7mr3834270ilh.137.1612534233334;
- Fri, 05 Feb 2021 06:10:33 -0800 (PST)
+        Fri, 5 Feb 2021 09:16:29 -0500
+Received: from [IPv6:2001:8a0:f24a:dd00:4cf5:7496:69c2:e329] (unknown [IPv6:2001:8a0:f24a:dd00:4cf5:7496:69c2:e329])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: ffy00)
+        by mail.archlinux.org (Postfix) with ESMTPSA id 5474D3C79A4;
+        Fri,  5 Feb 2021 14:36:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=archlinux.org;
+        s=dkim-rsa; t=1612535769;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=BdcXeBS9qmlteXxnHhvqawgjzqYPg8DsWN42PLeY9Uw=;
+        b=SKdb0TY3NI1ktIS1bXV/VyeImO251PIuFlomMzudJzF8MDhG9MdrXsppS62EYl6vIueIlD
+        lowAbALkjsVNBh3R0hbTQgtrlRGIXDOIzRVzitFzUdR+ZbWlH6zFLuL4q9Yk8godUGN7iY
+        qQv1841GvBeVyIXqWLust8zg+A2L/E3O03lVDed/LBY9iixDwdrP9giw/MjfeYcwYWIQF4
+        5RhMx5LryNcpkY5gRXAjituzuTdaKe6Z8lu88lyrZpj1i0cEtkt52Z/rNBaFuqiD4Wk4jh
+        cHJlx8+yXqTmBNDj4WhDNaZ1J98bC0NlGyvZPqwxI6qii6U4olVT22ljnpGMGDSpY7Bmb7
+        2kxlcOvNZmsUxCnfTXcT60bVCOcHl3K2BMnaTKWdHbsu/F1nf1AE/YBx4BoUDEHerAvrXj
+        vPDFa04b6oXoa2vKFTNyc9b0+gmsLx05f8g3xUs8Nhu3YpR6oMyyxsTTpPJvWO/wltZTK0
+        62I01TekKTq+yj0kSX1wBwO+Wolh0lfhEqAhry1MEGoIIxz27nK9BLtF7on63c1CkV9wM/
+        aISUJy/3Qn+Q4o9fazqx52rBi7apO71gPqWmcu0p11FdSwmKi59wyIngsHloxBVgpYCrZt
+        6i+jmw3krTPWcmv5DMbwfKK9ccoG5gkzeTn70WqoTxceRNfx/pjh4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=archlinux.org;
+        s=dkim-ed25519; t=1612535769;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=BdcXeBS9qmlteXxnHhvqawgjzqYPg8DsWN42PLeY9Uw=;
+        b=ScRsbG7dsJuiG9yEt4pgaqc5RIZVQRXKXsBZKahEHzphpHPG5L+JkImc2rDMSkNrMZCF6U
+        Ysl0v6g7G+6AfPAA==
+Message-ID: <a80853410f48a7d29541c155bca1341bdd24a671.camel@archlinux.org>
+Subject: Re: [PATCH] HID: logitech-dj: add support for keyboard events in
+ eQUAD step 4 Gaming
+From:   Filipe =?ISO-8859-1?Q?La=EDns?= <lains@archlinux.org>
+To:     Jiri Kosina <jikos@kernel.org>
+Cc:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <nycvar.YFH.7.76.2102051018370.28696@cbobk.fhfr.pm>
+References: <20210130191027.1225465-1-lains@archlinux.org>
+         <nycvar.YFH.7.76.2102051018370.28696@cbobk.fhfr.pm>
+Organization: Archlinux
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-k0whzotyicswfAMqfQHg"
+Date:   Fri, 05 Feb 2021 14:36:07 +0000
 MIME-Version: 1.0
-References: <20210204213146.4192368-1-eric.dumazet@gmail.com>
- <dbad0731e30c920cf4ab3458dfce3c73060e917c.camel@kernel.org>
- <CANn89iJ4ki9m6ne0W72QZuSJsBvrv9BMf9Me5hL9gw2tUnHhWg@mail.gmail.com> <20210205130238.5741-1-alobakin@pm.me>
-In-Reply-To: <20210205130238.5741-1-alobakin@pm.me>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Fri, 5 Feb 2021 15:10:21 +0100
-Message-ID: <CANn89i+Rpxw__Yexvcaga5aQ84CjqAzPZ6FyaO4Ua1yWhB069w@mail.gmail.com>
-Subject: Re: [PATCH net] net: gro: do not keep too many GRO packets in napi->rx_list
-To:     Alexander Lobakin <alobakin@pm.me>
-Cc:     Saeed Mahameed <saeed@kernel.org>,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        John Sperbeck <jsperbeck@google.com>,
-        Jian Yang <jianyang@google.com>,
-        Maxim Mikityanskiy <maximmi@mellanox.com>,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        Edward Cree <ecree@solarflare.com>,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.3 
+Authentication-Results: mail.archlinux.org;
+        auth=pass smtp.auth=ffy00 smtp.mailfrom=lains@archlinux.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 5, 2021 at 2:03 PM Alexander Lobakin <alobakin@pm.me> wrote:
->
 
->
-> It's strange why mailmap didn't pick up my active email at pm.me.
+--=-k0whzotyicswfAMqfQHg
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-I took the signatures from c80794323e82, I CCed all people involved in
-this recent patch.
+On Fri, 2021-02-05 at 10:18 +0100, Jiri Kosina wrote:
+> On Sat, 30 Jan 2021, Filipe La=C3=ADns wrote:
+>=20
+> > From: Filipe La=C3=ADns <lains@riseup.net>
+> >=20
+> > In e400071a805d6229223a98899e9da8c6233704a1 I added support for the
+> > receiver that comes with the G602 device, but unfortunately I screwed u=
+p
+> > during testing and it seems the keyboard events were actually not being
+> > sent to userspace.
+> > This resulted in keyboard events being broken in userspace, please
+> > backport the fix.
+> >=20
+> > The receiver uses the normal 0x01 Logitech keyboard report descriptor,
+> > as expected, so it is just a matter of flagging it as supported.
+> >=20
+> > Reported in
+> > https://github.com/libratbag/libratbag/issues/1124
+> >=20
+> > Signed-off-by: Filipe La=C3=ADns <lains@riseup.net>
+>=20
+> Given this is a regression, could you please add proper Fixes: and Cc:=
+=20
+> stable tags?
+>=20
+> Thank you,
+>=20
 
-It is very rare I use scripts/get_maintainer.pl since it tends to be noisy.
+Done :)
+Sorry about that, I am not yet familiarized with all steps of the workflow.
 
->
-> Anyways, this fix is correct for me. It restores the original Edward's
-> logics, but without spurious out-of-order deliveries.
-> Moreover, the pre-patch behaviour can easily be achieved by increasing
-> net.core.gro_normal_batch if needed.
->
-> Thanks!
->
-> Reviewed-by: Alexander Lobakin <alobakin@pm.me>
->
+Cheers,
+Filipe La=C3=ADns
 
-Thanks.
+--=-k0whzotyicswfAMqfQHg
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEE0jW0leqs33gyftiw+JPGdIFqqV0FAmAdV9cACgkQ+JPGdIFq
+qV1VBg//STnnbEKSewk1aaAAqd1Z/FWysoLF2bMHMv2Q4AORetDU+oYmE/zNY0fR
++DpspflqBfk9O1T7THJia5bHm0/bWEAu+dXGgRyJuAfof1CFJJxxs0dZn+V3Pkuh
+oauYl2+Ee20K4cbahKOnxaYNaAnh3GOa3ssxA8YLCaaYrRgR9Jf5N9jXnCSp8yGo
+X828i2u6+joOFhdcWhnzFRDC0lPEyLJoNdD/gcibfDk1b2GjtCfWAHgLO5P8d0xb
+VaViRfIhF6r5971Uh8xHCVvCATKJX9qSlAQXEX9oPtfWLUYeAZarQSVJ3yH9Sl05
+YNA/sOfnIrCKvx86eBPoFugbuVSzI0d+JzldBqPUnh1oOPOmTw4qm7hjkECl3et8
+iK0ZWYdzTd2HNN9RIxtSKT4SDuMi9HKGLwValJf5Z5yOc/nMGpg1NgaVsCBry/+1
+3ZPnTVu3gSZp8h+vN4eIRtdHuhCA+QahqCa9D58P8o0LAQy4uUSxyhhlJSa1908a
++0Y7cYdKcOQlgEbj9vubdmvLfhucCSpjTsj4HaWVz+BnlYNy9yOSTpP8ZcbZGf9O
+pHoNLwJNZJzrSVxfhSJiM2ZXusW59xjX/s0Ilw/Z9GpPSmcFVCzf7FY07V5crrwO
+LA0vBZxxlOAwX2EnUV8FNEV7ITrivGxs429yP+bfimaTilD/Dqg=
+=6fgA
+-----END PGP SIGNATURE-----
+
+--=-k0whzotyicswfAMqfQHg--
+
