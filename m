@@ -2,103 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93C16311000
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 19:35:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F8E1311006
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 19:36:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233781AbhBEQwc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 11:52:32 -0500
-Received: from mx2.suse.de ([195.135.220.15]:52262 "EHLO mx2.suse.de"
+        id S233505AbhBEQyO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 11:54:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46378 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231250AbhBEQtK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 11:49:10 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id D66C0AC97;
-        Fri,  5 Feb 2021 18:30:47 +0000 (UTC)
-Message-ID: <21b99f074d6e4ce469cb37d3b73c2cce5c728200.camel@suse.de>
-Subject: Re: [RFC/PATCH 05/11] soc: bcm: bcm2835-power: Add support for
- BCM2711's ARSAN ASB
-From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To:     phil@raspberrypi.com, Florian Fainelli <f.fainelli@gmail.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>
-Cc:     wahrenst@gmx.net, linux-kernel@vger.kernel.org
-Date:   Fri, 05 Feb 2021 19:30:46 +0100
-In-Reply-To: <d081a505-487d-eb29-94fd-5e1f638bba29@gmail.com>
-References: <20210205135249.2924-1-nsaenzjulienne@suse.de>
-         <20210205135249.2924-6-nsaenzjulienne@suse.de>
-         <d081a505-487d-eb29-94fd-5e1f638bba29@gmail.com>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-ve1mgrYE5Du9Qi/w9WRE"
-User-Agent: Evolution 3.38.3 
+        id S233549AbhBEQt5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 11:49:57 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6BEE864E75;
+        Fri,  5 Feb 2021 18:31:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612549899;
+        bh=ZBO58XuSLGoSIwV7OGo7aZ3r+3zbKVqiVTGcBJc1TbA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=eS0W03i6dAJPBLwrq1hqRWG6biv2ghW/VRQ95qDexIpMKku2X7JInKK9aImANrT2D
+         OIpp4VGFTv5mFXwI49isItZfynX3QsYpbNxMKm04jlugWYzBF7vpsYa/8V84c9H/3Y
+         USch21mY7kkgO1pAlCGhWmxfga1KFCS2oqfW9OPqrx0A9w3zcRcq6h7cI7UM8BHlSz
+         r/WkI4uFNJ/qG6GRfSOGbX02JPPALfgg3C6fK08t1WKaOAe3urbp8Tcpz4Hp4VoEQl
+         ymj9WAFGI+uXwioN9Mss9npgEPXxwKk0TVJk5E+ASgoVu+2BNkAlHlLJm9dws12AxD
+         mnvmEMHLnW0pg==
+Date:   Fri, 5 Feb 2021 11:31:35 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Borislav Petkov <bp@alien8.de>, Ard Biesheuvel <ardb@kernel.org>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, X86 ML <x86@kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        platform-driver-x86@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Kees Cook <keescook@chromium.org>
+Subject: Re: [PATCH] x86: efi: avoid BUILD_BUG_ON() for non-constant p4d_index
+Message-ID: <20210205183135.GA3393009@localhost>
+References: <20210107223424.4135538-1-arnd@kernel.org>
+ <YAHoB4ODvxSqNhsq@rani.riverdale.lan>
+ <YAH6r3lak/F2wndp@rani.riverdale.lan>
+ <CAMj1kXGZFZciN1_KruCr=g6GANNpRrCLR48b3q13+QfK481C7Q@mail.gmail.com>
+ <20210118202409.GG30090@zn.tnic>
+ <YAYAvBARSRSg8z8G@rani.riverdale.lan>
+ <CAMj1kXHM98-iDYpAozaWEv-qxhZ0-CUMwSdG532x2d+55gXDhQ@mail.gmail.com>
+ <20210203185148.GA1711888@localhost>
+ <20210205103457.GC17488@zn.tnic>
+ <CAKwvOdnAoNrbAs2kLng-k3L8j4hGS5HtJUv3L-pVwi+5dARQfg@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKwvOdnAoNrbAs2kLng-k3L8j4hGS5HtJUv3L-pVwi+5dARQfg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Feb 05, 2021 at 10:27:54AM -0800, Nick Desaulniers wrote:
+> On Fri, Feb 5, 2021 at 2:35 AM Borislav Petkov <bp@alien8.de> wrote:
+> >
+> > On Wed, Feb 03, 2021 at 11:51:48AM -0700, Nathan Chancellor wrote:
+> > > x86_64 all{mod,yes}config with clang are going to ship broken in 5.11.
+> >
+> > Dunno, it is still broken here even with those build assertions removed. And it
+> > ain't even an all{mod,yes}config - just my machine's config with
+> >
+> > CONFIG_ARCH_HAS_UBSAN_SANITIZE_ALL=y
+> > CONFIG_UBSAN=y
+> > # CONFIG_UBSAN_TRAP is not set
+> > CONFIG_CC_HAS_UBSAN_BOUNDS=y
+> > CONFIG_CC_HAS_UBSAN_ARRAY_BOUNDS=y
+> > CONFIG_UBSAN_BOUNDS=y
+> > CONFIG_UBSAN_ARRAY_BOUNDS=y
+> > CONFIG_UBSAN_SHIFT=y
+> > CONFIG_UBSAN_DIV_ZERO=y
+> > CONFIG_UBSAN_SIGNED_OVERFLOW=y
+> > CONFIG_UBSAN_UNSIGNED_OVERFLOW=y
+> > CONFIG_UBSAN_OBJECT_SIZE=y
+> > CONFIG_UBSAN_BOOL=y
+> > CONFIG_UBSAN_ENUM=y
+> > CONFIG_UBSAN_ALIGNMENT=y
+> > CONFIG_UBSAN_SANITIZE_ALL=y
+> > # CONFIG_TEST_UBSAN is not set
+> >
+> > and clang-10:
+> >
+> > lib/strncpy_from_user.o: warning: objtool: strncpy_from_user()+0x253: call to __ubsan_handle_add_overflow() with UACCESS enabled
+> > lib/strnlen_user.o: warning: objtool: strnlen_user()+0x244: call to __ubsan_handle_add_overflow() with UACCESS enabled
+> > ld: init/main.o: in function `kmalloc':
+> > /home/boris/kernel/linux/./include/linux/slab.h:557: undefined reference to `__ubsan_handle_alignment_assumption'
+> > ld: init/initramfs.o: in function `kmalloc':
+> > /home/boris/kernel/linux/./include/linux/slab.h:552: undefined reference to `__ubsan_handle_alignment_assumption'
+> > ld: init/initramfs.o: in function `kmalloc_large':
+> > /home/boris/kernel/linux/./include/linux/slab.h:481: undefined reference to `__ubsan_handle_alignment_assumption'
+> > ld: init/initramfs.o: in function `kmalloc':
+> > /home/boris/kernel/linux/./include/linux/slab.h:552: undefined reference to `__ubsan_handle_alignment_assumption'
+> > ld: /home/boris/kernel/linux/./include/linux/slab.h:552: undefined reference to `__ubsan_handle_alignment_assumption'
+> > ld: init/initramfs.o:/home/boris/kernel/linux/./include/linux/slab.h:552: more undefined references to `__ubsan_handle_alignment_assumption' follow
+> > ld: mm/mremap.o: in function `get_extent':
+> > /home/boris/kernel/linux/mm/mremap.c:355: undefined reference to `__compiletime_assert_327'
+> 
+> ^ this one is https://lore.kernel.org/lkml/20201230154104.522605-1-arnd@kernel.org/.
+> Trying to get the last of these tracked down.  I think there were some
+> changes to UBSAN configs that weren't tested with clang before merged.
 
---=-ve1mgrYE5Du9Qi/w9WRE
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+The rest of these should be resolved by
+https://lore.kernel.org/r/20210205023257.NJnJdyyZk%25akpm@linux-foundation.org/,
+which is currently on its way to Linus.
 
-Hi Florian, Phil,
-
-On Fri, 2021-02-05 at 08:56 -0800, Florian Fainelli wrote:
-> On 2/5/21 5:52 AM, Nicolas Saenz Julienne wrote:
-> > In BCM2711 the new ARGON ASB took over V3D. The old ASB is still presen=
-t
-> > with the ISP and H264 bits, and V3D is in the same place in the new ASB
-> > as the old one.
-> >=20
-> > Use the fact that 'pm->arsan_asb' is populated as a hint that we're on
-> > BCM2711. On top of that introduce the macro ASB_BASE() which will selec=
-t
-> > the correct ASB register base, based on whether we're trying to access
-> > V3D and which platform we're on.
->=20
-> Your subject has a typo, you most likely intended to write "Argon ASB",
-> right?
-
-Yes, sorry for that, the typo is also present in code. I mindlessly decided
-both words meant the same and went with it...
-
-So, for the record, s/arsan/argon/ should be applied on all patches, bindin=
-g is
-fine in that regards. On the other hand, the old arsan/rpivid ASB is refere=
-nced
-as 'asb' in code, and as 'arsan' in the bindings, I'll rename both to 'rpiv=
-id'
-in v2.
-
-Actually, if all this is too confusing, let me know and I'll send a v2 righ=
-t
-away.
-
-> I will review the series a little later today.
-
-Thanks!
-Nicolas
-
-
---=-ve1mgrYE5Du9Qi/w9WRE
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAmAdjtYACgkQlfZmHno8
-x/5ViwgAhkx8nnXPFByURX//saW7jL1Odv4Zls+xWQf3h5XuvODF53p49Rdxo3dd
-BzUPPXaL6oG+hasEJ2mDc+M4qW7COHCsAVJAuMYWL/+aqt14gZQOWw64PdzgostE
-72akjvWauXMmxLO2tbQkZh/YaQ0U591CGYGNr5A5bAP7FMTk6ilNOmjo2gKCBUCL
-6i8X4gjKc26/K71OIR/p0YgutEV9WweoLppszWUArgx5l5a4srfcOa9XXVBNyWeU
-ZIHUM9k8Y6VmhRpsLFt0owvM60omWNjktdNk9atZATqwFx8CIkbN0jMFtNC4XoE4
-3wlnvTbv7xsY+3rYcvmSPSaVZumfqw==
-=4k52
------END PGP SIGNATURE-----
-
---=-ve1mgrYE5Du9Qi/w9WRE--
-
+Cheers,
+Nathan
