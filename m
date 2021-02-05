@@ -2,71 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A6993104CA
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 06:58:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E68C3104D3
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 07:01:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230394AbhBEF6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 00:58:09 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:12465 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230258AbhBEF6H (ORCPT
+        id S230489AbhBEGBK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 01:01:10 -0500
+Received: from smtprelay0219.hostedemail.com ([216.40.44.219]:33568 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S230379AbhBEGA7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 00:58:07 -0500
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DX4R65g6czjKd5;
-        Fri,  5 Feb 2021 13:56:02 +0800 (CST)
-Received: from huawei.com (10.175.124.27) by DGGEMS412-HUB.china.huawei.com
- (10.3.19.212) with Microsoft SMTP Server id 14.3.498.0; Fri, 5 Feb 2021
- 13:57:17 +0800
-From:   wanghongzhe <wanghongzhe@huawei.com>
-To:     <peterhuewe@gmx.de>, <jarkko@kernel.org>, <jgg@ziepe.ca>
-CC:     <linux-integrity@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v1] tpm_tis_spi_main: set cs_change = 0 when timesout
-Date:   Fri, 5 Feb 2021 14:42:05 +0800
-Message-ID: <1612507325-2621-1-git-send-email-wanghongzhe@huawei.com>
-X-Mailer: git-send-email 1.7.12.4
+        Fri, 5 Feb 2021 01:00:59 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay08.hostedemail.com (Postfix) with ESMTP id 3255B182CED2A;
+        Fri,  5 Feb 2021 06:00:17 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2198:2199:2393:2559:2562:2828:2895:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3871:3874:4321:5007:6119:7514:7652:10004:10400:10848:11232:11658:11914:12296:12297:12740:12895:13069:13311:13357:13439:13894:14181:14659:14721:21080:21611:21627:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: song61_3716dc4275e2
+X-Filterd-Recvd-Size: 1998
+Received: from [192.168.1.159] (unknown [47.151.137.21])
+        (Authenticated sender: joe@perches.com)
+        by omf16.hostedemail.com (Postfix) with ESMTPA;
+        Fri,  5 Feb 2021 06:00:16 +0000 (UTC)
+Message-ID: <0c62fcfacca67bfef2275040da7150602fd2003a.camel@perches.com>
+Subject: Re: [PATCH v2 1/3] fs/efs: Use correct brace styling for statements
+From:   Joe Perches <joe@perches.com>
+To:     Amy Parker <enbyamy@gmail.com>, linux-fsdevel@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org
+Date:   Thu, 04 Feb 2021 22:00:13 -0800
+In-Reply-To: <20210205051429.553657-2-enbyamy@gmail.com>
+References: <20210205051429.553657-1-enbyamy@gmail.com>
+         <20210205051429.553657-2-enbyamy@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.124.27]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-when i reach TPM_RETRY, the cs cannot  change back to 'high'.
-So the TPM chips thinks this communication is not over.
-And next times communication cannot be effective because
-the communications mixed up with the last time.
+On Thu, 2021-02-04 at 21:14 -0800, Amy Parker wrote:
+> Many single-line statements have unnecessary braces, and some statement 
+> pairs have mismatched braces. This is a clear violation of the kernel 
+> style guide, which mandates that single line statements have no braces 
+> and that pairs with at least one multi-line block maintain their braces.
+> 
+> This patch fixes these style violations. Single-line statements that 
+> have braces have had their braces stripped. Pair single-line statements 
+> have been formatted per the style guide. Pair mixed-line statements have 
+> had their braces updated to conform.
+> 
+> Signed-off-by: Amy Parker <enbyamy@gmail.com>
+> ---
+>  fs/efs/inode.c | 10 ++++++----
+>  fs/efs/super.c | 15 ++++++---------
+>  2 files changed, 12 insertions(+), 13 deletions(-)
+> 
+> diff --git a/fs/efs/inode.c b/fs/efs/inode.c
+> @@ -120,8 +120,10 @@ struct inode *efs_iget(struct super_block *super, unsigned long ino)
+>  			device = 0;
+>  		else
+>  			device = MKDEV(sysv_major(rdev), sysv_minor(rdev));
+> -	} else
+> +	}
+> +	else {
 
-Signed-off-by: wanghongzhe <wanghongzhe@huawei.com>
----
- drivers/char/tpm/tpm_tis_spi_main.c | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+Not the kernel specified style.
 
-diff --git a/drivers/char/tpm/tpm_tis_spi_main.c b/drivers/char/tpm/tpm_tis_spi_main.c
-index 3856f6ebcb34..6c52cbb28881 100644
---- a/drivers/char/tpm/tpm_tis_spi_main.c
-+++ b/drivers/char/tpm/tpm_tis_spi_main.c
-@@ -64,8 +64,18 @@ static int tpm_tis_spi_flow_control(struct tpm_tis_spi_phy *phy,
- 				break;
- 		}
- 
--		if (i == TPM_RETRY)
-+		if (i == TPM_RETRY) {
-+			/* change back to 'high',
-+			 * So the TPM chips thinks the last communication
-+			 * is done.
-+			 */
-+			spi_xfer.cs_change = 0;
-+			spi_xfer->len = 1;
-+			spi_message_init(&m);
-+			spi_message_add_tail(spi_xfer, &m);
-+			ret = spi_sync_locked(phy->spi_device, &m);
- 			return -ETIMEDOUT;
-+		}
- 	}
- 
- 	return 0;
--- 
-2.19.1
+	} else {
+
+Try using checkpatch on your proposed patches.
+
 
