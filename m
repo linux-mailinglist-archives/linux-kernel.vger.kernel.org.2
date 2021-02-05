@@ -2,148 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E07AB31045B
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 06:10:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E266631045F
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 06:12:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230408AbhBEFJe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 00:09:34 -0500
-Received: from mga14.intel.com ([192.55.52.115]:17158 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229586AbhBEFJc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 00:09:32 -0500
-IronPort-SDR: ccm8DfQLeuRjHZ5nAVIavyiEtW3tUANwxuSMty2b3ol0JpLBlkDmJQrjbdtCbqdTTyQN62iXkA
- Pf6GmtG1NwFw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9885"; a="180604155"
-X-IronPort-AV: E=Sophos;i="5.81,154,1610438400"; 
-   d="scan'208";a="180604155"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Feb 2021 21:08:50 -0800
-IronPort-SDR: koN305Gqr94Z4GLnY5LoMO3p/XMNqW7bb2DorlARIPH9s9Fq9f3cDZ3tQ43DCwl8Jk9hI1t2kn
- jZSheEJyZ5hw==
-X-IronPort-AV: E=Sophos;i="5.81,154,1610438400"; 
-   d="scan'208";a="397325467"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Feb 2021 21:08:50 -0800
-Date:   Thu, 4 Feb 2021 21:08:50 -0800
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     Dave Hansen <dave.hansen@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Jethro Beekman <jethro@fortanix.com>,
-        linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org
-Subject: Re: [PATCH V3] x86: Remove unnecessary kmap() from
- sgx_ioc_enclave_init()
-Message-ID: <20210205050850.GC5033@iweiny-DESK2.sc.intel.com>
-References: <20210202194719.3525076-1-ira.weiny@intel.com>
- <YBnWDTlhE3K26CTp@kernel.org>
+        id S229713AbhBEFLX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 00:11:23 -0500
+Received: from esa2.hgst.iphmx.com ([68.232.143.124]:58166 "EHLO
+        esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230482AbhBEFLD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 00:11:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1612502062; x=1644038062;
+  h=from:to:cc:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=j8sElubGgBHZRsP7lbacHb4FV2phzrfAJo9+PNHclv4=;
+  b=FCGqyhiYZsw+7hZeo9ouX/73A8PHKi+ho/dOTeAbFQ4gb6vjhevv4J/8
+   GNGOcepbv+2RO7Zu5baJQndZUD2I6JXnK3zGPUkfaUphBDbFGHObiwlJB
+   Y4pR/GqltECKNRpBlk89OEiEcIKkj5v/HSW1PdLnD7Qr9OySdcG3wR6zL
+   6CNlGj8usx3JV6KZIY0o8q+bp0pvoQGNNJ+vDA8Q5gPUoupGvMnn1I1JT
+   vqmMmSGYO+6/P0jbDKGNs+kChssCXtqMsp+C0uMSYe1uaTVcmX+bL7JMy
+   uZhKqLOwc2v/9Cxrid7FRnCu/ILxNwn29I8A0xCnatZOaRPDyGuKcxMz5
+   Q==;
+IronPort-SDR: ADAhrH1ThPNZs/AYOfgHnb4aGcyyEH0f8S8D0CpvNNM6YTs22w0JrfK/E0X1ZCITUMNW4gYlJM
+ H/yrIsc8yL9UDxFq6AfJuQ9Zmp5fe5m9uCLT7ypWgCahlx8o20Ut8MLBNNnAHI1G1PU/H5HDqL
+ mzHJWeKJgdDj7lbjgxkmSgAdDieN/mAE4Tglb0DvDZqhym6aSdY9tv0CDT/6tR/pklkQHR500S
+ 8wU3EtAXhR7PpZG+lbcsNOJz9eDRs6x2RZq8wEWJFe8bvyAUfZ+XCpwe1JfMYw/c7pBtYliTJj
+ i6Y=
+X-IronPort-AV: E=Sophos;i="5.81,154,1610380800"; 
+   d="scan'208";a="263305767"
+Received: from mail-mw2nam10lp2109.outbound.protection.outlook.com (HELO NAM10-MW2-obe.outbound.protection.outlook.com) ([104.47.55.109])
+  by ob1.hgst.iphmx.com with ESMTP; 05 Feb 2021 13:12:43 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=XlugWsEEpEBvfBhgNgjTSiO9sj0emiMTRoJkB2MsEc7jrYA4QMRBpz4Lq0/vy5lJ4KcGhlwNQuWjNGLYxlqFRihTFp++OdLf6yWZuij23g61pJbV9dhbCsaCxmpiOqyn9dNBATQgidFzlFLV447usYAhMjyyKTgBOX4trVjcJYFA6F4JT/t8wxGxrgU0cI9lJ2EvgzzAyLXHv7ugI5TiopIc/7j3nrJ7Rit2CQtBAe+48R0L4M2wM8CLbiKnOxQz9OCn7qmJE1XIdxYM4EBRgMsaskUQyklDvx0Bb+Vuv55OoZkozJR51UEzOcnEzaOddGMyqvFdOkYNRWpkcqxLBg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=K6nlg9mLAYuxZDf4bgX2KMcjiYNYBkVEnENm5j96zIE=;
+ b=a2fuLpVDhzVwoaEI3EqG9yna/8QPvz73Hyahw4qg9jTeSFD7y9VUDFVDHcggUibLn7C41KL1jphNbwBiO5Fh7elEMaJSK1IupYKUNYZw6i+kE0OsmMkxPTVoa89FMvJO4G/LINGONx0Hz/2lyf738/XAf0+HC56Ip5aoUBje1pp/eIHzyIJMqJLo4X5JQ9FpNtys9XGpofDWLKFRQaHA6v66zEfOG4FSpisrjmSu/FvwNOIjK5y59oXilz/R+hSI3Tq7o7zvfroRrqAwqbTuxKAk2S9RBRgS8wGzzmOt5DLg+QoOkqlGwPrWZz2o2piqrNwGrAV+vuJhBxa0Xe7sxQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=K6nlg9mLAYuxZDf4bgX2KMcjiYNYBkVEnENm5j96zIE=;
+ b=XJz4d+4GYUNC9QBDCneu+yRiX2cuFvdtMuezMMNCSguDBJ5JNYHJtjKDZAU8SC1uncq+SEF2LhoaYTkyJiXca42hdpYKvvsj9zlRCUWbCDH5WNKwxIuwQbgyG0y6hkNztuyIRh+YGNqW0PU5BT/WON8NB5L41+xyaCYuXGCqtKw=
+Received: from DM6PR04MB4972.namprd04.prod.outlook.com (2603:10b6:5:fc::10) by
+ DM5PR04MB0298.namprd04.prod.outlook.com (2603:10b6:3:79::8) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3825.19; Fri, 5 Feb 2021 05:09:54 +0000
+Received: from DM6PR04MB4972.namprd04.prod.outlook.com
+ ([fe80::9a1:f2ba:2679:8188]) by DM6PR04MB4972.namprd04.prod.outlook.com
+ ([fe80::9a1:f2ba:2679:8188%7]) with mapi id 15.20.3825.020; Fri, 5 Feb 2021
+ 05:09:54 +0000
+From:   Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>
+To:     Amy Parker <enbyamy@gmail.com>
+CC:     "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/3] fs/efs: Use correct brace styling for statements
+Thread-Topic: [PATCH 1/3] fs/efs: Use correct brace styling for statements
+Thread-Index: AQHW+3sb8esbC/s2RUmR1UQYt0mr1w==
+Date:   Fri, 5 Feb 2021 05:09:54 +0000
+Message-ID: <DM6PR04MB49723F2FCDD6E7D11489CD0186B29@DM6PR04MB4972.namprd04.prod.outlook.com>
+References: <20210205045217.552927-1-enbyamy@gmail.com>
+ <20210205045217.552927-2-enbyamy@gmail.com>
+ <DM6PR04MB4972E287DED6DA5D4435986286B29@DM6PR04MB4972.namprd04.prod.outlook.com>
+ <CAE1WUT7BHwyL600Zx_3JrG4CGUgCTdufr8Hyy0ObYALqHO_OoQ@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [199.255.45.62]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 18bae298-00a4-4ad1-f3b7-08d8c9944687
+x-ms-traffictypediagnostic: DM5PR04MB0298:
+x-microsoft-antispam-prvs: <DM5PR04MB029873347BB88D581C93070A86B29@DM5PR04MB0298.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:6430;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: MAk5tEok/Zc1scrJxxGKH4g9XXqwHJ9x7or4xJkafIcWOUmLXsxvOtDMLNkjt4zZrRR2GmhLM3p7kiTcm2Mh+RyudPUvyoRqZfyi9O3BMJCWuYDnTYEbQ+yPV+fQXe9KKdIQHQjL40NacYi2l0yTHfNJtS4WA9KJI8MjEyZFjmTRdCi9Se5m9g48Jlb9E9V395bvVGYNbPlZsPAi4YI3zR+iyekAYysbSWx0EIcxB5UW0hzXMQTx1eMF5epx0iyHhORN4WsTQdtu7CINVJlpgR+ne8t3rM53bgpQEUqUWzLkHpLwD1H5d0k5lld1nwHu3Pukux8YmEDK8aQ4XiQkNEV7WQNUuihVeRzwMMSR829JQvlu6lxIM8dyEZ+xOYNmTsEftBx6IqC3sEjFEfwV9J6EbQF0LZ70k7KGn7HQpLS10hrKIbcf0ijA51lSTfmR2q67Ix7A2TOxYqXommeQpQMuqTaolPLfW6WGerJUqyXULglbwL99k6Y/3n3br1y+gyeaHZj4MpCdFG31HgPf9A==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR04MB4972.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(136003)(376002)(396003)(366004)(346002)(7696005)(26005)(6916009)(33656002)(478600001)(54906003)(4744005)(8936002)(66476007)(66446008)(71200400001)(66946007)(55016002)(66556008)(9686003)(52536014)(5660300002)(186003)(2906002)(91956017)(4326008)(86362001)(83380400001)(6506007)(64756008)(76116006)(8676002)(53546011)(316002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?aau5V6GoSU9EyWPR365QkPC2wJQsHaElz+IqUU5Hf/8NWXrT+8pz+sPzBGzh?=
+ =?us-ascii?Q?4JKjkHavyO6guG2Z0EjTsVN6BFTccmRjHFnedKQKe40I17rGUKe15SW2Cz/z?=
+ =?us-ascii?Q?IyM20r9Ib4Gbp3q/VRhELzm98UDDXUTe+7MVwCv4O+e9+dXoQoQ7DsXpKIKJ?=
+ =?us-ascii?Q?2MSHQii1bY/I6458FhRgKxCuNkHHxZcAT/GVZ58/No1nEZOVh4HyWzE1x4Ii?=
+ =?us-ascii?Q?uA3+wq6FNsoQ9xu0PQKlGKTaPT8wIbT14TayvF3OpZjHSXZvd5XA0YhGHxuK?=
+ =?us-ascii?Q?7q1lVK363g9toi/k+pbg90EfQQLXqrZSZZn0Q1qNYzkd1UdDYyrtSJbdWvZn?=
+ =?us-ascii?Q?vjjxAodfhwDHTL9OuYRU/NRuDKwo2KN5i349yvt8YntwX8pGbtAoAaKT/gzC?=
+ =?us-ascii?Q?u8R4/5rbMR/6rKQk0Unu827X15dEKAEhWxlutw4capdscNIsbGBZFb5CRkmp?=
+ =?us-ascii?Q?h49sfSs0v+hJenv8tProUZQWcfKoNKhXWyOGD9Sjufh55YJJA61ywjbUQzvc?=
+ =?us-ascii?Q?xqiUrnrh4XXI4JmiZ4PsAIclsOc4wCBocqFVpnlsQlAkw49od1lcl23OhWdf?=
+ =?us-ascii?Q?+NQCSgprY1kv1+ev6Jn9NXBg1VDG7nO5h+ipWE8yfre218BZTYpeLNmx32iw?=
+ =?us-ascii?Q?3/VGb+gmjpEqpikQErvBtJjMJb5npmxgTe6Qc1xkPclH3YVOsg9Pu/+CZDKb?=
+ =?us-ascii?Q?M4akiLYy3jraPfiLuWf34+s1KwauTgN/VW+BoSfFSJXjWJ7vT2EN9c6gWD10?=
+ =?us-ascii?Q?TFnASNfJpYWfFkbZZm97+xCHbXp6pkYU0cod8LmW6/OtSiPntZwyWu9b8hJK?=
+ =?us-ascii?Q?oBez71tG4on1a19odRLsksdLIMadnsYQFQelKZ81iGUcrGhMEg24VYBDLO2Q?=
+ =?us-ascii?Q?tjXR6vz50Fex9764t8LI8gS6qR8rtSBTPWu9C8WNEzq/sZuEaWTLPK7ipscR?=
+ =?us-ascii?Q?IyuSxryU4M2X8f9hBHEe3nS86s3DJTSuxWOJGglPjbw5iNRnNJlTkWs2XvmM?=
+ =?us-ascii?Q?XcyFYnxaH+Yqh7ssWyLQEvfW5KyOua/Uy/dIb0pN45C3ZeOy6FvTtNGmM1NN?=
+ =?us-ascii?Q?e7vKXo2mV2GPXGVUbO5HLzJlNI87AU54YKUueKIfnj/gO2xnuT9k0RJqV+xy?=
+ =?us-ascii?Q?VFPsrTmCH/nxw7xY/tIhKqGeZIWIYVZEvDLqmiH3AF286ZJfOhYSQBVyFUTE?=
+ =?us-ascii?Q?g8F6l4RifZtSv/1Ufrh78boiga/P8XL/GIwGJfrQBkjKH9YsLNnC5CWRZ2mm?=
+ =?us-ascii?Q?uTB9beO4WCXmJx+Uhj03Di7JCpO3+e3SZ897SkO+ef7T8lnBavNz1Mv9L7Ht?=
+ =?us-ascii?Q?TBFlDPtPaWg2aXnkX8uNRhZe?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YBnWDTlhE3K26CTp@kernel.org>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR04MB4972.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 18bae298-00a4-4ad1-f3b7-08d8c9944687
+X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Feb 2021 05:09:54.7853
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: PcBx8V1c4Fqb8qw+wLFZuzxkLIqcm7i1egJrKqVUd5Ae4/7e/rRvERXGv1JprrreM8/XHhNkrcpwEvJCH0jpX2UpVTmI3VV/eOaiohg/VT4=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR04MB0298
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 03, 2021 at 12:45:33AM +0200, Jarkko Sakkinen wrote:
-> On Tue, Feb 02, 2021 at 11:47:19AM -0800, ira.weiny@intel.com wrote:
-> > From: Ira Weiny <ira.weiny@intel.com>
-> > 
-> > kmap is inefficient and we are trying to reduce the usage in the kernel.
-> > There is no readily apparent reason why initp_page needs to be allocated
-> > and kmap'ed() but sigstruct needs to be page aligned and token
-> > 512 byte aligned.
-> > 
-> > kmalloc() can give us this alignment but we need to allocate PAGE_SIZE
-> > bytes to do so.  Rather than change this kmap() to kmap_local_page() use
-> > kmalloc() instead.
-> > 
-> > Remove the alloc_page()/kmap() and replace with kmalloc() to get a
-> > kernel address to use.
-> > 
-> > In addition add a comment to document the alignment requirements so that
-> > others like myself don't attempt to 'fix' this again.  Finally, add 2
-> > BUILD_BUG_ON's to ensure future changes to sigstruct and token do not go
-> > unnoticed and cause a bug.
-> > 
-> > Cc: Dave Hansen <dave.hansen@intel.com>
-> > Cc: Sean Christopherson <seanjc@google.com>
-> > Cc: Jethro Beekman <jethro@fortanix.com>
-> > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> > 
-> > ---
-> > Changes from v2[1]:
-> > 	When allocating a power of 2 size kmalloc() now guarantees the
-> > 	alignment of the respective size.  So go back to using kmalloc() but
-> > 	with a PAGE_SIZE allocation to get the alignment.  This also follows
-> > 	the pattern in sgx_ioc_enclave_create()
-> > 
-> > Changes from v1[1]:
-> > 	Use page_address() instead of kcmalloc() to ensure sigstruct is
-> > 	page aligned
-> > 	Use BUILD_BUG_ON to ensure token and sigstruct don't collide.
-> > 
-> > [1] https://lore.kernel.org/lkml/20210129001459.1538805-1-ira.weiny@intel.com/
-> > [2] https://lore.kernel.org/lkml/20210202013725.3514671-1-ira.weiny@intel.com/
-> > ---
-> >  arch/x86/kernel/cpu/sgx/ioctl.c | 15 +++++++++------
-> >  1 file changed, 9 insertions(+), 6 deletions(-)
-> > 
-> > diff --git a/arch/x86/kernel/cpu/sgx/ioctl.c b/arch/x86/kernel/cpu/sgx/ioctl.c
-> > index 90a5caf76939..e0c3301ccd67 100644
-> > --- a/arch/x86/kernel/cpu/sgx/ioctl.c
-> > +++ b/arch/x86/kernel/cpu/sgx/ioctl.c
-> > @@ -604,7 +604,6 @@ static long sgx_ioc_enclave_init(struct sgx_encl *encl, void __user *arg)
-> >  {
-> >  	struct sgx_sigstruct *sigstruct;
-> >  	struct sgx_enclave_init init_arg;
-> > -	struct page *initp_page;
-> >  	void *token;
-> >  	int ret;
-> >  
-> > @@ -615,11 +614,16 @@ static long sgx_ioc_enclave_init(struct sgx_encl *encl, void __user *arg)
-> >  	if (copy_from_user(&init_arg, arg, sizeof(init_arg)))
-> >  		return -EFAULT;
-> >  
-> > -	initp_page = alloc_page(GFP_KERNEL);
-> > -	if (!initp_page)
-> > +	/*
-> > +	 * sigstruct must be on a page boundry and token on a 512 byte boundry
-> > +	 * kmalloc() gives us this alignment when allocating PAGE_SIZE bytes
-> > +	 */
-> > +	sigstruct = kmalloc(PAGE_SIZE, GFP_KERNEL);
-> > +	if (!sigstruct)
-> >  		return -ENOMEM;
-> >  
-> > -	sigstruct = kmap(initp_page);
-> > +	BUILD_BUG_ON(sizeof(*sigstruct) > (PAGE_SIZE/2));
-> > +	BUILD_BUG_ON(SGX_LAUNCH_TOKEN_SIZE > (PAGE_SIZE/2));
-> 
-> Please remove these.
-
-I don't see why these would be a bad thing as they don't have any run time
-implications.  But I've removed them for v4 because getting rid of the kmap()
-is more important for me right now.
-
-Ira
-
-> 
-> >  	token = (void *)((unsigned long)sigstruct + PAGE_SIZE / 2);
-> >  	memset(token, 0, SGX_LAUNCH_TOKEN_SIZE);
-> >  
-> > @@ -645,8 +649,7 @@ static long sgx_ioc_enclave_init(struct sgx_encl *encl, void __user *arg)
-> >  	ret = sgx_encl_init(encl, sigstruct, token);
-> >  
-> >  out:
-> > -	kunmap(initp_page);
-> > -	__free_page(initp_page);
-> > +	kfree(sigstruct);
-> >  	return ret;
-> >  }
-> >  
-> > -- 
-> > 2.28.0.rc0.12.gb6a658bd00c9
-> > 
-> > 
-> 
-> /Jarkko
+On 2/4/21 21:01, Amy Parker wrote:=0A=
+>> Commit message is too long. Follow the style present in the tree.=0A=
+> Are you referring to the per-line length? That was supposed to have=0A=
+> been broken up, my apologies. Or is it the overall length that is the=0A=
+> issue?=0A=
+>=0A=
+>    -Amy IP=0A=
+>=0A=
+Per line length. I think it should be < 73.=0A=
