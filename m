@@ -2,125 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24DC63103D7
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 04:46:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A75FB3103D6
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 04:46:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230439AbhBEDqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 22:46:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56510 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230319AbhBEDqc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 22:46:32 -0500
-Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D94FCC0613D6
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 19:45:51 -0800 (PST)
-Received: by mail-qt1-x82d.google.com with SMTP id e11so4119777qtg.6
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 19:45:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HYFWkDEOfBhWSHmK2jmVVB6bfwty0OAqrNhMAUCf5OE=;
-        b=N44ptCLuB429yIat1IbEbc1ky15SrHFs/3Mhp4wp4JHqLlvcCvdVaYmZunuNN84Eh6
-         UQdN9EHB5MBpolyUvpI2LSqV+VSTOJsNWVjWya9WsQnTT98j3fEA3vMNt1COIJ1qSKpv
-         kxd+jdC9xyI6ZZe6ab36xX7419iSvjWe3F+HpVW2CWq+fjBFUis047eag9q950Svm3dH
-         jOr30+Z6pDX05t847GJlZGmbFUw8mby9DMQ4AuUZphqSJ9Rz5QM2tBiBX+QhNipSnZLS
-         dcGeDo+5lBsWl5PWygIqQS8KyPK/L0w8uMSxc7bP54rM+3JFx0LQLTerr4DycTKcGsrx
-         g2ZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HYFWkDEOfBhWSHmK2jmVVB6bfwty0OAqrNhMAUCf5OE=;
-        b=bNOBv7JRcKrswqX8D0a7Z/6c6FiPA+3nhOztCHr8t/i/wfhV39KH3C5X3nTJDfjNpF
-         ueUh5yVhcFjdf8PaIUkJo2sU2ZcYaWrCrTXlK47CcEFitzkZm0MJaoaFqUHawS6Q/FVx
-         F4GKPSzBfHWwhlI6wqMi6tuWPRZ59NQSpBedN04xNY186e9HWWcKa5S/+3AmcH63Jx9K
-         MI9Bf+EbdlFr9705tunRirZdhaGrCihochD/jlO3fUIbcYTIRPLp0Vr7YkRESFMjk+j1
-         45Nr/iKDTyGECecFFxBiudKevx8SZlsyYHr7XkTHhAvwG6Ev65ip8+Ai5HwOg9ZSF2At
-         qXhA==
-X-Gm-Message-State: AOAM532wDwE1ncLN6u1DkF7Sv0FNeaH2Je6Qg7/ixnWXRuIYUnz5bTto
-        0rE6YNDcpAjFa37v+Zptd8krrVLEbIPHEvQLoAQASA==
-X-Google-Smtp-Source: ABdhPJy4S732UpJX4hjGhJwphJyOfFYp2hDLn+YlkOekY3Ov+E3+XzTpR9umfLEMCTBKypw6jjKmPomMFVCV8Z71bDU=
-X-Received: by 2002:ac8:7143:: with SMTP id h3mr2734026qtp.101.1612496750744;
- Thu, 04 Feb 2021 19:45:50 -0800 (PST)
+        id S230256AbhBEDq0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 22:46:26 -0500
+Received: from ozlabs.org ([203.11.71.1]:40683 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229979AbhBEDqY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 22:46:24 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DX1Xk2vJcz9sVb;
+        Fri,  5 Feb 2021 14:45:42 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1612496742;
+        bh=QfWsKzcgs3CT5TN3x1n4KGoVfJ3XRtC5/yGO5p540fg=;
+        h=Date:From:To:Cc:Subject:From;
+        b=awMO1hN2lccbRrFPp3/1QMajbyNKTVOvtmU83NZFnL2WNKVelrCJOpf68NB8JNas+
+         7ZiRmK5JITcVzsiWdLd0WK0+bqw6D9PCo4uczHwQs51Kk8qBu+CBRWB54Wkf/yfmde
+         Dbj+GOawxXLjN6fcomn60Icftf9IUD2CNHJOyw45QQhKOoQECdSGgtMNezC06TzGMI
+         m8L3o7IG/0xSH1e/PzU536fNfOMGfujZXstSwouaAJvYmHs5HFDTFmtmJQ41ZoY1sJ
+         1Bd8H469K4Jb1c/NYvHpt3cOgf4j9++LNCgSReaAlas+ZuN7ycQdzBGVhfN+NhJLhH
+         emIUMKtJc0IUw==
+Date:   Fri, 5 Feb 2021 14:45:40 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Rob Herring <robherring2@gmail.com>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Rob Herring <robh@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>
+Subject: linux-next: manual merge of the devicetree tree with the kbuild
+ tree
+Message-ID: <20210205144540.1438cc3c@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20210123011704.1901835-1-joel@joelfernandes.org>
- <20210123011704.1901835-3-joel@joelfernandes.org> <YBv8gBSKU1MdtXuW@hirez.programming.kicks-ass.net>
-In-Reply-To: <YBv8gBSKU1MdtXuW@hirez.programming.kicks-ass.net>
-From:   Josh Don <joshdon@google.com>
-Date:   Thu, 4 Feb 2021 19:45:39 -0800
-Message-ID: <CABk29NuS=7U4kgvGPf1=tVJxG3tiPqjr_H4ZhAFHaKSS4uqn2Q@mail.gmail.com>
-Subject: Re: [PATCH v10 2/5] sched: CGroup tagging interface for core scheduling
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>, mingo@kernel.org,
-        torvalds@linux-foundation.org, fweisbec@gmail.com,
-        Kees Cook <keescook@chromium.org>,
-        Greg Kerr <kerrnel@google.com>, Phil Auld <pauld@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Agata Gruza <agata.gruza@intel.com>,
-        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
-        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
-        Paul Turner <pjt@google.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Patrick Bellasi <derkling@google.com>, benbjiang@tencent.com,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        Junaid Shahid <junaids@google.com>,
-        Jesse Barnes <jsbarnes@google.com>,
-        "Hyser,Chris" <chris.hyser@oracle.com>,
-        Ben Segall <bsegall@google.com>, Hao Luo <haoluo@google.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/Q1nJy/2MJTuDaL58gb34Tw0";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 4, 2021 at 5:54 AM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Fri, Jan 22, 2021 at 08:17:01PM -0500, Joel Fernandes (Google) wrote:
-> > From: Peter Zijlstra <peterz@infradead.org>
->
-> I'm thinking this is too much credit, I didn't write much of this.
->
-> > Marks all tasks in a cgroup as matching for core-scheduling.
-> >
-> > A task will need to be moved into the core scheduler queue when the cgroup
-> > it belongs to is tagged to run with core scheduling.  Similarly the task
-> > will need to be moved out of the core scheduler queue when the cgroup
-> > is untagged.
-> >
-> > Also after we forked a task, its core scheduler queue's presence will
-> > need to be updated according to its new cgroup's status.
-> >
-> > Use stop machine mechanism to update all tasks in a cgroup to prevent a
-> > new task from sneaking into the cgroup, and missed out from the update
-> > while we iterates through all the tasks in the cgroup.  A more complicated
-> > scheme could probably avoid the stop machine.  Such scheme will also
-> > need to resovle inconsistency between a task's cgroup core scheduling
-> > tag and residency in core scheduler queue.
-> >
-> > We are opting for the simple stop machine mechanism for now that avoids
-> > such complications.
-> >
-> > Core scheduler has extra overhead.  Enable it only for core with
-> > more than one SMT hardware threads.
->
-> Very little actual words on the desired and implemented semantics of the
-> interface, while the patch contains much non-obvious complication.
+--Sig_/Q1nJy/2MJTuDaL58gb34Tw0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Ack to both, will fix in the next posting.
+Hi all,
+
+Today's linux-next merge of the devicetree tree got a conflict in:
+
+  scripts/Makefile.lib
+
+between commit:
+
+  d73a6a04c76a ("kbuild: use always-y instead of extra-y")
+
+from the kbuild tree and commit:
+
+  ce88c9c79455 ("kbuild: Add support to build overlays (%.dtbo)")
+
+from the devicetree tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc scripts/Makefile.lib
+index 6f248ff91982,b00855b247e0..000000000000
+--- a/scripts/Makefile.lib
++++ b/scripts/Makefile.lib
+@@@ -85,12 -81,14 +85,14 @@@ always-y +=3D $(userprogs-always-y) $(use
+ =20
+  # DTB
+  # If CONFIG_OF_ALL_DTBS is enabled, all DT blobs are built
+ -extra-y				+=3D $(dtb-y)
+ -extra-$(CONFIG_OF_ALL_DTBS)	+=3D $(dtb-)
+ +always-y			+=3D $(dtb-y)
+ +always-$(CONFIG_OF_ALL_DTBS)	+=3D $(dtb-)
+ =20
+  ifneq ($(CHECK_DTBS),)
+ -extra-y +=3D $(patsubst %.dtb,%.dt.yaml, $(dtb-y))
+ -extra-y +=3D $(patsubst %.dtbo,%.dt.yaml, $(dtb-y))
+ -extra-$(CONFIG_OF_ALL_DTBS) +=3D $(patsubst %.dtb,%.dt.yaml, $(dtb-))
+ -extra-$(CONFIG_OF_ALL_DTBS) +=3D $(patsubst %.dtbo,%.dt.yaml, $(dtb-))
+ +always-y +=3D $(patsubst %.dtb,%.dt.yaml, $(dtb-y))
+++always-y +=3D $(patsubst %.dtbo,%.dt.yaml, $(dtb-y))
+ +always-$(CONFIG_OF_ALL_DTBS) +=3D $(patsubst %.dtb,%.dt.yaml, $(dtb-))
+++always-$(CONFIG_OF_ALL_DTBS) +=3D $(patsubst %.dtbo,%.dt.yaml, $(dtb-))
+  endif
+ =20
+  # Add subdir path
+
+--Sig_/Q1nJy/2MJTuDaL58gb34Tw0
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAcv2QACgkQAVBC80lX
+0Gy0xAf+PRYXIy6feQvq7zVUTxg869jUJLfEBcBRuybpTiCymDa8+vWrK37E+7fD
+RZvD6lWOsze5fgZIZ/cAlJX/c+EIf/LUtw/q7QomMzvdvoAzaqtmmxtmQweCo18B
+jr8ranuxVwG6iv23Ig6m5g4gPV0fU5byUj/Hhoo9zoxpKYvq08wQ08BKQBzuyeWz
+DeZ8ZvC/DfSE3WjMcActmWkv3lChOsEKZpYTOgEOYJPGWOzFDQsvjoFI0rwcGuSm
+Dg3Q2n0A0vDoSo19EU/TZ9RZAmGzRe1+FXlaoE3x8AD8hFmZo9gBqU2uQOi7VOzF
+Zt1tV7u3pMQB8fqXbERHuIcQTQTPHg==
+=zeNo
+-----END PGP SIGNATURE-----
+
+--Sig_/Q1nJy/2MJTuDaL58gb34Tw0--
