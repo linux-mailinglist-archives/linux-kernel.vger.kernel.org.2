@@ -2,145 +2,430 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA959310668
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 09:16:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33C58310660
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 09:12:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230221AbhBEINJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 03:13:09 -0500
-Received: from mail-oo1-f49.google.com ([209.85.161.49]:43226 "EHLO
-        mail-oo1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231574AbhBEIHH (ORCPT
+        id S231617AbhBEIM0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 03:12:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55570 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231578AbhBEIHI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 03:07:07 -0500
-Received: by mail-oo1-f49.google.com with SMTP id x19so1411722ooj.10;
-        Fri, 05 Feb 2021 00:06:51 -0800 (PST)
+        Fri, 5 Feb 2021 03:07:08 -0500
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 485E2C06178C
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 00:06:28 -0800 (PST)
+Received: by mail-pf1-x42d.google.com with SMTP id j12so3804772pfj.12
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 00:06:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=vyfEY4onehbYsafXLmYmoPdU8uLUNcWKOMLwNwKoKkY=;
+        b=kfBKmBc2V0gCtxWa0NO7oYwzFwIGrntrUmxp3VWtIk9vVbZiIidKiPuJA8fq913qm6
+         y/TLIbZegnoQtgZWXnoY0F50XKk+gmOZBOwtXXODAsfVg6j2csvgf5rnxg3kvcEij+Ww
+         iA5FM3Ee09ZD6RBVdpGH/37PXPYY7mc9loOttqO8p5Kpw0YabwufzJtMCqY7VcFk+oAq
+         YvAiZsgXhttv4oltgliHjQ1eb+C68HNj8UhmQEkTcS00U71i/PuTJSsaCPgh+0YnQ3Ya
+         Y10M/IVlNiVkfY9tmMF4EnfFLAG+Ffi0ChQ48uNWk5lSk1S2yOklIIh9QB1yixCp6BMu
+         8Evg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=i1sbeZYAOwBKv6wE1Ckk+wE5naRJCnZ4LL+AW39A3/w=;
-        b=MEMDy3CefHLQJtqvpW2KmzN64CMLgGkkPyiiFndtyX7fZPZkXJD3SpwvnjvAubFsez
-         j+BlWlGN4OS87n9DJGOmoPA7u3ajKPCJvYSJMsD6xNW3QMuH2XlF8RDEGdJHlaEL9CEJ
-         CUiA+YDlTO/Y4l+Czc34vGiEWPZ13vqHCuzbANYKMSEhbmfP3g3Yr5z2aaN9AiVrZM+L
-         rtTRw1QZtSDUqJf+rbF3NfhMERYgF6RQTnbnYcE2WCmDesA8F/Vl9fFicXk7yTCSh59v
-         MaoZG/LODDdEVd+M+rO9gAeN+K7T8/Vg2RAgrXjJLkuEaISTaLuTGWJPMRA/pbnvO5s5
-         sfOA==
-X-Gm-Message-State: AOAM533aKSRYcxT8dZukZoK9DmeRDMFP+EpyHU1pTahCkdr9+WXu/aSC
-        xkdTfCrHcjQri4s/hOGiYtFU7ke2p5GbGCmgy8M=
-X-Google-Smtp-Source: ABdhPJz46bJWsBPHyZM+AgT9VAN4FHCddLasieW1kdal/35EqalLOcrmu9pCZYE0c0KUJ5WVnwvWVR8uTRoL/Ix6xdQ=
-X-Received: by 2002:a4a:96b3:: with SMTP id s48mr2624067ooi.11.1612512386119;
- Fri, 05 Feb 2021 00:06:26 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=vyfEY4onehbYsafXLmYmoPdU8uLUNcWKOMLwNwKoKkY=;
+        b=ucmGVH8yYlRzDX1ZcqLu7y05pyWLOpGDJ+nmvRJQDiSj0OrbBMDxA4QoGKPMNza33V
+         qIHftKeQjBFmsnjqC0KJelOQhnwiwegREpJ4i5K4x0Za1jcWhl60kSgBNPR2LyNKmIJS
+         jCBpqc8s+BwhI4k3u021VVLUzrAGyQhFzy9XAB1IRZ9fYKRCBZW86TuHN/S4cOXgJiY3
+         M6YkAPRAKAoFxT7WQq87QEUTTd21UcxHQ/gVUbRFvoRYg8MJa5J6I0kE9Ms7C90vPIMl
+         KqeYm1otrcEDevUBdud2/iBAlCmX/xkAfGSQDwFo/o5uAV1Gq/WGToI0QAtzq/kpnhRj
+         J2ew==
+X-Gm-Message-State: AOAM531/qqRVCR02Q5hR9hgSaM95mi6mvGHZD0RKlqpqIKRH20D9qGpV
+        4YR2MgAOgjtqIMIefGerYKXPmRpStgQAdQ==
+X-Google-Smtp-Source: ABdhPJxFjQUH9qw9ZOiSQdFgimdjCJe9nf79dM7toVaJnYzL9q5QJkTgttrX+W6LBLzy/l57Ue2JIA==
+X-Received: by 2002:a63:f19:: with SMTP id e25mr3205563pgl.220.1612512387276;
+        Fri, 05 Feb 2021 00:06:27 -0800 (PST)
+Received: from localhost.localdomain ([2601:1c2:680:1319:692:26ff:feda:3a81])
+        by smtp.gmail.com with ESMTPSA id 32sm9520070pgq.80.2021.02.05.00.06.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Feb 2021 00:06:26 -0800 (PST)
+From:   John Stultz <john.stultz@linaro.org>
+To:     lkml <linux-kernel@vger.kernel.org>
+Cc:     John Stultz <john.stultz@linaro.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Christian Koenig <christian.koenig@amd.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Liam Mark <lmark@codeaurora.org>,
+        Chris Goldsworthy <cgoldswo@codeaurora.org>,
+        Laura Abbott <labbott@kernel.org>,
+        Brian Starkey <Brian.Starkey@arm.com>,
+        Hridya Valsaraju <hridya@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Sandeep Patil <sspatil@google.com>,
+        Daniel Mentz <danielmentz@google.com>,
+        =?UTF-8?q?=C3=98rjan=20Eide?= <orjan.eide@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Simon Ser <contact@emersion.fr>,
+        James Jones <jajones@nvidia.com>, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+Subject: [RFC][PATCH v6 1/7] drm: Add a sharable drm page-pool implementation
+Date:   Fri,  5 Feb 2021 08:06:15 +0000
+Message-Id: <20210205080621.3102035-2-john.stultz@linaro.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210205080621.3102035-1-john.stultz@linaro.org>
+References: <20210205080621.3102035-1-john.stultz@linaro.org>
 MIME-Version: 1.0
-References: <20210121225712.1118239-1-saravanak@google.com>
- <CGME20210204115252eucas1p2d145686f7a5dc7e7a04dddd0b0f2286c@eucas1p2.samsung.com>
- <20210121225712.1118239-3-saravanak@google.com> <9692dfc9-4c63-71c9-b52b-d0feba466695@samsung.com>
- <CAGETcx_KDA55Ti=5CHw48BP1L2Xo64=AFFe+17g27n=P-KUrow@mail.gmail.com> <6b606a5d-0435-1e9d-ac61-a8dacf051067@samsung.com>
-In-Reply-To: <6b606a5d-0435-1e9d-ac61-a8dacf051067@samsung.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 5 Feb 2021 09:06:14 +0100
-Message-ID: <CAMuHMdWqZonpeyk59b=o_3EKOQx4TxUZE4Jeo-Kxy_o_3CQvnQ@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] of: property: Add fw_devlink support for interrupts
-To:     Marek Szyprowski <m.szyprowski@samsung.com>
-Cc:     Saravana Kannan <saravanak@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Android Kernel Team <kernel-team@android.com>,
-        Rob Herring <robh@kernel.org>,
-        Thierry Reding <treding@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marek,
+This adds a shrinker controlled page pool, closely
+following the ttm_pool logic, which is abstracted out
+a bit so it can be used by other non-ttm drivers.
 
-On Fri, Feb 5, 2021 at 8:38 AM Marek Szyprowski
-<m.szyprowski@samsung.com> wrote:
-> On 04.02.2021 22:31, Saravana Kannan wrote:
-> > On Thu, Feb 4, 2021 at 3:52 AM Marek Szyprowski
-> > <m.szyprowski@samsung.com> wrote:
-> >> On 21.01.2021 23:57, Saravana Kannan wrote:
-> >>> This allows fw_devlink to create device links between consumers of an
-> >>> interrupt and the supplier of the interrupt.
-> >>>
-> >>> Cc: Marc Zyngier <maz@kernel.org>
-> >>> Cc: Kevin Hilman <khilman@baylibre.com>
-> >>> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> >>> Reviewed-by: Rob Herring <robh@kernel.org>
-> >>> Reviewed-by: Thierry Reding <treding@nvidia.com>
-> >>> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-> >>> Signed-off-by: Saravana Kannan <saravanak@google.com>
-> >> This patch landed some time ago in linux-next as commit 4104ca776ba3
-> >> ("of: property: Add fw_devlink support for interrupts"). It breaks MMC
-> >> host controller operation on ARM Juno R1 board (the mmci@50000 device
-> >> defined in arch/arm64/boot/dts/arm/juno-motherboard.dtsi). I didn't
-> > I grepped around and it looks like the final board file is this or
-> > whatever includes it?
-> > arch/arm64/boot/dts/arm/juno-base.dtsi
-> The final board file is arch/arm64/boot/dts/arm/juno-r1.dts
-> > This patch just finds the interrupt-parent and then tries to use that
-> > as a supplier if "interrupts" property is listed. But the only
-> > interrupt parent I can see is:
-> >          gic: interrupt-controller@2c010000 {
-> >                  compatible = "arm,gic-400", "arm,cortex-a15-gic";
-> >
-> > And the driver uses IRQCHIP_DECLARE() and hence should be pretty much
-> > a NOP since those suppliers are never devices and are ignored.
-> > $ git grep "arm,gic-400" -- drivers/
-> > drivers/irqchip/irq-gic.c:IRQCHIP_DECLARE(gic_400, "arm,gic-400", gic_of_init);
-> >
-> > This doesn't make any sense. Am I looking at the right files? Am I
-> > missing something?
->
-> Okay, I've added displaying a list of deferred devices when mounting
-> rootfs fails and got following items:
->
-> Deferred devices:
-> 18000000.ethernet        platform: probe deferral - supplier
-> bus@8000000:motherboard-bus not ready
-> 1c050000.mmci    amba: probe deferral - supplier
-> bus@8000000:motherboard-bus not ready
-> 1c1d0000.gpio    amba: probe deferral - supplier
-> bus@8000000:motherboard-bus not ready
-> 2b600000.iommu   platform: probe deferral - wait for supplier
-> scpi-power-domains
-> 7ff50000.hdlcd   platform: probe deferral - wait for supplier scpi-clk
-> 7ff60000.hdlcd   platform: probe deferral - wait for supplier scpi-clk
-> 1c060000.kmi     amba: probe deferral - supplier
-> bus@8000000:motherboard-bus not ready
-> 1c070000.kmi     amba: probe deferral - supplier
-> bus@8000000:motherboard-bus not ready
-> 1c170000.rtc     amba: probe deferral - supplier
-> bus@8000000:motherboard-bus not ready
-> 1c0f0000.wdt     amba: probe deferral - supplier
-> bus@8000000:motherboard-bus not ready
-> gpio-keys
-> Kernel panic - not syncing: VFS: Unable to mount root fs on
-> unknown-block(0,0)
->
-> I don't see the 'bus@8000000:motherboard-bus' on the deferred devices
-> list, so it looks that device core added a link to something that is not
-> a platform device...
+Cc: Daniel Vetter <daniel@ffwll.ch>
+Cc: Christian Koenig <christian.koenig@amd.com>
+Cc: Sumit Semwal <sumit.semwal@linaro.org>
+Cc: Liam Mark <lmark@codeaurora.org>
+Cc: Chris Goldsworthy <cgoldswo@codeaurora.org>
+Cc: Laura Abbott <labbott@kernel.org>
+Cc: Brian Starkey <Brian.Starkey@arm.com>
+Cc: Hridya Valsaraju <hridya@google.com>
+Cc: Suren Baghdasaryan <surenb@google.com>
+Cc: Sandeep Patil <sspatil@google.com>
+Cc: Daniel Mentz <danielmentz@google.com>
+Cc: Ørjan Eide <orjan.eide@arm.com>
+Cc: Robin Murphy <robin.murphy@arm.com>
+Cc: Ezequiel Garcia <ezequiel@collabora.com>
+Cc: Simon Ser <contact@emersion.fr>
+Cc: James Jones <jajones@nvidia.com>
+Cc: linux-media@vger.kernel.org
+Cc: dri-devel@lists.freedesktop.org
+Signed-off-by: John Stultz <john.stultz@linaro.org>
+---
+ drivers/gpu/drm/Kconfig     |   4 +
+ drivers/gpu/drm/Makefile    |   1 +
+ drivers/gpu/drm/page_pool.c | 220 ++++++++++++++++++++++++++++++++++++
+ include/drm/page_pool.h     |  54 +++++++++
+ 4 files changed, 279 insertions(+)
+ create mode 100644 drivers/gpu/drm/page_pool.c
+ create mode 100644 include/drm/page_pool.h
 
-Lemme guess: bus@8000000 is a simple bus, but it has an
-interrupt-map, and the devlink code doesn't follow the mapping?
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
+diff --git a/drivers/gpu/drm/Kconfig b/drivers/gpu/drm/Kconfig
+index 0973f408d75f..d16bf340ed2e 100644
+--- a/drivers/gpu/drm/Kconfig
++++ b/drivers/gpu/drm/Kconfig
+@@ -174,6 +174,10 @@ config DRM_DP_CEC
+ 	  Note: not all adapters support this feature, and even for those
+ 	  that do support this they often do not hook up the CEC pin.
+ 
++config DRM_PAGE_POOL
++	bool
++	depends on DRM
++
+ config DRM_TTM
+ 	tristate
+ 	depends on DRM && MMU
+diff --git a/drivers/gpu/drm/Makefile b/drivers/gpu/drm/Makefile
+index fefaff4c832d..877e0111ed34 100644
+--- a/drivers/gpu/drm/Makefile
++++ b/drivers/gpu/drm/Makefile
+@@ -32,6 +32,7 @@ drm-$(CONFIG_AGP) += drm_agpsupport.o
+ drm-$(CONFIG_PCI) += drm_pci.o
+ drm-$(CONFIG_DEBUG_FS) += drm_debugfs.o drm_debugfs_crc.o
+ drm-$(CONFIG_DRM_LOAD_EDID_FIRMWARE) += drm_edid_load.o
++drm-$(CONFIG_DRM_PAGE_POOL) += page_pool.o
+ 
+ drm_vram_helper-y := drm_gem_vram_helper.o
+ obj-$(CONFIG_DRM_VRAM_HELPER) += drm_vram_helper.o
+diff --git a/drivers/gpu/drm/page_pool.c b/drivers/gpu/drm/page_pool.c
+new file mode 100644
+index 000000000000..2139f86e6ca7
+--- /dev/null
++++ b/drivers/gpu/drm/page_pool.c
+@@ -0,0 +1,220 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * DRM page pool system
++ *
++ * Copyright (C) 2020 Linaro Ltd.
++ *
++ * Based on the ION page pool code
++ * Copyright (C) 2011 Google, Inc.
++ * As well as the ttm_pool code
++ * Copyright (C) 2020 Advanced Micro Devices, Inc.
++ */
++
++#include <linux/freezer.h>
++#include <linux/list.h>
++#include <linux/slab.h>
++#include <linux/swap.h>
++#include <linux/sched/signal.h>
++#include <drm/page_pool.h>
++
++static LIST_HEAD(pool_list);
++static DEFINE_MUTEX(pool_list_lock);
++static atomic_long_t total_pages;
++static unsigned long page_pool_max;
++MODULE_PARM_DESC(page_pool_max, "Number of pages in the WC/UC/DMA pool");
++module_param(page_pool_max, ulong, 0644);
++
++void drm_page_pool_set_max(unsigned long max)
++{
++	/* only write once */
++	if (!page_pool_max)
++		page_pool_max = max;
++}
++
++unsigned long drm_page_pool_get_max(void)
++{
++	return page_pool_max;
++}
++
++unsigned long drm_page_pool_get_total(void)
++{
++	return atomic_long_read(&total_pages);
++}
++
++int drm_page_pool_get_size(struct drm_page_pool *pool)
++{
++	int ret;
++
++	spin_lock(&pool->lock);
++	ret = pool->count;
++	spin_unlock(&pool->lock);
++	return ret;
++}
++
++static inline unsigned int drm_page_pool_free_pages(struct drm_page_pool *pool,
++						    struct page *page)
++{
++	return pool->free(page, pool->order);
++}
++
++static int drm_page_pool_shrink_one(void);
++
++void drm_page_pool_add(struct drm_page_pool *pool, struct page *page)
++{
++	spin_lock(&pool->lock);
++	list_add_tail(&page->lru, &pool->items);
++	pool->count++;
++	atomic_long_add(1 << pool->order, &total_pages);
++	spin_unlock(&pool->lock);
++
++	mod_node_page_state(page_pgdat(page), NR_KERNEL_MISC_RECLAIMABLE,
++			    1 << pool->order);
++
++	/* make sure we don't grow too large */
++	while (page_pool_max && atomic_long_read(&total_pages) > page_pool_max)
++		drm_page_pool_shrink_one();
++}
++EXPORT_SYMBOL_GPL(drm_page_pool_add);
++
++static struct page *drm_page_pool_remove(struct drm_page_pool *pool)
++{
++	struct page *page;
++
++	if (!pool->count)
++		return NULL;
++
++	page = list_first_entry(&pool->items, struct page, lru);
++	pool->count--;
++	atomic_long_sub(1 << pool->order, &total_pages);
++
++	list_del(&page->lru);
++	mod_node_page_state(page_pgdat(page), NR_KERNEL_MISC_RECLAIMABLE,
++			    -(1 << pool->order));
++	return page;
++}
++
++struct page *drm_page_pool_fetch(struct drm_page_pool *pool)
++{
++	struct page *page = NULL;
++
++	if (!pool) {
++		WARN_ON(!pool);
++		return NULL;
++	}
++
++	spin_lock(&pool->lock);
++	page = drm_page_pool_remove(pool);
++	spin_unlock(&pool->lock);
++
++	return page;
++}
++EXPORT_SYMBOL_GPL(drm_page_pool_fetch);
++
++struct drm_page_pool *drm_page_pool_create(unsigned int order,
++					   int (*free_page)(struct page *p, unsigned int order))
++{
++	struct drm_page_pool *pool = kmalloc(sizeof(*pool), GFP_KERNEL);
++
++	if (!pool)
++		return NULL;
++
++	pool->count = 0;
++	INIT_LIST_HEAD(&pool->items);
++	pool->order = order;
++	pool->free = free_page;
++	spin_lock_init(&pool->lock);
++	INIT_LIST_HEAD(&pool->list);
++
++	mutex_lock(&pool_list_lock);
++	list_add(&pool->list, &pool_list);
++	mutex_unlock(&pool_list_lock);
++
++	return pool;
++}
++EXPORT_SYMBOL_GPL(drm_page_pool_create);
++
++void drm_page_pool_destroy(struct drm_page_pool *pool)
++{
++	struct page *page;
++
++	/* Remove us from the pool list */
++	mutex_lock(&pool_list_lock);
++	list_del(&pool->list);
++	mutex_unlock(&pool_list_lock);
++
++	/* Free any remaining pages in the pool */
++	spin_lock(&pool->lock);
++	while (pool->count) {
++		page = drm_page_pool_remove(pool);
++		spin_unlock(&pool->lock);
++		drm_page_pool_free_pages(pool, page);
++		spin_lock(&pool->lock);
++	}
++	spin_unlock(&pool->lock);
++
++	kfree(pool);
++}
++EXPORT_SYMBOL_GPL(drm_page_pool_destroy);
++
++static int drm_page_pool_shrink_one(void)
++{
++	struct drm_page_pool *pool;
++	struct page *page;
++	int nr_freed = 0;
++
++	mutex_lock(&pool_list_lock);
++	pool = list_first_entry(&pool_list, typeof(*pool), list);
++
++	spin_lock(&pool->lock);
++	page = drm_page_pool_remove(pool);
++	spin_unlock(&pool->lock);
++
++	if (page)
++		nr_freed = drm_page_pool_free_pages(pool, page);
++
++	list_move_tail(&pool->list, &pool_list);
++	mutex_unlock(&pool_list_lock);
++
++	return nr_freed;
++}
++
++static unsigned long drm_page_pool_shrink_count(struct shrinker *shrinker,
++						struct shrink_control *sc)
++{
++	unsigned long count =  atomic_long_read(&total_pages);
++
++	return count ? count : SHRINK_EMPTY;
++}
++
++static unsigned long drm_page_pool_shrink_scan(struct shrinker *shrinker,
++					       struct shrink_control *sc)
++{
++	int to_scan = sc->nr_to_scan;
++	int nr_total = 0;
++
++	if (to_scan == 0)
++		return 0;
++
++	do {
++		int nr_freed = drm_page_pool_shrink_one();
++
++		to_scan -= nr_freed;
++		nr_total += nr_freed;
++	} while (to_scan >= 0 && atomic_long_read(&total_pages));
++
++	return nr_total;
++}
++
++static struct shrinker pool_shrinker = {
++	.count_objects = drm_page_pool_shrink_count,
++	.scan_objects = drm_page_pool_shrink_scan,
++	.seeks = 1,
++	.batch = 0,
++};
++
++int drm_page_pool_init_shrinker(void)
++{
++	return register_shrinker(&pool_shrinker);
++}
++module_init(drm_page_pool_init_shrinker);
++MODULE_LICENSE("GPL v2");
+diff --git a/include/drm/page_pool.h b/include/drm/page_pool.h
+new file mode 100644
+index 000000000000..47e240b2bc69
+--- /dev/null
++++ b/include/drm/page_pool.h
+@@ -0,0 +1,54 @@
++/* SPDX-License-Identifier: GPL-2.0 OR MIT */
++/*
++ * Copyright 2020 Advanced Micro Devices, Inc.
++ *
++ * Permission is hereby granted, free of charge, to any person obtaining a
++ * copy of this software and associated documentation files (the "Software"),
++ * to deal in the Software without restriction, including without limitation
++ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
++ * and/or sell copies of the Software, and to permit persons to whom the
++ * Software is furnished to do so, subject to the following conditions:
++ *
++ * The above copyright notice and this permission notice shall be included in
++ * all copies or substantial portions of the Software.
++ *
++ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
++ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
++ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
++ * THE COPYRIGHT HOLDER(S) OR AUTHOR(S) BE LIABLE FOR ANY CLAIM, DAMAGES OR
++ * OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
++ * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
++ * OTHER DEALINGS IN THE SOFTWARE.
++ *
++ * Authors: Christian König
++ */
++
++#ifndef _DRM_PAGE_POOL_H_
++#define _DRM_PAGE_POOL_H_
++
++#include <linux/mmzone.h>
++#include <linux/llist.h>
++#include <linux/spinlock.h>
++
++struct drm_page_pool {
++	int count;
++	struct list_head items;
++
++	int order;
++	int (*free)(struct page *p, unsigned int order);
++
++	spinlock_t lock;
++	struct list_head list;
++};
++
++void drm_page_pool_set_max(unsigned long max);
++unsigned long drm_page_pool_get_max(void);
++unsigned long drm_page_pool_get_total(void);
++int drm_page_pool_get_size(struct drm_page_pool *pool);
++struct page *drm_page_pool_fetch(struct drm_page_pool *pool);
++void drm_page_pool_add(struct drm_page_pool *pool, struct page *page);
++struct drm_page_pool *drm_page_pool_create(unsigned int order,
++					   int (*free_page)(struct page *p, unsigned int order));
++void drm_page_pool_destroy(struct drm_page_pool *pool);
++
++#endif
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.25.1
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
