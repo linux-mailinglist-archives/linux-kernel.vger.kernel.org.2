@@ -2,84 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12F25310B16
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 13:33:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D299A310B22
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 13:36:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232076AbhBEMbJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 07:31:09 -0500
-Received: from mx2.suse.de ([195.135.220.15]:39796 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232113AbhBEM1h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 07:27:37 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1612528010; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=vYOlJfz4MRDQGmCqhAtQi7wi5oI/P8Mw1UvNqrHm8E0=;
-        b=gCgDjCyxpmReMfSVikQlsXK9p/ptvbWTTpp5h/Inwu6i5zPsIu0LyvvKvQSPmG+taOFdkC
-        cSG4ai313F9G5rEys0ZeZCVUQQm7T1fqCJMgfxwozJLvpZqDDtWEn/5WChundIbLbamMY7
-        M5EeXa2PyTjLU1F5L1nvQL2cHlh0uaM=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 77411ACBA;
-        Fri,  5 Feb 2021 12:26:50 +0000 (UTC)
-Date:   Fri, 5 Feb 2021 13:26:49 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
-Cc:     Hugh Dickins <hughd@google.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: Possible deny of service with memfd_create()
-Message-ID: <YB05iR9fkaDDll9Y@dhcp22.suse.cz>
-References: <e7e6231d-8cf9-80a6-7459-5fec9ee547ba@amd.com>
- <YBwrGNS+Q4JMpuom@dhcp22.suse.cz>
- <alpine.LSU.2.11.2102041627040.2796@eggly.anvils>
- <762ad377-ac21-6d8d-d792-492ba7f6c000@amd.com>
- <YB0i3a6fIhWG7zCP@dhcp22.suse.cz>
- <3597e38e-ace7-104c-dcc8-59471e11dcfe@amd.com>
+        id S232160AbhBEMfh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 07:35:37 -0500
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:8377 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231473AbhBEM3p (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 07:29:45 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1612528186; x=1644064186;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=bJzoSY/ygQzw2VSmmIN4MIAoZ9nH3Rc8ITeWywneXRU=;
+  b=Xw7DJ9e8Y8SY0+CBVO5BLkrQUP2Y2TRJal7B5hewtt7rKg7gqeARGzl+
+   0QUEjYO22KAqf8rlwnGeTu6NPVDH5Sao3eR4ruFPgr4kpfW0bU3BlO9se
+   4lTrpuhnTjHOaqjE1r5B/2yrqnpFYv0t7Q3w25FvTN/aKpj3Okrgsnjy1
+   Fig8gfHf4RipZkkO0UQk0JYpspDKUqT8pl1F515FF0nunLNGcQSrTnZoi
+   w50M1XU6pJKaL3H/jAUui8F83CXagJvXUSV40GY4piijG4ZypRXXecCrz
+   MaF2MW27PmrSGX3ndM4rFVr1Xd5jGcqXQpWP/NKapJqb/+iyJeK3aBHqU
+   w==;
+IronPort-SDR: jpyOGeeSest0IdwMtZRgGcugfO2k3326RFQZKnI/dmySd5b3mrvYhYKfHmA7SwoLCqD+0bz2Uq
+ aVm+3MB3ymMywKCdLP22tbFXMQ58XPfY55Yr3T8dgEBtI8q0dFs9HCi84r4Tjfhi5Tp0M+5WHy
+ FgAIAnhhXX4Qknjd/9T9kpwrbkPUpyR0GOQfJ0vfPImPD2LiEXh8YYSwnW8QHzAi0B1otk8XKD
+ swKETtSWnCvMUmqYbBfZML5bH4piuPf/TCNUhhZHuxSHuE6etqVKXtHAZqZ7z38y9nuOzMuVdk
+ DKU=
+X-IronPort-AV: E=Sophos;i="5.81,154,1610434800"; 
+   d="scan'208";a="108151289"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 05 Feb 2021 05:28:08 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Fri, 5 Feb 2021 05:28:06 -0700
+Received: from localhost.localdomain (10.10.115.15) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
+ 15.1.1979.3 via Frontend Transport; Fri, 5 Feb 2021 05:28:05 -0700
+From:   <nicolas.ferre@microchip.com>
+To:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>
+CC:     <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>
+Subject: [PATCH 1/3] ARM: configs: sama5_defconfig: update and remove unneeded options
+Date:   Fri, 5 Feb 2021 13:27:54 +0100
+Message-ID: <bc06f0943bd93dd8c7e2f763f792074ce79c5b64.1612528021.git.nicolas.ferre@microchip.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <3597e38e-ace7-104c-dcc8-59471e11dcfe@amd.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 05-02-21 11:57:09, Christian König wrote:
-> Am 05.02.21 um 11:50 schrieb Michal Hocko:
-> > On Fri 05-02-21 08:54:31, Christian König wrote:
-> > > Am 05.02.21 um 01:32 schrieb Hugh Dickins:
-> > > > On Thu, 4 Feb 2021, Michal Hocko wrote:
-[...]
-> > > > > The only existing protection right now is to use memoery cgroup
-> > > > > controller because the tmpfs memory is accounted to the process which
-> > > > > faults the memory in (or write to the file).
-> > > Agreed, but having to rely on cgroup is not really satisfying when you have
-> > > to maintain a hardened server.
-> > Yes I do recognize the pain. The only other way to mitigate the risk is
-> > to disallow the syscall to untrusted users in a hardened environment.
-> > You should be very strict in tmpfs usage there already.
-> > 
-> 
-> Well it is perfectly valid for a process to use as much memory as it wants,
-> the problem is that we are not holding the process accountable for it.
-> 
-> As I said we have similar problems with GPU drivers and I think we just need
-> a way to do this.
-> 
-> Let me think about it a bit, maybe we can somehow use the file owner for
-> this.
+From: Nicolas Ferre <nicolas.ferre@microchip.com>
 
-There are some land mines on the way to watch for. The most obvious one
-would be to not double account populated file with its mapping. Those
-two might live in separate processes. So you would need a rmap walk just
-to evaluate oom_badness. Also you need to consider files which are not
-open anymore or they have been passed through to another process. And
-then the question is what to do about them. Killing their owner doesn't
-help anything because the file is still left behind.  I do expect you
-will learn more problems on the way but I definitely do not want to
-discourage you from this endeavor.
+Kconfig options are not present anymore or selected by default: remove
+them from sama5_defconfig.
+No change to kernel compilation expected.
+
+Signed-off-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+---
+ arch/arm/configs/sama5_defconfig | 11 -----------
+ 1 file changed, 11 deletions(-)
+
+diff --git a/arch/arm/configs/sama5_defconfig b/arch/arm/configs/sama5_defconfig
+index d3e0d4d79424..64573caa0ecd 100644
+--- a/arch/arm/configs/sama5_defconfig
++++ b/arch/arm/configs/sama5_defconfig
+@@ -1,7 +1,6 @@
+ # CONFIG_LOCALVERSION_AUTO is not set
+ # CONFIG_SWAP is not set
+ CONFIG_SYSVIPC=y
+-CONFIG_FHANDLE=y
+ CONFIG_NO_HZ_IDLE=y
+ CONFIG_HIGH_RES_TIMERS=y
+ CONFIG_LOG_BUF_SHIFT=14
+@@ -19,10 +18,7 @@ CONFIG_SOC_SAMA5D2=y
+ CONFIG_SOC_SAMA5D3=y
+ CONFIG_SOC_SAMA5D4=y
+ # CONFIG_ATMEL_CLOCKSOURCE_PIT is not set
+-CONFIG_AEABI=y
+ CONFIG_UACCESS_WITH_MEMCPY=y
+-CONFIG_ZBOOT_ROM_TEXT=0x0
+-CONFIG_ZBOOT_ROM_BSS=0x0
+ CONFIG_ARM_APPENDED_DTB=y
+ CONFIG_CMDLINE="console=ttyS0,115200 initrd=0x21100000,25165824 root=/dev/ram0 rw"
+ CONFIG_KEXEC=y
+@@ -41,13 +37,7 @@ CONFIG_IP_PNP=y
+ CONFIG_IP_PNP_DHCP=y
+ CONFIG_IP_PNP_BOOTP=y
+ CONFIG_IP_PNP_RARP=y
+-# CONFIG_INET_XFRM_MODE_TRANSPORT is not set
+-# CONFIG_INET_XFRM_MODE_TUNNEL is not set
+-# CONFIG_INET_XFRM_MODE_BEET is not set
+ # CONFIG_INET_DIAG is not set
+-# CONFIG_INET6_XFRM_MODE_TRANSPORT is not set
+-# CONFIG_INET6_XFRM_MODE_TUNNEL is not set
+-# CONFIG_INET6_XFRM_MODE_BEET is not set
+ CONFIG_IPV6_SIT_6RD=y
+ CONFIG_BRIDGE=m
+ CONFIG_BRIDGE_VLAN_FILTERING=y
+@@ -68,7 +58,6 @@ CONFIG_MTD=y
+ CONFIG_MTD_CMDLINE_PARTS=y
+ CONFIG_MTD_BLOCK=y
+ CONFIG_MTD_CFI=y
+-CONFIG_MTD_M25P80=y
+ CONFIG_MTD_RAW_NAND=y
+ CONFIG_MTD_NAND_ATMEL=y
+ CONFIG_MTD_SPI_NOR=y
 -- 
-Michal Hocko
-SUSE Labs
+2.30.0
+
