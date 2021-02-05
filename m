@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1609B311764
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 00:47:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5DF3311767
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 00:47:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230408AbhBEXpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 18:45:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40378 "EHLO
+        id S230055AbhBEXrG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 18:47:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232489AbhBEORn (ORCPT
+        with ESMTP id S232494AbhBEORn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 5 Feb 2021 09:17:43 -0500
-Received: from mail-wr1-x44a.google.com (mail-wr1-x44a.google.com [IPv6:2a00:1450:4864:20::44a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E89CAC0617AB
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 07:46:49 -0800 (PST)
-Received: by mail-wr1-x44a.google.com with SMTP id h18so5626014wrr.5
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 07:46:49 -0800 (PST)
+Received: from mail-wr1-x449.google.com (mail-wr1-x449.google.com [IPv6:2a00:1450:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08F98C0617A7
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 07:45:47 -0800 (PST)
+Received: by mail-wr1-x449.google.com with SMTP id e15so5543198wrm.13
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 07:45:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=Eem+CPI6cqDr3+sdydeGQiL8gIW8yui8+/Xm+DAKB7k=;
-        b=SekTvXiN+P4rBMIGDiv0wwZwiSR5ud4S18Maw4kVgQUSz5FEyuQjH7o5vB8M2vmUMM
-         Q9IwKiqWZ2Yzni/Twm1vRliwxS6Ofyr6GjmKPH0fvoYIpgsmkQdgB+otayIHcj7mH/2D
-         jmQoetdjxOjtR114YWCAtS8Fc2juWVSQssSxdWmZlUIYr3jed51NrPHMZtJCMyGYNRLf
-         xFoK/UyBl2mkVnEi/vaWWeRBriSKqgl/b+Wku4w85oDpVvnXWiYQLwR5eUbxAOT6jUTa
-         Z8LefNUER57XhQirYMl1Si4r9oJMTxRRv8rujMp6fw+hnNTyANk4BtTWwAwQn6481LYu
-         1Bbg==
+        bh=sdkgj896Qo+AFN+zvttnZapcO4bCa1e5ImK6MurFn1k=;
+        b=UwU8BZglk6GLCdc+Y+3cPUnrMSIhuxzhkzQi7L+6RBq8L/Ja+DrNoAHGZ9tg8zuien
+         9wQ/oFCEdEAqzF9q/ziTAcoTLx7uq4pe214ZPEfMRvBi41RZfpfTYdNJuR+aC1x1zhTG
+         j/jMay7GnbyuMPEuOHGBxtKo4KuqGPs53RjpG84LK6ZFkEla+I+5zy8xZ15HdGMOVJzn
+         tMaxk4y8mtz/jU4/R4uxAaF98U15EJgDBEMCthRK/vIO9tZkvEjazL4EP2GW385cy5Rd
+         yohmn2hhYmmpppVhingV+70vLqHCr6HaWpy2qXGFbNromUr4VMO4xKXOBPfNa/3ZOwdR
+         OO6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=Eem+CPI6cqDr3+sdydeGQiL8gIW8yui8+/Xm+DAKB7k=;
-        b=nmgr0Rk9jlYEVVWpNrqkYJ/PUcFKF3DDYVSKeNvOBk0KmXzQEPqW0xSCM2ecjiZchi
-         Fce6+wOrzgYnD+LTS44oxpKCSqK+5Q8FF3syRkJEqJalDptFhw/BtgIpZcIgrGNRyE0p
-         yyJ4Ptaojgk5SxnogoHOcttjTA3OqDdQqMtAEEStJkpX30nnUyJS2xhs6NemJprANfCl
-         GNy/JTQhO+3nciIyZrSu60LRB2tCauD8E7Etij8ikMUGPifB3K139Rk/fBShtGRf3Q5q
-         Ua1nqWAg9jpPsHSk3Tr54E3D523PZJ5aS03XYwXWWia7l7kBPtKd0qsgOVfkUttCHYdc
-         7m9g==
-X-Gm-Message-State: AOAM531avT0GgcGbVrnM2RODEArhVeHiLZXkLq83olPIS/OA9x428MM8
-        hJy4FXJC4zuHpJ4oTJpE+DS6nEd1/J5x4wIJ
-X-Google-Smtp-Source: ABdhPJyqQdKHrhOuNMT3pVa3R7FPH70A7UVF1EhvgAytPKqWBBtNMrRHXWGCczaKH2RqOThi7wWAhXKWKxUeKXJY
+        bh=sdkgj896Qo+AFN+zvttnZapcO4bCa1e5ImK6MurFn1k=;
+        b=Ky9fOuC4iHoeGMzLom959JEcl1+KA5vzewcHx8H973ff6+t5XMIGUEq7TIGoEl90cM
+         hIeUFFVw7aapCiZRRWb+T0Eq2N9uPbvzLCoYuVWRa/OuGrdWVBdmEEZCxPloAMh+GlfG
+         qOuNKqrCvHi8U9uJFuE2aZhr/7VTHnvk8K5J1efS30JBNc+9iRGryKoccpP5DfLmuO3E
+         3v69JET5K2TDf/Sy+vIGpMj6ffYULLRtr2LfrkAyIKLqUlh/La0p0TyORLZLWsFuWSja
+         JbI+Ip85BvRN5IXGbTNsUbJdS/6oDLZqfWw6FRdijC8xP1sQke1uLoEA3+i/Sy2fik1q
+         ynCQ==
+X-Gm-Message-State: AOAM532ydFOWVENQpQh5SXLxbhH3841kfY3HNj6fhsEEpfzhzQpj5NuH
+        VfYLf3EPL3nogExP5mYgykVn3ptbguxP7Wu0
+X-Google-Smtp-Source: ABdhPJxDbLmIELc7j7WQJZu+Bpk80w6bKCbvSm27wbQqmOHDlPvAbZr77jAT0AHFGmy1CYo2Fg0HMKHW3zixhotB
 Sender: "andreyknvl via sendgmr" <andreyknvl@andreyknvl3.muc.corp.google.com>
 X-Received: from andreyknvl3.muc.corp.google.com ([2a00:79e0:15:13:edb8:b79c:2e20:e531])
- (user=andreyknvl job=sendgmr) by 2002:a1c:25c2:: with SMTP id
- l185mr4086468wml.62.1612539574962; Fri, 05 Feb 2021 07:39:34 -0800 (PST)
-Date:   Fri,  5 Feb 2021 16:39:08 +0100
+ (user=andreyknvl job=sendgmr) by 2002:a05:600c:21d2:: with SMTP id
+ x18mr4105351wmj.186.1612539579825; Fri, 05 Feb 2021 07:39:39 -0800 (PST)
+Date:   Fri,  5 Feb 2021 16:39:10 +0100
 In-Reply-To: <cover.1612538932.git.andreyknvl@google.com>
-Message-Id: <419e4e7ac9ff7596a1a0956c117fcad1938e5d77.1612538932.git.andreyknvl@google.com>
+Message-Id: <3917dc59e3dbf99b2929a1e20d41df0c5930e026.1612538932.git.andreyknvl@google.com>
 Mime-Version: 1.0
 References: <cover.1612538932.git.andreyknvl@google.com>
 X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
-Subject: [PATCH v2 07/12] kasan, mm: fail krealloc on freed objects
+Subject: [PATCH v2 09/12] kasan: ensure poisoning size alignment
 From:   Andrey Konovalov <andreyknvl@google.com>
 To:     Andrew Morton <akpm@linux-foundation.org>,
         Catalin Marinas <catalin.marinas@arm.com>,
@@ -74,77 +74,219 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, if krealloc() is called on a freed object with KASAN enabled,
-it allocates and returns a new object, but doesn't copy any memory from
-the old one as ksize() returns 0. This makes the caller believe that
-krealloc() succeeded (KASAN report is printed though).
+A previous changes d99f6a10c161 ("kasan: don't round_up too much")
+attempted to simplify the code by adding a round_up(size) call into
+kasan_poison(). While this allows to have less round_up() calls around
+the code, this results in round_up() being called multiple times.
 
-This patch adds an accessibility check into __do_krealloc(). If the check
-fails, krealloc() returns NULL. This check duplicates the one in ksize();
-this is fixed in the following patch.
-
-This patch also adds a KASAN-KUnit test to check krealloc() behaviour
-when it's called on a freed object.
+This patch removes round_up() of size from kasan_poison() and ensures
+that all callers round_up() the size explicitly. This patch also adds
+WARN_ON() alignment checks for address and size to kasan_poison() and
+kasan_unpoison().
 
 Reviewed-by: Marco Elver <elver@google.com>
 Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 ---
- lib/test_kasan.c | 20 ++++++++++++++++++++
- mm/slab_common.c |  3 +++
- 2 files changed, 23 insertions(+)
+ mm/kasan/common.c |  9 ++++++---
+ mm/kasan/kasan.h  | 33 ++++++++++++++++++++-------------
+ mm/kasan/shadow.c | 37 ++++++++++++++++++++++---------------
+ 3 files changed, 48 insertions(+), 31 deletions(-)
 
-diff --git a/lib/test_kasan.c b/lib/test_kasan.c
-index 6e63ba62db09..791164ef191b 100644
---- a/lib/test_kasan.c
-+++ b/lib/test_kasan.c
-@@ -359,6 +359,25 @@ static void krealloc_pagealloc_less_oob(struct kunit *test)
- 					KMALLOC_MAX_CACHE_SIZE + 201);
+diff --git a/mm/kasan/common.c b/mm/kasan/common.c
+index a8a67dca5e55..7ffb1e6de2ef 100644
+--- a/mm/kasan/common.c
++++ b/mm/kasan/common.c
+@@ -261,7 +261,8 @@ void __kasan_unpoison_object_data(struct kmem_cache *cache, void *object)
+ 
+ void __kasan_poison_object_data(struct kmem_cache *cache, void *object)
+ {
+-	kasan_poison(object, cache->object_size, KASAN_KMALLOC_REDZONE);
++	kasan_poison(object, round_up(cache->object_size, KASAN_GRANULE_SIZE),
++			KASAN_KMALLOC_REDZONE);
  }
  
-+/*
-+ * Check that krealloc() detects a use-after-free, returns NULL,
-+ * and doesn't unpoison the freed object.
-+ */
-+static void krealloc_uaf(struct kunit *test)
-+{
-+	char *ptr1, *ptr2;
-+	int size1 = 201;
-+	int size2 = 235;
-+
-+	ptr1 = kmalloc(size1, GFP_KERNEL);
-+	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr1);
-+	kfree(ptr1);
-+
-+	KUNIT_EXPECT_KASAN_FAIL(test, ptr2 = krealloc(ptr1, size2, GFP_KERNEL));
-+	KUNIT_ASSERT_PTR_EQ(test, (void *)ptr2, NULL);
-+	KUNIT_EXPECT_KASAN_FAIL(test, *(volatile char *)ptr1);
-+}
-+
- static void kmalloc_oob_16(struct kunit *test)
+ /*
+@@ -348,7 +349,8 @@ static bool ____kasan_slab_free(struct kmem_cache *cache, void *object,
+ 		return true;
+ 	}
+ 
+-	kasan_poison(object, cache->object_size, KASAN_KMALLOC_FREE);
++	kasan_poison(object, round_up(cache->object_size, KASAN_GRANULE_SIZE),
++			KASAN_KMALLOC_FREE);
+ 
+ 	if ((IS_ENABLED(CONFIG_KASAN_GENERIC) && !quarantine))
+ 		return false;
+@@ -490,7 +492,8 @@ static void *____kasan_kmalloc(struct kmem_cache *cache, const void *object,
+ 	/* Poison the aligned part of the redzone. */
+ 	redzone_start = round_up((unsigned long)(object + size),
+ 				KASAN_GRANULE_SIZE);
+-	redzone_end = (unsigned long)object + cache->object_size;
++	redzone_end = round_up((unsigned long)(object + cache->object_size),
++				KASAN_GRANULE_SIZE);
+ 	kasan_poison((void *)redzone_start, redzone_end - redzone_start,
+ 			   KASAN_KMALLOC_REDZONE);
+ 
+diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
+index 6a2882997f23..98f70ffc9e1c 100644
+--- a/mm/kasan/kasan.h
++++ b/mm/kasan/kasan.h
+@@ -321,30 +321,37 @@ static inline u8 kasan_random_tag(void) { return 0; }
+ 
+ #ifdef CONFIG_KASAN_HW_TAGS
+ 
+-static inline void kasan_poison(const void *address, size_t size, u8 value)
++static inline void kasan_poison(const void *addr, size_t size, u8 value)
  {
- 	struct {
-@@ -1056,6 +1075,7 @@ static struct kunit_case kasan_kunit_test_cases[] = {
- 	KUNIT_CASE(krealloc_less_oob),
- 	KUNIT_CASE(krealloc_pagealloc_more_oob),
- 	KUNIT_CASE(krealloc_pagealloc_less_oob),
-+	KUNIT_CASE(krealloc_uaf),
- 	KUNIT_CASE(kmalloc_oob_16),
- 	KUNIT_CASE(kmalloc_uaf_16),
- 	KUNIT_CASE(kmalloc_oob_in_memset),
-diff --git a/mm/slab_common.c b/mm/slab_common.c
-index 39d1a8ff9bb8..dad70239b54c 100644
---- a/mm/slab_common.c
-+++ b/mm/slab_common.c
-@@ -1140,6 +1140,9 @@ static __always_inline void *__do_krealloc(const void *p, size_t new_size,
- 	void *ret;
- 	size_t ks;
+-	address = kasan_reset_tag(address);
++	addr = kasan_reset_tag(addr);
  
-+	if (likely(!ZERO_OR_NULL_PTR(p)) && !kasan_check_byte(p))
-+		return NULL;
+ 	/* Skip KFENCE memory if called explicitly outside of sl*b. */
+-	if (is_kfence_address(address))
++	if (is_kfence_address(addr))
+ 		return;
+ 
+-	hw_set_mem_tag_range((void *)address,
+-			round_up(size, KASAN_GRANULE_SIZE), value);
++	if (WARN_ON((unsigned long)addr & KASAN_GRANULE_MASK))
++		return;
++	if (WARN_ON(size & KASAN_GRANULE_MASK))
++		return;
 +
- 	ks = ksize(p);
++	hw_set_mem_tag_range((void *)addr, size, value);
+ }
  
- 	if (ks >= new_size) {
+-static inline void kasan_unpoison(const void *address, size_t size)
++static inline void kasan_unpoison(const void *addr, size_t size)
+ {
+-	u8 tag = get_tag(address);
++	u8 tag = get_tag(addr);
+ 
+-	address = kasan_reset_tag(address);
++	addr = kasan_reset_tag(addr);
+ 
+ 	/* Skip KFENCE memory if called explicitly outside of sl*b. */
+-	if (is_kfence_address(address))
++	if (is_kfence_address(addr))
+ 		return;
+ 
+-	hw_set_mem_tag_range((void *)address,
+-			round_up(size, KASAN_GRANULE_SIZE), tag);
++	if (WARN_ON((unsigned long)addr & KASAN_GRANULE_MASK))
++		return;
++	size = round_up(size, KASAN_GRANULE_SIZE);
++
++	hw_set_mem_tag_range((void *)addr, size, tag);
+ }
+ 
+ static inline bool kasan_byte_accessible(const void *addr)
+@@ -361,7 +368,7 @@ static inline bool kasan_byte_accessible(const void *addr)
+ /**
+  * kasan_poison - mark the memory range as unaccessible
+  * @addr - range start address, must be aligned to KASAN_GRANULE_SIZE
+- * @size - range size
++ * @size - range size, must be aligned to KASAN_GRANULE_SIZE
+  * @value - value that's written to metadata for the range
+  *
+  * The size gets aligned to KASAN_GRANULE_SIZE before marking the range.
+@@ -371,7 +378,7 @@ void kasan_poison(const void *addr, size_t size, u8 value);
+ /**
+  * kasan_unpoison - mark the memory range as accessible
+  * @addr - range start address, must be aligned to KASAN_GRANULE_SIZE
+- * @size - range size
++ * @size - range size, can be unaligned
+  *
+  * For the tag-based modes, the @size gets aligned to KASAN_GRANULE_SIZE before
+  * marking the range.
+diff --git a/mm/kasan/shadow.c b/mm/kasan/shadow.c
+index 1ed7817e4ee6..63f43443f5d7 100644
+--- a/mm/kasan/shadow.c
++++ b/mm/kasan/shadow.c
+@@ -69,7 +69,7 @@ void *memcpy(void *dest, const void *src, size_t len)
+ 	return __memcpy(dest, src, len);
+ }
+ 
+-void kasan_poison(const void *address, size_t size, u8 value)
++void kasan_poison(const void *addr, size_t size, u8 value)
+ {
+ 	void *shadow_start, *shadow_end;
+ 
+@@ -78,55 +78,62 @@ void kasan_poison(const void *address, size_t size, u8 value)
+ 	 * some of the callers (e.g. kasan_poison_object_data) pass tagged
+ 	 * addresses to this function.
+ 	 */
+-	address = kasan_reset_tag(address);
++	addr = kasan_reset_tag(addr);
+ 
+ 	/* Skip KFENCE memory if called explicitly outside of sl*b. */
+-	if (is_kfence_address(address))
++	if (is_kfence_address(addr))
+ 		return;
+ 
+-	size = round_up(size, KASAN_GRANULE_SIZE);
+-	shadow_start = kasan_mem_to_shadow(address);
+-	shadow_end = kasan_mem_to_shadow(address + size);
++	if (WARN_ON((unsigned long)addr & KASAN_GRANULE_MASK))
++		return;
++	if (WARN_ON(size & KASAN_GRANULE_MASK))
++		return;
++
++	shadow_start = kasan_mem_to_shadow(addr);
++	shadow_end = kasan_mem_to_shadow(addr + size);
+ 
+ 	__memset(shadow_start, value, shadow_end - shadow_start);
+ }
+ EXPORT_SYMBOL(kasan_poison);
+ 
+ #ifdef CONFIG_KASAN_GENERIC
+-void kasan_poison_last_granule(const void *address, size_t size)
++void kasan_poison_last_granule(const void *addr, size_t size)
+ {
+ 	if (size & KASAN_GRANULE_MASK) {
+-		u8 *shadow = (u8 *)kasan_mem_to_shadow(address + size);
++		u8 *shadow = (u8 *)kasan_mem_to_shadow(addr + size);
+ 		*shadow = size & KASAN_GRANULE_MASK;
+ 	}
+ }
+ #endif
+ 
+-void kasan_unpoison(const void *address, size_t size)
++void kasan_unpoison(const void *addr, size_t size)
+ {
+-	u8 tag = get_tag(address);
++	u8 tag = get_tag(addr);
+ 
+ 	/*
+ 	 * Perform shadow offset calculation based on untagged address, as
+ 	 * some of the callers (e.g. kasan_unpoison_object_data) pass tagged
+ 	 * addresses to this function.
+ 	 */
+-	address = kasan_reset_tag(address);
++	addr = kasan_reset_tag(addr);
+ 
+ 	/*
+ 	 * Skip KFENCE memory if called explicitly outside of sl*b. Also note
+ 	 * that calls to ksize(), where size is not a multiple of machine-word
+ 	 * size, would otherwise poison the invalid portion of the word.
+ 	 */
+-	if (is_kfence_address(address))
++	if (is_kfence_address(addr))
++		return;
++
++	if (WARN_ON((unsigned long)addr & KASAN_GRANULE_MASK))
+ 		return;
+ 
+-	/* Unpoison round_up(size, KASAN_GRANULE_SIZE) bytes. */
+-	kasan_poison(address, size, tag);
++	/* Unpoison all granules that cover the object. */
++	kasan_poison(addr, round_up(size, KASAN_GRANULE_SIZE), tag);
+ 
+ 	/* Partially poison the last granule for the generic mode. */
+ 	if (IS_ENABLED(CONFIG_KASAN_GENERIC))
+-		kasan_poison_last_granule(address, size);
++		kasan_poison_last_granule(addr, size);
+ }
+ 
+ #ifdef CONFIG_MEMORY_HOTPLUG
 -- 
 2.30.0.365.g02bc693789-goog
 
