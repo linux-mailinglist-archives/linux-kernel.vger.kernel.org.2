@@ -2,181 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 608A03117D2
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 01:32:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E3A7E3117D1
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 01:32:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231307AbhBFAcY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 19:32:24 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:11686 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231508AbhBELkH (ORCPT
+        id S231304AbhBFAcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 19:32:01 -0500
+Received: from mail-lf1-f50.google.com ([209.85.167.50]:45990 "EHLO
+        mail-lf1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231453AbhBELkr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 06:40:07 -0500
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DXD1F3Mr5zlH7W;
-        Fri,  5 Feb 2021 19:37:37 +0800 (CST)
-Received: from SWX921481.china.huawei.com (10.126.202.232) by
- DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
- 14.3.498.0; Fri, 5 Feb 2021 19:39:10 +0800
-From:   Barry Song <song.bao.hua@hisilicon.com>
-To:     <m.szyprowski@samsung.com>, <hch@lst.de>, <robin.murphy@arm.com>,
-        <iommu@lists.linux-foundation.org>
-CC:     <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>,
-        Barry Song <song.bao.hua@hisilicon.com>
-Subject: [PATCH v3 2/2] dma-mapping: benchmark: pretend DMA is transmitting
-Date:   Sat, 6 Feb 2021 00:33:25 +1300
-Message-ID: <20210205113325.19556-2-song.bao.hua@hisilicon.com>
-X-Mailer: git-send-email 2.21.0.windows.1
-In-Reply-To: <20210205113325.19556-1-song.bao.hua@hisilicon.com>
-References: <20210205113325.19556-1-song.bao.hua@hisilicon.com>
+        Fri, 5 Feb 2021 06:40:47 -0500
+Received: by mail-lf1-f50.google.com with SMTP id q12so9370043lfo.12
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 03:40:31 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=es/CMOpBNmEyuPK38vfc/xXnUQ3gwpJqjdelmm/M8tM=;
+        b=YHQYT+/fxl6XkYtWUsgOHoktJHQ3K5Z6ivixvoBdW39u2qVzZmX0WrvZuDsoULhZ8F
+         etiQ7+VrTVJIQ3XCcapqZyXBOdtIMXKuuhpgOU75KWo7KxRMe4XKxaqiLPUxiGGdBT/I
+         +cJ6w7TH5Y3fSVE9fXPnEKGnD9L7A7+ASLWbTABHoE56aWMzht20jTzP0et2s12n/JoS
+         dZZcBefdLHiJ13UL6LeAOkbJ/htzGKdHN7ybvMo64G9/rGiPHlS1QEa4rWEg+bRaT8ny
+         qfm/gHqieypgeVy2lgUX4CqxwUWNTaRxr4usQRUGynnCoaO7Gz6XVHkbVZTvWB0gjXGc
+         V+hA==
+X-Gm-Message-State: AOAM530tBoRzuN2lPNzX4/nwJAZfRe0dnlo6XCXdzHPDP23uBdBg0VO1
+        whw8vUzow1lYKDoRiL2eF7XlzVSnWAlkBcIrwEM=
+X-Google-Smtp-Source: ABdhPJwho135ZbzSUoJ+0l2SHrUaJmsgupXMcrnOmAQQ+jEJna1Tf7jwRwVQROtJ1u3oqfw7WHXIosYA9KzVjhlX6zY=
+X-Received: by 2002:a05:6512:2342:: with SMTP id p2mr2333999lfu.509.1612525203821;
+ Fri, 05 Feb 2021 03:40:03 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.126.202.232]
-X-CFilter-Loop: Reflected
+References: <20210129134855.195810-1-jolsa@redhat.com> <20210130234856.271282-1-jolsa@kernel.org>
+ <20210130234856.271282-6-jolsa@kernel.org>
+In-Reply-To: <20210130234856.271282-6-jolsa@kernel.org>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Fri, 5 Feb 2021 20:39:52 +0900
+Message-ID: <CAM9d7chWTLScBwLkAq_4Xm9dvLASCP3wp=P+dtsViodr=Jtr2A@mail.gmail.com>
+Subject: Re: [PATCH 05/24] perf daemon: Add client socket support
+To:     Jiri Olsa <jolsa@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Ian Rogers <irogers@google.com>,
+        Stephane Eranian <eranian@google.com>,
+        Alexei Budankov <abudankov@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In a real dma mapping user case, after dma_map is done, data will be
-transmit. Thus, in multi-threaded user scenario, IOMMU contention
-should not be that severe. For example, if users enable multiple
-threads to send network packets through 1G/10G/100Gbps NIC, usually
-the steps will be: map -> transmission -> unmap.  Transmission delay
-reduces the contention of IOMMU.
+On Sun, Jan 31, 2021 at 8:49 AM Jiri Olsa <jolsa@kernel.org> wrote:
+>
+> Adding support for client socket side that will be used
+> to send commands to daemon server socket.
+>
+> This patch adds only the core support, all commands using
+> this functionality are coming in following patches.
+>
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> ---
+>  tools/perf/builtin-daemon.c | 105 ++++++++++++++++++++++++++++++++++++
+>  1 file changed, 105 insertions(+)
+>
+> diff --git a/tools/perf/builtin-daemon.c b/tools/perf/builtin-daemon.c
+> index 756d60616d7d..eada3ceb9b0c 100644
+> --- a/tools/perf/builtin-daemon.c
+> +++ b/tools/perf/builtin-daemon.c
+> @@ -11,6 +11,7 @@
+>  #include <sys/types.h>
+>  #include <sys/socket.h>
+>  #include <sys/un.h>
+> +#include <sys/stat.h>
+>  #include <poll.h>
+>  #include "builtin.h"
+>  #include "perf.h"
+> @@ -42,6 +43,50 @@ static void sig_handler(int sig __maybe_unused)
+>         done = true;
+>  }
+>
+> +static int client_config(const char *var, const char *value, void *cb)
+> +{
+> +       struct daemon *daemon = cb;
+> +
+> +       if (!strcmp(var, "daemon.base") && !daemon->base_user) {
+> +               daemon->base = strdup(value);
+> +               if (!daemon->base)
+> +                       return -ENOMEM;
+> +       }
+> +
+> +       return 0;
+> +}
+> +
+> +static int check_base(struct daemon *daemon)
+> +{
+> +       struct stat st;
+> +
+> +       if (!daemon->base) {
+> +               pr_err("failed: base not defined\n");
+> +               return -EINVAL;
+> +       }
+> +
+> +       if (stat(daemon->base, &st)) {
+> +               pr_err("failed: base '%s' does not exists\n", daemon->base);
 
-Here a delay is added to simulate the transmission between map and unmap
-so that the tested result could be more accurate for TX and simple RX.
-A typical TX transmission for NIC would be like: map -> TX -> unmap
-since the socket buffers come from OS. Simple RX model eg. disk driver,
-is also map -> RX -> unmap, but real RX model in a NIC could be more
-complicated considering packets can come spontaneously and many drivers
-are using pre-mapped buffers pool. This is in the TBD list.
+Well, it could be a permission error or something..
 
-Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
----
- kernel/dma/map_benchmark.c                    | 12 ++++++++++-
- .../testing/selftests/dma/dma_map_benchmark.c | 21 ++++++++++++++++---
- 2 files changed, 29 insertions(+), 4 deletions(-)
+> +               return -EINVAL;
+> +       }
 
-diff --git a/kernel/dma/map_benchmark.c b/kernel/dma/map_benchmark.c
-index da95df381483..e0e64f8b0739 100644
---- a/kernel/dma/map_benchmark.c
-+++ b/kernel/dma/map_benchmark.c
-@@ -21,6 +21,7 @@
- #define DMA_MAP_BENCHMARK	_IOWR('d', 1, struct map_benchmark)
- #define DMA_MAP_MAX_THREADS	1024
- #define DMA_MAP_MAX_SECONDS	300
-+#define DMA_MAP_MAX_TRANS_DELAY	(10 * NSEC_PER_MSEC)
- 
- #define DMA_MAP_BIDIRECTIONAL	0
- #define DMA_MAP_TO_DEVICE	1
-@@ -36,7 +37,8 @@ struct map_benchmark {
- 	__s32 node; /* which numa node this benchmark will run on */
- 	__u32 dma_bits; /* DMA addressing capability */
- 	__u32 dma_dir; /* DMA data direction */
--	__u8 expansion[84];	/* For future use */
-+	__u32 dma_trans_ns; /* time for DMA transmission in ns */
-+	__u8 expansion[80];	/* For future use */
- };
- 
- struct map_benchmark_data {
-@@ -87,6 +89,9 @@ static int map_benchmark_thread(void *data)
- 		map_etime = ktime_get();
- 		map_delta = ktime_sub(map_etime, map_stime);
- 
-+		/* Pretend DMA is transmitting */
-+		ndelay(map->bparam.dma_trans_ns);
-+
- 		unmap_stime = ktime_get();
- 		dma_unmap_single(map->dev, dma_addr, PAGE_SIZE, map->dir);
- 		unmap_etime = ktime_get();
-@@ -218,6 +223,11 @@ static long map_benchmark_ioctl(struct file *file, unsigned int cmd,
- 			return -EINVAL;
- 		}
- 
-+		if (map->bparam.dma_trans_ns > DMA_MAP_MAX_TRANS_DELAY) {
-+			pr_err("invalid transmission delay\n");
-+			return -EINVAL;
-+		}
-+
- 		if (map->bparam.node != NUMA_NO_NODE &&
- 		    !node_possible(map->bparam.node)) {
- 			pr_err("invalid numa node\n");
-diff --git a/tools/testing/selftests/dma/dma_map_benchmark.c b/tools/testing/selftests/dma/dma_map_benchmark.c
-index 537d65968c48..fb23ce9617ea 100644
---- a/tools/testing/selftests/dma/dma_map_benchmark.c
-+++ b/tools/testing/selftests/dma/dma_map_benchmark.c
-@@ -12,9 +12,12 @@
- #include <sys/mman.h>
- #include <linux/types.h>
- 
-+#define NSEC_PER_MSEC	1000000L
-+
- #define DMA_MAP_BENCHMARK	_IOWR('d', 1, struct map_benchmark)
- #define DMA_MAP_MAX_THREADS	1024
- #define DMA_MAP_MAX_SECONDS     300
-+#define DMA_MAP_MAX_TRANS_DELAY	(10 * NSEC_PER_MSEC)
- 
- #define DMA_MAP_BIDIRECTIONAL	0
- #define DMA_MAP_TO_DEVICE	1
-@@ -36,7 +39,8 @@ struct map_benchmark {
- 	__s32 node; /* which numa node this benchmark will run on */
- 	__u32 dma_bits; /* DMA addressing capability */
- 	__u32 dma_dir; /* DMA data direction */
--	__u8 expansion[84];	/* For future use */
-+	__u32 dma_trans_ns; /* time for DMA transmission in ns */
-+	__u8 expansion[80];	/* For future use */
- };
- 
- int main(int argc, char **argv)
-@@ -46,12 +50,12 @@ int main(int argc, char **argv)
- 	/* default single thread, run 20 seconds on NUMA_NO_NODE */
- 	int threads = 1, seconds = 20, node = -1;
- 	/* default dma mask 32bit, bidirectional DMA */
--	int bits = 32, dir = DMA_MAP_BIDIRECTIONAL;
-+	int bits = 32, xdelay = 0, dir = DMA_MAP_BIDIRECTIONAL;
- 
- 	int cmd = DMA_MAP_BENCHMARK;
- 	char *p;
- 
--	while ((opt = getopt(argc, argv, "t:s:n:b:d:")) != -1) {
-+	while ((opt = getopt(argc, argv, "t:s:n:b:d:x:")) != -1) {
- 		switch (opt) {
- 		case 't':
- 			threads = atoi(optarg);
-@@ -68,6 +72,9 @@ int main(int argc, char **argv)
- 		case 'd':
- 			dir = atoi(optarg);
- 			break;
-+		case 'x':
-+			xdelay = atoi(optarg);
-+			break;
- 		default:
- 			return -1;
- 		}
-@@ -85,6 +92,12 @@ int main(int argc, char **argv)
- 		exit(1);
- 	}
- 
-+	if (xdelay < 0 || xdelay > DMA_MAP_MAX_TRANS_DELAY) {
-+		fprintf(stderr, "invalid transmit delay, must be in 0-%ld\n",
-+			DMA_MAP_MAX_TRANS_DELAY);
-+		exit(1);
-+	}
-+
- 	/* suppose the mininum DMA zone is 1MB in the world */
- 	if (bits < 20 || bits > 64) {
- 		fprintf(stderr, "invalid dma mask bit, must be in 20-64\n");
-@@ -109,6 +122,8 @@ int main(int argc, char **argv)
- 	map.node = node;
- 	map.dma_bits = bits;
- 	map.dma_dir = dir;
-+	map.dma_trans_ns = xdelay;
-+
- 	if (ioctl(fd, cmd, &map)) {
- 		perror("ioctl");
- 		exit(1);
--- 
-2.25.1
+You may also check whether it's a directory.
 
+> +
+> +       return 0;
+> +}
+> +
+> +static int setup_client_config(struct daemon *daemon)
+> +{
+> +       struct perf_config_set *set;
+> +       int err = -ENOMEM;
+> +
+> +       set = perf_config_set__load_file(daemon->config_real);
+> +       if (set) {
+> +               err = perf_config_set(set, client_config, daemon);
+> +               perf_config_set__delete(set);
+> +       }
+> +
+> +       return err ?: check_base(daemon);
+> +}
+> +
+>  static int setup_server_socket(struct daemon *daemon)
+>  {
+>         struct sockaddr_un addr;
+> @@ -114,6 +159,32 @@ static int handle_server_socket(struct daemon *daemon __maybe_unused, int sock_f
+>         return ret;
+>  }
+>
+> +static int setup_client_socket(struct daemon *daemon)
+> +{
+> +       struct sockaddr_un addr;
+> +       char path[100];
+> +       int fd;
+> +
+> +       fd = socket(AF_UNIX, SOCK_STREAM, 0);
+> +       if (fd == -1) {
+> +               perror("failed: socket");
+> +               return -1;
+> +       }
+> +
+> +       scnprintf(path, PATH_MAX, "%s/control", daemon->base);
+
+Same as the previous patch.  The path is 100 bytes..
+
+Thanks,
+Namhyung
+
+> +
+> +       memset(&addr, 0, sizeof(addr));
+> +       addr.sun_family = AF_UNIX;
+> +       strncpy(addr.sun_path, path, sizeof(addr.sun_path) - 1);
+> +
+> +       if (connect(fd, (struct sockaddr *) &addr, sizeof(addr)) == -1) {
+> +               perror("failed: connect");
+> +               return -1;
+> +       }
+> +
+> +       return fd;
+> +}
