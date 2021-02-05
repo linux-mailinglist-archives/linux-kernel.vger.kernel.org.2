@@ -2,163 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70BE7311730
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 00:38:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C869F31172E
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 00:38:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231145AbhBEXgG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 18:36:06 -0500
-Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:24639 "EHLO
-        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232066AbhBEOVn (ORCPT
+        id S230355AbhBEXfN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 18:35:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41310 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232313AbhBEOV5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 09:21:43 -0500
+        Fri, 5 Feb 2021 09:21:57 -0500
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91938C0617AB
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 07:59:19 -0800 (PST)
+Received: by mail-lf1-x12b.google.com with SMTP id p21so10522085lfu.11
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 07:59:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1612540829; x=1644076829;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   mime-version;
-  bh=TBohInsGRwLMOnqJDl8Pqhxj7U/fXFbfpMKPhnZcUFw=;
-  b=jgYImARJD6qkBQV5QsAiU36i737f/WHvRPDZ28run0cIE4FTZ8ks4Jn8
-   GyOSqHmIGskwEXAHpLVo3laroKOZolM7mIV/Fcrpf5bUZzk7nuh93Bojd
-   YT2CYWqYhsU+6iqwlVGmn8eK14yOvhhs7DyE8hGq1ttOyjvQH9Q7XOrd0
-   I=;
-X-IronPort-AV: E=Sophos;i="5.81,155,1610409600"; 
-   d="scan'208";a="82731861"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-2b-81e76b79.us-west-2.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-out-6002.iad6.amazon.com with ESMTP; 05 Feb 2021 15:59:38 +0000
-Received: from EX13D31EUA001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
-        by email-inbound-relay-2b-81e76b79.us-west-2.amazon.com (Postfix) with ESMTPS id 0A050A1D83;
-        Fri,  5 Feb 2021 15:59:34 +0000 (UTC)
-Received: from u3f2cd687b01c55.ant.amazon.com (10.43.162.194) by
- EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Fri, 5 Feb 2021 15:59:17 +0000
-From:   SeongJae Park <sjpark@amazon.com>
-To:     Greg KH <greg@kroah.com>
-CC:     SeongJae Park <sjpark@amazon.com>,
-        SeongJae Park <sjpark@amazon.de>,
-        <Jonathan.Cameron@huawei.com>, <aarcange@redhat.com>,
-        <acme@kernel.org>, <alexander.shishkin@linux.intel.com>,
-        <amit@kernel.org>, <benh@kernel.crashing.org>,
-        <brendan.d.gregg@gmail.com>, <brendanhiggins@google.com>,
-        <cai@lca.pw>, <colin.king@canonical.com>, <corbet@lwn.net>,
-        <david@redhat.com>, <dwmw@amazon.com>, <elver@google.com>,
-        <fan.du@intel.com>, <foersleo@amazon.de>, <gthelen@google.com>,
-        <irogers@google.com>, <jolsa@redhat.com>, <kirill@shutemov.name>,
-        <mark.rutland@arm.com>, <mgorman@suse.de>, <minchan@kernel.org>,
-        <mingo@redhat.com>, <namhyung@kernel.org>, <peterz@infradead.org>,
-        <rdunlap@infradead.org>, <riel@surriel.com>, <rientjes@google.com>,
-        <rostedt@goodmis.org>, <rppt@kernel.org>, <sblbir@amazon.com>,
-        <shakeelb@google.com>, <shuah@kernel.org>, <sj38.park@gmail.com>,
-        <snu@amazon.de>, <vbabka@suse.cz>, <vdavydov.dev@gmail.com>,
-        <yang.shi@linux.alibaba.com>, <ying.huang@intel.com>,
-        <zgf574564920@gmail.com>, <linux-damon@amazon.com>,
-        <linux-mm@kvack.org>, <linux-doc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v24 07/14] mm/damon: Implement a debugfs-based user space interface
-Date:   Fri, 5 Feb 2021 16:59:02 +0100
-Message-ID: <20210205155902.31102-1-sjpark@amazon.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <YB1kZaD/7omxXztF@kroah.com>
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jHFnyH790m7nlnJSVskIB0W5pLoFkbMx9bIb16KHmNs=;
+        b=Y1n3cckxp8Sv26Yg2Kxgb2craA8eH4oamlcKNyGu6Cq1ETKGeIjpz1wSLG34yCwBx9
+         8jCz4hYbdEzrAX0HgzdJIOZAxBXC75We1qql4WXxrna9TC7NdTBJ4AQonUGKLBiKsjI4
+         K7eE3O2fHwXc9MFhnrN0WYaNbqDRD0jwhifUYAb0N4UDEKiIlSTtsc4gAJogahjk9yU4
+         H2yVdG7mMrcZ+vdTepWBHEqEjQs47HZ21dfvcgETV8ovaJ59vY1rQbi4dzKp+swccwCE
+         yoKNg1vQ7f8haUoV7EPCiMm4JXjqOzywrdWE8hRgawdHbFgXUy6MoznmNBJSqTLnnPlU
+         qETg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jHFnyH790m7nlnJSVskIB0W5pLoFkbMx9bIb16KHmNs=;
+        b=Rv+/O1qL3ZeideIDULq0f8B12DTN5VzKRKf2PbsA+KyZ1lx0Wca5zqRerr4IY2MJ+1
+         Fk9pFb7Xp+3eBFWJ9cPGVvrDAjMM5KQVCaTL3xIh2neoh1IhU6IZ3Cz2uAPIJiMnPnKe
+         zxdmaKAfR6Pks907g2d1vc7lcvTVZ3FkGpe2Zf+hDoFy2Cy18zgvgWli35G45vpluISX
+         TkIVjPRONo93MMNJnMubSnUdNicz93CgiCuP0V5f6M2YsSOSmi/MAPnrRILARtkWfw4Q
+         m0fSY2Q7ijPWv4vPlRSeB0jvD3I0dbbD93xegUTip10U97h7U8fb44GAsFMYgcqAN70N
+         GW/g==
+X-Gm-Message-State: AOAM533rY5WmBe3A/x2Hp1rza8Pr7AE2x9okusIZITnCrHthAM5+xhSu
+        eUG9lN9VdzDDAfU+2S2+3bHyyCIszSCdFoLzdoVdBw==
+X-Google-Smtp-Source: ABdhPJynHravulos9kvEdqamWTrNiSmYhNidO9oViyVVCdPE2tLwU/SEvGYCabUTT73f1QcoYRDQDCmbc0htVFMoh9Y=
+X-Received: by 2002:ac2:5a41:: with SMTP id r1mr2870906lfn.117.1612540757833;
+ Fri, 05 Feb 2021 07:59:17 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.43.162.194]
-X-ClientProxiedBy: EX13D11UWB002.ant.amazon.com (10.43.161.20) To
- EX13D31EUA001.ant.amazon.com (10.43.165.15)
+References: <20210205062719.74431-1-songmuchun@bytedance.com>
+ <YB0DnAlCaQza4Uf9@dhcp22.suse.cz> <CAMZfGtVhBrwgkJVwiah6eDsppSf8fYp+uZ=tZmHBLDFeTmQX3w@mail.gmail.com>
+ <YB0euLiMU+T/9bMK@dhcp22.suse.cz>
+In-Reply-To: <YB0euLiMU+T/9bMK@dhcp22.suse.cz>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Fri, 5 Feb 2021 07:59:06 -0800
+Message-ID: <CALvZod65SY3yVXSwxO02VCZeEg9KsBqq9_Ph3pq2gfQ0eH=kFw@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH] mm: memcontrol: remove rcu_read_lock from get_mem_cgroup_from_page
+To:     Michal Hocko <mhocko@suse.com>, Roman Gushchin <guro@fb.com>
+Cc:     Muchun Song <songmuchun@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Cgroups <cgroups@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 5 Feb 2021 16:29:41 +0100 Greg KH <greg@kroah.com> wrote:
++Cc Roman
 
-> On Thu, Feb 04, 2021 at 04:31:43PM +0100, SeongJae Park wrote:
-> > From: SeongJae Park <sjpark@amazon.de>
-> > 
-> > DAMON is designed to be used by kernel space code such as the memory
-> > management subsystems, and therefore it provides only kernel space API.
-> > That said, letting the user space control DAMON could provide some
-> > benefits to them.  For example, it will allow user space to analyze
-> > their specific workloads and make their own special optimizations.
-> > 
-> > For such cases, this commit implements a simple DAMON application kernel
-> > module, namely 'damon-dbgfs', which merely wraps the DAMON api and
-> > exports those to the user space via the debugfs.
-> > 
-> > 'damon-dbgfs' exports three files, ``attrs``, ``target_ids``, and
-> > ``monitor_on`` under its debugfs directory, ``<debugfs>/damon/``.
-[...]
-> > ---
-> >  include/linux/damon.h |   3 +
-> >  mm/damon/Kconfig      |   9 +
-> >  mm/damon/Makefile     |   1 +
-> >  mm/damon/core.c       |  47 +++++
-> >  mm/damon/dbgfs.c      | 387 ++++++++++++++++++++++++++++++++++++++++++
-> >  5 files changed, 447 insertions(+)
-> >  create mode 100644 mm/damon/dbgfs.c
-[...]
-> > diff --git a/mm/damon/dbgfs.c b/mm/damon/dbgfs.c
-> > new file mode 100644
-> > index 000000000000..db15380737d1
-> > --- /dev/null
-> > +++ b/mm/damon/dbgfs.c
-[...]
-> > +
-> > +static int dbgfs_fill_ctx_dir(struct dentry *dir, struct damon_ctx *ctx)
-> > +{
-> > +	const char * const file_names[] = {"attrs", "target_ids"};
-> > +	const struct file_operations *fops[] = {&attrs_fops, &target_ids_fops};
-> > +	int i;
-> > +
-> > +	for (i = 0; i < ARRAY_SIZE(file_names); i++) {
-> > +		if (!debugfs_create_file(file_names[i], 0600, dir,
-> > +					ctx, fops[i])) {
-> > +			pr_err("failed to create %s file\n", file_names[i]);
-> > +			return -ENOMEM;
-> 
-> No need to check the return value of this function, just keep going and
-> ignore it as there's nothing to do and kernel code should not do
-> different things based on the output of any debugfs calls.
-> 
-> Also, this check is totally wrong and doesn't do what you think it is
-> doing...
+On Fri, Feb 5, 2021 at 2:49 AM Michal Hocko <mhocko@suse.com> wrote:
+>
+[snip]
+> > > > Also, css_get is enough because page
+> > > > has a reference to the memcg.
+> > >
+> > > tryget used to be there to guard against offlined memcg but we have
+> > > concluded this is impossible in this path. tryget stayed there to catch
+> > > some unexpected cases IIRC.
+> >
+> > Yeah, it can catch some unexpected cases. But why is this path
+> > special so that we need a tryget?
+>
+> I do not remember details and the changelog of that change is not
+> explicit but I suspect it was just because this one could trigger as
+> there are external callers to memcg. Is this protection needed? I am not
+> sure, this is for you to justify if you want to remove it.
+>
 
-Ok, I will drop the check.
+It used to be css_tryget_online() which was changed to css_tryget()
+and from the discussion at [1], it seemed css_get() would be enough
+but we took a safer route.
 
-> 
-> > +static int __init __damon_dbgfs_init(void)
-> > +{
-> > +	struct dentry *dbgfs_root;
-> > +	const char * const file_names[] = {"monitor_on"};
-> > +	const struct file_operations *fops[] = {&monitor_on_fops};
-> > +	int i;
-> > +
-> > +	dbgfs_root = debugfs_create_dir("damon", NULL);
-> > +	if (IS_ERR(dbgfs_root)) {
-> > +		pr_err("failed to create the dbgfs dir\n");
-> > +		return PTR_ERR(dbgfs_root);
-> 
-> Again, no need to check anything, just pass the result of a debugfs call
-> back into another one just fine.
+Anyways, I think we can either take the page_memcg_rcu() route or put
+explicit restrictions with page lock or lock_page_memcg() to guarantee
+page and memcg binding. I don't have a strong opinion either way but I
+think removing restrictions in future for new use-cases will be much
+harder, so, page_memcg_rcu() approach seems more appropriate at least
+for now.
 
-Ok.
-
-> 
-> > +	}
-> > +
-> > +	for (i = 0; i < ARRAY_SIZE(file_names); i++) {
-> > +		if (!debugfs_create_file(file_names[i], 0600, dbgfs_root,
-> > +					NULL, fops[i])) {
-> 
-> Again, this isn't checking what you think it is, so please don't do it.
-
-Got it.
-
-I will fix those as you suggested in the next version.
-
-
-Thanks,
-SeongJae Park
-
-> 
-> thanks,
-> 
-> greg k-h
+[1] https://lore.kernel.org/linux-mm/CALvZod5pAv=u8L2Tgk0hDY7XAiiF2dvjC1omQ5BSfzFu_2zSXA@mail.gmail.com/
