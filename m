@@ -2,243 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CD83311210
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 21:16:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F30BD3111D9
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 21:06:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233152AbhBESc5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 13:32:57 -0500
-Received: from mga17.intel.com ([192.55.52.151]:42608 "EHLO mga17.intel.com"
+        id S233325AbhBESU2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 13:20:28 -0500
+Received: from mga17.intel.com ([192.55.52.151]:43424 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233143AbhBEPL2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 10:11:28 -0500
-IronPort-SDR: NkLN0s19u8Q/8hvsgluBacSZ5pKfWvLOmlIKslq1VYpPAV+KToHycNgAG4kX28mm8ziEqRIJVL
- X2N0xHWGF6ow==
-X-IronPort-AV: E=McAfee;i="6000,8403,9885"; a="161198910"
+        id S233181AbhBEPTi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 10:19:38 -0500
+IronPort-SDR: rxS+TVhcopjXwZ6XmNNrx8MUSPNNRE0ZzC1GQoI0Q3p8Ch9m2Q+5urUnMqBGXv50cctWeIWhi1
+ AriKJC9FuxqA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9885"; a="161202209"
 X-IronPort-AV: E=Sophos;i="5.81,155,1610438400"; 
-   d="scan'208";a="161198910"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2021 07:16:48 -0800
-IronPort-SDR: L6EeRbz108IYTNk9eBnTyBrwHatHHod7ZI3K9FukzPCs+cX2c3y9djaf9hX7BzNKfU83xCVG+5
- gmDjzeP2MZlA==
-X-ExtLoop1: 1
+   d="scan'208";a="161202209"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2021 07:46:05 -0800
+IronPort-SDR: fKiQcixdo1R4YTDE5iV17j5dO3VrKf4tjh90qvMYApi6TvuIeeYcXZs/aZ62r1MI4oRvvI9UC+
+ XvVZIISPmdaA==
 X-IronPort-AV: E=Sophos;i="5.81,155,1610438400"; 
-   d="scan'208";a="358274762"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga007.fm.intel.com with ESMTP; 05 Feb 2021 07:16:45 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1000)
-        id 2207C411; Fri,  5 Feb 2021 17:16:41 +0200 (EET)
-From:   "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-To:     Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     x86@kernel.org, Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        "H . J . Lu" <hjl.tools@gmail.com>,
-        Andi Kleen <ak@linux.intel.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: [RFC 9/9] x86/mm: Implement PR_SET/GET_TAGGED_ADDR_CTRL with LAM
-Date:   Fri,  5 Feb 2021 18:16:30 +0300
-Message-Id: <20210205151631.43511-11-kirill.shutemov@linux.intel.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210205151631.43511-1-kirill.shutemov@linux.intel.com>
-References: <20210205151631.43511-1-kirill.shutemov@linux.intel.com>
+   d="scan'208";a="434502902"
+Received: from rhweight-wrk1.ra.intel.com ([137.102.106.42])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2021 07:46:05 -0800
+Date:   Fri, 5 Feb 2021 07:47:22 -0800 (PST)
+From:   matthew.gerlach@linux.intel.com
+X-X-Sender: mgerlach@rhweight-WRK1
+To:     Russ Weight <russell.h.weight@intel.com>
+cc:     mdf@kernel.org, linux-fpga@vger.kernel.org,
+        linux-kernel@vger.kernel.org, trix@redhat.com, lgoncalv@redhat.com,
+        yilun.xu@intel.com, hao.wu@intel.com, matthew.gerlach@intel.com
+Subject: Re: [PATCH v4 1/1] fpga: dfl: afu: harden port enable logic
+In-Reply-To: <20210204212713.256021-1-russell.h.weight@intel.com>
+Message-ID: <alpine.DEB.2.22.394.2102050747010.1307505@rhweight-WRK1>
+References: <20210204212713.256021-1-russell.h.weight@intel.com>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII; format=flowed
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Provide prctl() interface to enabled LAM for user addresses. Depending
-how many tag bits requested it may result in enabling LAM_U57 or
-LAM_U48.
+Reviewed-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
 
-If LAM_U48 is enabled, the process is no longer able to use full address
-space on 5-level paging machine and gets limited to 47-bit VA.
+On Thu, 4 Feb 2021, Russ Weight wrote:
 
-Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
----
- arch/x86/include/asm/processor.h |  10 +++
- arch/x86/kernel/process_64.c     | 145 +++++++++++++++++++++++++++++++
- 2 files changed, 155 insertions(+)
-
-diff --git a/arch/x86/include/asm/processor.h b/arch/x86/include/asm/processor.h
-index 82a08b585818..49fac2cc4329 100644
---- a/arch/x86/include/asm/processor.h
-+++ b/arch/x86/include/asm/processor.h
-@@ -810,6 +810,16 @@ extern void start_thread(struct pt_regs *regs, unsigned long new_ip,
- extern int get_tsc_mode(unsigned long adr);
- extern int set_tsc_mode(unsigned int val);
- 
-+#ifdef CONFIG_X86_64
-+long set_tagged_addr_ctrl(unsigned long flags,
-+			  int __user *nr_bits, int __user *offset);
-+long get_tagged_addr_ctrl(int __user *nr_bits, int __user *offset);
-+#define SET_TAGGED_ADDR_CTRL(flags, nr_bits, offset)	\
-+	set_tagged_addr_ctrl(flags, nr_bits, offset)
-+#define GET_TAGGED_ADDR_CTRL(nr_bits, offset)		\
-+	get_tagged_addr_ctrl(nr_bits, offset)
-+#endif
-+
- DECLARE_PER_CPU(u64, msr_misc_features_shadow);
- 
- #ifdef CONFIG_CPU_SUP_AMD
-diff --git a/arch/x86/kernel/process_64.c b/arch/x86/kernel/process_64.c
-index df342bedea88..99b87f0e1bc7 100644
---- a/arch/x86/kernel/process_64.c
-+++ b/arch/x86/kernel/process_64.c
-@@ -837,3 +837,148 @@ unsigned long KSTK_ESP(struct task_struct *task)
- {
- 	return task_pt_regs(task)->sp;
- }
-+
-+/*
-+ * Control the relaxed ABI allowing tagged user addresses into the kernel.
-+ */
-+static unsigned int tagged_addr_disabled;
-+
-+static bool lam_u48_allowed(void)
-+{
-+	struct mm_struct *mm = current->mm;
-+
-+	if (!full_va_allowed(mm))
-+		return true;
-+
-+	return find_vma(mm, DEFAULT_MAP_WINDOW) == NULL;
-+}
-+
-+#define LAM_U48_BITS 15
-+#define LAM_U57_BITS 6
-+
-+long set_tagged_addr_ctrl(unsigned long flags,
-+			  int __user *nr_bits, int __user *offset)
-+{
-+	int val;
-+
-+	if (in_32bit_syscall())
-+		return -EINVAL;
-+	if (flags & ~PR_TAGGED_ADDR_ENABLE)
-+		return -EINVAL;
-+	if (!boot_cpu_has(X86_FEATURE_LAM))
-+		return -ENOTSUPP;
-+
-+	/* Disable LAM */
-+	if (!(flags & PR_TAGGED_ADDR_ENABLE)) {
-+		clear_thread_flag(TIF_LAM_U48);
-+		clear_thread_flag(TIF_LAM_U57);
-+
-+		/* Update CR3 */
-+		switch_mm(current->mm, current->mm, current);
-+
-+		return 0;
-+	}
-+
-+	/*
-+	 * nr_bits == NULL || offset == NULL assumes ARM TBI (nr_bits == 8,
-+	 * offset == 56). LAM cannot provide this.
-+	 */
-+	if (!nr_bits || !offset)
-+		return -EINVAL;
-+
-+	/*
-+	 * Do not allow the enabling of the tagged address ABI if globally
-+	 * disabled via sysctl abi.tagged_addr_disabled.
-+	 */
-+	if (tagged_addr_disabled)
-+		return -EINVAL;
-+
-+	if (get_user(val, nr_bits))
-+		return -EFAULT;
-+	if (val > LAM_U48_BITS || val < 1)
-+		return -EINVAL;
-+	if (val > LAM_U57_BITS && !lam_u48_allowed())
-+		return -EINVAL;
-+
-+	val = val > LAM_U57_BITS ? LAM_U48_BITS : LAM_U57_BITS;
-+	if (put_user(val, nr_bits) || put_user(63 - val, offset))
-+		return -EFAULT;
-+
-+	if (val == LAM_U57_BITS) {
-+		clear_thread_flag(TIF_LAM_U48);
-+		set_thread_flag(TIF_LAM_U57);
-+		if (current->mm->context.lam == LAM_NONE)
-+			current->mm->context.lam = LAM_U57;
-+	} else {
-+		clear_thread_flag(TIF_LAM_U57);
-+		set_thread_flag(TIF_LAM_U48);
-+
-+		/*
-+		 * Do not allow to create a mapping above 47 bit.
-+		 *
-+		 * It's one way road: once a thread of the process enabled
-+		 * LAM_U48, no thread can ever create mapping above 47 bit.
-+		 * Even the LAM got disabled later.
-+		 */
-+		current->mm->context.lam = LAM_U48;
-+	}
-+
-+	/* Update CR3 */
-+	switch_mm(current->mm, current->mm, current);
-+
-+	return 0;
-+}
-+
-+long get_tagged_addr_ctrl(int __user *nr_bits, int __user *offset)
-+{
-+	if (in_32bit_syscall())
-+		return -EINVAL;
-+
-+	if (test_thread_flag(TIF_LAM_U57)) {
-+		if (nr_bits && put_user(LAM_U57_BITS, nr_bits))
-+			return -EFAULT;
-+		if (offset && put_user(63 - LAM_U57_BITS, offset))
-+			return -EFAULT;
-+	} else if (test_thread_flag(TIF_LAM_U48)) {
-+		if (nr_bits && put_user(LAM_U48_BITS, nr_bits))
-+			return -EFAULT;
-+		if (offset && put_user(63 - LAM_U48_BITS, offset))
-+			return -EFAULT;
-+	} else {
-+		int max_bits = lam_u48_allowed() ? LAM_U48_BITS : LAM_U57_BITS;
-+
-+		/* Report maximum tag size */
-+		if (nr_bits && put_user(max_bits, nr_bits))
-+		    return -EFAULT;
-+		return 0;
-+	}
-+
-+	return PR_TAGGED_ADDR_ENABLE;
-+}
-+
-+/*
-+ * Global sysctl to disable the tagged user addresses support. This control
-+ * only prevents the tagged address ABI enabling via prctl() and does not
-+ * disable it for tasks that already opted in to the relaxed ABI.
-+ */
-+
-+static struct ctl_table tagged_addr_sysctl_table[] = {
-+	{
-+		.procname	= "tagged_addr_disabled",
-+		.mode		= 0644,
-+		.data		= &tagged_addr_disabled,
-+		.maxlen		= sizeof(int),
-+		.proc_handler	= proc_dointvec_minmax,
-+		.extra1		= SYSCTL_ZERO,
-+		.extra2		= SYSCTL_ONE,
-+	},
-+	{ }
-+};
-+
-+static int __init tagged_addr_init(void)
-+{
-+	if (!register_sysctl("abi", tagged_addr_sysctl_table))
-+		return -EINVAL;
-+	return 0;
-+}
-+core_initcall(tagged_addr_init);
--- 
-2.26.2
-
+> Port enable is not complete until ACK = 0. Change
+> __afu_port_enable() to guarantee that the enable process
+> is complete by polling for ACK == 0.
+>
+> Reviewed-by: Tom Rix <trix@redhat.com>
+> Signed-off-by: Russ Weight <russell.h.weight@intel.com>
+> ---
+> v4:
+>  - Added a dev_warn() call for the -EINVAL case of afu_port_err_clear()
+>  - Modified dev_err() message in __afu_port_disable() to say "disable"
+>    instead of "reset"
+> v3:
+>  - afu_port_err_clear() changed to prioritize port_enable failure over
+>    other a detected mismatch in port errors.
+>  - reorganized code in port_reset() to be more readable.
+> v2:
+>  - Fixed typo in commit message
+> ---
+> drivers/fpga/dfl-afu-error.c | 10 ++++++----
+> drivers/fpga/dfl-afu-main.c  | 33 +++++++++++++++++++++++----------
+> drivers/fpga/dfl-afu.h       |  2 +-
+> 3 files changed, 30 insertions(+), 15 deletions(-)
+>
+> diff --git a/drivers/fpga/dfl-afu-error.c b/drivers/fpga/dfl-afu-error.c
+> index c4691187cca9..601e599fc33d 100644
+> --- a/drivers/fpga/dfl-afu-error.c
+> +++ b/drivers/fpga/dfl-afu-error.c
+> @@ -52,7 +52,7 @@ static int afu_port_err_clear(struct device *dev, u64 err)
+> 	struct dfl_feature_platform_data *pdata = dev_get_platdata(dev);
+> 	struct platform_device *pdev = to_platform_device(dev);
+> 	void __iomem *base_err, *base_hdr;
+> -	int ret = -EBUSY;
+> +	int enable_ret = 0, ret = -EBUSY;
+> 	u64 v;
+>
+> 	base_err = dfl_get_feature_ioaddr_by_id(dev, PORT_FEATURE_ID_ERROR);
+> @@ -96,18 +96,20 @@ static int afu_port_err_clear(struct device *dev, u64 err)
+> 		v = readq(base_err + PORT_FIRST_ERROR);
+> 		writeq(v, base_err + PORT_FIRST_ERROR);
+> 	} else {
+> +		dev_warn(dev, "__func__: received 0x%llx, expected 0x%llx\n",
+> +			 v, err);
+> 		ret = -EINVAL;
+> 	}
+>
+> 	/* Clear mask */
+> 	__afu_port_err_mask(dev, false);
+>
+> -	/* Enable the Port by clear the reset */
+> -	__afu_port_enable(pdev);
+> +	/* Enable the Port by clearing the reset */
+> +	enable_ret = __afu_port_enable(pdev);
+>
+> done:
+> 	mutex_unlock(&pdata->lock);
+> -	return ret;
+> +	return enable_ret ? enable_ret : ret;
+> }
+>
+> static ssize_t errors_show(struct device *dev, struct device_attribute *attr,
+> diff --git a/drivers/fpga/dfl-afu-main.c b/drivers/fpga/dfl-afu-main.c
+> index 753cda4b2568..77dadaae5b8f 100644
+> --- a/drivers/fpga/dfl-afu-main.c
+> +++ b/drivers/fpga/dfl-afu-main.c
+> @@ -21,6 +21,9 @@
+>
+> #include "dfl-afu.h"
+>
+> +#define RST_POLL_INVL 10 /* us */
+> +#define RST_POLL_TIMEOUT 1000 /* us */
+> +
+> /**
+>  * __afu_port_enable - enable a port by clear reset
+>  * @pdev: port platform device.
+> @@ -32,7 +35,7 @@
+>  *
+>  * The caller needs to hold lock for protection.
+>  */
+> -void __afu_port_enable(struct platform_device *pdev)
+> +int __afu_port_enable(struct platform_device *pdev)
+> {
+> 	struct dfl_feature_platform_data *pdata = dev_get_platdata(&pdev->dev);
+> 	void __iomem *base;
+> @@ -41,7 +44,7 @@ void __afu_port_enable(struct platform_device *pdev)
+> 	WARN_ON(!pdata->disable_count);
+>
+> 	if (--pdata->disable_count != 0)
+> -		return;
+> +		return 0;
+>
+> 	base = dfl_get_feature_ioaddr_by_id(&pdev->dev, PORT_FEATURE_ID_HEADER);
+>
+> @@ -49,10 +52,20 @@ void __afu_port_enable(struct platform_device *pdev)
+> 	v = readq(base + PORT_HDR_CTRL);
+> 	v &= ~PORT_CTRL_SFTRST;
+> 	writeq(v, base + PORT_HDR_CTRL);
+> -}
+>
+> -#define RST_POLL_INVL 10 /* us */
+> -#define RST_POLL_TIMEOUT 1000 /* us */
+> +	/*
+> +	 * HW clears the ack bit to indicate that the port is fully out
+> +	 * of reset.
+> +	 */
+> +	if (readq_poll_timeout(base + PORT_HDR_CTRL, v,
+> +			       !(v & PORT_CTRL_SFTRST_ACK),
+> +			       RST_POLL_INVL, RST_POLL_TIMEOUT)) {
+> +		dev_err(&pdev->dev, "timeout, failure to enable device\n");
+> +		return -ETIMEDOUT;
+> +	}
+> +
+> +	return 0;
+> +}
+>
+> /**
+>  * __afu_port_disable - disable a port by hold reset
+> @@ -86,7 +99,7 @@ int __afu_port_disable(struct platform_device *pdev)
+> 	if (readq_poll_timeout(base + PORT_HDR_CTRL, v,
+> 			       v & PORT_CTRL_SFTRST_ACK,
+> 			       RST_POLL_INVL, RST_POLL_TIMEOUT)) {
+> -		dev_err(&pdev->dev, "timeout, fail to reset device\n");
+> +		dev_err(&pdev->dev, "timeout, failure to disable device\n");
+> 		return -ETIMEDOUT;
+> 	}
+>
+> @@ -111,9 +124,9 @@ static int __port_reset(struct platform_device *pdev)
+>
+> 	ret = __afu_port_disable(pdev);
+> 	if (!ret)
+> -		__afu_port_enable(pdev);
+> +		return ret;
+>
+> -	return ret;
+> +	return __afu_port_enable(pdev);
+> }
+>
+> static int port_reset(struct platform_device *pdev)
+> @@ -872,11 +885,11 @@ static int afu_dev_destroy(struct platform_device *pdev)
+> static int port_enable_set(struct platform_device *pdev, bool enable)
+> {
+> 	struct dfl_feature_platform_data *pdata = dev_get_platdata(&pdev->dev);
+> -	int ret = 0;
+> +	int ret;
+>
+> 	mutex_lock(&pdata->lock);
+> 	if (enable)
+> -		__afu_port_enable(pdev);
+> +		ret = __afu_port_enable(pdev);
+> 	else
+> 		ret = __afu_port_disable(pdev);
+> 	mutex_unlock(&pdata->lock);
+> diff --git a/drivers/fpga/dfl-afu.h b/drivers/fpga/dfl-afu.h
+> index 576e94960086..e5020e2b1f3d 100644
+> --- a/drivers/fpga/dfl-afu.h
+> +++ b/drivers/fpga/dfl-afu.h
+> @@ -80,7 +80,7 @@ struct dfl_afu {
+> };
+>
+> /* hold pdata->lock when call __afu_port_enable/disable */
+> -void __afu_port_enable(struct platform_device *pdev);
+> +int __afu_port_enable(struct platform_device *pdev);
+> int __afu_port_disable(struct platform_device *pdev);
+>
+> void afu_mmio_region_init(struct dfl_feature_platform_data *pdata);
+> -- 
+> 2.25.1
+>
+>
