@@ -2,98 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D92093111E4
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 21:06:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B1E63111E9
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 21:09:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233445AbhBESXa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 13:23:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37522 "EHLO
+        id S233265AbhBESYD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 13:24:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233465AbhBESVj (ORCPT
+        with ESMTP id S233552AbhBESWJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 13:21:39 -0500
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F869C061788
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 12:03:23 -0800 (PST)
-Received: by mail-ot1-x331.google.com with SMTP id v1so8039112ott.10
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 12:03:23 -0800 (PST)
+        Fri, 5 Feb 2021 13:22:09 -0500
+Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 077EEC06174A
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 12:03:54 -0800 (PST)
+Received: by mail-il1-x130.google.com with SMTP id e7so6916616ile.7
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 12:03:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=gbEhNHNmugKLJCiX2KXjV/LxdZ+gCz+sfTdhU2+sb8o=;
-        b=hbBndiN61VScugSn8g5PdH5dOEpNc1vTlDgcO3sD8O0Q6YfsnCaurJGZNYTTpb+NeL
-         2C00ky9tWgh3CuOv2jxbTmdNpPk9XqWrjq7gXRCFpc/iaSrlsuWJa6bt03UGWa5Rq276
-         hTV4GgzREQQ4e8s4GIvRWcWvDOh9qfgu3LyAQ=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=9LzQ0yzRIqea5+VCWiNb3AgYRyWhw05TrVlxXakHq9o=;
+        b=BCn49+MA9XNXAcZ+CwOimBFTRu77VcHwdstpfcWNbIcxxz2OiJHkU4Pnn4Zj7nqP0q
+         9edGlb/UJZeHxkCiN9THKdEZ6L3LFlbGRJHJ+aEGQ7Jq/nlYWI7zOd6cEwG5adLs+9k3
+         4y8TfFdN8bIa886Aons3eR4Slof/O67ATT7+ID1zBkJ80eejS5P8RliS7Rr9UyHLJjpj
+         BNe3euFg9UKT5WDPqqYLH1YRzCS+nOLeIwPiaDAixvBF8uY9A2LMK9uzfgGuEOrkC02v
+         BGk8N4JGhieyrYQyUprh+5mtzbOXJ4IP4x4ZWmQnqFGtvggzhBLJGFXkgwkNQSyEfDTI
+         9Wkg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=gbEhNHNmugKLJCiX2KXjV/LxdZ+gCz+sfTdhU2+sb8o=;
-        b=IAyVAz/sT5g+VcP/hA5PMxXgkVaZjDtrseg5qqM297CL1q9w+OAQpKyykS5P93dff6
-         wDxAXjDJA9AQqIB33NHaB8o+NNRXfoiskFbAziw4H+cax1/xDcfDhIrw97mMhxHKJIPl
-         c4jdhVQuCj5yoM9+YNm47GvGHStmFB5ro6IDp2Lsimrx/v8IhFE0mnfr+RBDy7tEkTWa
-         hvUeDS9artD9skUio9iAHqcP1PG3g5z3IgOnKHkSeBdG57y8B2YZBFjb7zowsX0/FAP8
-         E0V0h51CR7hTHuiAlw0W1jQpXUNUZdQkwY5QTj2c+kLWWhS82/2RoLvNRu4moocR8w1e
-         MZZg==
-X-Gm-Message-State: AOAM530S6Dh5jrWES9sGS5Tiapy+bTt5bB8aL4uGUa9HMbYi6BlFiUVM
-        33LunK9NM8MvtzLV8Vi4bq4HXQ==
-X-Google-Smtp-Source: ABdhPJyzu0tvcLo4s7d2FrIQ4o1zmYD8+me/HyP+MRVvqQ5v4ul3YMRLWMniCJpUPs1SigUqE0QdTg==
-X-Received: by 2002:a05:6830:1dad:: with SMTP id z13mr4489856oti.223.1612555401135;
-        Fri, 05 Feb 2021 12:03:21 -0800 (PST)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id m7sm2002833otq.33.2021.02.05.12.03.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 05 Feb 2021 12:03:20 -0800 (PST)
-Subject: Re: [PATCH v3 1/7] seqnum_ops: Introduce Sequence Number Ops
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     corbet@lwn.net, peterz@infradead.org, keescook@chromium.org,
-        rafael@kernel.org, lenb@kernel.org, james.morse@arm.com,
-        tony.luck@intel.com, bp@alien8.de, devel@driverdev.osuosl.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-acpi@vger.kernel.org, linux-kselftest@vger.kernel.org
-References: <cover.1612314468.git.skhan@linuxfoundation.org>
- <23f6347a7bb9f902babe7351f71b23644035673d.1612314468.git.skhan@linuxfoundation.org>
- <YB0WzBnLd+OcpxEE@kroah.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <2fe15f90-2e33-d018-0d5d-cabe3846ed98@linuxfoundation.org>
-Date:   Fri, 5 Feb 2021 13:03:18 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=9LzQ0yzRIqea5+VCWiNb3AgYRyWhw05TrVlxXakHq9o=;
+        b=EfcqPAUR5DSDgnlbUryOmGGxWRHyAXc+iHuq117YJma8YVaU7KY40dBVnWWx+7QxPi
+         V95gg13MTLLr86AddpQFBAblUJ1tVghfI5OpzLpWMRgIdBazlItUKnaMIoeA+mAZgTHP
+         oIRsiGtlDuHazexQ7P8SbMdpUeYqLvBAfEfgxSY7pzwW2kgVCXm/U9ivICmcd/vrBrL/
+         //sHr+JJ0JgHsn9RCjUiTJ1CVX+v4W1n4G1uKZ6zQyyKtkV//qjA3DfIFzawapVU5JkN
+         LH/2siL7ADr2hIrCqdcJbB/Mdl4O89Pzmez1PZoGMqdMmgAJWgushjB10MNEnf3MtkQx
+         cgMA==
+X-Gm-Message-State: AOAM532i/CbNEdQZghDr5exejGtlGIBL/9YolaWqlA28xw2cmtxDrBZm
+        /6YCR7kAlSOiISody+MexyMSa9wN9cNQhPpIJdVJXtRPVe16hQ==
+X-Google-Smtp-Source: ABdhPJzsgleE8Go2JxRC438aJBVGZoifR0CJMFKPoOXnnZdlJsJ39/Bhk5hTzSyraVWmb3b2q++OTlc3RuiOxqIGwN4=
+X-Received: by 2002:a92:d485:: with SMTP id p5mr5019489ilg.114.1612555433554;
+ Fri, 05 Feb 2021 12:03:53 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <YB0WzBnLd+OcpxEE@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210129082726.19406-1-ruifeng.zhang0110@gmail.com>
+ <YBPNAoitmgnTxiqQ@kroah.com> <CAG7+-3NGUgryomKB=_W=p9nADPJVnns_x9oWpAFCEei7RiyrOA@mail.gmail.com>
+ <CAJZ5v0gh1y14mipnwJKE+-7FKzasMMTTzZY_dTpuepHGjyK-xg@mail.gmail.com>
+ <CAG7+-3N=vonV+8y0bTXXh72vJGUqMrjyu_d4sztzpPkrPj7KeQ@mail.gmail.com> <CAJZ5v0gvkF7y6a7ZeNippUAyWd7FfSKh4BmGS+ckT_HNkpQBTw@mail.gmail.com>
+In-Reply-To: <CAJZ5v0gvkF7y6a7ZeNippUAyWd7FfSKh4BmGS+ckT_HNkpQBTw@mail.gmail.com>
+From:   Ruifeng Zhang <ruifeng.zhang0110@gmail.com>
+Date:   Sat, 6 Feb 2021 04:03:41 +0800
+Message-ID: <CAG7+-3MHSbGt6h+fJUEcF9Hqf8RpJLyG=7ySx_qeMvaQNpubuA@mail.gmail.com>
+Subject: Re: [PATCH] RFC syscore: add suspend type to syscore
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Greg KH <gregkh@linuxfoundation.org>, ruifeng.zhang1@unisoc.com,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Chunyan Zhang <chunyan.zhang@unisoc.com>, ke.wang@unisoc.com,
+        nianfu.bai@unisoc.com, orson.zhai@unisoc.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/5/21 2:58 AM, Greg KH wrote:
-> On Wed, Feb 03, 2021 at 11:11:57AM -0700, Shuah Khan wrote:
->> +static inline u32 seqnum32_inc(struct seqnum32 *seq)
->> +{
->> +	atomic_t val = ATOMIC_INIT(seq->seqnum);
->> +
->> +	seq->seqnum = (u32) atomic_inc_return(&val);
->> +	if (seq->seqnum >= UINT_MAX)
->> +		pr_info("Sequence Number overflow %u detected\n",
->> +			seq->seqnum);
->> +	return seq->seqnum;
-> 
-> As Peter points out, this is doing doing what you think it is doing :(
-> 
-> Why do you not just have seq->seqnum be a real atomic variable?  Trying
-> to switch to/from one like this does not work as there is no
-> "atomic-ness" happening here at all.
-> 
-
-Yes. This is sloppy on my part. As Peter and Rafael also pointed. I have
-to start paying more attention to my inner voice.
-
-thanks,
--- Shuah
-
-
-
+Rafael J. Wysocki <rafael@kernel.org> =E4=BA=8E2021=E5=B9=B42=E6=9C=885=E6=
+=97=A5=E5=91=A8=E4=BA=94 =E4=B8=8B=E5=8D=887:39=E5=86=99=E9=81=93=EF=BC=9A
+>
+> On Fri, Feb 5, 2021 at 11:28 AM Ruifeng Zhang
+> <ruifeng.zhang0110@gmail.com> wrote:
+> >
+> > Rafael J. Wysocki <rafael@kernel.org> =E4=BA=8E2021=E5=B9=B42=E6=9C=884=
+=E6=97=A5=E5=91=A8=E5=9B=9B =E4=B8=8B=E5=8D=889:38=E5=86=99=E9=81=93=EF=BC=
+=9A
+> > >
+> > > On Thu, Feb 4, 2021 at 10:07 AM Ruifeng Zhang
+> > > <ruifeng.zhang0110@gmail.com> wrote:
+> > > >
+> > > > Greg KH <gregkh@linuxfoundation.org> =E4=BA=8E2021=E5=B9=B41=E6=9C=
+=8829=E6=97=A5=E5=91=A8=E4=BA=94 =E4=B8=8B=E5=8D=884:53=E5=86=99=E9=81=93=
+=EF=BC=9A
+> > > > >
+> > > > > On Fri, Jan 29, 2021 at 04:27:26PM +0800, Ruifeng Zhang wrote:
+> > > > > > From: Ruifeng Zhang <ruifeng.zhang1@unisoc.com>
+> > > > > >
+> > > > > > Suspend type contains s2ram and s2idle, but syscore is only
+> > > > > > available for S2RAM.
+> > > > >
+> > > > > Who else needs this?
+> > > > In the s2idle suspend and resume, some vendors want to do some
+> > > > things, for example the vendor implemented the watchdog driver.
+> > >
+> > > Do that in the platform operations then.
+> > >
+> > > Adding the syscore stuff to the suspend-to-idle flow is not an option=
+, sorry.
+> > Excause me, I really still want to know the reason.
+>
+> The conditions to run syscore operations are: with one CPU online and
+> with disabled interrupts on that CPU.  They are not satisfied in the
+> suspend-to-idle flow.  Moreover, none of the existing syscore
+> operations need to be executed for suspend-to-idle except for the
+> timekeeping suspend, but this is done for a special reason.
+>
+> > My requirement is that the watchdog need disable when the system s2idle=
+.
+> > If don't, the watchdog will bark when system resume.
+>
+> So disabled it from s2idle_ops->prepare() or
+> suspend_ops->prepare_late() if device suspend is too early for you.
+I will seriously consider your suggestions, thank you very much.
