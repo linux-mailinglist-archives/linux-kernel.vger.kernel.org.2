@@ -2,56 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 505F0310FBF
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 19:18:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50F76310FB9
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 19:16:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233562AbhBEQei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 11:34:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43288 "EHLO mail.kernel.org"
+        id S233590AbhBEQds (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 11:33:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43310 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233731AbhBEQbV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 11:31:21 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id CAE5A64E4F;
-        Fri,  5 Feb 2021 18:13:02 +0000 (UTC)
+        id S233733AbhBEQbX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 11:31:23 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 6E7A264E50;
+        Fri,  5 Feb 2021 18:13:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612548782;
-        bh=d/fhpgYA4tqMSIDukgjbRU+O4N6UkDxKCfNKwJtRD20=;
+        s=k20201202; t=1612548784;
+        bh=5FjHkHYOt9eZtavVQC5cbPIy3lXBb60Zbdm+IZTyxTM=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=q3BOR8vU7sVK54fGbS95lzy+GSH7g577XOmuTNh5xm9dQ1RlFujlHKmBNQ0J+Help
-         NKqRop8cR5+vh6QDNgVWIwB0kKVDawdEB+y3tBIfbLHmO4tNvHyKw0gFjJgXKbdTo2
-         nNvAU5R2IHKW+5CWdI2Hb37yswoBjeLP/8lSocoMTFnIPDLEfyah8mJJ3s1MXrDg99
-         XdvrLHwpveVCdbryYF+3JmHCTCbhDyRS69JSzi5/AXlVPPVcPhiKQfCtO+TskmQ7JY
-         nacbSQ9GztTAmTLjSJGudEBssgZHskUPetQK2kIL0zMmqPyKiBREOFvvv/GyguA4se
-         pggVxVJ96Ph1g==
+        b=ZQl6+OwmcKSOGk6voDdm9lfqG21+1AtKoOKdrjgCnzB7+aDAy2/WGEFASSVcyATvN
+         O+4QQgU/D5qWNh02e9SaD4a8kWwo3OAjzSVefPH8xpufHxT+mJoTmTXShJ+QYhGr2l
+         sKbONdWh3SXfM2/66zbKO1iVxiynGlloS7vOU02oEKayImytkIwBOzU3wAmTC4dGmI
+         jt88T7l/k8CwxyIjSYFJgI4Fl17mM/TSGdEWbVJzC+Etplx2SfH83kljahDb71hHkx
+         pXACcg9rUROFYXMSJ9YsOMJJEiZy/tanwIQ7U4UMgiZ9RUPF48xLqqXvvEZm9XLcMz
+         xocCiYII8mviQ==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id C585860978;
-        Fri,  5 Feb 2021 18:13:02 +0000 (UTC)
-Subject: Re: [GIT PULL] KVM fixes for 5.11-rc7
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 69C4860978;
+        Fri,  5 Feb 2021 18:13:04 +0000 (UTC)
+Subject: Re: [git pull] drm fixes for 5.11-rc7
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210205080456.30446-1-pbonzini@redhat.com>
-References: <20210205080456.30446-1-pbonzini@redhat.com>
-X-PR-Tracked-List-Id: <kvm.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210205080456.30446-1-pbonzini@redhat.com>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
-X-PR-Tracked-Commit-Id: 031b91a5fe6f1ce61b7617614ddde9ed61e252be
+In-Reply-To: <CAPM=9twvv9LRSTW4t_Q=OLfei1DsXn-fsjO8ad3cSsZ3KeDNhQ@mail.gmail.com>
+References: <CAPM=9twvv9LRSTW4t_Q=OLfei1DsXn-fsjO8ad3cSsZ3KeDNhQ@mail.gmail.com>
+X-PR-Tracked-List-Id: Direct Rendering Infrastructure - Development
+ <dri-devel.lists.freedesktop.org>
+X-PR-Tracked-Message-Id: <CAPM=9twvv9LRSTW4t_Q=OLfei1DsXn-fsjO8ad3cSsZ3KeDNhQ@mail.gmail.com>
+X-PR-Tracked-Remote: git://anongit.freedesktop.org/drm/drm tags/drm-fixes-2021-02-05-1
+X-PR-Tracked-Commit-Id: 59854811c08cfbdf52d79231666e7c07c46ff338
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 6157ce59bf318bd4ee23769c613cf5628d7f457b
-Message-Id: <161254878280.14736.12215442394994778995.pr-tracker-bot@kernel.org>
-Date:   Fri, 05 Feb 2021 18:13:02 +0000
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
+X-PR-Merge-Commit-Id: 8e91dd934be6131143df5db05fb06635581addf9
+Message-Id: <161254878442.14736.6188187964418855985.pr-tracker-bot@kernel.org>
+Date:   Fri, 05 Feb 2021 18:13:04 +0000
+To:     Dave Airlie <airlied@gmail.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        LKML <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri,  5 Feb 2021 03:04:56 -0500:
+The pull request you sent on Fri, 5 Feb 2021 11:43:49 +1000:
 
-> https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
+> git://anongit.freedesktop.org/drm/drm tags/drm-fixes-2021-02-05-1
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/6157ce59bf318bd4ee23769c613cf5628d7f457b
+https://git.kernel.org/torvalds/c/8e91dd934be6131143df5db05fb06635581addf9
 
 Thank you!
 
