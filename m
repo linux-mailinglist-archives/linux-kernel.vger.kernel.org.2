@@ -2,119 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE9AB31094C
+	by mail.lfdr.de (Postfix) with ESMTP id 3E51A31094B
 	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 11:40:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231235AbhBEKjq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 05:39:46 -0500
-Received: from mail.skyhub.de ([5.9.137.197]:43168 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231380AbhBEKfq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 05:35:46 -0500
-Received: from zn.tnic (p200300ec2f0bad000b74c3ca4e4ea61e.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:ad00:b74:c3ca:4e4e:a61e])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id B044D1EC04DF;
-        Fri,  5 Feb 2021 11:35:00 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1612521300;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=mpQ2H03vRziBvKFdKZ6tUIGAARtxtvomCBNzTQhxNf4=;
-        b=WvoLruU+FJx9oOsfBOQwESy/LzPtM5fuXxYRrxKyg2J3ZIJoKMGA6UCqtGykPujB7eGHCP
-        CE43nzJ9O5fKaW0l9aiIQXwVgIfdePyE9JH+TBeUwj7RwBidSDOO+K8MSst2DcREHXcZA2
-        yNNV8rz8NpYhP3dQO7OwMudKDRYQmI0=
-Date:   Fri, 5 Feb 2021 11:34:57 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Ard Biesheuvel <ardb@kernel.org>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, X86 ML <x86@kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        platform-driver-x86@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: Re: [PATCH] x86: efi: avoid BUILD_BUG_ON() for non-constant p4d_index
-Message-ID: <20210205103457.GC17488@zn.tnic>
-References: <20210107223424.4135538-1-arnd@kernel.org>
- <YAHoB4ODvxSqNhsq@rani.riverdale.lan>
- <YAH6r3lak/F2wndp@rani.riverdale.lan>
- <CAMj1kXGZFZciN1_KruCr=g6GANNpRrCLR48b3q13+QfK481C7Q@mail.gmail.com>
- <20210118202409.GG30090@zn.tnic>
- <YAYAvBARSRSg8z8G@rani.riverdale.lan>
- <CAMj1kXHM98-iDYpAozaWEv-qxhZ0-CUMwSdG532x2d+55gXDhQ@mail.gmail.com>
- <20210203185148.GA1711888@localhost>
+        id S231610AbhBEKjX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 05:39:23 -0500
+Received: from mail-lf1-f54.google.com ([209.85.167.54]:39325 "EHLO
+        mail-lf1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231519AbhBEKgQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 05:36:16 -0500
+Received: by mail-lf1-f54.google.com with SMTP id h7so9180135lfc.6
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 02:35:59 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=a6k/aNvuF++mqp+wzBrO3d6/1JtXcTUsmGTcoFLzD7s=;
+        b=MmcCptwWE2QnnWElP9+5z5HBWVFq3yWSHy+QEq0FjYtobxjfIOzbzxd4ueLdmRjPV+
+         21IaiCt+xszMQb71k/WA6RsNMNUMu9IK2oUDt0sREgVVv4ZZmhzv4+DBQm94jNlnt9YK
+         JO994Audgwha9NK43A+kOyWSR3UwCAXdd9CgJs7cyLlxdxaRH+fwgifEcZLp701n8oi0
+         kUHVgWUvhsx8yZPpfM2bDORblnXMgJ/czyqFBL3E0fcnslPBc5XIiaaZKdC8jO5AyXWB
+         V1rsQuWn8GLflfL5YNk7Ma46KNMJgkxGYiItYQlUkFhZ4yo9CCgg990cJK0EJ/TGekPj
+         9Itw==
+X-Gm-Message-State: AOAM5303YHCDtCc7rG/LVsx+v//sS9tz2/59v3VThcSAC0dF/ntgdTMj
+        HznKJD+Tw1QeiFamiC8gXGEFiYksUJuQ3dvkgqY=
+X-Google-Smtp-Source: ABdhPJwmZ4xla/TZQJhXnZFnA2IUpTxnWCjmcQGQbl2Ec8RoS5Ch6+j3XGGVolwHY1I5HPB+rSIior/+Qnij3E/BlOo=
+X-Received: by 2002:a19:d611:: with SMTP id n17mr2304130lfg.494.1612521333936;
+ Fri, 05 Feb 2021 02:35:33 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210203185148.GA1711888@localhost>
+References: <20210205065001.23252-1-yangjihong1@huawei.com>
+In-Reply-To: <20210205065001.23252-1-yangjihong1@huawei.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Fri, 5 Feb 2021 19:35:22 +0900
+Message-ID: <CAM9d7cgGGWtTkReghATVmMnOd=0dBrghBLgEc9AqT_PF-UP1Rg@mail.gmail.com>
+Subject: Re: [PATCH] perf record: Fix continue profiling after draining the buffer
+To:     Yang Jihong <yangjihong1@huawei.com>
+Cc:     amistry@google.com,
+        Alexey Budankov <alexey.budankov@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        zhangjinhao2@huawei.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 03, 2021 at 11:51:48AM -0700, Nathan Chancellor wrote:
-> x86_64 all{mod,yes}config with clang are going to ship broken in 5.11.
+Hello,
 
-Dunno, it is still broken here even with those build assertions removed. And it
-ain't even an all{mod,yes}config - just my machine's config with
+On Fri, Feb 5, 2021 at 3:50 PM Yang Jihong <yangjihong1@huawei.com> wrote:
+>
+> commit da231338ec9c098707c8a1e4d8a50e2400e2fe17 uses eventfd to solve rare race
+> where the setting and checking of 'done' which add done_fd to pollfd.
+> When draining buffer, revents of done_fd is 0 and evlist__filter_pollfd
+> function returns a non-zero value.
+> As a result, perf record does not stop profiling.
+>
+> The following simple scenarios can trigger this condition:
+>
+> sleep 10 &
+> perf record -p $!
+>
+> After the sleep process exits, perf record should stop profiling and exit.
+> However, perf record keeps running.
+>
+> If pollfd revents contains only POLLERR or POLLHUP,
+> perf record indicates that buffer is draining and need to stop profiling.
+> Use fdarray_flag__nonfilterable to set done eventfd to nonfilterable objects,
+> so that evlist__filter_pollfd does not filter and check done eventfd.
+>
+> Fixes: da231338ec9c (perf record: Use an eventfd to wakeup when done)
+> Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
+> ---
+>  tools/perf/builtin-record.c | 2 +-
+>  tools/perf/util/evlist.c    | 8 ++++++++
+>  tools/perf/util/evlist.h    | 4 ++++
+>  3 files changed, 13 insertions(+), 1 deletion(-)
+>
+> diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
+> index fd3911650612..51e593e896ea 100644
+> --- a/tools/perf/builtin-record.c
+> +++ b/tools/perf/builtin-record.c
+> @@ -1663,7 +1663,7 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
+>                 status = -1;
+>                 goto out_delete_session;
+>         }
+> -       err = evlist__add_pollfd(rec->evlist, done_fd);
+> +       err = evlist__add_wakeup_eventfd(rec->evlist, done_fd);
+>         if (err < 0) {
+>                 pr_err("Failed to add wakeup eventfd to poll list\n");
+>                 status = err;
+> diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
+> index 05363a7247c4..fea4c1e8010d 100644
+> --- a/tools/perf/util/evlist.c
+> +++ b/tools/perf/util/evlist.c
+> @@ -572,6 +572,14 @@ int evlist__filter_pollfd(struct evlist *evlist, short revents_and_mask)
+>         return perf_evlist__filter_pollfd(&evlist->core, revents_and_mask);
+>  }
+>
+> +#ifdef HAVE_EVENTFD_SUPPORT
+> +int evlist__add_wakeup_eventfd(struct evlist *evlist, int fd)
+> +{
+> +       return perf_evlist__add_pollfd(&evlist->core, fd, NULL, POLLIN,
+> +                                      fdarray_flag__nonfilterable);
+> +}
+> +#endif
 
-CONFIG_ARCH_HAS_UBSAN_SANITIZE_ALL=y
-CONFIG_UBSAN=y
-# CONFIG_UBSAN_TRAP is not set
-CONFIG_CC_HAS_UBSAN_BOUNDS=y
-CONFIG_CC_HAS_UBSAN_ARRAY_BOUNDS=y
-CONFIG_UBSAN_BOUNDS=y
-CONFIG_UBSAN_ARRAY_BOUNDS=y
-CONFIG_UBSAN_SHIFT=y
-CONFIG_UBSAN_DIV_ZERO=y
-CONFIG_UBSAN_SIGNED_OVERFLOW=y
-CONFIG_UBSAN_UNSIGNED_OVERFLOW=y
-CONFIG_UBSAN_OBJECT_SIZE=y
-CONFIG_UBSAN_BOOL=y
-CONFIG_UBSAN_ENUM=y
-CONFIG_UBSAN_ALIGNMENT=y
-CONFIG_UBSAN_SANITIZE_ALL=y
-# CONFIG_TEST_UBSAN is not set
+Does it build when HAVE_EVENTFD_SUPPORT is not defined?
 
-and clang-10:
+Thanks,
+Namhyung
 
-lib/strncpy_from_user.o: warning: objtool: strncpy_from_user()+0x253: call to __ubsan_handle_add_overflow() with UACCESS enabled
-lib/strnlen_user.o: warning: objtool: strnlen_user()+0x244: call to __ubsan_handle_add_overflow() with UACCESS enabled
-ld: init/main.o: in function `kmalloc':
-/home/boris/kernel/linux/./include/linux/slab.h:557: undefined reference to `__ubsan_handle_alignment_assumption'
-ld: init/initramfs.o: in function `kmalloc':
-/home/boris/kernel/linux/./include/linux/slab.h:552: undefined reference to `__ubsan_handle_alignment_assumption'
-ld: init/initramfs.o: in function `kmalloc_large':
-/home/boris/kernel/linux/./include/linux/slab.h:481: undefined reference to `__ubsan_handle_alignment_assumption'
-ld: init/initramfs.o: in function `kmalloc':
-/home/boris/kernel/linux/./include/linux/slab.h:552: undefined reference to `__ubsan_handle_alignment_assumption'
-ld: /home/boris/kernel/linux/./include/linux/slab.h:552: undefined reference to `__ubsan_handle_alignment_assumption'
-ld: init/initramfs.o:/home/boris/kernel/linux/./include/linux/slab.h:552: more undefined references to `__ubsan_handle_alignment_assumption' follow
-ld: mm/mremap.o: in function `get_extent':
-/home/boris/kernel/linux/mm/mremap.c:355: undefined reference to `__compiletime_assert_327'
-ld: mm/rmap.o: in function `anon_vma_chain_alloc':
-/home/boris/kernel/linux/mm/rmap.c:136: undefined reference to `__ubsan_handle_alignment_assumption'
-ld: mm/rmap.o: in function `anon_vma_alloc':
-/home/boris/kernel/linux/mm/rmap.c:89: undefined reference to `__ubsan_handle_alignment_assumption'
-ld: mm/rmap.o: in function `anon_vma_chain_alloc':
-/home/boris/kernel/linux/mm/rmap.c:136: undefined reference to `__ubsan_handle_alignment_assumption'
-ld: /home/boris/kernel/linux/mm/rmap.c:136: undefined reference to `__ubsan_handle_alignment_assumption'
-ld: /home/boris/kernel/linux/mm/rmap.c:136: undefined reference to `__ubsan_handle_alignment_assumption'
-ld: mm/vmalloc.o:/home/boris/kernel/linux/mm/vmalloc.c:1213: more undefined references to `__ubsan_handle_alignment_assumption' follow
-make: *** [Makefile:1164: vmlinux] Error 1
 
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+> +
+>  int evlist__poll(struct evlist *evlist, int timeout)
+>  {
+>         return perf_evlist__poll(&evlist->core, timeout);
+> diff --git a/tools/perf/util/evlist.h b/tools/perf/util/evlist.h
+> index 1aae75895dea..6d4d62151bc8 100644
+> --- a/tools/perf/util/evlist.h
+> +++ b/tools/perf/util/evlist.h
+> @@ -142,6 +142,10 @@ struct evsel *evlist__find_tracepoint_by_name(struct evlist *evlist, const char
+>  int evlist__add_pollfd(struct evlist *evlist, int fd);
+>  int evlist__filter_pollfd(struct evlist *evlist, short revents_and_mask);
+>
+> +#ifdef HAVE_EVENTFD_SUPPORT
+> +int evlist__add_wakeup_eventfd(struct evlist *evlist, int fd);
+> +#endif
+> +
+>  int evlist__poll(struct evlist *evlist, int timeout);
+>
+>  struct evsel *evlist__id2evsel(struct evlist *evlist, u64 id);
+> --
+> 2.17.1
+>
