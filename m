@@ -2,95 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD5EE3111F2
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 21:11:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EE583111F8
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 21:11:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233518AbhBES0i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 13:26:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38410 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233381AbhBESZs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 13:25:48 -0500
-Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB95EC06174A
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 12:07:28 -0800 (PST)
-Received: by mail-qt1-x830.google.com with SMTP id s11so2124838qtq.10
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 12:07:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lqehshu3MUzrBle/QPxMj3NcYrs2O2w0CHnNjXFfUqU=;
-        b=CaGJibvMjhSDKdOj6Tx5gGCiGEeZxTrLjUqGXdVJUt474AZwL5JTnIy7a82+nOThvI
-         /Kd5dqOlXza4DW9UgKcG5PpQepH32TaAH/xBcQT2CaMhBpsbwgOaSrffKlzFWHYfsnq+
-         pYN1Udbb+TjAT6mCvZ4jOh7XNqxBIa3GTKoM4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lqehshu3MUzrBle/QPxMj3NcYrs2O2w0CHnNjXFfUqU=;
-        b=losuWWg9YIxCuTNIWdAZzKR6kuEO0uWAfZGPutIstRlBK2VEUeTrytrxRvm9gfU3kx
-         MZvmK/5xjjbZiteGpagplPUs8QCWy7ej6yNb6JWnjxtHPa5UF2HjlzPyn42NH5aIEa2k
-         12D3j0nlksZ9S7Z2HPbYsWWqxb9PUAefL/9MKs8SnuARnOQEthqaQI1LO5O33zD6BVd1
-         xw4PliwowKICIAMos8mGjNg5NhQ3udZciXPTzWqsVKC+DNEb9r78L2HiFi4ByqK6vtEW
-         Wt6a0lGUvEg2y5XPXCThT0/jIk6NeigGbfe/lxPpMtAPh9gEDTSnAWFSjEGuxDNNPT9+
-         KBRw==
-X-Gm-Message-State: AOAM530urVMOlCeiPRBS2A7X7+3Bjh/5j+7vSzA1LnS/q2cp9L6oI7F5
-        Rn4rDCGJNn4tW2QUppym3U+gJZUQ7u4KWxA5xyuysQ==
-X-Google-Smtp-Source: ABdhPJy+gFh8lAckUDFUvPvLh47rABL095luYOJcWMkV8WMeHxa2hYhoDFsGxakL9ix/Lp3h3FRFT7dzPvlX38QG6r8=
-X-Received: by 2002:a05:622a:4ce:: with SMTP id q14mr6007256qtx.132.1612555648087;
- Fri, 05 Feb 2021 12:07:28 -0800 (PST)
+        id S233443AbhBES14 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 13:27:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34770 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233706AbhBES1S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 13:27:18 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EC17364FBA;
+        Fri,  5 Feb 2021 20:09:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612555742;
+        bh=beiP1QVTcTtnz/28je3Db2hFbKVGRBpJgYPrzRQ3FJY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=HiHatxkiTqo19TZ7agC6KDqUsgXV67Li8ly2L0wqDAIgO/TnRxAG2RsEVs5oqP6c+
+         UaOzHqagc4QJeLih2kXFAEt5d7GhSEhvjlhL3gH10/QCgaTVU1AQai8Mn1NFjTiezP
+         i1wgd9CTA84LgzCyhkwn5/kx2hr1+O0JvExsTupHij3anIzI/f4gsgHmz14r0nXCYL
+         l0+YcKZuoB+EBsv5ijeTNTCycIDJJ3bqKmtNaMYKKxf/lWGat0JwJxc2r6hSYJ80aS
+         IrqB6hXBSMagUQ342uqUdCGIfPNEt/aJJPrbGL+JfG1RPWW1Icry7tJhu+BlO9Wj7x
+         cGUyryDyXIy7Q==
+Date:   Fri, 5 Feb 2021 14:08:59 -0600
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Yicong Yang <yangyicong@hisilicon.com>, gregkh@linuxfoundation.org,
+        jdelvare@suse.com, giometti@enneenne.com, abbotti@mev.co.uk,
+        hsweeten@visionengravers.com, kw@linux.com,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-hwmon@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-kbuild@vger.kernel.org, masahiroy@kernel.org,
+        michal.lkml@markovi.net, prime.zeng@huawei.com,
+        linuxarm@openeuler.org
+Subject: Re: [PATCH 2/4] hwmon: Use subdir-ccflags-* to inherit debug flag
+Message-ID: <20210205200859.GA193526@bjorn-Precision-5520>
 MIME-Version: 1.0
-References: <20210205195113.20277-1-rajmohan.mani@intel.com> <20210205195113.20277-2-rajmohan.mani@intel.com>
-In-Reply-To: <20210205195113.20277-2-rajmohan.mani@intel.com>
-From:   Prashant Malani <pmalani@chromium.org>
-Date:   Fri, 5 Feb 2021 12:07:16 -0800
-Message-ID: <CACeCKadzdTGi3y_WbihX_p_rfL8wcTFVwbUGPU=de53fA9dVog@mail.gmail.com>
-Subject: Re: [PATCH 1/2] platform/chrome: cros_ec_typec: Skip port partner
- check in configure_mux()
-To:     Rajmohan Mani <rajmohan.mani@intel.com>
-Cc:     Benson Leung <bleung@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Guenter Roeck <groeck@chromium.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210205182832.GA186268@roeck-us.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Raj,
+On Fri, Feb 05, 2021 at 10:28:32AM -0800, Guenter Roeck wrote:
+> On Fri, Feb 05, 2021 at 05:44:13PM +0800, Yicong Yang wrote:
+> > From: Junhao He <hejunhao2@hisilicon.com>
+> > 
+> > Use subdir-ccflags-* instead of ccflags-* to inherit the debug
+> > settings from Kconfig when traversing subdirectories.
+> > 
+> > Suggested-by: Bjorn Helgaas <bhelgaas@google.com>
+> > Signed-off-by: Junhao He <hejunhao2@hisilicon.com>
+> > Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
+> 
+> What problem does this fix ? Maybe I am missing it, but I don't see
+> DEBUG being used in a subdirectory of drivers/hwmon.
 
-On Fri, Feb 5, 2021 at 11:52 AM Rajmohan Mani <rajmohan.mani@intel.com> wrote:
->
-> For certain needs like updating the USB4 retimer firmware when no
-> device are connected, the Type-C ports require mux configuration,
-> to be able to communicate with the retimer. So removed the above
-> check to allow for mux configuration of Type-C ports, to enable
-> retimer communication.
->
-> Signed-off-by: Rajmohan Mani <rajmohan.mani@intel.com>
-Reviewed-by: Prashant Malani <pmalani@chromium.org>
+It's my fault for raising this question [1].  Yicong fixed a real
+problem in drivers/pci, where we are currently using
 
-> ---
->  drivers/platform/chrome/cros_ec_typec.c | 3 ---
->  1 file changed, 3 deletions(-)
->
-> diff --git a/drivers/platform/chrome/cros_ec_typec.c b/drivers/platform/chrome/cros_ec_typec.c
-> index e724a5eaef1c..3d8ff3f8a514 100644
-> --- a/drivers/platform/chrome/cros_ec_typec.c
-> +++ b/drivers/platform/chrome/cros_ec_typec.c
-> @@ -536,9 +536,6 @@ static int cros_typec_configure_mux(struct cros_typec_data *typec, int port_num,
->         enum typec_orientation orientation;
->         int ret;
->
-> -       if (!port->partner)
-> -               return 0;
-> -
->         if (mux_flags & USB_PD_MUX_POLARITY_INVERTED)
->                 orientation = TYPEC_ORIENTATION_REVERSE;
->         else
-> --
-> 2.30.0
->
+  ccflags-$(CONFIG_PCI_DEBUG) := -DDEBUG
+
+so CONFIG_PCI_DEBUG=y turns on debug in drivers/pci, but not in the
+subdirectories.  That's surprising to users.
+
+So my question was whether we should default to using subdir-ccflags
+for -DDEBUG in general, and only use ccflags when we have
+subdirectories that have their own debug options, e.g.,
+
+  drivers/i2c/Makefile:ccflags-$(CONFIG_I2C_DEBUG_CORE) := -DDEBUG
+  drivers/i2c/algos/Makefile:ccflags-$(CONFIG_I2C_DEBUG_ALGO) := -DDEBUG
+  drivers/i2c/busses/Makefile:ccflags-$(CONFIG_I2C_DEBUG_BUS) := -DDEBUG
+  drivers/i2c/muxes/Makefile:ccflags-$(CONFIG_I2C_DEBUG_BUS) := -DDEBUG
+
+I mentioned drivers/hwmon along with a few others that have
+subdirectories, do not have per-subdirectory debug options, and use
+ccflags.  I didn't try to determine whether those subdirectories
+currently use -DDEBUG.
+
+In the case of drivers/hwmon, several drivers do use pr_debug(),
+and CONFIG_HWMON_DEBUG_CHIP=y turns those on.  But if somebody
+were to add pr_debug() to drivers/hwmon/occ/common.c, for example,
+CONFIG_HWMON_DEBUG_CHIP=y would *not* turn it on.  That sounds
+surprising to me, but if that's what you intend, that's totally fine.
+
+[1] https://lore.kernel.org/r/20210204161048.GA68790@bjorn-Precision-5520
+
+> > ---
+> >  drivers/hwmon/Makefile | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/hwmon/Makefile b/drivers/hwmon/Makefile
+> > index 09a86c5..1c0c089 100644
+> > --- a/drivers/hwmon/Makefile
+> > +++ b/drivers/hwmon/Makefile
+> > @@ -201,5 +201,5 @@ obj-$(CONFIG_SENSORS_XGENE)	+= xgene-hwmon.o
+> >  obj-$(CONFIG_SENSORS_OCC)	+= occ/
+> >  obj-$(CONFIG_PMBUS)		+= pmbus/
+> >  
+> > -ccflags-$(CONFIG_HWMON_DEBUG_CHIP) := -DDEBUG
+> > +subdir-ccflags-$(CONFIG_HWMON_DEBUG_CHIP) := -DDEBUG
+> >  
+> > -- 
+> > 2.8.1
+> > 
