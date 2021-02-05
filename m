@@ -2,156 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75671311801
+	by mail.lfdr.de (Postfix) with ESMTP id 03DEF311800
 	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 01:57:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231446AbhBFA4j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 19:56:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50908 "EHLO
+        id S231283AbhBFA4U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 19:56:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229824AbhBEJ43 (ORCPT
+        with ESMTP id S230150AbhBEJ4a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 04:56:29 -0500
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EF8CC061797
+        Fri, 5 Feb 2021 04:56:30 -0500
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D767BC0617A7
         for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 01:55:48 -0800 (PST)
-Received: by mail-pl1-x62b.google.com with SMTP id b8so3279775plh.12
+Received: by mail-qk1-x72c.google.com with SMTP id t63so6324940qkc.1
         for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 01:55:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ieUooMRLCXwYSeJ9XkKaTLtXyvbKzpUTDthbUyzSnHk=;
-        b=n2VvabbtalXtuWpwbmHrFHJWDgt6VXAhGhwbdn3LLJHGWqrhuY1N1pvOqWjuurIqKV
-         Wt3gfI4ENRh3m8WarXLdQHKsglwcB4jQsQTM1FI2RSigJffepY0Wy71+tM3V3y4RtSSB
-         QTEvWtWx/bCX+wZeWnYBnFl6sOklG98bYXTY+nRt2JTdu7ep0btUjMsqM8vHPIE8xV2S
-         zPjlJw9l0v6K132xILNn5kzQSUkq1lRERXtvOqA0aviqyozZSAcyU6EafIjtfPscn7Xj
-         1M1ol+Alt9uIyVWhKELcKRAaY4CmATJTQRaZlrqnPDYlaEZCc6SKLOiJF0BeWF3ngw3K
-         kCEQ==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=jLUbbKNVV5tFO9zmycGpbIFUUlj7eKovL/u+hTBJX9s=;
+        b=fjTu/VbpL1+QU+XMUG97Hgm1v9CDq6vaAuSnIeQ8R1BRUfVQSpHxX7GMi38WhBTIdY
+         2Q7k1S3vMQZHvQz2nxTqMmzQibHYnPK/JHFpAlfuWRtOlY2cnCsldHpDbW53A+SvWLD0
+         FUbE3T0QBAn2a3uASrv56Q/8zOhrPd5D1nCXOtJgKDL2XmmlM/o1sV4kLRKE5A2j0q1w
+         KWys+MnBhoATjpMbyEwnRuSYgnp99ED9YxyQaV8LTrMePe2IDfd5ZRmRxqxGe6RgoDI9
+         kKdki6UnpnkBnneXWNsjn+bVj381xFA2ETjZWnEkw3iW9ZfrjEZzLrdT51rhcbXu9ndh
+         dyPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ieUooMRLCXwYSeJ9XkKaTLtXyvbKzpUTDthbUyzSnHk=;
-        b=FGZADaO3OJ8LUE11fX12Yak7cPhs5W1v5hERdwJpOY9mHgtiazUmbzKI0XH9sNkU7z
-         0G566XyQKKoB1JDAdYWkxQmbIgxRVdxSdk8WlFdNvrUtYcFs4P4c8sxUSKZMAvnFmftr
-         jrWXXQI8SbKhKVt46UL7uYH7KSc/AWMZ2oqe2qaCEaKaQ/piAcDvt+4gXZ1/FLEvVdM6
-         ZSOjG6vob7sVNR0XZInu0HyJSxcjhDIwFFbmgUsY+cPE/wKFL0OBYq2sBpa0oyJsgv/1
-         9Y3Ik1836TUddfyNOSKAB4OslwbyPr1zbZvmnt0kdava0maAKI2czYtviXcts060gnbG
-         pVWw==
-X-Gm-Message-State: AOAM533OiOIcRZaS9/IuFbrqvGReeInjg3XDljZWpSS8qS3IxmVFtSwU
-        SRHECxFJ/yxNK9Vq4x29bN3ulXaioK1EMqm3FNPSjVCgB8eHLrr5
-X-Google-Smtp-Source: ABdhPJxK1r8J0nG6jTXmBfGsdJeNahQkfxe4JrZpdvLIp4t6/1mUBUVkIh/l3tNLmHc08ZQ1RyE72w6OxKnOVFPQonM=
-X-Received: by 2002:a17:902:9341:b029:e1:7b4e:57a8 with SMTP id
- g1-20020a1709029341b02900e17b4e57a8mr3346497plp.34.1612518947675; Fri, 05 Feb
- 2021 01:55:47 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=jLUbbKNVV5tFO9zmycGpbIFUUlj7eKovL/u+hTBJX9s=;
+        b=Gy/3duL1aPPYa8ReNhTR/XkhVGC09wRCmR7KtJbuRIYbyXqNQBTYq3kPsQKlnuEbzJ
+         FFdGqoCOmbVKOmaKJQZfUEdFbrWYvbmN4x4c9cZuNV3hl91I6tEL+eqNZ9s90xdGPAwr
+         yRIp1NTJmXuIU2z9izDpK3LKPRII4jt3AbdMg1Wc84a2WljZY+y/N9jIFe0L1YJBn8NQ
+         ipGRn8Ql8DNOiUDS4bboD9ydNREsYBJ9346fh8oeQ8hl7dSd5SOVIeGsrZ4Af+XBQEvv
+         +CiorbKh/kOA+z6lJU7x+tEBWaLOXmT5ate1/fXaxdh+ho0wOenjVxaYmMn80ZfD8JZy
+         nD4w==
+X-Gm-Message-State: AOAM531Uy8UtgBuIRBYziyRI9M1pgxhLxo465gV+PSwc9AkBPEk97oLs
+        s+U6NKu57ACGFdar/3dSuHM=
+X-Google-Smtp-Source: ABdhPJwD8RwYVAxc9TB0zM1jmIq2Q82Tki6IvOvKb4UPyMGbwnUVOKobfmbAe5eJKIVfbC03Qdh/8Q==
+X-Received: by 2002:a05:620a:49:: with SMTP id t9mr3669836qkt.231.1612518948192;
+        Fri, 05 Feb 2021 01:55:48 -0800 (PST)
+Received: from ArchLinux ([156.146.36.157])
+        by smtp.gmail.com with ESMTPSA id h5sm7558020qti.22.2021.02.05.01.55.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Feb 2021 01:55:47 -0800 (PST)
+Date:   Fri, 5 Feb 2021 15:25:39 +0530
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     Takashi Iwai <tiwai@suse.de>
+Cc:     perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, rdunlap@infradead.org
+Subject: Re: [PATCH] sound: x86: Trivial spell fixes throughout the file
+ intel_hdmi_audio.c
+Message-ID: <YB0WG1y4ZqG7SdeC@ArchLinux>
+Mail-Followup-To: Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        Takashi Iwai <tiwai@suse.de>, perex@perex.cz, tiwai@suse.com,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        rdunlap@infradead.org
+References: <20210205093214.637121-1-unixbhaskar@gmail.com>
+ <s5hk0rm4zvz.wl-tiwai@suse.de>
 MIME-Version: 1.0
-References: <20210205062310.74268-1-songmuchun@bytedance.com> <YB0Ay+epP/hnFmDS@dhcp22.suse.cz>
-In-Reply-To: <YB0Ay+epP/hnFmDS@dhcp22.suse.cz>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Fri, 5 Feb 2021 17:55:10 +0800
-Message-ID: <CAMZfGtWKNNhc1Jy1jzp2uZU_PM6GNWup7d=yUVk9AehKFo_CRw@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH] mm: memcontrol: fix missing wakeup oom task
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="bvrryYGVj3REAab+"
+Content-Disposition: inline
+In-Reply-To: <s5hk0rm4zvz.wl-tiwai@suse.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 5, 2021 at 4:24 PM Michal Hocko <mhocko@suse.com> wrote:
->
-> On Fri 05-02-21 14:23:10, Muchun Song wrote:
-> > We call memcg_oom_recover() in the uncharge_batch() to wakeup OOM task
-> > when page uncharged, but for the slab pages, we do not do this when page
-> > uncharged.
->
-> How does the patch deal with this?
 
-When we uncharge a slab page via __memcg_kmem_uncharge,
-actually, this path forgets to do this for us compared to
-uncharge_batch(). Right?
+--bvrryYGVj3REAab+
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
 
+On 10:39 Fri 05 Feb 2021, Takashi Iwai wrote:
+>On Fri, 05 Feb 2021 10:32:14 +0100,
+>Bhaskar Chowdhury wrote:
+>>
+>>
+>>
+>> s/confgiuration/configuration/
+>> s/Calculte/Calculate/
+>> s/unreference/unreferenced/
 >
-> > When we drain per cpu stock, we also should do this.
+>The last one isn't correct.  It was meant as a positive form, so if
+>any, it's "unrefer", but "reference" could be used as a verb in the
+>tech term, so IMO we can keep as is.
 >
-> Can we have anything the per-cpu stock while entering the OOM path. IIRC
-> we do drain all cpus before entering oom path.
+Good catch...thanks Takashi! As you like. :)
+>
+>thanks,
+>
+>Takashi
+>
+>>
+>> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+>> ---
+>>  sound/x86/intel_hdmi_audio.c | 6 +++---
+>>  1 file changed, 3 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/sound/x86/intel_hdmi_audio.c b/sound/x86/intel_hdmi_audio.c
+>> index 9f9fcd2749f2..89ddd9dd8fde 100644
+>> --- a/sound/x86/intel_hdmi_audio.c
+>> +++ b/sound/x86/intel_hdmi_audio.c
+>> @@ -342,7 +342,7 @@ static int had_prog_status_reg(struct snd_pcm_substream *substream,
+>>
+>>  /*
+>>   * function to initialize audio
+>> - * registers and buffer confgiuration registers
+>> + * registers and buffer configuration registers
+>>   * This function is called in the prepare callback
+>>   */
+>>  static int had_init_audio_ctrl(struct snd_pcm_substream *substream,
+>> @@ -611,7 +611,7 @@ static void had_prog_dip(struct snd_pcm_substream *substream,
+>>  		frame2.regx.chnl_cnt = substream->runtime->channels - 1;
+>>  		frame3.regx.chnl_alloc = ca;
+>>
+>> -		/* Calculte the byte wide checksum for all valid DIP words */
+>> +		/* Calculate the byte wide checksum for all valid DIP words */
+>>  		for (i = 0; i < BYTES_PER_WORD; i++)
+>>  			checksum += (info_frame >> (i * 8)) & 0xff;
+>>  		for (i = 0; i < BYTES_PER_WORD; i++)
+>> @@ -1109,7 +1109,7 @@ static int had_pcm_close(struct snd_pcm_substream *substream)
+>>
+>>  	intelhaddata = snd_pcm_substream_chip(substream);
+>>
+>> -	/* unreference and sync with the pending PCM accesses */
+>> +	/* unreferenced and sync with the pending PCM accesses */
+>>  	spin_lock_irq(&intelhaddata->had_spinlock);
+>>  	intelhaddata->stream_info.substream = NULL;
+>>  	intelhaddata->stream_info.substream_refcount--;
+>> --
+>> 2.30.0
+>>
 
-You are right. I did not notice this. Thank you.
+--bvrryYGVj3REAab+
+Content-Type: application/pgp-signature; name="signature.asc"
 
->
-> > The memcg_oom_recover() is small, so make it inline.
->
-> Does this lead to any code generation improvements? I would expect
-> compiler to be clever enough to inline static functions if that pays
-> off. If yes make this a patch on its own.
+-----BEGIN PGP SIGNATURE-----
 
-I have disassembled the code, I see memcg_oom_recover is not
-inline. Maybe because memcg_oom_recover has a lot of callers.
-Just guess.
+iQEzBAABCAAdFiEEnwF+nWawchZUPOuwsjqdtxFLKRUFAmAdFhQACgkQsjqdtxFL
+KRW8UQf+LkmZeI6BnF4HjGFKj1pXXOXijNyIhVk3MPipqBy6xQDvMot1pNXMZJej
+ieVfl8WS6vP3l/eU0pN73LteNzwhOWm4MZqimhS4TZV/S3YMGuAuwmv5qkF1hMLd
+b5sG+2NzcF2VBQhXmalhXZBN81KAsCIq0sj2gLAq+Dvhw2psXiOJebLN3EHDpT9Z
+e/jf5KGAgln2CbY9VjwvKldgQ0PTQoAoLO2WzJjgylW8iyPHvkEZbDZSzfRq+YFI
+3F6Cwwtw7JJYjULI4DuyFDUHOG3JBPGYBdK4AGHMJyaz/cFUJY1eSfbDuJAK52aC
+HpILrvXgnxwDE73tJCdF5ERbtD9oVg==
+=16e8
+-----END PGP SIGNATURE-----
 
-(gdb) disassemble uncharge_batch
- [...]
- 0xffffffff81341c73 <+227>: callq  0xffffffff8133c420 <page_counter_uncharge>
- 0xffffffff81341c78 <+232>: jmpq   0xffffffff81341bc0 <uncharge_batch+48>
- 0xffffffff81341c7d <+237>: callq  0xffffffff8133e2c0 <memcg_oom_recover>
-
->
-> > And the parameter
-> > of memcg cannot be NULL, so remove the check.
->
-> 2bd9bb206b338 has introduced the check without any explanation
-> whatsoever. I indeed do not see any potential path to provide a NULL
-> memcg here. This is an internal function so the check is unnecessary
-> indeed. Please make it a patch on its own.
-
-OK. Will do this. Thanks.
-
->
-> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> > ---
-> >  mm/memcontrol.c | 5 +++--
-> >  1 file changed, 3 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> > index 8c035846c7a4..8569f4dbea2a 100644
-> > --- a/mm/memcontrol.c
-> > +++ b/mm/memcontrol.c
-> > @@ -1925,7 +1925,7 @@ static int memcg_oom_wake_function(wait_queue_entry_t *wait,
-> >       return autoremove_wake_function(wait, mode, sync, arg);
-> >  }
-> >
-> > -static void memcg_oom_recover(struct mem_cgroup *memcg)
-> > +static inline void memcg_oom_recover(struct mem_cgroup *memcg)
-> >  {
-> >       /*
-> >        * For the following lockless ->under_oom test, the only required
-> > @@ -1935,7 +1935,7 @@ static void memcg_oom_recover(struct mem_cgroup *memcg)
-> >        * achieved by invoking mem_cgroup_mark_under_oom() before
-> >        * triggering notification.
-> >        */
-> > -     if (memcg && memcg->under_oom)
-> > +     if (memcg->under_oom)
-> >               __wake_up(&memcg_oom_waitq, TASK_NORMAL, 0, memcg);
-> >  }
-> >
-> > @@ -2313,6 +2313,7 @@ static void drain_stock(struct memcg_stock_pcp *stock)
-> >               page_counter_uncharge(&old->memory, stock->nr_pages);
-> >               if (do_memsw_account())
-> >                       page_counter_uncharge(&old->memsw, stock->nr_pages);
-> > +             memcg_oom_recover(old);
-> >               stock->nr_pages = 0;
-> >       }
-> >
-> > --
-> > 2.11.0
->
-> --
-> Michal Hocko
-> SUSE Labs
+--bvrryYGVj3REAab+--
