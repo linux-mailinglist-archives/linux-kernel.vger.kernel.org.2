@@ -2,96 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB9E431103C
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 19:46:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 488DF31103D
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 19:46:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233784AbhBERCu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 12:02:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47880 "EHLO mail.kernel.org"
+        id S233794AbhBERDK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 12:03:10 -0500
+Received: from mga07.intel.com ([134.134.136.100]:46168 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233693AbhBERAU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 12:00:20 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 74E7464F19;
-        Fri,  5 Feb 2021 18:42:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612550521;
-        bh=Och95jZSPmS5JZOu3rWCNdzFapqEaxA4bX7uCQJwQso=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=IX2kVxDXqUuV7iowgJJWwlByQAXihwSnK8hf2TkQT1LjJOn+hvItadXV2bJyoRau7
-         HOKkWGUOj+U72dTLpf3ngoAqJxxjr7HVVQLOZ3JeSerI0czD9EOtEjff0dN5pwjAzL
-         lHXtfzrHcLi0OEG13gFG+8vkS1XZn7EwSFmEV6Q4u24sKbaLeKU3RydjLgcxSyVqH9
-         o8/POigpER9rYtSUxohfdtok+MTincfAKZNBVtrzVs0qURvp6KhO+I3fVBFRCsQ/aP
-         QPOOkbBMHxXEPzJyBa4FDHBlm1WDl8DvdHUM+I5p77ZkVSZ+QkDIpX6sWoKuZFbqjt
-         APStkyUYfhrCw==
-Received: by mail-ed1-f43.google.com with SMTP id l12so10002193edt.3;
-        Fri, 05 Feb 2021 10:42:01 -0800 (PST)
-X-Gm-Message-State: AOAM530innO9ERQUQ/am41MEWx4Qu/qorp7E0r2caH9R81WGpvfQEKWP
-        sUFaZeUzEZeJ6a1MuJHoNZCVWgMDku+W4FuPKg==
-X-Google-Smtp-Source: ABdhPJwnoYzJJaU11tmANzpBNOiB4Jrz6Z0M34lW0MRbvQXE//h7k1Ng7TT1yLPvbcgMbS512EbgqHcxVP6l+HwWAJM=
-X-Received: by 2002:aa7:c895:: with SMTP id p21mr4907518eds.165.1612550519893;
- Fri, 05 Feb 2021 10:41:59 -0800 (PST)
+        id S233614AbhBERAQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 12:00:16 -0500
+IronPort-SDR: Ke/YG5Sr9I7n8vd4favQ7vANhQYVpmv01iWW3rFZ64Ms6C3aG4z/4fBTE2HsLU+YptgajHPqr7
+ W+gb628L+QZA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9886"; a="245543343"
+X-IronPort-AV: E=Sophos;i="5.81,155,1610438400"; 
+   d="scan'208";a="245543343"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2021 10:41:53 -0800
+IronPort-SDR: fYIBCWf6F8YGiaVwigkg6COEp/BFyCf3VF9Mir7LXUkPJtAgu5VY9t1zFYzDqvdG8dSaeFpRJW
+ k8iP9sQMMw5g==
+X-IronPort-AV: E=Sophos;i="5.81,155,1610438400"; 
+   d="scan'208";a="358363786"
+Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.212.95.7]) ([10.212.95.7])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2021 10:41:52 -0800
+Subject: Re: [PATCH v19 08/25] x86/mm: Introduce _PAGE_COW
+To:     Dave Hansen <dave.hansen@intel.com>,
+        Kees Cook <keescook@chromium.org>
+Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>
+References: <20210203225547.32221-1-yu-cheng.yu@intel.com>
+ <20210203225547.32221-9-yu-cheng.yu@intel.com>
+ <202102041215.B54FCA552F@keescook>
+ <2e43bf0b-e1a9-99f6-8d5d-d6e6886b4217@intel.com>
+From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
+Message-ID: <7381d8c1-5e1c-2667-7cb8-0a99f2c79b6d@intel.com>
+Date:   Fri, 5 Feb 2021 10:41:52 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-References: <20210205114011.10381-1-jbx6244@gmail.com> <20210205114011.10381-6-jbx6244@gmail.com>
-In-Reply-To: <20210205114011.10381-6-jbx6244@gmail.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Fri, 5 Feb 2021 12:41:45 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqJwNdUfoYM8SZmOgMG9iAyZkJ4-kzjjiDDm_mdmghTEOA@mail.gmail.com>
-Message-ID: <CAL_JsqJwNdUfoYM8SZmOgMG9iAyZkJ4-kzjjiDDm_mdmghTEOA@mail.gmail.com>
-Subject: Re: [PATCH v3 6/8] usb: dwc3: of-simple: add compatible for rk3328
-To:     Johan Jonker <jbx6244@gmail.com>
-Cc:     "heiko@sntech.de" <heiko@sntech.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Linux USB List <linux-usb@vger.kernel.org>,
-        devicetree@vger.kernel.org,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <2e43bf0b-e1a9-99f6-8d5d-d6e6886b4217@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 5, 2021 at 5:40 AM Johan Jonker <jbx6244@gmail.com> wrote:
->
-> From: Cameron Nemo <cnemo@tutanota.com>
->
-> Add a compatible to be hooked into by the Rockchip rk3328 device tree.
->
-> The rk3399 compatible cannot be reused because the rk3328 SoCs may
-> require a specialized driver in the future and old device trees must
-> remain compatible with newer kernels.
+On 2/4/2021 12:27 PM, Dave Hansen wrote:
+> On 2/4/21 12:19 PM, Kees Cook wrote:
+>>> (e) A page where the processor observed a Write=1 PTE, started a write, set
+>>>      Dirty=1, but then observed a Write=0 PTE.  That's possible today, but
+>>>      will not happen on processors that support shadow stack.
+>> What happens for "e" with/without CET? It sounds like direct writes to
+>> such pages will be (correctly) rejected by the MMU?
+> 
+> A page fault would be generated regardless of CET support.
+> 
+> If CET were not around, the fault would be reported as a present, write
+> fault.
+> 
+> If this happened and CET were around (which shouldn't happen in
+> practice, it means we have a hardware issue) a page fault exception is
+> generated. 
 
-Yes that's important, but...
+Thanks for the clarification.  With or without CET, direct write to 
+Write=0, Dirty=1 PTE triggers page fault.
 
-> Signed-off-by: Cameron Nemo <cnemo@tutanota.com>
-> Signed-off-by: Johan Jonker <jbx6244@gmail.com>
-> ---
->  drivers/usb/dwc3/dwc3-of-simple.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/drivers/usb/dwc3/dwc3-of-simple.c b/drivers/usb/dwc3/dwc3-of-simple.c
-> index e62ecd22b..93bc34328 100644
-> --- a/drivers/usb/dwc3/dwc3-of-simple.c
-> +++ b/drivers/usb/dwc3/dwc3-of-simple.c
-> @@ -171,6 +171,7 @@ static const struct dev_pm_ops dwc3_of_simple_dev_pm_ops = {
->  };
->
->  static const struct of_device_id of_dwc3_simple_match[] = {
-> +       { .compatible = "rockchip,rk3328-dwc3" },
+> Yu-cheng, I'm not sure there's enough debugging around to
+> tell us if this happens.  Would we even notice?
 
-Why does this driver need it? In fact, you don't want this driver to
-bind to the dwc3 node as we're binding to the 'snps,dwc3' driver.
+That potential hardware issue is, on a CET-capable system, a processor 
+writes to a Write=1, Dirty=0 page, and then observes the PTE is Write=0, 
+Dirty=1.  Let me think about it...
 
->         { .compatible = "rockchip,rk3399-dwc3" },
+Thanks!
 
-Given the above, you might think we should remove this, but we can't
-since there are old dtb's with the dwc3 child node.
-
-Presumably you are getting lucky here (with link order). The kernel
-has no logic to decide which driver to bind to if there are 2 matching
-drivers. If we did, it would probably be the opposite of what you want
-here as we'd pick the most specific match. This driver should probably
-bail probe if no dwc3 child node.
-
-Rob
+--
+Yu-cheng
