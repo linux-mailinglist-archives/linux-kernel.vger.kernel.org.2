@@ -2,123 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59AD23111FE
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 21:12:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F69E3111EC
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 21:09:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233209AbhBES3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 13:29:20 -0500
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:4297 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230307AbhBEPNQ (ORCPT
+        id S233436AbhBESZR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 13:25:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54522 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230311AbhBEPTd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 10:13:16 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B601d778b0000>; Fri, 05 Feb 2021 08:51:23 -0800
-Received: from HKMAIL101.nvidia.com (10.18.16.10) by HQMAIL101.nvidia.com
- (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 5 Feb
- 2021 16:51:22 +0000
-Received: from HKMAIL104.nvidia.com (10.18.16.13) by HKMAIL101.nvidia.com
- (10.18.16.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 5 Feb
- 2021 16:51:18 +0000
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.172)
- by HKMAIL104.nvidia.com (10.18.16.13) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Fri, 5 Feb 2021 16:51:18 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BrKMI8+DM+eoH6up4Cz7WmTU+VMziCYUNlYcJyjKO+wYt8heEPCRoVuv3kQ+3B1RyGwRACvQFekPdcg/jzo1ggUaGfFMPeF3yZ84zxHVJba4bkvGaGc59l0ispnMKulc52LXKQm1+KB0EU/Uv8DSweZHYHQg1+EzUViW+DmVEaeXj481AEQVFV9NXJmPp7z7BPYJLrdC2iuIsIa+4a4gokiwHKnGB+wXxh1Lwn57WOOiPvhooHliX/S0FRVB+AuSJOVXv6ZxmHY29LDGLOkPoQlXAqFK25uIokmzVgiYsDxzS6D/iKFe/mGJ43vFVOsGjKrs7eg/1fmJvMhXJuYAQA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1LS3cG1cQTFsLvem3P2GfggAuj5MfjtrblP3tNTGmuw=;
- b=SREeU8bOiqbx43hTeVCbPWNha6PgZCn5RjBMUhXvheVotXWci1e/2gSiDz26NQMLUHOTegObhRvyE2Opsf9Hi7+SwzBBYunIUgWU5vMiulziwBQCP+5hbb8bmSedhPpZ3mfcssuBc16YEuAaahnu0fv+VfxTepPbamh8G5kXkEpP3QsTyH6v/1qhSFHJVyhHZ+A2Exyty6P8Lgijh2jQdw+eemzp1kYW5rwVavlfMQdbrlHhsOVbGfUet04elRDk56SwDCvaB4dOGCv4A4jSQUvjbrZ3uF85ix4zwND2+r6pUN2jwcZDknwwt5Qk1tVV/bRl7HMEdZ6LqDZAVlW+aw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB2812.namprd12.prod.outlook.com (2603:10b6:5:44::27) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.24; Fri, 5 Feb
- 2021 16:51:15 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::d6b:736:fa28:5e4]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::d6b:736:fa28:5e4%7]) with mapi id 15.20.3825.025; Fri, 5 Feb 2021
- 16:51:15 +0000
-Date:   Fri, 5 Feb 2021 12:51:13 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     kernel test robot <lkp@intel.com>
-CC:     Avihai Horon <avihaih@nvidia.com>, <kbuild-all@lists.01.org>,
-        <linux-kernel@vger.kernel.org>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>, <linux-sh@vger.kernel.org>
-Subject: Re: drivers/infiniband/core/uverbs_std_types_device.c:299:29:
- sparse: sparse: incorrect type in argument 1 (different address spaces)
-Message-ID: <20210205165113.GV4247@nvidia.com>
-References: <202102020130.LmreFXR5-lkp@intel.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <202102020130.LmreFXR5-lkp@intel.com>
-X-ClientProxiedBy: BL0PR02CA0063.namprd02.prod.outlook.com
- (2603:10b6:207:3d::40) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        Fri, 5 Feb 2021 10:19:33 -0500
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ABE4C0613D6
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 08:53:50 -0800 (PST)
+Received: by mail-pj1-x1033.google.com with SMTP id q72so3947222pjq.2
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 08:53:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hcw9n9RMMUVWxg70MWeK9kZh+kpeij9pYEkv2fQx0mw=;
+        b=VozpUkTk78uVgRSkBc98kz8O+i6S29kQobFxqGqpIM0Zvx5qN4kR40XAhEA/qvd8D7
+         5EACMb1+Or7OFaMSnYoakkDR6b4t7k6xAHEp+klsPMmrHdDfZCUqLKuWxyJU7sWzrxme
+         F2dovMuQ1dSXqUMzF0/+7Dlr0hu5GWseR+BrscB1QH4bWW+4vby5MAcJ84dlz9DZmLnW
+         XpnNjelS5ggUGC8/YDYbFEZtE1GlAtwgaqjoKnLW0Oxl2VqbCJZavudq4gniB5ayG7iP
+         FQm9F4aC8512iDs3dK7kHOstKS2vFH+H5WiK8561SNaBrVAkJGDiPozqmfzG6LeVW5S3
+         YUoA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hcw9n9RMMUVWxg70MWeK9kZh+kpeij9pYEkv2fQx0mw=;
+        b=SMtNgk+j810QKpqf3qQWGU9Cwjmnd7pT8vYnrf7pz7LS0k+xhfrCYOfLStfityE/gD
+         h4yDGsopR31nY0+RT88wku5nyNvDwPDzDWpx7to8LP/7o9gQVP+KZfqMhDh5EVn/ShMJ
+         8yiD79oIm/M+oZzRV6tmd+0opGXnBXwjo+EGhjbmRrcnswe6lygsayru6DQfZKgL/8T7
+         BAQhG+sktrGoHiKxyy3OTv8nIpqMRNqiajPyu7kRev73Q8jUSbwRXN1h3kssya3av8Nb
+         KVzUsFbC0ncm9jIBwo4XKQMvnYjUzmHWhf/1ryun2y60Uf0RJZWNIPdjIcKz9hAvAnQ8
+         NCHw==
+X-Gm-Message-State: AOAM533WbTh70wruzZrQhBzfufvO/ZuGT69S/tg6CteIyPcQ/nF1Va4s
+        2t/M9PZhLI79S+R38PCCjmhxM57ulkkgEUFc2ew6JQ==
+X-Google-Smtp-Source: ABdhPJzOx1jzUf8Kvry3ymXe4EY4ug/A0RJ08P7be71hr9k0BaqcMjZLARXIWNDFyLts341ZMN8uGabiZm2lJPK4mDs=
+X-Received: by 2002:a17:90b:350b:: with SMTP id ls11mr4916787pjb.166.1612544030033;
+ Fri, 05 Feb 2021 08:53:50 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by BL0PR02CA0063.namprd02.prod.outlook.com (2603:10b6:207:3d::40) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.20 via Frontend Transport; Fri, 5 Feb 2021 16:51:14 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1l84K9-003xMG-Lh; Fri, 05 Feb 2021 12:51:13 -0400
-X-Header: ProcessedBy-CMR-outbound
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1612543883; bh=1LS3cG1cQTFsLvem3P2GfggAuj5MfjtrblP3tNTGmuw=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType:X-Header;
-        b=lIMD1UdrafM6UqUYoqsf3cJmfwcoJVmbTkiCyHZXs6GSvxxifYeZPEN46CBRqQCgf
-         nGPJgDvyNaB8y3M6VN89ysmHrorlrmd1Yggnc7EYZdRxF9WmOqVncsfAmG+Qdi2acd
-         zZlTp1fSqhmSIDeYEjwB2Dhuewq1qpCq8woa5/VsWFW9Y7Kq9Pfp6cGv7zu7tPManh
-         mAO0ga3af6/E2F7fOeIzmCf39aWcnnuE4sMUZvNYwFb4dEiP9lXdXI25IN0NgfBqS8
-         XXdZ1akLwQqukEApksqOsm1F8iG5oE9vpH//9+YksDWVK0FZ14ojg1qhf+NYOmId5q
-         BATk3BGfFHm4A==
+References: <cover.1612538932.git.andreyknvl@google.com>
+In-Reply-To: <cover.1612538932.git.andreyknvl@google.com>
+From:   Andrey Konovalov <andreyknvl@google.com>
+Date:   Fri, 5 Feb 2021 17:53:39 +0100
+Message-ID: <CAAeHK+zNRd4BZz4v2r2Q__Px+Cs1ncmBiYbLPyaTnixbiCp0nw@mail.gmail.com>
+Subject: Re: [PATCH v2 00/12] kasan: optimizations and fixes for HW_TAGS
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>
+Cc:     Will Deacon <will.deacon@arm.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 02, 2021 at 01:40:33AM +0800, kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   1048ba83fb1c00cd24172e23e8263972f6b5d9ac
-> commit: 9f85cbe50aa044a46f0a22fda323fa27b80c82da RDMA/uverbs: Expose the new GID query API to user space
-> date:   4 months ago
-> config: sh-randconfig-s031-20210201 (attached as .config)
-> compiler: sh4-linux-gcc (GCC) 9.3.0
-> reproduce:
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # apt-get install sparse
->         # sparse version: v0.6.3-215-g0fb77bb6-dirty
->         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=9f85cbe50aa044a46f0a22fda323fa27b80c82da
->         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->         git fetch --no-tags linus master
->         git checkout 9f85cbe50aa044a46f0a22fda323fa27b80c82da
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' ARCH=sh 
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> 
-> "sparse warnings: (new ones prefixed by >>)"
-> >> drivers/infiniband/core/uverbs_std_types_device.c:299:29: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *addr @@     got void [noderef] __user *__cl_addr @@
->    drivers/infiniband/core/uverbs_std_types_device.c:299:29: sparse:     expected void *addr
->    drivers/infiniband/core/uverbs_std_types_device.c:299:29: sparse:     got void [noderef] __user *__cl_addr
->    drivers/infiniband/core/uverbs_std_types_device.c:115:15: sparse: sparse: cast truncates bits from constant value (ffff0001 becomes 1)
->    drivers/infiniband/core/uverbs_std_types_device.c:195:15: sparse: sparse: cast truncates bits from constant value (ffffff01 becomes 1)
+On Fri, Feb 5, 2021 at 4:39 PM Andrey Konovalov <andreyknvl@google.com> wrote:
+>
+> This patchset goes on top of:
+>
+> 1. Vincenzo's async support patches [1], and
 
-This is a bug in  arch/sh/include/asm/page.h:
+Nevermind this, Vincenzo is planning to do more work on the async
+patches, so I'll post v3 of this patchset based on the mm tree.
 
-__kernel_size_t __clear_user(void *addr, __kernel_size_t size);
 
-#define clear_user(addr,n)						\
-...
-		__cl_size = __clear_user(__cl_addr, __cl_size);		\
-
-__clear_user() needs to take a void __user *addr
-
-Jason
+> 2. "kasan: untag addresses for KFENCE" fix [2] (already in mm).
+>
+> [1] https://lore.kernel.org/linux-arm-kernel/20210130165225.54047-1-vincenzo.frascino@arm.com/
+> [2] https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?h=akpm&id=dec4728fab910da0c86cf9a97e980f4244ebae9f
