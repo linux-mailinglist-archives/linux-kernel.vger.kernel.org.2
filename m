@@ -2,158 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCB33310471
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 06:18:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 122E0310473
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 06:20:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230482AbhBEFSN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 00:18:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47792 "EHLO
+        id S230191AbhBEFTZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 00:19:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229586AbhBEFSK (ORCPT
+        with ESMTP id S229998AbhBEFTP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 00:18:10 -0500
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28295C0613D6
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 21:17:30 -0800 (PST)
-Received: by mail-pg1-x529.google.com with SMTP id o21so2321777pgn.12
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 21:17:30 -0800 (PST)
+        Fri, 5 Feb 2021 00:19:15 -0500
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A136C0613D6
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 21:18:30 -0800 (PST)
+Received: by mail-yb1-xb2b.google.com with SMTP id k4so5585925ybp.6
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 21:18:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=O4cRtZruXboHwdwpsrWR0FgPvU0D3io6KdJXESFf9ao=;
-        b=ZJgt47b89QUQlQpNCk2RzHQADY4sdnAmKJ8jK3iomTBS3kuVnET2qJ6TYJeTas0uQJ
-         N0VKrsuo+G8G0p/2boVtfJfg3WK3+LDUux+tXVl+kqApyjiKQW3bL98+eOloGeRPPxck
-         fOLu0QXckPuYgiY63CcKCU8bppXngLh0YJMFJzcWN6XboFp8cuku9yqi64aViGN4pphN
-         VqqaW1wGpXpfoqTDLx0cqdIm9/og7/djeduxtCDG+URYROaS7lTVA5QqflqhW7e3yEvX
-         1L6xToHizavx21g27FDOAuwMWUrFEZaQE1GbrQxTDo/lI22mtH/33BeysNCLX1dOt5gf
-         /6Mw==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=lgOzo6AA5TXNIkBKlwLQRgO7wuH9dEiOWALI05+ya+s=;
+        b=NAjY1FvXNmUGUqI5ruw3fTkPLusc6/BtV63R1Ran0vMCGY6MURS28Krjx/21j8FPuy
+         N0flzcI/QoXFrpAedwhwSYdn4ARhraxpebOzmm7bOZX0A0p0c9TdKFm6mDsNo95+039r
+         6ze8c8K/W3WnRLu90amNei5xMtMVzDQbM0dQQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=O4cRtZruXboHwdwpsrWR0FgPvU0D3io6KdJXESFf9ao=;
-        b=KlcSU03hLas5AoV+M7/QddFAouxvnBsDafoZcQFBTE8Nog6vu6OwZYgLfxgL156Zqr
-         LRs6l3Sr9SWPAA2XleyoGo3z9THODYwHhm2SiNzmvxOqWIqXIOh8ZboOwsdlsrsiv7u+
-         2AV4FF6ORaf8dt0QZC/uDMH/NW3OoUs0sOzl1ug1rQn6ard11AAQJuNqrqkR8XlQgAJt
-         G2QvXhf+vdkmcjX1+HTE97FxDSro1XYeSp5cJHFcuEl+3DRB96tu9FX2EzDuYOVoP6Ae
-         E3cdYvRTvt0vTa87VU2Yx2XC1YkH8QS/OG94qLlTDMlLl4Uj8fJQB7e5wPlp9ofWdKFx
-         0qbg==
-X-Gm-Message-State: AOAM530yVkexMq1ON9euT4cb3WdVPZ6Nd7MnyucCi15emMeA3ZLvgQcJ
-        pNK6cLMVG74csh6405wTbZGIUrifJJo=
-X-Google-Smtp-Source: ABdhPJwD0qHX0hn2zLkvYd5rTaz7KYjrQysriZgmB3LZpcD7MhILeJTe+jTIlkjKVWAnr5Ixl2cTTw==
-X-Received: by 2002:a65:6152:: with SMTP id o18mr2668294pgv.392.1612502249646;
-        Thu, 04 Feb 2021 21:17:29 -0800 (PST)
-Received: from google.com ([2620:15c:211:201:598:57c0:5d30:3614])
-        by smtp.gmail.com with ESMTPSA id v3sm7158907pff.217.2021.02.04.21.17.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Feb 2021 21:17:28 -0800 (PST)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Thu, 4 Feb 2021 21:17:26 -0800
-From:   Minchan Kim <minchan@kernel.org>
-To:     John Hubbard <jhubbard@nvidia.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        gregkh@linuxfoundation.org, surenb@google.com, joaodias@google.com,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>
-Subject: Re: [PATCH] mm: cma: support sysfs
-Message-ID: <YBzU5uUbwa+QIwBQ@google.com>
-References: <20210203155001.4121868-1-minchan@kernel.org>
- <7e7c01a7-27fe-00a3-f67f-8bcf9ef3eae9@nvidia.com>
- <YBxT9XFE6QAQ4T9N@google.com>
- <cda5547b-0c78-756b-bd0c-f3e534d04bff@nvidia.com>
- <YByNU4Q7cc7gYwPh@google.com>
- <87d7ec1f-d892-0491-a2de-3d0feecca647@nvidia.com>
- <YByi/gdaGJeV/+8b@google.com>
- <71c4ce84-8be7-49e2-90bd-348762b320b4@nvidia.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=lgOzo6AA5TXNIkBKlwLQRgO7wuH9dEiOWALI05+ya+s=;
+        b=TLZOAvLbW5gd+L+F50MELWIvOLQqDtJG5BI4GQ3tWGJzxdxYCNvJ5S/s8HM7v1Yr3i
+         6hPUdyVZWAMrCD/8RgAQDHgQxZy66Iu/O+7JXwln1NacORYtET5P/e8UJ2ebmUJn5Qul
+         DJdnvuQIE1DHONQLBLop/O6xfi0pUebeu1aFPdDx1IZeLVlyoj8lmPQzfdX0+0l2L2ld
+         j5f8U3JDtfNUz5FYaA7rlvkzFQSdoTas4bATf6kv1A8JsQnffSFB1QS6iE4lci+X0vXI
+         +1QDieYTVDmhdHW+nqS8UF9NTCU0eJoQKYhK97sGrv1r6NAZ7jKC5oh3/BFqtQMJ0sZ9
+         zBYQ==
+X-Gm-Message-State: AOAM530A19trKjF1B1opxaekYTtn9hmBT7xzmky2uGz0dMRYcDtHa68w
+        df16Rkf/BtZ7+B4XjP9PvZ7rbNj5RAE5G5aVQYIUsw==
+X-Google-Smtp-Source: ABdhPJy/Dx6JrLpBx8VlbMaJA6d4oUUMF+XjSPFkmLacUYDtzQGWIKeD1y2Kdkfjs0iYFqc+ffAcW4a1c6K401rcSlU=
+X-Received: by 2002:a25:da41:: with SMTP id n62mr3671777ybf.155.1612502309147;
+ Thu, 04 Feb 2021 21:18:29 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <71c4ce84-8be7-49e2-90bd-348762b320b4@nvidia.com>
+References: <20200923121320.v3.1.I8693156f555875e5c8342e86ab37ce968dfdd277@changeid>
+ <20200923121320.v3.2.Ided0ab0808c4908238bd2eb9ebb6ffb2c9312789@changeid>
+ <YBh9HvbIRF4zd+AK@intel.com> <2a7c2edc-b83c-dccf-487d-1415b4bc23ff@xs4all.nl>
+In-Reply-To: <2a7c2edc-b83c-dccf-487d-1415b4bc23ff@xs4all.nl>
+From:   Sam McNally <sammc@chromium.org>
+Date:   Fri, 5 Feb 2021 16:17:51 +1100
+Message-ID: <CAJqEsoCOJmS5aVb5du09tXUi7UUKVBQDPe5KTdcBiDr8A7kSYA@mail.gmail.com>
+Subject: Re: [PATCH v3 2/4] drm_dp_mst_topology: use correct AUX channel
+To:     Hans Verkuil <hverkuil@xs4all.nl>
+Cc:     =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Hans Verkuil <hans.verkuil@cisco.com>,
+        dri-devel@lists.freedesktop.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 04, 2021 at 06:52:01PM -0800, John Hubbard wrote:
-> On 2/4/21 5:44 PM, Minchan Kim wrote:
-> > On Thu, Feb 04, 2021 at 04:24:20PM -0800, John Hubbard wrote:
-> > > On 2/4/21 4:12 PM, Minchan Kim wrote:
-> > > ...
-> > > > > > Then, how to know how often CMA API failed?
-> > > > > 
-> > > > > Why would you even need to know that, *in addition* to knowing specific
-> > > > > page allocation numbers that failed? Again, there is no real-world motivation
-> > > > > cited yet, just "this is good data". Need more stories and support here.
-> > > > 
-> > > > Let me give an example.
-> > > > 
-> > > > Let' assume we use memory buffer allocation via CMA for bluetooth
-> > > > enable of  device.
-> > > > If user clicks the bluetooth button in the phone but fail to allocate
-> > > > the memory from CMA, user will still see bluetooth button gray.
-> > > > User would think his touch was not enough powerful so he try clicking
-> > > > again and fortunately CMA allocation was successful this time and
-> > > > they will see bluetooh button enabled and could listen the music.
-> > > > 
-> > > > Here, product team needs to monitor how often CMA alloc failed so
-> > > > if the failure ratio is steadily increased than the bar,
-> > > > it means engineers need to go investigation.
-> > > > 
-> > > > Make sense?
-> > > > 
-> > > 
-> > > Yes, except that it raises more questions:
-> > > 
-> > > 1) Isn't this just standard allocation failure? Don't you already have a way
-> > > to track that?
-> > > 
-> > > Presumably, having the source code, you can easily deduce that a bluetooth
-> > > allocation failure goes directly to a CMA allocation failure, right?
-> 
-> Still wondering about this...
+On Thu, 4 Feb 2021 at 21:19, Hans Verkuil <hverkuil@xs4all.nl> wrote:
+>
+> On 01/02/2021 23:13, Ville Syrj=C3=A4l=C3=A4 wrote:
+> > On Wed, Sep 23, 2020 at 12:13:53PM +1000, Sam McNally wrote:
+> >> From: Hans Verkuil <hans.verkuil@cisco.com>
+> >>
+> >> For adapters behind an MST hub use the correct AUX channel.
+> >>
+> >> Signed-off-by: Hans Verkuil <hans.verkuil@cisco.com>
+> >> [sammc@chromium.org: rebased, removing redundant changes]
+> >> Signed-off-by: Sam McNally <sammc@chromium.org>
+> >> ---
+> >>
+> >> (no changes since v1)
+> >>
+> >>  drivers/gpu/drm/drm_dp_mst_topology.c | 36 ++++++++++++++++++++++++++=
++
+> >>  1 file changed, 36 insertions(+)
+> >>
+> >> diff --git a/drivers/gpu/drm/drm_dp_mst_topology.c b/drivers/gpu/drm/d=
+rm_dp_mst_topology.c
+> >> index 15b6cc39a754..0d753201adbd 100644
+> >> --- a/drivers/gpu/drm/drm_dp_mst_topology.c
+> >> +++ b/drivers/gpu/drm/drm_dp_mst_topology.c
+> >> @@ -2255,6 +2255,9 @@ drm_dp_mst_topology_unlink_port(struct drm_dp_ms=
+t_topology_mgr *mgr,
+> >>      drm_dp_mst_topology_put_port(port);
+> >>  }
+> >>
+> >> +static ssize_t
+> >> +drm_dp_mst_aux_transfer(struct drm_dp_aux *aux, struct drm_dp_aux_msg=
+ *msg);
+> >> +
+> >>  static struct drm_dp_mst_port *
+> >>  drm_dp_mst_add_port(struct drm_device *dev,
+> >>                  struct drm_dp_mst_topology_mgr *mgr,
+> >> @@ -2271,9 +2274,13 @@ drm_dp_mst_add_port(struct drm_device *dev,
+> >>      port->port_num =3D port_number;
+> >>      port->mgr =3D mgr;
+> >>      port->aux.name =3D "DPMST";
+> >> +    mutex_init(&port->aux.hw_mutex);
+> >> +    mutex_init(&port->aux.cec.lock);
+> >>      port->aux.dev =3D dev->dev;
+> >>      port->aux.is_remote =3D true;
+> >>
+> >> +    port->aux.transfer =3D drm_dp_mst_aux_transfer;
+> >> +
+> >
+> > This was supposed to be handled via higher levels checking for
+> > is_remote=3D=3Dtrue.
+>
+> Ah, I suspect this patch can be dropped entirely: it predates commit 2f22=
+1a5efed4
+> ("drm/dp_mst: Add MST support to DP DPCD R/W functions").
+>
+> It looks like that commit basically solved what this older patch attempts=
+ to do
+> as well.
+>
+> Sam, can you test if it works without this patch?
 
-It would work if we have full source code and stack are not complicated for
-every usecases. Having said, having a good central place automatically
-popped up is also beneficial for not to add similar statistics for each
-call sites.
-
-Why do we have too many item in slab sysfs instead of creating each call
-site inventing on each own?
-
-> 
-> > > 
-> > > Anyway, even though the above is still a little murky, I expect you're right
-> > > that it's good to have *some* indication, somewhere about CMA behavior...
-> > > 
-> > > Thinking about this some more, I wonder if this is really /proc/vmstat sort
-> > > of data that we're talking about. It seems to fit right in there, yes?
-> > 
-> > Thing is CMA instance are multiple, cma-A, cma-B, cma-C and each of CMA
-> > heap has own specific scenario. /proc/vmstat could be bloated a lot
-> > while CMA instance will be increased.
-> > 
-> 
-> Yes, that would not fit in /proc/vmstat...assuming that you really require
-> knowing--at this point--which CMA heap is involved. And that's worth poking
-> at. If you get an overall indication in vmstat that CMA is having trouble,
-> then maybe that's all you need to start digging further.
-
-I agree it could save to decide whether I should go digging further
-but anyway, I need to go though each of instance once it happens.
-In that, what I need is per-CMA statistics, not global.
-I am happy to implement it but I'd like to say it's not my case.
-
-> 
-> It's actually easier to monitor one or two simpler items than it is to monitor
-> a larger number of complicated items. And I get the impression that this is
-> sort of a top-level, production software indicator.
-
-Let me clarify one more time.
-
-What I'd like to get ultimately is per-CMA statistics instead of
-global vmstat for the usecase at this moment. Global vmstat
-could help the decision whether I should go deeper but it ends up
-needing per-CMA statistics. And I'd like to keep them in sysfs,
-not debugfs since it should be stable as a telemetric.
-
-What points do you disagree in this view?
+It almost just works; drm_dp_cec uses whether aux.transfer is non-null
+to filter out non-DP connectors. Using aux.is_remote as another signal
+indicating a DP connector seems plausible. We can drop this patch.
+Thanks all!
+>
+> Regards,
+>
+>         Hans
+>
+> >
+> >>      /* initialize the MST downstream port's AUX crc work queue */
+> >>      drm_dp_remote_aux_init(&port->aux);
+> >>
+> >> @@ -3503,6 +3510,35 @@ static int drm_dp_send_up_ack_reply(struct drm_=
+dp_mst_topology_mgr *mgr,
+> >>      return 0;
+> >>  }
+> >>
+> >> +static ssize_t
+> >> +drm_dp_mst_aux_transfer(struct drm_dp_aux *aux, struct drm_dp_aux_msg=
+ *msg)
+> >> +{
+> >> +    struct drm_dp_mst_port *port =3D
+> >> +            container_of(aux, struct drm_dp_mst_port, aux);
+> >> +    int ret;
+> >> +
+> >> +    switch (msg->request & ~DP_AUX_I2C_MOT) {
+> >> +    case DP_AUX_NATIVE_WRITE:
+> >> +    case DP_AUX_I2C_WRITE:
+> >> +    case DP_AUX_I2C_WRITE_STATUS_UPDATE:
+> >> +            ret =3D drm_dp_send_dpcd_write(port->mgr, port, msg->addr=
+ess,
+> >> +                                         msg->size, msg->buffer);
+> >
+> > That doesn't make sense to me. I2c writes and DPCD writes
+> > are definitely not the same thing.
+> >
+> > aux->transfer is a very low level thing. I don't think it's the
+> > correct level of abstraction for sideband.
+> >
+> >> +            break;
+> >> +
+> >> +    case DP_AUX_NATIVE_READ:
+> >> +    case DP_AUX_I2C_READ:
+> >> +            ret =3D drm_dp_send_dpcd_read(port->mgr, port, msg->addre=
+ss,
+> >> +                                        msg->size, msg->buffer);
+> >> +            break;
+> >> +
+> >> +    default:
+> >> +            ret =3D -EINVAL;
+> >> +            break;
+> >> +    }
+> >> +
+> >> +    return ret;
+> >> +}
+> >> +
+> >>  static int drm_dp_get_vc_payload_bw(u8 dp_link_bw, u8  dp_link_count)
+> >>  {
+> >>      if (dp_link_bw =3D=3D 0 || dp_link_count =3D=3D 0)
+> >> --
+> >> 2.28.0.681.g6f77f65b4e-goog
+> >>
+> >> _______________________________________________
+> >> dri-devel mailing list
+> >> dri-devel@lists.freedesktop.org
+> >> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+> >
+>
