@@ -2,95 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BAAF310751
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 10:10:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02B24310752
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 10:10:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230033AbhBEJHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 04:07:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39382 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229766AbhBEJDp (ORCPT
+        id S230097AbhBEJHd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 04:07:33 -0500
+Received: from mail-ot1-f44.google.com ([209.85.210.44]:45248 "EHLO
+        mail-ot1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229789AbhBEJEA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 04:03:45 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8951C0613D6;
-        Fri,  5 Feb 2021 01:02:22 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1612515741;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=PI2qDxyliIROzaHP65iJZdDI7TEweADPsyK8kuQaxNk=;
-        b=zBi0MQhP9nKeni7mdwBHlfEkPnsq6w7qX5hPJLpE8k2GAAOTU5T5MzuiWaVAO6QpZ9R2uh
-        39j5VzTSW9apNTGLzvkf5dJYsR+GdYFWssTQGgxJYeRv2UNNBlFukr+t0uzWIJxYXqGigG
-        if1LapcEXuOo3ME3NDKpg9VvSL4wt5V/8yN4GYUUI33k3E4oOD8g3jClfnSZJZrXACfWFI
-        DWqRpILF+fVG/UUtGMYKZ/Md/buLbltRmmMiT56GxRWSDvew1Vfjmo3W+f2kK7htGogQca
-        zreluAt0uUGEv307Hk4bSyI9nKFprANnz0gd83c0bLc9Uuegvuqx06BBXw2E+Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1612515741;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=PI2qDxyliIROzaHP65iJZdDI7TEweADPsyK8kuQaxNk=;
-        b=fmLm5xAkfO4+HxyVQpfy9TXnBr0fqZxm3WoGHV88cd2O4DXF4UKTXWLHVnerMd+XTHCfH5
-        ayCGPpFngheKIWCw==
-To:     Gabriel Krisman Bertazi <krisman@collabora.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        kernel@collabora.com, Linux API <linux-api@vger.kernel.org>,
-        Michael Kerrisk <mtk.manpages@gmail.com>
-Subject: Re: [PATCH RESEND] entry: Use different define for selector variable in SUD
-In-Reply-To: <20210204184028.1516328-1-krisman@collabora.com>
-References: <20210204184028.1516328-1-krisman@collabora.com>
-Date:   Fri, 05 Feb 2021 10:02:20 +0100
-Message-ID: <87ft2aanvn.fsf@nanos.tec.linutronix.de>
+        Fri, 5 Feb 2021 04:04:00 -0500
+Received: by mail-ot1-f44.google.com with SMTP id o12so6169626ote.12;
+        Fri, 05 Feb 2021 01:03:43 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=l7Sh3OKLYK8/nf4Ykbw6S9nNzg4ZLGDikm1EE1e+r9w=;
+        b=BAJliugn1VP7rzDxtX5QFmZOoCdMLCRpQHTD1ZQHv9dDdr6hOpp4Lup7OmQAInlv85
+         4ZzXLhCSB7xX228VLxZhwOkqsdX17VImR5c875iACbtxeVUQiWRYk6yhmVQXyilmxI/H
+         zxSgoUkDZBYfmVnnhyinH3Ej7eilgxWbMG4pYH+uN3Zc7yYy0tafkCBhyudG83rTLgRm
+         87mvseeFQ9F0fBQaKZCKZoTpqjYBlcTPt2fhhfKsRpSDftIzpr52dKEenles6Yt7hxQr
+         X+WFLasyn4BizDMJ8KLKXV8HtSu2Q2EyapMd6yaUR4UeHPLXbGhO6d3nocxNrk95fI+F
+         MOSA==
+X-Gm-Message-State: AOAM531qirj9Jy27no4bdO9q5FUWwRDucVnK9eLHh7YK8KrFN7KYhQ/R
+        5r8XN2M5hnadRTwtJxBb1vE2i3EYlLQw/rtXnjbFAwss2xQ=
+X-Google-Smtp-Source: ABdhPJwj49VQVnIUkrsrhrUkZIoxqLtC0zpgNHTh266wX+Jh32XKOa1YFkFARheJBx+QtP0uUm1taeVX6kVZxfNJOKo=
+X-Received: by 2002:a9d:3604:: with SMTP id w4mr2673501otb.107.1612515758371;
+ Fri, 05 Feb 2021 01:02:38 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <cover.1611904394.git.viresh.kumar@linaro.org> <434ba2467dd0cd011565625aeb3450650afe0aae.1611904394.git.viresh.kumar@linaro.org>
+In-Reply-To: <434ba2467dd0cd011565625aeb3450650afe0aae.1611904394.git.viresh.kumar@linaro.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 5 Feb 2021 10:02:27 +0100
+Message-ID: <CAMuHMdVp0vGMqoEoP9A7Y7-ph-DYUWdddtChdq_eZcROYTBMHg@mail.gmail.com>
+Subject: Re: [PATCH V7 4/6] kbuild: Add support to build overlays (%.dtbo)
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Frank Rowand <frowand.list@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        anmar.oueja@linaro.org, Bill Mills <bill.mills@linaro.org>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-kbuild <linux-kbuild@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Gabriel,
+Hi Viresh,
 
-On Thu, Feb 04 2021 at 13:40, Gabriel Krisman Bertazi wrote:
-> Michael Kerrisk suggested that, from an API perspective, it is a bad
-> idea to share the PR_SYS_DISPATCH_ defines between the prctl operation
-> and the selector variable.  Therefore, define two new constants to be
-> used by SUD's selector variable, and the corresponding documentation.
+Thanks for your patch
+(which I only noticed because it appeared in dt-rh/for-next ;-)
+
+On Fri, Jan 29, 2021 at 8:31 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+> Add support for building DT overlays (%.dtbo). The overlay's source file
+> will have the usual extension, i.e. .dts, though the blob will have
+
+Why use .dts and not .dtso for overlays?
+Because you originally (until v5) had a single rule for building .dtb
+and .dtbo files?
+
+> .dtbo extension to distinguish it from normal blobs.
 >
-> While this changes the API, it is backward compatible, as the values
-> remained the same and the old defines are still in place.  In addition,
-> SUD has never been part of a Linux release, it will show up for the
-> first time in 5.11.
+> Acked-by: Masahiro Yamada <masahiroy@kernel.org>
+> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 
-> --- a/include/uapi/linux/prctl.h
-> +++ b/include/uapi/linux/prctl.h
-> @@ -251,5 +251,7 @@ struct prctl_mm_map {
->  #define PR_SET_SYSCALL_USER_DISPATCH	59
->  # define PR_SYS_DISPATCH_OFF		0
->  # define PR_SYS_DISPATCH_ON		1
-> +# define PR_SYS_DISPATCH_FILTER_ALLOW	0
-> +# define PR_SYS_DISPATCH_FILTER_BLOCK	1
+Gr{oetje,eeting}s,
 
-This is still confusing because the defines are kinda associated to the
-prctl(). But ALLOW/BLOCK are the values which for the user space
-selector which allows to runtime filter the dispatching without the
-overhead of prctl().
+                        Geert
 
-So they want to be visualy seperated and not part of the PR_
-namespace. Something like the below.
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-#define PR_SET_SYSCALL_USER_DISPATCH	59
-# define PR_SYS_DISPATCH_OFF		0
-# define PR_SYS_DISPATCH_ON		1
-
-/* Control values for the syscall dispatch runtime selector (filter) */
-# define SYSCALL_DISPATCH_FILTER_ALLOW	0
-# define SYSCALL_DISPATCH_FILTER_BLOCK	1
-
-Hmm?
-
-Thanks,
-
-        tglx
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
