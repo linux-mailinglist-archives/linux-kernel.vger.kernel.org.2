@@ -2,240 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D3ED31134F
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 22:18:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E15F6311346
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 22:18:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233745AbhBEVSg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 16:18:36 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:52198 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233100AbhBETAp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 14:00:45 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 115Kd1tA017993;
-        Fri, 5 Feb 2021 20:41:59 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : content-type :
- mime-version; s=corp-2020-01-29;
- bh=nXQCScTnEmz9YpfAfESz0ZBlMiwzMlpLGxkAJpBxnVo=;
- b=QQtB5LdyOFniFaaDZUKwfzJj84PLhwPf/qhABEnHO1JfBcqj5Z6wCZQeW6fb+pgvpzIk
- SjguMYT/h50IQP/QFVAf5ZkmDpWSxGuwerukj145v+qwqvvSc49o8xwBa0tzqt6RRCXp
- Ks9grPaH8UDaMYvvLRWNyPrRjbZFXs4hbb7j3q6JF6671WBS/3QoSh0V2g4zxl5sTwLZ
- rnInH3rsKeB3iMkJesSzr1nDAQIFEgoH7GEEGTJ3jz9yeTl9gttT7vcGDaOgP0g1ebZv
- YORmnlprFdkuA6aidoBHPwwZU/o9lzGU8nz0ajaeaZlyY2ER3eudc/VwiQoEhzaQCMDS Yg== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2130.oracle.com with ESMTP id 36cxvrdu59-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 05 Feb 2021 20:41:59 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 115KelXG041067;
-        Fri, 5 Feb 2021 20:41:59 GMT
-Received: from nam04-sn1-obe.outbound.protection.outlook.com (mail-sn1nam04lp2053.outbound.protection.outlook.com [104.47.44.53])
-        by userp3030.oracle.com with ESMTP id 36dhd3fqjt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 05 Feb 2021 20:41:58 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eXxzYD7LK+Afh24bCjjKiSCbRoekJnDQG4Ii5Y/FKsf2s/hr2oTevVWeKdlHw3B7qAXatwRwBSuMWCkWhVEGkJvkzqg+es+hDjfIiSzGKPHKzY1PpVG3wEzCTLRQ1W9tslwtX4XDMs0G9XyrFP0bu3JjbckbeBHV0M4hjDDFfPkJ+lYVktuYM/RNxbQepIvU0sCEkA9a2wZhKa53yV1eiGvWKU7uB4MTsYgJ9OIuE+bwN5nu0zIPYhPKwZGIl0TGpnwx41gtkiCRiqHdkrybvVE30L32vaZCL5hgPQ1y7BJOsd8l+fxtkBNjKcpmpo3x7gOLPVnJO/BHBY6icEc2RA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nXQCScTnEmz9YpfAfESz0ZBlMiwzMlpLGxkAJpBxnVo=;
- b=LjH1BygoFaWVwLkkOO3YU1XdNyWXSzJlp/4bUCOKmbyX7SKKLvyVpWJgkyRFzKXfDuvZp0bx0x94c9mXnaqIoV75+AHYNX+XQRkX6fJl6eiyQLlWtFXRWMm54GTY53RJBtY+z8BXqyKOnzCFM7mPUOjLt4XbsJf9bxg2CT0AKlLCUw63u15Yu9UbMnQLXbNOEIoB1SZT8iXtRbIdwMokdo9WDL9VgL0vIC6lGbXQ0OQ8ggYR/P4+TGM0G25/yBTe7HymrTQIW6itwmQbzRqgEsiTmThVIvT7filj67uh1VRY/7zXpfUg8M0xSZthFolkGjiQFcZFoUfdQh1N065qOw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nXQCScTnEmz9YpfAfESz0ZBlMiwzMlpLGxkAJpBxnVo=;
- b=EclOh5Duf2mtaSXz35E6/1DO4QDtZUbQbSJP+WZ15AN1OOdWFugmSITxbyF9jVN4yha8slWs9AGLJgOr0Al7hoExbAhQaV/KWdPIT4O7pXKKNw8deI863HF2a4aYjfhL4EAbF+BDU17JOJyt8WJrrhe1VfTt4HAX+YtldhM6jNo=
-Authentication-Results: kvack.org; dkim=none (message not signed)
- header.d=none;kvack.org; dmarc=none action=none header.from=oracle.com;
-Received: from BYAPR10MB3077.namprd10.prod.outlook.com (2603:10b6:a03:8c::12)
- by SJ0PR10MB4432.namprd10.prod.outlook.com (2603:10b6:a03:2df::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.21; Fri, 5 Feb
- 2021 20:41:56 +0000
-Received: from BYAPR10MB3077.namprd10.prod.outlook.com
- ([fe80::74a8:8649:e20b:d571]) by BYAPR10MB3077.namprd10.prod.outlook.com
- ([fe80::74a8:8649:e20b:d571%7]) with mapi id 15.20.3805.024; Fri, 5 Feb 2021
- 20:41:55 +0000
-From:   Joao Martins <joao.m.martins@oracle.com>
-To:     linux-mm@kvack.org
-Cc:     linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Doug Ledford <dledford@redhat.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Joao Martins <joao.m.martins@oracle.com>
-Subject: [PATCH v3 2/4] mm/gup: decrement head page once for group of subpages
-Date:   Fri,  5 Feb 2021 20:41:25 +0000
-Message-Id: <20210205204127.29441-3-joao.m.martins@oracle.com>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20210205204127.29441-1-joao.m.martins@oracle.com>
-References: <20210205204127.29441-1-joao.m.martins@oracle.com>
-Content-Type: text/plain
-X-Originating-IP: [94.61.1.144]
-X-ClientProxiedBy: AM3PR03CA0058.eurprd03.prod.outlook.com
- (2603:10a6:207:5::16) To BYAPR10MB3077.namprd10.prod.outlook.com
- (2603:10b6:a03:8c::12)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from paddy.uk.oracle.com (94.61.1.144) by AM3PR03CA0058.eurprd03.prod.outlook.com (2603:10a6:207:5::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3825.19 via Frontend Transport; Fri, 5 Feb 2021 20:41:53 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 7d7084ce-126e-44cf-fe20-08d8ca1679f0
-X-MS-TrafficTypeDiagnostic: SJ0PR10MB4432:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SJ0PR10MB4432286E1E91053F7AE7BD03BBB29@SJ0PR10MB4432.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4502;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: hV0JdkC8m975A76sTARfBvHapW7oQjoTs7Let4b7nVHvCFuvRcfzqwO8n7cZDEvS+6qsnvlRozbhVs6P0i6r/LEuVmvbEKVT9Agnd4SuOFuFbMO4J9nMLdRcbpI3vLSTNWFZZFlcI6/wMTvlR2HCGJ7dXj0lEk13AaedcD/IoGrNa9LuN6HV2SjouvY3iat5qxF8GElypQlxf0fTxO3EVaXOVllZ+XRb2RaGYpLf22mLWz4XchOCWaQk7vdyKvDt4F8dY1yXSYBeWazGBLkRM3XV9VnjvfXR9FOJpO/PtRFyuu+QwKyzbxNjRHQ7X2V1sH33qLvT+KrzsPBvN8CvvLYSiToVnMY3zw+HnCOWMP/A2fJjmKW4I80YTJIrsdJqogYnfiDPX/WNdE6Gepm7b7rYH4ytaQZUSVBzpAaUZWVsl6QdrmySjohkKVsZVJnv1ukrF8mhV6EpTWn49hulCevWnljtjtKicWUe8dv2c4lJdyKs+/xImjY4UimeNPtGz9D953dmw+7GPegRbbEpIw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB3077.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(396003)(366004)(136003)(376002)(39860400002)(6916009)(1076003)(5660300002)(186003)(26005)(54906003)(52116002)(103116003)(4326008)(8676002)(83380400001)(66946007)(2906002)(36756003)(6486002)(478600001)(6666004)(66476007)(8936002)(107886003)(66556008)(16526019)(2616005)(7696005)(86362001)(316002)(956004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?RHB+wNW0N7tpUEVp9oj3rB5w1u70Z1VZTNhF0vWEEqYvw41h5Q73oBj9W2Mc?=
- =?us-ascii?Q?3b9p1Q5neFVcuNLYqbcGMMDti5NRSG2PR+B5p0cIIABp9zLBT2314mYMy+HA?=
- =?us-ascii?Q?CQmU1nklRvkSzPCdePN2NT+QxYLteAE+nJdwwbHA67KeFyRE4A1fYUpoJXSZ?=
- =?us-ascii?Q?nPKsdhZ2OEUIzMZwoiiUmprxdDD/lSiQqu7LTz9W+Twi1oNJDnLkmuDiSIMD?=
- =?us-ascii?Q?PwjSKmA/ZSLSgv/2wXHmOBx5HFYsSgP2uGlpDEAPvZ9hA2nYkEQsOrYeGZ7z?=
- =?us-ascii?Q?iL3LlNGA11l486te5820PrD8Y9efbCseIk3VTDyg4S3sLVlixdn+rpZE7nwr?=
- =?us-ascii?Q?HRIQIPitS2M4xU9KlELrP1x2tBoxynsrPXOnvBLU0WSw/A8jwxVCUsciUx6T?=
- =?us-ascii?Q?tYNVvqW82eayljIkZomBbObwEXIuYnpDA2EN3gD3Hmu0fvMvNCTSSPaElIUK?=
- =?us-ascii?Q?Cndc62N3xN2/vbaB9CUZ9tM98DoSs/vudrHDk1/AssLFARp0JxrSJF4ZppcF?=
- =?us-ascii?Q?4IpFUdWldnKoaBOKybn9bsdEt8+HNDUhl0pvmTLvVfbTSoSD44VaK6erSuQt?=
- =?us-ascii?Q?W2tgUmJFr4/RsuGUwPABFPdM3bdojwAZPtesyeEqPJO1K+4ImcQzGWcKZfaK?=
- =?us-ascii?Q?KBvpC4SsOkXxxWv/wbRBNRs9kmBIFIbiWg+tqiHIOsGgHIXy4EJKCT/8rWEB?=
- =?us-ascii?Q?eW54BdamXh9KDoVLTERoe1Y5vWE+RBFcmOEkaXHDZ00pNz2HJwyO0VNwCVbc?=
- =?us-ascii?Q?plAcuFBJaUJ6jInFN7ELuPNnVlpS6l7xuG/k+5iRfxH0z7fJnSnGQALMc6pG?=
- =?us-ascii?Q?NjAeFITo2lQa4z0pLHPboepkSvEm2XQPb1lNiD1jufmw3mGWODXDym5YuP4k?=
- =?us-ascii?Q?WPHT7qOYVktLNhqzEZ1fshiH/+AWRE8q7rHHxeg8l2reFG87xCLaIZ08s1UN?=
- =?us-ascii?Q?NQoOOqufLu4uSWOOIsvp1Snh4OrbhOKMMCZav1pkeTD734V5Hx2SFO0R0r95?=
- =?us-ascii?Q?amwSP5lcNAKOgENv5WCz0xu8bL1+K204b2Vzq75v8L2x8binailRuezEd9Mp?=
- =?us-ascii?Q?+Jg+0wXPu6fh/shb7cn0uTeqXt/0WlMPJje9Lv3ASuZX7kJuEFTdJgPlKrzg?=
- =?us-ascii?Q?wSpO5+VmUvRooFPHD/D4e88nXm74b3puGmywpOIhYuzdqAoLyl2pNk0IYx+R?=
- =?us-ascii?Q?4w3XckPXUHX6Pna2EFkXfaXi+f4J5pjjHkctawUoQHIUGwx+W/Ihhj45Capm?=
- =?us-ascii?Q?8pqX71H4HBjA/fsDbjKKDrpvYAfoG5VKdw4lTDdDUUwpaCiTQdRfYf6LIm+O?=
- =?us-ascii?Q?DNEgILN+NkyEApORNY1uvxMC?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7d7084ce-126e-44cf-fe20-08d8ca1679f0
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB3077.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Feb 2021 20:41:55.8532
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: BGkrzbTDBEqgMJm9McZPtfjgjmP2Ho3sN2HN8j97951Hj+6LkimmvnlSFFrFzkwxFobQWVV9dzYV1gKyEsAN7+EKh2P2C8yLZywmK8qehfQ=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR10MB4432
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9886 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 mlxlogscore=999 phishscore=0
- spamscore=0 suspectscore=0 malwarescore=0 adultscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102050129
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9886 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxlogscore=999
- mlxscore=0 priorityscore=1501 spamscore=0 impostorscore=0 clxscore=1015
- suspectscore=0 lowpriorityscore=0 phishscore=0 adultscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102050129
+        id S233666AbhBEVQ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 16:16:57 -0500
+Received: from so15.mailgun.net ([198.61.254.15]:51752 "EHLO so15.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233101AbhBETDR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 14:03:17 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1612557917; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=3BclvZ99xRNsYy0No6aROEDf6otnaYKYIumBhd5Kht8=; b=p5RoFq1QJGy+J9Sd/dptLXKAJDMcjx2x+M1Q6F60JXvhaoiJodImOG+UG+8mTC0nQwD2Ila8
+ zI37Wt4+1ip1Yq2ViqHRFwfpx2beDexMWdKopDDgKNnlfjJRbTK+EWV3u7lfofk1D/fbaFnV
+ JnI759lC+I7vniwqvDLyiTtxXFA=
+X-Mailgun-Sending-Ip: 198.61.254.15
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 601dae430bb8f50fb98af5d8 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 05 Feb 2021 20:44:51
+ GMT
+Sender: khsieh=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 81287C43464; Fri,  5 Feb 2021 20:44:50 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from khsieh-linux1.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: khsieh)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id B23E8C433CA;
+        Fri,  5 Feb 2021 20:44:48 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org B23E8C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=khsieh@codeaurora.org
+From:   Kuogee Hsieh <khsieh@codeaurora.org>
+To:     robdclark@gmail.com, sean@poorly.run, swboyd@chromium.org
+Cc:     tanmay@codeaurora.org, abhinavk@codeaurora.org,
+        aravindh@codeaurora.org, khsieh@codeaurora.org, airlied@linux.ie,
+        daniel@ffwll.ch, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] drm/msm/dp: reset dp controller only at boot up and pm_resume
+Date:   Fri,  5 Feb 2021 12:44:38 -0800
+Message-Id: <1612557878-19743-1-git-send-email-khsieh@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rather than decrementing the head page refcount one by one, we
-walk the page array and checking which belong to the same
-compound_head. Later on we decrement the calculated amount
-of references in a single write to the head page. To that
-end switch to for_each_compound_head() does most of the work.
+DP_SW_RESET is the global SW reset that is used to initialize DP
+controller. If DP_SW_RESET executed during connection setup,
+two HPD related side effects may occurred,
+1) pending HPD interrupts cleared unexpected
+2) re start debounce logic which trigger another interrupt
+This patch only issue DP_SW_RESET at boot up and pm_resume.
+This patch also reinit video_comp before configure dp controller
+to avoid missing VIDEO_READY interrupt.
 
-set_page_dirty() needs no adjustment as it's a nop for
-non-dirty head pages and it doesn't operate on tail pages.
-
-This considerably improves unpinning of pages with THP and
-hugetlbfs:
-
-- THP
-gup_test -t -m 16384 -r 10 [-L|-a] -S -n 512 -w
-PIN_LONGTERM_BENCHMARK (put values): ~87.6k us -> ~23.2k us
-
-- 16G with 1G huge page size
-gup_test -f /mnt/huge/file -m 16384 -r 10 [-L|-a] -S -n 512 -w
-PIN_LONGTERM_BENCHMARK: (put values): ~87.6k us -> ~27.5k us
-
-Signed-off-by: Joao Martins <joao.m.martins@oracle.com>
-Reviewed-by: John Hubbard <jhubbard@nvidia.com>
+Fixes: 9fc418430c65 ("drm/msm/dp: unplug interrupt missed after irq_hpd handler")
+Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
 ---
- mm/gup.c | 29 +++++++++++------------------
- 1 file changed, 11 insertions(+), 18 deletions(-)
+ drivers/gpu/drm/msm/dp/dp_ctrl.c    | 22 +++++++++-------------
+ drivers/gpu/drm/msm/dp/dp_ctrl.h    |  2 +-
+ drivers/gpu/drm/msm/dp/dp_display.c | 14 +++++++-------
+ 3 files changed, 17 insertions(+), 21 deletions(-)
 
-diff --git a/mm/gup.c b/mm/gup.c
-index 8defe4f670d5..467a11df216d 100644
---- a/mm/gup.c
-+++ b/mm/gup.c
-@@ -267,20 +267,15 @@ void unpin_user_pages_dirty_lock(struct page **pages, unsigned long npages,
- 				 bool make_dirty)
- {
- 	unsigned long index;
--
--	/*
--	 * TODO: this can be optimized for huge pages: if a series of pages is
--	 * physically contiguous and part of the same compound page, then a
--	 * single operation to the head page should suffice.
--	 */
-+	struct page *head;
-+	unsigned int ntails;
+diff --git a/drivers/gpu/drm/msm/dp/dp_ctrl.c b/drivers/gpu/drm/msm/dp/dp_ctrl.c
+index 55b7d0e..f8e75e2 100644
+--- a/drivers/gpu/drm/msm/dp/dp_ctrl.c
++++ b/drivers/gpu/drm/msm/dp/dp_ctrl.c
+@@ -1296,8 +1296,6 @@ static int dp_ctrl_setup_main_link(struct dp_ctrl_private *ctrl,
+ 	 * transitioned to PUSH_IDLE. In order to start transmitting
+ 	 * a link training pattern, we have to first do soft reset.
+ 	 */
+-	if (*training_step == DP_TRAINING_1)
+-		dp_catalog_ctrl_reset(ctrl->catalog);
  
- 	if (!make_dirty) {
- 		unpin_user_pages(pages, npages);
- 		return;
- 	}
+ 	ret = dp_ctrl_link_train(ctrl, cr, training_step);
  
--	for (index = 0; index < npages; index++) {
--		struct page *page = compound_head(pages[index]);
-+	for_each_compound_head(index, pages, npages, head, ntails) {
- 		/*
- 		 * Checking PageDirty at this point may race with
- 		 * clear_page_dirty_for_io(), but that's OK. Two key
-@@ -301,9 +296,9 @@ void unpin_user_pages_dirty_lock(struct page **pages, unsigned long npages,
- 		 * written back, so it gets written back again in the
- 		 * next writeback cycle. This is harmless.
- 		 */
--		if (!PageDirty(page))
--			set_page_dirty_lock(page);
--		unpin_user_page(page);
-+		if (!PageDirty(head))
-+			set_page_dirty_lock(head);
-+		put_compound_head(head, ntails, FOLL_PIN);
- 	}
+@@ -1366,7 +1364,7 @@ static int dp_ctrl_enable_stream_clocks(struct dp_ctrl_private *ctrl)
+ 	return ret;
  }
- EXPORT_SYMBOL(unpin_user_pages_dirty_lock);
-@@ -320,6 +315,8 @@ EXPORT_SYMBOL(unpin_user_pages_dirty_lock);
- void unpin_user_pages(struct page **pages, unsigned long npages)
+ 
+-int dp_ctrl_host_init(struct dp_ctrl *dp_ctrl, bool flip)
++int dp_ctrl_host_init(struct dp_ctrl *dp_ctrl, bool flip, bool reset)
  {
- 	unsigned long index;
-+	struct page *head;
-+	unsigned int ntails;
+ 	struct dp_ctrl_private *ctrl;
+ 	struct dp_io *dp_io;
+@@ -1383,6 +1381,9 @@ int dp_ctrl_host_init(struct dp_ctrl *dp_ctrl, bool flip)
+ 
+ 	ctrl->dp_ctrl.orientation = flip;
+ 
++	if (reset)
++		dp_catalog_ctrl_reset(ctrl->catalog);
++
+ 	dp_catalog_ctrl_phy_reset(ctrl->catalog);
+ 	phy_init(phy);
+ 	dp_catalog_ctrl_enable_irq(ctrl->catalog, true);
+@@ -1492,18 +1493,14 @@ static int dp_ctrl_deinitialize_mainlink(struct dp_ctrl_private *ctrl)
+ 	return 0;
+ }
+ 
+-static void dp_ctrl_link_idle_reset(struct dp_ctrl_private *ctrl)
+-{
+-	dp_ctrl_push_idle(&ctrl->dp_ctrl);
+-	dp_catalog_ctrl_reset(ctrl->catalog);
+-}
+-
+ static int dp_ctrl_link_maintenance(struct dp_ctrl_private *ctrl)
+ {
+ 	int ret = 0;
+ 	struct dp_cr_status cr;
+ 	int training_step = DP_TRAINING_NONE;
+ 
++	dp_ctrl_push_idle(&ctrl->dp_ctrl);
++
+ 	ctrl->dp_ctrl.pixel_rate = ctrl->panel->dp_mode.drm_mode.clock;
+ 
+ 	ret = dp_ctrl_setup_main_link(ctrl, &cr, &training_step);
+@@ -1630,7 +1627,6 @@ void dp_ctrl_handle_sink_request(struct dp_ctrl *dp_ctrl)
+ 
+ 	if (sink_request & DP_TEST_LINK_TRAINING) {
+ 		dp_link_send_test_response(ctrl->link);
+-		dp_ctrl_link_idle_reset(ctrl);
+ 		if (dp_ctrl_link_maintenance(ctrl)) {
+ 			DRM_ERROR("LM failed: TEST_LINK_TRAINING\n");
+ 			return;
+@@ -1684,7 +1680,7 @@ int dp_ctrl_on_link(struct dp_ctrl *dp_ctrl)
+ 			break;
+ 		}
+ 
+-		training_step = DP_TRAINING_1;
++		training_step = DP_TRAINING_NONE;
+ 		rc = dp_ctrl_setup_main_link(ctrl, &cr, &training_step);
+ 		if (rc == 0) {
+ 			/* training completed successfully */
+@@ -1792,14 +1788,14 @@ int dp_ctrl_on_stream(struct dp_ctrl *dp_ctrl)
+ 	 * Set up transfer unit values and set controller state to send
+ 	 * video.
+ 	 */
++	reinit_completion(&ctrl->video_comp);
++
+ 	dp_ctrl_configure_source_params(ctrl);
+ 
+ 	dp_catalog_ctrl_config_msa(ctrl->catalog,
+ 		ctrl->link->link_params.rate,
+ 		ctrl->dp_ctrl.pixel_rate, dp_ctrl_use_fixed_nvid(ctrl));
+ 
+-	reinit_completion(&ctrl->video_comp);
+-
+ 	dp_ctrl_setup_tr_unit(ctrl);
+ 
+ 	dp_catalog_ctrl_state_ctrl(ctrl->catalog, DP_STATE_CTRL_SEND_VIDEO);
+diff --git a/drivers/gpu/drm/msm/dp/dp_ctrl.h b/drivers/gpu/drm/msm/dp/dp_ctrl.h
+index f60ba93..a836bd3 100644
+--- a/drivers/gpu/drm/msm/dp/dp_ctrl.h
++++ b/drivers/gpu/drm/msm/dp/dp_ctrl.h
+@@ -19,7 +19,7 @@ struct dp_ctrl {
+ 	u32 pixel_rate;
+ };
+ 
+-int dp_ctrl_host_init(struct dp_ctrl *dp_ctrl, bool flip);
++int dp_ctrl_host_init(struct dp_ctrl *dp_ctrl, bool flip, bool reset);
+ void dp_ctrl_host_deinit(struct dp_ctrl *dp_ctrl);
+ int dp_ctrl_on_link(struct dp_ctrl *dp_ctrl);
+ int dp_ctrl_on_stream(struct dp_ctrl *dp_ctrl);
+diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
+index d9216f8..5a39da6 100644
+--- a/drivers/gpu/drm/msm/dp/dp_display.c
++++ b/drivers/gpu/drm/msm/dp/dp_display.c
+@@ -350,7 +350,7 @@ static int dp_display_process_hpd_high(struct dp_display_private *dp)
+ 	return rc;
+ }
+ 
+-static void dp_display_host_init(struct dp_display_private *dp)
++static void dp_display_host_init(struct dp_display_private *dp, int reset)
+ {
+ 	bool flip = false;
+ 
+@@ -365,7 +365,7 @@ static void dp_display_host_init(struct dp_display_private *dp)
+ 	dp_display_set_encoder_mode(dp);
+ 
+ 	dp_power_init(dp->power, flip);
+-	dp_ctrl_host_init(dp->ctrl, flip);
++	dp_ctrl_host_init(dp->ctrl, flip, reset);
+ 	dp_aux_init(dp->aux);
+ 	dp->core_initialized = true;
+ }
+@@ -403,7 +403,7 @@ static int dp_display_usbpd_configure_cb(struct device *dev)
+ 		goto end;
+ 	}
+ 
+-	dp_display_host_init(dp);
++	dp_display_host_init(dp, false);
  
  	/*
- 	 * If this WARN_ON() fires, then the system *might* be leaking pages (by
-@@ -328,13 +325,9 @@ void unpin_user_pages(struct page **pages, unsigned long npages)
- 	 */
- 	if (WARN_ON(IS_ERR_VALUE(npages)))
- 		return;
--	/*
--	 * TODO: this can be optimized for huge pages: if a series of pages is
--	 * physically contiguous and part of the same compound page, then a
--	 * single operation to the head page should suffice.
--	 */
--	for (index = 0; index < npages; index++)
--		unpin_user_page(pages[index]);
-+
-+	for_each_compound_head(index, pages, npages, head, ntails)
-+		put_compound_head(head, ntails, FOLL_PIN);
- }
- EXPORT_SYMBOL(unpin_user_pages);
+ 	 * set sink to normal operation mode -- D0
+@@ -700,7 +700,7 @@ static int dp_irq_hpd_handle(struct dp_display_private *dp, u32 data)
+ 		return 0;
+ 	}
+ 
+-	if (state == ST_CONNECT_PENDING) {
++	if (state == ST_CONNECT_PENDING || state == ST_DISCONNECT_PENDING) {
+ 		/* wait until ST_CONNECTED */
+ 		dp_add_event(dp, EV_IRQ_HPD_INT, 0, 1); /* delay = 1 */
+ 		mutex_unlock(&dp->event_mutex);
+@@ -1012,7 +1012,7 @@ int dp_display_get_test_bpp(struct msm_dp *dp)
+ static void dp_display_config_hpd(struct dp_display_private *dp)
+ {
+ 
+-	dp_display_host_init(dp);
++	dp_display_host_init(dp, true);
+ 	dp_catalog_ctrl_hpd_config(dp->catalog);
+ 
+ 	/* Enable interrupt first time
+@@ -1266,7 +1266,7 @@ static int dp_pm_resume(struct device *dev)
+ 	dp->hpd_state = ST_DISCONNECTED;
+ 
+ 	/* turn on dp ctrl/phy */
+-	dp_display_host_init(dp);
++	dp_display_host_init(dp, true);
+ 
+ 	dp_catalog_ctrl_hpd_config(dp->catalog);
+ 
+@@ -1449,7 +1449,7 @@ int msm_dp_display_enable(struct msm_dp *dp, struct drm_encoder *encoder)
+ 	state =  dp_display->hpd_state;
+ 
+ 	if (state == ST_DISPLAY_OFF)
+-		dp_display_host_init(dp_display);
++		dp_display_host_init(dp_display, true);
+ 
+ 	dp_display_enable(dp_display, 0);
  
 -- 
-2.17.1
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
