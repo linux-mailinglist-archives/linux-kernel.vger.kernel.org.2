@@ -2,104 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CC00310D90
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 17:05:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D942A310DA4
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 17:11:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232596AbhBEOYK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 09:24:10 -0500
-Received: from mail.archlinux.org ([95.216.189.61]:43242 "EHLO
-        mail.archlinux.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232432AbhBEOQj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 09:16:39 -0500
-Received: from localhost.localdomain (unknown [IPv6:2001:8a0:f24a:dd00:4cf5:7496:69c2:e329])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S232640AbhBEO3z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 09:29:55 -0500
+Received: from mga04.intel.com ([192.55.52.120]:16255 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232065AbhBEOSy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 09:18:54 -0500
+IronPort-SDR: Md9gHOWmaXCgIfNFCHnB1TbIL75Hsw5CNCDn9kt6rZGAOrA9ZjRt8pfQyT7lUQZ0+qiMihwoKC
+ sDWTYffNQtzQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9885"; a="178879683"
+X-IronPort-AV: E=Sophos;i="5.81,155,1610438400"; 
+   d="scan'208";a="178879683"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2021 06:38:07 -0800
+IronPort-SDR: 227D2ET+ba/qRbtZ+yCKwyHqYwI5MZcMZwAvT9sFy8iXgQmSs5kk0hAs2jkJLiQLAixIIQbQ1R
+ CU7DuqsYQ5SQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,155,1610438400"; 
+   d="scan'208";a="508557741"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga004.jf.intel.com with ESMTP; 05 Feb 2021 06:38:06 -0800
+Received: from [10.254.80.1] (kliang2-MOBL.ccr.corp.intel.com [10.254.80.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        (Authenticated sender: ffy00)
-        by mail.archlinux.org (Postfix) with ESMTPSA id D2E023C7995;
-        Fri,  5 Feb 2021 14:35:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=archlinux.org;
-        s=dkim-rsa; t=1612535704;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=NwiCsqnWonTULORaJqBJaMJZsYnHgHIEPKkCuvvEAZ4=;
-        b=mQWT80szYfzewHP7IgXmYw7rd1Cj/3AhJpdefjHNrQXSQCAjczwQbsc8SnDE82Kim5xvnB
-        opmGgULSPM/i/WBzdxPC3bs8P22QMLHT4NpN/RMaogbZQ7//VxBLxjvribPW5Q/fbJHkmX
-        QX+qBOs5sTZ8Z0INcH1ghXPmDxUDlSM3njCWQ9KzA4eRNCmVZHHbWnxAarOsei2hrfs5BO
-        8ZpI91za80iqD3h4c7xOdbEFpeSQel4Fvh6PJxEhX6VoSdo4xUXDYbAIKpHaSy+ChPlkxn
-        yvnspLOiLK5UvmdZfwTOQlQ1wrU631EA8RZdm9YnMnYCA++aYfp6tfQukAapau8XMG8X/O
-        Zl6jfDT9DlxbpQYJfTuueW7HtQYGPIKSwOijtLBxl0jrvXZrZz5y4UeKve7OSzAIpX/T85
-        70Nred3ga3X2EzfLhj5+AKNv62TzhqjG7aiv5mVPsSxy1lq4B1H5H0mwN0ji9F2/+xxIWq
-        2mWGvG0Ca/CWFPqdETbJmq5Xep3icpbeFxy89zD+ABmTX8UN3yPmoMyHQ4K+686UxZ8r+2
-        bxSHOfHQAM9Qdy4EmIGDkUrdGPNMAS56jPrVyfeTGHKQBaWTERjwExd4qomlOzsdUJqHOf
-        9f+9Vj/5tkmdp4ri4r4+yhkN4IOeHDgWjDnOvX+Y7GyCEAm5iGCI8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=archlinux.org;
-        s=dkim-ed25519; t=1612535704;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=NwiCsqnWonTULORaJqBJaMJZsYnHgHIEPKkCuvvEAZ4=;
-        b=AQJk+8TjWsZ35Cg8iEdUxvHDXHCFP8rg2j2n8egJSjp5KoqWyumUGZcrQvwkxtP6LCGz8j
-        /ODgjUrXgljjXKBg==
-From:   =?UTF-8?q?Filipe=20La=C3=ADns?= <lains@archlinux.org>
-To:     Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     =?UTF-8?q?Filipe=20La=C3=ADns?= <lains@riseup.net>,
-        stable@vger.kernel.org
-Subject: [PATCH v2] HID: logitech-dj: add support for keyboard events in eQUAD step 4 Gaming
-Date:   Fri,  5 Feb 2021 14:34:44 +0000
-Message-Id: <20210205143444.1155367-1-lains@archlinux.org>
-X-Mailer: git-send-email 2.30.0
+        by linux.intel.com (Postfix) with ESMTPS id 8C4AF580689;
+        Fri,  5 Feb 2021 06:38:05 -0800 (PST)
+Subject: Re: [PATCH 6/9] perf report: Support instruction latency
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Stephane Eranian <eranian@google.com>,
+        Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>,
+        Yao Jin <yao.jin@linux.intel.com>, maddy@linux.vnet.ibm.com
+References: <1612296553-21962-1-git-send-email-kan.liang@linux.intel.com>
+ <1612296553-21962-7-git-send-email-kan.liang@linux.intel.com>
+ <CAM9d7chGxZc0MA4nqVeJRDXLEzWsQ-ceJ+xgMVmEbQbDVDf72w@mail.gmail.com>
+From:   "Liang, Kan" <kan.liang@linux.intel.com>
+Message-ID: <a1e837a6-9c6a-c613-d7b9-8e6547dfcf67@linux.intel.com>
+Date:   Fri, 5 Feb 2021 09:38:04 -0500
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Authentication-Results: mail.archlinux.org;
-        auth=pass smtp.auth=ffy00 smtp.mailfrom=lains@archlinux.org
+In-Reply-To: <CAM9d7chGxZc0MA4nqVeJRDXLEzWsQ-ceJ+xgMVmEbQbDVDf72w@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Filipe Laíns <lains@riseup.net>
 
-In e400071a805d6229223a98899e9da8c6233704a1 I added support for the
-receiver that comes with the G602 device, but unfortunately I screwed up
-during testing and it seems the keyboard events were actually not being
-sent to userspace.
-This resulted in keyboard events being broken in userspace, please
-backport the fix.
 
-The receiver uses the normal 0x01 Logitech keyboard report descriptor,
-as expected, so it is just a matter of flagging it as supported.
+On 2/5/2021 6:08 AM, Namhyung Kim wrote:
+> On Wed, Feb 3, 2021 at 5:14 AM <kan.liang@linux.intel.com> wrote:
+>>
+>> From: Kan Liang <kan.liang@linux.intel.com>
+>>
+>> The instruction latency information can be recorded on some platforms,
+>> e.g., the Intel Sapphire Rapids server. With both memory latency
+>> (weight) and the new instruction latency information, users can easily
+>> locate the expensive load instructions, and also understand the time
+>> spent in different stages. The users can optimize their applications
+>> in different pipeline stages.
+>>
+>> The 'weight' field is shared among different architectures. Reusing the
+>> 'weight' field may impacts other architectures. Add a new field to store
+>> the instruction latency.
+>>
+>> Like the 'weight' support, introduce a 'ins_lat' for the global
+>> instruction latency, and a 'local_ins_lat' for the local instruction
+>> latency version.
+> 
+> Could you please clarify the difference between the global latency
+> and the local latency?
+>
 
-Reported in
-https://github.com/libratbag/libratbag/issues/1124
+The global means the total latency.
+The local means average latency, aka total / number of samples.
 
-Fixes: e400071a805d6 ("HID: logitech-dj: add the G602 receiver")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Filipe Laíns <lains@riseup.net>
----
-
-Changes in v2:
-- added missing Fixes: anc Cc: tags
-
- drivers/hid/hid-logitech-dj.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/hid/hid-logitech-dj.c b/drivers/hid/hid-logitech-dj.c
-index 6596c81947a8..2703333edc34 100644
---- a/drivers/hid/hid-logitech-dj.c
-+++ b/drivers/hid/hid-logitech-dj.c
-@@ -981,6 +981,7 @@ static void logi_hidpp_recv_queue_notif(struct hid_device *hdev,
- 	case 0x07:
- 		device_type = "eQUAD step 4 Gaming";
- 		logi_hidpp_dev_conn_notif_equad(hdev, hidpp_report, &workitem);
-+		workitem.reports_supported |= STD_KEYBOARD;
- 		break;
- 	case 0x08:
- 		device_type = "eQUAD step 4 for gamepads";
--- 
-2.30.0
-
+Thanks,
+Kan
