@@ -2,346 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9941D311989
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 04:11:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 829533119C4
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 04:19:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231706AbhBFDJk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 22:09:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38304 "EHLO
+        id S232363AbhBFDSg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 22:18:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231363AbhBFCi0 (ORCPT
+        with ESMTP id S231476AbhBFCkR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 21:38:26 -0500
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D22E6C08ED04
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 15:04:14 -0800 (PST)
-Received: by mail-qt1-x82e.google.com with SMTP id d15so6227126qtw.12
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 15:04:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=gkaL9LZwsu7edsdPwkeN2Wj+2Wyu6qO/VQw32thqesw=;
-        b=RD1IB4/rg+jKnPtU6Ngic5W0Htu4JlEY8fPn47TAHGOM7tOGgfFsVGAwXmhGKnu/hP
-         ckwiN09S4rjEbTklgSI0pGdFGcWM9SrFha3EyNiavsx7pXAOGR27Vd7KwACm9YuNsssY
-         JdhOM2IG2p2T7EAc5XiS0WtGEo/BCJRos/VkkR9STt3abibLxzBI3eI7RhLefXW4EBYj
-         TBUrHZKg5hQWcxHe/Aoye7ejUS8WVTdFs9OzYE4h6es6N93hCpWBvm999/ZRi7a4qhEl
-         ZPV3oyDP3VYCNThvdmwSGC0bb9g/oVeWqf5rO8Nlz7jgFC3qBnuFLNchGeYCeGhBoMBn
-         ycZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=gkaL9LZwsu7edsdPwkeN2Wj+2Wyu6qO/VQw32thqesw=;
-        b=BniONsaX5go3VJM+UXYi43BAMc5LH+YNgOjJfwECMz4pudPNhG89lFAAjmyvePBfPi
-         ehGaYomiObICnbfDxQ51dZeZ8JfJPbvhTUVYoPCCICw9o2BXFtzvORM4KJY6A4jOFxJl
-         P+gSbMcsQy2lvfkL4cX/k12b1c0MevL3eyxwODoLZW66fmbI/ne51haxcimPGZn6UOba
-         rblKYv6eErBFjBxhM4jFhCGWx4Ue8G3vz2NfuJI65jekUtdY0wEXv8uX6n8YX/8uIEHe
-         q7ysrdokSlPMNteH8W3evcgqu/cSvwq4sIfT6EH0PO2vqLKPdSHj1wvdMKADpYYwC+Lt
-         IwrQ==
-X-Gm-Message-State: AOAM530swO74S77KsvmyR23k51yQnohc8k5aJpIJ7ap5ZKTUFTVYQL6B
-        qU3lu/OWS/uq7kJfSQkvz3+/f4HNA/dS3g==
-X-Google-Smtp-Source: ABdhPJzXsqX+0HqdwNgqii/ALCVyuknIaYgOANJwZSd8L1OOvSCz7K6yuEmX5txLGKRd0yvziYIfzQ==
-X-Received: by 2002:aed:2022:: with SMTP id 31mr6618763qta.85.1612566254005;
-        Fri, 05 Feb 2021 15:04:14 -0800 (PST)
-Received: from debian-vm ([189.120.76.30])
-        by smtp.gmail.com with ESMTPSA id q25sm10781893qkq.32.2021.02.05.15.04.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Feb 2021 15:04:13 -0800 (PST)
-From:   Igor <igormtorrente@gmail.com>
-X-Google-Original-From: Igor <igor>
-Date:   Fri, 5 Feb 2021 20:04:10 -0300
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Fri, 5 Feb 2021 21:40:17 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46D2BC08ED89;
+        Fri,  5 Feb 2021 15:25:31 -0800 (PST)
+Date:   Fri, 05 Feb 2021 23:24:42 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1612567484;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZnEceAcJS8RbJxqxuC/DUSlKXfvuFogvHWnmfyoEmiA=;
+        b=28/ipzOD5LSAJOUrZzG3hp6nprNMFCNX8AZgsojfv9lWAjQngJTYk7BdEjN55dDZIlhiFv
+        UqrWXs5z7rrxlvQ0x3bmpWRCmBZvSkEuGc6znGOTCxB3N9DFhZB1itcepMNaGTFu+khzSj
+        qZ38kAUhu4htRL1mBPy9xNixaZLg0pfYirjZI6SKHoGHgsUHeSKPwOn3vH230ExZi0rxDG
+        7b8fNNSYOnGy78dO/jkNYc45kg7TGB7EBXHzefOs9eXuM20ISTFxCVP3T1DDXcgeSMGuhJ
+        BZau0XNcT6Y4yQ+PWNxCpbJkA9vMuslApWfKmoX1GNPnImZLyXMOIwAuqNlmzg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1612567484;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZnEceAcJS8RbJxqxuC/DUSlKXfvuFogvHWnmfyoEmiA=;
+        b=Ye5Akb2u3WJjSCUVfGjj1Yfc7D3mxj0401n8rUN3VqQZ+ADPyjm1zD28Z9bbIHqGUWibXM
+        B38fBtakSHOm2PAw==
+From:   "tip-bot2 for Gabriel Krisman Bertazi" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: core/urgent] entry: Use different define for selector variable in SUD
+Cc:     "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-Cc:     skhan@linuxfoundation.org
-Subject: Re: [PATCH 5.10 00/57] 5.10.14-rc1 review
-Message-ID: <YB3O6pxvRh0gsqtB@debian-vm>
-References: <20210205140655.982616732@linuxfoundation.org>
+In-Reply-To: <20210205184321.2062251-1-krisman@collabora.com>
+References: <20210205184321.2062251-1-krisman@collabora.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210205140655.982616732@linuxfoundation.org>
+Message-ID: <161256748291.23325.9194806071651632586.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 05, 2021 at 03:06:26PM +0100, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.14 release.
-> There are 57 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Sun, 07 Feb 2021 14:06:42 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.14-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+The following commit has been merged into the core/urgent branch of tip:
 
-Compiled and booted on my machine(x86_64) without any dmesg regression.
-The compilation uses the default Debian .config(From kernel 4.19.0-14-amd64),
-followed by olddefconfig.
+Commit-ID:     36a6c843fd0d8e02506681577e96dabd203dd8e8
+Gitweb:        https://git.kernel.org/tip/36a6c843fd0d8e02506681577e96dabd203dd8e8
+Author:        Gabriel Krisman Bertazi <krisman@collabora.com>
+AuthorDate:    Fri, 05 Feb 2021 13:43:21 -05:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Sat, 06 Feb 2021 00:21:42 +01:00
 
-Tested-by: Igor Matheus Andrade Torrente <igormtorrente@gmail.com>
+entry: Use different define for selector variable in SUD
 
-Best regards
+Michael Kerrisk suggested that, from an API perspective, it is a bad
+idea to share the PR_SYS_DISPATCH_ defines between the prctl operation
+and the selector variable.
+
+Therefore, define two new constants to be used by SUD's selector variable
+and update the corresponding documentation and test cases.
+
+While this changes the API syscall user dispatch has never been part of a
+Linux release, it will show up for the first time in 5.11.
+
+Suggested-by: Michael Kerrisk (man-pages) <mtk.manpages@gmail.com>
+Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Link: https://lore.kernel.org/r/20210205184321.2062251-1-krisman@collabora.com
+
+
 ---
-Igor Matheus Andrade Torrente
+ Documentation/admin-guide/syscall-user-dispatch.rst           |  4 +-
+ include/uapi/linux/prctl.h                                    |  3 ++-
+ kernel/entry/syscall_user_dispatch.c                          |  4 +-
+ tools/testing/selftests/syscall_user_dispatch/sud_benchmark.c |  8 ++--
+ tools/testing/selftests/syscall_user_dispatch/sud_test.c      | 14 ++++---
+ 5 files changed, 20 insertions(+), 13 deletions(-)
 
-> 
-> -------------
-> Pseudo-Shortlog of commits:
-> 
-> Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->     Linux 5.10.14-rc1
-> 
-> Peter Zijlstra <peterz@infradead.org>
->     workqueue: Restrict affinity change to rescuer
-> 
-> Peter Zijlstra <peterz@infradead.org>
->     kthread: Extract KTHREAD_IS_PER_CPU
-> 
-> Gayatri Kammela <gayatri.kammela@intel.com>
->     x86/cpu: Add another Alder Lake CPU to the Intel family
-> 
-> Josh Poimboeuf <jpoimboe@redhat.com>
->     objtool: Don't fail the kernel build on fatal errors
-> 
-> Oded Gabbay <ogabbay@kernel.org>
->     habanalabs: disable FW events on device removal
-> 
-> Oded Gabbay <ogabbay@kernel.org>
->     habanalabs: fix backward compatibility of idle check
-> 
-> Ofir Bitton <obitton@habana.ai>
->     habanalabs: zero pci counters packet before submit to FW
-> 
-> Vladimir Stempen <vladimir.stempen@amd.com>
->     drm/amd/display: Fixed corruptions on HPDRX link loss restore
-> 
-> Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>
->     drm/amd/display: Use hardware sequencer functions for PG control
-> 
-> Bing Guo <bing.guo@amd.com>
->     drm/amd/display: Change function decide_dp_link_settings to avoid infinite looping
-> 
-> Aric Cyr <aric.cyr@amd.com>
->     drm/amd/display: Allow PSTATE chnage when no displays are enabled
-> 
-> Jake Wang <haonan.wang2@amd.com>
->     drm/amd/display: Update dram_clock_change_latency for DCN2.1
-> 
-> Michael Ellerman <mpe@ellerman.id.au>
->     selftests/powerpc: Only test lwm/stmw on big endian
-> 
-> Jeannie Stevenson <jeanniestevenson@protonmail.com>
->     platform/x86: thinkpad_acpi: Add P53/73 firmware to fan_quirk_table for dual fan control
-> 
-> Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
->     nvmet: set right status on error in id-ns handler
-> 
-> Klaus Jensen <k.jensen@samsung.com>
->     nvme-pci: allow use of cmb on v1.4 controllers
-> 
-> Chao Leng <lengchao@huawei.com>
->     nvme-tcp: avoid request double completion for concurrent nvme_tcp_timeout
-> 
-> Chao Leng <lengchao@huawei.com>
->     nvme-rdma: avoid request double completion for concurrent nvme_rdma_timeout
-> 
-> Revanth Rajashekar <revanth.rajashekar@intel.com>
->     nvme: check the PRINFO bit before deciding the host buffer length
-> 
-> lianzhi chang <changlianzhi@uniontech.com>
->     udf: fix the problem that the disc content is not displayed
-> 
-> Sowjanya Komatineni <skomatineni@nvidia.com>
->     i2c: tegra: Create i2c_writesl_vi() to use with VI I2C for filling TX FIFO
-> 
-> Kai-Chuan Hsieh <kaichuan.hsieh@canonical.com>
->     ALSA: hda: Add Cometlake-R PCI ID
-> 
-> Brian King <brking@linux.vnet.ibm.com>
->     scsi: ibmvfc: Set default timeout to avoid crash during migration
-> 
-> Felix Fietkau <nbd@nbd.name>
->     mac80211: fix encryption key selection for 802.3 xmit
-> 
-> Felix Fietkau <nbd@nbd.name>
->     mac80211: fix fast-rx encryption check
-> 
-> Shayne Chen <shayne.chen@mediatek.com>
->     mac80211: fix incorrect strlen of .write in debugfs
-> 
-> Josh Poimboeuf <jpoimboe@redhat.com>
->     objtool: Don't add empty symbols to the rbtree
-> 
-> Kai Vehmanen <kai.vehmanen@linux.intel.com>
->     ALSA: hda: Add AlderLake-P PCI ID and HDMI codec vid
-> 
-> Kai-Heng Feng <kai.heng.feng@canonical.com>
->     ASoC: SOF: Intel: hda: Resume codec to do jack detection
-> 
-> Dinghao Liu <dinghao.liu@zju.edu.cn>
->     scsi: fnic: Fix memleak in vnic_dev_init_devcmd2
-> 
-> Javed Hasan <jhasan@marvell.com>
->     scsi: libfc: Avoid invoking response handler twice if ep is already completed
-> 
-> Martin Wilck <mwilck@suse.com>
->     scsi: scsi_transport_srp: Don't block target in failfast state
-> 
-> Peter Zijlstra <peterz@infradead.org>
->     x86: __always_inline __{rd,wr}msr()
-> 
-> Peter Zijlstra <peterz@infradead.org>
->     locking/lockdep: Avoid noinstr warning for DEBUG_LOCKDEP
-> 
-> Oded Gabbay <ogabbay@kernel.org>
->     habanalabs: fix dma_addr passed to dma_mmap_coherent
-> 
-> Arnold Gozum <arngozum@gmail.com>
->     platform/x86: intel-vbtn: Support for tablet mode on Dell Inspiron 7352
-> 
-> Hans de Goede <hdegoede@redhat.com>
->     platform/x86: touchscreen_dmi: Add swap-x-y quirk for Goodix touchscreen on Estar Beauty HD tablet
-> 
-> Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
->     tools/power/x86/intel-speed-select: Set higher of cpuinfo_max_freq or base_frequency
-> 
-> Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
->     tools/power/x86/intel-speed-select: Set scaling_max_freq to base_frequency
-> 
-> Tony Lindgren <tony@atomide.com>
->     phy: cpcap-usb: Fix warning for missing regulator_disable
-> 
-> Nadav Amit <namit@vmware.com>
->     iommu/vt-d: Do not use flush-queue when caching-mode is on
-> 
-> Nick Desaulniers <ndesaulniers@google.com>
->     ARM: 9025/1: Kconfig: CPU_BIG_ENDIAN depends on !LD_IS_LLD
-> 
-> Mike Rapoport <rppt@kernel.org>
->     Revert "x86/setup: don't remove E820_TYPE_RAM for pfn 0"
-> 
-> Catalin Marinas <catalin.marinas@arm.com>
->     arm64: Do not pass tagged addresses to __is_lm_address()
-> 
-> Vincenzo Frascino <vincenzo.frascino@arm.com>
->     arm64: Fix kernel address detection of __is_lm_address()
-> 
-> Robin Murphy <robin.murphy@arm.com>
->     arm64: dts: meson: Describe G12b GPU as coherent
-> 
-> Robin Murphy <robin.murphy@arm.com>
->     drm/panfrost: Support cache-coherent integrations
-> 
-> Robin Murphy <robin.murphy@arm.com>
->     iommu/io-pgtable-arm: Support coherency for Mali LPAE
-> 
-> Lijun Pan <ljp@linux.ibm.com>
->     ibmvnic: Ensure that CRQ entry read are correctly ordered
-> 
-> Rasmus Villemoes <rasmus.villemoes@prevas.dk>
->     net: switchdev: don't set port_obj_info->handled true when -EOPNOTSUPP
-> 
-> Pan Bian <bianpan2016@163.com>
->     net: dsa: bcm_sf2: put device node before return
-> 
-> Ido Schimmel <idosch@nvidia.com>
->     mlxsw: spectrum_span: Do not overwrite policer configuration
-> 
-> Voon Weifeng <weifeng.voon@intel.com>
->     stmmac: intel: Configure EHL PSE0 GbE and PSE1 GbE to 32 bits DMA addressing
-> 
-> Kevin Hao <haokexin@gmail.com>
->     net: octeontx2: Make sure the buffer is 128 byte aligned
-> 
-> Pan Bian <bianpan2016@163.com>
->     net: fec: put child node on error path
-> 
-> Pan Bian <bianpan2016@163.com>
->     net: stmmac: dwmac-intel-plat: remove config data on error
-> 
-> Marek Vasut <marex@denx.de>
->     net: dsa: microchip: Adjust reset release timing to match reference reset circuit
-> 
-> 
-> -------------
-> 
-> Diffstat:
-> 
->  Makefile                                           |  4 +-
->  arch/arm/mm/Kconfig                                |  1 +
->  arch/arm64/boot/dts/amlogic/meson-g12b.dtsi        |  4 ++
->  arch/arm64/include/asm/memory.h                    | 10 ++---
->  arch/arm64/mm/physaddr.c                           |  2 +-
->  arch/x86/include/asm/intel-family.h                |  1 +
->  arch/x86/include/asm/msr.h                         |  4 +-
->  arch/x86/kernel/setup.c                            | 20 +++++-----
->  .../amd/display/dc/clk_mgr/dcn30/dcn30_clk_mgr.c   |  6 ++-
->  drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c   |  7 +++-
->  .../drm/amd/display/dc/dcn10/dcn10_hw_sequencer.c  | 18 +++++++--
->  drivers/gpu/drm/amd/display/dc/dcn20/dcn20_hwseq.c |  9 ++++-
->  .../gpu/drm/amd/display/dc/dcn21/dcn21_resource.c  |  2 +-
->  drivers/gpu/drm/panfrost/panfrost_device.h         |  1 +
->  drivers/gpu/drm/panfrost/panfrost_drv.c            |  2 +
->  drivers/gpu/drm/panfrost/panfrost_gem.c            |  2 +
->  drivers/gpu/drm/panfrost/panfrost_mmu.c            |  1 +
->  drivers/i2c/busses/i2c-tegra.c                     | 22 ++++++++++-
->  drivers/iommu/intel/iommu.c                        |  5 +++
->  drivers/iommu/io-pgtable-arm.c                     | 11 +++++-
->  drivers/misc/habanalabs/common/device.c            |  9 +++++
->  drivers/misc/habanalabs/common/firmware_if.c       |  5 +++
->  drivers/misc/habanalabs/common/habanalabs_ioctl.c  |  2 +
->  drivers/misc/habanalabs/gaudi/gaudi.c              |  3 +-
->  drivers/misc/habanalabs/goya/goya.c                |  3 +-
->  drivers/net/dsa/bcm_sf2.c                          |  8 +++-
->  drivers/net/dsa/microchip/ksz_common.c             |  2 +-
->  drivers/net/ethernet/freescale/fec_main.c          |  3 +-
->  drivers/net/ethernet/ibm/ibmvnic.c                 |  6 +++
->  .../ethernet/marvell/octeontx2/nic/otx2_common.c   |  3 +-
->  .../net/ethernet/mellanox/mlxsw/spectrum_span.c    |  6 +++
->  .../net/ethernet/mellanox/mlxsw/spectrum_span.h    |  1 +
->  .../net/ethernet/stmicro/stmmac/dwmac-intel-plat.c |  4 +-
->  drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c  |  2 +
->  drivers/nvme/host/core.c                           | 17 ++++++++-
->  drivers/nvme/host/pci.c                            | 14 +++++++
->  drivers/nvme/host/rdma.c                           | 15 ++++++--
->  drivers/nvme/host/tcp.c                            | 14 +++++--
->  drivers/nvme/target/admin-cmd.c                    |  8 +++-
->  drivers/phy/motorola/phy-cpcap-usb.c               | 19 +++++++---
->  drivers/platform/x86/intel-vbtn.c                  |  6 +++
->  drivers/platform/x86/thinkpad_acpi.c               |  1 +
->  drivers/platform/x86/touchscreen_dmi.c             | 18 +++++++++
->  drivers/scsi/fnic/vnic_dev.c                       |  8 ++--
->  drivers/scsi/ibmvscsi/ibmvfc.c                     |  4 +-
->  drivers/scsi/libfc/fc_exch.c                       | 16 +++++++-
->  drivers/scsi/scsi_transport_srp.c                  |  9 ++++-
->  fs/udf/super.c                                     |  7 ++--
->  include/linux/kthread.h                            |  3 ++
->  include/linux/nvme.h                               |  6 +++
->  kernel/kthread.c                                   | 27 ++++++++++++-
->  kernel/locking/lockdep.c                           |  7 +++-
->  kernel/smpboot.c                                   |  1 +
->  kernel/workqueue.c                                 |  9 ++---
->  net/mac80211/debugfs.c                             | 44 ++++++++++------------
->  net/mac80211/rx.c                                  |  2 +
->  net/mac80211/tx.c                                  | 27 +++++++------
->  net/switchdev/switchdev.c                          | 23 ++++++-----
->  sound/pci/hda/hda_intel.c                          |  6 +++
->  sound/pci/hda/patch_hdmi.c                         |  1 +
->  sound/soc/sof/intel/hda-codec.c                    |  3 +-
->  tools/objtool/check.c                              | 14 +++----
->  tools/objtool/elf.c                                |  7 ++++
->  tools/power/x86/intel-speed-select/isst-config.c   | 32 ++++++++++++++++
->  .../powerpc/alignment/alignment_handler.c          |  5 ++-
->  65 files changed, 427 insertions(+), 135 deletions(-)
-> 
-> 
+diff --git a/Documentation/admin-guide/syscall-user-dispatch.rst b/Documentation/admin-guide/syscall-user-dispatch.rst
+index a380d65..6031495 100644
+--- a/Documentation/admin-guide/syscall-user-dispatch.rst
++++ b/Documentation/admin-guide/syscall-user-dispatch.rst
+@@ -70,8 +70,8 @@ trampoline code on the vDSO, that trampoline is never intercepted.
+ [selector] is a pointer to a char-sized region in the process memory
+ region, that provides a quick way to enable disable syscall redirection
+ thread-wide, without the need to invoke the kernel directly.  selector
+-can be set to PR_SYS_DISPATCH_ON or PR_SYS_DISPATCH_OFF.  Any other
+-value should terminate the program with a SIGSYS.
++can be set to SYSCALL_DISPATCH_FILTER_ALLOW or SYSCALL_DISPATCH_FILTER_BLOCK.
++Any other value should terminate the program with a SIGSYS.
+ 
+ Security Notes
+ --------------
+diff --git a/include/uapi/linux/prctl.h b/include/uapi/linux/prctl.h
+index 90deb41..667f1ae 100644
+--- a/include/uapi/linux/prctl.h
++++ b/include/uapi/linux/prctl.h
+@@ -251,5 +251,8 @@ struct prctl_mm_map {
+ #define PR_SET_SYSCALL_USER_DISPATCH	59
+ # define PR_SYS_DISPATCH_OFF		0
+ # define PR_SYS_DISPATCH_ON		1
++/* The control values for the user space selector when dispatch is enabled */
++# define SYSCALL_DISPATCH_FILTER_ALLOW	0
++# define SYSCALL_DISPATCH_FILTER_BLOCK	1
+ 
+ #endif /* _LINUX_PRCTL_H */
+diff --git a/kernel/entry/syscall_user_dispatch.c b/kernel/entry/syscall_user_dispatch.c
+index b0338a5..c240302 100644
+--- a/kernel/entry/syscall_user_dispatch.c
++++ b/kernel/entry/syscall_user_dispatch.c
+@@ -50,10 +50,10 @@ bool syscall_user_dispatch(struct pt_regs *regs)
+ 		if (unlikely(__get_user(state, sd->selector)))
+ 			do_exit(SIGSEGV);
+ 
+-		if (likely(state == PR_SYS_DISPATCH_OFF))
++		if (likely(state == SYSCALL_DISPATCH_FILTER_ALLOW))
+ 			return false;
+ 
+-		if (state != PR_SYS_DISPATCH_ON)
++		if (state != SYSCALL_DISPATCH_FILTER_BLOCK)
+ 			do_exit(SIGSYS);
+ 	}
+ 
+diff --git a/tools/testing/selftests/syscall_user_dispatch/sud_benchmark.c b/tools/testing/selftests/syscall_user_dispatch/sud_benchmark.c
+index 6689f11..073a037 100644
+--- a/tools/testing/selftests/syscall_user_dispatch/sud_benchmark.c
++++ b/tools/testing/selftests/syscall_user_dispatch/sud_benchmark.c
+@@ -22,6 +22,8 @@
+ # define PR_SET_SYSCALL_USER_DISPATCH	59
+ # define PR_SYS_DISPATCH_OFF	0
+ # define PR_SYS_DISPATCH_ON	1
++# define SYSCALL_DISPATCH_FILTER_ALLOW	0
++# define SYSCALL_DISPATCH_FILTER_BLOCK	1
+ #endif
+ 
+ #ifdef __NR_syscalls
+@@ -55,8 +57,8 @@ unsigned long trapped_call_count = 0;
+ unsigned long native_call_count = 0;
+ 
+ char selector;
+-#define SYSCALL_BLOCK   (selector = PR_SYS_DISPATCH_ON)
+-#define SYSCALL_UNBLOCK (selector = PR_SYS_DISPATCH_OFF)
++#define SYSCALL_BLOCK   (selector = SYSCALL_DISPATCH_FILTER_BLOCK)
++#define SYSCALL_UNBLOCK (selector = SYSCALL_DISPATCH_FILTER_ALLOW)
+ 
+ #define CALIBRATION_STEP 100000
+ #define CALIBRATE_TO_SECS 5
+@@ -170,7 +172,7 @@ int main(void)
+ 	syscall(MAGIC_SYSCALL_1);
+ 
+ #ifdef TEST_BLOCKED_RETURN
+-	if (selector == PR_SYS_DISPATCH_OFF) {
++	if (selector == SYSCALL_DISPATCH_FILTER_ALLOW) {
+ 		fprintf(stderr, "Failed to return with selector blocked.\n");
+ 		exit(-1);
+ 	}
+diff --git a/tools/testing/selftests/syscall_user_dispatch/sud_test.c b/tools/testing/selftests/syscall_user_dispatch/sud_test.c
+index 6498b05..b5d592d 100644
+--- a/tools/testing/selftests/syscall_user_dispatch/sud_test.c
++++ b/tools/testing/selftests/syscall_user_dispatch/sud_test.c
+@@ -18,6 +18,8 @@
+ # define PR_SET_SYSCALL_USER_DISPATCH	59
+ # define PR_SYS_DISPATCH_OFF	0
+ # define PR_SYS_DISPATCH_ON	1
++# define SYSCALL_DISPATCH_FILTER_ALLOW	0
++# define SYSCALL_DISPATCH_FILTER_BLOCK	1
+ #endif
+ 
+ #ifndef SYS_USER_DISPATCH
+@@ -30,8 +32,8 @@
+ # define MAGIC_SYSCALL_1 (0xff00)  /* Bad Linux syscall number */
+ #endif
+ 
+-#define SYSCALL_DISPATCH_ON(x) ((x) = 1)
+-#define SYSCALL_DISPATCH_OFF(x) ((x) = 0)
++#define SYSCALL_DISPATCH_ON(x) ((x) = SYSCALL_DISPATCH_FILTER_BLOCK)
++#define SYSCALL_DISPATCH_OFF(x) ((x) = SYSCALL_DISPATCH_FILTER_ALLOW)
+ 
+ /* Test Summary:
+  *
+@@ -56,7 +58,7 @@
+ 
+ TEST_SIGNAL(dispatch_trigger_sigsys, SIGSYS)
+ {
+-	char sel = 0;
++	char sel = SYSCALL_DISPATCH_FILTER_ALLOW;
+ 	struct sysinfo info;
+ 	int ret;
+ 
+@@ -79,7 +81,7 @@ TEST_SIGNAL(dispatch_trigger_sigsys, SIGSYS)
+ 
+ TEST(bad_prctl_param)
+ {
+-	char sel = 0;
++	char sel = SYSCALL_DISPATCH_FILTER_ALLOW;
+ 	int op;
+ 
+ 	/* Invalid op */
+@@ -220,7 +222,7 @@ TEST_SIGNAL(bad_selector, SIGSYS)
+ 	sigset_t mask;
+ 	struct sysinfo info;
+ 
+-	glob_sel = 0;
++	glob_sel = SYSCALL_DISPATCH_FILTER_ALLOW;
+ 	nr_syscalls_emulated = 0;
+ 	si_code = 0;
+ 	si_errno = 0;
+@@ -288,7 +290,7 @@ TEST(direct_dispatch_range)
+ {
+ 	int ret = 0;
+ 	struct sysinfo info;
+-	char sel = 0;
++	char sel = SYSCALL_DISPATCH_FILTER_ALLOW;
+ 
+ 	/*
+ 	 * Instead of calculating libc addresses; allow the entire
