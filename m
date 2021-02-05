@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84BEB3115C4
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 23:44:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DB97311569
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 23:32:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232926AbhBEWlE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 17:41:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44678 "EHLO mail.kernel.org"
+        id S233084AbhBEWay (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 17:30:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44674 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232774AbhBEOwN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 09:52:13 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D71864FD7;
-        Fri,  5 Feb 2021 14:09:35 +0000 (UTC)
+        id S232838AbhBEOyd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 09:54:33 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 33ED764FD8;
+        Fri,  5 Feb 2021 14:10:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612534176;
-        bh=+kMVAiqh5RcRrY3CkWPq2kPCMaTRR9tH/SpIOwVqDWY=;
+        s=korg; t=1612534204;
+        bh=Ei+H++JWsxsFhwx8F/JPvXtBIKGu1bdr15/qIkBKhKw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aknQe9eZ1priDbqduopmwrJkaANON8C/WNytgTidchVENj0GjVoXOWQyO+s83qBjM
-         XVCEwJ/Cv06jgGOV3Yd2b/veVQs4wE61peBEFPmBw0Y6EGKZLhqugIAAkdArRB4yu0
-         RT6QSQ4wuhVV5T29vxdm0RuSUa/1Ro8iOlzxyDD0=
+        b=cUFjxNXuQqxyX50D1UaQXu+7EVHGAlhl4LIOk3EJvTJEUUkAnVEKPLBThvJOozPFq
+         m9QM5cbljbwmgboHnWbS3LLNtP0Nz3AKPm/MZeL76DRfocPjpYGTRr5CIfUaoceqav
+         3eCw32mBtWt+v1UeyU+qCbiK+8LauRfiMdhXRGd0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nadav Amit <namit@vmware.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Joerg Roedel <jroedel@suse.de>
-Subject: [PATCH 5.10 17/57] iommu/vt-d: Do not use flush-queue when caching-mode is on
-Date:   Fri,  5 Feb 2021 15:06:43 +0100
-Message-Id: <20210205140656.717830135@linuxfoundation.org>
+        stable@vger.kernel.org, Bart Van Assche <bvanassche@acm.org>,
+        Martin Wilck <mwilck@suse.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 26/57] scsi: scsi_transport_srp: Dont block target in failfast state
+Date:   Fri,  5 Feb 2021 15:06:52 +0100
+Message-Id: <20210205140657.095615015@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210205140655.982616732@linuxfoundation.org>
 References: <20210205140655.982616732@linuxfoundation.org>
@@ -42,74 +41,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nadav Amit <namit@vmware.com>
+From: Martin Wilck <mwilck@suse.com>
 
-commit 29b32839725f8c89a41cb6ee054c85f3116ea8b5 upstream.
+[ Upstream commit 72eeb7c7151302ef007f1acd018cbf6f30e50321 ]
 
-When an Intel IOMMU is virtualized, and a physical device is
-passed-through to the VM, changes of the virtual IOMMU need to be
-propagated to the physical IOMMU. The hypervisor therefore needs to
-monitor PTE mappings in the IOMMU page-tables. Intel specifications
-provide "caching-mode" capability that a virtual IOMMU uses to report
-that the IOMMU is virtualized and a TLB flush is needed after mapping to
-allow the hypervisor to propagate virtual IOMMU mappings to the physical
-IOMMU. To the best of my knowledge no real physical IOMMU reports
-"caching-mode" as turned on.
+If the port is in SRP_RPORT_FAIL_FAST state when srp_reconnect_rport() is
+entered, a transition to SDEV_BLOCK would be illegal, and a kernel WARNING
+would be triggered. Skip scsi_target_block() in this case.
 
-Synchronizing the virtual and the physical IOMMU tables is expensive if
-the hypervisor is unaware which PTEs have changed, as the hypervisor is
-required to walk all the virtualized tables and look for changes.
-Consequently, domain flushes are much more expensive than page-specific
-flushes on virtualized IOMMUs with passthrough devices. The kernel
-therefore exploited the "caching-mode" indication to avoid domain
-flushing and use page-specific flushing in virtualized environments. See
-commit 78d5f0f500e6 ("intel-iommu: Avoid global flushes with caching
-mode.")
-
-This behavior changed after commit 13cf01744608 ("iommu/vt-d: Make use
-of iova deferred flushing"). Now, when batched TLB flushing is used (the
-default), full TLB domain flushes are performed frequently, requiring
-the hypervisor to perform expensive synchronization between the virtual
-TLB and the physical one.
-
-Getting batched TLB flushes to use page-specific invalidations again in
-such circumstances is not easy, since the TLB invalidation scheme
-assumes that "full" domain TLB flushes are performed for scalability.
-
-Disable batched TLB flushes when caching-mode is on, as the performance
-benefit from using batched TLB invalidations is likely to be much
-smaller than the overhead of the virtual-to-physical IOMMU page-tables
-synchronization.
-
-Fixes: 13cf01744608 ("iommu/vt-d: Make use of iova deferred flushing")
-Signed-off-by: Nadav Amit <namit@vmware.com>
-Cc: David Woodhouse <dwmw2@infradead.org>
-Cc: Lu Baolu <baolu.lu@linux.intel.com>
-Cc: Joerg Roedel <joro@8bytes.org>
-Cc: Will Deacon <will@kernel.org>
-Cc: stable@vger.kernel.org
-Acked-by: Lu Baolu <baolu.lu@linux.intel.com>
-Link: https://lore.kernel.org/r/20210127175317.1600473-1-namit@vmware.com
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Link: https://lore.kernel.org/r/20210111142541.21534-1-mwilck@suse.com
+Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+Signed-off-by: Martin Wilck <mwilck@suse.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iommu/intel/iommu.c |    5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/scsi/scsi_transport_srp.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
---- a/drivers/iommu/intel/iommu.c
-+++ b/drivers/iommu/intel/iommu.c
-@@ -3350,6 +3350,11 @@ static int __init init_dmars(void)
- 
- 		if (!ecap_pass_through(iommu->ecap))
- 			hw_pass_through = 0;
-+
-+		if (!intel_iommu_strict && cap_caching_mode(iommu->cap)) {
-+			pr_warn("Disable batched IOTLB flush due to virtualization");
-+			intel_iommu_strict = 1;
-+		}
- 		intel_svm_check(iommu);
- 	}
- 
+diff --git a/drivers/scsi/scsi_transport_srp.c b/drivers/scsi/scsi_transport_srp.c
+index cba1cf6a1c12d..1e939a2a387f3 100644
+--- a/drivers/scsi/scsi_transport_srp.c
++++ b/drivers/scsi/scsi_transport_srp.c
+@@ -541,7 +541,14 @@ int srp_reconnect_rport(struct srp_rport *rport)
+ 	res = mutex_lock_interruptible(&rport->mutex);
+ 	if (res)
+ 		goto out;
+-	scsi_target_block(&shost->shost_gendev);
++	if (rport->state != SRP_RPORT_FAIL_FAST)
++		/*
++		 * sdev state must be SDEV_TRANSPORT_OFFLINE, transition
++		 * to SDEV_BLOCK is illegal. Calling scsi_target_unblock()
++		 * later is ok though, scsi_internal_device_unblock_nowait()
++		 * treats SDEV_TRANSPORT_OFFLINE like SDEV_BLOCK.
++		 */
++		scsi_target_block(&shost->shost_gendev);
+ 	res = rport->state != SRP_RPORT_LOST ? i->f->reconnect(rport) : -ENODEV;
+ 	pr_debug("%s (state %d): transport.reconnect() returned %d\n",
+ 		 dev_name(&shost->shost_gendev), rport->state, res);
+-- 
+2.27.0
+
 
 
