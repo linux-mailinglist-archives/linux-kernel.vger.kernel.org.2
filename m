@@ -2,89 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50E3B31029C
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 03:13:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B7873102A3
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 03:19:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229692AbhBECM4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 21:12:56 -0500
-Received: from ozlabs.org ([203.11.71.1]:48531 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229487AbhBECMz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 21:12:55 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S229581AbhBECSv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 21:18:51 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45629 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229509AbhBECSt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 21:18:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612491443;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=yViiFj5/UvknIHJmYdZC5PhHVIA9CzYdE/iPEoPmYT8=;
+        b=VydWRsDoNbaS9UaBqjHIvkohG4qYws9p1v67yObKpKlFN5b862YmYfU+jf6eLTdPu1RYH2
+        Um+UM8xCZ+B7Vwta7SAX/5+673bnejoG120YQLuXzzw9REzRYBa3iN6aEBkWnmYVtlHzEv
+        ji4Nzo1hZjWU6DRvYx3tLaNr3UvOBTg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-109-WFpP9iRCNVqjMO78oLbFrQ-1; Thu, 04 Feb 2021 21:17:21 -0500
+X-MC-Unique: WFpP9iRCNVqjMO78oLbFrQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DWzSn0Q8yz9sWd;
-        Fri,  5 Feb 2021 13:12:09 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1612491132;
-        bh=9+YNYgOvs+LvDUb5QbSEuc4VS2ZKmFRzV9IFnBYP47c=;
-        h=Date:From:To:Cc:Subject:From;
-        b=RXStvPBpmTG/hL0RIHUavwUxVKDPK79dbRVeGANdInTCB3KZV418Lm3KS3OyQ+4++
-         ed9U0eY5x2T2mO9vsmhbVWacqmzmS8EvmMqDRLJJzpNXNhSQSNFdZ3F3HD8Jhvfp5l
-         uS7+O3c15NGDlfjYb8g6ubObuB078FZaBuR86SdyQoz3oMGbsaVKLWsSZuGDhXBMBc
-         fAR0pNMFc2WA1McV98Vvw1CD+NL1M49VSbP59VcUHup7CBtBem7Lu5l+7ZQ9of+N++
-         +Tz6DRCj9pOgOJapoE1kjuygrYf5j5eTQU0fQNmSo1sTMqwQgxuF7ahh9C2BGfG4Ff
-         LmwcZp6PYaiNg==
-Date:   Fri, 5 Feb 2021 13:12:08 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Alex Deucher <alexdeucher@gmail.com>,
-        Dave Airlie <airlied@linux.ie>,
-        DRI <dri-devel@lists.freedesktop.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the amdgpu tree
-Message-ID: <20210205131208.3c1bfcc6@canb.auug.org.au>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A68B19126D;
+        Fri,  5 Feb 2021 02:17:20 +0000 (UTC)
+Received: from localhost (ovpn-13-14.pek2.redhat.com [10.72.13.14])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C9FC45D762;
+        Fri,  5 Feb 2021 02:17:16 +0000 (UTC)
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Christoph Hellwig <hch@lst.de>, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Ming Lei <ming.lei@redhat.com>,
+        "Ewan D . Milne" <emilne@redhat.com>
+Subject: [PATCH 0/2] block: avoid to drop & re-add partitions if partitions aren't changed
+Date:   Fri,  5 Feb 2021 10:17:06 +0800
+Message-Id: <20210205021708.1498711-1-ming.lei@redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/zwipi3XuVJ2FCTtb1VezoeB";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/zwipi3XuVJ2FCTtb1VezoeB
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi Guys,
 
-Hi all,
+The two patches changes block ioctl(BLKRRPART) for avoiding drop &
+re-add partitions if partitions state isn't changed. The current
+behavior confuses userspace because partitions can disappear anytime
+when ioctl(BLKRRPART).
 
-After merging the amdgpu tree, today's linux-next build (x86_64
-allmodconfig) failed like this:
+Ming Lei (2):
+  block: move partitions check code into single helper
+  block: avoid to drop & re-add partitions if partitions aren't changed
 
+ block/genhd.c            |   2 +
+ block/partitions/check.h |   2 +
+ block/partitions/core.c  | 101 ++++++++++++++++++++++++++++++++-------
+ fs/block_dev.c           |  28 +++++++++--
+ include/linux/genhd.h    |   4 ++
+ 5 files changed, 118 insertions(+), 19 deletions(-)
 
-Caused by commit
+Cc: Ewan D. Milne <emilne@redhat.com>
+-- 
+2.29.2
 
-  13a75af50484 ("drm/amd/display: Fix unused variable warning")
-
-interacting with commit
-
-  4c3a3292730c ("drm/amd/display: fix unused variable warning")
-
-from the drm tree.
-
-I reverted the drm tree commit for now.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/zwipi3XuVJ2FCTtb1VezoeB
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAcqXgACgkQAVBC80lX
-0GwSagf+Oews8YCbCtU+/5+h8Og5tffUqqVFMZXXwHSVO4wo5JjWgtkwm8MS9you
-qB5B1pDA9msLAUW010IukWwkppTLI2ceF3SlwIOnBj9aUgl0y9kjyYdTHJYhsRm6
-ouKjuM8uVH5qLGpSB0mi6hlpVFHEYTe3m1T1jk3tmqFeaHB0+33n5Ac30uT5QC1M
-zKfm5a0EBW/pSEuZAWY9W67RPeSdocki1jUHUagZcax2w+Lcn1+LWlLWoWCUvRi0
-54I9Liv0vLjrjwwWXWs50X648MdDxCtU+uu47ozTYBCqmiEEvHqpPMaGaSlbA+ZN
-Oyin8IXfpMF3uB74ZqoJLDnVro7EUA==
-=ng4a
------END PGP SIGNATURE-----
-
---Sig_/zwipi3XuVJ2FCTtb1VezoeB--
