@@ -2,79 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C4AD3111ED
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 21:09:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 851233111F0
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 21:09:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233194AbhBESZY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 13:25:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38056 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233472AbhBESYG (ORCPT
+        id S233346AbhBES0L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 13:26:11 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:10323 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231455AbhBESYU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 13:24:06 -0500
-Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D738C061788
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 12:05:50 -0800 (PST)
-Received: by mail-qv1-xf32.google.com with SMTP id j4so4072027qvk.6
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 12:05:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=COIVkmLKVjBxWkNd3sXcovxZhEaGvx0vE0V8HNc6fkw=;
-        b=MMKKfiqqZSmiiR7dwaMA2hEB2+eyZZcoiYb3co6cQsig958i/s3kiTTfJiJPvrubBJ
-         dL2+N+3u2ZNmix9XN59xN8Csy7IB19VuE7dsvIPZxS9ukugAjRDvjyCD+fdo8E1GawAh
-         Hkw/+vpjf7E8vxb00zu2JEB/BUmtEo+ydwXek=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=COIVkmLKVjBxWkNd3sXcovxZhEaGvx0vE0V8HNc6fkw=;
-        b=tOnDuDNTT2oXu76csxCX1j7XUHbdNujsJapMBRHmSofMIFN1ALs/khqi9GZ3Jyhbiz
-         rPhAO7Nui3Wk1ZUyM88yeR1lM2iQIMGwU9+dfY3mPkj9KmOvu46X67TauE3l1P5aBK0t
-         BlUegnMLdDg7lvZuFDY25C9ZVKvBL8irUI6hrzHnLR57GRF5IPLkkHMilsWHbkg3v6vl
-         4Ssqwp/0UQz8jEeD5x85C4DivSUFkd+j7P00PICxooO/f3VPItO5xDlfvL95G8z+fTGa
-         mBZMEslDsTeY3W/sWfsFrzitk+13AAmihQaElh14SugVRaKSXknwQj7Lg+aHuN+I5XIU
-         6xyQ==
-X-Gm-Message-State: AOAM5317ERjBaJzcjEylPgYpYj1RNVcAOpXD00oVMqEIN1ckz6aYH/Zt
-        m0IrMXiup4IuclgwbGk7Pek+8ZP/lW5ZOOZUOplerg==
-X-Google-Smtp-Source: ABdhPJw9P4aHZiurZFpu2ywUm+vHxcCvBFwQC5Uv94xO+vrAOs73MGnhBXE4PYG6PuvNBCPFmecYPswJ0c8cTH96/UI=
-X-Received: by 2002:a05:6214:18f0:: with SMTP id ep16mr5984767qvb.0.1612555549642;
- Fri, 05 Feb 2021 12:05:49 -0800 (PST)
+        Fri, 5 Feb 2021 13:24:20 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B601da52c0000>; Fri, 05 Feb 2021 12:06:04 -0800
+Received: from MacBook-Pro-10.local (172.20.145.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 5 Feb
+ 2021 20:06:02 +0000
+Subject: Re: [PATCH] selftests/vm: rename file run_vmtests to run_vmtests.sh
+To:     Rong Chen <rong.a.chen@intel.com>, Shuah Khan <shuah@kernel.org>,
+        "Andrew Morton" <akpm@linux-foundation.org>
+CC:     kernel test robot <lkp@intel.com>,
+        <linux-kselftest@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20210205085507.1479894-1-rong.a.chen@intel.com>
+From:   John Hubbard <jhubbard@nvidia.com>
+Message-ID: <6796b330-0a53-284e-83ae-7d7abf1f57f2@nvidia.com>
+Date:   Fri, 5 Feb 2021 12:06:02 -0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
+ Gecko/20100101 Thunderbird/78.7.0
 MIME-Version: 1.0
-References: <20210205195113.20277-1-rajmohan.mani@intel.com> <20210205195113.20277-3-rajmohan.mani@intel.com>
-In-Reply-To: <20210205195113.20277-3-rajmohan.mani@intel.com>
-From:   Prashant Malani <pmalani@chromium.org>
-Date:   Fri, 5 Feb 2021 12:05:38 -0800
-Message-ID: <CACeCKafY=mFBC-6VKsnOgZc6f0Y_FraQrdRnbKQ-k448OgExDQ@mail.gmail.com>
-Subject: Re: [PATCH 2/2] platform/chrome: cros_ec_types: Support disconnect
- events without partners
-To:     Rajmohan Mani <rajmohan.mani@intel.com>
-Cc:     Benson Leung <bleung@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Guenter Roeck <groeck@chromium.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210205085507.1479894-1-rong.a.chen@intel.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1612555564; bh=0pOsfwhCIscPepYzMLvi0jYQRAVGAMRcZnw7cvEOMgY=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=GnwJjbl5syOwyrkRNPG0Smt5VZAShyJwJb6aZieqmcysyGg9XCdt4esHAcJIuKzTf
+         PIR8k7HWbXm3C6urlJUCbKjwspkAT8SfczopSpGyH7adXeZN0pR2UZA5CsCN8zUtDZ
+         M/mxDH3eQ9fSwxkkyywv3A73zFJXVZyHv0CcKPDNwDgsIhox3LB+miCAra9CZ0M3xB
+         YNI+zMdTknwInTg8VgiWWGbAneYQbjbPaVCo394NIYA6DJjucgM1ZLRIZKKihET+7E
+         yWSpj5C/ZxAARih0cbq9uxFzzhHNpg1dT5VUE5VHEdV6R6tW4K74XU85OqwqzFGhyk
+         05KuQjU9NATDQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Raj,
+On 2/5/21 12:55 AM, Rong Chen wrote:
+> Commit c2aa8afc36fa has renamed run_vmtests in Makefile,
+> but the file still uses the old name.
+> 
+> The kernel test robot reported the following issue:
+> 
+>   # selftests: vm: run_vmtests.sh
+>   # Warning: file run_vmtests.sh is missing!
+>   not ok 1 selftests: vm: run_vmtests.sh
+> 
 
-On Fri, Feb 5, 2021 at 11:52 AM Rajmohan Mani <rajmohan.mani@intel.com> wrote:
->
-> There are certain scenarios, where a disconnect event might
-> occur on a Type-C port with no port partners. This is required
-> to enable communication to Burnside Bridge USB4 retimers.
->
-> Signed-off-by: Rajmohan Mani <rajmohan.mani@intel.com>
-minor commit message nit (apologies for not spotting this earlier):
+I don't know exactly what is going on here, but there was originally a mistake
+on my part in renaming run_vmtests to run_vmtests.sh (I was trying to set
+the executable bit, which is not always supported by the patch flow), and that 
+caused some churn in Andrews's tree. And so maybe that rename got lost/dropped
+along the way.
 
-This patch alone doesn't add support for the "without partners" part
-(that comes in the next patch).
-This one purely adds support for disconnect events. So might be good
-to update the commit message if possible.
-But otherwise LGTM, so:
+> Reported-by: kernel test robot <lkp@intel.com>
+> Fixes: c2aa8afc36fa (selftests/vm: rename run_vmtests --> run_vmtests.sh)
+> Signed-off-by: Rong Chen <rong.a.chen@intel.com>
+> ---
+>   tools/testing/selftests/vm/{run_vmtests => run_vmtests.sh} | 0
+>   1 file changed, 0 insertions(+), 0 deletions(-)
+>   rename tools/testing/selftests/vm/{run_vmtests => run_vmtests.sh} (100%)
+> 
+> diff --git a/tools/testing/selftests/vm/run_vmtests b/tools/testing/selftests/vm/run_vmtests.sh
+> similarity index 100%
+> rename from tools/testing/selftests/vm/run_vmtests
+> rename to tools/testing/selftests/vm/run_vmtests.sh
+> 
 
-Reviewed-by: Prashant Malani <pmalani@chromium.org>
+So I guess this is OK, given that I see "run_vmtests" in both -next
+and main.
+
+Reviewed-by: John Hubbard <jhubbard@nvidia.com>
+
+thanks,
+-- 
+John Hubbard
+NVIDIA
