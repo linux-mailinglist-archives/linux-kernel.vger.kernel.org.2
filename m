@@ -2,91 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15EF931115B
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 20:41:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7B5131115A
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 20:39:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233341AbhBER44 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 12:56:56 -0500
-Received: from mga05.intel.com ([192.55.52.43]:31350 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229866AbhBEP1c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 10:27:32 -0500
-IronPort-SDR: q5GHhLrWQSYKcsaufTqixzTrY8sshMfaXLy4AJKeojhVHzM2Uj4jsR1xJnzY8v5n2AVY37KSMO
- Jpy2/ct0YhAQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9885"; a="266289190"
-X-IronPort-AV: E=Sophos;i="5.81,155,1610438400"; 
-   d="scan'208";a="266289190"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2021 09:07:58 -0800
-IronPort-SDR: Evp/LZjirJESAh4bToG6XDcjTyJiAbjSo6oAMspH01d1s37pZtHEmgs+9pe1bPns072osBdVvv
- t+xDubBHmA8g==
-X-IronPort-AV: E=Sophos;i="5.81,155,1610438400"; 
-   d="scan'208";a="416264267"
-Received: from mjwilkin-mobl.amr.corp.intel.com ([10.212.80.131])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2021 09:07:57 -0800
-Message-ID: <8c46da48f82963da2cfb08b1f488de8a6d2b0608.camel@linux.intel.com>
-Subject: Re: [PATCH 2/2] powercap/intel_rapl: Use topology interface in
- rapl_init_domains()
-From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Yunfeng Ye <yeyunfeng@huawei.com>,
-        "Zhang, Rui" <rui.zhang@intel.com>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        hushiyuan@huawei.com, hewenliang4@huawei.com, caihongda@huawei.com
-Date:   Fri, 05 Feb 2021 09:07:56 -0800
-In-Reply-To: <CAJZ5v0jOwfau2dPVnrAjv01dOGY+8i8o-2gr72fNa0Fug1CV=w@mail.gmail.com>
-References: <20210123100608.2349629-1-yeyunfeng@huawei.com>
-         <20210123100608.2349629-2-yeyunfeng@huawei.com>
-         <CAJZ5v0jOwfau2dPVnrAjv01dOGY+8i8o-2gr72fNa0Fug1CV=w@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+        id S233653AbhBER4R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 12:56:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56650 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229572AbhBEP2u (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 10:28:50 -0500
+Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD14CC06178A
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 09:10:31 -0800 (PST)
+Received: by mail-qv1-xf2c.google.com with SMTP id w11so3764498qvz.12
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 09:10:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=JSYiUbx9lBanOq4tbekqTAf5PAtDklDUpjXB1f72Qrc=;
+        b=tM/dZEUeDe1AgSL5LylGwYfRT5+levhjDv8vOBR8fUAbDaWMIznPnPLamaZYjY3wzT
+         g+cjA6pD7ZjdrM2mng9Mhako+BFslrJzcTyReIW3h3o2QgGnwwDoKQzvWVUktPepuyYF
+         AQpeiGmjpMs3K7CIzmD/iIjPrJfmglw9FOMLa8DMpRqKtFq4n+aJwjjtM6lqRBeHo15z
+         kMc5x+Y/a9DnW6WdEzSjR2PJZoQSYrOzjK7pChRoltFN0rOJYBKH6WVkXPnWme2gn3k3
+         YwP8eOjnLw8SSf+taDiSenMwKUeZDxhJoWi9lzmTgxWYD8kMQD8Zdwho7ZOxqfsluBcS
+         VKTQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=JSYiUbx9lBanOq4tbekqTAf5PAtDklDUpjXB1f72Qrc=;
+        b=dmPr4nDIfQMnv7f72jn3lyOtl261nyS7YUv77sgFO/H6KTMvyXhaGltJYyNVbg5U0u
+         M/w9OqbELy1a1I5B7wzYd/O0fvD98wxbIILOEdwU5MSW9ZAU7qEirqFSDKNfOD2OHvLG
+         Od9Miu7wC2zv+4XQzXeHw5SJq4kJXAocIJdC3tau7KH0HBhXuAkEPXmMmVPk0UAnQ1mk
+         dEHAeILhGZ0pALgPRDW1Vl/2QaGG6hSVkLWPZP2htEMMIua4x+68Gu3kLpkt+USiWdwm
+         6XWuiWVBndfoByeqUl9+/kLsvY9nkS9VFLbBEx2b0NALIOU15T8Itu1qijP7Ua2WPKh8
+         C7wg==
+X-Gm-Message-State: AOAM5328dWOlU+dNFcr9AWL1NhWjoJrHARfunVim+tDBIujPzkPLLzdO
+        dVx0JafbzHO25n/o2jnnCeoj0A==
+X-Google-Smtp-Source: ABdhPJwfv1gGAdP2jw5xSKMc6JrF213KOE1VJFhtyr1tERfRWP0BI2bHuc1NqNeFBd5A0OMvxYuzDA==
+X-Received: by 2002:a0c:e8c8:: with SMTP id m8mr5266723qvo.33.1612545031139;
+        Fri, 05 Feb 2021 09:10:31 -0800 (PST)
+Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
+        by smtp.gmail.com with ESMTPSA id c22sm8495640qtp.19.2021.02.05.09.10.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Feb 2021 09:10:29 -0800 (PST)
+Date:   Fri, 5 Feb 2021 12:10:28 -0500
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Tejun Heo <tj@kernel.org>, Roman Gushchin <guro@fb.com>,
+        linux-mm@kvack.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH 7/7] mm: memcontrol: consolidate lruvec stat flushing
+Message-ID: <YB18BF8b41RPra5b@cmpxchg.org>
+References: <20210202184746.119084-1-hannes@cmpxchg.org>
+ <20210202184746.119084-8-hannes@cmpxchg.org>
+ <YB1hhwVybr0x5M2j@dhcp22.suse.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YB1hhwVybr0x5M2j@dhcp22.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-02-05 at 13:46 +0100, Rafael J. Wysocki wrote:
-> On Sat, Jan 23, 2021 at 11:07 AM Yunfeng Ye <yeyunfeng@huawei.com>
-> wrote:
-> > It's not a good way to access the phys_proc_id of cpuinfo directly.
-> > So using topology_physical_package_id(cpu) instead.
-> > 
-> > Signed-off-by: Yunfeng Ye <yeyunfeng@huawei.com>
+On Fri, Feb 05, 2021 at 04:17:27PM +0100, Michal Hocko wrote:
+> On Tue 02-02-21 13:47:46, Johannes Weiner wrote:
+> > There are two functions to flush the per-cpu data of an lruvec into
+> > the rest of the cgroup tree: when the cgroup is being freed, and when
+> > a CPU disappears during hotplug. The difference is whether all CPUs or
+> > just one is being collected, but the rest of the flushing code is the
+> > same. Merge them into one function and share the common code.
 > 
-> Srinivas, Rui, any concerns?
-Looks good.
+> IIUC the only reason for the cpu == -1 special case is to avoid
+> zeroying, right? Is this optimization worth the special case? The code
+> would be slightly easier to follow without this.
 
-Thanks,
-Srinivas
+Hm, it was less about the optimization and more about which CPU(s)
+need(s) to be handled. But it's pretty silly the way it's written,
+indeed. I'll move the for_each_online_cpu() to the caller and drop the
+cpu==-1 special casing, it makes things much simpler and more obvious.
 
+> > Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
 > 
-> > ---
-> >  drivers/powercap/intel_rapl_common.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/powercap/intel_rapl_common.c
-> > b/drivers/powercap/intel_rapl_common.c
-> > index 5f3d39b8212a..8888adcb3927 100644
-> > --- a/drivers/powercap/intel_rapl_common.c
-> > +++ b/drivers/powercap/intel_rapl_common.c
-> > @@ -547,7 +547,7 @@ static void rapl_init_domains(struct
-> > rapl_package *rp)
-> > 
-> >                 if (i == RAPL_DOMAIN_PLATFORM && rp->id > 0) {
-> >                         snprintf(rd->name, RAPL_DOMAIN_NAME_LENGTH,
-> > "psys-%d",
-> > -                               cpu_data(rp-
-> > >lead_cpu).phys_proc_id);
-> > +                               topology_physical_package_id(rp-
-> > >lead_cpu));
-> >                 } else
-> >                         snprintf(rd->name, RAPL_DOMAIN_NAME_LENGTH,
-> > "%s",
-> >                                 rapl_domain_names[i]);
-> > --
-> > 2.27.0
-> > 
+> Anyway the above is not really a fundamental objection. It is more important
+> to unify the flushing.
+> 
+> Acked-by: Michal Hocko <mhocko@suse.com>
 
+Thanks. v2 is different, so I'll wait with taking the ack.
