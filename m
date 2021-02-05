@@ -2,324 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C44731179A
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 01:07:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D53F311798
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 01:07:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230510AbhBFAGc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 19:06:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41342 "EHLO
+        id S231487AbhBFAFf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 19:05:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229570AbhBENeZ (ORCPT
+        with ESMTP id S230094AbhBENhT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 08:34:25 -0500
-Received: from michel.telenet-ops.be (michel.telenet-ops.be [IPv6:2a02:1800:110:4::f00:18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEEE3C06178C
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 05:33:24 -0800 (PST)
-Received: from ramsan.of.borg ([84.195.186.194])
-        by michel.telenet-ops.be with bizsmtp
-        id RRZN2400Q4C55Sk06RZNM3; Fri, 05 Feb 2021 14:33:22 +0100
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1l81Eg-003Npa-5n; Fri, 05 Feb 2021 14:33:22 +0100
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1l81Ef-0083mN-B4; Fri, 05 Feb 2021 14:33:21 +0100
-From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     Magnus Damm <magnus.damm@gmail.com>,
-        Sebastian Reichel <sre@kernel.org>,
-        Saravana Kannan <saravanak@google.com>
-Cc:     linux-renesas-soc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH] soc: renesas: rmobile-sysc: Set OF_POPULATED and absorb reset handling
-Date:   Fri,  5 Feb 2021 14:33:19 +0100
-Message-Id: <20210205133319.1921108-1-geert+renesas@glider.be>
-X-Mailer: git-send-email 2.25.1
+        Fri, 5 Feb 2021 08:37:19 -0500
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48650C061786
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 05:36:39 -0800 (PST)
+Received: by mail-wr1-x42e.google.com with SMTP id u14so7743941wri.3
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 05:36:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=1gQoFS6ud405970AWgVagisJdKuspo0iHcNG3yO+v+Y=;
+        b=ZFx74dwXRN8XJoI8vReT6nG84gTmG6QDsKTETcJ06jTJw70JqS2qOLWzaeIPJLa2+q
+         i3A1Tex+NtYld5e4GVoxTw0izBPXMnjweumu4hA9cypntxtKgmAi+PLJzkGHZ1RqPeVy
+         tW/D5qIVWDn/14kg51lcnIhmcjtyQwf70EOXU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=1gQoFS6ud405970AWgVagisJdKuspo0iHcNG3yO+v+Y=;
+        b=fmYR86OkqG5FWo+C0U3WTNqu9CVF155leYoImHxM6o2qP7vDcVTVjDP7t0G64hynwG
+         gAeqzvm5dPgeA7cJAOqJCisVE2qK2t9SWVNG01v46LmzlrObxE3LfJK758d/iPsMfPQl
+         a3p/zbvusVHYwBg/3fE6Tz7+5pGlLuIM0eAk8oEqZr2BMiMMIYJZMJ18IR/Tt2RPh+O/
+         51swyjlmv6vBue8TyxsNGk/FIaCnwmqTfDuTRleGQYArsC7bk3uimimpfCLbBqGKYdn+
+         LUHvribyEXqRV1MeW4d3H+Q4xh6zgtxdaWn7/IsSDcHTJlQ6bVGtsvR/vXxVZI3kXlVR
+         Ei7A==
+X-Gm-Message-State: AOAM532xw9ILHGW6Be2DkzZW1qwd2fr6oMX8sIer8YBF9xglnHKxQDZn
+        hI7f/R1kXDE0WHva5OyGbwEY+J/yHEahg9Mg
+X-Google-Smtp-Source: ABdhPJzWE2gxGEZn4lzZcDo3tutehy5qX/E9j/4aIeZc6b9+p2my5zf6hrvCeUW2K6Drt8e7TSvqBw==
+X-Received: by 2002:a5d:5283:: with SMTP id c3mr4938476wrv.319.1612532197971;
+        Fri, 05 Feb 2021 05:36:37 -0800 (PST)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id z8sm11944234wrh.83.2021.02.05.05.36.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Feb 2021 05:36:37 -0800 (PST)
+From:   Daniel Vetter <daniel.vetter@ffwll.ch>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Kees Cook <keescook@chromium.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        =?UTF-8?q?J=C3=A9r=C3=B4me=20Glisse?= <jglisse@redhat.com>,
+        Jan Kara <jack@suse.cz>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-media@vger.kernel.org,
+        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org
+Subject: [PATCH] PCI: Also set up legacy files only after sysfs init
+Date:   Fri,  5 Feb 2021 14:36:32 +0100
+Message-Id: <20210205133632.2827730-1-daniel.vetter@ffwll.ch>
+X-Mailer: git-send-email 2.30.0
+In-Reply-To: <d958eb8e32d5dd6ffd981b92cd54fe7b3fcebab9>
+References: <d958eb8e32d5dd6ffd981b92cd54fe7b3fcebab9>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, there are two drivers binding to the R-Mobile System
-Controller (SYSC):
-  - The rmobile-sysc driver registers PM domains from a core_initcall(),
-    and does not use a platform driver,
-  - The rmobile-reset driver registers a reset handler, and does use a
-    platform driver.
+We are already doing this for all the regular sysfs files on PCI
+devices, but not yet on the legacy io files on the PCI buses. Thus far
+no problem, but in the next patch I want to wire up iomem revoke
+support. That needs the vfs up and running already to make sure that
+iomem_get_mapping() works.
 
-As fw_devlink only considers devices, it does not know that the
-rmobile-sysc driver is ready.  Hence if fw_devlink is enabled, probing
-of on-chip devices that are part of the SYSC PM domain is deferred until
-the optional rmobile-reset has been bound, which may happen too late
-(for e.g. the system timer on SoCs lacking an ARM architectured or
-global timer), or not at all, leading to complete system boot failures.
+Wire it up exactly like the existing code in
+pci_create_sysfs_dev_files(). Note that pci_remove_legacy_files()
+doesn't need a check since the one for pci_bus->legacy_io is
+sufficient.
 
-Fix this by:
-  1. Setting the OF_POPULATED flag for the SYSC device node after
-     successful initialization.
-     This will make of_link_to_phandle() ignore the SYSC device node as
-     a dependency, making consumer devices probe again.
-  2. Move reset handling from its own driver into the rmobile-sysc
-     driver.
-     This is needed because setting OF_POPULATED prevents the
-     rmobile-reset driver from binding against the same device.
+An alternative solution would be to implement a callback in sysfs to
+set up the address space from iomem_get_mapping() when userspace calls
+mmap(). This also works, but Greg didn't really like that just to work
+around an ordering issue when the kernel loads initially.
 
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+v2: Improve commit message (Bjorn)
+
+Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Dan Williams <dan.j.williams@intel.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: John Hubbard <jhubbard@nvidia.com>
+Cc: Jérôme Glisse <jglisse@redhat.com>
+Cc: Jan Kara <jack@suse.cz>
+Cc: Dan Williams <dan.j.williams@intel.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: linux-mm@kvack.org
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-samsung-soc@vger.kernel.org
+Cc: linux-media@vger.kernel.org
+Cc: Bjorn Helgaas <bhelgaas@google.com>
+Cc: linux-pci@vger.kernel.org
 ---
-To be queued in renesas-devel for v5.13.
+ drivers/pci/pci-sysfs.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-Tested on:
-  - SH-Mobile AG5 (KZM-A9-GT),
-  - R-Mobile APE6 (APE6-EVM),
-  - R-Mobile A1 (Armadillo-800 EVA).
-
- drivers/power/reset/Kconfig         |  7 ---
- drivers/power/reset/Makefile        |  1 -
- drivers/power/reset/rmobile-reset.c | 88 -----------------------------
- drivers/soc/renesas/rmobile-sysc.c  | 65 ++++++++++++++++++++-
- 4 files changed, 64 insertions(+), 97 deletions(-)
- delete mode 100644 drivers/power/reset/rmobile-reset.c
-
-diff --git a/drivers/power/reset/Kconfig b/drivers/power/reset/Kconfig
-index 1737e227b16e5136..417b112be3f660de 100644
---- a/drivers/power/reset/Kconfig
-+++ b/drivers/power/reset/Kconfig
-@@ -251,13 +251,6 @@ config POWER_RESET_SYSCON_POWEROFF
- 	help
- 	  Poweroff support for generic SYSCON mapped register poweroff.
- 
--config POWER_RESET_RMOBILE
--	tristate "Renesas R-Mobile reset driver"
--	depends on ARCH_RMOBILE || COMPILE_TEST
--	depends on HAS_IOMEM
--	help
--	  Reboot support for Renesas R-Mobile and SH-Mobile SoCs.
--
- config POWER_RESET_ZX
- 	tristate "ZTE SoCs reset driver"
- 	depends on ARCH_ZX || COMPILE_TEST
-diff --git a/drivers/power/reset/Makefile b/drivers/power/reset/Makefile
-index b4601c0a96ed26c7..77a57ca8e5300d60 100644
---- a/drivers/power/reset/Makefile
-+++ b/drivers/power/reset/Makefile
-@@ -29,7 +29,6 @@ obj-$(CONFIG_POWER_RESET_XGENE) += xgene-reboot.o
- obj-$(CONFIG_POWER_RESET_KEYSTONE) += keystone-reset.o
- obj-$(CONFIG_POWER_RESET_SYSCON) += syscon-reboot.o
- obj-$(CONFIG_POWER_RESET_SYSCON_POWEROFF) += syscon-poweroff.o
--obj-$(CONFIG_POWER_RESET_RMOBILE) += rmobile-reset.o
- obj-$(CONFIG_POWER_RESET_ZX) += zx-reboot.o
- obj-$(CONFIG_REBOOT_MODE) += reboot-mode.o
- obj-$(CONFIG_SYSCON_REBOOT_MODE) += syscon-reboot-mode.o
-diff --git a/drivers/power/reset/rmobile-reset.c b/drivers/power/reset/rmobile-reset.c
-deleted file mode 100644
-index bd3b396558e0df8c..0000000000000000
---- a/drivers/power/reset/rmobile-reset.c
-+++ /dev/null
-@@ -1,88 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0
--/*
-- * Renesas R-Mobile Reset Driver
-- *
-- * Copyright (C) 2014 Glider bvba
-- */
--
--#include <linux/io.h>
--#include <linux/module.h>
--#include <linux/notifier.h>
--#include <linux/of_address.h>
--#include <linux/platform_device.h>
--#include <linux/printk.h>
--#include <linux/reboot.h>
--
--/* SYSC Register Bank 2 */
--#define RESCNT2		0x20		/* Reset Control Register 2 */
--
--/* Reset Control Register 2 */
--#define RESCNT2_PRES	0x80000000	/* Soft power-on reset */
--
--static void __iomem *sysc_base2;
--
--static int rmobile_reset_handler(struct notifier_block *this,
--				 unsigned long mode, void *cmd)
--{
--	pr_debug("%s %lu\n", __func__, mode);
--
--	/* Let's assume we have acquired the HPB semaphore */
--	writel(RESCNT2_PRES, sysc_base2 + RESCNT2);
--
--	return NOTIFY_DONE;
--}
--
--static struct notifier_block rmobile_reset_nb = {
--	.notifier_call = rmobile_reset_handler,
--	.priority = 192,
--};
--
--static int rmobile_reset_probe(struct platform_device *pdev)
--{
--	int error;
--
--	sysc_base2 = of_iomap(pdev->dev.of_node, 1);
--	if (!sysc_base2)
--		return -ENODEV;
--
--	error = register_restart_handler(&rmobile_reset_nb);
--	if (error) {
--		dev_err(&pdev->dev,
--			"cannot register restart handler (err=%d)\n", error);
--		goto fail_unmap;
--	}
--
--	return 0;
--
--fail_unmap:
--	iounmap(sysc_base2);
--	return error;
--}
--
--static int rmobile_reset_remove(struct platform_device *pdev)
--{
--	unregister_restart_handler(&rmobile_reset_nb);
--	iounmap(sysc_base2);
--	return 0;
--}
--
--static const struct of_device_id rmobile_reset_of_match[] = {
--	{ .compatible = "renesas,sysc-rmobile", },
--	{ /* sentinel */ }
--};
--MODULE_DEVICE_TABLE(of, rmobile_reset_of_match);
--
--static struct platform_driver rmobile_reset_driver = {
--	.probe = rmobile_reset_probe,
--	.remove = rmobile_reset_remove,
--	.driver = {
--		.name = "rmobile_reset",
--		.of_match_table = rmobile_reset_of_match,
--	},
--};
--
--module_platform_driver(rmobile_reset_driver);
--
--MODULE_DESCRIPTION("Renesas R-Mobile Reset Driver");
--MODULE_AUTHOR("Geert Uytterhoeven <geert+renesas@glider.be>");
--MODULE_LICENSE("GPL v2");
-diff --git a/drivers/soc/renesas/rmobile-sysc.c b/drivers/soc/renesas/rmobile-sysc.c
-index bf64d052f9245db5..a8d85d111924d9ee 100644
---- a/drivers/soc/renesas/rmobile-sysc.c
-+++ b/drivers/soc/renesas/rmobile-sysc.c
-@@ -1,10 +1,11 @@
- // SPDX-License-Identifier: GPL-2.0
- /*
-- * rmobile power management support
-+ * R-Mobile power management and reset support
-  *
-  * Copyright (C) 2012  Renesas Solutions Corp.
-  * Copyright (C) 2012  Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-  * Copyright (C) 2014  Glider bvba
-+ * Copyright (C) 2021  Glider bv
-  *
-  * based on pm-sh7372.c
-  *  Copyright (C) 2011 Magnus Damm
-@@ -12,11 +13,13 @@
- #include <linux/clk/renesas.h>
- #include <linux/console.h>
- #include <linux/delay.h>
-+#include <linux/notifier.h>
- #include <linux/of.h>
- #include <linux/of_address.h>
- #include <linux/pm.h>
- #include <linux/pm_clock.h>
- #include <linux/pm_domain.h>
-+#include <linux/reboot.h>
- #include <linux/slab.h>
- 
- #include <asm/io.h>
-@@ -29,6 +32,11 @@
- #define PSTR_RETRIES	100
- #define PSTR_DELAY_US	10
- 
-+/* SYSC Register Bank 2 */
-+#define RESCNT2		0x20	/* Reset Control Register 2 */
-+
-+#define RESCNT2_PRES	BIT(31)	/* Soft power-on reset */
-+
- struct rmobile_pm_domain {
- 	struct generic_pm_domain genpd;
- 	struct dev_power_governor *gov;
-@@ -309,6 +317,54 @@ static int __init rmobile_add_pm_domains(void __iomem *base,
- 	return 0;
- }
- 
-+struct rmobile_reset {
-+	void __iomem *base;
-+	struct notifier_block nb;
-+};
-+
-+static int rmobile_reset_handler(struct notifier_block *this,
-+				 unsigned long mode, void *cmd)
-+{
-+	struct rmobile_reset *reset = container_of(this, struct rmobile_reset,
-+						   nb);
-+
-+	pr_debug("%s %lu\n", __func__, mode);
-+
-+	/* Let's assume we have acquired the HPB semaphore */
-+	writel(RESCNT2_PRES, reset->base + RESCNT2);
-+
-+	return NOTIFY_DONE;
-+}
-+
-+static int rmobile_reset_setup(struct device_node *np)
-+{
-+	struct rmobile_reset *reset;
-+	int error;
-+
-+	reset = kzalloc(sizeof(*reset), GFP_KERNEL);
-+	if (!reset)
-+		return -ENOMEM;
-+
-+	reset->base = of_iomap(np, 1);
-+	if (!reset->base)
-+		goto fail_free;
-+
-+	reset->nb.notifier_call = rmobile_reset_handler;
-+	reset->nb.priority = 192;
-+
-+	error = register_restart_handler(&reset->nb);
-+	if (error)
-+		goto fail_unmap;
-+
-+	return 0;
-+
-+fail_unmap:
-+	iounmap(reset->base);
-+fail_free:
-+	kfree(reset);
-+	return error;
-+}
-+
- static int __init rmobile_init_pm_domains(void)
+diff --git a/drivers/pci/pci-sysfs.c b/drivers/pci/pci-sysfs.c
+index fb072f4b3176..0c45b4f7b214 100644
+--- a/drivers/pci/pci-sysfs.c
++++ b/drivers/pci/pci-sysfs.c
+@@ -927,6 +927,9 @@ void pci_create_legacy_files(struct pci_bus *b)
  {
- 	struct device_node *np, *pmd;
-@@ -342,6 +398,13 @@ static int __init rmobile_init_pm_domains(void)
- 			of_node_put(np);
- 			break;
+ 	int error;
+ 
++	if (!sysfs_initialized)
++		return;
++
+ 	b->legacy_io = kcalloc(2, sizeof(struct bin_attribute),
+ 			       GFP_ATOMIC);
+ 	if (!b->legacy_io)
+@@ -1448,6 +1451,7 @@ void pci_remove_sysfs_dev_files(struct pci_dev *pdev)
+ static int __init pci_sysfs_init(void)
+ {
+ 	struct pci_dev *pdev = NULL;
++	struct pci_bus *pbus = NULL;
+ 	int retval;
+ 
+ 	sysfs_initialized = 1;
+@@ -1459,6 +1463,9 @@ static int __init pci_sysfs_init(void)
  		}
-+
-+		of_node_set_flag(np, OF_POPULATED);
-+
-+		ret = rmobile_reset_setup(np);
-+		if (ret)
-+			pr_err("%pOF: cannot register restart handler (%d)\n",
-+			       np, ret);
  	}
  
- 	put_special_pds();
++	while ((pbus = pci_find_next_bus(pbus)))
++		pci_create_legacy_files(pbus);
++
+ 	return 0;
+ }
+ late_initcall(pci_sysfs_init);
 -- 
-2.25.1
+2.30.0
 
