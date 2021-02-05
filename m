@@ -2,421 +2,258 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CE1E3117CD
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 01:30:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01DA53117CA
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 01:30:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231327AbhBFAae (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 19:30:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45298 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231436AbhBELlP (ORCPT
+        id S229622AbhBFA3D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 19:29:03 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:53622 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231778AbhBEMV3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 06:41:15 -0500
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A527C061793;
-        Fri,  5 Feb 2021 03:40:35 -0800 (PST)
-Received: by mail-ed1-x52e.google.com with SMTP id q2so8492184edi.4;
-        Fri, 05 Feb 2021 03:40:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=/a0aAjzQjJH2QwSKfKzXVA6KoKVTm9tiHyx2LD5lv90=;
-        b=tm9hFX8vgw/IO+XjEZZ8DEo9Z5slqcHZ6qme3dcewXEvUtMDDE+HSVor4YhcY8V07E
-         GjLMq87hcsYqeOgVOi4QXuc4pg3BMCRH6fYPL5duQybCD7wwhc6O35TiFbCcPiV2pM7K
-         ckpDyf9dy0PdD89/np2En/2ap1GpOze7hwAPqCVyAbfCVe+hzcVR/jy0r5D2C5wZMFsX
-         P2JYXAwvzGzBY9Zf0wG6ia4KlGc5lZsSdYThXMPo0xb7zyJacC/gjAej6QIeJ5yEXtOg
-         XYn49bpHQLY3Y4G4GpYyxNWjpMvMVNx2iHW5MFuoJuNb4OS+lbdPmNGDctDnWXKACCP3
-         xw1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=/a0aAjzQjJH2QwSKfKzXVA6KoKVTm9tiHyx2LD5lv90=;
-        b=NTkL/mua49D2N0rtbUU2+y+AxKmzPx8W4JC+zSiqfR/PVskjDcbHZjlUFHcAZBn9NJ
-         46dQ9ozy7PxG/orY2I4QaAoG44KLsRUseKllSXK/xQ4acz3KKuFN7x+EXQY5HPa+Gk9z
-         EpWpRU6M226DNQX+0T6C3dybWhTbBFBOexBueSetvigav8Jebhdhzl69+mhB7btTBfbF
-         opC2bmMGgyLjvZJrCum6/JRIsWsaaAy1//IlvDJtat7jAIygY0FySr6niXncM3Ec1sNR
-         B4/40dQsPn7+hZ10gzv24s/EGAEn73n6kJ0r6IQdAPuNpaYjGozk9PUEDcUArM1TtdGQ
-         +l6A==
-X-Gm-Message-State: AOAM53331FtlAZD3eufJWOa1QKFB9HCSiNty39fmV2o+8oyDONuQsaEq
-        p7ldQfgwCKAWEVFHRK4Lpz8=
-X-Google-Smtp-Source: ABdhPJz33cwjCvo3G5o+o9k+4HITu41zGsVt1XxToZkwHKyHWXHzfO/wEnL43vfsFv80SduvaUgfKg==
-X-Received: by 2002:a05:6402:17aa:: with SMTP id j10mr3163826edy.184.1612525233800;
-        Fri, 05 Feb 2021 03:40:33 -0800 (PST)
-Received: from debian.home (81-204-249-205.fixed.kpn.net. [81.204.249.205])
-        by smtp.gmail.com with ESMTPSA id o4sm3883476edw.78.2021.02.05.03.40.32
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 05 Feb 2021 03:40:33 -0800 (PST)
-From:   Johan Jonker <jbx6244@gmail.com>
-To:     heiko@sntech.de
-Cc:     robh+dt@kernel.org, gregkh@linuxfoundation.org, balbi@kernel.org,
-        linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 4/8] arm64: dts: rockchip: restyle rk3399 usbdrd3_1 node
-Date:   Fri,  5 Feb 2021 12:40:07 +0100
-Message-Id: <20210205114011.10381-4-jbx6244@gmail.com>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20210205114011.10381-1-jbx6244@gmail.com>
-References: <20210205114011.10381-1-jbx6244@gmail.com>
+        Fri, 5 Feb 2021 07:21:29 -0500
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 115C30uA146160;
+        Fri, 5 Feb 2021 07:20:40 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=0xuNBImoUyQ+IP7PJ61t5Qf97yOBkDdDWIuWSZuyW2o=;
+ b=jalKQ3W1CcDu9bvDOpEgakWxcDMFOxSCfHtlWhJlFA+iWaW70V6RFbZDSkAlC+5BEJTM
+ Q5JKsyQzkcexoahcTGft8KU1uI3vYFsIAZ5IixIxnG9NOTKpHmXCXWkcqu5I9WR/KlnA
+ o2dV1oUYZsfOeGgxzpPgb7E8yXW4GZxqj80C679eWxGfHCQRIPcx/UOZl6dH7AJO1hro
+ rSkhvkhfbTfBaebf+tTZgS4fHPT3O801foG3v7GsLVXou+e4NVV+Np4PcZordtVy4slP
+ OherjOEWkxNu2Hkw7GPM52qMdov4CGKrspUEM5JFBeVVv/FiqARPA//mGOptLMkLwFS8 AA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36h5hkgqfd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 05 Feb 2021 07:20:39 -0500
+Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 115C33qA146295;
+        Fri, 5 Feb 2021 07:20:37 -0500
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36h5hkgqd8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 05 Feb 2021 07:20:37 -0500
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 115CDJTX009922;
+        Fri, 5 Feb 2021 12:20:35 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma06ams.nl.ibm.com with ESMTP id 36evvf3hg0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 05 Feb 2021 12:20:34 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 115CKVYF30015892
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 5 Feb 2021 12:20:31 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 838AFA405B;
+        Fri,  5 Feb 2021 12:20:31 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 26FF5A4060;
+        Fri,  5 Feb 2021 12:20:31 +0000 (GMT)
+Received: from ibm-vm (unknown [9.145.1.216])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri,  5 Feb 2021 12:20:31 +0000 (GMT)
+Date:   Fri, 5 Feb 2021 13:20:09 +0100
+From:   Claudio Imbrenda <imbrenda@linux.ibm.com>
+To:     Janosch Frank <frankja@linux.ibm.com>
+Cc:     linux-kernel@vger.kernel.org, borntraeger@de.ibm.com,
+        david@redhat.com, kvm@vger.kernel.org, linux-s390@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] s390/kvm: VSIE: correctly handle MVPG when in
+ VSIE
+Message-ID: <20210205132009.6d5566d9@ibm-vm>
+In-Reply-To: <2e409ab1-1865-d59a-dc89-2d30f2657a38@linux.ibm.com>
+References: <20210202180028.876888-1-imbrenda@linux.ibm.com>
+        <20210202180028.876888-3-imbrenda@linux.ibm.com>
+        <2e409ab1-1865-d59a-dc89-2d30f2657a38@linux.ibm.com>
+Organization: IBM
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-02-05_07:2021-02-05,2021-02-05 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 suspectscore=0
+ spamscore=0 phishscore=0 bulkscore=0 priorityscore=1501 adultscore=0
+ impostorscore=0 mlxscore=0 lowpriorityscore=0 mlxlogscore=999
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102050080
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For rk3399 dwc3 usb the wrapper node for only clocks makes no sense,
-so restyle the rk3399 usbdrd3_1 node before more new SoC types are
-added with the same IP.
+On Thu, 4 Feb 2021 18:10:01 +0100
+Janosch Frank <frankja@linux.ibm.com> wrote:
 
-Signed-off-by: Johan Jonker <jbx6244@gmail.com>
----
-Changed V3:
-  remove aclk_usb3_rksoc_axi_perf
-  remove aclk_usb3
----
- arch/arm64/boot/dts/rockchip/rk3399-ficus.dts      |  2 +-
- arch/arm64/boot/dts/rockchip/rk3399-firefly.dts    |  6 +---
- .../boot/dts/rockchip/rk3399-gru-chromebook.dtsi   |  6 +---
- arch/arm64/boot/dts/rockchip/rk3399-hugsun-x99.dts |  6 +---
- .../boot/dts/rockchip/rk3399-khadas-edge.dtsi      |  6 +---
- arch/arm64/boot/dts/rockchip/rk3399-leez-p710.dts  |  6 +---
- arch/arm64/boot/dts/rockchip/rk3399-nanopi4.dtsi   |  4 ---
- arch/arm64/boot/dts/rockchip/rk3399-orangepi.dts   |  6 +---
- .../boot/dts/rockchip/rk3399-pinebook-pro.dts      |  4 ---
- arch/arm64/boot/dts/rockchip/rk3399-puma.dtsi      |  6 +---
- arch/arm64/boot/dts/rockchip/rk3399-roc-pc.dtsi    |  6 +---
- arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4.dtsi |  6 +---
- arch/arm64/boot/dts/rockchip/rk3399-rock960.dts    |  2 +-
- arch/arm64/boot/dts/rockchip/rk3399-rock960.dtsi   |  4 ---
- arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi |  6 +---
- arch/arm64/boot/dts/rockchip/rk3399-sapphire.dtsi  |  6 +---
- arch/arm64/boot/dts/rockchip/rk3399.dtsi           | 37 ++++++++--------------
- 17 files changed, 26 insertions(+), 93 deletions(-)
+> On 2/2/21 7:00 PM, Claudio Imbrenda wrote:
+> > Correctly handle the MVPG instruction when issued by a VSIE guest.
+> > 
+> > Fixes: a3508fbe9dc6d ("KVM: s390: vsie: initial support for nested
+> > virtualization") Cc: stable@vger.kernel.org
+> > Signed-off-by: Claudio Imbrenda <imbrenda@linux.ibm.com>  
+> 
+> So far the patch looks ok to me and way better to understand than v1,
+> good job
+> 
+> > ---
+> >  arch/s390/kvm/vsie.c | 94
+> > +++++++++++++++++++++++++++++++++++++++++--- 1 file changed, 89
+> > insertions(+), 5 deletions(-)
+> > 
+> > diff --git a/arch/s390/kvm/vsie.c b/arch/s390/kvm/vsie.c
+> > index 7db022141db3..2db49749e27b 100644
+> > --- a/arch/s390/kvm/vsie.c
+> > +++ b/arch/s390/kvm/vsie.c
+> > @@ -416,11 +416,6 @@ static void unshadow_scb(struct kvm_vcpu
+> > *vcpu, struct vsie_page *vsie_page) memcpy((void *)((u64)scb_o +
+> > 0xc0), (void *)((u64)scb_s + 0xc0), 0xf0 - 0xc0);  
+> 
+> Magic offsets being magic
+> Another item for my todo list.
+> 
+> >  		break;
+> > -	case ICPT_PARTEXEC:
+> > -		/* MVPG only */
+> > -		memcpy((void *)((u64)scb_o + 0xc0),
+> > -		       (void *)((u64)scb_s + 0xc0), 0xd0 - 0xc0);
+> > -		break;
+> >  	}
+> >  
+> >  	if (scb_s->ihcpu != 0xffffU)
+> > @@ -982,6 +977,91 @@ static int handle_stfle(struct kvm_vcpu *vcpu,
+> > struct vsie_page *vsie_page) return 0;
+> >  }
+> >  
+> > +static u64 vsie_get_register(struct kvm_vcpu *vcpu, struct
+> > vsie_page *vsie_page, u8 reg) +{
+> > +	reg &= 0xf;
+> > +	switch (reg) {
+> > +	case 15:
+> > +		return vsie_page->scb_s.gg15;
+> > +	case 14:
+> > +		return vsie_page->scb_s.gg14;
+> > +	default:
+> > +		return vcpu->run->s.regs.gprs[reg];
+> > +	}
+> > +}
+> > +
+> > +static int vsie_handle_mvpg(struct kvm_vcpu *vcpu, struct
+> > vsie_page *vsie_page) +{
+> > +	struct kvm_s390_sie_block *scb_s = &vsie_page->scb_s;
+> > +	unsigned long pei1, pei2, src, dest, mask = PAGE_MASK;
+> > +	u64 *pei_block = &vsie_page->scb_o->mcic;
+> > +	int edat, rc1, rc2;  
+> 
+> Can use a src/dst prefix or suffix please?
+> 1/2 is confusing.
 
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-ficus.dts b/arch/arm64/boot/dts/rockchip/rk3399-ficus.dts
-index 95110d065..4392780db 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399-ficus.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-ficus.dts
-@@ -157,7 +157,7 @@
- 	dr_mode = "host";
- };
- 
--&usbdrd_dwc3_1 {
-+&usbdrd3_1 {
- 	dr_mode = "host";
- };
- 
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-firefly.dts b/arch/arm64/boot/dts/rockchip/rk3399-firefly.dts
-index 4017b0e8c..28e5895de 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399-firefly.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-firefly.dts
-@@ -778,12 +778,8 @@
- };
- 
- &usbdrd3_1 {
--	status = "okay";
--};
--
--&usbdrd_dwc3_1 {
--	status = "okay";
- 	dr_mode = "host";
-+	status = "okay";
- };
- 
- &vopb {
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-gru-chromebook.dtsi b/arch/arm64/boot/dts/rockchip/rk3399-gru-chromebook.dtsi
-index 1384dabbd..c996c688d 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399-gru-chromebook.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-gru-chromebook.dtsi
-@@ -351,13 +351,9 @@ ap_i2c_tp: &i2c5 {
- };
- 
- &usbdrd3_1 {
--	status = "okay";
-+	dr_mode = "host";
- 	extcon = <&usbc_extcon1>;
--};
--
--&usbdrd_dwc3_1 {
- 	status = "okay";
--	dr_mode = "host";
- };
- 
- &pinctrl {
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-hugsun-x99.dts b/arch/arm64/boot/dts/rockchip/rk3399-hugsun-x99.dts
-index daf14f732..397050703 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399-hugsun-x99.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-hugsun-x99.dts
-@@ -736,12 +736,8 @@
- };
- 
- &usbdrd3_1 {
--	status = "okay";
--};
--
--&usbdrd_dwc3_1 {
--	status = "okay";
- 	dr_mode = "host";
-+	status = "okay";
- };
- 
- &vopb {
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-khadas-edge.dtsi b/arch/arm64/boot/dts/rockchip/rk3399-khadas-edge.dtsi
-index d028285fb..30e6e3e41 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399-khadas-edge.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-khadas-edge.dtsi
-@@ -802,12 +802,8 @@
- };
- 
- &usbdrd3_1 {
--	status = "okay";
--};
--
--&usbdrd_dwc3_1 {
--	status = "okay";
- 	dr_mode = "host";
-+	status = "okay";
- };
- 
- &vopb {
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-leez-p710.dts b/arch/arm64/boot/dts/rockchip/rk3399-leez-p710.dts
-index 1c0b48a71..a7092fda3 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399-leez-p710.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-leez-p710.dts
-@@ -616,12 +616,8 @@
- };
- 
- &usbdrd3_1 {
--	status = "okay";
--};
--
--&usbdrd_dwc3_1 {
--	status = "okay";
- 	dr_mode = "host";
-+	status = "okay";
- };
- 
- &vopb {
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-nanopi4.dtsi b/arch/arm64/boot/dts/rockchip/rk3399-nanopi4.dtsi
-index 90a6ea1d7..1e835a682 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399-nanopi4.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-nanopi4.dtsi
-@@ -712,10 +712,6 @@
- };
- 
- &usbdrd3_1 {
--	status = "okay";
--};
--
--&usbdrd_dwc3_1 {
- 	dr_mode = "host";
- 	status = "okay";
- };
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-orangepi.dts b/arch/arm64/boot/dts/rockchip/rk3399-orangepi.dts
-index 7b633622c..fdc027ff3 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399-orangepi.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-orangepi.dts
-@@ -859,12 +859,8 @@
- };
- 
- &usbdrd3_1 {
--	status = "okay";
--};
--
--&usbdrd_dwc3_1 {
--	status = "okay";
- 	dr_mode = "host";
-+	status = "okay";
- };
- 
- &vopb {
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-pinebook-pro.dts b/arch/arm64/boot/dts/rockchip/rk3399-pinebook-pro.dts
-index f00e11075..80ac8ab6a 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399-pinebook-pro.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-pinebook-pro.dts
-@@ -1091,10 +1091,6 @@
- };
- 
- &usbdrd3_1 {
--	status = "okay";
--};
--
--&usbdrd_dwc3_1 {
- 	dr_mode = "host";
- 	status = "okay";
- };
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-puma.dtsi b/arch/arm64/boot/dts/rockchip/rk3399-puma.dtsi
-index 4660416c8..2f12e4a7d 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399-puma.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-puma.dtsi
-@@ -517,12 +517,8 @@
- };
- 
- &usbdrd3_1 {
--	status = "okay";
--};
--
--&usbdrd_dwc3_1 {
--	status = "okay";
- 	dr_mode = "host";
-+	status = "okay";
- };
- 
- &usb_host1_ehci {
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-roc-pc.dtsi b/arch/arm64/boot/dts/rockchip/rk3399-roc-pc.dtsi
-index 4d30c1b32..f15f85162 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399-roc-pc.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-roc-pc.dtsi
-@@ -793,12 +793,8 @@
- };
- 
- &usbdrd3_1 {
--	status = "okay";
--};
--
--&usbdrd_dwc3_1 {
--	status = "okay";
- 	dr_mode = "host";
-+	status = "okay";
- };
- 
- &vopb {
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4.dtsi b/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4.dtsi
-index 69c067dd1..f07f49f45 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4.dtsi
-@@ -673,12 +673,8 @@
- };
- 
- &usbdrd3_1 {
--	status = "okay";
--};
--
--&usbdrd_dwc3_1 {
--	status = "okay";
- 	dr_mode = "host";
-+	status = "okay";
- };
- 
- &vopb {
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-rock960.dts b/arch/arm64/boot/dts/rockchip/rk3399-rock960.dts
-index 20c3ef9fc..e22995c8e 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399-rock960.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-rock960.dts
-@@ -168,7 +168,7 @@
- 	dr_mode = "otg";
- };
- 
--&usbdrd_dwc3_1 {
-+&usbdrd3_1 {
- 	dr_mode = "host";
- };
- 
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-rock960.dtsi b/arch/arm64/boot/dts/rockchip/rk3399-rock960.dtsi
-index 3920dcbd1..b5f23661e 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399-rock960.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-rock960.dtsi
-@@ -639,10 +639,6 @@
- 	status = "okay";
- };
- 
--&usbdrd_dwc3_1 {
--	status = "okay";
--};
--
- &vopb {
- 	status = "okay";
- };
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi b/arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi
-index 564b56810..be5b1c7e1 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi
-@@ -822,12 +822,8 @@
- };
- 
- &usbdrd3_1 {
--	status = "okay";
--};
--
--&usbdrd_dwc3_1 {
--	status = "okay";
- 	dr_mode = "host";
-+	status = "okay";
- };
- 
- &vopb {
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-sapphire.dtsi b/arch/arm64/boot/dts/rockchip/rk3399-sapphire.dtsi
-index 2e76f178e..fe9d4b2f8 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399-sapphire.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-sapphire.dtsi
-@@ -619,12 +619,8 @@
- };
- 
- &usbdrd3_1 {
--	status = "okay";
--};
--
--&usbdrd_dwc3_1 {
--	status = "okay";
- 	dr_mode = "host";
-+	status = "okay";
- };
- 
- &vopb {
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399.dtsi b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
-index cfde6cc64..a63806b30 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
-@@ -417,37 +417,26 @@
- 	};
- 
- 	usbdrd3_1: usb@fe900000 {
--		compatible = "rockchip,rk3399-dwc3";
--		#address-cells = <2>;
--		#size-cells = <2>;
--		ranges;
-+		compatible = "rockchip,rk3399-dwc3", "snps,dwc3";
-+		reg = <0x0 0xfe900000 0x0 0x100000>;
-+		interrupts = <GIC_SPI 110 IRQ_TYPE_LEVEL_HIGH 0>;
- 		clocks = <&cru SCLK_USB3OTG1_REF>, <&cru SCLK_USB3OTG1_SUSPEND>,
- 			 <&cru ACLK_USB3OTG1>, <&cru ACLK_USB3_GRF>;
- 		clock-names = "ref_clk", "suspend_clk",
- 			      "bus_clk", "grf_clk";
-+		dr_mode = "otg";
-+		phys = <&u2phy1_otg>, <&tcphy1_usb3>;
-+		phy-names = "usb2-phy", "usb3-phy";
-+		phy_type = "utmi_wide";
-+		power-domains = <&power RK3399_PD_USB3>;
- 		resets = <&cru SRST_A_USB3_OTG1>;
- 		reset-names = "usb3-otg";
-+		snps,dis-del-phy-power-chg-quirk;
-+		snps,dis_enblslpm_quirk;
-+		snps,dis-tx-ipgap-linecheck-quirk;
-+		snps,dis-u2-freeclk-exists-quirk;
-+		snps,dis_u2_susphy_quirk;
- 		status = "disabled";
--
--		usbdrd_dwc3_1: usb@fe900000 {
--			compatible = "snps,dwc3";
--			reg = <0x0 0xfe900000 0x0 0x100000>;
--			interrupts = <GIC_SPI 110 IRQ_TYPE_LEVEL_HIGH 0>;
--			clocks = <&cru SCLK_USB3OTG1_REF>, <&cru ACLK_USB3OTG1>,
--				 <&cru SCLK_USB3OTG1_SUSPEND>;
--			clock-names = "ref", "bus_early", "suspend";
--			dr_mode = "otg";
--			phys = <&u2phy1_otg>, <&tcphy1_usb3>;
--			phy-names = "usb2-phy", "usb3-phy";
--			phy_type = "utmi_wide";
--			snps,dis_enblslpm_quirk;
--			snps,dis-u2-freeclk-exists-quirk;
--			snps,dis_u2_susphy_quirk;
--			snps,dis-del-phy-power-chg-quirk;
--			snps,dis-tx-ipgap-linecheck-quirk;
--			power-domains = <&power RK3399_PD_USB3>;
--			status = "disabled";
--		};
- 	};
- 
- 	cdn_dp: dp@fec00000 {
--- 
-2.11.0
+will do
+
+> > +	union ctlreg0 cr0;
+> > +
+> > +	cr0.val = vcpu->arch.sie_block->gcr[0];
+> > +	edat = cr0.edat && test_kvm_facility(vcpu->kvm, 8);
+> > +	if (psw_bits(scb_s->gpsw).eaba == PSW_BITS_AMODE_24BIT)
+> > +		mask = 0xfff000;
+> > +	else if (psw_bits(scb_s->gpsw).eaba ==
+> > PSW_BITS_AMODE_31BIT)
+> > +		mask = 0x7ffff000;
+> > +
+> > +	dest = vsie_get_register(vcpu, vsie_page, scb_s->ipb >>
+> > 16) & mask;
+> > +	src = vsie_get_register(vcpu, vsie_page, scb_s->ipb >> 20)
+> > & mask; +
+> > +	rc1 = kvm_s390_shadow_fault(vcpu, vsie_page->gmap, dest,
+> > &pei1);
+> > +	rc2 = kvm_s390_shadow_fault(vcpu, vsie_page->gmap, src,
+> > &pei2);
+> > +	/*
+> > +	 * Either everything went well, or something non-critical
+> > went wrong
+> > +	 * e.g. beause of a race. In either case, simply retry.
+> > +	 */
+> > +	if (rc1 == -EAGAIN || rc2 == -EAGAIN || (!rc1 && !rc2)) {
+> > +		retry_vsie_icpt(vsie_page);
+> > +		return -EAGAIN;
+> > +	}
+> > +	/* Something more serious went wrong, propagate the error
+> > */
+> > +	if (rc1 < 0)
+> > +		return rc1;
+> > +	if (rc2 < 0)
+> > +		return rc2;
+> > +
+> > +	/* The only possible suppressing exception: just deliver
+> > it */
+> > +	if (rc1 == PGM_TRANSLATION_SPEC || rc2 ==
+> > PGM_TRANSLATION_SPEC) {
+> > +		clear_vsie_icpt(vsie_page);
+> > +		rc1 = kvm_s390_inject_program_int(vcpu,
+> > PGM_TRANSLATION_SPEC);
+> > +		WARN_ON_ONCE(rc1);
+> > +		return 1;
+> > +	}
+> > +
+> > +	/*
+> > +	 * Forward the PEI intercept to the guest if it was a page
+> > fault, or
+> > +	 * also for segment and region table faults if EDAT
+> > applies.
+> > +	 */
+> > +	if (edat) {
+> > +		rc1 = rc1 == PGM_ASCE_TYPE ? rc1 : 0;
+> > +		rc2 = rc2 == PGM_ASCE_TYPE ? rc2 : 0;
+> > +	}
+> > +	if ((!rc1 || rc1 == PGM_PAGE_TRANSLATION) && (!rc2 || rc2
+> > == PGM_PAGE_TRANSLATION)) {
+> > +		pei_block[0] = pei1;
+> > +		pei_block[1] = pei2;
+> > +		return 1;
+> > +	}
+> > +
+> > +	retry_vsie_icpt(vsie_page);
+> > +
+> > +	/*
+> > +	 * The host has edat, and the guest does not, or it was an
+> > ASCE type
+> > +	 * exception. The host needs to inject the appropriate DAT
+> > interrupts
+> > +	 * into the guest.
+> > +	 */
+> > +	if (rc1)
+> > +		return inject_fault(vcpu, rc1, dest, 1);
+> > +	if (rc2)> +		return inject_fault(vcpu, rc2,
+> > src, 0); +
+> > +	/* This should never be reached */  
+> 
+> BUG()?
+
+look at the code, if it's reached, it's a bug in the compiler :)
+
+maybe I should rewrite it so that there won't be any unreachable code at
+all
+
+> > +	return 0;
+> > +}
+> > +
+> >  /*
+> >   * Run the vsie on a shadow scb and a shadow gmap, without any
+> > further
+> >   * sanity checks, handling SIE faults.
+> > @@ -1068,6 +1148,10 @@ static int do_vsie_run(struct kvm_vcpu
+> > *vcpu, struct vsie_page *vsie_page) if ((scb_s->ipa & 0xf000) !=
+> > 0xf000) scb_s->ipa += 0x1000;
+> >  		break;
+> > +	case ICPT_PARTEXEC:
+> > +		if (scb_s->ipa == 0xb254)
+> > +			rc = vsie_handle_mvpg(vcpu, vsie_page);
+> > +		break;
+> >  	}
+> >  	return rc;
+> >  }
+> >   
+> 
 
