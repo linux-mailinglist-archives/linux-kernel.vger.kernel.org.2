@@ -2,239 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8438631062B
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 09:04:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8530531064F
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 09:12:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231253AbhBEICx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 03:02:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54636 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230267AbhBEICt (ORCPT
+        id S231175AbhBEIIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 03:08:07 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:55163 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231453AbhBEIG2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 03:02:49 -0500
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 348A3C061786;
-        Fri,  5 Feb 2021 00:02:09 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        Fri, 5 Feb 2021 03:06:28 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612512301;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=Va8uAp49smeqnrGGNNLNfaP87j7pFRlQR8LmmQQElkQ=;
+        b=dOHRaKDSWJtlH679pm8U/bwiZjEWwOHdjIoQ80vbuPfbU5uG+EWaiM9XCehizlep6q+JAg
+        uxZI2UB2ogknugTInhtG5vY3n60hHjrfIXsM0o2tvcG3WZFdMQaAE2/kcIetXduYL+Ualv
+        gYzN0F9nRMiwkodNWuaHGmIFb+hahdw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-264-_G6phLwKNFSCJM1iRO4bTQ-1; Fri, 05 Feb 2021 03:04:58 -0500
+X-MC-Unique: _G6phLwKNFSCJM1iRO4bTQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DX7DY27djz9sWl;
-        Fri,  5 Feb 2021 19:02:05 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1612512125;
-        bh=b5o08encDDbBpkEHesUtiuTB1D8tQcH/C5EQnOhllIg=;
-        h=Date:From:To:Cc:Subject:From;
-        b=Sukv7t27w50fmoqipoVm3szKxHWXLN6osIPBBQSBOI3sC3kcddVAktGowlqNC4hkJ
-         3qYW+hRb1rY3zfX3aZZZX/m8KV/qO/APGbtglVV6g1t44e7Wq+oIFOFW/A1JBseJon
-         IULksZS9Gj+h0DDyDCal2i7WigYPi6e3JtfmbJv8XPw46UM8ooGJw4RFGjMOkqlQ7d
-         8ubqu0sW/yxzRED2QSXErsHurmCgXH228Y4dPx8kDbHDMHfjf4FsP7p5qGUVJtbmsi
-         g3kHFB7yYi9xbve9dThLmJ9YT6TcNsuQFcTTv2IqKexjzPXQjwNVOn86czZqFBKvYh
-         DOAzmIFt6Xykg==
-Date:   Fri, 5 Feb 2021 19:02:02 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Wei Liu <wei.liu@kernel.org>
-Cc:     Dexuan Cui <decui@microsoft.com>,
-        Lillian Grassin-Drake <ligrassi@microsoft.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Sunil Muthuswamy <sunilmut@microsoft.com>
-Subject: linux-next: manual merge of the hyperv tree with Linus' tree
-Message-ID: <20210205190202.29c2b74e@canb.auug.org.au>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 42264192D785;
+        Fri,  5 Feb 2021 08:04:57 +0000 (UTC)
+Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E2A275D9D3;
+        Fri,  5 Feb 2021 08:04:56 +0000 (UTC)
+From:   Paolo Bonzini <pbonzini@redhat.com>
+To:     torvalds@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Subject: [GIT PULL] KVM fixes for 5.11-rc7
+Date:   Fri,  5 Feb 2021 03:04:56 -0500
+Message-Id: <20210205080456.30446-1-pbonzini@redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_//QenhhjKn_7h_v3V1YKu7Jo";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_//QenhhjKn_7h_v3V1YKu7Jo
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Linus,
 
-Hi all,
+The following changes since commit 9a78e15802a87de2b08dfd1bd88e855201d2c8fa:
 
-Today's linux-next merge of the hyperv tree got a conflict in:
+  KVM: x86: allow KVM_REQ_GET_NESTED_STATE_PAGES outside guest mode for VMX (2021-01-25 18:54:09 -0500)
 
-  arch/x86/hyperv/hv_init.c
+are available in the Git repository at:
 
-between commit:
+  https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
 
-  fff7b5e6ee63 ("x86/hyperv: Initialize clockevents after LAPIC is initiali=
-zed")
+for you to fetch changes up to 031b91a5fe6f1ce61b7617614ddde9ed61e252be:
 
-from Linus' tree and commits:
+  KVM: x86: Set so called 'reserved CR3 bits in LM mask' at vCPU reset (2021-02-04 12:59:28 -0500)
 
-  a06c2e7df586 ("x86/hyperv: extract partition ID from Microsoft Hypervisor=
- if necessary")
-  fa2c411b58fe ("x86/hyperv: implement an MSI domain for root partition")
+----------------------------------------------------------------
+x86 has lots of small bugfixes, mostly one liners.  It's quite late in
+5.11-rc but none of them are related to this merge window; it's just
+bugs coming in at the wrong time.  Of note among the others:
+- "KVM: x86: Allow guests to see MSR_IA32_TSX_CTRL even if tsx=off"
+  (live migration failure seen on distros that hadn't switched to tsx=off
+  right away)
 
-from the hyperv tree.
+ARM:
+- Avoid clobbering extra registers on initialisation
 
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
+----------------------------------------------------------------
+Andrew Scull (1):
+      KVM: arm64: Don't clobber x4 in __do_hyp_init
 
---=20
-Cheers,
-Stephen Rothwell
+Ben Gardon (1):
+      KVM: x86/mmu: Fix TDP MMU zap collapsible SPTEs
 
-diff --cc arch/x86/hyperv/hv_init.c
-index 6375967a8244,5ad48e8033e3..000000000000
---- a/arch/x86/hyperv/hv_init.c
-+++ b/arch/x86/hyperv/hv_init.c
-@@@ -26,9 -26,11 +27,13 @@@
-  #include <linux/cpuhotplug.h>
-  #include <linux/syscore_ops.h>
-  #include <clocksource/hyperv_timer.h>
-+ #include <linux/highmem.h>
-+=20
-+ u64 hv_current_partition_id =3D ~0ull;
-+ EXPORT_SYMBOL_GPL(hv_current_partition_id);
- =20
- +int hyperv_init_cpuhp;
- +
-  void *hv_hypercall_pg;
-  EXPORT_SYMBOL_GPL(hv_hypercall_pg);
- =20
-@@@ -315,25 -339,24 +342,43 @@@ static struct syscore_ops hv_syscore_op
-  	.resume		=3D hv_resume,
-  };
- =20
- +static void (* __initdata old_setup_percpu_clockev)(void);
- +
- +static void __init hv_stimer_setup_percpu_clockev(void)
- +{
- +	/*
- +	 * Ignore any errors in setting up stimer clockevents
- +	 * as we can run with the LAPIC timer as a fallback.
- +	 */
- +	(void)hv_stimer_alloc();
- +
- +	/*
- +	 * Still register the LAPIC timer, because the direct-mode STIMER is
- +	 * not supported by old versions of Hyper-V. This also allows users
- +	 * to switch to LAPIC timer via /sys, if they want to.
- +	 */
- +	if (old_setup_percpu_clockev)
- +		old_setup_percpu_clockev();
- +}
- +
-+ static void __init hv_get_partition_id(void)
-+ {
-+ 	struct hv_get_partition_id *output_page;
-+ 	u64 status;
-+ 	unsigned long flags;
-+=20
-+ 	local_irq_save(flags);
-+ 	output_page =3D *this_cpu_ptr(hyperv_pcpu_output_arg);
-+ 	status =3D hv_do_hypercall(HVCALL_GET_PARTITION_ID, NULL, output_page);
-+ 	if ((status & HV_HYPERCALL_RESULT_MASK) !=3D HV_STATUS_SUCCESS) {
-+ 		/* No point in proceeding if this failed */
-+ 		pr_err("Failed to get partition ID: %lld\n", status);
-+ 		BUG();
-+ 	}
-+ 	hv_current_partition_id =3D output_page->partition_id;
-+ 	local_irq_restore(flags);
-+ }
-+=20
-  /*
-   * This function is to be invoked early in the boot sequence after the
-   * hypervisor has been detected.
-@@@ -408,18 -437,41 +459,45 @@@ void __init hyperv_init(void
- =20
-  	rdmsrl(HV_X64_MSR_HYPERCALL, hypercall_msr.as_uint64);
-  	hypercall_msr.enable =3D 1;
-- 	hypercall_msr.guest_physical_address =3D vmalloc_to_pfn(hv_hypercall_pg);
-- 	wrmsrl(HV_X64_MSR_HYPERCALL, hypercall_msr.as_uint64);
-+=20
-+ 	if (hv_root_partition) {
-+ 		struct page *pg;
-+ 		void *src, *dst;
-+=20
-+ 		/*
-+ 		 * For the root partition, the hypervisor will set up its
-+ 		 * hypercall page. The hypervisor guarantees it will not show
-+ 		 * up in the root's address space. The root can't change the
-+ 		 * location of the hypercall page.
-+ 		 *
-+ 		 * Order is important here. We must enable the hypercall page
-+ 		 * so it is populated with code, then copy the code to an
-+ 		 * executable page.
-+ 		 */
-+ 		wrmsrl(HV_X64_MSR_HYPERCALL, hypercall_msr.as_uint64);
-+=20
-+ 		pg =3D vmalloc_to_page(hv_hypercall_pg);
-+ 		dst =3D kmap(pg);
-+ 		src =3D memremap(hypercall_msr.guest_physical_address << PAGE_SHIFT, PA=
-GE_SIZE,
-+ 				MEMREMAP_WB);
-+ 		BUG_ON(!(src && dst));
-+ 		memcpy(dst, src, HV_HYP_PAGE_SIZE);
-+ 		memunmap(src);
-+ 		kunmap(pg);
-+ 	} else {
-+ 		hypercall_msr.guest_physical_address =3D vmalloc_to_pfn(hv_hypercall_pg=
-);
-+ 		wrmsrl(HV_X64_MSR_HYPERCALL, hypercall_msr.as_uint64);
-+ 	}
- =20
-  	/*
- -	 * Ignore any errors in setting up stimer clockevents
- -	 * as we can run with the LAPIC timer as a fallback.
- +	 * hyperv_init() is called before LAPIC is initialized: see
- +	 * apic_intr_mode_init() -> x86_platform.apic_post_init() and
- +	 * apic_bsp_setup() -> setup_local_APIC(). The direct-mode STIMER
- +	 * depends on LAPIC, so hv_stimer_alloc() should be called from
- +	 * x86_init.timers.setup_percpu_clockev.
-  	 */
- -	(void)hv_stimer_alloc();
- +	old_setup_percpu_clockev =3D x86_init.timers.setup_percpu_clockev;
- +	x86_init.timers.setup_percpu_clockev =3D hv_stimer_setup_percpu_clockev;
- =20
-  	hv_apic_init();
- =20
-@@@ -427,7 -479,20 +505,22 @@@
- =20
-  	register_syscore_ops(&hv_syscore_ops);
- =20
- +	hyperv_init_cpuhp =3D cpuhp;
-++
-+ 	if (cpuid_ebx(HYPERV_CPUID_FEATURES) & HV_ACCESS_PARTITION_ID)
-+ 		hv_get_partition_id();
-+=20
-+ 	BUG_ON(hv_root_partition && hv_current_partition_id =3D=3D ~0ull);
-+=20
-+ #ifdef CONFIG_PCI_MSI
-+ 	/*
-+ 	 * If we're running as root, we want to create our own PCI MSI domain.
-+ 	 * We can't set this in hv_pci_init because that would be too late.
-+ 	 */
-+ 	if (hv_root_partition)
-+ 		x86_init.irqs.create_pci_msi_domain =3D hv_create_pci_msi_domain;
-+ #endif
-+=20
-  	return;
- =20
-  remove_cpuhp_state:
+Michael Roth (1):
+      KVM: x86: fix CPUID entries returned by KVM_GET_CPUID2 ioctl
 
---Sig_//QenhhjKn_7h_v3V1YKu7Jo
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+Paolo Bonzini (3):
+      Merge tag 'kvmarm-fixes-5.11-3' of git://git.kernel.org/.../kvmarm/kvmarm into HEAD
+      KVM: x86: Allow guests to see MSR_IA32_TSX_CTRL even if tsx=off
+      KVM: x86: cleanup CR3 reserved bits checks
 
------BEGIN PGP SIGNATURE-----
+Peter Gonda (1):
+      Fix unsynchronized access to sev members through svm_register_enc_region
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAc+3oACgkQAVBC80lX
-0GyvOgf+KKnzkfdO0KLIEhChM+ISB46wJRi3FmMbzGQd+XEQSXBieQRxD0rnOAsU
-zLFeUS66MX/qO8mOShgIYsLN8XlQZYn0NI0Gnr58AZWwaEywhV6ljyDp7zb+S2rR
-2+EyHJlXiq7Z2JD2PLvdMLj3g5DEpO/Nv2pTY76Q6d7P44X9ABOeyJA0LzZOz3mz
-vQ7jb8olVF2z9u26Z6rDnJ+R0d8zhK7SdsrerEHOSNpwHC7J8Tp4MNablitRp1Ee
-gv2bTHl7GEDzAhg/lK/NjHaFbWMIyDK/DMNtxrO83b/cM7MjwYlhyVLovkXPsC+G
-DY7wem+PqwBXR+5xIBhVFcTIxGPBhQ==
-=sinR
------END PGP SIGNATURE-----
+Sean Christopherson (3):
+      KVM: x86: Update emulator context mode if SYSENTER xfers to 64-bit mode
+      KVM: SVM: Treat SVM as unsupported when running as an SEV guest
+      KVM: x86: Set so called 'reserved CR3 bits in LM mask' at vCPU reset
 
---Sig_//QenhhjKn_7h_v3V1YKu7Jo--
+Vitaly Kuznetsov (1):
+      KVM: x86: Supplement __cr4_reserved_bits() with X86_FEATURE_PCID check
+
+Yu Zhang (1):
+      KVM: Documentation: Fix documentation for nested.
+
+Zheng Zhan Liang (1):
+      KVM/x86: assign hva with the right value to vm_munmap the pages
+
+ Documentation/virt/kvm/nested-vmx.rst            |  6 +++--
+ Documentation/virt/kvm/running-nested-guests.rst |  2 +-
+ arch/arm64/kvm/hyp/nvhe/hyp-init.S               | 20 ++++++++-------
+ arch/x86/kvm/cpuid.c                             |  2 +-
+ arch/x86/kvm/emulate.c                           |  2 ++
+ arch/x86/kvm/mmu/tdp_mmu.c                       |  6 ++---
+ arch/x86/kvm/svm/nested.c                        | 13 +++-------
+ arch/x86/kvm/svm/sev.c                           | 17 +++++++------
+ arch/x86/kvm/svm/svm.c                           |  5 ++++
+ arch/x86/kvm/svm/svm.h                           |  3 ---
+ arch/x86/kvm/vmx/vmx.c                           | 17 ++++++++++---
+ arch/x86/kvm/x86.c                               | 31 ++++++++++++++++--------
+ arch/x86/kvm/x86.h                               |  2 ++
+ arch/x86/mm/mem_encrypt.c                        |  1 +
+ 14 files changed, 77 insertions(+), 50 deletions(-)
+
