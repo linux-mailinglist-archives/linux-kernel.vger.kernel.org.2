@@ -2,201 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E847310E50
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 18:07:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE407310E6E
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 18:17:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233120AbhBEPZI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 10:25:08 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59688 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233169AbhBEPUa (ORCPT
+        id S233305AbhBEPbm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 10:31:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56260 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233241AbhBEP1Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 10:20:30 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612544447;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=NBcsouZewuvk8KZODy/tJjYpoCFexLf8th1hdmd2fdU=;
-        b=jBGc86R/zdSHU30Sa90TFlaf1YCdIAFMzYGzHI/SQ/XojxcN6AqAeTQs9m+FcuRPPkq0Q7
-        C9YH4ur8QsI5oYQMrPvDJu2K+yaxZDWP8RjPCErRDBYRo9qmpXtFbbIrVJMD++3Qiyb/0z
-        ZALZJG+8ZYFpS7uA/Eq/0cjZQBefKYQ=
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
- [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-570-kJMfH5zLOUmOMKWuBYZudQ-1; Fri, 05 Feb 2021 11:53:40 -0500
-X-MC-Unique: kJMfH5zLOUmOMKWuBYZudQ-1
-Received: by mail-qk1-f198.google.com with SMTP id e5so6364942qkn.2
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 08:53:40 -0800 (PST)
+        Fri, 5 Feb 2021 10:27:16 -0500
+Received: from mail-ej1-x64a.google.com (mail-ej1-x64a.google.com [IPv6:2a00:1450:4864:20::64a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6C6EC061797
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 08:58:44 -0800 (PST)
+Received: by mail-ej1-x64a.google.com with SMTP id k3so7128070ejr.16
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 08:58:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=4GtWCwQDeimvfkN1mTaSptGywDj7eww9UKGtvZYIBUg=;
+        b=KBklsWedQU4WWmG49UKX496WNk8xQGJXnMQCKxME7lEcweuC3XA0fTMug2U9c8htls
+         2c++B32BAC1MtXZo6OZjeHeOFZ90sT5JzwAbZwjtZM23BcbfMBEDUhKcH3Eo/LpIuzKm
+         4wO2OrG5iyTZ+H4nQDjcePBPjpv1CBp8AvOiZyWQ4sJK10khL4FY9ERkg96LxoLSNzQy
+         RlvTjuSB61dpR8aCxO9crcD6BTIZ1RdjWWulg1OvWVSiYD4JhbxMJuB1ooMwL4gxuaJM
+         RcSD3HGmSkmx7pB+WRYezM+yeaJKpFC23Z1xOeQQOjae9LYy9OwS6eKpRR6qodl5sB9S
+         cAjw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=NBcsouZewuvk8KZODy/tJjYpoCFexLf8th1hdmd2fdU=;
-        b=S//0PGrQJaNNsA9crVewAnOTHaLIhoNcNSvDwqeLG4Nkne5N82bhxRbSyMkLXRBdHO
-         CVaTwzi2OrZigICXSACsngF8yxAeDdPZKxodEpnyImv9x0yJgVAPwEkpLA6mYh0PUfpR
-         BTAQ3z1TcoaTcwg116MfyKiNfCV0jsVmKb4ABG7fIu//GyzoC8qdFHzepNpTRXzjCQdv
-         /712D3Ywtao/+yK3xqZQFlfr6zrNNQmCjSWBsd25fNY0PQW91Rho9DmjalNzL7kMbca5
-         hcXT9p5O5dS0HP+z94fqk+1PNA5hfc4jmYi6pi+SUAHFUsDqWaTuWcYbx7zDYrzrmmSi
-         o9YQ==
-X-Gm-Message-State: AOAM533GlbMOcCL1/Tc1nSxYgZMCTGXgICj9mbtZDZJNSqMbJ1tdwjuD
-        8PhHYtFswpvXF+Ww+Np0JP4Sx9V8sIB52jtoc499qxjGsSgp6PVXxgrhFsrRsJSyGvEV7S7I2EE
-        8AuwxqqZOZqIHgS2HIY6MwX5c
-X-Received: by 2002:ac8:5c0a:: with SMTP id i10mr4900099qti.239.1612544019908;
-        Fri, 05 Feb 2021 08:53:39 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzFpCiS7vlmmziN/8ahxv+juOeWp1Z1zPJrlPr5nMSaR9n55md55zNusgN1cZRy2ABzzKQMqw==
-X-Received: by 2002:ac8:5c0a:: with SMTP id i10mr4900071qti.239.1612544019658;
-        Fri, 05 Feb 2021 08:53:39 -0800 (PST)
-Received: from xz-x1.redhat.com (bras-vprn-toroon474qw-lp130-20-174-93-89-182.dsl.bell.ca. [174.93.89.182])
-        by smtp.gmail.com with ESMTPSA id 12sm9618893qkg.39.2021.02.05.08.53.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Feb 2021 08:53:39 -0800 (PST)
-From:   Peter Xu <peterx@redhat.com>
-To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Cc:     Gal Pressman <galpress@amazon.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Kirill Shutemov <kirill@shutemov.name>,
-        Jann Horn <jannh@google.com>,
-        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        Mike Kravetz <mike.kravetz@oracle.com>, peterx@redhat.com,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Wei Zhang <wzam@amazon.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: [PATCH v3 5/5] hugetlb: Do early cow when page pinned on src mm
-Date:   Fri,  5 Feb 2021 11:54:06 -0500
-Message-Id: <20210205165406.4655-6-peterx@redhat.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210205165406.4655-1-peterx@redhat.com>
-References: <20210205165406.4655-1-peterx@redhat.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=4GtWCwQDeimvfkN1mTaSptGywDj7eww9UKGtvZYIBUg=;
+        b=lWWx/PLDQ7c1zcLgvK3Go77r2EDXfxaztcpoLh142UkKu7WHnkmCBJPVJDBbA1CPHH
+         RYvqaFnLHL2g57wtV7QQOtFYpJ8FWW0QiZb/mRhkPnwo+j5oXru2Mw1h5mm0QLCjZVJ3
+         dUPAGmA+5iCD6Uv1M3PiCaTMg35K7g7Uge2yZiIm6Si1rEGb/fsiV2ofmgZ0ZXjVCCLs
+         u0HgygV9i5UoAjd6/5yFSQcxug9iQ3NnHmc+3j2RBGBcMsrackaYVL6T3E+aZk5vYkEL
+         yb0kZB2Vx4nnlxC1NxXHIvnp8G4UlW9FzvfgrTgLhyJWKFO+JSJVVzyylWYmQiHd+T/l
+         J3zw==
+X-Gm-Message-State: AOAM533xbcKzphiv5wEoBM1LHBLbK5Ze376SkpslHp+atJLtUgCZxk6f
+        BKgGK+MZ6h3wCBrj2dRRWvt8adec6w==
+X-Google-Smtp-Source: ABdhPJyg+Z53MiQXPBUdbUaO+0V+VxVmGSyDZvALt8fHclQXS0owRQ1TA0F83a2RbOjfnAR1jb/VTUBYPw==
+Sender: "elver via sendgmr" <elver@elver.muc.corp.google.com>
+X-Received: from elver.muc.corp.google.com ([2a00:79e0:15:13:c86d:8e60:951e:3880])
+ (user=elver job=sendgmr) by 2002:a50:e14d:: with SMTP id i13mr2777193edl.106.1612544323216;
+ Fri, 05 Feb 2021 08:58:43 -0800 (PST)
+Date:   Fri,  5 Feb 2021 17:58:35 +0100
+Message-Id: <20210205165835.821714-1-elver@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
+Subject: [PATCH] blk-mq-debugfs: mark concurrent stats counters as data races
+From:   Marco Elver <elver@google.com>
+To:     elver@google.com
+Cc:     linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
+        axboe@kernel.dk, linux-block@vger.kernel.org,
+        syzbot+2c308b859c8c103aae53@syzkaller.appspotmail.com,
+        syzbot+44f9b37d2de57637dbfd@syzkaller.appspotmail.com,
+        syzbot+49a9bcf457723ecaf1cf@syzkaller.appspotmail.com,
+        syzbot+b9914ed52d5b1d63f71d@syzkaller.appspotmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is the last missing piece of the COW-during-fork effort when there're
-pinned pages found.  One can reference 70e806e4e645 ("mm: Do early cow for
-pinned pages during fork() for ptes", 2020-09-27) for more information, since
-we do similar things here rather than pte this time, but just for hugetlb.
+KCSAN reports that several of the blk-mq debugfs stats counters are
+updated concurrently. Because blk-mq-debugfs does not demand precise
+stats counters, potential lossy updates due to data races can be
+tolerated. Therefore, mark and comment the accesses accordingly.
 
-Signed-off-by: Peter Xu <peterx@redhat.com>
+Reported-by: syzbot+2c308b859c8c103aae53@syzkaller.appspotmail.com
+Reported-by: syzbot+44f9b37d2de57637dbfd@syzkaller.appspotmail.com
+Reported-by: syzbot+49a9bcf457723ecaf1cf@syzkaller.appspotmail.com
+Reported-by: syzbot+b9914ed52d5b1d63f71d@syzkaller.appspotmail.com
+Signed-off-by: Marco Elver <elver@google.com>
 ---
- mm/hugetlb.c | 66 ++++++++++++++++++++++++++++++++++++++++++++++++----
- 1 file changed, 62 insertions(+), 4 deletions(-)
+Note: These 4 data races are among the most frequently encountered by
+syzbot:
 
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index 620700f05ff4..7c1a0ecc130e 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -3727,6 +3727,18 @@ static bool is_hugetlb_entry_hwpoisoned(pte_t pte)
- 		return false;
+  https://syzkaller.appspot.com/bug?id=7994761095b9677fb8bccaf41a77a82d5f444839
+  https://syzkaller.appspot.com/bug?id=08193ca23b80ec0e9bcbefba039162cff4f5d7a3
+  https://syzkaller.appspot.com/bug?id=7c51c15438f963024c4a4b3a6d7e119f4bdb2199
+  https://syzkaller.appspot.com/bug?id=6436cb57d04e8c5d6f0f40926d7511232aa2b5d4
+---
+ block/blk-mq-debugfs.c | 22 ++++++++++++----------
+ block/blk-mq-sched.c   |  3 ++-
+ block/blk-mq.c         |  9 ++++++---
+ 3 files changed, 20 insertions(+), 14 deletions(-)
+
+diff --git a/block/blk-mq-debugfs.c b/block/blk-mq-debugfs.c
+index 4de03da9a624..687d201f0d7b 100644
+--- a/block/blk-mq-debugfs.c
++++ b/block/blk-mq-debugfs.c
+@@ -554,15 +554,16 @@ static int hctx_dispatched_show(void *data, struct seq_file *m)
+ 	struct blk_mq_hw_ctx *hctx = data;
+ 	int i;
+ 
+-	seq_printf(m, "%8u\t%lu\n", 0U, hctx->dispatched[0]);
++	seq_printf(m, "%8u\t%lu\n", 0U, data_race(hctx->dispatched[0]));
+ 
+ 	for (i = 1; i < BLK_MQ_MAX_DISPATCH_ORDER - 1; i++) {
+ 		unsigned int d = 1U << (i - 1);
+ 
+-		seq_printf(m, "%8u\t%lu\n", d, hctx->dispatched[i]);
++		seq_printf(m, "%8u\t%lu\n", d, data_race(hctx->dispatched[i]));
+ 	}
+ 
+-	seq_printf(m, "%8u+\t%lu\n", 1U << (i - 1), hctx->dispatched[i]);
++	seq_printf(m, "%8u+\t%lu\n", 1U << (i - 1),
++		   data_race(hctx->dispatched[i]));
+ 	return 0;
  }
  
-+static void
-+hugetlb_install_page(struct vm_area_struct *vma, pte_t *ptep, unsigned long addr,
-+		     struct page *new_page)
-+{
-+	__SetPageUptodate(new_page);
-+	set_huge_pte_at(vma->vm_mm, addr, ptep, make_huge_pte(vma, new_page, 1));
-+	hugepage_add_new_anon_rmap(new_page, vma, addr);
-+	hugetlb_count_add(pages_per_huge_page(hstate_vma(vma)), vma->vm_mm);
-+	ClearHPageRestoreReserve(new_page);
-+	SetHPageMigratable(new_page);
-+}
-+
- int copy_hugetlb_page_range(struct mm_struct *dst, struct mm_struct *src,
- 			    struct vm_area_struct *vma)
+@@ -573,7 +574,7 @@ static ssize_t hctx_dispatched_write(void *data, const char __user *buf,
+ 	int i;
+ 
+ 	for (i = 0; i < BLK_MQ_MAX_DISPATCH_ORDER; i++)
+-		hctx->dispatched[i] = 0;
++		data_race(hctx->dispatched[i] = 0);
+ 	return count;
+ }
+ 
+@@ -581,7 +582,7 @@ static int hctx_queued_show(void *data, struct seq_file *m)
  {
-@@ -3736,6 +3748,7 @@ int copy_hugetlb_page_range(struct mm_struct *dst, struct mm_struct *src,
- 	int cow = is_cow_mapping(vma->vm_flags);
- 	struct hstate *h = hstate_vma(vma);
- 	unsigned long sz = huge_page_size(h);
-+	unsigned long npages = pages_per_huge_page(h);
- 	struct address_space *mapping = vma->vm_file->f_mapping;
- 	struct mmu_notifier_range range;
- 	int ret = 0;
-@@ -3784,6 +3797,7 @@ int copy_hugetlb_page_range(struct mm_struct *dst, struct mm_struct *src,
- 		spin_lock_nested(src_ptl, SINGLE_DEPTH_NESTING);
- 		entry = huge_ptep_get(src_pte);
- 		dst_entry = huge_ptep_get(dst_pte);
-+again:
- 		if (huge_pte_none(entry) || !huge_pte_none(dst_entry)) {
- 			/*
- 			 * Skip if src entry none.  Also, skip in the
-@@ -3807,6 +3821,52 @@ int copy_hugetlb_page_range(struct mm_struct *dst, struct mm_struct *src,
- 			}
- 			set_huge_swap_pte_at(dst, addr, dst_pte, entry, sz);
- 		} else {
-+			entry = huge_ptep_get(src_pte);
-+			ptepage = pte_page(entry);
-+			get_page(ptepage);
-+
-+			/*
-+			 * This is a rare case where we see pinned hugetlb
-+			 * pages while they're prone to COW.  We need to do the
-+			 * COW earlier during fork.
-+			 *
-+			 * When pre-allocating the page or copying data, we
-+			 * need to be without the pgtable locks since we could
-+			 * sleep during the process.
-+			 */
-+			if (unlikely(page_needs_cow_for_dma(vma, ptepage))) {
-+				pte_t src_pte_old = entry;
-+				struct page *new;
-+
-+				spin_unlock(src_ptl);
-+				spin_unlock(dst_ptl);
-+				/* Do not use reserve as it's private owned */
-+				new = alloc_huge_page(vma, addr, 1);
-+				if (IS_ERR(new)) {
-+					put_page(ptepage);
-+					ret = PTR_ERR(new);
-+					break;
-+				}
-+				copy_user_huge_page(new, ptepage, addr, vma,
-+						    npages);
-+				put_page(ptepage);
-+
-+				/* Install the new huge page if src pte stable */
-+				dst_ptl = huge_pte_lock(h, dst, dst_pte);
-+				src_ptl = huge_pte_lockptr(h, src, src_pte);
-+				spin_lock_nested(src_ptl, SINGLE_DEPTH_NESTING);
-+				entry = huge_ptep_get(src_pte);
-+				if (!pte_same(src_pte_old, entry)) {
-+					put_page(new);
-+					/* dst_entry won't change as in child */
-+					goto again;
-+				}
-+				hugetlb_install_page(vma, dst_pte, addr, new);
-+				spin_unlock(src_ptl);
-+				spin_unlock(dst_ptl);
-+				continue;
-+			}
-+
- 			if (cow) {
- 				/*
- 				 * No need to notify as we are downgrading page
-@@ -3817,12 +3877,10 @@ int copy_hugetlb_page_range(struct mm_struct *dst, struct mm_struct *src,
- 				 */
- 				huge_ptep_set_wrprotect(src, addr, src_pte);
- 			}
--			entry = huge_ptep_get(src_pte);
--			ptepage = pte_page(entry);
--			get_page(ptepage);
-+
- 			page_dup_rmap(ptepage, true);
- 			set_huge_pte_at(dst, addr, dst_pte, entry);
--			hugetlb_count_add(pages_per_huge_page(h), dst);
-+			hugetlb_count_add(npages, dst);
+ 	struct blk_mq_hw_ctx *hctx = data;
+ 
+-	seq_printf(m, "%lu\n", hctx->queued);
++	seq_printf(m, "%lu\n", data_race(hctx->queued));
+ 	return 0;
+ }
+ 
+@@ -590,7 +591,7 @@ static ssize_t hctx_queued_write(void *data, const char __user *buf,
+ {
+ 	struct blk_mq_hw_ctx *hctx = data;
+ 
+-	hctx->queued = 0;
++	data_race(hctx->queued = 0);
+ 	return count;
+ }
+ 
+@@ -598,7 +599,7 @@ static int hctx_run_show(void *data, struct seq_file *m)
+ {
+ 	struct blk_mq_hw_ctx *hctx = data;
+ 
+-	seq_printf(m, "%lu\n", hctx->run);
++	seq_printf(m, "%lu\n", data_race(hctx->run));
+ 	return 0;
+ }
+ 
+@@ -607,7 +608,7 @@ static ssize_t hctx_run_write(void *data, const char __user *buf, size_t count,
+ {
+ 	struct blk_mq_hw_ctx *hctx = data;
+ 
+-	hctx->run = 0;
++	data_race(hctx->run = 0);
+ 	return count;
+ }
+ 
+@@ -702,7 +703,8 @@ static int ctx_completed_show(void *data, struct seq_file *m)
+ {
+ 	struct blk_mq_ctx *ctx = data;
+ 
+-	seq_printf(m, "%lu %lu\n", ctx->rq_completed[1], ctx->rq_completed[0]);
++	seq_printf(m, "%lu %lu\n", data_race(ctx->rq_completed[1]),
++		   data_race(ctx->rq_completed[0]));
+ 	return 0;
+ }
+ 
+@@ -711,7 +713,7 @@ static ssize_t ctx_completed_write(void *data, const char __user *buf,
+ {
+ 	struct blk_mq_ctx *ctx = data;
+ 
+-	ctx->rq_completed[0] = ctx->rq_completed[1] = 0;
++	data_race(ctx->rq_completed[0] = ctx->rq_completed[1] = 0);
+ 	return count;
+ }
+ 
+diff --git a/block/blk-mq-sched.c b/block/blk-mq-sched.c
+index deff4e826e23..71a49835e89a 100644
+--- a/block/blk-mq-sched.c
++++ b/block/blk-mq-sched.c
+@@ -332,7 +332,8 @@ void blk_mq_sched_dispatch_requests(struct blk_mq_hw_ctx *hctx)
+ 	if (unlikely(blk_mq_hctx_stopped(hctx) || blk_queue_quiesced(q)))
+ 		return;
+ 
+-	hctx->run++;
++	/* data race ok: hctx->run only for debugfs stats. */
++	data_race(hctx->run++);
+ 
+ 	/*
+ 	 * A return of -EAGAIN is an indication that hctx->dispatch is not
+diff --git a/block/blk-mq.c b/block/blk-mq.c
+index f285a9123a8b..1d8970602032 100644
+--- a/block/blk-mq.c
++++ b/block/blk-mq.c
+@@ -341,7 +341,8 @@ static struct request *blk_mq_rq_ctx_init(struct blk_mq_alloc_data *data,
  		}
- 		spin_unlock(src_ptl);
- 		spin_unlock(dst_ptl);
+ 	}
+ 
+-	data->hctx->queued++;
++	/* data race ok: hctx->queued only for debugfs stats. */
++	data_race(data->hctx->queued++);
+ 	return rq;
+ }
+ 
+@@ -519,7 +520,8 @@ void blk_mq_free_request(struct request *rq)
+ 		}
+ 	}
+ 
+-	ctx->rq_completed[rq_is_sync(rq)]++;
++	/* data race ok: ctx->rq_completed only for debugfs stats. */
++	data_race(ctx->rq_completed[rq_is_sync(rq)]++);
+ 	if (rq->rq_flags & RQF_MQ_INFLIGHT)
+ 		__blk_mq_dec_active_requests(hctx);
+ 
+@@ -1419,7 +1421,8 @@ bool blk_mq_dispatch_rq_list(struct blk_mq_hw_ctx *hctx, struct list_head *list,
+ 	if (!list_empty(&zone_list))
+ 		list_splice_tail_init(&zone_list, list);
+ 
+-	hctx->dispatched[queued_to_index(queued)]++;
++	/* data race ok: hctx->dispatched only for debugfs stats. */
++	data_race(hctx->dispatched[queued_to_index(queued)]++);
+ 
+ 	/* If we didn't flush the entire list, we could have told the driver
+ 	 * there was more coming, but that turned out to be a lie.
+
+base-commit: 61556703b610a104de324e4f061dc6cf7b218b46
 -- 
-2.26.2
+2.30.0.365.g02bc693789-goog
 
