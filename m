@@ -2,182 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 132203117A5
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 01:11:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DCE753117A8
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 01:11:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231261AbhBFAJ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 19:09:27 -0500
-Received: from mga11.intel.com ([192.55.52.93]:50761 "EHLO mga11.intel.com"
+        id S231421AbhBFAK0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 19:10:26 -0500
+Received: from mga12.intel.com ([192.55.52.136]:60933 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229466AbhBEN36 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 08:29:58 -0500
-IronPort-SDR: P4CHLGU32cUGboFJJxqw7qAb5SIftnQfYweKWxnVkMeoRBQhxLHoyP+atqYUkVD3FJ8hkUDheA
- UDYnzgC783Dw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9885"; a="177925968"
+        id S229959AbhBEN2w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 08:28:52 -0500
+IronPort-SDR: bddQPWHzeoSAMSHsOqoxWeS/RdT8900zcMB6YvYOpHqkI72WAtuVnsB1vTmApN3vPfD9qvbHRd
+ SA16q4rA4zqw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9885"; a="160589439"
 X-IronPort-AV: E=Sophos;i="5.81,154,1610438400"; 
-   d="scan'208";a="177925968"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2021 05:24:24 -0800
-IronPort-SDR: aS+rBOk+j+5+bJwejQHF/loJJtOuS4YLhMerS8SYm8LqmL6nEu9donoeOafigRuSS/x9xfrC4v
- hWdqWkg2JXow==
-X-ExtLoop1: 1
+   d="scan'208";a="160589439"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2021 05:24:56 -0800
+IronPort-SDR: exWrynaxi8nwsAbdPFhPyxc/U2dfzuhauTirkVS6W2IifPhiOPeSDsPekze/NI4HnzifAq77Ov
+ 12UU4uW5QArw==
 X-IronPort-AV: E=Sophos;i="5.81,154,1610438400"; 
-   d="scan'208";a="434448918"
-Received: from stinkbox.fi.intel.com (HELO stinkbox) ([10.237.72.171])
-  by orsmga001.jf.intel.com with SMTP; 05 Feb 2021 05:24:21 -0800
-Received: by stinkbox (sSMTP sendmail emulation); Fri, 05 Feb 2021 15:24:20 +0200
-Date:   Fri, 5 Feb 2021 15:24:20 +0200
-From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
-To:     Sam McNally <sammc@chromium.org>
-Cc:     Hans Verkuil <hverkuil@xs4all.nl>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Hans Verkuil <hans.verkuil@cisco.com>,
-        dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH v3 2/4] drm_dp_mst_topology: use correct AUX channel
-Message-ID: <YB1HBDEB5/fefQzi@intel.com>
-References: <20200923121320.v3.1.I8693156f555875e5c8342e86ab37ce968dfdd277@changeid>
- <20200923121320.v3.2.Ided0ab0808c4908238bd2eb9ebb6ffb2c9312789@changeid>
- <YBh9HvbIRF4zd+AK@intel.com>
- <2a7c2edc-b83c-dccf-487d-1415b4bc23ff@xs4all.nl>
- <CAJqEsoCOJmS5aVb5du09tXUi7UUKVBQDPe5KTdcBiDr8A7kSYA@mail.gmail.com>
+   d="scan'208";a="393862627"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2021 05:24:53 -0800
+Received: from punajuuri.localdomain (punajuuri.localdomain [192.168.240.130])
+        by paasikivi.fi.intel.com (Postfix) with ESMTP id 822D7205D2;
+        Fri,  5 Feb 2021 15:24:51 +0200 (EET)
+Received: from sailus by punajuuri.localdomain with local (Exim 4.92)
+        (envelope-from <sakari.ailus@linux.intel.com>)
+        id 1l816f-0005GE-9P; Fri, 05 Feb 2021 15:25:05 +0200
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     linux-i2c@vger.kernel.org
+Cc:     Wolfram Sang <wsa@the-dreams.de>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        rajmohan.mani@intel.com, Tomasz Figa <tfiga@chromium.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Bingbu Cao <bingbu.cao@intel.com>,
+        Chiranjeevi Rapolu <chiranjeevi.rapolu@intel.com>,
+        Hyungwoo Yang <hyungwoo.yang@intel.com>,
+        linux-media@vger.kernel.org
+Subject: [PATCH v10 1/7] ACPI: scan: Obtain device's desired enumeration power state
+Date:   Fri,  5 Feb 2021 15:24:59 +0200
+Message-Id: <20210205132505.20173-2-sakari.ailus@linux.intel.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210205132505.20173-1-sakari.ailus@linux.intel.com>
+References: <20210205132505.20173-1-sakari.ailus@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJqEsoCOJmS5aVb5du09tXUi7UUKVBQDPe5KTdcBiDr8A7kSYA@mail.gmail.com>
-X-Patchwork-Hint: comment
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 05, 2021 at 04:17:51PM +1100, Sam McNally wrote:
-> On Thu, 4 Feb 2021 at 21:19, Hans Verkuil <hverkuil@xs4all.nl> wrote:
-> >
-> > On 01/02/2021 23:13, Ville Syrjälä wrote:
-> > > On Wed, Sep 23, 2020 at 12:13:53PM +1000, Sam McNally wrote:
-> > >> From: Hans Verkuil <hans.verkuil@cisco.com>
-> > >>
-> > >> For adapters behind an MST hub use the correct AUX channel.
-> > >>
-> > >> Signed-off-by: Hans Verkuil <hans.verkuil@cisco.com>
-> > >> [sammc@chromium.org: rebased, removing redundant changes]
-> > >> Signed-off-by: Sam McNally <sammc@chromium.org>
-> > >> ---
-> > >>
-> > >> (no changes since v1)
-> > >>
-> > >>  drivers/gpu/drm/drm_dp_mst_topology.c | 36 +++++++++++++++++++++++++++
-> > >>  1 file changed, 36 insertions(+)
-> > >>
-> > >> diff --git a/drivers/gpu/drm/drm_dp_mst_topology.c b/drivers/gpu/drm/drm_dp_mst_topology.c
-> > >> index 15b6cc39a754..0d753201adbd 100644
-> > >> --- a/drivers/gpu/drm/drm_dp_mst_topology.c
-> > >> +++ b/drivers/gpu/drm/drm_dp_mst_topology.c
-> > >> @@ -2255,6 +2255,9 @@ drm_dp_mst_topology_unlink_port(struct drm_dp_mst_topology_mgr *mgr,
-> > >>      drm_dp_mst_topology_put_port(port);
-> > >>  }
-> > >>
-> > >> +static ssize_t
-> > >> +drm_dp_mst_aux_transfer(struct drm_dp_aux *aux, struct drm_dp_aux_msg *msg);
-> > >> +
-> > >>  static struct drm_dp_mst_port *
-> > >>  drm_dp_mst_add_port(struct drm_device *dev,
-> > >>                  struct drm_dp_mst_topology_mgr *mgr,
-> > >> @@ -2271,9 +2274,13 @@ drm_dp_mst_add_port(struct drm_device *dev,
-> > >>      port->port_num = port_number;
-> > >>      port->mgr = mgr;
-> > >>      port->aux.name = "DPMST";
-> > >> +    mutex_init(&port->aux.hw_mutex);
-> > >> +    mutex_init(&port->aux.cec.lock);
-> > >>      port->aux.dev = dev->dev;
-> > >>      port->aux.is_remote = true;
-> > >>
-> > >> +    port->aux.transfer = drm_dp_mst_aux_transfer;
-> > >> +
-> > >
-> > > This was supposed to be handled via higher levels checking for
-> > > is_remote==true.
-> >
-> > Ah, I suspect this patch can be dropped entirely: it predates commit 2f221a5efed4
-> > ("drm/dp_mst: Add MST support to DP DPCD R/W functions").
-> >
-> > It looks like that commit basically solved what this older patch attempts to do
-> > as well.
-> >
-> > Sam, can you test if it works without this patch?
-> 
-> It almost just works; drm_dp_cec uses whether aux.transfer is non-null
-> to filter out non-DP connectors. Using aux.is_remote as another signal
-> indicating a DP connector seems plausible. We can drop this patch.
+Store a device's desired enumeration power state in struct
+acpi_device_power during acpi_device object's initialisation.
 
-Why would anyone even call this stuff on a non-DP connector?
-And where did they even get the struct drm_dp_aux to do so?
+Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+---
+ drivers/acpi/scan.c     | 4 ++++
+ include/acpi/acpi_bus.h | 1 +
+ 2 files changed, 5 insertions(+)
 
-> Thanks all!
-> >
-> > Regards,
-> >
-> >         Hans
-> >
-> > >
-> > >>      /* initialize the MST downstream port's AUX crc work queue */
-> > >>      drm_dp_remote_aux_init(&port->aux);
-> > >>
-> > >> @@ -3503,6 +3510,35 @@ static int drm_dp_send_up_ack_reply(struct drm_dp_mst_topology_mgr *mgr,
-> > >>      return 0;
-> > >>  }
-> > >>
-> > >> +static ssize_t
-> > >> +drm_dp_mst_aux_transfer(struct drm_dp_aux *aux, struct drm_dp_aux_msg *msg)
-> > >> +{
-> > >> +    struct drm_dp_mst_port *port =
-> > >> +            container_of(aux, struct drm_dp_mst_port, aux);
-> > >> +    int ret;
-> > >> +
-> > >> +    switch (msg->request & ~DP_AUX_I2C_MOT) {
-> > >> +    case DP_AUX_NATIVE_WRITE:
-> > >> +    case DP_AUX_I2C_WRITE:
-> > >> +    case DP_AUX_I2C_WRITE_STATUS_UPDATE:
-> > >> +            ret = drm_dp_send_dpcd_write(port->mgr, port, msg->address,
-> > >> +                                         msg->size, msg->buffer);
-> > >
-> > > That doesn't make sense to me. I2c writes and DPCD writes
-> > > are definitely not the same thing.
-> > >
-> > > aux->transfer is a very low level thing. I don't think it's the
-> > > correct level of abstraction for sideband.
-> > >
-> > >> +            break;
-> > >> +
-> > >> +    case DP_AUX_NATIVE_READ:
-> > >> +    case DP_AUX_I2C_READ:
-> > >> +            ret = drm_dp_send_dpcd_read(port->mgr, port, msg->address,
-> > >> +                                        msg->size, msg->buffer);
-> > >> +            break;
-> > >> +
-> > >> +    default:
-> > >> +            ret = -EINVAL;
-> > >> +            break;
-> > >> +    }
-> > >> +
-> > >> +    return ret;
-> > >> +}
-> > >> +
-> > >>  static int drm_dp_get_vc_payload_bw(u8 dp_link_bw, u8  dp_link_count)
-> > >>  {
-> > >>      if (dp_link_bw == 0 || dp_link_count == 0)
-> > >> --
-> > >> 2.28.0.681.g6f77f65b4e-goog
-> > >>
-> > >> _______________________________________________
-> > >> dri-devel mailing list
-> > >> dri-devel@lists.freedesktop.org
-> > >> https://lists.freedesktop.org/mailman/listinfo/dri-devel
-> > >
-> >
-
+diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
+index 1d7a02ee45e05..cdff32f297122 100644
+--- a/drivers/acpi/scan.c
++++ b/drivers/acpi/scan.c
+@@ -987,6 +987,7 @@ static void acpi_bus_init_power_state(struct acpi_device *device, int state)
+ 
+ static void acpi_bus_get_power_flags(struct acpi_device *device)
+ {
++	unsigned long long dse = ACPI_STATE_D0;
+ 	u32 i;
+ 
+ 	/* Presence of _PS0|_PR0 indicates 'power manageable' */
+@@ -1008,6 +1009,9 @@ static void acpi_bus_get_power_flags(struct acpi_device *device)
+ 	if (acpi_has_method(device->handle, "_DSW"))
+ 		device->power.flags.dsw_present = 1;
+ 
++	acpi_evaluate_integer(device->handle, "_DSE", NULL, &dse);
++	device->power.state_for_enumeration = dse;
++
+ 	/*
+ 	 * Enumerate supported power management states
+ 	 */
+diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
+index 02a716a0af5d4..becfc9f57002b 100644
+--- a/include/acpi/acpi_bus.h
++++ b/include/acpi/acpi_bus.h
+@@ -276,6 +276,7 @@ struct acpi_device_power {
+ 	int state;		/* Current state */
+ 	struct acpi_device_power_flags flags;
+ 	struct acpi_device_power_state states[ACPI_D_STATE_COUNT];	/* Power states (D0-D3Cold) */
++	u8 state_for_enumeration; /* Maximum power state for enumeration */
+ };
+ 
+ /* Performance Management */
 -- 
-Ville Syrjälä
-Intel
+2.20.1
+
