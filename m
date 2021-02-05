@@ -2,103 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3107E31013E
+	by mail.lfdr.de (Postfix) with ESMTP id A7B4431013F
 	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 01:04:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231553AbhBEACu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 19:02:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36720 "EHLO
+        id S231565AbhBEAC4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 19:02:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231533AbhBEACr (ORCPT
+        with ESMTP id S231508AbhBEACt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 19:02:47 -0500
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B604C06121D;
-        Thu,  4 Feb 2021 16:02:03 -0800 (PST)
-Received: by mail-yb1-xb2c.google.com with SMTP id r2so4976737ybk.11;
-        Thu, 04 Feb 2021 16:02:03 -0800 (PST)
+        Thu, 4 Feb 2021 19:02:49 -0500
+Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8C2BC0613D6
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 16:02:33 -0800 (PST)
+Received: by mail-il1-x12a.google.com with SMTP id q9so4335524ilo.1
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 16:02:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=RPLYbscW30uUnmFS2EtBGE+/+NamJbrbryNTpw6+TtQ=;
-        b=IkbC3NZf3mDtZwVs4vPkcHCCGrTPOi4CkAwZ1W+pDpupMPibvDoBT4z5IcNs5rUFqg
-         pYZQqLFlKlO/L5G/kCTup0yk6+q1qaafhn9JrRdhQtMzESns3rjLDkN91vmAF0T8De80
-         KAYx6paKCNjUEqLrvQYzL3JQLUrj93l0qnRDwssB2CPNu48bU3APGsHnlpjJGqDsZOpw
-         1LZsjcys514jufuZUJWJJ4joAZEMgdrcTBFe5Y2B4J6CTjkvf+6KpR6J0EYsU+ikRU5I
-         Uhgs8EN8r8JLGZygC3qYiXAtHR2sHuVyj2ElCTXqKcNtBY/lyfdsbvLnHbMJNCSY7f3j
-         2d3A==
+        bh=DRlw1BEuyomdDJLxk78/bJrM7aLmjlY5EXUOw6h3EOY=;
+        b=Dv6Sn9U7xzjLvTRIkoTdd5BML4cTfVQx72a8UHn/s2xVMk7qvDNjfh19Id10SHqBtU
+         8dCahoSaZ5ZaGsA85JwNopJHfNVKhf0Piow0FViF8vrBPjXv69DfMuq9zRSDJhos6YJU
+         h/2Z0CFkJI8rTGrN/0xe4aTM+AG25J43xjhgaqn6LyvFxdZpYCtFKCmX7bjeIrxigkpc
+         Ck1Qa41WnA3GaGsK2xAKvqWJ1xVZcvZi3oZzTmCPcPEztrbW5WvyEYH1MC652eXCwO8E
+         l3nw4LCBpFzLUpf9JMokXYnra/qgLxi4E+1pK2Rql8D3myuT0yH+lCjYIJ0i5ZnR3OZH
+         DMjA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=RPLYbscW30uUnmFS2EtBGE+/+NamJbrbryNTpw6+TtQ=;
-        b=PKFKNqmFgVdB/ZQ42F4CrNBSJXC2AJt0yNljKzjPzgvjxe6eq5I4nGtrezBIX2CaVy
-         vTX9gzzaCvD06jgOiO7B6VMjHKvp33PYfQ8k/9KNWoeIFv3CEli/ymRMlKVedkXxcdcN
-         Hahovk2hHySyqwtyUABR4rP3QNmHueeIjROjpO65K6hPjH+AOM9kMVPpfeXVhjL6PkSq
-         0Rg3aLCSQ4eCLdf3ZlZLtgAtoILfCtlCeTmOSrq1Vk7owuF17+legyRJKNtj8cn+ZHrc
-         eBJRxmrFyMRUWEE1vPFkTCf14wcRfWmCXAJjx0yAa6954sjJKKFar6Ag11crgbdiD8z3
-         d2cg==
-X-Gm-Message-State: AOAM5312w2i33ZnNG7/BmtPv0z7/M3YH7fDy155Kf3NrkG8gIgmN1RRN
-        OIQHsl3x1pXNKSWRvB5TccmN+sN5GBkfucrn9wY=
-X-Google-Smtp-Source: ABdhPJy3/NjcT0Y2DbYezgYmqrjXhztdNTW/Z5D51s82ZLlcsS/bAEpWRYQ+Xk/DI4sVSiTKGsvHf07wmg/fQ5lPSRo=
-X-Received: by 2002:a25:4b86:: with SMTP id y128mr2446517yba.403.1612483322704;
- Thu, 04 Feb 2021 16:02:02 -0800 (PST)
+        bh=DRlw1BEuyomdDJLxk78/bJrM7aLmjlY5EXUOw6h3EOY=;
+        b=fgEAGJqkEdqoldIVSFUqKf9Y9cUPadPYtgUYD0uzOLMXZQ7QZ1+ZX3lmx0ZwRF0fo+
+         pb5L2tLOSBrITKhnNR9zAuvIZo2j+dOL3NNrjm/0KLjU9nGI8qDASsGMkXNrCSGLjMDF
+         7xZxrRPJtpaXo8ZOu3f7D+oojecCpCSud24B7ZCv8mnUApJaT37xB5//UeVUhXyhD9Fp
+         byzAUlBF7wMU6dAikt2nZ7mYxnItRgymKx8vU16mMyMgFfaKYCSSg+I09XaP6CdS7HEb
+         +cMEeyYjYcqpqK5TeA35X9ekmJcrdXE9oH3AcG/iZPKa0HJSGquzoQMAwp7YbiaS2/YQ
+         zQgQ==
+X-Gm-Message-State: AOAM532JJ/800hykHLONbfxubXAv7lyYW9hs2o+hZnhdzPQpXEzxXB1G
+        RdydkQRzycGgUNrU77ovDM7hWefOuLV40HPs6twPwg==
+X-Google-Smtp-Source: ABdhPJyniATJC0osHOzyQR4BvrN08cms2xRmjWl6h0L7mQLa01ZsxiLW10AuCIj6oveC9MtJYxo3rxGoTTbDs3yveC4=
+X-Received: by 2002:a92:cbce:: with SMTP id s14mr1578328ilq.306.1612483353143;
+ Thu, 04 Feb 2021 16:02:33 -0800 (PST)
 MIME-Version: 1.0
-References: <20210204220741.GA920417@kernel.org>
-In-Reply-To: <20210204220741.GA920417@kernel.org>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 4 Feb 2021 16:01:51 -0800
-Message-ID: <CAEf4BzY-RbXXW-Ajcvq4fziOJ=tMtT7O76SUboHQyULNDkhthw@mail.gmail.com>
-Subject: Re: ANNOUNCE: pahole v1.20 (gcc11 DWARF5's default, lots of ELF
- sections, BTF)
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     dwarves@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Jiri Olsa <jolsa@kernel.org>,
-        Jan Engelhardt <jengelh@inai.de>,
-        Domenico Andreoli <cavok@debian.org>,
-        Matthias Schwarzott <zzam@gentoo.org>,
-        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
-        Mark Wieelard <mjw@redhat.com>,
-        Paul Moore <paul@paul-moore.com>,
-        Ondrej Mosnacek <omosnace@redhat.com>,
-        =?UTF-8?Q?Daniel_P=2E_Berrang=C3=A9?= <berrange@redhat.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Tom Stellard <tstellar@redhat.com>
+References: <20210204221959.232582-1-bgardon@google.com> <20210204225144.GU6468@xz-x1>
+In-Reply-To: <20210204225144.GU6468@xz-x1>
+From:   Ben Gardon <bgardon@google.com>
+Date:   Thu, 4 Feb 2021 16:02:22 -0800
+Message-ID: <CANgfPd-FK5VzDgpR8CYk+k_WxFz6FQun4Y+kPWt1qnVwWZMfXQ@mail.gmail.com>
+Subject: Re: [PATCH] KVM: VMX: Optimize flushing the PML buffer
+To:     Peter Xu <peterx@redhat.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Peter Shier <pshier@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Makarand Sonare <makarandsonare@google.com>,
+        Kai Huang <kai.huang@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 4, 2021 at 2:09 PM Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
+On Thu, Feb 4, 2021 at 2:51 PM Peter Xu <peterx@redhat.com> wrote:
 >
-> Hi,
+> Hi, Ben,
 >
->         The v1.20 release of pahole and its friends is out, mostly
-> addressing problems related to gcc 11 defaulting to DWARF5 for -g,
-> available at the usual places:
+> On Thu, Feb 04, 2021 at 02:19:59PM -0800, Ben Gardon wrote:
+> > The average time for each run demonstrated a strange bimodal distribution,
+> > with clusters around 2 seconds and 2.5 seconds. This may have been a
+> > result of vCPU migration between NUMA nodes.
+>
+> Have you thought about using numactl or similar technique to verify your idea
+> (force both vcpu threads binding, and memory allocations)?
+>
+> From the numbers it already shows improvements indeed, but just curious since
+> you raised this up. :)
 
-Great, thanks, Arnaldo! Do you plan to build RPMs soon as well?
+Frustratingly, the test machines I have don't have numactl installed
+but I've been meaning to add cpu pinning to the selftests perf tests
+anyway, so maybe this is a good reason to do it.
 
 >
-> Main git repo:
+> > @@ -5707,13 +5708,18 @@ static void vmx_flush_pml_buffer(struct kvm_vcpu *vcpu)
+> >       else
+> >               pml_idx++;
+> >
+> > +     memslots = kvm_vcpu_memslots(vcpu);
+> > +
+> >       pml_buf = page_address(vmx->pml_pg);
+> >       for (; pml_idx < PML_ENTITY_NUM; pml_idx++) {
+> > +             struct kvm_memory_slot *memslot;
+> >               u64 gpa;
+> >
+> >               gpa = pml_buf[pml_idx];
+> >               WARN_ON(gpa & (PAGE_SIZE - 1));
+> > -             kvm_vcpu_mark_page_dirty(vcpu, gpa >> PAGE_SHIFT);
+> > +
+> > +             memslot = __gfn_to_memslot(memslots, gpa >> PAGE_SHIFT);
+> > +             mark_page_dirty_in_slot(vcpu->kvm, memslot, gpa >> PAGE_SHIFT);
 >
->    git://git.kernel.org/pub/scm/devel/pahole/pahole.git
->
-> Mirror git repo:
->
->    https://github.com/acmel/dwarves.git
->
-> tarball + gpg signature:
->
->    https://fedorapeople.org/~acme/dwarves/dwarves-1.20.tar.xz
->    https://fedorapeople.org/~acme/dwarves/dwarves-1.20.tar.bz2
->    https://fedorapeople.org/~acme/dwarves/dwarves-1.20.tar.sign
->
-> Best Regards,
->
->  - Arnaldo
->
+> Since at it: make "gpa >> PAGE_SHIFT" a temp var too?
 
-[...]
+That's a good idea, I'll try it.
+
+>
+> Thanks,
+>
+> --
+> Peter Xu
+>
