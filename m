@@ -2,194 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 770273117F0
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 01:49:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D7AA3117ED
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 01:47:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231364AbhBFAro (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 19:47:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52656 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230139AbhBEKFm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 05:05:42 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DC7E464FD8;
-        Fri,  5 Feb 2021 10:04:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612519493;
-        bh=28PKurE22BswmWny+JOPpHCzycquk/wHe2fKb6YjBhI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GRMFjIMg0WDAfhXcZ/ESL0lo8tviyCl2qwH4O0+oHY8sHJdh09d/d8r86TI2w2Btj
-         AckC5f6l4QHWok0G1jdmoszO97+cmgVN713MWIYMgw2vkuaIDaHWCGvttlEO1nBM1d
-         iFfdBDb3IPsH7pdwJwNpm9a+7KmPQBsMJGsPATpNyWZIKOrs2jkNj/kAd9HLwi8qEM
-         9GpaACn2oT7I09+zOx27KRcy+SIThThBuonPZ6vcqCWA2FuWX12vrN9XhWD0NSmfWs
-         hHOUgvJQ00vjc0iZQUilD8KK+iphwnHHtlPVahgvJYwvFmE4BOkz8ylSK6T3OLuXdF
-         gmxHQk1GPOiiA==
-Received: by pali.im (Postfix)
-        id 3CEE18A2; Fri,  5 Feb 2021 11:04:50 +0100 (CET)
-Date:   Fri, 5 Feb 2021 11:04:49 +0100
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        Jan Kara <jack@suse.cz>, Kees Cook <keescook@chromium.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>, Jason Gunthorpe <jgg@ziepe.ca>,
-        =?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>,
-        Oliver O'Halloran <oohall@gmail.com>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
-Subject: Re: [PATCH 1/2] PCI: also set up legacy files only after sysfs init
-Message-ID: <20210205100449.w2vzqozgnolxqh4h@pali>
-References: <20210204165831.2703772-2-daniel.vetter@ffwll.ch>
- <20210204215019.GA104698@bjorn-Precision-5520>
- <20210204222407.pkx7wvmcvugdwqdd@pali>
- <CAKMK7uFeZpc4oV2GNRdP_EXmYqacg5o3jPegqqaFZZYqqRutFA@mail.gmail.com>
+        id S231273AbhBFAq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 19:46:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52596 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230206AbhBEKGw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 05:06:52 -0500
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08374C061786
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 02:06:17 -0800 (PST)
+Received: by mail-yb1-xb2e.google.com with SMTP id k4so6189211ybp.6
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 02:06:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Qlca0su+U02LsbC3LLD1AYGrfUlPzDaezLX5AMYp+eo=;
+        b=GlB8KK/AC8pgbczI0FcWoM7bJ5I+52mIFSdzFSd2Vp/n9A4AAg0PL8npODANtmmWeO
+         Wp8+EGrJW8RX9/K66tcc74TJJBZYWiZBVxalvlbwTOyHjCnoYrkXQSyszVBfN3wfuvg0
+         0iXcbwp475fdB6w/4sLRAqMVajtGPgAVQ968qn1mQtbjC2ZdKyRdYS60f1uldjebwwbD
+         RVDVqX8hmVeB8ecWq9QyN43MCPAbkWRW+G21hQU6zR2d6mAh3s2vUST9QTs+YZRjC3CE
+         Qq2xGMxZXJaEphn6UgVzAasrYoEcTxO9EoGv0cNqh1xr53kIdq88H0KQaSI23X0CpM41
+         sJjA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Qlca0su+U02LsbC3LLD1AYGrfUlPzDaezLX5AMYp+eo=;
+        b=pzq/3677hANKKdbYCsMLkSZ/kdSdVkV6eMYVCua+ZKu2knXFwUmiQ9UcyonihIH1yG
+         A6YWxBzQbWHR96nGvJBPDEzVkc0y1yJZuh8g1ywO+LWu0srFzCF5IjTgwxVIpx2Stdd8
+         ysGiCRaVtmfW11saCd36YJ1KvNKYY+RwOKBnJlhlmjYIaclQa8lRIdOv4+Z31ghODOUD
+         Yj6Uj7MTnqIiljdpzL6ZXrWXpr2cqt8HFpIwT1jB1cgCPrevEpke9aCRqm+CCEEW1L5M
+         n8EIEatg46deLEGF4ApeNH/4cxBXJ0BGKp3/ZiaakT00VwywhG4iIF4ARO8cLgC488Wu
+         +o1g==
+X-Gm-Message-State: AOAM533q1avnEWlIzESr7RMik87qv+KTeeujAQwYSST33OWV8aNSCWtp
+        GrT5yH3hPMjDB7DtCeO41Ik4jpK2fHlbiN97oyDjDA==
+X-Google-Smtp-Source: ABdhPJyW8GfWJvznKAIv9fkh9s+dgE5JsOR2n/TnXb5uyNuJ1xs1XK3M+JJN8pdzVpQtHnvoezuJsF3m6mBiZ2M8aJI=
+X-Received: by 2002:a25:f8a:: with SMTP id 132mr4973807ybp.228.1612519577059;
+ Fri, 05 Feb 2021 02:06:17 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAKMK7uFeZpc4oV2GNRdP_EXmYqacg5o3jPegqqaFZZYqqRutFA@mail.gmail.com>
-User-Agent: NeoMutt/20180716
+References: <20210121225712.1118239-1-saravanak@google.com>
+ <CGME20210204115252eucas1p2d145686f7a5dc7e7a04dddd0b0f2286c@eucas1p2.samsung.com>
+ <20210121225712.1118239-3-saravanak@google.com> <9692dfc9-4c63-71c9-b52b-d0feba466695@samsung.com>
+ <CAGETcx_KDA55Ti=5CHw48BP1L2Xo64=AFFe+17g27n=P-KUrow@mail.gmail.com>
+ <6b606a5d-0435-1e9d-ac61-a8dacf051067@samsung.com> <CAMuHMdWqZonpeyk59b=o_3EKOQx4TxUZE4Jeo-Kxy_o_3CQvnQ@mail.gmail.com>
+In-Reply-To: <CAMuHMdWqZonpeyk59b=o_3EKOQx4TxUZE4Jeo-Kxy_o_3CQvnQ@mail.gmail.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Fri, 5 Feb 2021 02:05:41 -0800
+Message-ID: <CAGETcx9Rqa7PygjSiQvadm7C2bpxS2rCf5oB_pFhjh+ESV-WQA@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] of: property: Add fw_devlink support for interrupts
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Android Kernel Team <kernel-team@android.com>,
+        Rob Herring <robh@kernel.org>,
+        Thierry Reding <treding@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Friday 05 February 2021 10:59:50 Daniel Vetter wrote:
-> On Thu, Feb 4, 2021 at 11:24 PM Pali Rohár <pali@kernel.org> wrote:
+On Fri, Feb 5, 2021 at 12:06 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+>
+> Hi Marek,
+>
+> On Fri, Feb 5, 2021 at 8:38 AM Marek Szyprowski
+> <m.szyprowski@samsung.com> wrote:
+> > On 04.02.2021 22:31, Saravana Kannan wrote:
+> > > On Thu, Feb 4, 2021 at 3:52 AM Marek Szyprowski
+> > > <m.szyprowski@samsung.com> wrote:
+> > >> On 21.01.2021 23:57, Saravana Kannan wrote:
+> > >>> This allows fw_devlink to create device links between consumers of an
+> > >>> interrupt and the supplier of the interrupt.
+> > >>>
+> > >>> Cc: Marc Zyngier <maz@kernel.org>
+> > >>> Cc: Kevin Hilman <khilman@baylibre.com>
+> > >>> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > >>> Reviewed-by: Rob Herring <robh@kernel.org>
+> > >>> Reviewed-by: Thierry Reding <treding@nvidia.com>
+> > >>> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+> > >>> Signed-off-by: Saravana Kannan <saravanak@google.com>
+> > >> This patch landed some time ago in linux-next as commit 4104ca776ba3
+> > >> ("of: property: Add fw_devlink support for interrupts"). It breaks MMC
+> > >> host controller operation on ARM Juno R1 board (the mmci@50000 device
+> > >> defined in arch/arm64/boot/dts/arm/juno-motherboard.dtsi). I didn't
+> > > I grepped around and it looks like the final board file is this or
+> > > whatever includes it?
+> > > arch/arm64/boot/dts/arm/juno-base.dtsi
+> > The final board file is arch/arm64/boot/dts/arm/juno-r1.dts
+> > > This patch just finds the interrupt-parent and then tries to use that
+> > > as a supplier if "interrupts" property is listed. But the only
+> > > interrupt parent I can see is:
+> > >          gic: interrupt-controller@2c010000 {
+> > >                  compatible = "arm,gic-400", "arm,cortex-a15-gic";
+> > >
+> > > And the driver uses IRQCHIP_DECLARE() and hence should be pretty much
+> > > a NOP since those suppliers are never devices and are ignored.
+> > > $ git grep "arm,gic-400" -- drivers/
+> > > drivers/irqchip/irq-gic.c:IRQCHIP_DECLARE(gic_400, "arm,gic-400", gic_of_init);
+> > >
+> > > This doesn't make any sense. Am I looking at the right files? Am I
+> > > missing something?
 > >
-> > On Thursday 04 February 2021 15:50:19 Bjorn Helgaas wrote:
-> > > [+cc Oliver, Pali, Krzysztof]
+> > Okay, I've added displaying a list of deferred devices when mounting
+> > rootfs fails and got following items:
 > >
-> > Just to note that extending or using sysfs_initialized introduces
-> > another race condition into kernel code which results in PCI fatal
-> > errors. Details are in email discussion which Bjorn already sent.
-> 
-> Yeah I wondered why this doesn't race.
+> > Deferred devices:
+> > 18000000.ethernet        platform: probe deferral - supplier
+> > bus@8000000:motherboard-bus not ready
+> > 1c050000.mmci    amba: probe deferral - supplier
+> > bus@8000000:motherboard-bus not ready
+> > 1c1d0000.gpio    amba: probe deferral - supplier
+> > bus@8000000:motherboard-bus not ready
+> > 2b600000.iommu   platform: probe deferral - wait for supplier
+> > scpi-power-domains
+> > 7ff50000.hdlcd   platform: probe deferral - wait for supplier scpi-clk
+> > 7ff60000.hdlcd   platform: probe deferral - wait for supplier scpi-clk
+> > 1c060000.kmi     amba: probe deferral - supplier
+> > bus@8000000:motherboard-bus not ready
+> > 1c070000.kmi     amba: probe deferral - supplier
+> > bus@8000000:motherboard-bus not ready
+> > 1c170000.rtc     amba: probe deferral - supplier
+> > bus@8000000:motherboard-bus not ready
+> > 1c0f0000.wdt     amba: probe deferral - supplier
+> > bus@8000000:motherboard-bus not ready
+> > gpio-keys
+> > Kernel panic - not syncing: VFS: Unable to mount root fs on
+> > unknown-block(0,0)
+> >
+> > I don't see the 'bus@8000000:motherboard-bus' on the deferred devices
+> > list, so it looks that device core added a link to something that is not
+> > a platform device...
 
-It races, but with smaller probability. I have not seen this race
-condition on x86. But I was able to reproduce it with native PCIe
-drivers on ARM64 (Marvell Armada 3720; pci-aardvark). In mentioned
-discussion I wrote when this race condition happen. But I understand
-that it is hard to simulate it.
+Probe deferred devices (even platform devices) not showing up in that
+list is not unusual. That's because devices end up on that list only
+after a driver for them is matched and then it fails.
 
-> but since the history goes back
-> to pre-git times I figured it would have been addressed somehow
-> already if it indeed does race.
-> -Daniel
-> 
-> > > s/also/Also/ in subject
-> > >
-> > > On Thu, Feb 04, 2021 at 05:58:30PM +0100, Daniel Vetter wrote:
-> > > > We are already doing this for all the regular sysfs files on PCI
-> > > > devices, but not yet on the legacy io files on the PCI buses. Thus far
-> > > > now problem, but in the next patch I want to wire up iomem revoke
-> > > > support. That needs the vfs up an running already to make so that
-> > > > iomem_get_mapping() works.
-> > >
-> > > s/now problem/no problem/
-> > > s/an running/and running/
-> > > s/so that/sure that/ ?
-> > >
-> > > iomem_get_mapping() doesn't exist; I don't know what that should be.
-> > >
-> > > > Wire it up exactly like the existing code. Note that
-> > > > pci_remove_legacy_files() doesn't need a check since the one for
-> > > > pci_bus->legacy_io is sufficient.
-> > >
-> > > I'm not sure exactly what you mean by "the existing code."  I could
-> > > probably figure it out, but it would save time to mention the existing
-> > > function here.
-> > >
-> > > This looks like another instance where we should really apply Oliver's
-> > > idea of converting these to attribute_groups [1].
-> > >
-> > > The cover letter mentions options discussed with Greg in [2], but I
-> > > don't think the "sysfs_initialized" hack vs attribute_groups was part
-> > > of that discussion.
-> > >
-> > > It's not absolutely a show-stopper, but it *is* a shame to extend the
-> > > sysfs_initialized hack if attribute_groups could do this more cleanly
-> > > and help solve more than one issue.
-> > >
-> > > Bjorn
-> > >
-> > > [1] https://lore.kernel.org/r/CAOSf1CHss03DBSDO4PmTtMp0tCEu5kScn704ZEwLKGXQzBfqaA@mail.gmail.com
-> > > [2] https://lore.kernel.org/dri-devel/CAKMK7uGrdDrbtj0OyzqQc0CGrQwc2F3tFJU9vLfm2jjufAZ5YQ@mail.gmail.com/
-> > >
-> > > > Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
-> > > > Cc: Stephen Rothwell <sfr@canb.auug.org.au>
-> > > > Cc: Jason Gunthorpe <jgg@ziepe.ca>
-> > > > Cc: Kees Cook <keescook@chromium.org>
-> > > > Cc: Dan Williams <dan.j.williams@intel.com>
-> > > > Cc: Andrew Morton <akpm@linux-foundation.org>
-> > > > Cc: John Hubbard <jhubbard@nvidia.com>
-> > > > Cc: Jérôme Glisse <jglisse@redhat.com>
-> > > > Cc: Jan Kara <jack@suse.cz>
-> > > > Cc: Dan Williams <dan.j.williams@intel.com>
-> > > > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > > > Cc: linux-mm@kvack.org
-> > > > Cc: linux-arm-kernel@lists.infradead.org
-> > > > Cc: linux-samsung-soc@vger.kernel.org
-> > > > Cc: linux-media@vger.kernel.org
-> > > > Cc: Bjorn Helgaas <bhelgaas@google.com>
-> > > > Cc: linux-pci@vger.kernel.org
-> > > > ---
-> > > >  drivers/pci/pci-sysfs.c | 7 +++++++
-> > > >  1 file changed, 7 insertions(+)
-> > > >
-> > > > diff --git a/drivers/pci/pci-sysfs.c b/drivers/pci/pci-sysfs.c
-> > > > index fb072f4b3176..0c45b4f7b214 100644
-> > > > --- a/drivers/pci/pci-sysfs.c
-> > > > +++ b/drivers/pci/pci-sysfs.c
-> > > > @@ -927,6 +927,9 @@ void pci_create_legacy_files(struct pci_bus *b)
-> > > >  {
-> > > >     int error;
-> > > >
-> > > > +   if (!sysfs_initialized)
-> > > > +           return;
-> > > > +
-> > > >     b->legacy_io = kcalloc(2, sizeof(struct bin_attribute),
-> > > >                            GFP_ATOMIC);
-> > > >     if (!b->legacy_io)
-> > > > @@ -1448,6 +1451,7 @@ void pci_remove_sysfs_dev_files(struct pci_dev *pdev)
-> > > >  static int __init pci_sysfs_init(void)
-> > > >  {
-> > > >     struct pci_dev *pdev = NULL;
-> > > > +   struct pci_bus *pbus = NULL;
-> > > >     int retval;
-> > > >
-> > > >     sysfs_initialized = 1;
-> > > > @@ -1459,6 +1463,9 @@ static int __init pci_sysfs_init(void)
-> > > >             }
-> > > >     }
-> > > >
-> > > > +   while ((pbus = pci_find_next_bus(pbus)))
-> > > > +           pci_create_legacy_files(pbus);
-> > > > +
-> > > >     return 0;
-> > > >  }
-> > > >  late_initcall(pci_sysfs_init);
-> > > > --
-> > > > 2.30.0
-> > > >
-> > > >
-> > > > _______________________________________________
-> > > > linux-arm-kernel mailing list
-> > > > linux-arm-kernel@lists.infradead.org
-> > > > http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-> 
-> 
-> 
-> -- 
-> Daniel Vetter
-> Software Engineer, Intel Corporation
-> http://blog.ffwll.ch
+>
+> Lemme guess: bus@8000000 is a simple bus, but it has an
+> interrupt-map, and the devlink code doesn't follow the mapping?
+>
+
+No, what's happening is that (and this is something I just learned)
+that if a parent has an "#interrupt-cells" property, it becomes your
+interrupt parent. In this case, the motherboard-bus (still a platform
+device) is the parent, but it never probes (because it's simple-bus
+and "arm,vexpress,v2p-p1"). But it becomes the interrupt parent. And
+this mmci device is marked as a consumer of this bus (while still a
+grand-child). Yeah, I'm working on patches (multiple rewrites) to take
+care of cases like this.
+
+-Saravana
