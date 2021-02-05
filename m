@@ -2,243 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD3BA310907
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 11:28:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 759FE3108E3
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 11:22:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231314AbhBEK0l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 05:26:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55638 "EHLO
+        id S230161AbhBEKVj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 05:21:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231178AbhBEKSI (ORCPT
+        with ESMTP id S231316AbhBEKSe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 05:18:08 -0500
-Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEE3DC061793
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 02:16:11 -0800 (PST)
-Received: by mail-oi1-x22e.google.com with SMTP id u66so4981846oig.9
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 02:16:11 -0800 (PST)
+        Fri, 5 Feb 2021 05:18:34 -0500
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A5ACC0617AA
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 02:16:54 -0800 (PST)
+Received: by mail-wm1-x32b.google.com with SMTP id w4so5535443wmi.4
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 02:16:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=2yuIYIxM1r0vjPBHPxM2y+AxnaXi3F039H0I6fPXB2Y=;
-        b=A9phunMoX2b9Gt5n9T0V20jIQdwPW9aWuFUt+j26fGARowppocLfwynGYKZKR1TvHP
-         oDYM6GO84zr2GTWpNTRjpDKbTn3MIDB8fM+hrnpLGfiUf/l+iVMugdoRIPgQX8kZ1Hta
-         jlDlzgJ4kNiRVRoNbZAav0p3u3jbhCwhdDh2k=
+        d=linaro.org; s=google;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=xocG/S8P551z1Q0qsVJwJDkFJwPOHcnTgqwvnPTPysw=;
+        b=UEbFYUw+pWzZXAWzURTp9Kg1/pq1VCHVMRL+ZetN+YrEqLZVMOnj9NmzNGA7FnefOq
+         iAT13LG0o412RsFD4f1SvsaiTg9gCLcOkNopj9mEfPkKzz2pJK+zC6SerAvpQ+9GGlFS
+         1ZmpGNYNUT0bFx/CrsGeYN37zUPBHQPqDjQLsbzornx5ZTbju+WgAOg0w9OcVNZnnVrX
+         iRPiHAaatvk513Of7Fi3MX7NqoKQ9vYPd3z7nQAnZTQ9FFvCgTqS8YxNR3AdzZoJL4G5
+         HLNPprFBCBlwUGao9oQQlmHO0Fo5vOO5rXvb1HLNSsDxzF5IR5V7TUkWzx0ey9IrqFHf
+         BkFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=2yuIYIxM1r0vjPBHPxM2y+AxnaXi3F039H0I6fPXB2Y=;
-        b=L/dvkCJwioBEUqB+c9OFHBf89PtepDYinvDRFW5wxluRcWkUcPGHCQgGrldG9ZE1hl
-         i5WXSEv4FXjAUTZPfEpUCw7168hWmiMWuTbZNkUBEr8W0g+vXLiP+FT2t4ppScizGPu4
-         nPjyhFF0maHy1rZXp+jpmwbR5MjXQfAFamGnHY+ZfZf3Ws+4HWAZ+pw4TZV90p9g3Dma
-         5N0PUbpibnOh1VpDxxZ+So+2Mz2KQabg4IZLIyuCcIdPs2IN/FUYDoBq/8U2Ydw97wYN
-         iEK4/w/joDnPXN3urCIC3buEJXiKfbKY3EpRFTrKN/KF8i0+U4ul3546xoJG404lwIwc
-         8s2A==
-X-Gm-Message-State: AOAM531Hedgb2Z85pACkr0JA+hZrRO2u+C7i0s8t7AqcrTODFs4Hfzjs
-        SB9nQ6eOYNUB9oFzqCm7btA++qyFlpm/brljdU/ysg==
-X-Google-Smtp-Source: ABdhPJyS7NBg6dpmgk+Mh+fuNgultS8ddwgsrdcEebMQvTNVbqaUOfhJ/OSI2TaI7qoinESzj+/7j2RvKfsoe9fAFGc=
-X-Received: by 2002:aca:df42:: with SMTP id w63mr2582638oig.128.1612520171119;
- Fri, 05 Feb 2021 02:16:11 -0800 (PST)
-MIME-Version: 1.0
-References: <20210204165831.2703772-2-daniel.vetter@ffwll.ch>
- <20210204215019.GA104698@bjorn-Precision-5520> <20210204222407.pkx7wvmcvugdwqdd@pali>
- <CAKMK7uFeZpc4oV2GNRdP_EXmYqacg5o3jPegqqaFZZYqqRutFA@mail.gmail.com> <20210205100449.w2vzqozgnolxqh4h@pali>
-In-Reply-To: <20210205100449.w2vzqozgnolxqh4h@pali>
-From:   Daniel Vetter <daniel.vetter@ffwll.ch>
-Date:   Fri, 5 Feb 2021 11:16:00 +0100
-Message-ID: <CAKMK7uG9NsEzFfapZa4KF6sw0=CuD6Pyk5=7WhjxgFBut4uJkw@mail.gmail.com>
-Subject: Re: [PATCH 1/2] PCI: also set up legacy files only after sysfs init
-To:     =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        Jan Kara <jack@suse.cz>, Kees Cook <keescook@chromium.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>, Jason Gunthorpe <jgg@ziepe.ca>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>,
-        "Oliver O'Halloran" <oohall@gmail.com>,
-        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=xocG/S8P551z1Q0qsVJwJDkFJwPOHcnTgqwvnPTPysw=;
+        b=fHzKz/iJzDumyTwjomgL/Ae+l0PVk1NKQIPJ/axNBlYW5D36u+hCs4C5ZsfgGI3VV2
+         ZTUMJg5snTkTZQyJvMnJtaVTxjRRoyXr3XSHyhQILJlQyEZW4dTPLWvehvYZRdgyMYNs
+         JbT+fNzOCE+EnqdUteLSpPV/1xYrK3WKuADqbulluS4MFg43vtF1d143PlqENap03kUG
+         zJi/FWb23konIvGW489FMiPEJJ0Dlj3Ivu1QN7RcZSU7q/P7YmortEM4f1uh4r7oxYoP
+         /LgOqoEeETEdXr8XpHCZNzWF3fY79VuBTl0IRhoS+BVW4lR9vJJQeH0Ge8s76k9+nh1c
+         k5VQ==
+X-Gm-Message-State: AOAM530MS8w+PTn8fXUU++ao5W3ifeIi0f3gAHEXCVPkZXwizE9PdIhr
+        SZNXWBRyn/fdy+ZgcTWdIyRUaJ/cU9wYBA==
+X-Google-Smtp-Source: ABdhPJzgQdOmE6tKKpb13xa7oosdlxMjaUXX5wp9Kn9+XGsTNplh/GiBhNwR2a1C8c+DlzJ/EJhZjg==
+X-Received: by 2002:a7b:c0cf:: with SMTP id s15mr2929947wmh.1.1612520212917;
+        Fri, 05 Feb 2021 02:16:52 -0800 (PST)
+Received: from [192.168.0.13] ([83.216.184.132])
+        by smtp.gmail.com with ESMTPSA id b2sm8988353wmd.41.2021.02.05.02.16.51
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 05 Feb 2021 02:16:52 -0800 (PST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
+Subject: Re: [PATCH BUGFIX/IMPROVEMENT 2/6] block, bfq: put reqs of waker and
+ woken in dispatch list
+From:   Paolo Valente <paolo.valente@linaro.org>
+In-Reply-To: <20210203114308.GB7094@quack2.suse.cz>
+Date:   Fri, 5 Feb 2021 11:16:50 +0100
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        linux-block <linux-block@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Transfer-Encoding: quoted-printable
+Message-Id: <EC22F02F-B215-4836-88F5-207FDFDED56B@linaro.org>
+References: <20210126105102.53102-1-paolo.valente@linaro.org>
+ <20210126105102.53102-3-paolo.valente@linaro.org>
+ <36ecc71d-ef51-c667-74f8-d8f289e2f7db@kernel.dk>
+ <A5A6D401-D774-4D9E-A68B-08D46368653E@linaro.org>
+ <20210203114308.GB7094@quack2.suse.cz>
+To:     Jan Kara <jack@suse.cz>
+X-Mailer: Apple Mail (2.3445.104.11)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 5, 2021 at 11:04 AM Pali Roh=C3=A1r <pali@kernel.org> wrote:
->
-> On Friday 05 February 2021 10:59:50 Daniel Vetter wrote:
-> > On Thu, Feb 4, 2021 at 11:24 PM Pali Roh=C3=A1r <pali@kernel.org> wrote=
-:
-> > >
-> > > On Thursday 04 February 2021 15:50:19 Bjorn Helgaas wrote:
-> > > > [+cc Oliver, Pali, Krzysztof]
-> > >
-> > > Just to note that extending or using sysfs_initialized introduces
-> > > another race condition into kernel code which results in PCI fatal
-> > > errors. Details are in email discussion which Bjorn already sent.
-> >
-> > Yeah I wondered why this doesn't race.
->
-> It races, but with smaller probability. I have not seen this race
-> condition on x86. But I was able to reproduce it with native PCIe
-> drivers on ARM64 (Marvell Armada 3720; pci-aardvark). In mentioned
-> discussion I wrote when this race condition happen. But I understand
-> that it is hard to simulate it.
-
-btw I looked at your patch, and isn't that just reducing the race window?
-
-I think we have a very similar problem in drm, where the
-drm_dev_register() for the overall device (which also registers all
-drm_connector) can race with the hotplug of an individual connector in
-drm_connector_register() which is hotplugged at runtime.
-
-I went with a per-connector registered boolean + a lock to make sure
-that really only one of the two call paths can end up registering the
-connector. Part of registering connectors is setting up sysfs files,
-so I think it's exactly the same problem as here.
-
-Cheers, Daniel
-
->
-> > but since the history goes back
-> > to pre-git times I figured it would have been addressed somehow
-> > already if it indeed does race.
-> > -Daniel
-> >
-> > > > s/also/Also/ in subject
-> > > >
-> > > > On Thu, Feb 04, 2021 at 05:58:30PM +0100, Daniel Vetter wrote:
-> > > > > We are already doing this for all the regular sysfs files on PCI
-> > > > > devices, but not yet on the legacy io files on the PCI buses. Thu=
-s far
-> > > > > now problem, but in the next patch I want to wire up iomem revoke
-> > > > > support. That needs the vfs up an running already to make so that
-> > > > > iomem_get_mapping() works.
-> > > >
-> > > > s/now problem/no problem/
-> > > > s/an running/and running/
-> > > > s/so that/sure that/ ?
-> > > >
-> > > > iomem_get_mapping() doesn't exist; I don't know what that should be=
-.
-> > > >
-> > > > > Wire it up exactly like the existing code. Note that
-> > > > > pci_remove_legacy_files() doesn't need a check since the one for
-> > > > > pci_bus->legacy_io is sufficient.
-> > > >
-> > > > I'm not sure exactly what you mean by "the existing code."  I could
-> > > > probably figure it out, but it would save time to mention the exist=
-ing
-> > > > function here.
-> > > >
-> > > > This looks like another instance where we should really apply Olive=
-r's
-> > > > idea of converting these to attribute_groups [1].
-> > > >
-> > > > The cover letter mentions options discussed with Greg in [2], but I
-> > > > don't think the "sysfs_initialized" hack vs attribute_groups was pa=
-rt
-> > > > of that discussion.
-> > > >
-> > > > It's not absolutely a show-stopper, but it *is* a shame to extend t=
-he
-> > > > sysfs_initialized hack if attribute_groups could do this more clean=
-ly
-> > > > and help solve more than one issue.
-> > > >
-> > > > Bjorn
-> > > >
-> > > > [1] https://lore.kernel.org/r/CAOSf1CHss03DBSDO4PmTtMp0tCEu5kScn704=
-ZEwLKGXQzBfqaA@mail.gmail.com
-> > > > [2] https://lore.kernel.org/dri-devel/CAKMK7uGrdDrbtj0OyzqQc0CGrQwc=
-2F3tFJU9vLfm2jjufAZ5YQ@mail.gmail.com/
-> > > >
-> > > > > Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
-> > > > > Cc: Stephen Rothwell <sfr@canb.auug.org.au>
-> > > > > Cc: Jason Gunthorpe <jgg@ziepe.ca>
-> > > > > Cc: Kees Cook <keescook@chromium.org>
-> > > > > Cc: Dan Williams <dan.j.williams@intel.com>
-> > > > > Cc: Andrew Morton <akpm@linux-foundation.org>
-> > > > > Cc: John Hubbard <jhubbard@nvidia.com>
-> > > > > Cc: J=C3=A9r=C3=B4me Glisse <jglisse@redhat.com>
-> > > > > Cc: Jan Kara <jack@suse.cz>
-> > > > > Cc: Dan Williams <dan.j.williams@intel.com>
-> > > > > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > > > > Cc: linux-mm@kvack.org
-> > > > > Cc: linux-arm-kernel@lists.infradead.org
-> > > > > Cc: linux-samsung-soc@vger.kernel.org
-> > > > > Cc: linux-media@vger.kernel.org
-> > > > > Cc: Bjorn Helgaas <bhelgaas@google.com>
-> > > > > Cc: linux-pci@vger.kernel.org
-> > > > > ---
-> > > > >  drivers/pci/pci-sysfs.c | 7 +++++++
-> > > > >  1 file changed, 7 insertions(+)
-> > > > >
-> > > > > diff --git a/drivers/pci/pci-sysfs.c b/drivers/pci/pci-sysfs.c
-> > > > > index fb072f4b3176..0c45b4f7b214 100644
-> > > > > --- a/drivers/pci/pci-sysfs.c
-> > > > > +++ b/drivers/pci/pci-sysfs.c
-> > > > > @@ -927,6 +927,9 @@ void pci_create_legacy_files(struct pci_bus *=
-b)
-> > > > >  {
-> > > > >     int error;
-> > > > >
-> > > > > +   if (!sysfs_initialized)
-> > > > > +           return;
-> > > > > +
-> > > > >     b->legacy_io =3D kcalloc(2, sizeof(struct bin_attribute),
-> > > > >                            GFP_ATOMIC);
-> > > > >     if (!b->legacy_io)
-> > > > > @@ -1448,6 +1451,7 @@ void pci_remove_sysfs_dev_files(struct pci_=
-dev *pdev)
-> > > > >  static int __init pci_sysfs_init(void)
-> > > > >  {
-> > > > >     struct pci_dev *pdev =3D NULL;
-> > > > > +   struct pci_bus *pbus =3D NULL;
-> > > > >     int retval;
-> > > > >
-> > > > >     sysfs_initialized =3D 1;
-> > > > > @@ -1459,6 +1463,9 @@ static int __init pci_sysfs_init(void)
-> > > > >             }
-> > > > >     }
-> > > > >
-> > > > > +   while ((pbus =3D pci_find_next_bus(pbus)))
-> > > > > +           pci_create_legacy_files(pbus);
-> > > > > +
-> > > > >     return 0;
-> > > > >  }
-> > > > >  late_initcall(pci_sysfs_init);
-> > > > > --
-> > > > > 2.30.0
-> > > > >
-> > > > >
-> > > > > _______________________________________________
-> > > > > linux-arm-kernel mailing list
-> > > > > linux-arm-kernel@lists.infradead.org
-> > > > > http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-> >
-> >
-> >
-> > --
-> > Daniel Vetter
-> > Software Engineer, Intel Corporation
-> > http://blog.ffwll.ch
 
 
+> Il giorno 3 feb 2021, alle ore 12:43, Jan Kara <jack@suse.cz> ha =
+scritto:
+>=20
+> On Thu 28-01-21 18:54:05, Paolo Valente wrote:
+>>=20
+>>=20
+>>> Il giorno 26 gen 2021, alle ore 17:18, Jens Axboe <axboe@kernel.dk> =
+ha scritto:
+>>>=20
+>>> On 1/26/21 3:50 AM, Paolo Valente wrote:
+>>>> Consider a new I/O request that arrives for a bfq_queue bfqq. If, =
+when
+>>>> this happens, the only active bfq_queues are bfqq and either its =
+waker
+>>>> bfq_queue or one of its woken bfq_queues, then there is no point in
+>>>> queueing this new I/O request in bfqq for service. In fact, the
+>>>> in-service queue and bfqq agree on serving this new I/O request as
+>>>> soon as possible. So this commit puts this new I/O request directly
+>>>> into the dispatch list.
+>>>>=20
+>>>> Tested-by: Jan Kara <jack@suse.cz>
+>>>> Signed-off-by: Paolo Valente <paolo.valente@linaro.org>
+>>>> ---
+>>>> block/bfq-iosched.c | 17 ++++++++++++++++-
+>>>> 1 file changed, 16 insertions(+), 1 deletion(-)
+>>>>=20
+>>>> diff --git a/block/bfq-iosched.c b/block/bfq-iosched.c
+>>>> index a83149407336..e5b83910fbe0 100644
+>>>> --- a/block/bfq-iosched.c
+>>>> +++ b/block/bfq-iosched.c
+>>>> @@ -5640,7 +5640,22 @@ static void bfq_insert_request(struct =
+blk_mq_hw_ctx *hctx, struct request *rq,
+>>>>=20
+>>>> 	spin_lock_irq(&bfqd->lock);
+>>>> 	bfqq =3D bfq_init_rq(rq);
+>>>> -	if (!bfqq || at_head || blk_rq_is_passthrough(rq)) {
+>>>> +
+>>>> +	/*
+>>>> +	 * Additional case for putting rq directly into the dispatch
+>>>> +	 * queue: the only active bfq_queues are bfqq and either its
+>>>> +	 * waker bfq_queue or one of its woken bfq_queues. In this
+>>>> +	 * case, there is no point in queueing rq in bfqq for
+>>>> +	 * service. In fact, the in-service queue and bfqq agree on
+>>>> +	 * serving this new I/O request as soon as possible.
+>>>> +	 */
+>>>> +	if (!bfqq ||
+>>>> +	    (bfqq !=3D bfqd->in_service_queue &&
+>>>> +	     bfqd->in_service_queue !=3D NULL &&
+>>>> +	     bfq_tot_busy_queues(bfqd) =3D=3D 1 + bfq_bfqq_busy(bfqq) &&
+>>>> +	     (bfqq->waker_bfqq =3D=3D bfqd->in_service_queue ||
+>>>> +	      bfqd->in_service_queue->waker_bfqq =3D=3D bfqq)) ||
+>>>> +	    at_head || blk_rq_is_passthrough(rq)) {
+>>>> 		if (at_head)
+>>>> 			list_add(&rq->queuelist, &bfqd->dispatch);
+>>>> 		else
+>>>>=20
+>>>=20
+>>> This is unreadable... Just seems like you are piling heuristics in =
+to
+>>> catch some case, and it's neither readable nor clean.
+>>>=20
+>>=20
+>> Yeah, these comments inappropriately assume that the reader knows the
+>> waker mechanism in depth.  And they do not stress at all how =
+important
+>> this improvement is.
+>>=20
+>> I'll do my best to improve these comments.
+>>=20
+>> To try to do a better job, let me also explain the matter early here.
+>> Maybe you or others can give me some early feedback (or just tell me
+>> to proceed).
+>>=20
+>> This change is one of the main improvements that boosted
+>> throughput in Jan's tests.  Here is the rationale:
+>> - consider a bfq_queue, say Q1, detected as a waker of another
+>>  bfq_queue, say Q2
+>> - by definition of a waker, Q1 blocks the I/O of Q2, i.e., some I/O =
+of
+>>  of Q1 needs to be completed for new I/O of Q1 to arrive.  A notable
+> 					       ^^ Q2?
+>=20
 
---=20
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Yes, thank you!
+
+(after this interaction, I'll fix and improve all this description,
+according to your comments)
+
+>>  example is journald
+>> - so, Q1 and Q2 are in any respect two cooperating processes: if the
+>>  service of Q1's I/O is delayed, Q2 can only suffer from it.
+>>  Conversely, if Q2's I/O is delayed, the purpose of Q1 is just =
+defeated.
+>=20
+> What do you exactly mean by this last sentence?
+
+By definition of waker, the purpose of Q1's I/O is doing what needs to
+be done, so that new Q2's I/O can finally be issued.  Delaying Q2's I/O
+is the opposite of this goal.
+
+>=20
+>> - as a consequence if some I/O of Q1/Q2 arrives while Q2/Q1 is the
+>>  only queue in service, there is absolutely no point in delaying the
+>>  service of such an I/O.  The only possible result is a throughput
+>>  loss, detected by Jan's test
+>=20
+> If we are idling at that moment waiting for more IO from in service =
+queue,
+> I agree.
+
+And I agree too, if the drive has no internal queueing, has no
+parallelism or pipeline, or is at least one order of magnitude slower
+than the CPU is processing I/O.  In all other cases, serving the I/O
+of only one queue at a time means throwing away throughput.  For
+example, on a consumer SSD, moving from one to two I/O threads served
+in parallel usually means doubling the throughput.
+
+So, the best thing to do, if all the above conditions are met, is to
+have this new I/O dispatched as soon as possible.
+
+The most efficient way to attain this goal is to just put the new I/O
+directly into the dispatch list.
+
+> But that doesn't seem to be part of your condition above?
+>=20
+>> - so, when the above condition holds, the most effective and =
+efficient
+>>  action is to put the new I/O directly in the dispatch list
+>> - as an additional restriction, Q1 and Q2 must be the only busy =
+queues
+>>  for this commit to put the I/O of Q2/Q1 in the dispatch list.  This =
+is
+>>  necessary, because, if also other queues are waiting for service, =
+then
+>>  putting new I/O directly in the dispatch list may evidently cause a
+>>  violation of service guarantees for the other queues
+>=20
+> This last restriction is not ideal for cases like jbd2 thread since it =
+may
+> still lead to pointless idling but I understand that without some
+> restriction like this several waking threads could just starve other =
+ones.
+
+Yeah, the goal here is to reduce a little bit false positives.
+
+> So I guess it's fine for now.
+>=20
+
+Yes, hopefully experience will lead us to even improvements or even
+better solutions.
+
+Thanks,
+Paolo
+
+> 								Honza
+> --=20
+> Jan Kara <jack@suse.com>
+> SUSE Labs, CR
+
