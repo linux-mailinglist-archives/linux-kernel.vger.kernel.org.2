@@ -2,65 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4C53310B8A
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 14:07:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04876310B8E
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 14:10:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229797AbhBENGp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 08:06:45 -0500
-Received: from mail-out.m-online.net ([212.18.0.9]:54556 "EHLO
-        mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232425AbhBENBd (ORCPT
+        id S230388AbhBENI3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 08:08:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34210 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232450AbhBENBc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 08:01:33 -0500
-Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
-        by mail-out.m-online.net (Postfix) with ESMTP id 4DXFr80dwTz1qs3H;
-        Fri,  5 Feb 2021 13:59:52 +0100 (CET)
-Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
-        by mail.m-online.net (Postfix) with ESMTP id 4DXFr803tlz1tYTs;
-        Fri,  5 Feb 2021 13:59:51 +0100 (CET)
-X-Virus-Scanned: amavisd-new at mnet-online.de
-Received: from mail.mnet-online.de ([192.168.8.182])
-        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
-        with ESMTP id vJkKCHb1hqKy; Fri,  5 Feb 2021 13:59:51 +0100 (CET)
-X-Auth-Info: t4HE+BK5wQRCu1XDCfX+HaOtglUJ6QAlyQeLE9TtsrCU71f5bkuHerxzx5Omf1Vu
-Received: from igel.home (ppp-46-244-178-206.dynamic.mnet-online.de [46.244.178.206])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.mnet-online.de (Postfix) with ESMTPSA;
-        Fri,  5 Feb 2021 13:59:51 +0100 (CET)
-Received: by igel.home (Postfix, from userid 1000)
-        id 52CF92C36FC; Fri,  5 Feb 2021 13:59:50 +0100 (CET)
-From:   Andreas Schwab <schwab@linux-m68k.org>
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Cc:     sammy@sammy.net, geert@linux-m68k.org,
-        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
-        rdunlap@infradead.org
-Subject: Re: [PATCH] arch: m68k: include: asm: Reconstruct the sentence in
- file sun3ints.h
-References: <20210205120455.1289448-1-unixbhaskar@gmail.com>
-X-Yow:  I'm sitting on my SPEED QUEEN..  To me, it's ENJOYABLE..
- I'm WARM..  I'm VIBRATORY..
-Date:   Fri, 05 Feb 2021 13:59:50 +0100
-In-Reply-To: <20210205120455.1289448-1-unixbhaskar@gmail.com> (Bhaskar
-        Chowdhury's message of "Fri, 5 Feb 2021 17:34:55 +0530")
-Message-ID: <87czxeisah.fsf@igel.home>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1.91 (gnu/linux)
+        Fri, 5 Feb 2021 08:01:32 -0500
+Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E288AC0613D6
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 05:00:32 -0800 (PST)
+Received: by mail-qk1-x72a.google.com with SMTP id l27so6675893qki.9
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 05:00:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DBV1D6Ulmmeg0XD410dqPaIFfUR1ad9jwk0fJwumF/4=;
+        b=UYtLnPaRPURQD2DV0MRGsjizexD0di8ASLpoteP2KvUtIa3WtJkzw+uDkUpdlNI+kq
+         +X7UpeuknA84xI9v6BUp87wROVah7IGgRlHubZk+wnFfTpzeuxiOHyKIcKsriAt1uGFH
+         X4nkvLhYNqllZGeFXQReMtjWS6/L7gQMXhiQv1hKdgnLmZQLK3gjfv8V6QYbmkssXMfW
+         4MPf+vSDbkkhsG2lFij1yoIc0/7G7xHu1Qpvv/aesnC1S6l2lrcDL2gjqW4PADahL2tg
+         WoBmA0kZARzwHjKyEgMMqlgLkPlihCRv9RKlQjswMZMIrXRz/qMWTXIRBrCT47kSlqjb
+         71dw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DBV1D6Ulmmeg0XD410dqPaIFfUR1ad9jwk0fJwumF/4=;
+        b=RKOJo4kv2/HPe7DR+rYvpaKMUsYaxmYt8MbQK9yWgfaw1M02dzUxlYNMQG6BFITXf+
+         D/i/bd5IuKd3lHgwRKxbOAIma/pj8vu0hiGDwruTYTUiFG8i5Q9jIlySK0oZp33auLYk
+         1ph+F3olliUtfI4VP0LWOQw/vWpACDigUdQJOkYogRPhh77rflSv3pNqUMTsPkoXwFFX
+         kKI2gDwIk++m3qtrZLOY9lE92b9Oq2QL8YNwKVl6w1qtcmZgfk3Gny6bkj9SOuxf/Ctv
+         16u2J9VSLi0YitSjt1wsf2ZO8HyQoLk9XQPLo6IGbDouJggfq0O3JAcBltk3+pkISfuK
+         q79g==
+X-Gm-Message-State: AOAM531c2Ud6FKaC8qvR3dMpuzoEyAAPbrzCS62qKusuB3irH5cgxDQu
+        4hRd04ERxL1hCxfkO7CUXkM=
+X-Google-Smtp-Source: ABdhPJxrie2UTeqqCE3Vg2D6+dzvEjZzeCzQ3MZFPzh0FksJ4UhzYpjj+t7cqcWPQCb8/suSjM8GHQ==
+X-Received: by 2002:a37:8cd:: with SMTP id 196mr3940194qki.434.1612530032227;
+        Fri, 05 Feb 2021 05:00:32 -0800 (PST)
+Received: from localhost.localdomain ([138.199.10.106])
+        by smtp.gmail.com with ESMTPSA id 17sm9481367qtu.23.2021.02.05.05.00.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Feb 2021 05:00:31 -0800 (PST)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     bskeggs@redhat.com, airlied@linux.ie, daniel@ffwll.ch,
+        dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: [PATCH] drivers: gpu: drm: nouveau: Change not good word with a good one in the file init.c
+Date:   Fri,  5 Feb 2021 18:30:17 +0530
+Message-Id: <20210205130017.1429442-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Feb 05 2021, Bhaskar Chowdhury wrote:
 
-> -/* master list of VME vectors -- don't fuck with this */
-> +/* master list of VME vectors -- don't do anything with this */
 
-don't mess with this
+s/fucking/messing/
 
-Andreas.
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+ drivers/gpu/drm/nouveau/nvkm/subdev/bios/init.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
--- 
-Andreas Schwab, schwab@linux-m68k.org
-GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
-"And now for something completely different."
+diff --git a/drivers/gpu/drm/nouveau/nvkm/subdev/bios/init.c b/drivers/gpu/drm/nouveau/nvkm/subdev/bios/init.c
+index 9de74f41dcd2..bc2a55a82171 100644
+--- a/drivers/gpu/drm/nouveau/nvkm/subdev/bios/init.c
++++ b/drivers/gpu/drm/nouveau/nvkm/subdev/bios/init.c
+@@ -446,7 +446,7 @@ init_ram_restrict(struct nvbios_init *init)
+ {
+ 	/* This appears to be the behaviour of the VBIOS parser, and *is*
+ 	 * important to cache the NV_PEXTDEV_BOOT0 on later chipsets to
+-	 * avoid fucking up the memory controller (somehow) by reading it
++	 * avoid messing up the memory controller (somehow) by reading it
+ 	 * on every INIT_RAM_RESTRICT_ZM_GROUP opcode.
+ 	 *
+ 	 * Preserving the non-caching behaviour on earlier chipsets just
+--
+2.30.0
+
