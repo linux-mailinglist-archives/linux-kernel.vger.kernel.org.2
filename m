@@ -2,105 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6128C310795
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 10:19:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A12D33107D9
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 10:30:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230289AbhBEJSA convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 5 Feb 2021 04:18:00 -0500
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:56213 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229721AbhBEJOu (ORCPT
+        id S230071AbhBEJ2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 04:28:39 -0500
+Received: from mail-m121144.qiye.163.com ([115.236.121.144]:41596 "EHLO
+        mail-m121144.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230413AbhBEJ0M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 04:14:50 -0500
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-18-_nbLTyr_NWyG3CFTV9PN3g-1; Fri, 05 Feb 2021 09:13:04 +0000
-X-MC-Unique: _nbLTyr_NWyG3CFTV9PN3g-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Fri, 5 Feb 2021 09:13:03 +0000
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Fri, 5 Feb 2021 09:13:03 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Pavel Machek' <pavel@ucw.cz>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-CC:     Arnd Bergmann <arnd@kernel.org>, Willy Tarreau <w@1wt.eu>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Krzysztof Adamski <krzysztof.adamski@nokia.com>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Baruch Siach <baruch@tkos.co.il>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Daniel Tang <dt.tangr@gmail.com>,
-        =?iso-8859-1?Q?Uwe_Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        "Jamie Iles" <jamie@jamieiles.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        "Viresh Kumar" <viresh.kumar@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jonas Jensen <jonas.jensen@gmail.com>,
-        Marc Gonzalez <marc.w.gonzalez@free.fr>,
-        Hartley Sweeten <hsweeten@visionengravers.com>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Shawn Guo <shawnguo@kernel.org>, Alex Elder <elder@linaro.org>,
-        "Alexander Shiyan" <shc_work@mail.ru>,
-        Koen Vandeputte <koen.vandeputte@ncentric.com>,
-        Hans Ulli Kroll <ulli.kroll@googlemail.com>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Wei Xu <xuwei5@hisilicon.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Yoshinori Sato <ysato@users.osdn.me>,
-        Mark Salter <msalter@redhat.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        "Geert Uytterhoeven" <geert+renesas@glider.be>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Subject: RE: Old platforms: bring out your dead
-Thread-Topic: Old platforms: bring out your dead
-Thread-Index: AQHW5tIZDj0fPDkXL0CUBZoouVVmHKoiLtzAgCZ1ZXKAAMpxkA==
-Date:   Fri, 5 Feb 2021 09:13:03 +0000
-Message-ID: <4f53ce214f2c498fa47794327a8f35fc@AcuMS.aculab.com>
-References: <CAK8P3a2VW8T+yYUG1pn1yR-5eU4jJXe1+M_ot6DAvfr2KyXCzQ@mail.gmail.com>
- <20210109055645.GA2009@1wt.eu>
- <CAK8P3a1C+EUvyLm3fo8TGOV39hhaxhtDM3cX_QLc-=WCzRksMw@mail.gmail.com>
- <6fb7e3f5035d44fab9801001f1811b59@AcuMS.aculab.com>
- <CAHp75Vf43_zqDX9K4GmkRd7fujY2zC8=LneSMFpC2qnJL_uG1A@mail.gmail.com>
- <20210204210140.GB7529@amd>
-In-Reply-To: <20210204210140.GB7529@amd>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
-MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+        Fri, 5 Feb 2021 04:26:12 -0500
+X-Greylist: delayed 676 seconds by postgrey-1.27 at vger.kernel.org; Fri, 05 Feb 2021 04:26:11 EST
+Received: from ubuntu.localdomain (unknown [157.0.31.124])
+        by mail-m121144.qiye.163.com (Hmail) with ESMTPA id C85A6AC0384;
+        Fri,  5 Feb 2021 17:14:07 +0800 (CST)
+From:   Yang Yang <yang.yang@vivo.com>
+To:     Omar Sandoval <osandov@osandov.com>, Jens Axboe <axboe@kernel.dk>,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     onlyfever@icloud.com
+Subject: [PATCH v2] kyber: introduce kyber_depth_updated()
+Date:   Fri,  5 Feb 2021 01:13:10 -0800
+Message-Id: <20210205091311.129498-1-yang.yang@vivo.com>
+X-Mailer: git-send-email 2.17.1
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZQhpNHk5CSx8aTksZVkpNSklOSk1PT0xCTE9VEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS0hKQ1VLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6MQg6Qjo4Oj8WKSo9OCgoGDky
+        SzoKCjBVSlVKTUpJTkpNT09DSE9PVTMWGhIXVQIaFRxVAhoVHDsNEg0UVRgUFkVZV1kSC1lBWUpO
+        TFVLVUhKVUpJT1lXWQgBWUFPS0pKNwY+
+X-HM-Tid: 0a77717856aeb039kuuuc85a6ac0384
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> We have open-hardware implementation for 486, AFAICT, thanks to MISTer
-> project. I'm not aware of open 586 core.
-> 
-> Being able to run recent Linux on open hardware sounds fun.
+Hang occurs when user changes the scheduler queue depth, by writing to
+the 'nr_requests' sysfs file of that device.
 
-Putting a 486 on an fpga might be 'interesting'.
-But it has a lot of 'cruft' (like 286 protected mode) that
-you really don't need.
-I'd bet RISCV comes out smaller.
+The details of the environment that we found the problem are as follows:
+  an eMMC block device
+  total driver tags: 16
+  default queue_depth: 32
+  kqd->async_depth initialized in kyber_init_sched() with queue_depth=32
 
-Most x86 ports are actually IBM-PC ports - so you'd also have
-to sort out all the peripherals.
+Then we change queue_depth to 256, by writing to the 'nr_requests' sysfs
+file. But kqd->async_depth don't be updated after queue_depth changes.
+Now the value of async depth is too small for queue_depth=256, this may
+cause hang.
 
-	David
+This patch introduces kyber_depth_updated(), so that kyber can update
+async depth when queue depth changes.
 
+Signed-off-by: Yang Yang <yang.yang@vivo.com>
+---
+v2:
+- Change the commit message
+- Change from sbitmap::depth to 2^sbitmap::shift
+---
+ block/kyber-iosched.c | 29 +++++++++++++----------------
+ 1 file changed, 13 insertions(+), 16 deletions(-)
+
+diff --git a/block/kyber-iosched.c b/block/kyber-iosched.c
+index dc89199bc8c6..17215b6bf482 100644
+--- a/block/kyber-iosched.c
++++ b/block/kyber-iosched.c
+@@ -353,19 +353,9 @@ static void kyber_timer_fn(struct timer_list *t)
+ 	}
+ }
+ 
+-static unsigned int kyber_sched_tags_shift(struct request_queue *q)
+-{
+-	/*
+-	 * All of the hardware queues have the same depth, so we can just grab
+-	 * the shift of the first one.
+-	 */
+-	return q->queue_hw_ctx[0]->sched_tags->bitmap_tags->sb.shift;
+-}
 -
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+ static struct kyber_queue_data *kyber_queue_data_alloc(struct request_queue *q)
+ {
+ 	struct kyber_queue_data *kqd;
+-	unsigned int shift;
+ 	int ret = -ENOMEM;
+ 	int i;
+ 
+@@ -400,9 +390,6 @@ static struct kyber_queue_data *kyber_queue_data_alloc(struct request_queue *q)
+ 		kqd->latency_targets[i] = kyber_latency_targets[i];
+ 	}
+ 
+-	shift = kyber_sched_tags_shift(q);
+-	kqd->async_depth = (1U << shift) * KYBER_ASYNC_PERCENT / 100U;
+-
+ 	return kqd;
+ 
+ err_buckets:
+@@ -458,9 +445,19 @@ static void kyber_ctx_queue_init(struct kyber_ctx_queue *kcq)
+ 		INIT_LIST_HEAD(&kcq->rq_list[i]);
+ }
+ 
+-static int kyber_init_hctx(struct blk_mq_hw_ctx *hctx, unsigned int hctx_idx)
++static void kyber_depth_updated(struct blk_mq_hw_ctx *hctx)
+ {
+ 	struct kyber_queue_data *kqd = hctx->queue->elevator->elevator_data;
++	struct blk_mq_tags *tags = hctx->sched_tags;
++	unsigned int shift = tags->bitmap_tags->sb.shift;
++
++	kqd->async_depth = (1U << shift) * KYBER_ASYNC_PERCENT / 100U;
++
++	sbitmap_queue_min_shallow_depth(tags->bitmap_tags, kqd->async_depth);
++}
++
++static int kyber_init_hctx(struct blk_mq_hw_ctx *hctx, unsigned int hctx_idx)
++{
+ 	struct kyber_hctx_data *khd;
+ 	int i;
+ 
+@@ -502,8 +499,7 @@ static int kyber_init_hctx(struct blk_mq_hw_ctx *hctx, unsigned int hctx_idx)
+ 	khd->batching = 0;
+ 
+ 	hctx->sched_data = khd;
+-	sbitmap_queue_min_shallow_depth(hctx->sched_tags->bitmap_tags,
+-					kqd->async_depth);
++	kyber_depth_updated(hctx);
+ 
+ 	return 0;
+ 
+@@ -1022,6 +1018,7 @@ static struct elevator_type kyber_sched = {
+ 		.completed_request = kyber_completed_request,
+ 		.dispatch_request = kyber_dispatch_request,
+ 		.has_work = kyber_has_work,
++		.depth_updated = kyber_depth_updated,
+ 	},
+ #ifdef CONFIG_BLK_DEBUG_FS
+ 	.queue_debugfs_attrs = kyber_queue_debugfs_attrs,
+-- 
+2.17.1
 
