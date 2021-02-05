@@ -2,128 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86E66310FE5
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 19:31:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 75968310FE4
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 19:31:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233339AbhBEQrR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 11:47:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44742 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233367AbhBEQnp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 11:43:45 -0500
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93589C061574;
-        Fri,  5 Feb 2021 10:25:26 -0800 (PST)
-Received: by mail-pl1-x634.google.com with SMTP id y10so3996902plk.7;
-        Fri, 05 Feb 2021 10:25:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hDtDmxYzgl4d3/qs8/uzGh/wEnBrhxdK4yPraq/NRyY=;
-        b=t/YdSGFw8VqVoa1GNBxu66fezqmi5TUbADL4oVBPP0/IG+bTi9h+DonXXD74X7QVK5
-         II/iIdPGSImQKVW0c0xTg+LpukBQkR3ZCwdgBBONudJ5sJ1CmSIZtK0fFW596jozgVfP
-         jDxRTaesog5T9hs6HHcA05q67L2mtvNUCgnbTcvhePAkiB1gbBgexUo+16qYPESc35cS
-         12YFYIz8AiLXqUaeA6GU0MdLL5T50YfvsHreaRKnTAL5VcciMUWT1OxjMi5lik8twYGl
-         ZEaEPXqp50XtaKR1OyCyTUpzAxhFczg3p+5TRhO45kA/kIUAuzqXOMjyXssWzV7gOPjc
-         etiQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hDtDmxYzgl4d3/qs8/uzGh/wEnBrhxdK4yPraq/NRyY=;
-        b=LWthXTU67G1g5KeSCdClGLDWBO0B5k0kCMSI0WXLH054gb/qjarwjGlMhsvWjJ31j0
-         cFIglaaqnNqnQpoMvapGCXS3LE3SDJrq4UvMB1udptcHIzgPgJNZ7jVpM3Sb3hfW0GMb
-         c1oykQghk9vRFXSR4gKn60AtTdg54IJQpLcUneR5i5BuMJl9cAvihfhEpfeyDjLcnYXm
-         fqX0gGOYvSppUSfEQ5vk2qT/rEcdWcO4qAQLAbO9TxkKhowuSyh9WgqlemcT5+ekV7+z
-         eO6wY+vA3vDgVEJwSTNGCibERPxEIwHZvH+T6nyonaP91tmyRpZaa3Clf112B7n5535d
-         IvHw==
-X-Gm-Message-State: AOAM533dqfsuIj3UXS5DMWlbCvy3zcMb+QPS9X36etqoK7zsnWnEb1PY
-        DOe5sb61vGsQ9qKcY6iQ0n3LU13N6F21ByhR7Rw=
-X-Google-Smtp-Source: ABdhPJxA5kH01hLnpC/G1J9D4X8lAY5LIygvAT+AFOof8c9R8sEDvANdrZQK4kJzaz+ZteiN5lyLdGNZskLCBBI8/P4=
-X-Received: by 2002:a17:90a:1b23:: with SMTP id q32mr5408942pjq.181.1612549526116;
- Fri, 05 Feb 2021 10:25:26 -0800 (PST)
+        id S233599AbhBEQqU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 11:46:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45156 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233294AbhBEQnn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 11:43:43 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 62B4D64E4D;
+        Fri,  5 Feb 2021 18:25:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612549524;
+        bh=hb309p839a18x47275kXH8RdkKDWYDg5Qa7e2tIfzIU=;
+        h=Subject:To:References:From:Date:In-Reply-To:From;
+        b=PP/2qv0ejvMgDlya0fseiY1tFEzYeNhIgoz2v+eezRT1XWzBYyjXcEICJm8sun0kQ
+         aSi59nceGXXXGoj4w4mG4ZYipqkso3wM8Wpb9AOeGReZI+iP9cz73lozokotMkju6f
+         mkcnrMgEhT9vuowqgW8VHdUByJb+SOMtWCcYTdTu6RSEYHZutHEr2wEaGl63bnkefa
+         cAHibiZPqBznjlN6ge11tK2orMz+XjWsUerZswaMzxDb9+YRMkh9qHfSOzVDQMOjOf
+         Yh8Unu4ucUnxv6cEJ4SleeSrWn1cgwOFVv6mbh2veyyaKljuXo6SI6z4W9oJP8TVKR
+         0HK075rWG8bkA==
+Subject: Re: [PATCH][RESEND] lib/vsprintf: make-printk-non-secret printks all
+ addresses as unhashed
+To:     Vlastimil Babka <vbabka@suse.cz>, Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        willy@infradead.org, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, roman.fietze@magna.com,
+        keescook@chromium.org, john.ogness@linutronix.de,
+        akinobu.mita@gmail.com
+References: <20210202213633.755469-1-timur@kernel.org>
+ <3baace45-38af-a59b-c376-9a4c39a17b2d@suse.cz>
+From:   Timur Tabi <timur@kernel.org>
+Message-ID: <d6223371-a5e7-28ac-704c-0e3d5b7ea713@kernel.org>
+Date:   Fri, 5 Feb 2021 12:25:22 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210122154300.7628-1-calvin.johnson@oss.nxp.com>
- <20210122154300.7628-8-calvin.johnson@oss.nxp.com> <20210205172518.GA18214@lsv03152.swis.in-blr01.nxp.com>
-In-Reply-To: <20210205172518.GA18214@lsv03152.swis.in-blr01.nxp.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Fri, 5 Feb 2021 20:25:09 +0200
-Message-ID: <CAHp75VdX2gZbt-eYp31wg0r+yih8omGxcTf6cMyhxjMZZYzFuQ@mail.gmail.com>
-Subject: Re: [net-next PATCH v4 07/15] net: mdiobus: Introduce fwnode_mdiobus_register_phy()
-To:     Calvin Johnson <calvin.johnson@oss.nxp.com>
-Cc:     Grant Likely <grant.likely@arm.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Jeremy Linton <jeremy.linton@arm.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        Cristi Sovaiala <cristian.sovaiala@nxp.com>,
-        Florin Laurentiu Chiculita <florinlaurentiu.chiculita@nxp.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Madalin Bucur <madalin.bucur@oss.nxp.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Pieter Jansen Van Vuuren <pieter.jansenvv@bamboosystems.io>,
-        Jon <jon@solid-run.com>, Saravana Kannan <saravanak@google.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "linux.cj" <linux.cj@gmail.com>,
-        Diana Madalina Craciun <diana.craciun@nxp.com>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        devicetree <devicetree@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <3baace45-38af-a59b-c376-9a4c39a17b2d@suse.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 5, 2021 at 7:25 PM Calvin Johnson
-<calvin.johnson@oss.nxp.com> wrote:
-> On Fri, Jan 22, 2021 at 09:12:52PM +0530, Calvin Johnson wrote:
 
-...
 
-> > +     rc = fwnode_property_match_string(child, "compatible", "ethernet-phy-ieee802.3-c45");
-> With ACPI, I'm facing some problem with fwnode_property_match_string(). It is
-> unable to detect the compatible string and returns -EPROTO.
->
-> ACPI node for PHY4 is as below:
->
->  Device(PHY4) {
->     Name (_ADR, 0x4)
->     Name(_CRS, ResourceTemplate() {
->     Interrupt(ResourceConsumer, Level, ActiveHigh, Shared)
->     {
->       AQR_PHY4_IT
->     }
->     }) // end of _CRS for PHY4
->     Name (_DSD, Package () {
->       ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
->         Package () {
->           Package () {"compatible", "ethernet-phy-ieee802.3-c45"}
->        }
->     })
->   } // end of PHY4
->
->  What is see is that in acpi_data_get_property(),
-> propvalue->type = 0x2(ACPI_TYPE_STRING) and type = 0x4(ACPI_TYPE_PACKAGE).
->
-> Any help please?
->
-> fwnode_property_match_string() works fine for DT.
+On 2/5/21 4:59 AM, Vlastimil Babka wrote:
+> Thanks a lot. Should this also affect %pK though? IIUC, there's currently no way
+> to achieve non-mangled %pK in all cases, even with the most permissive
+> kptr_restrict=1 setting:
+> - in IRQ, there's "pK-error" instead
+> - in a context of non-CAP_SYSLOG process, nulls are printed
 
-Can you show the DT node which works and also input for the
-)match_string() (i.o.w what exactly you are trying to match with)?
+Hmmm..  I thought %pK prints an unhashed pointer when the user is root, 
+at least in situations where the user can be known (e.g. during an ioctl 
+call).
 
--- 
-With Best Regards,
-Andy Shevchenko
+> Yes, neither should matter if %pK were only used for prints that generate
+> content of some kind of /proc file read by a CAP_SYSLOG process, but that
+> doesn't seem to be the case and there are %pK used for printing to dmesg too...
+
+I thought about that.  On one hand, people who use %pK probably really 
+wanted a hashed pointer printed.  On the other hand, I agree that %pK 
+should not be used for dmesg prints.
+
+I get the feeling that some (most?) people who use %pK don't really 
+understand how it's supposed to be used.
+
+I can extend make-printk-non-secret to %pK if everyone agrees.
