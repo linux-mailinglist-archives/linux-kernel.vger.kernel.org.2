@@ -2,223 +2,326 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3324C31130B
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 22:05:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7B4F311311
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 22:07:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233244AbhBETXJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 14:23:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49176 "EHLO
+        id S231657AbhBETYL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 14:24:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233082AbhBETSk (ORCPT
+        with ESMTP id S233666AbhBETUo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 14:18:40 -0500
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3CE3C0613D6;
-        Fri,  5 Feb 2021 13:00:51 -0800 (PST)
-Received: by mail-io1-xd2f.google.com with SMTP id f67so6802445ioa.1;
-        Fri, 05 Feb 2021 13:00:51 -0800 (PST)
+        Fri, 5 Feb 2021 14:20:44 -0500
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C16B2C061793;
+        Fri,  5 Feb 2021 13:02:29 -0800 (PST)
+Received: by mail-lf1-x12c.google.com with SMTP id f1so11830937lfu.3;
+        Fri, 05 Feb 2021 13:02:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=hi9Rt3BdtDidHjyujOpga3jEqfXm3rLdI8GGqexPGLM=;
-        b=Bn6KvzgkCZbCQ4KFEWt3k1LXHpDWcjVxrqsiV1DsgdaHSZkSpursJwFfdw2VzuPvW+
-         /pduGGJB+vcQydYxBmP54le63chFVkUb8I+1oFWfOt7gHWkCWwXI2IoifMcIpk/2QBHb
-         iyzuJpoGhkNihlyISN/ZHix0uxqxSyKoCGA44Lyq39ftmrz5aGC2PkUsjrM78AQ/t1sM
-         biIL73tKrim6JWqNhr2IxaYm8E7Fb8cgOU+2C4pL2im41P35edIk2kILTTTCYjzFXTBQ
-         eF6Sf+N0SyubcaSAC1eWckOSy2Xciu/N3budm6m06VaFgoWZ6dSdcHSLKvACVWhLdXf/
-         DD0g==
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=k7vUdIFSyjcIsr6cUWGwF1VVMP7n9ffhEoVI+QUVxQ4=;
+        b=lPFb7EhCxp3KO6bVZ79XOvUDbLCiemZY6nEJIV7GiF8PEr5dpiosSZEWSFhbgl8/Xk
+         VrRFXX0uw4sWgmU36iz3q8uq9IQZ9jidrmiPGzAX9DP0dh32Y9PU4aNYQXe/kA/lY+cJ
+         24lJNhYqPvPT/1t5vge1aiz6Y9IULgxKG3c5AvJ+enJ7mPPju/tWLrNiIBJZWx01VUt0
+         edUw61iCOXbuQvepGnTCwPSpBWkkLO4SE198cE2IKBQQ2d0grZCljMIp6rhaxiJdok3/
+         qWYj2KEfuufclFgkiQz1qwH2BcHKE0ns59iJ0gWAmYgHRpiL0LGBXot/8b2I9ZU8zQUI
+         FPiw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=hi9Rt3BdtDidHjyujOpga3jEqfXm3rLdI8GGqexPGLM=;
-        b=rXiJ9H+jsvLZ33Urjhjp3alXA4bXjYNWHc/ywUDD50qi8bZimy8HlSMe/s1yd1J4a9
-         PUCoDOgdAiX55jcLltF0P0Sl+Md/ZFJG3nFpPMoVaAs6hxhg1MuiwjFh/ttf951VQVt8
-         H2UJIJY0CMQ7WiyutwLsBHle2xl5aChsPv2xwP/MxyFArjvqSzOegyILuyxk27vAzvgQ
-         DyQJwV1F04xMSxqBH3LSH062xEy34+vP68szgyqEgKqAyDZGYBVxaqIjkg2vf+dyOXxY
-         TshG2khj0PA9e6QNP1z/dbvMU3ceSgo93x1gnQHfe8sLaeCSaNSuL1RJ4ofQzv0iQGeq
-         YvKQ==
-X-Gm-Message-State: AOAM532UN2p6hHf5GfOY7Gyj5sYSb5x63FcZl1RjNq9oXDkjukpPdQq8
-        8x5k6vjpOL6n34httyom05MYyn3Bqe8GDzBmrPw=
-X-Google-Smtp-Source: ABdhPJzYzGg+6Z6sHG4psEDgJUKr7M9Q11buxQ5eClzbNDi0FQpzv06YP/sLz4MYRbUkwnhZZySI/kO59NR+sxE5lg4=
-X-Received: by 2002:a05:6602:150a:: with SMTP id g10mr5853934iow.75.1612558851265;
- Fri, 05 Feb 2021 13:00:51 -0800 (PST)
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=k7vUdIFSyjcIsr6cUWGwF1VVMP7n9ffhEoVI+QUVxQ4=;
+        b=dhhMJhrntECGxEJ7Ly9wskLm/rgQaWbaKNaGbeecr5z+55M2L8BiobemHF02EUb7VQ
+         /Sqo5x4MLC0iUduBlIhDZwmk4AXRWXHkbjMC2AS6ea6Ca71EkhfHYO/EZavJOpa34PAK
+         Rj7U1TPbJdJIQFg/9Ns9n8qp74ehe8XIY9dRL8+z+tDG7Yh9FobNc4i6gPXNU3JrgFSe
+         S4+JPJkfIjjtHjtXFfaKG58SjHLY5ZrQ66HFoc4KU83kCk7G1Ht+lXL161yycBbRZ9PY
+         qlY8W3QkA3oFh0WcpN9mu8/QS4q8uUyx4BoS11vXLiu7zfHEOt5puwTPSTE5Mp8Gmi3M
+         lpiA==
+X-Gm-Message-State: AOAM5301CY+zXMCfe4ZWGU/lPIV3Z4yBxE4Gkluz6SSHhBkyErQYxKRf
+        Btkc1P7X3pM9cPPShC/a2P1u7Est7j5oHsROvnmezr9x35HIZQ==
+X-Google-Smtp-Source: ABdhPJy3AdE0Fv1P00g33kyYEE56m6bP3q/j+imuspRUMq6OgQ95Zw6IXm1PWub7pAazuy75GUVwVcvMxwmekcfbNZo=
+X-Received: by 2002:ac2:446c:: with SMTP id y12mr3406770lfl.657.1612558948130;
+ Fri, 05 Feb 2021 13:02:28 -0800 (PST)
 MIME-Version: 1.0
-References: <20210205202220.2748551-1-ndesaulniers@google.com>
-In-Reply-To: <20210205202220.2748551-1-ndesaulniers@google.com>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Fri, 5 Feb 2021 22:00:39 +0100
-Message-ID: <CA+icZUW3sg_PkbmKSFMs6EqwQV7=hvKuAgZSsbg=Qr6gTs7RbQ@mail.gmail.com>
-Subject: Re: [PATCH v9 0/3] Kbuild: DWARF v5 support
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
-        linux-kbuild@vger.kernel.org, linux-arch@vger.kernel.org,
-        Jakub Jelinek <jakub@redhat.com>,
-        Fangrui Song <maskray@google.com>,
-        Caroline Tice <cmtice@google.com>,
-        Nick Clifton <nickc@redhat.com>, Yonghong Song <yhs@fb.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Chris Murphy <bugzilla@colorremedies.com>,
-        Mark Wielaard <mark@klomp.org>
+From:   Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
+Date:   Sat, 6 Feb 2021 02:02:16 +0500
+Message-ID: <CABXGCsOposU1A_HavA_jmtkJMKhDZgh5m1b_YJK1Es5wyE-hZw@mail.gmail.com>
+Subject: BUG: KASAN: use-after-free in snd_complete_urb+0x109e/0x1740
+ [snd_usb_audio] (5.11-rc6)
+To:     zonque@gmail.com, tiwai@suse.de
+Cc:     Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
+        alsa-devel@alsa-project.org, linux-usb@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 5, 2021 at 9:22 PM Nick Desaulniers <ndesaulniers@google.com> wrote:
->
-> DWARF v5 is the latest standard of the DWARF debug info format.
->
-> DWARF5 wins significantly in terms of size and especially so when mixed
-> with compression (CONFIG_DEBUG_INFO_COMPRESSED).
->
-> Link: http://www.dwarfstd.org/doc/DWARF5.pdf
->
-> Patch 1 places the DWARF v5 sections explicitly in the kernel linker
-> script.
-> Patch 2 modifies Kconfig for DEBUG_INFO_DWARF4 to be used as a fallback.
-> Patch 3 adds an explicit Kconfig for DWARF v5 for clang and older GCC
-> where the implicit default DWARF version is not 5.
->
-> Changes from v8:
-> * Separate out the linker script changes (from v7 0002). Put those
->   first. Carry Reviewed by and tested by tags.  Least contentious part
->   of the series. Tagged for stable; otherwise users upgrading to GCC 11
->   may find orphan section warnings from the implicit default DWARF
->   version changing and generating the new debug info sections.
-> * Add CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT in 0002, make it the
->   default rather than CONFIG_DEBUG_INFO_DWARF4, as per Mark, Jakub,
->   Arvind.
-> * Drop reviewed by and tested by tags for 0002 and 0003; sorry
->   reviewers/testers, but I view that as a big change. I will buy you
->   beers if you're fatigued, AND for the help so far. I appreciate you.
+Hi folks.
+On 5.11-rc6 (git 3aaf0a27ffc2) I caught a new issue.
+For unknown reason sound disappeared in my headset Hyperx orbit s.
+But after reconnecting to another USB port headset stopped being
+detected as USB device in dmesg
+and in log appears a record about bug KASAN: use-after-free.
 
-All 3 patches NACKed - I drink no beer.
+[37920.370627] xhci_hcd 0000:06:00.3: AMD-Vi: Event logged
+[IO_PAGE_FAULT domain=0x0013 address=0xfe836480 flags=0x0000]
+[37920.370720] xhci_hcd 0000:06:00.3: WARNING: Host System Error
+[37925.514865] xhci_hcd 0000:06:00.3: xHCI host not responding to stop
+endpoint command.
+[37925.514875] xhci_hcd 0000:06:00.3: USBSTS: HCHalted HSE EINT HCE
+[37925.514883] xhci_hcd 0000:06:00.3: xHCI host controller not
+responding, assume dead
+[37925.515700] xhci_hcd 0000:06:00.3: HC died; cleaning up
+[37925.515760] usb 3-1: USB disconnect, device number 2
+[37925.515765] usb 3-1.1: USB disconnect, device number 5
+[37925.515896] ==================================================================
+[37925.515899] BUG: KASAN: use-after-free in
+snd_complete_urb+0x109e/0x1740 [snd_usb_audio]
+[37925.515919] Read of size 8 at addr ffff88813a264260 by task
+kworker/19:0/649395
 
-- sed@ -
+[37925.515926] CPU: 19 PID: 649395 Comm: kworker/19:0 Tainted: G
+ W        --------- ---
+5.11.0-0.rc6.20210203git3aaf0a27ffc2.144.fc34.x86_64 #1
+[37925.515930] Hardware name: System manufacturer System Product
+Name/ROG STRIX X570-I GAMING, BIOS 3402 01/13/2021
+[37925.515934] Workqueue: usb_hub_wq hub_event
+[37925.515940] Call Trace:
+[37925.515943]  <IRQ>
+[37925.515945]  dump_stack+0xae/0xe5
+[37925.515955]  print_address_description.constprop.0+0x18/0x160
+[37925.515960]  ? snd_complete_urb+0x109e/0x1740 [snd_usb_audio]
+[37925.515976]  kasan_report.cold+0x7f/0x10e
+[37925.515981]  ? snd_complete_urb+0x109e/0x1740 [snd_usb_audio]
+[37925.515997]  snd_complete_urb+0x109e/0x1740 [snd_usb_audio]
+[37925.516013]  ? usb_hcd_unmap_urb_for_dma+0x22/0x660
+[37925.516020]  ? xhci_unmap_urb_for_dma+0x21/0x3f0
+[37925.516025]  __usb_hcd_giveback_urb+0x24b/0x400
+[37925.516029]  usb_giveback_urb_bh+0x239/0x3f0
+[37925.516034]  ? __usb_hcd_giveback_urb+0x400/0x400
+[37925.516037]  ? ktime_get+0xbd/0x180
+[37925.516042]  ? sched_clock+0x5/0x10
+[37925.516046]  tasklet_action_common.constprop.0+0x166/0x320
+[37925.516052]  __do_softirq+0x1f6/0x9e9
+[37925.516058]  asm_call_irq_on_stack+0x12/0x20
+[37925.516062]  </IRQ>
+[37925.516064]  do_softirq_own_stack+0x85/0xa0
+[37925.516068]  __irq_exit_rcu+0x201/0x2e0
+[37925.516071]  irq_exit_rcu+0xa/0x20
+[37925.516074]  sysvec_apic_timer_interrupt+0x48/0xa0
+[37925.516079]  asm_sysvec_apic_timer_interrupt+0x12/0x20
+[37925.516083] RIP: 0010:__list_del_entry_valid+0xad/0xf0
+[37925.516088] Code: 02 00 75 51 49 8b 14 24 48 39 ea 0f 85 55 d1 2a
+01 48 b8 00 00 00 00 00 fc ff df 49 8d 7d 08 48 89 fa 48 c1 ea 03 80
+3c 02 00 <75> 22 49 8b 55 08 48 39 ea 0f 85 66 d1 2a 01 5d b8 01 00 00
+00 41
+[37925.516092] RSP: 0018:ffffc9001b9f77f8 EFLAGS: 00000246
+[37925.516096] RAX: dffffc0000000000 RBX: 0000000000000001 RCX: ffffffffb0464036
+[37925.516099] RDX: 1ffff1102569fa0f RSI: 0000000000000004 RDI: ffff88812b4fd078
+[37925.516101] RBP: ffff88812ac8b070 R08: 0000000000000001 R09: ffff88812ac8b083
+[37925.516104] R10: ffffed1025591610 R11: 0000000000000001 R12: ffff888129d63048
+[37925.516106] R13: ffff88812b4fd070 R14: ffff88812ac8b078 R15: dffffc0000000000
+[37925.516114]  ? klist_put+0x76/0x170
+[37925.516119]  klist_release+0x4e/0x450
+[37925.516123]  ? __device_link_free_srcu+0xe0/0xe0
+[37925.516128]  klist_put+0xa9/0x170
+[37925.516132]  device_del+0x22c/0xb50
+[37925.516137]  ? __device_link_del+0x350/0x350
+[37925.516141]  ? lock_acquire+0x5ab/0x790
+[37925.516144]  ? mutex_lock_io_nested+0x1010/0x1010
+[37925.516147]  ? lock_release+0x579/0xd20
+[37925.516151]  device_unregister+0x16/0xa0
+[37925.516155]  usb_remove_ep_devs+0x37/0x70
+[37925.516158]  usb_disable_device+0x25c/0x5f0
+[37925.516163]  usb_disconnect.cold+0x20c/0x683
+[37925.516172]  usb_disconnect.cold+0x107/0x683
+[37925.516176]  ? trace_hardirqs_on+0x1c/0x160
+[37925.516181]  hub_quiesce+0x148/0x2d0
+[37925.516186]  hub_event+0xcb1/0x3880
+[37925.516189]  ? lock_acquire+0x5ab/0x790
+[37925.516192]  ? lock_acquire+0x5ab/0x790
+[37925.516196]  ? lock_acquire+0x5ab/0x790
+[37925.516199]  ? lock_release+0x579/0xd20
+[37925.516204]  ? lock_downgrade+0x6b0/0x6b0
+[37925.516207]  ? lock_contended+0xbe0/0xbe0
+[37925.516209]  ? do_raw_spin_lock+0x250/0x250
+[37925.516214]  ? hub_port_debounce+0x2e0/0x2e0
+[37925.516217]  ? lock_acquire+0x5ab/0x790
+[37925.516220]  ? lock_release+0xd20/0xd20
+[37925.516223]  ? lock_downgrade+0x6b0/0x6b0
+[37925.516226]  ? do_raw_spin_trylock+0xa5/0x160
+[37925.516230]  ? lock_contended+0xbe0/0xbe0
+[37925.516237]  process_one_work+0x89f/0x1450
+[37925.516243]  ? pwq_dec_nr_in_flight+0x260/0x260
+[37925.516247]  ? lock_acquired+0x5d4/0xaf0
+[37925.516251]  worker_thread+0x590/0xf80
+[37925.516258]  ? process_one_work+0x1450/0x1450
+[37925.516262]  kthread+0x368/0x440
+[37925.516265]  ? _raw_spin_unlock_irq+0x24/0x40
+[37925.516268]  ? __kthread_bind_mask+0x90/0x90
+[37925.516272]  ret_from_fork+0x22/0x30
 
-> * Rework commit one lines, and commit messages somewhat.
-> * Remove Kconfig help text about v4 being "bigger."
-> * I didn't touch the BTF config from v8, but suggest the BTF folks
->   consider
->   https://lore.kernel.org/bpf/20210111180609.713998-1-natechancellor@gmail.com/
->   that way we can express via Kconfig that older version of pahole are
->   in conflict with other Kconfig options.
->
-> Changes from v7:
-> (Strictly commit message changes)
-> * Pick up Nathan's reviewed by tags for both patches.
-> * Add note about only modifying compiler dwarf info, not assembler dwarf
->   info, as per Nathan.
-> * Add link to Red Hat bug report and Chris' reported by on patch 2.
-> * Add more info from Jakub on patch 2 commit message.
-> * Reorder info about validating version, noting the tree is not "clean"
->   in the sense that parts mess up existing CFLAGS, or don't use
->   DEBUG_CFLAGS. I will not be adding such cleanups to this series. They
->   can be done AFTER.
-> * Update note about 2.35.2 (rather than include the full text Jakub
->   wrote on it in https://patchwork.kernel.org/project/linux-kbuild/patch/20201022012106.1875129-1-ndesaulniers@google.com/#23727667).
-> * Add note that GCC 11 has changed the implicit default version.
->
-> Changes from v6:
-> * Reorder sections from linker script to match order from BFD's internal
->   linker script.
-> * Add .debug_names section, as per Fangrui.
-> * Drop CONFIG_DEBUG_INFO_DWARF2. Patch 0001 becomes a menu with 1
->   choice. GCC's implicit default version of DWARF has been DWARF v4
->   since ~4.8.
-> * Modify the test script to check for the presence of
->   https://sourceware.org/bugzilla/show_bug.cgi?id=27195.
-> * Drop the clang without integrated assembler block in
->   0002. Bumps the version requirement for GAS to 2.35.2, which isn't
->   released yet (but should be released soon).  Folks looking to test
->   with clang but without the integrated assembler should fetch
->   binutils-gdb, build it from source, add a symlink to
->   binutils-gdb/gas/as-new to binutils-gdb/gas/as, then prefix
->   binutils-gdb/gas/as to their $PATH when building the kernel.
->
-> Changes from v5:
-> * Drop previous patch 1, it has been accepted into kbuild:
->   https://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git/commit/?h=kbuild&id=3f4d8ce271c7082be75bacbcbd2048aa78ce2b44
-> * Trying to set -Wa,-gdwarf-4 in the earlier patch was the source of
->   additional complexity. Drop it that part of the patch. We can revisit
->   clang without the integrated assembler setting -Wa,-gdwarf-4 later.
->   That is a separate problem from generally supporting DWARF v5.
-> * Rework the final patch for clang without the integrated assembler.
->   -Wa,-gdwarf-5 is required for DWARF5 in that case otherwise GAS will
->   not accept the assembler directives clang produces from C code when
->   generating asm.
->
-> Changes from v4:
-> * drop set -e from script as per Nathan.
-> * add dependency on !CONFIG_DEBUG_INFO_BTF for DWARF v5 as per Sedat.
-> * Move LLVM_IAS=1 complexity from patch 2 to patch 3 as per Arvind and
->   Masahiro. Sorry it took me a few tries to understand the point (I
->   might still not), but it looks much cleaner this way. Sorry Nathan, I
->   did not carry forward your previous reviews as a result, but I would
->   appreciate if you could look again.
-> * Add Nathan's reviewed by tag to patch 1.
-> * Reword commit message for patch 3 to mention LLVM_IAS=1 and -gdwarf-5
->   binutils addition later, and BTF issue.
-> * I still happen to see a pahole related error spew for the combination
->   of:
->   * LLVM=1
->   * LLVM_IAS=1
->   * CONFIG_DEBUG_INFO_DWARF4
->   * CONFIG_DEBUG_INFO_BTF
->   Though they're non-fatal to the build. I'm not sure yet why removing
->   any one of the above prevents the warning spew. Maybe we'll need a v6.
->
-> Changes from v3:
->
-> Changes as per Arvind:
-> * only add -Wa,-gdwarf-5 for (LLVM=1|CC=clang)+LLVM_IAS=0 builds.
-> * add -gdwarf-5 to Kconfig shell script.
-> * only run Kconfig shell script for Clang.
->
-> Apologies to Sedat and Nathan; I appreciate previous testing/review, but
-> I did no carry forward your Tested-by and Reviewed-by tags, as the
-> patches have changed too much IMO.
->
-> Changes from v2:
-> * Drop two of the earlier patches that have been accepted already.
-> * Add measurements with GCC 10.2 to commit message.
-> * Update help text as per Arvind with help from Caroline.
-> * Improve case/wording between DWARF Versions as per Masahiro.
->
-> Changes from the RFC:
-> * split patch in 3 patch series, include Fangrui's patch, too.
-> * prefer `DWARF vX` format, as per Fangrui.
-> * use spaces between assignment in Makefile as per Masahiro.
-> * simplify setting dwarf-version-y as per Masahiro.
-> * indent `prompt` in Kconfig change as per Masahiro.
-> * remove explicit default in Kconfig as per Masahiro.
-> * add comments to test_dwarf5_support.sh.
-> * change echo in test_dwarf5_support.sh as per Masahiro.
-> * remove -u from test_dwarf5_support.sh as per Masahiro.
-> * add a -gdwarf-5 cc-option check to Kconfig as per Jakub.
->
-> Nick Desaulniers (3):
->   vmlinux.lds.h: add DWARF v5 sections
->   Kbuild: make DWARF version a choice
->   Kconfig: allow explicit opt in to DWARF v5
->
->  Makefile                          |  6 ++--
->  include/asm-generic/vmlinux.lds.h |  7 ++++-
->  lib/Kconfig.debug                 | 48 +++++++++++++++++++++++++++----
->  scripts/test_dwarf5_support.sh    |  8 ++++++
->  4 files changed, 61 insertions(+), 8 deletions(-)
->  create mode 100755 scripts/test_dwarf5_support.sh
->
-> --
-> 2.30.0.365.g02bc693789-goog
->
+[37925.516282] Allocated by task 662343:
+[37925.516285]  kasan_save_stack+0x1b/0x40
+[37925.516292]  ____kasan_kmalloc.constprop.0+0x84/0xa0
+[37925.516295]  snd_usb_add_endpoint+0xf9/0x4f0 [snd_usb_audio]
+[37925.516311]  __snd_usb_parse_audio_interface+0xab3/0x35e0 [snd_usb_audio]
+[37925.516328]  snd_usb_parse_audio_interface+0x5f/0xb0 [snd_usb_audio]
+[37925.516343]  snd_usb_create_stream.isra.0+0x1be/0x430 [snd_usb_audio]
+[37925.516358]  usb_audio_probe+0x731/0x21d0 [snd_usb_audio]
+[37925.516376]  usb_probe_interface+0x26e/0x750
+[37925.516379]  really_probe+0x224/0xcc0
+[37925.516382]  driver_probe_device+0x1f2/0x380
+[37925.516384]  bus_for_each_drv+0x119/0x180
+[37925.516388]  __device_attach+0x26d/0x3d0
+[37925.516390]  bus_probe_device+0x1a5/0x260
+[37925.516393]  device_add+0x8c6/0x19e0
+[37925.516398]  usb_set_configuration+0x9df/0x1550
+[37925.516401]  usb_generic_driver_probe+0x79/0xa0
+[37925.516404]  usb_probe_device+0xa3/0x250
+[37925.516407]  really_probe+0x224/0xcc0
+[37925.516409]  driver_probe_device+0x1f2/0x380
+[37925.516412]  bus_for_each_drv+0x119/0x180
+[37925.516415]  __device_attach+0x26d/0x3d0
+[37925.516422]  bus_probe_device+0x1a5/0x260
+[37925.516424]  device_add+0x8c6/0x19e0
+[37925.516427]  usb_new_device.cold+0x536/0xc06
+[37925.516430]  hub_event+0x219b/0x3880
+[37925.516433]  process_one_work+0x89f/0x1450
+[37925.516436]  worker_thread+0x590/0xf80
+[37925.516440]  kthread+0x368/0x440
+[37925.516443]  ret_from_fork+0x22/0x30
+
+[37925.516450] Last potentially related work creation:
+[37925.516452]  kasan_save_stack+0x1b/0x40
+[37925.516455]  kasan_record_aux_stack+0xbc/0xe0
+[37925.516459]  call_rcu+0x162/0x1100
+[37925.516462]  amdgpu_bo_list_put+0x16c/0x1b0 [amdgpu]
+[37925.516650]  amdgpu_cs_ioctl+0x2117/0x4d10 [amdgpu]
+[37925.516839]  drm_ioctl_kernel+0x1af/0x240 [drm]
+[37925.516870]  drm_ioctl+0x43b/0x8e0 [drm]
+[37925.516898]  amdgpu_drm_ioctl+0xce/0x1b0 [amdgpu]
+[37925.517074]  __x64_sys_ioctl+0x127/0x190
+[37925.517078]  do_syscall_64+0x33/0x40
+[37925.517083]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+[37925.517089] Second to last potentially related work creation:
+[37925.517091]  kasan_save_stack+0x1b/0x40
+[37925.517093]  kasan_record_aux_stack+0xbc/0xe0
+[37925.517096]  call_rcu+0x162/0x1100
+[37925.517101]  amdgpu_bo_list_put+0x16c/0x1b0 [amdgpu]
+[37925.517282]  amdgpu_cs_ioctl+0x2117/0x4d10 [amdgpu]
+[37925.517461]  drm_ioctl_kernel+0x1af/0x240 [drm]
+[37925.517489]  drm_ioctl+0x43b/0x8e0 [drm]
+[37925.517518]  amdgpu_drm_ioctl+0xce/0x1b0 [amdgpu]
+[37925.517694]  __x64_sys_ioctl+0x127/0x190
+[37925.517700]  do_syscall_64+0x33/0x40
+[37925.517704]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+[37925.517709] The buggy address belongs to the object at ffff88813a264000
+                which belongs to the cache kmalloc-8k of size 8192
+[37925.517712] The buggy address is located 608 bytes inside of
+                8192-byte region [ffff88813a264000, ffff88813a266000)
+[37925.517716] The buggy address belongs to the page:
+[37925.517718] page:00000000a07d7675 refcount:1 mapcount:0
+mapping:0000000000000000 index:0xffff88813a264000 pfn:0x13a260
+[37925.517726] head:00000000a07d7675 order:3 compound_mapcount:0
+compound_pincount:0
+[37925.517729] flags: 0x17ffffc0010200(slab|head)
+[37925.517735] raw: 0017ffffc0010200 0000000000000000 0000000100000001
+ffff888100042280
+[37925.517738] raw: ffff88813a264000 0000000080020001 00000001ffffffff
+ffff8882fa23cca1
+[37925.517740] page dumped because: kasan: bad access detected
+[37925.517742] pages's memcg:ffff8882fa23cca1
+
+[37925.517746] Memory state around the buggy address:
+[37925.517751]  ffff88813a264100: fb fb fb fb fb fb fb fb fb fb fb fb
+fb fb fb fb
+[37925.517754]  ffff88813a264180: fb fb fb fb fb fb fb fb fb fb fb fb
+fb fb fb fb
+[37925.517756] >ffff88813a264200: fb fb fb fb fb fb fb fb fb fb fb fb
+fb fb fb fb
+[37925.517758]                                                        ^
+[37925.517761]  ffff88813a264280: fb fb fb fb fb fb fb fb fb fb fb fb
+fb fb fb fb
+[37925.517763]  ffff88813a264300: fb fb fb fb fb fb fb fb fb fb fb fb
+fb fb fb fb
+[37925.517765] ==================================================================
+[37925.521109] usb 3-1.2: USB disconnect, device number 9
+[37925.521116] usb 3-1.2.4: USB disconnect, device number 21
+[37925.522472] usb 4-1: USB disconnect, device number 2
+[37925.522477] usb 4-1.1: USB disconnect, device number 3
+[37925.525597] usb 4-1.2: USB disconnect, device number 4
+
+
+$ eu-addr2line -e
+/lib/debug/lib/modules/5.11.0-0.rc6.20210203git3aaf0a27ffc2.144.fc34.x86_64/kernel/sound/usb/snd-usb-audio.ko.debug
+snd_complete_urb+0x109e
+sound/usb/endpoint.c:444:27
+
+$ cat -s -n /usr/src/debug/kernel-20210204git61556703b610/linux-5.11.0-0.rc6.20210204git61556703b610.144.fc34.x86_64/sound/usb/endpoint.c
+| head -454 | tail -20
+   435 }
+   436 }
+   437
+   438 /*
+   439 * complete callback for urbs
+   440 */
+   441 static void snd_complete_urb(struct urb *urb)
+   442 {
+   443 struct snd_urb_ctx *ctx = urb->context;
+   444 struct snd_usb_endpoint *ep = ctx->ep;
+   445 unsigned long flags;
+   446 int err;
+   447
+   448 if (unlikely(urb->status == -ENOENT || /* unlinked */
+   449      urb->status == -ENODEV || /* device removed */
+   450      urb->status == -ECONNRESET || /* unlinked */
+   451      urb->status == -ESHUTDOWN)) /* device disabled */
+   452 goto exit_clear;
+   453 /* device disconnected */
+   454 if (unlikely(atomic_read(&ep->chip->shutdown)))
+
+
+$ git blame sound/usb/endpoint.c -L435,454
+Blaming lines:   1% (20/1631), done.
+8fdff6a319e7d (Daniel Mack  2012-04-12 13:51:11 +0200 435)      }
+8fdff6a319e7d (Daniel Mack  2012-04-12 13:51:11 +0200 436) }
+8fdff6a319e7d (Daniel Mack  2012-04-12 13:51:11 +0200 437)
+8fdff6a319e7d (Daniel Mack  2012-04-12 13:51:11 +0200 438) /*
+8fdff6a319e7d (Daniel Mack  2012-04-12 13:51:11 +0200 439)  * complete
+callback for urbs
+8fdff6a319e7d (Daniel Mack  2012-04-12 13:51:11 +0200 440)  */
+8fdff6a319e7d (Daniel Mack  2012-04-12 13:51:11 +0200 441) static void
+snd_complete_urb(struct urb *urb)
+8fdff6a319e7d (Daniel Mack  2012-04-12 13:51:11 +0200 442) {
+8fdff6a319e7d (Daniel Mack  2012-04-12 13:51:11 +0200 443)      struct
+snd_urb_ctx *ctx = urb->context;
+8fdff6a319e7d (Daniel Mack  2012-04-12 13:51:11 +0200 444)      struct
+snd_usb_endpoint *ep = ctx->ep;
+67e225009bb15 (Takashi Iwai 2014-11-06 13:04:49 +0100 445)
+unsigned long flags;
+8fdff6a319e7d (Daniel Mack  2012-04-12 13:51:11 +0200 446)      int err;
+8fdff6a319e7d (Daniel Mack  2012-04-12 13:51:11 +0200 447)
+8fdff6a319e7d (Daniel Mack  2012-04-12 13:51:11 +0200 448)      if
+(unlikely(urb->status == -ENOENT ||          /* unlinked */
+8fdff6a319e7d (Daniel Mack  2012-04-12 13:51:11 +0200 449)
+      urb->status == -ENODEV ||          /* device removed */
+8fdff6a319e7d (Daniel Mack  2012-04-12 13:51:11 +0200 450)
+      urb->status == -ECONNRESET ||      /* unlinked */
+47ab154593827 (Takashi Iwai 2015-08-25 16:09:00 +0200 451)
+      urb->status == -ESHUTDOWN))        /* device disabled */
+47ab154593827 (Takashi Iwai 2015-08-25 16:09:00 +0200 452)
+ goto exit_clear;
+47ab154593827 (Takashi Iwai 2015-08-25 16:09:00 +0200 453)      /*
+device disconnected */
+47ab154593827 (Takashi Iwai 2015-08-25 16:09:00 +0200 454)      if
+(unlikely(atomic_read(&ep->chip->shutdown)))
+
+
+Full kernel log here: https://pastebin.com/dRrF8Q8B
+
+-- 
+Best Regards,
+Mike Gavrilov.
