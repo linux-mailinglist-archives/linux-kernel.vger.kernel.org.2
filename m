@@ -2,96 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC9DA310DFD
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 17:39:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3AAD310E0C
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 17:43:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232997AbhBEO66 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 09:58:58 -0500
-Received: from smtprelay0110.hostedemail.com ([216.40.44.110]:46778 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S232892AbhBEO4E (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 09:56:04 -0500
-Received: from smtprelay.hostedemail.com (10.5.19.251.rfc1918.com [10.5.19.251])
-        by smtpgrave07.hostedemail.com (Postfix) with ESMTP id E931418037BD4
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 14:07:16 +0000 (UTC)
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay05.hostedemail.com (Postfix) with ESMTP id F32E518020C47;
-        Fri,  5 Feb 2021 14:07:00 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:982:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2828:2892:3138:3139:3140:3141:3142:3354:3622:3865:3866:3867:3868:3870:3871:3872:3873:3874:4321:5007:7514:7652:7875:7903:7974:10004:10400:10848:10904:10967:11232:11658:11914:12043:12297:12740:12760:12895:13069:13161:13229:13311:13357:13439:13869:14096:14097:14181:14659:14721:21080:21324:21325:21611:21627:21740:21773:21939:30005:30034:30054:30056:30060:30075:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
-X-HE-Tag: color19_270d317275e5
-X-Filterd-Recvd-Size: 3084
-Received: from [192.168.1.159] (unknown [47.151.137.21])
-        (Authenticated sender: joe@perches.com)
-        by omf08.hostedemail.com (Postfix) with ESMTPA;
-        Fri,  5 Feb 2021 14:06:59 +0000 (UTC)
-Message-ID: <565bfe3cd09197903ae07a87aadd94d1117d4106.camel@perches.com>
-Subject: Re: Small student project idea on appropriate integration trees in
- MAINTAINERS
-From:   Joe Perches <joe@perches.com>
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>
-Cc:     devel@lists.elisa.tech,
-        Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
-        Wolfgang Mauerer <wolfgang.mauerer@oth-regensburg.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Pia Eichinger <pia.eichinger@st.oth-regensburg.de>,
-        =?UTF-8?Q?Ba=C5=9Fak?= Erdamar <basakerdamar@gmail.com>
-Date:   Fri, 05 Feb 2021 06:06:57 -0800
-In-Reply-To: <CAKXUXMxxz7Lffre67uYKzuoXgcMXwv_36Od0UCwX50RPc9DkTg@mail.gmail.com>
-References: <CAKXUXMyRAer=0S9pxiRs2iF3pdkU8zW=JZw2a+nJJ30iPLPhCA@mail.gmail.com>
-         <20210128165447.3da0d98e@lwn.net>
-         <CAKXUXMxxz7Lffre67uYKzuoXgcMXwv_36Od0UCwX50RPc9DkTg@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        id S233055AbhBEPCS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 10:02:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45258 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232948AbhBEO5X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 09:57:23 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2981965060;
+        Fri,  5 Feb 2021 14:12:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1612534360;
+        bh=AFRu770qxT4dJB284AhaaMOLr7QZypYgV+N4yR/3l0E=;
+        h=From:To:Cc:Subject:Date:From;
+        b=k55Is1pS1Rjn9IfhzxeZDy/yuwQQSct7yBWrITnCijxJtSKXTooAR9v1YQwkhyd4P
+         oCMx6DG+JDTVrL1QU5yNyUIFSARsbNrEE2hQQSosl+77L1vN0yPLigQnX1RlIBdwcT
+         83bTDQpzNV5Bx486/CeHt/pK0nc3mQMJvaKuhUvQ=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org
+Subject: [PATCH 5.4 00/32] 5.4.96-rc1 review
+Date:   Fri,  5 Feb 2021 15:07:15 +0100
+Message-Id: <20210205140652.348864025@linuxfoundation.org>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
+X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-5.4.96-rc1.gz
+X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+X-KernelTest-Branch: linux-5.4.y
+X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
+X-KernelTest-Version: 5.4.96-rc1
+X-KernelTest-Deadline: 2021-02-07T14:06+00:00
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-02-05 at 07:42 +0100, Lukas Bulwahn wrote:
-> On Fri, Jan 29, 2021 at 12:54 AM Jonathan Corbet <corbet@lwn.net> wrote:
-> > 
-> > On Fri, 22 Jan 2021 09:22:24 +0100
-> > Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
-> > 
-> > > In this project, we can make use of:
-> > > 
-> > > - gitdm [git://git.lwn.net/gitdm.git]: gitdm includes some scripts to
-> > > parse MAINTAINERS and obtain the integration tree patch of a commit.
-> > 
-> > Look also at the 'treeplot' tool there, which determines which tree(s)
-> > each patch went through and makes pretty (OK, not hugely pretty) pictures
-> > from the result.
-> 
-> Thanks, we are well aware, and that is a good reminder for Basak and
-> me to get our gitdm treeplot patches in shape for proper submission.
-> 
-> > 
-> > I suspect you'll find that the tree information is mostly correct.
-> 
-> Your suspicion, which is counter to my hypothesis, makes this
-> investigation worthwhile just to see how correct that information
-> really is.
+This is the start of the stable review cycle for the 5.4.96 release.
+There are 32 patches in this series, all will be posted as a response
+to this one.  If anyone has any issues with these being applied, please
+let me know.
 
-I suspect the specific development trees listed in each MAINTAINERS
-subsystems is mostly useless information.
+Responses should be made by Sun, 07 Feb 2021 14:06:42 +0000.
+Anything received after that time might be too late.
 
-Just like the number of subsystems listed and their nominal maintainers
-is more vanity than actual.  MAINTAINER subsystems may be active for
-a small window of time when submitted, but these mostly driver entries
-are quickly aged out as the typically driver is completed.
+The whole patch series can be found in one patch at:
+	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.96-rc1.gz
+or in the git tree and branch at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
+and the diffstat can be found below.
 
-The 80:20 rule when applied to MAINTAINERS I suspect is more like 90:10.
+thanks,
 
-> > Developers need to know that to be able to base their patches properly; an
-> > incorrect entry would lead to a certain amount of maintainer misery.
+greg k-h
 
-The -next integration tree works relatively well as the basis for
-development.  If a patch doesn't apply, it's typically fairly easy
-to rebase it in the rare occasion it doesn't apply to a particular
-active tree.
+-------------
+Pseudo-Shortlog of commits:
+
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    Linux 5.4.96-rc1
+
+Peter Zijlstra <peterz@infradead.org>
+    workqueue: Restrict affinity change to rescuer
+
+Peter Zijlstra <peterz@infradead.org>
+    kthread: Extract KTHREAD_IS_PER_CPU
+
+Josh Poimboeuf <jpoimboe@redhat.com>
+    objtool: Don't fail on missing symbol table
+
+Bing Guo <bing.guo@amd.com>
+    drm/amd/display: Change function decide_dp_link_settings to avoid infinite looping
+
+Jake Wang <haonan.wang2@amd.com>
+    drm/amd/display: Update dram_clock_change_latency for DCN2.1
+
+Michael Ellerman <mpe@ellerman.id.au>
+    selftests/powerpc: Only test lwm/stmw on big endian
+
+Revanth Rajashekar <revanth.rajashekar@intel.com>
+    nvme: check the PRINFO bit before deciding the host buffer length
+
+lianzhi chang <changlianzhi@uniontech.com>
+    udf: fix the problem that the disc content is not displayed
+
+Kai-Chuan Hsieh <kaichuan.hsieh@canonical.com>
+    ALSA: hda: Add Cometlake-R PCI ID
+
+Brian King <brking@linux.vnet.ibm.com>
+    scsi: ibmvfc: Set default timeout to avoid crash during migration
+
+Felix Fietkau <nbd@nbd.name>
+    mac80211: fix fast-rx encryption check
+
+Kai-Heng Feng <kai.heng.feng@canonical.com>
+    ASoC: SOF: Intel: hda: Resume codec to do jack detection
+
+Dinghao Liu <dinghao.liu@zju.edu.cn>
+    scsi: fnic: Fix memleak in vnic_dev_init_devcmd2
+
+Javed Hasan <jhasan@marvell.com>
+    scsi: libfc: Avoid invoking response handler twice if ep is already completed
+
+Martin Wilck <mwilck@suse.com>
+    scsi: scsi_transport_srp: Don't block target in failfast state
+
+Peter Zijlstra <peterz@infradead.org>
+    x86: __always_inline __{rd,wr}msr()
+
+Arnold Gozum <arngozum@gmail.com>
+    platform/x86: intel-vbtn: Support for tablet mode on Dell Inspiron 7352
+
+Hans de Goede <hdegoede@redhat.com>
+    platform/x86: touchscreen_dmi: Add swap-x-y quirk for Goodix touchscreen on Estar Beauty HD tablet
+
+Tony Lindgren <tony@atomide.com>
+    phy: cpcap-usb: Fix warning for missing regulator_disable
+
+Eric Dumazet <edumazet@google.com>
+    net_sched: gen_estimator: support large ewma log
+
+ethanwu <ethanwu@synology.com>
+    btrfs: backref, use correct count to resolve normal data refs
+
+ethanwu <ethanwu@synology.com>
+    btrfs: backref, only search backref entries from leaves of the same root
+
+ethanwu <ethanwu@synology.com>
+    btrfs: backref, don't add refs from shared block when resolving normal backref
+
+ethanwu <ethanwu@synology.com>
+    btrfs: backref, only collect file extent items matching backref offset
+
+Enke Chen <enchen@paloaltonetworks.com>
+    tcp: make TCP_USER_TIMEOUT accurate for zero window probes
+
+Catalin Marinas <catalin.marinas@arm.com>
+    arm64: Do not pass tagged addresses to __is_lm_address()
+
+Vincenzo Frascino <vincenzo.frascino@arm.com>
+    arm64: Fix kernel address detection of __is_lm_address()
+
+Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+    ACPI: thermal: Do not call acpi_thermal_check() directly
+
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    Revert "Revert "block: end bio with BLK_STS_AGAIN in case of non-mq devs and REQ_NOWAIT""
+
+Lijun Pan <ljp@linux.ibm.com>
+    ibmvnic: Ensure that CRQ entry read are correctly ordered
+
+Rasmus Villemoes <rasmus.villemoes@prevas.dk>
+    net: switchdev: don't set port_obj_info->handled true when -EOPNOTSUPP
+
+Pan Bian <bianpan2016@163.com>
+    net: dsa: bcm_sf2: put device node before return
+
+
+-------------
+
+Diffstat:
+
+ Makefile                                           |   4 +-
+ arch/arm64/include/asm/memory.h                    |  10 +-
+ arch/arm64/mm/physaddr.c                           |   2 +-
+ arch/x86/include/asm/msr.h                         |   4 +-
+ block/blk-core.c                                   |  11 +-
+ drivers/acpi/thermal.c                             |  55 +++++---
+ drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c   |   3 +
+ .../gpu/drm/amd/display/dc/dcn21/dcn21_resource.c  |   2 +-
+ drivers/net/dsa/bcm_sf2.c                          |   8 +-
+ drivers/net/ethernet/ibm/ibmvnic.c                 |   6 +
+ drivers/nvme/host/core.c                           |  17 ++-
+ drivers/phy/motorola/phy-cpcap-usb.c               |  19 ++-
+ drivers/platform/x86/intel-vbtn.c                  |   6 +
+ drivers/platform/x86/touchscreen_dmi.c             |  18 +++
+ drivers/scsi/fnic/vnic_dev.c                       |   8 +-
+ drivers/scsi/ibmvscsi/ibmvfc.c                     |   4 +-
+ drivers/scsi/libfc/fc_exch.c                       |  16 ++-
+ drivers/scsi/scsi_transport_srp.c                  |   9 +-
+ fs/btrfs/backref.c                                 | 157 +++++++++++++--------
+ fs/udf/super.c                                     |   7 +-
+ include/linux/kthread.h                            |   3 +
+ include/net/tcp.h                                  |   1 +
+ kernel/kthread.c                                   |  27 +++-
+ kernel/smpboot.c                                   |   1 +
+ kernel/workqueue.c                                 |   9 +-
+ net/core/gen_estimator.c                           |  11 +-
+ net/ipv4/tcp_input.c                               |   1 +
+ net/ipv4/tcp_output.c                              |   2 +
+ net/ipv4/tcp_timer.c                               |  18 +++
+ net/mac80211/rx.c                                  |   2 +
+ net/switchdev/switchdev.c                          |  23 +--
+ sound/pci/hda/hda_intel.c                          |   3 +
+ sound/soc/sof/intel/hda-codec.c                    |   3 +-
+ tools/objtool/elf.c                                |   7 +-
+ .../powerpc/alignment/alignment_handler.c          |   5 +-
+ 35 files changed, 348 insertions(+), 134 deletions(-)
 
 
