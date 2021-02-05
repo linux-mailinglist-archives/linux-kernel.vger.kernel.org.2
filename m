@@ -2,130 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25EAB3103FD
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 05:13:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 75AA5310407
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 05:21:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230090AbhBEEM3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 23:12:29 -0500
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:13924 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229586AbhBEEM2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 23:12:28 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B601cc5830000>; Thu, 04 Feb 2021 20:11:47 -0800
-Received: from [10.2.60.31] (172.20.145.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 5 Feb
- 2021 04:11:46 +0000
-Subject: Re: [PATCH v2 1/4] mm/gup: add compound page list iterator
-To:     Joao Martins <joao.m.martins@oracle.com>, <linux-mm@kvack.org>
-CC:     <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Doug Ledford <dledford@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>
-References: <20210204202500.26474-1-joao.m.martins@oracle.com>
- <20210204202500.26474-2-joao.m.martins@oracle.com>
-From:   John Hubbard <jhubbard@nvidia.com>
-Message-ID: <74edd971-a80c-78b6-7ab2-5c1f6ba4ade9@nvidia.com>
-Date:   Thu, 4 Feb 2021 20:11:46 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:85.0) Gecko/20100101
- Thunderbird/85.0
+        id S230178AbhBEEUv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 23:20:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41868 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229518AbhBEEUr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 23:20:47 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 4717F64FA9;
+        Fri,  5 Feb 2021 04:20:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612498807;
+        bh=dZ7oBZDsHR/8Z3anSIEZghT8NDUy4ARYKhDT508Eq30=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=qwTW9cG5DdwxTRucZ3dABeBWGR8rA6gILnUijkeh5rr98GSznZ/mPlI1coVVuZ9fO
+         4g7u+l9VRQ/MCmKtgAK3SbFziAMDzuupnwhJBDGCvQhcafQ/ypnyNBD9keCslyhbxC
+         gCsigabbjq4k1cjmqN33RQnrA01+GczMfVES4C6pJzCTi5hCQq5rVZrtgSe49Gtdro
+         zk5AuxzcbjzbNOcV4VWZRQk83O905anTnNAYt1A/7uBNhyCraIiiM991EZf5mUQ4P+
+         o7YzV6oPJ8L+/kJksdRCNawT0r1XFosls4tIYfj0Map7a8tmCvORN4tlLjqTQ5qrBU
+         a4a4K+qZABHlA==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 3B351609F2;
+        Fri,  5 Feb 2021 04:20:07 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <20210204202500.26474-2-joao.m.martins@oracle.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1612498307; bh=90hw+ICZ/gKhWm8sbsBiKwsDNH4LvCEMvipiRUiV0MM=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=LhpAcaoP90LK+h6C9NVPT0uTQMDR5adUruhZC5cyal3ffapkhntOgUvld0IvTvww4
-         /K+2lyHpdwCoj8kFhCUtjNO7/H2V75pkG6KVChSn6gg2JOnyD5H0hRCoLz3Ldi7/Zf
-         r3YgIcBJ9JtKRuerOeZMhNmkTmF2LkBbJIH0YHq3UkLOs7rxC7WbxhD9322HjLtYCl
-         CSt8GFEnCdY0CxhkercG678mzx7Tu3VUS5Ca+G3GjyC9ZqeKUhwxDak0vOWHsc47ut
-         /pclIuZ47BQD5SnLBVMOyY9Aa2tLWZQkcI2U+Y5Ja5BR58NFwT+4+pKK3NA9OFjrck
-         h0rpXks7BXNZw==
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net] hv_netvsc: Reset the RSC count if NVSP_STAT_FAIL in
+ netvsc_receive()
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161249880723.20393.1705346337998765386.git-patchwork-notify@kernel.org>
+Date:   Fri, 05 Feb 2021 04:20:07 +0000
+References: <20210203113602.558916-1-parri.andrea@gmail.com>
+In-Reply-To: <20210203113602.558916-1-parri.andrea@gmail.com>
+To:     Andrea Parri (Microsoft) <parri.andrea@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, kys@microsoft.com,
+        haiyangz@microsoft.com, sthemmin@microsoft.com, wei.liu@kernel.org,
+        mikelley@microsoft.com, linux-hyperv@vger.kernel.org,
+        skarade@microsoft.com, juvazq@microsoft.com, davem@davemloft.net,
+        kuba@kernel.org, netdev@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/4/21 12:24 PM, Joao Martins wrote:
-> Add an helper that iterates over head pages in a list of pages. It
-> essentially counts the tails until the next page to process has a
-> different head that the current. This is going to be used by
-> unpin_user_pages() family of functions, to batch the head page refcount
-> updates once for all passed consecutive tail pages.
+Hello:
+
+This patch was applied to netdev/net.git (refs/heads/master):
+
+On Wed,  3 Feb 2021 12:36:02 +0100 you wrote:
+> Commit 44144185951a0f ("hv_netvsc: Add validation for untrusted Hyper-V
+> values") added validation to rndis_filter_receive_data() (and
+> rndis_filter_receive()) which introduced NVSP_STAT_FAIL-scenarios where
+> the count is not updated/reset.  Fix this omission, and prevent similar
+> scenarios from occurring in the future.
 > 
-> Suggested-by: Jason Gunthorpe <jgg@nvidia.com>
-> Signed-off-by: Joao Martins <joao.m.martins@oracle.com>
-> ---
->   mm/gup.c | 29 +++++++++++++++++++++++++++++
->   1 file changed, 29 insertions(+)
+> Reported-by: Juan Vazquez <juvazq@microsoft.com>
+> Signed-off-by: Andrea Parri (Microsoft) <parri.andrea@gmail.com>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: Jakub Kicinski <kuba@kernel.org>
+> Cc: netdev@vger.kernel.org
+> Fixes: 44144185951a0f ("hv_netvsc: Add validation for untrusted Hyper-V values")
 > 
-> diff --git a/mm/gup.c b/mm/gup.c
-> index d68bcb482b11..d1549c61c2f6 100644
-> --- a/mm/gup.c
-> +++ b/mm/gup.c
-> @@ -215,6 +215,35 @@ void unpin_user_page(struct page *page)
->   }
->   EXPORT_SYMBOL(unpin_user_page);
->   
-> +static inline void compound_next(unsigned long i, unsigned long npages,
-> +				 struct page **list, struct page **head,
-> +				 unsigned int *ntails)
-> +{
-> +	struct page *page;
-> +	unsigned int nr;
-> +
-> +	if (i >= npages)
-> +		return;
-> +
-> +	list += i;
-> +	npages -= i;
+> [...]
 
-It is worth noting that this is slightly more complex to read than it needs to be.
-You are changing both endpoints of a loop at once. That's hard to read for a human.
-And you're only doing it in order to gain the small benefit of being able to
-use nr directly at the end of the routine.
+Here is the summary with links:
+  - [net] hv_netvsc: Reset the RSC count if NVSP_STAT_FAIL in netvsc_receive()
+    https://git.kernel.org/netdev/net/c/12bc8dfb83b5
 
-If instead you keep npages constant like it naturally wants to be, you could
-just do a "(*ntails)++" in the loop, to take care of *ntails.
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-However, given that the patch is correct and works as-is, the above is really just
-an optional idea, so please feel free to add:
-
-Reviewed-by: John Hubbard <jhubbard@nvidia.com>
-
-
-thanks,
--- 
-John Hubbard
-NVIDIA
-
-> +	page = compound_head(*list);
-> +
-> +	for (nr = 1; nr < npages; nr++) {
-> +		if (compound_head(list[nr]) != page)
-> +			break;
-> +	}
-> +
-> +	*head = page;
-> +	*ntails = nr;
-> +}
-> +
-> +#define for_each_compound_head(__i, __list, __npages, __head, __ntails) \
-> +	for (__i = 0, \
-> +	     compound_next(__i, __npages, __list, &(__head), &(__ntails)); \
-> +	     __i < __npages; __i += __ntails, \
-> +	     compound_next(__i, __npages, __list, &(__head), &(__ntails)))
-> +
->   /**
->    * unpin_user_pages_dirty_lock() - release and optionally dirty gup-pinned pages
->    * @pages:  array of pages to be maybe marked dirty, and definitely released.
-> 
 
