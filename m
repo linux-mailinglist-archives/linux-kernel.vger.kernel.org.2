@@ -2,91 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E19AB311094
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 20:00:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F6C13110D7
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 20:14:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233552AbhBERRc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 12:17:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50218 "EHLO mail.kernel.org"
+        id S233243AbhBERbN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 12:31:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54086 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229988AbhBEROQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 12:14:16 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6FD4C64F19;
-        Fri,  5 Feb 2021 18:55:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612551358;
-        bh=Dut+c1FVyHBMznczx7YPl/WFEcO5YCjuRBcQn/cce0o=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HIQ53G/rdyIEmK4O5Pwo+d7o20ZMKNsfvwD6vY3+oeW7Ok3RpP/ZH9udF/0EyxiAa
-         SjnrxihAS62M2VaFx3DlhLvwLDhoMg6VD6xQnjWRZ/fb5JwYNvj7/t98zkcRLthvBe
-         3VuZzf4WM00pXfnbVr/AjfIZsbfmV+Z/GMZui1RwHZf0gV5pEyOasuftjk5tsjYufU
-         fxMGNxa1BYmz5J4PgajSgCMtxPDF2HAqR6iDqG+BrzldnTxifqSgpUNwzXYtxYKOao
-         8KPhxvNGtvM2oHfebe5rRQohaqYoS+j/Fx8HvazL2Xf+gRTlNTZ794sw6Htljq1ant
-         maJG6gpTixiaQ==
-Date:   Fri, 5 Feb 2021 18:55:53 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Catalin Marinas <catalin.marinas@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Mike Rapoport <rppt@linux.ibm.com>
-Subject: Re: [PATCH V2 1/2] arm64/mm: Fix pfn_valid() for ZONE_DEVICE based
- memory
-Message-ID: <20210205185552.GA23216@willie-the-truck>
-References: <1612239114-28428-1-git-send-email-anshuman.khandual@arm.com>
- <1612239114-28428-2-git-send-email-anshuman.khandual@arm.com>
- <20210202123215.GA16868@willie-the-truck>
- <20210202123524.GB16868@willie-the-truck>
- <f32e7caa-3414-9dd7-eb8c-220da1d925a1@redhat.com>
- <20210202125152.GC16868@willie-the-truck>
- <4d8f5156-8628-5531-1485-322ad92aa15c@redhat.com>
- <0e649f28-4d54-319d-f876-8a93870cda7f@arm.com>
+        id S230394AbhBEP7p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 10:59:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BFC2264FD5;
+        Fri,  5 Feb 2021 14:09:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1612534179;
+        bh=h92lfQvZWYCHhVh0dSSlBZF+ZSgGFnLK2HE5FRSzMdE=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=Ho7g/A8ehSaYnPFJQZ2004atJ9n++dfWW6HQVIUM2UA9rNp92n6RmmbocCOxsXQhh
+         RYASEWkdaTDMQBF6w7QEHQzB0S9V+10Sfy2nzNlgfWUNEOydHe6eRmXXG9eCV55FQh
+         Dgvbpd2uVnH1VEO1MhH5nUULOssC5/K+3VA9d1lk=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Tony Lindgren <tony@atomide.com>,
+        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 18/57] phy: cpcap-usb: Fix warning for missing regulator_disable
+Date:   Fri,  5 Feb 2021 15:06:44 +0100
+Message-Id: <20210205140656.759115619@linuxfoundation.org>
+X-Mailer: git-send-email 2.30.0
+In-Reply-To: <20210205140655.982616732@linuxfoundation.org>
+References: <20210205140655.982616732@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0e649f28-4d54-319d-f876-8a93870cda7f@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 03, 2021 at 09:20:39AM +0530, Anshuman Khandual wrote:
-> On 2/2/21 6:26 PM, David Hildenbrand wrote:
-> > On 02.02.21 13:51, Will Deacon wrote:
-> >> On Tue, Feb 02, 2021 at 01:39:29PM +0100, David Hildenbrand wrote:
-> >>> As I expressed already, long term we should really get rid of the arm64
-> >>> variant and rather special-case the generic one. Then we won't go out of
-> >>> sync - just as it happened with ZONE_DEVICE handling here.
-> >>
-> >> Why does this have to be long term? This ZONE_DEVICE stuff could be the
-> >> carrot on the stick :)
-> > 
-> > Yes, I suggested to do it now, but Anshuman convinced me that doing a
-> > simple fix upfront might be cleaner --- for example when it comes to
-> > backporting :)
-> 
-> Right. The current pfn_valid() breaks for ZONE_DEVICE memory and this fixes
-> the problem in the present context which can be easily backported if required.
-> 
-> Changing or rather overhauling the generic code with new configs as proposed
-> earlier (which I am planning to work on subsequently) would definitely be an
-> improvement for the current pfn_valid() situation in terms of maintainability
-> but then it should not stop us from fixing the problem now.
+From: Tony Lindgren <tony@atomide.com>
 
-Alright, I've mulled this over a bit. I don't agree that this patch helps
-with maintainability (quite the opposite, in fact), but perfection is the
-enemy of the good so I'll queue the series for 5.12. However, I'll revert
-the changes at the first sign of a problem, so please do work towards a
-generic solution which can replace this in the medium term.
+[ Upstream commit 764257d9069a9c19758b626cc1ba4ae079335d9e ]
 
-Even just adding hooks with well-defined (documented) semantics to
-pfn_valid() instead of having architectures override it wholesale would be a
-massive step forward in my opinion.
+On deferred probe, we will get the following splat:
 
-Will
+cpcap-usb-phy cpcap-usb-phy.0: could not initialize VBUS or ID IIO: -517
+WARNING: CPU: 0 PID: 21 at drivers/regulator/core.c:2123 regulator_put+0x68/0x78
+...
+(regulator_put) from [<c068ebf0>] (release_nodes+0x1b4/0x1fc)
+(release_nodes) from [<c068a9a4>] (really_probe+0x104/0x4a0)
+(really_probe) from [<c068b034>] (driver_probe_device+0x58/0xb4)
+
+Signed-off-by: Tony Lindgren <tony@atomide.com>
+Link: https://lore.kernel.org/r/20201230102105.11826-1-tony@atomide.com
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/phy/motorola/phy-cpcap-usb.c | 19 +++++++++++++------
+ 1 file changed, 13 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/phy/motorola/phy-cpcap-usb.c b/drivers/phy/motorola/phy-cpcap-usb.c
+index 442522ba487f0..4728e2bff6620 100644
+--- a/drivers/phy/motorola/phy-cpcap-usb.c
++++ b/drivers/phy/motorola/phy-cpcap-usb.c
+@@ -662,35 +662,42 @@ static int cpcap_usb_phy_probe(struct platform_device *pdev)
+ 	generic_phy = devm_phy_create(ddata->dev, NULL, &ops);
+ 	if (IS_ERR(generic_phy)) {
+ 		error = PTR_ERR(generic_phy);
+-		return PTR_ERR(generic_phy);
++		goto out_reg_disable;
+ 	}
+ 
+ 	phy_set_drvdata(generic_phy, ddata);
+ 
+ 	phy_provider = devm_of_phy_provider_register(ddata->dev,
+ 						     of_phy_simple_xlate);
+-	if (IS_ERR(phy_provider))
+-		return PTR_ERR(phy_provider);
++	if (IS_ERR(phy_provider)) {
++		error = PTR_ERR(phy_provider);
++		goto out_reg_disable;
++	}
+ 
+ 	error = cpcap_usb_init_optional_pins(ddata);
+ 	if (error)
+-		return error;
++		goto out_reg_disable;
+ 
+ 	cpcap_usb_init_optional_gpios(ddata);
+ 
+ 	error = cpcap_usb_init_iio(ddata);
+ 	if (error)
+-		return error;
++		goto out_reg_disable;
+ 
+ 	error = cpcap_usb_init_interrupts(pdev, ddata);
+ 	if (error)
+-		return error;
++		goto out_reg_disable;
+ 
+ 	usb_add_phy_dev(&ddata->phy);
+ 	atomic_set(&ddata->active, 1);
+ 	schedule_delayed_work(&ddata->detect_work, msecs_to_jiffies(1));
+ 
+ 	return 0;
++
++out_reg_disable:
++	regulator_disable(ddata->vusb);
++
++	return error;
+ }
+ 
+ static int cpcap_usb_phy_remove(struct platform_device *pdev)
+-- 
+2.27.0
+
+
+
