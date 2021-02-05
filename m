@@ -2,141 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB857310F36
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 18:56:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1B6A310F2D
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 18:55:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233556AbhBEQNZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 11:13:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37316 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233510AbhBEQJL (ORCPT
+        id S232591AbhBEQMm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 11:12:42 -0500
+Received: from mail-ot1-f45.google.com ([209.85.210.45]:36990 "EHLO
+        mail-ot1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233410AbhBEQKY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 11:09:11 -0500
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37ADBC061786
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 09:50:54 -0800 (PST)
-Received: by mail-pl1-x634.google.com with SMTP id a16so3942125plh.8
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 09:50:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=8LdcV8DMgciJSckP8og9DY1KpzD/dHjlqzcgElgAVXM=;
-        b=o26e66MUJ9hLAu9jrOp/+vQ/wqpT3vSn+OAqARm2Dr9nuJ9x0cpajYYgM/JZwGijHM
-         amM2qTGshvMv9EP2EC42ryZgdh7/NhUxkeSOEkF7SuoSyH8sbTij9rUcrPdB5wz/Go59
-         je0R+HE+os02G5T5NbJ8vNA7OHm6CemIB5WVstzjKJyXlmVYSrI5P6N5NKZm1kw2pFEi
-         9PtA/Qmue6lAc1/NLPbkCpEH+WoTL+jFiCE7Z4wO4goZKDqk7tjWs8fdfozVd7iwAgTx
-         baE2v9c7cFtOI8MQp61kF5cqiNRqWYKVaM4ipyBiorzEX7V48JJeY7n6FsVLCCNVgS2h
-         4Rsw==
+        Fri, 5 Feb 2021 11:10:24 -0500
+Received: by mail-ot1-f45.google.com with SMTP id k25so5584181otb.4;
+        Fri, 05 Feb 2021 09:52:31 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=8LdcV8DMgciJSckP8og9DY1KpzD/dHjlqzcgElgAVXM=;
-        b=FFUZmPwwrGqyZkTAjX/KB6ztsKVf9oc/tUd35FapeEnByICHQNw1l1IpzfeY/LQ4xR
-         VN2DlIpZE8VkSpsCxXccdtJ+9wLaScoZOgVOvpHkUY2uXnD/JqGvsGs0bu/Zw155eo/1
-         7vEkQMGVS8Bl/Rc+j5M5YU6kHtkrL8hHWOS3ENiYhlZ5ZU7+kQXgDt+t0Go5oDeyxK8U
-         7fdehjOQe12KSZCKgl/8yOwUng6HNqAwgp+xQUrgvpYZvsaTvvuxaoCg5VWIUjYlQg9A
-         ezb09Rnj2oF31tLevrNH9MJLtbnZJwYOhzK436D11HSLOFotQjNbv6Wh8BNnndnlw6aU
-         jBiw==
-X-Gm-Message-State: AOAM530BGTubZokdfI37M0xJYoWvIkVEmpU6wThcS7/MwU14pU50kXsR
-        QAQ+8Jj6vB8P9YhGTNHs7xW/LbQsRDyR9w==
-X-Google-Smtp-Source: ABdhPJydY9NVYsb//m4vDxJl8NxvAKpuf/tVRmc9bhQXb3Zbesg4vXCHY8g9SUEA5D1wt6hntua+NA==
-X-Received: by 2002:a17:90a:a084:: with SMTP id r4mr5138668pjp.190.1612547453595;
-        Fri, 05 Feb 2021 09:50:53 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:d169:a9f7:513:e5])
-        by smtp.gmail.com with ESMTPSA id a6sm9445934pfr.43.2021.02.05.09.50.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Feb 2021 09:50:52 -0800 (PST)
-Date:   Fri, 5 Feb 2021 09:50:46 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Yu Zhang <yu.c.zhang@linux.intel.com>
-Cc:     pbonzini@redhat.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, vkuznets@redhat.com,
-        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org
-Subject: Re: [PATCH] KVM: x86/MMU: Do not check unsync status for root SP.
-Message-ID: <YB2Fdp0Pn0MybBsB@google.com>
-References: <20210116002100.17339-1-yu.c.zhang@linux.intel.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cOKpvjLf9zUpsIbTZMtFYG0DIeTuDHInnNPJ34yMbiM=;
+        b=UvJlQ+ltfB987r4+JpJ6iLmcg9nhylC8m1d0Q5hT4W2jkC43vCExVq02FNhEtRSuRL
+         7bUlToPak1aOEMpsd+N7O8ZA/FTGmRpLsoDStd5i+UJTct54kkBy+FnTYs9qFFv6MExq
+         bcQpEOX5qmxbi5YQNkpDeS7xNCG58iYnnRS35Us5t5M0JiG5++SycJ0N4d+phCAcnLS+
+         6lNx67cMGv/aG3V+fcY8p/r35pCbtenP94zEYRoZmsfQLxDmslYIlpsgbFHHtMXZxjJu
+         Dxv4KDBDUGSeP6KhNuNsCsSP5cRCModn/JngQg1b9ABSAOzWDIPswem9+ynG//Ln8NQM
+         /jEg==
+X-Gm-Message-State: AOAM530Rb84RYXq9S2CIqzmzBXcLW6V8hZHmo4KVPXAFJSXLARIf+vle
+        6LkDccnAZUDsqciGBopI2xtJpRUYrbG6MEd03LY=
+X-Google-Smtp-Source: ABdhPJzwdFGUHXPIAbboLu8TM4MbXUDXVhJT4NPIaleBWpPUNaAwuAizc3j1xpYHn9f6vGZ0B35HLHskw63H0/PuFVU=
+X-Received: by 2002:a05:6830:148d:: with SMTP id s13mr4167414otq.250.1612547525938;
+ Fri, 05 Feb 2021 09:52:05 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210116002100.17339-1-yu.c.zhang@linux.intel.com>
+References: <20210121225712.1118239-1-saravanak@google.com>
+ <CGME20210204115252eucas1p2d145686f7a5dc7e7a04dddd0b0f2286c@eucas1p2.samsung.com>
+ <20210121225712.1118239-3-saravanak@google.com> <9692dfc9-4c63-71c9-b52b-d0feba466695@samsung.com>
+ <CAGETcx_KDA55Ti=5CHw48BP1L2Xo64=AFFe+17g27n=P-KUrow@mail.gmail.com>
+ <6b606a5d-0435-1e9d-ac61-a8dacf051067@samsung.com> <CAMuHMdWqZonpeyk59b=o_3EKOQx4TxUZE4Jeo-Kxy_o_3CQvnQ@mail.gmail.com>
+ <CAGETcx9Rqa7PygjSiQvadm7C2bpxS2rCf5oB_pFhjh+ESV-WQA@mail.gmail.com>
+ <CAMuHMdUt4tSEO_Hcf4AgVY_jqZ6Bsyk2+f2P3gQRQk0UfgSSjQ@mail.gmail.com> <CAGETcx9YN6uC3XJ_J+PLxvHBVFK-h2X3Qh+kuKDceN5XSt3ZuQ@mail.gmail.com>
+In-Reply-To: <CAGETcx9YN6uC3XJ_J+PLxvHBVFK-h2X3Qh+kuKDceN5XSt3ZuQ@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 5 Feb 2021 18:51:54 +0100
+Message-ID: <CAMuHMdVyTOp9PU0rO+YkpzE68VtGdy-bMOwmE_PJx2fiwwpMzQ@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] of: property: Add fw_devlink support for interrupts
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Android Kernel Team <kernel-team@android.com>,
+        Rob Herring <robh@kernel.org>,
+        Thierry Reding <treding@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 16, 2021, Yu Zhang wrote:
-> In shadow page table, only leaf SPs may be marked as unsync.
-> And for non-leaf SPs, we use unsync_children to keep the number
-> of the unsynced children. In kvm_mmu_sync_root(), sp->unsync
-> shall always be zero for the root SP, hence no need to check it.
-> 
-> Signed-off-by: Yu Zhang <yu.c.zhang@linux.intel.com>
-> ---
->  arch/x86/kvm/mmu/mmu.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index 6d16481a..1a6bb03 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -3412,8 +3412,7 @@ void kvm_mmu_sync_roots(struct kvm_vcpu *vcpu)
->  		 * mmu_need_write_protect() describe what could go wrong if this
->  		 * requirement isn't satisfied.
->  		 */
-> -		if (!smp_load_acquire(&sp->unsync) &&
-> -		    !smp_load_acquire(&sp->unsync_children))
-> +		if (!smp_load_acquire(&sp->unsync_children))
->  			return;
->  
->  		spin_lock(&vcpu->kvm->mmu_lock);
+Hi Saravana,
 
-Looks good.  To make this less scary and more obviously correct, maybe move the
-the WARN on !PG_LEVEL_4K into kvm_unsync_page() instead of having the WARN in
-its sole caller, and add a WARN in mmu_sync_children()?
+On Fri, Feb 5, 2021 at 6:20 PM Saravana Kannan <saravanak@google.com> wrote:
+> On Fri, Feb 5, 2021 at 2:20 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > On Fri, Feb 5, 2021 at 11:06 AM Saravana Kannan <saravanak@google.com> wrote:
+> > > On Fri, Feb 5, 2021 at 12:06 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > > > On Fri, Feb 5, 2021 at 8:38 AM Marek Szyprowski
+> > > > <m.szyprowski@samsung.com> wrote:
+> > > > > On 04.02.2021 22:31, Saravana Kannan wrote:
+> > > > > > On Thu, Feb 4, 2021 at 3:52 AM Marek Szyprowski
+> > > > > > <m.szyprowski@samsung.com> wrote:
+> > > > > >> On 21.01.2021 23:57, Saravana Kannan wrote:
+> > > > > >>> This allows fw_devlink to create device links between consumers of an
+> > > > > >>> interrupt and the supplier of the interrupt.
+> > > > > >>>
+> > > > > >>> Cc: Marc Zyngier <maz@kernel.org>
+> > > > > >>> Cc: Kevin Hilman <khilman@baylibre.com>
+> > > > > >>> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > > > > >>> Reviewed-by: Rob Herring <robh@kernel.org>
+> > > > > >>> Reviewed-by: Thierry Reding <treding@nvidia.com>
+> > > > > >>> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+> > > > > >>> Signed-off-by: Saravana Kannan <saravanak@google.com>
+> > > > > >> This patch landed some time ago in linux-next as commit 4104ca776ba3
+> > > > > >> ("of: property: Add fw_devlink support for interrupts"). It breaks MMC
+> > > > > >> host controller operation on ARM Juno R1 board (the mmci@50000 device
+> > > > > >> defined in arch/arm64/boot/dts/arm/juno-motherboard.dtsi). I didn't
+> > > > > > I grepped around and it looks like the final board file is this or
+> > > > > > whatever includes it?
+> > > > > > arch/arm64/boot/dts/arm/juno-base.dtsi
+> > > > > The final board file is arch/arm64/boot/dts/arm/juno-r1.dts
+> > > > > > This patch just finds the interrupt-parent and then tries to use that
+> > > > > > as a supplier if "interrupts" property is listed. But the only
+> > > > > > interrupt parent I can see is:
+> > > > > >          gic: interrupt-controller@2c010000 {
+> > > > > >                  compatible = "arm,gic-400", "arm,cortex-a15-gic";
+> > > > > >
+> > > > > > And the driver uses IRQCHIP_DECLARE() and hence should be pretty much
+> > > > > > a NOP since those suppliers are never devices and are ignored.
+> > > > > > $ git grep "arm,gic-400" -- drivers/
+> > > > > > drivers/irqchip/irq-gic.c:IRQCHIP_DECLARE(gic_400, "arm,gic-400", gic_of_init);
+> > > > > >
+> > > > > > This doesn't make any sense. Am I looking at the right files? Am I
+> > > > > > missing something?
+> > > > >
+> > > > > Okay, I've added displaying a list of deferred devices when mounting
+> > > > > rootfs fails and got following items:
+> > > > >
+> > > > > Deferred devices:
+> > > > > 18000000.ethernet        platform: probe deferral - supplier
+> > > > > bus@8000000:motherboard-bus not ready
+> > > > > 1c050000.mmci    amba: probe deferral - supplier
+> > > > > bus@8000000:motherboard-bus not ready
+> > > > > 1c1d0000.gpio    amba: probe deferral - supplier
+> > > > > bus@8000000:motherboard-bus not ready
+> > > > > 2b600000.iommu   platform: probe deferral - wait for supplier
+> > > > > scpi-power-domains
+> > > > > 7ff50000.hdlcd   platform: probe deferral - wait for supplier scpi-clk
+> > > > > 7ff60000.hdlcd   platform: probe deferral - wait for supplier scpi-clk
+> > > > > 1c060000.kmi     amba: probe deferral - supplier
+> > > > > bus@8000000:motherboard-bus not ready
+> > > > > 1c070000.kmi     amba: probe deferral - supplier
+> > > > > bus@8000000:motherboard-bus not ready
+> > > > > 1c170000.rtc     amba: probe deferral - supplier
+> > > > > bus@8000000:motherboard-bus not ready
+> > > > > 1c0f0000.wdt     amba: probe deferral - supplier
+> > > > > bus@8000000:motherboard-bus not ready
+> > > > > gpio-keys
+> > > > > Kernel panic - not syncing: VFS: Unable to mount root fs on
+> > > > > unknown-block(0,0)
+> > > > >
+> > > > > I don't see the 'bus@8000000:motherboard-bus' on the deferred devices
+> > > > > list, so it looks that device core added a link to something that is not
+> > > > > a platform device...
+> > >
+> > > Probe deferred devices (even platform devices) not showing up in that
+> > > list is not unusual. That's because devices end up on that list only
+> > > after a driver for them is matched and then it fails.
+> > >
+> > > > Lemme guess: bus@8000000 is a simple bus, but it has an
+> > > > interrupt-map, and the devlink code doesn't follow the mapping?
+> > > >
+> > >
+> > > No, what's happening is that (and this is something I just learned)
+> > > that if a parent has an "#interrupt-cells" property, it becomes your
+> > > interrupt parent. In this case, the motherboard-bus (still a platform
+> > > device) is the parent, but it never probes (because it's simple-bus
+> > > and "arm,vexpress,v2p-p1"). But it becomes the interrupt parent. And
+> > > this mmci device is marked as a consumer of this bus (while still a
+> > > grand-child). Yeah, I'm working on patches (multiple rewrites) to take
+> > > care of cases like this.
+> >
+> > One more reason to scrap the different handling of "simple-bus" and
+> > "simple-pm-bus", and use drivers/bus/simple-pm-bus.c, which is a
+> > platform device driver, for both? (like I originally intended ;-)
+>
+> I'm not sure if this will cause more issues since people are used to
+> simple-bus not needing a driver. I'm afraid to open that pandora's
+> box. Maybe last resort if I don't have any other options.
+>
+> But keeping that aside, I'm confused how interrupts are even working
+> if the parent is a DT node with no driver (let alone a device). Any
+> ideas on what's going on or what I'm misunderstanding?
 
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 86af58294272..bc8ee05bb3d3 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -1995,6 +1995,12 @@ static void mmu_sync_children(struct kvm_vcpu *vcpu,
-        LIST_HEAD(invalid_list);
-        bool flush = false;
+No driver is needed, as the interrupts are just translated by the map,
+and passed to another interrupt controller, which does have a driver.
 
-+       /*
-+        * Only 4k SPTEs can directly be made unsync, the root shadow page
-+        * should never be unsyc'd.
-+        */
-+       WARN_ON_ONCE(sp->unsync);
-+
-        while (mmu_unsync_walk(parent, &pages)) {
-                bool protected = false;
+Cfr. Section 2.4.3 "Interrupt Nexus Properties" in the DeviceTree
+Specification (https://www.devicetree.org/).
 
-@@ -2502,6 +2508,8 @@ EXPORT_SYMBOL_GPL(kvm_mmu_unprotect_page);
+Gr{oetje,eeting}s,
 
- static void kvm_unsync_page(struct kvm_vcpu *vcpu, struct kvm_mmu_page *sp)
- {
-+       WARN_ON(sp->role.level != PG_LEVEL_4K);
-+
-        trace_kvm_mmu_unsync_page(sp);
-        ++vcpu->kvm->stat.mmu_unsync;
-        sp->unsync = 1;
-@@ -2524,7 +2532,6 @@ bool mmu_need_write_protect(struct kvm_vcpu *vcpu, gfn_t gfn,
-                if (sp->unsync)
-                        continue;
+                        Geert
 
--               WARN_ON(sp->role.level != PG_LEVEL_4K);
-                kvm_unsync_page(vcpu, sp);
-        }
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-@@ -3406,8 +3413,7 @@ void kvm_mmu_sync_roots(struct kvm_vcpu *vcpu)
-                 * mmu_need_write_protect() describe what could go wrong if this
-                 * requirement isn't satisfied.
-                 */
--               if (!smp_load_acquire(&sp->unsync) &&
--                   !smp_load_acquire(&sp->unsync_children))
-+               if (!smp_load_acquire(&sp->unsync_children))
-                        return;
-
-                write_lock(&vcpu->kvm->mmu_lock);
-
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
