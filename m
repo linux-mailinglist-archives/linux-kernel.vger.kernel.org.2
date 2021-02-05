@@ -2,94 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73643310C37
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 14:54:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61EFC310C42
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 14:56:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231448AbhBENxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 08:53:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44822 "EHLO
+        id S231522AbhBENzx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 08:55:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231269AbhBENuK (ORCPT
+        with ESMTP id S229763AbhBENwT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 08:50:10 -0500
-Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E15CC0617AB
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 05:49:29 -0800 (PST)
-Received: by mail-qk1-x729.google.com with SMTP id t63so6900389qkc.1
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 05:49:29 -0800 (PST)
+        Fri, 5 Feb 2021 08:52:19 -0500
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 767B3C0613D6
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 05:52:04 -0800 (PST)
+Received: by mail-lj1-x231.google.com with SMTP id m22so7826356ljj.4
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 05:52:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ClyUAOZa7OFCglp1bjgNnlXnosYgcrxy4Bo5DWX5whw=;
-        b=FOINqIGCcM6JC0NsYY3CkXaBU8OT/mQFC438dCVwpji4LrPutJxYQeJ7dTf+VxP+u3
-         zInvInYh4EnxysFRQPofCeynn87IIMYWshQArmOWHQVoho53rCFN8ZNfUIeEupDBX+PD
-         pgDEPCsXI96sUaCb5FMllexsveMKMs7AqZTr11a4OIP70iyu6so8/OTmMbtio430oAvG
-         tSFKvPfhAParBvpOoMO6PT7wC9iJ2g5mw1TTV0/WT3fo8g2DLlqvBo0Cae7ra6/RaWI1
-         7J8MMdZ6ubw/VUkzXWw2Mx0E6GC1AYgATNJyIANBUnP1MSd3GOaVgE/ukYuk8ken0dhF
-         nrZg==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ASWzAhi2cG2TQHse+1Zu4lZ0A7tCAPhy+TIzDjmHLkM=;
+        b=FEqiqBbxKRc+F3Poiwa4vl81wMLAfV5VxyFnHYaiBpWou6UpR48cfY/ZenWXMwZdYB
+         P+emTgcsLNav6sEWDDyew051HRnkdlw+6FT1g/ZvWWZaxaDsa2Q9j2xxe+cS9/uIuWQ2
+         WUJ+tQeUiu2ab0oydkYcSnXQEltmnMogmmkBMRsUFGQ8n24B2JIXAjeen7qUlZSr3Sme
+         +OkTRhfP7vmAZwDZGBr5GxJ0FZ3qr+2fM+psINYQjp45D2jlnVfDc6IdlldkjZ1hXQJn
+         s5/A1MPgdy0yYF22EEdxIMWKMJ1UR8/R98GwjGNRQjWH0zGUhTDSqXK+Y2QNsWMk8Gl/
+         F9jg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ClyUAOZa7OFCglp1bjgNnlXnosYgcrxy4Bo5DWX5whw=;
-        b=taSSYqV9I0iSeZgL/19G+pQfB64xp9yY5SCHO+IUR4tG1N1313UOkWAc3MRSa58QPb
-         1PqbjjFXI1efIC4YCHcTDBXFuooFe/Sv8ou2tosQ5ygDtAd+AJQuPP84zB5YVn+HcZwf
-         T9zIX/Je4cLP6xGGkbNGjQi7ZK5KZ981KRqsrBPvRj/6wSGLUAdRghIbxaoF/6ytoymE
-         vGuIp1VlNTEgsDW1bfMFHqoTmJHblGt70LBL/U+6p9wl8snl1qU5O3KXSMSqx/YboTWw
-         WJeBTxjoCFh3iSy206l3IhoGn40giBqi2Cm7NAm0BObXO3yLE0q1UqANUE43zGGq7igb
-         v7mA==
-X-Gm-Message-State: AOAM530uYQXyLdldJExi97a9/bKsVy79eFDjKxKczRw3n/zO05tj3vV5
-        /2p7qtN+dgBd52lEPxj9IvDAww==
-X-Google-Smtp-Source: ABdhPJyedZWbZ/VF4fBY6l7VFipJ5IDXzjqxEPVTrm3E52U13xSe3YTO2VmNXl+IpGlsoUFUyN3YCA==
-X-Received: by 2002:a37:a50e:: with SMTP id o14mr4388187qke.250.1612532968204;
-        Fri, 05 Feb 2021 05:49:28 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
-        by smtp.gmail.com with ESMTPSA id c5sm9349747qkg.99.2021.02.05.05.49.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Feb 2021 05:49:27 -0800 (PST)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1l81UF-003qUb-5e; Fri, 05 Feb 2021 09:49:27 -0400
-Date:   Fri, 5 Feb 2021 09:49:27 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        dan.j.williams@intel.com
-Subject: Re: [PATCH 1/2] mm: provide a sane PTE walking API for modules
-Message-ID: <20210205134927.GL4718@ziepe.ca>
-References: <20210205103259.42866-1-pbonzini@redhat.com>
- <20210205103259.42866-2-pbonzini@redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ASWzAhi2cG2TQHse+1Zu4lZ0A7tCAPhy+TIzDjmHLkM=;
+        b=Ow18enNcrBw3rFhLEgfPvwZAecgfud2C7aAQHfs1i/EAi6BvaGEDvwkWuQOeRfl+k2
+         EEUHC6b3gWxrqobPMPpdP0LK04/4SQBQSe1F1FhGBDO5cv1W0eGSUK+QnySWeuyy/sJo
+         mubP/CnG9vYNFvccYuhzBpQ+7zgJ2ENtsAq+ZriI5hu23NPk0+AlxzGz8Hi5fF0OL526
+         Uh0+K0/2mOyxqQjwrZ5Z5OgSgSwnbsZ43X5AbQeNTl/wx1P7RSvCGptPJxsWfwPnUtEl
+         zDFajzn4+Tjs8rfqLrLYNW0lq+vFJtPRJCfrzTvFER3CHLbR5qGbJ5+gFQPutQHseA9V
+         +/1g==
+X-Gm-Message-State: AOAM532qas0Xohg4JWEHkmIr7/wUIZx8YCi+rekNe5X9SeFvvPu/tc1c
+        90W3FnqdrWoPoeoTcyYL+bwQbHyyQvUGEU9J8ARv/g==
+X-Google-Smtp-Source: ABdhPJz9WT4HEzFe+20unEq6h9V4ChSVF0OJxUZ0UilIi/mReWhYWQYl7T4ycCEjOI02KwEZ4eKlGSct7l2Wd4Ca+Rw=
+X-Received: by 2002:a2e:9857:: with SMTP id e23mr2697903ljj.209.1612533122884;
+ Fri, 05 Feb 2021 05:52:02 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210205103259.42866-2-pbonzini@redhat.com>
+References: <20210128183141.28097-1-valentin.schneider@arm.com> <20210128183141.28097-2-valentin.schneider@arm.com>
+In-Reply-To: <20210128183141.28097-2-valentin.schneider@arm.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Fri, 5 Feb 2021 14:51:51 +0100
+Message-ID: <CAKfTPtDrKrkZBQuaFSGvRo=aQAdF0vugxWervQpWeza21XL=yw@mail.gmail.com>
+Subject: Re: [PATCH 1/8] sched/fair: Clean up active balance nr_balance_failed trickery
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Quentin Perret <qperret@google.com>,
+        Pavan Kondeti <pkondeti@codeaurora.org>,
+        Rik van Riel <riel@surriel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 05, 2021 at 05:32:58AM -0500, Paolo Bonzini wrote:
-> Currently, the follow_pfn function is exported for modules but
-> follow_pte is not.  However, follow_pfn is very easy to misuse,
-> because it does not provide protections (so most of its callers
-> assume the page is writable!) and because it returns after having
-> already unlocked the page table lock.
-> 
-> Provide instead a simplified version of follow_pte that does
-> not have the pmdpp and range arguments.  The older version
-> survives as follow_invalidate_pte() for use by fs/dax.c.
-> 
-> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+On Thu, 28 Jan 2021 at 19:32, Valentin Schneider
+<valentin.schneider@arm.com> wrote:
+>
+> When triggering an active load balance, sd->nr_balance_failed is set to
+> such a value that any further can_migrate_task() using said sd will ignore
+> the output of task_hot().
+>
+> This behaviour makes sense, as active load balance intentionally preempts a
+> rq's running task to migrate it right away, but this asynchronous write is
+> a bit shoddy, as the stopper thread might run active_load_balance_cpu_stop
+> before the sd->nr_balance_failed write either becomes visible to the
+> stopper's CPU or even happens on the CPU that appended the stopper work.
+>
+> Add a struct lb_env flag to denote active balancing, and use it in
+> can_migrate_task(). Remove the sd->nr_balance_failed write that served the
+> same purpose.
+>
+> Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
 > ---
->  arch/s390/pci/pci_mmio.c |  2 +-
->  fs/dax.c                 |  5 +++--
->  include/linux/mm.h       |  6 ++++--
->  mm/memory.c              | 35 ++++++++++++++++++++++++++++++-----
->  4 files changed, 38 insertions(+), 10 deletions(-)
+>  kernel/sched/fair.c | 17 ++++++++++-------
+>  1 file changed, 10 insertions(+), 7 deletions(-)
+>
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 197a51473e0c..0f6a4e58ce3c 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -7423,6 +7423,7 @@ enum migration_type {
+>  #define LBF_SOME_PINNED        0x08
+>  #define LBF_NOHZ_STATS 0x10
+>  #define LBF_NOHZ_AGAIN 0x20
+> +#define LBF_ACTIVE_LB  0x40
+>
+>  struct lb_env {
+>         struct sched_domain     *sd;
+> @@ -7608,10 +7609,14 @@ int can_migrate_task(struct task_struct *p, struct lb_env *env)
+>
+>         /*
+>          * Aggressive migration if:
+> -        * 1) destination numa is preferred
+> -        * 2) task is cache cold, or
+> -        * 3) too many balance attempts have failed.
+> +        * 1) active balance
+> +        * 2) destination numa is preferred
+> +        * 3) task is cache cold, or
+> +        * 4) too many balance attempts have failed.
+>          */
+> +       if (env->flags & LBF_ACTIVE_LB)
+> +               return 1;
+> +
 
-Looks good to me, thanks
+This changes the behavior for numa system because it skips
+migrate_degrades_locality() which can return 1 and prevent active
+migration whatever nr_balance_failed
 
-Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+Is that intentional ?
 
-Jason
+>         tsk_cache_hot = migrate_degrades_locality(p, env);
+>         if (tsk_cache_hot == -1)
+>                 tsk_cache_hot = task_hot(p, env);
+> @@ -9805,9 +9810,6 @@ static int load_balance(int this_cpu, struct rq *this_rq,
+>                                         active_load_balance_cpu_stop, busiest,
+>                                         &busiest->active_balance_work);
+>                         }
+> -
+> -                       /* We've kicked active balancing, force task migration. */
+> -                       sd->nr_balance_failed = sd->cache_nice_tries+1;
+>                 }
+>         } else {
+>                 sd->nr_balance_failed = 0;
+> @@ -9963,7 +9965,8 @@ static int active_load_balance_cpu_stop(void *data)
+>                          * @dst_grpmask we need to make that test go away with lying
+>                          * about DST_PINNED.
+>                          */
+> -                       .flags          = LBF_DST_PINNED,
+> +                       .flags          = LBF_DST_PINNED |
+> +                                         LBF_ACTIVE_LB,
+>                 };
+>
+>                 schedstat_inc(sd->alb_count);
+> --
+> 2.27.0
+>
