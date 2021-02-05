@@ -2,112 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 204283119FE
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 04:27:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6D1431198E
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 04:13:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232585AbhBFD0U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 22:26:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39898 "EHLO
+        id S229561AbhBFDMP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 22:12:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231492AbhBFCnX (ORCPT
+        with ESMTP id S230315AbhBFCiZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 21:43:23 -0500
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61103C0698CE;
-        Fri,  5 Feb 2021 14:42:09 -0800 (PST)
-Received: by mail-pf1-x42a.google.com with SMTP id 18so3138186pfz.3;
-        Fri, 05 Feb 2021 14:42:09 -0800 (PST)
+        Fri, 5 Feb 2021 21:38:25 -0500
+Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D559BC08ECB7;
+        Fri,  5 Feb 2021 14:49:13 -0800 (PST)
+Received: by mail-oi1-x235.google.com with SMTP id v193so3773465oie.8;
+        Fri, 05 Feb 2021 14:49:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=FwjcqJWWNcSXw2VIILl7w2i/g+DKyP5+Y7qQ/2dsy3Y=;
-        b=C5k/72VaWxTYXyZABzbANvSq7XAPEorMLLNUKVWpBjewJ0/nNvm+LWaLOiohGp0ovm
-         ydq/loPXlxbvHTL1shzzb08YlKvgpXHwTWOwbNvY9ea9Lz5aWjWVGhPe5YDV/Rds/lju
-         cI2J85gWqlV8tlSZ73j/V3ulnwzlup5MdQG/QCYwzhdNdJDBwLOigLPH/tXOtcg0zbwR
-         /ZXynTDDFBhICZr8++j9brg05NXzWmiegj9La0PuQ83gwZPzK8O8vsjAsp1+/XFgHuDa
-         eEzttF2NnvzLPXLesD0FhxHGBRsh9LbT95mgvJFPWZZlkOvauqvq7kefG/HC5J0bNpUt
-         oM/w==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ojF9+RHOmAuEE2HU5gcyNLd/Z5tAjeBRPHoUC6HrwLk=;
+        b=pxi2+PLhskq0A6d7mF2s7rrouvzdsM7TSvqes8XQR/F3NXfqa0wWJUe1Nk4E62fGTN
+         4RJCTUzsOFzBU4hX65dVsID04WW9kaGGTFK9qXUhYdywSDV/OBVI+rDk0jTGCyPBDS3z
+         df4dtFhAuuOcjxlQ1VwmF6nZ1DTthI1O0XqETBs3Ol3UvqiONXm7brZMf1BE0mTiPKiJ
+         hNcLuUtc5Hfxay5T13zHan0MwnlCHvQKH4NQ0rew167memQe0wC82ETHyQYyfxmwijEA
+         SPDwzEI9NckT9eK3sAiohPDBx7xozjfugZIxfR3J0e02SFozyqCYrwfJLI2ux6ul14tJ
+         Q8xg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=FwjcqJWWNcSXw2VIILl7w2i/g+DKyP5+Y7qQ/2dsy3Y=;
-        b=phzt6x4qM4BMQ5gzigrhkLs2x1kKnFrls/ln86453N7KGYndUQRoNwj7upoP8BGW2Q
-         LwbU+Mtx3q8TXM3t3wWjBlWJwFr1Ebqv2bTqeSz1PrJxUUMAdcXf9iZb1T/qufhA9V+8
-         wNwWVmEcPc59oz7uSShRr7WgzpvYOdNFho/vRir75ukPwkBk7IVnHiTsB+f6G97WDlnE
-         jaY9sR9SZvTp1ZXS3uz5WE1fV56GZvxWDR623MaSNpdbeRLiV2PpUVE68mwSd8CIasZD
-         G1IFhCIApY8DKlBMU4h6nttU4BgSi5+h9L2lCu1LI5SJi8115jJ0FMhd2gbiJFBXA9ZK
-         1BtA==
-X-Gm-Message-State: AOAM5338iNal9yj2gla3uMAjbG9l0azJfKXyWlDgJg23YkMrFKE+tozD
-        DUoax7SRyJ7Gf16x154IqnASR7RS9E8=
-X-Google-Smtp-Source: ABdhPJzly2jwOwnOUpYovP03NCN3AX5wGKFqAThbKdf3wsuPPvFzgc7Oi07uZKaTLsd7w7cpDenJRg==
-X-Received: by 2002:a63:c54c:: with SMTP id g12mr6230188pgd.449.1612564929004;
-        Fri, 05 Feb 2021 14:42:09 -0800 (PST)
-Received: from shane-XPS-13-9380.hsd1.ca.comcast.net ([2601:646:8800:1c00:b867:f7ba:cb49:e834])
-        by smtp.gmail.com with ESMTPSA id j9sm9194982pjn.32.2021.02.05.14.42.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Feb 2021 14:42:08 -0800 (PST)
-From:   Xie He <xie.he.0141@gmail.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Willem de Bruijn <willemb@google.com>,
-        Eric Dumazet <edumazet@google.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Tanner Love <tannerlove@google.com>,
-        Eyal Birger <eyal.birger@gmail.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Xie He <xie.he.0141@gmail.com>
-Subject: [PATCH net-next] net/packet: Improve the comment about LL header visibility criteria
-Date:   Fri,  5 Feb 2021 14:41:24 -0800
-Message-Id: <20210205224124.21345-1-xie.he.0141@gmail.com>
-X-Mailer: git-send-email 2.27.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ojF9+RHOmAuEE2HU5gcyNLd/Z5tAjeBRPHoUC6HrwLk=;
+        b=SMy8IvyF4Cw2Cy4k2MsO3lPpHzW08RmVy+fR8ryXIxNNtEzb8R9+szpSqU45CQrH3T
+         IKieJbAxsWbpnAVweXPMPu2kdymCEh5scidjAsaLyScDNutEbOMOvfgRu+MQgbtswhvn
+         hZtZqB70BN3u5iUIp+ifKJ35Ji8QEJ2x9d3dL9az6lZ7Zh2Wqo4V698kGTaRIpLoY8xp
+         ov9i47lscTiDRp77/yOBRrhB5lPmiMIBit/G1zPjXRH22lw39kgBgyvAku9SsR6zRo+h
+         KvekiwGPcDOdrDyTTb+x+30NE7CmGpGAVDpENmvMQAA9wK/HF4/6MV3fORwYb1AxbPob
+         A1hg==
+X-Gm-Message-State: AOAM531+0M0gv9cvTvIEtzmpRGmcwYbY7GxCeRSg3gWe9itOMXAsRR+w
+        kz9DPM/Ci1EC/pG1N8vsNtaZtrGQ8JtwF5QZQbY=
+X-Google-Smtp-Source: ABdhPJxWGEoiaHg3LtbwhHldZO/Ccy2pzpAfPaypv8pJs2XmNwJy81zoTYFXK5bxo+oMzZNLAk21ecWpYJiwpen9YDI=
+X-Received: by 2002:aca:e108:: with SMTP id y8mr2216690oig.114.1612565353201;
+ Fri, 05 Feb 2021 14:49:13 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210205045217.552927-1-enbyamy@gmail.com> <20210205131910.GJ1993@twin.jikos.cz>
+ <CAE1WUT4az3ZZ8OU2AS2xxi9h1TbW958ivNXr53jinqHK5vuzMg@mail.gmail.com> <CAFLxGvz0ZnTs1B7v3R+Zefd5BhE9ximFpgKL8zRmGfOdBrsVfw@mail.gmail.com>
+In-Reply-To: <CAFLxGvz0ZnTs1B7v3R+Zefd5BhE9ximFpgKL8zRmGfOdBrsVfw@mail.gmail.com>
+From:   Amy Parker <enbyamy@gmail.com>
+Date:   Fri, 5 Feb 2021 14:49:02 -0800
+Message-ID: <CAE1WUT6Hq=phyjW1Wv01nvG1fWOAZVEsNyrtKC6Tu37ABnU=dA@mail.gmail.com>
+Subject: Re: [PATCH 0/3] fs/efs: Follow kernel style guide
+To:     Richard Weinberger <richard.weinberger@gmail.com>
+Cc:     dsterba@suse.cz, linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The "dev_has_header" function, recently added in
-commit d549699048b4 ("net/packet: fix packet receive on L3 devices
-without visible hard header"),
-is more accurate as criteria for determining whether a device exposes
-the LL header to upper layers, because in addition to dev->header_ops,
-it also checks for dev->header_ops->create.
+On Fri, Feb 5, 2021 at 2:37 PM Richard Weinberger
+<richard.weinberger@gmail.com> wrote:
+>
+> On Fri, Feb 5, 2021 at 11:26 PM Amy Parker <enbyamy@gmail.com> wrote:
+> >
+> > On Fri, Feb 5, 2021 at 5:1 AM David Sterba <dsterba@suse.cz> wrote:
+> > >
+> > > On Thu, Feb 04, 2021 at 08:52:14PM -0800, Amy Parker wrote:
+> > > > As the EFS driver is old and non-maintained,
+> > >
+> > > Is anybody using EFS on current kernels? There's not much point updating
+> > > it to current coding style, deleting fs/efs is probably the best option.
+> > >
+> >
+> > Wouldn't be surprised if there's a few systems out there that haven't
+> > migrated at all.
+>
+> Before ripping it from the kernel source you could do a FUSE port of EFS.
+> That way old filesystems can still get used on Linux.
 
-When transmitting an skb on a device, dev_hard_header can be called to
-generate an LL header. dev_hard_header will only generate a header if
-dev->header_ops->create is present.
-
-Signed-off-by: Xie He <xie.he.0141@gmail.com>
----
- net/packet/af_packet.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/net/packet/af_packet.c b/net/packet/af_packet.c
-index 6bbc7a448593..e24b2841c643 100644
---- a/net/packet/af_packet.c
-+++ b/net/packet/af_packet.c
-@@ -132,17 +132,17 @@ Resume
-     because it is invisible to us.
- 
- 
- On transmit:
- ------------
- 
--dev->header_ops != NULL
-+dev_has_header(dev) == true
-    mac_header -> ll header
-    data       -> ll header
- 
--dev->header_ops == NULL (ll header is invisible to us)
-+dev_has_header(dev) == false (ll header is invisible to us)
-    mac_header -> data
-    data       -> data
- 
-    We should set network_header on output to the correct position,
-    packet classifier depends on it.
-  */
--- 
-2.27.0
-
+A FUSE port of EFS would be a great idea. Know anyone that would be
+interested in working on it? I might try picking it up if no one else
+wants it, we'll see.
