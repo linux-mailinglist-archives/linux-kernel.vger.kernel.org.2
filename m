@@ -2,114 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7B4431013F
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 01:04:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FA9931014A
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 01:05:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231565AbhBEAC4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 19:02:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36718 "EHLO
+        id S231478AbhBEAFh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 19:05:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231508AbhBEACt (ORCPT
+        with ESMTP id S231372AbhBEAFd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 19:02:49 -0500
-Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8C2BC0613D6
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 16:02:33 -0800 (PST)
-Received: by mail-il1-x12a.google.com with SMTP id q9so4335524ilo.1
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 16:02:33 -0800 (PST)
+        Thu, 4 Feb 2021 19:05:33 -0500
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9F92C061786
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 16:04:53 -0800 (PST)
+Received: by mail-pg1-x52e.google.com with SMTP id n10so3258418pgl.10
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 16:04:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=DRlw1BEuyomdDJLxk78/bJrM7aLmjlY5EXUOw6h3EOY=;
-        b=Dv6Sn9U7xzjLvTRIkoTdd5BML4cTfVQx72a8UHn/s2xVMk7qvDNjfh19Id10SHqBtU
-         8dCahoSaZ5ZaGsA85JwNopJHfNVKhf0Piow0FViF8vrBPjXv69DfMuq9zRSDJhos6YJU
-         h/2Z0CFkJI8rTGrN/0xe4aTM+AG25J43xjhgaqn6LyvFxdZpYCtFKCmX7bjeIrxigkpc
-         Ck1Qa41WnA3GaGsK2xAKvqWJ1xVZcvZi3oZzTmCPcPEztrbW5WvyEYH1MC652eXCwO8E
-         l3nw4LCBpFzLUpf9JMokXYnra/qgLxi4E+1pK2Rql8D3myuT0yH+lCjYIJ0i5ZnR3OZH
-         DMjA==
+        bh=WuuWQCiwdV87iW0z7KxVY5BTEgeNizYr5qdipOfxXnc=;
+        b=hJu87bCSyR1Kv3ijwZbkKNvs01VCINeDtrWjeRxX0TBc8YFS0tk3FKL/zdwi5VP7td
+         PlI3K7mcZso4bJEOtv2rLoBj6TsGxU5HNATT/olyMpUxY4HRuKpdwLeygD5lQ8xJXyOp
+         8asM747S5Mmf6ZQXTnIFYFS2YDOaPVm7uCVnAZHlVeCEVMxQ/t1wP3+dug/EL2QxGaN6
+         venL6y4MmxsBhkB5uiilZ5lgZBP8TP8wJsjgmE9Nxna2IKtbRPWfJKVmMg86FnHWsU3p
+         boUZ8oswAq6lgYMKhYI1r5M8OCCIaXcU2dNcitOPz+jh/6ehx6tlLGeezWQwGD5UU9Ze
+         SQNQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=DRlw1BEuyomdDJLxk78/bJrM7aLmjlY5EXUOw6h3EOY=;
-        b=fgEAGJqkEdqoldIVSFUqKf9Y9cUPadPYtgUYD0uzOLMXZQ7QZ1+ZX3lmx0ZwRF0fo+
-         pb5L2tLOSBrITKhnNR9zAuvIZo2j+dOL3NNrjm/0KLjU9nGI8qDASsGMkXNrCSGLjMDF
-         7xZxrRPJtpaXo8ZOu3f7D+oojecCpCSud24B7ZCv8mnUApJaT37xB5//UeVUhXyhD9Fp
-         byzAUlBF7wMU6dAikt2nZ7mYxnItRgymKx8vU16mMyMgFfaKYCSSg+I09XaP6CdS7HEb
-         +cMEeyYjYcqpqK5TeA35X9ekmJcrdXE9oH3AcG/iZPKa0HJSGquzoQMAwp7YbiaS2/YQ
-         zQgQ==
-X-Gm-Message-State: AOAM532JJ/800hykHLONbfxubXAv7lyYW9hs2o+hZnhdzPQpXEzxXB1G
-        RdydkQRzycGgUNrU77ovDM7hWefOuLV40HPs6twPwg==
-X-Google-Smtp-Source: ABdhPJyniATJC0osHOzyQR4BvrN08cms2xRmjWl6h0L7mQLa01ZsxiLW10AuCIj6oveC9MtJYxo3rxGoTTbDs3yveC4=
-X-Received: by 2002:a92:cbce:: with SMTP id s14mr1578328ilq.306.1612483353143;
- Thu, 04 Feb 2021 16:02:33 -0800 (PST)
+        bh=WuuWQCiwdV87iW0z7KxVY5BTEgeNizYr5qdipOfxXnc=;
+        b=buthXABwedg3V2vb3BAACpud2vBmSsjV+X2KsaTWXbdop3QZvF0gRrEbJqcTNUlDrB
+         ol+vrNzAfR9tQWq2nEI3oI4l7/aoiHFMoPUk5/Y2dhy6D5ttoQrwegGhXJBqhGUfemi1
+         i3iRx3egpx76XJsMiyv2/6cHc/Jnf61edckKyjIhADBwzatwNDjqT4byeMIkg2ZtleyQ
+         iJj5kZ8NXLmjzJ0qUREdDFU9RGwcg/Xlknmk8vF5ncg7jXrg09Iegvky+wjKPjIIFKrM
+         ZPUYktocpFKTVZQqi5YB/Ok78xXZG/bWVKVroBic40jJlKX1Y6oGPlDWgri6HayIAmNG
+         KeEg==
+X-Gm-Message-State: AOAM5300bY4EQP5JYi3UA/W7kCTAT7jbCIsN9mHEJ4QlaXENGFv6V0bz
+        PEF3lIh7J6waHJr+FGtM6WjMXvHVKTC1KVFfo3xxkw==
+X-Google-Smtp-Source: ABdhPJxiqPOP+t9zseOEfIyIpqMaTUgdxO3foYKfOGifXc4uOhxBTBoT0OVMHzFKRSkn1upcNYcLbnRumZUT3uow9Yg=
+X-Received: by 2002:a62:838d:0:b029:1ba:9b85:2eac with SMTP id
+ h135-20020a62838d0000b02901ba9b852eacmr1917244pfe.36.1612483492832; Thu, 04
+ Feb 2021 16:04:52 -0800 (PST)
 MIME-Version: 1.0
-References: <20210204221959.232582-1-bgardon@google.com> <20210204225144.GU6468@xz-x1>
-In-Reply-To: <20210204225144.GU6468@xz-x1>
-From:   Ben Gardon <bgardon@google.com>
-Date:   Thu, 4 Feb 2021 16:02:22 -0800
-Message-ID: <CANgfPd-FK5VzDgpR8CYk+k_WxFz6FQun4Y+kPWt1qnVwWZMfXQ@mail.gmail.com>
-Subject: Re: [PATCH] KVM: VMX: Optimize flushing the PML buffer
-To:     Peter Xu <peterx@redhat.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Peter Shier <pshier@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Makarand Sonare <makarandsonare@google.com>,
-        Kai Huang <kai.huang@intel.com>
+References: <20210115210616.404156-1-ndesaulniers@google.com>
+ <CA+icZUVp+JNq89uc_DyWC6zh5=kLtUr7eOxHizfFggnEVGJpqw@mail.gmail.com>
+ <7354583d-de40-b6b9-6534-a4f4c038230f@fb.com> <CAKwvOd=5iR0JONwDb6ypD7dzzjOS3Uj0CjcyYqPF48eK4Pi90Q@mail.gmail.com>
+ <12b6c2ca-4cf7-4edd-faf2-72e3cb59c00e@fb.com> <20210117201500.GO457607@kernel.org>
+ <CAKwvOdmniAMZD0LiFdr5N8eOwHqNFED2Pd=pwOFF2Y8eSRXUHA@mail.gmail.com>
+ <CAEf4Bzbn1app3LZ1oah5ARn81j5RMNxRRHPVAkeY3h_0q7+7fg@mail.gmail.com>
+ <CAKwvOdmrVdxbEHdOFA8x+Q2yDWOfChZzBc6nR3rdaM8R3LsxfQ@mail.gmail.com> <CAEf4Bzbs5sDTB6w1D4LpKLGjY5sCCUnRUsU84Ccn8DoL352j1g@mail.gmail.com>
+In-Reply-To: <CAEf4Bzbs5sDTB6w1D4LpKLGjY5sCCUnRUsU84Ccn8DoL352j1g@mail.gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Thu, 4 Feb 2021 16:04:40 -0800
+Message-ID: <CAKwvOdk-4_Pt=DKFokDpG8L58xj4J-=PPrgSLEZnYs7VJu1jZA@mail.gmail.com>
+Subject: Re: [PATCH v5 0/3] Kbuild: DWARF v5 support
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
+        Fangrui Song <maskray@google.com>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 4, 2021 at 2:51 PM Peter Xu <peterx@redhat.com> wrote:
->
-> Hi, Ben,
->
-> On Thu, Feb 04, 2021 at 02:19:59PM -0800, Ben Gardon wrote:
-> > The average time for each run demonstrated a strange bimodal distribution,
-> > with clusters around 2 seconds and 2.5 seconds. This may have been a
-> > result of vCPU migration between NUMA nodes.
->
-> Have you thought about using numactl or similar technique to verify your idea
-> (force both vcpu threads binding, and memory allocations)?
->
-> From the numbers it already shows improvements indeed, but just curious since
-> you raised this up. :)
+Moving a bunch of folks + lists to BCC.
 
-Frustratingly, the test machines I have don't have numactl installed
-but I've been meaning to add cpu pinning to the selftests perf tests
-anyway, so maybe this is a good reason to do it.
-
+On Thu, Feb 4, 2021 at 3:54 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
 >
-> > @@ -5707,13 +5708,18 @@ static void vmx_flush_pml_buffer(struct kvm_vcpu *vcpu)
-> >       else
-> >               pml_idx++;
+> On Wed, Feb 3, 2021 at 7:13 PM Nick Desaulniers <ndesaulniers@google.com> wrote:
 > >
-> > +     memslots = kvm_vcpu_memslots(vcpu);
-> > +
-> >       pml_buf = page_address(vmx->pml_pg);
-> >       for (; pml_idx < PML_ENTITY_NUM; pml_idx++) {
-> > +             struct kvm_memory_slot *memslot;
-> >               u64 gpa;
+> > On Wed, Feb 3, 2021 at 6:58 PM Andrii Nakryiko
+> > <andrii.nakryiko@gmail.com> wrote:
+> > >
+> > > On Wed, Feb 3, 2021 at 5:31 PM Nick Desaulniers <ndesaulniers@google.com> wrote:
+> > > >
+> > > > On Sun, Jan 17, 2021 at 12:14 PM Arnaldo Carvalho de Melo
+> > > > <acme@kernel.org> wrote:
+> > > > >
+> > > > > Em Fri, Jan 15, 2021 at 03:43:06PM -0800, Yonghong Song escreveu:
+> > > > > >
+> > > > > >
+> > > > > > On 1/15/21 3:34 PM, Nick Desaulniers wrote:
+> > > > > > > On Fri, Jan 15, 2021 at 3:24 PM Yonghong Song <yhs@fb.com> wrote:
+> > > > > > > >
+> > > > > > > >
+> > > > > > > >
+> > > > > > > > On 1/15/21 1:53 PM, Sedat Dilek wrote:
+> > > > > > > > > En plus, I encountered breakage with GCC v10.2.1 and LLVM=1 and
+> > > > > > > > > CONFIG_DEBUG_INFO_DWARF4.
+> > > > > > > > > So might be good to add a "depends on !DEBUG_INFO_BTF" in this combination.
+> > > > > > >
+> > > > > > > Can you privately send me your configs that repro? Maybe I can isolate
+> > > > > > > it to a set of configs?
+> > > > > > >
+> > > > > > > >
+> > > > > > > > I suggested not to add !DEBUG_INFO_BTF to CONFIG_DEBUG_INFO_DWARF4.
+> > > > > > > > It is not there before and adding this may suddenly break some users.
+> > > > > > > >
+> > > > > > > > If certain combination of gcc/llvm does not work for
+> > > > > > > > CONFIG_DEBUG_INFO_DWARF4 with pahole, this is a bug bpf community
+> > > > > > > > should fix.
+> > > > > > >
+> > > > > > > Is there a place I should report bugs?
+> > > > > >
+> > > > > > You can send bug report to Arnaldo Carvalho de Melo <acme@kernel.org>,
+> > > > > > dwarves@vger.kernel.org and bpf@vger.kernel.org.
+> > > > >
+> > > > > I'm coming back from vacation, will try to read the messages and see if
+> > > > > I can fix this.
+> > > >
+> > > > IDK about DWARF v4; that seems to work for me.  I was previously observing
+> > > > https://bugzilla.redhat.com/show_bug.cgi?id=1922698
+> > > > with DWARF v5.  I just re-pulled the latest pahole, rebuilt, and no
+> > > > longer see that warning.
+> > > >
+> > > > I now observe a different set.  I plan on attending "BPF office hours
+> > > > tomorrow morning," but if anyone wants a sneak peak of the errors and
+> > > > how to reproduce:
+> > > > https://gist.github.com/nickdesaulniers/ae8c9efbe4da69b1cf0dce138c1d2781
+> > > >
+> > >
+> > > Is there another (easy) way to get your patch set without the b4 tool?
+> > > Is your patch set present in some patchworks instance, so that I can
+> > > download it in mbox format, for example?
 > >
-> >               gpa = pml_buf[pml_idx];
-> >               WARN_ON(gpa & (PAGE_SIZE - 1));
-> > -             kvm_vcpu_mark_page_dirty(vcpu, gpa >> PAGE_SHIFT);
-> > +
-> > +             memslot = __gfn_to_memslot(memslots, gpa >> PAGE_SHIFT);
-> > +             mark_page_dirty_in_slot(vcpu->kvm, memslot, gpa >> PAGE_SHIFT);
+> > $ wget https://lore.kernel.org/lkml/20210130004401.2528717-2-ndesaulniers@google.com/raw
+> > -O - | git am
+> > $ wget https://lore.kernel.org/lkml/20210130004401.2528717-3-ndesaulniers@google.com/raw
+> > -O - | git am
+> >
+> > If you haven't tried b4 yet, it's quite nice.  Hard to go back.  Lore
+> > also has mbox.gz links.  Not sure about patchwork.
+> >
 >
-> Since at it: make "gpa >> PAGE_SHIFT" a temp var too?
+> Ok, I managed to apply that on linux-next, but I can't get past this:
+>
+> ld.lld: error: undefined symbol: pa_trampoline_start
+> >>> referenced by arch/x86/realmode/rm/header.o:(real_mode_header)
 
-That's a good idea, I'll try it.
+Thanks for testing and the report. Do you have a .config you can send
+me to reproduce?
 
 >
-> Thanks,
+> ld.lld: error: undefined symbol: pa_trampoline_header
+> >>> referenced by arch/x86/realmode/rm/header.o:(real_mode_header)
 >
-> --
-> Peter Xu
+> ld.lld: error: undefined symbol: pa_trampoline_pgd
+> >>> referenced by arch/x86/realmode/rm/header.o:(real_mode_header)
+> >>> referenced by trampoline_64.S:142 (/data/users/andriin/linux/arch/x86/realmode/rm/trampoline_64.S:142)
+> >>>               arch/x86/realmode/rm/trampoline_64.o:(startup_32)
 >
+> ld.lld: error: undefined symbol: pa_wakeup_start
+> >>> referenced by arch/x86/realmode/rm/header.o:(real_mode_header)
+>
+> ld.lld: error: undefined symbol: pa_wakeup_header
+> >>> referenced by arch/x86/realmode/rm/header.o:(real_mode_header)
+>
+> ld.lld: error: undefined symbol: pa_machine_real_restart_asm
+> >>> referenced by arch/x86/realmode/rm/header.o:(real_mode_header)
+>
+> ld.lld: error: undefined symbol: pa_startup_32
+> >>> referenced by trampoline_64.S:77 (/data/users/andriin/linux/arch/x86/realmode/rm/trampoline_64.S:77)
+> >>>               arch/x86/realmode/rm/trampoline_64.o:(trampoline_start)
+>
+> ld.lld: error: undefined symbol: pa_tr_flags
+> >>> referenced by trampoline_64.S:124 (/data/users/andriin/linux/arch/x86/realmode/rm/trampoline_64.S:124)
+> >>>               arch/x86/realmode/rm/trampoline_64.o:(startup_32)
+>
+> ld.lld: error: undefined symbol: pa_tr_cr4
+> >>> referenced by trampoline_64.S:138 (/data/users/andriin/linux/arch/x86/realmode/rm/trampoline_64.S:138)
+> >>>               arch/x86/realmode/rm/trampoline_64.o:(startup_32)
+>
+> ld.lld: error: undefined symbol: pa_tr_efer
+> >>> referenced by trampoline_64.S:146 (/data/users/andriin/linux/arch/x86/realmode/rm/trampoline_64.S:146)
+> >>>               arch/x86/realmode/rm/trampoline_64.o:(startup_32)
+> >>> referenced by trampoline_64.S:147 (/data/users/andriin/linux/arch/x86/realmode/rm/trampoline_64.S:147)
+> >>>               arch/x86/realmode/rm/trampoline_64.o:(startup_32)
+>
+> ld.lld: error: undefined symbol: pa_startup_64
+> >>> referenced by trampoline_64.S:161 (/data/users/andriin/linux/arch/x86/realmode/rm/trampoline_64.S:161)
+> >>>               arch/x86/realmode/rm/trampoline_64.o:(startup_32)
+>
+> ld.lld: error: undefined symbol: pa_tr_gdt
+> >>> referenced by arch/x86/realmode/rm/trampoline_64.o:(tr_gdt)
+> >>> referenced by reboot.S:28 (/data/users/andriin/linux/arch/x86/realmode/rm/reboot.S:28)
+> >>>               arch/x86/realmode/rm/reboot.o:(machine_real_restart_asm)
+>
+> ld.lld: error: undefined symbol: pa_machine_real_restart_paging_off
+> >>> referenced by reboot.S:34 (/data/users/andriin/linux/arch/x86/realmode/rm/reboot.S:34)
+> >>>               arch/x86/realmode/rm/reboot.o:(machine_real_restart_asm)
+>
+> ld.lld: error: undefined symbol: pa_machine_real_restart_idt
+> >>> referenced by reboot.S:47 (/data/users/andriin/linux/arch/x86/realmode/rm/reboot.S:47)
+> >>>               arch/x86/realmode/rm/reboot.o:(machine_real_restart_asm)
+>
+> ld.lld: error: undefined symbol: pa_machine_real_restart_gdt
+> >>> referenced by reboot.S:54 (/data/users/andriin/linux/arch/x86/realmode/rm/reboot.S:54)
+> >>>               arch/x86/realmode/rm/reboot.o:(machine_real_restart_asm)
+> >>> referenced by arch/x86/realmode/rm/reboot.o:(machine_real_restart_gdt)
+>
+> ld.lld: error: undefined symbol: pa_wakeup_gdt
+> >>> referenced by arch/x86/realmode/rm/wakeup_asm.o:(wakeup_gdt)
+>   CC      arch/x86/mm/numa_64.o
+>   CC      arch/x86/mm/amdtopology.o
+>   HOSTCC  arch/x86/entry/vdso/vdso2c
+> make[4]: *** [arch/x86/realmode/rm/realmode.elf] Error 1
+> make[3]: *** [arch/x86/realmode/rm/realmode.bin] Error 2
+> make[2]: *** [arch/x86/realmode] Error 2
+> make[2]: *** Waiting for unfinished jobs....
+>
+>
+> Hopefully Arnaldo will have better luck.
+>
+>
+>
+> > >
+> > > >
+> > > > (FWIW: some other folks are hitting issues now with kernel's lack of
+> > > > DWARF v5 support: https://bugzilla.redhat.com/show_bug.cgi?id=1922707)
+> >
+> >
+> > --
+> > Thanks,
+> > ~Nick Desaulniers
+
+
+
+-- 
+Thanks,
+~Nick Desaulniers
