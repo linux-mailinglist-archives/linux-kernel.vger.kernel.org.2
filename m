@@ -2,581 +2,1118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0AE4310713
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 09:53:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DE60310715
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 09:53:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229777AbhBEIwD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 03:52:03 -0500
-Received: from mail-bn8nam11on2075.outbound.protection.outlook.com ([40.107.236.75]:31841
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229618AbhBEIv5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 03:51:57 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Y6Pz6J6rgkR42dypFDsnFFhMdyaJvZJrzVAWOm0d1Z9FdeB/Le7BzWss6dBtuRFvF/grczMIXrFa79rkibsV5gribDR7tdG5/UO7Zata7YHmGITk1f6f7h6K7Fx8E/78bsJB0yUdLUR8MJu8KvooYZVXV8LFBSSG165E8YeNqak8GAg5aeZBJAtlnHhy4m/2fgM72SWCxX7R2FYykxh6tC8M3HC8X7thDn2nuvlVNbH6lOVGxewq7pAJMo/OMznKjpC+9ZVEVdQWu0x/KhwjLhkJTx8Q4UjchWVA1gpKrscJ51+C+4plCgoptcYPOyapkVnAXe6UINQ/QK5syf9Ilw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=e+O+WE+wgw/rRrjMA6U0TSX1otQT8BiVNpgkLxI6Po4=;
- b=mwqO+PWCExd9dfgu1YrWpI77tvG2LvI8W8wQPpQss8VpN5S/3djqXkyScKsmlj/mZN2XDoXZMv9ZHs0VR0bO2aP1gUS1YlIF7IAtsI9gx6eLB57HAXT5MMF8syMpRoj/s0YojslGA0jfu9vDNUaSHKvu18VL1FU11BGZYZqBv/to12G0EykxRRyN6bKq/iOIWxFl4+BnPIoyzyZf56dL8MZE0Pk/2Ut0mYdEi2CmQuxVO62Qp/d4rCL89P2bTHjYQrj1GCFBjIrPmgAaSAZWjZsPmFOgrbxqx25SNpywtQ57uxO91YjL6TB8lKBPPmSNXs85BwDxoaMkwDS5QhoB+w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=e+O+WE+wgw/rRrjMA6U0TSX1otQT8BiVNpgkLxI6Po4=;
- b=4k7x2R2HlmdezC+fXsxZRxb9JuEGMmpXdzj+kXZC0PhsFP2+eTRVt2ZTPK4eCa7d4ysNjA8/nahEq92tEjnik8tB7pqnq78Czqzr2OQuAT2J59spW8ekcRsIRrE+eXO0636eWkPzCWxOwF/gy878oeI3rTX2u0qc/rVCWEM2iIw=
-Authentication-Results: lists.freedesktop.org; dkim=none (message not signed)
- header.d=none;lists.freedesktop.org; dmarc=none action=none
- header.from=amd.com;
-Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
- by MN2PR12MB4608.namprd12.prod.outlook.com (2603:10b6:208:fd::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.24; Fri, 5 Feb
- 2021 08:51:00 +0000
-Received: from MN2PR12MB3775.namprd12.prod.outlook.com
- ([fe80::c1ff:dcf1:9536:a1f2]) by MN2PR12MB3775.namprd12.prod.outlook.com
- ([fe80::c1ff:dcf1:9536:a1f2%2]) with mapi id 15.20.3825.023; Fri, 5 Feb 2021
- 08:51:00 +0000
-Subject: Re: [RFC][PATCH v6 4/7] drm: ttm_pool: Rework ttm_pool to use
- drm_page_pool
-To:     John Stultz <john.stultz@linaro.org>,
-        lkml <linux-kernel@vger.kernel.org>
-Cc:     Daniel Vetter <daniel@ffwll.ch>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Liam Mark <lmark@codeaurora.org>,
-        Chris Goldsworthy <cgoldswo@codeaurora.org>,
-        Laura Abbott <labbott@kernel.org>,
-        Brian Starkey <Brian.Starkey@arm.com>,
-        Hridya Valsaraju <hridya@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Sandeep Patil <sspatil@google.com>,
-        Daniel Mentz <danielmentz@google.com>,
-        =?UTF-8?Q?=c3=98rjan_Eide?= <orjan.eide@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Simon Ser <contact@emersion.fr>,
-        James Jones <jajones@nvidia.com>, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-References: <20210205080621.3102035-1-john.stultz@linaro.org>
- <20210205080621.3102035-5-john.stultz@linaro.org>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
-Message-ID: <28ba71e1-0101-6cb6-5909-df0c4fc0c4d6@amd.com>
-Date:   Fri, 5 Feb 2021 09:50:49 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-In-Reply-To: <20210205080621.3102035-5-john.stultz@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [2a02:908:1252:fb60:be8a:bd56:1f94:86e7]
-X-ClientProxiedBy: AM0PR10CA0086.EURPRD10.PROD.OUTLOOK.COM
- (2603:10a6:208:15::39) To MN2PR12MB3775.namprd12.prod.outlook.com
- (2603:10b6:208:159::19)
+        id S229815AbhBEIwZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 03:52:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56750 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229706AbhBEIwA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 03:52:00 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 16C6B64F3C
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 08:51:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612515076;
+        bh=f1dhRH8qQVND4R1479IjRVss06316QcvlxsGyjWQGfg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=E4qdn3l2DTolpG3Jgr7/BjqMrGPbmUUnCHsK2tmtvRLvjbZGyGBhWLiFEe3RuicAJ
+         06xmbVZG5tXkS0jveHWNWGOCGL+He+zj+Vc1I103ZTVnXjy9yNnO8TeICKPMsn0gtb
+         QBwIW5KuwPQMxFsO7LbHg3pIR86pPVQzLjCjWOwAFFsxPy8evdP+MHacDwIDX2W8hu
+         7LMjh1f00S0Por5H1YU2s7shH/g/18pHSBXJoaKI6L1E+BjxUhd1cELfMVVhReJIIS
+         yoci5LbVN+X0jQrL6k1qaFYRiwRGJo9A/UcOBDovh/QXB47AQAK41S1pYAQNO66kvR
+         2xbSc6bndK2xA==
+Received: by mail-io1-f49.google.com with SMTP id n14so6284516iog.3
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 00:51:16 -0800 (PST)
+X-Gm-Message-State: AOAM532yClhsn5upIUb5ywqiHp+iJM7qheeuE0T+sHi+TN9vjxyRccbl
+        04E2Bn+wwaGasWuPdHk1w9pivGosdHKNrOIdQVE=
+X-Google-Smtp-Source: ABdhPJyIXmS9MpG6fZ/ZnXJjzi62BrVyJjvXryhq32iLFrjx3wVXlZKP5w47dx8o+ueC9ZuB8T/FyrIFjEw9700mskk=
+X-Received: by 2002:a5d:9d57:: with SMTP id k23mr3163111iok.112.1612515075145;
+ Fri, 05 Feb 2021 00:51:15 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2a02:908:1252:fb60:be8a:bd56:1f94:86e7] (2a02:908:1252:fb60:be8a:bd56:1f94:86e7) by AM0PR10CA0086.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:15::39) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.19 via Frontend Transport; Fri, 5 Feb 2021 08:50:55 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 0980959a-2fe6-4eac-1632-08d8c9b32926
-X-MS-TrafficTypeDiagnostic: MN2PR12MB4608:
-X-Microsoft-Antispam-PRVS: <MN2PR12MB4608868E601FE228A4060A4F83B29@MN2PR12MB4608.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 2VAnDLotcpVEwghTkf/MAR64PYZ2QuZyWeRAjp2lCi58u+Pq8fGJI0Act2KE2bG+BaqUc2rAhXvw18RcD2Q7IGr3uYg7B4diwtt2b4LJE2HJmcKPi8fXr+TzK4v+eFeD8mOvFtfubsKU3XhZXtWnqzWtxNghP/KLSC2qGLZl2KdQwYV2wf4qu8zfmSW5lv1SHTzrCkzIsxmy1TBEiDBsTveZoGsKNbBlg5t72ZZcjer2gvE+iFam6rfbv+5M1M5/9GLmn7dVlozctMQCNZA+zT0PEbLfMxMG6kNPylq3t3j9MGqt6WYmfUQAOA0cibVE0Z6hIJEXBZ8CqSpj8U84/Tk529ODSD2vv0AkV5H6YWsvhCIqgnCoRefVR8cR78DHj6z/poaSCIWcz2RNgbP7YCDJFEZl3y9WZCR8bfm78PRsHoEbRVjMaDqaeCQx+FkvJ8Y6aay95UYdXAMZb54v4fwAOeY0haVhtXMICO17jU/GSyQfREGSAUhGggWgzNnBr7qF88lOsWqw7p5eEQPTpyf93+HwPmf4/S3N/tyxgm5t4owWQwzz3QnodNgKsJyZBGt5bKVytgPhea1XfM3ihLD1oLQHqo3gIy8ZkKbIU/s=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(366004)(39860400002)(346002)(136003)(396003)(83380400001)(8936002)(110136005)(8676002)(54906003)(316002)(31686004)(31696002)(5660300002)(66946007)(86362001)(30864003)(66556008)(66476007)(186003)(6666004)(52116002)(16526019)(4326008)(2906002)(7416002)(2616005)(6486002)(36756003)(478600001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?cGVlV3J1eEMrNGJsRVBqM2dsdHhyQzJ6WTBYQVMxTFY0YmltdGZ2V3FPWVBq?=
- =?utf-8?B?akMvUU4rMVhKcWFwaDhpVm5pd1lBQTg0SXVab0lNUzZDa3R5QytMN1l4dUIv?=
- =?utf-8?B?RUZDZlJRWHdOL0NGREk0Q3QwMHZDNU5naDNlNVFUZ3RIcUhWS1JuOEFURGlW?=
- =?utf-8?B?S3d5Yjl5cDdrNVlhYXJyRFhhZVowWXNxNnFVVElwUy85WHhiaHY1My9qcXlw?=
- =?utf-8?B?bmJZK2JYVklnL1BVWW1ISWJlenIzdTRoaU9KWmxoSHQ5THNHRlVwK1dwdUxW?=
- =?utf-8?B?a0l4eUMreHR2TVkzZnZscTZHSmFRMlBKd1pRNDNvbnY1UEhtaFUrY2FNaFR4?=
- =?utf-8?B?NGdRSDJPY2E0ZHoxSTNUSWwvUWg0YVc3bHpLTnlGckovalM4Z1pIQlR2Wks5?=
- =?utf-8?B?bFV2MmhROStuekJ6NzFKdjZPaC81K2VFbTcxMmhtN3ovekNSUzN5LzRTeUxL?=
- =?utf-8?B?aWdnUlF6ZjJYWGhnSmZtVEhBei83Vm1LYWJUcWtpV1J1NHFYNno5aTZGU2JB?=
- =?utf-8?B?K3psb1ViQzZzSThHVk1ENU9tYkNLL0lXTXRhYnBOSjhWNFVYUmsyOHVVMDFV?=
- =?utf-8?B?S0g4V241WGtpNWsyRmxlODV0R05TMEVxTG42Rkh2dVNUK3RYV2czbTBMcks5?=
- =?utf-8?B?RFhXUGI2WlIrbDRhYjlqVmVxWVVpcDhDUUgycGF3YnJpSTlSVXRwMUNBSy82?=
- =?utf-8?B?d0NrWTFhWE10WXRWL3F6QWhic0pRNVEzRzkveG5IVm1jd0QrN0orNDhjMmNC?=
- =?utf-8?B?LzJKZlkxUEE5b2J1RDh6Tm5UZU9UVHZSS2hLMjg5TjVCV3RoaCtNbVZEUmJQ?=
- =?utf-8?B?NVV4S1B2eHA3SlgvSFFsZUJ6UEhkQVcwZVMrU3R1RzA3cWt5Z3U3ZkdrWGVp?=
- =?utf-8?B?YWIvZFltZDBxVHF4WC9wTS9wVGdmTzc2Vlc4Nm1UUlcxNklUakZPS3dWYm9q?=
- =?utf-8?B?dUR0cVFnNjJVWXlNSGlaSWN2cTFSS1lVNG5hWHJrbUlkMVFlbEZsUGVnWVdZ?=
- =?utf-8?B?WDNPZ21IanRLS1NVY0Znc0swSEIwMlV5NDhna2dPUUtHM0NVNEJlWHF4ak12?=
- =?utf-8?B?M25iOXpOQk5VN0l0U3VZVEZQTW1jTXUwcUwwaGIvR3daaHVoVHdhV25nNTJn?=
- =?utf-8?B?SEg0RjdJd3d0S2tLTkFkUTVGT3dXLzMxWEhSdnVxRjRnc2ozYmwzS3NTdTMz?=
- =?utf-8?B?MktRQi81ekpDRUlQSXVqNXZOQzZ0T2lsbGIyd3lqZmpFYnFUNGVNK1ppYmZa?=
- =?utf-8?B?ZFVqcENKNmZQbzFlNzV1RU04dEtNT3IzTkw1S2Uwd2tUajJXZkVxZGQxSlRx?=
- =?utf-8?B?QUpEV2pkNWx6ZFVINnF6VGxPZ2lEYUxURUJuN054Y0hwOWl1WTZKdkZ2Zmp1?=
- =?utf-8?B?WlFFSEhBNkJGRVBwQ1gvUzRXY0daN1VleTQvRXNjRUY3cVltVXNSeE5YTnN0?=
- =?utf-8?B?OGFWcXJUQkpVd1IyTE5EWjNnMEZzWnlKK01PL0JkclZONjFMalBGZThSNm53?=
- =?utf-8?B?Z1pRM0FPYkp2SFV1UFQ2YUFiUUhjcU1EZ1U3blg3RVdvM1VkTXFFQVZ1aVk4?=
- =?utf-8?B?LzcxS2ptMVBCYlBxOW8ybWdMbHZ2US9VczZ4Rk1xdlN1NWNWUlRpZ0NxZi9X?=
- =?utf-8?B?NnZHWXV3YVVHbzZtS2lpZzlHN3dGdUErNkY3ODZUVTZSQzdyQXVLOFlNM0U4?=
- =?utf-8?B?VzdMck16UEhTVGhjYk9aK1EvVTlheEZCekwzMldXRGJjYTlBdERJOWpidnRi?=
- =?utf-8?B?b3ZTU09KQ1hXQ0pPYzhaRzVDOEpudWdaTlZiZ2pIclZWK2ZjQVRaTkRpVjB2?=
- =?utf-8?B?Wm9HVUdVdVdhdHVtbCtLYkZiaVcrek11UkFva2Z2L01qVnhsTmRmQks5N09Q?=
- =?utf-8?Q?5xbxnk7hZlrjk?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0980959a-2fe6-4eac-1632-08d8c9b32926
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Feb 2021 08:51:00.3753
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: wDrI3YEauqNOiTGc+l1U58ugNkpIkjwtIbMnzbqENmO8v0mzpO3ypncI1+wEdKtM
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4608
+References: <20210205031039.15202-1-lichenyang@loongson.cn>
+In-Reply-To: <20210205031039.15202-1-lichenyang@loongson.cn>
+From:   Huacai Chen <chenhuacai@kernel.org>
+Date:   Fri, 5 Feb 2021 16:51:02 +0800
+X-Gmail-Original-Message-ID: <CAAhV-H5yxEnpznS0PST2mz63KvuCgxmwgH2_F-QOmCO8s-fv3A@mail.gmail.com>
+Message-ID: <CAAhV-H5yxEnpznS0PST2mz63KvuCgxmwgH2_F-QOmCO8s-fv3A@mail.gmail.com>
+Subject: Re: [PATCH v4] drm/loongson: Add DRM Driver for Loongson 7A1000
+ bridge chip
+To:     Chenyang Li <lichenyang@loongson.cn>
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Huacai Chen <chenhuacai@loongson.cn>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 05.02.21 um 09:06 schrieb John Stultz:
-> This patch reworks the ttm_pool logic to utilize the recently
-> added drm_page_pool code.
->
-> Basically all the ttm_pool_type structures are replaced with
-> drm_page_pool pointers, and since the drm_page_pool logic has
-> its own shrinker, we can remove all of the ttm_pool shrinker
-> logic.
->
-> NOTE: There is one mismatch in the interfaces I'm not totally
-> happy with. The ttm_pool tracks all of its pooled pages across
-> a number of different pools, and tries to keep this size under
-> the specified page_pool_size value. With the drm_page_pool,
-> there may other users, however there is still one global
-> shrinker list of pools. So we can't easily reduce the ttm
-> pool under the ttm specified size without potentially doing
-> a lot of shrinking to other non-ttm pools. So either we can:
->    1) Try to split it so each user of drm_page_pools manages its
->       own pool shrinking.
->    2) Push the max value into the drm_page_pool, and have it
->       manage shrinking to fit under that global max. Then share
->       those size/max values out so the ttm_pool debug output
->       can have more context.
->
-> I've taken the second path in this patch set, but wanted to call
-> it out so folks could look closely.
+Hi, Chenyang,
 
-Option 3: Move the debugging code into the drm_page_pool as well.
-
-I strong think that will be a hard requirement from Daniel for 
-upstreaming this.
-
-Christian.
-
+On Fri, Feb 5, 2021 at 4:33 PM Chenyang Li <lichenyang@loongson.cn> wrote:
 >
-> Thoughts would be greatly appreciated here!
+> This patch adds an initial DRM driver for the Loongson LS7A1000
+> bridge chip(LS7A). The LS7A bridge chip contains two display
+> controllers, support dual display output. The maximum support for
+> each channel display is to 1920x1080@60Hz.
+> At present, DC device detection and DRM driver registration are
+> completed, the crtc/plane/encoder/connector objects has been
+> implemented.
+> On Loongson 3A4000 CPU and 7A1000 system, we have achieved the use
+> of dual screen, and support dual screen clone mode and expansion
+> mode.
 >
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: Christian Koenig <christian.koenig@amd.com>
-> Cc: Sumit Semwal <sumit.semwal@linaro.org>
-> Cc: Liam Mark <lmark@codeaurora.org>
-> Cc: Chris Goldsworthy <cgoldswo@codeaurora.org>
-> Cc: Laura Abbott <labbott@kernel.org>
-> Cc: Brian Starkey <Brian.Starkey@arm.com>
-> Cc: Hridya Valsaraju <hridya@google.com>
-> Cc: Suren Baghdasaryan <surenb@google.com>
-> Cc: Sandeep Patil <sspatil@google.com>
-> Cc: Daniel Mentz <danielmentz@google.com>
-> Cc: Ørjan Eide <orjan.eide@arm.com>
-> Cc: Robin Murphy <robin.murphy@arm.com>
-> Cc: Ezequiel Garcia <ezequiel@collabora.com>
-> Cc: Simon Ser <contact@emersion.fr>
-> Cc: James Jones <jajones@nvidia.com>
-> Cc: linux-media@vger.kernel.org
-> Cc: dri-devel@lists.freedesktop.org
-> Signed-off-by: John Stultz <john.stultz@linaro.org>
+> v4:
+> - Move the mode_valid function to the crtc.
+>
+> v3:
+> - Move the mode_valid function to the connector and optimize it.
+> - Fix num_crtc calculation method.
+>
+> v2:
+> - Complete the case of 32-bit color in CRTC.
+>
+> Signed-off-by: Chenyang Li <lichenyang@loongson.cn>
 > ---
->   drivers/gpu/drm/Kconfig        |   1 +
->   drivers/gpu/drm/ttm/ttm_pool.c | 199 +++++++--------------------------
->   include/drm/ttm/ttm_pool.h     |  23 +---
->   3 files changed, 41 insertions(+), 182 deletions(-)
+>  drivers/gpu/drm/Kconfig                       |   2 +
+>  drivers/gpu/drm/Makefile                      |   1 +
+>  drivers/gpu/drm/loongson/Kconfig              |  14 +
+>  drivers/gpu/drm/loongson/Makefile             |  14 +
+>  drivers/gpu/drm/loongson/loongson_connector.c |  48 ++++
+>  drivers/gpu/drm/loongson/loongson_crtc.c      | 241 ++++++++++++++++
+>  drivers/gpu/drm/loongson/loongson_device.c    |  54 ++++
+>  drivers/gpu/drm/loongson/loongson_drv.c       | 269 ++++++++++++++++++
+>  drivers/gpu/drm/loongson/loongson_drv.h       | 131 +++++++++
+>  drivers/gpu/drm/loongson/loongson_encoder.c   |  37 +++
+>  drivers/gpu/drm/loongson/loongson_plane.c     | 102 +++++++
+>  11 files changed, 913 insertions(+)
+>  create mode 100644 drivers/gpu/drm/loongson/Kconfig
+>  create mode 100644 drivers/gpu/drm/loongson/Makefile
+>  create mode 100644 drivers/gpu/drm/loongson/loongson_connector.c
+>  create mode 100644 drivers/gpu/drm/loongson/loongson_crtc.c
+>  create mode 100644 drivers/gpu/drm/loongson/loongson_device.c
+>  create mode 100644 drivers/gpu/drm/loongson/loongson_drv.c
+>  create mode 100644 drivers/gpu/drm/loongson/loongson_drv.h
+>  create mode 100644 drivers/gpu/drm/loongson/loongson_encoder.c
+>  create mode 100644 drivers/gpu/drm/loongson/loongson_plane.c
 >
 > diff --git a/drivers/gpu/drm/Kconfig b/drivers/gpu/drm/Kconfig
-> index d16bf340ed2e..d427abefabfb 100644
+> index 0973f408d75f..6ed1b6dc2f25 100644
 > --- a/drivers/gpu/drm/Kconfig
 > +++ b/drivers/gpu/drm/Kconfig
-> @@ -181,6 +181,7 @@ config DRM_PAGE_POOL
->   config DRM_TTM
->   	tristate
->   	depends on DRM && MMU
-> +	select DRM_PAGE_POOL
->   	help
->   	  GPU memory management subsystem for devices with multiple
->   	  GPU memory types. Will be enabled automatically if a device driver
-> diff --git a/drivers/gpu/drm/ttm/ttm_pool.c b/drivers/gpu/drm/ttm/ttm_pool.c
-> index eca36678f967..dbbaf55ca5df 100644
-> --- a/drivers/gpu/drm/ttm/ttm_pool.c
-> +++ b/drivers/gpu/drm/ttm/ttm_pool.c
-> @@ -37,6 +37,7 @@
->   #ifdef CONFIG_X86
->   #include <asm/set_memory.h>
->   #endif
-> +#include <drm/page_pool.h>
->   #include <drm/ttm/ttm_pool.h>
->   #include <drm/ttm/ttm_bo_driver.h>
->   #include <drm/ttm/ttm_tt.h>
-> @@ -63,15 +64,13 @@ module_param(page_pool_size, ulong, 0644);
->   
->   static atomic_long_t allocated_pages;
->   
-> -static struct ttm_pool_type global_write_combined[MAX_ORDER];
-> -static struct ttm_pool_type global_uncached[MAX_ORDER];
-> +static struct drm_page_pool *global_write_combined[MAX_ORDER];
-> +static struct drm_page_pool *global_uncached[MAX_ORDER];
->   
-> -static struct ttm_pool_type global_dma32_write_combined[MAX_ORDER];
-> -static struct ttm_pool_type global_dma32_uncached[MAX_ORDER];
-> +static struct drm_page_pool *global_dma32_write_combined[MAX_ORDER];
-> +static struct drm_page_pool *global_dma32_uncached[MAX_ORDER];
->   
->   static struct mutex shrinker_lock;
-> -static struct list_head shrinker_list;
-> -static struct shrinker mm_shrinker;
->   
->   /* Allocate pages of size 1 << order with the given gfp_flags */
->   static struct page *ttm_pool_alloc_page(struct ttm_pool *pool, gfp_t gfp_flags,
-> @@ -223,79 +222,26 @@ static void ttm_pool_unmap(struct ttm_pool *pool, dma_addr_t dma_addr,
->   		       DMA_BIDIRECTIONAL);
->   }
->   
-> -/* Give pages into a specific pool_type */
-> -static void ttm_pool_type_give(struct ttm_pool_type *pt, struct page *p)
-> -{
-> -	spin_lock(&pt->lock);
-> -	list_add(&p->lru, &pt->pages);
-> -	spin_unlock(&pt->lock);
-> -	atomic_long_add(1 << pt->order, &allocated_pages);
-> -}
-> -
-> -/* Take pages from a specific pool_type, return NULL when nothing available */
-> -static struct page *ttm_pool_type_take(struct ttm_pool_type *pt)
-> -{
-> -	struct page *p;
-> -
-> -	spin_lock(&pt->lock);
-> -	p = list_first_entry_or_null(&pt->pages, typeof(*p), lru);
-> -	if (p) {
-> -		atomic_long_sub(1 << pt->order, &allocated_pages);
-> -		list_del(&p->lru);
-> -	}
-> -	spin_unlock(&pt->lock);
-> -
-> -	return p;
-> -}
-> -
-> -/* Initialize and add a pool type to the global shrinker list */
-> -static void ttm_pool_type_init(struct ttm_pool_type *pt, struct ttm_pool *pool,
-> -			       enum ttm_caching caching, unsigned int order)
-> -{
-> -	pt->pool = pool;
-> -	pt->caching = caching;
-> -	pt->order = order;
-> -	spin_lock_init(&pt->lock);
-> -	INIT_LIST_HEAD(&pt->pages);
-> -
-> -	mutex_lock(&shrinker_lock);
-> -	list_add_tail(&pt->shrinker_list, &shrinker_list);
-> -	mutex_unlock(&shrinker_lock);
-> -}
-> -
-> -/* Remove a pool_type from the global shrinker list and free all pages */
-> -static void ttm_pool_type_fini(struct ttm_pool_type *pt)
-> -{
-> -	struct page *p, *tmp;
-> -
-> -	mutex_lock(&shrinker_lock);
-> -	list_del(&pt->shrinker_list);
-> -	mutex_unlock(&shrinker_lock);
-> -
-> -	list_for_each_entry_safe(p, tmp, &pt->pages, lru)
-> -		ttm_pool_free_page(p, pt->order);
-> -}
-> -
->   /* Return the pool_type to use for the given caching and order */
-> -static struct ttm_pool_type *ttm_pool_select_type(struct ttm_pool *pool,
-> +static struct drm_page_pool *ttm_pool_select_type(struct ttm_pool *pool,
->   						  enum ttm_caching caching,
->   						  unsigned int order)
->   {
->   	if (pool->use_dma_alloc)
-> -		return &pool->caching[caching].orders[order];
-> +		return pool->caching[caching].orders[order];
->   
->   #ifdef CONFIG_X86
->   	switch (caching) {
->   	case ttm_write_combined:
->   		if (pool->use_dma32)
-> -			return &global_dma32_write_combined[order];
-> +			return global_dma32_write_combined[order];
->   
-> -		return &global_write_combined[order];
-> +		return global_write_combined[order];
->   	case ttm_uncached:
->   		if (pool->use_dma32)
-> -			return &global_dma32_uncached[order];
-> +			return global_dma32_uncached[order];
->   
-> -		return &global_uncached[order];
-> +		return global_uncached[order];
->   	default:
->   		break;
->   	}
-> @@ -304,30 +250,6 @@ static struct ttm_pool_type *ttm_pool_select_type(struct ttm_pool *pool,
->   	return NULL;
->   }
->   
-> -/* Free pages using the global shrinker list */
-> -static unsigned int ttm_pool_shrink(void)
-> -{
-> -	struct ttm_pool_type *pt;
-> -	unsigned int num_freed;
-> -	struct page *p;
-> -
-> -	mutex_lock(&shrinker_lock);
-> -	pt = list_first_entry(&shrinker_list, typeof(*pt), shrinker_list);
-> -
-> -	p = ttm_pool_type_take(pt);
-> -	if (p) {
-> -		ttm_pool_free_page(p, pt->order);
-> -		num_freed = 1 << pt->order;
-> -	} else {
-> -		num_freed = 0;
-> -	}
-> -
-> -	list_move_tail(&pt->shrinker_list, &shrinker_list);
-> -	mutex_unlock(&shrinker_lock);
-> -
-> -	return num_freed;
-> -}
-> -
->   /* Return the allocation order based for a page */
->   static unsigned int ttm_pool_page_order(struct ttm_pool *pool, struct page *p)
->   {
-> @@ -377,10 +299,10 @@ int ttm_pool_alloc(struct ttm_pool *pool, struct ttm_tt *tt,
->   	for (order = min(MAX_ORDER - 1UL, __fls(num_pages)); num_pages;
->   	     order = min_t(unsigned int, order, __fls(num_pages))) {
->   		bool apply_caching = false;
-> -		struct ttm_pool_type *pt;
-> +		struct drm_page_pool *pt;
->   
->   		pt = ttm_pool_select_type(pool, tt->caching, order);
-> -		p = pt ? ttm_pool_type_take(pt) : NULL;
-> +		p = pt ? drm_page_pool_fetch(pt) : NULL;
->   		if (p) {
->   			apply_caching = true;
->   		} else {
-> @@ -462,7 +384,7 @@ void ttm_pool_free(struct ttm_pool *pool, struct ttm_tt *tt)
->   	for (i = 0; i < tt->num_pages; ) {
->   		struct page *p = tt->pages[i];
->   		unsigned int order, num_pages;
-> -		struct ttm_pool_type *pt;
-> +		struct drm_page_pool *pt;
->   
->   		order = ttm_pool_page_order(pool, p);
->   		num_pages = 1ULL << order;
-> @@ -473,15 +395,12 @@ void ttm_pool_free(struct ttm_pool *pool, struct ttm_tt *tt)
->   
->   		pt = ttm_pool_select_type(pool, tt->caching, order);
->   		if (pt)
-> -			ttm_pool_type_give(pt, tt->pages[i]);
-> +			drm_page_pool_add(pt, tt->pages[i]);
->   		else
->   			ttm_pool_free_page(tt->pages[i], order);
->   
->   		i += num_pages;
->   	}
-> -
-> -	while (atomic_long_read(&allocated_pages) > page_pool_size)
-> -		ttm_pool_shrink();
->   }
->   EXPORT_SYMBOL(ttm_pool_free);
->   
-> @@ -508,8 +427,8 @@ void ttm_pool_init(struct ttm_pool *pool, struct device *dev,
->   
->   	for (i = 0; i < TTM_NUM_CACHING_TYPES; ++i)
->   		for (j = 0; j < MAX_ORDER; ++j)
-> -			ttm_pool_type_init(&pool->caching[i].orders[j],
-> -					   pool, i, j);
-> +			pool->caching[i].orders[j] = drm_page_pool_create(j,
-> +							ttm_pool_free_page);
->   }
->   
->   /**
-> @@ -526,33 +445,18 @@ void ttm_pool_fini(struct ttm_pool *pool)
->   
->   	for (i = 0; i < TTM_NUM_CACHING_TYPES; ++i)
->   		for (j = 0; j < MAX_ORDER; ++j)
-> -			ttm_pool_type_fini(&pool->caching[i].orders[j]);
-> +			drm_page_pool_destroy(pool->caching[i].orders[j]);
->   }
->   
->   #ifdef CONFIG_DEBUG_FS
-> -/* Count the number of pages available in a pool_type */
-> -static unsigned int ttm_pool_type_count(struct ttm_pool_type *pt)
-> -{
-> -	unsigned int count = 0;
-> -	struct page *p;
-> -
-> -	spin_lock(&pt->lock);
-> -	/* Only used for debugfs, the overhead doesn't matter */
-> -	list_for_each_entry(p, &pt->pages, lru)
-> -		++count;
-> -	spin_unlock(&pt->lock);
-> -
-> -	return count;
-> -}
-> -
->   /* Dump information about the different pool types */
-> -static void ttm_pool_debugfs_orders(struct ttm_pool_type *pt,
-> +static void ttm_pool_debugfs_orders(struct drm_page_pool **pt,
->   				    struct seq_file *m)
->   {
->   	unsigned int i;
->   
->   	for (i = 0; i < MAX_ORDER; ++i)
-> -		seq_printf(m, " %8u", ttm_pool_type_count(&pt[i]));
-> +		seq_printf(m, " %8u", drm_page_pool_get_size(pt[i]));
->   	seq_puts(m, "\n");
->   }
->   
-> @@ -602,7 +506,10 @@ int ttm_pool_debugfs(struct ttm_pool *pool, struct seq_file *m)
->   	}
->   
->   	seq_printf(m, "\ntotal\t: %8lu of %8lu\n",
-> -		   atomic_long_read(&allocated_pages), page_pool_size);
-> +		   atomic_long_read(&allocated_pages),
-> +		   drm_page_pool_get_max());
-> +	seq_printf(m, "(%8lu in non-ttm pools)\n", drm_page_pool_get_total() -
-> +					atomic_long_read(&allocated_pages));
->   
->   	mutex_unlock(&shrinker_lock);
->   
-> @@ -612,28 +519,6 @@ EXPORT_SYMBOL(ttm_pool_debugfs);
->   
->   #endif
->   
-> -/* As long as pages are available make sure to release at least one */
-> -static unsigned long ttm_pool_shrinker_scan(struct shrinker *shrink,
-> -					    struct shrink_control *sc)
-> -{
-> -	unsigned long num_freed = 0;
-> -
-> -	do
-> -		num_freed += ttm_pool_shrink();
-> -	while (!num_freed && atomic_long_read(&allocated_pages));
-> -
-> -	return num_freed;
-> -}
-> -
-> -/* Return the number of pages available or SHRINK_EMPTY if we have none */
-> -static unsigned long ttm_pool_shrinker_count(struct shrinker *shrink,
-> -					     struct shrink_control *sc)
-> -{
-> -	unsigned long num_pages = atomic_long_read(&allocated_pages);
-> -
-> -	return num_pages ? num_pages : SHRINK_EMPTY;
-> -}
-> -
->   /**
->    * ttm_pool_mgr_init - Initialize globals
->    *
-> @@ -648,24 +533,21 @@ int ttm_pool_mgr_init(unsigned long num_pages)
->   	if (!page_pool_size)
->   		page_pool_size = num_pages;
->   
-> +	drm_page_pool_set_max(page_pool_size);
+> @@ -374,6 +374,8 @@ source "drivers/gpu/drm/xen/Kconfig"
+>
+>  source "drivers/gpu/drm/vboxvideo/Kconfig"
+>
+> +source "drivers/gpu/drm/loongson/Kconfig"
 > +
->   	mutex_init(&shrinker_lock);
-> -	INIT_LIST_HEAD(&shrinker_list);
->   
->   	for (i = 0; i < MAX_ORDER; ++i) {
-> -		ttm_pool_type_init(&global_write_combined[i], NULL,
-> -				   ttm_write_combined, i);
-> -		ttm_pool_type_init(&global_uncached[i], NULL, ttm_uncached, i);
-> -
-> -		ttm_pool_type_init(&global_dma32_write_combined[i], NULL,
-> -				   ttm_write_combined, i);
-> -		ttm_pool_type_init(&global_dma32_uncached[i], NULL,
-> -				   ttm_uncached, i);
-> +		global_write_combined[i] = drm_page_pool_create(i,
-> +							ttm_pool_free_page);
-> +		global_uncached[i] = drm_page_pool_create(i,
-> +							ttm_pool_free_page);
-> +		global_dma32_write_combined[i] = drm_page_pool_create(i,
-> +							ttm_pool_free_page);
-> +		global_dma32_uncached[i] = drm_page_pool_create(i,
-> +							ttm_pool_free_page);
->   	}
-> -
-> -	mm_shrinker.count_objects = ttm_pool_shrinker_count;
-> -	mm_shrinker.scan_objects = ttm_pool_shrinker_scan;
-> -	mm_shrinker.seeks = 1;
-> -	return register_shrinker(&mm_shrinker);
-> +	return 0;
->   }
->   
->   /**
-> @@ -678,13 +560,10 @@ void ttm_pool_mgr_fini(void)
->   	unsigned int i;
->   
->   	for (i = 0; i < MAX_ORDER; ++i) {
-> -		ttm_pool_type_fini(&global_write_combined[i]);
-> -		ttm_pool_type_fini(&global_uncached[i]);
-> +		drm_page_pool_destroy(global_write_combined[i]);
-> +		drm_page_pool_destroy(global_uncached[i]);
->   
-> -		ttm_pool_type_fini(&global_dma32_write_combined[i]);
-> -		ttm_pool_type_fini(&global_dma32_uncached[i]);
-> +		drm_page_pool_destroy(global_dma32_write_combined[i]);
-> +		drm_page_pool_destroy(global_dma32_uncached[i]);
->   	}
-> -
-> -	unregister_shrinker(&mm_shrinker);
-> -	WARN_ON(!list_empty(&shrinker_list));
->   }
-> diff --git a/include/drm/ttm/ttm_pool.h b/include/drm/ttm/ttm_pool.h
-> index 4321728bdd11..460ab232fd22 100644
-> --- a/include/drm/ttm/ttm_pool.h
-> +++ b/include/drm/ttm/ttm_pool.h
-> @@ -36,27 +36,6 @@ struct ttm_tt;
->   struct ttm_pool;
->   struct ttm_operation_ctx;
->   
-> -/**
-> - * ttm_pool_type - Pool for a certain memory type
-> - *
-> - * @pool: the pool we belong to, might be NULL for the global ones
-> - * @order: the allocation order our pages have
-> - * @caching: the caching type our pages have
-> - * @shrinker_list: our place on the global shrinker list
-> - * @lock: protection of the page list
-> - * @pages: the list of pages in the pool
-> - */
-> -struct ttm_pool_type {
-> -	struct ttm_pool *pool;
-> -	unsigned int order;
-> -	enum ttm_caching caching;
-> -
-> -	struct list_head shrinker_list;
-> -
-> -	spinlock_t lock;
-> -	struct list_head pages;
-> -};
-> -
->   /**
->    * ttm_pool - Pool for all caching and orders
->    *
-> @@ -71,7 +50,7 @@ struct ttm_pool {
->   	bool use_dma32;
->   
->   	struct {
-> -		struct ttm_pool_type orders[MAX_ORDER];
-> +		struct drm_page_pool *orders[MAX_ORDER];
->   	} caching[TTM_NUM_CACHING_TYPES];
->   };
->   
+>  source "drivers/gpu/drm/lima/Kconfig"
+>
+>  source "drivers/gpu/drm/panfrost/Kconfig"
+> diff --git a/drivers/gpu/drm/Makefile b/drivers/gpu/drm/Makefile
+> index fefaff4c832d..f87da730ea6d 100644
+> --- a/drivers/gpu/drm/Makefile
+> +++ b/drivers/gpu/drm/Makefile
+> @@ -119,6 +119,7 @@ obj-$(CONFIG_DRM_PL111) += pl111/
+>  obj-$(CONFIG_DRM_TVE200) += tve200/
+>  obj-$(CONFIG_DRM_XEN) += xen/
+>  obj-$(CONFIG_DRM_VBOXVIDEO) += vboxvideo/
+> +obj-$(CONFIG_DRM_LOONGSON) += loongson/
+>  obj-$(CONFIG_DRM_LIMA)  += lima/
+>  obj-$(CONFIG_DRM_PANFROST) += panfrost/
+>  obj-$(CONFIG_DRM_ASPEED_GFX) += aspeed/
+> diff --git a/drivers/gpu/drm/loongson/Kconfig b/drivers/gpu/drm/loongson/Kconfig
+> new file mode 100644
+> index 000000000000..43eb0c80cc12
+> --- /dev/null
+> +++ b/drivers/gpu/drm/loongson/Kconfig
+> @@ -0,0 +1,14 @@
+> +# SPDX-License-Identifier: GPL-2.0-only
+> +
+> +config DRM_LOONGSON
+> +       tristate "DRM support for LS7A1000 bridge chipset"
+> +       depends on DRM && PCI
+> +       depends on CPU_LOONGSON64
+> +       select DRM_KMS_HELPER
+> +       select DRM_VRAM_HELPER
+> +       select DRM_TTM
+> +       select DRM_TTM_HELPER
+> +       default n
+> +       help
+> +         Support the display controllers found on the Loongson LS7A1000
+> +         bridge.
+You can use LS7A instead of LS7A1000.
 
+> diff --git a/drivers/gpu/drm/loongson/Makefile b/drivers/gpu/drm/loongson/Makefile
+> new file mode 100644
+> index 000000000000..22d063953b78
+> --- /dev/null
+> +++ b/drivers/gpu/drm/loongson/Makefile
+> @@ -0,0 +1,14 @@
+> +# SPDX-License-Identifier: GPL-2.0-only
+> +#
+> +# Makefile for loongson drm drivers.
+> +# This driver provides support for the
+> +# Direct Rendering Infrastructure (DRI)
+> +
+> +ccflags-y := -Iinclude/drm
+> +loongson-y := loongson_drv.o \
+> +       loongson_crtc.o \
+> +       loongson_plane.o \
+> +       loongson_device.o \
+> +       loongson_connector.o \
+> +       loongson_encoder.o
+> +obj-$(CONFIG_DRM_LOONGSON) += loongson.o
+> diff --git a/drivers/gpu/drm/loongson/loongson_connector.c b/drivers/gpu/drm/loongson/loongson_connector.c
+> new file mode 100644
+> index 000000000000..6b1f0ffa33bd
+> --- /dev/null
+> +++ b/drivers/gpu/drm/loongson/loongson_connector.c
+> @@ -0,0 +1,48 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +
+> +#include "loongson_drv.h"
+> +
+> +static int loongson_get_modes(struct drm_connector *connector)
+> +{
+> +       int count;
+> +
+> +       count = drm_add_modes_noedid(connector, 1920, 1080);
+> +       drm_set_preferred_mode(connector, 1024, 768);
+> +
+> +       return count;
+> +}
+> +
+> +static const struct drm_connector_helper_funcs loongson_connector_helper = {
+> +       .get_modes = loongson_get_modes,
+> +};
+> +
+> +static const struct drm_connector_funcs loongson_connector_funcs = {
+> +       .fill_modes = drm_helper_probe_single_connector_modes,
+> +       .destroy = drm_connector_cleanup,
+> +       .reset = drm_atomic_helper_connector_reset,
+> +       .atomic_duplicate_state = drm_atomic_helper_connector_duplicate_state,
+> +       .atomic_destroy_state = drm_atomic_helper_connector_destroy_state,
+> +};
+> +
+> +int loongson_connector_init(struct loongson_device *ldev, int index)
+> +{
+> +       struct drm_connector *connector;
+> +       struct loongson_connector *lconnector;
+> +
+> +       lconnector = kzalloc(sizeof(struct loongson_connector), GFP_KERNEL);
+> +       if (!lconnector) {
+> +               DRM_INFO("loongson connector kzalloc failed\n");
+> +               return -1;
+> +       }
+> +
+> +       lconnector->ldev = ldev;
+> +       lconnector->id = index;
+> +
+> +       ldev->mode_info[index].connector = lconnector;
+> +       connector = &lconnector->base;
+> +       drm_connector_init(ldev->dev, connector, &loongson_connector_funcs,
+> +                          DRM_MODE_CONNECTOR_Unknown);
+> +       drm_connector_helper_add(connector, &loongson_connector_helper);
+> +
+> +       return 0;
+> +}
+> diff --git a/drivers/gpu/drm/loongson/loongson_crtc.c b/drivers/gpu/drm/loongson/loongson_crtc.c
+> new file mode 100644
+> index 000000000000..ec678118da0d
+> --- /dev/null
+> +++ b/drivers/gpu/drm/loongson/loongson_crtc.c
+> @@ -0,0 +1,241 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +
+> +#include "loongson_drv.h"
+> +
+> +static void try_each_loopc(u32 clk, u32 pstdiv, u32 frefc,
+> +                          struct pix_pll *pll_config)
+> +{
+> +       u32 loopc;
+> +       u32 loopc_p;
+> +       u32 c;
+> +       u32 min = 1000;
+> +
+> +       for (loopc = 24; loopc < 161; loopc++) {
+> +               if ((loopc < 12 * frefc) || (loopc > 32 * frefc))
+> +                       continue;
+Why use magic value 24, 161, 12 and 32? You can define meaningful macros.
+
+> +
+> +               loopc_p = 100000L * loopc / frefc;
+> +               c = (clk > loopc_p) ? (clk - loopc_p) : (loopc_p - clk);
+> +               if (c < min) {
+> +                       pll_config->l2_div = pstdiv;
+> +                       pll_config->l1_loopc = loopc;
+> +                       pll_config->l1_frefc = frefc;
+> +               }
+> +       }
+> +}
+> +
+> +static void cal_freq(u32 pixclock, struct pix_pll *pll_config)
+> +{
+> +       u32 pstdiv;
+> +       u32 frefc;
+> +       u32 clk;
+> +
+> +       for (pstdiv = 1; pstdiv < 64; pstdiv++) {
+> +               clk = pixclock * pstdiv;
+> +               for (frefc = 3; frefc < 6; frefc++)
+> +                       try_each_loopc(clk, pstdiv, frefc, pll_config);
+> +       }
+> +}
+> +
+> +static void config_pll(struct loongson_device *ldev, unsigned long pll_base,
+> +                      struct pix_pll *pll_cfg)
+> +{
+> +       u32 val;
+> +       u32 count = 0;
+> +
+> +       /* clear sel_pll_out0 */
+> +       val = ls_io_rreg(ldev, pll_base + 0x4);
+> +       val &= ~(1UL << 8);
+> +       ls_io_wreg(ldev, pll_base + 0x4, val);
+> +
+> +       /* set pll_pd */
+> +       val = ls_io_rreg(ldev, pll_base + 0x4);
+> +       val |= (1UL << 13);
+> +       ls_io_wreg(ldev, pll_base + 0x4, val);
+> +
+> +       /* clear set_pll_param */
+> +       val = ls_io_rreg(ldev, pll_base + 0x4);
+> +       val &= ~(1UL << 11);
+> +       ls_io_wreg(ldev, pll_base + 0x4, val);
+> +
+> +       /* clear old value & config new value */
+> +       val = ls_io_rreg(ldev, pll_base + 0x4);
+> +       val &= ~(0x7fUL << 0);
+> +       val |= (pll_cfg->l1_frefc << 0); /* refc */
+> +       ls_io_wreg(ldev, pll_base + 0x4, val);
+> +       val = ls_io_rreg(ldev, pll_base + 0x0);
+> +       val &= ~(0x7fUL << 0);
+> +       val |= (pll_cfg->l2_div << 0); /* div */
+> +       val &= ~(0x1ffUL << 21);
+> +       val |= (pll_cfg->l1_loopc << 21); /* loopc */
+> +       ls_io_wreg(ldev, pll_base + 0x0, val);
+> +
+> +       /* set set_pll_param */
+> +       val = ls_io_rreg(ldev, pll_base + 0x4);
+> +       val |= (1UL << 11);
+> +       ls_io_wreg(ldev, pll_base + 0x4, val);
+> +       /* clear pll_pd */
+> +       val = ls_io_rreg(ldev, pll_base + 0x4);
+> +       val &= ~(1UL << 13);
+> +       ls_io_wreg(ldev, pll_base + 0x4, val);
+> +
+> +       while (!(ls_io_rreg(ldev, pll_base + 0x4) & 0x80)) {
+> +               cpu_relax();
+> +               count++;
+> +               if (count >= 1000) {
+> +                       DRM_ERROR("loongson-7A PLL lock failed\n");
+> +                       break;
+> +               }
+> +       }
+> +
+> +       val = ls_io_rreg(ldev, pll_base + 0x4);
+> +       val |= (1UL << 8);
+> +       ls_io_wreg(ldev, pll_base + 0x4, val);
+> +}
+> +
+> +static void loongson_crtc_mode_set_nofb(struct drm_crtc *crtc)
+> +{
+> +       struct drm_device *dev = crtc->dev;
+> +       struct loongson_device *ldev = dev->dev_private;
+> +       struct loongson_crtc *lcrtc = to_loongson_crtc(crtc);
+> +       struct drm_display_mode *mode = &crtc->state->adjusted_mode;
+> +       const struct drm_format_info *format;
+> +       struct pix_pll pll_cfg;
+> +       u32 hr, hss, hse, hfl;
+> +       u32 vr, vss, vse, vfl;
+> +       u32 pix_freq;
+> +       u32 reg_offset;
+> +
+> +       hr = mode->hdisplay;
+> +       hss = mode->hsync_start;
+> +       hse = mode->hsync_end;
+> +       hfl = mode->htotal;
+> +
+> +       vr = mode->vdisplay;
+> +       vss = mode->vsync_start;
+> +       vse = mode->vsync_end;
+> +       vfl = mode->vtotal;
+> +
+> +       pix_freq = mode->clock;
+> +       reg_offset = lcrtc->reg_offset;
+> +       format = crtc->primary->state->fb->format;
+> +
+> +       ls_mm_wreg_locked(ldev, FB_DITCFG_REG + reg_offset, 0);
+> +       ls_mm_wreg_locked(ldev, FB_DITTAB_LO_REG + reg_offset, 0);
+> +       ls_mm_wreg_locked(ldev, FB_DITTAB_HI_REG + reg_offset, 0);
+> +       ls_mm_wreg_locked(ldev, FB_PANCFG_REG + reg_offset, FB_PANCFG_DEF);
+> +       ls_mm_wreg_locked(ldev, FB_PANTIM_REG + reg_offset, 0);
+> +
+> +       ls_mm_wreg_locked(ldev, FB_HDISPLAY_REG + reg_offset, (hfl << 16) | hr);
+> +       ls_mm_wreg_locked(ldev, FB_HSYNC_REG + reg_offset,
+> +                         FB_HSYNC_PULSE | (hse << 16) | hss);
+> +
+> +       ls_mm_wreg_locked(ldev, FB_VDISPLAY_REG + reg_offset, (vfl << 16) | vr);
+> +       ls_mm_wreg_locked(ldev, FB_VSYNC_REG + reg_offset,
+> +                         FB_VSYNC_PULSE | (vse << 16) | vss);
+> +
+> +       switch (format->format) {
+> +       case DRM_FORMAT_RGB565:
+> +               lcrtc->cfg_reg |= 0x3;
+> +               break;
+> +       case DRM_FORMAT_RGB888:
+> +       case DRM_FORMAT_XRGB8888:
+> +       case DRM_FORMAT_ARGB8888:
+> +       default:
+> +               lcrtc->cfg_reg |= 0x4;
+> +               break;
+> +       }
+> +       ls_mm_wreg_locked(ldev, FB_CFG_REG + reg_offset, lcrtc->cfg_reg);
+> +
+> +       cal_freq(pix_freq, &pll_cfg);
+> +       config_pll(ldev, LS_PIX_PLL + reg_offset, &pll_cfg);
+> +}
+> +
+> +static void loongson_crtc_atomic_enable(struct drm_crtc *crtc,
+> +                                       struct drm_crtc_state *old_state)
+> +{
+> +       struct drm_device *dev = crtc->dev;
+> +       struct loongson_device *ldev = dev->dev_private;
+> +       struct loongson_crtc *lcrtc = to_loongson_crtc(crtc);
+> +       u32 reg_offset = lcrtc->reg_offset;
+> +
+> +       lcrtc->cfg_reg |= CFG_ENABLE;
+> +       ls_mm_wreg_locked(ldev, FB_CFG_REG + reg_offset, lcrtc->cfg_reg);
+> +}
+> +
+> +static void loongson_crtc_atomic_disable(struct drm_crtc *crtc,
+> +                                        struct drm_crtc_state *old_state)
+> +{
+> +       struct drm_device *dev = crtc->dev;
+> +       struct loongson_device *ldev = dev->dev_private;
+> +       struct loongson_crtc *lcrtc = to_loongson_crtc(crtc);
+> +       u32 reg_offset = lcrtc->reg_offset;
+> +
+> +       lcrtc->cfg_reg &= ~CFG_ENABLE;
+> +       ls_mm_wreg_locked(ldev, FB_CFG_REG + reg_offset, lcrtc->cfg_reg);
+> +}
+> +
+> +static enum drm_mode_status loongson_mode_valid(struct drm_crtc *crtc,
+> +                                               struct drm_display_mode *mode)
+> +{
+> +       if (mode->hdisplay > 1920)
+> +               return MODE_BAD;
+> +       if (mode->vdisplay > 1080)
+> +               return MODE_BAD;
+> +       if (mode->hdisplay % 64)
+> +               return MODE_BAD;
+> +       if (mode->clock > 173000)
+> +               return MODE_CLOCK_HIGH;
+> +
+> +       return MODE_OK;
+> +}
+> +
+> +static const struct drm_crtc_helper_funcs loongson_crtc_helper_funcs = {
+> +       .mode_valid = loongson_mode_valid,
+> +       .atomic_enable = loongson_crtc_atomic_enable,
+> +       .atomic_disable = loongson_crtc_atomic_disable,
+> +       .mode_set_nofb = loongson_crtc_mode_set_nofb,
+> +};
+> +
+> +static const struct drm_crtc_funcs loongson_crtc_funcs = {
+> +       .set_config = drm_atomic_helper_set_config,
+> +       .page_flip = drm_atomic_helper_page_flip,
+> +       .reset = drm_atomic_helper_crtc_reset,
+> +       .destroy = drm_crtc_cleanup,
+> +       .atomic_duplicate_state = drm_atomic_helper_crtc_duplicate_state,
+> +       .atomic_destroy_state = drm_atomic_helper_crtc_destroy_state,
+> +};
+> +
+> +int loongson_crtc_init(struct loongson_device *ldev, int index)
+> +{
+> +       struct loongson_crtc *lcrtc;
+> +       u32 ret;
+> +
+> +       lcrtc = kzalloc(sizeof(struct loongson_crtc), GFP_KERNEL);
+> +       if (lcrtc == NULL)
+> +               return -1;
+> +
+> +       lcrtc->ldev = ldev;
+> +       lcrtc->reg_offset = index * REG_OFFSET;
+> +       lcrtc->cfg_reg = CFG_RESET;
+> +       lcrtc->crtc_id = index;
+> +
+> +       ret = loongson_plane_init(lcrtc);
+> +       if (ret)
+> +               return ret;
+> +
+> +       ret = drm_crtc_init_with_planes(ldev->dev, &lcrtc->base, lcrtc->plane,
+> +                                       NULL, &loongson_crtc_funcs, NULL);
+> +       if (ret) {
+> +               DRM_ERROR("failed to init crtc %d\n", index);
+> +               drm_plane_cleanup(lcrtc->plane);
+> +               return ret;
+> +       }
+> +
+> +       drm_crtc_helper_add(&lcrtc->base, &loongson_crtc_helper_funcs);
+> +
+> +       ldev->mode_info[index].crtc = lcrtc;
+> +
+> +       return 0;
+> +}
+> +
+> diff --git a/drivers/gpu/drm/loongson/loongson_device.c b/drivers/gpu/drm/loongson/loongson_device.c
+> new file mode 100644
+> index 000000000000..8fef61c042b5
+> --- /dev/null
+> +++ b/drivers/gpu/drm/loongson/loongson_device.c
+> @@ -0,0 +1,54 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +
+> +#include "loongson_drv.h"
+> +
+> +u32 loongson_gpu_offset(struct drm_plane_state *state)
+> +{
+> +       struct drm_gem_vram_object *gbo;
+> +       struct loongson_crtc *lcrtc;
+> +       struct loongson_device *ldev;
+> +       u32 gpu_addr;
+> +
+> +       lcrtc = to_loongson_crtc(state->crtc);
+> +       ldev = lcrtc->ldev;
+> +
+> +       gbo = drm_gem_vram_of_gem(state->fb->obj[0]);
+> +       gpu_addr = ldev->vram_start + drm_gem_vram_offset(gbo);
+> +
+> +       return gpu_addr;
+> +}
+> +
+> +u32 ls_io_rreg(struct loongson_device *ldev, u32 offset)
+> +{
+> +       u32 val;
+> +
+> +       val = readl(ldev->io + offset);
+> +
+> +       return val;
+> +}
+> +
+> +void ls_io_wreg(struct loongson_device *ldev, u32 offset, u32 val)
+> +{
+> +       writel(val, ldev->io + offset);
+> +}
+> +
+> +u32 ls_mm_rreg_locked(struct loongson_device *ldev, u32 offset)
+> +{
+> +       u32 val;
+> +       unsigned long flags;
+> +
+> +       spin_lock_irqsave(&ldev->mmio_lock, flags);
+> +       val = readl(ldev->mmio + offset);
+> +       spin_unlock_irqrestore(&ldev->mmio_lock, flags);
+> +
+> +       return val;
+> +}
+> +
+> +void ls_mm_wreg_locked(struct loongson_device *ldev, u32 offset, u32 val)
+> +{
+> +       unsigned long flags;
+> +
+> +       spin_lock_irqsave(&ldev->mmio_lock, flags);
+> +       writel(val, ldev->mmio + offset);
+> +       spin_unlock_irqrestore(&ldev->mmio_lock, flags);
+> +}
+You can use ls7a_ instead of ls_ as a more meaningful prefix.
+
+> diff --git a/drivers/gpu/drm/loongson/loongson_drv.c b/drivers/gpu/drm/loongson/loongson_drv.c
+> new file mode 100644
+> index 000000000000..8739c0dbc1b7
+> --- /dev/null
+> +++ b/drivers/gpu/drm/loongson/loongson_drv.c
+> @@ -0,0 +1,269 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Loongson LS7A1000 bridge chipset drm driver
+> + */
+> +
+> +#include <linux/console.h>
+> +#include <linux/pci.h>
+> +#include <linux/module.h>
+> +#include <linux/kernel.h>
+> +#include "loongson_drv.h"
+> +
+> +/* Interface history:
+> + * 0.1 - riginal.
+original?
+
+> + */
+> +#define DRIVER_MAJOR 0
+> +#define DRIVER_MINOR 1
+> +
+> +static const struct drm_mode_config_funcs loongson_mode_funcs = {
+> +       .fb_create = drm_gem_fb_create,
+> +       .atomic_check = drm_atomic_helper_check,
+> +       .atomic_commit = drm_atomic_helper_commit,
+> +       .output_poll_changed = drm_fb_helper_output_poll_changed,
+> +       .mode_valid = drm_vram_helper_mode_valid
+> +};
+> +
+> +static int loongson_device_init(struct drm_device *dev, uint32_t flags)
+> +{
+> +       struct loongson_device *ldev = dev->dev_private;
+> +       struct pci_dev *gpu_pdev;
+> +       resource_size_t aper_base;
+> +       resource_size_t aper_size;
+> +       resource_size_t mmio_base;
+> +       resource_size_t mmio_size;
+> +
+> +       /* GPU MEM */
+> +       /* We need get 7A-gpu pci device information for ldev->gpu_pdev */
+> +       /* dev->pdev save 7A-dc pci device information */
+> +       gpu_pdev = pci_get_device(PCI_VENDOR_ID_LOONGSON,
+> +                                 PCI_DEVICE_ID_LOONGSON_GPU, NULL);
+> +       if (IS_ERR(gpu_pdev))
+> +               return PTR_ERR(gpu_pdev);
+> +
+> +       ldev->gpu_pdev = gpu_pdev;
+> +       aper_base = pci_resource_start(gpu_pdev, 2);
+> +       aper_size = pci_resource_len(gpu_pdev, 2);
+> +       ldev->vram_start = (u32)aper_base;
+> +       ldev->vram_size = (u32)aper_size;
+> +
+> +       if (!devm_request_mem_region(ldev->dev->dev, ldev->vram_start,
+> +                                    ldev->vram_size, "loongson_vram")) {
+> +               DRM_ERROR("Can't reserve VRAM\n");
+> +               return -ENXIO;
+> +       }
+> +
+> +       /* DC MEM */
+> +       mmio_base = pci_resource_start(ldev->dev->pdev, 0);
+> +       mmio_size = pci_resource_len(ldev->dev->pdev, 0);
+> +       ldev->mmio = devm_ioremap(dev->dev, mmio_base, mmio_size);
+> +       if (!ldev->mmio) {
+> +               drm_err(dev, "Cannot map mmio region\n");
+> +               return -ENOMEM;
+> +       }
+> +
+> +       if (!devm_request_mem_region(ldev->dev->dev, mmio_base,
+> +                                    mmio_size, "loongson_mmio")) {
+> +               DRM_ERROR("Can't reserve mmio registers\n");
+> +               return -ENOMEM;
+> +       }
+> +
+> +       /* DC IO */
+> +       ldev->io = (void *)TO_UNCAC(LS7A_CHIPCFG_REG_BASE);
+> +       if (ldev->io == NULL)
+> +               return -ENOMEM;
+> +
+> +       DRM_INFO("DC mmio_base 0x%llx mmio_size 0x%llx io 0x%x\n",
+> +                mmio_base, mmio_size, *(int *)ldev->io);
+> +       DRM_INFO("GPU vram_start = 0x%x vram_size = 0x%x\n",
+> +                ldev->vram_start, ldev->vram_size);
+> +
+> +       return 0;
+> +}
+> +
+> +int loongson_modeset_init(struct loongson_device *ldev)
+> +{
+> +       struct drm_encoder *encoder;
+> +       struct drm_connector *connector;
+> +       int i;
+> +       u32 ret;
+> +
+> +       ldev->dev->mode_config.allow_fb_modifiers = true;
+> +
+> +       for (i = 0; i < 2; i++) {
+> +               ret = loongson_crtc_init(ldev, i);
+> +               if (ret) {
+> +                       DRM_WARN("loongson crtc%d init failed\n", i);
+> +                       continue;
+> +               }
+> +
+> +               ret = loongson_encoder_init(ldev, i);
+> +               if (ret) {
+> +                       DRM_ERROR("loongson_encoder_init failed\n");
+> +                       return -1;
+> +               }
+> +
+> +               ret = loongson_connector_init(ldev, i);
+> +               if (ret) {
+> +                       DRM_ERROR("loongson_vga_init failed\n");
+> +                       return -1;
+> +               }
+> +
+> +               encoder = &ldev->mode_info[i].encoder->base;
+> +               connector = &ldev->mode_info[i].connector->base;
+> +               drm_connector_attach_encoder(connector, encoder);
+> +               ldev->num_crtc++;
+> +       }
+> +
+> +       return 0;
+> +}
+> +
+> +static int loongson_drm_load(struct drm_device *dev, unsigned long flags)
+> +{
+> +       struct loongson_device *ldev;
+> +       int ret;
+> +
+> +       ldev = devm_kzalloc(dev->dev, sizeof(*ldev), GFP_KERNEL);
+> +       if (!ldev)
+> +               return -ENOMEM;
+> +
+> +       dev->dev_private = ldev;
+> +       ldev->dev = dev;
+> +
+> +       ret = loongson_device_init(dev, flags);
+> +       if (ret)
+> +               goto err;
+> +
+> +       ret = drmm_vram_helper_init(dev, ldev->vram_start, ldev->vram_size);
+> +       if (ret)
+> +               goto err;
+> +
+> +       drm_mode_config_init(dev);
+> +       dev->mode_config.funcs = (void *)&loongson_mode_funcs;
+> +       dev->mode_config.min_width = 1;
+> +       dev->mode_config.min_height = 1;
+> +       dev->mode_config.max_width = 4096;
+> +       dev->mode_config.max_height = 4096;
+> +       dev->mode_config.preferred_depth = 32;
+> +       dev->mode_config.prefer_shadow = 1;
+> +       dev->mode_config.fb_base = ldev->vram_start;
+> +
+> +       pci_set_drvdata(dev->pdev, dev);
+> +
+> +       ret = loongson_modeset_init(ldev);
+> +       if (ret)
+> +               dev_err(dev->dev, "Fatal error during modeset init: %d\n", ret);
+> +
+> +       drm_kms_helper_poll_init(dev);
+> +       drm_mode_config_reset(dev);
+> +
+> +       return 0;
+> +
+> +err:
+> +       drm_err(dev, "failed to initialize drm driver: %d\n", ret);
+> +       return ret;
+> +}
+> +
+> +static void loongson_drm_unload(struct drm_device *dev)
+> +{
+> +       drm_vram_helper_release_mm(dev);
+> +       drm_mode_config_cleanup(dev);
+> +       dev->dev_private = NULL;
+> +       dev_set_drvdata(dev->dev, NULL);
+> +}
+> +
+> +DEFINE_DRM_GEM_FOPS(fops);
+> +
+> +static struct drm_driver loongson_drm_driver = {
+> +       .driver_features = DRIVER_MODESET | DRIVER_GEM | DRIVER_ATOMIC,
+> +       .fops = &fops,
+> +       DRM_GEM_VRAM_DRIVER,
+> +
+> +       .name = DRIVER_NAME,
+> +       .desc = DRIVER_DESC,
+> +       .date = DRIVER_DATE,
+> +       .major = DRIVER_MAJOR,
+> +       .minor = DRIVER_MINOR,
+> +};
+> +
+> +static int loongson_pci_probe(struct pci_dev *pdev,
+> +                             const struct pci_device_id *ent)
+> +{
+> +       int ret;
+> +       struct drm_device *dev;
+> +
+> +       dev = drm_dev_alloc(&loongson_drm_driver, &pdev->dev);
+> +       if (IS_ERR(dev)) {
+> +               DRM_ERROR("failed to allocate drm_device\n");
+> +               return PTR_ERR(dev);
+> +       }
+> +
+> +       dev->pdev = pdev;
+> +       pci_set_drvdata(pdev, dev);
+> +
+> +       ret = pci_enable_device(pdev);
+> +       if (ret) {
+> +               drm_err(dev, "failed to enable pci device: %d\n", ret);
+> +               goto err_free;
+> +       }
+> +
+> +       ret = loongson_drm_load(dev, 0x0);
+> +       if (ret) {
+> +               drm_err(dev, "failed to load loongson: %d\n", ret);
+> +               goto err_pdev;
+> +       }
+> +
+> +       ret = drm_dev_register(dev, 0);
+> +       if (ret) {
+> +               drm_err(dev, "failed to register drv for userspace access: %d\n",
+> +                       ret);
+> +               goto err_pdev;
+> +       }
+> +
+> +       drm_fbdev_generic_setup(dev, dev->mode_config.preferred_depth);
+> +
+> +       return 0;
+> +
+> +err_pdev:
+> +       pci_disable_device(pdev);
+> +err_free:
+> +       drm_dev_put(dev);
+> +       return ret;
+> +}
+> +
+> +static void loongson_pci_remove(struct pci_dev *pdev)
+> +{
+> +       struct drm_device *dev = pci_get_drvdata(pdev);
+> +
+> +       drm_dev_unregister(dev);
+> +       loongson_drm_unload(dev);
+> +       drm_dev_put(dev);
+> +}
+> +
+> +static struct pci_device_id loongson_pci_devices[] = {
+> +       { PCI_DEVICE(PCI_VENDOR_ID_LOONGSON, PCI_DEVICE_ID_LOONGSON_DC) },
+> +       {0,}
+> +};
+> +
+> +static struct pci_driver loongson_drm_pci_driver = {
+> +       .name = DRIVER_NAME,
+> +       .id_table = loongson_pci_devices,
+> +       .probe = loongson_pci_probe,
+> +       .remove = loongson_pci_remove,
+> +};
+> +
+> +static int __init loongson_drm_init(void)
+> +{
+> +       return pci_register_driver(&loongson_drm_pci_driver);
+> +}
+> +
+> +static void __exit loongson_drm_exit(void)
+> +{
+> +       pci_unregister_driver(&loongson_drm_pci_driver);
+> +}
+> +
+> +module_init(loongson_drm_init);
+> +module_exit(loongson_drm_exit);
+> +
+> +MODULE_AUTHOR(DRIVER_AUTHOR);
+> +MODULE_DESCRIPTION(DRIVER_DESC);
+> +MODULE_LICENSE("GPL v2");
+> diff --git a/drivers/gpu/drm/loongson/loongson_drv.h b/drivers/gpu/drm/loongson/loongson_drv.h
+> new file mode 100644
+> index 000000000000..fba66559914b
+> --- /dev/null
+> +++ b/drivers/gpu/drm/loongson/loongson_drv.h
+> @@ -0,0 +1,131 @@
+> +/* SPDX-License-Identifier: GPL-2.0-only */
+> +
+> +#ifndef __LOONGSON_DRV_H__
+> +#define __LOONGSON_DRV_H__
+> +
+> +#include <drm/drm_drv.h>
+> +#include <drm/drm_gem.h>
+> +#include <drm/drm_fb_helper.h>
+> +#include <drm/drm_fourcc.h>
+> +#include <drm/drm_probe_helper.h>
+> +#include <drm/drm_atomic.h>
+> +#include <drm/drm_atomic_helper.h>
+> +#include <drm/drm_gem_framebuffer_helper.h>
+> +#include <drm/drm_gem_vram_helper.h>
+> +#include <drm/drm_plane.h>
+> +#include <drm/drm_plane_helper.h>
+> +#include <drm/drm_crtc.h>
+> +#include <drm/drm_crtc_helper.h>
+> +#include <drm/drm_connector.h>
+> +#include <drm/drm_encoder.h>
+> +
+> +/* General customization:
+> + */
+> +#define DRIVER_AUTHOR "Loongson graphics driver team"
+> +#define DRIVER_NAME "loongson-drm"
+> +#define DRIVER_DESC "Loongson LS7A1000 DRM driver"
+Use LS7A, as above.
+
+> +#define DRIVER_DATE "20200915"
+> +
+> +#define to_loongson_crtc(x) container_of(x, struct loongson_crtc, base)
+> +#define to_loongson_encoder(x) container_of(x, struct loongson_encoder, base)
+> +
+> +#define LS7A_CHIPCFG_REG_BASE (0x10010000)
+> +#define PCI_DEVICE_ID_LOONGSON_DC 0x7a06
+> +#define PCI_DEVICE_ID_LOONGSON_GPU 0x7a15
+> +#define LS_PIX_PLL (0x04b0)
+Use LS7A prefix, as above.
+
+> +#define REG_OFFSET (0x10)
+> +#define FB_CFG_REG (0x1240)
+> +#define FB_ADDR0_REG (0x1260)
+> +#define FB_ADDR1_REG (0x1580)
+> +#define FB_STRI_REG (0x1280)
+> +#define FB_DITCFG_REG (0x1360)
+> +#define FB_DITTAB_LO_REG (0x1380)
+> +#define FB_DITTAB_HI_REG (0x13a0)
+> +#define FB_PANCFG_REG (0x13c0)
+> +#define FB_PANTIM_REG (0x13e0)
+> +#define FB_HDISPLAY_REG (0x1400)
+> +#define FB_HSYNC_REG (0x1420)
+> +#define FB_VDISPLAY_REG (0x1480)
+> +#define FB_VSYNC_REG (0x14a0)
+> +
+> +#define CFG_FMT GENMASK(2, 0)
+> +#define CFG_FBSWITCH BIT(7)
+> +#define CFG_ENABLE BIT(8)
+> +#define CFG_FBNUM BIT(11)
+> +#define CFG_GAMMAR BIT(12)
+> +#define CFG_RESET BIT(20)
+> +
+> +#define FB_PANCFG_DEF 0x80001311
+> +#define FB_HSYNC_PULSE (1 << 30)
+> +#define FB_VSYNC_PULSE (1 << 30)
+> +
+> +struct pix_pll {
+> +       u32 l2_div;
+> +       u32 l1_loopc;
+> +       u32 l1_frefc;
+> +};
+> +
+> +struct loongson_crtc {
+> +       struct drm_crtc base;
+> +       struct loongson_device *ldev;
+> +       u32 crtc_id;
+> +       u32 reg_offset;
+> +       u32 cfg_reg;
+> +       struct drm_plane *plane;
+> +};
+> +
+> +struct loongson_encoder {
+> +       struct drm_encoder base;
+> +       struct loongson_device *ldev;
+> +       struct loongson_crtc *lcrtc;
+> +};
+> +
+> +struct loongson_connector {
+> +       struct drm_connector base;
+> +       struct loongson_device *ldev;
+> +       u16 id;
+> +       u32 type;
+> +};
+> +
+> +struct loongson_mode_info {
+> +       struct loongson_device *ldev;
+> +       struct loongson_crtc *crtc;
+> +       struct loongson_encoder *encoder;
+> +       struct loongson_connector *connector;
+> +};
+> +
+> +struct loongson_device {
+> +       struct drm_device *dev;
+> +       struct drm_atomic_state *state;
+> +
+> +       spinlock_t mmio_lock;
+> +       void __iomem *mmio;
+> +       void __iomem *io;
+> +       u32 vram_start;
+> +       u32 vram_size;
+> +
+> +       u32 num_crtc;
+> +       struct loongson_mode_info mode_info[2];
+> +       struct pci_dev *gpu_pdev; /* loongson 7A gpu device info */
+Use LS7A instead of "loongson 7A", for consistency.
+
+> +};
+> +
+> +/* crtc */
+> +int loongson_crtc_init(struct loongson_device *ldev, int index);
+> +
+> +/* connector */
+> +int loongson_connector_init(struct loongson_device *ldev, int index);
+> +
+> +/* encoder */
+> +int loongson_encoder_init(struct loongson_device *ldev, int index);
+> +
+> +/* plane */
+> +int loongson_plane_init(struct loongson_crtc *lcrtc);
+> +
+> +/* device */
+> +u32 loongson_gpu_offset(struct drm_plane_state *state);
+> +u32 ls_mm_rreg_locked(struct loongson_device *ldev, u32 offset);
+> +void ls_mm_wreg_locked(struct loongson_device *ldev, u32 offset, u32 val);
+> +u32 ls_io_rreg(struct loongson_device *ldev, u32 offset);
+> +void ls_io_wreg(struct loongson_device *ldev, u32 offset, u32 val);
+> +
+> +#endif /* __LOONGSON_DRV_H__ */
+> diff --git a/drivers/gpu/drm/loongson/loongson_encoder.c b/drivers/gpu/drm/loongson/loongson_encoder.c
+> new file mode 100644
+> index 000000000000..2002cee00303
+> --- /dev/null
+> +++ b/drivers/gpu/drm/loongson/loongson_encoder.c
+> @@ -0,0 +1,37 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +
+> +#include "loongson_drv.h"
+> +
+> +static void loongson_encoder_destroy(struct drm_encoder *encoder)
+> +{
+> +       struct loongson_encoder *lencoder = to_loongson_encoder(encoder);
+> +
+> +       drm_encoder_cleanup(encoder);
+> +       kfree(lencoder);
+> +}
+> +
+> +static const struct drm_encoder_funcs loongson_encoder_funcs = {
+> +       .destroy = loongson_encoder_destroy,
+> +};
+> +
+> +int loongson_encoder_init(struct loongson_device *ldev, int index)
+> +{
+> +       struct drm_encoder *encoder;
+> +       struct loongson_encoder *lencoder;
+> +
+> +       lencoder = kzalloc(sizeof(struct loongson_encoder), GFP_KERNEL);
+> +       if (!lencoder)
+> +               return -1;
+> +
+> +       lencoder->lcrtc = ldev->mode_info[index].crtc;
+> +       lencoder->ldev = ldev;
+> +       encoder = &lencoder->base;
+> +       encoder->possible_crtcs = 1 << index;
+> +
+> +       drm_encoder_init(ldev->dev, encoder, &loongson_encoder_funcs,
+> +                        DRM_MODE_ENCODER_DAC, NULL);
+> +
+> +       ldev->mode_info[index].encoder = lencoder;
+> +
+> +       return 0;
+> +}
+> diff --git a/drivers/gpu/drm/loongson/loongson_plane.c b/drivers/gpu/drm/loongson/loongson_plane.c
+> new file mode 100644
+> index 000000000000..288b6c894222
+> --- /dev/null
+> +++ b/drivers/gpu/drm/loongson/loongson_plane.c
+> @@ -0,0 +1,102 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +
+> +#include "loongson_drv.h"
+> +
+> +static void loongson_plane_atomic_update(struct drm_plane *plane,
+> +                                        struct drm_plane_state *old_state)
+> +{
+> +       struct loongson_crtc *lcrtc;
+> +       struct loongson_device *ldev;
+> +       struct drm_plane_state *state = plane->state;
+> +       u32 gpu_addr = 0;
+> +       u32 fb_addr = 0;
+> +       u32 reg_val = 0;
+> +       u32 reg_offset;
+> +       u32 pitch;
+> +       u8 depth;
+> +       u32 x, y;
+> +
+> +       if (!state->crtc || !state->fb)
+> +               return;
+> +
+> +       pitch = state->fb->pitches[0];
+> +       lcrtc = to_loongson_crtc(state->crtc);
+> +       ldev = lcrtc->ldev;
+> +       reg_offset = lcrtc->reg_offset;
+> +       x = state->crtc->x;
+> +       y = state->crtc->y;
+> +       depth = state->fb->format->cpp[0] << 3;
+> +
+> +       gpu_addr = loongson_gpu_offset(state);
+> +       reg_val = (pitch + 255) & ~255;
+> +       ls_mm_wreg_locked(ldev, FB_STRI_REG + reg_offset, reg_val);
+> +
+> +       switch (depth) {
+> +       case 12 ... 16:
+> +               fb_addr = gpu_addr + y * pitch + ALIGN(x, 64) * 2;
+> +               break;
+> +       case 24 ... 32:
+> +       default:
+> +               fb_addr = gpu_addr + y * pitch + ALIGN(x, 64) * 4;
+> +               break;
+> +       }
+> +
+> +       ls_mm_wreg_locked(ldev, FB_ADDR0_REG + reg_offset, fb_addr);
+> +       ls_mm_wreg_locked(ldev, FB_ADDR1_REG + reg_offset, fb_addr);
+> +       reg_val = lcrtc->cfg_reg | CFG_ENABLE;
+> +       ls_mm_wreg_locked(ldev, FB_CFG_REG + reg_offset, reg_val);
+> +}
+> +
+> +static const uint32_t loongson_formats[] = {
+> +       DRM_FORMAT_RGB565,
+> +       DRM_FORMAT_RGB888,
+> +       DRM_FORMAT_XRGB8888,
+> +       DRM_FORMAT_ARGB8888,
+> +};
+> +
+> +static const uint64_t loongson_format_modifiers[] = { DRM_FORMAT_MOD_LINEAR,
+> +                                                     DRM_FORMAT_MOD_INVALID };
+> +
+> +static const struct drm_plane_funcs loongson_plane_funcs = {
+> +       .atomic_duplicate_state = drm_atomic_helper_plane_duplicate_state,
+> +       .atomic_destroy_state = drm_atomic_helper_plane_destroy_state,
+> +       .destroy = drm_plane_cleanup,
+> +       .disable_plane = drm_atomic_helper_disable_plane,
+> +       .reset = drm_atomic_helper_plane_reset,
+> +       .update_plane = drm_atomic_helper_update_plane,
+> +};
+> +
+> +static const struct drm_plane_helper_funcs loongson_plane_helper_funcs = {
+> +       .prepare_fb     = drm_gem_vram_plane_helper_prepare_fb,
+> +       .cleanup_fb     = drm_gem_vram_plane_helper_cleanup_fb,
+> +       .atomic_update = loongson_plane_atomic_update,
+> +};
+> +
+> +int loongson_plane_init(struct loongson_crtc *lcrtc)
+> +{
+> +       struct loongson_device *ldev;
+> +       int crtc_id;
+> +       int ret;
+> +
+> +       ldev = lcrtc->ldev;
+> +       crtc_id = lcrtc->crtc_id;
+> +
+> +       lcrtc->plane = devm_kzalloc(ldev->dev->dev, sizeof(*lcrtc->plane),
+> +                                   GFP_KERNEL);
+> +       if (!lcrtc->plane)
+> +               return -ENOMEM;
+> +
+> +       ret = drm_universal_plane_init(ldev->dev, lcrtc->plane, BIT(crtc_id),
+> +                                      &loongson_plane_funcs, loongson_formats,
+> +                                      ARRAY_SIZE(loongson_formats),
+> +                                      loongson_format_modifiers,
+> +                                      DRM_PLANE_TYPE_PRIMARY, NULL);
+> +       if (ret) {
+> +               DRM_ERROR("fail to init planed crtc %d\n", crtc_id);
+> +               return ret;
+> +       }
+> +
+> +       drm_plane_helper_add(lcrtc->plane, &loongson_plane_helper_funcs);
+> +
+> +       return 0;
+> +}
+> --
+> 2.29.2
+
+Thanks,
+Huacai
+>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
