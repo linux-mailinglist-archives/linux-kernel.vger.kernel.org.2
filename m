@@ -2,137 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54347311464
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 23:07:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97A653114FE
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 23:23:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233090AbhBEWFb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 17:05:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49188 "EHLO
+        id S233309AbhBEWVY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 17:21:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232964AbhBEO5n (ORCPT
+        with ESMTP id S232912AbhBEO4V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 09:57:43 -0500
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B619C061793
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 08:25:56 -0800 (PST)
-Received: by mail-pl1-x631.google.com with SMTP id g3so3832695plp.2
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 08:25:56 -0800 (PST)
+        Fri, 5 Feb 2021 09:56:21 -0500
+Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B911DC06121C
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 08:34:22 -0800 (PST)
+Received: by mail-qt1-x82b.google.com with SMTP id z22so5373280qto.7
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 08:34:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RAV6woYg0kfqY+8ibsodS4//9eDsxI9wZiwPSoFnDsw=;
-        b=YWfA2TQ5ApvZiaB/IqgvOHh0zr5cPm+JHUeKZ3MWatPWqRn+mvCJRLw/TwPHlOjRX3
-         xSzjR3V9y59pebgurUiBcvvHg+NeXKpZNzzyfxxhKXfVgRx86huXB3XiDaEup1uA3iZu
-         58WHlIewB/n6yqYVlpdN2029/6Xn3wg2TRyryIQtMn0Jsn+i+ZMW8jyL6K71IhSHNL33
-         E1X/C2e96YJz8ZE451WxgNnwUhqWRee0PR7JOK+kUsqhvgZTq/Mh4RPW3a+Ch+rZ9rYJ
-         ykElq77xB8X64yHy+M0EZZCevdU23gKPsL+WVLfFgJKRcLus7h61IuWtG43Pf0p+Tksc
-         1+tw==
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=RW0ONyxKXYjlsRuX7eO/UdLt7OqwnBfWk+dSDdSDYyw=;
+        b=fDCx8PML3wpb7Gv9Qhxf/Lmgt8t9paY9PlqQPeev9GAzZIOy9HRlwnhk8Gj2bTe2yf
+         0uSHjMJJYfZDMDMboGVMVL98lxLZYKECaPT1YM59+/uoVp+j2yeayauMqi3OZM4d1tEn
+         YN/ecY3LDoZFlB6rqTT5ynUD98p8d4ARLnea2R77u3ZWZqfLt+1HcCkt9MhNrCijWhUz
+         f4DiXHO0gL1TK9dgWhCoDy3l5Q2bJk2OkxHSBoWy+wJ4rScOFcDJlLvSG/M9tYuP2TdN
+         mWVZjPe8sqxDRGKXq+ydF2Mdvz57XMe1jNoelLFF+OdOSt6KcspYQ/F2PQw35OvoRNYe
+         +pCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RAV6woYg0kfqY+8ibsodS4//9eDsxI9wZiwPSoFnDsw=;
-        b=FiGDNH0lTgC970kyjDOvk6x3hFR7jE+m/GVWGkcpQGuuhrvwiQK8m+JOSaOGnoYxgp
-         54vegcOZ7Q3N4bU96YZ9+oIjvG09I33CHI42ZlOJSm+x77/eUFyIj9den37SzPdd92VF
-         TeJ9TsOssIxb84Ctmm3lQSLi0LokxuGexYaRtIkAFu40Q+0o2N+MZ0Xk9bLpuec9HZjC
-         2Fl//4bMtWTumBP4DEhQeF6HF2ogpZ6lNRN8b3QZOAfu+PlXkrXj9ERw0/XQi//q+k7A
-         AZo0+022nNLN/b0zddYdlPD4fZ3w4Y5zGo2rs2gT9Q6/QnAL8G0bcuER4k23oPs1dCyZ
-         ocAw==
-X-Gm-Message-State: AOAM531WuDJbK86Y1uIJkb95s7rYLe+pDR5bktsBr6UYRRHAPz3am/XX
-        aDfVcaonfsNwl2+MDS5TPlzjDCsUKiwi2seobSNNMA==
-X-Google-Smtp-Source: ABdhPJz7hg3W9UVrqwUtxXCMXQuIfjDWNNH7DXXlqilvLV51Hybl4F2VuwOFjYZCYn1biMA69T6PJSx+PVqU/vuc6IU=
-X-Received: by 2002:a17:90b:350b:: with SMTP id ls11mr4812469pjb.166.1612542355340;
- Fri, 05 Feb 2021 08:25:55 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=RW0ONyxKXYjlsRuX7eO/UdLt7OqwnBfWk+dSDdSDYyw=;
+        b=Rid6CfXMlE1Y6SoQtFl1sU5+wplRtqjwyE1kTujKTzDaGbHeElddMUC65sh1xXel/v
+         wqLkI+CLTFTV1o711XI30BaVHXtg9pQfFy9JvZxmwuBMYjNniDtAl8BjjzN3fhcuZa44
+         bb5FGpugeGZa/1Mtn+MyHfSlMFhzQ3YNlAwj7S2BDEI9iYBzYFlBjWcu0qOu9ULfwJDz
+         CngnLirpx305Yz/+jIeaJCCVB89HKM195vVNcgSqNbcVdAjt/D6mjUzYVksRQsFMpzjn
+         8EC4+dUia8rPWb9eMsQ7hpen0iaDqQ1VFCLoPG2anWI4TOK1TURvnkaTPZHRhly+3Out
+         5y1Q==
+X-Gm-Message-State: AOAM532ZUZOzYsX1B78Ru0JkcOzX3KfyHMJZC6/uaAdfDNw1k3RH2SRA
+        De78sgOMgw0Bntl1mcYn3afoxg==
+X-Google-Smtp-Source: ABdhPJwnNJM/q0Eo2MlbfQjZiTMmgkK3+RzNgscQCLRFoS1nQRPHzBz9vh5zkKqKWZB2ML9LPR2nMQ==
+X-Received: by 2002:aed:20a8:: with SMTP id 37mr5172292qtb.362.1612542861989;
+        Fri, 05 Feb 2021 08:34:21 -0800 (PST)
+Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
+        by smtp.gmail.com with ESMTPSA id z5sm9626394qkc.61.2021.02.05.08.34.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Feb 2021 08:34:20 -0800 (PST)
+Date:   Fri, 5 Feb 2021 11:34:19 -0500
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Tejun Heo <tj@kernel.org>, Roman Gushchin <guro@fb.com>,
+        linux-mm@kvack.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH 6/7] mm: memcontrol: switch to rstat
+Message-ID: <YB1zi/bZdeL2j59I@cmpxchg.org>
+References: <20210202184746.119084-1-hannes@cmpxchg.org>
+ <20210202184746.119084-7-hannes@cmpxchg.org>
+ <YB1esMKg3QhBDFG2@dhcp22.suse.cz>
 MIME-Version: 1.0
-References: <cover.1612538932.git.andreyknvl@google.com>
-In-Reply-To: <cover.1612538932.git.andreyknvl@google.com>
-From:   Andrey Konovalov <andreyknvl@google.com>
-Date:   Fri, 5 Feb 2021 17:25:44 +0100
-Message-ID: <CAAeHK+zv7U_oN1WVqQNhorL4Gf9G-hFb120o3XFO9RDtY7TEpQ@mail.gmail.com>
-Subject: Re: [PATCH v2 00/12] kasan: optimizations and fixes for HW_TAGS
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>
-Cc:     Will Deacon <will.deacon@arm.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YB1esMKg3QhBDFG2@dhcp22.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 5, 2021 at 4:39 PM Andrey Konovalov <andreyknvl@google.com> wrote:
->
-> This patchset goes on top of:
->
-> 1. Vincenzo's async support patches [1], and
-> 2. "kasan: untag addresses for KFENCE" fix [2] (already in mm).
->
-> [1] https://lore.kernel.org/linux-arm-kernel/20210130165225.54047-1-vincenzo.frascino@arm.com/
-> [2] https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?h=akpm&id=dec4728fab910da0c86cf9a97e980f4244ebae9f
->
-> This patchset makes the HW_TAGS mode more efficient, mostly by reworking
-> poisoning approaches and simplifying/inlining some internal helpers.
->
-> With this change, the overhead of HW_TAGS annotations excluding setting
-> and checking memory tags is ~3%. The performance impact caused by tags
-> will be unknown until we have hardware that supports MTE.
->
-> As a side-effect, this patchset speeds up generic KASAN by ~15%.
+On Fri, Feb 05, 2021 at 04:05:20PM +0100, Michal Hocko wrote:
+> On Tue 02-02-21 13:47:45, Johannes Weiner wrote:
+> > Replace the memory controller's custom hierarchical stats code with
+> > the generic rstat infrastructure provided by the cgroup core.
+> > 
+> > The current implementation does batched upward propagation from the
+> > write side (i.e. as stats change). The per-cpu batches introduce an
+> > error, which is multiplied by the number of subgroups in a tree. In
+> > systems with many CPUs and sizable cgroup trees, the error can be
+> > large enough to confuse users (e.g. 32 batch pages * 32 CPUs * 32
+> > subgroups results in an error of up to 128M per stat item). This can
+> > entirely swallow allocation bursts inside a workload that the user is
+> > expecting to see reflected in the statistics.
+> > 
+> > In the past, we've done read-side aggregation, where a memory.stat
+> > read would have to walk the entire subtree and add up per-cpu
+> > counts. This became problematic with lazily-freed cgroups: we could
+> > have large subtrees where most cgroups were entirely idle. Hence the
+> > switch to change-driven upward propagation. Unfortunately, it needed
+> > to trade accuracy for speed due to the write side being so hot.
+> > 
+> > Rstat combines the best of both worlds: from the write side, it
+> > cheaply maintains a queue of cgroups that have pending changes, so
+> > that the read side can do selective tree aggregation. This way the
+> > reported stats will always be precise and recent as can be, while the
+> > aggregation can skip over potentially large numbers of idle cgroups.
+> > 
+> > This adds a second vmstats to struct mem_cgroup (MEMCG_NR_STAT +
+> > NR_VM_EVENT_ITEMS) to track pending subtree deltas during upward
+> > aggregation. It removes 3 words from the per-cpu data. It eliminates
+> > memcg_exact_page_state(), since memcg_page_state() is now exact.
+> 
+> The above confused me a bit. I can see the pcp data size increased by
+> adding _prev.  The resulting memory footprint should be increased by
+> sizeof(long) * (MEMCG_NR_STAT + NR_VM_EVENT_ITEMS) * (CPUS + 1)
+> which is roughly 1kB per CPU per memcg unless I have made any
+> mistake. This is a quite a lot and it should be mentioned in the
+> changelog.
 
-Forgot to include changes v1->v2:
+Not quite, you missed a hunk further below in the patch.
 
-- Use EXPORT_SYMBOL_GPL() for arm64 symbols.
-- Rename kmalloc bool flag argument to is_kmalloc.
-- Make empty mte_set_mem_tag_range() return void.
-- Fix build warning in 32-bit systems by using unsigned long instead
-of u64 in WARN_ON() checks.
-- Minor changes in comments and commit descriptions.
-- Use kfence_ksize() before __ksize() to avoid crashes with KFENCE.
-- Use inline instead of __always_inline.
+Yes, the _prev arrays are added to the percpu struct. HOWEVER, we used
+to have TWO percpu structs in a memcg: one for local data, one for
+hierarchical data. In the rstat format, one is enough to capture both:
 
->
-> Andrey Konovalov (12):
->   kasan, mm: don't save alloc stacks twice
->   kasan, mm: optimize kmalloc poisoning
->   kasan: optimize large kmalloc poisoning
->   kasan: clean up setting free info in kasan_slab_free
->   kasan: unify large kfree checks
->   kasan: rework krealloc tests
->   kasan, mm: fail krealloc on freed objects
->   kasan, mm: optimize krealloc poisoning
->   kasan: ensure poisoning size alignment
->   arm64: kasan: simplify and inline MTE functions
->   kasan: inline HW_TAGS helper functions
->   arm64: kasan: export MTE symbols for KASAN tests
->
->  arch/arm64/include/asm/cache.h     |   1 -
->  arch/arm64/include/asm/kasan.h     |   1 +
->  arch/arm64/include/asm/mte-def.h   |   2 +
->  arch/arm64/include/asm/mte-kasan.h |  65 ++++++++--
->  arch/arm64/include/asm/mte.h       |   2 -
->  arch/arm64/kernel/mte.c            |  48 +-------
->  arch/arm64/lib/mte.S               |  16 ---
->  include/linux/kasan.h              |  25 ++--
->  lib/test_kasan.c                   | 111 +++++++++++++++--
->  mm/kasan/common.c                  | 187 ++++++++++++++++++++---------
->  mm/kasan/kasan.h                   |  72 +++++++++--
->  mm/kasan/shadow.c                  |  53 ++++----
->  mm/slab_common.c                   |  18 ++-
->  mm/slub.c                          |   3 +-
->  14 files changed, 418 insertions(+), 186 deletions(-)
->
-> --
-> 2.30.0.365.g02bc693789-goog
->
+-       /* Legacy local VM stats and events */
+-       struct memcg_vmstats_percpu __percpu *vmstats_local;
+-
+-       /* Subtree VM stats and events (batched updates) */
+        struct memcg_vmstats_percpu __percpu *vmstats_percpu;
+
+This eliminates dead duplicates of the nr_page_events and
+targets[MEM_CGROUP_NTARGETS(2)] we used to carry, which means we have
+a net reduction of 3 longs in the percpu data with this series.
+
+> > Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+> 
+> Although the memory overhead is quite large and it scales both with
+> memcg count and CPUs so it can grow quite a bit I do not think this is
+> prohibitive. Although it would be really nice if this could be optimized
+> in the future.
+> 
+> All that being said, the code looks more manageable now.
+> Acked-by: Michal Hocko <mhocko@suse.com>
+
+Thanks
