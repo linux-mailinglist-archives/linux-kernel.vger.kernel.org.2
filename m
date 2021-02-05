@@ -2,110 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AECA31164F
+	by mail.lfdr.de (Postfix) with ESMTP id F3EED311651
 	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 00:02:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232235AbhBEXBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 18:01:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42858 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232775AbhBEOiV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 09:38:21 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 220B864FBC;
-        Fri,  5 Feb 2021 14:59:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612537146;
-        bh=pcoVC9g6Ql5brnm8ZYrxM8gXd4vKE+CdwztAMluc3jc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dAu9XINGXWMXKM/v4VSMEpR5UUCt36txoacXH7ka0tNv+vG8Uhvnlhf5OOFcYyRyK
-         tKUvQdjoSvGBnoTZ1QDZRsluTJ4fRW+i0tlc+VKsUF9R5bkMFO921B8eKwzT9xS89+
-         BxgNKjCkkKuVdr2Xb16fv/oWk2wF/IpowhfTwmRmdl/hk0xAPKiy6q/JPbOV9rihec
-         DwKrhy22qVj5ArEmPBouXYoyduoc9mEyFyB8W2cvPw7M1ank7v970HjrN9h2zkMlCC
-         yhP5EQx8DqzkpHfzgFM25WJfLei1aGv86v8U7bPoZpWQE7W4pd9B5eIU9O0dmMTnAy
-         8ir6e/XFyhIKg==
-Date:   Fri, 5 Feb 2021 14:58:16 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Shengjiu Wang <shengjiu.wang@nxp.com>
-Cc:     lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
-        festevam@gmail.com, linuxppc-dev@lists.ozlabs.org,
-        robh+dt@kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH 5/7] ASoC: imx-pcm-rpmsg: Add platform driver for audio
- base on rpmsg
-Message-ID: <20210205145816.GD4720@sirena.org.uk>
-References: <1612508250-10586-1-git-send-email-shengjiu.wang@nxp.com>
- <1612508250-10586-6-git-send-email-shengjiu.wang@nxp.com>
+        id S232359AbhBEXBo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 18:01:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44744 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232772AbhBEOhh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 09:37:37 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0987AC061224
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 08:15:34 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1612537200;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=gQS1atlJp0GWrdvv3C9vL1QMEy6xhIDqNluWSLp1A5k=;
+        b=xIhQ5uGcJ6BcdU14r0txPMabY89WnUIchSMBd2+luqw24tdLVUZBvg0TXpwxtN4FXWZmh3
+        l28YWhCh7zEvqfBfAdEuFAwmhqIRMXmG80UTPjlpBnGdo7IekY7YDjrf/pn2bT38w8pSFi
+        BtifArjvn2Gkrlee9V0DDidrJe0kP9FiN2kz/AmKpJMSJaQeCyx7Z06i16ct/bYiGnD2dX
+        h4jKOoGQZXo/t0n6gLGxctayj/V6majH9ZcFd2+AIrAwLkRrmhHtq7gCTm7S6o+lfKcT4D
+        srF6CWj206lYyxKpepVQnWeN26dPP6OP7XebLtyOIJ8z2VME9y3eGGgFswU/bA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1612537200;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=gQS1atlJp0GWrdvv3C9vL1QMEy6xhIDqNluWSLp1A5k=;
+        b=GOpZ7OK/dOdrZyLEhWC0rcf1UH9oV1tv/USFrse+asjnGwLy8aRAXC8Mwu5iSd4e04ElWL
+        Z1E1LWjHxevXLeCA==
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Kees Cook <keescook@chromium.org>
+Subject: Re: [patch 03/12] x86/irq/64: Adjust the per CPU irq stack pointer by 8
+In-Reply-To: <YB1NzV4Zxfmu7PEH@hirez.programming.kicks-ass.net>
+References: <20210204204903.350275743@linutronix.de> <20210204211154.410462790@linutronix.de> <YB1NzV4Zxfmu7PEH@hirez.programming.kicks-ass.net>
+Date:   Fri, 05 Feb 2021 16:00:00 +0100
+Message-ID: <87tuqq8sr3.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="k4f25fnPtRuIRUb3"
-Content-Disposition: inline
-In-Reply-To: <1612508250-10586-6-git-send-email-shengjiu.wang@nxp.com>
-X-Cookie: Huh?
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Feb 05 2021 at 14:53, Peter Zijlstra wrote:
+> On Thu, Feb 04, 2021 at 09:49:06PM +0100, Thomas Gleixner wrote:
+>>  Move the definition
+>> next to the inuse flag so they end up in the same cache line.
+>
+>> -DEFINE_PER_CPU(struct irq_stack *, hardirq_stack_ptr);
+>> +DEFINE_PER_CPU(void *, hardirq_stack_ptr);
+>>  DEFINE_PER_CPU(bool, hardirq_stack_inuse);
+>
+> Not strictly guaranteed they end up in the same line. If you stick them
+> in a struct and force alignment on the instance you'll have better
+> guarantees.
 
---k4f25fnPtRuIRUb3
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Fri, Feb 05, 2021 at 02:57:28PM +0800, Shengjiu Wang wrote:
-
-> +	if (params_format(params) == SNDRV_PCM_FORMAT_S16_LE)
-> +		msg->s_msg.param.format   = RPMSG_S16_LE;
-> +	else if (params_format(params) == SNDRV_PCM_FORMAT_S24_LE)
-
-Again this should be a switch statement.
-
-> +	if (params_channels(params) == 1)
-> +		msg->s_msg.param.channels = RPMSG_CH_LEFT;
-> +	else
-> +		msg->s_msg.param.channels = RPMSG_CH_STEREO;
-
-Shouldn't this be reporting an error if the number of channels is more
-than 2?
-
-> +		/*
-> +		 * if the data in the buffer is less than one period
-> +		 * send message immediately.
-> +		 * if there is more than one period data, delay one
-> +		 * period (timer) to send the message.
-> +		 */
-> +		if ((avail - writen_num * period_size) <= period_size) {
-> +			imx_rpmsg_insert_workqueue(substream, msg, info);
-> +		} else if (rpmsg->force_lpa && !timer_pending(timer)) {
-> +			int time_msec;
-> +
-> +			time_msec = (int)(runtime->period_size * 1000 / runtime->rate);
-> +			mod_timer(timer, jiffies + msecs_to_jiffies(time_msec));
-> +		}
-
-The comment here is at least confusing - why would we not send a full
-buffer immediately if we have one?  This sounds like it's the opposite
-way round to what we'd do if we were trying to cut down the number of
-messages.  It might help to say which buffer and where?
-
-> +	/**
-> +	 * Every work in the work queue, first we check if there
-
-/** comments are only for kerneldoc.
-
---k4f25fnPtRuIRUb3
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmAdXQcACgkQJNaLcl1U
-h9ACUwf9EcHPKiRzzRa6Atb6PHhaM1oBK/2zYZcdmLDejwBct/KltZywmVsBQv0o
-JmeLnKw7/jLk3Sph4Pqk6J2lyizC5nik/w7NjFO5CIUyNTQnFRZtaDILcnVr7vNk
-28HX0/XoPM54EbfyncrP41lr/L4EYgHmjIMqi/TjVtFnfyOt1Pq99Rj02lKDVnV3
-ERmOguBociG3yf9kV/wcrZzJ4hOg7Lw468CHtxoeCpPKsJovmByQ0I78JQJlJ1Jj
-TRjC06zUmRhscWFCrWiOkItqPpTcrv5TxMVh5Ko5zE1rYslk8XURTFpnKDxWoxkR
-MtylP+v1qS4G4STsZObKZtcso3D9hA==
-=hzt6
------END PGP SIGNATURE-----
-
---k4f25fnPtRuIRUb3--
+You're right. There are a bunch of per cpu variables which are randomly
+defined all over the place which should stay in the same cache line.
