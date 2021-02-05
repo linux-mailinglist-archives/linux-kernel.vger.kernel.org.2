@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BBA4311B13
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 05:47:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DCBA2311B1B
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 05:49:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231771AbhBFEqN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 23:46:13 -0500
-Received: from mga09.intel.com ([134.134.136.24]:63380 "EHLO mga09.intel.com"
+        id S231666AbhBFEsP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 23:48:15 -0500
+Received: from mga09.intel.com ([134.134.136.24]:63285 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231936AbhBFD0M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 22:26:12 -0500
-IronPort-SDR: Y8BbK6XKvWo4KDpypLEyeU4AkE6n1u4aMt8KgE0NVxzeSQDELIun09vEAr0yAgCNirl8q0jcPv
- CLIiKtQcs7mQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9886"; a="181650725"
+        id S230253AbhBFD20 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 22:28:26 -0500
+IronPort-SDR: iYW4GTOZKVNT5BB9xlYDRua80hq8n++CmDDLnS47ZpBD1QkFB6zTaWoY+FdsOugVJS8svbZn+M
+ lMb44sIpGI3Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9886"; a="181650727"
 X-IronPort-AV: E=Sophos;i="5.81,156,1610438400"; 
-   d="scan'208";a="181650725"
+   d="scan'208";a="181650727"
 Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2021 15:39:09 -0800
-IronPort-SDR: zxJsciv0+8epPRn9N5FVUle4SibbBi6SVYKn1UlNIvSb2DnHJPZT7aYKRTW7QSPsUd63hMpRX9
- x2JttSS7YRMQ==
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2021 15:39:10 -0800
+IronPort-SDR: tOw87rz7/Wba1I0AyQ41/n0QqttABYyZI4zTkDmQFiSGUWcYwBHAbpTRled3t0EB86D4ztnee5
+ mJAxE+ciKp1w==
 X-IronPort-AV: E=Sophos;i="5.81,156,1610438400"; 
-   d="scan'208";a="416183895"
+   d="scan'208";a="416183903"
 Received: from mdhake-mobl.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.209.53.25])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2021 15:39:07 -0800
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2021 15:39:08 -0800
 From:   Kuppuswamy Sathyanarayanan 
         <sathyanarayanan.kuppuswamy@linux.intel.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
@@ -38,9 +38,9 @@ Cc:     Andi Kleen <ak@linux.intel.com>,
         linux-kernel@vger.kernel.org,
         Kuppuswamy Sathyanarayanan 
         <sathyanarayanan.kuppuswamy@linux.intel.com>
-Subject: [RFC v1 09/26] x86/tdx: Handle CPUID via #VE
-Date:   Fri,  5 Feb 2021 15:38:26 -0800
-Message-Id: <e45fcb584cd9fd67e6585ad8a904659a8b2ff9a5.1612563142.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+Subject: [RFC v1 10/26] x86/io: Allow to override inX() and outX() implementation
+Date:   Fri,  5 Feb 2021 15:38:27 -0800
+Message-Id: <e0db62734d2e2794d3bd6e80a1d54f4306825d00.1612563142.git.sathyanarayanan.kuppuswamy@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1612563142.git.sathyanarayanan.kuppuswamy@linux.intel.com>
 References: <cover.1612563142.git.sathyanarayanan.kuppuswamy@linux.intel.com>
@@ -52,79 +52,52 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
 
-TDX has three classes of CPUID leaves: some CPUID leaves
-are always handled by the CPU, others are handled by the TDX module,
-and some others are handled by the VMM. Since the VMM cannot directly
-intercept the instruction these are reflected with a #VE exception
-to the guest, which then converts it into a TDCALL to the VMM,
-or handled directly.
-
-The TDX module EAS has a full list of CPUID leaves which are handled
-natively or by the TDX module in 16.2. Only unknown CPUIDs are handled by
-the #VE method. In practice this typically only applies to the
-hypervisor specific CPUIDs unknown to the native CPU.
-
-Therefore there is no risk of causing this in early CPUID code which
-runs before the #VE handler is set up because it will never access
-those exotic CPUID leaves.
+The patch allows to override the implementation of the port IO
+helpers. TDX code will provide an implementation that redirect the
+helpers to paravirt calls.
 
 Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
 Reviewed-by: Andi Kleen <ak@linux.intel.com>
 Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
 ---
- arch/x86/kernel/tdx.c | 32 ++++++++++++++++++++++++++++++++
- 1 file changed, 32 insertions(+)
+ arch/x86/include/asm/io.h | 16 ++++++++++++----
+ 1 file changed, 12 insertions(+), 4 deletions(-)
 
-diff --git a/arch/x86/kernel/tdx.c b/arch/x86/kernel/tdx.c
-index 5d961263601e..e98058c048b5 100644
---- a/arch/x86/kernel/tdx.c
-+++ b/arch/x86/kernel/tdx.c
-@@ -172,6 +172,35 @@ static int tdx_write_msr_safe(unsigned int msr, unsigned int low,
- 	return ret || r10 ? -EIO : 0;
- }
+diff --git a/arch/x86/include/asm/io.h b/arch/x86/include/asm/io.h
+index d726459d08e5..ef7a686a55a9 100644
+--- a/arch/x86/include/asm/io.h
++++ b/arch/x86/include/asm/io.h
+@@ -271,18 +271,26 @@ static inline bool sev_key_active(void) { return false; }
  
-+static void tdx_handle_cpuid(struct pt_regs *regs)
-+{
-+	register long r10 asm("r10") = TDVMCALL_STANDARD;
-+	register long r11 asm("r11") = EXIT_REASON_CPUID;
-+	register long r12 asm("r12") = regs->ax;
-+	register long r13 asm("r13") = regs->cx;
-+	register long r14 asm("r14");
-+	register long r15 asm("r15");
-+	register long rcx asm("rcx");
-+	long ret;
+ #endif /* CONFIG_AMD_MEM_ENCRYPT */
+ 
++#ifndef __out
++#define __out(bwl, bw)							\
++	asm volatile("out" #bwl " %" #bw "0, %w1" : : "a"(value), "Nd"(port))
++#endif
 +
-+	/* Allow to pass R10, R11, R12, R13, R14 and R15 down to the VMM */
-+	rcx = BIT(10) | BIT(11) | BIT(12) | BIT(13) | BIT(14) | BIT(15);
++#ifndef __in
++#define __in(bwl, bw)							\
++	asm volatile("in" #bwl " %w1, %" #bw "0" : "=a"(value) : "Nd"(port))
++#endif
 +
-+	asm volatile(TDCALL
-+			: "=a"(ret), "=r"(r10), "=r"(r11), "=r"(r12), "=r"(r13),
-+			  "=r"(r14), "=r"(r15)
-+			: "a"(TDVMCALL), "r"(rcx), "r"(r10), "r"(r11), "r"(r12),
-+			  "r"(r13)
-+			: );
-+
-+	regs->ax = r12;
-+	regs->bx = r13;
-+	regs->cx = r14;
-+	regs->dx = r15;
-+
-+	WARN_ON(ret || r10);
-+}
-+
- void __init tdx_early_init(void)
- {
- 	if (!cpuid_has_tdx_guest())
-@@ -227,6 +256,9 @@ int tdx_handle_virtualization_exception(struct pt_regs *regs,
- 	case EXIT_REASON_MSR_WRITE:
- 		ret = tdx_write_msr_safe(regs->cx, regs->ax, regs->dx);
- 		break;
-+	case EXIT_REASON_CPUID:
-+		tdx_handle_cpuid(regs);
-+		break;
- 	default:
- 		pr_warn("Unexpected #VE: %d\n", ve->exit_reason);
- 		return -EFAULT;
+ #define BUILDIO(bwl, bw, type)						\
+ static inline void out##bwl(unsigned type value, int port)		\
+ {									\
+-	asm volatile("out" #bwl " %" #bw "0, %w1"			\
+-		     : : "a"(value), "Nd"(port));			\
++	__out(bwl, bw);							\
+ }									\
+ 									\
+ static inline unsigned type in##bwl(int port)				\
+ {									\
+ 	unsigned type value;						\
+-	asm volatile("in" #bwl " %w1, %" #bw "0"			\
+-		     : "=a"(value) : "Nd"(port));			\
++	__in(bwl, bw);							\
+ 	return value;							\
+ }									\
+ 									\
 -- 
 2.25.1
 
