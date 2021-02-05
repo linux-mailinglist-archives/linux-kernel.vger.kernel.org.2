@@ -2,79 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D950310388
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 04:25:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB53C31038F
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 04:29:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230086AbhBEDYX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 22:24:23 -0500
-Received: from mail-lf1-f41.google.com ([209.85.167.41]:39667 "EHLO
-        mail-lf1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229567AbhBEDYR (ORCPT
+        id S229979AbhBED3O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 22:29:14 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37366 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229579AbhBED3O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 22:24:17 -0500
-Received: by mail-lf1-f41.google.com with SMTP id h7so7844205lfc.6;
-        Thu, 04 Feb 2021 19:24:00 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lBhQgpWYfLW4RX9Ru6N2PlBwZejRwOZ4EQOVez/Xssg=;
-        b=hUgnqTFEgz6c9Md7pD01PBTa2M+pzZb115r6ykNUNdL4Msji6h2CZnr/XKBjODtasB
-         MIHOm0qHURkcyyb62J//FJMHCjB1Ib9ZzbVvxoKwKihqO79B6zKc05Gb4KkD/P8UwsfR
-         F8M4FsS7VItWotM+c8ascaHO1RJHpU6jzSyLLblyCF4VbVOUCzj0xLJI1/riMtIWKmqY
-         g3iNqBn477CNS/GXXYeZe4x62zHmK0y/3Czf9t/jvnpkt7s/qEQD9DV2zZTrl9Ub2Mx2
-         AZFecBk+pRSYnNDDmrQFsqtXm96bjbTfIgZSFQC+mIpnlX2De/LaWIFcxMJ32X6AHwfb
-         p0og==
-X-Gm-Message-State: AOAM531B9Hil2YPOKSJqQze6lQ1BbS4XNzFPw5omwTdBBLPs4N4A3LQG
-        HK/9uK5EVUUYdLLBGO9AP89emLOODZT6Tw==
-X-Google-Smtp-Source: ABdhPJwf0Fy/99hSyFPNtSBBqFnO+jBpTdKMFXKbG6XwOkNvuRpeQCp3htlpTWBEJrRNTGsHuOy0aw==
-X-Received: by 2002:a05:6512:2287:: with SMTP id f7mr1348404lfu.40.1612495414961;
-        Thu, 04 Feb 2021 19:23:34 -0800 (PST)
-Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com. [209.85.208.171])
-        by smtp.gmail.com with ESMTPSA id s8sm871434ljm.71.2021.02.04.19.23.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Feb 2021 19:23:34 -0800 (PST)
-Received: by mail-lj1-f171.google.com with SMTP id t8so6029381ljk.10;
-        Thu, 04 Feb 2021 19:23:34 -0800 (PST)
-X-Received: by 2002:a2e:9890:: with SMTP id b16mr1389484ljj.488.1612495414322;
- Thu, 04 Feb 2021 19:23:34 -0800 (PST)
+        Thu, 4 Feb 2021 22:29:14 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612495667;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=j6n+ZLbkq+mLCc6aBqP6EMe2QS0ih77l0I/R5zi2Q/k=;
+        b=LfdOAVLyXLfWPbqHY6Ghg+KmAczp7R47J/NHlGH34JhiUCT9SCVcdU8eZUmGZdx6rl0FAz
+        Nzoy1nH8HlvDOCMzwD7jr1d3BMKEdIfX9miw1n+NJqgrM8uy8MBxGNZB1J+knEATTZ/UqC
+        PU1pIiqBannsa1VLX/X1CGU5g6z3WIY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-521-GXHq2iLTMEGLcKpW42pIgQ-1; Thu, 04 Feb 2021 22:27:45 -0500
+X-MC-Unique: GXHq2iLTMEGLcKpW42pIgQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 171DE195D560;
+        Fri,  5 Feb 2021 03:27:44 +0000 (UTC)
+Received: from [10.72.12.112] (ovpn-12-112.pek2.redhat.com [10.72.12.112])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 90BAA60937;
+        Fri,  5 Feb 2021 03:27:33 +0000 (UTC)
+Subject: Re: [PATCH v3 09/13] vhost/vdpa: remove vhost_vdpa_config_validate()
+To:     Stefano Garzarella <sgarzare@redhat.com>,
+        virtualization@lists.linux-foundation.org
+Cc:     Xie Yongji <xieyongji@bytedance.com>, kvm@vger.kernel.org,
+        Laurent Vivier <lvivier@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>,
+        linux-kernel@vger.kernel.org, "Michael S. Tsirkin" <mst@redhat.com>
+References: <20210204172230.85853-1-sgarzare@redhat.com>
+ <20210204172230.85853-10-sgarzare@redhat.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <6919d2d4-cc8e-2b67-2385-35803de5e38b@redhat.com>
+Date:   Fri, 5 Feb 2021 11:27:32 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210204184710.1880895-1-jernej.skrabec@siol.net> <20210204184710.1880895-6-jernej.skrabec@siol.net>
-In-Reply-To: <20210204184710.1880895-6-jernej.skrabec@siol.net>
-From:   Chen-Yu Tsai <wens@csie.org>
-Date:   Fri, 5 Feb 2021 11:23:24 +0800
-X-Gmail-Original-Message-ID: <CAGb2v65VauNZaxWgayp0BdGxm=Kbb3LF-YXarx9gFZmPYP8B-g@mail.gmail.com>
-Message-ID: <CAGb2v65VauNZaxWgayp0BdGxm=Kbb3LF-YXarx9gFZmPYP8B-g@mail.gmail.com>
-Subject: Re: [linux-sunxi] [PATCH 5/5] drm/sun4i: dw-hdmi: Fix max. frequency
- for H6
-To:     Jernej Skrabec <jernej.skrabec@siol.net>
-Cc:     Maxime Ripard <mripard@kernel.org>,
-        Mike Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-sunxi <linux-sunxi@googlegroups.com>,
-        Andre Heider <a.heider@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210204172230.85853-10-sgarzare@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 5, 2021 at 2:48 AM Jernej Skrabec <jernej.skrabec@siol.net> wrote:
->
-> It turns out that reasoning for lowering max. supported frequency is
-> wrong. Scrambling works just fine. Several now fixed bugs prevented
-> proper functioning, even with rates lower than 340 MHz. Issues were just
-> more pronounced with higher frequencies.
->
-> Fix that by allowing max. supported frequency in HW and fix the comment.
->
-> Fixes: cd9063757a22 ("drm/sun4i: DW HDMI: Lower max. supported rate for H6")
-> Tested-by: Andre Heider <a.heider@gmail.com>
-> Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
 
-Reviewed-by: Chen-Yu Tsai <wens@csie.org>
+On 2021/2/5 上午1:22, Stefano Garzarella wrote:
+> get_config() and set_config() callbacks in the 'struct vdpa_config_ops'
+> usually already validated the inputs. Also now they can return an error,
+> so we don't need to validate them here anymore.
+>
+> Let's use the return value of these callbacks and return it in case of
+> error in vhost_vdpa_get_config() and vhost_vdpa_set_config().
+>
+> Originally-by: Xie Yongji <xieyongji@bytedance.com>
+> Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
+> ---
+>   drivers/vhost/vdpa.c | 41 +++++++++++++----------------------------
+>   1 file changed, 13 insertions(+), 28 deletions(-)
+>
+> diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
+> index ef688c8c0e0e..d61e779000a8 100644
+> --- a/drivers/vhost/vdpa.c
+> +++ b/drivers/vhost/vdpa.c
+> @@ -185,51 +185,35 @@ static long vhost_vdpa_set_status(struct vhost_vdpa *v, u8 __user *statusp)
+>   	return 0;
+>   }
+>   
+> -static int vhost_vdpa_config_validate(struct vhost_vdpa *v,
+> -				      struct vhost_vdpa_config *c)
+> -{
+> -	long size = 0;
+> -
+> -	switch (v->virtio_id) {
+> -	case VIRTIO_ID_NET:
+> -		size = sizeof(struct virtio_net_config);
+> -		break;
+> -	}
+> -
+> -	if (c->len == 0)
+> -		return -EINVAL;
+> -
+> -	if (c->len > size - c->off)
+> -		return -E2BIG;
+> -
+> -	return 0;
+> -}
+> -
+>   static long vhost_vdpa_get_config(struct vhost_vdpa *v,
+>   				  struct vhost_vdpa_config __user *c)
+>   {
+>   	struct vdpa_device *vdpa = v->vdpa;
+>   	struct vhost_vdpa_config config;
+>   	unsigned long size = offsetof(struct vhost_vdpa_config, buf);
+> +	long ret;
+>   	u8 *buf;
+>   
+>   	if (copy_from_user(&config, c, size))
+>   		return -EFAULT;
+> -	if (vhost_vdpa_config_validate(v, &config))
+> +	if (config.len == 0)
+>   		return -EINVAL;
+>   	buf = kvzalloc(config.len, GFP_KERNEL);
+
+
+Then it means usersapce can allocate a very large memory.
+
+Rethink about this, we should limit the size here (e.g PAGE_SIZE) or 
+fetch the config size first (either through a config ops as you 
+suggested or a variable in the vdpa device that is initialized during 
+device creation).
+
+Thanks
+
+>   	if (!buf)
+>   		return -ENOMEM;
+>   
+> -	vdpa_get_config(vdpa, config.off, buf, config.len);
+> +	ret = vdpa_get_config(vdpa, config.off, buf, config.len);
+> +	if (ret)
+> +		goto out;
+>   
+>   	if (copy_to_user(c->buf, buf, config.len)) {
+> -		kvfree(buf);
+> -		return -EFAULT;
+> +		ret = -EFAULT;
+> +		goto out;
+>   	}
+>   
+> +out:
+>   	kvfree(buf);
+> -	return 0;
+> +	return ret;
+>   }
+>   
+>   static long vhost_vdpa_set_config(struct vhost_vdpa *v,
+> @@ -239,21 +223,22 @@ static long vhost_vdpa_set_config(struct vhost_vdpa *v,
+>   	const struct vdpa_config_ops *ops = vdpa->config;
+>   	struct vhost_vdpa_config config;
+>   	unsigned long size = offsetof(struct vhost_vdpa_config, buf);
+> +	long ret;
+>   	u8 *buf;
+>   
+>   	if (copy_from_user(&config, c, size))
+>   		return -EFAULT;
+> -	if (vhost_vdpa_config_validate(v, &config))
+> +	if (config.len == 0)
+>   		return -EINVAL;
+>   
+>   	buf = vmemdup_user(c->buf, config.len);
+>   	if (IS_ERR(buf))
+>   		return PTR_ERR(buf);
+>   
+> -	ops->set_config(vdpa, config.off, buf, config.len);
+> +	ret = ops->set_config(vdpa, config.off, buf, config.len);
+>   
+>   	kvfree(buf);
+> -	return 0;
+> +	return ret;
+>   }
+>   
+>   static long vhost_vdpa_get_features(struct vhost_vdpa *v, u64 __user *featurep)
+
