@@ -2,68 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4015C31186B
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 03:38:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E5AF311843
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 03:34:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230368AbhBFChL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 21:37:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37200 "EHLO
+        id S230150AbhBFCcb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 21:32:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230180AbhBFCco (ORCPT
+        with ESMTP id S229963AbhBFCcD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 21:32:44 -0500
-Received: from antares.kleine-koenig.org (antares.kleine-koenig.org [IPv6:2a01:4f8:c0c:3a97::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D18EC08ECA2
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 14:29:43 -0800 (PST)
-Received: by antares.kleine-koenig.org (Postfix, from userid 1000)
-        id D58D6AEDEFB; Fri,  5 Feb 2021 23:28:59 +0100 (CET)
-From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <uwe@kleine-koenig.org>
-To:     Dan Williams <dan.j.williams@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-nvdimm@lists.01.org, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH v2 2/5] dax-device: Properly handle drivers without remove callback
-Date:   Fri,  5 Feb 2021 23:28:39 +0100
-Message-Id: <20210205222842.34896-3-uwe@kleine-koenig.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210205222842.34896-1-uwe@kleine-koenig.org>
-References: <20210205222842.34896-1-uwe@kleine-koenig.org>
+        Fri, 5 Feb 2021 21:32:03 -0500
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9996BC08ECB0
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 14:45:21 -0800 (PST)
+Received: by mail-ed1-x534.google.com with SMTP id q2so10837778edi.4
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 14:45:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chrisdown.name; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=tI1f4i4ziW/Ximd5HKHu71YFTC8v8qUtKb681+ALp0o=;
+        b=YZdenX0Q9zk0V+QGiih7o/6iLs3mnbotXB87u469aXGFh8TPPwu5nPQD6MAlrqDm9b
+         V8qg2QBHm1+ncL5H95h1Kz8bFfws38DJF9HtFKz5WAyAs2VmQRN0wUJiKHKyS6giqYI5
+         MklliWJw3bOuhQLEIorHi0QMOpnHWKi0gTFk0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=tI1f4i4ziW/Ximd5HKHu71YFTC8v8qUtKb681+ALp0o=;
+        b=Cm//aNYV2pho8XnGmOcEOY95HChN3nlqruE/rQf0nCNEP7xWkYyOzrQXBtN1oAFZNx
+         0rmgW1Agkcwdme9ZacysHlVj9nfoNXnYHe98xvA8aErXqiQYJhkp7V0/xDVLhqrFt0J5
+         5+DK8fGsyN67XCSFlZbro7MU9QZ6ujfQK4QGtIgsdenGtZ5Fjdf4x51iWH9BurZJr9Va
+         1bFZqwEgKFAxhlVJ/EuZxvfNC2pXonIAexvlsHh3DA0CKDgL5Arg9uwJ+ETzK08pC78A
+         yWDXrCCM/XDYIP7sKW8yrtVzHvB/gVfQjBZ/XmAXGDnAdaGeDvoq2EU00Fv7RoJJQtGe
+         6wFA==
+X-Gm-Message-State: AOAM531ptihKMemCS56f4fBw7B5ksmUwuvI4QUfOgRgZCtY8pAnVWUAF
+        Q0UkErvTrIw/m/jpfwZ738ghPw==
+X-Google-Smtp-Source: ABdhPJyt3LLWpY62x1OjCahx1+I3sSaPyiQWpqmMIWHpa/OcR+efeRyrMqnBFf//oHc04KqZBHpyNg==
+X-Received: by 2002:aa7:d6c2:: with SMTP id x2mr5765469edr.225.1612565120194;
+        Fri, 05 Feb 2021 14:45:20 -0800 (PST)
+Received: from localhost ([2620:10d:c093:400::4:66bb])
+        by smtp.gmail.com with ESMTPSA id o4sm4656387edw.78.2021.02.05.14.45.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Feb 2021 14:45:19 -0800 (PST)
+Date:   Fri, 5 Feb 2021 22:45:19 +0000
+From:   Chris Down <chris@chrisdown.name>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Petr Mladek <pmladek@suse.com>, linux-kernel@vger.kernel.org,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        John Ogness <john.ogness@linutronix.de>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>, kernel-team@fb.com,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jason Baron <jbaron@akamai.com>,
+        Kees Cook <keescook@chromium.org>, linux-api@vger.kernel.org
+Subject: Re: [PATCH] printk: Userspace format enumeration support
+Message-ID: <YB3Kf896Zt9O+/Yh@chrisdown.name>
+References: <YBwU0G+P0vb9wTwm@chrisdown.name>
+ <YB11jybvFCb95S9e@alley>
+ <20210205124748.4af2d406@gandalf.local.home>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20210205124748.4af2d406@gandalf.local.home>
+User-Agent: Mutt/2.0.5 (da5e3282) (2021-01-21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If all resources are allocated in .probe() using devm_ functions it
-might make sense to not provide a .remove() callback. Then the right
-thing is to just return success.
+Hi Steven,
 
-Signed-off-by: Uwe Kleine-König <uwe@kleine-koenig.org>
----
- drivers/dax/bus.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+Steven Rostedt writes:
+>Interesting, because when I was looking at the original patch (looked at
+>the lore link before reading your reply), I thought to myself "this looks
+>exactly like what I did for trace_printk formats", which the above file is
+>where it is shown. I'm curious if this work was inspired by that?
 
-diff --git a/drivers/dax/bus.c b/drivers/dax/bus.c
-index 72fc4b9b9ae6..2c9e3f6f615f 100644
---- a/drivers/dax/bus.c
-+++ b/drivers/dax/bus.c
-@@ -178,8 +178,12 @@ static int dax_bus_remove(struct device *dev)
- {
- 	struct dax_device_driver *dax_drv = to_dax_drv(dev->driver);
- 	struct dev_dax *dev_dax = to_dev_dax(dev);
-+	int ret = 0;
- 
--	return dax_drv->remove(dev_dax);
-+	if (dax_drv->remove)
-+		ret = dax_drv->remove(dev_dax);
-+
-+	return ret;
- }
- 
- static struct bus_type dax_bus_type = {
--- 
-2.29.2
+The double __builtin_constant_p() trick was suggested by Johannes based on 
+prior art in trace_puts() just prior to patch submission. Other than that, it 
+seems we came up with basically the same solution independently. :-)
 
+>> Anyway, there is something wrong at the moment. The output looks fine
+>> with cat. But "less" says that it is a binary format and the output
+>> is a bit messy:
+>
+>Hmm, that's usually the case when lseek gets messed up. Not sure how that
+>happened.
+
+It looks as intended to me -- none of the newlines, nulls, or other control 
+sequences are escaped currently, since I didn't immediately see a reason to do 
+that. If that's a blocker though, I'm happy to change it.
+
+>> $> less /proc/printk_formats
+>> "/proc/printk_formats" may be a binary file.  See it anyway?
+>> vmlinux,^A3Warning: unable to open an initial console.
+>> ^@vmlinux,^A3Failed to execute %s (error %d)
+>> ^@vmlinux,^A6Kernel memory protection disabled.
+>> ^@vmlinux,^A3Starting init: %s exists but couldn't execute it (error %d)
+>>
+>>
+>> That is for now. I still have to think about it. And I am also curious
+>> about what others thing about this idea.
+>>
+>
+>I'm not against the idea. I don't think it belongs in /proc. Perhaps
+>debugfs is a better place to put it.
+
+Any location is fine with me, as long as it gets to userspace. How does 
+<debugfs>/printk/formats or <debugfs>/printk/formats/<module> sound to you?
+
+Thanks,
+
+Chris
