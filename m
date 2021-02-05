@@ -2,111 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC0CD31105F
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 19:52:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ECB7431105D
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 19:52:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233524AbhBERJy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 12:09:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42858 "EHLO mail.kernel.org"
+        id S233428AbhBERIh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 12:08:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43596 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233647AbhBEQ3d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 11:29:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 37B8F64E4D;
-        Fri,  5 Feb 2021 18:11:09 +0000 (UTC)
+        id S233748AbhBEQcN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 11:32:13 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 2B6B364E77;
+        Fri,  5 Feb 2021 18:13:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612548671;
-        bh=yWZtZPAP4nZYW79cu5NgAC9QYiraIlmFa0/bPP0ERuM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Gx6KEjej7Pl/icLyoEZGR+dQjVlGiKf7JZNFZauDKp8ynRzweCkcBblzalY0GSpXx
-         Lfw3l/GV8q6UIjEhf7qzSMBoAHbmZ2zZa5QH9JsFpXxb5uIMm2hr8312YSHpLXd0+M
-         YPoUrBP7lWrWVDY8RbFM+l+RZPzBWZ39rValnx2AWeWHVkVLdc1ZVBDM02ZRlKqYKU
-         8AGlTbusZuArYYAjxLECwgckTwpxMlbxUKy65KuqJgvkagM4UHBSb8VFODeDoijCcn
-         lphoRe4qxbkSsX5uydsNKmsd5vJl0xsbYRFUb8Z6l0kgpZ4S2voxvSUBhSRU1a75W7
-         hTrTwXqhDLspA==
-Date:   Fri, 5 Feb 2021 19:11:05 +0100
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Tony Battersby <tonyb@cybernetics.com>
-Cc:     Jiri Slaby <jirislaby@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org,
-        Jari Ruusu <jariruusu@protonmail.com>,
-        David Laight <David.Laight@ACULAB.COM>,
-        Christoph Biedl <linux-kernel.bfrz@manchmal.in-ulm.de>,
-        linux-media@vger.kernel.org
-Subject: Re: Kernel version numbers after 4.9.255 and 4.4.255
-Message-ID: <20210205191105.128c6e48@coco.lan>
-In-Reply-To: <0b12bac9-1b4e-ec4a-8a45-5eb3f1dbbeca@cybernetics.com>
-References: <a85b7749-38b2-8ce9-c15a-8acb9a54c5b5@kernel.org>
-        <0b12bac9-1b4e-ec4a-8a45-5eb3f1dbbeca@cybernetics.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+        s=k20201202; t=1612548788;
+        bh=/csbrMk6+VPCOiPQdvh2c2U7qDcJN+0+pZkFb5TOuik=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=vJJfi0nvEVWZzMP7zSx1K1UgpTndi1L9HD1M2nQvkOUPw7z838JZeELf40/Y4/ZGq
+         l9pesXthQPxNt+4bzFU95c0V4NbMg3OcFugbJ2tYLpOSKPG/KQzB/e8AtWKzN3O9p/
+         +7LQ0GNzQpVkAYKiLcSDGZREJxwTZhS9efvMh6n5Z1Gg9gY9oG48DTcNvEg+DaGOlW
+         Y6J5tC85R0XVv0RJfU+mL5GBv+c+kIXO+ZX9o1+xS3Q+hipPPake6bLArpeWDcgKLJ
+         /nGboAxsUr9Kckr2pOQbXyi7IMqisSHtjQq81k1acNyu056bI6T6N3DS+q9VyyOryy
+         sr4Ug0A4BRznA==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 26574609F2;
+        Fri,  5 Feb 2021 18:13:08 +0000 (UTC)
+Subject: Re: [GIT PULL] MMC fixes for v5.11-rc7
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20210205134345.117659-1-ulf.hansson@linaro.org>
+References: <20210205134345.117659-1-ulf.hansson@linaro.org>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20210205134345.117659-1-ulf.hansson@linaro.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/ulfh/mmc.git tags/mmc-v5.11-rc6
+X-PR-Tracked-Commit-Id: d7fb9c24209556478e65211d7a1f056f2d43cceb
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 2d8bdf5906580daf72364e0dac4517ac26d5b05d
+Message-Id: <161254878815.14736.12999277617486435826.pr-tracker-bot@kernel.org>
+Date:   Fri, 05 Feb 2021 18:13:08 +0000
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Linus <torvalds@linux-foundation.org>, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Fri, 5 Feb 2021 12:31:05 -0500
-Tony Battersby <tonyb@cybernetics.com> escreveu:
+The pull request you sent on Fri,  5 Feb 2021 14:43:45 +0100:
 
-> On 2/4/21 6:00 AM, Jiri Slaby wrote:
-> > Agreed. But currently, sublevel won't "wrap", it will "overflow" to=20
-> > patchlevel. And that might be a problem. So we might need to update the=
-=20
-> > header generation using e.g. "sublevel & 0xff" (wrap around) or=20
-> > "sublevel > 255 : 255 : sublevel" (be monotonic and get stuck at 255).
-> >
-> > In both LINUX_VERSION_CODE generation and KERNEL_VERSION proper. =20
->=20
-> My preference would be to be monotonic and get stuck at 255 to avoid
-> breaking out-of-tree modules.=C2=A0 If needed, add another macro that
-> increases the number of bits that can be used to check for sublevels >
-> 255, while keeping the old macros for compatibility reasons.=C2=A0 Since
-> sublevels > 255 have never existed before, any such checks must be
-> newly-added, so they can be required to use the new macros.
->=20
-> I do not run the 4.4/4.9 kernels usually, but I do sometimes test a wide
-> range of kernels from 3.18 (gasp!) up to the latest when bisecting,
-> benchmarking, or debugging problems.=C2=A0 And I use a number of out-of-t=
-ree
-> modules that rely on the KERNEL_VERSION to make everything work.=C2=A0 So=
-me
-> out-of-tree modules like an updated igb network driver might be needed
-> to make it possible to test the old kernel on particular hardware.
->=20
-> In the worst case, I can patch LINUX_VERSION_CODE and KERNEL_VERSION
-> locally to make out-of-tree modules work.=C2=A0 Or else just not test ker=
-nels
-> with sublevel > 255.
+> git://git.kernel.org/pub/scm/linux/kernel/git/ulfh/mmc.git tags/mmc-v5.11-rc6
 
-Overflowing LINUX_VERSION_CODE breaks media applications. Several media
-APIs have an ioctl that returns the Kernel version:
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/2d8bdf5906580daf72364e0dac4517ac26d5b05d
 
-	drivers/media/cec/core/cec-api.c:       caps.version =3D LINUX_VERSION_COD=
-E;
-	drivers/media/mc/mc-device.c:   info->media_version =3D LINUX_VERSION_CODE;
-	drivers/media/v4l2-core/v4l2-ioctl.c:   cap->version =3D LINUX_VERSION_COD=
-E;
-	drivers/media/v4l2-core/v4l2-subdev.c:          cap->version =3D LINUX_VER=
-SION_CODE;
+Thank you!
 
-Those can be used by applications in order to enable some features that
-are available only after certain Kernel versions.
-
-This is somewhat deprecated, in favor of the usage of some other
-capability fields, but for instance, the v4l2-compliance userspace tool
-have two such checks:
-
-	utils/v4l2-compliance/v4l2-compliance.cpp
-	640:	fail_on_test((vcap.version >> 16) < 3);
-	641:	if (vcap.version >=3D 0x050900)  // Present from 5.9.0 onwards
-
-As far as I remember, all such checks are against major.minor. So,
-something like:
-
-	sublevel =3D (sublevel > 0xff) ? 0xff : sublevel;
-
-inside KERNEL_VERSION macro should fix such regression at -stable.
-
-Thanks,
-Mauro
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
