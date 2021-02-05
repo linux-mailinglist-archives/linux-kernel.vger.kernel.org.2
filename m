@@ -2,148 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 193ED310FF1
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 19:33:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA3A631104E
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 19:50:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233299AbhBEQtL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 11:49:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45346 "EHLO
+        id S233510AbhBERGd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 12:06:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233602AbhBEQq2 (ORCPT
+        with ESMTP id S233628AbhBEQqo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 11:46:28 -0500
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29585C0617AB
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 10:28:09 -0800 (PST)
-Received: by mail-lf1-x133.google.com with SMTP id u25so11259195lfc.2
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 10:28:09 -0800 (PST)
+        Fri, 5 Feb 2021 11:46:44 -0500
+Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A518C06174A
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 10:28:26 -0800 (PST)
+Received: by mail-qk1-x733.google.com with SMTP id k193so7853674qke.6
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 10:28:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vlQvi4zwrhYdmhWv9Vq2VVPj783HBaHFi1PsMzmm4d4=;
-        b=u5KwWnRgD5pCq8gQDMJt0XLX6g9/Z5ZNYeBsQGYQxHdY71V+QRFsaeEOmZm6M+ctjV
-         bQD1HKcK8T2Jrh53z9N+NFHan5+3H3Q6/0X4nUMiXYxT09lykwbEWXR88hTWJHYCZIhq
-         BXZ7E6G+aqGgYdwAarNmkrhuOVfvFrr2LI3XEFW3W0yoeSQD/UI4GL9HIriyQ1weopok
-         aBg/5Bpq9/Gfd1La9sQhfdHOrC5IOja8dkhHG3Vnj3KodZzGKd9qlWAAWxrx00C5gDTb
-         GV+nT32hXVTzhYrxrB+kk7t2GJnWTEf/lCcEBxLbN+sY7IS7PCcnP/uGk5Bw82LtIo87
-         Obcg==
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2KeaXbGexKPSD8rISWFG5PeHSxIPuC3Rzo5og1/7Ir0=;
+        b=pV0wejWptXCQndSQPQbqSqo3RcnUZw+d6QFJ9TEEnzCMzSHQWc79RNjsbrbcojhnLj
+         HByaFRnyfY9pW7EnZ0hgajmYebe0E+XFuM3ERSwpzAY+2J2JBgDRe28TP+oqky6K591o
+         cwfu9EA1Dkok8d321pZ3mUjM/ZwN4/PxCPBcSJ5GBJuKy7FlQsIsmmSJKPsJAOmItoaM
+         RTgoarqvt6tfiZolIE3A6+tbJ5J4Uias+SRxR9lYvUDoIGPvWiUGoRTDcJ7k3bnkBzyy
+         G+QUkCJ9RuYX3eeQFVfJxTWSFgL1zSV5QNqpx/NaHOv3QFiTLiEa07fmlX6L8tky3Iby
+         Hctg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vlQvi4zwrhYdmhWv9Vq2VVPj783HBaHFi1PsMzmm4d4=;
-        b=g42x8deN7mXTVM+Jwpp+ciqzGl1qfCYrgaChEAgWpGKGThyOVsA9KVCfaEDByI8i1j
-         nO/GMsiAV6MBz7wKG0YD4nuG8a8wjqi1hDXali383IynGoWK3ExntfpA+CiFqZW1caH5
-         pjmehv8FXJyewOG1EB3qDI8s1aabg14KoJ9xH4v6jWDkW0bT+u+D+cEDSjedHUtJYx5C
-         pHIYIz/CxBYuXJfYAFv3Bmu9SBLwGybIC+MQHiKz+dUPFY6B26MvS9Dl0PTx6mAALtIB
-         v4v9Iri2xiGS+HFj0fUqzoJqSFegxZ9hiumvwfEWfxkxjYWacZxBRq5Yl9PxTGEvVxAm
-         Nluw==
-X-Gm-Message-State: AOAM531gqwLUQ6f0zjOiJ6zUkFBI/UVdJ7CvlgCjIfNK25lTM/MaWbc3
-        ZiHzrs0IVyKHLZphIPJ3+CD0aNoJgTKgf+MwVLbH1w==
-X-Google-Smtp-Source: ABdhPJxoVxcfWy4sLC0wCG0jeDvbtQemrdC1T055cQ7tAGl1Ro8Lbv+CThmyk6q7izGLdXtePnVNHF3RHjFU9ad6kug=
-X-Received: by 2002:ac2:5e84:: with SMTP id b4mr3353569lfq.73.1612549687415;
- Fri, 05 Feb 2021 10:28:07 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2KeaXbGexKPSD8rISWFG5PeHSxIPuC3Rzo5og1/7Ir0=;
+        b=XCfth1cPX09QrpaBmS87gLeY/xy06ffrLOHlFqcTGw7SlOC5gEwFLuvbzaWM0Zd9H9
+         e3VFZWdm40cgKAvoY4yKMOuZvKFHDUldyxrpTc4oZKFOAkKQh7ZdCLyE2ZDhEWrf0JAm
+         X2J3bu3oKFY8FG1sK97zpO4GupbZD6t5RX1GSFQUhSVUUVcPzrwgfrEi626unVSTJx38
+         6hJGzzfIt8QxgZPux19d9LZVkK0OFIEiBS7/LS06qVDzaH1NVVE5ah/yFyYFVXlgMCj4
+         hDyCHkbfA41TcXR79mHq4+UPh1ohq1AI743GY/8XbgBJB8+a9i2sYKUdfCrboExa/qy/
+         WW3A==
+X-Gm-Message-State: AOAM5329RW5EKOOBGL6nLoKCS5qlWPMomIOs0Nh+467p9nsqqGbUGXmV
+        ZCmnvMyEpskH38EKvJDPWBUU1w==
+X-Google-Smtp-Source: ABdhPJycX5ucJ0FBCl9fuPyJ0FnLf3Uzp45PJxhbLA7Gzzd2vVm0ovAIZl2mOj6xeE0MAgjRr9vJOQ==
+X-Received: by 2002:a37:a50e:: with SMTP id o14mr5718870qke.250.1612549705552;
+        Fri, 05 Feb 2021 10:28:25 -0800 (PST)
+Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
+        by smtp.gmail.com with ESMTPSA id a203sm10044990qkb.31.2021.02.05.10.28.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Feb 2021 10:28:24 -0800 (PST)
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Tejun Heo <tj@kernel.org>
+Cc:     Michal Hocko <mhocko@suse.com>, Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com
+Subject: [PATCH 0/8] mm: memcontrol: switch to rstat v2
+Date:   Fri,  5 Feb 2021 13:27:58 -0500
+Message-Id: <20210205182806.17220-1-hannes@cmpxchg.org>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-References: <20210107223424.4135538-1-arnd@kernel.org> <YAHoB4ODvxSqNhsq@rani.riverdale.lan>
- <YAH6r3lak/F2wndp@rani.riverdale.lan> <CAMj1kXGZFZciN1_KruCr=g6GANNpRrCLR48b3q13+QfK481C7Q@mail.gmail.com>
- <20210118202409.GG30090@zn.tnic> <YAYAvBARSRSg8z8G@rani.riverdale.lan>
- <CAMj1kXHM98-iDYpAozaWEv-qxhZ0-CUMwSdG532x2d+55gXDhQ@mail.gmail.com>
- <20210203185148.GA1711888@localhost> <20210205103457.GC17488@zn.tnic>
-In-Reply-To: <20210205103457.GC17488@zn.tnic>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Fri, 5 Feb 2021 10:27:54 -0800
-Message-ID: <CAKwvOdnAoNrbAs2kLng-k3L8j4hGS5HtJUv3L-pVwi+5dARQfg@mail.gmail.com>
-Subject: Re: [PATCH] x86: efi: avoid BUILD_BUG_ON() for non-constant p4d_index
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, X86 ML <x86@kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        platform-driver-x86@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Kees Cook <keescook@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 5, 2021 at 2:35 AM Borislav Petkov <bp@alien8.de> wrote:
->
-> On Wed, Feb 03, 2021 at 11:51:48AM -0700, Nathan Chancellor wrote:
-> > x86_64 all{mod,yes}config with clang are going to ship broken in 5.11.
->
-> Dunno, it is still broken here even with those build assertions removed. And it
-> ain't even an all{mod,yes}config - just my machine's config with
->
-> CONFIG_ARCH_HAS_UBSAN_SANITIZE_ALL=y
-> CONFIG_UBSAN=y
-> # CONFIG_UBSAN_TRAP is not set
-> CONFIG_CC_HAS_UBSAN_BOUNDS=y
-> CONFIG_CC_HAS_UBSAN_ARRAY_BOUNDS=y
-> CONFIG_UBSAN_BOUNDS=y
-> CONFIG_UBSAN_ARRAY_BOUNDS=y
-> CONFIG_UBSAN_SHIFT=y
-> CONFIG_UBSAN_DIV_ZERO=y
-> CONFIG_UBSAN_SIGNED_OVERFLOW=y
-> CONFIG_UBSAN_UNSIGNED_OVERFLOW=y
-> CONFIG_UBSAN_OBJECT_SIZE=y
-> CONFIG_UBSAN_BOOL=y
-> CONFIG_UBSAN_ENUM=y
-> CONFIG_UBSAN_ALIGNMENT=y
-> CONFIG_UBSAN_SANITIZE_ALL=y
-> # CONFIG_TEST_UBSAN is not set
->
-> and clang-10:
->
-> lib/strncpy_from_user.o: warning: objtool: strncpy_from_user()+0x253: call to __ubsan_handle_add_overflow() with UACCESS enabled
-> lib/strnlen_user.o: warning: objtool: strnlen_user()+0x244: call to __ubsan_handle_add_overflow() with UACCESS enabled
-> ld: init/main.o: in function `kmalloc':
-> /home/boris/kernel/linux/./include/linux/slab.h:557: undefined reference to `__ubsan_handle_alignment_assumption'
-> ld: init/initramfs.o: in function `kmalloc':
-> /home/boris/kernel/linux/./include/linux/slab.h:552: undefined reference to `__ubsan_handle_alignment_assumption'
-> ld: init/initramfs.o: in function `kmalloc_large':
-> /home/boris/kernel/linux/./include/linux/slab.h:481: undefined reference to `__ubsan_handle_alignment_assumption'
-> ld: init/initramfs.o: in function `kmalloc':
-> /home/boris/kernel/linux/./include/linux/slab.h:552: undefined reference to `__ubsan_handle_alignment_assumption'
-> ld: /home/boris/kernel/linux/./include/linux/slab.h:552: undefined reference to `__ubsan_handle_alignment_assumption'
-> ld: init/initramfs.o:/home/boris/kernel/linux/./include/linux/slab.h:552: more undefined references to `__ubsan_handle_alignment_assumption' follow
-> ld: mm/mremap.o: in function `get_extent':
-> /home/boris/kernel/linux/mm/mremap.c:355: undefined reference to `__compiletime_assert_327'
+This is version 2 of the memcg rstat patches. Updates since v1:
 
-^ this one is https://lore.kernel.org/lkml/20201230154104.522605-1-arnd@kernel.org/.
-Trying to get the last of these tracked down.  I think there were some
-changes to UBSAN configs that weren't tested with clang before merged.
+- added cgroup selftest output (see test section below) (thanks Roman)
+- updated cgroup selftest to match new kernel implementation
+- added Fixes: tag to 'mm: memcontrol: fix cpuhotplug statistics flushing' (Shakeel)
+- collected review & ack tags
+- added rstat overview to 'mm: memcontrol: switch to rstat' changelog (Michal)
+- simplified memcg_flush_lruvec_page_state() and removed cpu==-1 case (Michal)
 
-> ld: mm/rmap.o: in function `anon_vma_chain_alloc':
-> /home/boris/kernel/linux/mm/rmap.c:136: undefined reference to `__ubsan_handle_alignment_assumption'
-> ld: mm/rmap.o: in function `anon_vma_alloc':
-> /home/boris/kernel/linux/mm/rmap.c:89: undefined reference to `__ubsan_handle_alignment_assumption'
-> ld: mm/rmap.o: in function `anon_vma_chain_alloc':
-> /home/boris/kernel/linux/mm/rmap.c:136: undefined reference to `__ubsan_handle_alignment_assumption'
-> ld: /home/boris/kernel/linux/mm/rmap.c:136: undefined reference to `__ubsan_handle_alignment_assumption'
-> ld: /home/boris/kernel/linux/mm/rmap.c:136: undefined reference to `__ubsan_handle_alignment_assumption'
-> ld: mm/vmalloc.o:/home/boris/kernel/linux/mm/vmalloc.c:1213: more undefined references to `__ubsan_handle_alignment_assumption' follow
-> make: *** [Makefile:1164: vmlinux] Error 1
->
-> --
-> Regards/Gruss,
->     Boris.
->
-> https://people.kernel.org/tglx/notes-about-netiquette
+---
+
+This series converts memcg stats tracking to the streamlined rstat
+infrastructure provided by the cgroup core code. rstat is already used
+by the CPU controller and the IO controller. This change is motivated
+by recent accuracy problems in memcg's custom stats code, as well as
+the benefits of sharing common infra with other controllers.
+
+The current memcg implementation does batched tree aggregation on the
+write side: local stat changes are cached in per-cpu counters, which
+are then propagated upward in batches when a threshold (32 pages) is
+exceeded. This is cheap, but the error introduced by the lazy upward
+propagation adds up: 32 pages times CPUs times cgroups in the subtree.
+We've had complaints from service owners that the stats do not
+reliably track and react to allocation behavior as expected, sometimes
+swallowing the results of entire test applications.
+
+The original memcg stat implementation used to do tree aggregation
+exclusively on the read side: local stats would only ever be tracked
+in per-cpu counters, and a memory.stat read would iterate the entire
+subtree and sum those counters up. This didn't keep up with the times:
+
+- Cgroup trees are much bigger now. We switched to lazily-freed
+  cgroups, where deleted groups would hang around until their
+  remaining page cache has been reclaimed. This can result in large
+  subtrees that are expensive to walk, while most of the groups are
+  idle and their statistics don't change much anymore.
+
+- Automated monitoring increased. With the proliferation of userspace
+  oom killing, proactive reclaim, and higher-resolution logging of
+  workload trends in general, top-level stat files are polled at least
+  once a second in many deployments.
+
+- The lifetime of cgroups got shorter. Where most cgroup setups in the
+  past would have a few large policy-oriented cgroups for everything
+  running on the system, newer cgroup deployments tend to create one
+  group per application - which gets deleted again as the processes
+  exit. An aggregation scheme that doesn't retain child data inside
+  the parents loses event history of the subtree.
+
+Rstat addresses all three of those concerns through intelligent,
+persistent read-side aggregation. As statistics change at the local
+level, rstat tracks - on a per-cpu basis - only those parts of a
+subtree that have changes pending and require aggregation. The actual
+aggregation occurs on the colder read side - which can now skip over
+(potentially large) numbers of recently idle cgroups.
+
+---
+
+The test_kmem cgroup selftest is currently failing due to excessive
+cumulative vmstat drift from 100 subgroups:
+
+    ok 1 test_kmem_basic
+    memory.current = 8810496
+    slab + anon + file + kernel_stack = 17074568
+    slab = 6101384
+    anon = 946176
+    file = 0
+    kernel_stack = 10027008
+    not ok 2 test_kmem_memcg_deletion
+    ok 3 test_kmem_proc_kpagecgroup
+    ok 4 test_kmem_kernel_stacks
+    ok 5 test_kmem_dead_cgroups
+    ok 6 test_percpu_basic
+
+As you can see, memory.stat items far exceed memory.current. The
+kernel stack alone is bigger than all of charged memory. That's
+because the memory of the test has been uncharged from memory.current,
+but the negative vmstat deltas are still sitting in the percpu caches.
+
+The test at this time isn't even counting percpu, pagetables etc. yet,
+which would further contribute to the error. The last patch in the
+series updates the test to include them - as well as match error
+expectations on the new implementation to catch future regressions.
+
+With all patches applied, the (updated, more rigorous) test succeeds:
+
+    ok 1 test_kmem_basic
+    ok 2 test_kmem_memcg_deletion
+    ok 3 test_kmem_proc_kpagecgroup
+    ok 4 test_kmem_kernel_stacks
+    ok 5 test_kmem_dead_cgroups
+    ok 6 test_percpu_basic
+
+---
+
+A kernel build test confirms that overhead is comparable. Two kernels
+are built simultaneously in a nested tree with several idle siblings:
+
+root - kernelbuild - one - two - three - four - build-a (defconfig, make -j16)
+                                             `- build-b (defconfig, make -j16)
+                                             `- idle-1
+                                             `- ...
+                                             `- idle-9
+
+During the builds, kernelbuild/memory.stat is read once a second.
+
+A perf diff shows that the changes in cycle distribution is
+minimal. Top 10 kernel symbols:
+
+     0.09%     +0.08%  [kernel.kallsyms]                       [k] __mod_memcg_lruvec_state
+     0.00%     +0.06%  [kernel.kallsyms]                       [k] cgroup_rstat_updated
+     0.08%     -0.05%  [kernel.kallsyms]                       [k] __mod_memcg_state.part.0
+     0.16%     -0.04%  [kernel.kallsyms]                       [k] release_pages
+     0.00%     +0.03%  [kernel.kallsyms]                       [k] __count_memcg_events
+     0.01%     +0.03%  [kernel.kallsyms]                       [k] mem_cgroup_charge_statistics.constprop.0
+     0.10%     -0.02%  [kernel.kallsyms]                       [k] get_mem_cgroup_from_mm
+     0.05%     -0.02%  [kernel.kallsyms]                       [k] mem_cgroup_update_lru_size
+     0.57%     +0.01%  [kernel.kallsyms]                       [k] asm_exc_page_fault
 
 
+---
 
--- 
-Thanks,
-~Nick Desaulniers
+The on-demand aggregated stats are now fully accurate:
+
+$ grep -e nr_inactive_file /proc/vmstat | awk '{print($1,$2*4096)}'; \
+  grep -e inactive_file /sys/fs/cgroup/memory.stat
+
+vanilla:                              patched:
+nr_inactive_file 1574105088           nr_inactive_file 1027801088
+   inactive_file 1577410560              inactive_file 1027801088
+
+---
+
+ block/blk-cgroup.c                         |  14 +-
+ include/linux/memcontrol.h                 | 119 ++++-------
+ kernel/cgroup/cgroup.c                     |  34 +--
+ kernel/cgroup/rstat.c                      |  62 +++---
+ mm/memcontrol.c                            | 306 +++++++++++++--------------
+ tools/testing/selftests/cgroup/test_kmem.c |  22 +-
+ 6 files changed, 266 insertions(+), 291 deletions(-)
+
+Based on v5.11-rc5-mm1.
+
+
