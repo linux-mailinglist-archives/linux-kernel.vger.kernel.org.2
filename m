@@ -2,143 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACFBF31173F
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 00:43:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AD90311723
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 00:34:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229463AbhBEXmq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 18:42:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40390 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232540AbhBEOUK (ORCPT
+        id S230379AbhBEXa4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 18:30:56 -0500
+Received: from mail-il1-f198.google.com ([209.85.166.198]:48514 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231327AbhBEOXL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 09:20:10 -0500
-Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66F03C061D7F
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 07:57:56 -0800 (PST)
-Received: by mail-qt1-x834.google.com with SMTP id z32so5264376qtd.8
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 07:57:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=tmNWOER2gkNnhOJswBmgj3DRlXtWxnfQNoR9W/JQIbA=;
-        b=m/CFKqbpZvVbZySHTwTbH9pKEiWK6Gm8kVo43OIFrNj/Ym/I+NWkUf3vmRGUK14WjR
-         vvKQreZohNRCMs60wDLGC3qYIaidFu+B43obF2oQD/igFxS+EpDzZkdLGCGNNLBf5XKg
-         q2TJlp5XyPni1kJh46L7CAjrFdeazdWUh0XH/UrSBb7eHyy0StDPk6i14XqmGzppVzPp
-         MSLZDOvo5QJGHJNf8sIlzO8FyonyU+1fDIfX3kj/wHODGcwdhHmypQaY8E86Tfz9ePgH
-         w3GJgfG6BPO73gbbRNzfi3umEe1LHI1KwHpjVC0w1jH0KMmpLSKOxuot1iHOz2Oc/aXH
-         mMGQ==
+        Fri, 5 Feb 2021 09:23:11 -0500
+Received: by mail-il1-f198.google.com with SMTP id n12so6650298ili.15
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 08:01:41 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=tmNWOER2gkNnhOJswBmgj3DRlXtWxnfQNoR9W/JQIbA=;
-        b=Z4IlDqNAALDO0q9Vra61/CkIKCvqLAKT9v196EYptcxIgqi/CpNBnkObZa/ajxoG0V
-         Bw7HNSrqZvEs8/L2Ahi2E/nbMNykqfSTeGFSEP2fredDaARtFoNC9UVGku0ll98P7OYH
-         s+9jshq3RngGHFePiFxoROYmIsOmqaOwm8XP7U0oEvjv+sRa6lJEZNjVAK1RsNN2XMt/
-         E7zQLFZTtxqV1iOyNTWhmS8NUg78USfm6J3dDQUmUW9dFxxPS0wocweg3PUusisoBewH
-         pZTEe9xscwh0Ww/YMlVe81gUci8BbYrH+Pz99cWTcbbVxDJbPrEK8u6efFpJvCpzg3ML
-         oIGg==
-X-Gm-Message-State: AOAM5321lcWsxsqHcUeGuJKi+gRGPvBYYvuIzDwfYYWDmWVFjDRuLZad
-        16wq/EhRAV75X896Di4oVKOltCeWK331Mw==
-X-Google-Smtp-Source: ABdhPJxwF0U5i0+S20/nnzRH0bgOLvkmNT1Tq1z6aiVrUshIuh3TWoX2zbqiv+QVoB30PEQHxE6uGA==
-X-Received: by 2002:ac8:44c3:: with SMTP id b3mr4484105qto.3.1612534099833;
-        Fri, 05 Feb 2021 06:08:19 -0800 (PST)
-Received: from [192.168.1.93] (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
-        by smtp.gmail.com with ESMTPSA id a16sm7574046qta.69.2021.02.05.06.08.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 05 Feb 2021 06:08:19 -0800 (PST)
-Subject: Re: [PATCH v5 05/11] crypto: qce: skcipher: Return error for zero
- length messages
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     herbert@gondor.apana.org.au, davem@davemloft.net,
-        bjorn.andersson@linaro.org, ardb@kernel.org,
-        sivaprak@codeaurora.org, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210204214359.1993065-1-thara.gopinath@linaro.org>
- <20210204214359.1993065-6-thara.gopinath@linaro.org>
- <YBx5yWhKtT2EC2Ce@gmail.com>
- <00d759f3-8ea3-1f85-b623-225c372c0a04@linaro.org>
- <YByQpRG0SC0k0gYC@gmail.com>
-From:   Thara Gopinath <thara.gopinath@linaro.org>
-Message-ID: <ed714cc0-c3ca-88ca-f57f-e2a5ccf7ef16@linaro.org>
-Date:   Fri, 5 Feb 2021 09:08:18 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=N+Wsjqc3t3p+ezblFEPz3GEu/sbc+fG3bNjtE6lA99s=;
+        b=CLWwCX/IkwQjnflxV0jXAJ/pfluiPEcPtUOHOocoQcucvc23piJfcUfXbOsOJdw7lK
+         djK5C6kHQBCLcMbkXTfRAKyokIShleMxgcCjwbXMh2fBq1SAyXtYDf/xvxDhupPUEqAI
+         7nL6XuVSSqb+CiIbo25Loi8W81DQt+s7n9jLJW73DGG34aXC0TwT1FtAfokwz80B0txm
+         Xn01ZE1oQ94xvbUFIOOctIw3Rr/mKOqifjXLmo7mznogDwfp2LJMb/IV4QgH4m2hQ+6Q
+         wQ7MUS4XeOmwn/Uf95YS1Ix4/wDMsT808e3yKlem4PynP/mn5nlnIXA/qXG0V9wZn2OX
+         MLPA==
+X-Gm-Message-State: AOAM533nIjoDTP7+z6LKDF++1uR2FpZX870gW2OyXK+j8nJv1EKU2Sva
+        MEbx/qgkMtB3PQ3FnhqMBBXALmgyOH4PrBbZUL7pRGzQR4c9
+X-Google-Smtp-Source: ABdhPJxlSUOro/sF2to+ho9SVlB1eUNTr2BhrF6+fyViUGz0xVMgoV+bUkmwrXReTd3jphTZwVBkmZ8ODYi42qE0Cdcra/4/cskD
 MIME-Version: 1.0
-In-Reply-To: <YByQpRG0SC0k0gYC@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a05:6e02:b4d:: with SMTP id f13mr3910658ilu.138.1612534218814;
+ Fri, 05 Feb 2021 06:10:18 -0800 (PST)
+Date:   Fri, 05 Feb 2021 06:10:18 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000004cfe9f05ba976125@google.com>
+Subject: WARNING in mc1NUM_get_time
+From:   syzbot <syzbot+975f176f83908ae98694@syzkaller.appspotmail.com>
+To:     a.zummo@towertech.it, alexandre.belloni@bootlin.com,
+        linux-kernel@vger.kernel.org, linux-rtc@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    dd86e7fa Merge tag 'pci-v5.11-fixes-2' of git://git.kernel..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=147f29c4d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=e83e68d0a6aba5f6
+dashboard link: https://syzkaller.appspot.com/bug?extid=975f176f83908ae98694
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+975f176f83908ae98694@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+WARNING: CPU: 2 PID: 11674 at drivers/rtc/rtc-mc146818-lib.c:25 mc146818_get_time+0x665/0x860 drivers/rtc/rtc-mc146818-lib.c:25
+Modules linked in:
+CPU: 2 PID: 11674 Comm: syz-executor.2 Not tainted 5.11.0-rc6-syzkaller #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-2 04/01/2014
+RIP: 0010:mc146818_get_time+0x665/0x860 drivers/rtc/rtc-mc146818-lib.c:25
+Code: eb 4e e8 4e 49 c9 fb 4c 89 e6 48 c7 c7 e0 6b b9 8b e8 0f 4f 54 03 bf 58 89 41 00 e8 75 a9 33 fe e9 d5 f9 ff ff e8 2b 49 c9 fb <0f> 0b 48 c7 c7 e0 6b b9 8b 4c 89 e6 45 31 e4 e8 e7 4e 54 03 ba 24
+RSP: 0018:ffffc90000560d68 EFLAGS: 00010046
+RAX: 0000000080010002 RBX: dffffc0000000000 RCX: 0000000000000000
+RDX: ffff88806feaa3c0 RSI: ffffffff85a98a65 RDI: 0000000000000003
+RBP: ffffc90000560e00 R08: 0000000000000001 R09: 0000000000000022
+R10: ffffffff85a98462 R11: 0000000000000000 R12: 0000000000000046
+R13: 0000000000000022 R14: ffffc90000560f18 R15: ffff888010dd8000
+FS:  0000000000000000(0000) GS:ffff88802cc00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000002c99708 CR3: 0000000066e59000 CR4: 0000000000150ee0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <IRQ>
+ hpet_rtc_interrupt+0x2b0/0x380 arch/x86/kernel/hpet.c:1358
+ __handle_irq_event_percpu+0x303/0x8f0 kernel/irq/handle.c:156
+ handle_irq_event_percpu kernel/irq/handle.c:196 [inline]
+ handle_irq_event+0x102/0x290 kernel/irq/handle.c:213
+ handle_edge_irq+0x25f/0xd00 kernel/irq/chip.c:819
+ asm_call_irq_on_stack+0xf/0x20
+ </IRQ>
+ __run_irq_on_irqstack arch/x86/include/asm/irq_stack.h:48 [inline]
+ run_irq_on_irqstack_cond arch/x86/include/asm/irq_stack.h:101 [inline]
+ handle_irq arch/x86/kernel/irq.c:230 [inline]
+ __common_interrupt arch/x86/kernel/irq.c:249 [inline]
+ common_interrupt+0x120/0x200 arch/x86/kernel/irq.c:239
+ asm_common_interrupt+0x1e/0x40 arch/x86/include/asm/idtentry.h:620
+RIP: 0010:lock_release+0x3d5/0x710 kernel/locking/lockdep.c:5450
+Code: 15 02 00 00 48 c7 c7 a0 aa 4b 89 e8 f5 ac a2 07 b8 ff ff ff ff 65 0f c1 05 78 2f a9 7e 83 f8 01 0f 85 67 01 00 00 ff 34 24 9d <48> b8 00 00 00 00 00 fc ff df 48 01 c5 48 c7 45 00 00 00 00 00 c7
+RSP: 0018:ffffc90001d076d0 EFLAGS: 00000246
+RAX: 0000000000000001 RBX: 07b81204c4a70325 RCX: ffffc90001d07720
+RDX: 1ffff1100dfd55a7 RSI: 0000000000000001 RDI: 0000000000000000
+RBP: 1ffff920003a0edc R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000001 R11: 0000000000000000 R12: 0000000000000001
+R13: 0000000000000002 R14: ffff88806feaad40 R15: ffff88806feaa3c0
+ zap_pte_range mm/memory.c:1264 [inline]
+ zap_pmd_range mm/memory.c:1368 [inline]
+ zap_pud_range mm/memory.c:1397 [inline]
+ zap_p4d_range mm/memory.c:1418 [inline]
+ unmap_page_range+0xe30/0x2640 mm/memory.c:1439
+ unmap_single_vma+0x198/0x300 mm/memory.c:1484
+ unmap_vmas+0x168/0x2e0 mm/memory.c:1516
+ exit_mmap+0x2b1/0x5a0 mm/mmap.c:3220
+ __mmput+0x122/0x470 kernel/fork.c:1082
+ mmput+0x53/0x60 kernel/fork.c:1103
+ exit_mm kernel/exit.c:501 [inline]
+ do_exit+0xb6a/0x2ae0 kernel/exit.c:812
+ do_group_exit+0x125/0x310 kernel/exit.c:922
+ get_signal+0x427/0x20f0 kernel/signal.c:2773
+ arch_do_signal_or_restart+0x2a8/0x1eb0 arch/x86/kernel/signal.c:811
+ handle_signal_work kernel/entry/common.c:147 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:171 [inline]
+ exit_to_user_mode_prepare+0x148/0x250 kernel/entry/common.c:201
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
+ syscall_exit_to_user_mode+0x19/0x50 kernel/entry/common.c:302
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x465b09
+Code: Unable to access opcode bytes at RIP 0x465adf.
+RSP: 002b:00007f665e7a5218 EFLAGS: 00000246 ORIG_RAX: 00000000000000ca
+RAX: fffffffffffffe00 RBX: 000000000056bf68 RCX: 0000000000465b09
+RDX: 0000000000000000 RSI: 0000000000000080 RDI: 000000000056bf68
+RBP: 000000000056bf60 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf6c
+R13: 00007ffeb1baab0f R14: 00007f665e7a5300 R15: 0000000000022000
 
 
-On 2/4/21 7:26 PM, Eric Biggers wrote:
-> On Thu, Feb 04, 2021 at 07:09:53PM -0500, Thara Gopinath wrote:
->>>> @@ -260,6 +261,10 @@ static int qce_skcipher_crypt(struct skcipher_request *req, int encrypt)
->>>>    	rctx->flags |= encrypt ? QCE_ENCRYPT : QCE_DECRYPT;
->>>>    	keylen = IS_XTS(rctx->flags) ? ctx->enc_keylen >> 1 : ctx->enc_keylen;
->>>> +	/* CE does not handle 0 length messages */
->>>> +	if (!req->cryptlen)
->>>> +		return -EOPNOTSUPP;
->>>> +
->>>
->>> For the algorithms in question, the correct behavior is to return 0.
->>
->> What do you mean? The driver should return a 0 ?
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-Ok. I will re-spin the series once more with this change..
-
-> 
-> Yes, there is nothing to do for empty inputs, so just return 0 (success).
-> 
->>> Aren't the tests catching that difference?
->>
->> I was anyways planning on sending an email to the list with these queries.
->> But since you asked,  these are my observations with fuzz testing which I
->> have been doing quite a bit now (I am also working on adding a few qualcomm
->> AEAD algorithms support in mainline).
->>
->> - if the generic algorithm supports 0 length messages and the transformation
->> I am testing does not, the test framework throws an error and stops.
->> - key support mismatch between the generic algorithm vs my algorithm /engine
->> also does the same thing.For eg, Qualcomm CE engine does not support any
->> three keys being same for triple des algorithms. Where as a two key 3des is
->> a valid scenario for generic algorithm(k1=k3). Another example is hardware
->> engine not supporting AES192.
->>
->> How are these scenarios usually handled ? Why not allow the test framework
->> to proceed with the testing if the algorithm does not support a particular
->> scenario ?
-> 
-> Omitting support for certain inputs isn't allowed.  Anyone in the kernel who
-> wants to use a particular algorithm could get this driver for it, and if they
-> happen to use inputs which the driver decided not to support, things will break.
-
-Ya sounds reasonable.
-
-> 
-> The way that drivers handle this is to use a fallback cipher for inputs they
-> don't support.
-
-Ok. So I will add this to my todo and make sure to have fallback ciphers 
-for all the non-supported inputs. I will send this as a separate series 
-and not this one.
-
-In this case, though not supporting 0 length messages for encryption is 
-valid. I don't think I have to have a fallback for this. I could have 
-sworn that the test framework throws up an error for this. But I have 
-been testing a lot and may be I am just confused. I will double check this.
-
-
-> 
-> - Eric
-> 
-
--- 
-Warm Regards
-Thara
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
