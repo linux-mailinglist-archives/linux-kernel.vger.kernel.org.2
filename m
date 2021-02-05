@@ -2,33 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AB533115C3
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 23:44:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DC65311551
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 23:32:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232743AbhBEWk5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 17:40:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44348 "EHLO mail.kernel.org"
+        id S232116AbhBEW2Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 17:28:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44976 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232817AbhBEOwO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 09:52:14 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C912B65018;
-        Fri,  5 Feb 2021 14:10:55 +0000 (UTC)
+        id S232849AbhBEOyw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 09:54:52 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0F4BB65020;
+        Fri,  5 Feb 2021 14:11:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612534256;
-        bh=mfiiNN2iZPRQejpl2BGTt2sEn3eQDVkN/A1SY07Oq/M=;
+        s=korg; t=1612534270;
+        bh=D/tlQgjXAB4nMKA/FtiIDvM7nFaD0RUkXeM/gFAlG8E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XCpM0PpVwxtZ2CGsenE8drxWFFNLDSu+ViKxeMKlIxyJZYSQkVbbOFxEjPM4ajjb+
-         1FfeAeRO+axY90raabrxEFrkW75gg8n//b/NmB2biyt9hnzk0GgUTROOeBOvUN3XTq
-         U4s9ixdLbtMbbwvMpjVvJS3zqwpIrS7MSjz43lww=
+        b=KlEMS4/gnnlIqMk8f6fYFWCz4u81AV+IJGXT4AKMdPMqYilxYX8EZgjuzsF/lRPLH
+         phdw2dC3nDJGVFtISUWB86K/zj5dcnB8Dgx+01+EPpXcNPQGL6IN+4pqYsP2SwSZ7B
+         sMgT+kSOxZkttK082chXftqbTlDfDeanUEeC91jI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Libor Pechacek <lpechacek@suse.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
+        stable@vger.kernel.org, Daniel Wheeler <daniel.wheeler@amd.com>,
+        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
+        Eric Yang <eric.yang2@amd.com>,
+        Anson Jacob <anson.jacob@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 45/57] selftests/powerpc: Only test lwm/stmw on big endian
-Date:   Fri,  5 Feb 2021 15:07:11 +0100
-Message-Id: <20210205140657.911974385@linuxfoundation.org>
+Subject: [PATCH 5.10 49/57] drm/amd/display: Use hardware sequencer functions for PG control
+Date:   Fri,  5 Feb 2021 15:07:15 +0100
+Message-Id: <20210205140658.082559773@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210205140655.982616732@linuxfoundation.org>
 References: <20210205140655.982616732@linuxfoundation.org>
@@ -40,59 +43,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Ellerman <mpe@ellerman.id.au>
+From: Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>
 
-[ Upstream commit dd3a44c06f7b4f14e90065bf05d62c255b20005f ]
+[ Upstream commit c74f865f14318217350aa33363577cb95b06eb82 ]
 
-Newer binutils (>= 2.36) refuse to assemble lmw/stmw when building in
-little endian mode. That breaks compilation of our alignment handler
-test:
+[Why & How]
+These can differ per ASIC or not be present. Don't call the dcn20 ones
+directly but rather the ones defined by the ASIC init table.
 
-  /tmp/cco4l14N.s: Assembler messages:
-  /tmp/cco4l14N.s:1440: Error: `lmw' invalid when little-endian
-  /tmp/cco4l14N.s:1814: Error: `stmw' invalid when little-endian
-  make[2]: *** [../../lib.mk:139: /output/kselftest/powerpc/alignment/alignment_handler] Error 1
-
-These tests do pass on little endian machines, as the kernel will
-still emulate those instructions even when running little
-endian (which is arguably a kernel bug).
-
-But we don't really need to test that case, so ifdef those
-instructions out to get the alignment test building again.
-
-Reported-by: Libor Pechacek <lpechacek@suse.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Tested-by: Libor Pechacek <lpechacek@suse.com>
-Link: https://lore.kernel.org/r/20210119041800.3093047-1-mpe@ellerman.id.au
+Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
+Signed-off-by: Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>
+Reviewed-by: Eric Yang <eric.yang2@amd.com>
+Acked-by: Anson Jacob <anson.jacob@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../testing/selftests/powerpc/alignment/alignment_handler.c  | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ .../amd/display/dc/dcn10/dcn10_hw_sequencer.c  | 18 ++++++++++++++----
+ .../gpu/drm/amd/display/dc/dcn20/dcn20_hwseq.c |  9 +++++++--
+ 2 files changed, 21 insertions(+), 6 deletions(-)
 
-diff --git a/tools/testing/selftests/powerpc/alignment/alignment_handler.c b/tools/testing/selftests/powerpc/alignment/alignment_handler.c
-index cb53a8b777e68..c25cf7cd45e9f 100644
---- a/tools/testing/selftests/powerpc/alignment/alignment_handler.c
-+++ b/tools/testing/selftests/powerpc/alignment/alignment_handler.c
-@@ -443,7 +443,6 @@ int test_alignment_handler_integer(void)
- 	LOAD_DFORM_TEST(ldu);
- 	LOAD_XFORM_TEST(ldx);
- 	LOAD_XFORM_TEST(ldux);
--	LOAD_DFORM_TEST(lmw);
- 	STORE_DFORM_TEST(stb);
- 	STORE_XFORM_TEST(stbx);
- 	STORE_DFORM_TEST(stbu);
-@@ -462,7 +461,11 @@ int test_alignment_handler_integer(void)
- 	STORE_XFORM_TEST(stdx);
- 	STORE_DFORM_TEST(stdu);
- 	STORE_XFORM_TEST(stdux);
+diff --git a/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_hw_sequencer.c b/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_hw_sequencer.c
+index d0f3bf953d027..0d1e7b56fb395 100644
+--- a/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_hw_sequencer.c
++++ b/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_hw_sequencer.c
+@@ -646,8 +646,13 @@ static void power_on_plane(
+ 	if (REG(DC_IP_REQUEST_CNTL)) {
+ 		REG_SET(DC_IP_REQUEST_CNTL, 0,
+ 				IP_REQUEST_EN, 1);
+-		hws->funcs.dpp_pg_control(hws, plane_id, true);
+-		hws->funcs.hubp_pg_control(hws, plane_id, true);
 +
-+#ifdef __BIG_ENDIAN__
-+	LOAD_DFORM_TEST(lmw);
- 	STORE_DFORM_TEST(stmw);
-+#endif
- 
- 	return rc;
- }
++		if (hws->funcs.dpp_pg_control)
++			hws->funcs.dpp_pg_control(hws, plane_id, true);
++
++		if (hws->funcs.hubp_pg_control)
++			hws->funcs.hubp_pg_control(hws, plane_id, true);
++
+ 		REG_SET(DC_IP_REQUEST_CNTL, 0,
+ 				IP_REQUEST_EN, 0);
+ 		DC_LOG_DEBUG(
+@@ -1079,8 +1084,13 @@ void dcn10_plane_atomic_power_down(struct dc *dc,
+ 	if (REG(DC_IP_REQUEST_CNTL)) {
+ 		REG_SET(DC_IP_REQUEST_CNTL, 0,
+ 				IP_REQUEST_EN, 1);
+-		hws->funcs.dpp_pg_control(hws, dpp->inst, false);
+-		hws->funcs.hubp_pg_control(hws, hubp->inst, false);
++
++		if (hws->funcs.dpp_pg_control)
++			hws->funcs.dpp_pg_control(hws, dpp->inst, false);
++
++		if (hws->funcs.hubp_pg_control)
++			hws->funcs.hubp_pg_control(hws, hubp->inst, false);
++
+ 		dpp->funcs->dpp_reset(dpp);
+ 		REG_SET(DC_IP_REQUEST_CNTL, 0,
+ 				IP_REQUEST_EN, 0);
+diff --git a/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_hwseq.c b/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_hwseq.c
+index 01530e686f437..f1e9b3b06b924 100644
+--- a/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_hwseq.c
++++ b/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_hwseq.c
+@@ -1069,8 +1069,13 @@ static void dcn20_power_on_plane(
+ 	if (REG(DC_IP_REQUEST_CNTL)) {
+ 		REG_SET(DC_IP_REQUEST_CNTL, 0,
+ 				IP_REQUEST_EN, 1);
+-		dcn20_dpp_pg_control(hws, pipe_ctx->plane_res.dpp->inst, true);
+-		dcn20_hubp_pg_control(hws, pipe_ctx->plane_res.hubp->inst, true);
++
++		if (hws->funcs.dpp_pg_control)
++			hws->funcs.dpp_pg_control(hws, pipe_ctx->plane_res.dpp->inst, true);
++
++		if (hws->funcs.hubp_pg_control)
++			hws->funcs.hubp_pg_control(hws, pipe_ctx->plane_res.hubp->inst, true);
++
+ 		REG_SET(DC_IP_REQUEST_CNTL, 0,
+ 				IP_REQUEST_EN, 0);
+ 		DC_LOG_DEBUG(
 -- 
 2.27.0
 
