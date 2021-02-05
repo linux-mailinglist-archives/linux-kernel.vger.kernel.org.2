@@ -2,120 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44AB83109D1
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 12:07:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BDC053109C7
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 12:05:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231948AbhBELGr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 06:06:47 -0500
-Received: from mx2.suse.de ([195.135.220.15]:40306 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231722AbhBEK7t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 05:59:49 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 3B180AD29;
-        Fri,  5 Feb 2021 10:59:07 +0000 (UTC)
-To:     Timur Tabi <timur@kernel.org>, Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        willy@infradead.org, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, roman.fietze@magna.com,
-        keescook@chromium.org, john.ogness@linutronix.de,
-        akinobu.mita@gmail.com
-References: <20210202213633.755469-1-timur@kernel.org>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: [PATCH][RESEND] lib/vsprintf: make-printk-non-secret printks all
- addresses as unhashed
-Message-ID: <3baace45-38af-a59b-c376-9a4c39a17b2d@suse.cz>
-Date:   Fri, 5 Feb 2021 11:59:06 +0100
+        id S231917AbhBELF2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 06:05:28 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36918 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231965AbhBELCc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 06:02:32 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612522864;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=hlQHxvz68herj6uUlAqo6cNNlISG8mBPX3iyJA1YfgY=;
+        b=U2R7dq0veCLLFAVwqOxvVea3BPvYdvokhPTfULuAhI6A4XeySy63DjAVyJcnCbRVrkR6zX
+        Wpn5bRZyNzi+n8f6hFmcNpvvdV3YNIGn1/hNYjea7bwdvNBMVohSoXQmT8Fiv/NzsjcCn4
+        xvWmheoU8pNCX+B64VpCHF2LcEveh0E=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-199-XMZ3BsibNCmkIiYAPxHyiQ-1; Fri, 05 Feb 2021 06:01:03 -0500
+X-MC-Unique: XMZ3BsibNCmkIiYAPxHyiQ-1
+Received: by mail-ej1-f69.google.com with SMTP id n25so6711746ejd.5
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 03:01:02 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=hlQHxvz68herj6uUlAqo6cNNlISG8mBPX3iyJA1YfgY=;
+        b=lxkhUIjkllwQXWxcJMg4WIdgJWMifQNFnc/wuDjp0H+ZQPHMCWcpO1pEZTackOk78X
+         NUoi/fBaXNJs8G8dsInU21UcNDAH5KrXM/g5K0/VtA+F0UsL2MAo9SyfK4Frm38piu47
+         n4ej+zv5OQ++kNyaomuEoIJ17Pnv472FUJJgB4JO+a0LjzNp0jYK9aSggJ5khAopNtiY
+         0kyA41A1eNA6rE2fsBEW0IT+oruURUDlI6hWB57JhExvxmFoFJaB6U7xw5oUd7YFoj8d
+         WcjcNTfQwo3sjS8O4swYo6x2HPgFUeLkzh0J9M1oqFOGjrqeHq5pjN7AW14mq0LLkM9W
+         mPcQ==
+X-Gm-Message-State: AOAM5339wWStsAeCo0+E6IFQNlxce6IS1qXgd9yCOBQrvuSYCYJzEJm7
+        zw2JSYf+r5Cm8fTynjmfijPxlUKgDttwtS9pWgw8OMQFjRPrsfOSymN/fX50lgPO9Q5EDRFy1l6
+        BNfSmq8NkdYvA5PySl9BM1w3X
+X-Received: by 2002:a17:906:d84:: with SMTP id m4mr3483451eji.437.1612522861723;
+        Fri, 05 Feb 2021 03:01:01 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJy4F1t/R+DPSOQFVqV3fjaYushABxmKmxDzt7PERmONeplKqUD5cGkaLMtwig78BxPe+5fXxw==
+X-Received: by 2002:a17:906:d84:: with SMTP id m4mr3483425eji.437.1612522861540;
+        Fri, 05 Feb 2021 03:01:01 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id x25sm3802377edv.65.2021.02.05.03.00.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 05 Feb 2021 03:01:00 -0800 (PST)
+Subject: Re: [PATCH v2 4/4] KVM: x86: Expose Architectural LBR CPUID and its
+ XSAVES bit
+To:     "Xu, Like" <like.xu@intel.com>,
+        Sean Christopherson <seanjc@google.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Like Xu <like.xu@linux.intel.com>
+References: <20210203135714.318356-1-like.xu@linux.intel.com>
+ <20210203135714.318356-5-like.xu@linux.intel.com>
+ <8321d54b-173b-722b-ddce-df2f9bd7abc4@redhat.com>
+ <219d869b-0eeb-9e52-ea99-3444c6ab16a3@intel.com>
+ <b73a2945-11b9-38bf-845a-c64e7caa9d2e@intel.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <7698fd6c-94da-e352-193f-e09e002a8961@redhat.com>
+Date:   Fri, 5 Feb 2021 12:00:59 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-In-Reply-To: <20210202213633.755469-1-timur@kernel.org>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <b73a2945-11b9-38bf-845a-c64e7caa9d2e@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/2/21 10:36 PM, Timur Tabi wrote:
-> If the make-printk-non-secret command-line parameter is set, then
-> printk("%p") will print addresses as unhashed.  This is useful for
-> debugging purposes.
+On 05/02/21 09:16, Xu, Like wrote:
+> Hi Paolo,
 > 
-> A large warning message is displayed if this option is enabled,
-> because unhashed addresses, while useful for debugging, exposes
-> kernel addresses which can be a security risk.
+> I am wondering if it is acceptable for you to
+> review the minor Architecture LBR patch set without XSAVES for v5.12 ?
 > 
-> Signed-off-by: Timur Tabi <timur@kernel.org>
+> As far as I know, the guest Arch LBR  can still work without XSAVES 
+> support.
 
-Thanks a lot. Should this also affect %pK though? IIUC, there's currently no way
-to achieve non-mangled %pK in all cases, even with the most permissive
-kptr_restrict=1 setting:
-- in IRQ, there's "pK-error" instead
-- in a context of non-CAP_SYSLOG process, nulls are printed
+I dopn't think it can work.  You could have two guests on the same 
+physical CPU and the MSRs would be corrupted if the guests write to the 
+MSR but they do not enable the LBRs.
 
-Yes, neither should matter if %pK were only used for prints that generate
-content of some kind of /proc file read by a CAP_SYSLOG process, but that
-doesn't seem to be the case and there are %pK used for printing to dmesg too...
-
-> ---
->  lib/vsprintf.c | 34 ++++++++++++++++++++++++++++++++--
->  1 file changed, 32 insertions(+), 2 deletions(-)
-> 
-> diff --git a/lib/vsprintf.c b/lib/vsprintf.c
-> index 3b53c73580c5..b9f87084afb0 100644
-> --- a/lib/vsprintf.c
-> +++ b/lib/vsprintf.c
-> @@ -2090,6 +2090,30 @@ char *fwnode_string(char *buf, char *end, struct fwnode_handle *fwnode,
->  	return widen_string(buf, buf - buf_start, end, spec);
->  }
->  
-> +/* Disable pointer hashing if requested */
-> +static bool debug_never_hash_pointers __ro_after_init;
-> +
-> +static int __init debug_never_hash_pointers_enable(char *str)
-> +{
-> +	debug_never_hash_pointers = true;
-> +	pr_warn("**********************************************************\n");
-> +	pr_warn("**   NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE   **\n");
-> +	pr_warn("**                                                      **\n");
-> +	pr_warn("** All pointers that are printed to the console will    **\n");
-> +	pr_warn("** be printed as unhashed.                              **\n");
-> +	pr_warn("**                                                      **\n");
-> +	pr_warn("** Kernel memory addresses are exposed, which may       **\n");
-> +	pr_warn("** compromise security on your system.                  **\n");
-> +	pr_warn("**                                                      **\n");
-> +	pr_warn("** If you see this message and you are not debugging    **\n");
-> +	pr_warn("** the kernel, report this immediately to your vendor!  **\n");
-> +	pr_warn("**                                                      **\n");
-> +	pr_warn("**   NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE   **\n");
-> +	pr_warn("**********************************************************\n");
-> +	return 0;
-> +}
-> +early_param("make-printk-non-secret", debug_never_hash_pointers_enable);
-> +
->  /*
->   * Show a '%p' thing.  A kernel extension is that the '%p' is followed
->   * by an extra set of alphanumeric characters that are extended format
-> @@ -2297,8 +2321,14 @@ char *pointer(const char *fmt, char *buf, char *end, void *ptr,
->  		}
->  	}
->  
-> -	/* default is to _not_ leak addresses, hash before printing */
-> -	return ptr_to_id(buf, end, ptr, spec);
-> +	/*
-> +	 * default is to _not_ leak addresses, so hash before printing, unless
-> +	 * make-printk-non-secret is specified on the command line.
-> +	 */
-> +	if (unlikely(debug_never_hash_pointers))
-> +		return pointer_string(buf, end, ptr, spec);
-> +	else
-> +		return ptr_to_id(buf, end, ptr, spec);
->  }
->  
->  /*
-> 
+Paolo
 
