@@ -2,133 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8D9C310696
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 09:25:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BC3A310691
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 09:23:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231423AbhBEIX3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 03:23:29 -0500
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:41860 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231166AbhBEIXT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 03:23:19 -0500
-Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1158KmuI002731;
-        Fri, 5 Feb 2021 09:22:24 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=Po9OQlbyk7P2cLykDVpRf1AUVuQjNntuCh8fm7rd8hQ=;
- b=TcoB1OpfTeOrAFSU0FD3txxDBVLuaKctwy8Zbn+4li9sKgF6M6iGz8tmF+Cx5bU4LeMK
- RxXTRpPVVeTFaF7UsL3FQKPqg8pAN5VtL9b46a5rzsZDrEWM66jUdzARC+l/r0KGyPmT
- sss24FzgezF2m4s7Zdiki5hAj+PS2TTKgJgbZrWrDsXtNmjx7KighA/L7rws7Wpvj9vj
- abmVLYCA6xd8iElAuJxbWu/Q4xb06FC/c0fOwX4uhgFf7sEhfv5x0i1Istgdd1/hmXM3
- UKCxIgX4z1k8adk40iBLkv6caPCSW3+jvtaT3bMfnE0IfO0l4QDFlKd16vUVp/0gDCHp fg== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 36ey7hen8m-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 05 Feb 2021 09:22:24 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id B3D3D100038;
-        Fri,  5 Feb 2021 09:22:23 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 7200321E696;
-        Fri,  5 Feb 2021 09:22:23 +0100 (CET)
-Received: from lmecxl0889.lme.st.com (10.75.127.49) by SFHDAG2NODE3.st.com
- (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 5 Feb
- 2021 09:21:32 +0100
-Subject: Re: [PATCH v3 06/15] rpmsg: update rpmsg_chrdev_register_device
- function
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-CC:     kernel test robot <lkp@intel.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Andy Gross <agross@kernel.org>, <kbuild-all@lists.01.org>,
-        linux-remoteproc <linux-remoteproc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>
-References: <20210204084534.10516-7-arnaud.pouliquen@foss.st.com>
- <202102042006.UBNrTXCE-lkp@intel.com>
- <c853e1f6-d5f9-4270-5a78-2e9730e5089e@foss.st.com>
- <CANLsYky5r2BjBxjXaB4xNFNcb+zyVJshWZzgMUqf6C5Q9op9BA@mail.gmail.com>
-From:   Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
-Message-ID: <6bf6bb7b-d5c4-69d7-baad-831bc2ca4eae@foss.st.com>
-Date:   Fri, 5 Feb 2021 09:21:31 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S230497AbhBEIWt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 03:22:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51244 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231705AbhBEIWc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 03:22:32 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8792E64FC4
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 08:21:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612513309;
+        bh=rsgRIu/tvrvOwTftz1wZ70xC7b3dwy15C7K3SpnV89w=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=AqRQWFJfjCFeb7FUX0HIPN9GbRdQmfHw83fulDIk4mk1AGLLOD44h9Dlw2Xo2qMre
+         oWowLBMl0aBWcHM5PjiJjqSQv2ZuM7+q2Dn6ZMw7lWvCualSF301mkM49imkj/dTky
+         Za/ct6SRDzEtW8qJmpIT/lTvrB6wWfnurEeQFh25BPcdIOxClUuy+XzHX1BMfsAkBi
+         m23tVYyjD0k8sfoeTOoRQAFbqsXJ2aodkHZFvjm2VvHBdsNt0gfcyfg6nJ+vtT4nZz
+         7kiEQHfenwZC0kd8ncBqft4wLyEXcNW5xAmpsYe1ihvFdioUetAHZyd1YzOx6kAAXe
+         VUxEM0p+e9nTw==
+Received: by mail-oi1-f174.google.com with SMTP id y199so4659880oia.4
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 00:21:49 -0800 (PST)
+X-Gm-Message-State: AOAM5326HTqBvnld7v/dsXOkp+hrZIWRJEF5fffjSD9Eqh8PO51ynlXT
+        tpIRtM54bNecuKdkOtyaSuVgQ1KOqmFS5bJfDwA=
+X-Google-Smtp-Source: ABdhPJxK6Fv9qVP05016l+93dXRzK5UMll6W3BnwPgBy7DfTlXtBf0AvHu3ba+EUMdxxXIgGixUjHkdO1+IU5lGSh6w=
+X-Received: by 2002:aca:b6c1:: with SMTP id g184mr2381863oif.47.1612513308661;
+ Fri, 05 Feb 2021 00:21:48 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CANLsYky5r2BjBxjXaB4xNFNcb+zyVJshWZzgMUqf6C5Q9op9BA@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.49]
-X-ClientProxiedBy: SFHDAG2NODE3.st.com (10.75.127.6) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-02-05_04:2021-02-05,2021-02-05 signatures=0
+References: <6c65bcef-d4e7-25fa-43cf-2c435bb61bb9@collabora.com>
+ <CAMj1kXHMw5hMuV5VapcTeok3WJu1B79=Z3Xho0qda0nCqBFERA@mail.gmail.com>
+ <20210204100601.GT1463@shell.armlinux.org.uk> <CAMj1kXFog3=5zD7+P=cRfRLj1xfD1h1kU58iifASBSXkRe-E6g@mail.gmail.com>
+ <c0037472-75c8-6cf9-6ecf-e671fce9d636@collabora.com> <46373679-a149-8a3d-e914-780e4c6ff8be@collabora.com>
+ <CAMj1kXEshuPTrKvN4LpXQMftHJG+yH8+fgU7uVc6GYn0qd8-xA@mail.gmail.com>
+ <7c685184-8688-9319-075b-66133cb0b0c3@collabora.com> <CAMj1kXH_CCYyd5zNVRL=KWpBXtsKamV7Bfg=O1YWBJL0f_eXLQ@mail.gmail.com>
+ <CAKwvOd=ziPWHmBiPtW3h2VYLZ-CTMp4=aEonmMLM7c=Y0SeG1Q@mail.gmail.com>
+ <20210204181216.GB2989696@localhost> <CAKwvOd=UYuKPp6rO7aWGFEsc9yLa_UCLnAL-vwqzi_5sZg7O3g@mail.gmail.com>
+ <253b2987-c8e9-fcb6-c1b9-81e765c0cc2a@collabora.com>
+In-Reply-To: <253b2987-c8e9-fcb6-c1b9-81e765c0cc2a@collabora.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Fri, 5 Feb 2021 09:21:37 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXFKzEPqG5j2bn5n_3imc9aFyOEHX7CVDdwe2=ugTq=bZQ@mail.gmail.com>
+Message-ID: <CAMj1kXFKzEPqG5j2bn5n_3imc9aFyOEHX7CVDdwe2=ugTq=bZQ@mail.gmail.com>
+Subject: Re: next/master bisection: baseline.login on rk3288-rock2-square
+To:     Guillaume Tucker <guillaume.tucker@collabora.com>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        "kernelci-results@groups.io" <kernelci-results@groups.io>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 4 Feb 2021 at 22:31, Guillaume Tucker
+<guillaume.tucker@collabora.com> wrote:
+>
+> On 04/02/2021 18:23, Nick Desaulniers wrote:
+> > On Thu, Feb 4, 2021 at 10:12 AM Nathan Chancellor <nathan@kernel.org> wrote:
+> >>
+> >> On Thu, Feb 04, 2021 at 10:06:08AM -0800, 'Nick Desaulniers' via Clang Built Linux wrote:
+> >>> On Thu, Feb 4, 2021 at 8:02 AM Ard Biesheuvel <ardb@kernel.org> wrote:
+> >>>>
+> >>>> On Thu, 4 Feb 2021 at 16:53, Guillaume Tucker
+> >>>> <guillaume.tucker@collabora.com> wrote:
+> >>>>>
+> >>>>> On 04/02/2021 15:42, Ard Biesheuvel wrote:
+> >>>>>> On Thu, 4 Feb 2021 at 12:32, Guillaume Tucker
+> >>>>>> <guillaume.tucker@collabora.com> wrote:
+> >>>>>>>
+> >>>>>>> Essentially:
+> >>>>>>>
+> >>>>>>>   make -j18 ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- LLVM=1 CC="ccache clang" zImage
+> >>>
+> >>> This command should link with BFD (and assemble with GAS; it's only
+> >>> using clang as the compiler.
+> >>
+> >> I think you missed the 'LLVM=1' before CC="ccache clang". That should
+> >> use all of the LLVM utilities minus the integrated assembler while
+> >> wrapping clang with ccache.
+> >
+> > You're right, I missed `LLVM=1`. Adding `LD=ld.bfd` I think should
+> > permit fallback to BFD.
+>
+> That was close, except we're cross-compiling with GCC for arm.
+> So I've now built a plain next-20210203 (without Ard's fix) using
+> this command line:
+>
+>     make LD=arm-linux-gnueabihf-ld.bfd -j18 ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- LLVM=1 CC="ccache clang" zImage
+>
+> I'm using a modified Docker image gtucker/kernelci-build-clang-11
+> with the very latest LLVM 11 and gcc-8-arm-linux-gnueabihf
+> packages added to be able to use the GNU linker.  BTW I guess we
+> should enable this kind of hybrid build setup on kernelci.org as
+> well.
+>
+> Full build log + kernel binaries can be found here:
+>
+>     https://storage.staging.kernelci.org/gtucker/next-20210203-ard-fix/v5.10-rc4-24722-g58b6c0e507b7-gtucker_single-staging-41/arm/multi_v7_defconfig/clang-11/
+>
+> And this booted fine, which confirms it's really down to how
+> ld.lld puts together the kernel image.  Does it actually solve
+> the debate whether this is an issue to fix in the assembly code
+> or at link time?
+>
+> Full test job details for the record:
+>
+>     https://lava.collabora.co.uk/scheduler/job/3176004
+>
 
 
-On 2/4/21 5:53 PM, Mathieu Poirier wrote:
-> On Thu, 4 Feb 2021 at 08:11, Arnaud POULIQUEN
-> <arnaud.pouliquen@foss.st.com> wrote:
->>
->>
->>
->> On 2/4/21 1:44 PM, kernel test robot wrote:
->>> Hi Arnaud,
->>>
->>> I love your patch! Yet something to improve:
->>>
->>> [auto build test ERROR on linus/master]
->>> [also build test ERROR on v5.11-rc6 next-20210125]
->>> [cannot apply to rpmsg/for-next agross-msm/qcom/for-next]
->>> [If your patch is applied to the wrong git tree, kindly drop us a note.
->>> And when submitting patch, we suggest to use '--base' as documented in
->>> https://git-scm.com/docs/git-format-patch]
->>>
->>> url:    https://github.com/0day-ci/linux/commits/Arnaud-Pouliquen/introduce-a-generic-IOCTL-interface-for-RPMsg-channels-management/20210204-165337
->>> base:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 61556703b610a104de324e4f061dc6cf7b218b46
->>> config: openrisc-randconfig-r001-20210204 (attached as .config)
->>> compiler: or1k-linux-gcc (GCC) 9.3.0
->>> reproduce (this is a W=1 build):
->>>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->>>         chmod +x ~/bin/make.cross
->>>         # https://github.com/0day-ci/linux/commit/23c166e0b157f0695fa7daefb8c5e30f383c3efd
->>>         git remote add linux-review https://github.com/0day-ci/linux
->>>         git fetch --no-tags linux-review Arnaud-Pouliquen/introduce-a-generic-IOCTL-interface-for-RPMsg-channels-management/20210204-165337
->>>         git checkout 23c166e0b157f0695fa7daefb8c5e30f383c3efd
->>>         # save the attached .config to linux build tree
->>>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=openrisc
->>>
->>> If you fix the issue, kindly add following tag as appropriate
->>> Reported-by: kernel test robot <lkp@intel.com>>
->>> All errors (new ones prefixed by >>):
->>>
->>>    or1k-linux-ld: drivers/rpmsg/qcom_glink_native.o: in function `qcom_glink_native_probe':
->>>>> qcom_glink_native.c:(.text+0x2e88): undefined reference to `rpmsg_ctrl_register_device'
->>>    qcom_glink_native.c:(.text+0x2e88): relocation truncated to fit: R_OR1K_INSN_REL_26 against undefined symbol `rpmsg_ctrl_register_device'
->>
->> Thanks for highlighting it!
->>
->> I await further review comments first, but I will address this in my next
->> revision, if it still relevant.
-> 
-> I will be surprised if I get to look at your patchset before February
-> 22nd so it may be better to address the above.
+So the issue appears to be in the way the linker generates the
+_kernel_bss_size symbol, which obviously has an impact, given that the
+queued fix takes it into account in the cache_clean operation.
 
-Thanks for the information.
-I will therefore target a new review in week 7 even if no further comments are
-posted.
+On GNU ld, I see
 
-> 
->>
->>>
->>> ---
->>> 0-DAY CI Kernel Test Service, Intel Corporation
->>> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
->>>
+   479: 00065e14     0 NOTYPE  GLOBAL DEFAULT  ABS _kernel_bss_size
+
+whereas n LLVM ld.lld, I see
+
+   433: c1c86e98     0 NOTYPE  GLOBAL DEFAULT  ABS _kernel_bss_size
+
+and adding this value may cause the cache clean to operate on unmapped
+addresses, or cause the addition to wrap and not perform a cache clean
+at all.
+
+AFAICT, this also breaks the appended DTB case in LLVM, so this needs
+a separate fix in any case.
