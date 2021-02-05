@@ -2,174 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26FD631107A
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 19:59:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65064311070
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 19:56:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233608AbhBERPW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 12:15:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54516 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233528AbhBEQCX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 11:02:23 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E93E464DD8;
-        Fri,  5 Feb 2021 17:43:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612546988;
-        bh=gEp/HvqPhB4Uqab3x0LzOie9DNxy6sj3uLcExSzDTDM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LAPnZVJ37/WzuxMH869sMvIY7ph4o3QHekVLpTk2ncmMXKhOOUo0/CsFIDTAFdaQv
-         QwBCwBkT1ZZnqOC7227N8XkD8BquBVQrddXrMRwcCKGIlzSNT8BPm/eH+H580csyLb
-         1yC+AwxykX+mI5WKg9A8cLu0zpicSJItElROXEKm+PjTo0ut/dxdJMfs1G71pUYB3q
-         SFie6QsjmNux3UXx62GwtxOoPFwrr/ZnamGcB/4tiVtCcE8l4GqBnkNJdUlrx4IkOO
-         GG3vjgaBo5Lmb9aSQMZsZ79dMV95vNTjgoleK6pOXOcrZ2I74fUzbYrhU4PXcugaJk
-         uB/H7/Wb1vL2w==
-Date:   Fri, 5 Feb 2021 17:43:01 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Lecopzer Chen <lecopzer@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Mark Brown <broonie@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>, gustavoars@kernel.org,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Lecopzer Chen <lecopzer.chen@mediatek.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC..." 
-        <linux-mediatek@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Robin Murphy <robin.murphy@arm.com>, rppt@kernel.org,
-        tyhicks@linux.microsoft.com,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        yj.chiang@mediatek.com
-Subject: Re: [PATCH v2 1/4] arm64: kasan: don't populate vmalloc area for
- CONFIG_KASAN_VMALLOC
-Message-ID: <20210205174301.GF22665@willie-the-truck>
-References: <20210204150100.GE20815@willie-the-truck>
- <20210204163721.91295-1-lecopzer@gmail.com>
- <20210205171859.GE22665@willie-the-truck>
- <CAAeHK+zppv6P+PqAuZqAfd7++QxhA1rPX6vdY5MyYK_v6YdXSA@mail.gmail.com>
+        id S233149AbhBERNT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 12:13:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35972 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233175AbhBEQC5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 11:02:57 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A2D9C061756
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 09:44:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=WTOYkO8xgxh6+cxoqHMXLP73u+ngAcUFQvBQ799Oj4I=; b=RSNnrU0eDb+nkyop/RJYh1yq1s
+        peyU7BTzC9ITvPQQBDL31Tke2qqMDigbOuL5WKhxq8DF8ON1BYvGea5/Np8jHXuCw8HxTJ43ULF2l
+        mm+kXn+Ro148GTzgf4gliQYYH5YIFIRSvluiOaliXxgTQ4OZmy3h73oQkmBvsaBFM4dvBnnca5IE2
+        QXIWD2K2otw7bj+BVJW7/Bvf7+7B2I9R/Yqo6wmiHIOJQu6WJfSDRrc6CAMFZsT0M4Kv2nWyPnpfE
+        85dF3V/C5CcL98iS5eM7sSCwoJsO1xeKsXrjtJsfnVROy07cqYB3Rq4/M14oBX6rlH+41U5nHE59L
+        zmEMsTrA==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1l859l-002aCD-0l; Fri, 05 Feb 2021 17:44:33 +0000
+Date:   Fri, 5 Feb 2021 17:44:33 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Hugh Dickins <hughd@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        syzbot <syzbot+e5a33e700b1dd0da20a2@syzkaller.appspotmail.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        syzkaller-bugs@googlegroups.com,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Roman Gushchin <guro@fb.com>,
+        Wu Fengguang <fengguang.wu@intel.com>
+Subject: Re: INFO: task can't die in shrink_inactive_list (2)
+Message-ID: <20210205174433.GJ308988@casper.infradead.org>
+References: <0000000000000340a105b49441d3@google.com>
+ <20201123195452.8ecd01b1fc2ce287dfd6a0d5@linux-foundation.org>
+ <alpine.LSU.2.11.2012211128480.2302@eggly.anvils>
+ <20201221203344.GG874@casper.infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAAeHK+zppv6P+PqAuZqAfd7++QxhA1rPX6vdY5MyYK_v6YdXSA@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201221203344.GG874@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 05, 2021 at 06:30:44PM +0100, Andrey Konovalov wrote:
-> On Fri, Feb 5, 2021 at 6:19 PM Will Deacon <will@kernel.org> wrote:
-> >
-> > On Fri, Feb 05, 2021 at 12:37:21AM +0800, Lecopzer Chen wrote:
-> > >
-> > > > On Thu, Feb 04, 2021 at 10:46:12PM +0800, Lecopzer Chen wrote:
-> > > > > > On Sat, Jan 09, 2021 at 06:32:49PM +0800, Lecopzer Chen wrote:
-> > > > > > > Linux support KAsan for VMALLOC since commit 3c5c3cfb9ef4da9
-> > > > > > > ("kasan: support backing vmalloc space with real shadow memory")
-> > > > > > >
-> > > > > > > Like how the MODULES_VADDR does now, just not to early populate
-> > > > > > > the VMALLOC_START between VMALLOC_END.
-> > > > > > > similarly, the kernel code mapping is now in the VMALLOC area and
-> > > > > > > should keep these area populated.
-> > > > > > >
-> > > > > > > Signed-off-by: Lecopzer Chen <lecopzer.chen@mediatek.com>
-> > > > > > > ---
-> > > > > > >  arch/arm64/mm/kasan_init.c | 23 ++++++++++++++++++-----
-> > > > > > >  1 file changed, 18 insertions(+), 5 deletions(-)
-> > > > > > >
-> > > > > > > diff --git a/arch/arm64/mm/kasan_init.c b/arch/arm64/mm/kasan_init.c
-> > > > > > > index d8e66c78440e..39b218a64279 100644
-> > > > > > > --- a/arch/arm64/mm/kasan_init.c
-> > > > > > > +++ b/arch/arm64/mm/kasan_init.c
-> > > > > > > @@ -214,6 +214,7 @@ static void __init kasan_init_shadow(void)
-> > > > > > >  {
-> > > > > > >   u64 kimg_shadow_start, kimg_shadow_end;
-> > > > > > >   u64 mod_shadow_start, mod_shadow_end;
-> > > > > > > + u64 vmalloc_shadow_start, vmalloc_shadow_end;
-> > > > > > >   phys_addr_t pa_start, pa_end;
-> > > > > > >   u64 i;
-> > > > > > >
-> > > > > > > @@ -223,6 +224,9 @@ static void __init kasan_init_shadow(void)
-> > > > > > >   mod_shadow_start = (u64)kasan_mem_to_shadow((void *)MODULES_VADDR);
-> > > > > > >   mod_shadow_end = (u64)kasan_mem_to_shadow((void *)MODULES_END);
-> > > > > > >
-> > > > > > > + vmalloc_shadow_start = (u64)kasan_mem_to_shadow((void *)VMALLOC_START);
-> > > > > > > + vmalloc_shadow_end = (u64)kasan_mem_to_shadow((void *)VMALLOC_END);
-> > > > > > > +
-> > > > > > >   /*
-> > > > > > >    * We are going to perform proper setup of shadow memory.
-> > > > > > >    * At first we should unmap early shadow (clear_pgds() call below).
-> > > > > > > @@ -241,12 +245,21 @@ static void __init kasan_init_shadow(void)
-> > > > > > >
-> > > > > > >   kasan_populate_early_shadow(kasan_mem_to_shadow((void *)PAGE_END),
-> > > > > > >                              (void *)mod_shadow_start);
-> > > > > > > - kasan_populate_early_shadow((void *)kimg_shadow_end,
-> > > > > > > -                            (void *)KASAN_SHADOW_END);
-> > > > > > > + if (IS_ENABLED(CONFIG_KASAN_VMALLOC)) {
-> > > > > >
-> > > > > > Do we really need yet another CONFIG option for KASAN? What's the use-case
-> > > > > > for *not* enabling this if you're already enabling one of the KASAN
-> > > > > > backends?
-> > > > >
-> > > > > As I know, KASAN_VMALLOC now only supports KASAN_GENERIC and also
-> > > > > KASAN_VMALLOC uses more memory to map real shadow memory (1/8 of vmalloc va).
-> > > >
-> > > > The shadow is allocated dynamically though, isn't it?
-> > >
-> > > Yes, but It's still a cost.
-> > >
-> > > > > There should be someone can enable KASAN_GENERIC but can't use VMALLOC
-> > > > > due to memory issue.
-> > > >
-> > > > That doesn't sound particularly realistic to me. The reason I'm pushing here
-> > > > is because I would _really_ like to move to VMAP stack unconditionally, and
-> > > > that would effectively force KASAN_VMALLOC to be set if KASAN is in use.
-> > > >
-> > > > So unless there's a really good reason not to do that, please can we make
-> > > > this unconditional for arm64? Pretty please?
-> > >
-> > > I think it's fine since we have a good reason.
-> > > Also if someone have memory issue in KASAN_VMALLOC,
-> > > they can use SW_TAG, right?
-> > >
-> > > However the SW_TAG/HW_TAG is not supported VMALLOC yet.
-> > > So the code would be like
-> > >
-> > >       if (IS_ENABLED(CONFIG_KASAN_GENERIC))
-> >
-> > Just make this CONFIG_KASAN_VMALLOC, since that depends on KASAN_GENERIC.
-> >
-> > >               /* explain the relationship between
-> > >                * KASAN_GENERIC and KASAN_VMALLOC in arm64
-> > >                * XXX: because we want VMAP stack....
-> > >                */
-> >
-> > I don't understand the relation with SW_TAGS. The VMAP_STACK dependency is:
-> >
-> >         depends on !KASAN || KASAN_HW_TAGS || KASAN_VMALLOC
-> 
-> This means that VMAP_STACK can be only enabled if KASAN_HW_TAGS=y or
-> if KASAN_VMALLOC=y for other modes.
-> 
-> >
-> > which doesn't mention SW_TAGS at all. So that seems to imply that SW_TAGS
-> > and VMAP_STACK are mutually exclusive :(
-> 
-> SW_TAGS doesn't yet have vmalloc support, so it's not compatible with
-> VMAP_STACK. Once vmalloc support is added to SW_TAGS, KASAN_VMALLOC
-> should be allowed to be enabled with SW_TAGS. This series is a step
-> towards having that support, but doesn't implement it. That will be a
-> separate effort.
 
-Ok, thanks. Then I think we should try to invert the dependency here, if
-possible, so that the KASAN backends depend on !VMAP_STACK if they don't
-support it, rather than silently disabling VMAP_STACK when they are
-selected.
+Hugh, did you get a chance to test this?
 
-Will
+On Mon, Dec 21, 2020 at 08:33:44PM +0000, Matthew Wilcox wrote:
+> On Mon, Dec 21, 2020 at 11:56:36AM -0800, Hugh Dickins wrote:
+> > On Mon, 23 Nov 2020, Andrew Morton wrote:
+> > > On Fri, 20 Nov 2020 17:55:22 -0800 syzbot <syzbot+e5a33e700b1dd0da20a2@syzkaller.appspotmail.com> wrote:
+> > > 
+> > > > Hello,
+> > > > 
+> > > > syzbot found the following issue on:
+> > > > 
+> > > > HEAD commit:    03430750 Add linux-next specific files for 20201116
+> > > > git tree:       linux-next
+> > > > console output: https://syzkaller.appspot.com/x/log.txt?x=13f80e5e500000
+> > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=a1c4c3f27041fdb8
+> > > > dashboard link: https://syzkaller.appspot.com/bug?extid=e5a33e700b1dd0da20a2
+> > > > compiler:       gcc (GCC) 10.1.0-syz 20200507
+> > > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12f7bc5a500000
+> > > > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10934cf2500000
+> > > 
+> > > Alex, your series "per memcg lru lock" changed the vmscan code rather a
+> > > lot.  Could you please take a look at that reproducer?
+> > 
+> > Andrew, I promised I'd take a look at this syzreport too (though I think
+> > we're agreed by now that it has nothing to do with per-memcg lru_lock).
+> > 
+> > I did try, but (unlike Alex) did not manage to get the reproducer to
+> > reproduce it.  No doubt I did not try hard enough: I did rather lose
+> > interest after seeing that it appears to involve someone with
+> > CAP_SYS_ADMIN doing an absurdly large ioctl(BLKFRASET) on /dev/nullb0
+> > ("Null test block driver" enabled via CONFIG_BLK_DEV_NULL_BLK=y: that I
+> > did enable) and faulting from it: presumably triggering an absurd amount
+> > of readahead.
+> > 
+> > Cc'ing Matthew since he has a particular interest in readahead, and
+> > might be inspired to make some small safe change that would fix this,
+> > and benefit realistic cases too; but on the whole it didn't look worth
+> > worrying about - or at least not by me.
+> 
+> Oh, interesting.  Thanks for looping me in, I hadn't looked at this one
+> at all.  Building on the debugging you did, this is the interesting
+> part of the backtrace to me:
+> 
+> > > >  try_to_free_pages+0x29f/0x720 mm/vmscan.c:3264
+> > > >  __perform_reclaim mm/page_alloc.c:4360 [inline]
+> > > >  __alloc_pages_direct_reclaim mm/page_alloc.c:4381 [inline]
+> > > >  __alloc_pages_slowpath.constprop.0+0x917/0x2510 mm/page_alloc.c:4785
+> > > >  __alloc_pages_nodemask+0x5f0/0x730 mm/page_alloc.c:4995
+> > > >  alloc_pages_current+0x191/0x2a0 mm/mempolicy.c:2271
+> > > >  alloc_pages include/linux/gfp.h:547 [inline]
+> > > >  __page_cache_alloc mm/filemap.c:977 [inline]
+> > > >  __page_cache_alloc+0x2ce/0x360 mm/filemap.c:962
+> > > >  page_cache_ra_unbounded+0x3a1/0x920 mm/readahead.c:216
+> > > >  do_page_cache_ra+0xf9/0x140 mm/readahead.c:267
+> > > >  do_sync_mmap_readahead mm/filemap.c:2721 [inline]
+> > > >  filemap_fault+0x19d0/0x2940 mm/filemap.c:2809
+> 
+> So ra_pages has been set to something ridiculously large, and as
+> a result, we call do_page_cache_ra() asking to read more memory than
+> is available in the machine.  Funny thing, we actually have a function
+> to prevent this kind of situation, and it's force_page_cache_ra().
+> 
+> So this might fix the problem.  I only tested that it compiles.  I'll
+> be happy to write up a proper changelog and sign-off for it if it works ...
+> it'd be good to get it some soak testing on a variety of different
+> workloads; changing this stuff is enormously subtle.
+> 
+> As a testament to that, I think Fengguang got it wrong in commit
+> 2cbea1d3ab11 -- async_size should have been 3 * ra_pages / 4, not ra_pages
+> / 4 (because we read-behind by half the range, so we're looking for a
+> page fault to happen a quarter of the way behind this fault ...)
+> 
+> This is partially Roman's fault, see commit 600e19afc5f8.
+> 
+> diff --git a/mm/filemap.c b/mm/filemap.c
+> index d5e7c2029d16..43fe0f0ae3bb 100644
+> --- a/mm/filemap.c
+> +++ b/mm/filemap.c
+> @@ -2632,7 +2632,7 @@ static struct file *do_sync_mmap_readahead(struct vm_fault *vmf)
+>  	ra->size = ra->ra_pages;
+>  	ra->async_size = ra->ra_pages / 4;
+>  	ractl._index = ra->start;
+> -	do_page_cache_ra(&ractl, ra->size, ra->async_size);
+> +	force_page_cache_ra(&ractl, ra, ra->size);
+>  	return fpin;
+>  }
+>  
+> diff --git a/mm/internal.h b/mm/internal.h
+> index c43ccdddb0f6..5664b4b91340 100644
+> --- a/mm/internal.h
+> +++ b/mm/internal.h
+> @@ -49,8 +49,6 @@ void unmap_page_range(struct mmu_gather *tlb,
+>  			     unsigned long addr, unsigned long end,
+>  			     struct zap_details *details);
+>  
+> -void do_page_cache_ra(struct readahead_control *, unsigned long nr_to_read,
+> -		unsigned long lookahead_size);
+>  void force_page_cache_ra(struct readahead_control *, struct file_ra_state *,
+>  		unsigned long nr);
+>  static inline void force_page_cache_readahead(struct address_space *mapping,
+> diff --git a/mm/readahead.c b/mm/readahead.c
+> index c5b0457415be..f344c894c26a 100644
+> --- a/mm/readahead.c
+> +++ b/mm/readahead.c
+> @@ -246,7 +246,7 @@ EXPORT_SYMBOL_GPL(page_cache_ra_unbounded);
+>   * behaviour which would occur if page allocations are causing VM writeback.
+>   * We really don't want to intermingle reads and writes like that.
+>   */
+> -void do_page_cache_ra(struct readahead_control *ractl,
+> +static void do_page_cache_ra(struct readahead_control *ractl,
+>  		unsigned long nr_to_read, unsigned long lookahead_size)
+>  {
+>  	struct inode *inode = ractl->mapping->host;
+> 
