@@ -2,86 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72BE331138A
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 22:29:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3115D311378
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 22:27:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233743AbhBEV22 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 16:28:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49790 "EHLO
+        id S233040AbhBEV0K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 16:26:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232955AbhBEPAb (ORCPT
+        with ESMTP id S232891AbhBEPBu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 10:00:31 -0500
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F642C0613D6;
-        Fri,  5 Feb 2021 08:38:31 -0800 (PST)
-Received: from localhost.localdomain (unknown [IPv6:2a01:e0a:169:7140:5c7:913e:f5dc:1fa])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id A1C45316;
-        Fri,  5 Feb 2021 17:38:29 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1612543109;
-        bh=VDeh1UbbOpEZAzYMYoSbEP32YFEiJpOEK8yXSrSc9gw=;
-        h=From:To:Cc:Subject:Date:From;
-        b=W+E11Et3FLdhV256GHjyFmVVALpAUYR2UTSWtLPJDEfe79OTqd/b5NBiMjrZTrBdi
-         gM8z6hM+IF0thk0bcB99GXRcKHwPYV4Ozqj1UzpvKVRpQHTrbtYw05c1m46L0rLHAQ
-         W/T/UtvdDjE+I4dAeGyYG/0nEBCdizLed0+BjoGE=
-From:   Jean-Michel Hautbois <jeanmichel.hautbois@ideasonboard.com>
-To:     linux-media@vger.kernel.org
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        rahul.blr97@gmail.com, gregkh@linuxfoundation.org,
-        mchehab@kernel.org, tian.shu.qiu@intel.com, bingbu.cao@intel.com,
-        sakari.ailus@linux.intel.com, jeanmichel.hautbois@ideasonboard.com
-Subject: [PATCH] media: intel-ipu3: Specify CCM values precision
-Date:   Fri,  5 Feb 2021 17:38:19 +0100
-Message-Id: <20210205163819.28439-1-jeanmichel.hautbois@ideasonboard.com>
-X-Mailer: git-send-email 2.27.0
+        Fri, 5 Feb 2021 10:01:50 -0500
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13073C06178C;
+        Fri,  5 Feb 2021 08:39:53 -0800 (PST)
+Received: by mail-wr1-x42c.google.com with SMTP id m13so8336139wro.12;
+        Fri, 05 Feb 2021 08:39:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=me3FTzSZcjdT1PtgwoMZ44tI5YCzuNgZ6Xp92yrSWsI=;
+        b=chMzKh9krAIVQBkvSAjBKpWjzUixITFCXMcHcmhPA73u52j3zBYtIzvKm6tw0BOqpk
+         urjGp6JT0FBojBuCxIZVxedw4TO+bif6EkvV4+LJtOLhNnP79lg+SNBTQQcLxLyBlEDG
+         2Hr215ArgD2GJUbjNe5t0mVbzsAGyq8P6gQXy74VknBVk2P79NWzBh3LINJo+BkrYzaH
+         AgOTgYH8H5UT6Jr8+GLeAa7iQ8V+oRq031I91NY7p8WwKce5FvA9y0zreg/USfaYrdTn
+         FTix8/FvBQIkXZ9wjhICoHAkUWGKPkOwP9QCdSwuVzxwrAtmCzPv8w360fzHBtdH9+vr
+         t2pg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=me3FTzSZcjdT1PtgwoMZ44tI5YCzuNgZ6Xp92yrSWsI=;
+        b=OKN7lCBw0XC2wT8TAg8VEp45xRwGSNcqeL2s2dVT2rg0Oepa79F9HUwNHKRnym9hrG
+         huVUJADbaUsCvokOMk9MMLpnFzC8PV6ZHNB5ZN758DK3zE9K3dzKri2g9iuHWr9DAuFC
+         DIpN9Zv6zf7OLfG30tIMMeAlCQP7KdEJ3uX2T5QSdtGok7UozwvfHk8yetpMWO+BCxLQ
+         JfN/iHgUEobZMe0wvbdIEtMcdsgfLf2R76cnz7ZH6Lqv7V3ptMyoVBe12xD07bkTtUel
+         V6LRAaCDlItpVj9eJN66pC1AAMjZZf7GETZPBAG5Elus+rotvm25hBweF7MzzpKgO03v
+         biXg==
+X-Gm-Message-State: AOAM5300OVL/lOHsuwnIXxrxkZWeHggmTtdS/kN2eUn9wq6f6BihUKeB
+        P5ntDf8tUou/TtVSQdvHrFA14WoIEzQP1OyURWw=
+X-Google-Smtp-Source: ABdhPJyvzE1xjGUvO+f+OKFMTgJhKfcepV0Sxx1TJV6X1ZwKvB3DMuGm22+N/LLGi9tP9kI0mcBAk75bYhP+4qbk/BA=
+X-Received: by 2002:a5d:65ca:: with SMTP id e10mr6118874wrw.166.1612543191744;
+ Fri, 05 Feb 2021 08:39:51 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CAGngYiUgjsgWYP76NKnrhbQthWbceaiugTFL=UVh_KvDuRhQUw@mail.gmail.com>
+ <20210205150936.23010-1-sbauer@blackbox.su>
+In-Reply-To: <20210205150936.23010-1-sbauer@blackbox.su>
+From:   Sven Van Asbroeck <thesven73@gmail.com>
+Date:   Fri, 5 Feb 2021 11:39:40 -0500
+Message-ID: <CAGngYiUwzzmF2iPyBmrWBW_Oe=ffNbpxrZSyyQ6U_kLmNV56xg@mail.gmail.com>
+Subject: Re: [PATCH net-next v1 1/6] lan743x: boost performance on cpu archs
+ w/o dma cache snooping
+To:     Sergej Bauer <sbauer@blackbox.su>
+Cc:     Andrew Lunn <andrew@lunn.ch>, Markus.Elfring@web.de,
+        Alexey Denisov <rtgbnm@gmail.com>,
+        Tim Harvey <tharvey@gateworks.com>,
+        =?UTF-8?Q?Anders_R=C3=B8nningen?= <anders@ronningen.priv.no>,
+        Bryan Whitehead <bryan.whitehead@microchip.com>,
+        "maintainer:MICROCHIP LAN743X ETHERNET DRIVER" 
+        <UNGLinuxDriver@microchip.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "open list:MICROCHIP LAN743X ETHERNET DRIVER" 
+        <netdev@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When trying to convert a CCM matrix for IPU3, extreme values for the
-Color Correction Matrix.
-Specify the precision to ease userspace integration.
+Hi Sergej,
 
-Signed-off-by: Jean-Michel Hautbois <jeanmichel.hautbois@ideasonboard.com>
----
- drivers/staging/media/ipu3/include/intel-ipu3.h | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
+On Fri, Feb 5, 2021 at 10:09 AM Sergej Bauer <sbauer@blackbox.su> wrote:
+>
+> Tests after applying patches [2/6] and [3/6] are:
+> $ ifmtu eth7 500
+> $ sudo test_ber -l eth7 -c 1000 -n 1000000 -f500 --no-conf
 
-diff --git a/drivers/staging/media/ipu3/include/intel-ipu3.h b/drivers/staging/media/ipu3/include/intel-ipu3.h
-index edd8edda0647..68f7d11ce52f 100644
---- a/drivers/staging/media/ipu3/include/intel-ipu3.h
-+++ b/drivers/staging/media/ipu3/include/intel-ipu3.h
-@@ -923,19 +923,21 @@ struct ipu3_uapi_dm_config {
- /**
-  * struct ipu3_uapi_ccm_mat_config - Color correction matrix
-  *
-- * @coeff_m11: CCM 3x3 coefficient, range [-65536, 65535]
-+ * @coeff_m11: CCM 3x3 coefficient, range [-32768, 32767]
-  * @coeff_m12: CCM 3x3 coefficient, range [-8192, 8191]
-- * @coeff_m13: CCM 3x3 coefficient, range [-32768, 32767]
-+ * @coeff_m13: CCM 3x3 coefficient, range [-8192, 8191]
-  * @coeff_o_r: Bias 3x1 coefficient, range [-8191, 8181]
-- * @coeff_m21: CCM 3x3 coefficient, range [-32767, 32767]
-- * @coeff_m22: CCM 3x3 coefficient, range [-8192, 8191]
-- * @coeff_m23: CCM 3x3 coefficient, range [-32768, 32767]
-+ * @coeff_m21: CCM 3x3 coefficient, range [-8192, 8191]
-+ * @coeff_m22: CCM 3x3 coefficient, range [-32768, 32767]
-+ * @coeff_m23: CCM 3x3 coefficient, range [-8192, 8191]
-  * @coeff_o_g: Bias 3x1 coefficient, range [-8191, 8181]
-- * @coeff_m31: CCM 3x3 coefficient, range [-32768, 32767]
-+ * @coeff_m31: CCM 3x3 coefficient, range [-8192, 8191]
-  * @coeff_m32: CCM 3x3 coefficient, range [-8192, 8191]
-  * @coeff_m33: CCM 3x3 coefficient, range [-32768, 32767]
-  * @coeff_o_b: Bias 3x1 coefficient, range [-8191, 8181]
-  *
-+ * Precision s3.13, range [-8, 8).
-+ *
-  * Transform sensor specific color space to standard sRGB by applying 3x3 matrix
-  * and adding a bias vector O. The transformation is basically a rotation and
-  * translation in the 3-dimensional color spaces. Here are the defaults:
--- 
-2.27.0
-
+Thank you! Is there a way for me to run test_ber myself?
+Is this a standard, or a bespoke testing tool?
