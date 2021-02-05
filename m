@@ -2,116 +2,337 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 017543107E2
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 10:31:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55DD93107F0
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 10:34:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231167AbhBEJac (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 04:30:32 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38292 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229756AbhBEJ13 (ORCPT
+        id S230263AbhBEJdR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 04:33:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45286 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230389AbhBEJa1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 04:27:29 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612517162;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Nlcu3cb2XGllXsJ4Cjn3h9VHrxoAGbuybTGAlLoG1zc=;
-        b=OcwT8/10DsKddXyMm1ZcgOVCAOmLzOi/1mxDadsdjc1sMI/oyOF9qjR/li8oF6UyH8hm63
-        j1kj9mjza8BEcrW8PLor6rq2DWOtYrFGIeNn+EVbuLsf7+7J5KLTTqGPHbXoa7jT6LH578
-        m6GPfNmCnuC1OU43eMnVI5hgmpq0ktY=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-185-w1MJ0ANXPBuvevhbGOCutg-1; Fri, 05 Feb 2021 04:26:01 -0500
-X-MC-Unique: w1MJ0ANXPBuvevhbGOCutg-1
-Received: by mail-ed1-f70.google.com with SMTP id bd22so6574462edb.4
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 01:25:59 -0800 (PST)
+        Fri, 5 Feb 2021 04:30:27 -0500
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FCDAC06178C
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 01:29:47 -0800 (PST)
+Received: by mail-pj1-x102d.google.com with SMTP id m12so3296943pjs.4
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 01:29:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=C8kbHhr5ieZ6ruSdfvIdIqaCIJRoZTwflsvjoo9BVnk=;
+        b=XzVz7PTqFkJbrHQ4TD1ZAl9AGJX0cOmouGjHXf7luEbYx2a/fvA19GsbE/v7Q7hlss
+         Rgy9kNec//SwFulmUbTHp39/OxOvGI8kXgMAutQ9LSk7ffcDDlJp73ljuyoXhuRrC2rP
+         JlEoUBnwhs1JSUJ+MPRiiTcHjrgvpya2JDJFp2su4z+u70gcVbKAQJluHLIe2I+r1A3g
+         CqPqc0SU5Veq7bZN5RDZQNqbT9FoWRvJBuXj4DkQIVqbiKDNNjS3nItULo43b49zfhmM
+         0ANaUblgLe/rViiAT0sqcHFGpYESM3mtV11KpHlHPgdmzG5ffCa3Oz9XEU87vHjn0o9t
+         GsNg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Nlcu3cb2XGllXsJ4Cjn3h9VHrxoAGbuybTGAlLoG1zc=;
-        b=DdGeAoJWtryj93oBGzhkIj+MBFKkNDnQ5Smyu5OUZ5i1lbQuUZM+wdlQY/CRiCPk4e
-         TfxaVP5xtpVrFE/TYhr72dZRMXw3auADQw0u+Pf7gafXZlHlsgfzQ1RZOnHgDV6cs5rS
-         mJWKdCVFPronm3m+MJwB2zFjtO6461j5XpmlPm9BHXSNadCLNeZwlsk0M4JdQG2zGmQ2
-         b19MOGkRiFw9HBl8jnXh2DrQqP4un6C6SbNUXee2nwpDdG0sDTvXyIMnb1ERfaLfOGh9
-         93Tl8BZTT2q0gxZJOE5L9haQgJ3rL03sgvQPATdhxukHB9SBDKjR0/Ell3ANpYNlUgF/
-         wDPA==
-X-Gm-Message-State: AOAM530TgvxjbQmGSgBqjdeXAvP8YB7NLkMQFytAd2+z5Kmz0P93lj7p
-        o67a8xcO3C0N8JWyvQ2EVei0FxS6RJ/jfWJ/RJS7PLZQcMyIxzA99Jwo2ebgOr+Ve+x6x+zWzM7
-        9OF6AmHzyHNcp6DXIzGDqYf7G
-X-Received: by 2002:aa7:d696:: with SMTP id d22mr2625248edr.361.1612517159045;
-        Fri, 05 Feb 2021 01:25:59 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyBCgt1agj4Ikw/q7k012mueayWYguXKrdYnw9gpDmCVHElctmRa2drVchzijXjwZpd0XUn5A==
-X-Received: by 2002:aa7:d696:: with SMTP id d22mr2625239edr.361.1612517158898;
-        Fri, 05 Feb 2021 01:25:58 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id u18sm3680337ejc.76.2021.02.05.01.25.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 05 Feb 2021 01:25:58 -0800 (PST)
-Subject: Re: [PATCH v4 2/5] KVM: X86: Expose PKS to guest
-To:     Chenyi Qiang <chenyi.qiang@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Xiaoyao Li <xiaoyao.li@intel.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "x86@kernel.org" <x86@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Borislav Petkov <bp@alien8.de>
-References: <20210205083706.14146-1-chenyi.qiang@intel.com>
- <20210205083706.14146-3-chenyi.qiang@intel.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <8768ad06-e051-250d-93ec-fa4d684bc7b0@redhat.com>
-Date:   Fri, 5 Feb 2021 10:25:48 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=C8kbHhr5ieZ6ruSdfvIdIqaCIJRoZTwflsvjoo9BVnk=;
+        b=m2kQk7PumApsHqaZg+llfB7id5n2NV0J+g9/PGoDgT2Qt5PwIs7ai60LZxWSzGE+sB
+         am56n29Ona12PFKsV5HD0o0ZoJ8uWk2ljQhbfLCzZltiI871GoU7YOWdS+kZTrUzj+nW
+         vCYZkPz6Nknv4oDiylE8fRaBrOZJCTKS37DAZs2YUG1hOcwyCR2zP1zijNYF5eiGNXvX
+         KiTtyUj3nfJoxRzZDOyKQ5HiBNxBsC/E8Z7ZkCMWWw+8ZYgu0N/93TFEUyA5s7V9DBK9
+         vADJ03QckPAlbBqKxNmtnRXiz3L/mgtatIBojs0xByGRZha+49A17GElae0xqpTfK50W
+         q/vA==
+X-Gm-Message-State: AOAM532jImiGvt+P2epyqFdrUKj55t0fkIR8fgLti8cJtDskIP5fCY1P
+        ChpHn/0xgEUxGG7sbpWBoVvBHnk4Y+nNYhGUkcDRAQ==
+X-Google-Smtp-Source: ABdhPJzdbcoYfGNkatXU7sCb36XXR5pRUSMhgM1xy54hkZlCntyENM+DaVCm9tJZ8VWY34sziTfMoyKpg/x1B2tSjR0=
+X-Received: by 2002:a17:90a:b702:: with SMTP id l2mr3357990pjr.13.1612517386657;
+ Fri, 05 Feb 2021 01:29:46 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210205083706.14146-3-chenyi.qiang@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210204035043.36609-1-songmuchun@bytedance.com> <20210204035043.36609-5-songmuchun@bytedance.com>
+In-Reply-To: <20210204035043.36609-5-songmuchun@bytedance.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Fri, 5 Feb 2021 17:29:09 +0800
+Message-ID: <CAMZfGtUqX7ENkFLPS9OQ44Bh8=1FLwiBK3bwU6jAv=OBjZHZfA@mail.gmail.com>
+Subject: Re: [PATCH v14 4/8] mm: hugetlb: alloc the vmemmap pages associated
+ with each HugeTLB page
+To:     Oscar Salvador <osalvador@suse.de>
+Cc:     Xiongchun duan <duanxiongchun@bytedance.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Mina Almasry <almasrymina@google.com>, x86@kernel.org,
+        Matthew Wilcox <willy@infradead.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>, hpa@zytor.com,
+        viro@zeniv.linux.org.uk, mingo@redhat.com,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Mike Kravetz <mike.kravetz@oracle.com>, luto@kernel.org,
+        dave.hansen@linux.intel.com, oneukum@suse.com, paulmck@kernel.org,
+        pawan.kumar.gupta@linux.intel.com,
+        Andrew Morton <akpm@linux-foundation.org>, jroedel@suse.de,
+        mchehab+huawei@kernel.org, anshuman.khandual@arm.com, bp@alien8.de,
+        David Hildenbrand <david@redhat.com>,
+        =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
+        <naoya.horiguchi@nec.com>, David Rientjes <rientjes@google.com>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/02/21 09:37, Chenyi Qiang wrote:
-> 
-> diff --git a/arch/x86/mm/pkeys.c b/arch/x86/mm/pkeys.c
-> index 57718716cc70..8027f854c600 100644
-> --- a/arch/x86/mm/pkeys.c
-> +++ b/arch/x86/mm/pkeys.c
-> @@ -390,3 +390,9 @@ void pks_key_free(int pkey)
->  	__clear_bit(pkey, &pks_key_allocation_map);
->  }
->  EXPORT_SYMBOL_GPL(pks_key_free);
+On Thu, Feb 4, 2021 at 11:54 AM Muchun Song <songmuchun@bytedance.com> wrote:
+>
+> When we free a HugeTLB page to the buddy allocator, we should allocate the
+> vmemmap pages associated with it. But we may cannot allocate vmemmap pages
+> when the system is under memory pressure, in this case, we just refuse to
+> free the HugeTLB page instead of looping forever trying to allocate the
+> pages.
+>
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> ---
+>  include/linux/mm.h   |  2 ++
+>  mm/hugetlb.c         | 19 ++++++++++++-
+>  mm/hugetlb_vmemmap.c | 30 +++++++++++++++++++++
+>  mm/hugetlb_vmemmap.h |  8 ++++++
+>  mm/sparse-vmemmap.c  | 75 +++++++++++++++++++++++++++++++++++++++++++++++++++-
+>  5 files changed, 132 insertions(+), 2 deletions(-)
+>
+> diff --git a/include/linux/mm.h b/include/linux/mm.h
+> index d7dddf334779..33c5911afe18 100644
+> --- a/include/linux/mm.h
+> +++ b/include/linux/mm.h
+> @@ -2981,6 +2981,8 @@ static inline void print_vma_addr(char *prefix, unsigned long rip)
+>
+>  void vmemmap_remap_free(unsigned long start, unsigned long end,
+>                         unsigned long reuse);
+> +int vmemmap_remap_alloc(unsigned long start, unsigned long end,
+> +                       unsigned long reuse, gfp_t gfp_mask);
+>
+>  void *sparse_buffer_alloc(unsigned long size);
+>  struct page * __populate_section_memmap(unsigned long pfn,
+> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> index 4cfca27c6d32..5518283aa667 100644
+> --- a/mm/hugetlb.c
+> +++ b/mm/hugetlb.c
+> @@ -1397,16 +1397,26 @@ static void __free_huge_page(struct page *page)
+>                 h->resv_huge_pages++;
+>
+>         if (HPageTemporary(page)) {
+> -               list_del(&page->lru);
+>                 ClearHPageTemporary(page);
 > +
-> +u32 get_current_pkrs(void)
-> +{
-> +	return this_cpu_read(pkrs_cache);
-> +}
-> +EXPORT_SYMBOL_GPL(get_current_pkrs);
-> diff --git a/include/linux/pkeys.h b/include/linux/pkeys.h
-> index bed0e293f13b..480429020f4c 100644
-> --- a/include/linux/pkeys.h
-> +++ b/include/linux/pkeys.h
-> @@ -72,6 +72,10 @@ static inline void pks_mk_readwrite(int pkey)
->  {
->  	pr_err("%s is not valid without PKS support\n", __func__);
+> +               if (alloc_huge_page_vmemmap(h, page, GFP_ATOMIC)) {
+> +                       h->surplus_huge_pages++;
+> +                       h->surplus_huge_pages_node[nid]++;
+> +                       goto enqueue;
+> +               }
+> +               list_del(&page->lru);
+>                 update_and_free_page(h, page);
+>         } else if (h->surplus_huge_pages_node[nid]) {
+> +               if (alloc_huge_page_vmemmap(h, page, GFP_ATOMIC))
+> +                       goto enqueue;
+> +
+>                 /* remove the page from active list */
+>                 list_del(&page->lru);
+>                 update_and_free_page(h, page);
+>                 h->surplus_huge_pages--;
+>                 h->surplus_huge_pages_node[nid]--;
+>         } else {
+> +enqueue:
+>                 arch_clear_hugepage_flags(page);
+>                 enqueue_huge_page(h, page);
+>         }
+> @@ -1693,6 +1703,10 @@ static int free_pool_huge_page(struct hstate *h, nodemask_t *nodes_allowed,
+>                         struct page *page =
+>                                 list_entry(h->hugepage_freelists[node].next,
+>                                           struct page, lru);
+> +
+> +                       if (alloc_huge_page_vmemmap(h, page, GFP_ATOMIC))
+> +                               break;
+> +
+>                         list_del(&page->lru);
+>                         h->free_huge_pages--;
+>                         h->free_huge_pages_node[node]--;
+> @@ -1760,6 +1774,9 @@ int dissolve_free_huge_page(struct page *page)
+>                         goto retry;
+>                 }
+>
+> +               if (alloc_huge_page_vmemmap(h, head, GFP_ATOMIC))
+> +                       goto out;
+> +
+
+Hi Oscar,
+
+Because we allocate vmemmap pages and do the remapping
+before setting the PG_hwpoision of tail struct page. So we do
+not need the following patch.
+
+[1] https://patchwork.kernel.org/project/linux-mm/patch/20210117151053.24600-7-songmuchun@bytedance.com/
+
+>                 /*
+>                  * Move PageHWPoison flag from head page to the raw error page,
+>                  * which makes any subpages rather than the error page reusable.
+> diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
+> index ddd872ab6180..0bd6b8d7282d 100644
+> --- a/mm/hugetlb_vmemmap.c
+> +++ b/mm/hugetlb_vmemmap.c
+> @@ -169,6 +169,8 @@
+>   * (last) level. So this type of HugeTLB page can be optimized only when its
+>   * size of the struct page structs is greater than 2 pages.
+>   */
+> +#define pr_fmt(fmt)    "HugeTLB: " fmt
+> +
+>  #include "hugetlb_vmemmap.h"
+>
+>  /*
+> @@ -198,6 +200,34 @@ static inline unsigned long free_vmemmap_pages_size_per_hpage(struct hstate *h)
+>         return (unsigned long)free_vmemmap_pages_per_hpage(h) << PAGE_SHIFT;
 >  }
-> +static inline u32 get_current_pkrs(void)
+>
+> +int alloc_huge_page_vmemmap(struct hstate *h, struct page *head, gfp_t gfp_mask)
 > +{
-> +	return 0;
+> +       int ret;
+> +       unsigned long vmemmap_addr = (unsigned long)head;
+> +       unsigned long vmemmap_end, vmemmap_reuse;
+> +
+> +       if (!free_vmemmap_pages_per_hpage(h))
+> +               return 0;
+> +
+> +       vmemmap_addr += RESERVE_VMEMMAP_SIZE;
+> +       vmemmap_end = vmemmap_addr + free_vmemmap_pages_size_per_hpage(h);
+> +       vmemmap_reuse = vmemmap_addr - PAGE_SIZE;
+> +
+> +       /*
+> +        * The pages which the vmemmap virtual address range [@vmemmap_addr,
+> +        * @vmemmap_end) are mapped to are freed to the buddy allocator, and
+> +        * the range is mapped to the page which @vmemmap_reuse is mapped to.
+> +        * When a HugeTLB page is freed to the buddy allocator, previously
+> +        * discarded vmemmap pages must be allocated and remapping.
+> +        */
+> +       ret = vmemmap_remap_alloc(vmemmap_addr, vmemmap_end, vmemmap_reuse,
+> +                                 gfp_mask | __GFP_NOWARN | __GFP_THISNODE);
+> +       if (ret == -ENOMEM)
+> +               pr_info("cannot alloc vmemmap pages\n");
+> +
+> +       return ret;
 > +}
->  #endif /* ! CONFIG_ARCH_HAS_SUPERVISOR_PKEYS */
->  
-
-This would need an ack from the x86 people.  Andy, Boris?
-
-Paolo
-
+> +
+>  void free_huge_page_vmemmap(struct hstate *h, struct page *head)
+>  {
+>         unsigned long vmemmap_addr = (unsigned long)head;
+> diff --git a/mm/hugetlb_vmemmap.h b/mm/hugetlb_vmemmap.h
+> index 6923f03534d5..6f89a9eed02c 100644
+> --- a/mm/hugetlb_vmemmap.h
+> +++ b/mm/hugetlb_vmemmap.h
+> @@ -11,8 +11,16 @@
+>  #include <linux/hugetlb.h>
+>
+>  #ifdef CONFIG_HUGETLB_PAGE_FREE_VMEMMAP
+> +int alloc_huge_page_vmemmap(struct hstate *h, struct page *head,
+> +                           gfp_t gfp_mask);
+>  void free_huge_page_vmemmap(struct hstate *h, struct page *head);
+>  #else
+> +static inline int alloc_huge_page_vmemmap(struct hstate *h, struct page *head,
+> +                                         gfp_t gfp_mask)
+> +{
+> +       return 0;
+> +}
+> +
+>  static inline void free_huge_page_vmemmap(struct hstate *h, struct page *head)
+>  {
+>  }
+> diff --git a/mm/sparse-vmemmap.c b/mm/sparse-vmemmap.c
+> index 50c1dc00b686..277eb43aebd5 100644
+> --- a/mm/sparse-vmemmap.c
+> +++ b/mm/sparse-vmemmap.c
+> @@ -40,7 +40,8 @@
+>   * @remap_pte:         called for each non-empty PTE (lowest-level) entry.
+>   * @reuse_page:                the page which is reused for the tail vmemmap pages.
+>   * @reuse_addr:                the virtual address of the @reuse_page page.
+> - * @vmemmap_pages:     the list head of the vmemmap pages that can be freed.
+> + * @vmemmap_pages:     the list head of the vmemmap pages that can be freed
+> + *                     or is mapped from.
+>   */
+>  struct vmemmap_remap_walk {
+>         void (*remap_pte)(pte_t *pte, unsigned long addr,
+> @@ -237,6 +238,78 @@ void vmemmap_remap_free(unsigned long start, unsigned long end,
+>         free_vmemmap_page_list(&vmemmap_pages);
+>  }
+>
+> +static void vmemmap_restore_pte(pte_t *pte, unsigned long addr,
+> +                               struct vmemmap_remap_walk *walk)
+> +{
+> +       pgprot_t pgprot = PAGE_KERNEL;
+> +       struct page *page;
+> +       void *to;
+> +
+> +       BUG_ON(pte_page(*pte) != walk->reuse_page);
+> +
+> +       page = list_first_entry(walk->vmemmap_pages, struct page, lru);
+> +       list_del(&page->lru);
+> +       to = page_to_virt(page);
+> +       copy_page(to, (void *)walk->reuse_addr);
+> +
+> +       set_pte_at(&init_mm, addr, pte, mk_pte(page, pgprot));
+> +}
+> +
+> +static int alloc_vmemmap_page_list(unsigned long start, unsigned long end,
+> +                                  gfp_t gfp_mask, struct list_head *list)
+> +{
+> +       unsigned long addr;
+> +       int nid = page_to_nid((const void *)start);
+> +       struct page *page, *next;
+> +
+> +       for (addr = start; addr < end; addr += PAGE_SIZE) {
+> +               page = alloc_pages_node(nid, gfp_mask, 0);
+> +               if (!page)
+> +                       goto out;
+> +               list_add_tail(&page->lru, list);
+> +       }
+> +
+> +       return 0;
+> +out:
+> +       list_for_each_entry_safe(page, next, list, lru)
+> +               __free_pages(page, 0);
+> +       return -ENOMEM;
+> +}
+> +
+> +/**
+> + * vmemmap_remap_alloc - remap the vmemmap virtual address range [@start, end)
+> + *                      to the page which is from the @vmemmap_pages
+> + *                      respectively.
+> + * @start:     start address of the vmemmap virtual address range that we want
+> + *             to remap.
+> + * @end:       end address of the vmemmap virtual address range that we want to
+> + *             remap.
+> + * @reuse:     reuse address.
+> + * @gpf_mask:  GFP flag for allocating vmemmap pages.
+> + */
+> +int vmemmap_remap_alloc(unsigned long start, unsigned long end,
+> +                       unsigned long reuse, gfp_t gfp_mask)
+> +{
+> +       LIST_HEAD(vmemmap_pages);
+> +       struct vmemmap_remap_walk walk = {
+> +               .remap_pte      = vmemmap_restore_pte,
+> +               .reuse_addr     = reuse,
+> +               .vmemmap_pages  = &vmemmap_pages,
+> +       };
+> +
+> +       /* See the comment in the vmemmap_remap_free(). */
+> +       BUG_ON(start - reuse != PAGE_SIZE);
+> +
+> +       might_sleep_if(gfpflags_allow_blocking(gfp_mask));
+> +
+> +       if (alloc_vmemmap_page_list(start, end, gfp_mask, &vmemmap_pages))
+> +               return -ENOMEM;
+> +
+> +       vmemmap_remap_range(reuse, end, &walk);
+> +
+> +       return 0;
+> +}
+> +
+>  /*
+>   * Allocate a block of memory to be used to back the virtual memory map
+>   * or to back the page tables that are used to create the mapping.
+> --
+> 2.11.0
+>
