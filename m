@@ -2,246 +2,259 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CCF43106A7
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 09:29:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F7063106A3
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 09:28:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229554AbhBEI2U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 03:28:20 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51557 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229496AbhBEI2G (ORCPT
+        id S229734AbhBEI1g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 03:27:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59948 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229691AbhBEI1a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 03:28:06 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612513599;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=oDMQ6BYUDWHg8nMQB3rlhW/i1MEjtZA4avHL+byLM6c=;
-        b=e6HEAIeKffYlFNjEkapC1dzBcOJvOzJnuUmLJqm1JpJNvkC0UH+wkJmYVvvBVxNFRzfSvQ
-        9yVNKlXpUs9XLsvHWiSdhZYXdIQJCJFYKNif5J3QtSnLZjH82sF+1TF4rKHmYRZhLvrlXX
-        npBAsf7RG5tXW1NgslZMvPu1iPRFy/E=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-599-4fosFxWWPOWdlATZ_79JpQ-1; Fri, 05 Feb 2021 03:26:34 -0500
-X-MC-Unique: 4fosFxWWPOWdlATZ_79JpQ-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DA0481083E8F;
-        Fri,  5 Feb 2021 08:26:31 +0000 (UTC)
-Received: from [10.36.113.156] (ovpn-113-156.ams2.redhat.com [10.36.113.156])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 35F6510016F5;
-        Fri,  5 Feb 2021 08:26:29 +0000 (UTC)
-To:     Oscar Salvador <osalvador@suse.de>, akpm@linux-foundation.org
-Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>,
-        Michal Hocko <mhocko@kernel.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <20210204134325.7237-1-osalvador@suse.de>
- <20210204134325.7237-4-osalvador@suse.de>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Subject: Re: [PATCH v3 3/3] x86/vmemmap: Handle unpopulated sub-pmd ranges
-Message-ID: <41c06727-dda6-0154-fa31-51b0764005bb@redhat.com>
-Date:   Fri, 5 Feb 2021 09:26:28 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Fri, 5 Feb 2021 03:27:30 -0500
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1328C0613D6;
+        Fri,  5 Feb 2021 00:26:50 -0800 (PST)
+Received: by mail-io1-xd34.google.com with SMTP id n14so6228166iog.3;
+        Fri, 05 Feb 2021 00:26:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Z0Gm8u2TMhBz/YCAe+pp9wro9BJ8jYFwFo8FlNQSJoI=;
+        b=oMNVSNOZyGvv07CcK+taZmULiang1+bklyyyewwT198brr7qyEZbmo24VeU7rC0LfY
+         oo1t2KP3oKiXaAOKPttUlo+Qh0uiZ1JOoRyZuAgwFJYIX9jaKnb/f/FhqhNwhZ3NO+KI
+         nlsLpqfSWHmad4vHGGsgNWGV1MQngDWvri4yjWNOtCd+ZOn20zldzc27fOfPFr6LJTPZ
+         XssBMf7mHvFmCml0MF3YgcKdL8IucT9BAJj6A6sVFkvaBksjNTR2lIi110yruPesd1by
+         U+vXTcPV5gAZEjgWcZ4AdkG8q03QGAJiAwgcZY7qm31AciDMAOUi228tGbC+vTSnwchB
+         W1fg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Z0Gm8u2TMhBz/YCAe+pp9wro9BJ8jYFwFo8FlNQSJoI=;
+        b=X+4x3WW8c6Lrb72+9tiMYlLsjRGStvZPF/y8T6dhKtOugLMH2n3b/rD/V7cfJPFrMB
+         UXPXFvyaICQSK/h7kguiO4YyFWjdiei9PQkWUaKng9gC37QSasUfF1HRtKedcla9vWTo
+         jBaIJ97STTWF+8T7Ubq6nZuAoViXjfyAalN4TQfCJlPGOnaeB2heH/WKhUJHETLTu5pY
+         Mv6wXVTZLpgMUvmn1EW6HPnYtrt31RjXwd7yBvWY3smIlWQnvWUFHeyEQs6j+7AXaa+a
+         aX4lGfNsmGc5L8g1e6lSfQ/NUsVDBWqq/LrvYZlDcyPYQTUayTmWZzQXc8nV14ksMfa4
+         Xapg==
+X-Gm-Message-State: AOAM532P2LROdeMYH6lGk1RbBhbHQW79lyuU+XTC5ejjq9ZuLmDLG2Fy
+        bQ6aJ6DjjjUdSaKW5nSkOY6Z9QSiJADyUb7lQeM=
+X-Google-Smtp-Source: ABdhPJx/7S6ngUSZt+lhev2lxyfban1H04P3gyM5ctHEpKB7iEd1QnjQwA/cAK/IAK5dVcXtBF6hW5yVJkAuXRZ3y5U=
+X-Received: by 2002:a02:3f62:: with SMTP id c34mr3877574jaf.16.1612513608749;
+ Fri, 05 Feb 2021 00:26:48 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210204134325.7237-4-osalvador@suse.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+References: <20210201145105.20459-1-alexandru.ardelean@analog.com>
+ <20210201145105.20459-8-alexandru.ardelean@analog.com> <20210204180926.00005e4c@Huawei.com>
+In-Reply-To: <20210204180926.00005e4c@Huawei.com>
+From:   Alexandru Ardelean <ardeleanalex@gmail.com>
+Date:   Fri, 5 Feb 2021 10:26:32 +0200
+Message-ID: <CA+U=Dsq34ixRT71qD8ZTR7MQ7NDgDZV2EJ+3gT=QQ8wBz4GiGA@mail.gmail.com>
+Subject: Re: [PATCH v3 07/11] iio: add reference to iio buffer on iio_dev_attr
+To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        "Hennerich, Michael" <Michael.Hennerich@analog.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        =?UTF-8?B?TnVubyBTw6E=?= <nuno.sa@analog.com>,
+        "Bogdan, Dragos" <dragos.bogdan@analog.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04.02.21 14:43, Oscar Salvador wrote:
-> When the size of a struct page is not multiple of 2MB, sections do
-> not span a PMD anymore and so when populating them some parts of the
-> PMD will remain unused.
-> Because of this, PMDs will be left behind when depopulating sections
-> since remove_pmd_table() thinks that those unused parts are still in
-> use.
-> 
-> Fix this by marking the unused parts with PAGE_UNUSED, so memchr_inv()
-> will do the right thing and will let us free the PMD when the last user
-> of it is gone.
-> 
-> This patch is based on a similar patch by David Hildenbrand:
-> 
-> https://lore.kernel.org/linux-mm/20200722094558.9828-9-david@redhat.com/
-> https://lore.kernel.org/linux-mm/20200722094558.9828-10-david@redhat.com/
-> 
-> Signed-off-by: Oscar Salvador <osalvador@suse.de>
-> ---
->   arch/x86/mm/init_64.c | 106 ++++++++++++++++++++++++++++++++++++++----
->   1 file changed, 98 insertions(+), 8 deletions(-)
-> 
-> diff --git a/arch/x86/mm/init_64.c b/arch/x86/mm/init_64.c
-> index 9ecb3c488ac8..7e8de63f02b3 100644
-> --- a/arch/x86/mm/init_64.c
-> +++ b/arch/x86/mm/init_64.c
-> @@ -871,7 +871,93 @@ int arch_add_memory(int nid, u64 start, u64 size,
->   	return add_pages(nid, start_pfn, nr_pages, params);
->   }
->   
-> -#define PAGE_INUSE 0xFD
-> +#ifdef CONFIG_SPARSEMEM_VMEMMAP
-> +#define PAGE_UNUSED 0xFD
-> +
-> +/*
-> + * The unused vmemmap range, which was not yet memset(PAGE_UNUSED) ranges
-> + * from unused_pmd_start to next PMD_SIZE boundary.
-> + */
-> +static unsigned long unused_pmd_start __meminitdata;
-> +
-> +static void __meminit vmemmap_flush_unused_pmd(void)
-> +{
-> +	if (!unused_pmd_start)
-> +		return;
-> +	/*
-> +	 * Clears (unused_pmd_start, PMD_END]
-> +	 */
-> +	memset((void *)unused_pmd_start, PAGE_UNUSED,
-> +	       ALIGN(unused_pmd_start, PMD_SIZE) - unused_pmd_start);
-> +	unused_pmd_start = 0;
-> +}
-> +
-> +/* Returns true if the PMD is completely unused and thus it can be freed */
-> +static bool __meminit vmemmap_unuse_sub_pmd(unsigned long addr, unsigned long end)
-> +{
-> +	unsigned long start = ALIGN_DOWN(addr, PMD_SIZE);
-> +
-> +	vmemmap_flush_unused_pmd();
-> +	memset((void *)addr, PAGE_UNUSED, end - addr);
-> +
-> +	return !memchr_inv((void *)start, PAGE_UNUSED, PMD_SIZE);
-> +}
-> +
-> +static void __meminit __vmemmap_use_sub_pmd(unsigned long start)
-> +{
-> +	/*
-> +	 * As we expect to add in the same granularity as we remove, it's
-> +	 * sufficient to mark only some piece used to block the memmap page from
-> +	 * getting removed when removing some other adjacent memmap (just in
-> +	 * case the first memmap never gets initialized e.g., because the memory
-> +	 * block never gets onlined).
-> +	 */
-> +	memset((void *)start, 0, sizeof(struct page));
-> +}
-> +
-> +static void __meminit vmemmap_use_sub_pmd(unsigned long start, unsigned long end)
-> +{
-> +	/*
-> +	 * We only optimize if the new used range directly follows the
-> +	 * previously unused range (esp., when populating consecutive sections).
-> +	 */
-> +	if (unused_pmd_start == start) {
-> +		if (likely(IS_ALIGNED(end, PMD_SIZE)))
-> +			unused_pmd_start = 0;
-> +		else
-> +			unused_pmd_start = end;
-> +		return;
-> +	}
-> +
-> +	vmemmap_flush_unused_pmd();
-> +	__vmemmap_use_sub_pmd(start);
-> +}
-> +
-> +static void __meminit vmemmap_use_new_sub_pmd(unsigned long start, unsigned long end)
-> +{
-> +	vmemmap_flush_unused_pmd();
-> +
-> +	/*
-> +	 * Could be our memmap page is filled with PAGE_UNUSED already from a
-> +	 * previous remove.
-> +	 */
-> +	__vmemmap_use_sub_pmd(start);
-> +
-> +	/*
-> +	 * Mark the unused parts of the new memmap range
-> +	 */
-> +	if (!IS_ALIGNED(start, PMD_SIZE))
-> +		memset((void *)start, PAGE_UNUSED,
-> +		       start - ALIGN_DOWN(start, PMD_SIZE));
-> +	/*
-> +	 * We want to avoid memset(PAGE_UNUSED) when populating the vmemmap of
-> +	 * consecutive sections. Remember for the last added PMD the last
-> +	 * unused range in the populated PMD.
-> +	 */
-> +	if (!IS_ALIGNED(end, PMD_SIZE))
-> +		unused_pmd_start = end;
-> +}
-> +#endif
->   
->   static void __meminit free_pagetable(struct page *page, int order)
->   {
-> @@ -1006,7 +1092,6 @@ remove_pmd_table(pmd_t *pmd_start, unsigned long addr, unsigned long end,
->   	unsigned long next, pages = 0;
->   	pte_t *pte_base;
->   	pmd_t *pmd;
-> -	void *page_addr;
->   
->   	pmd = pmd_start + pmd_index(addr);
->   	for (; addr < end; addr = next, pmd++) {
-> @@ -1027,12 +1112,11 @@ remove_pmd_table(pmd_t *pmd_start, unsigned long addr, unsigned long end,
->   				spin_unlock(&init_mm.page_table_lock);
->   				pages++;
->   			} else {
-> -				/* If here, we are freeing vmemmap pages. */
-> -				memset((void *)addr, PAGE_INUSE, next - addr);
-> -
-> -				page_addr = page_address(pmd_page(*pmd));
-> -				if (!memchr_inv(page_addr, PAGE_INUSE,
-> -						PMD_SIZE)) {
-> +#ifdef CONFIG_SPARSEMEM_VMEMMAP
-> +				/*
-> +				 * Free the PMD if the whole range is unused.
-> +				 */
-> +				if (vmemmap_unuse_sub_pmd(addr, next)) {
->   					free_hugepage_table(pmd_page(*pmd),
->   							    altmap);
->   
-> @@ -1040,6 +1124,7 @@ remove_pmd_table(pmd_t *pmd_start, unsigned long addr, unsigned long end,
->   					pmd_clear(pmd);
->   					spin_unlock(&init_mm.page_table_lock);
->   				}
-> +#endif
->   			}
->   
->   			continue;
-> @@ -1492,11 +1577,16 @@ static int __meminit vmemmap_populate_hugepages(unsigned long start,
->   
->   				addr_end = addr + PMD_SIZE;
->   				p_end = p + PMD_SIZE;
-> +
-> +				if (!IS_ALIGNED(addr, PMD_SIZE) ||
-> +				    !IS_ALIGNED(next, PMD_SIZE))
-> +					vmemmap_use_new_sub_pmd(addr, next);
->   				continue;
->   			} else if (altmap)
->   				return -ENOMEM; /* no fallback */
->   		} else if (pmd_large(*pmd)) {
->   			vmemmap_verify((pte_t *)pmd, node, addr, next);
-> +			vmemmap_use_sub_pmd(addr, next);
->   			continue;
->   		}
->   		if (vmemmap_populate_basepages(addr, next, node, NULL))
-> 
+On Thu, Feb 4, 2021 at 8:16 PM Jonathan Cameron
+<Jonathan.Cameron@huawei.com> wrote:
+>
+> On Mon, 1 Feb 2021 16:51:01 +0200
+> Alexandru Ardelean <alexandru.ardelean@analog.com> wrote:
+>
+> > This change adds a reference to a 'struct iio_buffer' object on the
+> > iio_dev_attr object. This way, we can use the created iio_dev_attr objects
+> > on per-buffer basis (since they're allocated anyway).
+> >
+> > A minor downside of this change is that the number of parameters on
+> > __iio_add_chan_devattr() grows by 1. This looks like it could do with a bit
+> > of a re-think.
+>
+> Could use a bit of macro magic or static inline to keep the old
+> version set of parameter and have __iio_add_chan_devattr_with_buf
+> or similar.  I'm not sure I'd bother given we don't have that many callers.
 
-LGTM, thanks
+If there isn't a strong opinion to add the
+__iio_add_chan_devattr_with_buf() version + macro/inline magic, I'd
+probably not do it.
+In terms of patch-noise, it's not considerably better, and not
+necessarily worse.
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
+When I was thinking about the re-think of __iio_add_chan_devattr, I
+was thinking of a way to maybe re-architect this.
+Maybe, add some {device_}attribute that act as template [at least for
+the R/W functions].
+This definitely needs some thinking to make it clean and nice.
 
--- 
-Thanks,
-
-David / dhildenb
-
+>
+> >
+> > Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+> > ---
+> >  drivers/iio/iio_core.h            | 2 ++
+> >  drivers/iio/industrialio-buffer.c | 4 ++++
+> >  drivers/iio/industrialio-core.c   | 6 ++++++
+> >  drivers/iio/industrialio-event.c  | 1 +
+> >  include/linux/iio/sysfs.h         | 3 +++
+> >  5 files changed, 16 insertions(+)
+> >
+> > diff --git a/drivers/iio/iio_core.h b/drivers/iio/iio_core.h
+> > index 7d5b179c1fe7..731f5170d5b9 100644
+> > --- a/drivers/iio/iio_core.h
+> > +++ b/drivers/iio/iio_core.h
+> > @@ -12,6 +12,7 @@
+> >  #include <linux/kernel.h>
+> >  #include <linux/device.h>
+> >
+> > +struct iio_buffer;
+> >  struct iio_chan_spec;
+> >  struct iio_dev;
+> >
+> > @@ -43,6 +44,7 @@ int __iio_add_chan_devattr(const char *postfix,
+> >                          u64 mask,
+> >                          enum iio_shared_by shared_by,
+> >                          struct device *dev,
+> > +                        struct iio_buffer *buffer,
+> >                          struct list_head *attr_list);
+> >  void iio_free_chan_devattr_list(struct list_head *attr_list);
+> >
+> > diff --git a/drivers/iio/industrialio-buffer.c b/drivers/iio/industrialio-buffer.c
+> > index f82decf92b7c..a525e88b302f 100644
+> > --- a/drivers/iio/industrialio-buffer.c
+> > +++ b/drivers/iio/industrialio-buffer.c
+>
+> > @@ -447,6 +447,7 @@ static int iio_buffer_add_channel_sysfs(struct iio_dev *indio_dev,
+> >                                    0,
+> >                                    IIO_SEPARATE,
+> >                                    &indio_dev->dev,
+> > +                                  buffer,
+> >                                    &buffer->scan_el_dev_attr_list);
+> >       if (ret)
+> >               return ret;
+> > @@ -458,6 +459,7 @@ static int iio_buffer_add_channel_sysfs(struct iio_dev *indio_dev,
+> >                                    0,
+> >                                    0,
+> >                                    &indio_dev->dev,
+> > +                                  buffer,
+> >                                    &buffer->scan_el_dev_attr_list);
+> >       if (ret)
+> >               return ret;
+> > @@ -470,6 +472,7 @@ static int iio_buffer_add_channel_sysfs(struct iio_dev *indio_dev,
+> >                                            chan->scan_index,
+> >                                            0,
+> >                                            &indio_dev->dev,
+> > +                                          buffer,
+> >                                            &buffer->scan_el_dev_attr_list);
+> >       else
+> >               ret = __iio_add_chan_devattr("en",
+> > @@ -479,6 +482,7 @@ static int iio_buffer_add_channel_sysfs(struct iio_dev *indio_dev,
+> >                                            chan->scan_index,
+> >                                            0,
+> >                                            &indio_dev->dev,
+> > +                                          buffer,
+> >                                            &buffer->scan_el_dev_attr_list);
+> >       if (ret)
+> >               return ret;
+> > diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
+> > index ccd7aaff6d13..c68130885d83 100644
+> > --- a/drivers/iio/industrialio-core.c
+> > +++ b/drivers/iio/industrialio-core.c
+> > @@ -1114,6 +1114,7 @@ int __iio_add_chan_devattr(const char *postfix,
+> >                          u64 mask,
+> >                          enum iio_shared_by shared_by,
+> >                          struct device *dev,
+> > +                        struct iio_buffer *buffer,
+> >                          struct list_head *attr_list)
+> >  {
+> >       int ret;
+> > @@ -1129,6 +1130,7 @@ int __iio_add_chan_devattr(const char *postfix,
+> >               goto error_iio_dev_attr_free;
+> >       iio_attr->c = chan;
+> >       iio_attr->address = mask;
+> > +     iio_attr->buffer = buffer;
+> >       list_for_each_entry(t, attr_list, l)
+> >               if (strcmp(t->dev_attr.attr.name,
+> >                          iio_attr->dev_attr.attr.name) == 0) {
+> > @@ -1165,6 +1167,7 @@ static int iio_device_add_channel_label(struct iio_dev *indio_dev,
+> >                                    0,
+> >                                    IIO_SEPARATE,
+> >                                    &indio_dev->dev,
+> > +                                  NULL,
+> >                                    &iio_dev_opaque->channel_attr_list);
+> >       if (ret < 0)
+> >               return ret;
+> > @@ -1190,6 +1193,7 @@ static int iio_device_add_info_mask_type(struct iio_dev *indio_dev,
+> >                                            i,
+> >                                            shared_by,
+> >                                            &indio_dev->dev,
+> > +                                          NULL,
+> >                                            &iio_dev_opaque->channel_attr_list);
+> >               if ((ret == -EBUSY) && (shared_by != IIO_SEPARATE))
+> >                       continue;
+> > @@ -1226,6 +1230,7 @@ static int iio_device_add_info_mask_type_avail(struct iio_dev *indio_dev,
+> >                                            i,
+> >                                            shared_by,
+> >                                            &indio_dev->dev,
+> > +                                          NULL,
+> >                                            &iio_dev_opaque->channel_attr_list);
+> >               kfree(avail_postfix);
+> >               if ((ret == -EBUSY) && (shared_by != IIO_SEPARATE))
+> > @@ -1322,6 +1327,7 @@ static int iio_device_add_channel_sysfs(struct iio_dev *indio_dev,
+> >                                       i,
+> >                                       ext_info->shared,
+> >                                       &indio_dev->dev,
+> > +                                     NULL,
+> >                                       &iio_dev_opaque->channel_attr_list);
+> >                       i++;
+> >                       if (ret == -EBUSY && ext_info->shared)
+> > diff --git a/drivers/iio/industrialio-event.c b/drivers/iio/industrialio-event.c
+> > index ea8947cc21e4..a30e289fc362 100644
+> > --- a/drivers/iio/industrialio-event.c
+> > +++ b/drivers/iio/industrialio-event.c
+> > @@ -385,6 +385,7 @@ static int iio_device_add_event(struct iio_dev *indio_dev,
+> >
+> >               ret = __iio_add_chan_devattr(postfix, chan, show, store,
+> >                        (i << 16) | spec_index, shared_by, &indio_dev->dev,
+> > +                      NULL,
+> >                       &iio_dev_opaque->event_interface->dev_attr_list);
+> >               kfree(postfix);
+> >
+> > diff --git a/include/linux/iio/sysfs.h b/include/linux/iio/sysfs.h
+> > index b532c875bc24..e51fba66de4b 100644
+> > --- a/include/linux/iio/sysfs.h
+> > +++ b/include/linux/iio/sysfs.h
+> > @@ -9,6 +9,7 @@
+> >  #ifndef _INDUSTRIAL_IO_SYSFS_H_
+> >  #define _INDUSTRIAL_IO_SYSFS_H_
+> >
+> > +struct iio_buffer;
+> >  struct iio_chan_spec;
+> >
+> >  /**
+> > @@ -17,12 +18,14 @@ struct iio_chan_spec;
+> >   * @address: associated register address
+> >   * @l:               list head for maintaining list of dynamically created attrs
+> >   * @c:               specification for the underlying channel
+> > + * @buffer:  the IIO buffer to which this attribute belongs to (if any)
+> >   */
+> >  struct iio_dev_attr {
+> >       struct device_attribute dev_attr;
+> >       u64 address;
+> >       struct list_head l;
+> >       struct iio_chan_spec const *c;
+> > +     struct iio_buffer *buffer;
+> >  };
+> >
+> >  #define to_iio_dev_attr(_dev_attr)                           \
+>
