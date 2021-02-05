@@ -2,120 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BE0E310665
+	by mail.lfdr.de (Postfix) with ESMTP id CC9E2310666
 	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 09:16:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231553AbhBEIHF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 03:07:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55334 "EHLO
+        id S231690AbhBEIMm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 03:12:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231294AbhBEIGD (ORCPT
+        with ESMTP id S231571AbhBEIHH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 03:06:03 -0500
-Received: from forward105o.mail.yandex.net (forward105o.mail.yandex.net [IPv6:2a02:6b8:0:1a2d::608])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7F04C061793;
-        Fri,  5 Feb 2021 00:05:22 -0800 (PST)
-Received: from forward100q.mail.yandex.net (forward100q.mail.yandex.net [IPv6:2a02:6b8:c0e:4b:0:640:4012:bb97])
-        by forward105o.mail.yandex.net (Yandex) with ESMTP id E22294203827;
-        Fri,  5 Feb 2021 11:05:20 +0300 (MSK)
-Received: from vla1-4e4ee944ff6b.qloud-c.yandex.net (vla1-4e4ee944ff6b.qloud-c.yandex.net [IPv6:2a02:6b8:c0d:3192:0:640:4e4e:e944])
-        by forward100q.mail.yandex.net (Yandex) with ESMTP id DDE6D7080004;
-        Fri,  5 Feb 2021 11:05:20 +0300 (MSK)
-Received: from vla1-1bc5b51c612f.qloud-c.yandex.net (vla1-1bc5b51c612f.qloud-c.yandex.net [2a02:6b8:c0d:89c:0:640:1bc5:b51c])
-        by vla1-4e4ee944ff6b.qloud-c.yandex.net (mxback/Yandex) with ESMTP id EmakGzbKsi-5KHOfrIV;
-        Fri, 05 Feb 2021 11:05:20 +0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=maquefel.me; s=mail; t=1612512320;
-        bh=C5tU/jiLrZmvj9xOWKPAfwt+7YcgCQ3SmmER8nQlmxc=;
-        h=In-Reply-To:References:Date:Subject:To:From:Message-Id:Cc;
-        b=DOgAfDXIHXQm6lp8n6o9EdKgZe9lkl9EYWzW9kYbNUwQcZQ86xshLa4bhC76uq/v/
-         smhm76sS+RpTZd3n4vkXQEaUdBf1KoOLtMcVfPtVHf4kigsdrwMvxmPYJmQ4cGiVCQ
-         73EUaafLOKLyU7B3hz0CiLGCRnkfJLM0fHKl6bsQ=
-Authentication-Results: vla1-4e4ee944ff6b.qloud-c.yandex.net; dkim=pass header.i=@maquefel.me
-Received: by vla1-1bc5b51c612f.qloud-c.yandex.net (smtp/Yandex) with ESMTPSA id 8MWdPhaokU-5Kn8lqqC;
-        Fri, 05 Feb 2021 11:05:20 +0300
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (Client certificate not present)
-From:   Nikita Shubin <nikita.shubin@maquefel.me>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Nikita Shubin <nikita.shubin@maquefel.me>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Alexander Sverdlin <alexander.sverdlin@gmail.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v4 7/7] gpio: ep93xx: refactor base IRQ number
-Date:   Fri,  5 Feb 2021 11:05:07 +0300
-Message-Id: <20210205080507.16007-8-nikita.shubin@maquefel.me>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210205080507.16007-1-nikita.shubin@maquefel.me>
-References: <20210205080507.16007-1-nikita.shubin@maquefel.me>
+        Fri, 5 Feb 2021 03:07:07 -0500
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8535FC061786
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 00:06:26 -0800 (PST)
+Received: by mail-pg1-x530.google.com with SMTP id j2so4028818pgl.0
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 00:06:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zKwoaw8bdzrF/FhsWPWtgeGzPvNKHujT195hYCj6ZCs=;
+        b=K0THtBNlTDmpc3F2F9qo3PXiSflivANjFuhFHO0/w0OQkh9BJFI2DLfQCg3umFdPRT
+         9DU5VNc7SfomsN45a3Kb9J3ZAcxuU/PcFTQaVK8roWSeawag+xcKSAwCs5/MQo8f2H3d
+         viFJJrrovEHFzeIeEu8FqgsGG29CWEPTETHs3GBuUPsPi0L7kJqZ/1FRq6mEPCH/5VDb
+         6V9juYaeCpzq6xCPRvBkXCRT98zvQdGItcWAQezWayHIaKbLl7aAMecJp3C2A6Upcqfq
+         CHJNQWQRiVgDzfcgpmshCIoa3TqUQKF+dkdYVW/++YTotTS02mqYGn3sGt4SqKPViMJ0
+         ULZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zKwoaw8bdzrF/FhsWPWtgeGzPvNKHujT195hYCj6ZCs=;
+        b=SvQI6JmFpNHn8sOKdsO/QK87Y/qNci6MEKoL/wE/Bj++zDwNGdZUT8CbFpGqH3baK7
+         JZ/cTgLR4rgcwkpObGyYO3PHJnp1hRnHwAKltVCbiW2Ku2N6T2cVbWdO/h8yfnvg7J9u
+         cey1F/wsnECy10sObogTzlsiBkifW+XImcjAvFYCwPOYQ4Upc+D2TLGa5SGXaRJR+yD1
+         O6taXeSKhbRjFIaYQOnLuX4IXAwO5Ja7Bm4+i4M67ehPXupY8T1B5PzQXPYTpDp/acOJ
+         B6wYRq984g7rBNsoSPKcoilGsN3867VUvv1U1daHvCQeAEWlvyIN5rzSCJlV0qKiLJtL
+         s26Q==
+X-Gm-Message-State: AOAM531J0k0yX17A4gs+P+SUzsh3gshdld9+x4PobhxrJlmK0XK83t6x
+        4ZmcHbujPVpwzcP6F6aPq/52RBbNioLbxw==
+X-Google-Smtp-Source: ABdhPJyRH2+aPnRrC0zh854reLPDhJihnNvupmtnylhjqPZmslPnqqJCsTysj9OXBE675MNHWcjGGA==
+X-Received: by 2002:a63:bc02:: with SMTP id q2mr3217163pge.198.1612512385535;
+        Fri, 05 Feb 2021 00:06:25 -0800 (PST)
+Received: from localhost.localdomain ([2601:1c2:680:1319:692:26ff:feda:3a81])
+        by smtp.gmail.com with ESMTPSA id 32sm9520070pgq.80.2021.02.05.00.06.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Feb 2021 00:06:24 -0800 (PST)
+From:   John Stultz <john.stultz@linaro.org>
+To:     lkml <linux-kernel@vger.kernel.org>
+Cc:     John Stultz <john.stultz@linaro.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Christian Koenig <christian.koenig@amd.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Liam Mark <lmark@codeaurora.org>,
+        Chris Goldsworthy <cgoldswo@codeaurora.org>,
+        Laura Abbott <labbott@kernel.org>,
+        Brian Starkey <Brian.Starkey@arm.com>,
+        Hridya Valsaraju <hridya@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Sandeep Patil <sspatil@google.com>,
+        Daniel Mentz <danielmentz@google.com>,
+        =?UTF-8?q?=C3=98rjan=20Eide?= <orjan.eide@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Simon Ser <contact@emersion.fr>,
+        James Jones <jajones@nvidia.com>, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+Subject: [RFC][PATCH v6 0/7] Generic page pool & deferred freeing for system dmabuf heap
+Date:   Fri,  5 Feb 2021 08:06:14 +0000
+Message-Id: <20210205080621.3102035-1-john.stultz@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-- use predefined constants instead of plain numbers
-- use provided bank IRQ number instead of defined constant
-  for port F
+This series is starting to get long, so I figured I'd add a
+short cover letter for context.
 
-Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
----
- drivers/gpio/gpio-ep93xx.c | 15 ++++++++++-----
- 1 file changed, 10 insertions(+), 5 deletions(-)
+The point of this series is trying to add both deferred-freeing
+logic as well as a page pool to the DMA-BUF system heap.
 
-diff --git a/drivers/gpio/gpio-ep93xx.c b/drivers/gpio/gpio-ep93xx.c
-index 41b5b1de14f6..252f7d765ff2 100644
---- a/drivers/gpio/gpio-ep93xx.c
-+++ b/drivers/gpio/gpio-ep93xx.c
-@@ -31,6 +31,8 @@
- /* Maximum value for irq capable line identifiers */
- #define EP93XX_GPIO_LINE_MAX_IRQ 23
- 
-+#define EP93XX_GPIO_A_IRQ_BASE 64
-+#define EP93XX_GPIO_B_IRQ_BASE 72
- /*
-  * Static mapping of GPIO bank F IRQS:
-  * F0..F7 (16..24) to irq 80..87.
-@@ -304,14 +306,17 @@ _irq_name) \
- 
- static struct ep93xx_gpio_bank ep93xx_gpio_banks[] = {
- 	/* Bank A has 8 IRQs */
--	EP93XX_GPIO_BANK("A", 0x00, 0x10, 0x90, 0, true, false, 64, "gpio-irq-a"),
-+	EP93XX_GPIO_BANK("A", 0x00, 0x10, 0x90, 0, true, false,
-+			EP93XX_GPIO_A_IRQ_BASE, "gpio-irq-a"),
- 	/* Bank B has 8 IRQs */
--	EP93XX_GPIO_BANK("B", 0x04, 0x14, 0xac, 8, true, false, 72, "gpio-irq-b"),
-+	EP93XX_GPIO_BANK("B", 0x04, 0x14, 0xac, 8, true, false,
-+			 EP93XX_GPIO_B_IRQ_BASE, "gpio-irq-b"),
- 	EP93XX_GPIO_BANK("C", 0x08, 0x18, 0x00, 40, false, false, 0, 0),
- 	EP93XX_GPIO_BANK("D", 0x0c, 0x1c, 0x00, 24, false, false, 0, 0),
- 	EP93XX_GPIO_BANK("E", 0x20, 0x24, 0x00, 32, false, false, 0, 0),
- 	/* Bank F has 8 IRQs */
--	EP93XX_GPIO_BANK("F", 0x30, 0x34, 0x4c, 16, false, true, 0, "gpio-irq-b"),
-+	EP93XX_GPIO_BANK("F", 0x30, 0x34, 0x4c, 16, false, true, 0,
-+			 EP93XX_GPIO_F_IRQ_BASE, "gpio-irq-b"),
- 	EP93XX_GPIO_BANK("G", 0x38, 0x3c, 0x00, 48, false, false, 0, 0),
- 	EP93XX_GPIO_BANK("H", 0x40, 0x44, 0x00, 56, false, false, 0, 0),
- };
-@@ -410,7 +415,7 @@ static int ep93xx_gpio_add_bank(struct ep93xx_gpio_chip *egc,
- 		/* Pick resources 1..8 for these IRQs */
- 		for (i = 0; i < girq->num_parents; i++) {
- 			girq->parents[i] = platform_get_irq(pdev, i + 1);
--			gpio_irq = EP93XX_GPIO_F_IRQ_BASE + i;
-+			gpio_irq = bank->irq_base + i;
- 			irq_set_chip_data(gpio_irq, &epg->gc[5]);
- 			irq_set_chip_and_handler(gpio_irq,
- 						 &ep93xx_gpio_irq_chip,
-@@ -419,7 +424,7 @@ static int ep93xx_gpio_add_bank(struct ep93xx_gpio_chip *egc,
- 		}
- 		girq->default_type = IRQ_TYPE_NONE;
- 		girq->handler = handle_level_irq;
--		girq->first = EP93XX_GPIO_F_IRQ_BASE;
-+		girq->first = bank->irq_base;
- 	}
- 
- 	return devm_gpiochip_add_data(dev, gc, epg);
+This is desired, as the combination of deferred freeing along
+with the page pool allows us to offload page-zeroing out of
+the allocation hot path. This was done originally with ION
+and this patch series allows the DMA-BUF system heap to match
+ION's system heap allocation performance in a simple
+microbenchmark [1] (ION re-added to the kernel for comparision,
+running on an x86 vm image):
+
+./dmabuf-heap-bench -i 0 1 system                     
+Testing dmabuf system vs ion heaptype 0 (flags: 0x1)
+---------------------------------------------
+dmabuf heap: alloc 4096 bytes 5000 times in 86572223 ns          17314 ns/call
+ion heap:    alloc 4096 bytes 5000 times in 97442526 ns          19488 ns/call
+dmabuf heap: alloc 1048576 bytes 5000 times in 196635057 ns      39327 ns/call
+ion heap:    alloc 1048576 bytes 5000 times in 357323629 ns      71464 ns/call
+dmabuf heap: alloc 8388608 bytes 5000 times in 3165445534 ns     633089 ns/call
+ion heap:    alloc 8388608 bytes 5000 times in 3699591271 ns     739918 ns/call
+dmabuf heap: alloc 33554432 bytes 5000 times in 13327402517 ns   2665480 ns/call
+ion heap:    alloc 33554432 bytes 5000 times in 15292352796 ns   3058470 ns/call
+
+Daniel didn't like earlier attempts to re-use the network
+page-pool code to achieve this, and suggested the ttm_pool be
+used instead. This required pulling the fairly tightly knit
+ttm_pool logic apart, but after many failed attmempts I think
+I found a workable abstraction to split out shared logic.
+
+So this series contains a new generic drm_page_pool helper
+library, converts the ttm_pool to use it, and then adds the
+dmabuf deferred freeing and adds support to the dmabuf system
+heap to use both deferred freeing and the new drm_page_pool.
+
+Input would be greatly appreciated. Testing as well, as I don't
+have any development hardware that utilizes the ttm pool.
+
+thanks
+-john
+
+[1] https://android.googlesource.com/platform/system/memory/libdmabufheap/+/refs/heads/master/tests/dmabuf_heap_bench.c
+
+Cc: Daniel Vetter <daniel@ffwll.ch>
+Cc: Christian Koenig <christian.koenig@amd.com>
+Cc: Sumit Semwal <sumit.semwal@linaro.org>
+Cc: Liam Mark <lmark@codeaurora.org>
+Cc: Chris Goldsworthy <cgoldswo@codeaurora.org>
+Cc: Laura Abbott <labbott@kernel.org>
+Cc: Brian Starkey <Brian.Starkey@arm.com>
+Cc: Hridya Valsaraju <hridya@google.com>
+Cc: Suren Baghdasaryan <surenb@google.com>
+Cc: Sandeep Patil <sspatil@google.com>
+Cc: Daniel Mentz <danielmentz@google.com>
+Cc: Ørjan Eide <orjan.eide@arm.com>
+Cc: Robin Murphy <robin.murphy@arm.com>
+Cc: Ezequiel Garcia <ezequiel@collabora.com>
+Cc: Simon Ser <contact@emersion.fr>
+Cc: James Jones <jajones@nvidia.com>
+Cc: linux-media@vger.kernel.org
+Cc: dri-devel@lists.freedesktop.org
+
+John Stultz (7):
+  drm: Add a sharable drm page-pool implementation
+  drm: ttm_pool: Rename the ttm_pool_dma structure to ttm_pool_page_dat
+  drm: ttm_pool: Rework ttm_pool_free_page to allow us to use it as a
+    function pointer
+  drm: ttm_pool: Rework ttm_pool to use drm_page_pool
+  dma-buf: heaps: Add deferred-free-helper library code
+  dma-buf: system_heap: Add drm pagepool support to system heap
+  dma-buf: system_heap: Add deferred freeing to the system heap
+
+ drivers/dma-buf/heaps/Kconfig                |   5 +
+ drivers/dma-buf/heaps/Makefile               |   1 +
+ drivers/dma-buf/heaps/deferred-free-helper.c | 145 ++++++++++
+ drivers/dma-buf/heaps/deferred-free-helper.h |  55 ++++
+ drivers/dma-buf/heaps/system_heap.c          |  77 ++++-
+ drivers/gpu/drm/Kconfig                      |   5 +
+ drivers/gpu/drm/Makefile                     |   1 +
+ drivers/gpu/drm/page_pool.c                  | 220 +++++++++++++++
+ drivers/gpu/drm/ttm/ttm_pool.c               | 278 ++++++-------------
+ include/drm/page_pool.h                      |  54 ++++
+ include/drm/ttm/ttm_pool.h                   |  23 +-
+ 11 files changed, 639 insertions(+), 225 deletions(-)
+ create mode 100644 drivers/dma-buf/heaps/deferred-free-helper.c
+ create mode 100644 drivers/dma-buf/heaps/deferred-free-helper.h
+ create mode 100644 drivers/gpu/drm/page_pool.c
+ create mode 100644 include/drm/page_pool.h
+
 -- 
-2.26.2
+2.25.1
 
