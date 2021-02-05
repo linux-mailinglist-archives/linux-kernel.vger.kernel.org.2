@@ -2,111 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB8933116C7
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 00:20:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37AF731171B
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 00:30:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232245AbhBEXNA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 18:13:00 -0500
-Received: from foss.arm.com ([217.140.110.172]:35406 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232507AbhBEO2X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 09:28:23 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9BA67106F;
-        Fri,  5 Feb 2021 07:41:40 -0800 (PST)
-Received: from [10.37.8.15] (unknown [10.37.8.15])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4765D3F719;
-        Fri,  5 Feb 2021 07:41:38 -0800 (PST)
-Subject: Re: [PATCH v11 4/5] arm64: mte: Enable async tag check fault
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kasan-dev@googlegroups.com,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Will Deacon <will@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
+        id S230218AbhBEX2U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 18:28:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41312 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231217AbhBEOYM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 09:24:12 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63CEEC0611C2
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 07:49:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Q4i8Vd+iDG7UgW56EgaEHq1NQdnDRIWGcaM4duwOyCM=; b=FkIbdUb09QqaDoWsVhHJ6g8cNE
+        G+ZndRUfzxWAZ7ok3ovwJzPYevEjKnYiLRlJl8tnubvT+Er/YGLAWPa4tUMmsZnQ2onbvikPUShtS
+        pjBfU3oO753S33JBJuj/kAMqnAkyS9bXi3olgiu6rdVfMDzgz0D5YMe9OBZ5d8lkM1fdbFxkP8HDZ
+        dQgLh2si3dQxUII3TC7NUe37YLQEWlKeFGE9do9PlAI5V/9LPOAGDLli5TE+QpQBBV5h3eg8uQfzg
+        lhCZGlMF4W47RYGJOB7CPmLhaZYyB0GTTakoiGN93em6QlZLE7sl6pCVU324wkSa4JLWI1hmq3erY
+        E7kjs07A==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1l83M4-002T4R-DL; Fri, 05 Feb 2021 15:49:10 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id DE56D3013E5;
+        Fri,  5 Feb 2021 16:49:05 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 9FAE72BC43F8F; Fri,  5 Feb 2021 16:49:05 +0100 (CET)
+Date:   Fri, 5 Feb 2021 16:49:05 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>, x86@kernel.org,
         Andrey Ryabinin <aryabinin@virtuozzo.com>,
         Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Andrey Konovalov <andreyknvl@google.com>
-References: <20210130165225.54047-1-vincenzo.frascino@arm.com>
- <20210130165225.54047-5-vincenzo.frascino@arm.com>
- <20210205153918.GA12697@gaia>
-From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
-Message-ID: <1254c150-599c-d39d-3b83-8af4f3c403ee@arm.com>
-Date:   Fri, 5 Feb 2021 15:45:38 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Dmitry Vyukov <dvyukov@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        "H . J . Lu" <hjl.tools@gmail.com>,
+        Andi Kleen <ak@linux.intel.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC 0/9] Linear Address Masking enabling
+Message-ID: <YB1o8RZnaaf7xXAQ@hirez.programming.kicks-ass.net>
+References: <20210205151631.43511-1-kirill.shutemov@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20210205153918.GA12697@gaia>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210205151631.43511-1-kirill.shutemov@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Feb 05, 2021 at 06:16:20PM +0300, Kirill A. Shutemov wrote:
+> The feature competes for bits with 5-level paging: LAM_U48 makes it
+> impossible to map anything about 47-bits. The patchset made these
+> capability mutually exclusive: whatever used first wins. LAM_U57 can be
+> combined with mappings above 47-bits.
 
-
-On 2/5/21 3:39 PM, Catalin Marinas wrote:
-> On Sat, Jan 30, 2021 at 04:52:24PM +0000, Vincenzo Frascino wrote:
->> diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
->> index 92078e1eb627..7763ac1f2917 100644
->> --- a/arch/arm64/kernel/mte.c
->> +++ b/arch/arm64/kernel/mte.c
->> @@ -182,6 +182,37 @@ bool mte_report_once(void)
->>  	return READ_ONCE(report_fault_once);
->>  }
->>  
->> +#ifdef CONFIG_KASAN_HW_TAGS
->> +void mte_check_tfsr_el1(void)
->> +{
->> +	u64 tfsr_el1;
->> +
->> +	if (!system_supports_mte())
->> +		return;
->> +
->> +	tfsr_el1 = read_sysreg_s(SYS_TFSR_EL1);
->> +
->> +	/*
->> +	 * The kernel should never trigger an asynchronous fault on a
->> +	 * TTBR0 address, so we should never see TF0 set.
->> +	 * For futexes we disable checks via PSTATE.TCO.
->> +	 */
->> +	WARN_ONCE(tfsr_el1 & SYS_TFSR_EL1_TF0,
->> +		  "Kernel async tag fault on TTBR0 address");
-> 
-> Sorry, I got confused when I suggested this warning. If the user is
-> running in async mode, the TFSR_EL1.TF0 bit may be set by
-> copy_mount_options(), strncpy_from_user() which rely on an actual fault
-> happening (not the case with asynchronous where only a bit is set). With
-> the user MTE support, we never report asynchronous faults caused by the
-> kernel on user addresses as we can't easily track them. So this warning
-> may be triggered on correctly functioning kernel/user.
-> 
-
-No issue, I will re-post removing the WARN_ONCE().
-
->> +
->> +	if (unlikely(tfsr_el1 & SYS_TFSR_EL1_TF1)) {
->> +		/*
->> +		 * Note: isb() is not required after this direct write
->> +		 * because there is no indirect read subsequent to it
->> +		 * (per ARM DDI 0487F.c table D13-1).
->> +		 */
->> +		write_sysreg_s(0, SYS_TFSR_EL1);
-> 
-> Zeroing the whole register is still fine, we don't care about the TF0
-> bit anyway.
-> 
->> +
->> +		kasan_report_async();
->> +	}
->> +}
->> +#endif
-> 
-
--- 
-Regards,
-Vincenzo
+And I suppose we still can't switch between 4 and 5 level at runtime,
+using a CR3 bit?
