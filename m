@@ -2,94 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6F5C311010
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 19:38:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F004C31101A
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 19:40:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231446AbhBEQzp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 11:55:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46858 "EHLO
+        id S233256AbhBEQ5R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 11:57:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233379AbhBEQxa (ORCPT
+        with ESMTP id S232977AbhBEQz3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 11:53:30 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4618C0613D6;
-        Fri,  5 Feb 2021 10:35:12 -0800 (PST)
-Date:   Fri, 05 Feb 2021 18:35:10 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1612550111;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Exs6lFYVVBxc5ax1bU8BhYnTez6nauNcIiJLbxsfMOY=;
-        b=nTOeZ/cF70RZMY5ZToKFfQDtt5QRS36Rl4zOnxdLJHw811yswecyQJBxpBke9n9Q90FWlz
-        lfuSUr99Y9omIlVjw1SOZBVp+05sUfyJsqytyxUxxLGF5iUorue1MEbe4tFUoqjqD/cbog
-        5M7reDs5xNNTErV6kxuIBZ1uNgrslTGmvbHdKL+r3V4iDrTwNr9ARt6YwSWlqnQWbg5OoH
-        Eykv5OHf0g8N3eMIpEFO0uq18EDobhJz7YYRVWBGRORnrqlQpnQVFLIcvm4LQVIRj/++q2
-        IyN9O4UDYTkYMCFPQKdRwrJD4sKzeRW6r3NgwSdE+HNb7X4TPyCyEaOT4myZZA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1612550111;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Exs6lFYVVBxc5ax1bU8BhYnTez6nauNcIiJLbxsfMOY=;
-        b=1xQIYxMwmhNuJLCKIN/xhNa2xKuKIRVUysu8lrSsu8+jIc8Ygd467aSM3tLwegNtNV/j6n
-        RIzSgJrTFyGAXTAg==
-From:   "tip-bot2 for Alexey Dobriyan" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: timers/core] timens: Delete no-op time_ns_init()
-Cc:     Alexey Dobriyan <adobriyan@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andrei Vagin <avagin@gmail.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20201228215402.GA572900@localhost.localdomain>
-References: <20201228215402.GA572900@localhost.localdomain>
+        Fri, 5 Feb 2021 11:55:29 -0500
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4859C061574
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 10:37:11 -0800 (PST)
+Received: by mail-pl1-x634.google.com with SMTP id e12so4020112pls.4
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 10:37:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=OFwHGZmM8wqHN2mLtpKT/FoZS4DuP474ucBXNcxTZVA=;
+        b=GLeIyrcnqQ4/LFNG6+Afvlafscx8C1O0gOHaXxsKan7L74NiEwk4WspSkwax8j2c0Z
+         GNc/abUAOOIDjyt4g1biPXNH+3wBCCE+I+dRQ02xNGxfiTNDp0/YCmfC6eKmCyqaEDLQ
+         7wmxgWATXFhXmHIbm7ZMs0lTj8EbwgrL+rcAo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=OFwHGZmM8wqHN2mLtpKT/FoZS4DuP474ucBXNcxTZVA=;
+        b=J/oxm0KmXCdz4JKucHoX5EeF91M99OIDPfMTrQCpdUVpXl1GEGPZT4hH0mtuIL28F9
+         hMVF5dRkfFm+ipbVq90LKP6McMqbgsTRyaRd4B0aKu6cZAkBFoWswjI4nsoOOSGj6z4/
+         G76bA9AJsRLkgn0C68KJxdtXOt/PgK7xERwnpVBEGXgW3HubErCK94KKJ1ltT3BG63kx
+         4QVbm1/+sOQxldKk1D85JJQzv2LOggSuL1KTJNuxF5U6Fb+bhevGrQpZbexEcrM1Hujg
+         IKmb+hSRU0dllxQTIFy92DTk7Ijy11kFlNI5JRBFj5l9Vrn1W4o5PEukv+Sr8wyomFvT
+         n1og==
+X-Gm-Message-State: AOAM533Sib9/WnUbDwF/Fggk2BJThAtpe/gflfIu4l4/WiBOL0a9NmzG
+        vLY/5fdZTLgLAERVRne5+Nji3Q==
+X-Google-Smtp-Source: ABdhPJzron7Uw0ANgFuv3nlVXe+SFekWhPglquTB3GJVXUFuMXmBgZp20nzR2OqsYV350RyuicQFTA==
+X-Received: by 2002:a17:902:82cb:b029:e1:2b0f:da57 with SMTP id u11-20020a17090282cbb02900e12b0fda57mr5302564plz.33.1612550231379;
+        Fri, 05 Feb 2021 10:37:11 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id o1sm10799989pgq.1.2021.02.05.10.37.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Feb 2021 10:37:10 -0800 (PST)
+Date:   Fri, 5 Feb 2021 10:37:09 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Chris Wilson <chris@chris-wilson.co.uk>
+Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Lucas Stach <l.stach@pengutronix.de>, jannh@google.com
+Subject: Re: [PATCH] kernel: Expose SYS_kcmp by default
+Message-ID: <202102051030.1AF01772D@keescook>
+References: <20210205163752.11932-1-chris@chris-wilson.co.uk>
 MIME-Version: 1.0
-Message-ID: <161255011051.23325.10863511684535856878.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210205163752.11932-1-chris@chris-wilson.co.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the timers/core branch of tip:
+On Fri, Feb 05, 2021 at 04:37:52PM +0000, Chris Wilson wrote:
+> Userspace has discovered the functionality offered by SYS_kcmp and has
+> started to depend upon it. In particular, Mesa uses SYS_kcmp for
+> os_same_file_description() in order to identify when two fd (e.g. device
+> or dmabuf) point to the same struct file. Since they depend on it for
+> core functionality, lift SYS_kcmp out of the non-default
+> CONFIG_CHECKPOINT_RESTORE into the selectable syscall category.
+> 
+> Signed-off-by: Chris Wilson <chris@chris-wilson.co.uk>
+> Cc: Kees Cook <keescook@chromium.org>
+> Cc: Andy Lutomirski <luto@amacapital.net>
+> Cc: Will Drewry <wad@chromium.org>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Dave Airlie <airlied@gmail.com>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: Lucas Stach <l.stach@pengutronix.de>
+> ---
+>  init/Kconfig                                  | 11 +++++++++++
+>  kernel/Makefile                               |  2 +-
+>  tools/testing/selftests/seccomp/seccomp_bpf.c |  2 +-
+>  3 files changed, 13 insertions(+), 2 deletions(-)
+> 
+> diff --git a/init/Kconfig b/init/Kconfig
+> index b77c60f8b963..f62fca13ac5b 100644
+> --- a/init/Kconfig
+> +++ b/init/Kconfig
+> @@ -1194,6 +1194,7 @@ endif # NAMESPACES
+>  config CHECKPOINT_RESTORE
+>  	bool "Checkpoint/restore support"
+>  	select PROC_CHILDREN
+> +	select KCMP
+>  	default n
+>  	help
+>  	  Enables additional kernel features in a sake of checkpoint/restore.
+> @@ -1737,6 +1738,16 @@ config ARCH_HAS_MEMBARRIER_CALLBACKS
+>  config ARCH_HAS_MEMBARRIER_SYNC_CORE
+>  	bool
+>  
+> +config KCMP
+> +	bool "Enable kcmp() system call" if EXPERT
+> +	default y
 
-Commit-ID:     174bcc691f44fdd05046c694fc650933819f72c7
-Gitweb:        https://git.kernel.org/tip/174bcc691f44fdd05046c694fc650933819f72c7
-Author:        Alexey Dobriyan <adobriyan@gmail.com>
-AuthorDate:    Tue, 29 Dec 2020 00:54:02 +03:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Fri, 05 Feb 2021 19:32:09 +01:00
+I would expect this to be not default-y, especially if
+CHECKPOINT_RESTORE does a "select" on it.
 
-timens: Delete no-op time_ns_init()
+This is a really powerful syscall, but it is bounded by ptrace access
+controls, and uses pointer address obfuscation, so it may be okay to
+expose this. As it is, at least Ubuntu already has
+CONFIG_CHECKPOINT_RESTORE, so really, there's probably not much
+difference on exposure.
 
-Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Acked-by: Andrei Vagin <avagin@gmail.com>
-Link: https://lore.kernel.org/r/20201228215402.GA572900@localhost.localdomain
----
- kernel/time/namespace.c | 6 ------
- 1 file changed, 6 deletions(-)
+So, if you drop the "default y", I'm fine with this.
 
-diff --git a/kernel/time/namespace.c b/kernel/time/namespace.c
-index 6ca625f..12eab0d 100644
---- a/kernel/time/namespace.c
-+++ b/kernel/time/namespace.c
-@@ -465,9 +465,3 @@ struct time_namespace init_time_ns = {
- 	.ns.ops		= &timens_operations,
- 	.frozen_offsets	= true,
- };
--
--static int __init time_ns_init(void)
--{
--	return 0;
--}
--subsys_initcall(time_ns_init);
+-Kees
+
+> +	help
+> +	  Enable the file descriptor comparison system call. It provides
+> +	  user-space with the ability to compare two fd to see if they
+> +	  point to the same file, and check other attributes.
+> +
+> +	  If unsure, say Y.
+> +
+>  config RSEQ
+>  	bool "Enable rseq() system call" if EXPERT
+>  	default y
+> diff --git a/kernel/Makefile b/kernel/Makefile
+> index aa7368c7eabf..320f1f3941b7 100644
+> --- a/kernel/Makefile
+> +++ b/kernel/Makefile
+> @@ -51,7 +51,7 @@ obj-y += livepatch/
+>  obj-y += dma/
+>  obj-y += entry/
+>  
+> -obj-$(CONFIG_CHECKPOINT_RESTORE) += kcmp.o
+> +obj-$(CONFIG_KCMP) += kcmp.o
+>  obj-$(CONFIG_FREEZER) += freezer.o
+>  obj-$(CONFIG_PROFILING) += profile.o
+>  obj-$(CONFIG_STACKTRACE) += stacktrace.o
+> diff --git a/tools/testing/selftests/seccomp/seccomp_bpf.c b/tools/testing/selftests/seccomp/seccomp_bpf.c
+> index 26c72f2b61b1..1b6c7d33c4ff 100644
+> --- a/tools/testing/selftests/seccomp/seccomp_bpf.c
+> +++ b/tools/testing/selftests/seccomp/seccomp_bpf.c
+> @@ -315,7 +315,7 @@ TEST(kcmp)
+>  	ret = __filecmp(getpid(), getpid(), 1, 1);
+>  	EXPECT_EQ(ret, 0);
+>  	if (ret != 0 && errno == ENOSYS)
+> -		SKIP(return, "Kernel does not support kcmp() (missing CONFIG_CHECKPOINT_RESTORE?)");
+> +		SKIP(return, "Kernel does not support kcmp() (missing CONFIG_KCMP?)");
+>  }
+>  
+>  TEST(mode_strict_support)
+> -- 
+> 2.20.1
+> 
+
+-- 
+Kees Cook
