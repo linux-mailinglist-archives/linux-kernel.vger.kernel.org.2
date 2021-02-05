@@ -2,69 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F75731027F
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 02:58:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05340310258
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 02:45:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229834AbhBEB5Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 20:57:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40610 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229631AbhBEB5N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 20:57:13 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D19C264DC4;
-        Fri,  5 Feb 2021 01:56:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612490190;
-        bh=ZlbTbixiZ/VEvhe2cB1BDy9leTlPGZZcyvIJqx6f2UI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=tu6SJbXUsHBFLZamGifs83f3CijLyOjFBee5L2c4iFeuoBlcqfKvKIhvZc3L22Z+R
-         tj4OtzBNvXCd1gkay1lHs/nd57rPGEKXSgmcitvQJXpqPVESKx7TaT9aWCvHxfyh2C
-         OyTPEq5RzCUwfuqgsZjB9f7ng3IutikF/4Ce+tym0NfiWfuPmmdETry1Hco4C8u2kN
-         1Z+wjDtqiMrg0kz/fDOSsnZ/MxzHEO6WHMBtOinAwVe5DoAXBo6xc6PbgQAIbqFkGv
-         VhYGfuPZusMTknZUlZiZpuAFqgJZPFbNt3gXaqN1e+SUFquG0GafJv6BIFuRLsnot2
-         BkL2UbiwyKmNQ==
-Date:   Thu, 4 Feb 2021 17:56:28 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
-Cc:     xen-devel@lists.xenproject.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Wei Liu <wei.liu@kernel.org>,
-        Paul Durrant <paul@xen.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Igor Druzhinin <igor.druzhinin@citrix.com>,
-        stable@vger.kernel.org
-Subject: Re: [PATCH] xen/netback: avoid race in
- xenvif_rx_ring_slots_available()
-Message-ID: <20210204175628.7904d1da@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <f6fa1533-0646-e8b1-b7f8-51ad70691cae@suse.com>
-References: <20210202070938.7863-1-jgross@suse.com>
-        <20210203154800.4c6959d6@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <f6fa1533-0646-e8b1-b7f8-51ad70691cae@suse.com>
+        id S232912AbhBEBpk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 20:45:40 -0500
+Received: from mailout2.samsung.com ([203.254.224.25]:49875 "EHLO
+        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231650AbhBEBpg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 20:45:36 -0500
+Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210205014452epoutp025e566e72fbcba006d822e94185511a73~gtqZsJSIA0704807048epoutp027
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 01:44:52 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210205014452epoutp025e566e72fbcba006d822e94185511a73~gtqZsJSIA0704807048epoutp027
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1612489492;
+        bh=pAy9f5tg31NpVD3ZXP6DR2FvVm7psVqhEKVTP7Bg00s=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=Nr2rCmigc5tPiYMp0JFtEQMSRYg6ond420LH5nSRmfrBULTeaB7HAc1KiZnXjkD7V
+         M3gwsqJp/bEzIw0o7xLSLVdejPw+4F0McFzxP32BxZA/5MXR9oaqJ19oA+fnihMAO7
+         XcASw04tMDoZtUMVl/dsG5Sc3uXI+I2mieWYs/9E=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+        epcas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20210205014451epcas1p1dba7d4811da2106c83426bccd15fd073~gtqYrvhlD1880518805epcas1p1C;
+        Fri,  5 Feb 2021 01:44:51 +0000 (GMT)
+Received: from epsmges1p2.samsung.com (unknown [182.195.40.156]) by
+        epsnrtp4.localdomain (Postfix) with ESMTP id 4DWysD5DfHz4x9Q2; Fri,  5 Feb
+        2021 01:44:48 +0000 (GMT)
+Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
+        epsmges1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        D4.D7.63458.013AC106; Fri,  5 Feb 2021 10:44:48 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20210205014448epcas1p1e63dcbba6426162d3feb244144ee7bbb~gtqVgczLv1184211842epcas1p1t;
+        Fri,  5 Feb 2021 01:44:48 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20210205014447epsmtrp230987f1ded57a800e5f945f01bd3380a~gtqVfcfLm2604226042epsmtrp2V;
+        Fri,  5 Feb 2021 01:44:47 +0000 (GMT)
+X-AuditID: b6c32a36-c6d65a800000f7e2-b2-601ca31049f0
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        3F.48.13470.F03AC106; Fri,  5 Feb 2021 10:44:47 +0900 (KST)
+Received: from [10.113.221.102] (unknown [10.113.221.102]) by
+        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20210205014447epsmtip2b0f4623ea2b77bb66c72d52e9763bac0~gtqVI2rh13051430514epsmtip2F;
+        Fri,  5 Feb 2021 01:44:47 +0000 (GMT)
+Subject: Re: [PATCH v4 resend 00/13] MFD/extcon/ASoC: Rework arizona codec
+ jack-detect support
+To:     Hans de Goede <hdegoede@redhat.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        alsa-devel@alsa-project.org
+From:   Chanwoo Choi <cw00.choi@samsung.com>
+Organization: Samsung Electronics
+Message-ID: <49c77228-75fa-8e0a-0cb9-57afdd3f6b86@samsung.com>
+Date:   Fri, 5 Feb 2021 11:00:55 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
+        Thunderbird/59.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210204112502.88362-1-hdegoede@redhat.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrIJsWRmVeSWpSXmKPExsWy7bCmga7AYpkEgw1PNSyuXDzEZPFywmFG
+        i6kPn7BZfPqwn9XiSusmRos3x6czWdz/epTRYsXZyYwWl3fNYbO43biCzeLze6CSX/+fMVms
+        vX2HyYHXY8PnJjaPnbPusnss3vOSyWPTqk42jzvX9rB5zDsZ6DF9zn9Gj/f7rrJ59G1Zxejx
+        eZNcAFdUtk1GamJKapFCal5yfkpmXrqtkndwvHO8qZmBoa6hpYW5kkJeYm6qrZKLT4CuW2YO
+        0PFKCmWJOaVAoYDE4mIlfTubovzSklSFjPziElul1IKUnALLAr3ixNzi0rx0veT8XCtDAwMj
+        U6DChOyMPcf2MRZ08lTsf/GTrYHxDGcXIyeHhICJxPYl95i7GLk4hAR2MEr8ud7MCOF8YpSY
+        P+spO4TzjVFiefsGNpiW450/oBJ7GSWuvGiG6n/PKLFz/nQmkCphgQSJPw+vMoEkRATuMkn8
+        6HgNVsUM0vL653x2kCo2AS2J/S9ugM3lF1CUuPrjMSOIzStgJzHn+R1WEJtFQEXi8IbDzCC2
+        qECYxMltLVA1ghInZz5hAbE5BSwltjRNA9vMLCAucevJfChbXmL72zlgiyUEPnBIHNrSxwrx
+        hIvE032/oR4Slnh1fAs7hC0l8fndXqh4tcTKk0fYIJo7GCW27L8A1WwssX/pZKANHEAbNCXW
+        79KHCCtK7Pw9lxFiMZ/Eu689rCAlEgK8Eh1tQhAlyhKXH9xlgrAlJRa3d7JNYFSaheSdWUhe
+        mIXkhVkIyxYwsqxiFEstKM5NTy02LDBCjvBNjOC0rWW2g3HS2w96hxiZOBgPMUpwMCuJ8Ca2
+        SSUI8aYkVlalFuXHF5XmpBYfYjQFBvBEZinR5Hxg5sgriTc0NTI2NrYwMTQzNTRUEudNNHgQ
+        LySQnliSmp2aWpBaBNPHxMEp1cA0bfM7vn1Xoz5IvY3Kv/Mq92Ti9/U73Oex/AnnMT5+4NPN
+        os+Res8PHT9ye8L+YLMZc90Pa237NP/pqWdcPdHZqw7PzA3dzP1iyb+DAdF7ZzIfTXHykwjb
+        uVo9ehWT4W3fOq6PGenxTM0h05JKrN7/XC134ameeAZjuNrKGu0XeTPvXPkWVOaqXeKcqB50
+        zU73i1Ehr92EzCVOEV+PRMl+md/EWWFZM2+j4eukSTvLpCV2vpvwb5v0wXlnbTzPFl190yK6
+        deHN2B0dLW6rDHN/3z3+fL7aRRnXbi/N1pAjp/Ub58jXhhpt1Cna9COwUTLsrtexF+L3D76u
+        OOL9XO6Hg2nBRfbnBxfrtk0t8+9kUWIpzkg01GIuKk4EAIH6pZ5kBAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrFIsWRmVeSWpSXmKPExsWy7bCSvC7/YpkEgxk/jSyuXDzEZPFywmFG
+        i6kPn7BZfPqwn9XiSusmRos3x6czWdz/epTRYsXZyYwWl3fNYbO43biCzeLze6CSX/+fMVms
+        vX2HyYHXY8PnJjaPnbPusnss3vOSyWPTqk42jzvX9rB5zDsZ6DF9zn9Gj/f7rrJ59G1Zxejx
+        eZNcAFcUl01Kak5mWWqRvl0CV8aeY/sYCzp5Kva/+MnWwHiGs4uRk0NCwETieOcP9i5GLg4h
+        gd2MEgcmvGKGSEhKTLt4FMjmALKFJQ4fLoaoecso8Xv9bxaQGmGBBIk/D68ygSREBO4ySaw5
+        tYINxGEW2MsosXBjKytIlZBAD6PEzIuhIDabgJbE/hc32EBsfgFFias/HjOC2LwCdhJznt8B
+        q2cRUJE4vOEw2BWiAmESO5c8ZoKoEZQ4OfMJ2GZOAUuJLU3TwOLMAuoSf+ZdYoawxSVuPZkP
+        FZeX2P52DvMERuFZSNpnIWmZhaRlFpKWBYwsqxglUwuKc9Nziw0LDPNSy/WKE3OLS/PS9ZLz
+        czcxgqNXS3MH4/ZVH/QOMTJxMB5ilOBgVhLhTWyTShDiTUmsrEotyo8vKs1JLT7EKM3BoiTO
+        e6HrZLyQQHpiSWp2ampBahFMlomDU6qBSXPrZtas1v7+rOlpsxzvn7H/+eT1LbWyyMJTUfrm
+        7z9zzT+6UOXzRlE1JW+Zt0HT9t3aeT79NX/n8hU1vicVNFSWrNW0jmxVj+p4GbXp5LSLOg+P
+        3FMwVjeSZLLbeF37cZrH0gnq2w78t3y2d0VFvc8NY66VpQvq+ff6ymnz2Ojczd23QFyU6+gN
+        4Y61CoHLjjKfOVGzy/gtm3DvEs59M4/O+PODc9Gt+VVi548fMN328YJEoO5lS6WZlodbrjWk
+        PHet+HhlAnuwzVKGrtT3F9XX8G1UE3jxR6vm5HXGTPHus2xpp+VqztTMN5GfaqmvU1SwY+6t
+        stj3z2wPHfxZctD4h0ekxbrm/dpXjstnViixFGckGmoxFxUnAgBCZcgvTQMAAA==
+X-CMS-MailID: 20210205014448epcas1p1e63dcbba6426162d3feb244144ee7bbb
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210204112515epcas1p27a866811ba15a8cd8b0be9a3f7bf86e5
+References: <CGME20210204112515epcas1p27a866811ba15a8cd8b0be9a3f7bf86e5@epcas1p2.samsung.com>
+        <20210204112502.88362-1-hdegoede@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 4 Feb 2021 06:32:32 +0100 J=C3=BCrgen Gro=C3=9F wrote:
-> On 04.02.21 00:48, Jakub Kicinski wrote:
-> > On Tue,  2 Feb 2021 08:09:38 +0100 Juergen Gross wrote: =20
-> >> Since commit 23025393dbeb3b8b3 ("xen/netback: use lateeoi irq binding")
-> >> xenvif_rx_ring_slots_available() is no longer called only from the rx
-> >> queue kernel thread, so it needs to access the rx queue with the
-> >> associated queue held.
-> >>
-> >> Reported-by: Igor Druzhinin <igor.druzhinin@citrix.com>
-> >> Fixes: 23025393dbeb3b8b3 ("xen/netback: use lateeoi irq binding")
-> >> Cc: stable@vger.kernel.org
-> >> Signed-off-by: Juergen Gross <jgross@suse.com> =20
-> >=20
-> > Should we route this change via networking trees? I see the bug did not
-> > go through networking :)
->=20
-> I'm fine with either networking or the Xen tree. It should be included
-> in 5.11, though. So if you are willing to take it, please do so.
+On 2/4/21 8:24 PM, Hans de Goede wrote:
+> Hi all,
+> 
+> Here is v4 of my series to rework the arizona codec jack-detect support
+> to use the snd_soc_jack helpers instead of direct extcon reporting.
+> 
+> This is a resend with some extra *-by tags collected and with the extcon
+> folks added to the "To:" list, which I somehow missed with the original
+> v4 posting, sorry.
+> 
+> This is done by reworking the extcon driver into an arizona-jackdet
+> library and then modifying the codec drivers to use that directly,
+> replacing the old separate extcon child-devices and extcon-driver.
+> 
+> This brings the arizona-codec jack-detect handling inline with how
+> all other ASoC codec driver do this. This was developed and tested on
+> a Lenovo Yoga Tablet 1051L with a WM5102 codec.
+> 
+> This was also tested by Charles Keepax, one of the Cirrus Codec folks.
+> 
+> This depends on the previously posted "[PATCH v4 0/5] MFD/ASoC: Add
+> support for Intel Bay Trail boards with WM5102 codec" series and there
+> are various interdependencies between the patches in this series.
+> 
+> Lee Jones, the MFD maintainer has agreed to take this series upstream
+> through the MFD tree and to provide an immutable branch for the ASoC
+> and extcon subsystems to merge.
+> 
+> Mark and extcon-maintainers may we have your ack for merging these
+> through the MFD tree ?
 
-All right, applied to net, it'll most likely hit Linus's tree on Tue.
 
-Thanks!
+About patch2~patch6, I agree to take these patches to MFD tree.
+Acke-by: Chanwoo Choi <cw00.choi@samsung.com>
+
+-- 
+Best Regards,
+Chanwoo Choi
+Samsung Electronics
