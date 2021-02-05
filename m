@@ -2,99 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A59E311791
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 01:04:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E8A2311796
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 01:07:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231126AbhBFADH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 19:03:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44004 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230051AbhBENqW (ORCPT
+        id S231246AbhBFAEw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 19:04:52 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:47900 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231403AbhBENsU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 08:46:22 -0500
-Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C93EC0613D6
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 05:45:42 -0800 (PST)
-Received: by mail-oi1-x22d.google.com with SMTP id k142so7423139oib.7
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 05:45:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=GdZ3wqqwTq6M6U3OYS2ilnHulIJB13wMNL5rfazRims=;
-        b=oabmOw+vxz543HN1asQvNnuJLGcEuXjiyoiUOyxQ3mLYQ58HD6H2VY7jbSzz5Hrvw9
-         ZYrP3CuTmyEDe+qsdqawLsLME9LqV7Hkgbc8a+Lpz+D6nQx0I2IcH+jnq3O3bRDWEIak
-         6xFC91FTbbJCV8s9ksfH319W5UFehwG5s17P9oKCOvLFW1CSbbWgS7dIrWxq9DBWtDhd
-         /CY1d6bg5I7/fS9plfkx7cWkLNEh33FiKnICEwUO5TmjLoypfi32J4Rmyc0U0PMez7rJ
-         GSkyZr+kJJt/Uj3IEkT8m/L1yT56QlgRxXWXh9hRpQ6wLn7vhU44yFEb7ScuzkZgaWag
-         Ma0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=GdZ3wqqwTq6M6U3OYS2ilnHulIJB13wMNL5rfazRims=;
-        b=HuuOO2u2eCj6/8XdUK9ZPYGzngF9pMXHj5ADh66888qRdpsoKNNmLhg5979u8pXsCd
-         NK67SHFuUvl5AEuDj3NkO4ZjomD5MOCRZoUdKciF7G3hVFAPm116Bw0p0gNA2a6M8PYc
-         /mijleHawVc2ln70BmCNdgCY44RmcNERgjYgghu5SAqlF10srauO95bcLEcKLt26Q3OH
-         IRgzaCSefZIRAyTHQp/Bnwfj+PTxqFQeR49zrfxTOlxBzNosfodF8x4j2hTvVfj/w30y
-         pVW7daom9tyPFkcsAniSfWYmFA947S8xs+DLs4s8F/oM1m9qiGzjukX0+PjGjHpvbVoG
-         qFrg==
-X-Gm-Message-State: AOAM531LqFuwGH3g2sKd2pT8807bdfpWCEwZS0i7HW1KViyKgAOFqvcr
-        zb+KxkKw6Leh7Twf6G9KLoKSNwcWE/jSAkgJ0p0=
-X-Google-Smtp-Source: ABdhPJxntFctgcNb6Cm7JMCvgvmvxPdap1lvpoN8D41qG6E5d753UGGsI1vn8zrATeki8QPJ/LXjrQSy+ccPLp7oqA8=
-X-Received: by 2002:aca:3fd5:: with SMTP id m204mr3045233oia.0.1612532741566;
- Fri, 05 Feb 2021 05:45:41 -0800 (PST)
+        Fri, 5 Feb 2021 08:48:20 -0500
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 115DkRuB093953;
+        Fri, 5 Feb 2021 07:46:27 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1612532787;
+        bh=cB0WfTEJ3j7OEluhrKCZveupuzZyWbr/N7XfkmnBgmY=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=n/tLzFscrErJMCS0yYLR15tgBOTcIO/+yQiXgLgOtd8bDCXK3T68yhJa3Xz5TKyik
+         d/LXwQsdss99IlzmzzU0Zg9064h7E/rvIlo8/pp6ZnX1ZOS7N03w1m4bSuFk5imJEe
+         5St5bMdL/N7ZruQGgjb3TKilT6pFQhEh/ygdOTAs=
+Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 115DkRQK039984
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 5 Feb 2021 07:46:27 -0600
+Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 5 Feb
+ 2021 07:46:26 -0600
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 5 Feb 2021 07:46:26 -0600
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 115DkQ0M067702;
+        Fri, 5 Feb 2021 07:46:26 -0600
+Date:   Fri, 5 Feb 2021 19:16:25 +0530
+From:   Pratyush Yadav <p.yadav@ti.com>
+To:     Tudor Ambarus <tudor.ambarus@microchip.com>
+CC:     <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
+        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] mtd: spi-nor: Get rid of duplicated argument in
+ spi_nor_parse_sfdp()
+Message-ID: <20210205134625.6zmeit7ecqtzwyin@ti.com>
+References: <20210204174507.593419-1-tudor.ambarus@microchip.com>
 MIME-Version: 1.0
-Received: by 2002:a9d:1d64:0:0:0:0:0 with HTTP; Fri, 5 Feb 2021 05:45:41 -0800 (PST)
-Reply-To: alidoualassane27@gmail.com
-From:   Alidou Alassane <sudiamed@gmail.com>
-Date:   Fri, 5 Feb 2021 14:45:41 +0100
-Message-ID: <CADoJUNHEqXftKNe_+7O9GKiBn4O1Bb9rXzuvb-1AGJv74moQEg@mail.gmail.com>
-Subject: MESSAGE
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20210204174507.593419-1-tudor.ambarus@microchip.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello My Dear Friend,
+On 04/02/21 07:45PM, Tudor Ambarus wrote:
+> spi_nor_parse_sfdp(nor, nor->params);
+> passes for the second argument a member within the first argument.
+> Drop the second argument and obtain it directly from the first,
+> and do it across all the children functions. This is a follow up for
+> 'commit 69a8eed58cc0 ("mtd: spi-nor: Don't copy self-pointing struct around")'
+> 
+> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+> ---
+>  drivers/mtd/spi-nor/core.c     | 10 ++--
+>  drivers/mtd/spi-nor/core.h     |  6 +--
+>  drivers/mtd/spi-nor/issi.c     |  3 +-
+>  drivers/mtd/spi-nor/macronix.c |  3 +-
+>  drivers/mtd/spi-nor/sfdp.c     | 87 +++++++++++++---------------------
+>  drivers/mtd/spi-nor/sfdp.h     |  3 +-
+>  drivers/mtd/spi-nor/spansion.c | 12 ++---
+>  drivers/mtd/spi-nor/winbond.c  |  3 +-
+>  8 files changed, 49 insertions(+), 78 deletions(-)
+> 
+[...]
+> @@ -945,13 +935,11 @@ static int spi_nor_parse_smpt(struct spi_nor *nor,
+>   * @nor:		pointer to a 'struct spi_nor'.
+>   * @param_header:	pointer to the 'struct sfdp_parameter_header' describing
+>   *			the 4-Byte Address Instruction Table length and version.
+> - * @params:		pointer to the 'struct spi_nor_flash_parameter' to be.
+>   *
+>   * Return: 0 on success, -errno otherwise.
+>   */
+>  static int spi_nor_parse_4bait(struct spi_nor *nor,
+> -			       const struct sfdp_parameter_header *param_header,
+> -			       struct spi_nor_flash_parameter *params)
+> +			       const struct sfdp_parameter_header *param_header)
+>  {
+>  	static const struct sfdp_4bait reads[] = {
+>  		{ SNOR_HWCAPS_READ,		BIT(0) },
+> @@ -975,8 +963,8 @@ static int spi_nor_parse_4bait(struct spi_nor *nor,
+>  		{ 0u /* not used */,		BIT(11) },
+>  		{ 0u /* not used */,		BIT(12) },
+>  	};
+> -	struct spi_nor_pp_command *params_pp = params->page_programs;
+> -	struct spi_nor_erase_map *map = &params->erase_map;
+> +	struct spi_nor_pp_command *params_pp = nor->params->page_programs;
+> +	struct spi_nor_erase_map *map = &nor->params->erase_map;
+>  	struct spi_nor_erase_type *erase_type = map->erase_type;
+>  	u32 *dwords;
+>  	size_t len;
+> @@ -1013,7 +1001,7 @@ static int spi_nor_parse_4bait(struct spi_nor *nor,
+>  		const struct sfdp_4bait *read = &reads[i];
+>  
+>  		discard_hwcaps |= read->hwcaps;
+> -		if ((params->hwcaps.mask & read->hwcaps) &&
+> +		if ((nor->params->hwcaps.mask & read->hwcaps) &&
+>  		    (dwords[0] & read->supported_bit))
+>  			read_hwcaps |= read->hwcaps;
+>  	}
+> @@ -1029,8 +1017,8 @@ static int spi_nor_parse_4bait(struct spi_nor *nor,
+>  		/*
+>  		 * The 4 Byte Address Instruction (Optional) Table is the only
+>  		 * SFDP table that indicates support for Page Program Commands.
+> -		 * Bypass the params->hwcaps.mask and consider 4BAIT the biggest
+> -		 * authority for specifying Page Program support.
+> +		 * Bypass the nor->params->hwcaps.mask and consider 4BAIT the
+> +		 * biggest authority for specifying Page Program support.
+>  		 */
+>  		discard_hwcaps |= program->hwcaps;
+>  		if (dwords[0] & program->supported_bit)
+> @@ -1064,12 +1052,12 @@ static int spi_nor_parse_4bait(struct spi_nor *nor,
+>  	 * Discard all operations from the 4-byte instruction set which are
+>  	 * not supported by this memory.
+>  	 */
+> -	params->hwcaps.mask &= ~discard_hwcaps;
+> -	params->hwcaps.mask |= (read_hwcaps | pp_hwcaps);
+> +	nor->params->hwcaps.mask &= ~discard_hwcaps;
+> +	nor->params->hwcaps.mask |= (read_hwcaps | pp_hwcaps);
+>  
+>  	/* Use the 4-byte address instruction set. */
+>  	for (i = 0; i < SNOR_CMD_READ_MAX; i++) {
+> -		struct spi_nor_read_command *read_cmd = &params->reads[i];
+> +		struct spi_nor_read_command *read_cmd = &nor->params->reads[i];
 
-How are you and your family? I hope everybody is fine. I am happy to
-inform you that I later by the grace of God completed the transaction
-successfully with another partner.
+Nitpick: 'nor->params' is used in multiple places in this function. 
+Might be worth it to make it a local variable.
 
-The total fund was transferred to the new partner that I presented to
-the bank. Now I am outside my country due to the urgency of my son's
-kidney transplant and for an investment project with my partner.
-However, I did not forget your past efforts and assistance to me to
-see that the funds was approved with the bank, So, I have given to my
-secretary an ATM CARD that contains the sum of usd $ 350,000.00
+Either way,
 
-Please, accept this token of appreciation and God blessed you.
+Reviewed-by: Pratyush Yadav <p.yadav@ti.com>
 
-Below are the contact details of my secretary where I deposited your
-compensation fund worth usd $ 350,000.00 contact Mrs. Chiquita Labello
-immediately you receive my message to allow them to transfer it to
-you.
+>  
+>  		read_cmd->opcode = spi_nor_convert_3to4_read(read_cmd->opcode);
+>  	}
+[...]
 
-Contact information.
-
-Name: Chiquita Labello
-Email Address: =C2=A0chiquitalabello@yahoo.com
-Telephone: +228 93 23 23 61
-
-You should contact the bank at your earliest convenience so that the
-fund can be sent to you, so that you can withdraw from your bank in
-your country.
-
-I wish you the best in all your future endeavors. I will also call you
-at my earliest convenient.
-
-Your partner,
-
-NB: Remember to put this 10- lettered word ("GRACE-77113") as the
-subject of your email so that the bank will know that you are the
-rightful beneficiary of the compensation fund.
-
-Mr. Alidou Alasane
+-- 
+Regards,
+Pratyush Yadav
+Texas Instruments Inc.
