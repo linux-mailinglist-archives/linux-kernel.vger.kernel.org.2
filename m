@@ -2,75 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65E2C310AE0
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 13:08:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8996A310ADF
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 13:06:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231925AbhBEMHA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 07:07:00 -0500
-Received: from marcansoft.com ([212.63.210.85]:50440 "EHLO mail.marcansoft.com"
+        id S231400AbhBEMFt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 07:05:49 -0500
+Received: from mx2.suse.de ([195.135.220.15]:47360 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232135AbhBEMCg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 07:02:36 -0500
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (No client certificate requested)
-        (Authenticated sender: marcan@marcan.st)
-        by mail.marcansoft.com (Postfix) with ESMTPSA id 7297B42056;
-        Fri,  5 Feb 2021 12:01:48 +0000 (UTC)
-Subject: Re: [PATCH v6 05/21] arm64: Initialise as nVHE before switching to
- VHE
-To:     Marc Zyngier <maz@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        id S232152AbhBEMCv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 07:02:51 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 8EF68ADE3;
+        Fri,  5 Feb 2021 12:02:08 +0000 (UTC)
+Subject: Re: [PATCH v2] mm/page_owner: Record the timestamp of all pages
+ during free
+To:     Georgi Djakov <georgi.djakov@linaro.org>,
+        akpm@linux-foundation.org, linux-mm@kvack.org
+Cc:     corbet@lwn.net, linux-doc@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        Jing Zhang <jingzhangos@google.com>,
-        Prasad Sodagudi <psodagud@codeaurora.org>,
-        Srinivas Ramana <sramana@codeaurora.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Ajay Patil <pajay@qti.qualcomm.com>, kernel-team@android.com,
-        David Brazdil <dbrazdil@google.com>,
-        Will Deacon <will@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>
-References: <20210201115637.3123740-1-maz@kernel.org>
- <20210201115637.3123740-6-maz@kernel.org>
-From:   Hector Martin 'marcan' <marcan@marcan.st>
-Message-ID: <1dbffcd4-5b20-404c-94af-c985a96785e2@marcan.st>
-Date:   Fri, 5 Feb 2021 21:01:46 +0900
+References: <20210203175905.12267-1-georgi.djakov@linaro.org>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <db54c41c-2bb2-43e8-eb0d-5869a5cff10f@suse.cz>
+Date:   Fri, 5 Feb 2021 13:02:08 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-In-Reply-To: <20210201115637.3123740-6-maz@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: es-ES
+In-Reply-To: <20210203175905.12267-1-georgi.djakov@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/02/2021 20.56, Marc Zyngier wrote:
-> As we are aiming to be able to control whether we enable VHE or
-> not, let's always drop down to EL1 first, and only then upgrade
-> to VHE if at all possible.
+On 2/3/21 6:59 PM, Georgi Djakov wrote:
+> Collect the time when each allocation is freed, to help with memory
+> analysis with kdump/ramdump. Add the timestamp also in the page_owner
+> debugfs file and print it in dump_page().
 > 
-> This means that if the kernel is booted at EL2, we always start
-> with a nVHE init, drop to EL1 to initialise the the kernel, and
-> only then upgrade the kernel EL to EL2 if possible (the process
-> is obviously shortened for secondary CPUs).
+> Having another timestamp when we free the page helps for debugging
+> page migration issues. For example both alloc and free timestamps
+> being the same can gave hints that there is an issue with migrating
+> memory, as opposed to a page just being dropped during migration.
+> 
+> Signed-off-by: Georgi Djakov <georgi.djakov@linaro.org>
 
-Unfortunately, this is going to break on Apple SoCs, where it turns out 
-HCR_EL2.E2H is hard-wired to 1 - there is no nVHE mode. :(
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
 
- >>> mrs(HCR_EL2) & (1<<34)
-0x400000000
- >>> msr(HCR_EL2, mrs(HCR_EL2) & ~(1<<34))
- >>> mrs(HCR_EL2) & (1<<34)
-0x400000000
-
--- 
-Hector Martin "marcan" (marcan@marcan.st)
-Public Key: https://mrcn.st/pub
+Thanks.
