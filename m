@@ -2,107 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05005310721
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 09:54:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EAD4131071F
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 09:54:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229934AbhBEIxa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 03:53:30 -0500
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:53886 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229720AbhBEIxE (ORCPT
+        id S229881AbhBEIxV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 03:53:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37264 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229508AbhBEIxI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 03:53:04 -0500
-Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1158oe9c025982;
-        Fri, 5 Feb 2021 09:52:08 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=selector1;
- bh=a/WzW5u9oZm4Te6wakI3Z6sVptDelyDPT1JPG6TGgag=;
- b=1HK5VDL7zr91nt5H11oRqFSg0FkcSCEJBolqlEV70tfB/9m18AgHD/ptj9S6khitsXrr
- 70yrP5TemjJdQ8Djj7iF4bwmS+hWTWAUkVMuhOsE8PKwRn8bI9D0BoFlKZJhRpGPzfYj
- fN0GEUbxza4y7Ym5LAMbVy4JpFpGGmSF2VyGz7C3TY3UiwNv/dsI9lZu7hklFHfHoxVy
- AZqbIJqdpIeBuTvh05kmGmVn9BDOt6/SlRwAUDj+oy8p9Iu/tCytjDSy16FGTkoy80Vf
- RPwVsTAaGP314HTckLDaNSxHyJ6GFsOp51TwPKDA+172okHp7kmB2xQQfyoIc+oclkPQ 2w== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 36ey7hev2k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 05 Feb 2021 09:52:08 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 2CA82100038;
-        Fri,  5 Feb 2021 09:52:08 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 17FB8221794;
-        Fri,  5 Feb 2021 09:52:08 +0100 (CET)
-Received: from localhost (10.75.127.46) by SFHDAG2NODE3.st.com (10.75.127.6)
- with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 5 Feb 2021 09:52:07
- +0100
-From:   Alain Volmat <alain.volmat@foss.st.com>
-To:     <wsa@kernel.org>, <robh+dt@kernel.org>
-CC:     <mark.rutland@arm.com>, <pierre-yves.mordret@foss.st.com>,
-        <mcoquelin.stm32@gmail.com>, <alexandre.torgue@foss.st.com>,
-        <linux-i2c@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <fabrice.gasnier@foss.st.com>,
-        <alain.volmat@foss.st.com>
-Subject: [PATCH 5/5] i2c: stm32f7: indicate the address being accessed on errors
-Date:   Fri, 5 Feb 2021 09:51:44 +0100
-Message-ID: <1612515104-838-6-git-send-email-alain.volmat@foss.st.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1612515104-838-1-git-send-email-alain.volmat@foss.st.com>
-References: <1612515104-838-1-git-send-email-alain.volmat@foss.st.com>
+        Fri, 5 Feb 2021 03:53:08 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB3DFC06178B
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 00:52:27 -0800 (PST)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1l7wqh-0006EF-6p; Fri, 05 Feb 2021 09:52:19 +0100
+Received: from hardanger.blackshift.org (unknown [IPv6:2a03:f580:87bc:d400:8f9f:ac65:660b:ab5f])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id F246C5D72D6;
+        Fri,  5 Feb 2021 08:52:15 +0000 (UTC)
+Date:   Fri, 5 Feb 2021 09:52:15 +0100
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Xulin Sun <xulin.sun@windriver.com>
+Cc:     wg@grandegger.com, dmurphy@ti.com, sriram.dash@samsung.com,
+        kuba@kernel.org, davem@davemloft.net, linux-can@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        xulinsun@gmail.com
+Subject: Re: [PATCH 2/2] can: m_can: m_can_class_allocate_dev(): remove
+ impossible error return judgment
+Message-ID: <20210205085215.sgsvtys5z4gm3ict@hardanger.blackshift.org>
+References: <20210205072559.13241-1-xulin.sun@windriver.com>
+ <20210205072559.13241-2-xulin.sun@windriver.com>
+ <20210205081911.4xvabbzdtkvkpplq@hardanger.blackshift.org>
+ <9cae961a-881d-8678-6ec3-0fd00c74c8ad@windriver.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.46]
-X-ClientProxiedBy: SFHDAG3NODE1.st.com (10.75.127.7) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-02-05_06:2021-02-05,2021-02-05 signatures=0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="5ixmah6qra6ivpgj"
+Content-Disposition: inline
+In-Reply-To: <9cae961a-881d-8678-6ec3-0fd00c74c8ad@windriver.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To help debugging issues, add the address of the slave being
-accessed when getting an error.
 
-Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
----
- drivers/i2c/busses/i2c-stm32f7.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+--5ixmah6qra6ivpgj
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/i2c/busses/i2c-stm32f7.c b/drivers/i2c/busses/i2c-stm32f7.c
-index f77cd6512a86..ef642fe1eb2c 100644
---- a/drivers/i2c/busses/i2c-stm32f7.c
-+++ b/drivers/i2c/busses/i2c-stm32f7.c
-@@ -1602,7 +1602,8 @@ static irqreturn_t stm32f7_i2c_isr_error(int irq, void *data)
- 
- 	/* Bus error */
- 	if (status & STM32F7_I2C_ISR_BERR) {
--		dev_err(dev, "<%s>: Bus error\n", __func__);
-+		dev_err(dev, "<%s>: Bus error accessing addr 0x%x\n",
-+			__func__, f7_msg->addr);
- 		writel_relaxed(STM32F7_I2C_ICR_BERRCF, base + STM32F7_I2C_ICR);
- 		stm32f7_i2c_release_bus(&i2c_dev->adap);
- 		f7_msg->result = -EIO;
-@@ -1610,13 +1611,15 @@ static irqreturn_t stm32f7_i2c_isr_error(int irq, void *data)
- 
- 	/* Arbitration loss */
- 	if (status & STM32F7_I2C_ISR_ARLO) {
--		dev_dbg(dev, "<%s>: Arbitration loss\n", __func__);
-+		dev_dbg(dev, "<%s>: Arbitration loss accessing addr 0x%x\n",
-+			__func__, f7_msg->addr);
- 		writel_relaxed(STM32F7_I2C_ICR_ARLOCF, base + STM32F7_I2C_ICR);
- 		f7_msg->result = -EAGAIN;
- 	}
- 
- 	if (status & STM32F7_I2C_ISR_PECERR) {
--		dev_err(dev, "<%s>: PEC error in reception\n", __func__);
-+		dev_err(dev, "<%s>: PEC error in reception accessing addr 0x%x\n",
-+			__func__, f7_msg->addr);
- 		writel_relaxed(STM32F7_I2C_ICR_PECCF, base + STM32F7_I2C_ICR);
- 		f7_msg->result = -EINVAL;
- 	}
--- 
-2.17.1
+On 05.02.2021 16:46:16, Xulin Sun wrote:
+> On 2021/2/5 =E4=B8=8B=E5=8D=884:19, Marc Kleine-Budde wrote:
+> > On 05.02.2021 15:25:59, Xulin Sun wrote:
+> > > If the previous can_net device has been successfully allocated, its
+> > > private data structure is impossible to be empty, remove this redunda=
+nt
+> > > error return judgment. Otherwise, memory leaks for alloc_candev() will
+> > > be triggered.
+> > Your analysis is correct, the netdev_priv() will never fail. But how
+> > will this trigger a mem leak on alloc_candev()? I've removed that
+>=20
+> The previous code judges the netdev_priv is empty, and then goto out. The
+> correct approach should add free_candev(net_dev) before goto.
+>=20
+> The code Like:
+>=20
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 class_dev =3D netdev_priv(net_=
+dev);
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (!class_dev) {
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 dev_err(dev, "Failed to init netdev cdevate");
+> +=C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0 free_candev(net_dev);
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 goto out;
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+>=20
+> Otherwise, memory leaks for alloc_candev() will be triggered.
 
+No - as you said in the original patch description. The return value
+of netdev_priv() cannot be NULL, as net_dev is not NULL.
+
+> Now directly remove the impossible error return judgment to resolve
+> the above possible issue.
+
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+--5ixmah6qra6ivpgj
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmAdBzwACgkQqclaivrt
+76m8Wwf/XrNhbJ9LzHFhjVk8mBwZETNanYtNEHxJ7lZWEjMqjblzlefUvetmmfUA
+ft2uXaKHgJK5iWQiE8e8RFUzgKO/8Ff/whcfw7/YRtdQsGYQCIDhZ5L8xrIN1fr+
+1MocCKg08DuPBTa2hdRLn2zz3M1hOILVd6EcBolFHjWZ2obXuT6gT34AZ4tOXRwD
+07w31mfqQ6tYwBCv8SmhiZ8TSTDyGajv+Kqb2lhatTEMT5QfZC40OO5meCJhSyDi
+LcRmnitxcpbxlZuxP1ymadM6Nb7/urHYW/YCIhmYAJE1Jca4EtJYjb2TQ84RGxnJ
+r/9unNZqAMepkLnGB+N7aXSGx9kAyg==
+=LRzj
+-----END PGP SIGNATURE-----
+
+--5ixmah6qra6ivpgj--
