@@ -2,167 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48FBD311AF8
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 05:38:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC52F311B38
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 05:59:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229621AbhBFEh7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 23:37:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37190 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229650AbhBFCbT (ORCPT
+        id S230160AbhBFE7N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 23:59:13 -0500
+Received: from mail-yb1-f180.google.com ([209.85.219.180]:40006 "EHLO
+        mail-yb1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231396AbhBFDfi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 21:31:19 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89398C06121C
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 14:14:19 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id w4so8739225ybc.7
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 14:14:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=d5RIDWJchB5lEhG7XVyqeqKAvmcYq4cH2DHTaZwx5/0=;
-        b=FpnhHFz3tKFPWcMnsP3l/yAb+F4xtDN9a+EPKrp039W814ze9LgPS2QUt1bLmcn4Bx
-         fjWAOs18xxnAHyRbu5jwp5G1XqxPNDGXsCCvAejg73f5vbMd0k1iKljPB2pOTJL+Wewv
-         Fa4Fg2soTqDYR6ReE5M3CvB/4t3V2WiYPdNb8xORG7fNtAwge8iisF7XdNoPn/RN/V/y
-         hzJND4ecNGC/Xu5xf21WqIcn8LIHawkKlNXC1NxGZy72QVzNdxCxcyfMfkZ74rg1U29m
-         p/OKFrWOrTDBpLVDnLSpY0TxTAfhq+PmRP1rZygdoLUIxCcusgjx687xUkRQiTWOWpe7
-         ZL4Q==
+        Fri, 5 Feb 2021 22:35:38 -0500
+Received: by mail-yb1-f180.google.com with SMTP id i71so8773580ybg.7;
+        Fri, 05 Feb 2021 19:35:21 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=d5RIDWJchB5lEhG7XVyqeqKAvmcYq4cH2DHTaZwx5/0=;
-        b=fgEU+RVP60ZRzu9xF4yoyUk3xrUU3nH1FO76833m3YdnfKSYvXo2o3gHIBvuKFyN5G
-         f0jYFGQ6Q8aoAAP8tatE/ArpXGLGS5FtZSZqY2be1Da+ooUoze3nlN3wUs+VOHH/ZLZe
-         ZB1sjSy0iQMuRCumktQ4zklxDzVT3wfzgAMHddYarg5qOWCO0XLD9sqBIuMF42GlzUFA
-         IE0PbzwFLSLIerSeMnIHR0/dbQAPURVBJCo4R/GlZiRph3i1BJC/VMw506wNviSJjJqM
-         T7DVVSJCdhqumnWROcX98kjqNE76Jfrb8F0J2bf7gZAZskWFkDTuKcDArNtOG5ZcM5UL
-         ajDg==
-X-Gm-Message-State: AOAM533y0oJ1Loph83rQDUN+FkfEDCOjXIsdW07e9TsOW5jrHAKPIJ8h
-        KLzYnJoU6HOKDqYg1zKWy2BaNzXhzA92fQ==
-X-Google-Smtp-Source: ABdhPJwk/6GhpV3JsaR0hXqo38EkN4pxUz/+JPdF8gqRWCLxuGx+icVaRM8CuR2CMOLE7N24F6uDjzSxY4FCFQ==
-Sender: "dlatypov via sendgmr" <dlatypov@dlatypov.svl.corp.google.com>
-X-Received: from dlatypov.svl.corp.google.com ([2620:15c:2cd:202:a8b1:128a:69fa:86fb])
- (user=dlatypov job=sendgmr) by 2002:a25:21d4:: with SMTP id
- h203mr9010706ybh.290.1612563258804; Fri, 05 Feb 2021 14:14:18 -0800 (PST)
-Date:   Fri,  5 Feb 2021 14:14:09 -0800
-Message-Id: <20210205221409.1962881-1-dlatypov@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.30.0.478.g8a0d178c01-goog
-Subject: [PATCH v2] kunit: don't show `1 == 1` in failed assertion messages
-From:   Daniel Latypov <dlatypov@google.com>
-To:     brendanhiggins@google.com, davidgow@google.com
-Cc:     linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        skhan@linuxfoundation.org, Daniel Latypov <dlatypov@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=bWD0Xd1LugmrPim9uT1TIxiY19YbyAjLXKLTF24G3cs=;
+        b=aEFQvXg8Do6lrwB9raiRz8itDaZTBRwuDhWL1S/6aDcoFwtXDOb7LbTflYn3G2XCAt
+         5dKu2+VDYIL6/SepMFoASr/NsxFMeFWD3IGIFer80aXKgeMXQZEEziDAIJc28X9EcgRX
+         TWy7/IpTo/ifQ1KHl7KhFCFA7A+l7VLpbSLZsw4OIkS1DN2MRODrxf8smuXRw1cd3Ba5
+         OyEVMGKKnMhQNLw6A8LiLIAVEuyhxAycD7KlQqMw8+XR6cuE9KmSc/3Hyz9Qk8CihRGr
+         W47Qp+vNt4wg3djXcdDBNyqY84Uf3sb8o1OgUfU1eDUD5yYvZpLDIKvF/b2MexNQZl6b
+         GGiw==
+X-Gm-Message-State: AOAM5304zjZ+BI8oxKXrOFCwl8WXZdgX2q0hJQjZmK8LEdRbcirDrr8X
+        jveO7nT5z3GFUY0DVp7WfLpX3rQ2Yg==
+X-Google-Smtp-Source: ABdhPJx4H3231S2pjcifJwGi+k2xYKRAeq+BOInc+gwPHSJdr5kMBWGsfC5hidReoeOqkxqNElMVZQ==
+X-Received: by 2002:a9d:7514:: with SMTP id r20mr4899658otk.318.1612564007144;
+        Fri, 05 Feb 2021 14:26:47 -0800 (PST)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id u7sm2067882oib.22.2021.02.05.14.26.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Feb 2021 14:26:46 -0800 (PST)
+Received: (nullmailer pid 3867655 invoked by uid 1000);
+        Fri, 05 Feb 2021 22:26:45 -0000
+Date:   Fri, 5 Feb 2021 16:26:45 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Mark Brown <broonie@kernel.org>, Lee Jones <lee.jones@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mayulong <mayulong1@huawei.com>, devel@driverdev.osuosl.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 18/21] mfd: hi6421-spmi-pmic: move driver from staging
+Message-ID: <20210205222645.GB3857395@robh.at.kernel.org>
+References: <cover.1611072387.git.mchehab+huawei@kernel.org>
+ <e79ffb200c52fc8c8926492cc82ac5dbcda3e3fb.1611072387.git.mchehab+huawei@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e79ffb200c52fc8c8926492cc82ac5dbcda3e3fb.1611072387.git.mchehab+huawei@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, given something (fairly dystopian) like
-> KUNIT_EXPECT_EQ(test, 2 + 2, 5)
+On Tue, Jan 19, 2021 at 05:10:44PM +0100, Mauro Carvalho Chehab wrote:
+> This driver is ready for mainstream. So, move it out of staging.
+> 
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> ---
+>  .../mfd/hisilicon,hi6421-spmi-pmic.yaml       | 135 +++++++++
+>  MAINTAINERS                                   |   7 +
+>  drivers/mfd/Kconfig                           |  15 +
+>  drivers/mfd/Makefile                          |   1 +
+>  drivers/mfd/hi6421-spmi-pmic.c                | 281 ++++++++++++++++++
+>  drivers/staging/hikey9xx/Kconfig              |  16 -
+>  drivers/staging/hikey9xx/Makefile             |   1 -
+>  drivers/staging/hikey9xx/hi6421-spmi-pmic.c   | 281 ------------------
+>  .../hikey9xx/hisilicon,hi6421-spmi-pmic.yaml  | 135 ---------
+>  9 files changed, 439 insertions(+), 433 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/mfd/hisilicon,hi6421-spmi-pmic.yaml
+>  create mode 100644 drivers/mfd/hi6421-spmi-pmic.c
+>  delete mode 100644 drivers/staging/hikey9xx/hi6421-spmi-pmic.c
+>  delete mode 100644 drivers/staging/hikey9xx/hisilicon,hi6421-spmi-pmic.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/mfd/hisilicon,hi6421-spmi-pmic.yaml b/Documentation/devicetree/bindings/mfd/hisilicon,hi6421-spmi-pmic.yaml
+> new file mode 100644
+> index 000000000000..3b23ad56b31a
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mfd/hisilicon,hi6421-spmi-pmic.yaml
+> @@ -0,0 +1,135 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/mfd/hisilicon,hi6421-spmi-pmic.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: HiSilicon 6421v600 SPMI PMIC
+> +
+> +maintainers:
+> +  - Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> +
+> +description: |
+> +  HiSilicon 6421v600 should be connected inside a MIPI System Power Management
+> +  (SPMI) bus. It provides interrupts and power supply.
+> +
+> +  The GPIO and interrupt settings are represented as part of the top-level PMIC
+> +  node.
+> +
+> +  The SPMI controller part is provided by
+> +  drivers/staging/hikey9xx/hisilicon,hisi-spmi-controller.yaml.
+> +
+> +properties:
+> +  $nodename:
+> +    pattern: "pmic@[0-9a-f]"
+> +
+> +  compatible:
+> +    const: hisilicon,hi6421v600-spmi
 
-KUnit will prints a failure message like this.
->  Expected 2 + 2 == 5, but
->      2 + 2 == 4
->      5 == 5
-
-With this patch, the output just becomes
->  Expected 2 + 2 == 5, but
->      2 + 2 == 4
-
-This patch is slightly hacky, but it's quite common* to compare an
-expression to a literal integer value, so this can make KUnit less
-chatty in many cases. (This patch also fixes variants like
-KUNIT_EXPECT_GT, LE, et al.).
-
-It also allocates an additional string briefly, but given this only
-happens on test failures, it doesn't seem too bad a tradeoff.
-Also, in most cases it'll realize the lengths are unequal and bail out
-before the allocation.
-
-We could save the result of the formatted string to avoid wasting this
-extra work, but it felt cleaner to leave it as-is.
-
-Edge case: for something silly and unrealistic like
-> KUNIT_EXPECT_EQ(test, 4, 5);
-
-It'll generate this message with a trailing "but"
->  Expected 4 == 5, but
->  <next line of normal output>
-
-It didn't feel worth adding a check up-front to see if both sides are
-literals to handle this better.
-
-*A quick grep suggests 100+ comparisons to an integer literal as the
-right hand side.
-
-Signed-off-by: Daniel Latypov <dlatypov@google.com>
-Tested-by: David Gow <davidgow@google.com>
-Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
----
- lib/kunit/assert.c | 39 +++++++++++++++++++++++++++++++++------
- 1 file changed, 33 insertions(+), 6 deletions(-)
-
-diff --git a/lib/kunit/assert.c b/lib/kunit/assert.c
-index 33acdaa28a7d..e0ec7d6fed6f 100644
---- a/lib/kunit/assert.c
-+++ b/lib/kunit/assert.c
-@@ -85,6 +85,29 @@ void kunit_ptr_not_err_assert_format(const struct kunit_assert *assert,
- }
- EXPORT_SYMBOL_GPL(kunit_ptr_not_err_assert_format);
- 
-+/* Checks if `text` is a literal representing `value`, e.g. "5" and 5 */
-+static bool is_literal(struct kunit *test, const char *text, long long value,
-+		       gfp_t gfp)
-+{
-+	char *buffer;
-+	int len;
-+	bool ret;
-+
-+	len = snprintf(NULL, 0, "%lld", value);
-+	if (strlen(text) != len)
-+		return false;
-+
-+	buffer = kunit_kmalloc(test, len+1, gfp);
-+	if (!buffer)
-+		return false;
-+
-+	snprintf(buffer, len+1, "%lld", value);
-+	ret = strncmp(buffer, text, len) == 0;
-+
-+	kunit_kfree(test, buffer);
-+	return ret;
-+}
-+
- void kunit_binary_assert_format(const struct kunit_assert *assert,
- 				struct string_stream *stream)
- {
-@@ -97,12 +120,16 @@ void kunit_binary_assert_format(const struct kunit_assert *assert,
- 			  binary_assert->left_text,
- 			  binary_assert->operation,
- 			  binary_assert->right_text);
--	string_stream_add(stream, KUNIT_SUBSUBTEST_INDENT "%s == %lld\n",
--			  binary_assert->left_text,
--			  binary_assert->left_value);
--	string_stream_add(stream, KUNIT_SUBSUBTEST_INDENT "%s == %lld",
--			  binary_assert->right_text,
--			  binary_assert->right_value);
-+	if (!is_literal(stream->test, binary_assert->left_text,
-+			binary_assert->left_value, stream->gfp))
-+		string_stream_add(stream, KUNIT_SUBSUBTEST_INDENT "%s == %lld\n",
-+				  binary_assert->left_text,
-+				  binary_assert->left_value);
-+	if (!is_literal(stream->test, binary_assert->right_text,
-+			binary_assert->right_value, stream->gfp))
-+		string_stream_add(stream, KUNIT_SUBSUBTEST_INDENT "%s == %lld",
-+				  binary_assert->right_text,
-+				  binary_assert->right_value);
- 	kunit_assert_print_msg(assert, stream);
- }
- EXPORT_SYMBOL_GPL(kunit_binary_assert_format);
-
-base-commit: 1e0d27fce010b0a4a9e595506b6ede75934c31be
--- 
-2.30.0.478.g8a0d178c01-goog
-
+Also, use the compatible string as the filename.
