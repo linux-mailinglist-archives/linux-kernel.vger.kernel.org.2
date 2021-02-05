@@ -2,110 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADB693106D2
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 09:35:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E58243106D9
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 09:38:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229815AbhBEIf1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 03:35:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33322 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229693AbhBEIfA (ORCPT
+        id S229849AbhBEIhH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 03:37:07 -0500
+Received: from mailout2.samsung.com ([203.254.224.25]:13710 "EHLO
+        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229839AbhBEIgL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 03:35:00 -0500
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DAD5C061786
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 00:34:20 -0800 (PST)
-Received: by mail-wm1-x32b.google.com with SMTP id a16so7397966wmm.0
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 00:34:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=HHfAd0jRqxl9Kf+Um9ET57/jEyDsj3IKhyTUCMrpEZU=;
-        b=CTDnrnQM7qmmnnZvHQPCdGrpgM/joh0kwHoiGqQN3K7HvYA5M7wPDDJeovg1fl+Zn2
-         3Lg94szTZ7VrXAb0CgkcbqrHYOmhX5e12lNNCCE7ruWJ/UitZthWhS4y+S0hHkJKgH/T
-         A7vIFAbEgka0i9LYWguUIC9rfUWMJ9t0EvwrnQqhcKTA+BI7Kw/LQC5370GUt0VQGlIf
-         yZR6fO37+siVbiu2souUX3kW/rF9LLfDyDCJwypUCF/83EyJhjW2WQD4On0uVzdZamND
-         5sHNemVh2o/ASn78BzXK/PoYo1VQq16aCqCHlQB7EFwvCQ4N2G8IM0OkTyqwyuKwuLim
-         mong==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=HHfAd0jRqxl9Kf+Um9ET57/jEyDsj3IKhyTUCMrpEZU=;
-        b=qZTf2Avxb4zegBs8ljAAWu2d1zzRZesJCBY/hXFkyYl2m2bup0Ku+mSpoO6Ty0uK1M
-         wj/ccyYqoEO4itdCtUbwprsyfyKUyaeu7WYCI86E0HHTV5fuZTFeMjoJDCJmEgiBqwvz
-         Cye1teO6X7uYttc5lpwgdmVvpCArJT33l95q59H+e0B+IwUq3J3t9ld7zm3digdbs5x1
-         sYTgB4FonAVnqcyMExMyBRxeTnPvTWZFuEEWxEri/xwjm5dbJdRsk3Qp3eAR2K0Cqj1M
-         vYF0F0ZyTX9NL4JY8yFjKIWLrfJ80BHTz1BpCkUF3HPjZjj1Cvd+uNWam3nkUSDgx0vV
-         3fow==
-X-Gm-Message-State: AOAM5303WJkx36cbpyTSUXwIrGHmGic5rLEQDrrRDXFCN/oPKgndlMt1
-        gqYblVItRUWlCp9ElCbSL3U6Bg==
-X-Google-Smtp-Source: ABdhPJz17JjsWyci4e4xB1qYeMq8I1U9C4tvNzbHDmfHrivo4QRg3R2AccWKsjN6ESqU/VF+NvlE4g==
-X-Received: by 2002:a1c:7c17:: with SMTP id x23mr2616892wmc.65.1612514058703;
-        Fri, 05 Feb 2021 00:34:18 -0800 (PST)
-Received: from dell ([91.110.221.188])
-        by smtp.gmail.com with ESMTPSA id u4sm10921969wrr.37.2021.02.05.00.34.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Feb 2021 00:34:18 -0800 (PST)
-Date:   Fri, 5 Feb 2021 08:34:16 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        alsa-devel@alsa-project.org
-Subject: Re: [PATCH v4 4/5] ASoC: Intel: Add DMI quirk table to
- soc_intel_is_byt_cr()
-Message-ID: <20210205083416.GR2789116@dell>
-References: <20210120214957.140232-1-hdegoede@redhat.com>
- <20210120214957.140232-5-hdegoede@redhat.com>
- <20210204135616.GL2789116@dell>
- <20210204140515.GC4288@sirena.org.uk>
- <20210204150456.GN2789116@dell>
- <20210204151139.GE4288@sirena.org.uk>
- <20210204154058.GP2789116@dell>
- <20210204194213.GG4288@sirena.org.uk>
+        Fri, 5 Feb 2021 03:36:11 -0500
+Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210205083526epoutp0281a285cf4f4455dbc729fe6c0db5dd6a~gzQ340k1v0971609716epoutp02V
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 08:35:26 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210205083526epoutp0281a285cf4f4455dbc729fe6c0db5dd6a~gzQ340k1v0971609716epoutp02V
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1612514126;
+        bh=roCaxw1TIraQlxmt81EOnbYmX7cIvpUTglhwhX1swBk=;
+        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
+        b=kvsam9xXlvpVx37hXXm6Xdx+VP1MGPiOdPyleW8jx1ZVhRtuhink6hc4yjvVfl3Xt
+         0tKbeUXLIYNXEwZAEsZaXERxFLCMASYCFpL2oozBiAB55FUpJxf8awi6GYjif8JOS3
+         zAJqEPsxRUTEFbfIjeKTfgUMiVG/nvYsQERz+tNA=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+        epcas1p3.samsung.com (KnoxPortal) with ESMTP id
+        20210205083525epcas1p3792c41b7c1d03851811512d93dd9829e~gzQ28xlTJ1051410514epcas1p3I;
+        Fri,  5 Feb 2021 08:35:25 +0000 (GMT)
+Received: from epsmges1p2.samsung.com (unknown [182.195.40.161]) by
+        epsnrtp2.localdomain (Postfix) with ESMTP id 4DX7z06L8jz4x9Px; Fri,  5 Feb
+        2021 08:35:24 +0000 (GMT)
+Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
+        epsmges1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        15.D9.63458.C430D106; Fri,  5 Feb 2021 17:35:24 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas1p3.samsung.com (KnoxPortal) with ESMTPA id
+        20210205083524epcas1p3cd8e72a69a009b698bf9a9dbbb01f9b3~gzQ1noc6_1052610526epcas1p3W;
+        Fri,  5 Feb 2021 08:35:24 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20210205083524epsmtrp1dd2f4c42024662c73cab1fcc30b7dcc7~gzQ1ljHZ40038600386epsmtrp1g;
+        Fri,  5 Feb 2021 08:35:24 +0000 (GMT)
+X-AuditID: b6c32a36-6c9ff7000000f7e2-7f-601d034ce870
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        6F.E9.13470.B430D106; Fri,  5 Feb 2021 17:35:23 +0900 (KST)
+Received: from dh0421hwang01 (unknown [10.253.101.58]) by
+        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20210205083523epsmtip1f77b74b9aaeb2a8d52de1cbf2883974d~gzQ1Uhki-3111031110epsmtip1F;
+        Fri,  5 Feb 2021 08:35:23 +0000 (GMT)
+From:   "DooHyun Hwang" <dh0421.hwang@samsung.com>
+To:     "'Avri Altman'" <Avri.Altman@wdc.com>,
+        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <alim.akhtar@samsung.com>, <jejb@linux.ibm.com>,
+        <martin.petersen@oracle.com>, <stanley.chu@mediatek.com>,
+        <cang@codeaurora.org>, <asutoshd@codeaurora.org>,
+        <beanhuo@micron.com>, <jaegeuk@kernel.org>,
+        <adrian.hunter@intel.com>, <satyat@google.com>
+Cc:     <grant.jung@samsung.com>, <jt77.jang@samsung.com>,
+        <junwoo80.lee@samsung.com>, <jangsub.yi@samsung.com>,
+        <sh043.lee@samsung.com>, <cw9316.lee@samsung.com>,
+        <sh8267.baek@samsung.com>, <wkon.kim@samsung.com>
+In-Reply-To: <DM6PR04MB6575691082B0379B9B238B4EFCB29@DM6PR04MB6575.namprd04.prod.outlook.com>
+Subject: RE: [PATCH] scsi: ufs: print the counter of each event history
+Date:   Fri, 5 Feb 2021 17:35:23 +0900
+Message-ID: <000401d6fb99$d8b77c80$8a267580$@samsung.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210204194213.GG4288@sirena.org.uk>
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQGonOmpGA2Fw1RP91jP5BlOyCodSwIzgKWKAkwINgWqgfuF4A==
+Content-Language: ko
+X-Brightmail-Tracker: H4sIAAAAAAAAA02TfVBUVRjG59x79+4CbV2+4rhgrHeM0lzYZVk4FGCAo1dAJZnGagy4wR1g
+        WnZ39i6SNBFisyAgy0eNupBDGDgCgsOXQK0izYiQfzSQkE6AJsRHSQgmkEntcnPiv+e87++Z
+        533PmSPB3VZImSRDZ+KMOlZLk85E53fblIo4fHOysqJOhQYmm0h092wniWzmG2I0u3qLRNfu
+        nSDQYku9CJ0eNIvQX09bxGiyxYqjwo5KDNX+1ImhrumbYtTz9DiGhnuqSVQ82kWi8/1rGLI0
+        jpEo/+8rBBq5eUOE6jpuA9Q29Jh405MZLj2JMTWtWcy5b2cxprXhBMmU1fYC5rOBqwSz3FJI
+        Mg+n7hBMaXsDYJZaX2IKeouxeJf3tGHpHJvKGeWcLkWfmqFLC6djE5KikzTBSpVCFYpCaLmO
+        zeTC6V1x8YrdGVr7prT8CKvNspfiWZ6nAyLCjPosEydP1/OmcJozpGoNKqXBn2cz+Sxdmn+K
+        PvN1lVIZqLGTydr0r87/ghva8I8umF/NA7exIuAkgVQQrP/nDOHQblQXgMcuZhcBZ7teBLDp
+        fhsQGo8BHFzxfGbIn2/GBMgGYN7CWUI4/AZgd/lJsYMiKSWsvP476dAe1BwGLz7yckA4NQrg
+        6vij9Wwn6n04f+fzdYM7tQd+030ad2iC2goLhorsZolESoXCsUvxjrKUcoUDZybXR8UpX3j5
+        QTUuTCSHq1P1IiErCvYXrpEC4wGrTphxRy6k2pzg1P12QjDsgu1NX4gE7Q7n+tvFgpbBWYv5
+        P10MoKUvQjCXATjcX0IKDTVcXFoCjuFwahts6QkQyltg95MvgRD8PJz/s0TkQCAlhYVmNwHx
+        g+fWlu2I2K594DGXMkBbNyxm3bCYdcMC1v+jagDRAF7kDHxmGserDIEbX7oVrH+B7cFdoOLB
+        gn8fwCSgD0AJTntIWbMs2U2ayh7N4Yz6JGOWluP7gMZ+0+W4zDNFb/9DOlOSShOoVqtRUHBI
+        sEZNe0lZ5d0kNyqNNXEfcpyBMz7zYRInWR5G56qfK6gY95s+vmSg2ywJCfUXLqdumk70laxU
+        Rms/+d4mt03EjPr4TOesKCwDPxzcGpdyb2aodiwk+uqaqnzNwz0s2qNewVvfvuXlne5Wt2NO
+        NxaJDp1KHBxucI2tds01hmY//PWN/AjxuMUy8fFg0LsqU+XIQf7AQurLzhNzT2x7T4mcvUsb
+        O2tm/HyjNNkxtj++3s/nVrSW7jg6wyp2S6w/wsADypHpxtfC3OvKOt7xjTpiLk48vK+9OaZk
+        1WVn5CVJcHOvYp+ca05BJfmbcjbT8ejazrdeSZddH96z/1M+oO9w1bg7Hb0YuZd5oXf5Stpy
+        VewHPy8fKhXVeCcZCA+a4NNZ1XbcyLP/As9B0fGLBAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrGIsWRmVeSWpSXmKPExsWy7bCSnK43s2yCwc475hYnn6xhs3gwbxub
+        xd62E+wWL39eZbM4+LCTxeLT+mWsFjNOtbFa/Pq7nt3iyfpZzBYdWyczWSy6sY3JYsfzM+wW
+        u/42M1lc3jWHzaL7+g42i+XH/zFZ9K++y2bR9Gcfi8W1MydYLZZuvclosfnSNxYHUY/Lfb1M
+        Hgs2lXos3vOSyWPTqk42jwmLDjB6tJzcz+LxfX0Hm8fHp7dYPPq2rGL0+LxJzqP9QDdTAHcU
+        l01Kak5mWWqRvl0CV8bC5Y+YCzYzV6xs02hgvMnUxcjJISFgItH0bh2QzcUhJLCbUWLnok+s
+        EAkZie77e9m7GDmAbGGJw4eLIWpeMkpMe3WEHaSGTcBAYvKxN2wgCRGBH0wSS38uYgVxmAXu
+        M0os2jaVHaLlAaPE5clH2UBaOAViJd7dmgLWLizgLrF75wxmEJtFQEWi/VIXG8g6XgFLibsb
+        AkDCvAKCEidnPmEBsZkFtCV6H7YyQtjyEtvfzmGGuFRB4ufTZWBXiwg4SRzv+McGUSMiMbuz
+        jXkCo/AsJKNmIRk1C8moWUhaFjCyrGKUTC0ozk3PLTYsMMxLLdcrTswtLs1L10vOz93ECE4K
+        Wpo7GLev+qB3iJGJg/EQowQHs5IIb2KbVIIQb0piZVVqUX58UWlOavEhRmkOFiVx3gtdJ+OF
+        BNITS1KzU1MLUotgskwcnFINTB3BV1IyGLL+ylkGG3//wmNc5bHBe7rngyyR/lf5cRP0fr17
+        152VKyksErS7N5dr0c1VW902HPQN2/1zksWeveKuTJ/ZvH6fu//BbeuS+TeOHm6wM1ssxX5r
+        inscx6wDj7lSFK++euBdH6YmczSEm19g3VzxF9vWP/bz29VtueT9lxVHzVQuZ0l9+3xu4kzj
+        d4E/9CICOMKFNr71Pda3grnyVLy9x45tv1YHvJx88PCRK8+VnROtvq2XdhK8v62rclOUYPP6
+        jZnnjB7fi7l55R3b7ok+s2RLnFNz/6z/lSBZrx0wo18w0PHmvzSBvQ/m1yX7s6YJ+jFX/TZJ
+        mRmrN+2S1fPX7N67qpfH3Gc4UqnEUpyRaKjFXFScCACx2D1HeQMAAA==
+X-CMS-MailID: 20210205083524epcas1p3cd8e72a69a009b698bf9a9dbbb01f9b3
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210203102752epcas1p16713d977a1a679cf641894144d8f299d
+References: <CGME20210203102752epcas1p16713d977a1a679cf641894144d8f299d@epcas1p1.samsung.com>
+        <20210203101443.28934-1-dh0421.hwang@samsung.com>
+        <DM6PR04MB6575691082B0379B9B238B4EFCB29@DM6PR04MB6575.namprd04.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 04 Feb 2021, Mark Brown wrote:
+>>
+>> Since only print the recorded event history list, add to print the
+>> counter value.
+>>
+>> Signed-off-by: DooHyun Hwang <dh0421.hwang@samsung.com>
+>Reviewed-by: Avri Altman <avri.altman@wdc.com>
+>
+>Btw, You have the counter now in ufs-debugfs as well.
+>
+>Thanks,
+>Avri
 
-> On Thu, Feb 04, 2021 at 03:40:58PM +0000, Lee Jones wrote:
-> > On Thu, 04 Feb 2021, Mark Brown wrote:
-> > > On Thu, Feb 04, 2021 at 03:04:56PM +0000, Lee Jones wrote:
-> 
-> > > > This set has all the Acks we need to proceed.  What's blocking?
-> 
-> > > There's the subsystem maintainer...
-> 
-> > I assume that was a question and you meant "where's"?
-> 
-> > Pierre is listed as the Maintainer.
-> 
-> I'm fairly sure you can see what I meant here and why there might be a
-> concern.
+Thank you for your review and information.
 
-So that should be a Reviewed-by and not an Acked-by then.  That's fine.
+I hope to be able to check the counter value in kernel log as well.
 
-What do you want to happen with this set then?
+Thank you.
+DooHyun Hwang.
 
-You want it broken up?
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
