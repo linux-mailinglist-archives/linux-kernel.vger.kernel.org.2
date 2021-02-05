@@ -2,95 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52146310F1F
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 18:52:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52409310F27
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 18:53:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233328AbhBEQIz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 11:08:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35814 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233510AbhBEQCM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 11:02:12 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49174C061574;
-        Fri,  5 Feb 2021 09:43:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description;
-        bh=08/9eUYrON8JjgNfSMvnJtGPuDDsOmQbDO2HePIMB/Q=; b=ebzoSt+d2x4Dn+mrVLeczYcm2O
-        PyJ1PE4gCqwN0xjgVnEQsl3+4UXMZK7M+KeoKbdsFQH3qfNvFgyOw8WqMxbnzufp2c2p3XbabtPOl
-        cwvBvy1rDIAoZ0roobw6O4AGPu37ol+D2tlfLxW8AzZCsztgkaq6uZZsUD2EwNNw7b1aZOpbK0oS5
-        eLRNo6+hrS8Q9NTyyzg/Bzu0Ay3LusTcbpd2PFln1F8UQOIk616M5thi14c4pNu5jYPCHjBJJKnY6
-        SjfK1KXbyHh9VVXKzfwmL0BOUZa+sGS92978yOE2o76pjWtiGHBdxnBUtSxAhBbOCJdU6GK81s5w2
-        eumII7jw==;
-Received: from [2601:1c0:6280:3f0::aec2]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l8595-000862-PJ; Fri, 05 Feb 2021 17:43:52 +0000
-Subject: Re: [PATCH] drivers: gpu: drm: msn: disp: dpu1: Fixed couple of
- spellings in the file dpu_hw_top.h
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, robdclark@gmail.com,
-        sean@poorly.run, airlied@linux.ie, daniel@ffwll.ch,
-        jonathan@marek.ca, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-References: <20210205084758.354509-1-unixbhaskar@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <638f6e0c-cf14-a113-b1cf-5d07299c7332@infradead.org>
-Date:   Fri, 5 Feb 2021 09:43:46 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S233593AbhBEQLA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 11:11:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55828 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229669AbhBEQGK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 11:06:10 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 89B1564DD4;
+        Fri,  5 Feb 2021 17:47:50 +0000 (UTC)
+Date:   Fri, 5 Feb 2021 12:47:48 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Chris Down <chris@chrisdown.name>, linux-kernel@vger.kernel.org,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        John Ogness <john.ogness@linutronix.de>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>, kernel-team@fb.com,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jason Baron <jbaron@akamai.com>,
+        Kees Cook <keescook@chromium.org>, linux-api@vger.kernel.org
+Subject: Re: [PATCH] printk: Userspace format enumeration support
+Message-ID: <20210205124748.4af2d406@gandalf.local.home>
+In-Reply-To: <YB11jybvFCb95S9e@alley>
+References: <YBwU0G+P0vb9wTwm@chrisdown.name>
+        <YB11jybvFCb95S9e@alley>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20210205084758.354509-1-unixbhaskar@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/5/21 12:47 AM, Bhaskar Chowdhury wrote:
-> 
-> 
-> s/confguration/configuration/
-> s/Regsiters/Registers/
-> 
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
-> ---
->  drivers/gpu/drm/msm/disp/dpu1/dpu_hw_top.h | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_top.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_top.h
-> index 8018fff5667a..3aa10c89ca1b 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_top.h
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_top.h
-> @@ -30,7 +30,7 @@ struct traffic_shaper_cfg {
-> 
->  /**
->   * struct split_pipe_cfg - pipe configuration for dual display panels
-> - * @en        : Enable/disable dual pipe confguration
-> + * @en        : Enable/disable dual pipe configuration
->   * @mode      : Panel interface mode
->   * @intf      : Interface id for main control path
->   * @split_flush_en: Allows both the paths to be flushed when master path is
-> @@ -76,7 +76,7 @@ struct dpu_vsync_source_cfg {
->   * @setup_traffic_shaper : programs traffic shaper control
->   */
->  struct dpu_hw_mdp_ops {
-> -	/** setup_split_pipe() : Regsiters are not double buffered, thisk
-> +	/** setup_split_pipe() : Registers are not double buffered, thisk
+On Fri, 5 Feb 2021 17:42:55 +0100
+Petr Mladek <pmladek@suse.com> wrote:
 
-	                                                            this
+> Hi,
+> 
+> I would like to hear opinion from a bigger audience. It is an
+> userspace interface that we might need to maintain forewer.
+> Adding few more people in to CC:
+> 
+> Steven Rostedt <rostedt@goodmis.org>: printk co-maintainer
 
->  	 * function should be called before timing control enable
->  	 * @mdp  : mdp top context driver
->  	 * @cfg  : upper and lower part of pipe configuration
-> --
-> 2.30.0
+Thanks for Cc'ing me.
+
+> Alexey Dobriyan <adobriyan@gmail.com>: fs/proc maintainer
+> Greg Kroah-Hartman <gregkh@linuxfoundation.org>: sysfs maintainer
+> Jason Baron <jbaron@akamai.com>: dynamic_debug maintainer
+> Kees Cook <keescook@chromium.org>: security POV
+> linux-api@vger.kernel.org: Linux API mailing list
+> 
+> Of course, we should also ask if this is the right approach
+> for the think that you want to achieve.
+> 
+> The motivation for this patch is that the strings printed by kernels
+> are not reliable and you want a simple way to compare differences
+> bethween versions. Do I get it right?
+> 
+> See more comments below.
+> 
 > 
 
 
--- 
-~Randy
+> Also this is yet another style how the format is displayed. We already have
+> 
+> 	+ console/syslog: formated by record_print_text()
+> 	+ /dev/kmsg: formatted by info_print_ext_header(),  msg_print_ext_body().
+> 	+ /sys/kernel/debug/dynamic_debug/control
 
+
+> 	+ /sys/kernel/debug/tracing/printk_formats
+> 
+> We should get some inspiration from the existing interfaces.
+
+Interesting, because when I was looking at the original patch (looked at
+the lore link before reading your reply), I thought to myself "this looks
+exactly like what I did for trace_printk formats", which the above file is
+where it is shown. I'm curious if this work was inspired by that?
+
+
+
+> > diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
+> > index 34b7e0d2346c..0ca6e28e05d6 100644
+> > --- a/include/asm-generic/vmlinux.lds.h
+> > +++ b/include/asm-generic/vmlinux.lds.h
+> > @@ -309,6 +309,17 @@
+> >  #define ACPI_PROBE_TABLE(name)
+> >  #endif
+> >  
+> > +#ifdef CONFIG_PRINTK_ENUMERATION
+> > +#define PRINTK_FMTS							\
+> > +	.printk_fmts : AT(ADDR(.printk_fmts) - LOAD_OFFSET) {		\
+> > +		__start_printk_fmts = .;				\
+> > +		*(.printk_fmts)						\
+> > +		__stop_printk_fmts = .;					\
+> > +	}
+> > +#else
+> > +#define PRINTK_FMTS
+> > +#endif  
+> 
+> It should be defined after #define TRACEDATA to follow the existing
+> style.
+> 
+> But honestly I am not much familiar with the sections definitions.
+> I am curious why TRACE_PRINTKS() and __dyndbg are defined
+> a bit different way.
+> 
+
+I'm not sure what difference you mean.
+
+> > +static int proc_pf_show(struct seq_file *s, void *v)
+> > +{
+> > +	const struct printk_fmt_sec *ps = NULL;
+> > +	const char **fptr = NULL;
+> > +
+> > +	mutex_lock(&printk_fmts_mutex);
+> > +
+> > +	list_for_each_entry(ps, &printk_fmts_list, list) {
+> > +		const char *mod_name = ps_get_module_name(ps);
+> > +
+> > +		for (fptr = ps->start; fptr < ps->end; fptr++) {
+> > +			seq_puts(s, mod_name);
+> > +			seq_putc(s, ',');
+> > +			seq_puts(s, *fptr);
+> > +			seq_putc(s, '\0');
+> > +		}  
+> 
+> You probably should get inspiration from t_show() in trace_printk.c.
+> It handles newlines, ...
+> 
+> Or by ddebug_proc_show(). It uses seq_escape().
+> 
+> Anyway, there is something wrong at the moment. The output looks fine
+> with cat. But "less" says that it is a binary format and the output
+> is a bit messy:
+
+Hmm, that's usually the case when lseek gets messed up. Not sure how that
+happened.
+
+> 
+> $> less /proc/printk_formats   
+> "/proc/printk_formats" may be a binary file.  See it anyway? 
+> vmlinux,^A3Warning: unable to open an initial console.
+> ^@vmlinux,^A3Failed to execute %s (error %d)
+> ^@vmlinux,^A6Kernel memory protection disabled.
+> ^@vmlinux,^A3Starting init: %s exists but couldn't execute it (error %d)
+> 
+> 
+> That is for now. I still have to think about it. And I am also curious
+> about what others thing about this idea.
+> 
+
+I'm not against the idea. I don't think it belongs in /proc. Perhaps
+debugfs is a better place to put it.
+
+-- Steve
