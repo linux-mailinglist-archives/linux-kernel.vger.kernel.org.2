@@ -2,337 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36419311925
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 03:57:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CFC37311853
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 03:36:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232288AbhBFC4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 21:56:01 -0500
-Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:3938 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231300AbhBFChL (ORCPT
+        id S230499AbhBFCey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 21:34:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37196 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230165AbhBFCch (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 21:37:11 -0500
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 115MfQHM030586;
-        Fri, 5 Feb 2021 14:51:21 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=pfpt0220; bh=Ot5WpBZu0btcHw4uKMHtVdEZ78DUEOLlJuQ3edRvHBA=;
- b=dG4odzKhyTVzoH0ucATIv7GRakRxPqEc4QFD5qJS9v+QU90OlaLjVWxoRMC6rwnUgqfJ
- 9P+ri9Bt49hErIO/L0ehbYYl/9YuK3y88+ZXYcH4TYNQTFANFhKJ0j8zbM7aNWCOQ7kN
- 51DXm3Dx1pXa/1eNdnzWzImFiQ5VIhA4aHVRxlyW5amFt3OZS8zRNEEZ5810huijA4Qw
- hqafL3JmuDxuY1mfFEsUfiiI75MA7+RH410Dtskf/IXDNbqnz1PwDYuVc3eYys16WxF1
- 3SnXC9MpjeKshPVXoRtfyK5oYjSW7kYW2smcoHuIBEzPpPLRlkfODy0FKegigApv7auE lQ== 
-Received: from dc5-exch02.marvell.com ([199.233.59.182])
-        by mx0b-0016f401.pphosted.com with ESMTP id 36fnr6ag1w-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Fri, 05 Feb 2021 14:51:21 -0800
-Received: from SC-EXCH01.marvell.com (10.93.176.81) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 5 Feb
- 2021 14:51:19 -0800
-Received: from DC5-EXCH02.marvell.com (10.69.176.39) by SC-EXCH01.marvell.com
- (10.93.176.81) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 5 Feb
- 2021 14:51:18 -0800
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 5 Feb 2021 14:51:18 -0800
-Received: from hyd1soter3.marvell.com (unknown [10.29.37.12])
-        by maili.marvell.com (Postfix) with ESMTP id B7B0A3F7040;
-        Fri,  5 Feb 2021 14:51:14 -0800 (PST)
-From:   Geetha sowjanya <gakula@marvell.com>
-To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-crypto@vger.kernel.org>
-CC:     <sgoutham@marvell.com>, <davem@davemloft.net>, <kuba@kernel.org>,
-        <sbhatta@marvell.com>, <hkelam@marvell.com>, <jerinj@marvell.com>,
-        <lcherian@marvell.com>, <bbrezillon@kernel.org>,
-        <arno@natisbad.org>, <schalla@marvell.com>,
-        Geetha sowjanya <gakula@marvell.com>
-Subject: [net-next v4 04/14] octeontx2-af: cn10k: Update NIX and NPA context in debugfs
-Date:   Sat, 6 Feb 2021 04:20:03 +0530
-Message-ID: <20210205225013.15961-5-gakula@marvell.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210205225013.15961-1-gakula@marvell.com>
-References: <20210205225013.15961-1-gakula@marvell.com>
+        Fri, 5 Feb 2021 21:32:37 -0500
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CAFAC08ECB8
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 14:50:10 -0800 (PST)
+Received: by mail-pj1-x1031.google.com with SMTP id nm1so4430137pjb.3
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 14:50:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=gKCMWJy86du3XdDODHHkwDL4EqHeNQp1OLhPf7Jz0/g=;
+        b=DeXiiiz5Xu4mcDBbUqmfnVGscCw+wn6NsdbMyjAgmzY0DOwxWhcYOd/PnXNYyBohsH
+         kYceKhwQiG+aY1UbhHj+Kxmycp6RYnmrSDn4qOIt132V+xkdfuUzzL1LBYYDUIerwPc1
+         txnAFI8K2L0gYegSqTqvFwLAFkxZc02oP87Ok=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=gKCMWJy86du3XdDODHHkwDL4EqHeNQp1OLhPf7Jz0/g=;
+        b=QeJ8h/ZfefFMK2TF38TfhdysEwaWrJs6eeUlJYutPKkILTnpCJsOzhl1rJOrF1f/9T
+         vTZVeo/rAJxppO9Bpq0YLVBQqSBK4pfZ2hvH2beO/ZVoB9x2yCN9PAO+5wiRg5x4WKDi
+         Xmt56SKRIj26c8zbf77aPQMtf5iEeh7Bz2EdbxmIQEEyhsNC5/o67iPPEfudTDZboeKh
+         97nvZ/mbdE+xE153qYjf06WYaZYNd9UzTqp4X9a8X81w6ZqUse8nqc0sGO6zYSlSVMnk
+         gBExi9EkGMLfyZ/qYgoHih2ZC/9i/+u1iIDmaIAaEzwpP89T+Qy+cs+FTIDVz7TylRJw
+         q03A==
+X-Gm-Message-State: AOAM5323aKMvjWt/VUqZqfl39Oj3nHLUhDtC6OU/u/jcV0xGSyfpkfbd
+        F94a2dI7qaXaaZQuXSKoFHEchw==
+X-Google-Smtp-Source: ABdhPJwGvnWZVMON25jxMBQujRQW8J9vouiPFt6BaQnmk2Wd20tbSiNga0UjbYPbrvJYFU44SNIh9w==
+X-Received: by 2002:a17:90a:8b15:: with SMTP id y21mr5929152pjn.82.1612565409676;
+        Fri, 05 Feb 2021 14:50:09 -0800 (PST)
+Received: from chromium.org ([2620:15c:202:201:3d74:5f76:aaaa:6cb8])
+        by smtp.gmail.com with ESMTPSA id s126sm6639348pfs.81.2021.02.05.14.50.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Feb 2021 14:50:09 -0800 (PST)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-02-05_13:2021-02-05,2021-02-05 signatures=0
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1612557878-19743-1-git-send-email-khsieh@codeaurora.org>
+References: <1612557878-19743-1-git-send-email-khsieh@codeaurora.org>
+Subject: Re: [PATCH] drm/msm/dp: reset dp controller only at boot up and pm_resume
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     tanmay@codeaurora.org, abhinavk@codeaurora.org,
+        aravindh@codeaurora.org, khsieh@codeaurora.org, airlied@linux.ie,
+        daniel@ffwll.ch, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+To:     Kuogee Hsieh <khsieh@codeaurora.org>, robdclark@gmail.com,
+        sean@poorly.run
+Date:   Fri, 05 Feb 2021 14:50:07 -0800
+Message-ID: <161256540764.76967.2035577896654812758@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On CN10K platform NPA and NIX context structure bit fields
-had changed to support new features like bandwidth steering etc.
-This patch dumps approprate context for CN10K platform.
+Quoting Kuogee Hsieh (2021-02-05 12:44:38)
+> DP_SW_RESET is the global SW reset that is used to initialize DP
+> controller. If DP_SW_RESET executed during connection setup,
+> two HPD related side effects may occurred,
+> 1) pending HPD interrupts cleared unexpected
+> 2) re start debounce logic which trigger another interrupt
+> This patch only issue DP_SW_RESET at boot up and pm_resume.
+> This patch also reinit video_comp before configure dp controller
+> to avoid missing VIDEO_READY interrupt.
+>=20
+> Fixes: 9fc418430c65 ("drm/msm/dp: unplug interrupt missed after irq_hpd h=
+andler")
+> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
+> ---
 
-Signed-off-by: Geetha sowjanya <gakula@marvell.com>
-Signed-off-by: Sunil Goutham <sgoutham@marvell.com>
----
- .../ethernet/marvell/octeontx2/af/rvu_debugfs.c    | 177 ++++++++++++++++++++-
- 1 file changed, 175 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c
-index 80e9643..02775d4 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c
-@@ -449,6 +449,7 @@ RVU_DEBUG_SEQ_FOPS(npa_qsize, npa_qsize_display, npa_qsize_write);
- static void print_npa_aura_ctx(struct seq_file *m, struct npa_aq_enq_rsp *rsp)
- {
- 	struct npa_aura_s *aura = &rsp->aura;
-+	struct rvu *rvu = m->private;
- 
- 	seq_printf(m, "W0: Pool addr\t\t%llx\n", aura->pool_addr);
- 
-@@ -468,6 +469,9 @@ static void print_npa_aura_ctx(struct seq_file *m, struct npa_aq_enq_rsp *rsp)
- 
- 	seq_printf(m, "W3: limit\t\t%llu\nW3: bp\t\t\t%d\nW3: fc_ena\t\t%d\n",
- 		   (u64)aura->limit, aura->bp, aura->fc_ena);
-+
-+	if (!is_rvu_otx2(rvu))
-+		seq_printf(m, "W3: fc_be\t\t%d\n", aura->fc_be);
- 	seq_printf(m, "W3: fc_up_crossing\t%d\nW3: fc_stype\t\t%d\n",
- 		   aura->fc_up_crossing, aura->fc_stype);
- 	seq_printf(m, "W3: fc_hyst_bits\t%d\n", aura->fc_hyst_bits);
-@@ -485,12 +489,15 @@ static void print_npa_aura_ctx(struct seq_file *m, struct npa_aq_enq_rsp *rsp)
- 	seq_printf(m, "W5: err_qint_idx \t%d\n", aura->err_qint_idx);
- 
- 	seq_printf(m, "W6: thresh\t\t%llu\n", (u64)aura->thresh);
-+	if (!is_rvu_otx2(rvu))
-+		seq_printf(m, "W6: fc_msh_dst\t\t%d\n", aura->fc_msh_dst);
- }
- 
- /* Dumps given NPA Pool's context */
- static void print_npa_pool_ctx(struct seq_file *m, struct npa_aq_enq_rsp *rsp)
- {
- 	struct npa_pool_s *pool = &rsp->pool;
-+	struct rvu *rvu = m->private;
- 
- 	seq_printf(m, "W0: Stack base\t\t%llx\n", pool->stack_base);
- 
-@@ -512,6 +519,8 @@ static void print_npa_pool_ctx(struct seq_file *m, struct npa_aq_enq_rsp *rsp)
- 		   pool->avg_con, pool->fc_ena, pool->fc_stype);
- 	seq_printf(m, "W4: fc_hyst_bits\t%d\nW4: fc_up_crossing\t%d\n",
- 		   pool->fc_hyst_bits, pool->fc_up_crossing);
-+	if (!is_rvu_otx2(rvu))
-+		seq_printf(m, "W4: fc_be\t\t%d\n", pool->fc_be);
- 	seq_printf(m, "W4: update_time\t\t%d\n", pool->update_time);
- 
- 	seq_printf(m, "W5: fc_addr\t\t%llx\n", pool->fc_addr);
-@@ -525,8 +534,10 @@ static void print_npa_pool_ctx(struct seq_file *m, struct npa_aq_enq_rsp *rsp)
- 	seq_printf(m, "W8: thresh_int\t\t%d\n", pool->thresh_int);
- 	seq_printf(m, "W8: thresh_int_ena\t%d\nW8: thresh_up\t\t%d\n",
- 		   pool->thresh_int_ena, pool->thresh_up);
--	seq_printf(m, "W8: thresh_qint_idx\t%d\nW8: err_qint_idx\t\t%d\n",
-+	seq_printf(m, "W8: thresh_qint_idx\t%d\nW8: err_qint_idx\t%d\n",
- 		   pool->thresh_qint_idx, pool->err_qint_idx);
-+	if (!is_rvu_otx2(rvu))
-+		seq_printf(m, "W8: fc_msh_dst\t\t%d\n", pool->fc_msh_dst);
- }
- 
- /* Reads aura/pool's ctx from admin queue */
-@@ -910,11 +921,78 @@ static int rvu_dbg_nix_ndc_tx_hits_miss_display(struct seq_file *filp,
- 
- RVU_DEBUG_SEQ_FOPS(nix_ndc_tx_hits_miss, nix_ndc_tx_hits_miss_display, NULL);
- 
-+static void print_nix_cn10k_sq_ctx(struct seq_file *m,
-+				   struct nix_cn10k_sq_ctx_s *sq_ctx)
-+{
-+	seq_printf(m, "W0: ena \t\t\t%d\nW0: qint_idx \t\t\t%d\n",
-+		   sq_ctx->ena, sq_ctx->qint_idx);
-+	seq_printf(m, "W0: substream \t\t\t0x%03x\nW0: sdp_mcast \t\t\t%d\n",
-+		   sq_ctx->substream, sq_ctx->sdp_mcast);
-+	seq_printf(m, "W0: cq \t\t\t\t%d\nW0: sqe_way_mask \t\t%d\n\n",
-+		   sq_ctx->cq, sq_ctx->sqe_way_mask);
-+
-+	seq_printf(m, "W1: smq \t\t\t%d\nW1: cq_ena \t\t\t%d\nW1: xoff\t\t\t%d\n",
-+		   sq_ctx->smq, sq_ctx->cq_ena, sq_ctx->xoff);
-+	seq_printf(m, "W1: sso_ena \t\t\t%d\nW1: smq_rr_weight\t\t%d\n",
-+		   sq_ctx->sso_ena, sq_ctx->smq_rr_weight);
-+	seq_printf(m, "W1: default_chan\t\t%d\nW1: sqb_count\t\t\t%d\n\n",
-+		   sq_ctx->default_chan, sq_ctx->sqb_count);
-+
-+	seq_printf(m, "W2: smq_rr_count_lb \t\t%d\n", sq_ctx->smq_rr_count_lb);
-+	seq_printf(m, "W2: smq_rr_count_ub \t\t%d\n", sq_ctx->smq_rr_count_ub);
-+	seq_printf(m, "W2: sqb_aura \t\t\t%d\nW2: sq_int \t\t\t%d\n",
-+		   sq_ctx->sqb_aura, sq_ctx->sq_int);
-+	seq_printf(m, "W2: sq_int_ena \t\t\t%d\nW2: sqe_stype \t\t\t%d\n",
-+		   sq_ctx->sq_int_ena, sq_ctx->sqe_stype);
-+
-+	seq_printf(m, "W3: max_sqe_size\t\t%d\nW3: cq_limit\t\t\t%d\n",
-+		   sq_ctx->max_sqe_size, sq_ctx->cq_limit);
-+	seq_printf(m, "W3: lmt_dis \t\t\t%d\nW3: mnq_dis \t\t\t%d\n",
-+		   sq_ctx->mnq_dis, sq_ctx->lmt_dis);
-+	seq_printf(m, "W3: smq_next_sq\t\t\t%d\nW3: smq_lso_segnum\t\t%d\n",
-+		   sq_ctx->smq_next_sq, sq_ctx->smq_lso_segnum);
-+	seq_printf(m, "W3: tail_offset \t\t%d\nW3: smenq_offset\t\t%d\n",
-+		   sq_ctx->tail_offset, sq_ctx->smenq_offset);
-+	seq_printf(m, "W3: head_offset\t\t\t%d\nW3: smenq_next_sqb_vld\t\t%d\n\n",
-+		   sq_ctx->head_offset, sq_ctx->smenq_next_sqb_vld);
-+
-+	seq_printf(m, "W4: next_sqb \t\t\t%llx\n\n", sq_ctx->next_sqb);
-+	seq_printf(m, "W5: tail_sqb \t\t\t%llx\n\n", sq_ctx->tail_sqb);
-+	seq_printf(m, "W6: smenq_sqb \t\t\t%llx\n\n", sq_ctx->smenq_sqb);
-+	seq_printf(m, "W7: smenq_next_sqb \t\t%llx\n\n",
-+		   sq_ctx->smenq_next_sqb);
-+
-+	seq_printf(m, "W8: head_sqb\t\t\t%llx\n\n", sq_ctx->head_sqb);
-+
-+	seq_printf(m, "W9: vfi_lso_total\t\t%d\n", sq_ctx->vfi_lso_total);
-+	seq_printf(m, "W9: vfi_lso_sizem1\t\t%d\nW9: vfi_lso_sb\t\t\t%d\n",
-+		   sq_ctx->vfi_lso_sizem1, sq_ctx->vfi_lso_sb);
-+	seq_printf(m, "W9: vfi_lso_mps\t\t\t%d\nW9: vfi_lso_vlan0_ins_ena\t%d\n",
-+		   sq_ctx->vfi_lso_mps, sq_ctx->vfi_lso_vlan0_ins_ena);
-+	seq_printf(m, "W9: vfi_lso_vlan1_ins_ena\t%d\nW9: vfi_lso_vld \t\t%d\n\n",
-+		   sq_ctx->vfi_lso_vld, sq_ctx->vfi_lso_vlan1_ins_ena);
-+
-+	seq_printf(m, "W10: scm_lso_rem \t\t%llu\n\n",
-+		   (u64)sq_ctx->scm_lso_rem);
-+	seq_printf(m, "W11: octs \t\t\t%llu\n\n", (u64)sq_ctx->octs);
-+	seq_printf(m, "W12: pkts \t\t\t%llu\n\n", (u64)sq_ctx->pkts);
-+	seq_printf(m, "W14: dropped_octs \t\t%llu\n\n",
-+		   (u64)sq_ctx->dropped_octs);
-+	seq_printf(m, "W15: dropped_pkts \t\t%llu\n\n",
-+		   (u64)sq_ctx->dropped_pkts);
-+}
-+
- /* Dumps given nix_sq's context */
- static void print_nix_sq_ctx(struct seq_file *m, struct nix_aq_enq_rsp *rsp)
- {
- 	struct nix_sq_ctx_s *sq_ctx = &rsp->sq;
-+	struct nix_hw *nix_hw = m->private;
-+	struct rvu *rvu = nix_hw->rvu;
- 
-+	if (!is_rvu_otx2(rvu)) {
-+		print_nix_cn10k_sq_ctx(m, (struct nix_cn10k_sq_ctx_s *)sq_ctx);
-+		return;
-+	}
- 	seq_printf(m, "W0: sqe_way_mask \t\t%d\nW0: cq \t\t\t\t%d\n",
- 		   sq_ctx->sqe_way_mask, sq_ctx->cq);
- 	seq_printf(m, "W0: sdp_mcast \t\t\t%d\nW0: substream \t\t\t0x%03x\n",
-@@ -974,10 +1052,94 @@ static void print_nix_sq_ctx(struct seq_file *m, struct nix_aq_enq_rsp *rsp)
- 		   (u64)sq_ctx->dropped_pkts);
- }
- 
-+static void print_nix_cn10k_rq_ctx(struct seq_file *m,
-+				   struct nix_cn10k_rq_ctx_s *rq_ctx)
-+{
-+	seq_printf(m, "W0: ena \t\t\t%d\nW0: sso_ena \t\t\t%d\n",
-+		   rq_ctx->ena, rq_ctx->sso_ena);
-+	seq_printf(m, "W0: ipsech_ena \t\t\t%d\nW0: ena_wqwd \t\t\t%d\n",
-+		   rq_ctx->ipsech_ena, rq_ctx->ena_wqwd);
-+	seq_printf(m, "W0: cq \t\t\t\t%d\nW0: lenerr_dis \t\t\t%d\n",
-+		   rq_ctx->cq, rq_ctx->lenerr_dis);
-+	seq_printf(m, "W0: csum_il4_dis \t\t%d\nW0: csum_ol4_dis \t\t%d\n",
-+		   rq_ctx->csum_il4_dis, rq_ctx->csum_ol4_dis);
-+	seq_printf(m, "W0: len_il4_dis \t\t%d\nW0: len_il3_dis \t\t%d\n",
-+		   rq_ctx->len_il4_dis, rq_ctx->len_il3_dis);
-+	seq_printf(m, "W0: len_ol4_dis \t\t%d\nW0: len_ol3_dis \t\t%d\n",
-+		   rq_ctx->len_ol4_dis, rq_ctx->len_ol3_dis);
-+	seq_printf(m, "W0: wqe_aura \t\t\t%d\n\n", rq_ctx->wqe_aura);
-+
-+	seq_printf(m, "W1: spb_aura \t\t\t%d\nW1: lpb_aura \t\t\t%d\n",
-+		   rq_ctx->spb_aura, rq_ctx->lpb_aura);
-+	seq_printf(m, "W1: spb_aura \t\t\t%d\n", rq_ctx->spb_aura);
-+	seq_printf(m, "W1: sso_grp \t\t\t%d\nW1: sso_tt \t\t\t%d\n",
-+		   rq_ctx->sso_grp, rq_ctx->sso_tt);
-+	seq_printf(m, "W1: pb_caching \t\t\t%d\nW1: wqe_caching \t\t%d\n",
-+		   rq_ctx->pb_caching, rq_ctx->wqe_caching);
-+	seq_printf(m, "W1: xqe_drop_ena \t\t%d\nW1: spb_drop_ena \t\t%d\n",
-+		   rq_ctx->xqe_drop_ena, rq_ctx->spb_drop_ena);
-+	seq_printf(m, "W1: lpb_drop_ena \t\t%d\nW1: pb_stashing \t\t%d\n",
-+		   rq_ctx->lpb_drop_ena, rq_ctx->pb_stashing);
-+	seq_printf(m, "W1: ipsecd_drop_ena \t\t%d\nW1: chi_ena \t\t\t%d\n\n",
-+		   rq_ctx->ipsecd_drop_ena, rq_ctx->chi_ena);
-+
-+	seq_printf(m, "W2: band_prof_id \t\t%d\n", rq_ctx->band_prof_id);
-+	seq_printf(m, "W2: policer_ena \t\t%d\n", rq_ctx->policer_ena);
-+	seq_printf(m, "W2: spb_sizem1 \t\t\t%d\n", rq_ctx->spb_sizem1);
-+	seq_printf(m, "W2: wqe_skip \t\t\t%d\nW2: sqb_ena \t\t\t%d\n",
-+		   rq_ctx->wqe_skip, rq_ctx->spb_ena);
-+	seq_printf(m, "W2: lpb_size1 \t\t\t%d\nW2: first_skip \t\t\t%d\n",
-+		   rq_ctx->lpb_sizem1, rq_ctx->first_skip);
-+	seq_printf(m, "W2: later_skip\t\t\t%d\nW2: xqe_imm_size\t\t%d\n",
-+		   rq_ctx->later_skip, rq_ctx->xqe_imm_size);
-+	seq_printf(m, "W2: xqe_imm_copy \t\t%d\nW2: xqe_hdr_split \t\t%d\n\n",
-+		   rq_ctx->xqe_imm_copy, rq_ctx->xqe_hdr_split);
-+
-+	seq_printf(m, "W3: xqe_drop \t\t\t%d\nW3: xqe_pass \t\t\t%d\n",
-+		   rq_ctx->xqe_drop, rq_ctx->xqe_pass);
-+	seq_printf(m, "W3: wqe_pool_drop \t\t%d\nW3: wqe_pool_pass \t\t%d\n",
-+		   rq_ctx->wqe_pool_drop, rq_ctx->wqe_pool_pass);
-+	seq_printf(m, "W3: spb_pool_drop \t\t%d\nW3: spb_pool_pass \t\t%d\n",
-+		   rq_ctx->spb_pool_drop, rq_ctx->spb_pool_pass);
-+	seq_printf(m, "W3: spb_aura_drop \t\t%d\nW3: spb_aura_pass \t\t%d\n\n",
-+		   rq_ctx->spb_aura_pass, rq_ctx->spb_aura_drop);
-+
-+	seq_printf(m, "W4: lpb_aura_drop \t\t%d\nW3: lpb_aura_pass \t\t%d\n",
-+		   rq_ctx->lpb_aura_pass, rq_ctx->lpb_aura_drop);
-+	seq_printf(m, "W4: lpb_pool_drop \t\t%d\nW3: lpb_pool_pass \t\t%d\n",
-+		   rq_ctx->lpb_pool_drop, rq_ctx->lpb_pool_pass);
-+	seq_printf(m, "W4: rq_int \t\t\t%d\nW4: rq_int_ena\t\t\t%d\n",
-+		   rq_ctx->rq_int, rq_ctx->rq_int_ena);
-+	seq_printf(m, "W4: qint_idx \t\t\t%d\n\n", rq_ctx->qint_idx);
-+
-+	seq_printf(m, "W5: ltag \t\t\t%d\nW5: good_utag \t\t\t%d\n",
-+		   rq_ctx->ltag, rq_ctx->good_utag);
-+	seq_printf(m, "W5: bad_utag \t\t\t%d\nW5: flow_tagw \t\t\t%d\n",
-+		   rq_ctx->bad_utag, rq_ctx->flow_tagw);
-+	seq_printf(m, "W5: ipsec_vwqe \t\t\t%d\nW5: vwqe_ena \t\t\t%d\n",
-+		   rq_ctx->ipsec_vwqe, rq_ctx->vwqe_ena);
-+	seq_printf(m, "W5: vwqe_wait \t\t\t%d\nW5: max_vsize_exp\t\t%d\n",
-+		   rq_ctx->vwqe_wait, rq_ctx->max_vsize_exp);
-+	seq_printf(m, "W5: vwqe_skip \t\t\t%d\n\n", rq_ctx->vwqe_skip);
-+
-+	seq_printf(m, "W6: octs \t\t\t%llu\n\n", (u64)rq_ctx->octs);
-+	seq_printf(m, "W7: pkts \t\t\t%llu\n\n", (u64)rq_ctx->pkts);
-+	seq_printf(m, "W8: drop_octs \t\t\t%llu\n\n", (u64)rq_ctx->drop_octs);
-+	seq_printf(m, "W9: drop_pkts \t\t\t%llu\n\n", (u64)rq_ctx->drop_pkts);
-+	seq_printf(m, "W10: re_pkts \t\t\t%llu\n", (u64)rq_ctx->re_pkts);
-+}
-+
- /* Dumps given nix_rq's context */
- static void print_nix_rq_ctx(struct seq_file *m, struct nix_aq_enq_rsp *rsp)
- {
- 	struct nix_rq_ctx_s *rq_ctx = &rsp->rq;
-+	struct nix_hw *nix_hw = m->private;
-+	struct rvu *rvu = nix_hw->rvu;
-+
-+	if (!is_rvu_otx2(rvu)) {
-+		print_nix_cn10k_rq_ctx(m, (struct nix_cn10k_rq_ctx_s *)rq_ctx);
-+		return;
-+	}
- 
- 	seq_printf(m, "W0: wqe_aura \t\t\t%d\nW0: substream \t\t\t0x%03x\n",
- 		   rq_ctx->wqe_aura, rq_ctx->substream);
-@@ -1551,6 +1713,9 @@ static void rvu_dbg_cgx_init(struct rvu *rvu)
- 	char dname[20];
- 	void *cgx;
- 
-+	if (!cgx_get_cgxcnt_max())
-+		return;
-+
- 	rvu->rvu_dbg.cgx_root = debugfs_create_dir("cgx", rvu->rvu_dbg.root);
- 
- 	for (i = 0; i < cgx_get_cgxcnt_max(); i++) {
-@@ -2128,9 +2293,17 @@ static void rvu_dbg_cpt_init(struct rvu *rvu, int blkaddr)
- 			    &rvu_dbg_cpt_err_info_fops);
- }
- 
-+static const char *rvu_get_dbg_dir_name(struct rvu *rvu)
-+{
-+	if (!is_rvu_otx2(rvu))
-+		return "cn10k";
-+	else
-+		return "octeontx2";
-+}
-+
- void rvu_dbg_init(struct rvu *rvu)
- {
--	rvu->rvu_dbg.root = debugfs_create_dir(DEBUGFS_DIR_NAME, NULL);
-+	rvu->rvu_dbg.root = debugfs_create_dir(rvu_get_dbg_dir_name(rvu), NULL);
- 
- 	debugfs_create_file("rsrc_alloc", 0444, rvu->rvu_dbg.root, rvu,
- 			    &rvu_dbg_rsrc_status_fops);
--- 
-2.7.4
-
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
