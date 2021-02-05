@@ -2,87 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0DD1311568
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 23:32:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B5B7311620
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 23:59:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232959AbhBEWar (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 17:30:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44678 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231489AbhBEOye (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 09:54:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 06434650C9;
-        Fri,  5 Feb 2021 14:15:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612534501;
-        bh=Nw4bYKAmuQK2ybBR8s65hqtGG2O36emorJfd7nWAqPo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=H5eNfvcsg+venXBXmp5HenrE4rtNhRHAnx4OcqEfEmA2jym/SalhAFzeEN/N9NTID
-         X+bBM4EbYo4SCI71UJC4tiYXYQzcYuYxCCYLlkPXgntb8n0AT4iWHXVgbPUH6lrgqD
-         c9EEOC2Zd6fWuggP2NdnUmQb6Ce0W4KyleU7c8UI=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 09/15] x86: __always_inline __{rd,wr}msr()
-Date:   Fri,  5 Feb 2021 15:08:54 +0100
-Message-Id: <20210205140650.103083578@linuxfoundation.org>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210205140649.733510103@linuxfoundation.org>
-References: <20210205140649.733510103@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S232629AbhBEWvo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 17:51:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45902 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231244AbhBEOnE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 09:43:04 -0500
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BB2DC061221;
+        Fri,  5 Feb 2021 08:08:58 -0800 (PST)
+Received: by mail-ej1-x62c.google.com with SMTP id i8so12708350ejc.7;
+        Fri, 05 Feb 2021 08:08:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=R5nFxy4Bvc9UqP6WzBzfQTEG0FAeu+haMx96np+omMo=;
+        b=SkxTl7dg4/kQ6/uVdbjzPLlZhbFct6rOQUDHs7fnd78QqqRcYZQeeipCWfupHF40pk
+         i5zDi4j51nwMspV+Ow/eO0GiLnR5XPb+X4M0L3l2Ax/rMw9ifSnz2b2T5vPGo8jOWbPk
+         4ZlRaG6c3VAVb3WLshQ/b7lJJzRbnjX/w9y3nA1wMSz7q/V7O6oIf/XHzcWHJlUWF96M
+         /Vv+rcACbpcODuNULltUHIBftCbbFDyxJcylH/EZVlYJRK18WGujg1vUA+yLJ1w8Oedp
+         1i+Pt4MPOnJm+ahJPOEnW4td06UAcQg/JBZadILWbguPMGU2Ur1QpSzXYWb9yPaI1f9e
+         w1NQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=R5nFxy4Bvc9UqP6WzBzfQTEG0FAeu+haMx96np+omMo=;
+        b=lqw7579UQlVrb3Zvln/DLdQjSaor/GLJn+MEtFqHU2jDnGO9HslJ6UCJA+8xRLT3RE
+         Wuh7pOjlB2olMmFtGOgzDL7KKNwZR/Yjd7CWLFPp9y6YmlhwqcixW+jZDoiu8hn44MNP
+         sUtxj12836RWb7e8aYO4/HH1lIP2BHanLreSFLSYJF3JgsmHwkNcpn8T5TreLwvRLh7d
+         z3/AvmQsa9bZviCMofrTcmhUBYaieinHhU3tiUFIGcXNUQV0ReHb86Mxy/FJc84mSPGO
+         0XhZQNTppAg6tZ2X0rqKa4TASZfJudBx7qi4aBVixx4Hh1jJKthwgQlMLbo7ZtPHwMKe
+         IaxA==
+X-Gm-Message-State: AOAM530UPSsvxPLX3pxr2LmqGaPn+aPGaLeVJyv4HVXNQ32W3vJsh8nx
+        DOylBMyZLeBAOh/h+GcbkHMFhUpKOlM=
+X-Google-Smtp-Source: ABdhPJzYRW8GhrE8ij2ocDjjNLxXXtdRxY7LnssUqIvtP9+m2iGf6DAPG4l5T7OAzKWfzgoSTObIUQ==
+X-Received: by 2002:a17:906:3484:: with SMTP id g4mr4159438ejb.38.1612534185720;
+        Fri, 05 Feb 2021 06:09:45 -0800 (PST)
+Received: from skbuf (5-12-227-87.residential.rdsnet.ro. [5.12.227.87])
+        by smtp.gmail.com with ESMTPSA id zk6sm4019325ejb.119.2021.02.05.06.09.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Feb 2021 06:09:44 -0800 (PST)
+Date:   Fri, 5 Feb 2021 16:09:43 +0200
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Vadym Kochan <vadym.kochan@plvision.eu>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Oleksandr Mazur <oleksandr.mazur@plvision.eu>,
+        Serhiy Boiko <serhiy.boiko@plvision.eu>,
+        Serhiy Pshyk <serhiy.pshyk@plvision.eu>,
+        Volodymyr Mytnyk <volodymyr.mytnyk@plvision.eu>,
+        Taras Chornyi <taras.chornyi@plvision.eu>,
+        netdev@vger.kernel.org, Mickey Rachamim <mickeyr@marvell.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next 4/7] net: marvell: prestera: move netdev
+ topology validation to prestera_main
+Message-ID: <20210205140943.6c6l2z2v453oteov@skbuf>
+References: <20210203165458.28717-1-vadym.kochan@plvision.eu>
+ <20210203165458.28717-5-vadym.kochan@plvision.eu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210203165458.28717-5-vadym.kochan@plvision.eu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Zijlstra <peterz@infradead.org>
+On Wed, Feb 03, 2021 at 06:54:55PM +0200, Vadym Kochan wrote:
+> Move handling of PRECHANGEUPPER event from prestera_switchdev to
+> prestera_main which is responsible for basic netdev events handling
+> and routing them to related module.
+> 
+> Signed-off-by: Vadym Kochan <vadym.kochan@plvision.eu>
+> ---
 
-[ Upstream commit 66a425011c61e71560c234492d204e83cfb73d1d ]
-
-When the compiler choses to not inline the trivial MSR helpers:
-
-  vmlinux.o: warning: objtool: __sev_es_nmi_complete()+0xce: call to __wrmsr.constprop.14() leaves .noinstr.text section
-
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
-Link: https://lore.kernel.org/r/X/bf3gV+BW7kGEsB@hirez.programming.kicks-ass.net
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- arch/x86/include/asm/msr.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/arch/x86/include/asm/msr.h b/arch/x86/include/asm/msr.h
-index 30df295f6d94c..18f9a9b7280bd 100644
---- a/arch/x86/include/asm/msr.h
-+++ b/arch/x86/include/asm/msr.h
-@@ -88,7 +88,7 @@ static inline void do_trace_rdpmc(unsigned int msr, u64 val, int failed) {}
-  * think of extending them - you will be slapped with a stinking trout or a frozen
-  * shark will reach you, wherever you are! You've been warned.
-  */
--static inline unsigned long long notrace __rdmsr(unsigned int msr)
-+static __always_inline unsigned long long __rdmsr(unsigned int msr)
- {
- 	DECLARE_ARGS(val, low, high);
- 
-@@ -100,7 +100,7 @@ static inline unsigned long long notrace __rdmsr(unsigned int msr)
- 	return EAX_EDX_VAL(val, low, high);
- }
- 
--static inline void notrace __wrmsr(unsigned int msr, u32 low, u32 high)
-+static __always_inline void __wrmsr(unsigned int msr, u32 low, u32 high)
- {
- 	asm volatile("1: wrmsr\n"
- 		     "2:\n"
--- 
-2.27.0
-
-
-
+Reviewed-by: Vladimir Oltean <vladimir.oltean@nxp.com>
