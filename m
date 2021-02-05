@@ -2,161 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36D4C3108F3
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 11:24:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 978A23108F9
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 11:25:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231351AbhBEKXN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 05:23:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54648 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231328AbhBEKTb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 05:19:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CEC5A64FED;
-        Fri,  5 Feb 2021 10:18:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612520300;
-        bh=s6zOJkZnJEbm1xu0sX2TF5RgsugvUfGcTGQRbF8fYFQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=l8kKbOl3cDdM3E0eg11Cb78ojX1U42q1MLOpEbO9ohJ6ZsUhbIINgE9AGpi57xg07
-         nrjjNaNlf57dKR3WfAKi/M4HzTfRDGroizd8ACmJPeidm7+lvaabIXe7cQPaeWn9o/
-         A7dwUkMkXN6n1qunw/7DRnw+YFcS0Z5Mmkh9/ecc=
-Date:   Fri, 5 Feb 2021 11:18:17 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        linux-fbdev@vger.kernel.org,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        kvm@vger.kernel.org,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org,
-        Jaroslav Kysela <perex@perex.cz>,
-        Eric Anholt <eric@anholt.net>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig.org@pengutronix.de>, linux-i2c@vger.kernel.org,
-        linux-spi@vger.kernel.org, Jiri Slaby <jirislaby@kernel.org>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-watchdog@vger.kernel.org, linux-rtc@vger.kernel.org,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        linux-serial@vger.kernel.org, linux-input@vger.kernel.org,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Mike Leach <mike.leach@linaro.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        coresight@lists.linaro.org, Vladimir Zapolskiy <vz@mleia.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Mark Brown <broonie@kernel.org>,
-        Matt Mackall <mpm@selenic.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        kernel@pengutronix.de, linux-arm-kernel@lists.infradead.org,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Cornelia Huck <cohuck@redhat.com>, linux-mmc@vger.kernel.org,
-        Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org,
-        Vinod Koul <vkoul@kernel.org>, linux-crypto@vger.kernel.org,
-        Daniel Vetter <daniel@ffwll.ch>, Leo Yan <leo.yan@linaro.org>,
-        dmaengine@vger.kernel.org
-Subject: Re: [GIT PULL] immutable branch for amba changes targeting v5.12-rc1
-Message-ID: <YB0baUzgvpd+EoO6@kroah.com>
-References: <20210126165835.687514-1-u.kleine-koenig@pengutronix.de>
- <20210202135350.36nj3dmcoq3t7gcf@pengutronix.de>
- <YBlcTXlxemmC2lgr@kroah.com>
- <20210204165224.GA1463@shell.armlinux.org.uk>
- <YBwnUrQqlAz2LDPI@kroah.com>
- <20210204165951.GB1463@shell.armlinux.org.uk>
- <20210204181551.ethtuzm65flujmwe@pengutronix.de>
- <20210205093744.kr4rc7yvfiq6wimq@pengutronix.de>
+        id S231311AbhBEKYS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 05:24:18 -0500
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:39363 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230378AbhBEKVc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 05:21:32 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1612520492; x=1644056492;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=tcfAJDncwohmiRretyO/wet4EMTaW11wNI2LIzAPShA=;
+  b=nAkzLheDk7RvK8yHfRPfWPPCYwUpemW7ihCckkFLFUL0z8rayaXH8i5q
+   CAKPH3eiSrfXImgCW5FY7Z3Wfd8kVG+f/innpBAboD1hjc7W9iyLMHIff
+   spTRZM0/KLCnNLB8wZV1gpDRouFvR2lGeRwsKX4G/b8ggac/1o3am2MMW
+   B64CAJC2Xq1IQg0GQ+B/DLHxY1lQAfyVVQFRs4rbbi9li/BnMvrZ2Y7WX
+   U3PMGmjjFexUvKp8AVoX5zmtgaWSsEDNL9FZl3wGOI9mbt61zexp8MGql
+   rDJobLjcGpMNnAnV0yuQAlpJtsm4iJ19//S5zKvmxf4OzXBQyUeZKJYo6
+   A==;
+IronPort-SDR: yVQIjDFOHIoeWNbWhQPOTZ1acGzmBi/5v3P24pah9rB/W2zGZhGoTxfq4Nl4pkPqdxI2CprCox
+ UCBxbqNHjWsaCiy9fL6WKtYibHxCFb3WOP7yExv0aHFPWxZpWSKmEKZBiuNf8RjS05z4MADZvJ
+ UPT7Izkt4T29iTk3ob7weadRAjBMB6Sy9ov0MORQmK0KfyjraLcwBSYQgj2EGl2VxXaZHvn6Rs
+ DINw92d/ZEIcHr1i8siDqVVDrDsSNheHyJAx7NX0w2zCElScrgKTILKWZHp1pKXZ9qasJiCDni
+ WWo=
+X-IronPort-AV: E=Sophos;i="5.81,154,1610434800"; 
+   d="scan'208";a="108141749"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 05 Feb 2021 03:20:16 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Fri, 5 Feb 2021 03:20:14 -0700
+Received: from [10.12.68.39] (10.10.115.15) by chn-vm-ex01.mchp-main.com
+ (10.10.85.143) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
+ Transport; Fri, 5 Feb 2021 03:20:13 -0700
+Subject: Re: [PATCH] ARM: configs: at91: enable drivers for sam9x60
+To:     Tudor Ambarus - M18064 <Tudor.Ambarus@microchip.com>,
+        "Claudiu Beznea - M18063" <Claudiu.Beznea@microchip.com>,
+        "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
+        "alexandre.belloni@bootlin.com" <alexandre.belloni@bootlin.com>,
+        Ludovic Desroches - M43218 <Ludovic.Desroches@microchip.com>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+References: <1612518871-9311-1-git-send-email-claudiu.beznea@microchip.com>
+ <56ee9cda-7943-2f5e-c068-51eff7b021b3@microchip.com>
+From:   Nicolas Ferre <nicolas.ferre@microchip.com>
+Organization: microchip
+Message-ID: <225500e7-d3c8-f2bf-dd8c-4704c663493d@microchip.com>
+Date:   Fri, 5 Feb 2021 11:20:12 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210205093744.kr4rc7yvfiq6wimq@pengutronix.de>
+In-Reply-To: <56ee9cda-7943-2f5e-c068-51eff7b021b3@microchip.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 05, 2021 at 10:37:44AM +0100, Uwe Kleine-König wrote:
-> Hello Russell, hello Greg,
+On 05/02/2021 at 11:12, Tudor Ambarus - M18064 wrote:
+> On 2/5/21 11:54 AM, Claudiu Beznea wrote:
+>> Enable drivers for sam9x60/sam9x60-ek:
+>> - shutdown controller
+>> - CAN
+>> - AT24 EEPROM (present on SAM9X60-EK)
+>> - MCP23S08 (present on SAM9X60-EK)
+>> - AES, TDES, SHA
 > 
-> On Thu, Feb 04, 2021 at 07:15:51PM +0100, Uwe Kleine-König wrote:
-> > On Thu, Feb 04, 2021 at 04:59:51PM +0000, Russell King - ARM Linux admin wrote:
-> > > On Thu, Feb 04, 2021 at 05:56:50PM +0100, Greg Kroah-Hartman wrote:
-> > > > On Thu, Feb 04, 2021 at 04:52:24PM +0000, Russell King - ARM Linux admin wrote:
-> > > > > On Tue, Feb 02, 2021 at 03:06:05PM +0100, Greg Kroah-Hartman wrote:
-> > > > > > I'm glad to take this through my char/misc tree, as that's where the
-> > > > > > other coresight changes flow through.  So if no one else objects, I will
-> > > > > > do so...
-> > > > > 
-> > > > > Greg, did you end up pulling this after all? If not, Uwe produced a v2.
-> > > > > I haven't merged v2 yet as I don't know what you've done.
-> > > > 
-> > > > I thought you merged this?
-> > > 
-> > > I took v1, and put it in a branch I've promised in the past not to
-> > > rebase/rewind. Uwe is now asking for me to take a v2 or apply a patch
-> > > on top.
-> > > 
-> > > The only reason to produce an "immutable" branch is if it's the basis
-> > > for some dependent work and you need that branch merged into other
-> > > people's trees... so the whole "lets produce a v2" is really odd
-> > > workflow... I'm confused about what I should do, and who has to be
-> > > informed which option I take.
-> > > 
-> > > I'm rather lost here too.
-> > 
-> > Sorry to have cause this confusion. After I saw that my initial tag
-> > missed to adapt a driver I wanted to make it easy for you to fix the
-> > situation.
-> > So I created a patch to fix it and created a second tag with the patch
-> > squashed in. Obviously only one of them have to be picked and I hoped
-> > you (= Russell + Greg) would agree which option to pick.
-> > 
-> > My preference would be if you both pick up v2 of the tag to yield a
-> > history that is bisectable without build problems, but if Russell (who
-> > already picked up the broken tag) considers his tree immutable and so
-> > isn't willing to rebase, then picking up the patch is the way to go.
-> 
-> OK, the current state is that Russell applied the patch fixing
-> drivers/mailbox/arm_mhuv2.c on top of merging my first tag.
-> 
-> So the way forward now is that Greg pulls
-> 
-> 	git://git.armlinux.org.uk/~rmk/linux-arm.git devel-stable
-> 
-> which currently points to 
-> 
-> 	860660fd829e ("ARM: 9055/1: mailbox: arm_mhuv2: make remove callback return void")
-> 
-> , into his tree that contains the hwtracing changes that conflict with my
-> changes. @Greg: Is this good enough, or do you require a dedicated tag
-> to pull that?
-> 
-> I think these conflicting hwtracing changes are not yet in any of Greg's
-> trees (at least they are not in next).
-> 
-> When I pull
-> 
-> 	https://git.kernel.org/pub/scm/linux/kernel/git/coresight/linux.git next
-> 
-> (currently pointing to 4e73ff249184 ("coresight: etm4x: Handle accesses
-> to TRCSTALLCTLR")) into 860660fd829e, I get a conflict in
-> drivers/hwtracing/coresight/coresight-etm4x-core.c as expected. My
-> resolution looks as follows:
+> Crypto IPs are present only sam9x60. Should we have them as modules?
 
-Ok, my resolution looked a bit different.
+That's fine with me if we keep them as built-in.
+Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
 
-Can you pull my char-misc-testing branch and verify I got this all
-pulled in correctly?
+Regards,
+   Nicolas
 
-thanks,
+>> And use "make savedefconfig".
+>>
+>> Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+> 
+> With or without the Crypto IPs as modules:
+> 
+> Reviewed-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+> 
+>> ---
+>>   arch/arm/configs/at91_dt_defconfig | 12 +++++++-----
+>>   1 file changed, 7 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/arch/arm/configs/at91_dt_defconfig b/arch/arm/configs/at91_dt_defconfig
+>> index 5f3415c743ec..e274f8c492d2 100644
+>> --- a/arch/arm/configs/at91_dt_defconfig
+>> +++ b/arch/arm/configs/at91_dt_defconfig
+>> @@ -17,8 +17,6 @@ CONFIG_SOC_SAM9X60=y
+>>   # CONFIG_ATMEL_CLOCKSOURCE_PIT is not set
+>>   CONFIG_AEABI=y
+>>   CONFIG_UACCESS_WITH_MEMCPY=y
+>> -CONFIG_ZBOOT_ROM_TEXT=0x0
+>> -CONFIG_ZBOOT_ROM_BSS=0x0
+>>   CONFIG_ARM_APPENDED_DTB=y
+>>   CONFIG_ARM_ATAG_DTB_COMPAT=y
+>>   CONFIG_CMDLINE="console=ttyS0,115200 initrd=0x21100000,25165824 root=/dev/ram0 rw"
+>> @@ -38,6 +36,8 @@ CONFIG_IP_PNP_BOOTP=y
+>>   CONFIG_IP_PNP_RARP=y
+>>   # CONFIG_INET_DIAG is not set
+>>   CONFIG_IPV6_SIT_6RD=y
+>> +CONFIG_CAN=y
+>> +CONFIG_CAN_AT91=y
+>>   CONFIG_CFG80211=y
+>>   CONFIG_MAC80211=y
+>>   CONFIG_DEVTMPFS=y
+>> @@ -58,6 +58,7 @@ CONFIG_BLK_DEV_RAM=y
+>>   CONFIG_BLK_DEV_RAM_COUNT=4
+>>   CONFIG_BLK_DEV_RAM_SIZE=8192
+>>   CONFIG_ATMEL_SSC=y
+>> +CONFIG_EEPROM_AT24=m
+>>   CONFIG_SCSI=y
+>>   CONFIG_BLK_DEV_SD=y
+>>   # CONFIG_SCSI_LOWLEVEL is not set
+>> @@ -91,7 +92,6 @@ CONFIG_RT2800USB_UNKNOWN=y
+>>   CONFIG_RTL8187=m
+>>   CONFIG_RTL8192CU=m
+>>   # CONFIG_RTLWIFI_DEBUG is not set
+>> -CONFIG_INPUT_POLLDEV=y
+>>   CONFIG_INPUT_JOYDEV=y
+>>   CONFIG_INPUT_EVDEV=y
+>>   # CONFIG_KEYBOARD_ATKBD is not set
+>> @@ -111,8 +111,8 @@ CONFIG_I2C_GPIO=y
+>>   CONFIG_SPI=y
+>>   CONFIG_SPI_ATMEL=y
+>>   CONFIG_SPI_ATMEL_QUADSPI=y
+>> +CONFIG_PINCTRL_MCP23S08=m
+>>   CONFIG_POWER_RESET=y
+>> -# CONFIG_POWER_RESET_AT91_SAMA5D2_SHDWC is not set
+>>   CONFIG_POWER_SUPPLY=y
+>>   # CONFIG_HWMON is not set
+>>   CONFIG_WATCHDOG=y
+>> @@ -208,7 +208,9 @@ CONFIG_NLS_UTF8=y
+>>   CONFIG_CRYPTO_ECB=y
+>>   CONFIG_CRYPTO_USER_API_HASH=m
+>>   CONFIG_CRYPTO_USER_API_SKCIPHER=m
+>> -# CONFIG_CRYPTO_HW is not set
+>> +CONFIG_CRYPTO_DEV_ATMEL_AES=y
+>> +CONFIG_CRYPTO_DEV_ATMEL_TDES=y
+>> +CONFIG_CRYPTO_DEV_ATMEL_SHA=y
+>>   CONFIG_CRC_CCITT=y
+>>   CONFIG_FONTS=y
+>>   CONFIG_FONT_8x8=y
+>> --
+>> 2.7.4
+>>
+>>
+>> _______________________________________________
+>> linux-arm-kernel mailing list
+>> linux-arm-kernel@lists.infradead.org
+>> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+>>
+> 
 
-greg k-h
+
+-- 
+Nicolas Ferre
