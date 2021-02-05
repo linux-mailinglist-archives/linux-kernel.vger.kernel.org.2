@@ -2,151 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC25431194A
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 04:02:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25DE9311A1F
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 04:33:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232489AbhBFDBg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 22:01:36 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:55300 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230334AbhBFCi1 (ORCPT
+        id S231920AbhBFDbi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 22:31:38 -0500
+Received: from mail-ot1-f41.google.com ([209.85.210.41]:39655 "EHLO
+        mail-ot1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230226AbhBFCoP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 21:38:27 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612578992;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xVM8jheEqSMk2QyHpvwNWebjlFDs65NWkUd4v2wDYHc=;
-        b=YRXcloxJq+dXmL/Y1HT8DPphUK4yvOBIttALdlNvgU5/c1TiD1qR8frbiAzVQqCm278eAC
-        nRMgeOaS3xle6gv+9h4TUBUVB3nQpy1ycZU0MQZdrjAHiecpF8EUZ6CmF7RUYIAiPORktl
-        UKhK3raBDAYWMcUxFKccMpyNE7HkzjQ=
-Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
- [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-72-ratyq5rJNWWH_IrvDt9Y2A-1; Fri, 05 Feb 2021 21:36:30 -0500
-X-MC-Unique: ratyq5rJNWWH_IrvDt9Y2A-1
-Received: by mail-qv1-f71.google.com with SMTP id dh16so6430669qvb.11
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 18:36:30 -0800 (PST)
+        Fri, 5 Feb 2021 21:44:15 -0500
+Received: by mail-ot1-f41.google.com with SMTP id d7so6605412otq.6;
+        Fri, 05 Feb 2021 18:43:54 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=xVM8jheEqSMk2QyHpvwNWebjlFDs65NWkUd4v2wDYHc=;
-        b=OYLEOwyDoA1LLdbmtREtCeu75Fzfq2WI3j66Tw0xtlFZj0oritfqS98+6DqQYS6Qkk
-         J2/Wz5+4h69mwjZeCPKZ94dVsWD5z/GFhbX6fQENL3vh81prv5emzpmcvmMk4hlfrUiD
-         jt749TikvtvJaaVlfVHY0DQVIPMx5bSCAWgTcehQKBM8HfPmpV7uKqjm6skpHk7G3RDP
-         qMVOX+r5Mgr35hvN5SdhdChHHVzWCeGMPyCnS2YOrNqPsLNzQR7hyH3HTG6EwHp7/QfB
-         uBymOtx5f+yzhzfoyOlu9oNPAMbMOvmnpoomvBms0eOEt4xH+xPK/nHh4Te+NaQFSJwY
-         2Z2A==
-X-Gm-Message-State: AOAM533hOm+CRIHH0dccl7ncanQp4lm1RUDLYEwL9UumznmyoZlTFrtj
-        MJ0uTXOhFG2TN5Vrukc91ut8llMRWiSFZqn/4xiLmMZ51nFLIlgbjt2RljUcqOL24O7MmvCfa45
-        ZNGQDF2QB5t3YuY48vB+aYivJ
-X-Received: by 2002:a0c:b49f:: with SMTP id c31mr7466420qve.35.1612578990205;
-        Fri, 05 Feb 2021 18:36:30 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwoex5HpvPBM5UvEfsNE1ESwri7iRSz/V+1Pew+eLURB2aJovcfzWvRPgnMa/eebtLPb7GYuQ==
-X-Received: by 2002:a0c:b49f:: with SMTP id c31mr7466406qve.35.1612578989882;
-        Fri, 05 Feb 2021 18:36:29 -0800 (PST)
-Received: from xz-x1 (bras-vprn-toroon474qw-lp130-20-174-93-89-182.dsl.bell.ca. [174.93.89.182])
-        by smtp.gmail.com with ESMTPSA id 17sm12540565qtu.23.2021.02.05.18.36.28
+        bh=KVxSD1rRrWRAJtG5RDpbzugHIfcqDTvX+OpzCsWnge0=;
+        b=Et2QRdcvhCJGsfrCOtdRnnE7b2kywqKLe3l8qA51K105+qyJto5YsQ/h4g0nAh8ZjY
+         NoCrgDBjnr4O3dC0zW8bb+xkIBPHVVEfAPOXZ+zkv2g5ml1G0LCZ5CWWhBF6qmY6tihQ
+         HuDF1fCBkNpBQt5dNUNtFsr0j+L6j7Qopf7NXSnbOrXLO9XU4ewYHZsvVpT/VSgSGdvl
+         v6G1KWthwvSVLeZvXsAYT2NFo3Oc8YhXrgenJP9kR6TJFk1CoNbCHOZd3IEiyiuznfo/
+         sgXKxAFxKBPlDrLh1Wf0fj5YEstWLOFkeMcTwBclSuLwg8iPn0nZhoUeB9hJF58MCCQO
+         KTaQ==
+X-Gm-Message-State: AOAM530uchXvMvAd6x8KzjMAI0wSinBcckM+W7jItws7I/d5kZXAQd/n
+        kfPi2g3EwSZhtULqx5Kb2inRvXNv/Q==
+X-Google-Smtp-Source: ABdhPJyu7gJrKzV2CHIDzrZf0xO2fwFgHLWzzUYn1r2rXC/7SPUKdVPADz9GDBP6ItA1Y6wElUidrQ==
+X-Received: by 2002:a4a:ce90:: with SMTP id f16mr4998594oos.61.1612562215585;
+        Fri, 05 Feb 2021 13:56:55 -0800 (PST)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id x187sm2091742oig.3.2021.02.05.13.56.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Feb 2021 18:36:29 -0800 (PST)
-Date:   Fri, 5 Feb 2021 21:36:27 -0500
-From:   Peter Xu <peterx@redhat.com>
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Jerome Glisse <jglisse@redhat.com>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Hugh Dickins <hughd@google.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Nadav Amit <nadav.amit@gmail.com>
-Subject: Re: [PATCH RFC 00/30] userfaultfd-wp: Support shmem and hugetlbfs
-Message-ID: <20210206023627.GD3195@xz-x1>
-References: <20210115170907.24498-1-peterx@redhat.com>
- <20210129224938.GC260413@xz-x1>
- <339d27e8-9f34-3e80-2910-46f46d58e9a6@oracle.com>
+        Fri, 05 Feb 2021 13:56:54 -0800 (PST)
+Received: (nullmailer pid 3821562 invoked by uid 1000);
+        Fri, 05 Feb 2021 21:56:53 -0000
+Date:   Fri, 5 Feb 2021 15:56:53 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Andre Przywara <andre.przywara@arm.com>
+Cc:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Samuel Holland <samuel@sholland.org>,
+        Icenowy Zheng <icenowy@aosc.io>,
+        =?iso-8859-1?Q?Cl=E9ment_P=E9ron?= <peron.clem@gmail.com>,
+        Shuosheng Huang <huangshuosheng@allwinnertech.com>,
+        Yangtao Li <tiny.windzz@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-sunxi@googlegroups.com, Lee Jones <lee.jones@linaro.org>,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v5 04/20] dt-bindings: mfd: axp20x: Add AXP305 compatible
+ (plus optional IRQ)
+Message-ID: <20210205215653.GA3813445@robh.at.kernel.org>
+References: <20210127172500.13356-1-andre.przywara@arm.com>
+ <20210127172500.13356-5-andre.przywara@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <339d27e8-9f34-3e80-2910-46f46d58e9a6@oracle.com>
+In-Reply-To: <20210127172500.13356-5-andre.przywara@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 05, 2021 at 01:53:34PM -0800, Mike Kravetz wrote:
-> On 1/29/21 2:49 PM, Peter Xu wrote:
-> > On Fri, Jan 15, 2021 at 12:08:37PM -0500, Peter Xu wrote:
-> >> This is a RFC series to support userfaultfd upon shmem and hugetlbfs.
-> ...
-> > Huge & Mike,
-> > 
-> > Would any of you have comment/concerns on the high-level design of this series?
-> > 
-> > It would be great to know it, especially major objection, before move on to an
-> > non-rfc version.
+On Wed, Jan 27, 2021 at 05:24:44PM +0000, Andre Przywara wrote:
+> The AXP305 PMIC used in AXP805 seems to be fully compatible to the
+> AXP805 PMIC, so add the proper chain of compatible strings.
 > 
-> My apologies for not looking at this sooner.  Even now, I have only taken
-> a very brief look at the hugetlbfs patches.
+> Also at least on one board (Orangepi Zero2) there is no interrupt line
+> connected to the CPU, so make the "interrupts" property optional.
 > 
-> Coincidentally, I am working on the 'BUG' that soft dirty does not work for
-> hugetlbfs.  As you can imagine, there is some overlap in handling of wp ptes
-> set for soft dirty.  In addition, pmd sharing must be disabled for soft dirty
-> as here and in Axel's uffd minor fault code.
-
-Interesting to know that we'll reach and need something common from different
-directions, especially when they all mostly happen at the same time. :)
-
-Is there a real "BUG" that you mentioned?  I'd be glad to read about it if
-there is a link or something.
-
+> Signed-off-by: Andre Przywara <andre.przywara@arm.com>
+> ---
+>  Documentation/devicetree/bindings/mfd/axp20x.txt | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 > 
-> No objections to the overall approach based on my quick look.
+> diff --git a/Documentation/devicetree/bindings/mfd/axp20x.txt b/Documentation/devicetree/bindings/mfd/axp20x.txt
+> index 4991a6415796..4fd748101e3c 100644
+> --- a/Documentation/devicetree/bindings/mfd/axp20x.txt
+> +++ b/Documentation/devicetree/bindings/mfd/axp20x.txt
+> @@ -26,10 +26,10 @@ Required properties:
+>      * "x-powers,axp803"
+>      * "x-powers,axp806"
+>      * "x-powers,axp805", "x-powers,axp806"
+> +    * "x-powers,axp803", "x-powers,axp805", "x-powers,axp806"
 
-Thanks for having a look.
+I don't normally (yet) ask for schema conversions on compatible 
+additions, but this is one of the few remaining compatibles with no 
+schema for allwinner. So a conversion here would be nice. BTW, dtschema 
+now has a better check for this (-m option) without the false positives. 
+I plan to turn on the option soon (doesn't matter for dtbs as they all 
+have lots of warnings, but bindings also get warnings).
 
-So for hugetlb one major thing is indeed about the pmd sharing part, which
-seems that we've got very good consensus on.
+Either way,
 
-The other thing that I'd love to get some comment would be a shared topic with
-shmem in that: for a file-backed memory type, uffd-wp needs a consolidated way
-to record wr-protect information even if the pgtable entries were flushed.
-That comes from a fundamental difference between anonymous and file-backed
-memory in that anonymous pages keep all info in the pgtable entry, but
-file-backed memory is not, e.g., pgtable entries can be dropped at any time as
-long as page cache is there.
+Acked-by: Rob Herring <robh@kernel.org>
 
-I goes to look at soft-dirty then regarding this issue, and there's actually a
-paragraph about it:
 
-        While in most cases tracking memory changes by #PF-s is more than enough
-        there is still a scenario when we can lose soft dirty bits -- a task
-        unmaps a previously mapped memory region and then maps a new one at
-        exactly the same place. When unmap is called, the kernel internally
-        clears PTE values including soft dirty bits. To notify user space
-        application about such memory region renewal the kernel always marks
-        new memory regions (and expanded regions) as soft dirty.
-
-I feel like it just means soft-dirty currently allows false positives: we could
-have set the soft dirty bit even if the page is clean.  And that's what this
-series wanted to avoid: it used the new concept called "swap special pte" to
-persistent that information even for file-backed memory.  That all goes for
-avoiding those false positives.
-
+>      * "x-powers,axp809"
+>      * "x-powers,axp813"
+>  - reg: The I2C slave address or RSB hardware address for the AXP chip
+> -- interrupts: SoC NMI / GPIO interrupt connected to the PMIC's IRQ pin
+>  - interrupt-controller: The PMIC has its own internal IRQs
+>  - #interrupt-cells: Should be set to 1
+>  
+> @@ -43,6 +43,7 @@ more information:
+>  			AXP20x/LDO3: software-based implementation
+>  
+>  Optional properties:
+> +- interrupts: SoC NMI / GPIO interrupt connected to the PMIC's IRQ pin
+>  - x-powers,dcdc-freq: defines the work frequency of DC-DC in KHz
+>  		      AXP152/20X: range:  750-1875, Default: 1.5 MHz
+>  		      AXP22X/8XX: range: 1800-4050, Default: 3   MHz
+> -- 
+> 2.17.5
 > 
-> I'll try to take a closer look at the areas where efforts overlap.
-
-I dumped above just to hope maybe it could help a little bit more for the
-reviews, but if it's not, I totally agree we can focus on the overlapped part.
-And, I'd be more than glad to read your work too if I can understand more on
-what you're working on with the hugetlb soft dirty bug, since I do feel uffd-wp
-is servicing similar goals just like what soft-dirty does, so we could share a
-lot of common knowledge there. :)
-
-Thanks again!
-
--- 
-Peter Xu
-
