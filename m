@@ -2,102 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 488DF31103D
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 19:46:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A68C311047
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 19:48:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233794AbhBERDK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 12:03:10 -0500
-Received: from mga07.intel.com ([134.134.136.100]:46168 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233614AbhBERAQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 12:00:16 -0500
-IronPort-SDR: Ke/YG5Sr9I7n8vd4favQ7vANhQYVpmv01iWW3rFZ64Ms6C3aG4z/4fBTE2HsLU+YptgajHPqr7
- W+gb628L+QZA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9886"; a="245543343"
-X-IronPort-AV: E=Sophos;i="5.81,155,1610438400"; 
-   d="scan'208";a="245543343"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2021 10:41:53 -0800
-IronPort-SDR: fYIBCWf6F8YGiaVwigkg6COEp/BFyCf3VF9Mir7LXUkPJtAgu5VY9t1zFYzDqvdG8dSaeFpRJW
- k8iP9sQMMw5g==
-X-IronPort-AV: E=Sophos;i="5.81,155,1610438400"; 
-   d="scan'208";a="358363786"
-Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.212.95.7]) ([10.212.95.7])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2021 10:41:52 -0800
-Subject: Re: [PATCH v19 08/25] x86/mm: Introduce _PAGE_COW
-To:     Dave Hansen <dave.hansen@intel.com>,
-        Kees Cook <keescook@chromium.org>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>
-References: <20210203225547.32221-1-yu-cheng.yu@intel.com>
- <20210203225547.32221-9-yu-cheng.yu@intel.com>
- <202102041215.B54FCA552F@keescook>
- <2e43bf0b-e1a9-99f6-8d5d-d6e6886b4217@intel.com>
-From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
-Message-ID: <7381d8c1-5e1c-2667-7cb8-0a99f2c79b6d@intel.com>
-Date:   Fri, 5 Feb 2021 10:41:52 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S233529AbhBERFA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 12:05:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48586 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233728AbhBERBe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 12:01:34 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BD75C061788
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 10:43:16 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1612550595;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=46T3e7IPiQjvvWNmdsCx/VP9WgjJf3TMPB2At7n7NO4=;
+        b=0q9blxNOZca/qAJnf+VbiuFeMKUwhRLuGluPkhUFJS2gE5OjI/H7URNzTTvZDVBmvUfm9B
+        UPQvZMXlr/IXnpvO6GGAfDhCEB6isk/erkFygCcd9v33OAq/bmAHGHf901H7/54bHYyIAK
+        BoC24aplULALgUb+lTUzH6fXm19b65aISJq/aiJiv0MjKT29KnwvPiuCAcXc7j636eOlwY
+        tE5A9Vfg0qOcAsAV495phDDDKbL26xtf7KemD4uQLbM4kDvB4LVyLjqlBW6BtwllQSihEF
+        LocDp9ljoOIX5Et9YyDhlpolT0yroeaw8Mte7hy5kPYrp2Xio78BoUJlCn+IgA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1612550595;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=46T3e7IPiQjvvWNmdsCx/VP9WgjJf3TMPB2At7n7NO4=;
+        b=6F/0pDM80PDAOtRG5A7G83y4A61jU05ZecITkBfUyTuYU79jD4O9GTRdLB01mh4YyEMSOr
+        /uP4Z3fudtXrT3Aw==
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        linux-kernel@vger.kernel.org
+Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: Re: [PATCH] kernel: irq: Some words replce with better alternatives in the file timings.c
+In-Reply-To: <20210205122836.1355944-1-unixbhaskar@gmail.com>
+References: <20210205122836.1355944-1-unixbhaskar@gmail.com>
+Date:   Fri, 05 Feb 2021 19:43:14 +0100
+Message-ID: <878s828if1.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <2e43bf0b-e1a9-99f6-8d5d-d6e6886b4217@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/4/2021 12:27 PM, Dave Hansen wrote:
-> On 2/4/21 12:19 PM, Kees Cook wrote:
->>> (e) A page where the processor observed a Write=1 PTE, started a write, set
->>>      Dirty=1, but then observed a Write=0 PTE.  That's possible today, but
->>>      will not happen on processors that support shadow stack.
->> What happens for "e" with/without CET? It sounds like direct writes to
->> such pages will be (correctly) rejected by the MMU?
-> 
-> A page fault would be generated regardless of CET support.
-> 
-> If CET were not around, the fault would be reported as a present, write
-> fault.
-> 
-> If this happened and CET were around (which shouldn't happen in
-> practice, it means we have a hardware issue) a page fault exception is
-> generated. 
+Bhaskar,
 
-Thanks for the clarification.  With or without CET, direct write to 
-Write=0, Dirty=1 PTE triggers page fault.
+On Fri, Feb 05 2021 at 17:58, Bhaskar Chowdhury wrote:
 
-> Yu-cheng, I'm not sure there's enough debugging around to
-> tell us if this happens.  Would we even notice?
+The correct prefix for this file is:
 
-That potential hardware issue is, on a CET-capable system, a processor 
-writes to a Write=1, Dirty=0 page, and then observes the PTE is Write=0, 
-Dirty=1.  Let me think about it...
+   genirq/timings:
 
-Thanks!
+which you can find via: git log kernel/irq/timings.c
 
---
-Yu-cheng
+Also if you send a patch with spelling fixes then you might take care
+that your subject line does not contain spelling mistakes ...
+
+> +	 * ends the sequence as predictable for our purpose. In this
+>  	 * case, assume we have the beginning of a sequence and the
+> -	 * timestamp is the first value. As it is impossible to
+> +	 * timestamps is the first value. As it is impossible to
+
+timestamp is ... is correct
+
+>  	 * predict anything at this point, return.
+>  	 *
+> -	 * Note the first timestamp of the sequence will always fall
+> +	 * Note the first timestamps of the sequence will always fall
+
+Same here
+
+>  	 * in this test because the old_ts is zero. That is what we
+> -	 * want as we need another timestamp to compute an interval.
+> +	 * want as we need another timestamps to compute an interval.
+
+And here.
+
+>  	 */
+>  	if (interval >= NSEC_PER_SEC) {
+>  		irqs->count = 0;
+> @@ -523,7 +523,7 @@ static inline void irq_timings_store(int irq, struct irqt_stat *irqs, u64 ts)
+>   * thus the count is reinitialized.
+>   *
+>   * The array of values **must** be browsed in the time direction, the
+> - * timestamp must increase between an element and the next one.
+> + * timestamps must increase between an element and the next one.
+
+No 's' either.
+
+>   *
+>   * Returns a nanosec time based estimation of the earliest interrupt,
+>   * U64_MAX otherwise.
+> @@ -556,7 +556,7 @@ u64 irq_timings_next_event(u64 now)
+>  	 * type but with the cost of extra computation in the
+>  	 * interrupt handler hot path. We choose efficiency.
+>  	 *
+> -	 * Inject measured irq/timestamp to the pattern prediction
+> +	 * Inject measured irq/timestamps to the pattern prediction
+
+This one needs the 's', yes.
+
+>  	 * model while decrementing the counter because we consume the
+>  	 * data from our circular buffer.
+>  	 */
+
+Thanks,
+
+        tglx
