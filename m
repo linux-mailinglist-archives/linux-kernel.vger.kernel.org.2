@@ -2,86 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68E773111F4
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 21:11:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD5EE3111F2
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 21:11:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233655AbhBES1Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 13:27:16 -0500
-Received: from foss.arm.com ([217.140.110.172]:41352 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230001AbhBESZp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 13:25:45 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BD627ED1;
-        Fri,  5 Feb 2021 12:07:14 -0800 (PST)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6AA4C3F718;
-        Fri,  5 Feb 2021 12:07:13 -0800 (PST)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Quentin Perret <qperret@google.com>,
-        Pavan Kondeti <pkondeti@codeaurora.org>,
-        Rik van Riel <riel@surriel.com>
-Subject: Re: [PATCH 3/8] sched/fair: Tweak misfit-related capacity checks
-In-Reply-To: <CAKfTPtB_aJE0uDmARvKGe8_oX0Goaada_C5HKy7aaTbFGLxU-A@mail.gmail.com>
-References: <20210128183141.28097-1-valentin.schneider@arm.com> <20210128183141.28097-4-valentin.schneider@arm.com> <CAKfTPtADn0X8=ENfvG5dhzM1KbTD+JCCoOm-i8=bVkh0ZBM2Xg@mail.gmail.com> <jhjv9b61md0.mognet@arm.com> <CAKfTPtB_aJE0uDmARvKGe8_oX0Goaada_C5HKy7aaTbFGLxU-A@mail.gmail.com>
-User-Agent: Notmuch/0.21 (http://notmuchmail.org) Emacs/26.3 (x86_64-pc-linux-gnu)
-Date:   Fri, 05 Feb 2021 20:07:08 +0000
-Message-ID: <jhjsg6a1doz.mognet@arm.com>
+        id S233518AbhBES0i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 13:26:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38410 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233381AbhBESZs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 13:25:48 -0500
+Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB95EC06174A
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 12:07:28 -0800 (PST)
+Received: by mail-qt1-x830.google.com with SMTP id s11so2124838qtq.10
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 12:07:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lqehshu3MUzrBle/QPxMj3NcYrs2O2w0CHnNjXFfUqU=;
+        b=CaGJibvMjhSDKdOj6Tx5gGCiGEeZxTrLjUqGXdVJUt474AZwL5JTnIy7a82+nOThvI
+         /Kd5dqOlXza4DW9UgKcG5PpQepH32TaAH/xBcQT2CaMhBpsbwgOaSrffKlzFWHYfsnq+
+         pYN1Udbb+TjAT6mCvZ4jOh7XNqxBIa3GTKoM4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lqehshu3MUzrBle/QPxMj3NcYrs2O2w0CHnNjXFfUqU=;
+        b=losuWWg9YIxCuTNIWdAZzKR6kuEO0uWAfZGPutIstRlBK2VEUeTrytrxRvm9gfU3kx
+         MZvmK/5xjjbZiteGpagplPUs8QCWy7ej6yNb6JWnjxtHPa5UF2HjlzPyn42NH5aIEa2k
+         12D3j0nlksZ9S7Z2HPbYsWWqxb9PUAefL/9MKs8SnuARnOQEthqaQI1LO5O33zD6BVd1
+         xw4PliwowKICIAMos8mGjNg5NhQ3udZciXPTzWqsVKC+DNEb9r78L2HiFi4ByqK6vtEW
+         Wt6a0lGUvEg2y5XPXCThT0/jIk6NeigGbfe/lxPpMtAPh9gEDTSnAWFSjEGuxDNNPT9+
+         KBRw==
+X-Gm-Message-State: AOAM530urVMOlCeiPRBS2A7X7+3Bjh/5j+7vSzA1LnS/q2cp9L6oI7F5
+        Rn4rDCGJNn4tW2QUppym3U+gJZUQ7u4KWxA5xyuysQ==
+X-Google-Smtp-Source: ABdhPJy+gFh8lAckUDFUvPvLh47rABL095luYOJcWMkV8WMeHxa2hYhoDFsGxakL9ix/Lp3h3FRFT7dzPvlX38QG6r8=
+X-Received: by 2002:a05:622a:4ce:: with SMTP id q14mr6007256qtx.132.1612555648087;
+ Fri, 05 Feb 2021 12:07:28 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20210205195113.20277-1-rajmohan.mani@intel.com> <20210205195113.20277-2-rajmohan.mani@intel.com>
+In-Reply-To: <20210205195113.20277-2-rajmohan.mani@intel.com>
+From:   Prashant Malani <pmalani@chromium.org>
+Date:   Fri, 5 Feb 2021 12:07:16 -0800
+Message-ID: <CACeCKadzdTGi3y_WbihX_p_rfL8wcTFVwbUGPU=de53fA9dVog@mail.gmail.com>
+Subject: Re: [PATCH 1/2] platform/chrome: cros_ec_typec: Skip port partner
+ check in configure_mux()
+To:     Rajmohan Mani <rajmohan.mani@intel.com>
+Cc:     Benson Leung <bleung@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Guenter Roeck <groeck@chromium.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/02/21 18:17, Vincent Guittot wrote:
-> On Fri, 5 Feb 2021 at 18:00, Valentin Schneider
->> >> @@ -8253,7 +8260,7 @@ check_cpu_capacity(struct rq *rq, struct sched_domain *sd)
->> >>  static inline int check_misfit_status(struct rq *rq, struct sched_domain *sd)
->> >>  {
->> >>         return rq->misfit_task_load &&
->> >> -               (rq->cpu_capacity_orig < rq->rd->max_cpu_capacity ||
->> >> +               (capacity_greater(rq->rd->max_cpu_capacity, rq->cpu_capacity_orig) ||
->> >
->> > Why do you add a margin here whereas there was no margin before ?
->> >
->>
->> Comparing capacities without any sort of filter can lead to ping-ponging
->> tasks around (capacity values very easily fluctuate by +/- 1, if not more).
+Hi Raj,
+
+On Fri, Feb 5, 2021 at 11:52 AM Rajmohan Mani <rajmohan.mani@intel.com> wrote:
 >
-> max_cpu_capacity reflects the max of the cpu_capacity_orig values
-> don't aim to change and can be considered as static values.
-> It would be better to fix this rounding problem (if any) in
-> topology_get_cpu_scale instead of computing a margin every time it's
-> used
+> For certain needs like updating the USB4 retimer firmware when no
+> device are connected, the Type-C ports require mux configuration,
+> to be able to communicate with the retimer. So removed the above
+> check to allow for mux configuration of Type-C ports, to enable
+> retimer communication.
 >
+> Signed-off-by: Rajmohan Mani <rajmohan.mani@intel.com>
+Reviewed-by: Prashant Malani <pmalani@chromium.org>
 
-That's embarrassing, I was convinced we had something updating
-rd->max_cpu_capacity with actual rq->capacity values... But as you point
-out that's absolutely not the case, it's all based on rq->capacity_orig,
-which completely invalidates patch 5/8.
-
-Welp.
-
-Perhaps I can still keep 5/8 with something like
-
-  if (!rq->misfit_task_load)
-          return false;
-
-  do {
-          if (capacity_greater(group->sgc->max_capacity, rq->cpu_capacity))
-                  return true;
-
-          group = group->next;
-  } while (group != sd->groups);
-
-  return false;
-
-This works somewhat well for big.LITTLE, but for DynamIQ systems under a
-single L3 this ends up iterating over all the CPUs :/
+> ---
+>  drivers/platform/chrome/cros_ec_typec.c | 3 ---
+>  1 file changed, 3 deletions(-)
+>
+> diff --git a/drivers/platform/chrome/cros_ec_typec.c b/drivers/platform/chrome/cros_ec_typec.c
+> index e724a5eaef1c..3d8ff3f8a514 100644
+> --- a/drivers/platform/chrome/cros_ec_typec.c
+> +++ b/drivers/platform/chrome/cros_ec_typec.c
+> @@ -536,9 +536,6 @@ static int cros_typec_configure_mux(struct cros_typec_data *typec, int port_num,
+>         enum typec_orientation orientation;
+>         int ret;
+>
+> -       if (!port->partner)
+> -               return 0;
+> -
+>         if (mux_flags & USB_PD_MUX_POLARITY_INVERTED)
+>                 orientation = TYPEC_ORIENTATION_REVERSE;
+>         else
+> --
+> 2.30.0
+>
