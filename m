@@ -2,211 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D3013104F7
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 07:31:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 813843104FD
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 07:35:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231210AbhBEG33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 01:29:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34732 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229492AbhBEG3X (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 01:29:23 -0500
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3106C0613D6;
-        Thu,  4 Feb 2021 22:28:42 -0800 (PST)
-Received: by mail-pl1-x62c.google.com with SMTP id b8so3033806plh.12;
-        Thu, 04 Feb 2021 22:28:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:subject:to:cc:references:in-reply-to:mime-version
-         :message-id:content-transfer-encoding;
-        bh=n7CaGiXn3IclWpaI9yXVgNXyljc6Uf/i5e6pCdoBf3U=;
-        b=rwAZrEHXeSHsEhQqlWJWMhS+QhnKGA9Iw7FLGGoJKoOeBD7vZibcpQ9NObjulqTHTe
-         7GkjCmyb54Y7Z4prVF67Wk4/Sr6XWceCuls0wmHJ3qMB5hWV5UROmPQNd7iSsETxqXYu
-         ABIGme3BAikEa6nXXQtAUAcAbsfuvblhEDgWl1R8+L50d85TpF8DCSLsglMQAVBwmefL
-         dyzWInNwK3Onqpvn+ZtvCTQG28m3QOAuai43BoFdsBbCSQTBG0fjYiK6jNPr1YqCyHXp
-         mqcortFcQTAZkk7IhsdhE27f20UnUtR1rUbEeQxnF49HeIH2D2J5KjPZvWaQ9C7yRpYc
-         P4xg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
-         :mime-version:message-id:content-transfer-encoding;
-        bh=n7CaGiXn3IclWpaI9yXVgNXyljc6Uf/i5e6pCdoBf3U=;
-        b=eN2noE7ULbeG8KuU8R76iYxOSyrJ2CcODAVBjHTBKpyb06vTgqXbNvvlBctZBDbFTN
-         KcfhwdB4Rgw8wjRcMIyyzNXEBJAk67SuNw05AKm8012ZSO8ySqeQWxyyHjaanms2RAFM
-         G31mZX0WG1fJGgxYS4Lz/2NFCfoQwgV/U78Q1+7AAZOtmJzL149Q5+BjMKaweDucUyJr
-         qVywaqxtkHiFKpy1XtvmQE3z7Ca2zGh7rxdvU9lcw7IhHSkJrzrg9WHMxVZx6DWjMCF5
-         0hpMODmY46iaiVBTQK8UxcvF5FATP2fmjPOF885aldDnMlXKy1agdGydd5taoICd6Q8y
-         WRcQ==
-X-Gm-Message-State: AOAM533JtnoOHHBiJcE6PBSa9uuNGpOVV3MsBbRPa0XNcnJj1qKVtdkE
-        btgMsyH0XTPqR85DhukItLdWMnG5CMw=
-X-Google-Smtp-Source: ABdhPJyzYhRchCo7znC5uY06AcfhaOZlnYfVNeQoFViOz4lQHuEATDmNG7js6j4hIHTcx7QpjQxRyA==
-X-Received: by 2002:a17:903:248e:b029:df:e75a:68f7 with SMTP id p14-20020a170903248eb02900dfe75a68f7mr2657814plw.9.1612506522323;
-        Thu, 04 Feb 2021 22:28:42 -0800 (PST)
-Received: from localhost (60-242-11-44.static.tpgi.com.au. [60.242.11.44])
-        by smtp.gmail.com with ESMTPSA id c9sm7233627pjr.44.2021.02.04.22.28.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Feb 2021 22:28:41 -0800 (PST)
-Date:   Fri, 05 Feb 2021 16:28:35 +1000
-From:   Nicholas Piggin <npiggin@gmail.com>
-Subject: Re: [PATCH v2 1/1] powerpc/kvm: Save Timebase Offset to fix
- sched_clock() while running guest code.
-To:     "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Jordan Niethe <jniethe5@gmail.com>,
-        Leonardo Bras <leobras.c@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     kvm-ppc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org
-References: <20210205060643.233481-1-leobras.c@gmail.com>
-In-Reply-To: <20210205060643.233481-1-leobras.c@gmail.com>
+        id S230506AbhBEGdt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 01:33:49 -0500
+Received: from mga05.intel.com ([192.55.52.43]:29930 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230402AbhBEGdr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 01:33:47 -0500
+IronPort-SDR: qnNaDrF8UB8RD7ZE6BLf1Rgftme2ELbStYCrQp/sllGShu67SIxdRZFbTSFzz8naTKSHbmzN5L
+ 6hzMHnQx5WQA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9885"; a="266215567"
+X-IronPort-AV: E=Sophos;i="5.81,154,1610438400"; 
+   d="scan'208";a="266215567"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Feb 2021 22:33:05 -0800
+IronPort-SDR: 5QfnJPgBPwLYURmVJG9624ZfaSoOmSNsiNY3rSMbMcI1YTUQkNSOc2mWz/cFGjTYTCMeLbDRby
+ buv6rtcVoL/w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,154,1610438400"; 
+   d="scan'208";a="357588302"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.149]) ([10.237.72.149])
+  by orsmga003.jf.intel.com with ESMTP; 04 Feb 2021 22:33:01 -0800
+Subject: Re: [PATCH 2/2] mmc: mmc_test: use erase_arg for mmc_erase command
+To:     yann.gautier@foss.st.com, ulf.hansson@linaro.org
+Cc:     linux@armlinux.org.uk, linus.walleij@linaro.org,
+        ludovic.barre@foss.st.com, per.forlin@linaro.org,
+        huyue2@yulong.com, wsa+renesas@sang-engineering.com,
+        vbadigan@codeaurora.org, p.zabel@pengutronix.de, marex@denx.de,
+        swboyd@chromium.org, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210204120547.15381-1-yann.gautier@foss.st.com>
+ <20210204120547.15381-3-yann.gautier@foss.st.com>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <c1531549-29da-25dc-cada-f61edbc5f2fd@intel.com>
+Date:   Fri, 5 Feb 2021 08:33:04 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Message-Id: <1612506268.6rrvx34gzu.astroid@bobo.none>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210204120547.15381-3-yann.gautier@foss.st.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Excerpts from Leonardo Bras's message of February 5, 2021 4:06 pm:
-> Before guest entry, TBU40 register is changed to reflect guest timebase.
-> After exitting guest, the register is reverted to it's original value.
->=20
-> If one tries to get the timestamp from host between those changes, it
-> will present an incorrect value.
->=20
-> An example would be trying to add a tracepoint in
-> kvmppc_guest_entry_inject_int(), which depending on last tracepoint
-> acquired could actually cause the host to crash.
->=20
-> Save the Timebase Offset to PACA and use it on sched_clock() to always
-> get the correct timestamp.
+On 4/02/21 2:05 pm, yann.gautier@foss.st.com wrote:
+> From: Yann Gautier <yann.gautier@foss.st.com>
+> 
+> Since [1], the erase argument for mmc_erase() function is saved in
+> erase_arg field of card structure. It is preferable to use it instead of
+> hard-coded MMC_SECURE_ERASE_ARG, which from eMMC 4.51 spec is not
+> recommended:
+> "6.6.16 Secure Erase
+> NOTE Secure Erase is included for backwards compatibility. New system
+> level implementations (based on v4.51 devices and beyond) should use
+> Erase combined with Sanitize instead of secure erase."
+> 
+>  [1] commit 01904ff77676 ("mmc: core: Calculate the discard arg only once")
+> 
 
-Ouch. Not sure how reasonable it is to half switch into guest registers=20
-and expect to call into the wider kernel, fixing things up as we go.=20
-What if mftb is used in other places?
+Did you experience an issue because of this?  You could add that to the
+commit message.
 
-Especially as it doesn't seem like there is a reason that function _has_
-to be called after the timebase is switched to guest, that's just how=20
-the code is structured.
+There does not seem to be a need for secure erase, so:
 
-As a local hack to work out a bug okay. If you really need it upstream=20
-could you put it under a debug config option?
+Acked-by: Adrian Hunter <adrian.hunter@intel.com>
 
-Thanks,
-Nick
 
-> Signed-off-by: Leonardo Bras <leobras.c@gmail.com>
-> Suggested-by: Paul Mackerras <paulus@ozlabs.org>
+> Signed-off-by: Yann Gautier <yann.gautier@foss.st.com>
 > ---
-> Changes since v1:
-> - Subtracts offset only when CONFIG_KVM_BOOK3S_HANDLER and
->   CONFIG_PPC_BOOK3S_64 are defined.
-> ---
->  arch/powerpc/include/asm/kvm_book3s_asm.h | 1 +
->  arch/powerpc/kernel/asm-offsets.c         | 1 +
->  arch/powerpc/kernel/time.c                | 8 +++++++-
->  arch/powerpc/kvm/book3s_hv.c              | 2 ++
->  arch/powerpc/kvm/book3s_hv_rmhandlers.S   | 2 ++
->  5 files changed, 13 insertions(+), 1 deletion(-)
->=20
-> diff --git a/arch/powerpc/include/asm/kvm_book3s_asm.h b/arch/powerpc/inc=
-lude/asm/kvm_book3s_asm.h
-> index 078f4648ea27..e2c12a10eed2 100644
-> --- a/arch/powerpc/include/asm/kvm_book3s_asm.h
-> +++ b/arch/powerpc/include/asm/kvm_book3s_asm.h
-> @@ -131,6 +131,7 @@ struct kvmppc_host_state {
->  	u64 cfar;
->  	u64 ppr;
->  	u64 host_fscr;
-> +	u64 tb_offset;		/* Timebase offset: keeps correct timebase while on gue=
-st */
->  #endif
->  };
-> =20
-> diff --git a/arch/powerpc/kernel/asm-offsets.c b/arch/powerpc/kernel/asm-=
-offsets.c
-> index b12d7c049bfe..0beb8fdc6352 100644
-> --- a/arch/powerpc/kernel/asm-offsets.c
-> +++ b/arch/powerpc/kernel/asm-offsets.c
-> @@ -706,6 +706,7 @@ int main(void)
->  	HSTATE_FIELD(HSTATE_CFAR, cfar);
->  	HSTATE_FIELD(HSTATE_PPR, ppr);
->  	HSTATE_FIELD(HSTATE_HOST_FSCR, host_fscr);
-> +	HSTATE_FIELD(HSTATE_TB_OFFSET, tb_offset);
->  #endif /* CONFIG_PPC_BOOK3S_64 */
-> =20
->  #else /* CONFIG_PPC_BOOK3S */
-> diff --git a/arch/powerpc/kernel/time.c b/arch/powerpc/kernel/time.c
-> index 67feb3524460..f27f0163792b 100644
-> --- a/arch/powerpc/kernel/time.c
-> +++ b/arch/powerpc/kernel/time.c
-> @@ -699,7 +699,13 @@ EXPORT_SYMBOL_GPL(tb_to_ns);
->   */
->  notrace unsigned long long sched_clock(void)
->  {
-> -	return mulhdu(get_tb() - boot_tb, tb_to_ns_scale) << tb_to_ns_shift;
-> +	u64 tb =3D get_tb() - boot_tb;
-> +
-> +#if defined(CONFIG_PPC_BOOK3S_64) && defined(CONFIG_KVM_BOOK3S_HANDLER)
-> +	tb -=3D local_paca->kvm_hstate.tb_offset;
-> +#endif
-> +
-> +	return mulhdu(tb, tb_to_ns_scale) << tb_to_ns_shift;
->  }
-> =20
-> =20
-> diff --git a/arch/powerpc/kvm/book3s_hv.c b/arch/powerpc/kvm/book3s_hv.c
-> index b3731572295e..c08593c63353 100644
-> --- a/arch/powerpc/kvm/book3s_hv.c
-> +++ b/arch/powerpc/kvm/book3s_hv.c
-> @@ -3491,6 +3491,7 @@ static int kvmhv_load_hv_regs_and_go(struct kvm_vcp=
-u *vcpu, u64 time_limit,
->  		if ((tb & 0xffffff) < (new_tb & 0xffffff))
->  			mtspr(SPRN_TBU40, new_tb + 0x1000000);
->  		vc->tb_offset_applied =3D vc->tb_offset;
-> +		local_paca->kvm_hstate.tb_offset =3D vc->tb_offset;
->  	}
-> =20
->  	if (vc->pcr)
-> @@ -3594,6 +3595,7 @@ static int kvmhv_load_hv_regs_and_go(struct kvm_vcp=
-u *vcpu, u64 time_limit,
->  		if ((tb & 0xffffff) < (new_tb & 0xffffff))
->  			mtspr(SPRN_TBU40, new_tb + 0x1000000);
->  		vc->tb_offset_applied =3D 0;
-> +		local_paca->kvm_hstate.tb_offset =3D 0;
->  	}
-> =20
->  	mtspr(SPRN_HDEC, 0x7fffffff);
-> diff --git a/arch/powerpc/kvm/book3s_hv_rmhandlers.S b/arch/powerpc/kvm/b=
-ook3s_hv_rmhandlers.S
-> index b73140607875..8f7a9f7f4ee6 100644
-> --- a/arch/powerpc/kvm/book3s_hv_rmhandlers.S
-> +++ b/arch/powerpc/kvm/book3s_hv_rmhandlers.S
-> @@ -632,6 +632,7 @@ END_FTR_SECTION_IFCLR(CPU_FTR_ARCH_300)
->  	cmpdi	r8,0
->  	beq	37f
->  	std	r8, VCORE_TB_OFFSET_APPL(r5)
-> +	std	r8, HSTATE_TB_OFFSET(r13)
->  	mftb	r6		/* current host timebase */
->  	add	r8,r8,r6
->  	mtspr	SPRN_TBU40,r8	/* update upper 40 bits */
-> @@ -1907,6 +1908,7 @@ END_FTR_SECTION_IFSET(CPU_FTR_ARCH_207S)
->  	beq	17f
->  	li	r0, 0
->  	std	r0, VCORE_TB_OFFSET_APPL(r5)
-> +	std	r0, HSTATE_TB_OFFSET(r13)
->  	mftb	r6			/* current guest timebase */
->  	subf	r8,r8,r6
->  	mtspr	SPRN_TBU40,r8		/* update upper 40 bits */
-> --=20
-> 2.29.2
->=20
->=20
+>  drivers/mmc/core/mmc_test.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mmc/core/mmc_test.c b/drivers/mmc/core/mmc_test.c
+> index 39a478874ca3..63524551a13a 100644
+> --- a/drivers/mmc/core/mmc_test.c
+> +++ b/drivers/mmc/core/mmc_test.c
+> @@ -2110,7 +2110,7 @@ static int mmc_test_rw_multiple(struct mmc_test_card *test,
+>  	if (mmc_can_erase(test->card) &&
+>  	    tdata->prepare & MMC_TEST_PREP_ERASE) {
+>  		ret = mmc_erase(test->card, dev_addr,
+> -				size / 512, MMC_SECURE_ERASE_ARG);
+> +				size / 512, test->card->erase_arg);
+>  		if (ret)
+>  			ret = mmc_erase(test->card, dev_addr,
+>  					size / 512, MMC_ERASE_ARG);
+> 
+
