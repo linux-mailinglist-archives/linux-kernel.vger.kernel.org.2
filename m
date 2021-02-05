@@ -2,121 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AB4F31077A
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 10:16:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7BC531076D
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 10:13:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230077AbhBEJNp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 04:13:45 -0500
-Received: from mx2.suse.de ([195.135.220.15]:36122 "EHLO mx2.suse.de"
+        id S229711AbhBEJLy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 04:11:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59932 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229760AbhBEJKQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 04:10:16 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 039F7AFD7;
-        Fri,  5 Feb 2021 09:09:34 +0000 (UTC)
-Date:   Fri, 5 Feb 2021 10:09:28 +0100
-From:   Oscar Salvador <osalvador@suse.de>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     corbet@lwn.net, mike.kravetz@oracle.com, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
-        paulmck@kernel.org, mchehab+huawei@kernel.org,
-        pawan.kumar.gupta@linux.intel.com, rdunlap@infradead.org,
-        oneukum@suse.com, anshuman.khandual@arm.com, jroedel@suse.de,
-        almasrymina@google.com, rientjes@google.com, willy@infradead.org,
-        mhocko@suse.com, song.bao.hua@hisilicon.com, david@redhat.com,
-        naoya.horiguchi@nec.com, duanxiongchun@bytedance.com,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v14 8/8] mm: hugetlb: optimize the code with the help of
- the compiler
-Message-ID: <20210205090924.GA14537@linux>
-References: <20210204035043.36609-1-songmuchun@bytedance.com>
- <20210204035043.36609-9-songmuchun@bytedance.com>
+        id S229669AbhBEJJr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 04:09:47 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4EFB064FBF;
+        Fri,  5 Feb 2021 09:09:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1612516172;
+        bh=JdD0MSkgGiDQgR1RqZMYYZuQVt/HbkXgGJeoHCpYJio=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kmMA0pCiSfbnVQOP9h8OWUUs1gL0W3kE2qPu9+x+tMXmNjuqO/DHFbIepE4bOuxOH
+         GQBcrhUsbX6GyzQt/WPlsYs5a77THjVGJM95iiwKE+V3ETQ+/VZGmRJinOIeJVXMBT
+         +heMmOj2VdzbISIWeHN8fbVnuqzIlYv7PGtKlcpI=
+Date:   Fri, 5 Feb 2021 10:09:29 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Ikjoon Jang <ikjn@chromium.org>,
+        Nicolas Boichat <drinkcat@chromium.org>
+Subject: Re: [RFC PATCH v2 1/3] dt-bindings: usb: mtk-xhci: add compatible
+ for mt8195
+Message-ID: <YB0LSQdCZk3xL+ru@kroah.com>
+References: <20210203102642.7353-1-chunfeng.yun@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210204035043.36609-9-songmuchun@bytedance.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210203102642.7353-1-chunfeng.yun@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 04, 2021 at 11:50:43AM +0800, Muchun Song wrote:
-> We cannot optimize if a "struct page" crosses page boundaries. If
-> it is true, we can optimize the code with the help of a compiler.
-> When free_vmemmap_pages_per_hpage() returns zero, most functions are
-> optimized by the compiler.
-
-"When the "struct page size" crosses page boundaries we cannot
- make use of this feature.
- Let free_vmemmap_pages_per_hpage() return zero if that is the case,
- most of the functions can be optimized away."
-
-I think the above is more clear, but just a suggestion.
- 
-
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-
-Reviewed-by: Oscar Salvador <osalvador@suse.de>
-
+On Wed, Feb 03, 2021 at 06:26:40PM +0800, Chunfeng Yun wrote:
+> There are 4 USB controllers on MT8195, the controllers (IP1~IP3,
+> exclude IP0) have a wrong default SOF/ITP interval which is
+> calculated from the frame counter clock 24Mhz by default, but
+> in fact, the frame counter clock is 48Mhz, so we should set
+> the accurate interval according to 48Mhz. Here add a new compatible
+> for MT8195, it's also supported in driver. But the first controller
+> (IP0) has no such issue, we prefer to use generic compatible,
+> e.g. mt8192's compatible.
+> 
+> Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
 > ---
->  include/linux/hugetlb.h |  3 ++-
->  mm/hugetlb_vmemmap.c    | 13 +++++++++++++
->  2 files changed, 15 insertions(+), 1 deletion(-)
-> 
-> diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
-> index 822ab2f5542a..7bfb06e16298 100644
-> --- a/include/linux/hugetlb.h
-> +++ b/include/linux/hugetlb.h
-> @@ -878,7 +878,8 @@ extern bool hugetlb_free_vmemmap_enabled;
->  
->  static inline bool is_hugetlb_free_vmemmap_enabled(void)
->  {
-> -	return hugetlb_free_vmemmap_enabled;
-> +	return hugetlb_free_vmemmap_enabled &&
-> +	       is_power_of_2(sizeof(struct page));
->  }
->  #else
->  static inline bool is_hugetlb_free_vmemmap_enabled(void)
-> diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
-> index 8efad9978821..068d0e0cebc8 100644
-> --- a/mm/hugetlb_vmemmap.c
-> +++ b/mm/hugetlb_vmemmap.c
-> @@ -211,6 +211,12 @@ early_param("hugetlb_free_vmemmap", early_hugetlb_free_vmemmap_param);
->   */
->  static inline unsigned int free_vmemmap_pages_per_hpage(struct hstate *h)
->  {
-> +	/*
-> +	 * This check aims to let the compiler help us optimize the code as
-> +	 * much as possible.
-> +	 */
-> +	if (!is_power_of_2(sizeof(struct page)))
-> +		return 0;
->  	return h->nr_free_vmemmap_pages;
->  }
->  
-> @@ -280,6 +286,13 @@ void __init hugetlb_vmemmap_init(struct hstate *h)
->  	BUILD_BUG_ON(NR_USED_SUBPAGE >=
->  		     RESERVE_VMEMMAP_SIZE / sizeof(struct page));
->  
-> +	/*
-> +	 * The compiler can help us to optimize this function to null
-> +	 * when the size of the struct page is not power of 2.
-> +	 */
-> +	if (!is_power_of_2(sizeof(struct page)))
-> +		return;
-> +
->  	if (!hugetlb_free_vmemmap_enabled)
->  		return;
->  
-> -- 
-> 2.11.0
-> 
-> 
+> v2: no changes
 
--- 
-Oscar Salvador
-SUSE L3
+Note, I do not apply patches that have "RFC" as that means you do not
+feel comfortable with them being applied.
+
+Please resend without that when you feel they are ready to be merged.
+
+thanks,
+
+greg k-h
