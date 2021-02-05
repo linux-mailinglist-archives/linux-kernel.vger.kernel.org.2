@@ -2,138 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB4733108E1
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 11:21:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56FE03108D5
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 11:19:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231246AbhBEKVA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 05:21:00 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:12137 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231277AbhBEKQH (ORCPT
+        id S230034AbhBEKRu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 05:17:50 -0500
+Received: from mail-wm1-f45.google.com ([209.85.128.45]:53921 "EHLO
+        mail-wm1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231228AbhBEKOQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 05:16:07 -0500
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DXB8r3Bc8z164xV;
-        Fri,  5 Feb 2021 18:14:04 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.24) by
- DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
- 14.3.498.0; Fri, 5 Feb 2021 18:15:14 +0800
-From:   Weili Qian <qianweili@huawei.com>
-To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>
-CC:     <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
-        <xuzaibo@huawei.com>, <wangzhou1@hisilicon.com>
-Subject: [PATCH 6/6] crypto: hisilicon/qm - fix printing format issue
-Date:   Fri, 5 Feb 2021 18:12:58 +0800
-Message-ID: <1612519978-33340-7-git-send-email-qianweili@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1612519978-33340-1-git-send-email-qianweili@huawei.com>
-References: <1612519978-33340-1-git-send-email-qianweili@huawei.com>
+        Fri, 5 Feb 2021 05:14:16 -0500
+Received: by mail-wm1-f45.google.com with SMTP id j11so5524911wmi.3;
+        Fri, 05 Feb 2021 02:13:44 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=QqT1VbMd0Hl+nCIH2Pftmu9UNxh+ri5ATSj4oal47T8=;
+        b=s+nTYTTANbKOx1BwxDBbOQjB/2Oder7M6c3bKdDPSjHFsP85b5+bhW+d9oKlv3VyuJ
+         bPOuBZcCoR+hlZ/WA5wINEyx9NoxmvKChmoyYMvNlo3SmzHFEnj6MQCHe5adK/NnKjVv
+         xJXEc7jr1YplYvYjJPW4z/7oseh6AOwB4NKTiC3G5c1u+RqGXjlmFzfTgCoQu0BQVPPU
+         u+fFw8UibpYWOUue4vD5DDEoPI3s1iIuWQMWeavprt9jEbxBO1JX5nB63JvG+8BfPMAj
+         wXfULCZMzqdc816MxxXef0SkV8JgbAZzm0WDXSkoLJyXnSH6/dGAVfLIjWu/eWVCjtxE
+         KLIw==
+X-Gm-Message-State: AOAM533SkYPX/a8kwKYx1Bi/LvWUO0LP+iFxxOsP/vfHcZiH7h+Hf1Gn
+        x1k+P4CAshou1vEvF98IDoU=
+X-Google-Smtp-Source: ABdhPJzJPtImxISVzMWfcyfZ2V4sjHJjIzevNV8gq7uUcuCUEc4Jxwr2z68+YKorBsfNWjaOPQfSrQ==
+X-Received: by 2002:a1c:2587:: with SMTP id l129mr2866463wml.13.1612519999029;
+        Fri, 05 Feb 2021 02:13:19 -0800 (PST)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id y63sm8277107wmd.21.2021.02.05.02.13.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Feb 2021 02:13:18 -0800 (PST)
+Date:   Fri, 5 Feb 2021 10:13:16 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        Lillian Grassin-Drake <ligrassi@microsoft.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Sunil Muthuswamy <sunilmut@microsoft.com>
+Subject: Re: linux-next: manual merge of the hyperv tree with Linus' tree
+Message-ID: <20210205101316.rhxbacowjq7bii32@liuwe-devbox-debian-v2>
+References: <20210205190202.29c2b74e@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210205190202.29c2b74e@canb.auug.org.au>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch fixes inconsistent of printing format with argument type.
+On Fri, Feb 05, 2021 at 07:02:02PM +1100, Stephen Rothwell wrote:
+> Hi all,
+> 
+> Today's linux-next merge of the hyperv tree got a conflict in:
+> 
+>   arch/x86/hyperv/hv_init.c
+> 
+> between commit:
+> 
+>   fff7b5e6ee63 ("x86/hyperv: Initialize clockevents after LAPIC is initialized")
+> 
+> from Linus' tree and commits:
+> 
+>   a06c2e7df586 ("x86/hyperv: extract partition ID from Microsoft Hypervisor if necessary")
+>   fa2c411b58fe ("x86/hyperv: implement an MSI domain for root partition")
+> 
+> from the hyperv tree.
+> 
+> I fixed it up (see below) and can carry the fix as necessary. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
+> 
 
-Signed-off-by: Weili Qian <qianweili@huawei.com>
-Reviewed-by: Zaibo Xu <xuzaibo@huawei.com>
----
- drivers/crypto/hisilicon/qm.c | 16 ++++++++--------
- drivers/crypto/hisilicon/qm.h |  2 +-
- 2 files changed, 9 insertions(+), 9 deletions(-)
+Thanks Stephen.
 
-diff --git a/drivers/crypto/hisilicon/qm.c b/drivers/crypto/hisilicon/qm.c
-index 5dbc054..47df981 100644
---- a/drivers/crypto/hisilicon/qm.c
-+++ b/drivers/crypto/hisilicon/qm.c
-@@ -723,7 +723,7 @@ static irqreturn_t qm_aeq_irq(int irq, void *data)
- 			dev_err(&qm->pdev->dev, "%s overflow\n",
- 				qm_fifo_overflow[type]);
- 		else
--			dev_err(&qm->pdev->dev, "unknown error type %d\n",
-+			dev_err(&qm->pdev->dev, "unknown error type %u\n",
- 				type);
- 
- 		if (qm->status.aeq_head == QM_Q_DEPTH - 1) {
-@@ -1127,7 +1127,7 @@ static int dump_show(struct hisi_qm *qm, void *info,
- 
- 	dev_info(dev, "%s DUMP\n", info_name);
- 	for (i = 0; i < info_size; i += BYTE_PER_DW) {
--		pr_info("DW%d: %02X%02X %02X%02X\n", i / BYTE_PER_DW,
-+		pr_info("DW%u: %02X%02X %02X%02X\n", i / BYTE_PER_DW,
- 			info_buf[i], info_buf[i + 1UL],
- 			info_buf[i + 2UL], info_buf[i + 3UL]);
- 	}
-@@ -1160,7 +1160,7 @@ static int qm_sqc_dump(struct hisi_qm *qm, const char *s)
- 
- 	ret = kstrtou32(s, 0, &qp_id);
- 	if (ret || qp_id >= qm->qp_num) {
--		dev_err(dev, "Please input qp num (0-%d)", qm->qp_num - 1);
-+		dev_err(dev, "Please input qp num (0-%u)", qm->qp_num - 1);
- 		return -EINVAL;
- 	}
- 
-@@ -1206,7 +1206,7 @@ static int qm_cqc_dump(struct hisi_qm *qm, const char *s)
- 
- 	ret = kstrtou32(s, 0, &qp_id);
- 	if (ret || qp_id >= qm->qp_num) {
--		dev_err(dev, "Please input qp num (0-%d)", qm->qp_num - 1);
-+		dev_err(dev, "Please input qp num (0-%u)", qm->qp_num - 1);
- 		return -EINVAL;
- 	}
- 
-@@ -1285,7 +1285,7 @@ static int q_dump_param_parse(struct hisi_qm *qm, char *s,
- 
- 	ret = kstrtou32(presult, 0, q_id);
- 	if (ret || *q_id >= qp_num) {
--		dev_err(dev, "Please input qp num (0-%d)", qp_num - 1);
-+		dev_err(dev, "Please input qp num (0-%u)", qp_num - 1);
- 		return -EINVAL;
- 	}
- 
-@@ -2714,7 +2714,7 @@ int hisi_qm_start(struct hisi_qm *qm)
- 		return -EPERM;
- 	}
- 
--	dev_dbg(dev, "qm start with %d queue pairs\n", qm->qp_num);
-+	dev_dbg(dev, "qm start with %u queue pairs\n", qm->qp_num);
- 
- 	if (!qm->qp_num) {
- 		dev_err(dev, "qp_num should not be 0\n");
-@@ -3149,7 +3149,7 @@ int hisi_qm_alloc_qps_node(struct hisi_qm_list *qm_list, int qp_num,
- 
- 	mutex_unlock(&qm_list->lock);
- 	if (ret)
--		pr_info("Failed to create qps, node[%d], alg[%d], qp[%d]!\n",
-+		pr_info("Failed to create qps, node[%d], alg[%u], qp[%d]!\n",
- 			node, alg_type, qp_num);
- 
- err:
-@@ -3357,7 +3357,7 @@ pci_ers_result_t hisi_qm_dev_err_detected(struct pci_dev *pdev,
- 	if (pdev->is_virtfn)
- 		return PCI_ERS_RESULT_NONE;
- 
--	pci_info(pdev, "PCI error detected, state(=%d)!!\n", state);
-+	pci_info(pdev, "PCI error detected, state(=%u)!!\n", state);
- 	if (state == pci_channel_io_perm_failure)
- 		return PCI_ERS_RESULT_DISCONNECT;
- 
-diff --git a/drivers/crypto/hisilicon/qm.h b/drivers/crypto/hisilicon/qm.h
-index 6be5338..46e3a67 100644
---- a/drivers/crypto/hisilicon/qm.h
-+++ b/drivers/crypto/hisilicon/qm.h
-@@ -306,7 +306,7 @@ static inline int q_num_set(const char *val, const struct kernel_param *kp,
- 
- 	if (!pdev) {
- 		q_num = min_t(u32, QM_QNUM_V1, QM_QNUM_V2);
--		pr_info("No device found currently, suppose queue number is %d\n",
-+		pr_info("No device found currently, suppose queue number is %u\n",
- 			q_num);
- 	} else {
- 		if (pdev->revision == QM_HW_V1)
--- 
-2.8.1
+I've fixed up the conflicts locally in hyperv-next.
 
+Wei.
