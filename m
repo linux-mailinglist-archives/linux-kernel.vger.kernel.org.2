@@ -2,88 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2AB63117C8
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 01:28:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F07413117C7
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 01:28:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229986AbhBFA2c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 19:28:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53942 "EHLO
+        id S231157AbhBFA1s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 19:27:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231785AbhBEMV2 (ORCPT
+        with ESMTP id S231263AbhBEMWc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 07:21:28 -0500
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D448EC061786;
-        Fri,  5 Feb 2021 04:20:46 -0800 (PST)
-Received: by mail-qk1-x734.google.com with SMTP id a19so6645787qka.2;
-        Fri, 05 Feb 2021 04:20:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=RrxNJC+G65J+/Co9EWPzgkz6H64Dt1+RXsd7P6/3CKk=;
-        b=sSaoalcTy3cKHlwNIvGtLaD9xfZR9N1BBueZTUkC3CBdeJ6qXPggq+cHZ6B8ZRs2az
-         xbTC7haZs47r6LHF/xXB3YRygJ0cLvvO0XcMyiDhZAcmeuLRTqNW0Z2XxSlvU+19TCSC
-         kH9sl3U0VcPOlfWg3K86JLDTtiqeL5gbVyavMyPKMDTuV23xvqkTxTvWM8dISOxninNw
-         2CGeevOEciuB5FVMv412PYCpBibmeATHEG614l0GvDXOedjEc4WV2/D8KcyJzZazR058
-         MINos7P+paGxwq8fichwhJTltAtf9JhcmtqU5jgvZ9r6WpmIJyRpyWOpak+CvVf4s1iL
-         VysA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=RrxNJC+G65J+/Co9EWPzgkz6H64Dt1+RXsd7P6/3CKk=;
-        b=tA5Ch0iHC+8fjvvc61m4VXwinC8/NwgqghTIu9o1deF8Ql9WKsQqSPzhEk6UxK2Le/
-         iFUDn6madWbHWlXC7CmnJt2peTs0QfdEem63s2PKuil2RvQEMbHMFgsCr76eK7nnzP1C
-         QkzrEXS6zOjQ9UKpq9E7HDFpeq44TODoiYNs18b+gdqjOXq1obwtF8cz3PBgdzwOTk+4
-         1RzSvExc4p5/MJ3PWLNymkOHrYDM9ZvPQ56AOBSfmMbQDucrYwEzPsEZvqFF7bMlYSJo
-         wMGnzB7yzt+xA/lBXoyoEdK0oExOR1tLRvezDlxBOYyp0cvbTdYdESvS8UGYiFfEgabB
-         HgPA==
-X-Gm-Message-State: AOAM530EzLaXKBFp6PQykd2ukzwEPdWYZpB+fhJGRkNj/q/rQEoHk+lv
-        35B4J+wp4ucm8ium2EMpGu0=
-X-Google-Smtp-Source: ABdhPJycIY87jKEPdLIrkcqSFnjnCoCNPU+3dyWU5PYmy4tBpFW4lWHV3EdRWLY/tKpgj+aP8HfTRw==
-X-Received: by 2002:a05:620a:410:: with SMTP id 16mr3878858qkp.270.1612527646169;
-        Fri, 05 Feb 2021 04:20:46 -0800 (PST)
-Received: from localhost.localdomain ([138.199.10.106])
-        by smtp.gmail.com with ESMTPSA id q25sm8793868qkq.32.2021.02.05.04.20.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Feb 2021 04:20:44 -0800 (PST)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     jack@suse.cz, amir73il@gmail.com, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: [PATCH] fs: notify: inotify: Replace a common bad word with better common word
-Date:   Fri,  5 Feb 2021 17:50:33 +0530
-Message-Id: <20210205122033.1345204-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.30.0
+        Fri, 5 Feb 2021 07:22:32 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51548C06178B
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 04:21:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=z36dGRbCFgguUnQEKpJ8pVZDMMQJKuRXuXoi8kLH0Sg=; b=YNB2B2U8IV+7Ad6RFC+Ve1ryQk
+        98FiMbAiOrlSRFPURjQYnet3Liuta3LH2ZmCImVxPlLVmcPbmcsUAFtDR3OXG/IM2mwvxVo03wBQp
+        +kr/rj4W/tuEXEs53nM5semPwXtDkvioNiRAWG9rpqDL8R5qVKqwEle7um6OMJ4vv4jxlSbqQ6GRF
+        EsU/+MbdYNnMUkT11hciY7DjP2fOEXbWO+gR1E357EQGgp8p8Qe8NmPA4jGzOPAEOE4D2Tpb4ExNi
+        b4UI7k3ZyKbYHRFBtwHdNo1q/NoQZP5MBhYIXrBi8J4RYFrAK+rJ3DtMc4ZtiG3ZsZOHA+AJxAbf1
+        qiwTaB1A==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1l807E-0003qE-LI; Fri, 05 Feb 2021 12:21:36 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 063963059DD;
+        Fri,  5 Feb 2021 13:21:34 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id CA3322BBE1CB0; Fri,  5 Feb 2021 13:21:34 +0100 (CET)
+Date:   Fri, 5 Feb 2021 13:21:34 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Andy Lutomirski <luto@amacapital.net>
+Cc:     Andrew Cooper <andrew.cooper3@citrix.com>,
+        "H. Peter Anvin" <h.peter.anvin@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Jan Kiszka <jan.kiszka@siemens.com>, X86 ML <x86@kernel.org>
+Subject: Re: [RFC][PATCH 2/2] x86: add extra serialization for
+ non-serializing MSRs
+Message-ID: <YB04TgBo4P7n7s4X@hirez.programming.kicks-ass.net>
+References: <20200305174706.0D6B8EE4@viggo.jf.intel.com>
+ <20200305174708.F77040DD@viggo.jf.intel.com>
+ <f37ecf01-3167-f12e-d9d0-b55c44b80c29@citrix.com>
+ <CALCETrXMhe3ULF9UDc1=8CKVfKqneCxJ2wYmCdKPpntkkMNGWg@mail.gmail.com>
+ <YB0XonRIr1GcCy6M@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YB0XonRIr1GcCy6M@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Feb 05, 2021 at 11:02:10AM +0100, Peter Zijlstra wrote:
 
+> And presumably it is still allowed to do that when we write it like:
+> 
+> 	mov	$1, ([x])
+> 	mfence
+> 	wrmsr
+> 
+> because, mfence only has dependencies to memops and (fast) wrmsr is not
+> a memop.
+> 
+> Which then brings us to:
+> 
+> 	mov	$1, ([x])
+> 	mfence
+> 	lfence
+> 	wrmsr
+> 
+> In this case, the lfence acts like the newly minted ifence (see
+> spectre), and will block execution of (any) later instructions until
+> completion of all prior instructions. This, and only this ensures the
+> wrmsr happens after the mfence, which in turn ensures the store to x is
+> globally visible.
 
-s/fucked/messed/
+Note that I too do have a few questions.
 
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
----
- fs/notify/inotify/inotify_user.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Supposedly MFENCE is our LOAD/STORE completion fence of choice, and this
+obviously works with MMIO, since that's memops. The MMIO write of the
+buffer address to the DMA device must happen after completion of the
+previous data writes etc..
 
-diff --git a/fs/notify/inotify/inotify_user.c b/fs/notify/inotify/inotify_user.c
-index 59c177011a0f..0a9d1a81edf0 100644
---- a/fs/notify/inotify/inotify_user.c
-+++ b/fs/notify/inotify/inotify_user.c
-@@ -455,7 +455,7 @@ static void inotify_remove_from_idr(struct fsnotify_group *group,
- 	/*
- 	 * We found an mark in the idr at the right wd, but it's
- 	 * not the mark we were told to remove.  eparis seriously
--	 * fucked up somewhere.
-+	 * messed up somewhere.
- 	 */
- 	if (unlikely(found_i_mark != i_mark)) {
- 		WARN_ONCE(1, "%s: i_mark=%p i_mark->wd=%d i_mark->group=%p "
---
-2.30.0
+But what about the legacy IN/OUT ports? Are those memops? If not, we
+might need additional LFENCEs there too.
+
+Also, would SFENCE+LFENCE be sufficient for the WRMSR case? AFAIU SFENCE
+is the store completion barrier and should be strong enough to flush all
+store buffers. If not, why not?
 
