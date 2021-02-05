@@ -2,120 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05B11311AC6
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 05:19:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F2CCA311AC1
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 05:17:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229808AbhBFESv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 23:18:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39900 "EHLO
+        id S231138AbhBFEPt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 23:15:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231447AbhBFCpi (ORCPT
+        with ESMTP id S231712AbhBFCqI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 21:45:38 -0500
-Received: from antares.kleine-koenig.org (antares.kleine-koenig.org [IPv6:2a01:4f8:c0c:3a97::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7ED3DC08EC49
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 14:29:05 -0800 (PST)
-Received: by antares.kleine-koenig.org (Postfix, from userid 1000)
-        id 00403AEDF01; Fri,  5 Feb 2021 23:29:03 +0100 (CET)
-From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <uwe@kleine-koenig.org>
-To:     Dan Williams <dan.j.williams@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-nvdimm@lists.01.org, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH v2 5/5] dax-device: Make remove callback return void
-Date:   Fri,  5 Feb 2021 23:28:42 +0100
-Message-Id: <20210205222842.34896-6-uwe@kleine-koenig.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210205222842.34896-1-uwe@kleine-koenig.org>
-References: <20210205222842.34896-1-uwe@kleine-koenig.org>
+        Fri, 5 Feb 2021 21:46:08 -0500
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8920C08ECAE
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 14:39:06 -0800 (PST)
+Received: by mail-wm1-x32f.google.com with SMTP id w4so7218210wmi.4
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 14:39:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=t5Gn3UKnHmz7y35xPv/AAaJUGOdlL1SVmYKp08hQa2A=;
+        b=AKkqkC46A7/1BRDDGxRGLEZxNtnADzQGWuquqnpFdYydocW8BHy39p41Ef8RbZGQPw
+         Fk64CTFRIqDAFE3KY7pnYz/E1CMMhZszPNA0PZrpq9pf5j3BMFf8K6qaiv6ISRN9rS0i
+         LrbC4G9p6XDtciagWCIb3aiH0HRLK8ZdbSeRRFaQnm0jSJXtMz0AqpUsaRnpyKJwrP+h
+         dDbw2Dycw2PlGIT3GSAGSGxZpyTtbxo17rO6TaKN//bfVmQtefgRk4Klajwl8FSeSvgt
+         pFoJwxy6/3m1AmAwBFY+lcrBwCL+mZzWdkT4EXQ6Wsz4XadkWUjx0Ww1kop1pMSsm4hn
+         w8sQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=t5Gn3UKnHmz7y35xPv/AAaJUGOdlL1SVmYKp08hQa2A=;
+        b=Zx5JLkyuVgQIdp8KKH48PpRGumgsQmBfPcxQ9qDSG/8Q4lMtLoQqRk43OQTGlvVZ7I
+         MKAylAdZkUyiV6oU9TjPNnMnmy3sD+JETQrZhtl2a5/ZphDve/fQmpe0dII0Ns7Jf4uB
+         jeix7sRcZeBv+4fqr1tc+wqRnS1bHO5GgKpWkWJr0kTOnf7yfZHruJx4LXjpDXrPhmAU
+         w/cr71wz+oSz5f6l4vitcysuMOarx8bYH4J5hIBRhPHldam+gP/xrRACN0O9r6sELp3E
+         U9PGF3USLhnr5fZmGZbL6MmBEcFtrYzmyukHrzgDqGgc/qmwrvhy4LneApch8GTzE22K
+         NaCQ==
+X-Gm-Message-State: AOAM531FSwWOnoY47I4aeSnkYR7i1H+4rrzS4f9ob/tSo6VU34+BQnxr
+        9TGh2FQRwMC2+JrC6bP4Ha0OgsyalK09A+DmWzNNDQ==
+X-Google-Smtp-Source: ABdhPJy0sTM7b46RxdYwLPh10drgFMSgljzItLlUxvVIt+nz3DMnRfObLWe428PmKlhcwdjP+4xBZrSJQPA0kUzdbuA=
+X-Received: by 2002:a05:600c:4e92:: with SMTP id f18mr5220472wmq.126.1612564745104;
+ Fri, 05 Feb 2021 14:39:05 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20210205080621.3102035-1-john.stultz@linaro.org>
+ <20210205080621.3102035-2-john.stultz@linaro.org> <4471b3b0-603e-6dbb-8064-ff4a95afbba9@amd.com>
+ <CALAqxLWZkUFvJX5r2OU2erW4tU3j=+u==VTyzYkt+95LwwVCUA@mail.gmail.com>
+In-Reply-To: <CALAqxLWZkUFvJX5r2OU2erW4tU3j=+u==VTyzYkt+95LwwVCUA@mail.gmail.com>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Fri, 5 Feb 2021 14:38:53 -0800
+Message-ID: <CAJuCfpEkKfci_spdEAQKk1o_qoS53y-=i_zjqrDKeyW44AG+BQ@mail.gmail.com>
+Subject: Re: [RFC][PATCH v6 1/7] drm: Add a sharable drm page-pool implementation
+To:     John Stultz <john.stultz@linaro.org>
+Cc:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Liam Mark <lmark@codeaurora.org>,
+        Chris Goldsworthy <cgoldswo@codeaurora.org>,
+        Laura Abbott <labbott@kernel.org>,
+        Brian Starkey <Brian.Starkey@arm.com>,
+        Hridya Valsaraju <hridya@google.com>,
+        Sandeep Patil <sspatil@google.com>,
+        Daniel Mentz <danielmentz@google.com>,
+        =?UTF-8?Q?=C3=98rjan_Eide?= <orjan.eide@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Simon Ser <contact@emersion.fr>,
+        James Jones <jajones@nvidia.com>,
+        linux-media <linux-media@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The driver core ignores the return value of struct bus_type::remove()
-because there is only little that can be done. To simplify the quest to
-make this function return void, let struct dax_device_driver::remove()
-return void, too. All users already unconditionally return 0, this commit
-makes it obvious that returning an error code isn't intended.
+On Fri, Feb 5, 2021 at 12:47 PM John Stultz <john.stultz@linaro.org> wrote:
+>
+> On Fri, Feb 5, 2021 at 12:47 AM Christian K=C3=B6nig
+> <christian.koenig@amd.com> wrote:
+> > Am 05.02.21 um 09:06 schrieb John Stultz:
+> > > diff --git a/drivers/gpu/drm/page_pool.c b/drivers/gpu/drm/page_pool.=
+c
+> > > new file mode 100644
+> > > index 000000000000..2139f86e6ca7
+> > > --- /dev/null
+> > > +++ b/drivers/gpu/drm/page_pool.c
+> > > @@ -0,0 +1,220 @@
+> > > +// SPDX-License-Identifier: GPL-2.0
+> >
+> > Please use a BSD/MIT compatible license if you want to copy this from
+> > the TTM code.
+>
+> Hrm. This may be problematic, as it's not just TTM code, but some of
+> the TTM logic integrated into a page-pool implementation I wrote based
+> on logic from the ION code (which was GPL-2.0 before it was dropped).
+> So I don't think I can just make it MIT.  Any extra context on the
+> need for MIT, or suggestions on how to best resolve this?
+>
+> > > +int drm_page_pool_get_size(struct drm_page_pool *pool)
+> > > +{
+> > > +     int ret;
+> > > +
+> > > +     spin_lock(&pool->lock);
+> > > +     ret =3D pool->count;
+> > > +     spin_unlock(&pool->lock);
+> >
+> > Maybe use an atomic for the count instead?
+> >
+>
+> I can do that, but am curious as to the benefit? We are mostly using
+> count where we already have to take the pool->lock anyway, and this
+> drm_page_pool_get_size() is only used for debugfs output so far, so I
+> don't expect it to be a hot path.
+>
+>
+> > > +void drm_page_pool_add(struct drm_page_pool *pool, struct page *page=
+)
+> > > +{
+> > > +     spin_lock(&pool->lock);
+> > > +     list_add_tail(&page->lru, &pool->items);
+> > > +     pool->count++;
+> > > +     atomic_long_add(1 << pool->order, &total_pages);
+> > > +     spin_unlock(&pool->lock);
+> > > +
+> > > +     mod_node_page_state(page_pgdat(page), NR_KERNEL_MISC_RECLAIMABL=
+E,
+> > > +                         1 << pool->order);
+> >
+> > Hui what? What should that be good for?
+>
+> This is a carryover from the ION page pool implementation:
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/d=
+rivers/staging/android/ion/ion_page_pool.c?h=3Dv5.10#n28
+>
+> My sense is it helps with the vmstat/meminfo accounting so folks can
+> see the cached pages are shrinkable/freeable. This maybe falls under
+> other dmabuf accounting/stats discussions, so I'm happy to remove it
+> for now, or let the drivers using the shared page pool logic handle
+> the accounting themselves?
 
-Signed-off-by: Uwe Kleine-König <uwe@kleine-koenig.org>
----
- drivers/dax/bus.c  | 5 ++---
- drivers/dax/bus.h  | 2 +-
- drivers/dax/kmem.c | 7 ++-----
- 3 files changed, 5 insertions(+), 9 deletions(-)
+Yep, ION pools were accounted for as reclaimable kernel memory because
+they could be dropped when the system is under memory pressure.
 
-diff --git a/drivers/dax/bus.c b/drivers/dax/bus.c
-index bc425f1c52bd..0a939e28d048 100644
---- a/drivers/dax/bus.c
-+++ b/drivers/dax/bus.c
-@@ -178,12 +178,11 @@ static int dax_bus_remove(struct device *dev)
- {
- 	struct dax_device_driver *dax_drv = to_dax_drv(dev->driver);
- 	struct dev_dax *dev_dax = to_dev_dax(dev);
--	int ret = 0;
- 
- 	if (dax_drv->remove)
--		ret = dax_drv->remove(dev_dax);
-+		dax_drv->remove(dev_dax);
- 
--	return ret;
-+	return 0;
- }
- 
- static struct bus_type dax_bus_type = {
-diff --git a/drivers/dax/bus.h b/drivers/dax/bus.h
-index 72b92f95509f..1e946ad7780a 100644
---- a/drivers/dax/bus.h
-+++ b/drivers/dax/bus.h
-@@ -39,7 +39,7 @@ struct dax_device_driver {
- 	struct list_head ids;
- 	int match_always;
- 	int (*probe)(struct dev_dax *dev);
--	int (*remove)(struct dev_dax *dev);
-+	void (*remove)(struct dev_dax *dev);
- };
- 
- int __dax_driver_register(struct dax_device_driver *dax_drv,
-diff --git a/drivers/dax/kmem.c b/drivers/dax/kmem.c
-index 403ec42472d1..ac231cc36359 100644
---- a/drivers/dax/kmem.c
-+++ b/drivers/dax/kmem.c
-@@ -136,7 +136,7 @@ static int dev_dax_kmem_probe(struct dev_dax *dev_dax)
- }
- 
- #ifdef CONFIG_MEMORY_HOTREMOVE
--static int dev_dax_kmem_remove(struct dev_dax *dev_dax)
-+static void dev_dax_kmem_remove(struct dev_dax *dev_dax)
- {
- 	int i, success = 0;
- 	struct device *dev = &dev_dax->dev;
-@@ -176,11 +176,9 @@ static int dev_dax_kmem_remove(struct dev_dax *dev_dax)
- 		kfree(data);
- 		dev_set_drvdata(dev, NULL);
- 	}
--
--	return 0;
- }
- #else
--static int dev_dax_kmem_remove(struct dev_dax *dev_dax)
-+static void dev_dax_kmem_remove(struct dev_dax *dev_dax)
- {
- 	/*
- 	 * Without hotremove purposely leak the request_mem_region() for the
-@@ -190,7 +188,6 @@ static int dev_dax_kmem_remove(struct dev_dax *dev_dax)
- 	 * request_mem_region().
- 	 */
- 	any_hotremove_failed = true;
--	return 0;
- }
- #endif /* CONFIG_MEMORY_HOTREMOVE */
- 
--- 
-2.29.2
-
+>
+>
+> > > +static struct page *drm_page_pool_remove(struct drm_page_pool *pool)
+> > > +{
+> > > +     struct page *page;
+> > > +
+> > > +     if (!pool->count)
+> > > +             return NULL;
+> >
+> > Better use list_first_entry_or_null instead of checking the count.
+> >
+> > This way you can also pull the lock into the function.
+>
+> Yea, that cleans a number of things up nicely. Thank you!
+>
+>
+> > > +struct drm_page_pool *drm_page_pool_create(unsigned int order,
+> > > +                                        int (*free_page)(struct page=
+ *p, unsigned int order))
+> > > +{
+> > > +     struct drm_page_pool *pool =3D kmalloc(sizeof(*pool), GFP_KERNE=
+L);
+> >
+> > Why not making this an embedded object? We should not see much dynamic
+> > pool creation.
+>
+> Yea, it felt cleaner at the time this way, but I think I will need to
+> switch to an embedded object in order to resolve the memory usage
+> issue you pointed out with growing the ttm_pool_dma, so thank you for
+> the suggestion!
+>
+>
+> > > +void drm_page_pool_destroy(struct drm_page_pool *pool)
+> > > +{
+> > > +     struct page *page;
+> > > +
+> > > +     /* Remove us from the pool list */
+> > > +     mutex_lock(&pool_list_lock);
+> > > +     list_del(&pool->list);
+> > > +     mutex_unlock(&pool_list_lock);
+> > > +
+> > > +     /* Free any remaining pages in the pool */
+> > > +     spin_lock(&pool->lock);
+> >
+> > Locking should be unnecessary when the pool is destroyed anyway.
+>
+> I guess if we've already pruned ourself from the pool list, then your
+> right, we can't race with the shrinker and it's maybe not necessary.
+> But it also seems easier to consistently follow the locking rules in a
+> very unlikely path rather than leaning on subtlety.  Either way, I
+> think this becomes moot if I make the improvements you suggest to
+> drm_page_pool_remove().
+>
+> > > +static int drm_page_pool_shrink_one(void)
+> > > +{
+> > > +     struct drm_page_pool *pool;
+> > > +     struct page *page;
+> > > +     int nr_freed =3D 0;
+> > > +
+> > > +     mutex_lock(&pool_list_lock);
+> > > +     pool =3D list_first_entry(&pool_list, typeof(*pool), list);
+> > > +
+> > > +     spin_lock(&pool->lock);
+> > > +     page =3D drm_page_pool_remove(pool);
+> > > +     spin_unlock(&pool->lock);
+> > > +
+> > > +     if (page)
+> > > +             nr_freed =3D drm_page_pool_free_pages(pool, page);
+> > > +
+> > > +     list_move_tail(&pool->list, &pool_list);
+> >
+> > Better to move this up, directly after the list_first_entry().
+>
+> Sounds good!
+>
+> Thanks so much for your review and feedback! I'll try to get some of
+> the easy suggestions integrated, and will have to figure out what to
+> do about the re-licensing request.
+>
+> thanks
+> -john
