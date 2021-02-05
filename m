@@ -2,85 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11C46310F9C
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 19:13:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8168310F7E
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 19:07:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233722AbhBEQ24 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 11:28:56 -0500
-Received: from mail.monom.org ([188.138.9.77]:60970 "EHLO mail.monom.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233711AbhBEQ0i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 11:26:38 -0500
-Received: from mail.monom.org (localhost [127.0.0.1])
-        by filter.mynetwork.local (Postfix) with ESMTP id 2566150051D;
-        Fri,  5 Feb 2021 19:08:02 +0100 (CET)
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.monom.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.5 required=5.0 tests=ALL_TRUSTED,BAYES_00,
-        PP_MIME_FAKE_ASCII_TEXT autolearn=no autolearn_force=no version=3.4.2
-Received: from localhost (unknown [94.31.99.195])
-        by mail.monom.org (Postfix) with ESMTPSA id 779CD500182;
-        Fri,  5 Feb 2021 19:08:01 +0100 (CET)
-From:   Daniel Wagner <dwagner@suse.de>
-Subject: [ANNOUNCE] 4.4.256-rt214
-Date:   Fri, 05 Feb 2021 18:01:50 -0000
-Message-ID: <161254811056.21075.10011878796120213544@beryllium>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Carsten Emde <C.Emde@osadl.org>,
-        John Kacur <jkacur@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Tom Zanussi <tom.zanussi@linux.intel.com>,
-        Clark Williams <williams@redhat.com>,
-        Pavel Machek <pavel@denx.de>
+        id S233666AbhBEQYy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 11:24:54 -0500
+Received: from mail-ot1-f45.google.com ([209.85.210.45]:39513 "EHLO
+        mail-ot1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233700AbhBEQWN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 11:22:13 -0500
+Received: by mail-ot1-f45.google.com with SMTP id d7so5463540otq.6;
+        Fri, 05 Feb 2021 10:04:07 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=mTp6A1qwozX0Q2N8eolLgHis2iIcQhU+LJihP8ASbJA=;
+        b=gI4LDvJH5OWgUayKUTjuxig0pTEuwdYVT9TRgkO4o8CwuK8jaPIrHfiWP9EY4ybVfX
+         fdbe8hTpy3UNWW3+vkYeStz/2svgd3S5UUSKax2rYeJ9G7+MdOlFaY4pwWgsKbDTwu57
+         4HLJwaTDjIJKt/0sB8J63nN8C5U9X20znN49jk0EUsBxvrfpOhoohJn1eZ79tB8EqmGp
+         ht1OhZnvdn+zlSLJs5aHnpQVRm6a3Uf3I8Eo6tYxV00UpKkOlS2DyWFSia6NVoKee+O+
+         Z5E4qZ9PCC2HWlCRGzZFZEjqq6IeHbP+9xHEWjEZ1gGdEQ7YoNMNSLbEqIKFD3RE+p/p
+         clog==
+X-Gm-Message-State: AOAM530w9NK+4EJPaaKXOdIhVSRd2RlvDikwFmXaZmR+nL3Eu7Jy05yM
+        eAytz3lpUYLxWzbdGwTiw3WlrTGNUA==
+X-Google-Smtp-Source: ABdhPJytB3er9J2lOXgWY854+pW1GYcoVQ9S+fZk9WlwQ0ZWHz4lx7Re0rLsDiwt6vUbaYyJJX90FQ==
+X-Received: by 2002:a9d:6383:: with SMTP id w3mr4139805otk.225.1612548221824;
+        Fri, 05 Feb 2021 10:03:41 -0800 (PST)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id q7sm1808059oif.1.2021.02.05.10.03.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Feb 2021 10:03:41 -0800 (PST)
+Received: (nullmailer pid 3387050 invoked by uid 1000);
+        Fri, 05 Feb 2021 18:03:40 -0000
+Date:   Fri, 5 Feb 2021 12:03:40 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Sven Schuchmann <schuchmann@schleissheimer.de>
+Cc:     Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
+        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] leds: lp50xx: remove unused regulator
+Message-ID: <20210205180340.GA3378994@robh.at.kernel.org>
+References: <20210203083305.2434-1-schuchmann@schleissheimer.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210203083305.2434-1-schuchmann@schleissheimer.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello RT-list!
+On Wed, Feb 03, 2021 at 08:33:05AM +0000, Sven Schuchmann wrote:
+> The regulator for vled-supply is unused in the driver.
+> It is just assigned from DT and disabled in lp50xx_remove.
+> So the code can be removed from the driver.
 
-I'm pleased to announce the 4.4.256-rt214 stable release.
+The binding is not a driver. Does the h/w have a 'vled' supply? If so, 
+then it should remain in the binding.
 
-This release is just an update to the new stable 4.4.256 version.
-
-GregKH writes:
-
-  As was pointed out to us stable kernel maintainers last week, the
-  overflow of the .y release number was going to happen soon, and our
-  proposed solution for it (use 16 bits instead of 8), turns out to be
-  breaking a userspace-visable api.
-
-  As we can’t really break this, I did a release of the 4.4.256 and
-  4.9.256 releases today that contain nothing but a new version
-  number. See the links for the full technical details if curious.
-
-  Right now I’m asking that everyone who uses these older kernel
-  releases to upgrade to this release, and do a full rebuild of their
-  systems in order to see what might, or might not, break. If problems
-  happen, please let us know on the stable@vger.kernel.org mailing list
-  as soon as possible as I can only hold off on doing new stable
-  releases for these branches for a single week only (i.e. February 12,
-  2021).
-
-  http://www.kroah.com/log/blog/2021/02/05/8-bits-are-enough-for-a-version-number-dot-dot-dot/
-
-You can get this release via the git tree at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git
-
-  branch: v4.4-rt
-  Head SHA1: cddea11550f1a2f0e8dd1c517bae4b76603e55d2
-
-Or to build 4.4.256-rt214 directly, the following patches should be applied:
-
-  https://www.kernel.org/pub/linux/kernel/v4.x/linux-4.4.tar.xz
-
-  https://www.kernel.org/pub/linux/kernel/v4.x/patch-4.4.256.xz
-
-  https://www.kernel.org/pub/linux/kernel/projects/rt/4.4/patch-4.4.256-rt214.patch.xz
-
-
-Enjoy!
-Daniel
+> 
+> Part 1 updates the documentation
+> Part 2 removes the code
+> 
+> Signed-off-by: Sven Schuchmann <schuchmann@schleissheimer.de>
+> 
+> ---
+>  Documentation/devicetree/bindings/leds/leds-lp50xx.yaml | 3 ---
+>  1 file changed, 3 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/leds/leds-lp50xx.yaml b/Documentation/devicetree/bindings/leds/leds-lp50xx.yaml
+> index c192b5feadc7..c20a81d13bfd 100644
+> --- a/Documentation/devicetree/bindings/leds/leds-lp50xx.yaml
+> +++ b/Documentation/devicetree/bindings/leds/leds-lp50xx.yaml
+> @@ -43,9 +43,6 @@ properties:
+>      maxItems: 1
+>      description: GPIO pin to enable/disable the device.
+>  
+> -  vled-supply:
+> -    description: LED supply.
+> -
+>    '#address-cells':
+>      const: 1
+>  
+> -- 
+> 2.17.1
+> 
