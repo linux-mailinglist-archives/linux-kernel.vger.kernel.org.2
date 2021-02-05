@@ -2,126 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2929A31088D
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 10:58:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFBBB310892
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 10:58:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230221AbhBEJ6N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 04:58:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50766 "EHLO
+        id S230039AbhBEJ6h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 04:58:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229711AbhBEJzt (ORCPT
+        with ESMTP id S229815AbhBEJz5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 04:55:49 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21037C0613D6;
-        Fri,  5 Feb 2021 01:55:09 -0800 (PST)
-Date:   Fri, 05 Feb 2021 09:55:06 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1612518907;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=nm+eQE37WFWsRlF/7b2lgg3hzVX4/p/13UtpbBDqgZI=;
-        b=1E3PZb/HDKtjPsDoBr7xusoYKyt9MCwrvbjiLf2QxgRpv3zwespmEfjJA581G7dhy0kpnx
-        PJQd2qb2ZBHGNQjbbvFUf/jby5jvxciWdUejD/tviXiprtJuAPJ7rEHql8I629UUWaVz2C
-        Qod0S/xktvYuFgwnAO+Afyhy+F5ikASsM7I8DrhenmvqyCNXi1akKusYly4JEBc7MKvVkg
-        OqgHBaw2/ZbRmz8ftuog/FLEwjrFlHJB+os2CI/5bd6m+Elj/nKZKfILho8G3NTVMJSODj
-        C/NTGvGiguavWmR2rJLaL40q5Gp978O2PdnnzZWFAFjkM0N2hWuaUDRoMY8pFg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1612518907;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=nm+eQE37WFWsRlF/7b2lgg3hzVX4/p/13UtpbBDqgZI=;
-        b=jSOJeyn+0WzBo35Dn0GWsm6mrHo7d4SsrwXWO5LGHUufTxsXwACvjrp9fU5jcxndXf0Xue
-        Go9A6RAAcYIG2bBw==
-From:   "tip-bot2 for Daniel Vetter" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/sgx] x86/sgx: Drop racy follow_pfn() check
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Borislav Petkov <bp@suse.de>,
-        Jarkko Sakkinen <jarkko@kernel.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210204184519.2809313-1-daniel.vetter@ffwll.ch>
-References: <20210204184519.2809313-1-daniel.vetter@ffwll.ch>
-MIME-Version: 1.0
-Message-ID: <161251890694.23325.7141350574807037445.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+        Fri, 5 Feb 2021 04:55:57 -0500
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FBFFC06178C;
+        Fri,  5 Feb 2021 01:55:16 -0800 (PST)
+Received: by mail-wr1-x42a.google.com with SMTP id 7so7020648wrz.0;
+        Fri, 05 Feb 2021 01:55:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=MT0BlZZFXQ7Pukf17++wQpN4EZiEO2XNbV+qknkfsyA=;
+        b=YN/bcnZoNO4KfXVM+0sV8qqwBK2gJ64YbALf1RXWAcy8Uqxl1TNzBBX9oB56NN1h+B
+         bK0TJMqQT8L/+E4PVEhOvlZz3zDdUOohqMQGFcprGGpRPHTRvzJOOD86nPiyi/y7Y7/r
+         qDqFbPAYlARf0pcr+Mw2IORvdqwd8XFb8I0p+YwjvLzEI0UzC5WEW67HvWcQD3MxBev6
+         Riya5RK2gOpV+GiajE+stCFXjiQ0gi6aN3gmcu6QCn10xUH+jld/WyCqwLawdqjSFu2m
+         CZUl3oQvJKV0o2/OGIARU9+k+/79YSUnsQa+ENMBDWdTfP2PNvZl60H1JGkQ8AycLLNx
+         TAvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=MT0BlZZFXQ7Pukf17++wQpN4EZiEO2XNbV+qknkfsyA=;
+        b=dZhugUt5/OYvjYRJQ6K8gM4MQC+pMBAlWKaXKgx1JudlSCTGIBegjXaU71SuAdkr5J
+         DxyONMlOy0eZZwCn1541QccZCzz4N7I3NETsSwnXssHo+BRUm3n7MKVFoYsM45FberDF
+         rcmSz1FSKjX4fHQOeHIGVbQKXkV4/y+hYSuoTwKAQuH4df0qJ2psjavIHRrTg/adxDEE
+         caN5BXZkPtmphW1VQ8nkqbboxM5rCrYMMItnDXLDBbn6DJzsRBkNyzB2PICcbn6o01ad
+         8Ka/WLvpIoBdkoLPhR71AUgGKb/Dzbrk1kb7d/POyc+Eo8GG3waEnHdGqlsi+A8Y18f0
+         oQow==
+X-Gm-Message-State: AOAM531DrprtiLiABqoX1gCYeuFiWntYECtJqWpl57MSU+ReO85egIcx
+        Kutdt5CeuyJAEw8tQruXqY4=
+X-Google-Smtp-Source: ABdhPJx1/Me3l7tCNW11yyIC3uDqu69f7nvNS8wM0zQOOmPh5Fu5W6GNCNrDtAO8PGTekqBHbSuz0Q==
+X-Received: by 2002:adf:efc8:: with SMTP id i8mr4101524wrp.84.1612518914805;
+        Fri, 05 Feb 2021 01:55:14 -0800 (PST)
+Received: from felia.fritz.box ([2001:16b8:2ded:6500:7c12:49b0:591a:b2bd])
+        by smtp.gmail.com with ESMTPSA id u142sm8690977wmu.3.2021.02.05.01.55.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Feb 2021 01:55:14 -0800 (PST)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To:     Parav Pandit <parav@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-doc@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH] net/mlx5: docs: correct section reference in table of contents
+Date:   Fri,  5 Feb 2021 10:55:06 +0100
+Message-Id: <20210205095506.29146-1-lukas.bulwahn@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/sgx branch of tip:
+Commit 142d93d12dc1 ("net/mlx5: Add devlink subfunction port
+documentation") refers to a section 'mlx5 port function' in the table of
+contents, but includes a section 'mlx5 function attributes' instead.
 
-Commit-ID:     dc9b7be557ca94301ea5c06c0d72307e642ffb18
-Gitweb:        https://git.kernel.org/tip/dc9b7be557ca94301ea5c06c0d72307e642ffb18
-Author:        Daniel Vetter <daniel.vetter@ffwll.ch>
-AuthorDate:    Thu, 04 Feb 2021 19:45:19 +01:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Fri, 05 Feb 2021 10:45:11 +01:00
+Hence, make htmldocs warns:
 
-x86/sgx: Drop racy follow_pfn() check
+  mlx5.rst:16: WARNING: Unknown target name: "mlx5 port function".
 
-PTE insertion is fundamentally racy, and this check doesn't do anything
-useful. Quoting Sean:
+Correct the section reference in table of contents to the actual name of
+section in the documentation.
 
-  "Yeah, it can be whacked. The original, never-upstreamed code asserted
-  that the resolved PFN matched the PFN being installed by the fault
-  handler as a sanity check on the SGX driver's EPC management. The
-  WARN assertion got dropped for whatever reason, leaving that useless
-  chunk."
+Also, tune another section underline while visiting this document.
 
-Jason stumbled over this as a new user of follow_pfn(), and I'm trying
-to get rid of unsafe callers of that function so it can be locked down
-further.
-
-This is independent prep work for the referenced patch series:
-
-  https://lore.kernel.org/dri-devel/20201127164131.2244124-1-daniel.vetter@ffwll.ch/
-
-Fixes: 947c6e11fa43 ("x86/sgx: Add ptrace() support for the SGX driver")
-Reported-by: Jason Gunthorpe <jgg@ziepe.ca>
-Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
-Link: https://lkml.kernel.org/r/20210204184519.2809313-1-daniel.vetter@ffwll.ch
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 ---
- arch/x86/kernel/cpu/sgx/encl.c | 8 --------
- 1 file changed, 8 deletions(-)
+Saeed, please pick this patch for your -next tree on top of the commit above.
 
-diff --git a/arch/x86/kernel/cpu/sgx/encl.c b/arch/x86/kernel/cpu/sgx/encl.c
-index ee50a50..20a2dd5 100644
---- a/arch/x86/kernel/cpu/sgx/encl.c
-+++ b/arch/x86/kernel/cpu/sgx/encl.c
-@@ -141,7 +141,6 @@ static vm_fault_t sgx_vma_fault(struct vm_fault *vmf)
- 	struct sgx_encl_page *entry;
- 	unsigned long phys_addr;
- 	struct sgx_encl *encl;
--	unsigned long pfn;
- 	vm_fault_t ret;
+ .../networking/device_drivers/ethernet/mellanox/mlx5.rst      | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/Documentation/networking/device_drivers/ethernet/mellanox/mlx5.rst b/Documentation/networking/device_drivers/ethernet/mellanox/mlx5.rst
+index a1b32fcd0d76..1b7e32d8a61b 100644
+--- a/Documentation/networking/device_drivers/ethernet/mellanox/mlx5.rst
++++ b/Documentation/networking/device_drivers/ethernet/mellanox/mlx5.rst
+@@ -13,12 +13,12 @@ Contents
+ - `Devlink info`_
+ - `Devlink parameters`_
+ - `mlx5 subfunction`_
+-- `mlx5 port function`_
++- `mlx5 function attributes`_
+ - `Devlink health reporters`_
+ - `mlx5 tracepoints`_
  
- 	encl = vma->vm_private_data;
-@@ -168,13 +167,6 @@ static vm_fault_t sgx_vma_fault(struct vm_fault *vmf)
+ Enabling the driver and kconfig options
+-================================================
++=======================================
  
- 	phys_addr = sgx_get_epc_phys_addr(entry->epc_page);
- 
--	/* Check if another thread got here first to insert the PTE. */
--	if (!follow_pfn(vma, addr, &pfn)) {
--		mutex_unlock(&encl->lock);
--
--		return VM_FAULT_NOPAGE;
--	}
--
- 	ret = vmf_insert_pfn(vma, addr, PFN_DOWN(phys_addr));
- 	if (ret != VM_FAULT_NOPAGE) {
- 		mutex_unlock(&encl->lock);
+ | mlx5 core is modular and most of the major mlx5 core driver features can be selected (compiled in/out)
+ | at build time via kernel Kconfig flags.
+-- 
+2.17.1
+
