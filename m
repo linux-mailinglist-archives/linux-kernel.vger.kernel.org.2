@@ -2,108 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC8B6310699
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 09:25:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C4B7B31069F
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 09:28:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229529AbhBEIZj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 03:25:39 -0500
-Received: from mx2.suse.de ([195.135.220.15]:60396 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229466AbhBEIZb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 03:25:31 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1612513484; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        id S229717AbhBEI1S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 03:27:18 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:36596 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229693AbhBEI1I (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 03:27:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612513541;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=SUs0oFDd/E1bOdAXdbbVbAD1+nLxACMkGmS9iKg9WAk=;
-        b=mYo7dKgPs68rijoKaJCFctzUwf0uAHx+85FPPOwF+ebXspxPeNxvYFF/pdHRvSmQuSPHNT
-        jz99FRwyKrE7IcQZDfN2cw5zZhEPMD/STL2B/2Lno6831+b8yqHp65WWiH9E65SESmId5f
-        YD8L1gk+FOq6rrOBa1L9V1k/BWICpwM=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id A8BD4AE3F;
-        Fri,  5 Feb 2021 08:24:44 +0000 (UTC)
-Date:   Fri, 5 Feb 2021 09:24:43 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     hannes@cmpxchg.org, vdavydov.dev@gmail.com,
-        akpm@linux-foundation.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm: memcontrol: fix missing wakeup oom task
-Message-ID: <YB0Ay+epP/hnFmDS@dhcp22.suse.cz>
-References: <20210205062310.74268-1-songmuchun@bytedance.com>
+        bh=LxANOstSwBXrn0OC3M8r/TM5reax6AnMqz1DHOK0g18=;
+        b=WSZe6rygF69/TC70HWqdvhtRlruRIAS8eTPospz97Dn4BcaL6gPc8J1XyzrA9z2L3pmajW
+        ru/CCceyVl9w92VZI9jdBcSmv1zGIg3Jw+77G8WcEcWtX1JV5zuhTjoVpyFmNfX+SvDPVy
+        PWGLSQznbfgJh/NQCMI5UrtHAA2Mlqc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-98-Aund-JwENnm_luJEaMImoA-1; Fri, 05 Feb 2021 03:25:40 -0500
+X-MC-Unique: Aund-JwENnm_luJEaMImoA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AAAB81800D50;
+        Fri,  5 Feb 2021 08:25:38 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-115-23.rdu2.redhat.com [10.10.115.23])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B582D1970A;
+        Fri,  5 Feb 2021 08:25:36 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <YByxkDi0Ruhb0AA8@kernel.org>
+References: <YByxkDi0Ruhb0AA8@kernel.org> <161246085160.1990927.13137391845549674518.stgit@warthog.procyon.org.uk> <161246085966.1990927.2555272056564793056.stgit@warthog.procyon.org.uk>
+To:     Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     dhowells@redhat.com, sprabhu@redhat.com, christian@brauner.io,
+        selinux@vger.kernel.org, keyrings@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, containers@lists.linux-foundation.org
+Subject: Re: [PATCH 1/2] Add namespace tags that can be used for matching without pinning a ns
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210205062310.74268-1-songmuchun@bytedance.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <2094923.1612513535.1@warthog.procyon.org.uk>
+Date:   Fri, 05 Feb 2021 08:25:35 +0000
+Message-ID: <2094924.1612513535@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 05-02-21 14:23:10, Muchun Song wrote:
-> We call memcg_oom_recover() in the uncharge_batch() to wakeup OOM task
-> when page uncharged, but for the slab pages, we do not do this when page
-> uncharged.
+Jarkko Sakkinen <jarkko@kernel.org> wrote:
 
-How does the patch deal with this?
-
-> When we drain per cpu stock, we also should do this.
-
-Can we have anything the per-cpu stock while entering the OOM path. IIRC
-we do drain all cpus before entering oom path.
-
-> The memcg_oom_recover() is small, so make it inline.
-
-Does this lead to any code generation improvements? I would expect
-compiler to be clever enough to inline static functions if that pays
-off. If yes make this a patch on its own.
-
-> And the parameter
-> of memcg cannot be NULL, so remove the check.
-
-2bd9bb206b338 has introduced the check without any explanation
-whatsoever. I indeed do not see any potential path to provide a NULL
-memcg here. This is an internal function so the check is unnecessary
-indeed. Please make it a patch on its own.
-
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> ---
->  mm/memcontrol.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
+> > + * init_ns_common - Initialise the common part of a namespace
 > 
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 8c035846c7a4..8569f4dbea2a 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -1925,7 +1925,7 @@ static int memcg_oom_wake_function(wait_queue_entry_t *wait,
->  	return autoremove_wake_function(wait, mode, sync, arg);
->  }
->  
-> -static void memcg_oom_recover(struct mem_cgroup *memcg)
-> +static inline void memcg_oom_recover(struct mem_cgroup *memcg)
->  {
->  	/*
->  	 * For the following lockless ->under_oom test, the only required
-> @@ -1935,7 +1935,7 @@ static void memcg_oom_recover(struct mem_cgroup *memcg)
->  	 * achieved by invoking mem_cgroup_mark_under_oom() before
->  	 * triggering notification.
->  	 */
-> -	if (memcg && memcg->under_oom)
-> +	if (memcg->under_oom)
->  		__wake_up(&memcg_oom_waitq, TASK_NORMAL, 0, memcg);
->  }
->  
-> @@ -2313,6 +2313,7 @@ static void drain_stock(struct memcg_stock_pcp *stock)
->  		page_counter_uncharge(&old->memory, stock->nr_pages);
->  		if (do_memsw_account())
->  			page_counter_uncharge(&old->memsw, stock->nr_pages);
-> +		memcg_oom_recover(old);
->  		stock->nr_pages = 0;
->  	}
->  
-> -- 
-> 2.11.0
+> Nit: init_ns_common()
 
--- 
-Michal Hocko
-SUSE Labs
+Interesting.  The majority of code doesn't put the brackets in.
+
+> I've used lately (e.g. arch/x86/kernel/cpu/sgx/ioctl.c) along the lines:
+> 
+> * Return:
+> * - 0:          Initialization was successful.
+> * - -ENOMEM:    Out of memory.
+
+Actually, looking at kernel-doc.rst, this isn't necessarily the recommended
+approach as it will much everything into one line, complete with dashes, and
+can't handle splitting over lines.  You probably meant:
+
+      * Return:
+      * * 0		- OK to runtime suspend the device
+      * * -EBUSY	- Device should not be runtime suspended
+
+> * Return:
+> * - 0:          Initialization was successful.
+> * - -ENOMEM:    Out of memory.
+> 
+> Looking at the implementation, I guess this is a complete representation of
+> what it can return?
+
+It isn't.  It can return at least -ENOSPC as well, but it's awkward detailing
+the errors from functions it calls since they can change and then the
+description here is wrong.  I'm not sure there's a perfect answer to that.
+
+David
+
