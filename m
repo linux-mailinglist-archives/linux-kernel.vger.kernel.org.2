@@ -2,135 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97A653114FE
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 23:23:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59CE831149F
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 23:14:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233309AbhBEWVY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 17:21:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48888 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232912AbhBEO4V (ORCPT
+        id S232051AbhBEWJT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 17:09:19 -0500
+Received: from atlmailgw2.ami.com ([63.147.10.42]:47870 "EHLO
+        atlmailgw2.ami.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232935AbhBEO5b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 09:56:21 -0500
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B911DC06121C
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 08:34:22 -0800 (PST)
-Received: by mail-qt1-x82b.google.com with SMTP id z22so5373280qto.7
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 08:34:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=RW0ONyxKXYjlsRuX7eO/UdLt7OqwnBfWk+dSDdSDYyw=;
-        b=fDCx8PML3wpb7Gv9Qhxf/Lmgt8t9paY9PlqQPeev9GAzZIOy9HRlwnhk8Gj2bTe2yf
-         0uSHjMJJYfZDMDMboGVMVL98lxLZYKECaPT1YM59+/uoVp+j2yeayauMqi3OZM4d1tEn
-         YN/ecY3LDoZFlB6rqTT5ynUD98p8d4ARLnea2R77u3ZWZqfLt+1HcCkt9MhNrCijWhUz
-         f4DiXHO0gL1TK9dgWhCoDy3l5Q2bJk2OkxHSBoWy+wJ4rScOFcDJlLvSG/M9tYuP2TdN
-         mWVZjPe8sqxDRGKXq+ydF2Mdvz57XMe1jNoelLFF+OdOSt6KcspYQ/F2PQw35OvoRNYe
-         +pCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=RW0ONyxKXYjlsRuX7eO/UdLt7OqwnBfWk+dSDdSDYyw=;
-        b=Rid6CfXMlE1Y6SoQtFl1sU5+wplRtqjwyE1kTujKTzDaGbHeElddMUC65sh1xXel/v
-         wqLkI+CLTFTV1o711XI30BaVHXtg9pQfFy9JvZxmwuBMYjNniDtAl8BjjzN3fhcuZa44
-         bb5FGpugeGZa/1Mtn+MyHfSlMFhzQ3YNlAwj7S2BDEI9iYBzYFlBjWcu0qOu9ULfwJDz
-         CngnLirpx305Yz/+jIeaJCCVB89HKM195vVNcgSqNbcVdAjt/D6mjUzYVksRQsFMpzjn
-         8EC4+dUia8rPWb9eMsQ7hpen0iaDqQ1VFCLoPG2anWI4TOK1TURvnkaTPZHRhly+3Out
-         5y1Q==
-X-Gm-Message-State: AOAM532ZUZOzYsX1B78Ru0JkcOzX3KfyHMJZC6/uaAdfDNw1k3RH2SRA
-        De78sgOMgw0Bntl1mcYn3afoxg==
-X-Google-Smtp-Source: ABdhPJwnNJM/q0Eo2MlbfQjZiTMmgkK3+RzNgscQCLRFoS1nQRPHzBz9vh5zkKqKWZB2ML9LPR2nMQ==
-X-Received: by 2002:aed:20a8:: with SMTP id 37mr5172292qtb.362.1612542861989;
-        Fri, 05 Feb 2021 08:34:21 -0800 (PST)
-Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
-        by smtp.gmail.com with ESMTPSA id z5sm9626394qkc.61.2021.02.05.08.34.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Feb 2021 08:34:20 -0800 (PST)
-Date:   Fri, 5 Feb 2021 11:34:19 -0500
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, Roman Gushchin <guro@fb.com>,
-        linux-mm@kvack.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH 6/7] mm: memcontrol: switch to rstat
-Message-ID: <YB1zi/bZdeL2j59I@cmpxchg.org>
-References: <20210202184746.119084-1-hannes@cmpxchg.org>
- <20210202184746.119084-7-hannes@cmpxchg.org>
- <YB1esMKg3QhBDFG2@dhcp22.suse.cz>
+        Fri, 5 Feb 2021 09:57:31 -0500
+X-AuditID: ac10606f-247ff70000001934-f3-601d73c116e9
+Received: from atlms1.us.megatrends.com (atlms1.us.megatrends.com [172.16.96.144])
+        (using TLS with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by atlmailgw2.ami.com (Symantec Messaging Gateway) with SMTP id E5.4A.06452.1C37D106; Fri,  5 Feb 2021 11:35:13 -0500 (EST)
+Received: from ami-us-wk.us.megatrends.com (172.16.98.207) by
+ atlms1.us.megatrends.com (172.16.96.144) with Microsoft SMTP Server (TLS) id
+ 14.3.468.0; Fri, 5 Feb 2021 11:35:11 -0500
+From:   Hongwei Zhang <hongweiz@ami.com>
+To:     Linus Walleij <linus.walleij@linaro.org>
+CC:     Hongwei Zhang <hongweiz@ami.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>, <linux-gpio@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-aspeed@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
+        <openbmc@lists.ozlabs.org>
+Subject: [PATCH, v1 1/1] gpio: aspeed: Add gpio base address reading
+Date:   Fri, 5 Feb 2021 11:34:50 -0500
+Message-ID: <20210113223808.31626-2-hongweiz@ami.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210113223808.31626-1-hongweiz@ami.com> 
+References: <20210113223808.31626-1-hongweiz@ami.com> 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YB1esMKg3QhBDFG2@dhcp22.suse.cz>
+Content-Type: text/plain
+X-Originating-IP: [172.16.98.207]
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrILMWRmVeSWpSXmKPExsWyRiBhgu7BYtkEg6un9C12Xeaw+DL3FIvF
+        7/N/mS2m/FnOZLHp8TVWi+bV55gtNs//w2hxedccNotTLS9YHDg9rrbvYvd4f6OV3ePix2PM
+        Hneu7WHz2Lyk3uP8jIWMHp83yQWwR3HZpKTmZJalFunbJXBlLPpqXPCNreLYvevMDYx7WLsY
+        OTkkBEwk9mxfxNbFyMUhJLCLSeLt69usEM5ORomVOy8xg1SxCahJ7N08hwnEFhHQkeje9hOs
+        iFngIJPE9Gl72EESwgIuEqt/vWcDsVkEVCRWf38A1sArYCrRMH0XC8Q6eYnVGw6ADeUUMJfY
+        1vQcrF5IwEyi9dMjqHpBiZMzn4DVMwtISBx88YIZokZW4tahx0wQcxQlHvz6zjqBUWAWkpZZ
+        SFoWMDKtYhRKLMnJTczMSS830kvMzdRLzs/dxAgJ9vwdjB8/mh9iZOJgPMQowcGsJMKb2CaV
+        IMSbklhZlVqUH19UmpNafIhRmoNFSZx3lfvReCGB9MSS1OzU1ILUIpgsEwenVAPjofrHXB6Z
+        H4tUdX8Grk/3MvG9aJU3KeSb3n4e5R6pjXNzbM91mqbcLHxX8J11H2PUzn0dG1YVusYevNR3
+        9faXyMuvpqzl+3G9lGlFDe+mstcJbtuadrntzizZlPqy0zsv91zZpS8RSp720ldEKyJlnCyy
+        T/y68/Dm37Zrtr0fVTiX+BV+O/RfiaU4I9FQi7moOBEAYb4BgWQCAAA=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 05, 2021 at 04:05:20PM +0100, Michal Hocko wrote:
-> On Tue 02-02-21 13:47:45, Johannes Weiner wrote:
-> > Replace the memory controller's custom hierarchical stats code with
-> > the generic rstat infrastructure provided by the cgroup core.
-> > 
-> > The current implementation does batched upward propagation from the
-> > write side (i.e. as stats change). The per-cpu batches introduce an
-> > error, which is multiplied by the number of subgroups in a tree. In
-> > systems with many CPUs and sizable cgroup trees, the error can be
-> > large enough to confuse users (e.g. 32 batch pages * 32 CPUs * 32
-> > subgroups results in an error of up to 128M per stat item). This can
-> > entirely swallow allocation bursts inside a workload that the user is
-> > expecting to see reflected in the statistics.
-> > 
-> > In the past, we've done read-side aggregation, where a memory.stat
-> > read would have to walk the entire subtree and add up per-cpu
-> > counts. This became problematic with lazily-freed cgroups: we could
-> > have large subtrees where most cgroups were entirely idle. Hence the
-> > switch to change-driven upward propagation. Unfortunately, it needed
-> > to trade accuracy for speed due to the write side being so hot.
-> > 
-> > Rstat combines the best of both worlds: from the write side, it
-> > cheaply maintains a queue of cgroups that have pending changes, so
-> > that the read side can do selective tree aggregation. This way the
-> > reported stats will always be precise and recent as can be, while the
-> > aggregation can skip over potentially large numbers of idle cgroups.
-> > 
-> > This adds a second vmstats to struct mem_cgroup (MEMCG_NR_STAT +
-> > NR_VM_EVENT_ITEMS) to track pending subtree deltas during upward
-> > aggregation. It removes 3 words from the per-cpu data. It eliminates
-> > memcg_exact_page_state(), since memcg_page_state() is now exact.
+
+> On Wed, Jan 13, 2021 at 11:38 PM Hongwei Zhang <hongweiz@ami.com> wrote:
 > 
-> The above confused me a bit. I can see the pcp data size increased by
-> adding _prev.  The resulting memory footprint should be increased by
-> sizeof(long) * (MEMCG_NR_STAT + NR_VM_EVENT_ITEMS) * (CPUS + 1)
-> which is roughly 1kB per CPU per memcg unless I have made any
-> mistake. This is a quite a lot and it should be mentioned in the
-> changelog.
-
-Not quite, you missed a hunk further below in the patch.
-
-Yes, the _prev arrays are added to the percpu struct. HOWEVER, we used
-to have TWO percpu structs in a memcg: one for local data, one for
-hierarchical data. In the rstat format, one is enough to capture both:
-
--       /* Legacy local VM stats and events */
--       struct memcg_vmstats_percpu __percpu *vmstats_local;
--
--       /* Subtree VM stats and events (batched updates) */
-        struct memcg_vmstats_percpu __percpu *vmstats_percpu;
-
-This eliminates dead duplicates of the nr_page_events and
-targets[MEM_CGROUP_NTARGETS(2)] we used to carry, which means we have
-a net reduction of 3 longs in the percpu data with this series.
-
-> > Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+> > Add gpio base address reading in the driver; in old code, it just 
+> > returns -1 to gpio->chip.base.
+> >
+> > Fixes: 7ee2d5b4d4340353 ("ARM: dts: nuvoton: Add Fii Kudo system")
+> > Signed-off-by: Hongwei Zhang <hongweiz@ami.com>
 > 
-> Although the memory overhead is quite large and it scales both with
-> memcg count and CPUs so it can grow quite a bit I do not think this is
-> prohibitive. Although it would be really nice if this could be optimized
-> in the future.
+> NAK, sorry.
 > 
-> All that being said, the code looks more manageable now.
-> Acked-by: Michal Hocko <mhocko@suse.com>
+> We never allow the device tree to specify this.
+> 
+> First, it is a Linux-only base so it would have to be a "linux,..." property.
+> 
+> Even if it is a Linux-only property, it is a bad idea.
+> 
+> Only people using sysfs should have any need to specify global GPIO numbers. Don't use sysfs. Use the 
+> GPIO character device instead. See further:
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/gpio/TODO
+> 
+> Yours,
+> Linus Walleij
 
-Thanks
+Hi Linus,
+
+Thanks for your review and advice.
+
+--Hongwei
+
