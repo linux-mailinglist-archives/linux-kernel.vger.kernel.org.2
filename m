@@ -2,358 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C8EB311143
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 20:34:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A368B311161
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 20:41:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233756AbhBERvb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 12:51:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58760 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233653AbhBERs7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 12:48:59 -0500
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22679C06178A
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 11:30:42 -0800 (PST)
-Received: by mail-lj1-x231.google.com with SMTP id m22so9128675ljj.4
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 11:30:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=nMVBlfktI32CKOZnLOh0+7Wg5rAd+X5bNHlH0ugml6M=;
-        b=iIEFNrUz4uPbpzP7k56NxSoimI5C+kxJQ2l8kw8XMeUTHkNsWRq2OzrnYVbMIj0OoK
-         XtvutyYLCAfzh1U3vkf3B+VkLgwY9L+tIEiy9RdLztxRZk5bqcx9nT6Wi/KjTmaEA5jI
-         xEdPRX2H7+zD8WCUBHf198TsrXWtsT/vIS7OThplIp14sXsEa+kQRO808ABZtl1HJqmU
-         qdXZhjs8NQteyDi/eAal2SaaPTnBySp0VQY+Enb345mAKDAtGEv8TCPBzm67GQ8IPjNT
-         nuZWG7AH1qYjpYoMLBPta3ncA4mXKVCnXfh8mY13VoP2t5TH+IdXIpeS9LrLD5p7xn8H
-         ZVSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=nMVBlfktI32CKOZnLOh0+7Wg5rAd+X5bNHlH0ugml6M=;
-        b=dHYqsfTvxKn5JBt8n9+qRCTgYh/WdLSVv+zG0kJ+guHA/5Ca3kCuzSnM63LSAMdNep
-         7YAaVbloQRLXhr9yPQDB9opefo8dq3wdYJUDrOv0S/36oZCH98iYbTaKhmIz8udF7NSw
-         VDUObYcFlvXWHLF+Guz5PvGaRx1C9JRr9wMJNmmKa+2cmiILjix9xzxurhrFMykaOOJ4
-         2wul6pKpfch6W+/ghU1wiHjEXmrJMrH2CLKKypEFcd9+Hd8IvDpuch/nP8cmQR5IXiTa
-         WsDhTbzvv2OXd0wQyr9SXAjlC5oczi88FiNngSr09ITxwXvMJvdhG3pLdfy1UNR2l7Wb
-         Daqw==
-X-Gm-Message-State: AOAM532Y00Gtp10s4gyse+s52CKM3cY/IiFWafd31Gxge2/1Y9I4znH0
-        H/Ui2KG9ZU3yfjckPK5WXicapLyCTxBwdZ/wocexbw==
-X-Google-Smtp-Source: ABdhPJxB7paOYmoghVwr3Xj1OVS2grMJnj7gS/vnKiy77+MJ+yC9ZeLhJ1ew9I27NpqFkbtkov458N6OHf9KpZmADQM=
-X-Received: by 2002:a2e:b4b1:: with SMTP id q17mr3449257ljm.387.1612553440136;
- Fri, 05 Feb 2021 11:30:40 -0800 (PST)
+        id S233290AbhBER6R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 12:58:17 -0500
+Received: from mail-dm6nam12on2110.outbound.protection.outlook.com ([40.107.243.110]:7904
+        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233557AbhBERzD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 12:55:03 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MjGA+pQW5CDwTKNzW3FiHIrbKTxvGQxwdFuL90swrAOMl160eW8sClC8nnO1ta6J3gt+aI5ogCW3zHJKxrKlxCmPz0mUwo4tFIUzhYqewwpkZdnXytGSNpkFLyuZCfIEYHBYXaZ0Yx3M+BTmrdy0H/qibxSDhH2YXpCIclc3is9fPRjbmuSw1zbUKNS9jVXGVcx5ncr5BBo8zzvoIfb2KEoDFJy9Z3sqXoJbCMwtXcBqzdg+xxapqLuhUVVZbvgOR76KeSsMGQ4WlKKXVJGSftaYPGxuhy3qzDhbfFFY9xoMzgfZab3bU9nsKItn1fqPReJ6efmV7ZCFOtrdt26GTA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=EC9F0+KDt53W+gws6ZqdHg3qRQUCVk3gVMxVB+iHR1c=;
+ b=eY/vRgJ8YO1mW/Ws0n3zm//x7Fkkawumt1uknjlGYmtZBw7nGVTC6UpzDyKRUHAOK50nWHKGjY5Un5BkX68yeuxl71akpWkJ51m5DoedeIZZwP8956JsZ4YR8pMOVwFFfdym28jEKFC0Q2zkfYtP9I/XPxWMug4yz8baw9Xt6xyUokafyc3q+ALH6hsrrhWaxutzzBn3mKoskVin6uyFNtsmGLNIO43t+I2kzNSue2FQqsQZqMByGT4kyf/5xd0lwdatpwe88ZslTA6BEoh4aSo7jxtCP4Y4HXPgq2X2UQXtnEgf51NrjCrPXaOldRpkH07ThO0q9r98EsPdJKsdJw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=EC9F0+KDt53W+gws6ZqdHg3qRQUCVk3gVMxVB+iHR1c=;
+ b=N5kb74xpu5TGIPgLDXQK6GkaAxAjaVL7TaM27pJEeZZMAJewWHDva8aWv8WZ0fj3X+gS9XrK2JPI1QU/W4/Z/v0Mq924mgq/0rjKun3cyMVTAn6Wn0aCUH+piCooYYRSQ0BzBcZDZAmIDT/zaxRZNnesWNkxXKIW4iDIq/gPO4o=
+Received: from (2603:10b6:302:8::15) by
+ MW2PR2101MB1067.namprd21.prod.outlook.com (2603:10b6:302:a::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.3; Fri, 5 Feb
+ 2021 19:36:34 +0000
+Received: from MW2PR2101MB1787.namprd21.prod.outlook.com
+ ([fe80::c9f1:a5ea:6bd9:f0de]) by MW2PR2101MB1787.namprd21.prod.outlook.com
+ ([fe80::c9f1:a5ea:6bd9:f0de%7]) with mapi id 15.20.3846.003; Fri, 5 Feb 2021
+ 19:36:34 +0000
+From:   Dexuan Cui <decui@microsoft.com>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+CC:     "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Leandro Pereira <Leandro.Pereira@microsoft.com>
+Subject: RE: How can a userspace program tell if the system supports the ACPI
+ S4 state (Suspend-to-Disk)?
+Thread-Topic: How can a userspace program tell if the system supports the ACPI
+ S4 state (Suspend-to-Disk)?
+Thread-Index: AdbQHxbRjXJd8DrBQaCk5mureoGP6groIEYAAA2Kt1A=
+Date:   Fri, 5 Feb 2021 19:36:34 +0000
+Message-ID: <MW2PR2101MB1787B5253CAA640F8B7D2860BFB29@MW2PR2101MB1787.namprd21.prod.outlook.com>
+References: <MWHPR21MB0863BA3D689DDEC3CA6BC262BFC91@MWHPR21MB0863.namprd21.prod.outlook.com>
+ <CAJZ5v0jRgeAsyZXpm-XdL6GCKWk5=yVh1s4fZ3m0++NJK-gYBg@mail.gmail.com>
+In-Reply-To: <CAJZ5v0jRgeAsyZXpm-XdL6GCKWk5=yVh1s4fZ3m0++NJK-gYBg@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=468f7eb2-13d7-4308-9838-799f7e25e6f5;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2021-02-05T19:33:20Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=microsoft.com;
+x-originating-ip: [73.140.237.219]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: bd82d585-9491-424f-d220-08d8ca0d5896
+x-ms-traffictypediagnostic: MW2PR2101MB1067:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MW2PR2101MB1067E3E99FF41EC4C9A72B8CBFB29@MW2PR2101MB1067.namprd21.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: UiCP4eA1BO52zGBuGDi7amKR3/IQ+diJMcuHxYQaRm+4zT4LGoOSSq4K0yoTFFZ8zSTdaKzzb6mKWzEEkNj6p3UXo5x/pZvGT7tpTVTtWuUzeXo3OWkkJqw8iSkvcQJXfrVVNFKGL9oDMY9uhtScX1bLlm5rVYqdkXtZJsJp3bLjSyDSOAy7Q577ZChnOLnjM2tQ891SiC89pzzjXtyWDAVUqam3uO09NXg0QY1usxtViBcTftb1XucYts7UXxsaVSP9byIwQ7gvqQ6schcMNWwTdq7k4Fz2n38BiewuKv56ozgVeBCkxbyZUnvEyoJqyc6nAGwV/4LIxnAoEj/lF6Q6TkwkLgCrnCYM0Oi2KOAnp0ZaR6E1cnMy0U92539XadWmGlM8QkvCsq2N5JM1PfYmEOH9uQF3mb9CS/dqwo7eRGhHm3moFFd2TO/K34bEOe5LmqT24V01580oTyEqyR0u6ADnk/BFidAH4c4x0GhXpQjx8b8iVo1L1c/AUGwP4CYMma73bNhubdw04XGZYQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW2PR2101MB1787.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(396003)(346002)(39860400002)(376002)(136003)(6916009)(4326008)(82960400001)(8676002)(82950400001)(9686003)(66446008)(71200400001)(76116006)(15650500001)(66476007)(66946007)(316002)(66556008)(33656002)(10290500003)(2906002)(64756008)(186003)(54906003)(86362001)(5660300002)(7696005)(83380400001)(6506007)(8936002)(8990500004)(478600001)(53546011)(107886003)(52536014)(55016002)(26005);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?ZGVLQWRsN2YvbEJWdlh6TEVjSmV4WlNGVThxRDREOHh6NFo3Rlh6WXNMREpC?=
+ =?utf-8?B?WWtHWVBpK1FxVVIxMklhcDc5WHhMWkR3UEwrWG1iWkZEVTZ3R0c0ZzhLd0VH?=
+ =?utf-8?B?aFMzODRtb0pURE9GMXFZaWo0di9HSFRiazVncGs4ODNBSU9HYzZ0QWZTWURu?=
+ =?utf-8?B?RWppektWYkc1TkZjVHZ2ODZVRXdKbHpOM3IvR2trYTl1WFB1Zm1Jczd1Z3Nk?=
+ =?utf-8?B?OTg3eXVMM0I1bkF2WG9VbmhqSTgwcGZXRkJTWTJzUnJEQnY0MTVQelNRUXBJ?=
+ =?utf-8?B?T0szUzlsdllsUWRGL2RCWW1TSDlOQmtWaWxaQmFBZElFRjFRQUpOU3dNa0pS?=
+ =?utf-8?B?cmhhcnh1cTJ3N3RIRVpYWkNYNTJVTHVrcE05Sk1taUZ5eFd3VG4yRWpmMHMw?=
+ =?utf-8?B?aXN5VEJ0dEJPVENuQXJubitFci8yOGlJajYxcExPR2FqQ0tMSkM2YzYxbmFH?=
+ =?utf-8?B?SlUwOHo3RXJ6c1F2OHdHSDNsbERXRk5IWFcvSUFwbGJxamszSmZydkFoQ1dI?=
+ =?utf-8?B?alZkT2t2NzJxUFZrR01BRmR3WUFPQWtCaEthdTRLQTR5RWhzcU9RU2RiNGhW?=
+ =?utf-8?B?cUJTdnpIMnFCc2RDWVJrck9ZMzZSanVKYmV2anRHTWdZaXpNb1NJUkY1dUc3?=
+ =?utf-8?B?TitTUUFvR0tESVEvay9NTWNsdFV2c05NenZjSW8rSmRkM2dXTEVMTnlNSnRQ?=
+ =?utf-8?B?QjdJSmkrWXRqNFJKTm5od1Z1R1lNOE43cTgzc1BBekE2dFJaaW44Q3pCcFYv?=
+ =?utf-8?B?aDRucEJJWkljRTVKZERob0F0blFiWmpWV1M1Z3FobWpRZ05HRHU5YmNTalow?=
+ =?utf-8?B?eW9iS3A1WWxBdzJGVGtCSldUdEQ4ay9PSElDU1RYL1VOcGhXTU1lWnU4eEpU?=
+ =?utf-8?B?RkJXdkk1QzFOSFZjWSsvU0JqUGN4TG4zUDN6cUlqeWhpM0ZjODJPRWx4VFdQ?=
+ =?utf-8?B?MkhYTUlTWFhDak9yZW5pYnIxTjg0aVdJV0RxaExaVmg0bFF2NVN1UndBT29Z?=
+ =?utf-8?B?STd5NjBMNkRMRjMvY1R1NER6UTZHQTVkNHgxWlVNK2dXd1IwSnM1VGcySjJU?=
+ =?utf-8?B?Y04wcnRqay90YkZjSXlOWXgwQmFMNDcwRk5UVlpPY1VXWm5lR0RUUGV5N1Iw?=
+ =?utf-8?B?UlZZNmd3eDA2VUs5d0lqU25DaE9jNWN3aCsxMldvVlZsUytnSGtjMktxMnpQ?=
+ =?utf-8?B?OEdYSUczcVd1TEVhbDhjZW9XSGUxWWppMXNzVldDS3J5cDJSbzFNckhxNHNX?=
+ =?utf-8?B?WWtxeWFlamtkTlJ1MDRzelNIckdBeVhhd0xZeFdBWkFkSEs1QUUrUEM4aExh?=
+ =?utf-8?B?VU5TRmhxUjhDUUV4QkJYdWlpV0lxU2tuZlQyWnNDeVdueFFvblB1NHNPQTFI?=
+ =?utf-8?B?MWJ5TU9YemRjWEw5Y2ZsYUx1TjdMT1BFUENjUTRxRHFueGdYdEFvaUNBeUsv?=
+ =?utf-8?B?ZUpZQThkVXRNSWIzVnhkRVVXV1dmNEVEYXZiK3h4L0lKT1JmQWtaK1hpOFJp?=
+ =?utf-8?B?TU04Q0JvZlgxK1B2SFRZYjRjd1ErRENaQmtUcWtzTFJ3WUhSU2hFZVplekI5?=
+ =?utf-8?B?NElDa0FpQ3hEenZ6QzNFU1dJOHlFV0hMdGdUWk0wREExYllQeVpRcm1DMWNK?=
+ =?utf-8?B?b3l1Wm1oK2RkQnA2R051MFY0dHpOeWRMTzJTYVdkalhUZDJIR2RKcUVSelZ3?=
+ =?utf-8?B?YVlBbitZcDRMdnBGYmNjb1c1eDNyb0xTVXZYZmhFSHJMRTJESW5JYUtBUytB?=
+ =?utf-8?Q?Ocz1va4WESj9UP596EI5isjrzMwmE6N4mHMOt5Q?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <20210204220741.GA920417@kernel.org> <CA+icZUVQSojGgnis8Ds5GW-7-PVMZ2w4X5nQKSSkBPf-29NS6Q@mail.gmail.com>
- <CA+icZUU2xmZ=mhVYLRk7nZBRW0+v+YqBzq18ysnd7xN+S7JHyg@mail.gmail.com>
- <CA+icZUVyB3qaqq3pwOyJY_F4V6KU9hdF=AJM_D7iEW4QK4Eo6w@mail.gmail.com>
- <20210205152823.GD920417@kernel.org> <CA+icZUWzMdhuHDkcKMHAd39iMEijk65v2ADcz0=FdODr38sJ4w@mail.gmail.com>
- <CA+icZUXb1j-DrjvFEeeOGuR_pKmD_7_RusxpGQy+Pyhaoa==gA@mail.gmail.com>
- <CA+icZUVZA97V5C3kORqeSiaxRbfGbmzEaxgYf9RUMko4F76=7w@mail.gmail.com>
- <baa7c017-b2cf-b2cd-fbe8-2e021642f2e3@fb.com> <CA+icZUWESAQxWb6fvhOY0CxngLY3z4kOiZS2vPtSD5tDaSve-g@mail.gmail.com>
- <CA+icZUVGXxEGy7KYqHvw-iSb1HqDNzjXwAn=VEJaAbTjLCKDFQ@mail.gmail.com>
-In-Reply-To: <CA+icZUVGXxEGy7KYqHvw-iSb1HqDNzjXwAn=VEJaAbTjLCKDFQ@mail.gmail.com>
-From:   =?UTF-8?B?RsSBbmctcnXDrCBTw7JuZw==?= <maskray@google.com>
-Date:   Fri, 5 Feb 2021 11:30:28 -0800
-Message-ID: <CAFP8O3KA6uR5Q29UGXqxahHmfn6V6GSeKzCsBiD3838WEAGO3Q@mail.gmail.com>
-Subject: Re: ERROR: INT DW_ATE_unsigned_1 Error emitting BTF type
-To:     Sedat Dilek <sedat.dilek@gmail.com>
-Cc:     Yonghong Song <yhs@fb.com>,
-        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        dwarves@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Jiri Olsa <jolsa@kernel.org>,
-        Jan Engelhardt <jengelh@inai.de>,
-        Domenico Andreoli <cavok@debian.org>,
-        Matthias Schwarzott <zzam@gentoo.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Mark Wieelard <mjw@redhat.com>,
-        Paul Moore <paul@paul-moore.com>,
-        Ondrej Mosnacek <omosnace@redhat.com>,
-        =?UTF-8?Q?Daniel_P=2E_Berrang=C3=A9?= <berrange@redhat.com>,
-        Tom Stellard <tstellar@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MW2PR2101MB1787.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: bd82d585-9491-424f-d220-08d8ca0d5896
+X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Feb 2021 19:36:34.1670
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: pLnnD833t+9mh+ony3owHeQXrKGZYLkMJiJdAerwYFM7PbOfNHSSJrVoydlS5mVGOgASLtT/Xfgx+PsSbcAt1Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW2PR2101MB1067
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 5, 2021 at 11:21 AM Sedat Dilek <sedat.dilek@gmail.com> wrote:
->
-> On Fri, Feb 5, 2021 at 8:15 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
-> >
-> > On Fri, Feb 5, 2021 at 8:10 PM Yonghong Song <yhs@fb.com> wrote:
-> > >
-> > >
-> > >
-> > > On 2/5/21 11:06 AM, Sedat Dilek wrote:
-> > > > On Fri, Feb 5, 2021 at 7:53 PM Sedat Dilek <sedat.dilek@gmail.com> =
-wrote:
-> > > >>
-> > > >> On Fri, Feb 5, 2021 at 6:48 PM Sedat Dilek <sedat.dilek@gmail.com>=
- wrote:
-> > > >>>
-> > > >>> On Fri, Feb 5, 2021 at 4:28 PM Arnaldo Carvalho de Melo
-> > > >>> <arnaldo.melo@gmail.com> wrote:
-> > > >>>>
-> > > >>>> Em Fri, Feb 05, 2021 at 04:23:59PM +0100, Sedat Dilek escreveu:
-> > > >>>>> On Fri, Feb 5, 2021 at 3:41 PM Sedat Dilek <sedat.dilek@gmail.c=
-om> wrote:
-> > > >>>>>>
-> > > >>>>>> On Fri, Feb 5, 2021 at 3:37 PM Sedat Dilek <sedat.dilek@gmail.=
-com> wrote:
-> > > >>>>>>>
-> > > >>>>>>> Hi,
-> > > >>>>>>>
-> > > >>>>>>> when building with pahole v1.20 and binutils v2.35.2 plus Cla=
-ng
-> > > >>>>>>> v12.0.0-rc1 and DWARF-v5 I see:
-> > > >>>>>>> ...
-> > > >>>>>>> + info BTF .btf.vmlinux.bin.o
-> > > >>>>>>> + [  !=3D silent_ ]
-> > > >>>>>>> + printf   %-7s %s\n BTF .btf.vmlinux.bin.o
-> > > >>>>>>>   BTF     .btf.vmlinux.bin.o
-> > > >>>>>>> + LLVM_OBJCOPY=3D/opt/binutils/bin/objcopy /opt/pahole/bin/pa=
-hole -J
-> > > >>>>>>> .tmp_vmlinux.btf
-> > > >>>>>>> [115] INT DW_ATE_unsigned_1 Error emitting BTF type
-> > > >>>>>>> Encountered error while encoding BTF.
-> > > >>>>>>
-> > > >>>>>> Grepping the pahole sources:
-> > > >>>>>>
-> > > >>>>>> $ git grep DW_ATE
-> > > >>>>>> dwarf_loader.c:         bt->is_bool =3D encoding =3D=3D DW_ATE=
-_boolean;
-> > > >>>>>> dwarf_loader.c:         bt->is_signed =3D encoding =3D=3D DW_A=
-TE_signed;
-> > > >>>>>>
-> > > >>>>>> Missing DW_ATE_unsigned encoding?
-> > > >>>>>>
-> > > >>>>>
-> > > >>>>> Checked the LLVM sources:
-> > > >>>>>
-> > > >>>>> clang/lib/CodeGen/CGDebugInfo.cpp:    Encoding =3D
-> > > >>>>> llvm::dwarf::DW_ATE_unsigned_char;
-> > > >>>>> clang/lib/CodeGen/CGDebugInfo.cpp:    Encoding =3D llvm::dwarf:=
-:DW_ATE_unsigned;
-> > > >>>>> clang/lib/CodeGen/CGDebugInfo.cpp:    Encoding =3D
-> > > >>>>> llvm::dwarf::DW_ATE_unsigned_fixed;
-> > > >>>>> clang/lib/CodeGen/CGDebugInfo.cpp:
-> > > >>>>>    ? llvm::dwarf::DW_ATE_unsigned
-> > > >>>>> ...
-> > > >>>>> lld/test/wasm/debuginfo.test:CHECK-NEXT:                DW_AT_e=
-ncoding
-> > > >>>>>   (DW_ATE_unsigned)
-> > > >>>>>
-> > > >>>>> So, I will switch from GNU ld.bfd v2.35.2 to LLD-12.
-> > > >>>>
-> > > >>>> Thanks for the research, probably your conclusion is correct, ca=
-n you go
-> > > >>>> the next step and add that part and check if the end result is t=
-he
-> > > >>>> expected one?
-> > > >>>>
-> > > >>>
-> > > >>> Still building...
-> > > >>>
-> > > >>> Can you give me a hand on what has to be changed in dwarves/pahol=
-e?
-> > > >>>
-> > > >>> I guess switching from ld.bfd to ld.lld will show the same ERROR.
-> > > >>>
-> > > >>
-> > > >> This builds successfully - untested:
-> > > >>
-> > > >> $ git diff
-> > > >> diff --git a/btf_loader.c b/btf_loader.c
-> > > >> index ec286f413f36..a39edd3362db 100644
-> > > >> --- a/btf_loader.c
-> > > >> +++ b/btf_loader.c
-> > > >> @@ -107,6 +107,7 @@ static struct base_type *base_type__new(string=
-s_t
-> > > >> name, uint32_t attrs,
-> > > >>                 bt->bit_size =3D size;
-> > > >>                 bt->is_signed =3D attrs & BTF_INT_SIGNED;
-> > > >>                 bt->is_bool =3D attrs & BTF_INT_BOOL;
-> > > >> +               bt->is_unsigned =3D attrs & BTF_INT_UNSIGNED;
-> > > >>                 bt->name_has_encoding =3D false;
-> > > >>                 bt->float_type =3D float_type;
-> > > >>         }
-> > > >> diff --git a/ctf.h b/ctf.h
-> > > >> index 25b79892bde3..9e47c3c74677 100644
-> > > >> --- a/ctf.h
-> > > >> +++ b/ctf.h
-> > > >> @@ -100,6 +100,7 @@ struct ctf_full_type {
-> > > >> #define CTF_TYPE_INT_CHAR      0x2
-> > > >> #define CTF_TYPE_INT_BOOL      0x4
-> > > >> #define CTF_TYPE_INT_VARARGS   0x8
-> > > >> +#define CTF_TYPE_INT_UNSIGNED  0x16
-> > > >>
-> > > >> #define CTF_TYPE_FP_ATTRS(VAL)         ((VAL) >> 24)
-> > > >> #define CTF_TYPE_FP_OFFSET(VAL)                (((VAL) >> 16) & 0x=
-ff)
-> > > >> diff --git a/dwarf_loader.c b/dwarf_loader.c
-> > > >> index b73d7867e1e6..79d40f183c24 100644
-> > > >> --- a/dwarf_loader.c
-> > > >> +++ b/dwarf_loader.c
-> > > >> @@ -473,6 +473,7 @@ static struct base_type *base_type__new(Dwarf_=
-Die
-> > > >> *die, struct cu *cu)
-> > > >>                 bt->is_bool =3D encoding =3D=3D DW_ATE_boolean;
-> > > >>                 bt->is_signed =3D encoding =3D=3D DW_ATE_signed;
-> > > >>                 bt->is_varargs =3D false;
-> > > >> +               bt->is_unsigned =3D encoding =3D=3D DW_ATE_unsigne=
-d;
-> > > >>                 bt->name_has_encoding =3D true;
-> > > >>         }
-> > > >>
-> > > >> diff --git a/dwarves.h b/dwarves.h
-> > > >> index 98caf1abc54d..edf32d2e6f80 100644
-> > > >> --- a/dwarves.h
-> > > >> +++ b/dwarves.h
-> > > >> @@ -1261,6 +1261,7 @@ struct base_type {
-> > > >>         uint8_t         is_signed:1;
-> > > >>         uint8_t         is_bool:1;
-> > > >>         uint8_t         is_varargs:1;
-> > > >> +       uint8_t         is_unsigned:1;
-> > > >>         uint8_t         float_type:4;
-> > > >> };
-> > > >>
-> > > >> diff --git a/lib/bpf b/lib/bpf
-> > > >> --- a/lib/bpf
-> > > >> +++ b/lib/bpf
-> > > >> @@ -1 +1 @@
-> > > >> -Subproject commit 5af3d86b5a2c5fecdc3ab83822d083edd32b4396
-> > > >> +Subproject commit 5af3d86b5a2c5fecdc3ab83822d083edd32b4396-dirty
-> > > >> diff --git a/libbtf.c b/libbtf.c
-> > > >> index 9f7628304495..a0661a7bbed9 100644
-> > > >> --- a/libbtf.c
-> > > >> +++ b/libbtf.c
-> > > >> @@ -247,6 +247,8 @@ static const char *
-> > > >> btf_elf__int_encoding_str(uint8_t encoding)
-> > > >>                 return "CHAR";
-> > > >>         else if (encoding =3D=3D BTF_INT_BOOL)
-> > > >>                 return "BOOL";
-> > > >> +       else if (encoding =3D=3D BTF_INT_UNSIGNED)
-> > > >> +               return "UNSIGNED";
-> > > >>         else
-> > > >>                 return "UNKN";
-> > > >> }
-> > > >> @@ -379,6 +381,8 @@ int32_t btf_elf__add_base_type(struct btf_elf
-> > > >> *btfe, const struct base_type *bt,
-> > > >>                 encoding =3D BTF_INT_SIGNED;
-> > > >>         } else if (bt->is_bool) {
-> > > >>                 encoding =3D BTF_INT_BOOL;
-> > > >> +       } else if (bt->is_unsigned) {
-> > > >> +               encoding =3D BTF_INT_UNSIGNED;
-> > > >>         } else if (bt->float_type) {
-> > > >>                 fprintf(stderr, "float_type is not supported\n");
-> > > >>                 return -1;
-> > > >>
-> > > >> Additionally - I cannot see it with `git diff`:
-> > > >>
-> > > >> [ lib/bpf/include/uapi/linux/btf.h ]
-> > > >>
-> > > >> /* Attributes stored in the BTF_INT_ENCODING */
-> > > >> #define BTF_INT_SIGNED (1 << 0)
-> > > >> #define BTF_INT_CHAR (1 << 1)
-> > > >> #define BTF_INT_BOOL (1 << 2)
-> > > >> #define BTF_INT_UNSIGNED (1 << 3)
-> > > >>
-> > > >> Comments?
-> > > >>
-> > > >
-> > > > Hmmm...
-> > > >
-> > > > + info BTF .btf.vmlinux.bin.o
-> > > > + [  !=3D silent_ ]
-> > > > + printf   %-7s %s\n BTF .btf.vmlinux.bin.o
-> > > >   BTF     .btf.vmlinux.bin.o
-> > > > + LLVM_OBJCOPY=3Dllvm-objcopy /opt/pahole/bin/pahole -J .tmp_vmlinu=
-x.btf
-> > > > [2] INT long unsigned int Error emitting BTF type
-> > > > Encountered error while encoding BTF.
-> > > > + llvm-objcopy --only-section=3D.BTF --set-section-flags
-> > > > .BTF=3Dalloc,readonly --strip-all .tmp_vmlinux.btf .btf.vmlinux.bin=
-.o
-> > > > ...
-> > > > + info BTFIDS vmlinux
-> > > > + [  !=3D silent_ ]
-> > > > + printf   %-7s %s\n BTFIDS vmlinux
-> > > >   BTFIDS  vmlinux
-> > > > + ./tools/bpf/resolve_btfids/resolve_btfids vmlinux
-> > > > FAILED: load BTF from vmlinux: Invalid argument
-> > > > + on_exit
-> > > > + [ 255 -ne 0 ]
-> > > > + cleanup
-> > > > + rm -f .btf.vmlinux.bin.o
-> > > > + rm -f .tmp_System.map
-> > > > + rm -f .tmp_vmlinux.btf .tmp_vmlinux.kallsyms1
-> > > > .tmp_vmlinux.kallsyms1.S .tmp_vmlinux.kallsyms1.o
-> > > > .tmp_vmlinux.kallsyms2 .tmp_vmlinux.kallsyms2.S .tmp_vmlinux.kallsy=
-ms
-> > > > 2.o
-> > > > + rm -f System.map
-> > > > + rm -f vmlinux
-> > > > + rm -f vmlinux.o
-> > > > make[3]: *** [Makefile:1166: vmlinux] Error 255
-> > > >
-> > > > Grepping through linux.git/tools I guess some BTF tools/libs need t=
-o
-> > > > know what BTF_INT_UNSIGNED is?
-> > >
-> > > BTF_INT_UNSIGNED needs kernel support. Maybe to teach pahole to
-> > > ignore this for now until kernel infrastructure is ready.
-> > > Not sure whether this information will be useful or not
-> > > for BTF. This needs to be discussed separately.
-> > >
-> >
-> > [ CC Fangrui ]
-> >
-> > How can I teach pahole to ignore BTF_INT_UNSIGNED?
-> >
-> > Another tryout might be to use "-fbinutils-version=3D..." which is
-> > available for LLVM-12 according to Fangrui?
-> > Fangrui, which binutils versions can I pass and how?
-> >
->
-> OK, I checked LLVM-12 sources:
->
-> clang/docs/ReleaseNotes.rst:101:- New option ``-fbinutils-version=3D``
-> specifies the targeted binutils version.
-> clang/docs/ReleaseNotes.rst:102:  For example,
-> ``-fbinutils-version=3D2.35`` means compatibility with GNU as/ld
-> clang/docs/ReleaseNotes.rst-103-  before 2.35 is not needed: new
-> features can be used and there is no need to
-> clang/docs/ReleaseNotes.rst-104-  work around old GNU as/ld bugs.
->
-> Can I pass (also patchlevel) like 2.35.2?
-> Here I have Debian's v2.35.1 and a selfmade v2.35.2?
->
-> - Sedat -
->
-> - Sedat -
-
-Answering specifically this question:
-
-clang -help displays:
-...
-  -fbinutils-version=3D<major.minor>
-                          Produced object files can use all ELF
-features supported by this binutils version and newer. If
--fno-integrated-as is specified, the generated assembly will consider
-GNU as support. 'none' means that all ELF features can be used,
-regardless of binutils support. Defaults to 2.26.
-
-The option was introduced in  https://reviews.llvm.org/D85474
-major.minor.patch is not supported. In reality, very few features are
-gated by this option, currently just SHF_MERGE and a pending
-SHF_LINK_ORDER PGO patch.
-I think we will be conservative. If a 2.37 fix is back ported to
-2.35.2 and 2.36.1, we will ignore that and will use the feature only
-if -fbinutils-version=3D2.37 or above is specified.
-
-
---=20
-=E5=AE=8B=E6=96=B9=E7=9D=BF
+PiBGcm9tOiBSYWZhZWwgSi4gV3lzb2NraSA8cmFmYWVsQGtlcm5lbC5vcmc+DQo+IFNlbnQ6IEZy
+aWRheSwgRmVicnVhcnkgNSwgMjAyMSA1OjA2IEFNDQo+IFRvOiBEZXh1YW4gQ3VpIDxkZWN1aUBt
+aWNyb3NvZnQuY29tPg0KPiBDYzogbGludXgtYWNwaUB2Z2VyLmtlcm5lbC5vcmc7IGxpbnV4LWtl
+cm5lbEB2Z2VyLmtlcm5lbC5vcmc7DQo+IGxpbnV4LWh5cGVydkB2Z2VyLmtlcm5lbC5vcmc7IE1p
+Y2hhZWwgS2VsbGV5IDxtaWtlbGxleUBtaWNyb3NvZnQuY29tPg0KPiBTdWJqZWN0OiBSZTogSG93
+IGNhbiBhIHVzZXJzcGFjZSBwcm9ncmFtIHRlbGwgaWYgdGhlIHN5c3RlbSBzdXBwb3J0cyB0aGUg
+QUNQSQ0KPiBTNCBzdGF0ZSAoU3VzcGVuZC10by1EaXNrKT8NCj4gDQo+IE9uIFNhdCwgRGVjIDEy
+LCAyMDIwIGF0IDI6MjIgQU0gRGV4dWFuIEN1aSA8ZGVjdWlAbWljcm9zb2Z0LmNvbT4gd3JvdGU6
+DQo+ID4NCj4gPiBIaSBhbGwsDQo+ID4gSXQgbG9va3MgbGlrZSBMaW51eCBjYW4gaGliZXJuYXRl
+IGV2ZW4gaWYgdGhlIHN5c3RlbSBkb2VzIG5vdCBzdXBwb3J0IHRoZSBBQ1BJDQo+ID4gUzQgc3Rh
+dGUsIGFzIGxvbmcgYXMgdGhlIHN5c3RlbSBjYW4gc2h1dCBkb3duLCBzbyAiY2F0IC9zeXMvcG93
+ZXIvc3RhdGUiDQo+ID4gYWx3YXlzIGNvbnRhaW5zICJkaXNrIiwgdW5sZXNzIHdlIHNwZWNpZnkg
+dGhlIGtlcm5lbCBwYXJhbWV0ZXIgIm5vaGliZXJuYXRlIg0KPiA+IG9yIHdlIHVzZSBMT0NLRE9X
+Tl9ISUJFUk5BVElPTi4NCj4gPg0KPiA+IEluIHNvbWUgc2NlbmFyaW9zIElNTyBpdCBjYW4gc3Rp
+bGwgYmUgdXNlZnVsIGlmIHRoZSB1c2Vyc3BhY2UgaXMgYWJsZSB0byBkZXRlY3QNCj4gPiBpZiB0
+aGUgQUNQSSBTNCBzdGF0ZSBpcyBzdXBwb3J0ZWQgb3Igbm90LCBlLmcuIHdoZW4gYSBMaW51eCBn
+dWVzdCBydW5zIG9uDQo+ID4gSHlwZXItViwgSHlwZXItViB1c2VzIHRoZSB2aXJ0dWFsIEFDUEkg
+UzQgc3RhdGUgYXMgYW4gaW5kaWNhdG9yIG9mIHRoZSBwcm9wZXINCj4gPiBzdXBwb3J0IG9mIHRo
+ZSB0b29sIHN0YWNrIG9uIHRoZSBob3N0LCBpLmUuIHRoZSBndWVzdCBpcyBkaXNjb3VyYWdlZCBm
+cm9tDQo+ID4gdHJ5aW5nIGhpYmVybmF0aW9uIGlmIHRoZSBzdGF0ZSBpcyBub3Qgc3VwcG9ydGVk
+Lg0KPiA+DQo+ID4gSSBrbm93IHdlIGNhbiBjaGVjayB0aGUgUzQgc3RhdGUgYnkgJ2RtZXNnJzoN
+Cj4gPg0KPiA+ICMgZG1lc2cgfGdyZXAgQUNQSTogfCBncmVwIHN1cHBvcnQNCj4gPiBbICAgIDMu
+MDM0MTM0XSBBQ1BJOiAoc3VwcG9ydHMgUzAgUzQgUzUpDQo+ID4NCj4gPiBCdXQgdGhpcyBtZXRo
+b2QgaXMgdW5yZWxpYWJsZSBiZWNhdXNlIHRoZSBrZXJuZWwgbXNnIGJ1ZmZlciBjYW4gYmUgZmls
+bGVkDQo+ID4gYW5kIG92ZXJ3cml0dGVuLiBJcyB0aGVyZSBhbnkgYmV0dGVyIG1ldGhvZD8gSWYg
+bm90LCBkbyB5b3UgdGhpbmsgaWYgdGhlDQo+ID4gYmVsb3cgcGF0Y2ggaXMgYXBwcm9wcmlhdGU/
+IFRoYW5rcyENCj4gDQo+IFNvcnJ5IGZvciB0aGUgZGVsYXkuDQo+IA0KPiBJZiBBQ1BJIFM0IGlz
+IHN1cHBvcnRlZCwgL3N5cy9wb3dlci9kaXNrIHdpbGwgbGlzdCAicGxhdGZvcm0iIGFzIG9uZQ0K
+PiBvZiB0aGUgb3B0aW9ucyAoYW5kIGl0IHdpbGwgYmUgdGhlIGRlZmF1bHQgb25lIHRoZW4pLiAg
+T3RoZXJ3aXNlLA0KPiAicGxhdGZvcm0iIGlzIG5vdCBwcmVzZW50IGluIC9zeXMvcG93ZXIvZGlz
+aywgYmVjYXVzZSBBQ1BJIGlzIHRoZSBvbmx5DQo+IHVzZXIgb2YgaGliZXJuYXRpb25fb3BzLg0K
+PiANCj4gSFRIDQoNClRoaXMgd29ya3Mgb24geDg2LiBUaGFua3MgYSBsb3QhDQoNCkJUVywgZG9l
+cyB0aGlzIGFsc28gd29yayBvbiBBUk02ND8NCg0KVGhhbmtzLA0KLS0gRGV4dWFuDQo=
