@@ -2,139 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD2CF31192D
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 03:58:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09E1B31184A
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 03:34:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232416AbhBFC5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 21:57:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37426 "EHLO
+        id S230330AbhBFCdg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 21:33:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230523AbhBFCfA (ORCPT
+        with ESMTP id S230064AbhBFCcO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 21:35:00 -0500
+        Fri, 5 Feb 2021 21:32:14 -0500
 Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C64AEC0698C8
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 14:18:15 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id w11so3336448ybq.8
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 14:18:15 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C1AEC0698DC
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 14:26:52 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id i2so8772615ybl.16
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 14:26:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=h1P5+j+r2bLJx1bqqHOaKHRT8j4ftFPbzcum8mBY1zk=;
-        b=mcx4H+N3Y96PlBfUpR32o2wa1baEWAPMNaY3XlZY1crmU5fmQCozhESwTjOkU/6szQ
-         vb3P1crJn0ZXVSEpm3F8yGi8GYTvIwa3fEqWnP+j1RFjwWRZ0I38oZWMqRgSW28mCgZD
-         NvJeEGce11MQaIgEoSO8uJrph/cHXjKG1VqLZ9TdQx9bBLvrlsC45fEKwoRvDG/B9/5W
-         0Ql1PUSJdEFqjORTNZOEU1UNqJQu/tRQvReJpr/c3ProqZuGzClh+PWUXQmucdtxv6nG
-         3XD5xFJcS34ePMZIsM8GdhiZftCdjl93l6WFfHPY+SHiCN6m/w2bRhJ9PAbNKEoAuz8G
-         617w==
+        h=sender:date:in-reply-to:message-id:mime-version:references:subject
+         :from:to:cc;
+        bh=223PDDzeAXN7fiB0Z3sv31/CUo0CMPx1p1AufcopYWI=;
+        b=SFHQmMRc/ic1nmrT5IMiYstkL++tDL7Z3c9ojJSjDDxJdd2i0nznkXSFR68OUU+aVL
+         37l+IB6klV569hlqPafHkvF6+7WsET3whuds9yrB7AV+RdCxsQ77OXj4J7Tcyq8/Ykby
+         AlApFXR5yrG/7Vz11J14XoDvvGtfu1xCPL8V4LNO83ZHxI6bzavvye1rrEa6QHHFK9ZC
+         VbK5aLF05CCF+bWVcucqMPqSUnnHjKES2+MRdskFBHbYTLhsN1Fzt8tWmeiWWfnkvi6G
+         ubCkpqgDZw/sb8byBLZrzDfglYOud2eHQ2Bdkq3sgX+3NHRqCEOzx+TOG8IfoQk25pne
+         myDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=h1P5+j+r2bLJx1bqqHOaKHRT8j4ftFPbzcum8mBY1zk=;
-        b=ZJRa2TKmPPRL6S06jK6WXL6Ai1XRzN3QhxmBjFh8elY/GSNMOedMI4Hw/TVM2Wov0b
-         qInHCoTW2H/ou8psvxQgAU22tZ/3BPTycpAlWhr84guWhTjgKqvb6Ec5KD90IV45OlwA
-         kshbBtiMQpEwjyBo1UPCWlyFmLAE8IB2cJKCS6KgBpD3gGHvjsJMGQljHOz4/ddl6ObM
-         RBlAu8K8xlQXEk/ehrJRYgg/ZE+rvU8ciUcDZYAgz4tebQPevujDQdLJe/F0ug3YWM8C
-         L3cGmnHZMr6MZ5Rmbp2yGZJQ0gitnu2diIQ/L/A0K8gt1DLqRJ3+xjPTMWJpfUg4Kwzs
-         0rBQ==
-X-Gm-Message-State: AOAM5331IVIXm1Bws5fQTkkAd8Qn5OEzZLuU27E5XeoYayQa6j9uVusw
-        koEg4uNfEi1dYldaRP9gHI7A5LqelbE0Tw==
-X-Google-Smtp-Source: ABdhPJzEjw6yfxHwmlTOg2G4YDHFF0J/qsAiQnvNLMuWgD2tsDsoSSd9DtlGAuAgcOdTUfRL6Co12tiFY7WTHA==
-Sender: "dlatypov via sendgmr" <dlatypov@dlatypov.svl.corp.google.com>
-X-Received: from dlatypov.svl.corp.google.com ([2620:15c:2cd:202:a8b1:128a:69fa:86fb])
- (user=dlatypov job=sendgmr) by 2002:a25:d683:: with SMTP id
- n125mr9741087ybg.256.1612563495011; Fri, 05 Feb 2021 14:18:15 -0800 (PST)
-Date:   Fri,  5 Feb 2021 14:18:08 -0800
-Message-Id: <20210205221808.1966010-1-dlatypov@google.com>
+        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=223PDDzeAXN7fiB0Z3sv31/CUo0CMPx1p1AufcopYWI=;
+        b=t2amkh8QvRhfcKCJsmoG0uPMnw6ZQ9vgRW5miwEPE3TY2h1dcm7M4DQkx9Rc3l+ZZ/
+         9nc7xJce8eY9z7p389/0AYRu66ICRMvISKgcl7IhrWhFDxfLFIXoR9T86msiCouvViCL
+         V1KEX0JVC/gKMvO+0/o2cl+iqZ9R0gMAWSTi46Xp5EPu/Wo605uFf1zXKizYcZ54XCTW
+         nPdyCcaFo6R2nmvpzncpCdlGm6ggoX5Sk8l3PdhDxF5Ius+78zVx8w3DL9OJW/Jnbsen
+         xJeWmjlDWl+7k22Q063BBx6E6vttmTUDhzM9ktxz4qlbQRLyi+gEe+Eu03DPnnUeJR+s
+         x09w==
+X-Gm-Message-State: AOAM533CEoDZa1ICZ3HeGthpoiQbp5CinYKXj1TANNdMcw1TtGbvOe5c
+        giNcbSjbS6++cVrdgdlvOru5JiMJS2BIkAc=
+X-Google-Smtp-Source: ABdhPJxrL9cH3mLaTtg3wJ/fW0QIFeUS4+4EDQLIPatw4HQvuGDNDATg7OIEzUZWu1cx19SOt5U8lpPfcWDatIE=
+Sender: "saravanak via sendgmr" <saravanak@saravanak.san.corp.google.com>
+X-Received: from saravanak.san.corp.google.com ([2620:15c:2d:3:6d36:b798:55d7:f5c5])
+ (user=saravanak job=sendgmr) by 2002:a25:2693:: with SMTP id
+ m141mr9430134ybm.104.1612564011451; Fri, 05 Feb 2021 14:26:51 -0800 (PST)
+Date:   Fri,  5 Feb 2021 14:26:37 -0800
+In-Reply-To: <20210205222644.2357303-1-saravanak@google.com>
+Message-Id: <20210205222644.2357303-2-saravanak@google.com>
 Mime-Version: 1.0
+References: <20210205222644.2357303-1-saravanak@google.com>
 X-Mailer: git-send-email 2.30.0.478.g8a0d178c01-goog
-Subject: [PATCH] kunit: make KUNIT_EXPECT_STREQ() quote values, don't print literals
-From:   Daniel Latypov <dlatypov@google.com>
-To:     brendanhiggins@google.com, davidgow@google.com
-Cc:     linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        skhan@linuxfoundation.org, Daniel Latypov <dlatypov@google.com>
+Subject: [PATCH v4 1/8] driver core: fw_devlink: Detect supplier devices that
+ will never be added
+From:   Saravana Kannan <saravanak@google.com>
+To:     Jonathan Corbet <corbet@lwn.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Kevin Hilman <khilman@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Len Brown <len.brown@intel.com>, Len Brown <lenb@kernel.org>,
+        Pavel Machek <pavel@ucw.cz>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Saravana Kannan <saravanak@google.com>
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-acpi@vger.kernel.org,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        kernel-team@android.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Before:
->  Expected str == "world", but
->      str == hello
->      "world" == world
+During the initial parsing of firmware by fw_devlink, fw_devlink might
+infer that some supplier firmware nodes would get populated as devices.
+But the inference is not always correct. This patch tries to logically
+detect and fix such mistakes as boot progresses or more devices probe.
 
-After:
->  Expected str == "world", but
->      str == "hello"
-<we don't need to tell the user that "world" == "world">
+fw_devlink makes a fundamental assumption that once a device binds to a
+driver, it will populate (i.e: add as struct devices) all the child
+firmware nodes that could be populated as devices (if they aren't
+populated already).
 
-Note: like the literal ellision for integers, this doesn't handle the
-case of
-  KUNIT_EXPECT_STREQ(test, "hello", "world")
-since we don't expect it to realistically happen in checked in tests.
-(If you really wanted a test to fail, KUNIT_FAIL("msg") exists)
+So, whenever a device probes, we check all its child firmware nodes. If
+a child firmware node has a corresponding device populated, we don't
+modify the child node or its descendants. However, if a child firmware
+node has not been populated as a device, we delete all the fwnode links
+where the child node or its descendants are suppliers. This ensures that
+no other device is blocked on a firmware node that will never be
+populated as a device. We also mark such fwnodes as NOT_DEVICE, so that
+no new fwnode links are created with these nodes as suppliers.
 
-In that case, you'd get:
->  Expected "hello" == "world", but
-<output for next failure>
-
-Signed-off-by: Daniel Latypov <dlatypov@google.com>
+Fixes: e590474768f1 ("driver core: Set fw_devlink=on by default")
+Signed-off-by: Saravana Kannan <saravanak@google.com>
+Acked-by: Rafael J. Wysocki <rafael@kernel.org>
 ---
- lib/kunit/assert.c | 30 ++++++++++++++++++++++++------
- 1 file changed, 24 insertions(+), 6 deletions(-)
+ drivers/base/core.c    | 31 ++++++++++++++++++++++++++++---
+ include/linux/fwnode.h |  2 ++
+ 2 files changed, 30 insertions(+), 3 deletions(-)
 
-diff --git a/lib/kunit/assert.c b/lib/kunit/assert.c
-index e0ec7d6fed6f..176ef547fa94 100644
---- a/lib/kunit/assert.c
-+++ b/lib/kunit/assert.c
-@@ -156,6 +156,22 @@ void kunit_binary_ptr_assert_format(const struct kunit_assert *assert,
+diff --git a/drivers/base/core.c b/drivers/base/core.c
+index 484a942884ba..c95b1daabac7 100644
+--- a/drivers/base/core.c
++++ b/drivers/base/core.c
+@@ -148,6 +148,21 @@ void fwnode_links_purge(struct fwnode_handle *fwnode)
+ 	fwnode_links_purge_consumers(fwnode);
  }
- EXPORT_SYMBOL_GPL(kunit_binary_ptr_assert_format);
  
-+/* Checks if KUNIT_EXPECT_STREQ() args were string literals.
-+ * Note: `text` will have ""s where as `value` will not.
-+ */
-+static bool is_str_literal(const char *text, const char *value)
++static void fw_devlink_purge_absent_suppliers(struct fwnode_handle *fwnode)
 +{
-+	int len;
++	struct fwnode_handle *child;
 +
-+	len = strlen(text);
-+	if (len < 2)
-+		return false;
-+	if (text[0] != '\"' || text[len-1] != '\"')
-+		return false;
++	/* Don't purge consumer links of an added child */
++	if (fwnode->dev)
++		return;
 +
-+	return strncmp(text+1, value, len-2) == 0;
++	fwnode->flags |= FWNODE_FLAG_NOT_DEVICE;
++	fwnode_links_purge_consumers(fwnode);
++
++	fwnode_for_each_available_child_node(fwnode, child)
++		fw_devlink_purge_absent_suppliers(child);
 +}
 +
- void kunit_binary_str_assert_format(const struct kunit_assert *assert,
- 				    struct string_stream *stream)
- {
-@@ -168,12 +184,14 @@ void kunit_binary_str_assert_format(const struct kunit_assert *assert,
- 			  binary_assert->left_text,
- 			  binary_assert->operation,
- 			  binary_assert->right_text);
--	string_stream_add(stream, KUNIT_SUBSUBTEST_INDENT "%s == %s\n",
--			  binary_assert->left_text,
--			  binary_assert->left_value);
--	string_stream_add(stream, KUNIT_SUBSUBTEST_INDENT "%s == %s",
--			  binary_assert->right_text,
--			  binary_assert->right_value);
-+	if (!is_str_literal(binary_assert->left_text, binary_assert->left_value))
-+		string_stream_add(stream, KUNIT_SUBSUBTEST_INDENT "%s == \"%s\"\n",
-+				  binary_assert->left_text,
-+				  binary_assert->left_value);
-+	if (!is_str_literal(binary_assert->right_text, binary_assert->right_value))
-+		string_stream_add(stream, KUNIT_SUBSUBTEST_INDENT "%s == \"%s\"",
-+				  binary_assert->right_text,
-+				  binary_assert->right_value);
- 	kunit_assert_print_msg(assert, stream);
- }
- EXPORT_SYMBOL_GPL(kunit_binary_str_assert_format);
-
-base-commit: 1e0d27fce010b0a4a9e595506b6ede75934c31be
-prerequisite-patch-id: 290f8022f30763cbfb6aec969b038a6f60a57482
+ #ifdef CONFIG_SRCU
+ static DEFINE_MUTEX(device_links_lock);
+ DEFINE_STATIC_SRCU(device_links_srcu);
+@@ -1154,12 +1169,22 @@ void device_links_driver_bound(struct device *dev)
+ 	LIST_HEAD(sync_list);
+ 
+ 	/*
+-	 * If a device probes successfully, it's expected to have created all
++	 * If a device binds successfully, it's expected to have created all
+ 	 * the device links it needs to or make new device links as it needs
+-	 * them. So, it no longer needs to wait on any suppliers.
++	 * them. So, fw_devlink no longer needs to create device links to any
++	 * of the device's suppliers.
++	 *
++	 * Also, if a child firmware node of this bound device is not added as
++	 * a device by now, assume it is never going to be added and make sure
++	 * other devices don't defer probe indefinitely by waiting for such a
++	 * child device.
+ 	 */
+-	if (dev->fwnode && dev->fwnode->dev == dev)
++	if (dev->fwnode && dev->fwnode->dev == dev) {
++		struct fwnode_handle *child;
+ 		fwnode_links_purge_suppliers(dev->fwnode);
++		fwnode_for_each_available_child_node(dev->fwnode, child)
++			fw_devlink_purge_absent_suppliers(child);
++	}
+ 	device_remove_file(dev, &dev_attr_waiting_for_supplier);
+ 
+ 	device_links_write_lock();
+diff --git a/include/linux/fwnode.h b/include/linux/fwnode.h
+index fde4ad97564c..21082f11473f 100644
+--- a/include/linux/fwnode.h
++++ b/include/linux/fwnode.h
+@@ -19,8 +19,10 @@ struct device;
+  * fwnode link flags
+  *
+  * LINKS_ADDED: The fwnode has already be parsed to add fwnode links.
++ * NOT_DEVICE: The fwnode will never be populated as a struct device.
+  */
+ #define FWNODE_FLAG_LINKS_ADDED		BIT(0)
++#define FWNODE_FLAG_NOT_DEVICE		BIT(1)
+ 
+ struct fwnode_handle {
+ 	struct fwnode_handle *secondary;
 -- 
 2.30.0.478.g8a0d178c01-goog
 
