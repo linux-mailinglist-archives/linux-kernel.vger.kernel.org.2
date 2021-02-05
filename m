@@ -2,69 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2A53310750
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 10:10:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BAAF310751
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 10:10:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229984AbhBEJHR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 04:07:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58994 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229729AbhBEJCg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 04:02:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 47C5F64FB7;
-        Fri,  5 Feb 2021 09:01:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612515715;
-        bh=Mcqzu6fMcx8quc9YblmBNqOcxfIfuRAUgvRTdeue+0g=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=E/hGQ48H288v2XGveFxfFJKBnXladwFDdkybtunSyRMD5k5IXOPTQBUXFovYIljZ1
-         l6wZZR5WlJTFAc99Lu+uz1uQugi+0DmwHRWRJIgOiJjcfXvKlrNafYE1EYTStpjL79
-         tZI2wearpqnW4X9DEwl1MreUyKM+VMLcCXWTBkQFjLXmviPp4Gd4fmZDKnSiGumjFr
-         mNKwjXWiytRNaUfKT/c7BrufTQ5mS7A9c0VxETEZgyaBHy5JiZlJEF2dkTpTpEiod9
-         ETvoLWMsQmrHnOllW2BNJOxSvReNeeUcquH8tiFTiDsZ/xJQCqpsGiC4GfCjVACcIh
-         fBLK8S77BdykA==
-Date:   Fri, 5 Feb 2021 10:01:52 +0100 (CET)
-From:   Jiri Kosina <jikos@kernel.org>
-To:     Kurt Garloff <kurt@garloff.de>
-cc:     Jens Axboe <axboe@kernel.dk>, efremov@linux.com,
-        linux-block <linux-block@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [GIT PULL] Floppy patch for 5.12
-In-Reply-To: <925c6067-f317-70d1-231d-9d97c517212b@garloff.de>
-Message-ID: <nycvar.YFH.7.76.2102051000460.28696@cbobk.fhfr.pm>
-References: <45f555f4-b694-ca8e-c088-f34dea9fc7c7@linux.com> <ba300e13-dc16-af15-a386-0c5348e0f919@kernel.dk> <925c6067-f317-70d1-231d-9d97c517212b@garloff.de>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        id S230033AbhBEJHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 04:07:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39382 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229766AbhBEJDp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 04:03:45 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8951C0613D6;
+        Fri,  5 Feb 2021 01:02:22 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1612515741;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=PI2qDxyliIROzaHP65iJZdDI7TEweADPsyK8kuQaxNk=;
+        b=zBi0MQhP9nKeni7mdwBHlfEkPnsq6w7qX5hPJLpE8k2GAAOTU5T5MzuiWaVAO6QpZ9R2uh
+        39j5VzTSW9apNTGLzvkf5dJYsR+GdYFWssTQGgxJYeRv2UNNBlFukr+t0uzWIJxYXqGigG
+        if1LapcEXuOo3ME3NDKpg9VvSL4wt5V/8yN4GYUUI33k3E4oOD8g3jClfnSZJZrXACfWFI
+        DWqRpILF+fVG/UUtGMYKZ/Md/buLbltRmmMiT56GxRWSDvew1Vfjmo3W+f2kK7htGogQca
+        zreluAt0uUGEv307Hk4bSyI9nKFprANnz0gd83c0bLc9Uuegvuqx06BBXw2E+Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1612515741;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=PI2qDxyliIROzaHP65iJZdDI7TEweADPsyK8kuQaxNk=;
+        b=fmLm5xAkfO4+HxyVQpfy9TXnBr0fqZxm3WoGHV88cd2O4DXF4UKTXWLHVnerMd+XTHCfH5
+        ayCGPpFngheKIWCw==
+To:     Gabriel Krisman Bertazi <krisman@collabora.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        kernel@collabora.com, Linux API <linux-api@vger.kernel.org>,
+        Michael Kerrisk <mtk.manpages@gmail.com>
+Subject: Re: [PATCH RESEND] entry: Use different define for selector variable in SUD
+In-Reply-To: <20210204184028.1516328-1-krisman@collabora.com>
+References: <20210204184028.1516328-1-krisman@collabora.com>
+Date:   Fri, 05 Feb 2021 10:02:20 +0100
+Message-ID: <87ft2aanvn.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 4 Feb 2021, Kurt Garloff wrote:
+Gabriel,
 
-> >> The following changes since commit 0d7389718c32ad6bb8bee7895c91e2418b6b26aa:
-> >>
-> >>   Merge tag 'nvme-5.21-2020-02-02' of git://git.infradead.org/nvme into for-5.12/drivers (2021-02-02 07:11:47 -0700)
-> >>
-> >> are available in the Git repository at:
-> >>
-> >>   https://github.com/evdenis/linux-floppy tags/floppy-for-5.12
-> > Pulled, thanks.
-> 
-> Great, thanks!
-> 
-> Next is -stable then ... so all those cloud images using floppy to 
-> inject metadata work again, despite current libblkid. (Fortunately, most 
-> use cdrom these days.)
+On Thu, Feb 04 2021 at 13:40, Gabriel Krisman Bertazi wrote:
+> Michael Kerrisk suggested that, from an API perspective, it is a bad
+> idea to share the PR_SYS_DISPATCH_ defines between the prctl operation
+> and the selector variable.  Therefore, define two new constants to be
+> used by SUD's selector variable, and the corresponding documentation.
+>
+> While this changes the API, it is backward compatible, as the values
+> remained the same and the old defines are still in place.  In addition,
+> SUD has never been part of a Linux release, it will show up for the
+> first time in 5.11.
 
--stable we can do only after the commit lands in Linus' tree.
+> --- a/include/uapi/linux/prctl.h
+> +++ b/include/uapi/linux/prctl.h
+> @@ -251,5 +251,7 @@ struct prctl_mm_map {
+>  #define PR_SET_SYSCALL_USER_DISPATCH	59
+>  # define PR_SYS_DISPATCH_OFF		0
+>  # define PR_SYS_DISPATCH_ON		1
+> +# define PR_SYS_DISPATCH_FILTER_ALLOW	0
+> +# define PR_SYS_DISPATCH_FILTER_BLOCK	1
 
-Once that happens, I believe we can just as the version we have in 
-openSUSE 15.2 kernel for now as-is:
+This is still confusing because the defines are kinda associated to the
+prctl(). But ALLOW/BLOCK are the values which for the user space
+selector which allows to runtime filter the dispatching without the
+overhead of prctl().
 
-	https://github.com/openSUSE/kernel-source/commit/ab10a7db5f5b721bf2145e6eab9358a751dd0e5b
+So they want to be visualy seperated and not part of the PR_
+namespace. Something like the below.
 
--- 
-Jiri Kosina
-SUSE Labs
+#define PR_SET_SYSCALL_USER_DISPATCH	59
+# define PR_SYS_DISPATCH_OFF		0
+# define PR_SYS_DISPATCH_ON		1
 
+/* Control values for the syscall dispatch runtime selector (filter) */
+# define SYSCALL_DISPATCH_FILTER_ALLOW	0
+# define SYSCALL_DISPATCH_FILTER_BLOCK	1
+
+Hmm?
+
+Thanks,
+
+        tglx
