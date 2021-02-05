@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C0C931176A
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 00:47:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1609B311764
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 00:47:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231440AbhBEXq2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 18:46:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40398 "EHLO
+        id S230408AbhBEXpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 18:45:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232499AbhBEORn (ORCPT
+        with ESMTP id S232489AbhBEORn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 5 Feb 2021 09:17:43 -0500
-Received: from mail-wr1-x449.google.com (mail-wr1-x449.google.com [IPv6:2a00:1450:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63363C061356
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 07:46:52 -0800 (PST)
-Received: by mail-wr1-x449.google.com with SMTP id u15so5585000wrn.3
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 07:46:52 -0800 (PST)
+Received: from mail-wr1-x44a.google.com (mail-wr1-x44a.google.com [IPv6:2a00:1450:4864:20::44a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E89CAC0617AB
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 07:46:49 -0800 (PST)
+Received: by mail-wr1-x44a.google.com with SMTP id h18so5626014wrr.5
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 07:46:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=kg30/g/LrsxD86gPJMTES5VW5Hgvjnk4vM4kmv21+Z4=;
-        b=LCEFnlDaJcG0Q41NRa+Ch0e8o0QaxKPH4VLE5PeiB/2TOutaBSjhOVNhtlIuqskKNL
-         phpumV6RzdrEdBMlzF0JJ/UV8Gi5lGDAW74e0LAzZYz+t1c3Y9oGFxEzdOri6TmYTr5U
-         na1Uut/9hwzYcfOIuhkjF9fJjKOrh+9Tqp8O7hNSKLlOFpHYyFP5w0AVgMSjecylbZlj
-         pFazgfiM/L2igEvCu3/YSfXsjME4M0Weph+1nBqRsxnRS5ZoqKSs/FwCT7YXTazQ1F47
-         i3VS6u9Ncn4Er7IZkPDPnp8tQRJvJXTxGiJK3gP2p+0V3VZSUOiVr8uO6j1rSNg8VTTG
-         ++5A==
+        bh=Eem+CPI6cqDr3+sdydeGQiL8gIW8yui8+/Xm+DAKB7k=;
+        b=SekTvXiN+P4rBMIGDiv0wwZwiSR5ud4S18Maw4kVgQUSz5FEyuQjH7o5vB8M2vmUMM
+         Q9IwKiqWZ2Yzni/Twm1vRliwxS6Ofyr6GjmKPH0fvoYIpgsmkQdgB+otayIHcj7mH/2D
+         jmQoetdjxOjtR114YWCAtS8Fc2juWVSQssSxdWmZlUIYr3jed51NrPHMZtJCMyGYNRLf
+         xFoK/UyBl2mkVnEi/vaWWeRBriSKqgl/b+Wku4w85oDpVvnXWiYQLwR5eUbxAOT6jUTa
+         Z8LefNUER57XhQirYMl1Si4r9oJMTxRRv8rujMp6fw+hnNTyANk4BtTWwAwQn6481LYu
+         1Bbg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=kg30/g/LrsxD86gPJMTES5VW5Hgvjnk4vM4kmv21+Z4=;
-        b=aNp4PkqoWvKKFUt2bHFd6Ksp0SDRd33QMKO3QuHnatTqzhkoOm5jJQBq92TZitzV5e
-         SQPRmVCAkEoD0AjrJwOMxmQGm87hEpb0CBJ7Ajol4zdf8P2aj4+tInnJB5T7k65etUrN
-         cJR/nZOTrFzjEUYSbO+5pej7/U5X6sEiOYyBuoEL5COGAtUXiNrTrskaZOVoWzeHlMqT
-         58XSyDCjaryQT3j4NPmnwcWymiOKA8j0t0lodQ4SRdEKt7U1viMDkk9poTt83IGQo4Ec
-         jqLP2p5faajyRMzcNqNbcIYNQ92tjqLi5jV7GQFGVw+FqSS/K+vUkuY3r3UrDGLrb4/s
-         eexg==
-X-Gm-Message-State: AOAM533tJKow/e45licMYZrDASg4Ox0j6q/uKIx16UrjKaMe+p1dsHmu
-        vO+NBWG1mb4PaHmSmqFg2zjAY73xGP2QEQCY
-X-Google-Smtp-Source: ABdhPJwwKKgQGlKIo0fdvx1Js8AFJ3EgmJEbKeq2cWI3dxu4cKp8SA/tbBXB1FczDscVCzjNnOVVknB1qI6ECJfd
+        bh=Eem+CPI6cqDr3+sdydeGQiL8gIW8yui8+/Xm+DAKB7k=;
+        b=nmgr0Rk9jlYEVVWpNrqkYJ/PUcFKF3DDYVSKeNvOBk0KmXzQEPqW0xSCM2ecjiZchi
+         Fce6+wOrzgYnD+LTS44oxpKCSqK+5Q8FF3syRkJEqJalDptFhw/BtgIpZcIgrGNRyE0p
+         yyJ4Ptaojgk5SxnogoHOcttjTA3OqDdQqMtAEEStJkpX30nnUyJS2xhs6NemJprANfCl
+         GNy/JTQhO+3nciIyZrSu60LRB2tCauD8E7Etij8ikMUGPifB3K139Rk/fBShtGRf3Q5q
+         Ua1nqWAg9jpPsHSk3Tr54E3D523PZJ5aS03XYwXWWia7l7kBPtKd0qsgOVfkUttCHYdc
+         7m9g==
+X-Gm-Message-State: AOAM531avT0GgcGbVrnM2RODEArhVeHiLZXkLq83olPIS/OA9x428MM8
+        hJy4FXJC4zuHpJ4oTJpE+DS6nEd1/J5x4wIJ
+X-Google-Smtp-Source: ABdhPJyqQdKHrhOuNMT3pVa3R7FPH70A7UVF1EhvgAytPKqWBBtNMrRHXWGCczaKH2RqOThi7wWAhXKWKxUeKXJY
 Sender: "andreyknvl via sendgmr" <andreyknvl@andreyknvl3.muc.corp.google.com>
 X-Received: from andreyknvl3.muc.corp.google.com ([2a00:79e0:15:13:edb8:b79c:2e20:e531])
- (user=andreyknvl job=sendgmr) by 2002:a7b:c2aa:: with SMTP id
- c10mr3901926wmk.101.1612539569588; Fri, 05 Feb 2021 07:39:29 -0800 (PST)
-Date:   Fri,  5 Feb 2021 16:39:06 +0100
+ (user=andreyknvl job=sendgmr) by 2002:a1c:25c2:: with SMTP id
+ l185mr4086468wml.62.1612539574962; Fri, 05 Feb 2021 07:39:34 -0800 (PST)
+Date:   Fri,  5 Feb 2021 16:39:08 +0100
 In-Reply-To: <cover.1612538932.git.andreyknvl@google.com>
-Message-Id: <492dcd5030419c5421a3762457c0ff1a7c91e628.1612538932.git.andreyknvl@google.com>
+Message-Id: <419e4e7ac9ff7596a1a0956c117fcad1938e5d77.1612538932.git.andreyknvl@google.com>
 Mime-Version: 1.0
 References: <cover.1612538932.git.andreyknvl@google.com>
 X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
-Subject: [PATCH v2 05/12] kasan: unify large kfree checks
+Subject: [PATCH v2 07/12] kasan, mm: fail krealloc on freed objects
 From:   Andrey Konovalov <andreyknvl@google.com>
 To:     Andrew Morton <akpm@linux-foundation.org>,
         Catalin Marinas <catalin.marinas@arm.com>,
@@ -74,129 +74,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Unify checks in kasan_kfree_large() and in kasan_slab_free_mempool()
-for large allocations as it's done for small kfree() allocations.
+Currently, if krealloc() is called on a freed object with KASAN enabled,
+it allocates and returns a new object, but doesn't copy any memory from
+the old one as ksize() returns 0. This makes the caller believe that
+krealloc() succeeded (KASAN report is printed though).
 
-With this change, kasan_slab_free_mempool() starts checking that the
-first byte of the memory that's being freed is accessible.
+This patch adds an accessibility check into __do_krealloc(). If the check
+fails, krealloc() returns NULL. This check duplicates the one in ksize();
+this is fixed in the following patch.
+
+This patch also adds a KASAN-KUnit test to check krealloc() behaviour
+when it's called on a freed object.
 
 Reviewed-by: Marco Elver <elver@google.com>
 Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 ---
- include/linux/kasan.h | 16 ++++++++--------
- mm/kasan/common.c     | 36 ++++++++++++++++++++++++++----------
- 2 files changed, 34 insertions(+), 18 deletions(-)
+ lib/test_kasan.c | 20 ++++++++++++++++++++
+ mm/slab_common.c |  3 +++
+ 2 files changed, 23 insertions(+)
 
-diff --git a/include/linux/kasan.h b/include/linux/kasan.h
-index 2d5de4092185..d53ea3c047bc 100644
---- a/include/linux/kasan.h
-+++ b/include/linux/kasan.h
-@@ -200,6 +200,13 @@ static __always_inline bool kasan_slab_free(struct kmem_cache *s, void *object)
- 	return false;
+diff --git a/lib/test_kasan.c b/lib/test_kasan.c
+index 6e63ba62db09..791164ef191b 100644
+--- a/lib/test_kasan.c
++++ b/lib/test_kasan.c
+@@ -359,6 +359,25 @@ static void krealloc_pagealloc_less_oob(struct kunit *test)
+ 					KMALLOC_MAX_CACHE_SIZE + 201);
  }
  
-+void __kasan_kfree_large(void *ptr, unsigned long ip);
-+static __always_inline void kasan_kfree_large(void *ptr)
++/*
++ * Check that krealloc() detects a use-after-free, returns NULL,
++ * and doesn't unpoison the freed object.
++ */
++static void krealloc_uaf(struct kunit *test)
 +{
-+	if (kasan_enabled())
-+		__kasan_kfree_large(ptr, _RET_IP_);
++	char *ptr1, *ptr2;
++	int size1 = 201;
++	int size2 = 235;
++
++	ptr1 = kmalloc(size1, GFP_KERNEL);
++	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr1);
++	kfree(ptr1);
++
++	KUNIT_EXPECT_KASAN_FAIL(test, ptr2 = krealloc(ptr1, size2, GFP_KERNEL));
++	KUNIT_ASSERT_PTR_EQ(test, (void *)ptr2, NULL);
++	KUNIT_EXPECT_KASAN_FAIL(test, *(volatile char *)ptr1);
 +}
 +
- void __kasan_slab_free_mempool(void *ptr, unsigned long ip);
- static __always_inline void kasan_slab_free_mempool(void *ptr)
+ static void kmalloc_oob_16(struct kunit *test)
  {
-@@ -247,13 +254,6 @@ static __always_inline void * __must_check kasan_krealloc(const void *object,
- 	return (void *)object;
- }
+ 	struct {
+@@ -1056,6 +1075,7 @@ static struct kunit_case kasan_kunit_test_cases[] = {
+ 	KUNIT_CASE(krealloc_less_oob),
+ 	KUNIT_CASE(krealloc_pagealloc_more_oob),
+ 	KUNIT_CASE(krealloc_pagealloc_less_oob),
++	KUNIT_CASE(krealloc_uaf),
+ 	KUNIT_CASE(kmalloc_oob_16),
+ 	KUNIT_CASE(kmalloc_uaf_16),
+ 	KUNIT_CASE(kmalloc_oob_in_memset),
+diff --git a/mm/slab_common.c b/mm/slab_common.c
+index 39d1a8ff9bb8..dad70239b54c 100644
+--- a/mm/slab_common.c
++++ b/mm/slab_common.c
+@@ -1140,6 +1140,9 @@ static __always_inline void *__do_krealloc(const void *p, size_t new_size,
+ 	void *ret;
+ 	size_t ks;
  
--void __kasan_kfree_large(void *ptr, unsigned long ip);
--static __always_inline void kasan_kfree_large(void *ptr)
--{
--	if (kasan_enabled())
--		__kasan_kfree_large(ptr, _RET_IP_);
--}
--
- /*
-  * Unlike kasan_check_read/write(), kasan_check_byte() is performed even for
-  * the hardware tag-based mode that doesn't rely on compiler instrumentation.
-@@ -302,6 +302,7 @@ static inline bool kasan_slab_free(struct kmem_cache *s, void *object)
- {
- 	return false;
- }
-+static inline void kasan_kfree_large(void *ptr) {}
- static inline void kasan_slab_free_mempool(void *ptr) {}
- static inline void *kasan_slab_alloc(struct kmem_cache *s, void *object,
- 				   gfp_t flags)
-@@ -322,7 +323,6 @@ static inline void *kasan_krealloc(const void *object, size_t new_size,
- {
- 	return (void *)object;
- }
--static inline void kasan_kfree_large(void *ptr) {}
- static inline bool kasan_check_byte(const void *address)
- {
- 	return true;
-diff --git a/mm/kasan/common.c b/mm/kasan/common.c
-index da24b144d46c..7ea643f7e69c 100644
---- a/mm/kasan/common.c
-+++ b/mm/kasan/common.c
-@@ -364,6 +364,31 @@ bool __kasan_slab_free(struct kmem_cache *cache, void *object, unsigned long ip)
- 	return ____kasan_slab_free(cache, object, ip, true);
- }
++	if (likely(!ZERO_OR_NULL_PTR(p)) && !kasan_check_byte(p))
++		return NULL;
++
+ 	ks = ksize(p);
  
-+static bool ____kasan_kfree_large(void *ptr, unsigned long ip)
-+{
-+	if (ptr != page_address(virt_to_head_page(ptr))) {
-+		kasan_report_invalid_free(ptr, ip);
-+		return true;
-+	}
-+
-+	if (!kasan_byte_accessible(ptr)) {
-+		kasan_report_invalid_free(ptr, ip);
-+		return true;
-+	}
-+
-+	/*
-+	 * The object will be poisoned by kasan_free_pages() or
-+	 * kasan_slab_free_mempool().
-+	 */
-+
-+	return false;
-+}
-+
-+void __kasan_kfree_large(void *ptr, unsigned long ip)
-+{
-+	____kasan_kfree_large(ptr, ip);
-+}
-+
- void __kasan_slab_free_mempool(void *ptr, unsigned long ip)
- {
- 	struct page *page;
-@@ -377,10 +402,8 @@ void __kasan_slab_free_mempool(void *ptr, unsigned long ip)
- 	 * KMALLOC_MAX_SIZE, and kmalloc falls back onto page_alloc.
- 	 */
- 	if (unlikely(!PageSlab(page))) {
--		if (ptr != page_address(page)) {
--			kasan_report_invalid_free(ptr, ip);
-+		if (____kasan_kfree_large(ptr, ip))
- 			return;
--		}
- 		kasan_poison(ptr, page_size(page), KASAN_FREE_PAGE);
- 	} else {
- 		____kasan_slab_free(page->slab_cache, ptr, ip, false);
-@@ -539,13 +562,6 @@ void * __must_check __kasan_krealloc(const void *object, size_t size, gfp_t flag
- 		return ____kasan_kmalloc(page->slab_cache, object, size, flags);
- }
- 
--void __kasan_kfree_large(void *ptr, unsigned long ip)
--{
--	if (ptr != page_address(virt_to_head_page(ptr)))
--		kasan_report_invalid_free(ptr, ip);
--	/* The object will be poisoned by kasan_free_pages(). */
--}
--
- bool __kasan_check_byte(const void *address, unsigned long ip)
- {
- 	if (!kasan_byte_accessible(address)) {
+ 	if (ks >= new_size) {
 -- 
 2.30.0.365.g02bc693789-goog
 
