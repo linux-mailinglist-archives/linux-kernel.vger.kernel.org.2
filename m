@@ -2,98 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84CB83102E0
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 03:38:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D7D43102E8
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 03:41:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229984AbhBEChl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 21:37:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41728 "EHLO
+        id S229756AbhBECkz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 21:40:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229484AbhBEChi (ORCPT
+        with ESMTP id S229669AbhBECkv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 21:37:38 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DD33C0613D6;
-        Thu,  4 Feb 2021 18:36:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=ciHjs+jRrxK7UOBz+1nbSJbYdNtvt9f7zqlIzJkiFvs=; b=hnpcq40Tto7xSO201H6yoUJZQW
-        7+k0d0rFKmVmR4ELTYvU2IVB/Jo/q0YQ81rwoDxA31OcpKEMQq4r3XNUjDJ8NkiFsecwwmLbqLB2S
-        nNUjI2aLKw1aYyjpkFt5uLbCZ26ynXK0n17tqcq5T0DEvT859URB4Tgp5f63PBdQhyEqINdMxjVqi
-        gjtzh660wsK2aprk5pKQ8XPMRwuhnNGxlivsyXAJfdlY9yxLNaEwJMic8bpcq5K6K+KlTGH+l8ChV
-        vZ1+x0mMOmMRGJ+mbOTVFIFT8jm7O3SR4Z3h651a4pLq+EoO1+xjgakzxTOBul4M79Ii9m0H+30n2
-        G89HxS0A==;
-Received: from [2601:1c0:6280:3f0::aec2]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l7qzN-0008VE-Go; Fri, 05 Feb 2021 02:36:53 +0000
-Subject: Re: [PATCH v3 2/2] dmabuf: Add dmabuf inode number to /proc/*/fdinfo
-To:     Kalesh Singh <kaleshsingh@google.com>
-Cc:     jannh@google.com, jeffv@google.com, keescook@chromium.org,
-        surenb@google.com, minchan@kernel.org, hridya@google.com,
-        kernel-team@android.com, Alexey Dobriyan <adobriyan@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Alexey Gladkov <gladkov.alexey@gmail.com>,
-        Anand K Mistry <amistry@google.com>,
-        NeilBrown <neilb@suse.de>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Michel Lespinasse <walken@google.com>,
-        Bernd Edlinger <bernd.edlinger@hotmail.de>,
-        Andrei Vagin <avagin@gmail.com>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org
-References: <20210205022328.481524-1-kaleshsingh@google.com>
- <20210205022328.481524-2-kaleshsingh@google.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <b2d08c27-ae9b-16ed-3500-a4a724d563ef@infradead.org>
-Date:   Thu, 4 Feb 2021 18:36:43 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Thu, 4 Feb 2021 21:40:51 -0500
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98A07C0613D6
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 18:40:00 -0800 (PST)
+Received: by mail-wr1-x429.google.com with SMTP id c4so5889920wru.9
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 18:40:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KrxuWR/Lm4v4BWcac9Ts2j/JMY/RAA6h700GnlMoUbk=;
+        b=BOn1mNtq3puSazs0rViio49lg0t/e1BTWkIt5KnAQ9+Leu+6wtf9fZJ4ahbIH6NGZE
+         1Tvz9u5MV0MvZNT6vPJJ9iftmwcFVom5j1I2ZkkRZew+ntGs81+G0R1R1tXs9HArCdUV
+         P9Yodyq7r5/o0DLjI/VlezJ+VKS6bsOAde0GLNaok6TeoT4NPQAWeB8EFpBse3KIrT9y
+         TqqW10gU876llTurg6M2nUXMvGDOzRQbVkWMcOUpZEsAbBMtnGxWQV+vyVI+lBVNi77K
+         e2GLaOSkTsnQcMEf66aa7msysph6sdlTa6QJlA1N/OcxGKZicVjO32cj74CNtR89JLiv
+         wwuQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KrxuWR/Lm4v4BWcac9Ts2j/JMY/RAA6h700GnlMoUbk=;
+        b=JNmt1+K7pRg0oHY0Vnxpselgxi5hbvj2We3ihNX2v5CRtotiE/Jn8KsUKvUoxsvsO7
+         jv/2tK4YBbsfXL6wyld0KD9K6u1LhteTtC4eF6pa2lXkFn6E2zxImQDbNf9UoCOhAVhJ
+         pwZOMszbpoW8klzIpiP/nNbnSCyEC0ohSUXiGHGqyco5w1gO4VnvBl8iDVqdtkmdnEjX
+         o3LVInlcEBTwxgVk1iE9X/A8J5BWzIy5pSarQ4UdMbi+KeTuJ246Nd3JbWWSWwtQtyzW
+         wwe/vBl5T4pA8TdWKZ4ZH/PKtJsb9ekUyWyt1o62c7yfNKOoEdwiqWhswHBRfTIAhUN6
+         h1CQ==
+X-Gm-Message-State: AOAM532aBCTwG7L9kuCQq1hbMKuNOGmFJ18cvMgC5X3efz187JE9TAso
+        pjkjjmiQMc7uNgV7LLeKVXokbIClGyfeTb8wDIx2Wg==
+X-Google-Smtp-Source: ABdhPJz7jCN9ThVqAOwhnpQs7RtCjbmaX+bZOnmytw9bwt7OpRl7AdgZ8K+7ojC4UbsnDx2Omx4dOzf4impbO9I6jf4=
+X-Received: by 2002:adf:e50e:: with SMTP id j14mr2437426wrm.162.1612492799266;
+ Thu, 04 Feb 2021 18:39:59 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210205022328.481524-2-kaleshsingh@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210203155001.4121868-1-minchan@kernel.org> <7e7c01a7-27fe-00a3-f67f-8bcf9ef3eae9@nvidia.com>
+ <YBxT9XFE6QAQ4T9N@google.com> <cda5547b-0c78-756b-bd0c-f3e534d04bff@nvidia.com>
+ <YByNU4Q7cc7gYwPh@google.com> <87d7ec1f-d892-0491-a2de-3d0feecca647@nvidia.com>
+ <YByi/gdaGJeV/+8b@google.com>
+In-Reply-To: <YByi/gdaGJeV/+8b@google.com>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Thu, 4 Feb 2021 18:39:47 -0800
+Message-ID: <CAJuCfpHmMVFDZ7ZA0uVc_5b4HCB3QBptahBhTWovGvNtjmfGig@mail.gmail.com>
+Subject: Re: [PATCH] mm: cma: support sysfs
+To:     Minchan Kim <minchan@kernel.org>
+Cc:     John Hubbard <jhubbard@nvidia.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        John Dias <joaodias@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/4/21 6:23 PM, Kalesh Singh wrote:
-> If a FD refers to a DMA buffer add the DMA buffer inode number to
-> /proc/<pid>/fdinfo/<FD> and /proc/<pid>/task/<tid>/fdindo/<FD>.
-> 
-> The dmabuf inode number allows userspace to uniquely identify the buffer
-> and avoids a dependency on /proc/<pid>/fd/* when accounting per-process
-> DMA buffer sizes.
-> 
-> Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
-> ---
-> Changes in v3:
->   - Add documentation in proc.rst
+On Thu, Feb 4, 2021 at 5:44 PM Minchan Kim <minchan@kernel.org> wrote:
+>
+> On Thu, Feb 04, 2021 at 04:24:20PM -0800, John Hubbard wrote:
+> > On 2/4/21 4:12 PM, Minchan Kim wrote:
+> > ...
+> > > > > Then, how to know how often CMA API failed?
+> > > >
+> > > > Why would you even need to know that, *in addition* to knowing specific
+> > > > page allocation numbers that failed? Again, there is no real-world motivation
+> > > > cited yet, just "this is good data". Need more stories and support here.
+> > >
+> > > Let me give an example.
+> > >
+> > > Let' assume we use memory buffer allocation via CMA for bluetooth
+> > > enable of  device.
+> > > If user clicks the bluetooth button in the phone but fail to allocate
+> > > the memory from CMA, user will still see bluetooth button gray.
+> > > User would think his touch was not enough powerful so he try clicking
+> > > again and fortunately CMA allocation was successful this time and
+> > > they will see bluetooh button enabled and could listen the music.
+> > >
+> > > Here, product team needs to monitor how often CMA alloc failed so
+> > > if the failure ratio is steadily increased than the bar,
+> > > it means engineers need to go investigation.
+> > >
+> > > Make sense?
+> > >
+> >
+> > Yes, except that it raises more questions:
+> >
+> > 1) Isn't this just standard allocation failure? Don't you already have a way
+> > to track that?
+> >
+> > Presumably, having the source code, you can easily deduce that a bluetooth
+> > allocation failure goes directly to a CMA allocation failure, right?
+> >
+> > Anyway, even though the above is still a little murky, I expect you're right
+> > that it's good to have *some* indication, somewhere about CMA behavior...
+> >
+> > Thinking about this some more, I wonder if this is really /proc/vmstat sort
+> > of data that we're talking about. It seems to fit right in there, yes?
+>
+> Thing is CMA instance are multiple, cma-A, cma-B, cma-C and each of CMA
+> heap has own specific scenario. /proc/vmstat could be bloated a lot
+> while CMA instance will be increased.
 
-Hi,
-Thanks for the doc update.
-
-> Changes in v2:
->   - Update patch description
-> 
->  Documentation/filesystems/proc.rst | 17 +++++++++++++++++
->  drivers/dma-buf/dma-buf.c          |  1 +
->  2 files changed, 18 insertions(+)
-> 
-
-Acked-by: Randy Dunlap <rdunlap@infradead.org> # for Documentation/filesystems/proc.rst
-
-
--- 
-~Randy
-
+Oh, I missed the fact that you need these stats per-CMA.
