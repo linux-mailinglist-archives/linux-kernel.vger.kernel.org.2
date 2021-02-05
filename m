@@ -2,573 +2,314 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A05C311ACF
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 05:23:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C719C311AD2
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 05:24:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229727AbhBFEWd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 23:22:33 -0500
-Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:25080 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S230292AbhBFDNZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 22:13:25 -0500
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-        by mx0a-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 115MfcQN031924;
-        Fri, 5 Feb 2021 14:52:17 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pfpt0220;
- bh=jy2Jh5DBBlZURPHzJjdpRB/DqnRvI4A3HxSGrSPvhL4=;
- b=dWndROMk6HNN3GfV2FBE1w0xonsHcSyNhe5oKwAWu8cCm3EV/c2KC/A6npSb/TwvctSy
- e9VVhhpP1m285Oy322xxGBHvCHs79N3fTu4nags6G+OKl5nhApPopPtjyeQU4/rJVLk+
- iC/+W/4SfQu6Fxs49H0GJVHrLG945FYamxyz8sZ30MTRW9hC6fQAujXyFGEm4ZClgVMH
- x1DQyinF5SWU+Rwl29Hp0APF/IzlBBRtRJqG7duNmPUfGcVS8NO54BLkI11BaLxWA1sY
- 0TrcSvN4rULyPrJe8duB+pkX4fCt6XLjJ8BMQjs4micilP15QtnDdEl3V2Ywtr3vHZL3 +g== 
-Received: from dc5-exch02.marvell.com ([199.233.59.182])
-        by mx0a-0016f401.pphosted.com with ESMTP id 36gg1t5mw2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Fri, 05 Feb 2021 14:52:17 -0800
-Received: from SC-EXCH04.marvell.com (10.93.176.84) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 5 Feb
- 2021 14:52:16 -0800
-Received: from DC5-EXCH02.marvell.com (10.69.176.39) by SC-EXCH04.marvell.com
- (10.93.176.84) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 5 Feb
- 2021 14:52:15 -0800
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 5 Feb 2021 14:52:15 -0800
-Received: from hyd1soter3.marvell.com (unknown [10.29.37.12])
-        by maili.marvell.com (Postfix) with ESMTP id A75AC3F7040;
-        Fri,  5 Feb 2021 14:52:11 -0800 (PST)
-From:   Geetha sowjanya <gakula@marvell.com>
-To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-crypto@vger.kernel.org>
-CC:     <sgoutham@marvell.com>, <davem@davemloft.net>, <kuba@kernel.org>,
-        <sbhatta@marvell.com>, <hkelam@marvell.com>, <jerinj@marvell.com>,
-        <lcherian@marvell.com>, <bbrezillon@kernel.org>,
-        <arno@natisbad.org>, <schalla@marvell.com>,
-        Geetha sowjanya <gakula@marvell.com>,
-        "Sunil Kovvuri Goutham" <Sunil.Goutham@cavium.com>
-Subject: [net-next v4 13/14] octeontx2-af: cn10k: Add RPM Rx/Tx stats support
-Date:   Sat, 6 Feb 2021 04:20:12 +0530
-Message-ID: <20210205225013.15961-14-gakula@marvell.com>
+        id S230466AbhBFEXq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 23:23:46 -0500
+Received: from mga12.intel.com ([192.55.52.136]:57400 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231325AbhBFDOE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 22:14:04 -0500
+IronPort-SDR: oJVKEkZJa8QZV+9AdyQ6EAv4JzZJoFy65jXYZLmBN/5t143s9tahC9Mpy4+HzNImbPEWTqFNLD
+ VrOBt5yFwXpg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9886"; a="160655883"
+X-IronPort-AV: E=Sophos;i="5.81,156,1610438400"; 
+   d="scan'208";a="160655883"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2021 14:52:08 -0800
+IronPort-SDR: FU2GtyOMNJtVOjEBfokp589EhCf3lvpcjzrPdbBArfDbBiqFadkzxAfCYf803v1DSB9PwqJTTx
+ 2tKKn6jqirUg==
+X-IronPort-AV: E=Sophos;i="5.81,156,1610438400"; 
+   d="scan'208";a="409271923"
+Received: from smtp.ostc.intel.com ([10.54.29.231])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2021 14:52:08 -0800
+Received: from mtg-dev.jf.intel.com (mtg-dev.jf.intel.com [10.54.74.10])
+        by smtp.ostc.intel.com (Postfix) with ESMTP id 0943D6365;
+        Fri,  5 Feb 2021 14:52:08 -0800 (PST)
+Received: by mtg-dev.jf.intel.com (Postfix, from userid 1000)
+        id E412036262D; Fri,  5 Feb 2021 14:52:07 -0800 (PST)
+From:   mgross@linux.intel.com
+To:     markgross@kernel.org, mgross@linux.intel.com, arnd@arndb.de,
+        bp@suse.de, damien.lemoal@wdc.com, dragan.cvetic@xilinx.com,
+        gregkh@linuxfoundation.org, corbet@lwn.net,
+        palmerdabbelt@google.com, paul.walmsley@sifive.com,
+        peng.fan@nxp.com, robh+dt@kernel.org, shawnguo@kernel.org,
+        jassisinghbrar@gmail.com
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH v5 00/34] Intel Vision Processing base enabling
+Date:   Fri,  5 Feb 2021 14:51:30 -0800
+Message-Id: <20210205225204.32902-1-mgross@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210205225013.15961-1-gakula@marvell.com>
-References: <20210205225013.15961-1-gakula@marvell.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-02-05_13:2021-02-05,2021-02-05 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hariprasad Kelam <hkelam@marvell.com>
+From: Mark Gross <mgross@linux.intel.com>
 
-RPM supports below list of counters as an extension to existing counters
- *  class based flow control pause frames
- *  vlan/jabber/fragmented packets
- *  fcs/alignment/oversized error packets
+The Intel Vision Processing Unit (VPU) is an IP block that is showing up for
+the first time as part of the Keem Bay SOC.  Keem Bay is a quad core A53 Arm
+SOC.  It is designed to be used as a stand alone SOC as well as in an PCIe
+Vision Processing accelerator add in card.
 
-This patch adds support to display supported RPM counters via debugfs
-and define new mbox rpm_stats to read all support counters.
+This 5th version of this patch set includes more updates to the dt yaml files
+and some minor update updates from feedback given on the V4 version of
+intel_tsens_host.c and an updated commit comment for the vpu-ipc-mailbox to
+provide more detail on how the HW works. (see patch
+v5-0003-mailbox-vpu-ipc-mailbox-Add-support-for-Intel-VPU.patch)
 
-Signed-off-by: Hariprasad Kelam <hkelam@marvell.com>
-Signed-off-by: Geetha sowjanya <gakula@marvell.com>
-Signed-off-by: Sunil Kovvuri Goutham <Sunil.Goutham@cavium.com>
----
- drivers/net/ethernet/marvell/octeontx2/af/cgx.c    |  10 +-
- drivers/net/ethernet/marvell/octeontx2/af/cgx.h    |   4 +-
- .../ethernet/marvell/octeontx2/af/lmac_common.h    |  16 ++-
- drivers/net/ethernet/marvell/octeontx2/af/mbox.h   |  13 ++-
- drivers/net/ethernet/marvell/octeontx2/af/rpm.c    |  57 ++++++++++-
- drivers/net/ethernet/marvell/octeontx2/af/rpm.h    |   9 +-
- .../net/ethernet/marvell/octeontx2/af/rvu_cgx.c    |  36 +++++--
- .../ethernet/marvell/octeontx2/af/rvu_debugfs.c    | 108 +++++++++++++++++++--
- 8 files changed, 227 insertions(+), 26 deletions(-)
+At the bottom of this cover letter is the delta between v4 and this version for
+easy review of the modifications.
 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/cgx.c b/drivers/net/ethernet/marvell/octeontx2/af/cgx.c
-index 9a343fd..cf2358b 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/cgx.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/cgx.c
-@@ -330,10 +330,8 @@ void cgx_lmac_enadis_rx_pause_fwding(void *cgxd, int lmac_id, bool enable)
- 
- int cgx_get_rx_stats(void *cgxd, int lmac_id, int idx, u64 *rx_stat)
- {
--	struct mac_ops *mac_ops;
- 	struct cgx *cgx = cgxd;
- 
--	mac_ops = cgx->mac_ops;
- 	if (!is_lmac_valid(cgx, lmac_id))
- 		return -ENODEV;
- 	*rx_stat =  cgx_read(cgx, lmac_id, CGXX_CMRX_RX_STAT0 + (idx * 8));
-@@ -342,10 +340,8 @@ int cgx_get_rx_stats(void *cgxd, int lmac_id, int idx, u64 *rx_stat)
- 
- int cgx_get_tx_stats(void *cgxd, int lmac_id, int idx, u64 *tx_stat)
- {
--	struct mac_ops *mac_ops;
- 	struct cgx *cgx = cgxd;
- 
--	mac_ops = cgx->mac_ops;
- 	if (!is_lmac_valid(cgx, lmac_id))
- 		return -ENODEV;
- 	*tx_stat = cgx_read(cgx, lmac_id, CGXX_CMRX_TX_STAT0 + (idx * 8));
-@@ -1047,7 +1043,11 @@ struct mac_ops	cgx_mac_ops    = {
- 	.int_ena_bit    =       FW_CGX_INT,
- 	.lmac_fwi	=	CGX_LMAC_FWI,
- 	.non_contiguous_serdes_lane = false,
-+	.rx_stats_cnt   =       9,
-+	.tx_stats_cnt   =       18,
- 	.get_nr_lmacs	=	cgx_get_nr_lmacs,
-+	.mac_get_rx_stats  =	cgx_get_rx_stats,
-+	.mac_get_tx_stats  =	cgx_get_tx_stats,
- 	.mac_enadis_rx_pause_fwding =	cgx_lmac_enadis_rx_pause_fwding,
- 	.mac_get_pause_frm_status =	cgx_lmac_get_pause_frm_status,
- 	.mac_enadis_pause_frm =		cgx_lmac_enadis_pause_frm,
-@@ -1120,6 +1120,8 @@ static int cgx_probe(struct pci_dev *pdev, const struct pci_device_id *id)
- 
- 	cgx_populate_features(cgx);
- 
-+	mutex_init(&cgx->lock);
-+
- 	err = cgx_lmac_init(cgx);
- 	if (err)
- 		goto err_release_lmac;
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/cgx.h b/drivers/net/ethernet/marvell/octeontx2/af/cgx.h
-index f2c77e0..bb0087e 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/cgx.h
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/cgx.h
-@@ -41,7 +41,7 @@
- #define FW_CGX_INT			BIT_ULL(1)
- #define CGXX_CMRX_INT_ENA_W1S		0x058
- #define CGXX_CMRX_RX_ID_MAP		0x060
--#define CGXX_CMRX_RX_STAT0		(0x070 + mac_ops->csr_offset)
-+#define CGXX_CMRX_RX_STAT0		0x070
- #define CGXX_CMRX_RX_LMACS		0x128
- #define CGXX_CMRX_RX_DMAC_CTL0		(0x1F8 + mac_ops->csr_offset)
- #define CGX_DMAC_CTL0_CAM_ENABLE	BIT_ULL(3)
-@@ -52,7 +52,7 @@
- #define CGX_DMAC_CAM_ADDR_ENABLE	BIT_ULL(48)
- #define CGXX_CMRX_RX_DMAC_CAM1		0x400
- #define CGX_RX_DMAC_ADR_MASK		GENMASK_ULL(47, 0)
--#define CGXX_CMRX_TX_STAT0		(0x700 + mac_ops->csr_offset)
-+#define CGXX_CMRX_TX_STAT0		0x700
- #define CGXX_SCRATCH0_REG		0x1050
- #define CGXX_SCRATCH1_REG		0x1058
- #define CGX_CONST			0x2000
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/lmac_common.h b/drivers/net/ethernet/marvell/octeontx2/af/lmac_common.h
-index b4eb337..fea2303 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/lmac_common.h
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/lmac_common.h
-@@ -63,15 +63,25 @@ struct mac_ops {
- 	u8			lmac_fwi;
- 	u32			fifo_len;
- 	bool			non_contiguous_serdes_lane;
-+	/* RPM & CGX differs in number of Receive/transmit stats */
-+	u8			rx_stats_cnt;
-+	u8			tx_stats_cnt;
- 	/* Incase of RPM get number of lmacs from RPMX_CMR_RX_LMACS[LMAC_EXIST]
- 	 * number of setbits in lmac_exist tells number of lmacs
- 	 */
- 	int			(*get_nr_lmacs)(void *cgx);
- 
-+	/* Register Stats related functions */
-+	int			(*mac_get_rx_stats)(void *cgx, int lmac_id,
-+						    int idx, u64 *rx_stat);
-+	int			(*mac_get_tx_stats)(void *cgx, int lmac_id,
-+						    int idx, u64 *tx_stat);
-+
- 	/* Enable LMAC Pause Frame Configuration */
- 	void			(*mac_enadis_rx_pause_fwding)(void *cgxd,
- 							      int lmac_id,
- 							      bool enable);
-+
- 	int			(*mac_get_pause_frm_status)(void *cgxd,
- 							    int lmac_id,
- 							    u8 *tx_pause,
-@@ -81,10 +91,10 @@ struct mac_ops {
- 							int lmac_id,
- 							u8 tx_pause,
- 							u8 rx_pause);
-+
- 	void			(*mac_pause_frm_config)(void  *cgxd,
- 							int lmac_id,
- 							bool enable);
--
- };
- 
- struct cgx {
-@@ -99,6 +109,10 @@ struct cgx {
- 	u64			hw_features;
- 	struct mac_ops		*mac_ops;
- 	unsigned long		lmac_bmap; /* bitmap of enabled lmacs */
-+	/* Lock to serialize read/write of global csrs like
-+	 * RPMX_MTI_STAT_DATA_HI_CDC etc
-+	 */
-+	struct mutex		lock;
- };
- 
- typedef struct cgx rpm_t;
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/mbox.h b/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
-index fe36a07..cbd66ad 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
-@@ -155,6 +155,7 @@ M(CGX_CFG_PAUSE_FRM,	0x20E, cgx_cfg_pause_frm, cgx_pause_frm_cfg,	\
- 			       cgx_pause_frm_cfg)			\
- M(CGX_FEATURES_GET,	0x20F, cgx_features_get, msg_req,		\
- 			       cgx_features_info_msg)			\
-+M(RPM_STATS,		0x21C, rpm_stats, msg_req, rpm_stats_rsp)	\
- /* NPA mbox IDs (range 0x400 - 0x5FF) */				\
- M(NPA_LF_ALLOC,		0x400, npa_lf_alloc,				\
- 				npa_lf_alloc_req, npa_lf_alloc_rsp)	\
-@@ -403,14 +404,22 @@ struct cgx_pause_frm_cfg {
- #define RVU_LMAC_FEAT_FC		BIT_ULL(0) /* pause frames */
- #define RVU_LMAC_FEAT_PTP		BIT_ULL(1) /* precison time protocol */
- #define RVU_MAC_VERSION			BIT_ULL(2)
--#define RVU_MAC_CGX			0
--#define RVU_MAC_RPM			1
-+#define RVU_MAC_CGX			BIT_ULL(3)
-+#define RVU_MAC_RPM			BIT_ULL(4)
- 
- struct cgx_features_info_msg {
- 	struct mbox_msghdr hdr;
- 	u64    lmac_features;
- };
- 
-+struct rpm_stats_rsp {
-+	struct mbox_msghdr hdr;
-+#define RPM_RX_STATS_COUNT		43
-+#define RPM_TX_STATS_COUNT		34
-+	u64 rx_stats[RPM_RX_STATS_COUNT];
-+	u64 tx_stats[RPM_TX_STATS_COUNT];
-+};
-+
- /* NPA mbox message formats */
- 
- /* NPA mailbox error codes
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rpm.c b/drivers/net/ethernet/marvell/octeontx2/af/rpm.c
-index 8a4241a..3870cd4 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/rpm.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/rpm.c
-@@ -18,7 +18,11 @@ static struct mac_ops	rpm_mac_ops   = {
- 	.int_ena_bit    =       BIT_ULL(0),
- 	.lmac_fwi	=	RPM_LMAC_FWI,
- 	.non_contiguous_serdes_lane = true,
-+	.rx_stats_cnt   =       43,
-+	.tx_stats_cnt   =       34,
- 	.get_nr_lmacs	=	rpm_get_nr_lmacs,
-+	.mac_get_rx_stats  =	rpm_get_rx_stats,
-+	.mac_get_tx_stats  =	rpm_get_tx_stats,
- 	.mac_enadis_rx_pause_fwding =	rpm_lmac_enadis_rx_pause_fwding,
- 	.mac_get_pause_frm_status =	rpm_lmac_get_pause_frm_status,
- 	.mac_enadis_pause_frm =		rpm_lmac_enadis_pause_frm,
-@@ -49,7 +53,7 @@ int rpm_get_nr_lmacs(void *rpmd)
- 
- void rpm_lmac_enadis_rx_pause_fwding(void *rpmd, int lmac_id, bool enable)
- {
--	struct cgx *rpm = rpmd;
-+	rpm_t *rpm = rpmd;
- 	u64 cfg;
- 
- 	if (!rpm)
-@@ -171,3 +175,54 @@ void rpm_lmac_pause_frm_config(void *rpmd, int lmac_id, bool enable)
- 		rpm_write(rpm, lmac_id, RPMX_MTI_MAC100X_COMMAND_CONFIG, cfg);
- 	}
- }
-+
-+int rpm_get_rx_stats(void *rpmd, int lmac_id, int idx, u64 *rx_stat)
-+{
-+	rpm_t *rpm = rpmd;
-+	u64 val_lo, val_hi;
-+
-+	if (!rpm || lmac_id >= rpm->lmac_count)
-+		return -ENODEV;
-+
-+	mutex_lock(&rpm->lock);
-+
-+	/* Update idx to point per lmac Rx statistics page */
-+	idx += lmac_id * rpm->mac_ops->rx_stats_cnt;
-+
-+	/* Read lower 32 bits of counter */
-+	val_lo = rpm_read(rpm, 0, RPMX_MTI_STAT_RX_STAT_PAGES_COUNTERX +
-+			  (idx * 8));
-+
-+	/* upon read of lower 32 bits, higher 32 bits are written
-+	 * to RPMX_MTI_STAT_DATA_HI_CDC
-+	 */
-+	val_hi = rpm_read(rpm, 0, RPMX_MTI_STAT_DATA_HI_CDC);
-+
-+	*rx_stat = (val_hi << 32 | val_lo);
-+
-+	mutex_unlock(&rpm->lock);
-+	return 0;
-+}
-+
-+int rpm_get_tx_stats(void *rpmd, int lmac_id, int idx, u64 *tx_stat)
-+{
-+	rpm_t *rpm = rpmd;
-+	u64 val_lo, val_hi;
-+
-+	if (!rpm || lmac_id >= rpm->lmac_count)
-+		return -ENODEV;
-+
-+	mutex_lock(&rpm->lock);
-+
-+	/* Update idx to point per lmac Tx statistics page */
-+	idx += lmac_id * rpm->mac_ops->tx_stats_cnt;
-+
-+	val_lo = rpm_read(rpm, 0, RPMX_MTI_STAT_TX_STAT_PAGES_COUNTERX +
-+			    (idx * 8));
-+	val_hi = rpm_read(rpm, 0, RPMX_MTI_STAT_DATA_HI_CDC);
-+
-+	*tx_stat = (val_hi << 32 | val_lo);
-+
-+	mutex_unlock(&rpm->lock);
-+	return 0;
-+}
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rpm.h b/drivers/net/ethernet/marvell/octeontx2/af/rpm.h
-index 0e8b456..c939302 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/rpm.h
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/rpm.h
-@@ -18,6 +18,7 @@
- #define RPMX_CMRX_SW_INT_W1S            0x188
- #define RPMX_CMRX_SW_INT_ENA_W1S        0x198
- #define RPMX_CMRX_LINK_CFG		0x1070
-+#define RPMX_MTI_LPCSX_CONTROL(id)     (0x30000 | ((id) * 0x100))
- 
- #define RPMX_CMRX_LINK_RANGE_MASK	GENMASK_ULL(19, 16)
- #define RPMX_CMRX_LINK_BASE_MASK	GENMASK_ULL(11, 0)
-@@ -32,14 +33,20 @@
- #define RPMX_CMR_RX_OVR_BP		0x4120
- #define RPMX_CMR_RX_OVR_BP_EN(x)	BIT_ULL((x) + 8)
- #define RPMX_CMR_RX_OVR_BP_BP(x)	BIT_ULL((x) + 4)
-+#define RPMX_MTI_STAT_RX_STAT_PAGES_COUNTERX 0x12000
-+#define RPMX_MTI_STAT_TX_STAT_PAGES_COUNTERX 0x13000
-+#define RPMX_MTI_STAT_DATA_HI_CDC            0x10038
-+
- #define RPM_LMAC_FWI			0xa
- 
- /* Function Declarations */
-+int rpm_get_nr_lmacs(void *rpmd);
- void rpm_lmac_enadis_rx_pause_fwding(void *rpmd, int lmac_id, bool enable);
- int rpm_lmac_get_pause_frm_status(void *cgxd, int lmac_id, u8 *tx_pause,
- 				  u8 *rx_pause);
- void rpm_lmac_pause_frm_config(void *rpmd, int lmac_id, bool enable);
- int rpm_lmac_enadis_pause_frm(void *rpmd, int lmac_id, u8 tx_pause,
- 			      u8 rx_pause);
--int rpm_get_nr_lmacs(void *cgxd);
-+int rpm_get_tx_stats(void *rpmd, int lmac_id, int idx, u64 *tx_stat);
-+int rpm_get_rx_stats(void *rpmd, int lmac_id, int idx, u64 *rx_stat);
- #endif /* RPM_H */
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c
-index 1c980c8..e0f9414 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c
-@@ -453,10 +453,11 @@ int rvu_mbox_handler_cgx_stop_rxtx(struct rvu *rvu, struct msg_req *req,
- 	return 0;
- }
- 
--int rvu_mbox_handler_cgx_stats(struct rvu *rvu, struct msg_req *req,
--			       struct cgx_stats_rsp *rsp)
-+static int rvu_lmac_get_stats(struct rvu *rvu, struct msg_req *req,
-+			      void *rsp)
- {
- 	int pf = rvu_get_pf(req->hdr.pcifunc);
-+	struct mac_ops *mac_ops;
- 	int stat = 0, err = 0;
- 	u64 tx_stat, rx_stat;
- 	u8 cgx_idx, lmac;
-@@ -467,28 +468,47 @@ int rvu_mbox_handler_cgx_stats(struct rvu *rvu, struct msg_req *req,
- 
- 	rvu_get_cgx_lmac_id(rvu->pf2cgxlmac_map[pf], &cgx_idx, &lmac);
- 	cgxd = rvu_cgx_pdata(cgx_idx, rvu);
-+	mac_ops = get_mac_ops(cgxd);
- 
- 	/* Rx stats */
--	while (stat < CGX_RX_STATS_COUNT) {
--		err = cgx_get_rx_stats(cgxd, lmac, stat, &rx_stat);
-+	while (stat < mac_ops->rx_stats_cnt) {
-+		err = mac_ops->mac_get_rx_stats(cgxd, lmac, stat, &rx_stat);
- 		if (err)
- 			return err;
--		rsp->rx_stats[stat] = rx_stat;
-+		if (mac_ops->rx_stats_cnt == RPM_RX_STATS_COUNT)
-+			((struct rpm_stats_rsp *)rsp)->rx_stats[stat] = rx_stat;
-+		else
-+			((struct cgx_stats_rsp *)rsp)->rx_stats[stat] = rx_stat;
- 		stat++;
- 	}
- 
- 	/* Tx stats */
- 	stat = 0;
--	while (stat < CGX_TX_STATS_COUNT) {
--		err = cgx_get_tx_stats(cgxd, lmac, stat, &tx_stat);
-+	while (stat < mac_ops->tx_stats_cnt) {
-+		err = mac_ops->mac_get_tx_stats(cgxd, lmac, stat, &tx_stat);
- 		if (err)
- 			return err;
--		rsp->tx_stats[stat] = tx_stat;
-+		if (mac_ops->tx_stats_cnt == RPM_TX_STATS_COUNT)
-+			((struct rpm_stats_rsp *)rsp)->tx_stats[stat] = tx_stat;
-+		else
-+			((struct cgx_stats_rsp *)rsp)->tx_stats[stat] = tx_stat;
- 		stat++;
- 	}
- 	return 0;
- }
- 
-+int rvu_mbox_handler_cgx_stats(struct rvu *rvu, struct msg_req *req,
-+			       struct cgx_stats_rsp *rsp)
-+{
-+	return rvu_lmac_get_stats(rvu, req, (void *)rsp);
-+}
-+
-+int rvu_mbox_handler_rpm_stats(struct rvu *rvu, struct msg_req *req,
-+			       struct rpm_stats_rsp *rsp)
-+{
-+	return rvu_lmac_get_stats(rvu, req, (void *)rsp);
-+}
-+
- int rvu_mbox_handler_cgx_mac_addr_set(struct rvu *rvu,
- 				      struct cgx_mac_addr_set_or_get *req,
- 				      struct cgx_mac_addr_set_or_get *rsp)
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c
-index 0b0abd6..ec46a61 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c
-@@ -110,6 +110,89 @@ static char *cgx_tx_stats_fields[] = {
- 	[CGX_STAT17]	= "Control/PAUSE packets sent",
- };
- 
-+static char *rpm_rx_stats_fields[] = {
-+	"Octets of received packets",
-+	"Octets of received packets with out error",
-+	"Received packets with alignment errors",
-+	"Control/PAUSE packets received",
-+	"Packets received with Frame too long Errors",
-+	"Packets received with a1nrange length Errors",
-+	"Received packets",
-+	"Packets received with FrameCheckSequenceErrors",
-+	"Packets received with VLAN header",
-+	"Error packets",
-+	"Packets recievd with unicast DMAC",
-+	"Packets received with multicast DMAC",
-+	"Packets received with broadcast DMAC",
-+	"Dropped packets",
-+	"Total frames received on interface",
-+	"Packets received with an octet count < 64",
-+	"Packets received with an octet count == 64",
-+	"Packets received with an octet count of 65â127",
-+	"Packets received with an octet count of 128-255",
-+	"Packets received with an octet count of 256-511",
-+	"Packets received with an octet count of 512-1023",
-+	"Packets received with an octet count of 1024-1518",
-+	"Packets received with an octet count of > 1518",
-+	"Oversized Packets",
-+	"Jabber Packets",
-+	"Fragmented Packets",
-+	"CBFC(class based flow control) pause frames received for class 0",
-+	"CBFC pause frames received for class 1",
-+	"CBFC pause frames received for class 2",
-+	"CBFC pause frames received for class 3",
-+	"CBFC pause frames received for class 4",
-+	"CBFC pause frames received for class 5",
-+	"CBFC pause frames received for class 6",
-+	"CBFC pause frames received for class 7",
-+	"CBFC pause frames received for class 8",
-+	"CBFC pause frames received for class 9",
-+	"CBFC pause frames received for class 10",
-+	"CBFC pause frames received for class 11",
-+	"CBFC pause frames received for class 12",
-+	"CBFC pause frames received for class 13",
-+	"CBFC pause frames received for class 14",
-+	"CBFC pause frames received for class 15",
-+	"MAC control packets received",
-+};
-+
-+static char *rpm_tx_stats_fields[] = {
-+	"Total octets sent on the interface",
-+	"Total octets transmitted OK",
-+	"Control/Pause frames sent",
-+	"Total frames transmitted OK",
-+	"Total frames sent with VLAN header",
-+	"Error Packets",
-+	"Packets sent to unicast DMAC",
-+	"Packets sent to the multicast DMAC",
-+	"Packets sent to a broadcast DMAC",
-+	"Packets sent with an octet count == 64",
-+	"Packets sent with an octet count of 65â127",
-+	"Packets sent with an octet count of 128-255",
-+	"Packets sent with an octet count of 256-511",
-+	"Packets sent with an octet count of 512-1023",
-+	"Packets sent with an octet count of 1024-1518",
-+	"Packets sent with an octet count of > 1518",
-+	"CBFC(class based flow control) pause frames transmitted for class 0",
-+	"CBFC pause frames transmitted for class 1",
-+	"CBFC pause frames transmitted for class 2",
-+	"CBFC pause frames transmitted for class 3",
-+	"CBFC pause frames transmitted for class 4",
-+	"CBFC pause frames transmitted for class 5",
-+	"CBFC pause frames transmitted for class 6",
-+	"CBFC pause frames transmitted for class 7",
-+	"CBFC pause frames transmitted for class 8",
-+	"CBFC pause frames transmitted for class 9",
-+	"CBFC pause frames transmitted for class 10",
-+	"CBFC pause frames transmitted for class 11",
-+	"CBFC pause frames transmitted for class 12",
-+	"CBFC pause frames transmitted for class 13",
-+	"CBFC pause frames transmitted for class 14",
-+	"CBFC pause frames transmitted for class 15",
-+	"MAC control packets sent",
-+	"Total frames sent on the interface"
-+};
-+
- enum cpt_eng_type {
- 	CPT_AE_TYPE = 1,
- 	CPT_SE_TYPE = 2,
-@@ -1676,23 +1759,34 @@ static int cgx_print_stats(struct seq_file *s, int lmac_id)
- 
- 	/* Rx stats */
- 	seq_printf(s, "\n=======%s RX_STATS======\n\n", mac_ops->name);
--	while (stat < CGX_RX_STATS_COUNT) {
--		err = cgx_get_rx_stats(cgxd, lmac_id, stat, &rx_stat);
-+	while (stat < mac_ops->rx_stats_cnt) {
-+		err = mac_ops->mac_get_rx_stats(cgxd, lmac_id, stat, &rx_stat);
- 		if (err)
- 			return err;
--		seq_printf(s, "%s: %llu\n", cgx_rx_stats_fields[stat], rx_stat);
-+		if (is_rvu_otx2(rvu))
-+			seq_printf(s, "%s: %llu\n", cgx_rx_stats_fields[stat],
-+				   rx_stat);
-+		else
-+			seq_printf(s, "%s: %llu\n", rpm_rx_stats_fields[stat],
-+				   rx_stat);
- 		stat++;
- 	}
- 
- 	/* Tx stats */
- 	stat = 0;
- 	seq_printf(s, "\n=======%s TX_STATS======\n\n", mac_ops->name);
--	while (stat < CGX_TX_STATS_COUNT) {
--		err = cgx_get_tx_stats(cgxd, lmac_id, stat, &tx_stat);
-+	while (stat < mac_ops->tx_stats_cnt) {
-+		err = mac_ops->mac_get_tx_stats(cgxd, lmac_id, stat, &tx_stat);
- 		if (err)
- 			return err;
--		seq_printf(s, "%s: %llu\n", cgx_tx_stats_fields[stat], tx_stat);
--		stat++;
-+
-+	if (is_rvu_otx2(rvu))
-+		seq_printf(s, "%s: %llu\n", cgx_tx_stats_fields[stat],
-+			   tx_stat);
-+	else
-+		seq_printf(s, "%s: %llu\n", rpm_tx_stats_fields[stat],
-+			   tx_stat);
-+	stat++;
- 	}
- 
- 	return err;
+Thanks for looking at these and providing feedback.
+
+--mark
+
+C, Udhayakumar (8):
+  dt-bindings: misc: intel_tsens: Add tsens thermal bindings
+    documentation
+  misc: Tsens ARM host thermal driver.
+  misc: Intel tsens IA host driver.
+  Intel tsens i2c slave driver.
+  misc:intel_tsens: Intel Keem Bay tsens driver.
+  dt-bindings: misc: hddl_dev: Add hddl device management documentation
+  misc: Hddl device management for local host
+  misc: HDDL device management for IA host
+
+Daniele Alessandrelli (4):
+  dt-bindings: mailbox: Add Intel VPU IPC mailbox bindings
+  mailbox: vpu-ipc-mailbox: Add support for Intel VPU IPC mailbox
+  dt-bindings: Add bindings for Keem Bay IPC driver
+  keembay-ipc: Add Keem Bay IPC module
+
+Li, Tingqian (2):
+  dt-bindings: misc: Add Keem Bay vpumgr
+  misc: Add Keem Bay VPU manager
+
+Paul Murphy (2):
+  dt-bindings: Add bindings for Keem Bay VPU IPC driver
+  keembay-vpu-ipc: Add Keem Bay VPU IPC module
+
+Ramya P Karanth (1):
+  Intel Keem Bay XLink SMBus driver
+
+Seamus Kelly (7):
+  xlink-ipc: Add xlink ipc device tree bindings
+  xlink-ipc: Add xlink ipc driver
+  xlink-core: Add xlink core device tree bindings
+  xlink-core: Add xlink core driver xLink
+  xlink-core: Enable xlink protocol over pcie
+  xlink-core: Enable VPU IP management and runtime control
+  xlink-core: add async channel and events
+
+Srikanth Thokala (9):
+  misc: xlink-pcie: Add documentation for XLink PCIe driver
+  misc: xlink-pcie: lh: Add PCIe EPF driver for Local Host
+  misc: xlink-pcie: lh: Add PCIe EP DMA functionality
+  misc: xlink-pcie: lh: Add core communication logic
+  misc: xlink-pcie: lh: Prepare changes for adding remote host driver
+  misc: xlink-pcie: rh: Add PCIe EP driver for Remote Host
+  misc: xlink-pcie: rh: Add core communication logic
+  misc: xlink-pcie: Add XLink API interface
+  misc: xlink-pcie: Add asynchronous event notification support for
+    XLink
+
+mark gross (1):
+  Add Vision Processing Unit (VPU) documentation.
+
+ .../mailbox/intel,vpu-ipc-mailbox.yaml        |   69 +
+ .../bindings/misc/intel,hddl-client.yaml      |  117 +
+ .../bindings/misc/intel,intel-tsens.yaml      |  122 +
+ .../bindings/misc/intel,keembay-vpu-mgr.yaml  |   48 +
+ .../misc/intel,keembay-xlink-ipc.yaml         |   51 +
+ .../bindings/misc/intel,keembay-xlink.yaml    |   29 +
+ .../bindings/soc/intel/intel,keembay-ipc.yaml |   45 +
+ .../soc/intel/intel,keembay-vpu-ipc.yaml      |  143 ++
+ Documentation/hwmon/index.rst                 |    2 +
+ Documentation/hwmon/intel_tsens_host.rst      |   71 +
+ Documentation/hwmon/intel_tsens_sensor.rst    |   67 +
+ Documentation/i2c/busses/index.rst            |    1 +
+ .../i2c/busses/intel-xlink-smbus.rst          |   71 +
+ Documentation/index.rst                       |    1 +
+ .../misc-devices/hddl_device_client.rst       |  212 ++
+ .../misc-devices/hddl_device_server.rst       |  205 ++
+ Documentation/misc-devices/index.rst          |    2 +
+ Documentation/vpu/index.rst                   |   20 +
+ Documentation/vpu/vpu-stack-overview.rst      |  270 +++
+ Documentation/vpu/xlink-core.rst              |   81 +
+ Documentation/vpu/xlink-ipc.rst               |   51 +
+ Documentation/vpu/xlink-pcie.rst              |   90 +
+ MAINTAINERS                                   |   54 +
+ drivers/mailbox/Kconfig                       |   11 +
+ drivers/mailbox/Makefile                      |    2 +
+ drivers/mailbox/vpu-ipc-mailbox.c             |  297 +++
+ drivers/misc/Kconfig                          |    7 +
+ drivers/misc/Makefile                         |    7 +
+ drivers/misc/hddl_device/Kconfig              |   26 +
+ drivers/misc/hddl_device/Makefile             |    7 +
+ drivers/misc/hddl_device/hddl_device.c        |  565 +++++
+ drivers/misc/hddl_device/hddl_device_lh.c     |  764 +++++++
+ drivers/misc/hddl_device/hddl_device_rh.c     |  837 +++++++
+ drivers/misc/hddl_device/hddl_device_util.h   |   52 +
+ drivers/misc/intel_tsens/Kconfig              |   54 +
+ drivers/misc/intel_tsens/Makefile             |   10 +
+ drivers/misc/intel_tsens/intel_tsens_host.c   |  352 +++
+ drivers/misc/intel_tsens/intel_tsens_i2c.c    |  119 +
+ .../misc/intel_tsens/intel_tsens_thermal.c    |  651 ++++++
+ .../misc/intel_tsens/intel_tsens_thermal.h    |   38 +
+ drivers/misc/intel_tsens/keembay_thermal.c    |  169 ++
+ drivers/misc/intel_tsens/keembay_tsens.h      |  366 +++
+ drivers/misc/vpumgr/Kconfig                   |    9 +
+ drivers/misc/vpumgr/Makefile                  |    3 +
+ drivers/misc/vpumgr/vpu_common.h              |   31 +
+ drivers/misc/vpumgr/vpu_mgr.c                 |  370 +++
+ drivers/misc/vpumgr/vpu_smm.c                 |  554 +++++
+ drivers/misc/vpumgr/vpu_smm.h                 |   30 +
+ drivers/misc/vpumgr/vpu_vcm.c                 |  584 +++++
+ drivers/misc/vpumgr/vpu_vcm.h                 |   84 +
+ drivers/misc/xlink-core/Kconfig               |   33 +
+ drivers/misc/xlink-core/Makefile              |    5 +
+ drivers/misc/xlink-core/xlink-core.c          | 1331 +++++++++++
+ drivers/misc/xlink-core/xlink-core.h          |   25 +
+ drivers/misc/xlink-core/xlink-defs.h          |  181 ++
+ drivers/misc/xlink-core/xlink-dispatcher.c    |  436 ++++
+ drivers/misc/xlink-core/xlink-dispatcher.h    |   26 +
+ drivers/misc/xlink-core/xlink-ioctl.c         |  554 +++++
+ drivers/misc/xlink-core/xlink-ioctl.h         |   36 +
+ drivers/misc/xlink-core/xlink-multiplexer.c   | 1164 ++++++++++
+ drivers/misc/xlink-core/xlink-multiplexer.h   |   35 +
+ drivers/misc/xlink-core/xlink-platform.c      |  273 +++
+ drivers/misc/xlink-core/xlink-platform.h      |   65 +
+ drivers/misc/xlink-ipc/Kconfig                |    7 +
+ drivers/misc/xlink-ipc/Makefile               |    4 +
+ drivers/misc/xlink-ipc/xlink-ipc.c            |  878 +++++++
+ drivers/misc/xlink-pcie/Kconfig               |   20 +
+ drivers/misc/xlink-pcie/Makefile              |    2 +
+ drivers/misc/xlink-pcie/common/core.h         |  245 ++
+ drivers/misc/xlink-pcie/common/interface.c    |  124 +
+ drivers/misc/xlink-pcie/common/util.c         |  373 +++
+ drivers/misc/xlink-pcie/common/util.h         |   68 +
+ drivers/misc/xlink-pcie/common/xpcie.h        |  100 +
+ drivers/misc/xlink-pcie/local_host/Makefile   |    6 +
+ drivers/misc/xlink-pcie/local_host/core.c     |  817 +++++++
+ drivers/misc/xlink-pcie/local_host/dma.c      |  575 +++++
+ drivers/misc/xlink-pcie/local_host/epf.c      |  482 ++++
+ drivers/misc/xlink-pcie/local_host/epf.h      |  101 +
+ drivers/misc/xlink-pcie/remote_host/Makefile  |    6 +
+ drivers/misc/xlink-pcie/remote_host/core.c    |  621 +++++
+ drivers/misc/xlink-pcie/remote_host/main.c    |   93 +
+ drivers/misc/xlink-pcie/remote_host/pci.c     |  523 +++++
+ drivers/misc/xlink-pcie/remote_host/pci.h     |   65 +
+ drivers/misc/xlink-smbus/Kconfig              |   26 +
+ drivers/misc/xlink-smbus/Makefile             |    5 +
+ drivers/misc/xlink-smbus/xlink-smbus.c        |  467 ++++
+ drivers/soc/Kconfig                           |    1 +
+ drivers/soc/Makefile                          |    1 +
+ drivers/soc/intel/Kconfig                     |   33 +
+ drivers/soc/intel/Makefile                    |    5 +
+ drivers/soc/intel/keembay-ipc.c               | 1364 +++++++++++
+ drivers/soc/intel/keembay-vpu-ipc.c           | 2026 +++++++++++++++++
+ include/linux/hddl_device.h                   |  153 ++
+ include/linux/intel_tsens_host.h              |   34 +
+ include/linux/soc/intel/keembay-ipc.h         |   30 +
+ include/linux/soc/intel/keembay-vpu-ipc.h     |   62 +
+ include/linux/xlink-ipc.h                     |   48 +
+ include/linux/xlink.h                         |  146 ++
+ include/linux/xlink_drv_inf.h                 |   70 +
+ include/uapi/misc/vpumgr.h                    |   64 +
+ include/uapi/misc/xlink_uapi.h                |  145 ++
+ 101 files changed, 21775 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mailbox/intel,vpu-ipc-mailbox.yaml
+ create mode 100644 Documentation/devicetree/bindings/misc/intel,hddl-client.yaml
+ create mode 100644 Documentation/devicetree/bindings/misc/intel,intel-tsens.yaml
+ create mode 100644 Documentation/devicetree/bindings/misc/intel,keembay-vpu-mgr.yaml
+ create mode 100644 Documentation/devicetree/bindings/misc/intel,keembay-xlink-ipc.yaml
+ create mode 100644 Documentation/devicetree/bindings/misc/intel,keembay-xlink.yaml
+ create mode 100644 Documentation/devicetree/bindings/soc/intel/intel,keembay-ipc.yaml
+ create mode 100644 Documentation/devicetree/bindings/soc/intel/intel,keembay-vpu-ipc.yaml
+ create mode 100644 Documentation/hwmon/intel_tsens_host.rst
+ create mode 100644 Documentation/hwmon/intel_tsens_sensor.rst
+ create mode 100644 Documentation/i2c/busses/intel-xlink-smbus.rst
+ create mode 100644 Documentation/misc-devices/hddl_device_client.rst
+ create mode 100644 Documentation/misc-devices/hddl_device_server.rst
+ create mode 100644 Documentation/vpu/index.rst
+ create mode 100644 Documentation/vpu/vpu-stack-overview.rst
+ create mode 100644 Documentation/vpu/xlink-core.rst
+ create mode 100644 Documentation/vpu/xlink-ipc.rst
+ create mode 100644 Documentation/vpu/xlink-pcie.rst
+ create mode 100644 drivers/mailbox/vpu-ipc-mailbox.c
+ create mode 100644 drivers/misc/hddl_device/Kconfig
+ create mode 100644 drivers/misc/hddl_device/Makefile
+ create mode 100644 drivers/misc/hddl_device/hddl_device.c
+ create mode 100644 drivers/misc/hddl_device/hddl_device_lh.c
+ create mode 100644 drivers/misc/hddl_device/hddl_device_rh.c
+ create mode 100644 drivers/misc/hddl_device/hddl_device_util.h
+ create mode 100644 drivers/misc/intel_tsens/Kconfig
+ create mode 100644 drivers/misc/intel_tsens/Makefile
+ create mode 100644 drivers/misc/intel_tsens/intel_tsens_host.c
+ create mode 100644 drivers/misc/intel_tsens/intel_tsens_i2c.c
+ create mode 100644 drivers/misc/intel_tsens/intel_tsens_thermal.c
+ create mode 100644 drivers/misc/intel_tsens/intel_tsens_thermal.h
+ create mode 100644 drivers/misc/intel_tsens/keembay_thermal.c
+ create mode 100644 drivers/misc/intel_tsens/keembay_tsens.h
+ create mode 100644 drivers/misc/vpumgr/Kconfig
+ create mode 100644 drivers/misc/vpumgr/Makefile
+ create mode 100644 drivers/misc/vpumgr/vpu_common.h
+ create mode 100644 drivers/misc/vpumgr/vpu_mgr.c
+ create mode 100644 drivers/misc/vpumgr/vpu_smm.c
+ create mode 100644 drivers/misc/vpumgr/vpu_smm.h
+ create mode 100644 drivers/misc/vpumgr/vpu_vcm.c
+ create mode 100644 drivers/misc/vpumgr/vpu_vcm.h
+ create mode 100644 drivers/misc/xlink-core/Kconfig
+ create mode 100644 drivers/misc/xlink-core/Makefile
+ create mode 100644 drivers/misc/xlink-core/xlink-core.c
+ create mode 100644 drivers/misc/xlink-core/xlink-core.h
+ create mode 100644 drivers/misc/xlink-core/xlink-defs.h
+ create mode 100644 drivers/misc/xlink-core/xlink-dispatcher.c
+ create mode 100644 drivers/misc/xlink-core/xlink-dispatcher.h
+ create mode 100644 drivers/misc/xlink-core/xlink-ioctl.c
+ create mode 100644 drivers/misc/xlink-core/xlink-ioctl.h
+ create mode 100644 drivers/misc/xlink-core/xlink-multiplexer.c
+ create mode 100644 drivers/misc/xlink-core/xlink-multiplexer.h
+ create mode 100644 drivers/misc/xlink-core/xlink-platform.c
+ create mode 100644 drivers/misc/xlink-core/xlink-platform.h
+ create mode 100644 drivers/misc/xlink-ipc/Kconfig
+ create mode 100644 drivers/misc/xlink-ipc/Makefile
+ create mode 100644 drivers/misc/xlink-ipc/xlink-ipc.c
+ create mode 100644 drivers/misc/xlink-pcie/Kconfig
+ create mode 100644 drivers/misc/xlink-pcie/Makefile
+ create mode 100644 drivers/misc/xlink-pcie/common/core.h
+ create mode 100644 drivers/misc/xlink-pcie/common/interface.c
+ create mode 100644 drivers/misc/xlink-pcie/common/util.c
+ create mode 100644 drivers/misc/xlink-pcie/common/util.h
+ create mode 100644 drivers/misc/xlink-pcie/common/xpcie.h
+ create mode 100644 drivers/misc/xlink-pcie/local_host/Makefile
+ create mode 100644 drivers/misc/xlink-pcie/local_host/core.c
+ create mode 100644 drivers/misc/xlink-pcie/local_host/dma.c
+ create mode 100644 drivers/misc/xlink-pcie/local_host/epf.c
+ create mode 100644 drivers/misc/xlink-pcie/local_host/epf.h
+ create mode 100644 drivers/misc/xlink-pcie/remote_host/Makefile
+ create mode 100644 drivers/misc/xlink-pcie/remote_host/core.c
+ create mode 100644 drivers/misc/xlink-pcie/remote_host/main.c
+ create mode 100644 drivers/misc/xlink-pcie/remote_host/pci.c
+ create mode 100644 drivers/misc/xlink-pcie/remote_host/pci.h
+ create mode 100644 drivers/misc/xlink-smbus/Kconfig
+ create mode 100644 drivers/misc/xlink-smbus/Makefile
+ create mode 100644 drivers/misc/xlink-smbus/xlink-smbus.c
+ create mode 100644 drivers/soc/intel/Kconfig
+ create mode 100644 drivers/soc/intel/Makefile
+ create mode 100644 drivers/soc/intel/keembay-ipc.c
+ create mode 100644 drivers/soc/intel/keembay-vpu-ipc.c
+ create mode 100644 include/linux/hddl_device.h
+ create mode 100644 include/linux/intel_tsens_host.h
+ create mode 100644 include/linux/soc/intel/keembay-ipc.h
+ create mode 100644 include/linux/soc/intel/keembay-vpu-ipc.h
+ create mode 100644 include/linux/xlink-ipc.h
+ create mode 100644 include/linux/xlink.h
+ create mode 100644 include/linux/xlink_drv_inf.h
+ create mode 100644 include/uapi/misc/vpumgr.h
+ create mode 100644 include/uapi/misc/xlink_uapi.h
+
 -- 
-2.7.4
+2.17.1
 
