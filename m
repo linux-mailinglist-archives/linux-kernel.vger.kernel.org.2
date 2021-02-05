@@ -2,203 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B619D310652
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 09:12:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A89DD31066A
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 09:16:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231432AbhBEIIy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 03:08:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55672 "EHLO
+        id S231341AbhBEINm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 03:13:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231633AbhBEIHw (ORCPT
+        with ESMTP id S231709AbhBEIMz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 03:07:52 -0500
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACD01C06121F
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 00:06:40 -0800 (PST)
-Received: by mail-pf1-x434.google.com with SMTP id 18so1674817pfz.3
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 00:06:40 -0800 (PST)
+        Fri, 5 Feb 2021 03:12:55 -0500
+Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC5A5C0613D6;
+        Fri,  5 Feb 2021 00:12:15 -0800 (PST)
+Received: by mail-io1-xd2d.google.com with SMTP id f67so4369670ioa.1;
+        Fri, 05 Feb 2021 00:12:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=GOndOP8F+BfXNLjrSX9CtfpObuYsc9aU1JNxbRzKav4=;
-        b=Nn+MlC5tKBHafRdbSa7S8DmObCjHIWlNYVXwMR2RRmFpY/1YFN/JejT9MseDX0khO/
-         Piwh7OqAi92p946kQ+P8IdpWiNbpooftChpefls8Lmv9U8Q7rleVcIwXuOnqu/4BQzC+
-         goprUTNEMoRlSmp6To1gKsxWw6vM72Yr5P7HEGj5Yi9M5drA9jSPHpz65qDMqWz+R6RX
-         v/NGL7oFcwvXJOVn5S/LHz+ARYcnN5bywATDFLipVqQsms2hfi5V5SGE6jH3LGHk0hhg
-         /aqgi5o6SNZzoeZBdlWnAv3EE3rtQ2IxAYedQIia3hiO+oABFCiB/SacNV9a2foTJouk
-         GRDA==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZB1j7ExK4A7ZTcSGpsFbDsbAtl+Rf3XIZReIJAzrP/E=;
+        b=XXtOOo8b9F7DbnLhdt7eNZyb8z9yhPFsCDrLpHphzl4vaB23xFgJ3GZmf7ZEHhEvgS
+         1jd9OKJ2Fe4xkMM3CRxzb2yiKwG9MJO6vgSThmqNI0ih7o5nV5TXJ+DdQWpXD1HeTSVm
+         XJLRWems/uI5ZtWtNoogLkbkJXt5xxTRb/Vi/BYfe9H+bChyZ7evfs4uTtC3eJhA6fvv
+         ustbNwKcHotkvk82Dm+Irb+8ut84W/Ey7IU07rjuw3T9OgCDnlex+wwnL4tFBx4qwXBP
+         XIB4IsV1CW7tA1jmUkQ5pv0ko0GjbNF5Pplte7OJhTbmmqkUTveewySRDjS7VLs7tov+
+         1Ydw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=GOndOP8F+BfXNLjrSX9CtfpObuYsc9aU1JNxbRzKav4=;
-        b=BxsuyDFLdbYYO2zk8LrRvvb+g7ec7CAA1J2YJXSCv1vGog7NMZxh2xnJkSam+rsJwg
-         PMll6LTumMahKKTiODQvInv4gQ6BrB35fygTYALyWd8cdK3rhtB/OioEe/fmJ5e/E2Cd
-         L0eHWlGTdmkWsYH39qQ7Sa4XDy1Xfd6itztqKexU8bXA+IEKAjbYq2LgLaNSYSKkAXO/
-         fY1KcjtNF8tN2OZOgMy+Xjwt+IndXTfzZpWp7lFnWhaslgpCk/xWy9isMZogKSscomv+
-         Zqo/RnRPtR3vZSKxH84DDz3HVYuDFRNQuzRsMBWedA7ZAvHsraFHlBgim4AGoToZcvox
-         h6dQ==
-X-Gm-Message-State: AOAM530NudsGA0Ev3FVRmwkbXkFR2/qVoTRpboPDzqiRh9e7T7xww3Cg
-        2SKGdEniniQbbG+isfCzfc7SaCfb+bgxCw==
-X-Google-Smtp-Source: ABdhPJx+FpGulW/NuF4+mtl7ogJq0jqebiVtB3k4/SZDAmxf9F1Xx8HSTD5aCBfLoqE9Pbnctuk3TQ==
-X-Received: by 2002:aa7:9538:0:b029:1d6:ccef:72ad with SMTP id c24-20020aa795380000b02901d6ccef72admr3319521pfp.64.1612512399559;
-        Fri, 05 Feb 2021 00:06:39 -0800 (PST)
-Received: from localhost.localdomain ([2601:1c2:680:1319:692:26ff:feda:3a81])
-        by smtp.gmail.com with ESMTPSA id 32sm9520070pgq.80.2021.02.05.00.06.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Feb 2021 00:06:38 -0800 (PST)
-From:   John Stultz <john.stultz@linaro.org>
-To:     lkml <linux-kernel@vger.kernel.org>
-Cc:     John Stultz <john.stultz@linaro.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Christian Koenig <christian.koenig@amd.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Liam Mark <lmark@codeaurora.org>,
-        Chris Goldsworthy <cgoldswo@codeaurora.org>,
-        Laura Abbott <labbott@kernel.org>,
-        Brian Starkey <Brian.Starkey@arm.com>,
-        Hridya Valsaraju <hridya@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Sandeep Patil <sspatil@google.com>,
-        Daniel Mentz <danielmentz@google.com>,
-        =?UTF-8?q?=C3=98rjan=20Eide?= <orjan.eide@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Simon Ser <contact@emersion.fr>,
-        James Jones <jajones@nvidia.com>, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-Subject: [RFC][PATCH v6 7/7] dma-buf: system_heap: Add deferred freeing to the system heap
-Date:   Fri,  5 Feb 2021 08:06:21 +0000
-Message-Id: <20210205080621.3102035-8-john.stultz@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210205080621.3102035-1-john.stultz@linaro.org>
-References: <20210205080621.3102035-1-john.stultz@linaro.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZB1j7ExK4A7ZTcSGpsFbDsbAtl+Rf3XIZReIJAzrP/E=;
+        b=eFoWk5nMcGQj88nCPNNOXvFC3mxNtcls8Uf24ieIiXfAVrzSQr7y32bDYLLPBID0Hq
+         MTcxaF/k9Sdg879nbYnVAH1MaAXeSaqryhG3U5UODJ6x8CxqKXvV9dqm9T0TtORprqKE
+         P8sIEGntYoHtEXC/r5mDIBDqMSCZ3K5+O2KkaHlHoPUFh2ja7RUr9yzVKc7ZMWDu9SmY
+         XnJ+XzGxNN33SgNSgxSg2lJWLmW2Kz9GRtdhmWiOn4ohtbkIDiDz9rXaGkOFwwr8tDvl
+         P0FY6uhVc61MnH5GIqkNyRC4Wou406YBc6yZnOLY6DoZ7fa+cPkPvCk9OHSOO0S9XBqj
+         3uAQ==
+X-Gm-Message-State: AOAM530a1sPsxTFH9+83Uan4dG4q0bgS8XfmjZQlEdTeWAe8WYLQdh/k
+        NpC+FtboCrjkgSjZpKRmz6eifIXAKeszDko6SvA=
+X-Google-Smtp-Source: ABdhPJyHrvMyfOaJbsmql5Jla41bhRts2VhleUawSB3WvJ0q9gvCQh4kjJCdC/CI8Ab9+JXIkXlRhOP46V/vbsFfMJo=
+X-Received: by 2002:a02:3f62:: with SMTP id c34mr3836497jaf.16.1612512735120;
+ Fri, 05 Feb 2021 00:12:15 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20210201145105.20459-1-alexandru.ardelean@analog.com>
+ <20210201145105.20459-6-alexandru.ardelean@analog.com> <20210204174942.000013b3@Huawei.com>
+In-Reply-To: <20210204174942.000013b3@Huawei.com>
+From:   Alexandru Ardelean <ardeleanalex@gmail.com>
+Date:   Fri, 5 Feb 2021 10:12:03 +0200
+Message-ID: <CA+U=DsotfJ5A44CWtdXW=QYzz3ApvLaUK2PqH=Cs3FdqFJVLEQ@mail.gmail.com>
+Subject: Re: [PATCH v3 05/11] iio: buffer: group attr count and attr alloc
+To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        "Hennerich, Michael" <Michael.Hennerich@analog.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        =?UTF-8?B?TnVubyBTw6E=?= <nuno.sa@analog.com>,
+        "Bogdan, Dragos" <dragos.bogdan@analog.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Utilize the deferred free helper library in the system heap.
+On Thu, Feb 4, 2021 at 7:57 PM Jonathan Cameron
+<Jonathan.Cameron@huawei.com> wrote:
+>
+> On Mon, 1 Feb 2021 16:50:59 +0200
+> Alexandru Ardelean <alexandru.ardelean@analog.com> wrote:
+>
+> > If we want to merge the attributes of the buffer/ and scan_elements/
+> > directories, we'll need to count all attributes first, then (depending on
+> > the attribute group) either allocate 2 attribute groups, or a single one.
+>
+> Probably want to note why we might want to do 2 or 1 group here as it
+> sounds weird without knowing where this is going.
 
-This provides a nice performance bump and puts the
-system heap performance on par with ION.
+ack
 
-Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: Christian Koenig <christian.koenig@amd.com>
-Cc: Sumit Semwal <sumit.semwal@linaro.org>
-Cc: Liam Mark <lmark@codeaurora.org>
-Cc: Chris Goldsworthy <cgoldswo@codeaurora.org>
-Cc: Laura Abbott <labbott@kernel.org>
-Cc: Brian Starkey <Brian.Starkey@arm.com>
-Cc: Hridya Valsaraju <hridya@google.com>
-Cc: Suren Baghdasaryan <surenb@google.com>
-Cc: Sandeep Patil <sspatil@google.com>
-Cc: Daniel Mentz <danielmentz@google.com>
-Cc: Ørjan Eide <orjan.eide@arm.com>
-Cc: Robin Murphy <robin.murphy@arm.com>
-Cc: Ezequiel Garcia <ezequiel@collabora.com>
-Cc: Simon Ser <contact@emersion.fr>
-Cc: James Jones <jajones@nvidia.com>
-Cc: linux-media@vger.kernel.org
-Cc: dri-devel@lists.freedesktop.org
-Signed-off-by: John Stultz <john.stultz@linaro.org>
----
-v2:
-* Rework deferred-free api to use reason enum as suggested by
-  Suren Baghdasaryan
----
- drivers/dma-buf/heaps/Kconfig       |  1 +
- drivers/dma-buf/heaps/system_heap.c | 31 ++++++++++++++++++++++-------
- 2 files changed, 25 insertions(+), 7 deletions(-)
+>
+> >
+> > This change moves the allocation of the buffer/ attributes closer to the
+> > allocation of the scan_elements/ attributes to make grouping easier.
+> >
+> > Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+> This is fine, but one comment on a possible tidy up for another day inline.
+>
+> Jonathan
+>
+> > ---
+> >  drivers/iio/industrialio-buffer.c | 71 ++++++++++++++++---------------
+> >  1 file changed, 37 insertions(+), 34 deletions(-)
+> >
+> > diff --git a/drivers/iio/industrialio-buffer.c b/drivers/iio/industrialio-buffer.c
+> > index cc846988fdb9..23f22be62cc7 100644
+> > --- a/drivers/iio/industrialio-buffer.c
+> > +++ b/drivers/iio/industrialio-buffer.c
+> > @@ -1257,41 +1257,16 @@ static int __iio_buffer_alloc_sysfs_and_mask(struct iio_buffer *buffer,
+> >  {
+> >       struct iio_dev_attr *p;
+> >       struct attribute **attr;
+> > -     int ret, i, attrn, attrcount;
+> > +     int ret, i, attrn, scan_el_attrcount, buffer_attrcount;
+> >       const struct iio_chan_spec *channels;
+> >
+> > -     attrcount = 0;
+> > +     buffer_attrcount = 0;
+> >       if (buffer->attrs) {
+> > -             while (buffer->attrs[attrcount] != NULL)
+> > -                     attrcount++;
+> > +             while (buffer->attrs[buffer_attrcount] != NULL)
+> > +                     buffer_attrcount++;
+> >       }
+> >
+> > -     attr = kcalloc(attrcount + ARRAY_SIZE(iio_buffer_attrs) + 1,
+> > -                    sizeof(struct attribute *), GFP_KERNEL);
+> > -     if (!attr)
+> > -             return -ENOMEM;
+> > -
+> > -     memcpy(attr, iio_buffer_attrs, sizeof(iio_buffer_attrs));
+> > -     if (!buffer->access->set_length)
+> > -             attr[0] = &dev_attr_length_ro.attr;
+> > -
+> > -     if (buffer->access->flags & INDIO_BUFFER_FLAG_FIXED_WATERMARK)
+> > -             attr[2] = &dev_attr_watermark_ro.attr;
+> > -
+> > -     if (buffer->attrs)
+> > -             memcpy(&attr[ARRAY_SIZE(iio_buffer_attrs)], buffer->attrs,
+> > -                    sizeof(struct attribute *) * attrcount);
+> > -
+> > -     attr[attrcount + ARRAY_SIZE(iio_buffer_attrs)] = NULL;
+> > -
+> > -     buffer->buffer_group.name = "buffer";
+> > -     buffer->buffer_group.attrs = attr;
+> > -
+> > -     ret = iio_device_register_sysfs_group(indio_dev, &buffer->buffer_group);
+> > -     if (ret)
+> > -             goto error_free_buffer_attrs;
+> > -
+> > -     attrcount = 0;
+> > +     scan_el_attrcount = 0;
+> >       INIT_LIST_HEAD(&buffer->scan_el_dev_attr_list);
+> >       channels = indio_dev->channels;
+> >       if (channels) {
+> > @@ -1304,7 +1279,7 @@ static int __iio_buffer_alloc_sysfs_and_mask(struct iio_buffer *buffer,
+> >                                                        &channels[i]);
+> >                       if (ret < 0)
+> >                               goto error_cleanup_dynamic;
+> > -                     attrcount += ret;
+> > +                     scan_el_attrcount += ret;
+> >                       if (channels[i].type == IIO_TIMESTAMP)
+> >                               indio_dev->scan_index_timestamp =
+> >                                       channels[i].scan_index;
+> > @@ -1319,9 +1294,37 @@ static int __iio_buffer_alloc_sysfs_and_mask(struct iio_buffer *buffer,
+> >               }
+> >       }
+> >
+> > +     attr = kcalloc(buffer_attrcount + ARRAY_SIZE(iio_buffer_attrs) + 1,
+> > +                    sizeof(struct attribute *), GFP_KERNEL);
+> > +     if (!attr) {
+> > +             ret = -ENOMEM;
+> > +             goto error_free_scan_mask;
+> > +     }
+> > +
+> > +     memcpy(attr, iio_buffer_attrs, sizeof(iio_buffer_attrs));
+> > +     if (!buffer->access->set_length)
+> > +             attr[0] = &dev_attr_length_ro.attr;
+> > +
+> > +     if (buffer->access->flags & INDIO_BUFFER_FLAG_FIXED_WATERMARK)
+> > +             attr[2] = &dev_attr_watermark_ro.attr;
+>
+> Again a comment for the future  rather than now, but when we are copying
+> 4 items and then looking at whether to change 2 of them it might be cleaner
+> to just set them directly!  Touch of bit rot here :)
 
-diff --git a/drivers/dma-buf/heaps/Kconfig b/drivers/dma-buf/heaps/Kconfig
-index 7e28934e0def..10632ccfb4a5 100644
---- a/drivers/dma-buf/heaps/Kconfig
-+++ b/drivers/dma-buf/heaps/Kconfig
-@@ -5,6 +5,7 @@ config DMABUF_HEAPS_SYSTEM
- 	bool "DMA-BUF System Heap"
- 	depends on DMABUF_HEAPS
- 	select DRM_PAGE_POOL
-+	select DMABUF_HEAPS_DEFERRED_FREE
- 	help
- 	  Choose this option to enable the system dmabuf heap. The system heap
- 	  is backed by pages from the buddy allocator. If in doubt, say Y.
-diff --git a/drivers/dma-buf/heaps/system_heap.c b/drivers/dma-buf/heaps/system_heap.c
-index 6d39e9f32e36..042244407db5 100644
---- a/drivers/dma-buf/heaps/system_heap.c
-+++ b/drivers/dma-buf/heaps/system_heap.c
-@@ -22,6 +22,7 @@
- #include <linux/vmalloc.h>
- 
- #include <drm/page_pool.h>
-+#include "deferred-free-helper.h"
- 
- static struct dma_heap *sys_heap;
- 
-@@ -33,6 +34,7 @@ struct system_heap_buffer {
- 	struct sg_table sg_table;
- 	int vmap_cnt;
- 	void *vaddr;
-+	struct deferred_freelist_item deferred_free;
- };
- 
- struct dma_heap_attachment {
-@@ -308,30 +310,45 @@ static int system_heap_zero_buffer(struct system_heap_buffer *buffer)
- 	return ret;
- }
- 
--static void system_heap_dma_buf_release(struct dma_buf *dmabuf)
-+static void system_heap_buf_free(struct deferred_freelist_item *item,
-+				 enum df_reason reason)
- {
--	struct system_heap_buffer *buffer = dmabuf->priv;
-+	struct system_heap_buffer *buffer;
- 	struct sg_table *table;
- 	struct scatterlist *sg;
- 	int i, j;
- 
-+	buffer = container_of(item, struct system_heap_buffer, deferred_free);
- 	/* Zero the buffer pages before adding back to the pool */
--	system_heap_zero_buffer(buffer);
-+	if (reason == DF_NORMAL)
-+		if (system_heap_zero_buffer(buffer))
-+			reason = DF_UNDER_PRESSURE; // On failure, just free
- 
- 	table = &buffer->sg_table;
- 	for_each_sg(table->sgl, sg, table->nents, i) {
- 		struct page *page = sg_page(sg);
- 
--		for (j = 0; j < NUM_ORDERS; j++) {
--			if (compound_order(page) == orders[j])
--				break;
-+		if (reason == DF_UNDER_PRESSURE) {
-+			__free_pages(page, compound_order(page));
-+		} else {
-+			for (j = 0; j < NUM_ORDERS; j++) {
-+				if (compound_order(page) == orders[j])
-+					break;
-+			}
-+			drm_page_pool_add(pools[j], page);
- 		}
--		drm_page_pool_add(pools[j], page);
- 	}
- 	sg_free_table(table);
- 	kfree(buffer);
- }
- 
-+static void system_heap_dma_buf_release(struct dma_buf *dmabuf)
-+{
-+	struct system_heap_buffer *buffer = dmabuf->priv;
-+
-+	deferred_free(&buffer->deferred_free, system_heap_buf_free, buffer->len);
-+}
-+
- static const struct dma_buf_ops system_heap_buf_ops = {
- 	.attach = system_heap_attach,
- 	.detach = system_heap_detach,
--- 
-2.25.1
+So, I've been on-and-off about how to deal with this one.
+I wanted to clean it in various ways using new kernel sysfs APIs.
+Maybe, also remove the readonly variants and use the is_visible()
+property to set RO/RW modes.
+But I also came to the conclusion that this is an idea to address later.
+Trying to address this early-on confused me with other overlapping changes.
 
+>
+> > +
+> > +     if (buffer->attrs)
+> > +             memcpy(&attr[ARRAY_SIZE(iio_buffer_attrs)], buffer->attrs,
+> > +                    sizeof(struct attribute *) * buffer_attrcount);
+> > +
+> > +     buffer_attrcount += ARRAY_SIZE(iio_buffer_attrs);
+> > +     attr[buffer_attrcount] = NULL;
+> > +
+> > +     buffer->buffer_group.name = "buffer";
+> > +     buffer->buffer_group.attrs = attr;
+> > +
+> > +     ret = iio_device_register_sysfs_group(indio_dev, &buffer->buffer_group);
+> > +     if (ret)
+> > +             goto error_free_buffer_attrs;
+> > +
+> >       buffer->scan_el_group.name = iio_scan_elements_group_name;
+> >
+> > -     buffer->scan_el_group.attrs = kcalloc(attrcount + 1,
+> > +     buffer->scan_el_group.attrs = kcalloc(scan_el_attrcount + 1,
+> >                                             sizeof(buffer->scan_el_group.attrs[0]),
+> >                                             GFP_KERNEL);
+> >       if (buffer->scan_el_group.attrs == NULL) {
+> > @@ -1341,12 +1344,12 @@ static int __iio_buffer_alloc_sysfs_and_mask(struct iio_buffer *buffer,
+> >
+> >  error_free_scan_el_attrs:
+> >       kfree(buffer->scan_el_group.attrs);
+> > +error_free_buffer_attrs:
+> > +     kfree(buffer->buffer_group.attrs);
+> >  error_free_scan_mask:
+> >       bitmap_free(buffer->scan_mask);
+> >  error_cleanup_dynamic:
+> >       iio_free_chan_devattr_list(&buffer->scan_el_dev_attr_list);
+> > -error_free_buffer_attrs:
+> > -     kfree(buffer->buffer_group.attrs);
+> >
+> >       return ret;
+> >  }
+>
