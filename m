@@ -2,105 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AF4E310700
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 09:49:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB9D8310709
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 09:51:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229650AbhBEItC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 03:49:02 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:30948 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229570AbhBEIsz (ORCPT
+        id S229750AbhBEItS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 03:49:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36396 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229570AbhBEItG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 03:48:55 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612514845;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=wtAB+E6c/TYBQZzlkX08yekPP1vLvgQfj0ltXVt2MOI=;
-        b=CWAS3XiiybAR+cVuW/cvFs8IHdrRGDB+0VmnAbkEA0iO4io9vtZREyP9VmM+y8Wn29+xHU
-        SYGIlR7yd2yPbXh/6V+OoOtyk2MQSAoiN/f4wjfS498SV+TDU9AkN5hqyUx14gYQ28HjnX
-        j2WFUGj40BIRLxIKHdtcB3zoW+2MYrc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-448-thrY_TvcNtuKmhP4wp5wyA-1; Fri, 05 Feb 2021 03:47:23 -0500
-X-MC-Unique: thrY_TvcNtuKmhP4wp5wyA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1F75179EC2;
-        Fri,  5 Feb 2021 08:47:22 +0000 (UTC)
-Received: from [10.36.113.156] (ovpn-113-156.ams2.redhat.com [10.36.113.156])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D855A5D9D3;
-        Fri,  5 Feb 2021 08:47:20 +0000 (UTC)
-Subject: Re: [PATCH] hugetlb_cgroup: use helper pages_per_huge_page() in
- hugetlb_cgroup
-To:     Miaohe Lin <linmiaohe@huawei.com>, akpm@linux-foundation.org
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20210205084513.29624-1-linmiaohe@huawei.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <e1991759-c036-0b94-465f-fe9e58c1c322@redhat.com>
-Date:   Fri, 5 Feb 2021 09:47:20 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Fri, 5 Feb 2021 03:49:06 -0500
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 483E3C0613D6;
+        Fri,  5 Feb 2021 00:48:26 -0800 (PST)
+Received: by mail-qk1-x735.google.com with SMTP id k193so6150814qke.6;
+        Fri, 05 Feb 2021 00:48:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=BzE1rC9+4Ob7a//CgjHcInBulG7U+bfG7YEXt1wxsHs=;
+        b=l9dVTCmGoAURLhIdtpY2Il8vjJK+VKdCqHJ1EiB/wVxGZPRe7SNrjXgBqM5mG5M3/E
+         H+kS2t2WupnIjZSXM3GcR0RScM0ajwjrzV7/3Qo05Ct+ISrDtDrLNZ7xWsRFnN27tanQ
+         4sG9dY24InlBdr0SMSoSY+HvLid8mHrsT/JbpFWdGaTQDJ/HdTg02kJrnFfHOyYIYwQV
+         iBuerbx9c+FlAhT0i5h/1t/k74d89WBnIg6+CNdpIsOYZQp63+ArUXIArv/3ls4KokSA
+         vm2IKsjVGNE2nvu+T+W7EPJ5FgH/Ud5MBb+f7qIeni0jCsYLYBHxTH8vj8LYy0IY0WSC
+         ygcQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=BzE1rC9+4Ob7a//CgjHcInBulG7U+bfG7YEXt1wxsHs=;
+        b=o/HLsBAfpYVDqKOTKNAAMoCqQkFWFV4sgRqWSiFKe/fZ54SDjHrQZirmOWuDik2JKE
+         9FL0CE588zWqCHiDxLfg5hwj6enn6k84mnRJ9JkSycFV7TMJu//OWIainfpyg0xQ4xWq
+         Ai0ah9ndnR1BKqnVon+m4w7guufRHmn3ri9jkbLxk4Zz3C468IY+dEup5cV0B8zxOC0m
+         KGnFEaEwHVE16cVo+bwThjYyhucEdbOjLc4m3F77I4dKiOIR90ExrAFN/Ht+xcjCsYWx
+         S86oJ7932kI5jcqqCDj2HPAewg9llEdEKQqVw9qe3Qp3WFlJR1AadhLnHpfVwilhDa1K
+         XCSA==
+X-Gm-Message-State: AOAM530Qa84ZcmSkWH9N2PTPMFXayJPDhH50qYBRr9iOfl3uZWWQlCVg
+        LPPE4sXAKX+VDqa+UI84JYg=
+X-Google-Smtp-Source: ABdhPJwEsp2HDY6aiAZnc37qMPpbhH6YkFjIEJrGnJSSGixJ0jWz4+FKSkGEAK6X9G6aC8EfvAL/EA==
+X-Received: by 2002:a37:9bca:: with SMTP id d193mr3262357qke.369.1612514905594;
+        Fri, 05 Feb 2021 00:48:25 -0800 (PST)
+Received: from localhost.localdomain ([156.146.36.157])
+        by smtp.gmail.com with ESMTPSA id b17sm7906715qkh.57.2021.02.05.00.48.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Feb 2021 00:48:24 -0800 (PST)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     robdclark@gmail.com, sean@poorly.run, airlied@linux.ie,
+        daniel@ffwll.ch, jonathan@marek.ca, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: [PATCH] drivers: gpu: drm: msn: disp: dpu1: Fixed couple of spellings in the file dpu_hw_top.h
+Date:   Fri,  5 Feb 2021 14:17:58 +0530
+Message-Id: <20210205084758.354509-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-In-Reply-To: <20210205084513.29624-1-linmiaohe@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05.02.21 09:45, Miaohe Lin wrote:
-> We could use helper function pages_per_huge_page() to get the number of
-> pages in a hstate to simplify the code slightly.
-> 
-> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
-> ---
->   mm/hugetlb_cgroup.c | 6 +++---
->   1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/mm/hugetlb_cgroup.c b/mm/hugetlb_cgroup.c
-> index 8909e075d441..86b5cc128584 100644
-> --- a/mm/hugetlb_cgroup.c
-> +++ b/mm/hugetlb_cgroup.c
-> @@ -113,7 +113,7 @@ static void hugetlb_cgroup_init(struct hugetlb_cgroup *h_cgroup,
->   			rsvd_parent);
->   
->   		limit = round_down(PAGE_COUNTER_MAX,
-> -				   1 << huge_page_order(&hstates[idx]));
-> +				   pages_per_huge_page(&hstates[idx]));
->   
->   		ret = page_counter_set_max(
->   			hugetlb_cgroup_counter_from_cgroup(h_cgroup, idx),
-> @@ -466,7 +466,7 @@ static int hugetlb_cgroup_read_u64_max(struct seq_file *seq, void *v)
->   	counter = &h_cg->hugepage[idx];
->   
->   	limit = round_down(PAGE_COUNTER_MAX,
-> -			   1 << huge_page_order(&hstates[idx]));
-> +			   pages_per_huge_page(&hstates[idx]));
->   
->   	switch (MEMFILE_ATTR(cft->private)) {
->   	case RES_RSVD_USAGE:
-> @@ -513,7 +513,7 @@ static ssize_t hugetlb_cgroup_write(struct kernfs_open_file *of,
->   		return ret;
->   
->   	idx = MEMFILE_IDX(of_cft(of)->private);
-> -	nr_pages = round_down(nr_pages, 1 << huge_page_order(&hstates[idx]));
-> +	nr_pages = round_down(nr_pages, pages_per_huge_page(&hstates[idx]));
->   
->   	switch (MEMFILE_ATTR(of_cft(of)->private)) {
->   	case RES_RSVD_LIMIT:
-> 
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
 
--- 
-Thanks,
+s/confguration/configuration/
+s/Regsiters/Registers/
 
-David / dhildenb
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+ drivers/gpu/drm/msm/disp/dpu1/dpu_hw_top.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_top.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_top.h
+index 8018fff5667a..3aa10c89ca1b 100644
+--- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_top.h
++++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_top.h
+@@ -30,7 +30,7 @@ struct traffic_shaper_cfg {
+
+ /**
+  * struct split_pipe_cfg - pipe configuration for dual display panels
+- * @en        : Enable/disable dual pipe confguration
++ * @en        : Enable/disable dual pipe configuration
+  * @mode      : Panel interface mode
+  * @intf      : Interface id for main control path
+  * @split_flush_en: Allows both the paths to be flushed when master path is
+@@ -76,7 +76,7 @@ struct dpu_vsync_source_cfg {
+  * @setup_traffic_shaper : programs traffic shaper control
+  */
+ struct dpu_hw_mdp_ops {
+-	/** setup_split_pipe() : Regsiters are not double buffered, thisk
++	/** setup_split_pipe() : Registers are not double buffered, thisk
+ 	 * function should be called before timing control enable
+ 	 * @mdp  : mdp top context driver
+ 	 * @cfg  : upper and lower part of pipe configuration
+--
+2.30.0
 
