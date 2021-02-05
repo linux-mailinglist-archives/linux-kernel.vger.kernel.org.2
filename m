@@ -2,79 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB9B4311130
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 20:30:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D15B531112E
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 20:30:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233492AbhBERqd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 12:46:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56522 "EHLO mail.kernel.org"
+        id S233698AbhBERp7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 12:45:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56410 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232889AbhBERnb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 12:43:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5B46764E2E;
-        Fri,  5 Feb 2021 19:25:13 +0000 (UTC)
+        id S233403AbhBERnQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 12:43:16 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7E95164DDD;
+        Fri,  5 Feb 2021 19:24:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612553113;
-        bh=slBMzILp9QgXeNYRnY8ojvq0IafhxVVhPZ1aE5vU+Kc=;
+        s=k20201202; t=1612553090;
+        bh=Wkmdeu84GqsJBxdIKescV+S5TnRP000aL5aQE0iDgkM=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OxHxDOIgvp3x8FVmE9kU1x7oe2zAFmrx8UskZnRa7Sz+btX8Qjxvug4SpUWoXH4rW
-         rkRb8c3XNTvSfb+xXyPW3LgdPzda7JAVTqxepJ2ohReRhIqML8R0711TioSOXpHxH2
-         9A+i5cx6jSysjyLvACKhZThkDYxzM6VpXd868q25/XiqVgZNM6Ilf+AJgpe+dZQFhI
-         yaya6ALMw22278pArjmoCLRwUSBcAguAyhzuOMnpD9THg3s49Xr+OpgBcTx7HNFqCJ
-         ptlAwQtkOHabiS58p88EBnUlOuRwlEgPaKFLWkKK0qlknRpTFtoTh8kZ/APHLdQnt2
-         KoOsyeLgKNaLQ==
-Date:   Fri, 5 Feb 2021 19:24:24 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc:     Sameer Pujar <spujar@nvidia.com>, thierry.reding@gmail.com,
-        jonathanh@nvidia.com, alsa-devel@alsa-project.org,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
-        sharadg@nvidia.com
-Subject: Re: [PATCH v2 0/3] Rename audio graph export functions
-Message-ID: <20210205192424.GK4720@sirena.org.uk>
-References: <1612446612-32613-1-git-send-email-spujar@nvidia.com>
- <875z37scr8.wl-kuninori.morimoto.gx@renesas.com>
+        b=F0piSSUG09Rg5VbPykiphfcgLW5uZlIwNSsVKEHVTKoRYslMmzbPRdlB9LYGqVcXj
+         n2gSnUf78Q5LL2ojCeQfBlBOZ8RpK350oV+z38Af3bFRwxYVp2q+P2wKPejewW83oS
+         hzZDMsZ1cbHIqsRVN14A/dXCch7rhJs6EhO3f2s8mEvvF0M1CcFV3KgKT62m8eATie
+         oG6Cg4HF9LGaWfS0S+VqS1E/04zrs2NV3j1Rh9nfNf1gB9M82PuF5pJb/l8RYVzogS
+         hdO98xV267PbqMSj66hUDaFBmGRAm9Z8Qyn2Dlf0BS2BaNrryOrL2s1RGJ4karf5C4
+         9kybbTER1Svqg==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id DE33940513; Fri,  5 Feb 2021 16:24:46 -0300 (-03)
+Date:   Fri, 5 Feb 2021 16:24:46 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Yonghong Song <yhs@fb.com>
+Cc:     sedat.dilek@gmail.com,
+        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        dwarves@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        bpf@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
+        Jan Engelhardt <jengelh@inai.de>,
+        Domenico Andreoli <cavok@debian.org>,
+        Matthias Schwarzott <zzam@gentoo.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Mark Wieelard <mjw@redhat.com>,
+        Paul Moore <paul@paul-moore.com>,
+        Ondrej Mosnacek <omosnace@redhat.com>,
+        Daniel =?iso-8859-1?Q?P=2E_Berrang=E9?= <berrange@redhat.com>,
+        Tom Stellard <tstellar@redhat.com>
+Subject: Re: ERROR: INT DW_ATE_unsigned_1 Error emitting BTF type
+Message-ID: <20210205192446.GH920417@kernel.org>
+References: <20210204220741.GA920417@kernel.org>
+ <CA+icZUVQSojGgnis8Ds5GW-7-PVMZ2w4X5nQKSSkBPf-29NS6Q@mail.gmail.com>
+ <CA+icZUU2xmZ=mhVYLRk7nZBRW0+v+YqBzq18ysnd7xN+S7JHyg@mail.gmail.com>
+ <CA+icZUVyB3qaqq3pwOyJY_F4V6KU9hdF=AJM_D7iEW4QK4Eo6w@mail.gmail.com>
+ <20210205152823.GD920417@kernel.org>
+ <CA+icZUWzMdhuHDkcKMHAd39iMEijk65v2ADcz0=FdODr38sJ4w@mail.gmail.com>
+ <CA+icZUXb1j-DrjvFEeeOGuR_pKmD_7_RusxpGQy+Pyhaoa==gA@mail.gmail.com>
+ <CA+icZUVZA97V5C3kORqeSiaxRbfGbmzEaxgYf9RUMko4F76=7w@mail.gmail.com>
+ <baa7c017-b2cf-b2cd-fbe8-2e021642f2e3@fb.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="NqNl6FRZtoRUn5bW"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <875z37scr8.wl-kuninori.morimoto.gx@renesas.com>
-X-Cookie: Huh?
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <baa7c017-b2cf-b2cd-fbe8-2e021642f2e3@fb.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Em Fri, Feb 05, 2021 at 11:10:08AM -0800, Yonghong Song escreveu:
+> On 2/5/21 11:06 AM, Sedat Dilek wrote:
+> > On Fri, Feb 5, 2021 at 7:53 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
+> > Grepping through linux.git/tools I guess some BTF tools/libs need to
+> > know what BTF_INT_UNSIGNED is?
+ 
+> BTF_INT_UNSIGNED needs kernel support. Maybe to teach pahole to
+> ignore this for now until kernel infrastructure is ready.
 
---NqNl6FRZtoRUn5bW
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Yeah, I thought about doing that.
 
-On Fri, Feb 05, 2021 at 07:20:42AM +0900, Kuninori Morimoto wrote:
+> Not sure whether this information will be useful or not
+> for BTF. This needs to be discussed separately.
 
-> > This series renames exported functions from audio graph for a better
-> > global visibility. In doing so update the references in audio graph
-> > and Tegra audio graph card drivers.
+Maybe search for the rationale for its introduction in DWARF.
 
-> I guess [1/3] and [2/3] should be merged/squashed ?
-> Otherwise, there is git-bisect error.
-
-Yes, and I'll complain because I have automation to test every patch
-individually!  Otherwise this does look fine to me too.
-
---NqNl6FRZtoRUn5bW
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmAdm2cACgkQJNaLcl1U
-h9Cjjgf/YHn+MjPCdow32NDrJsA500L+9pHXNUNT68r7wTkbBQbkR5vVW2x+xnCW
-IpI5PWFNS1ziAIAuxc6hWVK4VDVA5PVQkoEw/RQXoC7JbproJ6+6QHuFi1ZpZ2Hq
-Q1UoSu82H0g4gx86WqsyqN0sJHIMptniLFQvk830RnDA28iX+N/IXsIh1QBArkZm
-0A1lu77XKKGNFLcOt8xSyXA94aEvAzZYltWROVgdSAOK8e1eAX75ocgeI/uj+eiY
-/yoD6PECteaO6iJLirDAEy5DS/vIW6HBHcIqutdNYc6Z8qrIHWGXqKOJgDQtmvvl
-Rdqyg7VPac3KKd/kcCRjNq/Hi3dbZQ==
-=y6/g
------END PGP SIGNATURE-----
-
---NqNl6FRZtoRUn5bW--
+- ARnaldo
