@@ -2,201 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 396933117FB
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 01:56:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 117153117FA
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 01:54:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231192AbhBFAyG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 19:54:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51826 "EHLO
+        id S230039AbhBFAxn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 19:53:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230363AbhBEKBA (ORCPT
+        with ESMTP id S231192AbhBEKDA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 05:01:00 -0500
-Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE858C0617A7
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 02:00:01 -0800 (PST)
-Received: by mail-ot1-x329.google.com with SMTP id t25so6351857otc.5
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 02:00:01 -0800 (PST)
+        Fri, 5 Feb 2021 05:03:00 -0500
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30A45C06178B
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 02:02:16 -0800 (PST)
+Received: by mail-ej1-x636.google.com with SMTP id jj19so11001384ejc.4
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 02:02:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
+        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=+4u7LFNcU9hMwfgLTZmVYDnd+qbrvGiQY6Ud/lubleQ=;
-        b=Sk2sbOl/YGsWHQ642ZxGsgnlPJp90k/MEp96MZd6QxXq2XXoVszajynNlPCU1EgwIp
-         JrYz9Rfexw9ffo4+U+GP1iNsEpA+sPVI+m3dHYB8TlTcsM12z2lC0O1i/PT8lFYQ8t+b
-         Vh8efEXHHiw+rh5OORJRedQ8kYAW8fFgoKVIE=
+         :cc;
+        bh=hsH61KDDx3Y8OXz/ss9YObsNe+q0AigWapDctDER+4o=;
+        b=0tGaTw+7R4737QFUR7L03ZUcXH86QHMgoqUHr23glRdIx079vNPmrPdq733mNlcmpz
+         gWlue8u7HtNZuwztRRTiNdL+QeM8vff1jsYhDjUiIlmHjEHIg/Uu6PTL6R9EGJd5jnui
+         fy3BDRuOhtMi/b6OIUnfFIZpj6gW/LHkRkwKEwpuPS3+oCsEy+nwBayXJPEbcj9tSIYR
+         mzohb+aD+asOyK/5d3OZI5o4FcMp5E8Ly5FYKBckPcEJrajoPk5vCBc3ffkA1DKctFHl
+         ueTRTjCYofnO/KPblRuMNmwS7lse3lltLUuDzavC6i1+j4x43hCL4bqQbTw/jOyfq7FD
+         eDuw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=+4u7LFNcU9hMwfgLTZmVYDnd+qbrvGiQY6Ud/lubleQ=;
-        b=PD/esfDtiUs7oeqvBddrNXhadDKjHhBwgb99A75WqEnl+K1gF+MmTNxcTmvudzM3YI
-         NR8vyn/7UqRwq6p6DSlLvB8OW4P6Cq7rUHNcagr5b0E004CpM8iBaliR9y0VE5bcUamB
-         RW4S7QjE+HxO/U5mn4laQ0anfVSxS/S6YrOX0tBD86gsnTQIwMMtefRCNACRlYIwbvaW
-         U1SKfUjowueLpfpUn8KDdXAHPLYTZS2Zz+IR8dY/bH3Z3l8akuyV03XbL2Ctjxyv98mz
-         FJNn4/61OzWOHQGHIyE7QAYBgCmOi6K+DekIf6w6en3RmGv8T/9k14yTQt6ZRZ0y/SDE
-         RCjQ==
-X-Gm-Message-State: AOAM5330dg4tlzoV8UVV1JKvJci0G4AqYBpdM6Jz2Jxmk9BAAo3aq90k
-        b/1fypj9aratBnaSEFZ/4U6pIAXKPmgN1kPbfFt19A==
-X-Google-Smtp-Source: ABdhPJzbngQ5SL0u3GVHbNMBJfQkQH0+gaX2wZqa80FFqtPMKC8sUU8IKX94LyS+DWVU6cSU7N0JCdCRKNzsiegRDCc=
-X-Received: by 2002:a9d:b85:: with SMTP id 5mr2898890oth.281.1612519201295;
- Fri, 05 Feb 2021 02:00:01 -0800 (PST)
+         :message-id:subject:to:cc;
+        bh=hsH61KDDx3Y8OXz/ss9YObsNe+q0AigWapDctDER+4o=;
+        b=manOg/npIOj4BXZJ8f3sVHVmzPAwVobkOicwoBguByo8qZaDufda7DLq65syTTveWt
+         6OSYZM1iw2WHyo9V2F7MEhkEwkB2ykvHWM6viXQ5D60GBj8Pizk8iAoGBXk2TY1BUQeZ
+         wJ4HUjq1vEe2jbVsVaeWFV9FRwjOnfNtrh/BHGTTTMjlwkZSWAFVGfVYkDFIypox9AQd
+         im60R8VDOTpy4xHM3GSZo1iApHMiH7bdfTGLpO2f9jw4q6iGv8/Vrto3VkCYQPVPjDUx
+         qXeVWJW3aEYFdlL4CstmcRNYCQtmdRunphxmyMFORuyKWaE6fynOGZ4hnUeNpwAIWwCL
+         mIUA==
+X-Gm-Message-State: AOAM532I/4xQ03Ngp7f0XyYJ46efygkxV0d1PIT1jkP5MAAmoIhgPmua
+        x6e3/ecR3MzR7L348rYNorVqYvlClmCaItIkiSUhBg==
+X-Google-Smtp-Source: ABdhPJx7xtmfvkbZBlgp22UnO9FMKZTPTwGhYg+QYtWNxMQmoX5+jZMzc9EWb1UGVcog4SwbazfAjmEnpvk1r7powrc=
+X-Received: by 2002:a17:906:84d7:: with SMTP id f23mr3484797ejy.87.1612519334867;
+ Fri, 05 Feb 2021 02:02:14 -0800 (PST)
 MIME-Version: 1.0
-References: <20210204165831.2703772-2-daniel.vetter@ffwll.ch>
- <20210204215019.GA104698@bjorn-Precision-5520> <20210204222407.pkx7wvmcvugdwqdd@pali>
-In-Reply-To: <20210204222407.pkx7wvmcvugdwqdd@pali>
-From:   Daniel Vetter <daniel.vetter@ffwll.ch>
-Date:   Fri, 5 Feb 2021 10:59:50 +0100
-Message-ID: <CAKMK7uFeZpc4oV2GNRdP_EXmYqacg5o3jPegqqaFZZYqqRutFA@mail.gmail.com>
-Subject: Re: [PATCH 1/2] PCI: also set up legacy files only after sysfs init
-To:     =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        Jan Kara <jack@suse.cz>, Kees Cook <keescook@chromium.org>,
+References: <20210205020730.1746354-1-saravanak@google.com>
+In-Reply-To: <20210205020730.1746354-1-saravanak@google.com>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Fri, 5 Feb 2021 11:02:04 +0100
+Message-ID: <CAMRc=Mci+LThvb5M5hmzjoCNSK1EAqZEqo7YU9Gp5Mo0FSRggw@mail.gmail.com>
+Subject: Re: [PATCH v1] gpiolib: Don't probe gpio_device if it's not the
+ primary device
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>, Jason Gunthorpe <jgg@ziepe.ca>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>,
-        "Oliver O'Halloran" <oohall@gmail.com>,
-        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>
+        Dmitry Osipenko <digetx@gmail.com>, kernel-team@android.com,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 4, 2021 at 11:24 PM Pali Roh=C3=A1r <pali@kernel.org> wrote:
+On Fri, Feb 5, 2021 at 3:08 AM Saravana Kannan <saravanak@google.com> wrote:
 >
-> On Thursday 04 February 2021 15:50:19 Bjorn Helgaas wrote:
-> > [+cc Oliver, Pali, Krzysztof]
+> Dmitry reported[1] boot error messages caused by
+> commit 4731210c09f5 ("gpiolib: Bind gpio_device to a driver to enable fw_devlink=on by default").
 >
-> Just to note that extending or using sysfs_initialized introduces
-> another race condition into kernel code which results in PCI fatal
-> errors. Details are in email discussion which Bjorn already sent.
+> gpio-1022 (cpu-pwr-req-hog): hogged as input
+> max77620-pinctrl max77620-pinctrl: pin gpio4 already requested by max77620-pinctrl; cannot claim for gpiochip1
+> max77620-pinctrl max77620-pinctrl: pin-4 (gpiochip1) status -22
+> max77620-pinctrl max77620-pinctrl: could not request pin 4 (gpio4) from group gpio4  on device max77620-pinctrl
+> gpio_stub_drv gpiochip1: Error applying setting, reverse things back
+> gpio_stub_drv: probe of gpiochip1 failed with error -22
+>
+> This happens because when we try to probe a device, driver core calls
+> into pinctrl to set up the pins. However, if the GPIO DT node already
+> has a proper device created and probed, trying to probe the gpio_device
+> with a stub driver makes the pins be claimed twice. pinctrl doesn't like
+> this and throws an error.
+>
+> So, this patch makes sure the gpio_stub_drv doesn't match with a
+> gpio_device if it's not the primary device for the fwnode.
+>
+> [1] - https://lore.kernel.org/lkml/544ad0e4-0954-274c-8e77-866aaa5661a8@gmail.com/
+> Fixes: 4731210c09f5 ("gpiolib: Bind gpio_device to a driver to enable fw_devlink=on by default")
+> Signed-off-by: Saravana Kannan <saravanak@google.com>
+> Tested-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+> Greg/Linus,
+>
+> This will need to go into driver-core because the Fixes is in
+> driver-core too.
+>
+> Thanks,
+> Saravana
+>
+>  drivers/gpio/gpiolib.c | 14 ++++++++++++++
+>  1 file changed, 14 insertions(+)
+>
+> diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
+> index 8e0564c50840..8ad679a928b0 100644
+> --- a/drivers/gpio/gpiolib.c
+> +++ b/drivers/gpio/gpiolib.c
+> @@ -56,8 +56,10 @@
+>  static DEFINE_IDA(gpio_ida);
+>  static dev_t gpio_devt;
+>  #define GPIO_DEV_MAX 256 /* 256 GPIO chip devices supported */
+> +static int gpio_bus_match(struct device *dev, struct device_driver *drv);
+>  static struct bus_type gpio_bus_type = {
+>         .name = "gpio",
+> +       .match = gpio_bus_match,
+>  };
+>
+>  /*
+> @@ -4199,6 +4201,18 @@ void gpiod_put_array(struct gpio_descs *descs)
+>  }
+>  EXPORT_SYMBOL_GPL(gpiod_put_array);
+>
+> +
+> +static int gpio_bus_match(struct device *dev, struct device_driver *drv)
+> +{
+> +       /*
+> +        * Only match if the fwnode doesn't already have a proper struct device
+> +        * created for it.
+> +        */
+> +       if (dev->fwnode && dev->fwnode->dev != dev)
+> +               return 0;
+> +       return 1;
+> +}
+> +
+>  static int gpio_stub_drv_probe(struct device *dev)
+>  {
+>         /*
+> --
+> 2.30.0.365.g02bc693789-goog
+>
 
-Yeah I wondered why this doesn't race, but since the history goes back
-to pre-git times I figured it would have been addressed somehow
-already if it indeed does race.
--Daniel
-
-> > s/also/Also/ in subject
-> >
-> > On Thu, Feb 04, 2021 at 05:58:30PM +0100, Daniel Vetter wrote:
-> > > We are already doing this for all the regular sysfs files on PCI
-> > > devices, but not yet on the legacy io files on the PCI buses. Thus fa=
-r
-> > > now problem, but in the next patch I want to wire up iomem revoke
-> > > support. That needs the vfs up an running already to make so that
-> > > iomem_get_mapping() works.
-> >
-> > s/now problem/no problem/
-> > s/an running/and running/
-> > s/so that/sure that/ ?
-> >
-> > iomem_get_mapping() doesn't exist; I don't know what that should be.
-> >
-> > > Wire it up exactly like the existing code. Note that
-> > > pci_remove_legacy_files() doesn't need a check since the one for
-> > > pci_bus->legacy_io is sufficient.
-> >
-> > I'm not sure exactly what you mean by "the existing code."  I could
-> > probably figure it out, but it would save time to mention the existing
-> > function here.
-> >
-> > This looks like another instance where we should really apply Oliver's
-> > idea of converting these to attribute_groups [1].
-> >
-> > The cover letter mentions options discussed with Greg in [2], but I
-> > don't think the "sysfs_initialized" hack vs attribute_groups was part
-> > of that discussion.
-> >
-> > It's not absolutely a show-stopper, but it *is* a shame to extend the
-> > sysfs_initialized hack if attribute_groups could do this more cleanly
-> > and help solve more than one issue.
-> >
-> > Bjorn
-> >
-> > [1] https://lore.kernel.org/r/CAOSf1CHss03DBSDO4PmTtMp0tCEu5kScn704ZEwL=
-KGXQzBfqaA@mail.gmail.com
-> > [2] https://lore.kernel.org/dri-devel/CAKMK7uGrdDrbtj0OyzqQc0CGrQwc2F3t=
-FJU9vLfm2jjufAZ5YQ@mail.gmail.com/
-> >
-> > > Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
-> > > Cc: Stephen Rothwell <sfr@canb.auug.org.au>
-> > > Cc: Jason Gunthorpe <jgg@ziepe.ca>
-> > > Cc: Kees Cook <keescook@chromium.org>
-> > > Cc: Dan Williams <dan.j.williams@intel.com>
-> > > Cc: Andrew Morton <akpm@linux-foundation.org>
-> > > Cc: John Hubbard <jhubbard@nvidia.com>
-> > > Cc: J=C3=A9r=C3=B4me Glisse <jglisse@redhat.com>
-> > > Cc: Jan Kara <jack@suse.cz>
-> > > Cc: Dan Williams <dan.j.williams@intel.com>
-> > > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > > Cc: linux-mm@kvack.org
-> > > Cc: linux-arm-kernel@lists.infradead.org
-> > > Cc: linux-samsung-soc@vger.kernel.org
-> > > Cc: linux-media@vger.kernel.org
-> > > Cc: Bjorn Helgaas <bhelgaas@google.com>
-> > > Cc: linux-pci@vger.kernel.org
-> > > ---
-> > >  drivers/pci/pci-sysfs.c | 7 +++++++
-> > >  1 file changed, 7 insertions(+)
-> > >
-> > > diff --git a/drivers/pci/pci-sysfs.c b/drivers/pci/pci-sysfs.c
-> > > index fb072f4b3176..0c45b4f7b214 100644
-> > > --- a/drivers/pci/pci-sysfs.c
-> > > +++ b/drivers/pci/pci-sysfs.c
-> > > @@ -927,6 +927,9 @@ void pci_create_legacy_files(struct pci_bus *b)
-> > >  {
-> > >     int error;
-> > >
-> > > +   if (!sysfs_initialized)
-> > > +           return;
-> > > +
-> > >     b->legacy_io =3D kcalloc(2, sizeof(struct bin_attribute),
-> > >                            GFP_ATOMIC);
-> > >     if (!b->legacy_io)
-> > > @@ -1448,6 +1451,7 @@ void pci_remove_sysfs_dev_files(struct pci_dev =
-*pdev)
-> > >  static int __init pci_sysfs_init(void)
-> > >  {
-> > >     struct pci_dev *pdev =3D NULL;
-> > > +   struct pci_bus *pbus =3D NULL;
-> > >     int retval;
-> > >
-> > >     sysfs_initialized =3D 1;
-> > > @@ -1459,6 +1463,9 @@ static int __init pci_sysfs_init(void)
-> > >             }
-> > >     }
-> > >
-> > > +   while ((pbus =3D pci_find_next_bus(pbus)))
-> > > +           pci_create_legacy_files(pbus);
-> > > +
-> > >     return 0;
-> > >  }
-> > >  late_initcall(pci_sysfs_init);
-> > > --
-> > > 2.30.0
-> > >
-> > >
-> > > _______________________________________________
-> > > linux-arm-kernel mailing list
-> > > linux-arm-kernel@lists.infradead.org
-> > > http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-
-
-
---=20
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Acked-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
