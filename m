@@ -2,176 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FBC63105E3
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 08:32:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8245E3105E8
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 08:33:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231497AbhBEHbN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 02:31:13 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:12467 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231269AbhBEHah (ORCPT
+        id S231576AbhBEHb5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 02:31:57 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54610 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231394AbhBEHbt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 02:30:37 -0500
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DX6Ts6KNqzjKkV;
-        Fri,  5 Feb 2021 15:28:33 +0800 (CST)
-Received: from [10.174.179.241] (10.174.179.241) by
- DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
- 14.3.498.0; Fri, 5 Feb 2021 15:29:44 +0800
-Subject: Re: [PATCH v14 6/8] mm: hugetlb: introduce nr_free_vmemmap_pages in
- the struct hstate
-To:     Muchun Song <songmuchun@bytedance.com>
-CC:     <duanxiongchun@bytedance.com>, <linux-doc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
-        <linux-fsdevel@vger.kernel.org>, <corbet@lwn.net>,
-        <mike.kravetz@oracle.com>, <tglx@linutronix.de>,
-        <mingo@redhat.com>, <bp@alien8.de>, <x86@kernel.org>,
-        <hpa@zytor.com>, <dave.hansen@linux.intel.com>, <luto@kernel.org>,
-        <peterz@infradead.org>, <viro@zeniv.linux.org.uk>,
-        <akpm@linux-foundation.org>, <paulmck@kernel.org>,
-        <mchehab+huawei@kernel.org>, <pawan.kumar.gupta@linux.intel.com>,
-        <rdunlap@infradead.org>, <oneukum@suse.com>,
-        <anshuman.khandual@arm.com>, <jroedel@suse.de>,
-        <almasrymina@google.com>, <rientjes@google.com>,
-        <willy@infradead.org>, <osalvador@suse.de>, <mhocko@suse.com>,
-        <song.bao.hua@hisilicon.com>, <david@redhat.com>,
-        <naoya.horiguchi@nec.com>
-References: <20210204035043.36609-1-songmuchun@bytedance.com>
- <20210204035043.36609-7-songmuchun@bytedance.com>
-From:   Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <42c8272a-f170-b27e-af5e-a7cb7777a728@huawei.com>
-Date:   Fri, 5 Feb 2021 15:29:43 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Fri, 5 Feb 2021 02:31:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612510221;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=D6Iob4dGvjRCmRzXFDoiMGK6DSQ4lJ9nfBHdsJ9JxOg=;
+        b=deWbUXRwgQi5Jz4U06A1JZ8U3W7B7udzCkERMU/geEYOMBYbUdiNLvHKYHu1e/kljTKWsN
+        rGzrxIjU9tHkUIfSWYctZvGDK0S5Q18nW/wifAiRPFW4jfysfSbvYuh2vUNu7eD8Wvh9BV
+        mIgwQg6i6ztig7KLRntRW8f/z+kp7WQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-101-f47qj8x4M56wM1N6eJn1qA-1; Fri, 05 Feb 2021 02:30:19 -0500
+X-MC-Unique: f47qj8x4M56wM1N6eJn1qA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5F1061020C25;
+        Fri,  5 Feb 2021 07:30:18 +0000 (UTC)
+Received: from T590 (ovpn-13-14.pek2.redhat.com [10.72.13.14])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id C523060C6C;
+        Fri,  5 Feb 2021 07:30:12 +0000 (UTC)
+Date:   Fri, 5 Feb 2021 15:30:07 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, "Ewan D . Milne" <emilne@redhat.com>
+Subject: Re: [PATCH 2/2] block: avoid to drop & re-add partitions if
+ partitions aren't changed
+Message-ID: <20210205073007.GA1519884@T590>
+References: <20210205021708.1498711-1-ming.lei@redhat.com>
+ <20210205021708.1498711-3-ming.lei@redhat.com>
+ <20210205071429.GA28033@lst.de>
 MIME-Version: 1.0
-In-Reply-To: <20210204035043.36609-7-songmuchun@bytedance.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.179.241]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210205071429.GA28033@lst.de>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/2/4 11:50, Muchun Song wrote:
-> All the infrastructure is ready, so we introduce nr_free_vmemmap_pages
-> field in the hstate to indicate how many vmemmap pages associated with
-> a HugeTLB page that can be freed to buddy allocator. And initialize it
-> in the hugetlb_vmemmap_init(). This patch is actual enablement of the
-> feature.
+On Fri, Feb 05, 2021 at 08:14:29AM +0100, Christoph Hellwig wrote:
+> On Fri, Feb 05, 2021 at 10:17:08AM +0800, Ming Lei wrote:
+> > block ioctl(BLKRRPART) always drops current partitions and adds
+> > partitions again, even though there isn't any change in partitions table.
+> > 
+> > ioctl(BLKRRPART) may be called by systemd-udevd and some disk utilities
+> > frequently.
 > 
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> Acked-by: Mike Kravetz <mike.kravetz@oracle.com>
-> Reviewed-by: Oscar Salvador <osalvador@suse.de>
-> ---
->  include/linux/hugetlb.h |  3 +++
->  mm/hugetlb.c            |  1 +
->  mm/hugetlb_vmemmap.c    | 30 ++++++++++++++++++++++++++----
->  mm/hugetlb_vmemmap.h    |  5 +++++
->  4 files changed, 35 insertions(+), 4 deletions(-)
-> 
-> diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
-> index ad249e56ac49..775aea53669a 100644
-> --- a/include/linux/hugetlb.h
-> +++ b/include/linux/hugetlb.h
-> @@ -560,6 +560,9 @@ struct hstate {
->  	unsigned int nr_huge_pages_node[MAX_NUMNODES];
->  	unsigned int free_huge_pages_node[MAX_NUMNODES];
->  	unsigned int surplus_huge_pages_node[MAX_NUMNODES];
-> +#ifdef CONFIG_HUGETLB_PAGE_FREE_VMEMMAP
-> +	unsigned int nr_free_vmemmap_pages;
-> +#endif
->  #ifdef CONFIG_CGROUP_HUGETLB
->  	/* cgroup control files */
->  	struct cftype cgroup_files_dfl[7];
-> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> index 5518283aa667..04dde2b71f3e 100644
-> --- a/mm/hugetlb.c
-> +++ b/mm/hugetlb.c
-> @@ -3220,6 +3220,7 @@ void __init hugetlb_add_hstate(unsigned int order)
->  	h->next_nid_to_free = first_memory_node;
->  	snprintf(h->name, HSTATE_NAME_LEN, "hugepages-%lukB",
->  					huge_page_size(h)/1024);
-> +	hugetlb_vmemmap_init(h);
->  
->  	parsed_hstate = h;
->  }
-> diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
-> index 224a3cb69bf9..36ebd677e606 100644
-> --- a/mm/hugetlb_vmemmap.c
-> +++ b/mm/hugetlb_vmemmap.c
-> @@ -208,13 +208,10 @@ early_param("hugetlb_free_vmemmap", early_hugetlb_free_vmemmap_param);
->  /*
->   * How many vmemmap pages associated with a HugeTLB page that can be freed
->   * to the buddy allocator.
-> - *
-> - * Todo: Returns zero for now, which means the feature is disabled. We will
-> - * enable it once all the infrastructure is there.
->   */
->  static inline unsigned int free_vmemmap_pages_per_hpage(struct hstate *h)
->  {
-> -	return 0;
-> +	return h->nr_free_vmemmap_pages;
->  }
->  
->  static inline unsigned long free_vmemmap_pages_size_per_hpage(struct hstate *h)
-> @@ -269,3 +266,28 @@ void free_huge_page_vmemmap(struct hstate *h, struct page *head)
->  	 */
->  	vmemmap_remap_free(vmemmap_addr, vmemmap_end, vmemmap_reuse);
->  }
-> +
-> +void __init hugetlb_vmemmap_init(struct hstate *h)
-> +{
-> +	unsigned int nr_pages = pages_per_huge_page(h);
-> +	unsigned int vmemmap_pages;
-> +
-> +	if (!hugetlb_free_vmemmap_enabled)
-> +		return;
-> +
-> +	vmemmap_pages = (nr_pages * sizeof(struct page)) >> PAGE_SHIFT;
-> +	/*
-> +	 * The head page and the first tail page are not to be freed to buddy
-> +	 * allocator, the other pages will map to the first tail page, so they
-> +	 * can be freed.
-> +	 *
-> +	 * Could RESERVE_VMEMMAP_NR be greater than @vmemmap_pages? It is true
-> +	 * on some architectures (e.g. aarch64). See Documentation/arm64/
-> +	 * hugetlbpage.rst for more details.
-> +	 */
-> +	if (likely(vmemmap_pages > RESERVE_VMEMMAP_NR))
-> +		h->nr_free_vmemmap_pages = vmemmap_pages - RESERVE_VMEMMAP_NR;
+> Err, why?  We should probably fix udev to not do stupid things first.
 
-Not a problem. Should we set h->nr_free_vmemmap_pages to 0 in 'else' case explicitly ?
+It is one standard syscall, and the command is just for re-read
+partition table, and it can be called by any application, fdisk
+calls it too even though no any change done on the disk data,
+same with parted, and there should be more.
 
-Anyway, looks good to me. Thanks.
-Reviewed-by: Miaohe Lin <linmiaohe@huawei.com>
+	#define BLKRRPART  _IO(0x12,95) /* re-read partition table */
 
-> +
-> +	pr_info("can free %d vmemmap pages for %s\n", h->nr_free_vmemmap_pages,
-> +		h->name);
-> +}
-> diff --git a/mm/hugetlb_vmemmap.h b/mm/hugetlb_vmemmap.h
-> index 6f89a9eed02c..02a21604ef1d 100644
-> --- a/mm/hugetlb_vmemmap.h
-> +++ b/mm/hugetlb_vmemmap.h
-> @@ -14,6 +14,7 @@
->  int alloc_huge_page_vmemmap(struct hstate *h, struct page *head,
->  			    gfp_t gfp_mask);
->  void free_huge_page_vmemmap(struct hstate *h, struct page *head);
-> +void hugetlb_vmemmap_init(struct hstate *h);
->  #else
->  static inline int alloc_huge_page_vmemmap(struct hstate *h, struct page *head,
->  					  gfp_t gfp_mask)
-> @@ -24,5 +25,9 @@ static inline int alloc_huge_page_vmemmap(struct hstate *h, struct page *head,
->  static inline void free_huge_page_vmemmap(struct hstate *h, struct page *head)
->  {
->  }
-> +
-> +static inline void hugetlb_vmemmap_init(struct hstate *h)
-> +{
-> +}
->  #endif /* CONFIG_HUGETLB_PAGE_FREE_VMEMMAP */
->  #endif /* _LINUX_HUGETLB_VMEMMAP_H */
-> 
+IMO, this syscall isn't supposed to drop partitions if user doesn't
+touch the partition table, do you think it is one sane behavior to
+drop partitions at will?
+
+-- 
+Ming
 
