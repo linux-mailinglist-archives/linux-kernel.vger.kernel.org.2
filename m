@@ -2,65 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 452F8310839
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 10:50:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8746310851
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 10:52:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230097AbhBEJrB convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 5 Feb 2021 04:47:01 -0500
-Received: from relay11.mail.gandi.net ([217.70.178.231]:34189 "EHLO
-        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229698AbhBEJpE (ORCPT
+        id S230071AbhBEJvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 04:51:04 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:12134 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229756AbhBEJrc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 04:45:04 -0500
-Received: from xps13 (aputeaux-654-1-105-144.w90-2.abo.wanadoo.fr [90.2.4.144])
-        (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay11.mail.gandi.net (Postfix) with ESMTPSA id E0A29100003;
-        Fri,  5 Feb 2021 09:44:17 +0000 (UTC)
-Date:   Fri, 5 Feb 2021 10:44:13 +0100
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Pratyush Yadav <p.yadav@ti.com>
-Cc:     Mark Brown <broonie@kernel.org>, <linux-spi@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <zhengxunli@mxic.com.tw>
-Subject: Re: [PATCH 1/2] spi: spi-mem: add spi_mem_dtr_supports_op()
-Message-ID: <20210205104413.5e873c0e@xps13>
-In-Reply-To: <20210204141218.32229-1-p.yadav@ti.com>
-References: <20210204141218.32229-1-p.yadav@ti.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Fri, 5 Feb 2021 04:47:32 -0500
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DX9Wr1cWTz164x8;
+        Fri,  5 Feb 2021 17:45:28 +0800 (CST)
+Received: from localhost.localdomain (10.67.165.24) by
+ DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
+ 14.3.498.0; Fri, 5 Feb 2021 17:46:39 +0800
+From:   Yicong Yang <yangyicong@hisilicon.com>
+To:     <gregkh@linuxfoundation.org>, <jdelvare@suse.com>,
+        <linux@roeck-us.net>, <giometti@enneenne.com>, <abbotti@mev.co.uk>,
+        <hsweeten@visionengravers.com>, <kw@linux.com>,
+        <helgaas@kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-pm@vger.kernel.org>, <linux-hwmon@vger.kernel.org>,
+        <devel@driverdev.osuosl.org>, <linux-kbuild@vger.kernel.org>,
+        <masahiroy@kernel.org>, <michal.lkml@markovi.net>
+CC:     <prime.zeng@huawei.com>, <yangyicong@hisilicon.com>,
+        <linuxarm@openeuler.org>
+Subject: [PATCH 2/4] hwmon: Use subdir-ccflags-* to inherit debug flag
+Date:   Fri, 5 Feb 2021 17:44:13 +0800
+Message-ID: <1612518255-23052-3-git-send-email-yangyicong@hisilicon.com>
+X-Mailer: git-send-email 2.8.1
+In-Reply-To: <1612518255-23052-1-git-send-email-yangyicong@hisilicon.com>
+References: <1612518255-23052-1-git-send-email-yangyicong@hisilicon.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain
+X-Originating-IP: [10.67.165.24]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pratyush,
+From: Junhao He <hejunhao2@hisilicon.com>
 
-Pratyush Yadav <p.yadav@ti.com> wrote on Thu, 4 Feb 2021 19:42:17 +0530:
+Use subdir-ccflags-* instead of ccflags-* to inherit the debug
+settings from Kconfig when traversing subdirectories.
 
-> spi_mem_default_supports_op() rejects DTR ops by default to ensure that
-> the controller drivers that haven't been updated with DTR support
-> continue to reject them. It also makes sure that controllers that don't
-> support DTR mode at all (which is most of them at the moment) also
-> reject them.
-> 
-> This means that controller drivers that want to support DTR mode can't
-> use spi_mem_default_supports_op(). Driver authors have to roll their own
-> supports_op() function and mimic the buswidth checks. See
-> spi-cadence-quadspi.c for example. Or even worse, driver authors might
-> skip it completely or get it wrong.
-> 
-> Add spi_mem_dtr_supports_op(). It provides a basic sanity check for DTR
-> ops and performs the buswidth requirement check. Move the logic for
-> checking buswidth in spi_mem_default_supports_op() to a separate
-> function so the logic is not repeated twice.
-> 
-> Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
+Suggested-by: Bjorn Helgaas <bhelgaas@google.com>
+Signed-off-by: Junhao He <hejunhao2@hisilicon.com>
+Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
+---
+ drivers/hwmon/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I am not a SPI-NOR expert but for what I know this approach looks good
-to me. Let's see what other maintainers think.
+diff --git a/drivers/hwmon/Makefile b/drivers/hwmon/Makefile
+index 09a86c5..1c0c089 100644
+--- a/drivers/hwmon/Makefile
++++ b/drivers/hwmon/Makefile
+@@ -201,5 +201,5 @@ obj-$(CONFIG_SENSORS_XGENE)	+= xgene-hwmon.o
+ obj-$(CONFIG_SENSORS_OCC)	+= occ/
+ obj-$(CONFIG_PMBUS)		+= pmbus/
+ 
+-ccflags-$(CONFIG_HWMON_DEBUG_CHIP) := -DDEBUG
++subdir-ccflags-$(CONFIG_HWMON_DEBUG_CHIP) := -DDEBUG
+ 
+-- 
+2.8.1
 
-Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
-
-Thanks,
-Miquèl
