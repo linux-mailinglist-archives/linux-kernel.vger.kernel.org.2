@@ -2,106 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B9283104F9
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 07:31:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B06C43104F1
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 07:31:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231216AbhBEG3y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 01:29:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34800 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230191AbhBEG3m (ORCPT
+        id S230527AbhBEG2U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 01:28:20 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:12401 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229492AbhBEG2R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 01:29:42 -0500
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29B0FC06178A
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 22:29:02 -0800 (PST)
-Received: by mail-pg1-x532.google.com with SMTP id o16so3850215pgg.5
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 22:29:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=QF0he1VW/PCEQZ3zvHTH+OFfohkfMVY0GDe6DZx57Hw=;
-        b=mj7FWoJGFrcDOyAz41eFXfoppM9M6PPJ32NbJyxstX+ZDQjXJigyQZplmJkH1qTaAI
-         tm89hJvYutfGv0GWNXUUQeCzoJ4C1a7kocoby20QK3xTwDOYU/yJA0TF1WaRDHIUUUdC
-         0EWmCqXSeA0fyGWqsNXnOD836itIMNkR8oUG61F/cNHeTPby+jkXrI5RCBcFZzO81HU8
-         BN1Tb9aUvc0GqHGTD/r/CFvwf9C+OvZYdrFV4VIhdqahmaktNx4YjXoYrf4mTytMSB+O
-         rtJ4q/JfOEKmZiEiZ6H65IwVAg6QM2ai3mfUyEUMJMhZ7LKuc7hL/E3I8Uwbj2NN4jIy
-         JCNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=QF0he1VW/PCEQZ3zvHTH+OFfohkfMVY0GDe6DZx57Hw=;
-        b=lwiSktSNB0djp2n4PaQw/iY5gTMlWpbgupabNM2kBSlmvItYh7W1DqVLN7kT/S5hLl
-         GRF2gxfFaTqGYNouE50fGapzke/1Ve5AIZBzKFooOehCwv+wmmhmxvCqD44IV92dDcSQ
-         z1RLohyx8P6mzbfrDlX2sF3gMPRw6s1hWax2B6tRGk46Yao7UPqpQTwkuMSICsZQgx3h
-         FtwjeWZLRWrv8nxqalJK6GYQKNzMwCRxVI1ri6OKP5M8W8Oa7plRa49WrxIyDur7DCn1
-         Uuch/ROqq1qgGxZ54h63PCBj3YbdDr86ipXNXcuKPpBEZscmQ4ekclL5ZrViVF8wPlvc
-         nRoA==
-X-Gm-Message-State: AOAM5300SZAqrQnrqab5IIJEH3lrO+ZwH2gr81lPBd2dTXzQrxMOEEZV
-        iVDHhbph5WCJVy+XeLw/lzmjcQ==
-X-Google-Smtp-Source: ABdhPJz3xSak1Dn+1ZNBcoidjGDQlEMM7oxnX3oxqr4zZSU6RqBaCShF9omCB+EjG8E8nejz7cbpsQ==
-X-Received: by 2002:a63:db05:: with SMTP id e5mr3016291pgg.104.1612506541740;
-        Thu, 04 Feb 2021 22:29:01 -0800 (PST)
-Received: from localhost.localdomain ([240e:b1:e401:3::f])
-        by smtp.gmail.com with ESMTPSA id z2sm8644919pgl.49.2021.02.04.22.28.53
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 04 Feb 2021 22:29:01 -0800 (PST)
-From:   Muchun Song <songmuchun@bytedance.com>
-To:     hannes@cmpxchg.org, mhocko@kernel.org, vdavydov.dev@gmail.com,
-        akpm@linux-foundation.org
-Cc:     cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Muchun Song <songmuchun@bytedance.com>
-Subject: [PATCH] mm: memcontrol: remove rcu_read_lock from get_mem_cgroup_from_page
-Date:   Fri,  5 Feb 2021 14:27:19 +0800
-Message-Id: <20210205062719.74431-1-songmuchun@bytedance.com>
-X-Mailer: git-send-email 2.21.0 (Apple Git-122)
+        Fri, 5 Feb 2021 01:28:17 -0500
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4DX55y16Lbz7hSV;
+        Fri,  5 Feb 2021 14:26:14 +0800 (CST)
+Received: from ubuntu.network (10.175.138.68) by
+ DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
+ 14.3.498.0; Fri, 5 Feb 2021 14:27:24 +0800
+From:   Zheng Yongjun <zhengyongjun3@huawei.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Zheng Yongjun <zhengyongjun3@huawei.com>
+Subject: [PATCH] net: core: Clean code style issues in `neighbour.c`
+Date:   Fri, 5 Feb 2021 14:28:21 +0800
+Message-ID: <20210205062821.3893-1-zhengyongjun3@huawei.com>
+X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.138.68]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The get_mem_cgroup_from_page() is called under page lock, so the page
-memcg cannot be changed under us. Also, css_get is enough because page
-has a reference to the memcg.
+Do code format alignment to clean code style issues.
 
-If we really want to make the get_mem_cgroup_from_page() suitable for
-arbitrary page, we should use page_memcg_rcu() instead of page_memcg()
-and call it after rcu_read_lock().
-
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
 ---
- mm/memcontrol.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+ net/core/neighbour.c | 17 ++++++++---------
+ 1 file changed, 8 insertions(+), 9 deletions(-)
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 87f01bc05d1f..6c7f1ea3955e 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -1063,16 +1063,15 @@ EXPORT_SYMBOL(get_mem_cgroup_from_mm);
-  */
- struct mem_cgroup *get_mem_cgroup_from_page(struct page *page)
- {
--	struct mem_cgroup *memcg = page_memcg(page);
-+	struct mem_cgroup *memcg;
+diff --git a/net/core/neighbour.c b/net/core/neighbour.c
+index 9500d28a43b0..a742c918a09b 100644
+--- a/net/core/neighbour.c
++++ b/net/core/neighbour.c
+@@ -299,7 +299,7 @@ static void neigh_flush_dev(struct neigh_table *tbl, struct net_device *dev,
+ 		struct neighbour __rcu **np = &nht->hash_buckets[i];
  
- 	if (mem_cgroup_disabled())
- 		return NULL;
- 
--	rcu_read_lock();
- 	/* Page should not get uncharged and freed memcg under us. */
--	if (!memcg || WARN_ON_ONCE(!css_tryget(&memcg->css)))
--		memcg = root_mem_cgroup;
--	rcu_read_unlock();
-+	memcg = page_memcg(page) ? : root_mem_cgroup;
-+	css_get(&memcg->css);
-+
- 	return memcg;
+ 		while ((n = rcu_dereference_protected(*np,
+-					lockdep_is_held(&tbl->lock))) != NULL) {
++						      lockdep_is_held(&tbl->lock))) != NULL) {
+ 			if (dev && n->dev != dev) {
+ 				np = &n->next;
+ 				continue;
+@@ -309,7 +309,7 @@ static void neigh_flush_dev(struct neigh_table *tbl, struct net_device *dev,
+ 				continue;
+ 			}
+ 			rcu_assign_pointer(*np,
+-				   rcu_dereference_protected(n->next,
++					   rcu_dereference_protected(n->next,
+ 						lockdep_is_held(&tbl->lock)));
+ 			write_lock(&n->lock);
+ 			neigh_del_timer(n);
+@@ -634,7 +634,7 @@ static struct neighbour *___neigh_create(struct neigh_table *tbl,
+ 					    lockdep_is_held(&tbl->lock));
+ 	     n1 != NULL;
+ 	     n1 = rcu_dereference_protected(n1->next,
+-			lockdep_is_held(&tbl->lock))) {
++					    lockdep_is_held(&tbl->lock))) {
+ 		if (dev == n1->dev && !memcmp(n1->primary_key, n->primary_key, key_len)) {
+ 			if (want_ref)
+ 				neigh_hold(n1);
+@@ -962,7 +962,7 @@ static void neigh_periodic_work(struct work_struct *work)
+ 	 * BASE_REACHABLE_TIME.
+ 	 */
+ 	queue_delayed_work(system_power_efficient_wq, &tbl->gc_work,
+-			      NEIGH_VAR(&tbl->parms, BASE_REACHABLE_TIME) >> 1);
++			   NEIGH_VAR(&tbl->parms, BASE_REACHABLE_TIME) >> 1);
+ 	write_unlock_bh(&tbl->lock);
  }
- EXPORT_SYMBOL(get_mem_cgroup_from_page);
+ 
+@@ -1620,8 +1620,7 @@ struct neigh_parms *neigh_parms_alloc(struct net_device *dev,
+ 	if (p) {
+ 		p->tbl		  = tbl;
+ 		refcount_set(&p->refcnt, 1);
+-		p->reachable_time =
+-				neigh_rand_reach_time(NEIGH_VAR(p, BASE_REACHABLE_TIME));
++		p->reachable_time = neigh_rand_reach_time(NEIGH_VAR(p, BASE_REACHABLE_TIME));
+ 		dev_hold(dev);
+ 		p->dev = dev;
+ 		write_pnet(&p->net, net);
+@@ -1693,7 +1692,7 @@ void neigh_table_init(int index, struct neigh_table *tbl)
+ 
+ #ifdef CONFIG_PROC_FS
+ 	if (!proc_create_seq_data(tbl->id, 0, init_net.proc_net_stat,
+-			      &neigh_stat_seq_ops, tbl))
++				  &neigh_stat_seq_ops, tbl))
+ 		panic("cannot create neighbour proc dir entry");
+ #endif
+ 
+@@ -1714,10 +1713,10 @@ void neigh_table_init(int index, struct neigh_table *tbl)
+ 	rwlock_init(&tbl->lock);
+ 	INIT_DEFERRABLE_WORK(&tbl->gc_work, neigh_periodic_work);
+ 	queue_delayed_work(system_power_efficient_wq, &tbl->gc_work,
+-			tbl->parms.reachable_time);
++			   tbl->parms.reachable_time);
+ 	timer_setup(&tbl->proxy_timer, neigh_proxy_process, 0);
+ 	skb_queue_head_init_class(&tbl->proxy_queue,
+-			&neigh_table_proxy_queue_class);
++				  &neigh_table_proxy_queue_class);
+ 
+ 	tbl->last_flush = now;
+ 	tbl->last_rand	= now + tbl->parms.reachable_time * 20;
 -- 
-2.11.0
+2.22.0
 
