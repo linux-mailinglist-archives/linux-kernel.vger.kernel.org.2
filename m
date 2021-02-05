@@ -2,89 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 012693115C5
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 23:44:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10FE33115B5
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 23:43:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233199AbhBEWlQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 17:41:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44342 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232881AbhBEOwM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 09:52:12 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 36E5C64FC9;
-        Fri,  5 Feb 2021 14:04:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612533851;
-        bh=T1jLO24sF0pYkT3lQr2onlwV1fj0AbfnrcXXdUAochg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BZOBBDws+/yhmPTxNLP4zonarclKLQMtK4MPPXtDYExmUzHRLjxXcJnfGq14VQa4L
-         yZhVB9oNHiU0DzaVx6si8j0aXHMHTj1MM3VS8xDsEeLmU5/b+5mHQBkgW7cT1CQKhX
-         bLMDr8tZSM1SipNLwaZFpx+i2Ki4uOTJ99+ziw0o=
-Date:   Fri, 5 Feb 2021 15:04:08 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <uwe@kleine-koenig.org>
-Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        kvm@vger.kernel.org, David Airlie <airlied@linux.ie>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        Jaroslav Kysela <perex@perex.cz>,
-        Eric Anholt <eric@anholt.net>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig.org@pengutronix.de>, linux-i2c@vger.kernel.org,
-        Jiri Slaby <jirislaby@kernel.org>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-watchdog@vger.kernel.org, linux-rtc@vger.kernel.org,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Takashi Iwai <tiwai@suse.com>,
-        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        linux-serial@vger.kernel.org, linux-input@vger.kernel.org,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Mike Leach <mike.leach@linaro.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        alsa-devel@alsa-project.org,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        coresight@lists.linaro.org, Vladimir Zapolskiy <vz@mleia.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Mark Brown <broonie@kernel.org>,
-        Matt Mackall <mpm@selenic.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        kernel@pengutronix.de, linux-arm-kernel@lists.infradead.org,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Cornelia Huck <cohuck@redhat.com>, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
-        Vinod Koul <vkoul@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        linux-crypto@vger.kernel.org, Daniel Vetter <daniel@ffwll.ch>,
-        Leo Yan <leo.yan@linaro.org>, dmaengine@vger.kernel.org
-Subject: Re: [PATCH] coresight: etm4x: Fix merge resolution for amba rework
-Message-ID: <YB1QWFWPennQZmjw@kroah.com>
-References: <20210205130848.20009-1-uwe@kleine-koenig.org>
+        id S231379AbhBEWjS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 17:39:18 -0500
+Received: from lb1-smtp-cloud9.xs4all.net ([194.109.24.22]:35553 "EHLO
+        lb1-smtp-cloud9.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232711AbhBEOxF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 09:53:05 -0500
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud9.xs4all.net with ESMTPA
+        id 81jIlTQ8CFFpm81jLlH5Aq; Fri, 05 Feb 2021 15:05:06 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1612533906; bh=x2AMkz27DNqKPKgNetJuCV2sz++CZ3rwFvIw3ofbltE=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=OR6eQ7zch7SkKCZGvArSCh6WCPwdJlX5CBVs9RvPp9bjDWGGaTafqyFDzdODJiVQc
+         egJ2xxtylMGuoOWQCIKzg0hS4ZitEUnqvLIvasqFr3b8LjBZIeaKA7GziJykM69kov
+         gkmBJe0ZbjtAisdE7NwUBGR0VqMPv7zzdSQ9nBEgbOcaSDDlA21fPXbMqV2y06aIUp
+         twZVbcqFaUXf2VKqsXyx9qLHPSLAO62IAsCw88268i8UyHKdKcCBj3V+j+tuJVO2ES
+         6/G1eZWChKhyVcM7QJ1gslMcuSU/+Eq3aBo+Q5Oqd3WMMEnv5zW2BDcO8zsqzrf7na
+         WsYlK6Bo+uFhw==
+Subject: Re: [PATCH] media: pwc: Fix the URB buffer allocation
+To:     Andrew Lunn <andrew@lunn.ch>, Takashi Iwai <tiwai@suse.de>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Matwey V. Kornilov" <matwey@sai.msu.ru>,
+        Robert Foss <robert.foss@linaro.org>
+References: <20210121202855.17400-1-tiwai@suse.de>
+ <7afd0612-de36-60b1-6650-6f8de24a7145@xs4all.nl> <YB0/wTjYqE9IgtXZ@lunn.ch>
+ <s5h1rdu4qgo.wl-tiwai@suse.de> <YB1EXirrstMlg/vA@lunn.ch>
+ <s5hy2g23a2o.wl-tiwai@suse.de> <YB1NyX9QdBdV89bu@lunn.ch>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Message-ID: <88c960d2-40b1-ab6c-c17b-863c803a54b0@xs4all.nl>
+Date:   Fri, 5 Feb 2021 15:05:00 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210205130848.20009-1-uwe@kleine-koenig.org>
+In-Reply-To: <YB1NyX9QdBdV89bu@lunn.ch>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfIQH2UNmB76N2qI9X7HFErel3ASF6ZSyAgrt2zva6/GcXmS3domASqz3v7bYtUz4LDT9j4TUeLl8L8s4F4KlYC6uyEyPcFEjdtfX6O6Ld5TdwUEM7ikq
+ cR6OJAtIBpUyE9HuFUgdwA835tIkG2LPbZu/g4gYchva1WfXdYs5ywLXPlR8PGBMjtfQbbcK2gNn+pI4NlWGOiIUotnKrBOtD1uDvFxGYN3wFMAqdDDShtyu
+ Ub8i4CpJwG9/L+6bEAEDXDdoZ5Tvq+UlnBiVOIhgscqpSAMGql7McalEMGECIV7BgOo4l/pWX91kW7FTxzTlw26kfB2POpq/X4fOjphtbWnsNqsykS13ssNl
+ QGMkAIWU0Bse9T1kCki8Wgo8cebfxw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 05, 2021 at 02:08:47PM +0100, Uwe Kleine-König wrote:
-> This was non-trivial to get right because commits
-> c23bc382ef0e ("coresight: etm4x: Refactor probing routine") and
-> 5214b563588e ("coresight: etm4x: Add support for sysreg only devices")
-> changed the code flow considerably. With this change the driver can be
-> built again.
+On 05/02/2021 14:53, Andrew Lunn wrote:
+> On Fri, Feb 05, 2021 at 02:42:23PM +0100, Takashi Iwai wrote:
+>> On Fri, 05 Feb 2021 14:13:02 +0100,
+>> Andrew Lunn wrote:
+>>>
+>>> Hi Takashi
+>>>
+>>>> Indeed, looks so.  In most cases, this doesn't matter since both point
+>>>> to the same device object.  In some cases like xhci-plat HCD, they
+>>>> differ.  And sysdev  might be a better choice from the consistency
+>>>> POV.
+>>>>
+>>>> But this brought an interesting question, too.  eg. USB chipidea
+>>>> HCD uses platform devices for both controller and sysdev, and I
+>>>> couldn't find any DMA mask setup.  So, no matter what to use, the uwc
+>>>> driver would be broken on this...  Maybe it's just not covered.
+>>>
+>>> Did you do a git bisect to see what actually broke it?  "1161db6776bd:
+>>> media: usb: pwc: Don't use coherent DMA buffers for ISO transfer"
+>>> introduced the code, not the regression. If we understand the
+>>> regression, that might give us the answer about chipidea.
+>>
+>> It's the recent DMA core change, the commit f959dcd6ddfd ("dma-direct:
+>> Fix potential NULL pointer dereference").  But basically it's a right
+>> fix, and the driver hitting this "regression" has been already broken
+>> but casually worked without setting a proper DMA mask.
 > 
-> Fixes: 0573d3fa4864 ("Merge branch 'devel-stable' of git://git.armlinux.org.uk/~rmk/linux-arm into char-misc-next")
-> Signed-off-by: Uwe Kleine-König <uwe@kleine-koenig.org>
+> So for the chipidea, it also just 'casually worked'. But now it
+> probably does not. But that is a separate chipidea issue.  None of my
+> ARM systems use the chipidea IP core, so i cannot test anything.
 
-Now queued up, thanks!
+Since few people use the pwc driver anymore, and certainly not on non-intel
+devices, I am happy with Matwey's patch as is merged in our media tree for
+5.12.
 
-greg k-h
+I'll mark Takashi's patch as Obsolete in patchwork as well.
+
+I might have an SBC with a chipidea, if so, I'll give it a quick spin.
+
+Regards,
+
+	Hans
