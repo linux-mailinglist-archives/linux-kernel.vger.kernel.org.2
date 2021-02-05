@@ -2,84 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9438E31078B
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 10:19:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8287B310784
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 10:16:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229969AbhBEJQq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 04:16:46 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:12436 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229684AbhBEJNo (ORCPT
+        id S230073AbhBEJQP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 04:16:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41686 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230180AbhBEJNy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 04:13:44 -0500
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4DX8n06y9CzjJRT;
-        Fri,  5 Feb 2021 17:11:48 +0800 (CST)
-Received: from [10.174.179.241] (10.174.179.241) by
- DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
- 14.3.498.0; Fri, 5 Feb 2021 17:12:46 +0800
-Subject: Re: [PATCH v14 6/8] mm: hugetlb: introduce nr_free_vmemmap_pages in
- the struct hstate
-To:     Oscar Salvador <osalvador@suse.de>
-CC:     Muchun Song <songmuchun@bytedance.com>,
-        <duanxiongchun@bytedance.com>, <linux-doc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
-        <linux-fsdevel@vger.kernel.org>, <corbet@lwn.net>,
-        <mike.kravetz@oracle.com>, <tglx@linutronix.de>,
-        <mingo@redhat.com>, <bp@alien8.de>, <x86@kernel.org>,
-        <hpa@zytor.com>, <dave.hansen@linux.intel.com>, <luto@kernel.org>,
-        <peterz@infradead.org>, <viro@zeniv.linux.org.uk>,
-        <akpm@linux-foundation.org>, <paulmck@kernel.org>,
-        <mchehab+huawei@kernel.org>, <pawan.kumar.gupta@linux.intel.com>,
-        <rdunlap@infradead.org>, <oneukum@suse.com>,
-        <anshuman.khandual@arm.com>, <jroedel@suse.de>,
-        <almasrymina@google.com>, <rientjes@google.com>,
-        <willy@infradead.org>, <mhocko@suse.com>,
-        <song.bao.hua@hisilicon.com>, <david@redhat.com>,
-        <naoya.horiguchi@nec.com>
-References: <20210204035043.36609-1-songmuchun@bytedance.com>
- <20210204035043.36609-7-songmuchun@bytedance.com>
- <42c8272a-f170-b27e-af5e-a7cb7777a728@huawei.com>
- <20210205082211.GA13848@linux>
- <435f3c32-0694-7af4-9032-0653a28a6a99@huawei.com>
- <20210205085632.GC13848@linux>
-From:   Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <318aa24d-86a7-0a18-c4df-80aa857e5388@huawei.com>
-Date:   Fri, 5 Feb 2021 17:12:45 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Fri, 5 Feb 2021 04:13:54 -0500
+Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D201AC0613D6;
+        Fri,  5 Feb 2021 01:13:13 -0800 (PST)
+Received: by mail-qk1-x72b.google.com with SMTP id a12so6177634qkh.10;
+        Fri, 05 Feb 2021 01:13:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PFbkaDmPxbAKpkOajTnpFDsUQrNOUBHeWcmqrZ8mcYY=;
+        b=A3A5LNWGbBoqoIfWxnPY2lwqbOp3WSHkix7RKTOTeBWemlb54jaO1UA7/kf1zgZmrb
+         lJnu5eUZueQOu0MqtFP4TGBpubcvcPSYAZCtK1ONyvQjpDx3MDrEo89BPQOvU/Cr+I03
+         UIISQQS9+UEnKgkWmJ9BMdhWjVJQ4p1lCjPCr9+ACQTSmtCbEv6jMFyKCM0+EfM+VE1j
+         BB1X4pW8SjwwnekAwWluAkmJQFxUZZtp7NU6rd09BKWamgvm+BJ/9IctwRo4N+aEAZJh
+         e1WB0sm4IlPrGv7cxrmniuKW7iuuOi18bOgH0mmyxhIukkPNtX3k+ch8hpAfgo7LeyeJ
+         0OpQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PFbkaDmPxbAKpkOajTnpFDsUQrNOUBHeWcmqrZ8mcYY=;
+        b=nHa308RcA40Xtbx5koq1yNUmcO/+NoA/PGa3LpiR8lLqLNS9M7rbeSFlY1qy+YeQrp
+         Zq3zC2JQcNafL69zQZVTeLoK+TaJsduVY1oCcUucHyPsJcC7wz/uICTnIL07cF4vxPsm
+         80hPac83m9bdoNxp222f9QXZxQUf6UJOmi1mTnHRVu3Hq4PiI2wreQczmlC7DUMhfDc7
+         y2vMDGIFelpLVVknyM20HZDEVdmbRy2zT+V+cnCoy9z1fLPbug9jINvJ+ipvLNjd6Z+W
+         CGoB55b6QT72sXjz5UGhFIfMCk7I0M7r+gvPnDuwsHSEQo8mkGXbnYGzN4pfIsVQZdxt
+         Ipaw==
+X-Gm-Message-State: AOAM530KEHtrGbUI7MeFXL1okRA/XL+jZ8pLfaw3189U4VgDsWkTBXxJ
+        PwVZ60ZrP2CFcT6JVMLbcEg=
+X-Google-Smtp-Source: ABdhPJzGv7lKE/tqQWXskWoiaSpjzL7hHjZT0sL0L0Cr6rGb/GtYUp3RXwW+ifi0IIKA7/FVtXDJpQ==
+X-Received: by 2002:ae9:ed4e:: with SMTP id c75mr3376700qkg.109.1612516392662;
+        Fri, 05 Feb 2021 01:13:12 -0800 (PST)
+Received: from localhost.localdomain ([156.146.36.157])
+        by smtp.gmail.com with ESMTPSA id l24sm206643qtr.16.2021.02.05.01.13.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Feb 2021 01:13:11 -0800 (PST)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     brking@us.ibm.com, jejb@linux.ibm.com, martin.petersen@oracle.com,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: [PATCH] drivers: scsi:  File ipr.c gets few spelling fixes
+Date:   Fri,  5 Feb 2021 14:42:57 +0530
+Message-Id: <20210205091257.484726-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-In-Reply-To: <20210205085632.GC13848@linux>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.179.241]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/2/5 16:56, Oscar Salvador wrote:
-> On Fri, Feb 05, 2021 at 04:39:26PM +0800, Miaohe Lin wrote:
->> Hi:
->> On 2021/2/5 16:22, Oscar Salvador wrote:
->>> On Fri, Feb 05, 2021 at 03:29:43PM +0800, Miaohe Lin wrote:
->>>>> +	if (likely(vmemmap_pages > RESERVE_VMEMMAP_NR))
->>>>> +		h->nr_free_vmemmap_pages = vmemmap_pages - RESERVE_VMEMMAP_NR;
->>>>
->>>> Not a problem. Should we set h->nr_free_vmemmap_pages to 0 in 'else' case explicitly ?
->>>
->>> No, hstate fields are already zeroed.
->>
->> I know hstate fields are already zeroed. What I mean is should we set nr_free_vmemmap_pages
->> to 0 _explicitly_ like nr_huge_pages and free_huge_pages in hugetlb_add_hstate() ?
->> But this is really trival.
-> 
-> We do not anny more [1]
-> 
-> [1] https://patchwork.kernel.org/project/linux-mm/patch/20201119112141.6452-1-osalvador@suse.de/
-> 
-> 
 
-Oh, I see. I thought we do it deliberately. Many thanks for your patient answer. :)
+
+s/Enablement/Entablement/
+s/specfied/specified/
+s/confgurations/configurations/
+
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+ drivers/scsi/ipr.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/scsi/ipr.c b/drivers/scsi/ipr.c
+index e451102b9a29..c12c0a309c54 100644
+--- a/drivers/scsi/ipr.c
++++ b/drivers/scsi/ipr.c
+@@ -16,7 +16,7 @@
+  *
+  * IBM pSeries: PCI-X Dual Channel Ultra 320 SCSI RAID Adapter
+  *              PCI-X Dual Channel Ultra 320 SCSI Adapter
+- *              PCI-X Dual Channel Ultra 320 SCSI RAID Enablement Card
++ *              PCI-X Dual Channel Ultra 320 SCSI RAID Entablement Card
+  *              Embedded SCSI adapter on p615 and p655 systems
+  *
+  * Supported Hardware Features:
+@@ -2470,7 +2470,7 @@ static void ipr_log_sis64_device_error(struct ipr_ioa_cfg *ioa_cfg,
+ }
+
+ /**
+- * ipr_get_error - Find the specfied IOASC in the ipr_error_table.
++ * ipr_get_error - Find the specified IOASC in the ipr_error_table.
+  * @ioasc:	IOASC
+  *
+  * This function will return the index of into the ipr_error_table
+@@ -7202,7 +7202,7 @@ static const u16 ipr_blocked_processors[] = {
+  *
+  * Adapters that use Gemstone revision < 3.1 do not work reliably on
+  * certain pSeries hardware. This function determines if the given
+- * adapter is in one of these confgurations or not.
++ * adapter is in one of these configurations or not.
+  *
+  * Return value:
+  * 	1 if adapter is not supported / 0 if adapter is supported
+--
+2.30.0
 
