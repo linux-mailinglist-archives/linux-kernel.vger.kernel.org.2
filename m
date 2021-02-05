@@ -2,223 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CA6B310800
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 10:38:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 462383107F2
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 10:34:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230419AbhBEJgQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 04:36:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45678 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230288AbhBEJcQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 04:32:16 -0500
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A629C0617A7
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 01:31:36 -0800 (PST)
-Received: by mail-pg1-x530.google.com with SMTP id n10so4123068pgl.10
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 01:31:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lZ52iWsdARGk2lAIOdx33a3ZO7f0psqY6W9v1+LcwX8=;
-        b=hmgcEJXs2lC+TuBrC3OG7kfz0kEvqC9gVuamTohw5/KFqqK9C1nVjxf+dI4nN6TAuc
-         t/Qaq+6Rbc34+Nkb+icyFho5ePqQrZU91QjEcNx8lSNQrAi0jbGH5eBdcsXyJAhvHO0n
-         eN/LnHPnjEnrQ2u8CB3EE/4jorFqrlP1PfGD5CoKzsdKevRyGDKQzA1w2w62ehjOZr3g
-         7BsvNzy8fuRLCePv5uivbXCUe6Utg3i1Coy7/AMNMryI3DWZxvEbXgBeda81qf3CaQUd
-         JbR5IrrJF0k8qanYzmAXrPBiUuvNtVmTZlQd9xfNyK6QS8tmNPzMiwkFAxv2l2WuiYz8
-         2wmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lZ52iWsdARGk2lAIOdx33a3ZO7f0psqY6W9v1+LcwX8=;
-        b=IaFPpdC4KRql2nEGuI6TlstO7Icq8ShE14ag3XkAFowoK3hyIyTCLRDA+JUmY/ngaq
-         L1wdrLtXTD3QR6Hn593ecxiIYM281ngrAnKzU4PKebbNxC8zPTyZgANQpVF1LqJEHBld
-         0DHW9Gm+OWWZrjM9iIu2O6ZQhhVQLmYgUjmd4uHnoHv4Fcn6zGZjmvVYkO+nCYWLWffb
-         yOCblkU431E6QcjvxuAiZiIG+RlwLe6Y1i4mFVM1d4SKuODNSOjtCYc7IRzVTrK+/tgl
-         6yuqZXq5aph2D288UqGgJlMf5io9E4i4ckWdT0t+y5zdd4XnIJzO5nF4En8SMUZa+6TX
-         2W1A==
-X-Gm-Message-State: AOAM530lZJUxe4SuJMCppvcUdVoDZY8B+YJx14RAHR5wV2QrjxICId9w
-        nRlsJqEbfIFwTTjPymf+ZyucM28KJq+L+8TYmbB7CA==
-X-Google-Smtp-Source: ABdhPJwV35KHOq4fEHYqxPMJ6oxRltbFzMTdl6LWDoB5jZOchXAiwqmkb2MMJUJsIfUL5zAsrBwbQew6pqOhTPA0B1c=
-X-Received: by 2002:aa7:9790:0:b029:1d8:263e:cc9b with SMTP id
- o16-20020aa797900000b02901d8263ecc9bmr1355925pfp.2.1612517495747; Fri, 05 Feb
- 2021 01:31:35 -0800 (PST)
+        id S230185AbhBEJeA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 04:34:00 -0500
+Received: from mail.skyhub.de ([5.9.137.197]:60562 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229554AbhBEJbx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 04:31:53 -0500
+Received: from zn.tnic (p200300ec2f0bad000b74c3ca4e4ea61e.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:ad00:b74:c3ca:4e4e:a61e])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 932661EC04DF;
+        Fri,  5 Feb 2021 10:31:09 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1612517469;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=dYpqaAC8S7f7CDYCrc4aIJXudkETAjwiqKr9RlNwrtc=;
+        b=sDiIkaCA7agPsTaK+kjcqZk811Ym6LkCJ/dwDAUaoHU7gzXWtcQoTbQomzwmHWNnYzGPXg
+        h1B0+AmnUfqKrvoizOkcEcB+ZwR4KZudVaKQIcb7aj4o0x9d+ioZ5EoTkzps/TwpIcuV8z
+        eR32JiN/vRXfZtygqZsdqphOFW2bBek=
+Date:   Fri, 5 Feb 2021 10:31:05 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
+        linux-kernel@vger.kernel.org, x86@kernel.org, peterz@infradead.org
+Subject: Re: [RFC][PATCH 1/2] x86: remove duplicate TSC DEADLINE MSR
+ definitions
+Message-ID: <20210205093105.GA17488@zn.tnic>
+References: <20200305174706.0D6B8EE4@viggo.jf.intel.com>
 MIME-Version: 1.0
-References: <20210204035043.36609-1-songmuchun@bytedance.com> <20210205085940.GD13848@linux>
-In-Reply-To: <20210205085940.GD13848@linux>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Fri, 5 Feb 2021 17:30:58 +0800
-Message-ID: <CAMZfGtUDBjKqcBF3NzMp5DMx_wQKYCR0QGZ7rWUoX3DOEpXT-A@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v14 0/8] Free some vmemmap pages of HugeTLB page
-To:     Oscar Salvador <osalvador@suse.de>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
-        anshuman.khandual@arm.com, jroedel@suse.de,
-        Mina Almasry <almasrymina@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        David Hildenbrand <david@redhat.com>,
-        =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
-        <naoya.horiguchi@nec.com>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200305174706.0D6B8EE4@viggo.jf.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 5, 2021 at 4:59 PM Oscar Salvador <osalvador@suse.de> wrote:
->
-> On Thu, Feb 04, 2021 at 11:50:35AM +0800, Muchun Song wrote:
-> > Changelog in v13 -> v14:
-> >   - Refuse to free the HugeTLB page when the system is under memory pressure.
-> >   - Use GFP_ATOMIC to allocate vmemmap pages instead of GFP_KERNEL.
-> >   - Rebase to linux-next 20210202.
-> >   - Fix and add some comments for vmemmap_remap_free().
->
-> What has happened to [1] ? AFAIK we still need it, right?
-> If not, could you explain why?
->
-> [1] https://patchwork.kernel.org/project/linux-mm/patch/20210117151053.24600-7-songmuchun@bytedance.com/
+On Thu, Mar 05, 2020 at 09:47:06AM -0800, Dave Hansen wrote:
+> 
+> There are two definitions for the TSC deadline MSR in msr-index.h,
+> one with an underscore and one without.  Axe one of them and move
+> all the references over to the other one.
+> 
+> Cc: x86@kernel.org
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> 
+> ---
+> 
+>  b/arch/x86/include/asm/msr-index.h                       |    2 --
+>  b/arch/x86/kvm/x86.c                                     |    6 +++---
+>  b/tools/arch/x86/include/asm/msr-index.h                 |    2 --
+>  b/tools/perf/trace/beauty/tracepoints/x86_msr.sh         |    2 +-
+>  b/tools/testing/selftests/kvm/include/x86_64/processor.h |    2 --
 
-Hi Oscar,
+acme, ACK to take the perf bits through tip?
 
-I reply to you in another thread (in the patch #4).
+Leaving in the rest.
 
-Thanks. :-)
+>  5 files changed, 4 insertions(+), 10 deletions(-)
+> 
+> diff -puN arch/x86/include/asm/msr-index.h~kill-dup-MSR_IA32_TSCDEADLINE arch/x86/include/asm/msr-index.h
+> --- a/arch/x86/include/asm/msr-index.h~kill-dup-MSR_IA32_TSCDEADLINE	2020-03-05 09:42:37.049901042 -0800
+> +++ b/arch/x86/include/asm/msr-index.h	2020-03-05 09:42:37.062901042 -0800
+> @@ -576,8 +576,6 @@
+>  #define MSR_IA32_APICBASE_ENABLE	(1<<11)
+>  #define MSR_IA32_APICBASE_BASE		(0xfffff<<12)
+>  
+> -#define MSR_IA32_TSCDEADLINE		0x000006e0
+> -
+>  #define MSR_IA32_UCODE_WRITE		0x00000079
+>  #define MSR_IA32_UCODE_REV		0x0000008b
+>  
+> diff -puN arch/x86/kvm/x86.c~kill-dup-MSR_IA32_TSCDEADLINE arch/x86/kvm/x86.c
+> --- a/arch/x86/kvm/x86.c~kill-dup-MSR_IA32_TSCDEADLINE	2020-03-05 09:42:37.051901042 -0800
+> +++ b/arch/x86/kvm/x86.c	2020-03-05 09:42:37.065901042 -0800
+> @@ -1200,7 +1200,7 @@ static const u32 emulated_msrs_all[] = {
+>  	MSR_KVM_PV_EOI_EN,
+>  
+>  	MSR_IA32_TSC_ADJUST,
+> -	MSR_IA32_TSCDEADLINE,
+> +	MSR_IA32_TSC_DEADLINE,
+>  	MSR_IA32_ARCH_CAPABILITIES,
+>  	MSR_IA32_MISC_ENABLE,
+>  	MSR_IA32_MCG_STATUS,
+> @@ -2688,7 +2688,7 @@ int kvm_set_msr_common(struct kvm_vcpu *
+>  		return kvm_set_apic_base(vcpu, msr_info);
+>  	case APIC_BASE_MSR ... APIC_BASE_MSR + 0x3ff:
+>  		return kvm_x2apic_msr_write(vcpu, msr, data);
+> -	case MSR_IA32_TSCDEADLINE:
+> +	case MSR_IA32_TSC_DEADLINE:
+>  		kvm_set_lapic_tscdeadline_msr(vcpu, data);
+>  		break;
+>  	case MSR_IA32_TSC_ADJUST:
+> @@ -3009,7 +3009,7 @@ int kvm_get_msr_common(struct kvm_vcpu *
+>  	case APIC_BASE_MSR ... APIC_BASE_MSR + 0x3ff:
+>  		return kvm_x2apic_msr_read(vcpu, msr_info->index, &msr_info->data);
+>  		break;
+> -	case MSR_IA32_TSCDEADLINE:
+> +	case MSR_IA32_TSC_DEADLINE:
+>  		msr_info->data = kvm_get_lapic_tscdeadline_msr(vcpu);
+>  		break;
+>  	case MSR_IA32_TSC_ADJUST:
+> diff -puN tools/arch/x86/include/asm/msr-index.h~kill-dup-MSR_IA32_TSCDEADLINE tools/arch/x86/include/asm/msr-index.h
+> --- a/tools/arch/x86/include/asm/msr-index.h~kill-dup-MSR_IA32_TSCDEADLINE	2020-03-05 09:42:37.055901042 -0800
+> +++ b/tools/arch/x86/include/asm/msr-index.h	2020-03-05 09:42:37.066901042 -0800
+> @@ -576,8 +576,6 @@
+>  #define MSR_IA32_APICBASE_ENABLE	(1<<11)
+>  #define MSR_IA32_APICBASE_BASE		(0xfffff<<12)
+>  
+> -#define MSR_IA32_TSCDEADLINE		0x000006e0
+> -
+>  #define MSR_IA32_UCODE_WRITE		0x00000079
+>  #define MSR_IA32_UCODE_REV		0x0000008b
+>  
+> diff -puN tools/perf/trace/beauty/tracepoints/x86_msr.sh~kill-dup-MSR_IA32_TSCDEADLINE tools/perf/trace/beauty/tracepoints/x86_msr.sh
+> --- a/tools/perf/trace/beauty/tracepoints/x86_msr.sh~kill-dup-MSR_IA32_TSCDEADLINE	2020-03-05 09:42:37.057901042 -0800
+> +++ b/tools/perf/trace/beauty/tracepoints/x86_msr.sh	2020-03-05 09:42:37.066901042 -0800
+> @@ -15,7 +15,7 @@ x86_msr_index=${arch_x86_header_dir}/msr
+>  
+>  printf "static const char *x86_MSRs[] = {\n"
+>  regex='^[[:space:]]*#[[:space:]]*define[[:space:]]+MSR_([[:alnum:]][[:alnum:]_]+)[[:space:]]+(0x00000[[:xdigit:]]+)[[:space:]]*.*'
+> -egrep $regex ${x86_msr_index} | egrep -v 'MSR_(ATOM|P[46]|AMD64|IA32_TSCDEADLINE|IDT_FCR4)' | \
+> +egrep $regex ${x86_msr_index} | egrep -v 'MSR_(ATOM|P[46]|AMD64|IA32_TSC_DEADLINE|IDT_FCR4)' | \
+>  	sed -r "s/$regex/\2 \1/g" | sort -n | \
+>  	xargs printf "\t[%s] = \"%s\",\n"
+>  printf "};\n\n"
+> diff -puN tools/testing/selftests/kvm/include/x86_64/processor.h~kill-dup-MSR_IA32_TSCDEADLINE tools/testing/selftests/kvm/include/x86_64/processor.h
+> --- a/tools/testing/selftests/kvm/include/x86_64/processor.h~kill-dup-MSR_IA32_TSCDEADLINE	2020-03-05 09:42:37.058901042 -0800
+> +++ b/tools/testing/selftests/kvm/include/x86_64/processor.h	2020-03-05 09:42:37.067901042 -0800
+> @@ -813,8 +813,6 @@ void kvm_get_cpu_address_width(unsigned
+>  #define		APIC_VECTOR_MASK	0x000FF
+>  #define	APIC_ICR2	0x310
+>  
+> -#define MSR_IA32_TSCDEADLINE		0x000006e0
+> -
+>  #define MSR_IA32_UCODE_WRITE		0x00000079
+>  #define MSR_IA32_UCODE_REV		0x0000008b
+>  
+> _
 
->
-> >
-> >   Thanks to Oscar, Mike, David H and David R's suggestions and review.
-> >
-> > Changelog in v12 -> v13:
-> >   - Remove VM_WARN_ON_PAGE macro.
-> >   - Add more comments in vmemmap_pte_range() and vmemmap_remap_free().
-> >
-> >   Thanks to Oscar and Mike's suggestions and review.
-> >
-> > Changelog in v11 -> v12:
-> >   - Move VM_WARN_ON_PAGE to a separate patch.
-> >   - Call __free_hugepage() with hugetlb_lock (See patch #5.) to serialize
-> >     with dissolve_free_huge_page(). It is to prepare for patch #9.
-> >   - Introduce PageHugeInflight. See patch #9.
-> >
-> > Changelog in v10 -> v11:
-> >   - Fix compiler error when !CONFIG_HUGETLB_PAGE_FREE_VMEMMAP.
-> >   - Rework some comments and commit changes.
-> >   - Rework vmemmap_remap_free() to 3 parameters.
-> >
-> >   Thanks to Oscar and Mike's suggestions and review.
-> >
-> > Changelog in v9 -> v10:
-> >   - Fix a bug in patch #11. Thanks to Oscar for pointing that out.
-> >   - Rework some commit log or comments. Thanks Mike and Oscar for the suggestions.
-> >   - Drop VMEMMAP_TAIL_PAGE_REUSE in the patch #3.
-> >
-> >   Thank you very much Mike and Oscar for reviewing the code.
-> >
-> > Changelog in v8 -> v9:
-> >   - Rework some code. Very thanks to Oscar.
-> >   - Put all the non-hugetlb vmemmap functions under sparsemem-vmemmap.c.
-> >
-> > Changelog in v7 -> v8:
-> >   - Adjust the order of patches.
-> >
-> >   Very thanks to David and Oscar. Your suggestions are very valuable.
-> >
-> > Changelog in v6 -> v7:
-> >   - Rebase to linux-next 20201130
-> >   - Do not use basepage mapping for vmemmap when this feature is disabled.
-> >   - Rework some patchs.
-> >     [PATCH v6 08/16] mm/hugetlb: Free the vmemmap pages associated with each hugetlb page
-> >     [PATCH v6 10/16] mm/hugetlb: Allocate the vmemmap pages associated with each hugetlb page
-> >
-> >   Thanks to Oscar and Barry.
-> >
-> > Changelog in v5 -> v6:
-> >   - Disable PMD/huge page mapping of vmemmap if this feature was enabled.
-> >   - Simplify the first version code.
-> >
-> > Changelog in v4 -> v5:
-> >   - Rework somme comments and code in the [PATCH v4 04/21] and [PATCH v4 05/21].
-> >
-> >   Thanks to Mike and Oscar's suggestions.
-> >
-> > Changelog in v3 -> v4:
-> >   - Move all the vmemmap functions to hugetlb_vmemmap.c.
-> >   - Make the CONFIG_HUGETLB_PAGE_FREE_VMEMMAP default to y, if we want to
-> >     disable this feature, we should disable it by a boot/kernel command line.
-> >   - Remove vmemmap_pgtable_{init, deposit, withdraw}() helper functions.
-> >   - Initialize page table lock for vmemmap through core_initcall mechanism.
-> >
-> >   Thanks for Mike and Oscar's suggestions.
-> >
-> > Changelog in v2 -> v3:
-> >   - Rename some helps function name. Thanks Mike.
-> >   - Rework some code. Thanks Mike and Oscar.
-> >   - Remap the tail vmemmap page with PAGE_KERNEL_RO instead of PAGE_KERNEL.
-> >     Thanks Matthew.
-> >   - Add some overhead analysis in the cover letter.
-> >   - Use vmemap pmd table lock instead of a hugetlb specific global lock.
-> >
-> > Changelog in v1 -> v2:
-> >   - Fix do not call dissolve_compound_page in alloc_huge_page_vmemmap().
-> >   - Fix some typo and code style problems.
-> >   - Remove unused handle_vmemmap_fault().
-> >   - Merge some commits to one commit suggested by Mike.
-> >
-> > Muchun Song (8):
-> >   mm: memory_hotplug: factor out bootmem core functions to
-> >     bootmem_info.c
-> >   mm: hugetlb: introduce a new config HUGETLB_PAGE_FREE_VMEMMAP
-> >   mm: hugetlb: free the vmemmap pages associated with each HugeTLB page
-> >   mm: hugetlb: alloc the vmemmap pages associated with each HugeTLB page
-> >   mm: hugetlb: add a kernel parameter hugetlb_free_vmemmap
-> >   mm: hugetlb: introduce nr_free_vmemmap_pages in the struct hstate
-> >   mm: hugetlb: gather discrete indexes of tail page
-> >   mm: hugetlb: optimize the code with the help of the compiler
-> >
-> >  Documentation/admin-guide/kernel-parameters.txt |  14 ++
-> >  Documentation/admin-guide/mm/hugetlbpage.rst    |   3 +
-> >  arch/x86/mm/init_64.c                           |  13 +-
-> >  fs/Kconfig                                      |   6 +
-> >  include/linux/bootmem_info.h                    |  65 +++++
-> >  include/linux/hugetlb.h                         |  43 +++-
-> >  include/linux/hugetlb_cgroup.h                  |  19 +-
-> >  include/linux/memory_hotplug.h                  |  27 --
-> >  include/linux/mm.h                              |   5 +
-> >  mm/Makefile                                     |   2 +
-> >  mm/bootmem_info.c                               | 124 ++++++++++
-> >  mm/hugetlb.c                                    |  23 +-
-> >  mm/hugetlb_vmemmap.c                            | 314 ++++++++++++++++++++++++
-> >  mm/hugetlb_vmemmap.h                            |  33 +++
-> >  mm/memory_hotplug.c                             | 116 ---------
-> >  mm/sparse-vmemmap.c                             | 280 +++++++++++++++++++++
-> >  mm/sparse.c                                     |   1 +
-> >  17 files changed, 930 insertions(+), 158 deletions(-)
-> >  create mode 100644 include/linux/bootmem_info.h
-> >  create mode 100644 mm/bootmem_info.c
-> >  create mode 100644 mm/hugetlb_vmemmap.c
-> >  create mode 100644 mm/hugetlb_vmemmap.h
-> >
-> > --
-> > 2.11.0
-> >
-> >
->
-> --
-> Oscar Salvador
-> SUSE L3
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
