@@ -2,107 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C757A311128
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 20:27:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39B38311123
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 20:27:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233673AbhBERpA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 12:45:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33620 "EHLO
+        id S233478AbhBERnt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 12:43:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233401AbhBEPzU (ORCPT
+        with ESMTP id S233409AbhBEPzd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 10:55:20 -0500
-Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E62CC0617A9
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 09:35:20 -0800 (PST)
-Received: by mail-qt1-x849.google.com with SMTP id z19so5756965qtv.20
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 09:35:20 -0800 (PST)
+        Fri, 5 Feb 2021 10:55:33 -0500
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6883C0617AB
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 09:36:33 -0800 (PST)
+Received: by mail-wr1-x42a.google.com with SMTP id u14so8609218wri.3
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 09:36:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=V3NcBz/sBuF9R5rbEs4mkivGfi7JQffIAtJVZQe6PVQ=;
-        b=AyFbGRtZMQocl7Q5NZT214tJhO130JH2kzAWqSjD8+Setp/oN6e7y7y8sPvxLQ8TH6
-         UfeGhuUInm0NPCAigeTNrpGzDs0p+CeVjTEmhqouTHFWmbb5IGwrv+hy3nMqEPJ5yukw
-         flPCVMav/pLrs8OsAbd8op8i84uJ0cBQXHIGczYU7OYXZ71NdHwo97Qy9Ohdp+Cmvc9v
-         5BhyH/fScylRm+CG12IxCgd5lj5u7a/9pl8SjQluL9wg2B8jUpNlP9gDHyB0ZVrHMbwx
-         6xr1/x0bN5rWepIoZ6NFyCEI08m5yhNOXHjLn12fmIibIaQ1QXL1I94o8s+BOLGB96yU
-         1XHQ==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=EzButGrSaMS3tpn14dm5oBUBI4ta0YCz3Bh4qddD9Gs=;
+        b=UIK8+EM7LIY0MJuZ/VuN3u1aXuD+m68zxN0voPQhmWdmcQKRLSzO3rHZWCZiLj+ifr
+         Jg+RyoW/1DpUwU5kx6JLYzyX3eliXyKZeYcDZ2pMZJ3N3OSje6Rajxnrash+2Xh1GoV8
+         WxxgiOWtLAkRrb42yugwZtFKJ65MX2NLlqdQwWcXoi/yV6aL+AmRm9aNzfMftOTbG0ni
+         ZklrDpDKg7tWySyLqyBmvEh8ZyD4P5UNK/hkicJFbPtmW3mwWlZTnqZM+xSPPcCNXwNb
+         9Y2gRGB1o9P7XOuHECT7uyNXXDBpdx/sGpaBDoD55H4SKWwYj8oafTVLPF97J4qcP8jc
+         tRJQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=V3NcBz/sBuF9R5rbEs4mkivGfi7JQffIAtJVZQe6PVQ=;
-        b=Y+kHfQ2RAqT05cHwec6GYCnWkGA86HirX8ydLk25ATItCYYSLCAt9iZ121oyXltobv
-         fYfvjItKw6o+W2bt8O4xTDeJbzYFfdST82rPVFgLMFhPPpVUaIXRHIgqv9lxuqLDRYYw
-         RNPRhtLYBIx54NmdPKdutMrqwoL6wSLUlX1VrK7fAKSzCtRVplh1D061aedlhrdGdTCK
-         veXWCTOWNFZ2EmA+PVcPT4ptGnwA4XQOaIp4WzqNb1YWXI9iTIoSS4KyRgle5iaK32EX
-         uxWIW/93+T7VrIlh3haD/KCzLIRIEchXmKhqT7vtmYc/BQnOKcP9n7t0f0qpx8O4l4Ie
-         aMiA==
-X-Gm-Message-State: AOAM532URopldaVxtKhDK8f2GUQZ6VekFTNBQ12tULmax99qSDV5lbzL
-        N/FBoYb5YP+onutTN6G7KJr4mlRJxDyHBEGg
-X-Google-Smtp-Source: ABdhPJweLbaw7VFlVSS/J9c4mZHXhCjW3eIz5PFMh/DXiJO3ThcuygtX+EQLe2kTQSSSDZUfps4nI4nhEccmHL6m
-Sender: "andreyknvl via sendgmr" <andreyknvl@andreyknvl3.muc.corp.google.com>
-X-Received: from andreyknvl3.muc.corp.google.com ([2a00:79e0:15:13:edb8:b79c:2e20:e531])
- (user=andreyknvl job=sendgmr) by 2002:a0c:eda6:: with SMTP id
- h6mr5378538qvr.19.1612546519544; Fri, 05 Feb 2021 09:35:19 -0800 (PST)
-Date:   Fri,  5 Feb 2021 18:34:46 +0100
-In-Reply-To: <cover.1612546384.git.andreyknvl@google.com>
-Message-Id: <14da91876a25a6ae5b2096f7c06ebbc6deb3cf6b.1612546384.git.andreyknvl@google.com>
-Mime-Version: 1.0
-References: <cover.1612546384.git.andreyknvl@google.com>
-X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
-Subject: [PATCH v3 mm 12/13] arm64: kasan: export MTE symbols for KASAN tests
-From:   Andrey Konovalov <andreyknvl@google.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>
-Cc:     Will Deacon <will.deacon@arm.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Andrey Konovalov <andreyknvl@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=EzButGrSaMS3tpn14dm5oBUBI4ta0YCz3Bh4qddD9Gs=;
+        b=XAYXPhEP7aBbjC2UDC7GLbeixBoBKxzFFyxvMnGuy6mbClzva9Gqafgabt3/O3y0WP
+         3CnfGIdqcGrX3dLrQXyu9NR8Zjjmzz4mSpN7MD8SGzmrT2jhkWaRcTSNoa6V6w+U8wXi
+         ytvrPaS7YN3a1gaOEMRDOwDN3g2PF3fxuPuZDtd32AZZAYhnjuLIPMAbRddl27pOprGH
+         vQqwzlAOO/Z003I6moVm278Yuj4G2SgSZdorUcLHkDrvCtTUWGJH3TV45m09sr5NyEbq
+         2kO0oOR1TsVj74rFkLPFLOgcKc/+VVJnGrYPNR45VnGAJ/g6RLhxaNquaSACA4U+LaY9
+         lAFQ==
+X-Gm-Message-State: AOAM530fvp8bvwVTkvkgUpmGYN9kxrhfqtuqewDv1Tc3kZC7gVZ1WpoM
+        +95mSO/t0okLXnAsJznQo66S4Q==
+X-Google-Smtp-Source: ABdhPJyG7XhS1wHSPAts0Ct8q6WV441NG908t3VfX5NGswdhqV7wB2Jyj1JI8Q6QB+egPd5MzO3eFg==
+X-Received: by 2002:adf:b749:: with SMTP id n9mr6100347wre.267.1612546592701;
+        Fri, 05 Feb 2021 09:36:32 -0800 (PST)
+Received: from maple.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
+        by smtp.gmail.com with ESMTPSA id r17sm12875145wro.46.2021.02.05.09.36.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Feb 2021 09:36:29 -0800 (PST)
+Date:   Fri, 5 Feb 2021 17:36:27 +0000
+From:   Daniel Thompson <daniel.thompson@linaro.org>
+To:     Sumit Garg <sumit.garg@linaro.org>
+Cc:     kgdb-bugreport@lists.sourceforge.net, jason.wessel@windriver.com,
+        dianders@chromium.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] kdb: Refactor env variables get/set code
+Message-ID: <20210205173627.guzsj4lfczimvp6d@maple.lan>
+References: <1612433660-32661-1-git-send-email-sumit.garg@linaro.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1612433660-32661-1-git-send-email-sumit.garg@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Export mte_enable_kernel() and mte_set_report_once() to fix:
+On Thu, Feb 04, 2021 at 03:44:20PM +0530, Sumit Garg wrote:
+> @@ -318,6 +318,65 @@ int kdbgetintenv(const char *match, int *value)
+>  }
+>  
+>  /*
+> + * kdb_setenv() - Alter an existing environment variable or create a new one.
+> + * @var: Name of the variable
+> + * @val: Value of the variable
+> + *
+> + * Return: Zero on success, a kdb diagnostic on failure.
+> + */
+> +static int kdb_setenv(const char *var, const char *val)
+> +{
+> +	int i;
+> +	char *ep;
+> +	size_t varlen, vallen;
+> +
+> +	varlen = strlen(var);
+> +	vallen = strlen(val);
+> +	ep = kdballocenv(varlen + vallen + 2);
+> +	if (ep == (char *)0)
+> +		return KDB_ENVBUFFULL;
+> +
+> +	sprintf(ep, "%s=%s", var, val);
+> +
+> +	ep[varlen+vallen+1] = '\0';
 
-ERROR: modpost: "mte_enable_kernel" [lib/test_kasan.ko] undefined!
-ERROR: modpost: "mte_set_report_once" [lib/test_kasan.ko] undefined!
+What is this line for? It looks pointless to me.
 
-Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
-Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
----
- arch/arm64/kernel/mte.c | 2 ++
- 1 file changed, 2 insertions(+)
+I know it's copied from the original code but it doesn't look like the
+sort of code you should want your name to appear next to in a git blame
+;-) .
 
-diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
-index 203108d51d40..a66c2806fc4d 100644
---- a/arch/arm64/kernel/mte.c
-+++ b/arch/arm64/kernel/mte.c
-@@ -113,11 +113,13 @@ void mte_enable_kernel(void)
- 	sysreg_clear_set(sctlr_el1, SCTLR_ELx_TCF_MASK, SCTLR_ELx_TCF_SYNC);
- 	isb();
- }
-+EXPORT_SYMBOL_GPL(mte_enable_kernel);
- 
- void mte_set_report_once(bool state)
- {
- 	WRITE_ONCE(report_fault_once, state);
- }
-+EXPORT_SYMBOL_GPL(mte_set_report_once);
- 
- bool mte_report_once(void)
- {
--- 
-2.30.0.365.g02bc693789-goog
 
+Daniel.
