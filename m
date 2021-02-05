@@ -2,132 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94F3A31093F
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 11:37:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0066431095D
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 11:44:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231597AbhBEKhU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 05:37:20 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58659 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231481AbhBEKee (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 05:34:34 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612521187;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3gSmdzdXiBJ/yrnbO3CPPt8A/90suw/nQvW79Jp5bxM=;
-        b=GBT+Ultz34+kwmWfHRvsxL/+Girq0DXMvIAkcEOuw5CxAJ5Ax0vB34IGjfZl76a2OV8znB
-        hfkSzCoLf04racEfNFNztNGfo8knUTpXPHS6l4gbk1lmjsOdDS4tocCIepFwI0Z6sI6JG3
-        wXx9at6wFRrgkgcq6u0xMqHfQuflahs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-151-h5qXyvvFPNayKE6P0wNAyQ-1; Fri, 05 Feb 2021 05:33:03 -0500
-X-MC-Unique: h5qXyvvFPNayKE6P0wNAyQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 061E9814318;
-        Fri,  5 Feb 2021 10:33:02 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 7C4F019D9F;
-        Fri,  5 Feb 2021 10:33:01 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     jgg@ziepe.ca, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        dan.j.williams@intel.com
-Subject: [PATCH 2/2] KVM: do not assume PTE is writable after follow_pfn
-Date:   Fri,  5 Feb 2021 05:32:59 -0500
-Message-Id: <20210205103259.42866-3-pbonzini@redhat.com>
-In-Reply-To: <20210205103259.42866-1-pbonzini@redhat.com>
-References: <20210205103259.42866-1-pbonzini@redhat.com>
-MIME-Version: 1.0
+        id S231596AbhBEKnP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 05:43:15 -0500
+Received: from mail-eopbgr10079.outbound.protection.outlook.com ([40.107.1.79]:43126
+        "EHLO EUR02-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231436AbhBEKey (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 05:34:54 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=P66Rs6Tl6JKTXsCxX04l8rFKI4KBo0qCrGxLMbRV1lIKvZSLXHl2x8IsnC0ssQ0r2esCXPX867Ixazyhnut+vj1+zJoWwqNpbUkUcFUEZuseCJ+IQjYaHjysacwNMBNQoM/UCFdsEckZGy/USpSNPMxNw9V+CKKFHG9b42I6ua6AQvZkYgM8nOLaSLTI5yjlB5nyk4uaVFk6KcXOKpeo2u1ATqeBfk3mq2L2l/AICtSazxnbLngtoVELsWhuz7ikNf2yly7fWszPXZyHwLuKBFEhpyTP4Iv5Y54tyHgt2gbdiZRxuQ426PdDDXIG4T+S6melLg7cnPUqtmMwXnmF1g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=IRzXn8aW11WIlU5e0WccjfvO531/XhQ7+NNJF9BivKs=;
+ b=VwFloYTtB+smoqc9OxnD70p6wbXVzNya0aYW5ShLMyJJG2wYudrDtzsNxhnw+yZuXlFXmECP36RLHqhL4KFyiNfenXDTnr+0ibXBwHJ1xewgIy9YNRgRjFetAUM9Q9AppZZdPgqKqRUTmxGHq8WNi53Bk8abQCB1PspiN4MMsv3OR5t6OqXqkfq5vQ2ZrLkx21Ep5T+K8f4X7TNBz8lZFg2QQGsp7ZPB8r+4k91nnSGKsEqJqeviTwBbZtUFD8qLW+hGNJjb6TmxJGzaWPTs3WQUC5XQPCySXMZrfoD/Xo2iw8v3HFsTwgrXP3ohfs/c95rUhlt7RT6pe8odB+TIQg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=kunbus.com; dmarc=pass action=none header.from=kunbus.com;
+ dkim=pass header.d=kunbus.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kunbus.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=IRzXn8aW11WIlU5e0WccjfvO531/XhQ7+NNJF9BivKs=;
+ b=JKNZqLNds8O6yMg//vS4+x/3zcx7o+PFo6LL36LZ/7BEyhBRDUHNGsSwXUFlkNsL3DV6167z8hXKQ004O9Wwu6l2XmUmr4/x93hOk7bjPPlvxCTDeZEJPPUiwWuy8uqJ97Rzf3EeyWwT3feHbOeORx+z1rsOFZmPvcQF436oRsE=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=kunbus.com;
+Received: from PR3P193MB0894.EURP193.PROD.OUTLOOK.COM (2603:10a6:102:a0::11)
+ by PR3P193MB0634.EURP193.PROD.OUTLOOK.COM (2603:10a6:102:3a::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.20; Fri, 5 Feb
+ 2021 10:34:03 +0000
+Received: from PR3P193MB0894.EURP193.PROD.OUTLOOK.COM
+ ([fe80::2839:56c8:759b:73]) by PR3P193MB0894.EURP193.PROD.OUTLOOK.COM
+ ([fe80::2839:56c8:759b:73%5]) with mapi id 15.20.3784.022; Fri, 5 Feb 2021
+ 10:34:03 +0000
+Subject: Re: [PATCH v3 1/2] tpm: fix reference counting for struct tpm_chip
+To:     Stefan Berger <stefanb@linux.ibm.com>,
+        Lino Sanfilippo <LinoSanfilippo@gmx.de>, peterhuewe@gmx.de,
+        jarkko@kernel.org
+Cc:     jgg@ziepe.ca, stefanb@linux.vnet.ibm.com,
+        James.Bottomley@hansenpartnership.com, stable@vger.kernel.org,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1612482643-11796-1-git-send-email-LinoSanfilippo@gmx.de>
+ <1612482643-11796-2-git-send-email-LinoSanfilippo@gmx.de>
+ <b36db793-9b40-92a8-19ef-4853ea10f775@linux.ibm.com>
+From:   Lino Sanfilippo <l.sanfilippo@kunbus.com>
+Message-ID: <04da066e-1c02-a34b-7ca6-b64ac17f12f3@kunbus.com>
+Date:   Fri, 5 Feb 2021 11:34:02 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+In-Reply-To: <b36db793-9b40-92a8-19ef-4853ea10f775@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+X-Originating-IP: [87.130.101.138]
+X-ClientProxiedBy: AM0PR05CA0085.eurprd05.prod.outlook.com
+ (2603:10a6:208:136::25) To PR3P193MB0894.EURP193.PROD.OUTLOOK.COM
+ (2603:10a6:102:a0::11)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [172.23.16.111] (87.130.101.138) by AM0PR05CA0085.eurprd05.prod.outlook.com (2603:10a6:208:136::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.20 via Frontend Transport; Fri, 5 Feb 2021 10:34:03 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 7f88bade-49bd-4ac9-1431-08d8c9c18ecc
+X-MS-TrafficTypeDiagnostic: PR3P193MB0634:
+X-Microsoft-Antispam-PRVS: <PR3P193MB0634C8EBCF280689D31FC0C1FAB29@PR3P193MB0634.EURP193.PROD.OUTLOOK.COM>
+X-MS-Oob-TLC-OOBClassifiers: OLM:51;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: RPaecFLDimqHMuuV2LBoQzUHMX4sg8WtgNUcWG7QxspplTR5bB1OKmSDFRc54FBEwoxzslKFm+t+sFJnAqXa3ObdX724U25du7QjuCOc/csB2NoAhAQQVJ41lBZMwbqdHPlhx4anrdg0ceJzUiQZ3ScgCkxyloOPjnoAl7BpefvK4PPDZQeb1IXzfzieo7AxSAdWa9xDpX42js5GD9ErMUtEpJTDnv4skxffynOjRaIzjNYkDGMuJlyJlvct+TJXIizkcPZ7rCuZz/0vMumiZBDzMD1hRAj9KZ7PFCfhk4w31mNeoQhqy2QvsqGkT4jj2GUSOJdJYqk1+QNc3zcrccGdtGTKDC1CaploIbUBbmWqh8q2YxxbvU7PpVKxdEHbTsroawMoMuAFRQpsrdojupt6TRa6bCqg/E9qMCubmtIV3uylzn8B/MxKMyLbXjfDrznJGCiGgSNLA+xbKMHSRIRn5YTFQJm3reb/npvDLnGvGEKEMO/dLASWSuz3DrWupSDQOgKIARM3sw17FKHX8jcrEOnUwbDS1MIcMYjVx+yI97A6gfx33xr10F5+NFUh3lS26DQ4TGHZgpMpEQjl9XVX1PWishoeF4wMHjc6+fg=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PR3P193MB0894.EURP193.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(4636009)(39830400003)(396003)(376002)(136003)(346002)(366004)(4744005)(16526019)(110136005)(16576012)(36756003)(53546011)(316002)(6486002)(31686004)(2616005)(31696002)(956004)(2906002)(5660300002)(66946007)(4326008)(66556008)(7416002)(86362001)(8936002)(26005)(8676002)(478600001)(186003)(52116002)(66476007)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?S2wzbFhwbW5OcjlOOTNVTGRxT0JiZGNyaFJVMERsNVdmSmhqYUgyVk9rSEIx?=
+ =?utf-8?B?ZktaM0I5OXpER05XZTlhYXp1VENiUlJCRVJtdThaTHNTdVBXY0dINmtEa3lt?=
+ =?utf-8?B?amRIbzR2YUluSWcvUGFvRDNheXZoK2F5WlhJUWNFcXZaMWw5QUFjN2U5Z1pm?=
+ =?utf-8?B?ZEI4c1JPY0NkUEh1RjZOTks2anFQRHBBWUNKc2pWNDJOdFJZM20zTXN1M2hS?=
+ =?utf-8?B?dUg1Z1ZkRTR0RXlsa2J2SkVLTnpDeXNVQThyemVKQzNndjQvM3pKUUpSYVZq?=
+ =?utf-8?B?eUpUaDQzcU5DeFFTRGFiZkRkVVhzaVZ4OERpbXNEVWp0NUx5Qi9vQ3kyb3pQ?=
+ =?utf-8?B?WHN2YTJsRFNtVUlaemg4dnEzaGlVKytjQ2d3R0xIUWdEVnNRaGd0T3FqMU9J?=
+ =?utf-8?B?RlIwOTJCMS8vRUJaQ2RnS0lBWHVqRkdJa3ljd0dqc3RqUHBwRm53QStSRkwr?=
+ =?utf-8?B?cjVuSFJFMzRJOG5uUWVqZ2VXc3Q0Qm1YZUtRL3d3NitTYjdFMmtvSFpXSGZP?=
+ =?utf-8?B?SHU5SDIzSTgyZXE3TE9jbzM3emYycE1oYTBkcmxvSzdlVkV0WG5nQ3VrSUxB?=
+ =?utf-8?B?cWhzK0w2RSt1aElKZzM1a01ZSE1XSXF6VjA3emwyek02NXJYdTZxQVhvMU5w?=
+ =?utf-8?B?b0NkamR2dWQ0cXZIU2ZUMUxLQnRlZVU1QXkwY3pLSXQ2L2hVaC9jSHF6VlV4?=
+ =?utf-8?B?TGQ1MFlQMWV1elpRTWp0ck9WM3JzSTVKdmdzRkdnZisyUFdWdnN0RXd5YWla?=
+ =?utf-8?B?MlpHVDJQZnp5ZVNLbUNoeXVkTWRpSFQvMEJvN3BHUDZTN1RNQTBzZEZscmVh?=
+ =?utf-8?B?Y0tZT1pCL085eWVOSW1OSGIzYnBnd3o2MW1TUTFpR3VYTE56NjBGR0dpNzlv?=
+ =?utf-8?B?VGNOS0tPNmJocEpVK1NrOThIWTUyWFBFeUJYb0xZTm1ZS3JDM2lLd0lFT1Y4?=
+ =?utf-8?B?MTl4NXFhWmhDdExBUTBvUEQxRzU2VDdkWXBrNzVCd0xDLzZGckRud1FKMHox?=
+ =?utf-8?B?b281cUZ2WWJjakYxVTZnR1Y5NExpS21LYkladEVpOVRvUHlKb21zREprTjBF?=
+ =?utf-8?B?WDQ4b2xMdUh5ZnM4cFQ2WVl1cmZPZk45N2hIT3BndWkrSjBPTnlxZDRwUE5K?=
+ =?utf-8?B?bVNXVk9lYmQrQkkrRDF3UFZOT3VkV2dxak13Sm9uWGlNMWpTb0x2VDg4UmlD?=
+ =?utf-8?B?aGxIak9TT0plSjcwRFE1TzNVUld4M1JDc3BNazZnUE9jOUZRdlJMY1VSNXU1?=
+ =?utf-8?B?bEM2QkFkK0ZpSERYcTVmT3Bhc1RzajdNT1UzbmpwdVRuS3kxUHF4REswUkpa?=
+ =?utf-8?B?cGZWc0kxUWRkeW5BVnRrdDcrVEI2Q2ZSVlhDWERRZmJRMXJaQTNmYkQ0ei9Q?=
+ =?utf-8?B?dm5mZTNybU8yaXpURUZScWllWmhKaWxZbVAzZXoyRTJHWUVDbkhKRUNXUlNw?=
+ =?utf-8?B?N2lwZWlSRWVLMWQ4M1ZVVEV6aVVTRU1jOFoxZU9mbHBTOWs5aDQxWWdhSE1j?=
+ =?utf-8?B?U2dKb3VTVmFBd2FsYnlReEZCZTVFVG5oazNrSHhoSGo0bEgxQWFndjM1RElC?=
+ =?utf-8?B?cmhsWWNJdkZPQndFczJWY2hpQW9WTHY3UVNWUGNVb0NqMHYyQkZTRStnR3Y4?=
+ =?utf-8?B?YVhLUWlzZ2UrNitjN3JqWi9qdklKaE1PVGliU1FPaExOc2hYZDRENllGaVJY?=
+ =?utf-8?B?QlpxblQ1VG9iODd2QW5tL1VVK1pQZ2RMb01GOS9ESDQ1SGJxeEl6dEtlWGVQ?=
+ =?utf-8?Q?vqcPsOomcezdic2C65Dj46SV8QHgvB5AEuQAxD0?=
+X-OriginatorOrg: kunbus.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7f88bade-49bd-4ac9-1431-08d8c9c18ecc
+X-MS-Exchange-CrossTenant-AuthSource: PR3P193MB0894.EURP193.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Feb 2021 10:34:03.5331
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: aaa4d814-e659-4b0a-9698-1c671f11520b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: PR4VJJnj6gVlBi9u/B7pKgIputW9LP4j4BG6mXHi6ZMtiHGcFtEsAdeuLZmeVpHgg+gPLFgKPLwqGq4ZE1j4tw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PR3P193MB0634
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order to convert an HVA to a PFN, KVM usually tries to use
-the get_user_pages family of functions.  This however is not
-possible for VM_IO vmas; in that case, KVM instead uses follow_pfn.
+Hi Stefan,
 
-In doing this however KVM loses the information on whether the
-PFN is writable.  That is usually not a problem because the main
-use of VM_IO vmas with KVM is for BARs in PCI device assignment,
-however it is a bug.  To fix it, use follow_pte and check pte_write
-while under the protection of the PTE lock.  The information can
-be used to fail hva_to_pfn_remapped or passed back to the
-caller via *writable.
+On 05.02.21 01:46, Stefan Berger wrote:
+> On 2/4/21 6:50 PM, Lino Sanfilippo wrote:
 
-Usage of follow_pfn was introduced in commit add6a0cd1c5b ("KVM: MMU: try to fix
-up page faults before giving up", 2016-07-05); however, even older version
-have the same issue, all the way back to commit 2e2e3738af33 ("KVM:
-Handle vma regions with no backing page", 2008-07-20), as they also did
-not check whether the PFN was writable.
+>> Signed-off-by: Lino Sanfilippo <l.sanfilippo@kunbus.com>
+> 
+> Tested-by: Stefan Berger <stefanb@linux.ibm.com>
+> 
+> Steps:
+> 
+> modprobe tpm_vtpm_proxy
+> 
+> swtpm chardev --vtpm-proxy --tpm2 --tpmstate dir=./ &
+> 
+> exec 100<>/dev/tpmrm1
+> 
+> kill -9 <swtpm pid>
+> 
+> rmmod tpm_vtpm_proxy
+> 
+> exec 100>&-   # fails before, works after   --> great job! :-)
+> 
+> 
+Great, thank you very much for testing!
 
-Fixes: 2e2e3738af33 ("KVM: Handle vma regions with no backing page")
-Reported-by: David Stevens <stevensd@google.com>
-Cc: 3pvd@google.com
-Cc: Jann Horn <jannh@google.com>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>
-Cc: stable@vger.kernel.org
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
----
- virt/kvm/kvm_main.c | 15 ++++++++++++---
- 1 file changed, 12 insertions(+), 3 deletions(-)
-
-diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index f34a85b93c2d..ee4ac2618ec5 100644
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -1907,9 +1907,11 @@ static int hva_to_pfn_remapped(struct vm_area_struct *vma,
- 			       kvm_pfn_t *p_pfn)
- {
- 	unsigned long pfn;
-+	pte_t *ptep;
-+	spinlock_t *ptl;
- 	int r;
- 
--	r = follow_pfn(vma, addr, &pfn);
-+	r = follow_pte(vma->vm_mm, addr, &ptep, &ptl);
- 	if (r) {
- 		/*
- 		 * get_user_pages fails for VM_IO and VM_PFNMAP vmas and does
-@@ -1924,14 +1926,19 @@ static int hva_to_pfn_remapped(struct vm_area_struct *vma,
- 		if (r)
- 			return r;
- 
--		r = follow_pfn(vma, addr, &pfn);
-+		r = follow_pte(vma->vm_mm, addr, &ptep, &ptl);
- 		if (r)
- 			return r;
-+	}
- 
-+	if (write_fault && !pte_write(*ptep)) {
-+		pfn = KVM_PFN_ERR_RO_FAULT;
-+		goto out;
- 	}
- 
- 	if (writable)
--		*writable = true;
-+		*writable = pte_write(*ptep);
-+	pfn = pte_pfn(*ptep);
- 
- 	/*
- 	 * Get a reference here because callers of *hva_to_pfn* and
-@@ -1946,6 +1953,8 @@ static int hva_to_pfn_remapped(struct vm_area_struct *vma,
- 	 */ 
- 	kvm_get_pfn(pfn);
- 
-+out:
-+	pte_unmap_unlock(ptep, ptl);
- 	*p_pfn = pfn;
- 	return 0;
- }
--- 
-2.26.2
-
+Best Regards,
+Lino
