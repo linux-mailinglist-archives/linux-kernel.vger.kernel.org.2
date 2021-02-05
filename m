@@ -2,121 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9405F3103E2
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 04:52:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C1163103E6
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 04:54:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230411AbhBEDwd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 22:52:33 -0500
-Received: from mail-pf1-f171.google.com ([209.85.210.171]:38757 "EHLO
-        mail-pf1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229692AbhBEDwb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 22:52:31 -0500
-Received: by mail-pf1-f171.google.com with SMTP id d26so2227603pfn.5;
-        Thu, 04 Feb 2021 19:52:15 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=PUgTmQjg/F/6InB3//OtXUQJ9eXEdUj+c8K+WJcFafw=;
-        b=F3tz+2an+grok/uDff+BdMZF1h7zw0HflQGc8y1/qR3+pi2k/3675RHXVbkqaEZFXA
-         G09HOG/0ygBjeoI6hgSLjMERbqVu5zJ8HiQLzgj7QSr74QVjQQ77DpJUx6+4tnlfWnYK
-         rlfatVZi95oOxlbbSI1aaOvy8vBd369yL07aMvd+zUA5tvYACzbMen8ifDWxn3sdviJm
-         Z1o5c4KEx1877vX2LpcF3TPOZhCwfXLTCbOPizLTx0RmVKndRIg+F10M9PIs8qHwgsjd
-         hxcxfvgXaVvUDqzf27YzOmdyrW2tQZ4/hENBn5ydMB32Y03uKGbbCkHZop8dz7dD8JH0
-         2mOA==
-X-Gm-Message-State: AOAM533GK/9eSLU9tVL4cRy0LWmw0IiOuax+haXyZ0Qqte/WJdmPL3rP
-        04fEQ2rvKxyVVq9qn8sA9/M54mNLmnLWpg==
-X-Google-Smtp-Source: ABdhPJxg8wQ3A/EiNaMHd6Ag38vW7KVOGTfIiKpn26WVMFBcri374acTRm4xV5rpuuwoQVGeoMIQjA==
-X-Received: by 2002:a05:6a00:15cc:b029:1ba:5282:3ab8 with SMTP id o12-20020a056a0015ccb02901ba52823ab8mr2453895pfu.77.1612497109871;
-        Thu, 04 Feb 2021 19:51:49 -0800 (PST)
-Received: from [10.101.46.49] (61-220-137-37.HINET-IP.hinet.net. [61.220.137.37])
-        by smtp.gmail.com with ESMTPSA id h8sm844123pfv.154.2021.02.04.19.51.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Feb 2021 19:51:48 -0800 (PST)
-Subject: Re: [PATCH] HID: intel-ish-hid: ipc: Add Tiger Lake H PCI device ID
-To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210204083315.122952-1-vicamo.yang@canonical.com>
- <85a4e6e61ac977d0d00dd9140a9e85f1102b3a6d.camel@linux.intel.com>
-From:   You-Sheng Yang <vicamo.yang@canonical.com>
-Message-ID: <57544f34-0e90-359c-766f-affcf890664a@canonical.com>
-Date:   Fri, 5 Feb 2021 11:51:46 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S231147AbhBEDxk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 22:53:40 -0500
+Received: from mga04.intel.com ([192.55.52.120]:34512 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230184AbhBEDxi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 22:53:38 -0500
+IronPort-SDR: JFZrqZ04xrDGVnp+AHYSzyfj8S9cIceHbj9MhSj/eiEFi+PVKFv5hU1f5czDOP4Oeya7++hlc+
+ 2lrdKV9Eu0ew==
+X-IronPort-AV: E=McAfee;i="6000,8403,9885"; a="178812605"
+X-IronPort-AV: E=Sophos;i="5.81,154,1610438400"; 
+   d="scan'208";a="178812605"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Feb 2021 19:52:38 -0800
+IronPort-SDR: ZtkMwGgKqJszXgT2iemnsvXjrWTCfy7JMDYSFhclK6GT7AqatAZDl6OxFwe30M3WXDZfaXgvBl
+ US14tnKSnCGQ==
+X-IronPort-AV: E=Sophos;i="5.81,154,1610438400"; 
+   d="scan'208";a="393673586"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Feb 2021 19:52:37 -0800
+Date:   Thu, 4 Feb 2021 19:52:36 -0800
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     dsterba@suse.cz, clm@fb.com, josef@toxicpanda.com,
+        dsterba@suse.com, Miao Xie <miaox@cn.fujitsu.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH] fs/btrfs: Fix raid6 qstripe kmap'ing
+Message-ID: <20210205035236.GB5033@iweiny-DESK2.sc.intel.com>
+References: <20210128061503.1496847-1-ira.weiny@intel.com>
+ <20210203155648.GE1993@suse.cz>
+ <20210204152608.GF1993@suse.cz>
 MIME-Version: 1.0
-In-Reply-To: <85a4e6e61ac977d0d00dd9140a9e85f1102b3a6d.camel@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210204152608.GF1993@suse.cz>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/4/21 11:13 PM, Srinivas Pandruvada wrote:
-> On Thu, 2021-02-04 at 16:33 +0800, You-Sheng Yang wrote:
->> Added Tiger Lake H PCI device ID to the supported device list.
->>
->> Signed-off-by: You-Sheng Yang <vicamo.yang@canonical.com>
-> Did you get chance to verify on a platform?
-> Do you see sensors enumerated in /sys/bus/iio?
-
-Yes,
-
-[    2.485650] ish-hid {33AECD58-B679-4E54-9BD9-A04D34F0C226}:
-[hid-ish]: enum_devices_done OK, num_hid_devices=3
-[    2.497337] hid-generic 001F:8087:0AC2.0003: hidraw2: <UNKNOWN> HID
-v2.00 Device [hid-ishtp 8087:0AC2] on
-[    2.506945] hid-generic 001F:8087:0AC2.0004: hidraw3: <UNKNOWN> HID
-v2.00 Device [hid-ishtp 8087:0AC2] on
-[    2.512127] hid-generic 001F:8087:0AC2.0005: hidraw4: <UNKNOWN> HID
-v2.00 Device [hid-ishtp 8087:0AC2] on
-
-$ ls /sys/bus/iio/devices/
-iio:device0  iio:device1  trigger0  trigger1
-
-One of them is an ambient light sensor, and it works only with this
-patch applied.
-
-Thanks,
-You-Sheng Yang
-
-> Thanks,
-> Srinivas
+On Thu, Feb 04, 2021 at 04:26:08PM +0100, David Sterba wrote:
+> On Wed, Feb 03, 2021 at 04:56:48PM +0100, David Sterba wrote:
+> > On Wed, Jan 27, 2021 at 10:15:03PM -0800, ira.weiny@intel.com wrote:
+> > > From: Ira Weiny <ira.weiny@intel.com>
+> > > 
+> > > When a qstripe is required an extra page is allocated and mapped.  There
+> > > were 3 problems.
+> > > 
+> > > 1) There is no reason to map the qstripe page more than 1 time if the
+> > >    number of bits set in rbio->dbitmap is greater than one.
+> > > 2) There is no reason to map the parity page and unmap it each time
+> > >    through the loop.
+> > > 3) There is no corresponding call of kunmap() for the qstripe page.
+> > > 
+> > > The page memory can continue to be reused with a single mapping on each
+> > > iteration by raid6_call.gen_syndrome() without remapping.  So map the
+> > > page for the duration of the loop.
+> > > 
+> > > Similarly, improve the algorithm by mapping the parity page just 1 time.
+> > > 
+> > > Fixes: 5a6ac9eacb49 ("Btrfs, raid56: support parity scrub on raid56")
+> > > To: Chris Mason <clm@fb.com>
+> > > To: Josef Bacik <josef@toxicpanda.com>
+> > > To: David Sterba <dsterba@suse.com>
+> > > Cc: Miao Xie <miaox@cn.fujitsu.com>
+> > > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> > > 
+> > > ---
+> > > This was found while replacing kmap() with kmap_local_page().  After
+> > > this patch unwinding all the mappings becomes pretty straight forward.
+> > > 
+> > > I'm not exactly sure I've worded this commit message intelligently.
+> > > Please forgive me if there is a better way to word it.
+> > 
+> > Changelog is good, thanks. I've added stable tags as the missing unmap
+> > is a potential problem.
 > 
->> ---
->>  drivers/hid/intel-ish-hid/ipc/hw-ish.h  | 1 +
->>  drivers/hid/intel-ish-hid/ipc/pci-ish.c | 1 +
->>  2 files changed, 2 insertions(+)
->>
->> diff --git a/drivers/hid/intel-ish-hid/ipc/hw-ish.h
->> b/drivers/hid/intel-ish-hid/ipc/hw-ish.h
->> index 1fb294ca463e..21b0e6123754 100644
->> --- a/drivers/hid/intel-ish-hid/ipc/hw-ish.h
->> +++ b/drivers/hid/intel-ish-hid/ipc/hw-ish.h
->> @@ -27,6 +27,7 @@
->>  #define CMP_H_DEVICE_ID		0x06FC
->>  #define EHL_Ax_DEVICE_ID	0x4BB3
->>  #define TGL_LP_DEVICE_ID	0xA0FC
->> +#define TGL_H_DEVICE_ID		0x43FC
->>  
->>  #define	REVISION_ID_CHT_A0	0x6
->>  #define	REVISION_ID_CHT_Ax_SI	0x0
->> diff --git a/drivers/hid/intel-ish-hid/ipc/pci-ish.c
->> b/drivers/hid/intel-ish-hid/ipc/pci-ish.c
->> index c6d48a8648b7..6dea657b7b15 100644
->> --- a/drivers/hid/intel-ish-hid/ipc/pci-ish.c
->> +++ b/drivers/hid/intel-ish-hid/ipc/pci-ish.c
->> @@ -37,6 +37,7 @@ static const struct pci_device_id ish_pci_tbl[] = {
->>  	{PCI_DEVICE(PCI_VENDOR_ID_INTEL, CMP_H_DEVICE_ID)},
->>  	{PCI_DEVICE(PCI_VENDOR_ID_INTEL, EHL_Ax_DEVICE_ID)},
->>  	{PCI_DEVICE(PCI_VENDOR_ID_INTEL, TGL_LP_DEVICE_ID)},
->> +	{PCI_DEVICE(PCI_VENDOR_ID_INTEL, TGL_H_DEVICE_ID)},
->>  	{0, }
->>  };
->>  MODULE_DEVICE_TABLE(pci, ish_pci_tbl);
+> There are lots of tests faling, stack traces like below. I haven't seen
+> anything obvious in the patch so that needs a closer look and for the
+> time being I can't add the patch to for-next.
+
+:-(
+
+I think I may have been off by 1 on the raid6 kmap...
+
+Something like this should fix it...
+
+diff --git a/fs/btrfs/raid56.c b/fs/btrfs/raid56.c
+index b8a39dad0f00..dbf52f1a379d 100644
+--- a/fs/btrfs/raid56.c
++++ b/fs/btrfs/raid56.c
+@@ -2370,7 +2370,7 @@ static noinline void finish_parity_scrub(struct btrfs_raid_bio *rbio,
+                        goto cleanup;
+                }
+                SetPageUptodate(q_page);
+-               pointers[rbio->real_stripes] = kmap(q_page);
++               pointers[rbio->real_stripes - 1] = kmap(q_page);
+        }
+ 
+        atomic_set(&rbio->error, 0);
+
+Let me roll a new version.
+
+Sorry,
+Ira
+
 > 
+>  BUG: kernel NULL pointer dereference, address:0000000000000000
+>  #PF: supervisor write access in kernel mode
+>  #PF: error_code(0x0002) - not-present page
+>  PGD 0 P4D 0
+>  Oops: 0002 [#1] PREEMPT SMP
+>  CPU: 2 PID: 17173 Comm: kworker/u8:5 Not tainted5.11.0-rc6-default+ #1422
+>  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),BIOS rel-1.12.0-59-gc9ba527-rebuilt.opensuse.org 04/01/2014
+>  Workqueue: btrfs-rmw btrfs_work_helper [btrfs]
+>  RIP: 0010:raid6_avx22_gen_syndrome+0x103/0x140 [raid6_pq]
+>  RSP: 0018:ffffa090042cfcf8 EFLAGS: 00010246
+>  RAX: ffff9e98e1848e80 RBX: ffff9e98d5849000 RCX:0000000000000020
+>  RDX: ffff9e98e32be000 RSI: 0000000000000000 RDI:ffff9e98e1848e80
+>  RBP: 0000000000000000 R08: 0000000000000000 R09:0000000000000001
+>  R10: ffff9e98e1848e90 R11: ffff9e98e1848e98 R12:0000000000001000
+>  R13: ffff9e98e1848e88 R14: 0000000000000005 R15:0000000000000002
+>  FS:  0000000000000000(0000) GS:ffff9e993da00000(0000)knlGS:0000000000000000
+>  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>  CR2: 0000000000000000 CR3: 0000000023143003 CR4:0000000000170ea0
+>  Call Trace:
+>   finish_parity_scrub+0x47b/0x7a0 [btrfs]
+>   raid56_parity_scrub_stripe+0x24e/0x260 [btrfs]
+>   btrfs_work_helper+0xd5/0x1d0 [btrfs]
+>   process_one_work+0x262/0x5f0
+>   worker_thread+0x4e/0x300
+>   ? process_one_work+0x5f0/0x5f0
+>   kthread+0x151/0x170
+>   ? __kthread_bind_mask+0x60/0x60
