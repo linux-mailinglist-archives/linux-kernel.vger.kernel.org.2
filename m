@@ -2,149 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61EFC310C42
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 14:56:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EDCEA310C4C
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 14:58:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231522AbhBENzx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 08:55:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44858 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229763AbhBENwT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 08:52:19 -0500
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 767B3C0613D6
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 05:52:04 -0800 (PST)
-Received: by mail-lj1-x231.google.com with SMTP id m22so7826356ljj.4
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 05:52:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ASWzAhi2cG2TQHse+1Zu4lZ0A7tCAPhy+TIzDjmHLkM=;
-        b=FEqiqBbxKRc+F3Poiwa4vl81wMLAfV5VxyFnHYaiBpWou6UpR48cfY/ZenWXMwZdYB
-         P+emTgcsLNav6sEWDDyew051HRnkdlw+6FT1g/ZvWWZaxaDsa2Q9j2xxe+cS9/uIuWQ2
-         WUJ+tQeUiu2ab0oydkYcSnXQEltmnMogmmkBMRsUFGQ8n24B2JIXAjeen7qUlZSr3Sme
-         +OkTRhfP7vmAZwDZGBr5GxJ0FZ3qr+2fM+psINYQjp45D2jlnVfDc6IdlldkjZ1hXQJn
-         s5/A1MPgdy0yYF22EEdxIMWKMJ1UR8/R98GwjGNRQjWH0zGUhTDSqXK+Y2QNsWMk8Gl/
-         F9jg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ASWzAhi2cG2TQHse+1Zu4lZ0A7tCAPhy+TIzDjmHLkM=;
-        b=Ow18enNcrBw3rFhLEgfPvwZAecgfud2C7aAQHfs1i/EAi6BvaGEDvwkWuQOeRfl+k2
-         EEUHC6b3gWxrqobPMPpdP0LK04/4SQBQSe1F1FhGBDO5cv1W0eGSUK+QnySWeuyy/sJo
-         mubP/CnG9vYNFvccYuhzBpQ+7zgJ2ENtsAq+ZriI5hu23NPk0+AlxzGz8Hi5fF0OL526
-         Uh0+K0/2mOyxqQjwrZ5Z5OgSgSwnbsZ43X5AbQeNTl/wx1P7RSvCGptPJxsWfwPnUtEl
-         zDFajzn4+Tjs8rfqLrLYNW0lq+vFJtPRJCfrzTvFER3CHLbR5qGbJ5+gFQPutQHseA9V
-         +/1g==
-X-Gm-Message-State: AOAM532qas0Xohg4JWEHkmIr7/wUIZx8YCi+rekNe5X9SeFvvPu/tc1c
-        90W3FnqdrWoPoeoTcyYL+bwQbHyyQvUGEU9J8ARv/g==
-X-Google-Smtp-Source: ABdhPJz9WT4HEzFe+20unEq6h9V4ChSVF0OJxUZ0UilIi/mReWhYWQYl7T4ycCEjOI02KwEZ4eKlGSct7l2Wd4Ca+Rw=
-X-Received: by 2002:a2e:9857:: with SMTP id e23mr2697903ljj.209.1612533122884;
- Fri, 05 Feb 2021 05:52:02 -0800 (PST)
+        id S231674AbhBEN4b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 08:56:31 -0500
+Received: from mx2.suse.de ([195.135.220.15]:56246 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231571AbhBENxj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 08:53:39 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id B18E9ACD4;
+        Fri,  5 Feb 2021 13:52:57 +0000 (UTC)
+From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+To:     f.fainelli@gmail.com, Saenz Julienne <nsaenzjulienne@suse.de>,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>
+Cc:     phil@raspberrypi.com, wahrenst@gmx.net,
+        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org
+Subject: [RFC/PATCH 01/11] dt-bindings: soc: bcm: bcm2835-pm: Convert bindings to DT schema
+Date:   Fri,  5 Feb 2021 14:52:37 +0100
+Message-Id: <20210205135249.2924-2-nsaenzjulienne@suse.de>
+X-Mailer: git-send-email 2.30.0
+In-Reply-To: <20210205135249.2924-1-nsaenzjulienne@suse.de>
+References: <20210205135249.2924-1-nsaenzjulienne@suse.de>
 MIME-Version: 1.0
-References: <20210128183141.28097-1-valentin.schneider@arm.com> <20210128183141.28097-2-valentin.schneider@arm.com>
-In-Reply-To: <20210128183141.28097-2-valentin.schneider@arm.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Fri, 5 Feb 2021 14:51:51 +0100
-Message-ID: <CAKfTPtDrKrkZBQuaFSGvRo=aQAdF0vugxWervQpWeza21XL=yw@mail.gmail.com>
-Subject: Re: [PATCH 1/8] sched/fair: Clean up active balance nr_balance_failed trickery
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Quentin Perret <qperret@google.com>,
-        Pavan Kondeti <pkondeti@codeaurora.org>,
-        Rik van Riel <riel@surriel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 28 Jan 2021 at 19:32, Valentin Schneider
-<valentin.schneider@arm.com> wrote:
->
-> When triggering an active load balance, sd->nr_balance_failed is set to
-> such a value that any further can_migrate_task() using said sd will ignore
-> the output of task_hot().
->
-> This behaviour makes sense, as active load balance intentionally preempts a
-> rq's running task to migrate it right away, but this asynchronous write is
-> a bit shoddy, as the stopper thread might run active_load_balance_cpu_stop
-> before the sd->nr_balance_failed write either becomes visible to the
-> stopper's CPU or even happens on the CPU that appended the stopper work.
->
-> Add a struct lb_env flag to denote active balancing, and use it in
-> can_migrate_task(). Remove the sd->nr_balance_failed write that served the
-> same purpose.
->
-> Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
-> ---
->  kernel/sched/fair.c | 17 ++++++++++-------
->  1 file changed, 10 insertions(+), 7 deletions(-)
->
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 197a51473e0c..0f6a4e58ce3c 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -7423,6 +7423,7 @@ enum migration_type {
->  #define LBF_SOME_PINNED        0x08
->  #define LBF_NOHZ_STATS 0x10
->  #define LBF_NOHZ_AGAIN 0x20
-> +#define LBF_ACTIVE_LB  0x40
->
->  struct lb_env {
->         struct sched_domain     *sd;
-> @@ -7608,10 +7609,14 @@ int can_migrate_task(struct task_struct *p, struct lb_env *env)
->
->         /*
->          * Aggressive migration if:
-> -        * 1) destination numa is preferred
-> -        * 2) task is cache cold, or
-> -        * 3) too many balance attempts have failed.
-> +        * 1) active balance
-> +        * 2) destination numa is preferred
-> +        * 3) task is cache cold, or
-> +        * 4) too many balance attempts have failed.
->          */
-> +       if (env->flags & LBF_ACTIVE_LB)
-> +               return 1;
-> +
+This converts the brcm,bcm2835-pc bindings from text to proper schema.
 
-This changes the behavior for numa system because it skips
-migrate_degrades_locality() which can return 1 and prevent active
-migration whatever nr_balance_failed
+Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+---
+ .../bindings/soc/bcm/brcm,bcm2835-pm.txt      | 46 -----------
+ .../bindings/soc/bcm/brcm,bcm2835-pm.yaml     | 79 +++++++++++++++++++
+ 2 files changed, 79 insertions(+), 46 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/soc/bcm/brcm,bcm2835-pm.txt
+ create mode 100644 Documentation/devicetree/bindings/soc/bcm/brcm,bcm2835-pm.yaml
 
-Is that intentional ?
+diff --git a/Documentation/devicetree/bindings/soc/bcm/brcm,bcm2835-pm.txt b/Documentation/devicetree/bindings/soc/bcm/brcm,bcm2835-pm.txt
+deleted file mode 100644
+index 72ff033565e5..000000000000
+--- a/Documentation/devicetree/bindings/soc/bcm/brcm,bcm2835-pm.txt
++++ /dev/null
+@@ -1,46 +0,0 @@
+-BCM2835 PM (Power domains, watchdog)
+-
+-The PM block controls power domains and some reset lines, and includes
+-a watchdog timer.  This binding supersedes the brcm,bcm2835-pm-wdt
+-binding which covered some of PM's register range and functionality.
+-
+-Required properties:
+-
+-- compatible:		Should be "brcm,bcm2835-pm"
+-- reg:			Specifies base physical address and size of the two
+-			  register ranges ("PM" and "ASYNC_BRIDGE" in that
+-			  order)
+-- clocks:		a) v3d: The V3D clock from CPRMAN
+-			b) peri_image: The PERI_IMAGE clock from CPRMAN
+-			c) h264: The H264 clock from CPRMAN
+-			d) isp: The ISP clock from CPRMAN
+-- #reset-cells: 	Should be 1.  This property follows the reset controller
+-			  bindings[1].
+-- #power-domain-cells:	Should be 1.  This property follows the power domain
+-			  bindings[2].
+-
+-Optional properties:
+-
+-- timeout-sec:		Contains the watchdog timeout in seconds
+-- system-power-controller: Whether the watchdog is controlling the
+-    system power.  This node follows the power controller bindings[3].
+-
+-[1] Documentation/devicetree/bindings/reset/reset.txt
+-[2] Documentation/devicetree/bindings/power/power-domain.yaml
+-[3] Documentation/devicetree/bindings/power/power-controller.txt
+-
+-Example:
+-
+-pm {
+-	compatible = "brcm,bcm2835-pm", "brcm,bcm2835-pm-wdt";
+-	#power-domain-cells = <1>;
+-	#reset-cells = <1>;
+-	reg = <0x7e100000 0x114>,
+-	      <0x7e00a000 0x24>;
+-	clocks = <&clocks BCM2835_CLOCK_V3D>,
+-		 <&clocks BCM2835_CLOCK_PERI_IMAGE>,
+-		 <&clocks BCM2835_CLOCK_H264>,
+-		 <&clocks BCM2835_CLOCK_ISP>;
+-	clock-names = "v3d", "peri_image", "h264", "isp";
+-	system-power-controller;
+-};
+diff --git a/Documentation/devicetree/bindings/soc/bcm/brcm,bcm2835-pm.yaml b/Documentation/devicetree/bindings/soc/bcm/brcm,bcm2835-pm.yaml
+new file mode 100644
+index 000000000000..5e0555fc0666
+--- /dev/null
++++ b/Documentation/devicetree/bindings/soc/bcm/brcm,bcm2835-pm.yaml
+@@ -0,0 +1,79 @@
++# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
++%YAML 1.2
++---
++$id: "http://devicetree.org/schemas/soc/bcm/brcm,bcm2835-pm.yaml#"
++$schema: "http://devicetree.org/meta-schemas/core.yaml#"
++
++title: BCM2835 PM (Power domains, watchdog)
++
++description: |
++  The PM block controls power domains and some reset lines, and includes a
++  watchdog timer.
++
++maintainers:
++  - Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
++
++allOf:
++  - $ref: ../../watchdog/watchdog.yaml#
++
++properties:
++  compatible:
++    items:
++      - enum:
++          - brcm,bcm2835-pm
++      - const: brcm,bcm2835-pm-wdt
++
++  reg:
++    minItems: 1
++    maxItems: 2
++    description: Specifies base physical address and size of the two register
++                 ranges, "PM" and "ASYNC_BRIDGE" in that order.
++
++  "#power-domain-cells":
++    const: 1
++
++  "#reset-cells":
++    const: 1
++
++  clocks:
++    minItems: 4
++    maxItems: 4
++
++  clock-names:
++    items:
++      - const: v3d
++      - const: peri_image
++      - const: h264
++      - const: isp
++
++  system-power-controller:
++    type: boolean
++
++  timeout-sec: true
++
++required:
++  - compatible
++  - reg
++  - "#power-domain-cells"
++  - "#reset-cells"
++  - clocks
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/clock/bcm2835.h>
++
++    watchdog@0 {
++        compatible = "brcm,bcm2835-pm", "brcm,bcm2835-pm-wdt";
++        #power-domain-cells = <1>;
++        #reset-cells = <1>;
++        reg = <0x7e100000 0x114>,
++              <0x7e00a000 0x24>;
++        clocks = <&clocks BCM2835_CLOCK_V3D>,
++        	 <&clocks BCM2835_CLOCK_PERI_IMAGE>,
++        	 <&clocks BCM2835_CLOCK_H264>,
++        	 <&clocks BCM2835_CLOCK_ISP>;
++        clock-names = "v3d", "peri_image", "h264", "isp";
++        system-power-controller;
++    };
+-- 
+2.30.0
 
->         tsk_cache_hot = migrate_degrades_locality(p, env);
->         if (tsk_cache_hot == -1)
->                 tsk_cache_hot = task_hot(p, env);
-> @@ -9805,9 +9810,6 @@ static int load_balance(int this_cpu, struct rq *this_rq,
->                                         active_load_balance_cpu_stop, busiest,
->                                         &busiest->active_balance_work);
->                         }
-> -
-> -                       /* We've kicked active balancing, force task migration. */
-> -                       sd->nr_balance_failed = sd->cache_nice_tries+1;
->                 }
->         } else {
->                 sd->nr_balance_failed = 0;
-> @@ -9963,7 +9965,8 @@ static int active_load_balance_cpu_stop(void *data)
->                          * @dst_grpmask we need to make that test go away with lying
->                          * about DST_PINNED.
->                          */
-> -                       .flags          = LBF_DST_PINNED,
-> +                       .flags          = LBF_DST_PINNED |
-> +                                         LBF_ACTIVE_LB,
->                 };
->
->                 schedstat_inc(sd->alb_count);
-> --
-> 2.27.0
->
