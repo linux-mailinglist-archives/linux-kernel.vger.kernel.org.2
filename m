@@ -2,88 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28423310B74
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 13:59:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 790F8310B7C
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 14:02:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231649AbhBEM57 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 07:57:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60608 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231274AbhBEMwh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 07:52:37 -0500
-Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15BD8C06178C;
-        Fri,  5 Feb 2021 04:51:57 -0800 (PST)
-Received: by mail-qv1-xf30.google.com with SMTP id u16so3321866qvo.9;
-        Fri, 05 Feb 2021 04:51:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=44jysrhfwvNRmTpMvVOgVkQrO5vwKN4Np5bGq//+V08=;
-        b=OuUxIbjv3QQvW74TKYWKJDsM1aMH2uOxhuDWi4Sf9YIcCQSsa2HoMQbI5nm/hhS4JK
-         IWctRpCo07zKaRxCPtJY/ZDpXqg72CGtM+B2p0rbdyI7O92clzlBJ9pncVMngme3xJCb
-         w5SE8BGpzuS6Iur43EAm6Km0RI8Jhtrdp7Of2FxkzAriYIHKogtOS7/tyoZopOEpJ39B
-         qJYFdHxGQhqGJZKTQFIFyU8bsoIB/1xBXqyudOouKU3G/jAWjHq7bXBv8/0jv2PU01eq
-         m0FQKW7eWK9paJ+IjSPlGnxXjWab8DctcDze/+gbCRuBVUzoWIhzhfGb78PhftpCcYcR
-         7y/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=44jysrhfwvNRmTpMvVOgVkQrO5vwKN4Np5bGq//+V08=;
-        b=YMP6MkOXWRgYXQHkflFhKK58bScgSvqLC8q+MHuRhQOSbFbJ7Wx2T4vp0VjLMF7wKm
-         GSry0ixPWJdSf2ldEqGNnQ9TBbGpzatSNA1zCgcKobNzb6NLQO/0VN185anoQWyv2IJu
-         p9uvpYNjJa2KJTdgFSPlui4aytqJ7MLBNz/gRG/oLvD0t5CRpjX8zYCglCUahaLbnkl7
-         26d461Kg5pBq1BF5X7NGhZUso49Y0tNqgZH+ZjIhxaY5Fyd8RV33mHNk1tf1LiJvmEGb
-         HxY0D/sZwxiy5o0/27QY3lOD4L2jW6qRZLWkEDQZ7SPkTNyCMzLe1nXb3PMS/3dRgFak
-         b2WQ==
-X-Gm-Message-State: AOAM533EY/W5uOzf3QV0MXOE7CJ9NlgMfrVFz1upTmhZWj6WIdV4pIc0
-        7vdJuz+Si6DVljjHUiUDyvg=
-X-Google-Smtp-Source: ABdhPJz5Q874NtMaa6VEJzJ+vb7K1l2cxjbgMJfrjZasbMLyCtE9pfE6vKkNNSkv2iuqV2h7xxT62A==
-X-Received: by 2002:ad4:45b0:: with SMTP id y16mr4229972qvu.3.1612529516354;
-        Fri, 05 Feb 2021 04:51:56 -0800 (PST)
-Received: from localhost.localdomain ([138.199.10.106])
-        by smtp.gmail.com with ESMTPSA id q22sm5104548qki.51.2021.02.05.04.51.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Feb 2021 04:51:55 -0800 (PST)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     rjw@rjwysocki.net, viresh.kumar@linaro.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: [PATCH] drivers: cpufreq: Change a word with a word , good one in the file powernow-k7.c
-Date:   Fri,  5 Feb 2021 18:21:44 +0530
-Message-Id: <20210205125144.1407032-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.30.0
+        id S232397AbhBENAe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 08:00:34 -0500
+Received: from vps0.lunn.ch ([185.16.172.187]:50262 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232401AbhBEMyM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 07:54:12 -0500
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1l80bx-004N5I-SV; Fri, 05 Feb 2021 13:53:21 +0100
+Date:   Fri, 5 Feb 2021 13:53:21 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Hans Verkuil <hverkuil@xs4all.nl>
+Cc:     Takashi Iwai <tiwai@suse.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Matwey V. Kornilov" <matwey@sai.msu.ru>,
+        Robert Foss <robert.foss@linaro.org>
+Subject: Re: [PATCH] media: pwc: Fix the URB buffer allocation
+Message-ID: <YB0/wTjYqE9IgtXZ@lunn.ch>
+References: <20210121202855.17400-1-tiwai@suse.de>
+ <7afd0612-de36-60b1-6650-6f8de24a7145@xs4all.nl>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7afd0612-de36-60b1-6650-6f8de24a7145@xs4all.nl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Feb 05, 2021 at 01:36:43PM +0100, Hans Verkuil wrote:
+> Hi Takashi,
+> 
+> Thank you for this patch, but it clashes with another patch trying to do the same thing
+> that has already been merged in our tree:
+> 
+> https://patchwork.linuxtv.org/project/linux-media/patch/20210104170007.20625-1-matwey@sai.msu.ru/
+> 
+> I do prefer your patch over the one already merged since it is a bit simpler, but
+> shouldn't the calls to dma_sync_single_for_cpu() and dma_sync_single_for_device()
+> in pwc-if.c also use urb->dev->bus->controller?
+> 
+> Also, Matwey's patch uses urb->dev->bus->sysdev instead of urb->dev->bus->controller.
+> How does 'sysdev' relate to 'controller'? I think 'controller' is the right device to
+> use, but either seems to work when I test it with my pwc webcam.
 
+Hi Hans
 
-s/fucked/messed/
+A quick grep in driver/usb show that all but one dma mapping operation
+use sysdev. The one other case uses controller. So the numbers suggest
+controller is wrong, sysdev is correct.
 
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
----
- drivers/cpufreq/powernow-k7.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+But maybe ask GregKH?
 
-diff --git a/drivers/cpufreq/powernow-k7.c b/drivers/cpufreq/powernow-k7.c
-index 5d515fc34836..2e114fc75e68 100644
---- a/drivers/cpufreq/powernow-k7.c
-+++ b/drivers/cpufreq/powernow-k7.c
-@@ -574,7 +574,7 @@ static int acer_cpufreq_pst(const struct dmi_system_id *d)
- }
-
- /*
-- * Some Athlon laptops have really fucked PST tables.
-+ * Some Athlon laptops have really messed PST tables.
-  * A BIOS update is all that can save them.
-  * Mention this, and disable cpufreq.
-  */
---
-2.30.0
-
+	   Andrew
