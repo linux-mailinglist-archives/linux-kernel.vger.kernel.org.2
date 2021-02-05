@@ -2,130 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB39A310809
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 10:38:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D90D53107EF
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 10:34:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230172AbhBEJhk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 04:37:40 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:57206 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230202AbhBEJeY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 04:34:24 -0500
-Received: from bogon.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxT_MjDh1gETYFAA--.6719S2;
-        Fri, 05 Feb 2021 17:21:40 +0800 (CST)
-From:   Youling Tang <tangyouling@loongson.cn>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        tangyouling@loongson.cn
-Subject: [PATCH] MIPS: crash_dump.c: Simplify copy_oldmem_page()
-Date:   Fri,  5 Feb 2021 17:21:39 +0800
-Message-Id: <1612516899-31285-1-git-send-email-tangyouling@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9DxT_MjDh1gETYFAA--.6719S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7Zr4fAryfuFWrWr1DZrWDurg_yoW8KF1rpr
-        sIk39Fkr45K3WUJwsFvwnFka4rJwn7Ca18GrZrC3W8uw1S9rnFvFykJ3Z2qrWUtry5KF4r
-        AFZ8Gr45Cr4UZaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkv14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-        2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26F4j6r4UJwAm72CE4IkC6x0Yz7v_Jr
-        0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkIecxEwVAFwVW8
-        uwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r
-        1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij
-        64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr
-        0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6Fyj6rWUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI
-        42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x0JUgJ5OUUUUU=
-X-CM-SenderInfo: 5wdqw5prxox03j6o00pqjv00gofq/
+        id S230281AbhBEJdE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 04:33:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43896 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230131AbhBEJYB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 04:24:01 -0500
+Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A02DC06178A
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 01:23:21 -0800 (PST)
+Received: by mail-ot1-x332.google.com with SMTP id o12so6213612ote.12
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 01:23:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=sS/Xd09oO/Yz7Hj4c1pMXiQx4PAyc9TbJHEWESq/zdk=;
+        b=F2M9IQ0Mcwqf9L0EvHG8jvCxSS3P6nZN7xpdji0YW2Vb0bIMHJ0EICfSmJXH13+OEm
+         krPXGvlWcY44Pt7pUr/D3V+F0v5YY7w63OxZE08ttweY89J8zqB7lHIAILmCZ9ny2YqN
+         9zo+EbKF4hd8YpcfyTU2+f4zh7/eT3IqgIEvo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=sS/Xd09oO/Yz7Hj4c1pMXiQx4PAyc9TbJHEWESq/zdk=;
+        b=oyYPCpV16cIWoSwYqLqn5SPEsI559wvm2Qwa6yy7HibvtOYsdt9rA0q2+bC6EpO4SE
+         PhP7G7LNhNqxq/EpJRCnqYxmoh+M+IGNWzMSEZzl4+wRTuOA7JDQF0ypAtIQUfpYDdc9
+         xbGsZ0D3cJ0xIYrEsGWyYCtwARqN1m+fS+pUOSzwIzk1hDWZAACqJ/sjSdXfjOWEYNbG
+         mfzWuODGtDRtkZ7/Nabur5qQSE1KvF0Mnc7MgVDg7F+Qk/00145ifqQmBDm4iR9wKNv5
+         U7tBnC5lFw+FuGL8wxAbuo66mu+7GxCwSmSRjG03m+lYmq5spCAyjMtwxhsjro/2vbQ7
+         j/OA==
+X-Gm-Message-State: AOAM53308mHfcFTT7M0SF6kmKFJijzfpirl7DXPrbNOTOMiZIimLz0C+
+        k71pzlji4cSP/JulwA0+4iBsvp2+831t0sNvBOwspA==
+X-Google-Smtp-Source: ABdhPJyvqwxmtXpTV9ZKIAiLz9FmmOsfNWEZVdMA32uQT+RmaGjI6VWxp+i56z1wSxB5hntfBMxUSK7fieqhiVOdzSE=
+X-Received: by 2002:a9d:6c96:: with SMTP id c22mr2681535otr.303.1612517000615;
+ Fri, 05 Feb 2021 01:23:20 -0800 (PST)
+MIME-Version: 1.0
+References: <20210204165831.2703772-2-daniel.vetter@ffwll.ch> <20210204215019.GA104698@bjorn-Precision-5520>
+In-Reply-To: <20210204215019.GA104698@bjorn-Precision-5520>
+From:   Daniel Vetter <daniel.vetter@ffwll.ch>
+Date:   Fri, 5 Feb 2021 10:23:09 +0100
+Message-ID: <CAKMK7uFczzNCDmakn1mxdjpeFaTcdayG4pVedq_f11gYnPbMRw@mail.gmail.com>
+Subject: Re: [PATCH 1/2] PCI: also set up legacy files only after sysfs init
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        Jan Kara <jack@suse.cz>, Kees Cook <keescook@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Linux MM <linux-mm@kvack.org>, Jason Gunthorpe <jgg@ziepe.ca>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>,
+        "Oliver O'Halloran" <oohall@gmail.com>,
+        =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>,
+        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace kmap_atomic_pfn() with kmap_local_pfn() which is preemptible and
-can take page faults.
+On Thu, Feb 4, 2021 at 10:50 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
+>
+> [+cc Oliver, Pali, Krzysztof]
+>
+> s/also/Also/ in subject
+>
+> On Thu, Feb 04, 2021 at 05:58:30PM +0100, Daniel Vetter wrote:
+> > We are already doing this for all the regular sysfs files on PCI
+> > devices, but not yet on the legacy io files on the PCI buses. Thus far
+> > now problem, but in the next patch I want to wire up iomem revoke
+> > support. That needs the vfs up an running already to make so that
+> > iomem_get_mapping() works.
+>
+> s/now problem/no problem/
+> s/an running/and running/
+> s/so that/sure that/ ?
+>
+> iomem_get_mapping() doesn't exist; I don't know what that should be.
 
-Remove the indirection of the dump page and the related cruft which is not
-longer required.
+Series is based on top of linux-next, where iomem_get_mapping exists.
+This patch fixes the 2nd patch in this series, which I had to take out
+of my branch because it failed.
 
-Remove unused or redundant header files.
+> > Wire it up exactly like the existing code. Note that
+> > pci_remove_legacy_files() doesn't need a check since the one for
+> > pci_bus->legacy_io is sufficient.
+>
+> I'm not sure exactly what you mean by "the existing code."  I could
+> probably figure it out, but it would save time to mention the existing
+> function here.
 
-Signed-off-by: Youling Tang <tangyouling@loongson.cn>
----
- arch/mips/kernel/crash_dump.c | 42 ++++++------------------------------------
- 1 file changed, 6 insertions(+), 36 deletions(-)
+Sorry, I meant the existing code in pci_create_sysfs_dev_files().
 
-diff --git a/arch/mips/kernel/crash_dump.c b/arch/mips/kernel/crash_dump.c
-index 01b2bd9..f2eb91c 100644
---- a/arch/mips/kernel/crash_dump.c
-+++ b/arch/mips/kernel/crash_dump.c
-@@ -1,11 +1,5 @@
- // SPDX-License-Identifier: GPL-2.0
- #include <linux/highmem.h>
--#include <linux/memblock.h>
--#include <linux/crash_dump.h>
--#include <linux/uaccess.h>
--#include <linux/slab.h>
--
--static void *kdump_buf_page;
- 
- /**
-  * copy_oldmem_page - copy one page from "oldmem"
-@@ -19,10 +13,6 @@ static void *kdump_buf_page;
-  *
-  * Copy a page from "oldmem". For this page, there is no pte mapped
-  * in the current kernel.
-- *
-- * Calling copy_to_user() in atomic context is not desirable. Hence first
-- * copying the data to a pre-allocated kernel page and then copying to user
-- * space in non-atomic context.
-  */
- ssize_t copy_oldmem_page(unsigned long pfn, char *buf,
- 			 size_t csize, unsigned long offset, int userbuf)
-@@ -32,36 +22,16 @@ ssize_t copy_oldmem_page(unsigned long pfn, char *buf,
- 	if (!csize)
- 		return 0;
- 
--	vaddr = kmap_atomic_pfn(pfn);
-+	vaddr = kmap_local_pfn(pfn);
- 
- 	if (!userbuf) {
--		memcpy(buf, (vaddr + offset), csize);
--		kunmap_atomic(vaddr);
-+		memcpy(buf, vaddr + offset, csize);
- 	} else {
--		if (!kdump_buf_page) {
--			pr_warn("Kdump: Kdump buffer page not allocated\n");
--
--			return -EFAULT;
--		}
--		copy_page(kdump_buf_page, vaddr);
--		kunmap_atomic(vaddr);
--		if (copy_to_user(buf, (kdump_buf_page + offset), csize))
--			return -EFAULT;
-+		if (copy_to_user(buf, vaddr + offset, csize))
-+			csize = -EFAULT;
- 	}
- 
--	return csize;
--}
--
--static int __init kdump_buf_page_init(void)
--{
--	int ret = 0;
-+	kunmap_local(vaddr);
- 
--	kdump_buf_page = kmalloc(PAGE_SIZE, GFP_KERNEL);
--	if (!kdump_buf_page) {
--		pr_warn("Kdump: Failed to allocate kdump buffer page\n");
--		ret = -ENOMEM;
--	}
--
--	return ret;
-+	return csize;
- }
--arch_initcall(kdump_buf_page_init);
--- 
-2.1.0
+> This looks like another instance where we should really apply Oliver's
+> idea of converting these to attribute_groups [1].
+>
+> The cover letter mentions options discussed with Greg in [2], but I
+> don't think the "sysfs_initialized" hack vs attribute_groups was part
+> of that discussion.
 
+Hm not sure the attribute_groups works. The problem is that I cant set
+up the attributes before the vfs layer is initialized, because before
+that point the iomem_get_mapping function doesn't return anything
+useful (well it crashes), because it needs to have an inode available.
+
+So if you want to set up the attributes earlier, we'd need some kind
+of callback, which Greg didn't like.
+
+> It's not absolutely a show-stopper, but it *is* a shame to extend the
+> sysfs_initialized hack if attribute_groups could do this more cleanly
+> and help solve more than one issue.
+
+So I think I have yet another init ordering problem here, but not sure.
+-Daniel
+
+>
+> Bjorn
+>
+> [1] https://lore.kernel.org/r/CAOSf1CHss03DBSDO4PmTtMp0tCEu5kScn704ZEwLKG=
+XQzBfqaA@mail.gmail.com
+> [2] https://lore.kernel.org/dri-devel/CAKMK7uGrdDrbtj0OyzqQc0CGrQwc2F3tFJ=
+U9vLfm2jjufAZ5YQ@mail.gmail.com/
+>
+> > Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
+> > Cc: Stephen Rothwell <sfr@canb.auug.org.au>
+> > Cc: Jason Gunthorpe <jgg@ziepe.ca>
+> > Cc: Kees Cook <keescook@chromium.org>
+> > Cc: Dan Williams <dan.j.williams@intel.com>
+> > Cc: Andrew Morton <akpm@linux-foundation.org>
+> > Cc: John Hubbard <jhubbard@nvidia.com>
+> > Cc: J=C3=A9r=C3=B4me Glisse <jglisse@redhat.com>
+> > Cc: Jan Kara <jack@suse.cz>
+> > Cc: Dan Williams <dan.j.williams@intel.com>
+> > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > Cc: linux-mm@kvack.org
+> > Cc: linux-arm-kernel@lists.infradead.org
+> > Cc: linux-samsung-soc@vger.kernel.org
+> > Cc: linux-media@vger.kernel.org
+> > Cc: Bjorn Helgaas <bhelgaas@google.com>
+> > Cc: linux-pci@vger.kernel.org
+> > ---
+> >  drivers/pci/pci-sysfs.c | 7 +++++++
+> >  1 file changed, 7 insertions(+)
+> >
+> > diff --git a/drivers/pci/pci-sysfs.c b/drivers/pci/pci-sysfs.c
+> > index fb072f4b3176..0c45b4f7b214 100644
+> > --- a/drivers/pci/pci-sysfs.c
+> > +++ b/drivers/pci/pci-sysfs.c
+> > @@ -927,6 +927,9 @@ void pci_create_legacy_files(struct pci_bus *b)
+> >  {
+> >       int error;
+> >
+> > +     if (!sysfs_initialized)
+> > +             return;
+> > +
+> >       b->legacy_io =3D kcalloc(2, sizeof(struct bin_attribute),
+> >                              GFP_ATOMIC);
+> >       if (!b->legacy_io)
+> > @@ -1448,6 +1451,7 @@ void pci_remove_sysfs_dev_files(struct pci_dev *p=
+dev)
+> >  static int __init pci_sysfs_init(void)
+> >  {
+> >       struct pci_dev *pdev =3D NULL;
+> > +     struct pci_bus *pbus =3D NULL;
+> >       int retval;
+> >
+> >       sysfs_initialized =3D 1;
+> > @@ -1459,6 +1463,9 @@ static int __init pci_sysfs_init(void)
+> >               }
+> >       }
+> >
+> > +     while ((pbus =3D pci_find_next_bus(pbus)))
+> > +             pci_create_legacy_files(pbus);
+> > +
+> >       return 0;
+> >  }
+> >  late_initcall(pci_sysfs_init);
+> > --
+> > 2.30.0
+> >
+> >
+> > _______________________________________________
+> > linux-arm-kernel mailing list
+> > linux-arm-kernel@lists.infradead.org
+> > http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+
+
+
+--=20
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
