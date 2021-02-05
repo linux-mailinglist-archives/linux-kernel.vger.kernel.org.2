@@ -2,208 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C737D3117A9
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 01:11:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 132203117A5
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 01:11:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231529AbhBFAKt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 19:10:49 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:15280 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229707AbhBENLL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 08:11:11 -0500
-Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 115D2YZF148771;
-        Fri, 5 Feb 2021 08:09:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : in-reply-to : references : date : message-id : mime-version :
- content-type; s=pp1; bh=FuHd5B8vQDs909fxLg4Hf92nFou7E5WKngwdbrDJ29E=;
- b=RMIoz47Q2nEx3A/aPzFKD18YZZ2fj1G/XzwH4yY8CD1bsH/eD31n7bn21sCh7PvQarOr
- 3WnOXR5MsT6Gww3zalOwjhGk181MV/Lf4zVutTrCEFSM+BZJNisjmcueSW9kTrVhz7hN
- 3Akfbgiuf+JDPdM4XX2IuoaXhRwq+FfPPsAxfYgFAzNc/MLINQv3eXt2lbjCcO1WL8Ge
- HF/MxQgVBXs4hYdmVeXqVn9FXLzpOqnZ7U+M4vWCnJApOEKU9yErmaigE0PxzixZRkdK
- 7JulrxlzftKECYQ32iJng3Ujnh/rCYwdSiCp1R8+X62jvpL3OBnt1xvoVGlUVN41e8gd zg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 36h5pktfaa-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 05 Feb 2021 08:09:52 -0500
-Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 115D3fgo155574;
-        Fri, 5 Feb 2021 08:09:52 -0500
-Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 36h5pktf9y-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 05 Feb 2021 08:09:52 -0500
-Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
-        by ppma01dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 115D8PtF019834;
-        Fri, 5 Feb 2021 13:09:51 GMT
-Received: from b01cxnp22035.gho.pok.ibm.com (b01cxnp22035.gho.pok.ibm.com [9.57.198.25])
-        by ppma01dal.us.ibm.com with ESMTP id 36eu8rbpju-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 05 Feb 2021 13:09:51 +0000
-Received: from b01ledav004.gho.pok.ibm.com (b01ledav004.gho.pok.ibm.com [9.57.199.109])
-        by b01cxnp22035.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 115D9onk25821548
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 5 Feb 2021 13:09:50 GMT
-Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DE3E5112066;
-        Fri,  5 Feb 2021 13:09:49 +0000 (GMT)
-Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0E0AF112063;
-        Fri,  5 Feb 2021 13:09:49 +0000 (GMT)
-Received: from localhost (unknown [9.163.5.169])
-        by b01ledav004.gho.pok.ibm.com (Postfix) with ESMTPS;
-        Fri,  5 Feb 2021 13:09:48 +0000 (GMT)
-From:   Fabiano Rosas <farosas@linux.ibm.com>
-To:     Leonardo Bras <leobras.c@gmail.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Leonardo Bras <leobras.c@gmail.com>,
-        Jordan Niethe <jniethe5@gmail.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Cc:     kvm-ppc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/1] powerpc/kvm: Save Timebase Offset to fix
- sched_clock() while running guest code.
-In-Reply-To: <20210205060643.233481-1-leobras.c@gmail.com>
-References: <20210205060643.233481-1-leobras.c@gmail.com>
-Date:   Fri, 05 Feb 2021 10:09:46 -0300
-Message-ID: <874kiqy82t.fsf@linux.ibm.com>
+        id S231261AbhBFAJ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 19:09:27 -0500
+Received: from mga11.intel.com ([192.55.52.93]:50761 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229466AbhBEN36 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 08:29:58 -0500
+IronPort-SDR: P4CHLGU32cUGboFJJxqw7qAb5SIftnQfYweKWxnVkMeoRBQhxLHoyP+atqYUkVD3FJ8hkUDheA
+ UDYnzgC783Dw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9885"; a="177925968"
+X-IronPort-AV: E=Sophos;i="5.81,154,1610438400"; 
+   d="scan'208";a="177925968"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2021 05:24:24 -0800
+IronPort-SDR: aS+rBOk+j+5+bJwejQHF/loJJtOuS4YLhMerS8SYm8LqmL6nEu9donoeOafigRuSS/x9xfrC4v
+ hWdqWkg2JXow==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,154,1610438400"; 
+   d="scan'208";a="434448918"
+Received: from stinkbox.fi.intel.com (HELO stinkbox) ([10.237.72.171])
+  by orsmga001.jf.intel.com with SMTP; 05 Feb 2021 05:24:21 -0800
+Received: by stinkbox (sSMTP sendmail emulation); Fri, 05 Feb 2021 15:24:20 +0200
+Date:   Fri, 5 Feb 2021 15:24:20 +0200
+From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
+To:     Sam McNally <sammc@chromium.org>
+Cc:     Hans Verkuil <hverkuil@xs4all.nl>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Hans Verkuil <hans.verkuil@cisco.com>,
+        dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH v3 2/4] drm_dp_mst_topology: use correct AUX channel
+Message-ID: <YB1HBDEB5/fefQzi@intel.com>
+References: <20200923121320.v3.1.I8693156f555875e5c8342e86ab37ce968dfdd277@changeid>
+ <20200923121320.v3.2.Ided0ab0808c4908238bd2eb9ebb6ffb2c9312789@changeid>
+ <YBh9HvbIRF4zd+AK@intel.com>
+ <2a7c2edc-b83c-dccf-487d-1415b4bc23ff@xs4all.nl>
+ <CAJqEsoCOJmS5aVb5du09tXUi7UUKVBQDPe5KTdcBiDr8A7kSYA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-02-05_07:2021-02-05,2021-02-05 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 phishscore=0
- mlxlogscore=999 adultscore=0 impostorscore=0 priorityscore=1501
- lowpriorityscore=0 suspectscore=0 mlxscore=0 spamscore=0 malwarescore=0
- clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102050083
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJqEsoCOJmS5aVb5du09tXUi7UUKVBQDPe5KTdcBiDr8A7kSYA@mail.gmail.com>
+X-Patchwork-Hint: comment
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Leonardo Bras <leobras.c@gmail.com> writes:
+On Fri, Feb 05, 2021 at 04:17:51PM +1100, Sam McNally wrote:
+> On Thu, 4 Feb 2021 at 21:19, Hans Verkuil <hverkuil@xs4all.nl> wrote:
+> >
+> > On 01/02/2021 23:13, Ville Syrjälä wrote:
+> > > On Wed, Sep 23, 2020 at 12:13:53PM +1000, Sam McNally wrote:
+> > >> From: Hans Verkuil <hans.verkuil@cisco.com>
+> > >>
+> > >> For adapters behind an MST hub use the correct AUX channel.
+> > >>
+> > >> Signed-off-by: Hans Verkuil <hans.verkuil@cisco.com>
+> > >> [sammc@chromium.org: rebased, removing redundant changes]
+> > >> Signed-off-by: Sam McNally <sammc@chromium.org>
+> > >> ---
+> > >>
+> > >> (no changes since v1)
+> > >>
+> > >>  drivers/gpu/drm/drm_dp_mst_topology.c | 36 +++++++++++++++++++++++++++
+> > >>  1 file changed, 36 insertions(+)
+> > >>
+> > >> diff --git a/drivers/gpu/drm/drm_dp_mst_topology.c b/drivers/gpu/drm/drm_dp_mst_topology.c
+> > >> index 15b6cc39a754..0d753201adbd 100644
+> > >> --- a/drivers/gpu/drm/drm_dp_mst_topology.c
+> > >> +++ b/drivers/gpu/drm/drm_dp_mst_topology.c
+> > >> @@ -2255,6 +2255,9 @@ drm_dp_mst_topology_unlink_port(struct drm_dp_mst_topology_mgr *mgr,
+> > >>      drm_dp_mst_topology_put_port(port);
+> > >>  }
+> > >>
+> > >> +static ssize_t
+> > >> +drm_dp_mst_aux_transfer(struct drm_dp_aux *aux, struct drm_dp_aux_msg *msg);
+> > >> +
+> > >>  static struct drm_dp_mst_port *
+> > >>  drm_dp_mst_add_port(struct drm_device *dev,
+> > >>                  struct drm_dp_mst_topology_mgr *mgr,
+> > >> @@ -2271,9 +2274,13 @@ drm_dp_mst_add_port(struct drm_device *dev,
+> > >>      port->port_num = port_number;
+> > >>      port->mgr = mgr;
+> > >>      port->aux.name = "DPMST";
+> > >> +    mutex_init(&port->aux.hw_mutex);
+> > >> +    mutex_init(&port->aux.cec.lock);
+> > >>      port->aux.dev = dev->dev;
+> > >>      port->aux.is_remote = true;
+> > >>
+> > >> +    port->aux.transfer = drm_dp_mst_aux_transfer;
+> > >> +
+> > >
+> > > This was supposed to be handled via higher levels checking for
+> > > is_remote==true.
+> >
+> > Ah, I suspect this patch can be dropped entirely: it predates commit 2f221a5efed4
+> > ("drm/dp_mst: Add MST support to DP DPCD R/W functions").
+> >
+> > It looks like that commit basically solved what this older patch attempts to do
+> > as well.
+> >
+> > Sam, can you test if it works without this patch?
+> 
+> It almost just works; drm_dp_cec uses whether aux.transfer is non-null
+> to filter out non-DP connectors. Using aux.is_remote as another signal
+> indicating a DP connector seems plausible. We can drop this patch.
 
-> Before guest entry, TBU40 register is changed to reflect guest timebase.
-> After exitting guest, the register is reverted to it's original value.
->
-> If one tries to get the timestamp from host between those changes, it
-> will present an incorrect value.
->
-> An example would be trying to add a tracepoint in
-> kvmppc_guest_entry_inject_int(), which depending on last tracepoint
-> acquired could actually cause the host to crash.
->
-> Save the Timebase Offset to PACA and use it on sched_clock() to always
-> get the correct timestamp.
->
-> Signed-off-by: Leonardo Bras <leobras.c@gmail.com>
-> Suggested-by: Paul Mackerras <paulus@ozlabs.org>
-> ---
-> Changes since v1:
-> - Subtracts offset only when CONFIG_KVM_BOOK3S_HANDLER and
->   CONFIG_PPC_BOOK3S_64 are defined.
-> ---
->  arch/powerpc/include/asm/kvm_book3s_asm.h | 1 +
->  arch/powerpc/kernel/asm-offsets.c         | 1 +
->  arch/powerpc/kernel/time.c                | 8 +++++++-
->  arch/powerpc/kvm/book3s_hv.c              | 2 ++
->  arch/powerpc/kvm/book3s_hv_rmhandlers.S   | 2 ++
->  5 files changed, 13 insertions(+), 1 deletion(-)
->
-> diff --git a/arch/powerpc/include/asm/kvm_book3s_asm.h b/arch/powerpc/include/asm/kvm_book3s_asm.h
-> index 078f4648ea27..e2c12a10eed2 100644
-> --- a/arch/powerpc/include/asm/kvm_book3s_asm.h
-> +++ b/arch/powerpc/include/asm/kvm_book3s_asm.h
-> @@ -131,6 +131,7 @@ struct kvmppc_host_state {
->  	u64 cfar;
->  	u64 ppr;
->  	u64 host_fscr;
-> +	u64 tb_offset;		/* Timebase offset: keeps correct
-> timebase while on guest */
+Why would anyone even call this stuff on a non-DP connector?
+And where did they even get the struct drm_dp_aux to do so?
 
-Couldn't you use the vc->tb_offset_applied for this? We have a reference
-for the vcore in the hstate already.
+> Thanks all!
+> >
+> > Regards,
+> >
+> >         Hans
+> >
+> > >
+> > >>      /* initialize the MST downstream port's AUX crc work queue */
+> > >>      drm_dp_remote_aux_init(&port->aux);
+> > >>
+> > >> @@ -3503,6 +3510,35 @@ static int drm_dp_send_up_ack_reply(struct drm_dp_mst_topology_mgr *mgr,
+> > >>      return 0;
+> > >>  }
+> > >>
+> > >> +static ssize_t
+> > >> +drm_dp_mst_aux_transfer(struct drm_dp_aux *aux, struct drm_dp_aux_msg *msg)
+> > >> +{
+> > >> +    struct drm_dp_mst_port *port =
+> > >> +            container_of(aux, struct drm_dp_mst_port, aux);
+> > >> +    int ret;
+> > >> +
+> > >> +    switch (msg->request & ~DP_AUX_I2C_MOT) {
+> > >> +    case DP_AUX_NATIVE_WRITE:
+> > >> +    case DP_AUX_I2C_WRITE:
+> > >> +    case DP_AUX_I2C_WRITE_STATUS_UPDATE:
+> > >> +            ret = drm_dp_send_dpcd_write(port->mgr, port, msg->address,
+> > >> +                                         msg->size, msg->buffer);
+> > >
+> > > That doesn't make sense to me. I2c writes and DPCD writes
+> > > are definitely not the same thing.
+> > >
+> > > aux->transfer is a very low level thing. I don't think it's the
+> > > correct level of abstraction for sideband.
+> > >
+> > >> +            break;
+> > >> +
+> > >> +    case DP_AUX_NATIVE_READ:
+> > >> +    case DP_AUX_I2C_READ:
+> > >> +            ret = drm_dp_send_dpcd_read(port->mgr, port, msg->address,
+> > >> +                                        msg->size, msg->buffer);
+> > >> +            break;
+> > >> +
+> > >> +    default:
+> > >> +            ret = -EINVAL;
+> > >> +            break;
+> > >> +    }
+> > >> +
+> > >> +    return ret;
+> > >> +}
+> > >> +
+> > >>  static int drm_dp_get_vc_payload_bw(u8 dp_link_bw, u8  dp_link_count)
+> > >>  {
+> > >>      if (dp_link_bw == 0 || dp_link_count == 0)
+> > >> --
+> > >> 2.28.0.681.g6f77f65b4e-goog
+> > >>
+> > >> _______________________________________________
+> > >> dri-devel mailing list
+> > >> dri-devel@lists.freedesktop.org
+> > >> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+> > >
+> >
 
->  #endif
->  };
->
-> diff --git a/arch/powerpc/kernel/asm-offsets.c b/arch/powerpc/kernel/asm-offsets.c
-> index b12d7c049bfe..0beb8fdc6352 100644
-> --- a/arch/powerpc/kernel/asm-offsets.c
-> +++ b/arch/powerpc/kernel/asm-offsets.c
-> @@ -706,6 +706,7 @@ int main(void)
->  	HSTATE_FIELD(HSTATE_CFAR, cfar);
->  	HSTATE_FIELD(HSTATE_PPR, ppr);
->  	HSTATE_FIELD(HSTATE_HOST_FSCR, host_fscr);
-> +	HSTATE_FIELD(HSTATE_TB_OFFSET, tb_offset);
->  #endif /* CONFIG_PPC_BOOK3S_64 */
->
->  #else /* CONFIG_PPC_BOOK3S */
-> diff --git a/arch/powerpc/kernel/time.c b/arch/powerpc/kernel/time.c
-> index 67feb3524460..f27f0163792b 100644
-> --- a/arch/powerpc/kernel/time.c
-> +++ b/arch/powerpc/kernel/time.c
-> @@ -699,7 +699,13 @@ EXPORT_SYMBOL_GPL(tb_to_ns);
->   */
->  notrace unsigned long long sched_clock(void)
->  {
-> -	return mulhdu(get_tb() - boot_tb, tb_to_ns_scale) << tb_to_ns_shift;
-> +	u64 tb = get_tb() - boot_tb;
-> +
-> +#if defined(CONFIG_PPC_BOOK3S_64) && defined(CONFIG_KVM_BOOK3S_HANDLER)
-> +	tb -= local_paca->kvm_hstate.tb_offset;
-> +#endif
-> +
-> +	return mulhdu(tb, tb_to_ns_scale) << tb_to_ns_shift;
->  }
->
->
-> diff --git a/arch/powerpc/kvm/book3s_hv.c b/arch/powerpc/kvm/book3s_hv.c
-> index b3731572295e..c08593c63353 100644
-> --- a/arch/powerpc/kvm/book3s_hv.c
-> +++ b/arch/powerpc/kvm/book3s_hv.c
-> @@ -3491,6 +3491,7 @@ static int kvmhv_load_hv_regs_and_go(struct kvm_vcpu *vcpu, u64 time_limit,
->  		if ((tb & 0xffffff) < (new_tb & 0xffffff))
->  			mtspr(SPRN_TBU40, new_tb + 0x1000000);
->  		vc->tb_offset_applied = vc->tb_offset;
-> +		local_paca->kvm_hstate.tb_offset = vc->tb_offset;
->  	}
->
->  	if (vc->pcr)
-> @@ -3594,6 +3595,7 @@ static int kvmhv_load_hv_regs_and_go(struct kvm_vcpu *vcpu, u64 time_limit,
->  		if ((tb & 0xffffff) < (new_tb & 0xffffff))
->  			mtspr(SPRN_TBU40, new_tb + 0x1000000);
->  		vc->tb_offset_applied = 0;
-> +		local_paca->kvm_hstate.tb_offset = 0;
->  	}
->
->  	mtspr(SPRN_HDEC, 0x7fffffff);
-> diff --git a/arch/powerpc/kvm/book3s_hv_rmhandlers.S b/arch/powerpc/kvm/book3s_hv_rmhandlers.S
-> index b73140607875..8f7a9f7f4ee6 100644
-> --- a/arch/powerpc/kvm/book3s_hv_rmhandlers.S
-> +++ b/arch/powerpc/kvm/book3s_hv_rmhandlers.S
-> @@ -632,6 +632,7 @@ END_FTR_SECTION_IFCLR(CPU_FTR_ARCH_300)
->  	cmpdi	r8,0
->  	beq	37f
->  	std	r8, VCORE_TB_OFFSET_APPL(r5)
-> +	std	r8, HSTATE_TB_OFFSET(r13)
->  	mftb	r6		/* current host timebase */
->  	add	r8,r8,r6
->  	mtspr	SPRN_TBU40,r8	/* update upper 40 bits */
-> @@ -1907,6 +1908,7 @@ END_FTR_SECTION_IFSET(CPU_FTR_ARCH_207S)
->  	beq	17f
->  	li	r0, 0
->  	std	r0, VCORE_TB_OFFSET_APPL(r5)
-> +	std	r0, HSTATE_TB_OFFSET(r13)
->  	mftb	r6			/* current guest timebase */
->  	subf	r8,r8,r6
->  	mtspr	SPRN_TBU40,r8		/* update upper 40 bits */
+-- 
+Ville Syrjälä
+Intel
