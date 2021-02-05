@@ -2,126 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FEB731100D
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 19:38:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93C16311000
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 19:35:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233230AbhBEQyj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 11:54:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45062 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233645AbhBEQto (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 11:49:44 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 557A7C061A2E;
-        Fri,  5 Feb 2021 10:29:18 -0800 (PST)
-Date:   Fri, 05 Feb 2021 18:29:16 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1612549757;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=sb5GcEh9if5NGgSGVu0nGTYCjgLQMWVdk4Mo4Rwo+eg=;
-        b=TFCR3Y/+8jtnarrAGnm9EC/SrOXb7ano917GU25q1kMis5k8lg0Zg8FY2Ibm8imzd4MT76
-        12BJtn8Dk6F+k7jxY7YTdfUjp+sXUgUZ5oiI2iPms1tsW6LvF381TD3boaGDRK2kWSZ/5E
-        6yS3ZHxBGzDxGbTqJTjjg3oP1Fppek7ghTIRhR0lK6S4lYiM1YI4XLJRfnmvhJ33wqrn3B
-        BgK0bk3knlWTbtm0IjJmJf00HZPQ9BmCWRcSXnON/ij15NVIuUt8omkJOGcqF6HhAMRhuj
-        vHzhMTUzx1Aqn3Ao/lejsGVaxtAC2z/EDJ6Wg6Ub1L+sF1OILg3toCU7oVRceQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1612549757;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=sb5GcEh9if5NGgSGVu0nGTYCjgLQMWVdk4Mo4Rwo+eg=;
-        b=Zv4tmMcj8NloO2VhFioICeiM2gmKlcTSkj66DClRpFFRPNnygvsL/+/kmfPL3ll6t79WeG
-        KYDdMiGoLmBIugCA==
-From:   "tip-bot2 for Alexandre Belloni" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: timers/core] alarmtimer: Update kerneldoc
-Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210202013457.3482388-1-alexandre.belloni@bootlin.com>
-References: <20210202013457.3482388-1-alexandre.belloni@bootlin.com>
+        id S233781AbhBEQwc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 11:52:32 -0500
+Received: from mx2.suse.de ([195.135.220.15]:52262 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231250AbhBEQtK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 11:49:10 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id D66C0AC97;
+        Fri,  5 Feb 2021 18:30:47 +0000 (UTC)
+Message-ID: <21b99f074d6e4ce469cb37d3b73c2cce5c728200.camel@suse.de>
+Subject: Re: [RFC/PATCH 05/11] soc: bcm: bcm2835-power: Add support for
+ BCM2711's ARSAN ASB
+From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+To:     phil@raspberrypi.com, Florian Fainelli <f.fainelli@gmail.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>
+Cc:     wahrenst@gmx.net, linux-kernel@vger.kernel.org
+Date:   Fri, 05 Feb 2021 19:30:46 +0100
+In-Reply-To: <d081a505-487d-eb29-94fd-5e1f638bba29@gmail.com>
+References: <20210205135249.2924-1-nsaenzjulienne@suse.de>
+         <20210205135249.2924-6-nsaenzjulienne@suse.de>
+         <d081a505-487d-eb29-94fd-5e1f638bba29@gmail.com>
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-ve1mgrYE5Du9Qi/w9WRE"
+User-Agent: Evolution 3.38.3 
 MIME-Version: 1.0
-Message-ID: <161254975618.23325.8904208407309453586.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the timers/core branch of tip:
 
-Commit-ID:     b5c28ea601b801d0ecd5ec703b8d54f77bfe5365
-Gitweb:        https://git.kernel.org/tip/b5c28ea601b801d0ecd5ec703b8d54f77bfe5365
-Author:        Alexandre Belloni <alexandre.belloni@bootlin.com>
-AuthorDate:    Tue, 02 Feb 2021 02:34:57 +01:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Fri, 05 Feb 2021 19:26:41 +01:00
+--=-ve1mgrYE5Du9Qi/w9WRE
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-alarmtimer: Update kerneldoc
+Hi Florian, Phil,
 
-Update kerneldoc comments to reflect the actual arguments and return values
-of the documented functions.
+On Fri, 2021-02-05 at 08:56 -0800, Florian Fainelli wrote:
+> On 2/5/21 5:52 AM, Nicolas Saenz Julienne wrote:
+> > In BCM2711 the new ARGON ASB took over V3D. The old ASB is still presen=
+t
+> > with the ISP and H264 bits, and V3D is in the same place in the new ASB
+> > as the old one.
+> >=20
+> > Use the fact that 'pm->arsan_asb' is populated as a hint that we're on
+> > BCM2711. On top of that introduce the macro ASB_BASE() which will selec=
+t
+> > the correct ASB register base, based on whether we're trying to access
+> > V3D and which platform we're on.
+>=20
+> Your subject has a typo, you most likely intended to write "Argon ASB",
+> right?
 
-Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/20210202013457.3482388-1-alexandre.belloni@bootlin.com
+Yes, sorry for that, the typo is also present in code. I mindlessly decided
+both words meant the same and went with it...
 
----
- kernel/time/alarmtimer.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+So, for the record, s/arsan/argon/ should be applied on all patches, bindin=
+g is
+fine in that regards. On the other hand, the old arsan/rpivid ASB is refere=
+nced
+as 'asb' in code, and as 'arsan' in the bindings, I'll rename both to 'rpiv=
+id'
+in v2.
 
-diff --git a/kernel/time/alarmtimer.c b/kernel/time/alarmtimer.c
-index f4ace1b..98d7a15 100644
---- a/kernel/time/alarmtimer.c
-+++ b/kernel/time/alarmtimer.c
-@@ -527,8 +527,11 @@ static enum alarmtimer_type clock2alarm(clockid_t clockid)
- /**
-  * alarm_handle_timer - Callback for posix timers
-  * @alarm: alarm that fired
-+ * @now: time at the timer expiration
-  *
-  * Posix timer callback for expired alarm timers.
-+ *
-+ * Return: whether the timer is to be restarted
-  */
- static enum alarmtimer_restart alarm_handle_timer(struct alarm *alarm,
- 							ktime_t now)
-@@ -715,8 +718,11 @@ static int alarm_timer_create(struct k_itimer *new_timer)
- /**
-  * alarmtimer_nsleep_wakeup - Wakeup function for alarm_timer_nsleep
-  * @alarm: ptr to alarm that fired
-+ * @now: time at the timer expiration
-  *
-  * Wakes up the task that set the alarmtimer
-+ *
-+ * Return: ALARMTIMER_NORESTART
-  */
- static enum alarmtimer_restart alarmtimer_nsleep_wakeup(struct alarm *alarm,
- 								ktime_t now)
-@@ -733,6 +739,7 @@ static enum alarmtimer_restart alarmtimer_nsleep_wakeup(struct alarm *alarm,
-  * alarmtimer_do_nsleep - Internal alarmtimer nsleep implementation
-  * @alarm: ptr to alarmtimer
-  * @absexp: absolute expiration time
-+ * @type: alarm type (BOOTTIME/REALTIME).
-  *
-  * Sets the alarm timer and sleeps until it is fired or interrupted.
-  */
-@@ -806,7 +813,6 @@ static long __sched alarm_timer_nsleep_restart(struct restart_block *restart)
-  * @which_clock: clockid
-  * @flags: determins abstime or relative
-  * @tsreq: requested sleep time (abs or rel)
-- * @rmtp: remaining sleep time saved
-  *
-  * Handles clock_nanosleep calls against _ALARM clockids
-  */
+Actually, if all this is too confusing, let me know and I'll send a v2 righ=
+t
+away.
+
+> I will review the series a little later today.
+
+Thanks!
+Nicolas
+
+
+--=-ve1mgrYE5Du9Qi/w9WRE
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAmAdjtYACgkQlfZmHno8
+x/5ViwgAhkx8nnXPFByURX//saW7jL1Odv4Zls+xWQf3h5XuvODF53p49Rdxo3dd
+BzUPPXaL6oG+hasEJ2mDc+M4qW7COHCsAVJAuMYWL/+aqt14gZQOWw64PdzgostE
+72akjvWauXMmxLO2tbQkZh/YaQ0U591CGYGNr5A5bAP7FMTk6ilNOmjo2gKCBUCL
+6i8X4gjKc26/K71OIR/p0YgutEV9WweoLppszWUArgx5l5a4srfcOa9XXVBNyWeU
+ZIHUM9k8Y6VmhRpsLFt0owvM60omWNjktdNk9atZATqwFx8CIkbN0jMFtNC4XoE4
+3wlnvTbv7xsY+3rYcvmSPSaVZumfqw==
+=4k52
+-----END PGP SIGNATURE-----
+
+--=-ve1mgrYE5Du9Qi/w9WRE--
+
