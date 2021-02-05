@@ -2,194 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 853E1311299
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 21:37:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7496C311284
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 21:33:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233082AbhBESyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 13:54:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45942 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233092AbhBEPEk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 10:04:40 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1B2E464EDE;
-        Fri,  5 Feb 2021 16:42:14 +0000 (UTC)
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1l84BP-00CILP-M7; Fri, 05 Feb 2021 16:42:11 +0000
+        id S231612AbhBEStr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 13:49:47 -0500
+Received: from services.gouders.net ([141.101.32.176]:55088 "EHLO
+        services.gouders.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233147AbhBESqU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 13:46:20 -0500
+Received: from lena.gouders.net (ltea-047-066-017-037.pools.arcor-ip.net [47.66.17.37])
+        (authenticated bits=0)
+        by services.gouders.net (8.14.8/8.14.8) with ESMTP id 115KND7O010254
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES128-GCM-SHA256 bits=128 verify=NO);
+        Fri, 5 Feb 2021 21:23:13 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gouders.net; s=gnet;
+        t=1612556594; bh=VzsV7TZd0UrfqDIc1n/qtEk7Hk2n9pTW0l4lu5esQ4k=;
+        h=From:To:Cc:Subject:Date;
+        b=OTVAtZAcikfUuINA6xINEDIbYerJWM+6LoQVnNF/+/Th9OivWsflmhAEJ7CiyuyF2
+         N343Tb/wMFdtJ96RmftinxotvCPP7rQDYJV5UXbgdtqr2v7y6YAijaF72I0XIqY6x6
+         M1BK5fsO+l22zLdCxkfFwT93g092IxYfTF022s3c=
+From:   Dirk Gouders <dirk@gouders.net>
+To:     Peter Huewe <peterhuewe@gmx.de>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Dirk Gouders <dirk@gouders.net>,
+        James Bottomley <James.Bottomley@HansenPartnership.com>,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/1] tpm_tis: handle -EPROBE_DEFER in tpm_tis_plat_probe()
+Date:   Fri,  5 Feb 2021 21:20:21 +0100
+Message-Id: <20210205202022.4515-1-dirk@gouders.net>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 05 Feb 2021 16:42:11 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     Will Deacon <will@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        David Brazdil <dbrazdil@google.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Jing Zhang <jingzhangos@google.com>,
-        Ajay Patil <pajay@qti.qualcomm.com>,
-        Prasad Sodagudi <psodagud@codeaurora.org>,
-        Srinivas Ramana <sramana@codeaurora.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        kernel-team@android.com
-Subject: Re: [PATCH v6 12/21] arm64: cpufeature: Add an early command-line
- cpufeature override facility
-In-Reply-To: <20210205163521.GA22665@willie-the-truck>
-References: <20210201115637.3123740-1-maz@kernel.org>
- <20210201115637.3123740-13-maz@kernel.org>
- <20210205163521.GA22665@willie-the-truck>
-User-Agent: Roundcube Webmail/1.4.10
-Message-ID: <a51c546a1e495cc744170244771674fe@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: will@kernel.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org, catalin.marinas@arm.com, mark.rutland@arm.com, dbrazdil@google.com, alexandru.elisei@arm.com, ardb@kernel.org, jingzhangos@google.com, pajay@qti.qualcomm.com, psodagud@codeaurora.org, sramana@codeaurora.org, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, kernel-team@android.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-02-05 16:35, Will Deacon wrote:
-> On Mon, Feb 01, 2021 at 11:56:28AM +0000, Marc Zyngier wrote:
->> In order to be able to override CPU features at boot time,
->> let's add a command line parser that matches options of the
->> form "cpureg.feature=value", and store the corresponding
->> value into the override val/mask pair.
->> 
->> No features are currently defined, so no expected change in
->> functionality.
->> 
->> Signed-off-by: Marc Zyngier <maz@kernel.org>
->> Acked-by: David Brazdil <dbrazdil@google.com>
->> Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
->> ---
->>  arch/arm64/kernel/Makefile         |   2 +-
->>  arch/arm64/kernel/head.S           |   1 +
->>  arch/arm64/kernel/idreg-override.c | 164 
->> +++++++++++++++++++++++++++++
->>  3 files changed, 166 insertions(+), 1 deletion(-)
->>  create mode 100644 arch/arm64/kernel/idreg-override.c
->> 
->> diff --git a/arch/arm64/kernel/Makefile b/arch/arm64/kernel/Makefile
->> index 86364ab6f13f..2262f0392857 100644
->> --- a/arch/arm64/kernel/Makefile
->> +++ b/arch/arm64/kernel/Makefile
->> @@ -17,7 +17,7 @@ obj-y			:= debug-monitors.o entry.o irq.o 
->> fpsimd.o		\
->>  			   return_address.o cpuinfo.o cpu_errata.o		\
->>  			   cpufeature.o alternative.o cacheinfo.o		\
->>  			   smp.o smp_spin_table.o topology.o smccc-call.o	\
->> -			   syscall.o proton-pack.o
->> +			   syscall.o proton-pack.o idreg-override.o
->> 
->>  targets			+= efi-entry.o
->> 
->> diff --git a/arch/arm64/kernel/head.S b/arch/arm64/kernel/head.S
->> index d74e5f84042e..3243e3ae9bd8 100644
->> --- a/arch/arm64/kernel/head.S
->> +++ b/arch/arm64/kernel/head.S
->> @@ -435,6 +435,7 @@ SYM_FUNC_START_LOCAL(__primary_switched)
->> 
->>  	mov	x0, x21				// pass FDT address in x0
->>  	bl	early_fdt_map			// Try mapping the FDT early
->> +	bl	init_feature_override
->>  	bl	switch_to_vhe
->>  #if defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KASAN_SW_TAGS)
->>  	bl	kasan_early_init
->> diff --git a/arch/arm64/kernel/idreg-override.c 
->> b/arch/arm64/kernel/idreg-override.c
->> new file mode 100644
->> index 000000000000..d8d0d3b25bc3
->> --- /dev/null
->> +++ b/arch/arm64/kernel/idreg-override.c
->> @@ -0,0 +1,164 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +/*
->> + * Early cpufeature override framework
->> + *
->> + * Copyright (C) 2020 Google LLC
->> + * Author: Marc Zyngier <maz@kernel.org>
->> + */
->> +
->> +#include <linux/ctype.h>
->> +#include <linux/kernel.h>
->> +#include <linux/libfdt.h>
->> +
->> +#include <asm/cacheflush.h>
->> +#include <asm/setup.h>
->> +
->> +#define FTR_DESC_NAME_LEN	20
->> +#define FTR_DESC_FIELD_LEN	10
->> +
->> +struct ftr_set_desc {
->> +	char 				name[FTR_DESC_NAME_LEN];
->> +	struct arm64_ftr_override	*override;
->> +	struct {
->> +		char			name[FTR_DESC_FIELD_LEN];
->> +		u8			shift;
->> +	} 				fields[];
->> +};
->> +
->> +static const struct ftr_set_desc * const regs[] __initconst = {
->> +};
->> +
->> +static char *cmdline_contains_option(const char *cmdline, const char 
->> *option)
->> +{
->> +	char *str = strstr(cmdline, option);
->> +
->> +	if ((str == cmdline || (str > cmdline && isspace(*(str - 1)))))
->> +		return str;
->> +
->> +	return NULL;
->> +}
->> +
->> +static int __init find_field(const char *cmdline,
->> +			     const struct ftr_set_desc *reg, int f, u64 *v)
->> +{
->> +	char opt[FTR_DESC_NAME_LEN + FTR_DESC_FIELD_LEN + 2], *str;
->> +	size_t len;
->> +
->> +	snprintf(opt, ARRAY_SIZE(opt), "%s.%s=", reg->name, 
->> reg->fields[f].name);
->> +
->> +	str = cmdline_contains_option(cmdline, opt);
->> +	if (!str)
->> +		return -1;
->> +
->> +	str += strlen(opt);
->> +	len = strcspn(str, " ");
-> 
-> I'm absolutely terrified of string parsing in C, but just wondering why 
-> you
-> only ignore literal spaces here. I _think_ the full-fat cmdline parsing 
-> uses
-> isspace() to delimit the options.
+Hello,
 
-That's clearly an oversight, as I use a more complete set of characters
-for the rest of the option splicing. I also think that with the way
-things are now parsed (options being extracted early and trimmed),
-we can drop this altogether.
+I noticed that the tpm_tis driver behaves different depending on
+wether it was compiled builtin or as a module.
 
-> Would it be possible to reuse any of the logic over in parse_args() to 
-> avoid
-> having to roll this ourselves?
+At least on my hardware, if builtin it always falls back to polling mode
+without notification which I do not understand considering the current
+efforts to fix interrupt probing[1].
 
-Maybe. I need to have a look.
+The builtin case could be fixed by handling -EPROBE_DEFER.  With a
+temporary dev_dbg() call added and James Bottomley's
+"[PATCH v2 4/5] tpm_tis: fix IRQ probing [1]" applied my kernel log
+looks like this:
 
-Thanks,
+[    2.671629] tpm_tis STM0125:00: Waiting for interrupt...
+[    2.851920] tpm_tis STM0125:00: Waiting for interrupt...
+[    2.852627] tpm_tis STM0125:00: Waiting for interrupt...
+[    2.908286] tpm_tis STM0125:00: Waiting for interrupt...
+[    3.340223] tpm_tis STM0125:00: Waiting for interrupt...
+[    3.407238] tpm_tis STM0125:00: Waiting for interrupt...
+[    3.408178] tpm_tis STM0125:00: Waiting for interrupt...
+[    3.408994] tpm_tis STM0125:00: Waiting for interrupt...
+[    3.487694] tpm_tis STM0125:00: Waiting for interrupt...
+[    3.773769] tpm_tis STM0125:00: Waiting for interrupt...
+[    3.868590] tpm_tis STM0125:00: Waiting for interrupt...
+[    3.923855] tpm_tis STM0125:00: Waiting for interrupt...
+[    4.235670] tpm_tis STM0125:00: Waiting for interrupt...
+[    4.852556] tpm_tis STM0125:00: Waiting for interrupt...
+[    6.767544] tpm_tis STM0125:00: 2.0 TPM (device-id 0x0, rev-id 78)
+[    6.767567] tpm_tis STM0125:00: TPM interface capabilities (0x30000415):
+[    6.767569] tpm_tis STM0125:00: 	Interrupt Level Low
+[    6.767570] tpm_tis STM0125:00: 	Locality Change Int Support
+[    6.767570] tpm_tis STM0125:00: 	Data Avail Int Support
 
-         M.
+
+Of course, this patch should not be added before Jarkko's fix [2], because
+builtin drivers would then hit the WARN_ONCE(), as well.
+
+Dirk
+
+
+[1] https://lore.kernel.org/linux-integrity/20201001180925.13808-5-James.Bottomley@HansenPartnership.com/
+[2] https://lore.kernel.org/linux-integrity/3936843b-c0da-dd8c-8aa9-90aa3b49d525@linux.ibm.com/T/#t
+
+Dirk Gouders (1):
+  tpm_tis: handle -EPROBE_DEFER in tpm_tis_plat_probe()
+
+ drivers/char/tpm/tpm_tis.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
 -- 
-Jazz is not dead. It just smells funny...
+2.26.2
+
