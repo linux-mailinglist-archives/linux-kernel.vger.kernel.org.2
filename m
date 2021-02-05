@@ -2,51 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FA6A3111A2
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 20:59:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CF9D311190
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 20:55:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233207AbhBESQs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 13:16:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60102 "EHLO mail.kernel.org"
+        id S229849AbhBESMy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 13:12:54 -0500
+Received: from mga01.intel.com ([192.55.52.88]:26074 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229581AbhBESJ3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 13:09:29 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 41AF064FB7;
-        Fri,  5 Feb 2021 19:51:11 +0000 (UTC)
-Date:   Fri, 5 Feb 2021 14:51:09 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Cc:     pmladek@suse.com, sergey.senozhatsky@gmail.com,
-        andriy.shevchenko@linux.intel.com, linux@rasmusvillemoes.dk,
-        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, rdunlap@infradead.org
-Subject: Re: [PATCH] lib:  Replace obscene word with a better one :)
-Message-ID: <20210205145109.24498541@gandalf.local.home>
-In-Reply-To: <20210205121543.1315285-1-unixbhaskar@gmail.com>
-References: <20210205121543.1315285-1-unixbhaskar@gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S233215AbhBESK1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 13:10:27 -0500
+IronPort-SDR: vJKumvLz/UU0rnx3c6sn1GpTL1NPWUj/Nio6qRPRdcxg+prcGy9M4uNiK4h0ZPB55PzOfsFl66
+ w24vJFX8z62w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9886"; a="200493375"
+X-IronPort-AV: E=Sophos;i="5.81,156,1610438400"; 
+   d="scan'208";a="200493375"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2021 11:52:05 -0800
+IronPort-SDR: 2wG+GUwyCmZCxlBs+Z4bhT8v1Jdljx2cjfoprBCaZQBhMd3moqntQ0K5LxTqPglht7NDfODBb3
+ vp4SnneUdbNA==
+X-IronPort-AV: E=Sophos;i="5.81,156,1610438400"; 
+   d="scan'208";a="434580877"
+Received: from glacier.sc.intel.com ([10.3.62.63])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 05 Feb 2021 11:52:05 -0800
+From:   Rajmohan Mani <rajmohan.mani@intel.com>
+To:     Benson Leung <bleung@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Guenter Roeck <groeck@chromium.org>,
+        linux-kernel@vger.kernel.org
+Cc:     heikki.krogerus@linux.intel.com, pmalani@chromium.org,
+        Rajmohan Mani <rajmohan.mani@intel.com>
+Subject: [PATCH 0/2] Add support for Type-C mux events without port partners
+Date:   Fri,  5 Feb 2021 11:51:11 -0800
+Message-Id: <20210205195113.20277-1-rajmohan.mani@intel.com>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri,  5 Feb 2021 17:45:43 +0530
-Bhaskar Chowdhury <unixbhaskar@gmail.com> wrote:
+There are cases, where support for Type-C mux events is needed, that
+does not have port partners.
+Enabling communication to a retimer connected to an USB4 port, when
+no devices are attached, is a case that requires support for handling
+Type-C mux events without port partners.
 
-> s/fucked/messed/
+The following patches[1] are needed on top of the mainline kernel to be
+able to verify these patches.
 
-Rules about obscene language is about new code coming into the kernel. We
-don't want to encourage people to do sweeping changes of existing code. It
-just causes unwanted churn, and adds noise to the git logs.
+commit 8553a979fcd0 ("platform/chrome: cros_ec_typec: Send mux
+		      configuration acknowledgment to EC")
+commit ba8ce515454e ("platform/chrome: cros_ec_typec: Parameterize
+		      cros_typec_cmds_supported()")
+commit 156309096542 ("platform/chrome: cros_ec_typec: Register plug
+		      altmodes")
+commit f4edab68e101 ("platform/chrome: cros_ec_typec: Register SOP'
+		      cable plug")
+commit 599229763911 ("platform/chrome: cros_ec_typec: Set partner
+		      num_altmodes")
+commit 72d6e32bd85b ("platform/chrome: cros_ec_typec: Store cable plug
+		      type")
+commit 8b46a212ad11 ("platform/chrome: cros_ec_typec: Register cable")
+commit c097f229b71e ("platform/chrome: cros_ec_typec: Rename discovery
+		      struct")
+commit 8fab2755191f ("platform/chrome: cros_ec_typec: Factor out PD
+		      identity parsing")
+commit a906f45d1480 ("platform/chrome: cros_ec_typec: Make disc_done
+		      flag partner-only")
 
-Sorry, NAK.
+[1]: https://git.kernel.org/pub/scm/linux/kernel/git/chrome-platform/
+linux.git/log/?h=cros-ec-typec-for-5.12
 
--- Steve
+Rajmohan Mani (2):
+  platform/chrome: cros_ec_typec: Skip port partner check in
+    configure_mux()
+  platform/chrome: cros_ec_types: Support disconnect events without
+    partners
+
+ drivers/platform/chrome/cros_ec_typec.c | 27 ++++++++++++++++---------
+ 1 file changed, 18 insertions(+), 9 deletions(-)
+
+-- 
+2.30.0
+
