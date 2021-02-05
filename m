@@ -2,139 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA8BF3104E0
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 07:11:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BB393104E5
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 07:15:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230497AbhBEGKu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 01:10:50 -0500
-Received: from so15.mailgun.net ([198.61.254.15]:48557 "EHLO so15.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230372AbhBEGKr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 01:10:47 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1612505428; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=IFL4u0zMOgMkwj7IrAvMy3o6w3y0xusQQ4M2DQQ2kcU=;
- b=lKbM2uB0UeaMKmaXjrrpFWTLyWqZ4QSWyv0TJSWIu3D6vlt8+S/Br51cjrR47gZJBMe6kCkO
- h1kDJZi5APtrrih1lT7ZlhVfiJBxNQVajwIbLf8fcataSab/Wgc/D0QQnFJH1PfEM+pYco1V
- Ktd1I0iXL93ojCZ0tLbDhfa+tPQ=
-X-Mailgun-Sending-Ip: 198.61.254.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 601ce13371c267229398a564 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 05 Feb 2021 06:09:55
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 0F519C43462; Fri,  5 Feb 2021 06:09:55 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4462BC433C6;
-        Fri,  5 Feb 2021 06:09:54 +0000 (UTC)
+        id S230402AbhBEGO6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 01:14:58 -0500
+Received: from mail-oln040092255027.outbound.protection.outlook.com ([40.92.255.27]:15978
+        "EHLO APC01-HK2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229492AbhBEGO4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 01:14:56 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FCypQmEi/vDSJOkxYzHTylK/kOO0BCQGUMOxCjQwus7j8glEQZzNA+YsNsuYSOGpa2hLuzNepzaS0DssXbGhkXgLle+tXfDfHO6mGl3PfHyMD+gwQ5lBOjWA0ryGRkMYfZP+um2YJbJqC/+6gWZ/h/gBwIq7bwF47dSTkiOivq1B4orKB14X1aIXEJYxhP11zovSPMN/Ad3LTk5oUwia/AP1N9sxUpXKn2bXAaY7/wWGEtyS1cB6jOSXT8V5sU+3PqU05SzJyxI8pru5oK6PX9PMPDGgDxTlJjB11hyY4R48Y2QATwGHxHlBPKNTAsu3XwV++j/HDCrmaB1WfZX4ow==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6e+Hn2zYSyH3wZA+zwk1eP0P9L/Uc/O9GRIFLdTC5HI=;
+ b=lw0nCNoS5hxOC6CjDbR6nTGROVkfQpwPzSqJRuxHbp9OF/d63cXtvEi4DQwfFk+lK65X85oZ2cis8rrkEGGgKrdhgcnWdrukjQVe4WSwX8ISC2t2N2bdHHhZzAxwUeWctQzmSA3Xbu08FmPV856FTdDkZEXNQu0UYPxCty0ytG4HCya8zXiCANwDrTUPegK99OyYCXF5ByalQve3RR/jcfXPyRIehiurZGO1cifUYV4rLErSRxtFG606mInKXq6Z5t/4w4fHliseFtA04EYyXrP0iuKz1coJy6a22sSy9aWgFG81rXaX6ytJA1PbU/ibONPdAMnMIM3UF1a4CHvKIw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=live.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6e+Hn2zYSyH3wZA+zwk1eP0P9L/Uc/O9GRIFLdTC5HI=;
+ b=vHFyax6OQFONLZf8gemGBxP4foeohwY9iNmBs1+BXWZc9srkTATLHJs63ebZZng/ZD2+r72fOciJFUFN98teTcl9cWeRanHumXlSzTHLqSoZYjWWqI/3TCgscxFGmgjBDLig5jatm0uHpAh+oezl+FHnUG94SJaIuzGLZGlp4A9ePnlRUbYUdZpzzl3F96B24Z9kr5u4CkRPXYH54tKAQrhw4qZcgAUoeO3FRmaI1ecTCz+rx+vOTKanqWI5gHC/M7/+TL0r1Vh3jYYaLpcMMdP9LSYJFTVz/8tkEaXa552RASzdm1xYtw+gZ5tvudBQaMuBVbV8zrEjrWI1GG7A0A==
+Received: from HK2APC01FT060.eop-APC01.prod.protection.outlook.com
+ (2a01:111:e400:7ebc::45) by
+ HK2APC01HT207.eop-APC01.prod.protection.outlook.com (2a01:111:e400:7ebc::442)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.11; Fri, 5 Feb
+ 2021 06:13:19 +0000
+Received: from PS1PR04MB2934.apcprd04.prod.outlook.com
+ (2a01:111:e400:7ebc::48) by HK2APC01FT060.mail.protection.outlook.com
+ (2a01:111:e400:7ebc::416) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.11 via Frontend
+ Transport; Fri, 5 Feb 2021 06:13:19 +0000
+X-IncomingTopHeaderMarker: OriginalChecksum:6B31E73FED300A683EA4544FF874DE5BEFFE0C18E1E5E22232FE3E17572D572A;UpperCasedChecksum:3F347C1490F8B92DA4226C1EB7D118FD872CB01362F6534359043393758DDE05;SizeAsReceived:8184;Count:48
+Received: from PS1PR04MB2934.apcprd04.prod.outlook.com
+ ([fe80::55d8:45ac:a6c8:b297]) by PS1PR04MB2934.apcprd04.prod.outlook.com
+ ([fe80::55d8:45ac:a6c8:b297%3]) with mapi id 15.20.3825.019; Fri, 5 Feb 2021
+ 06:13:19 +0000
+Subject: Re: [PATCH] arch:powerpc simple_write_to_buffer return check
+To:     Oliver O'Halloran <oohall@gmail.com>
+Cc:     Russell Currey <ruscur@russell.cc>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <PS1PR04MB29345AB59076B370A4F99F75D6B39@PS1PR04MB2934.apcprd04.prod.outlook.com>
+ <CAOSf1CGJ6ZeowMP8Zjo3TazYyaEGuEab4-QRKRJ2jjixUGGtCA@mail.gmail.com>
+From:   Mayank Suman <mayanksuman@live.com>
+Message-ID: <PS1PR04MB29349F268D8D60A8A43B4507D6B29@PS1PR04MB2934.apcprd04.prod.outlook.com>
+Date:   Fri, 5 Feb 2021 11:43:12 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
+In-Reply-To: <CAOSf1CGJ6ZeowMP8Zjo3TazYyaEGuEab4-QRKRJ2jjixUGGtCA@mail.gmail.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TMN:  [i+CSG2vXfBROR5cld2N6PXE4G6feH2doo5JRPXP0uQg=]
+X-ClientProxiedBy: BMXPR01CA0076.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:b00:54::16) To PS1PR04MB2934.apcprd04.prod.outlook.com
+ (2603:1096:803:3e::21)
+X-Microsoft-Original-Message-ID: <bef1361f-dbd7-bbca-e6b7-dc7ec4ade269@live.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Fri, 05 Feb 2021 14:09:54 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Bart Van Assche <bvanassche@acm.org>
-Cc:     jaegeuk@kernel.org, asutoshd@codeaurora.org,
-        nguyenb@codeaurora.org, hongwus@codeaurora.org,
-        linux-scsi@vger.kernel.org, kernel-team@android.com,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Sujit Reddy Thumma <sthumma@codeaurora.org>,
-        Vinayak Holikatti <vinholikatti@gmail.com>,
-        Yaniv Gardi <ygardi@codeaurora.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 3/3] scsi: ufs: Fix wrong Task Tag used in task
- management request UPIUs
-In-Reply-To: <cd83aa1d-444e-d4ba-c363-517dbf07891a@acm.org>
-References: <1611807365-35513-1-git-send-email-cang@codeaurora.org>
- <1611807365-35513-4-git-send-email-cang@codeaurora.org>
- <8351747f-0ec9-3c66-1bdf-b4b73fcee698@acm.org>
- <f0d1c6a196a044198647df6ca4b06efb@codeaurora.org>
- <cd83aa1d-444e-d4ba-c363-517dbf07891a@acm.org>
-Message-ID: <cf50ecf7a245674f8aee917455a7ccfa@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.0.120] (103.127.101.171) by BMXPR01CA0076.INDPRD01.PROD.OUTLOOK.COM (2603:1096:b00:54::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.17 via Frontend Transport; Fri, 5 Feb 2021 06:13:17 +0000
+X-MS-PublicTrafficType: Email
+X-IncomingHeaderCount: 48
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-Correlation-Id: 682d8e1f-0987-44bd-504c-08d8c99d2205
+X-MS-TrafficTypeDiagnostic: HK2APC01HT207:
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 0o+kwxJ9AYYchqNZQY8urdb7FQ/KxKRIq6uf1vMh2pspFvmXHhFxOGGrwSs/looSTEMC42U66wh1ENEq2bQ9wiqg02nVS1QmXHn4s/3PHUw1Xvs+4a41pAbOfkShW1Rsaps5yLa1JMYM/5u6tFyzxpxACzQSDfQdKfMLGF3cr6K0Zrjmtw1Y6qGe64jm04ALxhHTDdjMF3Yt3ZvPUzwDB4BgX/k5BT8fweGvBKzRy0S0gCx79NhkKLGzAK+sHmjyIBv6522jD70E0cBWgyhisUGQ5Oo+ft8zfrZCjcPYwKS8pmz74n6yllylDmoMhn5c0XJnftQbCrH3aJ516WcNrx0C9xC0LqEofmd1zamAH7TgwseXu+CCoo2lb/X4mWeRmiyKe/FBFcmPEx8Uw2KzUw==
+X-MS-Exchange-AntiSpam-MessageData: WU/18ZY5xlAyi12WhSe2zhUaQDNlLRO3CI8Pc+9B4J3DacMbYKvypMdtDUupX2W+GS6Wi6NsGv+BEf2zEWtQrdV+r1eKNEkQVaEe6+ok7SPkPeB0b1C6Gp+aVdzP9AcHk9o02v/wg8AVhIOworvsJg==
+X-OriginatorOrg: live.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 682d8e1f-0987-44bd-504c-08d8c99d2205
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Feb 2021 06:13:19.5638
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-AuthSource: HK2APC01FT060.eop-APC01.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: Internet
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: HK2APC01HT207
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-02-01 10:39, Bart Van Assche wrote:
-> On 1/28/21 9:57 PM, Can Guo wrote:
->> On 2021-01-29 11:15, Bart Van Assche wrote:
->>> On 1/27/21 8:16 PM, Can Guo wrote:
->>>> In __ufshcd_issue_tm_cmd(), it is not right to use hba->nutrs +
->>>> req->tag as
->>>> the Task Tag in one TMR UPIU. Directly use req->tag as the Task Tag.
->>> 
->>> Why is the current code wrong and why is this patch the proper fix?
->>> Please explain this in the patch description.
->> 
->> req->tag is the tag allocated for one TMR, no?
+On 05/02/21 4:05 am, Oliver O'Halloran wrote:
+> On Fri, Feb 5, 2021 at 5:17 AM Mayank Suman <mayanksuman@live.com> wrote:
+>>
+>> Signed-off-by: Mayank Suman <mayanksuman@live.com>
 > 
-> Hi Can,
->  Commit e293313262d3 ("scsi: ufs: Fix broken task management command
-> implementation") includes the following changes:
-> 
-> +       task_tag = hba->nutrs + free_slot;
->         task_req_upiup->header.dword_0 =
->                 UPIU_HEADER_DWORD(UPIU_TRANSACTION_TASK_REQ, 0,
-> -                                            lrbp->lun, 
-> lrbp->task_tag);
-> +                                            lun_id, task_tag);
->         task_req_upiup->header.dword_1 =
->                 UPIU_HEADER_DWORD(0, tm_function, 0, 0);
-> 
-> As one can see the value written in dword_0 starts at hba->nutrs. Was
-> that code correct? If that code was correct, does your patch perhaps
-> break task management support?
+> commit messages aren't optional
 
-That code is wrong. The Task Tag in Dword_0 should be the real tag we
-allocated for TMR. The transfer request Task Tag which we are trying to
-abort is given in Dword_5, which is the Input Parameter 3 of the TMR 
-UPIU.
-I am not sure why the author gave hba->nutrs + req->tag as the Task Tag
-of one TMR, the commit msg abot this part is not quite informative....
-
-Table 10.22 — Task Management Request UPIU
-TASK MANAGEMENT REQUEST UPIU
-----------------------------------
-|0         |1      |2   |3       |
-----------------------------------
-|xx00 0100b| Flags |LUN |Task Tag|
-----------------------------------
-...
-16 (MSB)   |17     |18  |19 (LSB)|
-----------------------------------
-Input Parameter 2
-----------------------------------
-
-Table 10.24 — Task Management Input Parameters
-Field Description
-Input Parameter 2 LSB: Task Tag of the task/command operated by the task 
-management function.
-
-Thanks,
-
-Can Guo.
+Sorry. I will include the commit message in PATCH v2.
 
 > 
-> Thanks,
+>> ---
+>>  arch/powerpc/kernel/eeh.c                    | 8 ++++----
+>>  arch/powerpc/platforms/powernv/eeh-powernv.c | 4 ++--
+>>  2 files changed, 6 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/arch/powerpc/kernel/eeh.c b/arch/powerpc/kernel/eeh.c
+>> index 813713c9120c..2dbe1558a71f 100644
+>> --- a/arch/powerpc/kernel/eeh.c
+>> +++ b/arch/powerpc/kernel/eeh.c
+>> @@ -1628,8 +1628,8 @@ static ssize_t eeh_force_recover_write(struct file *filp,
+>>         char buf[20];
+>>         int ret;
+>>
+>> -       ret = simple_write_to_buffer(buf, sizeof(buf), ppos, user_buf, count);
+>> -       if (!ret)
+>> +       ret = simple_write_to_buffer(buf, sizeof(buf)-1, ppos, user_buf, count);
 > 
-> Bart.
+> We should probably be zeroing the buffer. Reading to sizeof(buf) - 1
+> is done in a few places to guarantee that the string is nul
+> terminated, but without the preceeding memset() that isn't actually
+> guaranteed.
+
+Yes, the buffer should be zeroed out first. I have included memset() in Patch v2.
+
+> 
+>> +       if (ret <= 0)
+>>                 return -EFAULT;
+> 
+> EFAULT is supposed to be returned when the user supplies a buffer to
+> write(2) which is outside their address space. I figured letting the
+> sscanf() in the next step fail if the user passes writes a zero-length
+> buffer and returning EINVAL made more sense. That said, the exact
+> semantics around zero length writes are pretty handwavy so I guess
+> this isn't wrong, but I don't think it's better either.
+> 
+
+simple_write_to_buffer may return negative value on fail.
+So, -EFAULT should be return in case of negative return value. 
+The conditional (!ret) was not sufficient to catch negative return value.
