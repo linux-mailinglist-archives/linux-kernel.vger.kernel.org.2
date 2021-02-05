@@ -2,80 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14EA73110FD
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 20:21:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 464C33110C0
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 20:10:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233645AbhBERiR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 12:38:17 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:57852 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233373AbhBEP5d (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 10:57:33 -0500
-Received: from [192.168.0.104] (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 72E6C20B6C40;
-        Fri,  5 Feb 2021 09:39:15 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 72E6C20B6C40
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1612546755;
-        bh=HhOAZD2n7Y5nUjPEAl7h3S686KemCI0DTcFZcZkv6EE=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=pPLebMnDJH4+oF4Wosz3wKn0HGUpcCKpETnQ1382bqaeKGAtD2BOGcDKevTLA55e1
-         OsELd4GAKcCiA8pcT8fsjjgjrB1yeYfQGMhblNCu/1Du7oGfzkI/SrvdaYJ40LueW4
-         55pH9N2No/AMCipLzCvfMU/IaRxxL8Mlth5qxzbU=
-Subject: Re: [PATCH v2 1/2] ima: Free IMA measurement buffer on error
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     zohar@linux.ibm.com, bauerman@linux.ibm.com,
-        dmitry.kasatkin@gmail.com, ebiederm@xmission.com,
-        sashal@kernel.org, tyhicks@linux.microsoft.com,
-        linux-integrity@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org
-References: <20210204174951.25771-1-nramas@linux.microsoft.com>
- <YB0YdqbbdAdbEOQw@kroah.com>
-From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-Message-ID: <7000d128-272e-3654-8480-e46bf7dfad74@linux.microsoft.com>
-Date:   Fri, 5 Feb 2021 09:39:14 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S233533AbhBER1K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 12:27:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50324 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233529AbhBEROn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 12:14:43 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7C40E64DDD;
+        Fri,  5 Feb 2021 18:56:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612551385;
+        bh=OkkSvVZU2knJ4p+uUP/pF7UlAvILdapZPwTt6d0nZJs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=f2VckE1ZDvWkIdIrvbOurhCnBuCidDOT4RIjd/B0eLV8lyPiyDbvneMsAXhrzPasR
+         78UfPWR7ac7eyLIJe9WQzjEsZyaMx3ZzeNV/Wdlf5jW4LaZkv0zOvqydcDrG1hkEry
+         Yu6pfbjMKab6rwlZRziI9FUaprMrLKFEavyXwlIiQTTAlqZAt8nGB2WIuKOgOAWbDv
+         HqUf2ArcgxA2+WPpkT7vj5g+340q/VrxbQ4tLqdZinaCk/3N5ut3LrW9X6e5RAUtx1
+         AB+X0HeUgeSVTYFi6ufpDVMGpPWZZfIteVilCbeH+BEZPbb9jEo3Z+9JnzNVlOpnfh
+         ExfAZnGHY91SA==
+Date:   Fri, 5 Feb 2021 11:56:22 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, X86 ML <x86@kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        platform-driver-x86@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Subject: Re: [PATCH] x86/efi: Remove EFI PGD build time checks
+Message-ID: <20210205185622.GA461042@localhost>
+References: <20210118202409.GG30090@zn.tnic>
+ <YAYAvBARSRSg8z8G@rani.riverdale.lan>
+ <CAMj1kXHM98-iDYpAozaWEv-qxhZ0-CUMwSdG532x2d+55gXDhQ@mail.gmail.com>
+ <20210203185148.GA1711888@localhost>
+ <CAMj1kXFPOvkcw573wzKzMQOgT-nddFcAZo9M4Lk+idn_1UBbnA@mail.gmail.com>
+ <20210204105155.GA32255@zn.tnic>
+ <YBxqnosGDroAnpio@rani.riverdale.lan>
+ <20210204221318.GI32255@zn.tnic>
+ <YByMdh/qDEwreq6S@rani.riverdale.lan>
+ <20210205113930.GD17488@zn.tnic>
 MIME-Version: 1.0
-In-Reply-To: <YB0YdqbbdAdbEOQw@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210205113930.GD17488@zn.tnic>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/5/21 2:05 AM, Greg KH wrote:
-> On Thu, Feb 04, 2021 at 09:49:50AM -0800, Lakshmi Ramasubramanian wrote:
->> IMA allocates kernel virtual memory to carry forward the measurement
->> list, from the current kernel to the next kernel on kexec system call,
->> in ima_add_kexec_buffer() function.  In error code paths this memory
->> is not freed resulting in memory leak.
->>
->> Free the memory allocated for the IMA measurement list in
->> the error code paths in ima_add_kexec_buffer() function.
->>
->> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
->> Suggested-by: Tyler Hicks <tyhicks@linux.microsoft.com>
->> Fixes: 7b8589cc29e7 ("ima: on soft reboot, save the measurement list")
->> ---
->>   security/integrity/ima/ima_kexec.c | 1 +
->>   1 file changed, 1 insertion(+)
+On Fri, Feb 05, 2021 at 12:39:30PM +0100, Borislav Petkov wrote:
+> From: Borislav Petkov <bp@suse.de>
 > 
-> <formletter>
+> With CONFIG_X86_5LEVEL, CONFIG_UBSAN and CONFIG_UBSAN_UNSIGNED_OVERFLOW
+> enabled, clang fails the build with
 > 
-> This is not the correct way to submit patches for inclusion in the
-> stable kernel tree.  Please read:
->      https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
-> for how to do this properly.
+>   x86_64-linux-ld: arch/x86/platform/efi/efi_64.o: in function `efi_sync_low_kernel_mappings':
+>   efi_64.c:(.text+0x22c): undefined reference to `__compiletime_assert_354'
 > 
-> </formletter>
+> which happens due to -fsanitize=unsigned-integer-overflow being enabled:
 > 
+>   -fsanitize=unsigned-integer-overflow: Unsigned integer overflow, where
+>   the result of an unsigned integer computation cannot be represented
+>   in its type. Unlike signed integer overflow, this is not undefined
+>   behavior, but it is often unintentional. This sanitizer does not check
+>   for lossy implicit conversions performed before such a computation
+>   (see -fsanitize=implicit-conversion).
+> 
+> and that fires when the (intentional) EFI_VA_START/END defines overflow
+> an unsigned long, leading to the assertion expressions not getting
+> optimized away (on GCC they do)...
+> 
+> However, those checks are superfluous: the runtime services mapping
+> code already makes sure the ranges don't overshoot EFI_VA_END as the
+> EFI mapping range is hardcoded. On each runtime services call, it is
+> switched to the EFI-specific PGD and even if mappings manage to escape
+> that last PGD, this won't remain unnoticed for long.
+> 
+> So rip them out.
+> 
+> See https://github.com/ClangBuiltLinux/linux/issues/256 for more info.
+> 
+> Reported-by: Arnd Bergmann <arnd@arndb.de>
+> Link: http://lkml.kernel.org/r/20210107223424.4135538-1-arnd@kernel.org
+> Signed-off-by: Borislav Petkov <bp@suse.de>
 
-Thanks for the info Greg.
+Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+Tested-by: Nathan Chancellor <nathan@kernel.org>
 
-I will re-submit the two patches in the proper format.
-
-  -lakshmi
-
+> ---
+>  arch/x86/platform/efi/efi_64.c | 19 -------------------
+>  1 file changed, 19 deletions(-)
+> 
+> diff --git a/arch/x86/platform/efi/efi_64.c b/arch/x86/platform/efi/efi_64.c
+> index e1e8d4e3a213..8efd003540ca 100644
+> --- a/arch/x86/platform/efi/efi_64.c
+> +++ b/arch/x86/platform/efi/efi_64.c
+> @@ -115,31 +115,12 @@ void efi_sync_low_kernel_mappings(void)
+>  	pud_t *pud_k, *pud_efi;
+>  	pgd_t *efi_pgd = efi_mm.pgd;
+>  
+> -	/*
+> -	 * We can share all PGD entries apart from the one entry that
+> -	 * covers the EFI runtime mapping space.
+> -	 *
+> -	 * Make sure the EFI runtime region mappings are guaranteed to
+> -	 * only span a single PGD entry and that the entry also maps
+> -	 * other important kernel regions.
+> -	 */
+> -	MAYBE_BUILD_BUG_ON(pgd_index(EFI_VA_END) != pgd_index(MODULES_END));
+> -	MAYBE_BUILD_BUG_ON((EFI_VA_START & PGDIR_MASK) !=
+> -			(EFI_VA_END & PGDIR_MASK));
+> -
+>  	pgd_efi = efi_pgd + pgd_index(PAGE_OFFSET);
+>  	pgd_k = pgd_offset_k(PAGE_OFFSET);
+>  
+>  	num_entries = pgd_index(EFI_VA_END) - pgd_index(PAGE_OFFSET);
+>  	memcpy(pgd_efi, pgd_k, sizeof(pgd_t) * num_entries);
+>  
+> -	/*
+> -	 * As with PGDs, we share all P4D entries apart from the one entry
+> -	 * that covers the EFI runtime mapping space.
+> -	 */
+> -	BUILD_BUG_ON(p4d_index(EFI_VA_END) != p4d_index(MODULES_END));
+> -	BUILD_BUG_ON((EFI_VA_START & P4D_MASK) != (EFI_VA_END & P4D_MASK));
+> -
+>  	pgd_efi = efi_pgd + pgd_index(EFI_VA_END);
+>  	pgd_k = pgd_offset_k(EFI_VA_END);
+>  	p4d_efi = p4d_offset(pgd_efi, 0);
+> -- 
+> 2.29.2
+> 
+> -- 
+> Regards/Gruss,
+>     Boris.
+> 
+> https://people.kernel.org/tglx/notes-about-netiquette
