@@ -2,169 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76900310802
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 10:38:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9C6A31080B
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 10:38:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229596AbhBEJgl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 04:36:41 -0500
-Received: from mx2.suse.de ([195.135.220.15]:51584 "EHLO mx2.suse.de"
+        id S231186AbhBEJiE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 04:38:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38536 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230366AbhBEJdT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 04:33:19 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1612517551; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=5Xr0bOaT7Hvlq3oqjXdSuH4B/qZdB5Dc6rx0+uuEpQI=;
-        b=PA+NTz5sIaO95EayEOv4oJ/xu4jIPSUaWibcfl58SlcL64LDqOBN39GpmyA+6BT9zSzlaq
-        3UtETeEVbe/jqdl2bsDQ66wollPkrvIHJ1iQ/KrWpLk0L1SCfyf4oAKk8f8iS2j19+8Id4
-        FcrTxOwYegFPFLDnBk8kNxX4xXigoNQ=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 915B8ACBA;
-        Fri,  5 Feb 2021 09:32:31 +0000 (UTC)
-Date:   Fri, 5 Feb 2021 10:32:31 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     kernel test robot <oliver.sang@intel.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        lkp@intel.com, zhengjun.xing@linux.intel.com,
-        "J. Avila" <elavila@google.com>
-Subject: Re: [printk]  b031a684bf: INFO:rcu_tasks_detected_stalls_on_tasks
-Message-ID: <YB0Qr1XDBCUghEja@alley>
-References: <20210122081311.GA12834@xsang-OptiPlex-9020>
- <8735yev1dn.fsf@jogness.linutronix.de>
- <878s83h63x.fsf@jogness.linutronix.de>
+        id S230192AbhBEJeB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 04:34:01 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D735564F87;
+        Fri,  5 Feb 2021 09:33:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1612517600;
+        bh=sEJ206tK8tfWovLmF9zh6XZG7atL05JuXezYQtriNBw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=UPzAb0GvJ+zfqZaRj+jnoizNb7fyyDlHpsNPEyn87lqK9Yzg56Qdt8ERu14vUT4xt
+         71e2cstB2jH2l5z7jdgZShNvmjIsjb46wxu6uNXubOd+/AyaOHJzZ756dTJer3vymL
+         2/Czw/RFBS5uzL/govTHnuUBrsxKVgVN1mggYBl4=
+Date:   Fri, 5 Feb 2021 10:33:17 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     Jiri Slaby <jirislaby@kernel.org>,
+        Jari Ruusu <jariruusu@protonmail.com>,
+        Sasha Levin <sashal@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>,
+        masahiroy@kernel.org
+Subject: Re: Kernel version numbers after 4.9.255 and 4.4.255
+Message-ID: <YB0Q3UUzTUmgvH7V@kroah.com>
+References: <7pR0YCctzN9phpuEChlL7_SS6auHOM80bZBcGBTZPuMkc6XjKw7HUXf9vZUPi-IaV2gTtsRVXgywQbja8xpzjGRDGWJsVYSGQN5sNuX1yaQ=@protonmail.com>
+ <YBuSJqIG+AeqDuMl@kroah.com>
+ <78ada91b-21ee-563f-9f75-3cbaeffafad4@kernel.org>
+ <YBu1d0+nfbWGfMtj@kroah.com>
+ <20210205090659.GA22517@amd>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <878s83h63x.fsf@jogness.linutronix.de>
+In-Reply-To: <20210205090659.GA22517@amd>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 2021-02-04 22:38:02, John Ogness wrote:
-> On 2021-01-22, kernel test robot <oliver.sang@intel.com> wrote:
-> > FYI, we noticed the following commit (built with gcc-9):
-> >
-> > commit: b031a684bfd01d633c79d281bd0cf11c2f834ada ("printk: remove logbuf_lock writer-protection of ringbuffer")
-> > https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
+On Fri, Feb 05, 2021 at 10:06:59AM +0100, Pavel Machek wrote:
+> On Thu 2021-02-04 09:51:03, Greg Kroah-Hartman wrote:
+> > On Thu, Feb 04, 2021 at 08:26:04AM +0100, Jiri Slaby wrote:
+> > > On 04. 02. 21, 7:20, Greg Kroah-Hartman wrote:
+> > > > On Thu, Feb 04, 2021 at 05:59:42AM +0000, Jari Ruusu wrote:
+> > > > > Greg,
+> > > > > I hope that your linux kernel release scripts are
+> > > > > implemented in a way that understands that PATCHLEVEL= and
+> > > > > SUBLEVEL= numbers in top-level linux Makefile are encoded
+> > > > > as 8-bit numbers for LINUX_VERSION_CODE and
+> > > > > KERNEL_VERSION() macros, and must stay in range 0...255.
+> > > > > These 8-bit limits are hardcoded in both kernel source and
+> > > > > userspace ABI.
+> > > > > 
+> > > > > After 4.9.255 and 4.4.255, your scripts should be
+> > > > > incrementing a number in EXTRAVERSION= in top-level
+> > > > > linux Makefile.
+> > > > 
+> > > > Should already be fixed in linux-next, right?
+> > > 
+> > > I assume you mean:
+> > > commit 537896fabed11f8d9788886d1aacdb977213c7b3
+> > > Author: Sasha Levin <sashal@kernel.org>
+> > > Date:   Mon Jan 18 14:54:53 2021 -0500
+> > > 
+> > >     kbuild: give the SUBLEVEL more room in KERNEL_VERSION
+> > > 
+> > > That would IMO break userspace as definition of kernel version has changed.
+> > > And that one is UAPI/ABI (see include/generated/uapi/linux/version.h) as
+> > > Jari writes. For example will glibc still work:
+> > > http://sourceware.org/git/?p=glibc.git;a=blob;f=sysdeps/unix/sysv/linux/configure.ac;h=13abda0a51484c5951ffc6d718aa36b72f3a9429;hb=HEAD#l14
+> > > 
+> > > ? Or gcc 10 (11 will have this differently):
+> > > https://gcc.gnu.org/git/?p=gcc.git;a=blob;f=gcc/config/bpf/bpf.c;hb=ee5c3db6c5b2c3332912fb4c9cfa2864569ebd9a#l165
+> > > 
+> > > and
+> > > 
+> > > https://gcc.gnu.org/git/?p=gcc.git;a=blob;f=gcc/config/bpf/bpf-helpers.h;hb=ee5c3db6c5b2c3332912fb4c9cfa2864569ebd9a#l53
+> > 
+> > Ugh, I thought this was an internal representation, not an external one
+> > :(
+> > 
+> > > It might work somewhere, but there are a lot of (X * 65536 + Y * 256 + Z)
+> > > assumptions all around the world. So this doesn't look like a good idea.
+> > 
+> > Ok, so what happens if we "wrap"?  What will break with that?  At first
+> > glance, I can't see anything as we keep the padding the same, and our
+> > build scripts seem to pick the number up from the Makefile and treat it
+> > like a string.
+> > 
+> > It's only the crazy out-of-tree kernel stuff that wants to do minor
+> > version checks that might go boom.  And frankly, I'm not all that
+> > concerned if they have problems :)
+> > 
+> > So, let's leave it alone and just see what happens!
 > 
-> So I finally tracked down the problem. And yes, it is a problem with the
-> ringbuffer. And it turns out this is the same problem reported here [0].
+> Yeah, stable is a great place to do the experiments. Not that this is
+> the first time :-(.
 
-Uff. Great work!
+How else can we "test this out"?
 
-> If message sizes average larger than expected (more than 32 characters),
-> the data_ring will wrap before the desc_ring. Once the data_ring wraps,
-> it will start invalidating descriptors. These invalid descriptors hang
-> around until they are eventually recycled (when the desc_ring
-> wraps). Readers do not care about invalid descriptors, but they still
-> have to iterate past them. If the average message size is much larger
-> than 32 characters, then there will be many invalid descriptors
-> preceeding the valid descriptors.
-> 
-> For this particular LKP report, the RCU stalls started happening as the
-> number of invalid descriptors approached 17000. The reason this causes a
-> problem is because of the function prb_first_valid_seq(). It starts at
-> the oldest descriptor and searches to find the oldest _valid_
-> descriptor. In this case, it had to iterate past 17000 descriptors every
-> time.
+Should I do an "empty" release of 4.4.256 and see if anyone complains?
 
-Sigh. Good to know that iterating over these many descriptors has
-such a cost.
+Any other ideas are gladly welcome...
 
-> prb_first_valid_seq() is used in devkmsg_read() and in
-> devkmsg_poll(). And worse, it is called with local interrupts disabled
-> and logbuf_lock locked.
-> 
-> The solution is to avoid using prb_first_valid_seq() if possible. And
-> indeed, in both of these cases it is a simple change:
-> 
-> diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-> index c8847ee571f0..76e8df20fdf9 100644
-> --- a/kernel/printk/printk.c
-> +++ b/kernel/printk/printk.c
-> @@ -736,9 +736,9 @@ static ssize_t devkmsg_read(struct file *file, char __user *buf,
->  		logbuf_lock_irq();
->  	}
->  
-> -	if (user->seq < prb_first_valid_seq(prb)) {
-> +	if (r->info->seq != user->seq) {
+thanks,
 
-NOTE: This made me to realize one thing. We return -EPIPE even when
-      prb_reserve() was able to reserve the desriptor but not the data
-      space. It means that the message was lost already when it was
-      being stored.
-
-      It makes sense. It seems that we handle correctly even the situation
-      when empty line is stored. But it is something less obvious.
-      And we should keep it in mind.
-
-
->  		/* our last seen message is gone, return error and reset */
-> -		user->seq = prb_first_valid_seq(prb);
-> +		user->seq = r->info->seq;
->  		ret = -EPIPE;
->  		logbuf_unlock_irq();
->  		goto out;
-> @@ -813,6 +813,7 @@ static loff_t devkmsg_llseek(struct file *file, loff_t offset, int whence)
->  static __poll_t devkmsg_poll(struct file *file, poll_table *wait)
->  {
->  	struct devkmsg_user *user = file->private_data;
-> +	struct printk_info info;
->  	__poll_t ret = 0;
->  
->  	if (!user)
-> @@ -821,9 +822,9 @@ static __poll_t devkmsg_poll(struct file *file, poll_table *wait)
->  	poll_wait(file, &log_wait, wait);
->  
->  	logbuf_lock_irq();
-> -	if (prb_read_valid(prb, user->seq, NULL)) {
-> +	if (prb_read_valid_info(prb, user->seq, &info, NULL)) {
->  		/* return error when data has vanished underneath us */
-> -		if (user->seq < prb_first_valid_seq(prb))
-> +		if (info.seq != user->seq)
->  			ret = EPOLLIN|EPOLLRDNORM|EPOLLERR|EPOLLPRI;
->  		else
->  			ret = EPOLLIN|EPOLLRDNORM;
-> 
-
-The change looks good to me. Please, send it as a proper patch.
-
-> Once logbuf_lock and safe buffer usage is removed, this efficiency
-> wouldn't matter to the kernel anyway. But I am glad we hit it while it
-> still mattered because we should not be carelessly wasting CPU cycles
-> for any task.
-
-+1
-
-> Interestingly enough, LTP reported a problem with this code back in July
-> 2020. The "invalid descriptor issue" was clearly stated [1] and Petr
-> even made a suggestion [2] which is nearly identical to how I propose to
-> fix it here.
-> 
-> prb_first_valid_seq() is used unnecessarily in some syslog and devkmsg
-> locations as well. And prb_first_valid_seq() itself can also be slightly
-> improved.
-
-I am curious what idea you have ;-) I wonder if it might help to cache
-that last known first_valid_seq, e.g. in struct prb_desc_ring.
-
-But it might be tricky because it must be lockless and it is a 64-bit
-value. It might be solved by some lazy approach, e.g. trylock.
-But there is still the question who should pay the prize for this.
-IMHO, it should be on the reader side.
-
-> I am preparing a patch against linux-next for this. And although the
-> current situation is not pretty, I do not think it needs to be rushed
-> for 5.11. It is an inefficiency that occurs if the average message size
-> greatly exceeds 32 bytes and the ringbuffer is being blasted by new
-> messages and userspace is reading the ringbuffer.
-
-I agree. 5.11 release is getting close. And it might go in via stable
-quite quickly.
-
-Best Regards,
-Petr
+greg k-h
