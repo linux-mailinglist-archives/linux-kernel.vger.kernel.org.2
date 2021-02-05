@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6347B3115F4
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 23:55:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F14231156A
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 23:32:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230160AbhBEWqj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 17:46:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43562 "EHLO mail.kernel.org"
+        id S233194AbhBEWbD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 17:31:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44670 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232406AbhBEOqB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 09:46:01 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F26966507A;
-        Fri,  5 Feb 2021 14:13:10 +0000 (UTC)
+        id S232829AbhBEOyd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 09:54:33 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 909DF6507C;
+        Fri,  5 Feb 2021 14:13:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612534391;
-        bh=Y+ixUP1Ec25lKYwt/7pjnJG/ADSoVOxNvnDCOXgwmNg=;
+        s=korg; t=1612534400;
+        bh=WLCOk0yKmp1Fxy9rZNxmYOR/Idxo7Q1TOjFo7D7uzTc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=teZ/P5gKoV6brzr6osbe1olqLYo7IYlOmMf1qfk3NU0Lznzqaxj+HULVU0SO7QCUh
-         s1Wk1VFb3V7rLUd2z/QvF3WbhYmIT8AflmqMcpP1cef8xbMfAiaTUY6yP86hflTJa2
-         P9Be7tKGevH4VcUZ+Fr2pQoC7i06SMuiYMiFg3Cc=
+        b=JeYSg8rAzvflb1yPYGzBAnlyskE1+OwaNbRAFxca0uJoNQYuzkAbLCaRaVCjOpxWk
+         QFn0PmrpahvFzfNr5pRCjPP2gC8zajMLjClV9ZVLR8dwjj13ZZ22mXi+pV8NB1bwLB
+         Df0PkBlnLWCNvB9/EN5QWFLb7yCvt+ShQCtX3GEA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Karan Tilak Kumar <kartilak@cisco.com>,
-        Dinghao Liu <dinghao.liu@zju.edu.cn>,
+        stable@vger.kernel.org, Brian King <brking@linux.vnet.ibm.com>,
         "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 20/32] scsi: fnic: Fix memleak in vnic_dev_init_devcmd2
-Date:   Fri,  5 Feb 2021 15:07:35 +0100
-Message-Id: <20210205140653.212222311@linuxfoundation.org>
+Subject: [PATCH 5.4 23/32] scsi: ibmvfc: Set default timeout to avoid crash during migration
+Date:   Fri,  5 Feb 2021 15:07:38 +0100
+Message-Id: <20210205140653.334716730@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210205140652.348864025@linuxfoundation.org>
 References: <20210205140652.348864025@linuxfoundation.org>
@@ -41,56 +40,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dinghao Liu <dinghao.liu@zju.edu.cn>
+From: Brian King <brking@linux.vnet.ibm.com>
 
-[ Upstream commit d6e3ae76728ccde49271d9f5acfebbea0c5625a3 ]
+[ Upstream commit 764907293edc1af7ac857389af9dc858944f53dc ]
 
-When ioread32() returns 0xFFFFFFFF, we should execute cleanup functions
-like other error handling paths before returning.
+While testing live partition mobility, we have observed occasional crashes
+of the Linux partition. What we've seen is that during the live migration,
+for specific configurations with large amounts of memory, slow network
+links, and workloads that are changing memory a lot, the partition can end
+up being suspended for 30 seconds or longer. This resulted in the following
+scenario:
 
-Link: https://lore.kernel.org/r/20201225083520.22015-1-dinghao.liu@zju.edu.cn
-Acked-by: Karan Tilak Kumar <kartilak@cisco.com>
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+CPU 0                          CPU 1
+-------------------------------  ----------------------------------
+scsi_queue_rq                    migration_store
+ -> blk_mq_start_request          -> rtas_ibm_suspend_me
+  -> blk_add_timer                 -> on_each_cpu(rtas_percpu_suspend_me
+              _______________________________________V
+             |
+             V
+    -> IPI from CPU 1
+     -> rtas_percpu_suspend_me
+                                     -> __rtas_suspend_last_cpu
+
+-- Linux partition suspended for > 30 seconds --
+                                      -> for_each_online_cpu(cpu)
+                                           plpar_hcall_norets(H_PROD
+ -> scsi_dispatch_cmd
+                                      -> scsi_times_out
+                                       -> scsi_abort_command
+                                        -> queue_delayed_work
+  -> ibmvfc_queuecommand_lck
+   -> ibmvfc_send_event
+    -> ibmvfc_send_crq
+     - returns H_CLOSED
+   <- returns SCSI_MLQUEUE_HOST_BUSY
+-> __blk_mq_requeue_request
+
+                                      -> scmd_eh_abort_handler
+                                       -> scsi_try_to_abort_cmd
+                                         - returns SUCCESS
+                                       -> scsi_queue_insert
+
+Normally, the SCMD_STATE_COMPLETE bit would protect against the command
+completion and the timeout, but that doesn't work here, since we don't
+check that at all in the SCSI_MLQUEUE_HOST_BUSY path.
+
+In this case we end up calling scsi_queue_insert on a request that has
+already been queued, or possibly even freed, and we crash.
+
+The patch below simply increases the default I/O timeout to avoid this race
+condition. This is also the timeout value that nearly all IBM SAN storage
+recommends setting as the default value.
+
+Link: https://lore.kernel.org/r/1610463998-19791-1-git-send-email-brking@linux.vnet.ibm.com
+Signed-off-by: Brian King <brking@linux.vnet.ibm.com>
 Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/fnic/vnic_dev.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ drivers/scsi/ibmvscsi/ibmvfc.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/fnic/vnic_dev.c b/drivers/scsi/fnic/vnic_dev.c
-index 522636e946282..c8bf8c7ada6a7 100644
---- a/drivers/scsi/fnic/vnic_dev.c
-+++ b/drivers/scsi/fnic/vnic_dev.c
-@@ -444,7 +444,8 @@ int vnic_dev_init_devcmd2(struct vnic_dev *vdev)
- 	fetch_index = ioread32(&vdev->devcmd2->wq.ctrl->fetch_index);
- 	if (fetch_index == 0xFFFFFFFF) { /* check for hardware gone  */
- 		pr_err("error in devcmd2 init");
--		return -ENODEV;
-+		err = -ENODEV;
-+		goto err_free_wq;
- 	}
+diff --git a/drivers/scsi/ibmvscsi/ibmvfc.c b/drivers/scsi/ibmvscsi/ibmvfc.c
+index 8a76284b59b08..523809a8a2323 100644
+--- a/drivers/scsi/ibmvscsi/ibmvfc.c
++++ b/drivers/scsi/ibmvscsi/ibmvfc.c
+@@ -2881,8 +2881,10 @@ static int ibmvfc_slave_configure(struct scsi_device *sdev)
+ 	unsigned long flags = 0;
  
- 	/*
-@@ -460,7 +461,7 @@ int vnic_dev_init_devcmd2(struct vnic_dev *vdev)
- 	err = vnic_dev_alloc_desc_ring(vdev, &vdev->devcmd2->results_ring,
- 			DEVCMD2_RING_SIZE, DEVCMD2_DESC_SIZE);
- 	if (err)
--		goto err_free_wq;
-+		goto err_disable_wq;
- 
- 	vdev->devcmd2->result =
- 		(struct devcmd2_result *) vdev->devcmd2->results_ring.descs;
-@@ -481,8 +482,9 @@ int vnic_dev_init_devcmd2(struct vnic_dev *vdev)
- 
- err_free_desc_ring:
- 	vnic_dev_free_desc_ring(vdev, &vdev->devcmd2->results_ring);
--err_free_wq:
-+err_disable_wq:
- 	vnic_wq_disable(&vdev->devcmd2->wq);
-+err_free_wq:
- 	vnic_wq_free(&vdev->devcmd2->wq);
- err_free_devcmd2:
- 	kfree(vdev->devcmd2);
+ 	spin_lock_irqsave(shost->host_lock, flags);
+-	if (sdev->type == TYPE_DISK)
++	if (sdev->type == TYPE_DISK) {
+ 		sdev->allow_restart = 1;
++		blk_queue_rq_timeout(sdev->request_queue, 120 * HZ);
++	}
+ 	spin_unlock_irqrestore(shost->host_lock, flags);
+ 	return 0;
+ }
 -- 
 2.27.0
 
