@@ -2,73 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26E34310448
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 06:01:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EF3A31044D
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 06:03:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230366AbhBEFBE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 00:01:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47102 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229720AbhBEFAt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 00:00:49 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id D6B2B64F9C;
-        Fri,  5 Feb 2021 05:00:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612501207;
-        bh=ANRXaJiGNzWVr3mfR9VypXiYgLGkuFRRJgyf3MDSJzk=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=dBa/cEE+TB+HadwkfkFJittt9+BTb8UQC6oUDkirDV3JLGmUmmiyjTSd6B/3rupRN
-         5g53wn/CBcWx1hzg4lJXVghYdXpsVSj2rTD+R/BVrZYg2Y1+Wt0MmMyXs0WZYDKcTN
-         Pnc1sVOIOuPxqnidg/JVvQ+kplpTgaa0VerYZzx+bokGzNhAdHRUgQHFSNF6M9xOTX
-         Z/Z37kbuRjz9HhBMyK3ygU7MqRInhQsc1wqtcsxoIeDTF58tbIUa8AHH2n6e5bafr+
-         GTCXy8OwKEIk88v6Ez6N5dGcrWZtXlk0V65CZIFD+BtmSCtn41U/JeW92YvQffT7DR
-         6xZnwRk4xdpAA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id BE6FE609F3;
-        Fri,  5 Feb 2021 05:00:07 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S230408AbhBEFBq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 00:01:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44148 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230379AbhBEFBG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 00:01:06 -0500
+Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24229C0613D6;
+        Thu,  4 Feb 2021 21:00:26 -0800 (PST)
+Received: by mail-oi1-x22a.google.com with SMTP id d20so6251943oiw.10;
+        Thu, 04 Feb 2021 21:00:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=tg/3V2Rv5u2M2MO9kx/o0aGJFOc9i6LQtuKId3ENj5I=;
+        b=uXhJzcHjOmYDk6sr+fbRmJzVQvC7RxzhUyNM5pjhKG4F3eidLTI2T0JsCoLO5QMUYB
+         dtGMbs2266oVsZ6LcqtC1sjoaihMAppUwtOj/rUJiokh4qhlKzWaDZKAryIfhmMT6jZ7
+         Bb7zJzjFkjfAPYcJ/tuVYq5C5GR9+SvK44F1y8gikWo/STkJ2CqqF4YBclwzIa5dMEpm
+         N+o9vHaBM16dMQQKG4EJU5yYgE8uu3dYfTRWj7TLeWlJJ8i2ZQPW1lskcRh9q1FyHfvc
+         tJq9l0cqh9aZaeoZWYqFWbkTLdan/u04B83ExoNPUyhvUgAz2a/JsF+3SqRyK7FQUj2S
+         b78A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=tg/3V2Rv5u2M2MO9kx/o0aGJFOc9i6LQtuKId3ENj5I=;
+        b=oySPErqEBzNaLj48bHZoFYNN6IFJLngT1kro56SFDiKsHH2lIn18yiZtQewDtDlP87
+         YGBka20MspvHyaNjF664eiATFbY6iIx3M4g9wierMlb/J6Xnxot9eXD+c3QJijXzEid6
+         t8UBt921mnlsU7YUnFPggESmNR7mKquAPuNlGVXNMaPcylOb1wvFdRAKF+NSFfW5NYMt
+         JSh1RuvOgLN632ZnU0eA691MlTF4sg5mss30BPlvLZMnorqzidTYVIzHCuQcXAsEHvV+
+         xEw+n8/d0cSL+YrhUS2VKhh/fa5HDp+ejYYnhZ33tIjcHWAgHWd6aPCgJWYKOhdiAyhZ
+         eBzA==
+X-Gm-Message-State: AOAM531WpjP+Y1e8fKXWU7tBp4cTy0QakHyhbFpTF/DdXNIBvO97VfWc
+        i/9wjzdPNuZOoUFI0tbESVgSgEEs/OSXiOngsW5zDrfF1E8=
+X-Google-Smtp-Source: ABdhPJz2HS/2ghZA+VjmpDjaWHIvATcBN2qLgB2LjIgxpnUAFop7lParWMlXwL3gHSftsxkTYWU9reherQQbozWXmc8=
+X-Received: by 2002:a54:458f:: with SMTP id z15mr2043195oib.139.1612501225504;
+ Thu, 04 Feb 2021 21:00:25 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next 0/2] Amend "hv_netvsc: Copy packets sent by Hyper-V
- out of the receive buffer"
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161250120777.4551.1394354555198718660.git-patchwork-notify@kernel.org>
-Date:   Fri, 05 Feb 2021 05:00:07 +0000
-References: <20210203113513.558864-1-parri.andrea@gmail.com>
-In-Reply-To: <20210203113513.558864-1-parri.andrea@gmail.com>
-To:     Andrea Parri (Microsoft) <parri.andrea@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, kys@microsoft.com,
-        haiyangz@microsoft.com, sthemmin@microsoft.com, wei.liu@kernel.org,
-        mikelley@microsoft.com, linux-hyperv@vger.kernel.org,
-        skarade@microsoft.com, juvazq@microsoft.com, davem@davemloft.net,
-        kuba@kernel.org, netdev@vger.kernel.org
+References: <20210205045217.552927-1-enbyamy@gmail.com> <20210205045217.552927-2-enbyamy@gmail.com>
+ <DM6PR04MB4972E287DED6DA5D4435986286B29@DM6PR04MB4972.namprd04.prod.outlook.com>
+In-Reply-To: <DM6PR04MB4972E287DED6DA5D4435986286B29@DM6PR04MB4972.namprd04.prod.outlook.com>
+From:   Amy Parker <enbyamy@gmail.com>
+Date:   Thu, 4 Feb 2021 21:00:14 -0800
+Message-ID: <CAE1WUT7BHwyL600Zx_3JrG4CGUgCTdufr8Hyy0ObYALqHO_OoQ@mail.gmail.com>
+Subject: Re: [PATCH 1/3] fs/efs: Use correct brace styling for statements
+To:     Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>
+Cc:     "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+On Thu, Feb 4, 2021 at 8:57 PM Chaitanya Kulkarni
+<Chaitanya.Kulkarni@wdc.com> wrote:
+>
+> On 2/4/21 20:55, Amy Parker wrote:
+> > Many single-line statements have unnecessary braces, and some statement=
+ pairs have mismatched braces. This is a clear violation of the kernel styl=
+e guide, which mandates that single line statements have no braces and that=
+ pairs with at least one multi-line block maintain their braces.
+> >
+> > This patch fixes these style violations. Single-line statements that ha=
+ve braces have had their braces stripped. Pair single-line statements have =
+been formatted per the style guide. Pair mixed-line statements have had the=
+ir braces updated to conform.
+> >
+> > Signed-off-by: Amy Parker <enbyamy@gmail.com>
+> Commit message is too long. Follow the style present in the tree.
 
-This series was applied to netdev/net-next.git (refs/heads/master):
+Are you referring to the per-line length? That was supposed to have
+been broken up, my apologies. Or is it the overall length that is the
+issue?
 
-On Wed,  3 Feb 2021 12:35:11 +0100 you wrote:
-> Patch #2 also addresses the Smatch complaint reported here:
-> 
->    https://lkml.kernel.org/r/YBp2oVIdMe+G%2FliJ@mwanda/
-> 
-> Thanks,
->   Andrea
-> 
-> [...]
-
-Here is the summary with links:
-  - [net-next,1/2] hv_netvsc: Allocate the recv_buf buffers after NVSP_MSG1_TYPE_SEND_RECV_BUF
-    https://git.kernel.org/netdev/net-next/c/0102eeedb717
-  - [net-next,2/2] hv_netvsc: Load and store the proper (NBL_HASH_INFO) per-packet info
-    https://git.kernel.org/netdev/net-next/c/8dff9808e973
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+   -Amy IP
