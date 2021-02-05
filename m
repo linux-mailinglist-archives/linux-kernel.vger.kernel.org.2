@@ -2,114 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D7D43102E8
+	by mail.lfdr.de (Postfix) with ESMTP id BEAA13102E9
 	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 03:41:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229756AbhBECkz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 21:40:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42390 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229669AbhBECkv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 21:40:51 -0500
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98A07C0613D6
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 18:40:00 -0800 (PST)
-Received: by mail-wr1-x429.google.com with SMTP id c4so5889920wru.9
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 18:40:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KrxuWR/Lm4v4BWcac9Ts2j/JMY/RAA6h700GnlMoUbk=;
-        b=BOn1mNtq3puSazs0rViio49lg0t/e1BTWkIt5KnAQ9+Leu+6wtf9fZJ4ahbIH6NGZE
-         1Tvz9u5MV0MvZNT6vPJJ9iftmwcFVom5j1I2ZkkRZew+ntGs81+G0R1R1tXs9HArCdUV
-         P9Yodyq7r5/o0DLjI/VlezJ+VKS6bsOAde0GLNaok6TeoT4NPQAWeB8EFpBse3KIrT9y
-         TqqW10gU876llTurg6M2nUXMvGDOzRQbVkWMcOUpZEsAbBMtnGxWQV+vyVI+lBVNi77K
-         e2GLaOSkTsnQcMEf66aa7msysph6sdlTa6QJlA1N/OcxGKZicVjO32cj74CNtR89JLiv
-         wwuQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KrxuWR/Lm4v4BWcac9Ts2j/JMY/RAA6h700GnlMoUbk=;
-        b=JNmt1+K7pRg0oHY0Vnxpselgxi5hbvj2We3ihNX2v5CRtotiE/Jn8KsUKvUoxsvsO7
-         jv/2tK4YBbsfXL6wyld0KD9K6u1LhteTtC4eF6pa2lXkFn6E2zxImQDbNf9UoCOhAVhJ
-         pwZOMszbpoW8klzIpiP/nNbnSCyEC0ohSUXiGHGqyco5w1gO4VnvBl8iDVqdtkmdnEjX
-         o3LVInlcEBTwxgVk1iE9X/A8J5BWzIy5pSarQ4UdMbi+KeTuJ246Nd3JbWWSWwtQtyzW
-         wwe/vBl5T4pA8TdWKZ4ZH/PKtJsb9ekUyWyt1o62c7yfNKOoEdwiqWhswHBRfTIAhUN6
-         h1CQ==
-X-Gm-Message-State: AOAM532aBCTwG7L9kuCQq1hbMKuNOGmFJ18cvMgC5X3efz187JE9TAso
-        pjkjjmiQMc7uNgV7LLeKVXokbIClGyfeTb8wDIx2Wg==
-X-Google-Smtp-Source: ABdhPJz7jCN9ThVqAOwhnpQs7RtCjbmaX+bZOnmytw9bwt7OpRl7AdgZ8K+7ojC4UbsnDx2Omx4dOzf4impbO9I6jf4=
-X-Received: by 2002:adf:e50e:: with SMTP id j14mr2437426wrm.162.1612492799266;
- Thu, 04 Feb 2021 18:39:59 -0800 (PST)
+        id S229823AbhBECk5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 21:40:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46874 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229766AbhBECkw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 21:40:52 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 8F47364FB3;
+        Fri,  5 Feb 2021 02:40:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612492807;
+        bh=s3mrUTF85e0lkblvyy5bYFWLYge2WF7tbsn6bJvLuS0=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=X0BKqaPpFTfJ0lSgzu4TKG3CcgL8NeL0YjiM6SROz7PeKVrPijP6rZMnkHA0iG2rQ
+         m6LdkqHRvol1BeAxGz64eQ59UFKiXMP5fVnNxp1gX0a+939QQANNi1DoghK//fTkT2
+         Pydz9emUZ5H6SiD6A+FZs8uDL/2nxpTiuEy7FgjcTJonf12M3k7XBAHnpq/Nbbm3/r
+         80Ke6zJhpqZMMNx/dd0Sq6bNYubhptPpHLDKt1+/0t0tks01lVR/FxQQoy0x8tJff/
+         rwE1z4uviUcCOri+VTWvhtr2xR3Na/L7ak3Lwvv8xhtsABYB8aIphGdH4K7VMFbTQw
+         ZRs21jg4sYoTA==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 727A2609F1;
+        Fri,  5 Feb 2021 02:40:07 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20210203155001.4121868-1-minchan@kernel.org> <7e7c01a7-27fe-00a3-f67f-8bcf9ef3eae9@nvidia.com>
- <YBxT9XFE6QAQ4T9N@google.com> <cda5547b-0c78-756b-bd0c-f3e534d04bff@nvidia.com>
- <YByNU4Q7cc7gYwPh@google.com> <87d7ec1f-d892-0491-a2de-3d0feecca647@nvidia.com>
- <YByi/gdaGJeV/+8b@google.com>
-In-Reply-To: <YByi/gdaGJeV/+8b@google.com>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Thu, 4 Feb 2021 18:39:47 -0800
-Message-ID: <CAJuCfpHmMVFDZ7ZA0uVc_5b4HCB3QBptahBhTWovGvNtjmfGig@mail.gmail.com>
-Subject: Re: [PATCH] mm: cma: support sysfs
-To:     Minchan Kim <minchan@kernel.org>
-Cc:     John Hubbard <jhubbard@nvidia.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        John Dias <joaodias@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH RESEND v3 net-next 0/5] net: consolidate page_is_pfmemalloc()
+ usage
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161249280746.9463.15568343687164067943.git-patchwork-notify@kernel.org>
+Date:   Fri, 05 Feb 2021 02:40:07 +0000
+References: <20210202133030.5760-1-alobakin@pm.me>
+In-Reply-To: <20210202133030.5760-1-alobakin@pm.me>
+To:     Alexander Lobakin <alobakin@pm.me>
+Cc:     davem@davemloft.net, kuba@kernel.org, jhubbard@nvidia.com,
+        rientjes@google.com, yisen.zhuang@huawei.com,
+        salil.mehta@huawei.com, jesse.brandeburg@intel.com,
+        anthony.l.nguyen@intel.com, saeedm@nvidia.com, leon@kernel.org,
+        akpm@linux-foundation.org, brouer@redhat.com,
+        ilias.apalodimas@linaro.org, jonathan.lemon@gmail.com,
+        willemb@google.com, rdunlap@infradead.org, pablo@netfilter.org,
+        decui@microsoft.com, jakub@cloudflare.com, elver@google.com,
+        pabeni@redhat.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
+        linux-rdma@vger.kernel.org, linux-mm@kvack.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 4, 2021 at 5:44 PM Minchan Kim <minchan@kernel.org> wrote:
->
-> On Thu, Feb 04, 2021 at 04:24:20PM -0800, John Hubbard wrote:
-> > On 2/4/21 4:12 PM, Minchan Kim wrote:
-> > ...
-> > > > > Then, how to know how often CMA API failed?
-> > > >
-> > > > Why would you even need to know that, *in addition* to knowing specific
-> > > > page allocation numbers that failed? Again, there is no real-world motivation
-> > > > cited yet, just "this is good data". Need more stories and support here.
-> > >
-> > > Let me give an example.
-> > >
-> > > Let' assume we use memory buffer allocation via CMA for bluetooth
-> > > enable of  device.
-> > > If user clicks the bluetooth button in the phone but fail to allocate
-> > > the memory from CMA, user will still see bluetooth button gray.
-> > > User would think his touch was not enough powerful so he try clicking
-> > > again and fortunately CMA allocation was successful this time and
-> > > they will see bluetooh button enabled and could listen the music.
-> > >
-> > > Here, product team needs to monitor how often CMA alloc failed so
-> > > if the failure ratio is steadily increased than the bar,
-> > > it means engineers need to go investigation.
-> > >
-> > > Make sense?
-> > >
-> >
-> > Yes, except that it raises more questions:
-> >
-> > 1) Isn't this just standard allocation failure? Don't you already have a way
-> > to track that?
-> >
-> > Presumably, having the source code, you can easily deduce that a bluetooth
-> > allocation failure goes directly to a CMA allocation failure, right?
-> >
-> > Anyway, even though the above is still a little murky, I expect you're right
-> > that it's good to have *some* indication, somewhere about CMA behavior...
-> >
-> > Thinking about this some more, I wonder if this is really /proc/vmstat sort
-> > of data that we're talking about. It seems to fit right in there, yes?
->
-> Thing is CMA instance are multiple, cma-A, cma-B, cma-C and each of CMA
-> heap has own specific scenario. /proc/vmstat could be bloated a lot
-> while CMA instance will be increased.
+Hello:
 
-Oh, I missed the fact that you need these stats per-CMA.
+This series was applied to netdev/net-next.git (refs/heads/master):
+
+On Tue, 02 Feb 2021 13:30:43 +0000 you wrote:
+> page_is_pfmemalloc() is used mostly by networking drivers to test
+> if a page can be considered for reusing/recycling.
+> It doesn't write anything to the struct page itself, so its sole
+> argument can be constified, as well as the first argument of
+> skb_propagate_pfmemalloc().
+> In Page Pool core code, it can be simply inlined instead.
+> Most of the callers from NIC drivers were just doppelgangers of
+> the same condition tests. Derive them into a new common function
+> do deduplicate the code.
+> 
+> [...]
+
+Here is the summary with links:
+  - [RESEND,v3,net-next,1/5] mm: constify page_is_pfmemalloc() argument
+    https://git.kernel.org/netdev/net-next/c/1d7bab6a9445
+  - [RESEND,v3,net-next,2/5] skbuff: constify skb_propagate_pfmemalloc() "page" argument
+    https://git.kernel.org/netdev/net-next/c/48f971c9c80a
+  - [RESEND,v3,net-next,3/5] net: introduce common dev_page_is_reusable()
+    https://git.kernel.org/netdev/net-next/c/bc38f30f8dbc
+  - [RESEND,v3,net-next,4/5] net: use the new dev_page_is_reusable() instead of private versions
+    https://git.kernel.org/netdev/net-next/c/a79afa78e625
+  - [RESEND,v3,net-next,5/5] net: page_pool: simplify page recycling condition tests
+    https://git.kernel.org/netdev/net-next/c/05656132a874
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
