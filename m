@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 482D7311AEB
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 05:34:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C4E92311AE9
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 05:32:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230415AbhBFEdZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 23:33:25 -0500
-Received: from mga01.intel.com ([192.55.52.88]:2139 "EHLO mga01.intel.com"
+        id S230298AbhBFEcZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 23:32:25 -0500
+Received: from mga17.intel.com ([192.55.52.151]:55062 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231923AbhBFDP6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 22:15:58 -0500
-IronPort-SDR: AXPqKsPJhXBdwheFM1NNOV23c6Vh8NAzx58GhYQo1RnNW/6rSWMKJUP/9gzIZTd02gi2sdZONB
- 1OjvAjxAeVJg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9886"; a="200512636"
+        id S229751AbhBFDR3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 22:17:29 -0500
+IronPort-SDR: i5/YktUwLTXrmHvFv5NQdmGPQseh6svF/H4rq56dpL4/jyQdu5a9yTAWGoj+tVoGXx78gm1PvU
+ VA22ZOjmVC+g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9886"; a="161252119"
 X-IronPort-AV: E=Sophos;i="5.81,156,1610438400"; 
-   d="scan'208";a="200512636"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2021 14:52:08 -0800
-IronPort-SDR: q4Zpa82pDisceYpce9vD6Iobn+YFqr0Z+ldkgSg8TQMicPD6ozSl3aSLgZWzceFvHgHVgmJN1+
- ctW3phIcVkQQ==
+   d="scan'208";a="161252119"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2021 14:52:08 -0800
+IronPort-SDR: taO8Mi12Xv36iIBFVPi8jgoUfO7c7BTNyJE/dUyiCsWnsg38DFSmjFt2guIiugW1FqZd7JOouf
+ IOySZc3+utvA==
 X-IronPort-AV: E=Sophos;i="5.81,156,1610438400"; 
-   d="scan'208";a="576859344"
+   d="scan'208";a="397637784"
 Received: from smtp.ostc.intel.com ([10.54.29.231])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2021 14:52:08 -0800
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2021 14:52:08 -0800
 Received: from mtg-dev.jf.intel.com (mtg-dev.jf.intel.com [10.54.74.10])
-        by smtp.ostc.intel.com (Postfix) with ESMTP id 73ED76371;
+        by smtp.ostc.intel.com (Postfix) with ESMTP id 8CFEE6365;
         Fri,  5 Feb 2021 14:52:08 -0800 (PST)
 Received: by mtg-dev.jf.intel.com (Postfix, from userid 1000)
-        id 67B1136329C; Fri,  5 Feb 2021 14:52:08 -0800 (PST)
+        id 813AC363372; Fri,  5 Feb 2021 14:52:08 -0800 (PST)
 From:   mgross@linux.intel.com
 To:     markgross@kernel.org, mgross@linux.intel.com, arnd@arndb.de,
         bp@suse.de, damien.lemoal@wdc.com, dragan.cvetic@xilinx.com,
@@ -38,9 +38,9 @@ To:     markgross@kernel.org, mgross@linux.intel.com, arnd@arndb.de,
         jassisinghbrar@gmail.com
 Cc:     linux-kernel@vger.kernel.org,
         Srikanth Thokala <srikanth.thokala@intel.com>
-Subject: [PATCH v5 10/34] misc: xlink-pcie: lh: Add PCIe EP DMA functionality
-Date:   Fri,  5 Feb 2021 14:51:40 -0800
-Message-Id: <20210205225204.32902-11-mgross@linux.intel.com>
+Subject: [PATCH v5 12/34] misc: xlink-pcie: lh: Prepare changes for adding remote host driver
+Date:   Fri,  5 Feb 2021 14:51:42 -0800
+Message-Id: <20210205225204.32902-13-mgross@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210205225204.32902-1-mgross@linux.intel.com>
 References: <20210205225204.32902-1-mgross@linux.intel.com>
@@ -50,7 +50,8 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Srikanth Thokala <srikanth.thokala@intel.com>
 
-Add Synopsys PCIe DWC core embedded-DMA functionality for local host
+Move logic that can be reused between local host and remote host to
+common/ folder
 
 Cc: Arnd Bergmann <arnd@arndb.de>
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
@@ -58,705 +59,147 @@ Reviewed-by: Mark Gross <mgross@linux.intel.com>
 Signed-off-by: Mark Gross <mgross@linux.intel.com>
 Signed-off-by: Srikanth Thokala <srikanth.thokala@intel.com>
 ---
- drivers/misc/xlink-pcie/local_host/Makefile |   1 +
- drivers/misc/xlink-pcie/local_host/dma.c    | 575 ++++++++++++++++++++
- drivers/misc/xlink-pcie/local_host/epf.c    |  15 +-
- drivers/misc/xlink-pcie/local_host/epf.h    |  41 ++
- 4 files changed, 629 insertions(+), 3 deletions(-)
- create mode 100644 drivers/misc/xlink-pcie/local_host/dma.c
+ drivers/misc/xlink-pcie/{local_host => common}/core.h  | 8 +++-----
+ drivers/misc/xlink-pcie/{local_host => common}/util.c  | 8 +++-----
+ drivers/misc/xlink-pcie/{local_host => common}/util.h  | 8 +++-----
+ drivers/misc/xlink-pcie/{local_host => common}/xpcie.h | 8 +++-----
+ drivers/misc/xlink-pcie/local_host/Makefile            | 2 +-
+ drivers/misc/xlink-pcie/local_host/core.c              | 4 ++--
+ drivers/misc/xlink-pcie/local_host/epf.h               | 4 ++--
+ 7 files changed, 17 insertions(+), 25 deletions(-)
+ rename drivers/misc/xlink-pcie/{local_host => common}/core.h (96%)
+ rename drivers/misc/xlink-pcie/{local_host => common}/util.c (97%)
+ rename drivers/misc/xlink-pcie/{local_host => common}/util.h (91%)
+ rename drivers/misc/xlink-pcie/{local_host => common}/xpcie.h (92%)
 
-diff --git a/drivers/misc/xlink-pcie/local_host/Makefile b/drivers/misc/xlink-pcie/local_host/Makefile
-index 514d3f0c91bc..54fc118e2dd1 100644
---- a/drivers/misc/xlink-pcie/local_host/Makefile
-+++ b/drivers/misc/xlink-pcie/local_host/Makefile
-@@ -1,2 +1,3 @@
- obj-$(CONFIG_XLINK_PCIE_LH_DRIVER) += mxlk_ep.o
- mxlk_ep-objs := epf.o
-+mxlk_ep-objs += dma.o
-diff --git a/drivers/misc/xlink-pcie/local_host/dma.c b/drivers/misc/xlink-pcie/local_host/dma.c
-new file mode 100644
-index 000000000000..42978fb0db49
---- /dev/null
-+++ b/drivers/misc/xlink-pcie/local_host/dma.c
-@@ -0,0 +1,575 @@
-+// SPDX-License-Identifier: GPL-2.0-only
+diff --git a/drivers/misc/xlink-pcie/local_host/core.h b/drivers/misc/xlink-pcie/common/core.h
+similarity index 96%
+rename from drivers/misc/xlink-pcie/local_host/core.h
+rename to drivers/misc/xlink-pcie/common/core.h
+index 84985ef41a64..656b5e2dbfae 100644
+--- a/drivers/misc/xlink-pcie/local_host/core.h
++++ b/drivers/misc/xlink-pcie/common/core.h
+@@ -1,11 +1,9 @@
+ /* SPDX-License-Identifier: GPL-2.0-only */
+-/*****************************************************************************
+- *
 +/*
-+ * Intel Keem Bay XLink PCIe Driver
-+ *
+  * Intel Keem Bay XLink PCIe Driver
+  *
+- * Copyright (C) 2020 Intel Corporation
+- *
+- ****************************************************************************/
 + * Copyright (C) 2021 Intel Corporation
 + */
-+#include <linux/delay.h>
-+#include <linux/interrupt.h>
-+#include <linux/wait.h>
-+
-+#include "epf.h"
-+
-+#define DMA_DBI_OFFSET			(0x380000)
-+
-+/* PCIe DMA control 1 register definitions. */
-+#define DMA_CH_CONTROL1_CB_SHIFT	(0)
-+#define DMA_CH_CONTROL1_TCB_SHIFT	(1)
-+#define DMA_CH_CONTROL1_LLP_SHIFT	(2)
-+#define DMA_CH_CONTROL1_LIE_SHIFT	(3)
-+#define DMA_CH_CONTROL1_CS_SHIFT	(5)
-+#define DMA_CH_CONTROL1_CCS_SHIFT	(8)
-+#define DMA_CH_CONTROL1_LLE_SHIFT	(9)
-+#define DMA_CH_CONTROL1_CB_MASK		(BIT(DMA_CH_CONTROL1_CB_SHIFT))
-+#define DMA_CH_CONTROL1_TCB_MASK	(BIT(DMA_CH_CONTROL1_TCB_SHIFT))
-+#define DMA_CH_CONTROL1_LLP_MASK	(BIT(DMA_CH_CONTROL1_LLP_SHIFT))
-+#define DMA_CH_CONTROL1_LIE_MASK	(BIT(DMA_CH_CONTROL1_LIE_SHIFT))
-+#define DMA_CH_CONTROL1_CS_MASK		(0x3 << DMA_CH_CONTROL1_CS_SHIFT)
-+#define DMA_CH_CONTROL1_CCS_MASK	(BIT(DMA_CH_CONTROL1_CCS_SHIFT))
-+#define DMA_CH_CONTROL1_LLE_MASK	(BIT(DMA_CH_CONTROL1_LLE_SHIFT))
-+
-+/* DMA control 1 register Channel Status */
-+#define DMA_CH_CONTROL1_CS_RUNNING	(0x1 << DMA_CH_CONTROL1_CS_SHIFT)
-+#define DMA_CH_CONTROL1_CS_HALTED	(0x2 << DMA_CH_CONTROL1_CS_SHIFT)
-+#define DMA_CH_CONTROL1_CS_STOPPED	(0x3 << DMA_CH_CONTROL1_CS_SHIFT)
-+
-+/* PCIe DMA Engine enable register definitions. */
-+#define DMA_ENGINE_EN_SHIFT		(0)
-+#define DMA_ENGINE_EN_MASK		(BIT(DMA_ENGINE_EN_SHIFT))
-+
-+/* PCIe DMA interrupt registers definitions. */
-+#define DMA_ABORT_INTERRUPT_SHIFT	(16)
-+#define DMA_ABORT_INTERRUPT_MASK	(0xFF << DMA_ABORT_INTERRUPT_SHIFT)
-+#define DMA_ABORT_INTERRUPT_CH_MASK(_c) (BIT(_c) << DMA_ABORT_INTERRUPT_SHIFT)
-+#define DMA_DONE_INTERRUPT_MASK		(0xFF)
-+#define DMA_DONE_INTERRUPT_CH_MASK(_c)	(BIT(_c))
-+#define DMA_ALL_INTERRUPT_MASK \
-+	(DMA_ABORT_INTERRUPT_MASK | DMA_DONE_INTERRUPT_MASK)
-+
-+#define DMA_LL_ERROR_SHIFT		(16)
-+#define DMA_CPL_ABORT_SHIFT		(8)
-+#define DMA_CPL_TIMEOUT_SHIFT		(16)
-+#define DMA_DATA_POI_SHIFT		(24)
-+#define DMA_AR_ERROR_CH_MASK(_c)	(BIT(_c))
-+#define DMA_LL_ERROR_CH_MASK(_c)	(BIT(_c) << DMA_LL_ERROR_SHIFT)
-+#define DMA_UNREQ_ERROR_CH_MASK(_c)	(BIT(_c))
-+#define DMA_CPL_ABORT_ERROR_CH_MASK(_c)	(BIT(_c) << DMA_CPL_ABORT_SHIFT)
-+#define DMA_CPL_TIMEOUT_ERROR_CH_MASK(_c) (BIT(_c) << DMA_CPL_TIMEOUT_SHIFT)
-+#define DMA_DATA_POI_ERROR_CH_MASK(_c)	(BIT(_c) << DMA_DATA_POI_SHIFT)
-+
-+#define DMA_LLLAIE_SHIFT		(16)
-+#define DMA_LLLAIE_MASK			(0xF << DMA_LLLAIE_SHIFT)
-+
-+#define DMA_CHAN_WRITE_MAX_WEIGHT	(0x7)
-+#define DMA_CHAN_READ_MAX_WEIGHT	(0x3)
-+#define DMA_CHAN0_WEIGHT_OFFSET		(0)
-+#define DMA_CHAN1_WEIGHT_OFFSET		(5)
-+#define DMA_CHAN2_WEIGHT_OFFSET		(10)
-+#define DMA_CHAN3_WEIGHT_OFFSET		(15)
-+#define DMA_CHAN_WRITE_ALL_MAX_WEIGHT					\
-+	((DMA_CHAN_WRITE_MAX_WEIGHT << DMA_CHAN0_WEIGHT_OFFSET) |	\
-+	 (DMA_CHAN_WRITE_MAX_WEIGHT << DMA_CHAN1_WEIGHT_OFFSET) |	\
-+	 (DMA_CHAN_WRITE_MAX_WEIGHT << DMA_CHAN2_WEIGHT_OFFSET) |	\
-+	 (DMA_CHAN_WRITE_MAX_WEIGHT << DMA_CHAN3_WEIGHT_OFFSET))
-+#define DMA_CHAN_READ_ALL_MAX_WEIGHT					\
-+	((DMA_CHAN_READ_MAX_WEIGHT << DMA_CHAN0_WEIGHT_OFFSET) |	\
-+	 (DMA_CHAN_READ_MAX_WEIGHT << DMA_CHAN1_WEIGHT_OFFSET) |	\
-+	 (DMA_CHAN_READ_MAX_WEIGHT << DMA_CHAN2_WEIGHT_OFFSET) |	\
-+	 (DMA_CHAN_READ_MAX_WEIGHT << DMA_CHAN3_WEIGHT_OFFSET))
-+
-+#define PCIE_REGS_PCIE_APP_CNTRL	0x8
-+#define APP_XFER_PENDING		BIT(6)
-+#define PCIE_REGS_PCIE_SII_PM_STATE_1	0xb4
-+#define PM_LINKST_IN_L1			BIT(10)
-+
-+#define DMA_POLLING_TIMEOUT		1000000
-+#define DMA_ENABLE_TIMEOUT		1000
-+#define DMA_PCIE_PM_L1_TIMEOUT		20
-+
-+struct __packed pcie_dma_reg {
-+	u32 dma_ctrl_data_arb_prior;
-+	u32 reserved1;
-+	u32 dma_ctrl;
-+	u32 dma_write_engine_en;
-+	u32 dma_write_doorbell;
-+	u32 reserved2;
-+	u32 dma_write_channel_arb_weight_low;
-+	u32 dma_write_channel_arb_weight_high;
-+	u32 reserved3[3];
-+	u32 dma_read_engine_en;
-+	u32 dma_read_doorbell;
-+	u32 reserved4;
-+	u32 dma_read_channel_arb_weight_low;
-+	u32 dma_read_channel_arb_weight_high;
-+	u32 reserved5[3];
-+	u32 dma_write_int_status;
-+	u32 reserved6;
-+	u32 dma_write_int_mask;
-+	u32 dma_write_int_clear;
-+	u32 dma_write_err_status;
-+	u32 dma_write_done_imwr_low;
-+	u32 dma_write_done_imwr_high;
-+	u32 dma_write_abort_imwr_low;
-+	u32 dma_write_abort_imwr_high;
-+	u16 dma_write_ch_imwr_data[8];
-+	u32 reserved7[4];
-+	u32 dma_write_linked_list_err_en;
-+	u32 reserved8[3];
-+	u32 dma_read_int_status;
-+	u32 reserved9;
-+	u32 dma_read_int_mask;
-+	u32 dma_read_int_clear;
-+	u32 reserved10;
-+	u32 dma_read_err_status_low;
-+	u32 dma_rd_err_sts_h;
-+	u32 reserved11[2];
-+	u32 dma_read_linked_list_err_en;
-+	u32 reserved12;
-+	u32 dma_read_done_imwr_low;
-+	u32 dma_read_done_imwr_high;
-+	u32 dma_read_abort_imwr_low;
-+	u32 dma_read_abort_imwr_high;
-+	u16 dma_read_ch_imwr_data[8];
-+};
-+
-+struct __packed pcie_dma_chan {
-+	u32 dma_ch_control1;
-+	u32 reserved1;
-+	u32 dma_transfer_size;
-+	u32 dma_sar_low;
-+	u32 dma_sar_high;
-+	u32 dma_dar_low;
-+	u32 dma_dar_high;
-+	u32 dma_llp_low;
-+	u32 dma_llp_high;
-+};
-+
-+enum xpcie_ep_engine_type {
-+	WRITE_ENGINE,
-+	READ_ENGINE
-+};
-+
-+static u32 dma_chan_offset[2][DMA_CHAN_NUM] = {
-+	{ 0x200, 0x400, 0x600, 0x800 },
-+	{ 0x300, 0x500, 0x700, 0x900 }
-+};
-+
-+static void __iomem *intel_xpcie_ep_get_dma_base(struct pci_epf *epf)
-+{
-+	struct device *dev = &epf->dev;
-+	struct xpcie_epf *xpcie_epf = (struct xpcie_epf *)dev->driver_data;
-+
-+	return xpcie_epf->dbi_base + DMA_DBI_OFFSET;
-+}
-+
-+static int intel_xpcie_ep_dma_disable(void __iomem *dma_base,
-+				      enum xpcie_ep_engine_type rw)
-+{
-+	struct __iomem pcie_dma_reg * dma_reg =
-+				(struct __iomem pcie_dma_reg *)dma_base;
-+	void __iomem *int_mask, *int_clear;
-+	void __iomem *engine_en, *ll_err;
-+	int i;
-+
-+	if (rw == WRITE_ENGINE) {
-+		engine_en = (void __iomem *)&dma_reg->dma_write_engine_en;
-+		int_mask = (void __iomem *)&dma_reg->dma_write_int_mask;
-+		int_clear = (void __iomem *)&dma_reg->dma_write_int_clear;
-+		ll_err = (void __iomem *)&dma_reg->dma_write_linked_list_err_en;
-+	} else {
-+		engine_en = (void __iomem *)&dma_reg->dma_read_engine_en;
-+		int_mask = (void __iomem *)&dma_reg->dma_read_int_mask;
-+		int_clear = (void __iomem *)&dma_reg->dma_read_int_clear;
-+		ll_err = (void __iomem *)&dma_reg->dma_read_linked_list_err_en;
-+	}
-+
-+	iowrite32(0x0, engine_en);
-+
-+	/* Mask all interrupts. */
-+	iowrite32(DMA_ALL_INTERRUPT_MASK, int_mask);
-+
-+	/* Clear all interrupts. */
-+	iowrite32(DMA_ALL_INTERRUPT_MASK, int_clear);
-+
-+	/* Disable LL abort interrupt (LLLAIE). */
-+	iowrite32(0, ll_err);
-+
-+	/* Wait until the engine is disabled. */
-+	for (i = 0; i < DMA_ENABLE_TIMEOUT; i++) {
-+		if (!(ioread32(engine_en) & DMA_ENGINE_EN_MASK))
-+			return 0;
-+		msleep(20);
-+	}
-+
-+	return -EBUSY;
-+}
-+
-+static void intel_xpcie_ep_dma_enable(void __iomem *dma_base,
-+				      enum xpcie_ep_engine_type rw)
-+{
-+	struct __iomem pcie_dma_reg * dma_reg =
-+				(struct __iomem pcie_dma_reg *)(dma_base);
-+	void __iomem *engine_en, *ll_err, *arb_weight;
-+	struct __iomem pcie_dma_chan * dma_chan;
-+	void __iomem *int_mask, *int_clear;
-+	u32 offset, weight;
-+	int i;
-+
-+	if (rw == WRITE_ENGINE) {
-+		engine_en = (void __iomem *)&dma_reg->dma_write_engine_en;
-+		int_mask = (void __iomem *)&dma_reg->dma_write_int_mask;
-+		int_clear = (void __iomem *)&dma_reg->dma_write_int_clear;
-+		ll_err = (void __iomem *)&dma_reg->dma_write_linked_list_err_en;
-+		arb_weight = (void __iomem *)
-+			     &dma_reg->dma_write_channel_arb_weight_low;
-+		weight = DMA_CHAN_WRITE_ALL_MAX_WEIGHT;
-+	} else {
-+		engine_en = (void __iomem *)&dma_reg->dma_read_engine_en;
-+		int_mask = (void __iomem *)&dma_reg->dma_read_int_mask;
-+		int_clear = (void __iomem *)&dma_reg->dma_read_int_clear;
-+		ll_err = (void __iomem *)&dma_reg->dma_read_linked_list_err_en;
-+		arb_weight = (void __iomem *)
-+			     &dma_reg->dma_read_channel_arb_weight_low;
-+		weight = DMA_CHAN_READ_ALL_MAX_WEIGHT;
-+	}
-+
-+	iowrite32(DMA_ENGINE_EN_MASK, engine_en);
-+
-+	/* Unmask all interrupts, so that the interrupt line gets asserted. */
-+	iowrite32(~(u32)DMA_ALL_INTERRUPT_MASK, int_mask);
-+
-+	/* Clear all interrupts. */
-+	iowrite32(DMA_ALL_INTERRUPT_MASK, int_clear);
-+
-+	/* Set channel round robin weight. */
-+	iowrite32(weight, arb_weight);
-+
-+	/* Enable LL abort interrupt (LLLAIE). */
-+	iowrite32(DMA_LLLAIE_MASK, ll_err);
-+
-+	/* Enable linked list mode. */
-+	for (i = 0; i < DMA_CHAN_NUM; i++) {
-+		offset = dma_chan_offset[rw][i];
-+		dma_chan = (struct __iomem pcie_dma_chan *)(dma_base + offset);
-+		iowrite32(DMA_CH_CONTROL1_LLE_MASK,
-+			  (void __iomem *)&dma_chan->dma_ch_control1);
-+	}
-+}
-+
+ 
+ #ifndef XPCIE_CORE_HEADER_
+ #define XPCIE_CORE_HEADER_
+diff --git a/drivers/misc/xlink-pcie/local_host/util.c b/drivers/misc/xlink-pcie/common/util.c
+similarity index 97%
+rename from drivers/misc/xlink-pcie/local_host/util.c
+rename to drivers/misc/xlink-pcie/common/util.c
+index ec808b0cd72b..d99125f61ba0 100644
+--- a/drivers/misc/xlink-pcie/local_host/util.c
++++ b/drivers/misc/xlink-pcie/common/util.c
+@@ -1,11 +1,9 @@
+ // SPDX-License-Identifier: GPL-2.0-only
+-/*****************************************************************************
+- *
 +/*
-+ * Make sure EP is not in L1 state when DMA doorbell.
-+ * The DMA controller may start the wrong channel if doorbell occurs at the
-+ * same time as controller is transitioning to L1.
+  * Intel Keem Bay XLink PCIe Driver
+  *
+- * Copyright (C) 2020 Intel Corporation
+- *
+- ****************************************************************************/
++ * Copyright (C) 2021 Intel Corporation
 + */
-+static int intel_xpcie_ep_dma_doorbell(struct xpcie_epf *xpcie_epf, int chan,
-+				       void __iomem *doorbell)
-+{
-+	int i = DMA_PCIE_PM_L1_TIMEOUT, rc = 0;
-+	u32 val, pm_val;
-+
-+	val = ioread32(xpcie_epf->apb_base + PCIE_REGS_PCIE_APP_CNTRL);
-+	iowrite32(val | APP_XFER_PENDING,
-+		  xpcie_epf->apb_base + PCIE_REGS_PCIE_APP_CNTRL);
-+	pm_val = ioread32(xpcie_epf->apb_base + PCIE_REGS_PCIE_SII_PM_STATE_1);
-+	while (pm_val & PM_LINKST_IN_L1) {
-+		if (i-- < 0) {
-+			rc = -ETIME;
-+			break;
-+		}
-+		udelay(5);
-+		pm_val = ioread32(xpcie_epf->apb_base +
-+				  PCIE_REGS_PCIE_SII_PM_STATE_1);
-+	}
-+
-+	iowrite32((u32)chan, doorbell);
-+
-+	iowrite32(val & ~APP_XFER_PENDING,
-+		  xpcie_epf->apb_base + PCIE_REGS_PCIE_APP_CNTRL);
-+
-+	return rc;
-+}
-+
-+static int intel_xpcie_ep_dma_err_status(void __iomem *err_status, int chan)
-+{
-+	if (ioread32(err_status) &
-+	    (DMA_AR_ERROR_CH_MASK(chan) | DMA_LL_ERROR_CH_MASK(chan)))
-+		return -EIO;
-+
-+	return 0;
-+}
-+
-+static int intel_xpcie_ep_dma_rd_err_sts_h(void __iomem *err_status,
-+					   int chan)
-+{
-+	if (ioread32(err_status) &
-+	    (DMA_UNREQ_ERROR_CH_MASK(chan) |
-+	     DMA_CPL_ABORT_ERROR_CH_MASK(chan) |
-+	     DMA_CPL_TIMEOUT_ERROR_CH_MASK(chan) |
-+	     DMA_DATA_POI_ERROR_CH_MASK(chan)))
-+		return -EIO;
-+
-+	return 0;
-+}
-+
-+static void
-+intel_xpcie_ep_dma_setup_ll_descs(struct __iomem pcie_dma_chan * dma_chan,
-+				  struct xpcie_dma_ll_desc_buf *desc_buf,
-+				  int descs_num)
-+{
-+	struct xpcie_dma_ll_desc *descs = desc_buf->virt;
-+	int i;
-+
-+	/* Setup linked list descriptors */
-+	for (i = 0; i < descs_num - 1; i++)
-+		descs[i].dma_ch_control1 = DMA_CH_CONTROL1_CB_MASK;
-+	descs[descs_num - 1].dma_ch_control1 = DMA_CH_CONTROL1_LIE_MASK |
-+						DMA_CH_CONTROL1_CB_MASK;
-+	descs[descs_num].dma_ch_control1 = DMA_CH_CONTROL1_LLP_MASK |
-+					   DMA_CH_CONTROL1_TCB_MASK;
-+	descs[descs_num].src_addr = (phys_addr_t)desc_buf->phys;
-+
-+	/* Setup linked list settings */
-+	iowrite32(DMA_CH_CONTROL1_LLE_MASK | DMA_CH_CONTROL1_CCS_MASK,
-+		  (void __iomem *)&dma_chan->dma_ch_control1);
-+	iowrite32((u32)desc_buf->phys, (void __iomem *)&dma_chan->dma_llp_low);
-+	iowrite32((u64)desc_buf->phys >> 32,
-+		  (void __iomem *)&dma_chan->dma_llp_high);
-+}
-+
-+int intel_xpcie_ep_dma_write_ll(struct pci_epf *epf, int chan, int descs_num)
-+{
-+	struct xpcie_epf *xpcie_epf = epf_get_drvdata(epf);
-+	void __iomem *dma_base = xpcie_epf->dma_base;
-+	struct __iomem pcie_dma_chan * dma_chan;
-+	struct xpcie_dma_ll_desc_buf *desc_buf;
-+	struct __iomem pcie_dma_reg * dma_reg =
-+				(struct __iomem pcie_dma_reg *)(dma_base);
-+	int i, rc;
-+
-+	if (descs_num <= 0 || descs_num > XPCIE_NUM_TX_DESCS)
-+		return -EINVAL;
-+
-+	if (chan < 0 || chan >= DMA_CHAN_NUM)
-+		return -EINVAL;
-+
-+	dma_chan = (struct __iomem pcie_dma_chan *)
-+		(dma_base + dma_chan_offset[WRITE_ENGINE][chan]);
-+
-+	desc_buf = &xpcie_epf->tx_desc_buf[chan];
-+
-+	intel_xpcie_ep_dma_setup_ll_descs(dma_chan, desc_buf, descs_num);
-+
-+	/* Start DMA transfer. */
-+	rc = intel_xpcie_ep_dma_doorbell(xpcie_epf, chan,
-+					 (void __iomem *)
-+					 &dma_reg->dma_write_doorbell);
-+	if (rc)
-+		return rc;
-+
-+	/* Wait for DMA transfer to complete. */
-+	for (i = 0; i < DMA_POLLING_TIMEOUT; i++) {
-+		usleep_range(5, 10);
-+		if (ioread32((void __iomem *)&dma_reg->dma_write_int_status) &
-+		    (DMA_DONE_INTERRUPT_CH_MASK(chan) |
-+		     DMA_ABORT_INTERRUPT_CH_MASK(chan)))
-+			break;
-+	}
-+	if (i == DMA_POLLING_TIMEOUT) {
-+		dev_err(&xpcie_epf->epf->dev, "DMA Wr timeout\n");
-+		rc = -ETIME;
-+		goto cleanup;
-+	}
-+
-+	rc = intel_xpcie_ep_dma_err_status((void __iomem *)
-+					   &dma_reg->dma_write_err_status,
-+					   chan);
-+
-+cleanup:
-+	/* Clear the done/abort interrupt. */
-+	iowrite32((DMA_DONE_INTERRUPT_CH_MASK(chan) |
-+		   DMA_ABORT_INTERRUPT_CH_MASK(chan)),
-+		  (void __iomem *)&dma_reg->dma_write_int_clear);
-+
-+	if (rc) {
-+		if (intel_xpcie_ep_dma_disable(dma_base, WRITE_ENGINE)) {
-+			dev_err(&xpcie_epf->epf->dev,
-+				"failed to disable WR DMA\n");
-+			return rc;
-+		}
-+		intel_xpcie_ep_dma_enable(dma_base, WRITE_ENGINE);
-+	}
-+
-+	return rc;
-+}
-+
-+int intel_xpcie_ep_dma_read_ll(struct pci_epf *epf, int chan, int descs_num)
-+{
-+	struct xpcie_epf *xpcie_epf = epf_get_drvdata(epf);
-+	void __iomem *dma_base = xpcie_epf->dma_base;
-+	struct xpcie_dma_ll_desc_buf *desc_buf;
-+	struct __iomem pcie_dma_reg * dma_reg =
-+				(struct __iomem pcie_dma_reg *)(dma_base);
-+	struct __iomem pcie_dma_chan * dma_chan;
-+	int i, rc;
-+
-+	if (descs_num <= 0 || descs_num > XPCIE_NUM_RX_DESCS)
-+		return -EINVAL;
-+
-+	if (chan < 0 || chan >= DMA_CHAN_NUM)
-+		return -EINVAL;
-+
-+	dma_chan = (struct __iomem pcie_dma_chan *)
-+		(dma_base + dma_chan_offset[READ_ENGINE][chan]);
-+
-+	desc_buf = &xpcie_epf->rx_desc_buf[chan];
-+
-+	intel_xpcie_ep_dma_setup_ll_descs(dma_chan, desc_buf, descs_num);
-+
-+	/* Start DMA transfer. */
-+	rc = intel_xpcie_ep_dma_doorbell(xpcie_epf, chan,
-+					 (void __iomem *)
-+					 &dma_reg->dma_read_doorbell);
-+	if (rc)
-+		return rc;
-+
-+	/* Wait for DMA transfer to complete. */
-+	for (i = 0; i < DMA_POLLING_TIMEOUT; i++) {
-+		usleep_range(5, 10);
-+		if (ioread32((void __iomem *)&dma_reg->dma_read_int_status) &
-+		    (DMA_DONE_INTERRUPT_CH_MASK(chan) |
-+		     DMA_ABORT_INTERRUPT_CH_MASK(chan)))
-+			break;
-+	}
-+	if (i == DMA_POLLING_TIMEOUT) {
-+		dev_err(&xpcie_epf->epf->dev, "DMA Rd timeout\n");
-+		rc = -ETIME;
-+		goto cleanup;
-+	}
-+
-+	rc = intel_xpcie_ep_dma_err_status((void __iomem *)
-+					   &dma_reg->dma_read_err_status_low,
-+					   chan);
-+	if (!rc) {
-+		rc =
-+		intel_xpcie_ep_dma_rd_err_sts_h((void __iomem *)
-+						&dma_reg->dma_rd_err_sts_h,
-+						chan);
-+	}
-+cleanup:
-+	/* Clear the done/abort interrupt. */
-+	iowrite32((DMA_DONE_INTERRUPT_CH_MASK(chan) |
-+		   DMA_ABORT_INTERRUPT_CH_MASK(chan)),
-+		  (void __iomem *)&dma_reg->dma_read_int_clear);
-+
-+	if (rc) {
-+		if (intel_xpcie_ep_dma_disable(dma_base, READ_ENGINE)) {
-+			dev_err(&xpcie_epf->epf->dev,
-+				"failed to disable RD DMA\n");
-+			return rc;
-+		}
-+		intel_xpcie_ep_dma_enable(dma_base, READ_ENGINE);
-+	}
-+
-+	return rc;
-+}
-+
-+static void intel_xpcie_ep_dma_free_ll_descs_mem(struct xpcie_epf *xpcie_epf)
-+{
-+	struct device *dma_dev = xpcie_epf->epf->epc->dev.parent;
-+	int i;
-+
-+	for (i = 0; i < DMA_CHAN_NUM; i++) {
-+		if (xpcie_epf->tx_desc_buf[i].virt) {
-+			dma_free_coherent(dma_dev,
-+					  xpcie_epf->tx_desc_buf[i].size,
-+					  xpcie_epf->tx_desc_buf[i].virt,
-+					  xpcie_epf->tx_desc_buf[i].phys);
-+		}
-+		if (xpcie_epf->rx_desc_buf[i].virt) {
-+			dma_free_coherent(dma_dev,
-+					  xpcie_epf->rx_desc_buf[i].size,
-+					  xpcie_epf->rx_desc_buf[i].virt,
-+					  xpcie_epf->rx_desc_buf[i].phys);
-+		}
-+
-+		memset(&xpcie_epf->tx_desc_buf[i], 0,
-+		       sizeof(struct xpcie_dma_ll_desc_buf));
-+		memset(&xpcie_epf->rx_desc_buf[i], 0,
-+		       sizeof(struct xpcie_dma_ll_desc_buf));
-+	}
-+}
-+
-+static int intel_xpcie_ep_dma_alloc_ll_descs_mem(struct xpcie_epf *xpcie_epf)
-+{
-+	struct device *dma_dev = xpcie_epf->epf->epc->dev.parent;
-+	int tx_num = XPCIE_NUM_TX_DESCS + 1;
-+	int rx_num = XPCIE_NUM_RX_DESCS + 1;
-+	size_t tx_size, rx_size;
-+	int i;
-+
-+	tx_size = tx_num * sizeof(struct xpcie_dma_ll_desc);
-+	rx_size = rx_num * sizeof(struct xpcie_dma_ll_desc);
-+
-+	for (i = 0; i < DMA_CHAN_NUM; i++) {
-+		xpcie_epf->tx_desc_buf[i].virt =
-+			dma_alloc_coherent(dma_dev, tx_size,
-+					   &xpcie_epf->tx_desc_buf[i].phys,
-+					   GFP_KERNEL);
-+		xpcie_epf->rx_desc_buf[i].virt =
-+			dma_alloc_coherent(dma_dev, rx_size,
-+					   &xpcie_epf->rx_desc_buf[i].phys,
-+					   GFP_KERNEL);
-+
-+		if (!xpcie_epf->tx_desc_buf[i].virt ||
-+		    !xpcie_epf->rx_desc_buf[i].virt) {
-+			intel_xpcie_ep_dma_free_ll_descs_mem(xpcie_epf);
-+			return -ENOMEM;
-+		}
-+
-+		xpcie_epf->tx_desc_buf[i].size = tx_size;
-+		xpcie_epf->rx_desc_buf[i].size = rx_size;
-+	}
-+	return 0;
-+}
-+
-+int intel_xpcie_ep_dma_reset(struct pci_epf *epf)
-+{
-+	struct xpcie_epf *xpcie_epf = epf_get_drvdata(epf);
-+
-+	/* Disable the DMA read/write engine. */
-+	if (intel_xpcie_ep_dma_disable(xpcie_epf->dma_base, WRITE_ENGINE) ||
-+	    intel_xpcie_ep_dma_disable(xpcie_epf->dma_base, READ_ENGINE))
-+		return -EBUSY;
-+
-+	intel_xpcie_ep_dma_enable(xpcie_epf->dma_base, WRITE_ENGINE);
-+	intel_xpcie_ep_dma_enable(xpcie_epf->dma_base, READ_ENGINE);
-+
-+	return 0;
-+}
-+
-+int intel_xpcie_ep_dma_uninit(struct pci_epf *epf)
-+{
-+	struct xpcie_epf *xpcie_epf = epf_get_drvdata(epf);
-+
-+	if (intel_xpcie_ep_dma_disable(xpcie_epf->dma_base, WRITE_ENGINE) ||
-+	    intel_xpcie_ep_dma_disable(xpcie_epf->dma_base, READ_ENGINE))
-+		return -EBUSY;
-+
-+	intel_xpcie_ep_dma_free_ll_descs_mem(xpcie_epf);
-+
-+	return 0;
-+}
-+
-+int intel_xpcie_ep_dma_init(struct pci_epf *epf)
-+{
-+	struct xpcie_epf *xpcie_epf = epf_get_drvdata(epf);
-+	int rc;
-+
-+	xpcie_epf->dma_base = intel_xpcie_ep_get_dma_base(epf);
-+
-+	rc = intel_xpcie_ep_dma_alloc_ll_descs_mem(xpcie_epf);
-+	if (rc)
-+		return rc;
-+
-+	return intel_xpcie_ep_dma_reset(epf);
-+}
-diff --git a/drivers/misc/xlink-pcie/local_host/epf.c b/drivers/misc/xlink-pcie/local_host/epf.c
-index 0234756e89ae..7019aecd6a81 100644
---- a/drivers/misc/xlink-pcie/local_host/epf.c
-+++ b/drivers/misc/xlink-pcie/local_host/epf.c
-@@ -43,6 +43,8 @@ static irqreturn_t intel_xpcie_err_interrupt(int irq, void *args)
  
- 	xpcie_epf = container_of(xpcie, struct xpcie_epf, xpcie);
- 	val = ioread32(xpcie_epf->apb_base + PCIE_REGS_PCIE_ERR_INTR_FLAGS);
-+	if (val & LINK_REQ_RST_FLG)
-+		intel_xpcie_ep_dma_reset(xpcie_epf->epf);
+ #include "util.h"
  
- 	iowrite32(val, xpcie_epf->apb_base + PCIE_REGS_PCIE_ERR_INTR_FLAGS);
+diff --git a/drivers/misc/xlink-pcie/local_host/util.h b/drivers/misc/xlink-pcie/common/util.h
+similarity index 91%
+rename from drivers/misc/xlink-pcie/local_host/util.h
+rename to drivers/misc/xlink-pcie/common/util.h
+index 908be897a61d..5295783b0437 100644
+--- a/drivers/misc/xlink-pcie/local_host/util.h
++++ b/drivers/misc/xlink-pcie/common/util.h
+@@ -1,11 +1,9 @@
+ /* SPDX-License-Identifier: GPL-2.0-only */
+-/*****************************************************************************
+- *
++/*
+  * Intel Keem Bay XLink PCIe Driver
+  *
+- * Copyright (C) 2020 Intel Corporation
+- *
+- ****************************************************************************/
++ * Copyright (C) 2021 Intel Corporation
++ */
  
-@@ -285,8 +287,17 @@ static int intel_xpcie_epf_bind(struct pci_epf *epf)
- 		goto err_cleanup_bars;
- 	}
+ #ifndef XPCIE_UTIL_HEADER_
+ #define XPCIE_UTIL_HEADER_
+diff --git a/drivers/misc/xlink-pcie/local_host/xpcie.h b/drivers/misc/xlink-pcie/common/xpcie.h
+similarity index 92%
+rename from drivers/misc/xlink-pcie/local_host/xpcie.h
+rename to drivers/misc/xlink-pcie/common/xpcie.h
+index 8a559617daba..48529eb49be0 100644
+--- a/drivers/misc/xlink-pcie/local_host/xpcie.h
++++ b/drivers/misc/xlink-pcie/common/xpcie.h
+@@ -1,11 +1,9 @@
+ /* SPDX-License-Identifier: GPL-2.0-only */
+-/*****************************************************************************
+- *
++/*
+  * Intel Keem Bay XLink PCIe Driver
+  *
+- * Copyright (C) 2020 Intel Corporation
+- *
+- ****************************************************************************/
++ * Copyright (C) 2021 Intel Corporation
++ */
  
-+	ret = intel_xpcie_ep_dma_init(epf);
-+	if (ret) {
-+		dev_err(&epf->dev, "DMA initialization failed\n");
-+		goto err_free_err_irq;
-+	}
-+
- 	return 0;
+ #ifndef XPCIE_HEADER_
+ #define XPCIE_HEADER_
+diff --git a/drivers/misc/xlink-pcie/local_host/Makefile b/drivers/misc/xlink-pcie/local_host/Makefile
+index 28761751d43b..65df94c7e860 100644
+--- a/drivers/misc/xlink-pcie/local_host/Makefile
++++ b/drivers/misc/xlink-pcie/local_host/Makefile
+@@ -2,4 +2,4 @@ obj-$(CONFIG_XLINK_PCIE_LH_DRIVER) += mxlk_ep.o
+ mxlk_ep-objs := epf.o
+ mxlk_ep-objs += dma.o
+ mxlk_ep-objs += core.o
+-mxlk_ep-objs += util.o
++mxlk_ep-objs += ../common/util.o
+diff --git a/drivers/misc/xlink-pcie/local_host/core.c b/drivers/misc/xlink-pcie/local_host/core.c
+index c67ce2c3067d..2c4e29bce7f7 100644
+--- a/drivers/misc/xlink-pcie/local_host/core.c
++++ b/drivers/misc/xlink-pcie/local_host/core.c
+@@ -8,8 +8,8 @@
+ #include <linux/of_reserved_mem.h>
  
-+err_free_err_irq:
-+	free_irq(xpcie_epf->irq_err, &xpcie_epf->xpcie);
-+
- err_cleanup_bars:
- 	intel_xpcie_cleanup_bars(epf);
+ #include "epf.h"
+-#include "core.h"
+-#include "util.h"
++#include "../common/core.h"
++#include "../common/util.h"
  
-@@ -295,11 +306,9 @@ static int intel_xpcie_epf_bind(struct pci_epf *epf)
- 
- static void intel_xpcie_epf_unbind(struct pci_epf *epf)
- {
--	struct xpcie_epf *xpcie_epf = epf_get_drvdata(epf);
- 	struct pci_epc *epc = epf->epc;
- 
--	free_irq(xpcie_epf->irq, &xpcie_epf->xpcie);
--	free_irq(xpcie_epf->irq_err, &xpcie_epf->xpcie);
-+	intel_xpcie_ep_dma_uninit(epf);
- 
- 	pci_epc_stop(epc);
+ static struct xpcie *global_xpcie;
  
 diff --git a/drivers/misc/xlink-pcie/local_host/epf.h b/drivers/misc/xlink-pcie/local_host/epf.h
-index a60cd43fe555..82410404d54e 100644
+index 7220cead0973..40bf4ff36580 100644
 --- a/drivers/misc/xlink-pcie/local_host/epf.h
 +++ b/drivers/misc/xlink-pcie/local_host/epf.h
-@@ -18,6 +18,38 @@
+@@ -11,8 +11,8 @@
+ #include <linux/pci-epc.h>
+ #include <linux/pci-epf.h>
  
- #define KEEMBAY_XPCIE_STEPPING_MAXLEN 8
+-#include "xpcie.h"
+-#include "util.h"
++#include "../common/xpcie.h"
++#include "../common/util.h"
  
-+#define DMA_CHAN_NUM		(4)
-+
-+#define XPCIE_NUM_TX_DESCS	(64)
-+#define XPCIE_NUM_RX_DESCS	(64)
-+
-+extern bool dma_ll_mode;
-+
-+struct xpcie_dma_ll_desc {
-+	u32 dma_ch_control1;
-+	u32 dma_transfer_size;
-+	union {
-+		struct {
-+			u32 dma_sar_low;
-+			u32 dma_sar_high;
-+		};
-+		phys_addr_t src_addr;
-+	};
-+	union {
-+		struct {
-+			u32 dma_dar_low;
-+			u32 dma_dar_high;
-+		};
-+		phys_addr_t dst_addr;
-+	};
-+} __packed;
-+
-+struct xpcie_dma_ll_desc_buf {
-+	struct xpcie_dma_ll_desc *virt;
-+	dma_addr_t phys;
-+	size_t size;
-+};
-+
- struct xpcie_epf {
- 	struct pci_epf *epf;
- 	void *vaddr[BAR_5 + 1];
-@@ -32,6 +64,15 @@ struct xpcie_epf {
- 	void __iomem *dma_base;
- 	void __iomem *dbi_base;
- 	char stepping[KEEMBAY_XPCIE_STEPPING_MAXLEN];
-+
-+	struct xpcie_dma_ll_desc_buf	tx_desc_buf[DMA_CHAN_NUM];
-+	struct xpcie_dma_ll_desc_buf	rx_desc_buf[DMA_CHAN_NUM];
- };
- 
-+int intel_xpcie_ep_dma_init(struct pci_epf *epf);
-+int intel_xpcie_ep_dma_uninit(struct pci_epf *epf);
-+int intel_xpcie_ep_dma_reset(struct pci_epf *epf);
-+int intel_xpcie_ep_dma_read_ll(struct pci_epf *epf, int chan, int descs_num);
-+int intel_xpcie_ep_dma_write_ll(struct pci_epf *epf, int chan, int descs_num);
-+
- #endif /* XPCIE_EPF_HEADER_ */
+ #define XPCIE_DRIVER_NAME "mxlk_pcie_epf"
+ #define XPCIE_DRIVER_DESC "Intel(R) xLink PCIe endpoint function driver"
 -- 
 2.17.1
 
