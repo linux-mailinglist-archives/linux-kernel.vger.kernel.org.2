@@ -2,174 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 154133115A2
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 23:43:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98328311642
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 00:00:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233183AbhBEWhG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 17:37:06 -0500
-Received: from mga02.intel.com ([134.134.136.20]:12377 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232841AbhBEOwS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 09:52:18 -0500
-IronPort-SDR: g4zu5wZS16UMt35Za4sUEx2JCB5IJZmf1HhhkdaH1g2lvA++8Nmrwtw8n+dJB6Gc9+nlHd+aPG
- BV5AvKQfUhqg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9885"; a="168552901"
-X-IronPort-AV: E=Sophos;i="5.81,155,1610438400"; 
-   d="scan'208";a="168552901"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2021 06:13:37 -0800
-IronPort-SDR: f6xnWxVLISWM4A5zTjfYyRVrLrSHbKQlo4+kuMpKopIQIhRUAPym8i0ySLjQ35NrBM8epVI0Kp
- kKqVRC7CgMcw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,155,1610438400"; 
-   d="scan'208";a="373411166"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga008.fm.intel.com with ESMTP; 05 Feb 2021 06:13:36 -0800
-Received: from [10.254.80.1] (kliang2-MOBL.ccr.corp.intel.com [10.254.80.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by linux.intel.com (Postfix) with ESMTPS id 65DF8580689;
-        Fri,  5 Feb 2021 06:13:35 -0800 (PST)
-Subject: Re: [PATCH 2/9] perf tools: Support the auxiliary event
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Stephane Eranian <eranian@google.com>,
-        Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>,
-        Yao Jin <yao.jin@linux.intel.com>, maddy@linux.vnet.ibm.com
-References: <1612296553-21962-1-git-send-email-kan.liang@linux.intel.com>
- <1612296553-21962-3-git-send-email-kan.liang@linux.intel.com>
- <CAM9d7cjDYALhR-xd2n2vaL5cPBiMz8RukziQqsfqqYwqBc87yA@mail.gmail.com>
-From:   "Liang, Kan" <kan.liang@linux.intel.com>
-Message-ID: <33221095-5ef6-bec8-136e-34dc14ae7adb@linux.intel.com>
-Date:   Fri, 5 Feb 2021 09:13:34 -0500
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S231660AbhBEW7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 17:59:36 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31080 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232797AbhBEOk6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 09:40:58 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612541897;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=NnP5XCU4u3GLA5tU6K2RnQ5rd1UvAC9ZZ89SyiHV8bU=;
+        b=jHWLp9fXeO5yPVNAl5Qq4lKE1QLdW9VH2ka22e3qy0V5gQLW8KBACGp0rXKIZnX4uXUJZB
+        i77/O5NXtDuz+K3rDXVYd4x0R+76WGdCWSJ3ialrhOD4+u97xFBJFLOAy9MxLVkJtNvTLX
+        tUSQ6q5VGdlCmSmMeTD2vpOpY7noVQc=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-425-Y8SuSeBXOiSulWG-iBwssw-1; Fri, 05 Feb 2021 09:17:11 -0500
+X-MC-Unique: Y8SuSeBXOiSulWG-iBwssw-1
+Received: by mail-wm1-f70.google.com with SMTP id y9so3024331wmj.7
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 06:17:11 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=NnP5XCU4u3GLA5tU6K2RnQ5rd1UvAC9ZZ89SyiHV8bU=;
+        b=bfQ9+1VcBGu5yhnfV+NEOtfpSpcCybTy88it22MuJXbO1mI6feGFSaakSo5yAwrSHm
+         e3cfu3eU8K7fgwzKlg9QCEgKK1a1xjbq9ON0ZvTdjJuFb1Hqgw2yxj0tGdMxjV7E0EmC
+         t++BP+KxVqrLmMVO6LLoNn4OdCH2f3sW7zzxblM9TLZeGmIr8C/DjMawf2Jn4AkYhDcO
+         hIUtIJZguMcNspCqCtQakztFLyFNYlRETU+TSe+EDPHWhEgLkOlQ3o4cDAAEe1BwiA7A
+         DPe2HneF23MwMKOvv+lBep4Ge+Qz7yXwShKWyBTagROpSoUxa46p++cfzCNtNG2+Arf2
+         Ch4g==
+X-Gm-Message-State: AOAM532QDiXGliUokP2y4GZSCWjZ7vTPUhxGtmCUG0+O67fiwPhFs+9w
+        SYjLPBu+Zn5CmCwfNUqNq5i1u13BtOdydzQb/u/2Bd0KlUBFkHJJybOSTruhCdu6qjOdGrV6gy7
+        PUGYkDGeD2wBj6qn/9NbQvEbU
+X-Received: by 2002:a5d:453b:: with SMTP id j27mr5351074wra.92.1612534630613;
+        Fri, 05 Feb 2021 06:17:10 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxoN6BUEbnc4t31XEyr636+ZdDqrgfqdIVz7cbLxF0zafdGnFimMKQJ7JMi3xLjdYuOKx6feA==
+X-Received: by 2002:a5d:453b:: with SMTP id j27mr5351061wra.92.1612534630414;
+        Fri, 05 Feb 2021 06:17:10 -0800 (PST)
+Received: from steredhat (host-79-34-249-199.business.telecomitalia.it. [79.34.249.199])
+        by smtp.gmail.com with ESMTPSA id v6sm12579287wrx.32.2021.02.05.06.17.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Feb 2021 06:17:09 -0800 (PST)
+Date:   Fri, 5 Feb 2021 15:17:07 +0100
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Jason Wang <jasowang@redhat.com>,
+        virtualization@lists.linux-foundation.org,
+        Xie Yongji <xieyongji@bytedance.com>, kvm@vger.kernel.org,
+        Laurent Vivier <lvivier@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 09/13] vhost/vdpa: remove vhost_vdpa_config_validate()
+Message-ID: <20210205141707.clbckauxnrzd7nmv@steredhat>
+References: <20210204172230.85853-1-sgarzare@redhat.com>
+ <20210204172230.85853-10-sgarzare@redhat.com>
+ <6919d2d4-cc8e-2b67-2385-35803de5e38b@redhat.com>
+ <20210205091651.xfcdyuvwwzew2ufo@steredhat>
+ <20210205083108-mutt-send-email-mst@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CAM9d7cjDYALhR-xd2n2vaL5cPBiMz8RukziQqsfqqYwqBc87yA@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210205083108-mutt-send-email-mst@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2/5/2021 5:52 AM, Namhyung Kim wrote:
-> On Wed, Feb 3, 2021 at 5:14 AM <kan.liang@linux.intel.com> wrote:
+On Fri, Feb 05, 2021 at 08:32:37AM -0500, Michael S. Tsirkin wrote:
+>On Fri, Feb 05, 2021 at 10:16:51AM +0100, Stefano Garzarella wrote:
+>> On Fri, Feb 05, 2021 at 11:27:32AM +0800, Jason Wang wrote:
+>> >
+>> > On 2021/2/5 上午1:22, Stefano Garzarella wrote:
+>> > > get_config() and set_config() callbacks in the 'struct vdpa_config_ops'
+>> > > usually already validated the inputs. Also now they can return an error,
+>> > > so we don't need to validate them here anymore.
+>> > >
+>> > > Let's use the return value of these callbacks and return it in case of
+>> > > error in vhost_vdpa_get_config() and vhost_vdpa_set_config().
+>> > >
+>> > > Originally-by: Xie Yongji <xieyongji@bytedance.com>
+>> > > Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
+>> > > ---
+>> > >  drivers/vhost/vdpa.c | 41 +++++++++++++----------------------------
+>> > >  1 file changed, 13 insertions(+), 28 deletions(-)
+>> > >
+>> > > diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
+>> > > index ef688c8c0e0e..d61e779000a8 100644
+>> > > --- a/drivers/vhost/vdpa.c
+>> > > +++ b/drivers/vhost/vdpa.c
+>> > > @@ -185,51 +185,35 @@ static long vhost_vdpa_set_status(struct vhost_vdpa *v, u8 __user *statusp)
+>> > >  	return 0;
+>> > >  }
+>> > > -static int vhost_vdpa_config_validate(struct vhost_vdpa *v,
+>> > > -				      struct vhost_vdpa_config *c)
+>> > > -{
+>> > > -	long size = 0;
+>> > > -
+>> > > -	switch (v->virtio_id) {
+>> > > -	case VIRTIO_ID_NET:
+>> > > -		size = sizeof(struct virtio_net_config);
+>> > > -		break;
+>> > > -	}
+>> > > -
+>> > > -	if (c->len == 0)
+>> > > -		return -EINVAL;
+>> > > -
+>> > > -	if (c->len > size - c->off)
+>> > > -		return -E2BIG;
+>> > > -
+>> > > -	return 0;
+>> > > -}
+>> > > -
+>> > >  static long vhost_vdpa_get_config(struct vhost_vdpa *v,
+>> > >  				  struct vhost_vdpa_config __user *c)
+>> > >  {
+>> > >  	struct vdpa_device *vdpa = v->vdpa;
+>> > >  	struct vhost_vdpa_config config;
+>> > >  	unsigned long size = offsetof(struct vhost_vdpa_config, buf);
+>> > > +	long ret;
+>> > >  	u8 *buf;
+>> > >  	if (copy_from_user(&config, c, size))
+>> > >  		return -EFAULT;
+>> > > -	if (vhost_vdpa_config_validate(v, &config))
+>> > > +	if (config.len == 0)
+>> > >  		return -EINVAL;
+>> > >  	buf = kvzalloc(config.len, GFP_KERNEL);
+>> >
+>> >
+>> > Then it means usersapce can allocate a very large memory.
 >>
->> From: Kan Liang <kan.liang@linux.intel.com>
+>> Good point.
 >>
->> On the Intel Sapphire Rapids server, an auxiliary event has to be
->> enabled simultaneously with the load latency event to retrieve complete
->> Memory Info.
+>> >
+>> > Rethink about this, we should limit the size here (e.g PAGE_SIZE) or
+>> > fetch the config size first (either through a config ops as you
+>> > suggested or a variable in the vdpa device that is initialized during
+>> > device creation).
 >>
->> Add X86 specific perf_mem_events__name() to handle the auxiliary event.
->> - Users are only interested in the samples of the mem-loads event.
->>    Sample read the auxiliary event.
->> - The auxiliary event must be in front of the load latency event in a
->>    group. Assume the second event to sample if the auxiliary event is the
->>    leader.
->> - Add a weak is_mem_loads_aux_event() to check the auxiliary event for
->>    X86. For other ARCHs, it always return false.
+>> Maybe PAGE_SIZE is okay as a limit.
 >>
->> Parse the unique event name, mem-loads-aux, for the auxiliary event.
+>> If instead we want to fetch the config size, then better a config ops in my
+>> opinion, to avoid adding a new parameter to __vdpa_alloc_device().
 >>
->> Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
->> ---
->>   tools/perf/arch/x86/util/Build        |  1 +
->>   tools/perf/arch/x86/util/mem-events.c | 44 +++++++++++++++++++++++++++++++++++
->>   tools/perf/util/evsel.c               |  3 +++
->>   tools/perf/util/mem-events.c          |  5 ++++
->>   tools/perf/util/mem-events.h          |  2 ++
->>   tools/perf/util/parse-events.l        |  1 +
->>   tools/perf/util/record.c              |  5 +++-
->>   7 files changed, 60 insertions(+), 1 deletion(-)
->>   create mode 100644 tools/perf/arch/x86/util/mem-events.c
+>> I vote for PAGE_SIZE, but it isn't a strong opinion.
 >>
->> diff --git a/tools/perf/arch/x86/util/Build b/tools/perf/arch/x86/util/Build
->> index 347c39b..d73f548 100644
->> --- a/tools/perf/arch/x86/util/Build
->> +++ b/tools/perf/arch/x86/util/Build
->> @@ -6,6 +6,7 @@ perf-y += perf_regs.o
->>   perf-y += topdown.o
->>   perf-y += machine.o
->>   perf-y += event.o
->> +perf-y += mem-events.o
+>> What do you and @Michael suggest?
 >>
->>   perf-$(CONFIG_DWARF) += dwarf-regs.o
->>   perf-$(CONFIG_BPF_PROLOGUE) += dwarf-regs.o
->> diff --git a/tools/perf/arch/x86/util/mem-events.c b/tools/perf/arch/x86/util/mem-events.c
->> new file mode 100644
->> index 0000000..11b8469
->> --- /dev/null
->> +++ b/tools/perf/arch/x86/util/mem-events.c
->> @@ -0,0 +1,44 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +#include "util/pmu.h"
->> +#include "map_symbol.h"
->> +#include "mem-events.h"
->> +
->> +static char mem_loads_name[100];
->> +static bool mem_loads_name__init;
->> +
->> +#define MEM_LOADS_AUX          0x8203
->> +#define MEM_LOADS_AUX_NAME     "{cpu/mem-loads-aux/,cpu/mem-loads,ldlat=%u/pp}:S"
->> +
->> +bool is_mem_loads_aux_event(struct evsel *leader)
->> +{
->> +       if (!pmu_have_event("cpu", "mem-loads-aux"))
->> +               return false;
->> +
->> +       return leader->core.attr.config == MEM_LOADS_AUX;
->> +}
->> +
->> +char *perf_mem_events__name(int i)
->> +{
->> +       struct perf_mem_event *e = perf_mem_events__ptr(i);
->> +
->> +       if (!e)
->> +               return NULL;
->> +
->> +       if (i == PERF_MEM_EVENTS__LOAD) {
->> +               if (mem_loads_name__init)
->> +                       return mem_loads_name;
->> +
->> +               mem_loads_name__init = true;
->> +
->> +               if (pmu_have_event("cpu", "mem-loads-aux")) {
->> +                       scnprintf(mem_loads_name, sizeof(MEM_LOADS_AUX_NAME),
->> +                                 MEM_LOADS_AUX_NAME, perf_mem_events__loads_ldlat);
-> 
-> It changes "%u" to an actual latency value, right?
-> What if the value takes 3 or more digits?
-> I'm not sure scnprintf() will handle it properly.
+>> Thanks,
+>> Stefano
+>
+>Devices know what the config size is. Just have them provide it.
 >
 
-Yes, you are right. We should use the sizeof(mem_loads_name) as below.
-I will submit a patch to fix it.
+Okay, I'll add get_config_size() callback in vdpa_config_ops and I'll 
+leave vhost_vdpa_config_validate() that will use that callback instead 
+of 'virtio_id' to get the config size from the device.
 
-diff --git a/tools/perf/arch/x86/util/mem-events.c 
-b/tools/perf/arch/x86/util/mem-events.c
-index 11b8469..588110f 100644
---- a/tools/perf/arch/x86/util/mem-events.c
-+++ b/tools/perf/arch/x86/util/mem-events.c
-@@ -31,7 +31,7 @@ char *perf_mem_events__name(int i)
-  		mem_loads_name__init = true;
+At this point I think I can remove the "vdpa: add return value to 
+get_config/set_config callbacks" patch and leave void return to 
+get_config/set_config callbacks.
 
-  		if (pmu_have_event("cpu", "mem-loads-aux")) {
--			scnprintf(mem_loads_name, sizeof(MEM_LOADS_AUX_NAME),
-+			scnprintf(mem_loads_name, sizeof(mem_loads_name),
-  				  MEM_LOADS_AUX_NAME, perf_mem_events__loads_ldlat);
-  		} else {
-  			scnprintf(mem_loads_name, sizeof(mem_loads_name),
-
-
-
+Does this make sense?
 
 Thanks,
-Kan
+Stefano
 
