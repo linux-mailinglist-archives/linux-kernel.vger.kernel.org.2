@@ -2,149 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8617331091D
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 11:32:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE92E310919
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 11:31:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231430AbhBEKcG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 05:32:06 -0500
-Received: from smtp-8fa9.mail.infomaniak.ch ([83.166.143.169]:34529 "EHLO
-        smtp-8fa9.mail.infomaniak.ch" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231319AbhBEK2A (ORCPT
+        id S231391AbhBEKbM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 05:31:12 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:21830 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230523AbhBEK2m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 05:28:00 -0500
-Received: from smtp-2-0001.mail.infomaniak.ch (unknown [10.5.36.108])
-        by smtp-2-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4DXBRj2YVDzMqWkX;
-        Fri,  5 Feb 2021 11:26:57 +0100 (CET)
-Received: from ns3096276.ip-94-23-54.eu (unknown [23.97.221.149])
-        by smtp-2-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4DXBRf1R7Xzlh8TK;
-        Fri,  5 Feb 2021 11:26:54 +0100 (CET)
-Subject: =?UTF-8?Q?Re=3a_Conflict_with_Micka=c3=abl_Sala=c3=bcn=27s_blacklis?=
- =?UTF-8?Q?t_patches_=5bwas_=5bPATCH_v5_0/4=5d_Add_EFI=5fCERT=5fX509=5fGUID_?=
- =?UTF-8?Q?support_for_dbx/mokx_entries=5d?=
-To:     Eric Snowberg <eric.snowberg@oracle.com>
-Cc:     David Howells <dhowells@redhat.com>, dwmw2@infradead.org,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        James.Bottomley@HansenPartnership.com, masahiroy@kernel.org,
-        michal.lkml@markovi.net, jmorris@namei.org, serge@hallyn.com,
-        ardb@kernel.org, Mimi Zohar <zohar@linux.ibm.com>,
-        lszubowi@redhat.com, javierm@redhat.com, keyrings@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        Tyler Hicks <tyhicks@linux.microsoft.com>
-References: <20210122181054.32635-1-eric.snowberg@oracle.com>
- <1103491.1612369600@warthog.procyon.org.uk>
- <10e6616e-0598-9f33-2de9-4a5268bba586@digikod.net>
- <A5B5DEC0-E47A-4C3D-8E79-AF37B6C2E565@oracle.com>
- <7924ce4c-ea94-9540-0730-bddae7c6af07@digikod.net>
- <BFC930B3-7994-4C5B-A8EF-1DD1C73F5750@oracle.com>
-From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
-Message-ID: <dc6a4524-3935-fda6-40a8-cebf80942cdf@digikod.net>
-Date:   Fri, 5 Feb 2021 11:27:02 +0100
-User-Agent: 
+        Fri, 5 Feb 2021 05:28:42 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612520835;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+Rp1DAXoKwp5REwuto3wxp77HAsY8NDKCCfTe7Gd61I=;
+        b=MrAeHEd70Nf9QqLTlZkE7K5BO4T73OEJf8Tv4kaataoww06rYHI4hiz/ksCqTgX8C8cGO/
+        3Z2PwEqGNoLwVtra2KE8SkJoqRPSUg9uu5iTBjdya6N/dYmNklGkRO42G9tP3fK2/0mRgx
+        +R7BiBM/Rkb7L0qemtOYkAsRiJzYIac=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-206-XChZw8VbN2ulgCsoH0BiTw-1; Fri, 05 Feb 2021 05:27:14 -0500
+X-MC-Unique: XChZw8VbN2ulgCsoH0BiTw-1
+Received: by mail-ed1-f69.google.com with SMTP id o8so6763797edh.12
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 02:27:14 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=+Rp1DAXoKwp5REwuto3wxp77HAsY8NDKCCfTe7Gd61I=;
+        b=EDcf5/w9jOolKPuYCcpFp52yHVqbgmdsZs+cxP8SbgpJRkA0vbSaFp1oU+ghCPY8hf
+         kDnVnwQuMzXZAgMSbqFItAmmoGOMJYHSMmEyGTKXcQFzXW6pwvsNVDlo8da6YRiGRdCR
+         q7qW+kMyb9YYx/vMauraLqIEZcVdrcZsGKkujCZajn2590Mhe8ssus8QOXl22qIXIW6e
+         Xm+duqJ+WOlZNQqwOhKXF+I43k9K2lZ+ZQ7LwRUsfYgbsqdZOQFGvplXUHX7RyEMb9fU
+         oyqUx9fRUbXPHYQilG9RG29c/wylUSwKcKzul/8A/JK42Z/IRTnL7SicCVxxRNyCFk+O
+         fhQg==
+X-Gm-Message-State: AOAM531iU8AxzIctiyvD3e7zgFgZTdHG4ny6FUjpoVdFkidARAOXGKjJ
+        is+/KgH7RXXzIaVzKE3bhKpmJBEnHBFQ10XGCLX4Dw/kVhjPVfBPFJb6nS6T2vtdIjc9g5q4DSo
+        cmxWmLLLtHDhEFVuLFs4TdHmc
+X-Received: by 2002:a17:907:7785:: with SMTP id ky5mr3476371ejc.176.1612520832979;
+        Fri, 05 Feb 2021 02:27:12 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyMeg8vtWuCF2yvK1oMI22FhfdUctuk7E5CMiQad8OqQUhNz1iB2hVXUKr+G1e2k93ewhGYbA==
+X-Received: by 2002:a17:907:7785:: with SMTP id ky5mr3476355ejc.176.1612520832790;
+        Fri, 05 Feb 2021 02:27:12 -0800 (PST)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-37a3-353b-be90-1238.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:37a3:353b:be90:1238])
+        by smtp.gmail.com with ESMTPSA id f6sm1044759edr.72.2021.02.05.02.27.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 05 Feb 2021 02:27:12 -0800 (PST)
+Subject: Re: [PATCH v4 resend 00/13] MFD/extcon/ASoC: Rework arizona codec
+ jack-detect support
+To:     Chanwoo Choi <cw00.choi@samsung.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        alsa-devel@alsa-project.org
+References: <CGME20210204112515epcas1p27a866811ba15a8cd8b0be9a3f7bf86e5@epcas1p2.samsung.com>
+ <20210204112502.88362-1-hdegoede@redhat.com>
+ <49c77228-75fa-8e0a-0cb9-57afdd3f6b86@samsung.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <cf5cbd8c-2e00-03ef-5c38-dc6a5b80cf85@redhat.com>
+Date:   Fri, 5 Feb 2021 11:27:11 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-In-Reply-To: <BFC930B3-7994-4C5B-A8EF-1DD1C73F5750@oracle.com>
+In-Reply-To: <49c77228-75fa-8e0a-0cb9-57afdd3f6b86@samsung.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
-On 05/02/2021 01:24, Eric Snowberg wrote:
-> 
->> On Feb 4, 2021, at 1:26 AM, Mickaël Salaün <mic@digikod.net> wrote:
+On 2/5/21 3:00 AM, Chanwoo Choi wrote:
+> On 2/4/21 8:24 PM, Hans de Goede wrote:
+>> Hi all,
 >>
+>> Here is v4 of my series to rework the arizona codec jack-detect support
+>> to use the snd_soc_jack helpers instead of direct extcon reporting.
 >>
->> On 04/02/2021 04:53, Eric Snowberg wrote:
->>>
->>>> On Feb 3, 2021, at 11:49 AM, Mickaël Salaün <mic@digikod.net> wrote:
->>>>
->>>> This looks good to me, and it still works for my use case. Eric's
->>>> patchset only looks for asymmetric keys in the blacklist keyring, so
->>>> even if we use the same keyring we don't look for the same key types. My
->>>> patchset only allows blacklist keys (i.e. hashes, not asymmetric keys)
->>>> to be added by user space (if authenticated), but because Eric's
->>>> asymmetric keys are loaded with KEY_ALLOC_BYPASS_RESTRICTION, it should
->>>> be OK for his use case.  There should be no interference between the two
->>>> new features, but I find it a bit confusing to have such distinct use of
->>>> keys from the same keyring depending on their type.
->>>
->>> I agree, it is a bit confusing.  What is the thought of having a dbx 
->>> keyring, similar to how the platform keyring works?
->>>
->>> https://www.spinics.net/lists/linux-security-module/msg40262.html
->>>
->>>
->>>> On 03/02/2021 17:26, David Howells wrote:
->>>>>
->>>>> Eric Snowberg <eric.snowberg@oracle.com> wrote:
->>>>>
->>>>>> This is the fifth patch series for adding support for 
->>>>>> EFI_CERT_X509_GUID entries [1].  It has been expanded to not only include
->>>>>> dbx entries but also entries in the mokx.  Additionally my series to
->>>>>> preload these certificate [2] has also been included.
->>>>>
->>>>> Okay, I've tentatively applied this to my keys-next branch.  However, it
->>>>> conflicts minorly with Mickaël Salaün's patches that I've previously merged on
->>>>> the same branch.  Can you have a look at the merge commit
->>>>>
->>>>> 	https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git/commit/?h=keys-next&id=fdbbe7ceeb95090d09c33ce0497e0394c82aa33d
->>>>>
->>>>> 	(the top patch of my keys-next branch)
->>>>>
->>>>> to see if that is okay by both of you?  If so, can you give it a whirl?
->>>
->>>
->>> I’m seeing a build error within blacklist_hashes_checked with
->>> one of my configs.
->>>
->>> The config is as follows:
->>>
->>> $ grep CONFIG_SYSTEM_BLACKLIST_HASH_LIST .config
->>> CONFIG_SYSTEM_BLACKLIST_HASH_LIST=“revocation_list"
->>>
->>> $ cat certs/revocation_list
->>> "tbs:1e125ea4f38acb7b29b0c495fd8e7602c2c3353b913811a9da3a2fb505c08a32”
->>>
->>> make[1]: *** No rule to make target 'revocation_list', needed by 'certs/blacklist_hashes_checked'.  Stop.
+>> This is a resend with some extra *-by tags collected and with the extcon
+>> folks added to the "To:" list, which I somehow missed with the original
+>> v4 posting, sorry.
 >>
->> It requires an absolute path.
-> 
-> Ok, if I use an absolute path now with CONFIG_SYSTEM_BLACKLIST_HASH_LIST 
-> it works.
-> 
->> This is to align with other variables
->> using the config_filename macro: CONFIG_SYSTEM_TRUSTED_KEYS,
->> CONFIG_MODULE_SIG_KEY and now CONFIG_SYSTEM_REVOCATION_KEYS.
-> 
-> I just did a quick test with CONFIG_SYSTEM_TRUSTED_KEYS. It looks like we 
-> can use either a relative or absolute path with CONFIG_SYSTEM_TRUSTED_KEYS. 
-> Shouldn’t this be consistent?
-
-CONFIG_SYSTEM_TRUSTED_KEYS (and similar config) works with relative path
-to $(srctree) not $(srctree)/certs as in your example.
-
-We can make CONFIG_SYSTEM_BLACKLIST_HASH_LIST works with $(srctree) with
-this patch:
-
-diff --git a/certs/Makefile b/certs/Makefile
-index eb45407ff282..92a233eaa926 100644
---- a/certs/Makefile
-+++ b/certs/Makefile
-@@ -14,6 +14,8 @@ $(eval $(call config_filename,SYSTEM_BLACKLIST_HASH_LIST))
-
- $(obj)/blacklist_hashes.o: $(obj)/blacklist_hashes_checked
-
-+CFLAGS_blacklist_hashes.o += -I$(srctree)
-+
- targets += blacklist_hashes_checked
-
-
-> 
->> Cf. https://lore.kernel.org/lkml/1221725.1607515111@warthog.procyon.org.uk/
+>> This is done by reworking the extcon driver into an arizona-jackdet
+>> library and then modifying the codec drivers to use that directly,
+>> replacing the old separate extcon child-devices and extcon-driver.
 >>
->> We may want to patch scripts/kconfig/streamline_config.pl for both
->> CONFIG_SYSTEM_REVOCATION_KEYS and CONFIG_SYSTEM_BLACKLIST_HASH_LIST, to
->> warn user (and exit with an error) if such files are not found.
+>> This brings the arizona-codec jack-detect handling inline with how
+>> all other ASoC codec driver do this. This was developed and tested on
+>> a Lenovo Yoga Tablet 1051L with a WM5102 codec.
+>>
+>> This was also tested by Charles Keepax, one of the Cirrus Codec folks.
+>>
+>> This depends on the previously posted "[PATCH v4 0/5] MFD/ASoC: Add
+>> support for Intel Bay Trail boards with WM5102 codec" series and there
+>> are various interdependencies between the patches in this series.
+>>
+>> Lee Jones, the MFD maintainer has agreed to take this series upstream
+>> through the MFD tree and to provide an immutable branch for the ASoC
+>> and extcon subsystems to merge.
+>>
+>> Mark and extcon-maintainers may we have your ack for merging these
+>> through the MFD tree ?
 > 
+> 
+> About patch2~patch6, I agree to take these patches to MFD tree.
+> Acke-by: Chanwoo Choi <cw00.choi@samsung.com>
+
+Great, thank you.
+
+Regards,
+
+Hans
+
+
