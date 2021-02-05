@@ -2,72 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83618310314
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 04:01:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD111310318
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 04:04:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229934AbhBEDAx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 22:00:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54672 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229579AbhBEDAt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 22:00:49 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 6A56764FB7;
-        Fri,  5 Feb 2021 03:00:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612494008;
-        bh=fUR5wDI5UzxhOxkLaalOXN4vs7xHb1GYpZ7BV03OQKc=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=g1fvTTdVLH2ilS+FKcZPXxILECfcwXBHYblzk3doVcD0RWlia96X5FchduN4jveKB
-         UoCemZ5wfJOaLaMfo/G8sM4X6jAkzYEw5uBfDp6ajcjp4XiZ00hE+cFoEqGR6apBMo
-         uLHVQDNy2qQtckkoc0u0Ek+ttHFxky1L2PG2JwX/3V0kbzNtI+nLRJfSUnswJffhww
-         mOfX9b1WWAy+xI3fyassdV5FzkrsMdpSybjAfnr42+mfT5l63bmLuL5xm1ZrKrZnRt
-         xryBeBHV87zbRBV9EVU3R0d5EOnF2S8CVbX6X5+SFgIgWyEDCNiQKziSafbCmqqNNp
-         t51mmg48cRaNA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 58055609F4;
-        Fri,  5 Feb 2021 03:00:08 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S229910AbhBEDE1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 22:04:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47452 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229692AbhBEDE0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 22:04:26 -0500
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9D3FC06178B
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 19:03:39 -0800 (PST)
+Received: by mail-ej1-x62e.google.com with SMTP id bl23so9320601ejb.5
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 19:03:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=HdD5j9j3cDfjeYVvH0pZjtrZ1PN33V1eaKUOEOiYAwA=;
+        b=MCMgQ3BYFsf9mhagcx4mgzpXPagKjbvtJ0+E0wsfHfLu/UZ/cI1ftqJOZnqmhhBf79
+         0YZ2LAxqGE8ftu53EGD3mVgkOQprDB591lZYinaLo4uPXB7e1Ebby2muI7HoP0T7zSQr
+         G6vIvNdyz41RhUUpBXVLJX+sZCkKTLvHJ0BuwjGmJEwxw5PmvrBTVt2H57GEUZIS9Upx
+         gaZA8u5FVEeck1Esp5wRI3RND1hFJA69Fw1Cy6x9g7A3v69vddDJYUtF/uSD7V4P4pjX
+         IuSPk6h6og6kpLQN4o+YMhTMI4u5aUIXFzhj0GHUMq328asHle5Ne2gNpFUFUOYPBLc7
+         o5gg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=HdD5j9j3cDfjeYVvH0pZjtrZ1PN33V1eaKUOEOiYAwA=;
+        b=Sai9e1Su8Z78ySAptVp5lmurVHNWqXfovFvpW5Inb47fhRxKvN4E6df0GZPtqTfcG9
+         wtZSNMuYspMXygaKfSvRzGJXrkn8gfdvGSB5bmbgMLibFPdQ7QjOHh4HItX/NybDPkDF
+         9qKNkMfKoFEYdbaNOqd2RDmTfrUP/DmytPhcgQp0cTqvuMTJ8BxdN/HF1HJ94cp3Cb/0
+         ofzMIThUWhJvmF67a5S6VWKjCLkfcYQMB8J50GDeiGZxyzovzKrMa4qO+XAvS9FLN5Gj
+         0tz5mnxcbTfUkaCARLp+vYkWEcWD5Sla+SLX6yS/GfMhUfqPH1JEUOySEQmJaIVeg5TE
+         OHfA==
+X-Gm-Message-State: AOAM53171+LBV1yPL1urra8jZsz7drz11uCgbcabQ/414hF3vm/AWOPk
+        Wod6xzeP/KKW/ZusZmeGfo+UdKqSyxk6r+KdsRZt7w==
+X-Google-Smtp-Source: ABdhPJw0PU39HJiajGWKqQ+imH+UHqp7b05QK93dctO7TbXzblEzR/b6gXLoEwUEYGmAkDwAg94gyHIUfp5CyvY9OCk=
+X-Received: by 2002:a17:906:5846:: with SMTP id h6mr1992980ejs.521.1612494217144;
+ Thu, 04 Feb 2021 19:03:37 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH][next] net: hns3: remove redundant null check of an array
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161249400835.18283.15622720081111992226.git-patchwork-notify@kernel.org>
-Date:   Fri, 05 Feb 2021 03:00:08 +0000
-References: <20210203131040.21656-1-colin.king@canonical.com>
-In-Reply-To: <20210203131040.21656-1-colin.king@canonical.com>
-To:     Colin King <colin.king@canonical.com>
-Cc:     yisen.zhuang@huawei.com, salil.mehta@huawei.com,
-        davem@davemloft.net, kuba@kernel.org, tanhuazhong@huawei.com,
-        huangguangbin2@huawei.com, netdev@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210205015205.22947-1-benl@squareup.com>
+In-Reply-To: <20210205015205.22947-1-benl@squareup.com>
+From:   Jun Nie <jun.nie@linaro.org>
+Date:   Fri, 5 Feb 2021 11:03:26 +0800
+Message-ID: <CABymUCNfCZT5bkCeHOf6SEw1aStCNcXraen5pEiKSpcXc16z2Q@mail.gmail.com>
+Subject: Re: [PATCH v2 0/2] Clean up MSM8939 interconnect driver
+To:     Benjamin Li <benl@squareup.com>
+Cc:     Georgi Djakov <georgi.djakov@linaro.org>, kernel@squareup.com,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Georgi Djakov <djakov@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+Benjamin Li <benl@squareup.com> =E4=BA=8E2021=E5=B9=B42=E6=9C=885=E6=97=A5=
+=E5=91=A8=E4=BA=94 =E4=B8=8A=E5=8D=889:52=E5=86=99=E9=81=93=EF=BC=9A
+>
+> Following up on a review comment on commit 6c6fe5d3dc5e ("interconnect: q=
+com:
+> Add MSM8939 interconnect provider driver") to clean up some log pollution=
+.
+>
+> This is based on icc-next (which appears to contain a refactor commonizin=
+g
+> functions into icc-rpm.c).
+>
+> v2:
+> - Update commit message to add a full explanation, rather than referencin=
+g a
+>   previous commit.
+>
+> Benjamin Li (2):
+>   interconnect: qcom: icc-rpm: record slave RPM id in error log
+>   interconnect: qcom: msm8939: remove rpm-ids from non-RPM nodes
+>
+>  drivers/interconnect/qcom/icc-rpm.c |  4 ++--
+>  drivers/interconnect/qcom/msm8939.c | 16 ++++++++--------
+>  2 files changed, 10 insertions(+), 10 deletions(-)
+>
+> --
+> 2.17.1
+>
 
-This patch was applied to netdev/net-next.git (refs/heads/master):
-
-On Wed,  3 Feb 2021 13:10:40 +0000 you wrote:
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> The null check of filp->f_path.dentry->d_iname is redundant because
-> it is an array of DNAME_INLINE_LEN chars and cannot be a null. Fix
-> this by removing the null check.
-> 
-> Addresses-Coverity: ("Array compared against 0")
-> Fixes: 04987ca1b9b6 ("net: hns3: add debugfs support for tm nodes, priority and qset info")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> 
-> [...]
-
-Here is the summary with links:
-  - [next] net: hns3: remove redundant null check of an array
-    https://git.kernel.org/netdev/net-next/c/8f8a42ff003a
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+For 2 patches:
+Reviewed-by: Jun Nie <jun.nie@linaro.org>
