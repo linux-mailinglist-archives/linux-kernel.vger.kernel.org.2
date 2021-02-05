@@ -2,51 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB4F3310382
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 04:23:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98303310384
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 04:25:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229750AbhBEDX1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 22:23:27 -0500
-Received: from mail-lj1-f181.google.com ([209.85.208.181]:39405 "EHLO
-        mail-lj1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229567AbhBEDXZ (ORCPT
+        id S230232AbhBEDXr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 22:23:47 -0500
+Received: from mail-lf1-f42.google.com ([209.85.167.42]:41463 "EHLO
+        mail-lf1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229567AbhBEDXl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 22:23:25 -0500
-Received: by mail-lj1-f181.google.com with SMTP id u4so6062763ljh.6;
-        Thu, 04 Feb 2021 19:23:08 -0800 (PST)
+        Thu, 4 Feb 2021 22:23:41 -0500
+Received: by mail-lf1-f42.google.com with SMTP id a8so7820882lfi.8;
+        Thu, 04 Feb 2021 19:23:26 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Rja3IW88jr9tIZdmCSJYYXsY9wEVmDBMuxnwOuDy0Lw=;
-        b=SiGA965sSZRWkxqZikup+6gkTxyrjHOTO0Kl+p/PQ9RJpPRkUSGqfIhV2cAZgcWGWA
-         m5a+AWT/+BExM4EV/CXtAd//YICV+ZFnGCTQKVXj+tmVpE7beQBPy6+NGAII2LF3Droj
-         aM7EJ+DBkIntIskNR29Gk1wVzCl/Ml8PMFn5jsVQ0flhGE1rlQHMaYXboN3viJ8e//In
-         V4FVhJOHEb1JJPFKcxcYfBITRa0iJHPvJlHkHqmcinnSZTRDvDFT2j0QMSvgicjbeSkT
-         hfjZ7OKM5ffG+ZhVi/cAIrzhAEWIKmRaGPDm+cLus0ypqXtCSyToV5RPTlojpBbnYC+u
-         8YJw==
-X-Gm-Message-State: AOAM533oVrASwGS8OxxmTZtRUhDR3pSSUv0RAQKZ8jeWfGnZLjFw2OrG
-        Xxgr7ufo/KZb+sEoa9JgE6mjKE2r8JjFNQ==
-X-Google-Smtp-Source: ABdhPJy9CvY6pY4zNGadUz9e1rpBfweTCGZ+Uvv22kcvRrVuPDqox8BXsrEa9b6FsLNwex9uqMS0Gg==
-X-Received: by 2002:a2e:95ce:: with SMTP id y14mr1439233ljh.287.1612495362688;
-        Thu, 04 Feb 2021 19:22:42 -0800 (PST)
-Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com. [209.85.167.53])
-        by smtp.gmail.com with ESMTPSA id z5sm828236lft.51.2021.02.04.19.22.41
+        bh=cYGMAdaRz8G1QUdS9+LomG6wtHz0qQi99/eTTuMLV+0=;
+        b=WNGuQmEeSDk6Q8ZsHzFiFkYrL/hrbbtM7HwWDK9ip2uhlK8b4qRdlW5Ea1Lr/4yF71
+         5Mtoj1kCeOvUXETveEuLNLdsp289LaSD17tiRpEEFZmIc0JhyAh49ST2trV2vC0Pfpgd
+         3oqaMzu+Flo4xBy/iHX6NaaPxVvrliwa4jmDfikh+H4MFjj3IZqigToQmvlj/BMfPNkj
+         3subI6/QjV4VlYIv4n3hJ+3Xz96tHg6kq2CIZf5GD3uHhMz+TuYHCBFK9PN13JRtcABW
+         eZhdqUBC0db2CETvMY6P4xFL4ou30gJFgqmYkfehjxeE1F6EFvIsSFi5KS5sx3P30REp
+         TgZQ==
+X-Gm-Message-State: AOAM531wflf2ddEIwzVtaXwDAdbwFYsuawn9SiFFRD9rq+KeKSOs6KwD
+        7BmCjVX+KvoXAgYfcuYs/0ofl8G9flh8cg==
+X-Google-Smtp-Source: ABdhPJyRSrZot6iuSJMpbwrSrhADCDVPMUq6G80NwbWd/+WdX5mPgEj5k5RuROIZfh81IHbi+9+ZDw==
+X-Received: by 2002:ac2:5f6a:: with SMTP id c10mr1311524lfc.216.1612495380162;
+        Thu, 04 Feb 2021 19:23:00 -0800 (PST)
+Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com. [209.85.167.54])
+        by smtp.gmail.com with ESMTPSA id e10sm830732lfs.304.2021.02.04.19.23.00
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Feb 2021 19:22:42 -0800 (PST)
-Received: by mail-lf1-f53.google.com with SMTP id h7so7841952lfc.6;
-        Thu, 04 Feb 2021 19:22:41 -0800 (PST)
-X-Received: by 2002:ac2:561b:: with SMTP id v27mr1399561lfd.233.1612495361845;
- Thu, 04 Feb 2021 19:22:41 -0800 (PST)
+        Thu, 04 Feb 2021 19:23:00 -0800 (PST)
+Received: by mail-lf1-f54.google.com with SMTP id i187so7841687lfd.4;
+        Thu, 04 Feb 2021 19:23:00 -0800 (PST)
+X-Received: by 2002:ac2:5f56:: with SMTP id 22mr1458557lfz.296.1612495374946;
+ Thu, 04 Feb 2021 19:22:54 -0800 (PST)
 MIME-Version: 1.0
-References: <20210204184710.1880895-1-jernej.skrabec@siol.net> <20210204184710.1880895-2-jernej.skrabec@siol.net>
-In-Reply-To: <20210204184710.1880895-2-jernej.skrabec@siol.net>
+References: <20210204184710.1880895-1-jernej.skrabec@siol.net> <20210204184710.1880895-4-jernej.skrabec@siol.net>
+In-Reply-To: <20210204184710.1880895-4-jernej.skrabec@siol.net>
 From:   Chen-Yu Tsai <wens@csie.org>
-Date:   Fri, 5 Feb 2021 11:22:31 +0800
-X-Gmail-Original-Message-ID: <CAGb2v652cCbwvdvb8RA4zH41cnOKcqbVNosiU1eCGPjGpWUGcg@mail.gmail.com>
-Message-ID: <CAGb2v652cCbwvdvb8RA4zH41cnOKcqbVNosiU1eCGPjGpWUGcg@mail.gmail.com>
-Subject: Re: [linux-sunxi] [PATCH 1/5] clk: sunxi-ng: mp: fix parent rate
- change flag check
+Date:   Fri, 5 Feb 2021 11:22:44 +0800
+X-Gmail-Original-Message-ID: <CAGb2v6524xO6dLnW4mKBjgfFkqbydPDmxJopqkZ53=uXdo3rCw@mail.gmail.com>
+Message-ID: <CAGb2v6524xO6dLnW4mKBjgfFkqbydPDmxJopqkZ53=uXdo3rCw@mail.gmail.com>
+Subject: Re: [PATCH 3/5] drm/sun4i: dw-hdmi: always set clock rate
 To:     Jernej Skrabec <jernej.skrabec@siol.net>
 Cc:     Maxime Ripard <mripard@kernel.org>,
         Mike Turquette <mturquette@baylibre.com>,
@@ -66,10 +65,14 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Fri, Feb 5, 2021 at 2:48 AM Jernej Skrabec <jernej.skrabec@siol.net> wrote:
 >
-> CLK_SET_RATE_PARENT flag is checked on parent clock instead of current
-> one. Fix that.
+> As expected, HDMI controller clock should always match pixel clock. In
+> the past, changing HDMI controller rate would seemingly worsen
+> situation. However, that was the result of other bugs which are now
+> fixed.
 >
-> Fixes: 3f790433c3cb ("clk: sunxi-ng: Adjust MP clock parent rate when allowed")
+> Fix that by removing set_rate quirk and always set clock rate.
+>
+> Fixes: 40bb9d3147b2 ("drm/sun4i: Add support for H6 DW HDMI controller")
 > Tested-by: Andre Heider <a.heider@gmail.com>
 > Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
 
