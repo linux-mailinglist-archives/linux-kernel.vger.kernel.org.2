@@ -2,198 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5006E3117A0
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 01:08:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2514831178E
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 01:02:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231344AbhBFAIK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 19:08:10 -0500
-Received: from lb2-smtp-cloud9.xs4all.net ([194.109.24.26]:57677 "EHLO
-        lb2-smtp-cloud9.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229565AbhBENsL (ORCPT
+        id S231180AbhBFACV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 19:02:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44528 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231486AbhBENtK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 08:48:11 -0500
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud9.xs4all.net with ESMTPA
-        id 81RclTJVeFFpm81RglH0Uh; Fri, 05 Feb 2021 14:46:49 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1612532809; bh=eeIQ3lc6028oLMlea4AHNdLl0tt2BQ1HMogC4rAypDI=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=QXVUNaAT1tII5aFDk+cPR8pJYdtQgXYC6klZDolwlsOsOcOtMcYruZwvaYPoLxCp3
-         bfZGWpZWYMLUa1r+Vkit1r45mKmGycy0z9+BChbGO1uFFzTrsugaZQy5UkmiDPzfkN
-         Qx4EL0yU37Li6HA4uSZQz+Lp8L0PcwHSrwMhaIiYhnoC5cqLFeiOMEYnIICROjpjGC
-         mXwY9uy+oPn+F17WWxDL/TYwwwP74y1uMwirFXg0PJ6pw/TkooBsLoxhcQ0yDa0vZ6
-         CyTlMqKIIJzmQEE35EygcZKFXjLxs8GChTlgkmbENglKUl9CAHKsO57ZCuuKQUp+Nw
-         aO13Xc+6FR7bw==
-Subject: Re: [PATCH v3 2/4] drm_dp_mst_topology: use correct AUX channel
-To:     =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
-        Sam McNally <sammc@chromium.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Hans Verkuil <hans.verkuil@cisco.com>,
-        dri-devel@lists.freedesktop.org
-References: <20200923121320.v3.1.I8693156f555875e5c8342e86ab37ce968dfdd277@changeid>
- <20200923121320.v3.2.Ided0ab0808c4908238bd2eb9ebb6ffb2c9312789@changeid>
- <YBh9HvbIRF4zd+AK@intel.com> <2a7c2edc-b83c-dccf-487d-1415b4bc23ff@xs4all.nl>
- <CAJqEsoCOJmS5aVb5du09tXUi7UUKVBQDPe5KTdcBiDr8A7kSYA@mail.gmail.com>
- <YB1HBDEB5/fefQzi@intel.com>
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-Message-ID: <c577f417-b6c2-6714-8c97-ec6d636bb3a7@xs4all.nl>
-Date:   Fri, 5 Feb 2021 14:46:44 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Fri, 5 Feb 2021 08:49:10 -0500
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 798F8C06178B
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 05:48:09 -0800 (PST)
+Received: by mail-wr1-x429.google.com with SMTP id d16so7695967wro.11
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 05:48:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=b5Gt7lm7HDFnKYf2RrWhjZE+siO4dcLCTKmn9MIyd28=;
+        b=Jmz7cvf53TjCwGxQHJHpsHhluwKoKsW3viJc5Y8zvSIecn+748ZRpAoe5PqRxJZt8w
+         rTgZsaEPI5cjxNaMnArIgWgcCM9mV0CGhOHtYEDUH4H4+I6hxx5D55dBd3//G2HTrYQW
+         Xa5KuupgmPF17JaHIEkxdFpNkycMdf16pWqxm/1J//nluKu//pehprHvxiovF/43U1rt
+         g+wdOM9fd+nBHCmJySychS2ArSgVi0HMAn5Q2J8WraMm0U/nI5Gzq837tdQ12dl9TCBj
+         +5W12Zbl5nJ7K0kehzObfdw1gRKuH5RrThAfjxYPE29Ud1aUyMKRfZSEC/oi3x4Rg5m/
+         YLOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=b5Gt7lm7HDFnKYf2RrWhjZE+siO4dcLCTKmn9MIyd28=;
+        b=Z/6Ix6M0JpoD9v7gYbvOO5+S/xkAgtPrDixwdgNenMe1nTFPH3EznSC1UCNUFGs0cp
+         Y2u7BZ7970SdhHSGv2fBlAfH3ASTyE1oNUCpPGwL7JziN1BhaJXXo69sWoqEL9dF4Tc8
+         XkOzwG2FuqJxNXRVX+wzcoiOwzaL2lvD/FYXqdQjO1+ZrD+sZoXPKnY8Ydehpocu1FrE
+         gqK7D1cKbsbaOnOEbXqk2MQ9Cb451JbpxOpIayQtTuzwgqfxqODhbhETooOJEDhjEazL
+         iHMOms/ouUTe0/3WBbJCGQdoe2DQD0zxhDhoqgfjQQTbZd4QstXsZUo6Fk412zqF9I0G
+         0vrQ==
+X-Gm-Message-State: AOAM530uBffdla9aDRSZI9VoUvvllev7gyStbeWkqN+/t6cj7MNGFkA9
+        FNxUKwFUZROTDphR3wdtQp7M9mU664MiN3nSJhFRYw==
+X-Google-Smtp-Source: ABdhPJybgGA0dtqhlng9SXRL3K/UPqLnTkb5044cXBN2jjDhki4O2HFfSTqq5rK/3HB5ztEnaEpAz9V+KGafPMeIUtQ=
+X-Received: by 2002:a5d:6685:: with SMTP id l5mr5068041wru.176.1612532888143;
+ Fri, 05 Feb 2021 05:48:08 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <YB1HBDEB5/fefQzi@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4xfF/2LkHUBR6Sj5FcCmtu5nSjDtH0gXnDX48kOwSB2540xv2DzasTmniuBdVtNsBlQec0ezWIItZKJZVotxicsO8IKSyPnZpsIJauJsqzAvJDL62upT2c
- 3nEQGLoRVxVe9PS4j5SXwaaEbtesNJksIRkjsdC5LZGKs80/IRoVWTdRzXRqtn2cD3f/1dbCwaVvWXNzv2G9EYv0e2mO4A7RgBwkncLqWc8W+/y+0gpFFk1E
- xCzTOOpZtwXm5xDH+kRAhQW9OesbT9rSKmjZU1rkPu3YPzYsb2X4b6T02rq8YwQk3lKLzwX8LjLcf4QvJVeyQOTKfXRS9KNt+wfvhcVJHpl3UpszBFZVjA+G
- 6hT1EtSnM959b3M6T6cKpeY6jAbejDWyDJDOuDUWEOaHTu1/B7OT+vFTpHBpmizJS8NzussN
+References: <20210202163842.134734-1-leo.yan@linaro.org> <20210202163842.134734-3-leo.yan@linaro.org>
+ <3c0a0641-a375-c7c3-d72d-e1d626e60ad6@arm.com>
+In-Reply-To: <3c0a0641-a375-c7c3-d72d-e1d626e60ad6@arm.com>
+From:   Mike Leach <mike.leach@linaro.org>
+Date:   Fri, 5 Feb 2021 13:47:57 +0000
+Message-ID: <CAJ9a7Vh5UCyGPn7=psbTs_hMOPufkKLjqoRxw=z6XxB3SVnWtg@mail.gmail.com>
+Subject: Re: [PATCH v2 2/7] coresight: etm-perf: Support PID tracing for
+ kernel at EL2
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc:     Leo Yan <leo.yan@linaro.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Daniel Kiss <Daniel.Kiss@arm.com>,
+        Denis Nikitin <denik@chromium.org>,
+        Coresight ML <coresight@lists.linaro.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Al Grant <al.grant@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/02/2021 14:24, Ville Syrjälä wrote:
-> On Fri, Feb 05, 2021 at 04:17:51PM +1100, Sam McNally wrote:
->> On Thu, 4 Feb 2021 at 21:19, Hans Verkuil <hverkuil@xs4all.nl> wrote:
->>>
->>> On 01/02/2021 23:13, Ville Syrjälä wrote:
->>>> On Wed, Sep 23, 2020 at 12:13:53PM +1000, Sam McNally wrote:
->>>>> From: Hans Verkuil <hans.verkuil@cisco.com>
->>>>>
->>>>> For adapters behind an MST hub use the correct AUX channel.
->>>>>
->>>>> Signed-off-by: Hans Verkuil <hans.verkuil@cisco.com>
->>>>> [sammc@chromium.org: rebased, removing redundant changes]
->>>>> Signed-off-by: Sam McNally <sammc@chromium.org>
->>>>> ---
->>>>>
->>>>> (no changes since v1)
->>>>>
->>>>>  drivers/gpu/drm/drm_dp_mst_topology.c | 36 +++++++++++++++++++++++++++
->>>>>  1 file changed, 36 insertions(+)
->>>>>
->>>>> diff --git a/drivers/gpu/drm/drm_dp_mst_topology.c b/drivers/gpu/drm/drm_dp_mst_topology.c
->>>>> index 15b6cc39a754..0d753201adbd 100644
->>>>> --- a/drivers/gpu/drm/drm_dp_mst_topology.c
->>>>> +++ b/drivers/gpu/drm/drm_dp_mst_topology.c
->>>>> @@ -2255,6 +2255,9 @@ drm_dp_mst_topology_unlink_port(struct drm_dp_mst_topology_mgr *mgr,
->>>>>      drm_dp_mst_topology_put_port(port);
->>>>>  }
->>>>>
->>>>> +static ssize_t
->>>>> +drm_dp_mst_aux_transfer(struct drm_dp_aux *aux, struct drm_dp_aux_msg *msg);
->>>>> +
->>>>>  static struct drm_dp_mst_port *
->>>>>  drm_dp_mst_add_port(struct drm_device *dev,
->>>>>                  struct drm_dp_mst_topology_mgr *mgr,
->>>>> @@ -2271,9 +2274,13 @@ drm_dp_mst_add_port(struct drm_device *dev,
->>>>>      port->port_num = port_number;
->>>>>      port->mgr = mgr;
->>>>>      port->aux.name = "DPMST";
->>>>> +    mutex_init(&port->aux.hw_mutex);
->>>>> +    mutex_init(&port->aux.cec.lock);
->>>>>      port->aux.dev = dev->dev;
->>>>>      port->aux.is_remote = true;
->>>>>
->>>>> +    port->aux.transfer = drm_dp_mst_aux_transfer;
->>>>> +
->>>>
->>>> This was supposed to be handled via higher levels checking for
->>>> is_remote==true.
->>>
->>> Ah, I suspect this patch can be dropped entirely: it predates commit 2f221a5efed4
->>> ("drm/dp_mst: Add MST support to DP DPCD R/W functions").
->>>
->>> It looks like that commit basically solved what this older patch attempts to do
->>> as well.
->>>
->>> Sam, can you test if it works without this patch?
->>
->> It almost just works; drm_dp_cec uses whether aux.transfer is non-null
->> to filter out non-DP connectors. Using aux.is_remote as another signal
->> indicating a DP connector seems plausible. We can drop this patch.
-> 
-> Why would anyone even call this stuff on a non-DP connector?
-> And where did they even get the struct drm_dp_aux to do so?
+On Tue, 2 Feb 2021 at 23:06, Suzuki K Poulose <suzuki.poulose@arm.com> wrote:
+>
+> On 2/2/21 4:38 PM, Leo Yan wrote:
+> > From: Suzuki K Poulose <suzuki.poulose@arm.com>
+> >
+> > When the kernel is running at EL2, the PID is stored in CONTEXTIDR_EL2.
+> > So, tracing CONTEXTIDR_EL1 doesn't give us the pid of the process.
+> > Thus we should trace the VMID with VMIDOPT set to trace CONTEXTIDR_EL2
+> > instead of CONTEXTIDR_EL1.  Given that we have an existing config
+> > option "contextid" and this will be useful for tracing virtual machines
+> > (when we get to support virtualization).
+> >
+> > So instead, this patch extends option CTXTID with an extra bit
+> > ETM_OPT_CTXTID2 (bit 15), thus on an EL2 kernel, we will have another
+> > bit available for the perf tool: ETM_OPT_CTXTID is for kernel running in
+> > EL1, ETM_OPT_CTXTID2 is used when kernel runs in EL2 with VHE enabled.
+> >
+> > The tool must be backward compatible for users, i.e, "contextid" today
+> > traces PID and that should remain the same; for this purpose, the perf
+> > tool is updated to automatically set corresponding bit for the
+> > "contextid" config, therefore, the user doesn't have to bother which EL
+> > the kernel is running.
+> >
+> >    i.e, perf record -e cs_etm/contextid/u --
+> >
+> > will always do the "pid" tracing, independent of the kernel EL.
+> >
+> > The driver parses the format "contextid", which traces CONTEXTIDR_EL1
+> > for ETM_OPT_CTXTID (on EL1 kernel) and traces CONTEXTIDR_EL2 for
+> > ETM_OPT_CTXTID2 (on EL2 kernel).
+> >
+> > Besides the enhancement for format "contexid", extra two formats are
+> > introduced: "contextid1" and "contextid2".  This considers to support
+> > tracing both CONTEXTIDR_EL1 and CONTEXTIDR_EL2 when the kernel is
+> > running at EL2.  Finally, the PMU formats are defined as follow:
+> >
+> >    "contextid1": Available on both EL1 kernel and EL2 kernel.  When the
+> >                  kernel is running at EL1, "contextid1" enables the PID
+> >               tracing; when the kernel is running at EL2, this enables
+> >               tracing the PID of guest applications.
+> >
+> >    "contextid2": Only usable when the kernel is running at EL2.  When
+> >                  selected, enables PID tracing on EL2 kernel.
+> >
+> >    "contextid":  Will be an alias for the option that enables PID
+> >                  tracing.  I.e,
+> >                  contextid == contextid1, on EL1 kernel.
+> >                  contextid == contextid2, on EL2 kernel.
+> >
+> > Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+> > Cc: Al Grant <al.grant@arm.com>
+> > Cc: Mike Leach <mike.leach@linaro.org>
+> > Cc: Leo Yan <leo.yan@linaro.org>
+> > Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+>
+> You may add the following line here :
+>
+> [ Added two config formats: contextid1, contextid2 ]
+>
+> > Signed-off-by: Leo Yan <leo.yan@linaro.org>
+>
+> The patch as such looks good to me.
+>
+> Suzuki
 
-This check came in with commit 5ce70c799ac2 ("drm_dp_cec: check that aux
-has a transfer function"). It seems nouveau and amdgpu specific.
+Reviewed-by: Mike Leach <mike.leach@linaro.org>
 
-A better approach would be to fix those drivers to only call these cec
-functions for DP outputs. I think I moved the test to drm_dp_cec.c primarily
-for robustness (i.e. do nothing if called for a non-DP output). But that
-might not be the right approach after all.
 
-Regards,
-
-	Hans
-
-> 
->> Thanks all!
->>>
->>> Regards,
->>>
->>>         Hans
->>>
->>>>
->>>>>      /* initialize the MST downstream port's AUX crc work queue */
->>>>>      drm_dp_remote_aux_init(&port->aux);
->>>>>
->>>>> @@ -3503,6 +3510,35 @@ static int drm_dp_send_up_ack_reply(struct drm_dp_mst_topology_mgr *mgr,
->>>>>      return 0;
->>>>>  }
->>>>>
->>>>> +static ssize_t
->>>>> +drm_dp_mst_aux_transfer(struct drm_dp_aux *aux, struct drm_dp_aux_msg *msg)
->>>>> +{
->>>>> +    struct drm_dp_mst_port *port =
->>>>> +            container_of(aux, struct drm_dp_mst_port, aux);
->>>>> +    int ret;
->>>>> +
->>>>> +    switch (msg->request & ~DP_AUX_I2C_MOT) {
->>>>> +    case DP_AUX_NATIVE_WRITE:
->>>>> +    case DP_AUX_I2C_WRITE:
->>>>> +    case DP_AUX_I2C_WRITE_STATUS_UPDATE:
->>>>> +            ret = drm_dp_send_dpcd_write(port->mgr, port, msg->address,
->>>>> +                                         msg->size, msg->buffer);
->>>>
->>>> That doesn't make sense to me. I2c writes and DPCD writes
->>>> are definitely not the same thing.
->>>>
->>>> aux->transfer is a very low level thing. I don't think it's the
->>>> correct level of abstraction for sideband.
->>>>
->>>>> +            break;
->>>>> +
->>>>> +    case DP_AUX_NATIVE_READ:
->>>>> +    case DP_AUX_I2C_READ:
->>>>> +            ret = drm_dp_send_dpcd_read(port->mgr, port, msg->address,
->>>>> +                                        msg->size, msg->buffer);
->>>>> +            break;
->>>>> +
->>>>> +    default:
->>>>> +            ret = -EINVAL;
->>>>> +            break;
->>>>> +    }
->>>>> +
->>>>> +    return ret;
->>>>> +}
->>>>> +
->>>>>  static int drm_dp_get_vc_payload_bw(u8 dp_link_bw, u8  dp_link_count)
->>>>>  {
->>>>>      if (dp_link_bw == 0 || dp_link_count == 0)
->>>>> --
->>>>> 2.28.0.681.g6f77f65b4e-goog
->>>>>
->>>>> _______________________________________________
->>>>> dri-devel mailing list
->>>>> dri-devel@lists.freedesktop.org
->>>>> https://lists.freedesktop.org/mailman/listinfo/dri-devel
->>>>
->>>
-> 
-
+--
+Mike Leach
+Principal Engineer, ARM Ltd.
+Manchester Design Centre. UK
