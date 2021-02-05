@@ -2,87 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 326F33103DA
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 04:50:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9405F3103E2
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 04:52:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230263AbhBEDug (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 22:50:36 -0500
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:2935 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229692AbhBEDuf (ORCPT
+        id S230411AbhBEDwd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 22:52:33 -0500
+Received: from mail-pf1-f171.google.com ([209.85.210.171]:38757 "EHLO
+        mail-pf1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229692AbhBEDwb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 22:50:35 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B601cc0630000>; Thu, 04 Feb 2021 19:49:55 -0800
-Received: from [10.2.60.31] (172.20.145.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 5 Feb
- 2021 03:49:54 +0000
-Subject: Re: [PATCH] xfs: fix unused variable build warning in xfs_log.c
-To:     "Darrick J. Wong" <djwong@kernel.org>
-CC:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        <linux-xfs@vger.kernel.org>,
-        Linux Next <linux-next@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Brian Foster <bfoster@redhat.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Allison Henderson <allison.henderson@oracle.com>
-References: <20210205031814.414649-1-jhubbard@nvidia.com>
- <20210205033030.GL7193@magnolia>
-From:   John Hubbard <jhubbard@nvidia.com>
-Message-ID: <11a20ea7-3d58-d102-0fcb-6bc92cfc86d5@nvidia.com>
-Date:   Thu, 4 Feb 2021 19:49:54 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:85.0) Gecko/20100101
- Thunderbird/85.0
+        Thu, 4 Feb 2021 22:52:31 -0500
+Received: by mail-pf1-f171.google.com with SMTP id d26so2227603pfn.5;
+        Thu, 04 Feb 2021 19:52:15 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=PUgTmQjg/F/6InB3//OtXUQJ9eXEdUj+c8K+WJcFafw=;
+        b=F3tz+2an+grok/uDff+BdMZF1h7zw0HflQGc8y1/qR3+pi2k/3675RHXVbkqaEZFXA
+         G09HOG/0ygBjeoI6hgSLjMERbqVu5zJ8HiQLzgj7QSr74QVjQQ77DpJUx6+4tnlfWnYK
+         rlfatVZi95oOxlbbSI1aaOvy8vBd369yL07aMvd+zUA5tvYACzbMen8ifDWxn3sdviJm
+         Z1o5c4KEx1877vX2LpcF3TPOZhCwfXLTCbOPizLTx0RmVKndRIg+F10M9PIs8qHwgsjd
+         hxcxfvgXaVvUDqzf27YzOmdyrW2tQZ4/hENBn5ydMB32Y03uKGbbCkHZop8dz7dD8JH0
+         2mOA==
+X-Gm-Message-State: AOAM533GK/9eSLU9tVL4cRy0LWmw0IiOuax+haXyZ0Qqte/WJdmPL3rP
+        04fEQ2rvKxyVVq9qn8sA9/M54mNLmnLWpg==
+X-Google-Smtp-Source: ABdhPJxg8wQ3A/EiNaMHd6Ag38vW7KVOGTfIiKpn26WVMFBcri374acTRm4xV5rpuuwoQVGeoMIQjA==
+X-Received: by 2002:a05:6a00:15cc:b029:1ba:5282:3ab8 with SMTP id o12-20020a056a0015ccb02901ba52823ab8mr2453895pfu.77.1612497109871;
+        Thu, 04 Feb 2021 19:51:49 -0800 (PST)
+Received: from [10.101.46.49] (61-220-137-37.HINET-IP.hinet.net. [61.220.137.37])
+        by smtp.gmail.com with ESMTPSA id h8sm844123pfv.154.2021.02.04.19.51.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Feb 2021 19:51:48 -0800 (PST)
+Subject: Re: [PATCH] HID: intel-ish-hid: ipc: Add Tiger Lake H PCI device ID
+To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210204083315.122952-1-vicamo.yang@canonical.com>
+ <85a4e6e61ac977d0d00dd9140a9e85f1102b3a6d.camel@linux.intel.com>
+From:   You-Sheng Yang <vicamo.yang@canonical.com>
+Message-ID: <57544f34-0e90-359c-766f-affcf890664a@canonical.com>
+Date:   Fri, 5 Feb 2021 11:51:46 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-In-Reply-To: <20210205033030.GL7193@magnolia>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+In-Reply-To: <85a4e6e61ac977d0d00dd9140a9e85f1102b3a6d.camel@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1612496995; bh=aVWP6jGi6yMses/G7c+2YFcawvLkfOUygGY3+F5TXgI=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=KWALDuMdgil2trdKyD9hNMG7KVtlXqK7G8/mnFLVzxIKItIhlT1O+MkL5vdgysNFN
-         ckLMZyqhjMzE7YL0ZZoafYWo735tZBdeikGUWfjtCf3uj1NdxVDi25+gn6BbWd+4EL
-         3Ln0AoNV2yXLFAbT9LMsExozEX5IMb0LzVVrEb2TwBRFHfwugSI1YVsbtn3kBxhe6c
-         pF3ltoZ0xeF4sBSgsjPdZpPX5QVzF7NTwaE0iTh3wrjqhVIRsZKwy9OCw55cfrCJq0
-         e3tXUK6bslFVoN2Wh7dGMImquZSG/z6LX+Wev0r9x0CW7+M2USLkAdzqJvOMZJTreN
-         5MO65EV4Ww7pw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/4/21 7:30 PM, Darrick J. Wong wrote:
-> On Thu, Feb 04, 2021 at 07:18:14PM -0800, John Hubbard wrote:
->> Delete the unused "log" variable in xfs_log_cover().
+On 2/4/21 11:13 PM, Srinivas Pandruvada wrote:
+> On Thu, 2021-02-04 at 16:33 +0800, You-Sheng Yang wrote:
+>> Added Tiger Lake H PCI device ID to the supported device list.
 >>
->> Fixes: 303591a0a9473 ("xfs: cover the log during log quiesce")
->> Cc: Brian Foster <bfoster@redhat.com>
->> Cc: Christoph Hellwig <hch@lst.de>
->> Cc: Darrick J. Wong <djwong@kernel.org>
->> Cc: Allison Henderson <allison.henderson@oracle.com>
->> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
+>> Signed-off-by: You-Sheng Yang <vicamo.yang@canonical.com>
+> Did you get chance to verify on a platform?
+> Do you see sensors enumerated in /sys/bus/iio?
+
+Yes,
+
+[    2.485650] ish-hid {33AECD58-B679-4E54-9BD9-A04D34F0C226}:
+[hid-ish]: enum_devices_done OK, num_hid_devices=3
+[    2.497337] hid-generic 001F:8087:0AC2.0003: hidraw2: <UNKNOWN> HID
+v2.00 Device [hid-ishtp 8087:0AC2] on
+[    2.506945] hid-generic 001F:8087:0AC2.0004: hidraw3: <UNKNOWN> HID
+v2.00 Device [hid-ishtp 8087:0AC2] on
+[    2.512127] hid-generic 001F:8087:0AC2.0005: hidraw4: <UNKNOWN> HID
+v2.00 Device [hid-ishtp 8087:0AC2] on
+
+$ ls /sys/bus/iio/devices/
+iio:device0  iio:device1  trigger0  trigger1
+
+One of them is an ambient light sensor, and it works only with this
+patch applied.
+
+Thanks,
+You-Sheng Yang
+
+> Thanks,
+> Srinivas
+> 
 >> ---
->> Hi,
+>>  drivers/hid/intel-ish-hid/ipc/hw-ish.h  | 1 +
+>>  drivers/hid/intel-ish-hid/ipc/pci-ish.c | 1 +
+>>  2 files changed, 2 insertions(+)
 >>
->> I just ran into this on today's linux-next, so here you go!
+>> diff --git a/drivers/hid/intel-ish-hid/ipc/hw-ish.h
+>> b/drivers/hid/intel-ish-hid/ipc/hw-ish.h
+>> index 1fb294ca463e..21b0e6123754 100644
+>> --- a/drivers/hid/intel-ish-hid/ipc/hw-ish.h
+>> +++ b/drivers/hid/intel-ish-hid/ipc/hw-ish.h
+>> @@ -27,6 +27,7 @@
+>>  #define CMP_H_DEVICE_ID		0x06FC
+>>  #define EHL_Ax_DEVICE_ID	0x4BB3
+>>  #define TGL_LP_DEVICE_ID	0xA0FC
+>> +#define TGL_H_DEVICE_ID		0x43FC
+>>  
+>>  #define	REVISION_ID_CHT_A0	0x6
+>>  #define	REVISION_ID_CHT_Ax_SI	0x0
+>> diff --git a/drivers/hid/intel-ish-hid/ipc/pci-ish.c
+>> b/drivers/hid/intel-ish-hid/ipc/pci-ish.c
+>> index c6d48a8648b7..6dea657b7b15 100644
+>> --- a/drivers/hid/intel-ish-hid/ipc/pci-ish.c
+>> +++ b/drivers/hid/intel-ish-hid/ipc/pci-ish.c
+>> @@ -37,6 +37,7 @@ static const struct pci_device_id ish_pci_tbl[] = {
+>>  	{PCI_DEVICE(PCI_VENDOR_ID_INTEL, CMP_H_DEVICE_ID)},
+>>  	{PCI_DEVICE(PCI_VENDOR_ID_INTEL, EHL_Ax_DEVICE_ID)},
+>>  	{PCI_DEVICE(PCI_VENDOR_ID_INTEL, TGL_LP_DEVICE_ID)},
+>> +	{PCI_DEVICE(PCI_VENDOR_ID_INTEL, TGL_H_DEVICE_ID)},
+>>  	{0, }
+>>  };
+>>  MODULE_DEVICE_TABLE(pci, ish_pci_tbl);
 > 
-> Thanks for the tipoff, I just realized with horror that I got the git
-> push wrong and never actually updated xfs-linux.git#for-next.  This (and
-> all the other gcc warnings) are fixed in "xfs-for-next" which ... is not
-> for-next.
-> 
-> Sigh.....  so much for trying to get things in for testing. :(
-> 
-Well, if it's any consolation, this is the *only* warning that fired during
-my particular build, in linux-next. :)
-
-
-thanks,
--- 
-John Hubbard
-NVIDIA
