@@ -2,92 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96301311A20
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 04:33:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55E17311A8E
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 04:57:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232066AbhBFDb4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 22:31:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39402 "EHLO
+        id S230073AbhBFD5N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 22:57:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231610AbhBFClF (ORCPT
+        with ESMTP id S232235AbhBFCzl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 21:41:05 -0500
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 419DDC061D7E
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 14:11:26 -0800 (PST)
-Received: by mail-lj1-x229.google.com with SMTP id f2so9543797ljp.11
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 14:11:26 -0800 (PST)
+        Fri, 5 Feb 2021 21:55:41 -0500
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2855C061D7F;
+        Fri,  5 Feb 2021 14:11:55 -0800 (PST)
+Received: by mail-yb1-xb36.google.com with SMTP id s61so8261098ybi.4;
+        Fri, 05 Feb 2021 14:11:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=/4qEkNOrLEa6lxN/95STT61avrFjfvYnDY/MmP9s+0o=;
-        b=SFMRg/15SplEen1Sye0qlnbdi+BfK5VijvW5vUJ3y4Bmd4WNJhz6tl0srP2+1DuSsw
-         C3lWkUPurWOVp2t0RFiov09RInfN7R/g5i+K4WwL4uTDcMOdhpN9CeSp801NpEtNOBEC
-         SUdZb4605uhwR5bxZZ2IVZ3+ObmydPjYJuSCzxaXilJ1YgjkzpbLxmNch2OjtoJfI10g
-         USfaUm4N8916uETHmf91lTR6yn2JpFCCrQuufBqk+FfCam5Z/XPbN5uKx99d7R/QHtcn
-         sP15nQFOITOtaQ/eAIvwbrPPeGrV1BcVQa5PrUgUWKGhSDaW5yOE5xD6ccRkRVR1ZMNi
-         ue2A==
+        bh=2wYH4ZTK5z/flvIckrO5N+ZdlqhzmsEspV7Keq9hUBA=;
+        b=oWBXoCkzXi9LuyQb7q1zAAN1rA68maErUKhE9bEPkXayREl9MQX9apAsK0sg4QAc4R
+         pE8duD7oDXgunoFA/Wainaol5ZambqQh7QRYL1J8fD8FtgpzZFOdE1o7lk51ZWmag/kI
+         /31+5AfLYtrCkFvUqZUFE7hSxjBmuUOS7eNe+aGqHY6ee8aZHgHxPS5kAS6QPw68Zk+k
+         P5voEum08DOx3byVb9607rlojaiOLgPixlFHw7jr1yVexZyR/R1C86jfZnFT5j0Xc7Fv
+         wGbLcFhIasE9FuWdzv14fNzdTyVC0u2n+8nkiCZCN3eP3nhBioij9t/+0IAStRvtZJDb
+         xYYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=/4qEkNOrLEa6lxN/95STT61avrFjfvYnDY/MmP9s+0o=;
-        b=JGNy9Puro8U4Wypak8T1AYiC3U4b5yWUi6ErEDTIpACu0C7ansuKf1bugFAgp7jrBx
-         BUITWmC4YR59Z81DbfL8eAd1AaPyOHgBQ/sFk58QLq+IjHSncB/qDR5CGhg2HJ0Kx6xi
-         t6MlENjdadQlKiqUr5XbBFnToBFWhTqdPrsSvZpyXf1GgSB6mS5USHkhLqRv/xajLJ1S
-         tagNDYzh/uXzDMLg+wUos2t7Me72sSxtcvhHGTC14S3l6RYpVSMjQqhFvqmFoDwosZSb
-         ltmw1SgXXJvPClY7/Mr2lwuN0MhJBwWm+h1rw14YEKA+qxV35f2TaKmYfheK/9RIVlX2
-         MpjA==
-X-Gm-Message-State: AOAM532dzugR/lxn0+YzCbGejNgMWvgjSbP3iDNuEuaIvoYBLApZY2e+
-        8r7DEWiOa3n8S/4vSb87cDshFBE2EOnKVgV2iNrn1A==
-X-Google-Smtp-Source: ABdhPJwFONDOLDANaesx5u6Fdzy4/2gaSfHlVUX6IQVv6mnSIErvIy9Bpy5BdfJbA4zstHKJUlrtR5M0E1dH2R0PW0I=
-X-Received: by 2002:a2e:9ed1:: with SMTP id h17mr3702229ljk.160.1612563084463;
- Fri, 05 Feb 2021 14:11:24 -0800 (PST)
+        bh=2wYH4ZTK5z/flvIckrO5N+ZdlqhzmsEspV7Keq9hUBA=;
+        b=m7z9bn6lt6hMmMwj6mqRX4jptCvZdlKrr1Bz/dy9T3DXt9SiMLy9Jf5DU8KaJOvns5
+         4ZlFVKn8gLdkqZMwjuILRITg+y0irv0hOn5XPenaJClijpxMH62FYr0HN7bVlawCc3ZS
+         8Ky5/ZEpNp2vW7Fjjqx5uKdqukULhQ3lLgh8NziSZdd6ULMqAbGHLrTadl7+UXhe3Kcp
+         aKvn2Qp62Myz0UITTRk9SDnM0xaQL973egde1Jq1CfDZy9MXqqCGprrvXk7JXZ2LTdor
+         2Nl5qE0dmcBin2DDIsVOmvK33LdU8ZQ5QQkvcGfNTWbWiPB7GPC02+EDJYNnPcrJ/hJN
+         LtGA==
+X-Gm-Message-State: AOAM533q8Ri76ioWqhmTYsBZJvFeP4orlKbCHCT2tUgW2/UzOxPQ4ZjS
+        isrhxB+XgKSSXHocGswyVPc+kHhWNaE6GZg8ysq337y/l7LYDA==
+X-Google-Smtp-Source: ABdhPJyYCbGisxBoQhBELxd9IT/XMkHEEAZ56ZRFxuQ9ps6oooojPj6j5F5PwJjPEqTd6RkE4c0FpqD7mTcALl68VW0=
+X-Received: by 2002:a5b:3c4:: with SMTP id t4mr8559145ybp.510.1612563115280;
+ Fri, 05 Feb 2021 14:11:55 -0800 (PST)
 MIME-Version: 1.0
-References: <20210205182806.17220-1-hannes@cmpxchg.org> <20210205182806.17220-5-hannes@cmpxchg.org>
-In-Reply-To: <20210205182806.17220-5-hannes@cmpxchg.org>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Fri, 5 Feb 2021 14:11:13 -0800
-Message-ID: <CALvZod6R7Qbx2JgTHM-uLeRHZLhaMZiCkbevQBTN=jVizrt-Lw@mail.gmail.com>
-Subject: Re: [PATCH 4/8] cgroup: rstat: support cgroup1
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, Michal Hocko <mhocko@suse.com>,
-        Roman Gushchin <guro@fb.com>, Linux MM <linux-mm@kvack.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>
+References: <20210204220741.GA920417@kernel.org> <CAEf4BzY-RbXXW-Ajcvq4fziOJ=tMtT7O76SUboHQyULNDkhthw@mail.gmail.com>
+ <C359F19F-29BC-4F6D-961A-79BFA47F36A7@gmail.com> <CAEf4BzZf_1g13dA1t6rbi1TFttufyGNaU14pPxo9uK-FVArCbQ@mail.gmail.com>
+ <BFDC3C1D-F87D-4F82-BDB0-444629C484CE@gmail.com> <20210205162523.GF920417@kernel.org>
+In-Reply-To: <20210205162523.GF920417@kernel.org>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 5 Feb 2021 14:11:44 -0800
+Message-ID: <CAEf4BzaXAxOnzkuiOpdMKjQyYHjAN6Td35hDGwbYc9i9aGuj0A@mail.gmail.com>
+Subject: Re: ANNOUNCE: pahole v1.20 (gcc11 DWARF5's default, lots of ELF
+ sections, BTF)
+To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+Cc:     dwarves@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Jiri Olsa <jolsa@kernel.org>,
+        Jan Engelhardt <jengelh@inai.de>,
+        Domenico Andreoli <cavok@debian.org>,
+        Matthias Schwarzott <zzam@gentoo.org>,
+        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
+        Mark Wieelard <mjw@redhat.com>,
+        Paul Moore <paul@paul-moore.com>,
+        Ondrej Mosnacek <omosnace@redhat.com>,
+        =?UTF-8?Q?Daniel_P=2E_Berrang=C3=A9?= <berrange@redhat.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Tom Stellard <tstellar@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 5, 2021 at 10:28 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
+On Fri, Feb 5, 2021 at 8:25 AM Arnaldo Carvalho de Melo
+<arnaldo.melo@gmail.com> wrote:
 >
-> Rstat currently only supports the default hierarchy in cgroup2. In
-> order to replace memcg's private stats infrastructure - used in both
-> cgroup1 and cgroup2 - with rstat, the latter needs to support cgroup1.
+> Em Fri, Feb 05, 2021 at 06:33:43AM -0300, Arnaldo Carvalho de Melo escreveu:
+> > On February 5, 2021 4:39:47 AM GMT-03:00, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+> > >On Thu, Feb 4, 2021 at 8:34 PM Arnaldo Carvalho de Melo ><arnaldo.melo@gmail.com> wrote:
+> > >> On February 4, 2021 9:01:51 PM GMT-03:00, Andrii Nakryiko
+> > ><andrii.nakryiko@gmail.com> wrote:
+> > >> >On Thu, Feb 4, 2021 at 2:09 PM Arnaldo Carvalho de
+> > >Melo><acme@kernel.org> wrote:
+> > >> >>         The v1.20 release of pahole and its friends is out, mostly
+> > >> >> addressing problems related to gcc 11 defaulting to DWARF5 for -g,
+> > >> >> available at the usual places:
 >
-> The initialization and destruction callbacks for regular cgroups are
-> already in place. Remove the cgroup_on_dfl() guards to handle cgroup1.
+> > >> >Great, thanks, Arnaldo! Do you plan to build RPMs soon as well?
 >
-> The initialization of the root cgroup is currently hardcoded to only
-> handle cgrp_dfl_root.cgrp. Move those callbacks to cgroup_setup_root()
-> and cgroup_destroy_root() to handle the default root as well as the
-> various cgroup1 roots we may set up during mounting.
+> > >> It's in rawhide already, I'll do it for f33, f32 later,
 >
-> The linking of css to cgroups happens in code shared between cgroup1
-> and cgroup2 as well. Simply remove the cgroup_on_dfl() guard.
+> > >Do you have a link? I tried to find it, but only see 1.19 so far.
 >
-> Linkage of the root css to the root cgroup is a bit trickier: per
-> default, the root css of a subsystem controller belongs to the default
-> hierarchy (i.e. the cgroup2 root). When a controller is mounted in its
-> cgroup1 version, the root css is stolen and moved to the cgroup1 root;
-> on unmount, the css moves back to the default hierarchy. Annotate
-> rebind_subsystems() to move the root css linkage along between roots.
+> > https://koji.fedoraproject.org/koji/buildinfo?buildID=1703678
 >
-> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
-> Reviewed-by: Roman Gushchin <guro@fb.com>
+> And now for Fedora 33, waiting for karma bumps at:
+>
+> https://bodhi.fedoraproject.org/updates/FEDORA-2021-804e7a572c
+>
+> fedpkg buidling for f32 now.
+>
+> - Arnaldo
 
-Reviewed-by: Shakeel Butt <shakeelb@google.com>
+Ok, imported dwarves-1.20. Had to fix two dates in changelog (in
+spec), day of week didn't match the date, tooling complained about
+that. Also had to undo cmake_build and cmake_install fanciness,
+because apparently we don't have them or the support for it is not
+great. But otherwise everything else looks to be ok.
