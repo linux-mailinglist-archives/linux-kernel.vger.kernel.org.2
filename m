@@ -2,60 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 790F8310B7C
+	by mail.lfdr.de (Postfix) with ESMTP id EC32E310B7D
 	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 14:02:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232397AbhBENAe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 08:00:34 -0500
-Received: from vps0.lunn.ch ([185.16.172.187]:50262 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232401AbhBEMyM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 07:54:12 -0500
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1l80bx-004N5I-SV; Fri, 05 Feb 2021 13:53:21 +0100
-Date:   Fri, 5 Feb 2021 13:53:21 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Hans Verkuil <hverkuil@xs4all.nl>
-Cc:     Takashi Iwai <tiwai@suse.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Matwey V. Kornilov" <matwey@sai.msu.ru>,
-        Robert Foss <robert.foss@linaro.org>
-Subject: Re: [PATCH] media: pwc: Fix the URB buffer allocation
-Message-ID: <YB0/wTjYqE9IgtXZ@lunn.ch>
-References: <20210121202855.17400-1-tiwai@suse.de>
- <7afd0612-de36-60b1-6650-6f8de24a7145@xs4all.nl>
+        id S232462AbhBENC3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 08:02:29 -0500
+Received: from mail-ot1-f54.google.com ([209.85.210.54]:46496 "EHLO
+        mail-ot1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232203AbhBEM4a (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 07:56:30 -0500
+Received: by mail-ot1-f54.google.com with SMTP id d1so6728803otl.13;
+        Fri, 05 Feb 2021 04:56:14 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=b6P/9Ii6q0eh8+US0PsAM8pD22tXSNYwoelUIBahN5k=;
+        b=Ares69F1UY3/F3JlWlrkhAsr4j+l7S37taYvsQPW43eq3o6y6cUDOgkwSA1Uz/GiTl
+         CAqrRyHqh0Eaf2/qONC0GFNE/wQ3xvlWClHHaCp2BNJsz0/Ra5jrSDaMM7flLv3IVtjh
+         vQC9NnKEmHxPAx0fFIEz0imnEDX4ISyO3xrDRj+tvL+dzmHM/reeWC2lQszcWjEUrNWu
+         dhkUidgWEiFYU+6k9pUyvxjPhqoCL/3daDiUWb8bf9mix0v/8iOLAeCeC7QHKcNNoMNk
+         Zj1EtvWB551/8dLoNmDAUXRHbaCUdLhGtAs9pkc4+7z2Xm7rWf0yrkzBNiWgRA9VN4wh
+         21+g==
+X-Gm-Message-State: AOAM530IkY96KU4vcQ8rNaANxQ67brqH7NPLcBnz2ir70Da+Ur1e+uXd
+        ljciNZmGx2uktSULkEpjiAy2sRMNlHSve6jCBbU=
+X-Google-Smtp-Source: ABdhPJxIA8R1yJapdbJUdG3/EKMUPegxp/+2S2dHN4TFHZjg+cDqGqF+bKHmPnIGQ3ZUYjmWwrM2nM8zIG+L2bky7qA=
+X-Received: by 2002:a9d:a2d:: with SMTP id 42mr1806386otg.321.1612529747597;
+ Fri, 05 Feb 2021 04:55:47 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7afd0612-de36-60b1-6650-6f8de24a7145@xs4all.nl>
+References: <1607602177-1507-1-git-send-email-tanxiaofei@huawei.com> <94a38a33-a949-3cce-d617-e1476912596e@huawei.com>
+In-Reply-To: <94a38a33-a949-3cce-d617-e1476912596e@huawei.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 5 Feb 2021 13:55:33 +0100
+Message-ID: <CAJZ5v0hp49Jt6ZWMNUkEOmMST5eM60b8Nzz0wT4w1--zj-KPWw@mail.gmail.com>
+Subject: Re: [PATCH v5] ACPI / APEI: fix the regression of synchronous
+ external aborts occur in user-mode
+To:     tanxiaofei <tanxiaofei@huawei.com>,
+        James Morse <james.morse@arm.com>,
+        Borislav Petkov <bp@alien8.de>
+Cc:     Len Brown <lenb@kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Tony Luck <tony.luck@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Joerg Roedel <jroedel@suse.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linuxarm <linuxarm@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 05, 2021 at 01:36:43PM +0100, Hans Verkuil wrote:
-> Hi Takashi,
-> 
-> Thank you for this patch, but it clashes with another patch trying to do the same thing
-> that has already been merged in our tree:
-> 
-> https://patchwork.linuxtv.org/project/linux-media/patch/20210104170007.20625-1-matwey@sai.msu.ru/
-> 
-> I do prefer your patch over the one already merged since it is a bit simpler, but
-> shouldn't the calls to dma_sync_single_for_cpu() and dma_sync_single_for_device()
-> in pwc-if.c also use urb->dev->bus->controller?
-> 
-> Also, Matwey's patch uses urb->dev->bus->sysdev instead of urb->dev->bus->controller.
-> How does 'sysdev' relate to 'controller'? I think 'controller' is the right device to
-> use, but either seems to work when I test it with my pwc webcam.
+On Tue, Jan 26, 2021 at 2:32 PM tanxiaofei <tanxiaofei@huawei.com> wrote:
+>
+> @James
+> Hi James, please help to review this patch. Thank you very much. :)
 
-Hi Hans
+James, Boris, any comments?
 
-A quick grep in driver/usb show that all but one dma mapping operation
-use sysdev. The one other case uses controller. So the numbers suggest
-controller is wrong, sysdev is correct.
-
-But maybe ask GregKH?
-
-	   Andrew
+> On 2020/12/10 20:09, Xiaofei Tan wrote:
+> > After the commit 8fcc4ae6faf8 ("arm64: acpi: Make apei_claim_sea()
+> > synchronise with APEI's irq work") applied, do_sea() return directly
+> > for user-mode if apei_claim_sea() handled any error record. Therefore,
+> > each error record reported by the user-mode SEA must be effectively
+> > processed in APEI GHES driver.
+> >
+> > Currently, GHES driver only processes Memory Error Section.(Ignore PCIe
+> > Error Section, as it has nothing to do with SEA). It is not enough.
+> > Because ARM Processor Error could also be used for SEA in some hardware
+> > platforms, such as Kunpeng9xx series. We can't ask them to switch to
+> > use Memory Error Section for two reasons:
+> > 1)The server was delivered to customers, and it will introduce
+> > compatibility issue.
+> > 2)It make sense to use ARM Processor Error Section. Because either
+> > cache or memory errors could generate SEA when consumed by a processor.
+> >
+> > Do memory failure handling for ARM Processor Error Section just like
+> > for Memory Error Section.
+> >
+> > Signed-off-by: Xiaofei Tan <tanxiaofei@huawei.com>
+> > ---
+> > Changes since v4:
+> > - 1. Change the patch name from " ACPI / APEI: do memory failure on the
+> > physical address reported by ARM processor error section" to this
+> > more proper one.
+> > - 2. Add a comment in the code to tell why not filter out corrected
+> > error in an uncorrected section.
+> >
+> > Changes since v3:
+> > - Print unhandled error following James Morse's advice.
+> >
+> > Changes since v2:
+> > - Updated commit log
+> > ---
+> >  drivers/acpi/apei/ghes.c | 76 +++++++++++++++++++++++++++++++++++++-----------
+> >  1 file changed, 59 insertions(+), 17 deletions(-)
+> >
+> > diff --git a/drivers/acpi/apei/ghes.c b/drivers/acpi/apei/ghes.c
+> > index fce7ade..0893968 100644
+> > --- a/drivers/acpi/apei/ghes.c
+> > +++ b/drivers/acpi/apei/ghes.c
+> > @@ -441,28 +441,35 @@ static void ghes_kick_task_work(struct callback_head *head)
+> >       gen_pool_free(ghes_estatus_pool, (unsigned long)estatus_node, node_len);
+> >  }
+> >
+> > -static bool ghes_handle_memory_failure(struct acpi_hest_generic_data *gdata,
+> > -                                    int sev)
+> > +static bool ghes_do_memory_failure(u64 physical_addr, int flags)
+> >  {
+> >       unsigned long pfn;
+> > -     int flags = -1;
+> > -     int sec_sev = ghes_severity(gdata->error_severity);
+> > -     struct cper_sec_mem_err *mem_err = acpi_hest_get_payload(gdata);
+> >
+> >       if (!IS_ENABLED(CONFIG_ACPI_APEI_MEMORY_FAILURE))
+> >               return false;
+> >
+> > -     if (!(mem_err->validation_bits & CPER_MEM_VALID_PA))
+> > -             return false;
+> > -
+> > -     pfn = mem_err->physical_addr >> PAGE_SHIFT;
+> > +     pfn = PHYS_PFN(physical_addr);
+> >       if (!pfn_valid(pfn)) {
+> >               pr_warn_ratelimited(FW_WARN GHES_PFX
+> >               "Invalid address in generic error data: %#llx\n",
+> > -             mem_err->physical_addr);
+> > +             physical_addr);
+> >               return false;
+> >       }
+> >
+> > +     memory_failure_queue(pfn, flags);
+> > +     return true;
+> > +}
+> > +
+> > +static bool ghes_handle_memory_failure(struct acpi_hest_generic_data *gdata,
+> > +                                    int sev)
+> > +{
+> > +     int flags = -1;
+> > +     int sec_sev = ghes_severity(gdata->error_severity);
+> > +     struct cper_sec_mem_err *mem_err = acpi_hest_get_payload(gdata);
+> > +
+> > +     if (!(mem_err->validation_bits & CPER_MEM_VALID_PA))
+> > +             return false;
+> > +
+> >       /* iff following two events can be handled properly by now */
+> >       if (sec_sev == GHES_SEV_CORRECTED &&
+> >           (gdata->flags & CPER_SEC_ERROR_THRESHOLD_EXCEEDED))
+> > @@ -470,14 +477,51 @@ static bool ghes_handle_memory_failure(struct acpi_hest_generic_data *gdata,
+> >       if (sev == GHES_SEV_RECOVERABLE && sec_sev == GHES_SEV_RECOVERABLE)
+> >               flags = 0;
+> >
+> > -     if (flags != -1) {
+> > -             memory_failure_queue(pfn, flags);
+> > -             return true;
+> > -     }
+> > +     if (flags != -1)
+> > +             return ghes_do_memory_failure(mem_err->physical_addr, flags);
+> >
+> >       return false;
+> >  }
+> >
+> > +static bool ghes_handle_arm_hw_error(struct acpi_hest_generic_data *gdata, int sev)
+> > +{
+> > +     struct cper_sec_proc_arm *err = acpi_hest_get_payload(gdata);
+> > +     struct cper_arm_err_info *err_info;
+> > +     bool queued = false;
+> > +     int sec_sev, i;
+> > +
+> > +     log_arm_hw_error(err);
+> > +
+> > +     sec_sev = ghes_severity(gdata->error_severity);
+> > +     if (sev != GHES_SEV_RECOVERABLE || sec_sev != GHES_SEV_RECOVERABLE)
+> > +             return false;
+> > +
+> > +     err_info = (struct cper_arm_err_info *) (err + 1);
+> > +     for (i = 0; i < err->err_info_num; i++, err_info++) {
+> > +             bool is_cache = (err_info->type == CPER_ARM_CACHE_ERROR);
+> > +             bool has_pa = (err_info->validation_bits & CPER_ARM_INFO_VALID_PHYSICAL_ADDR);
+> > +
+> > +             /*
+> > +              * The field (err_info->error_info & BIT(26)) is fixed to set to
+> > +              * 1 in some old firmware of HiSilicon Kunpeng920. We assume that
+> > +              * firmware won't mix corrected errors in an uncorrected section,
+> > +              * and don't filter out 'corrected' error here.
+> > +              */
+> > +             if (!is_cache || !has_pa) {
+> > +                     pr_warn_ratelimited(FW_WARN GHES_PFX
+> > +                     "Unhandled processor error type %s\n",
+> > +                     err_info->type < ARRAY_SIZE(cper_proc_error_type_strs) ?
+> > +                     cper_proc_error_type_strs[err_info->type] : "unknown error");
+> > +                     continue;
+> > +             }
+> > +
+> > +             if (ghes_do_memory_failure(err_info->physical_fault_addr, 0))
+> > +                     queued = true;
+> > +     }
+> > +
+> > +     return queued;
+> > +}
+> > +
+> >  /*
+> >   * PCIe AER errors need to be sent to the AER driver for reporting and
+> >   * recovery. The GHES severities map to the following AER severities and
+> > @@ -605,9 +649,7 @@ static bool ghes_do_proc(struct ghes *ghes,
+> >                       ghes_handle_aer(gdata);
+> >               }
+> >               else if (guid_equal(sec_type, &CPER_SEC_PROC_ARM)) {
+> > -                     struct cper_sec_proc_arm *err = acpi_hest_get_payload(gdata);
+> > -
+> > -                     log_arm_hw_error(err);
+> > +                     queued = ghes_handle_arm_hw_error(gdata, sev);
+> >               } else {
+> >                       void *err = acpi_hest_get_payload(gdata);
+> >
+> >
+>
