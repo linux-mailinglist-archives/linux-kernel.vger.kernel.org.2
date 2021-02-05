@@ -2,144 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8AAE3104BD
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 06:50:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8C283104D0
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 07:00:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230363AbhBEFug (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 00:50:36 -0500
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:10543 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229586AbhBEFuf (ORCPT
+        id S230402AbhBEF7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 00:59:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56602 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230075AbhBEF7b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 00:50:35 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B601cdc830000>; Thu, 04 Feb 2021 21:49:55 -0800
-Received: from [10.2.60.31] (172.20.145.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 5 Feb
- 2021 05:49:55 +0000
-Subject: Re: [PATCH] mm: cma: support sysfs
-To:     Minchan Kim <minchan@kernel.org>
-CC:     Andrew Morton <akpm@linux-foundation.org>,
-        <gregkh@linuxfoundation.org>, <surenb@google.com>,
-        <joaodias@google.com>, LKML <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>
-References: <20210203155001.4121868-1-minchan@kernel.org>
- <7e7c01a7-27fe-00a3-f67f-8bcf9ef3eae9@nvidia.com>
- <YBxT9XFE6QAQ4T9N@google.com>
- <cda5547b-0c78-756b-bd0c-f3e534d04bff@nvidia.com>
- <YByNU4Q7cc7gYwPh@google.com>
- <87d7ec1f-d892-0491-a2de-3d0feecca647@nvidia.com>
- <YByi/gdaGJeV/+8b@google.com>
- <71c4ce84-8be7-49e2-90bd-348762b320b4@nvidia.com>
- <YBzU5uUbwa+QIwBQ@google.com>
-From:   John Hubbard <jhubbard@nvidia.com>
-Message-ID: <34110c61-9826-4cbe-8cd4-76f5e7612dbd@nvidia.com>
-Date:   Thu, 4 Feb 2021 21:49:54 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:85.0) Gecko/20100101
- Thunderbird/85.0
+        Fri, 5 Feb 2021 00:59:31 -0500
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3136C06178B
+        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 21:58:50 -0800 (PST)
+Received: by mail-qk1-x72d.google.com with SMTP id k193so5879960qke.6
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 21:58:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SZ0GQLJipF2hQIt0oYg/b3YND75QYohdSOPgCgGvmtI=;
+        b=oPGsTQx7+FdG6LRGl1TD3o+RbriHfudMdPEUWdoVcGtiFVzJyADmDY4/qjjG1+UIcy
+         wjKL99cqQfoIL+mWKhEojF7j3xy7b/FwNrgzFcnaC4VE2BI5tBDFbEYcfnximoQpd7Bo
+         foetOy+pvkseCt44S1+fCOI+yg3iGoGzvmkUU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SZ0GQLJipF2hQIt0oYg/b3YND75QYohdSOPgCgGvmtI=;
+        b=jiL+KGOOpfrGW1ltdFIbtHerFqvI4licC166/ZbkwWxecR5OEcpSc6wgpUc8p4d0Fn
+         E8d2JFyJRJZe/viA+Mc2WYePWPtZK+0e5EZfVC2HPyLbH9ceTuu3KZe0aY9HCSIlUYNL
+         I24Shi0qT1mtAHVvbbWPQYtgf443ISh1B+uylUQt1VKlxFEIclQuMRfaaJTrHIf70YTB
+         Dxn5fmW6Y6FD1d+h/BfMgnjA1RFJOIYxpZe36D16BTLKRGCCXXwLftN0rwR6/IQ/RjtO
+         9pn9Y5lRLKgamNCDS8CFFZTwVXbsRffTnntMKgdBhvEGT9Q8PzU3dCRN5vSSvWAwNZHk
+         Ya+w==
+X-Gm-Message-State: AOAM533Gy0bS4sBGcd6YAnKZWo9i2sP6vCm0qxXtECKyFtUuH00r+Uvg
+        JOrMVe17Xwai1FWWKM0c1S4sAjsDEQSGGdUJQECPpQ==
+X-Google-Smtp-Source: ABdhPJwYA73lftjBriOP+37YGUdH+MFOawlYakwpkyiHcFfBQsl9Chfbewfaer8b9y41czh2lCGjkNZ6cshLgPPsL0I=
+X-Received: by 2002:a37:73c3:: with SMTP id o186mr2728785qkc.194.1612504730031;
+ Thu, 04 Feb 2021 21:58:50 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <YBzU5uUbwa+QIwBQ@google.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1612504195; bh=IanrqRGxo10dCYdhSvV2QI9Ox25wHsXN8TeVjaQgFfk=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=ghlePawoEp/fnScOv8JFmuWqsJeUrg37wmsKYBDQM9xiRs8EUH+hG7Pq5KY0a9CmO
-         Bq+7pAhQfF7it8KUMsSLK6KPbJqajK99WrMidj+7NCk8znkaS1HQMT9VaFM9+LFbi6
-         WqZCM3teA/TQdEVoYlvbmi9dcK9elGIdKJn+6UnMGkzetEd4kv1uTMksR5n3+bb7fD
-         zQn7yEtJJ5wZIAAWrXKDsUiRFEkXoSxceweJJK3lECoHPI1ftOmUmMKmXQBNn1JuLL
-         QtnoxEGK0cF2pyGUJQW6Wk0PipInqrTqwxZ+PSSuDqyj5L61d3yeClqDQ88D8wWd92
-         FhqtagG/YPHGg==
+References: <20210128060515.1732758-1-stevensd@google.com> <c01b01dc-c636-1d1b-fb42-df718e23d20a@redhat.com>
+In-Reply-To: <c01b01dc-c636-1d1b-fb42-df718e23d20a@redhat.com>
+From:   David Stevens <stevensd@chromium.org>
+Date:   Fri, 5 Feb 2021 14:58:38 +0900
+Message-ID: <CAD=HUj5sKKnckSqBjjR8paGegLfSujk03C5uDwzfh=PAaj5BZA@mail.gmail.com>
+Subject: Re: [PATCH v3 0/2] KVM: x86/mmu: Skip mmu_notifier changes when possible
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        linux-mips@vger.kernel.org, Paul Mackerras <paulus@ozlabs.org>,
+        kvm-ppc@vger.kernel.org,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        David Stevens <stevensd@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/4/21 9:17 PM, Minchan Kim wrote:
-...
->>>> Presumably, having the source code, you can easily deduce that a bluetooth
->>>> allocation failure goes directly to a CMA allocation failure, right?
->>
->> Still wondering about this...
-> 
-> It would work if we have full source code and stack are not complicated for
-> every usecases. Having said, having a good central place automatically
-> popped up is also beneficial for not to add similar statistics for each
-> call sites.
-> 
-> Why do we have too many item in slab sysfs instead of creating each call
-> site inventing on each own?
-> 
+These patches might be responsible for some instability in one of our
+stress tests. I'll send an update once I figure out what's going on.
 
-I'm not sure I understand that question fully, but I don't think we need to
-invent anything unique here. So far we've discussed debugfs, sysfs, and /proc,
-none of which are new mechanisms.
+Thanks,
+David
 
-...
-
->> It's actually easier to monitor one or two simpler items than it is to monitor
->> a larger number of complicated items. And I get the impression that this is
->> sort of a top-level, production software indicator.
-> 
-> Let me clarify one more time.
-> 
-> What I'd like to get ultimately is per-CMA statistics instead of
-> global vmstat for the usecase at this moment. Global vmstat
-> could help the decision whether I should go deeper but it ends up
-> needing per-CMA statistics. And I'd like to keep them in sysfs,
-> not debugfs since it should be stable as a telemetric.
-> 
-> What points do you disagree in this view?
-
-
-No huge disagreements, I just want to get us down to the true essential elements
-of what is required--and find a good home for the data. Initial debugging always
-has excesses, and those should not end up in the more carefully vetted production
-code.
-
-If I were doing this, I'd probably consider HugeTLB pages as an example to follow,
-because they have a lot in common with CMA: it's another memory allocation pool, and
-people also want to monitor it.
-
-HugeTLB pages and THP pages are monitored in /proc:
-	/proc/meminfo and /proc/vmstat:
-
-# cat meminfo |grep -i huge
-AnonHugePages:     88064 kB
-ShmemHugePages:        0 kB
-FileHugePages:         0 kB
-HugePages_Total:     500
-HugePages_Free:      500
-HugePages_Rsvd:        0
-HugePages_Surp:        0
-Hugepagesize:       2048 kB
-Hugetlb:         1024000 kB
-
-# cat vmstat | grep -i huge
-nr_shmem_hugepages 0
-nr_file_hugepages 0
-nr_anon_transparent_hugepages 43
-numa_huge_pte_updates 0
-
-...aha, so is CMA:
-
-# cat vmstat | grep -i cma
-nr_free_cma 261718
-
-# cat meminfo | grep -i cma
-CmaTotal:        1048576 kB
-CmaFree:         1046872 kB
-
-OK, given that CMA is already in those two locations, maybe we should put
-this information in one or both of those, yes?
-
-
-thanks,
--- 
-John Hubbard
-NVIDIA
+On Thu, Jan 28, 2021 at 9:48 PM Paolo Bonzini <pbonzini@redhat.com> wrote:
+>
+> On 28/01/21 07:05, David Stevens wrote:
+> > These patches reduce how often mmu_notifier updates block guest page
+> > faults. The primary benefit of this is the reduction in the likelihood
+> > of extreme latency when handling a page fault due to another thread
+> > having been preempted while modifying host virtual addresses.
+> >
+> > v2 -> v3:
+> >   - Added patch to skip check for MMIO page faults
+> >   - Style changes
+> >
+> > David Stevens (1):
+> >    KVM: x86/mmu: Consider the hva in mmu_notifier retry
+> >
+> > Sean Christopherson (1):
+> >    KVM: x86/mmu: Skip mmu_notifier check when handling MMIO page fault
+> >
+> >   arch/powerpc/kvm/book3s_64_mmu_hv.c    |  2 +-
+> >   arch/powerpc/kvm/book3s_64_mmu_radix.c |  2 +-
+> >   arch/x86/kvm/mmu/mmu.c                 | 16 ++++++++------
+> >   arch/x86/kvm/mmu/paging_tmpl.h         |  7 ++++---
+> >   include/linux/kvm_host.h               | 25 +++++++++++++++++++++-
+> >   virt/kvm/kvm_main.c                    | 29 ++++++++++++++++++++++----
+> >   6 files changed, 65 insertions(+), 16 deletions(-)
+> >
+>
+> Queued, thanks.
+>
+> Paolo
+>
