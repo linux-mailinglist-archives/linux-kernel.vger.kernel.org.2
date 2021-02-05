@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D15A53110DD
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 20:16:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62C033110D2
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 20:14:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230436AbhBERbw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 12:31:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54092 "EHLO mail.kernel.org"
+        id S233586AbhBERaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 12:30:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54098 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233468AbhBEP7m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 10:59:42 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7AA2C6502A;
-        Fri,  5 Feb 2021 14:11:24 +0000 (UTC)
+        id S233470AbhBEP7p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 10:59:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F38F665030;
+        Fri,  5 Feb 2021 14:11:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612534285;
-        bh=7tNhC8ulhDtwMtSaZXJRxLWlcNzh4K3Z0fdcmoEtpOU=;
+        s=korg; t=1612534293;
+        bh=CJzhquXinqJ4mwJA43A2q4mP/ri/sWG3gbVv80b/q+A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BHjEas38vVqojxjAbWA7WLloHEtJ7ECjDkTfc51NxDB0SwlCh+PuG0Jv29vFnTLB3
-         tN8aCnQbsSAmg+LFJd6ddaNPkVF3f2CKG0vXCiIJpmMnUPLuZ9cMlyr7c7wTgrBGCR
-         Dm790fIQ8hVjQUWO9wRpPlr6oOV6+sotaXRdqnTA=
+        b=NVefQ4iUx70ot9d6QQMtJpP7BwpCRHU4MPG2lkr8fW6hQlbWhvSiZ6eH7rgWizSuA
+         xnTTOQcieX1/2qwiAvCQWyQK2k12EkLKLKv8hbMDxaoJcHe0Ef8IfR96pXPN9B4nHF
+         GPpfJa8w5eQJiwuNuKy0k3I0XFgrLR2+CUl/gdng=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nick Desaulniers <ndesaulniers@google.com>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Kamalesh Babulal <kamalesh@linux.vnet.ibm.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
+        stable@vger.kernel.org,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 54/57] objtool: Dont fail the kernel build on fatal errors
-Date:   Fri,  5 Feb 2021 15:07:20 +0100
-Message-Id: <20210205140658.306208184@linuxfoundation.org>
+Subject: [PATCH 5.10 57/57] workqueue: Restrict affinity change to rescuer
+Date:   Fri,  5 Feb 2021 15:07:23 +0100
+Message-Id: <20210205140658.433231033@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210205140655.982616732@linuxfoundation.org>
 References: <20210205140655.982616732@linuxfoundation.org>
@@ -42,59 +41,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Josh Poimboeuf <jpoimboe@redhat.com>
+From: Peter Zijlstra <peterz@infradead.org>
 
-[ Upstream commit 655cf86548a3938538642a6df27dd359e13c86bd ]
+[ Upstream commit 640f17c82460e9724fd256f0a1f5d99e7ff0bda4 ]
 
-This is basically a revert of commit 644592d32837 ("objtool: Fail the
-kernel build on fatal errors").
+create_worker() will already set the right affinity using
+kthread_bind_mask(), this means only the rescuer will need to change
+it's affinity.
 
-That change turned out to be more trouble than it's worth.  Failing the
-build is an extreme measure which sometimes gets too much attention and
-blocks CI build testing.
+Howveer, while in cpu-hot-unplug a regular task is not allowed to run
+on online&&!active as it would be pushed away quite agressively. We
+need KTHREAD_IS_PER_CPU to survive in that environment.
 
-These fatal-type warnings aren't yet as rare as we'd hope, due to the
-ever-increasing matrix of supported toolchains/plugins and their
-fast-changing nature as of late.
+Therefore set the affinity after getting that magic flag.
 
-Also, there are more people (and bots) looking for objtool warnings than
-ever before, so even non-fatal warnings aren't likely to be ignored for
-long.
-
-Suggested-by: Nick Desaulniers <ndesaulniers@google.com>
-Reviewed-by: Miroslav Benes <mbenes@suse.cz>
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-Reviewed-by: Kamalesh Babulal <kamalesh@linux.vnet.ibm.com>
-Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
+Tested-by: Valentin Schneider <valentin.schneider@arm.com>
+Link: https://lkml.kernel.org/r/20210121103506.826629830@infradead.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/objtool/check.c | 14 +++++---------
- 1 file changed, 5 insertions(+), 9 deletions(-)
+ kernel/workqueue.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
-diff --git a/tools/objtool/check.c b/tools/objtool/check.c
-index c6ab44543c92a..956383d5fa62e 100644
---- a/tools/objtool/check.c
-+++ b/tools/objtool/check.c
-@@ -2921,14 +2921,10 @@ int check(struct objtool_file *file)
- 	warnings += ret;
+diff --git a/kernel/workqueue.c b/kernel/workqueue.c
+index 0695c7895c892..1d99c52cc99a6 100644
+--- a/kernel/workqueue.c
++++ b/kernel/workqueue.c
+@@ -1845,12 +1845,6 @@ static void worker_attach_to_pool(struct worker *worker,
+ {
+ 	mutex_lock(&wq_pool_attach_mutex);
  
- out:
--	if (ret < 0) {
--		/*
--		 *  Fatal error.  The binary is corrupt or otherwise broken in
--		 *  some way, or objtool itself is broken.  Fail the kernel
--		 *  build.
--		 */
--		return ret;
--	}
+-	/*
+-	 * set_cpus_allowed_ptr() will fail if the cpumask doesn't have any
+-	 * online CPUs.  It'll be re-applied when any of the CPUs come up.
+-	 */
+-	set_cpus_allowed_ptr(worker->task, pool->attrs->cpumask);
 -
-+	/*
-+	 *  For now, don't fail the kernel build on fatal warnings.  These
-+	 *  errors are still fairly common due to the growing matrix of
-+	 *  supported toolchains and their recent pace of change.
-+	 */
- 	return 0;
- }
+ 	/*
+ 	 * The wq_pool_attach_mutex ensures %POOL_DISASSOCIATED remains
+ 	 * stable across this function.  See the comments above the flag
+@@ -1859,6 +1853,9 @@ static void worker_attach_to_pool(struct worker *worker,
+ 	if (pool->flags & POOL_DISASSOCIATED)
+ 		worker->flags |= WORKER_UNBOUND;
+ 
++	if (worker->rescue_wq)
++		set_cpus_allowed_ptr(worker->task, pool->attrs->cpumask);
++
+ 	list_add_tail(&worker->node, &pool->workers);
+ 	worker->pool = pool;
+ 
 -- 
 2.27.0
 
