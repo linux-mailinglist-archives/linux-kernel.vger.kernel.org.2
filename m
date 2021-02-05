@@ -2,96 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E2E7310297
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 03:09:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50E3B31029C
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 03:13:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229793AbhBECJM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 21:09:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35626 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229554AbhBECJK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 21:09:10 -0500
-Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6920C0613D6
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 18:08:29 -0800 (PST)
-Received: by mail-yb1-xb2f.google.com with SMTP id j84so5290165ybg.1
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 18:08:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8/DUuuLnOc3dW/Ew2hfkg+fVyjRRdajneZRBMkAFYOQ=;
-        b=PbuOE30AyXprky6/QR6czkFZx5uz17LkJwwN/l7f1dG57sQ7EjetrbkJPVtSaWBvWE
-         1MABWdpp0QcG1W3UvP4VyHMQ+KGHcWc6GEZzOA20F45P43A3TOMFTG7Gs/LeVB8CBvyM
-         LE9/ZWPsB+PgfTuWezS6JdVf6YTnKCuixndXTbwSDwXlUkEQ2YYbjGxT0Sx1Gq6bJmLQ
-         Ph8Gi+aqbEcWolobecwmtusaOk6FrDZzhIohA2gKDr8cO6ekedgyd1KyXWh78DscPoBN
-         lC/l73RCkWkvPfU5YrajCfBIaXC9A4tR+Lu7Umf5bb/5DhBnyV7zHBJMT2rxzowBYsWy
-         3zvg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8/DUuuLnOc3dW/Ew2hfkg+fVyjRRdajneZRBMkAFYOQ=;
-        b=s2Dw1CKga04XdtKuL+wjdeb68cg1CufhFqgoGyck9tfZSf9c1bLX4mhoHDntWc57ba
-         vrXbU2nNuVHjUNFTm2iB4ClGG1oGTiXbd56WQVc7B+q/ecPYrE9wI6B+EjCgBzRYpedk
-         FAWtUWdNWcdCwOoUx260pCYCdVuiz3SIkuEaJYcRhW3mAwX7NBhQzGiDG9ZBoJVTeD/H
-         OEenQV0hr4Nl2BU5p8pkXEtffA5UMZ+47t7ADlTueo+XCESaSLjNT6B5Kx7bWcoZXNIa
-         Lg6y0+VgSmp8yBXxN6J1jY7IBhumBslJUlBpMFFC2moRYWeJVKm0E0lwXJpP1ebSoeIB
-         QCng==
-X-Gm-Message-State: AOAM532c1mbkpCoQ9obiyKNpUu2focpXk5X02G3uDpy9ptCEX40sEAek
-        8mv548GU0Xk64dzn3ZoQ3WljdobMlOX2Z+U/CCmviw==
-X-Google-Smtp-Source: ABdhPJx+J5x04XVJbmCzZQFFCEeL6xlp5guKIWQwS5n8MuL3YcoG9mvY9lyIlpsOZ2HSMR15MNevEl/+YHoiA762ok8=
-X-Received: by 2002:a05:6902:1025:: with SMTP id x5mr3141079ybt.96.1612490909017;
- Thu, 04 Feb 2021 18:08:29 -0800 (PST)
+        id S229692AbhBECM4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 21:12:56 -0500
+Received: from ozlabs.org ([203.11.71.1]:48531 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229487AbhBECMz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 21:12:55 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DWzSn0Q8yz9sWd;
+        Fri,  5 Feb 2021 13:12:09 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1612491132;
+        bh=9+YNYgOvs+LvDUb5QbSEuc4VS2ZKmFRzV9IFnBYP47c=;
+        h=Date:From:To:Cc:Subject:From;
+        b=RXStvPBpmTG/hL0RIHUavwUxVKDPK79dbRVeGANdInTCB3KZV418Lm3KS3OyQ+4++
+         ed9U0eY5x2T2mO9vsmhbVWacqmzmS8EvmMqDRLJJzpNXNhSQSNFdZ3F3HD8Jhvfp5l
+         uS7+O3c15NGDlfjYb8g6ubObuB078FZaBuR86SdyQoz3oMGbsaVKLWsSZuGDhXBMBc
+         fAR0pNMFc2WA1McV98Vvw1CD+NL1M49VSbP59VcUHup7CBtBem7Lu5l+7ZQ9of+N++
+         +Tz6DRCj9pOgOJapoE1kjuygrYf5j5eTQU0fQNmSo1sTMqwQgxuF7ahh9C2BGfG4Ff
+         LmwcZp6PYaiNg==
+Date:   Fri, 5 Feb 2021 13:12:08 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Alex Deucher <alexdeucher@gmail.com>,
+        Dave Airlie <airlied@linux.ie>,
+        DRI <dri-devel@lists.freedesktop.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the amdgpu tree
+Message-ID: <20210205131208.3c1bfcc6@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20210205013847.1736929-1-saravanak@google.com> <CAOMZO5DRjT4d8gzSZZX4itcOXO_pye-1aq658EX2vQJ5xhEi8A@mail.gmail.com>
-In-Reply-To: <CAOMZO5DRjT4d8gzSZZX4itcOXO_pye-1aq658EX2vQJ5xhEi8A@mail.gmail.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Thu, 4 Feb 2021 18:07:53 -0800
-Message-ID: <CAGETcx9E+dw3HS+DHMhzbrQGcrT6z4kDH=ziS=1=i-7=0rLwgw@mail.gmail.com>
-Subject: Re: [PATCH v3] ARM: imx: avic: Convert to using IRQCHIP_DECLARE
-To:     Fabio Estevam <festevam@gmail.com>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Martin Kaiser <martin@kaiser.cx>,
-        Android Kernel Team <kernel-team@android.com>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/zwipi3XuVJ2FCTtb1VezoeB";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 4, 2021 at 5:54 PM Fabio Estevam <festevam@gmail.com> wrote:
->
-> Hi Saravana,
->
-> On Thu, Feb 4, 2021 at 10:39 PM Saravana Kannan <saravanak@google.com> wrote:
-> >
-> > Using IRQCHIP_DECLARE lets fw_devlink know that it should not wait for
-> > these interrupt controllers to be populated as struct devices. Without
-> > this change, fw_devlink=on will make the consumers of these interrupt
-> > controllers wait for the struct device to be added and thereby block the
-> > consumers' probes forever. Converting to IRQCHIP_DECLARE addresses boot
-> > issues on imx25 with fw_devlink=on that were reported by Martin.
-> >
-> > This also removes a lot of boilerplate code.
-> >
-> > Fixes: e590474768f1 ("driver core: Set fw_devlink=on by default")
-> > Reported-by: Martin Kaiser <martin@kaiser.cx>
-> > Signed-off-by: Saravana Kannan <saravanak@google.com>
-> > Tested-by: Martin Kaiser <martin@kaiser.cx>
->
-> Thanks for the respin:
->
-> Reviewed-by: Fabio Estevam <festevam@gmail.com>
+--Sig_/zwipi3XuVJ2FCTtb1VezoeB
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Thanks for the quick review.
+Hi all,
 
--Saravana
+After merging the amdgpu tree, today's linux-next build (x86_64
+allmodconfig) failed like this:
+
+
+Caused by commit
+
+  13a75af50484 ("drm/amd/display: Fix unused variable warning")
+
+interacting with commit
+
+  4c3a3292730c ("drm/amd/display: fix unused variable warning")
+
+from the drm tree.
+
+I reverted the drm tree commit for now.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/zwipi3XuVJ2FCTtb1VezoeB
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAcqXgACgkQAVBC80lX
+0GwSagf+Oews8YCbCtU+/5+h8Og5tffUqqVFMZXXwHSVO4wo5JjWgtkwm8MS9you
+qB5B1pDA9msLAUW010IukWwkppTLI2ceF3SlwIOnBj9aUgl0y9kjyYdTHJYhsRm6
+ouKjuM8uVH5qLGpSB0mi6hlpVFHEYTe3m1T1jk3tmqFeaHB0+33n5Ac30uT5QC1M
+zKfm5a0EBW/pSEuZAWY9W67RPeSdocki1jUHUagZcax2w+Lcn1+LWlLWoWCUvRi0
+54I9Liv0vLjrjwwWXWs50X648MdDxCtU+uu47ozTYBCqmiEEvHqpPMaGaSlbA+ZN
+Oyin8IXfpMF3uB74ZqoJLDnVro7EUA==
+=ng4a
+-----END PGP SIGNATURE-----
+
+--Sig_/zwipi3XuVJ2FCTtb1VezoeB--
