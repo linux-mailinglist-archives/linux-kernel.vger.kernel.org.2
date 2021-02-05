@@ -2,184 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1B6A310F2D
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 18:55:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58BD8310F37
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 18:56:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232591AbhBEQMm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 11:12:42 -0500
-Received: from mail-ot1-f45.google.com ([209.85.210.45]:36990 "EHLO
-        mail-ot1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233410AbhBEQKY (ORCPT
+        id S233572AbhBEQOD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 11:14:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37878 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233427AbhBEQLv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 11:10:24 -0500
-Received: by mail-ot1-f45.google.com with SMTP id k25so5584181otb.4;
-        Fri, 05 Feb 2021 09:52:31 -0800 (PST)
+        Fri, 5 Feb 2021 11:11:51 -0500
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76ED9C06174A
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 09:53:33 -0800 (PST)
+Received: by mail-yb1-xb2d.google.com with SMTP id y4so7520864ybk.12
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 09:53:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Yyoc99buBNFjurCaW/whYy79AAlTl7S/tHuz1PuZ6rI=;
+        b=RNlI3uvyWjwmLWgBHaS/45B4svMCSXu4HfvBQ26eWi6til6I2ADoIArRShwLABIfe9
+         2BRgu7DTI+5PaZvPUF/EqYWUNTXESJHlSuFCFSTflAIV60LFWtIy2p2jXpsWqpVhxV+h
+         Osp0HOf5ThOwmbo0m7NI2Vsv8JurXipUKhWm1KHHEM04uBTYR1Ct3N50gETk/wTcg0/n
+         BOh7WlWX7N6rUf8bvO7CIuX+LyODJrF+/liuF7ZgOkKNEYUy3zS50s1BKfgaOwK4KL+1
+         YQVIqZk4aK51xwyy7ZSmwyaYEbQTZEoQipgBJUnnKUuXJnnr0nd2QfwvJHuqYalgWUep
+         BLmQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=cOKpvjLf9zUpsIbTZMtFYG0DIeTuDHInnNPJ34yMbiM=;
-        b=UvJlQ+ltfB987r4+JpJ6iLmcg9nhylC8m1d0Q5hT4W2jkC43vCExVq02FNhEtRSuRL
-         7bUlToPak1aOEMpsd+N7O8ZA/FTGmRpLsoDStd5i+UJTct54kkBy+FnTYs9qFFv6MExq
-         bcQpEOX5qmxbi5YQNkpDeS7xNCG58iYnnRS35Us5t5M0JiG5++SycJ0N4d+phCAcnLS+
-         6lNx67cMGv/aG3V+fcY8p/r35pCbtenP94zEYRoZmsfQLxDmslYIlpsgbFHHtMXZxjJu
-         Dxv4KDBDUGSeP6KhNuNsCsSP5cRCModn/JngQg1b9ABSAOzWDIPswem9+ynG//Ln8NQM
-         /jEg==
-X-Gm-Message-State: AOAM530Rb84RYXq9S2CIqzmzBXcLW6V8hZHmo4KVPXAFJSXLARIf+vle
-        6LkDccnAZUDsqciGBopI2xtJpRUYrbG6MEd03LY=
-X-Google-Smtp-Source: ABdhPJzwdFGUHXPIAbboLu8TM4MbXUDXVhJT4NPIaleBWpPUNaAwuAizc3j1xpYHn9f6vGZ0B35HLHskw63H0/PuFVU=
-X-Received: by 2002:a05:6830:148d:: with SMTP id s13mr4167414otq.250.1612547525938;
- Fri, 05 Feb 2021 09:52:05 -0800 (PST)
+        bh=Yyoc99buBNFjurCaW/whYy79AAlTl7S/tHuz1PuZ6rI=;
+        b=PhIGDjlKBzMJyg35p5UfaPxbGSP6hpxUvCOWvqxIIfUlAEMgBmo9QcqGNTqdiPUO4O
+         GZljXzBj8RyvzqA1oimgkVfcXeGlOA9r1TTHzWOXw1bzFdJtd7xQ+1s3lCrnlOQAmIFJ
+         LU5zxNMSTDV4avDkKfqMUGKVVZY5i0A/A5SoTVg9tkFWcDnlSI1jspew+GQEST3P2Msg
+         TdKkFs3kQYRE16xhw1TBb6SurQrd60MRbymwQ1OZYz/WDIxMCPvrG0DSXbFuJmWFJylZ
+         SLoPWy7sm7H6otk8LElO4mr/y9nrr9jXAH8PF5Wlq/oQ9y7nVDXlviP3YDImsFDPcUsO
+         i0Gw==
+X-Gm-Message-State: AOAM532hUsVpJxdYARMAq+WWpLqyTUFA8fpu5Q/9UmZQ2AazQUzUPaxE
+        No0VehJUlKdLWQ/phejgaMGCGbBipNNf2nzeO89hQQ==
+X-Google-Smtp-Source: ABdhPJzftNh20E3+EK/eG+FkgVSmglKB8o6Y4ZKgI2ZSqeTfztNt0NB42LbGHh+yn517i+/7VYgeumlK4RjjphHSGOo=
+X-Received: by 2002:a25:af0b:: with SMTP id a11mr1751981ybh.228.1612547612559;
+ Fri, 05 Feb 2021 09:53:32 -0800 (PST)
 MIME-Version: 1.0
-References: <20210121225712.1118239-1-saravanak@google.com>
- <CGME20210204115252eucas1p2d145686f7a5dc7e7a04dddd0b0f2286c@eucas1p2.samsung.com>
- <20210121225712.1118239-3-saravanak@google.com> <9692dfc9-4c63-71c9-b52b-d0feba466695@samsung.com>
- <CAGETcx_KDA55Ti=5CHw48BP1L2Xo64=AFFe+17g27n=P-KUrow@mail.gmail.com>
- <6b606a5d-0435-1e9d-ac61-a8dacf051067@samsung.com> <CAMuHMdWqZonpeyk59b=o_3EKOQx4TxUZE4Jeo-Kxy_o_3CQvnQ@mail.gmail.com>
- <CAGETcx9Rqa7PygjSiQvadm7C2bpxS2rCf5oB_pFhjh+ESV-WQA@mail.gmail.com>
- <CAMuHMdUt4tSEO_Hcf4AgVY_jqZ6Bsyk2+f2P3gQRQk0UfgSSjQ@mail.gmail.com> <CAGETcx9YN6uC3XJ_J+PLxvHBVFK-h2X3Qh+kuKDceN5XSt3ZuQ@mail.gmail.com>
-In-Reply-To: <CAGETcx9YN6uC3XJ_J+PLxvHBVFK-h2X3Qh+kuKDceN5XSt3ZuQ@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 5 Feb 2021 18:51:54 +0100
-Message-ID: <CAMuHMdVyTOp9PU0rO+YkpzE68VtGdy-bMOwmE_PJx2fiwwpMzQ@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] of: property: Add fw_devlink support for interrupts
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Android Kernel Team <kernel-team@android.com>,
-        Rob Herring <robh@kernel.org>,
-        Thierry Reding <treding@nvidia.com>
+References: <20210205140649.733510103@linuxfoundation.org> <20210205140650.022247260@linuxfoundation.org>
+In-Reply-To: <20210205140650.022247260@linuxfoundation.org>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Fri, 5 Feb 2021 09:52:56 -0800
+Message-ID: <CAGETcx8q4WmpF1mT8uLHYQXnioDKFi0PL1wUuVOtCyCnvyvKhg@mail.gmail.com>
+Subject: Re: [PATCH 4.14 07/15] driver core: Extend device_is_dependent()
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        stable <stable@vger.kernel.org>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Saravana,
-
-On Fri, Feb 5, 2021 at 6:20 PM Saravana Kannan <saravanak@google.com> wrote:
-> On Fri, Feb 5, 2021 at 2:20 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > On Fri, Feb 5, 2021 at 11:06 AM Saravana Kannan <saravanak@google.com> wrote:
-> > > On Fri, Feb 5, 2021 at 12:06 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > > > On Fri, Feb 5, 2021 at 8:38 AM Marek Szyprowski
-> > > > <m.szyprowski@samsung.com> wrote:
-> > > > > On 04.02.2021 22:31, Saravana Kannan wrote:
-> > > > > > On Thu, Feb 4, 2021 at 3:52 AM Marek Szyprowski
-> > > > > > <m.szyprowski@samsung.com> wrote:
-> > > > > >> On 21.01.2021 23:57, Saravana Kannan wrote:
-> > > > > >>> This allows fw_devlink to create device links between consumers of an
-> > > > > >>> interrupt and the supplier of the interrupt.
-> > > > > >>>
-> > > > > >>> Cc: Marc Zyngier <maz@kernel.org>
-> > > > > >>> Cc: Kevin Hilman <khilman@baylibre.com>
-> > > > > >>> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > > > > >>> Reviewed-by: Rob Herring <robh@kernel.org>
-> > > > > >>> Reviewed-by: Thierry Reding <treding@nvidia.com>
-> > > > > >>> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-> > > > > >>> Signed-off-by: Saravana Kannan <saravanak@google.com>
-> > > > > >> This patch landed some time ago in linux-next as commit 4104ca776ba3
-> > > > > >> ("of: property: Add fw_devlink support for interrupts"). It breaks MMC
-> > > > > >> host controller operation on ARM Juno R1 board (the mmci@50000 device
-> > > > > >> defined in arch/arm64/boot/dts/arm/juno-motherboard.dtsi). I didn't
-> > > > > > I grepped around and it looks like the final board file is this or
-> > > > > > whatever includes it?
-> > > > > > arch/arm64/boot/dts/arm/juno-base.dtsi
-> > > > > The final board file is arch/arm64/boot/dts/arm/juno-r1.dts
-> > > > > > This patch just finds the interrupt-parent and then tries to use that
-> > > > > > as a supplier if "interrupts" property is listed. But the only
-> > > > > > interrupt parent I can see is:
-> > > > > >          gic: interrupt-controller@2c010000 {
-> > > > > >                  compatible = "arm,gic-400", "arm,cortex-a15-gic";
-> > > > > >
-> > > > > > And the driver uses IRQCHIP_DECLARE() and hence should be pretty much
-> > > > > > a NOP since those suppliers are never devices and are ignored.
-> > > > > > $ git grep "arm,gic-400" -- drivers/
-> > > > > > drivers/irqchip/irq-gic.c:IRQCHIP_DECLARE(gic_400, "arm,gic-400", gic_of_init);
-> > > > > >
-> > > > > > This doesn't make any sense. Am I looking at the right files? Am I
-> > > > > > missing something?
-> > > > >
-> > > > > Okay, I've added displaying a list of deferred devices when mounting
-> > > > > rootfs fails and got following items:
-> > > > >
-> > > > > Deferred devices:
-> > > > > 18000000.ethernet        platform: probe deferral - supplier
-> > > > > bus@8000000:motherboard-bus not ready
-> > > > > 1c050000.mmci    amba: probe deferral - supplier
-> > > > > bus@8000000:motherboard-bus not ready
-> > > > > 1c1d0000.gpio    amba: probe deferral - supplier
-> > > > > bus@8000000:motherboard-bus not ready
-> > > > > 2b600000.iommu   platform: probe deferral - wait for supplier
-> > > > > scpi-power-domains
-> > > > > 7ff50000.hdlcd   platform: probe deferral - wait for supplier scpi-clk
-> > > > > 7ff60000.hdlcd   platform: probe deferral - wait for supplier scpi-clk
-> > > > > 1c060000.kmi     amba: probe deferral - supplier
-> > > > > bus@8000000:motherboard-bus not ready
-> > > > > 1c070000.kmi     amba: probe deferral - supplier
-> > > > > bus@8000000:motherboard-bus not ready
-> > > > > 1c170000.rtc     amba: probe deferral - supplier
-> > > > > bus@8000000:motherboard-bus not ready
-> > > > > 1c0f0000.wdt     amba: probe deferral - supplier
-> > > > > bus@8000000:motherboard-bus not ready
-> > > > > gpio-keys
-> > > > > Kernel panic - not syncing: VFS: Unable to mount root fs on
-> > > > > unknown-block(0,0)
-> > > > >
-> > > > > I don't see the 'bus@8000000:motherboard-bus' on the deferred devices
-> > > > > list, so it looks that device core added a link to something that is not
-> > > > > a platform device...
-> > >
-> > > Probe deferred devices (even platform devices) not showing up in that
-> > > list is not unusual. That's because devices end up on that list only
-> > > after a driver for them is matched and then it fails.
-> > >
-> > > > Lemme guess: bus@8000000 is a simple bus, but it has an
-> > > > interrupt-map, and the devlink code doesn't follow the mapping?
-> > > >
-> > >
-> > > No, what's happening is that (and this is something I just learned)
-> > > that if a parent has an "#interrupt-cells" property, it becomes your
-> > > interrupt parent. In this case, the motherboard-bus (still a platform
-> > > device) is the parent, but it never probes (because it's simple-bus
-> > > and "arm,vexpress,v2p-p1"). But it becomes the interrupt parent. And
-> > > this mmci device is marked as a consumer of this bus (while still a
-> > > grand-child). Yeah, I'm working on patches (multiple rewrites) to take
-> > > care of cases like this.
-> >
-> > One more reason to scrap the different handling of "simple-bus" and
-> > "simple-pm-bus", and use drivers/bus/simple-pm-bus.c, which is a
-> > platform device driver, for both? (like I originally intended ;-)
+On Fri, Feb 5, 2021 at 6:14 AM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
 >
-> I'm not sure if this will cause more issues since people are used to
-> simple-bus not needing a driver. I'm afraid to open that pandora's
-> box. Maybe last resort if I don't have any other options.
+> From: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
 >
-> But keeping that aside, I'm confused how interrupts are even working
-> if the parent is a DT node with no driver (let alone a device). Any
-> ideas on what's going on or what I'm misunderstanding?
+> commit 3d1cf435e201d1fd63e4346b141881aed086effd upstream
+>
+> If the device passed as the target (second argument) to
+> device_is_dependent() is not completely registered (that is, it has
+> been initialized, but not added yet), but the parent pointer of it
+> is set, it may be missing from the list of the parent's children
+> and device_for_each_child() called by device_is_dependent() cannot
+> be relied on to catch that dependency.
+>
+> For this reason, modify device_is_dependent() to check the ancestors
+> of the target device by following its parent pointer in addition to
+> the device_for_each_child() walk.
+>
+> Fixes: 9ed9895370ae ("driver core: Functional dependencies tracking support")
+> Reported-by: Stephan Gerhold <stephan@gerhold.net>
+> Tested-by: Stephan Gerhold <stephan@gerhold.net>
+> Reviewed-by: Saravana Kannan <saravanak@google.com>
+> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> Link: https://lore.kernel.org/r/17705994.d592GUb2YH@kreacher
+> Cc: stable <stable@vger.kernel.org>
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> ---
+>  drivers/base/core.c |   17 ++++++++++++++++-
+>  1 file changed, 16 insertions(+), 1 deletion(-)
+>
+> --- a/drivers/base/core.c
+> +++ b/drivers/base/core.c
+> @@ -96,6 +96,16 @@ void device_links_read_unlock(int not_us
+>  }
+>  #endif /* !CONFIG_SRCU */
+>
+> +static bool device_is_ancestor(struct device *dev, struct device *target)
+> +{
+> +       while (target->parent) {
+> +               target = target->parent;
+> +               if (dev == target)
+> +                       return true;
+> +       }
+> +       return false;
+> +}
+> +
+>  /**
+>   * device_is_dependent - Check if one device depends on another one
+>   * @dev: Device to check dependencies for.
+> @@ -109,7 +119,12 @@ static int device_is_dependent(struct de
+>         struct device_link *link;
+>         int ret;
+>
+> -       if (dev == target)
+> +       /*
+> +        * The "ancestors" check is needed to catch the case when the target
+> +        * device has not been completely initialized yet and it is still
+> +        * missing from the list of children of its parent device.
+> +        */
+> +       if (dev == target || device_is_ancestor(dev, target))
+>                 return 1;
+>
+>         ret = device_for_each_child(dev, target, device_is_dependent);
+>
+>
 
-No driver is needed, as the interrupts are just translated by the map,
-and passed to another interrupt controller, which does have a driver.
+I think 4.14 device links API is so busted it's not worth patching
+this. It's not a memory leak or any kind of security issue.
 
-Cfr. Section 2.4.3 "Interrupt Nexus Properties" in the DeviceTree
-Specification (https://www.devicetree.org/).
+Stephan, are you seeing this issue in 4.14 or even care about it?
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+-Saravana
