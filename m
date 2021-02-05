@@ -2,184 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29C5D3103FA
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 05:11:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25EAB3103FD
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 05:13:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229997AbhBEEL0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 23:11:26 -0500
-Received: from foss.arm.com ([217.140.110.172]:46486 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229872AbhBEELZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 23:11:25 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 14A69ED1;
-        Thu,  4 Feb 2021 20:10:39 -0800 (PST)
-Received: from p8cg001049571a15.arm.com (unknown [10.163.93.198])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id CBB903F719;
-        Thu,  4 Feb 2021 20:10:33 -0800 (PST)
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-To:     linux-mm@kvack.org
-Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-xtensa@linux-xtensa.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] mm/memtest: Add ARCH_USE_MEMTEST
-Date:   Fri,  5 Feb 2021 09:40:42 +0530
-Message-Id: <1612498242-31579-1-git-send-email-anshuman.khandual@arm.com>
-X-Mailer: git-send-email 2.7.4
+        id S230090AbhBEEM3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 23:12:29 -0500
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:13924 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229586AbhBEEM2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 23:12:28 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B601cc5830000>; Thu, 04 Feb 2021 20:11:47 -0800
+Received: from [10.2.60.31] (172.20.145.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 5 Feb
+ 2021 04:11:46 +0000
+Subject: Re: [PATCH v2 1/4] mm/gup: add compound page list iterator
+To:     Joao Martins <joao.m.martins@oracle.com>, <linux-mm@kvack.org>
+CC:     <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Doug Ledford <dledford@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>
+References: <20210204202500.26474-1-joao.m.martins@oracle.com>
+ <20210204202500.26474-2-joao.m.martins@oracle.com>
+From:   John Hubbard <jhubbard@nvidia.com>
+Message-ID: <74edd971-a80c-78b6-7ab2-5c1f6ba4ade9@nvidia.com>
+Date:   Thu, 4 Feb 2021 20:11:46 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:85.0) Gecko/20100101
+ Thunderbird/85.0
+MIME-Version: 1.0
+In-Reply-To: <20210204202500.26474-2-joao.m.martins@oracle.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1612498307; bh=90hw+ICZ/gKhWm8sbsBiKwsDNH4LvCEMvipiRUiV0MM=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=LhpAcaoP90LK+h6C9NVPT0uTQMDR5adUruhZC5cyal3ffapkhntOgUvld0IvTvww4
+         /K+2lyHpdwCoj8kFhCUtjNO7/H2V75pkG6KVChSn6gg2JOnyD5H0hRCoLz3Ldi7/Zf
+         r3YgIcBJ9JtKRuerOeZMhNmkTmF2LkBbJIH0YHq3UkLOs7rxC7WbxhD9322HjLtYCl
+         CSt8GFEnCdY0CxhkercG678mzx7Tu3VUS5Ca+G3GjyC9ZqeKUhwxDak0vOWHsc47ut
+         /pclIuZ47BQD5SnLBVMOyY9Aa2tLWZQkcI2U+Y5Ja5BR58NFwT+4+pKK3NA9OFjrck
+         h0rpXks7BXNZw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-early_memtest() does not get called from all architectures. Hence enabling
-CONFIG_MEMTEST and providing a valid memtest=[1..N] kernel command line
-option might not trigger the memory pattern tests as would be expected in
-normal circumstances. This situation is misleading.
+On 2/4/21 12:24 PM, Joao Martins wrote:
+> Add an helper that iterates over head pages in a list of pages. It
+> essentially counts the tails until the next page to process has a
+> different head that the current. This is going to be used by
+> unpin_user_pages() family of functions, to batch the head page refcount
+> updates once for all passed consecutive tail pages.
+> 
+> Suggested-by: Jason Gunthorpe <jgg@nvidia.com>
+> Signed-off-by: Joao Martins <joao.m.martins@oracle.com>
+> ---
+>   mm/gup.c | 29 +++++++++++++++++++++++++++++
+>   1 file changed, 29 insertions(+)
+> 
+> diff --git a/mm/gup.c b/mm/gup.c
+> index d68bcb482b11..d1549c61c2f6 100644
+> --- a/mm/gup.c
+> +++ b/mm/gup.c
+> @@ -215,6 +215,35 @@ void unpin_user_page(struct page *page)
+>   }
+>   EXPORT_SYMBOL(unpin_user_page);
+>   
+> +static inline void compound_next(unsigned long i, unsigned long npages,
+> +				 struct page **list, struct page **head,
+> +				 unsigned int *ntails)
+> +{
+> +	struct page *page;
+> +	unsigned int nr;
+> +
+> +	if (i >= npages)
+> +		return;
+> +
+> +	list += i;
+> +	npages -= i;
 
-The change here prevents the above mentioned problem after introducing a
-new config option ARCH_USE_MEMTEST that should be subscribed on platforms
-that call early_memtest(), in order to enable the config CONFIG_MEMTEST.
-Conversely CONFIG_MEMTEST cannot be enabled on platforms where it would
-not be tested anyway.
+It is worth noting that this is slightly more complex to read than it needs to be.
+You are changing both endpoints of a loop at once. That's hard to read for a human.
+And you're only doing it in order to gain the small benefit of being able to
+use nr directly at the end of the routine.
 
-Cc: Russell King <linux@armlinux.org.uk>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: Michael Ellerman <mpe@ellerman.id.au>
-Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Cc: Paul Mackerras <paulus@samba.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Chris Zankel <chris@zankel.net>
-Cc: Max Filippov <jcmvbkbc@gmail.com>
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-mips@vger.kernel.org
-Cc: linuxppc-dev@lists.ozlabs.org
-Cc: linux-xtensa@linux-xtensa.org
-Cc: linux-mm@kvack.org
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
----
-This patch applies on v5.11-rc6 and has been tested on arm64 platform. But
-it has been just build tested on all other platforms.
+If instead you keep npages constant like it naturally wants to be, you could
+just do a "(*ntails)++" in the loop, to take care of *ntails.
 
- arch/arm/Kconfig     | 1 +
- arch/arm64/Kconfig   | 1 +
- arch/mips/Kconfig    | 1 +
- arch/powerpc/Kconfig | 1 +
- arch/x86/Kconfig     | 1 +
- arch/xtensa/Kconfig  | 1 +
- lib/Kconfig.debug    | 9 ++++++++-
- 7 files changed, 14 insertions(+), 1 deletion(-)
+However, given that the patch is correct and works as-is, the above is really just
+an optional idea, so please feel free to add:
 
-diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-index 138248999df7..a63b53c568df 100644
---- a/arch/arm/Kconfig
-+++ b/arch/arm/Kconfig
-@@ -32,6 +32,7 @@ config ARM
- 	select ARCH_SUPPORTS_ATOMIC_RMW
- 	select ARCH_USE_BUILTIN_BSWAP
- 	select ARCH_USE_CMPXCHG_LOCKREF
-+	select ARCH_USE_MEMTEST
- 	select ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT if MMU
- 	select ARCH_WANT_IPC_PARSE_VERSION
- 	select ARCH_WANT_LD_ORPHAN_WARN
-diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index c4acf8230f20..dfee5831d876 100644
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -70,6 +70,7 @@ config ARM64
- 	select ARCH_USE_QUEUED_RWLOCKS
- 	select ARCH_USE_QUEUED_SPINLOCKS
- 	select ARCH_USE_SYM_ANNOTATIONS
-+	select ARCH_USE_MEMTEST
- 	select ARCH_SUPPORTS_DEBUG_PAGEALLOC
- 	select ARCH_SUPPORTS_MEMORY_FAILURE
- 	select ARCH_SUPPORTS_SHADOW_CALL_STACK if CC_HAVE_SHADOW_CALL_STACK
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index 0a17bedf4f0d..1b21d8e53e6b 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -16,6 +16,7 @@ config MIPS
- 	select ARCH_USE_CMPXCHG_LOCKREF if 64BIT
- 	select ARCH_USE_QUEUED_RWLOCKS
- 	select ARCH_USE_QUEUED_SPINLOCKS
-+	select ARCH_USE_MEMTEST
- 	select ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT if MMU
- 	select ARCH_WANT_IPC_PARSE_VERSION
- 	select BUILDTIME_TABLE_SORT
-diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
-index 107bb4319e0e..9935343a8750 100644
---- a/arch/powerpc/Kconfig
-+++ b/arch/powerpc/Kconfig
-@@ -151,6 +151,7 @@ config PPC
- 	select ARCH_USE_CMPXCHG_LOCKREF		if PPC64
- 	select ARCH_USE_QUEUED_RWLOCKS		if PPC_QUEUED_SPINLOCKS
- 	select ARCH_USE_QUEUED_SPINLOCKS	if PPC_QUEUED_SPINLOCKS
-+	select ARCH_USE_MEMTEST
- 	select ARCH_WANT_IPC_PARSE_VERSION
- 	select ARCH_WANT_IRQS_OFF_ACTIVATE_MM
- 	select ARCH_WANT_LD_ORPHAN_WARN
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 21f851179ff0..90545348db1b 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -100,6 +100,7 @@ config X86
- 	select ARCH_USE_QUEUED_RWLOCKS
- 	select ARCH_USE_QUEUED_SPINLOCKS
- 	select ARCH_USE_SYM_ANNOTATIONS
-+	select ARCH_USE_MEMTEST
- 	select ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH
- 	select ARCH_WANT_DEFAULT_BPF_JIT	if X86_64
- 	select ARCH_WANTS_DYNAMIC_TASK_STRUCT
-diff --git a/arch/xtensa/Kconfig b/arch/xtensa/Kconfig
-index 37ce1489364e..8eb61fcdfc7f 100644
---- a/arch/xtensa/Kconfig
-+++ b/arch/xtensa/Kconfig
-@@ -9,6 +9,7 @@ config XTENSA
- 	select ARCH_HAS_DMA_SET_UNCACHED if MMU
- 	select ARCH_USE_QUEUED_RWLOCKS
- 	select ARCH_USE_QUEUED_SPINLOCKS
-+	select ARCH_USE_MEMTEST
- 	select ARCH_WANT_FRAME_POINTERS
- 	select ARCH_WANT_IPC_PARSE_VERSION
- 	select BUILDTIME_TABLE_SORT
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index 7937265ef879..6dd25b755a82 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -2469,11 +2469,18 @@ config TEST_FPU
- 
- endif # RUNTIME_TESTING_MENU
- 
-+config ARCH_USE_MEMTEST
-+	bool
-+	help
-+	  An architecture should select this when it uses early_memtest()
-+	  during boot process.
-+
- config MEMTEST
- 	bool "Memtest"
-+	depends on ARCH_USE_MEMTEST
- 	help
- 	  This option adds a kernel parameter 'memtest', which allows memtest
--	  to be set.
-+	  to be set and executed.
- 	        memtest=0, mean disabled; -- default
- 	        memtest=1, mean do 1 test pattern;
- 	        ...
+Reviewed-by: John Hubbard <jhubbard@nvidia.com>
+
+
+thanks,
 -- 
-2.20.1
+John Hubbard
+NVIDIA
+
+> +	page = compound_head(*list);
+> +
+> +	for (nr = 1; nr < npages; nr++) {
+> +		if (compound_head(list[nr]) != page)
+> +			break;
+> +	}
+> +
+> +	*head = page;
+> +	*ntails = nr;
+> +}
+> +
+> +#define for_each_compound_head(__i, __list, __npages, __head, __ntails) \
+> +	for (__i = 0, \
+> +	     compound_next(__i, __npages, __list, &(__head), &(__ntails)); \
+> +	     __i < __npages; __i += __ntails, \
+> +	     compound_next(__i, __npages, __list, &(__head), &(__ntails)))
+> +
+>   /**
+>    * unpin_user_pages_dirty_lock() - release and optionally dirty gup-pinned pages
+>    * @pages:  array of pages to be maybe marked dirty, and definitely released.
+> 
 
