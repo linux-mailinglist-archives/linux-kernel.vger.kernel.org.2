@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0512B310AA8
+	by mail.lfdr.de (Postfix) with ESMTP id F0ED8310AAA
 	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 12:54:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232059AbhBELwD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 06:52:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47088 "EHLO
+        id S231925AbhBELwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 06:52:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231922AbhBELt1 (ORCPT
+        with ESMTP id S231934AbhBELtd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 06:49:27 -0500
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21B0BC0617A9
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 03:48:46 -0800 (PST)
-Received: by mail-wr1-x432.google.com with SMTP id d16so7307949wro.11
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 03:48:46 -0800 (PST)
+        Fri, 5 Feb 2021 06:49:33 -0500
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 447E4C0617AA
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 03:48:48 -0800 (PST)
+Received: by mail-wm1-x333.google.com with SMTP id m1so5685604wml.2
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 03:48:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=XYl5WC2CeAwaSnwh84E7vNW/ABs0UQoT/VRBbEVSx+I=;
-        b=seS8jvZ4myl28gge7/5j3ukycaaF1VHUEs2tVLw0mGm5gXHHavNDpC8OT77pzpzWds
-         z/iNgNCo7Vmr9mTeQIPKqD8Ok2N4swfgAHNA7rpJQ9+r1VBfPhnKKDhU9emWEOHFiJqa
-         BtKeT92MLFXmu9IR8w0TBjqmWX46q1EH05Q/qnRFkw1WsgilzG8f6CHj1RDop2NoOvF3
-         43V9z1hwbq0H4/F3ZNqrznMTVm58qO9eE3RS0l+5WOQ7BI8PXe4k5Gwrd8deXVpIWwYu
-         isSMR+39FBZgt58RhZHqBcclxr0DT90s1MQpX5NfS3dbupOgANg9CMtgCTfvRo3WgpIJ
-         G9PA==
+        bh=csGZBCFb7RcKF2F89/cpf6XMRqeh6GOKlg6YlOqAkGU=;
+        b=RcN8N5SJeMiko1IrT+djDc6FnSDzjSIZiZJ6YwiIhlIyw3vMoOTwRKcnztO4mAXW6e
+         Q7TmstDcCd8xWctPsYBTURaS5+tEh1XKLrlcZccQzSpjRefUm/aGDETinC/h+j20nSnr
+         SExYqGmmGaYH+eaycRPZyppCbKsg2dUdQf2qb50qxx1ASiOrEpqn33u6wI6N0AzneqX+
+         CbHtHUZjUQZfP9SE3uJFj7Y764kWQREQ0lQjcx7wosl/yjks50usPQocqTDoBs1pifT1
+         99lz/G9S8sHgjQCmykMU2RTUQZ77l0z7CixPPFm0Zc25yvj4iK2RmG6x18ncMNGoJI16
+         N4Yw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=XYl5WC2CeAwaSnwh84E7vNW/ABs0UQoT/VRBbEVSx+I=;
-        b=QAvxJLKQNhuWk7iIjUgwTxAh67OIHtfeR7glrJYnaoS4anjfWMbLDDSL67Dec6CM0h
-         dIfzIMzXyrsYuLZByyoQqYRxSbY6SD0F4dIQYT2kgIIJBw6oBhT2wcwiQt5SjIpjvHfD
-         wzJ5pea8MsFiNIIM22gfYLr4qLVD7EDI0rf94rUGMK5fG+WhJBKxRoJXds4SmAw6EO2p
-         tt77GoNAfMeDyQHdk2Y3hbYxrUQGpjWGCI31vYfieuqPxDdpbhf0JYfD+UbMdazdnWhR
-         6Rs80cjbOckk8QyDCZMr3qmgS4kkwlQZOR7lUxhGCfAiudyBgSium3LA4rCV2EvnbVh6
-         YJAw==
-X-Gm-Message-State: AOAM532VNCh4PBrVkVJRFJ7XOXPx12PpDsdQ7Rav8p8p63atE8SqTXR3
-        NT5K3raQFGS+hnJlMio2RKhMKA==
-X-Google-Smtp-Source: ABdhPJzV48H4yXw49d2P5ea/ptVhtbk1sl25xUlKkhI7GcHrhWaqlPrkVhDSRFGLq2+6mzkjxWyT4Q==
-X-Received: by 2002:a5d:6b42:: with SMTP id x2mr4562699wrw.117.1612525724861;
-        Fri, 05 Feb 2021 03:48:44 -0800 (PST)
+        bh=csGZBCFb7RcKF2F89/cpf6XMRqeh6GOKlg6YlOqAkGU=;
+        b=KShRcyrL8sFzTpKDez5s1jG9mYpxZPqL6CrCatBwDvRLkIj8zzrvwt7NTitO3yGfYh
+         JQtafmj4CepNJLMxJglgBLp6wTi3+QV82z5aRI7F1I4hnNpaDV6komxrSisEa11pGvCQ
+         BvjEK+TWZXJLCc1YSRWG7W1EhqE8W6nk+sGbRjsOPcP1yshEpIZCxHLFw/B9yTzMG8Bh
+         s4QynRdEhnP+dvvCMCJ3IYzArkb9Ii24CClPNlPx3QEBVC+9gEHwiiyMdZDVKcj5pnNo
+         1Yq/fvTDLzFlTmFkPZ+aIredu4JmN4yQ2OcAAnBsGZ78Dqygh2sjVG964R3fFtA7WPp7
+         SDsQ==
+X-Gm-Message-State: AOAM530wLX3U2ZB2Y84wcfDYWoSZ8udgUoDydQBiwNg1Ks0cV4RkEHxV
+        cNTmydXFXsBXIPp1PEOZ/uXX9g==
+X-Google-Smtp-Source: ABdhPJwtCI5HglgYqF53hd3FbPt5Xx0Sylp6etX5Wyhn9sHYWtMghujGLlDgnwITBHIwqdAsSWKSaA==
+X-Received: by 2002:a05:600c:3515:: with SMTP id h21mr3240023wmq.179.1612525726984;
+        Fri, 05 Feb 2021 03:48:46 -0800 (PST)
 Received: from localhost.localdomain ([2a01:e0a:f:6020:442a:8956:28be:e500])
-        by smtp.gmail.com with ESMTPSA id z4sm11647586wrw.38.2021.02.05.03.48.43
+        by smtp.gmail.com with ESMTPSA id z4sm11647586wrw.38.2021.02.05.03.48.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Feb 2021 03:48:43 -0800 (PST)
+        Fri, 05 Feb 2021 03:48:45 -0800 (PST)
 From:   Vincent Guittot <vincent.guittot@linaro.org>
 To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
         dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
@@ -54,9 +54,9 @@ To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
         bristot@redhat.com, linux-kernel@vger.kernel.org,
         joel@joelfernandes.org
 Cc:     qais.yousef@arm.com, Vincent Guittot <vincent.guittot@linaro.org>
-Subject: [RFC PATCH 5/6] sched/fair: trigger the update of blocked load on newly idle cpu
-Date:   Fri,  5 Feb 2021 12:48:29 +0100
-Message-Id: <20210205114830.781-6-vincent.guittot@linaro.org>
+Subject: [PATCH 6/6] sched/fair: reduce the window for duplicated update
+Date:   Fri,  5 Feb 2021 12:48:30 +0100
+Message-Id: <20210205114830.781-7-vincent.guittot@linaro.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210205114830.781-1-vincent.guittot@linaro.org>
 References: <20210205114830.781-1-vincent.guittot@linaro.org>
@@ -64,79 +64,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Instead of waking up a random and already idle CPU, we can take advantage
-of this_cpu being about to enter idle to run the ILB and update the
-blocked load.
+Start to update last_blocked_load_update_tick to reduce the possibility
+of another cpu starting the update one more time
 
 Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
 ---
- include/linux/sched/nohz.h |  2 ++
- kernel/sched/fair.c        | 11 ++++++++---
- kernel/sched/idle.c        |  6 ++++++
- 3 files changed, 16 insertions(+), 3 deletions(-)
+ kernel/sched/fair.c | 16 ++++++----------
+ 1 file changed, 6 insertions(+), 10 deletions(-)
 
-diff --git a/include/linux/sched/nohz.h b/include/linux/sched/nohz.h
-index 6d67e9a5af6b..74cdc4e87310 100644
---- a/include/linux/sched/nohz.h
-+++ b/include/linux/sched/nohz.h
-@@ -9,8 +9,10 @@
- #if defined(CONFIG_SMP) && defined(CONFIG_NO_HZ_COMMON)
- extern void nohz_balance_enter_idle(int cpu);
- extern int get_nohz_timer_target(void);
-+extern void nohz_run_idle_balance(int cpu);
- #else
- static inline void nohz_balance_enter_idle(int cpu) { }
-+static inline void nohz_run_idle_balance(int cpu) { }
- #endif
- 
- #ifdef CONFIG_NO_HZ_COMMON
 diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 935594cd5430..3d2ab28d5736 100644
+index 3d2ab28d5736..968808c2c022 100644
 --- a/kernel/sched/fair.c
 +++ b/kernel/sched/fair.c
-@@ -10461,6 +10461,11 @@ static bool nohz_idle_balance(struct rq *this_rq, enum cpu_idle_type idle)
- 	return true;
+@@ -7852,17 +7852,9 @@ static inline bool others_have_blocked(struct rq *rq)
+ 	return false;
  }
  
-+void nohz_run_idle_balance(int cpu)
-+{
-+	nohz_idle_balance(cpu_rq(cpu), CPU_IDLE);
-+}
-+
- static void nohz_newidle_balance(struct rq *this_rq)
- {
- 	int this_cpu = this_rq->cpu;
-@@ -10482,10 +10487,10 @@ static void nohz_newidle_balance(struct rq *this_rq)
- 		return;
+-static inline void update_blocked_load_status(struct rq *rq, bool has_blocked)
+-{
+-	rq->last_blocked_load_update_tick = jiffies;
+-
+-	if (!has_blocked)
+-		rq->has_blocked_load = 0;
+-}
+ #else
+ static inline bool cfs_rq_has_blocked(struct cfs_rq *cfs_rq) { return false; }
+ static inline bool others_have_blocked(struct rq *rq) { return false; }
+-static inline void update_blocked_load_status(struct rq *rq, bool has_blocked) {}
+ #endif
  
- 	/*
--	 * Blocked load of idle CPUs need to be updated.
--	 * Kick an ILB to update statistics.
-+	 * Set the need to trigger ILB in order to update blocked load
-+	 * before entering idle state.
- 	 */
--	kick_ilb(NOHZ_STATS_KICK);
-+	this_rq->nohz_idle_balance = NOHZ_STATS_KICK;
- }
+ static bool __update_blocked_others(struct rq *rq, bool *done)
+@@ -8022,12 +8014,16 @@ static void update_blocked_averages(int cpu)
+ 	struct rq_flags rf;
  
- #else /* !CONFIG_NO_HZ_COMMON */
-diff --git a/kernel/sched/idle.c b/kernel/sched/idle.c
-index 305727ea0677..52a4e9ce2f9b 100644
---- a/kernel/sched/idle.c
-+++ b/kernel/sched/idle.c
-@@ -261,6 +261,12 @@ static void cpuidle_idle_call(void)
- static void do_idle(void)
- {
- 	int cpu = smp_processor_id();
+ 	rq_lock_irqsave(rq, &rf);
++	WRITE_ONCE(rq->last_blocked_load_update_tick, jiffies);
 +
-+	/*
-+	 * Check if we need to update some blocked load
-+	 */
-+	nohz_run_idle_balance(cpu);
+ 	update_rq_clock(rq);
+ 
+ 	decayed |= __update_blocked_others(rq, &done);
+ 	decayed |= __update_blocked_fair(rq, &done);
+ 
+-	update_blocked_load_status(rq, !done);
++	if (done)
++		rq->has_blocked_load = 0;
 +
- 	/*
- 	 * If the arch has a polling bit, we maintain an invariant:
- 	 *
+ 	if (decayed)
+ 		cpufreq_update_util(rq, 0);
+ 	rq_unlock_irqrestore(rq, &rf);
+@@ -8363,7 +8359,7 @@ static bool update_nohz_stats(struct rq *rq)
+ 	if (!cpumask_test_cpu(cpu, nohz.idle_cpus_mask))
+ 		return false;
+ 
+-	if (!time_after(jiffies, rq->last_blocked_load_update_tick))
++	if (!time_after(jiffies, READ_ONCE(rq->last_blocked_load_update_tick)))
+ 		return true;
+ 
+ 	update_blocked_averages(cpu);
 -- 
 2.17.1
 
