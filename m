@@ -2,133 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56C23311002
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 19:36:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FEB731100D
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 19:38:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233545AbhBEQxQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 11:53:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45462 "EHLO
+        id S233230AbhBEQyj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 11:54:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233542AbhBEQtV (ORCPT
+        with ESMTP id S233645AbhBEQto (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 11:49:21 -0500
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2A08C061A2A
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 10:29:12 -0800 (PST)
-Received: by mail-pg1-x52d.google.com with SMTP id o16so5141417pgg.5
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 10:29:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=/gKrMLsfGobXkiI6sjUHxc4o3Yi1e64+iFtcBHCUDvY=;
-        b=AiVGW8ZfV6b/ee/LcCv+Op+DKesFAlTEGF/07NV2m2QST+5RqOHjwLrN8SOTlsHXpp
-         GbTzYG/+F9OEtL49Tmfgwy9qbiHLoh6BzlrxNqzQJg8e0KXxzOS/DRVO7uq4SegSZl/A
-         bNR0Obo6GjVDXaQLKqtbvrdxhjKO3vjvpLXwA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/gKrMLsfGobXkiI6sjUHxc4o3Yi1e64+iFtcBHCUDvY=;
-        b=RIdu4afrezrh2P2roRsBY8yjlFRaXdAmpAsnZ1eIWEuUJc3+5O4caEUMDjGbF7Mnnl
-         yhDWJQP2BqTDt3d0gvPeUmk96HHFZ2n4hhHi/sFkrsZY9b3iKa4YzNsWODrW7ku/8fGU
-         QiagU3VSRSA8Wel9hE1pYonOEcc8z2se9hOWUtNUamzhuR38C2GBCqsYDZw/hgXzkv2t
-         kF3b1acncoQ2euHDKQ2mb+WHh/Y99Uq4EbJeLguElfOT6pANy7mreKB+qigSti3AK/cQ
-         oU1HRtjql0GRa+r7wdhbdgOHPbrUGXTX07Isr3dVidZVWgsbU1f5YCVV2Y/Q32l25EbW
-         MTcg==
-X-Gm-Message-State: AOAM530aolJznneiCnOtOKscLUlfdE7rBIfIE3maghCsxmlMrogZWz08
-        K/TdhDfG4i2umiJmCG7hMjrhKA==
-X-Google-Smtp-Source: ABdhPJzgdXL2yWJ9K+9ihBWlUxHBRPB2BDMQz9MrbEyfZkzXsv0feLphNyFqyBnHRUIq1f0V1bWsMQ==
-X-Received: by 2002:a62:8c05:0:b029:1d8:7f36:bcd8 with SMTP id m5-20020a628c050000b02901d87f36bcd8mr2771317pfd.43.1612549752486;
-        Fri, 05 Feb 2021 10:29:12 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id v3sm9644169pff.217.2021.02.05.10.29.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Feb 2021 10:29:11 -0800 (PST)
-Date:   Fri, 5 Feb 2021 10:29:10 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
-Cc:     Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>
-Subject: Re: [PATCH v19 06/25] x86/cet: Add control-protection fault handler
-Message-ID: <202102051028.A10679FF@keescook>
-References: <20210203225547.32221-1-yu-cheng.yu@intel.com>
- <20210203225547.32221-7-yu-cheng.yu@intel.com>
- <20210205135927.GH17488@zn.tnic>
- <2d829cba-784e-635a-e0c5-a7b334fa9b40@intel.com>
+        Fri, 5 Feb 2021 11:49:44 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 557A7C061A2E;
+        Fri,  5 Feb 2021 10:29:18 -0800 (PST)
+Date:   Fri, 05 Feb 2021 18:29:16 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1612549757;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=sb5GcEh9if5NGgSGVu0nGTYCjgLQMWVdk4Mo4Rwo+eg=;
+        b=TFCR3Y/+8jtnarrAGnm9EC/SrOXb7ano917GU25q1kMis5k8lg0Zg8FY2Ibm8imzd4MT76
+        12BJtn8Dk6F+k7jxY7YTdfUjp+sXUgUZ5oiI2iPms1tsW6LvF381TD3boaGDRK2kWSZ/5E
+        6yS3ZHxBGzDxGbTqJTjjg3oP1Fppek7ghTIRhR0lK6S4lYiM1YI4XLJRfnmvhJ33wqrn3B
+        BgK0bk3knlWTbtm0IjJmJf00HZPQ9BmCWRcSXnON/ij15NVIuUt8omkJOGcqF6HhAMRhuj
+        vHzhMTUzx1Aqn3Ao/lejsGVaxtAC2z/EDJ6Wg6Ub1L+sF1OILg3toCU7oVRceQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1612549757;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=sb5GcEh9if5NGgSGVu0nGTYCjgLQMWVdk4Mo4Rwo+eg=;
+        b=Zv4tmMcj8NloO2VhFioICeiM2gmKlcTSkj66DClRpFFRPNnygvsL/+/kmfPL3ll6t79WeG
+        KYDdMiGoLmBIugCA==
+From:   "tip-bot2 for Alexandre Belloni" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: timers/core] alarmtimer: Update kerneldoc
+Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210202013457.3482388-1-alexandre.belloni@bootlin.com>
+References: <20210202013457.3482388-1-alexandre.belloni@bootlin.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2d829cba-784e-635a-e0c5-a7b334fa9b40@intel.com>
+Message-ID: <161254975618.23325.8904208407309453586.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 05, 2021 at 10:00:21AM -0800, Yu, Yu-cheng wrote:
-> On 2/5/2021 5:59 AM, Borislav Petkov wrote:
-> > On Wed, Feb 03, 2021 at 02:55:28PM -0800, Yu-cheng Yu wrote:
-> > > +DEFINE_IDTENTRY_ERRORCODE(exc_control_protection)
-> > > +{
-> > > +	static DEFINE_RATELIMIT_STATE(rs, DEFAULT_RATELIMIT_INTERVAL,
-> > > +				      DEFAULT_RATELIMIT_BURST);
-> > > +	struct task_struct *tsk;
-> > > +
-> > > +	if (!user_mode(regs)) {
-> > > +		pr_emerg("PANIC: unexpected kernel control protection fault\n");
-> > > +		die("kernel control protection fault", regs, error_code);
-> > > +		panic("Machine halted.");
-> > > +	}
-> > > +
-> > > +	cond_local_irq_enable(regs);
-> > > +
-> > > +	if (!boot_cpu_has(X86_FEATURE_CET))
-> > > +		WARN_ONCE(1, "Control protection fault with CET support disabled\n");
-> > > +
-> > > +	tsk = current;
-> > > +	tsk->thread.error_code = error_code;
-> > > +	tsk->thread.trap_nr = X86_TRAP_CP;
-> > > +
-> > > +	if (show_unhandled_signals && unhandled_signal(tsk, SIGSEGV) &&
-> > > +	    __ratelimit(&rs)) {
-> > 
-> > I can't find it written down anywhere why the ratelimiting is needed at
-> > all?
-> > 
-> 
-> The ratelimit here is only for #CP, and its rate is not counted together
-> with other types of faults.  If a task gets here, it will exit.  The only
-> condition the ratelimit will trigger is when multiple tasks hit #CP at once,
-> which is unlikely.  Are you suggesting that we do not need the ratelimit
-> here?
+The following commit has been merged into the timers/core branch of tip:
 
-Since this is a potentially unprivileged-userspace-triggerable
-condition, I tend to prefer having a ratelimit. I don't feel _strongly_
-about it, but I find it better to be defensive against log spamming
-(whether malicious or accidental).
+Commit-ID:     b5c28ea601b801d0ecd5ec703b8d54f77bfe5365
+Gitweb:        https://git.kernel.org/tip/b5c28ea601b801d0ecd5ec703b8d54f77bfe5365
+Author:        Alexandre Belloni <alexandre.belloni@bootlin.com>
+AuthorDate:    Tue, 02 Feb 2021 02:34:57 +01:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Fri, 05 Feb 2021 19:26:41 +01:00
 
--- 
-Kees Cook
+alarmtimer: Update kerneldoc
+
+Update kerneldoc comments to reflect the actual arguments and return values
+of the documented functions.
+
+Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Link: https://lore.kernel.org/r/20210202013457.3482388-1-alexandre.belloni@bootlin.com
+
+---
+ kernel/time/alarmtimer.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/kernel/time/alarmtimer.c b/kernel/time/alarmtimer.c
+index f4ace1b..98d7a15 100644
+--- a/kernel/time/alarmtimer.c
++++ b/kernel/time/alarmtimer.c
+@@ -527,8 +527,11 @@ static enum alarmtimer_type clock2alarm(clockid_t clockid)
+ /**
+  * alarm_handle_timer - Callback for posix timers
+  * @alarm: alarm that fired
++ * @now: time at the timer expiration
+  *
+  * Posix timer callback for expired alarm timers.
++ *
++ * Return: whether the timer is to be restarted
+  */
+ static enum alarmtimer_restart alarm_handle_timer(struct alarm *alarm,
+ 							ktime_t now)
+@@ -715,8 +718,11 @@ static int alarm_timer_create(struct k_itimer *new_timer)
+ /**
+  * alarmtimer_nsleep_wakeup - Wakeup function for alarm_timer_nsleep
+  * @alarm: ptr to alarm that fired
++ * @now: time at the timer expiration
+  *
+  * Wakes up the task that set the alarmtimer
++ *
++ * Return: ALARMTIMER_NORESTART
+  */
+ static enum alarmtimer_restart alarmtimer_nsleep_wakeup(struct alarm *alarm,
+ 								ktime_t now)
+@@ -733,6 +739,7 @@ static enum alarmtimer_restart alarmtimer_nsleep_wakeup(struct alarm *alarm,
+  * alarmtimer_do_nsleep - Internal alarmtimer nsleep implementation
+  * @alarm: ptr to alarmtimer
+  * @absexp: absolute expiration time
++ * @type: alarm type (BOOTTIME/REALTIME).
+  *
+  * Sets the alarm timer and sleeps until it is fired or interrupted.
+  */
+@@ -806,7 +813,6 @@ static long __sched alarm_timer_nsleep_restart(struct restart_block *restart)
+  * @which_clock: clockid
+  * @flags: determins abstime or relative
+  * @tsreq: requested sleep time (abs or rel)
+- * @rmtp: remaining sleep time saved
+  *
+  * Handles clock_nanosleep calls against _ALARM clockids
+  */
