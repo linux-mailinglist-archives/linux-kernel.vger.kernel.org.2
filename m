@@ -2,173 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47F8F311200
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 21:12:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59AD23111FE
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 21:12:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233358AbhBES3g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 13:29:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47308 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233152AbhBEPNJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 10:13:09 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3AEB864EEB;
-        Fri,  5 Feb 2021 16:50:30 +0000 (UTC)
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1l84JP-00CIPY-Vb; Fri, 05 Feb 2021 16:50:28 +0000
+        id S233209AbhBES3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 13:29:20 -0500
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:4297 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230307AbhBEPNQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 10:13:16 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B601d778b0000>; Fri, 05 Feb 2021 08:51:23 -0800
+Received: from HKMAIL101.nvidia.com (10.18.16.10) by HQMAIL101.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 5 Feb
+ 2021 16:51:22 +0000
+Received: from HKMAIL104.nvidia.com (10.18.16.13) by HKMAIL101.nvidia.com
+ (10.18.16.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 5 Feb
+ 2021 16:51:18 +0000
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.172)
+ by HKMAIL104.nvidia.com (10.18.16.13) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Fri, 5 Feb 2021 16:51:18 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BrKMI8+DM+eoH6up4Cz7WmTU+VMziCYUNlYcJyjKO+wYt8heEPCRoVuv3kQ+3B1RyGwRACvQFekPdcg/jzo1ggUaGfFMPeF3yZ84zxHVJba4bkvGaGc59l0ispnMKulc52LXKQm1+KB0EU/Uv8DSweZHYHQg1+EzUViW+DmVEaeXj481AEQVFV9NXJmPp7z7BPYJLrdC2iuIsIa+4a4gokiwHKnGB+wXxh1Lwn57WOOiPvhooHliX/S0FRVB+AuSJOVXv6ZxmHY29LDGLOkPoQlXAqFK25uIokmzVgiYsDxzS6D/iKFe/mGJ43vFVOsGjKrs7eg/1fmJvMhXJuYAQA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1LS3cG1cQTFsLvem3P2GfggAuj5MfjtrblP3tNTGmuw=;
+ b=SREeU8bOiqbx43hTeVCbPWNha6PgZCn5RjBMUhXvheVotXWci1e/2gSiDz26NQMLUHOTegObhRvyE2Opsf9Hi7+SwzBBYunIUgWU5vMiulziwBQCP+5hbb8bmSedhPpZ3mfcssuBc16YEuAaahnu0fv+VfxTepPbamh8G5kXkEpP3QsTyH6v/1qhSFHJVyhHZ+A2Exyty6P8Lgijh2jQdw+eemzp1kYW5rwVavlfMQdbrlHhsOVbGfUet04elRDk56SwDCvaB4dOGCv4A4jSQUvjbrZ3uF85ix4zwND2+r6pUN2jwcZDknwwt5Qk1tVV/bRl7HMEdZ6LqDZAVlW+aw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB2812.namprd12.prod.outlook.com (2603:10b6:5:44::27) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.24; Fri, 5 Feb
+ 2021 16:51:15 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::d6b:736:fa28:5e4]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::d6b:736:fa28:5e4%7]) with mapi id 15.20.3825.025; Fri, 5 Feb 2021
+ 16:51:15 +0000
+Date:   Fri, 5 Feb 2021 12:51:13 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     kernel test robot <lkp@intel.com>
+CC:     Avihai Horon <avihaih@nvidia.com>, <kbuild-all@lists.01.org>,
+        <linux-kernel@vger.kernel.org>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>, <linux-sh@vger.kernel.org>
+Subject: Re: drivers/infiniband/core/uverbs_std_types_device.c:299:29:
+ sparse: sparse: incorrect type in argument 1 (different address spaces)
+Message-ID: <20210205165113.GV4247@nvidia.com>
+References: <202102020130.LmreFXR5-lkp@intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <202102020130.LmreFXR5-lkp@intel.com>
+X-ClientProxiedBy: BL0PR02CA0063.namprd02.prod.outlook.com
+ (2603:10b6:207:3d::40) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 05 Feb 2021 16:50:27 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     Will Deacon <will@kernel.org>
-Cc:     Steven Price <steven.price@arm.com>, netdev@vger.kernel.org,
-        yangbo.lu@nxp.com, john.stultz@linaro.org, tglx@linutronix.de,
-        pbonzini@redhat.com, seanjc@google.com, richardcochran@gmail.com,
-        Mark.Rutland@arm.com, suzuki.poulose@arm.com,
-        Andre.Przywara@arm.com, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        kvm@vger.kernel.org, Steve.Capper@arm.com, justin.he@arm.com,
-        jianyong.wu@arm.com, kernel-team@android.com
-Subject: Re: [PATCH v17 1/7] arm/arm64: Probe for the presence of KVM
- hypervisor
-In-Reply-To: <20210205111921.GA22109@willie-the-truck>
-References: <20210202141204.3134855-1-maz@kernel.org>
- <20210202141204.3134855-2-maz@kernel.org>
- <d5765ade-7199-2d1e-6d59-d3de6a52c6ce@arm.com>
- <20210205111921.GA22109@willie-the-truck>
-User-Agent: Roundcube Webmail/1.4.10
-Message-ID: <e2eefee823f6a8e448f6d477cef315d4@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: will@kernel.org, steven.price@arm.com, netdev@vger.kernel.org, yangbo.lu@nxp.com, john.stultz@linaro.org, tglx@linutronix.de, pbonzini@redhat.com, seanjc@google.com, richardcochran@gmail.com, Mark.Rutland@arm.com, suzuki.poulose@arm.com, Andre.Przywara@arm.com, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, kvm@vger.kernel.org, Steve.Capper@arm.com, justin.he@arm.com, jianyong.wu@arm.com, kernel-team@android.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.162.115.133) by BL0PR02CA0063.namprd02.prod.outlook.com (2603:10b6:207:3d::40) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.20 via Frontend Transport; Fri, 5 Feb 2021 16:51:14 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1l84K9-003xMG-Lh; Fri, 05 Feb 2021 12:51:13 -0400
+X-Header: ProcessedBy-CMR-outbound
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1612543883; bh=1LS3cG1cQTFsLvem3P2GfggAuj5MfjtrblP3tNTGmuw=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType:X-Header;
+        b=lIMD1UdrafM6UqUYoqsf3cJmfwcoJVmbTkiCyHZXs6GSvxxifYeZPEN46CBRqQCgf
+         nGPJgDvyNaB8y3M6VN89ysmHrorlrmd1Yggnc7EYZdRxF9WmOqVncsfAmG+Qdi2acd
+         zZlTp1fSqhmSIDeYEjwB2Dhuewq1qpCq8woa5/VsWFW9Y7Kq9Pfp6cGv7zu7tPManh
+         mAO0ga3af6/E2F7fOeIzmCf39aWcnnuE4sMUZvNYwFb4dEiP9lXdXI25IN0NgfBqS8
+         XXdZ1akLwQqukEApksqOsm1F8iG5oE9vpH//9+YksDWVK0FZ14ojg1qhf+NYOmId5q
+         BATk3BGfFHm4A==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-02-05 11:19, Will Deacon wrote:
-> On Fri, Feb 05, 2021 at 09:11:00AM +0000, Steven Price wrote:
->> On 02/02/2021 14:11, Marc Zyngier wrote:
->> > diff --git a/drivers/firmware/smccc/kvm_guest.c b/drivers/firmware/smccc/kvm_guest.c
->> > new file mode 100644
->> > index 000000000000..23ce1ded88b4
->> > --- /dev/null
->> > +++ b/drivers/firmware/smccc/kvm_guest.c
->> > @@ -0,0 +1,51 @@
->> > +// SPDX-License-Identifier: GPL-2.0
->> > +
->> > +#define pr_fmt(fmt) "smccc: KVM: " fmt
->> > +
->> > +#include <linux/init.h>
->> > +#include <linux/arm-smccc.h>
->> > +#include <linux/kernel.h>
->> > +#include <linux/string.h>
->> > +
->> > +static DECLARE_BITMAP(__kvm_arm_hyp_services, ARM_SMCCC_KVM_NUM_FUNCS) __ro_after_init = { };
->> > +
->> > +void __init kvm_init_hyp_services(void)
->> > +{
->> > +	int i;
->> > +	struct arm_smccc_res res;
->> > +
->> > +	if (arm_smccc_1_1_get_conduit() != SMCCC_CONDUIT_HVC)
->> > +		return;
->> > +
->> > +	arm_smccc_1_1_invoke(ARM_SMCCC_VENDOR_HYP_CALL_UID_FUNC_ID, &res);
->> > +	if (res.a0 != ARM_SMCCC_VENDOR_HYP_UID_KVM_REG_0 ||
->> > +	    res.a1 != ARM_SMCCC_VENDOR_HYP_UID_KVM_REG_1 ||
->> > +	    res.a2 != ARM_SMCCC_VENDOR_HYP_UID_KVM_REG_2 ||
->> > +	    res.a3 != ARM_SMCCC_VENDOR_HYP_UID_KVM_REG_3)
->> > +		return;
->> > +
->> > +	memset(&res, 0, sizeof(res));
->> > +	arm_smccc_1_1_invoke(ARM_SMCCC_VENDOR_HYP_KVM_FEATURES_FUNC_ID, &res);
->> > +	for (i = 0; i < 32; ++i) {
->> > +		if (res.a0 & (i))
->> > +			set_bit(i + (32 * 0), __kvm_arm_hyp_services);
->> > +		if (res.a1 & (i))
->> > +			set_bit(i + (32 * 1), __kvm_arm_hyp_services);
->> > +		if (res.a2 & (i))
->> > +			set_bit(i + (32 * 2), __kvm_arm_hyp_services);
->> > +		if (res.a3 & (i))
->> > +			set_bit(i + (32 * 3), __kvm_arm_hyp_services);
->> 
->> The bit shifts are missing, the tests should be of the form:
->> 
->> 	if (res.a0 & (1 << i))
->> 
->> Or indeed using a BIT() macro.
+On Tue, Feb 02, 2021 at 01:40:33AM +0800, kernel test robot wrote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   1048ba83fb1c00cd24172e23e8263972f6b5d9ac
+> commit: 9f85cbe50aa044a46f0a22fda323fa27b80c82da RDMA/uverbs: Expose the new GID query API to user space
+> date:   4 months ago
+> config: sh-randconfig-s031-20210201 (attached as .config)
+> compiler: sh4-linux-gcc (GCC) 9.3.0
+> reproduce:
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # apt-get install sparse
+>         # sparse version: v0.6.3-215-g0fb77bb6-dirty
+>         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=9f85cbe50aa044a46f0a22fda323fa27b80c82da
+>         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>         git fetch --no-tags linus master
+>         git checkout 9f85cbe50aa044a46f0a22fda323fa27b80c82da
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' ARCH=sh 
 > 
-> Maybe even test_bit()?
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> 
+> 
+> "sparse warnings: (new ones prefixed by >>)"
+> >> drivers/infiniband/core/uverbs_std_types_device.c:299:29: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *addr @@     got void [noderef] __user *__cl_addr @@
+>    drivers/infiniband/core/uverbs_std_types_device.c:299:29: sparse:     expected void *addr
+>    drivers/infiniband/core/uverbs_std_types_device.c:299:29: sparse:     got void [noderef] __user *__cl_addr
+>    drivers/infiniband/core/uverbs_std_types_device.c:115:15: sparse: sparse: cast truncates bits from constant value (ffff0001 becomes 1)
+>    drivers/infiniband/core/uverbs_std_types_device.c:195:15: sparse: sparse: cast truncates bits from constant value (ffffff01 becomes 1)
 
-Actually, maybe not doing things a-bit-at-a-time is less error prone.
-See below what I intend to fold in.
+This is a bug in  arch/sh/include/asm/page.h:
 
-Thanks,
+__kernel_size_t __clear_user(void *addr, __kernel_size_t size);
 
-         M.
+#define clear_user(addr,n)						\
+...
+		__cl_size = __clear_user(__cl_addr, __cl_size);		\
 
-diff --git a/drivers/firmware/smccc/kvm_guest.c 
-b/drivers/firmware/smccc/kvm_guest.c
-index 00bf3c7969fc..08836f2f39ee 100644
---- a/drivers/firmware/smccc/kvm_guest.c
-+++ b/drivers/firmware/smccc/kvm_guest.c
-@@ -2,8 +2,8 @@
+__clear_user() needs to take a void __user *addr
 
-  #define pr_fmt(fmt) "smccc: KVM: " fmt
-
--#include <linux/init.h>
-  #include <linux/arm-smccc.h>
-+#include <linux/bitmap.h>
-  #include <linux/kernel.h>
-  #include <linux/string.h>
-
-@@ -13,8 +13,8 @@ static DECLARE_BITMAP(__kvm_arm_hyp_services, 
-ARM_SMCCC_KVM_NUM_FUNCS) __ro_afte
-
-  void __init kvm_init_hyp_services(void)
-  {
--	int i;
-  	struct arm_smccc_res res;
-+	u32 val[4];
-
-  	if (arm_smccc_1_1_get_conduit() != SMCCC_CONDUIT_HVC)
-  		return;
-@@ -28,16 +28,13 @@ void __init kvm_init_hyp_services(void)
-
-  	memset(&res, 0, sizeof(res));
-  	arm_smccc_1_1_invoke(ARM_SMCCC_VENDOR_HYP_KVM_FEATURES_FUNC_ID, &res);
--	for (i = 0; i < 32; ++i) {
--		if (res.a0 & (i))
--			set_bit(i + (32 * 0), __kvm_arm_hyp_services);
--		if (res.a1 & (i))
--			set_bit(i + (32 * 1), __kvm_arm_hyp_services);
--		if (res.a2 & (i))
--			set_bit(i + (32 * 2), __kvm_arm_hyp_services);
--		if (res.a3 & (i))
--			set_bit(i + (32 * 3), __kvm_arm_hyp_services);
--	}
-+
-+	val[0] = lower_32_bits(res.a0);
-+	val[1] = lower_32_bits(res.a1);
-+	val[2] = lower_32_bits(res.a2);
-+	val[3] = lower_32_bits(res.a3);
-+
-+	bitmap_from_arr32(__kvm_arm_hyp_services, val, 
-ARM_SMCCC_KVM_NUM_FUNCS);
-
-  	pr_info("hypervisor services detected (0x%08lx 0x%08lx 0x%08lx 
-0x%08lx)\n",
-  		 res.a3, res.a2, res.a1, res.a0);
-
-
--- 
-Jazz is not dead. It just smells funny...
+Jason
