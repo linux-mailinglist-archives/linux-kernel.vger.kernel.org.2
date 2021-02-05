@@ -2,93 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2784C3116C8
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 00:20:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29FB53116C4
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 00:19:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232295AbhBEXNT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 18:13:19 -0500
-Received: from mx2.suse.de ([195.135.220.15]:50472 "EHLO mx2.suse.de"
+        id S232095AbhBEXM3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 18:12:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41764 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232625AbhBEO2U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 09:28:20 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1612541179; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=X0eNZnPZ2yvNSsohyfO18yi1he4bt+Z9BswCbs9pY3o=;
-        b=YTiJoqhqHI2WHfc/9NOnQxXomFQnQCUwdI5oE5KBAXc1O9bZPxV2+A/3GrVxmdvJKCbIc8
-        9ChcfYP2M7iEcMltkcdxKxBeP+1W6fktGOqgAaFVj4vBCU4AuFA1sVBIwma+QHOIqOGPkd
-        HlvyEvn0XK+Z44oQX8eZCi+9KntjaFw=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 560A9B0BF;
-        Fri,  5 Feb 2021 16:06:19 +0000 (UTC)
-Date:   Fri, 5 Feb 2021 17:06:18 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Roman Gushchin <guro@fb.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        id S232630AbhBEO26 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 09:28:58 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D08C264D92;
+        Fri,  5 Feb 2021 16:06:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612541205;
+        bh=m0Ived/Gtw9H0h9wzJs3877Bi8G+nGI9iZ9HA2qfSi0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=N19lstyfIjNxGz0mYNCERX8vzhh1nu7jBG58K4mykiqzTPnAy4sUWlGy2fihm8BZi
+         2hvg6JcH/74yAAhr6kGe8CSdh/ZWeu7AyEJ/8qD47xa5QJXEcaBroFOEc+OXUz08Kp
+         qhqV4TzpAkO2qCCq6/smiou/HyIojpMLPsUEmQSznsUqfZar1K0byzoV/LkJWHiyNf
+         GSn6boP/u4Jy3y4I3pqrJKex77yGszmnrQq2B9G46HiUhOHS3NpdMcNFKD1T+gKx66
+         v6VBSmMkbxAta0qgbDwCXodwiEat97uh2Wh2Hy5PeLCJ7Pi/wtO0lNQ74b3RcRPfKe
+         1dLN2PLyiSV1w==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 3750740513; Fri,  5 Feb 2021 13:06:41 -0300 (-03)
+Date:   Fri, 5 Feb 2021 13:06:41 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Chris Murphy <lists@colorremedies.com>
+Cc:     bpf <bpf@vger.kernel.org>, Jiri Olsa <jolsa@kernel.org>,
+        dwarves@vger.kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [External] Re: [PATCH] mm: memcontrol: remove rcu_read_lock from
- get_mem_cgroup_from_page
-Message-ID: <YB1s+puR+zPnkIFe@dhcp22.suse.cz>
-References: <20210205062719.74431-1-songmuchun@bytedance.com>
- <YB0DnAlCaQza4Uf9@dhcp22.suse.cz>
- <CAMZfGtVhBrwgkJVwiah6eDsppSf8fYp+uZ=tZmHBLDFeTmQX3w@mail.gmail.com>
- <YB0euLiMU+T/9bMK@dhcp22.suse.cz>
- <CALvZod65SY3yVXSwxO02VCZeEg9KsBqq9_Ph3pq2gfQ0eH=kFw@mail.gmail.com>
+        LKML <linux-kernel@vger.kernel.org>,
+        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Jakub Jelinek <jakub@redhat.com>,
+        Fangrui Song <maskray@google.com>,
+        Caroline Tice <cmtice@google.com>,
+        Nick Clifton <nickc@redhat.com>
+Subject: Re: [FIXED] Re: 5:11: in-kernel BTF is malformed
+Message-ID: <20210205160641.GE920417@kernel.org>
+References: <CAJCQCtRHOidM7Vps1JQSpZA14u+B5fR860FwZB=eb1wYjTpqDw@mail.gmail.com>
+ <CAEf4BzZ4oTB0-JizHe1VaCk2V+Jb9jJoTznkgh6CjE5VxNVqbg@mail.gmail.com>
+ <CAJCQCtRw6UWGGvjn0x__godYKYQXXmtyQys4efW2Pb84Q5q8Eg@mail.gmail.com>
+ <20210204010038.GA854763@kernel.org>
+ <CAJCQCtQfgRp78_WSrSHLNUUYNCyOCH=vo10nVZW_cyMjpZiNJg@mail.gmail.com>
+ <CAEf4Bza4XQxpS7VTNWGk6Rz-iUwZemF6+iAVBA_yvrWnV0k8Qg@mail.gmail.com>
+ <CAJCQCtRDJ_uiJcanP_p+y6Kz76c4P-EmndMyfHN5f4rtkgYhjA@mail.gmail.com>
+ <20210204132625.GB910119@kernel.org>
+ <20210204163319.GD910119@kernel.org>
+ <CAJCQCtT-i0Lv2zxUDko3XuiHpUqOnYPeND5LzD=zgrB1-GNvAg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CALvZod65SY3yVXSwxO02VCZeEg9KsBqq9_Ph3pq2gfQ0eH=kFw@mail.gmail.com>
+In-Reply-To: <CAJCQCtT-i0Lv2zxUDko3XuiHpUqOnYPeND5LzD=zgrB1-GNvAg@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 05-02-21 07:59:06, Shakeel Butt wrote:
-> +Cc Roman
-> 
-> On Fri, Feb 5, 2021 at 2:49 AM Michal Hocko <mhocko@suse.com> wrote:
+Em Thu, Feb 04, 2021 at 08:10:52PM -0700, Chris Murphy escreveu:
+> On Thu, Feb 4, 2021 at 9:33 AM Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
 > >
-> [snip]
-> > > > > Also, css_get is enough because page
-> > > > > has a reference to the memcg.
-> > > >
-> > > > tryget used to be there to guard against offlined memcg but we have
-> > > > concluded this is impossible in this path. tryget stayed there to catch
-> > > > some unexpected cases IIRC.
-> > >
-> > > Yeah, it can catch some unexpected cases. But why is this path
-> > > special so that we need a tryget?
-> >
-> > I do not remember details and the changelog of that change is not
-> > explicit but I suspect it was just because this one could trigger as
-> > there are external callers to memcg. Is this protection needed? I am not
-> > sure, this is for you to justify if you want to remove it.
-> >
+> > So I think that for the problems related to building the kernel with gcc
+> > 11 in Fedora Rawhide using the default that is now DWARF5, pahole 1.20
+> > is good to go and I'll tag it now.
 > 
-> It used to be css_tryget_online() which was changed to css_tryget()
-> and from the discussion at [1], it seemed css_get() would be enough
-> but we took a safer route.
+> dwarves-1.20-1.fc34.x86_64
+> libdwarves1-1.20-1.fc34.x86_64
 > 
-> Anyways, I think we can either take the page_memcg_rcu() route or put
-> explicit restrictions with page lock or lock_page_memcg() to guarantee
-> page and memcg binding. I don't have a strong opinion either way but I
-> think removing restrictions in future for new use-cases will be much
-> harder, so, page_memcg_rcu() approach seems more appropriate at least
-> for now.
+> Fixes both "failed to validate module [?????] BTF: -22" type errors,
+> and 'in-kernel BTF is malformed" with qemu-kvm and libvirt.
 
-Yeah, I would like to not have very special locking requirements here.
-Definitely not page_lock as that one is too overloaded already.
+Cool! Any fedora user here please give the update some love by bumping
+its karma at:
 
-> 
-> [1] https://lore.kernel.org/linux-mm/CALvZod5pAv=u8L2Tgk0hDY7XAiiF2dvjC1omQ5BSfzFu_2zSXA@mail.gmail.com/
+https://bodhi.fedoraproject.org/updates/FEDORA-2021-804e7a572c
 
--- 
-Michal Hocko
-SUSE Labs
+- Arnaldo
