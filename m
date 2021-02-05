@@ -2,148 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74396311727
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 00:34:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 013F2311765
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 00:47:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229736AbhBEXcs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 18:32:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41520 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232561AbhBEOWu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 09:22:50 -0500
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8816AC061226;
-        Fri,  5 Feb 2021 07:48:17 -0800 (PST)
-Received: by mail-pg1-x534.google.com with SMTP id g15so4797821pgu.9;
-        Fri, 05 Feb 2021 07:48:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=pEagqi62HNqjEDuovFOO2JjM1Kr7t2Jo4q/MNI9nB24=;
-        b=d+2AkdJ5YK/R4OEm1F9w9ooTMwZ/Vt+mJeEK9vh6KYl4J3TC/O5aR8pligor7UGdow
-         rTCeeXWc2j9KJ+o9LJX44mo5XXzp9ZogHdoTaldeuDMa6UcWd+mcdCw2atlcxCwoWqu+
-         +OxUbmrGZ765RoDSL8fDC4pPz4+WS3GbHGdvTiMhjzLYbzSmLAqfWvX5dO6wEmx/ho1t
-         vWuxRohupI2Un0Kww6hDdU9YgUYU8+v+KSJhU6iRmyZBxMEeWcxpo4L1qhhppRmlVl0U
-         WWIBsW9tAjoJzJ3+0yQz2WqCCoUyv6q5XW80AxPxur/9KI3e6d9M9Qa03a+dccPGI4e/
-         1U1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=pEagqi62HNqjEDuovFOO2JjM1Kr7t2Jo4q/MNI9nB24=;
-        b=RWr7bwUjGmnPvlwBtpd0QY4mG+hICaBqGE9rJKFIg72WVv6P01G+rf3qU7bMTd5+nE
-         FpWc6O+lM1/QE+PHMzXNmS/1sFAx3sE6NtLgou6ZBz5iMA3OpvhSuUwWWibaSiz9vsD0
-         Ji23WlxBVN7f+4IvaApUGxWIq9C8UaJw7exmIdEYrdY1wr/D8r/h8jBEJIR9uLgxeQb9
-         WT8Fbf+cYFZ0vouwEoBm1bX5n8ppTWGgK9NCs9XEgJcwwRePEOnCGbBofGeTJx5d+t+P
-         K3yGNq/dA+WQ5ttDFj8sp7oqZmtR3KkznSMkFBptcubE24GBFAin/Oz+YROfuldnnzsc
-         tyHQ==
-X-Gm-Message-State: AOAM530b2t+zI3cwLTjRdg2sHINn7HJLT0E1K+3RovSVZ4g1tytbtaz9
-        epwp/EE2MU89tZKqdfCDUzrLbr18eTWknR5EV/jtmLT/6UhW8vSi
-X-Google-Smtp-Source: ABdhPJyrzvmSgLmdsKyKFyvusDR+QofbAQpPKPcvpRRCE7XydDr33WsaT2aqAPYK9i/NCs+K9n6P4hAfVoIw1Sw3vdQ=
-X-Received: by 2002:a92:58ce:: with SMTP id z75mr4514066ilf.209.1612539662400;
- Fri, 05 Feb 2021 07:41:02 -0800 (PST)
+        id S231210AbhBEXpd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 18:45:33 -0500
+Received: from mga11.intel.com ([192.55.52.93]:61340 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232487AbhBEORn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 09:17:43 -0500
+IronPort-SDR: Z+Cwj4BZ7/DZOQNu6Q/5l9GF0mmt23Ikm8ciq7Nv7Kt9YzJCoJQU3DZ/9HfBB73eAZi+gl7lvH
+ JXC059Xwdx0w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9885"; a="177942713"
+X-IronPort-AV: E=Sophos;i="5.81,155,1610438400"; 
+   d="scan'208";a="177942713"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2021 07:45:38 -0800
+IronPort-SDR: wtwkrxB8blwaWY8JtjN8FHYIZpSAyZ88za/ZhKb51whEC0c8gTM4HDAZY178b+0tSXLNi7ewZi
+ zLwwNAMMzppw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,155,1610438400"; 
+   d="scan'208";a="416234276"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga002.fm.intel.com with ESMTP; 05 Feb 2021 07:45:38 -0800
+Received: from [10.254.80.1] (kliang2-MOBL.ccr.corp.intel.com [10.254.80.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by linux.intel.com (Postfix) with ESMTPS id 1EB6258087A;
+        Fri,  5 Feb 2021 07:45:37 -0800 (PST)
+Subject: Re: [PATCH 2/9] perf tools: Support the auxiliary event
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Namhyung Kim <namhyung@kernel.org>, Ingo Molnar <mingo@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Stephane Eranian <eranian@google.com>,
+        Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>,
+        Yao Jin <yao.jin@linux.intel.com>, maddy@linux.vnet.ibm.com
+References: <1612296553-21962-1-git-send-email-kan.liang@linux.intel.com>
+ <1612296553-21962-3-git-send-email-kan.liang@linux.intel.com>
+ <CAM9d7cjDYALhR-xd2n2vaL5cPBiMz8RukziQqsfqqYwqBc87yA@mail.gmail.com>
+ <33221095-5ef6-bec8-136e-34dc14ae7adb@linux.intel.com>
+ <20210205152648.GC920417@kernel.org>
+From:   "Liang, Kan" <kan.liang@linux.intel.com>
+Message-ID: <238b21d6-a32c-53d7-b498-b7c6e14a4974@linux.intel.com>
+Date:   Fri, 5 Feb 2021 10:45:35 -0500
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-References: <20210204220741.GA920417@kernel.org> <CA+icZUVQSojGgnis8Ds5GW-7-PVMZ2w4X5nQKSSkBPf-29NS6Q@mail.gmail.com>
- <CA+icZUU2xmZ=mhVYLRk7nZBRW0+v+YqBzq18ysnd7xN+S7JHyg@mail.gmail.com>
- <CA+icZUVyB3qaqq3pwOyJY_F4V6KU9hdF=AJM_D7iEW4QK4Eo6w@mail.gmail.com> <20210205152823.GD920417@kernel.org>
-In-Reply-To: <20210205152823.GD920417@kernel.org>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Fri, 5 Feb 2021 16:40:51 +0100
-Message-ID: <CA+icZUUNhtbv3sNkPd4Ac9rd5ZZ7DfNEqRKEHKWXEcpHd63c2g@mail.gmail.com>
-Subject: Re: ERROR: INT DW_ATE_unsigned_1 Error emitting BTF type
-To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-Cc:     dwarves@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        bpf@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
-        Jan Engelhardt <jengelh@inai.de>,
-        Domenico Andreoli <cavok@debian.org>,
-        Matthias Schwarzott <zzam@gentoo.org>,
-        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
-        Mark Wieelard <mjw@redhat.com>,
-        Paul Moore <paul@paul-moore.com>,
-        Ondrej Mosnacek <omosnace@redhat.com>,
-        =?UTF-8?Q?Daniel_P=2E_Berrang=C3=A9?= <berrange@redhat.com>,
-        Tom Stellard <tstellar@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210205152648.GC920417@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 5, 2021 at 4:28 PM Arnaldo Carvalho de Melo
-<arnaldo.melo@gmail.com> wrote:
->
-> Em Fri, Feb 05, 2021 at 04:23:59PM +0100, Sedat Dilek escreveu:
-> > On Fri, Feb 5, 2021 at 3:41 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
-> > >
-> > > On Fri, Feb 5, 2021 at 3:37 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
-> > > >
-> > > > Hi,
-> > > >
-> > > > when building with pahole v1.20 and binutils v2.35.2 plus Clang
-> > > > v12.0.0-rc1 and DWARF-v5 I see:
-> > > > ...
-> > > > + info BTF .btf.vmlinux.bin.o
-> > > > + [  != silent_ ]
-> > > > + printf   %-7s %s\n BTF .btf.vmlinux.bin.o
-> > > >  BTF     .btf.vmlinux.bin.o
-> > > > + LLVM_OBJCOPY=/opt/binutils/bin/objcopy /opt/pahole/bin/pahole -J
-> > > > .tmp_vmlinux.btf
-> > > > [115] INT DW_ATE_unsigned_1 Error emitting BTF type
-> > > > Encountered error while encoding BTF.
-> > >
-> > > Grepping the pahole sources:
-> > >
-> > > $ git grep DW_ATE
-> > > dwarf_loader.c:         bt->is_bool = encoding == DW_ATE_boolean;
-> > > dwarf_loader.c:         bt->is_signed = encoding == DW_ATE_signed;
-> > >
-> > > Missing DW_ATE_unsigned encoding?
-> > >
-> >
-> > Checked the LLVM sources:
-> >
-> > clang/lib/CodeGen/CGDebugInfo.cpp:    Encoding =
-> > llvm::dwarf::DW_ATE_unsigned_char;
-> > clang/lib/CodeGen/CGDebugInfo.cpp:    Encoding = llvm::dwarf::DW_ATE_unsigned;
-> > clang/lib/CodeGen/CGDebugInfo.cpp:    Encoding =
-> > llvm::dwarf::DW_ATE_unsigned_fixed;
-> > clang/lib/CodeGen/CGDebugInfo.cpp:
-> >   ? llvm::dwarf::DW_ATE_unsigned
-> > ...
-> > lld/test/wasm/debuginfo.test:CHECK-NEXT:                DW_AT_encoding
-> >  (DW_ATE_unsigned)
-> >
-> > So, I will switch from GNU ld.bfd v2.35.2 to LLD-12.
->
-> Thanks for the research, probably your conclusion is correct, can you go
-> the next step and add that part and check if the end result is the
-> expected one?
->
 
-Started a new build:
 
-$ ps -ef | grep p[e]rf
-dileks    529807  529775  0 16:32 pts/1    00:00:00 /usr/bin/perf_5.10
-stat make V=1 -j4 LLVM=1 PAHOLE=/opt/pahole/bin/pahole
-LOCALVERSION=-12-amd64-clang12-llvm KBUIL
-D_VERBOSE=1 KBUILD_BUILD_HOST=iniza
-KBUILD_BUILD_USER=sedat.dilek@gmail.com
-KBUILD_BUILD_TIMESTAMP=2021-02-05 bindeb-pkg
-KDEB_PKGVERSION=5.11.0~rc6-12~bullseye+dileks1
+On 2/5/2021 10:26 AM, Arnaldo Carvalho de Melo wrote:
+> Em Fri, Feb 05, 2021 at 09:13:34AM -0500, Liang, Kan escreveu:
+>>
+>>
+>> On 2/5/2021 5:52 AM, Namhyung Kim wrote:
+>>> On Wed, Feb 3, 2021 at 5:14 AM <kan.liang@linux.intel.com> wrote:
+>>>>
+>>>> From: Kan Liang <kan.liang@linux.intel.com>
+>>>>
+>>>> On the Intel Sapphire Rapids server, an auxiliary event has to be
+>>>> enabled simultaneously with the load latency event to retrieve complete
+>>>> Memory Info.
+>>>>
+>>>> Add X86 specific perf_mem_events__name() to handle the auxiliary event.
+>>>> - Users are only interested in the samples of the mem-loads event.
+>>>>     Sample read the auxiliary event.
+>>>> - The auxiliary event must be in front of the load latency event in a
+>>>>     group. Assume the second event to sample if the auxiliary event is the
+>>>>     leader.
+>>>> - Add a weak is_mem_loads_aux_event() to check the auxiliary event for
+>>>>     X86. For other ARCHs, it always return false.
+>>>>
+>>>> Parse the unique event name, mem-loads-aux, for the auxiliary event.
+>>>>
+>>>> Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+>>>> ---
+>>>>    tools/perf/arch/x86/util/Build        |  1 +
+>>>>    tools/perf/arch/x86/util/mem-events.c | 44 +++++++++++++++++++++++++++++++++++
+>>>>    tools/perf/util/evsel.c               |  3 +++
+>>>>    tools/perf/util/mem-events.c          |  5 ++++
+>>>>    tools/perf/util/mem-events.h          |  2 ++
+>>>>    tools/perf/util/parse-events.l        |  1 +
+>>>>    tools/perf/util/record.c              |  5 +++-
+>>>>    7 files changed, 60 insertions(+), 1 deletion(-)
+>>>>    create mode 100644 tools/perf/arch/x86/util/mem-events.c
+>>>>
+>>>> diff --git a/tools/perf/arch/x86/util/Build b/tools/perf/arch/x86/util/Build
+>>>> index 347c39b..d73f548 100644
+>>>> --- a/tools/perf/arch/x86/util/Build
+>>>> +++ b/tools/perf/arch/x86/util/Build
+>>>> @@ -6,6 +6,7 @@ perf-y += perf_regs.o
+>>>>    perf-y += topdown.o
+>>>>    perf-y += machine.o
+>>>>    perf-y += event.o
+>>>> +perf-y += mem-events.o
+>>>>
+>>>>    perf-$(CONFIG_DWARF) += dwarf-regs.o
+>>>>    perf-$(CONFIG_BPF_PROLOGUE) += dwarf-regs.o
+>>>> diff --git a/tools/perf/arch/x86/util/mem-events.c b/tools/perf/arch/x86/util/mem-events.c
+>>>> new file mode 100644
+>>>> index 0000000..11b8469
+>>>> --- /dev/null
+>>>> +++ b/tools/perf/arch/x86/util/mem-events.c
+>>>> @@ -0,0 +1,44 @@
+>>>> +// SPDX-License-Identifier: GPL-2.0
+>>>> +#include "util/pmu.h"
+>>>> +#include "map_symbol.h"
+>>>> +#include "mem-events.h"
+>>>> +
+>>>> +static char mem_loads_name[100];
+>>>> +static bool mem_loads_name__init;
+>>>> +
+>>>> +#define MEM_LOADS_AUX          0x8203
+>>>> +#define MEM_LOADS_AUX_NAME     "{cpu/mem-loads-aux/,cpu/mem-loads,ldlat=%u/pp}:S"
+>>>> +
+>>>> +bool is_mem_loads_aux_event(struct evsel *leader)
+>>>> +{
+>>>> +       if (!pmu_have_event("cpu", "mem-loads-aux"))
+>>>> +               return false;
+>>>> +
+>>>> +       return leader->core.attr.config == MEM_LOADS_AUX;
+>>>> +}
+>>>> +
+>>>> +char *perf_mem_events__name(int i)
+>>>> +{
+>>>> +       struct perf_mem_event *e = perf_mem_events__ptr(i);
+>>>> +
+>>>> +       if (!e)
+>>>> +               return NULL;
+>>>> +
+>>>> +       if (i == PERF_MEM_EVENTS__LOAD) {
+>>>> +               if (mem_loads_name__init)
+>>>> +                       return mem_loads_name;
+>>>> +
+>>>> +               mem_loads_name__init = true;
+>>>> +
+>>>> +               if (pmu_have_event("cpu", "mem-loads-aux")) {
+>>>> +                       scnprintf(mem_loads_name, sizeof(MEM_LOADS_AUX_NAME),
+>>>> +                                 MEM_LOADS_AUX_NAME, perf_mem_events__loads_ldlat);
+>>>
+>>> It changes "%u" to an actual latency value, right?
+>>> What if the value takes 3 or more digits?
+>>> I'm not sure scnprintf() will handle it properly.
+>>>
+>>
+>> Yes, you are right. We should use the sizeof(mem_loads_name) as below.
+>> I will submit a patch to fix it.
+>>
+>> diff --git a/tools/perf/arch/x86/util/mem-events.c
+>> b/tools/perf/arch/x86/util/mem-events.c
+>> index 11b8469..588110f 100644
+>> --- a/tools/perf/arch/x86/util/mem-events.c
+>> +++ b/tools/perf/arch/x86/util/mem-events.c
+>> @@ -31,7 +31,7 @@ char *perf_mem_events__name(int i)
+>>   		mem_loads_name__init = true;
+>>
+>>   		if (pmu_have_event("cpu", "mem-loads-aux")) {
+>> -			scnprintf(mem_loads_name, sizeof(MEM_LOADS_AUX_NAME),
+>> +			scnprintf(mem_loads_name, sizeof(mem_loads_name),
+>>   				  MEM_LOADS_AUX_NAME, perf_mem_events__loads_ldlat);
+>>   		} else {
+>>   			scnprintf(mem_loads_name, sizeof(mem_loads_name),
+> 
+> I'll fold this in the relevant cset.
+> 
 
-$ scripts/diffconfig /boot/config-5.11.0-rc6-10-amd64-clang12-bfd .config
-BUILD_SALT "5.11.0-rc6-10-amd64-clang12-bfd" ->
-"5.11.0-rc6-11-amd64-clang12-llvm"
-DEBUG_INFO_DWARF4 y -> n
-LD_VERSION 235020000 -> 0
-LLD_VERSION 0 -> 120000
-+DEBUG_INFO_DWARF5 y
-+LD_IS_LLD y
-+TOOLS_SUPPORT_RELR y
+Thanks!
 
-Will take approx. 03:15 [hh:mm] and report later.
-
-- Sedat -
+Kan
