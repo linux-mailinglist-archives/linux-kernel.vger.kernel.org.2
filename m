@@ -2,161 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05340310258
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 02:45:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48639310291
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 03:08:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232912AbhBEBpk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 20:45:40 -0500
-Received: from mailout2.samsung.com ([203.254.224.25]:49875 "EHLO
-        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231650AbhBEBpg (ORCPT
+        id S229783AbhBECHK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 21:07:10 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:12029 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229496AbhBECHG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 20:45:36 -0500
-Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210205014452epoutp025e566e72fbcba006d822e94185511a73~gtqZsJSIA0704807048epoutp027
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 01:44:52 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210205014452epoutp025e566e72fbcba006d822e94185511a73~gtqZsJSIA0704807048epoutp027
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1612489492;
-        bh=pAy9f5tg31NpVD3ZXP6DR2FvVm7psVqhEKVTP7Bg00s=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=Nr2rCmigc5tPiYMp0JFtEQMSRYg6ond420LH5nSRmfrBULTeaB7HAc1KiZnXjkD7V
-         M3gwsqJp/bEzIw0o7xLSLVdejPw+4F0McFzxP32BxZA/5MXR9oaqJ19oA+fnihMAO7
-         XcASw04tMDoZtUMVl/dsG5Sc3uXI+I2mieWYs/9E=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20210205014451epcas1p1dba7d4811da2106c83426bccd15fd073~gtqYrvhlD1880518805epcas1p1C;
-        Fri,  5 Feb 2021 01:44:51 +0000 (GMT)
-Received: from epsmges1p2.samsung.com (unknown [182.195.40.156]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 4DWysD5DfHz4x9Q2; Fri,  5 Feb
-        2021 01:44:48 +0000 (GMT)
-Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
-        epsmges1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        D4.D7.63458.013AC106; Fri,  5 Feb 2021 10:44:48 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20210205014448epcas1p1e63dcbba6426162d3feb244144ee7bbb~gtqVgczLv1184211842epcas1p1t;
-        Fri,  5 Feb 2021 01:44:48 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20210205014447epsmtrp230987f1ded57a800e5f945f01bd3380a~gtqVfcfLm2604226042epsmtrp2V;
-        Fri,  5 Feb 2021 01:44:47 +0000 (GMT)
-X-AuditID: b6c32a36-c6d65a800000f7e2-b2-601ca31049f0
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        3F.48.13470.F03AC106; Fri,  5 Feb 2021 10:44:47 +0900 (KST)
-Received: from [10.113.221.102] (unknown [10.113.221.102]) by
-        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20210205014447epsmtip2b0f4623ea2b77bb66c72d52e9763bac0~gtqVI2rh13051430514epsmtip2F;
-        Fri,  5 Feb 2021 01:44:47 +0000 (GMT)
-Subject: Re: [PATCH v4 resend 00/13] MFD/extcon/ASoC: Rework arizona codec
- jack-detect support
-To:     Hans de Goede <hdegoede@redhat.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        alsa-devel@alsa-project.org
-From:   Chanwoo Choi <cw00.choi@samsung.com>
-Organization: Samsung Electronics
-Message-ID: <49c77228-75fa-8e0a-0cb9-57afdd3f6b86@samsung.com>
-Date:   Fri, 5 Feb 2021 11:00:55 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
-        Thunderbird/59.0
+        Thu, 4 Feb 2021 21:07:06 -0500
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DWzJc4Y7YzjJKf;
+        Fri,  5 Feb 2021 10:05:04 +0800 (CST)
+Received: from SWX921481.china.huawei.com (10.126.202.19) by
+ DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
+ 14.3.498.0; Fri, 5 Feb 2021 10:06:17 +0800
+From:   Barry Song <song.bao.hua@hisilicon.com>
+To:     <m.szyprowski@samsung.com>, <hch@lst.de>, <robin.murphy@arm.com>,
+        <iommu@lists.linux-foundation.org>
+CC:     <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>,
+        Barry Song <song.bao.hua@hisilicon.com>
+Subject: [PATCH v2] dma-mapping: benchmark: pretend DMA is transmitting
+Date:   Fri, 5 Feb 2021 15:00:35 +1300
+Message-ID: <20210205020035.25340-1-song.bao.hua@hisilicon.com>
+X-Mailer: git-send-email 2.21.0.windows.1
 MIME-Version: 1.0
-In-Reply-To: <20210204112502.88362-1-hdegoede@redhat.com>
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrIJsWRmVeSWpSXmKPExsWy7bCmga7AYpkEgw1PNSyuXDzEZPFywmFG
-        i6kPn7BZfPqwn9XiSusmRos3x6czWdz/epTRYsXZyYwWl3fNYbO43biCzeLze6CSX/+fMVms
-        vX2HyYHXY8PnJjaPnbPusnss3vOSyWPTqk42jzvX9rB5zDsZ6DF9zn9Gj/f7rrJ59G1Zxejx
-        eZNcAFdUtk1GamJKapFCal5yfkpmXrqtkndwvHO8qZmBoa6hpYW5kkJeYm6qrZKLT4CuW2YO
-        0PFKCmWJOaVAoYDE4mIlfTubovzSklSFjPziElul1IKUnALLAr3ixNzi0rx0veT8XCtDAwMj
-        U6DChOyMPcf2MRZ08lTsf/GTrYHxDGcXIyeHhICJxPYl95i7GLk4hAR2MEr8ud7MCOF8YpSY
-        P+spO4TzjVFiefsGNpiW450/oBJ7GSWuvGiG6n/PKLFz/nQmkCphgQSJPw+vMoEkRATuMkn8
-        6HgNVsUM0vL653x2kCo2AS2J/S9ugM3lF1CUuPrjMSOIzStgJzHn+R1WEJtFQEXi8IbDzCC2
-        qECYxMltLVA1ghInZz5hAbE5BSwltjRNA9vMLCAucevJfChbXmL72zlgiyUEPnBIHNrSxwrx
-        hIvE032/oR4Slnh1fAs7hC0l8fndXqh4tcTKk0fYIJo7GCW27L8A1WwssX/pZKANHEAbNCXW
-        79KHCCtK7Pw9lxFiMZ/Eu689rCAlEgK8Eh1tQhAlyhKXH9xlgrAlJRa3d7JNYFSaheSdWUhe
-        mIXkhVkIyxYwsqxiFEstKM5NTy02LDBCjvBNjOC0rWW2g3HS2w96hxiZOBgPMUpwMCuJ8Ca2
-        SSUI8aYkVlalFuXHF5XmpBYfYjQFBvBEZinR5Hxg5sgriTc0NTI2NrYwMTQzNTRUEudNNHgQ
-        LySQnliSmp2aWpBaBNPHxMEp1cA0bfM7vn1Xoz5IvY3Kv/Mq92Ti9/U73Oex/AnnMT5+4NPN
-        os+Res8PHT9ye8L+YLMZc90Pa237NP/pqWdcPdHZqw7PzA3dzP1iyb+DAdF7ZzIfTXHykwjb
-        uVo9ehWT4W3fOq6PGenxTM0h05JKrN7/XC134ameeAZjuNrKGu0XeTPvXPkWVOaqXeKcqB50
-        zU73i1Ehr92EzCVOEV+PRMl+md/EWWFZM2+j4eukSTvLpCV2vpvwb5v0wXlnbTzPFl190yK6
-        deHN2B0dLW6rDHN/3z3+fL7aRRnXbi/N1pAjp/Ub58jXhhpt1Cna9COwUTLsrtexF+L3D76u
-        OOL9XO6Hg2nBRfbnBxfrtk0t8+9kUWIpzkg01GIuKk4EAIH6pZ5kBAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrFIsWRmVeSWpSXmKPExsWy7bCSvC7/YpkEgxk/jSyuXDzEZPFywmFG
-        i6kPn7BZfPqwn9XiSusmRos3x6czWdz/epTRYsXZyYwWl3fNYbO43biCzeLze6CSX/+fMVms
-        vX2HyYHXY8PnJjaPnbPusnss3vOSyWPTqk42jzvX9rB5zDsZ6DF9zn9Gj/f7rrJ59G1Zxejx
-        eZNcAFcUl01Kak5mWWqRvl0CV8aeY/sYCzp5Kva/+MnWwHiGs4uRk0NCwETieOcP9i5GLg4h
-        gd2MEgcmvGKGSEhKTLt4FMjmALKFJQ4fLoaoecso8Xv9bxaQGmGBBIk/D68ygSREBO4ySaw5
-        tYINxGEW2MsosXBjKytIlZBAD6PEzIuhIDabgJbE/hc32EBsfgFFias/HjOC2LwCdhJznt8B
-        q2cRUJE4vOEw2BWiAmESO5c8ZoKoEZQ4OfMJ2GZOAUuJLU3TwOLMAuoSf+ZdYoawxSVuPZkP
-        FZeX2P52DvMERuFZSNpnIWmZhaRlFpKWBYwsqxglUwuKc9Nziw0LDPNSy/WKE3OLS/PS9ZLz
-        czcxgqNXS3MH4/ZVH/QOMTJxMB5ilOBgVhLhTWyTShDiTUmsrEotyo8vKs1JLT7EKM3BoiTO
-        e6HrZLyQQHpiSWp2ampBahFMlomDU6qBSXPrZtas1v7+rOlpsxzvn7H/+eT1LbWyyMJTUfrm
-        7z9zzT+6UOXzRlE1JW+Zt0HT9t3aeT79NX/n8hU1vicVNFSWrNW0jmxVj+p4GbXp5LSLOg+P
-        3FMwVjeSZLLbeF37cZrH0gnq2w78t3y2d0VFvc8NY66VpQvq+ff6ymnz2Ojczd23QFyU6+gN
-        4Y61CoHLjjKfOVGzy/gtm3DvEs59M4/O+PODc9Gt+VVi548fMN328YJEoO5lS6WZlodbrjWk
-        PHet+HhlAnuwzVKGrtT3F9XX8G1UE3jxR6vm5HXGTPHus2xpp+VqztTMN5GfaqmvU1SwY+6t
-        stj3z2wPHfxZctD4h0ekxbrm/dpXjstnViixFGckGmoxFxUnAgBCZcgvTQMAAA==
-X-CMS-MailID: 20210205014448epcas1p1e63dcbba6426162d3feb244144ee7bbb
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.126.202.19]
 X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210204112515epcas1p27a866811ba15a8cd8b0be9a3f7bf86e5
-References: <CGME20210204112515epcas1p27a866811ba15a8cd8b0be9a3f7bf86e5@epcas1p2.samsung.com>
-        <20210204112502.88362-1-hdegoede@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/4/21 8:24 PM, Hans de Goede wrote:
-> Hi all,
-> 
-> Here is v4 of my series to rework the arizona codec jack-detect support
-> to use the snd_soc_jack helpers instead of direct extcon reporting.
-> 
-> This is a resend with some extra *-by tags collected and with the extcon
-> folks added to the "To:" list, which I somehow missed with the original
-> v4 posting, sorry.
-> 
-> This is done by reworking the extcon driver into an arizona-jackdet
-> library and then modifying the codec drivers to use that directly,
-> replacing the old separate extcon child-devices and extcon-driver.
-> 
-> This brings the arizona-codec jack-detect handling inline with how
-> all other ASoC codec driver do this. This was developed and tested on
-> a Lenovo Yoga Tablet 1051L with a WM5102 codec.
-> 
-> This was also tested by Charles Keepax, one of the Cirrus Codec folks.
-> 
-> This depends on the previously posted "[PATCH v4 0/5] MFD/ASoC: Add
-> support for Intel Bay Trail boards with WM5102 codec" series and there
-> are various interdependencies between the patches in this series.
-> 
-> Lee Jones, the MFD maintainer has agreed to take this series upstream
-> through the MFD tree and to provide an immutable branch for the ASoC
-> and extcon subsystems to merge.
-> 
-> Mark and extcon-maintainers may we have your ack for merging these
-> through the MFD tree ?
+In a real dma mapping user case, after dma_map is done, data will be
+transmit. Thus, in multi-threaded user scenario, IOMMU contention
+should not be that severe. For example, if users enable multiple
+threads to send network packets through 1G/10G/100Gbps NIC, usually
+the steps will be: map -> transmission -> unmap.  Transmission delay
+reduces the contention of IOMMU.
 
+Here a delay is added to simulate the transmission between map and unmap
+so that the tested result could be more accurate for TX and simple RX.
+A typical TX transmission for NIC would be like: map -> TX -> unmap
+since the socket buffers come from OS. Simple RX model eg. disk driver,
+is also map -> RX -> unmap, but real RX model in a NIC could be more
+complicated considering packets can come spontaneously and many drivers
+are using pre-mapped buffers pool. This is in the TBD list.
 
-About patch2~patch6, I agree to take these patches to MFD tree.
-Acke-by: Chanwoo Choi <cw00.choi@samsung.com>
+Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
+---
+ -v2: cleanup according to Robin's feedback. thanks, Robin.
 
+ kernel/dma/map_benchmark.c                    | 10 ++++++++++
+ .../testing/selftests/dma/dma_map_benchmark.c | 19 +++++++++++++++++--
+ 2 files changed, 27 insertions(+), 2 deletions(-)
+
+diff --git a/kernel/dma/map_benchmark.c b/kernel/dma/map_benchmark.c
+index 1b1b8ff875cb..06636406a245 100644
+--- a/kernel/dma/map_benchmark.c
++++ b/kernel/dma/map_benchmark.c
+@@ -21,6 +21,7 @@
+ #define DMA_MAP_BENCHMARK	_IOWR('d', 1, struct map_benchmark)
+ #define DMA_MAP_MAX_THREADS	1024
+ #define DMA_MAP_MAX_SECONDS	300
++#define DMA_MAP_MAX_TRANS_DELAY	(10 * NSEC_PER_MSEC) /* 10ms */
+ 
+ #define DMA_MAP_BIDIRECTIONAL	0
+ #define DMA_MAP_TO_DEVICE	1
+@@ -36,6 +37,7 @@ struct map_benchmark {
+ 	__s32 node; /* which numa node this benchmark will run on */
+ 	__u32 dma_bits; /* DMA addressing capability */
+ 	__u32 dma_dir; /* DMA data direction */
++	__u32 dma_trans_ns; /* time for DMA transmission in ns */
+ 	__u64 expansion[10];	/* For future use */
+ };
+ 
+@@ -87,6 +89,9 @@ static int map_benchmark_thread(void *data)
+ 		map_etime = ktime_get();
+ 		map_delta = ktime_sub(map_etime, map_stime);
+ 
++		/* Pretend DMA is transmitting */
++		ndelay(map->bparam.dma_trans_ns);
++
+ 		unmap_stime = ktime_get();
+ 		dma_unmap_single(map->dev, dma_addr, PAGE_SIZE, map->dir);
+ 		unmap_etime = ktime_get();
+@@ -218,6 +223,11 @@ static long map_benchmark_ioctl(struct file *file, unsigned int cmd,
+ 			return -EINVAL;
+ 		}
+ 
++		if (map->bparam.dma_trans_ns > DMA_MAP_MAX_TRANS_DELAY) {
++			pr_err("invalid transmission delay\n");
++			return -EINVAL;
++		}
++
+ 		if (map->bparam.node != NUMA_NO_NODE &&
+ 		    !node_possible(map->bparam.node)) {
+ 			pr_err("invalid numa node\n");
+diff --git a/tools/testing/selftests/dma/dma_map_benchmark.c b/tools/testing/selftests/dma/dma_map_benchmark.c
+index 7065163a8388..a370290d9503 100644
+--- a/tools/testing/selftests/dma/dma_map_benchmark.c
++++ b/tools/testing/selftests/dma/dma_map_benchmark.c
+@@ -11,9 +11,12 @@
+ #include <sys/mman.h>
+ #include <linux/types.h>
+ 
++#define NSEC_PER_MSEC	1000000L
++
+ #define DMA_MAP_BENCHMARK	_IOWR('d', 1, struct map_benchmark)
+ #define DMA_MAP_MAX_THREADS	1024
+ #define DMA_MAP_MAX_SECONDS     300
++#define DMA_MAP_MAX_TRANS_DELAY	(10 * NSEC_PER_MSEC) /* 10ms */
+ 
+ #define DMA_MAP_BIDIRECTIONAL	0
+ #define DMA_MAP_TO_DEVICE	1
+@@ -35,6 +38,7 @@ struct map_benchmark {
+ 	__s32 node; /* which numa node this benchmark will run on */
+ 	__u32 dma_bits; /* DMA addressing capability */
+ 	__u32 dma_dir; /* DMA data direction */
++	__u32 dma_trans_ns; /* delay for DMA transmission in ns */
+ 	__u64 expansion[10];	/* For future use */
+ };
+ 
+@@ -45,12 +49,12 @@ int main(int argc, char **argv)
+ 	/* default single thread, run 20 seconds on NUMA_NO_NODE */
+ 	int threads = 1, seconds = 20, node = -1;
+ 	/* default dma mask 32bit, bidirectional DMA */
+-	int bits = 32, dir = DMA_MAP_BIDIRECTIONAL;
++	int bits = 32, xdelay = 0, dir = DMA_MAP_BIDIRECTIONAL;
+ 
+ 	int cmd = DMA_MAP_BENCHMARK;
+ 	char *p;
+ 
+-	while ((opt = getopt(argc, argv, "t:s:n:b:d:")) != -1) {
++	while ((opt = getopt(argc, argv, "t:s:n:b:d:x:")) != -1) {
+ 		switch (opt) {
+ 		case 't':
+ 			threads = atoi(optarg);
+@@ -67,6 +71,9 @@ int main(int argc, char **argv)
+ 		case 'd':
+ 			dir = atoi(optarg);
+ 			break;
++		case 'x':
++			xdelay = atoi(optarg);
++			break;
+ 		default:
+ 			return -1;
+ 		}
+@@ -84,6 +91,12 @@ int main(int argc, char **argv)
+ 		exit(1);
+ 	}
+ 
++	if (xdelay < 0 || xdelay > DMA_MAP_MAX_TRANS_DELAY) {
++		fprintf(stderr, "invalid transmit delay, must be in 0-%ld\n",
++			DMA_MAP_MAX_TRANS_DELAY);
++		exit(1);
++	}
++
+ 	/* suppose the mininum DMA zone is 1MB in the world */
+ 	if (bits < 20 || bits > 64) {
+ 		fprintf(stderr, "invalid dma mask bit, must be in 20-64\n");
+@@ -107,6 +120,8 @@ int main(int argc, char **argv)
+ 	map.node = node;
+ 	map.dma_bits = bits;
+ 	map.dma_dir = dir;
++	map.dma_trans_ns = xdelay;
++
+ 	if (ioctl(fd, cmd, &map)) {
+ 		perror("ioctl");
+ 		exit(1);
 -- 
-Best Regards,
-Chanwoo Choi
-Samsung Electronics
+2.25.1
+
