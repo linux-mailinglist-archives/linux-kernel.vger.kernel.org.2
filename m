@@ -2,81 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BD69311B36
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 05:59:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A69F311AF4
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 05:37:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229754AbhBFE6R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 23:58:17 -0500
-Received: from mail-oi1-f176.google.com ([209.85.167.176]:35350 "EHLO
-        mail-oi1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231387AbhBFDfJ (ORCPT
+        id S230071AbhBFEga (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 23:36:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37204 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229706AbhBFCbc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 22:35:09 -0500
-Received: by mail-oi1-f176.google.com with SMTP id w8so9720974oie.2;
-        Fri, 05 Feb 2021 19:34:43 -0800 (PST)
+        Fri, 5 Feb 2021 21:31:32 -0500
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ED4AC0617AB;
+        Fri,  5 Feb 2021 14:06:57 -0800 (PST)
+Received: by mail-pj1-x102a.google.com with SMTP id fa16so3947568pjb.1;
+        Fri, 05 Feb 2021 14:06:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7jKvL0mVSUY7WhiJXE1najP+8YOEz8EBBJDLKRLoFS4=;
+        b=C9N3z9t9x+VqFqqULcHfI0HKUSmkux2p3uVXqU6wlYTYMEQi0mGvcNv1GJFB7f0Ozm
+         7lRszzUs5AqnJLCMdvI5U3/VsoI3yWTu9i1WKgYBpP8ZF0caE0RRKGQz8bqa3YZatnbA
+         dxdOB7wd17N8oPS2o9vg5s6rtWYTB5udHqTuJLigyuLdCs8F3uF1PAWxA9VaxlL51e9r
+         zX5JTOggxRB7At4JIjwhW/mDENIfn8pEVhmZGoBGLe/wUvlKM3veunprJzK34xCXDCaz
+         q+UMf7owhg0Hgs4LdEfcPt+rhcFfP/OHvgkcFQAxvaTFhMSSivA0ANTfZ9Mbp6xY7uKd
+         Ko6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=oYX3STVGOutn/ODTJ1Chx6wd1ikGLIpdQAWlo27fcnA=;
-        b=P/tmvMNJuCuqeky6J0kl0Kj1FLXJrI6DbCiAoZ274C7A4WTyk2uLzxl+LKN7kDMYzp
-         fQdHe4ZHjIp/K4xG0g45oblqhLfZL9P/oQ9fnjDp4a02Y/5VnowiUiL18s/AAubCOZBP
-         QLj2aKwmq+meqg60tlD+/PajmOFUlN3Ns38A+WnIdQAJ5BRI0VMW0aTvpriLtUSEMZLj
-         o/kSf2iyTANckXVa15Z8WULqesTu2yQdTO3BSbVUuixzohYwxH76z5SHz4sWQMxupss0
-         9ArTEOdoSaTROnG9MNc2u3RxTryhDJWvB+WijT33vgP6z1mDiCQKFENC/naBSgeCOlAm
-         p49w==
-X-Gm-Message-State: AOAM530erH1pbtNZAgpnrFXgHOyb+/S0D9/b/X7SKVpNqimfbrrN3urP
-        BuczDvVF1VijgIm/jXqOMF9iuUWJWA==
-X-Google-Smtp-Source: ABdhPJx7yvm1O6oqJ0lLXbtfmYGfoeVWzvCVL9cCxLieYLbGmE6b1ddW84xEXKVGBDviVnEhIIsV6Q==
-X-Received: by 2002:a05:6808:918:: with SMTP id w24mr4534554oih.20.1612562677933;
-        Fri, 05 Feb 2021 14:04:37 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id u15sm1970378oiu.28.2021.02.05.14.04.35
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7jKvL0mVSUY7WhiJXE1najP+8YOEz8EBBJDLKRLoFS4=;
+        b=cFbmriHeweyuTdZulk6/gpZj/opAuB1EUEYKR04JsTz+6jIASmTnt2/Ult587lBaxv
+         Pk6sMTiEimZNADRPFkxJ3Kt0xr/qbu1L9bbQ0aSwT/vJAeNFcfQ/nllt6SdyfSaRZyPo
+         BpajEMAH2I0PliHwvkpNTujGUb1axbxbVDlIU8/bz16bgD29/Kbe04XZFghGtFf6E8/j
+         GSwGmf7zDWjmZQq1GOwHCVGj9XSf1Fb3zaAcl8OuOVvmHSJXsuf8JyiuV3FJYXHHeh+m
+         I5YA8e8JBdA7L3VayjsBZH77s6gtpRH7k8DL6iXB73fnZ8iIfb1hVecqBnXADrI+qxIX
+         fypQ==
+X-Gm-Message-State: AOAM532CdgB5uUntmApPIVwzLyIARw7GrwuzrGGZxUpYhN1ZJZbwBWKX
+        Daiq5rzbLkNWh7d95UB1FtGci7TBWVkNBw==
+X-Google-Smtp-Source: ABdhPJwG++Ub96OHLDZvOnJ1HJyqed82R3DNnY3tzrSKJnsB9+8132bKNesmv9fGoedQYNG5ei72oQ==
+X-Received: by 2002:a17:90b:33d1:: with SMTP id lk17mr6086550pjb.102.1612562817117;
+        Fri, 05 Feb 2021 14:06:57 -0800 (PST)
+Received: from amypc-samantha.home ([47.145.126.51])
+        by smtp.gmail.com with ESMTPSA id s13sm5771676pgq.40.2021.02.05.14.06.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Feb 2021 14:04:36 -0800 (PST)
-Received: (nullmailer pid 3833547 invoked by uid 1000);
-        Fri, 05 Feb 2021 22:04:34 -0000
-Date:   Fri, 5 Feb 2021 16:04:34 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
-Cc:     linux-kernel@vger.kernel.org, Ran Bi <ran.bi@mediatek.com>,
-        Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org,
-        srv_heupstream@mediatek.com, Liam Girdwood <lgirdwood@gmail.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Fei Shao <fshao@chromium.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Eddie Huang <eddie.huang@mediatek.com>,
-        linux-mediatek@lists.infradead.org,
-        Lee Jones <lee.jones@linaro.org>, linux-rtc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Yuchen Huang <yuchen.huang@mediatek.com>,
-        Project_Global_Chrome_Upstream_Group@mediatek.com
-Subject: Re: [PATCH RESEND v5 3/8] dt-bindings: mfd: Add compatible for the
- MediaTek MT6359 PMIC
-Message-ID: <20210205220434.GA3833495@robh.at.kernel.org>
-References: <1611913781-23460-1-git-send-email-hsin-hsiung.wang@mediatek.com>
- <1611913781-23460-4-git-send-email-hsin-hsiung.wang@mediatek.com>
+        Fri, 05 Feb 2021 14:06:56 -0800 (PST)
+From:   Amy Parker <enbyamy@gmail.com>
+To:     schnelle@linux.ibm.com, corbet@lwn.net, mchehab+huawei@kernel.org,
+        tsbogend@alpha.franken.de
+Cc:     linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Amy Parker <enbyamy@gmail.com>
+Subject: [PATCH] ia64: Fix style guide breakage
+Date:   Fri,  5 Feb 2021 14:06:18 -0800
+Message-Id: <20210205220618.611388-1-enbyamy@gmail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1611913781-23460-4-git-send-email-hsin-hsiung.wang@mediatek.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 29 Jan 2021 17:49:36 +0800, Hsin-Hsiung Wang wrote:
-> This adds compatible for the MediaTek MT6359 PMIC.
-> 
-> Signed-off-by: Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
-> ---
-> changes since v4:
-> - remove unused compatible name.
-> ---
->  Documentation/devicetree/bindings/mfd/mt6397.txt | 1 +
->  1 file changed, 1 insertion(+)
-> 
+Some statements do not have proper spacing between their C
+keywords (commonly if and for) throughout files in the ia64 tree.
+This patch corrects this to follow the kernel code style guide.
 
-Acked-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Amy Parker <enbyamy@gmail.com>
+---
+ arch/ia64/hp/common/sba_iommu.c  | 6 +++---
+ arch/ia64/kernel/machine_kexec.c | 2 +-
+ arch/ia64/kernel/palinfo.c       | 6 +++---
+ 3 files changed, 7 insertions(+), 7 deletions(-)
+
+diff --git a/arch/ia64/hp/common/sba_iommu.c b/arch/ia64/hp/common/sba_iommu.c
+index 9148ddbf02e5..84a410f3e68f 100644
+--- a/arch/ia64/hp/common/sba_iommu.c
++++ b/arch/ia64/hp/common/sba_iommu.c
+@@ -139,7 +139,7 @@
+ 
+ #ifdef ASSERT_PDIR_SANITY
+ #define ASSERT(expr) \
+-        if(!(expr)) { \
++        if (!(expr)) { \
+                 printk( "\n" __FILE__ ":%d: Assertion " #expr " failed!\n",__LINE__); \
+                 panic(#expr); \
+         }
+@@ -510,7 +510,7 @@ sba_search_bitmap(struct ioc *ioc, struct device *dev,
+ 
+ 	if (likely(bits_wanted == 1)) {
+ 		unsigned int bitshiftcnt;
+-		for(; res_ptr < res_end ; res_ptr++) {
++		for (; res_ptr < res_end ; res_ptr++) {
+ 			if (likely(*res_ptr != ~0UL)) {
+ 				bitshiftcnt = ffz(*res_ptr);
+ 				*res_ptr |= (1UL << bitshiftcnt);
+@@ -538,7 +538,7 @@ sba_search_bitmap(struct ioc *ioc, struct device *dev,
+ 		mask = base_mask << bitshiftcnt;
+ 
+ 		DBG_RES("%s() o %ld %p", __func__, o, res_ptr);
+-		for(; res_ptr < res_end ; res_ptr++)
++		for (; res_ptr < res_end ; res_ptr++)
+ 		{ 
+ 			DBG_RES("    %p %lx %lx\n", res_ptr, mask, *res_ptr);
+ 			ASSERT(0 != mask);
+diff --git a/arch/ia64/kernel/machine_kexec.c b/arch/ia64/kernel/machine_kexec.c
+index efc9b568401c..8de286450578 100644
+--- a/arch/ia64/kernel/machine_kexec.c
++++ b/arch/ia64/kernel/machine_kexec.c
+@@ -137,7 +137,7 @@ void machine_kexec(struct kimage *image)
+ {
+ 	BUG_ON(!image);
+ 	unw_init_running(ia64_machine_kexec, image);
+-	for(;;);
++	for (;;);
+ }
+ 
+ void arch_crash_save_vmcoreinfo(void)
+diff --git a/arch/ia64/kernel/palinfo.c b/arch/ia64/kernel/palinfo.c
+index 78fa6579c9ea..ec2ff3e510c0 100644
+--- a/arch/ia64/kernel/palinfo.c
++++ b/arch/ia64/kernel/palinfo.c
+@@ -155,7 +155,7 @@ static void bitregister_process(struct seq_file *m, u64 *reg_info, int max)
+ 
+ 	value >>= i = begin = ffs(value) - 1;
+ 
+-	for(; i < max; i++ ) {
++	for (; i < max; i++ ) {
+ 
+ 		if (i != 0 && (i%64) == 0) value = *++reg_info;
+ 
+@@ -523,7 +523,7 @@ static void feature_set_info(struct seq_file *m, u64 avail, u64 status, u64 cont
+ 	int i;
+ 
+ 	vf = v = proc_features[set];
+-	for(i=0; i < 64; i++, avail >>=1, status >>=1, control >>=1) {
++	for (i=0; i < 64; i++, avail >>=1, status >>=1, control >>=1) {
+ 
+ 		if (!(control))		/* No remaining bits set */
+ 			break;
+@@ -613,7 +613,7 @@ static int bus_info(struct seq_file *m)
+ 	status  = st.pal_bus_features_val;
+ 	control = ct.pal_bus_features_val;
+ 
+-	for(i=0; i < 64; i++, v++, avail >>=1, status >>=1, control >>=1) {
++	for (i=0; i < 64; i++, v++, avail >>=1, status >>=1, control >>=1) {
+ 		if ( ! *v )
+ 			continue;
+ 		seq_printf(m, "%-48s : %s%s %s\n", *v,
+-- 
+2.29.2
+
