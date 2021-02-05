@@ -2,153 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80D693117F9
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 01:54:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04D073117F8
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 01:53:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231184AbhBFAxM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 19:53:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52404 "EHLO
+        id S230256AbhBFAwn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 19:52:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231205AbhBEKDR (ORCPT
+        with ESMTP id S229509AbhBEKDs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 05:03:17 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84B58C061356
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 02:02:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=VeyWycuGg4ZW+zeTPH9DJgzH6UhIGZUG1CK6P8oNHRI=; b=PAF90TL8TjDKJWkWpklNh81TT0
-        qYkPnTO+Vsn8SO6+GZrvD4IpX7550n/3F+YbDaBzX6wUO19tDdS689QQfgAVxrATwVgOSc3vbtbPN
-        xK3VOvFA2bXxmAtweqEhi8gZhriBjJZ8B8p9QhZa8h/yeQ4Snw/jekw4xdZNbcIAnNF9Te+XqGRMe
-        8MIRccBQxOLh6DbygXJBCInPkWdpOrHJ3LCybMM3Tyg1LKbhM59YMG6+DivdI+09xPteh5J+jdjyY
-        gxIeTNdCn1LULJIdfZAFDdw9U5i4g+uKngfJeWereY4DcwdoPEuGs8ZKnJRgASnEEbZrsKwdOJ00e
-        IFs0y5/g==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1l7xwL-0028Hz-TB; Fri, 05 Feb 2021 10:02:14 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 793BB301CC4;
-        Fri,  5 Feb 2021 11:02:10 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 673FD2BBE1CB3; Fri,  5 Feb 2021 11:02:10 +0100 (CET)
-Date:   Fri, 5 Feb 2021 11:02:10 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Andy Lutomirski <luto@amacapital.net>
-Cc:     Andrew Cooper <andrew.cooper3@citrix.com>,
-        "H. Peter Anvin" <h.peter.anvin@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Jan Kiszka <jan.kiszka@siemens.com>, X86 ML <x86@kernel.org>
-Subject: Re: [RFC][PATCH 2/2] x86: add extra serialization for
- non-serializing MSRs
-Message-ID: <YB0XonRIr1GcCy6M@hirez.programming.kicks-ass.net>
-References: <20200305174706.0D6B8EE4@viggo.jf.intel.com>
- <20200305174708.F77040DD@viggo.jf.intel.com>
- <f37ecf01-3167-f12e-d9d0-b55c44b80c29@citrix.com>
- <CALCETrXMhe3ULF9UDc1=8CKVfKqneCxJ2wYmCdKPpntkkMNGWg@mail.gmail.com>
+        Fri, 5 Feb 2021 05:03:48 -0500
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7510AC061786
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 02:03:27 -0800 (PST)
+Received: by mail-pf1-x42d.google.com with SMTP id q131so3981895pfq.10
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 02:03:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CbYQyh/wUPH5WcnSCH7zbiSdkAdjW/rNp5kroeeG+hQ=;
+        b=oXwCFwAIzW1+p8qYzYussJeJMDKDssCHnCVHnxhympWx+CHOZ6zhK3D+PrN+EHfBtg
+         1IV1X23575kPhbgfbZcJghneTAR4ayzRV1uAe870b0w9HF8b90msSuz1/Ak1imfvwzWE
+         qGmMvdpV/0A/Hr3mczZqhz1sgwWcgIhwfCXMuqiaLRieY7KxWn9s76rypPG5KMHkYc69
+         BO+Lo8JdpDtN9Vo+8Llv1Sb0lSwvFSWKmsvlgQnLYOEav/X7l90ryqxGiW0q9iOGCxgA
+         n8+oHdvppb01HQT2IJ5lkekz9mhZBVQMG7P06MuythPAJaJSFswA7nZ25b3LZoh1TR3Q
+         6zRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CbYQyh/wUPH5WcnSCH7zbiSdkAdjW/rNp5kroeeG+hQ=;
+        b=qOLVRVbj3dcRQlk7sncd+kqep/JEPGegB06pUlKXX+ebUq0bP2ZZorfkpt0fw+AGgB
+         FR6PwMnAQ7FQM6qKXe9uh6SECXUv6GeQUeFpa3Ghq4HAgNY2ZD3g6n/+7+phSgHF1u7E
+         12/SYL/aTv0HDxSZQrFfr0QCXwTMOX1rzaaHLm91GONMHOfPyma8LD1beZ5mWlnukTDx
+         /2bA72FuqJ4uJWo9nWoOh79FsNi4gmNCmzonPKzzT6+IEEBgmUTpUIIQrToBkKOFvU6C
+         HKs0E/KCTh7WY6h2HO9UDR7oDe543RG4RUcnOSYWhSgbnrVAi9Oow9+IPbtGOdweusVb
+         5fCg==
+X-Gm-Message-State: AOAM531cp7lHDnZ4riXPp7OxJP34YHZoKFWUDlshhuX80FQLHawys/Ro
+        qfXzXdhQYmHBj9IaSe8gT9sNfQ==
+X-Google-Smtp-Source: ABdhPJxsOqdEPug9LcOofBdQrmkfXtTjd5kRElPCsAo3oxuUzCRmjprv29fFJ3DkqZrzLOYovaPP9g==
+X-Received: by 2002:a62:7dc4:0:b029:1ba:765:3af with SMTP id y187-20020a627dc40000b02901ba076503afmr3722368pfc.78.1612519407070;
+        Fri, 05 Feb 2021 02:03:27 -0800 (PST)
+Received: from C02CC49MMD6R.bytedance.net ([139.177.225.239])
+        by smtp.gmail.com with ESMTPSA id l12sm8142562pjg.54.2021.02.05.02.03.20
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 05 Feb 2021 02:03:26 -0800 (PST)
+From:   Zhimin Feng <fengzhimin@bytedance.com>
+To:     x86@kernel.org, kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     pbonzini@redhat.com, seanjc@google.com, vkuznets@redhat.com,
+        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
+        fweisbec@gmail.com, zhouyibo@bytedance.com,
+        zhanghaozhong@bytedance.com, Zhimin Feng <fengzhimin@bytedance.com>
+Subject: [RESEND RFC: timer passthrough 0/9] Support timer passthrough for VM
+Date:   Fri,  5 Feb 2021 18:03:08 +0800
+Message-Id: <20210205100317.24174-1-fengzhimin@bytedance.com>
+X-Mailer: git-send-email 2.24.1 (Apple Git-126)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALCETrXMhe3ULF9UDc1=8CKVfKqneCxJ2wYmCdKPpntkkMNGWg@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 04, 2021 at 04:11:12PM -0800, Andy Lutomirski wrote:
-> I'm wondering if a more mild violation is possible:
-> 
-> Initialize *addr = 0.
-> 
-> mov $1, (addr)
-> wrmsr
-> 
-> remote cpu's IDT vector:
-> 
-> mov (addr), %rax
-> %rax == 0!
-> 
-> There's no speculative-execution-becoming-visible-even-if-it-doesn't-retire
-> here -- there's just an ordering violation.  For Linux, this would
-> presumably only manifest as a potential deadlock or confusion if the
-> IPI vector code looks at the list of pending work and doesn't find the
-> expected work in it.
-> 
-> Dave?  hpa?  What is the SDM trying to tell us?
+The main motivation for this patch is to improve the performance of VM.
+This patch series introduces how to enable the timer passthrough in
+non-root mode.
 
-[ Big caveat, I've not spoken to any hardware people about this. The
-below is purely my own understanding. ]
+The main idea is to offload the host timer to the preemtion timer in
+non-root mode. Through doing this, guest can write tscdeadline msr directly
+in non-root mode and host timer isn't lost. If CPU is in root mode,
+guest timer is switched to software timer.
 
-This is my interpretation as well. Without the MFENCE+LFENCE there is no
-guarantee the store is out of the store-buffer and the remote load isn't
-guaranteed to observe it.
+Testing on Intel(R) Xeon(R) Platinum 8260 server.
 
-What I think the SDM is trying to tell us, is that the IPI, even if it
-goes on the same regular coherency fabric as memory transfers, is not
-subject to the regular memory ordering rules.
+The guest OS is Debian(kernel: 4.19.28). The specific configuration is
+ is as follows: 8 cpu, 16GB memory, guest idle=poll
+memcached in guest(memcached -d -t 8 -u root)
 
-Normal TSO rules tells us that when:
+I use the memtier_benchmark tool to test performance
+(memtier_benchmark -P memcache_text -s guest_ip -c 16 -t 32
+ --key-maximum=10000000000 --random-data --data-size-range=64-128 -p 11211
+ --generate-keys --ratio 5:1 --test-time=500)
 
-P1() {
-	x = 1;
-	y = 1;
-}
+Total Ops can be improved 25% and Avg.Latency can be improved 20% when
+the timer-passthrough is enabled.
 
-P2() {
-	r1 = y;
-	r2 = x;
-}
+=============================================================
+               | Enable timer-passth | Disable timer-passth |
+=============================================================
+Totals Ops/sec |    514869.67        |     411766.67        |
+-------------------------------------------------------------
+Avg.Latency    |    0.99483          |     1.24294          |
+=============================================================
 
-r2 must not be 0 when r1 is 1. Because if we see store to y, we must
-also see store to x. But the IPI thing doesn't behave like a store. The
-(fast) wrmsr isn't even considered a memop.
 
-The thing is, the above ordering does not guarantee we have r2 != 0.
-r2==0 is allowed when r1==0. And that's an entirely sane outcome even if
-we run the instructions like:
+Zhimin Feng (9):
+  KVM: vmx: hook set_next_event for getting the host tscd
+  KVM: vmx: enable host lapic timer offload preemtion timer
+  KVM: vmx: enable passthrough timer to guest
+  KVM: vmx: enable passth timer switch to sw timer
+  KVM: vmx: use tsc_adjust to enable tsc_offset timer passthrough
+  KVM: vmx: check enable_timer_passth strictly
+  KVM: vmx: save the initial value of host tscd
+  KVM: vmx: Dynamically open or close the timer-passthrough for pre-vm
+  KVM: vmx: query the state of timer-passth for vm
 
-		CPU1		CPU2
+ arch/x86/include/asm/kvm_host.h |  27 ++++
+ arch/x86/kvm/lapic.c            |   1 +
+ arch/x86/kvm/vmx/vmx.c          | 331 +++++++++++++++++++++++++++++++++++++++-
+ arch/x86/kvm/x86.c              |  26 +++-
+ include/linux/kvm_host.h        |   1 +
+ include/uapi/linux/kvm.h        |   3 +
+ kernel/time/tick-common.c       |   1 +
+ tools/include/uapi/linux/kvm.h  |   3 +
+ virt/kvm/kvm_main.c             |   1 +
+ 9 files changed, 389 insertions(+), 5 deletions(-)
 
-cycle-1		mov $1, ([x])
-cycle-2		mov $1, ([y])
-cycle-3				mov ([y]), rax
-cycle-4				mov ([x]), rbx
-
-There is no guarantee _any_ of the stores will have made it out. And
-that's exactly the issue. The IPI might make it out of the core before
-any of the stores will.
-
-Furthermore, since there is no dependency between:
-
-	mov	$1, ([x])
-	wrmsr
-
-The CPU is allowed to reorder the execution and retire the wrmsr before
-the store. Very much like it would for normal non-dependent
-instructions.
-
-And presumably it is still allowed to do that when we write it like:
-
-	mov	$1, ([x])
-	mfence
-	wrmsr
-
-because, mfence only has dependencies to memops and (fast) wrmsr is not
-a memop.
-
-Which then brings us to:
-
-	mov	$1, ([x])
-	mfence
-	lfence
-	wrmsr
-
-In this case, the lfence acts like the newly minted ifence (see
-spectre), and will block execution of (any) later instructions until
-completion of all prior instructions. This, and only this ensures the
-wrmsr happens after the mfence, which in turn ensures the store to x is
-globally visible.
+-- 
+2.11.0
 
