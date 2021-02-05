@@ -2,88 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 722EB3108C1
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 11:13:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 819293108C8
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 11:17:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231189AbhBEKND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 05:13:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53824 "EHLO
+        id S229941AbhBEKNk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 05:13:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229537AbhBEKJx (ORCPT
+        with ESMTP id S231175AbhBEKJx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 5 Feb 2021 05:09:53 -0500
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D945BC06178A
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 02:09:05 -0800 (PST)
-Received: by mail-wr1-x433.google.com with SMTP id a1so7015040wrq.6
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 02:09:05 -0800 (PST)
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08FB6C06178B
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 02:09:07 -0800 (PST)
+Received: by mail-wr1-x429.google.com with SMTP id p15so6968103wrq.8
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 02:09:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=fzuLP5q7Y22hqk74qWKi13wdAskCgNT+M/at9DAaCkE=;
-        b=BEmrVD1In3nVLxXUkMz0EIQjZDJHJJghT2E+tIr5YJbppShCB1e5cwg84JKjFf7JMV
-         v+HQgPfoal0s+B2r8L2ONAImTPZAeK6sGjPmXc4Yig7m6T7dsZyRWzFCkqvJwEQOHgb9
-         bNe9P6E/Yl7sJbyQCsmQ1/HZuKMfPK/WB42msS5rup0OFI2kDa0kx2E6lThaTovjV7wi
-         /wCjQDV6sQYsnhM3i7a4LLxn7BlkCK3X0mc8E+yD5D5V7SZt2igawr/DD4OpazHlN/c3
-         ImQGoqBvVSWCkUgcm24mH39SE6WDmaQ52lidRIU2or0At/kelbEn45TuRNAXNaGU4RPA
-         R3yA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=fHMnPUMcdXUqu+570hjeKhQiTLfkIWlof5K/iTtz3V8=;
+        b=hFAFmfXciurO3DOzZhQ9WDsc1AZIH5rPt5WZqvg9H/fEZlyYd27/dKIYgUp7Dsv0l9
+         6CxOweQ/zJ1BGMQN/cVMF8CDE2Vt3kf5Rn/P8cPzX4P0DoPBa8FRf2sw5i8KKY9OlZCJ
+         MPZSBUMrHHy2WFdxZb2qbcFVbuEQEFoEE/PF4iaUQb6q1mmvngnoZk2XgK0AWUBpX0Lp
+         gEuPqGNOp+/CUSer98NmbhBAFMpJnmKII7MlSceZoqZDvLuxeNplRtQai1kNQG09Pk7A
+         gbisP6bGp53KgOHZVnE3dVc9eSKJw44sPvdKEudC/de0SPNfkKzpU3MCUMwVIZAC1n5g
+         y/HQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=fzuLP5q7Y22hqk74qWKi13wdAskCgNT+M/at9DAaCkE=;
-        b=ooqCW+kLF8oAA+8nFAmVF0Ewj1P1NtE2e5RyjvLwLQdcV76jRJUdulDkrqupqKf3af
-         dc3iGNBFoUX9h5YgOztxt4mvlXo1cmHExL9whMwxg892PpG5QGK0fXHjQefTzK9hMx85
-         4xBrwjp0sI0c6D/HSLQPGxKmRmgtTRqY5Uqbxjl2YHBquXnV//H03+J9TIEk0dmnr3Hp
-         Llqui7gFF+jV4wBtVh5u9FRQBN/EiXC/8d3o5JuHwOMDn1iRDEWuuKunsETrIc6lrZ0x
-         3gWJY+cjwgHfHHiTs+RwqlguXAVuHvxsz54kzDnxTD5TGsWdfEx1U/kvOAfh1jp3nfuD
-         EBlw==
-X-Gm-Message-State: AOAM532tpmVvTDtUohnMTbrDmxEXv9TyGc4qRIrrj+TaLbfg8zMm8znX
-        Yp/iRFSUbdKYQJTVkqLHqUpcfbEUkvtZRw==
-X-Google-Smtp-Source: ABdhPJyEkRChhLPMlqP7bnsV2B5qtwgp044ldrCaFivcyhOXqDXfCcvrTtwZLuD65RbRlIO+m/5GwA==
-X-Received: by 2002:adf:e4c3:: with SMTP id v3mr1860432wrm.210.1612519744690;
-        Fri, 05 Feb 2021 02:09:04 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=fHMnPUMcdXUqu+570hjeKhQiTLfkIWlof5K/iTtz3V8=;
+        b=WnmbJkm06Rj52Qryu1uZxlWbRtnEMUoeF/WK9plg0i052gtgdQLA0NEzOGvZWsfu4h
+         81oISIK5+Id9TWvlrKhrl0Sni+ZRElnS2Yyyh0meZ/+T8trQM7hUhHeY5oYeJdHXZyrC
+         pPgUnb3Q/gtU4yZwt9zQjlZYKtnr/MQBoFzpg788oEUjmteiHOLam74OJpT45dap9Ova
+         71XMQjahL6nh79vihYupMdEfg3TS9pdscwNJeWijDqrZmFGG51bqz91Ezgz7VLO1OyVU
+         ViWesWp8HtCkMtixkjykX3C1hVAsGP+kyfQzWw5JcqAm4X273gNUxizKkdLPh78wDLT+
+         Iemg==
+X-Gm-Message-State: AOAM533lUAqUMTFqOcy+4zEMkabLhFrt0r75j1OwNfnw0EpEEiQpxcQQ
+        IHamddb1IjIaW8xvuITKOVHVnA==
+X-Google-Smtp-Source: ABdhPJxbYzK4w00vHl1O/MUiSLOGBNrSM8Ces8gLQVkcMQzAD6HPt2uXWmwY8U0jiynYNTdmW6JTwA==
+X-Received: by 2002:adf:902a:: with SMTP id h39mr4101947wrh.147.1612519745850;
+        Fri, 05 Feb 2021 02:09:05 -0800 (PST)
 Received: from srini-hackbox.lan (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.gmail.com with ESMTPSA id g16sm8067738wmi.30.2021.02.05.02.09.03
+        by smtp.gmail.com with ESMTPSA id g16sm8067738wmi.30.2021.02.05.02.09.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Feb 2021 02:09:03 -0800 (PST)
+        Fri, 05 Feb 2021 02:09:05 -0800 (PST)
 From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-kernel@vger.kernel.org,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Randy Dunlap <rdunlap@infradead.org>,
         Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH 0/2] nvmem: patches (set 2) for 5.12
-Date:   Fri,  5 Feb 2021 10:08:51 +0000
-Message-Id: <20210205100853.32372-1-srinivas.kandagatla@linaro.org>
+Subject: [PATCH 1/2] nvmem: Kconfig: Correct typo in NVMEM_RMEM
+Date:   Fri,  5 Feb 2021 10:08:52 +0000
+Message-Id: <20210205100853.32372-2-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
+In-Reply-To: <20210205100853.32372-1-srinivas.kandagatla@linaro.org>
+References: <20210205100853.32372-1-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+From: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
 
-Here are some last nvmem patches (set 2) for 5.12 which includes
-- fixing a typo in Kconfig
-- a fix of uninitialized pointer
+s/drivers/driver/ as the configuration selects a single driver.
 
-If its not too late, Can you please queue them up for 5.12.
+Suggested-by: Randy Dunlap <rdunlap@infradead.org>
+Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+---
+ drivers/nvmem/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-thanks for you help,
-srini
-
-
-Nicolas Saenz Julienne (1):
-  nvmem: Kconfig: Correct typo in NVMEM_RMEM
-
-Subbaraman Narayanamurthy (1):
-  nvmem: qcom-spmi-sdam: Fix uninitialized pdev pointer
-
- drivers/nvmem/Kconfig          | 2 +-
- drivers/nvmem/qcom-spmi-sdam.c | 7 +++----
- 2 files changed, 4 insertions(+), 5 deletions(-)
-
+diff --git a/drivers/nvmem/Kconfig b/drivers/nvmem/Kconfig
+index fecc19b884bf..75d2594c16e1 100644
+--- a/drivers/nvmem/Kconfig
++++ b/drivers/nvmem/Kconfig
+@@ -273,7 +273,7 @@ config SPRD_EFUSE
+ config NVMEM_RMEM
+ 	tristate "Reserved Memory Based Driver Support"
+ 	help
+-	  This drivers maps reserved memory into an nvmem device. It might be
++	  This driver maps reserved memory into an nvmem device. It might be
+ 	  useful to expose information left by firmware in memory.
+ 
+ 	  This driver can also be built as a module. If so, the module
 -- 
 2.21.0
 
