@@ -2,94 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 854573108FD
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 11:26:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E8063108FF
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 11:26:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231344AbhBEKYo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 05:24:44 -0500
-Received: from mx2.suse.de ([195.135.220.15]:38156 "EHLO mx2.suse.de"
+        id S230322AbhBEKZL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 05:25:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55898 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231341AbhBEKWf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 05:22:35 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1612520509; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=441WHve7NP2TxAMx0OJ30INfKQWqrKfmb5j39ihe/DY=;
-        b=vD+GXDhlMi+q+LG9eTNBL8QlKKkp0Yk2YsIRnv1U0jtK12zgNa84A5lVmwU25sEhOXR1g3
-        r/tOBtkZeacMgrU3FSrlbpsoUpc6zQv2UU0Pk7EeQE2dfk4jtBkU3TZXUhKrL67tRGs+5K
-        iR6YLPQo02cieBvDO2ytc1YLsSVnVWI=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 181A3ACF4;
-        Fri,  5 Feb 2021 10:21:49 +0000 (UTC)
-Date:   Fri, 5 Feb 2021 11:21:47 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        id S231228AbhBEKWl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 05:22:41 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8DCF064E55;
+        Fri,  5 Feb 2021 10:21:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612520519;
+        bh=vTdK7tqpnai+N4Mr1MYvbIdxctZy8n6ZlIZgJ2TTGIs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=aw9IX3t8/+kJNRGDZ+eN+AcOe96RKkF8t8qkjRXLa5ntx8zUbf71H7CUidQRP/3oy
+         /jYL5MOzNTkXCNVb+pWxV8zK/1XWdVgzZi8nk/3ExJgEbVYSOS32dh8UG2wBx57LbT
+         OfJqPh+TzyXNYzzIQJO8xNFIIAvNiGmkVtRk+/nwkolGXcSYv9TH6LThlKK8ci0QPF
+         et1/cuIWO6xPGl6ZAON1zoRCnud1K6EP3sTct9KVU3TGucYouiF7zH/V758kBhQQB7
+         LyqKl1Z8P4+8ePkkWvfs31Oj9jOtCO+JuKcTd7+EAmVmnnXr+rST7vmtWkEsN6rZhM
+         4Y7uHIzJ0CqJQ==
+Received: by pali.im (Postfix)
+        id 41ADC8A2; Fri,  5 Feb 2021 11:21:57 +0100 (CET)
+Date:   Fri, 5 Feb 2021 11:21:57 +0100
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        Jan Kara <jack@suse.cz>, Kees Cook <keescook@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>, Jason Gunthorpe <jgg@ziepe.ca>,
+        =?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [External] Re: [PATCH] mm: memcontrol: fix missing wakeup oom
- task
-Message-ID: <YB0cO7R1WtJgAxI2@dhcp22.suse.cz>
-References: <20210205062310.74268-1-songmuchun@bytedance.com>
- <YB0Ay+epP/hnFmDS@dhcp22.suse.cz>
- <CAMZfGtWKNNhc1Jy1jzp2uZU_PM6GNWup7d=yUVk9AehKFo_CRw@mail.gmail.com>
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>,
+        Oliver O'Halloran <oohall@gmail.com>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
+Subject: Re: [PATCH 1/2] PCI: also set up legacy files only after sysfs init
+Message-ID: <20210205102157.n7avchjbzwbfkpdm@pali>
+References: <20210204165831.2703772-2-daniel.vetter@ffwll.ch>
+ <20210204215019.GA104698@bjorn-Precision-5520>
+ <20210204222407.pkx7wvmcvugdwqdd@pali>
+ <CAKMK7uFeZpc4oV2GNRdP_EXmYqacg5o3jPegqqaFZZYqqRutFA@mail.gmail.com>
+ <20210205100449.w2vzqozgnolxqh4h@pali>
+ <CAKMK7uG9NsEzFfapZa4KF6sw0=CuD6Pyk5=7WhjxgFBut4uJkw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAMZfGtWKNNhc1Jy1jzp2uZU_PM6GNWup7d=yUVk9AehKFo_CRw@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAKMK7uG9NsEzFfapZa4KF6sw0=CuD6Pyk5=7WhjxgFBut4uJkw@mail.gmail.com>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 05-02-21 17:55:10, Muchun Song wrote:
-> On Fri, Feb 5, 2021 at 4:24 PM Michal Hocko <mhocko@suse.com> wrote:
+On Friday 05 February 2021 11:16:00 Daniel Vetter wrote:
+> On Fri, Feb 5, 2021 at 11:04 AM Pali Rohár <pali@kernel.org> wrote:
 > >
-> > On Fri 05-02-21 14:23:10, Muchun Song wrote:
-> > > We call memcg_oom_recover() in the uncharge_batch() to wakeup OOM task
-> > > when page uncharged, but for the slab pages, we do not do this when page
-> > > uncharged.
+> > On Friday 05 February 2021 10:59:50 Daniel Vetter wrote:
+> > > On Thu, Feb 4, 2021 at 11:24 PM Pali Rohár <pali@kernel.org> wrote:
+> > > >
+> > > > On Thursday 04 February 2021 15:50:19 Bjorn Helgaas wrote:
+> > > > > [+cc Oliver, Pali, Krzysztof]
+> > > >
+> > > > Just to note that extending or using sysfs_initialized introduces
+> > > > another race condition into kernel code which results in PCI fatal
+> > > > errors. Details are in email discussion which Bjorn already sent.
+> > >
+> > > Yeah I wondered why this doesn't race.
 > >
-> > How does the patch deal with this?
+> > It races, but with smaller probability. I have not seen this race
+> > condition on x86. But I was able to reproduce it with native PCIe
+> > drivers on ARM64 (Marvell Armada 3720; pci-aardvark). In mentioned
+> > discussion I wrote when this race condition happen. But I understand
+> > that it is hard to simulate it.
 > 
-> When we uncharge a slab page via __memcg_kmem_uncharge,
-> actually, this path forgets to do this for us compared to
-> uncharge_batch(). Right?
+> btw I looked at your patch, and isn't that just reducing the race window?
 
-Yes this was more more or less clear (still would have been nicer to be
-explicit). But you still haven't replied to my question I believe. I
-assume you rely on refill_stock doing draining but how does this address
-the problem? Is it sufficient to do wakeups in the batched way?
+I probably have not wrote reply to that thread and only to Krzysztof on
+IRC, but my "hack" really does not solve that race condition. And as you
+wrote it only reduced occurrence on tested HW.
 
-> > > When we drain per cpu stock, we also should do this.
-> >
-> > Can we have anything the per-cpu stock while entering the OOM path. IIRC
-> > we do drain all cpus before entering oom path.
-> 
-> You are right. I did not notice this. Thank you.
-> 
-> >
-> > > The memcg_oom_recover() is small, so make it inline.
-> >
-> > Does this lead to any code generation improvements? I would expect
-> > compiler to be clever enough to inline static functions if that pays
-> > off. If yes make this a patch on its own.
-> 
-> I have disassembled the code, I see memcg_oom_recover is not
-> inline. Maybe because memcg_oom_recover has a lot of callers.
-> Just guess.
-> 
-> (gdb) disassemble uncharge_batch
->  [...]
->  0xffffffff81341c73 <+227>: callq  0xffffffff8133c420 <page_counter_uncharge>
->  0xffffffff81341c78 <+232>: jmpq   0xffffffff81341bc0 <uncharge_batch+48>
->  0xffffffff81341c7d <+237>: callq  0xffffffff8133e2c0 <memcg_oom_recover>
+Krzysztof wrote that would look at this issue and try to solve it
+properly. So I have not doing more investigation on that my "hack"
+patch, race conditions are hard to catch and solve...
 
-So does it really help to do the inlining?
--- 
-Michal Hocko
-SUSE Labs
+> I think we have a very similar problem in drm, where the
+> drm_dev_register() for the overall device (which also registers all
+> drm_connector) can race with the hotplug of an individual connector in
+> drm_connector_register() which is hotplugged at runtime.
+> 
+> I went with a per-connector registered boolean + a lock to make sure
+> that really only one of the two call paths can end up registering the
+> connector. Part of registering connectors is setting up sysfs files,
+> so I think it's exactly the same problem as here.
+> 
+> Cheers, Daniel
+> 
+> >
+> > > but since the history goes back
+> > > to pre-git times I figured it would have been addressed somehow
+> > > already if it indeed does race.
+> > > -Daniel
+> > >
+> > > > > s/also/Also/ in subject
+> > > > >
+> > > > > On Thu, Feb 04, 2021 at 05:58:30PM +0100, Daniel Vetter wrote:
+> > > > > > We are already doing this for all the regular sysfs files on PCI
+> > > > > > devices, but not yet on the legacy io files on the PCI buses. Thus far
+> > > > > > now problem, but in the next patch I want to wire up iomem revoke
+> > > > > > support. That needs the vfs up an running already to make so that
+> > > > > > iomem_get_mapping() works.
+> > > > >
+> > > > > s/now problem/no problem/
+> > > > > s/an running/and running/
+> > > > > s/so that/sure that/ ?
+> > > > >
+> > > > > iomem_get_mapping() doesn't exist; I don't know what that should be.
+> > > > >
+> > > > > > Wire it up exactly like the existing code. Note that
+> > > > > > pci_remove_legacy_files() doesn't need a check since the one for
+> > > > > > pci_bus->legacy_io is sufficient.
+> > > > >
+> > > > > I'm not sure exactly what you mean by "the existing code."  I could
+> > > > > probably figure it out, but it would save time to mention the existing
+> > > > > function here.
+> > > > >
+> > > > > This looks like another instance where we should really apply Oliver's
+> > > > > idea of converting these to attribute_groups [1].
+> > > > >
+> > > > > The cover letter mentions options discussed with Greg in [2], but I
+> > > > > don't think the "sysfs_initialized" hack vs attribute_groups was part
+> > > > > of that discussion.
+> > > > >
+> > > > > It's not absolutely a show-stopper, but it *is* a shame to extend the
+> > > > > sysfs_initialized hack if attribute_groups could do this more cleanly
+> > > > > and help solve more than one issue.
+> > > > >
+> > > > > Bjorn
+> > > > >
+> > > > > [1] https://lore.kernel.org/r/CAOSf1CHss03DBSDO4PmTtMp0tCEu5kScn704ZEwLKGXQzBfqaA@mail.gmail.com
+> > > > > [2] https://lore.kernel.org/dri-devel/CAKMK7uGrdDrbtj0OyzqQc0CGrQwc2F3tFJU9vLfm2jjufAZ5YQ@mail.gmail.com/
+> > > > >
+> > > > > > Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
+> > > > > > Cc: Stephen Rothwell <sfr@canb.auug.org.au>
+> > > > > > Cc: Jason Gunthorpe <jgg@ziepe.ca>
+> > > > > > Cc: Kees Cook <keescook@chromium.org>
+> > > > > > Cc: Dan Williams <dan.j.williams@intel.com>
+> > > > > > Cc: Andrew Morton <akpm@linux-foundation.org>
+> > > > > > Cc: John Hubbard <jhubbard@nvidia.com>
+> > > > > > Cc: Jérôme Glisse <jglisse@redhat.com>
+> > > > > > Cc: Jan Kara <jack@suse.cz>
+> > > > > > Cc: Dan Williams <dan.j.williams@intel.com>
+> > > > > > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > > > > > Cc: linux-mm@kvack.org
+> > > > > > Cc: linux-arm-kernel@lists.infradead.org
+> > > > > > Cc: linux-samsung-soc@vger.kernel.org
+> > > > > > Cc: linux-media@vger.kernel.org
+> > > > > > Cc: Bjorn Helgaas <bhelgaas@google.com>
+> > > > > > Cc: linux-pci@vger.kernel.org
+> > > > > > ---
+> > > > > >  drivers/pci/pci-sysfs.c | 7 +++++++
+> > > > > >  1 file changed, 7 insertions(+)
+> > > > > >
+> > > > > > diff --git a/drivers/pci/pci-sysfs.c b/drivers/pci/pci-sysfs.c
+> > > > > > index fb072f4b3176..0c45b4f7b214 100644
+> > > > > > --- a/drivers/pci/pci-sysfs.c
+> > > > > > +++ b/drivers/pci/pci-sysfs.c
+> > > > > > @@ -927,6 +927,9 @@ void pci_create_legacy_files(struct pci_bus *b)
+> > > > > >  {
+> > > > > >     int error;
+> > > > > >
+> > > > > > +   if (!sysfs_initialized)
+> > > > > > +           return;
+> > > > > > +
+> > > > > >     b->legacy_io = kcalloc(2, sizeof(struct bin_attribute),
+> > > > > >                            GFP_ATOMIC);
+> > > > > >     if (!b->legacy_io)
+> > > > > > @@ -1448,6 +1451,7 @@ void pci_remove_sysfs_dev_files(struct pci_dev *pdev)
+> > > > > >  static int __init pci_sysfs_init(void)
+> > > > > >  {
+> > > > > >     struct pci_dev *pdev = NULL;
+> > > > > > +   struct pci_bus *pbus = NULL;
+> > > > > >     int retval;
+> > > > > >
+> > > > > >     sysfs_initialized = 1;
+> > > > > > @@ -1459,6 +1463,9 @@ static int __init pci_sysfs_init(void)
+> > > > > >             }
+> > > > > >     }
+> > > > > >
+> > > > > > +   while ((pbus = pci_find_next_bus(pbus)))
+> > > > > > +           pci_create_legacy_files(pbus);
+> > > > > > +
+> > > > > >     return 0;
+> > > > > >  }
+> > > > > >  late_initcall(pci_sysfs_init);
+> > > > > > --
+> > > > > > 2.30.0
+> > > > > >
+> > > > > >
+> > > > > > _______________________________________________
+> > > > > > linux-arm-kernel mailing list
+> > > > > > linux-arm-kernel@lists.infradead.org
+> > > > > > http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+> > >
+> > >
+> > >
+> > > --
+> > > Daniel Vetter
+> > > Software Engineer, Intel Corporation
+> > > http://blog.ffwll.ch
+> 
+> 
+> 
+> -- 
+> Daniel Vetter
+> Software Engineer, Intel Corporation
+> http://blog.ffwll.ch
