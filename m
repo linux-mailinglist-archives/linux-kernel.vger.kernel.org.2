@@ -2,88 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4319A310199
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 01:27:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0371931019D
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 01:28:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231822AbhBEA06 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 19:26:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56670 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231922AbhBEA04 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 19:26:56 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 90E5A64D9D;
-        Fri,  5 Feb 2021 00:26:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612484775;
-        bh=leZEpI4tCbCaIcMRqiMOvFUKRIKm1hwWHpDcUc3Hyew=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=uWgZGLa6VR1Mty6aqa7qwwo12eQtntAaYwA2MJoYK2F6O/ahDB2GevWUOWuZSjuyR
-         iaLKcWs06tkiewx7woo0aUrRg4ZfSgZbbsH/JM+v3kRw1URyZvEARhA6PauvR0789x
-         d7A87g1JA4aDGsCCZSGsP22zFSRIDRB7kXqkRBVTsI6R5jR6n8i+dWGVNoWEKGNifo
-         NgsI0jR5oIsIWE0/8qN6J9IgTfCNQDQLd+24I+qu7GzC9ptxJ1g3Dc7B6BvbvQmpVL
-         M3M9xU0knt5ykidCH+BLwbOpLclspcuQA5UB54a+nKeT9g+6zouS04XJGgx60xBlBO
-         mq6VQfFjMHOWg==
-Date:   Thu, 4 Feb 2021 16:26:13 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Thara Gopinath <thara.gopinath@linaro.org>
-Cc:     herbert@gondor.apana.org.au, davem@davemloft.net,
-        bjorn.andersson@linaro.org, ardb@kernel.org,
-        sivaprak@codeaurora.org, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 05/11] crypto: qce: skcipher: Return error for zero
- length messages
-Message-ID: <YByQpRG0SC0k0gYC@gmail.com>
-References: <20210204214359.1993065-1-thara.gopinath@linaro.org>
- <20210204214359.1993065-6-thara.gopinath@linaro.org>
- <YBx5yWhKtT2EC2Ce@gmail.com>
- <00d759f3-8ea3-1f85-b623-225c372c0a04@linaro.org>
+        id S231975AbhBEA15 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 19:27:57 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:36556 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231838AbhBEA14 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 19:27:56 -0500
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1150QvK5061256;
+        Thu, 4 Feb 2021 18:26:57 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1612484817;
+        bh=yq7hCIHhoSTeDHW7juAsUUz79Y6SVLIYjBY085/BArw=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=bRbldSr45AFTDWj5sJu0z7AZJMA0QmQM09LruICalcxcxkCxIiJmJiFISYns/c1TU
+         3ZWpU6wTjGzXqvPAhXUCoT3gYSahDuu76kyRpxpjukRC2LKMPdKDfhZV2rh4z8YDdo
+         qElbrEdoI4ycFS0rHZF8gHZoKfZTPoXlJHSYGWac=
+Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1150QvX2129581
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 4 Feb 2021 18:26:57 -0600
+Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 4 Feb
+ 2021 18:26:56 -0600
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE101.ent.ti.com
+ (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 4 Feb 2021 18:26:56 -0600
+Received: from [10.250.39.117] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1150QuOY077490;
+        Thu, 4 Feb 2021 18:26:56 -0600
+Subject: Re: [PATCH V3 1/2] dt-bindings: power: bq27xxx: add bq78z10
+To:     Rob Herring <robh@kernel.org>,
+        LI Qingwu <Qing-wu.Li@leica-geosystems.com.cn>
+CC:     <linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>,
+        <sre@kernel.org>, <devicetree@vger.kernel.org>,
+        <robh+dt@kernel.org>, <grygorii.tertychnyi@leica-geosystems.com>,
+        <andrey.zhizhikin@leica-geosystems.com>, <krzk@kernel.org>,
+        <pali@kernel.org>
+References: <20210203104100.17143-1-Qing-wu.Li@leica-geosystems.com.cn>
+ <20210203104100.17143-2-Qing-wu.Li@leica-geosystems.com.cn>
+ <20210204233721.GA1331253@robh.at.kernel.org>
+From:   Dan Murphy <dmurphy@ti.com>
+Message-ID: <3342dd48-e165-2ca4-6411-d2641163ff91@ti.com>
+Date:   Thu, 4 Feb 2021 18:26:51 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <00d759f3-8ea3-1f85-b623-225c372c0a04@linaro.org>
+In-Reply-To: <20210204233721.GA1331253@robh.at.kernel.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 04, 2021 at 07:09:53PM -0500, Thara Gopinath wrote:
-> > > @@ -260,6 +261,10 @@ static int qce_skcipher_crypt(struct skcipher_request *req, int encrypt)
-> > >   	rctx->flags |= encrypt ? QCE_ENCRYPT : QCE_DECRYPT;
-> > >   	keylen = IS_XTS(rctx->flags) ? ctx->enc_keylen >> 1 : ctx->enc_keylen;
-> > > +	/* CE does not handle 0 length messages */
-> > > +	if (!req->cryptlen)
-> > > +		return -EOPNOTSUPP;
-> > > +
-> > 
-> > For the algorithms in question, the correct behavior is to return 0.
-> 
-> What do you mean? The driver should return a 0 ?
+Li
 
-Yes, there is nothing to do for empty inputs, so just return 0 (success).
+On 2/4/21 5:37 PM, Rob Herring wrote:
+> On Wed, 03 Feb 2021 10:40:59 +0000, LI Qingwu wrote:
+>> Add bindings for TI BQ78Z100. An I2C interface gas gauge.
+>> It provides a fully integrated safety protection
+>> and authentication for 1 to 2-series cell Li-Ion and
+>> Li-Polymer battery packs.
 
-> > Aren't the tests catching that difference?
-> 
-> I was anyways planning on sending an email to the list with these queries.
-> But since you asked,  these are my observations with fuzz testing which I
-> have been doing quite a bit now (I am also working on adding a few qualcomm
-> AEAD algorithms support in mainline).
-> 
-> - if the generic algorithm supports 0 length messages and the transformation
-> I am testing does not, the test framework throws an error and stops.
-> - key support mismatch between the generic algorithm vs my algorithm /engine
-> also does the same thing.For eg, Qualcomm CE engine does not support any
-> three keys being same for triple des algorithms. Where as a two key 3des is
-> a valid scenario for generic algorithm(k1=k3). Another example is hardware
-> engine not supporting AES192.
-> 
-> How are these scenarios usually handled ? Why not allow the test framework
-> to proceed with the testing if the algorithm does not support a particular
-> scenario ?
+$subject has the wrong part number
 
-Omitting support for certain inputs isn't allowed.  Anyone in the kernel who
-wants to use a particular algorithm could get this driver for it, and if they
-happen to use inputs which the driver decided not to support, things will break.
+Dan
 
-The way that drivers handle this is to use a fallback cipher for inputs they
-don't support.
 
-- Eric
+>> Signed-off-by: LI Qingwu <Qing-wu.Li@leica-geosystems.com.cn>
+>> ---
+>>   Documentation/devicetree/bindings/power/supply/bq27xxx.yaml | 1 +
+>>   1 file changed, 1 insertion(+)
+>>
+> Acked-by: Rob Herring <robh@kernel.org>
