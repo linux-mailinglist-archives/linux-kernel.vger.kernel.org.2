@@ -2,83 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E01C310F20
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 18:52:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05FB2310ECC
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 18:35:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232582AbhBEQJb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 11:09:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54892 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233534AbhBEQCZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 11:02:25 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D123C65085;
-        Fri,  5 Feb 2021 14:13:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612534411;
-        bh=8OdlNxrunJG6LU7uUfHdslNzgyN+w9PSYl2FoMzH2pk=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LCAc45vAkjoa+yikgbs7PRpDpkqibHIG681S4E9I8qbnJEjDYlBh+v7UVay0tob7b
-         VBk3Lo2rCeci9GPMpDBScL8FhaQyyHXnjzF/l0P3BHxZX4M1SKJbyDBkPbXhyNCZQh
-         NSPgfSVhy6IH1wLyDgk3AOmc/SzECn4AfNBQxcCw=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pan Bian <bianpan2016@163.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.19 01/17] net: dsa: bcm_sf2: put device node before return
-Date:   Fri,  5 Feb 2021 15:07:55 +0100
-Message-Id: <20210205140649.879838644@linuxfoundation.org>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210205140649.825180779@linuxfoundation.org>
-References: <20210205140649.825180779@linuxfoundation.org>
-User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
+        id S230436AbhBEPvU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 10:51:20 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54486 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233366AbhBEPrE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 10:47:04 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612546081;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=lL4LWN0foEEoPgPGKfYn/bLCSCit6wbUnsru7AAm4B0=;
+        b=baFu4lnR8kd1yLN6twnRAZwoe3KAdTb9VvYQCZv/7X/nQOGaRQshbPCiW/D3sJSeUsNQ5Z
+        CZ3yATQ2c0UlMecg1XXeKSql3ZMFUwV31wG7rzBGwjofg4/WwS79PuLMm//+iO85xTe2ex
+        C4r0xab/VxlmvYtKbMsvtYO/TwjzGwA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-266-HT3h5ooONLSHDCG2tH2YwQ-1; Fri, 05 Feb 2021 09:24:09 -0500
+X-MC-Unique: HT3h5ooONLSHDCG2tH2YwQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 64687192D789;
+        Fri,  5 Feb 2021 14:24:08 +0000 (UTC)
+Received: from treble.redhat.com (ovpn-116-178.rdu2.redhat.com [10.10.116.178])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id BB1975D9D7;
+        Fri,  5 Feb 2021 14:24:07 +0000 (UTC)
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     x86@kernel.org
+Cc:     linux-kernel@vger.kernel.org, Ivan Babrou <ivan@cloudflare.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: [PATCH 0/2] x86/unwind/orc: Handle missing ORC data better
+Date:   Fri,  5 Feb 2021 08:24:01 -0600
+Message-Id: <cover.1612534649.git.jpoimboe@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pan Bian <bianpan2016@163.com>
+A couple of patches for improving the ORC unwinder's handling of missing
+ORC data.
 
-commit cf3c46631e1637582f517a574c77cd6c05793817 upstream.
+Josh Poimboeuf (2):
+  x86/unwind/orc: Disable KASAN checking in the ORC unwinder, part 2
+  x86/unwind/orc: Silence warnings caused by missing ORC data
 
-Put the device node dn before return error code on failure path.
+ arch/x86/kernel/unwind_orc.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-Fixes: 461cd1b03e32 ("net: dsa: bcm_sf2: Register our slave MDIO bus")
-Signed-off-by: Pan Bian <bianpan2016@163.com>
-Link: https://lore.kernel.org/r/20210121123343.26330-1-bianpan2016@163.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/net/dsa/bcm_sf2.c |    8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
-
---- a/drivers/net/dsa/bcm_sf2.c
-+++ b/drivers/net/dsa/bcm_sf2.c
-@@ -423,15 +423,19 @@ static int bcm_sf2_mdio_register(struct
- 	/* Find our integrated MDIO bus node */
- 	dn = of_find_compatible_node(NULL, NULL, "brcm,unimac-mdio");
- 	priv->master_mii_bus = of_mdio_find_bus(dn);
--	if (!priv->master_mii_bus)
-+	if (!priv->master_mii_bus) {
-+		of_node_put(dn);
- 		return -EPROBE_DEFER;
-+	}
- 
- 	get_device(&priv->master_mii_bus->dev);
- 	priv->master_mii_dn = dn;
- 
- 	priv->slave_mii_bus = devm_mdiobus_alloc(ds->dev);
--	if (!priv->slave_mii_bus)
-+	if (!priv->slave_mii_bus) {
-+		of_node_put(dn);
- 		return -ENOMEM;
-+	}
- 
- 	priv->slave_mii_bus->priv = priv;
- 	priv->slave_mii_bus->name = "sf2 slave mii";
-
+-- 
+2.29.2
 
