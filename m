@@ -2,90 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D91B310E5E
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 18:14:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33139310E70
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 18:17:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233264AbhBEP2H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 10:28:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56132 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229725AbhBEP1M (ORCPT
+        id S233175AbhBEPdj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 10:33:39 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:48902 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233257AbhBEP14 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 10:27:12 -0500
-Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21CECC0617A9
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 09:08:12 -0800 (PST)
-Received: from ramsan.of.borg ([84.195.186.194])
-        by albert.telenet-ops.be with bizsmtp
-        id RV8B2400K4C55Sk06V8BMq; Fri, 05 Feb 2021 18:08:11 +0100
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1l84aZ-003VXF-9p; Fri, 05 Feb 2021 18:08:11 +0100
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1l84aY-008D0v-FS; Fri, 05 Feb 2021 18:08:10 +0100
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     Greg Kroah-Hartman <gregkh@suse.de>,
-        Henk Vergonet <Henk.Vergonet@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] uapi: map_to_7segment: Update example in documentation
-Date:   Fri,  5 Feb 2021 18:08:09 +0100
-Message-Id: <20210205170809.1956606-1-geert@linux-m68k.org>
-X-Mailer: git-send-email 2.25.1
+        Fri, 5 Feb 2021 10:27:56 -0500
+Date:   Fri, 05 Feb 2021 17:09:33 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1612544974;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2Rh5Yxk4TOiEVVCLvfzyyZU8viIhD1Vne2otryahZ2g=;
+        b=XB0eF/iOq8PXzeGIQvq0dYFlbT8w5OHLGwn1nqp6oHGwMPJY1K8Ut4MnIzSgjz2Rr0mmcY
+        YIZHWZ0Zr9ComoHNG3S13X7AYZuJY2NHaE/mk95FvCPO8CZfv/HKioPRzEFM/kTzwUPYHU
+        i1z155fwyxOMkpcQvUKvBniPcPKiRrvd5REsqoeF5RBpZ7IgouZ1WxtKAnHt9QjKxuesgR
+        kwZxqaaTEtb6ZvvRA7xiSUgKtKzlUXRyT2wr5i05vP2warMHgtI+eKO8taCUp9xQtCmD+c
+        QVDZfwi4A39jv6wpt8T1WROp6+M6oQXBslHOllqPH3wpN3iu0NTuzh1xT2bDzA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1612544974;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2Rh5Yxk4TOiEVVCLvfzyyZU8viIhD1Vne2otryahZ2g=;
+        b=iZdoGgk9Dr9QXt7/2NdlPuLoB/139oPt7cYAUrdaKxV0lS3Bc+9jPxcEZw8kNpps7VCMXQ
+        MNOSecxWsnxzmmAA==
+From:   "tip-bot2 for Geert Uytterhoeven" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: timers/urgent] ntp: Use freezable workqueue for RTC synchronization
+Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Rafael J. Wysocki" <rafael@kernel.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210125143039.1051912-1-geert+renesas@glider.be>
+References: <20210125143039.1051912-1-geert+renesas@glider.be>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Message-ID: <161254497336.23325.2614230583600966925.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The device_attribute .show() and .store() methods gained an extra
-parameter in v2.6.13, but the example in the documentation for the
-7-segment header file was never updated.  Add the missing parameters.
+The following commit has been merged into the timers/urgent branch of tip:
 
-While at it, get rid of the (misspelled) deprecated symbolic
-permissions, and switch to DEVICE_ATTR_RW(), which was introduced in
-v3.11
+Commit-ID:     24c242ec7abb3d21fa0b1da6bb251521dc1717b5
+Gitweb:        https://git.kernel.org/tip/24c242ec7abb3d21fa0b1da6bb251521dc1717b5
+Author:        Geert Uytterhoeven <geert+renesas@glider.be>
+AuthorDate:    Mon, 25 Jan 2021 15:30:39 +01:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Fri, 05 Feb 2021 18:03:13 +01:00
 
-Fixes: 54b6f35c99974e99 ("[PATCH] Driver core: change device_attribute callbacks")
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+ntp: Use freezable workqueue for RTC synchronization
+
+The bug fixed by commit e3fab2f3de081e98 ("ntp: Fix RTC synchronization on
+32-bit platforms") revealed an underlying issue: RTC synchronization may
+happen anytime, even while the system is partially suspended.
+
+On systems where the RTC is connected to an I2C bus, the I2C bus controller
+may already or still be suspended, triggering a WARNING during suspend or
+resume from s2ram:
+
+    WARNING: CPU: 0 PID: 124 at drivers/i2c/i2c-core.h:54 __i2c_transfer+0x634/0x680
+    i2c i2c-6: Transfer while suspended
+    [...]
+    Workqueue: events_power_efficient sync_hw_clock
+    [...]
+      (__i2c_transfer)
+      (i2c_transfer)
+      (regmap_i2c_read)
+      ...
+      (da9063_rtc_set_time)
+      (rtc_set_time)
+      (sync_hw_clock)
+      (process_one_work)
+
+Fix this race condition by using the freezable instead of the normal
+power-efficient workqueue.
+
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Acked-by: Rafael J. Wysocki <rafael@kernel.org>
+Link: https://lore.kernel.org/r/20210125143039.1051912-1-geert+renesas@glider.be
+
 ---
- include/uapi/linux/map_to_7segment.h | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+ kernel/time/ntp.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/include/uapi/linux/map_to_7segment.h b/include/uapi/linux/map_to_7segment.h
-index 13a06e5e966e53d2..8b02088f96e3733e 100644
---- a/include/uapi/linux/map_to_7segment.h
-+++ b/include/uapi/linux/map_to_7segment.h
-@@ -45,17 +45,22 @@
-  * In device drivers it is recommended, if required, to make the char map
-  * accessible via the sysfs interface using the following scheme:
-  *
-- * static ssize_t show_map(struct device *dev, char *buf) {
-+ * static ssize_t map_seg7_show(struct device *dev,
-+ *				struct device_attribute *attr, char *buf)
-+ * {
-  *	memcpy(buf, &map_seg7, sizeof(map_seg7));
-  *	return sizeof(map_seg7);
-  * }
-- * static ssize_t store_map(struct device *dev, const char *buf, size_t cnt) {
-+ * static ssize_t map_seg7_store(struct device *dev,
-+ *				 struct device_attribute *attr, const char *buf,
-+ *				 size_t cnt)
-+ * {
-  *	if(cnt != sizeof(map_seg7))
-  *		return -EINVAL;
-  *	memcpy(&map_seg7, buf, cnt);
-  *	return cnt;
-  * }
-- * static DEVICE_ATTR(map_seg7, PERMS_RW, show_map, store_map);
-+ * static DEVICE_ATTR_RW(map_seg7);
-  *
-  * History:
-  * 2005-05-31	RFC linux-kernel@vger.kernel.org
--- 
-2.25.1
-
+diff --git a/kernel/time/ntp.c b/kernel/time/ntp.c
+index 87389b9..5247afd 100644
+--- a/kernel/time/ntp.c
++++ b/kernel/time/ntp.c
+@@ -502,7 +502,7 @@ static struct hrtimer sync_hrtimer;
+ 
+ static enum hrtimer_restart sync_timer_callback(struct hrtimer *timer)
+ {
+-	queue_work(system_power_efficient_wq, &sync_work);
++	queue_work(system_freezable_power_efficient_wq, &sync_work);
+ 
+ 	return HRTIMER_NORESTART;
+ }
+@@ -668,7 +668,7 @@ void ntp_notify_cmos_timer(void)
+ 	 * just a pointless work scheduled.
+ 	 */
+ 	if (ntp_synced() && !hrtimer_is_queued(&sync_hrtimer))
+-		queue_work(system_power_efficient_wq, &sync_work);
++		queue_work(system_freezable_power_efficient_wq, &sync_work);
+ }
+ 
+ static void __init ntp_init_cmos_sync(void)
