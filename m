@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2A68311AD5
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 05:26:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 197E7311AD3
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 05:24:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230385AbhBFEYr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 23:24:47 -0500
-Received: from mga01.intel.com ([192.55.52.88]:46950 "EHLO mga01.intel.com"
+        id S230249AbhBFEYG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 23:24:06 -0500
+Received: from mga11.intel.com ([192.55.52.93]:50657 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231628AbhBFDOf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 22:14:35 -0500
-IronPort-SDR: 5IiB1PsDf4cgQ9w2BACfVjYmcURvWxhQAKOKAHQAQJurkZVLQ9JI0YAxwvBaDNWcttfv9la705
- ncX1cvWCwCXg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9886"; a="200512632"
+        id S231192AbhBFDNt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 22:13:49 -0500
+IronPort-SDR: UlMnF3hCfypl8N6/+ufZhF7642s1T1JXskGz7IT+wi1lKhMlk9P9cI+NfDwVN6ecLUfIFbgcOa
+ ECdyV8FXma4g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9886"; a="177992648"
 X-IronPort-AV: E=Sophos;i="5.81,156,1610438400"; 
-   d="scan'208";a="200512632"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2021 14:52:08 -0800
-IronPort-SDR: J8C2bqxZVpY8PMCgvJow1lgGe/U0AEBaMuBDU0mouhVe19hm96QL1acPDAO6tqkPrPhq/bjL9L
- CFJUwHdY2Esg==
+   d="scan'208";a="177992648"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2021 14:52:08 -0800
+IronPort-SDR: n37FcuYf6a4w6oOnvXtSsycXiPd8/8f7HkZ7hgC23g0HrDlgqzqPz1CcgIrr39mP6/PlxyqAj/
+ 7bj04Bmvw7sQ==
 X-IronPort-AV: E=Sophos;i="5.81,156,1610438400"; 
-   d="scan'208";a="416401014"
+   d="scan'208";a="416175319"
 Received: from smtp.ostc.intel.com ([10.54.29.231])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2021 14:52:08 -0800
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2021 14:52:08 -0800
 Received: from mtg-dev.jf.intel.com (mtg-dev.jf.intel.com [10.54.74.10])
-        by smtp.ostc.intel.com (Postfix) with ESMTP id 0AC8C6368;
+        by smtp.ostc.intel.com (Postfix) with ESMTP id 277AA636D;
         Fri,  5 Feb 2021 14:52:08 -0800 (PST)
 Received: by mtg-dev.jf.intel.com (Postfix, from userid 1000)
-        id EF239362609; Fri,  5 Feb 2021 14:52:07 -0800 (PST)
+        id 1BF6136269B; Fri,  5 Feb 2021 14:52:08 -0800 (PST)
 From:   mgross@linux.intel.com
 To:     markgross@kernel.org, mgross@linux.intel.com, arnd@arndb.de,
         bp@suse.de, damien.lemoal@wdc.com, dragan.cvetic@xilinx.com,
@@ -36,346 +36,87 @@ To:     markgross@kernel.org, mgross@linux.intel.com, arnd@arndb.de,
         palmerdabbelt@google.com, paul.walmsley@sifive.com,
         peng.fan@nxp.com, robh+dt@kernel.org, shawnguo@kernel.org,
         jassisinghbrar@gmail.com
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH v5 01/34] Add Vision Processing Unit (VPU) documentation.
-Date:   Fri,  5 Feb 2021 14:51:31 -0800
-Message-Id: <20210205225204.32902-2-mgross@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Daniele Alessandrelli <daniele.alessandrelli@intel.com>,
+        devicetree@vger.kernel.org
+Subject: [PATCH v5 04/34] dt-bindings: Add bindings for Keem Bay IPC driver
+Date:   Fri,  5 Feb 2021 14:51:34 -0800
+Message-Id: <20210205225204.32902-5-mgross@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210205225204.32902-1-mgross@linux.intel.com>
 References: <20210205225204.32902-1-mgross@linux.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: mark gross <mgross@linux.intel.com>
+From: Daniele Alessandrelli <daniele.alessandrelli@intel.com>
 
-The Intel VPU needs a complicated SW stack to make it work.  Add a
-directory to hold VPU related documentation including an architectural
-overview of the SW stack that the patches implement.
+Add DT binding documentation for the Intel Keem Bay IPC driver, which
+enables communication between the Computing Sub-System (CSS) and the
+Multimedia Sub-System (MSS) of the Intel Movidius SoC code named Keem
+Bay.
 
-Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: Rob Herring <robh+dt@kernel.org>
+Cc: devicetree@vger.kernel.org
+Reviewed-by: Mark Gross <mgross@linux.intel.com>
+Signed-off-by: Daniele Alessandrelli <daniele.alessandrelli@intel.com>
 Signed-off-by: Mark Gross <mgross@linux.intel.com>
 ---
- Documentation/index.rst                  |   1 +
- Documentation/vpu/index.rst              |  16 ++
- Documentation/vpu/vpu-stack-overview.rst | 270 +++++++++++++++++++++++
- 3 files changed, 287 insertions(+)
- create mode 100644 Documentation/vpu/index.rst
- create mode 100644 Documentation/vpu/vpu-stack-overview.rst
+ .../bindings/soc/intel/intel,keembay-ipc.yaml | 45 +++++++++++++++++++
+ 1 file changed, 45 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/soc/intel/intel,keembay-ipc.yaml
 
-diff --git a/Documentation/index.rst b/Documentation/index.rst
-index 5888e8a7272f..81a02f2af939 100644
---- a/Documentation/index.rst
-+++ b/Documentation/index.rst
-@@ -137,6 +137,7 @@ needed).
-    misc-devices/index
-    scheduler/index
-    mhi/index
-+   vpu/index
- 
- Architecture-agnostic documentation
- -----------------------------------
-diff --git a/Documentation/vpu/index.rst b/Documentation/vpu/index.rst
+diff --git a/Documentation/devicetree/bindings/soc/intel/intel,keembay-ipc.yaml b/Documentation/devicetree/bindings/soc/intel/intel,keembay-ipc.yaml
 new file mode 100644
-index 000000000000..7e290e048910
+index 000000000000..586fe73f4cd4
 --- /dev/null
-+++ b/Documentation/vpu/index.rst
-@@ -0,0 +1,16 @@
-+.. SPDX-License-Identifier: GPL-2.0-only
-+
-+============================================
-+Vision Processor Unit Documentation
-+============================================
-+
-+This documentation contains information for the Intel VPU stack.
-+
-+.. class:: toc-title
-+
-+	   Table of contents
-+
-+.. toctree::
-+   :maxdepth: 2
-+
-+   vpu-stack-overview
-diff --git a/Documentation/vpu/vpu-stack-overview.rst b/Documentation/vpu/vpu-stack-overview.rst
-new file mode 100644
-index 000000000000..1fe9ce423177
---- /dev/null
-+++ b/Documentation/vpu/vpu-stack-overview.rst
-@@ -0,0 +1,270 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+======================
-+Intel VPU architecture
-+======================
-+
-+Overview
-+========
-+
-+The Intel Movidius acquisition has developed a Vision Processing Unit (VPU)
-+roadmap of products starting with Keem Bay (KMB). The hardware configurations
-+the VPU can support include:
-+
-+1. Standalone smart camera that does local Computer Vision (CV) processing in
-+   camera
-+2. Standalone appliance or signel board computer connected to a network and
-+   tethered cameras doing local CV processing
-+3. Embedded in a USB dongle or M.2 as an CV accelerator.
-+4. Multiple VPU enabled SOC's on a PCIe card as a CV accelerator in a larger IA
-+   box or server.
-+
-+Keem Bay is the first instance of this family of products. This document
-+provides an architectural overview of the software stack supporting the VPU
-+enabled products.
-+
-+Keem Bay (KMB) is a Computer Vision AI processing SoC based on ARM A53 CPU that
-+provides Edge neural network acceleration (inference) and includes a Vision
-+Processing Unit (VPU) hardware. The ARM CPU SubSystem (CPUSS) interfaces
-+locally to the VPU and enables integration/interfacing with a remote host over
-+PCIe or USB or Ethernet interfaces. The interface between the CPUSS and the VPU
-+is implemented with hardware FIFOs (Control) and coherent memory mapping (Data)
-+such that zero copy processing can happen within the VPU.
-+
-+The KMB can be used in all 4 of the above classes of designs.
-+
-+We refer to the 'local host' as being the ARM part of the SoC, while the
-+'remote host' as the IA system hosting the KMB device(s). The KMB SoC boots
-+from an eMMC via uBoot and ARM Linux compatible device tree interface with an
-+expectation to fully boot within hundreds of milliseconds. There is also
-+support for downloading the kernel and root file system image from a remote
-+host.
-+
-+The eMMC can be updated with standard Mender update process.
-+See https://github.com/mendersoftware/mender
-+
-+The VPU is started and controlled from the A53 local host. Its firmware image
-+is loaded using the drive firware helper KAPI's.
-+
-+The VPU IP firware payload consists of a SPARC ISA RTEMS bootloader and/or
-+application binary.
-+
-+The interface allowing (remote or local) host clients to access VPU IP
-+capabilities is realized through an abstracted programming model, which
-+provides Remote Proxy APIs for a host CPU application to dynamically create and
-+execute CV and NN workloads on the VPU. All frameworks exposed through
-+programming model’s APIs are contained in the pre-compiled standard firmware
-+image.
-+
-+There is a significant software stack built up to support KMB and the use
-+cases. The rest of this documentation provides an overview of the components
-+of the stack.
-+
-+Keem Bay IPC
-+============
-+
-+Directly interfaces with the KMB hardware FIFOs to provide zero copy processing
-+from the VPU. It implements the lowest level protocol for interacting with the
-+VPU.
-+
-+The Keem Bay IPC mechanism is based on shared memory and hardware FIFOs.
-+Specifically there are:
-+
-+* Two 128-entry hardware FIFOs, one for the CPU and one for the VPU.
-+* Two shared memory regions, used as memory pool for allocating IPC buffers.
-+
-+An IPC channel is a software abstraction allowing communication multiplexing,
-+so that multiple applications / users can concurrently communicate with the
-+VPU.  IPC channels area conceptually similar to socket ports.
-+
-+There are a total of 1024 channels, each one identified by a channel ID,
-+ranging from 0 to 1023.
-+
-+Channels are divided in two categories:
-+
-+* High-Speed (HS) channels, having IDs in the 0-9 range.
-+* General-Purpose (GP) channels, having IDs in the 10-1023 range.
-+
-+HS channels have higher priority over GP channels and can be used by
-+applications requiring higher throughput or lower latency.
-+
-+Since all the channels share the same hardare resources (i.e., the hardware
-+FIFOs and the IPC memory pools), the Keem Bay IPC driver uses software queues
-+to give a higher priority to HS channels.
-+
-+The driver supports a build-time configurable number of communication channels
-+defined in a so-called Channel Mapping Table.
-+
-+An IPC channel is full duplex: a pending operation from a certain channel does
-+not block other operations on the same channel, regardless of their operation
-+mode (blocking or non-blocking).
-+
-+Operation mode is individually selectable for each channel, per operation
-+direction (read or write). All operations for that direction comply to
-+selection.
-+
-+
-+Keem Bay-VPU-IPC
-+================
-+
-+This is the MMIO driver of the VPU IP block inside the SOC. It is a control
-+driver mapping IPC channel communication to Xlink virtual channels.
-+
-+This driver provides the following functionality to other drivers in the
-+communication stack:
-+
-+* VPU IP execution control (firmware load, start, reset)
-+* VPU IP event notifications (device connected, device disconnected, WDT event)
-+* VPU IP device status query (OFF, BUSY, READY, ERROR, RECOVERY)
-+* Communication via the IPC protocol (wrapping the Keem Bay IPC driver and
-+  exposing it to higher level Xlink layer)
-+
-+In addition to the above, the driver exposes SoC information (like stepping,
-+device ID, etc.) to user-space via sysfs.
-+
-+This driver depends on the 'Keem Bay IPC' driver, which enables the Keem Bay
-+IPC communication protocol.
-+
-+The driver uses the Firmware API to load the VPU firmware from user-space.
-+
-+Xlink-IPC
-+=========
-+This component implements the IPC specific Xlink protocol. It maps channel
-+IDs to hardware FIFO entries, using the Keem Bay VPU IPC driver.
-+
-+Some of the main functions this driver provides:
-+
-+* establishing a connection with an IPC device
-+* obtaining a list with the available devices
-+* obtaining the status for a device
-+* booting a device
-+* resetting a device
-+* opening and closing channels
-+* issuing read and write operations
-+
-+Xlink-core
-+==========
-+
-+This component implements an abstracted set of control and communication APIs
-+based on channel identification. It is intended to support VPU technology both
-+at SoC level as well as at IP level, over multiple interfaces.
-+
-+It provides symmetrical services, where the producer and the consumer have
-+the same privileges.
-+
-+Xlink driver has the ability to abstract several types of communication
-+channels underneath, allowing the usage of different interfaces with the same
-+function calls.
-+
-+Xlink services are available to both kernel and user space clients and include:
-+
-+* interface abstract control and communication API
-+* multi device support
-+* concurrent communication across 4096 communication channels (from 0 to
-+  0xFFF), with customizable properties
-+* full duplex channels with multiprocess and multithread support
-+* channel IDs can be mapped to desired physical interface (PCIe, USB, ETH, IPC)
-+  via a Channel Mapping Table
-+* asynchronous fast passthrough mode: remote host data packets are directly
-+  dispatched using interrupt systems running on local host to IPC calls for low
-+  overhead
-+* channel handshaking mechanism for peer to peer communication, without the
-+  need of static channel preallocation
-+* channel resource management
-+* asynchronous data and device notifications to subscribers
-+
-+Xlink transports: PCIe, USB, ETH, IPC, XLink-PCIe
-+
-+XLink-PCIe
-+==========
-+This is an endpoint driver that maps Xlink channel IDs to PCIe channels.
-+
-+This component ensures (remote)host-to-(local)host communication, and VPU IP
-+communication via an asynchronous passthrough mode, where PCIe data loads are
-+directly dispatched to Xlink-IPC.
-+
-+The component builds and advertises Device IDs that are used by local host
-+application in case of multi device scenarios.
-+
-+XLink-USB
-+==========
-+This is an endpoint driver that maps Xlink channel IDs to bidirectional
-+USB endpoints and supports CDC USB class protocol. More than one Xlink channels
-+can be mapped to a single USB endpoint.
-+
-+This component ensures host-to-host communication, and, as well, asynchronous
-+passthrough communication, where USB transfer packets are directly dispatched
-+to Xlink-IPC.
-+
-+The component builds and advertises Device IDs that can are used by local host
-+application in case of multi device scenarios.
-+
-+XLink-ETH
-+=========
-+
-+This is an endpoint driver that maps Xlink channel IDs to Ethernet
-+sockets.
-+
-+This component ensures host-to-host communication, and, as well, asynchronous
-+passthrough communication, where Ethernet data loads are directly dispatched to
-+Xlink-IPC.
-+
-+The component builds and advertises Device IDs that can are used by local host
-+application in case of multi device scenarios.
-+
-+Assorted drivers that depend on this stack:
-+
-+Xlink-SMB
-+=========
-+The Intel Edge.AI Computer Vision platforms have to be monitored using platform
-+devices like sensors, fan controller, IO expander etc. Some of these devices
-+are memory mapped and some are I2C-based. None of these devices is directly
-+accessible to the host.
-+
-+The host here refers to the server to which the vision accelerators are
-+connected over PCIe Interface. The Host needs to do a consolidated action based
-+on the parameters of platform devices. In general, most of the standard devices
-+(includes sensors, fan controller, IO expander etc) are I2C/SMBus based and are
-+used to provide the status of the accelerator. Standard drivers for these
-+devices are available based on I2C/SMBus APIs.
-+
-+Instead of changing the sensor drivers to adapt to PCIe interface, a generic
-+I2C adapter "Xlink-SMBus" which underneath uses Xlink as physical medium is
-+used. With Xlink-SMBus, the drivers for the platform devices don't need to
-+undergo any interface change.
-+
-+TSEN
-+====
-+
-+Thermal sensor driver for exporting thermal events to the local Arm64 host as
-+well as to the remote X86 host if in the PCIe add-in CV accelerator
-+configuration.
-+
-+The driver receives the junction temperature from different heating points
-+inside the SOC. The driver will receive the temperature on SMBus connection and
-+forward over Xlink-smb when in a remote host configuration.
-+
-+In Keem Bay, the four thermal junction temperature points are Media Subsystem
-+(mss), Neral Network subsystem (nce), Compute subsystem (cse) and SOC(maximum
-+of mss, nce and cse).
-+
-+HDDL
-+====
-+
-+- Exports details of temperature sensor, current sensor and fan controller
-+  present in Intel Edge.AI Computer Vision platforms to IA host.
-+- Enable Time sync of Intel Edge.AI Computer Vision platform with IA host.
-+- Handles device connect and disconnect events.
-+- Receives slave address from the IA host for memory mapped thermal sensors
-+  present in SoC (Documentation/hwmon/intel_tsens_sensors.rst).
-+- Registers I2C slave device for slaves present in Intel Edge.AI Computer
-+  Vision platform
-+
-+
-+VPUMGR (VPU Manager)
-+====================
-+
-+Bridges firmware on VPU side and applications on CPU user-space, it assists
-+firmware on VPU side serving multiple user space application processes on CPU
-+side concurrently while also performing necessary data buffer management on
-+behalf of VPU IP.
++++ b/Documentation/devicetree/bindings/soc/intel/intel,keembay-ipc.yaml
+@@ -0,0 +1,45 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++# Copyright (C) 2020 Intel Corporation
++%YAML 1.2
++---
++$id: "http://devicetree.org/schemas/soc/intel/intel,keembay-ipc.yaml#"
++$schema: "http://devicetree.org/meta-schemas/core.yaml#"
++
++title: Keem Bay IPC
++
++maintainers:
++  - Daniele Alessandrelli <daniele.alessandrelli@intel.com>
++
++description:
++  The Keem Bay IPC driver enables Inter-Processor Communication (IPC) with the
++  Visual Processor Unit (VPU) embedded in the Intel Movidius SoC code named
++  Keem Bay.
++
++properties:
++  compatible:
++    const: intel,keembay-ipc
++
++  memory-region:
++    items:
++      - description:
++          Reserved memory region used by the CPU to allocate IPC packets.
++      - description:
++          Reserved memory region used by the VPU to allocate IPC packets.
++
++  mboxes:
++    description: VPU IPC Mailbox.
++
++required:
++  - compatible
++  - memory-region
++  - mboxes
++
++additionalProperties: false
++
++examples:
++  - |
++    ipc {
++          compatible = "intel,keembay-ipc";
++          memory-region = <&ipc_cpu_reserved>, <&ipc_vpu_reserved>;
++          mboxes = <&vpu_ipc_mbox 0>;
++    };
 -- 
 2.17.1
 
