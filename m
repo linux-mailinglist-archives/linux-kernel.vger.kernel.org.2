@@ -2,32 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E552311610
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 23:55:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0DD1311568
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 23:32:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230232AbhBEWuK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 17:50:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43564 "EHLO mail.kernel.org"
+        id S232959AbhBEWar (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 17:30:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44678 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232307AbhBEOqB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 09:46:01 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3F31864FC6;
-        Fri,  5 Feb 2021 14:14:58 +0000 (UTC)
+        id S231489AbhBEOye (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 09:54:34 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 06434650C9;
+        Fri,  5 Feb 2021 14:15:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612534498;
-        bh=IPu/KnhQuYij1Yo+UXNFmK41pPvNUgBHdzHHXXO6HsM=;
+        s=korg; t=1612534501;
+        bh=Nw4bYKAmuQK2ybBR8s65hqtGG2O36emorJfd7nWAqPo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mEKwfE8mLy8M/nuTXRjQCvT435qcaFvX+ClkJgLsYkRnY8R+MXcLDfqtFIhqImNfl
-         go0V9plGIpvAT5hAs8b9zNtZ5G/Gc/eEwceXmkU5b7wh4ZHHkcL5lOzepwul3pHI8p
-         O8hvQsrPnEAP2LXABKIQPIfCVuLj+SG6rlnApltY=
+        b=H5eNfvcsg+venXBXmp5HenrE4rtNhRHAnx4OcqEfEmA2jym/SalhAFzeEN/N9NTID
+         X+bBM4EbYo4SCI71UJC4tiYXYQzcYuYxCCYLlkPXgntb8n0AT4iWHXVgbPUH6lrgqD
+         c9EEOC2Zd6fWuggP2NdnUmQb6Ce0W4KyleU7c8UI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tony Lindgren <tony@atomide.com>,
-        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 08/15] phy: cpcap-usb: Fix warning for missing regulator_disable
-Date:   Fri,  5 Feb 2021 15:08:53 +0100
-Message-Id: <20210205140650.065860947@linuxfoundation.org>
+        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 09/15] x86: __always_inline __{rd,wr}msr()
+Date:   Fri,  5 Feb 2021 15:08:54 +0100
+Message-Id: <20210205140650.103083578@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210205140649.733510103@linuxfoundation.org>
 References: <20210205140649.733510103@linuxfoundation.org>
@@ -39,80 +41,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tony Lindgren <tony@atomide.com>
+From: Peter Zijlstra <peterz@infradead.org>
 
-[ Upstream commit 764257d9069a9c19758b626cc1ba4ae079335d9e ]
+[ Upstream commit 66a425011c61e71560c234492d204e83cfb73d1d ]
 
-On deferred probe, we will get the following splat:
+When the compiler choses to not inline the trivial MSR helpers:
 
-cpcap-usb-phy cpcap-usb-phy.0: could not initialize VBUS or ID IIO: -517
-WARNING: CPU: 0 PID: 21 at drivers/regulator/core.c:2123 regulator_put+0x68/0x78
-...
-(regulator_put) from [<c068ebf0>] (release_nodes+0x1b4/0x1fc)
-(release_nodes) from [<c068a9a4>] (really_probe+0x104/0x4a0)
-(really_probe) from [<c068b034>] (driver_probe_device+0x58/0xb4)
+  vmlinux.o: warning: objtool: __sev_es_nmi_complete()+0xce: call to __wrmsr.constprop.14() leaves .noinstr.text section
 
-Signed-off-by: Tony Lindgren <tony@atomide.com>
-Link: https://lore.kernel.org/r/20201230102105.11826-1-tony@atomide.com
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
+Link: https://lore.kernel.org/r/X/bf3gV+BW7kGEsB@hirez.programming.kicks-ass.net
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/phy/motorola/phy-cpcap-usb.c | 19 +++++++++++++------
- 1 file changed, 13 insertions(+), 6 deletions(-)
+ arch/x86/include/asm/msr.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/phy/motorola/phy-cpcap-usb.c b/drivers/phy/motorola/phy-cpcap-usb.c
-index 593c77dbde2eb..106f53f333242 100644
---- a/drivers/phy/motorola/phy-cpcap-usb.c
-+++ b/drivers/phy/motorola/phy-cpcap-usb.c
-@@ -623,35 +623,42 @@ static int cpcap_usb_phy_probe(struct platform_device *pdev)
- 	generic_phy = devm_phy_create(ddata->dev, NULL, &ops);
- 	if (IS_ERR(generic_phy)) {
- 		error = PTR_ERR(generic_phy);
--		return PTR_ERR(generic_phy);
-+		goto out_reg_disable;
- 	}
+diff --git a/arch/x86/include/asm/msr.h b/arch/x86/include/asm/msr.h
+index 30df295f6d94c..18f9a9b7280bd 100644
+--- a/arch/x86/include/asm/msr.h
++++ b/arch/x86/include/asm/msr.h
+@@ -88,7 +88,7 @@ static inline void do_trace_rdpmc(unsigned int msr, u64 val, int failed) {}
+  * think of extending them - you will be slapped with a stinking trout or a frozen
+  * shark will reach you, wherever you are! You've been warned.
+  */
+-static inline unsigned long long notrace __rdmsr(unsigned int msr)
++static __always_inline unsigned long long __rdmsr(unsigned int msr)
+ {
+ 	DECLARE_ARGS(val, low, high);
  
- 	phy_set_drvdata(generic_phy, ddata);
- 
- 	phy_provider = devm_of_phy_provider_register(ddata->dev,
- 						     of_phy_simple_xlate);
--	if (IS_ERR(phy_provider))
--		return PTR_ERR(phy_provider);
-+	if (IS_ERR(phy_provider)) {
-+		error = PTR_ERR(phy_provider);
-+		goto out_reg_disable;
-+	}
- 
- 	error = cpcap_usb_init_optional_pins(ddata);
- 	if (error)
--		return error;
-+		goto out_reg_disable;
- 
- 	cpcap_usb_init_optional_gpios(ddata);
- 
- 	error = cpcap_usb_init_iio(ddata);
- 	if (error)
--		return error;
-+		goto out_reg_disable;
- 
- 	error = cpcap_usb_init_interrupts(pdev, ddata);
- 	if (error)
--		return error;
-+		goto out_reg_disable;
- 
- 	usb_add_phy_dev(&ddata->phy);
- 	atomic_set(&ddata->active, 1);
- 	schedule_delayed_work(&ddata->detect_work, msecs_to_jiffies(1));
- 
- 	return 0;
-+
-+out_reg_disable:
-+	regulator_disable(ddata->vusb);
-+
-+	return error;
+@@ -100,7 +100,7 @@ static inline unsigned long long notrace __rdmsr(unsigned int msr)
+ 	return EAX_EDX_VAL(val, low, high);
  }
  
- static int cpcap_usb_phy_remove(struct platform_device *pdev)
+-static inline void notrace __wrmsr(unsigned int msr, u32 low, u32 high)
++static __always_inline void __wrmsr(unsigned int msr, u32 low, u32 high)
+ {
+ 	asm volatile("1: wrmsr\n"
+ 		     "2:\n"
 -- 
 2.27.0
 
