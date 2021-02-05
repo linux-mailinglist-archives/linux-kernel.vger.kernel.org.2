@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32A313114D4
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 23:23:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71C583114D5
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 23:23:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232964AbhBEWPZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 17:15:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45256 "EHLO mail.kernel.org"
+        id S233073AbhBEWPb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 17:15:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44988 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232947AbhBEO5X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 09:57:23 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 484DF65008;
-        Fri,  5 Feb 2021 14:10:33 +0000 (UTC)
+        id S232936AbhBEO5T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 09:57:19 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5ED6065038;
+        Fri,  5 Feb 2021 14:11:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612534233;
-        bh=Xx1E0OToD1LOcnM9o3BZfsKZYtXxWkDt3JP/pCT2x8Y=;
+        s=korg; t=1612534304;
+        bh=WFkbVPtm1HOMJAXeFh3+vHxFl0eQWhWtUVW+kV4Z2x0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fS8XWQO6J09z2UPIHyqADeg7upzWyROAiVnWhUqaBnxe5wI1WYaf3Vi7+xnDSU0Wn
-         E90pGu7cOmpH8vE8iQ6Jy4hEExbdlVIqJjdWEhr5GTLxwa2FB0R5nwPoYAH2OJI9js
-         L2MMXqVV4zuPJ1GjzJxC+gmWPZqGUhoRM1QXK4xg=
+        b=0p+DyCjRVnlwXsmEbZQRGa9ktDsC9Gejp8RJOeU4pepk17JARE3u8EgQHGUOfnQDb
+         xRRvj+2AFbRBWsuJUm3qT4TpuGEC5wDGyUu1+++XQA9WfgWoFOF+6icc3wUMjLJQva
+         MfWZlXa5NgVdc1xk2ZZIASq/GXtRVV5FpFbmNpgk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Felix Fietkau <nbd@nbd.name>,
+        Johannes Berg <johannes.berg@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 29/57] ASoC: SOF: Intel: hda: Resume codec to do jack detection
-Date:   Fri,  5 Feb 2021 15:06:55 +0100
-Message-Id: <20210205140657.218213304@linuxfoundation.org>
+Subject: [PATCH 5.10 34/57] mac80211: fix encryption key selection for 802.3 xmit
+Date:   Fri,  5 Feb 2021 15:07:00 +0100
+Message-Id: <20210205140657.425541985@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210205140655.982616732@linuxfoundation.org>
 References: <20210205140655.982616732@linuxfoundation.org>
@@ -41,39 +40,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kai-Heng Feng <kai.heng.feng@canonical.com>
+From: Felix Fietkau <nbd@nbd.name>
 
-[ Upstream commit bcd7059abc19e6ec5b2260dff6a008fb99c4eef9 ]
+[ Upstream commit b101dd2d22f45d203010b40c739df346a0cbebef ]
 
-Instead of queueing jackpoll_work, runtime resume the codec to let it
-use different jack detection methods based on jackpoll_interval.
+When using WEP, the default unicast key needs to be selected, instead of
+the STA PTK.
 
-This partially matches SOF driver's behavior with commit a6e7d0a4bdb0
-("ALSA: hda: fix jack detection with Realtek codecs when in D3"), the
-difference is SOF unconditionally resumes the codec.
-
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Link: https://lore.kernel.org/r/20210112181128.1229827-1-kai.heng.feng@canonical.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Felix Fietkau <nbd@nbd.name>
+Link: https://lore.kernel.org/r/20201218184718.93650-4-nbd@nbd.name
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/sof/intel/hda-codec.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ net/mac80211/tx.c | 27 +++++++++++++++------------
+ 1 file changed, 15 insertions(+), 12 deletions(-)
 
-diff --git a/sound/soc/sof/intel/hda-codec.c b/sound/soc/sof/intel/hda-codec.c
-index 8b0ddc4b8227b..8d65004c917a1 100644
---- a/sound/soc/sof/intel/hda-codec.c
-+++ b/sound/soc/sof/intel/hda-codec.c
-@@ -93,8 +93,7 @@ void hda_codec_jack_check(struct snd_sof_dev *sdev)
- 		 * has been recorded in STATESTS
- 		 */
- 		if (codec->jacktbl.used)
--			schedule_delayed_work(&codec->jackpoll_work,
--					      codec->jackpoll_interval);
-+			pm_request_resume(&codec->core.dev);
- }
- #else
- void hda_codec_jack_wake_enable(struct snd_sof_dev *sdev) {}
+diff --git a/net/mac80211/tx.c b/net/mac80211/tx.c
+index ca1e9de388910..88868bf300513 100644
+--- a/net/mac80211/tx.c
++++ b/net/mac80211/tx.c
+@@ -4278,7 +4278,6 @@ netdev_tx_t ieee80211_subif_start_xmit_8023(struct sk_buff *skb,
+ 	struct ethhdr *ehdr = (struct ethhdr *)skb->data;
+ 	struct ieee80211_key *key;
+ 	struct sta_info *sta;
+-	bool offload = true;
+ 
+ 	if (unlikely(skb->len < ETH_HLEN)) {
+ 		kfree_skb(skb);
+@@ -4294,18 +4293,22 @@ netdev_tx_t ieee80211_subif_start_xmit_8023(struct sk_buff *skb,
+ 
+ 	if (unlikely(IS_ERR_OR_NULL(sta) || !sta->uploaded ||
+ 	    !test_sta_flag(sta, WLAN_STA_AUTHORIZED) ||
+-		sdata->control_port_protocol == ehdr->h_proto))
+-		offload = false;
+-	else if ((key = rcu_dereference(sta->ptk[sta->ptk_idx])) &&
+-		 (!(key->flags & KEY_FLAG_UPLOADED_TO_HARDWARE) ||
+-		  key->conf.cipher == WLAN_CIPHER_SUITE_TKIP))
+-		offload = false;
+-
+-	if (offload)
+-		ieee80211_8023_xmit(sdata, dev, sta, key, skb);
+-	else
+-		ieee80211_subif_start_xmit(skb, dev);
++	    sdata->control_port_protocol == ehdr->h_proto))
++		goto skip_offload;
++
++	key = rcu_dereference(sta->ptk[sta->ptk_idx]);
++	if (!key)
++		key = rcu_dereference(sdata->default_unicast_key);
++
++	if (key && (!(key->flags & KEY_FLAG_UPLOADED_TO_HARDWARE) ||
++		    key->conf.cipher == WLAN_CIPHER_SUITE_TKIP))
++		goto skip_offload;
++
++	ieee80211_8023_xmit(sdata, dev, sta, key, skb);
++	goto out;
+ 
++skip_offload:
++	ieee80211_subif_start_xmit(skb, dev);
+ out:
+ 	rcu_read_unlock();
+ 
 -- 
 2.27.0
 
