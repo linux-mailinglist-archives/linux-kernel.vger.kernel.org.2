@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B3F5310F12
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 18:49:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DB73310F16
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 18:50:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233520AbhBEQGP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 11:06:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54422 "EHLO mail.kernel.org"
+        id S233465AbhBEQHU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 11:07:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53906 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233461AbhBEP7b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 10:59:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3FDA065071;
-        Fri,  5 Feb 2021 14:13:08 +0000 (UTC)
+        id S233497AbhBEQBY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 11:01:24 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 317D46506C;
+        Fri,  5 Feb 2021 14:12:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612534388;
-        bh=Bmz+88J6KbyvxEg5Rr1e3c7ZoiMhZVsQRiznE0tpD5A=;
+        s=korg; t=1612534374;
+        bh=uwFvfc6L4wpnKmbVy14n1pGZETZp9bDsqif3aF84e58=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=E+YAy6fMnLKyEHZ6+r+uKMNfpP0qWvaZMjHB1ppSpoRXcAAAB670+Z9pojTZ6yURt
-         OCJhVBKH76CyYocmO81ek0r6TNrjS18w+Ajozj0bYCyAI+J+unhl6TZVUWIq3dN2Ya
-         hYnq+YPQMfZ2PU3gPiVZeENFT9mEmzzSC4iUbNIU=
+        b=b977jaWgUz0ek9I20QieC5A0NmM7dJEo+HtCez2Y3v5iysueVRTupKrd2ltKQSsBq
+         JoRlDoT3It4E41t+Y+Jh4JhZno6hn5hOnunU6n/dUWyl/XAvTuy8vQuqLTAnVOfd1V
+         yYaLN7PAc6GTd7FQqEfk4sHg1FtZyhgqtH1DWOyo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Javed Hasan <jhasan@marvell.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Daniel Wheeler <daniel.wheeler@amd.com>,
+        Bing Guo <bing.guo@amd.com>, Jun Lei <Jun.Lei@amd.com>,
+        Anson Jacob <anson.jacob@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 19/32] scsi: libfc: Avoid invoking response handler twice if ep is already completed
-Date:   Fri,  5 Feb 2021 15:07:34 +0100
-Message-Id: <20210205140653.164018254@linuxfoundation.org>
+Subject: [PATCH 5.4 29/32] drm/amd/display: Change function decide_dp_link_settings to avoid infinite looping
+Date:   Fri,  5 Feb 2021 15:07:44 +0100
+Message-Id: <20210205140653.578210069@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210205140652.348864025@linuxfoundation.org>
 References: <20210205140652.348864025@linuxfoundation.org>
@@ -40,89 +42,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Javed Hasan <jhasan@marvell.com>
+From: Bing Guo <bing.guo@amd.com>
 
-[ Upstream commit b2b0f16fa65e910a3ec8771206bb49ee87a54ac5 ]
+[ Upstream commit 4716a7c50c5c66d6ddc42401e1e0ba13b492e105 ]
 
-A race condition exists between the response handler getting called because
-of exchange_mgr_reset() (which clears out all the active XIDs) and the
-response we get via an interrupt.
+Why:
+Function decide_dp_link_settings() loops infinitely when required bandwidth
+can't be supported.
 
-Sequence of events:
+How:
+Check the required bandwidth against verified_link_cap before trying to
+find a link setting for it.
 
-	 rport ba0200: Port timeout, state PLOGI
-	 rport ba0200: Port entered PLOGI state from PLOGI state
-	 xid 1052: Exchange timer armed : 20000 msecs      xid timer armed here
-	 rport ba0200: Received LOGO request while in state PLOGI
-	 rport ba0200: Delete port
-	 rport ba0200: work event 3
-	 rport ba0200: lld callback ev 3
-	 bnx2fc: rport_event_hdlr: event = 3, port_id = 0xba0200
-	 bnx2fc: ba0200 - rport not created Yet!!
-	 /* Here we reset any outstanding exchanges before
-	 freeing rport using the exch_mgr_reset() */
-	 xid 1052: Exchange timer canceled
-	 /* Here we got two responses for one xid */
-	 xid 1052: invoking resp(), esb 20000000 state 3
-	 xid 1052: invoking resp(), esb 20000000 state 3
-	 xid 1052: fc_rport_plogi_resp() : ep->resp_active 2
-	 xid 1052: fc_rport_plogi_resp() : ep->resp_active 2
-
-Skip the response if the exchange is already completed.
-
-Link: https://lore.kernel.org/r/20201215194731.2326-1-jhasan@marvell.com
-Signed-off-by: Javed Hasan <jhasan@marvell.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
+Signed-off-by: Bing Guo <bing.guo@amd.com>
+Reviewed-by: Jun Lei <Jun.Lei@amd.com>
+Acked-by: Anson Jacob <anson.jacob@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/libfc/fc_exch.c | 16 ++++++++++++++--
- 1 file changed, 14 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/scsi/libfc/fc_exch.c b/drivers/scsi/libfc/fc_exch.c
-index 52e8666598531..e5b18e5d46dac 100644
---- a/drivers/scsi/libfc/fc_exch.c
-+++ b/drivers/scsi/libfc/fc_exch.c
-@@ -1619,8 +1619,13 @@ static void fc_exch_recv_seq_resp(struct fc_exch_mgr *mp, struct fc_frame *fp)
- 		rc = fc_exch_done_locked(ep);
- 		WARN_ON(fc_seq_exch(sp) != ep);
- 		spin_unlock_bh(&ep->ex_lock);
--		if (!rc)
-+		if (!rc) {
- 			fc_exch_delete(ep);
-+		} else {
-+			FC_EXCH_DBG(ep, "ep is completed already,"
-+					"hence skip calling the resp\n");
-+			goto skip_resp;
-+		}
- 	}
+diff --git a/drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c b/drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c
+index 959eb075d11ed..c18f39271b034 100644
+--- a/drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c
++++ b/drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c
+@@ -1914,6 +1914,9 @@ static bool decide_dp_link_settings(struct dc_link *link, struct dc_link_setting
+ 			initial_link_setting;
+ 	uint32_t link_bw;
  
- 	/*
-@@ -1639,6 +1644,7 @@ static void fc_exch_recv_seq_resp(struct fc_exch_mgr *mp, struct fc_frame *fp)
- 	if (!fc_invoke_resp(ep, sp, fp))
- 		fc_frame_free(fp);
- 
-+skip_resp:
- 	fc_exch_release(ep);
- 	return;
- rel:
-@@ -1895,10 +1901,16 @@ static void fc_exch_reset(struct fc_exch *ep)
- 
- 	fc_exch_hold(ep);
- 
--	if (!rc)
-+	if (!rc) {
- 		fc_exch_delete(ep);
-+	} else {
-+		FC_EXCH_DBG(ep, "ep is completed already,"
-+				"hence skip calling the resp\n");
-+		goto skip_resp;
-+	}
- 
- 	fc_invoke_resp(ep, sp, ERR_PTR(-FC_EX_CLOSED));
-+skip_resp:
- 	fc_seq_set_resp(sp, NULL, ep->arg);
- 	fc_exch_release(ep);
- }
++	if (req_bw > dc_link_bandwidth_kbps(link, &link->verified_link_cap))
++		return false;
++
+ 	/* search for the minimum link setting that:
+ 	 * 1. is supported according to the link training result
+ 	 * 2. could support the b/w requested by the timing
 -- 
 2.27.0
 
