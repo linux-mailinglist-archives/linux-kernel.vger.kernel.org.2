@@ -2,196 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C784310FAA
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 19:15:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CABF310F55
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 19:01:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233691AbhBEQaf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 11:30:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38354 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233436AbhBEQOD (ORCPT
+        id S229587AbhBEQSg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 11:18:36 -0500
+Received: from mail29.static.mailgun.info ([104.130.122.29]:44823 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231912AbhBEQPG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 11:14:03 -0500
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0826CC061756
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 09:55:44 -0800 (PST)
-Received: by mail-yb1-xb33.google.com with SMTP id r2so7532283ybk.11
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 09:55:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=oV4/QNdvW7WFTevTUWsONkMbG/ycxO7GQ/aS51Zg8gI=;
-        b=adzhAHp1dsOLvAToCUa9H3O72uB2seSUhl2fvtC3P9AKpBJntZskib7NOxh7/US4Ar
-         TbGM8tZyB3VWlSSuVZGy2JyJpSTsF++ax7cK2JCd1wEX3YsVI9Lw11mU0e2Myrud7cm9
-         32VCGpuZ1DgxehxU/6uTwkYkKcdOnYJw/sCCAJYUvCScXTs2G7X2D+SH4de2HAcbAj9M
-         /aeFHpWIk0++7ckD4hgif5vb59uRYxwWmRj/6mpS7blv+B+0EVVkN1/3RA9HVVg5hvBy
-         UYfEKWtZxmWwVtJ/P7LSuaqvB36HtSXCxZ/p16V4Q57//EPmhthEHAPtSDRNH0MWnNtr
-         Vq4A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=oV4/QNdvW7WFTevTUWsONkMbG/ycxO7GQ/aS51Zg8gI=;
-        b=LmR2lODExreXEeuck/DevoQcJXpf+tafRHdFGlIY6DF3I/Za4R7wpmTcCxid31b1G0
-         /yViZ1HwwMO3R/9zKQYzG0YX8SIpf2TejjsZDPc72dW6Nu4+trJ3HC3Y+wpgoLXn/6Lu
-         Li28eT5dPvBFK2PTVDoOYpWFHV8ixqui4MYtHlgeIHqBbKhhbp3EH9s5Oop+5dtsUgKX
-         jNGUZ+n2qEH0Q88B0Hpp9NH8BCITthP5U52qkQbYqNMbWfqvjD5mcWlkM95T8EpoGIpH
-         0aYEGEHSpw3LrWxoa7yZHUw9cUjiAb11PTM7F+z6vwIXZ0XuuOebkGLI5tVl0H1jfpmy
-         WcQQ==
-X-Gm-Message-State: AOAM531EkF1iTPDqDT48M51MwhRw+CxvSOIirYf4JlV9HCEi/8IQ687Z
-        a8dFDXtsITotK6t9EsqCAZ3woxlF85VbyJA8JCaykA==
-X-Google-Smtp-Source: ABdhPJyNX34LAxLksXePsh3ybjrClbTuxGsgWuv66hGN2ejer/+KOBK502MCRpGNzAJPlJgDlkTg+3zqgyze5osAMvI=
-X-Received: by 2002:a25:718b:: with SMTP id m133mr8509524ybc.412.1612547744089;
- Fri, 05 Feb 2021 09:55:44 -0800 (PST)
+        Fri, 5 Feb 2021 11:15:06 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1612547823; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=yjcgfI0QYGg6Rxk3COL/nMdKpQeHfQgSqPtTICgLZeo=;
+ b=JzvvsqcsKuYBVRx6AK4lA3DJAAhK/SCU5rxBHYX3L2Yxqo0hqRwsoITubau0c/vKK0F0Hn5K
+ llefbsCGuLHtcfxaEC55n93dIHURIwn5zfxYBQlX/SOGz583pmOX6f2KabwUKe2h5i6Tx1ve
+ 5k2DQ3bFZ7RTycPEFL3QV2zs7kg=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 601d86d234db06ef79ede78c (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 05 Feb 2021 17:56:34
+ GMT
+Sender: mdalam=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 1F5B7C43465; Fri,  5 Feb 2021 17:56:34 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: mdalam)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 44975C43461;
+        Fri,  5 Feb 2021 17:56:33 +0000 (UTC)
 MIME-Version: 1.0
-References: <20210121225712.1118239-1-saravanak@google.com>
- <CGME20210204115252eucas1p2d145686f7a5dc7e7a04dddd0b0f2286c@eucas1p2.samsung.com>
- <20210121225712.1118239-3-saravanak@google.com> <9692dfc9-4c63-71c9-b52b-d0feba466695@samsung.com>
- <CAGETcx_KDA55Ti=5CHw48BP1L2Xo64=AFFe+17g27n=P-KUrow@mail.gmail.com>
- <6b606a5d-0435-1e9d-ac61-a8dacf051067@samsung.com> <CAMuHMdWqZonpeyk59b=o_3EKOQx4TxUZE4Jeo-Kxy_o_3CQvnQ@mail.gmail.com>
- <CAGETcx9Rqa7PygjSiQvadm7C2bpxS2rCf5oB_pFhjh+ESV-WQA@mail.gmail.com>
- <CAMuHMdUt4tSEO_Hcf4AgVY_jqZ6Bsyk2+f2P3gQRQk0UfgSSjQ@mail.gmail.com>
- <CAGETcx9YN6uC3XJ_J+PLxvHBVFK-h2X3Qh+kuKDceN5XSt3ZuQ@mail.gmail.com> <CAMuHMdVyTOp9PU0rO+YkpzE68VtGdy-bMOwmE_PJx2fiwwpMzQ@mail.gmail.com>
-In-Reply-To: <CAMuHMdVyTOp9PU0rO+YkpzE68VtGdy-bMOwmE_PJx2fiwwpMzQ@mail.gmail.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Fri, 5 Feb 2021 09:55:08 -0800
-Message-ID: <CAGETcx93cee=aH+cOyf-xmYGSHcn6AfBHC=fOw7By6=8JzT56Q@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] of: property: Add fw_devlink support for interrupts
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Android Kernel Team <kernel-team@android.com>,
-        Rob Herring <robh@kernel.org>,
-        Thierry Reding <treding@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 05 Feb 2021 23:26:33 +0530
+From:   mdalam@codeaurora.org
+To:     miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+        boris.brezillon@collabora.com, manivannan.sadhasivam@linaro.org,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     sricharan@codeaurora.org
+Subject: Re: [PATCH] mtd: rawnand: qcom: Update register macro name for 0x2c
+ offset
+In-Reply-To: <1612037236-7954-1-git-send-email-mdalam@codeaurora.org>
+References: <1612037236-7954-1-git-send-email-mdalam@codeaurora.org>
+Message-ID: <7ca35f62c4d3ba7833e192cab3a2701d@codeaurora.org>
+X-Sender: mdalam@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 5, 2021 at 9:52 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->
-> Hi Saravana,
->
-> On Fri, Feb 5, 2021 at 6:20 PM Saravana Kannan <saravanak@google.com> wrote:
-> > On Fri, Feb 5, 2021 at 2:20 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > > On Fri, Feb 5, 2021 at 11:06 AM Saravana Kannan <saravanak@google.com> wrote:
-> > > > On Fri, Feb 5, 2021 at 12:06 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > > > > On Fri, Feb 5, 2021 at 8:38 AM Marek Szyprowski
-> > > > > <m.szyprowski@samsung.com> wrote:
-> > > > > > On 04.02.2021 22:31, Saravana Kannan wrote:
-> > > > > > > On Thu, Feb 4, 2021 at 3:52 AM Marek Szyprowski
-> > > > > > > <m.szyprowski@samsung.com> wrote:
-> > > > > > >> On 21.01.2021 23:57, Saravana Kannan wrote:
-> > > > > > >>> This allows fw_devlink to create device links between consumers of an
-> > > > > > >>> interrupt and the supplier of the interrupt.
-> > > > > > >>>
-> > > > > > >>> Cc: Marc Zyngier <maz@kernel.org>
-> > > > > > >>> Cc: Kevin Hilman <khilman@baylibre.com>
-> > > > > > >>> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > > > > > >>> Reviewed-by: Rob Herring <robh@kernel.org>
-> > > > > > >>> Reviewed-by: Thierry Reding <treding@nvidia.com>
-> > > > > > >>> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-> > > > > > >>> Signed-off-by: Saravana Kannan <saravanak@google.com>
-> > > > > > >> This patch landed some time ago in linux-next as commit 4104ca776ba3
-> > > > > > >> ("of: property: Add fw_devlink support for interrupts"). It breaks MMC
-> > > > > > >> host controller operation on ARM Juno R1 board (the mmci@50000 device
-> > > > > > >> defined in arch/arm64/boot/dts/arm/juno-motherboard.dtsi). I didn't
-> > > > > > > I grepped around and it looks like the final board file is this or
-> > > > > > > whatever includes it?
-> > > > > > > arch/arm64/boot/dts/arm/juno-base.dtsi
-> > > > > > The final board file is arch/arm64/boot/dts/arm/juno-r1.dts
-> > > > > > > This patch just finds the interrupt-parent and then tries to use that
-> > > > > > > as a supplier if "interrupts" property is listed. But the only
-> > > > > > > interrupt parent I can see is:
-> > > > > > >          gic: interrupt-controller@2c010000 {
-> > > > > > >                  compatible = "arm,gic-400", "arm,cortex-a15-gic";
-> > > > > > >
-> > > > > > > And the driver uses IRQCHIP_DECLARE() and hence should be pretty much
-> > > > > > > a NOP since those suppliers are never devices and are ignored.
-> > > > > > > $ git grep "arm,gic-400" -- drivers/
-> > > > > > > drivers/irqchip/irq-gic.c:IRQCHIP_DECLARE(gic_400, "arm,gic-400", gic_of_init);
-> > > > > > >
-> > > > > > > This doesn't make any sense. Am I looking at the right files? Am I
-> > > > > > > missing something?
-> > > > > >
-> > > > > > Okay, I've added displaying a list of deferred devices when mounting
-> > > > > > rootfs fails and got following items:
-> > > > > >
-> > > > > > Deferred devices:
-> > > > > > 18000000.ethernet        platform: probe deferral - supplier
-> > > > > > bus@8000000:motherboard-bus not ready
-> > > > > > 1c050000.mmci    amba: probe deferral - supplier
-> > > > > > bus@8000000:motherboard-bus not ready
-> > > > > > 1c1d0000.gpio    amba: probe deferral - supplier
-> > > > > > bus@8000000:motherboard-bus not ready
-> > > > > > 2b600000.iommu   platform: probe deferral - wait for supplier
-> > > > > > scpi-power-domains
-> > > > > > 7ff50000.hdlcd   platform: probe deferral - wait for supplier scpi-clk
-> > > > > > 7ff60000.hdlcd   platform: probe deferral - wait for supplier scpi-clk
-> > > > > > 1c060000.kmi     amba: probe deferral - supplier
-> > > > > > bus@8000000:motherboard-bus not ready
-> > > > > > 1c070000.kmi     amba: probe deferral - supplier
-> > > > > > bus@8000000:motherboard-bus not ready
-> > > > > > 1c170000.rtc     amba: probe deferral - supplier
-> > > > > > bus@8000000:motherboard-bus not ready
-> > > > > > 1c0f0000.wdt     amba: probe deferral - supplier
-> > > > > > bus@8000000:motherboard-bus not ready
-> > > > > > gpio-keys
-> > > > > > Kernel panic - not syncing: VFS: Unable to mount root fs on
-> > > > > > unknown-block(0,0)
-> > > > > >
-> > > > > > I don't see the 'bus@8000000:motherboard-bus' on the deferred devices
-> > > > > > list, so it looks that device core added a link to something that is not
-> > > > > > a platform device...
-> > > >
-> > > > Probe deferred devices (even platform devices) not showing up in that
-> > > > list is not unusual. That's because devices end up on that list only
-> > > > after a driver for them is matched and then it fails.
-> > > >
-> > > > > Lemme guess: bus@8000000 is a simple bus, but it has an
-> > > > > interrupt-map, and the devlink code doesn't follow the mapping?
-> > > > >
-> > > >
-> > > > No, what's happening is that (and this is something I just learned)
-> > > > that if a parent has an "#interrupt-cells" property, it becomes your
-> > > > interrupt parent. In this case, the motherboard-bus (still a platform
-> > > > device) is the parent, but it never probes (because it's simple-bus
-> > > > and "arm,vexpress,v2p-p1"). But it becomes the interrupt parent. And
-> > > > this mmci device is marked as a consumer of this bus (while still a
-> > > > grand-child). Yeah, I'm working on patches (multiple rewrites) to take
-> > > > care of cases like this.
-> > >
-> > > One more reason to scrap the different handling of "simple-bus" and
-> > > "simple-pm-bus", and use drivers/bus/simple-pm-bus.c, which is a
-> > > platform device driver, for both? (like I originally intended ;-)
-> >
-> > I'm not sure if this will cause more issues since people are used to
-> > simple-bus not needing a driver. I'm afraid to open that pandora's
-> > box. Maybe last resort if I don't have any other options.
-> >
-> > But keeping that aside, I'm confused how interrupts are even working
-> > if the parent is a DT node with no driver (let alone a device). Any
-> > ideas on what's going on or what I'm misunderstanding?
->
-> No driver is needed, as the interrupts are just translated by the map,
-> and passed to another interrupt controller, which does have a driver.
->
-> Cfr. Section 2.4.3 "Interrupt Nexus Properties" in the DeviceTree
-> Specification (https://www.devicetree.org/).
->
+On 2021-01-31 01:37, Md Sadre Alam wrote:
+> This change will remove unused register name macro NAND_DEV1_ECC_CFG.
+> Since this register was only available in QPIC version 1.4.20 ipq40xx
+> and it was not used. In QPIC version 1.5 on wards this register got
+> removed.In QPIC version 2.0 0x2c offset is updated with register
+> NAND_AUTO_STATUS_EN So adding this register macro NAND_AUTO_STATUS_EN
+> with offset 0x2c.
+> 
+> Signed-off-by: Md Sadre Alam <mdalam@codeaurora.org>
 
-Yeah, I need to add interrupt-map support. Sigh. Only so many things I
-can fix at a time. Let me know if you want to help.
+   Ping! Is any additional info needed for this patch ?
 
--Saravana
+> ---
+>  drivers/mtd/nand/raw/qcom_nandc.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/nand/raw/qcom_nandc.c
+> b/drivers/mtd/nand/raw/qcom_nandc.c
+> index 9484be8..c238a35 100644
+> --- a/drivers/mtd/nand/raw/qcom_nandc.c
+> +++ b/drivers/mtd/nand/raw/qcom_nandc.c
+> @@ -27,7 +27,7 @@
+>  #define	NAND_DEV0_CFG0			0x20
+>  #define	NAND_DEV0_CFG1			0x24
+>  #define	NAND_DEV0_ECC_CFG		0x28
+> -#define	NAND_DEV1_ECC_CFG		0x2c
+> +#define	NAND_AUTO_STATUS_EN		0x2c
+>  #define	NAND_DEV1_CFG0			0x30
+>  #define	NAND_DEV1_CFG1			0x34
+>  #define	NAND_READ_ID			0x40
