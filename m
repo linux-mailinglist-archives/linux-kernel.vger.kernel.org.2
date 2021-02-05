@@ -2,128 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA2B63116F6
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 00:22:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 824E7311650
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 00:02:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232178AbhBEXVn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 18:21:43 -0500
-Received: from mx2.suse.de ([195.135.220.15]:48732 "EHLO mx2.suse.de"
+        id S232284AbhBEXBa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 18:01:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42864 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232616AbhBEOZr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 09:25:47 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1612538880; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=u6nLt32hHSRYEP44w6Q8jO52HR65E6F1MxMn+PffeCo=;
-        b=eoMxcZO9AYC0lNv6Jl0zdS7Nnkz6VqMQWDpWPY1xlgnXmYy4t0pxybOM8SrwuOlrWKhsGW
-        mGT+lqDRFr5ltdHWe2tkSYEMqhoSMUxGiAfYj2LFel3EN6KchlZISW+tyKV/+g7pR4ZPAI
-        +kYu7WQjtB1eS0Vft4tcfEeYs8r9FL8=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id DC35AB048;
-        Fri,  5 Feb 2021 15:27:59 +0000 (UTC)
-Date:   Fri, 5 Feb 2021 16:27:56 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     hannes@cmpxchg.org, vdavydov.dev@gmail.com,
-        akpm@linux-foundation.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] mm: memcontrol: replace the loop with a
- list_for_each_entry()
-Message-ID: <YB1j/DuQIUyCn56f@dhcp22.suse.cz>
-References: <20210204163055.56080-1-songmuchun@bytedance.com>
+        id S232776AbhBEOiU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 09:38:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D0758650E8;
+        Fri,  5 Feb 2021 15:28:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612538906;
+        bh=E2Jw4BshaPLVJ9wPxfC66/Uv6q2P/5ZX+rAXq/iyIPQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mlIPQhSmL4+gt4AYq78Tojxk5QM5rSKspqgbgKPkoDZJu2lW542q7KKUMwlICfYqM
+         LpDcBrqqm5RA1rybwKa6To2pnBo3Fkiq7XC0YkJtR68uVT49Tk5ZrgCWdwEyzRozOs
+         EC0NwgnB+QXXL3cWQPUXtgtoK9QTtP84KoOYgEkgcn22Jn2czLr2crqAcj+Uq4Rr79
+         R33unnJlVvV4CK9d5oALSpCObo8lF1u+ucMGv8Znarg7/5GoY+4U4PEKPcm2Jl+QbJ
+         6j+5yJkLKzIX+ITn/psNu1zkaTNTj094yF9Gm+cHLfjm7oc53GmM9oDNrhcIG3pBsL
+         VDmzl339xxFyw==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 63EDC40513; Fri,  5 Feb 2021 12:28:23 -0300 (-03)
+Date:   Fri, 5 Feb 2021 12:28:23 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Sedat Dilek <sedat.dilek@gmail.com>
+Cc:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        dwarves@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        bpf@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
+        Jan Engelhardt <jengelh@inai.de>,
+        Domenico Andreoli <cavok@debian.org>,
+        Matthias Schwarzott <zzam@gentoo.org>,
+        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
+        Mark Wieelard <mjw@redhat.com>,
+        Paul Moore <paul@paul-moore.com>,
+        Ondrej Mosnacek <omosnace@redhat.com>,
+        Daniel =?iso-8859-1?Q?P=2E_Berrang=E9?= <berrange@redhat.com>,
+        Tom Stellard <tstellar@redhat.com>
+Subject: Re: ERROR: INT DW_ATE_unsigned_1 Error emitting BTF type
+Message-ID: <20210205152823.GD920417@kernel.org>
+References: <20210204220741.GA920417@kernel.org>
+ <CA+icZUVQSojGgnis8Ds5GW-7-PVMZ2w4X5nQKSSkBPf-29NS6Q@mail.gmail.com>
+ <CA+icZUU2xmZ=mhVYLRk7nZBRW0+v+YqBzq18ysnd7xN+S7JHyg@mail.gmail.com>
+ <CA+icZUVyB3qaqq3pwOyJY_F4V6KU9hdF=AJM_D7iEW4QK4Eo6w@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210204163055.56080-1-songmuchun@bytedance.com>
+In-Reply-To: <CA+icZUVyB3qaqq3pwOyJY_F4V6KU9hdF=AJM_D7iEW4QK4Eo6w@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 05-02-21 00:30:55, Muchun Song wrote:
-> The rule of list walk has gone since:
+Em Fri, Feb 05, 2021 at 04:23:59PM +0100, Sedat Dilek escreveu:
+> On Fri, Feb 5, 2021 at 3:41 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
+> >
+> > On Fri, Feb 5, 2021 at 3:37 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
+> > >
+> > > Hi,
+> > >
+> > > when building with pahole v1.20 and binutils v2.35.2 plus Clang
+> > > v12.0.0-rc1 and DWARF-v5 I see:
+> > > ...
+> > > + info BTF .btf.vmlinux.bin.o
+> > > + [  != silent_ ]
+> > > + printf   %-7s %s\n BTF .btf.vmlinux.bin.o
+> > >  BTF     .btf.vmlinux.bin.o
+> > > + LLVM_OBJCOPY=/opt/binutils/bin/objcopy /opt/pahole/bin/pahole -J
+> > > .tmp_vmlinux.btf
+> > > [115] INT DW_ATE_unsigned_1 Error emitting BTF type
+> > > Encountered error while encoding BTF.
+> >
+> > Grepping the pahole sources:
+> >
+> > $ git grep DW_ATE
+> > dwarf_loader.c:         bt->is_bool = encoding == DW_ATE_boolean;
+> > dwarf_loader.c:         bt->is_signed = encoding == DW_ATE_signed;
+> >
+> > Missing DW_ATE_unsigned encoding?
+> >
 > 
->  commit a9d5adeeb4b2 ("mm/memcontrol: allow to uncharge page without using page->lru field")
+> Checked the LLVM sources:
 > 
-> So remove the strange comment and replace the loop with a
-> list_for_each_entry().
+> clang/lib/CodeGen/CGDebugInfo.cpp:    Encoding =
+> llvm::dwarf::DW_ATE_unsigned_char;
+> clang/lib/CodeGen/CGDebugInfo.cpp:    Encoding = llvm::dwarf::DW_ATE_unsigned;
+> clang/lib/CodeGen/CGDebugInfo.cpp:    Encoding =
+> llvm::dwarf::DW_ATE_unsigned_fixed;
+> clang/lib/CodeGen/CGDebugInfo.cpp:
+>   ? llvm::dwarf::DW_ATE_unsigned
+> ...
+> lld/test/wasm/debuginfo.test:CHECK-NEXT:                DW_AT_encoding
+>  (DW_ATE_unsigned)
 > 
-> There is only one caller of the uncharge_list(). So just fold it into
-> mem_cgroup_uncharge_list() and remove it.
-> 
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> So, I will switch from GNU ld.bfd v2.35.2 to LLD-12.
 
-Acked-by: Michal Hocko <mhocko@suse.com>
+Thanks for the research, probably your conclusion is correct, can you go
+the next step and add that part and check if the end result is the
+expected one?
 
-Thanks!
-
-> ---
-> v2:
->  - Fold uncharge_list() to mem_cgroup_uncharge_list().
-> 
->  mm/memcontrol.c | 35 ++++++++---------------------------
->  1 file changed, 8 insertions(+), 27 deletions(-)
-> 
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index ed5cc78a8dbf..8c035846c7a4 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -6862,31 +6862,6 @@ static void uncharge_page(struct page *page, struct uncharge_gather *ug)
->  	css_put(&ug->memcg->css);
->  }
->  
-> -static void uncharge_list(struct list_head *page_list)
-> -{
-> -	struct uncharge_gather ug;
-> -	struct list_head *next;
-> -
-> -	uncharge_gather_clear(&ug);
-> -
-> -	/*
-> -	 * Note that the list can be a single page->lru; hence the
-> -	 * do-while loop instead of a simple list_for_each_entry().
-> -	 */
-> -	next = page_list->next;
-> -	do {
-> -		struct page *page;
-> -
-> -		page = list_entry(next, struct page, lru);
-> -		next = page->lru.next;
-> -
-> -		uncharge_page(page, &ug);
-> -	} while (next != page_list);
-> -
-> -	if (ug.memcg)
-> -		uncharge_batch(&ug);
-> -}
-> -
->  /**
->   * mem_cgroup_uncharge - uncharge a page
->   * @page: page to uncharge
-> @@ -6918,11 +6893,17 @@ void mem_cgroup_uncharge(struct page *page)
->   */
->  void mem_cgroup_uncharge_list(struct list_head *page_list)
->  {
-> +	struct uncharge_gather ug;
-> +	struct page *page;
-> +
->  	if (mem_cgroup_disabled())
->  		return;
->  
-> -	if (!list_empty(page_list))
-> -		uncharge_list(page_list);
-> +	uncharge_gather_clear(&ug);
-> +	list_for_each_entry(page, page_list, lru)
-> +		uncharge_page(page, &ug);
-> +	if (ug.memcg)
-> +		uncharge_batch(&ug);
->  }
->  
->  /**
-> -- 
-> 2.11.0
-
--- 
-Michal Hocko
-SUSE Labs
+- Arnaldo
