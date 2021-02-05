@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15089311B05
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 05:43:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7AC1311B33
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 05:56:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231365AbhBFEmC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 23:42:02 -0500
+        id S232073AbhBFE4M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 23:56:12 -0500
 Received: from mga09.intel.com ([134.134.136.24]:63380 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230326AbhBFDWm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 22:22:42 -0500
-IronPort-SDR: iV+rpZRXcij7TLE7bAfaR+XnFZ6BPLSpr4exDeKWvgQk7E+Yvk0p9H1fcopqDVTqi3F4t+rXUW
- 7OYdoPqxNr/g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9886"; a="181646195"
+        id S229774AbhBFDcx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 22:32:53 -0500
+IronPort-SDR: 3PDrgHSkW7rV0M4Xi0WkBxRb+TpQlRPxQub0b3odyUE4zmzQgXggz8njAZiJVc8gnvZUgR12zk
+ KBOkU0qKVwvA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9886"; a="181646208"
 X-IronPort-AV: E=Sophos;i="5.81,156,1610438400"; 
-   d="scan'208";a="181646195"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2021 14:52:08 -0800
-IronPort-SDR: vT1I0JhWa70Nw3Wk4G1DvEyIujNbNpGQoxXzz6Ql1wa7XHq6utof9udL8FjNoMJEw5Jo55hoY5
- ON27W+zYtZ/w==
+   d="scan'208";a="181646208"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2021 14:52:09 -0800
+IronPort-SDR: vpjb915dIy4VVCm31ycr9pUQfbQH3JK8b3tV4gP56CDmvE4v8WJGt+TAFXMG0SeIRZO3gHnTyl
+ 8qZk2hoT0EpQ==
 X-IronPort-AV: E=Sophos;i="5.81,156,1610438400"; 
-   d="scan'208";a="360577852"
+   d="scan'208";a="484538320"
 Received: from smtp.ostc.intel.com ([10.54.29.231])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2021 14:52:08 -0800
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2021 14:52:08 -0800
 Received: from mtg-dev.jf.intel.com (mtg-dev.jf.intel.com [10.54.74.10])
-        by smtp.ostc.intel.com (Postfix) with ESMTP id 3FD72636E;
+        by smtp.ostc.intel.com (Postfix) with ESMTP id 58E63636E;
         Fri,  5 Feb 2021 14:52:08 -0800 (PST)
 Received: by mtg-dev.jf.intel.com (Postfix, from userid 1000)
-        id 341C836264C; Fri,  5 Feb 2021 14:52:08 -0800 (PST)
+        id 4CBEF362D32; Fri,  5 Feb 2021 14:52:08 -0800 (PST)
 From:   mgross@linux.intel.com
 To:     markgross@kernel.org, mgross@linux.intel.com, arnd@arndb.de,
         bp@suse.de, damien.lemoal@wdc.com, dragan.cvetic@xilinx.com,
@@ -37,12 +37,11 @@ To:     markgross@kernel.org, mgross@linux.intel.com, arnd@arndb.de,
         peng.fan@nxp.com, robh+dt@kernel.org, shawnguo@kernel.org,
         jassisinghbrar@gmail.com
 Cc:     linux-kernel@vger.kernel.org,
-        Paul Murphy <paul.j.murphy@intel.com>,
-        devicetree@vger.kernel.org,
-        Daniele Alessandrelli <daniele.alessandrelli@intel.com>
-Subject: [PATCH v5 06/34] dt-bindings: Add bindings for Keem Bay VPU IPC driver
-Date:   Fri,  5 Feb 2021 14:51:36 -0800
-Message-Id: <20210205225204.32902-7-mgross@linux.intel.com>
+        Srikanth Thokala <srikanth.thokala@intel.com>,
+        linux-doc@vger.kernel.org
+Subject: [PATCH v5 08/34] misc: xlink-pcie: Add documentation for XLink PCIe driver
+Date:   Fri,  5 Feb 2021 14:51:38 -0800
+Message-Id: <20210205225204.32902-9-mgross@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210205225204.32902-1-mgross@linux.intel.com>
 References: <20210205225204.32902-1-mgross@linux.intel.com>
@@ -50,171 +49,126 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paul Murphy <paul.j.murphy@intel.com>
+From: Srikanth Thokala <srikanth.thokala@intel.com>
 
-Add DT bindings documentation for the Keem Bay VPU IPC driver.
+Provide overview of XLink PCIe driver implementation
 
-Cc: Rob Herring <robh+dt@kernel.org>
-Cc: devicetree@vger.kernel.org
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: linux-doc@vger.kernel.org
 Reviewed-by: Mark Gross <mgross@linux.intel.com>
-Co-developed-by: Daniele Alessandrelli <daniele.alessandrelli@intel.com>
-Signed-off-by: Paul Murphy <paul.j.murphy@intel.com>
-Signed-off-by: Daniele Alessandrelli <daniele.alessandrelli@intel.com>
 Signed-off-by: Mark Gross <mgross@linux.intel.com>
+Signed-off-by: Srikanth Thokala <srikanth.thokala@intel.com>
 ---
- .../soc/intel/intel,keembay-vpu-ipc.yaml      | 143 ++++++++++++++++++
- 1 file changed, 143 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/soc/intel/intel,keembay-vpu-ipc.yaml
+ Documentation/vpu/index.rst      |  1 +
+ Documentation/vpu/xlink-pcie.rst | 90 ++++++++++++++++++++++++++++++++
+ 2 files changed, 91 insertions(+)
+ create mode 100644 Documentation/vpu/xlink-pcie.rst
 
-diff --git a/Documentation/devicetree/bindings/soc/intel/intel,keembay-vpu-ipc.yaml b/Documentation/devicetree/bindings/soc/intel/intel,keembay-vpu-ipc.yaml
+diff --git a/Documentation/vpu/index.rst b/Documentation/vpu/index.rst
+index 7e290e048910..661cc700ee45 100644
+--- a/Documentation/vpu/index.rst
++++ b/Documentation/vpu/index.rst
+@@ -14,3 +14,4 @@ This documentation contains information for the Intel VPU stack.
+    :maxdepth: 2
+ 
+    vpu-stack-overview
++   xlink-pcie
+diff --git a/Documentation/vpu/xlink-pcie.rst b/Documentation/vpu/xlink-pcie.rst
 new file mode 100644
-index 000000000000..9dae8ab4c723
+index 000000000000..85a70990e9c9
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/soc/intel/intel,keembay-vpu-ipc.yaml
-@@ -0,0 +1,143 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+# Copyright (c) Intel Corporation. All rights reserved.
-+%YAML 1.2
-+---
-+$id: "http://devicetree.org/schemas/soc/intel/intel,keembay-vpu-ipc.yaml#"
-+$schema: "http://devicetree.org/meta-schemas/core.yaml#"
++++ b/Documentation/vpu/xlink-pcie.rst
+@@ -0,0 +1,90 @@
++.. SPDX-License-Identifier: GPL-2.0
 +
-+title: Intel Keem Bay VPU IPC
++================================
++Kernel driver: Xlink-pcie driver
++================================
++Supported chips:
++  * Intel Edge.AI Computer Vision platforms: Keem Bay
++    Suffix: Bay
++    Slave address: 6240
++    Datasheet: Publicly available at Intel
 +
-+maintainers:
-+  - Paul Murphy <paul.j.murphy@intel.com>
-+  - Daniele Alessandrelli <daniele.alessandrelli@intel.com>
++Author: Srikanth Thokala Srikanth.Thokala@intel.com
 +
-+description:
-+  This binding provides support for the Vision Processing Unit (VPU) found on
-+  the Intel Keem Bay SoC.
++Introduction
++============
++The Xlink-pcie driver provides transport layer implementation for
++the data transfers to support Xlink protocol subsystem communication with the
++peer device, i.e., between remote host system and Keem Bay device.
 +
-+  The VPU is started and controlled by SoC CPU, which is in charge of loading
-+  the VPU firmware. The SoC CPU can communicate with the VPU firmware using an
-+  Inter-Processor Communication (IPC) mechanism.
++The Keem Bay device is an ARM-based SOC that includes a vision processing
++unit (VPU) and deep learning, neural network core in the hardware.
++The Xlink-pcie driver exports a functional device endpoint to the Keem Bay
++device and supports two-way communication with the peer device.
 +
-+properties:
-+  compatible:
-+    oneOf:
-+      - items:
-+          - const: intel,keembay-vpu-ipc
++High-level architecture
++=======================
++Remote Host: IA CPU
++Local Host: ARM CPU (Keem Bay)::
 +
-+  reg:
-+    items:
-+      - description: NCE WDT registers
-+      - description: NCE TIM_GEN_CONFIG registers
-+      - description: MSS WDT registers
-+      - description: MSS TIM_GEN_CONFIG registers
++        +------------------------------------------------------------------------+
++        |  Remote Host IA CPU              | | Local Host ARM CPU (Keem Bay) |   |
++        +==================================+=+===============================+===+
++        |  User App                        | | User App                      |   |
++        +----------------------------------+-+-------------------------------+---+
++        |   XLink UAPI                     | | XLink UAPI                    |   |
++        +----------------------------------+-+-------------------------------+---+
++        |   XLink Core                     | | XLink Core                    |   |
++        +----------------------------------+-+-------------------------------+---+
++        |   XLink PCIe                     | | XLink PCIe                    |   |
++        +----------------------------------+-+-------------------------------+---+
++        |   XLink-PCIe Remote Host driver  | | XLink-PCIe Local Host driver  |   |
++        +----------------------------------+-+-------------------------------+---+
++        |-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:|:|:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:|
++        +----------------------------------+-+-------------------------------+---+
++        |     PCIe Host Controller         | | PCIe Device Controller        | HW|
++        +----------------------------------+-+-------------------------------+---+
++               ^                                             ^
++               |                                             |
++               |------------- PCIe x2 Link  -----------------|
 +
-+  reg-names:
-+    items:
-+      - const: nce_wdt
-+      - const: nce_tim_cfg
-+      - const: mss_wdt
-+      - const: mss_tim_cfg
++This XLink PCIe driver comprises of two variants:
++* Local Host driver
 +
-+  memory-region:
-+    items:
-+      - description: reference to the VPU reserved memory region
-+      - description: reference to the X509 reserved memory region
-+      - description: reference to the MSS IPC area
++  * Intended for ARM CPU
++  * It is based on PCI Endpoint Framework
++  * Driver path: {tree}/drivers/misc/Xlink-pcie/local_host
 +
-+  clocks:
-+    items:
-+      - description: cpu clock
-+      - description: pll 0 out 0 rate
-+      - description: pll 0 out 1 rate
-+      - description: pll 0 out 2 rate
-+      - description: pll 0 out 3 rate
-+      - description: pll 1 out 0 rate
-+      - description: pll 1 out 1 rate
-+      - description: pll 1 out 2 rate
-+      - description: pll 1 out 3 rate
-+      - description: pll 2 out 0 rate
-+      - description: pll 2 out 1 rate
-+      - description: pll 2 out 2 rate
-+      - description: pll 2 out 3 rate
++* Remote Host driver
 +
-+  clock-names:
-+    items:
-+      - const: cpu_clock
-+      - const: pll_0_out_0
-+      - const: pll_0_out_1
-+      - const: pll_0_out_2
-+      - const: pll_0_out_3
-+      - const: pll_1_out_0
-+      - const: pll_1_out_1
-+      - const: pll_1_out_2
-+      - const: pll_1_out_3
-+      - const: pll_2_out_0
-+      - const: pll_2_out_1
-+      - const: pll_2_out_2
-+      - const: pll_2_out_3
++       * Intended for IA CPU
++       * It is a PCIe endpoint driver
++       * Driver path: {tree}/drivers/misc/Xlink-pcie/remote_host
 +
-+  interrupts:
-+    items:
-+      - description: number of NCE sub-system WDT timeout IRQ
-+      - description: number of MSS sub-system WDT timeout IRQ
++XLink PCIe communication between local host and remote host is achieved through
++ring buffer management and MSI/Doorbell interrupts.
 +
-+  interrupt-names:
-+    items:
-+      - const: nce_wdt
-+      - const: mss_wdt
++The Xlink-pcie driver subsystem registers the Keem Bay device as an endpoint
++driver and provides standard Linux PCIe sysfs interface:
++'/sys/bus/pci/devices/xxxx:xx:xx.0/'
 +
-+  intel,keembay-vpu-ipc-imr:
-+    $ref: "/schemas/types.yaml#/definitions/uint32"
-+    description:
-+      Isolated Memory Region (IMR) number that the runtime service must use to
-+      protect the VPU memory region before authentication.
 +
-+  intel,keembay-vpu-ipc-id:
-+    $ref: "/schemas/types.yaml#/definitions/uint32"
-+    description: The VPU ID to be passed to the VPU firmware.
++XLink protocol subsystem
++========================
++Xlink is an abstracted control and communication subsystem based on channel
++identification. It is intended to support VPU technology both at SoC level as
++well as at IP level, over multiple interfaces.
 +
-+additionalProperties: False
-+
-+examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+    vpu-ipc@3f00209c {
-+        compatible = "intel,keembay-vpu-ipc";
-+        reg = <0x3f00209c 0x10>,
-+              <0x3f003008 0x4>,
-+              <0x2082009c 0x10>,
-+              <0x20821008 0x4>;
-+        reg-names = "nce_wdt",
-+                    "nce_tim_cfg",
-+                    "mss_wdt",
-+                    "mss_tim_cfg";
-+        memory-region = <&vpu_reserved>,
-+                        <&vpu_x509_reserved>,
-+                        <&mss_ipc_reserved>;
-+        clocks = <&scmi_clk 0>,
-+                 <&scmi_clk 0>,
-+                 <&scmi_clk 1>,
-+                 <&scmi_clk 2>,
-+                 <&scmi_clk 3>,
-+                 <&scmi_clk 4>,
-+                 <&scmi_clk 5>,
-+                 <&scmi_clk 6>,
-+                 <&scmi_clk 7>,
-+                 <&scmi_clk 8>,
-+                 <&scmi_clk 9>,
-+                 <&scmi_clk 10>,
-+                 <&scmi_clk 11>;
-+        clock-names = "cpu_clock",
-+                      "pll_0_out_0", "pll_0_out_1",
-+                      "pll_0_out_2", "pll_0_out_3",
-+                      "pll_1_out_0", "pll_1_out_1",
-+                      "pll_1_out_2", "pll_1_out_3",
-+                      "pll_2_out_0", "pll_2_out_1",
-+                      "pll_2_out_2", "pll_2_out_3";
-+        interrupts = <GIC_SPI 63 IRQ_TYPE_LEVEL_HIGH>,
-+                     <GIC_SPI 47 IRQ_TYPE_LEVEL_HIGH>;
-+        interrupt-names = "nce_wdt", "mss_wdt";
-+        intel,keembay-vpu-ipc-imr = <9>;
-+        intel,keembay-vpu-ipc-id = <0>;
-+    };
++- The Xlink subsystem abstracts several types of communication channels
++  underneath, allowing the usage of different interfaces with the
++  same function call interface.
++- The Communication channels are full-duplex protocol channels allowing
++  concurrent bidirectional communication.
++- The Xlink subsystem also supports control operations to VPU either
++  from standalone local system or from remote system based on communication
++  interface underneath.
++- The Xlink subsystem supports the following communication interfaces:
++    * USB CDC
++    * Gigabit Ethernet
++    * PCIe
++    * IPC
 -- 
 2.17.1
 
