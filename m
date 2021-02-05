@@ -2,116 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6FAD311194
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 20:57:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89487311197
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 20:57:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233204AbhBESOK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 13:14:10 -0500
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:8978 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233312AbhBESMR (ORCPT
+        id S229725AbhBESOp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 13:14:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35736 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232098AbhBESNW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 13:12:17 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B601da2570001>; Fri, 05 Feb 2021 11:53:59 -0800
-Received: from MacBook-Pro-10.local (172.20.145.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 5 Feb
- 2021 19:53:58 +0000
-Subject: Re: [PATCH v2 1/4] mm/gup: add compound page list iterator
-To:     Joao Martins <joao.m.martins@oracle.com>, <linux-mm@kvack.org>
-CC:     <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Doug Ledford <dledford@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>
-References: <20210204202500.26474-1-joao.m.martins@oracle.com>
- <20210204202500.26474-2-joao.m.martins@oracle.com>
- <74edd971-a80c-78b6-7ab2-5c1f6ba4ade9@nvidia.com>
- <c274a794-94c8-3bd1-0b9d-670212279e52@oracle.com>
-From:   John Hubbard <jhubbard@nvidia.com>
-Message-ID: <4eececb9-fa0a-eeff-0c1f-79a0afb7da4e@nvidia.com>
-Date:   Fri, 5 Feb 2021 11:53:58 -0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
- Gecko/20100101 Thunderbird/78.7.0
+        Fri, 5 Feb 2021 13:13:22 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EADECC06174A;
+        Fri,  5 Feb 2021 11:55:05 -0800 (PST)
+Date:   Fri, 05 Feb 2021 19:55:01 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1612554902;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=60UK+BRAgNDrSuMPNEtATYvdu08y1VykIANnMVc0sR4=;
+        b=VnlHOjM/5qE4oE187BCCni3DZ+R4TFjxdC+rJA+9b0pyIMnSPcJSljjxdX7DSQmMyeJcK8
+        eHV1RUOcf7LAHYXx5X3h+9PpELhTPr8l2aw7W0Sm14/DNnKL2o/eCV8gFL536QzJrUMqZY
+        fyeOFKo8MTE90kg3JslkeF6qhxEETEbRc+9hB7p0Za7XiQ18KS9KCZ/omiaqT4bpl0PQWj
+        QUhgrSaJaa5OX3LrhNik+H9zuElzqDhopXoUW7uliLTUA1hTw0vw1hOuaZ/MTeealsMvdO
+        P/LjFZc1eg/ESfCSysYbzDkaZ/l8IjWCUCSKZakiv9Y44YKrbDlKj9Drc14O6w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1612554902;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=60UK+BRAgNDrSuMPNEtATYvdu08y1VykIANnMVc0sR4=;
+        b=mRU0LC6zf7KNT4n+R66RjplHopgfkXa+XuyTrQKxZPOZNTDBOl6tkRvppYF/0EWarPFGOd
+        btQDdA7IlUB5ELAw==
+From:   "tip-bot2 for Hans de Goede" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: irq/urgent] genirq: Prevent [devm_]irq_alloc_desc from returning irq 0
+Cc:     Hans de Goede <hdegoede@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>, stable@vger.kernel.org,
+        x86@kernel.org, linux-kernel@vger.kernel.org, maz@kernel.org
+In-Reply-To: <20201221185647.226146-1-hdegoede@redhat.com>
+References: <20201221185647.226146-1-hdegoede@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <c274a794-94c8-3bd1-0b9d-670212279e52@oracle.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
+Message-ID: <161255490170.23325.127304907450199511.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1612554839; bh=0h3J4XpgSbnd1qVxTuResEviGJFb7t4ULuzWgVzqm6Y=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=J1EL7s+beZe+hOTR8u2crhRqJwPojytXlLfGE4z7O5g60hQTigRJM/n4xeVAszlF2
-         qUsoIUqGgZ5Q2fhuVsO3JaD3xkvCVpotl0OGxKnwu4EZSMKd0zzyTftg7GDq9sE8HD
-         qmyA2mT+XX9TjJgiSN4nhGM3e+fINEVyMLgZc+WqYNzuSvCUKOl1iZsZuRWRxvUWVm
-         sEDaM3+vicku5i6GBMV03yz2o6gIPds3ZzJYXEc5qEEqj7qM/kaO45ZcA0gsQ7zLlL
-         rYd8UBMVWoAEIHFBYRTlplypwua41+B25dAbNDYhuCO+PjALKdu9EWybriTMviDOv3
-         sUZr0urn5TA1g==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/5/21 2:46 AM, Joao Martins wrote:
-...>> If instead you keep npages constant like it naturally wants to be, you could
->> just do a "(*ntails)++" in the loop, to take care of *ntails.
->>
-> I didn't do it as such as I would need to deref @ntails per iteration, so
-> it felt more efficient to do as above. On a second thought, I could alternatively do the
-> following below, thoughts?
-> 
-> diff --git a/mm/gup.c b/mm/gup.c
-> index d68bcb482b11..8defe4f670d5 100644
-> --- a/mm/gup.c
-> +++ b/mm/gup.c
-> @@ -215,6 +215,32 @@ void unpin_user_page(struct page *page)
->   }
->   EXPORT_SYMBOL(unpin_user_page);
-> 
-> +static inline void compound_next(unsigned long i, unsigned long npages,
-> +                                struct page **list, struct page **head,
-> +                                unsigned int *ntails)
-> +{
-> +       struct page *page;
-> +       unsigned int nr;
-> +
-> +       if (i >= npages)
-> +               return;
-> +
-> +       page = compound_head(list[i]);
-> +       for (nr = i + 1; nr < npages; nr++) {
-> +               if (compound_head(list[nr]) != page)
-> +                       break;
-> +       }
-> +
-> +       *head = page;
-> +       *ntails = nr - i;
-> +}
-> +
+The following commit has been merged into the irq/urgent branch of tip:
 
-Yes, this is cleaner and quite a bit easier to verify that it is correct.
+Commit-ID:     4c7bcb51ae25f79e3733982e5d0cd8ce8640ddfc
+Gitweb:        https://git.kernel.org/tip/4c7bcb51ae25f79e3733982e5d0cd8ce8640ddfc
+Author:        Hans de Goede <hdegoede@redhat.com>
+AuthorDate:    Mon, 21 Dec 2020 19:56:47 +01:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Fri, 05 Feb 2021 20:48:28 +01:00
 
-> 
->> However, given that the patch is correct and works as-is, the above is really just
->> an optional idea, so please feel free to add:
->>
->> Reviewed-by: John Hubbard <jhubbard@nvidia.com>
->>
->>
-> Thanks!
-> 
-> Hopefully I can retain that if the snippet above is preferred?
-> 
-> 	Joao
-> 
+genirq: Prevent [devm_]irq_alloc_desc from returning irq 0
 
-Yes. Still looks good.
+Since commit a85a6c86c25b ("driver core: platform: Clarify that IRQ 0
+is invalid"), having a linux-irq with number 0 will trigger a WARN()
+when calling platform_get_irq*() to retrieve that linux-irq.
 
-thanks,
--- 
-John Hubbard
-NVIDIA
+Since [devm_]irq_alloc_desc allocs a single irq and since irq 0 is not used
+on some systems, it can return 0, triggering that WARN(). This happens
+e.g. on Intel Bay Trail and Cherry Trail devices using the LPE audio engine
+for HDMI audio:
+
+ 0 is an invalid IRQ number
+ WARNING: CPU: 3 PID: 472 at drivers/base/platform.c:238 platform_get_irq_optional+0x108/0x180
+ Modules linked in: snd_hdmi_lpe_audio(+) ...
+
+ Call Trace:
+  platform_get_irq+0x17/0x30
+  hdmi_lpe_audio_probe+0x4a/0x6c0 [snd_hdmi_lpe_audio]
+
+ ---[ end trace ceece38854223a0b ]---
+
+Change the 'from' parameter passed to __[devm_]irq_alloc_descs() by the
+[devm_]irq_alloc_desc macros from 0 to 1, so that these macros will no
+longer return 0.
+
+Fixes: a85a6c86c25b ("driver core: platform: Clarify that IRQ 0 is invalid")
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20201221185647.226146-1-hdegoede@redhat.com
+---
+ include/linux/irq.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/include/linux/irq.h b/include/linux/irq.h
+index 4aeb1c4..2efde6a 100644
+--- a/include/linux/irq.h
++++ b/include/linux/irq.h
+@@ -928,7 +928,7 @@ int __devm_irq_alloc_descs(struct device *dev, int irq, unsigned int from,
+ 	__irq_alloc_descs(irq, from, cnt, node, THIS_MODULE, NULL)
+ 
+ #define irq_alloc_desc(node)			\
+-	irq_alloc_descs(-1, 0, 1, node)
++	irq_alloc_descs(-1, 1, 1, node)
+ 
+ #define irq_alloc_desc_at(at, node)		\
+ 	irq_alloc_descs(at, at, 1, node)
+@@ -943,7 +943,7 @@ int __devm_irq_alloc_descs(struct device *dev, int irq, unsigned int from,
+ 	__devm_irq_alloc_descs(dev, irq, from, cnt, node, THIS_MODULE, NULL)
+ 
+ #define devm_irq_alloc_desc(dev, node)				\
+-	devm_irq_alloc_descs(dev, -1, 0, 1, node)
++	devm_irq_alloc_descs(dev, -1, 1, 1, node)
+ 
+ #define devm_irq_alloc_desc_at(dev, at, node)			\
+ 	devm_irq_alloc_descs(dev, at, at, 1, node)
