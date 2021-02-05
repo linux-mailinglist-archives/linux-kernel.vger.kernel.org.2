@@ -2,129 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB027310757
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 10:10:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EB64310762
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 10:13:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229691AbhBEJJW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 04:09:22 -0500
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:46409 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229514AbhBEJGZ (ORCPT
+        id S229717AbhBEJLO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 04:11:14 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:58036 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230131AbhBEJHw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 04:06:25 -0500
-Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1159222J010299;
-        Fri, 5 Feb 2021 10:05:24 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=j0g3MEuv+YFAEugJs8NOIBW0mTSV3dOSXdpJKKD5GY8=;
- b=kH2VenhB+dEQpaWqkHi30IdNh4eIZP32ZjOPXQ7nUuaFlw4/EHPB/EwJrGIHxMOdKVNE
- QyRsr4skH8GpI3sBdjuAW0BCDxfK8cmOjbgVmDyd+tjQgSUjQ8oUuK2Yk5vNa+3Ek4hw
- dJNoHx4/+6Gmk6blzPPhsMGvnhMf1YuZ4ZQEo/qbr0PJWpWtfg9q9IKstMNrb7K4Yxk/
- 4thO7CmPugSWp7td+JH1EzrR14BO9T7owC+yDmVbvGQOFiPPtp3mlruMep8lN+2Wq1li
- 2Rmj/RL5PxR7IGCfXEKsc+J061C74EhqQ6h7q/zjGcn1M8dLqVd7yonWe1c2RZ81+mKx VA== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 36d0fsderx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 05 Feb 2021 10:05:24 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id C2F631001EB;
-        Fri,  5 Feb 2021 10:05:22 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id A6C7E221F7A;
-        Fri,  5 Feb 2021 10:05:22 +0100 (CET)
-Received: from lmecxl0504.lme.st.com (10.75.127.50) by SFHDAG2NODE3.st.com
- (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 5 Feb
- 2021 10:05:21 +0100
-Subject: Re: [PATCH 2/2] mmc: mmc_test: use erase_arg for mmc_erase command
-To:     Adrian Hunter <adrian.hunter@intel.com>, <ulf.hansson@linaro.org>
-CC:     <linux@armlinux.org.uk>, <linus.walleij@linaro.org>,
-        <ludovic.barre@foss.st.com>, <per.forlin@linaro.org>,
-        <huyue2@yulong.com>, <wsa+renesas@sang-engineering.com>,
-        <vbadigan@codeaurora.org>, <p.zabel@pengutronix.de>,
-        <marex@denx.de>, <swboyd@chromium.org>,
-        <linux-mmc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20210204120547.15381-1-yann.gautier@foss.st.com>
- <20210204120547.15381-3-yann.gautier@foss.st.com>
- <c1531549-29da-25dc-cada-f61edbc5f2fd@intel.com>
-From:   Yann GAUTIER <yann.gautier@foss.st.com>
-Message-ID: <b527e4ac-a5c7-c684-7a55-0c5510948805@foss.st.com>
-Date:   Fri, 5 Feb 2021 10:05:21 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 5 Feb 2021 04:07:52 -0500
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 223F61C0B79; Fri,  5 Feb 2021 10:07:00 +0100 (CET)
+Date:   Fri, 5 Feb 2021 10:06:59 +0100
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Jiri Slaby <jirislaby@kernel.org>,
+        Jari Ruusu <jariruusu@protonmail.com>,
+        Sasha Levin <sashal@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>,
+        masahiroy@kernel.org
+Subject: Re: Kernel version numbers after 4.9.255 and 4.4.255
+Message-ID: <20210205090659.GA22517@amd>
+References: <7pR0YCctzN9phpuEChlL7_SS6auHOM80bZBcGBTZPuMkc6XjKw7HUXf9vZUPi-IaV2gTtsRVXgywQbja8xpzjGRDGWJsVYSGQN5sNuX1yaQ=@protonmail.com>
+ <YBuSJqIG+AeqDuMl@kroah.com>
+ <78ada91b-21ee-563f-9f75-3cbaeffafad4@kernel.org>
+ <YBu1d0+nfbWGfMtj@kroah.com>
 MIME-Version: 1.0
-In-Reply-To: <c1531549-29da-25dc-cada-f61edbc5f2fd@intel.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.50]
-X-ClientProxiedBy: SFHDAG2NODE1.st.com (10.75.127.4) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-02-05_06:2021-02-05,2021-02-05 signatures=0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="zhXaljGHf11kAtnf"
+Content-Disposition: inline
+In-Reply-To: <YBu1d0+nfbWGfMtj@kroah.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/5/21 7:33 AM, Adrian Hunter wrote:
-> On 4/02/21 2:05 pm, yann.gautier@foss.st.com wrote:
->> From: Yann Gautier <yann.gautier@foss.st.com>
->>
->> Since [1], the erase argument for mmc_erase() function is saved in
->> erase_arg field of card structure. It is preferable to use it instead of
->> hard-coded MMC_SECURE_ERASE_ARG, which from eMMC 4.51 spec is not
->> recommended:
->> "6.6.16 Secure Erase
->> NOTE Secure Erase is included for backwards compatibility. New system
->> level implementations (based on v4.51 devices and beyond) should use
->> Erase combined with Sanitize instead of secure erase."
->>
->>   [1] commit 01904ff77676 ("mmc: core: Calculate the discard arg only once")
->>
-> 
-> Did you experience an issue because of this?  You could add that to the
-> commit message.
 
-Hi Adrian,
+--zhXaljGHf11kAtnf
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks for the review!
-Yes, I've seen an issue on STM32MP157C-EV1 board.
-After a write test (e.g. test 36), the tests 37 or 38, using mmc_erase 
-fail. With the erase argument used by default in the framework 
-(MMC_DISCARD_ARG), I can no more see this.
+On Thu 2021-02-04 09:51:03, Greg Kroah-Hartman wrote:
+> On Thu, Feb 04, 2021 at 08:26:04AM +0100, Jiri Slaby wrote:
+> > On 04. 02. 21, 7:20, Greg Kroah-Hartman wrote:
+> > > On Thu, Feb 04, 2021 at 05:59:42AM +0000, Jari Ruusu wrote:
+> > > > Greg,
+> > > > I hope that your linux kernel release scripts are
+> > > > implemented in a way that understands that PATCHLEVEL=3D and
+> > > > SUBLEVEL=3D numbers in top-level linux Makefile are encoded
+> > > > as 8-bit numbers for LINUX_VERSION_CODE and
+> > > > KERNEL_VERSION() macros, and must stay in range 0...255.
+> > > > These 8-bit limits are hardcoded in both kernel source and
+> > > > userspace ABI.
+> > > >=20
+> > > > After 4.9.255 and 4.4.255, your scripts should be
+> > > > incrementing a number in EXTRAVERSION=3D in top-level
+> > > > linux Makefile.
+> > >=20
+> > > Should already be fixed in linux-next, right?
+> >=20
+> > I assume you mean:
+> > commit 537896fabed11f8d9788886d1aacdb977213c7b3
+> > Author: Sasha Levin <sashal@kernel.org>
+> > Date:   Mon Jan 18 14:54:53 2021 -0500
+> >=20
+> >     kbuild: give the SUBLEVEL more room in KERNEL_VERSION
+> >=20
+> > That would IMO break userspace as definition of kernel version has chan=
+ged.
+> > And that one is UAPI/ABI (see include/generated/uapi/linux/version.h) as
+> > Jari writes. For example will glibc still work:
+> > http://sourceware.org/git/?p=3Dglibc.git;a=3Dblob;f=3Dsysdeps/unix/sysv=
+/linux/configure.ac;h=3D13abda0a51484c5951ffc6d718aa36b72f3a9429;hb=3DHEAD#=
+l14
+> >=20
+> > ? Or gcc 10 (11 will have this differently):
+> > https://gcc.gnu.org/git/?p=3Dgcc.git;a=3Dblob;f=3Dgcc/config/bpf/bpf.c;=
+hb=3Dee5c3db6c5b2c3332912fb4c9cfa2864569ebd9a#l165
+> >=20
+> > and
+> >=20
+> > https://gcc.gnu.org/git/?p=3Dgcc.git;a=3Dblob;f=3Dgcc/config/bpf/bpf-he=
+lpers.h;hb=3Dee5c3db6c5b2c3332912fb4c9cfa2864569ebd9a#l53
+>=20
+> Ugh, I thought this was an internal representation, not an external one
+> :(
+>=20
+> > It might work somewhere, but there are a lot of (X * 65536 + Y * 256 + =
+Z)
+> > assumptions all around the world. So this doesn't look like a good idea.
+>=20
+> Ok, so what happens if we "wrap"?  What will break with that?  At first
+> glance, I can't see anything as we keep the padding the same, and our
+> build scripts seem to pick the number up from the Makefile and treat it
+> like a string.
+>=20
+> It's only the crazy out-of-tree kernel stuff that wants to do minor
+> version checks that might go boom.  And frankly, I'm not all that
+> concerned if they have problems :)
+>=20
+> So, let's leave it alone and just see what happens!
 
-I can send a new version of the series with comment update here, and a 
-fixup on the first patch.
+Yeah, stable is a great place to do the experiments. Not that this is
+the first time :-(.
+								Pavel
+--=20
+http://www.livejournal.com/~pavelmachek
 
+--zhXaljGHf11kAtnf
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-Regards,
-Yann
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
 
-> 
-> There does not seem to be a need for secure erase, so:
-> 
-> Acked-by: Adrian Hunter <adrian.hunter@intel.com>
-> 
-> 
->> Signed-off-by: Yann Gautier <yann.gautier@foss.st.com>
->> ---
->>   drivers/mmc/core/mmc_test.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/mmc/core/mmc_test.c b/drivers/mmc/core/mmc_test.c
->> index 39a478874ca3..63524551a13a 100644
->> --- a/drivers/mmc/core/mmc_test.c
->> +++ b/drivers/mmc/core/mmc_test.c
->> @@ -2110,7 +2110,7 @@ static int mmc_test_rw_multiple(struct mmc_test_card *test,
->>   	if (mmc_can_erase(test->card) &&
->>   	    tdata->prepare & MMC_TEST_PREP_ERASE) {
->>   		ret = mmc_erase(test->card, dev_addr,
->> -				size / 512, MMC_SECURE_ERASE_ARG);
->> +				size / 512, test->card->erase_arg);
->>   		if (ret)
->>   			ret = mmc_erase(test->card, dev_addr,
->>   					size / 512, MMC_ERASE_ARG);
->>
-> 
+iEYEARECAAYFAmAdCrMACgkQMOfwapXb+vLjngCaAjjD5mUF+Nb1LcxkIk7LgvKS
+A7EAoI2Ulw6+CpcR2hYtxNEtEBLeN6Te
+=NBbj
+-----END PGP SIGNATURE-----
 
+--zhXaljGHf11kAtnf--
