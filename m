@@ -2,72 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B9133112AE
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 21:41:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34C183112B7
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 21:44:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233093AbhBES6y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 13:58:54 -0500
-Received: from mail-ot1-f45.google.com ([209.85.210.45]:43286 "EHLO
-        mail-ot1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233143AbhBES62 (ORCPT
+        id S233312AbhBETAB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 14:00:01 -0500
+Received: from mail-ot1-f53.google.com ([209.85.210.53]:45463 "EHLO
+        mail-ot1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233075AbhBES7F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 13:58:28 -0500
-Received: by mail-ot1-f45.google.com with SMTP id v1so8134446ott.10;
-        Fri, 05 Feb 2021 12:40:38 -0800 (PST)
+        Fri, 5 Feb 2021 13:59:05 -0500
+Received: by mail-ot1-f53.google.com with SMTP id o12so8117934ote.12;
+        Fri, 05 Feb 2021 12:41:15 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=Sm6NpdOnTtwSXORx8mTFH6un3hRG8XHN59PuT9PxTHY=;
-        b=ZiOPJE00cF5eWIq91x1XoXARyeQfeoutVToDfKzAD7LoW1SebwgCr5FPAv8wAdHVtU
-         F0yYUgTb4Z+ojDzrB44KCAVu11JA2iG13Cb5rqhpHbJru3WNFH/BMPEvRJX2hqniAWgG
-         AR2/sUm3yklvLBq4e0EcTEp2isz/HkTVCwVcBRhNwPwxSLQaTgwzL1OXRanCfUhNjiIk
-         qTOsukOodw+34V8XFa0NFh3kCTM0HU2K0lHTb7mP0jbK8S9s7mgcgWxzPOJ0O2rK3Sus
-         R1FcExNZMewQSzUjFfKn5UV9KJUVEI+kuaZqXvTwKkSjFAMYk0gmNoe7kSqalg89h0+6
-         UMUQ==
-X-Gm-Message-State: AOAM531ncUr0wLlACXvccMi30C0mY6WsIWJBtB0K+rQnO+baPM13t1Gn
-        jeY7DF0uXo5fSYRNvOYb1EICY4TxqA==
-X-Google-Smtp-Source: ABdhPJwSZjklLi0OGnD3BND6Th44dDLWc0079PTTrz8plDrDN/FVp4rS9kWi3YGddwujHwSNSyuuYg==
-X-Received: by 2002:a9d:6b02:: with SMTP id g2mr4477933otp.19.1612557612724;
-        Fri, 05 Feb 2021 12:40:12 -0800 (PST)
+        bh=E/BK7ustIanoJNUJSQwM8o9ooyu4BgVSwj4bIicyTic=;
+        b=S7fJSUFXvOIWWkK4akgRg28xjqYWInDb8vufn1DfnYV1uFt821jzBIdeyxh0NmTpSe
+         pCZovB/QB1BMJ4l8IafkIsJHEYXspgjEe9FqiDG80PS+hzAlfEJqWzV0urpf/UbD5OjR
+         LZON8//R9FiEnhYX3pdbs87H044MXLSJytbKwaJSzAguTx/APe9A8TSEIYI+z9lv7dlB
+         Wvu0BheeKUph8mUgRCCY8TZPxUffR+9edOtHR21PTJkhK4y9FRBXCK4an3SY7OGMZXjb
+         W75HwfK2yyQZlwXLh6HIeq1bugaATHa4U0FgNdwkCm+ZCwTvKnLpwJjPTuGylAPNqYEO
+         i3Cw==
+X-Gm-Message-State: AOAM533XhnwJoznb0KJi3+83XpdD2syehj/R8TSFT3pGFESGkUdxW7eV
+        sHFbVYfUj3iy8OmXkVydyw==
+X-Google-Smtp-Source: ABdhPJwU9TZ9VboIT/rxqywVBtj4ZrBVcJcUtNQ0dwYRAbHmJFXgjD/5F+v+to3u3RkkSwyUuCGYDQ==
+X-Received: by 2002:a9d:7f89:: with SMTP id t9mr522752otp.9.1612557650111;
+        Fri, 05 Feb 2021 12:40:50 -0800 (PST)
 Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id n93sm1986681ota.37.2021.02.05.12.40.10
+        by smtp.gmail.com with ESMTPSA id k207sm379560oih.32.2021.02.05.12.40.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Feb 2021 12:40:11 -0800 (PST)
-Received: (nullmailer pid 3691439 invoked by uid 1000);
-        Fri, 05 Feb 2021 20:40:09 -0000
-Date:   Fri, 5 Feb 2021 14:40:09 -0600
+        Fri, 05 Feb 2021 12:40:49 -0800 (PST)
+Received: (nullmailer pid 3692690 invoked by uid 1000);
+        Fri, 05 Feb 2021 20:40:48 -0000
+Date:   Fri, 5 Feb 2021 14:40:48 -0600
 From:   Rob Herring <robh@kernel.org>
-To:     Ansuel Smith <ansuelsmth@gmail.com>
-Cc:     linux-pm@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Zhang Rui <rui.zhang@intel.com>,
+To:     Mike Looijmans <mike.looijmans@topic.nl>
+Cc:     linux-iio@vger.kernel.org, Jonathan Cameron <jic23@kernel.org>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH v9 8/8] dt-bindings: thermal: tsens: Document ipq8064
+Subject: Re: [PATCH v8 1/2] dt-bindings: iio: accel: Add bmi088 accelerometer
  bindings
-Message-ID: <20210205204009.GA3691379@robh.at.kernel.org>
-References: <20210122145558.4982-1-ansuelsmth@gmail.com>
- <20210122145558.4982-9-ansuelsmth@gmail.com>
+Message-ID: <20210205204048.GA3692656@robh.at.kernel.org>
+References: <20210125150732.23873-1-mike.looijmans@topic.nl>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210122145558.4982-9-ansuelsmth@gmail.com>
+In-Reply-To: <20210125150732.23873-1-mike.looijmans@topic.nl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 22 Jan 2021 15:55:57 +0100, Ansuel Smith wrote:
-> Document the use of bindings used for msm8960 tsens based devices.
-> msm8960 use the same gcc regs and is set as a child of the qcom gcc.
+On Mon, 25 Jan 2021 16:07:31 +0100, Mike Looijmans wrote:
+> This adds the device-tree bindings for the Bosch Sensortec BMI088 IMU,
+> the accelerometer part.
 > 
-> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+> Signed-off-by: Mike Looijmans <mike.looijmans@topic.nl>
+> 
 > ---
->  .../bindings/thermal/qcom-tsens.yaml          | 56 ++++++++++++++++---
->  1 file changed, 48 insertions(+), 8 deletions(-)
+> 
+> Changes in v8:
+> Add spi-max-frequency: true
+> 
+> Changes in v7:
+> Add additionalProperties
+> Change bmi088_accel to bmi088-accel
+> Add interrupt-names and adjust description
+> 
+> Changes in v6:
+> I't been almost a year since the last commit, sorry...
+> Fixed the yaml errors
+> Add interrupt, vdd and vddio properties
+> 
+> Changes in v5:
+> submit together with driver code as patch series
+> 
+> Changes in v2:
+> convert to yaml format
+> 
+>  .../bindings/iio/accel/bosch,bmi088.yaml      | 68 +++++++++++++++++++
+>  1 file changed, 68 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/iio/accel/bosch,bmi088.yaml
 > 
 
 Reviewed-by: Rob Herring <robh@kernel.org>
