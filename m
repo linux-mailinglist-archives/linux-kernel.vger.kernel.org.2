@@ -2,108 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8287B310784
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 10:16:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6128C310795
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 10:19:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230073AbhBEJQP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 04:16:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41686 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230180AbhBEJNy (ORCPT
+        id S230289AbhBEJSA convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 5 Feb 2021 04:18:00 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:56213 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229721AbhBEJOu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 04:13:54 -0500
-Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D201AC0613D6;
-        Fri,  5 Feb 2021 01:13:13 -0800 (PST)
-Received: by mail-qk1-x72b.google.com with SMTP id a12so6177634qkh.10;
-        Fri, 05 Feb 2021 01:13:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=PFbkaDmPxbAKpkOajTnpFDsUQrNOUBHeWcmqrZ8mcYY=;
-        b=A3A5LNWGbBoqoIfWxnPY2lwqbOp3WSHkix7RKTOTeBWemlb54jaO1UA7/kf1zgZmrb
-         lJnu5eUZueQOu0MqtFP4TGBpubcvcPSYAZCtK1ONyvQjpDx3MDrEo89BPQOvU/Cr+I03
-         UIISQQS9+UEnKgkWmJ9BMdhWjVJQ4p1lCjPCr9+ACQTSmtCbEv6jMFyKCM0+EfM+VE1j
-         BB1X4pW8SjwwnekAwWluAkmJQFxUZZtp7NU6rd09BKWamgvm+BJ/9IctwRo4N+aEAZJh
-         e1WB0sm4IlPrGv7cxrmniuKW7iuuOi18bOgH0mmyxhIukkPNtX3k+ch8hpAfgo7LeyeJ
-         0OpQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=PFbkaDmPxbAKpkOajTnpFDsUQrNOUBHeWcmqrZ8mcYY=;
-        b=nHa308RcA40Xtbx5koq1yNUmcO/+NoA/PGa3LpiR8lLqLNS9M7rbeSFlY1qy+YeQrp
-         Zq3zC2JQcNafL69zQZVTeLoK+TaJsduVY1oCcUucHyPsJcC7wz/uICTnIL07cF4vxPsm
-         80hPac83m9bdoNxp222f9QXZxQUf6UJOmi1mTnHRVu3Hq4PiI2wreQczmlC7DUMhfDc7
-         y2vMDGIFelpLVVknyM20HZDEVdmbRy2zT+V+cnCoy9z1fLPbug9jINvJ+ipvLNjd6Z+W
-         CGoB55b6QT72sXjz5UGhFIfMCk7I0M7r+gvPnDuwsHSEQo8mkGXbnYGzN4pfIsVQZdxt
-         Ipaw==
-X-Gm-Message-State: AOAM530KEHtrGbUI7MeFXL1okRA/XL+jZ8pLfaw3189U4VgDsWkTBXxJ
-        PwVZ60ZrP2CFcT6JVMLbcEg=
-X-Google-Smtp-Source: ABdhPJzGv7lKE/tqQWXskWoiaSpjzL7hHjZT0sL0L0Cr6rGb/GtYUp3RXwW+ifi0IIKA7/FVtXDJpQ==
-X-Received: by 2002:ae9:ed4e:: with SMTP id c75mr3376700qkg.109.1612516392662;
-        Fri, 05 Feb 2021 01:13:12 -0800 (PST)
-Received: from localhost.localdomain ([156.146.36.157])
-        by smtp.gmail.com with ESMTPSA id l24sm206643qtr.16.2021.02.05.01.13.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Feb 2021 01:13:11 -0800 (PST)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     brking@us.ibm.com, jejb@linux.ibm.com, martin.petersen@oracle.com,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: [PATCH] drivers: scsi:  File ipr.c gets few spelling fixes
-Date:   Fri,  5 Feb 2021 14:42:57 +0530
-Message-Id: <20210205091257.484726-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.30.0
+        Fri, 5 Feb 2021 04:14:50 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-18-_nbLTyr_NWyG3CFTV9PN3g-1; Fri, 05 Feb 2021 09:13:04 +0000
+X-MC-Unique: _nbLTyr_NWyG3CFTV9PN3g-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Fri, 5 Feb 2021 09:13:03 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Fri, 5 Feb 2021 09:13:03 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Pavel Machek' <pavel@ucw.cz>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+CC:     Arnd Bergmann <arnd@kernel.org>, Willy Tarreau <w@1wt.eu>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Krzysztof Adamski <krzysztof.adamski@nokia.com>,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
+        Baruch Siach <baruch@tkos.co.il>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Daniel Tang <dt.tangr@gmail.com>,
+        =?iso-8859-1?Q?Uwe_Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        "Jamie Iles" <jamie@jamieiles.com>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        "Viresh Kumar" <viresh.kumar@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Jonas Jensen <jonas.jensen@gmail.com>,
+        Marc Gonzalez <marc.w.gonzalez@free.fr>,
+        Hartley Sweeten <hsweeten@visionengravers.com>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Shawn Guo <shawnguo@kernel.org>, Alex Elder <elder@linaro.org>,
+        "Alexander Shiyan" <shc_work@mail.ru>,
+        Koen Vandeputte <koen.vandeputte@ncentric.com>,
+        Hans Ulli Kroll <ulli.kroll@googlemail.com>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        Wei Xu <xuwei5@hisilicon.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Yoshinori Sato <ysato@users.osdn.me>,
+        Mark Salter <msalter@redhat.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        "Geert Uytterhoeven" <geert+renesas@glider.be>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Subject: RE: Old platforms: bring out your dead
+Thread-Topic: Old platforms: bring out your dead
+Thread-Index: AQHW5tIZDj0fPDkXL0CUBZoouVVmHKoiLtzAgCZ1ZXKAAMpxkA==
+Date:   Fri, 5 Feb 2021 09:13:03 +0000
+Message-ID: <4f53ce214f2c498fa47794327a8f35fc@AcuMS.aculab.com>
+References: <CAK8P3a2VW8T+yYUG1pn1yR-5eU4jJXe1+M_ot6DAvfr2KyXCzQ@mail.gmail.com>
+ <20210109055645.GA2009@1wt.eu>
+ <CAK8P3a1C+EUvyLm3fo8TGOV39hhaxhtDM3cX_QLc-=WCzRksMw@mail.gmail.com>
+ <6fb7e3f5035d44fab9801001f1811b59@AcuMS.aculab.com>
+ <CAHp75Vf43_zqDX9K4GmkRd7fujY2zC8=LneSMFpC2qnJL_uG1A@mail.gmail.com>
+ <20210204210140.GB7529@amd>
+In-Reply-To: <20210204210140.GB7529@amd>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+> We have open-hardware implementation for 486, AFAICT, thanks to MISTer
+> project. I'm not aware of open 586 core.
+> 
+> Being able to run recent Linux on open hardware sounds fun.
 
+Putting a 486 on an fpga might be 'interesting'.
+But it has a lot of 'cruft' (like 286 protected mode) that
+you really don't need.
+I'd bet RISCV comes out smaller.
 
-s/Enablement/Entablement/
-s/specfied/specified/
-s/confgurations/configurations/
+Most x86 ports are actually IBM-PC ports - so you'd also have
+to sort out all the peripherals.
 
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
----
- drivers/scsi/ipr.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+	David
 
-diff --git a/drivers/scsi/ipr.c b/drivers/scsi/ipr.c
-index e451102b9a29..c12c0a309c54 100644
---- a/drivers/scsi/ipr.c
-+++ b/drivers/scsi/ipr.c
-@@ -16,7 +16,7 @@
-  *
-  * IBM pSeries: PCI-X Dual Channel Ultra 320 SCSI RAID Adapter
-  *              PCI-X Dual Channel Ultra 320 SCSI Adapter
-- *              PCI-X Dual Channel Ultra 320 SCSI RAID Enablement Card
-+ *              PCI-X Dual Channel Ultra 320 SCSI RAID Entablement Card
-  *              Embedded SCSI adapter on p615 and p655 systems
-  *
-  * Supported Hardware Features:
-@@ -2470,7 +2470,7 @@ static void ipr_log_sis64_device_error(struct ipr_ioa_cfg *ioa_cfg,
- }
-
- /**
-- * ipr_get_error - Find the specfied IOASC in the ipr_error_table.
-+ * ipr_get_error - Find the specified IOASC in the ipr_error_table.
-  * @ioasc:	IOASC
-  *
-  * This function will return the index of into the ipr_error_table
-@@ -7202,7 +7202,7 @@ static const u16 ipr_blocked_processors[] = {
-  *
-  * Adapters that use Gemstone revision < 3.1 do not work reliably on
-  * certain pSeries hardware. This function determines if the given
-- * adapter is in one of these confgurations or not.
-+ * adapter is in one of these configurations or not.
-  *
-  * Return value:
-  * 	1 if adapter is not supported / 0 if adapter is supported
---
-2.30.0
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
