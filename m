@@ -2,67 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8203B310AF4
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 13:16:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CD63310AF9
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 13:20:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231310AbhBEMPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 07:15:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52140 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231283AbhBEMNE (ORCPT
+        id S231152AbhBEMR5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 07:17:57 -0500
+Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:33155 "EHLO
+        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230088AbhBEMOY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 07:13:04 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 177F0C06178A
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 04:12:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=L6mpUyb2tsXriUaxnJYzuNaLbxNc4mxLma6rOnf0vj0=; b=H+Q6G+KEvacqdLRfvY8ucy9m+u
-        OZ/RyKqspgovjVJ1UxlwgrYXnNZDtIYry6P53zz7Vsmhul70qm6DztS61LmTO8Kj+KxXDTJi7YaV9
-        0FKo8kzRDDSMQqFSTpJuHnLOA2+QydDl89CRhQjrWWSoDrTVnjom2YtEcE95xQnMQQb6+ZkNOIRUW
-        Lrg5uxjcihQKehxU3gyiLYzENN9dwBT4UF4VuoxEDZVMuSgwDSaKE2t1vuxFoLu5vB61bfsHrX6aB
-        Dpvzi191o88+C9kzm7LnRIERZQ68DhM7Jgn/7YZI/sw2zkcQB4O7QiCKNuXhGlJ6qojzDb/W4yUSH
-        /8atktZQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1l7zyD-002GeT-Ku; Fri, 05 Feb 2021 12:12:17 +0000
-Date:   Fri, 5 Feb 2021 12:12:17 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Minchan Kim <minchan@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        gregkh@linuxfoundation.org, surenb@google.com, joaodias@google.com,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>
-Subject: Re: [PATCH] mm: cma: support sysfs
-Message-ID: <20210205121217.GH308988@casper.infradead.org>
-References: <20210203155001.4121868-1-minchan@kernel.org>
- <20210205025526.GG308988@casper.infradead.org>
- <YBzWCl0MVNWntyUZ@google.com>
+        Fri, 5 Feb 2021 07:14:24 -0500
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.94)
+          with esmtps (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1l7zzP-002peY-2v; Fri, 05 Feb 2021 13:13:31 +0100
+Received: from dynamic-077-013-048-102.77.13.pool.telefonica.de ([77.13.48.102] helo=[192.168.1.10])
+          by inpost2.zedat.fu-berlin.de (Exim 4.94)
+          with esmtpsa (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1l7zzO-0048ZG-Rj; Fri, 05 Feb 2021 13:13:31 +0100
+Subject: Re: [PATCH] arch: m68k: include: asm: Reconstruct the sentence in
+ file sun3ints.h
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, sammy@sammy.net,
+        geert@linux-m68k.org, linux-m68k@lists.linux-m68k.org,
+        linux-kernel@vger.kernel.org
+Cc:     rdunlap@infradead.org
+References: <20210205120455.1289448-1-unixbhaskar@gmail.com>
+From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Message-ID: <02edcb2b-ce56-488a-774b-8ea5caa6f7ac@physik.fu-berlin.de>
+Date:   Fri, 5 Feb 2021 13:13:29 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YBzWCl0MVNWntyUZ@google.com>
+In-Reply-To: <20210205120455.1289448-1-unixbhaskar@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-Originating-IP: 77.13.48.102
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 04, 2021 at 09:22:18PM -0800, Minchan Kim wrote:
-> > > +	for (i = 0; i < cma_area_count; i++) {
-> > > +		cma = &cma_areas[i];
-> > > +		stat = kzalloc(sizeof(*stat), GFP_KERNEL);
-> > > +		if (!stat)
-> > > +			goto out;
-> > 
-> > How many cma areas are there going to be?  do we really want to allocate
-> > their stat individually?
-> 
-> I am not sure what could be in the end but at least, I have
-> 5+ candidates (but could be shrink or extend) and yes,
-> want to keep track them individually.
+On 2/5/21 1:04 PM, Bhaskar Chowdhury wrote:
+> s/fuck/"do anything"/
 
-I meant, wouldn't it be better to:
+What does this fix?
 
-	cma_stats = kzalloc(array_size(sizeof(*stat), cma_area_count),
-				GFP_KERNEL);
+-- 
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer - glaubitz@debian.org
+`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
 
