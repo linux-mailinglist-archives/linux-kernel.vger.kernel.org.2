@@ -2,166 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52409310F27
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 18:53:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72B70310F29
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 18:55:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233593AbhBEQLA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 11:11:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55828 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229669AbhBEQGK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 11:06:10 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 89B1564DD4;
-        Fri,  5 Feb 2021 17:47:50 +0000 (UTC)
-Date:   Fri, 5 Feb 2021 12:47:48 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Chris Down <chris@chrisdown.name>, linux-kernel@vger.kernel.org,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>, kernel-team@fb.com,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jason Baron <jbaron@akamai.com>,
-        Kees Cook <keescook@chromium.org>, linux-api@vger.kernel.org
-Subject: Re: [PATCH] printk: Userspace format enumeration support
-Message-ID: <20210205124748.4af2d406@gandalf.local.home>
-In-Reply-To: <YB11jybvFCb95S9e@alley>
-References: <YBwU0G+P0vb9wTwm@chrisdown.name>
-        <YB11jybvFCb95S9e@alley>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S233495AbhBEQLh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 11:11:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36748 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232226AbhBEQGc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 11:06:32 -0500
+Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8105C06178A;
+        Fri,  5 Feb 2021 09:48:14 -0800 (PST)
+Received: by mail-il1-x12b.google.com with SMTP id a16so6574787ilq.5;
+        Fri, 05 Feb 2021 09:48:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=Nzg2Y6oVl+tLUz3k5gFodM3ChMzuciBTFCA8xI93+E4=;
+        b=mzh3bA4P1GVt2poO+pGX1uSo08aLxLImENFo2eSBX4r53MeU/8TValwGQTeFEgDtU7
+         lKHDmzQxxcByjhX2sqUModDOkxjFskCKrRHDVW2JxmsZJ6e46wTYssM2hUibPy3D575B
+         +jiGZSpMJopbVXsVGES4zUpKbTO120TxkYuoCr1N+71+l1IoBgUEYm9J0MAvHIb3xQYN
+         U02XCrB+fqb8iKbZUeZlydA5JBo6bn2lTQbFCFqBghzYs0XSkzuag28jmlcAFPL7pJBs
+         A1emkUP1XvbD0fvgbbf4yBI0E9pfs/zBPtHcjpiQvb6DuSgFfLhXIIDmOpVzHTvXxBxz
+         hfKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=Nzg2Y6oVl+tLUz3k5gFodM3ChMzuciBTFCA8xI93+E4=;
+        b=BB36qj54RZFrwS2IObITEL9B3w8Kn+NRdUCNvQ8ph2yExjztrRUlijrASxDee0ESNE
+         xKHAV26hSKhs5avat208HdfIPBROq6W9+/jIZhDTpNYaI5YAhCuh4dvOIz7d1PwR/x4R
+         87/D8Z3CdKPDp4CiiF26apYY83/jiJboBp5c33c9cq8wHkOagQ/IDbzpYXpVB8Syy7q4
+         DPTT5/o2m9j2QgON7Bau/rdSjRQQexEDY5kel6biKUSR/PY61ZxHcmsxKpkH4vfkWSDb
+         SxMaFWPJxdy4EiXYwkY9qRG8BQpEUEspheokaO+jTxFavRkJGfSPju6F1VDSo0u+8cmF
+         UP4A==
+X-Gm-Message-State: AOAM533soWQgcbQnSbmdvH/BOt+eCHxD7I0CCaGriEEhAfuq+y20khvS
+        nE0YaMv5+DwLd6Wr+wvTLAHIp+zIawZUgMdX8J4=
+X-Google-Smtp-Source: ABdhPJzobqn7E2KduFsjD69vXwZuE2qkuShXvhD42PLKIrCEKwFrkYSvozWmQwUT8xJtc1AHzxZCoN9XFC6rq//XVWg=
+X-Received: by 2002:a92:58ce:: with SMTP id z75mr5018753ilf.209.1612547294004;
+ Fri, 05 Feb 2021 09:48:14 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20210204220741.GA920417@kernel.org> <CA+icZUVQSojGgnis8Ds5GW-7-PVMZ2w4X5nQKSSkBPf-29NS6Q@mail.gmail.com>
+ <CA+icZUU2xmZ=mhVYLRk7nZBRW0+v+YqBzq18ysnd7xN+S7JHyg@mail.gmail.com>
+ <CA+icZUVyB3qaqq3pwOyJY_F4V6KU9hdF=AJM_D7iEW4QK4Eo6w@mail.gmail.com> <20210205152823.GD920417@kernel.org>
+In-Reply-To: <20210205152823.GD920417@kernel.org>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Fri, 5 Feb 2021 18:48:02 +0100
+Message-ID: <CA+icZUWzMdhuHDkcKMHAd39iMEijk65v2ADcz0=FdODr38sJ4w@mail.gmail.com>
+Subject: Re: ERROR: INT DW_ATE_unsigned_1 Error emitting BTF type
+To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+Cc:     dwarves@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        bpf@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
+        Jan Engelhardt <jengelh@inai.de>,
+        Domenico Andreoli <cavok@debian.org>,
+        Matthias Schwarzott <zzam@gentoo.org>,
+        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
+        Mark Wieelard <mjw@redhat.com>,
+        Paul Moore <paul@paul-moore.com>,
+        Ondrej Mosnacek <omosnace@redhat.com>,
+        =?UTF-8?Q?Daniel_P=2E_Berrang=C3=A9?= <berrange@redhat.com>,
+        Tom Stellard <tstellar@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 5 Feb 2021 17:42:55 +0100
-Petr Mladek <pmladek@suse.com> wrote:
+On Fri, Feb 5, 2021 at 4:28 PM Arnaldo Carvalho de Melo
+<arnaldo.melo@gmail.com> wrote:
+>
+> Em Fri, Feb 05, 2021 at 04:23:59PM +0100, Sedat Dilek escreveu:
+> > On Fri, Feb 5, 2021 at 3:41 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
+> > >
+> > > On Fri, Feb 5, 2021 at 3:37 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
+> > > >
+> > > > Hi,
+> > > >
+> > > > when building with pahole v1.20 and binutils v2.35.2 plus Clang
+> > > > v12.0.0-rc1 and DWARF-v5 I see:
+> > > > ...
+> > > > + info BTF .btf.vmlinux.bin.o
+> > > > + [  != silent_ ]
+> > > > + printf   %-7s %s\n BTF .btf.vmlinux.bin.o
+> > > >  BTF     .btf.vmlinux.bin.o
+> > > > + LLVM_OBJCOPY=/opt/binutils/bin/objcopy /opt/pahole/bin/pahole -J
+> > > > .tmp_vmlinux.btf
+> > > > [115] INT DW_ATE_unsigned_1 Error emitting BTF type
+> > > > Encountered error while encoding BTF.
+> > >
+> > > Grepping the pahole sources:
+> > >
+> > > $ git grep DW_ATE
+> > > dwarf_loader.c:         bt->is_bool = encoding == DW_ATE_boolean;
+> > > dwarf_loader.c:         bt->is_signed = encoding == DW_ATE_signed;
+> > >
+> > > Missing DW_ATE_unsigned encoding?
+> > >
+> >
+> > Checked the LLVM sources:
+> >
+> > clang/lib/CodeGen/CGDebugInfo.cpp:    Encoding =
+> > llvm::dwarf::DW_ATE_unsigned_char;
+> > clang/lib/CodeGen/CGDebugInfo.cpp:    Encoding = llvm::dwarf::DW_ATE_unsigned;
+> > clang/lib/CodeGen/CGDebugInfo.cpp:    Encoding =
+> > llvm::dwarf::DW_ATE_unsigned_fixed;
+> > clang/lib/CodeGen/CGDebugInfo.cpp:
+> >   ? llvm::dwarf::DW_ATE_unsigned
+> > ...
+> > lld/test/wasm/debuginfo.test:CHECK-NEXT:                DW_AT_encoding
+> >  (DW_ATE_unsigned)
+> >
+> > So, I will switch from GNU ld.bfd v2.35.2 to LLD-12.
+>
+> Thanks for the research, probably your conclusion is correct, can you go
+> the next step and add that part and check if the end result is the
+> expected one?
+>
 
-> Hi,
-> 
-> I would like to hear opinion from a bigger audience. It is an
-> userspace interface that we might need to maintain forewer.
-> Adding few more people in to CC:
-> 
-> Steven Rostedt <rostedt@goodmis.org>: printk co-maintainer
+Still building...
 
-Thanks for Cc'ing me.
+Can you give me a hand on what has to be changed in dwarves/pahole?
 
-> Alexey Dobriyan <adobriyan@gmail.com>: fs/proc maintainer
-> Greg Kroah-Hartman <gregkh@linuxfoundation.org>: sysfs maintainer
-> Jason Baron <jbaron@akamai.com>: dynamic_debug maintainer
-> Kees Cook <keescook@chromium.org>: security POV
-> linux-api@vger.kernel.org: Linux API mailing list
-> 
-> Of course, we should also ask if this is the right approach
-> for the think that you want to achieve.
-> 
-> The motivation for this patch is that the strings printed by kernels
-> are not reliable and you want a simple way to compare differences
-> bethween versions. Do I get it right?
-> 
-> See more comments below.
-> 
-> 
+I guess switching from ld.bfd to ld.lld will show the same ERROR.
 
-
-> Also this is yet another style how the format is displayed. We already have
-> 
-> 	+ console/syslog: formated by record_print_text()
-> 	+ /dev/kmsg: formatted by info_print_ext_header(),  msg_print_ext_body().
-> 	+ /sys/kernel/debug/dynamic_debug/control
-
-
-> 	+ /sys/kernel/debug/tracing/printk_formats
-> 
-> We should get some inspiration from the existing interfaces.
-
-Interesting, because when I was looking at the original patch (looked at
-the lore link before reading your reply), I thought to myself "this looks
-exactly like what I did for trace_printk formats", which the above file is
-where it is shown. I'm curious if this work was inspired by that?
-
-
-
-> > diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
-> > index 34b7e0d2346c..0ca6e28e05d6 100644
-> > --- a/include/asm-generic/vmlinux.lds.h
-> > +++ b/include/asm-generic/vmlinux.lds.h
-> > @@ -309,6 +309,17 @@
-> >  #define ACPI_PROBE_TABLE(name)
-> >  #endif
-> >  
-> > +#ifdef CONFIG_PRINTK_ENUMERATION
-> > +#define PRINTK_FMTS							\
-> > +	.printk_fmts : AT(ADDR(.printk_fmts) - LOAD_OFFSET) {		\
-> > +		__start_printk_fmts = .;				\
-> > +		*(.printk_fmts)						\
-> > +		__stop_printk_fmts = .;					\
-> > +	}
-> > +#else
-> > +#define PRINTK_FMTS
-> > +#endif  
-> 
-> It should be defined after #define TRACEDATA to follow the existing
-> style.
-> 
-> But honestly I am not much familiar with the sections definitions.
-> I am curious why TRACE_PRINTKS() and __dyndbg are defined
-> a bit different way.
-> 
-
-I'm not sure what difference you mean.
-
-> > +static int proc_pf_show(struct seq_file *s, void *v)
-> > +{
-> > +	const struct printk_fmt_sec *ps = NULL;
-> > +	const char **fptr = NULL;
-> > +
-> > +	mutex_lock(&printk_fmts_mutex);
-> > +
-> > +	list_for_each_entry(ps, &printk_fmts_list, list) {
-> > +		const char *mod_name = ps_get_module_name(ps);
-> > +
-> > +		for (fptr = ps->start; fptr < ps->end; fptr++) {
-> > +			seq_puts(s, mod_name);
-> > +			seq_putc(s, ',');
-> > +			seq_puts(s, *fptr);
-> > +			seq_putc(s, '\0');
-> > +		}  
-> 
-> You probably should get inspiration from t_show() in trace_printk.c.
-> It handles newlines, ...
-> 
-> Or by ddebug_proc_show(). It uses seq_escape().
-> 
-> Anyway, there is something wrong at the moment. The output looks fine
-> with cat. But "less" says that it is a binary format and the output
-> is a bit messy:
-
-Hmm, that's usually the case when lseek gets messed up. Not sure how that
-happened.
-
-> 
-> $> less /proc/printk_formats   
-> "/proc/printk_formats" may be a binary file.  See it anyway? 
-> vmlinux,^A3Warning: unable to open an initial console.
-> ^@vmlinux,^A3Failed to execute %s (error %d)
-> ^@vmlinux,^A6Kernel memory protection disabled.
-> ^@vmlinux,^A3Starting init: %s exists but couldn't execute it (error %d)
-> 
-> 
-> That is for now. I still have to think about it. And I am also curious
-> about what others thing about this idea.
-> 
-
-I'm not against the idea. I don't think it belongs in /proc. Perhaps
-debugfs is a better place to put it.
-
--- Steve
+- Sedat -
