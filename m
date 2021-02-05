@@ -2,97 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D40F31173B
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 00:41:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2D71311739
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 00:41:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231147AbhBEXkj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 18:40:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40398 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232533AbhBEOUK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 09:20:10 -0500
-Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8D5EC061D7C
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 07:57:01 -0800 (PST)
-Received: by mail-oi1-x229.google.com with SMTP id k204so6330818oih.3
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 07:57:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=KW2YxiWoUuY8qaPcgZBtVIfE9G2SZ880I/V6+RY2NjM=;
-        b=N12CL2qYs6a2FVeLxgBeR7Lp6MiE/N/1gLXkEYnhRuu3M9cI27p9vE7lykcsRajlC6
-         6f4FgBPO/JkI9yH9elY1krGGqcHBGI/Fbkgmhx9LPNDseJHpRGdbwobkatdN1lCFDEmh
-         GTwKZvr3KVeb8r6H0/ex4pFx9ly444yQ+hQXfJeQdG8Rim+UI4YKIEiCjWyqmpCpsRyE
-         146uy6CySZ7TbOzgd/YiVDEFgYMV9FExjiAM0xokhhVn0LlGYvsAWegwEKf/M11M90O7
-         QjtKPsrdqZMgQTOqWdJKfCZJq4krA6mBMoQEYnRmsw6H7ngZEt/tcqcukTaBpjriEwRq
-         xDXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=KW2YxiWoUuY8qaPcgZBtVIfE9G2SZ880I/V6+RY2NjM=;
-        b=a7HW5Z2v6xX3UUSfN4S0mZ57PptEL0kc4HslnF+BDpU86sYl0rg0A6ntMzYIrX2t02
-         3cKhO1YuHFFq6N7mHF6IIsJoiDK/2II8H45qUSczjdFl8lXG/1Glczxv0rTcKDqkf9Mr
-         uJQWZyq1+aJo1XzH92D+3TCDftD+VrDSBYGJ5cTIiB852FI3qa2mFggfLlkWrO3ExyZ6
-         C6w5EAOrMS89EJwPPsF3cGHubQAuHcHGvQ22SEJgpbZytaKSfnrtzIUGDS9gnflYQtYe
-         kXG3MzYso08i31YTyjStLxYukXaZa4gjuberyENYpUfnknq6gMiHfxWWnKUr1Nk4eO2T
-         zEsA==
-X-Gm-Message-State: AOAM532yiaBaS4yGLzfrBL7McjiUWB83wmr4aqBrBsnRA18GusRirhQI
-        jN6W++1zUJrShszwGGO5deP8Gg+JB44=
-X-Google-Smtp-Source: ABdhPJwxnLX0P2jLQp2TSikWJzseQNTQ/Sl3m2VTSjQp4jJO0x9Nl9kpAg+2awirDD+ZiHXJCIQ08Q==
-X-Received: by 2002:a17:90b:4c8c:: with SMTP id my12mr4290989pjb.29.1612536200978;
-        Fri, 05 Feb 2021 06:43:20 -0800 (PST)
-Received: from localhost (g186.222-224-165.ppp.wakwak.ne.jp. [222.224.165.186])
-        by smtp.gmail.com with ESMTPSA id g22sm9582305pfu.200.2021.02.05.06.43.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Feb 2021 06:43:20 -0800 (PST)
-Date:   Fri, 5 Feb 2021 23:43:17 +0900
-From:   Stafford Horne <shorne@gmail.com>
-To:     Jan Henrik Weinstock <jan.weinstock@rwth-aachen.de>
-Cc:     geert@linux-m68k.org, jonas@southpole.se,
-        stefan.kristiansson@saunalahti.fi, openrisc@lists.librecores.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] openrisc: use device tree to determine present cpus
-Message-ID: <20210205144317.GK2002709@lianli.shorne-pla.net>
-References: <0b26eda7-229d-3dc9-f2ae-19b9212fb0ea@rwth-aachen.de>
- <20210129221643.GZ2002709@lianli.shorne-pla.net>
- <2a018afc-d797-3a91-ffab-e55ae3b0a795@rwth-aachen.de>
- <20210130230310.GC2002709@lianli.shorne-pla.net>
- <d9f4aafc-4d65-38b0-dde0-5e155836aee1@rwth-aachen.de>
- <20210131212752.GG2002709@lianli.shorne-pla.net>
- <6dbc27f8-5261-59c5-acba-70f6c6a74ba1@rwth-aachen.de>
+        id S230009AbhBEXj6 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 5 Feb 2021 18:39:58 -0500
+Received: from gloria.sntech.de ([185.11.138.130]:44268 "EHLO gloria.sntech.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231708AbhBEOUM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 09:20:12 -0500
+Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=diego.localnet)
+        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <heiko@sntech.de>)
+        id 1l82Wb-0002S7-Fm; Fri, 05 Feb 2021 15:55:57 +0100
+From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+To:     Sebastian Fricke <sebastian.fricke@posteo.net>
+Cc:     dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        hjc@rock-chips.com, robh+dt@kernel.org,
+        linux-media@vger.kernel.org, dafna.hirschfeld@collabora.com,
+        helen.koike@collabora.com, ezequiel@collabora.com,
+        cmuellner@linux.com
+Subject: Re: [PATCH 0/6] Support second Image Signal Processor on rk3399
+Date:   Fri, 05 Feb 2021 15:55:56 +0100
+Message-ID: <5860385.iIbC2pHGDl@diego>
+In-Reply-To: <5271305.e9J7NaK4W3@diego>
+References: <20210202145632.1263136-1-heiko@sntech.de> <20210205064335.6c3gs3h3pgvhceku@basti-TUXEDO-Book-XA1510> <5271305.e9J7NaK4W3@diego>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6dbc27f8-5261-59c5-acba-70f6c6a74ba1@rwth-aachen.de>
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset="iso-8859-1"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 01, 2021 at 12:49:31PM +0100, Jan Henrik Weinstock wrote:
-> Use the device tree to determine the present cpus instead of assuming all
-> CONFIG_NRCPUS are actually present in the system.
+Hi Sebastian,
+
+I did some tests myself today as well and can confirm your
+hdmi related finding - at least when plugged in on boot.
+
+I tried some combinations of camera vs. hdmi and it seems
+really only when hdmi is plugged in on boot
+
+(1)
+- boot
+- camera
+--> works
+
+(2)
+- boot
+- camera
+- hdmi plugged in
+- hdmi works
+- camera
+--> works
+
+(3)
+- hdmi plugged in
+- boot
+- hdmi works
+- camera
+--> camera doesn't work
+
+(4)
+- boot
+- hdmi plugged in
+- hdmi works
+- camera
+-> camera works
+
+
+With a bit of brute-force [0] it seems the camera also works again even
+with hdmi connected on boot. So conclusion would be that some clock
+is misbehaving.
+
+Now we'll "only" need to find out which one that is.
+
+
+Heiko
+
+
+[0]
+Don't disable any clock gates
+
+diff --git a/drivers/clk/clk-gate.c b/drivers/clk/clk-gate.c
+index 070dc47e95a1..8daf1fc3388c 100644
+--- a/drivers/clk/clk-gate.c
++++ b/drivers/clk/clk-gate.c
+@@ -61,6 +61,9 @@ static void clk_gate_endisable(struct clk_hw *hw, int enable)
+ 
+        set ^= enable;
+ 
++if (!enable)
++return;
++
+        if (gate->lock)
+                spin_lock_irqsave(gate->lock, flags);
+        else
+
+
+
+Am Freitag, 5. Februar 2021, 09:15:47 CET schrieb Heiko Stübner:
+> Hi Sebastian,
 > 
-> Signed-off-by: Jan Henrik Weinstock <jan.weinstock@rwth-aachen.de>
+> Am Freitag, 5. Februar 2021, 07:43:35 CET schrieb Sebastian Fricke:
+> > On 03.02.2021 20:54, Heiko Stübner wrote:
+> > >Am Mittwoch, 3. Februar 2021, 19:14:22 CET schrieb Sebastian Fricke:
+> > >> I have tested your patch set on my nanoPC-T4, here is a complete log
+> > >> with:
+> > >> - relevant kernel log entries
+> > >> - system information
+> > >> - media ctl output
+> > >> - sysfs entry information
+> > >>
+> > >> https://paste.debian.net/1183874/
+> > >>
+> > >> Additionally, to your patchset I have applied the following patches:
+> > >> https://github.com/initBasti/Linux_kernel_media_tree_fork/commits/dual_cam_setup
+> > >>
+> > >> And just to not cause confusion the `media_dev` entries come from this
+> > >> unmerged series:
+> > >> https://patchwork.kernel.org/project/linux-media/list/?series=426269
+> > >>
+> > >> I have actually been able to stream with both of my cameras at the same
+> > >> time using the libcamera cam command.
+> > >> I would like to thank you a lot for making this possible.
+> > >
+> > >Thanks for testing a dual camera setup. On my board I could only test
+> > >the second ISP. And really glad it works for you tool :-) .
+> > >
+> > >Out of curiosity, do you also see that green tint in the images the cameras
+> > >produce?
+> > 
+> > Yes, I do. Actually, I currently have two forms of a green tint, on my
+> > OV13850 everything is quite dark and greenish, which is caused by the
+> > missing 3A algorithms. On my OV4689, I have big patches of the image
+> > with bright green color and flickering, I investigated if this is
+> > connected to the 2nd ISP instance, but that doesn't seem to be the case
+> > as I have the same results when I switch the CSI ports of the cameras.
+> > 
+> > I have found another issue, while testing I discovered following
+> > issue:
+> > When I start the system with an HDMI monitor connected, then the camera
+> > on the 2nd port doesn't work. This is probably because the RX/TX is
+> > reserved as a TX.
+> > But it made me wonder because if the system has an RX, a TX, and
+> > an RX/TX, why isn't the pure TX used by the monitor and the
+> > cameras take RX and RX/TX?
+> > Or do you think that this is maybe a malfunction of this patch?
+> 
+> I don't think it is an issue with this specific series, but still puzzling.
+> 
+> I.e. the DPHYs are actually only relevant to the DSI controllers,
+> with TX0 being connected to DSI0 and TX1RX1 being connected
+> to DSI1. So having an hdmi display _in theory_ shouldn't matter at all.
+> 
+> Out of curiosity what happens, when you boot without hdmi connected
+> turn on the cameras, connect the hdmi after this, try the cameras again?
+> 
+> 
+> Heiko
+> 
+> > 
+> > >
+> > >Thanks
+> > >Heiko
+> > 
+> > Greetings,
+> > Sebastian
+> > 
+> > >
+> > >
+> > >> If you like to you can add:
+> > >> Tested-by: Sebastian Fricke <sebastian.fricke@posteo.net>
+> > >>
+> > >> On 02.02.2021 15:56, Heiko Stuebner wrote:
+> > >> >The rk3399 has two ISPs and right now only the first one is usable.
+> > >> >The second ISP is connected to the TXRX dphy on the soc.
+> > >> >
+> > >> >The phy of ISP1 is only accessible through the DSI controller's
+> > >> >io-memory, so this series adds support for simply using the dsi
+> > >> >controller is a phy if needed.
+> > >> >
+> > >> >That solution is needed at least on rk3399 and rk3288 but no-one
+> > >> >has looked at camera support on rk3288 at all, so right now
+> > >> >only implement the rk3399 specifics.
+> > >> >
+> > >> >
+> > >> >Heiko Stuebner (6):
+> > >> >  drm/rockchip: dsi: add own additional pclk handling
+> > >> >  dt-bindings: display: rockchip-dsi: add optional #phy-cells property
+> > >> >  drm/rockchip: dsi: add ability to work as a phy instead of full dsi
+> > >> >  arm64: dts: rockchip: add #phy-cells to mipi-dsi1
+> > >> >  arm64: dts: rockchip: add cif clk-control pinctrl for rk3399
+> > >> >  arm64: dts: rockchip: add isp1 node on rk3399
+> > >> >
+> > >> > .../display/rockchip/dw_mipi_dsi_rockchip.txt |   1 +
+> > >> > arch/arm64/boot/dts/rockchip/rk3399.dtsi      |  39 ++
+> > >> > drivers/gpu/drm/rockchip/Kconfig              |   2 +
+> > >> > .../gpu/drm/rockchip/dw-mipi-dsi-rockchip.c   | 342 ++++++++++++++++++
+> > >> > 4 files changed, 384 insertions(+)
+> > >> >
+> > >>
+> > >
+> > >
+> > >
+> > >
+> > 
+> 
+> 
 
-Hi Jan,
 
-I cannot apply this patch, it seems you somehow sent it signed as a multipart
-message via Thunderbird.
 
-This causes errors when trying to apply, even after I tried to manually fix the
-patch mail:
 
-    Applying: openrisc: use device tree to determine present cpus
-    error: sha1 information is lacking or useless (arch/openrisc/kernel/smp.c).
-    error: could not build fake ancestor
-    Patch failed at 0001 openrisc: use device tree to determine present cpus
-
-Can you send this using 'git send-email?'
-
-If not I can get it applied with some work, otherwise you can point me to a git
-repo which I can pull it from.
-
--Stafford
