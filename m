@@ -2,67 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A0FC3115EE
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 23:55:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29CE0311622
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 23:59:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233027AbhBEWps (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 17:45:48 -0500
-Received: from mga01.intel.com ([192.55.52.88]:9160 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229562AbhBEOwL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 09:52:11 -0500
-IronPort-SDR: gqNaeb1Bo2cqaaN72sb2k6Fi1tA6p9QQDOq10UJ4d5z0sZePMeVZPFHpJqgu1yOHL2vxe9HEr9
- bZDtpQzcvbRw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9885"; a="200458140"
-X-IronPort-AV: E=Sophos;i="5.81,155,1610438400"; 
-   d="scan'208";a="200458140"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2021 08:01:32 -0800
-IronPort-SDR: XM0B3MmmoWzhRiAeh0KlBcUrZDjGoqkkDfHi61Otf6dih0ahbZZXPqcTwXdkH+DME12WkBAR21
- aHWaSFFWEt/w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,155,1610438400"; 
-   d="scan'208";a="508578982"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga004.jf.intel.com with ESMTP; 05 Feb 2021 08:01:28 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1000)
-        id D6D3B184; Fri,  5 Feb 2021 18:01:27 +0200 (EET)
-Date:   Fri, 5 Feb 2021 19:01:27 +0300
-From:   "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>, x86@kernel.org,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        "H . J . Lu" <hjl.tools@gmail.com>,
-        Andi Kleen <ak@linux.intel.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC 0/9] Linear Address Masking enabling
-Message-ID: <20210205160127.ylcdd6bbve6q2bbk@black.fi.intel.com>
-References: <20210205151631.43511-1-kirill.shutemov@linux.intel.com>
- <YB1o8RZnaaf7xXAQ@hirez.programming.kicks-ass.net>
+        id S229879AbhBEWw1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 17:52:27 -0500
+Received: from mailoutvs7.siol.net ([185.57.226.198]:42821 "EHLO mail.siol.net"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231404AbhBEOnc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 09:43:32 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by mail.siol.net (Zimbra) with ESMTP id CDAA15212DD;
+        Fri,  5 Feb 2021 17:21:25 +0100 (CET)
+X-Virus-Scanned: amavisd-new at psrvmta12.zcs-production.pri
+Received: from mail.siol.net ([127.0.0.1])
+        by localhost (psrvmta12.zcs-production.pri [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id TKfwXNZRDSav; Fri,  5 Feb 2021 17:21:25 +0100 (CET)
+Received: from mail.siol.net (localhost [127.0.0.1])
+        by mail.siol.net (Zimbra) with ESMTPS id 7BD0E52391A;
+        Fri,  5 Feb 2021 17:21:25 +0100 (CET)
+Received: from kista.localnet (cpe-86-58-58-53.static.triera.net [86.58.58.53])
+        (Authenticated sender: jernej.skrabec@siol.net)
+        by mail.siol.net (Zimbra) with ESMTPA id C6873523912;
+        Fri,  5 Feb 2021 17:21:24 +0100 (CET)
+From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@siol.net>
+To:     Chen-Yu Tsai <wens@csie.org>, Maxime Ripard <maxime@cerno.tech>
+Cc:     Mike Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-sunxi <linux-sunxi@googlegroups.com>,
+        Andre Heider <a.heider@gmail.com>
+Subject: Re: Re: [PATCH 2/5] drm/sun4i: tcon: set sync polarity for tcon1 channel
+Date:   Fri, 05 Feb 2021 17:21:24 +0100
+Message-ID: <2156838.FvJGUiYDvf@kista>
+In-Reply-To: <20210205160130.ccp7jfcaa5hgyekb@gilmour>
+References: <20210204184710.1880895-1-jernej.skrabec@siol.net> <CAGb2v64qww4pFwMVrY5UpHOQtM43Q0VPx=3PwJGbB5Oh0qnx=w@mail.gmail.com> <20210205160130.ccp7jfcaa5hgyekb@gilmour>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YB1o8RZnaaf7xXAQ@hirez.programming.kicks-ass.net>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 05, 2021 at 04:49:05PM +0100, Peter Zijlstra wrote:
-> On Fri, Feb 05, 2021 at 06:16:20PM +0300, Kirill A. Shutemov wrote:
-> > The feature competes for bits with 5-level paging: LAM_U48 makes it
-> > impossible to map anything about 47-bits. The patchset made these
-> > capability mutually exclusive: whatever used first wins. LAM_U57 can be
-> > combined with mappings above 47-bits.
+Dne petek, 05. februar 2021 ob 17:01:30 CET je Maxime Ripard napisal(a):
+> On Fri, Feb 05, 2021 at 11:21:22AM +0800, Chen-Yu Tsai wrote:
+> > On Fri, Feb 5, 2021 at 2:48 AM Jernej Skrabec <jernej.skrabec@siol.net> 
+wrote:
+> > >
+> > > Channel 1 has polarity bits for vsync and hsync signals but driver never
+> > > sets them. It turns out that with pre-HDMI2 controllers seemingly there
+> > > is no issue if polarity is not set. However, with HDMI2 controllers
+> > > (H6) there often comes to de-synchronization due to phase shift. This
+> > > causes flickering screen. It's safe to assume that similar issues might
+> > > happen also with pre-HDMI2 controllers.
+> > >
+> > > Solve issue with setting vsync and hsync polarity. Note that display
+> > > stacks with tcon top have polarity bits actually in tcon0 polarity
+> > > register.
+> > >
+> > > Fixes: 9026e0d122ac ("drm: Add Allwinner A10 Display Engine support")
+> > > Tested-by: Andre Heider <a.heider@gmail.com>
+> > > Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
+> > > ---
+> > >  drivers/gpu/drm/sun4i/sun4i_tcon.c | 24 ++++++++++++++++++++++++
+> > >  drivers/gpu/drm/sun4i/sun4i_tcon.h |  5 +++++
+> > >  2 files changed, 29 insertions(+)
+> > >
+> > > diff --git a/drivers/gpu/drm/sun4i/sun4i_tcon.c b/drivers/gpu/drm/sun4i/
+sun4i_tcon.c
+> > > index 6b9af4c08cd6..0d132dae58c0 100644
+> > > --- a/drivers/gpu/drm/sun4i/sun4i_tcon.c
+> > > +++ b/drivers/gpu/drm/sun4i/sun4i_tcon.c
+> > > @@ -672,6 +672,29 @@ static void sun4i_tcon1_mode_set(struct sun4i_tcon 
+*tcon,
+> > >                      SUN4I_TCON1_BASIC5_V_SYNC(vsync) |
+> > >                      SUN4I_TCON1_BASIC5_H_SYNC(hsync));
+> > >
+> > > +       /* Setup the polarity of sync signals */
+> > > +       if (tcon->quirks->polarity_in_ch0) {
+> > > +               val = 0;
+> > > +
+> > > +               if (mode->flags & DRM_MODE_FLAG_PHSYNC)
+> > > +                       val |= SUN4I_TCON0_IO_POL_HSYNC_POSITIVE;
+> > > +
+> > > +               if (mode->flags & DRM_MODE_FLAG_PVSYNC)
+> > > +                       val |= SUN4I_TCON0_IO_POL_VSYNC_POSITIVE;
+> > > +
+> > > +               regmap_write(tcon->regs, SUN4I_TCON0_IO_POL_REG, val);
+> > > +       } else {
+> > > +               val = SUN4I_TCON1_IO_POL_UNKNOWN;
+> > 
+> > I think a comment for the origin of this is warranted.
 > 
-> And I suppose we still can't switch between 4 and 5 level at runtime,
-> using a CR3 bit?
+> If it's anything like TCON0, it's the pixel clock polarity
 
-No. And I can't imagine how would it work with 5-level on kernel side.
+Hard to say, DW HDMI controller has "data enable" polarity along hsync and 
+vsync. It could be either or none of those.
 
--- 
- Kirill A. Shutemov
+What should I write in comment? BSP drivers and documentation use only generic 
+names like io2_inv.
+
+Best regards,
+Jernej
+
+
