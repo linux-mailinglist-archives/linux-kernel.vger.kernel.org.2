@@ -2,144 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07789310E85
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 18:22:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77491310E92
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 18:24:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230262AbhBEPjv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 10:39:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51022 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233234AbhBEPh1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 10:37:27 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E0B5C64F2A;
-        Fri,  5 Feb 2021 17:19:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612545546;
-        bh=GD1HJWPDL+WDon52gpUBIOF+4zUWtcYiATH9iQBxbMw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fynDnKT1Ph8pNPVtE+r4TaxtbWbISD93iQOUxv4KO0WokE4jpHIDc5+QI58U3LhKQ
-         6MkPrX5qwJo0QSx/TsLiTb/lH+TgHhOWLnLQ/Uu2j/mWq/bEYVX1fv6dQ8OzKo2M/9
-         5VjkT5TSKuLvHR8rYH95fb6LkpdIkkPRq4/I6ns3Jsr1R/jR07PUHdr2AEgGpe5nva
-         iyKGnB5Opg5bShOZX0uPaaxnqrL8msH5GOMYBCSJxP/Pl7nX2AN4ffWatBfuLs8YeR
-         DDgJmOrpi+bmXnOSgM850qIknyAZ3nCr9dNnBTkNEU2Y2p/eOtRWJg1rln3MIhy19d
-         3QYZ+CtsToJFg==
-Date:   Fri, 5 Feb 2021 17:18:59 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Lecopzer Chen <lecopzer@gmail.com>
-Cc:     akpm@linux-foundation.org, andreyknvl@google.com, ardb@kernel.org,
-        aryabinin@virtuozzo.com, broonie@kernel.org,
-        catalin.marinas@arm.com, dan.j.williams@intel.com,
-        dvyukov@google.com, glider@google.com, gustavoars@kernel.org,
-        kasan-dev@googlegroups.com, lecopzer.chen@mediatek.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, linux-mm@kvack.org,
-        linux@roeck-us.net, robin.murphy@arm.com, rppt@kernel.org,
-        tyhicks@linux.microsoft.com, vincenzo.frascino@arm.com,
-        yj.chiang@mediatek.com
-Subject: Re: [PATCH v2 1/4] arm64: kasan: don't populate vmalloc area for
- CONFIG_KASAN_VMALLOC
-Message-ID: <20210205171859.GE22665@willie-the-truck>
-References: <20210204150100.GE20815@willie-the-truck>
- <20210204163721.91295-1-lecopzer@gmail.com>
+        id S230333AbhBEPlP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 10:41:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58632 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233319AbhBEPiN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 10:38:13 -0500
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F712C061756
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 09:19:48 -0800 (PST)
+Received: by mail-qk1-x730.google.com with SMTP id t63so7661296qkc.1
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 09:19:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=JI+1S8T48pFcr35wnbPxCUfOS4yHFzqI/JgwK92UMUE=;
+        b=Y1KlXeRl60DhAGK1OMQ2+nZVwB9IvEW7Z9d1AmkglS4SBaMjBmSAxjSgSFsRCAHgN0
+         vJVkxMhWbw5c4oq50K5uIjpwx0/gCXQqsO6PwDU3jVbEph1g/igusmAleN4F9FKli+pI
+         SdBttc3jID0SkLTqmOCF+SOHXFKNIBv9/oqEo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JI+1S8T48pFcr35wnbPxCUfOS4yHFzqI/JgwK92UMUE=;
+        b=U59kdDVjvKeYVob7v1HvtDe3Y3HzKh+PIgewGI3NG/s+2Oah4RiS61jFJGOb7/xMIo
+         f6j73hV+kXXO2+aPVgCtvEndVEFo15mgbswlI0vOmoWo4EF65GRfnKNOe8Ykmiu63i0d
+         39FbnQ0ZcsFzgeuWvO4uQn59KsMGcANAgxPOtUCg3QsDswji4uIbBXHLR7/TSFu90q8a
+         hY6mtGWqeKiAAR2g14gokn7oYbFBmRlsngQ/642rVguYgO7JQbSDZcCG2RpsEEuxOcxj
+         3KluDyatgY52dHn0Vf39I8NKBj2lnlGQx/CvcZZgh+30G/9XZwgJrPShSQ5MxkbiMFN0
+         EJ7g==
+X-Gm-Message-State: AOAM533UYQod+byKpoUCMoETpBXCDZHLJibaEhXdqPjDQnV+g/3cwTOX
+        7unQzYRA1CIMLcniwWtZ3cF4gJUVwqulOA==
+X-Google-Smtp-Source: ABdhPJyauE8TCby6YbaYjWbixlsxw1ZbubH0DDhlCzmcE6yKFd/iAbGB/FTYo19zfiw55efkwiEt1A==
+X-Received: by 2002:a37:a6d2:: with SMTP id p201mr5403552qke.186.1612545587082;
+        Fri, 05 Feb 2021 09:19:47 -0800 (PST)
+Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com. [209.85.219.174])
+        by smtp.gmail.com with ESMTPSA id y135sm10177499qkb.14.2021.02.05.09.19.45
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 05 Feb 2021 09:19:46 -0800 (PST)
+Received: by mail-yb1-f174.google.com with SMTP id m76so7488285ybf.0
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 09:19:45 -0800 (PST)
+X-Received: by 2002:a25:60d6:: with SMTP id u205mr7882421ybb.276.1612545585241;
+ Fri, 05 Feb 2021 09:19:45 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210204163721.91295-1-lecopzer@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20201203202737.7c4wrifqafszyd5y@google.com> <20201208054646.2913063-1-maskray@google.com>
+ <CAD=FV=WWSniXCaC+vAKRa1fCZB4_dbaejwq+NCF56aZFYE-Xsg@mail.gmail.com>
+ <CAKwvOdkFpqEDvJ5b9wpwEhnOdh-YJ8GxCc33JcHXqNRDnO=RfQ@mail.gmail.com> <CAD=FV=XUuo3OaDVOnFiczUTeyKt1moX7nQ+XEX_HiDpv2f3k8A@mail.gmail.com>
+In-Reply-To: <CAD=FV=XUuo3OaDVOnFiczUTeyKt1moX7nQ+XEX_HiDpv2f3k8A@mail.gmail.com>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Fri, 5 Feb 2021 09:19:33 -0800
+X-Gmail-Original-Message-ID: <CAD=FV=UTQCdd9dDG8W8fZZZhSPY3cwWgZk-3VYXZdz6pRbp8Ow@mail.gmail.com>
+Message-ID: <CAD=FV=UTQCdd9dDG8W8fZZZhSPY3cwWgZk-3VYXZdz6pRbp8Ow@mail.gmail.com>
+Subject: Re: [PATCH v2] firmware_loader: Align .builtin_fw to 8
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Fangrui Song <maskray@google.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        kernel test robot <lkp@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 05, 2021 at 12:37:21AM +0800, Lecopzer Chen wrote:
-> 
-> > On Thu, Feb 04, 2021 at 10:46:12PM +0800, Lecopzer Chen wrote:
-> > > > On Sat, Jan 09, 2021 at 06:32:49PM +0800, Lecopzer Chen wrote:
-> > > > > Linux support KAsan for VMALLOC since commit 3c5c3cfb9ef4da9
-> > > > > ("kasan: support backing vmalloc space with real shadow memory")
-> > > > >
-> > > > > Like how the MODULES_VADDR does now, just not to early populate
-> > > > > the VMALLOC_START between VMALLOC_END.
-> > > > > similarly, the kernel code mapping is now in the VMALLOC area and
-> > > > > should keep these area populated.
-> > > > >
-> > > > > Signed-off-by: Lecopzer Chen <lecopzer.chen@mediatek.com>
-> > > > > ---
-> > > > >  arch/arm64/mm/kasan_init.c | 23 ++++++++++++++++++-----
-> > > > >  1 file changed, 18 insertions(+), 5 deletions(-)
-> > > > >
-> > > > > diff --git a/arch/arm64/mm/kasan_init.c b/arch/arm64/mm/kasan_init.c
-> > > > > index d8e66c78440e..39b218a64279 100644
-> > > > > --- a/arch/arm64/mm/kasan_init.c
-> > > > > +++ b/arch/arm64/mm/kasan_init.c
-> > > > > @@ -214,6 +214,7 @@ static void __init kasan_init_shadow(void)
-> > > > >  {
-> > > > >   u64 kimg_shadow_start, kimg_shadow_end;
-> > > > >   u64 mod_shadow_start, mod_shadow_end;
-> > > > > + u64 vmalloc_shadow_start, vmalloc_shadow_end;
-> > > > >   phys_addr_t pa_start, pa_end;
-> > > > >   u64 i;
-> > > > >
-> > > > > @@ -223,6 +224,9 @@ static void __init kasan_init_shadow(void)
-> > > > >   mod_shadow_start = (u64)kasan_mem_to_shadow((void *)MODULES_VADDR);
-> > > > >   mod_shadow_end = (u64)kasan_mem_to_shadow((void *)MODULES_END);
-> > > > >
-> > > > > + vmalloc_shadow_start = (u64)kasan_mem_to_shadow((void *)VMALLOC_START);
-> > > > > + vmalloc_shadow_end = (u64)kasan_mem_to_shadow((void *)VMALLOC_END);
-> > > > > +
-> > > > >   /*
-> > > > >    * We are going to perform proper setup of shadow memory.
-> > > > >    * At first we should unmap early shadow (clear_pgds() call below).
-> > > > > @@ -241,12 +245,21 @@ static void __init kasan_init_shadow(void)
-> > > > >
-> > > > >   kasan_populate_early_shadow(kasan_mem_to_shadow((void *)PAGE_END),
-> > > > >                              (void *)mod_shadow_start);
-> > > > > - kasan_populate_early_shadow((void *)kimg_shadow_end,
-> > > > > -                            (void *)KASAN_SHADOW_END);
-> > > > > + if (IS_ENABLED(CONFIG_KASAN_VMALLOC)) {
-> > > >
-> > > > Do we really need yet another CONFIG option for KASAN? What's the use-case
-> > > > for *not* enabling this if you're already enabling one of the KASAN
-> > > > backends?
+Hi,
+
+On Fri, Jan 22, 2021 at 11:04 AM Doug Anderson <dianders@chromium.org> wrote:
+>
+> Hi,
+>
+> On Tue, Jan 5, 2021 at 11:20 AM Nick Desaulniers
+> <ndesaulniers@google.com> wrote:
+> >
+> > On Tue, Jan 5, 2021 at 9:45 AM Doug Anderson <dianders@chromium.org> wrote:
 > > >
-> > > As I know, KASAN_VMALLOC now only supports KASAN_GENERIC and also
-> > > KASAN_VMALLOC uses more memory to map real shadow memory (1/8 of vmalloc va).
+> > > Hi,
+> > >
+> > > On Mon, Dec 7, 2020 at 9:49 PM Fangrui Song <maskray@google.com> wrote:
+> > > >
+> > > > arm64 references the start address of .builtin_fw (__start_builtin_fw)
+> > > > with a pair of R_AARCH64_ADR_PREL_PG_HI21/R_AARCH64_LDST64_ABS_LO12_NC
+> > > > relocations. The compiler is allowed to emit the
+> > > > R_AARCH64_LDST64_ABS_LO12_NC relocation because struct builtin_fw in
+> > > > include/linux/firmware.h is 8-byte aligned.
+> > > >
+> > > > The R_AARCH64_LDST64_ABS_LO12_NC relocation requires the address to be a
+> > > > multiple of 8, which may not be the case if .builtin_fw is empty.
+> > > > Unconditionally align .builtin_fw to fix the linker error. 32-bit
+> > > > architectures could use ALIGN(4) but that would add unnecessary
+> > > > complexity, so just use ALIGN(8).
+> > > >
+> > > > Fixes: 5658c76 ("firmware: allow firmware files to be built into kernel image")
+> > > > Link: https://github.com/ClangBuiltLinux/linux/issues/1204
+> > > > Reported-by: kernel test robot <lkp@intel.com>
+> > > > Signed-off-by: Fangrui Song <maskray@google.com>
+> > > > Acked-by: Arnd Bergmann <arnd@arndb.de>
+> > > >
+> > > > ---
+> > > > Change in v2:
+> > > > * Use output section alignment instead of inappropriate ALIGN_FUNCTION()
+> > > > ---
+> > > >  include/asm-generic/vmlinux.lds.h | 2 +-
+> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > >
+> > > Tested-by: Douglas Anderson <dianders@chromium.org>
+> > >
+> > > For whatever reason this is hitting developers on Chrome OS a whole
+> > > lot suddenly.  Any chance it could be landed?  Which tree should it go
+> > > through?
 > >
-> > The shadow is allocated dynamically though, isn't it?
-> 
-> Yes, but It's still a cost.
-> 
-> > > There should be someone can enable KASAN_GENERIC but can't use VMALLOC
-> > > due to memory issue.
-> >
-> > That doesn't sound particularly realistic to me. The reason I'm pushing here
-> > is because I would _really_ like to move to VMAP stack unconditionally, and
-> > that would effectively force KASAN_VMALLOC to be set if KASAN is in use.
-> >
-> > So unless there's a really good reason not to do that, please can we make
-> > this unconditional for arm64? Pretty please?
-> 
-> I think it's fine since we have a good reason.
-> Also if someone have memory issue in KASAN_VMALLOC,
-> they can use SW_TAG, right?
-> 
-> However the SW_TAG/HW_TAG is not supported VMALLOC yet.
-> So the code would be like
-> 
-> 	if (IS_ENABLED(CONFIG_KASAN_GENERIC))
+> > Andrew,
+> > Would you mind picking up this patch for us, please?
+> > https://lore.kernel.org/lkml/20201208054646.2913063-1-maskray@google.com/
+>
+> I just synced today and I'm still hitting this error when building
+> mainline.  Perhaps Andrew is busy and someone else can pick it up?
+> It'd be nice to get this into v5.11
 
-Just make this CONFIG_KASAN_VMALLOC, since that depends on KASAN_GENERIC.
+I hate to be a broken record, but I synced and built mainline today
+(v5.11-rc6-139-gdd86e7fa07a3) and I'm still hitting this.  It feels
+like we need an alternate way to get this landed...
 
-> 		/* explain the relationship between 
-> 		 * KASAN_GENERIC and KASAN_VMALLOC in arm64
-> 		 * XXX: because we want VMAP stack....
-> 		 */
-
-I don't understand the relation with SW_TAGS. The VMAP_STACK dependency is:
-
-	depends on !KASAN || KASAN_HW_TAGS || KASAN_VMALLOC
-
-which doesn't mention SW_TAGS at all. So that seems to imply that SW_TAGS
-and VMAP_STACK are mutually exclusive :(
-
-Will
+-Doug
