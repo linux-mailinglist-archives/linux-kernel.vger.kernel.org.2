@@ -2,62 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50F76310FB9
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 19:16:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 020D6310FC5
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 19:20:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233590AbhBEQds (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 11:33:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43310 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233733AbhBEQbX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 11:31:23 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 6E7A264E50;
-        Fri,  5 Feb 2021 18:13:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612548784;
-        bh=5FjHkHYOt9eZtavVQC5cbPIy3lXBb60Zbdm+IZTyxTM=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=ZQl6+OwmcKSOGk6voDdm9lfqG21+1AtKoOKdrjgCnzB7+aDAy2/WGEFASSVcyATvN
-         O+4QQgU/D5qWNh02e9SaD4a8kWwo3OAjzSVefPH8xpufHxT+mJoTmTXShJ+QYhGr2l
-         sKbONdWh3SXfM2/66zbKO1iVxiynGlloS7vOU02oEKayImytkIwBOzU3wAmTC4dGmI
-         jt88T7l/k8CwxyIjSYFJgI4Fl17mM/TSGdEWbVJzC+Etplx2SfH83kljahDb71hHkx
-         pXACcg9rUROFYXMSJ9YsOMJJEiZy/tanwIQ7U4UMgiZ9RUPF48xLqqXvvEZm9XLcMz
-         xocCiYII8mviQ==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 69C4860978;
-        Fri,  5 Feb 2021 18:13:04 +0000 (UTC)
-Subject: Re: [git pull] drm fixes for 5.11-rc7
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <CAPM=9twvv9LRSTW4t_Q=OLfei1DsXn-fsjO8ad3cSsZ3KeDNhQ@mail.gmail.com>
-References: <CAPM=9twvv9LRSTW4t_Q=OLfei1DsXn-fsjO8ad3cSsZ3KeDNhQ@mail.gmail.com>
-X-PR-Tracked-List-Id: Direct Rendering Infrastructure - Development
- <dri-devel.lists.freedesktop.org>
-X-PR-Tracked-Message-Id: <CAPM=9twvv9LRSTW4t_Q=OLfei1DsXn-fsjO8ad3cSsZ3KeDNhQ@mail.gmail.com>
-X-PR-Tracked-Remote: git://anongit.freedesktop.org/drm/drm tags/drm-fixes-2021-02-05-1
-X-PR-Tracked-Commit-Id: 59854811c08cfbdf52d79231666e7c07c46ff338
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 8e91dd934be6131143df5db05fb06635581addf9
-Message-Id: <161254878442.14736.6188187964418855985.pr-tracker-bot@kernel.org>
-Date:   Fri, 05 Feb 2021 18:13:04 +0000
-To:     Dave Airlie <airlied@gmail.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        LKML <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>
+        id S233760AbhBEQgY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 11:36:24 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:60661 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233699AbhBEQdU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 11:33:20 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612548855;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=b+b6OD3StrUZhviTTkgah8uKJMjMpGgyYUl7CSN7rcs=;
+        b=HCfVOdRqXo+n3sgTEPC6PfoLoHQz52UilSj/iQuabA3PVquLfGwb2oZK01wXOg0n4iw/td
+        1qlVpt8c8+w2Pjyje7mjmhPAqq3Mg61njKaQENQH+sL3y08iFZAHd+CJugydzJhjXmOiNm
+        7ND/r7vKwiJ0DE3gjU661HjQui6mJe0=
+Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
+ [209.85.160.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-516-ks0CfC7YNrOw5RZGTTrvFA-1; Fri, 05 Feb 2021 13:14:14 -0500
+X-MC-Unique: ks0CfC7YNrOw5RZGTTrvFA-1
+Received: by mail-qt1-f197.google.com with SMTP id j14so5890747qtv.3
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 10:14:14 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=b+b6OD3StrUZhviTTkgah8uKJMjMpGgyYUl7CSN7rcs=;
+        b=CJrGPnXSUM8eEKPC3lloWcNWB+PPpd4Oi8lhTPPbJTr8/191BLUlwk0Dd+5mbhwY3H
+         qDWSzxYAmFP4Q9oX90cnbPiHduxlDTPrWS6D25qg/jPxSsOQPy1WiWEwjP3rjbXg1PsM
+         Pmb9wTlCqrvyDv/JmGDALinKvRV6u0j+3pmjyq3uLavbTdyNK7GwDSG2Eg/v383W/o1q
+         +BPTOZVCnd+wW7mEBYLApeBm/nGFVPmj/Z4WgfR9Q0bjvf9/j5XBzJiGQloquugQY1Us
+         w4oaS/elwm1dZkBDGFlJ2gkB0hBTrz1WPoYyxu2bC7rCFcN8XokzAwxa0mBjqmCxyJZe
+         tiwg==
+X-Gm-Message-State: AOAM533Hq2Kor/c9HOzrOYWf2IfmA7v28NHV0fjNrz6wX9Kdkck24EWF
+        DKhJwFsrNtRNWI7beDTBCy+vBmOma2ZgjbMYWIoyyXhxbRwC69pMr2fiGyQIuzQnc7NBXDewZ3D
+        GcsCuJU37dQBhr/HQ9td9KAQV
+X-Received: by 2002:a05:620a:530:: with SMTP id h16mr5623530qkh.136.1612548853758;
+        Fri, 05 Feb 2021 10:14:13 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJw2dxqnZovOeKuwXlYA9ZoMH6h3WcLq3ydNuPij1rSRR/WcmyfdGA897c3rYVPJ5YdnoImrSg==
+X-Received: by 2002:a05:620a:530:: with SMTP id h16mr5623516qkh.136.1612548853537;
+        Fri, 05 Feb 2021 10:14:13 -0800 (PST)
+Received: from xz-x1 (bras-vprn-toroon474qw-lp130-20-174-93-89-182.dsl.bell.ca. [174.93.89.182])
+        by smtp.gmail.com with ESMTPSA id i65sm9921618qkf.105.2021.02.05.10.14.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Feb 2021 10:14:12 -0800 (PST)
+Date:   Fri, 5 Feb 2021 13:14:11 -0500
+From:   Peter Xu <peterx@redhat.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org, jgg@ziepe.ca,
+        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        dan.j.williams@intel.com
+Subject: Re: [PATCH 0/2] KVM: do not assume PTE is writable after follow_pfn
+Message-ID: <20210205181411.GB3195@xz-x1>
+References: <20210205103259.42866-1-pbonzini@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210205103259.42866-1-pbonzini@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 5 Feb 2021 11:43:49 +1000:
+On Fri, Feb 05, 2021 at 05:32:57AM -0500, Paolo Bonzini wrote:
+> This series is the first step towards fixing KVM's usage of follow_pfn.
+> The immediate fix here is that KVM is not checking the writability of
+> the PFN, which actually dates back to way before the introduction of
+> follow_pfn in commit add6a0cd1c5b ("KVM: MMU: try to fix up page faults
+> before giving up", 2016-07-05).  There are more changes needed to
+> invalidate gfn-to-pfn caches from MMU notifiers, but this issue will
+> be tackled later.
+> 
+> A more fundamental issue however is that the follow_pfn function is
+> basically impossible to use correctly.  Almost all users for example
+> are assuming that the page is writable; KVM was not alone in this
+> mistake.  follow_pte, despite not being exported for modules, is a
+> far saner API.  Therefore, patch 1 simplifies follow_pte a bit and
+> makes it available to modules.
+> 
+> Please review and possibly ack for inclusion in the KVM tree,
+> thanks!
 
-> git://anongit.freedesktop.org/drm/drm tags/drm-fixes-2021-02-05-1
+FWIW, the patches look correct to me (if with patch 2 report fixed):
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/8e91dd934be6131143df5db05fb06635581addf9
+Reviewed-by: Peter Xu <peterx@redhat.com>
 
-Thank you!
+But I do have a question on why dax as the only user needs to pass in the
+notifier to follow_pte() for initialization.
+
+Indeed there're a difference on start/end init of the notifier depending on
+whether it's a huge pmd but since there's the pmdp passed over too so I assume
+the caller should know how to init the notifier anyways.
+
+The thing is at least in current code we could send meaningless notifiers,
+e.g., in follow_pte():
+
+	if (range) {
+		mmu_notifier_range_init(range, MMU_NOTIFY_CLEAR, 0, NULL, mm,
+					address & PAGE_MASK,
+					(address & PAGE_MASK) + PAGE_SIZE);
+		mmu_notifier_invalidate_range_start(range);
+	}
+	ptep = pte_offset_map_lock(mm, pmd, address, ptlp);
+	if (!pte_present(*ptep))
+		goto unlock;
+	*ptepp = ptep;
+	return 0;
+unlock:
+	pte_unmap_unlock(ptep, *ptlp);
+	if (range)
+		mmu_notifier_invalidate_range_end(range);
+
+The notify could be meaningless if we do the "goto unlock" path.
+
+Ideally it seems we can move the notifier code to caller (as what most mmu
+notifier users do) and we can also avoid doing that if follow_pte returned
+-EINVAL.
+
+Thanks,
 
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Peter Xu
+
