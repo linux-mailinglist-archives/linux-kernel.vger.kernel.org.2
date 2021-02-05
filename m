@@ -2,123 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED8AA31140F
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 23:00:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 400833113BD
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 22:44:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232480AbhBEV5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 16:57:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45264 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233007AbhBEO7i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 09:59:38 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 68817650B5;
-        Fri,  5 Feb 2021 14:14:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612534473;
-        bh=YRUUqm23s/ETZbX9vU/encIPO1XYTTBMD0pNKS+yxzo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IYvl0zBfSxOvmlzC0K2fqiLlTc8Fiax8D4pxfzkD+69KBwpvYpkx9IADJMCsHGOkf
-         +jYZoMGHD9Yk4NPSsqO0lxW0Lo+apc1SygKBCEE42i81PMpH/BwNpllWGqw5AwGe9H
-         r+lyQZPtkWUuP0DeC8Rs/RK+IpHHZW5whiDOLovM=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Brian King <brking@linux.vnet.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 13/15] scsi: ibmvfc: Set default timeout to avoid crash during migration
-Date:   Fri,  5 Feb 2021 15:08:58 +0100
-Message-Id: <20210205140650.268544540@linuxfoundation.org>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210205140649.733510103@linuxfoundation.org>
-References: <20210205140649.733510103@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S231790AbhBEVnw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 16:43:52 -0500
+Received: from mail.efficios.com ([167.114.26.124]:47352 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232887AbhBEO74 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 09:59:56 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 474922F508D;
+        Fri,  5 Feb 2021 10:09:28 -0500 (EST)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id I1BKq0K46zNG; Fri,  5 Feb 2021 10:09:27 -0500 (EST)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id C7ACB2F47DC;
+        Fri,  5 Feb 2021 10:09:27 -0500 (EST)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com C7ACB2F47DC
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1612537767;
+        bh=Ck2u+dtqWB3vlWMCLhAAtvbRHCvY9B7KyJIHvTSoVLw=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=Dg9QxwlDor6mV+Sd/7v2A2FNlCVCqONKIDCfJ5pPW985k1yaeewq+nbNNTD4pUp3t
+         TC9ObNTj2NTsybUWlMO64/79q8pQwpJq9P6KTE2v7wCFIrSAEnFP5NZoQc1APdG91g
+         W+tVqCDNKPbwPKtnKwaP0hUpyVkSPGArjzUSVmTDYroEfSK5CdkcxT9gjOS4o/VEaD
+         rg+PKRjalZaZaWG+vQo8R/hQ0erCl879OYg4AcBoljX7FI4dhA9VV6S786L7HNgWy5
+         Im3dWaO3fFMZMMcra/wSdT3T4n0A4cKocH3EU/qkXPf06nJT4EWycVnYG2hsflgS1C
+         d1kALGNJXTP0A==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id 9R2Zsrk1ft6s; Fri,  5 Feb 2021 10:09:27 -0500 (EST)
+Received: from localhost (unknown [192.222.236.144])
+        by mail.efficios.com (Postfix) with ESMTPSA id 6ECB52F4D5A;
+        Fri,  5 Feb 2021 10:09:27 -0500 (EST)
+Date:   Fri, 5 Feb 2021 10:09:26 -0500
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     Brendan Jackman <jackmanb@chromium.org>
+Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        Paul Renauld <renauld@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        James Morris <jmorris@namei.org>, pjt@google.com,
+        jannh@google.com, peterz@infradead.org, rafael.j.wysocki@intel.com,
+        keescook@chromium.org, thgarnie@chromium.org, kpsingh@google.com,
+        paul.renauld.epfl@gmail.com, Brendan Jackman <jackmanb@google.com>,
+        mathieu.desnoyers@efficios.com, rostedt@goodmis.org
+Subject: Re: [RFC] security: replace indirect calls with static calls
+Message-ID: <20210205150926.GA12608@localhost>
+References: <20200820164753.3256899-1-jackmanb@chromium.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200820164753.3256899-1-jackmanb@chromium.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Brian King <brking@linux.vnet.ibm.com>
+On 20-Aug-2020 06:47:53 PM, Brendan Jackman wrote:
+> From: Paul Renauld <renauld@google.com>
+> 
+> LSMs have high overhead due to indirect function calls through
+> retpolines. This RPC proposes to replace these with static calls [1]
+> instead.
+> 
+> This overhead is especially significant for the "bpf" LSM which supports
+> the implementation of LSM hooks with eBPF programs (security/bpf)[2]. In
+> order to facilitate this, the "bpf" LSM provides a default nop callback for
+> all LSM hooks. When enabled, the "bpf", LSM incurs an unnecessary /
+> avoidable indirect call to this nop callback.
+> 
+> The performance impact on a simple syscall eventfd_write (which triggers
+> the file_permission hook) was measured with and without "bpf" LSM
+> enabled. Activating the LSM resulted in an overhead of 4% [3].
+> 
+> This overhead prevents the adoption of bpf LSM on performance critical
+> systems, and also, in general, slows down all LSMs.
+> 
+> Currently, the LSM hook callbacks are stored in a linked list and
+> dispatched as indirect calls. Using static calls can remove this overhead
+> by replacing all indirect calls with direct calls.
+> 
+> During the discussion of the "bpf" LSM patch-set it was proposed to special
+> case BPF LSM to avoid the overhead by using static keys. This was however
+> not accepted and it was decided to [4]:
+> 
+> - Not special-case the "bpf" LSM.
+> - Implement a general solution benefitting the whole LSM framework.
+> 
+> This is based on the static call branch [5].
 
-[ Upstream commit 764907293edc1af7ac857389af9dc858944f53dc ]
+Hi!
 
-While testing live partition mobility, we have observed occasional crashes
-of the Linux partition. What we've seen is that during the live migration,
-for specific configurations with large amounts of memory, slow network
-links, and workloads that are changing memory a lot, the partition can end
-up being suspended for 30 seconds or longer. This resulted in the following
-scenario:
+So I reviewed this quickly, and hopefully my understanding is correct.
+AFAIU, your approach is limited to scenarios where the callbacks are
+known at compile-time. It also appears to add the overhead of a
+switch/case for every function call on the fast-path.
 
-CPU 0                          CPU 1
--------------------------------  ----------------------------------
-scsi_queue_rq                    migration_store
- -> blk_mq_start_request          -> rtas_ibm_suspend_me
-  -> blk_add_timer                 -> on_each_cpu(rtas_percpu_suspend_me
-              _______________________________________V
-             |
-             V
-    -> IPI from CPU 1
-     -> rtas_percpu_suspend_me
-                                     -> __rtas_suspend_last_cpu
+I am the original author of the tracepoint infrastructure in the Linux
+kernel, which also needs to iterate on an array of callbacks. Recently,
+Steven Rostedt pushed a change which accelerates the single-callback
+case using static calls to reduce retpoline mitigation overhead, but I
+would prefer if we could accelerate the multiple-callback case as well.
+Note that for tracepoints, the callbacks are not known at compile-time.
 
--- Linux partition suspended for > 30 seconds --
-                                      -> for_each_online_cpu(cpu)
-                                           plpar_hcall_norets(H_PROD
- -> scsi_dispatch_cmd
-                                      -> scsi_times_out
-                                       -> scsi_abort_command
-                                        -> queue_delayed_work
-  -> ibmvfc_queuecommand_lck
-   -> ibmvfc_send_event
-    -> ibmvfc_send_crq
-     - returns H_CLOSED
-   <- returns SCSI_MLQUEUE_HOST_BUSY
--> __blk_mq_requeue_request
+This is where I think we could come up with a generic solution that
+would fit both LSM and tracepoint use-cases.
 
-                                      -> scmd_eh_abort_handler
-                                       -> scsi_try_to_abort_cmd
-                                         - returns SUCCESS
-                                       -> scsi_queue_insert
+Here is what I have in mind. Let's say we generate code to accelerate up
+to N calls, and after that we have a fallback using indirect calls.
 
-Normally, the SCMD_STATE_COMPLETE bit would protect against the command
-completion and the timeout, but that doesn't work here, since we don't
-check that at all in the SCSI_MLQUEUE_HOST_BUSY path.
+Then we should be able to generate the following using static keys as a
+jump table and N static calls:
 
-In this case we end up calling scsi_queue_insert on a request that has
-already been queued, or possibly even freed, and we crash.
+  jump <static key label target>
+label_N:
+  stack setup
+  call
+label_N-1:
+  stack setup
+  call
+label_N-2:
+  stack setup
+  call
+  ...
+label_0:
+  jump end
+label_fallback:
+  <iteration and indirect calls>
+end:
 
-The patch below simply increases the default I/O timeout to avoid this race
-condition. This is also the timeout value that nearly all IBM SAN storage
-recommends setting as the default value.
+So the static keys would be used to jump to the appropriate label (using
+a static branch, which has pretty much 0 overhead). Static calls would
+be used to implement each of the calls.
 
-Link: https://lore.kernel.org/r/1610463998-19791-1-git-send-email-brking@linux.vnet.ibm.com
-Signed-off-by: Brian King <brking@linux.vnet.ibm.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/scsi/ibmvscsi/ibmvfc.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+Thoughts ?
 
-diff --git a/drivers/scsi/ibmvscsi/ibmvfc.c b/drivers/scsi/ibmvscsi/ibmvfc.c
-index dbacd9830d3df..460014ded14de 100644
---- a/drivers/scsi/ibmvscsi/ibmvfc.c
-+++ b/drivers/scsi/ibmvscsi/ibmvfc.c
-@@ -2891,8 +2891,10 @@ static int ibmvfc_slave_configure(struct scsi_device *sdev)
- 	unsigned long flags = 0;
- 
- 	spin_lock_irqsave(shost->host_lock, flags);
--	if (sdev->type == TYPE_DISK)
-+	if (sdev->type == TYPE_DISK) {
- 		sdev->allow_restart = 1;
-+		blk_queue_rq_timeout(sdev->request_queue, 120 * HZ);
-+	}
- 	spin_unlock_irqrestore(shost->host_lock, flags);
- 	return 0;
- }
+Thanks,
+
+Mathieu
+
 -- 
-2.27.0
-
-
-
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
