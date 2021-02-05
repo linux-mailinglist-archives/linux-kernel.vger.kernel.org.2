@@ -2,52 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8996A310ADF
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 13:06:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92D93310AE2
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 13:08:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231400AbhBEMFt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 07:05:49 -0500
-Received: from mx2.suse.de ([195.135.220.15]:47360 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232152AbhBEMCv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 07:02:51 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 8EF68ADE3;
-        Fri,  5 Feb 2021 12:02:08 +0000 (UTC)
-Subject: Re: [PATCH v2] mm/page_owner: Record the timestamp of all pages
- during free
-To:     Georgi Djakov <georgi.djakov@linaro.org>,
-        akpm@linux-foundation.org, linux-mm@kvack.org
-Cc:     corbet@lwn.net, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210203175905.12267-1-georgi.djakov@linaro.org>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <db54c41c-2bb2-43e8-eb0d-5869a5cff10f@suse.cz>
-Date:   Fri, 5 Feb 2021 13:02:08 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S231481AbhBEMHh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 07:07:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50282 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230111AbhBEMEa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 07:04:30 -0500
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C99AFC061786
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 04:03:38 -0800 (PST)
+Received: from zn.tnic (p200300ec2f0bad00ff9d6d5b91facfca.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:ad00:ff9d:6d5b:91fa:cfca])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 73CF71EC030F;
+        Fri,  5 Feb 2021 13:02:46 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1612526566;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=sKxM3ZrxvQUzR3JycrEdrI/8jyBLCDgk1CkoAaj5SSs=;
+        b=K+PS6/Tv06ySifmoob52mksbJAOoDnXEsKabYYxN4cmyEKQnZWdctsyNElrgB6F3q7aQuO
+        bsBF8ATPCII8npUABzL4lzW90E7iftEzyOPLFma3RwpSpJEBwONY+ltauYjQ0n+R0pC+e+
+        RD/SCEo+UXB3JDEo3u9aHgkez7snj5o=
+Date:   Fri, 5 Feb 2021 13:02:44 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Kees Cook <keescook@chromium.org>
+Subject: Re: [patch 01/12] x86/entry: Fix instrumentation annotation
+Message-ID: <20210205120244.GE17488@zn.tnic>
+References: <20210204204903.350275743@linutronix.de>
+ <20210204211154.091926005@linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20210203175905.12267-1-georgi.djakov@linaro.org>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20210204211154.091926005@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/3/21 6:59 PM, Georgi Djakov wrote:
-> Collect the time when each allocation is freed, to help with memory
-> analysis with kdump/ramdump. Add the timestamp also in the page_owner
-> debugfs file and print it in dump_page().
+On Thu, Feb 04, 2021 at 09:49:04PM +0100, Thomas Gleixner wrote:
+> Embracing a callout into instrumentation_begin() / instrumentation_begin()
+> does not really make sense. Make the latter instrumentation_end().
 > 
-> Having another timestamp when we free the page helps for debugging
-> page migration issues. For example both alloc and free timestamps
-> being the same can gave hints that there is an issue with migrating
-> memory, as opposed to a page just being dropped during migration.
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> ---
+>  arch/x86/entry/common.c |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> Signed-off-by: Georgi Djakov <georgi.djakov@linaro.org>
+> --- a/arch/x86/entry/common.c
+> +++ b/arch/x86/entry/common.c
+> @@ -270,7 +270,7 @@ static void __xen_pv_evtchn_do_upcall(vo
+>  
+>  	instrumentation_begin();
+>  	run_on_irqstack_cond(__xen_pv_evtchn_do_upcall, regs);
+> -	instrumentation_begin();
+> +	instrumentation_end();
+>  
+>  	set_irq_regs(old_regs);
 
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
+Cc: <stable@vger.kernel.org> ?
 
-Thanks.
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
