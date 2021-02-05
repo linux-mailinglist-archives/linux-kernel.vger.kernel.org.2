@@ -2,97 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 108723116ED
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 00:22:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AECA31164F
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 00:02:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231478AbhBEXUo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 18:20:44 -0500
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:53432 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230088AbhBEO1N (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 09:27:13 -0500
-Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 115EosxG001254;
-        Fri, 5 Feb 2021 15:57:48 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : subject : to
- : cc : references : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=aWDWtjgjvIr2y3zTvyZfIzBb+OyjkthoLMM6dyPBcVE=;
- b=oxIa9uWsFM5obMv0fBgVcd9iyGG0c1i0xPxb4Z2ZRFlbzEF0xK6gqmOeQPvB+U54HasS
- KAmL9hx2l0mTSb7/lfJq8QldK7bT7E4ls2fdAE7CZjk+AZWOgLJ3KoAdHiAeCOZ7T2V5
- Ws8c/e9PIt+HhbVB9cb/XzCrz+vNLM9ck2bPnqXbeiXK2YZmb0p4LzklbDIjXgY3P4sf
- Dz+6MBeul8NArDWkhNO1QbdM9iAe3c2vek80OZbKTD9IuzufBf4HHPrthH4RBAHOvnF7
- bMg+SlFCc3ceT6HFRF4r0AY/6TtLgtlAxTQ1CxB0XUVIZ7Sx6X6yyucSoy3UjJuZhTJw OQ== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 36ey7hh1j7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 05 Feb 2021 15:57:48 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 3BE6B100034;
-        Fri,  5 Feb 2021 15:57:48 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 219BA2402BB;
-        Fri,  5 Feb 2021 15:57:48 +0100 (CET)
-Received: from lmecxl1060.lme.st.com (10.75.127.44) by SFHDAG2NODE3.st.com
- (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 5 Feb
- 2021 15:57:47 +0100
-From:   Pierre Yves MORDRET <pierre-yves.mordret@foss.st.com>
-Subject: Re: [PATCH 0/5] i2c: stm32: filter binding support & debug info
-To:     Alain Volmat <alain.volmat@foss.st.com>, <wsa@kernel.org>,
-        <robh+dt@kernel.org>
-CC:     <mark.rutland@arm.com>, <mcoquelin.stm32@gmail.com>,
-        <alexandre.torgue@foss.st.com>, <linux-i2c@vger.kernel.org>,
-        <devicetree@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <fabrice.gasnier@foss.st.com>
-References: <1612515104-838-1-git-send-email-alain.volmat@foss.st.com>
-Message-ID: <4addb8e0-8fcb-d713-065d-858698f3d493@foss.st.com>
-Date:   Fri, 5 Feb 2021 15:57:39 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S232235AbhBEXBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 18:01:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42858 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232775AbhBEOiV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 09:38:21 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 220B864FBC;
+        Fri,  5 Feb 2021 14:59:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612537146;
+        bh=pcoVC9g6Ql5brnm8ZYrxM8gXd4vKE+CdwztAMluc3jc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dAu9XINGXWMXKM/v4VSMEpR5UUCt36txoacXH7ka0tNv+vG8Uhvnlhf5OOFcYyRyK
+         tKUvQdjoSvGBnoTZ1QDZRsluTJ4fRW+i0tlc+VKsUF9R5bkMFO921B8eKwzT9xS89+
+         BxgNKjCkkKuVdr2Xb16fv/oWk2wF/IpowhfTwmRmdl/hk0xAPKiy6q/JPbOV9rihec
+         DwKrhy22qVj5ArEmPBouXYoyduoc9mEyFyB8W2cvPw7M1ank7v970HjrN9h2zkMlCC
+         yhP5EQx8DqzkpHfzgFM25WJfLei1aGv86v8U7bPoZpWQE7W4pd9B5eIU9O0dmMTnAy
+         8ir6e/XFyhIKg==
+Date:   Fri, 5 Feb 2021 14:58:16 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Shengjiu Wang <shengjiu.wang@nxp.com>
+Cc:     lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
+        festevam@gmail.com, linuxppc-dev@lists.ozlabs.org,
+        robh+dt@kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH 5/7] ASoC: imx-pcm-rpmsg: Add platform driver for audio
+ base on rpmsg
+Message-ID: <20210205145816.GD4720@sirena.org.uk>
+References: <1612508250-10586-1-git-send-email-shengjiu.wang@nxp.com>
+ <1612508250-10586-6-git-send-email-shengjiu.wang@nxp.com>
 MIME-Version: 1.0
-In-Reply-To: <1612515104-838-1-git-send-email-alain.volmat@foss.st.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.44]
-X-ClientProxiedBy: SFHDAG2NODE2.st.com (10.75.127.5) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-02-05_09:2021-02-05,2021-02-05 signatures=0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="k4f25fnPtRuIRUb3"
+Content-Disposition: inline
+In-Reply-To: <1612508250-10586-6-git-send-email-shengjiu.wang@nxp.com>
+X-Cookie: Huh?
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello all
 
-Looks good to me
+--k4f25fnPtRuIRUb3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Signed-off-by: Pierre-Yves MORDRET <pierre-yves.mordret@foss.st.com>
+On Fri, Feb 05, 2021 at 02:57:28PM +0800, Shengjiu Wang wrote:
 
-Regards
-On 2/5/21 9:51 AM, Alain Volmat wrote:
-> This serie add support for the analog and digital filter binding
-> for the stm32f7 i2c driver.
-> An additional patch add also debug informations, displayed in case
-> of errors.
-> 
-> Alain Volmat (5):
->   i2c: stm32f7: fix configuration of the digital filter
->   i2c: stm32f7: support DT binding i2c-analog-filter
->   i2c: stm32f7: add support for DNF i2c-digital-filter binding
->   ARM: dts: stm32: enable the analog filter for all I2C nodes in
->     stm32mp151
->   i2c: stm32f7: indicate the address being accessed on errors
-> 
->  arch/arm/boot/dts/stm32mp151.dtsi |  6 +++
->  drivers/i2c/busses/i2c-stm32f7.c  | 63 ++++++++++++++++++++-----------
->  2 files changed, 46 insertions(+), 23 deletions(-)
-> 
+> +	if (params_format(params) == SNDRV_PCM_FORMAT_S16_LE)
+> +		msg->s_msg.param.format   = RPMSG_S16_LE;
+> +	else if (params_format(params) == SNDRV_PCM_FORMAT_S24_LE)
 
--- 
---
-~ Py MORDRET
---
+Again this should be a switch statement.
+
+> +	if (params_channels(params) == 1)
+> +		msg->s_msg.param.channels = RPMSG_CH_LEFT;
+> +	else
+> +		msg->s_msg.param.channels = RPMSG_CH_STEREO;
+
+Shouldn't this be reporting an error if the number of channels is more
+than 2?
+
+> +		/*
+> +		 * if the data in the buffer is less than one period
+> +		 * send message immediately.
+> +		 * if there is more than one period data, delay one
+> +		 * period (timer) to send the message.
+> +		 */
+> +		if ((avail - writen_num * period_size) <= period_size) {
+> +			imx_rpmsg_insert_workqueue(substream, msg, info);
+> +		} else if (rpmsg->force_lpa && !timer_pending(timer)) {
+> +			int time_msec;
+> +
+> +			time_msec = (int)(runtime->period_size * 1000 / runtime->rate);
+> +			mod_timer(timer, jiffies + msecs_to_jiffies(time_msec));
+> +		}
+
+The comment here is at least confusing - why would we not send a full
+buffer immediately if we have one?  This sounds like it's the opposite
+way round to what we'd do if we were trying to cut down the number of
+messages.  It might help to say which buffer and where?
+
+> +	/**
+> +	 * Every work in the work queue, first we check if there
+
+/** comments are only for kerneldoc.
+
+--k4f25fnPtRuIRUb3
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmAdXQcACgkQJNaLcl1U
+h9ACUwf9EcHPKiRzzRa6Atb6PHhaM1oBK/2zYZcdmLDejwBct/KltZywmVsBQv0o
+JmeLnKw7/jLk3Sph4Pqk6J2lyizC5nik/w7NjFO5CIUyNTQnFRZtaDILcnVr7vNk
+28HX0/XoPM54EbfyncrP41lr/L4EYgHmjIMqi/TjVtFnfyOt1Pq99Rj02lKDVnV3
+ERmOguBociG3yf9kV/wcrZzJ4hOg7Lw468CHtxoeCpPKsJovmByQ0I78JQJlJ1Jj
+TRjC06zUmRhscWFCrWiOkItqPpTcrv5TxMVh5Ko5zE1rYslk8XURTFpnKDxWoxkR
+MtylP+v1qS4G4STsZObKZtcso3D9hA==
+=hzt6
+-----END PGP SIGNATURE-----
+
+--k4f25fnPtRuIRUb3--
