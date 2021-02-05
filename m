@@ -2,119 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B35F33103EC
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 04:56:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C64CC3103EF
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 04:59:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231216AbhBED4G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 22:56:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58536 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231183AbhBED4E (ORCPT
+        id S231220AbhBED6y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 22:58:54 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:22502 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230525AbhBED6w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 22:56:04 -0500
-Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86DB0C0613D6
-        for <linux-kernel@vger.kernel.org>; Thu,  4 Feb 2021 19:55:24 -0800 (PST)
-Received: by mail-qk1-x72f.google.com with SMTP id l27so5677449qki.9
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Feb 2021 19:55:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MAaRJACWW51J5vlqCTX3yVGM03oPhbUpsF+ymE+oVAM=;
-        b=qVaZKJI5PUUQL3kPtrZv9MP7rbEn2UOxoEk1D/qucv3hsjP9Rzl6XZEOSkM89Gcz8n
-         Th2e8DYWq3VGFXrleupHZl6pcF56VM2YV8DOtGyGzVYKbqKpWhtpBud63WA7FItli+2z
-         60A7Qv4R8o5iM2CSGXU3lm+LlRhwAUlS4HSAz9ekA65tWg5Y99zakqBz5yo/NxsDfMGe
-         yf2qpAeLBHnIUqGmqryBTwH11mItoUMFqNLk5JW1ujFkFRLZRYR+xF+aKrNYATFKF5yr
-         TSn7hLacsQ/mA9ogRiLIZp8vz0j44fNl/yamA4u5t2DWmEqpBaQXJH8WaFGabokpw5Mn
-         CcOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MAaRJACWW51J5vlqCTX3yVGM03oPhbUpsF+ymE+oVAM=;
-        b=p2tJGXXfIrEcojZIVegt66sezs2cyS2FRUOCDxg4yOx0YpQZnaqaQ7r+uN1CSpAR5R
-         SuEN7cCIRP9/JVWP1gkuOLyzqC3qfdILS6TVTmo86TuICNbSjo8pi7SnirusKMxWfqMH
-         ycotlzkSTvhi6tZZp0w0Ps38mPHdiRWz8fKEvm+kAwYia0BoaA4pZ8r8n/4K3nxMXy6M
-         Jyw2m24l2ECOc75rBdWfGTaj6xPkkOSBJAL3797xwg1RFzCyvzO73W7rulcPWfPn6FNN
-         cp4zDpSaTLlTiQixh7lKRIOfR7tvMRD75m+kIj3E5XNWk1AzSjZPWR4XK7+vZffAmWTu
-         tIyA==
-X-Gm-Message-State: AOAM533T8jRuClUbTY/RqW8AIjrVmNcMSOa/yuS4FOqRkBnaRT6Wueq5
-        3DzN1LGk+CZxo95EDqm5vjuHIilBEuzhKbj6GfYNMQ==
-X-Google-Smtp-Source: ABdhPJyU0IV0FvLC+IraA0ATfPuhjgKtCVwOPkgOv7QG8VWPfHhXBGVe9EhHQ/EOwYF8Fhpi8vzer4IxIjmCnqrAt1E=
-X-Received: by 2002:ae9:e647:: with SMTP id x7mr2481056qkl.276.1612497323405;
- Thu, 04 Feb 2021 19:55:23 -0800 (PST)
+        Thu, 4 Feb 2021 22:58:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612497446;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=XNDRjK2k4hYr251fYAwJiovjLPZ7/aDsH67J1vk1NvU=;
+        b=d+RAk2enzD+S9GA6X4lNy6law9NKZcdUCD9f51Y81Njnp1ZlwbzVRQQZ0HBgzmPn/MvvSE
+        ZzYDpMA0adnevE/yNa11EaBl7/VAG4aTiTotHN+dhi4EVmrlvoib9u3Mx7u4k6GA3dVGM5
+        SJLYtkP6sjOmaAxEz26CDO7rdh2tJjM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-492-_eQcZEbrMcyx-IifS4jTFA-1; Thu, 04 Feb 2021 22:57:22 -0500
+X-MC-Unique: _eQcZEbrMcyx-IifS4jTFA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5E578AFA80;
+        Fri,  5 Feb 2021 03:57:21 +0000 (UTC)
+Received: from [10.72.12.112] (ovpn-12-112.pek2.redhat.com [10.72.12.112])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 616AA2B0A5;
+        Fri,  5 Feb 2021 03:57:15 +0000 (UTC)
+Subject: Re: [PATCH v1] vdpa/mlx5: Restore the hardware used index after
+ change map
+To:     Eli Cohen <elic@nvidia.com>, mst@redhat.com, si-wei.liu@oracle.com,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     lulu@redhat.com
+References: <20210204073618.36336-1-elic@nvidia.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <a23e0ea0-8471-4c97-73c5-e6e8fcf634ea@redhat.com>
+Date:   Fri, 5 Feb 2021 11:57:14 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210123011704.1901835-1-joel@joelfernandes.org>
- <20210123011704.1901835-3-joel@joelfernandes.org> <YBv+Ps8F2eho77qh@hirez.programming.kicks-ass.net>
-In-Reply-To: <YBv+Ps8F2eho77qh@hirez.programming.kicks-ass.net>
-From:   Josh Don <joshdon@google.com>
-Date:   Thu, 4 Feb 2021 19:55:12 -0800
-Message-ID: <CABk29NsmV=6fstw3qEPpEb5Zw9K6hpQSASE5yS68Zjj9_HDkcg@mail.gmail.com>
-Subject: Re: [PATCH v10 2/5] sched: CGroup tagging interface for core scheduling
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>, mingo@kernel.org,
-        torvalds@linux-foundation.org, fweisbec@gmail.com,
-        Kees Cook <keescook@chromium.org>,
-        Greg Kerr <kerrnel@google.com>, Phil Auld <pauld@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Agata Gruza <agata.gruza@intel.com>,
-        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
-        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
-        Paul Turner <pjt@google.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Patrick Bellasi <derkling@google.com>, benbjiang@tencent.com,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        Junaid Shahid <junaids@google.com>,
-        Jesse Barnes <jsbarnes@google.com>,
-        "Hyser,Chris" <chris.hyser@oracle.com>,
-        Ben Segall <bsegall@google.com>, Hao Luo <haoluo@google.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210204073618.36336-1-elic@nvidia.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 4, 2021 at 6:02 AM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Fri, Jan 22, 2021 at 08:17:01PM -0500, Joel Fernandes (Google) wrote:
->
-> > +#ifdef CONFIG_SCHED_DEBUG
-> > +     /* Read the group cookie. */
-> > +     {
-> > +             .name = "core_group_cookie",
-> > +             .flags = CFTYPE_NOT_ON_ROOT,
-> > +             .read_u64 = cpu_core_group_cookie_read_u64,
-> > +     },
-> > +#endif
->
-> > +#ifdef CONFIG_SCHED_DEBUG
-> > +     /* Read the group cookie. */
-> > +     {
-> > +             .name = "core_group_cookie",
-> > +             .flags = CFTYPE_NOT_ON_ROOT,
-> > +             .read_u64 = cpu_core_group_cookie_read_u64,
-> > +     },
-> > +#endif
->
-> AFAICT this leaks kernel pointers. IIRC that was a bad thing.
 
-For that matter, we're also exposing the cookie pointer in
-/proc/$pid/sched. Currently these are used by the selftests to
-validate that two tasks are/aren't sharing.  If this poses a risk, we
-can rework to avoid exposing the actual pointers.
+On 2021/2/4 下午3:36, Eli Cohen wrote:
+> When a change of memory map occurs, the hardware resources are destroyed
+> and then re-created again with the new memory map. In such case, we need
+> to restore the hardware available and used indices. The driver failed to
+> restore the used index which is added here.
+>
+> Also, since the driver also fails to reset the available and used
+> indices upon device reset, fix this here to avoid regression caused by
+> the fact that used index may not be zero upon device reset.
+>
+> Fixes: 1a86b377aa21 ("vdpa/mlx5: Add VDPA driver for supported mlx5 devices")
+> Signed-off-by: Eli Cohen <elic@nvidia.com>
+> ---
+> v0 -> v1:
+> Clear indices upon device reset
+
+
+Acked-by: Jason Wang <jasowang@redhat.com>
+
+
+>
+>   drivers/vdpa/mlx5/net/mlx5_vnet.c | 18 ++++++++++++++++++
+>   1 file changed, 18 insertions(+)
+>
+> diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> index 88dde3455bfd..b5fe6d2ad22f 100644
+> --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> @@ -87,6 +87,7 @@ struct mlx5_vq_restore_info {
+>   	u64 device_addr;
+>   	u64 driver_addr;
+>   	u16 avail_index;
+> +	u16 used_index;
+>   	bool ready;
+>   	struct vdpa_callback cb;
+>   	bool restore;
+> @@ -121,6 +122,7 @@ struct mlx5_vdpa_virtqueue {
+>   	u32 virtq_id;
+>   	struct mlx5_vdpa_net *ndev;
+>   	u16 avail_idx;
+> +	u16 used_idx;
+>   	int fw_state;
+>   
+>   	/* keep last in the struct */
+> @@ -804,6 +806,7 @@ static int create_virtqueue(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtque
+>   
+>   	obj_context = MLX5_ADDR_OF(create_virtio_net_q_in, in, obj_context);
+>   	MLX5_SET(virtio_net_q_object, obj_context, hw_available_index, mvq->avail_idx);
+> +	MLX5_SET(virtio_net_q_object, obj_context, hw_used_index, mvq->used_idx);
+>   	MLX5_SET(virtio_net_q_object, obj_context, queue_feature_bit_mask_12_3,
+>   		 get_features_12_3(ndev->mvdev.actual_features));
+>   	vq_ctx = MLX5_ADDR_OF(virtio_net_q_object, obj_context, virtio_q_context);
+> @@ -1022,6 +1025,7 @@ static int connect_qps(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtqueue *m
+>   struct mlx5_virtq_attr {
+>   	u8 state;
+>   	u16 available_index;
+> +	u16 used_index;
+>   };
+>   
+>   static int query_virtqueue(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtqueue *mvq,
+> @@ -1052,6 +1056,7 @@ static int query_virtqueue(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtqueu
+>   	memset(attr, 0, sizeof(*attr));
+>   	attr->state = MLX5_GET(virtio_net_q_object, obj_context, state);
+>   	attr->available_index = MLX5_GET(virtio_net_q_object, obj_context, hw_available_index);
+> +	attr->used_index = MLX5_GET(virtio_net_q_object, obj_context, hw_used_index);
+>   	kfree(out);
+>   	return 0;
+>   
+> @@ -1535,6 +1540,16 @@ static void teardown_virtqueues(struct mlx5_vdpa_net *ndev)
+>   	}
+>   }
+>   
+> +static void clear_virtqueues(struct mlx5_vdpa_net *ndev)
+> +{
+> +	int i;
+> +
+> +	for (i = ndev->mvdev.max_vqs - 1; i >= 0; i--) {
+> +		ndev->vqs[i].avail_idx = 0;
+> +		ndev->vqs[i].used_idx = 0;
+> +	}
+> +}
+> +
+>   /* TODO: cross-endian support */
+>   static inline bool mlx5_vdpa_is_little_endian(struct mlx5_vdpa_dev *mvdev)
+>   {
+> @@ -1610,6 +1625,7 @@ static int save_channel_info(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtqu
+>   		return err;
+>   
+>   	ri->avail_index = attr.available_index;
+> +	ri->used_index = attr.used_index;
+>   	ri->ready = mvq->ready;
+>   	ri->num_ent = mvq->num_ent;
+>   	ri->desc_addr = mvq->desc_addr;
+> @@ -1654,6 +1670,7 @@ static void restore_channels_info(struct mlx5_vdpa_net *ndev)
+>   			continue;
+>   
+>   		mvq->avail_idx = ri->avail_index;
+> +		mvq->used_idx = ri->used_index;
+>   		mvq->ready = ri->ready;
+>   		mvq->num_ent = ri->num_ent;
+>   		mvq->desc_addr = ri->desc_addr;
+> @@ -1768,6 +1785,7 @@ static void mlx5_vdpa_set_status(struct vdpa_device *vdev, u8 status)
+>   	if (!status) {
+>   		mlx5_vdpa_info(mvdev, "performing device reset\n");
+>   		teardown_driver(ndev);
+> +		clear_virtqueues(ndev);
+>   		mlx5_vdpa_destroy_mr(&ndev->mvdev);
+>   		ndev->mvdev.status = 0;
+>   		ndev->mvdev.mlx_features = 0;
+
