@@ -2,79 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E81E4310737
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 09:58:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 63CEF31073B
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 09:58:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230034AbhBEI5H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 03:57:07 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:37935 "EHLO pegase1.c-s.fr"
+        id S230070AbhBEI52 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 03:57:28 -0500
+Received: from mx2.suse.de ([195.135.220.15]:53656 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229706AbhBEI5A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 03:57:00 -0500
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4DX8R12T7Fz9tx4m;
-        Fri,  5 Feb 2021 09:56:13 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id iP97ruj8Us9F; Fri,  5 Feb 2021 09:56:13 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4DX8R11SdGz9tx4l;
-        Fri,  5 Feb 2021 09:56:13 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 4B8998B829;
-        Fri,  5 Feb 2021 09:56:14 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id Ed0NXKGKk2Ba; Fri,  5 Feb 2021 09:56:14 +0100 (CET)
-Received: from po16121vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id F2CF58B81C;
-        Fri,  5 Feb 2021 09:56:13 +0100 (CET)
-Received: by po16121vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id B9C78672D7; Fri,  5 Feb 2021 08:56:13 +0000 (UTC)
-Message-Id: <ad782af87a222efc79cfb06079b0fd23d4224eaf.1612515180.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH] powerpc/8xx: Fix software emulation interrupt
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>, npiggin@gmail.com
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Fri,  5 Feb 2021 08:56:13 +0000 (UTC)
+        id S229845AbhBEI5R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 03:57:17 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 52615AD37;
+        Fri,  5 Feb 2021 08:56:36 +0000 (UTC)
+Date:   Fri, 5 Feb 2021 09:56:33 +0100
+From:   Oscar Salvador <osalvador@suse.de>
+To:     Miaohe Lin <linmiaohe@huawei.com>
+Cc:     Muchun Song <songmuchun@bytedance.com>,
+        duanxiongchun@bytedance.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, corbet@lwn.net,
+        mike.kravetz@oracle.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
+        paulmck@kernel.org, mchehab+huawei@kernel.org,
+        pawan.kumar.gupta@linux.intel.com, rdunlap@infradead.org,
+        oneukum@suse.com, anshuman.khandual@arm.com, jroedel@suse.de,
+        almasrymina@google.com, rientjes@google.com, willy@infradead.org,
+        mhocko@suse.com, song.bao.hua@hisilicon.com, david@redhat.com,
+        naoya.horiguchi@nec.com
+Subject: Re: [PATCH v14 6/8] mm: hugetlb: introduce nr_free_vmemmap_pages in
+ the struct hstate
+Message-ID: <20210205085632.GC13848@linux>
+References: <20210204035043.36609-1-songmuchun@bytedance.com>
+ <20210204035043.36609-7-songmuchun@bytedance.com>
+ <42c8272a-f170-b27e-af5e-a7cb7777a728@huawei.com>
+ <20210205082211.GA13848@linux>
+ <435f3c32-0694-7af4-9032-0653a28a6a99@huawei.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <435f3c32-0694-7af4-9032-0653a28a6a99@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For unimplemented instructions or unimplemented SPRs, the 8xx triggers
-a "Software Emulation Exception" (0x1000). That interrupt doesn't set
-reason bits in SRR1 as the "Program Check Exception" does.
+On Fri, Feb 05, 2021 at 04:39:26PM +0800, Miaohe Lin wrote:
+> Hi:
+> On 2021/2/5 16:22, Oscar Salvador wrote:
+> > On Fri, Feb 05, 2021 at 03:29:43PM +0800, Miaohe Lin wrote:
+> >>> +	if (likely(vmemmap_pages > RESERVE_VMEMMAP_NR))
+> >>> +		h->nr_free_vmemmap_pages = vmemmap_pages - RESERVE_VMEMMAP_NR;
+> >>
+> >> Not a problem. Should we set h->nr_free_vmemmap_pages to 0 in 'else' case explicitly ?
+> > 
+> > No, hstate fields are already zeroed.
+> 
+> I know hstate fields are already zeroed. What I mean is should we set nr_free_vmemmap_pages
+> to 0 _explicitly_ like nr_huge_pages and free_huge_pages in hugetlb_add_hstate() ?
+> But this is really trival.
 
-Go through emulation_assist_interrupt() to set REASON_ILLEGAL.
+We do not anny more [1]
 
-Fixes: fbbcc3bb139e ("powerpc/8xx: Remove SoftwareEmulation()")
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
-I'm wondering whether it wouldn't be better to set REASON_ILLEGAL
-in the exception prolog and still call program_check_exception.
-And do the same in book3s/64 to avoid the nightmare of an
-INTERRUPT_HANDLER calling another INTERRUPT_HANDLER.
----
- arch/powerpc/kernel/head_8xx.S | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+[1] https://patchwork.kernel.org/project/linux-mm/patch/20201119112141.6452-1-osalvador@suse.de/
 
-diff --git a/arch/powerpc/kernel/head_8xx.S b/arch/powerpc/kernel/head_8xx.S
-index 52702f3db6df..9eb63cf6ac38 100644
---- a/arch/powerpc/kernel/head_8xx.S
-+++ b/arch/powerpc/kernel/head_8xx.S
-@@ -165,7 +165,7 @@ SystemCall:
- /* On the MPC8xx, this is a software emulation interrupt.  It occurs
-  * for all unimplemented and illegal instructions.
-  */
--	EXCEPTION(0x1000, SoftEmu, program_check_exception, EXC_XFER_STD)
-+	EXCEPTION(0x1000, SoftEmu, emulation_assist_interrupt, EXC_XFER_STD)
- 
- 	. = 0x1100
- /*
+
 -- 
-2.25.0
-
+Oscar Salvador
+SUSE L3
