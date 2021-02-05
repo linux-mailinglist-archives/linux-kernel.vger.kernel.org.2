@@ -2,118 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D128310836
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 10:50:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CFA1631082E
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 10:46:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229514AbhBEJqa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 04:46:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48214 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229669AbhBEJoG (ORCPT
+        id S229979AbhBEJqU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 04:46:20 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:46600 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229870AbhBEJoK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 04:44:06 -0500
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8323C061793
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 01:43:25 -0800 (PST)
-Received: by mail-pf1-x435.google.com with SMTP id i63so3961523pfg.7
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 01:43:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DqJqQl1xSKavN+wug0hZ0iZc5i9bwB3JAakaDPcsm9k=;
-        b=XC2yhAyepEIPdSWE2JxIt4ZGw87uQrdwLP8NeaGMO5mX/WpdJUWa6sD99Vrk6phbGS
-         3K459KZwzP0oMf4STCMaFC7U+M7tbH9p1YZLq9k79DyGkTKC8tj1mMvKi9t03tuD3MjS
-         J5Rt4IjddHqU09Qu/stJrezWoMk68xnRPnKYi4FOtCV/NHO7ZOJM6eE8W9ly/dxahTQv
-         I27QWH/L0CCsXWOq2802VE0wWECAUCbRZqV+tQ9oBEPEEDeILYKSGIfPdeJrV2dyHsmn
-         LmUNqezFR3aqybKv4qExPnXb+J/zzoVZ0Z3BDcawpV4AsCZKKRmc8V89i8+997nzRnVO
-         B4ng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DqJqQl1xSKavN+wug0hZ0iZc5i9bwB3JAakaDPcsm9k=;
-        b=aprLFICUvu7SSIuLRYv0J0+T3LBNs3susI9EA9Q1z4TLkTi4cFUyqubJlkWyXYcOqy
-         LQ+9EXPwH4fC6UnQdtHXkhlrYVfqetc0s+4Y5oTM/yFFGp9FsOh+T+hKNcSlXPJ/tYej
-         3zZnkninOp3UJNFjzSne8D6jV6QLMClXRxBCevG6dfByjTibKxCyEhQbeVTIkJ5GeblO
-         PZnoephggWezh9hrNMAxlWOaR64a/LEiZx2WFQTxl3mY0Ewfcm7eGzjsQ4LHDOztiXad
-         /Qlnuv+62treAFqM0ObhLdTywTdm0+V6GL32r55KdihYqf41MhDSyRre7Nh663FX6PgQ
-         5oYA==
-X-Gm-Message-State: AOAM531dzb7Xl7kxhwzFdswgl+vLzfB5ch1feDnaTfz4UcHX8HN3gMZZ
-        gwIKxHVntSe3WqKXuagyQpZKAyX/3ooKG2HO+Pwo0w==
-X-Google-Smtp-Source: ABdhPJyT4HMsF2dGuzPGOpl0Fmmj/5h+d6AATcrI1yEQ9m4uXBupaw+02kQjwB+emw72k0yf/4XBLFESW2s0tB5X0S0=
-X-Received: by 2002:a65:654e:: with SMTP id a14mr3609659pgw.265.1612518205362;
- Fri, 05 Feb 2021 01:43:25 -0800 (PST)
+        Fri, 5 Feb 2021 04:44:10 -0500
+Date:   Fri, 05 Feb 2021 09:43:28 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1612518209;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=bmOSBl6fxV6bmim1RfPGpWZJiBIHaqzxi5BfQAFXtj0=;
+        b=oJbT+lbKuq+fEZoWrThiUPHvHFltoVxZOdBAQDSHuk1UeC2S43wzfXD+I/FybbXv4dtOAg
+        0qgXfzGwNOrvdj6xyzFGxrk7QANIHVz6XFaCgGdMzjapR0l9TeLBP/CPHFSGlZLyBfWo+d
+        RNCwEe5HyqVwxj81A6GlT5cG1HihW1oldlG60ueZ4/iaoP6CBbY1FjOZoXine23gQwOYnw
+        WMZq3WZBLIEl/KSQ0mEvvFiEDhGWpLYx5WcZndypabt9uOIqGVDjgdsWgaVQrSRJRx5FUT
+        GO7XeViGMHp/KTXJ6LxXMedv5EOTzsPN0r8n38cca2Is0cB6VvbLuYQOYfyKjA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1612518209;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=bmOSBl6fxV6bmim1RfPGpWZJiBIHaqzxi5BfQAFXtj0=;
+        b=TOCzkU7M+jrqyKs27b+oGDWe3NXUsabAnBt1/N3CGloHtnLfl3h1RQjj1ibpBJfidKMrhW
+        FmmYcNUsGFmwDTAA==
+From:   "tip-bot2 for Alexey Dobriyan" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/cleanups] x86/asm: Fixup TASK_SIZE_MAX comment
+Cc:     Alexey Dobriyan <adobriyan@gmail.com>,
+        Borislav Petkov <bp@suse.de>,
+        Andy Lutomirski <luto@kernel.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20200305181719.GA5490@avx2>
+References: <20200305181719.GA5490@avx2>
 MIME-Version: 1.0
-References: <20210128111549.GA8174@zhaomy-pc> <CAG3jFysU4epjS3A85ZojrJn3TAC78O_jx5p_4SWsCdRBrQ5GXQ@mail.gmail.com>
- <CGME20210204123452eucas1p1eb8fd9dc5b62b036ebd9e9208e796cb9@eucas1p1.samsung.com>
- <CANMq1KAuUTqgM2mDR5WN6Ad+cATFXLPE+5rstyhfNE9Lc716+g@mail.gmail.com>
- <b680fef2-7c8a-183b-443a-6b2b9fe595d7@samsung.com> <CANMq1KAVMhFAdy_s4R-h1yzNWXRgWgZ4s9kQL11LDze3+Qv5_w@mail.gmail.com>
-In-Reply-To: <CANMq1KAVMhFAdy_s4R-h1yzNWXRgWgZ4s9kQL11LDze3+Qv5_w@mail.gmail.com>
-From:   Robert Foss <robert.foss@linaro.org>
-Date:   Fri, 5 Feb 2021 10:43:14 +0100
-Message-ID: <CAG3jFyu4JvH7iDriQWdwgkVaHH=vjGaVwF3P7DWLRbb19pKxsQ@mail.gmail.com>
-Subject: Re: [PATCH] drm/bridge: anx7625: enable DSI EOTP
-To:     Nicolas Boichat <drinkcat@chromium.org>
-Cc:     Andrzej Hajda <a.hajda@samsung.com>, devel@driverdev.osuosl.org,
-        Nicolas Boichat <drinkcat@google.com>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Sheng Pan <span@analogixsemi.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        David Airlie <airlied@linux.ie>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Vasily Khoruzhick <anarsoul@gmail.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Torsten Duwe <duwe@lst.de>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Sam Ravnborg <sam@ravnborg.org>, Xin Ji <xji@analogixsemi.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <161251820804.23325.5778148373565783781.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 4 Feb 2021 at 23:25, Nicolas Boichat <drinkcat@chromium.org> wrote:
->
-> On Thu, Feb 4, 2021 at 8:59 PM Andrzej Hajda <a.hajda@samsung.com> wrote:
-> >
-> >
-> > W dniu 04.02.2021 o 13:34, Nicolas Boichat pisze:
-> > > On Thu, Feb 4, 2021 at 8:07 PM Robert Foss <robert.foss@linaro.org> wrote:
-> > >> Hi Xin,
-> > >>
-> > >> Thanks for the patch.
-> > >>
-> > >> On Thu, 28 Jan 2021 at 12:17, Xin Ji <xji@analogixsemi.com> wrote:
-> > >>> Enable DSI EOTP feature for fixing some panel screen constance
-> > >>> shift issue.
-> > >>> Removing MIPI flag MIPI_DSI_MODE_EOT_PACKET to enable DSI EOTP.
+The following commit has been merged into the x86/cleanups branch of tip:
 
-Does "constance shift" have a typo? Should it be "constant shift"?
+Commit-ID:     4f63b320afdd9af406f4426b0ff1a2cdb23e5b8d
+Gitweb:        https://git.kernel.org/tip/4f63b320afdd9af406f4426b0ff1a2cdb23e5b8d
+Author:        Alexey Dobriyan <adobriyan@gmail.com>
+AuthorDate:    Thu, 05 Mar 2020 21:17:19 +03:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Fri, 05 Feb 2021 10:37:39 +01:00
 
-With that sorted out feel free to add my r-b.
-Reviewed-by: Robert Foss <robert.foss@linaro.org>
+x86/asm: Fixup TASK_SIZE_MAX comment
 
-> > >> I don't think I quite understand how removing the
-> > >> MIPI_DSI_MODE_EOT_PACKET flag will cause DSI EOTP to be enabled. Could
-> > >> you extrapolate on this in the commit message?
-> > > That confused me as well, but it turns out that's how the flag is defined:
-> > > ```
-> > > /* disable EoT packets in HS mode */
-> > > #define MIPI_DSI_MODE_EOT_PACKET BIT(9)
-> > > ```
-> > > (https://protect2.fireeye.com/v1/url?k=5bd95ebd-044267fb-5bd8d5f2-0cc47a3003e8-ce9db8ea264d6901&q=1&e=900556dc-d199-4c18-9432-5c3465a98eae&u=https%3A%2F%2Felixir.bootlin.com%2Flinux%2Flatest%2Fsource%2Finclude%2Fdrm%2Fdrm_mipi_dsi.h%23L129)
-> > >
-> > > I'm almost tempted to put together a mass patch to rename all of these flags...
-> >
-> >
-> > Yes that would be good, many of these flags were just copy pasted from
-> > some hw datasheet, without good analysis how to adapt them to the framework.
->
-> I'll look into it (but that shouldn't block this patch).
+Comment says "by preventing anything executable" which is not true. Even
+PROT_NONE mapping can't be installed at (1<<47 - 4096).
 
-Thanks for clearing this up Nicolas & Andrzej!
+  mmap(0x7ffffffff000, 4096, PROT_NONE, MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = -1 ENOMEM
+
+ [ bp: Fixup to the moved location in page_64_types.h. ]
+
+Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Reviewed-by: Andy Lutomirski <luto@kernel.org>
+Link: https://lkml.kernel.org/r/20200305181719.GA5490@avx2
+---
+ arch/x86/include/asm/page_64_types.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/x86/include/asm/page_64_types.h b/arch/x86/include/asm/page_64_types.h
+index 645bd1d..64297ea 100644
+--- a/arch/x86/include/asm/page_64_types.h
++++ b/arch/x86/include/asm/page_64_types.h
+@@ -66,7 +66,7 @@
+  * On Intel CPUs, if a SYSCALL instruction is at the highest canonical
+  * address, then that syscall will enter the kernel with a
+  * non-canonical return address, and SYSRET will explode dangerously.
+- * We avoid this particular problem by preventing anything executable
++ * We avoid this particular problem by preventing anything
+  * from being mapped at the maximum canonical address.
+  *
+  * On AMD CPUs in the Ryzen family, there's a nasty bug in which the
