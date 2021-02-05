@@ -2,240 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B02D3112FD
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 22:02:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3324C31130B
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 22:05:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232869AbhBETTe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 14:19:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49158 "EHLO
+        id S233244AbhBETXJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 14:23:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233095AbhBETR2 (ORCPT
+        with ESMTP id S233082AbhBETSk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 14:17:28 -0500
-Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A807C06174A
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 12:58:47 -0800 (PST)
-Received: by mail-qv1-xf33.google.com with SMTP id l14so4160168qvp.2
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 12:58:47 -0800 (PST)
+        Fri, 5 Feb 2021 14:18:40 -0500
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3CE3C0613D6;
+        Fri,  5 Feb 2021 13:00:51 -0800 (PST)
+Received: by mail-io1-xd2f.google.com with SMTP id f67so6802445ioa.1;
+        Fri, 05 Feb 2021 13:00:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=37a+50jHTum46YhneroEs89QRdYxVAM04dENJyujd8g=;
-        b=lq+TxZTQanVL/my5p/nG0eiT/zkux+zqpiIfpfq1XfY3Egtqk1E/JOrRHC95W1rngi
-         e+qI3H2FlinWC9ZB5nUwZkWEfvuSHWIsXv7vfQvVDfnr0DMqOeJd2Dkn/aXUe+actqUU
-         NKjhUIliuRJQJIf/wcJSUugGyZvK3El+dGXzxhXMBegJYH8sm42i+2TV3ZEywr3oEU7K
-         nBlzKGRNqmtEy5wvjmmZyofucVXvILOyplSf4Y8XU4/iUeoKVC33ampLkjHE1Tm5H4j4
-         vCHNRxhYXxBGLd3He1pQ4WZUhtfIA7o4VxifHYllM6zAVC2P2eYf77ubUSFjMDS82Enw
-         h0hg==
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=hi9Rt3BdtDidHjyujOpga3jEqfXm3rLdI8GGqexPGLM=;
+        b=Bn6KvzgkCZbCQ4KFEWt3k1LXHpDWcjVxrqsiV1DsgdaHSZkSpursJwFfdw2VzuPvW+
+         /pduGGJB+vcQydYxBmP54le63chFVkUb8I+1oFWfOt7gHWkCWwXI2IoifMcIpk/2QBHb
+         iyzuJpoGhkNihlyISN/ZHix0uxqxSyKoCGA44Lyq39ftmrz5aGC2PkUsjrM78AQ/t1sM
+         biIL73tKrim6JWqNhr2IxaYm8E7Fb8cgOU+2C4pL2im41P35edIk2kILTTTCYjzFXTBQ
+         eF6Sf+N0SyubcaSAC1eWckOSy2Xciu/N3budm6m06VaFgoWZ6dSdcHSLKvACVWhLdXf/
+         DD0g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=37a+50jHTum46YhneroEs89QRdYxVAM04dENJyujd8g=;
-        b=EOJFETioNGFPUiPbEO2Fa4+jXEh8XSGdMwSS/t7+/SyNDuR0mloApPz5+vSbQrpWse
-         FxwGU+XXjNPQSyuqNiMyuEXG5iXQi25Q8ljPS214d9Hoze6IdAqi0LAKJfV+GsIHRFf6
-         Rone+kbPmYeNI6cKwTjfqjfrEUecnBN2Yw1cKk+zYt5ARQKefTbVCO56iveuAPNzzsiT
-         hZ89erd4dKQtJ5WwsQziqv1aGaYk+tgvri7e+ShHk1g2P3Be7cvcWoNvRuqiOO70pdJm
-         8QhGUQEaUGXTT9fa8yoExj2MFOnHQQIpC0uJgoSR54qbgIAYGBqH2F1wILDSO7J3rNAo
-         936Q==
-X-Gm-Message-State: AOAM530ciD1kJZOVIV1bEOVT04lXaWbm1EgonXwlbZBVPl/R5cizZFgV
-        twteg2/K05X7rjyOyt5bAR478EtfFOmG5g==
-X-Google-Smtp-Source: ABdhPJzUqZra72aGceaJHGo0cMOCk5FIfWt5qki18puWwYygJ7OoHev2lwgrzM/tECkIP6BJbqPWsg==
-X-Received: by 2002:ad4:5606:: with SMTP id ca6mr6363094qvb.1.1612558726272;
-        Fri, 05 Feb 2021 12:58:46 -0800 (PST)
-Received: from debian-vm ([189.120.76.30])
-        by smtp.gmail.com with ESMTPSA id p12sm9381823qtw.27.2021.02.05.12.58.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Feb 2021 12:58:45 -0800 (PST)
-From:   Igor <igormtorrente@gmail.com>
-X-Google-Original-From: Igor <igor>
-Date:   Fri, 5 Feb 2021 17:58:42 -0300
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     skhan@linuxfoundation.org
-Subject: Re: [PATCH 5.4 00/32] 5.4.96-rc1 review
-Message-ID: <YB2xguYy7Xuf6F6j@debian-vm>
-References: <20210205140652.348864025@linuxfoundation.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=hi9Rt3BdtDidHjyujOpga3jEqfXm3rLdI8GGqexPGLM=;
+        b=rXiJ9H+jsvLZ33Urjhjp3alXA4bXjYNWHc/ywUDD50qi8bZimy8HlSMe/s1yd1J4a9
+         PUCoDOgdAiX55jcLltF0P0Sl+Md/ZFJG3nFpPMoVaAs6hxhg1MuiwjFh/ttf951VQVt8
+         H2UJIJY0CMQ7WiyutwLsBHle2xl5aChsPv2xwP/MxyFArjvqSzOegyILuyxk27vAzvgQ
+         DyQJwV1F04xMSxqBH3LSH062xEy34+vP68szgyqEgKqAyDZGYBVxaqIjkg2vf+dyOXxY
+         TshG2khj0PA9e6QNP1z/dbvMU3ceSgo93x1gnQHfe8sLaeCSaNSuL1RJ4ofQzv0iQGeq
+         YvKQ==
+X-Gm-Message-State: AOAM532UN2p6hHf5GfOY7Gyj5sYSb5x63FcZl1RjNq9oXDkjukpPdQq8
+        8x5k6vjpOL6n34httyom05MYyn3Bqe8GDzBmrPw=
+X-Google-Smtp-Source: ABdhPJzYzGg+6Z6sHG4psEDgJUKr7M9Q11buxQ5eClzbNDi0FQpzv06YP/sLz4MYRbUkwnhZZySI/kO59NR+sxE5lg4=
+X-Received: by 2002:a05:6602:150a:: with SMTP id g10mr5853934iow.75.1612558851265;
+ Fri, 05 Feb 2021 13:00:51 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210205140652.348864025@linuxfoundation.org>
+References: <20210205202220.2748551-1-ndesaulniers@google.com>
+In-Reply-To: <20210205202220.2748551-1-ndesaulniers@google.com>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Fri, 5 Feb 2021 22:00:39 +0100
+Message-ID: <CA+icZUW3sg_PkbmKSFMs6EqwQV7=hvKuAgZSsbg=Qr6gTs7RbQ@mail.gmail.com>
+Subject: Re: [PATCH v9 0/3] Kbuild: DWARF v5 support
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org,
+        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
+        linux-kbuild@vger.kernel.org, linux-arch@vger.kernel.org,
+        Jakub Jelinek <jakub@redhat.com>,
+        Fangrui Song <maskray@google.com>,
+        Caroline Tice <cmtice@google.com>,
+        Nick Clifton <nickc@redhat.com>, Yonghong Song <yhs@fb.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Chris Murphy <bugzilla@colorremedies.com>,
+        Mark Wielaard <mark@klomp.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 05, 2021 at 03:07:15PM +0100, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.4.96 release.
-> There are 32 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Sun, 07 Feb 2021 14:06:42 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.96-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+On Fri, Feb 5, 2021 at 9:22 PM Nick Desaulniers <ndesaulniers@google.com> wrote:
 >
+> DWARF v5 is the latest standard of the DWARF debug info format.
+>
+> DWARF5 wins significantly in terms of size and especially so when mixed
+> with compression (CONFIG_DEBUG_INFO_COMPRESSED).
+>
+> Link: http://www.dwarfstd.org/doc/DWARF5.pdf
+>
+> Patch 1 places the DWARF v5 sections explicitly in the kernel linker
+> script.
+> Patch 2 modifies Kconfig for DEBUG_INFO_DWARF4 to be used as a fallback.
+> Patch 3 adds an explicit Kconfig for DWARF v5 for clang and older GCC
+> where the implicit default DWARF version is not 5.
+>
+> Changes from v8:
+> * Separate out the linker script changes (from v7 0002). Put those
+>   first. Carry Reviewed by and tested by tags.  Least contentious part
+>   of the series. Tagged for stable; otherwise users upgrading to GCC 11
+>   may find orphan section warnings from the implicit default DWARF
+>   version changing and generating the new debug info sections.
+> * Add CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT in 0002, make it the
+>   default rather than CONFIG_DEBUG_INFO_DWARF4, as per Mark, Jakub,
+>   Arvind.
+> * Drop reviewed by and tested by tags for 0002 and 0003; sorry
+>   reviewers/testers, but I view that as a big change. I will buy you
+>   beers if you're fatigued, AND for the help so far. I appreciate you.
 
-Compiled and booted on my system(x86_64).
-No dmesg regressions so far.
+All 3 patches NACKed - I drink no beer.
 
-Tested-by: Igor Matheus Andrade Torrente <igormtorrente@gmail.com>
+- sed@ -
 
-Best regards
----
-Igor Matheus Andrade Torrente
-
-> -------------
-> Pseudo-Shortlog of commits:
-> 
-> Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->     Linux 5.4.96-rc1
-> 
-> Peter Zijlstra <peterz@infradead.org>
->     workqueue: Restrict affinity change to rescuer
-> 
-> Peter Zijlstra <peterz@infradead.org>
->     kthread: Extract KTHREAD_IS_PER_CPU
-> 
-> Josh Poimboeuf <jpoimboe@redhat.com>
->     objtool: Don't fail on missing symbol table
-> 
-> Bing Guo <bing.guo@amd.com>
->     drm/amd/display: Change function decide_dp_link_settings to avoid infinite looping
-> 
-> Jake Wang <haonan.wang2@amd.com>
->     drm/amd/display: Update dram_clock_change_latency for DCN2.1
-> 
-> Michael Ellerman <mpe@ellerman.id.au>
->     selftests/powerpc: Only test lwm/stmw on big endian
-> 
-> Revanth Rajashekar <revanth.rajashekar@intel.com>
->     nvme: check the PRINFO bit before deciding the host buffer length
-> 
-> lianzhi chang <changlianzhi@uniontech.com>
->     udf: fix the problem that the disc content is not displayed
-> 
-> Kai-Chuan Hsieh <kaichuan.hsieh@canonical.com>
->     ALSA: hda: Add Cometlake-R PCI ID
-> 
-> Brian King <brking@linux.vnet.ibm.com>
->     scsi: ibmvfc: Set default timeout to avoid crash during migration
-> 
-> Felix Fietkau <nbd@nbd.name>
->     mac80211: fix fast-rx encryption check
-> 
-> Kai-Heng Feng <kai.heng.feng@canonical.com>
->     ASoC: SOF: Intel: hda: Resume codec to do jack detection
-> 
-> Dinghao Liu <dinghao.liu@zju.edu.cn>
->     scsi: fnic: Fix memleak in vnic_dev_init_devcmd2
-> 
-> Javed Hasan <jhasan@marvell.com>
->     scsi: libfc: Avoid invoking response handler twice if ep is already completed
-> 
-> Martin Wilck <mwilck@suse.com>
->     scsi: scsi_transport_srp: Don't block target in failfast state
-> 
-> Peter Zijlstra <peterz@infradead.org>
->     x86: __always_inline __{rd,wr}msr()
-> 
-> Arnold Gozum <arngozum@gmail.com>
->     platform/x86: intel-vbtn: Support for tablet mode on Dell Inspiron 7352
-> 
-> Hans de Goede <hdegoede@redhat.com>
->     platform/x86: touchscreen_dmi: Add swap-x-y quirk for Goodix touchscreen on Estar Beauty HD tablet
-> 
-> Tony Lindgren <tony@atomide.com>
->     phy: cpcap-usb: Fix warning for missing regulator_disable
-> 
-> Eric Dumazet <edumazet@google.com>
->     net_sched: gen_estimator: support large ewma log
-> 
-> ethanwu <ethanwu@synology.com>
->     btrfs: backref, use correct count to resolve normal data refs
-> 
-> ethanwu <ethanwu@synology.com>
->     btrfs: backref, only search backref entries from leaves of the same root
-> 
-> ethanwu <ethanwu@synology.com>
->     btrfs: backref, don't add refs from shared block when resolving normal backref
-> 
-> ethanwu <ethanwu@synology.com>
->     btrfs: backref, only collect file extent items matching backref offset
-> 
-> Enke Chen <enchen@paloaltonetworks.com>
->     tcp: make TCP_USER_TIMEOUT accurate for zero window probes
-> 
-> Catalin Marinas <catalin.marinas@arm.com>
->     arm64: Do not pass tagged addresses to __is_lm_address()
-> 
-> Vincenzo Frascino <vincenzo.frascino@arm.com>
->     arm64: Fix kernel address detection of __is_lm_address()
-> 
-> Rafael J. Wysocki <rafael.j.wysocki@intel.com>
->     ACPI: thermal: Do not call acpi_thermal_check() directly
-> 
-> Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->     Revert "Revert "block: end bio with BLK_STS_AGAIN in case of non-mq devs and REQ_NOWAIT""
-> 
-> Lijun Pan <ljp@linux.ibm.com>
->     ibmvnic: Ensure that CRQ entry read are correctly ordered
-> 
-> Rasmus Villemoes <rasmus.villemoes@prevas.dk>
->     net: switchdev: don't set port_obj_info->handled true when -EOPNOTSUPP
-> 
-> Pan Bian <bianpan2016@163.com>
->     net: dsa: bcm_sf2: put device node before return
-> 
-> 
-> -------------
-> 
-> Diffstat:
-> 
->  Makefile                                           |   4 +-
->  arch/arm64/include/asm/memory.h                    |  10 +-
->  arch/arm64/mm/physaddr.c                           |   2 +-
->  arch/x86/include/asm/msr.h                         |   4 +-
->  block/blk-core.c                                   |  11 +-
->  drivers/acpi/thermal.c                             |  55 +++++---
->  drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c   |   3 +
->  .../gpu/drm/amd/display/dc/dcn21/dcn21_resource.c  |   2 +-
->  drivers/net/dsa/bcm_sf2.c                          |   8 +-
->  drivers/net/ethernet/ibm/ibmvnic.c                 |   6 +
->  drivers/nvme/host/core.c                           |  17 ++-
->  drivers/phy/motorola/phy-cpcap-usb.c               |  19 ++-
->  drivers/platform/x86/intel-vbtn.c                  |   6 +
->  drivers/platform/x86/touchscreen_dmi.c             |  18 +++
->  drivers/scsi/fnic/vnic_dev.c                       |   8 +-
->  drivers/scsi/ibmvscsi/ibmvfc.c                     |   4 +-
->  drivers/scsi/libfc/fc_exch.c                       |  16 ++-
->  drivers/scsi/scsi_transport_srp.c                  |   9 +-
->  fs/btrfs/backref.c                                 | 157 +++++++++++++--------
->  fs/udf/super.c                                     |   7 +-
->  include/linux/kthread.h                            |   3 +
->  include/net/tcp.h                                  |   1 +
->  kernel/kthread.c                                   |  27 +++-
->  kernel/smpboot.c                                   |   1 +
->  kernel/workqueue.c                                 |   9 +-
->  net/core/gen_estimator.c                           |  11 +-
->  net/ipv4/tcp_input.c                               |   1 +
->  net/ipv4/tcp_output.c                              |   2 +
->  net/ipv4/tcp_timer.c                               |  18 +++
->  net/mac80211/rx.c                                  |   2 +
->  net/switchdev/switchdev.c                          |  23 +--
->  sound/pci/hda/hda_intel.c                          |   3 +
->  sound/soc/sof/intel/hda-codec.c                    |   3 +-
->  tools/objtool/elf.c                                |   7 +-
->  .../powerpc/alignment/alignment_handler.c          |   5 +-
->  35 files changed, 348 insertions(+), 134 deletions(-)
-> 
-> 
+> * Rework commit one lines, and commit messages somewhat.
+> * Remove Kconfig help text about v4 being "bigger."
+> * I didn't touch the BTF config from v8, but suggest the BTF folks
+>   consider
+>   https://lore.kernel.org/bpf/20210111180609.713998-1-natechancellor@gmail.com/
+>   that way we can express via Kconfig that older version of pahole are
+>   in conflict with other Kconfig options.
+>
+> Changes from v7:
+> (Strictly commit message changes)
+> * Pick up Nathan's reviewed by tags for both patches.
+> * Add note about only modifying compiler dwarf info, not assembler dwarf
+>   info, as per Nathan.
+> * Add link to Red Hat bug report and Chris' reported by on patch 2.
+> * Add more info from Jakub on patch 2 commit message.
+> * Reorder info about validating version, noting the tree is not "clean"
+>   in the sense that parts mess up existing CFLAGS, or don't use
+>   DEBUG_CFLAGS. I will not be adding such cleanups to this series. They
+>   can be done AFTER.
+> * Update note about 2.35.2 (rather than include the full text Jakub
+>   wrote on it in https://patchwork.kernel.org/project/linux-kbuild/patch/20201022012106.1875129-1-ndesaulniers@google.com/#23727667).
+> * Add note that GCC 11 has changed the implicit default version.
+>
+> Changes from v6:
+> * Reorder sections from linker script to match order from BFD's internal
+>   linker script.
+> * Add .debug_names section, as per Fangrui.
+> * Drop CONFIG_DEBUG_INFO_DWARF2. Patch 0001 becomes a menu with 1
+>   choice. GCC's implicit default version of DWARF has been DWARF v4
+>   since ~4.8.
+> * Modify the test script to check for the presence of
+>   https://sourceware.org/bugzilla/show_bug.cgi?id=27195.
+> * Drop the clang without integrated assembler block in
+>   0002. Bumps the version requirement for GAS to 2.35.2, which isn't
+>   released yet (but should be released soon).  Folks looking to test
+>   with clang but without the integrated assembler should fetch
+>   binutils-gdb, build it from source, add a symlink to
+>   binutils-gdb/gas/as-new to binutils-gdb/gas/as, then prefix
+>   binutils-gdb/gas/as to their $PATH when building the kernel.
+>
+> Changes from v5:
+> * Drop previous patch 1, it has been accepted into kbuild:
+>   https://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git/commit/?h=kbuild&id=3f4d8ce271c7082be75bacbcbd2048aa78ce2b44
+> * Trying to set -Wa,-gdwarf-4 in the earlier patch was the source of
+>   additional complexity. Drop it that part of the patch. We can revisit
+>   clang without the integrated assembler setting -Wa,-gdwarf-4 later.
+>   That is a separate problem from generally supporting DWARF v5.
+> * Rework the final patch for clang without the integrated assembler.
+>   -Wa,-gdwarf-5 is required for DWARF5 in that case otherwise GAS will
+>   not accept the assembler directives clang produces from C code when
+>   generating asm.
+>
+> Changes from v4:
+> * drop set -e from script as per Nathan.
+> * add dependency on !CONFIG_DEBUG_INFO_BTF for DWARF v5 as per Sedat.
+> * Move LLVM_IAS=1 complexity from patch 2 to patch 3 as per Arvind and
+>   Masahiro. Sorry it took me a few tries to understand the point (I
+>   might still not), but it looks much cleaner this way. Sorry Nathan, I
+>   did not carry forward your previous reviews as a result, but I would
+>   appreciate if you could look again.
+> * Add Nathan's reviewed by tag to patch 1.
+> * Reword commit message for patch 3 to mention LLVM_IAS=1 and -gdwarf-5
+>   binutils addition later, and BTF issue.
+> * I still happen to see a pahole related error spew for the combination
+>   of:
+>   * LLVM=1
+>   * LLVM_IAS=1
+>   * CONFIG_DEBUG_INFO_DWARF4
+>   * CONFIG_DEBUG_INFO_BTF
+>   Though they're non-fatal to the build. I'm not sure yet why removing
+>   any one of the above prevents the warning spew. Maybe we'll need a v6.
+>
+> Changes from v3:
+>
+> Changes as per Arvind:
+> * only add -Wa,-gdwarf-5 for (LLVM=1|CC=clang)+LLVM_IAS=0 builds.
+> * add -gdwarf-5 to Kconfig shell script.
+> * only run Kconfig shell script for Clang.
+>
+> Apologies to Sedat and Nathan; I appreciate previous testing/review, but
+> I did no carry forward your Tested-by and Reviewed-by tags, as the
+> patches have changed too much IMO.
+>
+> Changes from v2:
+> * Drop two of the earlier patches that have been accepted already.
+> * Add measurements with GCC 10.2 to commit message.
+> * Update help text as per Arvind with help from Caroline.
+> * Improve case/wording between DWARF Versions as per Masahiro.
+>
+> Changes from the RFC:
+> * split patch in 3 patch series, include Fangrui's patch, too.
+> * prefer `DWARF vX` format, as per Fangrui.
+> * use spaces between assignment in Makefile as per Masahiro.
+> * simplify setting dwarf-version-y as per Masahiro.
+> * indent `prompt` in Kconfig change as per Masahiro.
+> * remove explicit default in Kconfig as per Masahiro.
+> * add comments to test_dwarf5_support.sh.
+> * change echo in test_dwarf5_support.sh as per Masahiro.
+> * remove -u from test_dwarf5_support.sh as per Masahiro.
+> * add a -gdwarf-5 cc-option check to Kconfig as per Jakub.
+>
+> Nick Desaulniers (3):
+>   vmlinux.lds.h: add DWARF v5 sections
+>   Kbuild: make DWARF version a choice
+>   Kconfig: allow explicit opt in to DWARF v5
+>
+>  Makefile                          |  6 ++--
+>  include/asm-generic/vmlinux.lds.h |  7 ++++-
+>  lib/Kconfig.debug                 | 48 +++++++++++++++++++++++++++----
+>  scripts/test_dwarf5_support.sh    |  8 ++++++
+>  4 files changed, 61 insertions(+), 8 deletions(-)
+>  create mode 100755 scripts/test_dwarf5_support.sh
+>
+> --
+> 2.30.0.365.g02bc693789-goog
+>
