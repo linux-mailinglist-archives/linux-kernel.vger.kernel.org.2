@@ -2,169 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DDE931132E
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 22:13:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE3B631138B
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 22:29:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233312AbhBEVMs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 16:12:48 -0500
-Received: from mail.fireflyinternet.com ([77.68.26.236]:58365 "EHLO
-        fireflyinternet.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S233812AbhBEVHN (ORCPT
+        id S233798AbhBEV2s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 16:28:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55576 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231876AbhBEV1r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 16:07:13 -0500
-X-Default-Received-SPF: pass (skip=forwardok (res=PASS)) x-ip-name=78.156.69.177;
-Received: from build.alporthouse.com (unverified [78.156.69.177]) 
-        by fireflyinternet.com (Firefly Internet (M1)) with ESMTP id 23802879-1500050 
-        for multiple; Fri, 05 Feb 2021 21:06:13 +0000
-From:   Chris Wilson <chris@chris-wilson.co.uk>
-To:     linux-kernel@vger.kernel.org
-Cc:     dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Kees Cook <keescook@chromium.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dave Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>
-Subject: [PATCH v2] kernel: Expose SYS_kcmp by default
-Date:   Fri,  5 Feb 2021 21:06:10 +0000
-Message-Id: <20210205210610.29837-1-chris@chris-wilson.co.uk>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210205163752.11932-1-chris@chris-wilson.co.uk>
-References: <20210205163752.11932-1-chris@chris-wilson.co.uk>
+        Fri, 5 Feb 2021 16:27:47 -0500
+X-Greylist: delayed 1119 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 05 Feb 2021 13:27:07 PST
+Received: from bues.ch (bues.ch [IPv6:2a01:138:9005::1:4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26499C0613D6;
+        Fri,  5 Feb 2021 13:27:07 -0800 (PST)
+Received: by bues.ch with esmtpsa (Exim 4.92)
+        (envelope-from <m@bues.ch>)
+        id 1l88Kz-0008Kk-SC; Fri, 05 Feb 2021 22:08:21 +0100
+Date:   Fri, 5 Feb 2021 22:06:44 +0100
+From:   Michael =?UTF-8?B?QsO8c2No?= <m@bues.ch>
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ssb: Use true and false for bool variable
+Message-ID: <20210205220644.0d05f5ce@wiggum>
+In-Reply-To: <1612508199-92282-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+References: <1612508199-92282-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/jz6Nx+otOii=QehdirSLbMq";
+ protocol="application/pgp-signature"; micalg=pgp-sha512
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Userspace has discovered the functionality offered by SYS_kcmp and has
-started to depend upon it. In particular, Mesa uses SYS_kcmp for
-os_same_file_description() in order to identify when two fd (e.g. device
-or dmabuf) point to the same struct file. Since they depend on it for
-core functionality, lift SYS_kcmp out of the non-default
-CONFIG_CHECKPOINT_RESTORE into the selectable syscall category.
+--Sig_/jz6Nx+otOii=QehdirSLbMq
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-Note that some distributions such as Ubuntu are already enabling
-CHECKPOINT_RESTORE in their configs and so, by extension, SYS_kcmp.
+On Fri,  5 Feb 2021 14:56:39 +0800
+Jiapeng Chong <jiapeng.chong@linux.alibaba.com> wrote:
 
-References: https://gitlab.freedesktop.org/drm/intel/-/issues/3046
-Signed-off-by: Chris Wilson <chris@chris-wilson.co.uk>
-Cc: Kees Cook <keescook@chromium.org>
-Cc: Andy Lutomirski <luto@amacapital.net>
-Cc: Will Drewry <wad@chromium.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Dave Airlie <airlied@gmail.com>
-Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: Lucas Stach <l.stach@pengutronix.de>
-Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch> # DRM depends on SYS_kcmp
+> Fix the following coccicheck warnings:
 
----
-v2:
-  - Default n.
-  - Borrrow help message from man kcmp.
-  - Export get_epoll_tfile_raw_ptr() for CONFIG_KCMP
----
- fs/eventpoll.c                                |  4 ++--
- include/linux/eventpoll.h                     |  2 +-
- init/Kconfig                                  | 12 ++++++++++++
- kernel/Makefile                               |  2 +-
- tools/testing/selftests/seccomp/seccomp_bpf.c |  2 +-
- 5 files changed, 17 insertions(+), 5 deletions(-)
+Acked-by: Michael B=C3=BCsch <m@bues.ch>
 
-diff --git a/fs/eventpoll.c b/fs/eventpoll.c
-index a829af074eb5..3196474cbe24 100644
---- a/fs/eventpoll.c
-+++ b/fs/eventpoll.c
-@@ -979,7 +979,7 @@ static struct epitem *ep_find(struct eventpoll *ep, struct file *file, int fd)
- 	return epir;
- }
- 
--#ifdef CONFIG_CHECKPOINT_RESTORE
-+#ifdef CONFIG_KCMP
- static struct epitem *ep_find_tfd(struct eventpoll *ep, int tfd, unsigned long toff)
- {
- 	struct rb_node *rbp;
-@@ -1021,7 +1021,7 @@ struct file *get_epoll_tfile_raw_ptr(struct file *file, int tfd,
- 
- 	return file_raw;
- }
--#endif /* CONFIG_CHECKPOINT_RESTORE */
-+#endif /* CONFIG_KCMP */
- 
- /**
-  * Adds a new entry to the tail of the list in a lockless way, i.e.
-diff --git a/include/linux/eventpoll.h b/include/linux/eventpoll.h
-index 0350393465d4..593322c946e6 100644
---- a/include/linux/eventpoll.h
-+++ b/include/linux/eventpoll.h
-@@ -18,7 +18,7 @@ struct file;
- 
- #ifdef CONFIG_EPOLL
- 
--#ifdef CONFIG_CHECKPOINT_RESTORE
-+#ifdef CONFIG_KCMP
- struct file *get_epoll_tfile_raw_ptr(struct file *file, int tfd, unsigned long toff);
- #endif
- 
-diff --git a/init/Kconfig b/init/Kconfig
-index b77c60f8b963..1b75141bc18b 100644
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -1194,6 +1194,7 @@ endif # NAMESPACES
- config CHECKPOINT_RESTORE
- 	bool "Checkpoint/restore support"
- 	select PROC_CHILDREN
-+	select KCMP
- 	default n
- 	help
- 	  Enables additional kernel features in a sake of checkpoint/restore.
-@@ -1737,6 +1738,17 @@ config ARCH_HAS_MEMBARRIER_CALLBACKS
- config ARCH_HAS_MEMBARRIER_SYNC_CORE
- 	bool
- 
-+config KCMP
-+	bool "Enable kcmp() system call" if EXPERT
-+	default n
-+	help
-+	  Enable the kernel resource comparison system call. It provides
-+	  user-space with the ability to compare two processes to see if they
-+	  share a common resource, such as a file descriptor or even virtual
-+	  memory space.
-+
-+	  If unsure, say N.
-+
- config RSEQ
- 	bool "Enable rseq() system call" if EXPERT
- 	default y
-diff --git a/kernel/Makefile b/kernel/Makefile
-index aa7368c7eabf..320f1f3941b7 100644
---- a/kernel/Makefile
-+++ b/kernel/Makefile
-@@ -51,7 +51,7 @@ obj-y += livepatch/
- obj-y += dma/
- obj-y += entry/
- 
--obj-$(CONFIG_CHECKPOINT_RESTORE) += kcmp.o
-+obj-$(CONFIG_KCMP) += kcmp.o
- obj-$(CONFIG_FREEZER) += freezer.o
- obj-$(CONFIG_PROFILING) += profile.o
- obj-$(CONFIG_STACKTRACE) += stacktrace.o
-diff --git a/tools/testing/selftests/seccomp/seccomp_bpf.c b/tools/testing/selftests/seccomp/seccomp_bpf.c
-index 26c72f2b61b1..1b6c7d33c4ff 100644
---- a/tools/testing/selftests/seccomp/seccomp_bpf.c
-+++ b/tools/testing/selftests/seccomp/seccomp_bpf.c
-@@ -315,7 +315,7 @@ TEST(kcmp)
- 	ret = __filecmp(getpid(), getpid(), 1, 1);
- 	EXPECT_EQ(ret, 0);
- 	if (ret != 0 && errno == ENOSYS)
--		SKIP(return, "Kernel does not support kcmp() (missing CONFIG_CHECKPOINT_RESTORE?)");
-+		SKIP(return, "Kernel does not support kcmp() (missing CONFIG_KCMP?)");
- }
- 
- TEST(mode_strict_support)
--- 
-2.20.1
+--=20
+Michael
 
+--Sig_/jz6Nx+otOii=QehdirSLbMq
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCgAdFiEEihRzkKVZOnT2ipsS9TK+HZCNiw4FAmAds2QACgkQ9TK+HZCN
+iw58hQ//T//CDvkFrpC+zCcZ6qfcfjLrO/d3Wswp1Ta01ZJIVEvpsHKb22VDnrAG
+YBnrcN8ZLSsMm9mcQrj4rzfLPhYEIOnaX4+4z8RtZZqwpK97A/3uVsGhx20U+E1k
+VwcHiIATbtzh7BeoLOrS/GW6f4zvJ+gld9hctJenKSe1vakBIuZ4ygCVSyX5kuiB
+QkWzZmEr4/SnqXAvCRF+CErP9jg3Ks1+uJRLxyj5XbA+MRFEjSajnfZlNiS2No2f
+nZxma6I9MpMIqsMLBFWHOWQkAVQPecFqGR25PPcYAe3kUT6vLbKjt4XTC5mOqA14
+CgwVynDEhBW4BpG2qzxUbS5/ahgmdbeOtF97aqXwX3fWD9PsFRvMAmYAn5SWKeS3
+Mtyvd9X9adDS39DkLtl8BftQ/shHAOS2iTAhfKZ79lnMdl6bcHhP8QvApTVc7mBk
+dx2sCT4Wu5uHZBeds0LyCPQCpqkTQ4AG+AhqhaZJV/RBmRTAwVYcx9dO+jTZSPj7
+XqTxafxJUi2wD7oAUIM7//Uy8fVvNiYVXrH9Zk8EXYRELY/v0NHlO3SBCxfhHaDm
+CfP15YzaNYnzsh8pWFHyTG30hoCzyDNhVezWSTYyWhhrTeB9I/mJ3qMHq27H3J90
+0Bt0xnQUDqp2tYPxm+w293AIoAnL69ZO2F0/r+wNplHtsKbyZMU=
+=h9ND
+-----END PGP SIGNATURE-----
+
+--Sig_/jz6Nx+otOii=QehdirSLbMq--
