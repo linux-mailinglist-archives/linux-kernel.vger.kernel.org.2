@@ -2,120 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81F5E311688
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 00:19:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14B003116C0
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 00:19:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231899AbhBEXDt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 18:03:49 -0500
-Received: from mail-il1-f197.google.com ([209.85.166.197]:54525 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232676AbhBEOgO (ORCPT
+        id S231816AbhBEXLj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 18:11:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43450 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232675AbhBEOcM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 09:36:14 -0500
-Received: by mail-il1-f197.google.com with SMTP id s4so6664919ilt.21
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 08:14:44 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=QLMdobwI21unXJ8AaGTczEYpBIwx778vxux7MxwfKw0=;
-        b=e+heyHDs2aQVry7e2VF+dzooNiL7dz+odDKWe+lxVF9jbLUb4Dnp2r4h6J+wL28GS+
-         IwPKh4ZTpRIDfhv7mXR4vmq6O4XPkG7dh6Dy+Rs/zRbdROUQ4iq3TRvBlaqBnZLpqgB3
-         kEeMhU7rH7Jz0LORDbcwT+EWRa10NH64i3bbIjwp8hzWt1kohHkFY2YhnsMrfICK5Plj
-         je6p1Ush6tOjirQs/9PM6lsEJp6J/6rB7WW3m/ra6U5jkH1wM0McKC9Lb+dR87x2CU+g
-         JDV5V7Kw8rHIOoOIBagrbDd69Bu/rx2NOdK574lkNtgQA5FHZ+B+PQIoE+eMEIRVpjly
-         Gk0w==
-X-Gm-Message-State: AOAM533iRCJGhPLIGGNeSEK0G5CIorhbIG+XS8xMcGf9JrUTK6MKFGbG
-        OByRRYbN3LZQrFEDkmB0kGYPq+8LmWE2KedUhuaRuxmMADi1
-X-Google-Smtp-Source: ABdhPJyTtj4JqxehYsbh8pCYlMZ6/g0siakHPFrYyRm/sexT0ghMwTNzvGcpEC0Nkz3MBf7DcpcR+YRs+wRZI/JNemcN6W8vEBul
+        Fri, 5 Feb 2021 09:32:12 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB8E2C061223
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 08:09:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=xmMvhqZUQ27b/b3Jk1/md0ZnUqghgPS0fl8J1sNpi9s=; b=Nhr0ZFAIBVV99nRqxGlmsHDWCB
+        wprAVgTl7wMJbil+L/TuuR2eHFJ1pFMa/1YkWR/U3PXefBbKqBl6YvzJTymh5aawd7wvN0xZk1r1M
+        sLUJNANh3PAqdwMURt4NuyDbNt/szLLxjCCFInrO94sYx67kYEOGlxNT61QV17ytV6vYPP+lvi/T2
+        z5v9cZaqiMBEq+u6QdlAgLaoBi5Kill84pAei3SgyIlp7qOi2dRWlGpGHCeXSCpcS2kGyp/pW6s/L
+        G4/7lVkeM1eFbMEGN77pDyq61MMQoULJH5I/g/8B1CkujbDwWI3SL9VMBWVymvQe0AV3+0PQM3VD0
+        NyG+rm8w==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1l82w4-0006yH-PD; Fri, 05 Feb 2021 15:22:17 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B3ECC30066E;
+        Fri,  5 Feb 2021 16:22:12 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 8FBFF20A0D644; Fri,  5 Feb 2021 16:22:12 +0100 (CET)
+Date:   Fri, 5 Feb 2021 16:22:12 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     Frederic Weisbecker <frederic@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Michal Hocko <mhocko@suse.com>,
+        rostedt@goodmis.org, jbaron@akamai.com, ardb@kernel.org
+Subject: Re: [RFC PATCH 6/8] preempt/dynamic: Provide
+ preempt_schedule[_notrace]() static calls
+Message-ID: <YB1ipIoAXLPP1fvU@hirez.programming.kicks-ass.net>
+References: <20210126235730.lgfa2uida5se5urn@treble>
+ <YBEuy6zlBcV8gLvY@hirez.programming.kicks-ass.net>
+ <YBFODfNZCjA9s0IP@hirez.programming.kicks-ass.net>
+ <20210127155914.jfmr4jay47yck5h5@treble>
+ <YBGSdtnKIL3kryos@hirez.programming.kicks-ass.net>
+ <20210127163308.cgiq7jxx2uziuhcc@treble>
+ <YBG0cSoJmu8NnoAT@hirez.programming.kicks-ass.net>
+ <20210127190003.64rdwoxyjgnq2rtx@treble>
+ <20210127190218.hoztl7eidujqarkt@treble>
+ <20210127231837.ifddpn7rhwdaepiu@treble>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1d88:: with SMTP id h8mr3911422ila.43.1612538416459;
- Fri, 05 Feb 2021 07:20:16 -0800 (PST)
-Date:   Fri, 05 Feb 2021 07:20:16 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000007ff56205ba985b60@google.com>
-Subject: general protection fault in vmx_vcpu_run (2)
-From:   syzbot <syzbot+42a71c84ef04577f1aef@syzkaller.appspotmail.com>
-To:     bp@alien8.de, hpa@zytor.com, jmattson@google.com, joro@8bytes.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mingo@redhat.com, pbonzini@redhat.com, seanjc@google.com,
-        syzkaller-bugs@googlegroups.com, tglx@linutronix.de,
-        vkuznets@redhat.com, wanpengli@tencent.com, x86@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210127231837.ifddpn7rhwdaepiu@treble>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Wed, Jan 27, 2021 at 05:18:37PM -0600, Josh Poimboeuf wrote:
 
-syzbot found the following issue on:
+> +static struct static_call_tramp_key *tramp_key_lookup(unsigned long addr)
+> +{
+> +	struct static_call_tramp_key *start = __start_static_call_tramp_key;
+> +	struct static_call_tramp_key *stop = __stop_static_call_tramp_key;
+> +	struct static_call_tramp_key *tramp_key;
+> +
+> +	for (tramp_key = start; tramp_key != stop; tramp_key++) {
+> +		unsigned long tramp;
+> +
+> +		tramp = (long)tramp_key->tramp + (long)&tramp_key->tramp;
+> +		if (tramp == addr)
+> +			return tramp_key;
+> +	}
+> +
+> +	return NULL;
+> +}
+> +
+>  static int static_call_add_module(struct module *mod)
+>  {
+> -	return __static_call_init(mod, mod->static_call_sites,
+> -				  mod->static_call_sites + mod->num_static_call_sites);
+> +	struct static_call_site *start = mod->static_call_sites;
+> +	struct static_call_site *stop = start + mod->num_static_call_sites;
+> +	struct static_call_site *site;
+> +
+> +	for (site = start; site != stop; site++) {
+> +		unsigned long addr = (unsigned long)static_call_key(site);
+> +		struct static_call_tramp_key *tramp_key;
+> +
+> +		/*
+> +		 * Is the key is exported, 'addr' points to the key, which
+> +		 * means modules are allowed to call static_call_update() on
+> +		 * it.
+> +		 *
+> +		 * Otherwise, the key isn't exported, and 'addr' points to the
+> +		 * trampoline so we need to lookup the key.
+> +		 *
+> +		 * We go through this dance to prevent crazy modules from
+> +		 * abusing sensitive static calls.
+> +		 */
+> +		if (!kernel_text_address(addr))
+> +			continue;
+> +
+> +		tramp_key = tramp_key_lookup(addr);
+> +		if (!tramp_key) {
+> +			pr_warn("Failed to fixup __raw_static_call() usage at: %ps\n",
+> +				static_call_addr(site));
+> +			return -EINVAL;
+> +		}
+> +
+> +		site->key = ((long)tramp_key->key - (long)&tramp_key->key) |
+> +			    (site->key & STATIC_CALL_SITE_FLAGS);
+> +	}
+> +
+> +	return __static_call_init(mod, start, stop);
+>  }
 
-HEAD commit:    aa2b8820 Add linux-next specific files for 20210205
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=13d27b54d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=15c41e44a64aa1a5
-dashboard link: https://syzkaller.appspot.com/bug?extid=42a71c84ef04577f1aef
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+42a71c84ef04577f1aef@syzkaller.appspotmail.com
-
-general protection fault, probably for non-canonical address 0xdffffc0000001e26: 0000 [#1] PREEMPT SMP KASAN
-KASAN: probably user-memory-access in range [0x000000000000f130-0x000000000000f137]
-CPU: 0 PID: 18290 Comm: syz-executor.0 Not tainted 5.11.0-rc6-next-20210205-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:atomic_switch_perf_msrs arch/x86/kvm/vmx/vmx.c:6527 [inline]
-RIP: 0010:vmx_vcpu_run+0x538/0x2740 arch/x86/kvm/vmx/vmx.c:6698
-Code: 8a 55 00 39 eb 0f 8d fd 00 00 00 e8 42 85 55 00 48 8b 0c 24 48 63 c3 48 8d 04 40 48 8d 2c c1 48 8d 7d 08 48 89 f8 48 c1 e8 03 <42> 80 3c 38 00 0f 85 05 1d 00 00 48 8d 7d 10 4c 8b 6d 08 48 89 f8
-RSP: 0018:ffffc9000238fb00 EFLAGS: 00010003
-RAX: 0000000000001e26 RBX: 0000000000000000 RCX: 000000000000f12e
-RDX: 0000000000040000 RSI: ffffffff811d679e RDI: 000000000000f136
-RBP: 000000000000f12e R08: 0000000000000000 R09: 0000000000000000
-R10: ffffffff811d675e R11: 0000000000000000 R12: ffff88806d8ba4d0
-R13: ffff88806d8ba520 R14: ffff88806d8b8000 R15: dffffc0000000000
-FS:  00007f1a30eaf700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f1a30ece6b8 CR3: 000000001c387000 CR4: 00000000001526f0
-Call Trace:
- vcpu_enter_guest+0x103d/0x3f90 arch/x86/kvm/x86.c:9015
- vcpu_run arch/x86/kvm/x86.c:9155 [inline]
- kvm_arch_vcpu_ioctl_run+0x440/0x1980 arch/x86/kvm/x86.c:9382
- kvm_vcpu_ioctl+0x467/0xd90 arch/x86/kvm/../../../virt/kvm/kvm_main.c:3283
- vfs_ioctl fs/ioctl.c:48 [inline]
- __do_sys_ioctl fs/ioctl.c:753 [inline]
- __se_sys_ioctl fs/ioctl.c:739 [inline]
- __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:739
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x465b09
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f1a30eaf188 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 000000000056c008 RCX: 0000000000465b09
-RDX: 0000000000000000 RSI: 000000000000ae80 RDI: 0000000000000007
-RBP: 00000000004b069f R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056c008
-R13: 00007ffde3d7a22f R14: 00007f1a30eaf300 R15: 0000000000022000
-Modules linked in:
----[ end trace 7085899e9678fd16 ]---
-RIP: 0010:atomic_switch_perf_msrs arch/x86/kvm/vmx/vmx.c:6527 [inline]
-RIP: 0010:vmx_vcpu_run+0x538/0x2740 arch/x86/kvm/vmx/vmx.c:6698
-Code: 8a 55 00 39 eb 0f 8d fd 00 00 00 e8 42 85 55 00 48 8b 0c 24 48 63 c3 48 8d 04 40 48 8d 2c c1 48 8d 7d 08 48 89 f8 48 c1 e8 03 <42> 80 3c 38 00 0f 85 05 1d 00 00 48 8d 7d 10 4c 8b 6d 08 48 89 f8
-RSP: 0018:ffffc9000238fb00 EFLAGS: 00010003
-RAX: 0000000000001e26 RBX: 0000000000000000 RCX: 000000000000f12e
-RDX: 0000000000040000 RSI: ffffffff811d679e RDI: 000000000000f136
-RBP: 000000000000f12e R08: 0000000000000000 R09: 0000000000000000
-R10: ffffffff811d675e R11: 0000000000000000 R12: ffff88806d8ba4d0
-R13: ffff88806d8ba520 R14: ffff88806d8b8000 R15: dffffc0000000000
-FS:  00007f1a30eaf700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f1a30ece6b8 CR3: 000000001c387000 CR4: 00000000001526f0
-
+I find it works better with this on..
 
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/kernel/static_call.c b/kernel/static_call.c
+index 5e6f567976c1..6906c6ec4c97 100644
+--- a/kernel/static_call.c
++++ b/kernel/static_call.c
+@@ -325,7 +325,7 @@ static int __static_call_mod_text_reserved(void *start, void *end)
+ 	return ret;
+ }
+ 
+-static struct static_call_tramp_key *tramp_key_lookup(unsigned long addr)
++static unsigned long tramp_key_lookup(unsigned long addr)
+ {
+ 	struct static_call_tramp_key *start = __start_static_call_tramp_key;
+ 	struct static_call_tramp_key *stop = __stop_static_call_tramp_key;
+@@ -336,10 +336,10 @@ static struct static_call_tramp_key *tramp_key_lookup(unsigned long addr)
+ 
+ 		tramp = (long)tramp_key->tramp + (long)&tramp_key->tramp;
+ 		if (tramp == addr)
+-			return tramp_key;
++			return (long)tramp_key->key + (long)&tramp_key->key;
+ 	}
+ 
+-	return NULL;
++	return 0;
+ }
+ 
+ static int static_call_add_module(struct module *mod)
+@@ -350,7 +350,7 @@ static int static_call_add_module(struct module *mod)
+ 
+ 	for (site = start; site != stop; site++) {
+ 		unsigned long addr = (unsigned long)static_call_key(site);
+-		struct static_call_tramp_key *tramp_key;
++		unsigned long key;
+ 
+ 		/*
+ 		 * Is the key is exported, 'addr' points to the key, which
+@@ -366,14 +366,14 @@ static int static_call_add_module(struct module *mod)
+ 		if (!kernel_text_address(addr))
+ 			continue;
+ 
+-		tramp_key = tramp_key_lookup(addr);
+-		if (!tramp_key) {
++		key = tramp_key_lookup(addr);
++		if (!key) {
+ 			pr_warn("Failed to fixup __raw_static_call() usage at: %ps\n",
+ 				static_call_addr(site));
+ 			return -EINVAL;
+ 		}
+ 
+-		site->key = ((long)tramp_key->key - (long)&tramp_key->key) |
++		site->key = (key - (long)&site->key) |
+ 			    (site->key & STATIC_CALL_SITE_FLAGS);
+ 	}
+ 
