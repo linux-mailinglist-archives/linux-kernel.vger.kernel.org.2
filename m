@@ -2,139 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBBF83116F4
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 00:22:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A928831171C
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 00:30:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232013AbhBEXVT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 18:21:19 -0500
-Received: from mx2.suse.de ([195.135.220.15]:49286 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231951AbhBEO0M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 09:26:12 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1612541047; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        id S229851AbhBEX26 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 18:28:58 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:42790 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232620AbhBEO2Q (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 09:28:16 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612541134;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=TuCw125E70gQA5pcVuLFq5da8zSoBoZGjiwm7DafF+E=;
-        b=pgEZdng5KQRSoP5J4Sq44/H4tL4C8kHWXtH/bHop8m7RvjYpX6iLAWxTdU4CdjusWgwxFQ
-        mFO7TK3ReZ3+zfOYkHlygAQkIuWaeQ5KchDns8ZUHLfo8QtDCk8gXMskKt1ZNsz3biIAj5
-        3PjuS5sox0GzmG3AucSvi4atHq+xNlk=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id BA792AC9B;
-        Fri,  5 Feb 2021 16:04:07 +0000 (UTC)
-Date:   Fri, 5 Feb 2021 17:04:07 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        bh=JoM62AWSDevjens3EGjD01RZCxIT1WEOEpSFlKtGj24=;
+        b=JvWIw5ofG0aKMZplHyD5DfjQDfKn8S4LXm49BDoTYB1XYmECDfvqvsY8i6mr25ba9KSDIe
+        tseaJd630r+HEPkJdGe6zwL9ozX1UHpfjMm/ijyy+K5aPiX3L3+GPmI0YVkP7AZeXVDhtj
+        MNHA2I39T/t2HUZK+wRmbUff05AaGWQ=
+Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
+ [209.85.160.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-246-3RiUaQ6-OyWvAkeC8yoVRw-1; Fri, 05 Feb 2021 11:05:33 -0500
+X-MC-Unique: 3RiUaQ6-OyWvAkeC8yoVRw-1
+Received: by mail-qt1-f198.google.com with SMTP id o14so5568986qtp.10
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 08:05:33 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=JoM62AWSDevjens3EGjD01RZCxIT1WEOEpSFlKtGj24=;
+        b=aPxeQcs0Q+9DwIZFh0N8Pep0L3/39ihT7rm9k3K1462v9Qy4CadcVlvRyxlpdkAkM0
+         yJsVMglamBY9CIBM4zX9tHxgRM1OVw7BsvwSYWkVzwIRi6iYN2MooVZdFGlc4L8Rm4M7
+         ZLRqFdGH63Q+foOOa2IDUOicdsgfFxxSOiIxE5GOCA5KDD6HLZF99hbVroF8DGFzgy38
+         SXaeL1yDvNCL4YTTx600HDwZVfmt0jHh4MowQ5BmOJqx2ltPWnkkyvsS7olpQ0jY8tjR
+         uTB6Z7vS+gVkwoBh3bO64emXCNHo/8tFg6FhYpctFGHYuUIPANY2cpNgN38F6838UMaT
+         blDQ==
+X-Gm-Message-State: AOAM533YGVQTSk/N8xlIDrHr9zGzvcEDqP8lDlKlNtgobAAMRrOSCYuH
+        NVltHGBXQmoUWy0Rj6oWv7ZDVxe4z95MzCV/MZv7i49yPxRSIMJ5VZr7hS/+aFhAWkx1CfFa/rB
+        H9LKUXRmDKPpl/skJie03joet
+X-Received: by 2002:a37:b346:: with SMTP id c67mr5077317qkf.212.1612541132732;
+        Fri, 05 Feb 2021 08:05:32 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzQM80RYsZTBhWjWiOiR1RHPvEgAzVUDDgbkzNLvCUyrFrGIeU8bK80LifWphXArYXXlDyxcA==
+X-Received: by 2002:a37:b346:: with SMTP id c67mr5077289qkf.212.1612541132526;
+        Fri, 05 Feb 2021 08:05:32 -0800 (PST)
+Received: from xz-x1 (bras-vprn-toroon474qw-lp130-20-174-93-89-182.dsl.bell.ca. [174.93.89.182])
+        by smtp.gmail.com with ESMTPSA id o10sm8653688qtg.37.2021.02.05.08.05.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Feb 2021 08:05:31 -0800 (PST)
+Date:   Fri, 5 Feb 2021 11:05:30 -0500
+From:   Peter Xu <peterx@redhat.com>
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Kirill Shutemov <kirill@shutemov.name>,
+        Wei Zhang <wzam@amazon.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Gal Pressman <galpress@amazon.com>, Jan Kara <jack@suse.cz>,
+        Jann Horn <jannh@google.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [External] Re: [PATCH] mm: memcontrol: fix missing wakeup oom
- task
-Message-ID: <YB1sd96CeJqNmzYn@dhcp22.suse.cz>
-References: <20210205062310.74268-1-songmuchun@bytedance.com>
- <YB0Ay+epP/hnFmDS@dhcp22.suse.cz>
- <CAMZfGtWKNNhc1Jy1jzp2uZU_PM6GNWup7d=yUVk9AehKFo_CRw@mail.gmail.com>
- <YB0cO7R1WtJgAxI2@dhcp22.suse.cz>
- <CAMZfGtXXjXKoxbOSB9h6JvgZKEGBh2sCf34usJXcBXxGjU6k0w@mail.gmail.com>
- <YB04B1gMdE/B3G9c@dhcp22.suse.cz>
- <CAMZfGtVBPdWUG6MuGcFt7A_Xr1zCJj-gnE0pKyhyJAy6bSSgnw@mail.gmail.com>
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v2 4/4] hugetlb: Do early cow when page pinned on src mm
+Message-ID: <20210205160530.GZ6468@xz-x1>
+References: <20210204145033.136755-1-peterx@redhat.com>
+ <20210204145033.136755-5-peterx@redhat.com>
+ <d45d4ce3-f386-708b-0f7a-4950df6721d9@oracle.com>
+ <20210205014328.GW6468@xz-x1>
+ <4344397d-cf08-b502-d5ff-76f19e778dfe@oracle.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAMZfGtVBPdWUG6MuGcFt7A_Xr1zCJj-gnE0pKyhyJAy6bSSgnw@mail.gmail.com>
+In-Reply-To: <4344397d-cf08-b502-d5ff-76f19e778dfe@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 05-02-21 23:30:36, Muchun Song wrote:
-> On Fri, Feb 5, 2021 at 8:20 PM Michal Hocko <mhocko@suse.com> wrote:
-> >
-> > On Fri 05-02-21 19:04:19, Muchun Song wrote:
-> > > On Fri, Feb 5, 2021 at 6:21 PM Michal Hocko <mhocko@suse.com> wrote:
-> > > >
-> > > > On Fri 05-02-21 17:55:10, Muchun Song wrote:
-> > > > > On Fri, Feb 5, 2021 at 4:24 PM Michal Hocko <mhocko@suse.com> wrote:
-> > > > > >
-> > > > > > On Fri 05-02-21 14:23:10, Muchun Song wrote:
-> > > > > > > We call memcg_oom_recover() in the uncharge_batch() to wakeup OOM task
-> > > > > > > when page uncharged, but for the slab pages, we do not do this when page
-> > > > > > > uncharged.
-> > > > > >
-> > > > > > How does the patch deal with this?
-> > > > >
-> > > > > When we uncharge a slab page via __memcg_kmem_uncharge,
-> > > > > actually, this path forgets to do this for us compared to
-> > > > > uncharge_batch(). Right?
-> > > >
-> > > > Yes this was more more or less clear (still would have been nicer to be
-> > > > explicit). But you still haven't replied to my question I believe. I
-> > > > assume you rely on refill_stock doing draining but how does this address
-> > > > the problem? Is it sufficient to do wakeups in the batched way?
-> > >
-> > > Sorry, the subject title may not be suitable. IIUC, memcg_oom_recover
-> > > aims to wake up the OOM task when we uncharge the page.
-> >
-> > Yes, your understanding is correct. This is a way to pro-actively wake
-> > up oom victims when the memcg oom handling is outsourced to the
-> > userspace. Please note that I haven't objected to the problem statement.
-> >
-> > I was questioning the fix for the problem.
-> >
-> > > I see uncharge_batch always do this. I am confused why
-> > > __memcg_kmem_uncharge does not.
-> >
-> > Very likely an omission. I haven't checked closely but I suspect this
-> > has been introduced by the recent kmem accounting changes.
-> >
-> > Why didn't you simply do the same thing and call memcg_oom_recover
-> > unconditionally and instead depend on the draining? I suspect this was
-> > because you wanted to recover also when draining which is not necessary
-> > as pointed out in other email.
+On Thu, Feb 04, 2021 at 09:11:24PM -0800, Mike Kravetz wrote:
+
+[...]
+
+> >>> @@ -3787,7 +3803,7 @@ int copy_hugetlb_page_range(struct mm_struct *dst, struct mm_struct *src,
+> >>>  		dst_entry = huge_ptep_get(dst_pte);
+> >>>  		if ((dst_pte == src_pte) || !huge_pte_none(dst_entry))
+> >>>  			continue;
+> >>> -
+> >>> +again:
+> >>>  		dst_ptl = huge_pte_lock(h, dst, dst_pte);
+> >>>  		src_ptl = huge_pte_lockptr(h, src, src_pte);
+> >>>  		spin_lock_nested(src_ptl, SINGLE_DEPTH_NESTING);
+> > 
+> > Side question: Mike, do you know why we need this lock_nested()?  Could the src
+> > lock be taken due to any reason already?  It confused me when I read the chunk.
 > 
-> Thanks for your explanations. You are right. It is my fault to depend
-> on the draining. I should call memcg_oom_recover directly in the
-> __memcg_kmem_uncharge. Right?
+> I see that it was added with commit 4647875819aa.  That was when huge pages
+> used the single per-mm ptl.  Lockdep seemed to complain about taking
+> &mm->page_table_lock twice.   Certainly, source and destination mm can not
+> be the same.  Right?
 
-Yes.
+Right, at least that's my understanding..
 
-> > [...]
-> > > > > > Does this lead to any code generation improvements? I would expect
-> > > > > > compiler to be clever enough to inline static functions if that pays
-> > > > > > off. If yes make this a patch on its own.
-> > > > >
-> > > > > I have disassembled the code, I see memcg_oom_recover is not
-> > > > > inline. Maybe because memcg_oom_recover has a lot of callers.
-> > > > > Just guess.
-> > > > >
-> > > > > (gdb) disassemble uncharge_batch
-> > > > >  [...]
-> > > > >  0xffffffff81341c73 <+227>: callq  0xffffffff8133c420 <page_counter_uncharge>
-> > > > >  0xffffffff81341c78 <+232>: jmpq   0xffffffff81341bc0 <uncharge_batch+48>
-> > > > >  0xffffffff81341c7d <+237>: callq  0xffffffff8133e2c0 <memcg_oom_recover>
-> > > >
-> > > > So does it really help to do the inlining?
-> > >
-> > > I just think memcg_oom_recover is very small, inline maybe
-> > > a good choice. Maybe I am wrong.
-> >
-> > In general I am not overly keen on changes without a proper
-> > justification. In this particular case I would understand that a
-> > function call that will almost never do anything but the test (because
-> > oom_disabled is a rarely used) is just waste of cycles in some hot
-> > paths (e.g. kmem uncharge). Maybe this even has some visible performance
-> > benefit. If this is really the case then would it make sense to guard
-> > this test by the existing cgroup_subsys_on_dfl(memory_cgrp_subsys)?
+> I do not have the full history, but it 'looks' like
+> lockdep might have been confused and this was added to keep it quiet.
 > 
-> Agree. I think it can improve performance when this
-> function is inline. Guarding the test should be also
-> an improvement on cgroup v2.
+> BTW - Copy page range for 'normal' pages has the same spin_lock_nested().
 
-I would be surprised if this was measurable but you can give it a try. A
-static key would be a reasonable argument for inlining on its own.
+Yes.  I'll need to take the same lock in v3, so I think I'll just follow.
+
+Thanks,
+
 -- 
-Michal Hocko
-SUSE Labs
+Peter Xu
+
