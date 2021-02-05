@@ -2,81 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09843310A57
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 12:36:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47229310A52
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 12:35:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231362AbhBELfp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 06:35:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42978 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231269AbhBELa0 (ORCPT
+        id S231784AbhBELeN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 06:34:13 -0500
+Received: from mail-lj1-f174.google.com ([209.85.208.174]:35186 "EHLO
+        mail-lj1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231563AbhBELbE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 06:30:26 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66DF3C06178C;
-        Fri,  5 Feb 2021 03:29:46 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1612524584;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=25MzDHo8cvo805GqTp3ymG5etlk+7u28hiYRA4P/Uhw=;
-        b=kvhJSIUqC/tY5pvHIf/BYbV6yMCjpZgPRahiBzAZu5HLoP4wjR0Hut5ytENaFrnGBHNjPT
-        p8hxa6wXv7M2VVsBmdIybKr7XSx83HJp8M/u9ouAJ1MN4ZTlC7AfkQF2xILXdrq1NMlQ3o
-        E73n7/vHDfPsdi6nkvTS7w1HHMdPABXku7g4vjJBEyMop1bC892EsQDGl3h4fJjkm5lC+9
-        6tkxjDNAFfQryMozD0UzuCiGF9NfiCZ5rkp9RUbEQJ3a36ykE8K9Hhmc1qECZjwLJ9bvUs
-        DvYOfZ/NngS7/EzSwqDtRd6Q1EZ7d6w92zfVGNMi9sLxCrPXmvziMLgSelP+2w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1612524584;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=25MzDHo8cvo805GqTp3ymG5etlk+7u28hiYRA4P/Uhw=;
-        b=zTO0EUpz6sP08Ly0QDpE+JohhFmbCtYWqVY/pjligeYGx6RQQ62GesGFiFILguAVUvhocq
-        aFlJiSmqBek8mdBw==
-To:     Paolo Bonzini <pbonzini@redhat.com>, Borislav Petkov <bp@alien8.de>
-Cc:     Chenyi Qiang <chenyi.qiang@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Xiaoyao Li <xiaoyao.li@intel.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, "x86\@kernel.org" <x86@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>
-Subject: Re: [PATCH v4 2/5] KVM: X86: Expose PKS to guest
-In-Reply-To: <e90dadf9-a4ad-96f2-01fd-9f57b284fa3f@redhat.com>
-References: <20210205083706.14146-1-chenyi.qiang@intel.com> <20210205083706.14146-3-chenyi.qiang@intel.com> <8768ad06-e051-250d-93ec-fa4d684bc7b0@redhat.com> <20210205095603.GB17488@zn.tnic> <e90dadf9-a4ad-96f2-01fd-9f57b284fa3f@redhat.com>
-Date:   Fri, 05 Feb 2021 12:29:44 +0100
-Message-ID: <87czxeah1z.fsf@nanos.tec.linutronix.de>
+        Fri, 5 Feb 2021 06:31:04 -0500
+Received: by mail-lj1-f174.google.com with SMTP id a17so7347296ljq.2
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 03:30:48 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ublMmZblhO/5gA9bZNTFro6gynn7H+4IfrYhBFsMl88=;
+        b=rSZg5vbws5WtyxfyvZw7wX8lFVW7k0Zymd7HlXurltfVPnFIBREXHk58HUqB9mKScq
+         5wYW3j+IPCf2n8S+FVtKNrisCn6GHfzNkdGiWk5tXKUwp0Zz+uHKCNtkRPhvLSuq0eV7
+         1RYY5ledNhH+tDHZQiMKO+RRZZ17cvUPf3/ro3j4zUe9SJOcS8FzZhyQEpl0Fd0SU3Ce
+         xQ5vq2fJVM2L+4aqOiOCR7+PsHz9o4nl6rP+/mmXUAGYPbusEwhiYkudKbz9KuSl5Efg
+         nfsWbkFNkOjXqQFGsOgccGNLZWmD5QJnZbVtinibVMrmdsI7a+1Zwgdd4BcJlgPd7Iep
+         7OIQ==
+X-Gm-Message-State: AOAM532agMJ+x/HcntnITJx94EMYUByPmdEevp3+J/U+qkeB0x+iBhGY
+        A4uw5zuRqrJuyEErJG4QtpeV8axqlZlKFB5AftA=
+X-Google-Smtp-Source: ABdhPJwnRBtcggTqph0RePSra2sGcOnJL9P2f9UYpxpR4fzn16OJzvR6e/TNrknR1Wr4rMhypZTP8HdNd6Uznn0Sv/U=
+X-Received: by 2002:a2e:9949:: with SMTP id r9mr2264737ljj.393.1612524621893;
+ Fri, 05 Feb 2021 03:30:21 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20210129134855.195810-1-jolsa@redhat.com> <20210130234856.271282-1-jolsa@kernel.org>
+ <20210130234856.271282-5-jolsa@kernel.org>
+In-Reply-To: <20210130234856.271282-5-jolsa@kernel.org>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Fri, 5 Feb 2021 20:30:10 +0900
+Message-ID: <CAM9d7ciwL-Kez-dgX=R154b10+APKNR+poo2Tq93JYF5rxV_GA@mail.gmail.com>
+Subject: Re: [PATCH 04/24] perf daemon: Add server socket support
+To:     Jiri Olsa <jolsa@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Ian Rogers <irogers@google.com>,
+        Stephane Eranian <eranian@google.com>,
+        Alexei Budankov <abudankov@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 05 2021 at 11:10, Paolo Bonzini wrote:
-> On 05/02/21 10:56, Borislav Petkov wrote:
->>> This would need an ack from the x86 people.  Andy, Boris?
->> 
->> This looks like the PKS baremetal pile needs to be upstream first.
+On Sun, Jan 31, 2021 at 8:49 AM Jiri Olsa <jolsa@kernel.org> wrote:
 >
-> Yes, it does.  I would like to have an ack for including the above two 
-> hunks once PKS is upstream.
+> Add support to create server socket that listens for client
+> commands and process them.
 >
-> I also have CET and bus lock #DB queued and waiting for the bare metal 
-> functionality, however they do not touch anything outside arch/x86/kvm.
+> This patch adds only the core support, all commands using
+> this functionality are coming in following patches.
+>
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> ---
+>  tools/perf/builtin-daemon.c | 101 +++++++++++++++++++++++++++++++++++-
+>  1 file changed, 100 insertions(+), 1 deletion(-)
+>
+> diff --git a/tools/perf/builtin-daemon.c b/tools/perf/builtin-daemon.c
+> index 8d0ac44ec808..756d60616d7d 100644
+> --- a/tools/perf/builtin-daemon.c
+> +++ b/tools/perf/builtin-daemon.c
+> @@ -1,5 +1,6 @@
+>  // SPDX-License-Identifier: GPL-2.0
+>  #include <subcmd/parse-options.h>
+> +#include <api/fd/array.h>
+>  #include <linux/limits.h>
+>  #include <string.h>
+>  #include <signal.h>
+> @@ -7,6 +8,10 @@
+>  #include <stdio.h>
+>  #include <unistd.h>
+>  #include <errno.h>
+> +#include <sys/types.h>
+> +#include <sys/socket.h>
+> +#include <sys/un.h>
+> +#include <poll.h>
+>  #include "builtin.h"
+>  #include "perf.h"
+>  #include "debug.h"
+> @@ -37,6 +42,78 @@ static void sig_handler(int sig __maybe_unused)
+>         done = true;
+>  }
+>
+> +static int setup_server_socket(struct daemon *daemon)
+> +{
+> +       struct sockaddr_un addr;
+> +       char path[100];
+> +       int fd;
+> +
+> +       fd = socket(AF_UNIX, SOCK_STREAM, 0);
+> +       if (fd < 0) {
+> +               fprintf(stderr, "socket: %s\n", strerror(errno));
+> +               return -1;
+> +       }
+> +
+> +       fcntl(fd, F_SETFD, FD_CLOEXEC);
+> +
+> +       scnprintf(path, PATH_MAX, "%s/control", daemon->base);
 
-What's the exact point of queueing random stuff which lacks bare metal
-support?
-
-Once PKS, CET or whatever is merged into tip then it's the point for
-resending the KVM patches for inclusion and that's the point where it
-gets acked and not $N month ahead when everything is still in flux.
+I couldn't find where the default value of daemon->base is set.
+Also 100 bytes seem not enough for the path name.
 
 Thanks,
+Namhyung
 
-        tglx
-
-
+> +
+> +       memset(&addr, 0, sizeof(addr));
+> +       addr.sun_family = AF_UNIX;
+> +
+> +       strncpy(addr.sun_path, path, sizeof(addr.sun_path) - 1);
+> +       unlink(path);
+> +
+> +       if (bind(fd, (struct sockaddr *)&addr, sizeof(addr)) == -1) {
+> +               perror("failed: bind");
+> +               return -1;
+> +       }
+> +
+> +       if (listen(fd, 1) == -1) {
+> +               perror("failed: listen");
+> +               return -1;
+> +       }
+> +
+> +       return fd;
+> +}
