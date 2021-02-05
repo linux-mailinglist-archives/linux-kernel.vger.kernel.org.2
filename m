@@ -2,92 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 565803112A3
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 21:39:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 853E1311299
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 21:37:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233258AbhBES4P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 13:56:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45950 "EHLO mail.kernel.org"
+        id S233082AbhBESyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 13:54:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45942 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233093AbhBEPEk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S233092AbhBEPEk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 5 Feb 2021 10:04:40 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6668964EE0;
-        Fri,  5 Feb 2021 16:42:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612543364;
-        bh=Z2xR3YEsMozd9AyI+P+EUP0GmbkPKQfSuwpY0Cq0H9Y=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=swGUw+mQ4bIYUUhZhteYutOf+pkR0+VMNeyWaPIohGmo55Bg6ribIYoWtTST+wZbH
-         zZ68lQGIK1hp/cOI26fD/DYSV327ZrkLP17UBW7EdO3V/7Gs6dvWuDUFigaPYuQ2KQ
-         pvnojUsPq4fMlg/sMPV8wtuwgfPF93b3hBr/vh4OwSwknOoNMnYy6g3NRLORfmfqlM
-         afaCFvHKBTdmYu+BiVMOgjxWjjnxgVV9CEiWu5mNks8KmcovTTy6/DSmuSIS2Vxgbr
-         NvVzKFhur3LxTh3Ow4mR+5jfgaelPVCAza8via4uxDW5+pIQcSBopgqzSH6ZXs0c5u
-         YRUQ2OujKo1Fg==
-Date:   Fri, 5 Feb 2021 16:41:54 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Alain Volmat <alain.volmat@foss.st.com>
-Cc:     amelie.delaunay@foss.st.com, linux-kernel@vger.kernel.org,
-        alexandre.torgue@foss.st.com, fabrice.gasnier@foss.st.com,
-        mcoquelin.stm32@gmail.com, linux-spi@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 5/8] spi: stm32: defer probe for reset
-Message-ID: <20210205164154.GA8179@sirena.org.uk>
-References: <1612523342-10466-1-git-send-email-alain.volmat@foss.st.com>
- <1612523342-10466-6-git-send-email-alain.volmat@foss.st.com>
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1B2E464EDE;
+        Fri,  5 Feb 2021 16:42:14 +0000 (UTC)
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1l84BP-00CILP-M7; Fri, 05 Feb 2021 16:42:11 +0000
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="6TrnltStXW4iwmi0"
-Content-Disposition: inline
-In-Reply-To: <1612523342-10466-6-git-send-email-alain.volmat@foss.st.com>
-X-Cookie: Sentient plasmoids are a gas.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 05 Feb 2021 16:42:11 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     Will Deacon <will@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        David Brazdil <dbrazdil@google.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Jing Zhang <jingzhangos@google.com>,
+        Ajay Patil <pajay@qti.qualcomm.com>,
+        Prasad Sodagudi <psodagud@codeaurora.org>,
+        Srinivas Ramana <sramana@codeaurora.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kernel-team@android.com
+Subject: Re: [PATCH v6 12/21] arm64: cpufeature: Add an early command-line
+ cpufeature override facility
+In-Reply-To: <20210205163521.GA22665@willie-the-truck>
+References: <20210201115637.3123740-1-maz@kernel.org>
+ <20210201115637.3123740-13-maz@kernel.org>
+ <20210205163521.GA22665@willie-the-truck>
+User-Agent: Roundcube Webmail/1.4.10
+Message-ID: <a51c546a1e495cc744170244771674fe@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: will@kernel.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org, catalin.marinas@arm.com, mark.rutland@arm.com, dbrazdil@google.com, alexandru.elisei@arm.com, ardb@kernel.org, jingzhangos@google.com, pajay@qti.qualcomm.com, psodagud@codeaurora.org, sramana@codeaurora.org, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2021-02-05 16:35, Will Deacon wrote:
+> On Mon, Feb 01, 2021 at 11:56:28AM +0000, Marc Zyngier wrote:
+>> In order to be able to override CPU features at boot time,
+>> let's add a command line parser that matches options of the
+>> form "cpureg.feature=value", and store the corresponding
+>> value into the override val/mask pair.
+>> 
+>> No features are currently defined, so no expected change in
+>> functionality.
+>> 
+>> Signed-off-by: Marc Zyngier <maz@kernel.org>
+>> Acked-by: David Brazdil <dbrazdil@google.com>
+>> Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
+>> ---
+>>  arch/arm64/kernel/Makefile         |   2 +-
+>>  arch/arm64/kernel/head.S           |   1 +
+>>  arch/arm64/kernel/idreg-override.c | 164 
+>> +++++++++++++++++++++++++++++
+>>  3 files changed, 166 insertions(+), 1 deletion(-)
+>>  create mode 100644 arch/arm64/kernel/idreg-override.c
+>> 
+>> diff --git a/arch/arm64/kernel/Makefile b/arch/arm64/kernel/Makefile
+>> index 86364ab6f13f..2262f0392857 100644
+>> --- a/arch/arm64/kernel/Makefile
+>> +++ b/arch/arm64/kernel/Makefile
+>> @@ -17,7 +17,7 @@ obj-y			:= debug-monitors.o entry.o irq.o 
+>> fpsimd.o		\
+>>  			   return_address.o cpuinfo.o cpu_errata.o		\
+>>  			   cpufeature.o alternative.o cacheinfo.o		\
+>>  			   smp.o smp_spin_table.o topology.o smccc-call.o	\
+>> -			   syscall.o proton-pack.o
+>> +			   syscall.o proton-pack.o idreg-override.o
+>> 
+>>  targets			+= efi-entry.o
+>> 
+>> diff --git a/arch/arm64/kernel/head.S b/arch/arm64/kernel/head.S
+>> index d74e5f84042e..3243e3ae9bd8 100644
+>> --- a/arch/arm64/kernel/head.S
+>> +++ b/arch/arm64/kernel/head.S
+>> @@ -435,6 +435,7 @@ SYM_FUNC_START_LOCAL(__primary_switched)
+>> 
+>>  	mov	x0, x21				// pass FDT address in x0
+>>  	bl	early_fdt_map			// Try mapping the FDT early
+>> +	bl	init_feature_override
+>>  	bl	switch_to_vhe
+>>  #if defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KASAN_SW_TAGS)
+>>  	bl	kasan_early_init
+>> diff --git a/arch/arm64/kernel/idreg-override.c 
+>> b/arch/arm64/kernel/idreg-override.c
+>> new file mode 100644
+>> index 000000000000..d8d0d3b25bc3
+>> --- /dev/null
+>> +++ b/arch/arm64/kernel/idreg-override.c
+>> @@ -0,0 +1,164 @@
+>> +// SPDX-License-Identifier: GPL-2.0
+>> +/*
+>> + * Early cpufeature override framework
+>> + *
+>> + * Copyright (C) 2020 Google LLC
+>> + * Author: Marc Zyngier <maz@kernel.org>
+>> + */
+>> +
+>> +#include <linux/ctype.h>
+>> +#include <linux/kernel.h>
+>> +#include <linux/libfdt.h>
+>> +
+>> +#include <asm/cacheflush.h>
+>> +#include <asm/setup.h>
+>> +
+>> +#define FTR_DESC_NAME_LEN	20
+>> +#define FTR_DESC_FIELD_LEN	10
+>> +
+>> +struct ftr_set_desc {
+>> +	char 				name[FTR_DESC_NAME_LEN];
+>> +	struct arm64_ftr_override	*override;
+>> +	struct {
+>> +		char			name[FTR_DESC_FIELD_LEN];
+>> +		u8			shift;
+>> +	} 				fields[];
+>> +};
+>> +
+>> +static const struct ftr_set_desc * const regs[] __initconst = {
+>> +};
+>> +
+>> +static char *cmdline_contains_option(const char *cmdline, const char 
+>> *option)
+>> +{
+>> +	char *str = strstr(cmdline, option);
+>> +
+>> +	if ((str == cmdline || (str > cmdline && isspace(*(str - 1)))))
+>> +		return str;
+>> +
+>> +	return NULL;
+>> +}
+>> +
+>> +static int __init find_field(const char *cmdline,
+>> +			     const struct ftr_set_desc *reg, int f, u64 *v)
+>> +{
+>> +	char opt[FTR_DESC_NAME_LEN + FTR_DESC_FIELD_LEN + 2], *str;
+>> +	size_t len;
+>> +
+>> +	snprintf(opt, ARRAY_SIZE(opt), "%s.%s=", reg->name, 
+>> reg->fields[f].name);
+>> +
+>> +	str = cmdline_contains_option(cmdline, opt);
+>> +	if (!str)
+>> +		return -1;
+>> +
+>> +	str += strlen(opt);
+>> +	len = strcspn(str, " ");
+> 
+> I'm absolutely terrified of string parsing in C, but just wondering why 
+> you
+> only ignore literal spaces here. I _think_ the full-fat cmdline parsing 
+> uses
+> isspace() to delimit the options.
 
---6TrnltStXW4iwmi0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+That's clearly an oversight, as I use a more complete set of characters
+for the rest of the option splicing. I also think that with the way
+things are now parsed (options being extracted early and trimmed),
+we can drop this altogether.
 
-On Fri, Feb 05, 2021 at 12:08:59PM +0100, Alain Volmat wrote:
-> Defer the probe operation when a reset controller device is expected
-> but have not yet been probed.
->=20
-> This change replaces use of devm_reset_control_get_exclusive() with
-> devm_reset_control_get_optional_exclusive() as reset controller is
-> optional which is now explicitly stated.
+> Would it be possible to reuse any of the logic over in parse_args() to 
+> avoid
+> having to roll this ourselves?
 
-This has trouble building an x86 allmodconfig build:
+Maybe. I need to have a look.
 
-/mnt/kernel/drivers/spi/spi-stm32.c: In function 'stm32_spi_prepare_msg':
-/mnt/kernel/drivers/spi/spi-stm32.c:1022:9: error: 'STM32H7_SPI_TSIZE_MAX' =
-undeclared (first use in this function); did you mean 'STM32H7_SPI_CR1_MASR=
-X'?
-         STM32H7_SPI_TSIZE_MAX,
-         ^~~~~~~~~~~~~~~~~~~~~
-         STM32H7_SPI_CR1_MASRX
-/mnt/kernel/drivers/spi/spi-stm32.c:1022:9: note: each undeclared identifie=
-r is reported only once for each function it appears in
+Thanks,
 
-This may be due to an earlier patch in the series, my script is working
-back through the patch series.
-
---6TrnltStXW4iwmi0
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmAddVEACgkQJNaLcl1U
-h9D5ngf/U0NKtBGQTpM/vYV8lyZzpsFLniAZnJzyq4E6SXXJQeY6+VmQt/7XWygG
-t8Q0KgHNLRep+Ks7DeqdFPbTQU2dzJ6hExzybysoHSyzsEz+Tbjvt7qaoQq9jnY5
-WQwFDz5Xsurc8zbWoSlZmKv9DhGPxxGaUAnMt6z0WjNcc5XQr8EboNJO6piMXMkY
-uMKmHUI/zRiFRm0vpgodW2dKa/Y4InIoRg9IESu2+p4Gv5fa3mVAApx5LWB0oFg4
-qMwbjllQl6XUuCJySDPQk/GjIXFN0h4nrE98uZAi8P6zgceT+6q2p3jWl+LvyBQZ
-MzLSVjaf7lv3SPp3b2/pFO2jeGt98A==
-=JrV5
------END PGP SIGNATURE-----
-
---6TrnltStXW4iwmi0--
+         M.
+-- 
+Jazz is not dead. It just smells funny...
