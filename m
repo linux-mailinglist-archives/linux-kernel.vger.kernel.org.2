@@ -2,121 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB983311013
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 19:40:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6F5C311010
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 19:38:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233595AbhBEQ4I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 11:56:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46580 "EHLO
+        id S231446AbhBEQzp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 11:55:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233730AbhBEQwM (ORCPT
+        with ESMTP id S233379AbhBEQxa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 11:52:12 -0500
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D306CC061574
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 10:33:53 -0800 (PST)
-Received: by mail-lj1-x235.google.com with SMTP id m22so8930080ljj.4
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 10:33:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=h2QQGa7WmUtOnh1lnM8t/aGQgM70oTQkAKJTNVCw1J0=;
-        b=oh+oZFzjEuM+WbroVeB3HQV7hp2UCvADxOpOuw/cUcJTqpwumRgyw3gbB++TWQaGwZ
-         e5VWAU63IaiI8ZtEQsfv6l0CJ+PBEKZSJnFumrGK5urxe7vi93WBugqZhQHtBKJf0Wcl
-         a22kxN8KCmc3cuM9+Br4GjvzGhleotknV3rdlcKMFEGwSnVu+p9X4eQXT5jYyFA7o9w0
-         LgfPIQRHj28tLA4ugPIpQr/y6c1IZxsVkAMGY0MkdMnGSJyPBS18qUQlrDt+QRXHvHnG
-         XhU2Ll4ZTjCmZhGPk7wuKDQWC9frJH7BTz8xW6GwqO5Q0h8mCNegD/NHVVUu1pW/l3Ju
-         Dwjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=h2QQGa7WmUtOnh1lnM8t/aGQgM70oTQkAKJTNVCw1J0=;
-        b=HeO63FHtd2jLwS4ueUSfFHxI5tlTBQgsas5K++gnAzAbXoqagKmDHIXB6LpuEWQECl
-         9scr9LCAi5v/5fUb8NpaSwM50ofiA16MmcUaSpVzR9BWfni+X0GUEVvbOm3oA9xjHO42
-         5qDHKXMB6KmNT864bbQMGUIAVr2qDa6jI72qlWNy2hT9glpdHoxT2CTRPh5k/kt0MXnO
-         mkQ23+BtzbvkZo9eBLoyy7O3Ul1g2ux3p3kHAW3sDayZvxg82WFMVL+Cqf7GgeC2GLGz
-         Or6p7bu33s5c2zVngqkBgV/rs0Z7aYVQYXXBpeh/U9epfvWyzUENmRYb0W7UdunrqbfQ
-         eejQ==
-X-Gm-Message-State: AOAM533HLL/tvCQGQoRyXbw1S1kdNUyuMGtKkq5BKgT1qrfrLlx6/7Fw
-        f6Jht5hlPnLYW2/XYkfEmhfEkLT8q9iojYanZUyc4w==
-X-Google-Smtp-Source: ABdhPJywatE7yc2UsD9fVqwCCiumk5bBJtELN+1itqTf5Df3lBAQZy/8ldu4LxetnWwOMwoKCP051SKEcDaqaI5LnbI=
-X-Received: by 2002:a2e:1519:: with SMTP id s25mr3379949ljd.495.1612550032109;
- Fri, 05 Feb 2021 10:33:52 -0800 (PST)
+        Fri, 5 Feb 2021 11:53:30 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4618C0613D6;
+        Fri,  5 Feb 2021 10:35:12 -0800 (PST)
+Date:   Fri, 05 Feb 2021 18:35:10 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1612550111;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Exs6lFYVVBxc5ax1bU8BhYnTez6nauNcIiJLbxsfMOY=;
+        b=nTOeZ/cF70RZMY5ZToKFfQDtt5QRS36Rl4zOnxdLJHw811yswecyQJBxpBke9n9Q90FWlz
+        lfuSUr99Y9omIlVjw1SOZBVp+05sUfyJsqytyxUxxLGF5iUorue1MEbe4tFUoqjqD/cbog
+        5M7reDs5xNNTErV6kxuIBZ1uNgrslTGmvbHdKL+r3V4iDrTwNr9ARt6YwSWlqnQWbg5OoH
+        Eykv5OHf0g8N3eMIpEFO0uq18EDobhJz7YYRVWBGRORnrqlQpnQVFLIcvm4LQVIRj/++q2
+        IyN9O4UDYTkYMCFPQKdRwrJD4sKzeRW6r3NgwSdE+HNb7X4TPyCyEaOT4myZZA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1612550111;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Exs6lFYVVBxc5ax1bU8BhYnTez6nauNcIiJLbxsfMOY=;
+        b=1xQIYxMwmhNuJLCKIN/xhNa2xKuKIRVUysu8lrSsu8+jIc8Ygd467aSM3tLwegNtNV/j6n
+        RIzSgJrTFyGAXTAg==
+From:   "tip-bot2 for Alexey Dobriyan" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: timers/core] timens: Delete no-op time_ns_init()
+Cc:     Alexey Dobriyan <adobriyan@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andrei Vagin <avagin@gmail.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20201228215402.GA572900@localhost.localdomain>
+References: <20201228215402.GA572900@localhost.localdomain>
 MIME-Version: 1.0
-References: <20201230154104.522605-1-arnd@kernel.org>
-In-Reply-To: <20201230154104.522605-1-arnd@kernel.org>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Fri, 5 Feb 2021 10:33:39 -0800
-Message-ID: <CAKwvOdkSyP-eZT=GGpg7z_C5z0GUsfLRHN2HOn8JgoTT_XrfGA@mail.gmail.com>
-Subject: Re: [PATCH] mm/mremap: fix BUILD_BUG_ON() error in get_extent
-To:     Arnd Bergmann <arnd@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Nathan Chancellor <natechancellor@gmail.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Brian Geffon <bgeffon@google.com>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <161255011051.23325.10863511684535856878.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 30, 2020 at 7:41 AM Arnd Bergmann <arnd@kernel.org> wrote:
->
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> clang cannt evaluate this function argument at compile time
-> when the function is not inlined, which leads to a link
-> time failure:
->
-> ld.lld: error: undefined symbol: __compiletime_assert_414
-> >>> referenced by mremap.c
-> >>>               mremap.o:(get_extent) in archive mm/built-in.a
->
-> Mark the function as __always_inline to avoid it.
->
-> Fixes: 9ad9718bfa41 ("mm/mremap: calculate extent in one place")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+The following commit has been merged into the timers/core branch of tip:
 
-Tested-by: Nick Desaulniers <ndesaulniers@google.com>
+Commit-ID:     174bcc691f44fdd05046c694fc650933819f72c7
+Gitweb:        https://git.kernel.org/tip/174bcc691f44fdd05046c694fc650933819f72c7
+Author:        Alexey Dobriyan <adobriyan@gmail.com>
+AuthorDate:    Tue, 29 Dec 2020 00:54:02 +03:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Fri, 05 Feb 2021 19:32:09 +01:00
 
-> ---
->  mm/mremap.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
->
-> diff --git a/mm/mremap.c b/mm/mremap.c
-> index c5590afe7165..1cb464a07184 100644
-> --- a/mm/mremap.c
-> +++ b/mm/mremap.c
-> @@ -336,8 +336,9 @@ enum pgt_entry {
->   * valid. Else returns a smaller extent bounded by the end of the source and
->   * destination pgt_entry.
->   */
-> -static unsigned long get_extent(enum pgt_entry entry, unsigned long old_addr,
-> -                       unsigned long old_end, unsigned long new_addr)
-> +static __always_inline unsigned long get_extent(enum pgt_entry entry,
-> +                       unsigned long old_addr, unsigned long old_end,
-> +                       unsigned long new_addr)
->  {
->         unsigned long next, extent, mask, size;
->
-> --
-> 2.29.2
->
-> --
-> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/20201230154104.522605-1-arnd%40kernel.org.
+timens: Delete no-op time_ns_init()
 
+Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Acked-by: Andrei Vagin <avagin@gmail.com>
+Link: https://lore.kernel.org/r/20201228215402.GA572900@localhost.localdomain
+---
+ kernel/time/namespace.c | 6 ------
+ 1 file changed, 6 deletions(-)
 
-
--- 
-Thanks,
-~Nick Desaulniers
+diff --git a/kernel/time/namespace.c b/kernel/time/namespace.c
+index 6ca625f..12eab0d 100644
+--- a/kernel/time/namespace.c
++++ b/kernel/time/namespace.c
+@@ -465,9 +465,3 @@ struct time_namespace init_time_ns = {
+ 	.ns.ops		= &timens_operations,
+ 	.frozen_offsets	= true,
+ };
+-
+-static int __init time_ns_init(void)
+-{
+-	return 0;
+-}
+-subsys_initcall(time_ns_init);
