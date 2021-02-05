@@ -2,177 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7838C31177E
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 00:56:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8E48311781
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 00:58:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231445AbhBEXzj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 18:55:39 -0500
-Received: from foss.arm.com ([217.140.110.172]:60590 "EHLO foss.arm.com"
+        id S230180AbhBEX5U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 18:57:20 -0500
+Received: from mga01.intel.com ([192.55.52.88]:57295 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231764AbhBEOB5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 09:01:57 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 55E9B143B;
-        Fri,  5 Feb 2021 05:58:37 -0800 (PST)
-Received: from e112269-lin.arm.com (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7DF783F719;
-        Fri,  5 Feb 2021 05:58:34 -0800 (PST)
-From:   Steven Price <steven.price@arm.com>
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>
-Cc:     Steven Price <steven.price@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
-        Juan Quintela <quintela@redhat.com>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        Richard Henderson <richard.henderson@linaro.org>,
-        Peter Maydell <peter.maydell@linaro.org>,
-        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
-Subject: [RFC PATCH v8 5/5] KVM: arm64: ioctl to fetch/store tags in a guest
-Date:   Fri,  5 Feb 2021 13:58:03 +0000
-Message-Id: <20210205135803.48321-6-steven.price@arm.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210205135803.48321-1-steven.price@arm.com>
-References: <20210205135803.48321-1-steven.price@arm.com>
+        id S231827AbhBEOCg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 09:02:36 -0500
+IronPort-SDR: q4cUuGtgrMTga1C8zKoLo+xR6jXPweX4VmJQksqKUSueaDAf5zYpZSQvX09DqOeltppd2/evWJ
+ MUGPJCDB4o8A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9885"; a="200439286"
+X-IronPort-AV: E=Sophos;i="5.81,155,1610438400"; 
+   d="scan'208";a="200439286"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2021 06:00:28 -0800
+IronPort-SDR: /oyLOQa5dLlgBICMZwszTvwddPxunCdi0z7SqqMGKMq1ORPIncjXUPHwE3Xw1waIAcJh8MSUnv
+ ntKHDcjjqIKQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,155,1610438400"; 
+   d="scan'208";a="484198514"
+Received: from stinkbox.fi.intel.com (HELO stinkbox) ([10.237.72.171])
+  by fmsmga001.fm.intel.com with SMTP; 05 Feb 2021 06:00:25 -0800
+Received: by stinkbox (sSMTP sendmail emulation); Fri, 05 Feb 2021 16:00:24 +0200
+Date:   Fri, 5 Feb 2021 16:00:24 +0200
+From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
+To:     Hans Verkuil <hverkuil@xs4all.nl>
+Cc:     Sam McNally <sammc@chromium.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Hans Verkuil <hans.verkuil@cisco.com>,
+        dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH v3 2/4] drm_dp_mst_topology: use correct AUX channel
+Message-ID: <YB1PeDETlhqg1GC3@intel.com>
+References: <20200923121320.v3.1.I8693156f555875e5c8342e86ab37ce968dfdd277@changeid>
+ <20200923121320.v3.2.Ided0ab0808c4908238bd2eb9ebb6ffb2c9312789@changeid>
+ <YBh9HvbIRF4zd+AK@intel.com>
+ <2a7c2edc-b83c-dccf-487d-1415b4bc23ff@xs4all.nl>
+ <CAJqEsoCOJmS5aVb5du09tXUi7UUKVBQDPe5KTdcBiDr8A7kSYA@mail.gmail.com>
+ <YB1HBDEB5/fefQzi@intel.com>
+ <c577f417-b6c2-6714-8c97-ec6d636bb3a7@xs4all.nl>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <c577f417-b6c2-6714-8c97-ec6d636bb3a7@xs4all.nl>
+X-Patchwork-Hint: comment
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The VMM may not wish to have it's own mapping of guest memory mapped
-with PROT_MTE because this causes problems if the VMM has tag checking
-enabled (the guest controls the tags in physical RAM and it's unlikely
-the tags are correct for the VMM).
+On Fri, Feb 05, 2021 at 02:46:44PM +0100, Hans Verkuil wrote:
+> On 05/02/2021 14:24, Ville Syrjälä wrote:
+> > On Fri, Feb 05, 2021 at 04:17:51PM +1100, Sam McNally wrote:
+> >> On Thu, 4 Feb 2021 at 21:19, Hans Verkuil <hverkuil@xs4all.nl> wrote:
+> >>>
+> >>> On 01/02/2021 23:13, Ville Syrjälä wrote:
+> >>>> On Wed, Sep 23, 2020 at 12:13:53PM +1000, Sam McNally wrote:
+> >>>>> From: Hans Verkuil <hans.verkuil@cisco.com>
+> >>>>>
+> >>>>> For adapters behind an MST hub use the correct AUX channel.
+> >>>>>
+> >>>>> Signed-off-by: Hans Verkuil <hans.verkuil@cisco.com>
+> >>>>> [sammc@chromium.org: rebased, removing redundant changes]
+> >>>>> Signed-off-by: Sam McNally <sammc@chromium.org>
+> >>>>> ---
+> >>>>>
+> >>>>> (no changes since v1)
+> >>>>>
+> >>>>>  drivers/gpu/drm/drm_dp_mst_topology.c | 36 +++++++++++++++++++++++++++
+> >>>>>  1 file changed, 36 insertions(+)
+> >>>>>
+> >>>>> diff --git a/drivers/gpu/drm/drm_dp_mst_topology.c b/drivers/gpu/drm/drm_dp_mst_topology.c
+> >>>>> index 15b6cc39a754..0d753201adbd 100644
+> >>>>> --- a/drivers/gpu/drm/drm_dp_mst_topology.c
+> >>>>> +++ b/drivers/gpu/drm/drm_dp_mst_topology.c
+> >>>>> @@ -2255,6 +2255,9 @@ drm_dp_mst_topology_unlink_port(struct drm_dp_mst_topology_mgr *mgr,
+> >>>>>      drm_dp_mst_topology_put_port(port);
+> >>>>>  }
+> >>>>>
+> >>>>> +static ssize_t
+> >>>>> +drm_dp_mst_aux_transfer(struct drm_dp_aux *aux, struct drm_dp_aux_msg *msg);
+> >>>>> +
+> >>>>>  static struct drm_dp_mst_port *
+> >>>>>  drm_dp_mst_add_port(struct drm_device *dev,
+> >>>>>                  struct drm_dp_mst_topology_mgr *mgr,
+> >>>>> @@ -2271,9 +2274,13 @@ drm_dp_mst_add_port(struct drm_device *dev,
+> >>>>>      port->port_num = port_number;
+> >>>>>      port->mgr = mgr;
+> >>>>>      port->aux.name = "DPMST";
+> >>>>> +    mutex_init(&port->aux.hw_mutex);
+> >>>>> +    mutex_init(&port->aux.cec.lock);
+> >>>>>      port->aux.dev = dev->dev;
+> >>>>>      port->aux.is_remote = true;
+> >>>>>
+> >>>>> +    port->aux.transfer = drm_dp_mst_aux_transfer;
+> >>>>> +
+> >>>>
+> >>>> This was supposed to be handled via higher levels checking for
+> >>>> is_remote==true.
+> >>>
+> >>> Ah, I suspect this patch can be dropped entirely: it predates commit 2f221a5efed4
+> >>> ("drm/dp_mst: Add MST support to DP DPCD R/W functions").
+> >>>
+> >>> It looks like that commit basically solved what this older patch attempts to do
+> >>> as well.
+> >>>
+> >>> Sam, can you test if it works without this patch?
+> >>
+> >> It almost just works; drm_dp_cec uses whether aux.transfer is non-null
+> >> to filter out non-DP connectors. Using aux.is_remote as another signal
+> >> indicating a DP connector seems plausible. We can drop this patch.
+> > 
+> > Why would anyone even call this stuff on a non-DP connector?
+> > And where did they even get the struct drm_dp_aux to do so?
+> 
+> This check came in with commit 5ce70c799ac2 ("drm_dp_cec: check that aux
+> has a transfer function"). It seems nouveau and amdgpu specific.
 
-Instead add a new ioctl which allows the VMM to easily read/write the
-tags from guest memory, allowing the VMM's mapping to be non-PROT_MTE
-while the VMM can still read/write the tags for the purpose of
-migration.
+I see.
 
-Signed-off-by: Steven Price <steven.price@arm.com>
----
- arch/arm64/include/uapi/asm/kvm.h | 13 +++++++
- arch/arm64/kvm/arm.c              | 57 +++++++++++++++++++++++++++++++
- include/uapi/linux/kvm.h          |  1 +
- 3 files changed, 71 insertions(+)
+> 
+> A better approach would be to fix those drivers to only call these cec
+> functions for DP outputs. I think I moved the test to drm_dp_cec.c primarily
+> for robustness (i.e. do nothing if called for a non-DP output). But that
+> might not be the right approach after all.
 
-diff --git a/arch/arm64/include/uapi/asm/kvm.h b/arch/arm64/include/uapi/asm/kvm.h
-index 24223adae150..5fc2534ac5df 100644
---- a/arch/arm64/include/uapi/asm/kvm.h
-+++ b/arch/arm64/include/uapi/asm/kvm.h
-@@ -184,6 +184,19 @@ struct kvm_vcpu_events {
- 	__u32 reserved[12];
- };
- 
-+struct kvm_arm_copy_mte_tags {
-+	__u64 guest_ipa;
-+	__u64 length;
-+	union {
-+		void __user *addr;
-+		__u64 padding;
-+	};
-+	__u64 flags;
-+};
-+
-+#define KVM_ARM_TAGS_TO_GUEST		0
-+#define KVM_ARM_TAGS_FROM_GUEST		1
-+
- /* If you need to interpret the index values, here is the key: */
- #define KVM_REG_ARM_COPROC_MASK		0x000000000FFF0000
- #define KVM_REG_ARM_COPROC_SHIFT	16
-diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
-index c55b7db8639c..0fbb5b9688ce 100644
---- a/arch/arm64/kvm/arm.c
-+++ b/arch/arm64/kvm/arm.c
-@@ -1303,6 +1303,53 @@ static int kvm_vm_ioctl_set_device_addr(struct kvm *kvm,
- 	}
- }
- 
-+static int kvm_vm_ioctl_mte_copy_tags(struct kvm *kvm,
-+				      struct kvm_arm_copy_mte_tags *copy_tags)
-+{
-+	gpa_t guest_ipa = copy_tags->guest_ipa;
-+	size_t length = copy_tags->length;
-+	void __user *tags = copy_tags->addr;
-+	gpa_t gfn;
-+	bool write = !(copy_tags->flags & KVM_ARM_TAGS_FROM_GUEST);
-+
-+	if (copy_tags->flags & ~KVM_ARM_TAGS_FROM_GUEST)
-+		return -EINVAL;
-+
-+	if (length & ~PAGE_MASK || guest_ipa & ~PAGE_MASK)
-+		return -EINVAL;
-+
-+	gfn = gpa_to_gfn(guest_ipa);
-+
-+	while (length > 0) {
-+		kvm_pfn_t pfn = gfn_to_pfn_prot(kvm, gfn, write, NULL);
-+		void *maddr;
-+		unsigned long num_tags = PAGE_SIZE / MTE_GRANULE_SIZE;
-+
-+		if (is_error_noslot_pfn(pfn))
-+			return -ENOENT;
-+
-+		maddr = page_address(pfn_to_page(pfn));
-+
-+		if (!write) {
-+			num_tags = mte_copy_tags_to_user(tags, maddr, num_tags);
-+			kvm_release_pfn_clean(pfn);
-+		} else {
-+			num_tags = mte_copy_tags_from_user(maddr, tags,
-+							   num_tags);
-+			kvm_release_pfn_dirty(pfn);
-+		}
-+
-+		if (num_tags != PAGE_SIZE / MTE_GRANULE_SIZE)
-+			return -EFAULT;
-+
-+		gfn++;
-+		tags += num_tags;
-+		length -= PAGE_SIZE;
-+	}
-+
-+	return 0;
-+}
-+
- long kvm_arch_vm_ioctl(struct file *filp,
- 		       unsigned int ioctl, unsigned long arg)
- {
-@@ -1339,6 +1386,16 @@ long kvm_arch_vm_ioctl(struct file *filp,
- 
- 		return 0;
- 	}
-+	case KVM_ARM_MTE_COPY_TAGS: {
-+		struct kvm_arm_copy_mte_tags copy_tags;
-+
-+		if (!kvm_has_mte(kvm))
-+			return -EINVAL;
-+
-+		if (copy_from_user(&copy_tags, argp, sizeof(copy_tags)))
-+			return -EFAULT;
-+		return kvm_vm_ioctl_mte_copy_tags(kvm, &copy_tags);
-+	}
- 	default:
- 		return -EINVAL;
- 	}
-diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
-index de737d5102ca..76fccb33d025 100644
---- a/include/uapi/linux/kvm.h
-+++ b/include/uapi/linux/kvm.h
-@@ -1397,6 +1397,7 @@ struct kvm_s390_ucas_mapping {
- /* Available with KVM_CAP_PMU_EVENT_FILTER */
- #define KVM_SET_PMU_EVENT_FILTER  _IOW(KVMIO,  0xb2, struct kvm_pmu_event_filter)
- #define KVM_PPC_SVM_OFF		  _IO(KVMIO,  0xb3)
-+#define KVM_ARM_MTE_COPY_TAGS	  _IOR(KVMIO,  0xb4, struct kvm_arm_copy_mte_tags)
- 
- /* ioctl for vm fd */
- #define KVM_CREATE_DEVICE	  _IOWR(KVMIO,  0xe0, struct kvm_create_device)
+Shrug. I guess just extending to check is_remote (or maybe there is
+some other member that's always set?) is a good enough short term
+solution. Someone may want to have a look at adjusting
+amdgpu/nouveau to not need it, but who knows how much work that is.
+
 -- 
-2.20.1
-
+Ville Syrjälä
+Intel
