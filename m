@@ -2,121 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C13A31173E
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 00:43:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70BE7311730
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 00:38:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230385AbhBEXmF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 18:42:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40386 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232537AbhBEOUK (ORCPT
+        id S231145AbhBEXgG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 18:36:06 -0500
+Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:24639 "EHLO
+        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232066AbhBEOVn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 09:20:10 -0500
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72A48C06121F
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 07:58:10 -0800 (PST)
-Received: by mail-qk1-x735.google.com with SMTP id x81so7357411qkb.0
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 07:58:10 -0800 (PST)
+        Fri, 5 Feb 2021 09:21:43 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=q5eyzLZq3gCKs8Kqw79XkqaQD8/gdoEJh1yzqQxqHt0=;
-        b=ZEWUNFjaacXrMffIa+tWBci8iY9Dj/FxUUXeBdqAu2KvjWWVuxjTwyNuZihnDEFXPF
-         rHLdpEmbtxPLlxdTercBuvHfpTHV+RyH3DwxMpk/eBXg8TCVwevSt60qABU9a++u1QWw
-         ixshWfeoK5Is5BrPf+qqDVyp5mTATbijtMgYZuCmKsNG9wOFnAn7Rn9GXSI1uhfOsfBr
-         H646r6BwHCa9FS0WxX6Xf85kzWHo4lIGiygp2Fpv1PX5EnL9CqDu5pFUxF6V4Dvs85e5
-         4fBmkGaVaKvnHn6uqelFKNvVi+Cybsi64bcoX7tdF7DaKX4hoAQbowhSbHc7+U6tvW3b
-         7vNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=q5eyzLZq3gCKs8Kqw79XkqaQD8/gdoEJh1yzqQxqHt0=;
-        b=IhZb/yobdz0VYE9FOsBUfiZMVUS/b/wJGrbf8pC7l4NMXcIHxNq8E6MYpkPYruDMbb
-         IS0E/HmLugC3sHSO4a2K/DGR4fEnr7J1qVRwC9K3CaRhfgUPk9LFB6eCcq3xICedUKsZ
-         uObzBoN5iewaY1tGr0KFfq9IwAdWHFmoKZg4fbzJa/CQBANyZByIBhd2mZhGLnVJnCKG
-         rQm6HDvqNLcUJhUvUVut9KRBpSFboE9Zd4nvXWJ6k4EY8CfaiForbxDoCX3nZy6PzEvP
-         kU/88wp+WrhI6QW1rWshQMIiV39T2DPmXVeMTUWEnA9iuaOTxRQOtlom66ZsySr3B2JL
-         LkeQ==
-X-Gm-Message-State: AOAM530GIHkZS2Dvz+UrGcTSIXpwGU/1EDM284BrguTQR5Gi/eGTr+Xe
-        +dj8vtANzg0EmYwAzOQGFnAH5gbdbKasaJu/
-X-Google-Smtp-Source: ABdhPJyA7K4oUWNeCskRU6Pypei9zC3tndf7O8W2PUr0OOndWQlgAUmypXMY9EdbNg2wmLUYeRpk9Q==
-X-Received: by 2002:a37:a053:: with SMTP id j80mr5100519qke.198.1612540689687;
-        Fri, 05 Feb 2021 07:58:09 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
-        by smtp.gmail.com with ESMTPSA id b16sm8170352qtx.85.2021.02.05.07.58.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Feb 2021 07:58:09 -0800 (PST)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1l83Um-003tDI-IH; Fri, 05 Feb 2021 11:58:08 -0400
-Date:   Fri, 5 Feb 2021 11:58:08 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Lino Sanfilippo <l.sanfilippo@kunbus.com>
-Cc:     Lino Sanfilippo <LinoSanfilippo@gmx.de>, peterhuewe@gmx.de,
-        jarkko@kernel.org, stefanb@linux.vnet.ibm.com,
-        James.Bottomley@hansenpartnership.com, stable@vger.kernel.org,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/2] tpm: fix reference counting for struct tpm_chip
-Message-ID: <20210205155808.GO4718@ziepe.ca>
-References: <1612482643-11796-1-git-send-email-LinoSanfilippo@gmx.de>
- <1612482643-11796-2-git-send-email-LinoSanfilippo@gmx.de>
- <20210205130511.GI4718@ziepe.ca>
- <3b821bf9-0f54-3473-d934-61c0c29f8957@kunbus.com>
- <20210205151511.GM4718@ziepe.ca>
- <f6e5dd7d-30df-26d9-c712-677c127a8026@kunbus.com>
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1612540829; x=1644076829;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   mime-version;
+  bh=TBohInsGRwLMOnqJDl8Pqhxj7U/fXFbfpMKPhnZcUFw=;
+  b=jgYImARJD6qkBQV5QsAiU36i737f/WHvRPDZ28run0cIE4FTZ8ks4Jn8
+   GyOSqHmIGskwEXAHpLVo3laroKOZolM7mIV/Fcrpf5bUZzk7nuh93Bojd
+   YT2CYWqYhsU+6iqwlVGmn8eK14yOvhhs7DyE8hGq1ttOyjvQH9Q7XOrd0
+   I=;
+X-IronPort-AV: E=Sophos;i="5.81,155,1610409600"; 
+   d="scan'208";a="82731861"
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-2b-81e76b79.us-west-2.amazon.com) ([10.43.8.2])
+  by smtp-border-fw-out-6002.iad6.amazon.com with ESMTP; 05 Feb 2021 15:59:38 +0000
+Received: from EX13D31EUA001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
+        by email-inbound-relay-2b-81e76b79.us-west-2.amazon.com (Postfix) with ESMTPS id 0A050A1D83;
+        Fri,  5 Feb 2021 15:59:34 +0000 (UTC)
+Received: from u3f2cd687b01c55.ant.amazon.com (10.43.162.194) by
+ EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Fri, 5 Feb 2021 15:59:17 +0000
+From:   SeongJae Park <sjpark@amazon.com>
+To:     Greg KH <greg@kroah.com>
+CC:     SeongJae Park <sjpark@amazon.com>,
+        SeongJae Park <sjpark@amazon.de>,
+        <Jonathan.Cameron@huawei.com>, <aarcange@redhat.com>,
+        <acme@kernel.org>, <alexander.shishkin@linux.intel.com>,
+        <amit@kernel.org>, <benh@kernel.crashing.org>,
+        <brendan.d.gregg@gmail.com>, <brendanhiggins@google.com>,
+        <cai@lca.pw>, <colin.king@canonical.com>, <corbet@lwn.net>,
+        <david@redhat.com>, <dwmw@amazon.com>, <elver@google.com>,
+        <fan.du@intel.com>, <foersleo@amazon.de>, <gthelen@google.com>,
+        <irogers@google.com>, <jolsa@redhat.com>, <kirill@shutemov.name>,
+        <mark.rutland@arm.com>, <mgorman@suse.de>, <minchan@kernel.org>,
+        <mingo@redhat.com>, <namhyung@kernel.org>, <peterz@infradead.org>,
+        <rdunlap@infradead.org>, <riel@surriel.com>, <rientjes@google.com>,
+        <rostedt@goodmis.org>, <rppt@kernel.org>, <sblbir@amazon.com>,
+        <shakeelb@google.com>, <shuah@kernel.org>, <sj38.park@gmail.com>,
+        <snu@amazon.de>, <vbabka@suse.cz>, <vdavydov.dev@gmail.com>,
+        <yang.shi@linux.alibaba.com>, <ying.huang@intel.com>,
+        <zgf574564920@gmail.com>, <linux-damon@amazon.com>,
+        <linux-mm@kvack.org>, <linux-doc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v24 07/14] mm/damon: Implement a debugfs-based user space interface
+Date:   Fri, 5 Feb 2021 16:59:02 +0100
+Message-ID: <20210205155902.31102-1-sjpark@amazon.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <YB1kZaD/7omxXztF@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f6e5dd7d-30df-26d9-c712-677c127a8026@kunbus.com>
+Content-Type: text/plain
+X-Originating-IP: [10.43.162.194]
+X-ClientProxiedBy: EX13D11UWB002.ant.amazon.com (10.43.161.20) To
+ EX13D31EUA001.ant.amazon.com (10.43.165.15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 05, 2021 at 04:50:13PM +0100, Lino Sanfilippo wrote:
+On Fri, 5 Feb 2021 16:29:41 +0100 Greg KH <greg@kroah.com> wrote:
+
+> On Thu, Feb 04, 2021 at 04:31:43PM +0100, SeongJae Park wrote:
+> > From: SeongJae Park <sjpark@amazon.de>
+> > 
+> > DAMON is designed to be used by kernel space code such as the memory
+> > management subsystems, and therefore it provides only kernel space API.
+> > That said, letting the user space control DAMON could provide some
+> > benefits to them.  For example, it will allow user space to analyze
+> > their specific workloads and make their own special optimizations.
+> > 
+> > For such cases, this commit implements a simple DAMON application kernel
+> > module, namely 'damon-dbgfs', which merely wraps the DAMON api and
+> > exports those to the user space via the debugfs.
+> > 
+> > 'damon-dbgfs' exports three files, ``attrs``, ``target_ids``, and
+> > ``monitor_on`` under its debugfs directory, ``<debugfs>/damon/``.
+[...]
+> > ---
+> >  include/linux/damon.h |   3 +
+> >  mm/damon/Kconfig      |   9 +
+> >  mm/damon/Makefile     |   1 +
+> >  mm/damon/core.c       |  47 +++++
+> >  mm/damon/dbgfs.c      | 387 ++++++++++++++++++++++++++++++++++++++++++
+> >  5 files changed, 447 insertions(+)
+> >  create mode 100644 mm/damon/dbgfs.c
+[...]
+> > diff --git a/mm/damon/dbgfs.c b/mm/damon/dbgfs.c
+> > new file mode 100644
+> > index 000000000000..db15380737d1
+> > --- /dev/null
+> > +++ b/mm/damon/dbgfs.c
+[...]
+> > +
+> > +static int dbgfs_fill_ctx_dir(struct dentry *dir, struct damon_ctx *ctx)
+> > +{
+> > +	const char * const file_names[] = {"attrs", "target_ids"};
+> > +	const struct file_operations *fops[] = {&attrs_fops, &target_ids_fops};
+> > +	int i;
+> > +
+> > +	for (i = 0; i < ARRAY_SIZE(file_names); i++) {
+> > +		if (!debugfs_create_file(file_names[i], 0600, dir,
+> > +					ctx, fops[i])) {
+> > +			pr_err("failed to create %s file\n", file_names[i]);
+> > +			return -ENOMEM;
 > 
-> On 05.02.21 16:15, Jason Gunthorpe wrote:
-> > 
-> > No, the cdev layer holds the refcount on the device while open is
-> > being called.
-> > 
-> Yes, but the reference that is responsible for the chip deallocation is chip->dev
-> which is linked to chip->cdev and represents /dev/tpm, not /dev/tpmrm.
-> You are right, we dont have the issue with /dev/tpm for the reason you mentioned.
-> But /dev/tpmrm is represented by chip->cdevs and keeping this ref held by the cdev
-> layer wont protect us from the chip being freed (which is the reason why we need
-> the chip->dev reference in the first place).
+> No need to check the return value of this function, just keep going and
+> ignore it as there's nothing to do and kernel code should not do
+> different things based on the output of any debugfs calls.
+> 
+> Also, this check is totally wrong and doesn't do what you think it is
+> doing...
 
-No, they are all chained together because they are all in the same
-struct:
+Ok, I will drop the check.
 
-struct tpm_chip {
-	struct device dev;
-	struct device devs;
-	struct cdev cdev;
-	struct cdev cdevs;
+> 
+> > +static int __init __damon_dbgfs_init(void)
+> > +{
+> > +	struct dentry *dbgfs_root;
+> > +	const char * const file_names[] = {"monitor_on"};
+> > +	const struct file_operations *fops[] = {&monitor_on_fops};
+> > +	int i;
+> > +
+> > +	dbgfs_root = debugfs_create_dir("damon", NULL);
+> > +	if (IS_ERR(dbgfs_root)) {
+> > +		pr_err("failed to create the dbgfs dir\n");
+> > +		return PTR_ERR(dbgfs_root);
+> 
+> Again, no need to check anything, just pass the result of a debugfs call
+> back into another one just fine.
 
-dev holds the refcount on memory, when it goes 0 the whole thing is
-kfreed.
+Ok.
 
-The rule is dev's refcount can't go to zero while any other refcount
-is != 0.
+> 
+> > +	}
+> > +
+> > +	for (i = 0; i < ARRAY_SIZE(file_names); i++) {
+> > +		if (!debugfs_create_file(file_names[i], 0600, dbgfs_root,
+> > +					NULL, fops[i])) {
+> 
+> Again, this isn't checking what you think it is, so please don't do it.
 
-For instance devs holds a get on dev that is put back only when devs
-goes to 0:
+Got it.
 
-static void tpm_devs_release(struct device *dev)
-{
-	struct tpm_chip *chip = container_of(dev, struct tpm_chip, devs);
+I will fix those as you suggested in the next version.
 
-	/* release the master device reference */
-	put_device(&chip->dev);
-}
 
-Both cdev elements do something similar inside the cdev layer.
+Thanks,
+SeongJae Park
 
-The net result is during any open() the tpm_chip is guarenteed to have
-a positive refcount.
-
-Jason
+> 
+> thanks,
+> 
+> greg k-h
