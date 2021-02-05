@@ -2,99 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C07C431134C
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 22:18:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 95A35311357
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 22:20:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233549AbhBEVRz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 16:17:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53412 "EHLO
+        id S233036AbhBEVUZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 16:20:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233039AbhBEVRo (ORCPT
+        with ESMTP id S233809AbhBEVTG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 16:17:44 -0500
-Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 091A9C06178B;
-        Fri,  5 Feb 2021 13:17:02 -0800 (PST)
-Received: by mail-il1-x12c.google.com with SMTP id o7so2602437ils.2;
-        Fri, 05 Feb 2021 13:17:02 -0800 (PST)
+        Fri, 5 Feb 2021 16:19:06 -0500
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB7A6C061756
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 13:18:26 -0800 (PST)
+Received: by mail-lj1-x232.google.com with SMTP id m22so9468864ljj.4
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 13:18:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=FGxzpwAkVg/sa9z4AuL5zfsiJ+ugd+iDv20cqXWFQPE=;
-        b=HU/gpDurYLVCXKXtvrInofxgEEkUtVh9jpiE56NojazaFQc6YmX8haY9wUK7ppdqTl
-         4g3DI+EWmN3bMEdyhUKcsI1sD/s59SE4T0ZQnekUZzUkmziBIDRG3jRPRhUvRJ/Ps+n8
-         UkpjAcC++y/HSJCocNitRhNDAkJK3PECoitWcvGHBN2ndEnTpNfP3pYP6Poes2hEtM3s
-         lgSWad4F1mJtnW7gQ5Ip5mGHQ50OH8aubSKELJNiGfJLR/iBebo6eiyviFgcitTrj0Rl
-         +Hc+/ElnjtClXPTJdNgxNK5fqknOIp1rY1GqWqVoMH/mHwSTZeR8Nnjro80wDQsLIT0X
-         FE5g==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=M/mNa0cCFnCBPv9oOHupxAJvNU5NKzX9ZpjTVG00V9k=;
+        b=Rtet6B6oBepuSfwX0Mt1avgYBOHHWa0CgvSO6WFeSeKf4J1sM4DcMrG5bc65K79XZ9
+         nKaRKqf4tLFb9DqAqjBdbVPE1pdd7ix3IWQtmQAvk+oFRK3jkfLSnLwd7A+0E1uGVp3f
+         xbuoidh/QLlOJvEzBI3DNxo12oITSdhV/7NbJzexL7yOOWW2cbQHBvCbceZSgqfwYZyD
+         TxYkr5eMaDsX+I7LjX6SN5fYusfBv+D4ILY7o5uSP2GEU5GkDyureKlPfYmR6aTaxQyc
+         d95Y4a5cKG0yLJppR9vT8lGXoEr6hW2yf1/7lZLh6p7jVNZMPwjZRyTtkYG5LYODQKjC
+         pb4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=FGxzpwAkVg/sa9z4AuL5zfsiJ+ugd+iDv20cqXWFQPE=;
-        b=aNcW0w8soVl4UE1Ho9WymavxoozCXCvSsaZ/kp6wRZI0c1meQpGf20dD47XPVq5uSC
-         7viXYoI42VIln7Ohz4nreUHSlFW+svrtdyKOc0oQvKFHLW0PN72qqdWrTTXPu09OOftH
-         n3reZPwFA9MADFM3ADyvKjokfRm0rpeCQOjL9f7EHPkLN0/B6RAu4rM7CO4qPaTRqLn5
-         vDGemUmgqyuJw5sVJFzW0AZh+HPCDhxl1U3zSx9Ey7MSi0egna8wus2qnTEsUFJJb9F+
-         hD8bgVq8Uyf0x7iYc5CXUkk3JkI5Vqj134ORYsnfSaoy5FEwJhdLtmgnD+Q8apRTPxrT
-         7Tfw==
-X-Gm-Message-State: AOAM533ZPB4Ps1aagywvMe8/IQtzeKJ3K5Eq2YkYVft/xDt9Z4HzHcIc
-        cMc2WQgV+E7zmuTA9wT5lmJdxD0CBhNqR7JNSU8=
-X-Google-Smtp-Source: ABdhPJy/f/k0zeyTyn8eB8bR3iADA1E/CXe+UK28BO9+H0JwIsYQI082vDMqTDdYTT7/RNy5xRTjRMEztZkr6WslCXE=
-X-Received: by 2002:a92:ce46:: with SMTP id a6mr5873923ilr.10.1612559821523;
- Fri, 05 Feb 2021 13:17:01 -0800 (PST)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=M/mNa0cCFnCBPv9oOHupxAJvNU5NKzX9ZpjTVG00V9k=;
+        b=HjFYOVG0seQq8AMKXMs9fOV7kVzfCGbOBnrdYiGgMPI0bFmsOIGAnw6pJODEgUDsUN
+         Hxu7MpSgXF2tbr0YEVmzVJU3sfn+LnTEkWKVxMuz+isoXbjjnoMl5LnV57wr75c6SRUO
+         SQxNVwyFU5l5Hle2a9JIGBpqAU7QwoVG9iCB6vsolLLHAkEVzM/epKkNR39l19Oj1NP+
+         iFLQFzOh7X2dMQMDAtjaMKFmLiQg6b9Dym+n+pYQhTIjwSkM53R7a9MMY8UqRHOZD5RJ
+         MR0UqBGXaabXCJIQJMv+vDGwXOWrLDa4abmrrhQPvbWe03O6uH2Q4Uun+gnLHYZHh3Q8
+         iWyw==
+X-Gm-Message-State: AOAM531EAvPgREQvH2UcphpSaLsuLaYkLlCh2NrUoE9fiS4haRmA/UaX
+        f2fjpSVT4L02tQbQgc+A+5NzpggWPLJWZYEjVdnBuw==
+X-Google-Smtp-Source: ABdhPJx5dPeDrLYGW00hRiU8hbhTVJoK1h7ZXHKdpr6PjoJlcg9frjh8W/xaexNoFtIzucZTyFu9xlz6J9W1fEiRPhc=
+X-Received: by 2002:a2e:9cc8:: with SMTP id g8mr3809288ljj.479.1612559905021;
+ Fri, 05 Feb 2021 13:18:25 -0800 (PST)
 MIME-Version: 1.0
-References: <CA+icZUVQSojGgnis8Ds5GW-7-PVMZ2w4X5nQKSSkBPf-29NS6Q@mail.gmail.com>
- <20210205211010.2764627-1-ndesaulniers@google.com>
-In-Reply-To: <20210205211010.2764627-1-ndesaulniers@google.com>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Fri, 5 Feb 2021 22:16:50 +0100
-Message-ID: <CA+icZUXkCC9U3PsYzqhzu7BZa-eE2kd53SfX2ODrr+N=QO6VvQ@mail.gmail.com>
-Subject: Re: ERROR: INT DW_ATE_unsigned_1 Error emitting BTF type
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     andriin@fb.com, arnaldo.melo@gmail.com, berrange@redhat.com,
-        bpf@vger.kernel.org, cavok@debian.org, dwarves@vger.kernel.org,
-        jengelh@inai.de, jolsa@kernel.org, linux-kernel@vger.kernel.org,
-        mjw@redhat.com, omosnace@redhat.com, paul@paul-moore.com,
-        tstellar@redhat.com, yhs@fb.com, zzam@gentoo.org
+References: <20210130004401.2528717-1-ndesaulniers@google.com>
+ <20210130004401.2528717-2-ndesaulniers@google.com> <20210204103946.GA14802@wildebeest.org>
+ <CAKwvOdm0O8m_+mxy7Z91Lu=Hzf6-DyCdAjMOsCRiMmNis4Pd2A@mail.gmail.com>
+ <20fdd20fe067dba00b349407c4a0128c97c1a707.camel@klomp.org>
+ <CAKwvOdmT4t==akMN7eHWgD_XdpN--PLpUj8vgujGJ4TpREvteQ@mail.gmail.com>
+ <42d2542d4b7f9836121b92d9bf349afa920bd4cd.camel@klomp.org>
+ <CAKwvOdmHM8srtLaEy+L_XGzO9TBbhP3csQNAhUTH_TmeDePkDQ@mail.gmail.com> <8696ef2e86c5d8078bf2d2c74fb3cbbecbd22c83.camel@klomp.org>
+In-Reply-To: <8696ef2e86c5d8078bf2d2c74fb3cbbecbd22c83.camel@klomp.org>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Fri, 5 Feb 2021 13:18:11 -0800
+Message-ID: <CAKwvOd=jMykgiR+fthEVeaP1c3-N6veZhKd2LZjeJ5KaqF4PHg@mail.gmail.com>
+Subject: Re: [PATCH v7 1/2] Kbuild: make DWARF version a choice
+To:     Mark Wielaard <mark@klomp.org>, Jakub Jelinek <jakub@redhat.com>,
+        Nick Clifton <nickc@redhat.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Fangrui Song <maskray@google.com>,
+        Caroline Tice <cmtice@google.com>, Yonghong Song <yhs@fb.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 5, 2021 at 10:10 PM Nick Desaulniers
-<ndesaulniers@google.com> wrote:
+On Fri, Feb 5, 2021 at 4:49 AM Mark Wielaard <mark@klomp.org> wrote:
 >
-> > Hi,
-> >
-> > when building with pahole v1.20 and binutils v2.35.2 plus Clang
-> > v12.0.0-rc1 and DWARF-v5 I see:
-> > ...
-> > + info BTF .btf.vmlinux.bin.o
-> > + [  != silent_ ]
-> > + printf   %-7s %s\n BTF .btf.vmlinux.bin.o
-> >  BTF     .btf.vmlinux.bin.o
-> > + LLVM_OBJCOPY=/opt/binutils/bin/objcopy /opt/pahole/bin/pahole -J
-> > .tmp_vmlinux.btf
-> > [115] INT DW_ATE_unsigned_1 Error emitting BTF type
-> > Encountered error while encoding BTF.
+> Hi Nick,
 >
-> Yes, I observe this error, too.
->
-> https://gist.github.com/nickdesaulniers/ae8c9efbe4da69b1cf0dce138c1d2781
->
-> via v9 of my DWARF v5 series, which should help make this easier to
-> reproduce:
-> https://lore.kernel.org/lkml/CA+icZUW3sg_PkbmKSFMs6EqwQV7=hvKuAgZSsbg=Qr6gTs7RbQ@mail.gmail.com/T/#m45ec7e6df4c4b5e9da034b95d7dfc8e2a0c81dac
+> On Thu, 2021-02-04 at 14:06 -0800, Nick Desaulniers wrote:
+> > On Thu, Feb 4, 2021 at 12:28 PM Mark Wielaard <mark@klomp.org> wrote:
+> > > I believe so yes, we did a mass-rebuild of all of Fedora a few weeks
+> > > back with a GCC11 pre-release and did find some tools which weren't
+> > > ready, but as far as I know all have been fixed now. I did try to
 
-Thanks Nick for confirming the error.
-
-Ah, I see you passed:
-
-make LLVM=1 LLVM_IAS=1 ...
-
-Can you by chance try with KCFLAGS="-fbinutils-version=2.35"?
-
-- Sedat -
+I guess I'm curious whether
+https://bugzilla.redhat.com/show_bug.cgi?id=1922707 came up during the
+mass rebuild of all of Fedora a few weeks ago?  Assuming the Linux
+kernel was part of that test, those warnings would have been both new
+and obviously related to changing the implicit default DWARF version.
+It's possible it was a kernel build without debug info enabled or a
+kernel version old enough to not have that linker warning enabled, I
+suppose.  It might be good to check though, that way changes to GCC
+that impact the kernel are caught even sooner or ASAP. New diagnostics
+added every compiler release come to mind in particular.
+-- 
+Thanks,
+~Nick Desaulniers
