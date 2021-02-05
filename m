@@ -2,176 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E30831121D
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 21:18:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0497D311255
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 21:26:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232917AbhBESeW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 13:34:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52048 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233132AbhBEPLE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 10:11:04 -0500
-Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [IPv6:2607:fcd0:100:8a00::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BB6BC06178B;
-        Fri,  5 Feb 2021 08:48:13 -0800 (PST)
-Received: from localhost (localhost [127.0.0.1])
-        by bedivere.hansenpartnership.com (Postfix) with ESMTP id 6B8A4128054D;
-        Fri,  5 Feb 2021 08:48:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1612543692;
-        bh=Qk86HJsAGCaa5VEyh7ydTPuNgosuMGRMD3HFh6dLzss=;
-        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-        b=Hxz21Tao/GbJoa/uOmu/9DH68/NGSLP2NwsU2Y49tdfoL1mfzQazA44sPgDjAe6kZ
-         vtX72RHRZHPaf603yKX8ODOWHTIulSgIKAphGt1ho+yoU3Up3nwCer8qMmLGA270rX
-         174B/CE8xdehPct3Ta64JFxIiKxmnqFBy2W7Toko=
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
-        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id RqzctNyNHdIN; Fri,  5 Feb 2021 08:48:12 -0800 (PST)
-Received: from jarvis.int.hansenpartnership.com (unknown [IPv6:2601:600:8280:66d1::c447])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id D1B091280542;
-        Fri,  5 Feb 2021 08:48:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1612543692;
-        bh=Qk86HJsAGCaa5VEyh7ydTPuNgosuMGRMD3HFh6dLzss=;
-        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-        b=Hxz21Tao/GbJoa/uOmu/9DH68/NGSLP2NwsU2Y49tdfoL1mfzQazA44sPgDjAe6kZ
-         vtX72RHRZHPaf603yKX8ODOWHTIulSgIKAphGt1ho+yoU3Up3nwCer8qMmLGA270rX
-         174B/CE8xdehPct3Ta64JFxIiKxmnqFBy2W7Toko=
-Message-ID: <ee4adfbb99273e1bdceca210bc1fa5f16a50c415.camel@HansenPartnership.com>
-Subject: Re: [PATCH v3 2/2] tpm: in tpm2_del_space check if ops pointer is
- still valid
-From:   James Bottomley <James.Bottomley@HansenPartnership.com>
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     Lino Sanfilippo <LinoSanfilippo@gmx.de>, peterhuewe@gmx.de,
-        jgg@ziepe.ca, stefanb@linux.vnet.ibm.com, stable@vger.kernel.org,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lino Sanfilippo <l.sanfilippo@kunbus.com>
-Date:   Fri, 05 Feb 2021 08:48:11 -0800
-In-Reply-To: <YByrCnswkIlz1w1t@kernel.org>
-References: <1612482643-11796-1-git-send-email-LinoSanfilippo@gmx.de>
-         <1612482643-11796-3-git-send-email-LinoSanfilippo@gmx.de>
-         <7308e5e9f51501bd92cced8f28ff6130c976b3ed.camel@HansenPartnership.com>
-         <YByrCnswkIlz1w1t@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+        id S233545AbhBESha (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 13:37:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47018 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233115AbhBEPKW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 10:10:22 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DDE1764EE0;
+        Fri,  5 Feb 2021 16:48:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612543708;
+        bh=7f4KP/9lp0Sy/l4DlqL3s3ovyzq5C2oXaRlJC24Sty0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fr0XTPfvLeRI7Bn/dzW1HJkIaa13V7z09YTiB85yeKBnzrM2GkwItSDBB0K152T8v
+         0FjoOhRiO1Ao73mDjAiuqKzZCSip90MXWi1NRXxFLuoK8KjqEZM/WuIPu/B55lAA5t
+         wM4CCZGiahtYWdjEi2kmb1kzWsg55eyuNOPK2ZvcZIQXfdHdfhBK1lg9HV1ni+bDXa
+         OzH5lv1lbfMeVTGbqyCHHqhAEQAkV+3ns4Synt+aCIH/0S+LQdCSKoW1v/kmgrSRda
+         ICjby68XItsFRbru8sRXFCm/ks+k4eqAfF/HzveUPSV/3gzmo7VFa7byZVltDeBtKu
+         MGSHFF4CXo6Ug==
+Date:   Fri, 5 Feb 2021 16:48:22 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Vincenzo Frascino <vincenzo.frascino@arm.com>
+Cc:     Andrey Konovalov <andreyknvl@google.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>
+Subject: Re: [PATCH v11 2/5] kasan: Add KASAN mode kernel parameter
+Message-ID: <20210205164822.GB22665@willie-the-truck>
+References: <20210130165225.54047-1-vincenzo.frascino@arm.com>
+ <20210130165225.54047-3-vincenzo.frascino@arm.com>
+ <CAAeHK+y=t4c5FfVx3r3Rvwg3GTYN_q1xme=mwk51hgQfJX9MZw@mail.gmail.com>
+ <CAAeHK+wdPDZkUSu+q1zb=YWxVD68mXqde9c+gYB4bb=zCsvbZw@mail.gmail.com>
+ <96163fa8-c093-8c2f-e085-8c2148882748@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <96163fa8-c093-8c2f-e085-8c2148882748@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-02-05 at 04:18 +0200, Jarkko Sakkinen wrote:
-> On Thu, Feb 04, 2021 at 04:34:11PM -0800, James Bottomley wrote:
-> > On Fri, 2021-02-05 at 00:50 +0100, Lino Sanfilippo wrote:
-> > > From: Lino Sanfilippo <l.sanfilippo@kunbus.com>
-> > > 
-> > > In tpm2_del_space() chip->ops is used for flushing the sessions.
-> > > However
-> > > this function may be called after tpm_chip_unregister() which
-> > > sets
-> > > the chip->ops pointer to NULL.
-> > > Avoid a possible NULL pointer dereference by checking if chip-
-> > > >ops is
-> > > still
-> > > valid before accessing it.
-> > > 
-> > > Fixes: a3fbfae82b4c ("tpm: take TPM chip power gating out of
-> > > tpm_transmit()")
-> > > Signed-off-by: Lino Sanfilippo <l.sanfilippo@kunbus.com>
-> > > ---
-> > >  drivers/char/tpm/tpm2-space.c | 15 ++++++++++-----
-> > >  1 file changed, 10 insertions(+), 5 deletions(-)
-> > > 
-> > > diff --git a/drivers/char/tpm/tpm2-space.c
-> > > b/drivers/char/tpm/tpm2-
-> > > space.c
-> > > index 784b8b3..9a29a40 100644
-> > > --- a/drivers/char/tpm/tpm2-space.c
-> > > +++ b/drivers/char/tpm/tpm2-space.c
-> > > @@ -58,12 +58,17 @@ int tpm2_init_space(struct tpm_space *space,
-> > > unsigned int buf_size)
-> > >  
-> > >  void tpm2_del_space(struct tpm_chip *chip, struct tpm_space
-> > > *space)
-> > >  {
-> > > -	mutex_lock(&chip->tpm_mutex);
-> > > -	if (!tpm_chip_start(chip)) {
-> > > -		tpm2_flush_sessions(chip, space);
-> > > -		tpm_chip_stop(chip);
-> > > +	down_read(&chip->ops_sem);
-> > > +	if (chip->ops) {
-> > > +		mutex_lock(&chip->tpm_mutex);
-> > > +		if (!tpm_chip_start(chip)) {
-> > > +			tpm2_flush_sessions(chip, space);
-> > > +			tpm_chip_stop(chip);
-> > > +		}
-> > > +		mutex_unlock(&chip->tpm_mutex);
-> > >  	}
-> > > -	mutex_unlock(&chip->tpm_mutex);
-> > > +	up_read(&chip->ops_sem);
-> > > +
-> > >  	kfree(space->context_buf);
-> > >  	kfree(space->session_buf);
-> > >  }
-> > 
-> > Actually, this still isn't right.  As I said to the last person who
-> > reported this, we should be doing a get/put on the ops, not rolling
-> > our
-> > own here:
-> > 
-> > https://lore.kernel.org/linux-integrity/e7566e1e48f5be9dca034b4bfb67683b5d3cb88f.camel@HansenPartnership.com/
-> > 
-> > The reporter went silent before we could get this tested, but could
-> > you
-> > try, please, because your patch is still hand rolling the ops
-> > get/put,
-> > just slightly better than it had been done previously.
-> > 
-> > James
+On Fri, Feb 05, 2021 at 04:00:07PM +0000, Vincenzo Frascino wrote:
 > 
-> Thanks for pointing this out. I'd strongly support Jason's proposal:
 > 
-> https://lore.kernel.org/linux-integrity/20201215175624.GG5487@ziepe.ca/
+> On 2/5/21 3:49 PM, Andrey Konovalov wrote:
+> > On Mon, Feb 1, 2021 at 9:04 PM Andrey Konovalov <andreyknvl@google.com> wrote:
+> >>
+> >> On Sat, Jan 30, 2021 at 5:52 PM Vincenzo Frascino
+> >> <vincenzo.frascino@arm.com> wrote:
+> >>>
+> >>> @@ -45,6 +52,9 @@ static enum kasan_arg_fault kasan_arg_fault __ro_after_init;
+> >>>  DEFINE_STATIC_KEY_FALSE(kasan_flag_enabled);
+> >>>  EXPORT_SYMBOL(kasan_flag_enabled);
+> >>>
+> >>> +/* Whether the asynchronous mode is enabled. */
+> >>> +bool kasan_flag_async __ro_after_init;
+> >>
+> >> Just noticed that we need EXPORT_SYMBOL(kasan_flag_async) here.
+> > 
+> > Hi Vincenzo,
+> > 
+> > If you post a new version of this series, please include
+> > EXPORT_SYMBOL(kasan_flag_async).
+> >
 > 
-> It's the best long-term way to fix this.
+> I can do that, no problem.
 
-Really, no it's not.  It introduces extra mechanism we don't need.
+EXPORT_SYMBOL_GPL, please :)
 
-To recap the issue: character devices already have an automatic
-mechanism which holds a reference to the struct device while the
-character node is open so the default is to release resources on final
-put of the struct device.
-
-tpm 2 is special because we have two character device nodes: /dev/tpm0
-and /dev/tpmrm0.  The way we make this work is that tpm0 is the master
-and tpmrm0 the slave, so the slave holds an extra reference on the
-master which is put when the slave final put happens.  This means that
-our resources aren't freed until the final puts of both devices, which
-is the model we're using.
-
-The practical consequence of this model is that if you allocate a chip
-structure with tpm_chip_alloc() you have to release it again by doing a
-put of *both* devices.
-
-However, patch fdc915f7f719 ("tpm: expose spaces via a device link
-/dev/tpmrm<n>") contains two bugs: firstly it didn't add a devm action
-release for devs and secondly it didn't update the only non-devm user
-ibm vtpm to do the double put.
-
-Stefan noticed the latter, so we got the bogus patch 8979b02aaf1d
-("tpm: Fix reference count to main device") applied which simply breaks
-the master/slave model by not taking a reference on the master for the
-slave.  I'm not sure why I didn't notice the problem with this fix at
-the time, but attention must have been elsewhere.
-
-Subsequently we got ftpm added which copied the ibm vtpm put bug.
-
-So I think 1/2 is the correct fix for all three bugs.  I just need to
-find a way to verify it.
-
-James
-
-
+Will
