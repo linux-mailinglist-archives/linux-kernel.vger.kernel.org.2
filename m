@@ -2,184 +2,249 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C5953112D3
+	by mail.lfdr.de (Postfix) with ESMTP id 0514F3112D2
 	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 21:53:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233103AbhBETKG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 14:10:06 -0500
-Received: from mail-oi1-f178.google.com ([209.85.167.178]:45722 "EHLO
-        mail-oi1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231725AbhBETBY (ORCPT
+        id S233283AbhBETJR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 14:09:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46122 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233374AbhBETBi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 14:01:24 -0500
-Received: by mail-oi1-f178.google.com with SMTP id m7so8853053oiw.12;
-        Fri, 05 Feb 2021 12:43:34 -0800 (PST)
+        Fri, 5 Feb 2021 14:01:38 -0500
+Received: from mail-vs1-xe35.google.com (mail-vs1-xe35.google.com [IPv6:2607:f8b0:4864:20::e35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1763EC06174A;
+        Fri,  5 Feb 2021 12:43:22 -0800 (PST)
+Received: by mail-vs1-xe35.google.com with SMTP id q23so4327819vsg.4;
+        Fri, 05 Feb 2021 12:43:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc
+         :content-transfer-encoding;
+        bh=zQsbQqU8v0J69kx7VlEEqc5CnlMmAXtv+kLMdo4DMoU=;
+        b=Q0NVz7Xg5ztNqEVp7o9ftQwRfhvHnLTnFQD2pcyaDROqmuH0UMeRXtAqhD/vXy9SZZ
+         XRkhMdIVJdFOa4FQ8brbYEiwGGHTfqeBiplecxKW6Od3zOJpV1Jk2k7xAEbG+q0biz/2
+         Yt3h1jxTQg/nStuYfLu6NL6iY0uJ161veM5hLLMa6SK+HdnPbig9pqW17qPqNXl6OW3P
+         KssDnJLanYqODyih11lUBShgXPlUoLe5OfQNyQZJiFCIy6lqKo/FtNIZT/olQyjrgoOS
+         LshggAoI+w6Z2yiZmb4l1SCzX9kT2JUXtn+IKNR0d0IoG9uTLyLgT5KF+IGHY03WT37x
+         z2IQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=afmn48XmJAf5UHtknLL+vZ43WdJumPw28Jtuqw8EJAI=;
-        b=RAqYTzVtCDjNFrUykaiNB/rN2lJ77nD+YF8IbPCibNLgcZC9cNDBMWIJE/1Wgct7QB
-         ZEusWgMD/6Y9PSaEfSyikPsYCVa3FpILJ++WfAy5YtIe2ggGNH56VtFkH60gn2nYQPC3
-         Y/eFzGtknkfZ++raXQtz3ryQna2sx0Od5HGWiCXIVx+BeZHQF77leexlspt8AccogqA1
-         C8unOUgDUMWn1nIfcTL/nc9NDHqMPf8jMjPa9OR4trOZVdvhhPPg03uxIImqjt/rtLh+
-         ybBOxU3HDE2W8/cFQ3ekt8Byg3eCFptUY5jH4Z+881GDuzQCZMhom6lUcx8C9pSNNVsW
-         aY8g==
-X-Gm-Message-State: AOAM532XVuM2u1HULq0UDHXJiHX/pLrj5XScLOl3w2nRadHWPV4+7Jal
-        J8fRuXCVdcecEHnKK+b1yQ==
-X-Google-Smtp-Source: ABdhPJwyCaAFj5u9ICufn3AaMqQoT2FLq45wljxNPZVfVlhr1bm4C38Uek+pFLCPFShGkrSA6BtPaw==
-X-Received: by 2002:aca:4e13:: with SMTP id c19mr4336663oib.66.1612557789168;
-        Fri, 05 Feb 2021 12:43:09 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id a188sm2013782oif.11.2021.02.05.12.43.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Feb 2021 12:43:08 -0800 (PST)
-Received: (nullmailer pid 3696812 invoked by uid 1000);
-        Fri, 05 Feb 2021 20:43:06 -0000
-Date:   Fri, 5 Feb 2021 14:43:06 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Henry Chen <henryc.chen@mediatek.com>
-Cc:     Georgi Djakov <georgi.djakov@linaro.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Ryan Case <ryandcase@chromium.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Nicolas Boichat <drinkcat@google.com>,
-        Fan Chen <fan.chen@mediatek.com>,
-        James Liao <jamesjj.liao@mediatek.com>,
-        Arvin Wang <arvin.wang@mediatek.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org
-Subject: Re: [PATCH V8 01/12] dt-bindings: soc: Add dvfsrc driver bindings
-Message-ID: <20210205204306.GA3692875@robh.at.kernel.org>
-References: <1611648234-15043-1-git-send-email-henryc.chen@mediatek.com>
- <1611648234-15043-2-git-send-email-henryc.chen@mediatek.com>
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc
+         :content-transfer-encoding;
+        bh=zQsbQqU8v0J69kx7VlEEqc5CnlMmAXtv+kLMdo4DMoU=;
+        b=MHdtNGjt1tla1/kluQEX1t9v9ohRCgEKW9L6Az6A0a9yzTkMjlKmN0YSpR24uaQWZ5
+         J4JoODnOERkSfDU4qYJgyB+vLn07G9Q+zzz6ksa8+x6KeRiURTkms9U/8kZ2RsB+WwNW
+         NW8dO23zyj2mG37yL1+O2bxhIjbZoTmFDbvAyukzofyRUAXhIl7hlDtYW6xsmx+UyIQB
+         WXTp3t2jY5oVqBzxYwV4GZalQjPJkqLkg5LhivTCQx+zZpHipMKkWb5jx0CERIV5nR62
+         6EiKUbmDGYPuj5uL7ImZuUNrnCEVdDIBreFVhFIrsyismv94ZSGe7/A9FemgZ9V/442S
+         Gxew==
+X-Gm-Message-State: AOAM532MvFZlzJs+bg3WCD3m6HFiHo/NJZxeMuqHJJQ79pmWbvdgNqkr
+        739AjB97NwBSvL2id1mGHg8VqeDD2Qtt4VfXd34=
+X-Google-Smtp-Source: ABdhPJxzP//EYDjw/9Gh7AShXIhMpCAZ8yFBWw3P1vtlwldQazlLxBNC9orqn4mv5zFF9oH5UoizNzSVMMuhvth2qY4=
+X-Received: by 2002:a67:c29e:: with SMTP id k30mr4509314vsj.45.1612557801344;
+ Fri, 05 Feb 2021 12:43:21 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1611648234-15043-2-git-send-email-henryc.chen@mediatek.com>
+From:   Hanabishi Recca <irecca.kun@gmail.com>
+Date:   Sat, 6 Feb 2021 01:43:10 +0500
+Message-ID: <CAOehnrO-qjA4-YbqjyQCc27SyE_T2_bPRfWNg=jb8_tTetRUkw@mail.gmail.com>
+Subject: Re: [PATCH v20 00/10] NTFS read-write driver GPL implementation by
+ Paragon Software
+To:     almaz.alexandrovich@paragon-software.com
+Cc:     aaptel@suse.com, andy.lavr@gmail.com, anton@tuxera.com,
+        dan.carpenter@oracle.com, dsterba@suse.cz, ebiggers@kernel.org,
+        hch@lst.de, joe@perches.com, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
+        mark@harmstone.com, nborisov@suse.com, pali@kernel.org,
+        rdunlap@infradead.org, viro@zeniv.linux.org.uk, willy@infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 04:03:43PM +0800, Henry Chen wrote:
-> Document the binding for enabling dvfsrc on MediaTek SoC.
-> 
-> Signed-off-by: Henry Chen <henryc.chen@mediatek.com>
-> ---
->  .../devicetree/bindings/soc/mediatek/dvfsrc.yaml   | 67 ++++++++++++++++++++++
->  include/dt-bindings/interconnect/mtk,mt8183-emi.h  | 21 +++++++
->  2 files changed, 88 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/soc/mediatek/dvfsrc.yaml
->  create mode 100644 include/dt-bindings/interconnect/mtk,mt8183-emi.h
-> 
-> diff --git a/Documentation/devicetree/bindings/soc/mediatek/dvfsrc.yaml b/Documentation/devicetree/bindings/soc/mediatek/dvfsrc.yaml
-> new file mode 100644
-> index 0000000..0b746a8
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/soc/mediatek/dvfsrc.yaml
-> @@ -0,0 +1,67 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: "http://devicetree.org/schemas/soc/mediatek/dvfsrc.yaml#"
-> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-> +
-> +title: MediaTek dynamic voltage and frequency scaling resource collector (DVFSRC)
-> +
-> +description: |
-> +  The Dynamic Voltage and Frequency Scaling Resource Collector (DVFSRC) is a
-> +  HW module which is used to collect all the requests from both software and
-> +  hardware and turn into the decision of minimum operating voltage and minimum
-> +  DRAM frequency to fulfill those requests.
-> +
-> +maintainers:
-> +  - henryc.chen <henryc.chen@mediatek.com>
-> +
-> +properties:
-> +  reg:
-> +    description: DVFSRC common register address and length.
+Can't even build v20 due to compilation errors.
 
-maxItems: 1
-
-> +
-> +  compatible:
-> +    enum:
-> +      - mediatek,mt6873-dvfsrc
-> +      - mediatek,mt8183-dvfsrc
-> +      - mediatek,mt8192-dvfsrc
-> +
-> +  '#interconnect-cells':
-> +    const: 1
-> +
-> +patternProperties:
-> +  dvfsrc-vcore:
-
-Not a pattern. Move to 'properties'.
-
-> +    type: object
-> +    description:
-> +      The DVFSRC regulator is modelled as a subdevice of the DVFSRC.
-> +      Because DVFSRC can request power directly via register read/write, likes
-> +      vcore which is a core power of mt8183. As such, the DVFSRC regulator
-> +      requires that DVFSRC nodes be present.
-> +    $ref: /schemas/regulator/regulator.yaml#
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - "#interconnect-cells"
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/interconnect/mtk,mt8183-emi.h>
-> +
-> +    soc {
-> +        #address-cells = <2>;
-> +        #size-cells = <2>;
-> +
-> +        dvfsrc@10012000 {
-> +            compatible = "mediatek,mt8183-dvfsrc";
-> +            reg = <0 0x10012000 0 0x1000>;
-> +            #interconnect-cells = <1>;
-> +            dvfsrc_vcore: dvfsrc-vcore {
-> +                    regulator-name = "dvfsrc-vcore";
-> +                    regulator-min-microvolt = <725000>;
-> +                    regulator-max-microvolt = <800000>;
-> +                    regulator-always-on;
-> +            };
-> +        };
-> +    };
-> diff --git a/include/dt-bindings/interconnect/mtk,mt8183-emi.h b/include/dt-bindings/interconnect/mtk,mt8183-emi.h
-> new file mode 100644
-> index 0000000..dfd143f
-> --- /dev/null
-> +++ b/include/dt-bindings/interconnect/mtk,mt8183-emi.h
-> @@ -0,0 +1,21 @@
-> +/* SPDX-License-Identifier: GPL-2.0
-> + *
-> + * Copyright (c) 2021 MediaTek Inc.
-> + */
-> +
-> +#ifndef __DT_BINDINGS_INTERCONNECT_MTK_MT8183_EMI_H
-> +#define __DT_BINDINGS_INTERCONNECT_MTK_MT8183_EMI_H
-> +
-> +#define MT8183_SLAVE_DDR_EMI			0
-> +#define MT8183_MASTER_MCUSYS			1
-> +#define MT8183_MASTER_GPU			2
-> +#define MT8183_MASTER_MMSYS			3
-> +#define MT8183_MASTER_MM_VPU			4
-> +#define MT8183_MASTER_MM_DISP			5
-> +#define MT8183_MASTER_MM_VDEC			6
-> +#define MT8183_MASTER_MM_VENC			7
-> +#define MT8183_MASTER_MM_CAM			8
-> +#define MT8183_MASTER_MM_IMG			9
-> +#define MT8183_MASTER_MM_MDP			10
-> +
-> +#endif
-> -- 
-> 1.9.1
-> 
+DKMS make.log for ntfs3-20.0.0 for kernel 5.10.13-arch1-1 (x86_64)
+Sat Feb  6 01:20:00 +05 2021
+make -C /lib/modules/5.10.13-arch1-1/build
+M=3D/var/lib/dkms/ntfs3/20.0.0/build modules
+make[1]: Entering directory '/usr/lib/modules/5.10.13-arch1-1/build'
+  CC [M]  /var/lib/dkms/ntfs3/20.0.0/build/attrib.o
+  CC [M]  /var/lib/dkms/ntfs3/20.0.0/build/attrlist.o
+  CC [M]  /var/lib/dkms/ntfs3/20.0.0/build/bitfunc.o
+  CC [M]  /var/lib/dkms/ntfs3/20.0.0/build/bitmap.o
+  CC [M]  /var/lib/dkms/ntfs3/20.0.0/build/dir.o
+  CC [M]  /var/lib/dkms/ntfs3/20.0.0/build/fsntfs.o
+  CC [M]  /var/lib/dkms/ntfs3/20.0.0/build/frecord.o
+  CC [M]  /var/lib/dkms/ntfs3/20.0.0/build/file.o
+/var/lib/dkms/ntfs3/20.0.0/build/file.c: In function =E2=80=98ntfs_getattr=
+=E2=80=99:
+/var/lib/dkms/ntfs3/20.0.0/build/file.c:93:19: error: passing argument
+1 of =E2=80=98generic_fillattr=E2=80=99 from incompatible pointer type
+[-Werror=3Dincompatible-pointer-types]
+   93 |  generic_fillattr(mnt_userns, inode, stat);
+      |                   ^~~~~~~~~~
+      |                   |
+      |                   struct user_namespace *
+In file included from ./include/linux/backing-dev.h:13,
+                 from /var/lib/dkms/ntfs3/20.0.0/build/file.c:8:
+./include/linux/fs.h:3095:30: note: expected =E2=80=98struct inode *=E2=80=
+=99 but
+argument is of type =E2=80=98struct user_namespace *=E2=80=99
+ 3095 | extern void generic_fillattr(struct inode *, struct kstat *);
+      |                              ^~~~~~~~~~~~~~
+/var/lib/dkms/ntfs3/20.0.0/build/file.c:93:31: error: passing argument
+2 of =E2=80=98generic_fillattr=E2=80=99 from incompatible pointer type
+[-Werror=3Dincompatible-pointer-types]
+   93 |  generic_fillattr(mnt_userns, inode, stat);
+      |                               ^~~~~
+      |                               |
+      |                               struct inode *
+In file included from ./include/linux/backing-dev.h:13,
+                 from /var/lib/dkms/ntfs3/20.0.0/build/file.c:8:
+./include/linux/fs.h:3095:46: note: expected =E2=80=98struct kstat *=E2=80=
+=99 but
+argument is of type =E2=80=98struct inode *=E2=80=99
+ 3095 | extern void generic_fillattr(struct inode *, struct kstat *);
+      |                                              ^~~~~~~~~~~~~~
+/var/lib/dkms/ntfs3/20.0.0/build/file.c:93:2: error: too many
+arguments to function =E2=80=98generic_fillattr=E2=80=99
+   93 |  generic_fillattr(mnt_userns, inode, stat);
+      |  ^~~~~~~~~~~~~~~~
+In file included from ./include/linux/backing-dev.h:13,
+                 from /var/lib/dkms/ntfs3/20.0.0/build/file.c:8:
+./include/linux/fs.h:3095:13: note: declared here
+ 3095 | extern void generic_fillattr(struct inode *, struct kstat *);
+      |             ^~~~~~~~~~~~~~~~
+/var/lib/dkms/ntfs3/20.0.0/build/file.c: In function =E2=80=98ntfs3_setattr=
+=E2=80=99:
+/var/lib/dkms/ntfs3/20.0.0/build/file.c:639:24: error: passing
+argument 1 of =E2=80=98setattr_prepare=E2=80=99 from incompatible pointer t=
+ype
+[-Werror=3Dincompatible-pointer-types]
+  639 |  err =3D setattr_prepare(mnt_userns, dentry, attr);
+      |                        ^~~~~~~~~~
+      |                        |
+      |                        struct user_namespace *
+In file included from ./include/linux/backing-dev.h:13,
+                 from /var/lib/dkms/ntfs3/20.0.0/build/file.c:8:
+./include/linux/fs.h:3217:28: note: expected =E2=80=98struct dentry *=E2=80=
+=99 but
+argument is of type =E2=80=98struct user_namespace *=E2=80=99
+ 3217 | extern int setattr_prepare(struct dentry *, struct iattr *);
+      |                            ^~~~~~~~~~~~~~~
+/var/lib/dkms/ntfs3/20.0.0/build/file.c:639:36: error: passing
+argument 2 of =E2=80=98setattr_prepare=E2=80=99 from incompatible pointer t=
+ype
+[-Werror=3Dincompatible-pointer-types]
+  639 |  err =3D setattr_prepare(mnt_userns, dentry, attr);
+      |                                    ^~~~~~
+      |                                    |
+      |                                    struct dentry *
+In file included from ./include/linux/backing-dev.h:13,
+                 from /var/lib/dkms/ntfs3/20.0.0/build/file.c:8:
+./include/linux/fs.h:3217:45: note: expected =E2=80=98struct iattr *=E2=80=
+=99 but
+argument is of type =E2=80=98struct dentry *=E2=80=99
+ 3217 | extern int setattr_prepare(struct dentry *, struct iattr *);
+      |                                             ^~~~~~~~~~~~~~
+/var/lib/dkms/ntfs3/20.0.0/build/file.c:639:8: error: too many
+arguments to function =E2=80=98setattr_prepare=E2=80=99
+  639 |  err =3D setattr_prepare(mnt_userns, dentry, attr);
+      |        ^~~~~~~~~~~~~~~
+In file included from ./include/linux/backing-dev.h:13,
+                 from /var/lib/dkms/ntfs3/20.0.0/build/file.c:8:
+./include/linux/fs.h:3217:12: note: declared here
+ 3217 | extern int setattr_prepare(struct dentry *, struct iattr *);
+      |            ^~~~~~~~~~~~~~~
+/var/lib/dkms/ntfs3/20.0.0/build/file.c:664:15: error: passing
+argument 1 of =E2=80=98setattr_copy=E2=80=99 from incompatible pointer type
+[-Werror=3Dincompatible-pointer-types]
+  664 |  setattr_copy(mnt_userns, inode, attr);
+      |               ^~~~~~~~~~
+      |               |
+      |               struct user_namespace *
+In file included from ./include/linux/backing-dev.h:13,
+                 from /var/lib/dkms/ntfs3/20.0.0/build/file.c:8:
+./include/linux/fs.h:3219:40: note: expected =E2=80=98struct inode *=E2=80=
+=99 but
+argument is of type =E2=80=98struct user_namespace *=E2=80=99
+ 3219 | extern void setattr_copy(struct inode *inode, const struct iattr *a=
+ttr);
+      |                          ~~~~~~~~~~~~~~^~~~~
+/var/lib/dkms/ntfs3/20.0.0/build/file.c:664:27: error: passing
+argument 2 of =E2=80=98setattr_copy=E2=80=99 from incompatible pointer type
+[-Werror=3Dincompatible-pointer-types]
+  664 |  setattr_copy(mnt_userns, inode, attr);
+      |                           ^~~~~
+      |                           |
+      |                           struct inode *
+In file included from ./include/linux/backing-dev.h:13,
+                 from /var/lib/dkms/ntfs3/20.0.0/build/file.c:8:
+./include/linux/fs.h:3219:67: note: expected =E2=80=98const struct iattr *=
+=E2=80=99
+but argument is of type =E2=80=98struct inode *=E2=80=99
+ 3219 | extern void setattr_copy(struct inode *inode, const struct iattr *a=
+ttr);
+      |                                               ~~~~~~~~~~~~~~~~~~~~^=
+~~~
+/var/lib/dkms/ntfs3/20.0.0/build/file.c:664:2: error: too many
+arguments to function =E2=80=98setattr_copy=E2=80=99
+  664 |  setattr_copy(mnt_userns, inode, attr);
+      |  ^~~~~~~~~~~~
+In file included from ./include/linux/backing-dev.h:13,
+                 from /var/lib/dkms/ntfs3/20.0.0/build/file.c:8:
+./include/linux/fs.h:3219:13: note: declared here
+ 3219 | extern void setattr_copy(struct inode *inode, const struct iattr *a=
+ttr);
+      |             ^~~~~~~~~~~~
+/var/lib/dkms/ntfs3/20.0.0/build/file.c: At top level:
+/var/lib/dkms/ntfs3/20.0.0/build/file.c:1109:13: error: initialization
+of =E2=80=98int (*)(const struct path *, struct kstat *, u32,  unsigned int=
+)=E2=80=99
+{aka =E2=80=98int (*)(const struct path *, struct kstat *, unsigned int,
+unsigned int)=E2=80=99} from incompatible pointer type =E2=80=98int (*)(str=
+uct
+user_namespace *, const struct path *, struct kstat *, u32,  u32)=E2=80=99
+{aka =E2=80=98int (*)(struct user_namespace *, const struct path *, struct
+kstat *, unsigned int,  unsigned int)=E2=80=99}
+[-Werror=3Dincompatible-pointer-types]
+ 1109 |  .getattr =3D ntfs_getattr,
+      |             ^~~~~~~~~~~~
+/var/lib/dkms/ntfs3/20.0.0/build/file.c:1109:13: note: (near
+initialization for =E2=80=98ntfs_file_inode_operations.getattr=E2=80=99)
+/var/lib/dkms/ntfs3/20.0.0/build/file.c:1110:13: error: initialization
+of =E2=80=98int (*)(struct dentry *, struct iattr *)=E2=80=99 from incompat=
+ible
+pointer type =E2=80=98int (*)(struct user_namespace *, struct dentry *, str=
+uct
+iattr *)=E2=80=99 [-Werror=3Dincompatible-pointer-types]
+ 1110 |  .setattr =3D ntfs3_setattr,
+      |             ^~~~~~~~~~~~~
+/var/lib/dkms/ntfs3/20.0.0/build/file.c:1110:13: note: (near
+initialization for =E2=80=98ntfs_file_inode_operations.setattr=E2=80=99)
+/var/lib/dkms/ntfs3/20.0.0/build/file.c:1112:16: error: initialization
+of =E2=80=98int (*)(struct inode *, int)=E2=80=99 from incompatible pointer=
+ type =E2=80=98int
+(*)(struct user_namespace *, struct inode *, int)=E2=80=99
+[-Werror=3Dincompatible-pointer-types]
+ 1112 |  .permission =3D ntfs_permission,
+      |                ^~~~~~~~~~~~~~~
+/var/lib/dkms/ntfs3/20.0.0/build/file.c:1112:16: note: (near
+initialization for =E2=80=98ntfs_file_inode_operations.permission=E2=80=99)
+/var/lib/dkms/ntfs3/20.0.0/build/file.c:1114:13: error: initialization
+of =E2=80=98int (*)(struct inode *, struct posix_acl *, int)=E2=80=99 from
+incompatible pointer type =E2=80=98int (*)(struct user_namespace *, struct
+inode *, struct posix_acl *, int)=E2=80=99
+[-Werror=3Dincompatible-pointer-types]
+ 1114 |  .set_acl =3D ntfs_set_acl,
+      |             ^~~~~~~~~~~~
+/var/lib/dkms/ntfs3/20.0.0/build/file.c:1114:13: note: (near
+initialization for =E2=80=98ntfs_file_inode_operations.set_acl=E2=80=99)
+cc1: some warnings being treated as errors
+make[2]: *** [scripts/Makefile.build:279:
+/var/lib/dkms/ntfs3/20.0.0/build/file.o] Error 1
+make[1]: *** [Makefile:1805: /var/lib/dkms/ntfs3/20.0.0/build] Error 2
+make[1]: Leaving directory '/usr/lib/modules/5.10.13-arch1-1/build'
+make: *** [Makefile:37: all] Error 2
