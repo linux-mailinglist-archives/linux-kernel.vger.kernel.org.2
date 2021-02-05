@@ -2,36 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D51C9311227
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 21:20:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F7DA31122A
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 21:20:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229754AbhBESf2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 13:35:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35560 "EHLO mail.kernel.org"
+        id S233150AbhBESg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 13:36:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36258 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233231AbhBESdo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 13:33:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DBC2D64FBA;
-        Fri,  5 Feb 2021 20:15:26 +0000 (UTC)
+        id S231991AbhBESfN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 13:35:13 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B795564FDC;
+        Fri,  5 Feb 2021 20:16:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612556127;
-        bh=yZA214pP9uEmxnlYovW4a/vibfl67RdvPHHROfP6O8k=;
-        h=From:To:In-Reply-To:References:Subject:Date:From;
-        b=KRNgmLlGoZ/Komwtz3wcBd0HAOvRePsOzlH4bw+vBB82jfBucMtmFsqWRbMG8HLiy
-         EhmccZT0slTc0iAbO7Fh3XvOsOyCD+wCLgsd50a1Q0d7Q7FyRAgFHqZZd0Q/d8bBSP
-         QT3HkMxyQnOpzVN7YstdHZL/mlhKWFF0/n8LzHm/PW/D6REaUqsEQWknJxhkpgys3j
-         zkeWb5pSr41qvkD5gFgZa1OdtyhXmno73VuLV0utN+D9S7uV2EopUJpURT7FkTfh6d
-         g2gDqaxG+uVD0jgf9bNUTbTW5LiOLiRCi2HCl6miNvdyfJ3xLPe4QNfsXnU3g+qpKh
-         vIc3uNp0sdBmQ==
+        s=k20201202; t=1612556217;
+        bh=L89irc7kubpj8fG6KjNnFLp+C8E3d91kIby1JkgGdVw=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=RMJWBHUtcxFaPY/CKkHCfLqlkXdvHFzoZPtkRpKDvwAMgaOqN75fl2RKBudGqFQK5
+         TPMFoX674ae4V1E+yr+3Ipb1tLIA3a0HfSUWjuzdwZM6eImml16bJ/BLzE/kagW5n0
+         HeP+rsAFae6whB/Ju17J/LgrMDaRYRaPQxedKto4bBb87kSiZInOo6xfLPi5ILT0f4
+         eNWgEGvYpqLh5enGNsL4UoRO1wEbU+ovfplAY0Byf5gec+rnkb8WHrWkX3SU7ynb0G
+         U1sBrwucKnyUxeU/e+6dvGLyFMGzeiHPLQUVnF2qdGNvUgTYBYfEafp0hfagUf4gkm
+         Bs/WVTLHvqaKA==
 From:   Mark Brown <broonie@kernel.org>
-To:     lars@metafoo.de, linux-kernel@vger.kernel.org,
-        alsa-devel@alsa-project.org, tiwai@suse.com,
-        Shengjiu Wang <shengjiu.wang@nxp.com>, perex@perex.cz
-In-Reply-To: <1612509985-11063-1-git-send-email-shengjiu.wang@nxp.com>
-References: <1612509985-11063-1-git-send-email-shengjiu.wang@nxp.com>
-Subject: Re: [RESEND PATH] ASoC: dmaengine_pcm: add peripheral configuration
-Message-Id: <161255607746.56562.2848342434481411880.b4-ty@kernel.org>
-Date:   Fri, 05 Feb 2021 20:14:37 +0000
+To:     amelie.delaunay@foss.st.com,
+        Alain Volmat <alain.volmat@foss.st.com>
+Cc:     mcoquelin.stm32@gmail.com,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-spi@vger.kernel.org,
+        fabrice.gasnier@foss.st.com, linux-kernel@vger.kernel.org,
+        alexandre.torgue@foss.st.com
+In-Reply-To: <1612523342-10466-1-git-send-email-alain.volmat@foss.st.com>
+References: <1612523342-10466-1-git-send-email-alain.volmat@foss.st.com>
+Subject: Re: (subset) [PATCH 0/8] spi: stm32: fix and enhancements for spi-stm32
+Message-Id: <161255616019.56748.10125284929138523865.b4-ty@kernel.org>
+Date:   Fri, 05 Feb 2021 20:16:00 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -39,23 +43,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 5 Feb 2021 15:26:25 +0800, Shengjiu Wang wrote:
-> The commit e7bbb7acabf4 ("dmaengine: add peripheral configuration")
-> adds peripheral configuration for dma_slave_config.
+On Fri, 5 Feb 2021 12:08:54 +0100, Alain Volmat wrote:
+> The serie provides a fix for the spi-stm32 driver, allowing to properly
+> handle 0 byte transfer (and thus being able to run spi-loopback-test).
 > 
-> This configuration is useful for some audio peripherals, for
-> example, the peripheral supports multi fifos, we can
-> let the DMA know which fifos are selected. So also add
-> this configuration for snd_dmaengine_dai_dma_data.
+> In addition to that, important enhancements are implemented, among them,
+> supporting transfer larger that what the IP can setup in one go or
+> allowing to use the SPI bus without cs_gpio.
+> 
+> [...]
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
 
 Thanks!
 
-[1/1] ASoC: dmaengine_pcm: add peripheral configuration
-      commit: 500c9f8c58a7c8cd5d9c1483569c046cfcfc47a4
+[2/8] spi: stm32: do not mandate cs_gpio
+      commit: 8f8d0e3e33e36ba63416cad64b9a9ad6b0129eed
+[3/8] spi: stm32h7: ensure message are smaller than max size
+      commit: 084de5232820c9e857ccc2282c3d94f33f92a381
+[4/8] spi: stm32: driver uses reset controller only at init
+      commit: 1c75cfd53e213044523141b464eb06813e39ecea
+[5/8] spi: stm32: defer probe for reset
+      commit: c63b95b76e69b679b9b95014552db099eb77a4fa
+[6/8] spi: stm32: use bitfield macros
+      commit: 5a380b833ad437123dca91bf900a696709d9b6ab
+[7/8] spi: stm32h7: replace private SPI_1HZ_NS with NSEC_PER_SEC
+      commit: e1e2093b16cb1cefe4dc483b00e73d1333260784
+[8/8] spi: stm32: make spurious and overrun interrupts visible
+      commit: c64e7efe46b7de21937ef4b3594d9b1fc74f07df
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
