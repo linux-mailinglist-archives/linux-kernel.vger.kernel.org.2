@@ -2,115 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6212C310A43
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 12:30:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 74F90310A46
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 12:30:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231436AbhBEL2e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 06:28:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50068 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231586AbhBELYW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 06:24:22 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7ABB264DB2;
-        Fri,  5 Feb 2021 11:23:40 +0000 (UTC)
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1l7zD8-00CFsF-2x; Fri, 05 Feb 2021 11:23:38 +0000
+        id S232001AbhBEL3p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 06:29:45 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:48394 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231357AbhBEL0E (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 06:26:04 -0500
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 115BO1wf048344;
+        Fri, 5 Feb 2021 05:24:01 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1612524241;
+        bh=vVhluiN+5BOsD2L9K3Iny8HhR+qZ41FlPExCZ+PrPR0=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=R0v8+yhiWdYyyheBcgfM8gf4VQHejMqvBqEpQUmE7xN1lD4c9xpMp8kkNHdVvx50c
+         PYkOD5pg+ED+9JSbVd3NMccJHnB7xyk31St+bZFGpc21nP6LRghRD3bebpk0Z4mDKk
+         HxXeWHiSF+s866ZaalNom1+NnoDXf4FZtv5Ri7Is=
+Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 115BO12F093234
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 5 Feb 2021 05:24:01 -0600
+Received: from DFLE113.ent.ti.com (10.64.6.34) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 5 Feb
+ 2021 05:24:01 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 5 Feb 2021 05:24:01 -0600
+Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 115BNxr2116113;
+        Fri, 5 Feb 2021 05:24:00 -0600
+Subject: Re: [PATCH] soc: ti: k3-ringacc: Use of_device_get_match_data()
+To:     Suman Anna <s-anna@ti.com>, Santosh Shilimkar <ssantosh@kernel.org>
+CC:     Vignesh Raghavendra <vigneshr@ti.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20210130050400.28085-1-s-anna@ti.com>
+From:   Grygorii Strashko <grygorii.strashko@ti.com>
+Message-ID: <7340caba-6975-2bc3-021e-c54a67cbcd18@ti.com>
+Date:   Fri, 5 Feb 2021 13:24:01 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+In-Reply-To: <20210130050400.28085-1-s-anna@ti.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Date:   Fri, 05 Feb 2021 11:23:37 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     Will Deacon <will@kernel.org>, Steven Price <steven.price@arm.com>
-Cc:     netdev@vger.kernel.org, yangbo.lu@nxp.com, john.stultz@linaro.org,
-        tglx@linutronix.de, pbonzini@redhat.com, seanjc@google.com,
-        richardcochran@gmail.com, Mark.Rutland@arm.com,
-        suzuki.poulose@arm.com, Andre.Przywara@arm.com,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        kvmarm@lists.cs.columbia.edu, kvm@vger.kernel.org,
-        Steve.Capper@arm.com, justin.he@arm.com, jianyong.wu@arm.com,
-        kernel-team@android.com
-Subject: Re: [PATCH v17 1/7] arm/arm64: Probe for the presence of KVM
- hypervisor
-In-Reply-To: <20210205111921.GA22109@willie-the-truck>
-References: <20210202141204.3134855-1-maz@kernel.org>
- <20210202141204.3134855-2-maz@kernel.org>
- <d5765ade-7199-2d1e-6d59-d3de6a52c6ce@arm.com>
- <20210205111921.GA22109@willie-the-truck>
-User-Agent: Roundcube Webmail/1.4.10
-Message-ID: <29f8b6f5faf33472b74ab5f2406c6081@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: will@kernel.org, steven.price@arm.com, netdev@vger.kernel.org, yangbo.lu@nxp.com, john.stultz@linaro.org, tglx@linutronix.de, pbonzini@redhat.com, seanjc@google.com, richardcochran@gmail.com, Mark.Rutland@arm.com, suzuki.poulose@arm.com, Andre.Przywara@arm.com, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, kvm@vger.kernel.org, Steve.Capper@arm.com, justin.he@arm.com, jianyong.wu@arm.com, kernel-team@android.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-02-05 11:19, Will Deacon wrote:
-> On Fri, Feb 05, 2021 at 09:11:00AM +0000, Steven Price wrote:
->> On 02/02/2021 14:11, Marc Zyngier wrote:
->> > diff --git a/drivers/firmware/smccc/kvm_guest.c b/drivers/firmware/smccc/kvm_guest.c
->> > new file mode 100644
->> > index 000000000000..23ce1ded88b4
->> > --- /dev/null
->> > +++ b/drivers/firmware/smccc/kvm_guest.c
->> > @@ -0,0 +1,51 @@
->> > +// SPDX-License-Identifier: GPL-2.0
->> > +
->> > +#define pr_fmt(fmt) "smccc: KVM: " fmt
->> > +
->> > +#include <linux/init.h>
->> > +#include <linux/arm-smccc.h>
->> > +#include <linux/kernel.h>
->> > +#include <linux/string.h>
->> > +
->> > +static DECLARE_BITMAP(__kvm_arm_hyp_services, ARM_SMCCC_KVM_NUM_FUNCS) __ro_after_init = { };
->> > +
->> > +void __init kvm_init_hyp_services(void)
->> > +{
->> > +	int i;
->> > +	struct arm_smccc_res res;
->> > +
->> > +	if (arm_smccc_1_1_get_conduit() != SMCCC_CONDUIT_HVC)
->> > +		return;
->> > +
->> > +	arm_smccc_1_1_invoke(ARM_SMCCC_VENDOR_HYP_CALL_UID_FUNC_ID, &res);
->> > +	if (res.a0 != ARM_SMCCC_VENDOR_HYP_UID_KVM_REG_0 ||
->> > +	    res.a1 != ARM_SMCCC_VENDOR_HYP_UID_KVM_REG_1 ||
->> > +	    res.a2 != ARM_SMCCC_VENDOR_HYP_UID_KVM_REG_2 ||
->> > +	    res.a3 != ARM_SMCCC_VENDOR_HYP_UID_KVM_REG_3)
->> > +		return;
->> > +
->> > +	memset(&res, 0, sizeof(res));
->> > +	arm_smccc_1_1_invoke(ARM_SMCCC_VENDOR_HYP_KVM_FEATURES_FUNC_ID, &res);
->> > +	for (i = 0; i < 32; ++i) {
->> > +		if (res.a0 & (i))
->> > +			set_bit(i + (32 * 0), __kvm_arm_hyp_services);
->> > +		if (res.a1 & (i))
->> > +			set_bit(i + (32 * 1), __kvm_arm_hyp_services);
->> > +		if (res.a2 & (i))
->> > +			set_bit(i + (32 * 2), __kvm_arm_hyp_services);
->> > +		if (res.a3 & (i))
->> > +			set_bit(i + (32 * 3), __kvm_arm_hyp_services);
->> 
->> The bit shifts are missing, the tests should be of the form:
->> 
->> 	if (res.a0 & (1 << i))
->> 
->> Or indeed using a BIT() macro.
+
+
+On 30/01/2021 07:04, Suman Anna wrote:
+> Simplify the retrieval of getting the match data in the probe
+> function by directly using of_device_get_match_data() instead
+> of using of_match_node() and getting data.
 > 
-> Maybe even test_bit()?
+> Signed-off-by: Suman Anna <s-anna@ti.com>
+> ---
+>   drivers/soc/ti/k3-ringacc.c | 7 +++----
+>   1 file changed, 3 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/soc/ti/k3-ringacc.c b/drivers/soc/ti/k3-ringacc.c
+> index b495b0d5d0fa..312ba0f98ad7 100644
+> --- a/drivers/soc/ti/k3-ringacc.c
+> +++ b/drivers/soc/ti/k3-ringacc.c
+> @@ -9,6 +9,7 @@
+>   #include <linux/io.h>
+>   #include <linux/init.h>
+>   #include <linux/of.h>
+> +#include <linux/of_device.h>
+>   #include <linux/platform_device.h>
+>   #include <linux/sys_soc.h>
+>   #include <linux/dma/ti-cppi5.h>
+> @@ -1517,15 +1518,13 @@ EXPORT_SYMBOL_GPL(k3_ringacc_dmarings_init);
+>   static int k3_ringacc_probe(struct platform_device *pdev)
+>   {
+>   	const struct ringacc_match_data *match_data;
+> -	const struct of_device_id *match;
+>   	struct device *dev = &pdev->dev;
+>   	struct k3_ringacc *ringacc;
+>   	int ret;
+>   
+> -	match = of_match_node(k3_ringacc_of_match, dev->of_node);
+> -	if (!match)
+> +	match_data = of_device_get_match_data(&pdev->dev);
+> +	if (!match_data)
+>   		return -ENODEV;
+> -	match_data = match->data;
+>   
+>   	ringacc = devm_kzalloc(dev, sizeof(*ringacc), GFP_KERNEL);
+>   	if (!ringacc)
+> 
 
-yeah. I'll fix that up, thanks for pointing this out.
-
-       M.
+Thank you
+Reviewed-by: Grygorii Strashko <grygorii.strashko@ti.com>
 -- 
-Jazz is not dead. It just smells funny...
+Best regards,
+grygorii
