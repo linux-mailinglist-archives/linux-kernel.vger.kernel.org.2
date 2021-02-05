@@ -2,60 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FC3A3117D5
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 01:34:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 608A03117D2
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 01:32:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231131AbhBFAdt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 19:33:49 -0500
-Received: from gloria.sntech.de ([185.11.138.130]:42280 "EHLO gloria.sntech.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231956AbhBELFv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 06:05:51 -0500
-Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=phil.lan)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1l7yvC-0001Ja-11; Fri, 05 Feb 2021 12:05:06 +0100
-From:   Heiko Stuebner <heiko@sntech.de>
-To:     heiko@sntech.de
-Cc:     mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
-        linux-clk@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
-Subject: [PATCH 4/5] clk: rockchip: use clock id for SCLK_VIP_OUT on rk3368
-Date:   Fri,  5 Feb 2021 12:05:01 +0100
-Message-Id: <20210205110502.1850669-4-heiko@sntech.de>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210205110502.1850669-1-heiko@sntech.de>
-References: <20210205110502.1850669-1-heiko@sntech.de>
+        id S231307AbhBFAcY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 19:32:24 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:11686 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231508AbhBELkH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 06:40:07 -0500
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DXD1F3Mr5zlH7W;
+        Fri,  5 Feb 2021 19:37:37 +0800 (CST)
+Received: from SWX921481.china.huawei.com (10.126.202.232) by
+ DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
+ 14.3.498.0; Fri, 5 Feb 2021 19:39:10 +0800
+From:   Barry Song <song.bao.hua@hisilicon.com>
+To:     <m.szyprowski@samsung.com>, <hch@lst.de>, <robin.murphy@arm.com>,
+        <iommu@lists.linux-foundation.org>
+CC:     <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>,
+        Barry Song <song.bao.hua@hisilicon.com>
+Subject: [PATCH v3 2/2] dma-mapping: benchmark: pretend DMA is transmitting
+Date:   Sat, 6 Feb 2021 00:33:25 +1300
+Message-ID: <20210205113325.19556-2-song.bao.hua@hisilicon.com>
+X-Mailer: git-send-email 2.21.0.windows.1
+In-Reply-To: <20210205113325.19556-1-song.bao.hua@hisilicon.com>
+References: <20210205113325.19556-1-song.bao.hua@hisilicon.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.126.202.232]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
+In a real dma mapping user case, after dma_map is done, data will be
+transmit. Thus, in multi-threaded user scenario, IOMMU contention
+should not be that severe. For example, if users enable multiple
+threads to send network packets through 1G/10G/100Gbps NIC, usually
+the steps will be: map -> transmission -> unmap.  Transmission delay
+reduces the contention of IOMMU.
 
-Export the vip-out clock via the newly added clock-id.
+Here a delay is added to simulate the transmission between map and unmap
+so that the tested result could be more accurate for TX and simple RX.
+A typical TX transmission for NIC would be like: map -> TX -> unmap
+since the socket buffers come from OS. Simple RX model eg. disk driver,
+is also map -> RX -> unmap, but real RX model in a NIC could be more
+complicated considering packets can come spontaneously and many drivers
+are using pre-mapped buffers pool. This is in the TBD list.
 
-Signed-off-by: Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
+Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
 ---
- drivers/clk/rockchip/clk-rk3368.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/dma/map_benchmark.c                    | 12 ++++++++++-
+ .../testing/selftests/dma/dma_map_benchmark.c | 21 ++++++++++++++++---
+ 2 files changed, 29 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/clk/rockchip/clk-rk3368.c b/drivers/clk/rockchip/clk-rk3368.c
-index 76fb04120089..61413be48d1a 100644
---- a/drivers/clk/rockchip/clk-rk3368.c
-+++ b/drivers/clk/rockchip/clk-rk3368.c
-@@ -474,7 +474,7 @@ static struct rockchip_clk_branch rk3368_clk_branches[] __initdata = {
- 	COMPOSITE_NODIV(0, "vip_src", mux_pll_src_cpll_gpll_p, 0,
- 			RK3368_CLKSEL_CON(21), 15, 1, MFLAGS,
- 			RK3368_CLKGATE_CON(4), 5, GFLAGS),
--	COMPOSITE_NOGATE(0, "sclk_vip_out", mux_vip_out_p, 0,
-+	COMPOSITE_NOGATE(SCLK_VIP_OUT, "sclk_vip_out", mux_vip_out_p, 0,
- 			RK3368_CLKSEL_CON(21), 14, 1, MFLAGS, 8, 5, DFLAGS),
+diff --git a/kernel/dma/map_benchmark.c b/kernel/dma/map_benchmark.c
+index da95df381483..e0e64f8b0739 100644
+--- a/kernel/dma/map_benchmark.c
++++ b/kernel/dma/map_benchmark.c
+@@ -21,6 +21,7 @@
+ #define DMA_MAP_BENCHMARK	_IOWR('d', 1, struct map_benchmark)
+ #define DMA_MAP_MAX_THREADS	1024
+ #define DMA_MAP_MAX_SECONDS	300
++#define DMA_MAP_MAX_TRANS_DELAY	(10 * NSEC_PER_MSEC)
  
- 	COMPOSITE_NODIV(SCLK_EDP_24M, "sclk_edp_24m", mux_edp_24m_p, 0,
+ #define DMA_MAP_BIDIRECTIONAL	0
+ #define DMA_MAP_TO_DEVICE	1
+@@ -36,7 +37,8 @@ struct map_benchmark {
+ 	__s32 node; /* which numa node this benchmark will run on */
+ 	__u32 dma_bits; /* DMA addressing capability */
+ 	__u32 dma_dir; /* DMA data direction */
+-	__u8 expansion[84];	/* For future use */
++	__u32 dma_trans_ns; /* time for DMA transmission in ns */
++	__u8 expansion[80];	/* For future use */
+ };
+ 
+ struct map_benchmark_data {
+@@ -87,6 +89,9 @@ static int map_benchmark_thread(void *data)
+ 		map_etime = ktime_get();
+ 		map_delta = ktime_sub(map_etime, map_stime);
+ 
++		/* Pretend DMA is transmitting */
++		ndelay(map->bparam.dma_trans_ns);
++
+ 		unmap_stime = ktime_get();
+ 		dma_unmap_single(map->dev, dma_addr, PAGE_SIZE, map->dir);
+ 		unmap_etime = ktime_get();
+@@ -218,6 +223,11 @@ static long map_benchmark_ioctl(struct file *file, unsigned int cmd,
+ 			return -EINVAL;
+ 		}
+ 
++		if (map->bparam.dma_trans_ns > DMA_MAP_MAX_TRANS_DELAY) {
++			pr_err("invalid transmission delay\n");
++			return -EINVAL;
++		}
++
+ 		if (map->bparam.node != NUMA_NO_NODE &&
+ 		    !node_possible(map->bparam.node)) {
+ 			pr_err("invalid numa node\n");
+diff --git a/tools/testing/selftests/dma/dma_map_benchmark.c b/tools/testing/selftests/dma/dma_map_benchmark.c
+index 537d65968c48..fb23ce9617ea 100644
+--- a/tools/testing/selftests/dma/dma_map_benchmark.c
++++ b/tools/testing/selftests/dma/dma_map_benchmark.c
+@@ -12,9 +12,12 @@
+ #include <sys/mman.h>
+ #include <linux/types.h>
+ 
++#define NSEC_PER_MSEC	1000000L
++
+ #define DMA_MAP_BENCHMARK	_IOWR('d', 1, struct map_benchmark)
+ #define DMA_MAP_MAX_THREADS	1024
+ #define DMA_MAP_MAX_SECONDS     300
++#define DMA_MAP_MAX_TRANS_DELAY	(10 * NSEC_PER_MSEC)
+ 
+ #define DMA_MAP_BIDIRECTIONAL	0
+ #define DMA_MAP_TO_DEVICE	1
+@@ -36,7 +39,8 @@ struct map_benchmark {
+ 	__s32 node; /* which numa node this benchmark will run on */
+ 	__u32 dma_bits; /* DMA addressing capability */
+ 	__u32 dma_dir; /* DMA data direction */
+-	__u8 expansion[84];	/* For future use */
++	__u32 dma_trans_ns; /* time for DMA transmission in ns */
++	__u8 expansion[80];	/* For future use */
+ };
+ 
+ int main(int argc, char **argv)
+@@ -46,12 +50,12 @@ int main(int argc, char **argv)
+ 	/* default single thread, run 20 seconds on NUMA_NO_NODE */
+ 	int threads = 1, seconds = 20, node = -1;
+ 	/* default dma mask 32bit, bidirectional DMA */
+-	int bits = 32, dir = DMA_MAP_BIDIRECTIONAL;
++	int bits = 32, xdelay = 0, dir = DMA_MAP_BIDIRECTIONAL;
+ 
+ 	int cmd = DMA_MAP_BENCHMARK;
+ 	char *p;
+ 
+-	while ((opt = getopt(argc, argv, "t:s:n:b:d:")) != -1) {
++	while ((opt = getopt(argc, argv, "t:s:n:b:d:x:")) != -1) {
+ 		switch (opt) {
+ 		case 't':
+ 			threads = atoi(optarg);
+@@ -68,6 +72,9 @@ int main(int argc, char **argv)
+ 		case 'd':
+ 			dir = atoi(optarg);
+ 			break;
++		case 'x':
++			xdelay = atoi(optarg);
++			break;
+ 		default:
+ 			return -1;
+ 		}
+@@ -85,6 +92,12 @@ int main(int argc, char **argv)
+ 		exit(1);
+ 	}
+ 
++	if (xdelay < 0 || xdelay > DMA_MAP_MAX_TRANS_DELAY) {
++		fprintf(stderr, "invalid transmit delay, must be in 0-%ld\n",
++			DMA_MAP_MAX_TRANS_DELAY);
++		exit(1);
++	}
++
+ 	/* suppose the mininum DMA zone is 1MB in the world */
+ 	if (bits < 20 || bits > 64) {
+ 		fprintf(stderr, "invalid dma mask bit, must be in 20-64\n");
+@@ -109,6 +122,8 @@ int main(int argc, char **argv)
+ 	map.node = node;
+ 	map.dma_bits = bits;
+ 	map.dma_dir = dir;
++	map.dma_trans_ns = xdelay;
++
+ 	if (ioctl(fd, cmd, &map)) {
+ 		perror("ioctl");
+ 		exit(1);
 -- 
-2.29.2
+2.25.1
 
