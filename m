@@ -2,128 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DC8F310BFD
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 14:41:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D0004310C0D
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 14:43:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230264AbhBENkP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 08:40:15 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:50201 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229988AbhBENgG (ORCPT
+        id S231321AbhBENnF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 08:43:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42594 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229706AbhBENkA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 08:36:06 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612532079;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=+FKg2DTzgviX+HjS8G7qH+HGbWsC/RfTXSUIVNIG9yc=;
-        b=jUVsXq7vj/Bs+RsnA54ayZwcTWh3GL/MASOZDEbWk0GnXrNg6KNlM9CaKWT3gJdBwVqh5N
-        BiYdcNRTj8RR1ChzFLyHZP2wjFNAHcnmfG8obpY1yS1VV17kGMdQkkmX1X1b49cOHu2qcH
-        HIY5YEk1UsDy9ByFaLLAGjlQaJXfoHM=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-570-UY2DmFPnNSeToJfNaHH2-Q-1; Fri, 05 Feb 2021 08:34:37 -0500
-X-MC-Unique: UY2DmFPnNSeToJfNaHH2-Q-1
-Received: by mail-ej1-f69.google.com with SMTP id by20so6737558ejc.1
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 05:34:37 -0800 (PST)
+        Fri, 5 Feb 2021 08:40:00 -0500
+Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBD5AC0617A7
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 05:39:14 -0800 (PST)
+Received: by mail-io1-xd35.google.com with SMTP id u8so6993824ior.13
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 05:39:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=GeehWlA/F2e6kevzgurBlXoC2SgLPzjICfnHBJp8xXw=;
+        b=fyC5ieFmhX2gXuRDFBl3MnJdGZZEBosubYtfM0C93wwpliWDPTRzOqXUilpk4XXCUz
+         hx4lNX6V72yPEdFSLsfyuHZ0iMwCoF74ht9WUNRALMemGQVDJp69HdSWnFkV+sz/dYsA
+         z/6hVd0me17m0sY6+0FoRiQJY0hOgB2t5WhX0v2VtR5AZ0+sQAjTDKdTDBTm3szHb9ap
+         6h9XgVcz/Fk2Cjw9FEQTOZZGSagzggpCfl5amOD2VybjZjpabcc/KGi4kdztbgXt2IaI
+         jymzV5CR7YYK+44JKb4br38wOqkh9MDNDsSb4ETZQZYjjUBP2sYDz+oCSMKsqrNEfdfs
+         mQ2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=+FKg2DTzgviX+HjS8G7qH+HGbWsC/RfTXSUIVNIG9yc=;
-        b=NmP3P3VjSRLhRajQP+uMJZX7T1hvkAhc/ESghq/FmSKPaW5ba5HFDLA49v9wluTcb1
-         lkdCEPOFfyWuU2JrBA3yS7rjBihXIXGGukUNiUWw59r32CM9hPT3FrsHGvm+f5yh0T6G
-         IX4oLNTWyGR5EHXXiHy8RWQUAOgpboA/t6rLLJGQfdWQ41LGiNs/nIeQdIH8WE40464X
-         cTlRvZrUX1M09BJt1PDuN306SNQPOkKxE6nJ9EZeHyUpCESgk4DlVC6jcRarXHvaIFrE
-         tL8tDuNo7dOAjrGlrqfRzey3xOSZMbd5ebjHTksr94pbio3sSFRCSpSyo5iaIPVkDFwG
-         BXeg==
-X-Gm-Message-State: AOAM532ZFZjcLFm2WJMJ3jARQNKBhVyDIVZ/S0yzp8TmfYZMr6QiyTQj
-        sD5xRgq5zvcCYjJaC3oL97PDloBSbkj3xSK4CeQ6vU+awjv2SSrX9thNPgUXbn7GLQf0cqD8+bY
-        O7I7donpxd+XBQfrxp7zRAifl
-X-Received: by 2002:aa7:dc17:: with SMTP id b23mr3572471edu.139.1612532076605;
-        Fri, 05 Feb 2021 05:34:36 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwHRaQZ6QkM5lJwBQoi1W7M9I9XGnD4C4hGg+cwtWLLAv4TNugbGm9Im1snFAe/Z2jIKqZbDQ==
-X-Received: by 2002:aa7:dc17:: with SMTP id b23mr3572459edu.139.1612532076428;
-        Fri, 05 Feb 2021 05:34:36 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id x14sm3906639ejb.0.2021.02.05.05.34.33
+        bh=GeehWlA/F2e6kevzgurBlXoC2SgLPzjICfnHBJp8xXw=;
+        b=jqxcN9fUxm2ewL0CFn1aVTfQzaYyhWqRT5dH5fz9mzC+6Gw3LD0piw5S5Anqv0ZCGq
+         I6pKaydadiXlD43VKR+9H1c5wY4zZ8dTQ2NoMOOyHLwzYqEfICfJGPCWkvIs+nUXQ9LI
+         pxVfhYQhM1PuSGLabzmcE6mXeOCbvlPTQLKZmKaHjBMbKjnI97G+5p9vOM2p3b/oPPBB
+         2kDl/VPn2CNQRv7hkScz96BARPTlBcy9+aGUE82SDRVqNDvZ95xDS+2iQejNyPAhxznQ
+         KrCrZuCAetyX8EbdrVMpZ7lbY/CoQtj8oke7LCgkQOTZhHIv0aXdag9SvyAbUl97xa6+
+         Z3zA==
+X-Gm-Message-State: AOAM5301RBwkSJ5xIwWx8CBv7rL1xX6RU5O6odhlOc9u1YneflsXmOno
+        0fLVqU+fUO/9GcLkHuBx1HfsDzHZMpsPzw==
+X-Google-Smtp-Source: ABdhPJzUu+mLjlS/mhwP9hIeGWQ2RXg/qpyfzUFtaOO8kCp50lZbw/OnwZvXxP1IEajLQvBtp/k+jg==
+X-Received: by 2002:a05:6602:1223:: with SMTP id z3mr4210661iot.130.1612532354220;
+        Fri, 05 Feb 2021 05:39:14 -0800 (PST)
+Received: from [172.22.22.26] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.googlemail.com with ESMTPSA id f139sm4081947ilh.60.2021.02.05.05.39.13
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 05 Feb 2021 05:34:35 -0800 (PST)
-To:     Zhimin Feng <fengzhimin@bytedance.com>, x86@kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     seanjc@google.com, vkuznets@redhat.com, wanpengli@tencent.com,
-        jmattson@google.com, joro@8bytes.org, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, hpa@zytor.com, fweisbec@gmail.com,
-        zhouyibo@bytedance.com, zhanghaozhong@bytedance.com
-References: <20210205100317.24174-1-fengzhimin@bytedance.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [RESEND RFC: timer passthrough 0/9] Support timer passthrough for
- VM
-Message-ID: <1ec32a4a-8f05-c840-8c8e-29c9c2a7f868@redhat.com>
-Date:   Fri, 5 Feb 2021 14:34:32 +0100
+        Fri, 05 Feb 2021 05:39:13 -0800 (PST)
+Subject: Re: [PATCH net-next 2/7] net: ipa: synchronize NAPI only for suspend
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     davem@davemloft.net, elder@kernel.org, evgreen@chromium.org,
+        bjorn.andersson@linaro.org, cpratapa@codeaurora.org,
+        subashab@codeaurora.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210203152855.11866-1-elder@linaro.org>
+ <20210203152855.11866-3-elder@linaro.org>
+ <20210204205322.792e079c@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   Alex Elder <elder@linaro.org>
+Message-ID: <b054d86b-dead-3fa8-e2d5-6068a4d54e6c@linaro.org>
+Date:   Fri, 5 Feb 2021 07:39:12 -0600
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-In-Reply-To: <20210205100317.24174-1-fengzhimin@bytedance.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210204205322.792e079c@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/02/21 11:03, Zhimin Feng wrote:
-> The main motivation for this patch is to improve the performance of VM.
-> This patch series introduces how to enable the timer passthrough in
-> non-root mode.
+On 2/4/21 10:53 PM, Jakub Kicinski wrote:
+> On Wed,  3 Feb 2021 09:28:50 -0600 Alex Elder wrote:
+>>  int gsi_channel_suspend(struct gsi *gsi, u32 channel_id, bool stop)
+>>  {
+>>  	struct gsi_channel *channel = &gsi->channel[channel_id];
+>> +	int ret;
+>>  
+>> -	return __gsi_channel_stop(channel, stop);
+>> +	/* Synchronize NAPI if successful, to ensure polling has finished. */
+>> +	ret = __gsi_channel_stop(channel, stop);
+>> +	if (!ret)
+>> +		napi_synchronize(&channel->napi);
+>> +
+>> +	return ret;
 > 
-> The main idea is to offload the host timer to the preemtion timer in
-> non-root mode. Through doing this, guest can write tscdeadline msr directly
-> in non-root mode and host timer isn't lost. If CPU is in root mode,
-> guest timer is switched to software timer.
+> nit:
 > 
-> Testing on Intel(R) Xeon(R) Platinum 8260 server.
+> 	ret = function();
+> 	if (ret)
+> 		return ret;
 > 
-> The guest OS is Debian(kernel: 4.19.28). The specific configuration is
->   is as follows: 8 cpu, 16GB memory, guest idle=poll
-> memcached in guest(memcached -d -t 8 -u root)
+> 	/* success path: do something else */
 > 
-> I use the memtier_benchmark tool to test performance
-> (memtier_benchmark -P memcache_text -s guest_ip -c 16 -t 32
->   --key-maximum=10000000000 --random-data --data-size-range=64-128 -p 11211
->   --generate-keys --ratio 5:1 --test-time=500)
-> 
-> Total Ops can be improved 25% and Avg.Latency can be improved 20% when
-> the timer-passthrough is enabled.
+> 	return 0;
 
-As Peter noticed, this is very invasive.  Perhaps you could try 
-organizing the code like this:
+No problem, I'm happy with it the way you suggest.  I will
+update in v2.   Thank you.
 
-1) just for the sake of these patches, completely disable the usage of 
-the preemption timer
-
-2) add a module parameter that:
-
-- reads the TSC deadline MSR on vmentry and uses it to program the VMX 
-preemption timer
-
-- disables the host APIC timer while the guest runs
-
-- injects a timer interrupt on preemption timer vmexits
-
-3) also if the module parameter is 1, use the MSR autoload feature to 
-use TSC_ADJUST instead of the VMCS TSC offset
-
-4) also if the module parameter is 1 reintroduce the hv_timer callbacks, 
-but this time to program the TSC deadline timer via MSR autoload
-
-5) only when everything else is in place, figure out how to avoid the 
-RDMSR for the TSC deadline MSR.
-
-Thanks,
-
-Paolo
+					-Alex
 
