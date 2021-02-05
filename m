@@ -2,118 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B06C43104F1
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 07:31:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D3013104F7
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 07:31:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230527AbhBEG2U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 01:28:20 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:12401 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229492AbhBEG2R (ORCPT
+        id S231210AbhBEG33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 01:29:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34732 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229492AbhBEG3X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 01:28:17 -0500
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4DX55y16Lbz7hSV;
-        Fri,  5 Feb 2021 14:26:14 +0800 (CST)
-Received: from ubuntu.network (10.175.138.68) by
- DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
- 14.3.498.0; Fri, 5 Feb 2021 14:27:24 +0800
-From:   Zheng Yongjun <zhengyongjun3@huawei.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Zheng Yongjun <zhengyongjun3@huawei.com>
-Subject: [PATCH] net: core: Clean code style issues in `neighbour.c`
-Date:   Fri, 5 Feb 2021 14:28:21 +0800
-Message-ID: <20210205062821.3893-1-zhengyongjun3@huawei.com>
-X-Mailer: git-send-email 2.22.0
+        Fri, 5 Feb 2021 01:29:23 -0500
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3106C0613D6;
+        Thu,  4 Feb 2021 22:28:42 -0800 (PST)
+Received: by mail-pl1-x62c.google.com with SMTP id b8so3033806plh.12;
+        Thu, 04 Feb 2021 22:28:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:subject:to:cc:references:in-reply-to:mime-version
+         :message-id:content-transfer-encoding;
+        bh=n7CaGiXn3IclWpaI9yXVgNXyljc6Uf/i5e6pCdoBf3U=;
+        b=rwAZrEHXeSHsEhQqlWJWMhS+QhnKGA9Iw7FLGGoJKoOeBD7vZibcpQ9NObjulqTHTe
+         7GkjCmyb54Y7Z4prVF67Wk4/Sr6XWceCuls0wmHJ3qMB5hWV5UROmPQNd7iSsETxqXYu
+         ABIGme3BAikEa6nXXQtAUAcAbsfuvblhEDgWl1R8+L50d85TpF8DCSLsglMQAVBwmefL
+         dyzWInNwK3Onqpvn+ZtvCTQG28m3QOAuai43BoFdsBbCSQTBG0fjYiK6jNPr1YqCyHXp
+         mqcortFcQTAZkk7IhsdhE27f20UnUtR1rUbEeQxnF49HeIH2D2J5KjPZvWaQ9C7yRpYc
+         P4xg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
+         :mime-version:message-id:content-transfer-encoding;
+        bh=n7CaGiXn3IclWpaI9yXVgNXyljc6Uf/i5e6pCdoBf3U=;
+        b=eN2noE7ULbeG8KuU8R76iYxOSyrJ2CcODAVBjHTBKpyb06vTgqXbNvvlBctZBDbFTN
+         KcfhwdB4Rgw8wjRcMIyyzNXEBJAk67SuNw05AKm8012ZSO8ySqeQWxyyHjaanms2RAFM
+         G31mZX0WG1fJGgxYS4Lz/2NFCfoQwgV/U78Q1+7AAZOtmJzL149Q5+BjMKaweDucUyJr
+         qVywaqxtkHiFKpy1XtvmQE3z7Ca2zGh7rxdvU9lcw7IhHSkJrzrg9WHMxVZx6DWjMCF5
+         0hpMODmY46iaiVBTQK8UxcvF5FATP2fmjPOF885aldDnMlXKy1agdGydd5taoICd6Q8y
+         WRcQ==
+X-Gm-Message-State: AOAM533JtnoOHHBiJcE6PBSa9uuNGpOVV3MsBbRPa0XNcnJj1qKVtdkE
+        btgMsyH0XTPqR85DhukItLdWMnG5CMw=
+X-Google-Smtp-Source: ABdhPJyzYhRchCo7znC5uY06AcfhaOZlnYfVNeQoFViOz4lQHuEATDmNG7js6j4hIHTcx7QpjQxRyA==
+X-Received: by 2002:a17:903:248e:b029:df:e75a:68f7 with SMTP id p14-20020a170903248eb02900dfe75a68f7mr2657814plw.9.1612506522323;
+        Thu, 04 Feb 2021 22:28:42 -0800 (PST)
+Received: from localhost (60-242-11-44.static.tpgi.com.au. [60.242.11.44])
+        by smtp.gmail.com with ESMTPSA id c9sm7233627pjr.44.2021.02.04.22.28.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Feb 2021 22:28:41 -0800 (PST)
+Date:   Fri, 05 Feb 2021 16:28:35 +1000
+From:   Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: [PATCH v2 1/1] powerpc/kvm: Save Timebase Offset to fix
+ sched_clock() while running guest code.
+To:     "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Jordan Niethe <jniethe5@gmail.com>,
+        Leonardo Bras <leobras.c@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     kvm-ppc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org
+References: <20210205060643.233481-1-leobras.c@gmail.com>
+In-Reply-To: <20210205060643.233481-1-leobras.c@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.138.68]
-X-CFilter-Loop: Reflected
+Message-Id: <1612506268.6rrvx34gzu.astroid@bobo.none>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Do code format alignment to clean code style issues.
+Excerpts from Leonardo Bras's message of February 5, 2021 4:06 pm:
+> Before guest entry, TBU40 register is changed to reflect guest timebase.
+> After exitting guest, the register is reverted to it's original value.
+>=20
+> If one tries to get the timestamp from host between those changes, it
+> will present an incorrect value.
+>=20
+> An example would be trying to add a tracepoint in
+> kvmppc_guest_entry_inject_int(), which depending on last tracepoint
+> acquired could actually cause the host to crash.
+>=20
+> Save the Timebase Offset to PACA and use it on sched_clock() to always
+> get the correct timestamp.
 
-Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
----
- net/core/neighbour.c | 17 ++++++++---------
- 1 file changed, 8 insertions(+), 9 deletions(-)
+Ouch. Not sure how reasonable it is to half switch into guest registers=20
+and expect to call into the wider kernel, fixing things up as we go.=20
+What if mftb is used in other places?
 
-diff --git a/net/core/neighbour.c b/net/core/neighbour.c
-index 9500d28a43b0..a742c918a09b 100644
---- a/net/core/neighbour.c
-+++ b/net/core/neighbour.c
-@@ -299,7 +299,7 @@ static void neigh_flush_dev(struct neigh_table *tbl, struct net_device *dev,
- 		struct neighbour __rcu **np = &nht->hash_buckets[i];
- 
- 		while ((n = rcu_dereference_protected(*np,
--					lockdep_is_held(&tbl->lock))) != NULL) {
-+						      lockdep_is_held(&tbl->lock))) != NULL) {
- 			if (dev && n->dev != dev) {
- 				np = &n->next;
- 				continue;
-@@ -309,7 +309,7 @@ static void neigh_flush_dev(struct neigh_table *tbl, struct net_device *dev,
- 				continue;
- 			}
- 			rcu_assign_pointer(*np,
--				   rcu_dereference_protected(n->next,
-+					   rcu_dereference_protected(n->next,
- 						lockdep_is_held(&tbl->lock)));
- 			write_lock(&n->lock);
- 			neigh_del_timer(n);
-@@ -634,7 +634,7 @@ static struct neighbour *___neigh_create(struct neigh_table *tbl,
- 					    lockdep_is_held(&tbl->lock));
- 	     n1 != NULL;
- 	     n1 = rcu_dereference_protected(n1->next,
--			lockdep_is_held(&tbl->lock))) {
-+					    lockdep_is_held(&tbl->lock))) {
- 		if (dev == n1->dev && !memcmp(n1->primary_key, n->primary_key, key_len)) {
- 			if (want_ref)
- 				neigh_hold(n1);
-@@ -962,7 +962,7 @@ static void neigh_periodic_work(struct work_struct *work)
- 	 * BASE_REACHABLE_TIME.
- 	 */
- 	queue_delayed_work(system_power_efficient_wq, &tbl->gc_work,
--			      NEIGH_VAR(&tbl->parms, BASE_REACHABLE_TIME) >> 1);
-+			   NEIGH_VAR(&tbl->parms, BASE_REACHABLE_TIME) >> 1);
- 	write_unlock_bh(&tbl->lock);
- }
- 
-@@ -1620,8 +1620,7 @@ struct neigh_parms *neigh_parms_alloc(struct net_device *dev,
- 	if (p) {
- 		p->tbl		  = tbl;
- 		refcount_set(&p->refcnt, 1);
--		p->reachable_time =
--				neigh_rand_reach_time(NEIGH_VAR(p, BASE_REACHABLE_TIME));
-+		p->reachable_time = neigh_rand_reach_time(NEIGH_VAR(p, BASE_REACHABLE_TIME));
- 		dev_hold(dev);
- 		p->dev = dev;
- 		write_pnet(&p->net, net);
-@@ -1693,7 +1692,7 @@ void neigh_table_init(int index, struct neigh_table *tbl)
- 
- #ifdef CONFIG_PROC_FS
- 	if (!proc_create_seq_data(tbl->id, 0, init_net.proc_net_stat,
--			      &neigh_stat_seq_ops, tbl))
-+				  &neigh_stat_seq_ops, tbl))
- 		panic("cannot create neighbour proc dir entry");
- #endif
- 
-@@ -1714,10 +1713,10 @@ void neigh_table_init(int index, struct neigh_table *tbl)
- 	rwlock_init(&tbl->lock);
- 	INIT_DEFERRABLE_WORK(&tbl->gc_work, neigh_periodic_work);
- 	queue_delayed_work(system_power_efficient_wq, &tbl->gc_work,
--			tbl->parms.reachable_time);
-+			   tbl->parms.reachable_time);
- 	timer_setup(&tbl->proxy_timer, neigh_proxy_process, 0);
- 	skb_queue_head_init_class(&tbl->proxy_queue,
--			&neigh_table_proxy_queue_class);
-+				  &neigh_table_proxy_queue_class);
- 
- 	tbl->last_flush = now;
- 	tbl->last_rand	= now + tbl->parms.reachable_time * 20;
--- 
-2.22.0
+Especially as it doesn't seem like there is a reason that function _has_
+to be called after the timebase is switched to guest, that's just how=20
+the code is structured.
 
+As a local hack to work out a bug okay. If you really need it upstream=20
+could you put it under a debug config option?
+
+Thanks,
+Nick
+
+> Signed-off-by: Leonardo Bras <leobras.c@gmail.com>
+> Suggested-by: Paul Mackerras <paulus@ozlabs.org>
+> ---
+> Changes since v1:
+> - Subtracts offset only when CONFIG_KVM_BOOK3S_HANDLER and
+>   CONFIG_PPC_BOOK3S_64 are defined.
+> ---
+>  arch/powerpc/include/asm/kvm_book3s_asm.h | 1 +
+>  arch/powerpc/kernel/asm-offsets.c         | 1 +
+>  arch/powerpc/kernel/time.c                | 8 +++++++-
+>  arch/powerpc/kvm/book3s_hv.c              | 2 ++
+>  arch/powerpc/kvm/book3s_hv_rmhandlers.S   | 2 ++
+>  5 files changed, 13 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/arch/powerpc/include/asm/kvm_book3s_asm.h b/arch/powerpc/inc=
+lude/asm/kvm_book3s_asm.h
+> index 078f4648ea27..e2c12a10eed2 100644
+> --- a/arch/powerpc/include/asm/kvm_book3s_asm.h
+> +++ b/arch/powerpc/include/asm/kvm_book3s_asm.h
+> @@ -131,6 +131,7 @@ struct kvmppc_host_state {
+>  	u64 cfar;
+>  	u64 ppr;
+>  	u64 host_fscr;
+> +	u64 tb_offset;		/* Timebase offset: keeps correct timebase while on gue=
+st */
+>  #endif
+>  };
+> =20
+> diff --git a/arch/powerpc/kernel/asm-offsets.c b/arch/powerpc/kernel/asm-=
+offsets.c
+> index b12d7c049bfe..0beb8fdc6352 100644
+> --- a/arch/powerpc/kernel/asm-offsets.c
+> +++ b/arch/powerpc/kernel/asm-offsets.c
+> @@ -706,6 +706,7 @@ int main(void)
+>  	HSTATE_FIELD(HSTATE_CFAR, cfar);
+>  	HSTATE_FIELD(HSTATE_PPR, ppr);
+>  	HSTATE_FIELD(HSTATE_HOST_FSCR, host_fscr);
+> +	HSTATE_FIELD(HSTATE_TB_OFFSET, tb_offset);
+>  #endif /* CONFIG_PPC_BOOK3S_64 */
+> =20
+>  #else /* CONFIG_PPC_BOOK3S */
+> diff --git a/arch/powerpc/kernel/time.c b/arch/powerpc/kernel/time.c
+> index 67feb3524460..f27f0163792b 100644
+> --- a/arch/powerpc/kernel/time.c
+> +++ b/arch/powerpc/kernel/time.c
+> @@ -699,7 +699,13 @@ EXPORT_SYMBOL_GPL(tb_to_ns);
+>   */
+>  notrace unsigned long long sched_clock(void)
+>  {
+> -	return mulhdu(get_tb() - boot_tb, tb_to_ns_scale) << tb_to_ns_shift;
+> +	u64 tb =3D get_tb() - boot_tb;
+> +
+> +#if defined(CONFIG_PPC_BOOK3S_64) && defined(CONFIG_KVM_BOOK3S_HANDLER)
+> +	tb -=3D local_paca->kvm_hstate.tb_offset;
+> +#endif
+> +
+> +	return mulhdu(tb, tb_to_ns_scale) << tb_to_ns_shift;
+>  }
+> =20
+> =20
+> diff --git a/arch/powerpc/kvm/book3s_hv.c b/arch/powerpc/kvm/book3s_hv.c
+> index b3731572295e..c08593c63353 100644
+> --- a/arch/powerpc/kvm/book3s_hv.c
+> +++ b/arch/powerpc/kvm/book3s_hv.c
+> @@ -3491,6 +3491,7 @@ static int kvmhv_load_hv_regs_and_go(struct kvm_vcp=
+u *vcpu, u64 time_limit,
+>  		if ((tb & 0xffffff) < (new_tb & 0xffffff))
+>  			mtspr(SPRN_TBU40, new_tb + 0x1000000);
+>  		vc->tb_offset_applied =3D vc->tb_offset;
+> +		local_paca->kvm_hstate.tb_offset =3D vc->tb_offset;
+>  	}
+> =20
+>  	if (vc->pcr)
+> @@ -3594,6 +3595,7 @@ static int kvmhv_load_hv_regs_and_go(struct kvm_vcp=
+u *vcpu, u64 time_limit,
+>  		if ((tb & 0xffffff) < (new_tb & 0xffffff))
+>  			mtspr(SPRN_TBU40, new_tb + 0x1000000);
+>  		vc->tb_offset_applied =3D 0;
+> +		local_paca->kvm_hstate.tb_offset =3D 0;
+>  	}
+> =20
+>  	mtspr(SPRN_HDEC, 0x7fffffff);
+> diff --git a/arch/powerpc/kvm/book3s_hv_rmhandlers.S b/arch/powerpc/kvm/b=
+ook3s_hv_rmhandlers.S
+> index b73140607875..8f7a9f7f4ee6 100644
+> --- a/arch/powerpc/kvm/book3s_hv_rmhandlers.S
+> +++ b/arch/powerpc/kvm/book3s_hv_rmhandlers.S
+> @@ -632,6 +632,7 @@ END_FTR_SECTION_IFCLR(CPU_FTR_ARCH_300)
+>  	cmpdi	r8,0
+>  	beq	37f
+>  	std	r8, VCORE_TB_OFFSET_APPL(r5)
+> +	std	r8, HSTATE_TB_OFFSET(r13)
+>  	mftb	r6		/* current host timebase */
+>  	add	r8,r8,r6
+>  	mtspr	SPRN_TBU40,r8	/* update upper 40 bits */
+> @@ -1907,6 +1908,7 @@ END_FTR_SECTION_IFSET(CPU_FTR_ARCH_207S)
+>  	beq	17f
+>  	li	r0, 0
+>  	std	r0, VCORE_TB_OFFSET_APPL(r5)
+> +	std	r0, HSTATE_TB_OFFSET(r13)
+>  	mftb	r6			/* current guest timebase */
+>  	subf	r8,r8,r6
+>  	mtspr	SPRN_TBU40,r8		/* update upper 40 bits */
+> --=20
+> 2.29.2
+>=20
+>=20
