@@ -2,96 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDEF1311724
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 00:34:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8C8F31172F
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 00:38:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230486AbhBEXbA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 18:31:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40978 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232572AbhBEOXL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 09:23:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6A7DE650F0;
-        Fri,  5 Feb 2021 15:39:22 +0000 (UTC)
-Date:   Fri, 5 Feb 2021 15:39:19 +0000
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Vincenzo Frascino <vincenzo.frascino@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kasan-dev@googlegroups.com,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Will Deacon <will@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Andrey Konovalov <andreyknvl@google.com>
-Subject: Re: [PATCH v11 4/5] arm64: mte: Enable async tag check fault
-Message-ID: <20210205153918.GA12697@gaia>
-References: <20210130165225.54047-1-vincenzo.frascino@arm.com>
- <20210130165225.54047-5-vincenzo.frascino@arm.com>
+        id S230470AbhBEXfd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 18:35:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41414 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232469AbhBEOWY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 09:22:24 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C51B8C06121C;
+        Fri,  5 Feb 2021 07:59:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=p8yliEbMqP3V4TzvseSTLJIbhTkc7zBiOssiRDK3Nzk=; b=uwYQHBNsUi+sKrXn/Gp+6afzBg
+        Xns98RH8bmqXcEhJIa8XRSVjoGdo4DpAwHn3yNX/rJ73sh+V204eiqAmvwGalKgqkQAghHOGKBwjN
+        R4Ben6HR849Yd+CPx466InoUjG3/6v6zyhQdt0gzl9V2xt3B9iLCLpEtK0F38gpMavuyO5bW7W0jt
+        ZibdfTAwuLyk6woueT/BIt9iMEdBu7xEkgsboGf0JRhKjXh+ePIbupKU1bJQ4IarZyfibFDRNL4IY
+        Cnt1B3Bg1gfsBKHmBd4wasZGMrJSXKg5kQYzQKEMUjTTz9CXlZ2GUK1kx+VIXf9YdBZKFlhXoNpyv
+        sboo4gUw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1l83DR-002Sec-9G; Fri, 05 Feb 2021 15:40:14 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 0DB8E3012DF;
+        Fri,  5 Feb 2021 16:40:11 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id EAD3D2BC43F6C; Fri,  5 Feb 2021 16:40:10 +0100 (CET)
+Date:   Fri, 5 Feb 2021 16:40:10 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     Brendan Jackman <jackmanb@chromium.org>,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        Paul Renauld <renauld@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        James Morris <jmorris@namei.org>, pjt@google.com,
+        jannh@google.com, rafael.j.wysocki@intel.com,
+        keescook@chromium.org, thgarnie@chromium.org, kpsingh@google.com,
+        paul.renauld.epfl@gmail.com, Brendan Jackman <jackmanb@google.com>,
+        rostedt@goodmis.org
+Subject: Re: [RFC] security: replace indirect calls with static calls
+Message-ID: <YB1m2i6bUM0LO5wS@hirez.programming.kicks-ass.net>
+References: <20200820164753.3256899-1-jackmanb@chromium.org>
+ <20210205150926.GA12608@localhost>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210130165225.54047-5-vincenzo.frascino@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210205150926.GA12608@localhost>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 30, 2021 at 04:52:24PM +0000, Vincenzo Frascino wrote:
-> diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
-> index 92078e1eb627..7763ac1f2917 100644
-> --- a/arch/arm64/kernel/mte.c
-> +++ b/arch/arm64/kernel/mte.c
-> @@ -182,6 +182,37 @@ bool mte_report_once(void)
->  	return READ_ONCE(report_fault_once);
->  }
->  
-> +#ifdef CONFIG_KASAN_HW_TAGS
-> +void mte_check_tfsr_el1(void)
-> +{
-> +	u64 tfsr_el1;
-> +
-> +	if (!system_supports_mte())
-> +		return;
-> +
-> +	tfsr_el1 = read_sysreg_s(SYS_TFSR_EL1);
-> +
-> +	/*
-> +	 * The kernel should never trigger an asynchronous fault on a
-> +	 * TTBR0 address, so we should never see TF0 set.
-> +	 * For futexes we disable checks via PSTATE.TCO.
-> +	 */
-> +	WARN_ONCE(tfsr_el1 & SYS_TFSR_EL1_TF0,
-> +		  "Kernel async tag fault on TTBR0 address");
+On Fri, Feb 05, 2021 at 10:09:26AM -0500, Mathieu Desnoyers wrote:
+> Then we should be able to generate the following using static keys as a
+> jump table and N static calls:
+> 
+>   jump <static key label target>
+> label_N:
+>   stack setup
+>   call
+> label_N-1:
+>   stack setup
+>   call
+> label_N-2:
+>   stack setup
+>   call
+>   ...
+> label_0:
+>   jump end
+> label_fallback:
+>   <iteration and indirect calls>
+> end:
+> 
+> So the static keys would be used to jump to the appropriate label (using
+> a static branch, which has pretty much 0 overhead). Static calls would
+> be used to implement each of the calls.
+> 
+> Thoughts ?
 
-Sorry, I got confused when I suggested this warning. If the user is
-running in async mode, the TFSR_EL1.TF0 bit may be set by
-copy_mount_options(), strncpy_from_user() which rely on an actual fault
-happening (not the case with asynchronous where only a bit is set). With
-the user MTE support, we never report asynchronous faults caused by the
-kernel on user addresses as we can't easily track them. So this warning
-may be triggered on correctly functioning kernel/user.
+At some point I tried to extend the static_branch infra to do multiple
+targets and while the low level plumbing is trivial, I ran into trouble
+trying to get a sane C level API for it.
 
-> +
-> +	if (unlikely(tfsr_el1 & SYS_TFSR_EL1_TF1)) {
-> +		/*
-> +		 * Note: isb() is not required after this direct write
-> +		 * because there is no indirect read subsequent to it
-> +		 * (per ARM DDI 0487F.c table D13-1).
-> +		 */
-> +		write_sysreg_s(0, SYS_TFSR_EL1);
 
-Zeroing the whole register is still fine, we don't care about the TF0
-bit anyway.
-
-> +
-> +		kasan_report_async();
-> +	}
-> +}
-> +#endif
-
--- 
-Catalin
