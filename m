@@ -2,160 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E1B53110E1
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 20:16:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B19E83110CF
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 20:12:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233427AbhBERd3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 12:33:29 -0500
-Received: from mslow2.mail.gandi.net ([217.70.178.242]:60415 "EHLO
-        mslow2.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233418AbhBEP6j (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 10:58:39 -0500
-Received: from relay2-d.mail.gandi.net (unknown [217.70.183.194])
-        by mslow2.mail.gandi.net (Postfix) with ESMTP id 1AC733C4CA8
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 15:10:43 +0000 (UTC)
-X-Originating-IP: 93.29.109.196
-Received: from aptenodytes (196.109.29.93.rev.sfr.net [93.29.109.196])
-        (Authenticated sender: paul.kocialkowski@bootlin.com)
-        by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id 6F07B40015;
-        Fri,  5 Feb 2021 15:10:18 +0000 (UTC)
-Date:   Fri, 5 Feb 2021 16:10:18 +0100
-From:   Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-To:     "H. Nikolaus Schaller" <hns@goldelico.com>
-Cc:     Robin Murphy <robin.murphy@arm.com>,
-        Yong Wu <yong.wu@mediatek.com>, Rob Herring <robh@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Discussions about the Letux Kernel 
-        <letux-kernel@openphoenux.org>
-Subject: Re: BOG: commit 89c7cb1608ac3 ("of/device: Update dma_range_map only
- when dev has valid dma-ranges") seems to break Pinephone display or LCDC
-Message-ID: <YB1f2kYMtHnM5ye1@aptenodytes>
-References: <81FE44A3-38C8-4B78-BB77-C09B4FC80B0A@goldelico.com>
- <YBkh6IZfmzaLWYPp@aptenodytes>
- <E45AE13E-6A74-43E6-A7AE-B0D425B10344@goldelico.com>
- <YBlW3ES1E5SwUOpJ@aptenodytes>
- <13D0EFBB-E2A1-4BA3-9F99-CF2B85127074@goldelico.com>
+        id S233528AbhBER3r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 12:29:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54084 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233471AbhBEP7p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 10:59:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7877A650E9;
+        Fri,  5 Feb 2021 15:15:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612538158;
+        bh=1sEW+rtg5YJG4p9Obi9qq7oVcTQWtSvG+Gb0mHpyNM8=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=W5uGP6H8vyQLn3hzvdc2oI0Wsj9H6KabWgkB55CVhy4/bzpnBs0BiswDlXtPUmTbz
+         8/25XHXXGAWByLz7F5mw338mbqRJBMoSJ7xQm2OgFgRxADCVTQdy4S0fl1Z23q926T
+         RZw3qoyeT5q1129rgHxO4RY20YtM77/6CSP2+luxZ8C2GEvapWEyeLJKC5pci+K1Sz
+         9u+r6KugDyXp9m9fKM5c4QdT+626TfCFzRicUvPTyOt8Wpe/4HHxrpELrjDowNXx+l
+         8VzuGXbJZ/7BoxZYUA6g1/0BuPzM6sBktPnYMZCXu50vQ2ZfTDeTO3IHJoT8eGZ22+
+         +RMe63td2tJGQ==
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     sgx@eclists.intel.com
+Cc:     dave.hansen@intel.com, Jarkko Sakkinen <jarkko@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Haitao Huang <haitao.huang@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Sean Christopherson <seanjc@google.com>,
+        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 2/2] x86/sgx: Maintain encl->refcount for each encl->mm_list entry
+Date:   Fri,  5 Feb 2021 17:15:45 +0200
+Message-Id: <20210205151546.144810-2-jarkko@kernel.org>
+X-Mailer: git-send-email 2.30.0
+In-Reply-To: <20210205151546.144810-1-jarkko@kernel.org>
+References: <20210205151546.144810-1-jarkko@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="NhpUC++SYlbyNDNM"
-Content-Disposition: inline
-In-Reply-To: <13D0EFBB-E2A1-4BA3-9F99-CF2B85127074@goldelico.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This has been shown in tests:
 
---NhpUC++SYlbyNDNM
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+[  +0.000008] WARNING: CPU: 3 PID: 7620 at kernel/rcu/srcutree.c:374 cleanup_srcu_struct+0xed/0x100
 
-Hey,
+There are two functions that drain encl->mm_list:
 
-On Tue 02 Feb 21, 16:07, H. Nikolaus Schaller wrote:
-> Hi Paul,
->=20
-> > Am 02.02.2021 um 14:42 schrieb Paul Kocialkowski <paul.kocialkowski@boo=
-tlin.com>:
-> >=20
-> > Hi Nikolaus,
-> >=20
-> > On Tue 02 Feb 21, 11:50, H. Nikolaus Schaller wrote:
-> >> Hi Paul,
-> >>=20
-> >>> Am 02.02.2021 um 10:56 schrieb Paul Kocialkowski <paul.kocialkowski@b=
-ootlin.com>:
-> >>>=20
-> >>> Hi Nikolaus,
-> >>>=20
-> >>> On Tue 02 Feb 21, 10:18, H. Nikolaus Schaller wrote:
-> >>>> Hi,
-> >>>> since v5.11-rc6 my Pinephone display shows some moir=C3=A9 pattern.
-> >>>>=20
-> >>>> I did a bisect between v5.11-rc5 and v5.11-rc6 and it told me that
-> >>>> the commit mentioned in the subject is the reason.
-> >>>>=20
-> >>>> Reverting it makes the display work again and re-reverting fail agai=
-n.
-> >>>>=20
-> >>>> IMHO it seems as if the display DMA of the pinephone (allwinner suni=
--a54)
-> >>>> got influenced and stopped to scan the framebuffer.
-> >>>>=20
-> >>>> The only dma-ranges I could find are defined here:
-> >>>>=20
-> >>>> 	arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
-> >>>>=20
-> >>>> 	dma-ranges =3D <0x00000000 0x40000000 0xc0000000>;
-> >>>>=20
-> >>>> but I can't tell if they are "valid" or not.
-> >>>>=20
-> >>>> Any insights are welcome. And please direct to the right people/mail=
-ing lists
-> >>>> if they are missing.
-> >>>=20
-> >>> This may not be strictly the same thing, but is this patch in your tr=
-ee:
-> >>> https://patchwork.kernel.org/project/linux-arm-kernel/patch/202101151=
-75831.1184260-2-paul.kocialkowski@bootlin.com/
-> >>>=20
-> >>> If not, it's worth a try to add it.
-> >>=20
-> >> No, it hasn't arrived in v5.11-rc6 (or linux-next) yet.
-> >>=20
-> >> But it fixes the issue.
-> >=20
-> > Great! The patch should already be on its way to the next RC.
->=20
-> Fine!
->=20
-> >=20
-> > And nice to see you're active on Pinephone as well!
->=20
-> I have a developer unit and the LetuxOS kernel already supports it a litt=
-le. This is why I observed the issue with -rc6
->=20
-> > You might remember me from
-> > the Replicant project, as I've worked a bit on the GTA04 :)
->=20
-> Sure, you are well remembered :)
->=20
-> I still have the dream to revitalize Replicant 4.2 for the GTA04 just for=
- fun. I can already boot to Replicant touch screen with a v5.4 kernel. v5.1=
-0 fails when trying to spawn zygote...
+- sgx_release() (i.e. VFS release) removes the remaining mm_list entries.
+- sgx_mmu_notifier_release() removes mm_list entry for the registered
+  process, if it still exists.
 
-Oh I see! I think Android has made some significant progress is its ability
-to use mainline (4.2 was an early stage and I remember having to backport
-patches to use some mainline features back then).
+If encl->refcount is taken only for VFS, this can lead to
+sgx_encl_release() being executed before sgx_mmu_notifier_release()
+completes, which is exactly what happens in the above klog entry.
 
-Maybe it would be easier with Replicant 6, but you'd have to go through the
-device bringup phase again, which is never nice.
+Each process also needs its own enclave reference.
 
-Cheers,
+In order to fix the race condition, increase encl->refcount when an
+entry to encl->mm_list added for a process. Release this reference
+when the mm_list entry is cleaned up, either in
+sgx_mmu_notifier_release() or sgx_release().
 
-Paul
+Fixes: 1728ab54b4be ("x86/sgx: Add a page reclaimer")
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Reported-by: Haitao Huang <haitao.huang@linux.intel.com>
+Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+---
+v7:
+- Same as v6 but v6 was missing cc to Dave. Thus, also the
+  MAINTAINERS update.
+v6:
+- Maintain refcount for each encl->mm_list entry.
+v5:
+- To make sure that the instance does not get deleted use kref_get()
+  kref_put(). This also removes the need for additional
+  synchronize_srcu().
+v4:
+- Rewrite the commit message.
+- Just change the call order. *_expedited() is out of scope for this
+  bug fix.
+v3: Fine-tuned tags, and added missing change log for v2.
+v2: Switch to synchronize_srcu_expedited().
+ arch/x86/kernel/cpu/sgx/driver.c | 6 ++++++
+ arch/x86/kernel/cpu/sgx/encl.c   | 8 ++++++++
+ 2 files changed, 14 insertions(+)
 
---=20
-Paul Kocialkowski, Bootlin
-Embedded Linux and kernel engineering
-https://bootlin.com
+diff --git a/arch/x86/kernel/cpu/sgx/driver.c b/arch/x86/kernel/cpu/sgx/driver.c
+index f2eac41bb4ff..8d8fcc91c0d6 100644
+--- a/arch/x86/kernel/cpu/sgx/driver.c
++++ b/arch/x86/kernel/cpu/sgx/driver.c
+@@ -72,6 +72,12 @@ static int sgx_release(struct inode *inode, struct file *file)
+ 		synchronize_srcu(&encl->srcu);
+ 		mmu_notifier_unregister(&encl_mm->mmu_notifier, encl_mm->mm);
+ 		kfree(encl_mm);
++
++		/*
++		 * Release the mm_list reference, as sgx_mmu_notifier_release()
++		 * will only do this only, when it grabs encl_mm.
++		 */
++		kref_put(&encl->refcount, sgx_encl_release);
+ 	}
+ 
+ 	kref_put(&encl->refcount, sgx_encl_release);
+diff --git a/arch/x86/kernel/cpu/sgx/encl.c b/arch/x86/kernel/cpu/sgx/encl.c
+index ee50a5010277..c1d9c86c0265 100644
+--- a/arch/x86/kernel/cpu/sgx/encl.c
++++ b/arch/x86/kernel/cpu/sgx/encl.c
+@@ -474,6 +474,7 @@ static void sgx_mmu_notifier_release(struct mmu_notifier *mn,
+ 	if (tmp == encl_mm) {
+ 		synchronize_srcu(&encl_mm->encl->srcu);
+ 		mmu_notifier_put(mn);
++		kref_put(&encl_mm->encl->refcount, sgx_encl_release);
+ 	}
+ }
+ 
+@@ -545,6 +546,13 @@ int sgx_encl_mm_add(struct sgx_encl *encl, struct mm_struct *mm)
+ 	}
+ 
+ 	spin_lock(&encl->mm_lock);
++
++	/*
++	 * Take a reference to guarantee that the enclave is not destroyed,
++	 * while sgx_mmu_notifier_release() is active.
++	 */
++	kref_get(&encl->refcount);
++
+ 	list_add_rcu(&encl_mm->list, &encl->mm_list);
+ 	/* Pairs with smp_rmb() in sgx_reclaimer_block(). */
+ 	smp_wmb();
+-- 
+2.30.0
 
---NhpUC++SYlbyNDNM
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEJZpWjZeIetVBefti3cLmz3+fv9EFAmAdX9kACgkQ3cLmz3+f
-v9GFMAgAnqzb02bU1xw4W/ZQTV4u/H+RjuIscu8QyAmTJQ4RJc7Nggl5VEJsPqed
-PUpdFkySE74+mKOAVCbv72LNE75VowT40avbmDqqPY+IZ0ddohasFOTNawQ8dPFf
-ZeS5kkRJj72AzdKuUIeboRXi2LjPmKgFDtAq7WSzjb8GG2sGSkjgpLNA5/c59l5O
-s5LLkrWDC5VyR0NXViBMb8ICLPS3mM4MgoyYs5NMRWDkj8wXadaKebl0+/TBEqZz
-m6fltCsuEpCGJmWMTvme1ixujhJQXqOlWr95OaJ4gNdF85kmRrT10P/zqJldOCGN
-KJP9QtzHP08Xvd7rSwaTzX5XtP48Rw==
-=ESK6
------END PGP SIGNATURE-----
-
---NhpUC++SYlbyNDNM--
