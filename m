@@ -2,162 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F510310430
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 05:52:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7EBE310435
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 05:54:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229596AbhBEEvq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 23:51:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46026 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229849AbhBEEvm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 23:51:42 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BF5C561481;
-        Fri,  5 Feb 2021 04:51:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612500661;
-        bh=vJRLWeUh1Mxpx9gsES/hy9gXr/MIHo+q7wald6FOY/o=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=OVBnYPE/2s304hVQWXBqdm8QY/yauVgOmeyp0lXUKEUsMmRQEqWQTiarm1B9oaUzM
-         z3fNKIb8RHfjF00JN8Pe0FUjVTJBRGLodYT7UDVney/9znuJFCQ0iV/O8aguX5mLLl
-         j0CpB+9tJiQSs+reo2ygAU+yy0k+KOsaGA/CNZPs9tShIk+re4JGr19E/XNuye5P5l
-         9kuPjAM1td4zXgJIbU6hKHp1skGxHxci4qN5bcfVB97F3gqjsNzwYxUtV4AjvsnSyh
-         5RmXZo6Qbt4Ic6Cy8At/EvJzZaVFQ3hzNett6KAO2vNpSOLjd6Lbn4nJW7sBcP6hdj
-         yeHT+tzBr2/Gw==
-Date:   Thu, 4 Feb 2021 20:50:59 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Alex Elder <elder@linaro.org>
-Cc:     davem@davemloft.net, elder@kernel.org, evgreen@chromium.org,
-        bjorn.andersson@linaro.org, cpratapa@codeaurora.org,
-        subashab@codeaurora.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 1/7] net: ipa: restructure a few functions
-Message-ID: <20210204205059.4b218a6d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210203152855.11866-2-elder@linaro.org>
-References: <20210203152855.11866-1-elder@linaro.org>
-        <20210203152855.11866-2-elder@linaro.org>
+        id S230525AbhBEExN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 23:53:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42420 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230127AbhBEExC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 23:53:02 -0500
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC7B5C0613D6;
+        Thu,  4 Feb 2021 20:52:22 -0800 (PST)
+Received: by mail-pf1-x436.google.com with SMTP id i63so3538116pfg.7;
+        Thu, 04 Feb 2021 20:52:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TiNwgvNg9wTQcaeQffbjRo8MeaMhlwRcSNfHHJcW5R0=;
+        b=BAItrihCnOoe0wDb56WNdzmcJM2b441L7LED+lFT9Lhb0GidXMJy1G3oL7MgS3JQH+
+         WNIdHK0lpuNuMDQfjPLxmuJz/vHLtbV+2g5iwp2OkCXoZrzG/VZDlwGYImoYvCp56yJg
+         uPcYjtm8gt/bb+JqLJvo5yLp4Z0nUAC7BK4zOsfH4Hu1uFokirM+2AErC7hGZfZPbZWo
+         oy5fEGPBDUGEZM71dr3qB4hZFEJ2LgB2iCVuVE6uZ67EQWow41jKwgg7q6p1LWOCkxgE
+         C40nxyXY+eDEd52wpJZ831MneIywEraKmHA8+xwv9mMFesxXqWI/cQMMOm9YddyCG0cm
+         WnZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TiNwgvNg9wTQcaeQffbjRo8MeaMhlwRcSNfHHJcW5R0=;
+        b=MFzV0R/oROuOD2m1TsdPCrCY/htfWZjx5MzxGL939o2f6DmN3fSD0RufWcbTuNHArk
+         jFAbx4jXnU6GhRMxpi3At/ln6AGY/0mHif/m6MiVMxZ310Jc26UiuC1qkw1bSsT4/+3W
+         KEDNGeEQk2tYhwqsIrosFzRYZMIj7kNPyZF9t1J9qQ0/e+Q+lOZpU2pZuIOXzBc8Fzwy
+         3RR3OrLp8C/Ue0o6P5rb8LieBNhFKTyptJxFhVPms9iEQmPkFcL1q34mJA0WXE7s0wXC
+         InX3Mf0csyLynJh5bqDQp6PJvMUKtN0qZMOFeLpP41bF6baEhTd2Ha2NPonSQVvKCpvT
+         RXxw==
+X-Gm-Message-State: AOAM531L7qIKJtpbywv482ZzPe1w+5JciqabhpTThCaRAAjOQftsTt3a
+        qHooGSEPrBOejQBNm+BHa70jDWpcwvHilw==
+X-Google-Smtp-Source: ABdhPJzhklPpfLn28lRihPdetGiXWdHS92RLyjlQfbVQJZNJ9vyXbe/wliWu7Oj/YxiCIGB1Bw5vpQ==
+X-Received: by 2002:a63:2746:: with SMTP id n67mr2471461pgn.54.1612500742180;
+        Thu, 04 Feb 2021 20:52:22 -0800 (PST)
+Received: from amypc-samantha.home ([47.145.126.51])
+        by smtp.gmail.com with ESMTPSA id s1sm6972440pjg.17.2021.02.04.20.52.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Feb 2021 20:52:21 -0800 (PST)
+From:   Amy Parker <enbyamy@gmail.com>
+To:     linux-fsdevel@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Amy Parker <enbyamy@gmail.com>
+Subject: [PATCH 0/3] fs/efs: Follow kernel style guide
+Date:   Thu,  4 Feb 2021 20:52:14 -0800
+Message-Id: <20210205045217.552927-1-enbyamy@gmail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed,  3 Feb 2021 09:28:49 -0600 Alex Elder wrote:
-> Make __gsi_channel_start() and __gsi_channel_stop() more structurally
-> and semantically similar to each other:
->   - Restructure __gsi_channel_start() to always return at the end of
->     the function, similar to the way __gsi_channel_stop() does.
->   - Move the mutex calls out of gsi_channel_stop_retry() and into
->     __gsi_channel_stop().
-> 
-> Restructure gsi_channel_stop() to always return at the end of the
-> function, like gsi_channel_start() does.
-> 
-> Signed-off-by: Alex Elder <elder@linaro.org>
-> ---
->  drivers/net/ipa/gsi.c | 45 +++++++++++++++++++++++--------------------
->  1 file changed, 24 insertions(+), 21 deletions(-)
-> 
-> diff --git a/drivers/net/ipa/gsi.c b/drivers/net/ipa/gsi.c
-> index 53640447bf123..2671b76ebcfe3 100644
-> --- a/drivers/net/ipa/gsi.c
-> +++ b/drivers/net/ipa/gsi.c
-> @@ -873,17 +873,17 @@ static void gsi_channel_deprogram(struct gsi_channel *channel)
->  
->  static int __gsi_channel_start(struct gsi_channel *channel, bool start)
->  {
-> -	struct gsi *gsi = channel->gsi;
-> -	int ret;
-> +	int ret = 0;
->  
-> -	if (!start)
-> -		return 0;
-> +	if (start) {
-> +		struct gsi *gsi = channel->gsi;
->  
-> -	mutex_lock(&gsi->mutex);
-> +		mutex_lock(&gsi->mutex);
->  
-> -	ret = gsi_channel_start_command(channel);
-> +		ret = gsi_channel_start_command(channel);
->  
-> -	mutex_unlock(&gsi->mutex);
-> +		mutex_unlock(&gsi->mutex);
-> +	}
+As the EFS driver is old and non-maintained, many kernel style guide
+rules have not been followed, and their violations have not been
+noticed. This patchset corrects those violations.
 
-nit: I thought just recently Willem pointed out that keeping main flow
-     unindented is considered good style, maybe it doesn't apply here
-     perfectly, but I'd think it still applies. Why have the entire
-     body of the function indented?
+Amy Parker (3):
+  fs/efs: Use correct brace styling for statements
+  fs/efs: Correct spacing after C keywords
+  fs/efs: Fix line breakage for C keywords
 
->  	return ret;
->  }
-> @@ -910,11 +910,8 @@ int gsi_channel_start(struct gsi *gsi, u32 channel_id)
->  static int gsi_channel_stop_retry(struct gsi_channel *channel)
->  {
->  	u32 retries = GSI_CHANNEL_STOP_RETRIES;
-> -	struct gsi *gsi = channel->gsi;
->  	int ret;
->  
-> -	mutex_lock(&gsi->mutex);
-> -
->  	do {
->  		ret = gsi_channel_stop_command(channel);
->  		if (ret != -EAGAIN)
-> @@ -922,19 +919,26 @@ static int gsi_channel_stop_retry(struct gsi_channel *channel)
->  		usleep_range(3 * USEC_PER_MSEC, 5 * USEC_PER_MSEC);
->  	} while (retries--);
->  
-> -	mutex_unlock(&gsi->mutex);
-> -
->  	return ret;
->  }
->  
->  static int __gsi_channel_stop(struct gsi_channel *channel, bool stop)
->  {
-> -	int ret;
-> +	int ret = 0;
->  
->  	/* Wait for any underway transactions to complete before stopping. */
->  	gsi_channel_trans_quiesce(channel);
->  
-> -	ret = stop ? gsi_channel_stop_retry(channel) : 0;
-> +	if (stop) {
-> +		struct gsi *gsi = channel->gsi;
-> +
-> +		mutex_lock(&gsi->mutex);
-> +
-> +		ret = gsi_channel_stop_retry(channel);
-> +
-> +		mutex_unlock(&gsi->mutex);
-> +	}
-> +
->  	/* Finally, ensure NAPI polling has finished. */
->  	if (!ret)
->  		napi_synchronize(&channel->napi);
-> @@ -948,15 +952,14 @@ int gsi_channel_stop(struct gsi *gsi, u32 channel_id)
->  	struct gsi_channel *channel = &gsi->channel[channel_id];
->  	int ret;
->  
-> -	/* Only disable the completion interrupt if stop is successful */
->  	ret = __gsi_channel_stop(channel, true);
-> -	if (ret)
-> -		return ret;
-> +	if (ret) {
+ fs/efs/inode.c | 36 ++++++++++++++++++++++--------------
+ fs/efs/namei.c |  2 +-
+ fs/efs/super.c | 25 +++++++++++--------------
+ 3 files changed, 34 insertions(+), 29 deletions(-)
 
-This inverts the logic, right? Is it intentional?
-
-> +		/* Disable the completion interrupt and NAPI if successful */
-> +		gsi_irq_ieob_disable_one(gsi, channel->evt_ring_id);
-> +		napi_disable(&channel->napi);
-> +	}
->  
-> -	gsi_irq_ieob_disable_one(gsi, channel->evt_ring_id);
-> -	napi_disable(&channel->napi);
-> -
-> -	return 0;
-> +	return ret;
->  }
->  
->  /* Reset and reconfigure a channel, (possibly) enabling the doorbell engine */
+-- 
+2.29.2
 
