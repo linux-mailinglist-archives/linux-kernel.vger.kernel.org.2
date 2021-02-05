@@ -2,95 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A8C3311228
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 21:20:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A4B231124E
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 21:23:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233400AbhBESgb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 13:36:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36154 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233184AbhBESfF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 13:35:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 81BD264FD4;
-        Fri,  5 Feb 2021 20:16:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612556210;
-        bh=TW5sax6toZxgcvGW6CkeLa+wpYzcbGpP5G0uPmTyGpU=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=ZXY+qw45N/aT6D+fdKLdJAiqeoip3CY8NPEReiTqSNjmUswblItrouOqQPxHeiOHG
-         9F/74wYMTx1qfYYLXLrRSrlCpuLOEXYdC64e3ncJFmOTg1ed/FxY/1Idwd14yW7CA5
-         7yD/pKofWeQfD6R+79OBJy7zatCgx9zwEOVFAvwqEDXFEHYvQ+KcsDcMzsGqIQj7uW
-         35w61e9kicTU3QG6acd8Lkg644k8d5pkrn4drp63MlllkHQgPfIlSyIKXbUqWGT0+o
-         y9CpZ5Zkicfm05pvzXMXga8yFLnpI9z0HL51YzczPQPSPAVLagqMK8oQWjdwt+v0h4
-         AUSX4+Bjj1M+g==
-From:   Mark Brown <broonie@kernel.org>
-To:     amelie.delaunay@foss.st.com,
-        Alain Volmat <alain.volmat@foss.st.com>
-Cc:     mcoquelin.stm32@gmail.com,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-spi@vger.kernel.org,
-        fabrice.gasnier@foss.st.com, linux-kernel@vger.kernel.org,
-        alexandre.torgue@foss.st.com
-In-Reply-To: <1612551572-495-1-git-send-email-alain.volmat@foss.st.com>
-References: <1612551572-495-1-git-send-email-alain.volmat@foss.st.com>
-Subject: Re: [PATCH v2 0/8] spi: stm32: fix and enhancements for spi-stm32
-Message-Id: <161255616019.56748.1388196714207020895.b4-ty@kernel.org>
-Date:   Fri, 05 Feb 2021 20:16:00 +0000
+        id S233136AbhBESlE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 13:41:04 -0500
+Received: from mail-io1-f69.google.com ([209.85.166.69]:55738 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233633AbhBEShj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 13:37:39 -0500
+Received: by mail-io1-f69.google.com with SMTP id a2so7239887iod.22
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 12:19:46 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=T3suVCmHiaNgyLyS4n8q7U68O2519AAWDFtJ3PVYJQQ=;
+        b=kX2+lnb+04a/TgPK+kuVkhb5u71eTsozN0K6ZxhuMmdn4bQAbSntuaKJjdTwkX1QA5
+         2c/VAVC+a2RY9/774nrDZSqL0r4GHzj/ilGKnhRWPqVUOK8y+5XCRFGXJbLbCYqt+sJ5
+         brkZfuM8T+DfKseKZtOy9xshfCbmKYeKS/CRSP1Q7JxeXOWSNItQz45ey6n24PVTx1pe
+         GJH+kIbihOZeaKIVS+loxmx3cLvnmOQzqiB+OWMnagQOrzsMqKwBmLoF0VCAjQnMPOgQ
+         YzL7KXLOYoDktQz6/348r7THzoaasulP37QBRtmpogCIhuo5TOfnj30x7sSVfhhdeXxf
+         X+wQ==
+X-Gm-Message-State: AOAM530mWeWd5GTjn25Dce8zCo0AbHwZsxWXjDX0QyJTX1TReNH8pUjl
+        raKQoTN9aL/IdQtxOnSNWIlG9TSxAEsL6Ne4eNX/O/741icJ
+X-Google-Smtp-Source: ABdhPJzAi4IZUkJnp77Csi+1vI54mssCEI+KZg39fFMpJ0uRt6VHUEmvCspsySC9O8u1kQjBdcBD+XIi/E9ITxXZV6AUaZ/ulQEs
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6e02:1b0c:: with SMTP id i12mr5381748ilv.200.1612556361467;
+ Fri, 05 Feb 2021 12:19:21 -0800 (PST)
+Date:   Fri, 05 Feb 2021 12:19:21 -0800
+In-Reply-To: <0000000000000c8bdd05ba6e12b1@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000001b114705ba9c8931@google.com>
+Subject: Re: WARNING: held lock freed in uprobe_unregister
+From:   syzbot <syzbot+acc3353d66960200ec63@syzkaller.appspotmail.com>
+To:     acme@kernel.org, alexander.shishkin@linux.intel.com,
+        jolsa@redhat.com, linux-kernel@vger.kernel.org,
+        mark.rutland@arm.com, mingo@redhat.com, namhyung@kernel.org,
+        peterz@infradead.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 5 Feb 2021 19:59:24 +0100, Alain Volmat wrote:
-> The serie provides a fix for the spi-stm32 driver, allowing to properly
-> handle 0 byte transfer (and thus being able to run spi-loopback-test).
-> 
-> In addition to that, important enhancements are implemented, among them,
-> supporting transfer larger that what the IP can setup in one go or
-> allowing to use the SPI bus without cs_gpio.
-> 
-> [...]
+syzbot has found a reproducer for the following issue on:
 
-Applied to
+HEAD commit:    aa2b8820 Add linux-next specific files for 20210205
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=10d455bf500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=15c41e44a64aa1a5
+dashboard link: https://syzkaller.appspot.com/bug?extid=acc3353d66960200ec63
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13797f80d00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=149b8c18d00000
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+acc3353d66960200ec63@syzkaller.appspotmail.com
 
-Thanks!
+=========================
+WARNING: held lock freed!
+5.11.0-rc6-next-20210205-syzkaller #0 Not tainted
+-------------------------
+syz-executor146/8424 is freeing memory ffff888014c83800-ffff888014c839ff, with a lock still held there!
+ffff888014c83890 (&uprobe->register_rwsem){+.+.}-{3:3}, at: uprobe_unregister+0x37/0x70 kernel/events/uprobes.c:1115
+2 locks held by syz-executor146/8424:
+ #0: ffffffff8bfe1328 (event_mutex){+.+.}-{3:3}, at: perf_uprobe_destroy+0x23/0x130 kernel/trace/trace_event_perf.c:347
+ #1: ffff888014c83890 (&uprobe->register_rwsem){+.+.}-{3:3}, at: uprobe_unregister+0x37/0x70 kernel/events/uprobes.c:1115
 
-[1/8] spi: stm32: properly handle 0 byte transfer
-      commit: 2269f5a8b1a7b38651d62676b98182828f29d11a
-[2/8] spi: stm32: do not mandate cs_gpio
-      commit: 8f8d0e3e33e36ba63416cad64b9a9ad6b0129eed
-[3/8] spi: stm32: use bitfield macros
-      commit: 5a380b833ad437123dca91bf900a696709d9b6ab
-[4/8] spi: stm32h7: ensure message are smaller than max size
-      commit: 084de5232820c9e857ccc2282c3d94f33f92a381
-[5/8] spi: stm32: driver uses reset controller only at init
-      commit: 1c75cfd53e213044523141b464eb06813e39ecea
-[6/8] spi: stm32: defer probe for reset
-      commit: c63b95b76e69b679b9b95014552db099eb77a4fa
-[7/8] spi: stm32h7: replace private SPI_1HZ_NS with NSEC_PER_SEC
-      commit: e1e2093b16cb1cefe4dc483b00e73d1333260784
-[8/8] spi: stm32: make spurious and overrun interrupts visible
-      commit: c64e7efe46b7de21937ef4b3594d9b1fc74f07df
+stack backtrace:
+CPU: 0 PID: 8424 Comm: syz-executor146 Not tainted 5.11.0-rc6-next-20210205-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:120
+ print_freed_lock_bug kernel/locking/lockdep.c:6256 [inline]
+ debug_check_no_locks_freed.cold+0x9d/0xa9 kernel/locking/lockdep.c:6289
+ slab_free_hook mm/slub.c:1549 [inline]
+ slab_free_freelist_hook+0xd8/0x1d0 mm/slub.c:1600
+ slab_free mm/slub.c:3161 [inline]
+ kfree+0xe5/0x7b0 mm/slub.c:4202
+ put_uprobe kernel/events/uprobes.c:612 [inline]
+ put_uprobe+0x13b/0x190 kernel/events/uprobes.c:601
+ delete_uprobe kernel/events/uprobes.c:947 [inline]
+ __uprobe_unregister+0x1e5/0x260 kernel/events/uprobes.c:1098
+ uprobe_unregister+0x42/0x70 kernel/events/uprobes.c:1116
+ __probe_event_disable+0x11e/0x240 kernel/trace/trace_uprobe.c:1084
+ probe_event_disable+0x155/0x1c0 kernel/trace/trace_uprobe.c:1171
+ trace_uprobe_register+0x45a/0x880 kernel/trace/trace_uprobe.c:1459
+ perf_trace_event_unreg.isra.0+0xac/0x250 kernel/trace/trace_event_perf.c:162
+ perf_uprobe_destroy+0xbb/0x130 kernel/trace/trace_event_perf.c:349
+ _free_event+0x2ee/0x1380 kernel/events/core.c:4830
+ put_event kernel/events/core.c:4924 [inline]
+ perf_event_release_kernel+0xa24/0xe00 kernel/events/core.c:5039
+ perf_release+0x33/0x40 kernel/events/core.c:5049
+ __fput+0x283/0x920 fs/file_table.c:280
+ task_work_run+0xdd/0x190 kernel/task_work.c:140
+ exit_task_work include/linux/task_work.h:30 [inline]
+ do_exit+0xc5c/0x2ae0 kernel/exit.c:825
+ do_group_exit+0x125/0x310 kernel/exit.c:922
+ __do_sys_exit_group kernel/exit.c:933 [inline]
+ __se_sys_exit_group kernel/exit.c:931 [inline]
+ __x64_sys_exit_group+0x3a/0x50 kernel/exit.c:931
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x43db19
+Code: Unable to access opcode bytes at RIP 0x43daef.
+RSP: 002b:00007ffd9444ab48 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
+RAX: ffffffffffffffda RBX: 00000000004ae230 RCX: 000000000043db19
+RDX: 000000000000003c RSI: 00000000000000e7 RDI: 0000000000000000
+RBP: 0000000000000000 R08: ffffffffffffffc0 R09: 0000000000000000
+R10: 00000000ffffffff R11: 0000000000000246 R12: 00000000004ae230
+R13: 0000000000000001 R14: 0000000000000000 R15: 0000000000000001
+==================================================================
+BUG: KASAN: use-after-free in __up_write kernel/locking/rwsem.c:1311 [inline]
+BUG: KASAN: use-after-free in up_write+0x488/0x560 kernel/locking/rwsem.c:1459
+Read of size 8 at addr ffff888014c83888 by task syz-executor146/8424
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+CPU: 0 PID: 8424 Comm: syz-executor146 Not tainted 5.11.0-rc6-next-20210205-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:120
+ print_address_description.constprop.0.cold+0x5b/0x2f8 mm/kasan/report.c:232
+ __kasan_report mm/kasan/report.c:399 [inline]
+ kasan_report.cold+0x7c/0xd8 mm/kasan/report.c:416
+ __up_write kernel/locking/rwsem.c:1311 [inline]
+ up_write+0x488/0x560 kernel/locking/rwsem.c:1459
+ uprobe_unregister+0x4a/0x70 kernel/events/uprobes.c:1117
+ __probe_event_disable+0x11e/0x240 kernel/trace/trace_uprobe.c:1084
+ probe_event_disable+0x155/0x1c0 kernel/trace/trace_uprobe.c:1171
+ trace_uprobe_register+0x45a/0x880 kernel/trace/trace_uprobe.c:1459
+ perf_trace_event_unreg.isra.0+0xac/0x250 kernel/trace/trace_event_perf.c:162
+ perf_uprobe_destroy+0xbb/0x130 kernel/trace/trace_event_perf.c:349
+ _free_event+0x2ee/0x1380 kernel/events/core.c:4830
+ put_event kernel/events/core.c:4924 [inline]
+ perf_event_release_kernel+0xa24/0xe00 kernel/events/core.c:5039
+ perf_release+0x33/0x40 kernel/events/core.c:5049
+ __fput+0x283/0x920 fs/file_table.c:280
+ task_work_run+0xdd/0x190 kernel/task_work.c:140
+ exit_task_work include/linux/task_work.h:30 [inline]
+ do_exit+0xc5c/0x2ae0 kernel/exit.c:825
+ do_group_exit+0x125/0x310 kernel/exit.c:922
+ __do_sys_exit_group kernel/exit.c:933 [inline]
+ __se_sys_exit_group kernel/exit.c:931 [inline]
+ __x64_sys_exit_group+0x3a/0x50 kernel/exit.c:931
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x43db19
+Code: Unable to access opcode bytes at RIP 0x43daef.
+RSP: 002b:00007ffd9444ab48 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
+RAX: ffffffffffffffda RBX: 00000000004ae230 RCX: 000000000043db19
+RDX: 000000000000003c RSI: 00000000000000e7 RDI: 0000000000000000
+RBP: 0000000000000000 R08: ffffffffffffffc0 R09: 0000000000000000
+R10: 00000000ffffffff R11: 0000000000000246 R12: 00000000004ae230
+R13: 0000000000000001 R14: 0000000000000000 R15: 0000000000000001
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+Allocated by task 8424:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_set_track mm/kasan/common.c:46 [inline]
+ set_alloc_info mm/kasan/common.c:403 [inline]
+ ____kasan_kmalloc mm/kasan/common.c:434 [inline]
+ ____kasan_kmalloc.constprop.0+0xa0/0xd0 mm/kasan/common.c:406
+ kmalloc include/linux/slab.h:556 [inline]
+ kzalloc include/linux/slab.h:686 [inline]
+ alloc_uprobe kernel/events/uprobes.c:731 [inline]
+ __uprobe_register+0x19c/0x850 kernel/events/uprobes.c:1167
+ trace_uprobe_enable kernel/trace/trace_uprobe.c:1063 [inline]
+ probe_event_enable+0x441/0xa00 kernel/trace/trace_uprobe.c:1129
+ trace_uprobe_register+0x443/0x880 kernel/trace/trace_uprobe.c:1456
+ perf_trace_event_reg kernel/trace/trace_event_perf.c:129 [inline]
+ perf_trace_event_init+0x549/0xa20 kernel/trace/trace_event_perf.c:204
+ perf_uprobe_init+0x16f/0x210 kernel/trace/trace_event_perf.c:336
+ perf_uprobe_event_init+0xff/0x1c0 kernel/events/core.c:9721
+ perf_try_init_event+0x12a/0x560 kernel/events/core.c:11038
+ perf_init_event kernel/events/core.c:11090 [inline]
+ perf_event_alloc.part.0+0xe3b/0x3960 kernel/events/core.c:11370
+ perf_event_alloc kernel/events/core.c:11749 [inline]
+ __do_sys_perf_event_open+0x647/0x2e60 kernel/events/core.c:11847
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+Freed by task 8424:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_set_track+0x1c/0x30 mm/kasan/common.c:46
+ kasan_set_free_info+0x20/0x30 mm/kasan/generic.c:357
+ ____kasan_slab_free.part.0+0xe1/0x110 mm/kasan/common.c:364
+ kasan_slab_free include/linux/kasan.h:191 [inline]
+ slab_free_hook mm/slub.c:1562 [inline]
+ slab_free_freelist_hook+0x82/0x1d0 mm/slub.c:1600
+ slab_free mm/slub.c:3161 [inline]
+ kfree+0xe5/0x7b0 mm/slub.c:4202
+ put_uprobe kernel/events/uprobes.c:612 [inline]
+ put_uprobe+0x13b/0x190 kernel/events/uprobes.c:601
+ delete_uprobe kernel/events/uprobes.c:947 [inline]
+ __uprobe_unregister+0x1e5/0x260 kernel/events/uprobes.c:1098
+ uprobe_unregister+0x42/0x70 kernel/events/uprobes.c:1116
+ __probe_event_disable+0x11e/0x240 kernel/trace/trace_uprobe.c:1084
+ probe_event_disable+0x155/0x1c0 kernel/trace/trace_uprobe.c:1171
+ trace_uprobe_register+0x45a/0x880 kernel/trace/trace_uprobe.c:1459
+ perf_trace_event_unreg.isra.0+0xac/0x250 kernel/trace/trace_event_perf.c:162
+ perf_uprobe_destroy+0xbb/0x130 kernel/trace/trace_event_perf.c:349
+ _free_event+0x2ee/0x1380 kernel/events/core.c:4830
+ put_event kernel/events/core.c:4924 [inline]
+ perf_event_release_kernel+0xa24/0xe00 kernel/events/core.c:5039
+ perf_release+0x33/0x40 kernel/events/core.c:5049
+ __fput+0x283/0x920 fs/file_table.c:280
+ task_work_run+0xdd/0x190 kernel/task_work.c:140
+ exit_task_work include/linux/task_work.h:30 [inline]
+ do_exit+0xc5c/0x2ae0 kernel/exit.c:825
+ do_group_exit+0x125/0x310 kernel/exit.c:922
+ __do_sys_exit_group kernel/exit.c:933 [inline]
+ __se_sys_exit_group kernel/exit.c:931 [inline]
+ __x64_sys_exit_group+0x3a/0x50 kernel/exit.c:931
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+The buggy address belongs to the object at ffff888014c83800
+ which belongs to the cache kmalloc-512 of size 512
+The buggy address is located 136 bytes inside of
+ 512-byte region [ffff888014c83800, ffff888014c83a00)
+The buggy address belongs to the page:
+page:0000000084dcae2b refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x14c82
+head:0000000084dcae2b order:1 compound_mapcount:0
+flags: 0xfff00000010200(slab|head)
+raw: 00fff00000010200 0000000000000000 0000000600000001 ffff888010841c80
+raw: 0000000000000000 0000000080080008 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
 
-Thanks,
-Mark
+Memory state around the buggy address:
+ ffff888014c83780: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+ ffff888014c83800: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>ffff888014c83880: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                      ^
+ ffff888014c83900: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff888014c83980: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
+
