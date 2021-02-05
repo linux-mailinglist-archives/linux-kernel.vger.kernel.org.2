@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B306B310AB4
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 12:56:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58CC3310AAF
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 12:56:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232045AbhBELzo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 06:55:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47070 "EHLO
+        id S231785AbhBELyQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 06:54:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231915AbhBELtW (ORCPT
+        with ESMTP id S231920AbhBELtY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 06:49:22 -0500
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 667DDC061797
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 03:48:42 -0800 (PST)
-Received: by mail-wm1-x32d.google.com with SMTP id i9so5686295wmq.1
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 03:48:42 -0800 (PST)
+        Fri, 5 Feb 2021 06:49:24 -0500
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 567B2C0617A7
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 03:48:44 -0800 (PST)
+Received: by mail-wr1-x430.google.com with SMTP id q7so7299612wre.13
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 03:48:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=hOP3rq3zGKSecQaHMq8WrAbaEPuRsVYJ642DAIJXZ0U=;
-        b=aMx2so61pcBb6wHd7tICmAhSr7P2Sdh2eBMkjIFBk+bKQ/qS+vSqLsndEAvgJWaZ2l
-         w4OOLSWATgLnnPhAldTfJCTssCu98a++L55c82244OsbtU6qaFO9sXFnDQbbLneo80fS
-         yMAfHJDPEZBX2oSbQwm+jvQU0Njk10qH8LqvbNsgExv1qCc8+cFDwPZFEznqTgO6zWWQ
-         F3OyVAKlDgPZHHx75/MYAMBzPpGRM4xRQCAkl2iUPGfpts1h58bczOsq07LhsqOS5RX5
-         iwIwrsV8MljGqvFYfsFJTgS2/g/PE8wKnXDoY3WiqBfioevp4k5SaPwxF8NPbARlFL+/
-         SK5w==
+        bh=R1k/G9W4vMVpJnpVB5SgdsbnWzbf5VfOkK8aj7ieetU=;
+        b=VL8qh9wwj+URZ5yzW89Jcfthj5sOKKy7MuWnX0hN+xL7l28eNVmdCIqEbAYbpODw2h
+         9C/kkBEiArBR0MBW1kUGTrGIG7C8oVYBiFqobNEC0Z9aOKOeAn+YGLHPHe5kJRjA9+yf
+         K/VT7FAxIwXMHIp3/ZC1mL90I2nfzOPBgJMwdxh6VPXeh7NrBgdUmE6mSRuAvEQ98Tok
+         zWYQYA+rumNBrdEMQKdG0WtmUo5juRq1k/fEdqx/xR1Yb8vXDOK6qJmfEnTjUsVyViQs
+         KoLlAbsRQhvVHDIpjoj4vWCt8QwbL6bNOm/vPxv9OY6r/hQbgjor8bvrzcS3IEcuOqXC
+         THSA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=hOP3rq3zGKSecQaHMq8WrAbaEPuRsVYJ642DAIJXZ0U=;
-        b=Qmd7c/8iAFQQX/fwCQ/3Hez70r4X9cBMzahYqB1BtW513kIGj83uXlqB0wQt8ZYaTB
-         ZOsKmEy302+NPvzubu6gE+8etbzxn8XIAuWkDCzKFa1F2onbe3Dsz/OSGsTrb2MXiiFc
-         qG5256i7jllgXrkq735meeX+vLfz1d2dr0DxLfaSK1zyaQw9BD4Cyabxq+UggpYb6yAt
-         JhAAoZ8/5uE/b3lOOFCWY/Tpg23KwvVlh/lcUjZlfz5ueW9pgeMmdjVDZQmRNO8Lqqxc
-         Ti1+4AZ1w8x00eP3Oz2oYLxztgJ6zRza3sMgzp7JUN+QOpXYyjtFuXYx0KbCDn2GYxUl
-         0YwA==
-X-Gm-Message-State: AOAM532cCYiL8boYFKPqSmx3dL4UQCck5cTuQhmFkbqveWX2/6isoFpy
-        ijESYjXK2ILzVS1jtpObyDV3GQ==
-X-Google-Smtp-Source: ABdhPJwruKeriyAO3G4vRjqxN4q1Kk228nU0WRQQGsn+qybMhq29FeiWoGo1ngPN7xJaM8IJKtvIOQ==
-X-Received: by 2002:a05:600c:4105:: with SMTP id j5mr3346944wmi.0.1612525721070;
-        Fri, 05 Feb 2021 03:48:41 -0800 (PST)
+        bh=R1k/G9W4vMVpJnpVB5SgdsbnWzbf5VfOkK8aj7ieetU=;
+        b=Oxfk/t258O15yR1KQ355APipB+Fdd8leRPiGnp+mAHFqMVYOz4V8rPSBmzdmDie7an
+         vEloUcZRJvho1M42RkNas2wQf511U7eimATYrVSZyI7eNVJ/UlqIvmSbOvjbAivx7kL4
+         9MeYnzBNb8ie/HYIv6jhM+hAB+6N44p99ewDsp2P595zDWnWhJib+AvsuY4O6iWwp50V
+         f/puXMgprwfDhnLpvD8+uzH42fGmCcLJ1oosxYDtGlFMSb5/oEhFfzaK2sydBF2dOQR9
+         nKE5htgPM0pCrLdSf+p1jpn6P40vB7Y2bNgw3nAJDg3WUKG0qsImeEn9GdQSzxSVkWe4
+         7y6w==
+X-Gm-Message-State: AOAM532ybTtsEh1rd/I47/3klkA1BQ8jnHtcDGlPZK1ooDfFFkUqzt0j
+        eWbZblIg1stimN68tHV3Qo1gBw==
+X-Google-Smtp-Source: ABdhPJzErVCq2EcNUJ/V5jC47wV+N069sR8h6Plwz7ZqfjvZjTQNWhqsVEc8BbeIXhS7hfuzHlChcQ==
+X-Received: by 2002:a5d:4a09:: with SMTP id m9mr4667225wrq.122.1612525723097;
+        Fri, 05 Feb 2021 03:48:43 -0800 (PST)
 Received: from localhost.localdomain ([2a01:e0a:f:6020:442a:8956:28be:e500])
-        by smtp.gmail.com with ESMTPSA id z4sm11647586wrw.38.2021.02.05.03.48.39
+        by smtp.gmail.com with ESMTPSA id z4sm11647586wrw.38.2021.02.05.03.48.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Feb 2021 03:48:40 -0800 (PST)
+        Fri, 05 Feb 2021 03:48:42 -0800 (PST)
 From:   Vincent Guittot <vincent.guittot@linaro.org>
 To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
         dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
@@ -54,9 +54,9 @@ To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
         bristot@redhat.com, linux-kernel@vger.kernel.org,
         joel@joelfernandes.org
 Cc:     qais.yousef@arm.com, Vincent Guittot <vincent.guittot@linaro.org>
-Subject: [PATCH 3/6] sched/fair: merge for each idle cpu loop of ILB
-Date:   Fri,  5 Feb 2021 12:48:27 +0100
-Message-Id: <20210205114830.781-4-vincent.guittot@linaro.org>
+Subject: [PATCH 4/6] sched/fair: reorder newidle_balance pulled_task test
+Date:   Fri,  5 Feb 2021 12:48:28 +0100
+Message-Id: <20210205114830.781-5-vincent.guittot@linaro.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210205114830.781-1-vincent.guittot@linaro.org>
 References: <20210205114830.781-1-vincent.guittot@linaro.org>
@@ -64,79 +64,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove the specific case for handling this_cpu outside for_each_cpu() loop
-when running ILB. Instead we use for_each_cpu_wrap() and start with the
-next cpu after this_cpu so we will continue to finish with this_cpu.
-
-update_nohz_stats() is now used for this_cpu too and will prevents
-unnecessary update. We don't need a special case for handling the update of
-nohz.next_balance for this_cpu anymore because it is now handled by the
-loop like others.
+Reorder the tests and skip prevent useless test when no load balance has
+been performed.
 
 Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
 ---
- kernel/sched/fair.c | 32 +++++++-------------------------
- 1 file changed, 7 insertions(+), 25 deletions(-)
+ kernel/sched/fair.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
 diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 60b8c1c68ab9..c587af230010 100644
+index c587af230010..935594cd5430 100644
 --- a/kernel/sched/fair.c
 +++ b/kernel/sched/fair.c
-@@ -10043,22 +10043,9 @@ static void rebalance_domains(struct rq *rq, enum cpu_idle_type idle)
- 	 * When the cpu is attached to null domain for ex, it will not be
- 	 * updated.
- 	 */
--	if (likely(update_next_balance)) {
-+	if (likely(update_next_balance))
- 		rq->next_balance = next_balance;
+@@ -10592,7 +10592,6 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
+ 	if (curr_cost > this_rq->max_idle_balance_cost)
+ 		this_rq->max_idle_balance_cost = curr_cost;
  
--#ifdef CONFIG_NO_HZ_COMMON
--		/*
--		 * If this CPU has been elected to perform the nohz idle
--		 * balance. Other idle CPUs have already rebalanced with
--		 * nohz_idle_balance() and nohz.next_balance has been
--		 * updated accordingly. This CPU is now running the idle load
--		 * balance for itself and we need to update the
--		 * nohz.next_balance accordingly.
--		 */
--		if ((idle == CPU_IDLE) && time_after(nohz.next_balance, rq->next_balance))
--			nohz.next_balance = rq->next_balance;
--#endif
--	}
- }
+-out:
+ 	/*
+ 	 * While browsing the domains, we released the rq lock, a task could
+ 	 * have been enqueued in the meantime. Since we're not going idle,
+@@ -10601,14 +10600,15 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
+ 	if (this_rq->cfs.h_nr_running && !pulled_task)
+ 		pulled_task = 1;
  
- static inline int on_null_domain(struct rq *rq)
-@@ -10388,8 +10375,12 @@ static bool _nohz_idle_balance(struct rq *this_rq, unsigned int flags,
- 	 */
- 	smp_mb();
- 
--	for_each_cpu(balance_cpu, nohz.idle_cpus_mask) {
--		if (balance_cpu == this_cpu || !idle_cpu(balance_cpu))
-+	/*
-+	 * Start with the next CPU after this_cpu so we will end with this_cpu and let a
-+	 * chance for other idle cpu to pull load.
-+	 */
-+	for_each_cpu_wrap(balance_cpu,  nohz.idle_cpus_mask, this_cpu+1) {
-+		if (!idle_cpu(balance_cpu))
- 			continue;
- 
- 		/*
-@@ -10435,15 +10426,6 @@ static bool _nohz_idle_balance(struct rq *this_rq, unsigned int flags,
- 	if (likely(update_next_balance))
- 		nohz.next_balance = next_balance;
- 
--	/* Newly idle CPU doesn't need an update */
--	if (idle != CPU_NEWLY_IDLE) {
--		update_blocked_averages(this_cpu);
--		has_blocked_load |= this_rq->has_blocked_load;
--	}
+-	/* Move the next balance forward */
+-	if (time_after(this_rq->next_balance, next_balance))
+-		this_rq->next_balance = next_balance;
 -
--	if (flags & NOHZ_BALANCE_KICK)
--		rebalance_domains(this_rq, CPU_IDLE);
--
- 	WRITE_ONCE(nohz.next_blocked,
- 		now + msecs_to_jiffies(LOAD_AVG_PERIOD));
+ 	/* Is there a task of a high priority class? */
+ 	if (this_rq->nr_running != this_rq->cfs.h_nr_running)
+ 		pulled_task = -1;
  
++out:
++	/* Move the next balance forward */
++	if (time_after(this_rq->next_balance, next_balance))
++		this_rq->next_balance = next_balance;
++
+ 	if (pulled_task)
+ 		this_rq->idle_stamp = 0;
+ 	else
 -- 
 2.17.1
 
