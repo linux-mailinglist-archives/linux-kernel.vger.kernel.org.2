@@ -2,49 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 017DB310626
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 08:59:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AF8031061C
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 08:57:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231396AbhBEH6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 02:58:35 -0500
-Received: from sym2.noone.org ([178.63.92.236]:45070 "EHLO sym2.noone.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231259AbhBEH6c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 02:58:32 -0500
-X-Greylist: delayed 61620 seconds by postgrey-1.27 at vger.kernel.org; Fri, 05 Feb 2021 02:58:32 EST
-Received: by sym2.noone.org (Postfix, from userid 1002)
-        id 4DX77Z6d1LzvjhV; Fri,  5 Feb 2021 08:57:46 +0100 (CET)
-Date:   Fri, 5 Feb 2021 08:57:46 +0100
-From:   Tobias Klauser <tklauser@distanz.ch>
-To:     Palmer Dabbelt <palmer@dabbelt.com>
-Cc:     shuah@kernel.org, Paul Walmsley <paul.walmsley@sifive.com>,
-        aou@eecs.berkeley.edu, vincenzo.frascino@arm.com,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org
-Subject: Re: [PATCH] selftests/vDSO: fix ABI selftest on riscv
-Message-ID: <20210205075745.jlf3vsjkp3n3rwss@distanz.ch>
-References: <20210204145042.7345-1-tklauser@distanz.ch>
- <mhng-1ed0f9e8-84ec-4f2e-ac42-5a608726e2fe@palmerdabbelt-glaptop>
+        id S231330AbhBEH5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 02:57:06 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:12838 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231304AbhBEH5F (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 02:57:05 -0500
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4DX74Q622Gz7hQV;
+        Fri,  5 Feb 2021 15:55:02 +0800 (CST)
+Received: from huawei.com (10.175.124.27) by DGGEMS407-HUB.china.huawei.com
+ (10.3.19.207) with Microsoft SMTP Server id 14.3.498.0; Fri, 5 Feb 2021
+ 15:56:21 +0800
+From:   wanghongzhe <wanghongzhe@huawei.com>
+To:     <peterhuewe@gmx.de>, <jarkko@kernel.org>, <jgg@ziepe.ca>
+CC:     <linux-integrity@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v2] tpm_tis_spi_main: set cs_change = 0 when timesout
+Date:   Fri, 5 Feb 2021 16:41:09 +0800
+Message-ID: <1612514469-4002-1-git-send-email-wanghongzhe@huawei.com>
+X-Mailer: git-send-email 1.7.12.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <mhng-1ed0f9e8-84ec-4f2e-ac42-5a608726e2fe@palmerdabbelt-glaptop>
-User-Agent: NeoMutt/20170113 (1.7.2)
+Content-Type: text/plain
+X-Originating-IP: [10.175.124.27]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-02-05 at 08:06:37 +0100, Palmer Dabbelt <palmer@dabbelt.com> wrote:
-> On Thu, 04 Feb 2021 06:50:42 PST (-0800), tklauser@distanz.ch wrote:
+when i reach TPM_RETRY, the cs cannot  change back to 'high'.
+So the TPM chips thinks this communication is not over.
+And next times communication cannot be effective because
+the communications mixed up with the last time.
 
-[...]
+v1 -> v2:
+ - fix spi_xfer->cs_change error
 
-> Reviewed-by: Palmer Dabbelt <palmerdabbelt@google.com>
-> Acked-by: Palmer Dabbelt <palmerdabbelt@google.com>
+Signed-off-by: wanghongzhe <wanghongzhe@huawei.com>
+---
+ drivers/char/tpm/tpm_tis_spi_main.c | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
-Thank you!
+diff --git a/drivers/char/tpm/tpm_tis_spi_main.c b/drivers/char/tpm/tpm_tis_spi_main.c
+index 3856f6ebcb34..6c52cbb28881 100644
+--- a/drivers/char/tpm/tpm_tis_spi_main.c
++++ b/drivers/char/tpm/tpm_tis_spi_main.c
+@@ -64,8 +64,18 @@ static int tpm_tis_spi_flow_control(struct tpm_tis_spi_phy *phy,
+ 				break;
+ 		}
+ 
+-		if (i == TPM_RETRY)
++		if (i == TPM_RETRY) {
++			/* change back to 'high',
++			 * So the TPM chips thinks the last communication
++			 * is done.
++			 */
++			spi_xfer->cs_change = 0;
++			spi_xfer->len = 1;
++			spi_message_init(&m);
++			spi_message_add_tail(spi_xfer, &m);
++			ret = spi_sync_locked(phy->spi_device, &m);
+ 			return -ETIMEDOUT;
++		}
+ 	}
+ 
+ 	return 0;
+-- 
+2.19.1
 
-> Not sure if you want this through the RISC-V tree, so I'm leaving it out for
-> now and assuming it'll go through a kselftest tree.
-
-Either way is fine for me.
