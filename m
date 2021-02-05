@@ -2,322 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C65403116F8
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 00:22:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53DAF311717
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 00:30:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232306AbhBEXWE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 18:22:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41526 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232605AbhBEOZQ (ORCPT
+        id S231476AbhBEXZy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 18:25:54 -0500
+Received: from wnew1-smtp.messagingengine.com ([64.147.123.26]:60597 "EHLO
+        wnew1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232584AbhBEOYL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 09:25:16 -0500
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B25BEC06121F
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 08:01:59 -0800 (PST)
-Received: by mail-pg1-x535.google.com with SMTP id r38so4807671pgk.13
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 08:01:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JKzHYk7x2hvbXkWUX21JwHTMetgJPnb4us/2IsTYdpk=;
-        b=zTSve8yXoBkXsy15pvK0/bcb/gGYrL2/Tf7JXvMkHJLmDRl+adWmXQPXvwvrnzDn18
-         XcAXX6wtaytv+zNeWGSTkhJLOthGcy+yuCB5Ygj0IyrlaKwCy2b8UfTGBAX0/noQW1Ar
-         PagMeWOIy8VRHX0efi2RnYl1jhXNcgdJQ5aygSbIxaizzcXirOccX0IfyPdRS6O9NPi0
-         0QwolKNXrchDKPXRWEh9zvyqZ87Lm3ApBulo6c52/EobMmvhBAeFJuxuYxQzrpAIFNMb
-         7quDVJyfcDRaufUqugLFowt+AHVMDGbm9xtrbHn8WDlnpq0HITovnopxyFBGGPpWP1q3
-         gXSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JKzHYk7x2hvbXkWUX21JwHTMetgJPnb4us/2IsTYdpk=;
-        b=IDHifCITfKgjbbuWS9a9KzJkacJbGalowsqrgRUHFzogOOEIEME8KKn1U4Uoay7QNP
-         ZyElhpyCaTnWAmmk/jNBuSBJdJlfTbz4C9edI3ryO8SORgRxNceVyrL3+65ycwh0H5tz
-         +3JhYnlN3KfkNV8miQh+Qu1UQCdVXozTTb9I73j86XwE65DWotpQqboGqpiLdY2IFmP5
-         CcwngxvHzLE18F72zqOMFHogboEiO3fI4DNS48I1skzVte3v5lAUigqw5zjkiUzOUaAv
-         b2F1di1z7MrV6gHUV+3HcBoI24qfVN/s++lhTQ0Ngqi9qO9SeObyzz9ezA6PFLqdrp3u
-         q+mA==
-X-Gm-Message-State: AOAM530ulvRN/MicEpFwxCvDqVnlsskQQTn+gj7lbn5o1axl+k8IhVaN
-        eUQwLKkSkTJtnK16LGpwf1x3gcy1rQ2/rX/Su2N++Q==
-X-Google-Smtp-Source: ABdhPJzpriQshTIpqKQMJT+0l4q2uq6+2sikc3EbsGrNrjMHRjbSi1HZo10AoayNFKnB5UaBFtSgW28vi+kRhgmUgm4=
-X-Received: by 2002:a63:de0e:: with SMTP id f14mr4863525pgg.273.1612540919220;
- Fri, 05 Feb 2021 08:01:59 -0800 (PST)
+        Fri, 5 Feb 2021 09:24:11 -0500
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.west.internal (Postfix) with ESMTP id CA236A62;
+        Fri,  5 Feb 2021 11:01:35 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Fri, 05 Feb 2021 11:01:36 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:content-transfer-encoding:in-reply-to; s=fm2; bh=Z
+        Ug4YBs2NZzkbzAyFNlphluvR52IfC1jIWmo0WKohOw=; b=nxRBtTKEPua4sw3Z8
+        I0u/zm1He1XiJfi2ef2lobVAa2QN6TgPTXwIYOg20BQHcix0353FjZlSEYd8MsTQ
+        /iMk/ZOHCsGgBc0SHiIzrherfhIqwAwYo3rml5oMY66SgWEfSnYSZqarq0w0gunN
+        PhOyW+dQ0P/ViGhWpGfw34cKymNsCpdZQoy1iRTNCJlcD5SyCqt6uo+czNjnxNB+
+        ikUA5vd2ErUwsGqyleyuqynKoJOZNWGuYbJJcynWP/ER9ifWYq4RfcStecbrzApF
+        m3pmFZ6HOWgbDPD40qrRqtQpIEbNLUXUNCB28Frl9SwIH5ASMy0YffKPqtDadVoe
+        9HSlQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm2; bh=ZUg4YBs2NZzkbzAyFNlphluvR52IfC1jIWmo0WKoh
+        Ow=; b=hRplnt8x9ng0QnsOvO3i9NBNgMtWLVSZe60hMQH0bSWl0L+JVAN/QDvwT
+        lmaMsbuEOqOYGd/0yIHIQPR6ICh0LLQrS/U+KhnrgRk5J8Iexnv7XsBNLpcm5MbJ
+        rCke763Yu3tyZLGrRLH+xIavxaXOWl2Jg6xwRWqWJtL8kFqxD95c4LfQrHohdsvW
+        p3lwjBE/+yNLwVu5HNYXFcZtf279iKGR1nrf2dLdI16n2VJepaiQFexELUMIukI3
+        hTIg7oS2ZC8xjsFIoLv6yyDTihP38gJpS7BUR6GuHvq7QwOVXmvxx5fCeYwpw7vl
+        Bl2O6/JJ5olR8CY/tEH8nfMzw710A==
+X-ME-Sender: <xms:22sdYH6uVesoFeifE_6Eim4_m8mI1wJQHMNhWcFuU9UujeO0fs8h7w>
+    <xme:22sdYM0A3rY-jZ89sLUxMJv7mFvqrt_XMp7bInrQNQ7bXeCTRyvJEHHw7-tcQi1wX
+    rD47nzU1NvDRYuN5BA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrgeeigdejtdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggugfgjsehtqhertddttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepgfejtedtjefggfffvdetuedthedtheegheeuteekfeeghfdtteejkeeludeg
+    vddunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:22sdYLV6X3XqZNzrMwJ2n4Hy0dSUqRdjoh64JvXReh8gYEOnnw5dXg>
+    <xmx:22sdYP7JbJikZS5zxnmcJbqM_T7xUVyS_dw46CZ5EvDC_4XtWN0_WA>
+    <xmx:22sdYKI-8yxGdsM6Sc9unBBUGB2DpORZJw9RS2R5szP48uOZ2Y50rQ>
+    <xmx:32sdYBnFqP1GOh1T62GmxtqopTP3B251EHdToE5EUEUmlkBEbQk6rXL-23o>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 9105624005D;
+        Fri,  5 Feb 2021 11:01:31 -0500 (EST)
+Date:   Fri, 5 Feb 2021 17:01:30 +0100
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Chen-Yu Tsai <wens@csie.org>
+Cc:     Jernej Skrabec <jernej.skrabec@siol.net>,
+        Mike Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-sunxi <linux-sunxi@googlegroups.com>,
+        Andre Heider <a.heider@gmail.com>
+Subject: Re: [PATCH 2/5] drm/sun4i: tcon: set sync polarity for tcon1 channel
+Message-ID: <20210205160130.ccp7jfcaa5hgyekb@gilmour>
+References: <20210204184710.1880895-1-jernej.skrabec@siol.net>
+ <20210204184710.1880895-3-jernej.skrabec@siol.net>
+ <CAGb2v64qww4pFwMVrY5UpHOQtM43Q0VPx=3PwJGbB5Oh0qnx=w@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210204035043.36609-1-songmuchun@bytedance.com>
- <20210204035043.36609-4-songmuchun@bytedance.com> <20210205085437.GB13848@linux>
-In-Reply-To: <20210205085437.GB13848@linux>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Sat, 6 Feb 2021 00:01:23 +0800
-Message-ID: <CAMZfGtVF7eYtK1a=4m3=tbU5s0QtHU15V9SZ0gjCxkHW+fKDsg@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v14 3/8] mm: hugetlb: free the vmemmap
- pages associated with each HugeTLB page
-To:     Oscar Salvador <osalvador@suse.de>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
-        anshuman.khandual@arm.com, jroedel@suse.de,
-        Mina Almasry <almasrymina@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        David Hildenbrand <david@redhat.com>,
-        =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
-        <naoya.horiguchi@nec.com>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAGb2v64qww4pFwMVrY5UpHOQtM43Q0VPx=3PwJGbB5Oh0qnx=w@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 5, 2021 at 4:54 PM Oscar Salvador <osalvador@suse.de> wrote:
->
-> On Thu, Feb 04, 2021 at 11:50:38AM +0800, Muchun Song wrote:
-> > Every HugeTLB has more than one struct page structure. We __know__ that
-> > we only use the first 4(HUGETLB_CGROUP_MIN_ORDER) struct page structures
-> > to store metadata associated with each HugeTLB.
+On Fri, Feb 05, 2021 at 11:21:22AM +0800, Chen-Yu Tsai wrote:
+> On Fri, Feb 5, 2021 at 2:48 AM Jernej Skrabec <jernej.skrabec@siol.net> w=
+rote:
 > >
-> > There are a lot of struct page structures associated with each HugeTLB
-> > page. For tail pages, the value of compound_head is the same. So we can
-> > reuse first page of tail page structures. We map the virtual addresses
-> > of the remaining pages of tail page structures to the first tail page
-> > struct, and then free these page frames. Therefore, we need to reserve
-> > two pages as vmemmap areas.
+> > Channel 1 has polarity bits for vsync and hsync signals but driver never
+> > sets them. It turns out that with pre-HDMI2 controllers seemingly there
+> > is no issue if polarity is not set. However, with HDMI2 controllers
+> > (H6) there often comes to de-synchronization due to phase shift. This
+> > causes flickering screen. It's safe to assume that similar issues might
+> > happen also with pre-HDMI2 controllers.
 > >
-> > When we allocate a HugeTLB page from the buddy, we can free some vmemmap
-> > pages associated with each HugeTLB page. It is more appropriate to do it
-> > in the prep_new_huge_page().
+> > Solve issue with setting vsync and hsync polarity. Note that display
+> > stacks with tcon top have polarity bits actually in tcon0 polarity
+> > register.
 > >
-> > The free_vmemmap_pages_per_hpage(), which indicates how many vmemmap
-> > pages associated with a HugeTLB page can be freed, returns zero for
-> > now, which means the feature is disabled. We will enable it once all
-> > the infrastructure is there.
-> >
-> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> > Fixes: 9026e0d122ac ("drm: Add Allwinner A10 Display Engine support")
+> > Tested-by: Andre Heider <a.heider@gmail.com>
+> > Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
 > > ---
->
-> [...]
->
-> > +void free_huge_page_vmemmap(struct hstate *h, struct page *head)
-> > +{
-> > +     unsigned long vmemmap_addr = (unsigned long)head;
-> > +     unsigned long vmemmap_end, vmemmap_reuse;
+> >  drivers/gpu/drm/sun4i/sun4i_tcon.c | 24 ++++++++++++++++++++++++
+> >  drivers/gpu/drm/sun4i/sun4i_tcon.h |  5 +++++
+> >  2 files changed, 29 insertions(+)
+> >
+> > diff --git a/drivers/gpu/drm/sun4i/sun4i_tcon.c b/drivers/gpu/drm/sun4i=
+/sun4i_tcon.c
+> > index 6b9af4c08cd6..0d132dae58c0 100644
+> > --- a/drivers/gpu/drm/sun4i/sun4i_tcon.c
+> > +++ b/drivers/gpu/drm/sun4i/sun4i_tcon.c
+> > @@ -672,6 +672,29 @@ static void sun4i_tcon1_mode_set(struct sun4i_tcon=
+ *tcon,
+> >                      SUN4I_TCON1_BASIC5_V_SYNC(vsync) |
+> >                      SUN4I_TCON1_BASIC5_H_SYNC(hsync));
+> >
+> > +       /* Setup the polarity of sync signals */
+> > +       if (tcon->quirks->polarity_in_ch0) {
+> > +               val =3D 0;
 > > +
-> > +     if (!free_vmemmap_pages_per_hpage(h))
-> > +             return;
+> > +               if (mode->flags & DRM_MODE_FLAG_PHSYNC)
+> > +                       val |=3D SUN4I_TCON0_IO_POL_HSYNC_POSITIVE;
 > > +
-> > +     vmemmap_addr += RESERVE_VMEMMAP_SIZE;
-> > +     vmemmap_end = vmemmap_addr + free_vmemmap_pages_size_per_hpage(h);
-> > +     vmemmap_reuse = vmemmap_addr - PAGE_SIZE;
+> > +               if (mode->flags & DRM_MODE_FLAG_PVSYNC)
+> > +                       val |=3D SUN4I_TCON0_IO_POL_VSYNC_POSITIVE;
 > > +
-> > +     /*
-> > +      * Remap the vmemmap virtual address range [@vmemmap_addr, @vmemmap_end)
-> > +      * to the page which @vmemmap_reuse is mapped to, then free the vmemmap
-> > +      * pages which the range are mapped to.
->
-> "then free the pages which the range [@vmemmap_addr, @vmemmap_end] is mapped to."
->
-> I am not a native but sounds better to me.
+> > +               regmap_write(tcon->regs, SUN4I_TCON0_IO_POL_REG, val);
+> > +       } else {
+> > +               val =3D SUN4I_TCON1_IO_POL_UNKNOWN;
+>=20
+> I think a comment for the origin of this is warranted.
 
-Me too. But I believe you are right. :-)
+If it's anything like TCON0, it's the pixel clock polarity
 
->
-> > +      */
-> > +     vmemmap_remap_free(vmemmap_addr, vmemmap_end, vmemmap_reuse);
-> > +}
-> > diff --git a/mm/hugetlb_vmemmap.h b/mm/hugetlb_vmemmap.h
-> > new file mode 100644
-> > index 000000000000..6923f03534d5
-> > --- /dev/null
-> > +++ b/mm/hugetlb_vmemmap.h
->
-> [...]
->
-> > diff --git a/mm/sparse-vmemmap.c b/mm/sparse-vmemmap.c
-> > index 16183d85a7d5..50c1dc00b686 100644
-> > --- a/mm/sparse-vmemmap.c
-> > +++ b/mm/sparse-vmemmap.c
-> > @@ -27,8 +27,215 @@
-> >  #include <linux/spinlock.h>
-> >  #include <linux/vmalloc.h>
-> >  #include <linux/sched.h>
-> > +#include <linux/pgtable.h>
-> > +#include <linux/bootmem_info.h>
-> > +
-> >  #include <asm/dma.h>
-> >  #include <asm/pgalloc.h>
-> > +#include <asm/tlbflush.h>
-> > +
-> > +/**
-> > + * vmemmap_remap_walk - walk vmemmap page table
-> > + *
-> > + * @remap_pte:               called for each non-empty PTE (lowest-level) entry.
->
-> Well, we BUG_ON on empty PTE, so not sure that pointing out here is worth.
-> It sounds like we do nothing when it's empty.
-> Maybe:
->
-> "called for each lowest-level entry (PTE)"
-
-Thanks. I will update this.
-
->
-> > + * @reuse_page:              the page which is reused for the tail vmemmap pages.
-> > + * @reuse_addr:              the virtual address of the @reuse_page page.
-> > + * @vmemmap_pages:   the list head of the vmemmap pages that can be freed.
-> > + */
-> > +struct vmemmap_remap_walk {
-> > +     void (*remap_pte)(pte_t *pte, unsigned long addr,
-> > +                       struct vmemmap_remap_walk *walk);
-> > +     struct page *reuse_page;
-> > +     unsigned long reuse_addr;
-> > +     struct list_head *vmemmap_pages;
-> > +};
-> > +
-> > +static void vmemmap_pte_range(pmd_t *pmd, unsigned long addr,
-> > +                           unsigned long end,
-> > +                           struct vmemmap_remap_walk *walk)
-> > +{
-> > +     pte_t *pte;
-> > +
-> > +     pte = pte_offset_kernel(pmd, addr);
-> > +
-> > +     /*
-> > +      * The reuse_page is found 'first' in table walk before we start
-> > +      * remapping (which is calling @walk->remap_pte).
-> > +      */
-> > +     if (!walk->reuse_page) {
-> > +             BUG_ON(pte_none(*pte) || walk->reuse_addr != addr);
->
-> I would rather have them in separate lines:
-> BUG_ON(pte_none(*pte));
-> BUG_ON(walk->reuse_addr != addr));
->
-> It helps when trying to figure out when we explode. One could dig in the
-> registers, but let's make it easier to find out.
-
-OK. Will do.
-
->
-> > +
->
-> [...]
->
->
-> > +static void vmemmap_remap_range(unsigned long start, unsigned long end,
-> > +                             struct vmemmap_remap_walk *walk)
-> > +{
-> > +     unsigned long addr = start;
-> > +     unsigned long next;
-> > +     pgd_t *pgd;
-> > +
-> > +     VM_BUG_ON(!IS_ALIGNED(start, PAGE_SIZE));
-> > +     VM_BUG_ON(!IS_ALIGNED(end, PAGE_SIZE));
-> > +
-> > +     pgd = pgd_offset_k(addr);
-> > +     do {
-> > +             BUG_ON(pgd_none(*pgd));
-> > +
-> > +             next = pgd_addr_end(addr, end);
-> > +             vmemmap_p4d_range(pgd, addr, next, walk);
-> > +     } while (pgd++, addr = next, addr != end);
-> > +
-> > +     /*
-> > +      * We do not change the mapping of the vmemmap virtual address range
-> > +      * [@start, @start + PAGE_SIZE) which belongs to the reuse range.
-> > +      * So we not need to flush the TLB.
-> > +      */
-> > +     flush_tlb_kernel_range(start + PAGE_SIZE, end);
->
-> I find that comment a bit confusing. I would rather describe what are we
-> flushing instead of what we are not.
->
-
-OK. Will update it.
-
->
-> > +}
-> > +
-> > +/*
-> > + * Free a vmemmap page. A vmemmap page can be allocated from the memblock
-> > + * allocator or buddy allocator. If the PG_reserved flag is set, it means
-> > + * that it allocated from the memblock allocator, just free it via the
-> > + * free_bootmem_page(). Otherwise, use __free_page().
-> > + */
-> > +static inline void free_vmemmap_page(struct page *page)
-> > +{
-> > +     if (PageReserved(page))
-> > +             free_bootmem_page(page);
-> > +     else
-> > +             __free_page(page);
-> > +}
-> > +
-> > +/* Free a list of the vmemmap pages */
-> > +static void free_vmemmap_page_list(struct list_head *list)
-> > +{
-> > +     struct page *page, *next;
-> > +
-> > +     list_for_each_entry_safe(page, next, list, lru) {
-> > +             list_del(&page->lru);
-> > +             free_vmemmap_page(page);
-> > +     }
-> > +}
-> > +
-> > +static void vmemmap_remap_pte(pte_t *pte, unsigned long addr,
-> > +                           struct vmemmap_remap_walk *walk)
-> > +{
-> > +     /*
-> > +      * Remap the tail pages as read-only to catch illegal write operation
-> > +      * to the tail pages.
-> > +      */
-> > +     pgprot_t pgprot = PAGE_KERNEL_RO;
-> > +     pte_t entry = mk_pte(walk->reuse_page, pgprot);
-> > +     struct page *page = pte_page(*pte);
-> > +
-> > +     list_add(&page->lru, walk->vmemmap_pages);
-> > +     set_pte_at(&init_mm, addr, pte, entry);
-> > +}
-> > +
-> > +/**
-> > + * vmemmap_remap_free - remap the vmemmap virtual address range [@start, @end)
-> > + *                   to the page which @reuse is mapped to, then free vmemmap
-> > + *                   which the range are mapped to.
-> > + * @start:   start address of the vmemmap virtual address range that we want
-> > + *           to remap.
-> > + * @end:     end address of the vmemmap virtual address range that we want to
-> > + *           remap.
-> > + * @reuse:   reuse address.
-> > + *
-> > + * Note: This function depends on vmemmap being base page mapped. Please make
-> > + * sure that the architecture disables PMD mapping of vmemmap pages when calling
-> > + * this function.
->
-> Well, we do not really depend on the architecture to not map the vmemmap range
-> with PMDs, right? IIUC, that is driven by your boot parameter (patch#5), which
-> overrides whatever the architecture can do.
-
-Right. I will rework the comment here.
-
->
-> Functional changes look good to me, so with all the above fixes, you can add:
->
-> Reviewed-by: Oscar Salvador <osalvador@suse.de>
->
-
-Very thanks.
-
->
-> --
-> Oscar Salvador
-> SUSE L3
+Maxime
