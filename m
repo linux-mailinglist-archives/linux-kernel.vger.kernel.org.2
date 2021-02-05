@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B06DD31159C
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 23:43:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C13F31159E
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 23:43:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232538AbhBEWfs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 17:35:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44676 "EHLO mail.kernel.org"
+        id S232855AbhBEWgQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 17:36:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44630 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232830AbhBEOyd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S232839AbhBEOyd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 5 Feb 2021 09:54:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 934C965036;
-        Fri,  5 Feb 2021 14:11:41 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 27C5C64F38;
+        Fri,  5 Feb 2021 14:10:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612534302;
-        bh=MRMKQ/ec294kd9c4DAsNwAg5T0uCnSUTNFzVtJW2fik=;
+        s=korg; t=1612534236;
+        bh=Q4OvAdboO6WGJc4QftulHDtVha3jGqAblQWnE4WApzM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lM12iWxQYpXX8s/c+98ZXo7n3v0i/nzoPDghmBJHAupTnciDK1s67KcJzawSq4LP0
-         3kj4ynYmIsvX/9RvZbd/0mdgVeOZ2jTS1qaPd8Zs2mu8edxUKdeziILhPIavd4RKle
-         p0O+TR4Cm6ry07VSYFHN5CgbD0lChBrydReuARBY=
+        b=iP4XwZ8PkMuiA9oXlZlKLFm+PJrGWSIv10a4NAZtyadmU9dirvvC4KiXLqGNCOweC
+         h3QuyewpaaaCvfEoDTknrGG9cMTvU+5JDzkOdp8RYrxXOA0XmZT+BgoPNOuBa3+02G
+         iFTFkgUPWG6RlEMR9duFJ9w68gjBHNPrX06T40RQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Felix Fietkau <nbd@nbd.name>,
-        Johannes Berg <johannes.berg@intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 33/57] mac80211: fix fast-rx encryption check
-Date:   Fri,  5 Feb 2021 15:06:59 +0100
-Message-Id: <20210205140657.382229465@linuxfoundation.org>
+        stable@vger.kernel.org, lianzhi chang <changlianzhi@uniontech.com>,
+        Jan Kara <jack@suse.cz>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 38/57] udf: fix the problem that the disc content is not displayed
+Date:   Fri,  5 Feb 2021 15:07:04 +0100
+Message-Id: <20210205140657.604397857@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210205140655.982616732@linuxfoundation.org>
 References: <20210205140655.982616732@linuxfoundation.org>
@@ -40,34 +39,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Felix Fietkau <nbd@nbd.name>
+From: lianzhi chang <changlianzhi@uniontech.com>
 
-[ Upstream commit 622d3b4e39381262da7b18ca1ed1311df227de86 ]
+[ Upstream commit 5cdc4a6950a883594e9640b1decb3fcf6222a594 ]
 
-When using WEP, the default unicast key needs to be selected, instead of
-the STA PTK.
+When the capacity of the disc is too large (assuming the 4.7G
+specification), the disc (UDF file system) will be burned
+multiple times in the windows (Multisession Usage). When the
+remaining capacity of the CD is less than 300M (estimated
+value, for reference only), open the CD in the Linux system,
+the content of the CD is displayed as blank (the kernel will
+say "No VRS found"). Windows can display the contents of the
+CD normally.
+Through analysis, in the "fs/udf/super.c": udf_check_vsd
+function, the actual value of VSD_MAX_SECTOR_OFFSET may
+be much larger than 0x800000. According to the current code
+logic, it is found that the type of sbi->s_session is "__s32",
+ when the remaining capacity of the disc is less than 300M
+(take a set of test values: sector=3154903040,
+sbi->s_session=1540464, sb->s_blocksize_bits=11 ), the
+calculation result of "sbi->s_session << sb->s_blocksize_bits"
+ will overflow. Therefore, it is necessary to convert the
+type of s_session to "loff_t" (when udf_check_vsd starts,
+assign a value to _sector, which is also converted in this
+way), so that the result will not overflow, and then the
+content of the disc can be displayed normally.
 
-Signed-off-by: Felix Fietkau <nbd@nbd.name>
-Link: https://lore.kernel.org/r/20201218184718.93650-5-nbd@nbd.name
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Link: https://lore.kernel.org/r/20210114075741.30448-1-changlianzhi@uniontech.com
+Signed-off-by: lianzhi chang <changlianzhi@uniontech.com>
+Signed-off-by: Jan Kara <jack@suse.cz>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/mac80211/rx.c | 2 ++
- 1 file changed, 2 insertions(+)
+ fs/udf/super.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/net/mac80211/rx.c b/net/mac80211/rx.c
-index 2a5a11f92b03e..98517423b0b76 100644
---- a/net/mac80211/rx.c
-+++ b/net/mac80211/rx.c
-@@ -4191,6 +4191,8 @@ void ieee80211_check_fast_rx(struct sta_info *sta)
+diff --git a/fs/udf/super.c b/fs/udf/super.c
+index 5bef3a68395d8..d0df217f4712a 100644
+--- a/fs/udf/super.c
++++ b/fs/udf/super.c
+@@ -705,6 +705,7 @@ static int udf_check_vsd(struct super_block *sb)
+ 	struct buffer_head *bh = NULL;
+ 	int nsr = 0;
+ 	struct udf_sb_info *sbi;
++	loff_t session_offset;
  
- 	rcu_read_lock();
- 	key = rcu_dereference(sta->ptk[sta->ptk_idx]);
-+	if (!key)
-+		key = rcu_dereference(sdata->default_unicast_key);
- 	if (key) {
- 		switch (key->conf.cipher) {
- 		case WLAN_CIPHER_SUITE_TKIP:
+ 	sbi = UDF_SB(sb);
+ 	if (sb->s_blocksize < sizeof(struct volStructDesc))
+@@ -712,7 +713,8 @@ static int udf_check_vsd(struct super_block *sb)
+ 	else
+ 		sectorsize = sb->s_blocksize;
+ 
+-	sector += (((loff_t)sbi->s_session) << sb->s_blocksize_bits);
++	session_offset = (loff_t)sbi->s_session << sb->s_blocksize_bits;
++	sector += session_offset;
+ 
+ 	udf_debug("Starting at sector %u (%lu byte sectors)\n",
+ 		  (unsigned int)(sector >> sb->s_blocksize_bits),
+@@ -757,8 +759,7 @@ static int udf_check_vsd(struct super_block *sb)
+ 
+ 	if (nsr > 0)
+ 		return 1;
+-	else if (!bh && sector - (sbi->s_session << sb->s_blocksize_bits) ==
+-			VSD_FIRST_SECTOR_OFFSET)
++	else if (!bh && sector - session_offset == VSD_FIRST_SECTOR_OFFSET)
+ 		return -1;
+ 	else
+ 		return 0;
 -- 
 2.27.0
 
