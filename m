@@ -2,106 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F372311571
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 23:32:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90C0E311588
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 23:43:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232535AbhBEWb5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 17:31:57 -0500
-Received: from 95-165-96-9.static.spd-mgts.ru ([95.165.96.9]:34318 "EHLO
-        blackbox.su" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232769AbhBEOye (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 09:54:34 -0500
-Received: from metamini.metanet (metamini.metanet [192.168.2.5])
-        by blackbox.su (Postfix) with ESMTP id 69EC7819BF;
-        Fri,  5 Feb 2021 18:09:58 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=blackbox.su; s=mail;
-        t=1612537798; bh=yFRtgztPp2fq5DB0y3un2d4zKag6mvcVdlCDaHCCsRg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Y8m0jzS1MrqKY/24sClbU9a5UCLW4iiN4w2pz3km+5N226seWem6T1Z8rVVQL6aVy
-         dO13hPEpaf3+c3S59qZdNzhYE3bLgq31tmFqT/rxVoMYIDu4PCaIw4NIDHhQ+8Jop2
-         0UeGTfsOHNI7YuIz6LahuryKo8ZjAwmnOLMWuTgMcSFoXeQDZ2jNTdiHpf2up8aMJD
-         sm6jDTMy34hGG4mm5O9v2L0z8mcxPLdT/AU+T3zZE50cQtj6aJJdyt8T96aRaD9ccm
-         1Tf3sFSP/k4oS0ffYhboCSaShz8xIDpBTzmEbfh+OMdG9/Wo1Ge83+pnb9QZfr0oQt
-         Kpi4B8plxE+JA==
-From:   Sergej Bauer <sbauer@blackbox.su>
-To:     thesven73@gmail.com
-Cc:     andrew@lunn.ch, Markus.Elfring@web.de, rtgbnm@gmail.com,
-        tharvey@gateworks.com, anders@ronningen.priv.no,
-        sbauer@blackbox.su,
-        Bryan Whitehead <bryan.whitehead@microchip.com>,
-        UNGLinuxDriver@microchip.com (maintainer:MICROCHIP LAN743X ETHERNET
-        DRIVER), "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        netdev@vger.kernel.org (open list:MICROCHIP LAN743X ETHERNET DRIVER),
-        linux-kernel@vger.kernel.org (open list)
-Subject: Re: [PATCH net-next v1 1/6] lan743x: boost performance on cpu archs w/o dma cache snooping
-Date:   Fri,  5 Feb 2021 18:09:35 +0300
-Message-Id: <20210205150936.23010-1-sbauer@blackbox.su>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <CAGngYiUgjsgWYP76NKnrhbQthWbceaiugTFL=UVh_KvDuRhQUw@mail.gmail.com>
-References: <CAGngYiUgjsgWYP76NKnrhbQthWbceaiugTFL=UVh_KvDuRhQUw@mail.gmail.com>
+        id S232910AbhBEWcx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 17:32:53 -0500
+Received: from mga18.intel.com ([134.134.136.126]:49466 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232971AbhBEO5n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 09:57:43 -0500
+IronPort-SDR: gazYxd2UzSU0aQte6yOwTofiVFSTK7ffYGwqtLdyXX9GVv6yJxmxcveaE+Sss60YnDA85i+NXf
+ aJFPx5oM/A9w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9885"; a="169120206"
+X-IronPort-AV: E=Sophos;i="5.81,155,1610438400"; 
+   d="scan'208";a="169120206"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2021 07:16:44 -0800
+IronPort-SDR: S6C8/MN991fMIKme9SySesQAZ7K5GvPlTylS3wOHj8LgHkiMMj/W8DXQA5DJDhPgtS5X0f/EGd
+ F2pA6br7P9pQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,155,1610438400"; 
+   d="scan'208";a="416226114"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga002.fm.intel.com with ESMTP; 05 Feb 2021 07:16:41 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1000)
+        id BFA36236; Fri,  5 Feb 2021 17:16:40 +0200 (EET)
+From:   "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+To:     Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     x86@kernel.org, Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        "H . J . Lu" <hjl.tools@gmail.com>,
+        Andi Kleen <ak@linux.intel.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Subject: [RFC 2/9] x86/mm: Fix CR3_ADDR_MASK
+Date:   Fri,  5 Feb 2021 18:16:23 +0300
+Message-Id: <20210205151631.43511-4-kirill.shutemov@linux.intel.com>
+X-Mailer: git-send-email 2.30.0
+In-Reply-To: <20210205151631.43511-1-kirill.shutemov@linux.intel.com>
+References: <20210205151631.43511-1-kirill.shutemov@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Friday, February 5, 2021 5:07:22 PM MSK you wrote:
-> Hi Sergej,
-> 
-> On Fri, Feb 5, 2021 at 7:44 AM Sergej Bauer <sbauer@blackbox.su> wrote:
-> > Hi Sven
-> > I can confirm great stability improvement after your patch
-> > "lan743x: boost performance on cpu archs w/o dma cache snooping".
-> > 
-> > Test machine is Intel Pentium G4560 3.50GHz
-> > lan743x with rejected virtual phy 'inside'
-> 
-> Interesting, so the speed boost patch seems to improve things even on
-> Intel...
-> 
-> Would you be able to apply and test the multi-buffer patch as well?
-> To do that, you can simply apply patches [2/6] and [3/6] on top of
-> what you already have.
-> 
+The mask must not include bits above physical address mask. These bits
+are reserved and can be used for other things. Bits 61 and 62 are used
+for Linear Address Masking.
 
-Hi Sven
-Tests after applying patches [2/6] and [3/6] are:
-$ ifmtu eth7 500
-$ sudo test_ber -l eth7 -c 1000 -n 1000000 -f500 --no-conf
-...
-number of sent packets      = 1000000
-number of received packets  = 713288
-number of lost packets = 286712
-number of out of order packets = 0
-number of bit errors   = 0
-total errors detected  = 286712
-bit error rate         = 0.286712
-average speed: 427.8043 Mbit/s
+Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+---
+ arch/x86/include/asm/processor-flags.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-$ ifmtu eth7 1500
-$ sudo test_ber -l eth7 -c 1000 -n 1000000 -f500 --no-conf
-...
-number of sent packets      = 1000000
-number of received packets  = 707869
-number of lost packets = 292131
-number of out of order packets = 0
-number of bit errors   = 0
-total errors detected  = 292131
-bit error rate         = 0.292131
-average speed: 431.0163 Mbit/s
+diff --git a/arch/x86/include/asm/processor-flags.h b/arch/x86/include/asm/processor-flags.h
+index 02c2cbda4a74..a7f3d9100adb 100644
+--- a/arch/x86/include/asm/processor-flags.h
++++ b/arch/x86/include/asm/processor-flags.h
+@@ -35,7 +35,7 @@
+  */
+ #ifdef CONFIG_X86_64
+ /* Mask off the address space ID and SME encryption bits. */
+-#define CR3_ADDR_MASK	__sme_clr(0x7FFFFFFFFFFFF000ull)
++#define CR3_ADDR_MASK	__sme_clr(PHYSICAL_PAGE_MASK)
+ #define CR3_PCID_MASK	0xFFFull
+ #define CR3_NOFLUSH	BIT_ULL(63)
+ 
+-- 
+2.26.2
 
-$ sudo test_ber -l eth7 -c 1000 -n 1000000 -f1500 --no-conf
-...
-number of sent packets      = 1000000
-number of received packets  = 1000000
-number of lost packets = 0
-number of out of order packets = 0
-number of bit errors   = 0
-total errors detected  = 0
-bit error rate         = 0
-average speed: 646.4932 Mbit/s
-
-> Keeping in mind that Bryan has identified an issue with the above
-> patch, which will get fixed in v2. So YMMV.
-I'll perform tests with v2 as well.
