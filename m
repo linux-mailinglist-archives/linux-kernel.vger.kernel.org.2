@@ -2,238 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAC9E3119DC
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 04:22:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B22C8311991
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 04:14:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232530AbhBFDWE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 22:22:04 -0500
-Received: from mail-ot1-f54.google.com ([209.85.210.54]:35381 "EHLO
-        mail-ot1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230515AbhBFCmJ (ORCPT
+        id S230171AbhBFDM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 22:12:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38284 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231215AbhBFCiZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 21:42:09 -0500
-Received: by mail-ot1-f54.google.com with SMTP id k10so6508936otl.2;
-        Fri, 05 Feb 2021 18:41:43 -0800 (PST)
+        Fri, 5 Feb 2021 21:38:25 -0500
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DED80C08E86E
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 14:27:02 -0800 (PST)
+Received: by mail-yb1-xb49.google.com with SMTP id i2so8773152ybl.16
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 14:27:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:in-reply-to:message-id:mime-version:references:subject
+         :from:to:cc;
+        bh=nTYZSPOjkc18IliuMfnfRh5H/pVF22NJbjiTgx5RAVQ=;
+        b=Mm6nmK+U9sWgdy5Kl5FWR72rOFcOPFvROrGTmdoXRpZIiuZV62ELOWH/ANFl9FZv48
+         WKXxbas72ewJwQSAlM+tuQ5oro9iQc2J6lQg3Fj4ZGY95z4hvdDMslQ/xFUCHGw9JTQW
+         ozCrQLXZ4ZZwk460RT8jQymPqzGWnn6RzLezbUwlZbxeN6sZ9i9EFrxpHIMJXDCZ+GtS
+         ZxX35V5B8D7JFLk2l9CMndHRKsILANotrh6ov6yUqsjE4ZkLpQq/qs+6ILuymjBzW/t3
+         lfMT6f+nRYfVGGUpAXuGaHE3M4iW6zmvvcop6V9w3pEKg6VttIn53oZg6LRjtoP47yQC
+         LIaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=FU+UCOFQQYVXfS0+LCrISl1mGUUH7pHKT1RulCQQqCk=;
-        b=lRJ7rKFrYJNPcL2fAV7PVPqNPRHQ+ks4xHyuUBFrOxWlLI3+yyMdj5lWWCUUwAZ7og
-         EFfwAotUhNZUkoaCtbJfJxlHHHIzz4mAgaMEyJU68POJLscPBzwt1MWgHlLydO+zAw4e
-         pSzxy0fLqR8ZSbswn6qeb+K1p19B0zrfWuY8/NlebXCUAynyhBtf6pLYimJ1CFmmY6td
-         xKI+Ynxem/1wAuCcruUZmxpLxiOXCHARQuJYPCigwl3eQtz/c6VwXc6vW/0BTocMhuBF
-         Q9ULkmDDnBYyL+9J3Mow6kkCauSB1hnfrR2llWPWh0zEccMm2ydxDSDs8XkaJ81cLwJb
-         lK5w==
-X-Gm-Message-State: AOAM531ToE63J7mBR1+QKJ4UoT4HH/VQev+iR1LLIFkx/SBTbI9Hm5LE
-        qW92apQHpn27ofceG5SAqYfCf2peSg==
-X-Google-Smtp-Source: ABdhPJyr1AlIFE4ExmRHCvX9qNXq8/sjd9wV24kKZcLUt9dS+ovyZrQ6nuiOsTAaglcyp92xF8HXfg==
-X-Received: by 2002:a9d:37c4:: with SMTP id x62mr5065131otb.87.1612563968681;
-        Fri, 05 Feb 2021 14:26:08 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id a63sm2097188otc.75.2021.02.05.14.26.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Feb 2021 14:26:07 -0800 (PST)
-Received: (nullmailer pid 3866684 invoked by uid 1000);
-        Fri, 05 Feb 2021 22:26:06 -0000
-Date:   Fri, 5 Feb 2021 16:26:06 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Mark Brown <broonie@kernel.org>, Lee Jones <lee.jones@linaro.org>,
+        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=nTYZSPOjkc18IliuMfnfRh5H/pVF22NJbjiTgx5RAVQ=;
+        b=pqRPfLYrU2A2xOBgJPGrUuJTHANVwdVrBXuG1oQhMDeIMfL26uFjsbvUGUBcbu52KX
+         yAxVJ37RS/pXKfT74FnxX/zuP3GrPMKplEoRCYAHNb7WXBaG+VAPXVSgWCeMmqsoRurr
+         Tsu1V68nrNq/TtF4I/XOQ5lO0NfNFUd3ucT54VGdhVgjnIrf12+M8sKSaK1vZyFWCy/c
+         77GMjzpXe3bn++wua3Y9wYOxPpXfr0BRii1v+wvJTv/Q4dn3suJDtn9C6WvW7BJHb0+z
+         c9mb6aYtSnAVLZB3jut6xMngvbHgxnvBqk46mgSy27ryprzQ6nW/S/2KK1eQzlkvGteX
+         e5yA==
+X-Gm-Message-State: AOAM533LNj52V+r8i06Nm9qLRXcCFQ8qXkEmw8ASGs5lvCGc0Hcnl3Py
+        6GVdnOipJsNJCsoM1lxIZ7iw1nLPSIGEX10=
+X-Google-Smtp-Source: ABdhPJyW1m9SbXAqH09239WynVsuVFpGwpuvcunwzfCPoBBzTTIBp5GlOy/wl0ZJFwtPTfMh78OkuipnUZY/zB8=
+Sender: "saravanak via sendgmr" <saravanak@saravanak.san.corp.google.com>
+X-Received: from saravanak.san.corp.google.com ([2620:15c:2d:3:6d36:b798:55d7:f5c5])
+ (user=saravanak job=sendgmr) by 2002:a25:3104:: with SMTP id
+ x4mr9895088ybx.141.1612564022147; Fri, 05 Feb 2021 14:27:02 -0800 (PST)
+Date:   Fri,  5 Feb 2021 14:26:41 -0800
+In-Reply-To: <20210205222644.2357303-1-saravanak@google.com>
+Message-Id: <20210205222644.2357303-6-saravanak@google.com>
+Mime-Version: 1.0
+References: <20210205222644.2357303-1-saravanak@google.com>
+X-Mailer: git-send-email 2.30.0.478.g8a0d178c01-goog
+Subject: [PATCH v4 5/8] driver core: fw_devlink: Handle suppliers that don't
+ use driver core
+From:   Saravana Kannan <saravanak@google.com>
+To:     Jonathan Corbet <corbet@lwn.net>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mayulong <mayulong1@huawei.com>, devel@driverdev.osuosl.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 18/21] mfd: hi6421-spmi-pmic: move driver from staging
-Message-ID: <20210205222606.GA3857395@robh.at.kernel.org>
-References: <cover.1611072387.git.mchehab+huawei@kernel.org>
- <e79ffb200c52fc8c8926492cc82ac5dbcda3e3fb.1611072387.git.mchehab+huawei@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e79ffb200c52fc8c8926492cc82ac5dbcda3e3fb.1611072387.git.mchehab+huawei@kernel.org>
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Kevin Hilman <khilman@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Len Brown <len.brown@intel.com>, Len Brown <lenb@kernel.org>,
+        Pavel Machek <pavel@ucw.cz>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     Saravana Kannan <saravanak@google.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-acpi@vger.kernel.org,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        kernel-team@android.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 19, 2021 at 05:10:44PM +0100, Mauro Carvalho Chehab wrote:
-> This driver is ready for mainstream. So, move it out of staging.
-> 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> ---
->  .../mfd/hisilicon,hi6421-spmi-pmic.yaml       | 135 +++++++++
->  MAINTAINERS                                   |   7 +
->  drivers/mfd/Kconfig                           |  15 +
->  drivers/mfd/Makefile                          |   1 +
->  drivers/mfd/hi6421-spmi-pmic.c                | 281 ++++++++++++++++++
->  drivers/staging/hikey9xx/Kconfig              |  16 -
->  drivers/staging/hikey9xx/Makefile             |   1 -
->  drivers/staging/hikey9xx/hi6421-spmi-pmic.c   | 281 ------------------
->  .../hikey9xx/hisilicon,hi6421-spmi-pmic.yaml  | 135 ---------
->  9 files changed, 439 insertions(+), 433 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/mfd/hisilicon,hi6421-spmi-pmic.yaml
->  create mode 100644 drivers/mfd/hi6421-spmi-pmic.c
->  delete mode 100644 drivers/staging/hikey9xx/hi6421-spmi-pmic.c
->  delete mode 100644 drivers/staging/hikey9xx/hisilicon,hi6421-spmi-pmic.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/mfd/hisilicon,hi6421-spmi-pmic.yaml b/Documentation/devicetree/bindings/mfd/hisilicon,hi6421-spmi-pmic.yaml
-> new file mode 100644
-> index 000000000000..3b23ad56b31a
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mfd/hisilicon,hi6421-spmi-pmic.yaml
-> @@ -0,0 +1,135 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/mfd/hisilicon,hi6421-spmi-pmic.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: HiSilicon 6421v600 SPMI PMIC
-> +
-> +maintainers:
-> +  - Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> +
-> +description: |
-> +  HiSilicon 6421v600 should be connected inside a MIPI System Power Management
-> +  (SPMI) bus. It provides interrupts and power supply.
-> +
-> +  The GPIO and interrupt settings are represented as part of the top-level PMIC
-> +  node.
-> +
-> +  The SPMI controller part is provided by
-> +  drivers/staging/hikey9xx/hisilicon,hisi-spmi-controller.yaml.
-> +
-> +properties:
-> +  $nodename:
-> +    pattern: "pmic@[0-9a-f]"
-> +
-> +  compatible:
-> +    const: hisilicon,hi6421v600-spmi
+Device links only work between devices that use the driver core to match
+and bind a driver to a device. So, add an API for frameworks to let the
+driver core know that a fwnode has been initialized by a driver without
+using the driver core.
 
-'-spmi' is redundant.
+Then use this information to make sure that fw_devlink doesn't make the
+consumers wait indefinitely on suppliers that'll never bind to a driver.
 
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  '#interrupt-cells':
-> +    const: 2
-> +
-> +  interrupt-controller:
-> +    description:
-> +      Identify that the PMIC is capable of behaving as an interrupt controller.
+Signed-off-by: Saravana Kannan <saravanak@google.com>
+---
+ drivers/base/core.c    | 15 +++++++++++++++
+ include/linux/fwnode.h | 19 +++++++++++++++++--
+ 2 files changed, 32 insertions(+), 2 deletions(-)
 
-Don't need a description here.
+diff --git a/drivers/base/core.c b/drivers/base/core.c
+index f466ab4f1c35..ea710b33bda6 100644
+--- a/drivers/base/core.c
++++ b/drivers/base/core.c
+@@ -1636,6 +1636,17 @@ static int fw_devlink_create_devlink(struct device *con,
+ 
+ 	sup_dev = get_dev_from_fwnode(sup_handle);
+ 	if (sup_dev) {
++		/*
++		 * If it's one of those drivers that don't actually bind to
++		 * their device using driver core, then don't wait on this
++		 * supplier device indefinitely.
++		 */
++		if (sup_dev->links.status == DL_DEV_NO_DRIVER &&
++		    sup_handle->flags & FWNODE_FLAG_INITIALIZED) {
++			ret = -EINVAL;
++			goto out;
++		}
++
+ 		/*
+ 		 * If this fails, it is due to cycles in device links.  Just
+ 		 * give up on this link and treat it as invalid.
+@@ -1655,6 +1666,10 @@ static int fw_devlink_create_devlink(struct device *con,
+ 		goto out;
+ 	}
+ 
++	/* Supplier that's already initialized without a struct device. */
++	if (sup_handle->flags & FWNODE_FLAG_INITIALIZED)
++		return -EINVAL;
++
+ 	/*
+ 	 * DL_FLAG_SYNC_STATE_ONLY doesn't block probing and supports
+ 	 * cycles. So cycle detection isn't necessary and shouldn't be
+diff --git a/include/linux/fwnode.h b/include/linux/fwnode.h
+index d5caefe39d93..dfefd43a737c 100644
+--- a/include/linux/fwnode.h
++++ b/include/linux/fwnode.h
+@@ -11,6 +11,7 @@
+ 
+ #include <linux/types.h>
+ #include <linux/list.h>
++#include <linux/err.h>
+ 
+ struct fwnode_operations;
+ struct device;
+@@ -18,11 +19,13 @@ struct device;
+ /*
+  * fwnode link flags
+  *
+- * LINKS_ADDED: The fwnode has already be parsed to add fwnode links.
+- * NOT_DEVICE: The fwnode will never be populated as a struct device.
++ * LINKS_ADDED:	The fwnode has already be parsed to add fwnode links.
++ * NOT_DEVICE:	The fwnode will never be populated as a struct device.
++ * INITIALIZED: The hardware corresponding to fwnode has been initialized.
+  */
+ #define FWNODE_FLAG_LINKS_ADDED		BIT(0)
+ #define FWNODE_FLAG_NOT_DEVICE		BIT(1)
++#define FWNODE_FLAG_INITIALIZED		BIT(2)
+ 
+ struct fwnode_handle {
+ 	struct fwnode_handle *secondary;
+@@ -161,6 +164,18 @@ static inline void fwnode_init(struct fwnode_handle *fwnode,
+ 	INIT_LIST_HEAD(&fwnode->suppliers);
+ }
+ 
++static inline void fwnode_dev_initialized(struct fwnode_handle *fwnode,
++					  bool initialized)
++{
++	if (IS_ERR_OR_NULL(fwnode))
++		return;
++
++	if (initialized)
++		fwnode->flags |= FWNODE_FLAG_INITIALIZED;
++	else
++		fwnode->flags &= ~FWNODE_FLAG_INITIALIZED;
++}
++
+ extern u32 fw_devlink_get_flags(void);
+ extern bool fw_devlink_is_strict(void);
+ int fwnode_link_add(struct fwnode_handle *con, struct fwnode_handle *sup);
+-- 
+2.30.0.478.g8a0d178c01-goog
 
-Don't you need 'interrupts' here to get the interrupts to the host?
-
-> +
-> +  gpios:
-> +    maxItems: 1
-
-GPIO for what? It's preferred to have a named gpio.
-
-> +
-> +  regulators:
-> +    type: object
-> +
-> +    properties:
-> +      '#address-cells':
-> +        const: 1
-> +
-> +      '#size-cells':
-> +        const: 0
-> +
-> +    patternProperties:
-> +      '^ldo[0-9]+@[0-9a-f]$':
-> +        type: object
-> +
-> +        $ref: "/schemas/regulator/regulator.yaml#"
-
-       additionalProperties: false
-
-Which will give you errors in the example.
-
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - regulators
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    /* pmic properties */
-> +
-> +    pmic: pmic@0 {
-> +      compatible = "hisilicon,hi6421-spmi";
-> +      reg = <0 0>;
-> +
-> +      #interrupt-cells = <2>;
-> +      interrupt-controller;
-> +      gpios = <&gpio28 0 0>;
-> +
-> +      regulators {
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
-> +
-> +        ldo3: LDO3 {
-
-LDO3: ldo3  {
-
-is preferred and closer to what you defined above.
-
-> +          regulator-name = "ldo3";
-> +          regulator-min-microvolt = <1500000>;
-> +          regulator-max-microvolt = <2000000>;
-> +          regulator-boot-on;
-> +        };
-> +
-> +        ldo4: LDO4 {
-> +          regulator-name = "ldo4";
-> +          regulator-min-microvolt = <1725000>;
-> +          regulator-max-microvolt = <1900000>;
-> +          regulator-boot-on;
-> +        };
-> +
-> +        ldo9: LDO9 {
-> +          regulator-name = "ldo9";
-> +          regulator-min-microvolt = <1750000>;
-> +          regulator-max-microvolt = <3300000>;
-> +          regulator-boot-on;
-> +        };
-> +
-> +        ldo15: LDO15 {
-> +          regulator-name = "ldo15";
-> +          regulator-min-microvolt = <1800000>;
-> +          regulator-max-microvolt = <3000000>;
-> +          regulator-always-on;
-> +        };
-> +
-> +        ldo16: LDO16 {
-> +          regulator-name = "ldo16";
-> +          regulator-min-microvolt = <1800000>;
-> +          regulator-max-microvolt = <3000000>;
-> +          regulator-boot-on;
-> +        };
-> +
-> +        ldo17: LDO17 {
-> +          regulator-name = "ldo17";
-> +          regulator-min-microvolt = <2500000>;
-> +          regulator-max-microvolt = <3300000>;
-> +        };
-> +
-> +        ldo33: LDO33 {
-> +          regulator-name = "ldo33";
-> +          regulator-min-microvolt = <2500000>;
-> +          regulator-max-microvolt = <3300000>;
-> +          regulator-boot-on;
-> +        };
-> +
-> +        ldo34: LDO34 {
-> +          regulator-name = "ldo34";
-> +          regulator-min-microvolt = <2600000>;
-> +          regulator-max-microvolt = <3300000>;
-> +        };
-> +      };
-> +    };
