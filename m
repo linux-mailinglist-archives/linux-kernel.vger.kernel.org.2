@@ -2,84 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0371931019D
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 01:28:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21F403101A2
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 01:29:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231975AbhBEA15 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 4 Feb 2021 19:27:57 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:36556 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231838AbhBEA14 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 4 Feb 2021 19:27:56 -0500
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1150QvK5061256;
-        Thu, 4 Feb 2021 18:26:57 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1612484817;
-        bh=yq7hCIHhoSTeDHW7juAsUUz79Y6SVLIYjBY085/BArw=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=bRbldSr45AFTDWj5sJu0z7AZJMA0QmQM09LruICalcxcxkCxIiJmJiFISYns/c1TU
-         3ZWpU6wTjGzXqvPAhXUCoT3gYSahDuu76kyRpxpjukRC2LKMPdKDfhZV2rh4z8YDdo
-         qElbrEdoI4ycFS0rHZF8gHZoKfZTPoXlJHSYGWac=
-Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1150QvX2129581
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 4 Feb 2021 18:26:57 -0600
-Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 4 Feb
- 2021 18:26:56 -0600
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE101.ent.ti.com
- (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 4 Feb 2021 18:26:56 -0600
-Received: from [10.250.39.117] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1150QuOY077490;
-        Thu, 4 Feb 2021 18:26:56 -0600
-Subject: Re: [PATCH V3 1/2] dt-bindings: power: bq27xxx: add bq78z10
-To:     Rob Herring <robh@kernel.org>,
-        LI Qingwu <Qing-wu.Li@leica-geosystems.com.cn>
-CC:     <linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>,
-        <sre@kernel.org>, <devicetree@vger.kernel.org>,
-        <robh+dt@kernel.org>, <grygorii.tertychnyi@leica-geosystems.com>,
-        <andrey.zhizhikin@leica-geosystems.com>, <krzk@kernel.org>,
-        <pali@kernel.org>
-References: <20210203104100.17143-1-Qing-wu.Li@leica-geosystems.com.cn>
- <20210203104100.17143-2-Qing-wu.Li@leica-geosystems.com.cn>
- <20210204233721.GA1331253@robh.at.kernel.org>
-From:   Dan Murphy <dmurphy@ti.com>
-Message-ID: <3342dd48-e165-2ca4-6411-d2641163ff91@ti.com>
-Date:   Thu, 4 Feb 2021 18:26:51 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S231991AbhBEA26 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 4 Feb 2021 19:28:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56996 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231986AbhBEA2x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 4 Feb 2021 19:28:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 25E8D64D9D;
+        Fri,  5 Feb 2021 00:28:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612484892;
+        bh=VyPQeUP6hYEQR+ykMe5wt6/I1Xczuy8ZEfcC2XszI2s=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lMih/QbVj6JuByqgBKNSF+y9LTPwOy18eaxOHqcjaNB+DqV+IRr7K4FMpscWiRapY
+         khlPoypqEi1tJqKPBYxAdU9DNJn21PSSW93C8dz6M0sLlE7/SNVFjVyTYILXaThDDY
+         IEvuO1wu/S40zzf03IIw7dVI4svIf9+om0F+UbPIVkPJcxc5D62rLKukjIQjazugrp
+         G16ca3YB9sq11Qty3WKg8PCtPXke4PBoBSXVAMoKmtxPkxRyQsVaWpk+JyjJdLVjhW
+         zE8jRskpIsxv/I7uCMJgQ1EMoNXl/NpzoOx/5FsYYYpIKddYDvKDJzaarMmAr67Tti
+         Kh/LlzPYD7NQQ==
+Date:   Thu, 4 Feb 2021 19:28:11 -0500
+From:   Sasha Levin <sashal@kernel.org>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Anthony Iliopoulos <ailiop@suse.com>, dm-devel@redhat.com,
+        linux-raid@vger.kernel.org, Mike Snitzer <snitzer@redhat.com>
+Subject: Re: [dm-devel] [PATCH AUTOSEL 5.4 03/26] dm integrity: select
+ CRYPTO_SKCIPHER
+Message-ID: <20210205002811.GV4035784@sasha-vm>
+References: <20210120012704.770095-1-sashal@kernel.org>
+ <20210120012704.770095-3-sashal@kernel.org>
+ <YAfD81Jw/0NU0eWN@sol.localdomain>
 MIME-Version: 1.0
-In-Reply-To: <20210204233721.GA1331253@robh.at.kernel.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <YAfD81Jw/0NU0eWN@sol.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Li
-
-On 2/4/21 5:37 PM, Rob Herring wrote:
-> On Wed, 03 Feb 2021 10:40:59 +0000, LI Qingwu wrote:
->> Add bindings for TI BQ78Z100. An I2C interface gas gauge.
->> It provides a fully integrated safety protection
->> and authentication for 1 to 2-series cell Li-Ion and
->> Li-Polymer battery packs.
-
-$subject has the wrong part number
-
-Dan
-
-
->> Signed-off-by: LI Qingwu <Qing-wu.Li@leica-geosystems.com.cn>
->> ---
->>   Documentation/devicetree/bindings/power/supply/bq27xxx.yaml | 1 +
->>   1 file changed, 1 insertion(+)
+On Tue, Jan 19, 2021 at 09:47:31PM -0800, Eric Biggers wrote:
+>On Tue, Jan 19, 2021 at 08:26:40PM -0500, Sasha Levin wrote:
+>> From: Anthony Iliopoulos <ailiop@suse.com>
 >>
-> Acked-by: Rob Herring <robh@kernel.org>
+>> [ Upstream commit f7b347acb5f6c29d9229bb64893d8b6a2c7949fb ]
+>>
+>> The integrity target relies on skcipher for encryption/decryption, but
+>> certain kernel configurations may not enable CRYPTO_SKCIPHER, leading to
+>> compilation errors due to unresolved symbols. Explicitly select
+>> CRYPTO_SKCIPHER for DM_INTEGRITY, since it is unconditionally dependent
+>> on it.
+>>
+>> Signed-off-by: Anthony Iliopoulos <ailiop@suse.com>
+>> Signed-off-by: Mike Snitzer <snitzer@redhat.com>
+>> Signed-off-by: Sasha Levin <sashal@kernel.org>
+>> ---
+>>  drivers/md/Kconfig | 1 +
+>>  1 file changed, 1 insertion(+)
+>>
+>> diff --git a/drivers/md/Kconfig b/drivers/md/Kconfig
+>> index aa98953f4462e..7dd6e98257c72 100644
+>> --- a/drivers/md/Kconfig
+>> +++ b/drivers/md/Kconfig
+>> @@ -565,6 +565,7 @@ config DM_INTEGRITY
+>>  	select BLK_DEV_INTEGRITY
+>>  	select DM_BUFIO
+>>  	select CRYPTO
+>> +	select CRYPTO_SKCIPHER
+>>  	select ASYNC_XOR
+>>  	---help---
+>>  	  This device-mapper target emulates a block device that has
+>
+>CRYPTO_SKCIPHER doesn't exist in 5.4 and earlier because it was renamed from
+>CRYPTO_BLKCIPHER in 5.5.  If this patch is really important enough to backport,
+>CRYPTO_SKCIPHER will need to be changed to CRYPTO_BLKCIPHER.
+
+I'll just drop it, thanks!
+
+-- 
+Thanks,
+Sasha
