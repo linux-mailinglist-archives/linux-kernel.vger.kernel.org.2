@@ -2,100 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30225310AE8
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 13:09:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88E78310AF0
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Feb 2021 13:13:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231934AbhBEMIM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 07:08:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50530 "EHLO
+        id S231913AbhBEMMS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 07:12:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231724AbhBEMF3 (ORCPT
+        with ESMTP id S231310AbhBEMFy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 07:05:29 -0500
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83AE6C06178B
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 04:04:48 -0800 (PST)
-Received: by mail-wr1-x432.google.com with SMTP id c4so7373097wru.9
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 04:04:48 -0800 (PST)
+        Fri, 5 Feb 2021 07:05:54 -0500
+Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADF56C061793
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 04:05:13 -0800 (PST)
+Received: by mail-qv1-xf34.google.com with SMTP id j4so3279629qvk.6
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 04:05:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=isg0DesRi/Hq2hLl7475jjCCpMIFm0fEZvxPt8FgJLo=;
-        b=jpaHqKqw488gWf1n6/9/udYV2FiCAjfu+wJVkv7/nJWzRHiYYaJ1oybvNbMCKEWb5w
-         rdSF7QAF8Rx9oEXs86EDbP8y4H0Mvh3KoWMEqQuiEiJ5Va0PiXsOYIe6bV5V+ue2sBu6
-         HohRwGqHjPwQwe/SdxJIgQL2f1SZ5AAPGLWd3xwnDosnM0iWrrEWeStKmEBODxloI8sG
-         OBOsWaKFLxk/J2tkylxu8kk7WVYwv/vmMlLTG6QB5Blrhiq3PWp/BA3MlwYFt8ycTbSp
-         xMUVrTE5+QtvQ4cvPe5bz6HDyyaGXsOvkjokI3n31dwPl44EEFJYL9FLADnCyjGf28ih
-         /NWg==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=w6IhO9s40oec0IOKUurPh0EF/d7cv4coioK7fFZj4LQ=;
+        b=SpJO5Tt1TO1dUD3i4VucFeay0wqS/HfNKt+YEFegYexKHkj5sf8P+tSXF8/dnQft/5
+         rvpy4jzhX800lgtMIv7LL4wkzvKx31Lpv2dbxbBRkAvs4M1p9lvHHhX3ZZUHyaf2JajQ
+         KIdBbmu7zxfFX1KbqbcoY8VBtqpPdd3VU8YN9IM1H6LKlHO4L86b+0nJFS2auCj3zv05
+         NqJQY/kF7WOoq2b0snEqSwLfSmoRF0hYPaKFj6gNRijH91nJoe/RQVglOYW9YMYaerCh
+         PE5vJ0jnDY/9lYoDlgoapXEC7/6GqjDrziidw6YJxCkXnnPxUCt2a7ZzR4UCF8EuV9Fd
+         Fs3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=isg0DesRi/Hq2hLl7475jjCCpMIFm0fEZvxPt8FgJLo=;
-        b=nRD062Y49B+GyhgLSf/xQ2zRRsQ8Ohx5FB893rXc6Aj31S2wYs4r3ePlRF2ybDbBxA
-         Gw6i0hzykY8BnySAlAwp1Qyd/jPq5WHDbViP1iS6UIqdQ1ANguXWknUQEagAQu9zLDdv
-         bLBA+zM3l2iMMENn9UtGtbu6WdpQ2F4jBoXgR7btQA2yhUVzDepBtXOvJT9fwL5L5tkQ
-         m8fzqNN+wNUb9i+IRs0jsOk2/qsIotCKvvj9MiMFXt3IUqJE1irq6Wp4MXsy0fTQkgfw
-         Xpe4QsNoToUP6qlHTPsBhBCa0L5f+9SrsgbiDy7sPXZU9/dtU12uqn+dr7HF3h0Rya0R
-         BQOA==
-X-Gm-Message-State: AOAM533/uFDsfz56eLijVse9XzUI16RQzhs9DgswteoYkE+LMQiPMNkW
-        ky/0FJlDmIa6NY1r9jCQDtC6EQ==
-X-Google-Smtp-Source: ABdhPJz85ZAdU8UaQR4yw4rp8r3Wg28lOdqcagt5/IEOF4rGJCE0fEmhemoSHOqR2Vs7mmnFNVSVAg==
-X-Received: by 2002:adf:8464:: with SMTP id 91mr4577259wrf.188.1612526687361;
-        Fri, 05 Feb 2021 04:04:47 -0800 (PST)
-Received: from localhost ([86.61.181.4])
-        by smtp.gmail.com with ESMTPSA id o12sm11814435wrx.82.2021.02.05.04.04.46
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=w6IhO9s40oec0IOKUurPh0EF/d7cv4coioK7fFZj4LQ=;
+        b=h0OcVXplzTmijzqoHbDmGA8dckUxXQR8X2dxDNDb4jCxTxsm4hUniJyrQ60c+KlHEn
+         j8dZa/lBTolghbKXgGmNxht2wJe32cZBDxb4lHBCzpq+1aVGJzbTfVZJz/UY3tw4vuod
+         pubLBaMGfEbGPQHB7sqr30AE/hhkMi/sleN8ZaKUNQ4qUUmAH+6WG6Jmcb5fwPaLSC3O
+         WAZWZCPfcA6NTWrD6kbZVgJ/he2feFwG2OAr2G77YpVWirboSIhZXl5i7GvllKJ0cv07
+         cmGSjQsBiQVxOq1SlFgjnrv5RVudaRG6dTwVKex+1NUdTjzZJ6fMljtdSTNGhC6dgcRk
+         AcgA==
+X-Gm-Message-State: AOAM531AvsGhObyd95lAZ0ttwqJoqre1q4yMua6I0zebczNbjUq03Oux
+        4IUc4aGp3j+x1pSdIrpZLvU=
+X-Google-Smtp-Source: ABdhPJwBexh4xI/1rmx/HQV+TJIDu6za4Ky6jCeJARIIc9+W8w3Zca33NATu5VKjlAWwrLT0aXbymg==
+X-Received: by 2002:a0c:f986:: with SMTP id t6mr3977209qvn.15.1612526713013;
+        Fri, 05 Feb 2021 04:05:13 -0800 (PST)
+Received: from localhost.localdomain ([138.199.10.106])
+        by smtp.gmail.com with ESMTPSA id v135sm9328298qka.98.2021.02.05.04.05.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Feb 2021 04:04:46 -0800 (PST)
-Date:   Fri, 5 Feb 2021 13:04:45 +0100
-From:   Jiri Pirko <jiri@resnulli.us>
-To:     Oleksandr Mazur <oleksandr.mazur@plvision.eu>
-Cc:     netdev@vger.kernel.org, dsahern@gmail.com, jiri@nvidia.com,
-        davem@davemloft.net, linux-kernel@vger.kernel.org, kuba@kernel.org
-Subject: Re: [PATCH iproute2-next V3] devlink: add support for port params
- get/set
-Message-ID: <20210205120445.GF4652@nanopsycho.orion>
-References: <20210202130445.5950-1-oleksandr.mazur@plvision.eu>
+        Fri, 05 Feb 2021 04:05:12 -0800 (PST)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     sammy@sammy.net, geert@linux-m68k.org,
+        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: [PATCH] arch: m68k: include: asm: Reconstruct the sentence in file sun3ints.h
+Date:   Fri,  5 Feb 2021 17:34:55 +0530
+Message-Id: <20210205120455.1289448-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210202130445.5950-1-oleksandr.mazur@plvision.eu>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tue, Feb 02, 2021 at 02:04:45PM CET, oleksandr.mazur@plvision.eu wrote:
->Add implementation for the port parameters
->getting/setting.
->Add bash completion for port param.
->Add man description for port param.
->
->Example:
->$ devlink dev param set netdevsim/netdevsim0/0 name test_port_parameter value false cmode runtime
->
->$ devlink port param show netdevsim/netdevsim0/0 name test_port_parameter
->netdevsim/netdevsim0/0:
->  name test_port_parameter type driver-specific
->    values:
->      cmode runtime value false
->
->$ devlink port  -jp param show netdevsim/netdevsim0/0 name test_port_parameter
->{
->    "param": {
->        "netdevsim/netdevsim0/0": [ {
->                "name": "test_port_parameter",
->                "type": "driver-specific",
->                "values": [ {
->                        "cmode": "runtime",
->                        "value": false
->                    } ]
->            } ]
->    }
->}
->
->Signed-off-by: Oleksandr Mazur <oleksandr.mazur@plvision.eu>
 
-Looks fine.
 
-Reviewed-by: Jiri Pirko <jiri@nvidia.com>
+s/fuck/"do anything"/
+
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+ arch/m68k/include/asm/sun3ints.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/m68k/include/asm/sun3ints.h b/arch/m68k/include/asm/sun3ints.h
+index 309d6e6a1374..1bbd76545d8f 100644
+--- a/arch/m68k/include/asm/sun3ints.h
++++ b/arch/m68k/include/asm/sun3ints.h
+@@ -27,7 +27,7 @@ extern void sun3_enable_interrupts (void);
+ extern void sun3_disable_interrupts (void);
+ extern volatile unsigned char* sun3_intreg;
+
+-/* master list of VME vectors -- don't fuck with this */
++/* master list of VME vectors -- don't do anything with this */
+ #define SUN3_VEC_FLOPPY		(IRQ_USER+0)
+ #define SUN3_VEC_VMESCSI0	(IRQ_USER+0)
+ #define SUN3_VEC_VMESCSI1	(IRQ_USER+1)
+--
+2.30.0
+
