@@ -2,120 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A928831171C
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 00:30:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE9CF3116D4
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 00:20:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229851AbhBEX26 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 18:28:58 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:42790 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232620AbhBEO2Q (ORCPT
+        id S231654AbhBEXQS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 18:16:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42620 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232432AbhBEO15 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 09:28:16 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612541134;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=JoM62AWSDevjens3EGjD01RZCxIT1WEOEpSFlKtGj24=;
-        b=JvWIw5ofG0aKMZplHyD5DfjQDfKn8S4LXm49BDoTYB1XYmECDfvqvsY8i6mr25ba9KSDIe
-        tseaJd630r+HEPkJdGe6zwL9ozX1UHpfjMm/ijyy+K5aPiX3L3+GPmI0YVkP7AZeXVDhtj
-        MNHA2I39T/t2HUZK+wRmbUff05AaGWQ=
-Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
- [209.85.160.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-246-3RiUaQ6-OyWvAkeC8yoVRw-1; Fri, 05 Feb 2021 11:05:33 -0500
-X-MC-Unique: 3RiUaQ6-OyWvAkeC8yoVRw-1
-Received: by mail-qt1-f198.google.com with SMTP id o14so5568986qtp.10
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 08:05:33 -0800 (PST)
+        Fri, 5 Feb 2021 09:27:57 -0500
+Received: from mail-oo1-xc31.google.com (mail-oo1-xc31.google.com [IPv6:2607:f8b0:4864:20::c31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A96BC061222
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 08:05:50 -0800 (PST)
+Received: by mail-oo1-xc31.google.com with SMTP id 123so1716909ooi.13
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 08:05:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=i+s2FZx53SQqxDw+1zONomhnnt1uwtiTU8GemVlvAO0=;
+        b=fot037dobwcRId/9HL/KeJ7m7AtvNPnIuli3LuaUHiSIuMoDWtJEP0R7+qmv1XaKXN
+         9lT/yZg+DvR5DJxSVbT/lHnMC7MzqKCFAYUMjntE8M++BVlJfTMLSTs6nX81Y74gwWW3
+         IU2Y/KNJdxJJ1X+KJbw6atVuEPR9a/mgLAf1/6qVEwEGW8Q0YpT1EeZNzMOJOpK6uhvg
+         87FLh4N4l5LnQh/5hkxoLbtXKVwKXvg7W26hhgTKgJ+mQJ53e+OHdZjKGXV/NkWXzR+m
+         psZGPWWMLEkohzZdJg9ud7dYimzBnw6Kc04he1gOqmGGXv7hU6S7Lp5srqyjXz6n31AR
+         gFPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=JoM62AWSDevjens3EGjD01RZCxIT1WEOEpSFlKtGj24=;
-        b=aPxeQcs0Q+9DwIZFh0N8Pep0L3/39ihT7rm9k3K1462v9Qy4CadcVlvRyxlpdkAkM0
-         yJsVMglamBY9CIBM4zX9tHxgRM1OVw7BsvwSYWkVzwIRi6iYN2MooVZdFGlc4L8Rm4M7
-         ZLRqFdGH63Q+foOOa2IDUOicdsgfFxxSOiIxE5GOCA5KDD6HLZF99hbVroF8DGFzgy38
-         SXaeL1yDvNCL4YTTx600HDwZVfmt0jHh4MowQ5BmOJqx2ltPWnkkyvsS7olpQ0jY8tjR
-         uTB6Z7vS+gVkwoBh3bO64emXCNHo/8tFg6FhYpctFGHYuUIPANY2cpNgN38F6838UMaT
-         blDQ==
-X-Gm-Message-State: AOAM533YGVQTSk/N8xlIDrHr9zGzvcEDqP8lDlKlNtgobAAMRrOSCYuH
-        NVltHGBXQmoUWy0Rj6oWv7ZDVxe4z95MzCV/MZv7i49yPxRSIMJ5VZr7hS/+aFhAWkx1CfFa/rB
-        H9LKUXRmDKPpl/skJie03joet
-X-Received: by 2002:a37:b346:: with SMTP id c67mr5077317qkf.212.1612541132732;
-        Fri, 05 Feb 2021 08:05:32 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzQM80RYsZTBhWjWiOiR1RHPvEgAzVUDDgbkzNLvCUyrFrGIeU8bK80LifWphXArYXXlDyxcA==
-X-Received: by 2002:a37:b346:: with SMTP id c67mr5077289qkf.212.1612541132526;
-        Fri, 05 Feb 2021 08:05:32 -0800 (PST)
-Received: from xz-x1 (bras-vprn-toroon474qw-lp130-20-174-93-89-182.dsl.bell.ca. [174.93.89.182])
-        by smtp.gmail.com with ESMTPSA id o10sm8653688qtg.37.2021.02.05.08.05.30
+        bh=i+s2FZx53SQqxDw+1zONomhnnt1uwtiTU8GemVlvAO0=;
+        b=GMBZD+PlxVh2PSraDtZstTD0rWysBBLmKvuzy/R1/ESLhDpmQOE1mIyDrluvbNLqe6
+         drBpzckl0j1YTb/ervq24XhrH+Xc1y4UcOS3LthZP8BDN/Xmo674qcE5yQQziguVdXQw
+         WtJqe4pWVsBvUAoMk0FV7sbwPuwaDlGE0WM2/A7p3NYEPF5U7JdhSfJPLaR2sZpRGBwI
+         uXY3klg02vi+tG0MwtewfXDGJzL02L1Hu7SmmVnDhOgXj+17xZ/CraUkxw4qIb+RjI7N
+         QMc3rmnW3y9R3AhXFv5kf+xdtj04YOvFu9Ak8H+l+EBctMiEgpM3PYPf/touzAS05yO0
+         1NKw==
+X-Gm-Message-State: AOAM5300gF63Kz2NhlwMbYavNuM6hvXkBbR6ZW3XOBk3NSb6nC22MTYk
+        rZlQs996UTar+tktx3s4ND3O6A==
+X-Google-Smtp-Source: ABdhPJwCsMQUz4jaikEzFIzuv4+PIPPBltgRkatECk/BpkPrrPOkmq7zHAw9E2z6WlXuG+pdO5L5cg==
+X-Received: by 2002:a4a:e99b:: with SMTP id s27mr242342ood.87.1612541149476;
+        Fri, 05 Feb 2021 08:05:49 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id y66sm990059oig.46.2021.02.05.08.05.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Feb 2021 08:05:31 -0800 (PST)
-Date:   Fri, 5 Feb 2021 11:05:30 -0500
-From:   Peter Xu <peterx@redhat.com>
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Kirill Shutemov <kirill@shutemov.name>,
-        Wei Zhang <wzam@amazon.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Gal Pressman <galpress@amazon.com>, Jan Kara <jack@suse.cz>,
-        Jann Horn <jannh@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH v2 4/4] hugetlb: Do early cow when page pinned on src mm
-Message-ID: <20210205160530.GZ6468@xz-x1>
-References: <20210204145033.136755-1-peterx@redhat.com>
- <20210204145033.136755-5-peterx@redhat.com>
- <d45d4ce3-f386-708b-0f7a-4950df6721d9@oracle.com>
- <20210205014328.GW6468@xz-x1>
- <4344397d-cf08-b502-d5ff-76f19e778dfe@oracle.com>
+        Fri, 05 Feb 2021 08:05:48 -0800 (PST)
+Date:   Fri, 5 Feb 2021 10:05:47 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Asutosh Das <asutoshd@codeaurora.org>,
+        Jack Pham <jackp@codeaurora.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/3] phy: qcom-qmp: Add UFS V5 registers found in
+ SM8350
+Message-ID: <YB1s2/lo0ud82anm@builder.lan>
+References: <20210204165805.62235-1-vkoul@kernel.org>
+ <20210204165805.62235-3-vkoul@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <4344397d-cf08-b502-d5ff-76f19e778dfe@oracle.com>
+In-Reply-To: <20210204165805.62235-3-vkoul@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 04, 2021 at 09:11:24PM -0800, Mike Kravetz wrote:
+On Thu 04 Feb 10:58 CST 2021, Vinod Koul wrote:
 
-[...]
-
-> >>> @@ -3787,7 +3803,7 @@ int copy_hugetlb_page_range(struct mm_struct *dst, struct mm_struct *src,
-> >>>  		dst_entry = huge_ptep_get(dst_pte);
-> >>>  		if ((dst_pte == src_pte) || !huge_pte_none(dst_entry))
-> >>>  			continue;
-> >>> -
-> >>> +again:
-> >>>  		dst_ptl = huge_pte_lock(h, dst, dst_pte);
-> >>>  		src_ptl = huge_pte_lockptr(h, src, src_pte);
-> >>>  		spin_lock_nested(src_ptl, SINGLE_DEPTH_NESTING);
-> > 
-> > Side question: Mike, do you know why we need this lock_nested()?  Could the src
-> > lock be taken due to any reason already?  It confused me when I read the chunk.
+> Add the registers for UFS found in SM8350. The UFS phy used in SM8350
+> seems to have same offsets as V5 phy, although Documentation for that is
+> lacking.
 > 
-> I see that it was added with commit 4647875819aa.  That was when huge pages
-> used the single per-mm ptl.  Lockdep seemed to complain about taking
-> &mm->page_table_lock twice.   Certainly, source and destination mm can not
-> be the same.  Right?
 
-Right, at least that's my understanding..
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
-> I do not have the full history, but it 'looks' like
-> lockdep might have been confused and this was added to keep it quiet.
+Regards,
+Bjorn
+
+> Signed-off-by: Vinod Koul <vkoul@kernel.org>
+> ---
+>  drivers/phy/qualcomm/phy-qcom-qmp.h | 47 +++++++++++++++++++++++++++++
+>  1 file changed, 47 insertions(+)
 > 
-> BTW - Copy page range for 'normal' pages has the same spin_lock_nested().
-
-Yes.  I'll need to take the same lock in v3, so I think I'll just follow.
-
-Thanks,
-
--- 
-Peter Xu
-
+> diff --git a/drivers/phy/qualcomm/phy-qcom-qmp.h b/drivers/phy/qualcomm/phy-qcom-qmp.h
+> index dff7be5a1cc1..71ce3aa174ae 100644
+> --- a/drivers/phy/qualcomm/phy-qcom-qmp.h
+> +++ b/drivers/phy/qualcomm/phy-qcom-qmp.h
+> @@ -824,6 +824,32 @@
+>  #define QPHY_V4_PCS_PCIE_PRESET_P10_PRE			0xbc
+>  #define QPHY_V4_PCS_PCIE_PRESET_P10_POST		0xe0
+>  
+> +/* Only for QMP V5 PHY - QSERDES COM registers */
+> +#define QSERDES_V5_COM_PLL_IVCO				0x058
+> +#define QSERDES_V5_COM_CP_CTRL_MODE0			0x074
+> +#define QSERDES_V5_COM_CP_CTRL_MODE1			0x078
+> +#define QSERDES_V5_COM_PLL_RCTRL_MODE0			0x07c
+> +#define QSERDES_V5_COM_PLL_RCTRL_MODE1			0x080
+> +#define QSERDES_V5_COM_PLL_CCTRL_MODE0			0x084
+> +#define QSERDES_V5_COM_PLL_CCTRL_MODE1			0x088
+> +#define QSERDES_V5_COM_SYSCLK_EN_SEL			0x094
+> +#define QSERDES_V5_COM_LOCK_CMP_EN			0x0a4
+> +#define QSERDES_V5_COM_LOCK_CMP1_MODE0			0x0ac
+> +#define QSERDES_V5_COM_LOCK_CMP2_MODE0			0x0b0
+> +#define QSERDES_V5_COM_LOCK_CMP1_MODE1			0x0b4
+> +#define QSERDES_V5_COM_DEC_START_MODE0			0x0bc
+> +#define QSERDES_V5_COM_LOCK_CMP2_MODE1			0x0b8
+> +#define QSERDES_V5_COM_DEC_START_MODE1			0x0c4
+> +#define QSERDES_V5_COM_VCO_TUNE_MAP			0x10c
+> +#define QSERDES_V5_COM_VCO_TUNE_INITVAL2		0x124
+> +#define QSERDES_V5_COM_HSCLK_SEL			0x158
+> +#define QSERDES_V5_COM_HSCLK_HS_SWITCH_SEL		0x15c
+> +#define QSERDES_V5_COM_BIN_VCOCAL_CMP_CODE1_MODE0	0x1ac
+> +#define QSERDES_V5_COM_BIN_VCOCAL_CMP_CODE2_MODE0	0x1b0
+> +#define QSERDES_V5_COM_BIN_VCOCAL_CMP_CODE1_MODE1	0x1b4
+> +#define QSERDES_V5_COM_BIN_VCOCAL_HSCLK_SEL		0x1bc
+> +#define QSERDES_V5_COM_BIN_VCOCAL_CMP_CODE2_MODE1	0x1b8
+> +
+>  /* Only for QMP V5 PHY - TX registers */
+>  #define QSERDES_V5_TX_RES_CODE_LANE_TX			0x34
+>  #define QSERDES_V5_TX_RES_CODE_LANE_RX			0x38
+> @@ -837,6 +863,10 @@
+>  #define QSERDES_V5_TX_RCV_DETECT_LVL_2			0xa4
+>  #define QSERDES_V5_TX_TRAN_DRVR_EMP_EN			0xc0
+>  #define QSERDES_V5_TX_PI_QEC_CTRL			0xe4
+> +#define QSERDES_V5_TX_PWM_GEAR_1_DIVIDER_BAND0_1	0x178
+> +#define QSERDES_V5_TX_PWM_GEAR_2_DIVIDER_BAND0_1	0x17c
+> +#define QSERDES_V5_TX_PWM_GEAR_3_DIVIDER_BAND0_1	0x180
+> +#define QSERDES_V5_TX_PWM_GEAR_4_DIVIDER_BAND0_1	0x184
+>  
+>  /* Only for QMP V5 PHY - RX registers */
+>  #define QSERDES_V5_RX_UCDR_FO_GAIN			0x008
+> @@ -893,6 +923,23 @@
+>  #define QSERDES_V5_RX_DCC_CTRL1				0x1a8
+>  #define QSERDES_V5_RX_VTH_CODE				0x1b0
+>  
+> +/* Only for QMP V5 PHY - UFS PCS registers */
+> +#define QPHY_V5_PCS_UFS_TIMER_20US_CORECLK_STEPS_MSB	0x00c
+> +#define QPHY_V5_PCS_UFS_TIMER_20US_CORECLK_STEPS_LSB	0x010
+> +#define QPHY_V5_PCS_UFS_PLL_CNTL			0x02c
+> +#define QPHY_V5_PCS_UFS_TX_LARGE_AMP_DRV_LVL		0x030
+> +#define QPHY_V5_PCS_UFS_TX_SMALL_AMP_DRV_LVL		0x038
+> +#define QPHY_V5_PCS_UFS_TX_HSGEAR_CAPABILITY		0x074
+> +#define QPHY_V5_PCS_UFS_RX_HSGEAR_CAPABILITY		0x0b4
+> +#define QPHY_V5_PCS_UFS_DEBUG_BUS_CLKSEL		0x124
+> +#define QPHY_V5_PCS_UFS_RX_MIN_HIBERN8_TIME		0x150
+> +#define QPHY_V5_PCS_UFS_RX_SIGDET_CTRL1			0x154
+> +#define QPHY_V5_PCS_UFS_RX_SIGDET_CTRL2			0x158
+> +#define QPHY_V5_PCS_UFS_TX_PWM_GEAR_BAND		0x160
+> +#define QPHY_V5_PCS_UFS_TX_HS_GEAR_BAND			0x168
+> +#define QPHY_V5_PCS_UFS_TX_MID_TERM_CTRL1		0x1d8
+> +#define QPHY_V5_PCS_UFS_MULTI_LANE_CTRL1		0x1e0
+> +
+>  /* Only for QMP V5 PHY - USB3 have different offsets than V4 */
+>  #define QPHY_V5_PCS_USB3_POWER_STATE_CONFIG1		0x300
+>  #define QPHY_V5_PCS_USB3_AUTONOMOUS_MODE_STATUS		0x304
+> -- 
+> 2.26.2
+> 
