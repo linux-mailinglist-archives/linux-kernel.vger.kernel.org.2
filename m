@@ -2,239 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96D7D3116B3
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 00:19:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C03E13116AB
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 00:19:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231443AbhBEXKv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 18:10:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43916 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231210AbhBEOdn (ORCPT
+        id S231330AbhBEXJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 18:09:57 -0500
+Received: from wout4-smtp.messagingengine.com ([64.147.123.20]:44351 "EHLO
+        wout4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232710AbhBEOeG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 09:33:43 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38665C06178A;
-        Fri,  5 Feb 2021 08:11:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:Message-ID:
-        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=+0WkhFCz6xUyn9L1glTxulg8Gxs8XBPGDsfl0JDzXmE=; b=IIg/2StJ1jRXNrytHsmqe6H2Xi
-        8qeP6CtpPh3AlzHOVKMqOcwIR3vt4x1CNbLe5XWi7Ov4dyCykq5r8j46achz1tAkk1JCL7rFctGKd
-        RgiKmJJAR2LBQS20GecXa68fpRAQJc+uxU7Votudqd5/UecOgWFoS2KFcGFN2g8cTS+wjytYj48Rl
-        8wrVzn0UlB6sUgAGYv7EQF0iGK5r7qQPmjVblVlnLq31PDAj/VuNyY05uC4GD2uUv2dD6DWfajQAa
-        6XbNs9tdoForYG2NT4TobVsxFE4aM61DMdExbgz9pufSB5/Mzw0yMg/5lzi645kncAHGhps1O8TCa
-        neVXHZRA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1l83hu-002UPw-Ed; Fri, 05 Feb 2021 16:11:44 +0000
-Date:   Fri, 5 Feb 2021 16:11:42 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Kent Overstreet <kent.overstreet@gmail.com>
-Subject: [RFC] Better page cache error handling
-Message-ID: <20210205161142.GI308988@casper.infradead.org>
+        Fri, 5 Feb 2021 09:34:06 -0500
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.west.internal (Postfix) with ESMTP id A71127DA;
+        Fri,  5 Feb 2021 11:12:01 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Fri, 05 Feb 2021 11:12:02 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:content-transfer-encoding:in-reply-to; s=fm2; bh=P
+        RZqKf7lsxMpUiRCiHe2f26y9RuSEPh83D4t+a5YnDI=; b=O9WE39yuJimMdhmEK
+        Oh7kP+0ctQ0BbS0Gzg4CCtNU/EhOTAM6VDNVnPpgeYLyO8QEZKBGETWjAWIKRz5u
+        C8b+PXuwuFo9hCGjnG90rL66U93CxIa7kVQKdd1kkCwuYrKciEY9kwFrg9I9dJ7d
+        70STTT7wbu122UYlDN3l45xNpJRZ4Fixo4uDcKbAXnjE7/Dx58sauRbq54dWPHxk
+        1tFe00BJHBCnYq3i94K/Y4jM9GdvSXm5JoN7X1K1wjiIfLHniU5kHMgYlA6Hvgrl
+        F6Yn6qgkaXHMHg0sk7ALhwNH7wJKfiiVubWshmgwBM5xTXwIg3EH8iST+4BaELTl
+        FAGrw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm2; bh=PRZqKf7lsxMpUiRCiHe2f26y9RuSEPh83D4t+a5Yn
+        DI=; b=HvZ4TyXYoBJjChzAjp3LsoVIFGD5X20D5V/Q8mPiaKvWHBr+VF7EOMRyW
+        0MTbwiPPFOWxysTHf0lsgX+dT7i49w4BDjrWDbJjAQb8ECqNXDL9RjBKf0iN4e+g
+        vvvNoUXUGfL5gDimuQwOX6Aer4FoKo1wh8TELN9wkeVQh7+Bvv3mShB3GLG/3Cdg
+        H5bMTkPWZctNEh70RvxZNO5BC82SSL/TuVtDz2OQspGctBzPBjJI2B6e3dMv1sVz
+        3PWOdRxkcgZEfo9jCehUFXeowOqIiSfe1mbhRUMGOPdeFh0bJvvgd1gZl0FG8sLS
+        rlqXxXXg9CCoAFct6laH5k2S7GExg==
+X-ME-Sender: <xms:UG4dYFwmsp1RaDLckf2VZIU-JwkMHrvybMRk1-7W1bKvZampdLjPCw>
+    <xme:UG4dYFN-lsDLS8uvU77R3udQ7S4ARSz2vHg4jv8oTEx0Qp2kcxYRkFIP6WvL5cJ0k
+    oVJu59QP20alFCQiGQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrgeeigdejudcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecunecujfgurhepfffhvffukfhfgggtugfgjgesthhqre
+    dttddtjeenucfhrhhomhepofgrgihimhgvucftihhprghrugcuoehmrgigihhmvgestggv
+    rhhnohdrthgvtghhqeenucggtffrrghtthgvrhhnpefgjeejkeejtddtteehtdefleetfe
+    ffuddvvedvhfdtieduteeljeegleeffeeuvdenucfkphepledtrdekledrieekrdejieen
+    ucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehmrgigih
+    hmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:UG4dYMNQO0U0KI1IxfR8IgNIw_avqnycneeuA7m_S7058DnF3FOJkQ>
+    <xmx:UG4dYPSBPxQIQI4849S5dE9nJB2k6lMebff34WHqaweaPsNTpybeuQ>
+    <xmx:UG4dYGCWuiH4HEdCR1a_Ifw98FBxQ5qGqERdgNfz9XEQJ6S_yeLdFw>
+    <xmx:UW4dYBdSqng_4wvBTrT9OO2eSjIJ1hL3ntUY0TrsiK3smG1qFJFqQg>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 7848324005A;
+        Fri,  5 Feb 2021 11:12:00 -0500 (EST)
+Date:   Fri, 5 Feb 2021 17:11:58 +0100
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     =?utf-8?B?54+t5rab?= <fengzheng923@gmail.com>
+Cc:     thierry.reding@gmail.com,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, wens@csie.org,
+        linux-kernel@vger.kernel.org, linux-pwm@vger.kernel.org
+Subject: Re: [PATCH v2] pwm: sunxi: Add Allwinner SoC PWM controller driver
+Message-ID: <20210205161158.gqinjayxcihtiofe@gilmour>
+References: <20210203125317.1975-1-fengzheng923@gmail.com>
+ <20210203154628.infi5jnlofdrysvs@gilmour>
+ <CAE=m61-oXn8CkzUpSxkuS-gLkxjwd8wSeL42Q5T+27_V89xgNw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAE=m61-oXn8CkzUpSxkuS-gLkxjwd8wSeL42Q5T+27_V89xgNw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Scenario:
+Hi,
 
-You have a disk with a bad sector.  This disk will take 30 seconds of
-trying progressively harder to recover the sector before timing the
-I/O out and returning BLK_STS_MEDIUM to the filesystem.  Unfortunately
-for you, this bad sector happens to have landed in index.html on your
-webserver which gets one hit per second.  You have configured 500
-threads on your webserver.
+On Thu, Feb 04, 2021 at 11:47:34AM +0800, =E7=8F=AD=E6=B6=9B wrote:
+> Maxime Ripard <maxime@cerno.tech> =E4=BA=8E2021=E5=B9=B42=E6=9C=883=E6=97=
+=A5=E5=91=A8=E4=B8=89 =E4=B8=8B=E5=8D=8811:46=E5=86=99=E9=81=93=EF=BC=9A
+>=20
+> > Hi,
+> >
+> > On Wed, Feb 03, 2021 at 08:53:17PM +0800, Ban Tao wrote:
+> > > From: Ban Tao <fengzheng923@gmail.com>
+> > >
+> > > The Allwinner R818, A133, R329, V536 and V833 has a new PWM controller
+> > > IP compared to the older Allwinner SoCs.
+> > >
+> > > Signed-off-by: Ban Tao <fengzheng923@gmail.com>
+> >
+> > Thanks for your patch. There's a bunch of warnings reported by
+> > checkpatch --strict, they should be addressed.
+> >
+> > > ---
+> > > v1->v2:
+> > > 1.delete unnecessary code.
+> > > 2.using a named define for some constants.
+> > > 3.Add comment in sun50i_pwm_config function.
+> > > 4.using dev_err_probe() for error handling.
+> > > 5.disable the clock after pwmchip_remove().
+> > > ---
+> > >  MAINTAINERS              |   6 +
+> > >  drivers/pwm/Kconfig      |  11 ++
+> > >  drivers/pwm/Makefile     |   1 +
+> > >  drivers/pwm/pwm-sun50i.c | 348 +++++++++++++++++++++++++++++++++++++=
+++
+> > >  4 files changed, 366 insertions(+)
+> > >  create mode 100644 drivers/pwm/pwm-sun50i.c
+> > >
+> > > diff --git a/MAINTAINERS b/MAINTAINERS
+> > > index e73636b75f29..d33cf1b69b43 100644
+> > > --- a/MAINTAINERS
+> > > +++ b/MAINTAINERS
+> > > @@ -737,6 +737,12 @@ L:       linux-media@vger.kernel.org
+> > >  S:   Maintained
+> > >  F:   drivers/staging/media/sunxi/cedrus/
+> > >
+> > > +ALLWINNER PWM DRIVER
+> > > +M:   Ban Tao <fengzheng923@gmail.com>
+> > > +L:   linux-pwm@vger.kernel.org
+> > > +S:   Maintained
+> > > +F:   drivers/pwm/pwm-sun50i.c
+> > > +
+> > >  ALPHA PORT
+> > >  M:   Richard Henderson <rth@twiddle.net>
+> > >  M:   Ivan Kokshaysky <ink@jurassic.park.msu.ru>
+> > > diff --git a/drivers/pwm/Kconfig b/drivers/pwm/Kconfig
+> > > index 9a4f66ae8070..17635a8f2ed3 100644
+> > > --- a/drivers/pwm/Kconfig
+> > > +++ b/drivers/pwm/Kconfig
+> > > @@ -552,6 +552,17 @@ config PWM_SUN4I
+> > >         To compile this driver as a module, choose M here: the module
+> > >         will be called pwm-sun4i.
+> > >
+> > > +config PWM_SUN50I
+> > > +     tristate "Allwinner enhanced PWM support"
+> > > +     depends on ARCH_SUNXI || COMPILE_TEST
+> > > +     depends on HAS_IOMEM && COMMON_CLK
+> > > +     help
+> > > +       Enhanced PWM framework driver for Allwinner R818, A133, R329,
+> > > +       V536 and V833 SoCs.
+> > > +
+> > > +       To compile this driver as a module, choose M here: the module
+> > > +       will be called pwm-sun50i.
+> > > +
+> >
+> > Even though it's unfortunate, there's a bunch of other SoCs part of the
+> > sun50i family that are supported by the sun4i driver.
+> >
+> > Which SoC introduced that new design? It's usually the name we pick up
+> > then.
+> >
+>=20
+> In fact, some SoCs has not been supported by the sun4i driver, such as v8=
+33,
+> v536, r818, a133 and r329.
+> v833 and v536 are part of the sun8i family, but r818, a133 and r329 are
+> part of the sun50i family.
 
-Today:
+Indeed, I missed that sorry.=20
 
-We allocate a page and try to read it.  29 threads pile up waiting
-for the page lock in filemap_update_page() (or whatever variant of
-that you're looking at; I'm talking about linux-next).  The original
-requester gets the error and returns -EIO to userspace.  One of the
-lucky 29 waiting threads sends another read.  30 more threads pile up
-while it's processing.  Eventually, all 500 threads of your webserver
-are sleeping waiting for their turn to get an EIO.
+> So,I'm confused, how do choose the name of this driver?
 
-With the below patch:
+Just go for the earliest SoC that introduced that design. What was the
+first SoC to use it?
 
-We allocate a page and try to read it.  29 threads pile up waiting
-for the page lock in filemap_update_page().  The error returned by the
-original I/O is shared between all 29 waiters as well as being returned
-to the requesting thread.  The next request for index.html will send
-another I/O, and more waiters will pile up trying to get the page lock,
-but at no time will more than 30 threads be waiting for the I/O to fail.
+> > > +static const struct sun50i_pwm_data sun8i_pwm_data_c9 =3D {
+> > > +     .npwm =3D 9,
+> > > +};
+> > > +
+> > > +static const struct sun50i_pwm_data sun50i_pwm_data_c16 =3D {
+> > > +     .npwm =3D 16,
+> > > +};
+> > > +
+> > > +static const struct of_device_id sun50i_pwm_dt_ids[] =3D {
+> > > +     {
+> > > +             .compatible =3D "allwinner,sun8i-v833-pwm",
+> > > +             .data =3D &sun8i_pwm_data_c9,
+> > > +     }, {
+> > > +             .compatible =3D "allwinner,sun8i-v536-pwm",
+> > > +             .data =3D &sun8i_pwm_data_c9,
+> > > +     }, {
+> > > +             .compatible =3D "allwinner,sun50i-r818-pwm",
+> > > +             .data =3D &sun50i_pwm_data_c16,
+> > > +     }, {
+> > > +             .compatible =3D "allwinner,sun50i-a133-pwm",
+> > > +             .data =3D &sun50i_pwm_data_c16,
+> > > +     }, {
+> > > +             .compatible =3D "allwinner,sun50i-r329-pwm",
+> > > +             .data =3D &sun8i_pwm_data_c9,
+> > > +     }, {
+> > > +             /* sentinel */
+> > > +     },
+> > > +};
+> > > +MODULE_DEVICE_TABLE(of, sun50i_pwm_dt_ids);
+> >
+> > What are the differences between all these SoCs? If there's none between
+> > the v833, v536 and R329, and between the r818 and the A133, you should
+> > use the same compatible.
+>=20
+> Compared with the sun4i driver, this patch is a completely different PWM =
+IP
+> controller.
 
-----
+Sure, I didn't mean to compare it to sun4i. What I meant was that as far
+as these struct goes, the A133 and the R818 look to have the same PWM
+controller. Just like the v833, v536 and R329.
 
-Individual filesystems will have to be modified to call unlock_page_err()
-to take advantage of this.  Unconverted filesystems will continue to
-behave as in the first scenario.
+If the PWM controllers are indeed identical across those SoCs, you can
+just use two compatibles, one for the PWM with 9 channels (again, the
+earliest SoC among the V833, v536 and r329), and one for the PWM with 16
+channels.
 
-I've only tested it lightly, but it doesn't seem to break anything.
-It needs some targetted testing with error injection which I haven't
-done yet.  It probably also needs some refinement to not report
-errors from readahead.  Also need to audit the other callers of
-put_and_wait_on_page_locked().  This patch interferes with the page
-folio work, so I'm not planning on pushing it for a couple of releases.
+None of those SoCs are supported at the moment in Linux though, so it
+would make more sense to support them first before adding a new driver
+for those SoCs, it's gonna be dead code otherwise.
 
-----
-
-diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
-index 16a1e82e3aeb..faeb6c4af7fd 100644
---- a/fs/iomap/buffered-io.c
-+++ b/fs/iomap/buffered-io.c
-@@ -183,7 +183,7 @@ iomap_read_page_end_io(struct bio_vec *bvec, int error)
- 	}
- 
- 	if (!iop || atomic_sub_and_test(bvec->bv_len, &iop->read_bytes_pending))
--		unlock_page(page);
-+		unlock_page_err(page, error);
- }
- 
- static void
-diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
-index fda84e88b2ba..e750881bedfe 100644
---- a/include/linux/pagemap.h
-+++ b/include/linux/pagemap.h
-@@ -564,11 +564,13 @@ struct wait_page_key {
- 	struct page *page;
- 	int bit_nr;
- 	int page_match;
-+	int err;
- };
- 
- struct wait_page_queue {
- 	struct page *page;
- 	int bit_nr;
-+	int err;
- 	wait_queue_entry_t wait;
- };
- 
-@@ -591,6 +593,7 @@ extern int __lock_page_async(struct page *page, struct wait_page_queue *wait);
- extern int __lock_page_or_retry(struct page *page, struct mm_struct *mm,
- 				unsigned int flags);
- extern void unlock_page(struct page *page);
-+extern void unlock_page_err(struct page *page, int err);
- extern void unlock_page_fscache(struct page *page);
- 
- /*
-diff --git a/mm/filemap.c b/mm/filemap.c
-index 97ff7294516e..515e0136f00f 100644
---- a/mm/filemap.c
-+++ b/mm/filemap.c
-@@ -1077,6 +1077,7 @@ static int wake_page_function(wait_queue_entry_t *wait, unsigned mode, int sync,
- 	 * afterwards to avoid any races. This store-release pairs
- 	 * with the load-acquire in wait_on_page_bit_common().
- 	 */
-+	wait_page->err = key->err;
- 	smp_store_release(&wait->flags, flags | WQ_FLAG_WOKEN);
- 	wake_up_state(wait->private, mode);
- 
-@@ -1094,7 +1095,7 @@ static int wake_page_function(wait_queue_entry_t *wait, unsigned mode, int sync,
- 	return (flags & WQ_FLAG_EXCLUSIVE) != 0;
- }
- 
--static void wake_up_page_bit(struct page *page, int bit_nr)
-+static void wake_up_page_bit(struct page *page, int bit_nr, int err)
- {
- 	wait_queue_head_t *q = page_waitqueue(page);
- 	struct wait_page_key key;
-@@ -1103,6 +1104,7 @@ static void wake_up_page_bit(struct page *page, int bit_nr)
- 
- 	key.page = page;
- 	key.bit_nr = bit_nr;
-+	key.err = err;
- 	key.page_match = 0;
- 
- 	bookmark.flags = 0;
-@@ -1152,7 +1154,7 @@ static void wake_up_page(struct page *page, int bit)
- {
- 	if (!PageWaiters(page))
- 		return;
--	wake_up_page_bit(page, bit);
-+	wake_up_page_bit(page, bit, 0);
- }
- 
- /*
-@@ -1214,6 +1216,7 @@ static inline int wait_on_page_bit_common(wait_queue_head_t *q,
- 	wait->func = wake_page_function;
- 	wait_page.page = page;
- 	wait_page.bit_nr = bit_nr;
-+	wait_page.err = 0;
- 
- repeat:
- 	wait->flags = 0;
-@@ -1325,8 +1328,10 @@ static inline int wait_on_page_bit_common(wait_queue_head_t *q,
- 	 */
- 	if (behavior == EXCLUSIVE)
- 		return wait->flags & WQ_FLAG_DONE ? 0 : -EINTR;
-+	if (behavior != DROP)
-+		wait_page.err = 0;
- 
--	return wait->flags & WQ_FLAG_WOKEN ? 0 : -EINTR;
-+	return wait->flags & WQ_FLAG_WOKEN ? wait_page.err : -EINTR;
- }
- 
- void wait_on_page_bit(struct page *page, int bit_nr)
-@@ -1408,8 +1413,9 @@ static inline bool clear_bit_unlock_is_negative_byte(long nr, volatile void *mem
- #endif
- 
- /**
-- * unlock_page - unlock a locked page
-+ * unlock_page_err - unlock a locked page
-  * @page: the page
-+ * @err: errno to be communicated to waiters
-  *
-  * Unlocks the page and wakes up sleepers in wait_on_page_locked().
-  * Also wakes sleepers in wait_on_page_writeback() because the wakeup
-@@ -1422,13 +1428,19 @@ static inline bool clear_bit_unlock_is_negative_byte(long nr, volatile void *mem
-  * portably (architectures that do LL/SC can test any bit, while x86 can
-  * test the sign bit).
-  */
--void unlock_page(struct page *page)
-+void unlock_page_err(struct page *page, int err)
- {
- 	BUILD_BUG_ON(PG_waiters != 7);
- 	page = compound_head(page);
- 	VM_BUG_ON_PAGE(!PageLocked(page), page);
- 	if (clear_bit_unlock_is_negative_byte(PG_locked, &page->flags))
--		wake_up_page_bit(page, PG_locked);
-+		wake_up_page_bit(page, PG_locked, err);
-+}
-+EXPORT_SYMBOL(unlock_page_err);
-+
-+void unlock_page(struct page *page)
-+{
-+	unlock_page_err(page, 0);
- }
- EXPORT_SYMBOL(unlock_page);
- 
-@@ -1446,7 +1458,7 @@ void unlock_page_fscache(struct page *page)
- 	page = compound_head(page);
- 	VM_BUG_ON_PAGE(!PagePrivate2(page), page);
- 	clear_bit_unlock(PG_fscache, &page->flags);
--	wake_up_page_bit(page, PG_fscache);
-+	wake_up_page_bit(page, PG_fscache, 0);
- }
- EXPORT_SYMBOL(unlock_page_fscache);
- 
-@@ -2298,8 +2310,11 @@ static int filemap_update_page(struct kiocb *iocb,
- 		if (iocb->ki_flags & (IOCB_NOWAIT | IOCB_NOIO))
- 			return -EAGAIN;
- 		if (!(iocb->ki_flags & IOCB_WAITQ)) {
--			put_and_wait_on_page_locked(page, TASK_KILLABLE);
--			return AOP_TRUNCATED_PAGE;
-+			error = put_and_wait_on_page_locked(page,
-+					TASK_KILLABLE);
-+			if (!error)
-+				return AOP_TRUNCATED_PAGE;
-+			return error;
- 		}
- 		error = __lock_page_async(page, iocb->ki_waitq);
- 		if (error)
+Maxime
