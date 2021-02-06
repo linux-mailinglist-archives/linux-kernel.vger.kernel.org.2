@@ -2,111 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 610BD311CEC
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 12:38:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC9CB311CED
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 12:38:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229729AbhBFLiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Feb 2021 06:38:18 -0500
-Received: from mout.gmx.net ([212.227.17.22]:44837 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229529AbhBFLiN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Feb 2021 06:38:13 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1612611390;
-        bh=1gDMzBOXApT4dZra9NexIlsNZan3JK+JlZ5frPub26g=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=VI/wp6yRSpIKh1M3XxuXpeaC1ZpgFy7/NsKNcWJyyIheL9BITBY7gH1GKlsIypmnm
-         oHjftHSh57LF4cTPBQSBDdbjKcfPsChmLQmmn14DtToxG8sso/+62lNN2cUDgPSE7l
-         e3GUcCiel/nWhrnhliO0YqZ4LmPgNxs64B9LGnh4=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [192.168.1.167] ([37.4.249.89]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MIMbU-1lBazy0ywu-00EOo2; Sat, 06
- Feb 2021 12:36:30 +0100
-Subject: Re: [RFC/PATCH 02/11] dt-bindings: soc: bcm: brcm,bcm2835-pm: Add
- support for bcm2711
-To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        f.fainelli@gmail.com, bcm-kernel-feedback-list@broadcom.com,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>
-Cc:     phil@raspberrypi.com, Rob Herring <robh+dt@kernel.org>,
-        linux-kernel@vger.kernel.org
-References: <20210205135249.2924-1-nsaenzjulienne@suse.de>
- <20210205135249.2924-3-nsaenzjulienne@suse.de>
-From:   Stefan Wahren <wahrenst@gmx.net>
-Message-ID: <aedc0d72-b160-b35c-edbc-c43bae031741@gmx.net>
-Date:   Sat, 6 Feb 2021 12:36:28 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S229704AbhBFLiH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Feb 2021 06:38:07 -0500
+Received: from mail-wr1-f44.google.com ([209.85.221.44]:44927 "EHLO
+        mail-wr1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229529AbhBFLiC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 6 Feb 2021 06:38:02 -0500
+Received: by mail-wr1-f44.google.com with SMTP id d16so10713977wro.11;
+        Sat, 06 Feb 2021 03:37:45 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=/IgcD1aj1Di/vgTAXi7obMa2KXOHpd/HyAcFAFEWn9A=;
+        b=HsPO32NUuEFbSXCU9w58p/O5+eJpySmRcLL+E/MQE/05+eia4k3/hCnV+1LoNB1E/z
+         XNOKpGqjhsVhl0jvUTvJdZV1jZcVdGKPgjjmmPlrqEabnZ5YloncIii5QyqquT0dr/x7
+         PR4Ac5AjnZMLk7bw8FMUwDktGb78qpBjy7M23xmfwFPKDdbud/PDARtlbgndk3X8jwFj
+         4AlLyTVfIMUFe0vfR3k7pFmhHxe3X+psc8bGef526dxoSCe+YlYCsPprlYSE2HL0RtqJ
+         D1wQ6ro572SDAI8oX71beVxwlj3Lgf+hny+l5FNPvHMOwdow5zdW4pLfK1iI6fqtIZHD
+         Wxeg==
+X-Gm-Message-State: AOAM531IzOjxzAXLg45utFMUbMnJhDBmLrb5cyJ6bXKt0157jSQHZ0oe
+        Oc3RQTvaVLVi8miwWi28u54=
+X-Google-Smtp-Source: ABdhPJxHCsluCPhcOMGhkbrvWoUD40EhEKFLTpsMW+TwMh4I029Wb4GHYWyZHNC9Iv0warwgq+dqaA==
+X-Received: by 2002:a5d:518d:: with SMTP id k13mr2146776wrv.158.1612611439574;
+        Sat, 06 Feb 2021 03:37:19 -0800 (PST)
+Received: from kozik-lap (194-95-143-94.dyn.cable.fcom.ch. [94.143.95.194])
+        by smtp.googlemail.com with ESMTPSA id b138sm10962806wmb.35.2021.02.06.03.37.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 06 Feb 2021 03:37:18 -0800 (PST)
+Date:   Sat, 6 Feb 2021 12:37:16 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Li Yang <leoyang.li@nxp.com>
+Cc:     Shawn Guo <shawnguo@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        devicetree@vger.kernel.org,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 03/15] dt-bindings: memory: fsl: convert ifc binding to
+ yaml schema
+Message-ID: <20210206113716.75zh7dq4cabgf367@kozik-lap>
+References: <20210205234734.3397-1-leoyang.li@nxp.com>
+ <20210205234734.3397-4-leoyang.li@nxp.com>
 MIME-Version: 1.0
-In-Reply-To: <20210205135249.2924-3-nsaenzjulienne@suse.de>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Content-Language: en-US
-X-Provags-ID: V03:K1:9qigCL0cfYF91zWWGv7/lqP1/oIk1oJiUZBcRqIH42DxLCSLkAr
- zuPHtZFyGOQolHyr/RQb63dtu+5ovaAeajp9HzWc8Qa8Yo/GXssjLUlUtHYC7QB51mOaSZW
- e2QsMfWeJXVUGZ/gYMSdn3yQ34PWE7IzI1/rsvBYXm8Cg3uxhmTa6HdJYeREA2RR+lrmyhk
- PXMdekmnQInGyNPP/2PAw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:yog0IGFOYZg=:kqvaJBzS0BOB0kGmg+rs+d
- tw8nzKfeRj3SyLxOtqTefPEgx0kAR5dKLSex+YV7eiYvr1Q1Fsq0j+OPncQicQljBb8ajhKMA
- k6XoXnmrjy7yJ6hvHtHlS/kSVGaTHLckWKt6lApIy/MN2GdbP47/R9SUJBOZuADbxhhDEGdlk
- qpRyazf5rE93Uiba8d053OKolqo794SaWB++8NReETm3IA/riu93leXnkODQ3OkT5UqhHrN62
- z2YBZTACTdTsmuM1NHd/C+esk01K9iDO6SajzeAbxSBYIG84w5Z6VBH06LA3D8k+3oS1oiLk0
- IKGA2WJkD39VWI0N3mo/s2gEy4D2yinNfXvvSDnXFaLIP6k5ZPTUnymCAun9xe43kQa5M5dkI
- qSyJkU9Rdcn3H4phBBQlURtsxVV4jeE3WAz/s5i1fwZsAB4TBp+WB/fANPknCj5+GRyxasVOY
- NWtgfeKjgcHmZvd/5/t5OZKWYtvW6gsBP6CO3YWOJEbMK7KAxLTtoAMppxwPJvfqFb8cPlBIi
- A8UFjQcfAK/jZvjwq0JiHurdBeidu6rc/pDLEm+npsMpEGuaoOSWhcs+GvL/DTg6NblVXGbJU
- PoDr7AnPzqp66L22LS0mAG0ymKv16nDH6EiPeMXRcpVzc/WcrdimwQ+8ehPvsFsZjNc66RcM4
- ZLXSbrhNwHdhgMgjqBV62LYfMZMkgdCI/aDfAXJ45glt6IwLs+7GJRLetodJYKlBgfU60uQuX
- luCQubo5YLnGs79xBuPyr+DQOoDNJrpMzmpmI0UPCThmZOoeySB2KCRYJ9wYw3Wpnivb9EjSI
- 47vzKLOjuH2CQ2Z9hgnMUNRfEIp99dpcZQ2FJ19aej40Jtx8syUBqNcoI4YTwaTn+b2kfyUL/
- UsJDdafCWxLQbqZoaSNw==
+Content-Disposition: inline
+In-Reply-To: <20210205234734.3397-4-leoyang.li@nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-Am 05.02.21 um 14:52 schrieb Nicolas Saenz Julienne:
-> Add a new compatible string for bcm2711 and the option to provide a
-> third reg property for the board's new Argon ASB.
->
-> The new Argon ASB took over V3D, which is our only consumer of this
-> driver so far. The old ASB is still be present with ISP and H264 bits
-> but no V3D.
->
-> Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+On Fri, Feb 05, 2021 at 05:47:22PM -0600, Li Yang wrote:
+> Convert the txt binding to yaml format and add description.  Also
+> updated the recommended node name to ifc-bus to align with the
+> simple-bus node name requirements.
+> 
+> Signed-off-by: Li Yang <leoyang.li@nxp.com>
 > ---
->  .../devicetree/bindings/soc/bcm/brcm,bcm2835-pm.yaml       | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
->
-> diff --git a/Documentation/devicetree/bindings/soc/bcm/brcm,bcm2835-pm.y=
-aml b/Documentation/devicetree/bindings/soc/bcm/brcm,bcm2835-pm.yaml
-> index 5e0555fc0666..a1f2e25e68db 100644
-> --- a/Documentation/devicetree/bindings/soc/bcm/brcm,bcm2835-pm.yaml
-> +++ b/Documentation/devicetree/bindings/soc/bcm/brcm,bcm2835-pm.yaml
-> @@ -21,13 +21,14 @@ properties:
->      items:
->        - enum:
->            - brcm,bcm2835-pm
-> +          - brcm,bcm2711-pm
->        - const: brcm,bcm2835-pm-wdt
->
->    reg:
->      minItems: 1
-> -    maxItems: 2
-> -    description: Specifies base physical address and size of the two re=
-gister
-> -                 ranges, "PM" and "ASYNC_BRIDGE" in that order.
-> +    maxItems: 3
-> +    description: Specifies base physical address and size of the regist=
-er
-> +                 ranges, "PM", "ASYNC_BRIDGE" and "ARGON_BRIDGE" in tha=
-t order.
-i know it's not trivial, but maybe we have reached the point to
-introduce reg-names here.
->
->    "#power-domain-cells":
->      const: 1
+>  .../bindings/memory-controllers/fsl/ifc.txt   |  82 ----------
+>  .../bindings/memory-controllers/fsl/ifc.yaml  | 140 ++++++++++++++++++
+>  2 files changed, 140 insertions(+), 82 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/memory-controllers/fsl/ifc.txt
+>  create mode 100644 Documentation/devicetree/bindings/memory-controllers/fsl/ifc.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/memory-controllers/fsl/ifc.txt b/Documentation/devicetree/bindings/memory-controllers/fsl/ifc.txt
+> deleted file mode 100644
+> index 89427b018ba7..000000000000
+> --- a/Documentation/devicetree/bindings/memory-controllers/fsl/ifc.txt
+> +++ /dev/null
+> @@ -1,82 +0,0 @@
+> -Integrated Flash Controller
+> -
+> -Properties:
+> -- name : Should be ifc
+> -- compatible : should contain "fsl,ifc". The version of the integrated
+> -               flash controller can be found in the IFC_REV register at
+> -               offset zero.
+> -
+> -- #address-cells : Should be either two or three.  The first cell is the
+> -                   chipselect number, and the remaining cells are the
+> -                   offset into the chipselect.
+> -- #size-cells : Either one or two, depending on how large each chipselect
+> -                can be.
+> -- reg : Offset and length of the register set for the device
+> -- interrupts: IFC may have one or two interrupts.  If two interrupt
+> -              specifiers are present, the first is the "common"
+> -              interrupt (CM_EVTER_STAT), and the second is the NAND
+> -              interrupt (NAND_EVTER_STAT).  If there is only one,
+> -              that interrupt reports both types of event.
+> -
+> -- little-endian : If this property is absent, the big-endian mode will
+> -                  be in use as default for registers.
+> -
+> -- ranges : Each range corresponds to a single chipselect, and covers
+> -           the entire access window as configured.
+> -
+> -Child device nodes describe the devices connected to IFC such as NOR (e.g.
+> -cfi-flash) and NAND (fsl,ifc-nand). There might be board specific devices
+> -like FPGAs, CPLDs, etc.
+> -
+> -Example:
+> -
+> -	ifc@ffe1e000 {
+> -		compatible = "fsl,ifc", "simple-bus";
+> -		#address-cells = <2>;
+> -		#size-cells = <1>;
+> -		reg = <0x0 0xffe1e000 0 0x2000>;
+> -		interrupts = <16 2 19 2>;
+> -		little-endian;
+> -
+> -		/* NOR, NAND Flashes and CPLD on board */
+> -		ranges = <0x0 0x0 0x0 0xee000000 0x02000000
+> -			  0x1 0x0 0x0 0xffa00000 0x00010000
+> -			  0x3 0x0 0x0 0xffb00000 0x00020000>;
+> -
+> -		flash@0,0 {
+> -			#address-cells = <1>;
+> -			#size-cells = <1>;
+> -			compatible = "cfi-flash";
+> -			reg = <0x0 0x0 0x2000000>;
+> -			bank-width = <2>;
+> -			device-width = <1>;
+> -
+> -			partition@0 {
+> -				/* 32MB for user data */
+> -				reg = <0x0 0x02000000>;
+> -				label = "NOR Data";
+> -			};
+> -		};
+> -
+> -		flash@1,0 {
+> -			#address-cells = <1>;
+> -			#size-cells = <1>;
+> -			compatible = "fsl,ifc-nand";
+> -			reg = <0x1 0x0 0x10000>;
+> -
+> -			partition@0 {
+> -				/* This location must not be altered  */
+> -				/* 1MB for u-boot Bootloader Image */
+> -				reg = <0x0 0x00100000>;
+> -				label = "NAND U-Boot Image";
+> -				read-only;
+> -			};
+> -		};
+> -
+> -		cpld@3,0 {
+> -			#address-cells = <1>;
+> -			#size-cells = <1>;
+> -			compatible = "fsl,p1010rdb-cpld";
+> -			reg = <0x3 0x0 0x000001f>;
+> -		};
+> -	};
+> diff --git a/Documentation/devicetree/bindings/memory-controllers/fsl/ifc.yaml b/Documentation/devicetree/bindings/memory-controllers/fsl/ifc.yaml
+> new file mode 100644
+> index 000000000000..d37cae66b027
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/memory-controllers/fsl/ifc.yaml
+> @@ -0,0 +1,140 @@
+> +# SPDX-License-Identifier: (GPL-2.0+ OR BSD-3-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/memory-controllers/fsl/ifc.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: FSL/NXP Integrated Flash Controller
+> +
+> +maintainers:
+> +  - Li Yang <leoyang.li@nxp.com>
+> +
+> +description: |
+> +  NXP's integrated flash controller (IFC) is an advanced version of the
+> +  enhanced local bus controller which includes similar programming and signal
+> +  interfaces with an extended feature set. The IFC provides access to multiple
+> +  external memory types, such as NAND flash (SLC and MLC), NOR flash, EPROM,
+> +  SRAM and other memories where address and data are shared on a bus.
+> +
+> +allOf:
+> +  - $ref: /schemas/simple-bus.yaml#
+> +
+> +properties:
+> +  $nodename:
+> +    pattern: "^ifc-bus@[0-9a-f]+$"
+
+Just "bus". The node name should be generic, represent generic class of
+a device. The class is a bus.
+
+> +
+> +  compatible:
+> +    contains:
+> +      const: fsl,ifc
+
+I think you should list all compatibles, to be specific. "contains"
+allow adding any arbitrary compatible.
+
+> +
+> +  "#address-cells":
+> +    enum: [2, 3]
+> +    description: |
+> +      Should be either two or three.  The first cell is the chipselect
+> +      number, and the remaining cells are the offset into the chipselect.
+> +
+> +  "#size-cells":
+> +    enum: [1, 2]
+> +    description: |
+> +      Either one or two, depending on how large each chipselect can be.
+> +
+> +  reg:
+> +    maxItems: 1
+> +    description: |
+> +        Offset and length of the register set for the device.
+
+Wrong indentation.
+
+> +
+> +  interrupts:
+> +    minItems: 1
+> +    maxItems: 2
+> +    description: |
+> +      IFC may have one or two interrupts.  If two interrupt specifiers are
+> +      present, the first is the "common" interrupt (CM_EVTER_STAT), and the
+> +      second is the NAND interrupt (NAND_EVTER_STAT).  If there is only one,
+> +      that interrupt reports both types of event.
+> +
+> +  little-endian:
+> +    description: |
+> +      If this property is absent, the big-endian mode will be in use as default
+> +      for registers.
+
+type: boolean
+
+> +
+> +  ranges:
+> +    description: |
+> +      Each range corresponds to a single chipselect, and covers the entire
+> +      access window as configured.
+> +
+> +patternProperties:
+
+Wrong indentation.
+
+Best regards,
+Krzysztof
