@@ -2,103 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03B10311E99
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 17:18:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0AB0311E9E
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 17:26:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229771AbhBFQR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Feb 2021 11:17:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52878 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229522AbhBFQR5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Feb 2021 11:17:57 -0500
-Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S230039AbhBFQ0N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Feb 2021 11:26:13 -0500
+Received: from wildebeest.demon.nl ([212.238.236.112]:47000 "EHLO
+        gnu.wildebeest.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229522AbhBFQ0K (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 6 Feb 2021 11:26:10 -0500
+Received: from librem (deer0x15.wildebeest.org [172.31.17.151])
+        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4B7C564EAC;
-        Sat,  6 Feb 2021 16:17:15 +0000 (UTC)
-Date:   Sat, 6 Feb 2021 16:17:11 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Benson Leung <bleung@chromium.org>,
-        Guenter Roeck <groeck@chromium.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Gwendal Grignou <gwendal@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Subject: Re: [PATCH v4 3/3] iio: proximity: Add a ChromeOS EC MKBP proximity
- driver
-Message-ID: <20210206161711.6f555434@archlinux>
-In-Reply-To: <20210202184434.42644-4-swboyd@chromium.org>
-References: <20210202184434.42644-1-swboyd@chromium.org>
-        <20210202184434.42644-4-swboyd@chromium.org>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        by gnu.wildebeest.org (Postfix) with ESMTPSA id 4216A30278CD;
+        Sat,  6 Feb 2021 17:25:28 +0100 (CET)
+Received: by librem (Postfix, from userid 1000)
+        id BD303C100B; Sat,  6 Feb 2021 17:24:19 +0100 (CET)
+Date:   Sat, 6 Feb 2021 17:24:19 +0100
+From:   Mark Wieelard <mark@klomp.org>
+To:     Yonghong Song <yhs@fb.com>
+Cc:     sedat.dilek@gmail.com, Masahiro Yamada <masahiroy@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        dwarves@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        bpf@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
+        Jan Engelhardt <jengelh@inai.de>,
+        Domenico Andreoli <cavok@debian.org>,
+        Matthias Schwarzott <zzam@gentoo.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Paul Moore <paul@paul-moore.com>,
+        Ondrej Mosnacek <omosnace@redhat.com>,
+        Daniel =?iso-8859-1?Q?P=2E_Berrang=E9?= <berrange@redhat.com>,
+        Tom Stellard <tstellar@redhat.com>
+Subject: Re: ERROR: INT DW_ATE_unsigned_1 Error emitting BTF type
+Message-ID: <20210206162419.GC2851@wildebeest.org>
+References: <20210205192446.GH920417@kernel.org>
+ <cb743ab8-9a66-a311-ed18-ecabf0947440@fb.com>
+ <CA+icZUUcjJASPN8NVgWNp+2h=WO-PT4Su3-yHZpynNHCrHEb-w@mail.gmail.com>
+ <d59c2a53-976c-c304-f208-67110bdd728a@fb.com>
+ <CA+icZUVhgnJ9j7dnXxLQi3DcmLrqpZgcAo2wmHJ_OxSQyS6DQg@mail.gmail.com>
+ <CA+icZUWFx47jWJsV6tyoS5f18joPLyE8TOeeyVgsk65k9sP2WQ@mail.gmail.com>
+ <CA+icZUUj1P_PAj=E8iF=C4m6gYm9zqb+WWbOdoTqemTeGnZbww@mail.gmail.com>
+ <CA+icZUWY0zkOb36gxMOuT5-m=vC5_e815gkSEyM45sO+jgcCZg@mail.gmail.com>
+ <CA+icZUW+4=WUexA3-qwXSdEY2L4DOhF1pQfw9=Bf2invYF1J2Q@mail.gmail.com>
+ <8ff11fa8-46cd-5f20-b988-20e65e122507@fb.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8ff11fa8-46cd-5f20-b988-20e65e122507@fb.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Flag: NO
+X-Spam-Status: No, score=-2.9 required=5.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on gnu.wildebeest.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue,  2 Feb 2021 10:44:34 -0800
-Stephen Boyd <swboyd@chromium.org> wrote:
+Hi,
 
-> Add support for a ChromeOS EC proximity driver that exposes a "front"
-> proximity sensor via the IIO subsystem. The EC decides when front
-> proximity is near and sets an MKBP switch 'EC_MKBP_FRONT_PROXIMITY' to
-> notify the kernel of proximity. Similarly, when proximity detects
-> something far away it sets the switch bit to 0. For now this driver
-> exposes a single sensor, but it could be expanded in the future via more
-> MKBP bits if desired.
+On Sat, Feb 06, 2021 at 12:26:44AM -0800, Yonghong Song wrote:
+> With the above vmlinux, the issue appears to be handling
+> DW_ATE_signed_1, DW_ATE_unsigned_{1,24,40}.
 > 
-> Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-> Cc: Benson Leung <bleung@chromium.org>
-> Cc: Guenter Roeck <groeck@chromium.org>
-> Cc: Douglas Anderson <dianders@chromium.org>
-> Cc: Gwendal Grignou <gwendal@chromium.org>
-> Reviewed-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+> The following patch should fix the issue:
 
-Just one thing noticed on a final read through.  I'm happy to fix up
-whilst applying.  Otherwise all I'm waiting for now is to give
-Rob time to look at the device tree binding if he wants to do so.
+That doesn't really make sense to me. Why is the compiler emitting a
+DW_TAG_base_type that needs to be interpreted according to the
+DW_AT_name attribute?
 
-Jonathan
+If the issue is that the size of the base type cannot be expressed in
+bytes then the DWARF spec provides the following option:
 
-> diff --git a/drivers/iio/proximity/cros_ec_mkbp_proximity.c b/drivers/iio/proximity/cros_ec_mkbp_proximity.c
-> new file mode 100644
-> index 000000000000..23bed4562b34
-> --- /dev/null
-> +++ b/drivers/iio/proximity/cros_ec_mkbp_proximity.c
-> @@ -0,0 +1,242 @@
-...
+    If the value of an object of the given type does not fully occupy
+    the storage described by a byte size attribute, the base type
+    entry may also have a DW_AT_bit_size and a DW_AT_data_bit_offset
+    attribute, both of whose values are integer constant values (see
+    Section 2.19 on page 55). The bit size attribute describes the
+    actual size in bits used to represent values of the given
+    type. The data bit offset attribute is the offset in bits from the
+    beginning of the containing storage to the beginning of the
+    value. Bits that are part of the offset are padding.  If this
+    attribute is omitted a default data bit offset of zero is assumed.
 
-> +static struct platform_driver cros_ec_mkbp_proximity_driver = {
-> +	.driver = {
-> +		.name = "cros-ec-mkbp-proximity",
-> +		.of_match_table = of_match_ptr(cros_ec_mkbp_proximity_of_match),
-I'm going to assume we know no one is going to use this with
-ACPI via PRP0001 given presumably the firmware on these devices
-is tightly controlled.
+Would it be possible to use that encoding of those special types?  If
+not, can we try to come up with some extension that doesn't require
+consumers to match magic names?
 
-However, we should should still drop the of_match_ptr
-as it will lead to an unused warning for cros_ec_mkbp_proximity_of_match
-if anyone builds this without CONFIG_OF + it sets a general bad
-precedence that I'd rather wasn't around for people to copy.
-Note that in general we are slowly ripping these out of IIO but
-probably lots still there.
+Thanks,
 
-If this is all that is needed in this version I'll just do it
-whilst applying unless anyone shouts.
-
-Jonathan
-
-> +	},
-> +	.probe = cros_ec_mkbp_proximity_probe,
-> +	.remove = cros_ec_mkbp_proximity_remove,
-> +};
-> +module_platform_driver(cros_ec_mkbp_proximity_driver);
-> +
-> +MODULE_LICENSE("GPL v2");
-> +MODULE_DESCRIPTION("ChromeOS EC MKBP proximity sensor driver");
-
+Mark
