@@ -2,100 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0330311CFD
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 12:53:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C13B3311D06
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 13:06:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229772AbhBFLwm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Feb 2021 06:52:42 -0500
-Received: from mout.gmx.net ([212.227.17.20]:58121 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229707AbhBFLwh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Feb 2021 06:52:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1612612258;
-        bh=HQRvOd7R+XGLJh5/A0+URGFieXzXq8K66bXLp9TitJc=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=jotPSxi2gj4m1M0enmSN3AZoHWT40/czP9/WC0woKO0ucSUMhjVFd5Y0/ZoBIdnIZ
-         GliLM3WqytmVJ8L9nYXK8AaBrob7sVnRT1y0nAVUMrd1msdI27UCje4CW6s3E/Qnay
-         x8mHVgaDyI+QOpFlozAo0it+2sh2Jqvj5bpP0WYM=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [192.168.1.167] ([37.4.249.89]) by mail.gmx.net (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MPogF-1lLMh729kR-00MvcP; Sat, 06
- Feb 2021 12:50:58 +0100
-Subject: Re: [RFC/PATCH 09/11] ARM: dts: bcm2711: Enable V3D
-To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        f.fainelli@gmail.com, bcm-kernel-feedback-list@broadcom.com,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     phil@raspberrypi.com, linux-kernel@vger.kernel.org
-References: <20210205135249.2924-1-nsaenzjulienne@suse.de>
- <20210205135249.2924-10-nsaenzjulienne@suse.de>
-From:   Stefan Wahren <wahrenst@gmx.net>
-Message-ID: <bb5c1091-8e3a-c13a-1f75-3c2bc1a40632@gmx.net>
-Date:   Sat, 6 Feb 2021 12:50:57 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S229707AbhBFMGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Feb 2021 07:06:11 -0500
+Received: from conssluserg-04.nifty.com ([210.131.2.83]:59041 "EHLO
+        conssluserg-04.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229506AbhBFMGI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 6 Feb 2021 07:06:08 -0500
+Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52]) (authenticated)
+        by conssluserg-04.nifty.com with ESMTP id 116C4sAC025439;
+        Sat, 6 Feb 2021 21:04:54 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com 116C4sAC025439
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1612613095;
+        bh=MyNqLeD8oVO7QhYdCXn23TUBvKfzTHuvCBPmk1/AVSQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=K3geEpuhiCQjYDuZ3lkjgTQU3ssF/X0s6aKbQRUl4gIQDC8lC0LAa6WnYeYGN6Xzd
+         QqHLt1EVWxlSMZ+dsgOag6O6i9hFwO+Wc3A2FsYUgSJ317acyAnpIENuQVsjpXX6Ck
+         oWuyNyP6lPTsKzJ15S/e7dzaKMStO6Ofl49JDrdzn1e2bT9xS2Lo9gHWrEVwnzH1YQ
+         SjyLRkSXabu2V2IJK0OkHrE17Srtu0CBXddh+c5maVTB7PQKGLkw7yEPnVY/r6neFu
+         xDY0IoDyrRjZ62M+kZ0mS62ayhkHl6JF1tsjyQh7KZArxZAIH3dkiYVDbP4Xj9LtTt
+         kAElfzuu2AokA==
+X-Nifty-SrcIP: [209.85.216.52]
+Received: by mail-pj1-f52.google.com with SMTP id z9so5312329pjl.5;
+        Sat, 06 Feb 2021 04:04:54 -0800 (PST)
+X-Gm-Message-State: AOAM532S3ekjDX8mYfpspKZME8xFhmV2IHvrPnE4ILRrY5tMlGSUuN/a
+        lcxltvA9OaQCKDiEi/FxMDPTOVS44/Zjta3a8WQ=
+X-Google-Smtp-Source: ABdhPJwNlPxaQhlrZOPfVop4v8yIt2lEK6B6xfhzZWKyP0MRXzE42NG6YouA87nqr8PtXiIIVdTNXol9eKU8k9mlaoA=
+X-Received: by 2002:a17:90a:5403:: with SMTP id z3mr8631933pjh.198.1612613094061;
+ Sat, 06 Feb 2021 04:04:54 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210205135249.2924-10-nsaenzjulienne@suse.de>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Content-Language: en-US
-X-Provags-ID: V03:K1:UuGM7JJSSCyFqp62EFvQsewyj3POYV88WAMG0nLsE3jr9exgP8a
- xR10r2+TKg4tICSJb/4dCgaZvA401yOLSXYB4T/PH9p6nIWCbOQICDHv8U150E3lVLcIX7p
- boy8kJxfMumlk1buzbIo1I90fkywqveLjTOAkv1qeEwKPf9eyqVbIYAIfLYJk1goSaIGV+r
- 6bYeNuoblfdIyHOoet5wQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:k4eAxP1S9EE=:5daa6BEohiVAajSS55KHvv
- alnktLEsYxmp8fRBn5JJS63xhee7gkadnzVZnB/yaQJefe1SbctyKQ2OTcbB0eaVX2BoTKy3v
- AXLH4vLf4Jx15O/pKy8kwCklC7oEekT0gboDyVgV44/YUqoCWl4sSP+il0sIE06c9PF7s49ML
- J4z5Y/ThFpJIChRR8BCwMU7w4NxyuLCqxl3+qbiQa7BH9OtZGvizp/kyuCI0OU274DpStKaf5
- TEpilyyKH60XUY/6/oMRg9MPwiXu9e+T+Bj4cNGOUJIha+CjL+BCKuRn8LLy+nqCJFQpCih5d
- N/ixOIsIZFKMje24/VUxPgaITjqgnO0ME9uKcsQYoE11tqVYfUXt2n0E4xG0oVtiMp0JA4Za5
- BVhN37b08Kk1pusKwOuO+sV7zKAfPGLW4gw0e8n3iF7t7AeC5Eo1l1Mvz2DJJPIK3q+Zn3FQY
- 8R0C+pMnl+LeaeoGIs54y8VMvQm03ixEGaor6i587q155uqlbTFUY8YCoK9LwFLvtAxd5KIwH
- mrrZIIVohRXKsEMXh3jQNI5CW73so5pM49B+oGqxeBkOY9/chw+mtrs0Y+kgycgphqFZx/zJr
- D6yg6RH5Ptk0b5COFH9GL0rT19JTx7Cy6T5P6563hZaCewqWuKIOeH+BV2GiZkNnooHVBaNyW
- 3Fca3UukCw5koN1iuW4SFV4fg4WMZTeRQS4/ZNBuKaApXY7VdediCzxrYhcO27JbeDaNdzPjJ
- Hhq1iB1FnnZnPXFSDwl6YkzP+l6ETw28mYVHPIk/EkxpeVqLxH9bZfKhNqIWI6ktJkNZKY6GZ
- yE231F3IGGL7soJ/7lsptLmCCLthjM4ZwFn9z9t1CN0ontMJcncQ+IeVnsXLWGY0HICoV6QvD
- FqcXVEAYZF6pXX7rnq0g==
+References: <20210205202220.2748551-1-ndesaulniers@google.com> <CA+icZUW3sg_PkbmKSFMs6EqwQV7=hvKuAgZSsbg=Qr6gTs7RbQ@mail.gmail.com>
+In-Reply-To: <CA+icZUW3sg_PkbmKSFMs6EqwQV7=hvKuAgZSsbg=Qr6gTs7RbQ@mail.gmail.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Sat, 6 Feb 2021 21:04:16 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAT8rjo=MdLqpjRXR2fnJ8XSeoA=uD633Pj1ENs5JOciXQ@mail.gmail.com>
+Message-ID: <CAK7LNAT8rjo=MdLqpjRXR2fnJ8XSeoA=uD633Pj1ENs5JOciXQ@mail.gmail.com>
+Subject: Re: [PATCH v9 0/3] Kbuild: DWARF v5 support
+To:     Sedat Dilek <sedat.dilek@gmail.com>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Jakub Jelinek <jakub@redhat.com>,
+        Fangrui Song <maskray@google.com>,
+        Caroline Tice <cmtice@google.com>,
+        Nick Clifton <nickc@redhat.com>, Yonghong Song <yhs@fb.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Chris Murphy <bugzilla@colorremedies.com>,
+        Mark Wielaard <mark@klomp.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Sat, Feb 6, 2021 at 6:00 AM Sedat Dilek <sedat.dilek@gmail.com> wrote:
+>
+> On Fri, Feb 5, 2021 at 9:22 PM Nick Desaulniers <ndesaulniers@google.com> wrote:
+> >
+> > DWARF v5 is the latest standard of the DWARF debug info format.
+> >
+> > DWARF5 wins significantly in terms of size and especially so when mixed
+> > with compression (CONFIG_DEBUG_INFO_COMPRESSED).
+> >
+> > Link: http://www.dwarfstd.org/doc/DWARF5.pdf
+> >
+> > Patch 1 places the DWARF v5 sections explicitly in the kernel linker
+> > script.
+> > Patch 2 modifies Kconfig for DEBUG_INFO_DWARF4 to be used as a fallback.
+> > Patch 3 adds an explicit Kconfig for DWARF v5 for clang and older GCC
+> > where the implicit default DWARF version is not 5.
+> >
+> > Changes from v8:
+> > * Separate out the linker script changes (from v7 0002). Put those
+> >   first. Carry Reviewed by and tested by tags.  Least contentious part
+> >   of the series. Tagged for stable; otherwise users upgrading to GCC 11
+> >   may find orphan section warnings from the implicit default DWARF
+> >   version changing and generating the new debug info sections.
+> > * Add CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT in 0002, make it the
+> >   default rather than CONFIG_DEBUG_INFO_DWARF4, as per Mark, Jakub,
+> >   Arvind.
+> > * Drop reviewed by and tested by tags for 0002 and 0003; sorry
+> >   reviewers/testers, but I view that as a big change. I will buy you
+> >   beers if you're fatigued, AND for the help so far. I appreciate you.
+>
+> All 3 patches NACKed - I drink no beer.
 
-Am 05.02.21 um 14:52 schrieb Nicolas Saenz Julienne:
-> This enables V3D for bcm2711 (used in the Raspberry Pi 4).
->
-> Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-> ---
->  arch/arm/boot/dts/bcm2711.dtsi | 12 ++++++++++++
->  1 file changed, 12 insertions(+)
->
-> diff --git a/arch/arm/boot/dts/bcm2711.dtsi b/arch/arm/boot/dts/bcm2711.=
-dtsi
-> index 537498a93a3a..dd8376f474db 100644
-> --- a/arch/arm/boot/dts/bcm2711.dtsi
-> +++ b/arch/arm/boot/dts/bcm2711.dtsi
-> @@ -548,6 +548,18 @@ genet_mdio: mdio@e14 {
->  				#size-cells =3D <0x1>;
->  			};
->  		};
-> +
-> +		v3d: gpu@7ec04000 {
-just a nit. I prefer the lowest register value here.
-> +			compatible =3D "brcm,bcm2711-v3d";
-> +			reg =3D <0x0 0x7ec00000 0x4000>,
-> +			      <0x0 0x7ec04000 0x4000>;
-> +			reg-names =3D "hub", "core0";
-> +
-> +			power-domains =3D <&pm BCM2835_POWER_DOMAIN_GRAFX_V3D>;
-> +			resets =3D <&pm BCM2835_RESET_V3D>;
-> +			clocks =3D <&firmware_clocks 5>;
-> +			interrupts =3D <GIC_SPI 74 IRQ_TYPE_LEVEL_HIGH>;
-> +		};
->  	};
->  };
->
+LoL.
+Other than beer, I am fine with v9.
+
+Personally, I thought v8 (no CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT)
+was good too, but I do not have a strong opinion about
+leaving the compiler's freedom to choose the dwarf version.
+
+Unless somebody has an objection, I will pick up v9 for the next MW.
+
+
+Meanwhile, if you want to give reviewed-by / tested-by
+please do so.
+
+
+
+-- 
+Best Regards
+Masahiro Yamada
