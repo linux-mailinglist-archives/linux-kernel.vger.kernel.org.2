@@ -2,65 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9502B311D77
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 14:25:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E8A0311D7B
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 14:37:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230018AbhBFNZW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Feb 2021 08:25:22 -0500
-Received: from wtarreau.pck.nerim.net ([62.212.114.60]:49673 "EHLO 1wt.eu"
+        id S229720AbhBFNhK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Feb 2021 08:37:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37064 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229910AbhBFNZT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Feb 2021 08:25:19 -0500
-Received: (from willy@localhost)
-        by pcw.home.local (8.15.2/8.15.2/Submit) id 116DOB3T022981;
-        Sat, 6 Feb 2021 14:24:11 +0100
-Date:   Sat, 6 Feb 2021 14:24:11 +0100
-From:   Willy Tarreau <w@1wt.eu>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Guenter Roeck <linux@roeck-us.net>, linux-kernel@vger.kernel.org,
-        akpm@linux-foundation.org, torvalds@linux-foundation.org,
-        stable@vger.kernel.org, lwn@lwn.net, jslaby@suse.cz,
-        shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com
-Subject: Re: Linux 4.4.256
-Message-ID: <20210206132411.GD7312@1wt.eu>
-References: <1612534196241236@kroah.com>
- <20210205205658.GA136925@roeck-us.net>
- <YB6S612pwLbQJf4u@kroah.com>
- <20210206131113.GB7312@1wt.eu>
- <YB6XfR5YDz8IjZHu@kroah.com>
+        id S229506AbhBFNhG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 6 Feb 2021 08:37:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 992EF64D9D;
+        Sat,  6 Feb 2021 13:36:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612618585;
+        bh=OCutRLaQDUvL3uLcorCbLXFfU+phdrBOkd6W0QNIyHU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Gjy7LkMwkG2XjFdp4fJH1gwZ7U6oWqDAMR7x7fSTXwIR81QloVBam/e76tvJeOdij
+         t6XKWFE6fRcH1m1kgVAqK9AfTycrmk6NFRVRgyJUSpp6aBBlFEQfJyv4pDEyGbqj/G
+         zmCj8ir/h3UJKxCGAViokpx4Jlj8HsFpscLfEnrTYrJy+W9rTCTwRcW0c6wYDR1Sff
+         /LS5aQJkjuGCowUmRyD//uF5Ro/78c31q1Lm7ARsPH9ab9QYjaxc5sWPntM54kngcX
+         3zfR/71fUrRYRNqNQx35HM4VEboHt5AFOQkBHmov7uPfqzQ0mXyTcCeDm7KPzSib3R
+         MSEfF4+FonUaQ==
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     kernel test robot <lkp@intel.com>, Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH 1/2] ARM: s3c: irq-s3c24xx: include headers for missing declarations
+Date:   Sat,  6 Feb 2021 14:36:14 +0100
+Message-Id: <20210206133615.119804-1-krzk@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YB6XfR5YDz8IjZHu@kroah.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Feb 06, 2021 at 02:19:57PM +0100, Greg Kroah-Hartman wrote:
-> On Sat, Feb 06, 2021 at 02:11:13PM +0100, Willy Tarreau wrote:
-> > On Sat, Feb 06, 2021 at 02:00:27PM +0100, Greg Kroah-Hartman wrote:
-> > > I think Sasha's patch here:
-> > > 	https://lore.kernel.org/r/20210205174702.1904681-1-sashal@kernel.org
-> > > is looking like the solution.
-> > 
-> > It might cause trouble to those forcing SUBLEVEL to a given version such
-> > as .0 to avoid exposing the exact stable version. I guess we should
-> > instead try to integrate a test on the value itself and cap it at 255.
-> 
-> That's the main goal of the upstream submission that checks the value
-> before capping it:
-> 	https://lore.kernel.org/r/20210206035033.2036180-2-sashal@kernel.org
->
-> > Something like this looks more robust to me, it will use SUBLEVEL for
-> > values 0 to 255 and 255 for any larger value:
-> > 
-> > -	expr $(VERSION) \* 65536 + 0$(PATCHLEVEL) \* 256 + 0$(SUBLEVEL)); \
-> > +	expr $(VERSION) \* 65536 + 0$(PATCHLEVEL) \* 256 + 255 \* (0$(SUBLEVEL) > 255) + 0$(SUBLEVEL) * (0$(SUBLEVEL \<= 255)); \
-> 
-> I think you just rewrote the above linked patch :)
+Include headers to fix W=1 build warnings:
 
-Ah I missed it, indeed! Sorry for the noise :-)
+  arch/arm/mach-s3c/irq-s3c24xx.c:389:5: warning:
+    no previous prototype for ‘s3c24xx_set_fiq’ [-Wmissing-prototypes]
+  arch/arm/mach-s3c/irq-s3c24xx.c:683:13: warning:
+    no previous prototype for ‘s3c2410_init_irq’ [-Wmissing-prototypes]
 
-Willy
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+---
+ arch/arm/mach-s3c/irq-s3c24xx.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/arch/arm/mach-s3c/irq-s3c24xx.c b/arch/arm/mach-s3c/irq-s3c24xx.c
+index 79b5f19af7a5..3368159d3f3e 100644
+--- a/arch/arm/mach-s3c/irq-s3c24xx.c
++++ b/arch/arm/mach-s3c/irq-s3c24xx.c
+@@ -21,6 +21,7 @@
+ #include <linux/of.h>
+ #include <linux/of_irq.h>
+ #include <linux/of_address.h>
++#include <linux/spi/s3c24xx.h>
+ 
+ #include <asm/exception.h>
+ #include <asm/mach/irq.h>
+@@ -32,6 +33,7 @@
+ #include "cpu.h"
+ #include "regs-irqtype.h"
+ #include "pm.h"
++#include "s3c24xx.h"
+ 
+ #define S3C_IRQTYPE_NONE	0
+ #define S3C_IRQTYPE_EINT	1
+-- 
+2.25.1
+
