@@ -2,112 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07562311D83
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 14:46:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F683311D87
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 14:51:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229917AbhBFNqS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Feb 2021 08:46:18 -0500
-Received: from mail-wr1-f52.google.com ([209.85.221.52]:41948 "EHLO
-        mail-wr1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229522AbhBFNqQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Feb 2021 08:46:16 -0500
-Received: by mail-wr1-f52.google.com with SMTP id p15so11020258wrq.8;
-        Sat, 06 Feb 2021 05:45:59 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=7ghVbTm1KHFPZQbBwYfJEJHbvho+CoG+hwSpE/oCZOc=;
-        b=J4P49KE26VN20zQsy64nRJ9kZCTU7hT791eqjKIiShB1Hi94Uu5D2actztD64XcVou
-         wQLWncDbGwwvIh2nnGnmIpexQfhi6J3/W5eatAfHZkx2uNC1fwCYZbjVwrNWRaOELJt0
-         G5PXOHxZe4Byx77vR4TEQtqXhU+Qxy3GAQJba1I/Qreex6RpQjJJkKciFL064UAhOenw
-         gWglKEWo+SI5TA3Ksns98P61rIMv+uRPkmezsdI5IHXLQEO+kDRXwUM7ddPZT2IOszL0
-         as16vsPukj6gmcxSC2zWHZjlIU6emgZgfPx1rwc5vTJCAhTD+T0QtSDMF9w8CzmsVfnU
-         xEmA==
-X-Gm-Message-State: AOAM531bUtBJjBDr6Xc0vkKByjdoQUw5Wn/cAuiyquaIyNkMYg5hvpfT
-        gbNrOWxJOSbZ5cP1vMmGpR0=
-X-Google-Smtp-Source: ABdhPJxfZL4HL+Mq28hXXROX5oDPXTtbYpNw5IDUR7G1wwpEwQJWkmQ95FfU7I+FNgdfeWWCNapjdQ==
-X-Received: by 2002:adf:e807:: with SMTP id o7mr10750502wrm.308.1612619133829;
-        Sat, 06 Feb 2021 05:45:33 -0800 (PST)
-Received: from kozik-lap (194-95-143-94.dyn.cable.fcom.ch. [94.143.95.194])
-        by smtp.googlemail.com with ESMTPSA id w14sm16387610wro.86.2021.02.06.05.45.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 06 Feb 2021 05:45:32 -0800 (PST)
-Date:   Sat, 6 Feb 2021 14:45:31 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
-        arm@kernel.org, soc@kernel.org
-Cc:     linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Sylwester Nawrocki <snawrocki@kernel.org>
-Subject: Re: [GIT PULL 2/3] ARM: dts: samsung: DTS for v5.12
-Message-ID: <20210206134531.l5vpzlmev4v3f3uo@kozik-lap>
-References: <20210125191240.11278-1-krzk@kernel.org>
- <20210125191240.11278-3-krzk@kernel.org>
+        id S229989AbhBFNvN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Feb 2021 08:51:13 -0500
+Received: from gloria.sntech.de ([185.11.138.130]:49114 "EHLO gloria.sntech.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229790AbhBFNvH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 6 Feb 2021 08:51:07 -0500
+Received: from p508fcd06.dip0.t-ipconnect.de ([80.143.205.6] helo=phil.fritz.box)
+        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <heiko@sntech.de>)
+        id 1l8Nyg-0007o1-Ae; Sat, 06 Feb 2021 14:50:22 +0100
+From:   Heiko Stuebner <heiko@sntech.de>
+To:     thierry.reding@gmail.com, sam@ravnborg.org
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Heiko Stuebner <heiko@sntech.de>
+Subject: [PATCH] drm/panel: kd35t133: allow using non-continuous dsi clock
+Date:   Sat,  6 Feb 2021 14:50:20 +0100
+Message-Id: <20210206135020.1991820-1-heiko@sntech.de>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210125191240.11278-3-krzk@kernel.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 08:12:39PM +0100, Krzysztof Kozlowski wrote:
-> The following changes since commit 5c8fe583cce542aa0b84adc939ce85293de36e5e:
-> 
->   Linux 5.11-rc1 (2020-12-27 15:30:22 -0800)
-> 
-> are available in the Git repository at:
-> 
->   https://git.kernel.org/pub/scm/linux/kernel/git/krzk/linux.git tags/samsung-dt-5.12
-> 
-> for you to fetch changes up to 3803f461bd28c1c817281348509399778633e82f:
-> 
->   ARM: dts: exynos: Add top-off charging regulator node for I9100 (2021-01-03 17:33:29 +0100)
-> 
-> ----------------------------------------------------------------
-> Samsung DTS ARM changes for v5.12
-> 
-> 1. Use new compatile to properly configure Exynos5420 USB2 PHY, fixing
->    it suspend/resume cycle.
-> 2. Correct Samsung PMIC interrupt trigger levels on multiple boards.
-> 3. Correct the voltages of Samsung GT-I9100 charger and add top-off
->    charger.
-> 
+The panel is able to work when dsi clock is non-continuous, thus
+the system power consumption can be reduced using such feature.
 
-Hi everyone,
+Add MIPI_DSI_CLOCK_NON_CONTINUOUS to panel's mode_flags.
 
-Any progress or new comments about this pull request?
+Also the flag actually becomes necessary after
+commit c6d94e37bdbb ("drm/bridge/synopsys: dsi: add support for non-continuous HS clock")
+and without it the panel only emits stripes instead of output.
 
-Best regards,
-Krzysztof
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+---
+ drivers/gpu/drm/panel/panel-elida-kd35t133.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
+diff --git a/drivers/gpu/drm/panel/panel-elida-kd35t133.c b/drivers/gpu/drm/panel/panel-elida-kd35t133.c
+index bc36aa3c1123..fe5ac3ef9018 100644
+--- a/drivers/gpu/drm/panel/panel-elida-kd35t133.c
++++ b/drivers/gpu/drm/panel/panel-elida-kd35t133.c
+@@ -265,7 +265,8 @@ static int kd35t133_probe(struct mipi_dsi_device *dsi)
+ 	dsi->lanes = 1;
+ 	dsi->format = MIPI_DSI_FMT_RGB888;
+ 	dsi->mode_flags = MIPI_DSI_MODE_VIDEO | MIPI_DSI_MODE_VIDEO_BURST |
+-			  MIPI_DSI_MODE_LPM | MIPI_DSI_MODE_EOT_PACKET;
++			  MIPI_DSI_MODE_LPM | MIPI_DSI_MODE_EOT_PACKET |
++			  MIPI_DSI_CLOCK_NON_CONTINUOUS;
+ 
+ 	drm_panel_init(&ctx->panel, &dsi->dev, &kd35t133_funcs,
+ 		       DRM_MODE_CONNECTOR_DSI);
+-- 
+2.29.2
 
-
-> ----------------------------------------------------------------
-> Krzysztof Kozlowski (6):
->       ARM: dts: exynos: correct PMIC interrupt trigger level on Artik 5
->       ARM: dts: exynos: correct PMIC interrupt trigger level on Monk
->       ARM: dts: exynos: correct PMIC interrupt trigger level on Rinato
->       ARM: dts: exynos: correct PMIC interrupt trigger level on Spring
->       ARM: dts: exynos: correct PMIC interrupt trigger level on Arndale Octa
->       ARM: dts: exynos: correct PMIC interrupt trigger level on Odroid XU3 family
-> 
-> Marek Szyprowski (1):
->       ARM: dts: exynos: use Exynos5420 dedicated USB2 PHY compatible
-> 
-> Timon Baetz (2):
->       ARM: dts: exynos: Fix charging regulator voltage and current for I9100
->       ARM: dts: exynos: Add top-off charging regulator node for I9100
-> 
->  arch/arm/boot/dts/exynos3250-artik5.dtsi      |  2 +-
->  arch/arm/boot/dts/exynos3250-monk.dts         |  2 +-
->  arch/arm/boot/dts/exynos3250-rinato.dts       |  2 +-
->  arch/arm/boot/dts/exynos4210-i9100.dts        | 30 ++++++++++++++++-----------
->  arch/arm/boot/dts/exynos5250-spring.dts       |  2 +-
->  arch/arm/boot/dts/exynos5420-arndale-octa.dts |  2 +-
->  arch/arm/boot/dts/exynos5422-odroid-core.dtsi |  2 +-
->  arch/arm/boot/dts/exynos54xx.dtsi             |  6 +++---
->  8 files changed, 27 insertions(+), 21 deletions(-)
