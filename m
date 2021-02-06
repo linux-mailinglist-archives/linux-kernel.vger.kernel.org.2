@@ -2,89 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2483312075
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 00:27:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44BBB312078
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 00:27:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229878AbhBFXWz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Feb 2021 18:22:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50414 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229832AbhBFXWk (ORCPT
+        id S229770AbhBFXZy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Feb 2021 18:25:54 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:56442 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229537AbhBFXZw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Feb 2021 18:22:40 -0500
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27F38C06174A;
-        Sat,  6 Feb 2021 15:22:00 -0800 (PST)
-Received: by mail-lj1-x22a.google.com with SMTP id e18so12046725lja.12;
-        Sat, 06 Feb 2021 15:22:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=TEe8sA86stKjEUM7UT7CywXr/sNsULZzMz+ZrqPM7Zc=;
-        b=ofEjoMZ1XO6PBjCDnQBFZX9e5zJrn9LiFUUBQa2mwwsWQ7yNrEQmasQPT5QKvDnkOX
-         1BMm1PYYAl6+z1u8ZpRO3deM9Yfr3F7eiqDM57bXSmZpNBsCMSe+UnSl4W7ynwW1KQaA
-         Xu7i1p8wlbAMxUuuRP+PewrykNQEWSJu/RzK1AjU9fm1JfWPRvWWacxD/8mqE3CjyA0v
-         aN8zgkyP7y6/TbgwJ45CWc4W6WfbCFgHt+uEDiKzFM1AtV8m+piwLNBzDZCbLJzew+mm
-         sEbI14MwhvmewUCPTUlJREiwkC862L2zZFe7iasUBToPLFmve92/EOZ1yozV7s18cZ5x
-         pj0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=TEe8sA86stKjEUM7UT7CywXr/sNsULZzMz+ZrqPM7Zc=;
-        b=dbRhRclWgz0EbmEmzfe9P9Rvh2T8ihx6oz2cewv7IJkBYmU5wUZzw8f3rMteiKlVth
-         eZ1xLc0O4RrV8CkELrPxdjui+CVxorxuY/bhukTGt/+RH2gEJGbNs4RLnq7+GPN6RHtW
-         n/uy1UAQV45SoHST22wgbl3rYiUeLiebR1ZrklImrggTxbIPb1ALnUE6vPVBzU72XcJa
-         G0oK5FsMy7hdzl8gP69KZi9OjSt9H/VY4FnMtgEL+O6ajy1vpk1I4LpPTe3J2If7Azs2
-         DS4xWrfZ7ySAYnIHnWm4bMo7ti6Rykr1NsaB51cJ3CjHUz6eOKnAS74ISDLyl2xNv4Om
-         JIQA==
-X-Gm-Message-State: AOAM530y43kw/ItVJqhdyGVMz70jaobmIpEWr7XdknLtVs0f0x5ZYKLz
-        xcqr2rWKsAV+HEtQtxVyNyA=
-X-Google-Smtp-Source: ABdhPJysd8SX+EMl9kmqsQMOdj6beJk2YbcL8OhsPRHHKXu+wD8VSJzlHHgUVrUPb59RLEeyNM5ijg==
-X-Received: by 2002:a2e:b179:: with SMTP id a25mr6639934ljm.425.1612653718696;
-        Sat, 06 Feb 2021 15:21:58 -0800 (PST)
-Received: from localhost.localdomain (h-158-174-22-164.NA.cust.bahnhof.se. [158.174.22.164])
-        by smtp.gmail.com with ESMTPSA id c23sm1465565lfi.241.2021.02.06.15.21.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 06 Feb 2021 15:21:58 -0800 (PST)
-From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
-To:     Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>
-Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>
-Subject: [PATCH] Platform: OLPC: Constify static struct regulator_ops
-Date:   Sun,  7 Feb 2021 00:21:52 +0100
-Message-Id: <20210206232152.58046-1-rikard.falkeborn@gmail.com>
-X-Mailer: git-send-email 2.30.0
+        Sat, 6 Feb 2021 18:25:52 -0500
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 0B03E1C0B7C; Sun,  7 Feb 2021 00:25:09 +0100 (CET)
+Date:   Sun, 7 Feb 2021 00:25:08 +0100
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 4.19 16/17] kthread: Extract KTHREAD_IS_PER_CPU
+Message-ID: <20210206232508.GA27515@amd>
+References: <20210205140649.825180779@linuxfoundation.org>
+ <20210205140650.464297049@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="/04w6evG8XlLl3ft"
+Content-Disposition: inline
+In-Reply-To: <20210205140650.464297049@linuxfoundation.org>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The only usage of it is to assign its address to the ops field in the
-regulator_desc struct, which is a pointer to const struct regulator_ops.
-Make it const to allow the compiler to put it in read-only memory.
 
-Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
----
- drivers/platform/olpc/olpc-ec.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+--/04w6evG8XlLl3ft
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/platform/olpc/olpc-ec.c b/drivers/platform/olpc/olpc-ec.c
-index 72dbbea0005c..4ff5c3a12991 100644
---- a/drivers/platform/olpc/olpc-ec.c
-+++ b/drivers/platform/olpc/olpc-ec.c
-@@ -386,7 +386,7 @@ static int dcon_regulator_is_enabled(struct regulator_dev *rdev)
- 	return ec->dcon_enabled ? 1 : 0;
- }
- 
--static struct regulator_ops dcon_regulator_ops = {
-+static const struct regulator_ops dcon_regulator_ops = {
- 	.enable		= dcon_regulator_enable,
- 	.disable	= dcon_regulator_disable,
- 	.is_enabled	= dcon_regulator_is_enabled,
--- 
-2.30.0
+Hi!
 
+> From: Peter Zijlstra <peterz@infradead.org>
+>=20
+> [ Upstream commit ac687e6e8c26181a33270efd1a2e2241377924b0 ]
+>=20
+> There is a need to distinguish geniune per-cpu kthreads from kthreads
+> that happen to have a single CPU affinity.
+>=20
+> Geniune per-cpu kthreads are kthreads that are CPU affine for
+> correctness, these will obviously have PF_KTHREAD set, but must also
+> have PF_NO_SETAFFINITY set, lest userspace modify their affinity and
+> ruins things.
+>=20
+> However, these two things are not sufficient, PF_NO_SETAFFINITY is
+> also set on other tasks that have their affinities controlled through
+> other means, like for instance workqueues.
+>=20
+> Therefore another bit is needed; it turns out kthread_create_per_cpu()
+> already has such a bit: KTHREAD_IS_PER_CPU, which is used to make
+> kthread_park()/kthread_unpark() work correctly.
+>=20
+> Expose this flag and remove the implicit setting of it from
+> kthread_create_on_cpu(); the io_uring usage of it seems dubious at
+> best.
+
+AFAIK this should not be in 4.19/5.10 as it does not fix anything w/o
+5ba2ffba13a1e. Nobody calls kthread_is_per_cpu() in those kernels.
+
+Best regards,
+								Pavel
+
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--/04w6evG8XlLl3ft
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAmAfJVQACgkQMOfwapXb+vKIbgCgwhgFHYtEbIGxwQEqO/Hz8Nej
+1QUAoIFCgZXOVP0o3W2xNOFMbJpI8S+q
+=T/1f
+-----END PGP SIGNATURE-----
+
+--/04w6evG8XlLl3ft--
