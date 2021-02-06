@@ -2,122 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D0B1311ABE
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 05:14:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5697311AB6
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 05:11:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230307AbhBFEOV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 23:14:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41000 "EHLO
+        id S230226AbhBFEKk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 23:10:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232048AbhBFCuo (ORCPT
+        with ESMTP id S232231AbhBFCzl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 21:50:44 -0500
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DFCCC08EE7F
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 16:40:11 -0800 (PST)
-Received: by mail-ed1-x52c.google.com with SMTP id s11so11131896edd.5
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 16:40:11 -0800 (PST)
+        Fri, 5 Feb 2021 21:55:41 -0500
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1854C03326D
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 17:00:20 -0800 (PST)
+Received: by mail-lf1-x12d.google.com with SMTP id m22so12725547lfg.5
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 17:00:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chrisdown.name; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=yd9DVs1bpM3Y2tHW1e5fufzslh0L2frolGTr8VlBm1w=;
-        b=hIqiPlRCktnGw29D8HqZEwtk/2+4Aty9eo+z/nKC5kuxzTo1rRn9Scus+6sMnqkx+d
-         rvpWk0D4qKSZWNKef9hjzewXR+FFFt/YsBLuv7PvF7fLGaD6FRRKta0iB7kcRs7zM9ON
-         g+djgut8H9myomPqLUkL1x7bDq1lccMg0mP88=
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Fb95oN2pGx3nj+Eb9wyweMoS+j1I5Uh71GzG+Sz5oEM=;
+        b=rmxoZUiSYkE8WfcgoGpH7IesJ19msP/HBOrSblBil1jDywKKNf0JAOM/ZXWZUbHylE
+         ZC3ZwMo8GNEAQB5DwMZpU2qre6bGCokTjqEtWwoGcnoQbvNYKFvMNBxN7n5bth2tqddl
+         jmseJ5ITj1AUUqey4rvVJJY1pFpw/ZMB+uIMqEwX1S0n2zl3xv9Z4/ve3yPhU7VwNabe
+         6zD1LGmW7sV8jwByfF3vS8tVg14Cx2jqVW9wQCcQWsHcvraZsvbtriBpxYOr89geqVgw
+         S5rAqh/fXXn7MLD7GG1OqbukEsSXVqs+Y9uQyfp2tZiDJ0cl9RhZ5jngWRQErTthIzRj
+         q/UA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=yd9DVs1bpM3Y2tHW1e5fufzslh0L2frolGTr8VlBm1w=;
-        b=rUoRdG3d7VhtEn6jnhbXtAcp7rkV8fFlt5RQt5NalQF8aA4Yh3r9PRmKkh9P7dt5VK
-         fJye2t4KGzwsmGel0cEtPtPhtVf/Kgd3GdrXXyjOLOHFfcD1zc5PIdfzQXweRRkMEmcg
-         BVajTg6t16wixDzdxxTMLcODrkSvi9zucnOPIh5spATySUp98B2nvxYSn22LxYeyo84n
-         n0xydV876ZM3G24EXMRdsyVMWT89DAfKy3Dhiml3LuJrL94dXO4xvgkA0a+7GLJeFIpa
-         kh+Vwh8WXrYzUdCrDK9FPbNCzRRvq7znyjWMKBFUC+TAy7ZvX6F87m27bARVaopGktOx
-         s5wg==
-X-Gm-Message-State: AOAM530ntBZpojW2IjxmC/qJ0Gf/nB3QqvAGUaC/eLsxyd3bD0Udjh0p
-        eQ0h40dzVQhfTScKa4B0pROo3Q==
-X-Google-Smtp-Source: ABdhPJxvlz9VFpro1BoxrP01rQJ4N6XwtZpuwm0SvnsLq5JrqOLFv6Dqdh/ANTeCcvFLAJqw6AsYbg==
-X-Received: by 2002:aa7:cfda:: with SMTP id r26mr6033955edy.142.1612572009688;
-        Fri, 05 Feb 2021 16:40:09 -0800 (PST)
-Received: from localhost ([2620:10d:c093:400::4:4dd1])
-        by smtp.gmail.com with ESMTPSA id o4sm4759933edw.78.2021.02.05.16.40.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Feb 2021 16:40:09 -0800 (PST)
-Date:   Sat, 6 Feb 2021 00:40:08 +0000
-From:   Chris Down <chris@chrisdown.name>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Seth Forshee <seth.forshee@canonical.com>,
-        Hugh Dickins <hughd@google.com>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-mm@kvack.org, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] tmpfs: Disallow CONFIG_TMPFS_INODE64 on s390
-Message-ID: <YB3laM3HQUM7u/Wo@chrisdown.name>
-References: <20210205230620.518245-1-seth.forshee@canonical.com>
- <20210205160551.cf57c4293ba5ccb8eb648c11@linux-foundation.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Fb95oN2pGx3nj+Eb9wyweMoS+j1I5Uh71GzG+Sz5oEM=;
+        b=CBKJ7LxI7HMdaxOMflzpIbIRRaYcDsRAtGKWHJXwNQ/22lBMR9D/LRO2DykRVXwvgo
+         s6Lt7awRJW/glNfZVFuFXTIQnonf3LUMnpV6kJBgWzS52FNU+IQFM1lgtpVPbQhsMhRE
+         12euWJgpH/AemygUyHGoVmOPxTSxhVk14HzTBBGFgPkHrdgNdd5OieIeLTvfdA6MclgY
+         jfykHzFmwZclBlYVhnAUTtymfBh7bFV2PLOR17D/UJE41iQ2yEfmeCEbHOxJZii5mEOr
+         nPy4beQB8/4AkJE5aeZknxnO2QAnFeuwlhlPf8hQf15Nyv8JyGRaai9HU5FE2G/MCP5w
+         ZhMQ==
+X-Gm-Message-State: AOAM532iDMXWCOCs2Va76WNnBvY6d6C/hwHhDfCfjrRIOkHN57B/BkBa
+        nFMKCQStZRMJMPwo2M2lIH3Xwkjh9nLBtgua4khHZQ==
+X-Google-Smtp-Source: ABdhPJxO5T6L8jGlLaSb3hN78KcIBodI1XXIxksiCZSZKhqYtKXh+IajAf/ZWDzbObIORdgIN5KK24RJzV+6a6SkJlI=
+X-Received: by 2002:a2e:8541:: with SMTP id u1mr4306946ljj.0.1612573219209;
+ Fri, 05 Feb 2021 17:00:19 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20210205160551.cf57c4293ba5ccb8eb648c11@linux-foundation.org>
-User-Agent: Mutt/2.0.5 (da5e3282) (2021-01-21)
+References: <20210204163055.56080-1-songmuchun@bytedance.com>
+In-Reply-To: <20210204163055.56080-1-songmuchun@bytedance.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Fri, 5 Feb 2021 17:00:07 -0800
+Message-ID: <CALvZod6Xv6jJbUsJ0Rh+7tS=SjOPxY5MqHLtr2JdJZov9T45wQ@mail.gmail.com>
+Subject: Re: [PATCH v2] mm: memcontrol: replace the loop with a list_for_each_entry()
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Andrew Morton writes:
->Currently there is an assumption in tmpfs that 64-bit architectures also
->have a 64-bit ino_t.  This is not true on s390 which has a 32-bit ino_t.
->With CONFIG_TMPFS_INODE64=y tmpfs mounts will get 64-bit inode numbers and
->display "inode64" in the mount options, but passing the "inode64" mount
->option will fail.  This leads to the following behavior:
+On Thu, Feb 4, 2021 at 8:39 AM Muchun Song <songmuchun@bytedance.com> wrote:
 >
-> # mkdir mnt
-> # mount -t tmpfs nodev mnt
-> # mount -o remount,rw mnt
-> mount: /home/ubuntu/mnt: mount point not mounted or bad option.
+> The rule of list walk has gone since:
 >
->As mount sees "inode64" in the mount options and thus passes it in the
->options for the remount.
+>  commit a9d5adeeb4b2 ("mm/memcontrol: allow to uncharge page without using page->lru field")
 >
+> So remove the strange comment and replace the loop with a
+> list_for_each_entry().
 >
->So prevent CONFIG_TMPFS_INODE64 from being selected on s390.
+> There is only one caller of the uncharge_list(). So just fold it into
+> mem_cgroup_uncharge_list() and remove it.
 >
->Link: https://lkml.kernel.org/r/20210205230620.518245-1-seth.forshee@canonical.com
->Fixes: ea3271f7196c ("tmpfs: support 64-bit inums per-sb")
->Signed-off-by: Seth Forshee <seth.forshee@canonical.com>
->Cc: Chris Down <chris@chrisdown.name>
->Cc: Hugh Dickins <hughd@google.com>
->Cc: Amir Goldstein <amir73il@gmail.com>
->Cc: Heiko Carstens <hca@linux.ibm.com>
->Cc: Vasily Gorbik <gor@linux.ibm.com>
->Cc: Christian Borntraeger <borntraeger@de.ibm.com>
->Cc: <stable@vger.kernel.org>	[5.9+]
->Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
 
-Either of the two ways presented looks fine to me, no real preference. Thanks!
-
-Acked-by: Chris Down <chris@chrisdown.name>
-
->---
->
-> fs/Kconfig |    2 +-
-> 1 file changed, 1 insertion(+), 1 deletion(-)
->
->--- a/fs/Kconfig~tmpfs-disallow-config_tmpfs_inode64-on-s390
->+++ a/fs/Kconfig
->@@ -203,7 +203,7 @@ config TMPFS_XATTR
->
-> config TMPFS_INODE64
-> 	bool "Use 64-bit ino_t by default in tmpfs"
->-	depends on TMPFS && 64BIT
->+	depends on TMPFS && 64BIT && !S390
-> 	default n
-> 	help
-> 	  tmpfs has historically used only inode numbers as wide as an unsigned
->_
->
+Reviewed-by: Shakeel Butt <shakeelb@google.com>
