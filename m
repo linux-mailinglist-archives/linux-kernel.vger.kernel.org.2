@@ -2,107 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46E473118EF
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 03:52:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3C6B311840
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 03:34:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232091AbhBFCvN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 21:51:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38360 "EHLO
+        id S229771AbhBFCbp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 21:31:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231278AbhBFCgR (ORCPT
+        with ESMTP id S229562AbhBFCa6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 21:36:17 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2D17C08EE7B;
-        Fri,  5 Feb 2021 16:39:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=mZCRVETJ8PFFSolgHhB5Tp0serDneMbD0XJnnQKOZTI=; b=BxHBM4b9ULo1IOmmp+yYoLbHzA
-        T7jAwmuzi3nMiMuX4tSkT/PrHmdvmiGIRtRT/UkrGY+MQn3UjhuH9epQ5p+ZfcNl6+MGqcoaQTzOA
-        3u9fGYgTMy7MutsAZYCmCG0OHhLpFF54+pcZVvNUrQol7VN1x8yplUX+rdXTzoCUqFlzpK8rwKzOJ
-        diBnw2RUzvs+/6D90s2sCtbcRqjpD9AINeb0tex9RhkHpmLzu0NaLJXeHfsRlLizZU5m9K5zi40tm
-        QNvThKpybBm2o4UpU5v+Xa3rIySjTRMa2Ah7VNAJ7CBgXfTwVgoU6hQwCFVDeU9jgxIKa2NtGEDov
-        vygqBJ+w==;
-Received: from [2601:1c0:6280:3f0::aec2]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l8BdT-0004md-Uz; Sat, 06 Feb 2021 00:39:40 +0000
-Subject: Re: [PATCH v4 1/2] procfs: Allow reading fdinfo with PTRACE_MODE_READ
-To:     Kalesh Singh <kaleshsingh@google.com>
-Cc:     jannh@google.com, jeffv@google.com, keescook@chromium.org,
-        surenb@google.com, minchan@kernel.org, hridya@google.com,
-        christian.koenig@amd.com, kernel-team@android.com,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Alexey Gladkov <gladkov.alexey@gmail.com>,
-        NeilBrown <neilb@suse.de>, Szabolcs Nagy <szabolcs.nagy@arm.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Michel Lespinasse <walken@google.com>,
-        Bernd Edlinger <bernd.edlinger@hotmail.de>,
-        Andrei Vagin <avagin@gmail.com>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-doc@vger.kernel.org
-References: <20210205213353.669122-1-kaleshsingh@google.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <fe8780a1-364e-ec8f-48ee-192438d52c01@infradead.org>
-Date:   Fri, 5 Feb 2021 16:39:29 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
-MIME-Version: 1.0
-In-Reply-To: <20210205213353.669122-1-kaleshsingh@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        Fri, 5 Feb 2021 21:30:58 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3A9EC033268
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 16:42:23 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id 78so5451319ybn.14
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 16:42:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:reply-to:date:message-id:mime-version:subject:from:to:cc;
+        bh=/uKdxO7FbPiBVeLTlxl1CfT/Z9yqVnQz43NlcHgsGl4=;
+        b=mgWuoDzKopp0TTA8rmgl4BKF9dbWHGsAISViQKsZV+FpaNv8jWFglKIcXKTrzgFB69
+         kNHOOomBoBsz9/2bptFdvSLjwDtei0F+iDq20PqSNjdH9s9W2BCCswgtg1Oit+V2Z5C4
+         cwLFOFb/IdcYnOicBwydv9W29TEIap1qs23mJtlwzmZV0VwQURljouLQaMubOP/SRULq
+         H/9nsKNjKbNGzNfsfA0KS2rc1aUaRjHbW7rPalnIS4VaKcSTZEbEx6kl1kTJTcewCWoR
+         BAyU8NRyX9tyHJoBUrLy1xKVjbcmdzasRMv9Zjz+v+caOPcW4gGHtTrHmRtXQiTeVrcQ
+         yS8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:reply-to:date:message-id:mime-version
+         :subject:from:to:cc;
+        bh=/uKdxO7FbPiBVeLTlxl1CfT/Z9yqVnQz43NlcHgsGl4=;
+        b=o1DHuiOPFpEIYDy+tcWtAf8I24o686yC3pAdgxX3/jJ74kAq/ZD7gnCG8Fzgchu2F9
+         p9mH03FefVoP8jx325FplOOB2e5kKRyKtmr28K6l1EKQElQtHsXFzzHsYJt/4YB4zdYp
+         rAJDsPj0I2Mvidn0lODlQQsx4RZRENPo5lhlilZy81n2/v4Gm8bdVDO37rZuB3qI06O0
+         1KjZa1pNl7sosDxl7J9k7HjK4yLvSFcn/bITnGE/OOhqdWpcYjkGNrl08q0QaOxOksPZ
+         ikO+2q/5cqS/PGAlISTWwZ84hPoChXqTpEsTcgb8WxQhvqul0rB9lHYab/M3LBO/YE4h
+         Npsw==
+X-Gm-Message-State: AOAM5335Rb8JfV4qrx0478fbc1yPWbcZAE9Ot/lHADCDFd+K8UiLNeSe
+        Kv1rqKfttgRNN65qprpWr/bf/zh8t1A=
+X-Google-Smtp-Source: ABdhPJx9PBagDThm3MGgi0E+HsklXIC0Oj8sYJAfylwTidtK3vM6ARhOOlcdB+sI6KDQltE+hHnREPZebQc=
+Sender: "seanjc via sendgmr" <seanjc@seanjc798194.pdx.corp.google.com>
+X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:d169:a9f7:513:e5])
+ (user=seanjc job=sendgmr) by 2002:a25:24c:: with SMTP id 73mr9515183ybc.362.1612572143209;
+ Fri, 05 Feb 2021 16:42:23 -0800 (PST)
+Reply-To: Sean Christopherson <seanjc@google.com>
+Date:   Fri,  5 Feb 2021 16:42:18 -0800
+Message-Id: <20210206004218.312023-1-seanjc@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.0.478.g8a0d178c01-goog
+Subject: [RFC PATCH] KVM: x86: Set PF_VCPU when processing IRQs to fix
+ tick-based accounting
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/5/21 1:33 PM, Kalesh Singh wrote:
-> Android captures per-process system memory state when certain low memory
-> events (e.g a foreground app kill) occur, to identify potential memory
-> hoggers. In order to measure how much memory a process actually consumes,
-> it is necessary to include the DMA buffer sizes for that process in the
-> memory accounting. Since the handle to DMA buffers are raw FDs, it is
-> important to be able to identify which processes have FD references to
-> a DMA buffer.
-> 
-> Currently, DMA buffer FDs can be accounted using /proc/<pid>/fd/* and
-> /proc/<pid>/fdinfo -- both are only readable by the process owner,
-> as follows:
->   1. Do a readlink on each FD.
->   2. If the target path begins with "/dmabuf", then the FD is a dmabuf FD.
->   3. stat the file to get the dmabuf inode number.
->   4. Read/ proc/<pid>/fdinfo/<fd>, to get the DMA buffer size.
-> 
-> Accessing other processes’ fdinfo requires root privileges. This limits
+Temporarily set PF_VCPU while processing IRQ VM-Exits so that a tick IRQ
+accounts the time slice to the guest.  Tick-based accounting of guest
+time is currently broken as PF_VCPU is only set during the relatively
+short VM-Enter sequence, which runs entirely with IRQs disabled, and IRQs
+that occur in the guest are processed well after PF_VCPU is cleared.
 
-Tangential:
-Please just use ASCII "'" -- it's good enough.
+Keep PF_VCPU set across both VMX's processing of already-acked IRQs
+(handle_exit_irqoff()) and the explicit IRQ window (SVM's processing,
+plus ticks that occur immediately after VM-Exit on both VMX and SVM).
 
-> the use of the interface to debugging environments and is not suitable
-> for production builds.  Granting root privileges even to a system process
-> increases the attack surface and is highly undesirable.
-> 
-> Since fdinfo doesn't permit reading process memory and manipulating
-> process state, allow accessing fdinfo under PTRACE_MODE_READ_FSCRED.
-> 
-> Suggested-by: Jann Horn <jannh@google.com>
-> Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
-> ---
-> Changes in v2:
->   - Update patch description
-> 
->  fs/proc/base.c |  4 ++--
->  fs/proc/fd.c   | 15 ++++++++++++++-
->  2 files changed, 16 insertions(+), 3 deletions(-)
+Fixes: 87fa7f3e98a1 ("x86/kvm: Move context tracking where it belongs")
+Cc: stable@vger.kernel.org
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+---
 
+This is quite obnoxious, hence the RFC, but I can't think of a clever,
+less ugly way to fix the accounting.
 
+ arch/x86/kvm/x86.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index d9f931c63293..6ddf341cd755 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -9118,6 +9118,13 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
+ 	vcpu->mode = OUTSIDE_GUEST_MODE;
+ 	smp_wmb();
+ 
++	/*
++	 * Temporarily pretend this task is running a vCPU when potentially
++	 * processing an IRQ exit, including the below opening of an IRQ
++	 * window.  Tick-based accounting of guest time relies on PF_VCPU
++	 * being set when the tick IRQ handler runs.
++	 */
++	current->flags |= PF_VCPU;
+ 	static_call(kvm_x86_handle_exit_irqoff)(vcpu);
+ 
+ 	/*
+@@ -9132,6 +9139,7 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
+ 	++vcpu->stat.exits;
+ 	local_irq_disable();
+ 	kvm_after_interrupt(vcpu);
++	current->flags &= ~PF_VCPU;
+ 
+ 	if (lapic_in_kernel(vcpu)) {
+ 		s64 delta = vcpu->arch.apic->lapic_timer.advance_expire_delta;
 -- 
-~Randy
+2.30.0.478.g8a0d178c01-goog
 
