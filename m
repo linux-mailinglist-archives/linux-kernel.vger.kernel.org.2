@@ -2,66 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52BB5311F2A
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 18:43:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A65B5311F2F
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 18:43:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230347AbhBFRkr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Feb 2021 12:40:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33124 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230261AbhBFRkm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Feb 2021 12:40:42 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 391D164E85
-        for <linux-kernel@vger.kernel.org>; Sat,  6 Feb 2021 17:40:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612633201;
-        bh=BV/OFUakTiHq8xAQyY0URE5Yj6utelRSRjwQXxOhok8=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=rGXsytCTtl/Q+hybptlWfyozklih0bn1vEN7a5Lq8AiwPxZl9a0WDsqlYTJucwz6l
-         PDPorJ+akX3z6iaK5ndN/BLs2A52PInaw9wC7Kmw3nqANZszkuN0N+/TqCah/dzpi/
-         8XqAgb08BIGkrgqPAFUuSC6HgMZ4AKU3ybdPbJQG+wtFuBdrhFgcZ/opMxrOJy83sT
-         11eOGabpShCc8PMpYCXtBvGX5EU+LJG6XSdXIOfKP3Z0qEq29UiUtzyDYykGoDZ3So
-         CyRNBVLoEaQRCJjppcdDmTRBOg5JpYdnprDsWd452vEEufQAZOw0Uk5t8vUBGXoYGG
-         J5Za9fwMkh18A==
-From:   Oded Gabbay <ogabbay@kernel.org>
-To:     linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] habanalabs/gaudi: don't enable clock gating on DMA5
-Date:   Sat,  6 Feb 2021 19:39:54 +0200
-Message-Id: <20210206173954.4662-3-ogabbay@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210206173954.4662-1-ogabbay@kernel.org>
-References: <20210206173954.4662-1-ogabbay@kernel.org>
+        id S230388AbhBFRlc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Feb 2021 12:41:32 -0500
+Received: from bedivere.hansenpartnership.com ([96.44.175.130]:41414 "EHLO
+        bedivere.hansenpartnership.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230327AbhBFRlO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 6 Feb 2021 12:41:14 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by bedivere.hansenpartnership.com (Postfix) with ESMTP id 22D57128015D;
+        Sat,  6 Feb 2021 09:40:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=hansenpartnership.com; s=20151216; t=1612633233;
+        bh=wztkNCBX/ZeuHiJS/Vj2aETWcPrKfBF2Wrx0Qm5SnUA=;
+        h=Message-ID:Subject:From:To:Date:From;
+        b=ZX1O3cJ2hNAmo/oJqzwZLv0No7NRNGqB6mvicWUAXTQyXltAEIqESfgXCV6tg4Hs8
+         R3Rdj3Qvb7D+t8RvFBjoOhpEBuxmGEZn1Cr3mskSoHw5N3u6i+3RQ2e21zYDanL1oR
+         0arTj7koS7vH5MuEE4RkNQIvm9AVYKp6jrbJyAtY=
+Received: from bedivere.hansenpartnership.com ([127.0.0.1])
+        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id G__BCZz8wh2Y; Sat,  6 Feb 2021 09:40:33 -0800 (PST)
+Received: from jarvis.int.hansenpartnership.com (unknown [IPv6:2601:600:8280:66d1::c447])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id C2E5712800EE;
+        Sat,  6 Feb 2021 09:40:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=hansenpartnership.com; s=20151216; t=1612633233;
+        bh=wztkNCBX/ZeuHiJS/Vj2aETWcPrKfBF2Wrx0Qm5SnUA=;
+        h=Message-ID:Subject:From:To:Date:From;
+        b=ZX1O3cJ2hNAmo/oJqzwZLv0No7NRNGqB6mvicWUAXTQyXltAEIqESfgXCV6tg4Hs8
+         R3Rdj3Qvb7D+t8RvFBjoOhpEBuxmGEZn1Cr3mskSoHw5N3u6i+3RQ2e21zYDanL1oR
+         0arTj7koS7vH5MuEE4RkNQIvm9AVYKp6jrbJyAtY=
+Message-ID: <4694bcc43696d52e6a81c915c2215bc8022918fc.camel@HansenPartnership.com>
+Subject: [GIT PULL] SCSI fixes for 5.11-rc6
+From:   James Bottomley <James.Bottomley@HansenPartnership.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-scsi <linux-scsi@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Date:   Sat, 06 Feb 2021 09:40:32 -0800
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Graph Compiler uses DMA5 in a non-standard way and it requires the
-driver to disable clock gating on that DMA.
+One fix in drivers (lpfc) that stops an oops on resource exhaustion.
 
-Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
+The patch is available here:
+
+git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
+
+The short changelog is:
+
+James Smart (1):
+      scsi: lpfc: Fix EEH encountering oops with NVMe traffic
+
+And the diffstat:
+
+ drivers/scsi/lpfc/lpfc_nvme.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+With full diff below
+
+James
+
 ---
- drivers/misc/habanalabs/gaudi/gaudi.c | 6 ++++++
- 1 file changed, 6 insertions(+)
 
-diff --git a/drivers/misc/habanalabs/gaudi/gaudi.c b/drivers/misc/habanalabs/gaudi/gaudi.c
-index 35342edd4a02..9152242778f5 100644
---- a/drivers/misc/habanalabs/gaudi/gaudi.c
-+++ b/drivers/misc/habanalabs/gaudi/gaudi.c
-@@ -3460,6 +3460,12 @@ static void gaudi_set_clock_gating(struct hl_device *hdev)
- 		enable = !!(hdev->clock_gating_mask &
- 				(BIT_ULL(gaudi_dma_assignment[i])));
+diff --git a/drivers/scsi/lpfc/lpfc_nvme.c b/drivers/scsi/lpfc/lpfc_nvme.c
+index 1cb82fa6a60e..39d147e251bf 100644
+--- a/drivers/scsi/lpfc/lpfc_nvme.c
++++ b/drivers/scsi/lpfc/lpfc_nvme.c
+@@ -559,6 +559,9 @@ __lpfc_nvme_ls_req(struct lpfc_vport *vport, struct lpfc_nodelist *ndlp,
+ 		return -ENODEV;
+ 	}
  
-+		/* GC sends work to DMA engine through Upper CP in DMA5 so
-+		 * we need to not enable clock gating in that DMA
-+		 */
-+		if (i == GAUDI_HBM_DMA_4)
-+			enable = 0;
++	if (!vport->phba->sli4_hba.nvmels_wq)
++		return -ENOMEM;
 +
- 		qman_offset = gaudi_dma_assignment[i] * DMA_QMAN_OFFSET;
- 		WREG32(mmDMA0_QM_CGM_CFG1 + qman_offset,
- 				enable ? QMAN_CGM1_PWR_GATE_EN : 0);
--- 
-2.25.1
+ 	/*
+ 	 * there are two dma buf in the request, actually there is one and
+ 	 * the second one is just the start address + cmd size.
 
