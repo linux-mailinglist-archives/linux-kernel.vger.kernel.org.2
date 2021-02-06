@@ -2,114 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B6DB311D6D
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 14:18:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58E45311D53
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 14:10:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230088AbhBFNSR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Feb 2021 08:18:17 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:42208 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229717AbhBFNSD (ORCPT
+        id S229753AbhBFNJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Feb 2021 08:09:50 -0500
+Received: from alln-iport-4.cisco.com ([173.37.142.91]:11133 "EHLO
+        alln-iport-4.cisco.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229522AbhBFNJj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Feb 2021 08:18:03 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 116DAA7b058414;
-        Sat, 6 Feb 2021 13:17:12 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=mime-version :
- message-id : date : from : to : cc : subject : references : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=iBieoUlmovjvu5MaIJ9cX8BhQE205Z9HXYbmJPk/bDk=;
- b=qS/UJStC/nkTVP/7CzekK8ci4FqXC+RyAqJRpDbmo9Xv+t4hMztZTr4iUy6llQ/LjW9M
- 3NH+O+TFJQdKARJ6YpvnKfGpLxl3mv+4Fo4HiXkvJXarBX+0OEROCCuEvaglUbQFROvu
- oWuXhPwM1rKlnyYK1nytJ8fqOfa5uYr0Y2oIBJ1mYBaZgwZUtIBumykl7xdYBpU9CNFA
- JLgEh8n/cbGYPIjPDOqJUUrykouJUMGff33r1svR6q0H05AYdc+d9TTPYgv0G3hKOfSg
- VXBaHNKK2uqQg61uC3MKrifipl87bsThi52vgkphIn4rBJ1bQrWnb5T2kqjVLP7rVisk jQ== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2130.oracle.com with ESMTP id 36hjhqgn9f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 06 Feb 2021 13:17:12 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 116DARWr028459;
-        Sat, 6 Feb 2021 13:17:09 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3020.oracle.com with ESMTP id 36hjeh3f5y-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 06 Feb 2021 13:17:09 +0000
-Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 116DH89E018854;
-        Sat, 6 Feb 2021 13:17:08 GMT
-Received: from ban25x6uut24.us.oracle.com (/10.153.73.24) by default (Oracle
- Beehive Gateway v4.0) with ESMTP ; Sat, 06 Feb 2021 05:16:17 -0800
+        Sat, 6 Feb 2021 08:09:39 -0500
+X-Greylist: delayed 545 seconds by postgrey-1.27 at vger.kernel.org; Sat, 06 Feb 2021 08:09:38 EST
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=cisco.com; i=@cisco.com; l=1668; q=dns/txt; s=iport;
+  t=1612616978; x=1613826578;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=N4oMQ2G7Ex1ON1n93ujw9PeeJlVrRzyTku1hxe8J0Ag=;
+  b=lMv0T4Xi0mGxwsreEf32hbOx1FP7Anmancd7FLzIkuBYXnqlatk0C9LA
+   q5juxEuqqVRQRvUEtHFGzqyhwRglh2Y3PSZ/VtdQhW4rFke4kmmXFRpxN
+   qfRMBvfFo/VuCCUacOZ8XhKr1un1Hi6dbnOmuaryWgaY4ME1sUttGummz
+   M=;
+X-IronPort-AV: E=Sophos;i="5.81,157,1610409600"; 
+   d="scan'208";a="642413507"
+Received: from alln-core-10.cisco.com ([173.36.13.132])
+  by alln-iport-4.cisco.com with ESMTP/TLS/DHE-RSA-SEED-SHA; 06 Feb 2021 12:59:48 +0000
+Received: from sjc-ads-2883.cisco.com (sjc-ads-2883.cisco.com [171.70.33.62])
+        by alln-core-10.cisco.com (8.15.2/8.15.2) with ESMTPS id 116CxmaJ023883
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
+        Sat, 6 Feb 2021 12:59:48 GMT
+Received: by sjc-ads-2883.cisco.com (Postfix, from userid 725528)
+        id 0BC50CC1251; Sat,  6 Feb 2021 04:59:48 -0800 (PST)
+From:   Ivan Khoronzhuk <ikhoronz@cisco.com>
+To:     linux-mips@vger.kernel.org, tsbogend@alpha.franken.de,
+        linux-kernel@vger.kernel.org
+Cc:     yangtiezhu@loongson.cn, rppt@kernel.org, ivan.khoronzhuk@gmail.com,
+        Ivan Khoronzhuk <ikhoronz@cisco.com>
+Subject: [PATCH] mips: kernel: setup: fix crash kernel resource allocation
+Date:   Sat,  6 Feb 2021 12:59:40 +0000
+Message-Id: <20210206125940.111766-1-ikhoronz@cisco.com>
+X-Mailer: git-send-email 2.23.1
 MIME-Version: 1.0
-Message-ID: <1612614564-4220-3-git-send-email-si-wei.liu@oracle.com>
-Date:   Sat, 6 Feb 2021 04:29:24 -0800 (PST)
-From:   Si-Wei Liu <si-wei.liu@oracle.com>
-To:     mst@redhat.com, jasowang@redhat.com, elic@nvidia.com
-Cc:     linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        si-wei.liu@oracle.com
-Subject: [PATCH 3/3] mlx5_vdpa: defer clear_virtqueues to until DRIVER_OK
-References: <1612614564-4220-1-git-send-email-si-wei.liu@oracle.com>
-In-Reply-To: <1612614564-4220-1-git-send-email-si-wei.liu@oracle.com>
-X-Mailer: git-send-email 1.8.3.1
-Content-Type: text/plain; charset=ascii
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-IMR: 1
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9886 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 suspectscore=0
- adultscore=0 phishscore=0 bulkscore=0 mlxlogscore=999 spamscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102060093
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9886 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 impostorscore=0
- priorityscore=1501 bulkscore=0 suspectscore=0 mlxscore=0 phishscore=0
- lowpriorityscore=0 mlxlogscore=999 clxscore=1015 spamscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102060093
+Content-Transfer-Encoding: 8bit
+X-Outbound-SMTP-Client: 171.70.33.62, sjc-ads-2883.cisco.com
+X-Outbound-Node: alln-core-10.cisco.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While virtq is stopped,  get_vq_state() is supposed to
-be  called to  get  sync'ed  with  the latest internal
-avail_index from device. The saved avail_index is used
-to restate  the virtq  once device is started.  Commit
-b35ccebe3ef7 introduced the clear_virtqueues() routine
-to  reset  the saved  avail_index,  however, the index
-gets cleared a bit earlier before get_vq_state() tries
-to read it. This would cause consistency problems when
-virtq is restarted, e.g. through a series of link down
-and link up events. We  could  defer  the  clearing of
-avail_index  to  until  the  device  is to be started,
-i.e. until  VIRTIO_CONFIG_S_DRIVER_OK  is set again in
-set_status().
+In order to avoid crash kernel corruption, its memory is reserved
+early in memblock and as result, in time when resources are inited
+it's not present in memblock.memory, so crash kernel memory is out
+of ranges listed with for_each_mem_range(). To avoid it and still
+keep memory reserved lets reseve it out of loop by inserting it in
+iomem_resource.
 
-Fixes: b35ccebe3ef7 ("vdpa/mlx5: Restore the hardware used index after change map")
-Signed-off-by: Si-Wei Liu <si-wei.liu@oracle.com>
+Fixes: a94e4f24ec83 ("MIPS: init: Drop boot_mem_map")
+Signed-off-by: Ivan Khoronzhuk <ikhoronz@cisco.com>
 ---
- drivers/vdpa/mlx5/net/mlx5_vnet.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Based on linux-next/master
 
-diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-index aa6f8cd..444ab58 100644
---- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
-+++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-@@ -1785,7 +1785,6 @@ static void mlx5_vdpa_set_status(struct vdpa_device *vdev, u8 status)
- 	if (!status) {
- 		mlx5_vdpa_info(mvdev, "performing device reset\n");
- 		teardown_driver(ndev);
--		clear_virtqueues(ndev);
- 		mlx5_vdpa_destroy_mr(&ndev->mvdev);
- 		ndev->mvdev.status = 0;
- 		++mvdev->generation;
-@@ -1794,6 +1793,7 @@ static void mlx5_vdpa_set_status(struct vdpa_device *vdev, u8 status)
+ arch/mips/kernel/setup.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
+index 3785c72bc3bc..25e376ef2f2a 100644
+--- a/arch/mips/kernel/setup.c
++++ b/arch/mips/kernel/setup.c
+@@ -473,14 +473,15 @@ static void __init mips_parse_crashkernel(void)
+ 	crashk_res.end	 = crash_base + crash_size - 1;
+ }
  
- 	if ((status ^ ndev->mvdev.status) & VIRTIO_CONFIG_S_DRIVER_OK) {
- 		if (status & VIRTIO_CONFIG_S_DRIVER_OK) {
-+			clear_virtqueues(ndev);
- 			err = setup_driver(ndev);
- 			if (err) {
- 				mlx5_vdpa_warn(mvdev, "failed to setup driver\n");
+-static void __init request_crashkernel(struct resource *res)
++static void __init request_crashkernel(void)
+ {
+ 	int ret;
+ 
+ 	if (crashk_res.start == crashk_res.end)
+ 		return;
+ 
+-	ret = request_resource(res, &crashk_res);
++	/* The crashk resource shoud be located in normal mem */
++	ret = insert_resource(&iomem_resource, &crashk_res);
+ 	if (!ret)
+ 		pr_info("Reserving %ldMB of memory at %ldMB for crashkernel\n",
+ 			(unsigned long)(resource_size(&crashk_res) >> 20),
+@@ -734,8 +735,9 @@ static void __init resource_init(void)
+ 		request_resource(res, &code_resource);
+ 		request_resource(res, &data_resource);
+ 		request_resource(res, &bss_resource);
+-		request_crashkernel(res);
+ 	}
++
++	request_crashkernel();
+ }
+ 
+ #ifdef CONFIG_SMP
 -- 
-1.8.3.1
+2.23.1
 
