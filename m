@@ -2,93 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67048311D70
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 14:20:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CCC0311D72
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 14:21:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229975AbhBFNUJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Feb 2021 08:20:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35026 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229711AbhBFNUA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Feb 2021 08:20:00 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D5B1C06174A;
-        Sat,  6 Feb 2021 05:19:20 -0800 (PST)
-Date:   Sat, 06 Feb 2021 13:19:17 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1612617558;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=YdhW8H6qMtBR3dhPjNOCZRv4mtqbJgbehBwMCpjdRto=;
-        b=0aQZF0jANt5pyjB0XcpH6MWrRgSDKFh9eO0QhFUz+X13NSRhZLF8/2w+Vh75Mh8N78PYv4
-        8okU2qVRARTIyLkjvqbqsRgF9tCdTnXcMFDeZyX5R6ONMR3vcY5OGqqubopKlKhmKm5x14
-        +4tDMfZvqVMA1TJb8MbLi3yAO59O/+awj1d0aWYe2lhLZtPCykpjqMImKrEpHJft2vZVlq
-        c83CFJ2mfvZZNEASTXPpEqvC8j259xIU/8sJuRPzOY8k93F2exGyszMJAclQ7WnCAiJMGf
-        m61tgR8dMyw0r1XYRxUHyOKY6wsvyv2sx8fJkP9FDPUOanz52MqQF+JW5f7dlg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1612617558;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=YdhW8H6qMtBR3dhPjNOCZRv4mtqbJgbehBwMCpjdRto=;
-        b=wtxWxzTmp9C0wOnlhVhgy0u7VetV+HsnOz2XJHP8Wk7/UZ6qxZtwYSRwlnQ98s6AcaOPtI
-        nqBbM79DZAVvrRCg==
-From:   "tip-bot2 for Jarkko Sakkinen" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/sgx] MAINTAINERS: Add Dave Hansen as reviewer for INTEL SGX
-Cc:     Jarkko Sakkinen <jarkko@kernel.org>, Borislav Petkov <bp@suse.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210205151546.144810-1-jarkko@kernel.org>
-References: <20210205151546.144810-1-jarkko@kernel.org>
+        id S230144AbhBFNUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Feb 2021 08:20:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35858 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230126AbhBFNUn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 6 Feb 2021 08:20:43 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8DA5264EBC;
+        Sat,  6 Feb 2021 13:19:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1612617600;
+        bh=m3attUaLPE9Ru+kOwqRvJP4eo6QUeyvo9aYOsKMlySA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JXQvmaYnAU8P3vwCI/SUUrv9vXtAgV1Bvg6RQRAkazGT1ZW5U48XryjlElF51WDg4
+         GhKDTfV/MAypDNXBlIBDPsj7NEJQ+hhusLXwutbsGk8sOJMo3WY/ud9CDP6vWe1Y3H
+         m7q31sOCcFza0UeTJvSWeE66FwBy4ITg0CYNu3Jw=
+Date:   Sat, 6 Feb 2021 14:19:57 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Willy Tarreau <w@1wt.eu>
+Cc:     Guenter Roeck <linux@roeck-us.net>, linux-kernel@vger.kernel.org,
+        akpm@linux-foundation.org, torvalds@linux-foundation.org,
+        stable@vger.kernel.org, lwn@lwn.net, jslaby@suse.cz,
+        shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com
+Subject: Re: Linux 4.4.256
+Message-ID: <YB6XfR5YDz8IjZHu@kroah.com>
+References: <1612534196241236@kroah.com>
+ <20210205205658.GA136925@roeck-us.net>
+ <YB6S612pwLbQJf4u@kroah.com>
+ <20210206131113.GB7312@1wt.eu>
 MIME-Version: 1.0
-Message-ID: <161261755749.23325.11866851026791658905.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210206131113.GB7312@1wt.eu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/sgx branch of tip:
+On Sat, Feb 06, 2021 at 02:11:13PM +0100, Willy Tarreau wrote:
+> On Sat, Feb 06, 2021 at 02:00:27PM +0100, Greg Kroah-Hartman wrote:
+> > I think Sasha's patch here:
+> > 	https://lore.kernel.org/r/20210205174702.1904681-1-sashal@kernel.org
+> > is looking like the solution.
+> 
+> It might cause trouble to those forcing SUBLEVEL to a given version such
+> as .0 to avoid exposing the exact stable version. I guess we should
+> instead try to integrate a test on the value itself and cap it at 255.
 
-Commit-ID:     848477782bfa2b6aec738045246abd6cd104006c
-Gitweb:        https://git.kernel.org/tip/848477782bfa2b6aec738045246abd6cd104006c
-Author:        Jarkko Sakkinen <jarkko@kernel.org>
-AuthorDate:    Fri, 05 Feb 2021 17:15:44 +02:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Sat, 06 Feb 2021 14:15:27 +01:00
+That's the main goal of the upstream submission that checks the value
+before capping it:
+	https://lore.kernel.org/r/20210206035033.2036180-2-sashal@kernel.org
 
-MAINTAINERS: Add Dave Hansen as reviewer for INTEL SGX
+> Something like this looks more robust to me, it will use SUBLEVEL for
+> values 0 to 255 and 255 for any larger value:
+> 
+> -	expr $(VERSION) \* 65536 + 0$(PATCHLEVEL) \* 256 + 0$(SUBLEVEL)); \
+> +	expr $(VERSION) \* 65536 + 0$(PATCHLEVEL) \* 256 + 255 \* (0$(SUBLEVEL) > 255) + 0$(SUBLEVEL) * (0$(SUBLEVEL \<= 255)); \
 
-Add Dave as reviewer for INTEL SGX patches.
+I think you just rewrote the above linked patch :)
 
-Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Acked-by: Dave Hansen <dave.hansen@linux.intel.com>
-Link: https://lkml.kernel.org/r/20210205151546.144810-1-jarkko@kernel.org
----
- MAINTAINERS | 1 +
- 1 file changed, 1 insertion(+)
+thanks,
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 5b66de2..41b78e2 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -9227,6 +9227,7 @@ F:	include/linux/tboot.h
- 
- INTEL SGX
- M:	Jarkko Sakkinen <jarkko@kernel.org>
-+R:	Dave Hansen <dave.hansen@linux.intel.com>
- L:	linux-sgx@vger.kernel.org
- S:	Supported
- Q:	https://patchwork.kernel.org/project/intel-sgx/list/
+greg k-h
