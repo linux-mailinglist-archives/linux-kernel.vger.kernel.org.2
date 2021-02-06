@@ -2,143 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97DC9311AC3
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 05:17:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D0B1311ABE
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 05:14:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229977AbhBFEQv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 23:16:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39962 "EHLO
+        id S230307AbhBFEOV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 23:14:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231668AbhBFCpx (ORCPT
+        with ESMTP id S232048AbhBFCuo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 21:45:53 -0500
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E350C08EE29
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 16:29:17 -0800 (PST)
-Received: by mail-pj1-x1033.google.com with SMTP id my11so7338109pjb.1
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 16:29:17 -0800 (PST)
+        Fri, 5 Feb 2021 21:50:44 -0500
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DFCCC08EE7F
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 16:40:11 -0800 (PST)
+Received: by mail-ed1-x52c.google.com with SMTP id s11so11131896edd.5
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 16:40:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=chrisdown.name; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=T7sb6ncr5R6wfUcQGMveYp/z+yGX8ZVufAGOzAOyT3k=;
-        b=h0gWg+Hg5xu/Yy2S6jOGQaWPkX14GYYxCS6NWxJLotd8KUKczFGhG2pqg8j1VPsYBa
-         U4KDRQ6QNIp8g43R3aT/kUnYoTlFtBznbnf/dIDoi6Y0SXddsK9U0zJxh8kN8NoGWCLy
-         R6JTP6LztRdG2yi+qfmXaU2q05fLTbH1jS0mVulEuLDv9+fJeRFwLUzQl6SIw/yM99u7
-         +hNNWKXhaPrJMyny8FCmCJgDom/9buVKN/q0448RcasAh6d16ZNbLRB0uQpm6UjnMh+H
-         lAojBuXgoL1qN7a/aoE+5U6N7xgMfovtrimShCPe1N8raoimErLrlKRBwSMJvp6VajJM
-         QUug==
+         :content-disposition:in-reply-to:user-agent;
+        bh=yd9DVs1bpM3Y2tHW1e5fufzslh0L2frolGTr8VlBm1w=;
+        b=hIqiPlRCktnGw29D8HqZEwtk/2+4Aty9eo+z/nKC5kuxzTo1rRn9Scus+6sMnqkx+d
+         rvpWk0D4qKSZWNKef9hjzewXR+FFFt/YsBLuv7PvF7fLGaD6FRRKta0iB7kcRs7zM9ON
+         g+djgut8H9myomPqLUkL1x7bDq1lccMg0mP88=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=T7sb6ncr5R6wfUcQGMveYp/z+yGX8ZVufAGOzAOyT3k=;
-        b=GfziprzUQ3xgQ6aaQSfcO1MV9oGzuN4Gs7aNYqUbqgq5LQDRFeCetIytaqGsGA3QiJ
-         82q8CpDSRIHkRbTLDJliXXnNmI618/xyb3foorgylskgouJm6q5HPsZoz7QYDB5u/CC8
-         i2RhRgHjr2ID6yZz0K/bWNEvH6uYp++GjrcxorptKm3qAMnnmKuSSaCYSb/2ShZ+0c02
-         S7PIXTyBjTFqCzraLWSYwxXkc0x3xPrDg+fSu83uUqQUG1zwuRRbDN9qb5VNh7rjb+a0
-         Cl1S+w2u0ltbxrUMhq44joaLgBejtM76uyna5AJA26eR6mm0wMQCuvAMjoaWeDZoAalL
-         wBHw==
-X-Gm-Message-State: AOAM531iAWMfL8OZg2FJtV0eVieKSaFpln7qUKRQE2tm6QtcFEprykaR
-        geDvdp480YgyhJalZMawM52ATw==
-X-Google-Smtp-Source: ABdhPJw1OIcTGX649D2tHxeoNCRGC+hK7tKAtFvzxDG4DvBViD7hvDhdB3hwb06AxvnafUGuRcrmTA==
-X-Received: by 2002:a17:902:fe09:b029:e1:6964:98dc with SMTP id g9-20020a170902fe09b02900e1696498dcmr6634863plj.24.1612571356921;
-        Fri, 05 Feb 2021 16:29:16 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:d169:a9f7:513:e5])
-        by smtp.gmail.com with ESMTPSA id o190sm11780244pgo.50.2021.02.05.16.29.15
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=yd9DVs1bpM3Y2tHW1e5fufzslh0L2frolGTr8VlBm1w=;
+        b=rUoRdG3d7VhtEn6jnhbXtAcp7rkV8fFlt5RQt5NalQF8aA4Yh3r9PRmKkh9P7dt5VK
+         fJye2t4KGzwsmGel0cEtPtPhtVf/Kgd3GdrXXyjOLOHFfcD1zc5PIdfzQXweRRkMEmcg
+         BVajTg6t16wixDzdxxTMLcODrkSvi9zucnOPIh5spATySUp98B2nvxYSn22LxYeyo84n
+         n0xydV876ZM3G24EXMRdsyVMWT89DAfKy3Dhiml3LuJrL94dXO4xvgkA0a+7GLJeFIpa
+         kh+Vwh8WXrYzUdCrDK9FPbNCzRRvq7znyjWMKBFUC+TAy7ZvX6F87m27bARVaopGktOx
+         s5wg==
+X-Gm-Message-State: AOAM530ntBZpojW2IjxmC/qJ0Gf/nB3QqvAGUaC/eLsxyd3bD0Udjh0p
+        eQ0h40dzVQhfTScKa4B0pROo3Q==
+X-Google-Smtp-Source: ABdhPJxvlz9VFpro1BoxrP01rQJ4N6XwtZpuwm0SvnsLq5JrqOLFv6Dqdh/ANTeCcvFLAJqw6AsYbg==
+X-Received: by 2002:aa7:cfda:: with SMTP id r26mr6033955edy.142.1612572009688;
+        Fri, 05 Feb 2021 16:40:09 -0800 (PST)
+Received: from localhost ([2620:10d:c093:400::4:4dd1])
+        by smtp.gmail.com with ESMTPSA id o4sm4759933edw.78.2021.02.05.16.40.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Feb 2021 16:29:16 -0800 (PST)
-Date:   Fri, 5 Feb 2021 16:29:09 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Ben Gardon <bgardon@google.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Peter Xu <peterx@redhat.com>, Peter Shier <pshier@google.com>,
-        Peter Feiner <pfeiner@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
-Subject: Re: [PATCH v2 21/28] KVM: x86/mmu: Flush TLBs after zap in TDP MMU
- PF handler
-Message-ID: <YB3i1UXM/uIzHJuD@google.com>
-References: <20210202185734.1680553-1-bgardon@google.com>
- <20210202185734.1680553-22-bgardon@google.com>
+        Fri, 05 Feb 2021 16:40:09 -0800 (PST)
+Date:   Sat, 6 Feb 2021 00:40:08 +0000
+From:   Chris Down <chris@chrisdown.name>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Seth Forshee <seth.forshee@canonical.com>,
+        Hugh Dickins <hughd@google.com>,
+        Amir Goldstein <amir73il@gmail.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        linux-mm@kvack.org, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] tmpfs: Disallow CONFIG_TMPFS_INODE64 on s390
+Message-ID: <YB3laM3HQUM7u/Wo@chrisdown.name>
+References: <20210205230620.518245-1-seth.forshee@canonical.com>
+ <20210205160551.cf57c4293ba5ccb8eb648c11@linux-foundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <20210202185734.1680553-22-bgardon@google.com>
+In-Reply-To: <20210205160551.cf57c4293ba5ccb8eb648c11@linux-foundation.org>
+User-Agent: Mutt/2.0.5 (da5e3282) (2021-01-21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 02, 2021, Ben Gardon wrote:
-> +static inline bool tdp_mmu_zap_spte_atomic(struct kvm *kvm,
-> +					   struct tdp_iter *iter)
-> +{
-> +	/*
-> +	 * Freeze the SPTE by setting it to a special,
-> +	 * non-present value. This will stop other threads from
-> +	 * immediately installing a present entry in its place
-> +	 * before the TLBs are flushed.
-> +	 */
-> +	if (!tdp_mmu_set_spte_atomic(kvm, iter, REMOVED_SPTE))
-> +		return false;
-> +
-> +	kvm_flush_remote_tlbs_with_address(kvm, iter->gfn,
-> +					   KVM_PAGES_PER_HPAGE(iter->level));
-> +
-> +	/*
-> +	 * No other thread can overwrite the removed SPTE as they
-> +	 * must either wait on the MMU lock or use
-> +	 * tdp_mmu_set_spte_atomic which will not overrite the
-> +	 * special removed SPTE value. No bookkeeping is needed
-> +	 * here since the SPTE is going from non-present
-> +	 * to non-present.
-> +	 */
+Andrew Morton writes:
+>Currently there is an assumption in tmpfs that 64-bit architectures also
+>have a 64-bit ino_t.  This is not true on s390 which has a 32-bit ino_t.
+>With CONFIG_TMPFS_INODE64=y tmpfs mounts will get 64-bit inode numbers and
+>display "inode64" in the mount options, but passing the "inode64" mount
+>option will fail.  This leads to the following behavior:
+>
+> # mkdir mnt
+> # mount -t tmpfs nodev mnt
+> # mount -o remount,rw mnt
+> mount: /home/ubuntu/mnt: mount point not mounted or bad option.
+>
+>As mount sees "inode64" in the mount options and thus passes it in the
+>options for the remount.
+>
+>
+>So prevent CONFIG_TMPFS_INODE64 from being selected on s390.
+>
+>Link: https://lkml.kernel.org/r/20210205230620.518245-1-seth.forshee@canonical.com
+>Fixes: ea3271f7196c ("tmpfs: support 64-bit inums per-sb")
+>Signed-off-by: Seth Forshee <seth.forshee@canonical.com>
+>Cc: Chris Down <chris@chrisdown.name>
+>Cc: Hugh Dickins <hughd@google.com>
+>Cc: Amir Goldstein <amir73il@gmail.com>
+>Cc: Heiko Carstens <hca@linux.ibm.com>
+>Cc: Vasily Gorbik <gor@linux.ibm.com>
+>Cc: Christian Borntraeger <borntraeger@de.ibm.com>
+>Cc: <stable@vger.kernel.org>	[5.9+]
+>Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
-Can we expand these comments out to 80 chars before the final/official push?
+Either of the two ways presented looks fine to me, no real preference. Thanks!
 
-> +	WRITE_ONCE(*iter->sptep, 0);
-> +
-> +	return true;
-> +}
-> +
->  
->  /*
->   * __tdp_mmu_set_spte - Set a TDP MMU SPTE and handle the associated bookkeeping
-> @@ -523,6 +562,15 @@ static inline void __tdp_mmu_set_spte(struct kvm *kvm, struct tdp_iter *iter,
->  
->  	lockdep_assert_held_write(&kvm->mmu_lock);
->  
-> +	/*
-> +	 * No thread should be using this function to set SPTEs to the
-> +	 * temporary removed SPTE value.
-> +	 * If operating under the MMU lock in read mode, tdp_mmu_set_spte_atomic
-> +	 * should be used. If operating under the MMU lock in write mode, the
-> +	 * use of the removed SPTE should not be necessary.
-> +	 */
-> +	WARN_ON(iter->old_spte == REMOVED_SPTE);
-> +
->  	WRITE_ONCE(*rcu_dereference(iter->sptep), new_spte);
->  
->  	__handle_changed_spte(kvm, as_id, iter->gfn, iter->old_spte, new_spte,
-> @@ -790,12 +838,9 @@ int kvm_tdp_mmu_map(struct kvm_vcpu *vcpu, gpa_t gpa, u32 error_code,
->  		 */
->  		if (is_shadow_present_pte(iter.old_spte) &&
->  		    is_large_pte(iter.old_spte)) {
-> -			if (!tdp_mmu_set_spte_atomic(vcpu->kvm, &iter, 0))
-> +			if (!tdp_mmu_zap_spte_atomic(vcpu->kvm, &iter))
->  				break;
->  
-> -			kvm_flush_remote_tlbs_with_address(vcpu->kvm, iter.gfn,
-> -					KVM_PAGES_PER_HPAGE(iter.level));
-> -
->  			/*
->  			 * The iter must explicitly re-read the spte here
->  			 * because the new value informs the !present
-> -- 
-> 2.30.0.365.g02bc693789-goog
-> 
+Acked-by: Chris Down <chris@chrisdown.name>
+
+>---
+>
+> fs/Kconfig |    2 +-
+> 1 file changed, 1 insertion(+), 1 deletion(-)
+>
+>--- a/fs/Kconfig~tmpfs-disallow-config_tmpfs_inode64-on-s390
+>+++ a/fs/Kconfig
+>@@ -203,7 +203,7 @@ config TMPFS_XATTR
+>
+> config TMPFS_INODE64
+> 	bool "Use 64-bit ino_t by default in tmpfs"
+>-	depends on TMPFS && 64BIT
+>+	depends on TMPFS && 64BIT && !S390
+> 	default n
+> 	help
+> 	  tmpfs has historically used only inode numbers as wide as an unsigned
+>_
+>
