@@ -2,117 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21B9A3119FC
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 04:27:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 462653119D6
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 04:22:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232556AbhBFD0N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 22:26:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39814 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231378AbhBFCm6 (ORCPT
+        id S232295AbhBFDV1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 22:21:27 -0500
+Received: from condef-02.nifty.com ([202.248.20.67]:32514 "EHLO
+        condef-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231660AbhBFClX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 21:42:58 -0500
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A724C08EE23;
-        Fri,  5 Feb 2021 16:36:21 -0800 (PST)
-Received: by mail-qk1-x735.google.com with SMTP id d85so8822627qkg.5;
-        Fri, 05 Feb 2021 16:36:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=soHf/mVkpp4EzKMqVWUbreRz7Dg6N9YiICzzPMnFLgM=;
-        b=Y9A7DrF+GRyVSqLlIWAqpZjRpK1BnR9AU2oy9l86xnICu0C06khdlyvebXTfsufVp3
-         qFSv0lMNhC1k5+7lThnQodAGRE763h5hO88FyePg4nrSXHNeiEfBumRk6AWZPimWkqkx
-         qpucA2uG8pS3xPePjOBfBdzdAh2BRp2r9/sjSEL4yFkSyvjsn8e1T9bGXEaW4RqBpFgW
-         6cak4g6ZOB0CZkxYIVnu68wmId3mTHWLJlx/4HDFfrhCcR4NwZDykcxtCAgmmHgWOix+
-         YTvstD48fvj7uMBiYjruR3sYmtxebP5PUMajHbfyZ8bhIIxnGmXnwwnxKYbXqNrCGHbg
-         YQnA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=soHf/mVkpp4EzKMqVWUbreRz7Dg6N9YiICzzPMnFLgM=;
-        b=jgczVR/sUodzDmuXZOWRE/ugDdYr3d6hc/IA7Rzp3BxksOOuYIWFmZ5K0G7D9zpYR+
-         nrUFIyqrlO7cz34+DKy9p9d3bv4JQG45UKjq/+X6DBok0QQQwWvxFhhEweIHqsFjzc7S
-         ymJ4YJqKaJsrlxSQmghrESG0rhemIiPSUtt2f8K7Qwp7tc39Ua6zIlQFwM+qVzcs6xuR
-         5lUDF4ZfebKMSP3a5EqfRqzS09zc4IGGbavsPQgTfjwoD3SBx5xYKGHABw2dw4VGd8E3
-         LR57T9JoNztEHVEUXEKSIZu9JIyjawEw2eO4bAeJKMovNx2NTTW1Zzjpg2N9z1scSDRZ
-         28GA==
-X-Gm-Message-State: AOAM530AJ7gADb9+udc1dqiZvHNxzCzd/rAf47bwdU++gr8lcgpFAdpa
-        MslHOq4YmNV1C9urm6v8Dis=
-X-Google-Smtp-Source: ABdhPJwGuyt+FQ9iasR9NXAGsXzScwo1mYEEWKSB1Fesweuwl/pT6uyUcJFKwh24uzoUC4vYfVxNxw==
-X-Received: by 2002:ae9:ed04:: with SMTP id c4mr6833524qkg.289.1612571780538;
-        Fri, 05 Feb 2021 16:36:20 -0800 (PST)
-Received: from Gentoo ([156.146.58.50])
-        by smtp.gmail.com with ESMTPSA id z23sm6931551qkb.13.2021.02.05.16.36.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Feb 2021 16:36:19 -0800 (PST)
-Date:   Sat, 6 Feb 2021 06:06:46 +0530
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     pmladek@suse.com, sergey.senozhatsky@gmail.com,
-        andriy.shevchenko@linux.intel.com, linux@rasmusvillemoes.dk,
-        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, rdunlap@infradead.org
-Subject: Re: [PATCH] lib:  Replace obscene word with a better one :)
-Message-ID: <YB3knt9yx4CQ5Q+g@Gentoo>
-Mail-Followup-To: Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>, pmladek@suse.com,
-        sergey.senozhatsky@gmail.com, andriy.shevchenko@linux.intel.com,
-        linux@rasmusvillemoes.dk, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, rdunlap@infradead.org
-References: <20210205121543.1315285-1-unixbhaskar@gmail.com>
- <20210205145109.24498541@gandalf.local.home>
+        Fri, 5 Feb 2021 21:41:23 -0500
+X-Greylist: delayed 502 seconds by postgrey-1.27 at vger.kernel.org; Fri, 05 Feb 2021 21:41:18 EST
+Received: from conssluserg-06.nifty.com ([10.126.8.85])by condef-02.nifty.com with ESMTP id 1160sDqm007252;
+        Sat, 6 Feb 2021 09:54:13 +0900
+Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47]) (authenticated)
+        by conssluserg-06.nifty.com with ESMTP id 1160r6ML013051;
+        Sat, 6 Feb 2021 09:53:06 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-06.nifty.com 1160r6ML013051
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1612572787;
+        bh=GPySi5FWUUgt3Nf/zevYzreQ14QCHC7dq4Gj7Iu6PdM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=KzoShgNcKgDb7aRIUtJmJ1rx2FCzGlFX5m421RSg8KaR+ZHU8DcZFfkcqCpImJ9Se
+         20oACGiCEzq35ncdGVLdFr6G1HYhyWy3yG5j/x9hhHGP5NxMYVrw8h5YL8Obo6YLgf
+         0JL+92QeKSoxYEWm/F+wV2qZUWoO7N4oDG5iKl1+/QwFmgAkEuLBfJn6y9tjzrDebn
+         CkTvpcRmcekx+4ZSrH5eVn29+qe268TkYo2LZ43I6TRxiQJVDMNn33AogXk8F6sYKx
+         vh58eyX+5U0MuKjD6MMyeih7AS0CJ0J0dJLiYuJsou+U3K8BZAAhnwrtxQ+ZftcYw/
+         XzdXCJifY0GFQ==
+X-Nifty-SrcIP: [209.85.216.47]
+Received: by mail-pj1-f47.google.com with SMTP id nm1so4543652pjb.3;
+        Fri, 05 Feb 2021 16:53:06 -0800 (PST)
+X-Gm-Message-State: AOAM530vi38FgUq3BStni3+djPmsdCkMkd75APd+ouP2CUqitGa9qRye
+        8vhfsDS++evyT1BiAfd2zU/jnAdQ25D8Yun4xHI=
+X-Google-Smtp-Source: ABdhPJy2iadLfW+f/QGkcC2eqfoUOehXlU0LObloB/V5zjeO+YCzFrx6L4Mi1lzQVdV+RNvC/ncuPB1ZZ0t1rSii5I8=
+X-Received: by 2002:a17:902:bb87:b029:e1:d1f:2736 with SMTP id
+ m7-20020a170902bb87b02900e10d1f2736mr6360693pls.1.1612572786057; Fri, 05 Feb
+ 2021 16:53:06 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="UxWCXiFroMay8coY"
-Content-Disposition: inline
-In-Reply-To: <20210205145109.24498541@gandalf.local.home>
+References: <1612518255-23052-1-git-send-email-yangyicong@hisilicon.com>
+ <1612518255-23052-5-git-send-email-yangyicong@hisilicon.com> <YB0VxBrYM3BSoxrc@kroah.com>
+In-Reply-To: <YB0VxBrYM3BSoxrc@kroah.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Sat, 6 Feb 2021 09:52:28 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQoUZYxswxT9zkq=G_2A4tdkhkedMyQhj8eHkBeqz7+Lw@mail.gmail.com>
+Message-ID: <CAK7LNAQoUZYxswxT9zkq=G_2A4tdkhkedMyQhj8eHkBeqz7+Lw@mail.gmail.com>
+Subject: Re: [PATCH 4/4] staging: comedi: Use subdir-ccflags-* to inherit
+ debug flag
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Yicong Yang <yangyicong@hisilicon.com>, jdelvare@suse.com,
+        Guenter Roeck <linux@roeck-us.net>, giometti@enneenne.com,
+        Ian Abbott <abbotti@mev.co.uk>,
+        Hartley Sweeten <hsweeten@visionengravers.com>, kw@linux.com,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PM mailing list <linux-pm@vger.kernel.org>,
+        linux-hwmon@vger.kernel.org, devel@driverdev.osuosl.org,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>, linuxarm@openeuler.org,
+        prime.zeng@huawei.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---UxWCXiFroMay8coY
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-
-On 14:51 Fri 05 Feb 2021, Steven Rostedt wrote:
->On Fri,  5 Feb 2021 17:45:43 +0530
->Bhaskar Chowdhury <unixbhaskar@gmail.com> wrote:
+On Fri, Feb 5, 2021 at 6:54 PM Greg KH <gregkh@linuxfoundation.org> wrote:
 >
->> s/fucked/messed/
+> On Fri, Feb 05, 2021 at 05:44:15PM +0800, Yicong Yang wrote:
+> > From: Junhao He <hejunhao2@hisilicon.com>
+> >
+> > Use subdir-ccflags-* instead of ccflags-* to inherit the debug
+> > settings from Kconfig when traversing subdirectories.
 >
->Rules about obscene language is about new code coming into the kernel. We
->don't want to encourage people to do sweeping changes of existing code. It
->just causes unwanted churn, and adds noise to the git logs.
+> Again, explain _why_.
 >
->Sorry, NAK.
+> Please read the section entitled "The canonical patch format" in the
+> kernel file, Documentation/SubmittingPatches for what a proper changelog
+> should look like.
 >
-You are spot on Steven.Thanks, man!
->-- Steve
+> thanks,
+>
+> greg k-h
 
---UxWCXiFroMay8coY
-Content-Type: application/pgp-signature; name="signature.asc"
 
------BEGIN PGP SIGNATURE-----
+I think this is a good clean-up,
+assuming CONFIG_COMEDI_DEBUG intends to
+give the DEBUG flag to all source files
+under drivers/staging/comedi/.
 
-iQEzBAABCAAdFiEEnwF+nWawchZUPOuwsjqdtxFLKRUFAmAd5JoACgkQsjqdtxFL
-KRVJjwf9HiNq6piH7OOkVeCIFZ612OrZ09mEwQcxP8AN0TtxgI7eNH0k73SM4zMx
-8OsmrJRLv1+2dD5Uuzv825rUldYu7+TBYxdy7/RsLd8diK5y2f7fl5SbfytzkWIG
-DxzPBvwCJAFv1To3AkzA1v4DIPuUhHpYcesaZPgyOr8XVm+R8IlOQ/fkihN4IDxh
-HLhlNCyP0FA/dMjS58ZJ9ZP/pyr7ivf1ufsou5bHTDcswmnsH40/D09wiLxBuQTt
-+n8vON8abYdMtQK2bsvy6EMMZOBQUD7NA/yeszv7A/5za7QrSoj2TEaqx5+uSVod
-pS00qbw3qijXtJlgJwsbloLxM2jyRQ==
-=lyJS
------END PGP SIGNATURE-----
 
---UxWCXiFroMay8coY--
+
+-- 
+Best Regards
+Masahiro Yamada
