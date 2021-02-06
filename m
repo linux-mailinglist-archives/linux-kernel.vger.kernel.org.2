@@ -2,102 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00C17311AA2
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 05:04:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F6A2311A9C
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 05:02:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231749AbhBFECy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 23:02:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43856 "EHLO
+        id S232331AbhBFEBk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 23:01:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232487AbhBFDBc (ORCPT
+        with ESMTP id S231812AbhBFDCu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 22:01:32 -0500
-Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16479C06174A;
-        Fri,  5 Feb 2021 19:00:52 -0800 (PST)
-Received: by mail-qv1-xf31.google.com with SMTP id l14so4491239qvp.2;
-        Fri, 05 Feb 2021 19:00:52 -0800 (PST)
+        Fri, 5 Feb 2021 22:02:50 -0500
+Received: from mail-ua1-x936.google.com (mail-ua1-x936.google.com [IPv6:2607:f8b0:4864:20::936])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EF51C06178A
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 19:02:10 -0800 (PST)
+Received: by mail-ua1-x936.google.com with SMTP id a16so2785909uad.9
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 19:02:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=jsYTfAyddo367IDFzdQpxCbNtMumdTCO9J/dsgKO1IE=;
-        b=etfqZ32m21s7qD/Oo8PaMdd8ZJ/AMC7yYpO89fS0vn3zirJaF3BbEo+yKkwTUCjAQQ
-         tGpXQnXizzt+65NyOovBqftshiZuHcEcbthq1v+JoPcZTMIGwQGtNe1uDUGmuAEM5jf8
-         C4YE4cE5euCOF6XFWa04yEOVtg+EczKUgf7atmpXKWgRvbYrJzdPnT98ZiCnschwlUJL
-         UcbCNJvEmmjljr0zNUEv5xkD/0w4KeBUl7c5l3ddI/DSX/DY3lqXqCyS5vEvyI5oWAAi
-         hex4hpU3tvTApMqrqON756efcFVTYjwONs6e6ljXlJoj1hWfxZ3E9YTiMkUygSeQ6+QF
-         Hu9A==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vuPLugpx3nVqN901hZhHAJ68fe+2jLjEwlOR0tJDXYA=;
+        b=F6opSYqv6jZOIDMw2g1ehsjaiUwtHudjb08fDacbv/EDpLlwSpy4IMI9fFhh8IsrUR
+         6z2eJKGywevwZfoGwCPGT5Nm9kzq//cAUkMjmj4ttLr0H4RuMnf0xAHFZ3WXDK2CX4Jv
+         kxl/y2itpTtbDt2HwFVoyjCBpFYEnW27WBFeQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=jsYTfAyddo367IDFzdQpxCbNtMumdTCO9J/dsgKO1IE=;
-        b=MpDiFVk7FcDuIkMdrPUqcW/MRJFtYhEO49TGo+haPPGFjaXBj2+Hr/1mFcI2uTsMq3
-         maOb+RM4LwLQkBl4ZyqGCjPdENr6vbWoRsj8Hg1MCUFaGSNFr5lt3CEtjSQ+s1Kn6aUr
-         rF4fJKuSPYwV3gPg04lpf0UcYjV+1NmwG17zE0aszwFI6e15tSsSIMt4MY3p8JWe9bhl
-         xw8bQost1pQp//F7n5YZFgD2YPjopZdlkDEEliHniAhkIFyBrvdS3+ZyQip4Z/mdlQXu
-         SiRZCIKqP/b9vSzJYMG8SLHWtYX4n84upYway9oMgV9yJIPWanDgNkNrhUrMI+WSWMgP
-         HeMA==
-X-Gm-Message-State: AOAM530sB3ow0iV8wuX5jWa5qdaWUgYmebImOLM4J5Euya3+a+THwF/8
-        LrlEYxaEd54PxGE+Wm9NG4k=
-X-Google-Smtp-Source: ABdhPJzcT8L4O/rFn/XxOP4Cb29Q5OEMW0k3RonyDJYKXrbIhu7rdz5xndnrHRVTNd7y4ERhHE6VWQ==
-X-Received: by 2002:a05:6214:c65:: with SMTP id t5mr7337492qvj.19.1612580451166;
-        Fri, 05 Feb 2021 19:00:51 -0800 (PST)
-Received: from localhost (dhcp-6c-ae-f6-dc-d8-61.cpe.echoes.net. [72.28.8.195])
-        by smtp.gmail.com with ESMTPSA id c17sm10964531qka.16.2021.02.05.19.00.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Feb 2021 19:00:50 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Fri, 5 Feb 2021 22:00:00 -0500
-From:   Tejun Heo <tj@kernel.org>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>, Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH 4/8] cgroup: rstat: support cgroup1
-Message-ID: <YB4GMLKa56KLwBX2@mtj.duckdns.org>
-References: <20210205182806.17220-1-hannes@cmpxchg.org>
- <20210205182806.17220-5-hannes@cmpxchg.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vuPLugpx3nVqN901hZhHAJ68fe+2jLjEwlOR0tJDXYA=;
+        b=pb2ie5IA0/RYGvmrsYsVN1Hq+vgSi2uoJhxb5ytmH89zMewyELQ8pUUkrYW/vDRouR
+         X6f5bPDi/Hu+KGbHYAzRHSCBOjeqTXvYfBXx7CGN6cMFO1ZSB72bn7YzcUXDvgYJhmnh
+         zogyH6IvU6Si1VEi/3VElsEUn5dDVU3s2bSk5tCCUc2hZOJIx656k+UrxEbOY5wThlmf
+         CPzy3xs016PsFtddBa6f/reGhh+JFkUOoc97YZq6BobVxUsdf25afj9Kwucj9DFnO81J
+         HrPYaYi4qPjD/AMrH9I0Eqb4By0JUClu/r4+VsOle6+s9xvP8BhKnREXi4ClDiQ0UKk8
+         lroA==
+X-Gm-Message-State: AOAM532/iNMrHs2Zlr163uTRZ1L8vnLyNU06rOSRXD2SS6iHpTkK1FsS
+        Rl1pDKyKutHsYa5vxzA5jZl9q0oQtMturd+eR9dVNQ==
+X-Google-Smtp-Source: ABdhPJx8dqL+kHCdeyZ4DlETrA6syQ9QDsjU5KGZ5QnyvgeCk+5tYIv9ZfqZvBXd6LQikBo/7yMyvzQGpgRlw96uTRc=
+X-Received: by 2002:ab0:20d:: with SMTP id 13mr2631762uas.27.1612580529357;
+ Fri, 05 Feb 2021 19:02:09 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210205182806.17220-5-hannes@cmpxchg.org>
+References: <20210126011759.1605641-1-drinkcat@chromium.org>
+ <20210126091747.v11.1.Ie74d3355761aab202d4825ac6f66d990bba0130e@changeid> <20210205175543.GA3363048@robh.at.kernel.org>
+In-Reply-To: <20210205175543.GA3363048@robh.at.kernel.org>
+From:   Nicolas Boichat <drinkcat@chromium.org>
+Date:   Sat, 6 Feb 2021 11:01:57 +0800
+Message-ID: <CANMq1KAshVgWPp=4KpjkwfAD=N4ZOw0xBCZHkfGob-TY0RCGew@mail.gmail.com>
+Subject: Re: [PATCH v11 1/4] dt-bindings: gpu: mali-bifrost: Add Mediatek MT8183
+To:     Rob Herring <robh@kernel.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Fei Shao <fshao@chromium.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Devicetree List <devicetree@vger.kernel.org>,
+        David Airlie <airlied@linux.ie>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
+        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
+        Steven Price <steven.price@arm.com>,
+        Kristian Kristensen <hoegsberg@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 05, 2021 at 01:28:02PM -0500, Johannes Weiner wrote:
-> Rstat currently only supports the default hierarchy in cgroup2. In
-> order to replace memcg's private stats infrastructure - used in both
-> cgroup1 and cgroup2 - with rstat, the latter needs to support cgroup1.
-> 
-> The initialization and destruction callbacks for regular cgroups are
-> already in place. Remove the cgroup_on_dfl() guards to handle cgroup1.
-> 
-> The initialization of the root cgroup is currently hardcoded to only
-> handle cgrp_dfl_root.cgrp. Move those callbacks to cgroup_setup_root()
-> and cgroup_destroy_root() to handle the default root as well as the
-> various cgroup1 roots we may set up during mounting.
-> 
-> The linking of css to cgroups happens in code shared between cgroup1
-> and cgroup2 as well. Simply remove the cgroup_on_dfl() guard.
-> 
-> Linkage of the root css to the root cgroup is a bit trickier: per
-> default, the root css of a subsystem controller belongs to the default
-> hierarchy (i.e. the cgroup2 root). When a controller is mounted in its
-> cgroup1 version, the root css is stolen and moved to the cgroup1 root;
-> on unmount, the css moves back to the default hierarchy. Annotate
-> rebind_subsystems() to move the root css linkage along between roots.
-> 
-> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
-> Reviewed-by: Roman Gushchin <guro@fb.com>
+On Sat, Feb 6, 2021 at 1:55 AM Rob Herring <robh@kernel.org> wrote:
+>
+> On Tue, 26 Jan 2021 09:17:56 +0800, Nicolas Boichat wrote:
+> > Define a compatible string for the Mali Bifrost GPU found in
+> > Mediatek's MT8183 SoCs.
+> >
+> > Signed-off-by: Nicolas Boichat <drinkcat@chromium.org>
+> > ---
+> >
+> > Changes in v11:
+> >  - binding: power-domain-names not power-domainS-names
+> >
+> > Changes in v10:
+> >  - Fix the binding to make sure sram-supply property can be provided.
+> >
+> > Changes in v9: None
+> > Changes in v8: None
+> > Changes in v7: None
+> > Changes in v6:
+> >  - Rebased, actually tested with recent mesa driver.
+> >
+> > Changes in v5:
+> >  - Rename "2d" power domain to "core2"
+> >
+> > Changes in v4:
+> >  - Add power-domain-names description
+> >    (kept Alyssa's reviewed-by as the change is minor)
+> >
+> > Changes in v3: None
+> > Changes in v2: None
+> >
+> >  .../bindings/gpu/arm,mali-bifrost.yaml        | 28 +++++++++++++++++++
+> >  1 file changed, 28 insertions(+)
+> >
+>
+>
+> Please add Acked-by/Reviewed-by tags when posting new versions. However,
+> there's no need to repost patches *only* to add the tags. The upstream
+> maintainer will do that for acks received on the version they apply.
+>
+> If a tag was not added on purpose, please state why and what changed.
 
-Acked-by: Tejun Heo <tj@kernel.org>
+There were changes in v11, I thought you'd want to review again?
 
-Thanks.
+Anyway, I can resend a v12 with all the Rb/Ab if that works better for you.
 
--- 
-tejun
+>
