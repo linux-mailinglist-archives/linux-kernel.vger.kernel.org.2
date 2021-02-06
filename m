@@ -2,91 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4A84311C3D
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 09:38:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 203AF311C3B
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 09:38:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229879AbhBFIiF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Feb 2021 03:38:05 -0500
-Received: from mailgw02.mediatek.com ([210.61.82.184]:49247 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229800AbhBFIhM (ORCPT
+        id S229832AbhBFIhg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Feb 2021 03:37:36 -0500
+Received: from mail-il1-f199.google.com ([209.85.166.199]:50891 "EHLO
+        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229707AbhBFIgy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Feb 2021 03:37:12 -0500
-X-UUID: 116b2c8ac0214046a6ae1e0de80caeb6-20210206
-X-UUID: 116b2c8ac0214046a6ae1e0de80caeb6-20210206
-Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw02.mediatek.com
-        (envelope-from <lecopzer.chen@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1111705410; Sat, 06 Feb 2021 16:36:29 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs08n1.mediatek.inc (172.21.101.55) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Sat, 6 Feb 2021 16:36:08 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Sat, 6 Feb 2021 16:36:08 +0800
-From:   Lecopzer Chen <lecopzer.chen@mediatek.com>
-To:     <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
-        <kasan-dev@googlegroups.com>,
-        <linux-arm-kernel@lists.infradead.org>, <will@kernel.org>
-CC:     <dan.j.williams@intel.com>, <aryabinin@virtuozzo.com>,
-        <glider@google.com>, <dvyukov@google.com>,
-        <akpm@linux-foundation.org>, <linux-mediatek@lists.infradead.org>,
-        <yj.chiang@mediatek.com>, <catalin.marinas@arm.com>,
-        <ardb@kernel.org>, <andreyknvl@google.com>, <broonie@kernel.org>,
-        <linux@roeck-us.net>, <rppt@kernel.org>,
-        <tyhicks@linux.microsoft.com>, <robin.murphy@arm.com>,
-        <vincenzo.frascino@arm.com>, <gustavoars@kernel.org>,
-        <lecopzer@gmail.com>, Lecopzer Chen <lecopzer.chen@mediatek.com>
-Subject: [PATCH v3 5/5] arm64: Kconfig: select KASAN_VMALLOC if KANSAN_GENERIC is enabled
-Date:   Sat, 6 Feb 2021 16:35:52 +0800
-Message-ID: <20210206083552.24394-6-lecopzer.chen@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20210206083552.24394-1-lecopzer.chen@mediatek.com>
-References: <20210206083552.24394-1-lecopzer.chen@mediatek.com>
+        Sat, 6 Feb 2021 03:36:54 -0500
+Received: by mail-il1-f199.google.com with SMTP id x11so8332921ill.17
+        for <linux-kernel@vger.kernel.org>; Sat, 06 Feb 2021 00:36:39 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=Vjllui7uaJPc8hueRFxPXFS2fUrnK2hwtttKy49Se7c=;
+        b=jZTxecx6eWHxCjB3vxUAoend2jTpzIIeoB/I95WHeeWPygBNje7INCCic1c2/hufPG
+         1PR2r3pKgW9kaccSHJk5vlua1+rHNafOjIBg++S1l1fSsz6rGIMsl2gmM5oGfwQgR3qR
+         mjtfmTqEJjEVfaVke/2r6cFDnWFNrH6cjnwA/pFPQtVk9YLf2Vt8E95PCyi89ch0TabC
+         RQSodBJoa4XbFVljTw36UwJTZ/W3UIP6ZqQTjNKtcMCYjgl1xOV3DIur1XbrMBFCpPhP
+         Cc7nCivCgTrJLhcIyuZQkx6gNiOuxUiDZrjIzE0z0F7zuBjjbfX3wL8RMEyDLVMzpIoz
+         y1cw==
+X-Gm-Message-State: AOAM533SQmgUKU2AODLiRWsdAh2g0OJZRgQO95FvVc4PjJHQ2oyqv9XY
+        skjLAGqpinETMc/PlMDHX5WzIaHbCsK5gzGVhufoE+zg8r3C
+X-Google-Smtp-Source: ABdhPJxdYczRveQpCPBHDtTkJB7uRbqfviBPRd7k0i4Q1KOsXvzGLGjVkTTmxVFUU3t6/hf80LeKtMR7PaCztG8NUy+cBum5e6ty
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+X-Received: by 2002:a6b:fb0f:: with SMTP id h15mr7682245iog.27.1612600573798;
+ Sat, 06 Feb 2021 00:36:13 -0800 (PST)
+Date:   Sat, 06 Feb 2021 00:36:13 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000005dacd805baa6d46e@google.com>
+Subject: KASAN: wild-memory-access Write in l2cap_chan_put
+From:   syzbot <syzbot+a384548b03ddcbbaf619@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, johan.hedberg@gmail.com, kuba@kernel.org,
+        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
+        luiz.dentz@gmail.com, marcel@holtmann.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Before this patch, someone who wants to use VMAP_STACK when
-KASAN_GENERIC enabled must explicitly select KASAN_VMALLOC.
+Hello,
 
-From Will's suggestion [1]:
-  > I would _really_ like to move to VMAP stack unconditionally, and
-  > that would effectively force KASAN_VMALLOC to be set if KASAN is in use.
+syzbot found the following issue on:
 
-Because VMAP_STACK now depends on either HW_TAGS or KASAN_VMALLOC if
-KASAN enabled, in order to make VMAP_STACK selected unconditionally,
-we bind KANSAN_GENERIC and KASAN_VMALLOC together.
+HEAD commit:    88bb507a Merge tag 'media/v5.11-3' of git://git.kernel.org..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=112bab6f500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=6e95b9873f64b36c
+dashboard link: https://syzkaller.appspot.com/bug?extid=a384548b03ddcbbaf619
+userspace arch: i386
 
-Note that SW_TAGS supports neither VMAP_STACK nor KASAN_VMALLOC now,
-so this is the first step to make VMAP_STACK selected unconditionally.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-Bind KANSAN_GENERIC and KASAN_VMALLOC together is supposed to cost more
-memory at runtime, thus the alternative is using SW_TAGS KASAN instead.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+a384548b03ddcbbaf619@syzkaller.appspotmail.com
 
-[1]: https://lore.kernel.org/lkml/20210204150100.GE20815@willie-the-truck/
+==================================================================
+BUG: KASAN: wild-memory-access in instrument_atomic_read_write include/linux/instrumented.h:101 [inline]
+BUG: KASAN: wild-memory-access in atomic_fetch_sub_release include/asm-generic/atomic-instrumented.h:220 [inline]
+BUG: KASAN: wild-memory-access in __refcount_sub_and_test include/linux/refcount.h:272 [inline]
+BUG: KASAN: wild-memory-access in __refcount_dec_and_test include/linux/refcount.h:315 [inline]
+BUG: KASAN: wild-memory-access in refcount_dec_and_test include/linux/refcount.h:333 [inline]
+BUG: KASAN: wild-memory-access in kref_put include/linux/kref.h:64 [inline]
+BUG: KASAN: wild-memory-access in l2cap_chan_put+0x35/0x2e0 net/bluetooth/l2cap_core.c:502
+Write of size 4 at addr aaaa00aaaaaaaac2 by task kworker/2:22/10838
 
-Suggested-by: Will Deacon <will@kernel.org>
-Signed-off-by: Lecopzer Chen <lecopzer.chen@mediatek.com>
+CPU: 2 PID: 10838 Comm: kworker/2:22 Not tainted 5.11.0-rc6-syzkaller #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-2 04/01/2014
+Workqueue: events l2cap_chan_timeout
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:120
+ __kasan_report mm/kasan/report.c:400 [inline]
+ kasan_report.cold+0x5f/0xd5 mm/kasan/report.c:413
+ check_memory_region_inline mm/kasan/generic.c:179 [inline]
+ check_memory_region+0x13d/0x180 mm/kasan/generic.c:185
+ instrument_atomic_read_write include/linux/instrumented.h:101 [inline]
+ atomic_fetch_sub_release include/asm-generic/atomic-instrumented.h:220 [inline]
+ __refcount_sub_and_test include/linux/refcount.h:272 [inline]
+ __refcount_dec_and_test include/linux/refcount.h:315 [inline]
+ refcount_dec_and_test include/linux/refcount.h:333 [inline]
+ kref_put include/linux/kref.h:64 [inline]
+ l2cap_chan_put+0x35/0x2e0 net/bluetooth/l2cap_core.c:502
+ l2cap_sock_kill+0xd0/0x240 net/bluetooth/l2cap_sock.c:1217
+ l2cap_chan_timeout+0x1cc/0x2f0 net/bluetooth/l2cap_core.c:438
+ process_one_work+0x98d/0x15f0 kernel/workqueue.c:2275
+ worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
+ kthread+0x3b1/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+==================================================================
+Kernel panic - not syncing: panic_on_warn set ...
+CPU: 2 PID: 10838 Comm: kworker/2:22 Tainted: G    B             5.11.0-rc6-syzkaller #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-2 04/01/2014
+Workqueue: events l2cap_chan_timeout
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:120
+ panic+0x306/0x73d kernel/panic.c:231
+ end_report+0x58/0x5e mm/kasan/report.c:100
+ __kasan_report mm/kasan/report.c:403 [inline]
+ kasan_report.cold+0x67/0xd5 mm/kasan/report.c:413
+ check_memory_region_inline mm/kasan/generic.c:179 [inline]
+ check_memory_region+0x13d/0x180 mm/kasan/generic.c:185
+ instrument_atomic_read_write include/linux/instrumented.h:101 [inline]
+ atomic_fetch_sub_release include/asm-generic/atomic-instrumented.h:220 [inline]
+ __refcount_sub_and_test include/linux/refcount.h:272 [inline]
+ __refcount_dec_and_test include/linux/refcount.h:315 [inline]
+ refcount_dec_and_test include/linux/refcount.h:333 [inline]
+ kref_put include/linux/kref.h:64 [inline]
+ l2cap_chan_put+0x35/0x2e0 net/bluetooth/l2cap_core.c:502
+ l2cap_sock_kill+0xd0/0x240 net/bluetooth/l2cap_sock.c:1217
+ l2cap_chan_timeout+0x1cc/0x2f0 net/bluetooth/l2cap_core.c:438
+ process_one_work+0x98d/0x15f0 kernel/workqueue.c:2275
+ worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
+ kthread+0x3b1/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+Dumping ftrace buffer:
+   (ftrace buffer empty)
+Kernel Offset: disabled
+Rebooting in 1 seconds..
+ACPI MEMORY or I/O RESET_REG.
+
+
 ---
- arch/arm64/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index a8f5a9171a85..9be6a57f6447 100644
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -190,6 +190,7 @@ config ARM64
- 	select IOMMU_DMA if IOMMU_SUPPORT
- 	select IRQ_DOMAIN
- 	select IRQ_FORCED_THREADING
-+	select KASAN_VMALLOC if KASAN_GENERIC
- 	select MODULES_USE_ELF_RELA
- 	select NEED_DMA_MAP_STATE
- 	select NEED_SG_DMA_LENGTH
--- 
-2.25.1
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
