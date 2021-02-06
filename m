@@ -2,241 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D5FB311C10
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 09:04:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 506B7311C14
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 09:07:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229615AbhBFIDU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Feb 2021 03:03:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51570 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229539AbhBFIDR (ORCPT
+        id S229716AbhBFIGH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Feb 2021 03:06:07 -0500
+Received: from mail-lf1-f45.google.com ([209.85.167.45]:33970 "EHLO
+        mail-lf1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229539AbhBFIF6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Feb 2021 03:03:17 -0500
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A13AC0613D6
-        for <linux-kernel@vger.kernel.org>; Sat,  6 Feb 2021 00:02:36 -0800 (PST)
-Received: by mail-pf1-x42a.google.com with SMTP id w14so5918105pfi.2
-        for <linux-kernel@vger.kernel.org>; Sat, 06 Feb 2021 00:02:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+4ngpioykdaswjtQ50G9wJ1z4lzpWogRACPFYV04cNw=;
-        b=LBNEqzXrKkilK+S+ibcAuad7DFuUukoIsNHlF4p6chdboba20kOYSIu5QwpWxQH2nx
-         OEZ31k5B9EyIvppcoINkh65RGhM7KBuvGESxDNDPNcDy8qRL1GZSlNF3RNZxFN0AnqUf
-         jzbSD2vCfbkyhYFr5nkOMwKC0n0demDWQv75PFSvstDHGmhOPtrCQS+pEBQgHzwMMIDD
-         iEWt2VE5hj7kFYYsIZ8F/GmiFVudtGC6EsUVV6VXChW3/RROvXmn3nLPPl5uCcAFABgh
-         Tpkct590AMCu9aD10Gqv5FCbNGgWxb8naqpM8gwbWdvZXQKbyJaYoWvFgocaCAfo0mQz
-         HdTg==
+        Sat, 6 Feb 2021 03:05:58 -0500
+Received: by mail-lf1-f45.google.com with SMTP id a12so13927889lfb.1
+        for <linux-kernel@vger.kernel.org>; Sat, 06 Feb 2021 00:05:41 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=+4ngpioykdaswjtQ50G9wJ1z4lzpWogRACPFYV04cNw=;
-        b=RcVBdOMuMU0lVhPtT4ZXMcSGYIYWKMoIqTxwSoOCLFER9AKq4jYpedCO8fVkH+oLe0
-         EswB5NsOAtKCYLne6/hROLpSzvZG3ozwNU9i8JyKB7Z9wxh4v/dFj81fIfm53q0BRiZa
-         pwMaUGhOeSJD9zk7GFotI91QhW/4zbtPaoo8Vu4nKvr5+r9PT3C6ae1qua6QAYcgyUfq
-         ehTNHvmco+uM7QJzEE6wtBgfmZEZM8O7ms2rsfvJq3l/JQCvAHZhG/syHy8yYGidj/vF
-         A/bacv7tHe5oGgqN7luGatGgLGBc7t7F7NAjsXxT3HKDDCrf4qIyC6OH7FU6eXIKwVaX
-         qU3g==
-X-Gm-Message-State: AOAM530n4d+NrUPRU14/Z+muZB8CRmlB5HcaX8ySqYs1M0fjr00pouf7
-        4tPfJMoF4YId/rdKaF9K6EyU9GPygh6spdqeLS/m4Q==
-X-Google-Smtp-Source: ABdhPJzVyVF5yNIljrr7V2pJ5nxH8aJhsD1UM3EyuHS7WsAUOEosBeeTy2sHnzGqAIU6QNuHnp8ZM3ux8Bx7YWuBCDE=
-X-Received: by 2002:aa7:9790:0:b029:1d8:263e:cc9b with SMTP id
- o16-20020aa797900000b02901d8263ecc9bmr6239477pfp.2.1612598555875; Sat, 06 Feb
- 2021 00:02:35 -0800 (PST)
+        bh=2c02oGcqajn71CZBW4vnCCBPytWY5m2465JnwumXBXE=;
+        b=pybtnFsTBx+tiErldkwOPW7TSkTMlaMypC4mjuKI8YnpZkUrAGtPMWtVt6j+qB+FCz
+         M3ywXR8qtQFU2rPkKQ6+h1wEDBDRDIYhkh8jA7MUf6HePaaY0myHlcuge4bwpsPgcp0C
+         qojNCXKGxNCM+T1Yxya67KvZcPhekV+dEQqZ04g/0MvmuRw75se/eTrcYpp1jxkBavau
+         j17OfowQ+2armx3ojxy7pnV5RWZcBGChsPctkAmh3IX2RnqB1lLE0mggZqgiHChlB/kI
+         SyRBsR7Y4jNKw1/FsSHeE7SEGfHug5FW59w/aTSvzXA9zrwDOuKeW4zaaPPtbl9qDbqm
+         XHjQ==
+X-Gm-Message-State: AOAM533yP5gSIYv0UDlR/U3cy8giq2JPPjEo6+A8nLFuBDMj5wwUFg98
+        QQr/BhT3LPOE+8jZSQQtLM1il+4kFVK/ccvCN60=
+X-Google-Smtp-Source: ABdhPJx9xfMSPulw1nk72FT1O0OC6KbobEhvSVgp7HblGWuV0CDwXTKq0w5YkC/xSUiwmxl2LRA7EAjHOUox3yM1aCQ=
+X-Received: by 2002:a19:5c6:: with SMTP id 189mr4536671lff.300.1612598715736;
+ Sat, 06 Feb 2021 00:05:15 -0800 (PST)
 MIME-Version: 1.0
-References: <20210204035043.36609-1-songmuchun@bytedance.com>
- <20210204035043.36609-5-songmuchun@bytedance.com> <20210205115351.GA16428@linux>
-In-Reply-To: <20210205115351.GA16428@linux>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Sat, 6 Feb 2021 16:01:58 +0800
-Message-ID: <CAMZfGtXWBThxT26B9nD+zNVoU9BcK_G8uwqqTBCCwCeXG0AuxQ@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v14 4/8] mm: hugetlb: alloc the vmemmap
- pages associated with each HugeTLB page
-To:     Oscar Salvador <osalvador@suse.de>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
-        anshuman.khandual@arm.com, jroedel@suse.de,
-        Mina Almasry <almasrymina@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        David Hildenbrand <david@redhat.com>,
-        =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
-        <naoya.horiguchi@nec.com>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+References: <20210129134855.195810-1-jolsa@redhat.com> <20210130234856.271282-1-jolsa@kernel.org>
+ <20210130234856.271282-7-jolsa@kernel.org> <CAM9d7cg6qEeq--PPxyC9Bq8VNw91O_M+PgnNQ-Sk7n_tKOE1yg@mail.gmail.com>
+ <YB1AihrsetqhIYIc@krava>
+In-Reply-To: <YB1AihrsetqhIYIc@krava>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Sat, 6 Feb 2021 17:05:04 +0900
+Message-ID: <CAM9d7chedaB7-ZsqpUYGnG9LBYOspd59Nq842Q_yCR4YWDQL9g@mail.gmail.com>
+Subject: Re: [PATCH 06/24] perf daemon: Add config file support
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Ian Rogers <irogers@google.com>,
+        Stephane Eranian <eranian@google.com>,
+        Alexei Budankov <abudankov@huawei.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 5, 2021 at 7:54 PM Oscar Salvador <osalvador@suse.de> wrote:
+On Fri, Feb 5, 2021 at 9:56 PM Jiri Olsa <jolsa@redhat.com> wrote:
 >
-> On Thu, Feb 04, 2021 at 11:50:39AM +0800, Muchun Song wrote:
-> > When we free a HugeTLB page to the buddy allocator, we should allocate the
-> > vmemmap pages associated with it. But we may cannot allocate vmemmap pages
-> > when the system is under memory pressure, in this case, we just refuse to
-> > free the HugeTLB page instead of looping forever trying to allocate the
-> > pages.
+> On Fri, Feb 05, 2021 at 09:14:54PM +0900, Namhyung Kim wrote:
+> > On Sun, Jan 31, 2021 at 8:49 AM Jiri Olsa <jolsa@kernel.org> wrote:
+> > [SNIP]
+> > > @@ -263,9 +605,16 @@ static int __cmd_start(struct daemon *daemon, struct option parent_options[],
+> > >         signal(SIGTERM, sig_handler);
+> > >
+> > >         while (!done && !err) {
+> > > -               if (fdarray__poll(&fda, -1)) {
+> > > +               err = daemon__reconfig(daemon);
 > >
-> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> > I think it's confusing since you put the reconfig function here.
+> > What not split normal and reconfig passes?
 >
-> [...]
+> hum, not sure what's confusing in here? I've been known to
+> produce confusing code, but this one seems clear to me
+
+Maybe it's because of the name.  I thought reconfig is a
+special case when it detects some change.  But you call
+it in the loop unconditionally.
+
 >
-> > diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> > index 4cfca27c6d32..5518283aa667 100644
-> > --- a/mm/hugetlb.c
-> > +++ b/mm/hugetlb.c
-> > @@ -1397,16 +1397,26 @@ static void __free_huge_page(struct page *page)
-> >               h->resv_huge_pages++;
 > >
-> >       if (HPageTemporary(page)) {
-> > -             list_del(&page->lru);
-> >               ClearHPageTemporary(page);
-> > +
-> > +             if (alloc_huge_page_vmemmap(h, page, GFP_ATOMIC)) {
-> > +                     h->surplus_huge_pages++;
-> > +                     h->surplus_huge_pages_node[nid]++;
-> > +                     goto enqueue;
-> > +             }
-> > +             list_del(&page->lru);
-> >               update_and_free_page(h, page);
-> >       } else if (h->surplus_huge_pages_node[nid]) {
-> > +             if (alloc_huge_page_vmemmap(h, page, GFP_ATOMIC))
-> > +                     goto enqueue;
-> > +
-> >               /* remove the page from active list */
-> >               list_del(&page->lru);
-> >               update_and_free_page(h, page);
-> >               h->surplus_huge_pages--;
-> >               h->surplus_huge_pages_node[nid]--;
-> >       } else {
-> > +enqueue:
-> >               arch_clear_hugepage_flags(page);
-> >               enqueue_huge_page(h, page);
+> > I mean something like below
+> >
+> >  __cmd_start()
+> > {
+> >     setup_server_config();
+> >     daemon__run();
 >
-> Ok, we just keep them in the pool in case we fail to allocate.
->
->
-> > diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
-> > index ddd872ab6180..0bd6b8d7282d 100644
-> > --- a/mm/hugetlb_vmemmap.c
-> > +++ b/mm/hugetlb_vmemmap.c
-> > @@ -169,6 +169,8 @@
-> >   * (last) level. So this type of HugeTLB page can be optimized only when its
-> >   * size of the struct page structs is greater than 2 pages.
->
-> [...]
->
-> > +int alloc_huge_page_vmemmap(struct hstate *h, struct page *head, gfp_t gfp_mask)
-> > +{
-> > +     int ret;
-> > +     unsigned long vmemmap_addr = (unsigned long)head;
-> > +     unsigned long vmemmap_end, vmemmap_reuse;
-> > +
-> > +     if (!free_vmemmap_pages_per_hpage(h))
-> > +             return 0;
-> > +
-> > +     vmemmap_addr += RESERVE_VMEMMAP_SIZE;
-> > +     vmemmap_end = vmemmap_addr + free_vmemmap_pages_size_per_hpage(h);
-> > +     vmemmap_reuse = vmemmap_addr - PAGE_SIZE;
-> > +
-> > +     /*
-> > +      * The pages which the vmemmap virtual address range [@vmemmap_addr,
-> > +      * @vmemmap_end) are mapped to are freed to the buddy allocator, and
-> > +      * the range is mapped to the page which @vmemmap_reuse is mapped to.
-> > +      * When a HugeTLB page is freed to the buddy allocator, previously
-> > +      * discarded vmemmap pages must be allocated and remapping.
-> > +      */
-> > +     ret = vmemmap_remap_alloc(vmemmap_addr, vmemmap_end, vmemmap_reuse,
-> > +                               gfp_mask | __GFP_NOWARN | __GFP_THISNODE);
->
-> Why don't you set all the GFP flags here?
+> what's daemon__run? the daemon operates in the while loop below
 
-Originally, I wanted to let the caller know the GFP flag which they
-used. But setting all the GFP flags here also makes sense to me.
-And we can remove the @gfp_mask parameter of the
-alloc_huge_page_vmemmap. It is simple.
+I thought about starting the sessions in the config.
 
 >
-> vmemmap_remap_alloc(vmemmap_addr, vmemmap_end, vmemmap_reuse, GFP_ATOMIC|
->                     __GFP_NOWARN | __GFP_THISNODE) ?
+> >
+> >     while (!done && !err) {
+> >         ...
+> >         if (reconfig) {
+> >             daemon__kill();
+>
+> you don't kill daemon for each reconfig change,
+> we detect changed sessions and kill/restart only them
 
-I will use this.
-
->
-> > diff --git a/mm/sparse-vmemmap.c b/mm/sparse-vmemmap.c
-> > index 50c1dc00b686..277eb43aebd5 100644
-> > --- a/mm/sparse-vmemmap.c
-> > +++ b/mm/sparse-vmemmap.c
->
-> [...]
->
-> > +static int alloc_vmemmap_page_list(unsigned long start, unsigned long end,
-> > +                                gfp_t gfp_mask, struct list_head *list)
->
-> I think it would make more sense for this function to get the nid and the
-> nr_pages to allocate directly.
-
-Just like alloc_pages(), right? If so, make sense to me.
+Yep, we can make it that way.
 
 >
-> > +{
-> > +     unsigned long addr;
-> > +     int nid = page_to_nid((const void *)start);
+> >             setup_server_config();
+> >             daemon__reconfig();
+> >         }
+> >     }
 >
-> Uh, that void is a bit ugly. page_to_nid(struct page *)start).
-> Do not need the const either.
-
-OK. Will do. Thanks.
-
 >
-> > +     struct page *page, *next;
-> > +
-> > +     for (addr = start; addr < end; addr += PAGE_SIZE) {
-> > +             page = alloc_pages_node(nid, gfp_mask, 0);
-> > +             if (!page)
-> > +                     goto out;
-> > +             list_add_tail(&page->lru, list);
-> > +     }
+> so basically the current workflow is:
 >
-> and replace this by while(--nr_pages) etc.
+>         setup_server_config                                     <--- reads config file, prepares session objects
+>
+>         while (!done) {
+>                 daemon__reconfig                                <--- check session objects states and run/stop them
 
-OK. Will do.
+Hmm.. then how about rename it to daemon__handle_state()
+or daemon__do_loop() or something?
+
+Thanks,
+Namhyung
+
 
 >
-> I did not really go in depth, but looks good to me, and much more simply
-> overall.
-
-Yeah. The series only has 8 patches now. It is simpler.
-
+>                 if (fdarray__poll(&fda, -1)) {
 >
-> The only thing I am not sure about is the use of GFP_ATOMIC.
-> It has been raised before than when we are close to OOM, the user might want
-> to try to free up some memory by dissolving free_huge_pages, and so we might
-> want to dip in the reserves.
+>                         handle_config_changes(&reconfig)        <--- was there a config file change?
 >
-> Given the fact that we are prepared to fail, and that we do not retry, I would
-> rather use GFP_KERNEL than to have X pages atomically allocated and then realize
-> we need to drop them on the ground because we cannot go further at some point.
-> I think those reserves would be better off used by someone else in that
-> situation.
+>                         if (reconfig)                           <--- yes,
+>                                 setup_server_config             <---      change session objects/states
+>                 }
+>         }
 >
-> But this is just my thoughs, and given the fact that there seems to be a consensus
-> of susing GFP_ATOMIC.
+> thanks,
+> jirka
 >
-> --
-> Oscar Salvador
-> SUSE L3
