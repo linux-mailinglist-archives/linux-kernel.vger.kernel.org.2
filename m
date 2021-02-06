@@ -2,91 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BDA7311EB4
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 17:40:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 08976311EB7
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 17:45:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230159AbhBFQkH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Feb 2021 11:40:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54526 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229788AbhBFQkF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Feb 2021 11:40:05 -0500
-Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S230177AbhBFQo5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Feb 2021 11:44:57 -0500
+Received: from vulcan.natalenko.name ([104.207.131.136]:48338 "EHLO
+        vulcan.natalenko.name" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229788AbhBFQoy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 6 Feb 2021 11:44:54 -0500
+Received: from localhost (kaktus.kanapka.ml [151.237.229.131])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DA97364E41;
-        Sat,  6 Feb 2021 16:39:22 +0000 (UTC)
-Date:   Sat, 6 Feb 2021 16:39:19 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Ye Xiang <xiang.ye@intel.com>
-Cc:     jikos@kernel.org, srinivas.pandruvada@linux.intel.com,
-        linux-input@vger.kernel.org, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        linux-rtc@vger.kernel.org
-Subject: Re: [PATCH v2 0/2] resolve read hystersis return invalid argument
- issue for hid sensors
-Message-ID: <20210206163919.7993d392@archlinux>
-In-Reply-To: <20210201054921.18214-1-xiang.ye@intel.com>
-References: <20210201054921.18214-1-xiang.ye@intel.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        by vulcan.natalenko.name (Postfix) with ESMTPSA id 2F4A5977746;
+        Sat,  6 Feb 2021 17:44:11 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
+        s=dkim-20170712; t=1612629851;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=nL54iWMpoSnIbP1+Qd7tBjjYvN2BWAFko+iYvkNs/Co=;
+        b=YXIwO6Kc7XcvyxxobFRIPkmPFm7JgKr1G4QvPWGK+MToyiBy2oyf38tXV0ZdGyyMOyRRAQ
+        l5V2Hi99szEJqedUDHfZFFQY2IzbByE40SErTY6LoM/z56WKxD+Wa6E54p4h0RG7HhsLYn
+        ys6TZNaDuNXoGKLhZCg7O/5Osv/mPVs=
+Date:   Sat, 6 Feb 2021 17:44:10 +0100
+From:   Oleksandr Natalenko <oleksandr@natalenko.name>
+To:     Hanabishi Recca <irecca.kun@gmail.com>
+Cc:     almaz.alexandrovich@paragon-software.com, aaptel@suse.com,
+        andy.lavr@gmail.com, anton@tuxera.com, dan.carpenter@oracle.com,
+        dsterba@suse.cz, ebiggers@kernel.org, hch@lst.de, joe@perches.com,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-ntfs-dev@lists.sourceforge.net, mark@harmstone.com,
+        nborisov@suse.com, pali@kernel.org, rdunlap@infradead.org,
+        viro@zeniv.linux.org.uk, willy@infradead.org
+Subject: Re: [PATCH v20 00/10] NTFS read-write driver GPL implementation by
+ Paragon Software
+Message-ID: <20210206164410.eebttjuswbcvbxxz@spock.localdomain>
+References: <CAOehnrO-qjA4-YbqjyQCc27SyE_T2_bPRfWNg=jb8_tTetRUkw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAOehnrO-qjA4-YbqjyQCc27SyE_T2_bPRfWNg=jb8_tTetRUkw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon,  1 Feb 2021 13:49:19 +0800
-Ye Xiang <xiang.ye@intel.com> wrote:
+On Sat, Feb 06, 2021 at 01:43:10AM +0500, Hanabishi Recca wrote:
+> Can't even build v20 due to compilation errors.
 
-> This patch series move get sensitivity attribute to common layer and
-> resolve read hystersis return invalid argument issue for hid sensors als,
-> incli-3d, rotation, and press on intel ISH Platform.
-Hi Ye Xiang
+I think this submission is based against linux-next branch where
+idmapped mounts are introduced, hence it is not applicable to v5.10 and
+v5.11 any more.
 
-
-Series looks good to me.
-
-Now this series touches a few bits of code outside of IIO so ideally
-I'm looking for acks from:
-@ Jiri for the header
-@ Alessandro / Alexandre (+CC) for RTC
-
-Both changes are trivial but might cause them some noise in other work
-going on in their subsystems.
-
-For reference:
-https://lore.kernel.org/linux-iio/20210201054921.18214-2-xiang.ye@intel.com/
-
-Thanks,
-
-Jonathan
-
-> 
-> ---
-> v2:
->   - separate the add relative sensitivity patch to the next patch series.
-> 
-> Ye Xiang (2):
->   iio: hid-sensors: Move get sensitivity attribute to hid-sensor-common
->   hid-sensors: Add more data fields for sensitivity checking
-> 
->  drivers/iio/accel/hid-sensor-accel-3d.c       | 23 ++++++-------
->  .../hid-sensors/hid-sensor-attributes.c       | 17 +++++++++-
->  drivers/iio/gyro/hid-sensor-gyro-3d.c         | 19 ++++-------
->  drivers/iio/humidity/hid-sensor-humidity.c    | 16 ++++------
->  drivers/iio/light/hid-sensor-als.c            | 20 +++++-------
->  drivers/iio/light/hid-sensor-prox.c           | 27 +++++-----------
->  drivers/iio/magnetometer/hid-sensor-magn-3d.c | 32 ++++++-------------
->  drivers/iio/orientation/hid-sensor-incl-3d.c  | 20 +++++-------
->  drivers/iio/orientation/hid-sensor-rotation.c | 24 ++++++--------
->  .../position/hid-sensor-custom-intel-hinge.c  | 20 ++++--------
->  drivers/iio/pressure/hid-sensor-press.c       | 20 +++++-------
->  .../iio/temperature/hid-sensor-temperature.c  | 16 ++++------
->  drivers/rtc/rtc-hid-sensor-time.c             |  4 ++-
->  include/linux/hid-sensor-hub.h                |  4 ++-
->  14 files changed, 111 insertions(+), 151 deletions(-)
-> 
-
+-- 
+  Oleksandr Natalenko (post-factum)
