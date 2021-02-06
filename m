@@ -2,84 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 203AF311E5B
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 16:14:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79D27311E5E
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 16:16:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230146AbhBFPNu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Feb 2021 10:13:50 -0500
-Received: from wildebeest.demon.nl ([212.238.236.112]:45862 "EHLO
-        gnu.wildebeest.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229807AbhBFPNp (ORCPT
+        id S230288AbhBFPOk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Feb 2021 10:14:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59534 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230176AbhBFPOi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Feb 2021 10:13:45 -0500
-Received: from librem (deer0x15.wildebeest.org [172.31.17.151])
-        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by gnu.wildebeest.org (Postfix) with ESMTPSA id DFFA33027634;
-        Sat,  6 Feb 2021 16:12:59 +0100 (CET)
-Received: by librem (Postfix, from userid 1000)
-        id 41626C100B; Sat,  6 Feb 2021 16:11:51 +0100 (CET)
-Date:   Sat, 6 Feb 2021 16:11:51 +0100
-From:   Mark Wielaard <mark@klomp.org>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Jakub Jelinek <jakub@redhat.com>, Nick Clifton <nickc@redhat.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Fangrui Song <maskray@google.com>,
-        Caroline Tice <cmtice@google.com>, Yonghong Song <yhs@fb.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [PATCH v7 1/2] Kbuild: make DWARF version a choice
-Message-ID: <20210206151151.GB2851@wildebeest.org>
-References: <20210130004401.2528717-1-ndesaulniers@google.com>
- <20210130004401.2528717-2-ndesaulniers@google.com>
- <20210204103946.GA14802@wildebeest.org>
- <CAKwvOdm0O8m_+mxy7Z91Lu=Hzf6-DyCdAjMOsCRiMmNis4Pd2A@mail.gmail.com>
- <20fdd20fe067dba00b349407c4a0128c97c1a707.camel@klomp.org>
- <CAKwvOdmT4t==akMN7eHWgD_XdpN--PLpUj8vgujGJ4TpREvteQ@mail.gmail.com>
- <42d2542d4b7f9836121b92d9bf349afa920bd4cd.camel@klomp.org>
- <CAKwvOdmHM8srtLaEy+L_XGzO9TBbhP3csQNAhUTH_TmeDePkDQ@mail.gmail.com>
- <8696ef2e86c5d8078bf2d2c74fb3cbbecbd22c83.camel@klomp.org>
- <CAKwvOd=jMykgiR+fthEVeaP1c3-N6veZhKd2LZjeJ5KaqF4PHg@mail.gmail.com>
+        Sat, 6 Feb 2021 10:14:38 -0500
+Received: from antares.kleine-koenig.org (antares.kleine-koenig.org [IPv6:2a01:4f8:c0c:3a97::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 346AAC06174A;
+        Sat,  6 Feb 2021 07:13:59 -0800 (PST)
+Received: by antares.kleine-koenig.org (Postfix, from userid 1000)
+        id 51094AEEC12; Sat,  6 Feb 2021 16:13:56 +0100 (CET)
+From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <uwe@kleine-koenig.org>
+To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Guenter Roeck <groeck@chromium.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v1 1/3] HID: intel-ish-hid: Drop if block with an always false condition
+Date:   Sat,  6 Feb 2021 16:13:46 +0100
+Message-Id: <20210206151348.14530-1-uwe@kleine-koenig.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKwvOd=jMykgiR+fthEVeaP1c3-N6veZhKd2LZjeJ5KaqF4PHg@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Flag: NO
-X-Spam-Status: No, score=-2.9 required=5.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=ham autolearn_force=no version=3.4.0
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on gnu.wildebeest.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nick,
+A remove callback is only ever called for a bound device. So there is no
+need to check for device or driver being NULL.
 
-On Fri, Feb 05, 2021 at 01:18:11PM -0800, Nick Desaulniers wrote:
-> On Fri, Feb 5, 2021 at 4:49 AM Mark Wielaard <mark@klomp.org> wrote:
-> I guess I'm curious whether
-> https://bugzilla.redhat.com/show_bug.cgi?id=1922707 came up during the
-> mass rebuild of all of Fedora a few weeks ago?  Assuming the Linux
-> kernel was part of that test, those warnings would have been both new
-> and obviously related to changing the implicit default DWARF version.
+Signed-off-by: Uwe Kleine-König <uwe@kleine-koenig.org>
+---
+ drivers/hid/intel-ish-hid/ishtp/bus.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
-Yes, looking at the build.log that warning was also present.  But the
-dwarves pahole update to process DWARF5 was more important.  Also at
-first it was believed this came from the binutils ld linker
-scripts. Which were also updated first. Once your patch is accepted we
-can resolve that bug.
+diff --git a/drivers/hid/intel-ish-hid/ishtp/bus.c b/drivers/hid/intel-ish-hid/ishtp/bus.c
+index bba29cd36d29..ccd54f244503 100644
+--- a/drivers/hid/intel-ish-hid/ishtp/bus.c
++++ b/drivers/hid/intel-ish-hid/ishtp/bus.c
+@@ -257,17 +257,13 @@ static int ishtp_cl_bus_match(struct device *dev, struct device_driver *drv)
+ static int ishtp_cl_device_remove(struct device *dev)
+ {
+ 	struct ishtp_cl_device *device = to_ishtp_cl_device(dev);
+-	struct ishtp_cl_driver *driver;
+-
+-	if (!device || !dev->driver)
+-		return 0;
++	struct ishtp_cl_driver *driver = to_ishtp_cl_driver(dev->driver);
+ 
+ 	if (device->event_cb) {
+ 		device->event_cb = NULL;
+ 		cancel_work_sync(&device->event_work);
+ 	}
+ 
+-	driver = to_ishtp_cl_driver(dev->driver);
+ 	if (!driver->remove) {
+ 		dev->driver = NULL;
+ 
 
-Cheers,
+base-commit: 5c8fe583cce542aa0b84adc939ce85293de36e5e
+-- 
+2.29.2
 
-Mark
