@@ -2,92 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52CA8311ABC
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 05:14:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E52D5311AAD
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 05:07:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230152AbhBFENX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 23:13:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41532 "EHLO
+        id S232079AbhBFEGl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 23:06:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232201AbhBFCzV (ORCPT
+        with ESMTP id S232111AbhBFC7u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 21:55:21 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41E0DC06121C
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 18:31:34 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id n81so9275668ybg.20
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 18:31:34 -0800 (PST)
+        Fri, 5 Feb 2021 21:59:50 -0500
+Received: from mail-ua1-x92c.google.com (mail-ua1-x92c.google.com [IPv6:2607:f8b0:4864:20::92c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F80AC061A27
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 18:52:16 -0800 (PST)
+Received: by mail-ua1-x92c.google.com with SMTP id p19so2784143uad.7
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 18:52:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=pg0W/R7zse7EuXBb4JSBY3vmlRcXUGF9rrk9VSwX6b0=;
-        b=D4K1oHbfzEXavSAr43Kq1T1ta0mIdfD0L/KzpYR9dz0d1EbcXv4UCnOskw77CXX41L
-         PchyM/pIK9P0Jxc9CvbYnehDMCfVMNpMGqQEi4W1vIGf3K2ueOzIfryEaEmRl8Nzn9wx
-         JAKgIW51v8P/WT5AVSXcjNzBfrUtE6T4G18rMxXIsOsCUN2DbSR6OS24OLhcKfDjpdfz
-         uPii70C03VwZ95GoojWY+etO3VyDUzgmm8+5k6rrIkx85LmaXNyXz1ncs36MAp6SXujV
-         Dax44IAWzk+vLcLHAfrBvHLYpNKqzqOWEnD94EiOVQmO+sjB+Qao/83gRYzRJ6y8bHEY
-         BbLQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ESjeBadsRkrAl+qIXzCFj686nO8RcbYAT55ppoG4TfI=;
+        b=iyOTr5Y38WWt2U+DhmDSY+CBq4jfRgX8ILyD7YpxBzkeNUR+cxPUF9DY77zDG0zUYh
+         DyNhMeCsWL+QjDtPPEWCOyYQJ4FylyTU8H84s00folBHvMWIKo9oX2jesaP/QL2lJ0rL
+         aXve1wzBt16y3WeQthTKPQsrVGvCaOT4UPeEq/IAdrd9P1sqxr8LmTsTcyNl9Nq81g04
+         OAd2RRJg93oImvbz2d+9QM8gehWtbZ/kO+ItK6g8jE3h2YMCN8jCJpQYkUSY210Wl85Y
+         9EjT7pAimi5fyPPnHw+fMRJjaOpwrHMNJf16Egtyy+81UeFVzXnN5IkO+VuCNFbKrYme
+         2fBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=pg0W/R7zse7EuXBb4JSBY3vmlRcXUGF9rrk9VSwX6b0=;
-        b=ivC2eSAtDKB0oIikEb9xcjEmSkeXJgx5DZRPf/benU/7Sow6Tm9QH1SvdbuugeGLFZ
-         uRwhxfsJf41vU6UxmwrjQFeke3V+5/ZCq12lsjLZRoZYVqI7KuclbAPZ9Z0ri9FUIMWR
-         a8rCbOEkpY8asr4oEuCQrwk0IDrO64CAPaLndyNLNfslsYv2vZVw7A8iHfshXTlvDmxY
-         Pe2/vi+FtRYovcn26zjfGyPIIPO2GfCWYE0vPx8h6PtKWLH4wqRFRfc7rB/2Wco50u0g
-         ti86U0WrSKQXWp6TF/cnHge8cRZDlXvY/XribHYld7vx/2uzwYm0+mD8Xz7y/EOWn0rL
-         /nyg==
-X-Gm-Message-State: AOAM531ZdCVPmNpDKdyBXIe4iverMsGnjwgkwiuuT5VUCmHL922V5MJu
-        cAX+ZHvtluyIPQO958pEdsu42LvZ
-X-Google-Smtp-Source: ABdhPJzeJvpuloADryZgdGQ60MX7y1ab5Igdr3YB1r2d9IocONYjEbck+WeQDNAJ+cvcznehGUmZl9w3
-Sender: "rkir via sendgmr" <rkir@rkir.kir.corp.google.com>
-X-Received: from rkir.kir.corp.google.com ([2620:15c:29:200:6406:401c:95df:fca2])
- (user=rkir job=sendgmr) by 2002:a25:a4ea:: with SMTP id g97mr11166275ybi.286.1612578693448;
- Fri, 05 Feb 2021 18:31:33 -0800 (PST)
-Date:   Fri,  5 Feb 2021 18:31:18 -0800
-Message-Id: <20210206023118.1521194-1-rkir@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.30.0.478.g8a0d178c01-goog
-Subject: [PATCH] Remove the GOLDFISH dependency from BATTERY_GOLDFISH
-From:   rkir@google.com
-To:     sre@kernel.org
-Cc:     linux-kernel@vger.kernel.org, lfy@google.com,
-        Roman Kiryanov <rkir@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ESjeBadsRkrAl+qIXzCFj686nO8RcbYAT55ppoG4TfI=;
+        b=VAJhuAd8Rjoyuwbu4PL85W0dVDFG9PFI/9n/oFNClCX0ffhF9d2ZNTAbAAlFV8REe0
+         VIsRGfmYD5gHpNe3aHoEBMw/K0xHdQDSR8jhJqutpIELE9c2JjbK0zr5RSeYPo6feBBE
+         SkxWSM5I2csbfqtAk+3qJ46WSxa/CQ1fBHQdRGoVMwmDaMJgKvegy3Am4h/WnMbE78wy
+         CcAtQ0PXA3IQjpU6XN4pAoGz32fLBye/JcOSr5EXv74nfjaUEbJtvCnsYOzwJ6cUNdmZ
+         dw6Ndq+Sr2ICQL+CUanCVeDvSHrVuNvIHjrcx17AmeantOojaV1Dg+ddz3xJP5sN32PA
+         fQ8A==
+X-Gm-Message-State: AOAM532rRD4T8pdZgWqnX12UTY9dqtyfWm0F/YNDRXid3gCmdw3hmRJP
+        2RhAaMzdhenTe+YLBP7m2APNAvEalBY=
+X-Google-Smtp-Source: ABdhPJzogM3serKmMghnQtVT+X4UHoIc7BBrlzs72ttJcps09N2N+imfMt2AjNNTZvLrK02TDMrfrw==
+X-Received: by 2002:ab0:146d:: with SMTP id c42mr5119650uae.56.1612579934935;
+        Fri, 05 Feb 2021 18:52:14 -0800 (PST)
+Received: from mail-vk1-f178.google.com (mail-vk1-f178.google.com. [209.85.221.178])
+        by smtp.gmail.com with ESMTPSA id u18sm1292322vkb.26.2021.02.05.18.52.13
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 05 Feb 2021 18:52:13 -0800 (PST)
+Received: by mail-vk1-f178.google.com with SMTP id n63so1912499vkn.12
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 18:52:13 -0800 (PST)
+X-Received: by 2002:a1f:ae81:: with SMTP id x123mr5333772vke.1.1612579932931;
+ Fri, 05 Feb 2021 18:52:12 -0800 (PST)
+MIME-Version: 1.0
+References: <20210205224124.21345-1-xie.he.0141@gmail.com>
+In-Reply-To: <20210205224124.21345-1-xie.he.0141@gmail.com>
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Date:   Fri, 5 Feb 2021 21:51:36 -0500
+X-Gmail-Original-Message-ID: <CA+FuTScLTZqZhNU7bWEw4OMTQzcKV106iRLwA--La0uH+JrTtg@mail.gmail.com>
+Message-ID: <CA+FuTScLTZqZhNU7bWEw4OMTQzcKV106iRLwA--La0uH+JrTtg@mail.gmail.com>
+Subject: Re: [PATCH net-next] net/packet: Improve the comment about LL header
+ visibility criteria
+To:     Xie He <xie.he.0141@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        John Ogness <john.ogness@linutronix.de>,
+        Tanner Love <tannerlove@google.com>,
+        Eyal Birger <eyal.birger@gmail.com>,
+        Network Development <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Roman Kiryanov <rkir@google.com>
+On Fri, Feb 5, 2021 at 5:42 PM Xie He <xie.he.0141@gmail.com> wrote:
+>
+> The "dev_has_header" function, recently added in
+> commit d549699048b4 ("net/packet: fix packet receive on L3 devices
+> without visible hard header"),
+> is more accurate as criteria for determining whether a device exposes
+> the LL header to upper layers, because in addition to dev->header_ops,
+> it also checks for dev->header_ops->create.
+>
+> When transmitting an skb on a device, dev_hard_header can be called to
+> generate an LL header. dev_hard_header will only generate a header if
+> dev->header_ops->create is present.
+>
+> Signed-off-by: Xie He <xie.he.0141@gmail.com>
 
-This will allow to use the BATTERY_GOLDFISH driver
-without enabling GOLDFISH.
+Acked-by: Willem de Bruijn <willemb@google.com>
 
-Signed-off-by: Roman Kiryanov <rkir@google.com>
----
- drivers/power/supply/Kconfig | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/power/supply/Kconfig b/drivers/power/supply/Kconfig
-index eec646c568b7..8704fe644b1f 100644
---- a/drivers/power/supply/Kconfig
-+++ b/drivers/power/supply/Kconfig
-@@ -683,11 +683,11 @@ config AB8500_BM
- 
- config BATTERY_GOLDFISH
- 	tristate "Goldfish battery driver"
--	depends on GOLDFISH || COMPILE_TEST
- 	depends on HAS_IOMEM
- 	help
--	  Say Y to enable support for the battery and AC power in the
--	  Goldfish emulator.
-+	  Say Y to enable support for the Goldfish battery and AC power
-+	  driver. Originated in the Android Studio Emulator (goldfish) it is
-+	  going to be used in other emulators.
- 
- config BATTERY_RT5033
- 	tristate "RT5033 fuel gauge support"
--- 
-2.30.0.478.g8a0d178c01-goog
-
+Indeed, existence of dev->header_ops->create is the deciding factor. Thanks Xie.
