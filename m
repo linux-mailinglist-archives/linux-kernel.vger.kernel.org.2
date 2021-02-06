@@ -2,101 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 949B7311893
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 03:44:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A67D311908
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 03:54:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231673AbhBFClS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 21:41:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37426 "EHLO
+        id S231836AbhBFCx0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 21:53:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230088AbhBFCcp (ORCPT
+        with ESMTP id S229531AbhBFCfl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 21:32:45 -0500
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28691C033274;
-        Fri,  5 Feb 2021 17:25:47 -0800 (PST)
-Received: by mail-lf1-x130.google.com with SMTP id v24so12824349lfr.7;
-        Fri, 05 Feb 2021 17:25:47 -0800 (PST)
+        Fri, 5 Feb 2021 21:35:41 -0500
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCB63C08EE20
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 16:13:04 -0800 (PST)
+Received: by mail-pg1-x52a.google.com with SMTP id n10so5659783pgl.10
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 16:13:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=3gRTKh6ImIBqQGsQL+QoYKSXz0Ojnm2JgYPA7s+gs/0=;
+        b=Cz0Rbou6R2GfMkFcHRTSj91dNPzf4snQdMPb3lVCZg0aSdWFga6SQV+mrMoeqeFeZA
+         JXn3/+w23rL+7j+JlO2JYIOQOjvYWqENSH5xsKl5bGJvsgITKvTn4Hv6obQYApdcn7q6
+         72KKMCNvq7RZXLFdEFwedrzBiQGbnlMsdW5tzgIcD1gj83pyAE/O0JrWLBrxefqa9Cx+
+         2g34QVQ73UcIvzwUzsuKFI69dM0RXA9Fv51Tvpt6CJSguuem6H3YuysJriTkSSQ3K6wx
+         idVeJcs+BATmC41tPlRZ3dUSKiUZGGZcd1q15QM3t1Y6P0g73gxfA0O+VlPeIP6Xe+cE
+         ekEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=OAQ3yX80CT+PWZsMkbbsby+9FcIwY7MvIPOlo3nK144=;
-        b=jXKpZcpWWst4BmGxxnTV2rntTCu+YReE3ptmp4wsVMDmPjq3mdmbIOqNiBfvP1F40t
-         6CO8122CaHFMkRgcFpTnC+0KR8rnA2pzthxZ6FbKXVxxwAue3EDxtt6pYcGoiNJnXt0z
-         Ajo5EvlZJb2gNk2pjDvbH93qMT4cFshCQlRTVOAKGflDBJfioBGGOzvgVYwuxyK9b5lH
-         a31SmEIawjDVSvRJkH7RnOKUlNfT+GN6y/YSpMvop4GGDIyL/ug1OA8Zx7K0wNeTWgiZ
-         3uBY+w5UZNko9rf4jiFzf5+NEnhpvjdqefgaCklHxTXU2mN2t7JvdQ3dSnb94uvtdg/b
-         OHjg==
-X-Gm-Message-State: AOAM533BBrprVhZWmcHg5m7jnQjZoZA4MVQszPFpp7O8aKKaAed3WXeF
-        T3jNZAd5mghNBBKip1+JqcMdKIWTelk=
-X-Google-Smtp-Source: ABdhPJwSrxaDHvFQ2KqpN0/Iz/1gmfklhTKJ65S7WGsWwCRT1efpQ4IcZxhDzsPPHBKdwAysHD51uw==
-X-Received: by 2002:a5d:4204:: with SMTP id n4mr7772326wrq.196.1612570429573;
-        Fri, 05 Feb 2021 16:13:49 -0800 (PST)
-Received: from msft-t490s.teknoraver.net (net-37-182-2-234.cust.vodafonedsl.it. [37.182.2.234])
-        by smtp.gmail.com with ESMTPSA id d3sm14566390wrp.79.2021.02.05.16.13.48
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=3gRTKh6ImIBqQGsQL+QoYKSXz0Ojnm2JgYPA7s+gs/0=;
+        b=cpaqt9tqaSzB6CMdUQFNVLQV6jboOq35X2jZIRAtnA+p4jOqWDG6wbJG4qUQU/+rYe
+         j8SenXKGReluLP6t5GMwrhTx0ixW3/mofTBSzHBaWbrS09SLEEkm+SZj1oXo9ZpSLUlL
+         TMs7BYMJm333y2FOZ0NNNBCPTSndlh2RAi6OUypXJIUzjwQnwBHVpTUJr+V2KzHjQORL
+         DaksDjfjoCXw9SMB1IS4STc13JZN163bVBDJYS/Tz6fMcMtOBYpIzs0lx2BWT5rS326U
+         ieu6OshY+BzS8RvfIeUV7gs4MhQa6ABvEcdylkWFiC5mao0uyIDRsGOETeJ93z+aL7/l
+         JM1A==
+X-Gm-Message-State: AOAM532ooCo3eXNWO9BITGrRCBQH6C8S+uXE0JqcFrfNoe+6qQyrY08m
+        +9sfedm4VFNo2plpAFBfs2K+uA==
+X-Google-Smtp-Source: ABdhPJziJQ2M+f24DSt9+DWu8gxxbl93d+hjLo80R4gAsZRVzR02Wc/FWamcEw0pcYYDENcE1T14Mw==
+X-Received: by 2002:aa7:87d9:0:b029:1b7:1c6c:56e0 with SMTP id i25-20020aa787d90000b02901b71c6c56e0mr6604785pfo.25.1612570383996;
+        Fri, 05 Feb 2021 16:13:03 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:d169:a9f7:513:e5])
+        by smtp.gmail.com with ESMTPSA id s13sm5957080pgq.40.2021.02.05.16.13.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Feb 2021 16:13:48 -0800 (PST)
-From:   Matteo Croce <mcroce@linux.microsoft.com>
-To:     linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Lennart Poettering <lennart@poettering.net>,
-        Luca Boccassi <bluca@debian.org>, Jens Axboe <axboe@kernel.dk>,
-        Alexander Viro <viro@zeniv.linux.org.uk>
-Subject: [PATCH 5/5] loop: increment sequence number
-Date:   Sat,  6 Feb 2021 01:09:03 +0100
-Message-Id: <20210206000903.215028-6-mcroce@linux.microsoft.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210206000903.215028-1-mcroce@linux.microsoft.com>
-References: <20210206000903.215028-1-mcroce@linux.microsoft.com>
+        Fri, 05 Feb 2021 16:13:03 -0800 (PST)
+Date:   Fri, 5 Feb 2021 16:12:56 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Ben Gardon <bgardon@google.com>,
+        LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
+        Peter Xu <peterx@redhat.com>, Peter Shier <pshier@google.com>,
+        Peter Feiner <pfeiner@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
+Subject: Re: [PATCH v2 23/28] KVM: x86/mmu: Allow parallel page faults for
+ the TDP MMU
+Message-ID: <YB3fCO+QOXaR2Kcj@google.com>
+References: <20210202185734.1680553-1-bgardon@google.com>
+ <20210202185734.1680553-24-bgardon@google.com>
+ <d2c4ae90-1e60-23ed-4bda-24cf88db04c9@redhat.com>
+ <CANgfPd-ELyPrn5z0N+o8R6Ci=O25XF+EDU-HDGgvVXGV7uF-dQ@mail.gmail.com>
+ <39751a29-3a47-a108-f626-8abf0008ea09@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <39751a29-3a47-a108-f626-8abf0008ea09@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matteo Croce <mcroce@microsoft.com>
+On Wed, Feb 03, 2021, Paolo Bonzini wrote:
+> On 03/02/21 18:46, Ben Gardon wrote:
+> > enum kvm_mmu_lock_mode lock_mode =
+> > get_mmu_lock_mode_for_root(vcpu->kvm, vcpu->arch.mmu->root_hpa);
+> > ....
+> > kvm_mmu_lock_for_mode(lock_mode);
+> > 
+> > Not sure if either of those are actually clearer, but the latter
+> > trends in the direction the RCF took, having an enum to capture
+> > read/write and whether or not yo yield in a lock mode parameter.
+> 
+> Could be a possibility.  Also:
+> 
+> enum kvm_mmu_lock_mode lock_mode =
+>   kvm_mmu_lock_for_root(vcpu->kvm, vcpu->arch.mmu->root_hpa);
+> 
+> kvm_mmu_unlock(vcpu->kvm, lock_mode);
+> 
+> Anyway it can be done on top.
 
-On a very loaded system, if there are many events queued up from multiple
-attach/detach cycles, it's impossible to match them up with the
-LOOP_CONFIGURE or LOOP_SET_FD call, since we don't know where the position
-of our own association in the queue is[1].
-Not even an empty uevent queue is a reliable indication that we already
-received the uevent we were waiting for, since with multi-partition block
-devices each partition's event is queued asynchronously and might be
-delivered later.
+Maybe go with a literal name, unless we expect additional usage?  E.g. 
+kvm_mmu_(un)lock_for_page_fault() isn't terrible.
 
-Increment the disk sequence number when setting or changing the backing
-file, so the userspace knows which backing file generated the event.
-
-[1] https://github.com/systemd/systemd/issues/17469#issuecomment-762919781
-
-Signed-off-by: Matteo Croce <mcroce@microsoft.com>
----
- drivers/block/loop.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/drivers/block/loop.c b/drivers/block/loop.c
-index e5ff328f0917..c12b3faae3ab 100644
---- a/drivers/block/loop.c
-+++ b/drivers/block/loop.c
-@@ -734,6 +734,7 @@ static int loop_change_fd(struct loop_device *lo, struct block_device *bdev,
- 		goto out_err;
- 
- 	/* and ... switch */
-+	inc_diskseq(lo->lo_disk);
- 	blk_mq_freeze_queue(lo->lo_queue);
- 	mapping_set_gfp_mask(old_file->f_mapping, lo->old_gfp_mask);
- 	lo->lo_backing_file = file;
-@@ -1122,6 +1123,8 @@ static int loop_configure(struct loop_device *lo, fmode_t mode,
- 	if (error)
- 		goto out_unlock;
- 
-+	inc_diskseq(lo->lo_disk);
-+
- 	if (!(file->f_mode & FMODE_WRITE) || !(mode & FMODE_WRITE) ||
- 	    !file->f_op->write_iter)
- 		lo->lo_flags |= LO_FLAGS_READ_ONLY;
--- 
-2.29.2
-
+I'm not a fan of the kvm_mmu_lock_for_root() variants.  "for_root" doesn't have
+an obvious connection to the page fault handler or to the read/shared mode of
+the TDP.  But, the name is also specific enough to pique my curiosity and make
+me wonder what's it's doing.
