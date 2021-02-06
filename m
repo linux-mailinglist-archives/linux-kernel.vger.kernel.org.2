@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94E69311C36
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 09:38:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D509C311C35
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 09:38:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229751AbhBFIg5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Feb 2021 03:36:57 -0500
-Received: from mailgw02.mediatek.com ([210.61.82.184]:49208 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229548AbhBFIgv (ORCPT
+        id S229691AbhBFIgw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Feb 2021 03:36:52 -0500
+Received: from mailgw01.mediatek.com ([210.61.82.183]:46417 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229537AbhBFIgu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Feb 2021 03:36:51 -0500
-X-UUID: 53bfa8a91c8d442fb25bd5cdc930985c-20210206
-X-UUID: 53bfa8a91c8d442fb25bd5cdc930985c-20210206
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw02.mediatek.com
+        Sat, 6 Feb 2021 03:36:50 -0500
+X-UUID: 54a4c85ce4454427adab3f6a641998f7-20210206
+X-UUID: 54a4c85ce4454427adab3f6a641998f7-20210206
+Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw01.mediatek.com
         (envelope-from <lecopzer.chen@mediatek.com>)
         (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1992209691; Sat, 06 Feb 2021 16:36:06 +0800
+        with ESMTP id 494478168; Sat, 06 Feb 2021 16:36:06 +0800
 Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs08n2.mediatek.inc (172.21.101.56) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Sat, 6 Feb 2021 16:36:04 +0800
+ mtkmbs08n1.mediatek.inc (172.21.101.55) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Sat, 6 Feb 2021 16:36:05 +0800
 Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas11.mediatek.inc
  (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Sat, 6 Feb 2021 16:36:04 +0800
+ Transport; Sat, 6 Feb 2021 16:36:05 +0800
 From:   Lecopzer Chen <lecopzer.chen@mediatek.com>
 To:     <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
         <kasan-dev@googlegroups.com>,
@@ -37,29 +37,41 @@ CC:     <dan.j.williams@intel.com>, <aryabinin@virtuozzo.com>,
         <tyhicks@linux.microsoft.com>, <robin.murphy@arm.com>,
         <vincenzo.frascino@arm.com>, <gustavoars@kernel.org>,
         <lecopzer@gmail.com>, Lecopzer Chen <lecopzer.chen@mediatek.com>
-Subject: [PATCH v3 0/5] arm64: kasan: support CONFIG_KASAN_VMALLOC
-Date:   Sat, 6 Feb 2021 16:35:47 +0800
-Message-ID: <20210206083552.24394-1-lecopzer.chen@mediatek.com>
+Subject: [PATCH v3 1/5] arm64: kasan: don't populate vmalloc area for CONFIG_KASAN_VMALLOC
+Date:   Sat, 6 Feb 2021 16:35:48 +0800
+Message-ID: <20210206083552.24394-2-lecopzer.chen@mediatek.com>
 X-Mailer: git-send-email 2.18.0
+In-Reply-To: <20210206083552.24394-1-lecopzer.chen@mediatek.com>
+References: <20210206083552.24394-1-lecopzer.chen@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-TM-SNTS-SMTP: 48ED01F9EB92388DB50C25F6565B6744F8836A662E8B2C774BE4F94EFBD8AA522000:8
 X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-Linux supports KAsan for VMALLOC since commit 3c5c3cfb9ef4da9
+Linux support KAsan for VMALLOC since commit 3c5c3cfb9ef4da9
 ("kasan: support backing vmalloc space with real shadow memory")
 
-Acroding to how x86 ported it [1], they early allocated p4d and pgd,
-but in arm64 I just simulate how KAsan supports MODULES_VADDR in arm64
-by not to populate the vmalloc area except for kimg address.
+Like how the MODULES_VADDR does now, just not to early populate
+the VMALLOC_START between VMALLOC_END.
+
+Before:
+
+MODULE_VADDR: no mapping, no zoreo shadow at init
+VMALLOC_VADDR: backed with zero shadow at init
+
+After:
+
+MODULE_VADDR: no mapping, no zoreo shadow at init
+VMALLOC_VADDR: no mapping, no zoreo shadow at init
+
+Thus the mapping will get allocated on demand by the core function
+of KASAN_VMALLOC.
 
   -----------  vmalloc_shadow_start
  |           |
- |           | 
+ |           |
  |           | <= non-mapping
  |           |
  |           |
@@ -75,62 +87,55 @@ by not to populate the vmalloc area except for kimg address.
  |00000000000|
  ------------- KASAN_SHADOW_END
 
-
-Test environment:
-    4G and 8G Qemu virt, 
-    39-bit VA + 4k PAGE_SIZE with 3-level page table,
-    test by lib/test_kasan.ko and lib/test_kasan_module.ko
-
-It works in Kaslr with CONFIG_RANDOMIZE_MODULE_REGION_FULL
-and randomize module region inside vmalloc area.
-
-Also work with VMAP_STACK, thanks Ard for testing it.
-
-
-[1]: commit 0609ae011deb41c ("x86/kasan: support KASAN_VMALLOC")
-
-
 Signed-off-by: Lecopzer Chen <lecopzer.chen@mediatek.com>
-Acked-by: Andrey Konovalov <andreyknvl@google.com>
-Tested-by: Andrey Konovalov <andreyknvl@google.com>
-Tested-by: Ard Biesheuvel <ardb@kernel.org>
-
 ---
-Thanks Will Deacon, Ard Biesheuvel and Andrey Konovalov
-for reviewing and suggestion.
+ arch/arm64/mm/kasan_init.c | 18 +++++++++++++-----
+ 1 file changed, 13 insertions(+), 5 deletions(-)
 
-v3 -> v2
-rebase on 5.11-rc6
-	1. remove always true condition in kasan_init() and remove unsed
-	   vmalloc_shadow_start.
-	2. select KASAN_VMALLOC if KANSAN_GENERIC is enabled
-	   for VMAP_STACK.
-	3. tweak commit message
-
-v2 -> v1
-	1. kasan_init.c tweak indent
-	2. change Kconfig depends only on HAVE_ARCH_KASAN
-	3. support randomized module region.
-
-
-v2:
-https://lkml.org/lkml/2021/1/9/49
-v1:
-https://lore.kernel.org/lkml/20210103171137.153834-1-lecopzer@gmail.com/
----
-Lecopzer Chen (5):
-  arm64: kasan: don't populate vmalloc area for CONFIG_KASAN_VMALLOC
-  arm64: kasan: abstract _text and _end to KERNEL_START/END
-  arm64: Kconfig: support CONFIG_KASAN_VMALLOC
-  arm64: kaslr: support randomized module area with KASAN_VMALLOC
-  arm64: Kconfig: select KASAN_VMALLOC if KANSAN_GENERIC is enabled
-
- arch/arm64/Kconfig         |  2 ++
- arch/arm64/kernel/kaslr.c  | 18 ++++++++++--------
- arch/arm64/kernel/module.c | 16 +++++++++-------
- arch/arm64/mm/kasan_init.c | 24 ++++++++++++++++--------
- 4 files changed, 37 insertions(+), 23 deletions(-)
-
+diff --git a/arch/arm64/mm/kasan_init.c b/arch/arm64/mm/kasan_init.c
+index d8e66c78440e..20d06008785f 100644
+--- a/arch/arm64/mm/kasan_init.c
++++ b/arch/arm64/mm/kasan_init.c
+@@ -214,6 +214,7 @@ static void __init kasan_init_shadow(void)
+ {
+ 	u64 kimg_shadow_start, kimg_shadow_end;
+ 	u64 mod_shadow_start, mod_shadow_end;
++	u64 vmalloc_shadow_end;
+ 	phys_addr_t pa_start, pa_end;
+ 	u64 i;
+ 
+@@ -223,6 +224,8 @@ static void __init kasan_init_shadow(void)
+ 	mod_shadow_start = (u64)kasan_mem_to_shadow((void *)MODULES_VADDR);
+ 	mod_shadow_end = (u64)kasan_mem_to_shadow((void *)MODULES_END);
+ 
++	vmalloc_shadow_end = (u64)kasan_mem_to_shadow((void *)VMALLOC_END);
++
+ 	/*
+ 	 * We are going to perform proper setup of shadow memory.
+ 	 * At first we should unmap early shadow (clear_pgds() call below).
+@@ -241,12 +244,17 @@ static void __init kasan_init_shadow(void)
+ 
+ 	kasan_populate_early_shadow(kasan_mem_to_shadow((void *)PAGE_END),
+ 				   (void *)mod_shadow_start);
+-	kasan_populate_early_shadow((void *)kimg_shadow_end,
+-				   (void *)KASAN_SHADOW_END);
+ 
+-	if (kimg_shadow_start > mod_shadow_end)
+-		kasan_populate_early_shadow((void *)mod_shadow_end,
+-					    (void *)kimg_shadow_start);
++	if (IS_ENABLED(CONFIG_KASAN_VMALLOC))
++		kasan_populate_early_shadow((void *)vmalloc_shadow_end,
++					    (void *)KASAN_SHADOW_END);
++	else {
++		kasan_populate_early_shadow((void *)kimg_shadow_end,
++					    (void *)KASAN_SHADOW_END);
++		if (kimg_shadow_start > mod_shadow_end)
++			kasan_populate_early_shadow((void *)mod_shadow_end,
++						    (void *)kimg_shadow_start);
++	}
+ 
+ 	for_each_mem_range(i, &pa_start, &pa_end) {
+ 		void *start = (void *)__phys_to_virt(pa_start);
 -- 
 2.25.1
 
