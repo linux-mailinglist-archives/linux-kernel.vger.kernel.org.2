@@ -2,109 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C829311BDC
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 08:13:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56E39311BD8
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 08:13:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229706AbhBFHNY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Feb 2021 02:13:24 -0500
-Received: from m12-14.163.com ([220.181.12.14]:45331 "EHLO m12-14.163.com"
+        id S229608AbhBFHMh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Feb 2021 02:12:37 -0500
+Received: from a.mx.secunet.com ([62.96.220.36]:50294 "EHLO a.mx.secunet.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229572AbhBFHNW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Feb 2021 02:13:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=XTjul6edC9FmtB9jkA
-        AnYebdbC+m5/JicB+b/cgtNbU=; b=ZvyL5N+srJabKV3KJATl6BynrlSfxMUbQf
-        ZuqtO6OOO1NDsIjzdK8CaIBcNRP7lXFQjciNbdzNrDeoLc4xPz/agkK/HY4FNAyz
-        IdJf2gT+ZqofDY6Zr/c+NA0TDAFkVK/Bh8cSmdD/w1nXSLJDGQ3r+WLE1Anu+26G
-        PMKsPBODA=
-Received: from localhost.localdomain.localdomain (unknown [182.150.162.248])
-        by smtp10 (Coremail) with SMTP id DsCowACntpoKQR5g_q3Ajg--.62473S2;
-        Sat, 06 Feb 2021 15:11:07 +0800 (CST)
-From:   winndows@163.com
-To:     josef@toxicpanda.com, axboe@kernel.dk
-Cc:     linux-block@vger.kernel.org, nbd@other.debian.org,
-        linux-kernel@vger.kernel.org, Liao Pingfang <winndows@163.com>
-Subject: [PATCH] nbd: Convert to DEFINE_SHOW_ATTRIBUTE
-Date:   Sat,  6 Feb 2021 15:10:55 +0800
-Message-Id: <1612595455-4050-1-git-send-email-winndows@163.com>
-X-Mailer: git-send-email 1.8.3.1
-X-CM-TRANSID: DsCowACntpoKQR5g_q3Ajg--.62473S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7AF13tw1DCr4kZr45KFW3ZFb_yoW8uFW7pF
-        s3Ca1DCFW0kw4UWrs5tFsxZa4S93Z7try0gry2v34SyryDurWSyFs5WFWftFyrKFWrJrsr
-        XFn8GFy8J3WUCrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07UO0eLUUUUU=
-X-Originating-IP: [182.150.162.248]
-X-CM-SenderInfo: hzlq0vxrzvqiywtou0bp/1tbi8QsxmV-PKDed+AAAs4
+        id S229492AbhBFHMa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 6 Feb 2021 02:12:30 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by a.mx.secunet.com (Postfix) with ESMTP id E786C205CF;
+        Sat,  6 Feb 2021 08:11:48 +0100 (CET)
+X-Virus-Scanned: by secunet
+Received: from a.mx.secunet.com ([127.0.0.1])
+        by localhost (a.mx.secunet.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id bmkgi2TFKruh; Sat,  6 Feb 2021 08:11:48 +0100 (CET)
+Received: from cas-essen-01.secunet.de (unknown [10.53.40.201])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by a.mx.secunet.com (Postfix) with ESMTPS id 8993920591;
+        Sat,  6 Feb 2021 08:11:48 +0100 (CET)
+Received: from mbx-essen-01.secunet.de (10.53.40.197) by
+ cas-essen-01.secunet.de (10.53.40.201) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Sat, 6 Feb 2021 08:11:48 +0100
+Received: from gauss2.secunet.de (10.182.7.193) by mbx-essen-01.secunet.de
+ (10.53.40.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2044.4; Sat, 6 Feb 2021
+ 08:11:48 +0100
+Received: by gauss2.secunet.de (Postfix, from userid 1000)
+        id 8E2E73182C11; Sat,  6 Feb 2021 08:11:48 +0100 (CET)
+Date:   Sat, 6 Feb 2021 08:11:48 +0100
+From:   Steffen Klassert <steffen.klassert@secunet.com>
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+CC:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
+        <yoshfuji@linux-ipv6.org>, <dsahern@kernel.org>, <kuba@kernel.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] esp: Simplify the calculation of variables
+Message-ID: <20210206071148.GS3576117@gauss3.secunet.de>
+References: <1612320270-873-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <1612320270-873-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-ClientProxiedBy: cas-essen-02.secunet.de (10.53.40.202) To
+ mbx-essen-01.secunet.de (10.53.40.197)
+X-EXCLAIMER-MD-CONFIG: 2c86f778-e09b-4440-8b15-867914633a10
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Liao Pingfang <winndows@163.com>
+On Wed, Feb 03, 2021 at 10:44:30AM +0800, Jiapeng Chong wrote:
+> Fix the following coccicheck warnings:
+> 
+> ./net/ipv6/esp6.c:791:16-18: WARNING !A || A && B is equivalent
+> to !A || B.
+> 
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 
-Use DEFINE_SHOW_ATTRIBUTE macro to simplify the code.
-
-Signed-off-by: Liao Pingfang <winndows@163.com>
----
- drivers/block/nbd.c | 28 ++++------------------------
- 1 file changed, 4 insertions(+), 24 deletions(-)
-
-diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
-index e6ea5d3..8b9622e 100644
---- a/drivers/block/nbd.c
-+++ b/drivers/block/nbd.c
-@@ -1529,17 +1529,7 @@ static int nbd_dbg_tasks_show(struct seq_file *s, void *unused)
- 	return 0;
- }
- 
--static int nbd_dbg_tasks_open(struct inode *inode, struct file *file)
--{
--	return single_open(file, nbd_dbg_tasks_show, inode->i_private);
--}
--
--static const struct file_operations nbd_dbg_tasks_ops = {
--	.open = nbd_dbg_tasks_open,
--	.read = seq_read,
--	.llseek = seq_lseek,
--	.release = single_release,
--};
-+DEFINE_SHOW_ATTRIBUTE(nbd_dbg_tasks);
- 
- static int nbd_dbg_flags_show(struct seq_file *s, void *unused)
- {
-@@ -1564,17 +1554,7 @@ static int nbd_dbg_flags_show(struct seq_file *s, void *unused)
- 	return 0;
- }
- 
--static int nbd_dbg_flags_open(struct inode *inode, struct file *file)
--{
--	return single_open(file, nbd_dbg_flags_show, inode->i_private);
--}
--
--static const struct file_operations nbd_dbg_flags_ops = {
--	.open = nbd_dbg_flags_open,
--	.read = seq_read,
--	.llseek = seq_lseek,
--	.release = single_release,
--};
-+DEFINE_SHOW_ATTRIBUTE(nbd_dbg_flags);
- 
- static int nbd_dev_dbg_init(struct nbd_device *nbd)
- {
-@@ -1592,11 +1572,11 @@ static int nbd_dev_dbg_init(struct nbd_device *nbd)
- 	}
- 	config->dbg_dir = dir;
- 
--	debugfs_create_file("tasks", 0444, dir, nbd, &nbd_dbg_tasks_ops);
-+	debugfs_create_file("tasks", 0444, dir, nbd, &nbd_dbg_tasks_fops);
- 	debugfs_create_u64("size_bytes", 0444, dir, &config->bytesize);
- 	debugfs_create_u32("timeout", 0444, dir, &nbd->tag_set.timeout);
- 	debugfs_create_u64("blocksize", 0444, dir, &config->blksize);
--	debugfs_create_file("flags", 0444, dir, nbd, &nbd_dbg_flags_ops);
-+	debugfs_create_file("flags", 0444, dir, nbd, &nbd_dbg_flags_fops);
- 
- 	return 0;
- }
--- 
-1.8.3.1
-
-
+Applied to ipsec-next, thanks!
