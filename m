@@ -2,88 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6D6D311D2D
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 13:48:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40B2E311D30
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 13:52:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229976AbhBFMsW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Feb 2021 07:48:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56516 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229506AbhBFMsT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Feb 2021 07:48:19 -0500
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01D11C06174A;
-        Sat,  6 Feb 2021 04:47:38 -0800 (PST)
-Received: by mail-lj1-x22d.google.com with SMTP id f19so10532437ljn.5;
-        Sat, 06 Feb 2021 04:47:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=/z7HFF3L/qI3FvkGB7cDrmovm/gwu9it6WOSqPW1Scg=;
-        b=rpVOK/Rd+ASx3prdTxZHrUJZejSp7hH4U8F7NpDj9T5UkUTPfSAASfTEOxSvGSCoY4
-         HAU8U6PIh5eBMnpifru+4ktXo6U8dhLr4UntJQ+Ty8GyA5Ce3Ftxb+rvAetptvq4EDIn
-         8AOGuBQL81nhWUHgmGLt1LnIKeQ2FlQRd0OIRvYnIzqOXgr/j2M+fbrqgXZf6KkBwidZ
-         ctYs4eMAXL7yN6Ey08jKnrbsjr22NoxCy8H04JrgYTRb75C8MIm62RMViPdm/tW4w/MS
-         RS5dxTOqm+ZSFNyGgSuQdx+xF4ihXBlXqan6m3EqBziSfQ2sg9TtNvpw+Bt+N5qS8gJa
-         D9Wg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=/z7HFF3L/qI3FvkGB7cDrmovm/gwu9it6WOSqPW1Scg=;
-        b=b2v8p+CSIVypT/g9kyqO+YfX7cgWx/gOFismGz/gQHM6XvqnA7RFRD8+IOINPM1zkC
-         7fMsrmeboHtT+SggAt31aQnZ4k8M21nUWLWc3TSqsuZ0dADq8me/mYFDp+uhJ7SdueZq
-         eBaPifsZdsl6YO77EAsxepEAOx2Fx7i7Z6r5Ben7NJJ163SDLM9M5B4INFlaHiEGSpDE
-         dFAH1WjS5sbVN4zvdR32qY16+bi7pyQH+g1htM3izjdKLOehTel5/83SP24bthwVTg5c
-         QUrHhLx/lR3DJ+lj19kMF/sjdPqBRCGrjFE4PhbZzm5F5if7aemZzpC+WvAPtHrGBHMp
-         b5hg==
-X-Gm-Message-State: AOAM531yLlc8YKHxTIj/o+ILf/2BjQ4Ze8m8ZCnhXIMjLKKyDROF3oST
-        ZvraDoNyZ39yDmdBPJw9HPo=
-X-Google-Smtp-Source: ABdhPJyO0e3Ypvqx5DBPT8VEOqHxfnsDG3RyNFOa/SOLmE4YPmAafx82BiTBU3OQjif04/Fyljtz4g==
-X-Received: by 2002:a2e:580b:: with SMTP id m11mr5605637ljb.426.1612615655093;
-        Sat, 06 Feb 2021 04:47:35 -0800 (PST)
-Received: from grain.localdomain ([5.18.103.226])
-        by smtp.gmail.com with ESMTPSA id q63sm1300622ljq.35.2021.02.06.04.47.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 06 Feb 2021 04:47:33 -0800 (PST)
-Received: by grain.localdomain (Postfix, from userid 1000)
-        id 5F21056011E; Sat,  6 Feb 2021 15:47:32 +0300 (MSK)
-Date:   Sat, 6 Feb 2021 15:47:32 +0300
-From:   Cyrill Gorcunov <gorcunov@gmail.com>
-To:     Chris Wilson <chris@chris-wilson.co.uk>
-Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        intel-gfx@lists.freedesktop.org, Kees Cook <keescook@chromium.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dave Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        stable@vger.kernel.org, Daniel Vetter <daniel.vetter@ffwll.ch>
-Subject: Re: [PATCH v3] kcmp: Support selection of SYS_kcmp without
- CHECKPOINT_RESTORE
-Message-ID: <20210206124732.GK2172@grain>
-References: <20210205163752.11932-1-chris@chris-wilson.co.uk>
- <20210205220012.1983-1-chris@chris-wilson.co.uk>
+        id S229793AbhBFMvj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Feb 2021 07:51:39 -0500
+Received: from ozlabs.org ([203.11.71.1]:46959 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229529AbhBFMvh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 6 Feb 2021 07:51:37 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DXsbJ43GRz9sVv;
+        Sat,  6 Feb 2021 23:50:52 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1612615853;
+        bh=oiKiD/snw/9+bkBo/LrWBA2HU0txJEZ2rYW7sTcHLnU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=gz3xEXqcloGHdPByV7w3kxO/HXCqjwTOLAJEE6IwZV+gQnfU5u1jYNLW96+vDhICh
+         jxRp1PucICHrrk0ueWw5twDVbt7IfrvJgxoDX1vODvbKEIMJHaG+gkhwulpWw4Y49r
+         TkoqI41+FOGfAhk2WxfIqCa2gc3gZRhhQ3/JN9VCbF+kw1h1vVJwRwY9iF/yF+zmCd
+         uTIG325iaUQwXWXfixg0HqZXx8tk58GjbwV1YO1trKUZttogHJJGipL66iP239Z4eM
+         TeWe8xQZQ6NjQJ8XLHPMezKmHBsLCYEVM0c6BR/QIxEC+2MVWGe8hIEuOlzXBKKgAe
+         UYRCcKGgD4tPw==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        masahiroy@kernel.org, npiggin@gmail.com, raoni@linux.ibm.com,
+        ravi.bangoria@linux.ibm.com
+Subject: [GIT PULL] Please pull powerpc/linux.git powerpc-5.11-7 tag
+Date:   Sat, 06 Feb 2021 23:50:45 +1100
+Message-ID: <8735y9pdga.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210205220012.1983-1-chris@chris-wilson.co.uk>
-User-Agent: Mutt/1.14.6 (2020-07-11)
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 05, 2021 at 10:00:12PM +0000, Chris Wilson wrote:
-> Userspace has discovered the functionality offered by SYS_kcmp and has
-> started to depend upon it. In particular, Mesa uses SYS_kcmp for
-> os_same_file_description() in order to identify when two fd (e.g. device
-> or dmabuf) point to the same struct file. Since they depend on it for
-> core functionality, lift SYS_kcmp out of the non-default
-> CONFIG_CHECKPOINT_RESTORE into the selectable syscall category.
-> 
-...
-Reviewed-by: Cyrill Gorcunov <gorcunov@gmail.com>
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
+Hi Linus,
+
+Please pull some more powerpc fixes for 5.11:
+
+The following changes since commit 4025c784c573cab7e3f84746cc82b8033923ec62:
+
+  powerpc/64s: prevent recursive replay_soft_interrupts causing superfluous interrupt (2021-01-24 22:27:24 +1100)
+
+are available in the git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/powerpc-5.11-7
+
+for you to fetch changes up to 24321ac668e452a4942598533d267805f291fdc9:
+
+  powerpc/64/signal: Fix regression in __kernel_sigtramp_rt64() semantics (2021-02-02 22:14:41 +1100)
+
+- ------------------------------------------------------------------
+powerpc fixes for 5.11 #7
+
+A fix for a change we made to __kernel_sigtramp_rt64() which confused glibc's
+backtrace logic, and also changed the semantics of that symbol, which was
+arguably an ABI break.
+
+A fix for a stack overwrite in our VSX instruction emulation.
+
+A couple of fixes for the Makefile logic in the new C VDSO.
+
+Thanks to: Masahiro Yamada, Naveen N. Rao, Raoni Fassina Firmino, Ravi Bangoria.
+
+- ------------------------------------------------------------------
+Masahiro Yamada (2):
+      powerpc/vdso: fix unnecessary rebuilds of vgettimeofday.o
+      powerpc/vdso64: remove meaningless vgettimeofday.o build rule
+
+Raoni Fassina Firmino (1):
+      powerpc/64/signal: Fix regression in __kernel_sigtramp_rt64() semantics
+
+Ravi Bangoria (1):
+      powerpc/sstep: Fix array out of bound warning
+
+
+ arch/powerpc/kernel/Makefile                      |  4 ++--
+ arch/powerpc/kernel/vdso32/Makefile               |  5 +----
+ arch/powerpc/kernel/{vdso32 => }/vdso32_wrapper.S |  0
+ arch/powerpc/kernel/vdso64/Makefile               |  8 +-------
+ arch/powerpc/kernel/vdso64/sigtramp.S             | 11 ++++++++++-
+ arch/powerpc/kernel/vdso64/vdso64.lds.S           |  2 +-
+ arch/powerpc/kernel/{vdso64 => }/vdso64_wrapper.S |  0
+ arch/powerpc/lib/sstep.c                          | 14 ++++++++------
+ 8 files changed, 23 insertions(+), 21 deletions(-)
+ rename arch/powerpc/kernel/{vdso32 => }/vdso32_wrapper.S (100%)
+ rename arch/powerpc/kernel/{vdso64 => }/vdso64_wrapper.S (100%)
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEJFGtCPCthwEv2Y/bUevqPMjhpYAFAmAekG8ACgkQUevqPMjh
+pYAHKw/+JNrzuw4P67ZqPcOMKayKAmUzBvd1ED/NBQtvtZpJS78tUVfps8DIr01g
+i+UnlOohaavtGT0ARPTp7wEGL2c7vyzoNyxPdVru0x3UWq8xvnpdKfiHut7LjLot
+32/aS9/rChr++JE7UeVVabYxvZJy9RSQg1DjcEi08X+LOwe2yJorME/4hVD3qjEV
+FOIPbdsOOFyI3RWMsp3UFG3rwdJreHImSfZIlHUBCGHbLs5bVLC2CyoXN2UYTToS
+DrD4C1R8a9wBTYcHOEJHAPCoeYHlELROeyEWbTapGGFlpMERUyhWxoEJNrkPt7Ym
+3wQjlfI2g1oTu1ewi4D4QUHsnZHfwXvVAMzY84LvPRFXZrzJuvh17Dx9VD65ALfc
+zyzasuecdEXlbGYilJHAA1m8Qlgm4utxzA+5BDv4UgegBVCopWjo2I1Ai+7vFo6S
+58joA+G0m1E2QfbCQeEderBqe34kGMGcbzQFb8CQq7UnIG88U4JclCFbogOxDCdW
+Ogu93sJpMRT2pNorBOk//clNBgdzm+PLE1uywZ7t2rLUN58SehBWM8SLDJgVWVfY
+iPpN5hRJmEKhkT5Zq+l8Muvn2XsCc9jW0wZJW5k4jcEnwFfIsKBej2Qgiqm1y0D6
+oFk9Wsp0K2YTo7G4ViL45r6RjlXVVfGzkK0t9LzTFV9znYaI5NE=
+=dwna
+-----END PGP SIGNATURE-----
