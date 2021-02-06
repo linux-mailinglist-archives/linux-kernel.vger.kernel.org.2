@@ -2,83 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1A5C311F46
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 19:08:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C3D50311F47
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 19:12:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230469AbhBFSHo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Feb 2021 13:07:44 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:44652 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230020AbhBFSHj (ORCPT
+        id S230488AbhBFSLc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Feb 2021 13:11:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40698 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230473AbhBFSL3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Feb 2021 13:07:39 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612634773;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=+3K/ORZIshWIeyzZP4aoxZMdX04y5DfgexQ64BWXU8Y=;
-        b=jEsf3S4LG2P/SINojbxkUZG7h5zPHLijVla47fWeo5rg1QRkXiHmmi/q9J7JaM94qzzpwC
-        5JweSlBYbpEKLcayDrnc9TLcKfXrJ4t761ViIBlhoNirJLAByzaNMXU1wUgjMk5NlB9iQ9
-        BRp6YsthZrkx+y1E5oYLpfJB7Us/g1s=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-204-9Li4jnmTPJ-OOFFjEqd1hQ-1; Sat, 06 Feb 2021 13:06:11 -0500
-X-MC-Unique: 9Li4jnmTPJ-OOFFjEqd1hQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 25DE5107ACC7;
-        Sat,  6 Feb 2021 18:06:09 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.37])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 43FA257;
-        Sat,  6 Feb 2021 18:06:06 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Sat,  6 Feb 2021 19:06:08 +0100 (CET)
-Date:   Sat, 6 Feb 2021 19:06:05 +0100
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     Ravi Bangoria <ravi.bangoria@linux.ibm.com>
-Cc:     mpe@ellerman.id.au, rostedt@goodmis.org, paulus@samba.org,
-        jniethe5@gmail.com, naveen.n.rao@linux.ibm.com,
-        sandipan@linux.ibm.com, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] powerpc/uprobes: Validation for prefixed instruction
-Message-ID: <20210206180604.GA8897@redhat.com>
-References: <20210204104703.273429-1-ravi.bangoria@linux.ibm.com>
+        Sat, 6 Feb 2021 13:11:29 -0500
+Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74755C06174A;
+        Sat,  6 Feb 2021 10:10:49 -0800 (PST)
+Received: by mail-il1-x131.google.com with SMTP id y17so8929885ili.12;
+        Sat, 06 Feb 2021 10:10:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=e4WGUj7LIAI0OsTSONaPK/trDzhQumNZ4RBKCXhXtNA=;
+        b=EWlJKYPpmzu4lvFMsn+FGTy/G8FGCzAKD57m1Xd+SW+MFtndCCWkFUvNnPfvtt3enz
+         aSxazhm4b+vchNhIe14R9A5fGGTd8sJk2exmWFLu31oDUNW7LdGMWGxEW4HO3hojWYAO
+         gHa5oeFsptzOoPPMhXbztdkLJPz6avSIHcdK3auzKcdXQAFqoGbQiXG44emuujamn8ra
+         43xIky8rRlSFdGWAHLPkCsP5QzU/FcwsWP183hBXnDVu5AM0axvc4BKZmXZICBUIvR2c
+         vnk+WYGZ2R/0LQsOZ0KeftSE39x+l9B8koWsir1ZwVZeF7tKJwLrQhXSuUvak3GoAuqF
+         uGUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=e4WGUj7LIAI0OsTSONaPK/trDzhQumNZ4RBKCXhXtNA=;
+        b=T+AhBYysYKf8fz7tZVlfOont/gxH0u31UzbM236EUpafsVC+s6hWJcx2UvOr2OdtOD
+         yjWF2bn5BATQpC1hvKN6lVZ71AqbJ2HbJqM0v5OunYoMu3q9er0ImGWUn5WL1ca8cRZM
+         qabXTaS3Aj3GVs0BgDUO/WXACC3Kq8GeyhK12o4WH8sIRa9hpj58u8Z2zQ7DQs3lUmOL
+         dicDLYTOBTlLQ4CjJcq732IdMR3pPCkEAREV3nptmaeMGclFA5yfpP+sNIpa0BJVioPV
+         ZAmItCySz4B5kpiKJRQqRGaxAJSS42e0Rd4XoIwmzq2SnSgqXzkYKpaJhHYaqbZ6yH0Y
+         zGBQ==
+X-Gm-Message-State: AOAM532Qznae4Z0KHilBM9NM0tW00fjdeJ6HMParVho77ty7c8lWMsFx
+        brNzSWGxcx7L05sIjasU77RejNEKTvGvmGS+9OU=
+X-Google-Smtp-Source: ABdhPJxcl1k3Ixfj3ACK8pH/6YNKVtZqw3QAR4YuXPMdXX7iO1JVP34iE53bDUIf9QbK6qpqpCpJlIuoYK1FXOcUplI=
+X-Received: by 2002:a92:ce46:: with SMTP id a6mr9362044ilr.10.1612635048727;
+ Sat, 06 Feb 2021 10:10:48 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210204104703.273429-1-ravi.bangoria@linux.ibm.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+References: <20210205192446.GH920417@kernel.org> <cb743ab8-9a66-a311-ed18-ecabf0947440@fb.com>
+ <CA+icZUUcjJASPN8NVgWNp+2h=WO-PT4Su3-yHZpynNHCrHEb-w@mail.gmail.com>
+ <d59c2a53-976c-c304-f208-67110bdd728a@fb.com> <CA+icZUVhgnJ9j7dnXxLQi3DcmLrqpZgcAo2wmHJ_OxSQyS6DQg@mail.gmail.com>
+ <CA+icZUWFx47jWJsV6tyoS5f18joPLyE8TOeeyVgsk65k9sP2WQ@mail.gmail.com>
+ <CA+icZUUj1P_PAj=E8iF=C4m6gYm9zqb+WWbOdoTqemTeGnZbww@mail.gmail.com>
+ <CA+icZUWY0zkOb36gxMOuT5-m=vC5_e815gkSEyM45sO+jgcCZg@mail.gmail.com>
+ <CA+icZUW+4=WUexA3-qwXSdEY2L4DOhF1pQfw9=Bf2invYF1J2Q@mail.gmail.com>
+ <8ff11fa8-46cd-5f20-b988-20e65e122507@fb.com> <20210206162419.GC2851@wildebeest.org>
+ <3f5a00ef-1c71-d0da-e9fd-c7f707760f5c@fb.com>
+In-Reply-To: <3f5a00ef-1c71-d0da-e9fd-c7f707760f5c@fb.com>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Sat, 6 Feb 2021 19:10:37 +0100
+Message-ID: <CA+icZUVfTH=yONintyJ+T8kvTrR4Q0gumJYNUCs6Ybraff5Kpg@mail.gmail.com>
+Subject: Re: ERROR: INT DW_ATE_unsigned_1 Error emitting BTF type
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Mark Wieelard <mark@klomp.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        dwarves@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        bpf@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
+        Jan Engelhardt <jengelh@inai.de>,
+        Domenico Andreoli <cavok@debian.org>,
+        Matthias Schwarzott <zzam@gentoo.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Paul Moore <paul@paul-moore.com>,
+        Ondrej Mosnacek <omosnace@redhat.com>,
+        =?UTF-8?Q?Daniel_P=2E_Berrang=C3=A9?= <berrange@redhat.com>,
+        Tom Stellard <tstellar@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/04, Ravi Bangoria wrote:
+On Sat, Feb 6, 2021 at 6:53 PM Yonghong Song <yhs@fb.com> wrote:
 >
-> +static int get_instr(struct mm_struct *mm, unsigned long addr, u32 *instr)
-> +{
-> +	struct page *page;
-> +	struct vm_area_struct *vma;
-> +	void *kaddr;
-> +	unsigned int gup_flags = FOLL_FORCE | FOLL_SPLIT_PMD;
-> +
-> +	if (get_user_pages_remote(mm, addr, 1, gup_flags, &page, &vma, NULL) <= 0)
-> +		return -EINVAL;
+>
+>
+> On 2/6/21 8:24 AM, Mark Wieelard wrote:
+> > Hi,
+> >
+> > On Sat, Feb 06, 2021 at 12:26:44AM -0800, Yonghong Song wrote:
+> >> With the above vmlinux, the issue appears to be handling
+> >> DW_ATE_signed_1, DW_ATE_unsigned_{1,24,40}.
+> >>
+> >> The following patch should fix the issue:
+> >
+> > That doesn't really make sense to me. Why is the compiler emitting a
+> > DW_TAG_base_type that needs to be interpreted according to the
+> > DW_AT_name attribute?
+> >
+> > If the issue is that the size of the base type cannot be expressed in
+> > bytes then the DWARF spec provides the following option:
+> >
+> >      If the value of an object of the given type does not fully occupy
+> >      the storage described by a byte size attribute, the base type
+> >      entry may also have a DW_AT_bit_size and a DW_AT_data_bit_offset
+> >      attribute, both of whose values are integer constant values (see
+> >      Section 2.19 on page 55). The bit size attribute describes the
+> >      actual size in bits used to represent values of the given
+> >      type. The data bit offset attribute is the offset in bits from the
+> >      beginning of the containing storage to the beginning of the
+> >      value. Bits that are part of the offset are padding.  If this
+> >      attribute is omitted a default data bit offset of zero is assumed.
+> >
+> > Would it be possible to use that encoding of those special types?  If
+>
+> I agree with you. I do not like comparing me as well. Unfortunately,
+> there is no enough information in dwarf to find out actual information.
+> The following is the dwarf dump with vmlinux (Sedat provided) for
+> DW_ATE_unsigned_1.
+>
+> 0x000e97e9:   DW_TAG_base_type
+>                  DW_AT_name      ("DW_ATE_unsigned_1")
+>                  DW_AT_encoding  (DW_ATE_unsigned)
+>                  DW_AT_byte_size (0x00)
+>
+> There is no DW_AT_bit_size and DW_AT_bit_offset for base type.
+> AFAIK, these two attributes typically appear in struct/union members
+> together with DW_AT_byte_size.
+>
+> Maybe compilers (clang in this case) can emit DW_AT_bit_size = 1
+> and DW_AT_bit_offset = 0/7 (depending on big/little endian) and
+> this case, we just test and get DW_AT_bit_size and it should work.
+>
+> But I think BTF does not need this (DW_ATE_unsigned_1) for now.
+> I checked dwarf dump and it is mostly used for some arith operation
+> encoded in dump (in this case, e.g., shift by 1 bit)
+>
+> 0x000015cf:   DW_TAG_base_type
+>                  DW_AT_name      ("DW_ATE_unsigned_1")
+>                  DW_AT_encoding  (DW_ATE_unsigned)
+>                  DW_AT_byte_size (0x00)
+>
+> 0x00010ed9:         DW_TAG_formal_parameter
+>                        DW_AT_location    (DW_OP_lit0, DW_OP_not,
+> DW_OP_convert (0x000015cf) "DW_ATE_unsigned_1", DW_OP_convert
+> (0x000015d4) "DW_ATE_unsigned_8", DW_OP_stack_value)
+>                        DW_AT_abstract_origin     (0x00013984 "branch")
+>
+> Look at clang frontend, only the following types are encoded with
+> unsigned dwarf type.
+>
+>    case BuiltinType::UShort:
+>    case BuiltinType::UInt:
+>    case BuiltinType::UInt128:
+>    case BuiltinType::ULong:
+>    case BuiltinType::WChar_U:
+>    case BuiltinType::ULongLong:
+>      Encoding = llvm::dwarf::DW_ATE_unsigned;
+>      break;
+>
+>
+> > not, can we try to come up with some extension that doesn't require
+> > consumers to match magic names?
+> >
 
-"vma" is not used, and I don't think you need FOLL_SPLIT_PMD.
+You want me to upload mlx5_core.ko?
 
-Otherwise I can't really comment this ppc-specific change.
+When looking with llvm-dwarf for DW_ATE_unsigned_160:
 
-To be honest, I don't even understand why do we need this fix. Sure, the
-breakpoint in the middle of 64-bit insn won't work, why do we care? The
-user should know what does he do.
+0x00d65616:   DW_TAG_base_type
+               DW_AT_name      ("DW_ATE_unsigned_160")
+               DW_AT_encoding  (DW_ATE_unsigned)
+               DW_AT_byte_size (0x14)
 
-Not to mention we can't really trust get_user_pages() in that this page
-can be modified by mm owner or debugger...
+If you need further information, please let me know.
 
-But I won't argue.
+Thanks.
 
-Oleg.
-
+- Sedat -
