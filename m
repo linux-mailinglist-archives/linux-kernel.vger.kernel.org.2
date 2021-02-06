@@ -2,90 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B57A312081
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 00:40:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5309A312083
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 00:40:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229731AbhBFXcD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Feb 2021 18:32:03 -0500
-Received: from mail-wr1-f43.google.com ([209.85.221.43]:45467 "EHLO
-        mail-wr1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229613AbhBFXb7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Feb 2021 18:31:59 -0500
-Received: by mail-wr1-f43.google.com with SMTP id m13so12567640wro.12;
-        Sat, 06 Feb 2021 15:31:43 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=zjYjcEofR6lNR/I0DZSWZ30pohQFASDcROijEHvASfk=;
-        b=ZoggzEQ+pvxS7xp7i5Esv0+Sjcv2zX818ixeZeR3RH9XEuuwPOR0jXnru6sHNdWItT
-         ml23XMQqDA2wdQ2wBsLnA/NpBdWt6GU9ZMQKpagd5Gozst3hVyiHwPIpQC7ux+mxThlV
-         4Ik/55ywnhP/GTYs81gpAOetNyVHNp5FM0IsWkSiO6rKSIDzBh91E5WDV53DKyLf6IZX
-         OfRqtSXmVAQ/Pq6T7pui8oddK3tnIaxYezwXx9HoP0v8oMgPjLI42h45Z3CVVsveCwgi
-         38DH05w0JwDJ+tcQH80fHLaUJmASfO76sEeh46Y2eEAaRbwt1AiSIuKWxmkH0MtfOXTF
-         i+FA==
-X-Gm-Message-State: AOAM530YIkeF1G12DsvpT599iLQ4zRmEpFlVQATILRbASVyjiexMPSjY
-        c1G6TGjZHaTBeX0UrYBPpBmbmAWfWsuuuTQK
-X-Google-Smtp-Source: ABdhPJyviThF+C226ccwvm0Yz791/heX9KN5ZUvUKv70glVs6XpgX6GbMLDuta/nqLy/orcKkMMGnA==
-X-Received: by 2002:adf:f6d0:: with SMTP id y16mr3212434wrp.351.1612654277840;
-        Sat, 06 Feb 2021 15:31:17 -0800 (PST)
-Received: from rocinante ([95.155.85.46])
-        by smtp.gmail.com with ESMTPSA id o124sm13395628wmb.5.2021.02.06.15.31.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 06 Feb 2021 15:31:16 -0800 (PST)
-Date:   Sun, 7 Feb 2021 00:31:14 +0100
-From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
-To:     Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>
-Cc:     linux-doc@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Derek Kiernan <derek.kiernan@xilinx.com>,
-        Dragan Cvetic <dragan.cvetic@xilinx.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jonathan Corbet <corbet@lwn.net>
-Subject: Re: [RESEND v4 4/6] Documentation: misc-devices: Add Documentation
- for dw-xdata-pcie driver
-Message-ID: <YB8mwrhOZ2kPL3Oo@rocinante>
-References: <cover.1612390291.git.gustavo.pimentel@synopsys.com>
- <2cc3a3a324d299a096f1d3e682b2039d3537b013.1612390291.git.gustavo.pimentel@synopsys.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <2cc3a3a324d299a096f1d3e682b2039d3537b013.1612390291.git.gustavo.pimentel@synopsys.com>
+        id S229702AbhBFXdq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Feb 2021 18:33:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52978 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229596AbhBFXdl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 6 Feb 2021 18:33:41 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 613D764E7F;
+        Sat,  6 Feb 2021 23:33:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612654381;
+        bh=aquYRLe0vS7BxANT7KuppxORErlw7qOkHV/Tq2bAJnk=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=DiRqq1Q7J2NoPSZXMyR8pudkVmc5wAffKObeEuMgrNbliLIk60wintrbZLltbvNOY
+         iy6f9nVWxsNhx5xfnu/3iB63gKttC9rsGEMgausegOEzFO/0s8fQNq4i1TWXalSbSU
+         fFrkK1vMHTOeLeX21PCf/3JPlpPqZtNcHP2hWJQNfxQ4rGRyqggPl2YYKn7eljqEBP
+         5Kl0QYWNPihlFUNpy0MJrsaUsfO5Kn/MrCWKDS922vkmW0VBOheTb0zMwxpSZEWNfG
+         2HRw6YZrwx67XIlzlDLwhQLgl1/CFwpVs8zhvUsUIuV2G9ABqQn82XkMvqpcAvH2PG
+         PcrMin65ALt7w==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 4EB1060978;
+        Sat,  6 Feb 2021 23:33:01 +0000 (UTC)
+Subject: Re: [GIT PULL] cifs fixes
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <CAH2r5ms+1ZYrkBJvd9kuN0-tv1PTLzrHUxeGrhVOcEtHXkbqYQ@mail.gmail.com>
+References: <CAH2r5ms+1ZYrkBJvd9kuN0-tv1PTLzrHUxeGrhVOcEtHXkbqYQ@mail.gmail.com>
+X-PR-Tracked-List-Id: <linux-cifs.vger.kernel.org>
+X-PR-Tracked-Message-Id: <CAH2r5ms+1ZYrkBJvd9kuN0-tv1PTLzrHUxeGrhVOcEtHXkbqYQ@mail.gmail.com>
+X-PR-Tracked-Remote: git://git.samba.org/sfrench/cifs-2.6.git tags/5.11-rc6-smb3
+X-PR-Tracked-Commit-Id: 21b200d091826a83aafc95d847139b2b0582f6d1
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 825b5991a46ef28a05a4646c8fe1ae5cef7c7828
+Message-Id: <161265438126.31594.13733135661613476045.pr-tracker-bot@kernel.org>
+Date:   Sat, 06 Feb 2021 23:33:01 +0000
+To:     Steve French <smfrench@gmail.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        CIFS <linux-cifs@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Gustavo,
+The pull request you sent on Sat, 6 Feb 2021 12:28:31 -0600:
 
-[...]
-> +The interaction with this driver is done through the module parameter and
-> +can be changed in runtime. The driver outputs the requested command state
-> +information to /var/log/kern.log or dmesg.
+> git://git.samba.org/sfrench/cifs-2.6.git tags/5.11-rc6-smb3
 
-The driver does not seem to offer any parameters (aside of using sysfs
-for runtime settings), and it also seem to only print what it's doing
-when debug level is enabled - unless I am missing something?
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/825b5991a46ef28a05a4646c8fe1ae5cef7c7828
 
-[...]
-> +Request to stop any current TLP transfer:
-> +- Command:
-> +	echo 1 > /sys/kernel/dw-xdata-pcie/stop
-[...]
+Thank you!
 
-When I do the following:
-
-  # echo 1 > /sys/kernel/dw-xdata-pcie/write
-  # echo 1 > /sys/kernel/dw-xdata-pcie/stop
-  # cat /sys/kernel/dw-xdata-pcie/write
-
-Would output from cat above simply show "0 MB/s" then?  I wonder how
-someone using this new driver could tell whether "write" or "read"
-traffic generation has been enabled aside of reading the sysfs files,
-would adding "/sys/kernel/dw-xdata-pcie/active" be an overkill here?
-
-What do you think?
-
-Krzysztof
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
