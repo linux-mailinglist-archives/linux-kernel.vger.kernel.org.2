@@ -2,143 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0B74311DE7
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 15:46:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D319311DE2
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 15:44:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230285AbhBFOpd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Feb 2021 09:45:33 -0500
-Received: from mga01.intel.com ([192.55.52.88]:38620 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230247AbhBFOot (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Feb 2021 09:44:49 -0500
-IronPort-SDR: qx7oWrw87hjsGDlUqbAtsR389kewQtkwqObvyDeg4LhzlIGymv5ACPIioVAnH0HpqmD/2W/xUr
- tIDzOIKi4qRA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9886"; a="200566044"
-X-IronPort-AV: E=Sophos;i="5.81,158,1610438400"; 
-   d="scan'208";a="200566044"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Feb 2021 06:43:47 -0800
-IronPort-SDR: gA45uT67lxOzE4s5fSMLrQzbrFN0ln6BpLAvCjxo24mlsuHHWUzTvgOB9SPBceQ7lR6b6+W3yU
- ZZAlPK9QS4Vg==
-X-IronPort-AV: E=Sophos;i="5.81,158,1610438400"; 
-   d="scan'208";a="394360228"
-Received: from twinkler-lnx.jer.intel.com ([10.12.91.138])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Feb 2021 06:43:45 -0800
-From:   Tomas Winkler <tomas.winkler@intel.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Alexander Usyskin <alexander.usyskin@intel.com>,
-        linux-kernel@vger.kernel.org,
-        Tomas Winkler <tomas.winkler@intel.com>
-Subject: [char-misc-next 6/6] mei: bus: add client dma interface
-Date:   Sat,  6 Feb 2021 16:43:25 +0200
-Message-Id: <20210206144325.25682-6-tomas.winkler@intel.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210206144325.25682-1-tomas.winkler@intel.com>
-References: <20210206144325.25682-1-tomas.winkler@intel.com>
+        id S230226AbhBFOok (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Feb 2021 09:44:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52956 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229959AbhBFOoT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 6 Feb 2021 09:44:19 -0500
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EE85C061756
+        for <linux-kernel@vger.kernel.org>; Sat,  6 Feb 2021 06:43:39 -0800 (PST)
+Received: by mail-ej1-x62a.google.com with SMTP id l25so320031eja.9
+        for <linux-kernel@vger.kernel.org>; Sat, 06 Feb 2021 06:43:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=s8gzRxBOUWpYvYUjAHTudDzEzdkPAGSWptjJZFM921U=;
+        b=esTil7M8UeFtwP/f6Hl/GIu6Xyi2XiHr6YP1bFtq7BeA9PDVX0Zw7BUWfijO74VQEY
+         E2O0Gfkh4L+xRnqZ1M/HmiWpeLv96x4+oxekWQkuYMDTVZsGMtZa3X6M0v4R5+V564uU
+         Uobr3Q5zFztjge+5+e9ufrQEa52i2L0MTuIT7bReMKJSy6lybLVCyXXxPK2LiUmFMsdZ
+         Tu+TBVC6X40HPLOMA8Udy4Yhq+DoSkcBbJ9yfgd1zSxDCbD6pSCi5LPaVcMDNuBlGAk0
+         BOAeglJaYcDZBeJKmklzueKtEfOLAd+eVtGdSvlxFMrvQw4ft8mvITtoO++5Z/hLp1NV
+         8qGw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=s8gzRxBOUWpYvYUjAHTudDzEzdkPAGSWptjJZFM921U=;
+        b=sbfmlbQzonWZob0a3C8fTbP4uotiWgMVDpmzBCSTKz8eHpLH/slFI8hVwbWtGOSP6d
+         7sO0YOcPCK3L3XfGT5PqSdgvEWNHKGHkqPrSsDmRNFqBiL2NVOSx6YcyXYdiBxt52XWo
+         DVaENBG5bwueeVLgjCT9MlDO1m8Y/x+w++Xttln/lmGBCixcSz8SQz7G/4KK8DFz4IpF
+         gIzTYrXH+Su3G/nLTDKb1zC6axtE4fjsX37NQubMOL7GwWrAsgzDGFuLHjg26IEn/pmz
+         CsILsTB8UcVrJp4ZDlNdjKyg6Lt6yUHSjD9Oj2+MiEp0y/wOVH41VE3R0L6J2hgYUZXg
+         kRMA==
+X-Gm-Message-State: AOAM530t4oMi7tNZjIgqyTSV/eP/R5O6Y8TeV/JjF1VD7eyyjpVeboov
+        85Jv/5wzIAwcYYEZ5eUN8wUOKp37DoQrHat9bjIf/g==
+X-Google-Smtp-Source: ABdhPJwMb9QZlLMK2z3VMshR0px2Pd6ZatzlqukPwGfqXwhyqeT5hu179TeTsanlOrI0t7u54jJ/HtarUdtBidqrCL0=
+X-Received: by 2002:a17:906:a153:: with SMTP id bu19mr9360181ejb.287.1612622617636;
+ Sat, 06 Feb 2021 06:43:37 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210205140649.825180779@linuxfoundation.org>
+In-Reply-To: <20210205140649.825180779@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Sat, 6 Feb 2021 20:13:26 +0530
+Message-ID: <CA+G9fYvMAAQe32VnoTf0bQA7Ep4NvT5jEEo7jUwjHtz9nKUhcg@mail.gmail.com>
+Subject: Re: [PATCH 4.19 00/17] 4.19.174-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Usyskin <alexander.usyskin@intel.com>
+On Fri, 5 Feb 2021 at 19:44, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 4.19.174 release.
+> There are 17 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Sun, 07 Feb 2021 14:06:42 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.19.174-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.19.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
+>
 
-Expose the client dma mapping via mei client
-bus interface.
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-Signed-off-by: Alexander Usyskin <alexander.usyskin@intel.com>
-Signed-off-by: Tomas Winkler <tomas.winkler@intel.com>
----
- drivers/misc/mei/bus.c     | 46 ++++++++++++++++++++++++++++++++++++++
- drivers/misc/mei/hw.h      |  5 +++++
- include/linux/mei_cl_bus.h |  3 +++
- 3 files changed, 54 insertions(+)
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-diff --git a/drivers/misc/mei/bus.c b/drivers/misc/mei/bus.c
-index 34fb5e541fe5..d430710a5fe5 100644
---- a/drivers/misc/mei/bus.c
-+++ b/drivers/misc/mei/bus.c
-@@ -636,6 +636,52 @@ static void mei_cl_bus_vtag_free(struct mei_cl_device *cldev)
- 	kfree(cl_vtag);
- }
- 
-+void *mei_cldev_dma_map(struct mei_cl_device *cldev, u8 buffer_id, size_t size)
-+{
-+	struct mei_device *bus;
-+	struct mei_cl *cl;
-+	int ret;
-+
-+	if (!cldev || !buffer_id || !size)
-+		return ERR_PTR(-EINVAL);
-+
-+	if (!IS_ALIGNED(size, MEI_FW_PAGE_SIZE)) {
-+		dev_err(&cldev->dev, "Map size should be aligned to %lu\n",
-+			MEI_FW_PAGE_SIZE);
-+		return ERR_PTR(-EINVAL);
-+	}
-+
-+	cl = cldev->cl;
-+	bus = cldev->bus;
-+
-+	mutex_lock(&bus->device_lock);
-+	ret = mei_cl_dma_alloc_and_map(cl, NULL, buffer_id, size);
-+	mutex_unlock(&bus->device_lock);
-+	if (ret)
-+		return ERR_PTR(ret);
-+	return cl->dma.vaddr;
-+}
-+EXPORT_SYMBOL_GPL(mei_cldev_dma_map);
-+
-+int mei_cldev_dma_unmap(struct mei_cl_device *cldev)
-+{
-+	struct mei_device *bus;
-+	struct mei_cl *cl;
-+	int ret;
-+
-+	if (!cldev)
-+		return -EINVAL;
-+
-+	cl = cldev->cl;
-+	bus = cldev->bus;
-+
-+	mutex_lock(&bus->device_lock);
-+	ret = mei_cl_dma_unmap(cl, NULL);
-+	mutex_unlock(&bus->device_lock);
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(mei_cldev_dma_unmap);
-+
- /**
-  * mei_cldev_enable - enable me client device
-  *     create connection with me client
-diff --git a/drivers/misc/mei/hw.h b/drivers/misc/mei/hw.h
-index b10606550613..bc240b88abf1 100644
---- a/drivers/misc/mei/hw.h
-+++ b/drivers/misc/mei/hw.h
-@@ -22,6 +22,11 @@
- #define MEI_D0I3_TIMEOUT            5  /* D0i3 set/unset max response time */
- #define MEI_HBM_TIMEOUT             1  /* 1 second */
- 
-+/*
-+ * FW page size for DMA allocations
-+ */
-+#define MEI_FW_PAGE_SIZE 4096UL
-+
- /*
-  * MEI Version
-  */
-diff --git a/include/linux/mei_cl_bus.h b/include/linux/mei_cl_bus.h
-index 959ad7d850b4..53801eacfaef 100644
---- a/include/linux/mei_cl_bus.h
-+++ b/include/linux/mei_cl_bus.h
-@@ -116,4 +116,7 @@ int mei_cldev_enable(struct mei_cl_device *cldev);
- int mei_cldev_disable(struct mei_cl_device *cldev);
- bool mei_cldev_enabled(struct mei_cl_device *cldev);
- 
-+void *mei_cldev_dma_map(struct mei_cl_device *cldev, u8 buffer_id, size_t size);
-+int mei_cldev_dma_unmap(struct mei_cl_device *cldev);
-+
- #endif /* _LINUX_MEI_CL_BUS_H */
--- 
-2.26.2
+Summary
+------------------------------------------------------------------------
 
+kernel: 4.19.174-rc1
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-4.19.y
+git commit: 7a4e5f94ac6ccb0ba6023c08e97db26a20dc7dd6
+git describe: v4.19.173-18-g7a4e5f94ac6c
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.19=
+.y/build/v4.19.173-18-g7a4e5f94ac6c
+
+No regressions (compared to build v4.19.173)
+
+No fixes (compared to build v4.19.173)
+
+
+Ran 45341 total tests in the following environments and test suites.
+
+Environments
+--------------
+- arm
+- arm64
+- dragonboard-410c - arm64
+- hi6220-hikey - arm64
+- i386
+- juno-r2 - arm64
+- juno-r2-kasan
+- mips
+- qemu-arm64-clang
+- qemu-arm64-kasan
+- qemu-x86_64-clang
+- qemu-x86_64-kasan
+- qemu_arm
+- qemu_arm64
+- qemu_arm64-compat
+- qemu_i386
+- qemu_x86_64
+- qemu_x86_64-compat
+- s390
+- sparc
+- x15 - arm
+- x86_64
+- x86_64
+
+Test Suites
+-----------
+* build
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-dio-tests
+* ltp-io-tests
+* fwts
+* install-android-platform-tools-r2600
+* kselftest-android
+* kselftest-bpf
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-zram
+* kvm-unit-tests
+* libhugetlbfs
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-cve-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-tracing-tests
+* network-basic-tests
+* perf
+* v4l2-compliance
+* ltp-controllers-tests
+* ltp-mm-tests
+* ltp-open-posix-tests
+* ltp-syscalls-tests
+* rcutorture
+* kselftest-
+* kselftest-kvm
+* kselftest-vm
+
+--=20
+Linaro LKFT
+https://lkft.linaro.org
