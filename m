@@ -2,51 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B72A6311A88
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 04:55:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 125A7311A21
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 04:33:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231961AbhBFDy0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 22:54:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41472 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231648AbhBFCwv (ORCPT
+        id S232198AbhBFDcC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 22:32:02 -0500
+Received: from mail-wm1-f45.google.com ([209.85.128.45]:38637 "EHLO
+        mail-wm1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231569AbhBFCk7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 21:52:51 -0500
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C7BBC033275;
-        Fri,  5 Feb 2021 17:26:54 -0800 (PST)
-Received: by mail-lf1-x12b.google.com with SMTP id a8so12786755lfi.8;
-        Fri, 05 Feb 2021 17:26:54 -0800 (PST)
+        Fri, 5 Feb 2021 21:40:59 -0500
+Received: by mail-wm1-f45.google.com with SMTP id y187so7445510wmd.3;
+        Fri, 05 Feb 2021 18:40:42 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=AYoAF7gPgCmz0hFYeiRmD4lOmSaTwA1DbF9cbEqAcQ0=;
-        b=ie63wiewQTPFO5AyrseRnYIWAna3cvOcmTRM5ltEPbD/emfDeZilCvFSRht467yRcU
-         ZEB6fBxFTpZEoCOnKTGrp9PBRcBCX3ds2VEpVtxD65Iazdpv8z+lAVJmFOfJgoYTkUg2
-         AVJyZJLnX4OYRbYlHYVeuO7tRizj+wEnCT69pI745LhjTB0wyk69MifKgYNnKyMTa10r
-         udJG6kPRhuAJbQoryGMdbrSF1fFeiZXSd/+do9GOTUK6XdDnIh1Behu/KA/ndg1Zd2r7
-         jVtx9qjqZi8M5yYCCSkxAmC8ul2LD8nDoNeQUkYReihA75x6X6dfGPSdpmTWbWuJVDNP
-         owLw==
-X-Gm-Message-State: AOAM531BqxcM1IzhRPKa5mHXDJEWIaJvx8RUP8VZJOtFUr63kUX1MBAc
-        H2Q8iiwZ9A1OrPRYmaZWTNezPSIHBBc=
-X-Google-Smtp-Source: ABdhPJz0zPGnTDbhSwzmVhzv+2yGPRYdicJfRxej/w+rmJd8/nndZwohleSblLFZNNYj9MfNIOTTQw==
-X-Received: by 2002:a5d:49c1:: with SMTP id t1mr7634170wrs.56.1612570147262;
-        Fri, 05 Feb 2021 16:09:07 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=crp7AXUnob0dNe1RTlaAdYK5J2RKpyaUTwbxaLZLJdY=;
+        b=rOXPkEooWjKH2/AOpnh5HoBndkOLmhLdwC+A0HSRCSFnROvbiHWH8rsiQSvNch/sJa
+         xnTRfl9Bir0d2NXkC2Q6rGnuaVAyotbVHBWi1O0k+yuiVSBGcuApZvujUqLbP8fa8zch
+         niBkIYDsULdR60RFAQF2/m6YFPbNJim0G2HnZ1wQZkw+scZGfjD+c3RzR06+kBvb9BH5
+         H1vp7EOZZR5dbVucQ5mWz1FyAYBP75OlK7YsOYOK5QJ1DIYR3n8n3aoEQ5O01c0iHLwi
+         bCuVAA2IqGL1Uoio6YKzHrqRaBPn6ALp1YpKdaLQFb96LcWUzUmQvE8vjCmA1mPLAVAc
+         yjKQ==
+X-Gm-Message-State: AOAM532RdTH5GGEbfgNfLLbBektSm0C6M9LrC/CAEf5e0+4a+Yltdezi
+        oL3sYfhlZxSQAEW3kZrLqZCFRMZX6lQ=
+X-Google-Smtp-Source: ABdhPJwGQ66skeYfY9kGR9UXMXYyL5qwHO1V0r5hQL55M80HyRceyEgT9G8HOp22Tc+hIswm6TbPcQ==
+X-Received: by 2002:a1c:720b:: with SMTP id n11mr5613002wmc.154.1612570265034;
+        Fri, 05 Feb 2021 16:11:05 -0800 (PST)
 Received: from msft-t490s.teknoraver.net (net-37-182-2-234.cust.vodafonedsl.it. [37.182.2.234])
-        by smtp.gmail.com with ESMTPSA id d3sm14566390wrp.79.2021.02.05.16.09.05
+        by smtp.gmail.com with ESMTPSA id d3sm14566390wrp.79.2021.02.05.16.11.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Feb 2021 16:09:06 -0800 (PST)
+        Fri, 05 Feb 2021 16:11:04 -0800 (PST)
 From:   Matteo Croce <mcroce@linux.microsoft.com>
 To:     linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org,
         Lennart Poettering <lennart@poettering.net>,
         Luca Boccassi <bluca@debian.org>, Jens Axboe <axboe@kernel.dk>,
         Alexander Viro <viro@zeniv.linux.org.uk>
-Subject: [PATCH 0/5] block: add a sequence number to disks
-Date:   Sat,  6 Feb 2021 01:08:58 +0100
-Message-Id: <20210206000903.215028-1-mcroce@linux.microsoft.com>
+Subject: [PATCH 1/5] block: add disk sequence number
+Date:   Sat,  6 Feb 2021 01:08:59 +0100
+Message-Id: <20210206000903.215028-2-mcroce@linux.microsoft.com>
 X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210206000903.215028-1-mcroce@linux.microsoft.com>
+References: <20210206000903.215028-1-mcroce@linux.microsoft.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -55,80 +54,79 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Matteo Croce <mcroce@microsoft.com>
 
-With this series a monotonically increasing number is added to disks,
-precisely in the genhd struct, and it's exported in sysfs and uevent.
+Add a sequence number to the disk devices. This number is put in the
+uevent so userspace can correlate events when a driver reuses a device,
+like the loop one.
 
-This helps the userspace correlate events for devices that reuse the
-same device, like loop.
+Signed-off-by: Matteo Croce <mcroce@microsoft.com>
+---
+ block/genhd.c         | 19 +++++++++++++++++++
+ include/linux/genhd.h |  2 ++
+ 2 files changed, 21 insertions(+)
 
-The first patch is the core one, the 2..4 expose the information in
-different ways, while the last one increase the sequence number for
-loop devices at every attach.
-
-    # udevadm monitor -kp |grep -e ^DEVNAME -e ^DISKSEQ &
-    [1] 523
-    # losetup -fP 3part
-    [ 3698.615848] loop0: detected capacity change from 16384 to 0
-    DEVNAME=/dev/loop0
-    DISKSEQ=13
-    [ 3698.647189]  loop0: p1 p2 p3
-    DEVNAME=/dev/loop0
-    DISKSEQ=13
-    DEVNAME=/dev/loop0p1
-    DISKSEQ=13
-    DEVNAME=/dev/loop0p2
-    DISKSEQ=13
-    DEVNAME=/dev/loop0p3
-    DISKSEQ=13
-    # losetup -fP 2part
-    [ 3705.170766] loop1: detected capacity change from 40960 to 0
-    DEVNAME=/dev/loop1
-    DISKSEQ=14
-    [ 3705.247280]  loop1: p1 p2
-    DEVNAME=/dev/loop1
-    DISKSEQ=14
-    DEVNAME=/dev/loop1p1
-    DISKSEQ=14
-    DEVNAME=/dev/loop1p2
-    DISKSEQ=14
-    # ./getdiskseq /dev/loop*
-    /dev/loop0:     13
-    /dev/loop0p1:   13
-    /dev/loop0p2:   13
-    /dev/loop0p3:   13
-    /dev/loop1:     14
-    /dev/loop1p1:   14
-    /dev/loop1p2:   14
-    /dev/loop2:     5
-    /dev/loop3:     6
-    /dev/loop-control: Function not implemented
-    # grep . /sys/class/block/*/diskseq
-    /sys/class/block/loop0/diskseq:13
-    /sys/class/block/loop1/diskseq:14
-    /sys/class/block/loop2/diskseq:5
-    /sys/class/block/loop3/diskseq:6
-    /sys/class/block/ram0/diskseq:1
-    /sys/class/block/ram1/diskseq:2
-    /sys/class/block/vda/diskseq:7
-
-If merged, this feature will immediately used by the userspace:
-https://github.com/systemd/systemd/issues/17469#issuecomment-762919781
-
-Matteo Croce (5):
-  block: add disk sequence number
-  block: add ioctl to read the disk sequence number
-  block: refactor sysfs code
-  block: export diskseq in sysfs
-  loop: increment sequence number
-
- Documentation/ABI/testing/sysfs-block | 12 ++++++++
- block/genhd.c                         | 43 ++++++++++++++++++++++++---
- block/ioctl.c                         |  2 ++
- drivers/block/loop.c                  |  3 ++
- include/linux/genhd.h                 |  2 ++
- include/uapi/linux/fs.h               |  1 +
- 6 files changed, 59 insertions(+), 4 deletions(-)
-
+diff --git a/block/genhd.c b/block/genhd.c
+index 9e741a4f351b..4dbf589e1610 100644
+--- a/block/genhd.c
++++ b/block/genhd.c
+@@ -1425,8 +1425,17 @@ static void disk_release(struct device *dev)
+ 		blk_put_queue(disk->queue);
+ 	kfree(disk);
+ }
++
++static int block_uevent(struct device *dev, struct kobj_uevent_env *env)
++{
++	struct gendisk *disk = dev_to_disk(dev);
++
++	return add_uevent_var(env, "DISKSEQ=%llu", disk->diskseq);
++}
++
+ struct class block_class = {
+ 	.name		= "block",
++	.dev_uevent	= block_uevent,
+ };
+ 
+ static char *block_devnode(struct device *dev, umode_t *mode,
+@@ -1601,6 +1610,8 @@ struct gendisk *__alloc_disk_node(int minors, int node_id)
+ 	disk_to_dev(disk)->class = &block_class;
+ 	disk_to_dev(disk)->type = &disk_type;
+ 	device_initialize(disk_to_dev(disk));
++	inc_diskseq(disk);
++
+ 	return disk;
+ 
+ out_bdput:
+@@ -2149,3 +2160,11 @@ static void disk_release_events(struct gendisk *disk)
+ 	WARN_ON_ONCE(disk->ev && disk->ev->block != 1);
+ 	kfree(disk->ev);
+ }
++
++void inc_diskseq(struct gendisk *disk)
++{
++	static atomic64_t diskseq;
++
++	disk->diskseq = atomic64_inc_return(&diskseq);
++}
++EXPORT_SYMBOL_GPL(inc_diskseq);
+diff --git a/include/linux/genhd.h b/include/linux/genhd.h
+index 809aaa32d53c..2e5a0b8893db 100644
+--- a/include/linux/genhd.h
++++ b/include/linux/genhd.h
+@@ -177,6 +177,7 @@ struct gendisk {
+ 	int node_id;
+ 	struct badblocks *bb;
+ 	struct lockdep_map lockdep_map;
++	u64 diskseq;
+ };
+ 
+ /*
+@@ -335,6 +336,7 @@ static inline void bd_unlink_disk_holder(struct block_device *bdev,
+ #endif /* CONFIG_SYSFS */
+ 
+ extern struct rw_semaphore bdev_lookup_sem;
++extern void inc_diskseq(struct gendisk *disk);
+ 
+ dev_t blk_lookup_devt(const char *name, int partno);
+ void blk_request_module(dev_t devt);
 -- 
 2.29.2
 
