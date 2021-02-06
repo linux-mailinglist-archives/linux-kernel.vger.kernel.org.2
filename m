@@ -2,55 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43CC8311ACA
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 05:21:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB209311AC7
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 05:19:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229999AbhBFEUE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 23:20:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37196 "EHLO
+        id S230315AbhBFETM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 23:19:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229683AbhBFCbs (ORCPT
+        with ESMTP id S231699AbhBFCuo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 21:31:48 -0500
-Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93242C08EE15
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 16:09:04 -0800 (PST)
-Received: by mail-pf1-x449.google.com with SMTP id a12so6103602pfh.19
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 16:09:04 -0800 (PST)
+        Fri, 5 Feb 2021 21:50:44 -0500
+Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 588ADC08EE1D
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 16:09:10 -0800 (PST)
+Received: by mail-qk1-x749.google.com with SMTP id c63so7299935qkd.1
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 16:09:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=i3/JC2Cwh7xZ8b0cCoTT3RVdoEzv5GBHxf2BMEc4UJ0=;
-        b=WUF/00cMWBAIrZtgcIEZ04af1Kbg95o3THqYe6MOel4ajWpgKa2+csrn7FA2Mm/XE1
-         nXdbnc9uTMo4xdIWW0kaeQoIu1GAeFPAf9Vby66h95Uc+quS62YNR9tgEySbIHLXc02j
-         gSycaS6O7GXT6l2M3b21rLo7BkWlYIBYCplLCXDZqZMgRaQFvv7MEyeE6YxeZHZoaCn2
-         KfBr0d9z/BE/JDKEhIdKk8CmC9BsDbCEsdGlV5MAzppB9u2R+S0iR8TcC3VXYEw9b46K
-         hAYcdf6U5BlPBK2aTuAn1gKDr9nm+FmURzKQK7K/cWp1RwSd3HpWyCMOCItFqFpYxHpI
-         +/Jg==
+        h=sender:date:in-reply-to:message-id:mime-version:references:subject
+         :from:to:cc;
+        bh=KdjKwQSV8R49hhF8YBTPAsSenCKV1XvSoMIimz2f7Lo=;
+        b=u8ilAwjsWp1UN91pf1gmxM/49s467/eLrcvHS5yAiHMELI/fEaJ+bctfICqIJTIqQ0
+         x2MEI3eltGnZrdyvOIyhn/u8pufdJ/vJg40YGrRTQP9pcn7qBt2H4kCyAFEG4LC70+3d
+         QkxEyeeoH1Q6nFYtrGlqM/Ui7oIXkLQRIxExK5IXuSrsBZYrSfSkXszNhmzrugIUEqni
+         UYzzZxDDz1Vkz+GsrlaA19tIqwiqyQh6YpntT0tEk6h1VFSt6UwJzVFgHNkeYHQUP6TW
+         RVTJa3R9/oIf+sjqsGuH1rnbZo1nMZZdkYZLrDqa5BDKSkksYaPu3e8w5CwhW9y3F2Gi
+         hP1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=i3/JC2Cwh7xZ8b0cCoTT3RVdoEzv5GBHxf2BMEc4UJ0=;
-        b=gQZk2tWvmkp4hXQgilRoDplRc67zDMym3xoPJdZblbrZu/u1xA3EB2NE/kL3YsPdDx
-         6iz4wr1M4h8zCiTYNjNLlQjUp1t55RojfkYE699KGAfmnRNKJv9kiXsdG14k84r2HaEH
-         FYm13D+NNV1/CS5ZqUiep9cQtYXfbzajy9FsmfQOxjomCZjFr7IjRXZI1ml3AExT0FDy
-         HiH3f8PTbo41NMXR1NL8DxElvoABZFh6f/fKzQeh4TlURUUydLfbWrXhHRgbG/V/QUt+
-         NOF87bmqqxG4dcHWbbPAXYKuF8AYV3pUdssGA7U3hHlW4LddsvMRhTnc8KiI6fw6hr+W
-         pzRA==
-X-Gm-Message-State: AOAM530lAqyDXkc94/1AiSw3bB2Ajz231e/Zfb6DWDBKj1MHflxNjlgq
-        XjLrFcoi1NFlAgqeWN+jiLh7DyGpLAp3yA==
-X-Google-Smtp-Source: ABdhPJz7vSWCdKojknwoknkR/yMe6c/FsLSyxxVddN7wHAsq1UyDAvKCfhn3yF3ek6fdf+/8WntA50DkyYt0Yg==
+        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=KdjKwQSV8R49hhF8YBTPAsSenCKV1XvSoMIimz2f7Lo=;
+        b=hLDjjXH+vQlRIfNne2+DaFc3Vrs+89JSz61LkPmWJ2+48+r/WhQ7daXa6Rq1CglZv9
+         APeCSy6ACGv+ukbNuYb31eYCuloeY0XR4Fy8x+S55/Zof9lbSC/GzqtBOYU5L5e48QLL
+         L+N0+Fz7uepH4oe7Miw/wGzypeCUc3jzuJTcD45gid6Rq94yxVa7bdx6GNVqn9gJ5f2K
+         TXt3W5ootCc0D+rsY4nZVTjaOcH8lP+4KYTbgkJNmcOIog8hBd3DLVsh1hp5shxLCKcx
+         mQOhLXI996UsJyyBroENc2YCB0n2GZf+3yO5p5AhYY2yoNc9yX8gcW9JWTEWg+9m+U9c
+         pkIQ==
+X-Gm-Message-State: AOAM531anylQ5/WnecgjctKNJFgjfF0RJSD0bnYiMypXUqZ6FifOuI0d
+        R7QOcaWt2sqpGPPT1PlYbwbqaDjfkxf0gA==
+X-Google-Smtp-Source: ABdhPJzuVtOEBEdpMg+xANPjOgnrC323ecoJ6yJGZv45bT7+rm2SAUoHCScRms23l0Pw2ZbX3BaxS/NuT6ttMw==
 Sender: "dlatypov via sendgmr" <dlatypov@dlatypov.svl.corp.google.com>
 X-Received: from dlatypov.svl.corp.google.com ([2620:15c:2cd:202:a8b1:128a:69fa:86fb])
- (user=dlatypov job=sendgmr) by 2002:a17:902:778e:b029:de:b475:c430 with SMTP
- id o14-20020a170902778eb02900deb475c430mr6143681pll.53.1612570144115; Fri, 05
- Feb 2021 16:09:04 -0800 (PST)
-Date:   Fri,  5 Feb 2021 16:08:51 -0800
-Message-Id: <20210206000854.2037923-1-dlatypov@google.com>
+ (user=dlatypov job=sendgmr) by 2002:ad4:47b2:: with SMTP id
+ a18mr6953341qvz.1.1612570149583; Fri, 05 Feb 2021 16:09:09 -0800 (PST)
+Date:   Fri,  5 Feb 2021 16:08:54 -0800
+In-Reply-To: <20210206000854.2037923-1-dlatypov@google.com>
+Message-Id: <20210206000854.2037923-4-dlatypov@google.com>
 Mime-Version: 1.0
+References: <20210206000854.2037923-1-dlatypov@google.com>
 X-Mailer: git-send-email 2.30.0.478.g8a0d178c01-goog
-Subject: [PATCH v4 0/3] kunit: support running subsets of test suites from kunit.py
+Subject: [PATCH v4 3/3] kunit: tool: fix unintentional statefulness in run_kernel()
 From:   Daniel Latypov <dlatypov@google.com>
 To:     brendanhiggins@google.com
 Cc:     davidgow@google.com, linux-kernel@vger.kernel.org,
@@ -61,58 +63,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When using `kunit.py run` to run tests, users must populate a
-`kunitconfig` file to select the options the tests are hidden behind and
-all their dependencies.
+This is a bug that has been present since the first version of this
+code.
+Using [] as a default parameter is dangerous, since it's mutable.
 
-The patch [1] to allow specifying a path to kunitconfig promises to make
-this nicer as we can have checked in files corresponding to different
-sets of tests.
+Example using the REPL:
+>>> def bad(param = []):
+...     param.append(len(param))
+...     print(param)
+...
+>>> bad()
+[0]
+>>> bad()
+[0, 1]
 
-But it's still annoying 
-1) when trying to run a subet of tests
-2) when you want to run tests that don't have such a pre-existing
-kunitconfig and selecting all the necessary options is tricky.
+This wasn't a concern in the past since it would just keep appending the
+same values to it.
 
-This patch series aims to alleviate both:
-1) `kunit.py run 'my-suite-*'`
-I.e. use my current kunitconfig, but just run suites that match this glob
-2) `kunit.py run --alltests 'my-suite-*'`
-I.e. use allyesconfig so I don't have to worry about writing a
-kunitconfig at all.
+E.g. before, `args` would just grow in size like:
+  [mem=1G', 'console=tty']
+  [mem=1G', 'console=tty', mem=1G', 'console=tty']
 
-See the first commit message for more details and discussion about
-future work.
+But with now filter_glob, this is more dangerous, e.g.
+  run_kernel(filter_glob='my-test*') # default modified here
+  run_kernel()			     # filter_glob still applies here!
+That earlier `filter_glob` will affect all subsequent calls that don't
+specify `args`.
 
-This patch series also includes a bugfix for a latent bug that can't be
-triggered right now but has worse consequences as a result of the
-changes needed to plumb in this suite name glob.
+Note: currently the kunit tool only calls run_kernel() at most once, so
+it's not possible to trigger any negative side-effects right now.
 
-[1] https://lore.kernel.org/linux-kselftest/20210201205514.3943096-1-dlatypov@google.com/
-
+Fixes: 6ebf5866f2e8 ("kunit: tool: add Python wrappers for running KUnit tests")
+Signed-off-by: Daniel Latypov <dlatypov@google.com>
+Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
 ---
-v1 -> v2:
-  Fix free of `suites` subarray in suite_set.
-  Found by Dan Carpenter and kernel test robot.
-v2 -> v3:
-  Add MODULE_PARM_DESC() for kunit.filter_glob.
-v3 -> v4:
-  Rebase on top of kunit_tool_test.py and typing fixes for merging.
+ tools/testing/kunit/kunit_kernel.py | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-Daniel Latypov (3):
-  kunit: add kunit.filter_glob cmdline option to filter suites
-  kunit: tool: add support for filtering suites by glob
-  kunit: tool: fix unintentional statefulness in run_kernel()
-
- lib/kunit/Kconfig                      |  1 +
- lib/kunit/executor.c                   | 93 +++++++++++++++++++++++---
- tools/testing/kunit/kunit.py           | 21 ++++--
- tools/testing/kunit/kunit_kernel.py    |  6 +-
- tools/testing/kunit/kunit_tool_test.py | 15 +++--
- 5 files changed, 115 insertions(+), 21 deletions(-)
-
-
-base-commit: aa919f3b019d0e10e0c035598546b30cca7bcb19
+diff --git a/tools/testing/kunit/kunit_kernel.py b/tools/testing/kunit/kunit_kernel.py
+index 71a5f5c1750b..f309a33256cd 100644
+--- a/tools/testing/kunit/kunit_kernel.py
++++ b/tools/testing/kunit/kunit_kernel.py
+@@ -203,7 +203,9 @@ class LinuxSourceTree(object):
+ 			return False
+ 		return self.validate_config(build_dir)
+ 
+-	def run_kernel(self, args=[], build_dir='', filter_glob='', timeout=None) -> Iterator[str]:
++	def run_kernel(self, args=None, build_dir='', filter_glob='', timeout=None) -> Iterator[str]:
++		if not args:
++			args = []
+ 		args.extend(['mem=1G', 'console=tty'])
+ 		if filter_glob:
+ 			args.append('kunit.filter_glob='+filter_glob)
 -- 
 2.30.0.478.g8a0d178c01-goog
 
