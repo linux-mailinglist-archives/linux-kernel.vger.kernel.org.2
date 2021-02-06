@@ -2,145 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0784C311A92
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 04:59:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67342311A6B
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 04:46:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231522AbhBFD6x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 22:58:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43438 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232013AbhBFC7j (ORCPT
+        id S232132AbhBFDpm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 22:45:42 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:20866 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231774AbhBFCsn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 21:59:39 -0500
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F83EC061B3F
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 18:45:58 -0800 (PST)
-Received: by mail-yb1-xb2c.google.com with SMTP id c3so8725893ybi.3
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 18:45:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=oeZT1Ar4/x7iejk6TCKZJw9nmldyPb7Q9CQuMN8dXaw=;
-        b=AFhS6ATY/Y9NYutPrE19KVJ8QEJaF2PGTuOgrz9Gy3OYD8T3nfEM6tCPc4DQDe+cmT
-         gGbLVifQsQtzUiF3X4dGA4SNwVI3LH7qwxl1vZhz3YR9Cp0qiGY/3jeh+rr5qm3r6IY7
-         7hxHxK00mdEOHcIzgnBPiTqPV6L0vljvrfDvcDix7+8XPR81Lvup9F+WfsCimBB6dz24
-         J+btxbs8E6J54C44KCAuZnUKGV86hdX+MuPzB7x2eyZrfnvisXKRD/0QNEtfhqDIpVGA
-         Umt5XZHpqcC8bLOtBUQYJkjuYUyDhcO+rJXg9bilCjQKjRIdxzmsD4JoNfGKr5VvY1w/
-         v/NQ==
+        Fri, 5 Feb 2021 21:48:43 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612579636;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+wyoDc8XOR2cj3A6BtGWJ+SBoGGxhF/HLXZdPPz1zrI=;
+        b=NfkxfGo2USee1vFlwiWtx8eX6/u+Mq7m+pJowFwztAjH3uZhBs584mJbhGgAMJsNWyeIl3
+        zR++SutSs5Aa956RB3T1qSc9KtbnJlBF/OS3xK1bnIef2bIgdF10sQEKD7P4hlc8XKTIz5
+        /XL5t343v6QhJxKa4oZEd7c0pXbmmrc=
+Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
+ [209.85.160.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-168-9JKLlsftOGG9hKlw401GSw-1; Fri, 05 Feb 2021 21:47:14 -0500
+X-MC-Unique: 9JKLlsftOGG9hKlw401GSw-1
+Received: by mail-qt1-f198.google.com with SMTP id k90so6700009qte.4
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 18:47:14 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=oeZT1Ar4/x7iejk6TCKZJw9nmldyPb7Q9CQuMN8dXaw=;
-        b=FwFPfjAiJ+D0fJ1vD3XKr+ar5BIQh58kBs/gUtN2yrJdjDGHWH9PJ08JA/agyAkbgA
-         LMlt5o7DGcQa+RwOs95chRaP46V46LTIq+cIBGePalrjqjHdhn2z2ESIGpBKBoi3Ccpf
-         3SNTXDsVfULtiIzkN5CaO5g3usWPVavNBP5gwRE0aEQSszn44ueri0ZRKveLL00SDayG
-         /RsC5/RgF2A5JUzNmeMDNCkPXmo5A1MsW1i3FzIKuo957+QdhIDfl78l15wTUm06EFWb
-         YcJ0PrS6LFb1Y6zwbgh96UaoDd1UxFSruuQgboNbGR8Hth2RUjTSUpcrmm7kvZ6xS+qT
-         6cQA==
-X-Gm-Message-State: AOAM533Ur6utyHPuQc9pFCCPNcbhWZawn+QctumrWI9WYCevkKMmGOiL
-        /tezd07XX109Le4UW9+onAeMJb6OLE6j8rDnrt4Knw==
-X-Google-Smtp-Source: ABdhPJy11Z5i7gStQAF/aV2cWsIZWC4t0l/3YBj3YIJdn7KvpZm4nPNRQyA7a/+WGcaogoso5SndN/JmnOvk57r9ybc=
-X-Received: by 2002:a25:af0b:: with SMTP id a11mr4263580ybh.228.1612579557241;
- Fri, 05 Feb 2021 18:45:57 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=+wyoDc8XOR2cj3A6BtGWJ+SBoGGxhF/HLXZdPPz1zrI=;
+        b=mZmQKmjuLZPAh+Kai2GejcRRwQ/EEFaMizcFiwf+GL1zsAl3sJZnecPCGKrhiUzOii
+         UDqdqR4ekM0IrCfXKKrjAN3z/vM7IRxBrLNUj0PA0usWjhz3KfdIzzR2kiUtN7ISvg1l
+         CTLBVVPzYmgmez59t3Wu3sEpjhbqI3mmt9+fZlaAJbSzP6G2TOVGC+2Av6ZOHjgz/z+Z
+         T7bI2kjSu/nWx2JIXnM8nPPusx4FxyYFdch/Pb8FiOQ7rFYxMpJxfT6jZ4Qcg8L6IKOG
+         NP4NJ6NZ4YidZyrywgagBFxNmZQf/v/Wjxni+JcgmE6+0j7omq2gU6Kyr82ytlW5DKHp
+         jgsQ==
+X-Gm-Message-State: AOAM531HF17uqSvtNt/hzw6moY2q2iRRL0caqsQ1heXv09m9zP08FpYw
+        SCc8jD2X5zjRhoQoC1+EXvxZqnrBRIWizfszN0hU5EO+fifFnHfrM0WGIoxMIC0D3A+4gKLgKUF
+        WsxodOAFRNX2w40g8fc+vsfA4
+X-Received: by 2002:a37:9d53:: with SMTP id g80mr7350176qke.307.1612579634199;
+        Fri, 05 Feb 2021 18:47:14 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzeKIuLtR8y4v8gCIkyTs9rsJZfFFo+tzRDqiO6R5CA7Iai/cKcEqVyrzhf/2UEe5+FVdUrcw==
+X-Received: by 2002:a37:9d53:: with SMTP id g80mr7350163qke.307.1612579633991;
+        Fri, 05 Feb 2021 18:47:13 -0800 (PST)
+Received: from xz-x1 (bras-vprn-toroon474qw-lp130-20-174-93-89-182.dsl.bell.ca. [174.93.89.182])
+        by smtp.gmail.com with ESMTPSA id 22sm11848068qke.123.2021.02.05.18.47.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Feb 2021 18:47:13 -0800 (PST)
+Date:   Fri, 5 Feb 2021 21:47:11 -0500
+From:   Peter Xu <peterx@redhat.com>
+To:     Hugh Dickins <hughd@google.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Nadav Amit <nadav.amit@gmail.com>
+Subject: Re: [PATCH RFC 00/30] userfaultfd-wp: Support shmem and hugetlbfs
+Message-ID: <20210206024711.GE3195@xz-x1>
+References: <20210115170907.24498-1-peterx@redhat.com>
+ <20210129224938.GC260413@xz-x1>
+ <alpine.LSU.2.11.2102051411200.5769@eggly.anvils>
 MIME-Version: 1.0
-References: <20210205222644.2357303-1-saravanak@google.com>
-In-Reply-To: <20210205222644.2357303-1-saravanak@google.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Fri, 5 Feb 2021 18:45:21 -0800
-Message-ID: <CAGETcx_f7BEbkOFtw_6_4fMcgGOWkujbqXhDbDcNstOxgvcPfA@mail.gmail.com>
-Subject: Re: [PATCH v4 0/8] Make fw_devlink=on more forgiving
-To:     Jonathan Corbet <corbet@lwn.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Kevin Hilman <khilman@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Len Brown <len.brown@intel.com>, Len Brown <lenb@kernel.org>,
-        Pavel Machek <pavel@ucw.cz>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Android Kernel Team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <alpine.LSU.2.11.2102051411200.5769@eggly.anvils>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 5, 2021 at 2:26 PM Saravana Kannan <saravanak@google.com> wrote:
->
-> There are a lot of devices/drivers where they never have a struct device
-> created for them or the driver initializes the hardware without ever
-> binding to the struct device.
->
-> This series is intended to avoid any boot regressions due to such
-> devices/drivers when fw_devlink=on and also address the handling of
-> optional suppliers.
->
-> Patch 1 and 2 addresses the issue of firmware nodes that look like
-> they'll have struct devices created for them, but will never actually
-> have struct devices added for them. For example, DT nodes with a
-> compatible property that don't have devices added for them.
->
-> Patch 3 and 4 allow for handling optional DT bindings.
->
-> Patch 5 sets up a generic API to handle drivers that never bind with
-> their devices.
->
-> Patch 6 through 8 update different frameworks to use the new API.
->
-> Thanks,
-> Saravana
->
+On Fri, Feb 05, 2021 at 02:21:47PM -0800, Hugh Dickins wrote:
+> On Fri, 29 Jan 2021, Peter Xu wrote:
+> > 
+> > Huge & Mike,
+> > 
+> > Would any of you have comment/concerns on the high-level design of this series?
+> > 
+> > It would be great to know it, especially major objection, before move on to an
+> > non-rfc version.
+> 
+> Seeing Mike's update prompts me to speak up: I have been looking, and
+> will continue to look through it - will report when done; but find I've
+> been making very little forward progress from one day to the next.
+> 
+> It is very confusing, inevitably; but you have done an *outstanding*
+> job on acknowledging the confusion, and commenting it in great detail.
 
-Forgot to add version history:
+I'm honored to receive such an evaluation, thanks Hugh!
 
-v1 -> v2:
-Patch 1: Added a flag to fwnodes that aren't devices.
-Patch 3: New patch to ise the flag set in patch 1 to not create bad links.
+As a quick summary - what I did in this series is mostly what you've suggested
+on using swp_type==1 && swp_offset=0 as a special pte, so the swap code can
+trap it.  The only difference is that "swp_type==1 && swp_offset=0" still uses
+valid swp_entry address space, so I introduced the "swap special pte" idea
+hoping to make it clearer, which is also based on Andrea's suggestion.  I hope
+I didn't make it even worse. :)
 
-v2 -> v3:
-- Patch 1: Added Rafael's Ack
-- New patches 3 and 4
+It's just that I don't want to make this idea that "only works for uffd-wp".
+What I'm thinking is whether we can provide such a common way to keep some
+records in pgtable entries that point to file-backed memory.  Say, currently
+for a file-backed memory we can only have either a valid pte (either RO or RW)
+or a none pte.  So maybe we could provide a way to start using the rest pte
+address space that we haven't yet used.
 
-v3 -> v4:
-- No changes to patches 1-4.
-- New patches 5-8.
+Please take your time on reviewing the series.  Any of your future comment
+would be greatly welcomed.
 
--Saravana
+Thanks,
 
-> Saravana Kannan (8):
->   driver core: fw_devlink: Detect supplier devices that will never be
->     added
->   of: property: Don't add links to absent suppliers
->   driver core: Add fw_devlink.strict kernel param
->   of: property: Add fw_devlink support for optional properties
->   driver core: fw_devlink: Handle suppliers that don't use driver core
->   irqdomain: Mark fwnodes when their irqdomain is added/removed
->   PM: domains: Mark fwnodes when their powerdomain is added/removed
->   clk: Mark fwnodes when their clock provider is added/removed
->
->  .../admin-guide/kernel-parameters.txt         |  5 ++
->  drivers/base/core.c                           | 58 ++++++++++++++++++-
->  drivers/base/power/domain.c                   |  2 +
->  drivers/clk/clk.c                             |  3 +
->  drivers/of/property.c                         | 16 +++--
->  include/linux/fwnode.h                        | 20 ++++++-
->  kernel/irq/irqdomain.c                        |  2 +
->  7 files changed, 98 insertions(+), 8 deletions(-)
->
-> --
-> 2.30.0.478.g8a0d178c01-goog
->
+-- 
+Peter Xu
+
