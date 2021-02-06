@@ -2,152 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F596311EFA
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 18:01:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B6C1311F0C
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 18:09:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230051AbhBFRA3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Feb 2021 12:00:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53780 "EHLO
+        id S229636AbhBFRJF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Feb 2021 12:09:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229506AbhBFRAZ (ORCPT
+        with ESMTP id S229506AbhBFRJD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Feb 2021 12:00:25 -0500
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A51C3C06174A;
-        Sat,  6 Feb 2021 08:59:45 -0800 (PST)
-Received: by mail-oi1-x234.google.com with SMTP id m7so11028655oiw.12;
-        Sat, 06 Feb 2021 08:59:45 -0800 (PST)
+        Sat, 6 Feb 2021 12:09:03 -0500
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8921AC061786
+        for <linux-kernel@vger.kernel.org>; Sat,  6 Feb 2021 09:08:22 -0800 (PST)
+Received: by mail-ed1-x532.google.com with SMTP id s3so13171429edi.7
+        for <linux-kernel@vger.kernel.org>; Sat, 06 Feb 2021 09:08:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=0/UAdvhavUTbyxsEFBpVC/GjkxhAL2BGJY1lnKrcCkk=;
-        b=GxyvINd2neluxgNxNGqofRw09+yh3vow3B2ok/57/hpFsHY6Uw6mERpMr6WvXzddn+
-         Dh6OZBz9K2TB/UjKKqwzSSmgwbpbSfFQgr2wFCycCc/wEoIDit/1b1U86w6+sPt/tomx
-         +0WaLzePt+RHqXFN2KBsgeZUbxgGSLLavhG5itIoYYHKcaLZRg2iFJg2jNrbTFC2RSl8
-         VpYWk0874cn6zPHWPqmUyB4cU/f1yEg1MaN0pyQnSeF0/sfWkz4cW1cZjIbYZ5MhAup6
-         ZKdsvJFnEgWQIw69qjcq7Rwd/aulzD01srsgQCoPUXr4CZDfVqagTNfepRxFAXZNVH1l
-         +BUw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AgKjvYfEh6xpmyvNQMjRGgDLZsYQaTS+BFtps2bpJUw=;
+        b=ThVvBbpSCDok5f64vDhprvEkK/m7fVXQdQpbbP4n/lz6Ig8IxNYWkLGoMyA37vrYzz
+         gPs+IShTZe52N+faFtQ1JODauvpGwgLxImTmv7yg79QuBNu7LEtLrHE0LdCfKbHwT3J0
+         +momjgdxgVTTZRK6q5rJPgcQMe2nHVExdw8vz6Z9byh6fN7vSjfoWolc1hJgZPSZLJBZ
+         2Y7imnARDqana7qDnNwhqC6MfQk+BkwgtXmnjVXL2A+TvvTnsaAyWef61da89hmnchIA
+         obdnq5A/aZfXYGOtNKGsl4P7NrQuybdVlNyM9x8IeWcFtSbzSAi3pRJv6X2540ZNiKNS
+         n4lg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=0/UAdvhavUTbyxsEFBpVC/GjkxhAL2BGJY1lnKrcCkk=;
-        b=mCZck28nFg7eDXUWXzmpP1Hy+5rH4bC802wpoiaZnsEv3KFumk6uQN974agYuUkaaO
-         cbHIDTkCibv/r0+9wiTZswNJBflLQsHJVTmvyphVEL6vltOVFd7JLxcMXfG9JkCZC2V0
-         Se1cMzBpzuDnY3E+c20XHE5P5VG7CIITleD88cfBz3+j2o1x4I9nzV8/UVnwQ28UDuL9
-         tF7H75M5pwRqn3M5cAHGyqKLwDa5CTA2A4fW7i7C5WoGu0StuiroJPo/1gfrBYqUjBT1
-         5Aa41JDl4QKkRvZX6qMyMcgtv0iHzGvUEAn/lMgt4YBky7dVurQAcDQ4cdCEGzj7T62C
-         0xVA==
-X-Gm-Message-State: AOAM530no3J8ReocrBgdi6gBAJ3iA5oW8qDE2oMcFPvbpnPmsHvk8B1U
-        1gCIUqjB1MsZd0yle8hQfG4=
-X-Google-Smtp-Source: ABdhPJz2FItpEibzfZP5FoftlZ34ne6yQBkCcm1oL1JelIcgrnGJMKlaSdJzIa1+wC1mX73t3kYU6w==
-X-Received: by 2002:aca:90e:: with SMTP id 14mr6061879oij.65.1612630785182;
-        Sat, 06 Feb 2021 08:59:45 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id g36sm607141otb.67.2021.02.06.08.59.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 06 Feb 2021 08:59:44 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: Linux 4.4.256
-To:     Willy Tarreau <w@1wt.eu>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, stable@vger.kernel.org, lwn@lwn.net,
-        jslaby@suse.cz, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com
-References: <1612534196241236@kroah.com>
- <20210205205658.GA136925@roeck-us.net> <YB6S612pwLbQJf4u@kroah.com>
- <20210206131113.GB7312@1wt.eu> <20210206132239.GC7312@1wt.eu>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- xsFNBE6H1WcBEACu6jIcw5kZ5dGeJ7E7B2uweQR/4FGxH10/H1O1+ApmcQ9i87XdZQiB9cpN
- RYHA7RCEK2dh6dDccykQk3bC90xXMPg+O3R+C/SkwcnUak1UZaeK/SwQbq/t0tkMzYDRxfJ7
- nyFiKxUehbNF3r9qlJgPqONwX5vJy4/GvDHdddSCxV41P/ejsZ8PykxyJs98UWhF54tGRWFl
- 7i1xvaDB9lN5WTLRKSO7wICuLiSz5WZHXMkyF4d+/O5ll7yz/o/JxK5vO/sduYDIlFTvBZDh
- gzaEtNf5tQjsjG4io8E0Yq0ViobLkS2RTNZT8ICq/Jmvl0SpbHRvYwa2DhNsK0YjHFQBB0FX
- IdhdUEzNefcNcYvqigJpdICoP2e4yJSyflHFO4dr0OrdnGLe1Zi/8Xo/2+M1dSSEt196rXaC
- kwu2KgIgmkRBb3cp2vIBBIIowU8W3qC1+w+RdMUrZxKGWJ3juwcgveJlzMpMZNyM1jobSXZ0
- VHGMNJ3MwXlrEFPXaYJgibcg6brM6wGfX/LBvc/haWw4yO24lT5eitm4UBdIy9pKkKmHHh7s
- jfZJkB5fWKVdoCv/omy6UyH6ykLOPFugl+hVL2Prf8xrXuZe1CMS7ID9Lc8FaL1ROIN/W8Vk
- BIsJMaWOhks//7d92Uf3EArDlDShwR2+D+AMon8NULuLBHiEUQARAQABzTJHdWVudGVyIFJv
- ZWNrIChMaW51eCBhY2NvdW50KSA8bGludXhAcm9lY2stdXMubmV0PsLBgQQTAQIAKwIbAwYL
- CQgHAwIGFQgCCQoLBBYCAwECHgECF4ACGQEFAlVcphcFCRmg06EACgkQyx8mb86fmYFg0RAA
- nzXJzuPkLJaOmSIzPAqqnutACchT/meCOgMEpS5oLf6xn5ySZkl23OxuhpMZTVX+49c9pvBx
- hpvl5bCWFu5qC1jC2eWRYU+aZZE4sxMaAGeWenQJsiG9lP8wkfCJP3ockNu0ZXXAXwIbY1O1
- c+l11zQkZw89zNgWgKobKzrDMBFOYtAh0pAInZ9TSn7oA4Ctejouo5wUugmk8MrDtUVXmEA9
- 7f9fgKYSwl/H7dfKKsS1bDOpyJlqhEAH94BHJdK/b1tzwJCFAXFhMlmlbYEk8kWjcxQgDWMu
- GAthQzSuAyhqyZwFcOlMCNbAcTSQawSo3B9yM9mHJne5RrAbVz4TWLnEaX8gA5xK3uCNCeyI
- sqYuzA4OzcMwnnTASvzsGZoYHTFP3DQwf2nzxD6yBGCfwNGIYfS0i8YN8XcBgEcDFMWpOQhT
- Pu3HeztMnF3HXrc0t7e5rDW9zCh3k2PA6D2NV4fews9KDFhLlTfCVzf0PS1dRVVWM+4jVl6l
- HRIAgWp+2/f8dx5vPc4Ycp4IsZN0l1h9uT7qm1KTwz+sSl1zOqKD/BpfGNZfLRRxrXthvvY8
- BltcuZ4+PGFTcRkMytUbMDFMF9Cjd2W9dXD35PEtvj8wnEyzIos8bbgtLrGTv/SYhmPpahJA
- l8hPhYvmAvpOmusUUyB30StsHIU2LLccUPPOwU0ETofVZwEQALlLbQeBDTDbwQYrj0gbx3bq
- 7kpKABxN2MqeuqGr02DpS9883d/t7ontxasXoEz2GTioevvRmllJlPQERVxM8gQoNg22twF7
- pB/zsrIjxkE9heE4wYfN1AyzT+AxgYN6f8hVQ7Nrc9XgZZe+8IkuW/Nf64KzNJXnSH4u6nJM
- J2+Dt274YoFcXR1nG76Q259mKwzbCukKbd6piL+VsT/qBrLhZe9Ivbjq5WMdkQKnP7gYKCAi
- pNVJC4enWfivZsYupMd9qn7Uv/oCZDYoBTdMSBUblaLMwlcjnPpOYK5rfHvC4opxl+P/Vzyz
- 6WC2TLkPtKvYvXmdsI6rnEI4Uucg0Au/Ulg7aqqKhzGPIbVaL+U0Wk82nz6hz+WP2ggTrY1w
- ZlPlRt8WM9w6WfLf2j+PuGklj37m+KvaOEfLsF1v464dSpy1tQVHhhp8LFTxh/6RWkRIR2uF
- I4v3Xu/k5D0LhaZHpQ4C+xKsQxpTGuYh2tnRaRL14YMW1dlI3HfeB2gj7Yc8XdHh9vkpPyuT
- nY/ZsFbnvBtiw7GchKKri2gDhRb2QNNDyBnQn5mRFw7CyuFclAksOdV/sdpQnYlYcRQWOUGY
- HhQ5eqTRZjm9z+qQe/T0HQpmiPTqQcIaG/edgKVTUjITfA7AJMKLQHgp04Vylb+G6jocnQQX
- JqvvP09whbqrABEBAAHCwWUEGAECAA8CGwwFAlVcpi8FCRmg08MACgkQyx8mb86fmYHNRQ/+
- J0OZsBYP4leJvQF8lx9zif+v4ZY/6C9tTcUv/KNAE5leyrD4IKbnV4PnbrVhjq861it/zRQW
- cFpWQszZyWRwNPWUUz7ejmm9lAwPbr8xWT4qMSA43VKQ7ZCeTQJ4TC8kjqtcbw41SjkjrcTG
- wF52zFO4bOWyovVAPncvV9eGA/vtnd3xEZXQiSt91kBSqK28yjxAqK/c3G6i7IX2rg6pzgqh
- hiH3/1qM2M/LSuqAv0Rwrt/k+pZXE+B4Ud42hwmMr0TfhNxG+X7YKvjKC+SjPjqp0CaztQ0H
- nsDLSLElVROxCd9m8CAUuHplgmR3seYCOrT4jriMFBtKNPtj2EE4DNV4s7k0Zy+6iRQ8G8ng
- QjsSqYJx8iAR8JRB7Gm2rQOMv8lSRdjva++GT0VLXtHULdlzg8VjDnFZ3lfz5PWEOeIMk7Rj
- trjv82EZtrhLuLjHRCaG50OOm0hwPSk1J64R8O3HjSLdertmw7eyAYOo4RuWJguYMg5DRnBk
- WkRwrSuCn7UG+qVWZeKEsFKFOkynOs3pVbcbq1pxbhk3TRWCGRU5JolI4ohy/7JV1TVbjiDI
- HP/aVnm6NC8of26P40Pg8EdAhajZnHHjA7FrJXsy3cyIGqvg9os4rNkUWmrCfLLsZDHD8FnU
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <e173809f-505d-64a8-1547-37e0f6243f4c@roeck-us.net>
-Date:   Sat, 6 Feb 2021 08:59:42 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AgKjvYfEh6xpmyvNQMjRGgDLZsYQaTS+BFtps2bpJUw=;
+        b=mFcmfa6OaD8CE6lJQK9N9ODfJHydL0etG+wc+QSyguo8t3qlqNBCWFY0pjmIf5go7p
+         O8zzBqaCxSg8OdLhbtsPKMQ5WYOsfQine3poN1xEXTMg/mQ1CqTJvddJlgLWC9217UxJ
+         WYi8AxePscuDseLRkW8fQw0RkSDLrgEvaKlFp2UUjvGUHd3WGX4dSCIB0A2qMxJPQgLi
+         SQ9bAdlOgMpuvro2KDkBdbTkVzGZbI3oFsoPTKZrpyCNZXX5nDHnNfsPLJaqIP1ic3w7
+         TtaFkjLVSvF13ED+BRO7abN568MC8V0AGBm7nwq+n0nys3ODUAg7pO9OFnQ5x+9U1vTZ
+         y+/w==
+X-Gm-Message-State: AOAM5335YcblKNBGHd23cVuDwuWFzYVLYbuPOvAhTRwdMPfK6aLbXmVB
+        FvYz/WjLxx8Zbh3oW8pjkvzxnPZAYgjtQbZWzHI=
+X-Google-Smtp-Source: ABdhPJx0FddPlepxSBE7r2noeRP3IBv5OhdVLMHl6lYWFCnitUzUkWX3j9z2mKYXmvrBBG7zi8nCjO91Lavw54JADQQ=
+X-Received: by 2002:a05:6402:2053:: with SMTP id bc19mr8966375edb.230.1612631301186;
+ Sat, 06 Feb 2021 09:08:21 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210206132239.GC7312@1wt.eu>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <71c4ce84-8be7-49e2-90bd-348762b320b4@nvidia.com>
+ <YBzU5uUbwa+QIwBQ@google.com> <34110c61-9826-4cbe-8cd4-76f5e7612dbd@nvidia.com>
+ <YBzkjh5nnuNiGb6Q@google.com> <f6e41e39-d60b-764d-0af4-8e6977663821@nvidia.com>
+ <YB1vIrgI9S/5CDxL@google.com> <269689b7-3b6d-55dc-9044-fbf2984089ab@nvidia.com>
+ <YB24YXMJOjwokDb5@google.com> <CAJuCfpEaQqgsyGtzRvovpuLOELR0iRNvNF0rnih1bq0HQCTuww@mail.gmail.com>
+ <cbd30192-6f9f-845c-6b1c-e21ed737781d@nvidia.com> <YB3K9rx7E9qMf6Is@google.com>
+In-Reply-To: <YB3K9rx7E9qMf6Is@google.com>
+From:   Pintu Agarwal <pintu.ping@gmail.com>
+Date:   Sat, 6 Feb 2021 22:38:09 +0530
+Message-ID: <CAOuPNLj9kKFFOS_56KkJ4w3jD51WOZ+d=nubcQQeihpk4B_-Ng@mail.gmail.com>
+Subject: Re: [PATCH] mm: cma: support sysfs
+To:     Minchan Kim <minchan@kernel.org>
+Cc:     John Hubbard <jhubbard@nvidia.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        John Dias <joaodias@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/6/21 5:22 AM, Willy Tarreau wrote:
-> On Sat, Feb 06, 2021 at 02:11:13PM +0100, Willy Tarreau wrote:
->> Something like this looks more robust to me, it will use SUBLEVEL for
->> values 0 to 255 and 255 for any larger value:
->>
->> -	expr $(VERSION) \* 65536 + 0$(PATCHLEVEL) \* 256 + 0$(SUBLEVEL)); \
->> +	expr $(VERSION) \* 65536 + 0$(PATCHLEVEL) \* 256 + 255 \* (0$(SUBLEVEL) > 255) + 0$(SUBLEVEL) * (0$(SUBLEVEL \<= 255)); \
-> 
-> Bah, I obviously missed a backslash above and forgot spaces around parens.
-> Here's a tested version:
-> 
-> diff --git a/Makefile b/Makefile
-> index 7d86ad6ad36c..9b91b8815b40 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -1252,7 +1252,7 @@ endef
->  
->  define filechk_version.h
->  	echo \#define LINUX_VERSION_CODE $(shell                         \
-> -	expr $(VERSION) \* 65536 + 0$(PATCHLEVEL) \* 256 + 0$(SUBLEVEL)); \
-> +	expr $(VERSION) \* 65536 + 0$(PATCHLEVEL) \* 256 + 255 \* \( 0$(SUBLEVEL) \> 255 \) + 0$(SUBLEVEL) \* \( 0$(SUBLEVEL) \<= 255 \) ); \
->  	echo '#define KERNEL_VERSION(a,b,c) (((a) << 16) + ((b) << 8) + (c))'
->  endef
->  
+On Sat, 6 Feb 2021 at 04:17, Minchan Kim <minchan@kernel.org> wrote:
+>
+> On Fri, Feb 05, 2021 at 01:58:06PM -0800, John Hubbard wrote:
+> > On 2/5/21 1:52 PM, Suren Baghdasaryan wrote:
+> > > > > > I takes your suggestion something like this.
+> > > > > >
+> > > > > > [alloc_range] could be order or range by interval
+> > > > > >
+> > > > > > /sys/kernel/mm/cma/cma-A/[alloc_range]/success
+> > > > > > /sys/kernel/mm/cma/cma-A/[alloc_range]/fail
+> > > > > > ..
+> > > > > > ..
+> > > > > > /sys/kernel/mm/cma/cma-Z/[alloc_range]/success
+> > > > > > /sys/kernel/mm/cma/cma-Z/[alloc_range]/fail
+> > >
+> > > The interface above seems to me the most useful actually, if by
+> > > [alloc_range] you mean the different allocation orders. This would
+> > > cover Minchan's per-CMA failure tracking and would also allow us to
+> > > understand what kind of allocations are failing and therefore if the
+> > > problem is caused by pinning/fragmentation or by over-utilization.
+> > >
+> >
+> > I agree. That seems about right, now that we've established that
+> > cma areas are a must-have.
+>
+> Okay, now we agreed the dirction right now so let me do that in next
+> version. If you don't see it's reasonable, let me know.
+>
+> * I will drop the number of CMA *page* allocation attemtps/failures to
+> make simple start
+> * I will keep CMA allocation attemtps/failures
+> * They will be under /sys/kernel/mm/cma/cma-XX/success,fail
+> * It will turn on CONFIG_CMA && CONFIG_SYSFS
+>
+> Orthognal work(diffrent patchset)
+>
+> * adding global CMA alloc/fail into vmstat
+> * adding alloc_range success/failure under CONFIG_CMA_ALLOC_TRACKING
+>   whatever configuration or just by default if everyone agree
+>
 
-I like that version.
+> # cat meminfo | grep -i cma
+> CmaTotal:        1048576 kB
+> CmaFree:         1046872 kB
 
-Two questions: Are there any concerns that KERNEL_VERSION(4, 4, 256)
-matches KERNEL_VERSION(4, 5. 0), and do you plan to send this patch
-upstream ?
+This CMA info was added by me way back in 2014.
+At that time I even thought about adding this cma alloc/fail counter in vmstat.
+That time I also had an internal patch about it but later dropped
+(never released to mainline).
+If required I can re-work again on this part.
+
+And I have few more points to add here.
+1) In the past I have faced this cma allocation failure (which could
+be common in small embedded devices).
+Earlier it was even difficult to figure if cma failure actually happened.
+Thus I added this simple patch:
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?h=v5.11-rc6&id=5984af1082f3b115082178ed88c47033d43b924d
+
+2) IMO just reporting CMA alloc/fail may not be enough (at times). The
+main point is for which client/dev is this failure happening ?
+Sometimes just tuning the size or fixing the alignment can resolve the
+failure if we know the client. For global CMA it will be just NULL
+(dev).
+
+3) IMO having 2 options SYSFS and DEBUGFS may confuse the
+developer/user (personal experience). So are we going to remove the
+DEBUGFS or merge it ?
+
+4) Sometimes CMA (or DMA) allocation failure can happen even very
+early in boot time itself. At that time these are anyways not useful.
+Some system may not proceed if CMA/DMA allocation is failing (again
+personal experience).
+==> Anyways this is altogether is different case...
+
+5) The default max CMA areas are defined to be 7 but user can
+configure it to any number, may be 20 or 50 (???)
+
+6) Thus I would like to propose another thing here.
+Just like we have /proc/vmallocinfo, /proc/slabinfo, etc., we can also
+have: /proc/cmainfo
+Here in /proc/cmaminfo we can capute more detailed information:
+Global CMA Data: Alloc/Free
+Client specific data: name, size, success, fail, flags, align, etc
+(just a random example).
+==> This can dynamically grow as large as possible
+==> It can also be enabled/disabled based on CMA config itself (no
+additional config required)
+
+Any feedback on point (6) specifically ?
+
 
 Thanks,
-Guenter
+Pintu
