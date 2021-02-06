@@ -2,94 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06E7E312038
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 22:53:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F699312040
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 23:12:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229720AbhBFVv1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Feb 2021 16:51:27 -0500
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:23345 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229536AbhBFVvY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Feb 2021 16:51:24 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1612648284; x=1644184284;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=Y0LF0QiYzcdX2y6gwZ07FxsFEt3swqe56rzuZlawFZY=;
-  b=cDYNu+y0QI8Zs/iCh2jHO61uZbp+dt3c4VRjGTBP0dKcb0CTfsOIZtvC
-   WUh6sNqYltr2tD43X7/DrVjK93vAJUDpbb5XniAI87CLgBNQEPGoI0fqG
-   BajPc7nMIvPcIVglQLE8TX2f32oQwKC5PgLrRG1vOxguNnyTSNogG4Pxz
-   iFd2oCHevPXvMRot7yGdaGexjEMNRus0MhQTz1AJ+m+qS+XTxBz/G3D+4
-   pkqLjwubcYjUYiAQp789ri8nM5Gfh4N8h2tMDoexptfPj2RpMLSVxY0tL
-   SOyh3z2il9E1A0qR6EtALlA9819IJzxFR86IE6xpN916STEXWGVlVvfgy
-   w==;
-IronPort-SDR: gcsT9Pl+dqnMyULVGuASekAJ8cQq3N7GU2uvRFbX2u22exT5uskHtEuInH4D1G92ZidNUElUCj
- UsVlloBGTnVKheEQPtsV942divjR9FZLY1mSfEvrF31jIoXOZxcyhzCg0B6k74tQ9pU9SLQWbu
- v3xeNizgY5SUCsJV9nGOSZkXh73an31+crWYTENs0hbeLf7YYkPBy6rg54V9JC8Is/qgQNF/M6
- TGBaIkIAFNQJobu9Q5SaVxIBhH9VFU+dSfPZ4Zb+Dur/dNMG0Sen3jqSF0Gflx84n79ktffPQK
- nns=
-X-IronPort-AV: E=Sophos;i="5.81,158,1610434800"; 
-   d="scan'208";a="102871017"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 06 Feb 2021 14:49:48 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Sat, 6 Feb 2021 14:49:48 -0700
-Received: from soft-dev3.localdomain (10.10.115.15) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Sat, 6 Feb 2021 14:49:46 -0700
-From:   Horatiu Vultur <horatiu.vultur@microchip.com>
-To:     <jiri@resnulli.us>, <ivecera@redhat.com>, <davem@davemloft.net>,
-        <kuba@kernel.org>, <roopa@nvidia.com>, <nikolay@nvidia.com>,
-        <rasmus.villemoes@prevas.dk>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <bridge@lists.linux-foundation.org>
-CC:     Horatiu Vultur <horatiu.vultur@microchip.com>
-Subject: [PATCH net 2/2] switchdev: mrp: Remove SWITCHDEV_ATTR_ID_MRP_PORT_STAT
-Date:   Sat, 6 Feb 2021 22:47:34 +0100
-Message-ID: <20210206214734.1577849-3-horatiu.vultur@microchip.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210206214734.1577849-1-horatiu.vultur@microchip.com>
-References: <20210206214734.1577849-1-horatiu.vultur@microchip.com>
+        id S229564AbhBFWJS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Feb 2021 17:09:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45972 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229522AbhBFWJO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 6 Feb 2021 17:09:14 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8A07364E07;
+        Sat,  6 Feb 2021 22:08:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612649313;
+        bh=G5JO4wfHXL3Rm3mvu0w0aeD8DDbQuoaIoRiqsfnDaPs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=XbtQt5OnGfvRN0oSLrbIbC/GbwV/0N9hd/ry6uRLJxVaHq1T2aI2OuND401yhtESO
+         aTb3Skn/gGZ5VZnPazyPsQxibt9cn99VdlmI9MYOqXJ1Y9r7jsFUQn1uVtwbF8sHkF
+         D4Sn/hYWbmkmuHBHL3G0PYa/lulsZZP5OWKiP0zyVYhBtEdYwk5veDd2IyudM4aacB
+         qdwUHFBNHpYcJB0WU/OpXOqEq1zscXClo2YDWrcl3bnVVs1DNbhpxDdHwyDibAZVjx
+         NBf1ALrTM44Z66u1QnYVVPJURnQRCfhJ6j/UO3DgE0raAvwMrzVqAAcT6DGq1Av6Et
+         92Hf0xTP7/O3w==
+Date:   Sat, 6 Feb 2021 15:08:32 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Santosh Shilimkar <ssantosh@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
+        kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH] memory: ti-emif-pm: Drop of_match_ptr from of_device_id
+ table
+Message-ID: <20210206220832.GA1466025@ubuntu-m3-large-x86>
+References: <20210206111343.19273-1-krzk@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210206111343.19273-1-krzk@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that MRP started to use also SWITCHDEV_ATTR_ID_PORT_STP_STATE to
-notify HW, then SWITCHDEV_ATTR_ID_MRP_PORT_STAT is not used anywhere
-else, therefore we can remove it.
+On Sat, Feb 06, 2021 at 12:13:43PM +0100, Krzysztof Kozlowski wrote:
+> The driver can match only via the DT table so the table should be always
+> used and the of_match_ptr does not have any sense (this also allows ACPI
+> matching via PRP0001, even though it might be not relevant here).  This
+> fixes compile warning (!CONFIG_OF with clang):
+> 
+>     drivers/memory/ti-emif-pm.c:238:34: warning:
+>         unused variable 'ti_emif_of_match' [-Wunused-const-variable]
+> 
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-Fixes: c284b545900830 ("switchdev: mrp: Extend switchdev API to offload MRP")
-Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
----
- include/net/switchdev.h | 2 --
- 1 file changed, 2 deletions(-)
+Yes, this seems to be how everyone is dealing with this warning:
 
-diff --git a/include/net/switchdev.h b/include/net/switchdev.h
-index 99cd538d6519..afdf8bd1b4fe 100644
---- a/include/net/switchdev.h
-+++ b/include/net/switchdev.h
-@@ -42,7 +42,6 @@ enum switchdev_attr_id {
- 	SWITCHDEV_ATTR_ID_BRIDGE_MC_DISABLED,
- 	SWITCHDEV_ATTR_ID_BRIDGE_MROUTER,
- #if IS_ENABLED(CONFIG_BRIDGE_MRP)
--	SWITCHDEV_ATTR_ID_MRP_PORT_STATE,
- 	SWITCHDEV_ATTR_ID_MRP_PORT_ROLE,
- #endif
- };
-@@ -62,7 +61,6 @@ struct switchdev_attr {
- 		u16 vlan_protocol;			/* BRIDGE_VLAN_PROTOCOL */
- 		bool mc_disabled;			/* MC_DISABLED */
- #if IS_ENABLED(CONFIG_BRIDGE_MRP)
--		u8 mrp_port_state;			/* MRP_PORT_STATE */
- 		u8 mrp_port_role;			/* MRP_PORT_ROLE */
- #endif
- 	} u;
--- 
-2.27.0
+Reviewed-by: Nathan Chancellor <nathan@kernel.org>
 
+> ---
+>  drivers/memory/ti-emif-pm.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/memory/ti-emif-pm.c b/drivers/memory/ti-emif-pm.c
+> index 6c747c1e98cb..179fec2da56d 100644
+> --- a/drivers/memory/ti-emif-pm.c
+> +++ b/drivers/memory/ti-emif-pm.c
+> @@ -340,7 +340,7 @@ static struct platform_driver ti_emif_driver = {
+>  	.remove = ti_emif_remove,
+>  	.driver = {
+>  		.name = KBUILD_MODNAME,
+> -		.of_match_table = of_match_ptr(ti_emif_of_match),
+> +		.of_match_table = ti_emif_of_match,
+>  		.pm = &ti_emif_pm_ops,
+>  	},
+>  };
+> -- 
+> 2.25.1
+> 
