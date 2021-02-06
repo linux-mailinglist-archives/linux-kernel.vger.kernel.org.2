@@ -2,127 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 291EF311E67
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 16:25:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 521C2311E6A
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 16:27:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230192AbhBFPY5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Feb 2021 10:24:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33492 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230038AbhBFPYz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Feb 2021 10:24:55 -0500
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7973FC061756
-        for <linux-kernel@vger.kernel.org>; Sat,  6 Feb 2021 07:24:14 -0800 (PST)
-Received: by mail-ed1-x52f.google.com with SMTP id t5so12919128eds.12
-        for <linux-kernel@vger.kernel.org>; Sat, 06 Feb 2021 07:24:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=hojxOHd5o8QU0ARaDwSt3xNFY2ML96kutkiitTdDDTs=;
-        b=FqHiOGCsSzFwDBxYydxb8TkeJvNfz6QiySKQp6c6tjLtJdeS25Fn3ETpEaPG/TAq0L
-         qktg8G01+wh0/Y9nDHxpxoegSMkKo4BGZa0DUAGEw8HEXIyIuggWOcpBB6ahnoasY8bu
-         KZsg8GkDhAitoCPLem7Pd4aUhyD5PSx+aktyHm702rFmSdRy5TLNj+GIoecYmc6Qqkc3
-         pafQ1zjkJvaVYnYlUIVR6FnrHOR+RPeRYaW90vS8kk/4BMcO1Cp8OSjVAsliwEPRs5Pd
-         ltR2coY4EdDT7lf63vUOW2KmatLtIhZxXGCwjbIX4Vjs6YbdhC5pis9iFawF3QokVSwF
-         EpkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=hojxOHd5o8QU0ARaDwSt3xNFY2ML96kutkiitTdDDTs=;
-        b=dkT55K5Fp7GhAfx9rHiObVjUXc11KnH5Tx/Xtv7YKRYXfBKjFDvDA8URVsnfdAfeFW
-         nPqxnR/7bpi+/hntpwsQX9tPxMyIZbpmiNM3zI93iK+bA6CzHsIC3r28gXJ/VVRjIVXo
-         Reymja0m4d6YQEDHdTbv2LV8GQjJrp+lNocHsMKzPI/V2+pzhEH0tuEyMF0waC+da+5d
-         2fJHivFhvbvqOfeuk4Fal3DxRDN12ekLiL8Kl9QsaCz6xf49EsaelkSCKNpyi1/JabHD
-         aeQnT6OfawI6W3WHJiwtZHs9GND81kQpXJI+MRIptkoIsp3j7ZpuHi2PuhPI5Ec/C6Br
-         8diQ==
-X-Gm-Message-State: AOAM532SL/7ircgc4IvpbSAtAZcvvv+oofbBSCeJSHx3zhALl07l+SxC
-        F4T2DW2y+xF7e7pkf9XV1A==
-X-Google-Smtp-Source: ABdhPJzs6FzvDMWuDqrrF6o3I5MdaJgCLP5kOfypcngni1HkljVNA7lizEOt0i+vJ0duDZZX1nv9hw==
-X-Received: by 2002:aa7:cdc8:: with SMTP id h8mr8868350edw.244.1612625053283;
-        Sat, 06 Feb 2021 07:24:13 -0800 (PST)
-Received: from localhost.localdomain ([46.53.252.141])
-        by smtp.gmail.com with ESMTPSA id l1sm5353174eje.12.2021.02.06.07.24.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 06 Feb 2021 07:24:13 -0800 (PST)
-Date:   Sat, 6 Feb 2021 18:24:11 +0300
-From:   Alexey Dobriyan <adobriyan@gmail.com>
-To:     mingo@redhat.com, peterz@infradead.org
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH 4/5] sched: make nr_iowait_cpu() return 32-bit
-Message-ID: <20210206152411.GD487103@localhost.localdomain>
-References: <20210206151832.GA487103@localhost.localdomain>
+        id S230294AbhBFP1c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Feb 2021 10:27:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49550 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229586AbhBFP12 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 6 Feb 2021 10:27:28 -0500
+Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B675D64E7D;
+        Sat,  6 Feb 2021 15:26:46 +0000 (UTC)
+Date:   Sat, 6 Feb 2021 15:26:43 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     <alexandru.tachici@analog.com>
+Cc:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <robh+dt@kernel.org>
+Subject: Re: [PATCH v2 2/2] dt-bindings: iio: adc: ad7124: add config nodes
+Message-ID: <20210206152643.53b0e01b@archlinux>
+In-Reply-To: <20210204113551.68744-3-alexandru.tachici@analog.com>
+References: <20210204113551.68744-1-alexandru.tachici@analog.com>
+        <20210204113551.68744-3-alexandru.tachici@analog.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210206151832.GA487103@localhost.localdomain>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Runqueue ->nr_iowait counters are 32-bit anyway.
+On Thu, 4 Feb 2021 13:35:51 +0200
+<alexandru.tachici@analog.com> wrote:
 
-Propagate 32-bitness into other code, but don't try too hard.
+> From: Alexandru Tachici <alexandru.tachici@analog.com>
+> 
+> Document use of configurations in device-tree bindings.
+> 
+> Signed-off-by: Alexandru Tachici <alexandru.tachici@analog.com>
 
-Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
----
+Ignoring discussing in my reply to the cover letter...
 
- drivers/cpuidle/governors/menu.c |    6 +++---
- include/linux/sched/stat.h       |    2 +-
- kernel/sched/core.c              |    2 +-
- 3 files changed, 5 insertions(+), 5 deletions(-)
+This is a breaking change as described.  We can't move properties
+around without some sort of fullback for them being in the old
+location.
 
---- a/drivers/cpuidle/governors/menu.c
-+++ b/drivers/cpuidle/governors/menu.c
-@@ -117,7 +117,7 @@ struct menu_device {
- 	int		interval_ptr;
- };
- 
--static inline int which_bucket(u64 duration_ns, unsigned long nr_iowaiters)
-+static inline int which_bucket(u64 duration_ns, unsigned int nr_iowaiters)
- {
- 	int bucket = 0;
- 
-@@ -150,7 +150,7 @@ static inline int which_bucket(u64 duration_ns, unsigned long nr_iowaiters)
-  * to be, the higher this multiplier, and thus the higher
-  * the barrier to go to an expensive C state.
-  */
--static inline int performance_multiplier(unsigned long nr_iowaiters)
-+static inline int performance_multiplier(unsigned int nr_iowaiters)
- {
- 	/* for IO wait tasks (per cpu!) we add 10x each */
- 	return 1 + 10 * nr_iowaiters;
-@@ -270,7 +270,7 @@ static int menu_select(struct cpuidle_driver *drv, struct cpuidle_device *dev,
- 	unsigned int predicted_us;
- 	u64 predicted_ns;
- 	u64 interactivity_req;
--	unsigned long nr_iowaiters;
-+	unsigned int nr_iowaiters;
- 	ktime_t delta_next;
- 	int i, idx;
- 
---- a/include/linux/sched/stat.h
-+++ b/include/linux/sched/stat.h
-@@ -19,7 +19,7 @@ extern int nr_processes(void);
- unsigned int nr_running(void);
- extern bool single_task_running(void);
- unsigned int nr_iowait(void);
--extern unsigned long nr_iowait_cpu(int cpu);
-+unsigned int nr_iowait_cpu(int cpu);
- 
- static inline int sched_info_on(void)
- {
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -4383,7 +4383,7 @@ unsigned long long nr_context_switches(void)
-  * it does become runnable.
-  */
- 
--unsigned long nr_iowait_cpu(int cpu)
-+unsigned int nr_iowait_cpu(int cpu)
- {
- 	return atomic_read(&cpu_rq(cpu)->nr_iowait);
- }
+> ---
+>  .../bindings/iio/adc/adi,ad7124.yaml          | 72 +++++++++++++++----
+>  1 file changed, 57 insertions(+), 15 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/iio/adc/adi,ad7124.yaml b/Documentation/devicetree/bindings/iio/adc/adi,ad7124.yaml
+> index fb3d0dae9bae..330064461d0a 100644
+> --- a/Documentation/devicetree/bindings/iio/adc/adi,ad7124.yaml
+> +++ b/Documentation/devicetree/bindings/iio/adc/adi,ad7124.yaml
+> @@ -62,20 +62,19 @@ required:
+>    - interrupts
+>  
+>  patternProperties:
+> -  "^channel@([0-9]|1[0-5])$":
+> -    $ref: "adc.yaml"
+> +  "^config@(2[0-7])$":
+>      type: object
+>      description: |
+> -      Represents the external channels which are connected to the ADC.
+> +      Represents a channel configuration.
+> +      See Documentation/devicetree/bindings/iio/adc/adc.txt.
+
+adc.yaml now.
+
+
+>  
+>      properties:
+>        reg:
+>          description: |
+> -          The channel number. It can have up to 8 channels on ad7124-4
+> -          and 16 channels on ad7124-8, numbered from 0 to 15.
+> +          The config number. It can have up to 8 configuration.
+>          items:
+> -          minimum: 0
+> -          maximum: 15
+> +         minimum: 20
+> +         maximum: 27
+
+Number then 0-7 please rather than 20-27.
+
+>  
+>        adi,reference-select:
+>          description: |
+> @@ -88,8 +87,6 @@ patternProperties:
+>          $ref: /schemas/types.yaml#/definitions/uint32
+>          enum: [0, 1, 3]
+>  
+> -      diff-channels: true
+> -
+>        bipolar: true
+>  
+>        adi,buffered-positive:
+> @@ -100,6 +97,35 @@ patternProperties:
+>          description: Enable buffered mode for negative input.
+>          type: boolean
+>  
+> +    additionalProperties: false
+> +
+> +  "^channel@([0-9]|1[0-5])$":
+> +    type: object
+> +    description: |
+> +      Represents the external channels which are connected to the ADC.
+> +      See Documentation/devicetree/bindings/iio/adc/adc.txt.
+> +
+> +    properties:
+> +      reg:
+> +        description: |
+> +          The channel number. It can have up to 8 channels on ad7124-4
+> +          and 16 channels on ad7124-8, numbered from 0 to 15.
+> +        items:
+> +         minimum: 0
+> +         maximum: 15
+> +
+> +      diff-channels: true
+> +
+> +      adi,configuration:
+> +        description: |
+> +          The devices has 8 configuration and ad7124-8 support up to 16 unipolar channels.
+> +          Each channel can be assigned one configuration. Some channels will be sharing the
+> +          same configuration.
+> +        allOf:
+> +          - $ref: /schemas/types.yaml#/definitions/uint32
+> +        minimum: 20
+> +        maximum: 27
+> +
+>      required:
+>        - reg
+>        - diff-channels
+> @@ -127,30 +153,46 @@ examples:
+>          #address-cells = <1>;
+>          #size-cells = <0>;
+>  
+> -        channel@0 {
+> -          reg = <0>;
+> -          diff-channels = <0 1>;
+> +        config@20 {
+> +          reg = <20>;
+>            adi,reference-select = <0>;
+>            adi,buffered-positive;
+>          };
+>  
+> -        channel@1 {
+> -          reg = <1>;
+> +        config@21 {
+> +          reg = <21>;
+>            bipolar;
+> -          diff-channels = <2 3>;
+>            adi,reference-select = <0>;
+>            adi,buffered-positive;
+>            adi,buffered-negative;
+>          };
+>  
+> +        config@22 {
+> +          reg = <22>;
+> +        };
+> +
+> +        channel@0 {
+> +          reg = <0>;
+> +          diff-channels = <0 1>;
+> +          adi,configuration = <20>;
+> +        };
+> +
+> +        channel@1 {
+> +          reg = <1>;
+> +          diff-channels = <2 3>;
+> +          adi,configuration = <21>;
+> +        };
+> +
+>          channel@2 {
+>            reg = <2>;
+>            diff-channels = <4 5>;
+> +          adi,configuration = <22>;
+>          };
+>  
+>          channel@3 {
+>            reg = <3>;
+>            diff-channels = <6 7>;
+> +          adi,configuration = <22>;
+>          };
+>        };
+>      };
+
