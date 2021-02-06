@@ -2,70 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54F4A311B51
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 06:08:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52465311B56
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 06:09:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230487AbhBFFH2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Feb 2021 00:07:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49980 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231486AbhBFECo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 23:02:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 62A9564DA3;
-        Sat,  6 Feb 2021 04:02:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612584120;
-        bh=XiHFcUyJrSAelpR+HWhkR6qx5t1YmZcP7sS3igpdcfc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=i0VcmTsv4+gMe73KUDRy1j3Uj1wf2Z+4kwhKieOmhmpGhJpYoqwNNha+qALjqepEP
-         lhAG5aSi78JhpFiQibVPqRT0rOUkLsLB2ZYUP7gb8bzJyW48Rr/6UCQs6c5ovIJZCH
-         IJ9HaXVPLeFz5t3jjsHLUZqthrYbSOknJoW8CCzBTUQ0pae6cKOZQvdUtnRhbYEyO0
-         Wpk2pYtm8wvtV0YHHBZaoVxfi0irLO/4pLZ2z5DilQcQRH0nQchF/vBXwfoQ4DErnq
-         +tmNu4gDqwB0jccfLH4lREp8WGLG6lxPRwNEge5KTwY9uq9nNGicY9B+qn1nDYPtaY
-         /XHhsXt6A6WWg==
-Date:   Fri, 5 Feb 2021 23:01:59 -0500
-From:   Sasha Levin <sashal@kernel.org>
-To:     masahiroy@kernel.org, michal.lkml@markovi.net
-Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, gregkh@linuxfoundation.org,
-        stable@kernel.org
-Subject: Re: [PATCH 3/3] kbuild: introduce KERNEL_VERSION2 and
- LINUX_VERSION_CODE2
-Message-ID: <20210206040159.GW4035784@sasha-vm>
-References: <20210206035033.2036180-1-sashal@kernel.org>
- <20210206035033.2036180-3-sashal@kernel.org>
+        id S231328AbhBFFIp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Feb 2021 00:08:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58182 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231237AbhBFEIh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 23:08:37 -0500
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32FA8C06174A;
+        Fri,  5 Feb 2021 20:07:57 -0800 (PST)
+Received: by mail-lf1-x12a.google.com with SMTP id i187so13406528lfd.4;
+        Fri, 05 Feb 2021 20:07:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=J+eX8cvfxZRZnydfgzpZ5i698z/K+trqTZY5SHSLd/s=;
+        b=PGxbtl0pe5ElQqi4a0E0M0Nw9s3hoi5BKyo0PEyy8eVgIx2lMmLXIRCfwc2zKkoc+H
+         efV71Ws04ApYgjXZrPdp+RHcNmSjpk/P7jhlSgWXOLx52b07eQPwBAvDHGNGn9DOBTcv
+         cmbRKVXKpgwL8Z4DM+EaoR0G6eyu3mfglSwfB3OZom4ymdAthZ/Fm1yW6QS13PAlU1xb
+         X47wJINaxMuPEyuAhaVbMbTFM91V4gOpmRl1Qb+duzk6iPDcFEiLWJToRBBxrWzo4OV6
+         Jkbla2VxMSYxIDngDdXguVkrt04Q0IpExAUJ+Jg+9fWc5XaJix4nYJqnQDHiChSLcFR7
+         QpFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=J+eX8cvfxZRZnydfgzpZ5i698z/K+trqTZY5SHSLd/s=;
+        b=Ydf+L0/HaGRpmaSYUHLxGxuhkRXx7WqSs6UIDCql1fxW6ZE6PGBo8YyTYUpcXog7Ze
+         mTAFhI3aRdlCDJLcVXueSwruAPICukjAhPhIBeiYzEmxMPE40M7d0Q1v7mTt6wxBuWWY
+         OpdcpSgsVhpQ8vyPa2teKA0qZ0c6lEiZDgk/6khI75cjKzoN7abTsJN7BPkwZt4KMyOS
+         YeZVa8tlFGTjMH5cTGuEjUxq0pHxXL4+1nz+Ex8ZSarzk01A4b11Ost65Cz36XIR9F6u
+         k8jMna94qqlZP+jbXjtliZDwyW8o3smEFR92nHFdodt107j+byZHPQLpa4yVmHfc7xhC
+         Kong==
+X-Gm-Message-State: AOAM5327w4YHiHp4BHCPsfrhMm6jZamTCkEA5PFSWIBwnxBy5usGnQb9
+        MQEf6meSI/8MjBMFezeWEQ+BLxF8Nde8PJK50+Y=
+X-Google-Smtp-Source: ABdhPJwNCFVg93cxZuqePljHYYuB3o800M4VWQqxJjFADhqAa525T4G+FIf7CMTHKNbALo3LtibsImz0arYAV3+czsY=
+X-Received: by 2002:a05:6512:516:: with SMTP id o22mr4032232lfb.487.1612584475795;
+ Fri, 05 Feb 2021 20:07:55 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20210206035033.2036180-3-sashal@kernel.org>
+References: <20210205125552.1417492-1-unixbhaskar@gmail.com>
+In-Reply-To: <20210205125552.1417492-1-unixbhaskar@gmail.com>
+From:   Julian Calaby <julian.calaby@gmail.com>
+Date:   Sat, 6 Feb 2021 15:07:44 +1100
+Message-ID: <CAGRGNgUgJP2uovJB5UHM1cBD=+7wDFPJMcx3PDe_aDrQnE-2Ag@mail.gmail.com>
+Subject: Re: [PATCH] drivers: scsi: Describe and replace a word with better
+ one in the file qlogicpti.h
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Cc:     "James E. J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Linux SCSI List <linux-scsi@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 05, 2021 at 10:50:33PM -0500, Sasha Levin wrote:
->SUBLEVEL only has 8 bits of space, which means that we'll overflow it
->once it reaches 256.
->
->Few of the stable branches will imminently overflow SUBLEVEL while
->there's no risk of overflowing VERSION.
->
->Thus, give SUBLEVEL 8 more bits which will be stolen from VERSION, this
->should create a better balance between the different version numbers we
->use.
->
->We can't however use the original KERNEL_VERSION and LINUX_VERSION_CODE
->as userspace has created ABI dependency on their structure, and we risk
->breaking this userspace by modifying the layout of the version integers.
->
->Cc: stable@kernel.org
->Signed-off-by: Sasha Levin <sashal@kernel.org>
->Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Hi Bhaskar,
 
-I wanted to re-use an older commit but forgot to drop the two tags
-above. The tags from Masahiro and Greg shouldn't be here, sorry about
-that.
+On Sat, Feb 6, 2021 at 9:55 AM Bhaskar Chowdhury <unixbhaskar@gmail.com> wrote:
+>
+>
+>
+> s/fucking/awful/
+>
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+> ---
+>  drivers/scsi/qlogicpti.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/scsi/qlogicpti.h b/drivers/scsi/qlogicpti.h
+> index 2b6374e08a7d..4a47631b22ea 100644
+> --- a/drivers/scsi/qlogicpti.h
+> +++ b/drivers/scsi/qlogicpti.h
+> @@ -62,7 +62,7 @@
+>  #define REQUEST_QUEUE_WAKEUP           0x8005
+>  #define EXECUTION_TIMEOUT_RESET                0x8006
+>
+> -/* Am I fucking pedantic or what? */
+> +/* Am I awful pedantic or what? */
+
+You're right that this needs to go, but "awfully" is a better
+replacement than "awful".
+
+However it's likely that the entire comment can either be removed or
+replaced with something more descriptive.
+
+Thanks,
 
 -- 
-Thanks,
-Sasha
+Julian Calaby
+
+Email: julian.calaby@gmail.com
+Profile: http://www.google.com/profiles/julian.calaby/
