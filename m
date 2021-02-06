@@ -2,208 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE373311842
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 03:34:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5ACC3118B0
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 03:44:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229587AbhBFCcL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 21:32:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37198 "EHLO
+        id S231801AbhBFCo0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 21:44:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229976AbhBFCcH (ORCPT
+        with ESMTP id S230377AbhBFCdp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 21:32:07 -0500
-Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 961D6C08EE77
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 16:32:29 -0800 (PST)
-Received: by mail-qk1-x749.google.com with SMTP id i11so7255161qkn.21
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 16:32:29 -0800 (PST)
+        Fri, 5 Feb 2021 21:33:45 -0500
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0691FC08EE7A
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 16:39:09 -0800 (PST)
+Received: by mail-qk1-x72d.google.com with SMTP id a12so8796170qkh.10
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 16:39:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:reply-to:date:message-id:mime-version:subject:from:to:cc;
-        bh=pp8fidxQDUFla17Oiws2IWIbULFigNiSSfGs09JA2vk=;
-        b=b18RVzQAnJVFPbIGZXNu0CUWEM+61tFcDjq8Je09drj6fLcNJTF1NaXKxkkMLUkr6L
-         hLhW6mZaPUnoLEVlClJ8a/YZ09VuBKt643gRBGpG86g3ufH5iEwsVXMRDM+HUP+pv7Q6
-         8W39vR6OWGTMsifsOtyYyDQQwO2wRjwXOWkcJNVPlsRJWtkH713+vbzEcxV809UrG21N
-         IxFczrmXiUVIc+yF3SGWL2C7IBJB9Unw0NVIsuWLLljk+3a2EEoF0UpL33QCRmBAYO95
-         cf2/zuoWem4+PoL3tzj9G0Smo0zWg5qnsxcSgqlXA01D+BuIu9hmydC3TcxboGNgvDOK
-         ottg==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ciK0YLExn9NtmT/ujAAKYIWsGrGZcSbTE1owRjIeMgc=;
+        b=pAXnADSm+QJgLf+gcgZ5W2l/zhC6+B04AFwPHQBJz4JLGYPoDsNIc13ulxR0xi+VgA
+         5wdx+D1TXUPWmcbVeRB7X2AEER4H3vM5FxTtksbE8k/VgrgHLbfzEoVcvwWH/9UNzKYC
+         TOJHSec6umfecHTksMS0z7VcT0CXSWQZgehc3S4IfnhxK8aBgnifHSZuAt+8xKVErlMg
+         /phlaeoskSC1TmERgVjIE5naLkqyz8swVpMLGpzT/aQYhQTzwz/Bnpq8jeGVmQN2QVcn
+         718ES1nRFUVQxTCJDrWdwIkh3qAiApux5QFXfJC32k62ZjWBdEwBy5z3X4Y49fmwbZ+I
+         RCvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:reply-to:date:message-id:mime-version
-         :subject:from:to:cc;
-        bh=pp8fidxQDUFla17Oiws2IWIbULFigNiSSfGs09JA2vk=;
-        b=GEUxPWC+di03stL6zmk79ELBgtCfgLyacdFwM+3kaqIPIxCh6G/mkXyMfKmlOL7Qgn
-         lb0ydguAPXmilp27oNTP3GBrDZNaYkBIvjdJmMG9O0Cpan+zSXIohzcAQvIL6Eu33jeX
-         9hLJa/4oZ+uzgOUWBLuUo2R1BRxeN7jaFd4q+w/JXOPCCZ6iANr7e2MqweOBoNYteXjK
-         3wDOw4/2lv+OwTU2D23Dx3529nlTPFqFYbzF+ZtBRA0GsfJEkLHGbS+3NB9aooxTsSNt
-         Dnzwk4S58Gz364oIvf0UNsgrBI1nIag2cdHBMGDwzn1w+WQmEFBNLqNaTYoGq4HFGHVL
-         kQEA==
-X-Gm-Message-State: AOAM531ODibjqwiQ+L9rAdcGMQSm3J5Quis3nM7Du8t/6h4QgXRMfs8K
-        DASECUyT28Ekc1zSD+lgwU+Gjcx0XLQ=
-X-Google-Smtp-Source: ABdhPJyNOekQxKxWr22DCjEyGNcytvgr4nXfqY1cTHSIF2dulDCnKdFw/f5Ec8jjKbcfP7TsurNgQtrPFpY=
-Sender: "seanjc via sendgmr" <seanjc@seanjc798194.pdx.corp.google.com>
-X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:d169:a9f7:513:e5])
- (user=seanjc job=sendgmr) by 2002:ad4:4993:: with SMTP id t19mr6916734qvx.41.1612571548281;
- Fri, 05 Feb 2021 16:32:28 -0800 (PST)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Fri,  5 Feb 2021 16:32:24 -0800
-Message-Id: <20210206003224.302728-1-seanjc@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.30.0.478.g8a0d178c01-goog
-Subject: [PATCH] KVM: SVM: Delay restoration of host MSR_TSC_AUX until return
- to userspace
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ciK0YLExn9NtmT/ujAAKYIWsGrGZcSbTE1owRjIeMgc=;
+        b=HA8uN8U5CYN89SaX41yLBUBwVY6ne8KNbhKeiWboU/9ILkuSCLD2RqhgrIRIZkHyKw
+         IdO5NlpqQ76q5V4dYN5N1VMRb0skpWE7YVwrZGxM4i1XKMc+8OQCdJElNazuZcTvSjF7
+         DrTjwlugaWyhXd60tJjSHZ7zselhj+7jCaHcK90sS9VjWaYEeTfI44suBcZRXISjnL4g
+         4najHRAXviHv5IBB4HjSEt5ShmVBpn3efFZ0Kv0MTJTngkBaT/b3m0hhxM4kAgsL9eNd
+         sgp/9LmZKNc6pvJlme5VljGY/Xf9MEWiR4hRsUWg5tZYJWoBbQVE7OGbPNmP2mdnsFFX
+         J+PA==
+X-Gm-Message-State: AOAM531ajbeB3/Sm8QabqkJWa0QiLWUqirrRlBh37aeIPp9dNC/teVPj
+        f+sVuVdkf30ypN4StV8DgubJ+vbVZQvLq+8M
+X-Google-Smtp-Source: ABdhPJwjSuDbU/cvRcr0S0nr4WF6ca/O+BI3ierMwVBkkMT8QdKr0frxBPIeCSqB/NMdwwQ0+hIPFg==
+X-Received: by 2002:a37:9c14:: with SMTP id f20mr7383034qke.82.1612571947693;
+        Fri, 05 Feb 2021 16:39:07 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
+        by smtp.gmail.com with ESMTPSA id 199sm11376368qkm.126.2021.02.05.16.39.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Feb 2021 16:39:06 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1l8Bcw-004BCu-4L; Fri, 05 Feb 2021 20:39:06 -0400
+Date:   Fri, 5 Feb 2021 20:39:06 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Lino Sanfilippo <LinoSanfilippo@gmx.de>
+Cc:     Lino Sanfilippo <l.sanfilippo@kunbus.com>, peterhuewe@gmx.de,
+        jarkko@kernel.org, stefanb@linux.vnet.ibm.com,
+        James.Bottomley@hansenpartnership.com, stable@vger.kernel.org,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/2] tpm: fix reference counting for struct tpm_chip
+Message-ID: <20210206003906.GR4718@ziepe.ca>
+References: <1612482643-11796-1-git-send-email-LinoSanfilippo@gmx.de>
+ <1612482643-11796-2-git-send-email-LinoSanfilippo@gmx.de>
+ <20210205130511.GI4718@ziepe.ca>
+ <3b821bf9-0f54-3473-d934-61c0c29f8957@kunbus.com>
+ <20210205151511.GM4718@ziepe.ca>
+ <f6e5dd7d-30df-26d9-c712-677c127a8026@kunbus.com>
+ <20210205155808.GO4718@ziepe.ca>
+ <db7c90c3-d86a-65c9-81a2-be1527b47e11@gmx.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <db7c90c3-d86a-65c9-81a2-be1527b47e11@gmx.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use KVM's "user return MSRs" framework to defer restoring the host's
-MSR_TSC_AUX until the CPU returns to userspace.  Add/improve comments to
-clarify why MSR_TSC_AUX is intercepted on both RDMSR and WRMSR, and why
-it's safe for KVM to keep the guest's value loaded even if KVM is
-scheduled out.
+On Fri, Feb 05, 2021 at 10:50:02PM +0100, Lino Sanfilippo wrote:
+> On 05.02.21 at 16:58, Jason Gunthorpe wrote:
+> eference in the first place).
+> >
+> > No, they are all chained together because they are all in the same
+> > struct:
+> >
+> > struct tpm_chip {
+> > 	struct device dev;
+> > 	struct device devs;
+> > 	struct cdev cdev;
+> > 	struct cdev cdevs;
+> >
+> > dev holds the refcount on memory, when it goes 0 the whole thing is
+> > kfreed.
+> >
+> > The rule is dev's refcount can't go to zero while any other refcount
+> > is != 0.
+> >
+> > For instance devs holds a get on dev that is put back only when devs
+> > goes to 0:
+> >
+> > static void tpm_devs_release(struct device *dev)
+> > {
+> > 	struct tpm_chip *chip = container_of(dev, struct tpm_chip, devs);
+> >
+> > 	/* release the master device reference */
+> > 	put_device(&chip->dev);
+> > }
+> >
+> > Both cdev elements do something similar inside the cdev layer.
+> 
+> Well this chaining is exactly what does not work nowadays and what the patch is supposed
+> to fix: currently we dont ever take the extra ref (not even in TPM 2 case, note that
+> TPM_CHIP_FLAG_TMP2 is never set), so
+> 
+> -	if (chip->flags & TPM_CHIP_FLAG_TPM2)
+> -		get_device(&chip->dev);
+> +	get_device(&chip->dev);
 
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
- arch/x86/kvm/svm/svm.c | 50 ++++++++++++++++++------------------------
- arch/x86/kvm/svm/svm.h |  7 ------
- 2 files changed, 21 insertions(+), 36 deletions(-)
+Oh, hah, yes that is busted up. The patch sketch I sent to James is
+the right way to handle it, feel free to take it up
 
-diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-index 4141caea857a..a5231a8841ff 100644
---- a/arch/x86/kvm/svm/svm.c
-+++ b/arch/x86/kvm/svm/svm.c
-@@ -220,6 +220,15 @@ struct kvm_ldttss_desc {
- 
- DEFINE_PER_CPU(struct svm_cpu_data *, svm_data);
- 
-+/*
-+ * Only MSR_TSC_AUX is switched via the user return hook.  EFER is switched via
-+ * the VMCB, and the SYSCALL/SYSENTER MSRs are handled by VMLOAD/VMSAVE.
-+ *
-+ * RDTSCP and RDPID are not used in the kernel, specifically to allow KVM to
-+ * defer the restoration of TSC_AUX until the CPU returns to userspace.
-+ */
-+#define TSC_AUX_URET_SLOT	0
-+
- static const u32 msrpm_ranges[] = {0, 0xc0000000, 0xc0010000};
- 
- #define NUM_MSR_MAPS ARRAY_SIZE(msrpm_ranges)
-@@ -965,6 +974,9 @@ static __init int svm_hardware_setup(void)
- 		kvm_tsc_scaling_ratio_frac_bits = 32;
- 	}
- 
-+	if (boot_cpu_has(X86_FEATURE_RDTSCP))
-+		kvm_define_user_return_msr(TSC_AUX_URET_SLOT, MSR_TSC_AUX);
-+
- 	/* Check for pause filtering support */
- 	if (!boot_cpu_has(X86_FEATURE_PAUSEFILTER)) {
- 		pause_filter_count = 0;
-@@ -1418,19 +1430,10 @@ static void svm_prepare_guest_switch(struct kvm_vcpu *vcpu)
- {
- 	struct vcpu_svm *svm = to_svm(vcpu);
- 	struct svm_cpu_data *sd = per_cpu(svm_data, vcpu->cpu);
--	unsigned int i;
- 
- 	if (svm->guest_state_loaded)
- 		return;
- 
--	/*
--	 * Certain MSRs are restored on VMEXIT (sev-es), or vmload of host save
--	 * area (non-sev-es). Save ones that aren't so we can restore them
--	 * individually later.
--	 */
--	for (i = 0; i < NR_HOST_SAVE_USER_MSRS; i++)
--		rdmsrl(host_save_user_msrs[i], svm->host_user_msrs[i]);
--
- 	/*
- 	 * Save additional host state that will be restored on VMEXIT (sev-es)
- 	 * or subsequent vmload of host save area.
-@@ -1449,29 +1452,15 @@ static void svm_prepare_guest_switch(struct kvm_vcpu *vcpu)
- 		}
- 	}
- 
--	/* This assumes that the kernel never uses MSR_TSC_AUX */
- 	if (static_cpu_has(X86_FEATURE_RDTSCP))
--		wrmsrl(MSR_TSC_AUX, svm->tsc_aux);
-+		kvm_set_user_return_msr(TSC_AUX_URET_SLOT, svm->tsc_aux, -1ull);
- 
- 	svm->guest_state_loaded = true;
- }
- 
- static void svm_prepare_host_switch(struct kvm_vcpu *vcpu)
- {
--	struct vcpu_svm *svm = to_svm(vcpu);
--	unsigned int i;
--
--	if (!svm->guest_state_loaded)
--		return;
--
--	/*
--	 * Certain MSRs are restored on VMEXIT (sev-es), or vmload of host save
--	 * area (non-sev-es). Restore the ones that weren't.
--	 */
--	for (i = 0; i < NR_HOST_SAVE_USER_MSRS; i++)
--		wrmsrl(host_save_user_msrs[i], svm->host_user_msrs[i]);
--
--	svm->guest_state_loaded = false;
-+	to_svm(vcpu)->guest_state_loaded = false;
- }
- 
- static void svm_vcpu_load(struct kvm_vcpu *vcpu, int cpu)
-@@ -2948,12 +2937,15 @@ static int svm_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr)
- 			return 1;
- 
- 		/*
--		 * This is rare, so we update the MSR here instead of using
--		 * direct_access_msrs.  Doing that would require a rdmsr in
--		 * svm_vcpu_put.
-+		 * TSC_AUX is usually changed only during boot and never read
-+		 * directly.  Intercept TSC_AUX instead of exposing it to the
-+		 * guest via direct_acess_msrs, and switch it via user return.
- 		 */
- 		svm->tsc_aux = data;
--		wrmsrl(MSR_TSC_AUX, svm->tsc_aux);
-+
-+		preempt_disable();
-+		kvm_set_user_return_msr(TSC_AUX_URET_SLOT, data, -1ull);
-+		preempt_enable();
- 		break;
- 	case MSR_IA32_DEBUGCTLMSR:
- 		if (!boot_cpu_has(X86_FEATURE_LBRV)) {
-diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
-index 39e071fdab0c..4053f564e27e 100644
---- a/arch/x86/kvm/svm/svm.h
-+++ b/arch/x86/kvm/svm/svm.h
-@@ -23,11 +23,6 @@
- 
- #define __sme_page_pa(x) __sme_set(page_to_pfn(x) << PAGE_SHIFT)
- 
--static const u32 host_save_user_msrs[] = {
--	MSR_TSC_AUX,
--};
--#define NR_HOST_SAVE_USER_MSRS ARRAY_SIZE(host_save_user_msrs)
--
- #define MAX_DIRECT_ACCESS_MSRS	18
- #define MSRPM_OFFSETS	16
- extern u32 msrpm_offsets[MSRPM_OFFSETS] __read_mostly;
-@@ -115,8 +110,6 @@ struct vcpu_svm {
- 
- 	u64 next_rip;
- 
--	u64 host_user_msrs[NR_HOST_SAVE_USER_MSRS];
--
- 	u64 spec_ctrl;
- 	/*
- 	 * Contains guest-controlled bits of VIRT_SPEC_CTRL, which will be
--- 
-2.30.0.478.g8a0d178c01-goog
+> and tpm_devs_release() is never called, since there is nothing that ever puts devs, so
 
+Yes, that is a pre-existing memory leak
+
+> The race with only get_device()/putdevice() in tpm_common_open()/tpm_common_release() is:
+
+The refcount handling is busted up and not working the way it is
+designed, when that is fixed there is no race.
+
+Jason
