@@ -2,162 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C7B4311B9F
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 06:39:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A95C1311BA0
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 06:39:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229669AbhBFFc1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Feb 2021 00:32:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47736 "EHLO
+        id S229716AbhBFFfF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Feb 2021 00:35:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229508AbhBFFcY (ORCPT
+        with ESMTP id S229536AbhBFFez (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Feb 2021 00:32:24 -0500
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 726EFC06174A
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 21:31:44 -0800 (PST)
-Received: by mail-pf1-x442.google.com with SMTP id q20so5732191pfu.8
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 21:31:44 -0800 (PST)
+        Sat, 6 Feb 2021 00:34:55 -0500
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C37D1C061756
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 21:34:14 -0800 (PST)
+Received: by mail-lf1-x129.google.com with SMTP id d3so13517490lfg.10
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 21:34:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=FKowa1RDI4gAn2i/8CsmokscP0DHk0rQuUmtfUOkf14=;
-        b=QG1aw+8E+12v902XHpwzldqxb4A1Lj3qdFRH7WE6qJINMFYl3F0ngeaj+xgzyzdC7L
-         RWJvyeBNpkbz7LGYJUO29iQCc/PIN9dh8djANSNc4nAwMcpKL8osSsxJzBtUkKvv1KSX
-         rlBz5rM8K73S2j7khgYT76XLTq66M6L23rvRsOGpYT8RyX3fyTLMXYwVqg1XLIoRnU5h
-         4+zrtTLTXXAEiPagj37w3im/D2+5Q/EInXnG9Lr3g1VZkFE4tYSUx+x+mlCLRAxHBhx0
-         2zS11pc9uFPjinNL1MvZVCZcSraPtkG2ATlSEWV0LlWMhRc43QKd6M2k7PYrmJsifHsD
-         sH8A==
+        bh=EDWgXFMkN9SJ13tK/quWc9ya9uCuscGv0JtfRkXDqkg=;
+        b=kGz+OZdKKTuD7RfPJrqf1WbIk+Zk/d8xX/d7I/bD1qEvTjxXD1/8Z05KGsKGZfGzsY
+         RLtOuwLNN2uDBqGVczNc10UZ3vdcenH/3OXseukU6qZOQq9o/OiFbEMPTkfjpHHhKrRS
+         tK7q6LbFqU5sWQYrdARJpZ1K+s2P92o5LtL8XwCjZ4mGeqIy1KV/lQoW6o0ss1qAqpj5
+         ahrfZTrStBaxXJ/CY/FfiCbZvBhW0D2q495puHi4vXqJDdjclDY9diJA21hO2Jm9yx9Q
+         mgVVgbqxHT3E8PKrLV9vMkGAUpQzyHUCIFNXoRUNfuDJb2JKrias/RyDoAg4/HCGt7AT
+         niBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=FKowa1RDI4gAn2i/8CsmokscP0DHk0rQuUmtfUOkf14=;
-        b=NZM0PjrDgv906D7SJrvPdcOBS3lp3x4fjqe66zeHJT8VIxWlduFzSu/Csk8umU8Z5d
-         cXyWFTaYn06qgBbgcZbirQ6S7JZcjcVfqR96iZz3eGZK+qG+36h+aI15Km5F60HbuphD
-         /fZbIh3AdpCY7o8JM/TIvKtOLPr/l6yQWr3hY9uAG8oj5N1t+hTBNCSpIRBmQOtgx53p
-         l61j0NsPab/ZDqJLTX6S+W37GGcgdP90B4HdsSlIeoiPRHJl72wQ0ZX11NJgU7jY2Gab
-         jGUdsKzc5xAZL4PrHi+9k9/c1QI93IFRMP14dwQB1B53+mpEP+OtTySFLvoaQMaXXs4g
-         rwTw==
-X-Gm-Message-State: AOAM530mWis648wOltyyTaofzZyq294W49WqZJzipNdeGff13s3Mb42y
-        /IOAUpxvwrsSk4Vdu0NeAro=
-X-Google-Smtp-Source: ABdhPJyiQfrptj44lHTEls1Z9UOVQ8TI1XHyDIMBcWkjUEATqjNkafEd+Xrr4CQ5mlJx2MNUrxqoVg==
-X-Received: by 2002:a65:50c3:: with SMTP id s3mr7547967pgp.269.1612589503269;
-        Fri, 05 Feb 2021 21:31:43 -0800 (PST)
-Received: from localhost ([178.236.46.205])
-        by smtp.gmail.com with ESMTPSA id g5sm11473590pfm.115.2021.02.05.21.31.41
+        bh=EDWgXFMkN9SJ13tK/quWc9ya9uCuscGv0JtfRkXDqkg=;
+        b=F5osIXCU/wJJuMf5I5n6tGA21ewMm7eIV3WKk0OjFj1pAKYo7T1TRpwdiJese75Esx
+         F0o/oqOhbyz1NY19oqWTPhWe4+c6bdpJmTWPSTV1WLyv6R9qBlByHOb9wKzeD2+VEvLL
+         pamQPsbUT/aRQrEYnD9avFyem30wAFY32jOyIcpfZVgdQRMsqR487ynj1kS/pf0lyrul
+         3zbx4sY3PTO5Tp5CJQDFbzb4w2r4aZ+vnelPlhlS22WbjEr5BEqRuB10zP0XnM5JDRWE
+         xkmxPAR6AJFk17p++rqJfzl3KikFhXEs7Mmc61i37NuQT4K2RxZ9hM3SKAYzK+k/zk4I
+         NO5g==
+X-Gm-Message-State: AOAM5337b0jLMCf4gOGjHKbX/ZsHIwNEXVXbAS6fmljnfzPiyQvXMPSg
+        4M8f86NHnpndvqX0BpTxrzPzvMmUXleVibc3ItQ=
+X-Google-Smtp-Source: ABdhPJzL8m2jAziUjI/5JdDslpkxK3xfUP4MHNtUNd00OEBUV7YB3lJW78hsaIgbmfW+3a85S74a5w==
+X-Received: by 2002:a05:6512:b15:: with SMTP id w21mr4356970lfu.645.1612589653307;
+        Fri, 05 Feb 2021 21:34:13 -0800 (PST)
+Received: from localhost.localdomain ([147.30.65.60])
+        by smtp.googlemail.com with ESMTPSA id e7sm1236722ljo.74.2021.02.05.21.34.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Feb 2021 21:31:42 -0800 (PST)
-From:   menglong8.dong@gmail.com
-X-Google-Original-From: dong.menglong@zte.com.cn
-To:     axboe@kernel.dk
-Cc:     davem@davemloft.net, viro@zeniv.linux.org.uk,
-        herbert@gondor.apana.org.au, dong.menglong@zte.com.cn,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH net-next] net: socket: use BIT_MASK for MSG_*
-Date:   Sat,  6 Feb 2021 13:31:09 +0800
-Message-Id: <20210206053109.78205-1-dong.menglong@zte.com.cn>
-X-Mailer: git-send-email 2.30.0
+        Fri, 05 Feb 2021 21:34:12 -0800 (PST)
+From:   Sabyrzhan Tasbolatov <snovitoll@gmail.com>
+To:     arnd@arndb.de, gregkh@linuxfoundation.org
+Cc:     alex.dewar90@gmail.com, linux-kernel@vger.kernel.org,
+        syzbot+15ec7391f3d6a1a7cc7d@syzkaller.appspotmail.com
+Subject: [PATCH] drivers/misc/vmw_vmci: restrict too big queue size in qp_host_alloc_queue
+Date:   Sat,  6 Feb 2021 11:34:09 +0600
+Message-Id: <20210206053409.1972270-1-snovitoll@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Menglong Dong <dong.menglong@zte.com.cn>
+syzbot found WARNING in qp_broker_alloc[1] in qp_host_alloc_queue()
+when num_pages is 0x100001, giving queue_size + queue_page_size
+bigger than KMALLOC_MAX_SIZE for kzalloc(), resulting order >= MAX_ORDER
+condition.
 
-The bit mask for MSG_* seems a little confused here. Replace it
-with BIT_MASK to make it clear to understand.
+queue_size + queue_page_size=0x8000d8, where KMALLOC_MAX_SIZE=0x400000.
 
-Signed-off-by: Menglong Dong <dong.menglong@zte.com.cn>
+
+FYI, I've also noticed in vmci_queue_pair.c other SLAB allocations with no
+length check that might exceed KMALLOC_MAX_SIZE as well,
+but syzbot doesn't have reproduces for them.
+
+in qp_alloc_ppn_set():
+	produce_ppns =
+	    kmalloc_array(num_produce_pages, sizeof(*produce_ppns),
+			  GFP_KERNEL);
+[..]
+	consume_ppns =
+	    kmalloc_array(num_consume_pages, sizeof(*consume_ppns),
+			  GFP_KERNEL);
+[..]
+in qp_alloc_hypercall():
+	msg_size = sizeof(*alloc_msg) +
+	    (size_t) entry->num_ppns * ppn_size;
+	alloc_msg = kmalloc(msg_size, GFP_KERNEL);
+[..]
+in qp_broker_create():
+	entry->local_mem = kcalloc(QPE_NUM_PAGES(entry->qp),
+					   PAGE_SIZE, GFP_KERNEL);
+
+[1]
+Call Trace:
+ alloc_pages include/linux/gfp.h:547 [inline]
+ kmalloc_order+0x40/0x130 mm/slab_common.c:837
+ kmalloc_order_trace+0x15/0x70 mm/slab_common.c:853
+ kmalloc_large include/linux/slab.h:481 [inline]
+ __kmalloc+0x257/0x330 mm/slub.c:3959
+ kmalloc include/linux/slab.h:557 [inline]
+ kzalloc include/linux/slab.h:682 [inline]
+ qp_host_alloc_queue drivers/misc/vmw_vmci/vmci_queue_pair.c:540 [inline]
+ qp_broker_create drivers/misc/vmw_vmci/vmci_queue_pair.c:1351 [inline]
+ qp_broker_alloc+0x936/0x2740 drivers/misc/vmw_vmci/vmci_queue_pair.c:1739
+
+Reported-by: syzbot+15ec7391f3d6a1a7cc7d@syzkaller.appspotmail.com
+Signed-off-by: Sabyrzhan Tasbolatov <snovitoll@gmail.com>
 ---
- include/linux/socket.h | 71 ++++++++++++++++++++++--------------------
- 1 file changed, 37 insertions(+), 34 deletions(-)
+ drivers/misc/vmw_vmci/vmci_queue_pair.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/include/linux/socket.h b/include/linux/socket.h
-index 385894b4a8bb..671d31c41582 100644
---- a/include/linux/socket.h
-+++ b/include/linux/socket.h
-@@ -283,42 +283,45 @@ struct ucred {
-    Added those for 1003.1g not all are supported yet
-  */
+diff --git a/drivers/misc/vmw_vmci/vmci_queue_pair.c b/drivers/misc/vmw_vmci/vmci_queue_pair.c
+index c49065887e8f..f6af406fda80 100644
+--- a/drivers/misc/vmw_vmci/vmci_queue_pair.c
++++ b/drivers/misc/vmw_vmci/vmci_queue_pair.c
+@@ -537,6 +537,11 @@ static struct vmci_queue *qp_host_alloc_queue(u64 size)
  
--#define MSG_OOB		1
--#define MSG_PEEK	2
--#define MSG_DONTROUTE	4
--#define MSG_TRYHARD     4       /* Synonym for MSG_DONTROUTE for DECnet */
--#define MSG_CTRUNC	8
--#define MSG_PROBE	0x10	/* Do not send. Only probe path f.e. for MTU */
--#define MSG_TRUNC	0x20
--#define MSG_DONTWAIT	0x40	/* Nonblocking io		 */
--#define MSG_EOR         0x80	/* End of record */
--#define MSG_WAITALL	0x100	/* Wait for a full request */
--#define MSG_FIN         0x200
--#define MSG_SYN		0x400
--#define MSG_CONFIRM	0x800	/* Confirm path validity */
--#define MSG_RST		0x1000
--#define MSG_ERRQUEUE	0x2000	/* Fetch message from error queue */
--#define MSG_NOSIGNAL	0x4000	/* Do not generate SIGPIPE */
--#define MSG_MORE	0x8000	/* Sender will send more */
--#define MSG_WAITFORONE	0x10000	/* recvmmsg(): block until 1+ packets avail */
--#define MSG_SENDPAGE_NOPOLICY 0x10000 /* sendpage() internal : do no apply policy */
--#define MSG_SENDPAGE_NOTLAST 0x20000 /* sendpage() internal : not the last page */
--#define MSG_BATCH	0x40000 /* sendmmsg(): more messages coming */
--#define MSG_EOF         MSG_FIN
--#define MSG_NO_SHARED_FRAGS 0x80000 /* sendpage() internal : page frags are not shared */
--#define MSG_SENDPAGE_DECRYPTED	0x100000 /* sendpage() internal : page may carry
--					  * plain text and require encryption
--					  */
--
--#define MSG_ZEROCOPY	0x4000000	/* Use user data in kernel path */
--#define MSG_FASTOPEN	0x20000000	/* Send data in TCP SYN */
--#define MSG_CMSG_CLOEXEC 0x40000000	/* Set close_on_exec for file
--					   descriptor received through
--					   SCM_RIGHTS */
-+#define MSG_OOB		BIT_MASK(0)
-+#define MSG_PEEK	BIT_MASK(1)
-+#define MSG_DONTROUTE	BIT_MASK(2)
-+#define MSG_TRYHARD	BIT_MASK(2)	/* Synonym for MSG_DONTROUTE for DECnet		*/
-+#define MSG_CTRUNC	BIT_MASK(3)
-+#define MSG_PROBE	BIT_MASK(4)	/* Do not send. Only probe path f.e. for MTU	*/
-+#define MSG_TRUNC	BIT_MASK(5)
-+#define MSG_DONTWAIT	BIT_MASK(6)	/* Nonblocking io		*/
-+#define MSG_EOR		BIT_MASK(7)	/* End of record		*/
-+#define MSG_WAITALL	BIT_MASK(8)	/* Wait for a full request	*/
-+#define MSG_FIN		BIT_MASK(9)
-+#define MSG_SYN		BIT_MASK(10)
-+#define MSG_CONFIRM	BIT_MASK(11)	/* Confirm path validity	*/
-+#define MSG_RST		BIT_MASK(12)
-+#define MSG_ERRQUEUE	BIT_MASK(13)	/* Fetch message from error queue */
-+#define MSG_NOSIGNAL	BIT_MASK(14)	/* Do not generate SIGPIPE	*/
-+#define MSG_MORE	BIT_MASK(15)	/* Sender will send more	*/
-+#define MSG_WAITFORONE	BIT_MASK(16)	/* recvmmsg(): block until 1+ packets avail */
-+#define MSG_SENDPAGE_NOPOLICY	BIT_MASK(16)	/* sendpage() internal : do no apply policy */
-+#define MSG_SENDPAGE_NOTLAST	BIT_MASK(17)	/* sendpage() internal : not the last page  */
-+#define MSG_BATCH	BIT_MASK(18)		/* sendmmsg(): more messages coming */
-+#define MSG_EOF		MSG_FIN
-+#define MSG_NO_SHARED_FRAGS	BIT_MASK(19)	/* sendpage() internal : page frags
-+						 * are not shared
-+						 */
-+#define MSG_SENDPAGE_DECRYPTED	BIT_MASK(20)	/* sendpage() internal : page may carry
-+						 * plain text and require encryption
-+						 */
+ 	queue_page_size = num_pages * sizeof(*queue->kernel_if->u.h.page);
+ 
++	if (queue_size + queue_page_size > KMALLOC_MAX_SIZE) {
++		pr_warn("too big queue to allocate\n");
++		return NULL;
++	}
 +
-+#define MSG_ZEROCOPY	BIT_MASK(26)	/* Use user data in kernel path */
-+#define MSG_FASTOPEN	BIT_MASK(29)	/* Send data in TCP SYN */
-+#define MSG_CMSG_CLOEXEC	BIT_MASK(30)	/* Set close_on_exec for file
-+						 * descriptor received through
-+						 * SCM_RIGHTS
-+						 */
- #if defined(CONFIG_COMPAT)
--#define MSG_CMSG_COMPAT	0x80000000	/* This message needs 32 bit fixups */
-+#define MSG_CMSG_COMPAT	BIT_MASK(31)	/* This message needs 32 bit fixups */
- #else
--#define MSG_CMSG_COMPAT	0		/* We never have 32 bit fixups */
-+#define MSG_CMSG_COMPAT	0	/* We never have 32 bit fixups */
- #endif
- 
- 
+ 	queue = kzalloc(queue_size + queue_page_size, GFP_KERNEL);
+ 	if (queue) {
+ 		queue->q_header = NULL;
 -- 
-2.30.0
+2.25.1
 
