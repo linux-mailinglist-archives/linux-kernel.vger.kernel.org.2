@@ -2,91 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31FD8311AB7
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 05:11:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0068F311ABB
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 05:13:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231682AbhBFELS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 23:11:18 -0500
-Received: from so15.mailgun.net ([198.61.254.15]:36077 "EHLO so15.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232209AbhBFCz3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 21:55:29 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1612580110; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=Wp8L5Uv0x1WmD2G3Tgk2vfJDnMP6rhkD3cr6tfJd2/Y=; b=cGSG9/3zOgSsUosG1vpJDIvJ6Vp1CKWRKvybbzBKO7hz1N84R4Vq8pgt8QYtg5wvQ1M1Z84i
- Ffl0vddeQb2yHkDiA/+9M00QWw2jwDB9YrRKPZPyRnKBKVcUzmkOROkZZN7YNV3AVD6MzVan
- HzhOLW+m10g0qdlRdcCQARh7P1w=
-X-Mailgun-Sending-Ip: 198.61.254.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 601df77734db06ef798aa116 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 06 Feb 2021 01:57:11
- GMT
-Sender: charante=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id B5203C43463; Sat,  6 Feb 2021 01:57:10 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-3.2 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
-Received: from [192.168.29.110] (unknown [49.37.158.25])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: charante)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9DFC5C433C6;
-        Sat,  6 Feb 2021 01:57:07 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 9DFC5C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=charante@codeaurora.org
-Subject: Re: [PATCH] mm: page_alloc: update the COMPACT[STALL|FAIL] events
- properly
-To:     David Rientjes <rientjes@google.com>
-Cc:     akpm@linux-foundation.org, vbabka@suse.cz, mhocko@suse.com,
-        vinmenon@codeaurora.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <1612187338-19100-1-git-send-email-charante@codeaurora.org>
- <d9d1dd7b-1fe7-67b6-6ba4-fb1a6faa8fae@google.com>
- <160ba3b5-2cd4-5ff0-1348-fb477cefd33d@codeaurora.org>
- <1213f4c6-7557-268d-253e-23f8fea55b19@google.com>
-From:   Charan Teja Kalla <charante@codeaurora.org>
-Message-ID: <8a03203b-e6dd-3a86-5b83-33d9c6adcc11@codeaurora.org>
-Date:   Sat, 6 Feb 2021 07:27:04 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S230064AbhBFEM6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 23:12:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41534 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232200AbhBFCzV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 21:55:21 -0500
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EF68C03327E
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 18:30:42 -0800 (PST)
+Received: by mail-pf1-x436.google.com with SMTP id w14so5557943pfi.2
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 18:30:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:subject:to:cc:references:in-reply-to:mime-version
+         :message-id:content-transfer-encoding;
+        bh=3Fi8z3aDMK6SLGRFmW7/sd7tkTtOagycLE2d1dIDY6o=;
+        b=rtRAOrV2nEwgcUNM8Bgzcw57M4vJGgkUG3PJgKWP1L/JR1szJU+EcKSvOLLf+aWKL0
+         y7w4Ye1x61LIY1dsjUXHTMyjIN717p7guDykyWRE4n+4YFmRUX9XWf4q4JzjJJYBEwsB
+         DrNOVtf1p4KRGkREu2b63Y7oZLer+yOdoGTnTVPH8lbhHk2YRh3SNavst23rynPd9gBz
+         exFrm5GQ6JPEQBA0GnKvLd1T/VMjr8LlgZv5f8gRV/1mC1lsXNRUfEB2HEdR296toA88
+         p5QBEeF0A1iTtuGF+17SQM1dQ4xhTjh7PbPCWM1HWWF8Px08J2w7PvOmLriJi8vzeOZg
+         mDcg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
+         :mime-version:message-id:content-transfer-encoding;
+        bh=3Fi8z3aDMK6SLGRFmW7/sd7tkTtOagycLE2d1dIDY6o=;
+        b=QglsAMFP6WdqaAXWv0Bh9frhf56n8WJwOe6QuCNliv6kJOBEsyc6+N/nvfHrpNiqp/
+         T1+30sSBd45fludg4OA8R/HmHeZFkNlWLrhPFBvu/KprDg4e3GOeoOmy7/x0wDdD0+Zj
+         EX88gJGT4rtLavrzZYb7AFdz29rv1BVWAxOax3/BKAAsIeNYcRpwMkaXJHBqYwWgSSDN
+         TcSUR2pllMgat3epjBIpIbRrVXy6SVXvH7pNuSFLYacDZthyu4AORB11ZCqhOX7sjlV6
+         xRUBwLY45nZlpJK9AP0DDeQOr+eyqIoANLxp2eqpHHg4Kpd5jY+YYrmjdpY3eq1jMHzq
+         L6gg==
+X-Gm-Message-State: AOAM532XL+PWJLHn3W6ssQpjV0Sq0yA4LR39piJljuOCUuNCJvom60YI
+        1tVbC6fKU1apSBlPp+9jDN0tFrtU7kQ=
+X-Google-Smtp-Source: ABdhPJzDGa3wDnCUkAanIdz0B9tGf5GQ/noqhwonPNUk2tdsE1R02jIiz7q+ZxsBl5i6u1W9CUjWtw==
+X-Received: by 2002:a62:7650:0:b029:1bb:aa42:aa96 with SMTP id r77-20020a6276500000b02901bbaa42aa96mr7240915pfc.33.1612578641762;
+        Fri, 05 Feb 2021 18:30:41 -0800 (PST)
+Received: from localhost (60-242-11-44.static.tpgi.com.au. [60.242.11.44])
+        by smtp.gmail.com with ESMTPSA id z27sm6358444pff.124.2021.02.05.18.30.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Feb 2021 18:30:41 -0800 (PST)
+Date:   Sat, 06 Feb 2021 12:30:35 +1000
+From:   Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: [PATCH] powerpc/8xx: Fix software emulation interrupt
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@samba.org>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+References: <ad782af87a222efc79cfb06079b0fd23d4224eaf.1612515180.git.christophe.leroy@csgroup.eu>
+In-Reply-To: <ad782af87a222efc79cfb06079b0fd23d4224eaf.1612515180.git.christophe.leroy@csgroup.eu>
 MIME-Version: 1.0
-In-Reply-To: <1213f4c6-7557-268d-253e-23f8fea55b19@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Message-Id: <1612578497.zykn0q97ns.astroid@bobo.none>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/6/2021 3:58 AM, David Rientjes wrote:
->> In the code, when COMPACT_SKIPPED is being returned, the page will
->> always be NULL. So, I'm not sure how much useful it is for the page ==
->> NULL check here. Or I failed to understand your point here?
->>
-> Your code is short-circuiting the rest of  __alloc_pages_direct_compact() 
-> where the return value is dictated by whether page is NULL or non-NULL.  
-> We can't leak a captured page if we are testing for it being NULL or 
-> non-NULL, which is what the rest of __alloc_pages_direct_compact() does 
-> *before* your change.  So the idea was to add a check the page is actually 
-> NULL here since you are now relying on the return value of 
-> compact_zone_order() to be COMPACT_SKIPPED to infer page == NULL.
-> 
-> I agree that's currently true in the code, I was trying to catch any 
-> errors where current->capture_control.page was non-NULL but 
-> try_to_compact_pages() returns COMPACT_SKIPPED.  There's some complexity 
-> here.
+Excerpts from Christophe Leroy's message of February 5, 2021 6:56 pm:
+> For unimplemented instructions or unimplemented SPRs, the 8xx triggers
+> a "Software Emulation Exception" (0x1000). That interrupt doesn't set
+> reason bits in SRR1 as the "Program Check Exception" does.
+>=20
+> Go through emulation_assist_interrupt() to set REASON_ILLEGAL.
+>=20
+> Fixes: fbbcc3bb139e ("powerpc/8xx: Remove SoftwareEmulation()")
+> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+> ---
+> I'm wondering whether it wouldn't be better to set REASON_ILLEGAL
+> in the exception prolog and still call program_check_exception.
+> And do the same in book3s/64 to avoid the nightmare of an
+> INTERRUPT_HANDLER calling another INTERRUPT_HANDLER.
 
-Thanks for the detailed explanation. This looks fine to me. I will send
-V2 with this information in the commit log.
+Hmm, I missed this. We just change program_check_exception to
+a common function which is called by both.
 
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora
-Forum, a Linux Foundation Collaborative Project
+Thanks,
+Nick
+
