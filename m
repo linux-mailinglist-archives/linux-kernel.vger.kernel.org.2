@@ -2,138 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03666311E57
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 16:13:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 203AF311E5B
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 16:14:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230372AbhBFPML (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Feb 2021 10:12:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58700 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229807AbhBFPKp (ORCPT
+        id S230146AbhBFPNu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Feb 2021 10:13:50 -0500
+Received: from wildebeest.demon.nl ([212.238.236.112]:45862 "EHLO
+        gnu.wildebeest.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229807AbhBFPNp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Feb 2021 10:10:45 -0500
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7B37C06121D
-        for <linux-kernel@vger.kernel.org>; Sat,  6 Feb 2021 07:09:07 -0800 (PST)
-Received: by mail-pl1-x62b.google.com with SMTP id u15so5102871plf.1
-        for <linux-kernel@vger.kernel.org>; Sat, 06 Feb 2021 07:09:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=zR9OsHslqhDG8eEUn6PBh2UQCbLLHkueVjbLue/1gyw=;
-        b=AV089iQbfYZ3TEy26MlPZup2jvRdzw8UeMiOT5DYlDKCUfo45ZRXr1Te83bx7xjrpW
-         zYreHLal6AkzgRP6eAX8eFKgtRktEExoHJRp6QzX06KU6+qmcivjCzF6LmMA520b/w3w
-         zR8C9JGpC/XKXKZWpy4O0SuV7a9YXsWAK4B42+B2OzYM/qmxDHWxGbnz3FCylG1qIajT
-         T+XaYAVsIPQWzXGMlRL3eluLC16/EslSDKwyM+VYmWElB+9rxoKLpa26008X0O2SltHi
-         6/S6D2pyeyZHyXrvly/Jj2fkGInXY5lDx/rk+d3rXz8N/jWzA3OrjCoZer26flpUhIEJ
-         mLjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=zR9OsHslqhDG8eEUn6PBh2UQCbLLHkueVjbLue/1gyw=;
-        b=StGYc6Ba4oYKWbKON1NcT9UY1118xKUCuM4pJxB+ddHM6s2ZRINLgoGCT8I47HPF1X
-         z8H/KAlhn5LrcvTUz3mzCMZz+kwgRsePQO3R05Lt3Vl4hrvLQgJ2TiIbVfptHPnBBpR0
-         OFbSl4nWQuChq1a+yjQwHaWxj16wlWgDAcTNDs0mVRUw0km0oJTx93TsBhMxp12mPnXZ
-         NKqTA6Yi0od6Pv7TzR4iaODkCT+TL1GdIDO6uAnRi9LgL+es2oZOM0R97m/tAHG/qjo7
-         fTkQV3KThjcVcjmFVLnzQMTj5LFcK37RuUjTg4Jk5L4ZEu8ThZHmydjBNTg0fdaQp/jb
-         sDrw==
-X-Gm-Message-State: AOAM531SSKW28uT19Er6beSb/vYuJEPyF2GjLNL9+bl6ku0w4XrOPRBm
-        iv9Ueay+TQJTY0t9CGyIJLebpA==
-X-Google-Smtp-Source: ABdhPJzHhRA/YCVn3C/SiFaht017M5NJCA/gir1VRykF39YQux9zfgwsSmliQIrr6ITzG42+/VQvFQ==
-X-Received: by 2002:a17:90b:4d06:: with SMTP id mw6mr8656415pjb.24.1612624147404;
-        Sat, 06 Feb 2021 07:09:07 -0800 (PST)
-Received: from localhost ([45.137.216.202])
-        by smtp.gmail.com with ESMTPSA id v4sm11797312pjt.4.2021.02.06.07.09.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 06 Feb 2021 07:09:06 -0800 (PST)
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Daniel Kiss <Daniel.Kiss@arm.com>,
-        Denis Nikitin <denik@chromium.org>,
-        Al Grant <al.grant@arm.com>, coresight@lists.linaro.org,
-        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Leo Yan <leo.yan@linaro.org>
-Subject: [PATCH v3 8/8] Documentation: coresight: Add PID tracing description
-Date:   Sat,  6 Feb 2021 23:08:33 +0800
-Message-Id: <20210206150833.42120-9-leo.yan@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210206150833.42120-1-leo.yan@linaro.org>
-References: <20210206150833.42120-1-leo.yan@linaro.org>
+        Sat, 6 Feb 2021 10:13:45 -0500
+Received: from librem (deer0x15.wildebeest.org [172.31.17.151])
+        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by gnu.wildebeest.org (Postfix) with ESMTPSA id DFFA33027634;
+        Sat,  6 Feb 2021 16:12:59 +0100 (CET)
+Received: by librem (Postfix, from userid 1000)
+        id 41626C100B; Sat,  6 Feb 2021 16:11:51 +0100 (CET)
+Date:   Sat, 6 Feb 2021 16:11:51 +0100
+From:   Mark Wielaard <mark@klomp.org>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Jakub Jelinek <jakub@redhat.com>, Nick Clifton <nickc@redhat.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Fangrui Song <maskray@google.com>,
+        Caroline Tice <cmtice@google.com>, Yonghong Song <yhs@fb.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [PATCH v7 1/2] Kbuild: make DWARF version a choice
+Message-ID: <20210206151151.GB2851@wildebeest.org>
+References: <20210130004401.2528717-1-ndesaulniers@google.com>
+ <20210130004401.2528717-2-ndesaulniers@google.com>
+ <20210204103946.GA14802@wildebeest.org>
+ <CAKwvOdm0O8m_+mxy7Z91Lu=Hzf6-DyCdAjMOsCRiMmNis4Pd2A@mail.gmail.com>
+ <20fdd20fe067dba00b349407c4a0128c97c1a707.camel@klomp.org>
+ <CAKwvOdmT4t==akMN7eHWgD_XdpN--PLpUj8vgujGJ4TpREvteQ@mail.gmail.com>
+ <42d2542d4b7f9836121b92d9bf349afa920bd4cd.camel@klomp.org>
+ <CAKwvOdmHM8srtLaEy+L_XGzO9TBbhP3csQNAhUTH_TmeDePkDQ@mail.gmail.com>
+ <8696ef2e86c5d8078bf2d2c74fb3cbbecbd22c83.camel@klomp.org>
+ <CAKwvOd=jMykgiR+fthEVeaP1c3-N6veZhKd2LZjeJ5KaqF4PHg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKwvOd=jMykgiR+fthEVeaP1c3-N6veZhKd2LZjeJ5KaqF4PHg@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Flag: NO
+X-Spam-Status: No, score=-2.9 required=5.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on gnu.wildebeest.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After support the PID tracing for the kernel in EL1 or EL2, the usage
-gets more complicated.
+Hi Nick,
 
-This patch gives description for the PMU formats of contextID configs,
-this can help users to understand how to control the knobs for PID
-tracing when the kernel is in different ELs.
+On Fri, Feb 05, 2021 at 01:18:11PM -0800, Nick Desaulniers wrote:
+> On Fri, Feb 5, 2021 at 4:49 AM Mark Wielaard <mark@klomp.org> wrote:
+> I guess I'm curious whether
+> https://bugzilla.redhat.com/show_bug.cgi?id=1922707 came up during the
+> mass rebuild of all of Fedora a few weeks ago?  Assuming the Linux
+> kernel was part of that test, those warnings would have been both new
+> and obviously related to changing the implicit default DWARF version.
 
-Signed-off-by: Leo Yan <leo.yan@linaro.org>
----
- Documentation/trace/coresight/coresight.rst | 32 +++++++++++++++++++++
- 1 file changed, 32 insertions(+)
+Yes, looking at the build.log that warning was also present.  But the
+dwarves pahole update to process DWARF5 was more important.  Also at
+first it was believed this came from the binutils ld linker
+scripts. Which were also updated first. Once your patch is accepted we
+can resolve that bug.
 
-diff --git a/Documentation/trace/coresight/coresight.rst b/Documentation/trace/coresight/coresight.rst
-index 0b73acb44efa..169749efd8d1 100644
---- a/Documentation/trace/coresight/coresight.rst
-+++ b/Documentation/trace/coresight/coresight.rst
-@@ -512,6 +512,38 @@ The --itrace option controls the type and frequency of synthesized events
- Note that only 64-bit programs are currently supported - further work is
- required to support instruction decode of 32-bit Arm programs.
- 
-+2.2) Tracing PID
-+
-+The kernel can be built to write the PID value into the PE ContextID registers.
-+For a kernel running at EL1, the PID is stored in CONTEXTIDR_EL1.  A PE may
-+implement Arm Virtualization Host Extensions (VHE), which the kernel can
-+run at EL2 as a virtualisation host; in this case, the PID value is stored in
-+CONTEXTIDR_EL2.
-+
-+perf provides PMU formats that program the ETM to insert these values into the
-+trace data; the PMU formats are defined as below:
-+
-+  "contextid1": Available on both EL1 kernel and EL2 kernel.  When the
-+                kernel is running at EL1, "contextid1" enables the PID
-+                tracing; when the kernel is running at EL2, this enables
-+                tracing the PID of guest applications.
-+
-+  "contextid2": Only usable when the kernel is running at EL2.  When
-+                selected, enables PID tracing on EL2 kernel.
-+
-+  "contextid":  Will be an alias for the option that enables PID
-+                tracing.  I.e,
-+                contextid == contextid1, on EL1 kernel.
-+                contextid == contextid2, on EL2 kernel.
-+
-+perf will always enable PID tracing at the relevant EL, this is accomplished by
-+automatically enable the "contextid" config - but for EL2 it is possible to make
-+specific adjustments using configs "contextid1" and "contextid2", E.g. if a user
-+wants to trace PIDs for both host and guest, the two configs "contextid1" and
-+"contextid2" can be set at the same time:
-+
-+  perf record -e cs_etm/contextid1,contextid2/u -- vm
-+
- 
- Generating coverage files for Feedback Directed Optimization: AutoFDO
- ---------------------------------------------------------------------
--- 
-2.25.1
+Cheers,
 
+Mark
