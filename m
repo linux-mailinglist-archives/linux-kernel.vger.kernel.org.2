@@ -2,206 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 628EC311B4C
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 06:07:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 12802311B4F
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 06:07:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231449AbhBFFGP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Feb 2021 00:06:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48442 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232355AbhBFDvT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 22:51:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1ECB064FB3;
-        Sat,  6 Feb 2021 03:50:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612583437;
-        bh=oyWsAoaaylR2Qn509XAgnpBU5prFNdPLKPX4axkvNpU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=J0V7Br+K/IYLBcg9zeKVGXSAj8KgnEjNQ6249qCLmsmRJ3I1NI27iIiPkex+AQucR
-         pP6h9TJsAw5SMtW+Cyv/IVH9BYFV6XnVC8caqKu531gAw75o3t2oPkE9CitiqYnA3J
-         u5Qb3swP70hnjv46a3omR7t9cMfTlYD3LHUuwAOelNER7iw7PehFnMO69kQxr/AMn8
-         K30G62oeZStL/YCmGVaXy6GndqjDellXE9ni0sX0wvWMTXjV44t/3qZLIjBf2Wn9PK
-         DmbCpUmZH+G/yr6s9/TpabZ33h1G/aWFsnfvLJ+B+neGK2EdrEacGkQ6zKKnQEechR
-         Yzi6jcUoKJUsA==
-From:   Sasha Levin <sashal@kernel.org>
-To:     masahiroy@kernel.org, michal.lkml@markovi.net
-Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, gregkh@linuxfoundation.org,
-        Sasha Levin <sashal@kernel.org>, stable@kernel.org
-Subject: [PATCH 3/3] kbuild: introduce KERNEL_VERSION2 and LINUX_VERSION_CODE2
-Date:   Fri,  5 Feb 2021 22:50:33 -0500
-Message-Id: <20210206035033.2036180-3-sashal@kernel.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210206035033.2036180-1-sashal@kernel.org>
-References: <20210206035033.2036180-1-sashal@kernel.org>
+        id S229789AbhBFFGz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Feb 2021 00:06:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56288 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230487AbhBFD7m (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 22:59:42 -0500
+Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A35A9C061756;
+        Fri,  5 Feb 2021 19:59:01 -0800 (PST)
+Received: by mail-qt1-x831.google.com with SMTP id e15so6602380qte.9;
+        Fri, 05 Feb 2021 19:59:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=BOfhpI6Pct7YOvRYywamiqV90GYlguNDYCZVZfdMFF4=;
+        b=ijefe/7VuijxV7fXltuMQCv2CDhZQmJb4GneqOJpBl03bFpQ9R7lm3ZJn2qvYC3egj
+         JtayyTyxDBGm3+RUiEWCUhdEJoY14xs59Q0n+zDOpAJ5m2SDDFbtfzPkFCPD4c4zm5dm
+         H9A8GxySd9zaO16fTZM6YGk2nIU5HSdfU8T15TZRVJ+0gAtd747GNaTGJOYiTe160uB6
+         7J59DJnEIE74SZsWMQWBL8l4pW8wS/CZ+GDUblW8tX72x97QV9QcbEs9Y2INsOnM/rM6
+         81dlxRd9+nXqNLk9taTp/JsBueaXBVFEDg4WjvMd6nxce0aiRvurouTa243dlx4OJI6j
+         pexA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=BOfhpI6Pct7YOvRYywamiqV90GYlguNDYCZVZfdMFF4=;
+        b=Oztj+M/y1DQOBSmA9KC02MfWHBE2+cWZVGdzbD0dap6So1kh66vTnEox9uOBW/lapM
+         A1gOuk9x12BSaiXeOqBfioDrrPfj7r5acEiLin+6R6VpDos7Euva7YcC1oMkOT9UqpB2
+         jA9xSwO6hiauROWgVjqdJFf3MTOYP41cwDkJ+17sjbmDbpk+MCSmsaWE8KvjlmzLslmc
+         qLOxETWW1zKXrK8cX/+vd74dX9QIsMfFW+f+gPlGdir/aGDURh7SUftHoSHXbKTE1ea9
+         si0llxBWdJz/dkDQILC8sO0y7VQKTz1Yx2aWSEBQW+xreXpHhme5uL+imdmrcawggfRz
+         jSrA==
+X-Gm-Message-State: AOAM533Mn22lsMRcN5xefMXDGovyaexZI7jQIbKw6DHYOER0lzSzhfwy
+        qWxWnePyDAa4LLw2pcvzKI0=
+X-Google-Smtp-Source: ABdhPJxHU0djNxKsFfcG4kkVF/LLNPr6VomPir5Bk+1Ok/DpWAT3ivhJVFGm/F38GogVG8ysqI5eGQ==
+X-Received: by 2002:ac8:5d0d:: with SMTP id f13mr7172637qtx.317.1612583940812;
+        Fri, 05 Feb 2021 19:59:00 -0800 (PST)
+Received: from localhost (dhcp-6c-ae-f6-dc-d8-61.cpe.echoes.net. [72.28.8.195])
+        by smtp.gmail.com with ESMTPSA id h5sm10540341qti.22.2021.02.05.19.58.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Feb 2021 19:59:00 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Fri, 5 Feb 2021 22:58:09 -0500
+From:   Tejun Heo <tj@kernel.org>
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.com>, Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: [PATCH 0/8] mm: memcontrol: switch to rstat v2
+Message-ID: <YB4T0eX3XDiLPNI1@mtj.duckdns.org>
+References: <20210205182806.17220-1-hannes@cmpxchg.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210205182806.17220-1-hannes@cmpxchg.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SUBLEVEL only has 8 bits of space, which means that we'll overflow it
-once it reaches 256.
+On Fri, Feb 05, 2021 at 01:27:58PM -0500, Johannes Weiner wrote:
+> This is version 2 of the memcg rstat patches. Updates since v1:
+> 
+> - added cgroup selftest output (see test section below) (thanks Roman)
+> - updated cgroup selftest to match new kernel implementation
+> - added Fixes: tag to 'mm: memcontrol: fix cpuhotplug statistics flushing' (Shakeel)
+> - collected review & ack tags
+> - added rstat overview to 'mm: memcontrol: switch to rstat' changelog (Michal)
+> - simplified memcg_flush_lruvec_page_state() and removed cpu==-1 case (Michal)
 
-Few of the stable branches will imminently overflow SUBLEVEL while
-there's no risk of overflowing VERSION.
+The whole series looks good to me. Please feel free to route the rstat
+patches with the rest of the series.
 
-Thus, give SUBLEVEL 8 more bits which will be stolen from VERSION, this
-should create a better balance between the different version numbers we
-use.
+Thanks.
 
-We can't however use the original KERNEL_VERSION and LINUX_VERSION_CODE
-as userspace has created ABI dependency on their structure, and we risk
-breaking this userspace by modifying the layout of the version integers.
-
-Cc: stable@kernel.org
-Signed-off-by: Sasha Levin <sashal@kernel.org>
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- Makefile                                       | 8 +++++++-
- drivers/net/ethernet/mellanox/mlx5/core/main.c | 4 ++--
- drivers/usb/core/hcd.c                         | 4 ++--
- drivers/usb/gadget/udc/aspeed-vhub/hub.c       | 4 ++--
- include/linux/usb/composite.h                  | 4 ++--
- kernel/sys.c                                   | 2 +-
- tools/perf/tests/bpf-script-example.c          | 2 +-
- tools/perf/tests/bpf-script-test-kbuild.c      | 2 +-
- tools/perf/tests/bpf-script-test-prologue.c    | 2 +-
- 9 files changed, 19 insertions(+), 13 deletions(-)
-
-diff --git a/Makefile b/Makefile
-index 157be50c691e5..2177c548e4c24 100644
---- a/Makefile
-+++ b/Makefile
-@@ -1266,7 +1266,13 @@ define filechk_version.h
- 		expr $(VERSION) \* 65536 + 0$(PATCHLEVEL) \* 256 + $(SUBLEVEL)); \
- 	fi;                                                              \
- 	echo '#define KERNEL_VERSION(a,b,c) (((a) << 16) + ((b) << 8) +  \
--	((c) > 255 ? 255 : (c)))'
-+	((c) > 255 ? 255 : (c)))';                                       \
-+	echo \#define LINUX_VERSION_CODE2 $(shell                        \
-+	expr $(VERSION) \* 16777216 + 0$(PATCHLEVEL) \* 65536 + 0$(SUBLEVEL)); \
-+	echo \#define LINUX_VERSION_MAJOR $(VERSION);                    \
-+	echo \#define LINUX_VERSION_PATCHLEVEL $(PATCHLEVEL);            \
-+	echo \#define LINUX_VERSION_SUBLEVEL $(SUBLEVEL);                \
-+	echo '#define KERNEL_VERSION2(a,b,c) (((a) << 24) + ((b) << 16) + (c))'
- endef
- 
- $(version_h): FORCE
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/main.c b/drivers/net/ethernet/mellanox/mlx5/core/main.c
-index e4c9627485aa5..989f15d9aa7d4 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/main.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/main.c
-@@ -237,8 +237,8 @@ static void mlx5_set_driver_version(struct mlx5_core_dev *dev)
- 	remaining_size = max_t(int, 0, driver_ver_sz - strlen(string));
- 
- 	snprintf(string + strlen(string), remaining_size, "%u.%u.%u",
--		 (u8)((LINUX_VERSION_CODE >> 16) & 0xff), (u8)((LINUX_VERSION_CODE >> 8) & 0xff),
--		 (u16)(LINUX_VERSION_CODE & 0xffff));
-+		(u8)(LINUX_VERSION_MAJOR), (u8)(LINUX_VERSION_PATCHLEVEL),
-+		(u16)(LINUX_VERSION_SUBLEVEL));
- 
- 	/*Send the command*/
- 	MLX5_SET(set_driver_version_in, in, opcode,
-diff --git a/drivers/usb/core/hcd.c b/drivers/usb/core/hcd.c
-index ad5a0f405a75c..3f0381344221e 100644
---- a/drivers/usb/core/hcd.c
-+++ b/drivers/usb/core/hcd.c
-@@ -111,8 +111,8 @@ DECLARE_WAIT_QUEUE_HEAD(usb_kill_urb_queue);
-  */
- 
- /*-------------------------------------------------------------------------*/
--#define KERNEL_REL	bin2bcd(((LINUX_VERSION_CODE >> 16) & 0x0ff))
--#define KERNEL_VER	bin2bcd(((LINUX_VERSION_CODE >> 8) & 0x0ff))
-+#define KERNEL_REL	bin2bcd(LINUX_VERSION_MAJOR)
-+#define KERNEL_VER	bin2bcd(LINUX_VERSION_PATCHLEVEL)
- 
- /* usb 3.1 root hub device descriptor */
- static const u8 usb31_rh_dev_descriptor[18] = {
-diff --git a/drivers/usb/gadget/udc/aspeed-vhub/hub.c b/drivers/usb/gadget/udc/aspeed-vhub/hub.c
-index bfd8e77788e29..5c7dea5e0ff16 100644
---- a/drivers/usb/gadget/udc/aspeed-vhub/hub.c
-+++ b/drivers/usb/gadget/udc/aspeed-vhub/hub.c
-@@ -46,8 +46,8 @@
-  *    - Make vid/did overridable
-  *    - make it look like usb1 if usb1 mode forced
-  */
--#define KERNEL_REL	bin2bcd(((LINUX_VERSION_CODE >> 16) & 0x0ff))
--#define KERNEL_VER	bin2bcd(((LINUX_VERSION_CODE >> 8) & 0x0ff))
-+#define KERNEL_REL	bin2bcd(LINUX_VERSION_MAJOR)
-+#define KERNEL_VER	bin2bcd(LINUX_VERSION_PATCHLEVEL)
- 
- enum {
- 	AST_VHUB_STR_INDEX_MAX = 4,
-diff --git a/include/linux/usb/composite.h b/include/linux/usb/composite.h
-index 5646dad886e61..c71150f2c6390 100644
---- a/include/linux/usb/composite.h
-+++ b/include/linux/usb/composite.h
-@@ -575,8 +575,8 @@ static inline u16 get_default_bcdDevice(void)
- {
- 	u16 bcdDevice;
- 
--	bcdDevice = bin2bcd((LINUX_VERSION_CODE >> 16 & 0xff)) << 8;
--	bcdDevice |= bin2bcd((LINUX_VERSION_CODE >> 8 & 0xff));
-+	bcdDevice = bin2bcd(LINUX_VERSION_MAJOR) << 8;
-+	bcdDevice |= bin2bcd(LINUX_VERSION_PATCHLEVEL);
- 	return bcdDevice;
- }
- 
-diff --git a/kernel/sys.c b/kernel/sys.c
-index 8bb46e50f02d4..b09fe21e88ff5 100644
---- a/kernel/sys.c
-+++ b/kernel/sys.c
-@@ -1242,7 +1242,7 @@ static int override_release(char __user *release, size_t len)
- 				break;
- 			rest++;
- 		}
--		v = ((LINUX_VERSION_CODE >> 8) & 0xff) + 60;
-+		v = LINUX_VERSION_PATCHLEVEL + 60;
- 		copy = clamp_t(size_t, len, 1, sizeof(buf));
- 		copy = scnprintf(buf, copy, "2.6.%u%s", v, rest);
- 		ret = copy_to_user(release, buf, copy + 1);
-diff --git a/tools/perf/tests/bpf-script-example.c b/tools/perf/tests/bpf-script-example.c
-index ab4b98b3165db..a56bf381335e9 100644
---- a/tools/perf/tests/bpf-script-example.c
-+++ b/tools/perf/tests/bpf-script-example.c
-@@ -5,7 +5,7 @@
-  */
- #ifndef LINUX_VERSION_CODE
- # error Need LINUX_VERSION_CODE
--# error Example: for 4.2 kernel, put 'clang-opt="-DLINUX_VERSION_CODE=0x40200" into llvm section of ~/.perfconfig'
-+# error Example: for 4.2 kernel, put 'clang-opt="-DLINUX_VERSION_CODE=0x4020000" into llvm section of ~/.perfconfig'
- #endif
- #define BPF_ANY 0
- #define BPF_MAP_TYPE_ARRAY 2
-diff --git a/tools/perf/tests/bpf-script-test-kbuild.c b/tools/perf/tests/bpf-script-test-kbuild.c
-index 219673aa278fb..21663295d5b5a 100644
---- a/tools/perf/tests/bpf-script-test-kbuild.c
-+++ b/tools/perf/tests/bpf-script-test-kbuild.c
-@@ -5,7 +5,7 @@
-  */
- #ifndef LINUX_VERSION_CODE
- # error Need LINUX_VERSION_CODE
--# error Example: for 4.2 kernel, put 'clang-opt="-DLINUX_VERSION_CODE=0x40200" into llvm section of ~/.perfconfig'
-+# error Example: for 4.2 kernel, put 'clang-opt="-DLINUX_VERSION_CODE=0x4020000" into llvm section of ~/.perfconfig'
- #endif
- #define SEC(NAME) __attribute__((section(NAME), used))
- 
-diff --git a/tools/perf/tests/bpf-script-test-prologue.c b/tools/perf/tests/bpf-script-test-prologue.c
-index bd83d364cf30d..8db19e70813cc 100644
---- a/tools/perf/tests/bpf-script-test-prologue.c
-+++ b/tools/perf/tests/bpf-script-test-prologue.c
-@@ -5,7 +5,7 @@
-  */
- #ifndef LINUX_VERSION_CODE
- # error Need LINUX_VERSION_CODE
--# error Example: for 4.2 kernel, put 'clang-opt="-DLINUX_VERSION_CODE=0x40200" into llvm section of ~/.perfconfig'
-+# error Example: for 4.2 kernel, put 'clang-opt="-DLINUX_VERSION_CODE=0x4020000" into llvm section of ~/.perfconfig'
- #endif
- #define SEC(NAME) __attribute__((section(NAME), used))
- 
 -- 
-2.27.0
-
+tejun
