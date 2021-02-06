@@ -2,105 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84057311ACC
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 05:21:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85E52311AA5
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 05:05:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230495AbhBFEVD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 23:21:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42596 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230322AbhBFDME (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 22:12:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3957165016;
-        Sat,  6 Feb 2021 00:05:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1612569953;
-        bh=UShNfZsoBlO05lAQRkPFldQn5CSrPHZ7sGnhQHHXTnk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=WgICwMkady18epyVATi4bMxlwDnjJGnkWlirkeeU6ddtzD4iYENFo+ABGWhYKmzHT
-         W5bRqQ2r3qKjrmp+K2ltce9TZTz34jpR6v2pCmvkfHSSNW2Xth0N1LVn0VfJM0zrSp
-         UJlrejTzImt9N4P+YRM+bQy3O15KMAriMEScCras=
-Date:   Fri, 5 Feb 2021 16:05:51 -0800
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Seth Forshee <seth.forshee@canonical.com>
-Cc:     Hugh Dickins <hughd@google.com>, Chris Down <chris@chrisdown.name>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-mm@kvack.org, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] tmpfs: Disallow CONFIG_TMPFS_INODE64 on s390
-Message-Id: <20210205160551.cf57c4293ba5ccb8eb648c11@linux-foundation.org>
-In-Reply-To: <20210205230620.518245-1-seth.forshee@canonical.com>
-References: <20210205230620.518245-1-seth.forshee@canonical.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S231209AbhBFEEP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 23:04:15 -0500
+Received: from mail-qv1-f51.google.com ([209.85.219.51]:39211 "EHLO
+        mail-qv1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232483AbhBFDB3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 22:01:29 -0500
+Received: by mail-qv1-f51.google.com with SMTP id j4so4479391qvk.6
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 19:01:08 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GWIdyaZk9/oYRcHEJ4+7tjtfndiQTrSxe6MqleW8vSk=;
+        b=EttcJxPs2QbwLr/udhGmx6gXl4kpmMWkVGbtcEvg43vXWQPiNLyQeiDiBGiMtnvAT9
+         Zq/sq5HGtVacAexJ7RC602IqV174kwZmKS3BwT4ft39XJC4wPKmsatk3+Xif7mRzUF/v
+         i9kvEXDY427SBZwRQmv249mYbyPJTGv4RcqGYSmDHFHyS+XjGx2w0jLA9VYhGA0hP/VA
+         /BxDdxD0tNMaALxlez7x7UlC602S8EFBsheIt6lapR260ziRl1BD6vhFy4Vie8LCc7yJ
+         NmB/hesDYLvY2rUXJQhKiRsFRX88ztct5i5Yl/A79nYk/6zdv576ZhMMFA9eWsuhw1/m
+         DQ+A==
+X-Gm-Message-State: AOAM532FjmctrnBYWh6NuvVvP1dEZBLstodXoWSGiN1zcYTWs4+bFI54
+        C1dWbnnxRY3LaUs3I50BxGY99s1kywtCOut9G4nXgMsmlrE=
+X-Google-Smtp-Source: ABdhPJxJIgKIk10RyyaoxQblF4duLLNKgdCrZTM3t0nEtDR0HKVJ+HMhYv8hicaLUuB9Bc+5v/j665IqMkjHYeTsV0A=
+X-Received: by 2002:a1f:ae81:: with SMTP id x123mr5136104vke.1.1612570045044;
+ Fri, 05 Feb 2021 16:07:25 -0800 (PST)
+MIME-Version: 1.0
+References: <20210205234515.1216538-1-lyude@redhat.com> <20210205234515.1216538-6-lyude@redhat.com>
+In-Reply-To: <20210205234515.1216538-6-lyude@redhat.com>
+From:   Ilia Mirkin <imirkin@alum.mit.edu>
+Date:   Fri, 5 Feb 2021 19:07:13 -0500
+Message-ID: <CAKb7Uvhj+hMwhaNNng7yOOTSBf5gPNRT86aeXebvmPKHY1yTcw@mail.gmail.com>
+Subject: Re: [Nouveau] [RFC v3 05/10] drm/i915/dpcd_bl: Cleanup
+ intel_dp_aux_vesa_enable_backlight() a bit
+To:     Lyude Paul <lyude@redhat.com>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        nouveau <nouveau@lists.freedesktop.org>,
+        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
+        David Airlie <airlied@linux.ie>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Sean Paul <seanpaul@chromium.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri,  5 Feb 2021 17:06:20 -0600 Seth Forshee <seth.forshee@canonical.com> wrote:
+On Fri, Feb 5, 2021 at 6:45 PM Lyude Paul <lyude@redhat.com> wrote:
+>
+> Get rid of the extraneous switch case in here, and just open code
+> edp_backlight_mode as we only ever use it once.
+>
+> Signed-off-by: Lyude Paul <lyude@redhat.com>
+> ---
+>  .../gpu/drm/i915/display/intel_dp_aux_backlight.c | 15 ++-------------
+>  1 file changed, 2 insertions(+), 13 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c b/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
+> index c37ccc8538cb..95e3e344cf40 100644
+> --- a/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
+> +++ b/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
+> @@ -382,7 +382,7 @@ intel_dp_aux_vesa_enable_backlight(const struct intel_crtc_state *crtc_state,
+>         struct intel_dp *intel_dp = intel_attached_dp(connector);
+>         struct drm_i915_private *i915 = dp_to_i915(intel_dp);
+>         struct intel_panel *panel = &connector->panel;
+> -       u8 dpcd_buf, new_dpcd_buf, edp_backlight_mode;
+> +       u8 dpcd_buf, new_dpcd_buf;
+>         u8 pwmgen_bit_count = panel->backlight.edp.vesa.pwmgen_bit_count;
+>
+>         if (drm_dp_dpcd_readb(&intel_dp->aux,
+> @@ -393,12 +393,8 @@ intel_dp_aux_vesa_enable_backlight(const struct intel_crtc_state *crtc_state,
+>         }
+>
+>         new_dpcd_buf = dpcd_buf;
+> -       edp_backlight_mode = dpcd_buf & DP_EDP_BACKLIGHT_CONTROL_MODE_MASK;
+>
+> -       switch (edp_backlight_mode) {
+> -       case DP_EDP_BACKLIGHT_CONTROL_MODE_PWM:
+> -       case DP_EDP_BACKLIGHT_CONTROL_MODE_PRESET:
+> -       case DP_EDP_BACKLIGHT_CONTROL_MODE_PRODUCT:
+> +       if ((dpcd_buf & DP_EDP_BACKLIGHT_CONTROL_MODE_MASK) != DP_EDP_BACKLIGHT_CONTROL_MODE_MASK) {
 
-> This feature requires ino_t be 64-bits, which is true for every
-> 64-bit architecture but s390, so prevent this option from being
-> selected there.
-> 
+You probably meant != MODE_DPCD?
 
-The previous patch nicely described the end-user impact of the bug. 
-This is especially important when requesting a -stable backport.
-
-Here's what I ended up with:
-
-
-From: Seth Forshee <seth.forshee@canonical.com>
-Subject: tmpfs: disallow CONFIG_TMPFS_INODE64 on s390
-
-Currently there is an assumption in tmpfs that 64-bit architectures also
-have a 64-bit ino_t.  This is not true on s390 which has a 32-bit ino_t. 
-With CONFIG_TMPFS_INODE64=y tmpfs mounts will get 64-bit inode numbers and
-display "inode64" in the mount options, but passing the "inode64" mount
-option will fail.  This leads to the following behavior:
-
- # mkdir mnt
- # mount -t tmpfs nodev mnt
- # mount -o remount,rw mnt
- mount: /home/ubuntu/mnt: mount point not mounted or bad option.
-
-As mount sees "inode64" in the mount options and thus passes it in the
-options for the remount.
-
-
-So prevent CONFIG_TMPFS_INODE64 from being selected on s390.
-
-Link: https://lkml.kernel.org/r/20210205230620.518245-1-seth.forshee@canonical.com
-Fixes: ea3271f7196c ("tmpfs: support 64-bit inums per-sb")
-Signed-off-by: Seth Forshee <seth.forshee@canonical.com>
-Cc: Chris Down <chris@chrisdown.name>
-Cc: Hugh Dickins <hughd@google.com>
-Cc: Amir Goldstein <amir73il@gmail.com>
-Cc: Heiko Carstens <hca@linux.ibm.com>
-Cc: Vasily Gorbik <gor@linux.ibm.com>
-Cc: Christian Borntraeger <borntraeger@de.ibm.com>
-Cc: <stable@vger.kernel.org>	[5.9+]
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
----
-
- fs/Kconfig |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
---- a/fs/Kconfig~tmpfs-disallow-config_tmpfs_inode64-on-s390
-+++ a/fs/Kconfig
-@@ -203,7 +203,7 @@ config TMPFS_XATTR
- 
- config TMPFS_INODE64
- 	bool "Use 64-bit ino_t by default in tmpfs"
--	depends on TMPFS && 64BIT
-+	depends on TMPFS && 64BIT && !S390
- 	default n
- 	help
- 	  tmpfs has historically used only inode numbers as wide as an unsigned
-_
-
+>                 new_dpcd_buf &= ~DP_EDP_BACKLIGHT_CONTROL_MODE_MASK;
+>                 new_dpcd_buf |= DP_EDP_BACKLIGHT_CONTROL_MODE_DPCD;
+>
+> @@ -406,13 +402,6 @@ intel_dp_aux_vesa_enable_backlight(const struct intel_crtc_state *crtc_state,
+>                                        pwmgen_bit_count) != 1)
+>                         drm_dbg_kms(&i915->drm,
+>                                     "Failed to write aux pwmgen bit count\n");
+> -
+> -               break;
+> -
+> -       /* Do nothing when it is already DPCD mode */
+> -       case DP_EDP_BACKLIGHT_CONTROL_MODE_DPCD:
+> -       default:
+> -               break;
+>         }
+>
+>         if (panel->backlight.edp.vesa.pwm_freq_pre_divider) {
+> --
+> 2.29.2
+>
+> _______________________________________________
+> Nouveau mailing list
+> Nouveau@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/nouveau
