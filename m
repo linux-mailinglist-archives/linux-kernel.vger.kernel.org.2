@@ -2,118 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67342311A6B
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 04:46:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CA3B311A6D
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 04:46:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232132AbhBFDpm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 22:45:42 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:20866 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231774AbhBFCsn (ORCPT
+        id S232344AbhBFDqG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 22:46:06 -0500
+Received: from mail-il1-f200.google.com ([209.85.166.200]:42678 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231917AbhBFCsy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 21:48:43 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612579636;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=+wyoDc8XOR2cj3A6BtGWJ+SBoGGxhF/HLXZdPPz1zrI=;
-        b=NfkxfGo2USee1vFlwiWtx8eX6/u+Mq7m+pJowFwztAjH3uZhBs584mJbhGgAMJsNWyeIl3
-        zR++SutSs5Aa956RB3T1qSc9KtbnJlBF/OS3xK1bnIef2bIgdF10sQEKD7P4hlc8XKTIz5
-        /XL5t343v6QhJxKa4oZEd7c0pXbmmrc=
-Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
- [209.85.160.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-168-9JKLlsftOGG9hKlw401GSw-1; Fri, 05 Feb 2021 21:47:14 -0500
-X-MC-Unique: 9JKLlsftOGG9hKlw401GSw-1
-Received: by mail-qt1-f198.google.com with SMTP id k90so6700009qte.4
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 18:47:14 -0800 (PST)
+        Fri, 5 Feb 2021 21:48:54 -0500
+Received: by mail-il1-f200.google.com with SMTP id i16so7984734ila.9
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 18:48:38 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=+wyoDc8XOR2cj3A6BtGWJ+SBoGGxhF/HLXZdPPz1zrI=;
-        b=mZmQKmjuLZPAh+Kai2GejcRRwQ/EEFaMizcFiwf+GL1zsAl3sJZnecPCGKrhiUzOii
-         UDqdqR4ekM0IrCfXKKrjAN3z/vM7IRxBrLNUj0PA0usWjhz3KfdIzzR2kiUtN7ISvg1l
-         CTLBVVPzYmgmez59t3Wu3sEpjhbqI3mmt9+fZlaAJbSzP6G2TOVGC+2Av6ZOHjgz/z+Z
-         T7bI2kjSu/nWx2JIXnM8nPPusx4FxyYFdch/Pb8FiOQ7rFYxMpJxfT6jZ4Qcg8L6IKOG
-         NP4NJ6NZ4YidZyrywgagBFxNmZQf/v/Wjxni+JcgmE6+0j7omq2gU6Kyr82ytlW5DKHp
-         jgsQ==
-X-Gm-Message-State: AOAM531HF17uqSvtNt/hzw6moY2q2iRRL0caqsQ1heXv09m9zP08FpYw
-        SCc8jD2X5zjRhoQoC1+EXvxZqnrBRIWizfszN0hU5EO+fifFnHfrM0WGIoxMIC0D3A+4gKLgKUF
-        WsxodOAFRNX2w40g8fc+vsfA4
-X-Received: by 2002:a37:9d53:: with SMTP id g80mr7350176qke.307.1612579634199;
-        Fri, 05 Feb 2021 18:47:14 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzeKIuLtR8y4v8gCIkyTs9rsJZfFFo+tzRDqiO6R5CA7Iai/cKcEqVyrzhf/2UEe5+FVdUrcw==
-X-Received: by 2002:a37:9d53:: with SMTP id g80mr7350163qke.307.1612579633991;
-        Fri, 05 Feb 2021 18:47:13 -0800 (PST)
-Received: from xz-x1 (bras-vprn-toroon474qw-lp130-20-174-93-89-182.dsl.bell.ca. [174.93.89.182])
-        by smtp.gmail.com with ESMTPSA id 22sm11848068qke.123.2021.02.05.18.47.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Feb 2021 18:47:13 -0800 (PST)
-Date:   Fri, 5 Feb 2021 21:47:11 -0500
-From:   Peter Xu <peterx@redhat.com>
-To:     Hugh Dickins <hughd@google.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Jerome Glisse <jglisse@redhat.com>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Nadav Amit <nadav.amit@gmail.com>
-Subject: Re: [PATCH RFC 00/30] userfaultfd-wp: Support shmem and hugetlbfs
-Message-ID: <20210206024711.GE3195@xz-x1>
-References: <20210115170907.24498-1-peterx@redhat.com>
- <20210129224938.GC260413@xz-x1>
- <alpine.LSU.2.11.2102051411200.5769@eggly.anvils>
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=BXozcHqNYuL5j2Ska5b3mqD7pLflP2CE2Wr1H6P2MX0=;
+        b=aUhRuTNSm36SdT47e2AvJFKjy4EH1tcg/y2L8BoYbjVEx2ekd9/1MUXy9Uumk6vM5Y
+         5ey088OIg+3G/4IkEhV6vBsaSnOtA1BqJH84+7U4fVtGAR1DDQbk7Q6IIb+l3YkeRaG6
+         PqNyzpZi/HRTg08loSf0/YBUpGWrrQb+qtO6OajHyYqnSetEhAxw9H5vFDchD9H541k3
+         pci4AlQ+OrOC/L5DOpG8S2XBVQp85vyQtr9XpVCLxedG81yaO7cfck9x4OqAX3GdOpHa
+         tkmBpfJZFbvI7lUG7El7kTMaZdgc+pSiDq/sAeb+otb/gkVZcMQTe1s5V7zlxOMbg5MX
+         GgcQ==
+X-Gm-Message-State: AOAM532O4eFLtT1IuPReGrpC/dzf8FBphY2JgPUIBAPECHrYWstOLlMR
+        +6lcMotlVQyZURtA57BzeFzlUPaNQi9vLeN4kKGWihscBZ6c
+X-Google-Smtp-Source: ABdhPJzlQYkIcI9RY/kXSUXwETZdsy0ASDWYf6DwgQRuoWNcihGqo3Lt7D4qI90RprB72OOXkeVlamomeR4LfTBtkqpJQh/69rWB
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <alpine.LSU.2.11.2102051411200.5769@eggly.anvils>
+X-Received: by 2002:a05:6e02:1343:: with SMTP id k3mr6566311ilr.102.1612579693247;
+ Fri, 05 Feb 2021 18:48:13 -0800 (PST)
+Date:   Fri, 05 Feb 2021 18:48:13 -0800
+In-Reply-To: <00000000000060c28405b5df4b1b@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000c9c04b05baa1f7b6@google.com>
+Subject: Re: WARNING: ODEBUG bug in slave_kobj_release
+From:   syzbot <syzbot+7bce4c2f7e1768ec3fe0@syzkaller.appspotmail.com>
+To:     andy@greyhouse.net, davem@davemloft.net, j.vosburgh@gmail.com,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        vfalico@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 05, 2021 at 02:21:47PM -0800, Hugh Dickins wrote:
-> On Fri, 29 Jan 2021, Peter Xu wrote:
-> > 
-> > Huge & Mike,
-> > 
-> > Would any of you have comment/concerns on the high-level design of this series?
-> > 
-> > It would be great to know it, especially major objection, before move on to an
-> > non-rfc version.
-> 
-> Seeing Mike's update prompts me to speak up: I have been looking, and
-> will continue to look through it - will report when done; but find I've
-> been making very little forward progress from one day to the next.
-> 
-> It is very confusing, inevitably; but you have done an *outstanding*
-> job on acknowledging the confusion, and commenting it in great detail.
+syzbot has found a reproducer for the following issue on:
 
-I'm honored to receive such an evaluation, thanks Hugh!
+HEAD commit:    4d469ec8 Merge branch '1GbE' of git://git.kernel.org/pub/s..
+git tree:       net-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=10aa7b54d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=9804f8fe1c4e3869
+dashboard link: https://syzkaller.appspot.com/bug?extid=7bce4c2f7e1768ec3fe0
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17ce5ac4d00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=176a96c4d00000
 
-As a quick summary - what I did in this series is mostly what you've suggested
-on using swp_type==1 && swp_offset=0 as a special pte, so the swap code can
-trap it.  The only difference is that "swp_type==1 && swp_offset=0" still uses
-valid swp_entry address space, so I introduced the "swap special pte" idea
-hoping to make it clearer, which is also based on Andrea's suggestion.  I hope
-I didn't make it even worse. :)
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+7bce4c2f7e1768ec3fe0@syzkaller.appspotmail.com
 
-It's just that I don't want to make this idea that "only works for uffd-wp".
-What I'm thinking is whether we can provide such a common way to keep some
-records in pgtable entries that point to file-backed memory.  Say, currently
-for a file-backed memory we can only have either a valid pte (either RO or RW)
-or a none pte.  So maybe we could provide a way to start using the rest pte
-address space that we haven't yet used.
-
-Please take your time on reviewing the series.  Any of your future comment
-would be greatly welcomed.
-
-Thanks,
-
--- 
-Peter Xu
+kobject_add_internal failed for bonding_slave (error: -12 parent: virt_wifi0)
+------------[ cut here ]------------
+ODEBUG: assert_init not available (active state 0) object type: timer_list hint: 0x0
+WARNING: CPU: 0 PID: 8733 at lib/debugobjects.c:505 debug_print_object+0x16e/0x250 lib/debugobjects.c:505
+Modules linked in:
+CPU: 0 PID: 8733 Comm: syz-executor025 Not tainted 5.11.0-rc6-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:debug_print_object+0x16e/0x250 lib/debugobjects.c:505
+Code: ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 af 00 00 00 48 8b 14 dd c0 f5 9e 89 4c 89 ee 48 c7 c7 c0 e9 9e 89 e8 3b 30 f8 04 <0f> 0b 83 05 85 00 e1 09 01 48 83 c4 18 5b 5d 41 5c 41 5d 41 5e c3
+RSP: 0018:ffffc90001ede980 EFLAGS: 00010086
+RAX: 0000000000000000 RBX: 0000000000000005 RCX: 0000000000000000
+RDX: ffff88801c729bc0 RSI: ffffffff815b6395 RDI: fffff520003dbd22
+RBP: 0000000000000001 R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffff815af56e R11: 0000000000000000 R12: ffffffff894d8d20
+R13: ffffffff899ef040 R14: ffffffff8161bfd0 R15: 1ffff920003dbd3b
+FS:  00007f756d575700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000490a00 CR3: 000000001881a000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ debug_object_assert_init lib/debugobjects.c:890 [inline]
+ debug_object_assert_init+0x1f4/0x2e0 lib/debugobjects.c:861
+ debug_timer_assert_init kernel/time/timer.c:737 [inline]
+ debug_assert_init kernel/time/timer.c:782 [inline]
+ del_timer+0x6d/0x110 kernel/time/timer.c:1202
+ try_to_grab_pending+0x6d/0xd0 kernel/workqueue.c:1252
+ __cancel_work_timer+0xa6/0x520 kernel/workqueue.c:3098
+ slave_kobj_release+0x48/0xe0 drivers/net/bonding/bond_main.c:1492
+ kobject_cleanup lib/kobject.c:705 [inline]
+ kobject_release lib/kobject.c:736 [inline]
+ kref_put include/linux/kref.h:65 [inline]
+ kobject_put+0x1c8/0x540 lib/kobject.c:753
+ bond_kobj_init drivers/net/bonding/bond_main.c:1513 [inline]
+ bond_alloc_slave drivers/net/bonding/bond_main.c:1530 [inline]
+ bond_enslave+0x20f3/0x4d40 drivers/net/bonding/bond_main.c:1732
+ do_set_master+0x1c8/0x220 net/core/rtnetlink.c:2519
+ do_setlink+0x920/0x3a70 net/core/rtnetlink.c:2715
+ __rtnl_newlink+0xdc1/0x1700 net/core/rtnetlink.c:3376
+ rtnl_newlink+0x64/0xa0 net/core/rtnetlink.c:3491
+ rtnetlink_rcv_msg+0x44e/0xad0 net/core/rtnetlink.c:5553
+ netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2502
+ netlink_unicast_kernel net/netlink/af_netlink.c:1312 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1338
+ netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1927
+ sock_sendmsg_nosec net/socket.c:652 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:672
+ ____sys_sendmsg+0x6e8/0x810 net/socket.c:2345
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2399
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2432
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x44a619
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 01 16 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f756d5752f8 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 00000000004d62c8 RCX: 000000000044a619
+RDX: 0000000000000000 RSI: 0000000020000080 RDI: 0000000000000005
+RBP: 00000000004d62c0 R08: 0000000000000002 R09: 0000000000003031
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000049f6f4
+R13: 00007f756d575300 R14: 0000000000000002 R15: 0000000000022000
 
