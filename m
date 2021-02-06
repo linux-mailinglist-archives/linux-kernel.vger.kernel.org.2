@@ -2,234 +2,324 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB95931200E
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 21:47:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 119A6312010
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 21:49:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229554AbhBFUqw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Feb 2021 15:46:52 -0500
-Received: from mail-pj1-f42.google.com ([209.85.216.42]:39535 "EHLO
-        mail-pj1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229506AbhBFUqu (ORCPT
+        id S229608AbhBFUrF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Feb 2021 15:47:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45512 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229506AbhBFUrC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Feb 2021 15:46:50 -0500
-Received: by mail-pj1-f42.google.com with SMTP id d2so5745493pjs.4;
-        Sat, 06 Feb 2021 12:46:34 -0800 (PST)
+        Sat, 6 Feb 2021 15:47:02 -0500
+Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 968A4C06174A;
+        Sat,  6 Feb 2021 12:46:22 -0800 (PST)
+Received: by mail-il1-x12e.google.com with SMTP id y5so9196609ilg.4;
+        Sat, 06 Feb 2021 12:46:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=wblMFryEfE03I8+svoYntwq6BTYoS+a2cimbwYQJhT0=;
+        b=skDU450bdBV23wbanIhwI2wQmzmWmPlmbcaSIkgYVwsjb8ksnnsqHqn+e28Nz9Vnb2
+         6jVIiLc16GnYpT741gOiOz/wAOaBwBju4uegD9aSzzvhhCkXJRyI9tFuGzD1fhFt2UMv
+         j2XcQdtXInLh/4XtLgRfGGytJfR2O//p+eZlvP0QqgkHsbHO2GMV0Ni3u+HC9gPyiczE
+         Owq/Riruq+pA2Z6ndpTMX1MRfr05d47V2H7zdCCqk9E9qCuLCJuYJrWb10/uzmqiI1NB
+         i3/lAmc6Gm33BvTBtJiL75ZF/SGJjyuXcRtCS5j6RxcMZO4j57337XYyqfC0Elu+kK7M
+         /nLA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=WzrZL2XMTEn7bkOUsNN1sx1v9uLLwH7Gc/tIhKE1Vx8=;
-        b=f3GW66rhTQNMCCAyJQ5VGx8WzybpisyHzy1epswZ1+5liv0i4i/46yd581qX+9jdkV
-         vFGIm1Y5k+omBFLAZ0UIRVvon8vJMqeozGWCFmY3iGVnfvAMbr93alpQSvFT7s8LmwgK
-         hodeIzqbth5b0USLNgFSxQ5Zov8m/uqHyM6EVV6Qtt34hZKlNdR84DMl3yigmS5cRNJP
-         Fg0IUKTmL1++u2ibrBcvwF0AieVs6D9aKruMLkRG7EaHrmYTaUq6xp6XKZRPNRy5htBN
-         aajsYrcItqVqoRuKTd4W+d3PVXzSvMLYh2kbhY5RbfLeXEHj28Q4JZEUGXmsDC8dAu/I
-         ImRA==
-X-Gm-Message-State: AOAM532PJDueAi0R+nx1rKDX9Z/MtAYEzvyw4jUfqhhgCTQpwsvhg4nS
-        i6Qi13oUYFg587qprMe1FM8=
-X-Google-Smtp-Source: ABdhPJzu14s2V+gWNmsgQN72q2OpSHs5fyodoooul9feRHL+YvokUOJdDZ9zWcd3c/MuqFIa8nB/FA==
-X-Received: by 2002:a17:902:ecc1:b029:e1:93ab:1e7b with SMTP id a1-20020a170902ecc1b02900e193ab1e7bmr7250872plh.61.1612644369466;
-        Sat, 06 Feb 2021 12:46:09 -0800 (PST)
-Received: from localhost ([2601:647:5b00:1161:a4cc:eef9:fbc0:2781])
-        by smtp.gmail.com with ESMTPSA id s9sm13438902pfd.38.2021.02.06.12.46.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 06 Feb 2021 12:46:08 -0800 (PST)
-Date:   Sat, 6 Feb 2021 12:46:07 -0800
-From:   Moritz Fischer <mdf@kernel.org>
-To:     Russ Weight <russell.h.weight@intel.com>
-Cc:     mdf@kernel.org, linux-fpga@vger.kernel.org,
-        linux-kernel@vger.kernel.org, trix@redhat.com, lgoncalv@redhat.com,
-        yilun.xu@intel.com, hao.wu@intel.com, matthew.gerlach@intel.com,
-        Matthew Gerlach <matthew.gerlach@linux.intel.com>
-Subject: Re: [PATCH v5 1/1] fpga: dfl: afu: harden port enable logic
-Message-ID: <YB8AD46GfmVpC7xh@epycbox.lan>
-References: <20210205182521.275887-1-russell.h.weight@intel.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=wblMFryEfE03I8+svoYntwq6BTYoS+a2cimbwYQJhT0=;
+        b=EZlX9I3lvtoZbLaXADftMkofCMHRcjXt/fgG7xMZb2XzOENjnRwY1zzQ/Fw5ZQJWTp
+         CefwtSFGKP050mhTrZd9Z1V5ZXd0jMqtRkifHapZLR2LN/lWVB7lgqWDBULl398CsLaq
+         lYhgBZsETPwsHTtnl7Y9SDx7BwRruXdY+vhTz78szX8OiBbclDrsnTPgpE3Pnk4XoROs
+         ngK7iYibGOiCV6sIT0JBSTeBrcW32UVcDic+uNqNf56LVBGpGldYCYPALncKw52fI/cm
+         EZkDGELi8CUSNK8kilea6YChlkI+rOnKM5Jixrp6WCLwA8kWorbh4JbHDrP/khIPgoXa
+         V4Ng==
+X-Gm-Message-State: AOAM533l2MdvNImmt0ImYx6oFXiP4ovMiWraMakhLs0NsGscFzLILRno
+        l444hYFhRi8F9v3yvJP5qgP6+HCHNcJsAZiA0Hs=
+X-Google-Smtp-Source: ABdhPJxg7P2qmy5kv7AuaOobkLPQNB1SW4PTuTVwi47B8Kj3OhXa90+5meJpJ8DM3PzewA5aGJJf5ua69XaUdJl3xmk=
+X-Received: by 2002:a92:ce46:: with SMTP id a6mr9748959ilr.10.1612644381687;
+ Sat, 06 Feb 2021 12:46:21 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210205182521.275887-1-russell.h.weight@intel.com>
+References: <20210205192446.GH920417@kernel.org> <d59c2a53-976c-c304-f208-67110bdd728a@fb.com>
+ <CA+icZUVhgnJ9j7dnXxLQi3DcmLrqpZgcAo2wmHJ_OxSQyS6DQg@mail.gmail.com>
+ <CA+icZUWFx47jWJsV6tyoS5f18joPLyE8TOeeyVgsk65k9sP2WQ@mail.gmail.com>
+ <CA+icZUUj1P_PAj=E8iF=C4m6gYm9zqb+WWbOdoTqemTeGnZbww@mail.gmail.com>
+ <CA+icZUWY0zkOb36gxMOuT5-m=vC5_e815gkSEyM45sO+jgcCZg@mail.gmail.com>
+ <CA+icZUW+4=WUexA3-qwXSdEY2L4DOhF1pQfw9=Bf2invYF1J2Q@mail.gmail.com>
+ <8ff11fa8-46cd-5f20-b988-20e65e122507@fb.com> <20210206162419.GC2851@wildebeest.org>
+ <3f5a00ef-1c71-d0da-e9fd-c7f707760f5c@fb.com> <CA+icZUVfTH=yONintyJ+T8kvTrR4Q0gumJYNUCs6Ybraff5Kpg@mail.gmail.com>
+ <64206fbc-656a-5ffd-6e9d-739c8c6f7410@fb.com> <CA+icZUUZVYN97wKiR9-LOwhQmxMSxggvm4MS4z9nLCvZOB8FLQ@mail.gmail.com>
+ <CA+icZUV=-NmFtF9RQTRnbwBUiaPnroiSwyv-9RxA-3-nrgQ_rQ@mail.gmail.com>
+ <89f15151-6843-b260-c8f4-88deefd7d569@fb.com> <CA+icZUVHtbOuXWh=9XMqVr6=Lo_YMPLhZa6XRN3pLTt=btRmpg@mail.gmail.com>
+ <8b8e31bc-3deb-dcc4-8c51-4bd820855af6@fb.com>
+In-Reply-To: <8b8e31bc-3deb-dcc4-8c51-4bd820855af6@fb.com>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Sat, 6 Feb 2021 21:46:10 +0100
+Message-ID: <CA+icZUVDVchAbxxnpYK3Qcg4aLk_diF=wgrqj5xXuKOp95Zv-w@mail.gmail.com>
+Subject: Re: ERROR: INT DW_ATE_unsigned_1 Error emitting BTF type
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Mark Wieelard <mark@klomp.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        dwarves@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        bpf@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
+        Jan Engelhardt <jengelh@inai.de>,
+        Domenico Andreoli <cavok@debian.org>,
+        Matthias Schwarzott <zzam@gentoo.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Paul Moore <paul@paul-moore.com>,
+        Ondrej Mosnacek <omosnace@redhat.com>,
+        =?UTF-8?Q?Daniel_P=2E_Berrang=C3=A9?= <berrange@redhat.com>,
+        Tom Stellard <tstellar@redhat.com>,
+        Fangrui Song <maskray@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Russ,
+On Sat, Feb 6, 2021 at 9:13 PM Yonghong Song <yhs@fb.com> wrote:
+>
+>
+>
+> On 2/6/21 11:44 AM, Sedat Dilek wrote:
+> > On Sat, Feb 6, 2021 at 8:33 PM Yonghong Song <yhs@fb.com> wrote:
+> >>
+> >>
+> >>
+> >> On 2/6/21 11:28 AM, Sedat Dilek wrote:
+> >>> On Sat, Feb 6, 2021 at 8:22 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
+> >>>>
+> >>>> On Sat, Feb 6, 2021 at 8:17 PM Yonghong Song <yhs@fb.com> wrote:
+> >>>>>
+> >>>>>
+> >>>>>
+> >>>>> On 2/6/21 10:10 AM, Sedat Dilek wrote:
+> >>>>>> On Sat, Feb 6, 2021 at 6:53 PM Yonghong Song <yhs@fb.com> wrote:
+> >>>>>>>
+> >>>>>>>
+> >>>>>>>
+> >>>>>>> On 2/6/21 8:24 AM, Mark Wieelard wrote:
+> >>>>>>>> Hi,
+> >>>>>>>>
+> >>>>>>>> On Sat, Feb 06, 2021 at 12:26:44AM -0800, Yonghong Song wrote:
+> >>>>>>>>> With the above vmlinux, the issue appears to be handling
+> >>>>>>>>> DW_ATE_signed_1, DW_ATE_unsigned_{1,24,40}.
+> >>>>>>>>>
+> >>>>>>>>> The following patch should fix the issue:
+> >>>>>>>>
+> >>>>>>>> That doesn't really make sense to me. Why is the compiler emitting a
+> >>>>>>>> DW_TAG_base_type that needs to be interpreted according to the
+> >>>>>>>> DW_AT_name attribute?
+> >>>>>>>>
+> >>>>>>>> If the issue is that the size of the base type cannot be expressed in
+> >>>>>>>> bytes then the DWARF spec provides the following option:
+> >>>>>>>>
+> >>>>>>>>         If the value of an object of the given type does not fully occupy
+> >>>>>>>>         the storage described by a byte size attribute, the base type
+> >>>>>>>>         entry may also have a DW_AT_bit_size and a DW_AT_data_bit_offset
+> >>>>>>>>         attribute, both of whose values are integer constant values (see
+> >>>>>>>>         Section 2.19 on page 55). The bit size attribute describes the
+> >>>>>>>>         actual size in bits used to represent values of the given
+> >>>>>>>>         type. The data bit offset attribute is the offset in bits from the
+> >>>>>>>>         beginning of the containing storage to the beginning of the
+> >>>>>>>>         value. Bits that are part of the offset are padding.  If this
+> >>>>>>>>         attribute is omitted a default data bit offset of zero is assumed.
+> >>>>>>>>
+> >>>>>>>> Would it be possible to use that encoding of those special types?  If
+> >>>>>>>
+> >>>>>>> I agree with you. I do not like comparing me as well. Unfortunately,
+> >>>>>>> there is no enough information in dwarf to find out actual information.
+> >>>>>>> The following is the dwarf dump with vmlinux (Sedat provided) for
+> >>>>>>> DW_ATE_unsigned_1.
+> >>>>>>>
+> >>>>>>> 0x000e97e9:   DW_TAG_base_type
+> >>>>>>>                     DW_AT_name      ("DW_ATE_unsigned_1")
+> >>>>>>>                     DW_AT_encoding  (DW_ATE_unsigned)
+> >>>>>>>                     DW_AT_byte_size (0x00)
+> >>>>>>>
+> >>>>>>> There is no DW_AT_bit_size and DW_AT_bit_offset for base type.
+> >>>>>>> AFAIK, these two attributes typically appear in struct/union members
+> >>>>>>> together with DW_AT_byte_size.
+> >>>>>>>
+> >>>>>>> Maybe compilers (clang in this case) can emit DW_AT_bit_size = 1
+> >>>>>>> and DW_AT_bit_offset = 0/7 (depending on big/little endian) and
+> >>>>>>> this case, we just test and get DW_AT_bit_size and it should work.
+> >>>>>>>
+> >>>>>>> But I think BTF does not need this (DW_ATE_unsigned_1) for now.
+> >>>>>>> I checked dwarf dump and it is mostly used for some arith operation
+> >>>>>>> encoded in dump (in this case, e.g., shift by 1 bit)
+> >>>>>>>
+> >>>>>>> 0x000015cf:   DW_TAG_base_type
+> >>>>>>>                     DW_AT_name      ("DW_ATE_unsigned_1")
+> >>>>>>>                     DW_AT_encoding  (DW_ATE_unsigned)
+> >>>>>>>                     DW_AT_byte_size (0x00)
+> >>>>>>>
+> >>>>>>> 0x00010ed9:         DW_TAG_formal_parameter
+> >>>>>>>                           DW_AT_location    (DW_OP_lit0, DW_OP_not,
+> >>>>>>> DW_OP_convert (0x000015cf) "DW_ATE_unsigned_1", DW_OP_convert
+> >>>>>>> (0x000015d4) "DW_ATE_unsigned_8", DW_OP_stack_value)
+> >>>>>>>                           DW_AT_abstract_origin     (0x00013984 "branch")
+> >>>>>>>
+> >>>>>>> Look at clang frontend, only the following types are encoded with
+> >>>>>>> unsigned dwarf type.
+> >>>>>>>
+> >>>>>>>       case BuiltinType::UShort:
+> >>>>>>>       case BuiltinType::UInt:
+> >>>>>>>       case BuiltinType::UInt128:
+> >>>>>>>       case BuiltinType::ULong:
+> >>>>>>>       case BuiltinType::WChar_U:
+> >>>>>>>       case BuiltinType::ULongLong:
+> >>>>>>>         Encoding = llvm::dwarf::DW_ATE_unsigned;
+> >>>>>>>         break;
+> >>>>>>>
+> >>>>>>>
+> >>>>>>>> not, can we try to come up with some extension that doesn't require
+> >>>>>>>> consumers to match magic names?
+> >>>>>>>>
+> >>>>>>
+> >>>>>> You want me to upload mlx5_core.ko?
+> >>>>>
+> >>>>> I just sent out a patch. You are cc'ed. I also attached in this email.
+> >>>>> Yes, it would be great if you can upload mlx5_core.ko so I can
+> >>>>> double check with this DW_ATE_unsigned_160 which is really usual.
+> >>>>>
+> >>>>
+> >>>> Yupp, just built a new pahole :-).
+> >>>> Re-building linux-kernel...
+> >>>>
+> >>>> Will upload mlx5_core.ko - need zstd-ed it before.
+> >>>>
+> >>>
+> >>> Hmm, I guess you want a mlx5_core.ko with your patch applied-to-pahole-1.20 :-)?
+> >>
+> >> this should work too. I want to check dwarf data. My patch won't impact
+> >> dwarf generation.
+> >>
+> >
+> > Usual Dropbox-Link:
+> >
+> > https://www.dropbox.com/sh/kvyh8ps7na0r1h5/AABfyNfDZ2bESse_bo4h05fFa?dl=0
+> >
+> > See "for-yhs" directory:
+> >
+> > 1. mlx5-module_yhs-v1 ("[PATCH dwarves] btf_encoder: sanitize
+> > non-regular int base type")
+> > 2. mlx5-module_yhs-dileks-v4 (with the last diff-v4 I tried successfully)
+>
+> Thanks, with llvm-dwarfdump, I can see
+>
+> 0x00d65616:   DW_TAG_base_type
+>                  DW_AT_name      ("DW_ATE_unsigned_160")
+>                  DW_AT_encoding  (DW_ATE_unsigned)
+>                  DW_AT_byte_size (0x14)
+>
+> 0x00d88e81:         DW_TAG_variable
+>                        DW_AT_location    (indexed (0xad) loclist =
+> 0x0005df42:
+>                           [0x0000000000088c8e, 0x0000000000088c97):
+> DW_OP_breg9 R9+0, DW_OP_convert (0x00d65616) "DW_ATE_unsigned_160",
+> DW_OP_convert (0x00d65607) "DW_ATE_unsigned_32", DW_OP_stack_value,
+> DW_OP_piece 0x4)
+>                        DW_AT_abstract_origin     (0x00d88d37 "_v")
+>
+>
+> 0x00d88d37:       DW_TAG_variable
+>                      DW_AT_name  ("_v")
+>                      DW_AT_decl_file
+> ("/home/dileks/src/linux-kernel/git/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_ste.c")
+>                      DW_AT_decl_line     (1198)
+>                      DW_AT_type  (0x00d68835 "u32")
+>
+> The source code at line 1198.
+> 1198         DR_STE_SET_MASK_V(eth_l3_ipv4_5_tuple, bit_mask,
+> 1199                           source_port, mask, udp_sport);
+>
+> This is for struct mlx5dr_match_spec.
+>
+> struct mlx5dr_match_spec {
+>          u32 smac_47_16;         /* Source MAC address of incoming packet */
+>          /* Incoming packet Ethertype - this is the Ethertype
+>           * following the last VLAN tag of the packet
+>           */
+>          u32 ethertype:16;
+>          u32 smac_15_0:16;
+> ...
+>          u32 tcp_dport:16;
+>          /* TCP source port.;tcp and udp sport/dport are mutually
+> exclusive */
+>          u32 tcp_sport:16;
+>          u32 ttl_hoplimit:8;
+>          u32 reserved:24;
+>          /* UDP destination port.;tcp and udp sport/dport are mutually
+> exclusive */
+>          u32 udp_dport:16;
+>          /* UDP source port.;tcp and udp sport/dport are mutually
+> exclusive */
+>          u32 udp_sport:16;
+>          /* IPv6 source address of incoming packets
+>           * For IPv4 address use bits 31:0 (rest of the bits are reserved)
+>           * This field should be qualified by an appropriate ethertype
+>           */
+>          u32 src_ip_127_96;
+> ...
+> }
+>
+> which includes a bunch of bit fields and non-bit fields.
+>
+> I have no idea why clang will generate
+>     DW_OP_convert (0x00d65616) "DW_ATE_unsigned_160"
+> and possibly try to capture more semantic information?
+> But BTF should be able to safely ignore this as described
+> in my patch.
+>
+> Thanks.
+>
 
-On Fri, Feb 05, 2021 at 10:25:21AM -0800, Russ Weight wrote:
-> Port enable is not complete until ACK = 0. Change
-> __afu_port_enable() to guarantee that the enable process
-> is complete by polling for ACK == 0.
-> 
-> Reviewed-by: Tom Rix <trix@redhat.com>
-> Reviewed-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
-> Signed-off-by: Russ Weight <russell.h.weight@intel.com>
-> ---
-> v5:
->   - Added Reviewed-by tag to commit message
-> v4:
->   - Added a dev_warn() call for the -EINVAL case of afu_port_err_clear()
->   - Modified dev_err() message in __afu_port_disable() to say "disable"
->     instead of "reset"
-> v3:
->   - afu_port_err_clear() changed to prioritize port_enable failure over
->     other a detected mismatch in port errors.
->   - reorganized code in port_reset() to be more readable.
-> v2:
->   - Fixed typo in commit message
-> ---
->  drivers/fpga/dfl-afu-error.c | 10 ++++++----
->  drivers/fpga/dfl-afu-main.c  | 33 +++++++++++++++++++++++----------
->  drivers/fpga/dfl-afu.h       |  2 +-
->  3 files changed, 30 insertions(+), 15 deletions(-)
-> 
-> diff --git a/drivers/fpga/dfl-afu-error.c b/drivers/fpga/dfl-afu-error.c
-> index c4691187cca9..601e599fc33d 100644
-> --- a/drivers/fpga/dfl-afu-error.c
-> +++ b/drivers/fpga/dfl-afu-error.c
-> @@ -52,7 +52,7 @@ static int afu_port_err_clear(struct device *dev, u64 err)
->  	struct dfl_feature_platform_data *pdata = dev_get_platdata(dev);
->  	struct platform_device *pdev = to_platform_device(dev);
->  	void __iomem *base_err, *base_hdr;
-> -	int ret = -EBUSY;
-> +	int enable_ret = 0, ret = -EBUSY;
->  	u64 v;
->  
->  	base_err = dfl_get_feature_ioaddr_by_id(dev, PORT_FEATURE_ID_ERROR);
-> @@ -96,18 +96,20 @@ static int afu_port_err_clear(struct device *dev, u64 err)
->  		v = readq(base_err + PORT_FIRST_ERROR);
->  		writeq(v, base_err + PORT_FIRST_ERROR);
->  	} else {
-> +		dev_warn(dev, "__func__: received 0x%llx, expected 0x%llx\n",
-> +			 v, err);
->  		ret = -EINVAL;
->  	}
->  
->  	/* Clear mask */
->  	__afu_port_err_mask(dev, false);
->  
-> -	/* Enable the Port by clear the reset */
-> -	__afu_port_enable(pdev);
-> +	/* Enable the Port by clearing the reset */
-> +	enable_ret = __afu_port_enable(pdev);
->  
->  done:
->  	mutex_unlock(&pdata->lock);
-> -	return ret;
-> +	return enable_ret ? enable_ret : ret;
+[ CC Fangrui - the only guy I know who might comment on this ]
 
-Help me understand (sorry if I'm slow here ...), you set ret to -EINVAL,
-but then we only care if enabling the port worked?
+Fangrui, feel free to comment?
 
-I'm not sure I follow the logic (doesn't mean it's wrong :) ).
->  }
->  
->  static ssize_t errors_show(struct device *dev, struct device_attribute *attr,
-> diff --git a/drivers/fpga/dfl-afu-main.c b/drivers/fpga/dfl-afu-main.c
-> index 753cda4b2568..77dadaae5b8f 100644
-> --- a/drivers/fpga/dfl-afu-main.c
-> +++ b/drivers/fpga/dfl-afu-main.c
-> @@ -21,6 +21,9 @@
->  
->  #include "dfl-afu.h"
->  
-> +#define RST_POLL_INVL 10 /* us */
-> +#define RST_POLL_TIMEOUT 1000 /* us */
-> +
->  /**
->   * __afu_port_enable - enable a port by clear reset
->   * @pdev: port platform device.
-> @@ -32,7 +35,7 @@
->   *
->   * The caller needs to hold lock for protection.
->   */
-> -void __afu_port_enable(struct platform_device *pdev)
-> +int __afu_port_enable(struct platform_device *pdev)
->  {
->  	struct dfl_feature_platform_data *pdata = dev_get_platdata(&pdev->dev);
->  	void __iomem *base;
-> @@ -41,7 +44,7 @@ void __afu_port_enable(struct platform_device *pdev)
->  	WARN_ON(!pdata->disable_count);
->  
->  	if (--pdata->disable_count != 0)
-> -		return;
-> +		return 0;
->  
->  	base = dfl_get_feature_ioaddr_by_id(&pdev->dev, PORT_FEATURE_ID_HEADER);
->  
-> @@ -49,10 +52,20 @@ void __afu_port_enable(struct platform_device *pdev)
->  	v = readq(base + PORT_HDR_CTRL);
->  	v &= ~PORT_CTRL_SFTRST;
->  	writeq(v, base + PORT_HDR_CTRL);
-> -}
->  
-> -#define RST_POLL_INVL 10 /* us */
-> -#define RST_POLL_TIMEOUT 1000 /* us */
-> +	/*
-> +	 * HW clears the ack bit to indicate that the port is fully out
-> +	 * of reset.
-> +	 */
-> +	if (readq_poll_timeout(base + PORT_HDR_CTRL, v,
-> +			       !(v & PORT_CTRL_SFTRST_ACK),
-> +			       RST_POLL_INVL, RST_POLL_TIMEOUT)) {
-> +		dev_err(&pdev->dev, "timeout, failure to enable device\n");
-> +		return -ETIMEDOUT;
-> +	}
-> +
-> +	return 0;
-> +}
->  
->  /**
->   * __afu_port_disable - disable a port by hold reset
-> @@ -86,7 +99,7 @@ int __afu_port_disable(struct platform_device *pdev)
->  	if (readq_poll_timeout(base + PORT_HDR_CTRL, v,
->  			       v & PORT_CTRL_SFTRST_ACK,
->  			       RST_POLL_INVL, RST_POLL_TIMEOUT)) {
-> -		dev_err(&pdev->dev, "timeout, fail to reset device\n");
-> +		dev_err(&pdev->dev, "timeout, failure to disable device\n");
->  		return -ETIMEDOUT;
->  	}
->  
-> @@ -111,9 +124,9 @@ static int __port_reset(struct platform_device *pdev)
->  
->  	ret = __afu_port_disable(pdev);
->  	if (!ret)
-> -		__afu_port_enable(pdev);
-> +		return ret;
->  
-> -	return ret;
-> +	return __afu_port_enable(pdev);
->  }
->  
->  static int port_reset(struct platform_device *pdev)
-> @@ -872,11 +885,11 @@ static int afu_dev_destroy(struct platform_device *pdev)
->  static int port_enable_set(struct platform_device *pdev, bool enable)
->  {
->  	struct dfl_feature_platform_data *pdata = dev_get_platdata(&pdev->dev);
-> -	int ret = 0;
-> +	int ret;
->  
->  	mutex_lock(&pdata->lock);
->  	if (enable)
-> -		__afu_port_enable(pdev);
-> +		ret = __afu_port_enable(pdev);
->  	else
->  		ret = __afu_port_disable(pdev);
->  	mutex_unlock(&pdata->lock);
-> diff --git a/drivers/fpga/dfl-afu.h b/drivers/fpga/dfl-afu.h
-> index 576e94960086..e5020e2b1f3d 100644
-> --- a/drivers/fpga/dfl-afu.h
-> +++ b/drivers/fpga/dfl-afu.h
-> @@ -80,7 +80,7 @@ struct dfl_afu {
->  };
->  
->  /* hold pdata->lock when call __afu_port_enable/disable */
-> -void __afu_port_enable(struct platform_device *pdev);
-> +int __afu_port_enable(struct platform_device *pdev);
->  int __afu_port_disable(struct platform_device *pdev);
->  
->  void afu_mmio_region_init(struct dfl_feature_platform_data *pdata);
-> -- 
-> 2.25.1
-> 
+Get the patch "[PATCH dwarves] btf_encoder: sanitize non-regular int
+base type" from Yonghong Son:
 
-Thanks,
-Moritz
+link="https://lore.kernel.org/r/20210206191350.830616-1-yhs@fb.com"
+b4 -d am $link
+
+I commented the success in the other thread.
+Sorry for cross-posting.
+
+Big Thank-You Yonghong!
+
+- Sedat -
+
+
+- Sedat -
+
+> >
+> > - Sedat -
+> >
+> >>>
+> >>>> - Sedat -
+> >>>>
+> >>>>>>
+> >>>>>> When looking with llvm-dwarf for DW_ATE_unsigned_160:
+> >>>>>>
+> >>>>>> 0x00d65616:   DW_TAG_base_type
+> >>>>>>                   DW_AT_name      ("DW_ATE_unsigned_160")
+> >>>>>>                   DW_AT_encoding  (DW_ATE_unsigned)
+> >>>>>>                   DW_AT_byte_size (0x14)
+> >>>>>>
+> >>>>>> If you need further information, please let me know.
+> >>>>>>
+> >>>>>> Thanks.
+> >>>>>>
+> >>>>>> - Sedat -
+> >>>>>>
