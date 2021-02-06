@@ -2,60 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B139311BF0
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 08:23:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB137311BF2
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 08:24:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229713AbhBFHWu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Feb 2021 02:22:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50740 "EHLO mail.kernel.org"
+        id S229734AbhBFHX5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Feb 2021 02:23:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50802 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229721AbhBFHWr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Feb 2021 02:22:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E74EA64FD1;
-        Sat,  6 Feb 2021 07:22:05 +0000 (UTC)
+        id S229715AbhBFHXv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 6 Feb 2021 02:23:51 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8643864FD1;
+        Sat,  6 Feb 2021 07:23:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612596126;
-        bh=uJW0U1zMvAZv+rGVPbTMrkiyuU6ywj0nhXYICREKdM8=;
+        s=korg; t=1612596190;
+        bh=13wxReQcfjFneIEOZSyiWPFborDcoVVkk5DRCF3mq4I=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=En654oyF05/AukCKqS89Ad74tc5bfONh2v0ljnhPYJyvw9uPjwMShnjkyMjqieS4e
-         zNQEXfKWk2rBN/P3qRSDKEMShORuzC9bdJVO/qvYuj3eCGATQlBHaUDIOHvMWE2/HP
-         G+ocurJ4OObmBpNfsEN0kNnc/iFQ9bN2UtUq+Wnw=
-Date:   Sat, 6 Feb 2021 08:22:02 +0100
+        b=poRfP7Dr3sqni1xZBHNINNWJKnP5CRzJXXfjXBa/m0jjk5pqThMhs2EpeGFZebu4Q
+         2cKrEXae3cpeK29/rgVBugHpqFvLF7m9jLTqBZDNJM8GUGH1qDrFveeAqkokjTDEb4
+         Db2hDDvRXcXA6GUzl5h3WdUd78hL3EroJhHCw+As=
+Date:   Sat, 6 Feb 2021 08:23:06 +0100
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Tony Battersby <tonyb@cybernetics.com>
-Cc:     Jiri Slaby <jirislaby@kernel.org>, linux-kernel@vger.kernel.org,
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     Jiri Slaby <jirislaby@kernel.org>,
         Jari Ruusu <jariruusu@protonmail.com>,
-        David Laight <David.Laight@aculab.com>,
-        Christoph Biedl <linux-kernel.bfrz@manchmal.in-ulm.de>
+        Sasha Levin <sashal@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>,
+        masahiroy@kernel.org
 Subject: Re: Kernel version numbers after 4.9.255 and 4.4.255
-Message-ID: <YB5DmnPd/Er0+yem@kroah.com>
-References: <a85b7749-38b2-8ce9-c15a-8acb9a54c5b5@kernel.org>
- <0b12bac9-1b4e-ec4a-8a45-5eb3f1dbbeca@cybernetics.com>
+Message-ID: <YB5D2iX5s53Q8MB6@kroah.com>
+References: <7pR0YCctzN9phpuEChlL7_SS6auHOM80bZBcGBTZPuMkc6XjKw7HUXf9vZUPi-IaV2gTtsRVXgywQbja8xpzjGRDGWJsVYSGQN5sNuX1yaQ=@protonmail.com>
+ <YBuSJqIG+AeqDuMl@kroah.com>
+ <78ada91b-21ee-563f-9f75-3cbaeffafad4@kernel.org>
+ <YBu1d0+nfbWGfMtj@kroah.com>
+ <20210205090659.GA22517@amd>
+ <YB0Q3UUzTUmgvH7V@kroah.com>
+ <20210205184412.GA20410@duo.ucw.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <0b12bac9-1b4e-ec4a-8a45-5eb3f1dbbeca@cybernetics.com>
+In-Reply-To: <20210205184412.GA20410@duo.ucw.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 05, 2021 at 12:31:05PM -0500, Tony Battersby wrote:
-> On 2/4/21 6:00 AM, Jiri Slaby wrote:
-> > Agreed. But currently, sublevel won't "wrap", it will "overflow" to 
-> > patchlevel. And that might be a problem. So we might need to update the 
-> > header generation using e.g. "sublevel & 0xff" (wrap around) or 
-> > "sublevel > 255 : 255 : sublevel" (be monotonic and get stuck at 255).
-> >
-> > In both LINUX_VERSION_CODE generation and KERNEL_VERSION proper.
+On Fri, Feb 05, 2021 at 07:44:12PM +0100, Pavel Machek wrote:
+> Hi!
 > 
-> My preference would be to be monotonic and get stuck at 255 to avoid
-> breaking out-of-tree modules.
+> > > > Ugh, I thought this was an internal representation, not an external one
+> > > > :(
+> > > > 
+> > > > > It might work somewhere, but there are a lot of (X * 65536 + Y * 256 + Z)
+> > > > > assumptions all around the world. So this doesn't look like a good idea.
+> > > > 
+> > > > Ok, so what happens if we "wrap"?  What will break with that?  At first
+> > > > glance, I can't see anything as we keep the padding the same, and our
+> > > > build scripts seem to pick the number up from the Makefile and treat it
+> > > > like a string.
+> > > > 
+> > > > It's only the crazy out-of-tree kernel stuff that wants to do minor
+> > > > version checks that might go boom.  And frankly, I'm not all that
+> > > > concerned if they have problems :)
+> > > > 
+> > > > So, let's leave it alone and just see what happens!
+> > > 
+> > > Yeah, stable is a great place to do the experiments. Not that this is
+> > > the first time :-(.
+> > 
+> > How else can we "test this out"?
+> > 
+> > Should I do an "empty" release of 4.4.256 and see if anyone complains?
+> 
+> It seems that would be bad idea, as it would cause problems when stuff
+> is compiled on 4.4.256, not simply by running it.
+> 
+> Sasha's patch seems like one option that could work.
+> 
+> Even safer option is to switch to 4.4.255-st1, 4.4.255-st2 ... scheme.
 
-I really do not care about out-of-tree modules sorry, as there's nothing
-we can do about them.  And internal kernel apis are always changing,
-even in stable/lts releases, so changing this type of thing for them
-should not be a big deal as maintainers of this type of code always have
-to do that.
+Using EXTRAVERSION would work, but it is effectivly the same thing as
+nothing exports that to userspace through the LINUX_VERSION macro.
+
+So clamping the version like Sasha's patches seems to be the best
+solution.
 
 thanks,
 
