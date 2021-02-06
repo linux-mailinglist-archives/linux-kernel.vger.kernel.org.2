@@ -2,86 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12802311B4F
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 06:07:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54F4A311B51
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 06:08:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229789AbhBFFGz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Feb 2021 00:06:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56288 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230487AbhBFD7m (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 22:59:42 -0500
-Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A35A9C061756;
-        Fri,  5 Feb 2021 19:59:01 -0800 (PST)
-Received: by mail-qt1-x831.google.com with SMTP id e15so6602380qte.9;
-        Fri, 05 Feb 2021 19:59:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=BOfhpI6Pct7YOvRYywamiqV90GYlguNDYCZVZfdMFF4=;
-        b=ijefe/7VuijxV7fXltuMQCv2CDhZQmJb4GneqOJpBl03bFpQ9R7lm3ZJn2qvYC3egj
-         JtayyTyxDBGm3+RUiEWCUhdEJoY14xs59Q0n+zDOpAJ5m2SDDFbtfzPkFCPD4c4zm5dm
-         H9A8GxySd9zaO16fTZM6YGk2nIU5HSdfU8T15TZRVJ+0gAtd747GNaTGJOYiTe160uB6
-         7J59DJnEIE74SZsWMQWBL8l4pW8wS/CZ+GDUblW8tX72x97QV9QcbEs9Y2INsOnM/rM6
-         81dlxRd9+nXqNLk9taTp/JsBueaXBVFEDg4WjvMd6nxce0aiRvurouTa243dlx4OJI6j
-         pexA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=BOfhpI6Pct7YOvRYywamiqV90GYlguNDYCZVZfdMFF4=;
-        b=Oztj+M/y1DQOBSmA9KC02MfWHBE2+cWZVGdzbD0dap6So1kh66vTnEox9uOBW/lapM
-         A1gOuk9x12BSaiXeOqBfioDrrPfj7r5acEiLin+6R6VpDos7Euva7YcC1oMkOT9UqpB2
-         jA9xSwO6hiauROWgVjqdJFf3MTOYP41cwDkJ+17sjbmDbpk+MCSmsaWE8KvjlmzLslmc
-         qLOxETWW1zKXrK8cX/+vd74dX9QIsMfFW+f+gPlGdir/aGDURh7SUftHoSHXbKTE1ea9
-         si0llxBWdJz/dkDQILC8sO0y7VQKTz1Yx2aWSEBQW+xreXpHhme5uL+imdmrcawggfRz
-         jSrA==
-X-Gm-Message-State: AOAM533Mn22lsMRcN5xefMXDGovyaexZI7jQIbKw6DHYOER0lzSzhfwy
-        qWxWnePyDAa4LLw2pcvzKI0=
-X-Google-Smtp-Source: ABdhPJxHU0djNxKsFfcG4kkVF/LLNPr6VomPir5Bk+1Ok/DpWAT3ivhJVFGm/F38GogVG8ysqI5eGQ==
-X-Received: by 2002:ac8:5d0d:: with SMTP id f13mr7172637qtx.317.1612583940812;
-        Fri, 05 Feb 2021 19:59:00 -0800 (PST)
-Received: from localhost (dhcp-6c-ae-f6-dc-d8-61.cpe.echoes.net. [72.28.8.195])
-        by smtp.gmail.com with ESMTPSA id h5sm10540341qti.22.2021.02.05.19.58.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Feb 2021 19:59:00 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Fri, 5 Feb 2021 22:58:09 -0500
-From:   Tejun Heo <tj@kernel.org>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>, Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH 0/8] mm: memcontrol: switch to rstat v2
-Message-ID: <YB4T0eX3XDiLPNI1@mtj.duckdns.org>
-References: <20210205182806.17220-1-hannes@cmpxchg.org>
+        id S230487AbhBFFH2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Feb 2021 00:07:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49980 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231486AbhBFECo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 23:02:44 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 62A9564DA3;
+        Sat,  6 Feb 2021 04:02:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612584120;
+        bh=XiHFcUyJrSAelpR+HWhkR6qx5t1YmZcP7sS3igpdcfc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=i0VcmTsv4+gMe73KUDRy1j3Uj1wf2Z+4kwhKieOmhmpGhJpYoqwNNha+qALjqepEP
+         lhAG5aSi78JhpFiQibVPqRT0rOUkLsLB2ZYUP7gb8bzJyW48Rr/6UCQs6c5ovIJZCH
+         IJ9HaXVPLeFz5t3jjsHLUZqthrYbSOknJoW8CCzBTUQ0pae6cKOZQvdUtnRhbYEyO0
+         Wpk2pYtm8wvtV0YHHBZaoVxfi0irLO/4pLZ2z5DilQcQRH0nQchF/vBXwfoQ4DErnq
+         +tmNu4gDqwB0jccfLH4lREp8WGLG6lxPRwNEge5KTwY9uq9nNGicY9B+qn1nDYPtaY
+         /XHhsXt6A6WWg==
+Date:   Fri, 5 Feb 2021 23:01:59 -0500
+From:   Sasha Levin <sashal@kernel.org>
+To:     masahiroy@kernel.org, michal.lkml@markovi.net
+Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, gregkh@linuxfoundation.org,
+        stable@kernel.org
+Subject: Re: [PATCH 3/3] kbuild: introduce KERNEL_VERSION2 and
+ LINUX_VERSION_CODE2
+Message-ID: <20210206040159.GW4035784@sasha-vm>
+References: <20210206035033.2036180-1-sashal@kernel.org>
+ <20210206035033.2036180-3-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <20210205182806.17220-1-hannes@cmpxchg.org>
+In-Reply-To: <20210206035033.2036180-3-sashal@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 05, 2021 at 01:27:58PM -0500, Johannes Weiner wrote:
-> This is version 2 of the memcg rstat patches. Updates since v1:
-> 
-> - added cgroup selftest output (see test section below) (thanks Roman)
-> - updated cgroup selftest to match new kernel implementation
-> - added Fixes: tag to 'mm: memcontrol: fix cpuhotplug statistics flushing' (Shakeel)
-> - collected review & ack tags
-> - added rstat overview to 'mm: memcontrol: switch to rstat' changelog (Michal)
-> - simplified memcg_flush_lruvec_page_state() and removed cpu==-1 case (Michal)
+On Fri, Feb 05, 2021 at 10:50:33PM -0500, Sasha Levin wrote:
+>SUBLEVEL only has 8 bits of space, which means that we'll overflow it
+>once it reaches 256.
+>
+>Few of the stable branches will imminently overflow SUBLEVEL while
+>there's no risk of overflowing VERSION.
+>
+>Thus, give SUBLEVEL 8 more bits which will be stolen from VERSION, this
+>should create a better balance between the different version numbers we
+>use.
+>
+>We can't however use the original KERNEL_VERSION and LINUX_VERSION_CODE
+>as userspace has created ABI dependency on their structure, and we risk
+>breaking this userspace by modifying the layout of the version integers.
+>
+>Cc: stable@kernel.org
+>Signed-off-by: Sasha Levin <sashal@kernel.org>
+>Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+>Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 
-The whole series looks good to me. Please feel free to route the rstat
-patches with the rest of the series.
-
-Thanks.
+I wanted to re-use an older commit but forgot to drop the two tags
+above. The tags from Masahiro and Greg shouldn't be here, sorry about
+that.
 
 -- 
-tejun
+Thanks,
+Sasha
