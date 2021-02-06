@@ -2,115 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3FF6311C46
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 09:51:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9C94311C4A
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 09:53:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229638AbhBFIvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Feb 2021 03:51:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58180 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229537AbhBFIvF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Feb 2021 03:51:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B738064E75;
-        Sat,  6 Feb 2021 08:50:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612601424;
-        bh=zU2xiBSt8hLV2J5I2PJQXajZLHybe0rfMUOYGL+cv3Y=;
-        h=From:To:Cc:Subject:Date:From;
-        b=dvdzuukFUcLRj1GMnFY4O5Xh2jIo4XtQ1oDb+ATVbP208A5+x0KbFzoGYW14gVHwc
-         J0+VnTkkaL7Isr0upnQ/EEryKYyGp93J5VwX4o/KCFwVV49ib4ODdUYllyYdQjHqN9
-         BZQOppEU74uZv/LFSNki4ghwzo6ixq8a6T4xGCH7JMz+s6VCKfHH7HYFdmZmL8IGS8
-         xZil5S9XAUMUO98HdQhi1ILzALSRQSVg18q9jq0boNEq6hcWk9kVZ9ZxVg0vlLtDVp
-         Wpm2cCOLN0CmGKb9+G3iZvc3h4RJi84nv35fV8x0wZxj0RjkMMPhZWZxnJhw1muvkv
-         zlRzJw6T1ZU2w==
-From:   Ard Biesheuvel <ardb@kernel.org>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devel@acpica.org, Ard Biesheuvel <ardb@kernel.org>,
-        Robert Moore <robert.moore@intel.com>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Len Brown <lenb@kernel.org>, Shawn Guo <shawn.guo@linaro.org>
-Subject: [PATCH] Revert "ACPICA: Interpreter: fix memory leak by using existing buffer"
-Date:   Sat,  6 Feb 2021 09:49:37 +0100
-Message-Id: <20210206084937.20853-1-ardb@kernel.org>
-X-Mailer: git-send-email 2.30.0
+        id S229736AbhBFIvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Feb 2021 03:51:37 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:39098 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229492AbhBFIvg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 6 Feb 2021 03:51:36 -0500
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 0B62C1C0B77; Sat,  6 Feb 2021 09:50:38 +0100 (CET)
+Date:   Sat, 6 Feb 2021 09:50:37 +0100
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Tony Lindgren <tony@atomide.com>
+Cc:     Amit Kucheria <amitk@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Eduardo Valentin <edubezval@gmail.com>,
+        Keerthy <j-keerthy@ti.com>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
+        Adam Ford <aford173@gmail.com>,
+        Carl Philipp Klemm <philipp@uvos.xyz>,
+        "H . Nikolaus Schaller" <hns@goldelico.com>,
+        Merlijn Wajer <merlijn@wizzup.org>,
+        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
+        Sebastian Reichel <sre@kernel.org>
+Subject: Re: [PATCH 4/4] thermal: ti-soc-thermal: Use non-inverted define for
+ omap4
+Message-ID: <20210206085037.GA15736@amd>
+References: <20210205134534.49200-1-tony@atomide.com>
+ <20210205134534.49200-5-tony@atomide.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="u3/rZRmxL6MmkK24"
+Content-Disposition: inline
+In-Reply-To: <20210205134534.49200-5-tony@atomide.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit 32cf1a12cad43358e47dac8014379c2f33dfbed4.
 
-The 'exisitng buffer' in this case is the firmware provided table, and
-we should not modify that in place. This fixes a crash on arm64 with
-initrd table overrides, in which case the DSDT is not mapped with
-read/write permissions.
+--u3/rZRmxL6MmkK24
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Cc: Robert Moore <robert.moore@intel.com>
-Cc: Erik Kaneda <erik.kaneda@intel.com>
-Cc: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Cc: Len Brown <lenb@kernel.org>
-Reported-by: Shawn Guo <shawn.guo@linaro.org>
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
----
- drivers/acpi/acpica/nsrepair2.c | 17 +++++++++++++----
- 1 file changed, 13 insertions(+), 4 deletions(-)
+Hi!
 
-diff --git a/drivers/acpi/acpica/nsrepair2.c b/drivers/acpi/acpica/nsrepair2.c
-index d2c8d8279e7a..24c197d91f29 100644
---- a/drivers/acpi/acpica/nsrepair2.c
-+++ b/drivers/acpi/acpica/nsrepair2.c
-@@ -495,8 +495,9 @@ acpi_ns_repair_HID(struct acpi_evaluate_info *info,
- 		   union acpi_operand_object **return_object_ptr)
- {
- 	union acpi_operand_object *return_object = *return_object_ptr;
--	char *dest;
-+	union acpi_operand_object *new_string;
- 	char *source;
-+	char *dest;
- 
- 	ACPI_FUNCTION_NAME(ns_repair_HID);
- 
-@@ -517,6 +518,13 @@ acpi_ns_repair_HID(struct acpi_evaluate_info *info,
- 		return_ACPI_STATUS(AE_OK);
- 	}
- 
-+	/* It is simplest to always create a new string object */
-+
-+	new_string = acpi_ut_create_string_object(return_object->string.length);
-+	if (!new_string) {
-+		return_ACPI_STATUS(AE_NO_MEMORY);
-+	}
-+
- 	/*
- 	 * Remove a leading asterisk if present. For some unknown reason, there
- 	 * are many machines in the field that contains IDs like this.
-@@ -526,7 +534,7 @@ acpi_ns_repair_HID(struct acpi_evaluate_info *info,
- 	source = return_object->string.pointer;
- 	if (*source == '*') {
- 		source++;
--		return_object->string.length--;
-+		new_string->string.length--;
- 
- 		ACPI_DEBUG_PRINT((ACPI_DB_REPAIR,
- 				  "%s: Removed invalid leading asterisk\n",
-@@ -541,11 +549,12 @@ acpi_ns_repair_HID(struct acpi_evaluate_info *info,
- 	 * "NNNN####" where N is an uppercase letter or decimal digit, and
- 	 * # is a hex digit.
- 	 */
--	for (dest = return_object->string.pointer; *source; dest++, source++) {
-+	for (dest = new_string->string.pointer; *source; dest++, source++) {
- 		*dest = (char)toupper((int)*source);
- 	}
--	return_object->string.pointer[return_object->string.length] = 0;
- 
-+	acpi_ut_remove_reference(return_object);
-+	*return_object_ptr = new_string;
- 	return_ACPI_STATUS(AE_OK);
- }
- 
--- 
-2.30.0
+> When we set bit 10 high we use continuous mode and not single
+> mode. Let's correct this to avoid confusion. No functional
+> changes here, the code does the right thing with bit 10.
 
+Seems okay to me. 1/4:
+
+Acked-by: Pavel Machek <pavel@ucw.cz>
+
+Best regards,
+							Pavel
+
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--u3/rZRmxL6MmkK24
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAmAeWF0ACgkQMOfwapXb+vJXogCggf/PATmsqQj9afp1RX5Ex5UE
+tekAn1oRdjaJiDARyjDlQRp33SU5l8s/
+=nyzP
+-----END PGP SIGNATURE-----
+
+--u3/rZRmxL6MmkK24--
