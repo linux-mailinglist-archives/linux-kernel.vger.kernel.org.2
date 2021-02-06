@@ -2,61 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 376B7312056
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 23:47:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 429EB312060
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 00:00:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229613AbhBFWqv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Feb 2021 17:46:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47640 "EHLO mail.kernel.org"
+        id S229650AbhBFW67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Feb 2021 17:58:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48226 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229529AbhBFWqr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Feb 2021 17:46:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 2064064E87;
-        Sat,  6 Feb 2021 22:46:07 +0000 (UTC)
+        id S229522AbhBFW64 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 6 Feb 2021 17:58:56 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D464A64E33;
+        Sat,  6 Feb 2021 22:58:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612651567;
-        bh=5j+LbVjGFw1oXzojch2FWai3yyYwLi04bWMHaNY6g48=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=Cl8in0jPwgrhPLY8w79Jw5L650D4ava2fbXnvXpgzf595XSRRZaYZWvmrxHKPium9
-         HfVGcnQ76N8aGisf3vZOwtfU5u2as5iXHoCCwyCQInbAAmeJD93zDakPPny3PLaSBR
-         rxIf2j1FRVMg0tWdVVZ4YrApuOP5Fk7IfjZ7e35WFxhz9BID/pbXYHSpew0ZgA6/5L
-         /hxa1MyfKzwuJHlSpWgWXpXiFbM8EhsHQpJ1yNCFI/jdM8nY84rvQwtVcEQhsCqZxN
-         n1V43lNMcGMoBqzTFLGLxVfWg0lJdbbWS3Rj1n4yBGgsV2oIDPNV4d5+nbpVBrh+M0
-         1gXFqEEWrlwYA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 1B58060978;
-        Sat,  6 Feb 2021 22:46:07 +0000 (UTC)
-Subject: Re: [GIT PULL] SCSI fixes for 5.11-rc6
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <4694bcc43696d52e6a81c915c2215bc8022918fc.camel@HansenPartnership.com>
-References: <4694bcc43696d52e6a81c915c2215bc8022918fc.camel@HansenPartnership.com>
-X-PR-Tracked-List-Id: <linux-scsi.vger.kernel.org>
-X-PR-Tracked-Message-Id: <4694bcc43696d52e6a81c915c2215bc8022918fc.camel@HansenPartnership.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
-X-PR-Tracked-Commit-Id: 8c65830ae1629b03e5d65e9aafae7e2cf5f8b743
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 964d069f93c4468b220f7e15fac7a3f7bd6d13ec
-Message-Id: <161265156710.9050.8382905942205973356.pr-tracker-bot@kernel.org>
-Date:   Sat, 06 Feb 2021 22:46:07 +0000
-To:     James Bottomley <James.Bottomley@HansenPartnership.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
+        s=k20201202; t=1612652296;
+        bh=QAqNyRM5hmPHOGZUsUZJhXXvXlIEDMHraTzFBBKjuis=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=h4VKX6fn6tyC5AJ7Kac2AS8J9yXLhCUapeDEEgbKluLVhJeOKU2gwg6/ZPIOvf3BP
+         dq+S09hTNXsM+arUzefBZBV5RnCSXW9DFqhqjQw366VIsDD9gku/JuqSusQY9S8+kI
+         2kNhQJ/tpHDNi/zCWpFB5E5LuggNkfL0Dqpg/OWaiFoLahmAPkZU4wqscQygtXKQBk
+         /pQT6S50RZvl543XCXbY+9RUGJwnSuEed3IF3sWH4jkW0kcpU+mJ3l9Jy0XEUf+3BZ
+         cb1MSx20R/hyI0mAvIAh4bB1bQUMCJwzIn2D6yg1LWYxkKfyL04ZvH/n7EN+qiO0gF
+         KYMZl//E87fWw==
+Date:   Sat, 6 Feb 2021 14:58:14 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Alex Elder <elder@linaro.org>
+Cc:     davem@davemloft.net, elder@kernel.org, evgreen@chromium.org,
+        bjorn.andersson@linaro.org, cpratapa@codeaurora.org,
+        subashab@codeaurora.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v2 0/7] net: ipa: a mix of small improvements
+Message-ID: <20210206145814.6a25b8dd@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210205221100.1738-1-elder@linaro.org>
+References: <20210205221100.1738-1-elder@linaro.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sat, 06 Feb 2021 09:40:32 -0800:
+On Fri,  5 Feb 2021 16:10:53 -0600 Alex Elder wrote:
+> Version 2 of this series restructures a couple of the changed
+> functions (in patches 1 and 2) to avoid blocks of indented code
+> by returning early when possible, as suggested by Jakub.  The
+> description of the first patch was changed as a result, to better
+> reflect what the updated patch does.  It also fixes one spot I
+> identified when updating the code, where gsi_channel_stop() was
+> doing the wrong thing on error.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
-
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/964d069f93c4468b220f7e15fac7a3f7bd6d13ec
-
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Fixed the repeated word in patch 1 and applied. Thanks!
