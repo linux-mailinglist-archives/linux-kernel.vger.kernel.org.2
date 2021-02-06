@@ -2,148 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AF6A312016
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 21:49:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83BFD312018
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 21:50:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229669AbhBFUtL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Feb 2021 15:49:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45962 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229626AbhBFUtG (ORCPT
+        id S229690AbhBFUu3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Feb 2021 15:50:29 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36443 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229536AbhBFUu2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Feb 2021 15:49:06 -0500
-Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 908D9C06178B
-        for <linux-kernel@vger.kernel.org>; Sat,  6 Feb 2021 12:47:45 -0800 (PST)
-Received: by mail-yb1-xb2f.google.com with SMTP id i71so10512212ybg.7
-        for <linux-kernel@vger.kernel.org>; Sat, 06 Feb 2021 12:47:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+hjAXsPVbgElgRdj+BZ+6MVnNMTVzcYGHrvtwU1AcCs=;
-        b=PivZDf7vbfBH6bSgHRaWMYMP8xN20P+lGSInQZfjmRrebl4zG19XOD81h4xHPsxfvN
-         rrEa3VG5KM++VddLx0G0hTtcKmO3HR5nuYYQszPGx7j17MOYIXpprrMbnqMjHCQ16gnh
-         vAAp8M7sh5ngMRXLEvCnpR0SE2eLb/b831luTAfpCMUIl/+mJcASqjF/vSQElaBpCa5G
-         ILxRh/y64IoVeO+zKE/zafs6iW5iGJpNWNeiVO4o5xdYwVvhVcqNHRaL4XC6XStW1r/E
-         jU8CFfUhqfItkbmKMgW8wP9A8yilwS0e3PFFDVjJn3PIqvllgunktYiSTLq9+arpDImJ
-         yCYw==
+        Sat, 6 Feb 2021 15:50:28 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612644540;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=PCFKnTq1WWQXV4SZe1NEa1HYcBgQPqnFAnL0fpGrWIU=;
+        b=G+m5vAXpmuwRQmgXBPojdCB81xtfHNFqVT7vAl8aE9nIRrA0gJdsKWIf4Ljbu+1DqRuApY
+        /r72i82UqG4R5GrOU/ku1FkVWgQ9Zxu3tCsoxB194+LwfVtiSc5ogVDtYJd9IQnzd2NZtp
+        +2tPMWre4t51w/kDnLWNsWiX+Xes6Ao=
+Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
+ [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-227-PxN6ZVUaOoOuhIzZtpB8Vw-1; Sat, 06 Feb 2021 15:48:59 -0500
+X-MC-Unique: PxN6ZVUaOoOuhIzZtpB8Vw-1
+Received: by mail-qk1-f198.google.com with SMTP id d194so8941737qke.3
+        for <linux-kernel@vger.kernel.org>; Sat, 06 Feb 2021 12:48:59 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+hjAXsPVbgElgRdj+BZ+6MVnNMTVzcYGHrvtwU1AcCs=;
-        b=l0pOO0ihTM92owGbs8a+zL76hqqza1dEdMCFq9T9MHKdYnHu54YnXC0pAArg+mX+hr
-         CchiFznANKOwEcGj0cC95xOHaAgbXMk85ZWz/lm5v612+Ov9RrM4u+aTFye6fmt+XUbA
-         jzwb2QEvjelGxjzCtBk1j2ijafB/TmbBYALDBE3W5+oDq+m7eqCHmqXJWiQ2AqlUMIVT
-         yeBX6LZjXuqK5UntTGiEFE+9aQjnf2oC6HkSQXrDZSgUWmPOj5C36zUe9m8mfh5BX3B3
-         orSFm+vj3lv7OiHUrZrgmNYhciwMIKEF1JnZYZu7uPRydzxEbKbwgiTf/pRkyRdhKZq4
-         LNGQ==
-X-Gm-Message-State: AOAM533I1T1p2EzvODLGhsgmpiPe6dKylEBfjKoTzRKy7CGF/UCG7I7w
-        jxcHgQX07t2Op07uNbK5MTOjmHnKChF4hlXIPRDxSA==
-X-Google-Smtp-Source: ABdhPJyL0NcBX/RigrI99Osm8m1ZvOqxCkoIvfHxGEI93KNtJj0ymk4vExKY8KweKVKWPIOdql7mDcRKQHJIMzVuTpU=
-X-Received: by 2002:a25:b74c:: with SMTP id e12mr16000102ybm.20.1612644464464;
- Sat, 06 Feb 2021 12:47:44 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PCFKnTq1WWQXV4SZe1NEa1HYcBgQPqnFAnL0fpGrWIU=;
+        b=O3v4NZ7Ju5cSbQ5gs8vmYuB8mhudT3F0n7sb8ljc0KtTGrwRSIAzHWgUkhXHn5/yv3
+         YmL7WBA4nahuklWns6i9X0UFCtNE9NWwogkYofAYTcXIHjc+KmfJDSWgX5l0L8j6YWwq
+         Gd9HM3u1bgKo4NZOEV2Uh+8jEyM4ljowSv2XxNRVITV2iONEG48VgUWEgOyZAmZuHaOp
+         hTO1B8GArOCnna+kjOjlsRgENFs32mPOFlB49kN1z8ymrkPICJfXYkUGBJodACb8siDG
+         iyx6122tTTzOV0vJUKuw1wGRYKV9zSPHi/z8FTz3gvUcSOMff1EocJeeuRU+W26C9Pp6
+         Kn/A==
+X-Gm-Message-State: AOAM530fl5y6Pk0VGF3rCaQD0nNLvIaNy28wTKBuC8kw6XOe/EcGPT8w
+        /mrfOEiQbKCObB+JB5/eNCQEUozU871uFPyZoYOt4gvPYvFA9gtSiC8FSoD1b8/0a20J0zNQWbG
+        ubH1fjfWK7ZekKKvIkWdYZ0Gv
+X-Received: by 2002:a37:9e8a:: with SMTP id h132mr10472962qke.119.1612644538671;
+        Sat, 06 Feb 2021 12:48:58 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJz4ABoSm8MNhG2j0XpoBzjmwQleeKZNw2SbtFiIORMN8j9rCWlkjgD5g9YL3M3NMQk92wimMw==
+X-Received: by 2002:a37:9e8a:: with SMTP id h132mr10472949qke.119.1612644538460;
+        Sat, 06 Feb 2021 12:48:58 -0800 (PST)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id j125sm12880330qke.56.2021.02.06.12.48.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 06 Feb 2021 12:48:57 -0800 (PST)
+From:   trix@redhat.com
+To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com
+Cc:     linux-kernel@vger.kernel.org, Tom Rix <trix@redhat.com>
+Subject: [PATCH] sched/deadline: fix BUG_ON() ENQUEUE_REPLENISH check
+Date:   Sat,  6 Feb 2021 12:48:51 -0800
+Message-Id: <20210206204851.3673588-1-trix@redhat.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <20210205222644.2357303-1-saravanak@google.com> <CAMuHMdXo+ShM3Ct2OSCscJwaLJ4rbytpA14=dR5q+3F9kJjNfw@mail.gmail.com>
-In-Reply-To: <CAMuHMdXo+ShM3Ct2OSCscJwaLJ4rbytpA14=dR5q+3F9kJjNfw@mail.gmail.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Sat, 6 Feb 2021 12:47:08 -0800
-Message-ID: <CAGETcx9j8YzcJa6-s4cuyTpwFsUAAaBD6H9mf1wfzafb_x+5tg@mail.gmail.com>
-Subject: Re: [PATCH v4 0/8] Make fw_devlink=on more forgiving
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Kevin Hilman <khilman@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Len Brown <len.brown@intel.com>, Len Brown <lenb@kernel.org>,
-        Pavel Machek <pavel@ucw.cz>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PM list <linux-pm@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Android Kernel Team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Feb 6, 2021 at 11:41 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->
-> Hi Saravana,
->
-> On Fri, Feb 5, 2021 at 11:26 PM Saravana Kannan <saravanak@google.com> wrote:
-> > There are a lot of devices/drivers where they never have a struct device
-> > created for them or the driver initializes the hardware without ever
-> > binding to the struct device.
-> >
-> > This series is intended to avoid any boot regressions due to such
-> > devices/drivers when fw_devlink=on and also address the handling of
-> > optional suppliers.
->
-> Thanks for your series!
->
-> > Patch 5 sets up a generic API to handle drivers that never bind with
-> > their devices.
-> >
-> > Patch 6 through 8 update different frameworks to use the new API.
->
-> >   driver core: fw_devlink: Handle suppliers that don't use driver core
-> >   irqdomain: Mark fwnodes when their irqdomain is added/removed
-> >   PM: domains: Mark fwnodes when their powerdomain is added/removed
-> >   clk: Mark fwnodes when their clock provider is added/removed
->
-> I take it this is an automatic alternative for letting drivers set the
-> OF_POPULATED flag manually?
+From: Tom Rix <trix@redhat.com>
 
-The frameworks can still continue setting it to avoid creating dead
-"struct devices" that'll never be used. This new flag handles cases
-where the device is already created, but will never bind to a driver.
-So, they are meant to do slightly different things, but the end result
-is removing the need for individual drivers to set OF_POPULATED (and
-Rob hates that too).
+When the BUG_ON check for (flags != ENQUEUE_REPLENISH) was created, the
+flag was set to ENQUEUE_REPLENISH in rt_mutex_setprio(), now it is or-ed
+in.  So the checking logic needs to change.
 
-> Is this actually safe?  It's not uncommon for a driver to register
-> multiple providers, sometimes even of different types (clock, genpd,
-> irq, reset[1], ...).
+Fixes: 1de64443d755 ("sched/core: Fix task and run queue sched_info::run_delay inconsistencies")
+Signed-off-by: Tom Rix <trix@redhat.com>
+---
+ kernel/sched/deadline.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-This flag is just an indication that the fwnode has been initialized
-by a driver. It's okay if the flag gets set multiple times when a
-driver is registering with multiple frameworks. It's also okay if the
-flag is cleared multiple times as the driver is uninitializing the
-hardware (although, this is very unlikely for drivers that don't use
-device-driver model). When we actually try to create device links, we
-just check if this happened without a driver actually binding to this
-device. There's no "probing" race because the "status" I check goes
-through NO_DRIVER -> PROBING -(registering happens)-> BOUND ->
-UNBINDING -(deregistering happens) -> NO_DRIVER. So if the fwnode flag
-is getting set as part of the driver's probe function, the "status"
-value will never be NO_DRIVER.
+diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
+index 1508d126e88b..f50d20b7fe7c 100644
+--- a/kernel/sched/deadline.c
++++ b/kernel/sched/deadline.c
+@@ -1561,7 +1561,7 @@ static void enqueue_task_dl(struct rq *rq, struct task_struct *p, int flags)
+ 		 * the throttle.
+ 		 */
+ 		p->dl.dl_throttled = 0;
+-		BUG_ON(!is_dl_boosted(&p->dl) || flags != ENQUEUE_REPLENISH);
++		BUG_ON(!is_dl_boosted(&p->dl) || !(flags & ENQUEUE_REPLENISH));
+ 		return;
+ 	}
+ 
+-- 
+2.27.0
 
-> Can you be sure consumer drivers do not start probing while their
-> dependency is still busy registering providers?
-
-The code only acts on that flag when trying to create device links
-from the consumer to the supplier. This is just a way to tell "hey,
-don't bother creating a device link, this supplier will never bind".
-So it just avoids blocking the consumer. Doesn't really make the
-consumers probe earlier than they would have.
-
-> [1] Which brings my attention to the fact that devlink does not consider
->     "resets" properties yet.
->
-
-Yeah, we can add that and other bindings as we go.
-
--Saravana
