@@ -2,87 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 737C1311E93
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 17:03:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14569311E95
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 17:08:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230308AbhBFQDN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Feb 2021 11:03:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41626 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229539AbhBFQDI (ORCPT
+        id S229693AbhBFQII (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Feb 2021 11:08:08 -0500
+Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:51947 "EHLO
+        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229539AbhBFQIF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Feb 2021 11:03:08 -0500
-Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1508EC061756;
-        Sat,  6 Feb 2021 08:02:28 -0800 (PST)
-Received: by mail-oi1-x235.google.com with SMTP id n7so10912465oic.11;
-        Sat, 06 Feb 2021 08:02:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=jANMVpFV6X+7bLZv9mIw0bFW8TVD0W2g2QnIcrut0SA=;
-        b=UJxaSXeFuPQD+5+4L2M8xzzMJjx9DnlNW8QpkkLEhx+8jFz4sNTTHlduwCR7bUrLFW
-         9hLEcyzOW4jSiWhWT3DmaoKhs8uqqaX7XPW0dmWp1S00IG0eO1QnMQygAvgltE2BDzVY
-         cyWTsrpM2YfuE7sggD+Ii5VYS/TnKTehfAp/KmjFHFNGuw661IhWpxiobueSIz0UU4Al
-         OOO0C9Bs+YEGUlc8lTF5c/CLnu22HGgvBZue2sAg9Plf7DVHetzDIngJI6z7mZnTUVu+
-         e/ZAJ0id/du41H6f5RPOtLVC3/cmpVC9vJ8OW0hiELmkEKCmFQRBkiWTFAUjPPkNzDYf
-         Amdg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=jANMVpFV6X+7bLZv9mIw0bFW8TVD0W2g2QnIcrut0SA=;
-        b=Bt5F2ZjFcKyT8C4Ip/oGnsjrKy8Det0w4/rji0IIEsngpg4OY9V1xqb/RPIo05BJkP
-         IYbKQ76ebntX+SED76+PFreT+SzC1ao5RWogeZoEKIGPf7jrAneracEkniPo88cfTxpl
-         RlAwAx5dVrLTgjaRhxbfKCD01kseLqLAqvV3+O29CWM54CTpGmCRQ23a85e7bnkpL2zW
-         8G5BxSJPBCGgyO/UN1BSesWZivWfvcUiVzS6ZqRrZODoOmKP/5EkVeQt6/yEHoFLOjbj
-         /6timDIt2eORpXpTDtX3QED2BjoPqKTXL2fICH+1+0A6k4duGuzZsCcUlqNsypx1LPcj
-         rJhg==
-X-Gm-Message-State: AOAM531UfTFBOALg1vKxtWYp3szUa57mVQBMAAkoyBcLzI0rqEvj7oNq
-        N6AJ3Dgo3bpehIFz7zjyweXAe7tws3s=
-X-Google-Smtp-Source: ABdhPJxaGNhyWK54AG/aHtmD0X5bggRUnSSoWyyseMAuuE4Pyn+IztdmL30/c6HpSNLj8fdwkvSwZQ==
-X-Received: by 2002:aca:df84:: with SMTP id w126mr1481242oig.58.1612627347593;
-        Sat, 06 Feb 2021 08:02:27 -0800 (PST)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id u2sm2522762oor.40.2021.02.06.08.02.26
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sat, 06 Feb 2021 08:02:27 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Sat, 6 Feb 2021 08:02:25 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        stable@vger.kernel.org
-Subject: Re: [PATCH 5.10 00/57] 5.10.14-rc1 review
-Message-ID: <20210206160225.GD175716@roeck-us.net>
-References: <20210205140655.982616732@linuxfoundation.org>
+        Sat, 6 Feb 2021 11:08:05 -0500
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.94)
+          with esmtps (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1l8Q7G-001ebd-KX; Sat, 06 Feb 2021 17:07:22 +0100
+Received: from pd9f74830.dip0.t-ipconnect.de ([217.247.72.48] helo=[192.168.178.23])
+          by inpost2.zedat.fu-berlin.de (Exim 4.94)
+          with esmtpsa (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1l8Q7G-002tp2-8y; Sat, 06 Feb 2021 17:07:22 +0100
+Subject: Re: [PATCH] ia64: Fix style guide breakage
+To:     Amy Parker <enbyamy@gmail.com>, schnelle@linux.ibm.com,
+        corbet@lwn.net, mchehab+huawei@kernel.org,
+        tsbogend@alpha.franken.de
+Cc:     linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210205220618.611388-1-enbyamy@gmail.com>
+From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Message-ID: <a3215a2b-76d3-6285-8072-160a905de362@physik.fu-berlin.de>
+Date:   Sat, 6 Feb 2021 17:07:21 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210205140655.982616732@linuxfoundation.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210205220618.611388-1-enbyamy@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-Originating-IP: 217.247.72.48
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 05, 2021 at 03:06:26PM +0100, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.14 release.
-> There are 57 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+Hi Amy!
+
+On 2/5/21 11:06 PM, Amy Parker wrote:
+> Some statements do not have proper spacing between their C
+> keywords (commonly if and for) throughout files in the ia64 tree.
+> This patch corrects this to follow the kernel code style guide.
 > 
-> Responses should be made by Sun, 07 Feb 2021 14:06:42 +0000.
-> Anything received after that time might be too late.
-> 
+> Signed-off-by: Amy Parker <enbyamy@gmail.com>
 
-Build results:
-	total: 154 pass: 154 fail: 0
-Qemu test results:
-	total: 427 pass: 427 fail: 0
+I never noticed. Does the kernel coding style guideline actually require
+space after "for" and "if" and similar statements but not before function
+names?
 
-Tested-by: Guenter Roeck <linux@roeck-us.net>
+Adrian
 
-Guenter
+-- 
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer - glaubitz@debian.org
+`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+
