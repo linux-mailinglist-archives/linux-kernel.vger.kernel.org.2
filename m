@@ -2,83 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12034311D80
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 14:41:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07562311D83
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 14:46:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229815AbhBFNlF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Feb 2021 08:41:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39460 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229522AbhBFNlA (ORCPT
+        id S229917AbhBFNqS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Feb 2021 08:46:18 -0500
+Received: from mail-wr1-f52.google.com ([209.85.221.52]:41948 "EHLO
+        mail-wr1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229522AbhBFNqQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Feb 2021 08:41:00 -0500
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42AABC06174A;
-        Sat,  6 Feb 2021 05:40:19 -0800 (PST)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: gtucker)
-        with ESMTPSA id BC0CA1F41177
-Subject: Re: [PATCH RESEND v2 4/5] iommu/tegra-smmu: Rework
- tegra_smmu_probe_device()
-To:     Nicolin Chen <nicoleotsuka@gmail.com>
-Cc:     will@kernel.org, linux-kernel@vger.kernel.org,
-        iommu@lists.linux-foundation.org, linux-tegra@vger.kernel.org,
-        jonathanh@nvidia.com, vdumpa@nvidia.com, thierry.reding@gmail.com,
-        joro@8bytes.org, kernel@collabora.com,
-        Dmitry Osipenko <digetx@gmail.com>,
-        "kernelci-results@groups.io" <kernelci-results@groups.io>
-References: <20201125101013.14953-1-nicoleotsuka@gmail.com>
- <20201125101013.14953-5-nicoleotsuka@gmail.com>
- <46a96cf9-91cc-2ad4-702a-e95ba7200375@collabora.com>
- <20210205052422.GA11329@Asurada-Nvidia>
- <20210205094556.GA32677@Asurada-Nvidia>
-From:   Guillaume Tucker <guillaume.tucker@collabora.com>
-Message-ID: <f45c94b4-2949-4eac-5944-85d43a8afef5@collabora.com>
-Date:   Sat, 6 Feb 2021 13:40:13 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Sat, 6 Feb 2021 08:46:16 -0500
+Received: by mail-wr1-f52.google.com with SMTP id p15so11020258wrq.8;
+        Sat, 06 Feb 2021 05:45:59 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7ghVbTm1KHFPZQbBwYfJEJHbvho+CoG+hwSpE/oCZOc=;
+        b=J4P49KE26VN20zQsy64nRJ9kZCTU7hT791eqjKIiShB1Hi94Uu5D2actztD64XcVou
+         wQLWncDbGwwvIh2nnGnmIpexQfhi6J3/W5eatAfHZkx2uNC1fwCYZbjVwrNWRaOELJt0
+         G5PXOHxZe4Byx77vR4TEQtqXhU+Qxy3GAQJba1I/Qreex6RpQjJJkKciFL064UAhOenw
+         gWglKEWo+SI5TA3Ksns98P61rIMv+uRPkmezsdI5IHXLQEO+kDRXwUM7ddPZT2IOszL0
+         as16vsPukj6gmcxSC2zWHZjlIU6emgZgfPx1rwc5vTJCAhTD+T0QtSDMF9w8CzmsVfnU
+         xEmA==
+X-Gm-Message-State: AOAM531bUtBJjBDr6Xc0vkKByjdoQUw5Wn/cAuiyquaIyNkMYg5hvpfT
+        gbNrOWxJOSbZ5cP1vMmGpR0=
+X-Google-Smtp-Source: ABdhPJxfZL4HL+Mq28hXXROX5oDPXTtbYpNw5IDUR7G1wwpEwQJWkmQ95FfU7I+FNgdfeWWCNapjdQ==
+X-Received: by 2002:adf:e807:: with SMTP id o7mr10750502wrm.308.1612619133829;
+        Sat, 06 Feb 2021 05:45:33 -0800 (PST)
+Received: from kozik-lap (194-95-143-94.dyn.cable.fcom.ch. [94.143.95.194])
+        by smtp.googlemail.com with ESMTPSA id w14sm16387610wro.86.2021.02.06.05.45.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 06 Feb 2021 05:45:32 -0800 (PST)
+Date:   Sat, 6 Feb 2021 14:45:31 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
+        arm@kernel.org, soc@kernel.org
+Cc:     linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Sylwester Nawrocki <snawrocki@kernel.org>
+Subject: Re: [GIT PULL 2/3] ARM: dts: samsung: DTS for v5.12
+Message-ID: <20210206134531.l5vpzlmev4v3f3uo@kozik-lap>
+References: <20210125191240.11278-1-krzk@kernel.org>
+ <20210125191240.11278-3-krzk@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20210205094556.GA32677@Asurada-Nvidia>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210125191240.11278-3-krzk@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/02/2021 09:45, Nicolin Chen wrote:
-> Hi Guillaume,
+On Mon, Jan 25, 2021 at 08:12:39PM +0100, Krzysztof Kozlowski wrote:
+> The following changes since commit 5c8fe583cce542aa0b84adc939ce85293de36e5e:
 > 
-> On Thu, Feb 04, 2021 at 09:24:23PM -0800, Nicolin Chen wrote:
->>> Please let us know if you need any help debugging this issue or
->>> to try a fix on this platform.
->>
->> Yes, I don't have any Tegra124 platform to run. It'd be very nice
->> if you can run some debugging patch (I can provide you) and a fix
->> after I root cause the issue.
+>   Linux 5.11-rc1 (2020-12-27 15:30:22 -0800)
 > 
-> Would it be possible for you to run with the given debugging patch?
+> are available in the Git repository at:
 > 
-> It'd be nicer if I can get both logs of the vanilla kernel (failing)
-> and the commit-reverted version (passing), each applying this patch.
+>   https://git.kernel.org/pub/scm/linux/kernel/git/krzk/linux.git tags/samsung-dt-5.12
+> 
+> for you to fetch changes up to 3803f461bd28c1c817281348509399778633e82f:
+> 
+>   ARM: dts: exynos: Add top-off charging regulator node for I9100 (2021-01-03 17:33:29 +0100)
+> 
+> ----------------------------------------------------------------
+> Samsung DTS ARM changes for v5.12
+> 
+> 1. Use new compatile to properly configure Exynos5420 USB2 PHY, fixing
+>    it suspend/resume cycle.
+> 2. Correct Samsung PMIC interrupt trigger levels on multiple boards.
+> 3. Correct the voltages of Samsung GT-I9100 charger and add top-off
+>    charger.
+> 
 
-Sure, I've run 3 jobs:
+Hi everyone,
 
-* v5.11-rc6 as a reference, to see the original issue:
-  https://lava.collabora.co.uk/scheduler/job/3187848
+Any progress or new comments about this pull request?
 
-* + your debug patch:
-  https://lava.collabora.co.uk/scheduler/job/3187849
-
-* + the "breaking" commit reverted, passing the tests:
-  https://lava.collabora.co.uk/scheduler/job/3187851
+Best regards,
+Krzysztof
 
 
-You can see the history of the test branch I'm using here, with
-the 3 revisions mentioned above:
 
-  https://gitlab.collabora.com/gtucker/linux/-/commits/linux-5.11-rc6-nyan-big-drm-read/
-
-
-Hope that helps,
-Guillaume
+> ----------------------------------------------------------------
+> Krzysztof Kozlowski (6):
+>       ARM: dts: exynos: correct PMIC interrupt trigger level on Artik 5
+>       ARM: dts: exynos: correct PMIC interrupt trigger level on Monk
+>       ARM: dts: exynos: correct PMIC interrupt trigger level on Rinato
+>       ARM: dts: exynos: correct PMIC interrupt trigger level on Spring
+>       ARM: dts: exynos: correct PMIC interrupt trigger level on Arndale Octa
+>       ARM: dts: exynos: correct PMIC interrupt trigger level on Odroid XU3 family
+> 
+> Marek Szyprowski (1):
+>       ARM: dts: exynos: use Exynos5420 dedicated USB2 PHY compatible
+> 
+> Timon Baetz (2):
+>       ARM: dts: exynos: Fix charging regulator voltage and current for I9100
+>       ARM: dts: exynos: Add top-off charging regulator node for I9100
+> 
+>  arch/arm/boot/dts/exynos3250-artik5.dtsi      |  2 +-
+>  arch/arm/boot/dts/exynos3250-monk.dts         |  2 +-
+>  arch/arm/boot/dts/exynos3250-rinato.dts       |  2 +-
+>  arch/arm/boot/dts/exynos4210-i9100.dts        | 30 ++++++++++++++++-----------
+>  arch/arm/boot/dts/exynos5250-spring.dts       |  2 +-
+>  arch/arm/boot/dts/exynos5420-arndale-octa.dts |  2 +-
+>  arch/arm/boot/dts/exynos5422-odroid-core.dtsi |  2 +-
+>  arch/arm/boot/dts/exynos54xx.dtsi             |  6 +++---
+>  8 files changed, 27 insertions(+), 21 deletions(-)
