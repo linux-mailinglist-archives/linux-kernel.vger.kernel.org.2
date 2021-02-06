@@ -2,230 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75727311A81
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 04:53:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C38D8311A65
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 04:44:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232457AbhBFDvq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 22:51:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41662 "EHLO
+        id S231504AbhBFDoL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 22:44:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232180AbhBFCyE (ORCPT
+        with ESMTP id S231473AbhBFCsA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 21:54:04 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC5D8C08EE7C;
-        Fri,  5 Feb 2021 16:40:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=+8+c6e2MXDrIRynamuIEcXTAJuyCmgpjsez/l/OAdUE=; b=M93kocYSsm7VHSI27ipgq83m4X
-        5Bm2dri1chpJof5Msn5PyZzvfhUOwpQPRW5zcAgbgVHJkN9BjnuDjYmwzrG52A0rvcoiyeT0wiWqo
-        HfFiGOPupsKDFz//dZsW6uH9lyB/XvsItdtQNN0IItQylnPu4DrIzzbyIRnwGA66owR6RfIjUbOfi
-        O7M9lphz2K44Tv0/Ck+CCLfWXhzCS5cWpR6nOfKr3k8V+uOmChh03hBkfzk2B73g3Ke4nohk48hON
-        HtkTiEtLFnXzY+bjaitQ9FE1xVfPeNI2hZTi2wZdhSPzPnDBfYA4tTepbCa0T2Ha+FYBSfB+PDS6h
-        odT1F7Ew==;
-Received: from [2601:1c0:6280:3f0::aec2]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l8Bdp-0004ne-EB; Sat, 06 Feb 2021 00:40:01 +0000
-Subject: Re: [PATCH v4 2/2] dmabuf: Add dmabuf inode number to /proc/*/fdinfo
-To:     Kalesh Singh <kaleshsingh@google.com>
-Cc:     jannh@google.com, jeffv@google.com, keescook@chromium.org,
-        surenb@google.com, minchan@kernel.org, hridya@google.com,
-        christian.koenig@amd.com, kernel-team@android.com,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Alexey Gladkov <gladkov.alexey@gmail.com>,
-        NeilBrown <neilb@suse.de>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Michel Lespinasse <walken@google.com>,
-        Bernd Edlinger <bernd.edlinger@hotmail.de>,
-        Andrei Vagin <avagin@gmail.com>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-doc@vger.kernel.org
-References: <20210205213353.669122-1-kaleshsingh@google.com>
- <20210205213353.669122-2-kaleshsingh@google.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <753e0a3b-ce7c-5518-65b1-f743dd370b76@infradead.org>
-Date:   Fri, 5 Feb 2021 16:39:51 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Fri, 5 Feb 2021 21:48:00 -0500
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAA36C033270
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 17:02:25 -0800 (PST)
+Received: by mail-qk1-x72f.google.com with SMTP id k193so8848468qke.6
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 17:02:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=FLppRaBxTaTBBqnUXgqhBfq/MXGjD2GePBnWu7V919s=;
+        b=Hg8QkEjqcz56CXhXkp1Dh9Snx4WRELdVyJ1HGayaJXyEm9EtREpftEmuj8C8KYDVWK
+         duiLaV84VItsT53GTqATLo39qU0ela1yL6ZhEq42LlNsjMMbsqjWuBvlzS0xWhBiw/ub
+         xB3CZUsemutHXa+PJyVBPnVsJBkWBpnrSxKTshS6UllhQ0CE6PQkq8/L5iRjuRy3gEVF
+         oSPCGXMjdR4DsFELb0c/t3f9o9/l1IK2EbmpIg8ykwy4w8Exj6ytk70ql4h5S3NxKmKD
+         7sXYejDowxGiniXcr7aHZTwJrQLkfiBZ4LzVIyeXLN3sDduL/cuO3ywRMdyB14q8uiqR
+         Lr5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=FLppRaBxTaTBBqnUXgqhBfq/MXGjD2GePBnWu7V919s=;
+        b=qdrxrp4u/Sgocg42j+FoAO3PiLysZ/D85S79GzNehRpkOcHF6DFF6I76pOutaz1LhB
+         9Lclkxs66lLYS4BpbOIQ4N5HRdaHrjTwR4yAwsNEPTD1hgPTQT6y9vl9so/1wFYwfGrt
+         nG/ZzQXwGl7RYSh2KmAqZ645hb0k4qLg9nIZfYosw6LZvW9ju6B1/ho4MrRVt9Bw2RGO
+         LA1t4hpB9kqoaRq6TbgoRTVqbghKNuz3EUM0Aooz0ShbyWnqMZ5tkEymv4ZUc/WAvVHO
+         kXxy/qkiNGX0fELCI4iACtZiEmkHtsvCvY6Jc9f5G1w2BevwhFHXsdanY5gFydTxLsOd
+         LJPw==
+X-Gm-Message-State: AOAM532Xfa2uxCJiVQNFOT2NbcqGqIi05trOu62W5YlOBGFvkvJQiz5j
+        5fWoYly4mexltOnf5/Pb/G8zWQ==
+X-Google-Smtp-Source: ABdhPJwVBr7etauHiCjhknPRB2gY/JQ/tVzQinXjOkvfahLLyY6HRmk6T/xCYpuxVmPJvC6gd44bQg==
+X-Received: by 2002:a37:a3d0:: with SMTP id m199mr6795926qke.497.1612573344787;
+        Fri, 05 Feb 2021 17:02:24 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
+        by smtp.gmail.com with ESMTPSA id d1sm7315887qtq.94.2021.02.05.17.02.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Feb 2021 17:02:24 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1l8BzT-004BbR-OL; Fri, 05 Feb 2021 21:02:23 -0400
+Date:   Fri, 5 Feb 2021 21:02:23 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     James Bottomley <James.Bottomley@HansenPartnership.com>
+Cc:     Jarkko Sakkinen <jarkko@kernel.org>,
+        Lino Sanfilippo <LinoSanfilippo@gmx.de>, peterhuewe@gmx.de,
+        stefanb@linux.vnet.ibm.com, stable@vger.kernel.org,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lino Sanfilippo <l.sanfilippo@kunbus.com>
+Subject: Re: [PATCH v3 2/2] tpm: in tpm2_del_space check if ops pointer is
+ still valid
+Message-ID: <20210206010223.GS4718@ziepe.ca>
+References: <1612482643-11796-1-git-send-email-LinoSanfilippo@gmx.de>
+ <1612482643-11796-3-git-send-email-LinoSanfilippo@gmx.de>
+ <7308e5e9f51501bd92cced8f28ff6130c976b3ed.camel@HansenPartnership.com>
+ <YByrCnswkIlz1w1t@kernel.org>
+ <ee4adfbb99273e1bdceca210bc1fa5f16a50c415.camel@HansenPartnership.com>
+ <20210205172528.GP4718@ziepe.ca>
+ <89892a6152826e89276126fd2688b7c767484f41.camel@HansenPartnership.com>
 MIME-Version: 1.0
-In-Reply-To: <20210205213353.669122-2-kaleshsingh@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <89892a6152826e89276126fd2688b7c767484f41.camel@HansenPartnership.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/5/21 1:33 PM, Kalesh Singh wrote:
-> And 'inode_no' field to /proc/<pid>/fdinfo/<FD> and
-> /proc/<pid>/task/<tid>/fdinfo/<FD>.
+On Fri, Feb 05, 2021 at 09:54:29AM -0800, James Bottomley wrote:
+> On Fri, 2021-02-05 at 13:25 -0400, Jason Gunthorpe wrote:
+> > On Fri, Feb 05, 2021 at 08:48:11AM -0800, James Bottomley wrote:
+> > > > Thanks for pointing this out. I'd strongly support Jason's
+> > > > proposal:
+> > > > 
+> > > > https://lore.kernel.org/linux-integrity/20201215175624.GG5487@ziepe.ca/
+> > > > 
+> > > > It's the best long-term way to fix this.
+> > > 
+> > > Really, no it's not.  It introduces extra mechanism we don't need.
+> > > To recap the issue: character devices already have an automatic
+> > > mechanism which holds a reference to the struct device while the
+> > > character node is open so the default is to release resources on
+> > > final
+> > > put of the struct device.
+> > 
+> > The refcount on the struct device only keeps the memory alive, it
+> > doesn't say anything about the ops. We still need to lock and check
+> > the ops each and every time they are used.
 > 
-> The inode numbers can be used to uniquely identify DMA buffers
-> in user space and avoids a dependency on /proc/<pid>/fd/* when
-> accounting per-process DMA buffer sizes.
-> 
-> Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
-> ---
-> Changes in v4:
->   - Add inode number as common field in fdinfo, per Christian
-> Changes in v3:
->   - Add documentation in proc.rst, per Randy
-> Changes in v2:
->   - Update patch description
-> 
->  Documentation/filesystems/proc.rst | 37 +++++++++++++++++++++++++-----
->  fs/proc/fd.c                       |  5 ++--
->  2 files changed, 34 insertions(+), 8 deletions(-)
-> 
-> diff --git a/Documentation/filesystems/proc.rst b/Documentation/filesystems/proc.rst
-> index 2fa69f710e2a..db46da32230c 100644
-> --- a/Documentation/filesystems/proc.rst
-> +++ b/Documentation/filesystems/proc.rst
-> @@ -1902,18 +1902,20 @@ if precise results are needed.
->  3.8	/proc/<pid>/fdinfo/<fd> - Information about opened file
->  ---------------------------------------------------------------
->  This file provides information associated with an opened file. The regular
-> -files have at least three fields -- 'pos', 'flags' and 'mnt_id'. The 'pos'
-> -represents the current offset of the opened file in decimal form [see lseek(2)
-> -for details], 'flags' denotes the octal O_xxx mask the file has been
-> -created with [see open(2) for details] and 'mnt_id' represents mount ID of
-> -the file system containing the opened file [see 3.5 /proc/<pid>/mountinfo
-> -for details].
-> +files have at least four fields -- 'pos', 'flags', 'mnt_id' and 'inode_no'.
-> +The 'pos' represents the current offset of the opened file in decimal
-> +form [see lseek(2) for details], 'flags' denotes the octal O_xxx mask the
-> +file has been created with [see open(2) for details] and 'mnt_id' represents
-> +mount ID of the file system containing the opened file [see 3.5
-> +/proc/<pid>/mountinfo for details]. 'inode_no' represents the inode number
-> +of the file.
->  
->  A typical output is::
->  
->  	pos:	0
->  	flags:	0100002
->  	mnt_id:	19
-> +	inode_no:       63107
->  
->  All locks associated with a file descriptor are shown in its fdinfo too::
->  
-> @@ -1930,6 +1932,7 @@ Eventfd files
->  	pos:	0
->  	flags:	04002
->  	mnt_id:	9
-> +	inode_no:       63107
->  	eventfd-count:	5a
->  
->  where 'eventfd-count' is hex value of a counter.
-> @@ -1942,6 +1945,7 @@ Signalfd files
->  	pos:	0
->  	flags:	04002
->  	mnt_id:	9
-> +	inode_no:       63107
->  	sigmask:	0000000000000200
->  
->  where 'sigmask' is hex value of the signal mask associated
-> @@ -1955,6 +1959,7 @@ Epoll files
->  	pos:	0
->  	flags:	02
->  	mnt_id:	9
-> +	inode_no:       63107
->  	tfd:        5 events:       1d data: ffffffffffffffff pos:0 ino:61af sdev:7
->  
->  where 'tfd' is a target file descriptor number in decimal form,
-> @@ -1971,6 +1976,8 @@ For inotify files the format is the following::
->  
->  	pos:	0
->  	flags:	02000000
-> +	mnt_id:	9
-> +	inode_no:       63107
->  	inotify wd:3 ino:9e7e sdev:800013 mask:800afce ignored_mask:0 fhandle-bytes:8 fhandle-type:1 f_handle:7e9e0000640d1b6d
->  
->  where 'wd' is a watch descriptor in decimal form, i.e. a target file
-> @@ -1993,6 +2000,7 @@ For fanotify files the format is::
->  	pos:	0
->  	flags:	02
->  	mnt_id:	9
-> +	inode_no:       63107
->  	fanotify flags:10 event-flags:0
->  	fanotify mnt_id:12 mflags:40 mask:38 ignored_mask:40000003
->  	fanotify ino:4f969 sdev:800013 mflags:0 mask:3b ignored_mask:40000000 fhandle-bytes:8 fhandle-type:1 f_handle:69f90400c275b5b4
-> @@ -2017,6 +2025,7 @@ Timerfd files
->  	pos:	0
->  	flags:	02
->  	mnt_id:	9
-> +	inode_no:       63107
->  	clockid: 0
->  	ticks: 0
->  	settime flags: 01
-> @@ -2031,6 +2040,22 @@ details]. 'it_value' is remaining time until the timer expiration.
->  with TIMER_ABSTIME option which will be shown in 'settime flags', but 'it_value'
->  still exhibits timer's remaining time.
->  
-> +DMA Buffer files
-> +~~~~~~~~~~~~~~~~
-> +
-> +::
-> +
-> +	pos:	0
-> +	flags:	04002
-> +	mnt_id:	9
-> +	inode_no:       63107
+> I think this is the crux of our disagreement: I think the ops doesn't
+> matter because to call try_get_ops you have to have a chip structure
+> and the only way you get a chip structure is if you hold a device
+> containing it, in which case the device hold guarantees the chip can't
+> be freed.  
 
-Hi,
+The get_device() only guarentees the chip memory hasn't been kfree'd.
 
-Why do all of the examples have so many spaces between inode_no:
-and the number?
+It doesn't mean tpm_chip_unregister() hasn't already run, completed
+and set ops == NULL.
 
-Ah, it's a \t in the output along with the length of the "inode_no:"
-string. OK.
+In the file path we have the get_device implicitly by the file's
+i_cdev pointing to that chain of refcounts that ends on the chip's
+main struct device. So we know the chip memory cannot be kfreed while
+the struct file exists.
 
-Next question: why are there spaces instead of a tab between
-"inode_no": and the number? All of the other fields that are
-preceded by a \t in the seq_printf() call have tabs in the output.
+However, there is nothing preventing the struct file from living past
+tpm_chip_unregister(). cdev_device_del() does not wait for all files's
+to be closed, it only removes the ability to open new files. Open
+files do prevent removal of the module, but it does not prevent
+hot-unplug of the underling device, eg with sysfs unbind.
 
-Except for the tabs vs. spaces, the Documentation change is:
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
+In fact, nothing about tpm_chip_unregister() excludes open files.
 
+So it is perfectly legal for tpm_chip_unregister() to return, the devm
+put_device to be called, and the refcount of the chip to still be
+positive - held by open files.
 
+In this situation ops will be NULL when file operations are called and
+eg doing a tpm_chip_start will crash on:
 
-> +	size:   32768
-> +	count:  2
-> +	exp_name:  system-heap
-> +
-> +where 'size' is the size of the DMA buffer in bytes. 'count' is the file count of
-> +the DMA buffer file. 'exp_name' is the name of the DMA buffer exporter.
-> +
->  3.9	/proc/<pid>/map_files - Information about memory mapped files
->  ---------------------------------------------------------------------
->  This directory contains symbolic links which represent memory mapped files
-> diff --git a/fs/proc/fd.c b/fs/proc/fd.c
-> index 585e213301f9..2c25909bf9d1 100644
-> --- a/fs/proc/fd.c
-> +++ b/fs/proc/fd.c
-> @@ -54,9 +54,10 @@ static int seq_show(struct seq_file *m, void *v)
->  	if (ret)
->  		return ret;
->  
-> -	seq_printf(m, "pos:\t%lli\nflags:\t0%o\nmnt_id:\t%i\n",
-> +	seq_printf(m, "pos:\t%lli\nflags:\t0%o\nmnt_id:\t%i\ninode_no:\t%lu\n",
->  		   (long long)file->f_pos, f_flags,
-> -		   real_mount(file->f_path.mnt)->mnt_id);
-> +		   real_mount(file->f_path.mnt)->mnt_id,
-> +		   file_inode(file)->i_ino);
->  
->  	/* show_fd_locks() never deferences files so a stale value is safe */
->  	show_fd_locks(m, file, files);
-> 
+	if (chip->ops->clk_enable)
 
-thanks.
--- 
-~Randy
+To use the TPM driver, the rules are you must hold a get_device() on a
+chip, and then upgrade it to a 'tpm_try_get_ops' before calling any
+driver functions. 
 
+Only the critical region formed by tpm_try_get_ops() will prevent
+tpm_chip_unregister() from completing. It is the thing that ensures
+the driver is actually present.
+
+> In either case, I think you get returned a device to which you hold a
+> reference.  Is there any other case where you can get a chip without
+> also getting a device reference?
+
+There should be no case where there is a struct chip pointer without
+something owning a reference for that pointer.
+
+> I'll answer the other point in a separate email, but I think the
+> principle sounds OK: we could do the final put right after we del the
+> char devices because that's called in the module release routine and
+> thus not have to rely on the devm actions which, as you say, are an
+> annoying complication.
+
+I think tpm_alloc() should have an error unwind that is only
+put_device(chip->dev), anything else breaks the basic programming
+pattern of alloc/register.
+
+Jason
