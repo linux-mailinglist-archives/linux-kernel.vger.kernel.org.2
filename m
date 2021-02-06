@@ -2,86 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32576311D29
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 13:45:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B379311D2B
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 13:47:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229892AbhBFMp1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Feb 2021 07:45:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55896 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229681AbhBFMpY (ORCPT
+        id S229934AbhBFMrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Feb 2021 07:47:20 -0500
+Received: from conssluserg-05.nifty.com ([210.131.2.90]:32475 "EHLO
+        conssluserg-05.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229681AbhBFMrS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Feb 2021 07:45:24 -0500
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78B40C061756
-        for <linux-kernel@vger.kernel.org>; Sat,  6 Feb 2021 04:44:43 -0800 (PST)
-Received: by mail-wr1-x433.google.com with SMTP id d16so10854523wro.11
-        for <linux-kernel@vger.kernel.org>; Sat, 06 Feb 2021 04:44:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chrisdown.name; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=FdxkSResqQzkMQudO+mFnTtwity6/Y5j5OUXY7bW1CY=;
-        b=Aa1oif6wIeCk38mTPALdE/pM3IoRCp1VTkKq6cVjr/teo80g5ZDn9wwJKv68yBwVKt
-         qurR6BM7I9gYh/8T8nz/jyNfDIXvovtr5O5PMbcbd7AAO4Q1wxK6vvSoTcT3F6rtpmAI
-         v+vj0/V+uu8aKJSvTLcpBIB/Wg7LBmRayxQHQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=FdxkSResqQzkMQudO+mFnTtwity6/Y5j5OUXY7bW1CY=;
-        b=j2N+ll6/XXLgwdEdCDQMBTSy+bIXw7lMZi/OWNY6ZUokNsSB8RopKKakC66udWhlgH
-         WL2aMdm23DNtO6QLSHmFRvOfwIIbrJqSBJRgzHSxBA4qsenVbZLrXEDaei2lN4WFKw/9
-         0o51CVnvbb3oVjBtxM1eYZNjTYXf7zocAr05lKMuwJ0PkIMj14101jwdyHHRfDc5eFuB
-         uL2jTySO5GD2//KPir7PCyr7PvHOafholgJcc6U9alJuYYIcRMG1PJrYBSZkRLiGe8Sc
-         XBRMTToaWY4DuO8eAF6l7V9QuC8TmZGmlMgLQvyrSBRUxS+rPT/lHFZbp37FXoHRuuP2
-         Vtzw==
-X-Gm-Message-State: AOAM533j+owpydUiW+6S5lJkPLAeqwa8Qyn0irGXY6dUlWJWyPDNAvYm
-        Evm7rmFXx4lMVbchS8E3x8OGwA==
-X-Google-Smtp-Source: ABdhPJyU0DSUD06+MJYK5IN96/TSbHWfYrAodvWTr13jCnWBAwHvl1W0Y0XNV8ZPPivdRQOVLvIyZw==
-X-Received: by 2002:adf:fb0c:: with SMTP id c12mr10268601wrr.6.1612615482067;
-        Sat, 06 Feb 2021 04:44:42 -0800 (PST)
-Received: from localhost ([85.255.234.177])
-        by smtp.gmail.com with ESMTPSA id r17sm15877486wro.46.2021.02.06.04.44.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 06 Feb 2021 04:44:41 -0800 (PST)
-Date:   Sat, 6 Feb 2021 12:44:39 +0000
-From:   Chris Down <chris@chrisdown.name>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Petr Mladek <pmladek@suse.com>, linux-kernel@vger.kernel.org,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>, kernel-team@fb.com,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Jason Baron <jbaron@akamai.com>,
-        Kees Cook <keescook@chromium.org>, linux-api@vger.kernel.org
-Subject: Re: [PATCH] printk: Userspace format enumeration support
-Message-ID: <YB6PN8VsVo4pNxCb@chrisdown.name>
-References: <YBwU0G+P0vb9wTwm@chrisdown.name>
- <YB11jybvFCb95S9e@alley>
- <20210205124748.4af2d406@gandalf.local.home>
- <YB3Kf896Zt9O+/Yh@chrisdown.name>
- <YB5Bsyk4o3Mqr6Li@kroah.com>
+        Sat, 6 Feb 2021 07:47:18 -0500
+Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175]) (authenticated)
+        by conssluserg-05.nifty.com with ESMTP id 116CkMn0021526;
+        Sat, 6 Feb 2021 21:46:22 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com 116CkMn0021526
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1612615582;
+        bh=9Rzc5vv0hXi2qq4VeEMWQtc+VBWOzvTwws6J09xsVOo=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=QeIM2WesdOzDgMqtUG/xXS7FQLhBIXWuqi86vB7PAixHQkCIKkj5gRSjn5WSfu8ik
+         QVMSdwLKb7zTSE42eL1MwUObXJUBhr6LeqkmuftQ+DpzUwqrMMFFADKokJQC1q7zoT
+         QfISslyW0zpUxxJ1CuyrA1Qk1cN/EXznMsGmODHEAp2AXR+cS+b6m/EwJAL9WNVJ+Q
+         LKnPmrdEzJv/eO8qjZsx0pP1DS9nnHBXJ2RmY2HuerTpxG4/VEoRqCMSGEg9XGivVq
+         oK4I4hK6LCB9xVl7QPZMhHFgHy8w6cdNbP11C15HRHuW4Cy7+mLiQqQX9w+H6RJser
+         uHTlEmE4VL3oA==
+X-Nifty-SrcIP: [209.85.214.175]
+Received: by mail-pl1-f175.google.com with SMTP id k22so599723pll.6;
+        Sat, 06 Feb 2021 04:46:22 -0800 (PST)
+X-Gm-Message-State: AOAM531LJRxKMgfqVhNXv5qHbz9j9zz8scTVnZV116UPD85oRwhb4rda
+        cXLA6HwVcDtpQ+T942LY/zPztC80VsH0N+flWuQ=
+X-Google-Smtp-Source: ABdhPJxJS52xzMoza4f/5VvZ+g++sQunIQNG/ghLsQ3I+xTuFo8PlQuNJSoejZN6qsSV5AM7SzNIRVLchZTctuP1VsE=
+X-Received: by 2002:a17:902:bb87:b029:e1:d1f:2736 with SMTP id
+ m7-20020a170902bb87b02900e10d1f2736mr8380973pls.1.1612615581575; Sat, 06 Feb
+ 2021 04:46:21 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <YB5Bsyk4o3Mqr6Li@kroah.com>
-User-Agent: Mutt/2.0.5 (da5e3282) (2021-01-21)
+References: <20210206035033.2036180-1-sashal@kernel.org> <20210206035033.2036180-3-sashal@kernel.org>
+In-Reply-To: <20210206035033.2036180-3-sashal@kernel.org>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Sat, 6 Feb 2021 21:45:44 +0900
+X-Gmail-Original-Message-ID: <CAK7LNASoWNfEAzQYOo7_PqgU61iiZk8i=F-JS38yn5AnfQNhzQ@mail.gmail.com>
+Message-ID: <CAK7LNASoWNfEAzQYOo7_PqgU61iiZk8i=F-JS38yn5AnfQNhzQ@mail.gmail.com>
+Subject: Re: [PATCH 3/3] kbuild: introduce KERNEL_VERSION2 and LINUX_VERSION_CODE2
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     Michal Marek <michal.lkml@markovi.net>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Greg Kroah-Hartman writes:
->> > I'm not against the idea. I don't think it belongs in /proc. Perhaps
->> > debugfs is a better place to put it.
->>
->> Any location is fine with me, as long as it gets to userspace. How does
->> <debugfs>/printk/formats or <debugfs>/printk/formats/<module> sound to you?
+On Sat, Feb 6, 2021 at 12:50 PM Sasha Levin <sashal@kernel.org> wrote:
 >
->That's fine with me, but I'd like to see the patch with this in it first
->before approving it :)
+> SUBLEVEL only has 8 bits of space, which means that we'll overflow it
+> once it reaches 256.
+>
+> Few of the stable branches will imminently overflow SUBLEVEL while
+> there's no risk of overflowing VERSION.
+>
+> Thus, give SUBLEVEL 8 more bits which will be stolen from VERSION, this
+> should create a better balance between the different version numbers we
+> use.
+>
+> We can't however use the original KERNEL_VERSION and LINUX_VERSION_CODE
+> as userspace has created ABI dependency on their structure, and we risk
+> breaking this userspace by modifying the layout of the version integers.
+>
+> Cc: stable@kernel.org
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
+> Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
+> ---
+>  Makefile                                       | 8 +++++++-
+>  drivers/net/ethernet/mellanox/mlx5/core/main.c | 4 ++--
+>  drivers/usb/core/hcd.c                         | 4 ++--
+>  drivers/usb/gadget/udc/aspeed-vhub/hub.c       | 4 ++--
+>  include/linux/usb/composite.h                  | 4 ++--
+>  kernel/sys.c                                   | 2 +-
+>  tools/perf/tests/bpf-script-example.c          | 2 +-
+>  tools/perf/tests/bpf-script-test-kbuild.c      | 2 +-
+>  tools/perf/tests/bpf-script-test-prologue.c    | 2 +-
+>  9 files changed, 19 insertions(+), 13 deletions(-)
+>
+> diff --git a/Makefile b/Makefile
+> index 157be50c691e5..2177c548e4c24 100644
+> --- a/Makefile
+> +++ b/Makefile
+> @@ -1266,7 +1266,13 @@ define filechk_version.h
+>                 expr $(VERSION) \* 65536 + 0$(PATCHLEVEL) \* 256 + $(SUBLEVEL)); \
+>         fi;                                                              \
+>         echo '#define KERNEL_VERSION(a,b,c) (((a) << 16) + ((b) << 8) +  \
+> -       ((c) > 255 ? 255 : (c)))'
+> +       ((c) > 255 ? 255 : (c)))';                                       \
+> +       echo \#define LINUX_VERSION_CODE2 $(shell                        \
+> +       expr $(VERSION) \* 16777216 + 0$(PATCHLEVEL) \* 65536 + 0$(SUBLEVEL)); \
 
-Thanks! I'll send v2 soon then with the aforementioned changes, and a move to 
-debugfs.
+
+Is this needed?
+No one in this patch uses LINUX_VERSION_CODE2.
+
+The in-kernel code can use
+LINUX_VERSION_MAJOR/PATCHLEVEL/SUBLEVEL directly.
+
+
+Userspace does not need LINUX_VERSION_CODE2 either.
+
+Your comment in 2/3 states that
+userspace only decodes MAJOR and PATCHLEVEL fields,
+so LINUX_VERSION_CODE will still do well.
+
+
+
+
+> index ab4b98b3165db..a56bf381335e9 100644
+> --- a/tools/perf/tests/bpf-script-example.c
+> +++ b/tools/perf/tests/bpf-script-example.c
+> @@ -5,7 +5,7 @@
+>   */
+>  #ifndef LINUX_VERSION_CODE
+>  # error Need LINUX_VERSION_CODE
+> -# error Example: for 4.2 kernel, put 'clang-opt="-DLINUX_VERSION_CODE=0x40200" into llvm section of ~/.perfconfig'
+> +# error Example: for 4.2 kernel, put 'clang-opt="-DLINUX_VERSION_CODE=0x4020000" into llvm section of ~/.perfconfig'
+
+
+Is this change needed?
+
+
+
+
+>  #endif
+>  #define BPF_ANY 0
+>  #define BPF_MAP_TYPE_ARRAY 2
+> diff --git a/tools/perf/tests/bpf-script-test-kbuild.c b/tools/perf/tests/bpf-script-test-kbuild.c
+> index 219673aa278fb..21663295d5b5a 100644
+> --- a/tools/perf/tests/bpf-script-test-kbuild.c
+> +++ b/tools/perf/tests/bpf-script-test-kbuild.c
+> @@ -5,7 +5,7 @@
+>   */
+>  #ifndef LINUX_VERSION_CODE
+>  # error Need LINUX_VERSION_CODE
+> -# error Example: for 4.2 kernel, put 'clang-opt="-DLINUX_VERSION_CODE=0x40200" into llvm section of ~/.perfconfig'
+> +# error Example: for 4.2 kernel, put 'clang-opt="-DLINUX_VERSION_CODE=0x4020000" into llvm section of ~/.perfconfig'
+>  #endif
+>  #define SEC(NAME) __attribute__((section(NAME), used))
+>
+> diff --git a/tools/perf/tests/bpf-script-test-prologue.c b/tools/perf/tests/bpf-script-test-prologue.c
+> index bd83d364cf30d..8db19e70813cc 100644
+> --- a/tools/perf/tests/bpf-script-test-prologue.c
+> +++ b/tools/perf/tests/bpf-script-test-prologue.c
+> @@ -5,7 +5,7 @@
+>   */
+>  #ifndef LINUX_VERSION_CODE
+>  # error Need LINUX_VERSION_CODE
+> -# error Example: for 4.2 kernel, put 'clang-opt="-DLINUX_VERSION_CODE=0x40200" into llvm section of ~/.perfconfig'
+> +# error Example: for 4.2 kernel, put 'clang-opt="-DLINUX_VERSION_CODE=0x4020000" into llvm section of ~/.perfconfig'
+>  #endif
+>  #define SEC(NAME) __attribute__((section(NAME), used))
+>
+> --
+> 2.27.0
+>
+
+
+-- 
+Best Regards
+Masahiro Yamada
