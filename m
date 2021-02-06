@@ -2,90 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE986311D1F
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 13:32:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32576311D29
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 13:45:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229884AbhBFMaS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Feb 2021 07:30:18 -0500
-Received: from mail-wr1-f48.google.com ([209.85.221.48]:36240 "EHLO
-        mail-wr1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229795AbhBFMaP (ORCPT
+        id S229892AbhBFMp1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Feb 2021 07:45:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55896 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229681AbhBFMpY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Feb 2021 07:30:15 -0500
-Received: by mail-wr1-f48.google.com with SMTP id u14so10908872wri.3;
-        Sat, 06 Feb 2021 04:29:59 -0800 (PST)
+        Sat, 6 Feb 2021 07:45:24 -0500
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78B40C061756
+        for <linux-kernel@vger.kernel.org>; Sat,  6 Feb 2021 04:44:43 -0800 (PST)
+Received: by mail-wr1-x433.google.com with SMTP id d16so10854523wro.11
+        for <linux-kernel@vger.kernel.org>; Sat, 06 Feb 2021 04:44:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chrisdown.name; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=FdxkSResqQzkMQudO+mFnTtwity6/Y5j5OUXY7bW1CY=;
+        b=Aa1oif6wIeCk38mTPALdE/pM3IoRCp1VTkKq6cVjr/teo80g5ZDn9wwJKv68yBwVKt
+         qurR6BM7I9gYh/8T8nz/jyNfDIXvovtr5O5PMbcbd7AAO4Q1wxK6vvSoTcT3F6rtpmAI
+         v+vj0/V+uu8aKJSvTLcpBIB/Wg7LBmRayxQHQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=6g1k3SFhjqedu/1j0b61HvZBLCKR46ltwlIl3YSgDVs=;
-        b=kJyFjC4ifKlm2J3k86DX1qpo4G01vDsPW2vsDU1O1l/7zwVKtW+NZlrf1DVfZ2hlO1
-         yPSRdLC7MYCxLY1fSKi1jx8IRjU0c9A4SqdDaQFxOGaYM/C2pe5KH5FT8W1264SB19Ty
-         ALJUXvzEy898u+2u3Yb3VD+UZfQtPkkRi5DavqfF4llh2pnCRMeLj+bxWliAWv+2dDER
-         0xqFfiYLvwwTagPZC6c51tAwoffD7AqX2IB3M8cHCxoBXV1pE8lxc4GXYg/AlzctmoBy
-         8DzMKjwDyWlas4MHme/NwwhKqqwvC6m8KwhYAusWwnyfQ95gAjLXJhSCvNgRdlWmn3IO
-         AQSg==
-X-Gm-Message-State: AOAM532aXlF3JJXj+EkTsYrktyw7Zfk6HV3nYJiitVz+odvLsHWmfUpb
-        JQfpEoW6cd8b/PLE1TBv3QN++mEFybY=
-X-Google-Smtp-Source: ABdhPJxtXSt1RXtUx7YNMJ1Ljd6FDrlsdjfB9lgkpbRfzOXYcKtV51Y8G9umCp4Sr3+WYWVUrjcjAg==
-X-Received: by 2002:a5d:58fa:: with SMTP id f26mr10283772wrd.33.1612614573407;
-        Sat, 06 Feb 2021 04:29:33 -0800 (PST)
-Received: from msft-t490s.teknoraver.net (net-2-36-203-239.cust.vodafonedsl.it. [2.36.203.239])
-        by smtp.gmail.com with ESMTPSA id c11sm15421697wrs.28.2021.02.06.04.29.32
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=FdxkSResqQzkMQudO+mFnTtwity6/Y5j5OUXY7bW1CY=;
+        b=j2N+ll6/XXLgwdEdCDQMBTSy+bIXw7lMZi/OWNY6ZUokNsSB8RopKKakC66udWhlgH
+         WL2aMdm23DNtO6QLSHmFRvOfwIIbrJqSBJRgzHSxBA4qsenVbZLrXEDaei2lN4WFKw/9
+         0o51CVnvbb3oVjBtxM1eYZNjTYXf7zocAr05lKMuwJ0PkIMj14101jwdyHHRfDc5eFuB
+         uL2jTySO5GD2//KPir7PCyr7PvHOafholgJcc6U9alJuYYIcRMG1PJrYBSZkRLiGe8Sc
+         XBRMTToaWY4DuO8eAF6l7V9QuC8TmZGmlMgLQvyrSBRUxS+rPT/lHFZbp37FXoHRuuP2
+         Vtzw==
+X-Gm-Message-State: AOAM533j+owpydUiW+6S5lJkPLAeqwa8Qyn0irGXY6dUlWJWyPDNAvYm
+        Evm7rmFXx4lMVbchS8E3x8OGwA==
+X-Google-Smtp-Source: ABdhPJyU0DSUD06+MJYK5IN96/TSbHWfYrAodvWTr13jCnWBAwHvl1W0Y0XNV8ZPPivdRQOVLvIyZw==
+X-Received: by 2002:adf:fb0c:: with SMTP id c12mr10268601wrr.6.1612615482067;
+        Sat, 06 Feb 2021 04:44:42 -0800 (PST)
+Received: from localhost ([85.255.234.177])
+        by smtp.gmail.com with ESMTPSA id r17sm15877486wro.46.2021.02.06.04.44.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 06 Feb 2021 04:29:32 -0800 (PST)
-From:   Matteo Croce <mcroce@linux.microsoft.com>
-To:     netdev@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Johannes Berg <johannes@sipsolutions.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH net-next] cfg80211: remove unused callback
-Date:   Sat,  6 Feb 2021 13:29:20 +0100
-Message-Id: <20210206122920.3210-1-mcroce@linux.microsoft.com>
-X-Mailer: git-send-email 2.29.2
+        Sat, 06 Feb 2021 04:44:41 -0800 (PST)
+Date:   Sat, 6 Feb 2021 12:44:39 +0000
+From:   Chris Down <chris@chrisdown.name>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Petr Mladek <pmladek@suse.com>, linux-kernel@vger.kernel.org,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        John Ogness <john.ogness@linutronix.de>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>, kernel-team@fb.com,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Jason Baron <jbaron@akamai.com>,
+        Kees Cook <keescook@chromium.org>, linux-api@vger.kernel.org
+Subject: Re: [PATCH] printk: Userspace format enumeration support
+Message-ID: <YB6PN8VsVo4pNxCb@chrisdown.name>
+References: <YBwU0G+P0vb9wTwm@chrisdown.name>
+ <YB11jybvFCb95S9e@alley>
+ <20210205124748.4af2d406@gandalf.local.home>
+ <YB3Kf896Zt9O+/Yh@chrisdown.name>
+ <YB5Bsyk4o3Mqr6Li@kroah.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <YB5Bsyk4o3Mqr6Li@kroah.com>
+User-Agent: Mutt/2.0.5 (da5e3282) (2021-01-21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matteo Croce <mcroce@microsoft.com>
+Greg Kroah-Hartman writes:
+>> > I'm not against the idea. I don't think it belongs in /proc. Perhaps
+>> > debugfs is a better place to put it.
+>>
+>> Any location is fine with me, as long as it gets to userspace. How does
+>> <debugfs>/printk/formats or <debugfs>/printk/formats/<module> sound to you?
+>
+>That's fine with me, but I'd like to see the patch with this in it first
+>before approving it :)
 
-The ieee80211 class registers a callback which actually does nothing.
-Given that the callback is optional, and all its accesses are protected
-by a NULL check, remove it entirely.
-
-Signed-off-by: Matteo Croce <mcroce@microsoft.com>
----
- net/wireless/sysfs.c | 7 -------
- 1 file changed, 7 deletions(-)
-
-diff --git a/net/wireless/sysfs.c b/net/wireless/sysfs.c
-index 3ac1f48195d2..41cb4d565149 100644
---- a/net/wireless/sysfs.c
-+++ b/net/wireless/sysfs.c
-@@ -81,12 +81,6 @@ static void wiphy_dev_release(struct device *dev)
- 	cfg80211_dev_free(rdev);
- }
- 
--static int wiphy_uevent(struct device *dev, struct kobj_uevent_env *env)
--{
--	/* TODO, we probably need stuff here */
--	return 0;
--}
--
- #ifdef CONFIG_PM_SLEEP
- static void cfg80211_leave_all(struct cfg80211_registered_device *rdev)
- {
-@@ -157,7 +151,6 @@ struct class ieee80211_class = {
- 	.owner = THIS_MODULE,
- 	.dev_release = wiphy_dev_release,
- 	.dev_groups = ieee80211_groups,
--	.dev_uevent = wiphy_uevent,
- 	.pm = WIPHY_PM_OPS,
- 	.ns_type = &net_ns_type_operations,
- 	.namespace = wiphy_namespace,
--- 
-2.29.2
-
+Thanks! I'll send v2 soon then with the aforementioned changes, and a move to 
+debugfs.
