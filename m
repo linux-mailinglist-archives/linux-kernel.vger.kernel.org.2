@@ -2,165 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66088311F28
+	by mail.lfdr.de (Postfix) with ESMTP id D66E1311F29
 	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 18:43:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230294AbhBFRkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Feb 2021 12:40:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33118 "EHLO mail.kernel.org"
+        id S230317AbhBFRko (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Feb 2021 12:40:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33122 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229506AbhBFRkk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Feb 2021 12:40:40 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CF54764DAF;
-        Sat,  6 Feb 2021 17:39:58 +0000 (UTC)
+        id S230244AbhBFRkl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 6 Feb 2021 12:40:41 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2294764E2A
+        for <linux-kernel@vger.kernel.org>; Sat,  6 Feb 2021 17:39:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612633199;
-        bh=M7HdCCmFBU+B8QOQD4rZtkG7F6vLIw3MFm5y/918lJk=;
-        h=From:To:Cc:Subject:Date:From;
-        b=FSJ0SNkrxiOpsfX7zowC1OHX/Et7yLp4OKtQAq6cqWU48T57xATiSrmH4IjXIVzAF
-         +wIoqJJKKw0hKO9o/mlI60GRTYQm2WXuOJ8xdmp22wkYHSMJmie4uDK6IntVVdXuA4
-         OXRezIuIPLXJXqo2oXMXWs/JD0QCWT3g1tscmQ8gibHu65HHsPVCwfwlAlKKRiS97G
-         /UEwIzHDYAKy1bphkXbXPvqL5C8bTDYBmnCkHdNljGnU7YwVSqzfxTgpUnST+SHIsJ
-         EKLgLRVaytHHsm2Yub8HFlb75fkjMjTFSwp21bQ077uhxPYoTypRhDNCRWYYFoN3JY
-         6YR1kfxwXPN7g==
+        s=k20201202; t=1612633200;
+        bh=XX1Ezmq9b1glhJo4yYiu02uGXrH3eXsmRJjRIWPlrCk=;
+        h=From:To:Subject:Date:In-Reply-To:References:From;
+        b=sSWG4fE2FBhhLcL+zN96dcSitqQ4w81xWCFr7OaAkwz4oniFaM8ATItjfAOgcaeOj
+         FH5nSOvefDr13qT6zLdVurIsHi3kkMmVV1fycpE64rwRZ/sfmK2g3cpWRERBWl3v/P
+         PU+BcPPPfgEJ7O7XNjgT+TxwYBNlbGdAAFy+O/JqI3ocPMhdo4FMHHGrL0NsIS0F2M
+         /LsYu6QkhGvLambhqMeEb60UnOTPJTGASXjdzkvLTV63nApmhUzdBK0tWHiRJrQTMo
+         a8shNUtvkMJYylpLlqTutUVXVWAmNiwvLYToTdrH8fgWladx0SjW4Pz5BXdkhnn68L
+         lXRfMW2Zjl04A==
 From:   Oded Gabbay <ogabbay@kernel.org>
 To:     linux-kernel@vger.kernel.org
-Cc:     Ohad Sharabi <osharabi@habana.ai>
-Subject: [PATCH 1/3] habanalabs: update security map after init CPU Qs
-Date:   Sat,  6 Feb 2021 19:39:52 +0200
-Message-Id: <20210206173954.4662-1-ogabbay@kernel.org>
+Subject: [PATCH 2/3] habanalabs: return block size + block ID
+Date:   Sat,  6 Feb 2021 19:39:53 +0200
+Message-Id: <20210206173954.4662-2-ogabbay@kernel.org>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210206173954.4662-1-ogabbay@kernel.org>
+References: <20210206173954.4662-1-ogabbay@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ohad Sharabi <osharabi@habana.ai>
+When user gives us a block address to get its ID to mmap it, he also
+needs to get from us the block size to pass to the driver in the mmap
+function.
 
-when reading CPU_BOOT_DEV_STS0 reg after FW reports SRAM AVAILABLE the
-value in the register might not yet be updated by FW.
-to overcome this issue another "up-to-date" read of this register is
-done at the end of CPU queues init.
-
-Signed-off-by: Ohad Sharabi <osharabi@habana.ai>
-Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
 Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
 ---
- drivers/misc/habanalabs/common/firmware_if.c | 7 ++-----
- drivers/misc/habanalabs/common/habanalabs.h  | 3 ---
- drivers/misc/habanalabs/gaudi/gaudi.c        | 6 +++++-
- drivers/misc/habanalabs/goya/goya.c          | 6 +++++-
- 4 files changed, 12 insertions(+), 10 deletions(-)
+ drivers/misc/habanalabs/common/habanalabs.h |  4 ++-
+ drivers/misc/habanalabs/common/memory.c     | 19 +++++++++------
+ drivers/misc/habanalabs/gaudi/gaudi.c       |  2 +-
+ drivers/misc/habanalabs/goya/goya.c         |  2 +-
+ include/uapi/misc/habanalabs.h              | 27 ++++++++++++++++-----
+ 5 files changed, 37 insertions(+), 17 deletions(-)
 
-diff --git a/drivers/misc/habanalabs/common/firmware_if.c b/drivers/misc/habanalabs/common/firmware_if.c
-index 31b52a223f02..09706c571e95 100644
---- a/drivers/misc/habanalabs/common/firmware_if.c
-+++ b/drivers/misc/habanalabs/common/firmware_if.c
-@@ -125,7 +125,8 @@ int hl_fw_send_cpu_message(struct hl_device *hdev, u32 hw_queue_id, u32 *msg,
- 		goto out;
- 	}
- 
--	if (hdev->asic_prop.fw_cpucp_ack_with_pi)
-+	if (hdev->asic_prop.fw_app_security_map &
-+			CPU_BOOT_DEV_STS0_PKT_PI_ACK_EN)
- 		expected_ack_val = queue->pi;
- 	else
- 		expected_ack_val = CPUCP_PACKET_FENCE_VAL;
-@@ -786,10 +787,6 @@ int hl_fw_init_cpu(struct hl_device *hdev, u32 cpu_boot_status_reg,
- 				CPU_BOOT_DEV_STS0_FW_HARD_RST_EN)
- 			prop->hard_reset_done_by_fw = true;
- 
--		if (prop->fw_boot_cpu_security_map &
--				CPU_BOOT_DEV_STS0_PKT_PI_ACK_EN)
--			prop->fw_cpucp_ack_with_pi = true;
--
- 		dev_dbg(hdev->dev,
- 			"Firmware boot CPU security status %#x\n",
- 			prop->fw_boot_cpu_security_map);
 diff --git a/drivers/misc/habanalabs/common/habanalabs.h b/drivers/misc/habanalabs/common/habanalabs.h
-index 18ed3a6000b0..46c37b0c704a 100644
+index 46c37b0c704a..dc9f5a83dfc9 100644
 --- a/drivers/misc/habanalabs/common/habanalabs.h
 +++ b/drivers/misc/habanalabs/common/habanalabs.h
-@@ -420,8 +420,6 @@ struct hl_mmu_properties {
-  *                            from BOOT_DEV_STS0
-  * @dram_supports_virtual_memory: is there an MMU towards the DRAM
-  * @hard_reset_done_by_fw: true if firmware is handling hard reset flow
-- * @fw_cpucp_ack_with_pi: true if cpucp is acking messages with the PQ PI
-- *                        instead of a magic number
-  * @num_functional_hbms: number of functional HBMs in each DCORE.
-  */
- struct asic_fixed_properties {
-@@ -483,7 +481,6 @@ struct asic_fixed_properties {
- 	u8				fw_security_status_valid;
- 	u8				dram_supports_virtual_memory;
- 	u8				hard_reset_done_by_fw;
--	u8				fw_cpucp_ack_with_pi;
- 	u8				num_functional_hbms;
- };
+@@ -862,6 +862,8 @@ enum div_select_defs {
+  *                   showing it to users.
+  * @ack_protection_bits_errors: ack and dump all security violations
+  * @get_hw_block_id: retrieve a HW block id to be used by the user to mmap it.
++ *                   also returns the size of the block if caller supplies
++ *                   a valid pointer for it
+  * @hw_block_mmap: mmap a HW block with a given id.
+  * @enable_events_from_fw: send interrupt to firmware to notify them the
+  *                         driver is ready to receive asynchronous events. This
+@@ -980,7 +982,7 @@ struct hl_asic_funcs {
+ 	u64 (*descramble_addr)(struct hl_device *hdev, u64 addr);
+ 	void (*ack_protection_bits_errors)(struct hl_device *hdev);
+ 	int (*get_hw_block_id)(struct hl_device *hdev, u64 block_addr,
+-			u32 *block_id);
++				u32 *block_size, u32 *block_id);
+ 	int (*hw_block_mmap)(struct hl_device *hdev, struct vm_area_struct *vma,
+ 			u32 block_id, u32 block_size);
+ 	void (*enable_events_from_fw)(struct hl_device *hdev);
+diff --git a/drivers/misc/habanalabs/common/memory.c b/drivers/misc/habanalabs/common/memory.c
+index 7171e8820a2d..7cadf75ebb81 100644
+--- a/drivers/misc/habanalabs/common/memory.c
++++ b/drivers/misc/habanalabs/common/memory.c
+@@ -1289,12 +1289,13 @@ static int unmap_device_va(struct hl_ctx *ctx, struct hl_mem_in *args,
+ 	return rc;
+ }
  
+-static int map_block(struct hl_device *hdev, u64 address, u64 *handle)
++static int map_block(struct hl_device *hdev, u64 address, u64 *handle,
++			u32 *size)
+ {
+ 	u32 block_id = 0;
+ 	int rc;
+ 
+-	rc = hdev->asic_funcs->get_hw_block_id(hdev, address, &block_id);
++	rc = hdev->asic_funcs->get_hw_block_id(hdev, address, size, &block_id);
+ 
+ 	*handle = block_id | HL_MMAP_TYPE_BLOCK;
+ 	*handle <<= PAGE_SHIFT;
+@@ -1371,7 +1372,7 @@ static int mem_ioctl_no_mmu(struct hl_fpriv *hpriv, union hl_mem_args *args)
+ 	struct hl_device *hdev = hpriv->hdev;
+ 	struct hl_ctx *ctx = hpriv->ctx;
+ 	u64 block_handle, device_addr = 0;
+-	u32 handle = 0;
++	u32 handle = 0, block_size;
+ 	int rc;
+ 
+ 	switch (args->in.op) {
+@@ -1416,8 +1417,9 @@ static int mem_ioctl_no_mmu(struct hl_fpriv *hpriv, union hl_mem_args *args)
+ 
+ 	case HL_MEM_OP_MAP_BLOCK:
+ 		rc = map_block(hdev, args->in.map_block.block_addr,
+-							&block_handle);
+-		args->out.handle = block_handle;
++				&block_handle, &block_size);
++		args->out.block_handle = block_handle;
++		args->out.block_size = block_size;
+ 		break;
+ 
+ 	default:
+@@ -1437,7 +1439,7 @@ int hl_mem_ioctl(struct hl_fpriv *hpriv, void *data)
+ 	struct hl_device *hdev = hpriv->hdev;
+ 	struct hl_ctx *ctx = hpriv->ctx;
+ 	u64 block_handle, device_addr = 0;
+-	u32 handle = 0;
++	u32 handle = 0, block_size;
+ 	int rc;
+ 
+ 	if (!hl_device_operational(hdev, &status)) {
+@@ -1524,8 +1526,9 @@ int hl_mem_ioctl(struct hl_fpriv *hpriv, void *data)
+ 
+ 	case HL_MEM_OP_MAP_BLOCK:
+ 		rc = map_block(hdev, args->in.map_block.block_addr,
+-							&block_handle);
+-		args->out.handle = block_handle;
++				&block_handle, &block_size);
++		args->out.block_handle = block_handle;
++		args->out.block_size = block_size;
+ 		break;
+ 
+ 	default:
 diff --git a/drivers/misc/habanalabs/gaudi/gaudi.c b/drivers/misc/habanalabs/gaudi/gaudi.c
-index 6905857b363b..f937d90786b2 100644
+index f937d90786b2..35342edd4a02 100644
 --- a/drivers/misc/habanalabs/gaudi/gaudi.c
 +++ b/drivers/misc/habanalabs/gaudi/gaudi.c
-@@ -536,7 +536,6 @@ static int gaudi_get_fixed_properties(struct hl_device *hdev)
- 	prop->fw_security_disabled = true;
- 	prop->fw_security_status_valid = false;
- 	prop->hard_reset_done_by_fw = false;
--	prop->fw_cpucp_ack_with_pi = false;
- 
- 	return 0;
+@@ -8490,7 +8490,7 @@ static u64 gaudi_get_device_time(struct hl_device *hdev)
  }
-@@ -3727,6 +3726,7 @@ static int gaudi_init_cpu(struct hl_device *hdev)
- static int gaudi_init_cpu_queues(struct hl_device *hdev, u32 cpu_timeout)
- {
- 	struct gaudi_device *gaudi = hdev->asic_specific;
-+	struct asic_fixed_properties *prop = &hdev->asic_prop;
- 	struct hl_eq *eq;
- 	u32 status;
- 	struct hl_hw_queue *cpu_pq =
-@@ -3783,6 +3783,10 @@ static int gaudi_init_cpu_queues(struct hl_device *hdev, u32 cpu_timeout)
- 		return -EIO;
- 	}
  
-+	/* update FW application security bits */
-+	if (prop->fw_security_status_valid)
-+		prop->fw_app_security_map = RREG32(mmCPU_BOOT_DEV_STS0);
-+
- 	gaudi->hw_cap_initialized |= HW_CAP_CPU_Q;
- 	return 0;
+ static int gaudi_get_hw_block_id(struct hl_device *hdev, u64 block_addr,
+-					u32 *block_id)
++				u32 *block_size, u32 *block_id)
+ {
+ 	return -EPERM;
  }
 diff --git a/drivers/misc/habanalabs/goya/goya.c b/drivers/misc/habanalabs/goya/goya.c
-index af6a5760924c..c30524660761 100644
+index c30524660761..ed566c52ccaa 100644
 --- a/drivers/misc/habanalabs/goya/goya.c
 +++ b/drivers/misc/habanalabs/goya/goya.c
-@@ -464,7 +464,6 @@ int goya_get_fixed_properties(struct hl_device *hdev)
- 	prop->fw_security_disabled = true;
- 	prop->fw_security_status_valid = false;
- 	prop->hard_reset_done_by_fw = false;
--	prop->fw_cpucp_ack_with_pi = false;
- 
- 	return 0;
+@@ -5390,7 +5390,7 @@ static void goya_ctx_fini(struct hl_ctx *ctx)
  }
-@@ -1189,6 +1188,7 @@ static int goya_stop_external_queues(struct hl_device *hdev)
- int goya_init_cpu_queues(struct hl_device *hdev)
+ 
+ static int goya_get_hw_block_id(struct hl_device *hdev, u64 block_addr,
+-				u32 *block_id)
++			u32 *block_size, u32 *block_id)
  {
- 	struct goya_device *goya = hdev->asic_specific;
-+	struct asic_fixed_properties *prop = &hdev->asic_prop;
- 	struct hl_eq *eq;
- 	u32 status;
- 	struct hl_hw_queue *cpu_pq = &hdev->kernel_queues[GOYA_QUEUE_ID_CPU_PQ];
-@@ -1241,6 +1241,10 @@ int goya_init_cpu_queues(struct hl_device *hdev)
- 		return -EIO;
- 	}
- 
-+	/* update FW application security bits */
-+	if (prop->fw_security_status_valid)
-+		prop->fw_app_security_map = RREG32(mmCPU_BOOT_DEV_STS0);
-+
- 	goya->hw_cap_initialized |= HW_CAP_CPU_Q;
- 	return 0;
+ 	return -EPERM;
  }
+diff --git a/include/uapi/misc/habanalabs.h b/include/uapi/misc/habanalabs.h
+index 64ae83b5f8e5..5a86b521a450 100644
+--- a/include/uapi/misc/habanalabs.h
++++ b/include/uapi/misc/habanalabs.h
+@@ -782,10 +782,10 @@ struct hl_mem_in {
+ 		/* HL_MEM_OP_MAP_BLOCK - map a hw block */
+ 		struct {
+ 			/*
+-			 * HW block address to map, a handle will be returned
+-			 * to the user and will be used to mmap the relevant
+-			 * block. Only addresses from configuration space are
+-			 * allowed.
++			 * HW block address to map, a handle and size will be
++			 * returned to the user and will be used to mmap the
++			 * relevant block. Only addresses from configuration
++			 * space are allowed.
+ 			 */
+ 			__u64 block_addr;
+ 		} map_block;
+@@ -816,11 +816,26 @@ struct hl_mem_out {
+ 		__u64 device_virt_addr;
+ 
+ 		/*
+-		 * Used for HL_MEM_OP_ALLOC and HL_MEM_OP_MAP_BLOCK.
++		 * Used in HL_MEM_OP_ALLOC
+ 		 * This is the assigned handle for the allocated memory
+-		 * or mapped block
+ 		 */
+ 		__u64 handle;
++
++		struct {
++			/*
++			 * Used in HL_MEM_OP_MAP_BLOCK.
++			 * This is the assigned handle for the mapped block
++			 */
++			__u64 block_handle;
++
++			/*
++			 * Used in HL_MEM_OP_MAP_BLOCK
++			 * This is the size of the mapped block
++			 */
++			__u32 block_size;
++
++			__u32 pad;
++		};
+ 	};
+ };
+ 
 -- 
 2.25.1
 
