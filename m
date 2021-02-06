@@ -2,94 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1592311BDE
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 08:16:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DC96311BEB
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 08:22:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229719AbhBFHOo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Feb 2021 02:14:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50242 "EHLO mail.kernel.org"
+        id S229702AbhBFHVd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Feb 2021 02:21:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50570 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229539AbhBFHOj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Feb 2021 02:14:39 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C94FB64F9B;
-        Sat,  6 Feb 2021 07:13:57 +0000 (UTC)
+        id S229522AbhBFHVa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 6 Feb 2021 02:21:30 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1874E64EB9;
+        Sat,  6 Feb 2021 07:20:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612595638;
-        bh=nuSHRF9OudOjXsyAgzF1fbrlfgZwD78OhCatWB6lMhg=;
+        s=korg; t=1612596049;
+        bh=xdg+P2Qc0twWG80mc917q0suMB4BOviqUgCbHNfbBos=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bfdy8GGAvV1JvU8U8TipoZKPpm+FV/xETSJFvJVGOnp9jQ04zVIPC7tfY4/0Dtpx5
-         rr0Wdc6jhXyMWnS95gt4Wc0D3QTOXQ6LA+4tD0Jc5KvcELwoYJLlEJc70W4iduGJG2
-         pyiOCZFOJJcBGG2jUQ+axSw270/h4fj4jq62kGiM=
-Date:   Sat, 6 Feb 2021 08:13:55 +0100
+        b=SsZtTDrEbppS+wSks1Hq0AMqCTxk1HExT5dtEj6uRz+9sbcwaRSpwm5xE/E1G1ffI
+         XwKjgWK/E0y50hzOrWiYVX2rQfWvtZO1vA+n/ddjw9MoAfFu/SRVL+jBf5DG7dXHN6
+         iAd6RmtV32zeVoDbYhe6HOQIT497oT5cpNiOgrTs=
+Date:   Sat, 6 Feb 2021 08:20:45 +0100
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Chris Down <chris@chrisdown.name>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Petr Mladek <pmladek@suse.com>, linux-kernel@vger.kernel.org,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>, kernel-team@fb.com,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Jason Baron <jbaron@akamai.com>,
-        Kees Cook <keescook@chromium.org>, linux-api@vger.kernel.org
-Subject: Re: [PATCH] printk: Userspace format enumeration support
-Message-ID: <YB5Bsyk4o3Mqr6Li@kroah.com>
-References: <YBwU0G+P0vb9wTwm@chrisdown.name>
- <YB11jybvFCb95S9e@alley>
- <20210205124748.4af2d406@gandalf.local.home>
- <YB3Kf896Zt9O+/Yh@chrisdown.name>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Tony Battersby <tonyb@cybernetics.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        linux-kernel@vger.kernel.org,
+        Jari Ruusu <jariruusu@protonmail.com>,
+        David Laight <David.Laight@aculab.com>,
+        Christoph Biedl <linux-kernel.bfrz@manchmal.in-ulm.de>,
+        linux-media@vger.kernel.org
+Subject: Re: Kernel version numbers after 4.9.255 and 4.4.255
+Message-ID: <YB5DTUiurAwqZbz1@kroah.com>
+References: <a85b7749-38b2-8ce9-c15a-8acb9a54c5b5@kernel.org>
+ <0b12bac9-1b4e-ec4a-8a45-5eb3f1dbbeca@cybernetics.com>
+ <20210205191105.128c6e48@coco.lan>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <YB3Kf896Zt9O+/Yh@chrisdown.name>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210205191105.128c6e48@coco.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 05, 2021 at 10:45:19PM +0000, Chris Down wrote:
-> Hi Steven,
+On Fri, Feb 05, 2021 at 07:11:05PM +0100, Mauro Carvalho Chehab wrote:
+> Em Fri, 5 Feb 2021 12:31:05 -0500
+> Tony Battersby <tonyb@cybernetics.com> escreveu:
 > 
-> Steven Rostedt writes:
-> > Interesting, because when I was looking at the original patch (looked at
-> > the lore link before reading your reply), I thought to myself "this looks
-> > exactly like what I did for trace_printk formats", which the above file is
-> > where it is shown. I'm curious if this work was inspired by that?
-> 
-> The double __builtin_constant_p() trick was suggested by Johannes based on
-> prior art in trace_puts() just prior to patch submission. Other than that,
-> it seems we came up with basically the same solution independently. :-)
-> 
-> > > Anyway, there is something wrong at the moment. The output looks fine
-> > > with cat. But "less" says that it is a binary format and the output
-> > > is a bit messy:
+> > On 2/4/21 6:00 AM, Jiri Slaby wrote:
+> > > Agreed. But currently, sublevel won't "wrap", it will "overflow" to 
+> > > patchlevel. And that might be a problem. So we might need to update the 
+> > > header generation using e.g. "sublevel & 0xff" (wrap around) or 
+> > > "sublevel > 255 : 255 : sublevel" (be monotonic and get stuck at 255).
+> > >
+> > > In both LINUX_VERSION_CODE generation and KERNEL_VERSION proper.  
 > > 
-> > Hmm, that's usually the case when lseek gets messed up. Not sure how that
-> > happened.
-> 
-> It looks as intended to me -- none of the newlines, nulls, or other control
-> sequences are escaped currently, since I didn't immediately see a reason to
-> do that. If that's a blocker though, I'm happy to change it.
-> 
-> > > $> less /proc/printk_formats
-> > > "/proc/printk_formats" may be a binary file.  See it anyway?
-> > > vmlinux,^A3Warning: unable to open an initial console.
-> > > ^@vmlinux,^A3Failed to execute %s (error %d)
-> > > ^@vmlinux,^A6Kernel memory protection disabled.
-> > > ^@vmlinux,^A3Starting init: %s exists but couldn't execute it (error %d)
-> > > 
-> > > 
-> > > That is for now. I still have to think about it. And I am also curious
-> > > about what others thing about this idea.
-> > > 
+> > My preference would be to be monotonic and get stuck at 255 to avoid
+> > breaking out-of-tree modules.  If needed, add another macro that
+> > increases the number of bits that can be used to check for sublevels >
+> > 255, while keeping the old macros for compatibility reasons.  Since
+> > sublevels > 255 have never existed before, any such checks must be
+> > newly-added, so they can be required to use the new macros.
 > > 
-> > I'm not against the idea. I don't think it belongs in /proc. Perhaps
-> > debugfs is a better place to put it.
+> > I do not run the 4.4/4.9 kernels usually, but I do sometimes test a wide
+> > range of kernels from 3.18 (gasp!) up to the latest when bisecting,
+> > benchmarking, or debugging problems.  And I use a number of out-of-tree
+> > modules that rely on the KERNEL_VERSION to make everything work.  Some
+> > out-of-tree modules like an updated igb network driver might be needed
+> > to make it possible to test the old kernel on particular hardware.
+> > 
+> > In the worst case, I can patch LINUX_VERSION_CODE and KERNEL_VERSION
+> > locally to make out-of-tree modules work.  Or else just not test kernels
+> > with sublevel > 255.
 > 
-> Any location is fine with me, as long as it gets to userspace. How does
-> <debugfs>/printk/formats or <debugfs>/printk/formats/<module> sound to you?
+> Overflowing LINUX_VERSION_CODE breaks media applications. Several media
+> APIs have an ioctl that returns the Kernel version:
+> 
+> 	drivers/media/cec/core/cec-api.c:       caps.version = LINUX_VERSION_CODE;
+> 	drivers/media/mc/mc-device.c:   info->media_version = LINUX_VERSION_CODE;
+> 	drivers/media/v4l2-core/v4l2-ioctl.c:   cap->version = LINUX_VERSION_CODE;
+> 	drivers/media/v4l2-core/v4l2-subdev.c:          cap->version = LINUX_VERSION_CODE;
 
-That's fine with me, but I'd like to see the patch with this in it first
-before approving it :)
+This always struck me as odd, because why can't they just use the
+uname(2) syscall instead?
+
+> Those can be used by applications in order to enable some features that
+> are available only after certain Kernel versions.
+> 
+> This is somewhat deprecated, in favor of the usage of some other
+> capability fields, but for instance, the v4l2-compliance userspace tool
+> have two such checks:
+> 
+> 	utils/v4l2-compliance/v4l2-compliance.cpp
+> 	640:	fail_on_test((vcap.version >> 16) < 3);
+> 	641:	if (vcap.version >= 0x050900)  // Present from 5.9.0 onwards
+> 
+> As far as I remember, all such checks are against major.minor. So,
+> something like:
+> 
+> 	sublevel = (sublevel > 0xff) ? 0xff : sublevel;
+> 
+> inside KERNEL_VERSION macro should fix such regression at -stable.
+
+I think if we clamp KERNEL_VERSION at 255 we should be fine for anyone
+checking this type of thing.  Sasha has posted patches to do this.
 
 thanks,
 
