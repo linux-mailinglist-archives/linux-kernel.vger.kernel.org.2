@@ -2,151 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2348311A32
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 04:35:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E8A45311A7A
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 04:49:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230324AbhBFDdV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 22:33:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38404 "EHLO
+        id S232033AbhBFDtt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 22:49:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231571AbhBFCk7 (ORCPT
+        with ESMTP id S232058AbhBFCuv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 21:40:59 -0500
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37CF8C08EE0E;
-        Fri,  5 Feb 2021 16:02:05 -0800 (PST)
-Received: by mail-pf1-x432.google.com with SMTP id o20so5403994pfu.0;
-        Fri, 05 Feb 2021 16:02:05 -0800 (PST)
+        Fri, 5 Feb 2021 21:50:51 -0500
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57490C08EE11
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 16:03:13 -0800 (PST)
+Received: by mail-lf1-x132.google.com with SMTP id d3so12441757lfg.10
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 16:03:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=O0vKLYfAmXc0/k0ACT3lqtKu7s9dM9QFfP8g5XRQnj4=;
-        b=FZDuDo2+WqlhvtUQ6FDDDGn5OT14iJXX3p6qk78+UhEifqBB1bwWzYqvXkqq/mxuQn
-         nBiZd8oTg0NS67pNccJL2jNtIzicVzNGo0oFxQJpfO/PAaidDr1r3aI164Fn+zsKyxga
-         /upKftLaLzlNvEyM4xdQSjiSdhaBO0lSLyKqAhRUn85QBxYUhbxlrOBhV0M+BIn/sTUj
-         B21nsLc65Jr9OxJ+lOCLe5ObluI8z+K4hMOub6jF3m2zsJONjRRekLUpQJxVxL2nhLQf
-         sDorwWbrQM3Nj/+/cUnOCBNNvAnG5/61a5TdJLJWqQtRLNBso4NSfaVQi33NQXLLglEd
-         4FFA==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=NWPbrqSGD6rR+HAkD4dteJHXvU5H2qHvAqzNOoE/AX4=;
+        b=Q9wbjEdeHc4TeNxJ/V+vcdkXrft7Hdvxxn+SIjZxu8PZsrwK5feK1ppXy1XqnE28Ro
+         D4ok3CLhopKZbW5fYvBwYj1OZxnIx1dNO+j/IUzx9eM1ch5hzGzmxEydedxC76cWDlf8
+         vavb1T9si/T+EQjB+UhwvM+HTrxgBeGiY4jchmvvqyRbZ7E1tkbi4bGuJI010NTymG1W
+         KmVVl1eMaq4TdUrh/rsBFGcVys2kY3z/YQiM0T97plSvPSfTXUzx6jFYonOe57z75kmY
+         mapTq2Rquh3dM65g/II/UgJxQnA238NhsBg8vg+nUry3YhUuPw3/eRvpW50is8E+69vI
+         Ey4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=O0vKLYfAmXc0/k0ACT3lqtKu7s9dM9QFfP8g5XRQnj4=;
-        b=cCJN5SsT0jhocT8RF8Z9dC8thfxibcKt5imBO2/Z6TQFkQnmlllT9l77HUbdrREidY
-         PcRGvGU/1A6P0ub5xor9BsVap46c/TcV1t9HJFL5ny95sb/Y5VYNSWeBgKP27eDOoaNb
-         MlIM5I42BbqYgUHAN3sM69TlzzIWXrYavT/3sYsQzt+va6y9n9f1gY9mI7fCMZOjH5Rm
-         6ieCS48ABa4e7/uu7T0RjEnGiih60KJNivbVGQWqqmeuLf/q9hWsnV0DZlKZfos5jVvr
-         HyOFp23jhITjgBZEFQ65ph6P119OUQm/ODtbKPPvRVpQgD0gKAEF5nF7JWX8LBQs5TbU
-         Ejow==
-X-Gm-Message-State: AOAM53330XGwTOM9wNIjuTp8rHmZ4ojgiqrr2F/hNo1Px6Q83A/LtK4I
-        3gVwh+blq85NmbiMFb/vTxg=
-X-Google-Smtp-Source: ABdhPJyfCJlUhXX9huFfITKMzkEnYela6H+5eB8eIlJAZxrH+kYruQ+IjtHEP+bS8n7fheNJ2gh4/w==
-X-Received: by 2002:a63:4f09:: with SMTP id d9mr6993846pgb.70.1612569724851;
-        Fri, 05 Feb 2021 16:02:04 -0800 (PST)
-Received: from amypc-samantha.home ([47.145.126.51])
-        by smtp.gmail.com with ESMTPSA id r189sm11771724pgr.10.2021.02.05.16.02.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Feb 2021 16:02:04 -0800 (PST)
-From:   Amy Parker <enbyamy@gmail.com>
-To:     davem@davemloft.net, kuba@kernel.org, akpm@linux-foundation.org,
-        rppt@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Amy Parker <enbyamy@gmail.com>
-Subject: [PATCH 2/3] drivers/net/ethernet/amd: Fix bracket matching and line levels
-Date:   Fri,  5 Feb 2021 16:01:45 -0800
-Message-Id: <20210206000146.616465-3-enbyamy@gmail.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210206000146.616465-1-enbyamy@gmail.com>
-References: <20210206000146.616465-1-enbyamy@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NWPbrqSGD6rR+HAkD4dteJHXvU5H2qHvAqzNOoE/AX4=;
+        b=ePYw9nWZrGirp/hlWyIF3Z+o3L6H1Xoxga2WkdpScKTvI8JJwu3m+zqdtFT93AvNir
+         vmoIIMDz4kF9GUcMitHaLam3WRxUXgDdyZaXHALzpBQFNpkNYhsgU8ALJmTTZbfHET0/
+         +rc13wRBDfbdWIlOHAkjW+3DIsc50ejAe6n4SrysgJrgISgUf2/Up2j3/4A9xGf9FCNH
+         /7F2STntKjuUCnqq+ZEhWDyc4a6bWCzJUAQCQEXIy5w9VMgA4PXUnYfMf+byLU033f66
+         OqUORkt3eqSgGynw/ssRy9oC05KkS3nfEs5TRN4Of81rZkUm7r+tZIgPWvq8Z2MQYYIk
+         x81A==
+X-Gm-Message-State: AOAM530eFcyLw8EqbyTimovXpJY8yIkU1ZxeHQKxxOxqbENClb7bE/hb
+        F5Jz8x+FNxS7gy5VsxkbN4VXrqPmwBY8MC9lZ+aosg==
+X-Google-Smtp-Source: ABdhPJwFLIr/GH5BZQINZQllHE4paJG7suSjTbzOFq6WfqnMVkh1s9cjISJEvl7WKkrsrv8vLH+/5AkJ3PEobamJQ4I=
+X-Received: by 2002:a2e:7d11:: with SMTP id y17mr4129417ljc.116.1612569791666;
+ Fri, 05 Feb 2021 16:03:11 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210205202220.2748551-1-ndesaulniers@google.com>
+ <20210205202220.2748551-2-ndesaulniers@google.com> <20210205160034.a0e0ba06752bef03e60f91f8@linux-foundation.org>
+In-Reply-To: <20210205160034.a0e0ba06752bef03e60f91f8@linux-foundation.org>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Fri, 5 Feb 2021 16:02:58 -0800
+Message-ID: <CAKwvOdmkx=+MGkc5uCB=0TssnHNQXb0E+x=CqbGs6gGZc5GH7Q@mail.gmail.com>
+Subject: Re: [PATCH v9 1/3] vmlinux.lds.h: add DWARF v5 sections
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Jakub Jelinek <jakub@redhat.com>,
+        Fangrui Song <maskray@google.com>,
+        Caroline Tice <cmtice@google.com>,
+        Nick Clifton <nickc@redhat.com>, Yonghong Song <yhs@fb.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Chris Murphy <bugzilla@colorremedies.com>,
+        Mark Wielaard <mark@klomp.org>,
+        "# 3.4.x" <stable@vger.kernel.org>,
+        Chris Murphy <lists@colorremedies.com>,
+        Nathan Chancellor <nathan@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some statements - often if statements - do not follow the kernel
-style guide regarding what lines brackets and pairs should be on.
-This patch fixes those style violations.
+On Fri, Feb 5, 2021 at 4:00 PM Andrew Morton <akpm@linux-foundation.org> wrote:
+>
+> On Fri,  5 Feb 2021 12:22:18 -0800 Nick Desaulniers <ndesaulniers@google.com> wrote:
+>
+> > We expect toolchains to produce these new debug info sections as part of
+> > DWARF v5. Add explicit placements to prevent the linker warnings from
+> > --orphan-section=warn.
+> >
+> > Compilers may produce such sections with explicit -gdwarf-5, or based on
+> > the implicit default version of DWARF when -g is used via DEBUG_INFO.
+> > This implicit default changes over time, and has changed to DWARF v5
+> > with GCC 11.
+> >
+> > .debug_sup was mentioned in review, but without compilers producing it
+> > today, let's wait to add it until it becomes necessary.
+> >
+>
+> There isn't anything in this changelog which explains why a -stable
+> backport was requested?  Or is there?  Irritating linker warnings?
+> More than that?
 
-Signed-off-by: Amy Parker <enbyamy@gmail.com>
----
- drivers/net/ethernet/amd/atarilance.c | 13 +++++--------
- drivers/net/ethernet/amd/sun3lance.c  |  7 +++----
- 2 files changed, 8 insertions(+), 12 deletions(-)
-
-diff --git a/drivers/net/ethernet/amd/atarilance.c b/drivers/net/ethernet/amd/atarilance.c
-index 141244c5ca4e..9ec44cf4ba9c 100644
---- a/drivers/net/ethernet/amd/atarilance.c
-+++ b/drivers/net/ethernet/amd/atarilance.c
-@@ -543,12 +543,11 @@ static unsigned long __init lance_probe1( struct net_device *dev,
- 		/* Switch back to Ram */
- 		i = IO->mem;
- 		lp->cardtype = PAM_CARD;
--	}
--	else if (*RIEBL_MAGIC_ADDR == RIEBL_MAGIC) {
-+	} else if (*RIEBL_MAGIC_ADDR == RIEBL_MAGIC) {
- 		lp->cardtype = NEW_RIEBL;
--	}
--	else
-+	} else {
- 		lp->cardtype = OLD_RIEBL;
-+	}
- 
- 	if (lp->cardtype == PAM_CARD ||
- 		memaddr == (unsigned short *)0xffe00000) {
-@@ -559,8 +558,7 @@ static unsigned long __init lance_probe1( struct net_device *dev,
- 			return 0;
- 		}
- 		dev->irq = IRQ_AUTO_5;
--	}
--	else {
-+	} else {
- 		/* For VME-RieblCards, request a free VME int */
- 		unsigned int irq = atari_register_vme_int();
- 		if (!irq) {
-@@ -993,8 +991,7 @@ static int lance_rx( struct net_device *dev )
- 			if (pkt_len < 60) {
- 				printk( "%s: Runt packet!\n", dev->name );
- 				dev->stats.rx_errors++;
--			}
--			else {
-+			} else {
- 				skb = netdev_alloc_skb(dev, pkt_len + 2);
- 				if (skb == NULL) {
- 					for (i = 0; i < RX_RING_SIZE; i++)
-diff --git a/drivers/net/ethernet/amd/sun3lance.c b/drivers/net/ethernet/amd/sun3lance.c
-index ca7b6e483d2a..c7af742f63ad 100644
---- a/drivers/net/ethernet/amd/sun3lance.c
-+++ b/drivers/net/ethernet/amd/sun3lance.c
-@@ -757,7 +757,7 @@ static irqreturn_t lance_interrupt( int irq, void *dev_id)
- 
- 	REGA(CSR0) = CSR0_INEA;
- 
--	if(DREG & (CSR0_RINT | CSR0_TINT)) {
-+	if (DREG & (CSR0_RINT | CSR0_TINT)) {
- 	     DPRINTK(2, ("restarting interrupt, csr0=%#04x\n", DREG));
- 	     goto still_more;
- 	}
-@@ -774,7 +774,7 @@ static int lance_rx( struct net_device *dev )
- 	int entry = lp->new_rx;
- 
- 	/* If we own the next entry, it's a new packet. Send it up. */
--	while( (MEM->rx_head[entry].flag & RMD1_OWN) == RMD1_OWN_HOST ) {
-+	while ((MEM->rx_head[entry].flag & RMD1_OWN) == RMD1_OWN_HOST) {
- 		struct lance_rx_head *head = &(MEM->rx_head[entry]);
- 		int status = head->flag;
- 
-@@ -799,8 +799,7 @@ static int lance_rx( struct net_device *dev )
- 			if (pkt_len < 60) {
- 				printk( "%s: Runt packet!\n", dev->name );
- 				dev->stats.rx_errors++;
--			}
--			else {
-+			} else {
- 				skb = netdev_alloc_skb(dev, pkt_len + 2);
- 				if (skb == NULL) {
- 					dev->stats.rx_dropped++;
+Users adopting GCC 11 will start to see warnings from the linker due
+to --orphan-section=warn when building the branches of the stable
+tree.  Stable has IME accepted patches for permitting newer toolchains
+to continue to compile warning free.
 -- 
-2.29.2
-
+Thanks,
+~Nick Desaulniers
