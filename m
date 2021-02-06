@@ -2,224 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 042AC311D08
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 13:08:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 230B3311D0B
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 13:11:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229751AbhBFMIa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Feb 2021 07:08:30 -0500
-Received: from conssluserg-01.nifty.com ([210.131.2.80]:43414 "EHLO
-        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229715AbhBFMI1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Feb 2021 07:08:27 -0500
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182]) (authenticated)
-        by conssluserg-01.nifty.com with ESMTP id 116C7VMD016673;
-        Sat, 6 Feb 2021 21:07:32 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 116C7VMD016673
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1612613252;
-        bh=HdoLE03CK15wGQr5Q0QSpne0yUJVrCWsgwIqdjsO7ik=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Nr04RuuBjtk2s0cm45dAsuIxjk7enbyRmeDXRsLW6wM69EQAijqFeZ3wvDpSVtV9U
-         8S6NSZZ1TzntQ5VCcZ6mnRQdcgbIfS/jxJZQRASHoPFawQ1QJ88QB9KyvcEzTyXKTS
-         Eswf18Jy3YChQo2rG6GrN6Z+S5+kY0Q04p9Mr8AAG28bpNNAhx5D2iPYRyB7gdV4zr
-         2OVmMovQds/OwZvBpb03QMPDKznYhp+kNdjxjpxeC1GWMxe4Q+Gey/FvdtOkIivrNx
-         PqWDMGv/TnnUH1di1FYQtjU8dZcUHCuALQDKvrwwAMxrELKQBljTRZnPE9i3Ol0+56
-         hfMvRtbnanjpA==
-X-Nifty-SrcIP: [209.85.210.182]
-Received: by mail-pf1-f182.google.com with SMTP id q131so6158895pfq.10;
-        Sat, 06 Feb 2021 04:07:32 -0800 (PST)
-X-Gm-Message-State: AOAM5333QdwGiLAknHNr6sHVJ78ZU/UxAr3fLfQ1UoZtlFyus6b0x6Wt
-        5oXkeJ0CYWW3z7qznZIl+Tb9Lv65kT09rA9ok4g=
-X-Google-Smtp-Source: ABdhPJyTMgZZWKHhhdikXWtKjnCd+VTpjNA3wKpcdML7atGMT3CZaAiMRRXN3Fnp2lAU/+VDkxq70fDiSQtIJ1qYByQ=
-X-Received: by 2002:a63:1f1d:: with SMTP id f29mr9083496pgf.47.1612613251324;
- Sat, 06 Feb 2021 04:07:31 -0800 (PST)
+        id S229774AbhBFMKM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Feb 2021 07:10:12 -0500
+Received: from mx2.suse.de ([195.135.220.15]:43512 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229506AbhBFMKJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 6 Feb 2021 07:10:09 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1612613360; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=bLVpkjvwwsqTJMAhg+ODWS/f0rJ20lZm7EB2rlXndJQ=;
+        b=nETloEJqeRb1B8noD3G6MK5p7CmyF2qhrJEJwcLTMHDgWqP4kHYsmvb53bXbtY2eXKkVXu
+        p3rQeHDirXputjWpw4GiAr6r3qxh31F/2v4tj+3DGeiGTPh0TGsujNdz5+P9gInc2QKU4m
+        HFPXblDYLtFGC1AdcftZegmDOKKOUcs=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id C3E32ACD4;
+        Sat,  6 Feb 2021 12:09:20 +0000 (UTC)
+Subject: Re: [PATCH 1/7] xen/events: reset affinity of 2-level event initially
+To:     Julien Grall <julien@xen.org>, xen-devel@lists.xenproject.org,
+        linux-kernel@vger.kernel.org
+Cc:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        stable@vger.kernel.org
+References: <20210206104932.29064-1-jgross@suse.com>
+ <20210206104932.29064-2-jgross@suse.com>
+ <f89567cf-f954-0d97-087e-5e31bfa6d49d@xen.org>
+From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+Message-ID: <d2017caa-0ea8-ae9d-d9f6-45be3da20688@suse.com>
+Date:   Sat, 6 Feb 2021 13:09:19 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-References: <20210206035033.2036180-1-sashal@kernel.org>
-In-Reply-To: <20210206035033.2036180-1-sashal@kernel.org>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Sat, 6 Feb 2021 21:06:53 +0900
-X-Gmail-Original-Message-ID: <CAK7LNARn+rPSUhFFwyePyAPMAVC=R2sHMdAo2FkVh_8GXOxGCw@mail.gmail.com>
-Message-ID: <CAK7LNARn+rPSUhFFwyePyAPMAVC=R2sHMdAo2FkVh_8GXOxGCw@mail.gmail.com>
-Subject: Re: [PATCH 1/3] Revert "kbuild: give the SUBLEVEL more room in KERNEL_VERSION"
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     Michal Marek <michal.lkml@markovi.net>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <f89567cf-f954-0d97-087e-5e31bfa6d49d@xen.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="k44Pv081BDAGDRg5GIN3FYf23bN8FtnTt"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Feb 6, 2021 at 12:50 PM Sasha Levin <sashal@kernel.org> wrote:
->
-> This reverts commit 537896fabed11f8d9788886d1aacdb977213c7b3.
->
-> This turns out to be a bad idea: userspace has coded the structure of
-> KERNEL_VERSION on it's own and assumes the 2-1-1 byte split, making it
-> userspace ABI we can't break.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--k44Pv081BDAGDRg5GIN3FYf23bN8FtnTt
+Content-Type: multipart/mixed; boundary="sWZapDRceH0piXqAOWoHExChDqfbHzOt6";
+ protected-headers="v1"
+From: =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+To: Julien Grall <julien@xen.org>, xen-devel@lists.xenproject.org,
+ linux-kernel@vger.kernel.org
+Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+ Stefano Stabellini <sstabellini@kernel.org>, stable@vger.kernel.org
+Message-ID: <d2017caa-0ea8-ae9d-d9f6-45be3da20688@suse.com>
+Subject: Re: [PATCH 1/7] xen/events: reset affinity of 2-level event initially
+References: <20210206104932.29064-1-jgross@suse.com>
+ <20210206104932.29064-2-jgross@suse.com>
+ <f89567cf-f954-0d97-087e-5e31bfa6d49d@xen.org>
+In-Reply-To: <f89567cf-f954-0d97-087e-5e31bfa6d49d@xen.org>
 
-It is unfortunate...
+--sWZapDRceH0piXqAOWoHExChDqfbHzOt6
+Content-Type: multipart/mixed;
+ boundary="------------9361F2EC9288E604E62BA699"
+Content-Language: en-US
 
-I will drop this from my tree.
+This is a multi-part message in MIME format.
+--------------9361F2EC9288E604E62BA699
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
 
-This did not hit Linus' tree yet.
+On 06.02.21 12:20, Julien Grall wrote:
+> Hi Juergen,
+>=20
+> On 06/02/2021 10:49, Juergen Gross wrote:
+>> When creating a new event channel with 2-level events the affinity
+>> needs to be reset initially in order to avoid using an old affinity
+>> from earlier usage of the event channel port.
+>>
+>> The same applies to the affinity when onlining a vcpu: all old
+>> affinity settings for this vcpu must be reset. As percpu events get
+>> initialized before the percpu event channel hook is called,
+>> resetting of the affinities happens after offlining a vcpu (this is
+>> working, as initial percpu memory is zeroed out).
+>>
+>> Cc: stable@vger.kernel.org
+>> Reported-by: Julien Grall <julien@xen.org>
+>> Signed-off-by: Juergen Gross <jgross@suse.com>
+>> ---
+>> =C2=A0 drivers/xen/events/events_2l.c | 20 ++++++++++++++++++++
+>> =C2=A0 1 file changed, 20 insertions(+)
+>>
+>> diff --git a/drivers/xen/events/events_2l.c=20
+>> b/drivers/xen/events/events_2l.c
+>> index da87f3a1e351..23217940144a 100644
+>> --- a/drivers/xen/events/events_2l.c
+>> +++ b/drivers/xen/events/events_2l.c
+>> @@ -47,6 +47,16 @@ static unsigned evtchn_2l_max_channels(void)
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return EVTCHN_2L_NR_CHANNELS;
+>> =C2=A0 }
+>> +static int evtchn_2l_setup(evtchn_port_t evtchn)
+>> +{
+>> +=C2=A0=C2=A0=C2=A0 unsigned int cpu;
+>> +
+>> +=C2=A0=C2=A0=C2=A0 for_each_online_cpu(cpu)
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 clear_bit(evtchn, BM(per_c=
+pu(cpu_evtchn_mask, cpu)));
+>=20
+> The bit corresponding to the event channel can only be set on a single =
 
+> CPU. Could we avoid the loop and instead clear the bit while closing th=
+e=20
+> port?
 
-
-> The reverted patch didn't make it past linux-next, so no userspace was
-> hurt in the process.
->
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
-> ---
->  Makefile                                       | 7 ++-----
->  drivers/net/ethernet/mellanox/mlx5/core/main.c | 4 ++--
->  drivers/usb/core/hcd.c                         | 4 ++--
->  drivers/usb/gadget/udc/aspeed-vhub/hub.c       | 4 ++--
->  include/linux/usb/composite.h                  | 4 ++--
->  kernel/sys.c                                   | 2 +-
->  tools/perf/tests/bpf-script-example.c          | 2 +-
->  tools/perf/tests/bpf-script-test-kbuild.c      | 2 +-
->  tools/perf/tests/bpf-script-test-prologue.c    | 2 +-
->  9 files changed, 14 insertions(+), 17 deletions(-)
->
-> diff --git a/Makefile b/Makefile
-> index 28019532e55ac..49ac1b7fe8e99 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -1259,11 +1259,8 @@ endef
->
->  define filechk_version.h
->         echo \#define LINUX_VERSION_CODE $(shell                         \
-> -       expr $(VERSION) \* 16777216 + 0$(PATCHLEVEL) \* 65536 + 0$(SUBLEVEL)); \
-> -       echo \#define LINUX_VERSION_MAJOR $(VERSION); \
-> -       echo \#define LINUX_VERSION_PATCHLEVEL $(PATCHLEVEL); \
-> -       echo \#define LINUX_VERSION_SUBLEVEL $(SUBLEVEL); \
-> -       echo '#define KERNEL_VERSION(a,b,c) (((a) << 24) + ((b) << 16) + (c))'
-> +       expr $(VERSION) \* 65536 + 0$(PATCHLEVEL) \* 256 + 0$(SUBLEVEL)); \
-> +       echo '#define KERNEL_VERSION(a,b,c) (((a) << 16) + ((b) << 8) + (c))'
->  endef
->
->  $(version_h): FORCE
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/main.c b/drivers/net/ethernet/mellanox/mlx5/core/main.c
-> index 989f15d9aa7d4..e4c9627485aa5 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/main.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/main.c
-> @@ -237,8 +237,8 @@ static void mlx5_set_driver_version(struct mlx5_core_dev *dev)
->         remaining_size = max_t(int, 0, driver_ver_sz - strlen(string));
->
->         snprintf(string + strlen(string), remaining_size, "%u.%u.%u",
-> -               (u8)(LINUX_VERSION_MAJOR), (u8)(LINUX_VERSION_PATCHLEVEL),
-> -               (u16)(LINUX_VERSION_SUBLEVEL));
-> +                (u8)((LINUX_VERSION_CODE >> 16) & 0xff), (u8)((LINUX_VERSION_CODE >> 8) & 0xff),
-> +                (u16)(LINUX_VERSION_CODE & 0xffff));
->
->         /*Send the command*/
->         MLX5_SET(set_driver_version_in, in, opcode,
-> diff --git a/drivers/usb/core/hcd.c b/drivers/usb/core/hcd.c
-> index 3f0381344221e..ad5a0f405a75c 100644
-> --- a/drivers/usb/core/hcd.c
-> +++ b/drivers/usb/core/hcd.c
-> @@ -111,8 +111,8 @@ DECLARE_WAIT_QUEUE_HEAD(usb_kill_urb_queue);
->   */
->
->  /*-------------------------------------------------------------------------*/
-> -#define KERNEL_REL     bin2bcd(LINUX_VERSION_MAJOR)
-> -#define KERNEL_VER     bin2bcd(LINUX_VERSION_PATCHLEVEL)
-> +#define KERNEL_REL     bin2bcd(((LINUX_VERSION_CODE >> 16) & 0x0ff))
-> +#define KERNEL_VER     bin2bcd(((LINUX_VERSION_CODE >> 8) & 0x0ff))
->
->  /* usb 3.1 root hub device descriptor */
->  static const u8 usb31_rh_dev_descriptor[18] = {
-> diff --git a/drivers/usb/gadget/udc/aspeed-vhub/hub.c b/drivers/usb/gadget/udc/aspeed-vhub/hub.c
-> index 5c7dea5e0ff16..bfd8e77788e29 100644
-> --- a/drivers/usb/gadget/udc/aspeed-vhub/hub.c
-> +++ b/drivers/usb/gadget/udc/aspeed-vhub/hub.c
-> @@ -46,8 +46,8 @@
->   *    - Make vid/did overridable
->   *    - make it look like usb1 if usb1 mode forced
->   */
-> -#define KERNEL_REL     bin2bcd(LINUX_VERSION_MAJOR)
-> -#define KERNEL_VER     bin2bcd(LINUX_VERSION_PATCHLEVEL)
-> +#define KERNEL_REL     bin2bcd(((LINUX_VERSION_CODE >> 16) & 0x0ff))
-> +#define KERNEL_VER     bin2bcd(((LINUX_VERSION_CODE >> 8) & 0x0ff))
->
->  enum {
->         AST_VHUB_STR_INDEX_MAX = 4,
-> diff --git a/include/linux/usb/composite.h b/include/linux/usb/composite.h
-> index c71150f2c6390..5646dad886e61 100644
-> --- a/include/linux/usb/composite.h
-> +++ b/include/linux/usb/composite.h
-> @@ -575,8 +575,8 @@ static inline u16 get_default_bcdDevice(void)
->  {
->         u16 bcdDevice;
->
-> -       bcdDevice = bin2bcd(LINUX_VERSION_MAJOR) << 8;
-> -       bcdDevice |= bin2bcd(LINUX_VERSION_PATCHLEVEL);
-> +       bcdDevice = bin2bcd((LINUX_VERSION_CODE >> 16 & 0xff)) << 8;
-> +       bcdDevice |= bin2bcd((LINUX_VERSION_CODE >> 8 & 0xff));
->         return bcdDevice;
->  }
->
-> diff --git a/kernel/sys.c b/kernel/sys.c
-> index b09fe21e88ff5..8bb46e50f02d4 100644
-> --- a/kernel/sys.c
-> +++ b/kernel/sys.c
-> @@ -1242,7 +1242,7 @@ static int override_release(char __user *release, size_t len)
->                                 break;
->                         rest++;
->                 }
-> -               v = LINUX_VERSION_PATCHLEVEL + 60;
-> +               v = ((LINUX_VERSION_CODE >> 8) & 0xff) + 60;
->                 copy = clamp_t(size_t, len, 1, sizeof(buf));
->                 copy = scnprintf(buf, copy, "2.6.%u%s", v, rest);
->                 ret = copy_to_user(release, buf, copy + 1);
-> diff --git a/tools/perf/tests/bpf-script-example.c b/tools/perf/tests/bpf-script-example.c
-> index a56bf381335e9..ab4b98b3165db 100644
-> --- a/tools/perf/tests/bpf-script-example.c
-> +++ b/tools/perf/tests/bpf-script-example.c
-> @@ -5,7 +5,7 @@
->   */
->  #ifndef LINUX_VERSION_CODE
->  # error Need LINUX_VERSION_CODE
-> -# error Example: for 4.2 kernel, put 'clang-opt="-DLINUX_VERSION_CODE=0x4020000" into llvm section of ~/.perfconfig'
-> +# error Example: for 4.2 kernel, put 'clang-opt="-DLINUX_VERSION_CODE=0x40200" into llvm section of ~/.perfconfig'
->  #endif
->  #define BPF_ANY 0
->  #define BPF_MAP_TYPE_ARRAY 2
-> diff --git a/tools/perf/tests/bpf-script-test-kbuild.c b/tools/perf/tests/bpf-script-test-kbuild.c
-> index 21663295d5b5a..219673aa278fb 100644
-> --- a/tools/perf/tests/bpf-script-test-kbuild.c
-> +++ b/tools/perf/tests/bpf-script-test-kbuild.c
-> @@ -5,7 +5,7 @@
->   */
->  #ifndef LINUX_VERSION_CODE
->  # error Need LINUX_VERSION_CODE
-> -# error Example: for 4.2 kernel, put 'clang-opt="-DLINUX_VERSION_CODE=0x4020000" into llvm section of ~/.perfconfig'
-> +# error Example: for 4.2 kernel, put 'clang-opt="-DLINUX_VERSION_CODE=0x40200" into llvm section of ~/.perfconfig'
->  #endif
->  #define SEC(NAME) __attribute__((section(NAME), used))
->
-> diff --git a/tools/perf/tests/bpf-script-test-prologue.c b/tools/perf/tests/bpf-script-test-prologue.c
-> index 8db19e70813cc..bd83d364cf30d 100644
-> --- a/tools/perf/tests/bpf-script-test-prologue.c
-> +++ b/tools/perf/tests/bpf-script-test-prologue.c
-> @@ -5,7 +5,7 @@
->   */
->  #ifndef LINUX_VERSION_CODE
->  # error Need LINUX_VERSION_CODE
-> -# error Example: for 4.2 kernel, put 'clang-opt="-DLINUX_VERSION_CODE=0x4020000" into llvm section of ~/.perfconfig'
-> +# error Example: for 4.2 kernel, put 'clang-opt="-DLINUX_VERSION_CODE=0x40200" into llvm section of ~/.perfconfig'
->  #endif
->  #define SEC(NAME) __attribute__((section(NAME), used))
->
-> --
-> 2.27.0
->
+This would need another callback.
 
 
--- 
-Best Regards
-Masahiro Yamada
+Juergen
+
+
+--------------9361F2EC9288E604E62BA699
+Content-Type: application/pgp-keys;
+ name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment;
+ filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
+cWx
+w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
+f8Z
+d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
+9bf
+IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
+G7/
+377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
+3Jv
+c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
+QIe
+AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
+hpw
+dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
+MbD
+1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
+oPH
+Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
+5QL
++qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
+2Vu
+IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
+QoL
+BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
+Wf0
+teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
+/nu
+AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
+ITT
+d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
+XBK
+7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
+80h
+SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
+AcD
+AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
+FOX
+gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
+jnD
+kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
+N51
+N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
+otu
+fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
+tqS
+EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
+hsD
+BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
+g3O
+ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
+dM7
+wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
+D+j
+LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
+V2x
+AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
+Eaw
+QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
+nHI
+s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
+wgn
+BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
+bVF
+LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
+pEd
+IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
+QAB
+wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
+Tbe
+8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
+vJz
+Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
+VGi
+wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
+svi
+uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
+zXs
+ZDn8R38=3D
+=3D2wuH
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------9361F2EC9288E604E62BA699--
+
+--sWZapDRceH0piXqAOWoHExChDqfbHzOt6--
+
+--k44Pv081BDAGDRg5GIN3FYf23bN8FtnTt
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmAehu8FAwAAAAAACgkQsN6d1ii/Ey9X
+kwgAlYliBzwYKSnfrnhvXCvyGlf/2wg58/IU1RSP3v/M21lBFPsvzMXY6/x3au0rfGt8u6GZiFyE
+6BdzORQdNVQzW1ODZcLHE0I3MRmoLQtfMbzg/xRD4DgG5dyJybjY7Wd0EbNJbj9L7P1Qq90OuJXj
+0qWwz/MHElHwYa+MhcXdvZsRckN8gFyo389TKMlmCdb9V1Cs54KHy3czAuviGJ0WpZv62hzeteHM
+I1WpABERAa3P5Ftx59OwyRWLF7n/hWDZUaBzzWqOnFwxD8eEkdU976Qy4XKo5KEbzKWtFz8k+m8v
+SKj2/6BuXAEvo+ANYxJdxQ/vaONqkDIJa7jwa0A64A==
+=dKdX
+-----END PGP SIGNATURE-----
+
+--k44Pv081BDAGDRg5GIN3FYf23bN8FtnTt--
