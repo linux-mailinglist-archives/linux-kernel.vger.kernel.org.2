@@ -2,56 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC6B7311B4D
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 06:07:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6717311B42
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 06:02:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231612AbhBFFGW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Feb 2021 00:06:22 -0500
-Received: from gloria.sntech.de ([185.11.138.130]:47342 "EHLO gloria.sntech.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231876AbhBFD61 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 22:58:27 -0500
-Received: from p508fdf7d.dip0.t-ipconnect.de ([80.143.223.125] helo=phil.fritz.box)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1l8B78-00052x-Dn; Sat, 06 Feb 2021 01:06:14 +0100
-From:   Heiko Stuebner <heiko@sntech.de>
-To:     Heiko Stuebner <heiko@sntech.de>
-Cc:     linux-clk@vger.kernel.org, robh+dt@kernel.org, sboyd@kernel.org,
-        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
-        linux-rockchip@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mturquette@baylibre.com
-Subject: Re: [PATCH 1/5] clk: rockchip: add clock ids for PCLK_DPHYRX and PCLK_DPHYTX0 on rk3368
-Date:   Sat,  6 Feb 2021 01:06:12 +0100
-Message-Id: <161256995504.1897877.6561871784286411999.b4-ty@sntech.de>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210205110502.1850669-1-heiko@sntech.de>
-References: <20210205110502.1850669-1-heiko@sntech.de>
+        id S230131AbhBFFBX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Feb 2021 00:01:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52392 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229866AbhBFDlb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 5 Feb 2021 22:41:31 -0500
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E10EBC08EE28
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 16:27:04 -0800 (PST)
+Received: by mail-pf1-x432.google.com with SMTP id w18so5400583pfu.9
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 16:27:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=EH3HRE/ibAwzd4o+wOpnfLPBD+oAmovzGutqmDQDCIg=;
+        b=lc8Qw0kNFzTtqe6BIDMx231cY0gFUoT9MZSiM+wnbBFQlaHgTDDk6kcV1GHTXnJhQo
+         KBTF79P9Zaax+amNTdEv9MGPTyOugyxRV0Q5NFBKrlcvwJfktwrS/ldssoNeQgbimTEA
+         jA6mRYrrznUQS/0osskEWOnkfXEy1vzRAHwS33kbFdujVkNmnu95KK/k/AVVIkNXrjzr
+         7xdyMk4EWNbkJbmrEbEFIZOGYEareyNfyJjDKkJVqqPAmKpZEoCiVh5gsY1Jy/k/f6i+
+         81AwnITy97MEdorNUdiRVxCQ7RNaQ47ohBhgoZSqaiA7tfwJsxTRld5l7EjscB4Qa6EB
+         nuSg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=EH3HRE/ibAwzd4o+wOpnfLPBD+oAmovzGutqmDQDCIg=;
+        b=rKZSNt2oZ0PrxaPR+WWqPaA1WhZP8XIj/N7XN98w955TvuP87i0YhSWfwUcRd3EjC9
+         jZ3rpYAG/Ami1gOVQQilNmniN7NTRxEN6LqSlv0miXRJ5Xn9TU1Z+nSgJO4OBjgEKYl3
+         3EQsdaiM+Qav51N/WPM9gIQQEdic96foouhdg4FMsFZSKKdjOw9ca/zdBPhqaWCnFd7B
+         CTc6SV+3sadBMDfAUkJcVUbTCOxvT3EyKf81Owpp2LyaupMEcyMchIiKmhNI8Q/SD/W7
+         uBhEICCsymJussdfYuc9TDZAP/hRnQk/Ol72Q4j5SvYAnxntFqyhys27cBdZHP1xomUm
+         IdXw==
+X-Gm-Message-State: AOAM533luvJbTBtfZurFORG9kelBGjvDpbuyUjK6OeQ4+8RDGboBpuRZ
+        xvkX2WJddfkKfwnRUc8FzOgxSA==
+X-Google-Smtp-Source: ABdhPJwFPakzZi7F4YXbdMIn58tmOenc4WF1friZt/+b0HiEN1gqMvgZgMvx8X1RrcdLO6JKGXn7qw==
+X-Received: by 2002:aa7:92c6:0:b029:1cb:1c6f:c605 with SMTP id k6-20020aa792c60000b02901cb1c6fc605mr7100209pfa.4.1612571224287;
+        Fri, 05 Feb 2021 16:27:04 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:d169:a9f7:513:e5])
+        by smtp.gmail.com with ESMTPSA id t6sm10993068pfe.177.2021.02.05.16.27.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Feb 2021 16:27:03 -0800 (PST)
+Date:   Fri, 5 Feb 2021 16:26:57 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Ben Gardon <bgardon@google.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, Peter Xu <peterx@redhat.com>,
+        Peter Shier <pshier@google.com>,
+        Peter Feiner <pfeiner@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
+Subject: Re: [PATCH v2 20/28] KVM: x86/mmu: Use atomic ops to set SPTEs in
+ TDP MMU map
+Message-ID: <YB3iUde728MPiuo9@google.com>
+References: <20210202185734.1680553-1-bgardon@google.com>
+ <20210202185734.1680553-21-bgardon@google.com>
+ <81f13e36-b2f9-a4bc-ab8e-75cedb88bbb1@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <81f13e36-b2f9-a4bc-ab8e-75cedb88bbb1@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 5 Feb 2021 12:04:58 +0100, Heiko Stuebner wrote:
-> Needed by the mipi dphys.
-> The naming follows the clock names in the manual.
+On Wed, Feb 03, 2021, Paolo Bonzini wrote:
+> On 02/02/21 19:57, Ben Gardon wrote:
+> > To prepare for handling page faults in parallel, change the TDP MMU
+> > page fault handler to use atomic operations to set SPTEs so that changes
+> > are not lost if multiple threads attempt to modify the same SPTE.
+> > 
+> > Reviewed-by: Peter Feiner <pfeiner@google.com>
+> > Signed-off-by: Ben Gardon <bgardon@google.com>
+> > 
+> > ---
+> > 
+> > v1 -> v2
+> > - Rename "atomic" arg to "shared" in multiple functions
+> > - Merged the commit that protects the lists of TDP MMU pages with a new
+> >    lock
+> > - Merged the commits to add an atomic option for setting SPTEs and to
+> >    use that option in the TDP MMU page fault handler
+> 
+> I'll look at the kernel test robot report if nobody beats me to it.
 
-Applied, thanks!
+It's just a vanilla i386 compilation issue, the xchg() is on an 8-byte value.
 
-[1/5] clk: rockchip: add clock ids for PCLK_DPHYRX and PCLK_DPHYTX0 on rk3368
-      commit: 0be10b6f68b217876665031f643e571a5661fc9c
-[2/5] clk: rockchip: use clock ids for PCLK_DPHYRX and PCLK_DPHYTX0 on rk3368
-      commit: fabb841c5b16721298cfe649b569a4fa40af28a6
-[3/5] clk: rockchip: add clock id for SCLK_VIP_OUT on rk3368
-      commit: 686458aa752362f86d881d7fa4576c9f175b2d9b
-[4/5] clk: rockchip: use clock id for SCLK_VIP_OUT on rk3368
-      commit: ed2243e0038b8afdd7726d117da34ee4577e11ad
-[5/5] clk: rockchip: fix DPHY gate locations on rk3368
-      commit: 4bc23b3c83c9a3fc0a7dd8f2f11f451aa92c85cd
-
-Best regards,
--- 
-Heiko Stuebner <heiko@sntech.de>
+We could fudge around it via #ifdef around the xchg().  Making all of tdp_mmu.c
+x86-64 only would be nice to avoid future annoyance, though the number of stubs
+required would be painful...
