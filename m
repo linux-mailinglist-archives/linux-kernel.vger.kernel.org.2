@@ -2,115 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6334311A8D
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 04:57:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0784C311A92
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 04:59:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232286AbhBFD4Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 22:56:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42580 "EHLO
+        id S231522AbhBFD6x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 22:58:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232230AbhBFCzl (ORCPT
+        with ESMTP id S232013AbhBFC7j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 21:55:41 -0500
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBE99C03327D;
-        Fri,  5 Feb 2021 18:13:35 -0800 (PST)
-Received: by mail-pj1-x1030.google.com with SMTP id z9so4826704pjl.5;
-        Fri, 05 Feb 2021 18:13:35 -0800 (PST)
+        Fri, 5 Feb 2021 21:59:39 -0500
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F83EC061B3F
+        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 18:45:58 -0800 (PST)
+Received: by mail-yb1-xb2c.google.com with SMTP id c3so8725893ybi.3
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 18:45:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=0buCJiWiupf4M1cuZVH0zshahYh4cEwQbw2GM3MH8Fg=;
-        b=G5on0SR7ld8bJ1VpW84vyIDXbUFHwiD6GzZ4cLMxlvWBuRe37PiM8Dj1+fyRArGO3r
-         49GExPbTWtQksWApW0BpgfL/COONqJSE8VjdU0Q/zv8TpKtZIMlGEoxvcXk7YGrI4iYC
-         ttAsD9u6Gq656++i666Qd7idYD9ruhjDmu2t/77I92rfDkL+OcBaw0i6Iw0W4x8cxEHU
-         N3PPq4Or5LWoVpFjiVQnfsL3dlV2yYTJUWI44B3on+cgf6nE9FZ89rI4U7sZLhiORji5
-         14xYZw6Wo7oCRW+U6feAJOGs3SmCPmBi0O8n+7a55CyC2imWixc6jEJHcRc976pJwpw8
-         uvNw==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=oeZT1Ar4/x7iejk6TCKZJw9nmldyPb7Q9CQuMN8dXaw=;
+        b=AFhS6ATY/Y9NYutPrE19KVJ8QEJaF2PGTuOgrz9Gy3OYD8T3nfEM6tCPc4DQDe+cmT
+         gGbLVifQsQtzUiF3X4dGA4SNwVI3LH7qwxl1vZhz3YR9Cp0qiGY/3jeh+rr5qm3r6IY7
+         7hxHxK00mdEOHcIzgnBPiTqPV6L0vljvrfDvcDix7+8XPR81Lvup9F+WfsCimBB6dz24
+         J+btxbs8E6J54C44KCAuZnUKGV86hdX+MuPzB7x2eyZrfnvisXKRD/0QNEtfhqDIpVGA
+         Umt5XZHpqcC8bLOtBUQYJkjuYUyDhcO+rJXg9bilCjQKjRIdxzmsD4JoNfGKr5VvY1w/
+         v/NQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=0buCJiWiupf4M1cuZVH0zshahYh4cEwQbw2GM3MH8Fg=;
-        b=LjJK012zTh7iE6wjnPCRRA1KvGU381eJVzp+uNaGep4twtcgvrSq9y+YbfB7i7dDM4
-         6uFmNe7pjW6TuSkjnMxQtbpmY6QeL93zcDZ66ErkkX24aR7fugQXuIBtMs+X/Y2R+DE9
-         yetYmWuQ+u/X+R6a26F6vRWaRFYNyqxRcG9dhP4A4zbgnt2aGyUhYwzMudq/4VRYmxkb
-         g3euzhBEHuFPKpIafMh2MC02brn/Fdcy38S764fkCcE9b8lL7fyb9eNI+luZPzbWccYu
-         XSonP3XigXr6edHNBGowmU3ioOPvIeQAEIpkb0DhlmtdPagO7ZR6SEtLg+kMcJPQ/sYe
-         exig==
-X-Gm-Message-State: AOAM533oOClP1WCSqyzG+BfcR+IMsEIS0Zl+thj66GpViLwVqrDi6nGQ
-        /YkuNvxZbjC/lcn6I3yMCIM=
-X-Google-Smtp-Source: ABdhPJzGiU+isXfShZJyv0Mh7lT8WZvsuNYGRAma+nWrzY3qKbkHoMwJorx4GCrAGeXlYDfjWIlXfw==
-X-Received: by 2002:a17:90a:b28b:: with SMTP id c11mr3499939pjr.62.1612577614945;
-        Fri, 05 Feb 2021 18:13:34 -0800 (PST)
-Received: from google.com ([2620:15c:202:201:518d:8fc4:6ccc:568c])
-        by smtp.gmail.com with ESMTPSA id j4sm10789856pfa.131.2021.02.05.18.13.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Feb 2021 18:13:33 -0800 (PST)
-Date:   Fri, 5 Feb 2021 18:13:31 -0800
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, linux-input@vger.kernel.org
-Subject: [git pull] Input updates for v5.11-rc6
-Message-ID: <YB37S7x1mvSeERFT@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=oeZT1Ar4/x7iejk6TCKZJw9nmldyPb7Q9CQuMN8dXaw=;
+        b=FwFPfjAiJ+D0fJ1vD3XKr+ar5BIQh58kBs/gUtN2yrJdjDGHWH9PJ08JA/agyAkbgA
+         LMlt5o7DGcQa+RwOs95chRaP46V46LTIq+cIBGePalrjqjHdhn2z2ESIGpBKBoi3Ccpf
+         3SNTXDsVfULtiIzkN5CaO5g3usWPVavNBP5gwRE0aEQSszn44ueri0ZRKveLL00SDayG
+         /RsC5/RgF2A5JUzNmeMDNCkPXmo5A1MsW1i3FzIKuo957+QdhIDfl78l15wTUm06EFWb
+         YcJ0PrS6LFb1Y6zwbgh96UaoDd1UxFSruuQgboNbGR8Hth2RUjTSUpcrmm7kvZ6xS+qT
+         6cQA==
+X-Gm-Message-State: AOAM533Ur6utyHPuQc9pFCCPNcbhWZawn+QctumrWI9WYCevkKMmGOiL
+        /tezd07XX109Le4UW9+onAeMJb6OLE6j8rDnrt4Knw==
+X-Google-Smtp-Source: ABdhPJy11Z5i7gStQAF/aV2cWsIZWC4t0l/3YBj3YIJdn7KvpZm4nPNRQyA7a/+WGcaogoso5SndN/JmnOvk57r9ybc=
+X-Received: by 2002:a25:af0b:: with SMTP id a11mr4263580ybh.228.1612579557241;
+ Fri, 05 Feb 2021 18:45:57 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20210205222644.2357303-1-saravanak@google.com>
+In-Reply-To: <20210205222644.2357303-1-saravanak@google.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Fri, 5 Feb 2021 18:45:21 -0800
+Message-ID: <CAGETcx_f7BEbkOFtw_6_4fMcgGOWkujbqXhDbDcNstOxgvcPfA@mail.gmail.com>
+Subject: Re: [PATCH v4 0/8] Make fw_devlink=on more forgiving
+To:     Jonathan Corbet <corbet@lwn.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Kevin Hilman <khilman@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Len Brown <len.brown@intel.com>, Len Brown <lenb@kernel.org>,
+        Pavel Machek <pavel@ucw.cz>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Android Kernel Team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Fri, Feb 5, 2021 at 2:26 PM Saravana Kannan <saravanak@google.com> wrote:
+>
+> There are a lot of devices/drivers where they never have a struct device
+> created for them or the driver initializes the hardware without ever
+> binding to the struct device.
+>
+> This series is intended to avoid any boot regressions due to such
+> devices/drivers when fw_devlink=on and also address the handling of
+> optional suppliers.
+>
+> Patch 1 and 2 addresses the issue of firmware nodes that look like
+> they'll have struct devices created for them, but will never actually
+> have struct devices added for them. For example, DT nodes with a
+> compatible property that don't have devices added for them.
+>
+> Patch 3 and 4 allow for handling optional DT bindings.
+>
+> Patch 5 sets up a generic API to handle drivers that never bind with
+> their devices.
+>
+> Patch 6 through 8 update different frameworks to use the new API.
+>
+> Thanks,
+> Saravana
+>
 
-Please pull from:
+Forgot to add version history:
 
-	git://git.kernel.org/pub/scm/linux/kernel/git/dtor/input.git for-linus
+v1 -> v2:
+Patch 1: Added a flag to fwnodes that aren't devices.
+Patch 3: New patch to ise the flag set in patch 1 to not create bad links.
 
-to receive updates for the input subsystem. Nothing terribly
-interesting, just a few fixups.
+v2 -> v3:
+- Patch 1: Added Rafael's Ack
+- New patches 3 and 4
 
-Changelog:
----------
+v3 -> v4:
+- No changes to patches 1-4.
+- New patches 5-8.
 
-Alexey Dobriyan (1):
-      Input: i8042 - unbreak Pegatron C15B
+-Saravana
 
-AngeloGioacchino Del Regno (2):
-      dt-bindings: input: touchscreen: goodix: Add binding for GT9286 IC
-      Input: goodix - add support for Goodix GT9286 chip
-
-Benjamin Valentin (1):
-      Input: xpad - sync supported devices with fork on GitHub
-
-Geert Uytterhoeven (3):
-      Input: st1232 - fix off-by-one error in resolution handling
-      Input: st1232 - do not read more bytes than needed
-      Input: st1232 - wait until device is ready before reading resolution
-
-Heinrich Schuchardt (1):
-      dt-bindings: input: adc-keys: clarify description
-
-Marek Vasut (1):
-      Input: ili210x - implement pressure reporting for ILI251x
-
-Souptick Joarder (1):
-      Input: ariel-pwrbutton - remove unused variable ariel_pwrbutton_id_table
-
-Diffstat:
---------
-
- .../devicetree/bindings/input/adc-keys.txt         | 22 +++++++++-
- .../bindings/input/touchscreen/goodix.yaml         |  1 +
- drivers/input/joystick/xpad.c                      | 17 +++++++-
- drivers/input/misc/ariel-pwrbutton.c               |  6 ---
- drivers/input/serio/i8042-x86ia64io.h              |  2 +
- drivers/input/touchscreen/goodix.c                 |  2 +
- drivers/input/touchscreen/ili210x.c                | 26 ++++++++----
- drivers/input/touchscreen/st1232.c                 | 48 +++++++++++++++++++---
- 8 files changed, 102 insertions(+), 22 deletions(-)
-
-Thanks.
-
-
--- 
-Dmitry
+> Saravana Kannan (8):
+>   driver core: fw_devlink: Detect supplier devices that will never be
+>     added
+>   of: property: Don't add links to absent suppliers
+>   driver core: Add fw_devlink.strict kernel param
+>   of: property: Add fw_devlink support for optional properties
+>   driver core: fw_devlink: Handle suppliers that don't use driver core
+>   irqdomain: Mark fwnodes when their irqdomain is added/removed
+>   PM: domains: Mark fwnodes when their powerdomain is added/removed
+>   clk: Mark fwnodes when their clock provider is added/removed
+>
+>  .../admin-guide/kernel-parameters.txt         |  5 ++
+>  drivers/base/core.c                           | 58 ++++++++++++++++++-
+>  drivers/base/power/domain.c                   |  2 +
+>  drivers/clk/clk.c                             |  3 +
+>  drivers/of/property.c                         | 16 +++--
+>  include/linux/fwnode.h                        | 20 ++++++-
+>  kernel/irq/irqdomain.c                        |  2 +
+>  7 files changed, 98 insertions(+), 8 deletions(-)
+>
+> --
+> 2.30.0.478.g8a0d178c01-goog
+>
