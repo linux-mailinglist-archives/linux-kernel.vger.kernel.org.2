@@ -2,136 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 203AF311C3B
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 09:38:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 885D4311C40
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 09:43:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229832AbhBFIhg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Feb 2021 03:37:36 -0500
-Received: from mail-il1-f199.google.com ([209.85.166.199]:50891 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229707AbhBFIgy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Feb 2021 03:36:54 -0500
-Received: by mail-il1-f199.google.com with SMTP id x11so8332921ill.17
-        for <linux-kernel@vger.kernel.org>; Sat, 06 Feb 2021 00:36:39 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=Vjllui7uaJPc8hueRFxPXFS2fUrnK2hwtttKy49Se7c=;
-        b=jZTxecx6eWHxCjB3vxUAoend2jTpzIIeoB/I95WHeeWPygBNje7INCCic1c2/hufPG
-         1PR2r3pKgW9kaccSHJk5vlua1+rHNafOjIBg++S1l1fSsz6rGIMsl2gmM5oGfwQgR3qR
-         mjtfmTqEJjEVfaVke/2r6cFDnWFNrH6cjnwA/pFPQtVk9YLf2Vt8E95PCyi89ch0TabC
-         RQSodBJoa4XbFVljTw36UwJTZ/W3UIP6ZqQTjNKtcMCYjgl1xOV3DIur1XbrMBFCpPhP
-         Cc7nCivCgTrJLhcIyuZQkx6gNiOuxUiDZrjIzE0z0F7zuBjjbfX3wL8RMEyDLVMzpIoz
-         y1cw==
-X-Gm-Message-State: AOAM533SQmgUKU2AODLiRWsdAh2g0OJZRgQO95FvVc4PjJHQ2oyqv9XY
-        skjLAGqpinETMc/PlMDHX5WzIaHbCsK5gzGVhufoE+zg8r3C
-X-Google-Smtp-Source: ABdhPJxdYczRveQpCPBHDtTkJB7uRbqfviBPRd7k0i4Q1KOsXvzGLGjVkTTmxVFUU3t6/hf80LeKtMR7PaCztG8NUy+cBum5e6ty
+        id S229693AbhBFInH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Feb 2021 03:43:07 -0500
+Received: from mout.gmx.net ([212.227.17.20]:46445 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229537AbhBFInE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 6 Feb 2021 03:43:04 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1612600885;
+        bh=jKjTxUhx0ZNYdb/aeP0CN8+I4HtK+hmzEwsPv81gWyQ=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=ObzIE3K1u68uklIZPh/tDCUooGV6jFe85bM67qgjMsT7caOe+fSRP4RkDS5to7+VO
+         Ignpd2vHw3cdsX6dYOKR8+4fDDg2o8qsqdWto3SuYX06RuS9/rCUU7Y6bOwvW2NLOy
+         8qd3HPpeDLNs0unB3Nr+8t7zVfUixV1uA4R7ej5g=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from LT02.fritz.box ([62.143.246.89]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1M8hVB-1l4AQ0320X-004jyh; Sat, 06
+ Feb 2021 09:41:25 +0100
+From:   Heinrich Schuchardt <xypron.glpk@gmx.de>
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     Ard Biesheuvel <ardb@kernel.org>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Heinrich Schuchardt <xypron.glpk@gmx.de>
+Subject: [PATCH 1/1] docs: arm: /chosen node parameters
+Date:   Sat,  6 Feb 2021 09:41:20 +0100
+Message-Id: <20210206084120.43305-1-xypron.glpk@gmx.de>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-X-Received: by 2002:a6b:fb0f:: with SMTP id h15mr7682245iog.27.1612600573798;
- Sat, 06 Feb 2021 00:36:13 -0800 (PST)
-Date:   Sat, 06 Feb 2021 00:36:13 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000005dacd805baa6d46e@google.com>
-Subject: KASAN: wild-memory-access Write in l2cap_chan_put
-From:   syzbot <syzbot+a384548b03ddcbbaf619@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, johan.hedberg@gmail.com, kuba@kernel.org,
-        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
-        luiz.dentz@gmail.com, marcel@holtmann.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:ZF+CMxuQR6Z5hw6+G8WobfOwH0qpnXY5qwfc8e3AYz1GMiItJ2w
+ euzvJ04R/WPrHxfxOkeHdddqmkTAh+X5AxHvuvkMWfxv+Mt8AUgutASTIBr9eUBPSpGoaez
+ 36FWxp2O3m/UHe9Wg3WpdDFU6uukJR1VDmAsK8XfVHezzAWQI7GWDCQPEPhMAY5gYnGd6ea
+ 4uDM70yN/fNZjZmwsguHA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Coo//GXXLlI=:T5yue8KHto5xWxSQ/PctAp
+ /qnkx8OUuI4LFNYeLf35zo9i0ko3U8H2Rcmz1+LeiBT8nteVguZB/N9OadU57LgC+izRZUUU5
+ BGcXzeohep+QYEelrM7onXQIwojgLwRfTYRZb/LydPhrw5/tsXosjxvdMb5tQW5FB13KzlUfb
+ 0sY1eO54/jcY0qN3gKW/rM12WgW0MvCXVHq2TunhMiSANQmmFCXg+WK/1VpzjELUPq2kNs2O2
+ KmQ/OlYY/Z277xN4afxJbhjaPsdNWmaMdzJK0nkSicYei1Vy+P8KAzq4ftOeDMqLkldGArFbg
+ WuN8ow+4x6xSAsfem52E1gVwn35qnE6GSvxasNp5DpZv6AREpVSqpiUlhl8minxTt8TaqzJAs
+ uFILHgqNhRZ1+CjKHYh+1puu+WgrOQZLDgY2wWpyyLWUpm8kgovRFR/muaJvXDr3EUliUwXq/
+ BKV7IKhVC0KrkhS1G95UNTQuOcvPZvENk03aDYLnpTROUAKn/JpaUBXO4Y4Wnyfl5GIimbO3x
+ LX3yt4Qde4ygg0cwQeVbdbnnTJG5yX6n/1ZDVAGwPs7I6AQ8wXeak5il0JWxIs1y2i/OxiaOX
+ 9wndN794586mMtKYWUvN/glvAW+JJqAgDqyEtXjwHS74FdROxUKwTAoGZnEjV3lEoBRo/fRGT
+ P4ym5ixGMFShjxUO3ixY/Racqn5f27gQpsatqTHfDjpPIk6ZMWXpmuUlUnpzJm5qb1zJWYThx
+ zg7zDnFqayPEQDYk82C7d4G3fXEN2KVmjjR5ch7LX0BFZizPTDfzmjjq2+nJ4m0vRaNKc5ZUO
+ 64I4E4zf2DxlhAT+v+K0D2GOJopmEqE916DIExItKgSmMsE4I8l7UfKk2fkPVR4QyNoO2ZmJZ
+ Y3hSGM4Ysjv+C7j6bWXg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Add missing items to table of parameters set in the /chosen node by the EF=
+I
+stub.
 
-syzbot found the following issue on:
+Signed-off-by: Heinrich Schuchardt <xypron.glpk@gmx.de>
+=2D--
+ Documentation/arm/uefi.rst | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-HEAD commit:    88bb507a Merge tag 'media/v5.11-3' of git://git.kernel.org..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=112bab6f500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=6e95b9873f64b36c
-dashboard link: https://syzkaller.appspot.com/bug?extid=a384548b03ddcbbaf619
-userspace arch: i386
+diff --git a/Documentation/arm/uefi.rst b/Documentation/arm/uefi.rst
+index f732f957421f..9b0b5e458a1e 100644
+=2D-- a/Documentation/arm/uefi.rst
++++ b/Documentation/arm/uefi.rst
+@@ -64,4 +64,11 @@ linux,uefi-mmap-desc-size   32-bit   Size in bytes of e=
+ach entry in the UEFI
+                                      memory map.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+ linux,uefi-mmap-desc-ver    32-bit   Version of the mmap descriptor forma=
+t.
++
++linux,initrd-start          64-bit   Physical start address of an initrd
++
++linux,initrd-end            64-bit   Physical end address of an initrd
++
++kaslr-seed                  64-bit   Entropy used to randomize the kernel=
+ image
++                                     base address location.
+ =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D  =3D=3D=3D=3D=3D=3D   =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D
+=2D-
+2.30.0
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+a384548b03ddcbbaf619@syzkaller.appspotmail.com
-
-==================================================================
-BUG: KASAN: wild-memory-access in instrument_atomic_read_write include/linux/instrumented.h:101 [inline]
-BUG: KASAN: wild-memory-access in atomic_fetch_sub_release include/asm-generic/atomic-instrumented.h:220 [inline]
-BUG: KASAN: wild-memory-access in __refcount_sub_and_test include/linux/refcount.h:272 [inline]
-BUG: KASAN: wild-memory-access in __refcount_dec_and_test include/linux/refcount.h:315 [inline]
-BUG: KASAN: wild-memory-access in refcount_dec_and_test include/linux/refcount.h:333 [inline]
-BUG: KASAN: wild-memory-access in kref_put include/linux/kref.h:64 [inline]
-BUG: KASAN: wild-memory-access in l2cap_chan_put+0x35/0x2e0 net/bluetooth/l2cap_core.c:502
-Write of size 4 at addr aaaa00aaaaaaaac2 by task kworker/2:22/10838
-
-CPU: 2 PID: 10838 Comm: kworker/2:22 Not tainted 5.11.0-rc6-syzkaller #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-2 04/01/2014
-Workqueue: events l2cap_chan_timeout
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:120
- __kasan_report mm/kasan/report.c:400 [inline]
- kasan_report.cold+0x5f/0xd5 mm/kasan/report.c:413
- check_memory_region_inline mm/kasan/generic.c:179 [inline]
- check_memory_region+0x13d/0x180 mm/kasan/generic.c:185
- instrument_atomic_read_write include/linux/instrumented.h:101 [inline]
- atomic_fetch_sub_release include/asm-generic/atomic-instrumented.h:220 [inline]
- __refcount_sub_and_test include/linux/refcount.h:272 [inline]
- __refcount_dec_and_test include/linux/refcount.h:315 [inline]
- refcount_dec_and_test include/linux/refcount.h:333 [inline]
- kref_put include/linux/kref.h:64 [inline]
- l2cap_chan_put+0x35/0x2e0 net/bluetooth/l2cap_core.c:502
- l2cap_sock_kill+0xd0/0x240 net/bluetooth/l2cap_sock.c:1217
- l2cap_chan_timeout+0x1cc/0x2f0 net/bluetooth/l2cap_core.c:438
- process_one_work+0x98d/0x15f0 kernel/workqueue.c:2275
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
- kthread+0x3b1/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
-==================================================================
-Kernel panic - not syncing: panic_on_warn set ...
-CPU: 2 PID: 10838 Comm: kworker/2:22 Tainted: G    B             5.11.0-rc6-syzkaller #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-2 04/01/2014
-Workqueue: events l2cap_chan_timeout
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:120
- panic+0x306/0x73d kernel/panic.c:231
- end_report+0x58/0x5e mm/kasan/report.c:100
- __kasan_report mm/kasan/report.c:403 [inline]
- kasan_report.cold+0x67/0xd5 mm/kasan/report.c:413
- check_memory_region_inline mm/kasan/generic.c:179 [inline]
- check_memory_region+0x13d/0x180 mm/kasan/generic.c:185
- instrument_atomic_read_write include/linux/instrumented.h:101 [inline]
- atomic_fetch_sub_release include/asm-generic/atomic-instrumented.h:220 [inline]
- __refcount_sub_and_test include/linux/refcount.h:272 [inline]
- __refcount_dec_and_test include/linux/refcount.h:315 [inline]
- refcount_dec_and_test include/linux/refcount.h:333 [inline]
- kref_put include/linux/kref.h:64 [inline]
- l2cap_chan_put+0x35/0x2e0 net/bluetooth/l2cap_core.c:502
- l2cap_sock_kill+0xd0/0x240 net/bluetooth/l2cap_sock.c:1217
- l2cap_chan_timeout+0x1cc/0x2f0 net/bluetooth/l2cap_core.c:438
- process_one_work+0x98d/0x15f0 kernel/workqueue.c:2275
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
- kthread+0x3b1/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
-Dumping ftrace buffer:
-   (ftrace buffer empty)
-Kernel Offset: disabled
-Rebooting in 1 seconds..
-ACPI MEMORY or I/O RESET_REG.
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
