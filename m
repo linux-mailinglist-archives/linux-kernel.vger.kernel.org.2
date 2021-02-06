@@ -2,95 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83BFD312018
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 21:50:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FFD931201F
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 22:01:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229690AbhBFUu3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Feb 2021 15:50:29 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36443 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229536AbhBFUu2 (ORCPT
+        id S229564AbhBFU7Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Feb 2021 15:59:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48132 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229522AbhBFU7X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Feb 2021 15:50:28 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612644540;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=PCFKnTq1WWQXV4SZe1NEa1HYcBgQPqnFAnL0fpGrWIU=;
-        b=G+m5vAXpmuwRQmgXBPojdCB81xtfHNFqVT7vAl8aE9nIRrA0gJdsKWIf4Ljbu+1DqRuApY
-        /r72i82UqG4R5GrOU/ku1FkVWgQ9Zxu3tCsoxB194+LwfVtiSc5ogVDtYJd9IQnzd2NZtp
-        +2tPMWre4t51w/kDnLWNsWiX+Xes6Ao=
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
- [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-227-PxN6ZVUaOoOuhIzZtpB8Vw-1; Sat, 06 Feb 2021 15:48:59 -0500
-X-MC-Unique: PxN6ZVUaOoOuhIzZtpB8Vw-1
-Received: by mail-qk1-f198.google.com with SMTP id d194so8941737qke.3
-        for <linux-kernel@vger.kernel.org>; Sat, 06 Feb 2021 12:48:59 -0800 (PST)
+        Sat, 6 Feb 2021 15:59:23 -0500
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E49EC06174A;
+        Sat,  6 Feb 2021 12:58:43 -0800 (PST)
+Received: by mail-lj1-x22d.google.com with SMTP id s18so11750383ljg.7;
+        Sat, 06 Feb 2021 12:58:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=fODc4Y13jnUgYFxRk0/SlJ0oEOTVWjVViI6j6TXwrmA=;
+        b=i+BNW/3lPIn8qBEL4dJSYVVoNBe4G3m2fgH7TV4qRli2Y4zuXfrL3ikjrrJSXN9QOV
+         /jx3qFgEgkW+O7Gl44iV8Vi3upllIZM4E2ARLbwYwztquYKNqOGjsor5pdhM8G8dx1C1
+         bqw6EKRkRC51ozp047gC4F2wIBPE/O2iVcpAUOkCoD3oCzOY4NzC9fkdQZL3gGeI8cYC
+         3hCFf/DBMCKnopIFFpORPEg8kciDMfINbpVT2nUvJ2W1glufCsg4bkGr7iN3vNQgexUs
+         dL1a++FA+Mh8vP8liREDQuw0Ewsjbq+A6ZWdFDV/K51vKCH2hQOxq39Rm/Y+F9I+SxK5
+         8RUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=PCFKnTq1WWQXV4SZe1NEa1HYcBgQPqnFAnL0fpGrWIU=;
-        b=O3v4NZ7Ju5cSbQ5gs8vmYuB8mhudT3F0n7sb8ljc0KtTGrwRSIAzHWgUkhXHn5/yv3
-         YmL7WBA4nahuklWns6i9X0UFCtNE9NWwogkYofAYTcXIHjc+KmfJDSWgX5l0L8j6YWwq
-         Gd9HM3u1bgKo4NZOEV2Uh+8jEyM4ljowSv2XxNRVITV2iONEG48VgUWEgOyZAmZuHaOp
-         hTO1B8GArOCnna+kjOjlsRgENFs32mPOFlB49kN1z8ymrkPICJfXYkUGBJodACb8siDG
-         iyx6122tTTzOV0vJUKuw1wGRYKV9zSPHi/z8FTz3gvUcSOMff1EocJeeuRU+W26C9Pp6
-         Kn/A==
-X-Gm-Message-State: AOAM530fl5y6Pk0VGF3rCaQD0nNLvIaNy28wTKBuC8kw6XOe/EcGPT8w
-        /mrfOEiQbKCObB+JB5/eNCQEUozU871uFPyZoYOt4gvPYvFA9gtSiC8FSoD1b8/0a20J0zNQWbG
-        ubH1fjfWK7ZekKKvIkWdYZ0Gv
-X-Received: by 2002:a37:9e8a:: with SMTP id h132mr10472962qke.119.1612644538671;
-        Sat, 06 Feb 2021 12:48:58 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJz4ABoSm8MNhG2j0XpoBzjmwQleeKZNw2SbtFiIORMN8j9rCWlkjgD5g9YL3M3NMQk92wimMw==
-X-Received: by 2002:a37:9e8a:: with SMTP id h132mr10472949qke.119.1612644538460;
-        Sat, 06 Feb 2021 12:48:58 -0800 (PST)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id j125sm12880330qke.56.2021.02.06.12.48.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 06 Feb 2021 12:48:57 -0800 (PST)
-From:   trix@redhat.com
-To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com
-Cc:     linux-kernel@vger.kernel.org, Tom Rix <trix@redhat.com>
-Subject: [PATCH] sched/deadline: fix BUG_ON() ENQUEUE_REPLENISH check
-Date:   Sat,  6 Feb 2021 12:48:51 -0800
-Message-Id: <20210206204851.3673588-1-trix@redhat.com>
-X-Mailer: git-send-email 2.27.0
+        bh=fODc4Y13jnUgYFxRk0/SlJ0oEOTVWjVViI6j6TXwrmA=;
+        b=IBWliyORz+uqgxjXBHQ0pZDtFdSRCu0TV71mA0ccCXvwNTZCUB0NCZKElZrGKLbAOq
+         czK9LPIEvKY4Xa+oSSv8wAIq37HbbcWFNDoML5uo9Y0pyAKJ2enIuvW0xvIpQC/0SXIF
+         hHYJWpD0fV0/7ZotBH8L0kS6JLRWDLkcRpV1nj+josW030wDCw7OlUNYTJ0lESHPlDYi
+         Yza2Y+OYk3hdGSK4LBTFog0cF5Qq/qRhF9C41ZNmoIpt4wqlSKFZoiM7j/oqz7/3DxcU
+         ZHXc5tw5QwLau0kMNb04encKal5vx50fEuzT3hiVJFD7wAcbBnaUJpwVa4VabVuD+DYo
+         MeTA==
+X-Gm-Message-State: AOAM532132npUc0fQgrD09OwR9TiykG3ZOFrXtqhq6G8zZgb5WiLd9iH
+        Rab2yV/kurl35nQ6chdZy2ZmECumMTQ=
+X-Google-Smtp-Source: ABdhPJz0+XIQ0VmKOXwuXGw+Yp6c6LpRsX19zuZPttNlimegwkGn6w0xU0Bd08AOaN/VgftdtgH/Fg==
+X-Received: by 2002:a2e:8444:: with SMTP id u4mr1155075ljh.342.1612645121429;
+        Sat, 06 Feb 2021 12:58:41 -0800 (PST)
+Received: from [192.168.0.131] ([194.183.54.57])
+        by smtp.gmail.com with ESMTPSA id b39sm1376435ljf.68.2021.02.06.12.58.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 06 Feb 2021 12:58:40 -0800 (PST)
+Subject: Re: AW: [PATCH v2 1/4] leds: lp50xx: add setting of default intensity
+ from DT
+To:     Sven Schuchmann <schuchmann@schleissheimer.de>,
+        Pavel Machek <pavel@ucw.cz>
+Cc:     Dan Murphy <dmurphy@ti.com>, Rob Herring <robh+dt@kernel.org>,
+        "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20210204143726.27977-1-schuchmann@schleissheimer.de>
+ <20210204145201.GB14305@duo.ucw.cz>
+ <DB8P190MB063482D8E38C0529AD16A4D5D9B29@DB8P190MB0634.EURP190.PROD.OUTLOOK.COM>
+ <20210205102338.GA27854@amd> <c107d3b9-2141-7cad-837a-f8ef107df61c@gmail.com>
+ <DB8P190MB06344FAD6492E56D28A4E916D9B19@DB8P190MB0634.EURP190.PROD.OUTLOOK.COM>
+From:   Jacek Anaszewski <jacek.anaszewski@gmail.com>
+Message-ID: <d5631e35-cd62-106f-2ec4-de3163367bc0@gmail.com>
+Date:   Sat, 6 Feb 2021 21:58:39 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <DB8P190MB06344FAD6492E56D28A4E916D9B19@DB8P190MB0634.EURP190.PROD.OUTLOOK.COM>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+Sven,
 
-When the BUG_ON check for (flags != ENQUEUE_REPLENISH) was created, the
-flag was set to ENQUEUE_REPLENISH in rt_mutex_setprio(), now it is or-ed
-in.  So the checking logic needs to change.
+On 2/6/21 2:14 PM, Sven Schuchmann wrote:
+> Hello Dan,
+> 
+>> Von: Jacek Anaszewski <jacek.anaszewski@gmail.com>
+>> Gesendet: Freitag, 5. Februar 2021 19:37
+>> Hi Pavel,
+>>
+>> On 2/5/21 11:23 AM, Pavel Machek wrote:
+>>> Hi!
+>>>
+>>>>>>        patternProperties:
+>>>>>>          "(^led-[0-9a-f]$|led)":
+>>>>>> @@ -99,6 +104,7 @@ examples:
+>>>>>>                   reg = <0x1>;
+>>>>>>                   color = <LED_COLOR_ID_RGB>;
+>>>>>>                   function = LED_FUNCTION_CHARGING;
+>>>>>> +               default-intensity = <100 0 0>;
+>>
+>> How will you know which array position is for which child LED?
+>> I presume DT child nodes are not guaranteed to be parsed in the order
+>> of declaration?
+> 
+> I tried to fiddle this out, but it seems Jacek is right over here.
+> The multi-led definition looks like this (from the documentation leds-lp50xx.yaml)
+> 
+>          multi-led@1 {
+>                 #address-cells = <1>;
+>                 #size-cells = <0>;
+>                 reg = <0x1>;
+>                 color = <LED_COLOR_ID_RGB>;
+>                 function = LED_FUNCTION_CHARGING;
+> 
+>                 led-0 {
+>                     color = <LED_COLOR_ID_RED>;
+>                 };
+> 
+>                 led-1 {
+>                     color = <LED_COLOR_ID_GREEN>;
+>                 };
+> 
+>                 led-2 {
+>                     color = <LED_COLOR_ID_BLUE>;
+>                 };
+>            };
+> 
+> But it seems that the color definition of each led is ignored.
+> By ignored I mean the driver does not take care which color
+> is at which position. So if I change led-0 to be LED_COLOR_ID_BLUE
+> and led-2 to be LED_COLOR_ID_RED nothing will change if I write
+> from userspace. Could you help to clarify?
+> Then it is even hard to know which led to set with default-intensity.
 
-Fixes: 1de64443d755 ("sched/core: Fix task and run queue sched_info::run_delay inconsistencies")
-Signed-off-by: Tom Rix <trix@redhat.com>
----
- kernel/sched/deadline.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+See Documentation/ABI/testing/sysfs-class-led-multicolor and
+documentation of multi_index and multi_intensity files.
+It is the multi_index file that tells what is the order of colors
+in the multi_intensity file.
 
-diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
-index 1508d126e88b..f50d20b7fe7c 100644
---- a/kernel/sched/deadline.c
-+++ b/kernel/sched/deadline.c
-@@ -1561,7 +1561,7 @@ static void enqueue_task_dl(struct rq *rq, struct task_struct *p, int flags)
- 		 * the throttle.
- 		 */
- 		p->dl.dl_throttled = 0;
--		BUG_ON(!is_dl_boosted(&p->dl) || flags != ENQUEUE_REPLENISH);
-+		BUG_ON(!is_dl_boosted(&p->dl) || !(flags & ENQUEUE_REPLENISH));
- 		return;
- 	}
- 
+And that depends on the order of enumeration of the nodes by DT parser.
+
+> Also it seems that the enumeration of the multi-leds should
+> start with multi-led@0 (and not 1 as in the documentation).
+
+The @unit-address part of node name must match the first address
+specified in the reg property of the node, so this is correct.
 -- 
-2.27.0
-
+Best regards,
+Jacek Anaszewski
