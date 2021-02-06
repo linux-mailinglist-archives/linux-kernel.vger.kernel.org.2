@@ -2,135 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3A61311DA6
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 15:25:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2614311DA8
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 15:28:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230086AbhBFOZa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Feb 2021 09:25:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40364 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229721AbhBFOZ1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Feb 2021 09:25:27 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5DE0F60202;
-        Sat,  6 Feb 2021 14:24:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612621486;
-        bh=/p4zLyT/sglIdYpclSaSgJPTKSydYopRWQ786pmalgk=;
-        h=Date:From:To:Cc:Subject:From;
-        b=DCtcwc3p1UqKmsDttVMygYfzhM8RnjEUI4TyRDpGr6uW8/+wSYjoc4ByOydSC9znI
-         bpiJiIFHFSHFp/ZlWXjxFR12unKI2hUrIAVenRLu03VMO2ERVGjzIuC9acxrQB03cq
-         TmgBooqD15kSPpqHhL46t2MgDswUn3FlWSiGUjGA=
-Date:   Sat, 6 Feb 2021 15:24:44 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
-Subject: [GIT PULL] USB driver fixes for 5.11-rc7
-Message-ID: <YB6mrF7MGZ7AsN3m@kroah.com>
+        id S230071AbhBFO2K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Feb 2021 09:28:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49454 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230087AbhBFO2G (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 6 Feb 2021 09:28:06 -0500
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45556C061756
+        for <linux-kernel@vger.kernel.org>; Sat,  6 Feb 2021 06:27:26 -0800 (PST)
+Received: by mail-ed1-x531.google.com with SMTP id s26so7075686edt.10
+        for <linux-kernel@vger.kernel.org>; Sat, 06 Feb 2021 06:27:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=PktqN9cRlLYA052139XgKYF4870sQXKWYd5S3nLH7zE=;
+        b=geBJ6ifNaPg2/9JEcup33g2SMk3jUpscz4jU3F5tk1T5UqV8jZrf0yEgbAFhd3Gtz5
+         8SrBDjV+qKasj9QA1LjbbJUBsX188R9vMxjyK1EeKmjKlakDdtbgCLRd81FyFIk35YP6
+         rcBSD8KJU63VisdRoFUAg5E0saL94kuvP6xTjVIRhXtjfGYg8CMZdm+UEYbM0hCmsK7N
+         Qqrk/MrY3SJSdl38pBEMqf+8lDKsq2zWiUbyNe8lQji9AodI+pY6flr9ylPk5e4O3Yl6
+         EiwZ00TNvCWlCDNTg3yIaoa3OJ9FtAyB302RZMy7Yvg2LwwIK3a9p7f8gn35f9ZJffE0
+         mtPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=PktqN9cRlLYA052139XgKYF4870sQXKWYd5S3nLH7zE=;
+        b=gFXxiqG/WPuulDz0F9ta5OAh/F8c+ol+LEQZvpqV5+g23oyrwTXjTXlqKnm1erWn6D
+         zQMtVI4ZJSthmMaYKdaNL+IsReYt9ZQ45NkO3FiX7IokDesCTQ5KnLNGYHl+PoTObXe+
+         BLKFu04Vx/tSjFQKpJaHmmSuCcOs7TrS2sDFQI5n9kZf7qCufnCjfQzFrbl0fzcPKRie
+         kqBqYNsqcZXecMnMPOecfwba1kjkVo4bu7oUSfgy737bjWC8Sfb46pGmkpQanjou/Xdf
+         SvxxJDop2aBtfhDCRq0ASgRZqjqo0gXo172YGyQT5hoKeRSwIrO6RdStJVR8uT0CpdFz
+         MWyA==
+X-Gm-Message-State: AOAM531/dcUqjdW7mIbd8sFagybROTRG0Y3eptdqDWRhHfywFB88MWst
+        essChytqc2c+hNVZWFkA9uGc3CIYDBv2oc6ptfr0Pg==
+X-Google-Smtp-Source: ABdhPJx3KUdnhDR6bTAVF131x4DCkslTuPYIK+Kh2NC82mlk/Sgrs+TfBOoAT+tGvjmkH/Ok/+UMngPjLyTVzgm131w=
+X-Received: by 2002:a05:6402:702:: with SMTP id w2mr8842358edx.78.1612621644703;
+ Sat, 06 Feb 2021 06:27:24 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+References: <20210205140652.348864025@linuxfoundation.org>
+In-Reply-To: <20210205140652.348864025@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Sat, 6 Feb 2021 19:57:13 +0530
+Message-ID: <CA+G9fYufC-FM6RzeOTbKC_kt5k1krnSoWtvfuiZjiUJnpSiGMQ@mail.gmail.com>
+Subject: Re: [PATCH 5.4 00/32] 5.4.96-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 6ee1d745b7c9fd573fba142a2efdad76a9f1cb04:
+On Fri, 5 Feb 2021 at 19:43, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.4.96 release.
+> There are 32 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Sun, 07 Feb 2021 14:06:42 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.4.96-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.4.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-  Linux 5.11-rc5 (2021-01-24 16:47:14 -0800)
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-are available in the Git repository at:
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git tags/usb-5.11-rc7
+Summary
+------------------------------------------------------------------------
 
-for you to fetch changes up to f670e9f9c8cac716c3506c6bac9e997b27ad441a:
+kernel: 5.4.96-rc1
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-5.4.y
+git commit: da7c9d56bab5c4eb00d9d1545fcdc390ce75e001
+git describe: v5.4.95-33-gda7c9d56bab5
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.4.=
+y/build/v5.4.95-33-gda7c9d56bab5
 
-  usb: dwc2: Fix endpoint direction check in ep_from_windex (2021-02-05 10:28:38 +0100)
+No regressions (compared to build v5.4.95)
 
-----------------------------------------------------------------
-USB fixes for 5.11-rc7
+No fixes (compared to build v5.4.95)
 
-Here are some small, last-minute, USB driver fixes for 5.11-rc7
+Ran 45285 total tests in the following environments and test suites.
 
-They all resolve issues reported, or are a few new device ids for some
-drivers.  They include:
-	- new device ids for some usb-serial drivers
-	- xhci fixes for a variety of reported problems
-	- dwc3 driver bugfixes
-	- dwc2 driver bugfixes
-	- usblp driver bugfix
-	- thunderbolt bugfix
-	- few other tiny fixes
+Environments
+--------------
+- arc
+- arm
+- arm64
+- dragonboard-410c
+- hi6220-hikey
+- i386
+- juno-r2
+- juno-r2-compat
+- juno-r2-kasan
+- mips
+- parisc
+- powerpc
+- qemu-arm-clang
+- qemu-arm64-clang
+- qemu-arm64-kasan
+- qemu-x86_64-clang
+- qemu-x86_64-kasan
+- qemu-x86_64-kcsan
+- qemu_arm
+- qemu_arm64
+- qemu_arm64-compat
+- qemu_i386
+- qemu_x86_64
+- qemu_x86_64-compat
+- riscv
+- s390
+- sh
+- sparc
+- x15
+- x86
+- x86-kasan
+- x86_64
 
-All have been in linux-next with no reported issues.
+Test Suites
+-----------
+* build
+* linux-log-parser
+* install-android-platform-tools-r2600
+* kselftest-android
+* kselftest-bpf
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-zram
+* libhugetlbfs
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* perf
+* fwts
+* ltp-sched-tests
+* network-basic-tests
+* v4l2-compliance
+* kselftest-kexec
+* kselftest-x86
+* kvm-unit-tests
+* ltp-open-posix-tests
+* rcutorture
+* kselftest-
+* kselftest-vm
+* ssuite
 
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
-----------------------------------------------------------------
-Chenxin Jin (1):
-      USB: serial: cp210x: add new VID/PID for supporting Teraoka AD2000
-
-Christoph Schemmel (1):
-      USB: serial: option: Adding support for Cinterion MV31
-
-Chunfeng Yun (2):
-      usb: xhci-mtk: skip dropping bandwidth of unchecked endpoints
-      usb: xhci-mtk: break loop when find the endpoint to drop
-
-Dan Carpenter (1):
-      USB: gadget: legacy: fix an error code in eth_bind()
-
-Gary Bisson (1):
-      usb: dwc3: fix clock issue during resume in OTG mode
-
-Greg Kroah-Hartman (2):
-      Merge tag 'usb-serial-5.11-rc6' of https://git.kernel.org/.../johan/usb-serial into usb-linus
-      Merge tag 'thunderbolt-for-v5.11-rc7' of git://git.kernel.org/.../westeri/thunderbolt into usb-linus
-
-Heiko Stuebner (1):
-      usb: dwc2: Fix endpoint direction check in ep_from_windex
-
-Ikjoon Jang (1):
-      usb: xhci-mtk: fix unreleased bandwidth data
-
-Jeremy Figgins (1):
-      USB: usblp: don't call usb_set_interface if there's a single alt
-
-Mario Limonciello (1):
-      thunderbolt: Fix possible NULL pointer dereference in tb_acpi_add_link()
-
-Mathias Nyman (1):
-      xhci: fix bounce buffer usage for non-sg list case
-
-Pali Rohár (1):
-      usb: host: xhci: mvebu: make USB 3.0 PHY optional for Armada 3720
-
-Pho Tran (1):
-      USB: serial: cp210x: add pid/vid for WSDA-200-USB
-
-Yoshihiro Shimoda (1):
-      usb: renesas_usbhs: Clear pipe running flag in usbhs_pkt_pop()
-
-kernel test robot (1):
-      usb: gadget: aspeed: add missing of_node_put
-
- drivers/thunderbolt/acpi.c               |   2 +-
- drivers/usb/class/usblp.c                |  19 +++--
- drivers/usb/dwc2/gadget.c                |   8 +-
- drivers/usb/dwc3/core.c                  |   2 +-
- drivers/usb/gadget/legacy/ether.c        |   4 +-
- drivers/usb/gadget/udc/aspeed-vhub/hub.c |   4 +-
- drivers/usb/host/xhci-mtk-sch.c          | 130 ++++++++++++++++++++++---------
- drivers/usb/host/xhci-mtk.c              |   2 +
- drivers/usb/host/xhci-mtk.h              |  15 ++++
- drivers/usb/host/xhci-mvebu.c            |  42 ++++++++++
- drivers/usb/host/xhci-mvebu.h            |   6 ++
- drivers/usb/host/xhci-plat.c             |  20 ++++-
- drivers/usb/host/xhci-plat.h             |   1 +
- drivers/usb/host/xhci-ring.c             |  31 +++++---
- drivers/usb/host/xhci.c                  |   8 +-
- drivers/usb/host/xhci.h                  |   4 +
- drivers/usb/renesas_usbhs/fifo.c         |   1 +
- drivers/usb/serial/cp210x.c              |   2 +
- drivers/usb/serial/option.c              |   6 ++
- 19 files changed, 237 insertions(+), 70 deletions(-)
+--=20
+Linaro LKFT
+https://lkft.linaro.org
