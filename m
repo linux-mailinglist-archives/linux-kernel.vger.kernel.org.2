@@ -2,72 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 663F7311EAC
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 17:34:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BDA7311EB4
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 17:40:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230039AbhBFQd1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Feb 2021 11:33:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48056 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229771AbhBFQdZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Feb 2021 11:33:25 -0500
-Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9374CC061756
-        for <linux-kernel@vger.kernel.org>; Sat,  6 Feb 2021 08:32:45 -0800 (PST)
-Received: by mail-ot1-x330.google.com with SMTP id o12so10036465ote.12
-        for <linux-kernel@vger.kernel.org>; Sat, 06 Feb 2021 08:32:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=XeMgAW+cx24N/wv8PNeOlMR0vLin7caKIko2yyeqvRw=;
-        b=bAHqJFXwRTK8yH/6dnC3Mrve+BI7F7/00grOX7pYMAhy3cIHzjlDkuxBdKPzMZqTRR
-         ICf8XBQzfq4VHs/t+hElyR6bCB64IYqfgVZHioLKN20ZTnwt0y5nR1rnuUCVKodHOtqd
-         NSf5loIuQXGrgOEajteR/ugVxKswuLax2MkiN8TNhEZs0lkw5uzh8qghsLkKLdkRCQHT
-         c+3dS6eVxTafBdjA+Tzrntha/Y5Vs2m62Q9ayOgs4EJYrZQ/6hdeI0PI06KQsYG1HWjV
-         uz0Ftk8PvuZo1dn0mL4CJpIbzv+BQ6bLaJAwtYLLm/xdYRv6sAUXWUcxyCnTl4KzsqLE
-         hV6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=XeMgAW+cx24N/wv8PNeOlMR0vLin7caKIko2yyeqvRw=;
-        b=B0dY6jCWAT4FAa+NUcjmRxoA1J4ymb1QVeJFrrJ34uZhaifdl0yYgX6t7Sw21S7Zvb
-         HLnv9TNfBVVbJvqccWXVoNrUdvtpbuqd01c+bfpBswZigMX9i4eE/KXwOqgD7mTFZO48
-         nTGDiFhThCkOo6EpY+uU1vLQS0uQD5PMNhNzdsdRrc4+0DmETl+W9wEpaCL5+7/JNFZQ
-         O4W1VGmux0cllqvnrmRiH+I3rnABR6/ZyKU/DFo3pyCbGuNQz9VFO0dWyWOc/wUJqFpm
-         NPXhc7KuKizH0uLLSDEpPOHL0eIGvp/qgtmPFIWRa8qHvVOoCeivBDtPuTIWG+NVCcIz
-         mWPA==
-X-Gm-Message-State: AOAM530rpp48SkUzT1/R/u9/agY7OPAvOZ7QfWsYA07XGBrPl4OzWeRL
-        bSmi5Ds/Ul1f2tdL8/+/3h+V32CN2m7TEmmlRrE=
-X-Google-Smtp-Source: ABdhPJygS4BxJRPN+Gym3WfEk1Q55hrE/uVKqPkban0dMNDf9voI6ldTJ3RWZ6NnyrqT/YrJa8B5Akib+rDuO4VyXhI=
-X-Received: by 2002:a9d:866:: with SMTP id 93mr7190577oty.365.1612629164761;
- Sat, 06 Feb 2021 08:32:44 -0800 (PST)
+        id S230159AbhBFQkH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Feb 2021 11:40:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54526 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229788AbhBFQkF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 6 Feb 2021 11:40:05 -0500
+Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DA97364E41;
+        Sat,  6 Feb 2021 16:39:22 +0000 (UTC)
+Date:   Sat, 6 Feb 2021 16:39:19 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Ye Xiang <xiang.ye@intel.com>
+Cc:     jikos@kernel.org, srinivas.pandruvada@linux.intel.com,
+        linux-input@vger.kernel.org, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        linux-rtc@vger.kernel.org
+Subject: Re: [PATCH v2 0/2] resolve read hystersis return invalid argument
+ issue for hid sensors
+Message-ID: <20210206163919.7993d392@archlinux>
+In-Reply-To: <20210201054921.18214-1-xiang.ye@intel.com>
+References: <20210201054921.18214-1-xiang.ye@intel.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Received: by 2002:a4a:3e02:0:0:0:0:0 with HTTP; Sat, 6 Feb 2021 08:32:43 -0800 (PST)
-Reply-To: sroomf70@gmail.com
-From:   "Dr. Ali Moses" <alimoses07@gmail.com>
-Date:   Sat, 6 Feb 2021 17:32:43 +0100
-Message-ID: <CADWzZe7zH0s3oc1bmpzom5+Sc4FKgNZTWmq3E55TEZ4ma_ckmg@mail.gmail.com>
-Subject: Greetings,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
--- 
-Greetings,
-I'm Dr. Ali Moses, did you Receive the (FUND), that was paid to you?
-please, do not hesitate to Let me know with your full name:.. for
-immediate verification notice,
+On Mon,  1 Feb 2021 13:49:19 +0800
+Ye Xiang <xiang.ye@intel.com> wrote:
+
+> This patch series move get sensitivity attribute to common layer and
+> resolve read hystersis return invalid argument issue for hid sensors als,
+> incli-3d, rotation, and press on intel ISH Platform.
+Hi Ye Xiang
+
+
+Series looks good to me.
+
+Now this series touches a few bits of code outside of IIO so ideally
+I'm looking for acks from:
+@ Jiri for the header
+@ Alessandro / Alexandre (+CC) for RTC
+
+Both changes are trivial but might cause them some noise in other work
+going on in their subsystems.
+
+For reference:
+https://lore.kernel.org/linux-iio/20210201054921.18214-2-xiang.ye@intel.com/
 
 Thanks,
 
-Dr. Ali Moses,
-Foreign Remittance Director
+Jonathan
 
-Sincerely Yours, Respectfully,
+> 
+> ---
+> v2:
+>   - separate the add relative sensitivity patch to the next patch series.
+> 
+> Ye Xiang (2):
+>   iio: hid-sensors: Move get sensitivity attribute to hid-sensor-common
+>   hid-sensors: Add more data fields for sensitivity checking
+> 
+>  drivers/iio/accel/hid-sensor-accel-3d.c       | 23 ++++++-------
+>  .../hid-sensors/hid-sensor-attributes.c       | 17 +++++++++-
+>  drivers/iio/gyro/hid-sensor-gyro-3d.c         | 19 ++++-------
+>  drivers/iio/humidity/hid-sensor-humidity.c    | 16 ++++------
+>  drivers/iio/light/hid-sensor-als.c            | 20 +++++-------
+>  drivers/iio/light/hid-sensor-prox.c           | 27 +++++-----------
+>  drivers/iio/magnetometer/hid-sensor-magn-3d.c | 32 ++++++-------------
+>  drivers/iio/orientation/hid-sensor-incl-3d.c  | 20 +++++-------
+>  drivers/iio/orientation/hid-sensor-rotation.c | 24 ++++++--------
+>  .../position/hid-sensor-custom-intel-hinge.c  | 20 ++++--------
+>  drivers/iio/pressure/hid-sensor-press.c       | 20 +++++-------
+>  .../iio/temperature/hid-sensor-temperature.c  | 16 ++++------
+>  drivers/rtc/rtc-hid-sensor-time.c             |  4 ++-
+>  include/linux/hid-sensor-hub.h                |  4 ++-
+>  14 files changed, 111 insertions(+), 151 deletions(-)
+> 
 
-Mr Bill T Winters,
-Group Chief Executive Officer & Executive Director,
