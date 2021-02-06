@@ -2,236 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3A0D311A82
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 04:53:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B72A6311A88
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 04:55:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229894AbhBFDwJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 22:52:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42194 "EHLO
+        id S231961AbhBFDy0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 22:54:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231231AbhBFCyE (ORCPT
+        with ESMTP id S231648AbhBFCwv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 21:54:04 -0500
-Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0360C08EE18
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 16:09:06 -0800 (PST)
-Received: by mail-qt1-x849.google.com with SMTP id r18so6484896qta.19
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 16:09:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=8M/syFwNKdzYEjkQkOYzNkXR9VPw1LAYsj1sJNWjiBk=;
-        b=nYqPrlQ8bPXo82BHmCshPA0DrP2QyVU1c2O3OiWZplSSx//RzQLzK6rAov+1H7WHQq
-         qSgImo1+xURHIbIRwJWoiQvS5DjEJb1ciirBRxu59NX3opYH/Og29Bt/7gVGaz1b7SGa
-         v24/HnoK7xAW+tQISmNX5xVpV7xy5HcnvXI+gPCBX/y6nO8A3TNXVaZg1gIqqYxKQWqC
-         90o6q68wtbOxLY5BJCLsMt+QevKkG6pUvmMpKrO//vk4BAHPXmPqNRtDDqObSid8IJYm
-         w323A4p0HC0+nBE68P/aAe/mBaidGo7raBzZq8xdbhY61+AIuEfDxIINk5hN35tYX7qd
-         P5Og==
+        Fri, 5 Feb 2021 21:52:51 -0500
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C7BBC033275;
+        Fri,  5 Feb 2021 17:26:54 -0800 (PST)
+Received: by mail-lf1-x12b.google.com with SMTP id a8so12786755lfi.8;
+        Fri, 05 Feb 2021 17:26:54 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=8M/syFwNKdzYEjkQkOYzNkXR9VPw1LAYsj1sJNWjiBk=;
-        b=HXDWWH/NUuZxlfJ0eJahEL0xjyvgnZFJAyYWHxuvTdZs1YiPdOp0KMdxMSpmfaduYB
-         NefHv3VDNy2FH2yO3cgYGHJfe7VMOOO3E6RelLW8l741/TS5l2JojfeY2Y4mUIjc3fu3
-         cIaMr79rtjiJkbqYl+XTFcNLFgNn3V1ns5Kt2xd0D3kfEWcqX4g+zkdozzAN1rcNoD7W
-         0nSVJHJFIREbbeBJxjbgKCyjyxL6f7ucDUKgwvahkIrU8popV7frXQSuugPr4DavLUfP
-         hyh6XjvRiRQGTv+R1nUzSzIh1KKusyok/XSwN9iSCHl7QAug86LHfccLUP16tUuh/074
-         hHTA==
-X-Gm-Message-State: AOAM530bo1Ru+1tKxtgZ+U7DUpM3L7u+8IbIrXuVRQgM5ydOZfbZ+lg5
-        vz1kVfKaYSVCgffpzte6uufgLYDRn5VabQ==
-X-Google-Smtp-Source: ABdhPJwejMnPfoTjhxzO+OMYTP1ejnWqjjZeDSASAOK903g6uLHnsmZ8c8eAkNlifSzymY4cBRiKJOBP/axPhQ==
-Sender: "dlatypov via sendgmr" <dlatypov@dlatypov.svl.corp.google.com>
-X-Received: from dlatypov.svl.corp.google.com ([2620:15c:2cd:202:a8b1:128a:69fa:86fb])
- (user=dlatypov job=sendgmr) by 2002:a05:6214:592:: with SMTP id
- bx18mr6897223qvb.32.1612570145933; Fri, 05 Feb 2021 16:09:05 -0800 (PST)
-Date:   Fri,  5 Feb 2021 16:08:52 -0800
-In-Reply-To: <20210206000854.2037923-1-dlatypov@google.com>
-Message-Id: <20210206000854.2037923-2-dlatypov@google.com>
-Mime-Version: 1.0
-References: <20210206000854.2037923-1-dlatypov@google.com>
-X-Mailer: git-send-email 2.30.0.478.g8a0d178c01-goog
-Subject: [PATCH v4 1/3] kunit: add kunit.filter_glob cmdline option to filter suites
-From:   Daniel Latypov <dlatypov@google.com>
-To:     brendanhiggins@google.com
-Cc:     davidgow@google.com, linux-kernel@vger.kernel.org,
-        kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
-        skhan@linuxfoundation.org, Daniel Latypov <dlatypov@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=AYoAF7gPgCmz0hFYeiRmD4lOmSaTwA1DbF9cbEqAcQ0=;
+        b=ie63wiewQTPFO5AyrseRnYIWAna3cvOcmTRM5ltEPbD/emfDeZilCvFSRht467yRcU
+         ZEB6fBxFTpZEoCOnKTGrp9PBRcBCX3ds2VEpVtxD65Iazdpv8z+lAVJmFOfJgoYTkUg2
+         AVJyZJLnX4OYRbYlHYVeuO7tRizj+wEnCT69pI745LhjTB0wyk69MifKgYNnKyMTa10r
+         udJG6kPRhuAJbQoryGMdbrSF1fFeiZXSd/+do9GOTUK6XdDnIh1Behu/KA/ndg1Zd2r7
+         jVtx9qjqZi8M5yYCCSkxAmC8ul2LD8nDoNeQUkYReihA75x6X6dfGPSdpmTWbWuJVDNP
+         owLw==
+X-Gm-Message-State: AOAM531BqxcM1IzhRPKa5mHXDJEWIaJvx8RUP8VZJOtFUr63kUX1MBAc
+        H2Q8iiwZ9A1OrPRYmaZWTNezPSIHBBc=
+X-Google-Smtp-Source: ABdhPJz0zPGnTDbhSwzmVhzv+2yGPRYdicJfRxej/w+rmJd8/nndZwohleSblLFZNNYj9MfNIOTTQw==
+X-Received: by 2002:a5d:49c1:: with SMTP id t1mr7634170wrs.56.1612570147262;
+        Fri, 05 Feb 2021 16:09:07 -0800 (PST)
+Received: from msft-t490s.teknoraver.net (net-37-182-2-234.cust.vodafonedsl.it. [37.182.2.234])
+        by smtp.gmail.com with ESMTPSA id d3sm14566390wrp.79.2021.02.05.16.09.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Feb 2021 16:09:06 -0800 (PST)
+From:   Matteo Croce <mcroce@linux.microsoft.com>
+To:     linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Lennart Poettering <lennart@poettering.net>,
+        Luca Boccassi <bluca@debian.org>, Jens Axboe <axboe@kernel.dk>,
+        Alexander Viro <viro@zeniv.linux.org.uk>
+Subject: [PATCH 0/5] block: add a sequence number to disks
+Date:   Sat,  6 Feb 2021 01:08:58 +0100
+Message-Id: <20210206000903.215028-1-mcroce@linux.microsoft.com>
+X-Mailer: git-send-email 2.29.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-E.g. specifying this would run suites with "list" in their name.
-  kunit.filter_glob=list*
+From: Matteo Croce <mcroce@microsoft.com>
 
-Note: the executor prints out a TAP header that includes the number of
-suites we intend to run.
-So unless we want to report empty results for filtered-out suites, we
-need to do the filtering here in the executor.
-It's also probably better in the executor since we most likely don't
-want any filtering to apply to tests built as modules.
+With this series a monotonically increasing number is added to disks,
+precisely in the genhd struct, and it's exported in sysfs and uevent.
 
-This code does add a CONFIG_GLOB=y dependency for CONFIG_KUNIT=y.
-But the code seems light enough that it shouldn't be an issue.
+This helps the userspace correlate events for devices that reuse the
+same device, like loop.
 
-For now, we only filter on suite names so we don't have to create copies
-of the suites themselves, just the array (of arrays) holding them.
+The first patch is the core one, the 2..4 expose the information in
+different ways, while the last one increase the sequence number for
+loop devices at every attach.
 
-The name is rather generic since in the future, we could consider
-extending it to a syntax like:
-  kunit.filter_glob=<suite_glob>.<test_glob>
-E.g. to run all the del list tests
-  kunit.filter_glob=list-kunit-test.*del*
+    # udevadm monitor -kp |grep -e ^DEVNAME -e ^DISKSEQ &
+    [1] 523
+    # losetup -fP 3part
+    [ 3698.615848] loop0: detected capacity change from 16384 to 0
+    DEVNAME=/dev/loop0
+    DISKSEQ=13
+    [ 3698.647189]  loop0: p1 p2 p3
+    DEVNAME=/dev/loop0
+    DISKSEQ=13
+    DEVNAME=/dev/loop0p1
+    DISKSEQ=13
+    DEVNAME=/dev/loop0p2
+    DISKSEQ=13
+    DEVNAME=/dev/loop0p3
+    DISKSEQ=13
+    # losetup -fP 2part
+    [ 3705.170766] loop1: detected capacity change from 40960 to 0
+    DEVNAME=/dev/loop1
+    DISKSEQ=14
+    [ 3705.247280]  loop1: p1 p2
+    DEVNAME=/dev/loop1
+    DISKSEQ=14
+    DEVNAME=/dev/loop1p1
+    DISKSEQ=14
+    DEVNAME=/dev/loop1p2
+    DISKSEQ=14
+    # ./getdiskseq /dev/loop*
+    /dev/loop0:     13
+    /dev/loop0p1:   13
+    /dev/loop0p2:   13
+    /dev/loop0p3:   13
+    /dev/loop1:     14
+    /dev/loop1p1:   14
+    /dev/loop1p2:   14
+    /dev/loop2:     5
+    /dev/loop3:     6
+    /dev/loop-control: Function not implemented
+    # grep . /sys/class/block/*/diskseq
+    /sys/class/block/loop0/diskseq:13
+    /sys/class/block/loop1/diskseq:14
+    /sys/class/block/loop2/diskseq:5
+    /sys/class/block/loop3/diskseq:6
+    /sys/class/block/ram0/diskseq:1
+    /sys/class/block/ram1/diskseq:2
+    /sys/class/block/vda/diskseq:7
 
-But at the moment, it's far easier to manually comment out test cases in
-test files as opposed to messing with sets of Kconfig entries to select
-specific suites.
-So even just doing this makes using kunit far less annoying.
+If merged, this feature will immediately used by the userspace:
+https://github.com/systemd/systemd/issues/17469#issuecomment-762919781
 
-Signed-off-by: Daniel Latypov <dlatypov@google.com>
-Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
----
- lib/kunit/Kconfig    |  1 +
- lib/kunit/executor.c | 93 +++++++++++++++++++++++++++++++++++++++-----
- 2 files changed, 85 insertions(+), 9 deletions(-)
+Matteo Croce (5):
+  block: add disk sequence number
+  block: add ioctl to read the disk sequence number
+  block: refactor sysfs code
+  block: export diskseq in sysfs
+  loop: increment sequence number
 
-diff --git a/lib/kunit/Kconfig b/lib/kunit/Kconfig
-index 00909e6a2443..0b5dfb001bac 100644
---- a/lib/kunit/Kconfig
-+++ b/lib/kunit/Kconfig
-@@ -4,6 +4,7 @@
- 
- menuconfig KUNIT
- 	tristate "KUnit - Enable support for unit tests"
-+	select GLOB if KUNIT=y
- 	help
- 	  Enables support for kernel unit tests (KUnit), a lightweight unit
- 	  testing and mocking framework for the Linux kernel. These tests are
-diff --git a/lib/kunit/executor.c b/lib/kunit/executor.c
-index a95742a4ece7..15832ed44668 100644
---- a/lib/kunit/executor.c
-+++ b/lib/kunit/executor.c
-@@ -1,6 +1,8 @@
- // SPDX-License-Identifier: GPL-2.0
- 
- #include <kunit/test.h>
-+#include <linux/glob.h>
-+#include <linux/moduleparam.h>
- 
- /*
-  * These symbols point to the .kunit_test_suites section and are defined in
-@@ -11,14 +13,81 @@ extern struct kunit_suite * const * const __kunit_suites_end[];
- 
- #if IS_BUILTIN(CONFIG_KUNIT)
- 
--static void kunit_print_tap_header(void)
-+static char *filter_glob;
-+module_param(filter_glob, charp, 0);
-+MODULE_PARM_DESC(filter_glob,
-+		"Filter which KUnit test suites run at boot-time, e.g. list*");
-+
-+static struct kunit_suite * const *
-+kunit_filter_subsuite(struct kunit_suite * const * const subsuite)
-+{
-+	int i, n = 0;
-+	struct kunit_suite **filtered;
-+
-+	n = 0;
-+	for (i = 0; subsuite[i] != NULL; ++i) {
-+		if (glob_match(filter_glob, subsuite[i]->name))
-+			++n;
-+	}
-+
-+	if (n == 0)
-+		return NULL;
-+
-+	filtered = kmalloc_array(n + 1, sizeof(*filtered), GFP_KERNEL);
-+	if (!filtered)
-+		return NULL;
-+
-+	n = 0;
-+	for (i = 0; subsuite[i] != NULL; ++i) {
-+		if (glob_match(filter_glob, subsuite[i]->name))
-+			filtered[n++] = subsuite[i];
-+	}
-+	filtered[n] = NULL;
-+
-+	return filtered;
-+}
-+
-+struct suite_set {
-+	struct kunit_suite * const * const *start;
-+	struct kunit_suite * const * const *end;
-+};
-+
-+static struct suite_set kunit_filter_suites(void)
-+{
-+	int i;
-+	struct kunit_suite * const **copy, * const *filtered_subsuite;
-+	struct suite_set filtered;
-+
-+	const size_t max = __kunit_suites_end - __kunit_suites_start;
-+
-+	if (!filter_glob) {
-+		filtered.start = __kunit_suites_start;
-+		filtered.end = __kunit_suites_end;
-+		return filtered;
-+	}
-+
-+	copy = kmalloc_array(max, sizeof(*filtered.start), GFP_KERNEL);
-+	filtered.start = copy;
-+	if (!copy) { /* won't be able to run anything, return an empty set */
-+		filtered.end = copy;
-+		return filtered;
-+	}
-+
-+	for (i = 0; i < max; ++i) {
-+		filtered_subsuite = kunit_filter_subsuite(__kunit_suites_start[i]);
-+		if (filtered_subsuite)
-+			*copy++ = filtered_subsuite;
-+	}
-+	filtered.end = copy;
-+	return filtered;
-+}
-+
-+static void kunit_print_tap_header(struct suite_set *suite_set)
- {
- 	struct kunit_suite * const * const *suites, * const *subsuite;
- 	int num_of_suites = 0;
- 
--	for (suites = __kunit_suites_start;
--	     suites < __kunit_suites_end;
--	     suites++)
-+	for (suites = suite_set->start; suites < suite_set->end; suites++)
- 		for (subsuite = *suites; *subsuite != NULL; subsuite++)
- 			num_of_suites++;
- 
-@@ -30,12 +99,18 @@ int kunit_run_all_tests(void)
- {
- 	struct kunit_suite * const * const *suites;
- 
--	kunit_print_tap_header();
-+	struct suite_set suite_set = kunit_filter_suites();
-+
-+	kunit_print_tap_header(&suite_set);
-+
-+	for (suites = suite_set.start; suites < suite_set.end; suites++)
-+		__kunit_test_suites_init(*suites);
- 
--	for (suites = __kunit_suites_start;
--	     suites < __kunit_suites_end;
--	     suites++)
--			__kunit_test_suites_init(*suites);
-+	if (filter_glob) { /* a copy was made of each array */
-+		for (suites = suite_set.start; suites < suite_set.end; suites++)
-+			kfree(*suites);
-+		kfree(suite_set.start);
-+	}
- 
- 	return 0;
- }
+ Documentation/ABI/testing/sysfs-block | 12 ++++++++
+ block/genhd.c                         | 43 ++++++++++++++++++++++++---
+ block/ioctl.c                         |  2 ++
+ drivers/block/loop.c                  |  3 ++
+ include/linux/genhd.h                 |  2 ++
+ include/uapi/linux/fs.h               |  1 +
+ 6 files changed, 59 insertions(+), 4 deletions(-)
+
 -- 
-2.30.0.478.g8a0d178c01-goog
+2.29.2
 
