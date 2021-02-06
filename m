@@ -2,119 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB209311AC7
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 05:19:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5E6C311AB9
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 05:13:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230315AbhBFETM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 5 Feb 2021 23:19:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41470 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231699AbhBFCuo (ORCPT
+        id S229976AbhBFEL4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 5 Feb 2021 23:11:56 -0500
+Received: from mail-wm1-f49.google.com ([209.85.128.49]:39342 "EHLO
+        mail-wm1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232211AbhBFCzd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 5 Feb 2021 21:50:44 -0500
-Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 588ADC08EE1D
-        for <linux-kernel@vger.kernel.org>; Fri,  5 Feb 2021 16:09:10 -0800 (PST)
-Received: by mail-qk1-x749.google.com with SMTP id c63so7299935qkd.1
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Feb 2021 16:09:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=KdjKwQSV8R49hhF8YBTPAsSenCKV1XvSoMIimz2f7Lo=;
-        b=u8ilAwjsWp1UN91pf1gmxM/49s467/eLrcvHS5yAiHMELI/fEaJ+bctfICqIJTIqQ0
-         x2MEI3eltGnZrdyvOIyhn/u8pufdJ/vJg40YGrRTQP9pcn7qBt2H4kCyAFEG4LC70+3d
-         QkxEyeeoH1Q6nFYtrGlqM/Ui7oIXkLQRIxExK5IXuSrsBZYrSfSkXszNhmzrugIUEqni
-         UYzzZxDDz1Vkz+GsrlaA19tIqwiqyQh6YpntT0tEk6h1VFSt6UwJzVFgHNkeYHQUP6TW
-         RVTJa3R9/oIf+sjqsGuH1rnbZo1nMZZdkYZLrDqa5BDKSkksYaPu3e8w5CwhW9y3F2Gi
-         hP1A==
+        Fri, 5 Feb 2021 21:55:33 -0500
+Received: by mail-wm1-f49.google.com with SMTP id u14so7446042wmq.4;
+        Fri, 05 Feb 2021 18:55:16 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=KdjKwQSV8R49hhF8YBTPAsSenCKV1XvSoMIimz2f7Lo=;
-        b=hLDjjXH+vQlRIfNne2+DaFc3Vrs+89JSz61LkPmWJ2+48+r/WhQ7daXa6Rq1CglZv9
-         APeCSy6ACGv+ukbNuYb31eYCuloeY0XR4Fy8x+S55/Zof9lbSC/GzqtBOYU5L5e48QLL
-         L+N0+Fz7uepH4oe7Miw/wGzypeCUc3jzuJTcD45gid6Rq94yxVa7bdx6GNVqn9gJ5f2K
-         TXt3W5ootCc0D+rsY4nZVTjaOcH8lP+4KYTbgkJNmcOIog8hBd3DLVsh1hp5shxLCKcx
-         mQOhLXI996UsJyyBroENc2YCB0n2GZf+3yO5p5AhYY2yoNc9yX8gcW9JWTEWg+9m+U9c
-         pkIQ==
-X-Gm-Message-State: AOAM531anylQ5/WnecgjctKNJFgjfF0RJSD0bnYiMypXUqZ6FifOuI0d
-        R7QOcaWt2sqpGPPT1PlYbwbqaDjfkxf0gA==
-X-Google-Smtp-Source: ABdhPJzuVtOEBEdpMg+xANPjOgnrC323ecoJ6yJGZv45bT7+rm2SAUoHCScRms23l0Pw2ZbX3BaxS/NuT6ttMw==
-Sender: "dlatypov via sendgmr" <dlatypov@dlatypov.svl.corp.google.com>
-X-Received: from dlatypov.svl.corp.google.com ([2620:15c:2cd:202:a8b1:128a:69fa:86fb])
- (user=dlatypov job=sendgmr) by 2002:ad4:47b2:: with SMTP id
- a18mr6953341qvz.1.1612570149583; Fri, 05 Feb 2021 16:09:09 -0800 (PST)
-Date:   Fri,  5 Feb 2021 16:08:54 -0800
-In-Reply-To: <20210206000854.2037923-1-dlatypov@google.com>
-Message-Id: <20210206000854.2037923-4-dlatypov@google.com>
-Mime-Version: 1.0
-References: <20210206000854.2037923-1-dlatypov@google.com>
-X-Mailer: git-send-email 2.30.0.478.g8a0d178c01-goog
-Subject: [PATCH v4 3/3] kunit: tool: fix unintentional statefulness in run_kernel()
-From:   Daniel Latypov <dlatypov@google.com>
-To:     brendanhiggins@google.com
-Cc:     davidgow@google.com, linux-kernel@vger.kernel.org,
-        kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
-        skhan@linuxfoundation.org, Daniel Latypov <dlatypov@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=aCJ5PaXDlTI4AjcUCXBQTCjHD7JcPX94ZBJxHdZFYJs=;
+        b=q+EabVDft+zoeSQ23UoeV4vHAXE1pK811ECDaoNlarAnD4VrXeYHR1CPrxjYKVDF+J
+         sW+ZD37+Vcecr2nLip5DtmNkLcCb9PYaRvmw2Irj9HXlAngFfuYfj+boBRMCV0+95pEB
+         aqrjefR0PcHEqFEiuiOMAFIx6sqY8jptoJVijO7EOJr2Ls2kKB8k2SMWS879C2+jlWZ4
+         1ER4QwE5IbmiWdUzBE7Etk/QBPYXTSd576bsm1LD82DpWyqdCxBabeXluhprmleh8M+x
+         QjtrpefifQH92WslSISQqkh3Q8QZJ3Rkkz173LY0WlGwH3Wg5jDAhrCgoAxa7ySLL8Dg
+         rVSQ==
+X-Gm-Message-State: AOAM532bSE+ahezXE2yhxIzC6qRb/1k42w+KnHs3+LLqesqF3bNJ8mTi
+        jZJ+iVCzJJjJ0E2FmwUiKi1X6T5IjoA=
+X-Google-Smtp-Source: ABdhPJx7aqDZs1uXhcmo/ZfRQRW7gg++4yuzlD1SZ+jzLQ7pwK52YYcGgJWxOjbdbuPtsMr5bMSAow==
+X-Received: by 2002:a05:600c:4f8b:: with SMTP id n11mr5472818wmq.160.1612570388879;
+        Fri, 05 Feb 2021 16:13:08 -0800 (PST)
+Received: from msft-t490s.teknoraver.net (net-37-182-2-234.cust.vodafonedsl.it. [37.182.2.234])
+        by smtp.gmail.com with ESMTPSA id d3sm14566390wrp.79.2021.02.05.16.13.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Feb 2021 16:13:08 -0800 (PST)
+From:   Matteo Croce <mcroce@linux.microsoft.com>
+To:     linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Lennart Poettering <lennart@poettering.net>,
+        Luca Boccassi <bluca@debian.org>, Jens Axboe <axboe@kernel.dk>,
+        Alexander Viro <viro@zeniv.linux.org.uk>
+Subject: [PATCH 4/5] block: export diskseq in sysfs
+Date:   Sat,  6 Feb 2021 01:09:02 +0100
+Message-Id: <20210206000903.215028-5-mcroce@linux.microsoft.com>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210206000903.215028-1-mcroce@linux.microsoft.com>
+References: <20210206000903.215028-1-mcroce@linux.microsoft.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a bug that has been present since the first version of this
-code.
-Using [] as a default parameter is dangerous, since it's mutable.
+From: Matteo Croce <mcroce@microsoft.com>
 
-Example using the REPL:
->>> def bad(param = []):
-...     param.append(len(param))
-...     print(param)
-...
->>> bad()
-[0]
->>> bad()
-[0, 1]
+Add a new sysfs handle to export the new diskseq value.
+Place it in <sysfs>/block/<disk>/diskseq and document it.
 
-This wasn't a concern in the past since it would just keep appending the
-same values to it.
-
-E.g. before, `args` would just grow in size like:
-  [mem=1G', 'console=tty']
-  [mem=1G', 'console=tty', mem=1G', 'console=tty']
-
-But with now filter_glob, this is more dangerous, e.g.
-  run_kernel(filter_glob='my-test*') # default modified here
-  run_kernel()			     # filter_glob still applies here!
-That earlier `filter_glob` will affect all subsequent calls that don't
-specify `args`.
-
-Note: currently the kunit tool only calls run_kernel() at most once, so
-it's not possible to trigger any negative side-effects right now.
-
-Fixes: 6ebf5866f2e8 ("kunit: tool: add Python wrappers for running KUnit tests")
-Signed-off-by: Daniel Latypov <dlatypov@google.com>
-Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
+Signed-off-by: Matteo Croce <mcroce@microsoft.com>
 ---
- tools/testing/kunit/kunit_kernel.py | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ Documentation/ABI/testing/sysfs-block | 12 ++++++++++++
+ block/genhd.c                         | 11 +++++++++++
+ 2 files changed, 23 insertions(+)
 
-diff --git a/tools/testing/kunit/kunit_kernel.py b/tools/testing/kunit/kunit_kernel.py
-index 71a5f5c1750b..f309a33256cd 100644
---- a/tools/testing/kunit/kunit_kernel.py
-+++ b/tools/testing/kunit/kunit_kernel.py
-@@ -203,7 +203,9 @@ class LinuxSourceTree(object):
- 			return False
- 		return self.validate_config(build_dir)
+diff --git a/Documentation/ABI/testing/sysfs-block b/Documentation/ABI/testing/sysfs-block
+index e34cdeeeb9d4..a0ed87386639 100644
+--- a/Documentation/ABI/testing/sysfs-block
++++ b/Documentation/ABI/testing/sysfs-block
+@@ -28,6 +28,18 @@ Description:
+ 		For more details refer Documentation/admin-guide/iostats.rst
  
--	def run_kernel(self, args=[], build_dir='', filter_glob='', timeout=None) -> Iterator[str]:
-+	def run_kernel(self, args=None, build_dir='', filter_glob='', timeout=None) -> Iterator[str]:
-+		if not args:
-+			args = []
- 		args.extend(['mem=1G', 'console=tty'])
- 		if filter_glob:
- 			args.append('kunit.filter_glob='+filter_glob)
+ 
++What:		/sys/block/<disk>/diskseq
++Date:		February 2021
++Contact:	Matteo Croce <mcroce@microsoft.com>
++Description:
++		The /sys/block/<disk>/diskseq files reports the disk
++		sequence number, which is a monotonically increasing
++		number assigned to every drive.
++		Some devices, like the loop device, refresh such number
++		every time the backing file is changed.
++		The value type is 64 bit unsigned.
++
++
+ What:		/sys/block/<disk>/<part>/stat
+ Date:		February 2008
+ Contact:	Jerome Marchand <jmarchan@redhat.com>
+diff --git a/block/genhd.c b/block/genhd.c
+index a59a35cf452c..1aedd4fab6f3 100644
+--- a/block/genhd.c
++++ b/block/genhd.c
+@@ -1975,6 +1975,7 @@ static void disk_check_events(struct disk_events *ev,
+  * events_async		: list of events which can be detected w/o polling
+  *			  (always empty, only for backwards compatibility)
+  * events_poll_msecs	: polling interval, 0: disable, -1: system default
++ * diskseq		: disk sequence number, since boot
+  */
+ static ssize_t __disk_events_show(unsigned int events, char *buf)
+ {
+@@ -2045,16 +2046,26 @@ static ssize_t disk_events_poll_msecs_store(struct device *dev,
+ 	return count;
+ }
+ 
++static ssize_t diskseq_show(struct device *dev,
++			    struct device_attribute *attr, char *buf)
++{
++	struct gendisk *disk = dev_to_disk(dev);
++
++	return sprintf(buf, "%llu\n", disk->diskseq);
++}
++
+ static const DEVICE_ATTR(events, 0444, disk_events_show, NULL);
+ static const DEVICE_ATTR(events_async, 0444, disk_events_async_show, NULL);
+ static const DEVICE_ATTR(events_poll_msecs, 0644,
+ 			 disk_events_poll_msecs_show,
+ 			 disk_events_poll_msecs_store);
++static const DEVICE_ATTR(diskseq, 0444, diskseq_show, NULL);
+ 
+ static const struct attribute *disk_sysfs_attrs[] = {
+ 	&dev_attr_events.attr,
+ 	&dev_attr_events_async.attr,
+ 	&dev_attr_events_poll_msecs.attr,
++	&dev_attr_diskseq.attr,
+ 	NULL,
+ };
+ 
 -- 
-2.30.0.478.g8a0d178c01-goog
+2.29.2
 
