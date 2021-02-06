@@ -2,108 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A654F311E85
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 16:56:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB778311E87
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 16:57:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230184AbhBFP4J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Feb 2021 10:56:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51416 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229785AbhBFP4G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Feb 2021 10:56:06 -0500
-Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9E4C764E9D;
-        Sat,  6 Feb 2021 15:55:24 +0000 (UTC)
-Date:   Sat, 6 Feb 2021 15:55:20 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Lars-Peter Clausen <lars@metafoo.de>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Michael Auchter <michael.auchter@ni.com>,
-        linux-iio@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: iio: dac: Add missing ad5686 compatible
- strings
-Message-ID: <20210206155520.68f971e9@archlinux>
-In-Reply-To: <20210202211022.GB3706951@robh.at.kernel.org>
-References: <20210202181427.3934218-1-robh@kernel.org>
-        <efbfbb94-bf61-5503-9833-df23709f56a2@metafoo.de>
-        <20210202211022.GB3706951@robh.at.kernel.org>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S230216AbhBFP5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Feb 2021 10:57:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40436 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229558AbhBFP5j (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 6 Feb 2021 10:57:39 -0500
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DBB2C06174A;
+        Sat,  6 Feb 2021 07:56:58 -0800 (PST)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: sjoerd)
+        with ESMTPSA id D0E811F40E84
+Received: by dawn.luon.net (Postfix, from userid 1000)
+        id 084DEC62B06; Sat,  6 Feb 2021 16:56:54 +0100 (CET)
+Date:   Sat, 6 Feb 2021 16:56:53 +0100
+From:   Sjoerd Simons <sjoerd@collabora.com>
+To:     Marcel Holtmann <marcel@holtmann.org>
+Cc:     Trent Piepho <tpiepho@gmail.com>,
+        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Hilda Wu <hildawu@realtek.com>,
+        Sathish Narasimman <sathish.narasimman@intel.com>,
+        Chethan T N <chethan.tumkur.narayan@intel.com>,
+        Hsin-Yu Chao <hychao@chromium.org>,
+        Amit K Bag <amit.k.bag@intel.com>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        kernel@collabora.com
+Subject: Re: [PATCH] Bluetooth: btusb: Always fallback to alt 1 for WBS
+Message-ID: <YB68RUVLRGQKS+yH@dawn.lan>
+References: <20201210012003.133000-1-tpiepho@gmail.com>
+ <7ADF39E2-647E-49E2-9C5B-B0BF6A303B95@holtmann.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <7ADF39E2-647E-49E2-9C5B-B0BF6A303B95@holtmann.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2 Feb 2021 15:10:22 -0600
-Rob Herring <robh@kernel.org> wrote:
-
-> On Tue, Feb 02, 2021 at 09:55:56PM +0100, Lars-Peter Clausen wrote:
-> > On 2/2/21 7:14 PM, Rob Herring wrote:  
-> > > The example uses 'adi,ad5686', but the schema fails to document it. Given
-> > > the filename and there is a similar part AD5686, let's just add the
-> > > compatible strings including the 'r' variant.  
+On Fri, Dec 18, 2020 at 10:23:08PM +0100, Marcel Holtmann wrote:
+> Hi Trent,
+> 
+> > When alt mode 6 is not available, fallback to the kernel <= 5.7 behavior
+> > of always using alt mode 1.
 > > 
-> > There are two variants of this chip. One with a SPI interface and one with a
-> > I2C interface. This binding document only describes the I2C variants. But
-> > the ad5686 is a SPI variant.  
-> 
-> Right, I should have noticed that.
-> 
-> > I think this is a typo and we should replace ad5686 with ad5696, including
-> > the document name.  
-> 
-> Though we do frequently document both I2C and SPI variants in the same 
-> binding, given there's no existing SPI support and the example is wrong 
-> I agree.
+> > Prior to kernel 5.8, btusb would always use alt mode 1 for WBS (Wide
+> > Band Speech aka mSBC aka transparent SCO).  In commit baac6276c0a9
+> > ("Bluetooth: btusb: handle mSBC audio over USB Endpoints") this
+> > was changed to use alt mode 6, which is the recommended mode in the
+> > Bluetooth spec (Specifications of the Bluetooth System, v5.0, Vol 4.B
+> > §2.2.1).  However, many if not most BT USB adapters do not support alt
+> > mode 6.  In fact, I have been unable to find any which do.
 
-Ah, this is what I get for reading my emails out of order.
+> patch has been applied to bluetooth-next tree.
 
-There is existing SPI driver support if that's what you mean
-we just haven't documented the binding for it.
+For easier application to the stable tree(s) this should probably get:
+  Fixes: baac6276c0a9 ("Bluetooth: btusb: handle mSBC audio over USB Endpoints")
 
-Should work via the fallbacks in SPI that drop the vendor id off then match
-on the rest.  As I mentioned in reply to v2. It's an old driver so
-kind of got DT support by accident.
+In my testing this indeed fixes mSBC audio with both a Belkin (Broadcom
+BCM20702A, 050d:065a) and an Intel Bluetooth (8087:0a2b) adapters.
 
-I'll play catch up at some stage soon on missing binding docs,
-(I suspect there are quite a few for older IIO drivers)
+  Tested-By: Sjoerd Simons <sjoerd@collabora.com>
 
-Thanks,
-
-Jonathan
-
-> 
-> > > 
-> > > Cc: Lars-Peter Clausen <lars@metafoo.de>
-> > > Cc: Michael Hennerich <Michael.Hennerich@analog.com>
-> > > Cc: Jonathan Cameron <jic23@kernel.org>
-> > > Cc: Peter Meerwald-Stadler <pmeerw@pmeerw.net>
-> > > Cc: Michael Auchter <michael.auchter@ni.com>
-> > > Cc: linux-iio@vger.kernel.org
-> > > Signed-off-by: Rob Herring <robh@kernel.org>
-> > > ---
-> > >   Documentation/devicetree/bindings/iio/dac/adi,ad5686.yaml | 2 ++
-> > >   1 file changed, 2 insertions(+)
-> > > 
-> > > diff --git a/Documentation/devicetree/bindings/iio/dac/adi,ad5686.yaml b/Documentation/devicetree/bindings/iio/dac/adi,ad5686.yaml
-> > > index 8065228e5df8..190919291828 100644
-> > > --- a/Documentation/devicetree/bindings/iio/dac/adi,ad5686.yaml
-> > > +++ b/Documentation/devicetree/bindings/iio/dac/adi,ad5686.yaml
-> > > @@ -19,6 +19,8 @@ properties:
-> > >         - adi,ad5338r
-> > >         - adi,ad5671r
-> > >         - adi,ad5675r
-> > > +      - adi,ad5686
-> > > +      - adi,ad5686r
-> > >         - adi,ad5691r
-> > >         - adi,ad5692r
-> > >         - adi,ad5693  
-> > 
-> >   
-
+Regards,
+  Sjoerd
