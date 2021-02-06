@@ -2,56 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECB8F311EF0
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 17:56:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E0EC311EF1
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Feb 2021 17:56:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230442AbhBFQ4K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Feb 2021 11:56:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52682 "EHLO
+        id S230368AbhBFQ42 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Feb 2021 11:56:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230252AbhBFQzQ (ORCPT
+        with ESMTP id S230035AbhBFQzf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Feb 2021 11:55:16 -0500
-Received: from mail-oo1-xc32.google.com (mail-oo1-xc32.google.com [IPv6:2607:f8b0:4864:20::c32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19473C06174A;
-        Sat,  6 Feb 2021 08:54:35 -0800 (PST)
-Received: by mail-oo1-xc32.google.com with SMTP id 123so2427506ooi.13;
-        Sat, 06 Feb 2021 08:54:35 -0800 (PST)
+        Sat, 6 Feb 2021 11:55:35 -0500
+Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55C62C061756;
+        Sat,  6 Feb 2021 08:54:55 -0800 (PST)
+Received: by mail-oi1-x232.google.com with SMTP id u66so9137818oig.9;
+        Sat, 06 Feb 2021 08:54:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:subject:to:references:from:autocrypt:message-id:date
+        h=sender:subject:from:to:references:autocrypt:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=4f6I9USihrGpK6Xnf3rDf6zOof3wmpdcC4YGLi1f7js=;
-        b=dyUkOGrS2O+HY5O6FzHev3ECjsaHLfh35BDTbgMaKCt0H2YCliKGRQ5Pp87C4NaNyr
-         UQTljT9XUPJ9FGA2MoCbkMyLxL08y3UbcUBhSU5gK9BsSOjhHMZDA5As3qKH7b0nLk81
-         wza2Ye4OGcEq2tG8EWgKroN7sphV5e6NHTPCjg4XdJIYJEo4gDBn4LYZXERog4lgcgui
-         nkUYn5a/XAuRUau9w6MM13NrO+k/e7o118DBlNVidJShJBwBA8P8vkJTU7Rv2Q8O62D4
-         2VPbV522kCw71vgG2UNYjtyWNTS/tK2NtYN+L/1LQv5R5RPqSdPc8S8r9/vrGV+yCxpj
-         Hbig==
+        bh=t7LWk3fuhpB3iSPfRxS8n3m0KkkANHMzTxE3Vzuctms=;
+        b=TF7CsRzvACrhtC7PRos8J+ThD+MSLtuHlSqW4bbBLwcxGnXcZ/DjUMAUG/mehV2AJu
+         qfu5q3TGIikX77FYZ6WiMogLi5+7vPTgZXQsXiwBlRNpARFNtejecDmeqooQ8ebCp3rN
+         BllD/BtrbC45Qu5sBEmSAVlWH7u/2y0M0qgNImxUTwVv1nXt6vW+XVWV5oc1vtQkM4Wa
+         UfF85NUcFm7t9fWkpiBp3Gwviu9CMHursUxW+mPDabEDL0tdT5sDHxsoRxa1AlCBgPQt
+         uauJ+ognGcKkvyPF0oFUkZEH1+0SwX9D2Q96Bs7oN27m0L7N/ssju7aysFhWkXvtSfwj
+         vLlQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:references:from:autocrypt
+        h=x-gm-message-state:sender:subject:from:to:references:autocrypt
          :message-id:date:user-agent:mime-version:in-reply-to
          :content-language:content-transfer-encoding;
-        bh=4f6I9USihrGpK6Xnf3rDf6zOof3wmpdcC4YGLi1f7js=;
-        b=mXuUJlbe4juV8lJVSVCRujg7eSae7xBJnHSyasTW1JhvAEQMz3UjqtI/1UVViHSLUp
-         l4M0IpKjQXZw8eNjacu5hYq9KEWJxtn7AXOnOB+ulyDkZvisJuSTdebizQZPbqXRY41G
-         YwFxrYUjsbCVtQ0zZoBi12BzOoZlx7OGg0uIQlr56J2aQpMyHxZEAGWI6JyATFYypn8f
-         tX5eqznFFZ2Xbp68XJAUA5gRpHdB7COMqnC3iZn0B3yqOL1x0T75hld+YA+16mmiuXNw
-         trNjfjErz/rRvcgtHye8jjZcoCzsFQeBZgsarqgtv0+XQNGDO1CYWMSwuYWi0fxm0IoI
-         XdSA==
-X-Gm-Message-State: AOAM533SuarxbVt0CJsKrfUh9wlzCHLrSfumMCoahftXpfPnJKZXu9TF
-        sv5jf0bsJ/vVNJsip/7SMupEabLHYOE=
-X-Google-Smtp-Source: ABdhPJxL21q0OTDSUvuj99QEzFGAzmm71oeJWx/E5F9nm5bR/MXBetsEVQ1vEUbE4EIf48ltUFV60A==
-X-Received: by 2002:a05:6820:414:: with SMTP id o20mr7453516oou.46.1612630473711;
-        Sat, 06 Feb 2021 08:54:33 -0800 (PST)
+        bh=t7LWk3fuhpB3iSPfRxS8n3m0KkkANHMzTxE3Vzuctms=;
+        b=d/11kLgkLmGsTZg4LER2oDiokh6rczf5ON4HCjP0scpZhycPPzMpNyFv2OPG+TMs1n
+         fAzeNf6VKfgRweTeIyHGglLTRxE625L5DxHp9O0Utx7FpfnITRhLfC9xXhXzoo/Q00jf
+         JO0UmtpJdMKjdidkaGKvE2XVNu9UKO2I9PKm8/+coF02gw76O+aFJ+rVjQZ/8X8Sgh1v
+         sYyxWNAWush/PQWAejdw4c5ilBUIYCTZ/Q71bu7NjnmV41Bo6mlVzyYRTTAL7VDEsl/L
+         S6lUem1uKCK6QUEdWUhHVoW11c2GZbyp9eAKVk8rvYsfKxHgX8GNHpl661Z/nVopSk5J
+         FUZw==
+X-Gm-Message-State: AOAM532b4b9Jq7Xcs115HpMLsMeQvRp6DZQ8uZr3vwIx1MB79pzUv7Fd
+        UocGBLlpKZwwcKxZU9TkWkjzGwTC0mQ=
+X-Google-Smtp-Source: ABdhPJymez97uJVyJmUzNG8ahXAfEf5w1sEGyW1kJhxOCbVPi/TiIS1A6maaO+32fFekzON9Cyi8WA==
+X-Received: by 2002:a54:4886:: with SMTP id r6mr6517971oic.54.1612630494552;
+        Sat, 06 Feb 2021 08:54:54 -0800 (PST)
 Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id t65sm2443281oie.25.2021.02.06.08.54.32
+        by smtp.gmail.com with ESMTPSA id s189sm2493743oif.19.2021.02.06.08.54.53
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 06 Feb 2021 08:54:32 -0800 (PST)
+        Sat, 06 Feb 2021 08:54:53 -0800 (PST)
 Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH v4 3/4] hwmon: lm75: Add ti,lm75 to of_match list
+Subject: Re: [PATCH v4 2/4] hwmon: lm75: Add nxp,lm75a to of_match list
+From:   Guenter Roeck <linux@roeck-us.net>
 To:     "Matwey V. Kornilov" <matwey@sai.msu.ru>,
         Jean Delvare <jdelvare@suse.com>,
         Rob Herring <robh+dt@kernel.org>,
@@ -61,8 +62,8 @@ To:     "Matwey V. Kornilov" <matwey@sai.msu.ru>,
         open list <linux-kernel@vger.kernel.org>
 References: <2588ea5c-630e-6509-689d-4c8fea358e9b@roeck-us.net>
  <20210206095121.20625-1-matwey@sai.msu.ru>
- <20210206095121.20625-4-matwey@sai.msu.ru>
-From:   Guenter Roeck <linux@roeck-us.net>
+ <20210206095121.20625-3-matwey@sai.msu.ru>
+ <cea0ffc3-9fd9-28b1-95f3-b6bee96137fc@roeck-us.net>
 Autocrypt: addr=linux@roeck-us.net; keydata=
  xsFNBE6H1WcBEACu6jIcw5kZ5dGeJ7E7B2uweQR/4FGxH10/H1O1+ApmcQ9i87XdZQiB9cpN
  RYHA7RCEK2dh6dDccykQk3bC90xXMPg+O3R+C/SkwcnUak1UZaeK/SwQbq/t0tkMzYDRxfJ7
@@ -106,66 +107,100 @@ Autocrypt: addr=linux@roeck-us.net; keydata=
  WkRwrSuCn7UG+qVWZeKEsFKFOkynOs3pVbcbq1pxbhk3TRWCGRU5JolI4ohy/7JV1TVbjiDI
  HP/aVnm6NC8of26P40Pg8EdAhajZnHHjA7FrJXsy3cyIGqvg9os4rNkUWmrCfLLsZDHD8FnU
  mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <195b6bfe-957e-9d1f-89c4-68d49bad3c97@roeck-us.net>
-Date:   Sat, 6 Feb 2021 08:54:31 -0800
+Message-ID: <358d0b0d-6a2d-7e7f-1962-7af3fa939f8a@roeck-us.net>
+Date:   Sat, 6 Feb 2021 08:54:52 -0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210206095121.20625-4-matwey@sai.msu.ru>
+In-Reply-To: <cea0ffc3-9fd9-28b1-95f3-b6bee96137fc@roeck-us.net>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/6/21 1:51 AM, Matwey V. Kornilov wrote:
-> Currently, armada-388-helios4.dts and nuvoton-npcm730-kudo.dts use
-> "ti,lm75" compatible string.
-> 
-> TI LM75A/B are compatible with original LM75A
-> 
-> https://www.ti.com/lit/ds/symlink/lm75a.pdf
-> https://www.ti.com/lit/ds/symlink/lm75b.pdf
-> 
-> Signed-off-by: Matwey V. Kornilov <matwey@sai.msu.ru>
-> ---
->  Documentation/devicetree/bindings/hwmon/lm75.yaml | 1 +
->  drivers/hwmon/lm75.c                              | 4 ++++
->  2 files changed, 5 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/hwmon/lm75.yaml b/Documentation/devicetree/bindings/hwmon/lm75.yaml
-> index 8c3848f4c277..721e77ce4390 100644
-> --- a/Documentation/devicetree/bindings/hwmon/lm75.yaml
-> +++ b/Documentation/devicetree/bindings/hwmon/lm75.yaml
-> @@ -32,6 +32,7 @@ properties:
->        - st,stds75
->        - st,stlm75
->        - microchip,tcn75
-> +      - ti,lm75
->        - ti,tmp100
->        - ti,tmp101
->        - ti,tmp105
-> diff --git a/drivers/hwmon/lm75.c b/drivers/hwmon/lm75.c
-> index 9c54c7d86771..3e4374aa2f99 100644
-> --- a/drivers/hwmon/lm75.c
-> +++ b/drivers/hwmon/lm75.c
-> @@ -750,6 +750,10 @@ static const struct of_device_id __maybe_unused lm75_of_match[] = {
->  		.compatible = "microchip,tcn75",
->  		.data = (void *)tcn75
->  	},
-> +	{
-> +		.compatible = "ti,lm75",
-> +		.data = (void *)lm75a
-> +	},
+On 2/6/21 8:48 AM, Guenter Roeck wrote:
+> On 2/6/21 1:51 AM, Matwey V. Kornilov wrote:
+>> NXP LM75A is compatible with original LM75A while it has improved
+>> 11-bit precision.
+>>
+>> https://www.nxp.com/docs/en/data-sheet/LM75A.pdf
+>>
+>> Signed-off-by: Matwey V. Kornilov <matwey@sai.msu.ru>
+>> ---
+>>  Documentation/devicetree/bindings/hwmon/lm75.yaml |  1 +
+>>  drivers/hwmon/lm75.c                              | 11 +++++++++++
+>>  2 files changed, 12 insertions(+)
+>>
+>> diff --git a/Documentation/devicetree/bindings/hwmon/lm75.yaml b/Documentation/devicetree/bindings/hwmon/lm75.yaml
+>> index aec8edd1e0c6..8c3848f4c277 100644
+>> --- a/Documentation/devicetree/bindings/hwmon/lm75.yaml
+>> +++ b/Documentation/devicetree/bindings/hwmon/lm75.yaml
+>> @@ -22,6 +22,7 @@ properties:
+>>        - national,lm75
+>>        - national,lm75a
+>>        - national,lm75b
+>> +      - nxp,lm75a
 
-I think that would be better aligned with lm75, not with lm75a.
+We'll also need nxp,lm75b because that is distinctly different to
+national,lm75b / ti,lm75b. Also, we'll need to fix the entry for
+those to reflect that the sensor resolution is only 9 bit, not
+11 bit as currently claimed.
 
 Thanks,
 Guenter
 
->  	{
->  		.compatible = "ti,tmp100",
->  		.data = (void *)tmp100
+>>        - maxim,max6625
+>>        - maxim,max6626
+>>        - maxim,max31725
+>> diff --git a/drivers/hwmon/lm75.c b/drivers/hwmon/lm75.c
+>> index 08cde1c446db..9c54c7d86771 100644
+>> --- a/drivers/hwmon/lm75.c
+>> +++ b/drivers/hwmon/lm75.c
+>> @@ -33,6 +33,7 @@ enum lm75_type {		/* keep sorted in alphabetical order */
+>>  	lm75,
+>>  	lm75a,
+>>  	lm75b,
+>> +	nxp_lm75,
+> 
+> Please make this lm75a_nxp for improved alphabetical alignment
+> and to reflect that it is LM75A.
+> 
+>>  	max6625,
+>>  	max6626,
+>>  	max31725,
+>> @@ -182,6 +183,11 @@ static const struct lm75_params device_params[] = {
+>>  		.default_resolution = 11,
+>>  		.default_sample_time = MSEC_PER_SEC / 10,
+>>  	},
+>> +	[nxp_lm75] = {
+>> +		.default_resolution = 11,
+>> +		.default_sample_time = MSEC_PER_SEC / 10,
+>> +		.resolution_limits = 9,
+>> +	},
+>>  	[max6625] = {
+>>  		.default_resolution = 9,
+>>  		.default_sample_time = MSEC_PER_SEC / 7,
+>> @@ -644,6 +650,7 @@ static const struct i2c_device_id lm75_ids[] = {
+>>  	{ "lm75", lm75, },
+>>  	{ "lm75a", lm75a, },
+>>  	{ "lm75b", lm75b, },
+>> +	{ "nxp_lm75a", nxp_lm75, },
+>>  	{ "max6625", max6625, },
+>>  	{ "max6626", max6626, },
+>>  	{ "max31725", max31725, },
+>> @@ -703,6 +710,10 @@ static const struct of_device_id __maybe_unused lm75_of_match[] = {
+>>  		.compatible = "national,lm75b",
+>>  		.data = (void *)lm75b
+>>  	},
+>> +	{
+>> +		.compatible = "nxp,lm75a",
+>> +		.data = (void *)nxp_lm75
+>> +	},
+>>  	{
+>>  		.compatible = "maxim,max6625",
+>>  		.data = (void *)max6625
+>>
 > 
 
