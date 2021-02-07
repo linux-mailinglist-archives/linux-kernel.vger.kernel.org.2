@@ -2,94 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0806E31285E
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 00:32:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14831312860
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 00:34:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229650AbhBGXcJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Feb 2021 18:32:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48316 "EHLO
+        id S229788AbhBGXei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Feb 2021 18:34:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229590AbhBGXcF (ORCPT
+        with ESMTP id S229587AbhBGXee (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Feb 2021 18:32:05 -0500
-Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89445C06174A;
-        Sun,  7 Feb 2021 15:31:25 -0800 (PST)
-Received: by mail-qk1-x72b.google.com with SMTP id a12so12756674qkh.10;
-        Sun, 07 Feb 2021 15:31:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :content-transfer-encoding;
-        bh=o5IhRHEGMqXqh+QGBqGS9tIVGn7/L64cLJSFPIY/AWc=;
-        b=oaXRUPA2F/7aryfPuau3KqPF6FZaskYAxYMUtjXPSU/iaRh+dp3vv/WuM5lHSsOH77
-         K796rEVfqQxzbx7kpzn7bED/l1qsnf/K952NVEG/4Hu8N1ukn65rB5CNWYZkigHXs17B
-         YG4YnsxkHnfnATuIsVrMv7o7kZC73L1tQMQx/wLGfTmHiMQE5HLEX41Wid5z2eLwvatY
-         YDCIG8BhiVTcTji8wVLbtF4McQNOov4L7QmmsE7dOuOBoD/eLN+XucGQ38cshoziwC4U
-         CcWSYNxDJm2UlVrBdYpF+Ebkfy1m1/3mU899InPMB9fOwUzyYYL+GNMDAfUUGRu5VjJf
-         v+hQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:content-transfer-encoding;
-        bh=o5IhRHEGMqXqh+QGBqGS9tIVGn7/L64cLJSFPIY/AWc=;
-        b=nCrlQ4sLAHpTB2MEOlt3qdWxYoamZ1LHqg+HIKLGzHjm1ij1EY89ET8ZC0kGAnLt+u
-         d9DLRuRLo/yuvpXteMePV1qD8bHAZG6SHFhxuDQCIO1DP0jIeHVH5FzJsMnZJ7dMegHw
-         +jT3LFuTAuzTkgdyu4FGfhBJMNHEfjGisaJm4c+20a4QECNB9clLTjffGfaF36TSNiDs
-         SX4VFnxhMB/WoRFNquYMW6HpaQM+1rJOoBoh3BZUqcbJfWp7Q0LEiDPLi9KCTwWcLGZ6
-         6HEmGZRtBHdXIIXe3YqrwvGs9XNG/fjB1cVUWNnMT+5GA8/EDYr9Ptjh7qkrLP/mue/B
-         k+bg==
-X-Gm-Message-State: AOAM533rVOAC4kPnf8cojtsBEYaWBL/BhpRxtn50HAbryd/gurB+/bnL
-        bNtcmoqFXKC3VmuFtnyxg90=
-X-Google-Smtp-Source: ABdhPJwxl0ho6ygvAdO4u+DaD7lks38s9pkwgumfoUrWph/Twl9ejj5QD7qkIjSM5ocHuqPwFjJnHg==
-X-Received: by 2002:a37:a58d:: with SMTP id o135mr14012949qke.204.1612740684640;
-        Sun, 07 Feb 2021 15:31:24 -0800 (PST)
-Received: from arch-chirva.localdomain (pool-68-133-6-116.bflony.fios.verizon.net. [68.133.6.116])
-        by smtp.gmail.com with ESMTPSA id 12sm15494228qkg.39.2021.02.07.15.31.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 07 Feb 2021 15:31:24 -0800 (PST)
-Date:   Sun, 7 Feb 2021 18:31:22 -0500
-From:   Stuart Little <achirvasub@gmail.com>
-To:     Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Marco Elver <elver@google.com>, Arnd Bergmann <arnd@arndb.de>
-Cc:     linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kasan-dev@googlegroups.com
-Subject: PROBLEM: 5.11.0-rc7 fails to =?utf-8?Q?com?=
- =?utf-8?Q?pile_with_error=3A_=E2=80=98-mindirect-branch=E2=80=99_and_?=
- =?utf-8?B?4oCYLWZjZi1wcm90ZWN0aW9u4oCZ?= are not compatible
-Message-ID: <YCB4Sgk5g5B2Nu09@arch-chirva.localdomain>
+        Sun, 7 Feb 2021 18:34:34 -0500
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3065C061756;
+        Sun,  7 Feb 2021 15:33:53 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DYlpj3RWhz9rx6;
+        Mon,  8 Feb 2021 10:33:49 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1612740830;
+        bh=mUVAHkaKy3IiZ79jVV9e5g/cx4s3Sz9ehM7aiqphm7Y=;
+        h=Date:From:To:Cc:Subject:From;
+        b=aAzrvbRMXZmChzgc90gbY0JnzKbJaxXeV8oCfPNqDXgawaBshYHTrpDNdT3lktjwY
+         J5Mh89e3SZyW8V7+jWqPKp0YPlW5ujxHTOIhngq1ZfG9YSIB+UvErQ7Qq/To9BDNVg
+         Db0IYZ0VHMhrnFS6CRQlGANL10ELfPo9yT1vlBfSDfZYXXvz7E8U4LmZA3ZJ4+FFgm
+         gbcieRCRR/cew5fDjBySzB2fgRttzftwzpd6vmDKHHyuuanC6vexIZNILv9myYBCtW
+         lM96Xvd4cgSQxyUaod5CvYzIPGiFlr+lK8nqW3/YQy6OYtIqR0jrrjrp1IJfH6uf+d
+         bZvjdTxS87htw==
+Date:   Mon, 8 Feb 2021 10:33:48 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     "Darrick J. Wong" <djwong@kernel.org>,
+        David Chinner <david@fromorbit.com>, linux-xfs@vger.kernel.org
+Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the xfs tree with the pidfd tree
+Message-ID: <20210208103348.1a0beef9@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/ksx.y2CT98xmSoyaTgZuwYE";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I am trying to compile on an x86_64 host for a 32-bit system; my config is at
+--Sig_/ksx.y2CT98xmSoyaTgZuwYE
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-https://termbin.com/v8jl
+Hi all,
 
-I am getting numerous errors of the form
+Today's linux-next merge of the xfs tree got a conflict in:
 
-./include/linux/kasan-checks.h:17:1: error: ‘-mindirect-branch’ and ‘-fcf-protection’ are not compatible
+  fs/xfs/xfs_ioctl.c
 
-and
+between commit:
 
-./include/linux/kcsan-checks.h:143:6: error: ‘-mindirect-branch’ and ‘-fcf-protection’ are not compatible
+  f736d93d76d3 ("xfs: support idmapped mounts")
 
-and
+from the pidfd tree and commit:
 
-./arch/x86/include/asm/arch_hweight.h:16:1: error: ‘-mindirect-branch’ and ‘-fcf-protection’ are not compatible
+  7317a03df703 ("xfs: refactor inode ownership change transaction/inode/quo=
+ta allocation idiom")
 
-(those include files indicated whom I should add to this list; apologies if this reaches you in error).
+from the xfs tree.
 
-The full log of the build is at
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
 
-https://termbin.com/wbgs
+--=20
+Cheers,
+Stephen Rothwell
 
----
+diff --cc fs/xfs/xfs_ioctl.c
+index 3d4c7ca080fb,248083ea0276..000000000000
+--- a/fs/xfs/xfs_ioctl.c
++++ b/fs/xfs/xfs_ioctl.c
+@@@ -1280,9 -1275,9 +1280,10 @@@ xfs_ioctl_setattr_prepare_dax
+   */
+  static struct xfs_trans *
+  xfs_ioctl_setattr_get_trans(
+- 	struct file		*file)
+ -	struct xfs_inode	*ip,
+++	struct file		*file,
++ 	struct xfs_dquot	*pdqp)
+  {
+ +	struct xfs_inode	*ip =3D XFS_I(file_inode(file));
+  	struct xfs_mount	*mp =3D ip->i_mount;
+  	struct xfs_trans	*tp;
+  	int			error =3D -EROFS;
+@@@ -1470,9 -1461,9 +1469,9 @@@ xfs_ioctl_setattr
+ =20
+  	xfs_ioctl_setattr_prepare_dax(ip, fa);
+ =20
+- 	tp =3D xfs_ioctl_setattr_get_trans(file);
+ -	tp =3D xfs_ioctl_setattr_get_trans(ip, pdqp);
+++	tp =3D xfs_ioctl_setattr_get_trans(file, pdqp);
+  	if (IS_ERR(tp)) {
+- 		code =3D PTR_ERR(tp);
++ 		error =3D PTR_ERR(tp);
+  		goto error_free_dquots;
+  	}
+ =20
+@@@ -1615,7 -1599,7 +1606,7 @@@ xfs_ioc_setxflags
+ =20
+  	xfs_ioctl_setattr_prepare_dax(ip, &fa);
+ =20
+- 	tp =3D xfs_ioctl_setattr_get_trans(filp);
+ -	tp =3D xfs_ioctl_setattr_get_trans(ip, NULL);
+++	tp =3D xfs_ioctl_setattr_get_trans(filp, NULL);
+  	if (IS_ERR(tp)) {
+  		error =3D PTR_ERR(tp);
+  		goto out_drop_write;
 
-5.11.0-rc6 built fine last week on this same setup. 
+--Sig_/ksx.y2CT98xmSoyaTgZuwYE
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAgeNwACgkQAVBC80lX
+0GwQrwf7BhqxJ3pn3YyKDTWkgQVXqJ4FvUqr3Hdzwap+4rtKbLgi6hW7DF5SPcbk
+svGdGbmTXwkr/64zSVBQ1K60srd8FdeLIvHxtapJJyjPnDjQgTToUVHf3U5cS3jY
+S7mU5XKLOdT/FqnO1jBo9IDDuy5lnG9DAOz61GaXVhwJx+FqCgU4vSquhb+PS7Gc
+Zez50ItYFptvbYGIaMd2IL057WqTk8HQY6OsR6eQO+THUvcqHPamK1JhqZnHA+V6
+D4Rdx12ZTKQAeIezgRlLc0PlKaHcBF5MbGTLUjbs7qHCWRCUtfNzgY6PJ00otvVC
+DyoHntBxbmgHTcnHU6bqi7nQcNkhMw==
+=wxv3
+-----END PGP SIGNATURE-----
+
+--Sig_/ksx.y2CT98xmSoyaTgZuwYE--
