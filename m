@@ -2,156 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ACF63122B9
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 09:31:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE6233122B3
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 09:31:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229566AbhBGIa7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Feb 2021 03:30:59 -0500
-Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:8460 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229975AbhBGIXg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Feb 2021 03:23:36 -0500
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1178LJnR025674;
-        Sun, 7 Feb 2021 00:22:45 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=pfpt0220; bh=OPe9kw3KgrmCl20IXxeiNKwyyAIVDOtu+mzfNNZEIRs=;
- b=K6cfxUAlAzRWPGg1Feo8VqgJM4G//j6Fza/dgIJ1W6ryijXtzCiT9CeB7unCLkL9BFIH
- JbXqYbB6qU/A4/dj4WESNKYjPRuDeoYQD/POvFMHqRwF0VAPOlmJYUcqrtohTaVYiBQa
- P0PX9T60QMx9GHwncJgMM7ed8pVwO4ocNjw+nRnKrw/QbrVVMS+aUoEZ+GAxVfJB8Fjl
- VxuYvCQlp8GWvxCcPwCi6Tl9i/UnAnM7DXdgg0lesNji/cDoEYYUoj8kgJDDUaPbgi7m
- hlQyvsxavjMuFo0UHVXU7t48ujZN4lcQfX7yXpOc/hLSIzmLYjS3ZCYKtTVXZZkJBBAy XQ== 
-Received: from dc5-exch02.marvell.com ([199.233.59.182])
-        by mx0b-0016f401.pphosted.com with ESMTP id 36hugq1m3k-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Sun, 07 Feb 2021 00:22:45 -0800
-Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Sun, 7 Feb
- 2021 00:22:44 -0800
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Sun, 7 Feb 2021 00:22:44 -0800
-Received: from stefan-pc.marvell.com (stefan-pc.marvell.com [10.5.25.21])
-        by maili.marvell.com (Postfix) with ESMTP id 3A28D3F703F;
-        Sun,  7 Feb 2021 00:22:40 -0800 (PST)
-From:   <stefanc@marvell.com>
-To:     <netdev@vger.kernel.org>
-CC:     <thomas.petazzoni@bootlin.com>, <davem@davemloft.net>,
-        <nadavh@marvell.com>, <ymarkman@marvell.com>,
-        <linux-kernel@vger.kernel.org>, <stefanc@marvell.com>,
-        <kuba@kernel.org>, <linux@armlinux.org.uk>, <mw@semihalf.com>,
-        <andrew@lunn.ch>, <rmk+kernel@armlinux.org.uk>,
-        <atenart@kernel.org>, <devicetree@vger.kernel.org>,
-        <robh+dt@kernel.org>, <sebastian.hesselbarth@gmail.com>,
-        <gregory.clement@bootlin.com>,
-        <linux-arm-kernel@lists.infradead.org>
-Subject: [RESEND PATCH v8 net-next 15/15] net: mvpp2: add TX FC firmware check
-Date:   Sun, 7 Feb 2021 10:19:24 +0200
-Message-ID: <1612685964-21890-16-git-send-email-stefanc@marvell.com>
-X-Mailer: git-send-email 1.9.1
-In-Reply-To: <1612685964-21890-1-git-send-email-stefanc@marvell.com>
-References: <1612685964-21890-1-git-send-email-stefanc@marvell.com>
+        id S230179AbhBGIaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Feb 2021 03:30:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57258 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229963AbhBGIX2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Feb 2021 03:23:28 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5935464E72;
+        Sun,  7 Feb 2021 08:22:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1612686167;
+        bh=tML2fpxEbgd0c5kgCO0BnSURh4MuFYUYXeMzuTwXXIQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fsA4wesmWFnG15nDVuw3kRJY/kUoF27SdL32cV6VUdaTZaa21DEx05IFJv1qQ2uxM
+         FDkX6a3pn/2MzSCQAqkz9PUfgPFQiHzLHy3HP9FCeXN1htNqdl1oKERqz6N62WGILZ
+         2xxWLyRS0E8CRiiyViv8Nw8JE28KtVQQRSBikW68=
+Date:   Sun, 7 Feb 2021 09:22:44 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Willy Tarreau <w@1wt.eu>, linux-kernel@vger.kernel.org,
+        akpm@linux-foundation.org, torvalds@linux-foundation.org,
+        stable@vger.kernel.org, lwn@lwn.net, jslaby@suse.cz,
+        shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com
+Subject: Re: Linux 4.4.256
+Message-ID: <YB+jVD6r4vlzuZO0@kroah.com>
+References: <1612534196241236@kroah.com>
+ <20210205205658.GA136925@roeck-us.net>
+ <YB6S612pwLbQJf4u@kroah.com>
+ <20210206131113.GB7312@1wt.eu>
+ <20210206132239.GC7312@1wt.eu>
+ <e173809f-505d-64a8-1547-37e0f6243f4c@roeck-us.net>
+ <YB7cU7SCyBOHFJGS@kroah.com>
+ <20210206184926.GA19587@roeck-us.net>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-02-07_03:2021-02-05,2021-02-07 signatures=0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210206184926.GA19587@roeck-us.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefan Chulski <stefanc@marvell.com>
+On Sat, Feb 06, 2021 at 10:49:26AM -0800, Guenter Roeck wrote:
+> On Sat, Feb 06, 2021 at 07:13:39PM +0100, Greg Kroah-Hartman wrote:
+> > On Sat, Feb 06, 2021 at 08:59:42AM -0800, Guenter Roeck wrote:
+> > > On 2/6/21 5:22 AM, Willy Tarreau wrote:
+> > > > On Sat, Feb 06, 2021 at 02:11:13PM +0100, Willy Tarreau wrote:
+> > > >> Something like this looks more robust to me, it will use SUBLEVEL for
+> > > >> values 0 to 255 and 255 for any larger value:
+> > > >>
+> > > >> -	expr $(VERSION) \* 65536 + 0$(PATCHLEVEL) \* 256 + 0$(SUBLEVEL)); \
+> > > >> +	expr $(VERSION) \* 65536 + 0$(PATCHLEVEL) \* 256 + 255 \* (0$(SUBLEVEL) > 255) + 0$(SUBLEVEL) * (0$(SUBLEVEL \<= 255)); \
+> > > > 
+> > > > Bah, I obviously missed a backslash above and forgot spaces around parens.
+> > > > Here's a tested version:
+> > > > 
+> > > > diff --git a/Makefile b/Makefile
+> > > > index 7d86ad6ad36c..9b91b8815b40 100644
+> > > > --- a/Makefile
+> > > > +++ b/Makefile
+> > > > @@ -1252,7 +1252,7 @@ endef
+> > > >  
+> > > >  define filechk_version.h
+> > > >  	echo \#define LINUX_VERSION_CODE $(shell                         \
+> > > > -	expr $(VERSION) \* 65536 + 0$(PATCHLEVEL) \* 256 + 0$(SUBLEVEL)); \
+> > > > +	expr $(VERSION) \* 65536 + 0$(PATCHLEVEL) \* 256 + 255 \* \( 0$(SUBLEVEL) \> 255 \) + 0$(SUBLEVEL) \* \( 0$(SUBLEVEL) \<= 255 \) ); \
+> > > >  	echo '#define KERNEL_VERSION(a,b,c) (((a) << 16) + ((b) << 8) + (c))'
+> > > >  endef
+> > > >  
+> > > 
+> > > I like that version.
+> > 
+> > See the patch that Sasha queued up already, it just fixes it at 255 for
+> > now, and we will update with what is in Linus's tree like the above when
+> > that gets merged in 5.12-rc1.
+> > 
+> > > Two questions: Are there any concerns that KERNEL_VERSION(4, 4, 256)
+> > > matches KERNEL_VERSION(4, 5. 0),
+> > 
+> > As that "release" did nothing, no, I'm not too worried about it, are
+> > you?
+> > 
+> There are lots (35) of "KERNEL_VERSION(4, 5, 0)" in chromeos-4.4.
+> That should not matter with the clamped LINUX_VERSION_CODE, but
+> I'd prefer to clamp KERNEL_VERSION as well just to be sure. On
+> top of that, some of the vendor code we carry along does check
+> SUBVERSION, but that is probably more of an academic concern.
 
-Patch check that TX FC firmware is running in CM3.
-If not, global TX FC would be disabled.
+Ah, the internal checks, I think the other patch by Sasha will let that
+get bigger and should work for you as well.  Can you try it out?
 
-Signed-off-by: Stefan Chulski <stefanc@marvell.com>
----
- drivers/net/ethernet/marvell/mvpp2/mvpp2.h      |  1 +
- drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c | 42 ++++++++++++++++----
- 2 files changed, 36 insertions(+), 7 deletions(-)
+thanks,
 
-diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2.h b/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
-index 9947385..25013a4 100644
---- a/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
-+++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
-@@ -829,6 +829,7 @@
- 
- #define MSS_THRESHOLD_STOP	768
- #define MSS_THRESHOLD_START	1024
-+#define MSS_FC_MAX_TIMEOUT	5000
- 
- /* RX buffer constants */
- #define MVPP2_SKB_SHINFO_SIZE \
-diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-index 5526214..dfc2e71 100644
---- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-+++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-@@ -932,6 +932,34 @@ static void mvpp2_bm_pool_update_fc(struct mvpp2_port *port,
- 	spin_unlock_irqrestore(&port->priv->mss_spinlock, flags);
- }
- 
-+static int mvpp2_enable_global_fc(struct mvpp2 *priv)
-+{
-+	int val, timeout = 0;
-+
-+	/* Enable global flow control. In this stage global
-+	 * flow control enabled, but still disabled per port.
-+	 */
-+	val = mvpp2_cm3_read(priv, MSS_FC_COM_REG);
-+	val |= FLOW_CONTROL_ENABLE_BIT;
-+	mvpp2_cm3_write(priv, MSS_FC_COM_REG, val);
-+
-+	/* Check if Firmware running and disable FC if not*/
-+	val |= FLOW_CONTROL_UPDATE_COMMAND_BIT;
-+	mvpp2_cm3_write(priv, MSS_FC_COM_REG, val);
-+
-+	while (timeout < MSS_FC_MAX_TIMEOUT) {
-+		val = mvpp2_cm3_read(priv, MSS_FC_COM_REG);
-+
-+		if (!(val & FLOW_CONTROL_UPDATE_COMMAND_BIT))
-+			return 0;
-+		usleep_range(10, 20);
-+		timeout++;
-+	}
-+
-+	priv->global_tx_fc = false;
-+	return -EOPNOTSUPP;
-+}
-+
- /* Release buffer to BM */
- static inline void mvpp2_bm_pool_put(struct mvpp2_port *port, int pool,
- 				     dma_addr_t buf_dma_addr,
-@@ -7281,7 +7309,7 @@ static int mvpp2_probe(struct platform_device *pdev)
- 	struct resource *res;
- 	void __iomem *base;
- 	int i, shared;
--	int err, val;
-+	int err;
- 
- 	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
- 	if (!priv)
-@@ -7509,13 +7537,13 @@ static int mvpp2_probe(struct platform_device *pdev)
- 		goto err_port_probe;
- 	}
- 
--	/* Enable global flow control. In this stage global
--	 * flow control enabled, but still disabled per port.
--	 */
- 	if (priv->global_tx_fc && priv->hw_version != MVPP21) {
--		val = mvpp2_cm3_read(priv, MSS_FC_COM_REG);
--		val |= FLOW_CONTROL_ENABLE_BIT;
--		mvpp2_cm3_write(priv, MSS_FC_COM_REG, val);
-+		err = mvpp2_enable_global_fc(priv);
-+		if (err) {
-+			dev_warn(&pdev->dev, "CM3 firmware not running, version should be higher than 18.09 ");
-+			dev_warn(&pdev->dev, "and chip revision B0\n");
-+			dev_warn(&pdev->dev, "Flow control not supported\n");
-+		}
- 	}
- 
- 	mvpp2_dbgfs_init(priv, pdev->name);
--- 
-1.9.1
-
+greg k-h
