@@ -2,173 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED65B312495
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 15:09:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E605312497
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 15:14:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230023AbhBGOJQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Feb 2021 09:09:16 -0500
-Received: from esa4.hgst.iphmx.com ([216.71.154.42]:47152 "EHLO
-        esa4.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229972AbhBGOJF (ORCPT
+        id S230048AbhBGOK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Feb 2021 09:10:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41214 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229609AbhBGOJ6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Feb 2021 09:09:05 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1612706943; x=1644242943;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=UecLnoXflpW4/2ptE9LcV5IrAn2GDBIWUROR/ayI6h4=;
-  b=k5wo8naueZ9uSgwgaXJ6jFeyfadtc79fz5vfY8pxSuVmGULS3kf89bWZ
-   qD3LTrtmm//1hzh9HgBHN2jI/M0S1HLpGXLRnSWSQOm9vMZvqrKKetUH/
-   mNCQMLHmdW8PJHkWSfb45oQ1NgEqumpEs+dHP9rT/3fbdmBPei+wS2+iN
-   ahlLSkXrTSPo7oTblY7hau/kd1vgmglvEg87tme1I6+j9x/d8o5Q2Bjq6
-   F5kyiFk7yxDwV0cQzu5aphSyEgQjUzShUog9nnMfizpskt38+Bb7CHVSZ
-   oTjX/fst/W1gpEtB9Gmlhs4RuGzA/Om8XbPeYEIh9iZ49qoNcfIvDuVyQ
-   Q==;
-IronPort-SDR: GuX1GSrXc0bKklaQ7agKcUTCDSQ0Zl50sQGHr5vbLpCWOlKddZQkViSS2TPRDCFbtjdaYzGA6R
- d0Xas6f1/UYq5YJLc1rhfnPH52QAwDS0k2v9/4UVte+KnNTApmq7XIaGSfQnoqORgEzGx/I1QU
- L1ajbIgqtJo/1bG6JztwieNBp2tHsrsuGuMKNLec8B+EmyWf8FI/lDudDT4DTWZwRE5q9YXJF3
- CICSouaawZkUn+Gb7tmNl3bUPwFSb3aqX98PP2TT87FQ8G6Dk2ivPJyV3FurZOkVOD2n6G+bJF
- c1Q=
-X-IronPort-AV: E=Sophos;i="5.81,160,1610380800"; 
-   d="scan'208";a="159376416"
-Received: from mail-dm6nam12lp2177.outbound.protection.outlook.com (HELO NAM12-DM6-obe.outbound.protection.outlook.com) ([104.47.59.177])
-  by ob1.hgst.iphmx.com with ESMTP; 07 Feb 2021 22:07:13 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nIGz3fBoXBl9LP+Bfsq/Qd7MUF+RBTeBhkxp4eNPRXxYkMR29zXRwEOWoQTIQvGrLq+6OGM/QtLHTpJK7/uKDrZxVUbiqfQyomS4sTI89BPdOl0MvijwQB6Sb7FjVec1rV16V8Ktl6aryWOlMLDHto1rGD+p4F5CR+7NQbcI5YP3oOtdRiME2ob/0hM3cLJn+ojm91GXGhb4/Um3rEbvA6Z7n06YjP35XIkLIQalGE9wn2vA9waWEIKWDYrf6BPp1PL+qdNR3huP1fukVq45DKLWWFOR6vHiYGDk4GL6f5yqmoY4MZFnkM+MyqpE7vUtU8V59WcCd29pC8+B5nQJhA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=UecLnoXflpW4/2ptE9LcV5IrAn2GDBIWUROR/ayI6h4=;
- b=WLM0vQrb95tzfrx5374w9ItxUkh/D46P+R/gKVQlSSTkMa/DYHHPlBIzD+Cl200AF08NZhGVm6seRTNsgPH99WXjEVFIgcMwDHC250PzK/kGJXtFtg/MjoPKNXNjl2x3/kyxWMrThE6xDnwCxFLNVEwG69bA56EyzeMsfyoY5ouprXaxTUqv4CumaZf1jSr2CmEKDu9vCUf5QuSFUPW6/n0F0MsDPJjAgwwGIm6eQbx1vPEZ52nG5qEiA8CwmzFhE36KwLsSml1i11zZOASjdRmOOEP5qmmJgbxAQaM0do2fvMXzfVjqrWxpUPasAtdHvluQxTDWbXIGCXTmTeoNjQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
+        Sun, 7 Feb 2021 09:09:58 -0500
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4F26C06174A
+        for <linux-kernel@vger.kernel.org>; Sun,  7 Feb 2021 06:09:09 -0800 (PST)
+Received: by mail-lf1-x12c.google.com with SMTP id f23so1017565lfk.9
+        for <linux-kernel@vger.kernel.org>; Sun, 07 Feb 2021 06:09:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=UecLnoXflpW4/2ptE9LcV5IrAn2GDBIWUROR/ayI6h4=;
- b=lh9OadzbGN/Fm/vsWpSJS6gfManZ2hIJUkdf+bQL4KoEkPZR9KIJHNcSVbZv+ZcQXetk9nyo8Ar/qQ8IoUTvKrmzDNZGROcaDIHJncLzA12sQDTUGQl7L/wwtDdcNxAEVSpF2fa9PqmD/dU10yDxBx8O9QVEiR74WOuW0T4lmE8=
-Received: from DM6PR04MB6575.namprd04.prod.outlook.com (2603:10b6:5:1b7::7) by
- DM6PR04MB6969.namprd04.prod.outlook.com (2603:10b6:5:240::20) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3825.27; Sun, 7 Feb 2021 14:07:11 +0000
-Received: from DM6PR04MB6575.namprd04.prod.outlook.com
- ([fe80::e824:f31b:38cf:ef66]) by DM6PR04MB6575.namprd04.prod.outlook.com
- ([fe80::e824:f31b:38cf:ef66%4]) with mapi id 15.20.3825.030; Sun, 7 Feb 2021
- 14:07:11 +0000
-From:   Avri Altman <Avri.Altman@wdc.com>
-To:     Bean Huo <huobean@gmail.com>,
-        "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        Bart Van Assche <bvanassche@acm.org>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Daejun Park <daejun7.park@samsung.com>,
-        "alim.akhtar@samsung.com" <alim.akhtar@samsung.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        Zang Leigang <zangleigang@hisilicon.com>,
-        Avi Shchislowski <Avi.Shchislowski@wdc.com>,
-        Bean Huo <beanhuo@micron.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>
-Subject: RE: [PATCH v2 0/9] Add Host control mode to HPB
-Thread-Topic: [PATCH v2 0/9] Add Host control mode to HPB
-Thread-Index: AQHW+T2pDR5iHBOyAEKwD+lDN07qHapJc8gAgAAB84CAA0efoA==
-Date:   Sun, 7 Feb 2021 14:07:11 +0000
-Message-ID: <DM6PR04MB6575FA76F94CA00F9804642DFCB09@DM6PR04MB6575.namprd04.prod.outlook.com>
-References: <20210202083007.104050-1-avri.altman@wdc.com>
-         <ec32248a3e56eef83744cd4844210d347add27d3.camel@gmail.com>
- <304cb44c67dc1d5fe081ea4450823c1c3b456284.camel@gmail.com>
-In-Reply-To: <304cb44c67dc1d5fe081ea4450823c1c3b456284.camel@gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [212.25.79.133]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 5f8e986d-1335-4332-033b-08d8cb71a9f3
-x-ms-traffictypediagnostic: DM6PR04MB6969:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DM6PR04MB69692324179DA2347E22380AFCB09@DM6PR04MB6969.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 5cgF3BzBTrNaG2gAEnI9Bz5GrAksLhr1FoZ48d7MpreReVmue7UnBYP+3DVe1VORMDDkkxIdx2qhxD8gyKY/QD9ttRuGy81v83CP/S2Z3d5/tD1+zglNyhRenlICzaIyHA0ZSQBAfJ+a0R4d+Na4nnByUsulyzA8p7QxDGiuATduAqms25bbw/ersRptAXG/rvmIT8qJjRyc9ClieMVfmEAmUePYpM0bVc7MdcTO7Yx5VtWeYUgpq9J0ne2QhX0e6ZenF7cOgyB6b1+uPH4nAVLFBQXQQ5IpLnwXhygN1wBoULhegucCX72Tv12XAop3q7Vf2gGMd2xMi2JN74IwKzsv9keIAh+tPqor/eIIjhgraZ2B1ml608O9ax6Jh129GdGjvOW/7rg0ZfOrnwu+nmFq8/Lllk3VziSr2ysy/9UUywdic7iZql6zaPuzO/fFkIID5w6BWBsNBC13JLwL3p4bcB5VECXa2VLp2FPLvQ78cwl+m5yBi67VoAj8qUsytd/K19fLOOeURS2JGLnu7g==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR04MB6575.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(376002)(346002)(136003)(39860400002)(366004)(316002)(33656002)(2906002)(186003)(7416002)(8936002)(8676002)(9686003)(83380400001)(55016002)(54906003)(52536014)(5660300002)(26005)(71200400001)(110136005)(478600001)(4326008)(6506007)(66946007)(7696005)(66556008)(66476007)(66446008)(64756008)(76116006)(86362001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?cTllaWdFZDZuUzA5Yy8yOUk1YngvT0ZzUi96ZUdja1pQMTE5YTJILzZNTGNP?=
- =?utf-8?B?MDBoaHgxb3p2QVJIRERHeWsxN2ZpamFOaVdaRlljVEprcG5nT2plMStyNUtJ?=
- =?utf-8?B?LzZ1S2toWEkvT29tMXdNSFBXeTFXUlJGS09VUWxnRE9lRW9yQ2NNanRONDlS?=
- =?utf-8?B?eWRnNW5YY1plYjdIV1l3MDR3TmZkWCttcFQwNmdaZ3RRRktmNFI3c1Uyc1hP?=
- =?utf-8?B?a24yQnEzdG05bTBqMzZYZUlDc3I0R05JMi93TjMwMVV6b1JxYmM4RFBmQjh3?=
- =?utf-8?B?dlZQY0VOVUtaaGd5NENiNmFFNjY2T3dBaWoxZWVQejN1SkhPWGljMTZJV1k1?=
- =?utf-8?B?VWtjdTYwbEN3N3JnWWxjaTFVZUxzRU5wb1RYQUtEYlhjbTcxUHRUQTYrZFA4?=
- =?utf-8?B?KzhvNy95SUcxMUhMVzVwRHlvTy9WUm1nNW5LM011RTFDZTlTY2FrdU9IQUlm?=
- =?utf-8?B?R3NFVWhLUHFVQmpscnJqeTNsWnpzVS9OSXR6d0lJR2ZBdFBQQmQ4SVMvQnNY?=
- =?utf-8?B?bllZcW96STFQYmxOMHNnZ2w0bis0THF2a05xYk15VDhzMnFGTENmWDZHK2g0?=
- =?utf-8?B?aGJZZjJaTTAzMmw5TEo5dVlwa29zeWRBbUJhaXdVQXY5Z3VCSTViQmtYZGhV?=
- =?utf-8?B?RHJhT3pTVnFISHl2OGhrTHBRRDFEUVc5cHRwWjZLWUtTUVoxaXpNck5Pb2Fw?=
- =?utf-8?B?eVZsVXVjTGlvRnFGc0ZGSXZmZUt6Mm4rL0d0SjFJRXRycFhWa3YxU3R3a2ps?=
- =?utf-8?B?NFZlbFU0cCtiUW1qZ3J5WFFyK0hWYng5ZFhuQ1A1QVE2a0ZZWmtrUmJOajFs?=
- =?utf-8?B?V3FoUXE0VUxQTkhKdDhRK0RYZ1dCQXluY2ZXUWpVMDZFRXNIeUVTcWkrV1RT?=
- =?utf-8?B?c0Y2QkU2ckJZUmxiMVE2R0dvOGVKb1ZQbTZsZGF4N0V3ck9abFRXRGFCNmlD?=
- =?utf-8?B?UzVDaXN4Q1BpZVVVTC9sNmloUkcyaUY4YTJGdTBSTSs2RjFtSHF6QWpkU0Q2?=
- =?utf-8?B?T2V3ZjBLb0FQK3VEZDlISDVIQ0tiUW4vNXF4bjZVcm5qd1htS2tvRmV5ZzJJ?=
- =?utf-8?B?UDN6TDU4Y3RoK3RtZ01NRWsxVmliKzZIUTc1ckhPY0tHUzBwSE9pcTI3QWlp?=
- =?utf-8?B?TkNWZ1hua3l4N2xUT2ttS2ZuUUdBd25NdGpvcW1LMVVPczRSTy9DRWlqd2oz?=
- =?utf-8?B?Q1lGdUNPYmZPWnVoeFQ2MlQyYytMdXVaV0prRnNRZ3doazBlbEdnVE9LVDU3?=
- =?utf-8?B?aVZNeURuQmhSbVpMVDQwdVNyR2VyeE1rM2N1RjhDb3dmUXExN0pCMmZoTitG?=
- =?utf-8?B?c2RuaGRLK1RmU2hSN05Rc0VUZ2RlRE5XT3JleXZTL2UwQWhndDRCM3dYaTNL?=
- =?utf-8?B?NFlqazZBMUx5bDVFeVA3aWlBRlozbkVNblJHYjd1dHVNZTRRSkY1V0lOT0NM?=
- =?utf-8?B?VmFJcm1PZjNtTmdSU3ZmaFZDay9GMk90QlovVFpGN2R6OThHa1NheDZhaXB1?=
- =?utf-8?B?QjdmMjlkK2Z4WXg3NjVLTjV6RmRTSXFGUmdaUEZGMllhQVFBMDlIYzBhNDM3?=
- =?utf-8?B?cWNBZFNwRmIxY0JvNlN5UGtDdCtWTU42T0QzcW4yam92end2THhzcm1EN2Zu?=
- =?utf-8?B?eGJXTXFuRG5NZklpcnJNd2t1NU9hejBaTWRCem82bGp1WkVOMmp4bGFNTlB0?=
- =?utf-8?B?SlFsWWlKakpzTUh0WGcvVnlWZVkrakZmTGYyanhiS0lnVnc5d2ZOZFgvSGkr?=
- =?utf-8?Q?d23f1pkN6g8TNsvpzR+1Wdpmuk0FFai1tGt8eXm?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=3WGdnPvISs64NeCdwfew7cl4A+lVQsglEqZAL7qKKck=;
+        b=N/K1mbr7vtBj7ZjjCa7b5P7eXXnKKs+HjGZDu4xkzSHwBTzUxYIArRUoIfj+qxNdnS
+         w6UmMXkFIKBjjMXa+5VXwOUC/34D20hKZ5bU3LJ/LEjPvNb5u2xHSEDIpn4JMM18xMlj
+         0BIrrEHC5Z7wABsWF+dA38XofrThWLr1vNnRIt8hkMUBBblLJczgMhill0T9OkJP5O7v
+         d3e1XrIB7QPCTUEQ+P701I818w8qgbH2g4m/7NTOdmUURU62qnYfoDi9UU+LXtyZjR2I
+         e+H38//N/BO2Qnfq6Bh7u/cQFT10O2UtA87NHF2z98qQmainwT9MHa+7pt0RwNIsZJgc
+         Dgaw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=3WGdnPvISs64NeCdwfew7cl4A+lVQsglEqZAL7qKKck=;
+        b=dd7iTci33BVpzgICJ8JD3fQH6v2gfbEr6P12yrwfpITtjtEiZFyIm5u2sbvxLG4Ui3
+         9rUMs+orWQpS5A7XmadBSuw3G2sfkNYNAZoFVas1NpZfjKpTISMyftcEpE/mIW/JwwjL
+         S6sUVddMDgN7Syh4VHdxTGeX/fz35m2hiNd7KgDhZALRA6DRREdIDBD6M2Jalhjx/I4N
+         eMJRXPhe2lFrFAwB18NGyWti9qmLLwn0irNDfZphjvKmdHR0qbdCP05GkuyDVnLgnsWE
+         Wx4Su8OYTPcXfHNci5x9IiGpLeqW4mRvJ8EWGcxd0qm7Fx4V28cGCDR8sDMSVC4SOAow
+         MNEw==
+X-Gm-Message-State: AOAM533Mub5ibliyzC9Nhu6Qzp4dm1Qib0l43GECUIRWVtFI2ddZQVwi
+        Z5aIM7fHfEF6650YPlASCx/dqg==
+X-Google-Smtp-Source: ABdhPJwXp/oy+V9Wswzmu/s94NDp417EvomnDa9nyhb8+7f+CoIzFtqIvBCuwa0s2sOkvmdAbytoaA==
+X-Received: by 2002:a19:ac08:: with SMTP id g8mr319535lfc.428.1612706947859;
+        Sun, 07 Feb 2021 06:09:07 -0800 (PST)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id d15sm1705266lfm.183.2021.02.07.06.09.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 07 Feb 2021 06:09:07 -0800 (PST)
+Received: by box.localdomain (Postfix, from userid 1000)
+        id A6568102656; Sun,  7 Feb 2021 17:09:06 +0300 (+03)
+Date:   Sun, 7 Feb 2021 17:09:06 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     "H.J. Lu" <hjl.tools@gmail.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Andi Kleen <ak@linux.intel.com>,
+        Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        GNU C Library <libc-alpha@sourceware.org>,
+        GCC Development <gcc@gcc.gnu.org>
+Subject: Re: [RFC 9/9] x86/mm: Implement PR_SET/GET_TAGGED_ADDR_CTRL with LAM
+Message-ID: <20210207140906.hdfzorevpmiqtryd@box>
+References: <20210205151631.43511-1-kirill.shutemov@linux.intel.com>
+ <20210205151631.43511-11-kirill.shutemov@linux.intel.com>
+ <CAMe9rOrhPNs7WZa7DquEQf_YN4XyeDZC5u3XC7MBDija3ic3+Q@mail.gmail.com>
+ <CACT4Y+b3jpjnWeDeUmn8TZ6KvQCu3riip0R07JjNwiOjsRYy6w@mail.gmail.com>
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR04MB6575.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5f8e986d-1335-4332-033b-08d8cb71a9f3
-X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Feb 2021 14:07:11.4111
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: UAm4pI56879/v+618tJbxvqSq/Ad5DSjIlms39bRfMLB5xDlvQ9Ny5m6/cEHFl0GbL/gl05sQEaeaprula+9CQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR04MB6969
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACT4Y+b3jpjnWeDeUmn8TZ6KvQCu3riip0R07JjNwiOjsRYy6w@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgQmVhbiwNCiANCj4gSW4gYWRkaXRpb24gdG8gdGhlIGFib3ZlIGFkdmFudGFnZSBvZiBIUEIg
-Imhvc3QgY29udHJvbCBtb2RlIiwgd291bGQNCj4geW91IHBsZWFzZSBzaGFyZSB0aGUgcGVyZm9y
-bWFuY2UgY29tcGFyaXNvbiBkYXRhIHdpdGggImRldmljZSBjb250cm9sDQo+IG1vZGUiPyB0aGF0
-IHdpbGwgZHJhdyBtb3JlIGF0dGVudGlvbiwgc2luY2UgeW91IG1lbnRpb25lZCAieW91IHRlc3Rl
-ZA0KPiBvbiBHYWxheHkgUzIwLCBhbmQgWGlhb21pIE1pMTAgcHJvIiwgSSB0aGluayB5b3UgaGF2
-ZSB0aGlzIGtpbmQgb2YNCj4gZGF0YS4NCj4gDQo+IFlvdXIgSFBCICJob3N0IGNvbnRyb2wgbW9k
-ZSIgZHJpdmVyIHNpdHMgaW4gdGhlIHVmcyBkcml2ZXIuIFNpbmNlIG15DQo+IEhQQiAiaG9zdCBj
-b250cm9sIG1vZGUiIGRyaXZlciBpcyBhbHNvIGltcGxlbWVudGVkIGluIHRoZSBVRlMgZHJpdmVy
-DQo+IGxheWVyLCBJIGRpZCB0ZXN0IG15IEhQQiBkcml2ZXIgYmV0d2VlbiBkZXZpY2UgbW9kZSBh
-bmQgaG9zdCBtb2RlLiBTYXcNCj4gVUZTIEhQQiAiaG9zdCBjb250cm9sIG1vZGUiIGRyaXZlciBo
-YXMgcGVyZm9ybWFuY2UgZ2FpbiBjb21wYXJpbmcgdG8NCj4gSFBCICJkZXZpY2UgY29udHJvbCBt
-b2RlIiBkcml2ZXIsIGJ1dCBub3Qgc2lnbmlmaWNhbnQuIElmIHlvdSBjYW4gc2hhcmUNCj4geW91
-ciBIUEIgaG9zdCBjb250cm9sIG1vZGUgZHJ2aXZlciBkYXRhLCB0aGF0IHdpbGwgYmUgYXdlc29t
-ZS4NCkhvc3QgY29udHJvbCBtb2RlIHdhc24ndCBzdGFuZGFyZGl6ZWQgdG8gb3ZlcmNvbWUgZGV2
-aWNlIG1vZGUgcGVyZm9ybWFuY2UuDQpJbnN0ZWFkLCBob3N0IGNvbnRyb2wgbW9kZSwgZW50YWls
-cyBzZXZlcmFsIGFkdmFudGFnZXMgY29tcGFyaW5nIHRvIGRldmljZSBjb250cm9sIG1vZGU6DQot
-IEFsbG93IE9FTSB2ZW5kb3JzIHRvIGhhdmUgYSB1bmlmaWVkIEhQQiBhcHByb2FjaCwgd2l0aCBt
-aW5vciB0byBudWxsIHBlcmZvcm1hbmNlIHZvbGF0aWxpdHkgYWNyb3NzIGRpZmZlcmVudCBzdG9y
-YWdlIHZlbmRvcnMNCi0gRmxleGlibGUgYW5kIHRyYW5zcGFyZW50IGxvZ2ljIHdoaWNoIGRvZXNu
-4oCZdCByZXF1aXJlcyBkZXZpY2UgZmlybXdhcmUgY2hhbmdlcy4NCkhlbmNlLCB0aGUgZGlzY3Vz
-c2lvbiBvZiBob3N0LWNvbnRyb2wgdnMgZGV2aWNlIGNvbnRyb2wgcGVyZm9ybWFuY2UgZ2FpbiBp
-cyBjaGFzaW5nIHRoZSByZWQgaGVycmluZy4NCg0KVGhhbmtzLA0KQXZyaQ0KDQoNCg0K
+On Sun, Feb 07, 2021 at 09:07:02AM +0100, Dmitry Vyukov wrote:
+> On Fri, Feb 5, 2021 at 4:43 PM H.J. Lu <hjl.tools@gmail.com> wrote:
+> >
+> > On Fri, Feb 5, 2021 at 7:16 AM Kirill A. Shutemov
+> > <kirill.shutemov@linux.intel.com> wrote:
+> > >
+> > > Provide prctl() interface to enabled LAM for user addresses. Depending
+> > > how many tag bits requested it may result in enabling LAM_U57 or
+> > > LAM_U48.
+> >
+> > I prefer the alternate kernel interface based on CET arch_prctl interface which
+> > is implemented in glibc on users/intel/lam/master branch:
+> >
+> > https://gitlab.com/x86-glibc/glibc/-/tree/users/intel/lam/master
+> >
+> > and in GCC on users/intel/lam/master branch:
+> >
+> > https://gitlab.com/x86-gcc/gcc/-/tree/users/intel/lam/master
+> 
+> Hi Kirill, H.J.,
+> 
+> I don't have strong preference for PR_SET/GET_TAGGED_ADDR_CTRL vs
+> ARCH_X86_FEATURE_1_ENABLE itself, but tying LAM to ELF and
+> GNU_PROPERTY in the second option looks strange. LAM can be used
+> outside of ELF/GNU, right?
+
+Sure. In both cases it's still a syscall.
+
+-- 
+ Kirill A. Shutemov
