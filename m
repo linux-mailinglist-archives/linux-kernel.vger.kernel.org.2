@@ -2,138 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 382AE312486
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 14:13:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF24731248D
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 14:29:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229979AbhBGNMr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Feb 2021 08:12:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57334 "EHLO
+        id S229839AbhBGN2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Feb 2021 08:28:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229872AbhBGNMo (ORCPT
+        with ESMTP id S229565AbhBGN2g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Feb 2021 08:12:44 -0500
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 961ECC061756
-        for <linux-kernel@vger.kernel.org>; Sun,  7 Feb 2021 05:12:03 -0800 (PST)
-Received: by mail-wm1-x331.google.com with SMTP id j21so7938215wmj.0
-        for <linux-kernel@vger.kernel.org>; Sun, 07 Feb 2021 05:12:03 -0800 (PST)
+        Sun, 7 Feb 2021 08:28:36 -0500
+Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A2C3C06174A
+        for <linux-kernel@vger.kernel.org>; Sun,  7 Feb 2021 05:27:56 -0800 (PST)
+Received: by mail-yb1-xb43.google.com with SMTP id w204so11900897ybg.2
+        for <linux-kernel@vger.kernel.org>; Sun, 07 Feb 2021 05:27:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SISOIgfsxj2z8VwmMOujp6fXedz5KiEYfI9wSyDzvC8=;
-        b=P4s3pEQ6IBAC6p0W66KZ+YpQoB5L/STEiRT+HpSEyF8a4Buf+uBGMK7hwg0OHQWXiM
-         lBfFugB60Ha4/KFYLslXclnx8NAAklo67yXfAe2C/qBcvL4yC93g4AykYrRB+xOwVWKf
-         twHkNJvemF8Nqf+B2fpW79VF5NNHtEKgr5gYt98/qKJVza5AfEi4YSMM7KJZPUszSpGr
-         MXUpFbk4StecqD7EIHJUGgclHLXsP+qIxe1gQ4UfW0BY0GifGGBS69M8LdW5iJjWH7lH
-         xNzqbmy3KKWUj288/cJG9mLMBVL1+PCZN+0bsHs6mbIVjMlA957YCPc3iHkksjr810qt
-         JlHg==
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=tc1wa4UN4Ph/eXyA+xklM2q8VGTILW896ODKnpAVCBM=;
+        b=GyIsYeJxRwkGsfvxjl1rJ9m2wEfqseI0dZCMK3K9SuFs/A4XuOKOCq0xXZMKO4+L1i
+         QO645J7B3rxqmrDFN3MRYl76qyi17JP+xmAajoTiNRP2fDrBvXq0n7MJWbLMtQ74L5be
+         QPlW3OsWX2WJptk82KFVrPRLlcdI0pLRAZGDrHJyJt/Y+IvL51PyAmN7XzUq/oUcL9Rk
+         Z0iR1i/ITfhz70/JX2HMEAEYnX67955+CIpMzqpYhWeqD6qxMZVIYVxYiG816F5Q33UT
+         VyCmTaZ6LkO4Q1htM5itSQQNYGn79L4C4yCYEi4q9JwskhA/Wme77hLNeRvE6WeRKehC
+         Ak0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SISOIgfsxj2z8VwmMOujp6fXedz5KiEYfI9wSyDzvC8=;
-        b=VP2STc5yM7LfoU40LFGlUlR4xYBYLKf/C+/9HvjzJPctj7tbJgRwqJ2plosTHWvrUy
-         rwKcZKR1RdDnClLS6uUoko4x0HuNyR/EuYUR0UgdQPdN/9vdtnqtBFddP9GoXYO4VXPK
-         PZQmb4N8p1qMad0dYh+6d4Yqv5GRW0R/8rVDuhihKXEXcjY+VPxisYjoWer1PW+8itLS
-         axKT0kH/cBBZeoT1k9XmxYQSAzCnblkP+viLAVFIosYEZ/UHHlcMzOn54MAjuvHLLVnK
-         lnlU1N5apo1ClgT76Yx63g8qzv7FOBgKHcnXaMqPvvHTF2l2098TG8hNmAbbfTEJ3mC+
-         XZgA==
-X-Gm-Message-State: AOAM530udIJfvSSEyIqHs+TDWyAU5Pj63N45R2cQLlOpjEcwso6FHgTc
-        giAnlUMjfVAdBECEQGU+QTcfJfCQO8uRvHT0dmo=
-X-Google-Smtp-Source: ABdhPJzrZkHSlk4UmOBS7bvvUDYA/pEdWgg29Eivq3vpuXVWIHbEegYiV+Lm3MJjh0Saph3nqKpZfT3zj9L3CAEKEYY=
-X-Received: by 2002:a1c:105:: with SMTP id 5mr11054556wmb.89.1612703522329;
- Sun, 07 Feb 2021 05:12:02 -0800 (PST)
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=tc1wa4UN4Ph/eXyA+xklM2q8VGTILW896ODKnpAVCBM=;
+        b=Oe/733u1JuADSzl2urQVqMaSCiTEKO00OXpcNM3n87g9zjjRmiDfU1NYdRDg1WBRio
+         kCJf+OCj8xKpqlBL7si7STSJm0yTBlPyBK1revaQAKSOBmUT5Y6ohMio8g0t1sREZR6u
+         mmzXxcoazkEZMeKg6NM++rpoPoMHX8X71nkWBJHRdOwHqK61ldsyABIVqW7VtdTZRJ99
+         3aUW+j/vCMdejZthrCQDnq0lXHUj5PL6SURcoMb5p908NHHPy9idsb189RysJdX1cnNY
+         E3uIwoNFyhoSf2Ew64vsqvZs2xBsPqjzhVYzTH6mDG3G0HCfLaLrjvmXNWbQUVBq78GK
+         QiuA==
+X-Gm-Message-State: AOAM531B4F5U+VvJHxwmgd9DYkW1fSjHfBy1Avq9R0UA9fqlRIPl/mJ7
+        cV0ImLqzxNT09/cbzoHZB+FaolQX/BAC6FGml3A=
+X-Google-Smtp-Source: ABdhPJybypwT+QLrbX9gIXyTC5bZ6tnnbxm3cC4TVj7oReO4AVsMxsINFgWXutX1n2f8LEiW8gZ71cbITzy9PSb5bro=
+X-Received: by 2002:a25:6189:: with SMTP id v131mr4635839ybb.481.1612704475559;
+ Sun, 07 Feb 2021 05:27:55 -0800 (PST)
 MIME-Version: 1.0
-References: <20210127105121.20345-1-lukasz.luba@arm.com> <CAKGbVbsn=xVEa0=c3rywRShVZD18LkmLZ1qDUuDsrT5KnTjr6g@mail.gmail.com>
- <3d1b4696-0172-f88a-f41f-c66ac3baa429@arm.com> <CAKGbVbsuqsGYRqUyWRiC+h9o7kNMvB16-Y6378KG_rv0SG4VDQ@mail.gmail.com>
- <aab9c140-155e-894f-5b7d-749396a388fc@arm.com> <CAKGbVbvTzmj=3tAyNyDRU8autb+de8R9dc6ohBTuM5miJV4cWg@mail.gmail.com>
- <0afa6299-1c35-ab98-702e-8dcd168bcaac@arm.com> <deb2c075-4177-d487-b1cd-1c60790ca625@arm.com>
-In-Reply-To: <deb2c075-4177-d487-b1cd-1c60790ca625@arm.com>
-From:   Qiang Yu <yuq825@gmail.com>
-Date:   Sun, 7 Feb 2021 21:11:51 +0800
-Message-ID: <CAKGbVbvwQJxdM9d1oTgCC+dfppGBCbfA3r6hG24N2zMjmWo5sQ@mail.gmail.com>
-Subject: Re: [PATCH] drm/lima: Use delayed timer as default in devfreq profile
-To:     Lukasz Luba <lukasz.luba@arm.com>
-Cc:     Robin Murphy <robin.murphy@arm.com>, lima@lists.freedesktop.org,
-        David Airlie <airlied@linux.ie>,
-        Christian Hewitt <christianshewitt@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>
+Received: by 2002:a05:7110:808c:b029:31:979a:3050 with HTTP; Sun, 7 Feb 2021
+ 05:27:55 -0800 (PST)
+Reply-To: abdoul.hassan01@gmail.com
+From:   Mr Abdoul hassan <maho.issa02@gmail.com>
+Date:   Sun, 7 Feb 2021 05:27:55 -0800
+Message-ID: <CACBryDRBVFPtGXQWGkxTy7V88_owEM4iLg9tSs-DWdWjRa7H5g@mail.gmail.com>
+Subject: I want to seek your assistance
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied to drm-misc-next.
+--=20
+Dear Friend,
+I am Mr Abdoul Hassan. I am working with one of the prime banks in
+Burkina Faso. I have a business proposal which concerns the transfer
+of.of Twenty Two Million and Five Hundred Thousand united state
+dollars ($22.500 000mUSD).into a foreign account. Everything about
+this transaction shall be legally done without any problem. If you are
+interested to help me, I will give you more details as soon as I
+receive your positive response.If you are willing to work with me,
+send me immediately the information listed below.
 
-Regards,
-Qiang
-
-On Thu, Feb 4, 2021 at 10:24 PM Lukasz Luba <lukasz.luba@arm.com> wrote:
->
->
->
-> On 2/4/21 1:39 PM, Robin Murphy wrote:
-> > On 2021-02-03 02:01, Qiang Yu wrote:
-> >> On Tue, Feb 2, 2021 at 10:02 PM Lukasz Luba <lukasz.luba@arm.com> wrote:
-> >>>
-> >>>
-> >>>
-> >>> On 2/2/21 1:01 AM, Qiang Yu wrote:
-> >>>> Hi Lukasz,
-> >>>>
-> >>>> Thanks for the explanation. So the deferred timer option makes a
-> >>>> mistake that
-> >>>> when GPU goes from idle to busy for only one poll periodic, in this
-> >>>> case 50ms, right?
-> >>>
-> >>> Not exactly. Driver sets the polling interval to 50ms (in this case)
-> >>> because it needs ~3-frame average load (in 60fps). I have discovered the
-> >>> issue quite recently that on systems with 2 CPUs or more, the devfreq
-> >>> core is not monitoring the devices even for seconds. Therefore, we might
-> >>> end up with quite big amount of work that GPU is doing, but we don't
-> >>> know about it. Devfreq core didn't check <- timer didn't fired. Then
-> >>> suddenly that CPU, which had the deferred timer registered last time,
-> >>> is waking up and timer triggers to check our device. We get the stats,
-> >>> but they might be showing load from 1sec not 50ms. We feed them into
-> >>> governor. Governor sees the new load, but was tested and configured for
-> >>> 50ms, so it might try to rise the frequency to max. The GPU work might
-> >>> be already lower and there is no need for such freq. Then the CPU goes
-> >>> idle again, so no devfreq core check for next e.g. 1sec, but the
-> >>> frequency stays at max OPP and we burn power.
-> >>>
-> >>> So, it's completely unreliable. We might stuck at min frequency and
-> >>> suffer the frame drops, or sometimes stuck to max freq and burn more
-> >>> power when there is no such need.
-> >>>
-> >>> Similar for thermal governor, which is confused by this old stats and
-> >>> long period stats, longer than 50ms.
-> >>>
-> >>> Stats from last e.g. ~1sec tells you nothing about real recent GPU
-> >>> workload.
-> >> Oh, right, I missed this case.
-> >>
-> >>>
-> >>>> But delayed timer will wakeup CPU every 50ms even when system is
-> >>>> idle, will this
-> >>>> cause more power consumption for the case like phone suspend?
-> >>>
-> >>> No, in case of phone suspend it won't increase the power consumption.
-> >>> The device won't be woken up, it will stay in suspend.
-> >> I mean the CPU is waked up frequently by timer when phone suspend,
-> >> not the whole device (like the display).
-> >>
-> >> Seems it's better to have deferred timer when device is suspended for
-> >> power saving,
-> >> and delayed timer when device in working state. User knows this and
-> >> can use sysfs
-> >> to change it.
-> >
-> > Doesn't devfreq_suspend_device() already cancel any timer work either
-> > way in that case?
->
-> Correct, the governor should pause the monitoring mechanism (and timer).
->
-> Regards,
-> Lukasz
+Your   Name=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6
+Your   Nationality=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6
+Your  Age=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6=E2=
+=80=A6
+Your  Occupation=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6
+Your Mobile Telephone Line=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6
+Your Address=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6=
+=E2=80=A6=E2=80=A6=E2=80=A6
+Thanks
+Best regards,
+Mr Abdoul Hassan
+abdoul.hassan01@gmail.com
