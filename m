@@ -2,80 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE1E73120DC
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 03:22:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14C383120E2
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 03:25:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229651AbhBGCVW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Feb 2021 21:21:22 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:12079 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229562AbhBGCVT (ORCPT
+        id S229626AbhBGCYm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Feb 2021 21:24:42 -0500
+Received: from mail-pg1-f169.google.com ([209.85.215.169]:41687 "EHLO
+        mail-pg1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229522AbhBGCYj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Feb 2021 21:21:19 -0500
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DYCWY749czMWBZ;
-        Sun,  7 Feb 2021 10:18:49 +0800 (CST)
-Received: from [10.174.179.149] (10.174.179.149) by
- DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
- 14.3.498.0; Sun, 7 Feb 2021 10:20:28 +0800
-Subject: Re: [PATCH] mm/hugetlb: use helper huge_page_size() to simplify the
- hugetlb_vm_op_pagesize()
-To:     David Hildenbrand <david@redhat.com>, <akpm@linux-foundation.org>,
-        <mike.kravetz@oracle.com>
-CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
-References: <20210205092209.16024-1-linmiaohe@huawei.com>
- <2743477c-a256-0295-884d-5354c634508d@redhat.com>
-From:   Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <82eecd04-c669-7697-a593-30aedae94a3b@huawei.com>
-Date:   Sun, 7 Feb 2021 10:20:27 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Sat, 6 Feb 2021 21:24:39 -0500
+Received: by mail-pg1-f169.google.com with SMTP id t11so4288420pgu.8;
+        Sat, 06 Feb 2021 18:24:24 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=DV9HHj90/6CU2obG3fOkTfyceXYyBSjTuvrMdoSYT4c=;
+        b=iFvJ7bz/qRVsOZ33D9VbVw483HO+57AL+eyl8ykEpYGpwR3MxD3TsC+PesBsv4n5cx
+         TQBHuoUcB6tB4ZRvRcKun4ooCgBqayzsbFBPk/z/R+fdHyS9rOdCkLdxBawWn7HHs/QY
+         O+StKcOyl39yofzsgbfUsEhicUec7LunrHkLfQA9qjxGEvqfG4Ah9IPXqwuyIKOxqhCx
+         aBrbOmG0UN8sk+AIHK5plE2F+3gAJp8dfP7QJjdb5lBW9ulRZxR9qz1rrsN2Qm4XAV/t
+         bPyxRfIgmNUT5BQQ1QxsizesmjPz9nWYDCE2LaS/Kfa2RXFBPsBPN670yN/zDWIMspzT
+         OCHQ==
+X-Gm-Message-State: AOAM530RHMtFvMhJlFWhAldCIqLRjDLe+eE2Kn6wjTr4Lpo2/+cdzGFQ
+        bTmBeHll9xK/jCcReAyVLrVaHPBlyrc=
+X-Google-Smtp-Source: ABdhPJwtnw8SZQ2wx4sc+xxcjWnCOja9n0ib3wtDBNghEuUST9w/8PrNn78lYbXSNr7Is/+5IHj/4Q==
+X-Received: by 2002:a62:ab16:0:b029:1bd:9bdc:2459 with SMTP id p22-20020a62ab160000b02901bd9bdc2459mr11980992pff.19.1612664638483;
+        Sat, 06 Feb 2021 18:23:58 -0800 (PST)
+Received: from ?IPv6:2601:647:4000:d7:7d2:d17b:df07:7747? ([2601:647:4000:d7:7d2:d17b:df07:7747])
+        by smtp.gmail.com with ESMTPSA id c15sm7748482pjc.9.2021.02.06.18.23.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 06 Feb 2021 18:23:57 -0800 (PST)
+Subject: Re: [RFC PATCH v1 1/2] block: bsg: resume scsi device before
+ accessing
+To:     Asutosh Das <asutoshd@codeaurora.org>, cang@codeaurora.org,
+        martin.petersen@oracle.com, linux-scsi@vger.kernel.org
+Cc:     linux-arm-msm@vger.kernel.org, stern@rowland.harvard.edu,
+        "Bao D . Nguyen" <nguyenb@codeaurora.org>,
+        FUJITA Tomonori <fujita.tomonori@lab.ntt.co.jp>,
+        Jens Axboe <axboe@kernel.dk>,
+        "open list:BLOCK LAYER" <linux-block@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <cover.1611719814.git.asutoshd@codeaurora.org>
+ <c04a11a590628c2497cef113b0dfea781de90416.1611719814.git.asutoshd@codeaurora.org>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <f83e890d-61b9-e428-6289-b7268fbe7e01@acm.org>
+Date:   Sat, 6 Feb 2021 18:23:55 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-In-Reply-To: <2743477c-a256-0295-884d-5354c634508d@redhat.com>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <c04a11a590628c2497cef113b0dfea781de90416.1611719814.git.asutoshd@codeaurora.org>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.179.149]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/2/6 0:12, David Hildenbrand wrote:
-> On 05.02.21 10:22, Miaohe Lin wrote:
->> We can use helper huge_page_size() to get the size of the pages allocated
->> when backing a VMA directly to make the code more simplified.
->>
->> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
->> ---
->>   mm/hugetlb.c | 4 +---
->>   1 file changed, 1 insertion(+), 3 deletions(-)
->>
->> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
->> index 18628f8dbfb0..3eea2a34d9f5 100644
->> --- a/mm/hugetlb.c
->> +++ b/mm/hugetlb.c
->> @@ -3647,9 +3647,7 @@ static int hugetlb_vm_op_split(struct vm_area_struct *vma, unsigned long addr)
->>     static unsigned long hugetlb_vm_op_pagesize(struct vm_area_struct *vma)
->>   {
->> -    struct hstate *hstate = hstate_vma(vma);
->> -
->> -    return 1UL << huge_page_shift(hstate);
->> +    return huge_page_size(hstate_vma(vma));
->>   }
+On 1/26/21 8:00 PM, Asutosh Das wrote:
+> Resumes the scsi device before accessing it.
 > 
-> Maybe it makes sense to squash all of these individual patches you send that do the same things/perform the same cleanups. Shouldn't be to hard to identify all these cases using simple "git grep".
-> 
+> Change-Id: I2929af60f2a92c89704a582fcdb285d35b429fde
+> Signed-off-by: Asutosh Das <asutoshd@codeaurora.org>
+> Signed-off-by: Can Guo <cang@codeaurora.org>
+> Signed-off-by: Bao D. Nguyen <nguyenb@codeaurora.org>
 
-Many thanks for your advice. I'am studying the mm code and find these cleanups when I come across these code.
-I postponed these cleanups but forgot trying to squash the patches that do the same things. I would try to
-identify all the same cases using "git grep" rather than relying on code review.
+No Change-Id tags in upstream patches please.
 
-> Makes life of reviewers and maintainers easier ...
-> 
+Thanks,
 
-My bad. Sorry.
-
-> 
-
-Thanks again.
+Bart.
