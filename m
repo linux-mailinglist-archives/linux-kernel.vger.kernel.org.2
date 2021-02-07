@@ -2,122 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3504312859
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 00:29:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0806E31285E
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 00:32:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229785AbhBGX3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Feb 2021 18:29:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47556 "EHLO
+        id S229650AbhBGXcJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Feb 2021 18:32:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229797AbhBGX2d (ORCPT
+        with ESMTP id S229590AbhBGXcF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Feb 2021 18:28:33 -0500
-Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C264EC06174A
-        for <linux-kernel@vger.kernel.org>; Sun,  7 Feb 2021 15:27:52 -0800 (PST)
-Received: by mail-qt1-x82d.google.com with SMTP id v3so9245137qtw.4
-        for <linux-kernel@vger.kernel.org>; Sun, 07 Feb 2021 15:27:52 -0800 (PST)
+        Sun, 7 Feb 2021 18:32:05 -0500
+Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89445C06174A;
+        Sun,  7 Feb 2021 15:31:25 -0800 (PST)
+Received: by mail-qk1-x72b.google.com with SMTP id a12so12756674qkh.10;
+        Sun, 07 Feb 2021 15:31:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=u7G/hFOAnHbS4sYv+AEKOoZxVRfU3Rzrd0mY9zx+N9I=;
-        b=V5PqZJ+jJ+LwqgEBUuqUXH/UAqX9a1Sd527G0+++w69uzEviEg+if9Jya9YeRWbs3u
-         ZQAB94N1C54R1fc29DLrAaTQZShCWZ2fNH09kmYUAX4ycINJ8Ni5MpyTNGND8YfEduLc
-         9WReRfz3AhaxuUHDCJzi4ym1NYVKuUY0fekl9z30mEGpGNdMQ9NX44BvLNmdsJvA52RF
-         5dY3gIW/iTYHfyxeNhp2ohS/rEe7+dfs1pZdA02He4G13Iyag3sg7ZYEp/oXDIexb4vu
-         HadxGo1URcWCBhrfx41TiEySq4cXf5NVUIenyyK/s0IbOTWUyGBrYyTKGSLraKUYCwVM
-         urkw==
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :content-transfer-encoding;
+        bh=o5IhRHEGMqXqh+QGBqGS9tIVGn7/L64cLJSFPIY/AWc=;
+        b=oaXRUPA2F/7aryfPuau3KqPF6FZaskYAxYMUtjXPSU/iaRh+dp3vv/WuM5lHSsOH77
+         K796rEVfqQxzbx7kpzn7bED/l1qsnf/K952NVEG/4Hu8N1ukn65rB5CNWYZkigHXs17B
+         YG4YnsxkHnfnATuIsVrMv7o7kZC73L1tQMQx/wLGfTmHiMQE5HLEX41Wid5z2eLwvatY
+         YDCIG8BhiVTcTji8wVLbtF4McQNOov4L7QmmsE7dOuOBoD/eLN+XucGQ38cshoziwC4U
+         CcWSYNxDJm2UlVrBdYpF+Ebkfy1m1/3mU899InPMB9fOwUzyYYL+GNMDAfUUGRu5VjJf
+         v+hQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=u7G/hFOAnHbS4sYv+AEKOoZxVRfU3Rzrd0mY9zx+N9I=;
-        b=ZumLb7Ce1DVN8A3AMULAK0wF04jgc/9KllkwoWRGm+YDKv/EPDvK/RcweJQet1o0qU
-         DLTtK9jgnTaCeX8EmIhUH/N0uIOD1ipsH552yxT5cQsyCJeKEO1jIRxKwIDfXCniLNRU
-         KPNZ81F4JMK8jQeA8FIvaxA82zJ4aff2UP9F3AHUOtyLDx6soSoZq/SavROeDoEK9dpm
-         OHCCefEwZ5TkCzov4O+eh39k2e1bhT0clTSIlD3TVr/FqfeDzExO3zfNxYQSXGPm1cne
-         juyFBifSjQeVJiDtgWnTGBezHJ3NUaPQ1g2FdeBzBl50H2nhCqGq0i9mq3O2Y+5nhmFf
-         OMCg==
-X-Gm-Message-State: AOAM531iuZvaznUXluYiK0OED+v3HlLdv5mEuF2nuGpynfMIDnkhD0Td
-        Z14r6ohgqwKjpal9sVWVgiw=
-X-Google-Smtp-Source: ABdhPJzwSz6kJ2CYDZOKvNxoAEBMUAd4fTdEtZa6VjRv3yFBdpk+zx3QoVt0TuymUx8chHGd6DTiSA==
-X-Received: by 2002:ac8:5c44:: with SMTP id j4mr13363315qtj.124.1612740472082;
-        Sun, 07 Feb 2021 15:27:52 -0800 (PST)
-Received: from OpenSuse ([156.146.36.180])
-        by smtp.gmail.com with ESMTPSA id r44sm13520853qtb.28.2021.02.07.15.27.48
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:content-transfer-encoding;
+        bh=o5IhRHEGMqXqh+QGBqGS9tIVGn7/L64cLJSFPIY/AWc=;
+        b=nCrlQ4sLAHpTB2MEOlt3qdWxYoamZ1LHqg+HIKLGzHjm1ij1EY89ET8ZC0kGAnLt+u
+         d9DLRuRLo/yuvpXteMePV1qD8bHAZG6SHFhxuDQCIO1DP0jIeHVH5FzJsMnZJ7dMegHw
+         +jT3LFuTAuzTkgdyu4FGfhBJMNHEfjGisaJm4c+20a4QECNB9clLTjffGfaF36TSNiDs
+         SX4VFnxhMB/WoRFNquYMW6HpaQM+1rJOoBoh3BZUqcbJfWp7Q0LEiDPLi9KCTwWcLGZ6
+         6HEmGZRtBHdXIIXe3YqrwvGs9XNG/fjB1cVUWNnMT+5GA8/EDYr9Ptjh7qkrLP/mue/B
+         k+bg==
+X-Gm-Message-State: AOAM533rVOAC4kPnf8cojtsBEYaWBL/BhpRxtn50HAbryd/gurB+/bnL
+        bNtcmoqFXKC3VmuFtnyxg90=
+X-Google-Smtp-Source: ABdhPJwxl0ho6ygvAdO4u+DaD7lks38s9pkwgumfoUrWph/Twl9ejj5QD7qkIjSM5ocHuqPwFjJnHg==
+X-Received: by 2002:a37:a58d:: with SMTP id o135mr14012949qke.204.1612740684640;
+        Sun, 07 Feb 2021 15:31:24 -0800 (PST)
+Received: from arch-chirva.localdomain (pool-68-133-6-116.bflony.fios.verizon.net. [68.133.6.116])
+        by smtp.gmail.com with ESMTPSA id 12sm15494228qkg.39.2021.02.07.15.31.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 07 Feb 2021 15:27:51 -0800 (PST)
-Date:   Mon, 8 Feb 2021 04:57:45 +0530
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     Sedat Dilek <sedat.dilek@gmail.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Kyle Huey <me@kylehuey.com>, linux-kernel@vger.kernel.org
-Subject: Re: [Linux v5.11-rc7] x86: entry: Leftover of _TIF_SINGLESTEP define?
-Message-ID: <YCB3cd/XjYnoOBxE@OpenSuse>
-Mail-Followup-To: Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        Thomas Gleixner <tglx@linutronix.de>, Kyle Huey <me@kylehuey.com>,
-        linux-kernel@vger.kernel.org
-References: <CA+icZUUhzpmoD_XrHtnFUGSpXHrVOTnVG9Q_Tek8oA8isHZe=Q@mail.gmail.com>
+        Sun, 07 Feb 2021 15:31:24 -0800 (PST)
+Date:   Sun, 7 Feb 2021 18:31:22 -0500
+From:   Stuart Little <achirvasub@gmail.com>
+To:     Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Marco Elver <elver@google.com>, Arnd Bergmann <arnd@arndb.de>
+Cc:     linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kasan-dev@googlegroups.com
+Subject: PROBLEM: 5.11.0-rc7 fails to =?utf-8?Q?com?=
+ =?utf-8?Q?pile_with_error=3A_=E2=80=98-mindirect-branch=E2=80=99_and_?=
+ =?utf-8?B?4oCYLWZjZi1wcm90ZWN0aW9u4oCZ?= are not compatible
+Message-ID: <YCB4Sgk5g5B2Nu09@arch-chirva.localdomain>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="5GI/9lfadYPWd2hK"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CA+icZUUhzpmoD_XrHtnFUGSpXHrVOTnVG9Q_Tek8oA8isHZe=Q@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+I am trying to compile on an x86_64 host for a 32-bit system; my config is at
 
---5GI/9lfadYPWd2hK
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
+https://termbin.com/v8jl
 
-On 00:08 Mon 08 Feb 2021, Sedat Dilek wrote:
->Hi,
->
->congrats to Linux v5.11-rc7.
->
->after commit 6342adcaa683 ("entry: Ensure trap after single-step on
->system call return"):
->
->$ git grep '\_TIF_SINGLESTEP' arch/x86/
->arch/x86/include/asm/thread_info.h:#define _TIF_SINGLESTEP
-> (1 << TIF_SINGLESTEP)
->
-Does it failed the build???
+I am getting numerous errors of the form
 
-Just curious??
+./include/linux/kasan-checks.h:17:1: error: ‘-mindirect-branch’ and ‘-fcf-protection’ are not compatible
 
->Is this a leftover and can be removed (now)?
->
->Thanks.
->
->Regards,
->- Sedat -
->
->[1] https://marc.info/?l=linux-kernel&m=161273724611262&w=2
->[2] https://git.kernel.org/linus/6342adcaa683
+and
 
---5GI/9lfadYPWd2hK
-Content-Type: application/pgp-signature; name="signature.asc"
+./include/linux/kcsan-checks.h:143:6: error: ‘-mindirect-branch’ and ‘-fcf-protection’ are not compatible
 
------BEGIN PGP SIGNATURE-----
+and
 
-iQEzBAABCAAdFiEEnwF+nWawchZUPOuwsjqdtxFLKRUFAmAgd3AACgkQsjqdtxFL
-KRWSdggA2+Pm1AGeBFLwT2e4oT0yjC3aKGGN2ElV6OT7AM3S++R3+qind/21Lewr
-IYVuWRTWdayEmnvp7nIUQbquKPXBiuYJ7cHWzpD5jNcd6ejD9C3FaeGTvsGE8XYx
-J80LTSjDtztfAOcUZ/NCHGT7E/drbIbxqYhN3ZmznUMT9SDmikit1xlFd7IUWoyO
-W95UWLdOPD+96RlckM9vUa44pGx1jmKXFTFqOr5ex27aRvcWGXqJkabKbLxeiQF/
-fwry6CymQjthoxOzB1XD/PI/PqJfy8sD6yUize3aTqnO2Vg+4CrjJqFG35g669AR
-+yC/HjdaYwbzrqP41s7V7FDhN1eIuw==
-=G7ru
------END PGP SIGNATURE-----
+./arch/x86/include/asm/arch_hweight.h:16:1: error: ‘-mindirect-branch’ and ‘-fcf-protection’ are not compatible
 
---5GI/9lfadYPWd2hK--
+(those include files indicated whom I should add to this list; apologies if this reaches you in error).
+
+The full log of the build is at
+
+https://termbin.com/wbgs
+
+---
+
+5.11.0-rc6 built fine last week on this same setup. 
