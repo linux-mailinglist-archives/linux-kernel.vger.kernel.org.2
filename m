@@ -2,213 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E0B03123AB
+	by mail.lfdr.de (Postfix) with ESMTP id DF8183123AC
 	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 11:49:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229717AbhBGKqY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Feb 2021 05:46:24 -0500
-Received: from guitar.tcltek.co.il ([192.115.133.116]:45790 "EHLO
-        mx.tkos.co.il" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229506AbhBGKqT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Feb 2021 05:46:19 -0500
-Received: from tarshish (unknown [10.0.8.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx.tkos.co.il (Postfix) with ESMTPS id 790FD440820;
-        Sun,  7 Feb 2021 12:45:34 +0200 (IST)
-References: <1612685964-21890-1-git-send-email-stefanc@marvell.com>
- <1612685964-21890-4-git-send-email-stefanc@marvell.com>
-User-agent: mu4e 1.4.15; emacs 27.1
-From:   Baruch Siach <baruch@tkos.co.il>
-To:     stefanc@marvell.com
-Cc:     netdev@vger.kernel.org, andrew@lunn.ch, ymarkman@marvell.com,
-        devicetree@vger.kernel.org, atenart@kernel.org,
-        linux-kernel@vger.kernel.org, linux@armlinux.org.uk,
-        nadavh@marvell.com, rmk+kernel@armlinux.org.uk, robh+dt@kernel.org,
-        thomas.petazzoni@bootlin.com, kuba@kernel.org, mw@semihalf.com,
-        davem@davemloft.net, gregory.clement@bootlin.com,
-        sebastian.hesselbarth@gmail.com,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [RESEND PATCH v8 net-next 03/15] net: mvpp2: add CM3 SRAM
- memory map
-In-reply-to: <1612685964-21890-4-git-send-email-stefanc@marvell.com>
-Date:   Sun, 07 Feb 2021 12:45:34 +0200
-Message-ID: <87mtwgxik1.fsf@tarshish>
+        id S229750AbhBGKq4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Feb 2021 05:46:56 -0500
+Received: from smtprelay0199.hostedemail.com ([216.40.44.199]:40782 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229506AbhBGKq3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Feb 2021 05:46:29 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay06.hostedemail.com (Postfix) with ESMTP id BE53518223253;
+        Sun,  7 Feb 2021 10:45:46 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:960:973:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1381:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3353:3867:3868:5007:6120:7652:7901:8603:10004:10400:10471:10848:11026:11473:11657:11658:11914:12043:12296:12297:12438:12555:13069:13163:13229:13255:13311:13357:13439:13894:14659:14721:21080:21451:21627:21990:30012:30054,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: nest17_010c860275f5
+X-Filterd-Recvd-Size: 2900
+Received: from [192.168.1.159] (unknown [47.151.137.21])
+        (Authenticated sender: joe@perches.com)
+        by omf19.hostedemail.com (Postfix) with ESMTPA;
+        Sun,  7 Feb 2021 10:45:46 +0000 (UTC)
+Message-ID: <c00c5058effff98b6cd76a0cfadb469c33091e08.camel@perches.com>
+Subject: Re: [PATCH] I was wondering why I can't set the resolution to
+ 2560x1080, while in windows 7 I can without a problem. I looked at the
+ radeon driver code and found it doesn't support this resolution. So I made
+ some changes. I added the hdmi_mhz parameter. In cmdline I set
+ radeon.hdmi_mhz=190 Only tested on the Radeon HD 5830
+From:   Joe Perches <joe@perches.com>
+To:     Marcin Raszka <djraszit@gmail.com>, linux-kernel@vger.kernel.org
+Date:   Sun, 07 Feb 2021 02:45:44 -0800
+In-Reply-To: <20210207094604.7250-1-djraszit@gmail.com>
+References: <20210207094604.7250-1-djraszit@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stefan,
+Your subject needs to be changed and a commit log added.
 
-On Sun, Feb 07 2021, stefanc@marvell.com wrote:
-> From: Stefan Chulski <stefanc@marvell.com>
->
-> This patch adds CM3 memory map and CM3 read/write callbacks.
-> No functionality changes.
->
-> Signed-off-by: Stefan Chulski <stefanc@marvell.com>
-> ---
->  drivers/net/ethernet/marvell/mvpp2/mvpp2.h      |  7 +++
->  drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c | 63 +++++++++++++++++++-
->  2 files changed, 67 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2.h b/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
-> index 6bd7e40..aec9179 100644
-> --- a/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
-> +++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
-> @@ -748,6 +748,9 @@
->  #define MVPP2_TX_FIFO_THRESHOLD(kb)	\
->  		((kb) * 1024 - MVPP2_TX_FIFO_THRESHOLD_MIN)
->  
-> +/* MSS Flow control */
-> +#define MSS_SRAM_SIZE	0x800
+> diff --git a/drivers/gpu/drm/radeon/radeon_connectors.c b/drivers/gpu/drm/radeon/radeon_connectors.c
+[]
+> @@ -37,6 +37,8 @@
+>  #include <linux/pm_runtime.h>
+>  #include <linux/vga_switcheroo.h>
+> 
+> +extern int hdmimhz;
 > +
->  /* RX buffer constants */
->  #define MVPP2_SKB_SHINFO_SIZE \
->  	SKB_DATA_ALIGN(sizeof(struct skb_shared_info))
-> @@ -925,6 +928,7 @@ struct mvpp2 {
->  	/* Shared registers' base addresses */
->  	void __iomem *lms_base;
->  	void __iomem *iface_base;
-> +	void __iomem *cm3_base;
->  
->  	/* On PPv2.2, each "software thread" can access the base
->  	 * register through a separate address space, each 64 KB apart
-> @@ -996,6 +1000,9 @@ struct mvpp2 {
->  
->  	/* page_pool allocator */
->  	struct page_pool *page_pool[MVPP2_PORT_MAX_RXQ];
-> +
-> +	/* CM3 SRAM pool */
-> +	struct gen_pool *sram_pool;
->  };
->  
->  struct mvpp2_pcpu_stats {
-> diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-> index a07cf60..307f9fd 100644
-> --- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-> +++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-> @@ -25,6 +25,7 @@
->  #include <linux/of_net.h>
->  #include <linux/of_address.h>
->  #include <linux/of_device.h>
-> +#include <linux/genalloc.h>
->  #include <linux/phy.h>
->  #include <linux/phylink.h>
->  #include <linux/phy/phy.h>
-> @@ -6846,6 +6847,44 @@ static int mvpp2_init(struct platform_device *pdev, struct mvpp2 *priv)
->  	return 0;
->  }
->  
-> +static int mvpp2_get_sram(struct platform_device *pdev,
-> +			  struct mvpp2 *priv)
-> +{
-> +	struct device_node *dn = pdev->dev.of_node;
-> +	static bool defer_once;
-> +	struct resource *res;
-> +
-> +	if (has_acpi_companion(&pdev->dev)) {
-> +		res = platform_get_resource(pdev, IORESOURCE_MEM, 2);
-> +		if (!res) {
-> +			dev_warn(&pdev->dev, "ACPI is too old, Flow control not supported\n");
-> +			return 0;
-> +		}
-> +		priv->cm3_base = devm_ioremap_resource(&pdev->dev, res);
-> +		if (IS_ERR(priv->cm3_base))
-> +			return PTR_ERR(priv->cm3_base);
-> +	} else {
-> +		priv->sram_pool = of_gen_pool_get(dn, "cm3-mem", 0);
-> +		if (!priv->sram_pool) {
-> +			if (!defer_once) {
-> +				defer_once = true;
-> +				/* Try defer once */
-> +				return -EPROBE_DEFER;
-> +			}
-> +			dev_warn(&pdev->dev, "DT is too old, Flow control not supported\n");
+>  static int radeon_dp_handle_hpd(struct drm_connector *connector)
+>  {
+>  	struct radeon_connector *radeon_connector = to_radeon_connector(connector);
+> @@ -503,7 +505,7 @@ static void radeon_add_common_modes(struct drm_encoder *encoder, struct drm_conn
+>  	struct mode_size {
+>  		int w;
+>  		int h;
+> -	} common_modes[17] = {
+> +	} common_modes[18] = {
 
-This warning will show on every DT system with no cm3-mem property, right?
+probably better without a specific array size
 
-> +			return -ENOMEM;
-> +		}
-> +		/* cm3_base allocated with offset zero into the SRAM since mapping size
-> +		 * is equal to requested size.
-> +		 */
-> +		priv->cm3_base = (void __iomem *)gen_pool_alloc(priv->sram_pool,
-> +								MSS_SRAM_SIZE);
-> +		if (!priv->cm3_base)
-> +			return -ENOMEM;
-> +	}
-> +	return 0;
-> +}
-> +
->  static int mvpp2_probe(struct platform_device *pdev)
->  {
->  	const struct acpi_device_id *acpi_id;
-> @@ -6902,6 +6941,13 @@ static int mvpp2_probe(struct platform_device *pdev)
->  		priv->iface_base = devm_ioremap_resource(&pdev->dev, res);
->  		if (IS_ERR(priv->iface_base))
->  			return PTR_ERR(priv->iface_base);
-> +
-> +		/* Map CM3 SRAM */
-> +		err = mvpp2_get_sram(pdev, priv);
-> +		if (err == -EPROBE_DEFER)
-> +			return err;
-> +		else if (err)
-> +			dev_warn(&pdev->dev, "Fail to alloc CM3 SRAM\n");
+>  		{ 640,  480},
+>  		{ 720,  480},
+>  		{ 800,  600},
+> @@ -520,10 +522,11 @@ static void radeon_add_common_modes(struct drm_encoder *encoder, struct drm_conn
+>  		{1680, 1050},
+>  		{1600, 1200},
+>  		{1920, 1080},
+> -		{1920, 1200}
+> +		{1920, 1200},
+> +		{2560, 1080}
+>  	};
+>  
+> 
+> -	for (i = 0; i < 17; i++) {
+> +	for (i = 0; i < 18; i++) {
 
-This one will show as well.
+	for (i = 0; i < ARRAY_SIZE(common_modes); i++) {
 
-I would not expect that from a patch that makes "no functional change".
+> @@ -1491,25 +1494,32 @@ static enum drm_mode_status radeon_dvi_mode_valid(struct drm_connector *connecto
+>  	    (mode->clock > 135000))
+>  		return MODE_CLOCK_HIGH;
+>  
+> 
+> -	if (radeon_connector->use_digital && (mode->clock > 165000)) {
+> +	if (radeon_connector->use_digital && (mode->clock > (hdmimhz * 1000))) {
+>  		if ((radeon_connector->connector_object_id == CONNECTOR_OBJECT_ID_DUAL_LINK_DVI_I) ||
+>  		    (radeon_connector->connector_object_id == CONNECTOR_OBJECT_ID_DUAL_LINK_DVI_D) ||
+> -		    (radeon_connector->connector_object_id == CONNECTOR_OBJECT_ID_HDMI_TYPE_B))
+> +		    (radeon_connector->connector_object_id == CONNECTOR_OBJECT_ID_HDMI_TYPE_B)){
+> +			printk("MODE_CLOCK_HIHG0 %d", hdmimhz);
 
-baruch
-
->  	}
->  
->  	if (priv->hw_version == MVPP22 && dev_of_node(&pdev->dev)) {
-> @@ -6947,11 +6993,13 @@ static int mvpp2_probe(struct platform_device *pdev)
->  
->  	if (dev_of_node(&pdev->dev)) {
->  		priv->pp_clk = devm_clk_get(&pdev->dev, "pp_clk");
-> -		if (IS_ERR(priv->pp_clk))
-> -			return PTR_ERR(priv->pp_clk);
-> +		if (IS_ERR(priv->pp_clk)) {
-> +			err = PTR_ERR(priv->pp_clk);
-> +			goto err_cm3;
-> +		}
->  		err = clk_prepare_enable(priv->pp_clk);
->  		if (err < 0)
-> -			return err;
-> +			goto err_cm3;
->  
->  		priv->gop_clk = devm_clk_get(&pdev->dev, "gop_clk");
->  		if (IS_ERR(priv->gop_clk)) {
-> @@ -7087,6 +7135,11 @@ static int mvpp2_probe(struct platform_device *pdev)
->  	clk_disable_unprepare(priv->gop_clk);
->  err_pp_clk:
->  	clk_disable_unprepare(priv->pp_clk);
-> +err_cm3:
-> +	if (priv->sram_pool && priv->cm3_base)
-> +		gen_pool_free(priv->sram_pool, (unsigned long)priv->cm3_base,
-> +			      MSS_SRAM_SIZE);
-> +
->  	return err;
->  }
->  
-> @@ -7127,6 +7180,10 @@ static int mvpp2_remove(struct platform_device *pdev)
->  				  aggr_txq->descs_dma);
->  	}
->  
-> +	if (priv->sram_pool && priv->cm3_base)
-> +		gen_pool_free(priv->sram_pool, (unsigned long)priv->cm3_base,
-> +			      MSS_SRAM_SIZE);
-> +
->  	if (is_acpi_node(port_fwnode))
->  		return 0;
+unnecessary debugging printks?
 
 
--- 
-                                                     ~. .~   Tk Open Systems
-=}------------------------------------------------ooO--U--Ooo------------{=
-   - baruch@tkos.co.il - tel: +972.52.368.4656, http://www.tkos.co.il -
