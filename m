@@ -2,71 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE943312677
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 18:45:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8C9D312668
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 18:38:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229636AbhBGRpV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Feb 2021 12:45:21 -0500
-Received: from m12-13.163.com ([220.181.12.13]:38218 "EHLO m12-13.163.com"
+        id S229596AbhBGRgs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Feb 2021 12:36:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53414 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229506AbhBGRpS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Feb 2021 12:45:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=xRGMz2+Y98v+90gy3L
-        YVUzAcWLPNy7FWsh6R8cGnp+E=; b=WTCyWP5fn7t9lJ5WOYxufV7nmpCgIWJbyF
-        kddKV5jveaw4Hoa0Dk4+rLYrzMYAqAoP4dx4/AfvEYsHhFqFs+wzGkt4T4TdshDB
-        cP5p2ix7nWD2KJ9DN6Pj3u5UwOH9rEqeJaJBslGWK3NaxsiniQaxWqNG4Y7GNRYi
-        I3GCRr3T0=
-Received: from localhost.localdomain (unknown [223.87.231.49])
-        by smtp9 (Coremail) with SMTP id DcCowADXFDpRAiBgqDBEeQ--.361S2;
-        Sun, 07 Feb 2021 23:08:03 +0800 (CST)
-From:   alex_luca@163.com
-To:     Geert Uytterhoeven <geert+renesas@glider.be>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        linux-renesas-soc@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, alex_luca@163.com,
-        Zhang Kun <zhangkun@cdjrlc.com>
-Subject: [PATCH] pinctrl: renesas:fix possible null pointer dereference struct pinmux_range *
-Date:   Sun,  7 Feb 2021 23:07:36 +0800
-Message-Id: <20210207150736.24382-1-alex_luca@163.com>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: DcCowADXFDpRAiBgqDBEeQ--.361S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrurW8Kr47ArW7urWfCw17ZFb_yoW3twc_Ca
-        48ta4xAFW5C3Z3ur4xZF43Xr9FkF48ursYqrnFqF43A347Xr4YyF95urZ7G348Gw17XFWq
-        yFWvqr4ftr17AjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUUHmh7UUUUU==
-X-Originating-IP: [223.87.231.49]
-X-CM-SenderInfo: xdoh5spoxftqqrwthudrp/1tbiThMyylUDHqWZUAAAsB
+        id S229491AbhBGRgq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Feb 2021 12:36:46 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2C8B664E05;
+        Sun,  7 Feb 2021 17:36:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612719366;
+        bh=lfZVA4TJ0u7Z73tC1n2QinNUzUjjNHPy0eX0J09YL68=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Puag2A0Lb/YbJtA8FsyW8DhhwZHemJUXMo2xi0Z1/IyvV6XGT7YS6oTa0lN8rXCGd
+         j6iauA7U6a4Ag8HK5eo+CZqoknhsEPW8rLFDDMS5Tc/n2+z6Q0s+jWP4TkprzAjED4
+         QI3VLNG/ROeSk6qBg66Kj24OQheMAeahNLcXJrd9RrOecHKQ8JVaXrILEzJmmOjLZy
+         81w+3eOd7q3dTlIrLyNlm9x8CoU4vg0M9oPQ9bLavk6wUp/4SKaAM/xMhgazJRob4I
+         RhLMcStREIYTUfo7ZdN5Lh5R9T0ansX7CLzhQ7/p5xAaXqliUZ46RBtlBOa1j1qdRn
+         6JKzVJQ5RAvxw==
+Date:   Sun, 7 Feb 2021 23:06:01 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux Phy <linux-phy@lists.infradead.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>
+Subject: [GIT PULL]: soundwire: updates for v5.12-rc1
+Message-ID: <20210207173601.GA879029@vkoul-mobl.Dlink>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="MGYHOYXEY6WxJCY8"
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Kun <zhangkun@cdjrlc.com>
 
-The parameters of  sh_pfc_enum_in_range() pinmux_range *r should be checked
-first for possible null ponter, especially when PINMUX_TYPE_FUNCTION as the
-pinmux_type was passed by sh_pfc_config_mux().
+--MGYHOYXEY6WxJCY8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Zhang Kun <zhangkun@cdjrlc.com>
----
- drivers/pinctrl/renesas/core.c | 3 +++
- 1 file changed, 3 insertions(+)
+Hello Greg,
 
-diff --git a/drivers/pinctrl/renesas/core.c b/drivers/pinctrl/renesas/core.c
-index 2cc457279345..40bbc8366668 100644
---- a/drivers/pinctrl/renesas/core.c
-+++ b/drivers/pinctrl/renesas/core.c
-@@ -128,6 +128,9 @@ int sh_pfc_get_pin_index(struct sh_pfc *pfc, unsigned int pin)
- 
- static int sh_pfc_enum_in_range(u16 enum_id, const struct pinmux_range *r)
- {
-+	if (!r)
-+		return 0;
-+
- 	if (enum_id < r->begin)
- 		return 0;
- 
--- 
-2.17.1
+Please pull to receive update for v5.12-rc1. This update includes new
+no_pm IO routines and bunch of updates for intel & cadence drivers.
 
+The following changes since commit 5c8fe583cce542aa0b84adc939ce85293de36e5e:
 
+  Linux 5.11-rc1 (2020-12-27 15:30:22 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/soundwire.git tags/so=
+undwire-5.12-rc1
+
+for you to fetch changes up to 6d7a1ff71cbb326fadfbedb7f75c1fc8f5c84d84:
+
+  soundwire: bus: clarify dev_err/dbg device references (2021-02-07 17:49:1=
+7 +0530)
+
+----------------------------------------------------------------
+soundwire updates for 5.12-rc1
+
+Updates forv5.12-rc1 are:
+ - New no_pm IO routines and the usage in Intel drivers
+ - Intel driver & Cadence lib updates
+
+----------------------------------------------------------------
+Bard Liao (3):
+      soundwire: intel: don't return error when clock stop failed
+      soundwire: bus: add more details to track failed transfers
+      soundwire: export sdw_write/read_no_pm functions
+
+Chao Song (1):
+      soundwire: return earlier if no slave is attached
+
+Pierre-Louis Bossart (11):
+      soundwire: cadence: reduce timeout on transactions
+      soundwire: use consistent format for Slave devID logs
+      soundwire: cadence: add status in dev_dbg 'State change' log
+      soundwire: cadence: fix ACK/NAK handling
+      soundwire: cadence: adjust verbosity in response handling
+      soundwire: bus: add better dev_dbg to track complete() calls
+      soundwire: bus: use sdw_update_no_pm when initializing a device
+      soundwire: bus: use sdw_write_no_pm when setting the bus scale regist=
+ers
+      soundwire: bus: use no_pm IO routines for all interrupt handling
+      soundwire: bus: fix confusion on device used by pm_runtime
+      soundwire: bus: clarify dev_err/dbg device references
+
+Rikard Falkeborn (1):
+      soundwire: sysfs: Constify static struct attribute_group
+
+Srinivas Kandagatla (1):
+      soundwire: debugfs: use controller id instead of link_id
+
+Vinod Koul (2):
+      MAINTAINERS: soundwire: Add soundwire tree
+      soundwire: Revert "soundwire: debugfs: use controller id instead of l=
+ink_id"
+
+Zheng Yongjun (1):
+      soundwire: intel: Use kzalloc for allocating only one thing
+
+ MAINTAINERS                        |   1 +
+ drivers/soundwire/bus.c            | 179 ++++++++++++++++++++-------------=
+----
+ drivers/soundwire/cadence_master.c |  31 +++----
+ drivers/soundwire/intel.c          |   8 +-
+ drivers/soundwire/slave.c          |  10 +--
+ drivers/soundwire/sysfs_slave.c    |   2 +-
+ include/linux/soundwire/sdw.h      |   2 +
+ 7 files changed, 128 insertions(+), 105 deletions(-)
+
+Thanks
+--=20
+~Vinod
+
+--MGYHOYXEY6WxJCY8
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEE+vs47OPLdNbVcHzyfBQHDyUjg0cFAmAgJQEACgkQfBQHDyUj
+g0dF4w/9G3CcwiK07vq20rk3JAceuaNVjO0sylgzPrcCpHXiJjKNqF6RzQp3aVZt
+T0E8sfE0aWIvU4O4RCA7O+2GelcMp8FubDr/3uwB8GimnhAMSRQ/7ymo7twUHCib
+v2fEqfp11uv/c0+x6hAcz2lOeETpKAI8m0uPJ4uoj3P1m16VuVZ/rMI9W3ea60NK
+0Xc8BbquXqE8HoprWYVNeBTOA1ZQf4jMMEss5OTuI8K9X6v7Cfk5Febt3zSIe174
+kBwwsMCi2seZrUKK/wpqy8YXcqK4zv1d98DnLDu2T3T23mSyPOjkeXV9zU+Pbq4+
+W2vkmuS98JBFoPTpxHUbq/03GAA8G//rYM2McSILOyKHqpcGNjGAeXfUh/e1obye
+HYSwOeG9jFpNW+6fmBFrqfx2+xcpQfrponEFPbC+oa8IjJgw9+tdchZMoDyjf97n
+lJ3GbFWZ6ey8j7B6DXYB7/J5RAA4Q6bxaEefhrOVDBtbrziDuvNwnBw7454G7NYo
+PWkOE9CojV9c/Wvc5PGGYZ4rXEnjfxaOVEiusXd1z1jdq003R2JP8FpwpYhv5+LL
+3NFoodFxmxn6Vt6acaQzf5tYwzbljlCJbttMF0ZfGm7nA3SZEYIakIJZZ8h9gWW6
+nhJY3ZyVRuAom5ieEuvY3tZ16pw5YWQShllMf/3Z9ztoAQ7eRXE=
+=Bbjt
+-----END PGP SIGNATURE-----
+
+--MGYHOYXEY6WxJCY8--
