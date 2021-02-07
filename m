@@ -2,63 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06198312308
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 10:19:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B51131230B
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 10:20:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229601AbhBGJSt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Feb 2021 04:18:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35300 "EHLO mail.kernel.org"
+        id S229626AbhBGJTg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Feb 2021 04:19:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35408 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229537AbhBGJSr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Feb 2021 04:18:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9361B64E22;
-        Sun,  7 Feb 2021 09:18:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612689486;
-        bh=M+7Vjj0l8SWkkCAfHsTiuFeZisfU3zkOxBiol6f8cvo=;
+        id S229522AbhBGJTb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Feb 2021 04:19:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2A91D64E22;
+        Sun,  7 Feb 2021 09:18:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612689530;
+        bh=OygoctvNrqCv3+yqvOUhM5F9TdXP26wbyygyZSDx/ME=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JzWhpLNn2V57naiWxS4uA4F/40eR6CV/py3pinOi1yXfpWjytSpfXty7e+qvs6oqC
-         4nUaKQtfIPxH/RHs8A0JHDTn8dR5ov8SAQlbXeJamysGtCeQuZ42D/o07NcGc7rDX9
-         M9joDAf8O1qqPXUmc4rRwFcdSiqZ0dL6mBS8J/lI=
-Date:   Sun, 7 Feb 2021 10:18:01 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: Re: [PATCH v3] staging: emxx_udc: Make incorrectly defined global
- static
-Message-ID: <YB+wSYgNABzNWFfb@kroah.com>
-References: <YB+qDND2OmY8WwA0@kroah.com>
- <20210207085911.270746-1-memxor@gmail.com>
+        b=X9lHKJWOTcXLEeVJj92+4bOk5plpSBCiUD1AypE5r32Qmh5QsMZIOJbBLHDaT+6HA
+         65APmYOmRlcQFMUwUFN56Zm8pqjfFjF6kTIylEQCqvE4k3S7AclrMV97kTBTgpU31Q
+         u78Oh2yiQzNdaSEg9UozwxOTChRWdLJC+qt+4iRxBbUSBLER233XM299k35/a3f0VM
+         1zWxdnHdyiZyTJGWbQBpe4vdQ2Y6xv37G24qsZWjib2JNuPmWBSyu1aPEkgUUGtBTW
+         cJu0Hir6ci80a3QQg9y5BnvFvCXiJ53IsbUy1P4+xbhmw8kesm6oKn960M4W5JoY4s
+         sWLfjzEwnuGgA==
+Date:   Sun, 7 Feb 2021 11:18:42 +0200
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Ivan Khoronzhuk <ikhoronz@cisco.com>
+Cc:     linux-mips@vger.kernel.org, tsbogend@alpha.franken.de,
+        linux-kernel@vger.kernel.org, yangtiezhu@loongson.cn,
+        ivan.khoronzhuk@gmail.com
+Subject: Re: [PATCH] mips: kernel: setup: fix crash kernel resource allocation
+Message-ID: <20210207091842.GU242749@kernel.org>
+References: <20210206125940.111766-1-ikhoronz@cisco.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210207085911.270746-1-memxor@gmail.com>
+In-Reply-To: <20210206125940.111766-1-ikhoronz@cisco.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Feb 07, 2021 at 02:29:12PM +0530, Kumar Kartikeya Dwivedi wrote:
-> The global gpio_desc pointer and int vbus_irq were defined in the header,
-> instead put the definitions in the translation unit and make them static as
-> there's only a single consumer, and these symbols shouldn't pollute the
-> global namespace.
-> 
-> This fixes the following sparse warnings for this driver:
-> drivers/staging/emxx_udc/emxx_udc.c: note: in included file:
-> drivers/staging/emxx_udc/emxx_udc.h:23:18: warning: symbol 'vbus_gpio' was not
-> declared. Should it be static?  drivers/staging/emxx_udc/emxx_udc.h:24:5:
-> warning: symbol 'vbus_irq' was not declared. Should it be static?
-> 
-> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+On Sat, Feb 06, 2021 at 12:59:40PM +0000, Ivan Khoronzhuk wrote:
+> In order to avoid crash kernel corruption, its memory is reserved
+> early in memblock and as result, in time when resources are inited
+> it's not present in memblock.memory, so crash kernel memory is out
+> of ranges listed with for_each_mem_range(). To avoid it and still
+> keep memory reserved lets reseve it out of loop by inserting it in
+> iomem_resource.
+
+Unless I misread the code, the crash kernel memory is actually allocated
+from memblock (memblock_find_in_range + memblock_reserve), but for some
+reason memblock_reserve(<crash kernel>) is called outside
+mips_parse_crashkernel(). So the crash kernel memory is surely in both
+memblock.memory and memblock.reserved and it will be covered by
+for_each_mem_range().
+
+The mips_parse_crashkernel() function and the following reservation of
+crash kernel memory should be merged, IMO, and this can be further
+simplified with memblock_alloc() helpers.
+
+Is there a particular issue you are trying to fix?
+ 
+> Fixes: a94e4f24ec83 ("MIPS: init: Drop boot_mem_map")
+> Signed-off-by: Ivan Khoronzhuk <ikhoronz@cisco.com>
 > ---
-> Changes in v1:
-> Switch to variable with static linkage instead of extern
-> Changes in v2:
-> Resend a versioned patch
-> Changes in v3:
-> Include version changelog below the marker
+> Based on linux-next/master
+> 
+>  arch/mips/kernel/setup.c | 8 +++++---
+>  1 file changed, 5 insertions(+), 3 deletions(-)
+> 
+> diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
+> index 3785c72bc3bc..25e376ef2f2a 100644
+> --- a/arch/mips/kernel/setup.c
+> +++ b/arch/mips/kernel/setup.c
+> @@ -473,14 +473,15 @@ static void __init mips_parse_crashkernel(void)
+>  	crashk_res.end	 = crash_base + crash_size - 1;
+>  }
+>  
+> -static void __init request_crashkernel(struct resource *res)
+> +static void __init request_crashkernel(void)
+>  {
+>  	int ret;
+>  
+>  	if (crashk_res.start == crashk_res.end)
+>  		return;
+>  
+> -	ret = request_resource(res, &crashk_res);
+> +	/* The crashk resource shoud be located in normal mem */
+> +	ret = insert_resource(&iomem_resource, &crashk_res);
+>  	if (!ret)
+>  		pr_info("Reserving %ldMB of memory at %ldMB for crashkernel\n",
+>  			(unsigned long)(resource_size(&crashk_res) >> 20),
+> @@ -734,8 +735,9 @@ static void __init resource_init(void)
+>  		request_resource(res, &code_resource);
+>  		request_resource(res, &data_resource);
+>  		request_resource(res, &bss_resource);
+> -		request_crashkernel(res);
+>  	}
+> +
+> +	request_crashkernel();
+>  }
+>  
+>  #ifdef CONFIG_SMP
+> -- 
+> 2.23.1
+> 
 
-Much better, thanks, now queued up.
-
-greg k-h
+-- 
+Sincerely yours,
+Mike.
