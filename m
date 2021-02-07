@@ -2,89 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C1C931212A
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 04:31:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 534B931212C
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 04:33:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229638AbhBGDah (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Feb 2021 22:30:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46604 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229506AbhBGDaf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Feb 2021 22:30:35 -0500
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A79BC06174A
-        for <linux-kernel@vger.kernel.org>; Sat,  6 Feb 2021 19:29:55 -0800 (PST)
-Received: by mail-lj1-x241.google.com with SMTP id q14so2824504ljp.4
-        for <linux-kernel@vger.kernel.org>; Sat, 06 Feb 2021 19:29:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dYbm//cUR0InpLPNHSXpOGWXSrCz7B8B5No4bQkGlUo=;
-        b=Bv1RNWH2KXDnV/6TdSNNWgMNe/8vr6sFCVNr0fn/62puKpvImwNmMV3vSLqkVUqqk7
-         /bS7TKX3i1cakxrRmc80TtfPZez3KhWrWqHwSsExzrHGAz9oLwonjNUcDZmNpaAEqhHi
-         YmoPaEeANKEJk7nAXWPqCdQK+WyXg9nlDO82rqjAYH0yF+9/+DSxjYYOj2QOpi0oAbx8
-         eJX1rx46wuebCximG1FYFsMe8jk+RzPnEAV5YnghW10zQA3NoWcdwt5md+DL2UTCNND7
-         hVamCJhkhTggYsPk511FumXBWu+bOQq8PUVLPC1wH6pTf+rfeGyXYNKvSKLHNFPcryS+
-         y9ig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dYbm//cUR0InpLPNHSXpOGWXSrCz7B8B5No4bQkGlUo=;
-        b=r8Sz7/Z3zviwNXJS2mRqwDJaNZzvkwkMW6fE47UCHvKXswpoW/QoR0nBfumA5s9jQg
-         UimFneJh4s9I5Mx8gJvPi0aQkFDggVecBYKS4S3N4GGeHwcu6NLnVsEAOK4NBoAiuGyD
-         rYarN/qomH8iTSYQu4D2wzAeotMYzIkyXDKXfX/JjDvSfSFsnSv3z4Pm/WyJTV9ttnDz
-         Cnq6SR+bnPQOdecqVvsfLraALcW1WqpzSw2G5yQDupnVZD6HM9nnnjtDbMlwN6zDyP5x
-         V3W3oOfmDR4s0n1ofuukteAM/bafFD5gVoZ8XSDeb0wovz3VU1ZZ4YGzEW3rzL8pte6k
-         TWzg==
-X-Gm-Message-State: AOAM532DkOFn2TylbmX8Zl23Q5x2XfG0tbty7/LIjfA2iJJOaKEANA7F
-        +hyzD516WTdjdqPs4Se8vPseJiqXp4YFFG8ORYo=
-X-Google-Smtp-Source: ABdhPJzCihwJlOQzdY8mmeoTi34cYXGUnjiITHknHKZ9tbvuNCXExpakJbdFJ3u3YCP4Y+TACxCe/i1eUQqzwWoPolQ=
-X-Received: by 2002:a2e:880e:: with SMTP id x14mr7008504ljh.89.1612668591965;
- Sat, 06 Feb 2021 19:29:51 -0800 (PST)
+        id S229706AbhBGDc4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Feb 2021 22:32:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40670 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229613AbhBGDcx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 6 Feb 2021 22:32:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8E9D664E7F;
+        Sun,  7 Feb 2021 03:32:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612668732;
+        bh=5q+3AseSjJ73gfEyHtsH1AwnHP9+QRAn8sefYBlZhgo=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Tfdpc0fROte/2EfA4jbpqvHuJLpo8gT6MeZUZ6stzvHGQPxMssEYJzyZYzhN1OyEI
+         6e9nAo8d9OjTbMeVgKRRo6ngB+NY+CLcPj8ITHJYRvq/uFHKWaBACDBDKo+LINftQG
+         Iykvb8cWFZsSDZrZ1q+kZRmBvvhb9U/ELeO7Ucuo4sF+8QRtPyo3NJ5V/gCpWxiNl3
+         evrNhmRn929MP/mkSzvs1HHTjHVF9ch5aXW+ud4mGuVzynbwU3OwqC3ssVjt5ZiYCc
+         p+c+lGi3HWbfu58DcJ2kl8UA6d7oN3q+hgSJp8QPqtVOhol85dgF/eVrbFKamahMfy
+         E8Ic+Jj0N8RBg==
+Received: by mail-lj1-f179.google.com with SMTP id c18so12499511ljd.9;
+        Sat, 06 Feb 2021 19:32:12 -0800 (PST)
+X-Gm-Message-State: AOAM532Pgw+vi0SBVjC4t8pAtVN97DJmweV+mzP178O+cQPAUXFlAhb5
+        el6rBZouXl6zeXq/SgmrEa8sFBzcqNu0+hQqWB4=
+X-Google-Smtp-Source: ABdhPJxeX1WqQ4nGoVWb+bT7A7kxtIVu0Xd4yP+o4w8tUS+Z+GDdW96VnaC1q8rPqHW9zJyiE/xRNZ7u0+YiMF8XvhM=
+X-Received: by 2002:a2e:89cd:: with SMTP id c13mr7004902ljk.285.1612668730907;
+ Sat, 06 Feb 2021 19:32:10 -0800 (PST)
 MIME-Version: 1.0
-References: <20210206053109.78205-1-dong.menglong@zte.com.cn> <CAHp75VfMYOz+qexix_TujGfUgFAtUXdbS=ekVdE_4cwRv5W8pw@mail.gmail.com>
-In-Reply-To: <CAHp75VfMYOz+qexix_TujGfUgFAtUXdbS=ekVdE_4cwRv5W8pw@mail.gmail.com>
-From:   Menglong Dong <menglong8.dong@gmail.com>
-Date:   Sun, 7 Feb 2021 11:29:40 +0800
-Message-ID: <CADxym3bsqAH969H-P8SSam+_gbjgWkxP90Zh-RnzDaOJuwD3ig@mail.gmail.com>
-Subject: Re: [PATCH net-next] net: socket: use BIT_MASK for MSG_*
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     "axboe@kernel.dk" <axboe@kernel.dk>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "herbert@gondor.apana.org.au" <herbert@gondor.apana.org.au>,
-        "dong.menglong@zte.com.cn" <dong.menglong@zte.com.cn>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20210204074609.3553018-1-guoren@kernel.org> <20210204074609.3553018-2-guoren@kernel.org>
+ <c36b816b-6d80-9542-45fc-507c5cc302fb@linaro.org>
+In-Reply-To: <c36b816b-6d80-9542-45fc-507c5cc302fb@linaro.org>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Sun, 7 Feb 2021 11:31:59 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTSe7GUzPRvk6bK8AfQFp2uxae1Oo0w-ZtrtmcJmMWCqPw@mail.gmail.com>
+Message-ID: <CAJF2gTSe7GUzPRvk6bK8AfQFp2uxae1Oo0w-ZtrtmcJmMWCqPw@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] drivers/clocksource: Fixup csky,mptimer compile
+ error with CPU_CK610
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-csky@vger.kernel.org, Guo Ren <guoren@linux.alibaba.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+Hi Daniel,
 
-On Sat, Feb 6, 2021 at 4:20 PM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
+On Thu, Feb 4, 2021 at 4:48 PM Daniel Lezcano <daniel.lezcano@linaro.org> wrote:
 >
+> On 04/02/2021 08:46, guoren@kernel.org wrote:
+> > From: Guo Ren <guoren@linux.alibaba.com>
+> >
+> > The timer-mp-csky.c only could support CPU_CK860 and it will
+> > compile error with CPU_CK610.
+> >
+> > It has been selected in arch/csky/Kconfig.
 >
->
-> On Saturday, February 6, 2021, <menglong8.dong@gmail.com> wrote:
->>
->> From: Menglong Dong <dong.menglong@zte.com.cn>
->>
->> The bit mask for MSG_* seems a little confused here. Replace it
->> with BIT_MASK to make it clear to understand.
->
->
-> It makes it more confusing if you understand the difference between BIT_MASK() and BIT(). I think you have to use the latter. And note () when referring to the function or macro.
->
+> It would be better if you fix the root cause of the compilation error.
+The timer-mp-csky.c has used specific instructions which only
+supported by CK860 and timer-mp-csky.c is only design for CK860.
 
-I replaced BIT_MASK() with BIT() in the patch of v2, and it looks much
-more tidy.
-I can't figure out the difference between BIT() and BIT_MASK(), seems
-the latter one more safe... isn't it?
+In arch/csky/Konfig we only select it with CK860.
+        select CSKY_MPINTC if CPU_CK860
+        select CSKY_MP_TIMER if CPU_CK860
 
-Thanks:)
-Menglong Dong
+So here let's select timer-mp-csky.c in arch/csky/Kconfig, not in
+drivers/clocksource/Kconfig.
+
+
+-- 
+Best Regards
+ Guo Ren
+
+ML: https://lore.kernel.org/linux-csky/
