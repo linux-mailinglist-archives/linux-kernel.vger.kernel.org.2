@@ -2,124 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2F50312339
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 10:35:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51DE931233C
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 10:41:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229587AbhBGJfH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Feb 2021 04:35:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36996 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229506AbhBGJfD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Feb 2021 04:35:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D72364E2A;
-        Sun,  7 Feb 2021 09:34:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612690462;
-        bh=vHdplIXe2RStxmKLVaI73uahI+H48WMD9Z6xwvPREOM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GA/UugZBRdxo19A6s+kxnmLYt1SAraTqqy+qtZGDoDGBadsBnv9WRNv/5kN2nKcNH
-         ZG6VqjBDUysIN8Z+S7aj6UwU7ES0p+Icio6RJ/+5COw0I6i8uTq+s2Njpe6vtvY1QN
-         G9dHiZBV26PMMg8Nv6cmeNwIrGuQdj7mjAQNhL20=
-Date:   Sun, 7 Feb 2021 10:34:18 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Youling Tang <tangyouling@loongson.cn>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
-        devel@driverdev.osuosl.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: fix ignoring return value warning
-Message-ID: <YB+0GmywKAQVBIjG@kroah.com>
-References: <1612689808-30985-1-git-send-email-tangyouling@loongson.cn>
+        id S229611AbhBGJku (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Feb 2021 04:40:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40526 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229506AbhBGJkq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Feb 2021 04:40:46 -0500
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49431C06174A
+        for <linux-kernel@vger.kernel.org>; Sun,  7 Feb 2021 01:40:06 -0800 (PST)
+Received: by mail-lj1-x229.google.com with SMTP id y14so12957441ljn.8
+        for <linux-kernel@vger.kernel.org>; Sun, 07 Feb 2021 01:40:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=oG8UuFWzfJqkv2XW5txDA/xJM4YW9culKt5veHh2BgA=;
+        b=d07Sfmdr0dMMF1m60A94qoOnxCI4Ibg8PMS8ENR++ZRhiVhNmzBR9GWeABSz8CbR3N
+         l1bRxFrfzBm0Znbaws1P0A5z43C7ANHTeOqU/EkWVG2OX5LTrt1ex78eSpAZ7DSI9U/F
+         iz57wZhbnhpw9BYHLz4fyj5oSv4GXePD6gOZDg6MWSDB1n8Qjpu7h5dKgSRmjJzOUhua
+         iCRoeihp9cbz0+Im0ZuctCGABErN4knHPmWm8ph7bw3AwIbXk49E0VuodHmxS51Fa9m/
+         8gWalfeUQgsaqTU/azWpaqL2hwCBi3X/jdhw2NYLDzSOxkdCLy30BrmxYhUngKPP6w3Y
+         QFlQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=oG8UuFWzfJqkv2XW5txDA/xJM4YW9culKt5veHh2BgA=;
+        b=mxTx1SgU9UrSgjoqEdPQqDbF3U3krq2MUj912d7IPDJ4mGbs0bjuQ9JNERD34sFK4k
+         IOF6JUGIfDOaZdNw1xD7g5G0Zr912HYmXw9w6ASb93aVzF9D1w4aSCrvYZqdVAy7Bfrg
+         PsLnuBqUe8eiaEohwzCekc2uHkXOrZhq0HeXy5bQltW7FsWIpRknB/rCTSfd1RdzHFsn
+         5HvmX3tC1mAXnu8/ejxIwsKqaTZHRdkCkPzW3JQZ0Z8B8rhpuZpQCGFMH02kOKmiApAq
+         tfVfKNq/o5kTvC8dMihOpJv5d50NS38yGrJ5Jwc7Wk8illltvnExCCHEYaaJnRr7VIHu
+         FS4A==
+X-Gm-Message-State: AOAM532LveOnZSoJMIuyXyJXuOw3YR/J/4B9gfWWWs3zobsMWRFCornU
+        cXKyrdO59wBoo0Rn3PkizBA13t6KvYnS8h19
+X-Google-Smtp-Source: ABdhPJyLhltgaKaBwcehjdthljdD9ajYLu2puVCyN/CKvHT9cbR+5spcNhRsW4nU1N+y/mP804mDbg==
+X-Received: by 2002:a2e:8883:: with SMTP id k3mr7434504lji.198.1612690804648;
+        Sun, 07 Feb 2021 01:40:04 -0800 (PST)
+Received: from raszit-komputer-amd.raszit-server.ovh ([62.122.232.191])
+        by smtp.gmail.com with ESMTPSA id y18sm1639118lfe.29.2021.02.07.01.40.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 07 Feb 2021 01:40:04 -0800 (PST)
+From:   Marcin Raszka <djraszit@gmail.com>
+To:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Cc:     Marcin Raszka <djraszit@gmail.com>
+Subject: [PATCH] I was wondering why I can't set the resolution to 2560x1080, while in windows 7 I can without a problem. I looked at the radeon driver code and found it doesn't support this resolution. So I made some changes. I added the hdmi_mhz parameter. In cmdline I set radeon.hdmi_mhz=190 Only tested on the Radeon HD 5830
+Date:   Sun,  7 Feb 2021 10:39:52 +0100
+Message-Id: <20210207093952.7087-1-djraszit@gmail.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1612689808-30985-1-git-send-email-tangyouling@loongson.cn>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Feb 07, 2021 at 05:23:28PM +0800, Youling Tang wrote:
-> Fix the below ignoring return value warning for device_reset.
-> 
-> drivers/staging/mt7621-dma/mtk-hsdma.c:685:2: warning: ignoring return value
-> of function declared with 'warn_unused_result' attribute [-Wunused-result]
->         device_reset(&pdev->dev);
->         ^~~~~~~~~~~~ ~~~~~~~~~~
-> drivers/staging/ralink-gdma/ralink-gdma.c:836:2: warning: ignoring return value
-> of function declared with 'warn_unused_result' attribute [-Wunused-result]
->         device_reset(&pdev->dev);
->         ^~~~~~~~~~~~ ~~~~~~~~~~
-> 
-> Signed-off-by: Youling Tang <tangyouling@loongson.cn>
-> ---
->  drivers/staging/mt7621-dma/mtk-hsdma.c    | 6 +++++-
->  drivers/staging/ralink-gdma/ralink-gdma.c | 6 +++++-
->  2 files changed, 10 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/staging/mt7621-dma/mtk-hsdma.c b/drivers/staging/mt7621-dma/mtk-hsdma.c
-> index bc4bb43..d4ffa52 100644
-> --- a/drivers/staging/mt7621-dma/mtk-hsdma.c
-> +++ b/drivers/staging/mt7621-dma/mtk-hsdma.c
-> @@ -682,7 +682,11 @@ static int mtk_hsdma_probe(struct platform_device *pdev)
->  		return ret;
->  	}
->  
-> -	device_reset(&pdev->dev);
-> +	ret = device_reset(&pdev->dev);
-> +	if (ret) {
-> +		dev_err(&pdev->dev, "failed to reset device\n");
-> +		return ret;
-> +	}
->  
->  	dd = &hsdma->ddev;
->  	dma_cap_set(DMA_MEMCPY, dd->cap_mask);
-> diff --git a/drivers/staging/ralink-gdma/ralink-gdma.c b/drivers/staging/ralink-gdma/ralink-gdma.c
-> index 655df31..df99c47 100644
-> --- a/drivers/staging/ralink-gdma/ralink-gdma.c
-> +++ b/drivers/staging/ralink-gdma/ralink-gdma.c
-> @@ -833,7 +833,11 @@ static int gdma_dma_probe(struct platform_device *pdev)
->  		return ret;
->  	}
->  
-> -	device_reset(&pdev->dev);
-> +	ret = device_reset(&pdev->dev);
-> +	if (ret) {
-> +		dev_err(&pdev->dev, "failed to reset device\n");
-> +		return ret;
-> +	}
->  
->  	dd = &dma_dev->ddev;
->  	dma_cap_set(DMA_MEMCPY, dd->cap_mask);
-> -- 
-> 2.1.0
-> 
+---
+ drivers/gpu/drm/radeon/radeon_benchmark.c  |  5 ++--
+ drivers/gpu/drm/radeon/radeon_connectors.c | 30 ++++++++++++++--------
+ drivers/gpu/drm/radeon/radeon_drv.c        |  5 ++++
+ drivers/gpu/drm/radeon/radeon_encoders.c   |  6 +++--
+ 4 files changed, 32 insertions(+), 14 deletions(-)
 
+diff --git a/drivers/gpu/drm/radeon/radeon_benchmark.c b/drivers/gpu/drm/radeon/radeon_benchmark.c
+index ac9a5ec481c3..c283b6b15925 100644
+--- a/drivers/gpu/drm/radeon/radeon_benchmark.c
++++ b/drivers/gpu/drm/radeon/radeon_benchmark.c
+@@ -30,7 +30,7 @@
+ #define RADEON_BENCHMARK_COPY_DMA  0
+ 
+ #define RADEON_BENCHMARK_ITERATIONS 1024
+-#define RADEON_BENCHMARK_COMMON_MODES_N 17
++#define RADEON_BENCHMARK_COMMON_MODES_N 18
+ 
+ static int radeon_benchmark_do_move(struct radeon_device *rdev, unsigned size,
+ 				    uint64_t saddr, uint64_t daddr,
+@@ -184,7 +184,8 @@ void radeon_benchmark(struct radeon_device *rdev, int test_number)
+ 		1680 * 1050 * 4,
+ 		1600 * 1200 * 4,
+ 		1920 * 1080 * 4,
+-		1920 * 1200 * 4
++		1920 * 1200 * 4,
++		2560 * 1080 * 4
+ 	};
+ 
+ 	switch (test_number) {
+diff --git a/drivers/gpu/drm/radeon/radeon_connectors.c b/drivers/gpu/drm/radeon/radeon_connectors.c
+index 607ad5620bd9..37927222f5b3 100644
+--- a/drivers/gpu/drm/radeon/radeon_connectors.c
++++ b/drivers/gpu/drm/radeon/radeon_connectors.c
+@@ -37,6 +37,8 @@
+ #include <linux/pm_runtime.h>
+ #include <linux/vga_switcheroo.h>
+ 
++extern int hdmimhz;
++
+ static int radeon_dp_handle_hpd(struct drm_connector *connector)
+ {
+ 	struct radeon_connector *radeon_connector = to_radeon_connector(connector);
+@@ -503,7 +505,7 @@ static void radeon_add_common_modes(struct drm_encoder *encoder, struct drm_conn
+ 	struct mode_size {
+ 		int w;
+ 		int h;
+-	} common_modes[17] = {
++	} common_modes[18] = {
+ 		{ 640,  480},
+ 		{ 720,  480},
+ 		{ 800,  600},
+@@ -520,10 +522,11 @@ static void radeon_add_common_modes(struct drm_encoder *encoder, struct drm_conn
+ 		{1680, 1050},
+ 		{1600, 1200},
+ 		{1920, 1080},
+-		{1920, 1200}
++		{1920, 1200},
++		{2560, 1080}
+ 	};
+ 
+-	for (i = 0; i < 17; i++) {
++	for (i = 0; i < 18; i++) {
+ 		if (radeon_encoder->devices & (ATOM_DEVICE_TV_SUPPORT)) {
+ 			if (common_modes[i].w > 1024 ||
+ 			    common_modes[i].h > 768)
+@@ -1491,25 +1494,32 @@ static enum drm_mode_status radeon_dvi_mode_valid(struct drm_connector *connecto
+ 	    (mode->clock > 135000))
+ 		return MODE_CLOCK_HIGH;
+ 
+-	if (radeon_connector->use_digital && (mode->clock > 165000)) {
++	if (radeon_connector->use_digital && (mode->clock > (hdmimhz * 1000))) {
+ 		if ((radeon_connector->connector_object_id == CONNECTOR_OBJECT_ID_DUAL_LINK_DVI_I) ||
+ 		    (radeon_connector->connector_object_id == CONNECTOR_OBJECT_ID_DUAL_LINK_DVI_D) ||
+-		    (radeon_connector->connector_object_id == CONNECTOR_OBJECT_ID_HDMI_TYPE_B))
++		    (radeon_connector->connector_object_id == CONNECTOR_OBJECT_ID_HDMI_TYPE_B)){
++			printk("MODE_CLOCK_HIHG0 %d", hdmimhz);
+ 			return MODE_OK;
+-		else if (ASIC_IS_DCE6(rdev) && drm_detect_hdmi_monitor(radeon_connector_edid(connector))) {
++		}else if (ASIC_IS_DCE6(rdev) && drm_detect_hdmi_monitor(radeon_connector_edid(connector))) {
+ 			/* HDMI 1.3+ supports max clock of 340 Mhz */
+-			if (mode->clock > 340000)
++			if (mode->clock > 340000){
++				printk("MODE_CLOCK_HIHG1 %d", hdmimhz);
+ 				return MODE_CLOCK_HIGH;
+-			else
++			}else{
++				printk("MODE_OK1");
+ 				return MODE_OK;
++			}
+ 		} else {
++			printk("MODE_CLOCK_HIHG2 %d", hdmimhz);
+ 			return MODE_CLOCK_HIGH;
+ 		}
+ 	}
+ 
+ 	/* check against the max pixel clock */
+-	if ((mode->clock / 10) > rdev->clock.max_pixel_clock)
++	if ((mode->clock / 10) > rdev->clock.max_pixel_clock){
++		printk("MODE_CLOCK_HIHG3 %d", hdmimhz);
+ 		return MODE_CLOCK_HIGH;
++	}
+ 
+ 	return MODE_OK;
+ }
+@@ -1809,7 +1819,7 @@ static enum drm_mode_status radeon_dp_mode_valid(struct drm_connector *connector
+ 				if (mode->clock > 340000)
+ 					return MODE_CLOCK_HIGH;
+ 			} else {
+-				if (mode->clock > 165000)
++				if (mode->clock > (hdmimhz * 1000))
+ 					return MODE_CLOCK_HIGH;
+ 			}
+ 		}
+diff --git a/drivers/gpu/drm/radeon/radeon_drv.c b/drivers/gpu/drm/radeon/radeon_drv.c
+index e45d7344ac2b..fce8f9ab8018 100644
+--- a/drivers/gpu/drm/radeon/radeon_drv.c
++++ b/drivers/gpu/drm/radeon/radeon_drv.c
+@@ -281,6 +281,11 @@ int radeon_cik_support = 1;
+ MODULE_PARM_DESC(cik_support, "CIK support (1 = enabled (default), 0 = disabled)");
+ module_param_named(cik_support, radeon_cik_support, int, 0444);
+ 
++int hdmimhz = 165;
++MODULE_PARM_DESC(hdmi_mhz, "set HDMI max frequency, default is 165");
++module_param_named(hdmi_mhz, hdmimhz, int, 0444);
++
++
+ static struct pci_device_id pciidlist[] = {
+ 	radeon_PCI_IDS
+ };
+diff --git a/drivers/gpu/drm/radeon/radeon_encoders.c b/drivers/gpu/drm/radeon/radeon_encoders.c
+index 46549d5179ee..6b805bcd5726 100644
+--- a/drivers/gpu/drm/radeon/radeon_encoders.c
++++ b/drivers/gpu/drm/radeon/radeon_encoders.c
+@@ -35,6 +35,8 @@
+ #include "radeon_legacy_encoders.h"
+ #include "atom.h"
+ 
++extern int hdmimhz;
++
+ static uint32_t radeon_encoder_clones(struct drm_encoder *encoder)
+ {
+ 	struct drm_device *dev = encoder->dev;
+@@ -389,7 +391,7 @@ bool radeon_dig_monitor_is_duallink(struct drm_encoder *encoder,
+ 				else
+ 					return false;
+ 			} else {
+-				if (pixel_clock > 165000)
++				if (pixel_clock > (hdmimhz * 1000))
+ 					return true;
+ 				else
+ 					return false;
+@@ -414,7 +416,7 @@ bool radeon_dig_monitor_is_duallink(struct drm_encoder *encoder,
+ 				else
+ 					return false;
+ 			} else {
+-				if (pixel_clock > 165000)
++				if (pixel_clock > (hdmimhz * 1000))
+ 					return true;
+ 				else
+ 					return false;
+-- 
+2.30.0
 
-Hi,
-
-This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
-a patch that has triggered this response.  He used to manually respond
-to these common problems, but in order to save his sanity (he kept
-writing the same thing over and over, yet to different people), I was
-created.  Hopefully you will not take offence and will fix the problem
-in your patch and resubmit it so that it can be accepted into the Linux
-kernel tree.
-
-You are receiving this message because of the following common error(s)
-as indicated below:
-
-- Your patch did not apply to any known trees that Greg is in control
-  of.  Possibly this is because you made it against Linus's tree, not
-  the linux-next tree, which is where all of the development for the
-  next version of the kernel is at.  Please refresh your patch against
-  the linux-next tree, or even better yet, the development tree
-  specified in the MAINTAINERS file for the subsystem you are submitting
-  a patch for, and resend it.
-
-If you wish to discuss this problem further, or you have questions about
-how to resolve this issue, please feel free to respond to this email and
-Greg will reply once he has dug out from the pending patches received
-from other developers.
-
-thanks,
-
-greg k-h's patch email bot
