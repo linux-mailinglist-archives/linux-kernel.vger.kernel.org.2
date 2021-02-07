@@ -2,249 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C33B53125EA
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 17:14:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CAEBE3125FB
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 17:22:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229715AbhBGQOl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Feb 2021 11:14:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39744 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229684AbhBGQOj (ORCPT
+        id S229491AbhBGQWH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Feb 2021 11:22:07 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:31411 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229638AbhBGQWA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Feb 2021 11:14:39 -0500
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 135DFC06174A
-        for <linux-kernel@vger.kernel.org>; Sun,  7 Feb 2021 08:13:58 -0800 (PST)
-Received: by mail-wm1-x332.google.com with SMTP id i9so10893305wmq.1
-        for <linux-kernel@vger.kernel.org>; Sun, 07 Feb 2021 08:13:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chrisdown.name; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=f37oj4SSGjJfGtwkQjnruEKUcZ9jnJkZgRlS8GvfDpk=;
-        b=VjnOiaVP9qw4+aXLb3VabaMjxoNmVuHAsR3OCyqZ/I91l4V/FRz78g69nwUOo0QROL
-         dlU9D/owyWqjoqI9lAViV916GWcsWhQX7LFOxUeMaPSUYFlfBQMGNMgOzPxoEVhv7wWi
-         nU9vOrAQpYnmdwbyKkBh5Vb+Bdo6GUREdio6I=
+        Sun, 7 Feb 2021 11:22:00 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612714833;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=FZqyDugOGOW0JQq4JTJQ1tDgFP/xH2dXqvp4jbAWnlA=;
+        b=RmgIofntqJBxbB2NSQAwYGxcjqzapGgewbxjKILKQYenodoE+oCkAPWQ9RHM2qL0cpjcnJ
+        6SCn+1ImcrtSu69VOACk4XBVTkc0CX0NSWUqc/hsW7JjSPjlnmn29Z+l4WhD4RAOqYUZn7
+        ZVKquqQNSqZncCaS0IcW4ytyKBEtnC8=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-164-SLLlD35rMbOtohfy0pAK0g-1; Sun, 07 Feb 2021 11:20:31 -0500
+X-MC-Unique: SLLlD35rMbOtohfy0pAK0g-1
+Received: by mail-ed1-f70.google.com with SMTP id p18so11790061edr.20
+        for <linux-kernel@vger.kernel.org>; Sun, 07 Feb 2021 08:20:31 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=f37oj4SSGjJfGtwkQjnruEKUcZ9jnJkZgRlS8GvfDpk=;
-        b=PRpbzzc6QDaX0KdIXOnxDz/wkuWE9XB0nr0jW+zbknnGvdsPmY81Jevvn8SrxevsyO
-         YEzVt6AAjxi+a7GN1+0rtzJJ1R1bEhbUt5vdo0Lg44fvrCw80bn8bxY3a9EpVq1B+tkH
-         GBGZc+0Jam0KIjEvqDayz+7wTrh+8VhjYkvTBMvvBATHRqaYeWjjW5zVnCQ8ckG5qBid
-         EiC485boAVkOu49F7O/I4jsJuU77k3lt7YUMc5WZ9xE6t9ye4Xe0oNBBeuxZry/PKFGw
-         v+DFo7avSYes2qIzdMfhpYj0AUmEwyblY9SXUJV8GZ/zrhzPGWC/x6i2wc9ryBUzC56J
-         Awag==
-X-Gm-Message-State: AOAM532UjY12ZsU8nfI+6H5Ch6LZTt5P/xnYqJRs3owH/JYPo7jwR1Gl
-        P2lzMOglvTJhss8iCQtoadPIdw==
-X-Google-Smtp-Source: ABdhPJy/G6UTTnVN7G8hSm4cI5wnEUspUGa1gKabuiqwlIqZPGMWhGgLTEcznMyRnlOAaCxUGYFdbQ==
-X-Received: by 2002:a1c:32c4:: with SMTP id y187mr11517942wmy.120.1612714436498;
-        Sun, 07 Feb 2021 08:13:56 -0800 (PST)
-Received: from localhost ([2a01:4b00:8432:8a00:63de:dd93:20be:f460])
-        by smtp.gmail.com with ESMTPSA id u3sm25613442wre.54.2021.02.07.08.13.55
+         :mime-version:content-disposition:in-reply-to;
+        bh=FZqyDugOGOW0JQq4JTJQ1tDgFP/xH2dXqvp4jbAWnlA=;
+        b=MJuhZm6PBgrdbcU93Amr4cKfIH+wO4kNWtlYHh91FfPVwlmXDk4T7OklpmgjxwXO90
+         e9qRjYAm0Y7KVpai1o/eYuy4iImShneAl+xiBGIe7/KyIr5fouUARaWH5HTW35S89P+x
+         ZrKDJOpH/pn3vRPsaFs2Ir1jj7rG7g3fpw1UqRqjt0gMgaspQ9XiQ/CLitGy7gup39yo
+         ebIVTIT9vDoeyTGDWIOm9QFgUEIyE8JDmkf2Jh3N3DsGuZ0y52NPbdy0CC9fuTRZ394u
+         pIDS/rgFltJT3rZ9H0nlRb74iwjFmoa6k6wk0fXdJCgGN/yNbRXeumjPE4XjP4L0dYa9
+         XuFQ==
+X-Gm-Message-State: AOAM531HMB6NwrT3Av3kLCsyu4K0udZpoBPZpD2Nq1lUPi05DMrt65OO
+        RloXbfxuq9EG/NbNV1/GTLngcMJ7GYd2xuunQkOahAloS6mcQyJxBREV1v4rZ+SA9j78rmqPem0
+        +t9JmTGyB51uvvDlTlzsvvrtC
+X-Received: by 2002:aa7:cb0d:: with SMTP id s13mr13143851edt.221.1612714830403;
+        Sun, 07 Feb 2021 08:20:30 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxSdcDNfe71ti67oDmkvTssos1+0OxTMKiTicFwRsqODDXrK/rf1JmpCvBGtLbnaWdb2ccmlQ==
+X-Received: by 2002:aa7:cb0d:: with SMTP id s13mr13143828edt.221.1612714830149;
+        Sun, 07 Feb 2021 08:20:30 -0800 (PST)
+Received: from redhat.com (bzq-79-180-2-31.red.bezeqint.net. [79.180.2.31])
+        by smtp.gmail.com with ESMTPSA id w3sm7043867eja.52.2021.02.07.08.20.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 07 Feb 2021 08:13:55 -0800 (PST)
-Date:   Sun, 7 Feb 2021 16:13:55 +0000
-From:   Chris Down <chris@chrisdown.name>
-To:     Joe Perches <joe@perches.com>
-Cc:     Petr Mladek <pmladek@suse.com>, linux-kernel@vger.kernel.org,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>, kernel-team@fb.com,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jason Baron <jbaron@akamai.com>,
-        Kees Cook <keescook@chromium.org>, linux-api@vger.kernel.org
-Subject: Re: [PATCH] printk: Userspace format enumeration support
-Message-ID: <YCARw7dYA7R3Dx3m@chrisdown.name>
-References: <YBwU0G+P0vb9wTwm@chrisdown.name>
- <YB11jybvFCb95S9e@alley>
- <YB3Fwh827m0F+y3n@chrisdown.name>
- <49124db60cdc88c4e9fcca1bbc9767432ad5a93b.camel@perches.com>
- <YB8IcCqOJA7vzqiJ@chrisdown.name>
- <dc6cf90d978e012b0d698a698935d526ca4b0a1c.camel@perches.com>
- <YB/1iHwwTi9dOv38@chrisdown.name>
- <bd53d894b7bb0fcaa520282a04a6487828282695.camel@perches.com>
+        Sun, 07 Feb 2021 08:20:29 -0800 (PST)
+Date:   Sun, 7 Feb 2021 11:20:25 -0500
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jorgen Hansen <jhansen@vmware.com>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Alexander Popov <alex.popov@linux.com>, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stsp2@yandex.ru, oxffffaa@gmail.com
+Subject: Re: [RFC PATCH v4 00/17] virtio/vsock: introduce SOCK_SEQPACKET
+ support
+Message-ID: <20210207111954-mutt-send-email-mst@kernel.org>
+References: <20210207151259.803917-1-arseny.krasnov@kaspersky.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <bd53d894b7bb0fcaa520282a04a6487828282695.camel@perches.com>
-User-Agent: Mutt/2.0.5 (da5e3282) (2021-01-21)
+In-Reply-To: <20210207151259.803917-1-arseny.krasnov@kaspersky.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Joe Perches writes:
->> There are several issues with your proposed approach that make it unsuitable
->> for use as part of a reliable production environment:
->>
->> 1. It misses printk() formats without KERN_SOH
->>
->> printk() formats without KERN_SOH are legal and use MESSAGE_LOGLEVEL_DEFAULT.
->> On my test kernel, your proposed patch loses >5% of printk formats -- over 200
->> messages -- due to this, including critical ones like those about hardware or
->> other errors.
->
->There are _very_ few of those printks without KERN_<level> and those
->very few are not generally being changed.
+On Sun, Feb 07, 2021 at 06:12:56PM +0300, Arseny Krasnov wrote:
+> 	This patchset impelements support of SOCK_SEQPACKET for virtio
+> transport.
+> 	As SOCK_SEQPACKET guarantees to save record boundaries, so to
+> do it, two new packet operations were added: first for start of record
+>  and second to mark end of record(SEQ_BEGIN and SEQ_END later). Also,
+> both operations carries metadata - to maintain boundaries and payload
+> integrity. Metadata is introduced by adding special header with two
+> fields - message count and message length:
+> 
+> 	struct virtio_vsock_seq_hdr {
+> 		__le32  msg_cnt;
+> 		__le32  msg_len;
+> 	} __attribute__((packed));
+> 
+> 	This header is transmitted as payload of SEQ_BEGIN and SEQ_END
+> packets(buffer of second virtio descriptor in chain) in the same way as
+> data transmitted in RW packets. Payload was chosen as buffer for this
+> header to avoid touching first virtio buffer which carries header of
+> packet, because someone could check that size of this buffer is equal
+> to size of packet header. To send record, packet with start marker is
+> sent first(it's header contains length of record and counter), then
+> counter is incremented and all data is sent as usual 'RW' packets and
+> finally SEQ_END is sent(it also carries counter of message, which is
+> counter of SEQ_BEGIN + 1), also after sedning SEQ_END counter is
+> incremented again. On receiver's side, length of record is known from
+> packet with start record marker. To check that no packets were dropped
+> by transport, counters of two sequential SEQ_BEGIN and SEQ_END are
+> checked(counter of SEQ_END must be bigger that counter of SEQ_BEGIN by
+> 1) and length of data between two markers is compared to length in
+> SEQ_BEGIN header.
+> 	Now as  packets of one socket are not reordered neither on
+> vsock nor on vhost transport layers, such markers allows to restore
+> original record on receiver's side. If user's buffer is smaller that
+> record length, when all out of size data is dropped.
+> 	Maximum length of datagram is not limited as in stream socket,
+> because same credit logic is used. Difference with stream socket is
+> that user is not woken up until whole record is received or error
+> occurred. Implementation also supports 'MSG_EOR' and 'MSG_TRUNC' flags.
+> 	Tests also implemented.
+> 
+>  Arseny Krasnov (17):
+>   af_vsock: update functions for connectible socket
+>   af_vsock: separate wait data loop
+>   af_vsock: separate receive data loop
+>   af_vsock: implement SEQPACKET receive loop
+>   af_vsock: separate wait space loop
+>   af_vsock: implement send logic for SEQPACKET
+>   af_vsock: rest of SEQPACKET support
+>   af_vsock: update comments for stream sockets
+>   virtio/vsock: dequeue callback for SOCK_SEQPACKET
+>   virtio/vsock: fetch length for SEQPACKET record
+>   virtio/vsock: add SEQPACKET receive logic
+>   virtio/vsock: rest of SOCK_SEQPACKET support
+>   virtio/vsock: setup SEQPACKET ops for transport
+>   vhost/vsock: setup SEQPACKET ops for transport
+>   vsock_test: add SOCK_SEQPACKET tests
+>   loopback/vsock: setup SEQPACKET ops for transport
+>   virtio/vsock: simplify credit update function API
+> 
+>  drivers/vhost/vsock.c                   |   8 +-
+>  include/linux/virtio_vsock.h            |  15 +
+>  include/net/af_vsock.h                  |   9 +
+>  include/uapi/linux/virtio_vsock.h       |  16 +
+>  net/vmw_vsock/af_vsock.c                | 588 +++++++++++++++-------
+>  net/vmw_vsock/virtio_transport.c        |   5 +
+>  net/vmw_vsock/virtio_transport_common.c | 316 ++++++++++--
+>  net/vmw_vsock/vsock_loopback.c          |   5 +
+>  tools/testing/vsock/util.c              |  32 +-
+>  tools/testing/vsock/util.h              |   3 +
+>  tools/testing/vsock/vsock_test.c        | 126 +++++
+>  11 files changed, 895 insertions(+), 228 deletions(-)
+> 
+>  TODO:
+>  - What to do, when server doesn't support SOCK_SEQPACKET. In current
+>    implementation RST is replied in the same way when listening port
+>    is not found. I think that current RST is enough,because case when
+>    server doesn't support SEQ_PACKET is same when listener missed(e.g.
+>    no listener in both cases).
 
-I already specified how many are lost: 5%. That's not "very few". That's a huge 
-proportion of the coverage afforded by this patch, including several important 
-cases.
+   - virtio spec patch
 
-Relying on "they generally don't change" is not a recipe for reliability or 
-success (and they do change, more data on that below).
+>  v3 -> v4:
+>  - callbacks for loopback transport
+>  - SEQPACKET specific metadata moved from packet header to payload
+>    and called 'virtio_vsock_seq_hdr'
+>  - record integrity check:
+>    1) SEQ_END operation was added, which marks end of record.
+>    2) Both SEQ_BEGIN and SEQ_END carries counter which is incremented
+>       on every marker send.
+>  - af_vsock.c: socket operations for STREAM and SEQPACKET call same
+>    functions instead of having own "gates" differs only by names:
+>    'vsock_seqpacket/stream_getsockopt()' now replaced with
+>    'vsock_connectible_getsockopt()'.
+>  - af_vsock.c: 'seqpacket_dequeue' callback returns error and flag that
+>    record ready. There is no need to return number of copied bytes,
+>    because case when record received successfully is checked at virtio
+>    transport layer, when SEQ_END is processed. Also user doesn't need
+>    number of copied bytes, because 'recv()' from SEQPACKET could return
+>    error, length of users's buffer or length of whole record(both are
+>    known in af_vsock.c).
+>  - af_vsock.c: both wait loops in af_vsock.c(for data and space) moved
+>    to separate functions because now both called from several places.
+>  - af_vsock.c: 'vsock_assign_transport()' checks that 'new_transport'
+>    pointer is not NULL and returns 'ESOCKTNOSUPPORT' instead of 'ENODEV'
+>    if failed to use transport.
+>  - tools/testing/vsock/vsock_test.c: rename tests
+> 
+>  v2 -> v3:
+>  - patches reorganized: split for prepare and implementation patches
+>  - local variables are declared in "Reverse Christmas tree" manner
+>  - virtio_transport_common.c: valid leXX_to_cpu() for vsock header
+>    fields access
+>  - af_vsock.c: 'vsock_connectible_*sockopt()' added as shared code
+>    between stream and seqpacket sockets.
+>  - af_vsock.c: loops in '__vsock_*_recvmsg()' refactored.
+>  - af_vsock.c: 'vsock_wait_data()' refactored.
+> 
+>  v1 -> v2:
+>  - patches reordered: af_vsock.c related changes now before virtio vsock
+>  - patches reorganized: more small patches, where +/- are not mixed
+>  - tests for SOCK_SEQPACKET added
+>  - all commit messages updated
+>  - af_vsock.c: 'vsock_pre_recv_check()' inlined to
+>    'vsock_connectible_recvmsg()'
+>  - af_vsock.c: 'vsock_assign_transport()' returns ENODEV if transport
+>    was not found
+>  - virtio_transport_common.c: transport callback for seqpacket dequeue
+>  - virtio_transport_common.c: simplified
+>    'virtio_transport_recv_connected()'
+>  - virtio_transport_common.c: send reset on socket and packet type
+> 			      mismatch.
+> 
+> -- 
+> 2.25.1
 
->> 2. Users don't always have the kernel image available
->>
->> Many of our machines and many of the machines of others like us do not boot
->> using local storage, but instead use PXE or other technologies where the kernel
->> may not be stored during runtime.
->>
->> As is described in the changelog, it is necessary to be able to vary
->> remediations not only based on what is already in /dev/kmsg, but also to be
->> able to make decisions about our methodology based on what's _supported_ in the
->> running kernel at runtime, and your proposed approach makes this not viable.
->
->Indirection would alway work.
->
->You could load a separate file with output strings along with your
->kernel image.
-
-You're moving the goalposts quite quickly here, which makes it harder to reply 
-to your points. Now you're proposing an entirely separate distribution path, 
-compared to interfaces that we already have precedent for in the kernel (eg.  
-trace_printk). That requires a strong justification, and I'm not seeing one 
-here.
-
->> 3. `KERN_SOH + level' can appear in other places than just printk strings
->>
->> KERN_SOH is just ASCII '\001' -- it's not distinctive or unique, even when
->> paired with a check for something that looks like a level after it. For this
->> reason, your proposed patch results in a non-trivial amount of non-printk
->> related garbage in its output. For example:
->>
->>      % binutils/strings -k /tmp/vmlinux | head -5
->>      3L)s
->>      3L)s
->>      c,[]A\
->>      c(L)c
->>      d$pL)d$`u4
->>
->> Fundamentally, one cannot use a tool which just determines whether something is
->> printable to determine semantic intent.
->
->$ kernel_strings --kernel --section ".rodata" vmlinux
->
->I got exactly 0.
-
-"It works on my computer" is not a valid testing methodology, especially for 
-something as complex as the Linux kernel. It's especially not a valid rebuttal 
-to someone demonstrating that it clearly doesn't work on theirs.
-
-Even filtering to the .rodata section, there's plenty of garbage just in the 
-first five cases:
-
-     % binutils/strings --kernel --section ".rodata" /tmp/vmlinux | head -5
-     3******* Your BIOS seems to not contain a fix for K8 errata #93
-     1>pBC)
-     dTRAC
-     6Run %s as init process
-     7calling  %pS @ %i
-
-Clearly there are cases that you are not considering. My kernel config is 
-attached if you want to try and replicate, but regardless, it's really not 
-valid to say "it works for me" in response to someone showing that it doesn't.
-
->> 4. strings(1) output cannot differentiate embedded newlines and new formats
->>
->> The following has exactly the same output from strings(1), but will manifest
->> completely differently at printk() time:
->>
->>      printk(KERN_ERR "line one\nline two\nline three\n");
->>      printk("line four\n");
->
->This is not the preferred output style and is only done in old and
->unchanging code.
->
->Your use case in your commit log is looking for _changed_ formats.
-
-Joe, it's fine to present alternatives to people's patches, but please do your 
-research before spouting things like this. It's a waste of everyone's time to 
-refute things which are so easily demonstrated to be false.
-
-Here are a bunch of recent changes to printk I found just from literally 2 
-minutes of looking through `git log`:
-
-- ea34f78f3df6: 2020, printk site deleted (which of course we also need to know.)
-- a0f6d924cada: 2020, new callsite. the level is printed dynamically, so your proposed patch would not match.
-- bf13718bc57a: 2020, existing printk changed. 
-- 994388f228c6: 2020, printk site changed to au0828_isocdbg, reworded entirely.
-- a8b62fd08505: 2020, new callsite, dynamic level.
-
-I could find literally pages and pages of these just from the last few years.  
-Your belief that these printks are only in "unchanging" code does not match 
-reality.
-
->On Thu, 2021-02-04 at 15:37 +0000, Chris Down wrote:
->> This patch provides a solution to the issue of silently changed or
->> deleted printks:
->
->Exactly _how_ many of these use cases do you think exist?
->
->The generally preferred style for the example above would be:
->
->	pr_err("line one\n");
->	pr_err("line two\n");
->	pr_err("line three\n");
->	pr_err("line four\n");
-
-I have no idea why you think this is so rare -- we have mixed pr_* and 
-unadorned printk() all over the codebase. A number of the patches I just gave 
-above are in files with mixed calls.
-
->> The originally posted patch _does_ differentiate between these cases, using \0
->> as a reliable separator. Its outputs are, respectively:
->>
->>      \0013line one\nline two\nline three\0\nline four\n\0
->>      \0013line one\nline two\n\0line three\nline four\n\0
->>
->> This isn't just a theoretical concern -- there are plenty of places which use
->> multiline printks, and we must be able to distinguish between that and
->> _multiple_ printks.
->
->Just like there are many places that use buffered printks as the
->example I gave earlier.  None of which your proposed solution would find.
-
-There are always going to be cases which are not caught. The point is that the 
-patch proposed in this thread captures significantly more cases than the 
-`strings` case (not to mention that it avoids outputting garbage from .rodata), 
-not that it covers every imaginable scenario.
-
->> 5. strings(1) is not contextually aware, and cannot be made to act as if it is
->>
->> strings has no idea about what it is reading, which is why it is more than
->> happy to output the kind of meaningless output shown in #3. There are plenty of
->> places across the kernel where there might be a sequence of bytes which the
->> strings utility happens to interpret as being semantically meaningful, but in
->> reality just happens to be an unrelated sequence of coincidentally printable
->> bytes that just happens to contain a \001.
->>
->> I appreciate your willingness to propose other solutions, but for these
->> reasons, the proposed strings(1) patch would not suffice as an interface for
->> printk enumeration.
->
->I think you are on a path to try to make printk output immutable.
->I think that's a _very_ bad path.
-
-That's literally the opposite of what this patchset does. This patchset 
-offloads the responsibility of worrying about userspace parsers breaking 
-because of changes to kernel printks, because those userspace parsers and 
-maintainers now have a mechanism to detect changes. If anything, it _reduces_ 
-the risk of what you're describing.
