@@ -2,74 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D68293123B2
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 11:59:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C3D63123B5
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 12:00:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229562AbhBGK5n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Feb 2021 05:57:43 -0500
-Received: from mx2.suse.de ([195.135.220.15]:50568 "EHLO mx2.suse.de"
+        id S229651AbhBGK7s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Feb 2021 05:59:48 -0500
+Received: from ozlabs.org ([203.11.71.1]:46721 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229445AbhBGK5l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Feb 2021 05:57:41 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id D5867AD6A;
-        Sun,  7 Feb 2021 10:57:00 +0000 (UTC)
-Date:   Sun, 7 Feb 2021 11:56:58 +0100
-From:   Borislav Petkov <bp@suse.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] timers/urgent for v5.11-rc7
-Message-ID: <20210207105658.GB32127@zn.tnic>
+        id S229590AbhBGK7p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Feb 2021 05:59:45 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DYR3n3lvHz9sCD;
+        Sun,  7 Feb 2021 21:59:01 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1612695542;
+        bh=/I7fNZAOAjhvTsy13VVZEWwmE79v1IGag6Aa52s48MQ=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Y49DNtSjkVemEyEMu+XXZTr6kJeADvpb8zF++cqSlNcyKyydFSViByjBkJ88dDl2n
+         Ky/YX/oqQZ8aM8Z8jE49KQmOqYkH3Lq2mT8B6CQVLtpNs48qqj9hW7vxrsl7krzTX1
+         RWlmJ1QLT8VLU3l5Bke0nE8mPNcWLPVf+E/VgoOfG2sVS/3BJHQCEeZd6PuOcQDyVu
+         KWMkZRb5NA8nymQk+5Et7zPCvNOPi0khs+ZztgqEUdSvUKl+hCp8b7WFOCMdBSUuFG
+         sN+ChfNnCuVszJORnx+phz9t95YrTfrQ1m3i7JsUPc1dTZANk1OdlxlFCdwzisi+dk
+         W1kmBN2MtdVgA==
+Date:   Sun, 7 Feb 2021 21:59:00 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Fixes tag needs some work in the soundwire tree
+Message-ID: <20210207215900.1223b0ca@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/T.Ffr+Nq7jbltv01kb3MCkK";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+--Sig_/T.Ffr+Nq7jbltv01kb3MCkK
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-please pull two more timers-related fixes for v5.11.
+Hi all,
 
-Thx.
+In commit
 
----
+  531f45f2bdf6 ("soundwire: export sdw_write/read_no_pm functions")
 
-The following changes since commit 211e5db19d15a721b2953ea54b8f26c2963720eb:
+Fixes tag
 
-  rtc: mc146818: Detect and handle broken RTCs (2021-01-27 09:36:22 +0100)
+  Fixes: 60ee9be25571 ('soundwire: bus: add PM/no-PM versions of
 
-are available in the Git repository at:
+has these problem(s):
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/timers_urgent_for_v5.11_rc7
+  - Subject has leading but no trailing parentheses
+  - Subject has leading but no trailing quotes
 
-for you to fetch changes up to 24c242ec7abb3d21fa0b1da6bb251521dc1717b5:
+Please do not split Fixes tags over more than one line.
 
-  ntp: Use freezable workqueue for RTC synchronization (2021-02-05 18:03:13 +0100)
+--=20
+Cheers,
+Stephen Rothwell
 
-----------------------------------------------------------------
-- Use a freezable workqueue for RTC sync because the sync can happen at any time
-and trigger suspend assertion checks in the i2c subsystem.
+--Sig_/T.Ffr+Nq7jbltv01kb3MCkK
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-- Correct a previous RTC validation change to check only bit 6 in register D
-because some Intel machines use bits 0-5.
+-----BEGIN PGP SIGNATURE-----
 
-----------------------------------------------------------------
-Geert Uytterhoeven (1):
-      ntp: Use freezable workqueue for RTC synchronization
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAfx/QACgkQAVBC80lX
+0GySrQf/dWcUHlrOsaFEk0zcNaSGyg5nXtINOiWGlIsC77aVBS73AW643pLdXUVa
+C3WNM2raBTXyR/DbqUZpCmKSGhTfmdTNmRgloSmGq/PX9xpFU8f4aY3DYq/KB0EN
+67bk3YPDFzN3RDMwq6WAebgBZLqQBnfYmT8hXMfjM/sXJ9oj0znczqlsgGhn+8LL
+ZvXwIQhAPSOnOGP9qm4DvAiTyqRFOOMWTLb34gvinuhBgE1Be/7TafGrInIrHWD8
+S2x6EM8oYNOh7D9hQvFK+cPDId4iUbGXn0uTRQcDMfSy7hqlJjGYNR6yIJ6x/l7g
+Fd1NXo+cKwAJ5XXkoRe3/FA+ShXaAA==
+=EUMx
+-----END PGP SIGNATURE-----
 
-Thomas Gleixner (1):
-      rtc: mc146818: Dont test for bit 0-5 in Register D
-
- drivers/rtc/rtc-cmos.c         | 4 ++--
- drivers/rtc/rtc-mc146818-lib.c | 4 ++--
- kernel/time/ntp.c              | 4 ++--
- 3 files changed, 6 insertions(+), 6 deletions(-)
-
--- 
-Regards/Gruss,
-    Boris.
-
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
+--Sig_/T.Ffr+Nq7jbltv01kb3MCkK--
