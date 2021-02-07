@@ -2,145 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E55D4312484
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 14:12:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC972312485
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 14:13:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229797AbhBGNLp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Feb 2021 08:11:45 -0500
-Received: from mail-eopbgr60086.outbound.protection.outlook.com ([40.107.6.86]:28822
-        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229491AbhBGNLk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Feb 2021 08:11:40 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hMkcqPjGE+0pknLWPrVh4SwV5y+jDQWj83qqk5+OBjWBMHJju3yrypi0ZHtowSOaxzldFnJeKkad//YfJC8WIvDy+9iNCiNTYRC/EuFmlDCEix2WoT4Urna+YiAbUOK8a+lp+5cpMEXgari7TVIoetXds/awPXjcxd5QHHFa03Xbe033Rdyjk3yVY//jpgTNocnAWz+VE70UY/BEfh3HL8mHUwnsfQ06pw5R9pjGRmujGwQZr99TBHOFYz6/YV/AngyyVifR5BmJfdo0va9M0p4dkKF6bblhJV8V4CowdIMtYrz483cRvNwnA2TbnARoo/1cuZu8nvpZqFMPxMR7Yg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5eYh5MHJ9Rn6qOvDJuPHRSuL2PlMKOWDrB0yAYsfO+s=;
- b=XuDra1SQkDN/pR08B+Itv5g7yR7BpJNJCFfeZKuzWgoPM21TKKzuwyO8laFCCn8z+hWj+L3p6SupKdcyVgZVCS40TR/jUQmGxurcrkI+/I0oChBVBcWnO4NOsbEnwo2ztTfwvPmyBkZOKbswD07BMRru1QCAxjcFLqGejPRa3Bt0+XFOJa7yutFpSJF2to/Y+xEEzhmB4yPNMDdyq+uGvlzHd5lb6jOU5CYjEXpJcEWa+m44i2toORcredk4wbHFKupoX+OFNQGEysEeiUTH1ohPS/ZJjl9d8gCFrG0Me+G3NVDbO/t3A6pnHL7cPEbK7uo40RQ4pvBR/wBgeV5J5A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5eYh5MHJ9Rn6qOvDJuPHRSuL2PlMKOWDrB0yAYsfO+s=;
- b=ijaovIg/vvnI/kXCY70MhEdjqFHxFXmrMamSOcJe9bJdhguupxm8hbhEYB80T67D6QePaCCsT9WckmjASEx5KdiXwHL+mWpb6bxsu1DIDoizr1AFEnbmCZyLBxA997KHoqi7P0NGi/X8Q+eJfyTbsM7wnFU1tBbr06jUk8G/o4k=
-Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
- by DB7PR04MB5465.eurprd04.prod.outlook.com (2603:10a6:10:85::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.23; Sun, 7 Feb
- 2021 13:10:51 +0000
-Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com
- ([fe80::d58c:d479:d094:43d0]) by DB6PR0402MB2760.eurprd04.prod.outlook.com
- ([fe80::d58c:d479:d094:43d0%9]) with mapi id 15.20.3825.024; Sun, 7 Feb 2021
- 13:10:51 +0000
-From:   Peng Fan <peng.fan@nxp.com>
-To:     "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "adrian.hunter@intel.com" <adrian.hunter@intel.com>
-CC:     "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        "festevam@gmail.com" <festevam@gmail.com>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH V2 0/4] imx esdhc dt/driver update
-Thread-Topic: [PATCH V2 0/4] imx esdhc dt/driver update
-Thread-Index: AQHW76RVLKb1OEKwmEWX0lhOZ4iaA6pMxeWQ
-Date:   Sun, 7 Feb 2021 13:10:51 +0000
-Message-ID: <DB6PR0402MB2760CA4A3D7DC4D5D6C3D81A88B09@DB6PR0402MB2760.eurprd04.prod.outlook.com>
-References: <1611198593-16287-1-git-send-email-peng.fan@nxp.com>
-In-Reply-To: <1611198593-16287-1-git-send-email-peng.fan@nxp.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: linaro.org; dkim=none (message not signed)
- header.d=none;linaro.org; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [92.121.68.129]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: bc5c1550-d100-41aa-2e1d-08d8cb69cb75
-x-ms-traffictypediagnostic: DB7PR04MB5465:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DB7PR04MB5465FD3BD3CF4F0238BC8A4C88B09@DB7PR04MB5465.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:3826;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: kCNJp+85EsYFu0WANO92MY+PjrQsaO+KC8OLnLonBN/nUY8hVSK30ckqkjEFogtMhjgQTgegCLyPTrPLI8+BX67ORVRTowXG+g/mgKpTre5hHw7Zt9bJGku9m/3+eeTjBg2LwiNhgCTTie1wk8sCLrFSAIj/ux4iYptlLnyvu3y5UcunAgon4M9JQX5UF8S7IvDNq3/EMFfBFtQi6CRW4xNSzHTPBmFqmfj/h6xTsJcvz9//0t2C9dY2GVG1IJ8VfB/1oM/BRbqGu617MTvPHpOTsoV1psgnqvQf7UcNg2JWnEe2O8UiPszne/CtM8iyfVvQPNAM2cWu3fBTnomWYx+jjzIcogpVqKBmIEaNOKn3Jcba4eNAnQb8GIXIpA60fg1DOrAS21vQjwxhtMTzdVZCXapFdr60URwryqDCi9gLwtu3jAIjHQZcJq9NR7XIjQlBzru1lxNLJgd4NRCtWs/ZEuaBlYNazqYCawTvn3SE/ojZkt9bgEEG89UpiWbt1W2iXq4eihWKrG7fsPKkYQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2760.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(366004)(136003)(346002)(396003)(376002)(64756008)(316002)(66446008)(2906002)(110136005)(8676002)(15650500001)(66476007)(66946007)(6506007)(66556008)(33656002)(71200400001)(55016002)(7416002)(8936002)(9686003)(76116006)(52536014)(7696005)(44832011)(478600001)(86362001)(4326008)(186003)(5660300002)(26005)(4744005)(54906003)(83380400001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?MrwEqpCndnwvX5SKCDfql4tK+0/MGsRIiv6O22oCV705oRchNKze4anfLL3j?=
- =?us-ascii?Q?AtiF8sZH3NsWeT6Ij/jwNPS1ISTB75z3/dEqadvwhCmR80e1ua+x47IHj4mj?=
- =?us-ascii?Q?8aSe/YWAr73jqsEYgFZhi5aQG3EX4QOdENOiAyTnA4Yv0LkiHqTXitYtm5Uo?=
- =?us-ascii?Q?zpO64g0PeEDySDIEI39buckv+5CKeCQTcXlhO/AEAE8F0HN2VLDUk03pR7z6?=
- =?us-ascii?Q?bNo71OGKRcRV90uQLfQp5+rNou78ZLR8IUVo4bUMwLScd5wx3Ua8/7aMCCUu?=
- =?us-ascii?Q?/wp4YTDdKM/k7GmJBU/1FFBJWqA0+RcbyOnskAoAjOFaut7dwRwtGisaIOT4?=
- =?us-ascii?Q?/gtf8Gc9KzM5Pn0PoF2sWcGf++Wy5LuGuDg5fpPC4qWT/FhZ/kKLxHdMtx4D?=
- =?us-ascii?Q?vKLahTyEC5sTM8QQW74/c4b+Ii6EsE27/69yDl5VvWF1VABa7xgwcnJII6a+?=
- =?us-ascii?Q?4rifSBlbNupSryK/9VVkhtC/WTI4tx1a8vHbNPPRRX0b6mYtFVwaALEd/VrB?=
- =?us-ascii?Q?7d6ikafKKYmrwEmK5Xgamv/GOIEYrBOFtruZ+iGZ0CsDK8tMsJglesfgNE+5?=
- =?us-ascii?Q?YJh39ZBBsiQ520GtiPGOkLZpJjrkjyVnHJ+dO6fjKmsKnKSXw1YM/acxLiea?=
- =?us-ascii?Q?pV8MdcGuwuupn+Zc9iA0yQZ74iCcbokD8ebN++8lmenEOoLwK6fc99FpAP+o?=
- =?us-ascii?Q?CIbu2wIHm05pvaWz88+o7G1DyXTy9w/3beoJEfSPRYkZm8VwegHLYWsKrDFf?=
- =?us-ascii?Q?FvPj+lK5uqQA7gEsVdLAUxHaEefwcRBSWtWw5DYObqeL5FNX4ipTTCb2s62L?=
- =?us-ascii?Q?sSJ9KmF6qqrRQyb/fvZ/Tc2kyIQzBY+RcIp4uKUrsYsz/tMnFjK8T4VcOF/y?=
- =?us-ascii?Q?r2FE/0lH6qArWBT9lkdu6j9LG4T5IqUKsvgud4JShrXT+un3CtuOoZg38UTC?=
- =?us-ascii?Q?+yyV3AHVD/nHab/BmPD3HSIYnT+O9DV6OfWpIpOji/kCBMpkq685Gh8RbvOS?=
- =?us-ascii?Q?boUUX64L0Mhy6VXclkrFZ01vXLJ/wQKn1sbOMh6DS8/8RMXn4jey7vWc3O79?=
- =?us-ascii?Q?zpQzcvzU5Yy5iqAzVt9PSe/Gw7ADw1aVrT3JDMFjcWsTGy4zcfRGevUg3T+9?=
- =?us-ascii?Q?FU0sNBpIvo6TUDQMJPSOshGcTNcMMWuG0XTTvm8K+45IxRfBxy2JB0pWipUS?=
- =?us-ascii?Q?CRGC2QM+wD8eBC9HZZV7CO1apQOus6ZlKJjLjaZzx1JheWoQBbJtg+Gjz4f7?=
- =?us-ascii?Q?8q9wiG5zk/Smj9slNL4aG5C/9FszCjsJCdqRp+Q/sqZyckmsrlcktEX4ovnb?=
- =?us-ascii?Q?M6ijNw0juI18G9K3VcgfbSpe?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S229851AbhBGNMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Feb 2021 08:12:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57266 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229491AbhBGNM0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Feb 2021 08:12:26 -0500
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D948C06174A
+        for <linux-kernel@vger.kernel.org>; Sun,  7 Feb 2021 05:11:45 -0800 (PST)
+Received: by mail-wr1-x436.google.com with SMTP id u14so13890214wri.3
+        for <linux-kernel@vger.kernel.org>; Sun, 07 Feb 2021 05:11:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QKECbsWCMXV3jdws0/56aBoSaNa9rnsRvH773f+Ajxs=;
+        b=J9mKA6jAoyc+ndFvGXTJbR7opS6yIPhigLhA5yw0KXqdR+KY5kcxzuovEDVQVj7ttE
+         Yaj2fuIxchsknU84aXiwgbq1o189RPKd6hS00mG/emXrQDZSm7wXiTMGuuz769SW8Dpd
+         r7Yl4MnxeNL8ygHBf0y6iXtwhG5k2jYST8mOdp5PtKQmDfYOYdhYeIr4my62HJDhdUdr
+         GDUn3VPScc4ZZeYKaVC+bZn61gMRkIWL551IO/5BGgDpvw/5vnAp0Ixr3BZQ18DIEcF/
+         0N6dQ3oSDJx4/hSwiCLolDou/L7WxIKv+MhBy2ov7lv5/GhA4+AxdVMt3SG2uNa/WZ0O
+         1e1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QKECbsWCMXV3jdws0/56aBoSaNa9rnsRvH773f+Ajxs=;
+        b=AFhQ84bIUnO9DHE1OkQlRRFVl8qqTWD2vJsq4z+eYBz0hcWLBMWVtSBWbOv5OQbtZM
+         xSD4128OMqNdCe+ObJvtTH8HOLSCtUQZgyzdNjBbA+ZxmgA/ZzSN5pIZE1MH5Ha0Bj40
+         v0tJRYOahGARRrIANG3kxyNtN77C/cMwh4EYd4ga2HzYaKssgs4ncsKOxb3xI0dlNGMz
+         grzJKXPSHEPo9pBb8VDEQ7lNN5f8NnwzMnhEaNLsQgre/LOZd1UUROW1e/ErSHS+JTDn
+         ZbgCkVsACgILajblcMgKCfPE7iXmpRYdjidcbRcayG0IsDxKdpgTDif6ksSGP4r2vNkX
+         9+6A==
+X-Gm-Message-State: AOAM533yy0luez/IH21BbfLq5wqiCbJATtkuOhi0YOvfn8XPv5/1bbnV
+        UIg8v6RNpcVPhpSsuSkmimx+tEycikiqn64hxgk=
+X-Google-Smtp-Source: ABdhPJyeGR8kZfLzFpYv0bD6bYcy2h0AO7MffReuc+RgGV+SwVun4EOnTj+f6/OPtZPdbP55fN6tAjXbaNICE28lTvc=
+X-Received: by 2002:a5d:4b8e:: with SMTP id b14mr14532579wrt.130.1612703503805;
+ Sun, 07 Feb 2021 05:11:43 -0800 (PST)
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DB6PR0402MB2760.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: bc5c1550-d100-41aa-2e1d-08d8cb69cb75
-X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Feb 2021 13:10:51.6764
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: wRZIjOaJ0ka3eEESXAQt74LDCnuhX0ZHHdw8mDAK68GKgVpiay9j4u3/x/y7FQl0j8CVoWtRpeH5N1Y+/da60Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB7PR04MB5465
+References: <20210127194047.21462-1-christianshewitt@gmail.com>
+ <CAKGbVbtaDHmukvfF=sfSmWHVdAYoF6-i4RTzsPQ6zfsjHcGNCw@mail.gmail.com>
+ <2c8d2b9e-c1cc-1157-19de-409957ecf9da@arm.com> <CAKGbVbuLRvZaZNfU-pi=7vqJZO2zOHAkrjTo6vs9BKLrV21O8g@mail.gmail.com>
+In-Reply-To: <CAKGbVbuLRvZaZNfU-pi=7vqJZO2zOHAkrjTo6vs9BKLrV21O8g@mail.gmail.com>
+From:   Qiang Yu <yuq825@gmail.com>
+Date:   Sun, 7 Feb 2021 21:11:32 +0800
+Message-ID: <CAKGbVbu-BJMxpwbC4XoP3rzt_hYtoSVHr1zjA5OXSy8YQmEXag@mail.gmail.com>
+Subject: Re: [PATCH v2] drm/lima: add governor data with pre-defined thresholds
+To:     Lukasz Luba <lukasz.luba@arm.com>
+Cc:     Christian Hewitt <christianshewitt@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        lima@lists.freedesktop.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Steven Price <steven.price@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Subject: [PATCH V2 0/4] imx esdhc dt/driver update
+Applied to drm-misc-next.
 
-Gentle ping..
+Regards,
+Qiang
 
-Thanks,
-Peng.
-
->=20
-> From: Peng Fan <peng.fan@nxp.com>
->=20
-> Patch V2:
->  patch 1, 2, 3 is new
->  patch 4 is not changed
->=20
-> Peng Fan (4):
->   dt-bindings: mmc: fsl-imx-esdhc: add pinctrl bindings
->   dt-bindings: mmc: fsl-imx-esdhc: add clock bindings
->   arm64: dts: imx8qxp: correct usdhc clock-names sequence
->   mmc: sdhci-esdhc-imx: validate pinctrl before use it
->=20
->  .../bindings/mmc/fsl-imx-esdhc.yaml           | 36
-> +++++++++++++++++++
->  arch/arm64/boot/dts/freescale/imx8qxp.dtsi    | 18 +++++-----
->  drivers/mmc/host/sdhci-esdhc-imx.c            |  2 +-
->  3 files changed, 46 insertions(+), 10 deletions(-)
->=20
-> --
-> 2.28.0
-
+On Tue, Feb 2, 2021 at 9:04 AM Qiang Yu <yuq825@gmail.com> wrote:
+>
+> OK, I see. Patch is also:
+> Reviewed-by: Qiang Yu <yuq825@gmail.com>
+>
+> Regards,
+> Qiang
+>
+> On Mon, Feb 1, 2021 at 5:59 PM Lukasz Luba <lukasz.luba@arm.com> wrote:
+> >
+> >
+> >
+> > On 1/30/21 1:57 PM, Qiang Yu wrote:
+> > > This patch gets minor improvement on glmark2 (160->162).
+> >
+> > It has bigger impact when the load is changing and the frequency
+> > is stuck to min w/o this patch.
+> >
+> > >
+> > > Seems there's no way for user to change this value, do we?
+> > > Or there's work pending to expose it to sysfs?
+> >
+> > True there is no user sysfs. I've proposed a patch to export these via
+> > sysfs. Chanwoo is going to work on it. When it will land mainline, it's
+> > probably a few months. So for now, the fix makes sense.
+> >
+> > Regards,
+> > Lukasz
+> >
