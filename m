@@ -2,244 +2,300 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F04E31244B
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 13:30:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE21B312466
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 13:59:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229785AbhBGM1t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Feb 2021 07:27:49 -0500
-Received: from mail-mw2nam10on2087.outbound.protection.outlook.com ([40.107.94.87]:36830
-        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229510AbhBGM1m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Feb 2021 07:27:42 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mrEbuOXwaZxfdR3+42ABh0zHpoKCxnEAdQgIG3vtrW9Yv9WGoTOLQOtBuf2O1OVMLogfUE+uv/dsP/iCBT31glcxrrHhn0tT8E0ROi1XczRsLVRIrS4wfjIqnYnrebuvejZLkhykzsGWpERZlEDzTfssdHxAF7H9naFQNhwDDQFf5DUnu0AP+65a1jYrgHhRUI6jotDw6/TaqTmRurChcPYRtD5K6P4gPaydR8ryc3JGh/E8eCKJM51qLgyuSnhaxKA+CPe8ovTPUiqS7Ev47UrPq4k+kMa3XlAgg6/3/i2pOvl9XzIu8tO90jwcYmG7/RoGrBONx/J4Q9uqMWPtZQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gCB7prNXs4eU0326oxzzF0EnCojI9fDNDGYG9u9DBM8=;
- b=GKZvn9gURTVZW3b1ShoHtPfzl2BXfHa2x2eUACo46vPcUPEdf6puM4a7Hq42kokrLvUZGIRgTxQxjq6zNSsHAI1QUk36kSQwVBt+okF/sBIP4ZnsowsY/J+5KLYVVUYNC8KmiENIpqV2BGfPHUZ735GvDbyJwoVSHiuKAxUkEVGA71joyW3iVkX7zIFGv8NGRNg6lvE9qutVlxlUp3Mk6GiMtlwW/pyuYk6S4kxd84iHLxZ9uCgI+8uQ9y6ZI1q71bXsYH8q2f8kjmIbK+mYs3sY6DjlytSN7oOGetz+yKBMGqNGNUrn9SHyY9Au2xBN6huAHEW2K0u3Er14nY+2jg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=windriversystems.onmicrosoft.com;
- s=selector2-windriversystems-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gCB7prNXs4eU0326oxzzF0EnCojI9fDNDGYG9u9DBM8=;
- b=daiKFZtA4KYlTtc2miTwsynVq2DJsDk18ZIkdDhW9dzV/lYEooUMb2tHMtybiN5S5/SAK/Mi7esOFeOVWhY47G7kEQ/AO/1iZ8mNObM1Tmx+yzkVGO7Nd7bBpLRF1VLCMSAX6sPXa+p3Jx08vQDbHb03ROkPZrbwPcsLoj2OM3M=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=windriver.com;
-Received: from BYAPR11MB2632.namprd11.prod.outlook.com (2603:10b6:a02:c4::17)
- by SJ0PR11MB4815.namprd11.prod.outlook.com (2603:10b6:a03:2dd::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.20; Sun, 7 Feb
- 2021 12:26:27 +0000
-Received: from BYAPR11MB2632.namprd11.prod.outlook.com
- ([fe80::89a3:42c3:6509:4acd]) by BYAPR11MB2632.namprd11.prod.outlook.com
- ([fe80::89a3:42c3:6509:4acd%4]) with mapi id 15.20.3784.026; Sun, 7 Feb 2021
- 12:26:27 +0000
-From:   qiang.zhang@windriver.com
-To:     urezki@gmail.com, paulmck@kernel.org, joel@joelfernandes.org
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v4] kvfree_rcu: Release page cache under memory pressure
-Date:   Sun,  7 Feb 2021 20:44:32 +0800
-Message-Id: <20210207124432.10143-1-qiang.zhang@windriver.com>
-X-Mailer: git-send-email 2.17.1
-Content-Type: text/plain
-X-Originating-IP: [60.247.85.82]
-X-ClientProxiedBy: HK2PR04CA0057.apcprd04.prod.outlook.com
- (2603:1096:202:14::25) To BYAPR11MB2632.namprd11.prod.outlook.com
- (2603:10b6:a02:c4::17)
+        id S229826AbhBGM7O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Feb 2021 07:59:14 -0500
+Received: from mx2.suse.de ([195.135.220.15]:55280 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229562AbhBGM7K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Feb 2021 07:59:10 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1612702703; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=R4cfw25YjQoJcPP/iQMBZfe/aKgR1aMn6caYYNJq2oA=;
+        b=NVUgb1rUvbGL7B8EVkCTRilE+7aJXjXcGnDQicYl5bl0Tjm57ZfU+dPxnJkVUB5wFTJze/
+        T737CA8q//lZm2NPNe8HQRz++grQzU4akhrhcv9Szk8TeLE/1eK6UdVIiN6goOOz/lYcrg
+        VOH+VrW52LA+831qJjxNScRTPTjO5R4=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id B65BFAD3E;
+        Sun,  7 Feb 2021 12:58:22 +0000 (UTC)
+To:     Julien Grall <julien@xen.org>, xen-devel@lists.xenproject.org,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        netdev@vger.kernel.org, linux-scsi@vger.kernel.org
+Cc:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        stable@vger.kernel.org,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        =?UTF-8?Q?Roger_Pau_Monn=c3=a9?= <roger.pau@citrix.com>,
+        Jens Axboe <axboe@kernel.dk>, Wei Liu <wei.liu@kernel.org>,
+        Paul Durrant <paul@xen.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+References: <20210206104932.29064-1-jgross@suse.com>
+ <bd63694e-ac0c-7954-ec00-edad05f8da1c@xen.org>
+From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+Subject: Re: [PATCH 0/7] xen/events: bug fixes and some diagnostic aids
+Message-ID: <eeb62129-d9fc-2155-0e0f-aff1fbb33fbc@suse.com>
+Date:   Sun, 7 Feb 2021 13:58:20 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from pek-lpg-core1-vm1.wrs.com (60.247.85.82) by HK2PR04CA0057.apcprd04.prod.outlook.com (2603:1096:202:14::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.17 via Frontend Transport; Sun, 7 Feb 2021 12:26:24 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: eaeed43c-b4c1-4563-2339-08d8cb63972e
-X-MS-TrafficTypeDiagnostic: SJ0PR11MB4815:
-X-Microsoft-Antispam-PRVS: <SJ0PR11MB4815FB1E9C48199FC88A4CF7FFB09@SJ0PR11MB4815.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3173;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: A6ry+5+GbE3Mzf5XHJew4EVu94IM73yu6s2P4cERWNSnxpHwDjoKQPNc3fMc99IBS3/hUmUUxa1OsVMKhaWwMrTZElLj7Mzepts5Cqs3gB2OOId6hm6Kd2TW6aSFppNUKmdxF2RcvXsmgPiOHlZtIlphv0xnw5U/KHbj6B3TNmGZFR1fHteXELAwNtOHmZHENd6kIC9BBlZKtYTrD46hsCeYDjR+Oqjm6Yl/+mWBexEGqd31UTzuE2f1ChneXdE22pZc3D5n9ZAEi3jnajU/RMjDwsHZ9fzWWMkT/0z72GLDqkiQjiTC2A90JxsAUmxeEvyGFl8FHOzypEaVXYHLjrCRYWBhSWFcjIr0RFOTgptW2W1pwKkgkP56Oy9Q064gOEIPEwPWa/FkrbJUADHbY/EXgENzoF8tjUH0e9mFuSKJwe+RmT1QFJYYdSacX8yPDMBKubW0d6r8e/omPT8aK/Gvot496HS/IPKlTow8rZkAIGth9t/NInUCU3AmPR5Xq9uMNoD0loQ8A29Y2kKLrA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB2632.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(366004)(39840400004)(346002)(376002)(136003)(9686003)(5660300002)(6512007)(36756003)(83380400001)(26005)(186003)(16526019)(6506007)(1076003)(6486002)(316002)(66946007)(478600001)(52116002)(8676002)(2616005)(66476007)(8936002)(4326008)(66556008)(6666004)(86362001)(956004)(2906002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?XTVm87hwySNcQqul3xXuag1ELQnyQmESwdNx7yUxuXQaPVxgSqypF3hBHq0d?=
- =?us-ascii?Q?ZJ+WXtOFZSF1MObLnEsG8KTCYySkZXOSeQEoMQdtWYDGPebX6zNv2B+qizWU?=
- =?us-ascii?Q?GnKaxeeZdtDXt33PyDB6Z9TVu1gipQ8hYWduZ15pZuKCrTdMUHopA7YpdDG6?=
- =?us-ascii?Q?ymxwhz5baU0sFAD+Ru558UHy1pq7MRVLCB2TO+hQxkCdHeHXUgbm6QLWVdjX?=
- =?us-ascii?Q?RcaWFY0UWnorO6UB8EfytNp0yFjUyr2tp8IHE+nnquI7Gx7jfPL+xTqK58RK?=
- =?us-ascii?Q?gPj5H/DyuiIZE0BLnRnZh+rzL028xz/jOW4+3x7/qCyMOxUgbQdGc4z22Rwk?=
- =?us-ascii?Q?i4gy/X2BfusH7S64TZv/i8ZR0IWqpZvErPp5vh8lZwXUO1Iffv+VCxPfYkl4?=
- =?us-ascii?Q?uFvdOw1lLfUktzG+rUu3HMM7BDhgQDG2Ww0ReKJKv0y2v82BRq8fFXbFh3TG?=
- =?us-ascii?Q?o0TY3r2HLNlMa5jh8AfFTk64O0WDtfCzCxCBmoWbMpP+xfhMIrpipNIjoy7h?=
- =?us-ascii?Q?r53JnDOXovSSBQlieP0V2UFjogarYsY+SdGSpDFBKTfJxWsMtZoxl2Dd8nHV?=
- =?us-ascii?Q?frvYGNq8/AyorV0zhQKn4zgYX3NBRTpC99EaeGfhEUv4g5BFT4c9OA1uYpMj?=
- =?us-ascii?Q?U7rJq/BPb8qmWV4ltMLD00BQJW4fMsD3r0rfITraZOj0DqxxctaCJI6wxHof?=
- =?us-ascii?Q?hi8fuZWzjUTku9JIqz+MwrDpGYsw/M8oBvfA6++m7R1qrrxrzkPwywvoCwoA?=
- =?us-ascii?Q?1wZUCGTxWHG7fKNPExZORij8B2/byqd9RCi5gzc+qs76+ZZsaQrn7JNBbw/+?=
- =?us-ascii?Q?rdZ7+ISliEUe0xhmwQP5PlVYSwbW/sJnTMuhtJp6KhLpq1vZPfzO+5M8Vvxa?=
- =?us-ascii?Q?D16Uplnl5tU0wU2m3dHHlLCxDR+DIEYz5sA8USruckjLC/P2lNT614lDJEbu?=
- =?us-ascii?Q?EwXyi1IKQLYM70R7WzLBRKAV5O/ag1nuM1uWwKC0D7/zjb3I85z4Q2NXE1/y?=
- =?us-ascii?Q?IpBrqvqRRf7sb4RuBRclDWMaV0/pMM+5Hn4jLGgoX2CFbLz7j5Vs+IexeqjH?=
- =?us-ascii?Q?W8IMdoe6lamEaSVAcFfreEE40/A5QAvq/JkqSF5NNVVwlx1HcjpbdoRL0d6w?=
- =?us-ascii?Q?udwXtZ214XzvOnyK/FJIRPwujXLQAQ5FnmQ/byqp6AL5Z3D5RiTz8K3Bp6BQ?=
- =?us-ascii?Q?jy/UHSrHseZAF7p+6bz9xeGWw2imsWUIVWSFOGoBlfTvq4BbcSIpJ50tf0WY?=
- =?us-ascii?Q?oVu8Abffnb4Vf7Z6wxC3tVHL9FsX7F6NvUdO1F6oFvqqBWG3xLEcFH+whDB5?=
- =?us-ascii?Q?5ipyybMcIFt4fdPXPEgXztUa?=
-X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: eaeed43c-b4c1-4563-2339-08d8cb63972e
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB2632.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Feb 2021 12:26:27.5367
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: xCXJFIG1p3XIv/16nnrbil8bZ6vEMQvgaYhoBY2W0Tq02hzAKpXqjVqWy8sbAxnXNOHMZiJbQ03wGcG925DRTy8Z4IROaaE2QOzIDnoHSt8=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB4815
+In-Reply-To: <bd63694e-ac0c-7954-ec00-edad05f8da1c@xen.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="jbyJhFnNSEXLNH4hAQuvMm4TNC9cM8aAU"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zqiang <qiang.zhang@windriver.com>
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--jbyJhFnNSEXLNH4hAQuvMm4TNC9cM8aAU
+Content-Type: multipart/mixed; boundary="WsIzMPvAKA2367z5Rpwd77YJ5fV8xFlI0";
+ protected-headers="v1"
+From: =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+To: Julien Grall <julien@xen.org>, xen-devel@lists.xenproject.org,
+ linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+ netdev@vger.kernel.org, linux-scsi@vger.kernel.org
+Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+ Stefano Stabellini <sstabellini@kernel.org>, stable@vger.kernel.org,
+ Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+ =?UTF-8?Q?Roger_Pau_Monn=c3=a9?= <roger.pau@citrix.com>,
+ Jens Axboe <axboe@kernel.dk>, Wei Liu <wei.liu@kernel.org>,
+ Paul Durrant <paul@xen.org>, "David S. Miller" <davem@davemloft.net>,
+ Jakub Kicinski <kuba@kernel.org>
+Message-ID: <eeb62129-d9fc-2155-0e0f-aff1fbb33fbc@suse.com>
+Subject: Re: [PATCH 0/7] xen/events: bug fixes and some diagnostic aids
+References: <20210206104932.29064-1-jgross@suse.com>
+ <bd63694e-ac0c-7954-ec00-edad05f8da1c@xen.org>
+In-Reply-To: <bd63694e-ac0c-7954-ec00-edad05f8da1c@xen.org>
 
-Add free per-cpu existing krcp's page cache operation, when
-the system is under memory pressure.
+--WsIzMPvAKA2367z5Rpwd77YJ5fV8xFlI0
+Content-Type: multipart/mixed;
+ boundary="------------2346595A18135BE727B08B51"
+Content-Language: en-US
 
-Signed-off-by: Zqiang <qiang.zhang@windriver.com>
-Co-developed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
----
- v1->v2->v3->v4:
- During the test a page shrinker is pretty active, because of low memory
- condition. callback drains it whereas kvfree_rcu() part refill it right
- away making kind of vicious circle.
- Through Vlad Rezki suggestion, to avoid this, schedule a periodic delayed
- work with HZ, and it's easy to do that.
+This is a multi-part message in MIME format.
+--------------2346595A18135BE727B08B51
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
 
- kernel/rcu/tree.c | 50 +++++++++++++++++++++++++++++++++++++++--------
- 1 file changed, 42 insertions(+), 8 deletions(-)
+On 06.02.21 19:46, Julien Grall wrote:
+> Hi Juergen,
+>=20
+> On 06/02/2021 10:49, Juergen Gross wrote:
+>> The first three patches are fixes for XSA-332. The avoid WARN splats
+>> and a performance issue with interdomain events.
+>=20
+> Thanks for helping to figure out the problem. Unfortunately, I still se=
+e=20
+> reliably the WARN splat with the latest Linux master (1e0d27fce010) +=20
+> your first 3 patches.
+>=20
+> I am using Xen 4.11 (1c7d984645f9) and dom0 is forced to use the 2L=20
+> events ABI.
+>=20
+> After some debugging, I think I have an idea what's went wrong. The=20
+> problem happens when the event is initially bound from vCPU0 to a=20
+> different vCPU.
+>=20
+>  From the comment in xen_rebind_evtchn_to_cpu(), we are masking the=20
+> event to prevent it being delivered on an unexpected vCPU. However, I=20
+> believe the following can happen:
+>=20
+> vCPU0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 | vCPU1
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 |
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 | Call xen_rebind_evtchn_to_cpu()
+> receive event X=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 |
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 | mask event X
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 | bind to vCPU1
+> <vCPU descheduled>=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | unmask e=
+vent X
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 |
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 | receive event X
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 |
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 | handle_edge_irq(X)
+> handle_edge_irq(X)=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 ->=
+ handle_irq_event()
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0 -> set IRQD_IN_PROGRESS
+>  =C2=A0-> set IRQS_PENDING=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0 -> evtchn_interrupt()
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0 -> clear IRQD_IN_PROGRESS
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 |=C2=A0 -> IRQS_PENDING is set
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 |=C2=A0 -> handle_irq_event()
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0 -> evtchn_interrupt()
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0=C2=A0 -> WARN()
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 |
+>=20
+> All the lateeoi handlers expect a ONESHOT semantic and=20
+> evtchn_interrupt() is doesn't tolerate any deviation.
+>=20
+> I think the problem was introduced by 7f874a0447a9 ("xen/events: fix=20
+> lateeoi irq acknowledgment") because the interrupt was disabled=20
+> previously. Therefore we wouldn't do another iteration in=20
+> handle_edge_irq().
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index c1ae1e52f638..f3b772eef468 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -3139,7 +3139,7 @@ struct kfree_rcu_cpu {
- 	bool initialized;
- 	int count;
- 
--	struct work_struct page_cache_work;
-+	struct delayed_work page_cache_work;
- 	atomic_t work_in_progress;
- 	struct hrtimer hrtimer;
- 
-@@ -3395,7 +3395,7 @@ schedule_page_work_fn(struct hrtimer *t)
- 	struct kfree_rcu_cpu *krcp =
- 		container_of(t, struct kfree_rcu_cpu, hrtimer);
- 
--	queue_work(system_highpri_wq, &krcp->page_cache_work);
-+	queue_delayed_work(system_highpri_wq, &krcp->page_cache_work, 0);
- 	return HRTIMER_NORESTART;
- }
- 
-@@ -3404,7 +3404,7 @@ static void fill_page_cache_func(struct work_struct *work)
- 	struct kvfree_rcu_bulk_data *bnode;
- 	struct kfree_rcu_cpu *krcp =
- 		container_of(work, struct kfree_rcu_cpu,
--			page_cache_work);
-+			page_cache_work.work);
- 	unsigned long flags;
- 	bool pushed;
- 	int i;
-@@ -3428,15 +3428,22 @@ static void fill_page_cache_func(struct work_struct *work)
- 	atomic_set(&krcp->work_in_progress, 0);
- }
- 
-+static bool backoff_page_cache_fill;
-+
- static void
- run_page_cache_worker(struct kfree_rcu_cpu *krcp)
- {
- 	if (rcu_scheduler_active == RCU_SCHEDULER_RUNNING &&
- 			!atomic_xchg(&krcp->work_in_progress, 1)) {
--		hrtimer_init(&krcp->hrtimer, CLOCK_MONOTONIC,
--			HRTIMER_MODE_REL);
--		krcp->hrtimer.function = schedule_page_work_fn;
--		hrtimer_start(&krcp->hrtimer, 0, HRTIMER_MODE_REL);
-+		if (READ_ONCE(backoff_page_cache_fill)) {
-+			queue_delayed_work(system_highpri_wq, &krcp->page_cache_work, HZ);
-+			WRITE_ONCE(backoff_page_cache_fill, false);
-+		} else {
-+			hrtimer_init(&krcp->hrtimer, CLOCK_MONOTONIC,
-+				HRTIMER_MODE_REL);
-+			krcp->hrtimer.function = schedule_page_work_fn;
-+			hrtimer_start(&krcp->hrtimer, 0, HRTIMER_MODE_REL);
-+		}
- 	}
- }
- 
-@@ -3571,19 +3578,44 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
- }
- EXPORT_SYMBOL_GPL(kvfree_call_rcu);
- 
-+static int free_krc_page_cache(struct kfree_rcu_cpu *krcp)
-+{
-+	unsigned long flags;
-+	struct llist_node *page_list, *pos, *n;
-+	int freed = 0;
-+
-+	raw_spin_lock_irqsave(&krcp->lock, flags);
-+	page_list = llist_del_all(&krcp->bkvcache);
-+	krcp->nr_bkv_objs = 0;
-+	raw_spin_unlock_irqrestore(&krcp->lock, flags);
-+
-+	llist_for_each_safe(pos, n, page_list) {
-+		free_page((unsigned long)pos);
-+		freed++;
-+	}
-+
-+	return freed;
-+}
-+
- static unsigned long
- kfree_rcu_shrink_count(struct shrinker *shrink, struct shrink_control *sc)
- {
- 	int cpu;
- 	unsigned long count = 0;
-+	unsigned long flags;
- 
- 	/* Snapshot count of all CPUs */
- 	for_each_possible_cpu(cpu) {
- 		struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
- 
- 		count += READ_ONCE(krcp->count);
-+
-+		raw_spin_lock_irqsave(&krcp->lock, flags);
-+		count += krcp->nr_bkv_objs;
-+		raw_spin_unlock_irqrestore(&krcp->lock, flags);
- 	}
- 
-+	WRITE_ONCE(backoff_page_cache_fill, true);
- 	return count;
- }
- 
-@@ -3598,6 +3630,8 @@ kfree_rcu_shrink_scan(struct shrinker *shrink, struct shrink_control *sc)
- 		struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
- 
- 		count = krcp->count;
-+		count += free_krc_page_cache(krcp);
-+
- 		raw_spin_lock_irqsave(&krcp->lock, flags);
- 		if (krcp->monitor_todo)
- 			kfree_rcu_drain_unlock(krcp, flags);
-@@ -4574,7 +4608,7 @@ static void __init kfree_rcu_batch_init(void)
- 		}
- 
- 		INIT_DELAYED_WORK(&krcp->monitor_work, kfree_rcu_monitor);
--		INIT_WORK(&krcp->page_cache_work, fill_page_cache_func);
-+		INIT_DELAYED_WORK(&krcp->page_cache_work, fill_page_cache_func);
- 		krcp->initialized = true;
- 	}
- 	if (register_shrinker(&kfree_rcu_shrinker))
--- 
-2.17.1
+I think you picked the wrong commit for blaming, as this is just
+the last patch of the three patches you were testing.
 
+> Aside the handlers, I think it may impact the defer EOI mitigation=20
+> because in theory if a 3rd vCPU is joining the party (let say vCPU A=20
+> migrate the event from vCPU B to vCPU C). So info->{eoi_cpu, irq_epoch,=
+=20
+> eoi_time} could possibly get mangled?
+>=20
+> For a fix, we may want to consider to hold evtchn_rwlock with the write=
+=20
+> permission. Although, I am not 100% sure this is going to prevent=20
+> everything.
+
+It will make things worse, as it would violate the locking hierarchy
+(xen_rebind_evtchn_to_cpu() is called with the IRQ-desc lock held).
+
+On a first glance I think we'll need a 3rd masking state ("temporarily
+masked") in the second patch in order to avoid a race with lateeoi.
+
+In order to avoid the race you outlined above we need an "event is being
+handled" indicator checked via test_and_set() semantics in
+handle_irq_for_port() and reset only when calling clear_evtchn().
+
+> Does my write-up make sense to you?
+
+Yes. What about my reply? ;-)
+
+
+Juergen
+
+--------------2346595A18135BE727B08B51
+Content-Type: application/pgp-keys;
+ name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment;
+ filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
+cWx
+w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
+f8Z
+d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
+9bf
+IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
+G7/
+377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
+3Jv
+c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
+QIe
+AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
+hpw
+dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
+MbD
+1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
+oPH
+Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
+5QL
++qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
+2Vu
+IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
+QoL
+BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
+Wf0
+teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
+/nu
+AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
+ITT
+d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
+XBK
+7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
+80h
+SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
+AcD
+AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
+FOX
+gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
+jnD
+kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
+N51
+N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
+otu
+fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
+tqS
+EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
+hsD
+BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
+g3O
+ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
+dM7
+wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
+D+j
+LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
+V2x
+AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
+Eaw
+QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
+nHI
+s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
+wgn
+BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
+bVF
+LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
+pEd
+IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
+QAB
+wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
+Tbe
+8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
+vJz
+Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
+VGi
+wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
+svi
+uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
+zXs
+ZDn8R38=3D
+=3D2wuH
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------2346595A18135BE727B08B51--
+
+--WsIzMPvAKA2367z5Rpwd77YJ5fV8xFlI0--
+
+--jbyJhFnNSEXLNH4hAQuvMm4TNC9cM8aAU
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmAf4+wFAwAAAAAACgkQsN6d1ii/Ey/K
+wAf/TDFYrTVsLzXeGxzeWtu1WaVoa4Ox7JPKEZSm8YJEojQtmVLPl+srPzcEDNlv3AAuecZNf2JB
+5itbzEBHszyYZFVlr/uWRtkGM6d6wiiDngAo+sQHw7HUM3izmn+CxiwEXVjIitUvDOzsLm6ORRDy
+sqJ71jM50C9fP7f+mCAlK3CJ3SnIULeMnuisSyu/QNwpYNXf8KJa9WhB5UAwBYN1rielG0LFQTeH
+7gSZqmDj+5ahj9ZFXKAcwjHRjoz8eOqKHA1SYoSL2Hl2HjnuBCjK/zzFUzAaDzXUxAZHtkArREZZ
+D2ttbvrl1JzUc4Nhf5iaKCJbCSeu+ET0u+AVKHIwFQ==
+=TWlv
+-----END PGP SIGNATURE-----
+
+--jbyJhFnNSEXLNH4hAQuvMm4TNC9cM8aAU--
