@@ -2,74 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 213E73127F9
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 23:48:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D2FC312800
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 23:59:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229721AbhBGWrl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Feb 2021 17:47:41 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:36302 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229564AbhBGWrg (ORCPT
+        id S229601AbhBGW5v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Feb 2021 17:57:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40988 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229506AbhBGW5t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Feb 2021 17:47:36 -0500
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1l8spM-0007Sp-Sk; Sun, 07 Feb 2021 22:46:48 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Marc Titinger <mtitinger+renesas@baylibre.com>,
-        Lina Iyer <lina.iyer@linaro.org>, linux-pm@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] PM / Domains: Fix integer overflows on u32 bit multiplies
-Date:   Sun,  7 Feb 2021 22:46:48 +0000
-Message-Id: <20210207224648.8137-1-colin.king@canonical.com>
+        Sun, 7 Feb 2021 17:57:49 -0500
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79E24C06174A
+        for <linux-kernel@vger.kernel.org>; Sun,  7 Feb 2021 14:57:08 -0800 (PST)
+Received: by mail-wr1-x429.google.com with SMTP id z6so15034327wrq.10
+        for <linux-kernel@vger.kernel.org>; Sun, 07 Feb 2021 14:57:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+6El5WCTppNM0qvL0uiwmEG0rhEopk6FVWHfgdbdVZg=;
+        b=MSnejK1IpoKy7pi8SiX9ew6g0MaSPZ05PsczuGT76RvZZtD9b3J6fMr0oB+i7wKPTd
+         SzEUFcwwrHMbqWPA4xOvo6Kx3Rjs2++K5XcwAACHkRstFoMFKiCgfO0mCznSeOIz85BS
+         jNxOjkVYfJvJalsFyS1o6SvStQ5JRL0iSCayzliNdZp9kX2vty3wlKVJoySCQjfd+uGo
+         G4+NL77Uki1Knvcksxvk5ukUAYA8+xOQ87f5qhZP6QDYdHkUaj/JGtejNbvtNGPpjn1A
+         61LH8Et6ehduW5I0FbUageFs/xVWW30pITd9bHuyGsOCX4hIOc15N3+6Oi6omM3dSuX7
+         1RWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+6El5WCTppNM0qvL0uiwmEG0rhEopk6FVWHfgdbdVZg=;
+        b=dIPuXk3wwNlF3VQVj8o9GWTLFMLf2LurvgSmXOTYFmfiArwSOTHOIroVo6pvFZ2mp6
+         3i6EjEEDw5Tyy3So7NA6XTczVuPEOqi/SoGYiMOG9bKdgtGL5DkGbFMOb7d6BbsbKDNL
+         VBzaE+ERz9re6sQjnV5QR7lpbqdGO8io8X5/faULyi/9lsI6h+lRhnQplJD14i1xh8Yg
+         3kwPB5RbmLkDaUFIklCEwJt3fiKEri4n/avKpNIIRUOoGu91maCqRLIrq7r8p6m+xHgB
+         +Rq15JzZlWnH/hWjA3oqel8XqutbKiUaEy7lmQQdAOWdwJ6cw9VMVqV4Zvg9zuJHwbnI
+         HMbg==
+X-Gm-Message-State: AOAM5339klbnKJYRnkvVgYx5kzc3WK8FXab5r9FXoWMEXSoD9s8GcHHc
+        YOya4g42+lxx8NagekzZTqgCqS4ZGEknlhq2
+X-Google-Smtp-Source: ABdhPJyBO4nFCEM6p+AEqwVp5rTIdppXsQI9l1SnMf4AEp0H7wCfDusVJhFZ75uXfLDNUb7x6U6NlQ==
+X-Received: by 2002:a5d:6712:: with SMTP id o18mr16567930wru.375.1612738627114;
+        Sun, 07 Feb 2021 14:57:07 -0800 (PST)
+Received: from localhost.localdomain (2.0.5.1.1.6.3.8.5.c.c.3.f.b.d.3.0.0.0.0.6.1.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:df16:0:3dbf:3cc5:8361:1502])
+        by smtp.gmail.com with ESMTPSA id x18sm6339906wmi.8.2021.02.07.14.57.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 07 Feb 2021 14:57:06 -0800 (PST)
+From:   Phillip Potter <phil@philpotter.co.uk>
+To:     gregkh@linuxfoundation.org
+Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        romain.perier@gmail.com, apais@linux.microsoft.com
+Subject: [PATCH] staging: rtl8192e: remove braces from single-line block
+Date:   Sun,  7 Feb 2021 22:57:03 +0000
+Message-Id: <20210207225703.114229-1-phil@philpotter.co.uk>
 X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+This removes the braces from the if statement that checks the
+wps_ie_len and ieee->wps_ie values in rtllib_association_req of
+rtllib_softmac.c as this block contains only one statement.
+Fixes a checkpatch warning.
 
-There are three occurrances of u32 variables being multiplied by
-1000 using 32 bit multiplies and the result being assigned to a
-64 bit signed integer.  These can potentially lead to a 32 bit
-overflows, so fix this by casting 1000 to a UL first to force
-a 64 bit multiply hence avoiding the overflow.
-
-Addresses-Coverity: ("Unintentional integer overflow")
-Fixes: 30f604283e05 ("PM / Domains: Allow domain power states to be read from DT")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
 ---
- drivers/base/power/domain.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/staging/rtl8192e/rtllib_softmac.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/base/power/domain.c b/drivers/base/power/domain.c
-index aaf6c83b5cf6..ddeff69126ff 100644
---- a/drivers/base/power/domain.c
-+++ b/drivers/base/power/domain.c
-@@ -2831,10 +2831,10 @@ static int genpd_parse_state(struct genpd_power_state *genpd_state,
+diff --git a/drivers/staging/rtl8192e/rtllib_softmac.c b/drivers/staging/rtl8192e/rtllib_softmac.c
+index 2c752ba5a802..2d3be91b113d 100644
+--- a/drivers/staging/rtl8192e/rtllib_softmac.c
++++ b/drivers/staging/rtl8192e/rtllib_softmac.c
+@@ -1352,9 +1352,8 @@ rtllib_association_req(struct rtllib_network *beacon,
+ 		rtllib_WMM_Info(ieee, &tag);
+ 	}
  
- 	err = of_property_read_u32(state_node, "min-residency-us", &residency);
- 	if (!err)
--		genpd_state->residency_ns = 1000 * residency;
-+		genpd_state->residency_ns = 1000UL * residency;
+-	if (wps_ie_len && ieee->wps_ie) {
++	if (wps_ie_len && ieee->wps_ie)
+ 		skb_put_data(skb, ieee->wps_ie, wps_ie_len);
+-	}
  
--	genpd_state->power_on_latency_ns = 1000 * exit_latency;
--	genpd_state->power_off_latency_ns = 1000 * entry_latency;
-+	genpd_state->power_on_latency_ns = 1000UL * exit_latency;
-+	genpd_state->power_off_latency_ns = 1000UL * entry_latency;
- 	genpd_state->fwnode = &state_node->fwnode;
- 
- 	return 0;
+ 	if (turbo_info_len) {
+ 		tag = skb_put(skb, turbo_info_len);
 -- 
 2.29.2
 
