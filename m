@@ -2,255 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A22F8312492
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 15:02:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1F53312493
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 15:07:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229821AbhBGOCg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Feb 2021 09:02:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39666 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229491AbhBGOCe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Feb 2021 09:02:34 -0500
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEBCBC06174A;
-        Sun,  7 Feb 2021 06:01:53 -0800 (PST)
-Received: by mail-pl1-x631.google.com with SMTP id e9so6438999plh.3;
-        Sun, 07 Feb 2021 06:01:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=BKfhCVrNE1G6tN7jQvqfXJj8IfC/ZteJhEq5g/yoxvw=;
-        b=A0bWvrmJDtsuEOYxobKagLrEDwfpdGfBUXyNxSLL2RleOEw8xPFdDHa0z3VhfGU29d
-         tUEzSPNkG4BykmsXy5ycaLpCIpWPa/9z8y8Z1p3C0VlkmVlY+aivkjLO0jDWYyAM6dL7
-         GPtRwsL6Km2m7ZteMjy0Juw3C2ctMjWJ/KF92jijWzS1FhkcJvvL1w7Y5V88tJT11fSe
-         kUIuBt2cwYDSmO0L7DdBPDTzzC6bM4eJN/L2bEOFpmdk2Lfsmmbu5ykiIhqmAaRWqqw1
-         XfNFUorWIE0cV9Q9mgJWDShf97oijQgK5KerxxbXeVY9Fcta/xRjF33FBN5419O7gEoE
-         EIig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=BKfhCVrNE1G6tN7jQvqfXJj8IfC/ZteJhEq5g/yoxvw=;
-        b=qbPc7YnWTKsz4LUzJcZAnKzdKPXuFrXHfvI5+FDIORW3O1V9Fq7L8yrxpMo5SxOveb
-         MWV00ZjlbZMTfKZFM9i6KLcoG6P2yfq/8KftZ45KNd/VAof3HjCmrelyLF4GSb94kat4
-         pK4y+pZehxOPR9aM8RDAi8xF0p5UFQ+ijdtl/EWHh5VS5q/oWL75jV6Bm/2iCMInoO+F
-         qY5dC7AHscRhpguAbKJStvyW6FiRHLKy84CPefiMp65sqWxR7OlmtMi2HEWNt9EfMDZK
-         JbhOZ5VTEfY+w6jt7nxCMzhT9xX8XCRa5cHkL3qSlREqWUFcUKC/aij/HdG3anDK6TmF
-         VUVw==
-X-Gm-Message-State: AOAM53329SmnEJkNCaf8GllUj/x83cwQpxo6GJ2p6rxMjq770qwkHMQc
-        fhsr8E9OHhCJ5G8o7Np335gXLFNXzIatqrNo
-X-Google-Smtp-Source: ABdhPJzDD68MGez2ZZeZZdxvQqsQi2a9z4QnBhFgoIJxSTyQ6l8TOC604eXe9zh39aOBBeYk9QX4Dg==
-X-Received: by 2002:a17:902:e5cc:b029:df:bc77:3aba with SMTP id u12-20020a170902e5ccb02900dfbc773abamr12569541plf.72.1612706512920;
-        Sun, 07 Feb 2021 06:01:52 -0800 (PST)
-Received: from bf-rmsz-10.ccdomain.com ([103.220.76.197])
-        by smtp.gmail.com with ESMTPSA id lf4sm13826283pjb.0.2021.02.07.06.01.49
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 07 Feb 2021 06:01:52 -0800 (PST)
-From:   Carlis <zhangxuezhi3@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     colin.king@canonical.com, oliver.graute@kococonnector.com,
-        zhangxuezhi1@yulong.com, mh12gx2825@gmail.com, sbrivio@redhat.com,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v15] staging: fbtft: add tearing signal detect
-Date:   Sun,  7 Feb 2021 22:01:57 +0800
-Message-Id: <1612706517-124617-1-git-send-email-zhangxuezhi3@gmail.com>
-X-Mailer: git-send-email 1.9.1
+        id S229892AbhBGOD5 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 7 Feb 2021 09:03:57 -0500
+Received: from mga17.intel.com ([192.55.52.151]:26521 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229491AbhBGODz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Feb 2021 09:03:55 -0500
+IronPort-SDR: 8D3jnlqdJkFFWwCoCYGVx4n6feYwehA4i4xZN6XZFgkDTnE1yedXxIgEPE6le74wRd40mO0FVq
+ l1IMjvxzpe1Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9887"; a="161361343"
+X-IronPort-AV: E=Sophos;i="5.81,160,1610438400"; 
+   d="scan'208";a="161361343"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Feb 2021 06:03:15 -0800
+IronPort-SDR: w4HwOLhkr11WcQKJxIouR3zrWuMLjBvTTgX35xGPQULIwJH8khipzlNpWCHX9peZwLkDGn593g
+ Gj056aD/h/nA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,160,1610438400"; 
+   d="scan'208";a="486633978"
+Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
+  by fmsmga001.fm.intel.com with ESMTP; 07 Feb 2021 06:03:14 -0800
+Received: from lcsmsx602.ger.corp.intel.com (10.109.210.11) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Sun, 7 Feb 2021 06:03:14 -0800
+Received: from hasmsx602.ger.corp.intel.com (10.184.107.142) by
+ LCSMSX602.ger.corp.intel.com (10.109.210.11) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Sun, 7 Feb 2021 16:03:12 +0200
+Received: from hasmsx602.ger.corp.intel.com ([10.184.107.142]) by
+ HASMSX602.ger.corp.intel.com ([10.184.107.142]) with mapi id 15.01.1713.004;
+ Sun, 7 Feb 2021 16:03:11 +0200
+From:   "Winkler, Tomas" <tomas.winkler@intel.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     "Usyskin, Alexander" <alexander.usyskin@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Grumbach, Emmanuel" <emmanuel.grumbach@intel.com>,
+        "Coelho, Luciano" <luciano.coelho@intel.com>
+Subject: RE: [char-misc-next 6/6] mei: bus: add client dma interface
+Thread-Topic: [char-misc-next 6/6] mei: bus: add client dma interface
+Thread-Index: AQHW/JZ6zfy6g0Lzl0WlwNIsjRgFAKpLE28AgAAknRD///f+gIABA0qw
+Date:   Sun, 7 Feb 2021 14:03:11 +0000
+Message-ID: <8223112ef8504a31996c2c1bd386d1fe@intel.com>
+References: <20210206144325.25682-1-tomas.winkler@intel.com>
+ <20210206144325.25682-6-tomas.winkler@intel.com> <YB6sIi61X5p6Dq6y@kroah.com>
+ <2a9b40090acd41438fc6b1d2fb49f38d@intel.com> <YB7EIciZrmBrEqUA@kroah.com>
+In-Reply-To: <YB7EIciZrmBrEqUA@kroah.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+x-originating-ip: [10.184.70.1]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+MIME-Version: 1.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Carlis <zhangxuezhi1@yulong.com>
-
-For st7789v IC, when we need continuous full screen refresh, it is best to
-wait for the tearing effect line signal to arrive to avoid screen tearing.
-
-Signed-off-by: Carlis <zhangxuezhi1@yulong.com>
----
-v15: change ret value return logic in write_vmem.
-v14: change to define TE completion and TE irq only in st7789v.
-v13: change TE completion to par data struct member and add a new
-     function to deal te gpio request, add new write_vmem function.
-v12: change dev_err to dev_err_probe and add space in comments start, and
-     delete te_mutex, change te wait logic.
-v11: remove devm_gpio_put and change a dev_err to dev_info.
-v10: additional notes.
-v9: change pr_* to dev_*.
-v8: delete a log line.
-v7: return error value when request fail.
-v6: add te gpio request fail deal logic.
-v5: fix log print.
-v4: modify some code style and change te irq set function name.
-v3: modify author and signed-off-by name.
-v2: add release te gpio after irq request fail.
----
- drivers/staging/fbtft/fb_st7789v.c | 115 +++++++++++++++++++++++++++++++++++++
- 1 file changed, 115 insertions(+)
-
-diff --git a/drivers/staging/fbtft/fb_st7789v.c b/drivers/staging/fbtft/fb_st7789v.c
-index 3a280cc..abe9395 100644
---- a/drivers/staging/fbtft/fb_st7789v.c
-+++ b/drivers/staging/fbtft/fb_st7789v.c
-@@ -7,9 +7,13 @@
- 
- #include <linux/bitops.h>
- #include <linux/delay.h>
-+#include <linux/gpio/consumer.h>
- #include <linux/init.h>
- #include <linux/kernel.h>
-+#include <linux/interrupt.h>
-+#include <linux/completion.h>
- #include <linux/module.h>
-+
- #include <video/mipi_display.h>
- 
- #include "fbtft.h"
-@@ -66,6 +70,62 @@ enum st7789v_command {
- #define MADCTL_MX BIT(6) /* bitmask for column address order */
- #define MADCTL_MY BIT(7) /* bitmask for page address order */
- 
-+/* 60Hz for 16.6ms, configured as 2*16.6ms */
-+#define PANEL_TE_TIMEOUT_MS  33
-+
-+static struct completion panel_te; /* completion for panel TE line */
-+static int irq_te; /* Linux IRQ for LCD TE line */
-+
-+static irqreturn_t panel_te_handler(int irq, void *data)
-+{
-+	complete(&panel_te);
-+	return IRQ_HANDLED;
-+}
-+
-+/*
-+ * init_tearing_effect_line() - init tearing effect line.
-+ * @par: FBTFT parameter object.
-+ *
-+ * Return: 0 on success, or a negative error code otherwise.
-+ */
-+static int init_tearing_effect_line(struct fbtft_par *par)
-+{
-+	struct device *dev = par->info->device;
-+	struct gpio_desc *te;
-+	int rc, irq;
-+
-+	te = gpiod_get_optional(dev, "te", GPIOD_IN);
-+	if (IS_ERR(te))
-+		return dev_err_probe(dev, PTR_ERR(te), "Failed to request te GPIO\n");
-+
-+	/* if te is NULL, indicating no configuration, directly return success */
-+	if (!te) {
-+		irq_te = 0;
-+		return 0;
-+	}
-+
-+	irq = gpiod_to_irq(te);
-+
-+	/* GPIO is locked as an IRQ, we may drop the reference */
-+	gpiod_put(te);
-+
-+	if (irq < 0)
-+		return irq;
-+
-+	irq_te = irq;
-+	init_completion(&panel_te);
-+
-+	/* The effective state is high and lasts no more than 1000 microseconds */
-+	rc = devm_request_irq(dev, irq_te, panel_te_handler,
-+			      IRQF_TRIGGER_RISING, "TE_GPIO", par);
-+	if (rc)
-+		return dev_err_probe(dev, rc, "TE IRQ request failed.\n");
-+
-+	disable_irq_nosync(irq_te);
-+
-+	return 0;
-+}
-+
- /**
-  * init_display() - initialize the display controller
-  *
-@@ -82,6 +142,12 @@ enum st7789v_command {
-  */
- static int init_display(struct fbtft_par *par)
- {
-+	int rc;
-+
-+	rc = init_tearing_effect_line(par);
-+	if (rc)
-+		return rc;
-+
- 	/* turn off sleep mode */
- 	write_reg(par, MIPI_DCS_EXIT_SLEEP_MODE);
- 	mdelay(120);
-@@ -137,6 +203,10 @@ static int init_display(struct fbtft_par *par)
- 	 */
- 	write_reg(par, PWCTRL1, 0xA4, 0xA1);
- 
-+	/* TE line output is off by default when powering on */
-+	if (irq_te)
-+		write_reg(par, MIPI_DCS_SET_TEAR_ON, 0x00);
-+
- 	write_reg(par, MIPI_DCS_SET_DISPLAY_ON);
- 
- 	if (HSD20_IPS)
-@@ -145,6 +215,50 @@ static int init_display(struct fbtft_par *par)
- 	return 0;
- }
- 
-+/*
-+ * write_vmem() - write data to display.
-+ * @par: FBTFT parameter object.
-+ * @offset: offset from screen_buffer.
-+ * @len: the length of data to be writte.
-+ *
-+ * Return: 0 on success, or a negative error code otherwise.
-+ */
-+static int write_vmem(struct fbtft_par *par, size_t offset, size_t len)
-+{
-+	struct device *dev = par->info->device;
-+	int ret;
-+
-+	if (irq_te) {
-+		enable_irq(irq_te);
-+		reinit_completion(&panel_te);
-+		ret = wait_for_completion_timeout(&panel_te,
-+						  msecs_to_jiffies(PANEL_TE_TIMEOUT_MS));
-+		if (ret == 0)
-+			dev_err(dev, "wait panel TE timeout\n");
-+
-+		disable_irq(irq_te);
-+	}
-+
-+	switch (par->pdata->display.buswidth) {
-+	case 8:
-+		ret = fbtft_write_vmem16_bus8(par, offset, len);
-+		break;
-+	case 9:
-+		ret = fbtft_write_vmem16_bus9(par, offset, len);
-+		break;
-+	case 16:
-+		ret = fbtft_write_vmem16_bus16(par, offset, len);
-+		break;
-+	default:
-+		dev_err(dev, "Unsupported buswidth %d\n",
-+			par->pdata->display.buswidth);
-+		ret = 0;
-+		break;
-+	}
-+
-+	return ret;
-+}
-+
- /**
-  * set_var() - apply LCD properties like rotation and BGR mode
-  *
-@@ -259,6 +373,7 @@ static int blank(struct fbtft_par *par, bool on)
- 	.gamma = HSD20_IPS_GAMMA,
- 	.fbtftops = {
- 		.init_display = init_display,
-+		.write_vmem = write_vmem,
- 		.set_var = set_var,
- 		.set_gamma = set_gamma,
- 		.blank = blank,
--- 
-1.9.1
+> 
+> On Sat, Feb 06, 2021 at 03:04:34PM +0000, Winkler, Tomas wrote:
+> > > On Sat, Feb 06, 2021 at 04:43:25PM +0200, Tomas Winkler wrote:
+> > > > From: Alexander Usyskin <alexander.usyskin@intel.com>
+> > > >
+> > > > Expose the client dma mapping via mei client bus interface.
+> > > >
+> > > > Signed-off-by: Alexander Usyskin <alexander.usyskin@intel.com>
+> > > > Signed-off-by: Tomas Winkler <tomas.winkler@intel.com>
+> > > > ---
+> > > >  drivers/misc/mei/bus.c     | 46
+> > > ++++++++++++++++++++++++++++++++++++++
+> > > >  drivers/misc/mei/hw.h      |  5 +++++
+> > > >  include/linux/mei_cl_bus.h |  3 +++
+> > > >  3 files changed, 54 insertions(+)
+> > > >
+> > > > diff --git a/drivers/misc/mei/bus.c b/drivers/misc/mei/bus.c index
+> > > > 34fb5e541fe5..d430710a5fe5 100644
+> > > > --- a/drivers/misc/mei/bus.c
+> > > > +++ b/drivers/misc/mei/bus.c
+> > > > @@ -636,6 +636,52 @@ static void mei_cl_bus_vtag_free(struct
+> > > mei_cl_device *cldev)
+> > > >  	kfree(cl_vtag);
+> > > >  }
+> > > >
+> > > > +void *mei_cldev_dma_map(struct mei_cl_device *cldev, u8
+> > > > +buffer_id, size_t size) {
+> > > > +	struct mei_device *bus;
+> > > > +	struct mei_cl *cl;
+> > > > +	int ret;
+> > > > +
+> > > > +	if (!cldev || !buffer_id || !size)
+> > > > +		return ERR_PTR(-EINVAL);
+> > > > +
+> > > > +	if (!IS_ALIGNED(size, MEI_FW_PAGE_SIZE)) {
+> > > > +		dev_err(&cldev->dev, "Map size should be aligned to %lu\n",
+> > > > +			MEI_FW_PAGE_SIZE);
+> > > > +		return ERR_PTR(-EINVAL);
+> > > > +	}
+> > > > +
+> > > > +	cl = cldev->cl;
+> > > > +	bus = cldev->bus;
+> > > > +
+> > > > +	mutex_lock(&bus->device_lock);
+> > > > +	ret = mei_cl_dma_alloc_and_map(cl, NULL, buffer_id, size);
+> > > > +	mutex_unlock(&bus->device_lock);
+> > > > +	if (ret)
+> > > > +		return ERR_PTR(ret);
+> > > > +	return cl->dma.vaddr;
+> > > > +}
+> > > > +EXPORT_SYMBOL_GPL(mei_cldev_dma_map);
+> > >
+> > > Why are you exporting symbols without a user of them?
+> > >
+> > > That's a sure way to get them removed by someone right after this
+> > > lands in the tree :)
+> > >
+> > > Please only add infrastructure for when you have a real user.
+> > You are right,  the user is coming from wifi tree. We need merge before
+> they do.
+> > If you prefer we can merge that all from the wifi tree.
+> 
+> That wasn't documented well at all in your changelog comment :(
+Note taken.  
+> It can go through whatever tree needs it.
+If possible please merge our changes already here, and let the wifi guys to finish their task in their tree, in their own time.
+Thanks
+Tomas
 
