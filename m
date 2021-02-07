@@ -2,185 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DED43127D7
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 23:24:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56CF53127DB
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 23:27:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229719AbhBGWYk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Feb 2021 17:24:40 -0500
-Received: from antares.kleine-koenig.org ([94.130.110.236]:48884 "EHLO
-        antares.kleine-koenig.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229626AbhBGWYe (ORCPT
+        id S229729AbhBGWZS convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 7 Feb 2021 17:25:18 -0500
+Received: from szxga01-in.huawei.com ([45.249.212.187]:4612 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229611AbhBGWZP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Feb 2021 17:24:34 -0500
-Received: by antares.kleine-koenig.org (Postfix, from userid 1000)
-        id C6E5EAF2EE6; Sun,  7 Feb 2021 23:23:51 +0100 (CET)
-From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <uwe@kleine-koenig.org>
-To:     Tomas Winkler <tomas.winkler@intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-watchdog@vger.kernel.org
-Subject: [PATCH v1 2/2] mei: bus: change remove callback to return void
-Date:   Sun,  7 Feb 2021 23:22:24 +0100
-Message-Id: <20210207222224.97547-2-uwe@kleine-koenig.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210207222224.97547-1-uwe@kleine-koenig.org>
-References: <20210207222224.97547-1-uwe@kleine-koenig.org>
+        Sun, 7 Feb 2021 17:25:15 -0500
+Received: from DGGEMM404-HUB.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4DYkFH2dR4zY664;
+        Mon,  8 Feb 2021 06:23:15 +0800 (CST)
+Received: from dggpemm100012.china.huawei.com (7.185.36.212) by
+ DGGEMM404-HUB.china.huawei.com (10.3.20.212) with Microsoft SMTP Server (TLS)
+ id 14.3.498.0; Mon, 8 Feb 2021 06:24:29 +0800
+Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
+ dggpemm100012.china.huawei.com (7.185.36.212) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2106.2; Mon, 8 Feb 2021 06:24:29 +0800
+Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
+ dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.2106.006;
+ Mon, 8 Feb 2021 06:24:29 +0800
+From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+To:     Matthew Wilcox <willy@infradead.org>,
+        "Wangzhou (B)" <wangzhou1@hisilicon.com>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "jgg@ziepe.ca" <jgg@ziepe.ca>,
+        "kevin.tian@intel.com" <kevin.tian@intel.com>,
+        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "Liguozhu (Kenneth)" <liguozhu@hisilicon.com>,
+        "zhangfei.gao@linaro.org" <zhangfei.gao@linaro.org>,
+        "chensihang (A)" <chensihang1@hisilicon.com>
+Subject: RE: [RFC PATCH v3 1/2] mempinfd: Add new syscall to provide memory
+ pin
+Thread-Topic: [RFC PATCH v3 1/2] mempinfd: Add new syscall to provide memory
+ pin
+Thread-Index: AQHW/SrsWWMRpilf2UC1Pz29QqsBVqpMsX2AgACQE1A=
+Date:   Sun, 7 Feb 2021 22:24:28 +0000
+Message-ID: <f4b2d7db8a1047d9952cbbfaf9e27824@hisilicon.com>
+References: <1612685884-19514-1-git-send-email-wangzhou1@hisilicon.com>
+ <1612685884-19514-2-git-send-email-wangzhou1@hisilicon.com>
+ <20210207213409.GL308988@casper.infradead.org>
+In-Reply-To: <20210207213409.GL308988@casper.infradead.org>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.126.200.200]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The driver core ignores the return value of mei_cl_device_remove() so
-passing an error value doesn't solve any problem. As most mei drivers'
-remove callbacks return 0 unconditionally and returning a different value
-doesn't have any effect, change this prototype to return void and return 0
-unconditionally in mei_cl_device_remove(). The only driver that could
-return an error value is modified to emit an explicit warning in the error
-case.
 
-Signed-off-by: Uwe Kleine-König <uwe@kleine-koenig.org>
----
- drivers/misc/mei/bus.c           | 5 ++---
- drivers/misc/mei/hdcp/mei_hdcp.c | 7 +++++--
- drivers/nfc/microread/mei.c      | 4 +---
- drivers/nfc/pn544/mei.c          | 4 +---
- drivers/watchdog/mei_wdt.c       | 4 +---
- include/linux/mei_cl_bus.h       | 2 +-
- 6 files changed, 11 insertions(+), 15 deletions(-)
 
-diff --git a/drivers/misc/mei/bus.c b/drivers/misc/mei/bus.c
-index 50d617e7467e..54dddae46705 100644
---- a/drivers/misc/mei/bus.c
-+++ b/drivers/misc/mei/bus.c
-@@ -879,17 +879,16 @@ static int mei_cl_device_remove(struct device *dev)
- {
- 	struct mei_cl_device *cldev = to_mei_cl_device(dev);
- 	struct mei_cl_driver *cldrv = to_mei_cl_driver(dev->driver);
--	int ret = 0;
- 
- 	if (cldrv->remove)
--		ret = cldrv->remove(cldev);
-+		cldrv->remove(cldev);
- 
- 	mei_cldev_unregister_callbacks(cldev);
- 
- 	mei_cl_bus_module_put(cldev);
- 	module_put(THIS_MODULE);
- 
--	return ret;
-+	return 0;
- }
- 
- static ssize_t name_show(struct device *dev, struct device_attribute *a,
-diff --git a/drivers/misc/mei/hdcp/mei_hdcp.c b/drivers/misc/mei/hdcp/mei_hdcp.c
-index 9ae9669e46ea..6a455ebe4891 100644
---- a/drivers/misc/mei/hdcp/mei_hdcp.c
-+++ b/drivers/misc/mei/hdcp/mei_hdcp.c
-@@ -845,16 +845,19 @@ static int mei_hdcp_probe(struct mei_cl_device *cldev,
- 	return ret;
- }
- 
--static int mei_hdcp_remove(struct mei_cl_device *cldev)
-+static void mei_hdcp_remove(struct mei_cl_device *cldev)
- {
- 	struct i915_hdcp_comp_master *comp_master =
- 						mei_cldev_get_drvdata(cldev);
-+	int ret;
- 
- 	component_master_del(&cldev->dev, &mei_component_master_ops);
- 	kfree(comp_master);
- 	mei_cldev_set_drvdata(cldev, NULL);
- 
--	return mei_cldev_disable(cldev);
-+	ret = mei_cldev_disable(cldev);
-+	if (ret)
-+		dev_warn(&cldev->dev, "mei_cldev_disable() failed\n")
- }
- 
- #define MEI_UUID_HDCP GUID_INIT(0xB638AB7E, 0x94E2, 0x4EA2, 0xA5, \
-diff --git a/drivers/nfc/microread/mei.c b/drivers/nfc/microread/mei.c
-index 5dad8847a9b3..8fa7771085eb 100644
---- a/drivers/nfc/microread/mei.c
-+++ b/drivers/nfc/microread/mei.c
-@@ -44,15 +44,13 @@ static int microread_mei_probe(struct mei_cl_device *cldev,
- 	return 0;
- }
- 
--static int microread_mei_remove(struct mei_cl_device *cldev)
-+static void microread_mei_remove(struct mei_cl_device *cldev)
- {
- 	struct nfc_mei_phy *phy = mei_cldev_get_drvdata(cldev);
- 
- 	microread_remove(phy->hdev);
- 
- 	nfc_mei_phy_free(phy);
--
--	return 0;
- }
- 
- static struct mei_cl_device_id microread_mei_tbl[] = {
-diff --git a/drivers/nfc/pn544/mei.c b/drivers/nfc/pn544/mei.c
-index 579bc599f545..5c10aac085a4 100644
---- a/drivers/nfc/pn544/mei.c
-+++ b/drivers/nfc/pn544/mei.c
-@@ -42,7 +42,7 @@ static int pn544_mei_probe(struct mei_cl_device *cldev,
- 	return 0;
- }
- 
--static int pn544_mei_remove(struct mei_cl_device *cldev)
-+static void pn544_mei_remove(struct mei_cl_device *cldev)
- {
- 	struct nfc_mei_phy *phy = mei_cldev_get_drvdata(cldev);
- 
-@@ -51,8 +51,6 @@ static int pn544_mei_remove(struct mei_cl_device *cldev)
- 	pn544_hci_remove(phy->hdev);
- 
- 	nfc_mei_phy_free(phy);
--
--	return 0;
- }
- 
- static struct mei_cl_device_id pn544_mei_tbl[] = {
-diff --git a/drivers/watchdog/mei_wdt.c b/drivers/watchdog/mei_wdt.c
-index 5391bf3e6b11..53165e49c298 100644
---- a/drivers/watchdog/mei_wdt.c
-+++ b/drivers/watchdog/mei_wdt.c
-@@ -619,7 +619,7 @@ static int mei_wdt_probe(struct mei_cl_device *cldev,
- 	return ret;
- }
- 
--static int mei_wdt_remove(struct mei_cl_device *cldev)
-+static void mei_wdt_remove(struct mei_cl_device *cldev)
- {
- 	struct mei_wdt *wdt = mei_cldev_get_drvdata(cldev);
- 
-@@ -636,8 +636,6 @@ static int mei_wdt_remove(struct mei_cl_device *cldev)
- 	dbgfs_unregister(wdt);
- 
- 	kfree(wdt);
--
--	return 0;
- }
- 
- #define MEI_UUID_WD UUID_LE(0x05B79A6F, 0x4628, 0x4D7F, \
-diff --git a/include/linux/mei_cl_bus.h b/include/linux/mei_cl_bus.h
-index 959ad7d850b4..07f5ef8fc456 100644
---- a/include/linux/mei_cl_bus.h
-+++ b/include/linux/mei_cl_bus.h
-@@ -68,7 +68,7 @@ struct mei_cl_driver {
- 
- 	int (*probe)(struct mei_cl_device *cldev,
- 		     const struct mei_cl_device_id *id);
--	int (*remove)(struct mei_cl_device *cldev);
-+	void (*remove)(struct mei_cl_device *cldev);
- };
- 
- int __mei_cldev_driver_register(struct mei_cl_driver *cldrv,
--- 
-2.29.2
+> -----Original Message-----
+> From: Matthew Wilcox [mailto:willy@infradead.org]
+> Sent: Monday, February 8, 2021 10:34 AM
+> To: Wangzhou (B) <wangzhou1@hisilicon.com>
+> Cc: linux-kernel@vger.kernel.org; iommu@lists.linux-foundation.org;
+> linux-mm@kvack.org; linux-arm-kernel@lists.infradead.org;
+> linux-api@vger.kernel.org; Andrew Morton <akpm@linux-foundation.org>;
+> Alexander Viro <viro@zeniv.linux.org.uk>; gregkh@linuxfoundation.org; Song
+> Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>; jgg@ziepe.ca;
+> kevin.tian@intel.com; jean-philippe@linaro.org; eric.auger@redhat.com;
+> Liguozhu (Kenneth) <liguozhu@hisilicon.com>; zhangfei.gao@linaro.org;
+> chensihang (A) <chensihang1@hisilicon.com>
+> Subject: Re: [RFC PATCH v3 1/2] mempinfd: Add new syscall to provide memory
+> pin
+> 
+> On Sun, Feb 07, 2021 at 04:18:03PM +0800, Zhou Wang wrote:
+> > SVA(share virtual address) offers a way for device to share process virtual
+> > address space safely, which makes more convenient for user space device
+> > driver coding. However, IO page faults may happen when doing DMA
+> > operations. As the latency of IO page fault is relatively big, DMA
+> > performance will be affected severely when there are IO page faults.
+> > >From a long term view, DMA performance will be not stable.
+> >
+> > In high-performance I/O cases, accelerators might want to perform
+> > I/O on a memory without IO page faults which can result in dramatically
+> > increased latency. Current memory related APIs could not achieve this
+> > requirement, e.g. mlock can only avoid memory to swap to backup device,
+> > page migration can still trigger IO page fault.
+> 
+> Well ... we have two requirements.  The application wants to not take
+> page faults.  The system wants to move the application to a different
+> NUMA node in order to optimise overall performance.  Why should the
+> application's desires take precedence over the kernel's desires?  And why
+> should it be done this way rather than by the sysadmin using numactl to
+> lock the application to a particular node?
+
+NUMA balancer is just one of many reasons for page migration. Even one
+simple alloc_pages() can cause memory migration in just single NUMA
+node or UMA system.
+
+The other reasons for page migration include but are not limited to:
+* memory move due to CMA
+* memory move due to huge pages creation
+
+Hardly we can ask users to disable the COMPACTION, CMA and Huge Page
+in the whole system.
+
+On the other hand, numactl doesn't always bind memory to single NUMA
+node, sometimes, while applications require many cpu, it could bind
+more than one memory node.
+
+Thanks
+Barry
 
