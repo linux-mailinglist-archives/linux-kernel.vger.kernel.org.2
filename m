@@ -2,73 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 735AA31278D
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 22:32:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DDFE631278F
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 22:32:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229669AbhBGVaz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Feb 2021 16:30:55 -0500
-Received: from vps0.lunn.ch ([185.16.172.187]:53836 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229506AbhBGVau (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Feb 2021 16:30:50 -0500
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1l8rd5-004iEQ-BC; Sun, 07 Feb 2021 22:30:03 +0100
-Date:   Sun, 7 Feb 2021 22:30:03 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     stefanc@marvell.com
-Cc:     netdev@vger.kernel.org, thomas.petazzoni@bootlin.com,
-        davem@davemloft.net, nadavh@marvell.com, ymarkman@marvell.com,
-        linux-kernel@vger.kernel.org, kuba@kernel.org,
-        linux@armlinux.org.uk, mw@semihalf.com, rmk+kernel@armlinux.org.uk,
-        atenart@kernel.org, devicetree@vger.kernel.org, robh+dt@kernel.org,
-        sebastian.hesselbarth@gmail.com, gregory.clement@bootlin.com,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v9 net-next 01/15] doc: marvell: add CM3 address space
- and PPv2.3 description
-Message-ID: <YCBb2xWGXjNqBWPl@lunn.ch>
-References: <1612723137-18045-1-git-send-email-stefanc@marvell.com>
- <1612723137-18045-2-git-send-email-stefanc@marvell.com>
+        id S229706AbhBGVca (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Feb 2021 16:32:30 -0500
+Received: from angie.orcam.me.uk ([157.25.102.26]:47232 "EHLO
+        angie.orcam.me.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229506AbhBGVcX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Feb 2021 16:32:23 -0500
+Received: by angie.orcam.me.uk (Postfix, from userid 500)
+        id A46C39200B4; Sun,  7 Feb 2021 22:31:38 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by angie.orcam.me.uk (Postfix) with ESMTP id 9D2109200B3;
+        Sun,  7 Feb 2021 22:31:38 +0100 (CET)
+Date:   Sun, 7 Feb 2021 22:31:38 +0100 (CET)
+From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
+To:     Jinyang He <hejinyang@loongson.cn>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Paul Burton <paulburton@kernel.org>,
+        Jun-Ru Chang <jrjang@realtek.com>
+Subject: Re: [PATCH v2 2/4] MIPS: microMIPS: Fix the judgment of mm_jr16_op
+ and mm_jalr_op
+In-Reply-To: <1611207098-11381-3-git-send-email-hejinyang@loongson.cn>
+Message-ID: <alpine.DEB.2.21.2102072200300.35623@angie.orcam.me.uk>
+References: <1611207098-11381-1-git-send-email-hejinyang@loongson.cn> <1611207098-11381-3-git-send-email-hejinyang@loongson.cn>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1612723137-18045-2-git-send-email-stefanc@marvell.com>
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Feb 07, 2021 at 08:38:43PM +0200, stefanc@marvell.com wrote:
-> From: Stefan Chulski <stefanc@marvell.com>
-> 
-> Patch adds CM3 address space PPv2.3 description.
-> 
-> Signed-off-by: Stefan Chulski <stefanc@marvell.com>
-> ---
->  Documentation/devicetree/bindings/net/marvell-pp2.txt | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/net/marvell-pp2.txt b/Documentation/devicetree/bindings/net/marvell-pp2.txt
-> index b783976..1eb480a 100644
-> --- a/Documentation/devicetree/bindings/net/marvell-pp2.txt
-> +++ b/Documentation/devicetree/bindings/net/marvell-pp2.txt
-> @@ -1,5 +1,6 @@
->  * Marvell Armada 375 Ethernet Controller (PPv2.1)
->    Marvell Armada 7K/8K Ethernet Controller (PPv2.2)
-> +  Marvell CN913X Ethernet Controller (PPv2.3)
->  
->  Required properties:
->  
-> @@ -12,7 +13,7 @@ Required properties:
->  	- common controller registers
->  	- LMS registers
->  	- one register area per Ethernet port
-> -  For "marvell,armada-7k-pp2", must contain the following register
-> +  For "marvell,armada-7k-pp2" used by 7K/8K and CN913X, must contain the following register
->    sets:
->  	- packet processor registers
->  	- networking interfaces registers
+On Thu, 21 Jan 2021, Jinyang He wrote:
 
-Hi Stefan
+> mm16_r5_format.rt is 5 bits, so directly judge the value if equal or not.
+> mm_jalr_op requires 7th to 16th bits. These 10 which bits generated by
 
-Shouldn't there be an entry here describing what the third register
-set is?
+ The minor opcode extension field is comprised of bits 15:6, not 16:7 as 
+your description suggests.  Please be accurate with statements.
+
+> shifting u_format.uimmediate by 6 may be affected by sign extension.
+
+ Why?  The `uimmediate' bit-field member is unsigned for a reason.  No 
+sign-extension is made on unsigned data with the right-shift operation.
+
+> Thus, take out the 10 bits for comparison.
+> 
+> Without this patch, errors may occur, such as these bits are all ones.
+
+ How did you come to this conclusion?
+
+> diff --git a/arch/mips/kernel/process.c b/arch/mips/kernel/process.c
+> index d737234..74d7fd8 100644
+> --- a/arch/mips/kernel/process.c
+> +++ b/arch/mips/kernel/process.c
+> @@ -292,8 +292,8 @@ static inline int is_jump_ins(union mips_instruction *ip)
+>  	 * microMIPS is kind of more fun...
+>  	 */
+>  	if (mm_insn_16bit(ip->word >> 16)) {
+> -		if ((ip->mm16_r5_format.opcode == mm_pool16c_op &&
+> -		    (ip->mm16_r5_format.rt & mm_jr16_op) == mm_jr16_op))
+> +		if (ip->mm16_r5_format.opcode == mm_pool16c_op &&
+> +		    ip->mm16_r5_format.rt == mm_jr16_op)
+>  			return 1;
+>  		return 0;
+>  	}
+
+ Code style changes should be submitted on their own as separate patches.
+
+> @@ -305,7 +305,7 @@ static inline int is_jump_ins(union mips_instruction *ip)
+>  	if (ip->r_format.opcode != mm_pool32a_op ||
+>  			ip->r_format.func != mm_pool32axf_op)
+>  		return 0;
+> -	return ((ip->u_format.uimmediate >> 6) & mm_jalr_op) == mm_jalr_op;
+> +	return ((ip->u_format.uimmediate >> 6) & GENMASK(9, 0)) == mm_jalr_op;
+
+ You've now excluded JALR.HB, JALRS, and JALRS.HB instructions.  The mask 
+was there for a reason.  If you can't be bothered to verify microMIPS 
+changes say with QEMU, then at the very least please check documentation.  
+The intent of this code is clear and these instructions are even spelled 
+out explicitly in the comment at the top.
+
+ Thomas, please revert this change as I can see you've already taken it.  
+It's plain wrong.
+
+  Maciej
