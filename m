@@ -2,68 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 830A9312328
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 10:24:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EA44312331
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 10:26:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229763AbhBGJYY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Feb 2021 04:24:24 -0500
-Received: from marcansoft.com ([212.63.210.85]:34428 "EHLO mail.marcansoft.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229611AbhBGJYQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Feb 2021 04:24:16 -0500
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (No client certificate requested)
-        (Authenticated sender: marcan@marcan.st)
-        by mail.marcansoft.com (Postfix) with ESMTPSA id 58C4142852;
-        Sun,  7 Feb 2021 09:23:30 +0000 (UTC)
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     soc@kernel.org, linux-arm-kernel@lists.infradead.org,
-        robh+dt@kernel.org, Arnd Bergmann <arnd@kernel.org>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Olof Johansson <olof@lixom.net>
-References: <20210204203951.52105-1-marcan@marcan.st>
- <20210204203951.52105-12-marcan@marcan.st> <87ft29kxmp.wl-maz@kernel.org>
-From:   Hector Martin 'marcan' <marcan@marcan.st>
-Subject: Re: [PATCH 11/18] arm64: Kconfig: Require FIQ support for ARCH_APPLE
-Message-ID: <860b7dac-ccad-b6c9-c7be-537d6b1c5ede@marcan.st>
-Date:   Sun, 7 Feb 2021 18:23:28 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S229806AbhBGJ0e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Feb 2021 04:26:34 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:40816 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229742AbhBGJ0K (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Feb 2021 04:26:10 -0500
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 1C51D1C0B77; Sun,  7 Feb 2021 10:25:28 +0100 (CET)
+Date:   Sun, 7 Feb 2021 10:25:27 +0100
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Pan Bian <bianpan2016@163.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: Re: [PATCH 5.4 01/32] net: dsa: bcm_sf2: put device node before
+ return
+Message-ID: <20210207092527.GB32297@amd>
+References: <20210205140652.348864025@linuxfoundation.org>
+ <20210205140652.414435105@linuxfoundation.org>
 MIME-Version: 1.0
-In-Reply-To: <87ft29kxmp.wl-maz@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: es-ES
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="3uo+9/B/ebqu+fSQ"
+Content-Disposition: inline
+In-Reply-To: <20210205140652.414435105@linuxfoundation.org>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/02/2021 00.46, Marc Zyngier wrote:
->>   config ARCH_APPLE
->>   	bool "Apple Silicon SoC family"
->>   	select GENERIC_IRQ_CHIP
->> +	select ARM64_FIQ_SUPPORT
-> 
-> Ah, this is what I was expecting in the previous patch. I guess the
-> initial ARCH_APPLE patch could be moved down the line and add all the
-> dependencies in one go.
 
-I was trying to introduce the Kconfig before the code that depends on 
-it; is it kosher to have it in the other order, looking for CONFIG_ 
-defines that don't exist yet?
+--3uo+9/B/ebqu+fSQ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Though in this case the only user earlier in the series is the Samsung 
-stuff, which doesn't care about FIQs, so I can just sort things as 
-FIQ->ARCH_APPLE->samsung->AIC...
+Hi!
 
-I'm not sure about AIC vs. ARCH_APPLE though. Right now the pattern is 
-that AIC depends on ARCH_APPLE and also defaults to that. But then you 
-can build with ARCH_APPLE and AIC disabled if you so choose, which does 
-result in a broken system on these machines. AIC should build without 
-ARCH_APPLE (as long as we're on ARM64), so we could reverse that.
+> From: Pan Bian <bianpan2016@163.com>
+>=20
+> commit cf3c46631e1637582f517a574c77cd6c05793817 upstream.
+>=20
+> Put the device node dn before return error code on failure path.
 
--- 
-Hector Martin "marcan" (marcan@marcan.st)
-Public Key: https://mrcn.st/pub
+This fixes one resource leak, but exposes next one: get_device() is
+not undone in the second error path and in the end of function.
+
+Best regards,
+							Pavel
+
+> +++ b/drivers/net/dsa/bcm_sf2.c
+> @@ -421,15 +421,19 @@ static int bcm_sf2_mdio_register(struct
+>  	/* Find our integrated MDIO bus node */
+>  	dn =3D of_find_compatible_node(NULL, NULL, "brcm,unimac-mdio");
+>  	priv->master_mii_bus =3D of_mdio_find_bus(dn);
+> -	if (!priv->master_mii_bus)
+> +	if (!priv->master_mii_bus) {
+> +		of_node_put(dn);
+>  		return -EPROBE_DEFER;
+> +	}
+> =20
+>  	get_device(&priv->master_mii_bus->dev);
+>  	priv->master_mii_dn =3D dn;
+> =20
+>  	priv->slave_mii_bus =3D devm_mdiobus_alloc(ds->dev);
+> -	if (!priv->slave_mii_bus)
+> +	if (!priv->slave_mii_bus) {
+> +		of_node_put(dn);
+>  		return -ENOMEM;
+> +	}
+> =20
+>  	priv->slave_mii_bus->priv =3D priv;
+>  	priv->slave_mii_bus->name =3D "sf2 slave mii";
+>=20
+
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--3uo+9/B/ebqu+fSQ
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAmAfsgcACgkQMOfwapXb+vKFfQCeJ3svL4kIy6zxFrOZoIvwQv27
+jxsAoKdfe3FnCslEBpZLL3R87KpwUGE4
+=LJc7
+-----END PGP SIGNATURE-----
+
+--3uo+9/B/ebqu+fSQ--
