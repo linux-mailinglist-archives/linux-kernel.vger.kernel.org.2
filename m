@@ -2,97 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEA6D312126
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 04:23:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C1C931212A
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 04:31:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229721AbhBGDWZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Feb 2021 22:22:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44856 "EHLO
+        id S229638AbhBGDah (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Feb 2021 22:30:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229506AbhBGDWX (ORCPT
+        with ESMTP id S229506AbhBGDaf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Feb 2021 22:22:23 -0500
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D87F1C06174A
-        for <linux-kernel@vger.kernel.org>; Sat,  6 Feb 2021 19:21:42 -0800 (PST)
-Received: by mail-pg1-x52d.google.com with SMTP id o7so8055879pgl.1
-        for <linux-kernel@vger.kernel.org>; Sat, 06 Feb 2021 19:21:42 -0800 (PST)
+        Sat, 6 Feb 2021 22:30:35 -0500
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A79BC06174A
+        for <linux-kernel@vger.kernel.org>; Sat,  6 Feb 2021 19:29:55 -0800 (PST)
+Received: by mail-lj1-x241.google.com with SMTP id q14so2824504ljp.4
+        for <linux-kernel@vger.kernel.org>; Sat, 06 Feb 2021 19:29:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=J8aByEx4plaMl5Ii2PzH3W/CgTfnQKhyYr110Lcchrs=;
-        b=mFu/sUbRMlghzahoygXzzYY0xBX6vQfrZgIuts7d7SdErQg69aS0OHiShJVbR8ocxB
-         zYLQnliOyY08jeKFPrYgg+wLxR3OH3PWfOofT0BqTxr+ho9ndgRCrbIWB0KrKgi9T5iQ
-         sk5Ya4/FeuiO891lUp4m0ZF/1PP69cJ4umVzk=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dYbm//cUR0InpLPNHSXpOGWXSrCz7B8B5No4bQkGlUo=;
+        b=Bv1RNWH2KXDnV/6TdSNNWgMNe/8vr6sFCVNr0fn/62puKpvImwNmMV3vSLqkVUqqk7
+         /bS7TKX3i1cakxrRmc80TtfPZez3KhWrWqHwSsExzrHGAz9oLwonjNUcDZmNpaAEqhHi
+         YmoPaEeANKEJk7nAXWPqCdQK+WyXg9nlDO82rqjAYH0yF+9/+DSxjYYOj2QOpi0oAbx8
+         eJX1rx46wuebCximG1FYFsMe8jk+RzPnEAV5YnghW10zQA3NoWcdwt5md+DL2UTCNND7
+         hVamCJhkhTggYsPk511FumXBWu+bOQq8PUVLPC1wH6pTf+rfeGyXYNKvSKLHNFPcryS+
+         y9ig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=J8aByEx4plaMl5Ii2PzH3W/CgTfnQKhyYr110Lcchrs=;
-        b=moGU3faSfmnS24XH4JvelsShpTPA/BHYvoyFb1x6oevHhBTDRdwLogOwSCTI1Mu+xI
-         /JmJENBQLbh0SqGZdi8fJg6JJox+2hLxpm38uHMZDIMW2rw3Jrqy6JwrQvR06CA1t0gQ
-         BLnHwEnBbc513WdvyS5T0VMxq+PlJMF3nYXXJktJtMtjnU76cIoSEZ4W6xRk96X79Wm/
-         Pi1ToQAaW4h+acROzointq6jtmMOqPuslayinjVNMwX8brsWJCxci4uSrQCETP7u55IW
-         GLNHRppeF8AzP2swaBhU5DdwVWQjqhze7If7y0MfyGiI9R1AlsSQjl3Yl1BQWmo5uWI2
-         nlHg==
-X-Gm-Message-State: AOAM530T9u0hqyuwbCexvD/xWN2lc+bQUE96h5+NixFEj1qsJvH5+fsW
-        2S2o8aC7XZzkbHAvF4PVzIELBtNzFfq8cg==
-X-Google-Smtp-Source: ABdhPJwhwyicDF4yN4qXAJMR6YjwkSPDz3Q+Vn402tMQ9b4zaNH0rTvNy2HQr6IlbfuqrdidvmE2iA==
-X-Received: by 2002:a63:551f:: with SMTP id j31mr11668546pgb.432.1612668102161;
-        Sat, 06 Feb 2021 19:21:42 -0800 (PST)
-Received: from chromium.org ([2620:15c:202:201:2c64:7ee8:fefb:fab2])
-        by smtp.gmail.com with ESMTPSA id u19sm1499571pjy.20.2021.02.06.19.21.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 06 Feb 2021 19:21:41 -0800 (PST)
-Content-Type: text/plain; charset="utf-8"
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dYbm//cUR0InpLPNHSXpOGWXSrCz7B8B5No4bQkGlUo=;
+        b=r8Sz7/Z3zviwNXJS2mRqwDJaNZzvkwkMW6fE47UCHvKXswpoW/QoR0nBfumA5s9jQg
+         UimFneJh4s9I5Mx8gJvPi0aQkFDggVecBYKS4S3N4GGeHwcu6NLnVsEAOK4NBoAiuGyD
+         rYarN/qomH8iTSYQu4D2wzAeotMYzIkyXDKXfX/JjDvSfSFsnSv3z4Pm/WyJTV9ttnDz
+         Cnq6SR+bnPQOdecqVvsfLraALcW1WqpzSw2G5yQDupnVZD6HM9nnnjtDbMlwN6zDyP5x
+         V3W3oOfmDR4s0n1ofuukteAM/bafFD5gVoZ8XSDeb0wovz3VU1ZZ4YGzEW3rzL8pte6k
+         TWzg==
+X-Gm-Message-State: AOAM532DkOFn2TylbmX8Zl23Q5x2XfG0tbty7/LIjfA2iJJOaKEANA7F
+        +hyzD516WTdjdqPs4Se8vPseJiqXp4YFFG8ORYo=
+X-Google-Smtp-Source: ABdhPJzCihwJlOQzdY8mmeoTi34cYXGUnjiITHknHKZ9tbvuNCXExpakJbdFJ3u3YCP4Y+TACxCe/i1eUQqzwWoPolQ=
+X-Received: by 2002:a2e:880e:: with SMTP id x14mr7008504ljh.89.1612668591965;
+ Sat, 06 Feb 2021 19:29:51 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210206161711.6f555434@archlinux>
-References: <20210202184434.42644-1-swboyd@chromium.org> <20210202184434.42644-4-swboyd@chromium.org> <20210206161711.6f555434@archlinux>
-Subject: Re: [PATCH v4 3/3] iio: proximity: Add a ChromeOS EC MKBP proximity driver
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Benson Leung <bleung@chromium.org>,
-        Guenter Roeck <groeck@chromium.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Gwendal Grignou <gwendal@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>
-To:     Jonathan Cameron <jic23@kernel.org>
-Date:   Sat, 06 Feb 2021 19:21:39 -0800
-Message-ID: <161266809977.76967.12637197400196121672@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+References: <20210206053109.78205-1-dong.menglong@zte.com.cn> <CAHp75VfMYOz+qexix_TujGfUgFAtUXdbS=ekVdE_4cwRv5W8pw@mail.gmail.com>
+In-Reply-To: <CAHp75VfMYOz+qexix_TujGfUgFAtUXdbS=ekVdE_4cwRv5W8pw@mail.gmail.com>
+From:   Menglong Dong <menglong8.dong@gmail.com>
+Date:   Sun, 7 Feb 2021 11:29:40 +0800
+Message-ID: <CADxym3bsqAH969H-P8SSam+_gbjgWkxP90Zh-RnzDaOJuwD3ig@mail.gmail.com>
+Subject: Re: [PATCH net-next] net: socket: use BIT_MASK for MSG_*
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     "axboe@kernel.dk" <axboe@kernel.dk>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "herbert@gondor.apana.org.au" <herbert@gondor.apana.org.au>,
+        "dong.menglong@zte.com.cn" <dong.menglong@zte.com.cn>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Jonathan Cameron (2021-02-06 08:17:11)
-> On Tue,  2 Feb 2021 10:44:34 -0800
-> Stephen Boyd <swboyd@chromium.org> wrote:
->=20
-> > +static struct platform_driver cros_ec_mkbp_proximity_driver =3D {
-> > +     .driver =3D {
-> > +             .name =3D "cros-ec-mkbp-proximity",
-> > +             .of_match_table =3D of_match_ptr(cros_ec_mkbp_proximity_o=
-f_match),
-> I'm going to assume we know no one is going to use this with
-> ACPI via PRP0001 given presumably the firmware on these devices
-> is tightly controlled.
+Hello!
 
-Correct.
+On Sat, Feb 6, 2021 at 4:20 PM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
+>
+>
+>
+> On Saturday, February 6, 2021, <menglong8.dong@gmail.com> wrote:
+>>
+>> From: Menglong Dong <dong.menglong@zte.com.cn>
+>>
+>> The bit mask for MSG_* seems a little confused here. Replace it
+>> with BIT_MASK to make it clear to understand.
+>
+>
+> It makes it more confusing if you understand the difference between BIT_MASK() and BIT(). I think you have to use the latter. And note () when referring to the function or macro.
+>
 
->=20
-> However, we should should still drop the of_match_ptr
-> as it will lead to an unused warning for cros_ec_mkbp_proximity_of_match
-> if anyone builds this without CONFIG_OF + it sets a general bad
-> precedence that I'd rather wasn't around for people to copy.
-> Note that in general we are slowly ripping these out of IIO but
-> probably lots still there.
->=20
-> If this is all that is needed in this version I'll just do it
-> whilst applying unless anyone shouts.
->=20
+I replaced BIT_MASK() with BIT() in the patch of v2, and it looks much
+more tidy.
+I can't figure out the difference between BIT() and BIT_MASK(), seems
+the latter one more safe... isn't it?
 
-Agreed. Thanks for fixing that last little bit.
+Thanks:)
+Menglong Dong
