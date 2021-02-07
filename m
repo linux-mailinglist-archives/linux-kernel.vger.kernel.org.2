@@ -2,101 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AE0C31232B
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 10:26:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 830A9312328
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 10:24:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229754AbhBGJYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Feb 2021 04:24:39 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:43642 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229613AbhBGJYW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Feb 2021 04:24:22 -0500
-Received: from bogon.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxf_KRsR9gYrgHAA--.10006S2;
-        Sun, 07 Feb 2021 17:23:29 +0800 (CST)
-From:   Youling Tang <tangyouling@loongson.cn>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-Cc:     devel@driverdev.osuosl.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        tangyouling@loongson.cn
-Subject: [PATCH] staging: fix ignoring return value warning
-Date:   Sun,  7 Feb 2021 17:23:28 +0800
-Message-Id: <1612689808-30985-1-git-send-email-tangyouling@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9Dxf_KRsR9gYrgHAA--.10006S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7KF4kKw4DZw4DKw1DGFyfZwb_yoW8CF4fpa
-        yxAa4Ykry2yF4Uu3yUAF1xZ3Z8ua4xK3y8Cayqyw1F9ryrJa4Svry5tFyUKr4rJr93KF4r
-        tFW7ZF4UZay8WrDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkl14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-        JVWxJr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv6xkF7I0E14v26r
-        xl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
-        6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr
-        0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkIecxEwVAFwVW8
-        uwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r
-        1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij
-        64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr
-        0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1l
-        IxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUjwSdDUUUU
-        U==
-X-CM-SenderInfo: 5wdqw5prxox03j6o00pqjv00gofq/
+        id S229763AbhBGJYY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Feb 2021 04:24:24 -0500
+Received: from marcansoft.com ([212.63.210.85]:34428 "EHLO mail.marcansoft.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229611AbhBGJYQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Feb 2021 04:24:16 -0500
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (No client certificate requested)
+        (Authenticated sender: marcan@marcan.st)
+        by mail.marcansoft.com (Postfix) with ESMTPSA id 58C4142852;
+        Sun,  7 Feb 2021 09:23:30 +0000 (UTC)
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     soc@kernel.org, linux-arm-kernel@lists.infradead.org,
+        robh+dt@kernel.org, Arnd Bergmann <arnd@kernel.org>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        Olof Johansson <olof@lixom.net>
+References: <20210204203951.52105-1-marcan@marcan.st>
+ <20210204203951.52105-12-marcan@marcan.st> <87ft29kxmp.wl-maz@kernel.org>
+From:   Hector Martin 'marcan' <marcan@marcan.st>
+Subject: Re: [PATCH 11/18] arm64: Kconfig: Require FIQ support for ARCH_APPLE
+Message-ID: <860b7dac-ccad-b6c9-c7be-537d6b1c5ede@marcan.st>
+Date:   Sun, 7 Feb 2021 18:23:28 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
+MIME-Version: 1.0
+In-Reply-To: <87ft29kxmp.wl-maz@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: es-ES
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the below ignoring return value warning for device_reset.
+On 07/02/2021 00.46, Marc Zyngier wrote:
+>>   config ARCH_APPLE
+>>   	bool "Apple Silicon SoC family"
+>>   	select GENERIC_IRQ_CHIP
+>> +	select ARM64_FIQ_SUPPORT
+> 
+> Ah, this is what I was expecting in the previous patch. I guess the
+> initial ARCH_APPLE patch could be moved down the line and add all the
+> dependencies in one go.
 
-drivers/staging/mt7621-dma/mtk-hsdma.c:685:2: warning: ignoring return value
-of function declared with 'warn_unused_result' attribute [-Wunused-result]
-        device_reset(&pdev->dev);
-        ^~~~~~~~~~~~ ~~~~~~~~~~
-drivers/staging/ralink-gdma/ralink-gdma.c:836:2: warning: ignoring return value
-of function declared with 'warn_unused_result' attribute [-Wunused-result]
-        device_reset(&pdev->dev);
-        ^~~~~~~~~~~~ ~~~~~~~~~~
+I was trying to introduce the Kconfig before the code that depends on 
+it; is it kosher to have it in the other order, looking for CONFIG_ 
+defines that don't exist yet?
 
-Signed-off-by: Youling Tang <tangyouling@loongson.cn>
----
- drivers/staging/mt7621-dma/mtk-hsdma.c    | 6 +++++-
- drivers/staging/ralink-gdma/ralink-gdma.c | 6 +++++-
- 2 files changed, 10 insertions(+), 2 deletions(-)
+Though in this case the only user earlier in the series is the Samsung 
+stuff, which doesn't care about FIQs, so I can just sort things as 
+FIQ->ARCH_APPLE->samsung->AIC...
 
-diff --git a/drivers/staging/mt7621-dma/mtk-hsdma.c b/drivers/staging/mt7621-dma/mtk-hsdma.c
-index bc4bb43..d4ffa52 100644
---- a/drivers/staging/mt7621-dma/mtk-hsdma.c
-+++ b/drivers/staging/mt7621-dma/mtk-hsdma.c
-@@ -682,7 +682,11 @@ static int mtk_hsdma_probe(struct platform_device *pdev)
- 		return ret;
- 	}
- 
--	device_reset(&pdev->dev);
-+	ret = device_reset(&pdev->dev);
-+	if (ret) {
-+		dev_err(&pdev->dev, "failed to reset device\n");
-+		return ret;
-+	}
- 
- 	dd = &hsdma->ddev;
- 	dma_cap_set(DMA_MEMCPY, dd->cap_mask);
-diff --git a/drivers/staging/ralink-gdma/ralink-gdma.c b/drivers/staging/ralink-gdma/ralink-gdma.c
-index 655df31..df99c47 100644
---- a/drivers/staging/ralink-gdma/ralink-gdma.c
-+++ b/drivers/staging/ralink-gdma/ralink-gdma.c
-@@ -833,7 +833,11 @@ static int gdma_dma_probe(struct platform_device *pdev)
- 		return ret;
- 	}
- 
--	device_reset(&pdev->dev);
-+	ret = device_reset(&pdev->dev);
-+	if (ret) {
-+		dev_err(&pdev->dev, "failed to reset device\n");
-+		return ret;
-+	}
- 
- 	dd = &dma_dev->ddev;
- 	dma_cap_set(DMA_MEMCPY, dd->cap_mask);
+I'm not sure about AIC vs. ARCH_APPLE though. Right now the pattern is 
+that AIC depends on ARCH_APPLE and also defaults to that. But then you 
+can build with ARCH_APPLE and AIC disabled if you so choose, which does 
+result in a broken system on these machines. AIC should build without 
+ARCH_APPLE (as long as we're on ARM64), so we could reverse that.
+
 -- 
-2.1.0
-
+Hector Martin "marcan" (marcan@marcan.st)
+Public Key: https://mrcn.st/pub
