@@ -2,113 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC3F23127C3
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 23:03:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 94A773127C9
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 23:16:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229615AbhBGWDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Feb 2021 17:03:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57616 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229570AbhBGWDS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Feb 2021 17:03:18 -0500
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C2F2C06174A
-        for <linux-kernel@vger.kernel.org>; Sun,  7 Feb 2021 14:02:38 -0800 (PST)
-Received: by mail-pl1-x62b.google.com with SMTP id j11so6772051plt.11
-        for <linux-kernel@vger.kernel.org>; Sun, 07 Feb 2021 14:02:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
-        h=content-transfer-encoding:from:mime-version:subject:date:message-id
-         :references:cc:in-reply-to:to;
-        bh=rF9rOEV9Q8WVIOH0rqIWO7EqANQSyBnp1ft+vyl9KF0=;
-        b=QANXs0Ex159+byJKUEaE28kl3Xh1NJ9WQlAArBMiqR/LE0uHG9IpHhfqWrVmJbho7R
-         zP1u0EqWhELbEmtTGccuSGqB1fhJqbp8L6ZAFLx9BsWQEpn7+9fUeq7ZlknoiHHfRYsV
-         yCiSNhT/oz/MSrVIf+6C3avuFCznOmT2MIzTiHTudXkJ3md/uaNKYTp7OcY+zyFWUdx3
-         t2hI93ykFPrRg/ziGbbX6FfZAddsJEzERu6Jadvk5KI3v/9ZrpWsV/zrUDO5Y59dlxde
-         zHUljpHpBinHt9TpnJyq7p6CZXtVOCBYq6uXD8Si3ujOPNxK8fpJ1Q0naopg0iRuSxBm
-         +jGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:from:mime-version
-         :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=rF9rOEV9Q8WVIOH0rqIWO7EqANQSyBnp1ft+vyl9KF0=;
-        b=akbvt0hbjL9kUaIpO2SC+BwU6l8sXHKim2SUUhB7zGidigLVpI+4t3mPEOGJHIUn8A
-         2vZz9yC2Nfe6t/heIy2LKeWChxNAi9BCc9UVIzcgrhRJsuCE3GTqeNLWlCd+NJAj7sNI
-         BDIu34PKJ11W7RWBb2NgGTbkEZT6TGKCJnhJvcuwoDNPYi14Klj+1GOmX2snwVe+fpa3
-         1Pwsj5rYatJDybckF6puI3DbgTEBwjdeH8hfXpIw8bY9/7eEJrQgRdzMogj84YISrN4s
-         +LzHdRjAHme4qGv0ZupXx41mo13Kw+Vfw82kY6W1Wpg2yzkDx/RiyOP7euszH/Q5AflE
-         aSnw==
-X-Gm-Message-State: AOAM532YH1fc//rU9uYWOUOv4E1rhVflSyrdRhOwQ2j8vAG3CHn80te6
-        TZU8fIMU6RDZTnoXqU++9Y4meA==
-X-Google-Smtp-Source: ABdhPJzNR1bzv/JQhWJTt0CBbMKbJVt9xR9k8FE58XkDiaugfM9e0sPAPw9t+dZ9eAqufWWfnMqn+g==
-X-Received: by 2002:a17:90a:184:: with SMTP id 4mr13919868pjc.87.1612735358046;
-        Sun, 07 Feb 2021 14:02:38 -0800 (PST)
-Received: from ?IPv6:2601:646:c200:1ef2:8e8:e217:43e7:e032? ([2601:646:c200:1ef2:8e8:e217:43e7:e032])
-        by smtp.gmail.com with ESMTPSA id i25sm16435713pgb.33.2021.02.07.14.02.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 07 Feb 2021 14:02:37 -0800 (PST)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Andy Lutomirski <luto@amacapital.net>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [RFC PATCH v3 1/2] mempinfd: Add new syscall to provide memory pin
-Date:   Sun, 7 Feb 2021 14:02:36 -0800
-Message-Id: <ED58431F-5972-47D1-BF50-93A20AD86C46@amacapital.net>
-References: <1612685884-19514-2-git-send-email-wangzhou1@hisilicon.com>
-Cc:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
-        linux-api@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        gregkh@linuxfoundation.org, song.bao.hua@hisilicon.com,
-        jgg@ziepe.ca, kevin.tian@intel.com, jean-philippe@linaro.org,
-        eric.auger@redhat.com, liguozhu@hisilicon.com,
-        zhangfei.gao@linaro.org, Sihang Chen <chensihang1@hisilicon.com>
-In-Reply-To: <1612685884-19514-2-git-send-email-wangzhou1@hisilicon.com>
-To:     Zhou Wang <wangzhou1@hisilicon.com>
-X-Mailer: iPhone Mail (18D52)
+        id S229590AbhBGWOz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Feb 2021 17:14:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53004 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229506AbhBGWOx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Feb 2021 17:14:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D6AF64DEE;
+        Sun,  7 Feb 2021 22:14:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612736052;
+        bh=yLI+r9yxF4Usf8nmWDKhF8GsMG4dnZXjsjBHn97UbFA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=pjN08tdXYOqee5+QsBDHbxXXQ72z6Q2HoAJH+PQdR6sqaWHagDVPO3cLUP7Zd0p3C
+         WgdSG02zADag9+UkzedE6vX0CuAFpfVxbuKXBnpD5239yR2QVzQPjQfMNDzKvT7Kjv
+         j7cKthdU4enD2/9VPE+4oa0ZkR1kl5BdcLPxurJfHruYJN2Tpgn6DuFiD+ey5r6o5W
+         XrpFKs/DwsfwWcv9o3tnpLsVSBKhrYXqJlykVLAdi9faRCRWPGL/pp8h6s+k0iSSnd
+         BDm0QqsIMZr35GDOCTHP3HXBcrS/7hQorvy+qo9+K97U4ZtcRQtk04aIt7wzxE5WKO
+         bAM0WBc5pph4Q==
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     linux-sgx@vger.kernel.org
+Cc:     dave.hansen@intel.com, Jarkko Sakkinen <jarkko@kernel.org>,
+        Haitao Huang <haitao.huang@linux.intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Jethro Beekman <jethro@fortanix.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v8] x86/sgx: Maintain encl->refcount for each encl->mm_list entry
+Date:   Mon,  8 Feb 2021 00:14:01 +0200
+Message-Id: <20210207221401.29933-1-jarkko@kernel.org>
+X-Mailer: git-send-email 2.30.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This has been shown in tests:
 
+[  +0.000008] WARNING: CPU: 3 PID: 7620 at kernel/rcu/srcutree.c:374 cleanup_srcu_struct+0xed/0x100
 
-> On Feb 7, 2021, at 12:31 AM, Zhou Wang <wangzhou1@hisilicon.com> wrote:
->=20
-> =EF=BB=BFSVA(share virtual address) offers a way for device to share proce=
-ss virtual
-> address space safely, which makes more convenient for user space device
-> driver coding. However, IO page faults may happen when doing DMA
-> operations. As the latency of IO page fault is relatively big, DMA
-> performance will be affected severely when there are IO page faults.
-> =46rom a long term view, DMA performance will be not stable.
->=20
-> In high-performance I/O cases, accelerators might want to perform
-> I/O on a memory without IO page faults which can result in dramatically
-> increased latency. Current memory related APIs could not achieve this
-> requirement, e.g. mlock can only avoid memory to swap to backup device,
-> page migration can still trigger IO page fault.
->=20
-> Various drivers working under traditional non-SVA mode are using
-> their own specific ioctl to do pin. Such ioctl can be seen in v4l2,
-> gpu, infiniband, media, vfio, etc. Drivers are usually doing dma
-> mapping while doing pin.
->=20
-> But, in SVA mode, pin could be a common need which isn't necessarily
-> bound with any drivers, and neither is dma mapping needed by drivers
-> since devices are using the virtual address of CPU. Thus, It is better
-> to introduce a new common syscall for it.
->=20
-> This patch leverages the design of userfaultfd and adds mempinfd for pin
-> to avoid messing up mm_struct. A fd will be got by mempinfd, then user
-> space can do pin/unpin pages by ioctls of this fd, all pinned pages under
-> one file will be unpinned in file release process. Like pin page cases in
-> other places, can_do_mlock is used to check permission and input
-> parameters.
+This is essentially a use-after free, although SRCU notices it as
+an SRCU cleanup in an invalid context.
 
+== Background ==
 
-Can you document what the syscall does?
+SGX has a data structure (struct sgx_encl_mm) which keeps per-mm SGX
+metadata.  This is separate from 'struct sgx_encl' because, in theory,
+an enclave can be mapped from more than one mm.  sgx_encl_mm includes
+a pointer back to the sgx_encl.
 
-Userfaultfd is an fd because one program controls another.  Is mempinfd like=
- this?=
+This means that sgx_encl must have a longer lifetime than all of the
+sgx_encl_mm's that point to it.  That's usually the case: sgx_encl_mm
+is freed only after the mmu_notifier is unregistered in sgx_release().
+
+However, there's a race.  If the process is exiting,
+sgx_mmu_notifier_release() can be called in parallel with sgx_release()
+instead of being called *by* it.  The mmu_notifier path keeps encl_mm
+alive past when sgx_encl can be freed.  This inverts the lifetime rules
+and means that sgx_mmu_notifier_release() can access a freed sgx_encl.
+
+== Fix ==
+
+Increase encl->refcount when encl_mm->encl is established. Release
+this reference encl_mm is freed.  This ensures that 'encl' outlives
+'encl_mm'.
+
+Fixes: 1728ab54b4be ("x86/sgx: Add a page reclaimer")
+Cc: Dave Hansen <dave.hansen@linux.intel.com
+Reported-by: Haitao Huang <haitao.huang@linux.intel.com>
+Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+---
+v8:
+- Slight adjustments on call sites suggested by Dave, to make things
+  more clear and obvious. Otherwise, semantically same as v7:
+  https://lore.kernel.org/linux-sgx/b874673d-9d58-0d6f-ce2d-ef4d33ac5115@intel.com/
+  Contains also long description written by Dave.
+v7:
+- No changes from v6. Resend of
+  https://patchwork.kernel.org/project/intel-sgx/patch/20210204143845.39697-1-jarkko@kernel.org/
+v6:
+- Maintain refcount for each encl->mm_list entry.
+v5:
+- To make sure that the instance does not get deleted use kref_get()
+  kref_put(). This also removes the need for additional
+  synchronize_srcu().
+v4:
+- Rewrite the commit message.
+- Just change the call order. *_expedited() is out of scope for this
+  bug fix.
+v3: Fine-tuned tags, and added missing change log for v2.
+v2: Switch to synchronize_srcu_expedited().
+
+ arch/x86/kernel/cpu/sgx/driver.c | 3 +++
+ arch/x86/kernel/cpu/sgx/encl.c   | 5 +++++
+ 2 files changed, 8 insertions(+)
+
+diff --git a/arch/x86/kernel/cpu/sgx/driver.c b/arch/x86/kernel/cpu/sgx/driver.c
+index f2eac41bb4ff..8ce6d8371cfb 100644
+--- a/arch/x86/kernel/cpu/sgx/driver.c
++++ b/arch/x86/kernel/cpu/sgx/driver.c
+@@ -72,6 +72,9 @@ static int sgx_release(struct inode *inode, struct file *file)
+ 		synchronize_srcu(&encl->srcu);
+ 		mmu_notifier_unregister(&encl_mm->mmu_notifier, encl_mm->mm);
+ 		kfree(encl_mm);
++
++		/* 'encl_mm' is gone, put encl_mm->encl reference: */
++		kref_put(&encl->refcount, sgx_encl_release);
+ 	}
+ 
+ 	kref_put(&encl->refcount, sgx_encl_release);
+diff --git a/arch/x86/kernel/cpu/sgx/encl.c b/arch/x86/kernel/cpu/sgx/encl.c
+index 20a2dd5ba2b4..7449ef33f081 100644
+--- a/arch/x86/kernel/cpu/sgx/encl.c
++++ b/arch/x86/kernel/cpu/sgx/encl.c
+@@ -473,6 +473,9 @@ static void sgx_mmu_notifier_free(struct mmu_notifier *mn)
+ {
+ 	struct sgx_encl_mm *encl_mm = container_of(mn, struct sgx_encl_mm, mmu_notifier);
+ 
++	/* 'encl_mm' is going away, put encl_mm->encl reference: */
++	kref_put(&encl_mm->encl->refcount, sgx_encl_release);
++
+ 	kfree(encl_mm);
+ }
+ 
+@@ -526,6 +529,8 @@ int sgx_encl_mm_add(struct sgx_encl *encl, struct mm_struct *mm)
+ 	if (!encl_mm)
+ 		return -ENOMEM;
+ 
++	/* Grab a refcount for the encl_mm->encl reference: */
++	kref_get(&encl->refcount);
+ 	encl_mm->encl = encl;
+ 	encl_mm->mm = mm;
+ 	encl_mm->mmu_notifier.ops = &sgx_mmu_notifier_ops;
+-- 
+2.30.0
+
