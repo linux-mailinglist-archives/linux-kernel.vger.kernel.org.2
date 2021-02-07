@@ -2,96 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28EBD312552
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 16:28:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 442F4312555
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 16:31:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229998AbhBGP2U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Feb 2021 10:28:20 -0500
-Received: from mail-pl1-f177.google.com ([209.85.214.177]:34147 "EHLO
-        mail-pl1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230373AbhBGPZg (ORCPT
+        id S230177AbhBGP2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Feb 2021 10:28:55 -0500
+Received: from smtprelay0143.hostedemail.com ([216.40.44.143]:53288 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S230107AbhBGP0R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Feb 2021 10:25:36 -0500
-Received: by mail-pl1-f177.google.com with SMTP id u15so6508177plf.1
-        for <linux-kernel@vger.kernel.org>; Sun, 07 Feb 2021 07:25:19 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=03TyJ5KVF/x1aNwDz5a1nMAIlPKwQUH2D24fRznCL74=;
-        b=hG5LbDyhku2Pe3L1IXBM00JtlBWwSDwQdjDii5LSiV5nNq9UAFlokeVVhcDzhuBSUs
-         caVEI04Dj6IRhK+RMU2YhwCMtp+Ndse5SX540GaPxPZkIGZaRxEhj9i+uZzVn7DqhMtE
-         Mf3z05ZpWCVLsrCAJM3mOvHE64KOaY3GiDZIupv5sqqNfEAUkEdY8opQLrg1tdzmOF64
-         o+Mqd/lAv3tKeg7465y8hvI+em2uy0QxByLWx4dHJJw+yvKNdnUyuVJw7RTBlS8gAvdF
-         4bFQ+eI+QUf81se9IhUNwlQ0i2CuX8hXED9VeYvedDgLV0MHb5kkORzR6NQyykkZ6J39
-         H/qw==
-X-Gm-Message-State: AOAM533tpxZ5mLM5naDqkQJrU4jx1Y1CbzBuRLxW6AgT8yBI7JxXJT8a
-        LXYUPDQQG3iWy/VFVsc8ZyY=
-X-Google-Smtp-Source: ABdhPJygoT6MEb84dN4R7bT/4jrz6kpFbuqc4oEjabtOfoYcegxs8DdO3QV7zlKNZqA8ch/BOw9ZKg==
-X-Received: by 2002:a17:902:e9c4:b029:e1:805d:7965 with SMTP id 4-20020a170902e9c4b02900e1805d7965mr12452125plk.53.1612711494178;
-        Sun, 07 Feb 2021 07:24:54 -0800 (PST)
-Received: from karthik-strix-linux.karthek.com ([192.140.154.2])
-        by smtp.gmail.com with ESMTPSA id k9sm12907351pji.8.2021.02.07.07.24.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 07 Feb 2021 07:24:53 -0800 (PST)
-Date:   Sun, 7 Feb 2021 20:54:49 +0530
-From:   karthek <mail@karthek.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: rtl8723bs: fix block comments alignment
-Message-ID: <YCAGQYng2hhg6xJk@karthik-strix-linux.karthek.com>
-References: <YB/2Uvj99+sReckM@karthik-strix-linux.karthek.com>
- <YB/6ZmZwCF3jeEue@kroah.com>
- <YB/9hS2S1oaCmuDq@karthik-strix-linux.karthek.com>
- <YB//EZl0aeLk/y+E@kroah.com>
- <YCADP8ijAYvrsU7F@karthik-strix-linux.karthek.com>
- <YCAEL9Eed6ijeeR+@kroah.com>
- <YCAFEvCySI8u2059@karthik-strix-linux.karthek.com>
- <YCAFeSw//h8JYpFk@kroah.com>
+        Sun, 7 Feb 2021 10:26:17 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay03.hostedemail.com (Postfix) with ESMTP id 42D0C837F24A;
+        Sun,  7 Feb 2021 15:25:32 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:973:982:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2194:2199:2393:2553:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3870:3871:3872:3873:3874:4250:4321:5007:6119:7652:7903:8531:10004:10400:10848:11026:11232:11658:11914:12297:12679:12740:12760:12895:13069:13161:13229:13255:13311:13357:13439:14096:14097:14659:14721:21080:21433:21451:21611:21627:21771:21990:30054:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: road21_3c0a044275f7
+X-Filterd-Recvd-Size: 2124
+Received: from [192.168.1.159] (unknown [47.151.137.21])
+        (Authenticated sender: joe@perches.com)
+        by omf06.hostedemail.com (Postfix) with ESMTPA;
+        Sun,  7 Feb 2021 15:25:30 +0000 (UTC)
+Message-ID: <6d5c18f41277d4d926dbe411df070393b4418d6f.camel@perches.com>
+Subject: Re: [PATCH] staging: octeon: convert all uses of strlcpy to strscpy
+ in ethernet-mdio.c
+From:   Joe Perches <joe@perches.com>
+To:     Greg KH <gregkh@linuxfoundation.org>,
+        Phillip Potter <phil@philpotter.co.uk>
+Cc:     alexander.sverdlin@nokia.com, andrew@lunn.ch, davem@davemloft.net,
+        chris.packham@alliedtelesis.co.nz, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org
+Date:   Sun, 07 Feb 2021 07:25:29 -0800
+In-Reply-To: <YB//SDQJEsHwewFb@kroah.com>
+References: <20210207144804.88330-1-phil@philpotter.co.uk>
+         <YB//SDQJEsHwewFb@kroah.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YCAFeSw//h8JYpFk@kroah.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Feb 07, 2021 at 04:21:29PM +0100, Greg Kroah-Hartman wrote:
-> On Sun, Feb 07, 2021 at 08:49:46PM +0530, karthek wrote:
-> > On Sun, Feb 07, 2021 at 04:15:59PM +0100, Greg Kroah-Hartman wrote:
-> > > On Sun, Feb 07, 2021 at 08:41:59PM +0530, karthek wrote:
-> > > > On Sun, Feb 07, 2021 at 03:54:09PM +0100, Greg Kroah-Hartman wrote:
-> > > > > On Sun, Feb 07, 2021 at 08:17:33PM +0530, karthek wrote:
-> > > > > 
-> > > > > <snip>
-> > > > > 
-> > > > > For some reason you sent this only to me, which is a bit rude to
-> > > > > everyone else on the mailing list.  I'll be glad to respond if you
-> > > > > resend it to everyone.
-> > > > > 
-> > > > > thanks,
-> > > > > 
-> > > > i> greg k-h
-> > > > 
-> > > > ok anyway
-> > > > 
-> > > > Those both lines(from, signed-off-by) are exactly same, what's problem
-> > > > with them?
-> > > 
-> > > I don't see the context here...
-> > are you real greg or bot?
+On Sun, 2021-02-07 at 15:55 +0100, Greg KH wrote:
+> On Sun, Feb 07, 2021 at 02:48:04PM +0000, Phillip Potter wrote:
+> > Convert three calls to strlcpy inside the cvm_oct_get_drvinfo function
+> > to strscpy calls. Fixes a style warning.
 > 
-> All too real :)
-> 
-> > > Anyway, if you do sign documents with just "karthek" (lowercase and
-> > > all), that's fine, but I do have to ask, right?
-> > I do sign just karthek everywhere(bank,gov docs,etc), thats my legal
-> > signature
-> 
-> Ok, that's good to know, however I have an application here from you
-> with a different name on it.  Odd...
-Ofcourse thats my legal name(Karthik Alapati) and this is my legal
-signature(karthek)
-FYI this is the first time i used my legal name on internet application
-> 
-> greg k-h
+> Is it really safe to do this type of conversion here?
+
+Yes.  No locks are taken by either strlcpy or strscpy, and the conversion
+is only done where the return value is unused.
+
+strscpy is:
+
+lib/string.c: * Preferred to strlcpy() since the API doesn't require reading memory
+lib/string.c- * from the src string beyond the specified "count" bytes, and since
+lib/string.c: * the return value is easier to error-check than strlcpy()'s.
+lib/string.c- * In addition, the implementation is robust to the string changing out
+lib/string.c: * from underneath it, unlike the current strlcpy() implementation.
+
+> If so, you need
+> to provide evidence of it in the changelog, otherwise we could just do a
+> search/replace across the whole kernel and be done with it :)
+
+Yes please.
+
+There's a cocci script for that in commit 75b1a8f9d62e
+("ALSA: Convert strlcpy to strscpy when return value is unused")
+
+
