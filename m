@@ -2,104 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39BDB3127EB
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 23:39:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50E723127F2
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 23:46:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229629AbhBGWiB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Feb 2021 17:38:01 -0500
-Received: from mga03.intel.com ([134.134.136.65]:50231 "EHLO mga03.intel.com"
+        id S229626AbhBGWqE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Feb 2021 17:46:04 -0500
+Received: from mx2.suse.de ([195.135.220.15]:51000 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229506AbhBGWh7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Feb 2021 17:37:59 -0500
-IronPort-SDR: bI98z3VZ3prz7Y9u7NYaooUQkvtXMoo2cb9d4IAhdMcmyQym18q3hRtRsIsmMHKy+N7AEQJIuy
- z9L34twn/t6A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9888"; a="181699511"
-X-IronPort-AV: E=Sophos;i="5.81,160,1610438400"; 
-   d="scan'208";a="181699511"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Feb 2021 14:37:17 -0800
-IronPort-SDR: 10BPne042QQI8wcgqw+OFVPPo0RaptW/BQhPVLu5c99hpHjeEAOFA4MVOf/EhU0eVVPqw3XizL
- f98UHx1HjuNw==
-X-IronPort-AV: E=Sophos;i="5.81,160,1610438400"; 
-   d="scan'208";a="376885720"
-Received: from yramx-mobl1.amr.corp.intel.com (HELO [10.213.174.131]) ([10.213.174.131])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Feb 2021 14:37:17 -0800
-Subject: Re: [PATCH v8] x86/sgx: Maintain encl->refcount for each
- encl->mm_list entry
-To:     Jarkko Sakkinen <jarkko@kernel.org>, linux-sgx@vger.kernel.org
-Cc:     Haitao Huang <haitao.huang@linux.intel.com>,
+        id S229506AbhBGWqB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Feb 2021 17:46:01 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 229C2AD24;
+        Sun,  7 Feb 2021 22:45:20 +0000 (UTC)
+From:   NeilBrown <neilb@suse.de>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Date:   Mon, 08 Feb 2021 09:45:09 +1100
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Xin Long <lucien.xin@gmail.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
         Dave Hansen <dave.hansen@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Jethro Beekman <jethro@fortanix.com>,
-        linux-kernel@vger.kernel.org
-References: <20210207221401.29933-1-jarkko@kernel.org>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <41238875-988f-fbb1-af2b-2e667ba8861d@intel.com>
-Date:   Sun, 7 Feb 2021 14:37:17 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vlad Yasevich <vyasevich@gmail.com>,
+        Neil Horman <nhorman@tuxdriver.com>,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-sctp@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH 0/3] Fix some seq_file users that were recently broken
+In-Reply-To: <20210205143550.58d3530918459eafa918ad0c@linux-foundation.org>
+References: <161248518659.21478.2484341937387294998.stgit@noble1>
+ <20210205143550.58d3530918459eafa918ad0c@linux-foundation.org>
+Message-ID: <87ft27ebuy.fsf@notabene.neil.brown.name>
 MIME-Version: 1.0
-In-Reply-To: <20210207221401.29933-1-jarkko@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="=-=-=";
+        micalg=pgp-sha256; protocol="application/pgp-signature"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> This has been shown in tests:
-> 
-> [  +0.000008] WARNING: CPU: 3 PID: 7620 at kernel/rcu/srcutree.c:374 cleanup_srcu_struct+0xed/0x100
-> 
-> This is essentially a use-after free, although SRCU notices it as
-> an SRCU cleanup in an invalid context.
-...
+--=-=-=
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-Acked-by: Dave Hansen <dave.hansen@linux.intel.com
+On Fri, Feb 05 2021, Andrew Morton wrote:
 
+> On Fri, 05 Feb 2021 11:36:30 +1100 NeilBrown <neilb@suse.de> wrote:
+>
+>> A recent change to seq_file broke some users which were using seq_file
+>> in a non-"standard" way ...  though the "standard" isn't documented, so
+>> they can be excused.  The result is a possible leak - of memory in one
+>> case, of references to a 'transport' in the other.
+>>=20
+>> These three patches:
+>>  1/ document and explain the problem
+>>  2/ fix the problem user in x86
+>>  3/ fix the problem user in net/sctp
+>>=20
+>
+> 1f4aace60b0e ("fs/seq_file.c: simplify seq_file iteration code and
+> interface") was August 2018, so I don't think "recent" applies here?
+
+I must be getting old :-(
+
+>
+> I didn't look closely, but it appears that the sctp procfs file is
+> world-readable.  So we gave unprivileged userspace the ability to leak
+> kernel memory?
+
+Not quite that bad.  The x86 problem allows arbitrary memory to be
+leaked, but that is in debugfs (as I'm sure you saw) so is root-only.
+The sctp one only allows an sctp_transport to be pinned.  That is not
+good and would, e.g., prevent the module from being unloaded.  But
+unlike a simple memory leak it won't affect anything outside of sctp.
+
+>
+> So I'm thinking that we aim for 5.12-rc1 on all three patches with a cc:s=
+table?
+
+Thanks for looking after these!
+
+NeilBrown
+
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQJCBAEBCAAsFiEEG8Yp69OQ2HB7X0l6Oeye3VZigbkFAmAgbXYOHG5laWxiQHN1
+c2UuZGUACgkQOeye3VZigbmRIw/+L3opkKLyG2Hn5LtKCl8TV5atFOVnkNdg4u1/
+N7vs18opY/vMHwel8DJX3FKF1nZeiZVan1cUox774eoWmFjni/IGrVU9HjVowJhc
+zHqv17t60IuxAWl4YAYu1SEryAgLMtX6OlqJVrjQ1WRpMEqWN14SgJ2qbuQQW3Fp
+zuCEaR5/MMmWfHtVxthrlmqrPO4DdULJWd54S+OR9AdBTJ5iTP6GqbiT6E5500am
+DMlL9oaymdwILGK339a97BDkvo/GcXiU4I9Netwsn+dhE+iM0A6nfdpR2S+UkbLE
+fqIC4ICia5Cdd04cuMQxqjDqKqgWoj6q+j5BisfXu+VryUWPp+IKLJnljJ3HKOo1
+8HZ4M4ldc2c2fo0BZy8qLgld2Ky9yWfkWvFxD91fdLoW862hb4QSORaqeuOHCCxy
+TFEgOfgEXRS0y1YP1ue1TkvBCMlFlRQ/y4b0b7PKLcZmbQ8gZP/ZLtMcPVxS+uiW
+WtqvP8ED9uSbmDgZKWrkId0XN2qd/N2VeDqqaHLEm3AYBYKe6sjNRq/P2XhaJgvg
+fwgFf5HWbWRwpgdLtSpFdwobSZJoSfoqWPGfHw9qnldXXbLSuDrEHIFRywNCHODl
+SpL40dXvgMrkDtHYK7C9V7xPMCj9Ja0dnSR2KJQOJnWXw4NnHUXbVAf7VP+5MqpD
+WJxmMU8=
+=Gd5p
+-----END PGP SIGNATURE-----
+--=-=-=--
