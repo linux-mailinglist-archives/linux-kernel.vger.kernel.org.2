@@ -2,107 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50E723127F2
+	by mail.lfdr.de (Postfix) with ESMTP id C23CE3127F3
 	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 23:46:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229626AbhBGWqE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Feb 2021 17:46:04 -0500
-Received: from mx2.suse.de ([195.135.220.15]:51000 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229506AbhBGWqB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Feb 2021 17:46:01 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 229C2AD24;
-        Sun,  7 Feb 2021 22:45:20 +0000 (UTC)
-From:   NeilBrown <neilb@suse.de>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Date:   Mon, 08 Feb 2021 09:45:09 +1100
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Xin Long <lucien.xin@gmail.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
+        id S229669AbhBGWqM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Feb 2021 17:46:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38520 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229506AbhBGWqI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Feb 2021 17:46:08 -0500
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B513C061756
+        for <linux-kernel@vger.kernel.org>; Sun,  7 Feb 2021 14:45:28 -0800 (PST)
+Received: by mail-pg1-x533.google.com with SMTP id g15so9017978pgu.9
+        for <linux-kernel@vger.kernel.org>; Sun, 07 Feb 2021 14:45:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
+        h=content-transfer-encoding:from:mime-version:subject:date:message-id
+         :references:cc:in-reply-to:to;
+        bh=V0uopCc+Y0QYk8iwQ9m6+FASFiFg80AicIAk+4GVhA4=;
+        b=OuoHrdLNj1xzOmH/0X2jABl3LFXwoN1N8uC2wxTNrBak4c8wnDMmCgcrzW7F39Kw5Y
+         I75KpRXclZJs5OxWQGk471VgdFlIa4Z4wIWWNlWY5aWIjqODOKwIZEc6DWI1Q/0jCKqR
+         oRDKXY7GrVPCk8y+d/DSiBsHW2uM6TvaT/oDuB+DTbvoWbKwNbWkuAg7pzNCg0scAU07
+         MPBKMt0Lxp3aUNlzP40hmCdvZdPj5FcoNH/txikY8PQZDnbU2zKRP9P3Z1x0hbgoQ9jd
+         laFm+AgeZ/gdzE6BnPDVr+gJlTV+lwSjMdeZgwVWu4F347viA71cVm5P4+oJEWix65eg
+         yhyQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:content-transfer-encoding:from:mime-version
+         :subject:date:message-id:references:cc:in-reply-to:to;
+        bh=V0uopCc+Y0QYk8iwQ9m6+FASFiFg80AicIAk+4GVhA4=;
+        b=UepJGSXgN3I6fjrYWNA+mb40rUUGz0aCPruZg9vvb2ZQCtkKqRLi8IyUV5i0PsVYu3
+         TISTU9UC/J47FqljuoP5xIbF+hq0KpEIST5uAuEP8xS/cexVxYWlAJDAUKaNb62QTlY6
+         ooJc1ogjPdm/1Pg8S2tgZZ9IL8fGWHWf2LbySql2gz2HFRO3OAPOCUsx2awPO1ADdqE2
+         /sKhwSo9OabLKXEDrbOmtyaoqujkUSaNB5I8hdma7/W2Au+D+JYjfsuAqR+B7W2tOZFh
+         xrb4kMosOLvwEiQRmjyP7yaJ/FWjTPH4Ug0GMsLvXUdSNkU8nTxIitLaBu6qPDfvAuZJ
+         NDgA==
+X-Gm-Message-State: AOAM531zUZWF+33qnvO4Gvv3h172Tpo1CqEz1TonaObuCXAVuST1UEqT
+        ftiOCAKP4DLi/saOd27VhGpRkA==
+X-Google-Smtp-Source: ABdhPJy72Bg2svmBHXxD0gTq2s8+vPaNzQd4gVbBa5VUcB1H6EPjFdKyxkpnF8r9Ci88GbhjuLK7ag==
+X-Received: by 2002:a05:6a00:15d2:b029:1b7:30c1:8495 with SMTP id o18-20020a056a0015d2b02901b730c18495mr14853352pfu.32.1612737928063;
+        Sun, 07 Feb 2021 14:45:28 -0800 (PST)
+Received: from ?IPv6:2601:646:c200:1ef2:95e2:2f3b:be35:8413? ([2601:646:c200:1ef2:95e2:2f3b:be35:8413])
+        by smtp.gmail.com with ESMTPSA id y7sm978492pfl.127.2021.02.07.14.45.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 07 Feb 2021 14:45:27 -0800 (PST)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From:   Andy Lutomirski <luto@amacapital.net>
+Mime-Version: 1.0 (1.0)
+Subject: Re: [RFC v1 09/26] x86/tdx: Handle CPUID via #VE
+Date:   Sun, 7 Feb 2021 14:45:26 -0800
+Message-Id: <0A886D87-1979-419C-86DE-EA2FABDFF3EB@amacapital.net>
+References: <f81afd12-91ed-27c9-58d6-e59e7e1178c0@intel.com>
+Cc:     "Kirill A. Shutemov" <kirill@shutemov.name>,
         Andy Lutomirski <luto@kernel.org>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        Vlad Yasevich <vyasevich@gmail.com>,
-        Neil Horman <nhorman@tuxdriver.com>,
-        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-sctp@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH 0/3] Fix some seq_file users that were recently broken
-In-Reply-To: <20210205143550.58d3530918459eafa918ad0c@linux-foundation.org>
-References: <161248518659.21478.2484341937387294998.stgit@noble1>
- <20210205143550.58d3530918459eafa918ad0c@linux-foundation.org>
-Message-ID: <87ft27ebuy.fsf@notabene.neil.brown.name>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha256; protocol="application/pgp-signature"
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <f81afd12-91ed-27c9-58d6-e59e7e1178c0@intel.com>
+To:     Dave Hansen <dave.hansen@intel.com>
+X-Mailer: iPhone Mail (18D52)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Feb 05 2021, Andrew Morton wrote:
+> On Feb 7, 2021, at 2:31 PM, Dave Hansen <dave.hansen@intel.com> wrote:
+>=20
+> =EF=BB=BFOn 2/7/21 12:29 PM, Kirill A. Shutemov wrote:
+>>> Couldn't you just have one big helper that takes *all* the registers
+>>> that get used in any TDVMCALL and sets all the rcx bits?  The users
+>>> could just pass 0's for the things they don't use.
+>>>=20
+>>> Then you've got the ugly inline asm in one place.  It also makes it
+>>> harder to screw up the 'rcx' mask and end up passing registers you
+>>> didn't want into a malicious VMM.
+>> For now we only pass down R10-R15, but the interface allows to pass down
+>> much wider set of registers, including XMM. How far do we want to get it?=
 
-> On Fri, 05 Feb 2021 11:36:30 +1100 NeilBrown <neilb@suse.de> wrote:
->
->> A recent change to seq_file broke some users which were using seq_file
->> in a non-"standard" way ...  though the "standard" isn't documented, so
->> they can be excused.  The result is a possible leak - of memory in one
->> case, of references to a 'transport' in the other.
->>=20
->> These three patches:
->>  1/ document and explain the problem
->>  2/ fix the problem user in x86
->>  3/ fix the problem user in net/sctp
->>=20
->
-> 1f4aace60b0e ("fs/seq_file.c: simplify seq_file iteration code and
-> interface") was August 2018, so I don't think "recent" applies here?
+>=20
+> Just do what we immediately need: R10-R15
+> .
+>=20
 
-I must be getting old :-(
-
->
-> I didn't look closely, but it appears that the sctp procfs file is
-> world-readable.  So we gave unprivileged userspace the ability to leak
-> kernel memory?
-
-Not quite that bad.  The x86 problem allows arbitrary memory to be
-leaked, but that is in debugfs (as I'm sure you saw) so is root-only.
-The sctp one only allows an sctp_transport to be pinned.  That is not
-good and would, e.g., prevent the module from being unloaded.  But
-unlike a simple memory leak it won't affect anything outside of sctp.
-
->
-> So I'm thinking that we aim for 5.12-rc1 on all three patches with a cc:s=
-table?
-
-Thanks for looking after these!
-
-NeilBrown
-
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQJCBAEBCAAsFiEEG8Yp69OQ2HB7X0l6Oeye3VZigbkFAmAgbXYOHG5laWxiQHN1
-c2UuZGUACgkQOeye3VZigbmRIw/+L3opkKLyG2Hn5LtKCl8TV5atFOVnkNdg4u1/
-N7vs18opY/vMHwel8DJX3FKF1nZeiZVan1cUox774eoWmFjni/IGrVU9HjVowJhc
-zHqv17t60IuxAWl4YAYu1SEryAgLMtX6OlqJVrjQ1WRpMEqWN14SgJ2qbuQQW3Fp
-zuCEaR5/MMmWfHtVxthrlmqrPO4DdULJWd54S+OR9AdBTJ5iTP6GqbiT6E5500am
-DMlL9oaymdwILGK339a97BDkvo/GcXiU4I9Netwsn+dhE+iM0A6nfdpR2S+UkbLE
-fqIC4ICia5Cdd04cuMQxqjDqKqgWoj6q+j5BisfXu+VryUWPp+IKLJnljJ3HKOo1
-8HZ4M4ldc2c2fo0BZy8qLgld2Ky9yWfkWvFxD91fdLoW862hb4QSORaqeuOHCCxy
-TFEgOfgEXRS0y1YP1ue1TkvBCMlFlRQ/y4b0b7PKLcZmbQ8gZP/ZLtMcPVxS+uiW
-WtqvP8ED9uSbmDgZKWrkId0XN2qd/N2VeDqqaHLEm3AYBYKe6sjNRq/P2XhaJgvg
-fwgFf5HWbWRwpgdLtSpFdwobSZJoSfoqWPGfHw9qnldXXbLSuDrEHIFRywNCHODl
-SpL40dXvgMrkDtHYK7C9V7xPMCj9Ja0dnSR2KJQOJnWXw4NnHUXbVAf7VP+5MqpD
-WJxmMU8=
-=Gd5p
------END PGP SIGNATURE-----
---=-=-=--
+How much of the register state is revealed to the VMM when we do a TDVMCALL?=
+  Presumably we should fully sanitize all register state that shows up in cl=
+eartext on the other end, and we should treat all regs that can be modified b=
+y the VMM as clobbered.=
