@@ -2,256 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A05731211B
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 04:16:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D6D8312123
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 04:20:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229736AbhBGDPz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Feb 2021 22:15:55 -0500
-Received: from mga01.intel.com ([192.55.52.88]:20832 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229760AbhBGDNS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Feb 2021 22:13:18 -0500
-IronPort-SDR: k+bsbeVWN6LkO+R7QI4E8K+/42oPoDIinLR00vkEDD/FSnmBCllzeD7pbY/x7wGR3c6Nb94LRI
- OToBiqkPbj/Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9887"; a="200608584"
-X-IronPort-AV: E=Sophos;i="5.81,158,1610438400"; 
-   d="scan'208";a="200608584"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Feb 2021 19:12:35 -0800
-IronPort-SDR: BG76uLU57RNOeLRqkycN7h2OcUvHnhXOXHzADk/aEK3V5fCMNGFCY4BxhssyfwJTu+XPsS8g/u
- 7d33GwkDvcag==
-X-IronPort-AV: E=Sophos;i="5.81,158,1610438400"; 
-   d="scan'208";a="584618245"
-Received: from shsi6026.sh.intel.com (HELO localhost) ([10.239.147.88])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Feb 2021 19:12:31 -0800
-From:   shuo.a.liu@intel.com
-To:     linux-kernel@vger.kernel.org, x86@kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Yu Wang <yu1.wang@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Shuo Liu <shuo.a.liu@intel.com>
-Subject: [PATCH v9 18/18] sample/acrn: Introduce a sample of HSM ioctl interface usage
-Date:   Sun,  7 Feb 2021 11:10:40 +0800
-Message-Id: <20210207031040.49576-19-shuo.a.liu@intel.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20210207031040.49576-1-shuo.a.liu@intel.com>
-References: <20210207031040.49576-1-shuo.a.liu@intel.com>
+        id S229537AbhBGDT0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Feb 2021 22:19:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44222 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229506AbhBGDTX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 6 Feb 2021 22:19:23 -0500
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFCF4C06174A
+        for <linux-kernel@vger.kernel.org>; Sat,  6 Feb 2021 19:18:43 -0800 (PST)
+Received: by mail-pj1-x1044.google.com with SMTP id m12so6357995pjs.4
+        for <linux-kernel@vger.kernel.org>; Sat, 06 Feb 2021 19:18:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5hVA75TI4VW+toWZWw8M7rllZt3/tTITVwishPlS0nk=;
+        b=mE33PNRI6JsTzvJL/3GNUi+joORjaRz1uiWWX0sw2cbchPuO10oVOaHq32QTco5R1K
+         Kzscw5ZmHjXAqsJCeLGEtuOv9F/vuYoAOew41xMHr963i4JUl2Wt8Bc/07ZOt5bARgeT
+         L+aPwJMe9wtJed0yyia/7cByWgx8dGBahoKATPZw+fI3UDWAg17OfaQe80SPuG3NUOQT
+         HBieH2j7rFVzqedMSn8u8769ethRftWBKFsm0dfWFk5fRU8BOkYBnG6w5qeryC5zoQmC
+         gLS7KMd/2Ujqx4qVJk7piyRGpu4xpQ9NzNze8KcPWQ0ZqcgGUNX2aLir6rVQjbmjz8VR
+         G2JA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5hVA75TI4VW+toWZWw8M7rllZt3/tTITVwishPlS0nk=;
+        b=LnCsFbUAE0r9ZyyBuRtLnJR3N+Bp4yd0kXnzKx/IgppH+u2bajZ06AYMFAaFIfIhD9
+         dVkPIKCUSqkp5LQDtkKrl+2BZQCSgexKPU5l2OFLEGmDwb017tZ9ciQRoNY4sWqoOAHw
+         /9dGXEGBa2JIfPk0OD+ACugjOgpWMR201adFAxvJnhuTjsRKE0HZNsR3W+sh/cAoqMA/
+         bQeTXpsFkwYBcrNXYOPY6BhHjkhk6njd5AAcgqG4zW7BoRu10yVDzw6q6hP6hbq7/KGj
+         Hm9b4xRSrBqjH8x523NM9wugPUmCvteyyPnT9PIu8awRwZyRQPNAvcPHtskxsDjJpfhb
+         WH0w==
+X-Gm-Message-State: AOAM531+3KdFIz84CUbI4yPWSFurl6SKUoWRBqHSeQnyxHsfeOCTk0c3
+        3wBqe5Qo4/Dxgu+6NGMY+d8=
+X-Google-Smtp-Source: ABdhPJxOE15K0PHVV5j2n0JfppcUbrls3vjkAWkUVT1qyFWJ6hUAOt6cS4htfVOByBnk2eUttx+8HA==
+X-Received: by 2002:a17:90b:1297:: with SMTP id fw23mr10961630pjb.180.1612667923262;
+        Sat, 06 Feb 2021 19:18:43 -0800 (PST)
+Received: from localhost.localdomain ([178.236.46.205])
+        by smtp.gmail.com with ESMTPSA id 21sm13671897pfh.56.2021.02.06.19.18.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 06 Feb 2021 19:18:42 -0800 (PST)
+From:   menglong8.dong@gmail.com
+X-Google-Original-From: dong.menglong@zte.com.cn
+To:     axboe@kernel.dk, andy.shevchenko@gmail.com
+Cc:     davem@davemloft.net, kuba@kernel.org, viro@zeniv.linux.org.uk,
+        dong.menglong@zte.com.cn, herbert@gondor.apana.org.au,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 net-next] net: socket: use BIT() for MSG_*
+Date:   Sat,  6 Feb 2021 19:18:16 -0800
+Message-Id: <20210207031816.1864-1-dong.menglong@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shuo Liu <shuo.a.liu@intel.com>
+From: Menglong Dong <dong.menglong@zte.com.cn>
 
-Launch a simple guest (with several instructions as payload) on ACRN
-with demonstration ioctl usage.
+The bit mask for MSG_* seems a little confused here. Replace it
+with BIT() to make it clear to understand.
 
-Signed-off-by: Shuo Liu <shuo.a.liu@intel.com>
+Changes since v1:
+- use BIT() instead of BIT_MASK()
+
+Signed-off-by: Menglong Dong <dong.menglong@zte.com.cn>
 ---
- samples/acrn/Makefile    |  12 ++++
- samples/acrn/guest.ld    |   9 +++
- samples/acrn/payload.ld  |   9 +++
- samples/acrn/vm-sample.c | 136 +++++++++++++++++++++++++++++++++++++++
- 4 files changed, 166 insertions(+)
- create mode 100644 samples/acrn/Makefile
- create mode 100644 samples/acrn/guest.ld
- create mode 100644 samples/acrn/payload.ld
- create mode 100644 samples/acrn/vm-sample.c
+ include/linux/socket.h | 71 ++++++++++++++++++++++--------------------
+ 1 file changed, 37 insertions(+), 34 deletions(-)
 
-diff --git a/samples/acrn/Makefile b/samples/acrn/Makefile
-new file mode 100644
-index 000000000000..c8e3ed9785e9
---- /dev/null
-+++ b/samples/acrn/Makefile
-@@ -0,0 +1,12 @@
-+# SPDX-License-Identifier: GPL-2.0
+diff --git a/include/linux/socket.h b/include/linux/socket.h
+index 385894b4a8bb..cc525d66512d 100644
+--- a/include/linux/socket.h
++++ b/include/linux/socket.h
+@@ -283,42 +283,45 @@ struct ucred {
+    Added those for 1003.1g not all are supported yet
+  */
+ 
+-#define MSG_OOB		1
+-#define MSG_PEEK	2
+-#define MSG_DONTROUTE	4
+-#define MSG_TRYHARD     4       /* Synonym for MSG_DONTROUTE for DECnet */
+-#define MSG_CTRUNC	8
+-#define MSG_PROBE	0x10	/* Do not send. Only probe path f.e. for MTU */
+-#define MSG_TRUNC	0x20
+-#define MSG_DONTWAIT	0x40	/* Nonblocking io		 */
+-#define MSG_EOR         0x80	/* End of record */
+-#define MSG_WAITALL	0x100	/* Wait for a full request */
+-#define MSG_FIN         0x200
+-#define MSG_SYN		0x400
+-#define MSG_CONFIRM	0x800	/* Confirm path validity */
+-#define MSG_RST		0x1000
+-#define MSG_ERRQUEUE	0x2000	/* Fetch message from error queue */
+-#define MSG_NOSIGNAL	0x4000	/* Do not generate SIGPIPE */
+-#define MSG_MORE	0x8000	/* Sender will send more */
+-#define MSG_WAITFORONE	0x10000	/* recvmmsg(): block until 1+ packets avail */
+-#define MSG_SENDPAGE_NOPOLICY 0x10000 /* sendpage() internal : do no apply policy */
+-#define MSG_SENDPAGE_NOTLAST 0x20000 /* sendpage() internal : not the last page */
+-#define MSG_BATCH	0x40000 /* sendmmsg(): more messages coming */
+-#define MSG_EOF         MSG_FIN
+-#define MSG_NO_SHARED_FRAGS 0x80000 /* sendpage() internal : page frags are not shared */
+-#define MSG_SENDPAGE_DECRYPTED	0x100000 /* sendpage() internal : page may carry
+-					  * plain text and require encryption
+-					  */
+-
+-#define MSG_ZEROCOPY	0x4000000	/* Use user data in kernel path */
+-#define MSG_FASTOPEN	0x20000000	/* Send data in TCP SYN */
+-#define MSG_CMSG_CLOEXEC 0x40000000	/* Set close_on_exec for file
+-					   descriptor received through
+-					   SCM_RIGHTS */
++#define MSG_OOB		BIT(0)
++#define MSG_PEEK	BIT(1)
++#define MSG_DONTROUTE	BIT(2)
++#define MSG_TRYHARD	BIT(2)	/* Synonym for MSG_DONTROUTE for DECnet		*/
++#define MSG_CTRUNC	BIT(3)
++#define MSG_PROBE	BIT(4)	/* Do not send. Only probe path f.e. for MTU	*/
++#define MSG_TRUNC	BIT(5)
++#define MSG_DONTWAIT	BIT(6)	/* Nonblocking io		*/
++#define MSG_EOR		BIT(7)	/* End of record		*/
++#define MSG_WAITALL	BIT(8)	/* Wait for a full request	*/
++#define MSG_FIN		BIT(9)
++#define MSG_SYN		BIT(10)
++#define MSG_CONFIRM	BIT(11)	/* Confirm path validity	*/
++#define MSG_RST		BIT(12)
++#define MSG_ERRQUEUE	BIT(13)	/* Fetch message from error queue */
++#define MSG_NOSIGNAL	BIT(14)	/* Do not generate SIGPIPE	*/
++#define MSG_MORE	BIT(15)	/* Sender will send more	*/
++#define MSG_WAITFORONE	BIT(16)	/* recvmmsg(): block until 1+ packets avail */
++#define MSG_SENDPAGE_NOPOLICY	BIT(16)	/* sendpage() internal : do no apply policy */
++#define MSG_SENDPAGE_NOTLAST	BIT(17)	/* sendpage() internal : not the last page  */
++#define MSG_BATCH	BIT(18)		/* sendmmsg(): more messages coming */
++#define MSG_EOF		MSG_FIN
++#define MSG_NO_SHARED_FRAGS	BIT(19)	/* sendpage() internal : page frags
++					 * are not shared
++					 */
++#define MSG_SENDPAGE_DECRYPTED	BIT(20)	/* sendpage() internal : page may carry
++					 * plain text and require encryption
++					 */
 +
-+.PHONY: vm-sample
-+
-+vm-sample: vm-sample.o payload.o
-+	$(CC) $^ -o $@
-+
-+payload.o: payload.ld guest16.o
-+	$(LD) -T $< -o $@
-+
-+clean:
-+	rm *.o vm-sample
-diff --git a/samples/acrn/guest.ld b/samples/acrn/guest.ld
-new file mode 100644
-index 000000000000..5127c682bd22
---- /dev/null
-+++ b/samples/acrn/guest.ld
-@@ -0,0 +1,9 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+OUTPUT_FORMAT(binary)
-+SECTIONS
-+{
-+        .start : { *(.start) }
-+        .text : { *(.text*) }
-+        .rodata : { *(.rodata) }
-+        .data : { *(.data) }
-+}
-diff --git a/samples/acrn/payload.ld b/samples/acrn/payload.ld
-new file mode 100644
-index 000000000000..e8d9a498ad62
---- /dev/null
-+++ b/samples/acrn/payload.ld
-@@ -0,0 +1,9 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+SECTIONS
-+{
-+        .payload16 0 : {
-+                guest16 = .;
-+                guest16.o(.text)
-+                guest16_end = .;
-+        }
-+}
-diff --git a/samples/acrn/vm-sample.c b/samples/acrn/vm-sample.c
-new file mode 100644
-index 000000000000..b2dad47a77a0
---- /dev/null
-+++ b/samples/acrn/vm-sample.c
-@@ -0,0 +1,136 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * A sample program to run a User VM on the ACRN hypervisor
-+ *
-+ * This sample runs in a Service VM, which is a privileged VM of ACRN.
-+ * CONFIG_ACRN_HSM need to be enabled in the Service VM.
-+ *
-+ * Guest VM code in guest16.s will be executed after the VM launched.
-+ *
-+ * Copyright (C) 2020 Intel Corporation. All rights reserved.
-+ */
-+#include <stdio.h>
-+#include <stdint.h>
-+#include <stdlib.h>
-+#include <string.h>
-+#include <malloc.h>
-+#include <fcntl.h>
-+#include <unistd.h>
-+#include <signal.h>
-+#include <sys/ioctl.h>
-+#include <linux/acrn.h>
-+
-+#define GUEST_MEMORY_SIZE	(1024*1024)
-+void *guest_memory;
-+
-+extern const unsigned char guest16[], guest16_end[];
-+static char io_request_page[4096] __attribute__((aligned(4096)));
-+static struct acrn_io_request *io_req_buf = (struct acrn_io_request *)io_request_page;
-+
-+__u16 vcpu_num;
-+__u16 vmid;
-+/* POST_STANDARD_VM_UUID1, refer to https://github.com/projectacrn/acrn-hypervisor/blob/master/hypervisor/include/common/vm_uuids.h */
-+guid_t vm_uuid = GUID_INIT(0x385479d2, 0xd625, 0xe811, 0x86, 0x4e, 0xcb, 0x7a, 0x18, 0xb3, 0x46, 0x43);
-+
-+int hsm_fd;
-+int is_running = 1;
-+
-+void vm_exit(int sig)
-+{
-+	sig = sig;
-+
-+	is_running = 0;
-+	ioctl(hsm_fd, ACRN_IOCTL_PAUSE_VM, vmid);
-+	ioctl(hsm_fd, ACRN_IOCTL_DESTROY_IOREQ_CLIENT, 0);
-+}
-+
-+int main(int argc, char **argv)
-+{
-+	int vcpu_id, ret;
-+	struct acrn_vm_creation create_vm = {0};
-+	struct acrn_vm_memmap ram_map = {0};
-+	struct acrn_vcpu_regs regs;
-+	struct acrn_io_request *io_req;
-+	struct acrn_ioreq_notify __attribute__((aligned(8))) notify;
-+
-+	argc = argc;
-+	argv = argv;
-+
-+	guest_memory = memalign(4096, GUEST_MEMORY_SIZE);
-+	if (!guest_memory) {
-+		printf("No enough memory!\n");
-+		return -1;
-+	}
-+	hsm_fd = open("/dev/acrn_hsm", O_RDWR|O_CLOEXEC);
-+
-+	memcpy(&create_vm.uuid, &vm_uuid, 16);
-+	create_vm.ioreq_buf = (__u64)io_req_buf;
-+	ret = ioctl(hsm_fd, ACRN_IOCTL_CREATE_VM, &create_vm);
-+	printf("Created VM! [%d]\n", ret);
-+	vcpu_num = create_vm.vcpu_num;
-+	vmid = create_vm.vmid;
-+
-+	/* setup guest memory */
-+	ram_map.type = ACRN_MEMMAP_RAM;
-+	ram_map.vma_base = (__u64)guest_memory;
-+	ram_map.len = GUEST_MEMORY_SIZE;
-+	ram_map.user_vm_pa = 0;
-+	ram_map.attr = ACRN_MEM_ACCESS_RWX;
-+	ret = ioctl(hsm_fd, ACRN_IOCTL_SET_MEMSEG, &ram_map);
-+	printf("Set up VM memory! [%d]\n", ret);
-+
-+	memcpy(guest_memory, guest16, guest16_end-guest16);
-+
-+	/* setup vcpu registers */
-+	memset(&regs, 0, sizeof(regs));
-+	regs.vcpu_id = 0;
-+	regs.vcpu_regs.rip = 0;
-+
-+	/* CR0_ET | CR0_NE */
-+	regs.vcpu_regs.cr0 = 0x30U;
-+	regs.vcpu_regs.cs_ar = 0x009FU;
-+	regs.vcpu_regs.cs_sel = 0xF000U;
-+	regs.vcpu_regs.cs_limit = 0xFFFFU;
-+	regs.vcpu_regs.cs_base = 0 & 0xFFFF0000UL;
-+	regs.vcpu_regs.rip = 0 & 0xFFFFUL;
-+
-+	ret = ioctl(hsm_fd, ACRN_IOCTL_SET_VCPU_REGS, &regs);
-+	printf("Set up VM BSP registers! [%d]\n", ret);
-+
-+	/* create an ioreq client for this VM */
-+	ret = ioctl(hsm_fd, ACRN_IOCTL_CREATE_IOREQ_CLIENT, 0);
-+	printf("Created IO request client! [%d]\n", ret);
-+
-+	/* run vm */
-+	ret = ioctl(hsm_fd, ACRN_IOCTL_START_VM, vmid);
-+	printf("Start VM! [%d]\n", ret);
-+
-+	signal(SIGINT, vm_exit);
-+	while (is_running) {
-+		ret = ioctl(hsm_fd, ACRN_IOCTL_ATTACH_IOREQ_CLIENT, 0);
-+
-+		for (vcpu_id = 0; vcpu_id < vcpu_num; vcpu_id++) {
-+			io_req = &io_req_buf[vcpu_id];
-+			if ((__sync_add_and_fetch(&io_req->processed, 0) == ACRN_IOREQ_STATE_PROCESSING)
-+					&& (!io_req->kernel_handled))
-+				if (io_req->type == ACRN_IOREQ_TYPE_PORTIO) {
-+					int bytes, port, in;
-+
-+					port = io_req->reqs.pio_request.address;
-+					bytes = io_req->reqs.pio_request.size;
-+					in = (io_req->reqs.pio_request.direction == ACRN_IOREQ_DIR_READ);
-+					printf("Guest VM %s PIO[%x] with size[%x]\n", in ? "read" : "write", port, bytes);
-+
-+					notify.vmid = vmid;
-+					notify.vcpu = vcpu_id;
-+					ioctl(hsm_fd, ACRN_IOCTL_NOTIFY_REQUEST_FINISH, &notify);
-+				}
-+		}
-+	}
-+
-+	ret = ioctl(hsm_fd, ACRN_IOCTL_DESTROY_VM, NULL);
-+	printf("Destroy VM! [%d]\n", ret);
-+	close(hsm_fd);
-+	free(guest_memory);
-+	return 0;
-+}
++#define MSG_ZEROCOPY	BIT(26)		/* Use user data in kernel path */
++#define MSG_FASTOPEN	BIT(29)		/* Send data in TCP SYN */
++#define MSG_CMSG_CLOEXEC	BIT(30)	/* Set close_on_exec for file
++					 * descriptor received through
++					 * SCM_RIGHTS
++					 */
+ #if defined(CONFIG_COMPAT)
+-#define MSG_CMSG_COMPAT	0x80000000	/* This message needs 32 bit fixups */
++#define MSG_CMSG_COMPAT	BIT_MASK(31)	/* This message needs 32 bit fixups */
+ #else
+-#define MSG_CMSG_COMPAT	0		/* We never have 32 bit fixups */
++#define MSG_CMSG_COMPAT	0	/* We never have 32 bit fixups */
+ #endif
+ 
+ 
 -- 
-2.28.0
+2.25.1
 
