@@ -2,147 +2,249 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 458F03125E9
+	by mail.lfdr.de (Postfix) with ESMTP id C33B53125EA
 	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 17:14:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229681AbhBGQOi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Feb 2021 11:14:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38600 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229510AbhBGQOg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Feb 2021 11:14:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 034B164DF6;
-        Sun,  7 Feb 2021 16:13:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612714435;
-        bh=zcZlepliAKEpsQcjfQL5rOruiRCsxavgL9m1xLxyi1A=;
-        h=From:To:Cc:Subject:Date:From;
-        b=ILIVy3MUkI+cGdiORsKm9Dob09TFC2BYfeUCHeV+Ln1yW4rVUJtoJgaQ7T9IEsp2p
-         Xl/YJ3x5RCrRSNdjAKsWbUNEUjDmxpiORfFirt7PrK3+HGQk1YBVdN5PzEbhuZZNAy
-         lRPegR6KJR5e4o6LusSL/dRgc1hsMFkZOJVdD/YQR6bs86Eupeq/HHPOR3MO8Wu0fM
-         vdTm3T9JxeFRh8NmsBIm2kbDBS1rM07lSn3A4eMQ77FDXTkvSaAhVOJ+Aed8cDDRgv
-         4kFqaTQRbqIj/b8DajEKGTFmH6mkfFvBFzur14odsb7Fh61m850XnR++hjhXt7tX8M
-         9sHxPfUvW/OWg==
-From:   Sasha Levin <sashal@kernel.org>
-To:     masahiroy@kernel.org, michal.lkml@markovi.net
-Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        gregkh@linuxfoundation.org, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH] kbuild: simplify access to the kernel's version
-Date:   Sun,  7 Feb 2021 11:13:52 -0500
-Message-Id: <20210207161352.2044572-1-sashal@kernel.org>
-X-Mailer: git-send-email 2.27.0
+        id S229715AbhBGQOl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Feb 2021 11:14:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39744 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229684AbhBGQOj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Feb 2021 11:14:39 -0500
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 135DFC06174A
+        for <linux-kernel@vger.kernel.org>; Sun,  7 Feb 2021 08:13:58 -0800 (PST)
+Received: by mail-wm1-x332.google.com with SMTP id i9so10893305wmq.1
+        for <linux-kernel@vger.kernel.org>; Sun, 07 Feb 2021 08:13:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chrisdown.name; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=f37oj4SSGjJfGtwkQjnruEKUcZ9jnJkZgRlS8GvfDpk=;
+        b=VjnOiaVP9qw4+aXLb3VabaMjxoNmVuHAsR3OCyqZ/I91l4V/FRz78g69nwUOo0QROL
+         dlU9D/owyWqjoqI9lAViV916GWcsWhQX7LFOxUeMaPSUYFlfBQMGNMgOzPxoEVhv7wWi
+         nU9vOrAQpYnmdwbyKkBh5Vb+Bdo6GUREdio6I=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=f37oj4SSGjJfGtwkQjnruEKUcZ9jnJkZgRlS8GvfDpk=;
+        b=PRpbzzc6QDaX0KdIXOnxDz/wkuWE9XB0nr0jW+zbknnGvdsPmY81Jevvn8SrxevsyO
+         YEzVt6AAjxi+a7GN1+0rtzJJ1R1bEhbUt5vdo0Lg44fvrCw80bn8bxY3a9EpVq1B+tkH
+         GBGZc+0Jam0KIjEvqDayz+7wTrh+8VhjYkvTBMvvBATHRqaYeWjjW5zVnCQ8ckG5qBid
+         EiC485boAVkOu49F7O/I4jsJuU77k3lt7YUMc5WZ9xE6t9ye4Xe0oNBBeuxZry/PKFGw
+         v+DFo7avSYes2qIzdMfhpYj0AUmEwyblY9SXUJV8GZ/zrhzPGWC/x6i2wc9ryBUzC56J
+         Awag==
+X-Gm-Message-State: AOAM532UjY12ZsU8nfI+6H5Ch6LZTt5P/xnYqJRs3owH/JYPo7jwR1Gl
+        P2lzMOglvTJhss8iCQtoadPIdw==
+X-Google-Smtp-Source: ABdhPJy/G6UTTnVN7G8hSm4cI5wnEUspUGa1gKabuiqwlIqZPGMWhGgLTEcznMyRnlOAaCxUGYFdbQ==
+X-Received: by 2002:a1c:32c4:: with SMTP id y187mr11517942wmy.120.1612714436498;
+        Sun, 07 Feb 2021 08:13:56 -0800 (PST)
+Received: from localhost ([2a01:4b00:8432:8a00:63de:dd93:20be:f460])
+        by smtp.gmail.com with ESMTPSA id u3sm25613442wre.54.2021.02.07.08.13.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 07 Feb 2021 08:13:55 -0800 (PST)
+Date:   Sun, 7 Feb 2021 16:13:55 +0000
+From:   Chris Down <chris@chrisdown.name>
+To:     Joe Perches <joe@perches.com>
+Cc:     Petr Mladek <pmladek@suse.com>, linux-kernel@vger.kernel.org,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        John Ogness <john.ogness@linutronix.de>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>, kernel-team@fb.com,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jason Baron <jbaron@akamai.com>,
+        Kees Cook <keescook@chromium.org>, linux-api@vger.kernel.org
+Subject: Re: [PATCH] printk: Userspace format enumeration support
+Message-ID: <YCARw7dYA7R3Dx3m@chrisdown.name>
+References: <YBwU0G+P0vb9wTwm@chrisdown.name>
+ <YB11jybvFCb95S9e@alley>
+ <YB3Fwh827m0F+y3n@chrisdown.name>
+ <49124db60cdc88c4e9fcca1bbc9767432ad5a93b.camel@perches.com>
+ <YB8IcCqOJA7vzqiJ@chrisdown.name>
+ <dc6cf90d978e012b0d698a698935d526ca4b0a1c.camel@perches.com>
+ <YB/1iHwwTi9dOv38@chrisdown.name>
+ <bd53d894b7bb0fcaa520282a04a6487828282695.camel@perches.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <bd53d894b7bb0fcaa520282a04a6487828282695.camel@perches.com>
+User-Agent: Mutt/2.0.5 (da5e3282) (2021-01-21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Instead of storing the version in a single integer and having various
-kernel (and userspace) code how it's constructed, export individual
-(major, patchlevel, sublevel) components and simplify kernel code that
-uses it.
+Joe Perches writes:
+>> There are several issues with your proposed approach that make it unsuitable
+>> for use as part of a reliable production environment:
+>>
+>> 1. It misses printk() formats without KERN_SOH
+>>
+>> printk() formats without KERN_SOH are legal and use MESSAGE_LOGLEVEL_DEFAULT.
+>> On my test kernel, your proposed patch loses >5% of printk formats -- over 200
+>> messages -- due to this, including critical ones like those about hardware or
+>> other errors.
+>
+>There are _very_ few of those printks without KERN_<level> and those
+>very few are not generally being changed.
 
-This should also make it easier on userspace.
+I already specified how many are lost: 5%. That's not "very few". That's a huge 
+proportion of the coverage afforded by this patch, including several important 
+cases.
 
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- Makefile                                       | 5 ++++-
- drivers/net/ethernet/mellanox/mlx5/core/main.c | 4 ++--
- drivers/usb/core/hcd.c                         | 4 ++--
- drivers/usb/gadget/udc/aspeed-vhub/hub.c       | 4 ++--
- include/linux/usb/composite.h                  | 4 ++--
- kernel/sys.c                                   | 2 +-
- 6 files changed, 13 insertions(+), 10 deletions(-)
+Relying on "they generally don't change" is not a recipe for reliability or 
+success (and they do change, more data on that below).
 
-diff --git a/Makefile b/Makefile
-index 157be50c691e5..8e002fb5cae7b 100644
---- a/Makefile
-+++ b/Makefile
-@@ -1266,7 +1266,10 @@ define filechk_version.h
- 		expr $(VERSION) \* 65536 + 0$(PATCHLEVEL) \* 256 + $(SUBLEVEL)); \
- 	fi;                                                              \
- 	echo '#define KERNEL_VERSION(a,b,c) (((a) << 16) + ((b) << 8) +  \
--	((c) > 255 ? 255 : (c)))'
-+	((c) > 255 ? 255 : (c)))';                                       \
-+	echo \#define LINUX_VERSION_MAJOR $(VERSION);                    \
-+	echo \#define LINUX_VERSION_PATCHLEVEL $(PATCHLEVEL);            \
-+	echo \#define LINUX_VERSION_SUBLEVEL $(SUBLEVEL);                \
- endef
- 
- $(version_h): FORCE
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/main.c b/drivers/net/ethernet/mellanox/mlx5/core/main.c
-index e4c9627485aa5..989f15d9aa7d4 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/main.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/main.c
-@@ -237,8 +237,8 @@ static void mlx5_set_driver_version(struct mlx5_core_dev *dev)
- 	remaining_size = max_t(int, 0, driver_ver_sz - strlen(string));
- 
- 	snprintf(string + strlen(string), remaining_size, "%u.%u.%u",
--		 (u8)((LINUX_VERSION_CODE >> 16) & 0xff), (u8)((LINUX_VERSION_CODE >> 8) & 0xff),
--		 (u16)(LINUX_VERSION_CODE & 0xffff));
-+		(u8)(LINUX_VERSION_MAJOR), (u8)(LINUX_VERSION_PATCHLEVEL),
-+		(u16)(LINUX_VERSION_SUBLEVEL));
- 
- 	/*Send the command*/
- 	MLX5_SET(set_driver_version_in, in, opcode,
-diff --git a/drivers/usb/core/hcd.c b/drivers/usb/core/hcd.c
-index ad5a0f405a75c..3f0381344221e 100644
---- a/drivers/usb/core/hcd.c
-+++ b/drivers/usb/core/hcd.c
-@@ -111,8 +111,8 @@ DECLARE_WAIT_QUEUE_HEAD(usb_kill_urb_queue);
-  */
- 
- /*-------------------------------------------------------------------------*/
--#define KERNEL_REL	bin2bcd(((LINUX_VERSION_CODE >> 16) & 0x0ff))
--#define KERNEL_VER	bin2bcd(((LINUX_VERSION_CODE >> 8) & 0x0ff))
-+#define KERNEL_REL	bin2bcd(LINUX_VERSION_MAJOR)
-+#define KERNEL_VER	bin2bcd(LINUX_VERSION_PATCHLEVEL)
- 
- /* usb 3.1 root hub device descriptor */
- static const u8 usb31_rh_dev_descriptor[18] = {
-diff --git a/drivers/usb/gadget/udc/aspeed-vhub/hub.c b/drivers/usb/gadget/udc/aspeed-vhub/hub.c
-index bfd8e77788e29..5c7dea5e0ff16 100644
---- a/drivers/usb/gadget/udc/aspeed-vhub/hub.c
-+++ b/drivers/usb/gadget/udc/aspeed-vhub/hub.c
-@@ -46,8 +46,8 @@
-  *    - Make vid/did overridable
-  *    - make it look like usb1 if usb1 mode forced
-  */
--#define KERNEL_REL	bin2bcd(((LINUX_VERSION_CODE >> 16) & 0x0ff))
--#define KERNEL_VER	bin2bcd(((LINUX_VERSION_CODE >> 8) & 0x0ff))
-+#define KERNEL_REL	bin2bcd(LINUX_VERSION_MAJOR)
-+#define KERNEL_VER	bin2bcd(LINUX_VERSION_PATCHLEVEL)
- 
- enum {
- 	AST_VHUB_STR_INDEX_MAX = 4,
-diff --git a/include/linux/usb/composite.h b/include/linux/usb/composite.h
-index 5646dad886e61..c71150f2c6390 100644
---- a/include/linux/usb/composite.h
-+++ b/include/linux/usb/composite.h
-@@ -575,8 +575,8 @@ static inline u16 get_default_bcdDevice(void)
- {
- 	u16 bcdDevice;
- 
--	bcdDevice = bin2bcd((LINUX_VERSION_CODE >> 16 & 0xff)) << 8;
--	bcdDevice |= bin2bcd((LINUX_VERSION_CODE >> 8 & 0xff));
-+	bcdDevice = bin2bcd(LINUX_VERSION_MAJOR) << 8;
-+	bcdDevice |= bin2bcd(LINUX_VERSION_PATCHLEVEL);
- 	return bcdDevice;
- }
- 
-diff --git a/kernel/sys.c b/kernel/sys.c
-index 8bb46e50f02d4..b09fe21e88ff5 100644
---- a/kernel/sys.c
-+++ b/kernel/sys.c
-@@ -1242,7 +1242,7 @@ static int override_release(char __user *release, size_t len)
- 				break;
- 			rest++;
- 		}
--		v = ((LINUX_VERSION_CODE >> 8) & 0xff) + 60;
-+		v = LINUX_VERSION_PATCHLEVEL + 60;
- 		copy = clamp_t(size_t, len, 1, sizeof(buf));
- 		copy = scnprintf(buf, copy, "2.6.%u%s", v, rest);
- 		ret = copy_to_user(release, buf, copy + 1);
--- 
-2.27.0
+>> 2. Users don't always have the kernel image available
+>>
+>> Many of our machines and many of the machines of others like us do not boot
+>> using local storage, but instead use PXE or other technologies where the kernel
+>> may not be stored during runtime.
+>>
+>> As is described in the changelog, it is necessary to be able to vary
+>> remediations not only based on what is already in /dev/kmsg, but also to be
+>> able to make decisions about our methodology based on what's _supported_ in the
+>> running kernel at runtime, and your proposed approach makes this not viable.
+>
+>Indirection would alway work.
+>
+>You could load a separate file with output strings along with your
+>kernel image.
 
+You're moving the goalposts quite quickly here, which makes it harder to reply 
+to your points. Now you're proposing an entirely separate distribution path, 
+compared to interfaces that we already have precedent for in the kernel (eg.  
+trace_printk). That requires a strong justification, and I'm not seeing one 
+here.
+
+>> 3. `KERN_SOH + level' can appear in other places than just printk strings
+>>
+>> KERN_SOH is just ASCII '\001' -- it's not distinctive or unique, even when
+>> paired with a check for something that looks like a level after it. For this
+>> reason, your proposed patch results in a non-trivial amount of non-printk
+>> related garbage in its output. For example:
+>>
+>>      % binutils/strings -k /tmp/vmlinux | head -5
+>>      3L)s
+>>      3L)s
+>>      c,[]A\
+>>      c(L)c
+>>      d$pL)d$`u4
+>>
+>> Fundamentally, one cannot use a tool which just determines whether something is
+>> printable to determine semantic intent.
+>
+>$ kernel_strings --kernel --section ".rodata" vmlinux
+>
+>I got exactly 0.
+
+"It works on my computer" is not a valid testing methodology, especially for 
+something as complex as the Linux kernel. It's especially not a valid rebuttal 
+to someone demonstrating that it clearly doesn't work on theirs.
+
+Even filtering to the .rodata section, there's plenty of garbage just in the 
+first five cases:
+
+     % binutils/strings --kernel --section ".rodata" /tmp/vmlinux | head -5
+     3******* Your BIOS seems to not contain a fix for K8 errata #93
+     1>pBC)
+     dTRAC
+     6Run %s as init process
+     7calling  %pS @ %i
+
+Clearly there are cases that you are not considering. My kernel config is 
+attached if you want to try and replicate, but regardless, it's really not 
+valid to say "it works for me" in response to someone showing that it doesn't.
+
+>> 4. strings(1) output cannot differentiate embedded newlines and new formats
+>>
+>> The following has exactly the same output from strings(1), but will manifest
+>> completely differently at printk() time:
+>>
+>>      printk(KERN_ERR "line one\nline two\nline three\n");
+>>      printk("line four\n");
+>
+>This is not the preferred output style and is only done in old and
+>unchanging code.
+>
+>Your use case in your commit log is looking for _changed_ formats.
+
+Joe, it's fine to present alternatives to people's patches, but please do your 
+research before spouting things like this. It's a waste of everyone's time to 
+refute things which are so easily demonstrated to be false.
+
+Here are a bunch of recent changes to printk I found just from literally 2 
+minutes of looking through `git log`:
+
+- ea34f78f3df6: 2020, printk site deleted (which of course we also need to know.)
+- a0f6d924cada: 2020, new callsite. the level is printed dynamically, so your proposed patch would not match.
+- bf13718bc57a: 2020, existing printk changed. 
+- 994388f228c6: 2020, printk site changed to au0828_isocdbg, reworded entirely.
+- a8b62fd08505: 2020, new callsite, dynamic level.
+
+I could find literally pages and pages of these just from the last few years.  
+Your belief that these printks are only in "unchanging" code does not match 
+reality.
+
+>On Thu, 2021-02-04 at 15:37 +0000, Chris Down wrote:
+>> This patch provides a solution to the issue of silently changed or
+>> deleted printks:
+>
+>Exactly _how_ many of these use cases do you think exist?
+>
+>The generally preferred style for the example above would be:
+>
+>	pr_err("line one\n");
+>	pr_err("line two\n");
+>	pr_err("line three\n");
+>	pr_err("line four\n");
+
+I have no idea why you think this is so rare -- we have mixed pr_* and 
+unadorned printk() all over the codebase. A number of the patches I just gave 
+above are in files with mixed calls.
+
+>> The originally posted patch _does_ differentiate between these cases, using \0
+>> as a reliable separator. Its outputs are, respectively:
+>>
+>>      \0013line one\nline two\nline three\0\nline four\n\0
+>>      \0013line one\nline two\n\0line three\nline four\n\0
+>>
+>> This isn't just a theoretical concern -- there are plenty of places which use
+>> multiline printks, and we must be able to distinguish between that and
+>> _multiple_ printks.
+>
+>Just like there are many places that use buffered printks as the
+>example I gave earlier.  None of which your proposed solution would find.
+
+There are always going to be cases which are not caught. The point is that the 
+patch proposed in this thread captures significantly more cases than the 
+`strings` case (not to mention that it avoids outputting garbage from .rodata), 
+not that it covers every imaginable scenario.
+
+>> 5. strings(1) is not contextually aware, and cannot be made to act as if it is
+>>
+>> strings has no idea about what it is reading, which is why it is more than
+>> happy to output the kind of meaningless output shown in #3. There are plenty of
+>> places across the kernel where there might be a sequence of bytes which the
+>> strings utility happens to interpret as being semantically meaningful, but in
+>> reality just happens to be an unrelated sequence of coincidentally printable
+>> bytes that just happens to contain a \001.
+>>
+>> I appreciate your willingness to propose other solutions, but for these
+>> reasons, the proposed strings(1) patch would not suffice as an interface for
+>> printk enumeration.
+>
+>I think you are on a path to try to make printk output immutable.
+>I think that's a _very_ bad path.
+
+That's literally the opposite of what this patchset does. This patchset 
+offloads the responsibility of worrying about userspace parsers breaking 
+because of changes to kernel printks, because those userspace parsers and 
+maintainers now have a mechanism to detect changes. If anything, it _reduces_ 
+the risk of what you're describing.
