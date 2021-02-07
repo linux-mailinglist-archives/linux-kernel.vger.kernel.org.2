@@ -2,89 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03142312342
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 10:50:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01664312340
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 10:50:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229704AbhBGJuC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Feb 2021 04:50:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42482 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229564AbhBGJtw (ORCPT
+        id S229719AbhBGJuE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Feb 2021 04:50:04 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:12445 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229445AbhBGJtw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 7 Feb 2021 04:49:52 -0500
-Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD01AC061756;
-        Sun,  7 Feb 2021 01:49:11 -0800 (PST)
-Received: by mail-qk1-x72f.google.com with SMTP id r77so11524888qka.12;
-        Sun, 07 Feb 2021 01:49:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=cbbpsfQOSGbGs7R9zUS8hYozEigpvRyjnIt3/cvm3W4=;
-        b=diViRcfhsBkjhy6mWySEJOvsQpOFK8pZMbHHTOXwUoPo1Ufs827UZAvqXypn/cYfbC
-         w6BVY6DkW3CKlG2KmSRpgU5z2KocTnpA6/MSr+resHu5Lry5t6So7Ij6KP0YOIUAM9W/
-         huFYnUNtqpAcUFTaoClhw4N7n27WmMKnsKfev01KHJxc+8bzxTWIJGGdzL6ZJgkcbpJg
-         IdB8X6n+ct1xkjqGPnj+HWL0/tirsOdYu2VRr7ftt2i//YyLHiP9LHr7JFBytNJUAaI1
-         5cgpzZ3gAIyg49t2FiBhrd7VMbFLD9n5qn+iTRwhsPWZI1OMMqICxBPAgxO5SQLVPtx/
-         NDuQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cbbpsfQOSGbGs7R9zUS8hYozEigpvRyjnIt3/cvm3W4=;
-        b=S2sN5X3+CKTIEKySU/HdJfUJqkf3RZGejze9h79tt2SUy+oUxw1Bfatvu5mExexaBE
-         qgZt4e4OBBpPTTRSZCyvXhV5rCXx33IYMmEv/cbpTLMPAbIQcXJKwGEuGCBKB93kHq+7
-         yMai9M94TzvyN5qfD5RP7GMoFXBcMeqTtcJ+2Y20fhALxn8EssX1YhqJzfURW4FlkBIG
-         tpFmzsaUBc4GjhY+iUJ4VxjZc9rR9gyrYvbWjxuQBrX1eM2OP5twDS5MtqhC8CUVDgAk
-         89DsEygo+WNpFkHJ5asoW79oLU5Mk0pe0HKbhjDfBUSGzLTZ+BusJluZAtJlJaDf1lON
-         qhJg==
-X-Gm-Message-State: AOAM531w36QWr3EDAqzrw1hzEkgwGosUNoNaV7YiJQW1RTi58lf+g3K4
-        7UoBVMPi/0fXEtLXY0Ep7ZBpSXXCZCsOVznLj+Y=
-X-Google-Smtp-Source: ABdhPJz7+XOZYuIE5pcblvhRQewVLTixRZW/R/cp3G96D5R/aLCDqK4IrND0zV4hhmv9HidC2Ycs1HEyKDlklGV2C98=
-X-Received: by 2002:ae9:e80e:: with SMTP id a14mr2346374qkg.103.1612691351108;
- Sun, 07 Feb 2021 01:49:11 -0800 (PST)
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4DYPTv5vDszjGFZ;
+        Sun,  7 Feb 2021 17:48:03 +0800 (CST)
+Received: from [10.67.102.118] (10.67.102.118) by
+ DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
+ 14.3.498.0; Sun, 7 Feb 2021 17:49:03 +0800
+Subject: Re: [PATCH 3/3] crypto: hisilicon/sec - fixes shash test error
+To:     Ard Biesheuvel <ardb@kernel.org>
+CC:     Herbert Xu <herbert@gondor.apana.org.au>,
+        <wangzhou1@hisilicon.com>, "Zaibo Xu" <xuzaibo@huawei.com>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <1612519857-30714-1-git-send-email-liulongfang@huawei.com>
+ <1612519857-30714-4-git-send-email-liulongfang@huawei.com>
+ <20210205114435.GA17031@gondor.apana.org.au>
+ <70c0e041-9bcc-aa67-a0ad-a1a202f2e708@huawei.com>
+ <CAMj1kXF71nPwMVNM-xwo2UNXW6xq3G=QTCNahLNS7fCfhdSMsA@mail.gmail.com>
+From:   liulongfang <liulongfang@huawei.com>
+Message-ID: <29e527d9-5b0e-5054-b0b4-d8b72e1c917c@huawei.com>
+Date:   Sun, 7 Feb 2021 17:49:03 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-References: <1612508250-10586-1-git-send-email-shengjiu.wang@nxp.com>
- <1612508250-10586-3-git-send-email-shengjiu.wang@nxp.com> <20210205140251.GB4720@sirena.org.uk>
-In-Reply-To: <20210205140251.GB4720@sirena.org.uk>
-From:   Shengjiu Wang <shengjiu.wang@gmail.com>
-Date:   Sun, 7 Feb 2021 17:49:00 +0800
-Message-ID: <CAA+D8AOa73k4yRsy20w2yHOTPoKATm0pwsBdJvtxthEtff6WrA@mail.gmail.com>
-Subject: Re: [PATCH 2/7] ASoC: fsl_rpmsg: Add CPU DAI driver for audio base on rpmsg
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Shengjiu Wang <shengjiu.wang@nxp.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, alsa-devel@alsa-project.org,
-        Timur Tabi <timur@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        linuxppc-dev@lists.ozlabs.org, Xiubo Li <Xiubo.Lee@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Takashi Iwai <tiwai@suse.com>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Fabio Estevam <festevam@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAMj1kXF71nPwMVNM-xwo2UNXW6xq3G=QTCNahLNS7fCfhdSMsA@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.102.118]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 5, 2021 at 10:04 PM Mark Brown <broonie@kernel.org> wrote:
->
-> On Fri, Feb 05, 2021 at 02:57:25PM +0800, Shengjiu Wang wrote:
-> > This is a dummy cpu dai driver for rpmsg audio use case,
-> > which is mainly used for getting the user's configuration
->
-> This is actually doing stuff, it's not a dummy driver.
->
-> > +static int fsl_rpmsg_remove(struct platform_device *pdev)
-> > +{
-> > +     return 0;
-> > +}
->
-> If this isn't needed just remove it.
-
-Thanks Mark. I will update them.
-
-Best regards
-Wang shengjiu
+On 2021/2/7 16:02, Ard Biesheuvel wrote:
+> On Sun, 7 Feb 2021 at 03:47, liulongfang <liulongfang@huawei.com> wrote:
+>>
+>> On 2021/2/5 19:44, Herbert Xu write:
+>>> On Fri, Feb 05, 2021 at 06:10:57PM +0800, Longfang Liu wrote:
+>>>> If this configuration item is not turned on,
+>>>> the allocation of crypto_tfm will fail when
+>>>> the shash algorithm calculates the hash
+>>>> through the software.
+>>>>
+>>>> Signed-off-by: Longfang Liu <liulongfang@huawei.com>
+>>>> ---
+>>>>  arch/arm64/configs/defconfig | 2 +-
+>>>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>>>
+>>>> diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
+>>>> index 8383016..7cfc9b6 100644
+>>>> --- a/arch/arm64/configs/defconfig
+>>>> +++ b/arch/arm64/configs/defconfig
+>>>> @@ -117,7 +117,7 @@ CONFIG_KVM=y
+>>>>  CONFIG_ARM64_CRYPTO=y
+>>>>  CONFIG_CRYPTO_SHA1_ARM64_CE=y
+>>>>  CONFIG_CRYPTO_SHA2_ARM64_CE=y
+>>>> -CONFIG_CRYPTO_SHA512_ARM64_CE=m
+>>>> +CONFIG_CRYPTO_SHA512_ARM64_CE=y
+>>>
+>>> If this is truly needed then it should be enabled through Kconfig.
+>>>
+>>> Cheers,
+>>>
+>> Hi Herbert,
+>> The option select CRYPTO_SHA512 already exists in Kconfig.
+> 
+> In that case, how can the shash TFM allocation fail?
+> 
+Hi
+After comparison and investigation, the problem is that the header
+file "crypto/internal/hash.h" is not added. After adding this header file,
+which CRYPTO_SHA512_ARM64_C compilation option does not need to be enabled.
+I will modify it in the next patch.
+>> Can I change it to this: select CRYPTO_SHA512 || CRYPTO_SHA512_ARM64_CE
+> 
+> No, you cannot select expressions like that.
+> 
+> Could you please explain the problem you are trying to solve?
+> .
+> 
+When allocation shash TFM with hmac(sha512)-cbc(aes) algorithm,
+TFM will return an error.
+Thanks
+Longfang.
