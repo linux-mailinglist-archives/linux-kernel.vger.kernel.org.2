@@ -2,165 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D6D8312123
+	by mail.lfdr.de (Postfix) with ESMTP id A4870312124
 	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 04:20:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229537AbhBGDT0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Feb 2021 22:19:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44222 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229506AbhBGDTX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Feb 2021 22:19:23 -0500
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFCF4C06174A
-        for <linux-kernel@vger.kernel.org>; Sat,  6 Feb 2021 19:18:43 -0800 (PST)
-Received: by mail-pj1-x1044.google.com with SMTP id m12so6357995pjs.4
-        for <linux-kernel@vger.kernel.org>; Sat, 06 Feb 2021 19:18:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=5hVA75TI4VW+toWZWw8M7rllZt3/tTITVwishPlS0nk=;
-        b=mE33PNRI6JsTzvJL/3GNUi+joORjaRz1uiWWX0sw2cbchPuO10oVOaHq32QTco5R1K
-         Kzscw5ZmHjXAqsJCeLGEtuOv9F/vuYoAOew41xMHr963i4JUl2Wt8Bc/07ZOt5bARgeT
-         L+aPwJMe9wtJed0yyia/7cByWgx8dGBahoKATPZw+fI3UDWAg17OfaQe80SPuG3NUOQT
-         HBieH2j7rFVzqedMSn8u8769ethRftWBKFsm0dfWFk5fRU8BOkYBnG6w5qeryC5zoQmC
-         gLS7KMd/2Ujqx4qVJk7piyRGpu4xpQ9NzNze8KcPWQ0ZqcgGUNX2aLir6rVQjbmjz8VR
-         G2JA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=5hVA75TI4VW+toWZWw8M7rllZt3/tTITVwishPlS0nk=;
-        b=LnCsFbUAE0r9ZyyBuRtLnJR3N+Bp4yd0kXnzKx/IgppH+u2bajZ06AYMFAaFIfIhD9
-         dVkPIKCUSqkp5LQDtkKrl+2BZQCSgexKPU5l2OFLEGmDwb017tZ9ciQRoNY4sWqoOAHw
-         /9dGXEGBa2JIfPk0OD+ACugjOgpWMR201adFAxvJnhuTjsRKE0HZNsR3W+sh/cAoqMA/
-         bQeTXpsFkwYBcrNXYOPY6BhHjkhk6njd5AAcgqG4zW7BoRu10yVDzw6q6hP6hbq7/KGj
-         Hm9b4xRSrBqjH8x523NM9wugPUmCvteyyPnT9PIu8awRwZyRQPNAvcPHtskxsDjJpfhb
-         WH0w==
-X-Gm-Message-State: AOAM531+3KdFIz84CUbI4yPWSFurl6SKUoWRBqHSeQnyxHsfeOCTk0c3
-        3wBqe5Qo4/Dxgu+6NGMY+d8=
-X-Google-Smtp-Source: ABdhPJxOE15K0PHVV5j2n0JfppcUbrls3vjkAWkUVT1qyFWJ6hUAOt6cS4htfVOByBnk2eUttx+8HA==
-X-Received: by 2002:a17:90b:1297:: with SMTP id fw23mr10961630pjb.180.1612667923262;
-        Sat, 06 Feb 2021 19:18:43 -0800 (PST)
-Received: from localhost.localdomain ([178.236.46.205])
-        by smtp.gmail.com with ESMTPSA id 21sm13671897pfh.56.2021.02.06.19.18.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 06 Feb 2021 19:18:42 -0800 (PST)
-From:   menglong8.dong@gmail.com
-X-Google-Original-From: dong.menglong@zte.com.cn
-To:     axboe@kernel.dk, andy.shevchenko@gmail.com
-Cc:     davem@davemloft.net, kuba@kernel.org, viro@zeniv.linux.org.uk,
-        dong.menglong@zte.com.cn, herbert@gondor.apana.org.au,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 net-next] net: socket: use BIT() for MSG_*
-Date:   Sat,  6 Feb 2021 19:18:16 -0800
-Message-Id: <20210207031816.1864-1-dong.menglong@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        id S229711AbhBGDT6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Feb 2021 22:19:58 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:51226 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229506AbhBGDT4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 6 Feb 2021 22:19:56 -0500
+Received: from [10.130.0.55] (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxX_MnXB9gP4sHAA--.9676S3;
+        Sun, 07 Feb 2021 11:19:04 +0800 (CST)
+Subject: Re: [PATCH] mips: kernel: setup: fix crash kernel resource allocation
+To:     Ivan Khoronzhuk <ikhoronz@cisco.com>, linux-mips@vger.kernel.org,
+        tsbogend@alpha.franken.de, linux-kernel@vger.kernel.org
+References: <20210206125940.111766-1-ikhoronz@cisco.com>
+Cc:     yangtiezhu@loongson.cn, rppt@kernel.org, ivan.khoronzhuk@gmail.com
+From:   Jinyang He <hejinyang@loongson.cn>
+Message-ID: <01729c08-c5e3-e9c0-2ddb-a5289e536153@loongson.cn>
+Date:   Sun, 7 Feb 2021 11:19:03 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
+ Thunderbird/45.4.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210206125940.111766-1-ikhoronz@cisco.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: AQAAf9DxX_MnXB9gP4sHAA--.9676S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxJF1DAFyrWFWUXw13Ar4fKrg_yoW5XrWrpr
+        4xta1UtF4UZFs7Ga1rAr1xZFWfW3ZayFWfWr4ay3s3ua9xJr9Iyrn3WFW3uryUKrWFqF1Y
+        qF4UXw1qga90vaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUB214x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
+        6r4UJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v26r
+        4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2Wl
+        Yx0EF7xvrVAajcxG14v26r1j6r4UMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67
+        AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lF7I21c0EjII2zVCS
+        5cI20VAGYxC7Mxk0xIA0c2IEe2xFo4CEbIxvr21lc2xSY4AK67AK6r48MxAIw28IcxkI7V
+        AKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCj
+        r7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6x
+        IIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAI
+        w20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6x
+        kF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUnVyIUUUUU
+X-CM-SenderInfo: pkhmx0p1dqwqxorr0wxvrqhubq/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Menglong Dong <dong.menglong@zte.com.cn>
+On 02/06/2021 08:59 PM, Ivan Khoronzhuk wrote:
 
-The bit mask for MSG_* seems a little confused here. Replace it
-with BIT() to make it clear to understand.
+> In order to avoid crash kernel corruption, its memory is reserved
+> early in memblock and as result, in time when resources are inited
+> it's not present in memblock.memory, so crash kernel memory is out
+> of ranges listed with for_each_mem_range(). To avoid it and still
+> keep memory reserved lets reseve it out of loop by inserting it in
+> iomem_resource.
 
-Changes since v1:
-- use BIT() instead of BIT_MASK()
+Hi, Ivan,
 
-Signed-off-by: Menglong Dong <dong.menglong@zte.com.cn>
----
- include/linux/socket.h | 71 ++++++++++++++++++++++--------------------
- 1 file changed, 37 insertions(+), 34 deletions(-)
+I'm not familiar with memblock. If the following my ideas show my
+ignorance, please forgive me.
 
-diff --git a/include/linux/socket.h b/include/linux/socket.h
-index 385894b4a8bb..cc525d66512d 100644
---- a/include/linux/socket.h
-+++ b/include/linux/socket.h
-@@ -283,42 +283,45 @@ struct ucred {
-    Added those for 1003.1g not all are supported yet
-  */
- 
--#define MSG_OOB		1
--#define MSG_PEEK	2
--#define MSG_DONTROUTE	4
--#define MSG_TRYHARD     4       /* Synonym for MSG_DONTROUTE for DECnet */
--#define MSG_CTRUNC	8
--#define MSG_PROBE	0x10	/* Do not send. Only probe path f.e. for MTU */
--#define MSG_TRUNC	0x20
--#define MSG_DONTWAIT	0x40	/* Nonblocking io		 */
--#define MSG_EOR         0x80	/* End of record */
--#define MSG_WAITALL	0x100	/* Wait for a full request */
--#define MSG_FIN         0x200
--#define MSG_SYN		0x400
--#define MSG_CONFIRM	0x800	/* Confirm path validity */
--#define MSG_RST		0x1000
--#define MSG_ERRQUEUE	0x2000	/* Fetch message from error queue */
--#define MSG_NOSIGNAL	0x4000	/* Do not generate SIGPIPE */
--#define MSG_MORE	0x8000	/* Sender will send more */
--#define MSG_WAITFORONE	0x10000	/* recvmmsg(): block until 1+ packets avail */
--#define MSG_SENDPAGE_NOPOLICY 0x10000 /* sendpage() internal : do no apply policy */
--#define MSG_SENDPAGE_NOTLAST 0x20000 /* sendpage() internal : not the last page */
--#define MSG_BATCH	0x40000 /* sendmmsg(): more messages coming */
--#define MSG_EOF         MSG_FIN
--#define MSG_NO_SHARED_FRAGS 0x80000 /* sendpage() internal : page frags are not shared */
--#define MSG_SENDPAGE_DECRYPTED	0x100000 /* sendpage() internal : page may carry
--					  * plain text and require encryption
--					  */
--
--#define MSG_ZEROCOPY	0x4000000	/* Use user data in kernel path */
--#define MSG_FASTOPEN	0x20000000	/* Send data in TCP SYN */
--#define MSG_CMSG_CLOEXEC 0x40000000	/* Set close_on_exec for file
--					   descriptor received through
--					   SCM_RIGHTS */
-+#define MSG_OOB		BIT(0)
-+#define MSG_PEEK	BIT(1)
-+#define MSG_DONTROUTE	BIT(2)
-+#define MSG_TRYHARD	BIT(2)	/* Synonym for MSG_DONTROUTE for DECnet		*/
-+#define MSG_CTRUNC	BIT(3)
-+#define MSG_PROBE	BIT(4)	/* Do not send. Only probe path f.e. for MTU	*/
-+#define MSG_TRUNC	BIT(5)
-+#define MSG_DONTWAIT	BIT(6)	/* Nonblocking io		*/
-+#define MSG_EOR		BIT(7)	/* End of record		*/
-+#define MSG_WAITALL	BIT(8)	/* Wait for a full request	*/
-+#define MSG_FIN		BIT(9)
-+#define MSG_SYN		BIT(10)
-+#define MSG_CONFIRM	BIT(11)	/* Confirm path validity	*/
-+#define MSG_RST		BIT(12)
-+#define MSG_ERRQUEUE	BIT(13)	/* Fetch message from error queue */
-+#define MSG_NOSIGNAL	BIT(14)	/* Do not generate SIGPIPE	*/
-+#define MSG_MORE	BIT(15)	/* Sender will send more	*/
-+#define MSG_WAITFORONE	BIT(16)	/* recvmmsg(): block until 1+ packets avail */
-+#define MSG_SENDPAGE_NOPOLICY	BIT(16)	/* sendpage() internal : do no apply policy */
-+#define MSG_SENDPAGE_NOTLAST	BIT(17)	/* sendpage() internal : not the last page  */
-+#define MSG_BATCH	BIT(18)		/* sendmmsg(): more messages coming */
-+#define MSG_EOF		MSG_FIN
-+#define MSG_NO_SHARED_FRAGS	BIT(19)	/* sendpage() internal : page frags
-+					 * are not shared
-+					 */
-+#define MSG_SENDPAGE_DECRYPTED	BIT(20)	/* sendpage() internal : page may carry
-+					 * plain text and require encryption
-+					 */
-+
-+#define MSG_ZEROCOPY	BIT(26)		/* Use user data in kernel path */
-+#define MSG_FASTOPEN	BIT(29)		/* Send data in TCP SYN */
-+#define MSG_CMSG_CLOEXEC	BIT(30)	/* Set close_on_exec for file
-+					 * descriptor received through
-+					 * SCM_RIGHTS
-+					 */
- #if defined(CONFIG_COMPAT)
--#define MSG_CMSG_COMPAT	0x80000000	/* This message needs 32 bit fixups */
-+#define MSG_CMSG_COMPAT	BIT_MASK(31)	/* This message needs 32 bit fixups */
- #else
--#define MSG_CMSG_COMPAT	0		/* We never have 32 bit fixups */
-+#define MSG_CMSG_COMPAT	0	/* We never have 32 bit fixups */
- #endif
- 
- 
--- 
-2.25.1
+First, not only the crash kernel is reserved early in memblock, but also
+code, data, and bss are also reserved in bootmem_init():
+
+     /* Reserve memory occupied by kernel. */
+     memblock_reserve(__pa_symbol(&_text),
+             __pa_symbol(&_end) - __pa_symbol(&_text));
+
+(CONFIG_NUMA is not enabled. NUMA platform reserved them is earlier.)
+
+If there is something unsuitable with the crash kernel, is there something
+unsuitable with the kernel memory?
+
+
+Then, for_each_mem_range() is normal memory. Although memblock_reserve()
+has used before that, it just adds memory to memblock.reserved. That means
+it will still appear in memblock.memory. Thus, here I have a question,
+do we need to use replace for_each_mem_range with for_each_mem_range_rev?
+
+Finally, thank you for the patch, it makes me think a lot.
+
+Thanks,
+Jinyang
+
+> Fixes: a94e4f24ec83 ("MIPS: init: Drop boot_mem_map")
+> Signed-off-by: Ivan Khoronzhuk <ikhoronz@cisco.com>
+> ---
+> Based on linux-next/master
+>
+>   arch/mips/kernel/setup.c | 8 +++++---
+>   1 file changed, 5 insertions(+), 3 deletions(-)
+>
+> diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
+> index 3785c72bc3bc..25e376ef2f2a 100644
+> --- a/arch/mips/kernel/setup.c
+> +++ b/arch/mips/kernel/setup.c
+> @@ -473,14 +473,15 @@ static void __init mips_parse_crashkernel(void)
+>   	crashk_res.end	 = crash_base + crash_size - 1;
+>   }
+>   
+> -static void __init request_crashkernel(struct resource *res)
+> +static void __init request_crashkernel(void)
+>   {
+>   	int ret;
+>   
+>   	if (crashk_res.start == crashk_res.end)
+>   		return;
+>   
+> -	ret = request_resource(res, &crashk_res);
+> +	/* The crashk resource shoud be located in normal mem */
+> +	ret = insert_resource(&iomem_resource, &crashk_res);
+>   	if (!ret)
+>   		pr_info("Reserving %ldMB of memory at %ldMB for crashkernel\n",
+>   			(unsigned long)(resource_size(&crashk_res) >> 20),
+> @@ -734,8 +735,9 @@ static void __init resource_init(void)
+>   		request_resource(res, &code_resource);
+>   		request_resource(res, &data_resource);
+>   		request_resource(res, &bss_resource);
+> -		request_crashkernel(res);
+>   	}
+> +
+> +	request_crashkernel();
+>   }
+>   
+>   #ifdef CONFIG_SMP
 
