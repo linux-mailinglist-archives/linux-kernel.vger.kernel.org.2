@@ -2,110 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B51131230B
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 10:20:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4BAB31230F
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 10:21:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229626AbhBGJTg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Feb 2021 04:19:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35408 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229522AbhBGJTb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Feb 2021 04:19:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2A91D64E22;
-        Sun,  7 Feb 2021 09:18:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612689530;
-        bh=OygoctvNrqCv3+yqvOUhM5F9TdXP26wbyygyZSDx/ME=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=X9lHKJWOTcXLEeVJj92+4bOk5plpSBCiUD1AypE5r32Qmh5QsMZIOJbBLHDaT+6HA
-         65APmYOmRlcQFMUwUFN56Zm8pqjfFjF6kTIylEQCqvE4k3S7AclrMV97kTBTgpU31Q
-         u78Oh2yiQzNdaSEg9UozwxOTChRWdLJC+qt+4iRxBbUSBLER233XM299k35/a3f0VM
-         1zWxdnHdyiZyTJGWbQBpe4vdQ2Y6xv37G24qsZWjib2JNuPmWBSyu1aPEkgUUGtBTW
-         cJu0Hir6ci80a3QQg9y5BnvFvCXiJ53IsbUy1P4+xbhmw8kesm6oKn960M4W5JoY4s
-         sWLfjzEwnuGgA==
-Date:   Sun, 7 Feb 2021 11:18:42 +0200
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Ivan Khoronzhuk <ikhoronz@cisco.com>
-Cc:     linux-mips@vger.kernel.org, tsbogend@alpha.franken.de,
-        linux-kernel@vger.kernel.org, yangtiezhu@loongson.cn,
-        ivan.khoronzhuk@gmail.com
-Subject: Re: [PATCH] mips: kernel: setup: fix crash kernel resource allocation
-Message-ID: <20210207091842.GU242749@kernel.org>
-References: <20210206125940.111766-1-ikhoronz@cisco.com>
+        id S229693AbhBGJVD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Feb 2021 04:21:03 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:40420 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229548AbhBGJVA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Feb 2021 04:21:00 -0500
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id A18411C0B77; Sun,  7 Feb 2021 10:20:16 +0100 (CET)
+Date:   Sun, 7 Feb 2021 10:20:15 +0100
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Subbaraya Sundeep <sbhatta@marvell.com>,
+        Kevin Hao <haokexin@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: Re: [PATCH 5.10 04/57] net: octeontx2: Make sure the buffer is 128
+ byte aligned
+Message-ID: <20210207092015.GA32297@amd>
+References: <20210205140655.982616732@linuxfoundation.org>
+ <20210205140656.168305608@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="BOKacYhQ+x31HxR3"
 Content-Disposition: inline
-In-Reply-To: <20210206125940.111766-1-ikhoronz@cisco.com>
+In-Reply-To: <20210205140656.168305608@linuxfoundation.org>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Feb 06, 2021 at 12:59:40PM +0000, Ivan Khoronzhuk wrote:
-> In order to avoid crash kernel corruption, its memory is reserved
-> early in memblock and as result, in time when resources are inited
-> it's not present in memblock.memory, so crash kernel memory is out
-> of ranges listed with for_each_mem_range(). To avoid it and still
-> keep memory reserved lets reseve it out of loop by inserting it in
-> iomem_resource.
 
-Unless I misread the code, the crash kernel memory is actually allocated
-from memblock (memblock_find_in_range + memblock_reserve), but for some
-reason memblock_reserve(<crash kernel>) is called outside
-mips_parse_crashkernel(). So the crash kernel memory is surely in both
-memblock.memory and memblock.reserved and it will be covered by
-for_each_mem_range().
+--BOKacYhQ+x31HxR3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-The mips_parse_crashkernel() function and the following reservation of
-crash kernel memory should be merged, IMO, and this can be further
-simplified with memblock_alloc() helpers.
+Hi!
 
-Is there a particular issue you are trying to fix?
- 
-> Fixes: a94e4f24ec83 ("MIPS: init: Drop boot_mem_map")
-> Signed-off-by: Ivan Khoronzhuk <ikhoronz@cisco.com>
-> ---
-> Based on linux-next/master
-> 
->  arch/mips/kernel/setup.c | 8 +++++---
->  1 file changed, 5 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
-> index 3785c72bc3bc..25e376ef2f2a 100644
-> --- a/arch/mips/kernel/setup.c
-> +++ b/arch/mips/kernel/setup.c
-> @@ -473,14 +473,15 @@ static void __init mips_parse_crashkernel(void)
->  	crashk_res.end	 = crash_base + crash_size - 1;
->  }
->  
-> -static void __init request_crashkernel(struct resource *res)
-> +static void __init request_crashkernel(void)
->  {
->  	int ret;
->  
->  	if (crashk_res.start == crashk_res.end)
->  		return;
->  
-> -	ret = request_resource(res, &crashk_res);
-> +	/* The crashk resource shoud be located in normal mem */
-> +	ret = insert_resource(&iomem_resource, &crashk_res);
->  	if (!ret)
->  		pr_info("Reserving %ldMB of memory at %ldMB for crashkernel\n",
->  			(unsigned long)(resource_size(&crashk_res) >> 20),
-> @@ -734,8 +735,9 @@ static void __init resource_init(void)
->  		request_resource(res, &code_resource);
->  		request_resource(res, &data_resource);
->  		request_resource(res, &bss_resource);
-> -		request_crashkernel(res);
->  	}
-> +
-> +	request_crashkernel();
->  }
->  
->  #ifdef CONFIG_SMP
-> -- 
-> 2.23.1
-> 
+> commit db2805150a0f27c00ad286a29109397a7723adad upstream.
+>=20
+> The octeontx2 hardware needs the buffer to be 128 byte aligned.
+> But in the current implementation of napi_alloc_frag(), it can't
+> guarantee the return address is 128 byte aligned even the request size
+> is a multiple of 128 bytes, so we have to request an extra 128 bytes and
+> use the PTR_ALIGN() to make sure that the buffer is aligned correctly.
+>=20
+> +++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
+> @@ -473,10 +473,11 @@ dma_addr_t __otx2_alloc_rbuf(struct otx2
+>  	dma_addr_t iova;
+>  	u8 *buf;
+> =20
+> -	buf =3D napi_alloc_frag(pool->rbsize);
+> +	buf =3D napi_alloc_frag(pool->rbsize + OTX2_ALIGN);
+>  	if (unlikely(!buf))
+>  		return -ENOMEM;
+> =20
+> +	buf =3D PTR_ALIGN(buf, OTX2_ALIGN);
 
--- 
-Sincerely yours,
-Mike.
+So we allocate a buffer, then change it, and then pass modified
+pointer to the page_frag_free(buf); in the error path. That... can't
+be right, right?
+
+>  	iova =3D dma_map_single_attrs(pfvf->dev, buf, pool->rbsize,
+>  				    DMA_FROM_DEVICE, DMA_ATTR_SKIP_CPU_SYNC);
+>  	if (unlikely(dma_mapping_error(pfvf->dev, iova))) {
+
+BTW otx2_alloc_rbuf and __otx2_alloc_rbuf should probably return s64,
+as they return negative error code...
+
+Best regards,
+							Pavel
+
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--BOKacYhQ+x31HxR3
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAmAfsM8ACgkQMOfwapXb+vIl0QCgk69H52jrBg3QTdCu0tD/nL/q
+SQoAn2S0Dij/cUdtTKroFagyHVfIUxfi
+=9MqR
+-----END PGP SIGNATURE-----
+
+--BOKacYhQ+x31HxR3--
