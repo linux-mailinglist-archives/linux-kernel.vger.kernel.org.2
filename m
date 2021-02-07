@@ -2,83 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF24731248D
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 14:29:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EED063124AB
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 15:27:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229839AbhBGN2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Feb 2021 08:28:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60694 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229565AbhBGN2g (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Feb 2021 08:28:36 -0500
-Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A2C3C06174A
-        for <linux-kernel@vger.kernel.org>; Sun,  7 Feb 2021 05:27:56 -0800 (PST)
-Received: by mail-yb1-xb43.google.com with SMTP id w204so11900897ybg.2
-        for <linux-kernel@vger.kernel.org>; Sun, 07 Feb 2021 05:27:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=tc1wa4UN4Ph/eXyA+xklM2q8VGTILW896ODKnpAVCBM=;
-        b=GyIsYeJxRwkGsfvxjl1rJ9m2wEfqseI0dZCMK3K9SuFs/A4XuOKOCq0xXZMKO4+L1i
-         QO645J7B3rxqmrDFN3MRYl76qyi17JP+xmAajoTiNRP2fDrBvXq0n7MJWbLMtQ74L5be
-         QPlW3OsWX2WJptk82KFVrPRLlcdI0pLRAZGDrHJyJt/Y+IvL51PyAmN7XzUq/oUcL9Rk
-         Z0iR1i/ITfhz70/JX2HMEAEYnX67955+CIpMzqpYhWeqD6qxMZVIYVxYiG816F5Q33UT
-         VyCmTaZ6LkO4Q1htM5itSQQNYGn79L4C4yCYEi4q9JwskhA/Wme77hLNeRvE6WeRKehC
-         Ak0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=tc1wa4UN4Ph/eXyA+xklM2q8VGTILW896ODKnpAVCBM=;
-        b=Oe/733u1JuADSzl2urQVqMaSCiTEKO00OXpcNM3n87g9zjjRmiDfU1NYdRDg1WBRio
-         kCJf+OCj8xKpqlBL7si7STSJm0yTBlPyBK1revaQAKSOBmUT5Y6ohMio8g0t1sREZR6u
-         mmzXxcoazkEZMeKg6NM++rpoPoMHX8X71nkWBJHRdOwHqK61ldsyABIVqW7VtdTZRJ99
-         3aUW+j/vCMdejZthrCQDnq0lXHUj5PL6SURcoMb5p908NHHPy9idsb189RysJdX1cnNY
-         E3uIwoNFyhoSf2Ew64vsqvZs2xBsPqjzhVYzTH6mDG3G0HCfLaLrjvmXNWbQUVBq78GK
-         QiuA==
-X-Gm-Message-State: AOAM531B4F5U+VvJHxwmgd9DYkW1fSjHfBy1Avq9R0UA9fqlRIPl/mJ7
-        cV0ImLqzxNT09/cbzoHZB+FaolQX/BAC6FGml3A=
-X-Google-Smtp-Source: ABdhPJybypwT+QLrbX9gIXyTC5bZ6tnnbxm3cC4TVj7oReO4AVsMxsINFgWXutX1n2f8LEiW8gZ71cbITzy9PSb5bro=
-X-Received: by 2002:a25:6189:: with SMTP id v131mr4635839ybb.481.1612704475559;
- Sun, 07 Feb 2021 05:27:55 -0800 (PST)
+        id S229813AbhBGOY6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Feb 2021 09:24:58 -0500
+Received: from mail.figgyc.uk ([204.13.154.60]:52860 "EHLO mail.figgyc.uk"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229751AbhBGOXN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Feb 2021 09:23:13 -0500
+X-Greylist: delayed 1842 seconds by postgrey-1.27 at vger.kernel.org; Sun, 07 Feb 2021 09:23:12 EST
+DKIM-Signature: a=rsa-sha256; bh=+W9jqtvjB4TFcPdtNzGomMX3JEdWSo19rZS32GgHeps=;
+ c=relaxed/relaxed; d=figgyc.uk;
+ h=Subject:Subject:Sender:To:To:Cc:Cc:From:From:Date:Date:MIME-Version:MIME-Version:Content-Type:Content-Transfer-Encoding:Content-Transfer-Encoding:Reply-To:In-Reply-To:Message-Id:Message-Id:References:Autocrypt:Openpgp;
+ i=@figgyc.uk; s=default; t=1612702155; v=1; x=1613134155;
+ b=kUPbvntvILEmdDvbWOg/nngyACr6u3Y1nQQiV8y7bVYhpVSciUFHaUZm7gTIu01aXbeIrhuF
+ TuJNeyzk5Po2h++uIUbyzfk7uLWixa19pNjHZgLrfHKEqaPKPgisaaJgrKA9+/M3FiCrLIv1TsD
+ G8W0mmgbABCD6gZRj4+419574XDqdTHoWgiAgS82Wf+fFHII51KUyXv7Jh+rKhVOWyfcuTlXimJ
+ mqJriIkgMcsTvVsEnFl+1y1G2vQIx2QHoPb8kpn80ZTuF/6+kS7zvmr1ivXcTewIW5xDasCCXYN
+ 3I9DiUU9FuDKb3N7wUpzq4bkBq7rytWuEQn/sQnW4l5dQ==
+Received: by mail.figgyc.uk (envelope-sender <figgyc@figgyc.uk>) with ESMTPS
+ id 90dc45c2; Sun, 07 Feb 2021 07:49:15 -0500
+From:   George Brooke <figgyc@figgyc.uk>
+To:     Tudor Ambarus <tudor.ambarus@microchip.com>
+Cc:     George Brooke <figgyc@figgyc.uk>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd: spi-nor: boya: add support for boya by25q128as
+Date:   Sun,  7 Feb 2021 12:30:34 +0000
+Message-Id: <20210207123032.516207-1-figgyc@figgyc.uk>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Received: by 2002:a05:7110:808c:b029:31:979a:3050 with HTTP; Sun, 7 Feb 2021
- 05:27:55 -0800 (PST)
-Reply-To: abdoul.hassan01@gmail.com
-From:   Mr Abdoul hassan <maho.issa02@gmail.com>
-Date:   Sun, 7 Feb 2021 05:27:55 -0800
-Message-ID: <CACBryDRBVFPtGXQWGkxTy7V88_owEM4iLg9tSs-DWdWjRa7H5g@mail.gmail.com>
-Subject: I want to seek your assistance
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=20
-Dear Friend,
-I am Mr Abdoul Hassan. I am working with one of the prime banks in
-Burkina Faso. I have a business proposal which concerns the transfer
-of.of Twenty Two Million and Five Hundred Thousand united state
-dollars ($22.500 000mUSD).into a foreign account. Everything about
-this transaction shall be legally done without any problem. If you are
-interested to help me, I will give you more details as soon as I
-receive your positive response.If you are willing to work with me,
-send me immediately the information listed below.
+Adds support for the Boya Microelectronics BY25Q128AS 128 Mbit flash.
+I tested this on the Creality WB-01 embedded device which uses this,
+although that was with OpenWrt which is still using 5.4 so I had to
+do a bit of porting work. Don't see how that would make much of a
+difference though.
 
-Your   Name=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6
-Your   Nationality=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6
-Your  Age=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6=E2=
-=80=A6
-Your  Occupation=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6
-Your Mobile Telephone Line=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6
-Your Address=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6=
-=E2=80=A6=E2=80=A6=E2=80=A6
-Thanks
-Best regards,
-Mr Abdoul Hassan
-abdoul.hassan01@gmail.com
+Signed-off-by: George Brooke <figgyc@figgyc.uk>
+---
+ drivers/mtd/spi-nor/Makefile |  1 +
+ drivers/mtd/spi-nor/boya.c   | 23 +++++++++++++++++++++++
+ drivers/mtd/spi-nor/core.c   |  1 +
+ drivers/mtd/spi-nor/core.h   |  1 +
+ 4 files changed, 26 insertions(+)
+ create mode 100644 drivers/mtd/spi-nor/boya.c
+
+diff --git a/drivers/mtd/spi-nor/Makefile b/drivers/mtd/spi-nor/Makefile
+index 653923896205..7d1551fbfbaa 100644
+--- a/drivers/mtd/spi-nor/Makefile
++++ b/drivers/mtd/spi-nor/Makefile
+@@ -2,6 +2,7 @@
+ 
+ spi-nor-objs			:= core.o sfdp.o
+ spi-nor-objs			+= atmel.o
++spi-nor-objs			+= boya.o
+ spi-nor-objs			+= catalyst.o
+ spi-nor-objs			+= eon.o
+ spi-nor-objs			+= esmt.o
+diff --git a/drivers/mtd/spi-nor/boya.c b/drivers/mtd/spi-nor/boya.c
+new file mode 100644
+index 000000000000..014b0087048a
+--- /dev/null
++++ b/drivers/mtd/spi-nor/boya.c
+@@ -0,0 +1,23 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (C) 2005, Intec Automation Inc.
++ * Copyright (C) 2014, Freescale Semiconductor, Inc.
++ */
++
++#include <linux/mtd/spi-nor.h>
++
++#include "core.h"
++
++static const struct flash_info boya_parts[] = {
++	/* Boya */
++	{ "by25q128as", INFO(0x684018, 0, 64 * 1024, 256,
++			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
++			SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
++	},
++};
++
++const struct spi_nor_manufacturer spi_nor_boya = {
++	.name = "boya",
++	.parts = boya_parts,
++	.nparts = ARRAY_SIZE(boya_parts),
++};
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index 20df44b753da..4d0d003e9c3f 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -2160,6 +2160,7 @@ int spi_nor_sr2_bit7_quad_enable(struct spi_nor *nor)
+ 
+ static const struct spi_nor_manufacturer *manufacturers[] = {
+ 	&spi_nor_atmel,
++	&spi_nor_boya,
+ 	&spi_nor_catalyst,
+ 	&spi_nor_eon,
+ 	&spi_nor_esmt,
+diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+index d631ee299de3..d5ed5217228b 100644
+--- a/drivers/mtd/spi-nor/core.h
++++ b/drivers/mtd/spi-nor/core.h
+@@ -409,6 +409,7 @@ struct spi_nor_manufacturer {
+ 
+ /* Manufacturer drivers. */
+ extern const struct spi_nor_manufacturer spi_nor_atmel;
++extern const struct spi_nor_manufacturer spi_nor_boya;
+ extern const struct spi_nor_manufacturer spi_nor_catalyst;
+ extern const struct spi_nor_manufacturer spi_nor_eon;
+ extern const struct spi_nor_manufacturer spi_nor_esmt;
+-- 
+2.30.0
+
