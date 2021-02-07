@@ -2,93 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CD70312421
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 12:53:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC43C312423
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 12:55:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229983AbhBGLxz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Feb 2021 06:53:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39712 "EHLO
+        id S229715AbhBGLys (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Feb 2021 06:54:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229772AbhBGLtp (ORCPT
+        with ESMTP id S229734AbhBGLvA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Feb 2021 06:49:45 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37F29C06174A;
-        Sun,  7 Feb 2021 03:49:05 -0800 (PST)
-Received: from zn.tnic (p200300ec2f287c00fd7d89ed8712b97d.dip0.t-ipconnect.de [IPv6:2003:ec:2f28:7c00:fd7d:89ed:8712:b97d])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 2B0E61EC0118;
-        Sun,  7 Feb 2021 12:49:00 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1612698540;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=akHfnhCK1MKhUH8obwmx+2AZkZVmst1LXxgWweXsm5k=;
-        b=B86vde7CMxLdMdCsOpJ2LUaIaL/ZHoZe45q6NJxyrXBFxvwweJZQhvKRLdBQl2p/jjTU3x
-        l6GL0bEgVSmxa8iGYaiXTcgIx9DEXlFhztFV/DUx4UtCibDcWzBq4lYW9bfXNNBsZA50JD
-        aFR8usmB45sfTxnU6XsXaYbBwiqdQpU=
-Date:   Sun, 7 Feb 2021 12:49:02 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Jing Liu <jing2.liu@linux.intel.com>
-Cc:     pbonzini@redhat.com, seanjc@google.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jing2.liu@intel.com,
-        x86-ml <x86@kernel.org>
-Subject: Re: [PATCH RFC 3/7] kvm: x86: XSAVE state and XFD MSRs context switch
-Message-ID: <20210207114902.GA6723@zn.tnic>
-References: <20210207154256.52850-1-jing2.liu@linux.intel.com>
- <20210207154256.52850-4-jing2.liu@linux.intel.com>
+        Sun, 7 Feb 2021 06:51:00 -0500
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26214C061786
+        for <linux-kernel@vger.kernel.org>; Sun,  7 Feb 2021 03:50:17 -0800 (PST)
+Received: by mail-pg1-x52d.google.com with SMTP id o7so8464273pgl.1
+        for <linux-kernel@vger.kernel.org>; Sun, 07 Feb 2021 03:50:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=D9IDMWbwqRjWQ88sXAJ6HnXN8J78RgV5vzOEqBH3b4Q=;
+        b=FQRIE1jcDkARAu2aLteEtkCYM+mzS8So7WE025WE1MR1R2ZhSDDYzpEPVPAuAdwcBy
+         1bGRd9KwluSFPRY5jBBRpu5w2Xv7U6W2T6souo+wq23w3hVZLeDz4W3JP8AmOvqrA0al
+         cMSrZWSBI6bptzWr2swc+PwNqUMITqp4ghKfAnFKXJ72J6IFeK0lLSjDE/L4VWq4R1d7
+         Xtkiy6YdMGM77ybqeZqrx5mAu+6wrXg65NOSF75kpwXvAfB5ps5cNFCRiaZ3BOLtTITh
+         9k1CVSCtP9t1UcJO/Rhsa+MhRA6qrILxpyQw0IV0L2AZ1XWcs/rK1S7fYybFLmSpRNxm
+         6Cmw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=D9IDMWbwqRjWQ88sXAJ6HnXN8J78RgV5vzOEqBH3b4Q=;
+        b=cTB6lzWn3GWUDBDVduHCnjKn9IUzjFIBtsBapPa3Gdddg2UdZxzIeXQ4at3Bqxn03/
+         7S7m4m7rijFKElHXXcBGZ6D3SwpPIo23g3445aPEKlrp+DJjtbj7ZP4FmPilEMMrAYmG
+         G+3c+nQYZOBPKtDur7rsFs8vWuyFrQcImBgLvwyvb5Pf7Pe0XepPBLc4dEr35Qp6xSR3
+         3ienC4egKO6i/qswNPWtx/EqtIO6+b5U6Pv21+AeiLdv032INhfZuFyG42SBkF6dDEjw
+         qBJqEfDBc6LPePBpdHi4Xz1I4BvUetD2h6lHmdig+Dn/ZLfG9GLn6MoZzHzU15fP14WI
+         Qz2Q==
+X-Gm-Message-State: AOAM530EP1XyWLCGSImxJG9SwKHh8H1ViRkk1FIHT5SAG0DRdFQH2Qes
+        XDChlSg7Cs7UPdIf8Yke4CkqT4sedl5YymJjtsE=
+X-Google-Smtp-Source: ABdhPJzz5FdA9mEQewbiXnFzXEt1wrrogcNRuo7SNvUl32EpRPuHX6xINSjHPx8e8zZxX0GRokJnVbP32CTj3jsgjcQ=
+X-Received: by 2002:a63:e50:: with SMTP id 16mr12682906pgo.74.1612698616412;
+ Sun, 07 Feb 2021 03:50:16 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210207154256.52850-4-jing2.liu@linux.intel.com>
+References: <20210206053109.78205-1-dong.menglong@zte.com.cn>
+ <CAHp75VfMYOz+qexix_TujGfUgFAtUXdbS=ekVdE_4cwRv5W8pw@mail.gmail.com> <CADxym3bsqAH969H-P8SSam+_gbjgWkxP90Zh-RnzDaOJuwD3ig@mail.gmail.com>
+In-Reply-To: <CADxym3bsqAH969H-P8SSam+_gbjgWkxP90Zh-RnzDaOJuwD3ig@mail.gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Sun, 7 Feb 2021 13:50:00 +0200
+Message-ID: <CAHp75Vc50sMfOLSk3nfPcAqfeKeCJ7_MiTKzwksZFt078J-+DA@mail.gmail.com>
+Subject: Re: [PATCH net-next] net: socket: use BIT_MASK for MSG_*
+To:     Menglong Dong <menglong8.dong@gmail.com>
+Cc:     "axboe@kernel.dk" <axboe@kernel.dk>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "herbert@gondor.apana.org.au" <herbert@gondor.apana.org.au>,
+        "dong.menglong@zte.com.cn" <dong.menglong@zte.com.cn>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Feb 07, 2021 at 10:42:52AM -0500, Jing Liu wrote:
-> diff --git a/arch/x86/kernel/fpu/init.c b/arch/x86/kernel/fpu/init.c
-> index 7e0c68043ce3..fbb761fc13ec 100644
-> --- a/arch/x86/kernel/fpu/init.c
-> +++ b/arch/x86/kernel/fpu/init.c
-> @@ -145,6 +145,7 @@ EXPORT_SYMBOL_GPL(fpu_kernel_xstate_min_size);
->   * can be dynamically expanded to include some states up to this size.
->   */
->  unsigned int fpu_kernel_xstate_max_size;
-> +EXPORT_SYMBOL_GPL(fpu_kernel_xstate_max_size);
->  
->  /* Get alignment of the TYPE. */
->  #define TYPE_ALIGN(TYPE) offsetof(struct { char x; TYPE test; }, test)
-> diff --git a/arch/x86/kernel/fpu/xstate.c b/arch/x86/kernel/fpu/xstate.c
-> index 080f3be9a5e6..9c471a0364e2 100644
-> --- a/arch/x86/kernel/fpu/xstate.c
-> +++ b/arch/x86/kernel/fpu/xstate.c
-> @@ -77,12 +77,14 @@ static struct xfeature_capflag_info xfeature_capflags[] __initdata = {
->   * XSAVE buffer, both supervisor and user xstates.
->   */
->  u64 xfeatures_mask_all __read_mostly;
-> +EXPORT_SYMBOL_GPL(xfeatures_mask_all);
->  
->  /*
->   * This represents user xstates, a subset of xfeatures_mask_all, saved in a
->   * dynamic kernel XSAVE buffer.
->   */
->  u64 xfeatures_mask_user_dynamic __read_mostly;
-> +EXPORT_SYMBOL_GPL(xfeatures_mask_user_dynamic);
->  
->  static unsigned int xstate_offsets[XFEATURE_MAX] = { [ 0 ... XFEATURE_MAX - 1] = -1};
->  static unsigned int xstate_sizes[XFEATURE_MAX]   = { [ 0 ... XFEATURE_MAX - 1] = -1};
+On Sun, Feb 7, 2021 at 5:29 AM Menglong Dong <menglong8.dong@gmail.com> wrote:
+> On Sat, Feb 6, 2021 at 4:20 PM Andy Shevchenko
+> <andy.shevchenko@gmail.com> wrote:
+> > On Saturday, February 6, 2021, <menglong8.dong@gmail.com> wrote:
 
-Make sure you Cc x86@kernel.org when touching code outside of kvm.
+> > It makes it more confusing if you understand the difference between BIT_MASK() and BIT(). I think you have to use the latter. And note () when referring to the function or macro.
+>
+> I replaced BIT_MASK() with BIT() in the patch of v2, and it looks much
+> more tidy.
+> I can't figure out the difference between BIT() and BIT_MASK(), seems
+> the latter one more safe... isn't it?
 
-There's this script called scripts/get_maintainer.pl which will tell you who to
-Cc. Use it before you send next time please.
+BIT_MASK() operates on top of (long) bitmaps when you already know the
+address of the certain word you would like to change. When the
+parameter is constant it will be helpful only in some (rare) cases,
+where you define a (long) bit mask, which has a bit, like 65, set. For
+most of the cases it's not needed. It's rare that hardware operates on
+bitmaps longer than data bus width.
 
-Thx.
 
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+With Best Regards,
+Andy Shevchenko
