@@ -2,240 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7AFB3124D6
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 15:50:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14AC73124D2
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 15:49:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229816AbhBGOtY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Feb 2021 09:49:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49634 "EHLO
+        id S229631AbhBGOsu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Feb 2021 09:48:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229683AbhBGOtU (ORCPT
+        with ESMTP id S229506AbhBGOst (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Feb 2021 09:49:20 -0500
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B850C061788;
-        Sun,  7 Feb 2021 06:48:40 -0800 (PST)
-Received: by mail-wr1-x430.google.com with SMTP id a1so14078661wrq.6;
-        Sun, 07 Feb 2021 06:48:40 -0800 (PST)
+        Sun, 7 Feb 2021 09:48:49 -0500
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1625DC06174A
+        for <linux-kernel@vger.kernel.org>; Sun,  7 Feb 2021 06:48:09 -0800 (PST)
+Received: by mail-wm1-x332.google.com with SMTP id 190so10354931wmz.0
+        for <linux-kernel@vger.kernel.org>; Sun, 07 Feb 2021 06:48:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=7BqckfrsML2GBf51tQxDktXn1rf1aCAw97+iuGvoYrU=;
-        b=ii6+OfbyFYX7w/6SCw9ShkxQRF8j6hEYOL+zdWvUx754o+/X1BWGSPfcu7qkDZbFpY
-         jP4zNZnLUX5+YHpknamRWyITZzHzD7LpGH3CRsWZhD1UyCzwUAQIkLEyiBf8oHcysyIj
-         CEkkOl/rCXMIQ75Qst0DwAQYyG+657lXR/aZGotRiCv2FOAzwjeOcbaC+eHJLxpgN0nk
-         St/vRIcwICGuPq3q9Kno4eL+LR6kIuOobxsOUtVwveVJzXNtFhBl4dsc86d7EuAcOujj
-         ZEdyS3UVwTA7AVkWkeamD45hqfzXqa7ijeIl1V/sSUoHuWsWZb6HmONO81gEJDhBlNFA
-         WV/g==
+        bh=U+FD4FX1W6U2mWTuvI4YJ635kqsngjRjhMWM6RDCGfA=;
+        b=AECeStMnc4+w96Ilr4WY6VqwAL2P4HRo4cUt0DESevLEYIhDDNkBfSniM/3y/4Uo2Y
+         bChGzp3f4vOV1p4vJ0d5TbBGwvXnNSTASbQYda66AK2zsLyDnI8qtF0AQG4oFF9Th2N5
+         5WHD09gLTQt7dTZRSvXYLaT5u3vz0/pMbECdcUYNcFSqMR/dzFb/WzuiIy+1NvtLIrfL
+         v4Sve+eF0wqJYGOVoi7RDCYSeTxM8oWQiCjrh26fu3jLprOnIG2FzAcoHzf54fG0Lrz1
+         pePfhjEyU4iyfoq78IwmVwNc1h9SZx3ZmUehwiVu6hQRBiiqNOT6+FkJ34aXpYmxM7Ha
+         gukA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=7BqckfrsML2GBf51tQxDktXn1rf1aCAw97+iuGvoYrU=;
-        b=GKOJc1QrCO/1I4hBMMzsv3GUKbbOHYGUqqtxZF463YgAmTgxKW3mds+iWYtP4UtcnI
-         6HrjDxmWepNdT3uxIOHz6QwtByfR/m30u/KTdTdMHqCYJRylc9KMzKeW/K2IdE2f4cS7
-         y4GP5qyNaYntnwuoPqo6H8eh9zTMqbrkvJWZRCv5Q4Xxc00nofVBctjdm7/1srNhB1SM
-         8nvLTYaQdyVnfwOZ5ljwmqqGKZ+Wgn3N2+qayHfIlTaExDvoX6aa/A3IYEr7Rhj7ye2M
-         CQdp9tJWsMDDstiEcj/y5jb4IJC+fTer6kDqflLBLDmjO4U7k13zX026kh+F7vyOcEBA
-         6Kog==
-X-Gm-Message-State: AOAM5310aJS+lJln4Pw1vqefIiVGBBhMcqf8AUazLouFN7nm8KqlNRZd
-        grTD064oV0yJRTBBUMdfh6s=
-X-Google-Smtp-Source: ABdhPJzqmUOB0AKWfAYA3ZcJIsBiWGa8CPbn/5V8tqKx7wufmIM1QDbELvpc8CBF9UruRTa5pBf6VA==
-X-Received: by 2002:adf:9226:: with SMTP id 35mr15617024wrj.408.1612709318760;
-        Sun, 07 Feb 2021 06:48:38 -0800 (PST)
-Received: from warrior.lan ([2a03:7380:2407:423c:abcd:a480:34c9:3d94])
-        by smtp.gmail.com with ESMTPSA id n15sm21946388wrx.2.2021.02.07.06.48.37
+        bh=U+FD4FX1W6U2mWTuvI4YJ635kqsngjRjhMWM6RDCGfA=;
+        b=ueO3wFq1i3dSzdudqQypX3iJQR+BC60AzYpFQbITc5hLWjEpKZN27bFV4NVX/yYN5H
+         kTKLRmq1hf0/Np/cTn6sZMVVSq3B8gmW+Ltkk19ss+8s0wnX1fXSJUVFyl6Q+4ynU1a8
+         4N0VGhdMcRaTmcwrqJDMfL2sP32Yg/x4sSQrw+nNGZ2UOdtCcoDGXGZLmOvqdGYWSpmt
+         vun3lj01IHEZD1UO1PVi6arshLOjbPfXfCWu7daNsdYsxPiDlT4L6Ik43dSdleVQP2CK
+         k93RfclvSTGFecjE3Ag83fO5YsIUWNb3rPfh1HKq4VD4MKhZBfwSbUOKDYK2m3d+sPVR
+         3d2A==
+X-Gm-Message-State: AOAM532zzDYLtqdYn2wFpcd07a1YPNDWDiCfU+65B1sqGkJEVQmDnujM
+        63uK2/6P33Ayg2HvNzQHnEDRnw==
+X-Google-Smtp-Source: ABdhPJwlfr8M4W6SCuEjqXkYxolOOvi+szVjPfeMJ08gbEUvM9Uo19BSqfM2i4Uhet5G1C42HsixIw==
+X-Received: by 2002:a1c:e402:: with SMTP id b2mr11359221wmh.122.1612709287404;
+        Sun, 07 Feb 2021 06:48:07 -0800 (PST)
+Received: from localhost.localdomain (2.0.5.1.1.6.3.8.5.c.c.3.f.b.d.3.0.0.0.0.6.1.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:df16:0:3dbf:3cc5:8361:1502])
+        by smtp.gmail.com with ESMTPSA id n10sm22600578wro.39.2021.02.07.06.48.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 07 Feb 2021 06:48:37 -0800 (PST)
-From:   Maxim Mikityanskiy <maxtram95@gmail.com>
-To:     Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Terry Junge <terry.junge@plantronics.com>,
-        JD Cole <jd.cole@plantronics.com>, JD Cole <jd@jdc.me>
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Maxim Mikityanskiy <maxtram95@gmail.com>
-Subject: [PATCH] HID: plantronics: Workaround for double volume key presses
-Date:   Sun,  7 Feb 2021 16:47:40 +0200
-Message-Id: <20210207144740.6238-1-maxtram95@gmail.com>
-X-Mailer: git-send-email 2.30.0
+        Sun, 07 Feb 2021 06:48:06 -0800 (PST)
+From:   Phillip Potter <phil@philpotter.co.uk>
+To:     gregkh@linuxfoundation.org
+Cc:     alexander.sverdlin@nokia.com, andrew@lunn.ch, davem@davemloft.net,
+        chris.packham@alliedtelesis.co.nz, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] staging: octeon: convert all uses of strlcpy to strscpy in ethernet-mdio.c
+Date:   Sun,  7 Feb 2021 14:48:04 +0000
+Message-Id: <20210207144804.88330-1-phil@philpotter.co.uk>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Plantronics Blackwire 3220 Series (047f:c056) sends HID reports twice
-for each volume key press. This patch adds a quirk to hid-plantronics
-for this product ID, which will ignore the second volume key press if
-it happens within 5 ms from the last one that was handled.
+Convert three calls to strlcpy inside the cvm_oct_get_drvinfo function
+to strscpy calls. Fixes a style warning.
 
-The patch was tested on the mentioned model only, it shouldn't affect
-other models, however, this quirk might be needed for them too.
-Auto-repeat (when a key is held pressed) is not affected, because the
-rate is about 3 times per second, which is far less frequent than once
-in 5 ms.
-
-Fixes: 81bb773faed7 ("HID: plantronics: Update to map volume up/down controls")
-Signed-off-by: Maxim Mikityanskiy <maxtram95@gmail.com>
+Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
 ---
-People from Plantronics, maybe you could advise on a better fix than
-filtering duplicate events on driver level? Do you happen to know why
-they occur in the first place? Are any other headsets affected?
+ drivers/staging/octeon/ethernet-mdio.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
- drivers/hid/hid-ids.h         |  1 +
- drivers/hid/hid-plantronics.c | 60 +++++++++++++++++++++++++++++++++--
- include/linux/hid.h           |  2 ++
- 3 files changed, 61 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/hid/hid-ids.h b/drivers/hid/hid-ids.h
-index 5ba0aa1d2335..5ac52b4d900d 100644
---- a/drivers/hid/hid-ids.h
-+++ b/drivers/hid/hid-ids.h
-@@ -937,6 +937,7 @@
- #define USB_DEVICE_ID_ORTEK_IHOME_IMAC_A210S	0x8003
- 
- #define USB_VENDOR_ID_PLANTRONICS	0x047f
-+#define USB_DEVICE_ID_PLANTRONICS_BLACKWIRE_3220_SERIES	0xc056
- 
- #define USB_VENDOR_ID_PANASONIC		0x04da
- #define USB_DEVICE_ID_PANABOARD_UBT780	0x1044
-diff --git a/drivers/hid/hid-plantronics.c b/drivers/hid/hid-plantronics.c
-index 85b685efc12f..e81b7cec2d12 100644
---- a/drivers/hid/hid-plantronics.c
-+++ b/drivers/hid/hid-plantronics.c
-@@ -13,6 +13,7 @@
- 
- #include <linux/hid.h>
- #include <linux/module.h>
-+#include <linux/jiffies.h>
- 
- #define PLT_HID_1_0_PAGE	0xffa00000
- #define PLT_HID_2_0_PAGE	0xffa20000
-@@ -36,6 +37,16 @@
- #define PLT_ALLOW_CONSUMER (field->application == HID_CP_CONSUMERCONTROL && \
- 			    (usage->hid & HID_USAGE_PAGE) == HID_UP_CONSUMER)
- 
-+#define PLT_QUIRK_DOUBLE_VOLUME_KEYS BIT(0)
-+
-+#define PLT_DOUBLE_KEY_TIMEOUT 5 /* ms */
-+
-+struct plt_drv_data {
-+	unsigned long device_type;
-+	unsigned long last_volume_key_ts;
-+	u32 quirks;
-+};
-+
- static int plantronics_input_mapping(struct hid_device *hdev,
- 				     struct hid_input *hi,
- 				     struct hid_field *field,
-@@ -43,7 +54,8 @@ static int plantronics_input_mapping(struct hid_device *hdev,
- 				     unsigned long **bit, int *max)
+diff --git a/drivers/staging/octeon/ethernet-mdio.c b/drivers/staging/octeon/ethernet-mdio.c
+index b0fd083a5bf2..b3049108edc4 100644
+--- a/drivers/staging/octeon/ethernet-mdio.c
++++ b/drivers/staging/octeon/ethernet-mdio.c
+@@ -21,9 +21,9 @@
+ static void cvm_oct_get_drvinfo(struct net_device *dev,
+ 				struct ethtool_drvinfo *info)
  {
- 	unsigned short mapped_key;
--	unsigned long plt_type = (unsigned long)hid_get_drvdata(hdev);
-+	struct plt_drv_data *drv_data = hid_get_drvdata(hdev);
-+	unsigned long plt_type = drv_data->device_type;
- 
- 	/* special case for PTT products */
- 	if (field->application == HID_GD_JOYSTICK)
-@@ -105,6 +117,30 @@ static int plantronics_input_mapping(struct hid_device *hdev,
- 	return 1;
+-	strlcpy(info->driver, KBUILD_MODNAME, sizeof(info->driver));
+-	strlcpy(info->version, UTS_RELEASE, sizeof(info->version));
+-	strlcpy(info->bus_info, "Builtin", sizeof(info->bus_info));
++	strscpy(info->driver, KBUILD_MODNAME, sizeof(info->driver));
++	strscpy(info->version, UTS_RELEASE, sizeof(info->version));
++	strscpy(info->bus_info, "Builtin", sizeof(info->bus_info));
  }
  
-+static int plantronics_event(struct hid_device *hdev, struct hid_field *field,
-+			     struct hid_usage *usage, __s32 value)
-+{
-+	struct plt_drv_data *drv_data = hid_get_drvdata(hdev);
-+
-+	if (drv_data->quirks & PLT_QUIRK_DOUBLE_VOLUME_KEYS) {
-+		unsigned long prev_ts, cur_ts;
-+
-+		/* Usages are filtered in plantronics_usages. */
-+
-+		if (!value) /* Handle key presses only. */
-+			return 0;
-+
-+		prev_ts = drv_data->last_volume_key_ts;
-+		cur_ts = jiffies;
-+		if (jiffies_to_msecs(cur_ts - prev_ts) <= PLT_DOUBLE_KEY_TIMEOUT)
-+			return 1; /* Ignore the repeated key. */
-+
-+		drv_data->last_volume_key_ts = cur_ts;
-+	}
-+
-+	return 0;
-+}
-+
- static unsigned long plantronics_device_type(struct hid_device *hdev)
- {
- 	unsigned i, col_page;
-@@ -133,15 +169,24 @@ static unsigned long plantronics_device_type(struct hid_device *hdev)
- static int plantronics_probe(struct hid_device *hdev,
- 			     const struct hid_device_id *id)
- {
-+	struct plt_drv_data *drv_data;
- 	int ret;
- 
-+	drv_data = devm_kzalloc(&hdev->dev, sizeof(*drv_data), GFP_KERNEL);
-+	if (!drv_data)
-+		return -ENOMEM;
-+
- 	ret = hid_parse(hdev);
- 	if (ret) {
- 		hid_err(hdev, "parse failed\n");
- 		goto err;
- 	}
- 
--	hid_set_drvdata(hdev, (void *)plantronics_device_type(hdev));
-+	drv_data->device_type = plantronics_device_type(hdev);
-+	drv_data->quirks = id->driver_data;
-+	drv_data->last_volume_key_ts = jiffies - msecs_to_jiffies(PLT_DOUBLE_KEY_TIMEOUT);
-+
-+	hid_set_drvdata(hdev, drv_data);
- 
- 	ret = hid_hw_start(hdev, HID_CONNECT_DEFAULT |
- 		HID_CONNECT_HIDINPUT_FORCE | HID_CONNECT_HIDDEV_FORCE);
-@@ -153,15 +198,26 @@ static int plantronics_probe(struct hid_device *hdev,
- }
- 
- static const struct hid_device_id plantronics_devices[] = {
-+	{ HID_USB_DEVICE(USB_VENDOR_ID_PLANTRONICS,
-+					 USB_DEVICE_ID_PLANTRONICS_BLACKWIRE_3220_SERIES),
-+		.driver_data = PLT_QUIRK_DOUBLE_VOLUME_KEYS },
- 	{ HID_USB_DEVICE(USB_VENDOR_ID_PLANTRONICS, HID_ANY_ID) },
- 	{ }
- };
- MODULE_DEVICE_TABLE(hid, plantronics_devices);
- 
-+static const struct hid_usage_id plantronics_usages[] = {
-+	{ HID_CP_VOLUMEUP, EV_KEY, HID_ANY_ID },
-+	{ HID_CP_VOLUMEDOWN, EV_KEY, HID_ANY_ID },
-+	{ HID_TERMINATOR, HID_TERMINATOR, HID_TERMINATOR }
-+};
-+
- static struct hid_driver plantronics_driver = {
- 	.name = "plantronics",
- 	.id_table = plantronics_devices,
-+	.usage_table = plantronics_usages,
- 	.input_mapping = plantronics_input_mapping,
-+	.event = plantronics_event,
- 	.probe = plantronics_probe,
- };
- module_hid_driver(plantronics_driver);
-diff --git a/include/linux/hid.h b/include/linux/hid.h
-index c39d71eb1fd0..6bf6feb3db7c 100644
---- a/include/linux/hid.h
-+++ b/include/linux/hid.h
-@@ -262,6 +262,8 @@ struct hid_item {
- #define HID_CP_SELECTION	0x000c0080
- #define HID_CP_MEDIASELECTION	0x000c0087
- #define HID_CP_SELECTDISC	0x000c00ba
-+#define HID_CP_VOLUMEUP		0x000c00e9
-+#define HID_CP_VOLUMEDOWN	0x000c00ea
- #define HID_CP_PLAYBACKSPEED	0x000c00f1
- #define HID_CP_PROXIMITY	0x000c0109
- #define HID_CP_SPEAKERSYSTEM	0x000c0160
+ static int cvm_oct_nway_reset(struct net_device *dev)
 -- 
-2.30.0
+2.29.2
 
