@@ -2,128 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C895312670
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 18:38:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F1F831267B
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 18:48:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229751AbhBGRiE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Feb 2021 12:38:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57546 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229729AbhBGRiA (ORCPT
+        id S229681AbhBGRrg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Feb 2021 12:47:36 -0500
+Received: from smtprelay0130.hostedemail.com ([216.40.44.130]:46120 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229510AbhBGRre (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Feb 2021 12:38:00 -0500
-Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1C1FC06174A
-        for <linux-kernel@vger.kernel.org>; Sun,  7 Feb 2021 09:37:19 -0800 (PST)
-Received: by mail-qv1-xf2a.google.com with SMTP id r13so5946033qvm.11
-        for <linux-kernel@vger.kernel.org>; Sun, 07 Feb 2021 09:37:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=j9qX/HSwLIMkP63Z3KVtmxMD254RgIGqBGNpCVomjWY=;
-        b=nNNMJeBi0mPrn9xvenzjb7nX0r7+1vTZVgnpiPdsvMEYsbPxm577zKBfHWm1WnZ0I6
-         d+3OwFjhKKyKbJP46sku5okjjhHvffxRGy8cqlkwDuRUzQ0XCMMKEVQ6AgCWPExndX71
-         iV/F/MxRqhLEVIW7PCyQVdwxaFFoXgExBvu8sYrNURdElojS1mGJiXG9sabighuYGzQU
-         0wWIWHzgN8BnvfcPJjQf3+xcdeyTYuPqQLXwkqiII5Ijfv0+VK66zfGu0J+OLQWHBlrr
-         Kw2EdENjXfdhW5dSrS4JoV0AYReI4rMEoi1srVgbWsGwO+gkYbaR63jGH+RAAwEVIjYG
-         6mWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=j9qX/HSwLIMkP63Z3KVtmxMD254RgIGqBGNpCVomjWY=;
-        b=RjvmxLpLEPflCIJBtxYTwDHXjPLWaTq3zgLziUwc0So+Z0jghSJ/IhniUDq5jtiPsJ
-         sT80sWYH+31xrnZOD4VuZnXplVG45HhoPKdbJAjJrqL2gqODLnU58eMt1VerD3lOtoyx
-         q7CgTkbf4NoM2yirm8Dp7k+zLa6URSX6tlhAJXhHzF4DO9TCdOW7Ze7HWB3pkjxFHmTM
-         ByPA/wE2m/ic45NT1/fVNSrzg5hv4OVg1alCo3NBYwvaVorJIxbePzutR+FJBq9/yjgs
-         TETxqXJlP1QeUr/FbVA6RXHJpij4CHqmjwywUkIfGI8RnA+nOAfPThyqr5UjUA8Z1cS4
-         wnUA==
-X-Gm-Message-State: AOAM530wHr7YDYzyMmFdBwY0XugWMx4rIbAEq5s9AXe//pZQWOyeEx23
-        ybV3jqjLktsJgUNcBdjtaBtq6f2nxlIPmnu7PuNuBszuYwfj+g==
-X-Google-Smtp-Source: ABdhPJxCjzPVfc2g1XZxDZvYSY4IV7O7SVX3xJakIAGZzxobmpJJpZpBIB0BY2mm1CSY2CXwv2rPdWyqlr2BrsTWol4=
-X-Received: by 2002:ad4:584b:: with SMTP id de11mr12935044qvb.19.1612719438769;
- Sun, 07 Feb 2021 09:37:18 -0800 (PST)
+        Sun, 7 Feb 2021 12:47:34 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay08.hostedemail.com (Postfix) with ESMTP id 8F4A4182CED28;
+        Sun,  7 Feb 2021 17:46:53 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:2:41:69:355:379:599:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1381:1437:1515:1516:1518:1535:1593:1594:1606:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3355:3622:3866:3867:3868:4117:4321:4605:5007:6119:7652:7903:8603:10004:10848:11026:11232:11658:11914:12043:12048:12296:12297:12438:12555:12683:12740:12760:12895:12986:13255:13439:14659:21080:21451:21611:21627:21990:30012:30051:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: side02_2f0318a275f8
+X-Filterd-Recvd-Size: 6214
+Received: from [192.168.1.159] (unknown [47.151.137.21])
+        (Authenticated sender: joe@perches.com)
+        by omf17.hostedemail.com (Postfix) with ESMTPA;
+        Sun,  7 Feb 2021 17:46:52 +0000 (UTC)
+Message-ID: <45cde3a597e932e3e81264034455582b21e72642.camel@perches.com>
+Subject: Re: [PATCH] staging: gasket: fix indentation and lines ending with
+ open parenthesis
+From:   Joe Perches <joe@perches.com>
+To:     Mahak Gupta <gmahak1@gmail.com>, linux-kernel@vger.kernel.org,
+        devel@driverdev.osuosl.org, gregkh@linuxfoundation.org,
+        rcy@google.com, benchan@chromium.org, toddpoynor@google.com,
+        rspringer@google.com
+Date:   Sun, 07 Feb 2021 09:46:50 -0800
+In-Reply-To: <20210207140928.11029-1-gmahak1@gmail.com>
+References: <20210207140928.11029-1-gmahak1@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Sun, 7 Feb 2021 09:37:21 -0800
-Message-ID: <CAPcyv4j++J_ra8zWkvVovmwmYCERp8vKsVSZn9x4PYGoJa-XOA@mail.gmail.com>
-Subject: [GIT PULL] libnvdimm fixes for v5.11-rc7
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-nvdimm <linux-nvdimm@lists.01.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus, please pull from:
+On Sun, 2021-02-07 at 19:39 +0530, Mahak Gupta wrote:
+> This patch fixes warnings of 'checkpatch.pl'. According to
+> Linux coding guidelines, code should be aligned properly to
+> match with open parenthesis and lines should not end with
+> open parenthesis.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/nvdimm/nvdimm
-tags/libnvdimm-fixes-5.11-rc7
+Perhaps try using temporaries to reduce line length when used multiple times...
 
-...to receive a fix for a crash scenario that has been present since
-the initial merge, a minor regression in sysfs attribute visibility,
-and a fix for some flexible array warnings. The bulk of this pull is
-an update to the libnvdimm unit test infrastructure to test non-ACPI
-platforms. Given there is zero regression risk for test updates, and
-the tests enable validation of bits headed towards the next merge
-window, I saw no reason to hold the new tests back. Santosh originally
-submitted this before the v5.11 window opened.
-
-This has all appeared in -next with no reported issues.
-
+Something like:
 ---
+ drivers/staging/gasket/gasket_ioctl.c | 31 +++++++++++++++++++------------
+ 1 file changed, 19 insertions(+), 12 deletions(-)
 
-The following changes since commit 7c53f6b671f4aba70ff15e1b05148b10d58c2837:
+diff --git a/drivers/staging/gasket/gasket_ioctl.c b/drivers/staging/gasket/gasket_ioctl.c
+index e3047d36d8db..3cb2227d5972 100644
+--- a/drivers/staging/gasket/gasket_ioctl.c
++++ b/drivers/staging/gasket/gasket_ioctl.c
+@@ -44,6 +44,7 @@ static int gasket_read_page_table_size(struct gasket_dev *gasket_dev,
+ {
+ 	int ret = 0;
+ 	struct gasket_page_table_ioctl ibuf;
++	struct gasket_page_table *table;
+ 
+ 	if (copy_from_user(&ibuf, argp, sizeof(struct gasket_page_table_ioctl)))
+ 		return -EFAULT;
+@@ -51,8 +52,8 @@ static int gasket_read_page_table_size(struct gasket_dev *gasket_dev,
+ 	if (ibuf.page_table_index >= gasket_dev->num_page_tables)
+ 		return -EFAULT;
+ 
+-	ibuf.size = gasket_page_table_num_entries(
+-		gasket_dev->page_table[ibuf.page_table_index]);
++	table = gasket_dev->page_table[ibuf.page_table_index];
++	ibuf.size = gasket_page_table_num_entries(table);
+ 
+ 	trace_gasket_ioctl_page_table_data(ibuf.page_table_index, ibuf.size,
+ 					   ibuf.host_address,
+@@ -70,6 +71,7 @@ static int gasket_read_simple_page_table_size(struct gasket_dev *gasket_dev,
+ {
+ 	int ret = 0;
+ 	struct gasket_page_table_ioctl ibuf;
++	struct gasket_page_table *table;
+ 
+ 	if (copy_from_user(&ibuf, argp, sizeof(struct gasket_page_table_ioctl)))
+ 		return -EFAULT;
+@@ -77,8 +79,8 @@ static int gasket_read_simple_page_table_size(struct gasket_dev *gasket_dev,
+ 	if (ibuf.page_table_index >= gasket_dev->num_page_tables)
+ 		return -EFAULT;
+ 
+-	ibuf.size =
+-		gasket_page_table_num_simple_entries(gasket_dev->page_table[ibuf.page_table_index]);
++	table = gasket_dev->page_table[ibuf.page_table_index];
++	ibuf.size = gasket_page_table_num_simple_entries(table);
+ 
+ 	trace_gasket_ioctl_page_table_data(ibuf.page_table_index, ibuf.size,
+ 					   ibuf.host_address,
+@@ -97,6 +99,7 @@ static int gasket_partition_page_table(struct gasket_dev *gasket_dev,
+ 	int ret;
+ 	struct gasket_page_table_ioctl ibuf;
+ 	uint max_page_table_size;
++	struct gasket_page_table *table;
+ 
+ 	if (copy_from_user(&ibuf, argp, sizeof(struct gasket_page_table_ioctl)))
+ 		return -EFAULT;
+@@ -107,8 +110,9 @@ static int gasket_partition_page_table(struct gasket_dev *gasket_dev,
+ 
+ 	if (ibuf.page_table_index >= gasket_dev->num_page_tables)
+ 		return -EFAULT;
+-	max_page_table_size = gasket_page_table_max_size(
+-		gasket_dev->page_table[ibuf.page_table_index]);
++
++	table = gasket_dev->page_table[ibuf.page_table_index];
++	max_page_table_size = gasket_page_table_max_size(table);
+ 
+ 	if (ibuf.size > max_page_table_size) {
+ 		dev_dbg(gasket_dev->dev,
+@@ -119,8 +123,7 @@ static int gasket_partition_page_table(struct gasket_dev *gasket_dev,
+ 
+ 	mutex_lock(&gasket_dev->mutex);
+ 
+-	ret = gasket_page_table_partition(
+-		gasket_dev->page_table[ibuf.page_table_index], ibuf.size);
++	ret = gasket_page_table_partition(table, ibuf.size);
+ 	mutex_unlock(&gasket_dev->mutex);
+ 
+ 	return ret;
+@@ -131,6 +134,7 @@ static int gasket_map_buffers(struct gasket_dev *gasket_dev,
+ 			      struct gasket_page_table_ioctl __user *argp)
+ {
+ 	struct gasket_page_table_ioctl ibuf;
++	struct gasket_page_table *table;
+ 
+ 	if (copy_from_user(&ibuf, argp, sizeof(struct gasket_page_table_ioctl)))
+ 		return -EFAULT;
+@@ -142,12 +146,13 @@ static int gasket_map_buffers(struct gasket_dev *gasket_dev,
+ 	if (ibuf.page_table_index >= gasket_dev->num_page_tables)
+ 		return -EFAULT;
+ 
+-	if (gasket_page_table_are_addrs_bad(gasket_dev->page_table[ibuf.page_table_index],
++	table = gasket_dev->page_table[ibuf.page_table_index];
++	if (gasket_page_table_are_addrs_bad(table,
+ 					    ibuf.host_address,
+ 					    ibuf.device_address, ibuf.size))
+ 		return -EINVAL;
+ 
+-	return gasket_page_table_map(gasket_dev->page_table[ibuf.page_table_index],
++	return gasket_page_table_map(table,
+ 				     ibuf.host_address, ibuf.device_address,
+ 				     ibuf.size / PAGE_SIZE);
+ }
+@@ -157,6 +162,7 @@ static int gasket_unmap_buffers(struct gasket_dev *gasket_dev,
+ 				struct gasket_page_table_ioctl __user *argp)
+ {
+ 	struct gasket_page_table_ioctl ibuf;
++	struct gasket_page_table *table;
+ 
+ 	if (copy_from_user(&ibuf, argp, sizeof(struct gasket_page_table_ioctl)))
+ 		return -EFAULT;
+@@ -168,11 +174,12 @@ static int gasket_unmap_buffers(struct gasket_dev *gasket_dev,
+ 	if (ibuf.page_table_index >= gasket_dev->num_page_tables)
+ 		return -EFAULT;
+ 
+-	if (gasket_page_table_is_dev_addr_bad(gasket_dev->page_table[ibuf.page_table_index],
++	table = gasket_dev->page_table[ibuf.page_table_index];
++	if (gasket_page_table_is_dev_addr_bad(table,
+ 					      ibuf.device_address, ibuf.size))
+ 		return -EINVAL;
+ 
+-	gasket_page_table_unmap(gasket_dev->page_table[ibuf.page_table_index],
++	gasket_page_table_unmap(table,
+ 				ibuf.device_address, ibuf.size / PAGE_SIZE);
+ 
+ 	return 0;
 
-  Linux 5.11-rc3 (2021-01-10 14:34:50 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/nvdimm/nvdimm
-tags/libnvdimm-fixes-5.11-rc7
-
-for you to fetch changes up to 7018c897c2f243d4b5f1b94bc6b4831a7eab80fb:
-
-  libnvdimm/dimm: Avoid race between probe and available_slots_show()
-(2021-02-01 16:20:40 -0800)
-
-----------------------------------------------------------------
-libnvdimm for 5.11-rc7
-- Fix a crash when sysfs accesses race 'dimm' driver probe/remove.
-
-- Fix a regression in 'resource' attribute visibility necessary for
-  mapping badblocks and other physical address interrogations.
-
-- Fix some flexible array warnings
-
-- Expand the unit test infrastructure for non-ACPI platforms
-
-----------------------------------------------------------------
-Dan Williams (3):
-      ACPI: NFIT: Fix flexible_array.cocci warnings
-      libnvdimm/namespace: Fix visibility of namespace resource attribute
-      libnvdimm/dimm: Avoid race between probe and available_slots_show()
-
-Jianpeng Ma (1):
-      libnvdimm/pmem: Remove unused header
-
-Santosh Sivaraj (7):
-      testing/nvdimm: Add test module for non-nfit platforms
-      ndtest: Add compatability string to treat it as PAPR family
-      ndtest: Add dimms to the two buses
-      ndtest: Add dimm attributes
-      ndtest: Add regions and mappings to the test buses
-      ndtest: Add nvdimm control functions
-      ndtest: Add papr health related flags
-
- drivers/acpi/nfit/core.c            |   75 +--
- drivers/nvdimm/dimm_devs.c          |   18 +-
- drivers/nvdimm/namespace_devs.c     |   10 +-
- drivers/nvdimm/pmem.c               |    1 -
- tools/testing/nvdimm/config_check.c |    3 +-
- tools/testing/nvdimm/test/Kbuild    |    6 +-
- tools/testing/nvdimm/test/ndtest.c  | 1129 +++++++++++++++++++++++++++++++++++
- tools/testing/nvdimm/test/ndtest.h  |  109 ++++
- 8 files changed, 1293 insertions(+), 58 deletions(-)
- create mode 100644 tools/testing/nvdimm/test/ndtest.c
- create mode 100644 tools/testing/nvdimm/test/ndtest.h
