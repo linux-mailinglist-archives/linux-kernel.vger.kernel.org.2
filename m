@@ -2,144 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFB41312498
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 15:14:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CB40312499
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 15:14:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230055AbhBGOLY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Feb 2021 09:11:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41346 "EHLO
+        id S230074AbhBGOMc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Feb 2021 09:12:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230043AbhBGOK2 (ORCPT
+        with ESMTP id S230064AbhBGOLr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Feb 2021 09:10:28 -0500
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4DA6C061756
-        for <linux-kernel@vger.kernel.org>; Sun,  7 Feb 2021 06:09:46 -0800 (PST)
-Received: by mail-wr1-x432.google.com with SMTP id a1so13999388wrq.6
-        for <linux-kernel@vger.kernel.org>; Sun, 07 Feb 2021 06:09:46 -0800 (PST)
+        Sun, 7 Feb 2021 09:11:47 -0500
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB7A0C06174A
+        for <linux-kernel@vger.kernel.org>; Sun,  7 Feb 2021 06:11:06 -0800 (PST)
+Received: by mail-lf1-x131.google.com with SMTP id a8so18086051lfi.8
+        for <linux-kernel@vger.kernel.org>; Sun, 07 Feb 2021 06:11:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=OG1Z720HiLI9TnXhLnBUmjf5XIxwOfpZr3RRpPSXgXQ=;
-        b=GfsaJtmnGDEpBhuLitsDTYUsTz64nplZRyNBtdJpb486s9lXKCtHilA3fpiApDplH3
-         4CDoarxDiA934iORYhlKJWX1+PAAtdYLb98tzM+WJ/upRbmnKKWUR/hreMXjZNY4Cxa/
-         pSLmUGvN10759ojMa98twMbNDyyyT75Hh4GQ94IuSO+JpmXyDCpqs7lbzNqTPO54C0AV
-         7ZY/IdamEpZ7mPIKuwi3a1FLz/NKpy7Y9QsSRgf+9CfZONvXYBwThW4nrI4rbaD0LgVy
-         a410LPmAp0V8TEc1F7YCnqFbxF8F2ryrdfmWgcMvMfhnyK0x++XWwDsPpKE+tkISIYXa
-         GZPg==
+        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=s4WZ+XQ2gzSoSrd61MbApkvoEwH993k7eH2ccgmvEBs=;
+        b=SLwO39e/colkQuF4viAXoO72fETD80UbjCemU3uAyTFLCuY5B58Ub6jSr745S6xJbG
+         xR3t7kO9c/H/SeeGLjP23z4MFz+RML2B/VzhUijlLtuuK3gZ1cJyzW3Hc77lxpjedJNv
+         Q0a2HfmY74qW7tOS+4VGQRYxR/rHCeCKQ3i/M5FnLh5Eh6pBOQ5JbMcPOoYuvFVFiK4O
+         Zuh7eDnvUF70o/0lm0S/NUNKJv6LshS4prPO6f4+jy0scJUnXc4PRNSFYDNMeFndM5SG
+         JUELsxUujdJeLQEEq90/KCAMsrMcc0XHHGBsq+FLRAIkU/8yCjUUDS4x+shNJnC3h5AZ
+         ZMqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=OG1Z720HiLI9TnXhLnBUmjf5XIxwOfpZr3RRpPSXgXQ=;
-        b=HBN9+mx5cP8WJzQuTInsuVymBpWQAodvX34vWZ0xElckP+iGOXjw/JCZtgxjUjJ0Lr
-         NZIHKB4VvgnDuw5M+FPwrwP5pG6zdn3i4venPsYdYjkrA7Q25kfVNPDx+rmS2SUqKc4y
-         2hvAEBuFRzaHq3sT7nuzFNScy7rrtpdwm8imBL+mg9PMRc9cYsdGYZpIFUnF4HKRvRB2
-         T0T9DEWedSS/NTPsDBuK5MHA2rUcQduj9KMYtrOI+5H5vDWeOteZbIXw7oUtzpTqWPVp
-         braUi/xrBrd5A9d+ZdlG5z2sjptoru+5r+iGbNMlPsgYRvYrM9pR0Vgqu8xvZpWt8kg1
-         h/Yw==
-X-Gm-Message-State: AOAM533TVChFNQXCxWSCOc2iMpc0KoYuzE8V4K3CYT+3NCN8IrASkRfC
-        mCJhvbp90r/sHriDWrnlpZ0=
-X-Google-Smtp-Source: ABdhPJzoppnoztlFXc9Mnu2L51Ulp5+l73hpF4TySI7ZzlwTO/JM1danrGQ+bgtcI06kEfUN4YW+WQ==
-X-Received: by 2002:adf:cd01:: with SMTP id w1mr15008526wrm.316.1612706985388;
-        Sun, 07 Feb 2021 06:09:45 -0800 (PST)
-Received: from mahak-Inspiron-7570 ([103.153.208.42])
-        by smtp.gmail.com with ESMTPSA id v5sm2049044wro.71.2021.02.07.06.09.43
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=s4WZ+XQ2gzSoSrd61MbApkvoEwH993k7eH2ccgmvEBs=;
+        b=ss+VO9pzOTT+JIn5k+pJ5zCKy7OhHqJ713TwyhoMaYtJgNetx3UXUV8p7rVsL0b2mn
+         o/O991U/WR1oavZHguUxSrXnMd2O+uJQ3echTqvhBFnGjNAuuz3xsH3M1HKxq9RKfUN+
+         KhwoiWTucTlCKj/c5Rw9NjImJH5Hk3g001LxTmz/AEZ6nYrEPSsABdjQRnL48El0zoZ0
+         JcddMCjYKQNzJu8y2xgYOdidtsw2Eg143ysbtF5VQ3ideVrDyJ96AQxP7kKISi74bc5h
+         qYGIZc8mO39KWgc0mVlC9U8KDFEEIGWLN6e/7OPJeGWrOCWJIGrKWpdBYyoj0umAxSGc
+         DdWg==
+X-Gm-Message-State: AOAM533jQq5v3+068cLrF2wc1OS0XoB4RvKeItgTnNC20FQ5f4HCpM6I
+        brz9J/rJAfjlXbjIGJ0RHj2Y2g==
+X-Google-Smtp-Source: ABdhPJwMXw8/BIi1fzug5jfv2ICrED3bATc7yibBV1zlVwBkrGNJLHWYg9k/vE/YoMlg/YELc/CK3g==
+X-Received: by 2002:ac2:4d45:: with SMTP id 5mr7950633lfp.135.1612707065193;
+        Sun, 07 Feb 2021 06:11:05 -0800 (PST)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id g17sm1741914lfb.30.2021.02.07.06.11.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 07 Feb 2021 06:09:44 -0800 (PST)
-From:   Mahak Gupta <gmahak1@gmail.com>
-To:     linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org,
-        gregkh@linuxfoundation.org, rcy@google.com, benchan@chromium.org,
-        toddpoynor@google.com, rspringer@google.com
-Cc:     Mahak Gupta <gmahak1@gmail.com>
-Subject: [PATCH] staging: gasket: fix indentation and lines ending with open parenthesis
-Date:   Sun,  7 Feb 2021 19:39:28 +0530
-Message-Id: <20210207140928.11029-1-gmahak1@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Sun, 07 Feb 2021 06:11:04 -0800 (PST)
+Received: by box.localdomain (Postfix, from userid 1000)
+        id 6F8C7102656; Sun,  7 Feb 2021 17:11:04 +0300 (+03)
+Date:   Sun, 7 Feb 2021 17:11:04 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        "H . J . Lu" <hjl.tools@gmail.com>,
+        Andi Kleen <ak@linux.intel.com>, Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC 0/9] Linear Address Masking enabling
+Message-ID: <20210207141104.ikxbdxhoisgqaoio@box>
+References: <20210205151631.43511-1-kirill.shutemov@linux.intel.com>
+ <CACT4Y+bh1yaGLs5H3YTM6YLLtyWELvjWR7HcEk0pd9Nod9u4ZQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACT4Y+bh1yaGLs5H3YTM6YLLtyWELvjWR7HcEk0pd9Nod9u4ZQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch fixes warnings of 'checkpatch.pl'. According to
-Linux coding guidelines, code should be aligned properly to
-match with open parenthesis and lines should not end with
-open parenthesis.
+On Sun, Feb 07, 2021 at 09:24:23AM +0100, Dmitry Vyukov wrote:
+> On Fri, Feb 5, 2021 at 4:16 PM Kirill A. Shutemov
+> <kirill.shutemov@linux.intel.com> wrote:
+> >
+> > Linear Address Masking[1] (LAM) modifies the checking that is applied to
+> > 64-bit linear addresses, allowing software to use of the untranslated
+> > address bits for metadata.
+> >
+> > The patchset brings support for LAM for userspace addresses.
+> >
+> > The most sensitive part of enabling is change in tlb.c, where CR3 flags
+> > get set. Please take a look that what I'm doing makes sense.
+> >
+> > The patchset is RFC quality and the code requires more testing before it
+> > can be applied.
+> >
+> > The userspace API is not finalized yet. The patchset extends API used by
+> > ARM64: PR_GET/SET_TAGGED_ADDR_CTRL. The API is adjusted to not imply ARM
+> > TBI: it now allows to request a number of bits of metadata needed and
+> > report where these bits are located in the address.
+> >
+> > There's an alternative proposal[2] for the API based on Intel CET
+> > interface. Please let us know if you prefer one over another.
+> >
+> > The feature competes for bits with 5-level paging: LAM_U48 makes it
+> > impossible to map anything about 47-bits. The patchset made these
+> > capability mutually exclusive: whatever used first wins. LAM_U57 can be
+> > combined with mappings above 47-bits.
+> >
+> > I include QEMU patch in case if somebody wants to play with the feature.
+> 
+> Exciting! Do you plan to send the QEMU patch to QEMU?
 
-Signed-off-by: Mahak Gupta <gmahak1@gmail.com>
----
- drivers/staging/gasket/gasket_ioctl.c | 18 ++++++++----------
- 1 file changed, 8 insertions(+), 10 deletions(-)
+Sure. After more testing, once I'm sure it's conforming to the hardware.
 
-diff --git a/drivers/staging/gasket/gasket_ioctl.c b/drivers/staging/gasket/gasket_ioctl.c
-index e3047d36d8db..a966231bad42 100644
---- a/drivers/staging/gasket/gasket_ioctl.c
-+++ b/drivers/staging/gasket/gasket_ioctl.c
-@@ -40,7 +40,7 @@ static int gasket_set_event_fd(struct gasket_dev *gasket_dev,
- 
- /* Read the size of the page table. */
- static int gasket_read_page_table_size(struct gasket_dev *gasket_dev,
--	struct gasket_page_table_ioctl __user *argp)
-+				       struct gasket_page_table_ioctl __user *argp)
- {
- 	int ret = 0;
- 	struct gasket_page_table_ioctl ibuf;
-@@ -51,8 +51,7 @@ static int gasket_read_page_table_size(struct gasket_dev *gasket_dev,
- 	if (ibuf.page_table_index >= gasket_dev->num_page_tables)
- 		return -EFAULT;
- 
--	ibuf.size = gasket_page_table_num_entries(
--		gasket_dev->page_table[ibuf.page_table_index]);
-+	ibuf.size = gasket_page_table_num_entries(gasket_dev->page_table[ibuf.page_table_index]);
- 
- 	trace_gasket_ioctl_page_table_data(ibuf.page_table_index, ibuf.size,
- 					   ibuf.host_address,
-@@ -66,7 +65,7 @@ static int gasket_read_page_table_size(struct gasket_dev *gasket_dev,
- 
- /* Read the size of the simple page table. */
- static int gasket_read_simple_page_table_size(struct gasket_dev *gasket_dev,
--	struct gasket_page_table_ioctl __user *argp)
-+					      struct gasket_page_table_ioctl __user *argp)
- {
- 	int ret = 0;
- 	struct gasket_page_table_ioctl ibuf;
-@@ -92,7 +91,7 @@ static int gasket_read_simple_page_table_size(struct gasket_dev *gasket_dev,
- 
- /* Set the boundary between the simple and extended page tables. */
- static int gasket_partition_page_table(struct gasket_dev *gasket_dev,
--	struct gasket_page_table_ioctl __user *argp)
-+				       struct gasket_page_table_ioctl __user *argp)
- {
- 	int ret;
- 	struct gasket_page_table_ioctl ibuf;
-@@ -107,8 +106,8 @@ static int gasket_partition_page_table(struct gasket_dev *gasket_dev,
- 
- 	if (ibuf.page_table_index >= gasket_dev->num_page_tables)
- 		return -EFAULT;
--	max_page_table_size = gasket_page_table_max_size(
--		gasket_dev->page_table[ibuf.page_table_index]);
-+	max_page_table_size = gasket_page_table_max_size
-+		(gasket_dev->page_table[ibuf.page_table_index]);
- 
- 	if (ibuf.size > max_page_table_size) {
- 		dev_dbg(gasket_dev->dev,
-@@ -119,8 +118,7 @@ static int gasket_partition_page_table(struct gasket_dev *gasket_dev,
- 
- 	mutex_lock(&gasket_dev->mutex);
- 
--	ret = gasket_page_table_partition(
--		gasket_dev->page_table[ibuf.page_table_index], ibuf.size);
-+	ret = gasket_page_table_partition(gasket_dev->page_table[ibuf.page_table_index], ibuf.size);
- 	mutex_unlock(&gasket_dev->mutex);
- 
- 	return ret;
-@@ -183,7 +181,7 @@ static int gasket_unmap_buffers(struct gasket_dev *gasket_dev,
-  * corresponding memory.
-  */
- static int gasket_config_coherent_allocator(struct gasket_dev *gasket_dev,
--	struct gasket_coherent_alloc_config_ioctl __user *argp)
-+					    struct gasket_coherent_alloc_config_ioctl __user *argp)
- {
- 	int ret;
- 	struct gasket_coherent_alloc_config_ioctl ibuf;
 -- 
-2.17.1
-
+ Kirill A. Shutemov
