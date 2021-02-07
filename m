@@ -2,84 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F071312574
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 16:42:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 948313125A0
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 16:57:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229753AbhBGPmT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Feb 2021 10:42:19 -0500
-Received: from mail.zx2c4.com ([104.131.123.232]:35218 "EHLO mail.zx2c4.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229681AbhBGPmQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Feb 2021 10:42:16 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
-        t=1612712492;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=hTkIZmiyo6LPLop4ULyhig9y6oJZRsL54eK66gDQqFY=;
-        b=Ms1mEOtAxsSEwgnfXT3TTFsJx2fyIIImss7qnWp+cBpbmx9b2+4KJlFr2MDOyb436J43Wf
-        3SEH0JxIhfi5sjLz2wkYIBirFIcXwNtJgPG37r123Mi8TLsi9nB105/tPa84hCbkjg9uLn
-        J3g59QO0A7XZN8yL+x8t8J5iEsJ4K/Y=
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id fb5425dc (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO);
-        Sun, 7 Feb 2021 15:41:32 +0000 (UTC)
-Received: by mail-yb1-f174.google.com with SMTP id r2so12055294ybk.11;
-        Sun, 07 Feb 2021 07:41:32 -0800 (PST)
-X-Gm-Message-State: AOAM530rwFIQLylCmW2gf5CLVKx9lR7zQxwXmHunaxBKlXPeWTkvO3gP
-        ZhetycSjoPXmsX4bWqQBv5xUR+qSUa3vjqXuuCc=
-X-Google-Smtp-Source: ABdhPJzWLfcmA9cWOsjR8X9Z9b5NnoEDKhjb1c+ffga4HD3XwSmVQIcPUw0K5psdUsiZFNjGgREoON11Rl14NEiW00A=
-X-Received: by 2002:a25:4981:: with SMTP id w123mr19671584yba.123.1612712491158;
- Sun, 07 Feb 2021 07:41:31 -0800 (PST)
+        id S229596AbhBGP4n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Feb 2021 10:56:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35896 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229491AbhBGP4l (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Feb 2021 10:56:41 -0500
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C12ABC06174A
+        for <linux-kernel@vger.kernel.org>; Sun,  7 Feb 2021 07:55:55 -0800 (PST)
+Received: by mail-wr1-x436.google.com with SMTP id a1so14263889wrq.6
+        for <linux-kernel@vger.kernel.org>; Sun, 07 Feb 2021 07:55:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=0E1VUN8G/OPIL1C7pz+2prddbYXUwAAZ8Arf/5v2Sxo=;
+        b=vMIUTrFeLDoel4sVmTIRApRDmZ71M9NOPckidtV0kQbsa60TgeTCVTP8+XvKf08J6Z
+         Mxh53Ju1lQdKCn4nWaZLEydKj48A5gHf5PtYCvlNrx61KQiBT3RmvhNap8ojPXulH/Tf
+         DdJhmN6iTPpO2IvNA4rmklBUAXIShDF1a7hUawi5296M1mdkA9bEB5WjarZMjypG7aTU
+         fg9UeG0vJcbSb1aoo79GEtPDQyhcsKxuX37k7EuMOXYudkm6O9ZiCRlyW/cQlntNPmeP
+         fs/jufmlq2CigjQs8FVfdVyso5CkvKHWK5zlPzqwr3cAF7wCANsrwz3nMIQ99idM4q2q
+         zilA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=0E1VUN8G/OPIL1C7pz+2prddbYXUwAAZ8Arf/5v2Sxo=;
+        b=W1D0Bff9mLxYxS+wkF6yPtei4JuBC2iZYUa8S7+IZbutRFnPn9pWrTTDKRS91pA3wQ
+         cvyaNoGoUqFWrxQTuqNboPU++0h18t8zeygt7BZI7Oh+3wg9GQbv0v6qQHAI9tvQ6vuH
+         AKDKs7Xx71nPWQVwu8C+4ivrZlK36F+/hdmqD60r3QqJiWu/lSxqCv+PUWgQKcISYhEU
+         Vb3++u9JUqCEerMJUPOAeNpd6E9+fVbNFqGcOEj4qiDGF3v0l+ATVMGc04efDBAGwBaL
+         Cws8cDFt4xNfll2jrnZHLUyiWLL+dPgjkbS1BJH99MHwjUqn8tNAxQS5J7MPcsWyf7pD
+         Mx4A==
+X-Gm-Message-State: AOAM5318S4T6O6dc2aMoVTfH6JfHRy/VNTw7mlQygG4Tg1yp3PMido7/
+        RBvh5NQBNTE+LgxPc2Op5dHxOg==
+X-Google-Smtp-Source: ABdhPJy43Jj0B/tlzcEUCDcxCpP7sINP1pKCjAj6i62s7+2H6KawmrPgkJAyS7WePYeNO+DZOYUakw==
+X-Received: by 2002:a5d:6847:: with SMTP id o7mr15606807wrw.216.1612713354515;
+        Sun, 07 Feb 2021 07:55:54 -0800 (PST)
+Received: from kernelvm (2.0.5.1.1.6.3.8.5.c.c.3.f.b.d.3.0.0.0.0.6.1.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:df16:0:3dbf:3cc5:8361:1502])
+        by smtp.gmail.com with ESMTPSA id o12sm22696042wrx.82.2021.02.07.07.55.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 07 Feb 2021 07:55:52 -0800 (PST)
+Date:   Sun, 7 Feb 2021 15:55:50 +0000
+From:   Phillip Potter <phil@philpotter.co.uk>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     alexander.sverdlin@nokia.com, andrew@lunn.ch, davem@davemloft.net,
+        chris.packham@alliedtelesis.co.nz, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org, joe@perches.com
+Subject: Re: [PATCH v2] staging: octeon: convert all uses of strlcpy to
+ strscpy in ethernet-mdio.c
+Message-ID: <20210207155550.GA88784@kernelvm>
+References: <20210207151320.88696-1-phil@philpotter.co.uk>
+ <YCAIqrpLLBxZh+47@kroah.com>
 MIME-Version: 1.0
-References: <20210207035024.69095-1-colton@boothsoftware.ca>
-In-Reply-To: <20210207035024.69095-1-colton@boothsoftware.ca>
-From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
-Date:   Sun, 7 Feb 2021 16:41:20 +0100
-X-Gmail-Original-Message-ID: <CAHmME9oa+yAJikmSysEZCEPftTwxFyftiO3iS7wGeCd=nd75Gg@mail.gmail.com>
-Message-ID: <CAHmME9oa+yAJikmSysEZCEPftTwxFyftiO3iS7wGeCd=nd75Gg@mail.gmail.com>
-Subject: Re: [PATCH] Input: synaptic - reverting dcb00fc799dc03fd320e123e4c81b3278c763ea5
- because it breaks the touchpad for one guy on Reddit.
-To:     colton@boothsoftware.ca
-Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>, colton@boothlinux.ca,
-        Lyude Paul <lyude@redhat.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Vincent Huang <vincent.huang@tw.synaptics.com>,
-        Dennis Kadioglu <denk@eclipso.email>,
-        Yussuf Khalil <dev@pp3345.net>, Ilya Katsnelson <me@0upti.me>,
-        Gaurav Agrawal <agrawalgaurav@gnome.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        linux-input@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YCAIqrpLLBxZh+47@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Feb 7, 2021 at 5:00 AM Colton Booth <colton@boothsoftware.ca> wrote:
->
-> I can't test myself since I don't have the correct hardware, BUT this change seems to work for him. I'm thinking he has an early version of the X1E which may use slightly different trackpad revision.
->
-> Signed-off-by: Colton Booth <colton@boothsoftware.ca>
-> ---
->  drivers/input/mouse/synaptics.c | 2 --
->  1 file changed, 2 deletions(-)
->
-> diff --git a/drivers/input/mouse/synaptics.c b/drivers/input/mouse/synaptics.c
-> index ffad142801b3..2d3f03921dbc 100644
-> --- a/drivers/input/mouse/synaptics.c
-> +++ b/drivers/input/mouse/synaptics.c
-> @@ -179,9 +179,7 @@ static const char * const smbus_pnp_ids[] = {
->         "LEN0093", /* T480 */
->         "LEN0096", /* X280 */
->         "LEN0097", /* X280 -> ALPS trackpoint */
-> -       "LEN0099", /* X1 Extreme Gen 1 / P1 Gen 1 */
->         "LEN009b", /* T580 */
-> -       "LEN0402", /* X1 Extreme Gen 2 / P1 Gen 2 */
->         "LEN200f", /* T450s */
->         "LEN2044", /* L470  */
->         "LEN2054", /* E480 */
+On Sun, Feb 07, 2021 at 04:35:06PM +0100, Greg KH wrote:
+> On Sun, Feb 07, 2021 at 03:13:20PM +0000, Phillip Potter wrote:
+> > Convert three calls to strlcpy inside the cvm_oct_get_drvinfo function
+> > to strscpy calls. As return values were not checked for these three
+> > calls before, change should be safe as functionality is equivalent.
+> > 
+> > Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
+> > ---
+> > 
+> > v2: Modified changelog to take account of feedback from Greg KH.
+> > 
+> >  drivers/staging/octeon/ethernet-mdio.c | 6 +++---
+> >  1 file changed, 3 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/drivers/staging/octeon/ethernet-mdio.c b/drivers/staging/octeon/ethernet-mdio.c
+> > index b0fd083a5bf2..b3049108edc4 100644
+> > --- a/drivers/staging/octeon/ethernet-mdio.c
+> > +++ b/drivers/staging/octeon/ethernet-mdio.c
+> > @@ -21,9 +21,9 @@
+> >  static void cvm_oct_get_drvinfo(struct net_device *dev,
+> >  				struct ethtool_drvinfo *info)
+> >  {
+> > -	strlcpy(info->driver, KBUILD_MODNAME, sizeof(info->driver));
+> > -	strlcpy(info->version, UTS_RELEASE, sizeof(info->version));
+> > -	strlcpy(info->bus_info, "Builtin", sizeof(info->bus_info));
+> > +	strscpy(info->driver, KBUILD_MODNAME, sizeof(info->driver));
+> > +	strscpy(info->version, UTS_RELEASE, sizeof(info->version));
+> > +	strscpy(info->bus_info, "Builtin", sizeof(info->bus_info));
+> >  }
+> >  
+> >  static int cvm_oct_nway_reset(struct net_device *dev)
+> 
+> Sorry, this does not apply to my tree, someone already did this
+> conversion before you :(
+> 
+> greg k-h
 
-This removes two totally separate models for "one guy on Reddit". Does
-he have two computers that coincidentally have the same problem? Any
-details about what that problem is so that we can assess it?
+Thank you anyway, and thank you to you and Joe for your feedback, much
+appreciated.
 
-Jason
+Regards,
+Phil
