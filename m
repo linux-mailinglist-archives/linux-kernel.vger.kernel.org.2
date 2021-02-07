@@ -2,100 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4942C3120FE
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 03:52:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90F0A312101
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 03:54:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229727AbhBGCvZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Feb 2021 21:51:25 -0500
-Received: from mail-pg1-f169.google.com ([209.85.215.169]:38316 "EHLO
-        mail-pg1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229690AbhBGCvV (ORCPT
+        id S229623AbhBGCyc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Feb 2021 21:54:32 -0500
+Received: from conssluserg-01.nifty.com ([210.131.2.80]:27329 "EHLO
+        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229506AbhBGCy3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Feb 2021 21:51:21 -0500
-Received: by mail-pg1-f169.google.com with SMTP id m2so1269384pgq.5;
-        Sat, 06 Feb 2021 18:51:06 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=rnLaQW7jn1tU44mIZoa/y5WEV3NcdRCQdqW5OmbPOS8=;
-        b=WdzszSSyko9XaC1W3iGAGtdZmqCdNb0T6ZvBrcG7X6AtInbw0F0yGtuvcuY7WmmDa/
-         ZalSG2QYdnzKMGjJO5myI5ZwwCkgVomMJxpXPNzyEdZkrBkwnDKz2LY96ej77mv/KrfC
-         EQ/Leiua9ZZtFsBXxqouBF4J9W8tywvElSyjOo8xcIfkbP9GEd8ODjaOAbZ7p5mBqO/x
-         p6OvvfZAi0xOV7ESSO4f10VK45r10Z3TW/Suho9O2iKpVe9VxChE/2HS6eDGgXmwPpcX
-         HqSDq5aKLwABz2CYrRaS4DO/Zidu5Siht4ILEDfl0wou9JmOvGYQQgNiFBV/IqkJhyOq
-         cdkQ==
-X-Gm-Message-State: AOAM531fEyhg7ueSTiKXeZ2BSQ56n3nnLMM59iB4f8mnrruD1tfjS46g
-        mWEO7J9L9+gyomW1AqsQbYiUnE9zzBQ=
-X-Google-Smtp-Source: ABdhPJz8WRP5zFEHlKiaH+nmC6DWDj3S1DgBEVSfsTyqRGz4IAFCm52O28jwMUYcoztoEIrjSlPz7Q==
-X-Received: by 2002:a05:6a00:1:b029:1c1:2d5f:dc16 with SMTP id h1-20020a056a000001b02901c12d5fdc16mr11841244pfk.55.1612666240825;
-        Sat, 06 Feb 2021 18:50:40 -0800 (PST)
-Received: from ?IPv6:2601:647:4000:d7:7d2:d17b:df07:7747? ([2601:647:4000:d7:7d2:d17b:df07:7747])
-        by smtp.gmail.com with ESMTPSA id i7sm14562240pfc.50.2021.02.06.18.50.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 06 Feb 2021 18:50:40 -0800 (PST)
-Subject: Re: [PATCH v3 3/3] scsi: ufs: Fix wrong Task Tag used in task
- management request UPIUs
-To:     Can Guo <cang@codeaurora.org>
-Cc:     jaegeuk@kernel.org, asutoshd@codeaurora.org,
-        nguyenb@codeaurora.org, hongwus@codeaurora.org,
-        linux-scsi@vger.kernel.org, kernel-team@android.com,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Sujit Reddy Thumma <sthumma@codeaurora.org>,
-        Vinayak Holikatti <vinholikatti@gmail.com>,
-        Yaniv Gardi <ygardi@codeaurora.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <1611807365-35513-1-git-send-email-cang@codeaurora.org>
- <1611807365-35513-4-git-send-email-cang@codeaurora.org>
- <8351747f-0ec9-3c66-1bdf-b4b73fcee698@acm.org>
- <f0d1c6a196a044198647df6ca4b06efb@codeaurora.org>
- <cd83aa1d-444e-d4ba-c363-517dbf07891a@acm.org>
- <cf50ecf7a245674f8aee917455a7ccfa@codeaurora.org>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <00ae0fb0-4c35-686b-857c-b6cba40be83a@acm.org>
-Date:   Sat, 6 Feb 2021 18:50:37 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Sat, 6 Feb 2021 21:54:29 -0500
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176]) (authenticated)
+        by conssluserg-01.nifty.com with ESMTP id 1172rLsh001245;
+        Sun, 7 Feb 2021 11:53:22 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 1172rLsh001245
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1612666402;
+        bh=BoXC8u4n3XsOnNJy5T4YdHexR5Wi4TjPTxHkFdGm1FI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=DdIodsUomeejV6lET0maqiWahXC3CUiLmIrreEPXNJ6IoRs9Jh4lSD/s6a1Uwmx0D
+         eFoBTytGBO0swKi7BPwdzSZ8s8wCarrinXc58qxHvi069qC5847kiihp7C7XIpe3FP
+         d0Vp+/N65K2V0hRu9678SExvAyuCPTRwcnhwWuqqPkKRXjb9q+s4naAr8gmjUAtY7M
+         ANjO6dsdEHaJ4Tu00RlBx6VSq0UkBByexeOSiMyJkzhKuIRIObn4HksT8fUuJZO+k+
+         KlHfr5n9ApwkMbVvTvS7+5P/qS06uPDt2G8z9WWIkkj0AbfUI+t8omOEJOtDvVYCzs
+         qIP89IrvKSviw==
+X-Nifty-SrcIP: [209.85.214.176]
+Received: by mail-pl1-f176.google.com with SMTP id y10so6015514plk.7;
+        Sat, 06 Feb 2021 18:53:21 -0800 (PST)
+X-Gm-Message-State: AOAM533jEZLxpqJA2JrmJUqm93vBeL572asfEFYcoDR0+zG9qYDfMIcW
+        wPFGtKnVJ/qTmnoGBRl+QfmJ/CVBJ4dNa+udSF8=
+X-Google-Smtp-Source: ABdhPJx2zu0y4+GmrMSs7Pyar4+QTkls+xENDAQ0VONSOCtFH2KDyOjhQ0+cdxdBuJqSwqEvnPp5yNLuxsAzmaBd/HE=
+X-Received: by 2002:a17:902:8687:b029:e1:601e:bd29 with SMTP id
+ g7-20020a1709028687b02900e1601ebd29mr10707736plo.47.1612666401066; Sat, 06
+ Feb 2021 18:53:21 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <cf50ecf7a245674f8aee917455a7ccfa@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210206035033.2036180-1-sashal@kernel.org> <20210206035033.2036180-2-sashal@kernel.org>
+In-Reply-To: <20210206035033.2036180-2-sashal@kernel.org>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Sun, 7 Feb 2021 11:52:43 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQ3CUPbmv9KQP=Za0JesFm6AvfntqM=6GKnyF6hBk4QEQ@mail.gmail.com>
+Message-ID: <CAK7LNAQ3CUPbmv9KQP=Za0JesFm6AvfntqM=6GKnyF6hBk4QEQ@mail.gmail.com>
+Subject: Re: [PATCH 2/3] kbuild: clamp SUBLEVEL to 255
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     Michal Marek <michal.lkml@markovi.net>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/4/21 10:09 PM, Can Guo wrote:
-> That code is wrong. The Task Tag in Dword_0 should be the real tag we
-> allocated for TMR. The transfer request Task Tag which we are trying to
-> abort is given in Dword_5, which is the Input Parameter 3 of the TMR UPIU.
-> I am not sure why the author gave hba->nutrs + req->tag as the Task Tag
-> of one TMR, the commit msg abot this part is not quite informative....
-> 
-> Table 10.22 — Task Management Request UPIU
-> TASK MANAGEMENT REQUEST UPIU
-> ----------------------------------
-> |0         |1      |2   |3       |
-> ----------------------------------
-> |xx00 0100b| Flags |LUN |Task Tag|
-> ----------------------------------
-> ...
-> 16 (MSB)   |17     |18  |19 (LSB)|
-> ----------------------------------
-> Input Parameter 2
-> ----------------------------------
-> 
-> Table 10.24 — Task Management Input Parameters
-> Field Description
-> Input Parameter 2 LSB: Task Tag of the task/command operated by the task
-> management function.
+On Sat, Feb 6, 2021 at 12:50 PM Sasha Levin <sashal@kernel.org> wrote:
+>
+> Right now if SUBLEVEL becomes larger than 255 it will overflow into the
+> territory of PATCHLEVEL, causing havoc in userspace that tests for
+> specific kernel version.
+>
+> While userspace code tests for MAJOR and PATCHLEVEL, it doesn't test
+> SUBLEVEL at any point as ABI changes don't happen in the context of
+> stable tree.
+>
+> Thus, to avoid overflows, simply clamp SUBLEVEL to it's maximum value in
+> the context of LINUX_VERSION_CODE. This does not affect "make
+> kernelversion" and such.
+>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
 
-Thanks for the clarification. Feel free to add the following to this patch:
 
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+I applied 2/3 to linux-kbuild.
+
+Please resend only 3/3.
+
+Thanks.
+
+
+
+> ---
+>  Makefile | 12 +++++++++---
+>  1 file changed, 9 insertions(+), 3 deletions(-)
+>
+> diff --git a/Makefile b/Makefile
+> index 49ac1b7fe8e99..157be50c691e5 100644
+> --- a/Makefile
+> +++ b/Makefile
+> @@ -1258,9 +1258,15 @@ define filechk_utsrelease.h
+>  endef
+>
+>  define filechk_version.h
+> -       echo \#define LINUX_VERSION_CODE $(shell                         \
+> -       expr $(VERSION) \* 65536 + 0$(PATCHLEVEL) \* 256 + 0$(SUBLEVEL)); \
+> -       echo '#define KERNEL_VERSION(a,b,c) (((a) << 16) + ((b) << 8) + (c))'
+> +       if [ $(SUBLEVEL) -gt 255 ]; then                                 \
+> +               echo \#define LINUX_VERSION_CODE $(shell                 \
+> +               expr $(VERSION) \* 65536 + 0$(PATCHLEVEL) \* 256 + 255); \
+> +       else                                                             \
+> +               echo \#define LINUX_VERSION_CODE $(shell                 \
+> +               expr $(VERSION) \* 65536 + 0$(PATCHLEVEL) \* 256 + $(SUBLEVEL)); \
+> +       fi;                                                              \
+> +       echo '#define KERNEL_VERSION(a,b,c) (((a) << 16) + ((b) << 8) +  \
+> +       ((c) > 255 ? 255 : (c)))'
+>  endef
+>
+>  $(version_h): FORCE
+> --
+> 2.27.0
+>
+
+
+-- 
+Best Regards
+Masahiro Yamada
