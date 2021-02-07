@@ -2,130 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4870312124
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 04:20:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BEA6D312126
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 04:23:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229711AbhBGDT6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Feb 2021 22:19:58 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:51226 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229506AbhBGDT4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Feb 2021 22:19:56 -0500
-Received: from [10.130.0.55] (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxX_MnXB9gP4sHAA--.9676S3;
-        Sun, 07 Feb 2021 11:19:04 +0800 (CST)
-Subject: Re: [PATCH] mips: kernel: setup: fix crash kernel resource allocation
-To:     Ivan Khoronzhuk <ikhoronz@cisco.com>, linux-mips@vger.kernel.org,
-        tsbogend@alpha.franken.de, linux-kernel@vger.kernel.org
-References: <20210206125940.111766-1-ikhoronz@cisco.com>
-Cc:     yangtiezhu@loongson.cn, rppt@kernel.org, ivan.khoronzhuk@gmail.com
-From:   Jinyang He <hejinyang@loongson.cn>
-Message-ID: <01729c08-c5e3-e9c0-2ddb-a5289e536153@loongson.cn>
-Date:   Sun, 7 Feb 2021 11:19:03 +0800
-User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
- Thunderbird/45.4.0
+        id S229721AbhBGDWZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Feb 2021 22:22:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44856 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229506AbhBGDWX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 6 Feb 2021 22:22:23 -0500
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D87F1C06174A
+        for <linux-kernel@vger.kernel.org>; Sat,  6 Feb 2021 19:21:42 -0800 (PST)
+Received: by mail-pg1-x52d.google.com with SMTP id o7so8055879pgl.1
+        for <linux-kernel@vger.kernel.org>; Sat, 06 Feb 2021 19:21:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=J8aByEx4plaMl5Ii2PzH3W/CgTfnQKhyYr110Lcchrs=;
+        b=mFu/sUbRMlghzahoygXzzYY0xBX6vQfrZgIuts7d7SdErQg69aS0OHiShJVbR8ocxB
+         zYLQnliOyY08jeKFPrYgg+wLxR3OH3PWfOofT0BqTxr+ho9ndgRCrbIWB0KrKgi9T5iQ
+         sk5Ya4/FeuiO891lUp4m0ZF/1PP69cJ4umVzk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=J8aByEx4plaMl5Ii2PzH3W/CgTfnQKhyYr110Lcchrs=;
+        b=moGU3faSfmnS24XH4JvelsShpTPA/BHYvoyFb1x6oevHhBTDRdwLogOwSCTI1Mu+xI
+         /JmJENBQLbh0SqGZdi8fJg6JJox+2hLxpm38uHMZDIMW2rw3Jrqy6JwrQvR06CA1t0gQ
+         BLnHwEnBbc513WdvyS5T0VMxq+PlJMF3nYXXJktJtMtjnU76cIoSEZ4W6xRk96X79Wm/
+         Pi1ToQAaW4h+acROzointq6jtmMOqPuslayinjVNMwX8brsWJCxci4uSrQCETP7u55IW
+         GLNHRppeF8AzP2swaBhU5DdwVWQjqhze7If7y0MfyGiI9R1AlsSQjl3Yl1BQWmo5uWI2
+         nlHg==
+X-Gm-Message-State: AOAM530T9u0hqyuwbCexvD/xWN2lc+bQUE96h5+NixFEj1qsJvH5+fsW
+        2S2o8aC7XZzkbHAvF4PVzIELBtNzFfq8cg==
+X-Google-Smtp-Source: ABdhPJwhwyicDF4yN4qXAJMR6YjwkSPDz3Q+Vn402tMQ9b4zaNH0rTvNy2HQr6IlbfuqrdidvmE2iA==
+X-Received: by 2002:a63:551f:: with SMTP id j31mr11668546pgb.432.1612668102161;
+        Sat, 06 Feb 2021 19:21:42 -0800 (PST)
+Received: from chromium.org ([2620:15c:202:201:2c64:7ee8:fefb:fab2])
+        by smtp.gmail.com with ESMTPSA id u19sm1499571pjy.20.2021.02.06.19.21.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 06 Feb 2021 19:21:41 -0800 (PST)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <20210206125940.111766-1-ikhoronz@cisco.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: AQAAf9DxX_MnXB9gP4sHAA--.9676S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxJF1DAFyrWFWUXw13Ar4fKrg_yoW5XrWrpr
-        4xta1UtF4UZFs7Ga1rAr1xZFWfW3ZayFWfWr4ay3s3ua9xJr9Iyrn3WFW3uryUKrWFqF1Y
-        qF4UXw1qga90vaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUB214x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
-        6r4UJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v26r
-        4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2Wl
-        Yx0EF7xvrVAajcxG14v26r1j6r4UMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67
-        AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lF7I21c0EjII2zVCS
-        5cI20VAGYxC7Mxk0xIA0c2IEe2xFo4CEbIxvr21lc2xSY4AK67AK6r48MxAIw28IcxkI7V
-        AKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCj
-        r7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6x
-        IIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAI
-        w20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6x
-        kF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUnVyIUUUUU
-X-CM-SenderInfo: pkhmx0p1dqwqxorr0wxvrqhubq/
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210206161711.6f555434@archlinux>
+References: <20210202184434.42644-1-swboyd@chromium.org> <20210202184434.42644-4-swboyd@chromium.org> <20210206161711.6f555434@archlinux>
+Subject: Re: [PATCH v4 3/3] iio: proximity: Add a ChromeOS EC MKBP proximity driver
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Benson Leung <bleung@chromium.org>,
+        Guenter Roeck <groeck@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Gwendal Grignou <gwendal@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>
+To:     Jonathan Cameron <jic23@kernel.org>
+Date:   Sat, 06 Feb 2021 19:21:39 -0800
+Message-ID: <161266809977.76967.12637197400196121672@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/06/2021 08:59 PM, Ivan Khoronzhuk wrote:
+Quoting Jonathan Cameron (2021-02-06 08:17:11)
+> On Tue,  2 Feb 2021 10:44:34 -0800
+> Stephen Boyd <swboyd@chromium.org> wrote:
+>=20
+> > +static struct platform_driver cros_ec_mkbp_proximity_driver =3D {
+> > +     .driver =3D {
+> > +             .name =3D "cros-ec-mkbp-proximity",
+> > +             .of_match_table =3D of_match_ptr(cros_ec_mkbp_proximity_o=
+f_match),
+> I'm going to assume we know no one is going to use this with
+> ACPI via PRP0001 given presumably the firmware on these devices
+> is tightly controlled.
 
-> In order to avoid crash kernel corruption, its memory is reserved
-> early in memblock and as result, in time when resources are inited
-> it's not present in memblock.memory, so crash kernel memory is out
-> of ranges listed with for_each_mem_range(). To avoid it and still
-> keep memory reserved lets reseve it out of loop by inserting it in
-> iomem_resource.
+Correct.
 
-Hi, Ivan,
+>=20
+> However, we should should still drop the of_match_ptr
+> as it will lead to an unused warning for cros_ec_mkbp_proximity_of_match
+> if anyone builds this without CONFIG_OF + it sets a general bad
+> precedence that I'd rather wasn't around for people to copy.
+> Note that in general we are slowly ripping these out of IIO but
+> probably lots still there.
+>=20
+> If this is all that is needed in this version I'll just do it
+> whilst applying unless anyone shouts.
+>=20
 
-I'm not familiar with memblock. If the following my ideas show my
-ignorance, please forgive me.
-
-First, not only the crash kernel is reserved early in memblock, but also
-code, data, and bss are also reserved in bootmem_init():
-
-     /* Reserve memory occupied by kernel. */
-     memblock_reserve(__pa_symbol(&_text),
-             __pa_symbol(&_end) - __pa_symbol(&_text));
-
-(CONFIG_NUMA is not enabled. NUMA platform reserved them is earlier.)
-
-If there is something unsuitable with the crash kernel, is there something
-unsuitable with the kernel memory?
-
-
-Then, for_each_mem_range() is normal memory. Although memblock_reserve()
-has used before that, it just adds memory to memblock.reserved. That means
-it will still appear in memblock.memory. Thus, here I have a question,
-do we need to use replace for_each_mem_range with for_each_mem_range_rev?
-
-Finally, thank you for the patch, it makes me think a lot.
-
-Thanks,
-Jinyang
-
-> Fixes: a94e4f24ec83 ("MIPS: init: Drop boot_mem_map")
-> Signed-off-by: Ivan Khoronzhuk <ikhoronz@cisco.com>
-> ---
-> Based on linux-next/master
->
->   arch/mips/kernel/setup.c | 8 +++++---
->   1 file changed, 5 insertions(+), 3 deletions(-)
->
-> diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
-> index 3785c72bc3bc..25e376ef2f2a 100644
-> --- a/arch/mips/kernel/setup.c
-> +++ b/arch/mips/kernel/setup.c
-> @@ -473,14 +473,15 @@ static void __init mips_parse_crashkernel(void)
->   	crashk_res.end	 = crash_base + crash_size - 1;
->   }
->   
-> -static void __init request_crashkernel(struct resource *res)
-> +static void __init request_crashkernel(void)
->   {
->   	int ret;
->   
->   	if (crashk_res.start == crashk_res.end)
->   		return;
->   
-> -	ret = request_resource(res, &crashk_res);
-> +	/* The crashk resource shoud be located in normal mem */
-> +	ret = insert_resource(&iomem_resource, &crashk_res);
->   	if (!ret)
->   		pr_info("Reserving %ldMB of memory at %ldMB for crashkernel\n",
->   			(unsigned long)(resource_size(&crashk_res) >> 20),
-> @@ -734,8 +735,9 @@ static void __init resource_init(void)
->   		request_resource(res, &code_resource);
->   		request_resource(res, &data_resource);
->   		request_resource(res, &bss_resource);
-> -		request_crashkernel(res);
->   	}
-> +
-> +	request_crashkernel();
->   }
->   
->   #ifdef CONFIG_SMP
-
+Agreed. Thanks for fixing that last little bit.
