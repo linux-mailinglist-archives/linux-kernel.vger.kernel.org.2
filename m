@@ -2,77 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD1FF3122E7
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 09:54:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7EEA3122FF
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 10:12:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229691AbhBGIxv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Feb 2021 03:53:51 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:36060 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229522AbhBGIxt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Feb 2021 03:53:49 -0500
-Received: from loongson.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx__JVqh9gVbQHAA--.9789S2;
-        Sun, 07 Feb 2021 16:52:37 +0800 (CST)
-From:   Jinyang He <hejinyang@loongson.cn>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] MIPS: process: Fix no previous prototype warning
-Date:   Sun,  7 Feb 2021 16:52:36 +0800
-Message-Id: <1612687956-28075-1-git-send-email-hejinyang@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9Dx__JVqh9gVbQHAA--.9789S2
-X-Coremail-Antispam: 1UD129KBjvdXoW7Xr1xZFWrCFy3Ar48AFyrZwb_yoWDuwc_Cw
-        17Cw18W3s2yr4qvFy7Jan3Jwn0k34UGFyDuwn3Zr1YyasxAry5W393Aw1DJwn09r9aqF1r
-        W3W5J3yUGwnI9jkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUb7AYjsxI4VWkKwAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I
-        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
-        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0
-        cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4
-        A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IE
-        w4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26r4j6F4UMc
-        vjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCY02Avz4vE14v_GFyl42xK82IY
-        c2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s
-        026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1Y6r17MIIYrxkI7VAKI48JMIIF
-        0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0x
-        vE42xK8VAvwI8IcIk0rVW3JVWrJr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280
-        aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU5RrW7UUUUU==
-X-CM-SenderInfo: pkhmx0p1dqwqxorr0wxvrqhubq/
+        id S229684AbhBGJKI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Feb 2021 04:10:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33980 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229510AbhBGJJz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Feb 2021 04:09:55 -0500
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F45BC06174A
+        for <linux-kernel@vger.kernel.org>; Sun,  7 Feb 2021 01:09:15 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id q131so7739070pfq.10
+        for <linux-kernel@vger.kernel.org>; Sun, 07 Feb 2021 01:09:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=8HDOBrsAzuKElcA7qlZ9yTgLVVQVK/JHfy+n859Oh30=;
+        b=hTDqu+ogfbyEUrJBefH1NDZLWV/9R7Xns8v8K80ALJPTjTJyIrIi7JqY29rJ455pKI
+         bplqftu8wsySlImyowff8faJjpcvGo9sjI/LWfBbd0O5OTp901md0n0uqD6FldDrSd4z
+         m/h6q0kMKr/oWHJruQWB+HJ6WhUy1YTmbXDx4j16iTSeFTy+5JnP14ifsJhnnUr5Z/a6
+         nbyHAiSvfAQrf6amn2nJoE/wKDb+ebEAnt/goAkmEbNUjqlvfML9ifNEVvkZd7HZcr+H
+         oWBX5ewbjt7+P55E9u82rlm8eDf/j52Pw50R6NPMNpYEb7+6ewSC7LzUC6VJwYAu+sDr
+         hicw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=8HDOBrsAzuKElcA7qlZ9yTgLVVQVK/JHfy+n859Oh30=;
+        b=tbVV7zXw5/3h+t9gWZ2P+pVlA9p4QileyGjdLWIjlk3zjMyoqWpj/PGzEJki79H4IB
+         bVjwIsFlzreOrPtfRnMa16JPDE63Rb34+MYQKkoChem21ivt2GUGv20A6c/nglPXCevN
+         /MvMTKEJ09ZFlnbj7DKT1W5RLZYX263G9mMZJpTsetbVjsTlZ//erZvS0gM3pZ+1qHMk
+         tUwYoD+tzbYCCzVyEQcOqnrefv6/xZQm9J9zdaX2cAL8yIo28MivPJeEX3+sdbQeb7wp
+         e1pk3JEssijyqCckYw8/Bo/phMLRsRZe3cmsrsM6J7dQumPBJy42P4go0/W1tpwNx9OL
+         HQNQ==
+X-Gm-Message-State: AOAM532PV6IuiDf92hNna6AQaYvY0CNbntpxPHLlGzNrxtAl5QqJIsH5
+        uYJqm2jhYWBv1ElsXvGIwnzRbmXJ3cI=
+X-Google-Smtp-Source: ABdhPJwPgES6MZO45w9RWQwiYHp+JPsOrKQM+/wkG5LHLtm0gIKRxBmePOcDQl8id3d+NlqBh0sXCA==
+X-Received: by 2002:a65:50c8:: with SMTP id s8mr12375480pgp.68.1612688953916;
+        Sun, 07 Feb 2021 01:09:13 -0800 (PST)
+Received: from localhost ([2402:3a80:11d2:b946:a2a4:c5ff:fe20:7222])
+        by smtp.gmail.com with ESMTPSA id h11sm12883843pfr.201.2021.02.07.01.09.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 07 Feb 2021 01:09:13 -0800 (PST)
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To:     devel@driverdev.osuosl.org, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org
+Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: [PATCH v3] staging: emxx_udc: Make incorrectly defined global static
+Date:   Sun,  7 Feb 2021 14:29:12 +0530
+Message-Id: <20210207085911.270746-1-memxor@gmail.com>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <YB+qDND2OmY8WwA0@kroah.com>
+References: <YB+qDND2OmY8WwA0@kroah.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-unwind_stack_by_address and unwind_stack need <asm/stacktrace.h>.
-arch_align_stack needs <asm/exec.h>
+The global gpio_desc pointer and int vbus_irq were defined in the header,
+instead put the definitions in the translation unit and make them static as
+there's only a single consumer, and these symbols shouldn't pollute the
+global namespace.
 
-link: https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org/thread/ZPL2RRA6RZKRQZI5IGOVLFXN2GVZBN3L/
-Fixes: ("MIPS: process: Remove unnecessary headers inclusion")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Jinyang He <hejinyang@loongson.cn>
+This fixes the following sparse warnings for this driver:
+drivers/staging/emxx_udc/emxx_udc.c: note: in included file:
+drivers/staging/emxx_udc/emxx_udc.h:23:18: warning: symbol 'vbus_gpio' was not
+declared. Should it be static?  drivers/staging/emxx_udc/emxx_udc.h:24:5:
+warning: symbol 'vbus_irq' was not declared. Should it be static?
+
+Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 ---
- arch/mips/kernel/process.c | 2 ++
- 1 file changed, 2 insertions(+)
+Changes in v1:
+Switch to variable with static linkage instead of extern
+Changes in v2:
+Resend a versioned patch
+Changes in v3:
+Include version changelog below the marker
+---
+ drivers/staging/emxx_udc/emxx_udc.c | 3 +++
+ drivers/staging/emxx_udc/emxx_udc.h | 2 --
+ 2 files changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/arch/mips/kernel/process.c b/arch/mips/kernel/process.c
-index 0c5bc06..2e591df 100644
---- a/arch/mips/kernel/process.c
-+++ b/arch/mips/kernel/process.c
-@@ -26,6 +26,7 @@
- #include <asm/asm.h>
- #include <asm/dsemul.h>
- #include <asm/dsp.h>
-+#include <asm/exec.h>
- #include <asm/fpu.h>
- #include <asm/inst.h>
- #include <asm/irq.h>
-@@ -36,6 +37,7 @@
- #include <asm/mipsregs.h>
- #include <asm/processor.h>
- #include <asm/reg.h>
-+#include <asm/stacktrace.h>
+diff --git a/drivers/staging/emxx_udc/emxx_udc.c b/drivers/staging/emxx_udc/emxx_udc.c
+index a30b4f5b1..3536c03ff 100644
+--- a/drivers/staging/emxx_udc/emxx_udc.c
++++ b/drivers/staging/emxx_udc/emxx_udc.c
+@@ -34,6 +34,9 @@
+ #define	DRIVER_DESC	"EMXX UDC driver"
+ #define	DMA_ADDR_INVALID	(~(dma_addr_t)0)
  
- #ifdef CONFIG_HOTPLUG_CPU
- void arch_cpu_idle_dead(void)
++static struct gpio_desc *vbus_gpio;
++static int vbus_irq;
++
+ static const char	driver_name[] = "emxx_udc";
+ static const char	driver_desc[] = DRIVER_DESC;
+ 
+diff --git a/drivers/staging/emxx_udc/emxx_udc.h b/drivers/staging/emxx_udc/emxx_udc.h
+index bca614d69..c9e37a1b8 100644
+--- a/drivers/staging/emxx_udc/emxx_udc.h
++++ b/drivers/staging/emxx_udc/emxx_udc.h
+@@ -20,8 +20,6 @@
+ /* below hacked up for staging integration */
+ #define GPIO_VBUS 0 /* GPIO_P153 on KZM9D */
+ #define INT_VBUS 0 /* IRQ for GPIO_P153 */
+-struct gpio_desc *vbus_gpio;
+-int vbus_irq;
+ 
+ /*------------ Board dependence(Wait) */
+ 
 -- 
-2.1.0
+2.29.2
 
