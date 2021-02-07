@@ -2,54 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5F6F31222C
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 08:11:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3314131222B
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 08:05:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229611AbhBGHJJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Feb 2021 02:09:09 -0500
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:60466 "EHLO
-        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbhBGHJA (ORCPT
+        id S229621AbhBGHEi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Feb 2021 02:04:38 -0500
+Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:54941 "EHLO
+        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229445AbhBGHES (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Feb 2021 02:09:00 -0500
-Received: by kvm5.telegraphics.com.au (Postfix, from userid 502)
-        id 03FB62A7EE; Sun,  7 Feb 2021 02:08:18 -0500 (EST)
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-Message-Id: <baa95d7235921dff23bed6320518f3fa90396603.1612681353.git.fthain@telegraphics.com.au>
-From:   Finn Thain <fthain@telegraphics.com.au>
-Subject: [PATCH] m68k: Drop -fno-strength-reduce from KBUILD_CFLAGS
-Date:   Sun, 07 Feb 2021 18:02:33 +1100
+        Sun, 7 Feb 2021 02:04:18 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R771e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UO3X7ct_1612681362;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UO3X7ct_1612681362)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Sun, 07 Feb 2021 15:02:46 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     perex@perex.cz
+Cc:     tiwai@suse.com, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] ALSA: pci: Assign boolean values to a bool variable
+Date:   Sun,  7 Feb 2021 15:02:41 +0800
+Message-Id: <1612681361-63404-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This workaround became redundant either when the driver in question was
-removed (in Linux v2.6.23) or when the compiler flag became a no-op
-(in GCC v4.2). Linux has required GCC v4.6 or later since v4.19.
+Fix the following coccicheck warnings:
 
-Link: https://gcc.gnu.org/git/?p=gcc.git;a=commitdiff;h=efa1cdf01850b28c2f6f7035ebd4420259494615
-References: commit 565bae6a4a8f ("[SCSI] 53c7xx: kill driver")
-References: commit cafa0010cd51 ("Raise the minimum required gcc version to 4.6")
-Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
+./sound/pci/azt3328.c:2451:2-16: WARNING: Assignment of 0/1 to bool
+variable.
+
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 ---
- arch/m68k/Makefile | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ sound/pci/azt3328.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/m68k/Makefile b/arch/m68k/Makefile
-index ea14f2046fb4..5be4efec173a 100644
---- a/arch/m68k/Makefile
-+++ b/arch/m68k/Makefile
-@@ -66,8 +66,7 @@ KBUILD_CFLAGS += $(cpuflags-y)
- KBUILD_CFLAGS += -pipe -ffreestanding
+diff --git a/sound/pci/azt3328.c b/sound/pci/azt3328.c
+index 77c7030..37f8fc4 100644
+--- a/sound/pci/azt3328.c
++++ b/sound/pci/azt3328.c
+@@ -2448,7 +2448,7 @@ static void snd_azf3328_mixer_reg_decode(struct azf3328_mixer_reg *r, unsigned l
  
- ifdef CONFIG_MMU
--# without -fno-strength-reduce the 53c7xx.c driver fails ;-(
--KBUILD_CFLAGS += -fno-strength-reduce -ffixed-a2
-+KBUILD_CFLAGS += -ffixed-a2
- else
- # we can use a m68k-linux-gcc toolchain with these in place
- KBUILD_CPPFLAGS += -DUTS_SYSNAME=\"uClinux\"
+ 		/* shutdown codecs to reduce power / noise */
+ 			/* have ...ctrl_codec_activity() act properly */
+-		codec->running = 1;
++		codec->running = true;
+ 		snd_azf3328_ctrl_codec_activity(chip, codec_type, 0);
+ 
+ 		spin_lock_irq(codec->lock);
 -- 
-2.26.2
+1.8.3.1
 
