@@ -2,108 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12FEF312398
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 11:40:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E29D312376
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 11:32:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229771AbhBGKh4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Feb 2021 05:37:56 -0500
-Received: from inva021.nxp.com ([92.121.34.21]:38600 "EHLO inva021.nxp.com"
+        id S229587AbhBGKb7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Feb 2021 05:31:59 -0500
+Received: from wtarreau.pck.nerim.net ([62.212.114.60]:49685 "EHLO 1wt.eu"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229636AbhBGKg1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Feb 2021 05:36:27 -0500
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 1117C2019AE;
-        Sun,  7 Feb 2021 11:35:40 +0100 (CET)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id F3B0C200E28;
-        Sun,  7 Feb 2021 11:35:34 +0100 (CET)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 2980640326;
-        Sun,  7 Feb 2021 11:35:25 +0100 (CET)
-From:   Shengjiu Wang <shengjiu.wang@nxp.com>
-To:     lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
-        tiwai@suse.com, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, timur@kernel.org,
-        nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
-        linuxppc-dev@lists.ozlabs.org, robh+dt@kernel.org,
-        devicetree@vger.kernel.org
-Subject: [PATCH v2 7/7] ASoC: dt-bindings: imx-rpmsg: Add binding doc for rpmsg machine driver
-Date:   Sun,  7 Feb 2021 18:23:55 +0800
-Message-Id: <1612693435-31418-8-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1612693435-31418-1-git-send-email-shengjiu.wang@nxp.com>
-References: <1612693435-31418-1-git-send-email-shengjiu.wang@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S229445AbhBGKb5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Feb 2021 05:31:57 -0500
+Received: (from willy@localhost)
+        by pcw.home.local (8.15.2/8.15.2/Submit) id 117AVEru031382;
+        Sun, 7 Feb 2021 11:31:14 +0100
+Date:   Sun, 7 Feb 2021 11:31:14 +0100
+From:   Willy Tarreau <w@1wt.eu>
+To:     Marcin Raszka <djraszit@gmail.com>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] I was wondering why I can't set the resolution to
+ 2560x1080, while in windows 7 I can without a problem. I looked at the
+ radeon driver code and found it doesn't support this resolution. So I made
+ some changes. I added the hdmi_mhz parameter. In cmdline I set
+ radeon.hdmi_mhz=190 Only tested on the Radeon HD 5830
+Message-ID: <20210207103114.GA31373@1wt.eu>
+References: <20210207094604.7250-1-djraszit@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210207094604.7250-1-djraszit@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Imx-rpmsg is a new added machine driver for supporting audio on Cortex-M
-core. The Cortex-M core will control the audio interface, DMA and audio
-codec, setup the pipeline, the audio driver on Cortex-A core side is just
-to communitcate with M core, it is a virtual sound card and don't touch
-the hardware.
+Hello,
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
----
- .../bindings/sound/imx-audio-rpmsg.yaml       | 48 +++++++++++++++++++
- 1 file changed, 48 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/imx-audio-rpmsg.yaml
+On Sun, Feb 07, 2021 at 10:46:04AM +0100, Marcin Raszka wrote:
+> ---
+>  drivers/gpu/drm/radeon/radeon_benchmark.c  |  5 ++--
+>  drivers/gpu/drm/radeon/radeon_connectors.c | 30 ++++++++++++++--------
+>  drivers/gpu/drm/radeon/radeon_drv.c        |  5 ++++
+>  drivers/gpu/drm/radeon/radeon_encoders.c   |  6 +++--
+>  4 files changed, 32 insertions(+), 14 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/radeon/radeon_benchmark.c b/drivers/gpu/drm/radeon/radeon_benchmark.c
+(...)
 
-diff --git a/Documentation/devicetree/bindings/sound/imx-audio-rpmsg.yaml b/Documentation/devicetree/bindings/sound/imx-audio-rpmsg.yaml
-new file mode 100644
-index 000000000000..b941aeb80678
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/imx-audio-rpmsg.yaml
-@@ -0,0 +1,48 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/imx-audio-rpmsg.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: NXP i.MX audio complex with rpmsg
-+
-+maintainers:
-+  - Shengjiu Wang <shengjiu.wang@nxp.com>
-+
-+properties:
-+  compatible:
-+    enum:
-+      - fsl,imx-audio-rpmsg
-+
-+  model:
-+    $ref: /schemas/types.yaml#/definitions/string
-+    description: User specified audio sound card name
-+
-+  audio-cpu:
-+    description: The phandle of an CPU DAI controller
-+
-+  rpmsg-out:
-+    description: |
-+      This is a boolean property. If present, the transmitting function
-+      will be enabled,
-+
-+  rpmsg-in:
-+    description: |
-+      This is a boolean property. If present, the receiving function
-+      will be enabled.
-+
-+required:
-+  - compatible
-+  - model
-+  - audio-cpu
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    sound-rpmsg {
-+        compatible = "fsl,imx-audio-rpmsg";
-+        model = "ak4497-audio";
-+        audio-cpu = <&rpmsg_audio>;
-+        rpmsg-out;
-+    };
--- 
-2.27.0
+Please have a look at Documentation/process/submitting-patches.rst to
+see how to reformat your patch so that it contains a descriptive commit
+message.
 
+Thanks,
+Willy
