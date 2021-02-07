@@ -2,77 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBF85312359
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 11:07:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7B55312365
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 11:11:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229638AbhBGKHA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Feb 2021 05:07:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46124 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229510AbhBGKG6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Feb 2021 05:06:58 -0500
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 098B3C06174A
-        for <linux-kernel@vger.kernel.org>; Sun,  7 Feb 2021 02:06:18 -0800 (PST)
-Received: by mail-pl1-x62d.google.com with SMTP id 8so6261831plc.10
-        for <linux-kernel@vger.kernel.org>; Sun, 07 Feb 2021 02:06:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=xzxdWyHrXhHu6b7fYfNflc4EJF5/TpK4zPGY4/WRmDk=;
-        b=qQUAzL2aMpAZr4DXIogOeX2Fu9euOMqRQMJMuoLsAZ1T1zHWg9dHWe1FCTlaPkk3eH
-         FFpCRMf+S3Y9EhakdzlAP0FB0iTM4n+kTaE+wI4bAbwlcYX8kWFbFgPqKpZmVRMI0CNE
-         P1LKYY8RgpnG8TTO3kGcOVKFHkZrhDC206nvhoQEF3puYlCaWpC3Il+DErXqawDeU+lf
-         v1Du97q2g4yE9Hb+HuwgAMRAB7RKqQ8lsJmUnOqupwmdhuMt4xoha12GdooV9iKT3caX
-         LVogV6Cl49bEM8+d+YVxYcPmy0co37QNFXm4Cac+njjkEXWZGd/DoR/D49vAb8OyJ94A
-         mSOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=xzxdWyHrXhHu6b7fYfNflc4EJF5/TpK4zPGY4/WRmDk=;
-        b=uRBMhRLmzak1CLTH8fbtRgKYK+14QmZFVjTBkAtgvHiaFAbKjthoZ2Yl1pnZqkezOx
-         oPgEeWNtjkQCTE7t2/oMTKjH/J66fI1J1Kl0NAW+TYeKfBT1XrNRoiliGDDd9zaUBmrq
-         suBo6Z/KhDTC+H/5xXtX+DkwiqpUyNaCWGcwr+b6TB3ekI+JMlVaT+zLXQAT8yC4+/I+
-         r3wO8pODoPRtj1fcvO5rJiAsJHZrOIdQEi94XcR89lNInLe3bfCwYv5DwpzLefQgMk/O
-         mwrkaFoXR3GvkSkWM+2gydoYYSUpGbb/0ef77WgzIVs0sb2RqSpd8tb2Azvxfn5UXP77
-         BuBw==
-X-Gm-Message-State: AOAM531naBctgm0o7t3wQIadkFVEXnTSru+3Y5d0CQrFHStympawlP0A
-        YoAGTSOEXcLUFpEdye9eVaH3gADs1z1SrF4ZwYk=
-X-Google-Smtp-Source: ABdhPJwtsvwVoecNVIwD898je4QC0HkDBY10o08v7uqpAYaextpvJ9u2y38Y2PKd9CeZUhUNMJhabXDTxdCeqI5p7xU=
-X-Received: by 2002:a17:90b:1a86:: with SMTP id ng6mr11681034pjb.113.1612692377684;
- Sun, 07 Feb 2021 02:06:17 -0800 (PST)
-MIME-Version: 1.0
-Received: by 2002:a17:90a:2e14:0:0:0:0 with HTTP; Sun, 7 Feb 2021 02:06:17
- -0800 (PST)
-Reply-To: georgemike7031@gmail.com
-From:   george mike <missdonnahistory@gmail.com>
-Date:   Sun, 7 Feb 2021 11:06:17 +0100
-Message-ID: <CACROPfGa77H_ojx0pDZdirGf6DqoaC1vEP6v-xDF2mAapyTqrg@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        id S229736AbhBGKJt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Feb 2021 05:09:49 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:20870 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229787AbhBGKJC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Feb 2021 05:09:02 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4DYPx466cDz9txrK;
+        Sun,  7 Feb 2021 11:08:08 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id kzuzDFmCJECz; Sun,  7 Feb 2021 11:08:08 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4DYPx45CBFz9txrJ;
+        Sun,  7 Feb 2021 11:08:08 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id C15038B788;
+        Sun,  7 Feb 2021 11:08:11 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id dp6qCZ_f1S0i; Sun,  7 Feb 2021 11:08:11 +0100 (CET)
+Received: from po16121vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 7D8698B766;
+        Sun,  7 Feb 2021 11:08:11 +0100 (CET)
+Received: by po16121vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id 4A964672C0; Sun,  7 Feb 2021 10:08:11 +0000 (UTC)
+Message-Id: <c72f014730823b413528e90ab6c4d3bcb79f8497.1612692067.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH] powerpc/uaccess: Perform barrier_nospec() in KUAP allowance
+ helpers
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>, cmr@codefail.de
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Sun,  7 Feb 2021 10:08:11 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hallo
+barrier_nospec() in uaccess helpers is there to protect against
+speculative accesses around access_ok().
 
-Mein Name ist George Mike. Ich bin von Beruf Rechtsanwalt. Ich m=C3=B6chte
-Ihnen anbieten
-der n=C3=A4chste Verwandte meines Klienten. Sie erben die Summe von (8,5
-Millionen US-Dollar)
-Dollar, die mein Kunde vor seinem Tod auf der Bank gelassen hat.
+When using user_access_begin() sequences together with
+unsafe_get_user() like macros, barrier_nospec() is called for
+every single read although we know the access_ok() is done
+onece.
 
-Mein Kunde ist ein Staatsb=C3=BCrger Ihres Landes, der mit seiner Frau bei
-einem Autounfall ums Leben gekommen ist
-und einziger Sohn. Ich habe Anspruch auf 50% des Gesamtfonds, 50% darauf
-sein f=C3=BCr dich.
-Bitte kontaktieren Sie meine private E-Mail hier f=C3=BCr weitere
-Informationen: georgemike7031@gmail.com
+Since all user accesses must be granted by a call to either
+allow_read_from_user() or allow_read_write_user() which will
+always happen after the access_ok() check, move the barrier_nospec()
+there.
 
-Vielen Dank im Voraus,
-Mr. George Mike,
+Reported-by: Christopher M. Riedl <cmr@codefail.de>
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ arch/powerpc/include/asm/kup.h     |  2 ++
+ arch/powerpc/include/asm/uaccess.h | 12 +-----------
+ 2 files changed, 3 insertions(+), 11 deletions(-)
+
+diff --git a/arch/powerpc/include/asm/kup.h b/arch/powerpc/include/asm/kup.h
+index bf221a2a523e..7ec21af49a45 100644
+--- a/arch/powerpc/include/asm/kup.h
++++ b/arch/powerpc/include/asm/kup.h
+@@ -91,6 +91,7 @@ static __always_inline void setup_kup(void)
+ 
+ static inline void allow_read_from_user(const void __user *from, unsigned long size)
+ {
++	barrier_nospec();
+ 	allow_user_access(NULL, from, size, KUAP_READ);
+ }
+ 
+@@ -102,6 +103,7 @@ static inline void allow_write_to_user(void __user *to, unsigned long size)
+ static inline void allow_read_write_user(void __user *to, const void __user *from,
+ 					 unsigned long size)
+ {
++	barrier_nospec();
+ 	allow_user_access(to, from, size, KUAP_READ_WRITE);
+ }
+ 
+diff --git a/arch/powerpc/include/asm/uaccess.h b/arch/powerpc/include/asm/uaccess.h
+index 501c9a79038c..46123ae6a4c9 100644
+--- a/arch/powerpc/include/asm/uaccess.h
++++ b/arch/powerpc/include/asm/uaccess.h
+@@ -315,7 +315,6 @@ do {								\
+ 	__chk_user_ptr(__gu_addr);				\
+ 	if (!is_kernel_addr((unsigned long)__gu_addr))		\
+ 		might_fault();					\
+-	barrier_nospec();					\
+ 	if (do_allow)								\
+ 		__get_user_size(__gu_val, __gu_addr, __gu_size, __gu_err);	\
+ 	else									\
+@@ -333,10 +332,8 @@ do {								\
+ 	__typeof__(size) __gu_size = (size);				\
+ 									\
+ 	might_fault();							\
+-	if (access_ok(__gu_addr, __gu_size)) {				\
+-		barrier_nospec();					\
++	if (access_ok(__gu_addr, __gu_size))				\
+ 		__get_user_size(__gu_val, __gu_addr, __gu_size, __gu_err); \
+-	}								\
+ 	(x) = (__force __typeof__(*(ptr)))__gu_val;				\
+ 									\
+ 	__gu_err;							\
+@@ -350,7 +347,6 @@ do {								\
+ 	__typeof__(size) __gu_size = (size);			\
+ 								\
+ 	__chk_user_ptr(__gu_addr);				\
+-	barrier_nospec();					\
+ 	__get_user_size(__gu_val, __gu_addr, __gu_size, __gu_err); \
+ 	(x) = (__force __typeof__(*(ptr)))__gu_val;			\
+ 								\
+@@ -395,7 +391,6 @@ raw_copy_in_user(void __user *to, const void __user *from, unsigned long n)
+ {
+ 	unsigned long ret;
+ 
+-	barrier_nospec();
+ 	allow_read_write_user(to, from, n);
+ 	ret = __copy_tofrom_user(to, from, n);
+ 	prevent_read_write_user(to, from, n);
+@@ -412,19 +407,15 @@ static inline unsigned long raw_copy_from_user(void *to,
+ 
+ 		switch (n) {
+ 		case 1:
+-			barrier_nospec();
+ 			__get_user_size(*(u8 *)to, from, 1, ret);
+ 			break;
+ 		case 2:
+-			barrier_nospec();
+ 			__get_user_size(*(u16 *)to, from, 2, ret);
+ 			break;
+ 		case 4:
+-			barrier_nospec();
+ 			__get_user_size(*(u32 *)to, from, 4, ret);
+ 			break;
+ 		case 8:
+-			barrier_nospec();
+ 			__get_user_size(*(u64 *)to, from, 8, ret);
+ 			break;
+ 		}
+@@ -432,7 +423,6 @@ static inline unsigned long raw_copy_from_user(void *to,
+ 			return 0;
+ 	}
+ 
+-	barrier_nospec();
+ 	allow_read_from_user(from, n);
+ 	ret = __copy_tofrom_user((__force void __user *)to, from, n);
+ 	prevent_read_from_user(from, n);
+-- 
+2.25.0
+
