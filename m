@@ -2,120 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 173F63126B2
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 19:33:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54F0A3126B8
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 19:42:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229745AbhBGSdW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Feb 2021 13:33:22 -0500
-Received: from mga18.intel.com ([134.134.136.126]:41725 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229564AbhBGSdP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Feb 2021 13:33:15 -0500
-IronPort-SDR: S1alTEQBSREfPr4SZz3OdvvmnAxIwhG0Cnx+tPJZbCEpIIpQUWfYSsrvfokRmdEfEOZsmaDTwp
- fUexXoErm6Hg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9888"; a="169307908"
-X-IronPort-AV: E=Sophos;i="5.81,160,1610438400"; 
-   d="scan'208";a="169307908"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Feb 2021 10:32:34 -0800
-IronPort-SDR: bY6cfzXRJrKLEJw864kReNn1ryiI+38UtjAnlzykxFwoEbrj7/dRkI27X2Y/N5o/bizzwir+PF
- G/ETJBlpuwfA==
-X-IronPort-AV: E=Sophos;i="5.81,160,1610438400"; 
-   d="scan'208";a="376838498"
-Received: from yramx-mobl1.amr.corp.intel.com (HELO [10.213.174.131]) ([10.213.174.131])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Feb 2021 10:32:33 -0800
-Subject: Re: [GIT PULL] x86/urgent for v5.11-rc7
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Borislav Petkov <bp@suse.de>
-Cc:     Steven Rostedt <rostedt@goodmis.org>, x86-ml <x86@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>
-References: <20210207104022.GA32127@zn.tnic>
- <CAHk-=widXSyJ8W3vRrqO-zNP12A+odxg2J2_-oOUskz33wtfqA@mail.gmail.com>
- <20210207175814.GF32127@zn.tnic>
- <CAHk-=wi5z9S7x94SKYNj6qSHBqz+OD76GW=MDzo-KN2Fzm-V4Q@mail.gmail.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <541146c6-d809-1041-7417-547d7248e3cd@intel.com>
-Date:   Sun, 7 Feb 2021 10:32:33 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S229609AbhBGSkP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Feb 2021 13:40:15 -0500
+Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:34350 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229506AbhBGSkM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Feb 2021 13:40:12 -0500
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+        by mx0b-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 117ITVqe027003;
+        Sun, 7 Feb 2021 10:39:15 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=pfpt0220;
+ bh=rwP+/h9Wla6L8NwTi0242f4mTjKxn+tRzrKhxtQepKg=;
+ b=jEBDh5psFr3ZkPpXs+buxRJdWUi/Y+nYSgTDrEGcexz9y3S1AbysnHswpF/RdtktB9vS
+ 9Qo+wSmYOPeCPhSIAmCrPSVP9TXgUn6pdceKOE1OgPs+xaLYnL+ZCHHzFiBBrzfbdUY0
+ f7uiGeLatbcOc5J5lRl+UKNU580kRUAynVeVhhjmGgUU4k1JQkPAc3dlkggAg5h8PmxL
+ kqCTbpiCkIPzckREvjauY9a77VfBCa1xFeycexTOpQP8/npmw08BEHoo4TjiP8D8pFju
+ WZRPbPueg1AIsP7RW1kTQEx8IZ9cNe2K3AilgRSNDWUDvyHIwgQeSa6JFoO1E8qv/+J6 QQ== 
+Received: from dc5-exch01.marvell.com ([199.233.59.181])
+        by mx0b-0016f401.pphosted.com with ESMTP id 36hugq2esj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Sun, 07 Feb 2021 10:39:15 -0800
+Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Sun, 7 Feb
+ 2021 10:39:12 -0800
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Sun, 7 Feb 2021 10:39:13 -0800
+Received: from stefan-pc.marvell.com (stefan-pc.marvell.com [10.5.25.21])
+        by maili.marvell.com (Postfix) with ESMTP id 174B43F7040;
+        Sun,  7 Feb 2021 10:39:08 -0800 (PST)
+From:   <stefanc@marvell.com>
+To:     <netdev@vger.kernel.org>
+CC:     <thomas.petazzoni@bootlin.com>, <davem@davemloft.net>,
+        <nadavh@marvell.com>, <ymarkman@marvell.com>,
+        <linux-kernel@vger.kernel.org>, <stefanc@marvell.com>,
+        <kuba@kernel.org>, <linux@armlinux.org.uk>, <mw@semihalf.com>,
+        <andrew@lunn.ch>, <rmk+kernel@armlinux.org.uk>,
+        <atenart@kernel.org>, <devicetree@vger.kernel.org>,
+        <robh+dt@kernel.org>, <sebastian.hesselbarth@gmail.com>,
+        <gregory.clement@bootlin.com>,
+        <linux-arm-kernel@lists.infradead.org>
+Subject: [PATCH v9 net-next 00/15] net: mvpp2: Add TX Flow Control support
+Date:   Sun, 7 Feb 2021 20:38:42 +0200
+Message-ID: <1612723137-18045-1-git-send-email-stefanc@marvell.com>
+X-Mailer: git-send-email 1.9.1
 MIME-Version: 1.0
-In-Reply-To: <CAHk-=wi5z9S7x94SKYNj6qSHBqz+OD76GW=MDzo-KN2Fzm-V4Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-02-07_10:2021-02-05,2021-02-07 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/7/21 10:15 AM, Linus Torvalds wrote:
-> On Sun, Feb 7, 2021 at 9:58 AM Borislav Petkov <bp@suse.de> wrote:
->> It probably is an item on some Intel manager's to-enable list. So far,
->> the CET enablement concentrates only on userspace but dhansen might know
->> more about future plans. CCed.
-> I think the new Ryzen 5000 series also supports CET, but I don't have
-> any machines to check.
+From: Stefan Chulski <stefanc@marvell.com>
 
-Intel wraps up Shadow Stacks and Indirect Branch Tracking (IBT) under
-the CET umbrella, although they can be implemented totally independently.
+Armada hardware has a pause generation mechanism in GOP (MAC).
+The GOP generate flow control frames based on an indication programmed in Ports Control 0 Register. There is a bit per port.
+However assertion of the PortX Pause bits in the ports control 0 register only sends a one time pause.
+To complement the function the GOP has a mechanism to periodically send pause control messages based on periodic counters.
+This mechanism ensures that the pause is effective as long as the Appropriate PortX Pause is asserted.
 
-I actually forget about the IBT half most of the time because the kernel
-code to implement userspace support is a much lighter lift than shadow
-stacks.
+Problem is that Packet Processor that actually can drop packets due to lack of resources not connected to the GOP flow control generation mechanism.
+To solve this issue Armada has firmware running on CM3 CPU dedicated for Flow Control support.
+Firmware monitors Packet Processor resources and asserts XON/XOFF by writing to Ports Control 0 Register.
 
-My understanding is that AMD has documented support for Shadow Stacks:
+MSS shared SRAM memory used to communicate between CM3 firmware and PP2 driver.
+During init PP2 driver informs firmware about used BM pools, RXQs, congestion and depletion thresholds.
 
-	https://www.amd.com/system/files/TechDocs/24592.pdf
+The pause frames are generated whenever congestion or depletion in resources is detected.
+The back pressure is stopped when the resource reaches a sufficient level.
+So the congestion/depletion and sufficient level implement a hysteresis that reduces the XON/XOFF toggle frequency.
 
-But has not yet released any documentation about IBT.  IBT seems to be
-Intel-only, at least in the short term.  There may be more, but the
-"Tiger Lake" CPUs are the only ones I know of off the top of my head
-that are in the wild:
+Packet Processor v23 hardware introduces support for RX FIFO fill level monitor.
+Patch "add PPv23 version definition" to differ between v23 and v22 hardware.
+Patch "add TX FC firmware check" verifies that CM3 firmware supports Flow Control monitoring.
 
-> https://ark.intel.com/content/www/us/en/ark/products/208661/intel-core-i7-1160g7-processor-12m-cache-up-to-4-40-ghz-with-ipu.html
+v8 --> v9
+- Replace generic pool allocation with devm_ioremap_resource
+
+v7 --> v8
+- Reorder "always compare hw-version vs MVPP21" and "add PPv23 version definition" commits
+- Typo fixes
+- Remove condition fix from "add RXQ flow control configurations"
+
+v6 --> v7
+- Reduce patch set from 18 to 15 patches
+ - Documentation change combined into a single patch
+ - RXQ and BM size change combined into a single patch
+ - Ring size change check moved into "add RXQ flow control configurations" commit
+
+v5 --> v6
+- No change
+
+v4 --> v5
+- Add missed Signed-off
+- Fix warnings in patches 3 and 12
+- Add revision requirement to warning message
+- Move mss_spinlock into RXQ flow control configurations patch
+- Improve FCA RXQ non occupied descriptor threshold commit message
+
+v3 --> v4
+- Remove RFC tag
+
+v2 --> v3
+- Remove inline functions
+- Add PPv2.3 description into marvell-pp2.txt
+- Improve mvpp2_interrupts_mask/unmask procedure
+- Improve FC enable/disable procedure
+- Add priv->sram_pool check
+- Remove gen_pool_destroy call
+- Reduce Flow Control timer to x100 faster
+
+v1 --> v2
+- Add memory requirements information
+- Add EPROBE_DEFER if of_gen_pool_get return NULL
+- Move Flow control configuration to mvpp2_mac_link_up callback
+- Add firmware version info with Flow control support
+
+Konstantin Porotchkin (1):
+  dts: marvell: add CM3 SRAM memory to cp11x ethernet device tree
+
+Stefan Chulski (14):
+  doc: marvell: add CM3 address space and PPv2.3 description
+  net: mvpp2: add CM3 SRAM memory map
+  net: mvpp2: always compare hw-version vs MVPP21
+  net: mvpp2: add PPv23 version definition
+  net: mvpp2: increase BM pool and RXQ size
+  net: mvpp2: add FCA periodic timer configurations
+  net: mvpp2: add FCA RXQ non occupied descriptor threshold
+  net: mvpp2: enable global flow control
+  net: mvpp2: add RXQ flow control configurations
+  net: mvpp2: add ethtool flow control configuration support
+  net: mvpp2: add BM protection underrun feature support
+  net: mvpp2: add PPv23 RX FIFO flow control
+  net: mvpp2: set 802.3x GoP Flow Control mode
+  net: mvpp2: add TX FC firmware check
+
+ Documentation/devicetree/bindings/net/marvell-pp2.txt |   5 +-
+ arch/arm64/boot/dts/marvell/armada-cp11x.dtsi         |   2 +-
+ drivers/net/ethernet/marvell/mvpp2/mvpp2.h            | 124 ++++-
+ drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c       | 526 ++++++++++++++++++--
+ 4 files changed, 608 insertions(+), 49 deletions(-)
+
+-- 
+1.9.1
 
