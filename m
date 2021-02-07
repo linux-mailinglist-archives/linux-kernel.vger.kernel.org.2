@@ -2,152 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BA873122CD
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 09:36:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 181CA3122CC
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 09:36:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229707AbhBGIgY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Feb 2021 03:36:24 -0500
-Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:41628 "EHLO
-        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229815AbhBGIeY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Feb 2021 03:34:24 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0UO3Fxaw_1612686772;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0UO3Fxaw_1612686772)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Sun, 07 Feb 2021 16:32:52 +0800
-From:   Yang Li <yang.lee@linux.alibaba.com>
-To:     shaggy@kernel.org
-Cc:     jfs-discussion@lists.sourceforge.net, linux-kernel@vger.kernel.org,
-        Yang Li <yang.lee@linux.alibaba.com>
-Subject: [PATCH v2] jfs: turn diLog(), dataLog() and txLog() into void functions
-Date:   Sun,  7 Feb 2021 16:32:50 +0800
-Message-Id: <1612686770-26163-1-git-send-email-yang.lee@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S229721AbhBGIgA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Feb 2021 03:36:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59594 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229977AbhBGIeM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Feb 2021 03:34:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BC98C64E30;
+        Sun,  7 Feb 2021 08:33:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1612686809;
+        bh=CRF6ov8HZYQgEMXDSLagshxMHLuVPb+BGxWwtc4e66E=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Nl8xpCtGkMfGXg5YCYtqrLhodKgeY4c/Lr9EQ6MkFxnx2AMTdNdR3SVtlsoRx9reB
+         /wdrtE4kD398a4E08oKcvXYG9I+tX2kcIGJ8GlJ+rsd2HdRIF+myMP+uiNKT5P8HrR
+         0Ids3NNMBPsOx3loFGmyDQqqghGuIwGpCZHBKoH4=
+Date:   Sun, 7 Feb 2021 09:33:26 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: emxx_udc: Fix incorrectly defined global
+Message-ID: <YB+l1t/k4VuSw3B9@kroah.com>
+References: <20210207000030.256592-1-memxor@gmail.com>
+ <20210207173441.2902acac@canb.auug.org.au>
+ <20210207073827.7l7h3475tqgxxfte@apollo>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210207073827.7l7h3475tqgxxfte@apollo>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These functions always return '0' and no callers use the return value.
-So make it a void function.
+On Sun, Feb 07, 2021 at 01:08:27PM +0530, Kumar Kartikeya Dwivedi wrote:
+> On Sun, Feb 07, 2021 at 12:04:41PM IST, Stephen Rothwell wrote:
+> > 
+> > Given that drivers/staging/emxx_udc/emxx_udc.h is only included by
+> > drivers/staging/emxx_udc/emxx_udc.c, shouldn't these variables just be
+> > declared static in emxx_udc.c and removed from emxx_udc.h?
+> >
+> 
+> Either would be correct. I went this way because it was originally trying to
+> (incorrectly) define a global variable instead. I guess they can be static now
+> and when more users are added, the linkage can be adjusted as needed.
+> 
+> Here's another version of the patch:
 
-This eliminates the following coccicheck warning:
-./fs/jfs/jfs_txnmgr.c:1365:5-7: Unneeded variable: "rc". Return "0" on
-line 1414
-./fs/jfs/jfs_txnmgr.c:1422:5-7: Unneeded variable: "rc". Return "0" on
-line 1527
+<snip>
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
----
+Please resend in the proper format that a second version of a patch
+should be in (the documentation describes how to do this.)
 
-Changes in v2
--turn functions forward references to void type.
+thanks,
 
- fs/jfs/jfs_txnmgr.c | 32 +++++++++++++++-----------------
- 1 file changed, 15 insertions(+), 17 deletions(-)
-
-diff --git a/fs/jfs/jfs_txnmgr.c b/fs/jfs/jfs_txnmgr.c
-index dca8edd..5f54a4c 100644
---- a/fs/jfs/jfs_txnmgr.c
-+++ b/fs/jfs/jfs_txnmgr.c
-@@ -148,10 +148,10 @@ static inline void TXN_SLEEP_DROP_LOCK(wait_queue_head_t * event)
- /*
-  * forward references
-  */
--static int diLog(struct jfs_log * log, struct tblock * tblk, struct lrd * lrd,
--		struct tlock * tlck, struct commit * cd);
--static int dataLog(struct jfs_log * log, struct tblock * tblk, struct lrd * lrd,
--		struct tlock * tlck);
-+static void diLog(struct jfs_log *log, struct tblock *tblk, struct lrd *lrd,
-+		struct tlock *tlck, struct commit *cd);
-+static void dataLog(struct jfs_log *log, struct tblock *tblk, struct lrd *lrd,
-+		struct tlock *tlck);
- static void dtLog(struct jfs_log * log, struct tblock * tblk, struct lrd * lrd,
- 		struct tlock * tlck);
- static void mapLog(struct jfs_log * log, struct tblock * tblk, struct lrd * lrd,
-@@ -159,8 +159,8 @@ static void mapLog(struct jfs_log * log, struct tblock * tblk, struct lrd * lrd,
- static void txAllocPMap(struct inode *ip, struct maplock * maplock,
- 		struct tblock * tblk);
- static void txForce(struct tblock * tblk);
--static int txLog(struct jfs_log * log, struct tblock * tblk,
--		struct commit * cd);
-+static void txLog(struct jfs_log *log, struct tblock *tblk,
-+		struct commit *cd);
- static void txUpdateMap(struct tblock * tblk);
- static void txRelease(struct tblock * tblk);
- static void xtLog(struct jfs_log * log, struct tblock * tblk, struct lrd * lrd,
-@@ -1365,9 +1365,8 @@ int txCommit(tid_t tid,		/* transaction identifier */
-  *
-  * RETURN :
-  */
--static int txLog(struct jfs_log * log, struct tblock * tblk, struct commit * cd)
-+static void txLog(struct jfs_log *log, struct tblock *tblk, struct commit *cd)
- {
--	int rc = 0;
- 	struct inode *ip;
- 	lid_t lid;
- 	struct tlock *tlck;
-@@ -1414,7 +1413,7 @@ static int txLog(struct jfs_log * log, struct tblock * tblk, struct commit * cd)
- 		}
- 	}
- 
--	return rc;
-+	return;
- }
- 
- /*
-@@ -1422,10 +1421,9 @@ static int txLog(struct jfs_log * log, struct tblock * tblk, struct commit * cd)
-  *
-  * function:	log inode tlock and format maplock to update bmap;
-  */
--static int diLog(struct jfs_log * log, struct tblock * tblk, struct lrd * lrd,
--		 struct tlock * tlck, struct commit * cd)
-+static void diLog(struct jfs_log *log, struct tblock *tblk, struct lrd *lrd,
-+		 struct tlock *tlck, struct commit *cd)
- {
--	int rc = 0;
- 	struct metapage *mp;
- 	pxd_t *pxd;
- 	struct pxd_lock *pxdlock;
-@@ -1527,7 +1525,7 @@ static int diLog(struct jfs_log * log, struct tblock * tblk, struct lrd * lrd,
- 	}
- #endif				/* _JFS_WIP */
- 
--	return rc;
-+	return;
- }
- 
- /*
-@@ -1535,8 +1533,8 @@ static int diLog(struct jfs_log * log, struct tblock * tblk, struct lrd * lrd,
-  *
-  * function:	log data tlock
-  */
--static int dataLog(struct jfs_log * log, struct tblock * tblk, struct lrd * lrd,
--	    struct tlock * tlck)
-+static void dataLog(struct jfs_log *log, struct tblock *tblk, struct lrd *lrd,
-+	    struct tlock *tlck)
- {
- 	struct metapage *mp;
- 	pxd_t *pxd;
-@@ -1562,7 +1560,7 @@ static int dataLog(struct jfs_log * log, struct tblock * tblk, struct lrd * lrd,
- 		metapage_homeok(mp);
- 		discard_metapage(mp);
- 		tlck->mp = NULL;
--		return 0;
-+		return;
- 	}
- 
- 	PXDaddress(pxd, mp->index);
-@@ -1573,7 +1571,7 @@ static int dataLog(struct jfs_log * log, struct tblock * tblk, struct lrd * lrd,
- 	/* mark page as homeward bound */
- 	tlck->flag |= tlckWRITEPAGE;
- 
--	return 0;
-+	return;
- }
- 
- /*
--- 
-1.8.3.1
-
+greg k-h
