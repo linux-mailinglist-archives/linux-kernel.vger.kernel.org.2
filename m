@@ -2,98 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C250312794
+	by mail.lfdr.de (Postfix) with ESMTP id 2AE77312793
 	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 22:34:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229756AbhBGVdT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Feb 2021 16:33:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50104 "EHLO mail.kernel.org"
+        id S229742AbhBGVdH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Feb 2021 16:33:07 -0500
+Received: from vps0.lunn.ch ([185.16.172.187]:53854 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229715AbhBGVcz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S229548AbhBGVcz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 7 Feb 2021 16:32:55 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 798D564E2A;
-        Sun,  7 Feb 2021 21:32:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612733535;
-        bh=RivXxiZn9Zzrs/dCzu2v4UlfD0jPwYaefogKeTQvQFg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=p+XqyuVy29AD6v9C+SrhkPnOPenQO+PCZeBqjV6eUa7N7Ad23AFC7i0wG8vXBFY3H
-         FIxlax2BVY7Kmx6I/Y4ipHkO2FRjtIhgA5JkAMvHctAGsjoiN9bdBmbN2L7PPXipPW
-         Df+2eN6fW97KcLtiYDrAaB/xQ9Cx3WeOWfjxpKbTFqyQM5zyAgXdmCOEtkQSzXfIsP
-         jnK0lK0Nb5af0MYn7INxZVIfIAOZB8wKS1BELc4VLn96yR5WsxAc+EM1Se893Fgw8p
-         5CdVHieFfpEg84fKEqmM9uEBXIskbUnAP4pMzHhfrH4ng4kzv7PPh4hZvrJhKzOq7j
-         pXvuxW2O6K9CQ==
-Date:   Sun, 7 Feb 2021 23:32:06 +0200
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Dave Hansen <dave.hansen@intel.com>, Borislav Petkov <bp@alien8.de>
-Cc:     linux-sgx@vger.kernel.org,
-        Haitao Huang <haitao.huang@linux.intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Sean Christopherson <seanjc@google.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] x86/sgx: Maintain encl->refcount for each
- encl->mm_list entry
-Message-ID: <YCBcVsUoIM9Nw9Iy@kernel.org>
-References: <20210205182840.2260-1-jarkko@kernel.org>
- <20210205182840.2260-2-jarkko@kernel.org>
- <b874673d-9d58-0d6f-ce2d-ef4d33ac5115@intel.com>
- <YCBbynuhKKjqkzzk@kernel.org>
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1l8rf7-004iGX-8h; Sun, 07 Feb 2021 22:32:09 +0100
+Date:   Sun, 7 Feb 2021 22:32:09 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     stefanc@marvell.com
+Cc:     netdev@vger.kernel.org, thomas.petazzoni@bootlin.com,
+        davem@davemloft.net, nadavh@marvell.com, ymarkman@marvell.com,
+        linux-kernel@vger.kernel.org, kuba@kernel.org,
+        linux@armlinux.org.uk, mw@semihalf.com, rmk+kernel@armlinux.org.uk,
+        atenart@kernel.org, devicetree@vger.kernel.org, robh+dt@kernel.org,
+        sebastian.hesselbarth@gmail.com, gregory.clement@bootlin.com,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v9 net-next 03/15] net: mvpp2: add CM3 SRAM memory map
+Message-ID: <YCBcWbATtEuw470X@lunn.ch>
+References: <1612723137-18045-1-git-send-email-stefanc@marvell.com>
+ <1612723137-18045-4-git-send-email-stefanc@marvell.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YCBbynuhKKjqkzzk@kernel.org>
+In-Reply-To: <1612723137-18045-4-git-send-email-stefanc@marvell.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Feb 07, 2021 at 11:29:49PM +0200, Jarkko Sakkinen wrote:
-> On Fri, Feb 05, 2021 at 11:36:57AM -0800, Dave Hansen wrote:
-> > On 2/5/21 10:28 AM, Jarkko Sakkinen wrote:
-> > > This has been shown in tests:
-> > > 
-> > > [  +0.000008] WARNING: CPU: 3 PID: 7620 at kernel/rcu/srcutree.c:374 cleanup_srcu_struct+0xed/0x100
-> > > 
-> > > There are two functions that drain encl->mm_list:
-> > > 
-> > > - sgx_release() (i.e. VFS release) removes the remaining mm_list entries.
-> > > - sgx_mmu_notifier_release() removes mm_list entry for the registered
-> > >   process, if it still exists.
-> > 
-> > Jarkko, I like your approach.  This actually has the potential to be a
-> > lot more understandable than the fix we settled on before.
-> 
-> Yeah, it's more like by-the-book use of refcount, each processs gets
-> a reference. This way things should be always serialized correctly.
-> 
-> > But I think the explanation needs some tweaking, and I think I can take
-> > it a step further to make it even more straightforward.  The issue here
-> > isn't *really* mm_list, it's this:
-> > 
-> > 	encl_mm->encl = encl;
-> 
-> Agreed.
-> 
-> This was also in center of thinking when I did this new patch.
-> 
-> > That literally establishes a encl_mm to encl reference and needs a
-> > reference count.  That reference remains until 'encl_mm' is freed.  I
-> > don't think mm_list needs to even be taken into account.
-> > 
-> > The most straightforward way to fix this is to take a refcount at
-> > "encl_mm->encl = encl" and release it at kfree(encl_mm).  That makes a
-> > *lot* of logical sense to me, and it's also trivial to audit.
-> > 
-> > Totally untested patch attached (adapted directly from yours).
-> 
-> I tested this version, and it also seems to work. Boris, can you
-> pick this refined version from Dave's attachment or do you prefer
-> that I do a re-send?
+> +static int mvpp2_get_sram(struct platform_device *pdev,
+> +			  struct mvpp2 *priv)
+> +{
+> +	struct resource *res;
+> +
+> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 2);
+> +	if (!res) {
+> +		if (has_acpi_companion(&pdev->dev))
+> +			dev_warn(&pdev->dev, "ACPI is too old, Flow control not supported\n");
+> +		else
+> +			dev_warn(&pdev->dev, "DT is too old, Flow control not supported\n");
+> +		return 0;
+> +	}
+> +
+> +	priv->cm3_base = devm_ioremap_resource(&pdev->dev, res);
+> +	if (IS_ERR(priv->cm3_base))
+> +		return PTR_ERR(priv->cm3_base);
+> +
+> +	return 0;
+> +}
 
-Nevermind. I'll send a proper patch (just noticed that the attachment
-did have short summary).
+This looks much better. Thanks
 
-/Jarkko
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+
+    Andrew
