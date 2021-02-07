@@ -2,109 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C7423123A6
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 11:45:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E0B03123AB
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 11:49:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229611AbhBGKpo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Feb 2021 05:45:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54368 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229522AbhBGKpk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Feb 2021 05:45:40 -0500
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08D2DC06174A;
-        Sun,  7 Feb 2021 02:45:00 -0800 (PST)
-Received: by mail-ej1-x62a.google.com with SMTP id hs11so20122831ejc.1;
-        Sun, 07 Feb 2021 02:44:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=3IGbIM3G5/TPBw50jfxVOTum5oKaSu4oHa8fy1eVeCg=;
-        b=ZhqUx+/OVXJaazlJ1KTjrpIlkFBKBh6euygDDz7fw5of/OoOAD8j+nf/p+Ct6QPme8
-         Az0TXMycKD7OMzgMg225sA18v3cgMjSqbV0wrisZ2cGLpx5vCwtqFP01XAObDPolrz1T
-         gT3ZuDIW7I+Nqw5wBooMvVvqQBefSutMhLqZmMqIgzFkcq3acZgfEAmiklzgOnA7A67p
-         Ru0Q12A6O83Jz/4Lt+zpcTfs4k7+HbInuL4YZkXgDo9iQLViw0eXOnmsr5cTWunoPXqO
-         swpHArmO/6iNilkvtFKkLXBtTkCJrvx5wXSGoxVztnVobcbgTaVm7n49CGIp5SwcOaqT
-         wqAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=3IGbIM3G5/TPBw50jfxVOTum5oKaSu4oHa8fy1eVeCg=;
-        b=h/PeTNCAz28dTIiNAFw8pgoOZsvB+IPDJ9kp/buPB0DMndI1DJM05dMR538He1TgXh
-         J/s9gqu9irhg+3lWIoIOLEcRtdUvSmFq4UaZdhFDGX3GMSckiDcf6/poMkR6r9/eLzOd
-         asl0+fMAxaVkAi3mLFUE93jvi2iim8irTk+7LXT5MDmyMUkKlbmQdTK5/z4dphoixPrw
-         8ZzDQTriEjxZQKLAP3pBRPPcA2prV2meKAitOEwPQntgMrTs5KDXpApxXzzPJbgfuJI6
-         QDVQhZwFZ7yA5g2nR7I42v/AVSsiAO2m0twwVXjBXOPVmGiXG0jD3G0yp1eKRy1VHeua
-         4m8Q==
-X-Gm-Message-State: AOAM532UHXLbFvXY28GEbbjV1hP0DB46GFtvInKiOlT8uYM+hYGTeCoK
-        iShLjxb11PqL1NnRoDNLilk=
-X-Google-Smtp-Source: ABdhPJy29cByRXEPWMZGZSLuR/2jLDllsyl7Dv+ArERUaYgpHwrqkpWmcvB75hzanxOZIzxQIWE6Ug==
-X-Received: by 2002:a17:906:b106:: with SMTP id u6mr11973612ejy.313.1612694698816;
-        Sun, 07 Feb 2021 02:44:58 -0800 (PST)
-Received: from ubuntu-laptop (ip5f5bee1b.dynamic.kabel-deutschland.de. [95.91.238.27])
-        by smtp.googlemail.com with ESMTPSA id e24sm1855425ejb.121.2021.02.07.02.44.57
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sun, 07 Feb 2021 02:44:58 -0800 (PST)
-Message-ID: <19a3cf32c556455f43f9c0f61a408eda65f6d7ec.camel@gmail.com>
-Subject: Re: [PATCH v19 3/3] scsi: ufs: Prepare HPB read for cached
- sub-region
-From:   Bean Huo <huobean@gmail.com>
-To:     Can Guo <cang@codeaurora.org>
-Cc:     Avri Altman <Avri.Altman@wdc.com>, daejun7.park@samsung.com,
-        Greg KH <gregkh@linuxfoundation.org>, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, asutoshd@codeaurora.org,
-        stanley.chu@mediatek.com, bvanassche@acm.org,
-        ALIM AKHTAR <alim.akhtar@samsung.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        BoRam Shin <boram.shin@samsung.com>,
-        SEUNGUK SHIN <seunguk.shin@samsung.com>
-Date:   Sun, 07 Feb 2021 11:44:56 +0100
-In-Reply-To: <ba7943ab40720df96a9fedb04ab0e4c8@codeaurora.org>
-References: <20210129052848epcms2p6e5797efd94e6282b76ad9ae6c99e3ab5@epcms2p6>
-         <CGME20210129052848epcms2p6e5797efd94e6282b76ad9ae6c99e3ab5@epcms2p5>
-         <20210129053042epcms2p538e7fa396c3c2104594c44e48be53eb8@epcms2p5>
-         <7f25ccb1d857131baa1c0424c4542e33@codeaurora.org>
-         <b6a8652c00411e3f71d33e7a6322f49eb5701039.camel@gmail.com>
-         <DM6PR04MB657522B94AB436CF096460F6FCB29@DM6PR04MB6575.namprd04.prod.outlook.com>
-         <12a011cd895dc9be5ec6c4f964b6011af492f06d.camel@gmail.com>
-         <ba7943ab40720df96a9fedb04ab0e4c8@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        id S229717AbhBGKqY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Feb 2021 05:46:24 -0500
+Received: from guitar.tcltek.co.il ([192.115.133.116]:45790 "EHLO
+        mx.tkos.co.il" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229506AbhBGKqT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Feb 2021 05:46:19 -0500
+Received: from tarshish (unknown [10.0.8.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx.tkos.co.il (Postfix) with ESMTPS id 790FD440820;
+        Sun,  7 Feb 2021 12:45:34 +0200 (IST)
+References: <1612685964-21890-1-git-send-email-stefanc@marvell.com>
+ <1612685964-21890-4-git-send-email-stefanc@marvell.com>
+User-agent: mu4e 1.4.15; emacs 27.1
+From:   Baruch Siach <baruch@tkos.co.il>
+To:     stefanc@marvell.com
+Cc:     netdev@vger.kernel.org, andrew@lunn.ch, ymarkman@marvell.com,
+        devicetree@vger.kernel.org, atenart@kernel.org,
+        linux-kernel@vger.kernel.org, linux@armlinux.org.uk,
+        nadavh@marvell.com, rmk+kernel@armlinux.org.uk, robh+dt@kernel.org,
+        thomas.petazzoni@bootlin.com, kuba@kernel.org, mw@semihalf.com,
+        davem@davemloft.net, gregory.clement@bootlin.com,
+        sebastian.hesselbarth@gmail.com,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [RESEND PATCH v8 net-next 03/15] net: mvpp2: add CM3 SRAM
+ memory map
+In-reply-to: <1612685964-21890-4-git-send-email-stefanc@marvell.com>
+Date:   Sun, 07 Feb 2021 12:45:34 +0200
+Message-ID: <87mtwgxik1.fsf@tarshish>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 2021-02-07 at 15:36 +0800, Can Guo wrote:
-> > 
-> > Thanks, I tested Daejun's patchset before, it is also ok (I don't
-> > know
-> > which version patchset). maybe we can keep current implementation
-> > as
-> > default, then if there is conflict, and submit the quirk.
-> > 
-> 
-> Yeah, you've tested it, are you sure that Micron's UFS devices are OK
-> with this specific code line?
-> 
-> Micron UFS FW team has confirmed that Micron's HPB entries read out
-> by
-> "HPB Buffer Read" cmd are in big-endian byte ordering.
+Hi Stefan,
 
-Aha, I think you didn't check with right person :), ping me, let me
-tell you this confusing story. and see my HPB patch, I didn't the same
-with here:
+On Sun, Feb 07 2021, stefanc@marvell.com wrote:
+> From: Stefan Chulski <stefanc@marvell.com>
+>
+> This patch adds CM3 memory map and CM3 read/write callbacks.
+> No functionality changes.
+>
+> Signed-off-by: Stefan Chulski <stefanc@marvell.com>
+> ---
+>  drivers/net/ethernet/marvell/mvpp2/mvpp2.h      |  7 +++
+>  drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c | 63 +++++++++++++++++++-
+>  2 files changed, 67 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2.h b/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
+> index 6bd7e40..aec9179 100644
+> --- a/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
+> +++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
+> @@ -748,6 +748,9 @@
+>  #define MVPP2_TX_FIFO_THRESHOLD(kb)	\
+>  		((kb) * 1024 - MVPP2_TX_FIFO_THRESHOLD_MIN)
+>  
+> +/* MSS Flow control */
+> +#define MSS_SRAM_SIZE	0x800
+> +
+>  /* RX buffer constants */
+>  #define MVPP2_SKB_SHINFO_SIZE \
+>  	SKB_DATA_ALIGN(sizeof(struct skb_shared_info))
+> @@ -925,6 +928,7 @@ struct mvpp2 {
+>  	/* Shared registers' base addresses */
+>  	void __iomem *lms_base;
+>  	void __iomem *iface_base;
+> +	void __iomem *cm3_base;
+>  
+>  	/* On PPv2.2, each "software thread" can access the base
+>  	 * register through a separate address space, each 64 KB apart
+> @@ -996,6 +1000,9 @@ struct mvpp2 {
+>  
+>  	/* page_pool allocator */
+>  	struct page_pool *page_pool[MVPP2_PORT_MAX_RXQ];
+> +
+> +	/* CM3 SRAM pool */
+> +	struct gen_pool *sram_pool;
+>  };
+>  
+>  struct mvpp2_pcpu_stats {
+> diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
+> index a07cf60..307f9fd 100644
+> --- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
+> +++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
+> @@ -25,6 +25,7 @@
+>  #include <linux/of_net.h>
+>  #include <linux/of_address.h>
+>  #include <linux/of_device.h>
+> +#include <linux/genalloc.h>
+>  #include <linux/phy.h>
+>  #include <linux/phylink.h>
+>  #include <linux/phy/phy.h>
+> @@ -6846,6 +6847,44 @@ static int mvpp2_init(struct platform_device *pdev, struct mvpp2 *priv)
+>  	return 0;
+>  }
+>  
+> +static int mvpp2_get_sram(struct platform_device *pdev,
+> +			  struct mvpp2 *priv)
+> +{
+> +	struct device_node *dn = pdev->dev.of_node;
+> +	static bool defer_once;
+> +	struct resource *res;
+> +
+> +	if (has_acpi_companion(&pdev->dev)) {
+> +		res = platform_get_resource(pdev, IORESOURCE_MEM, 2);
+> +		if (!res) {
+> +			dev_warn(&pdev->dev, "ACPI is too old, Flow control not supported\n");
+> +			return 0;
+> +		}
+> +		priv->cm3_base = devm_ioremap_resource(&pdev->dev, res);
+> +		if (IS_ERR(priv->cm3_base))
+> +			return PTR_ERR(priv->cm3_base);
+> +	} else {
+> +		priv->sram_pool = of_gen_pool_get(dn, "cm3-mem", 0);
+> +		if (!priv->sram_pool) {
+> +			if (!defer_once) {
+> +				defer_once = true;
+> +				/* Try defer once */
+> +				return -EPROBE_DEFER;
+> +			}
+> +			dev_warn(&pdev->dev, "DT is too old, Flow control not supported\n");
 
-https://patchwork.kernel.org/project/linux-scsi/patch/20200504142032.16619-6-beanhuo@micron.com/
+This warning will show on every DT system with no cm3-mem property, right?
 
-Bean
+> +			return -ENOMEM;
+> +		}
+> +		/* cm3_base allocated with offset zero into the SRAM since mapping size
+> +		 * is equal to requested size.
+> +		 */
+> +		priv->cm3_base = (void __iomem *)gen_pool_alloc(priv->sram_pool,
+> +								MSS_SRAM_SIZE);
+> +		if (!priv->cm3_base)
+> +			return -ENOMEM;
+> +	}
+> +	return 0;
+> +}
+> +
+>  static int mvpp2_probe(struct platform_device *pdev)
+>  {
+>  	const struct acpi_device_id *acpi_id;
+> @@ -6902,6 +6941,13 @@ static int mvpp2_probe(struct platform_device *pdev)
+>  		priv->iface_base = devm_ioremap_resource(&pdev->dev, res);
+>  		if (IS_ERR(priv->iface_base))
+>  			return PTR_ERR(priv->iface_base);
+> +
+> +		/* Map CM3 SRAM */
+> +		err = mvpp2_get_sram(pdev, priv);
+> +		if (err == -EPROBE_DEFER)
+> +			return err;
+> +		else if (err)
+> +			dev_warn(&pdev->dev, "Fail to alloc CM3 SRAM\n");
+
+This one will show as well.
+
+I would not expect that from a patch that makes "no functional change".
+
+baruch
+
+>  	}
+>  
+>  	if (priv->hw_version == MVPP22 && dev_of_node(&pdev->dev)) {
+> @@ -6947,11 +6993,13 @@ static int mvpp2_probe(struct platform_device *pdev)
+>  
+>  	if (dev_of_node(&pdev->dev)) {
+>  		priv->pp_clk = devm_clk_get(&pdev->dev, "pp_clk");
+> -		if (IS_ERR(priv->pp_clk))
+> -			return PTR_ERR(priv->pp_clk);
+> +		if (IS_ERR(priv->pp_clk)) {
+> +			err = PTR_ERR(priv->pp_clk);
+> +			goto err_cm3;
+> +		}
+>  		err = clk_prepare_enable(priv->pp_clk);
+>  		if (err < 0)
+> -			return err;
+> +			goto err_cm3;
+>  
+>  		priv->gop_clk = devm_clk_get(&pdev->dev, "gop_clk");
+>  		if (IS_ERR(priv->gop_clk)) {
+> @@ -7087,6 +7135,11 @@ static int mvpp2_probe(struct platform_device *pdev)
+>  	clk_disable_unprepare(priv->gop_clk);
+>  err_pp_clk:
+>  	clk_disable_unprepare(priv->pp_clk);
+> +err_cm3:
+> +	if (priv->sram_pool && priv->cm3_base)
+> +		gen_pool_free(priv->sram_pool, (unsigned long)priv->cm3_base,
+> +			      MSS_SRAM_SIZE);
+> +
+>  	return err;
+>  }
+>  
+> @@ -7127,6 +7180,10 @@ static int mvpp2_remove(struct platform_device *pdev)
+>  				  aggr_txq->descs_dma);
+>  	}
+>  
+> +	if (priv->sram_pool && priv->cm3_base)
+> +		gen_pool_free(priv->sram_pool, (unsigned long)priv->cm3_base,
+> +			      MSS_SRAM_SIZE);
+> +
+>  	if (is_acpi_node(port_fwnode))
+>  		return 0;
 
 
-
+-- 
+                                                     ~. .~   Tk Open Systems
+=}------------------------------------------------ooO--U--Ooo------------{=
+   - baruch@tkos.co.il - tel: +972.52.368.4656, http://www.tkos.co.il -
