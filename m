@@ -2,85 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 249FE3122DC
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 09:48:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18DC23122E0
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 09:50:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229742AbhBGIsZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Feb 2021 03:48:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57596 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229548AbhBGIsK (ORCPT
+        id S229717AbhBGIuZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Feb 2021 03:50:25 -0500
+Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:41025 "EHLO
+        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229570AbhBGIuX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Feb 2021 03:48:10 -0500
-Received: from mail.marcansoft.com (marcansoft.com [IPv6:2a01:298:fe:f::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75230C061756;
-        Sun,  7 Feb 2021 00:47:29 -0800 (PST)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (No client certificate requested)
-        (Authenticated sender: marcan@marcan.st)
-        by mail.marcansoft.com (Postfix) with ESMTPSA id 0B62E4283E;
-        Sun,  7 Feb 2021 08:47:24 +0000 (UTC)
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     soc@kernel.org, linux-arm-kernel@lists.infradead.org,
-        robh+dt@kernel.org, Arnd Bergmann <arnd@kernel.org>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Olof Johansson <olof@lixom.net>,
-        Mark Rutland <mark.rutland@arm.com>,
-        James Morse <james.morse@arm.com>
-References: <20210204203951.52105-1-marcan@marcan.st>
- <20210204203951.52105-11-marcan@marcan.st> <87h7mpky0f.wl-maz@kernel.org>
-From:   Hector Martin 'marcan' <marcan@marcan.st>
-Subject: Re: [PATCH 10/18] arm64: Introduce FIQ support
-Message-ID: <2bfebb31-afb5-88a7-d092-87f88aa7367a@marcan.st>
-Date:   Sun, 7 Feb 2021 17:47:23 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
-MIME-Version: 1.0
-In-Reply-To: <87h7mpky0f.wl-maz@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: es-ES
-Content-Transfer-Encoding: 8bit
+        Sun, 7 Feb 2021 03:50:23 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R711e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UO3vxJI_1612687766;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UO3vxJI_1612687766)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Sun, 07 Feb 2021 16:49:38 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     alexander.deucher@amd.com
+Cc:     christian.koenig@amd.com, airlied@linux.ie, daniel@ffwll.ch,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] drm/amd/pm: Remove unnecessary conversion to bool
+Date:   Sun,  7 Feb 2021 16:49:25 +0800
+Message-Id: <1612687765-43874-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/02/2021 00.37, Marc Zyngier wrote:
-> See my digression in patch 8. I really wonder what the benefit is to
-> treat FIQ independently of IRQ, and we might as well generalise
-> this. We could always panic on getting a FIQ on platforms that don't
-> expect one.
-> 
-> It'd be good to rope in the other interested parties (Mark for the
-> early entry code, James for RAS and SError handling).
+Fix the following coccicheck warning:
 
-CCing Mark and James: TL;DR what do you think about unconditionally 
-keeping DAIF.I == DAIF.F, would this break other platforms with spurious 
-FIQs or conversely mask FIQs when we don't want to in some cases? The 
-FIQ vector would remain a panic except on platforms that require using 
-it, via an alternatives patch.
+./drivers/gpu/drm/amd/pm/swsmu/smu11/sienna_cichlid_ppt.c:907:47-52:
+WARNING: conversion to bool not needed here.
 
->>   	kernel_ventry	1, sync				// Synchronous EL1h
->>   	kernel_ventry	1, irq				// IRQ EL1h
->> -	kernel_ventry	1, fiq_invalid			// FIQ EL1h
->> +							// FIQ EL1h
->> +	kernel_ventry	1, fiq_invalid, 64, irq, ARM64_NEEDS_FIQ
-> 
-> It could be better to create a set of first class FIQ handlers rather
-> than this alternative target macro. I quickly hacked this instead,
-> which I find more readable.
+Reported-by: Abaci Robot<abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+---
+ drivers/gpu/drm/amd/pm/swsmu/smu11/sienna_cichlid_ppt.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I think I ended up with the macro change to keep it 1:1 with IRQ, vs a 
-separate branch... but I didn't think of the fallthrough-with-nop trick, 
-neat. It is definitely is more readable. Are you OK with me pulling this 
-patch in for v2, with your name on it?
-
-> -	kernel_ventry	0, fiq_invalid_compat, 32	// FIQ 32-bit EL0
-> +	kernel_ventry	0, fiq, 32			// FIQ 32-bit EL0
-
-fiq_compat here, right?
-
+diff --git a/drivers/gpu/drm/amd/pm/swsmu/smu11/sienna_cichlid_ppt.c b/drivers/gpu/drm/amd/pm/swsmu/smu11/sienna_cichlid_ppt.c
+index d68d3df..b364862 100644
+--- a/drivers/gpu/drm/amd/pm/swsmu/smu11/sienna_cichlid_ppt.c
++++ b/drivers/gpu/drm/amd/pm/swsmu/smu11/sienna_cichlid_ppt.c
+@@ -904,7 +904,7 @@ static bool sienna_cichlid_is_support_fine_grained_dpm(struct smu_context *smu,
+ 	dpm_desc = &pptable->DpmDescriptor[clk_index];
+ 
+ 	/* 0 - Fine grained DPM, 1 - Discrete DPM */
+-	return dpm_desc->SnapToDiscrete == 0 ? true : false;
++	return dpm_desc->SnapToDiscrete != 0;
+ }
+ 
+ static int sienna_cichlid_print_clk_levels(struct smu_context *smu,
 -- 
-Hector Martin "marcan" (marcan@marcan.st)
-Public Key: https://mrcn.st/pub
+1.8.3.1
+
