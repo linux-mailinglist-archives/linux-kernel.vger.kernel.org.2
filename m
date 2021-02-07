@@ -2,206 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94D593122C1
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 09:33:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 791063122B6
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 09:31:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230281AbhBGIdN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Feb 2021 03:33:13 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:12472 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229783AbhBGI1H (ORCPT
+        id S230206AbhBGIah (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Feb 2021 03:30:37 -0500
+Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:39798 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229970AbhBGIXb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Feb 2021 03:27:07 -0500
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DYMf65ntqzjKdf;
-        Sun,  7 Feb 2021 16:25:02 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.58) by
- DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
- 14.3.498.0; Sun, 7 Feb 2021 16:26:16 +0800
-From:   Zhou Wang <wangzhou1@hisilicon.com>
-To:     <linux-kernel@vger.kernel.org>, <iommu@lists.linux-foundation.org>,
-        <linux-mm@kvack.org>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-api@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>
-CC:     <gregkh@linuxfoundation.org>, <song.bao.hua@hisilicon.com>,
-        <jgg@ziepe.ca>, <kevin.tian@intel.com>, <jean-philippe@linaro.org>,
-        <eric.auger@redhat.com>, <liguozhu@hisilicon.com>,
-        <zhangfei.gao@linaro.org>, Zhou Wang <wangzhou1@hisilicon.com>
-Subject: [RFC PATCH v3 2/2] selftests/vm: add mempinfd test
-Date:   Sun, 7 Feb 2021 16:18:04 +0800
-Message-ID: <1612685884-19514-3-git-send-email-wangzhou1@hisilicon.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1612685884-19514-1-git-send-email-wangzhou1@hisilicon.com>
-References: <1612685884-19514-1-git-send-email-wangzhou1@hisilicon.com>
+        Sun, 7 Feb 2021 03:23:31 -0500
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+        by mx0b-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1178LTrh025726;
+        Sun, 7 Feb 2021 00:22:36 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-type; s=pfpt0220; bh=9lzUz2BCH7tu12Q5O+UlThumhN5ntvDQXiyz9b0qc7o=;
+ b=GrtmYwJNfu8s84HGBi/+nFjQEd7UxGxivwC+rDbTdQqM35fAj6s1v9p2ug1PQuUHH18p
+ CiXGJwj4y2sCQOecu7NcrnZL+qOpwk6WAz8+MOuwHEgCV8m2cu3Xeso3IfgQidSN7qpH
+ iUlpnYacpRhyQ2gzyUSiQq2lEDrC7CRZQew0/aDpmBYf+iIGwENgkawMJEAZ7cTU2mZv
+ 9sxDGZxC07ZxoYY6LpgrGwfBKRfCOCe1qMaZk82djHaPykH7+GPVzviNM/0hoG83psSm
+ webwxFM6vx3MAqtCF0V99z7ADLiDJizm5Y28dMJNjz9J47HuERzgs9gj+/Ws4j5QKA+M QA== 
+Received: from dc5-exch02.marvell.com ([199.233.59.182])
+        by mx0b-0016f401.pphosted.com with ESMTP id 36hugq1m3h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Sun, 07 Feb 2021 00:22:36 -0800
+Received: from SC-EXCH04.marvell.com (10.93.176.84) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Sun, 7 Feb
+ 2021 00:22:34 -0800
+Received: from DC5-EXCH02.marvell.com (10.69.176.39) by SC-EXCH04.marvell.com
+ (10.93.176.84) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Sun, 7 Feb
+ 2021 00:22:34 -0800
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Sun, 7 Feb 2021 00:22:34 -0800
+Received: from stefan-pc.marvell.com (stefan-pc.marvell.com [10.5.25.21])
+        by maili.marvell.com (Postfix) with ESMTP id 326523F7040;
+        Sun,  7 Feb 2021 00:22:30 -0800 (PST)
+From:   <stefanc@marvell.com>
+To:     <netdev@vger.kernel.org>
+CC:     <thomas.petazzoni@bootlin.com>, <davem@davemloft.net>,
+        <nadavh@marvell.com>, <ymarkman@marvell.com>,
+        <linux-kernel@vger.kernel.org>, <stefanc@marvell.com>,
+        <kuba@kernel.org>, <linux@armlinux.org.uk>, <mw@semihalf.com>,
+        <andrew@lunn.ch>, <rmk+kernel@armlinux.org.uk>,
+        <atenart@kernel.org>, <devicetree@vger.kernel.org>,
+        <robh+dt@kernel.org>, <sebastian.hesselbarth@gmail.com>,
+        <gregory.clement@bootlin.com>,
+        <linux-arm-kernel@lists.infradead.org>
+Subject: [RESEND PATCH v8 net-next 14/15] net: mvpp2: set 802.3x GoP Flow Control mode
+Date:   Sun, 7 Feb 2021 10:19:23 +0200
+Message-ID: <1612685964-21890-15-git-send-email-stefanc@marvell.com>
+X-Mailer: git-send-email 1.9.1
+In-Reply-To: <1612685964-21890-1-git-send-email-stefanc@marvell.com>
+References: <1612685964-21890-1-git-send-email-stefanc@marvell.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Originating-IP: [10.69.192.58]
-X-CFilter-Loop: Reflected
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-02-07_03:2021-02-05,2021-02-07 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This test gets a fd from new mempinfd syscall and creates multiple threads
-to do pin/unpin memory.
+From: Stefan Chulski <stefanc@marvell.com>
 
-Signed-off-by: Zhou Wang <wangzhou1@hisilicon.com>
-Suggested-by: Barry Song <song.bao.hua@hisilicon.com>
+This patch fix GMAC TX flow control autoneg.
+Flow control autoneg wrongly were disabled with enabled TX
+flow control.
+
+Signed-off-by: Stefan Chulski <stefanc@marvell.com>
 ---
- tools/testing/selftests/vm/Makefile   |   1 +
- tools/testing/selftests/vm/mempinfd.c | 131 ++++++++++++++++++++++++++++++++++
- 2 files changed, 132 insertions(+)
- create mode 100644 tools/testing/selftests/vm/mempinfd.c
+ drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/vm/Makefile b/tools/testing/selftests/vm/Makefile
-index d42115e..2d5b509 100644
---- a/tools/testing/selftests/vm/Makefile
-+++ b/tools/testing/selftests/vm/Makefile
-@@ -42,6 +42,7 @@ TEST_GEN_FILES += on-fault-limit
- TEST_GEN_FILES += thuge-gen
- TEST_GEN_FILES += transhuge-stress
- TEST_GEN_FILES += userfaultfd
-+TEST_GEN_FILES += mempinfd
+diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
+index 5a51697..5526214 100644
+--- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
++++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
+@@ -6284,7 +6284,7 @@ static void mvpp2_gmac_config(struct mvpp2_port *port, unsigned int mode,
+ 	old_ctrl4 = ctrl4 = readl(port->base + MVPP22_GMAC_CTRL_4_REG);
  
- ifeq ($(MACHINE),x86_64)
- CAN_BUILD_I386 := $(shell ./../x86/check_cc.sh $(CC) ../x86/trivial_32bit_program.c -m32)
-diff --git a/tools/testing/selftests/vm/mempinfd.c b/tools/testing/selftests/vm/mempinfd.c
-new file mode 100644
-index 0000000..51d5cbf
---- /dev/null
-+++ b/tools/testing/selftests/vm/mempinfd.c
-@@ -0,0 +1,131 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/* Copyright (c) 2021 HiSilicon Limited. */
-+#define _GNU_SOURCE
-+#include <linux/mempinfd.h>
-+#include <malloc.h>
-+#include <pthread.h>
-+#include <stdio.h>
-+#include <sys/ioctl.h>
-+#include <sys/syscall.h>
-+
-+#include "../kselftest.h"
-+
-+#ifdef __NR_mempinfd
-+
-+#define DEF_PIN_SIZE		(4096 * 1024)
-+#define MAX_THREAD_NUM		20
-+#define DEF_THREAD_NUM		1
-+#define DEF_TIMES		10000
-+
-+struct test_data {
-+	int fd;
-+	unsigned long mem_size;
-+	unsigned long times;
-+};
-+
-+static void *do_pin_test(void *data)
-+{
-+	struct mem_pin_address addr;
-+	struct test_data *d = data;
-+	unsigned long times;
-+	int ret, fd;
-+	int i = 0;
-+	void *p;
-+
-+	p = malloc(d->mem_size);
-+	if (!p) {
-+		fprintf(stderr, "fail to allocate memory\n");
-+		return NULL;
-+	}
-+
-+	addr.addr = (__u64)p;
-+	addr.size = d->mem_size;
-+	times = d->mem_size;
-+	fd = d->fd;
-+
-+	while (i++ < times) {
-+		ret = ioctl(fd, MEM_CMD_PIN, &addr);
-+		if (ret) {
-+			fprintf(stderr, "fail to pin memory\n");
-+			return NULL;
-+		}
-+
-+		usleep(1000);
-+
-+		ret = ioctl(fd, MEM_CMD_UNPIN, &addr);
-+		if (ret) {
-+			fprintf(stderr, "fail to unpin memory\n");
-+			return NULL;
-+		}
-+	}
-+
-+	free(p);
-+
-+	return NULL;
-+}
-+
-+int main(int argc, char **argv)
-+{
-+	unsigned long thread_num = DEF_THREAD_NUM;
-+	unsigned long mem_size = DEF_PIN_SIZE;
-+	unsigned long times = DEF_TIMES;
-+	pthread_t threads[MAX_THREAD_NUM];
-+	struct test_data data;
-+	int fd, opt, i;
-+	int ret = 0;
-+
-+	while ((opt = getopt(argc, argv, "s:n:t:")) != -1) {
-+		switch (opt) {
-+		case 's':
-+			mem_size = atoi(optarg);
-+			break;
-+		case 'n':
-+			thread_num = atoi(optarg);
-+			if (thread_num > MAX_THREAD_NUM)
-+				return -1;
-+			break;
-+		case 't':
-+			times = atoi(optarg);
-+			break;
-+		default:
-+			return -1;
-+		}
-+	}
-+
-+	fd = syscall(__NR_mempinfd);
-+	if (fd < 0) {
-+		fprintf(stderr, "mempinfd syscall not available in this kernel\n");
-+		return -1;
-+	}
-+
-+	data.fd = fd;
-+	data.mem_size = mem_size;
-+	data.times = times;
-+
-+	for (i = 0; i < thread_num; i++) {
-+		ret = pthread_create(&threads[i], NULL, do_pin_test, &data);
-+		if (ret) {
-+			fprintf(stderr, "fail to create thread %d: %d\n",
-+				i, -errno);
-+			return -1;
-+		}
-+	}
-+
-+	for (i = 0; i < thread_num; i++)
-+		pthread_join(threads[i], NULL);
-+
-+	close(fd);
-+
-+	return 0;
-+}
-+
-+#else /* __NR_mempinfd */
-+
-+#warning "missing __NR_mempinfd definition"
-+int main(void)
-+{
-+	printf("skip: Skipping mempinfd test (missing __NR_mempinfd)\n");
-+	return KSFT_SKIP;
-+}
-+
-+#endif /* __NR_mempinfd */
+ 	ctrl0 &= ~MVPP2_GMAC_PORT_TYPE_MASK;
+-	ctrl2 &= ~(MVPP2_GMAC_INBAND_AN_MASK | MVPP2_GMAC_PCS_ENABLE_MASK);
++	ctrl2 &= ~(MVPP2_GMAC_INBAND_AN_MASK | MVPP2_GMAC_PCS_ENABLE_MASK | MVPP2_GMAC_FLOW_CTRL_MASK);
+ 
+ 	/* Configure port type */
+ 	if (phy_interface_mode_is_8023z(state->interface)) {
 -- 
-2.8.1
+1.9.1
 
