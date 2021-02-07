@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 534B931212C
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 04:33:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE2D8312130
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 04:36:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229706AbhBGDc4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Feb 2021 22:32:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40670 "EHLO mail.kernel.org"
+        id S229725AbhBGDfs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Feb 2021 22:35:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40914 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229613AbhBGDcx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Feb 2021 22:32:53 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8E9D664E7F;
-        Sun,  7 Feb 2021 03:32:12 +0000 (UTC)
+        id S229705AbhBGDfq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 6 Feb 2021 22:35:46 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E63D764E7D;
+        Sun,  7 Feb 2021 03:35:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612668732;
-        bh=5q+3AseSjJ73gfEyHtsH1AwnHP9+QRAn8sefYBlZhgo=;
+        s=k20201202; t=1612668906;
+        bh=9bozjFasYFNBnvuHUezc3sMHX+mbAWvUqvbfrelUpbg=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Tfdpc0fROte/2EfA4jbpqvHuJLpo8gT6MeZUZ6stzvHGQPxMssEYJzyZYzhN1OyEI
-         6e9nAo8d9OjTbMeVgKRRo6ngB+NY+CLcPj8ITHJYRvq/uFHKWaBACDBDKo+LINftQG
-         Iykvb8cWFZsSDZrZ1q+kZRmBvvhb9U/ELeO7Ucuo4sF+8QRtPyo3NJ5V/gCpWxiNl3
-         evrNhmRn929MP/mkSzvs1HHTjHVF9ch5aXW+ud4mGuVzynbwU3OwqC3ssVjt5ZiYCc
-         p+c+lGi3HWbfu58DcJ2kl8UA6d7oN3q+hgSJp8QPqtVOhol85dgF/eVrbFKamahMfy
-         E8Ic+Jj0N8RBg==
-Received: by mail-lj1-f179.google.com with SMTP id c18so12499511ljd.9;
-        Sat, 06 Feb 2021 19:32:12 -0800 (PST)
-X-Gm-Message-State: AOAM532Pgw+vi0SBVjC4t8pAtVN97DJmweV+mzP178O+cQPAUXFlAhb5
-        el6rBZouXl6zeXq/SgmrEa8sFBzcqNu0+hQqWB4=
-X-Google-Smtp-Source: ABdhPJxeX1WqQ4nGoVWb+bT7A7kxtIVu0Xd4yP+o4w8tUS+Z+GDdW96VnaC1q8rPqHW9zJyiE/xRNZ7u0+YiMF8XvhM=
-X-Received: by 2002:a2e:89cd:: with SMTP id c13mr7004902ljk.285.1612668730907;
- Sat, 06 Feb 2021 19:32:10 -0800 (PST)
+        b=kaWlG8C0iqFUbvSBKNJ1HaQuDQgDGkvGDPLWmk0uvivTCgqFyH+vNpe8UwH8IxPeM
+         bZLnaxmwUTOOzGxOLN5PrLYDutyLjsJq0yINzGJ8qw+PCkEmfvTlRC1MwPIu/M1uk+
+         BMBAo5yElQoATgpvvgYwjVDzC4EtHRi0C2knajEnz/bswIX1xvgaAS+h7IbeY1wqCl
+         OLC9N3acEqqdo3hDSMQ4gi4MNHHmD0+w2I7CeskzK1mwztVAjOWJeOtI+8SFXpWS+V
+         pHE01xuZr8zNWBHqpP5nSJ3k71Mk1d8BHQtX9kycDoEk1by5SYEdpTWZeJsjdqZvYd
+         xge1hnHLrGkXw==
+Received: by mail-lf1-f48.google.com with SMTP id d3so16873504lfg.10;
+        Sat, 06 Feb 2021 19:35:05 -0800 (PST)
+X-Gm-Message-State: AOAM5330hp6hJ/ReLPrS2aT6UyH+LmFdAbKUhLgkAjUiD2s3dzi4ZclA
+        mcskk0yujnbtivJBSToOei3MY592BqhoLbzWHxc=
+X-Google-Smtp-Source: ABdhPJzjm0X9/WNl5dP1IHd4dZvYAWylL1yDcxs3WKloYBrYNgSZSW5emHmai2qbV1uJfra9HFMk0ZYwArEucRBRXYk=
+X-Received: by 2002:a05:6512:33cb:: with SMTP id d11mr6538893lfg.24.1612668904286;
+ Sat, 06 Feb 2021 19:35:04 -0800 (PST)
 MIME-Version: 1.0
 References: <20210204074609.3553018-1-guoren@kernel.org> <20210204074609.3553018-2-guoren@kernel.org>
- <c36b816b-6d80-9542-45fc-507c5cc302fb@linaro.org>
-In-Reply-To: <c36b816b-6d80-9542-45fc-507c5cc302fb@linaro.org>
+ <c36b816b-6d80-9542-45fc-507c5cc302fb@linaro.org> <CAJF2gTSe7GUzPRvk6bK8AfQFp2uxae1Oo0w-ZtrtmcJmMWCqPw@mail.gmail.com>
+In-Reply-To: <CAJF2gTSe7GUzPRvk6bK8AfQFp2uxae1Oo0w-ZtrtmcJmMWCqPw@mail.gmail.com>
 From:   Guo Ren <guoren@kernel.org>
-Date:   Sun, 7 Feb 2021 11:31:59 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTSe7GUzPRvk6bK8AfQFp2uxae1Oo0w-ZtrtmcJmMWCqPw@mail.gmail.com>
-Message-ID: <CAJF2gTSe7GUzPRvk6bK8AfQFp2uxae1Oo0w-ZtrtmcJmMWCqPw@mail.gmail.com>
+Date:   Sun, 7 Feb 2021 11:34:53 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTRru-5aT_R=AoCWC6e08oF_isBfL_ALUvdqCSmxBuEgtg@mail.gmail.com>
+Message-ID: <CAJF2gTRru-5aT_R=AoCWC6e08oF_isBfL_ALUvdqCSmxBuEgtg@mail.gmail.com>
 Subject: Re: [PATCH v2 2/2] drivers/clocksource: Fixup csky,mptimer compile
  error with CPU_CK610
 To:     Daniel Lezcano <daniel.lezcano@linaro.org>
@@ -50,28 +50,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daniel,
+The same way in IRQ chip:
 
-On Thu, Feb 4, 2021 at 4:48 PM Daniel Lezcano <daniel.lezcano@linaro.org> wrote:
+Link: https://lore.kernel.org/lkml/161245410060.1472442.13488057609914274236.b4-ty@kernel.org/
+
+On Sun, Feb 7, 2021 at 11:31 AM Guo Ren <guoren@kernel.org> wrote:
 >
-> On 04/02/2021 08:46, guoren@kernel.org wrote:
-> > From: Guo Ren <guoren@linux.alibaba.com>
-> >
-> > The timer-mp-csky.c only could support CPU_CK860 and it will
-> > compile error with CPU_CK610.
-> >
-> > It has been selected in arch/csky/Kconfig.
+> Hi Daniel,
 >
-> It would be better if you fix the root cause of the compilation error.
-The timer-mp-csky.c has used specific instructions which only
-supported by CK860 and timer-mp-csky.c is only design for CK860.
+> On Thu, Feb 4, 2021 at 4:48 PM Daniel Lezcano <daniel.lezcano@linaro.org> wrote:
+> >
+> > On 04/02/2021 08:46, guoren@kernel.org wrote:
+> > > From: Guo Ren <guoren@linux.alibaba.com>
+> > >
+> > > The timer-mp-csky.c only could support CPU_CK860 and it will
+> > > compile error with CPU_CK610.
+> > >
+> > > It has been selected in arch/csky/Kconfig.
+> >
+> > It would be better if you fix the root cause of the compilation error.
+> The timer-mp-csky.c has used specific instructions which only
+> supported by CK860 and timer-mp-csky.c is only design for CK860.
+>
+> In arch/csky/Konfig we only select it with CK860.
+>         select CSKY_MPINTC if CPU_CK860
+>         select CSKY_MP_TIMER if CPU_CK860
+>
+> So here let's select timer-mp-csky.c in arch/csky/Kconfig, not in
+> drivers/clocksource/Kconfig.
+>
+>
+> --
+> Best Regards
+>  Guo Ren
+>
+> ML: https://lore.kernel.org/linux-csky/
 
-In arch/csky/Konfig we only select it with CK860.
-        select CSKY_MPINTC if CPU_CK860
-        select CSKY_MP_TIMER if CPU_CK860
-
-So here let's select timer-mp-csky.c in arch/csky/Kconfig, not in
-drivers/clocksource/Kconfig.
 
 
 -- 
