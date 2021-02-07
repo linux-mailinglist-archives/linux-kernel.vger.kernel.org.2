@@ -2,56 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 546F7312348
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 10:52:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40DA331234A
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 10:52:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229636AbhBGJuj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Feb 2021 04:50:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42628 "EHLO
+        id S229750AbhBGJvf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Feb 2021 04:51:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229506AbhBGJuf (ORCPT
+        with ESMTP id S229566AbhBGJv1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Feb 2021 04:50:35 -0500
-Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1109FC06174A;
-        Sun,  7 Feb 2021 01:49:53 -0800 (PST)
-Received: by mail-qk1-x72b.google.com with SMTP id t63so11599011qkc.1;
-        Sun, 07 Feb 2021 01:49:53 -0800 (PST)
+        Sun, 7 Feb 2021 04:51:27 -0500
+Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2F25C06174A;
+        Sun,  7 Feb 2021 01:50:46 -0800 (PST)
+Received: by mail-qv1-xf29.google.com with SMTP id 2so5691329qvd.0;
+        Sun, 07 Feb 2021 01:50:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=FYzO838l1olFuso01/LKL9EKMqYrX52CmTrPsMkBDNA=;
-        b=PH/nShvusjxGG+pD98o6NOty7igDMLoVCNcNMmmjFvvckGRm0oVqX1c7mx4J+ayJWh
-         PCIX7g4Xc+nZmsDqDERSkx7dzoHKAYcxNT61mIYdBwx1hNy5ilCwTdXXMmpzge2a7KDK
-         /xi3ULiq5Msm+qvMpLhHXO57vX/3f1spJxrUgaN85rDrp1w1sEvYzsGlrcd6+YucJMIy
-         xpjwb12qxSbsE5rw/WD7sQZxYc1mDD1QGoIma/VOnbQFQvTBcXaa5G0spS8BW5vttuJ0
-         3jcB9pb5TAKYjnK2JM/uBfQzOfoWGRZxdExX+a70dnbh3NnbAcVXlKL9exdZ+2Bb8IVh
-         24EA==
+        bh=dZ4pFx7u5BUDAgelezxkYQyF+xKN7GGALoSIhITUj+o=;
+        b=pDgcBRamMSdoUB2BEpAst1f1B9nv0WmaS1Vvz3pxn90Bo2k1jjA+Rmy0x4aLBo07mY
+         asda/mt0rtnitVvzATsvxfXHA32w6sTXiqJjs1JBXExweSz1LhjNLHlAe1y/uJwVoXPP
+         wMZxM9NPideQw1Zn+3YhCfTxp2iE+jS49MhfAhBXlxoCTbo27Rn9tle+lHnmbjfbFvXp
+         X0hAwsQSyOLaIiM0VA16unpVG4z8pP0NFOokUPDV4c6WWuDTv7Mspy8/5jiWRxPdTYZ2
+         ot4n0YWlHpRfnib2YaYfQTZxNBV6VLrvkNQtRO3nOIMXZmsratGIKOhZWgirQuqokfd3
+         5XYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=FYzO838l1olFuso01/LKL9EKMqYrX52CmTrPsMkBDNA=;
-        b=QOxlIBKVxZMnT/VPGfpsr7havxV5axs4/scDjfu3/erq2HSE6PdGgnOefTKCLQZKKk
-         PEJ1hl3Coespv/VvA+aWEw/84k+8mvj14ibxsPa5Gbh+VLr2D38n9UMm4Lj4tE13wTiR
-         FNEbmin81+h6Mt7GQlBBJHYIeZ/8gDem8bmB/83HUNh1cUBE1CEp8d+dSZERZbVt/1Tx
-         QjK2+cqoENWFVwiMtU8cC0uEsyr8ggQT+LU9qigrHciVdgml3jHY7yQGE0br/rcFz9hy
-         yxvf9/vR15EMyuRRjY6+LiaWGKxhwXYpsA7OKxmr00wvfb4EQLcA/CU7t7wuNgN+Qjwn
-         aj1A==
-X-Gm-Message-State: AOAM531Ym5thH9kUsxGDPeJAgO+0+GLIx2PmNNLR2xceaLNXodw8GYPN
-        3/taTzUdb4L3qUnYzFenJp3R8U9IDwk4hSXUyAk=
-X-Google-Smtp-Source: ABdhPJwBFvr9P32/Q0z9GRaRw15XheT3/2z/Vbq8+UOXhCI06iB1wVa/pcAviEiXyvpKDJQ/NID21lMi+PuAC/mGLuk=
-X-Received: by 2002:a05:620a:14a6:: with SMTP id x6mr11806815qkj.152.1612691392406;
- Sun, 07 Feb 2021 01:49:52 -0800 (PST)
+        bh=dZ4pFx7u5BUDAgelezxkYQyF+xKN7GGALoSIhITUj+o=;
+        b=DM4qRCoLpOPrYi/jp8FGcYGahkaI+sZnWvVqgGMZTF+xaPtVKBznilQgf0JBmeUA8w
+         DedvQstdH7smZf4aX/gEIDOIraOZ/TqnnvY6gf3//Zap7Ws4gE2WEkmllLoCrHdB1lDK
+         xfCjoKsTuDj0/QCttEFtAmdxmMXuUYPENauavDo192ltaO15Y4sMM/HDlMvLwikXwgh9
+         Mz+Eh5MGGwj560LTQzGZKCy69Qq5yvDz8Q0MF9Q9fvyY867wcC6jwxzmPsXMudGcf+T2
+         9kGnUHA+QhuP6jShd9MounSwJHu/oWUj4bg3e4f8txyqedeWOxmoGhwonsm9DlCFW2at
+         YUmw==
+X-Gm-Message-State: AOAM5339Ju3krDsKeGDHxfmXT/q7ibkROgDeQAPhFksYxRcr8P9et6Q8
+        uCZke8KfJUQa0+7ffrUX3bm59llgYmpA/aPL1bI=
+X-Google-Smtp-Source: ABdhPJy645FIrmGyg3s+S/f06QE4AJor1BtSgmIOXYOPdd5fhNxXhtiMyZ5sAnnbwtjUKTyx3gqZcZrxPegIJKozRmo=
+X-Received: by 2002:a05:6214:76f:: with SMTP id f15mr11458355qvz.56.1612691446129;
+ Sun, 07 Feb 2021 01:50:46 -0800 (PST)
 MIME-Version: 1.0
 References: <1612508250-10586-1-git-send-email-shengjiu.wang@nxp.com>
- <1612508250-10586-5-git-send-email-shengjiu.wang@nxp.com> <20210205142516.GC4720@sirena.org.uk>
-In-Reply-To: <20210205142516.GC4720@sirena.org.uk>
+ <1612508250-10586-6-git-send-email-shengjiu.wang@nxp.com> <20210205145816.GD4720@sirena.org.uk>
+In-Reply-To: <20210205145816.GD4720@sirena.org.uk>
 From:   Shengjiu Wang <shengjiu.wang@gmail.com>
-Date:   Sun, 7 Feb 2021 17:49:41 +0800
-Message-ID: <CAA+D8APye40DiiYtQbsaM0X5vt4-4z+=YAvf-aSHxzvBk=aBfA@mail.gmail.com>
-Subject: Re: [PATCH 4/7] ASoC: imx-audio-rpmsg: Add rpmsg_driver for audio channel
+Date:   Sun, 7 Feb 2021 17:50:35 +0800
+Message-ID: <CAA+D8AMTyxcz2nXEDemuWRwtORSfRoBRZO03WyX+XpuiOD0XiA@mail.gmail.com>
+Subject: Re: [PATCH 5/7] ASoC: imx-pcm-rpmsg: Add platform driver for audio
+ base on rpmsg
 To:     Mark Brown <broonie@kernel.org>
 Cc:     Shengjiu Wang <shengjiu.wang@nxp.com>,
         "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
@@ -69,28 +70,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 5, 2021 at 10:27 PM Mark Brown <broonie@kernel.org> wrote:
+On Fri, Feb 5, 2021 at 11:00 PM Mark Brown <broonie@kernel.org> wrote:
 >
-> On Fri, Feb 05, 2021 at 02:57:27PM +0800, Shengjiu Wang wrote:
+> On Fri, Feb 05, 2021 at 02:57:28PM +0800, Shengjiu Wang wrote:
 >
-> > +     /* TYPE C is notification from M core */
-> > +     if (r_msg->header.type == MSG_TYPE_C) {
-> > +             if (r_msg->header.cmd == TX_PERIOD_DONE) {
+> > +     if (params_format(params) == SNDRV_PCM_FORMAT_S16_LE)
+> > +             msg->s_msg.param.format   = RPMSG_S16_LE;
+> > +     else if (params_format(params) == SNDRV_PCM_FORMAT_S24_LE)
 >
-> > +             } else if (r_msg->header.cmd == RX_PERIOD_DONE) {
+> Again this should be a switch statement.
 >
-> A switch statement would be clearer and more extensible...
+> > +     if (params_channels(params) == 1)
+> > +             msg->s_msg.param.channels = RPMSG_CH_LEFT;
+> > +     else
+> > +             msg->s_msg.param.channels = RPMSG_CH_STEREO;
 >
-> > +     /* TYPE B is response msg */
-> > +     if (r_msg->header.type == MSG_TYPE_B) {
-> > +             memcpy(&info->r_msg, r_msg, sizeof(struct rpmsg_r_msg));
-> > +             complete(&info->cmd_complete);
-> > +     }
+> Shouldn't this be reporting an error if the number of channels is more
+> than 2?
 >
-> ...and make this flow clearer for example.  Do we need to warn on
-> unknown messages?
+> > +             /*
+> > +              * if the data in the buffer is less than one period
+> > +              * send message immediately.
+> > +              * if there is more than one period data, delay one
+> > +              * period (timer) to send the message.
+> > +              */
+> > +             if ((avail - writen_num * period_size) <= period_size) {
+> > +                     imx_rpmsg_insert_workqueue(substream, msg, info);
+> > +             } else if (rpmsg->force_lpa && !timer_pending(timer)) {
+> > +                     int time_msec;
+> > +
+> > +                     time_msec = (int)(runtime->period_size * 1000 / runtime->rate);
+> > +                     mod_timer(timer, jiffies + msecs_to_jiffies(time_msec));
+> > +             }
+>
+> The comment here is at least confusing - why would we not send a full
+> buffer immediately if we have one?  This sounds like it's the opposite
+> way round to what we'd do if we were trying to cut down the number of
+> messages.  It might help to say which buffer and where?
+>
+> > +     /**
+> > +      * Every work in the work queue, first we check if there
+>
+> /** comments are only for kerneldoc.
 
-Thanks for reviewing. I will update them.
+Thanks Mark, I will update them.
 
 Best regards
 wang shengjiu
