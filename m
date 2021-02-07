@@ -2,125 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0A4D31223A
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 08:31:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6461231223C
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 08:38:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229570AbhBGHaB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Feb 2021 02:30:01 -0500
-Received: from mga01.intel.com ([192.55.52.88]:23368 "EHLO mga01.intel.com"
+        id S229590AbhBGHhO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Feb 2021 02:37:14 -0500
+Received: from so15.mailgun.net ([198.61.254.15]:23849 "EHLO so15.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229445AbhBGH37 (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Sun, 7 Feb 2021 02:29:59 -0500
-IronPort-SDR: 6xCcoN+EQdZ8XcnHfiC/HYsXRBjRNlPW6Q0FNbYrT0jR+WvEDJYjs8mr94NvNy/904ca+L/mxG
- p+3PWbp9YhUg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9887"; a="200626444"
-X-IronPort-AV: E=Sophos;i="5.81,159,1610438400"; 
-   d="scan'208";a="200626444"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Feb 2021 23:28:12 -0800
-IronPort-SDR: z4MyDx1MepWdMl/sEpwFBW2dPbiL0gSPt/C0+Pm/pL/th+UXcarKHm1cuxJhoRKqYMLA72NmgS
- g6tJIZTriDtg==
-X-IronPort-AV: E=Sophos;i="5.81,159,1610438400"; 
-   d="scan'208";a="435199352"
-Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.238.4.27]) ([10.238.4.27])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Feb 2021 23:28:09 -0800
-Subject: Re: [PATCH v2 2/2] perf script: Support filtering by hex address
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com,
-        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        kan.liang@intel.com, yao.jin@intel.com
-References: <20210129070854.29312-1-yao.jin@linux.intel.com>
- <20210129070854.29312-2-yao.jin@linux.intel.com> <YB0UvM6t+BSqQkkk@krava>
-From:   "Jin, Yao" <yao.jin@linux.intel.com>
-Message-ID: <275089b5-f69c-1ebd-ea69-634785844421@linux.intel.com>
-Date:   Sun, 7 Feb 2021 15:28:07 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S229506AbhBGHhJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Feb 2021 02:37:09 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1612683406; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=vFvvHLjgjdxstAnQa5f3esWGzIkB2tiB9mU/LldaNe8=;
+ b=vxgudXWB4TI5vfcn8lIxBrAiE+1+5zqBY3BOt3sS60m/RMUxYEozqM0yoAqFVwRgO1w5EtxD
+ EGpDuyq6+E7D2Dh+DH2AY3b46ypG21yQUxqVrKkjTuWkDjQMYnaqKv+MEQFNcR+/f5KWEo/f
+ YiEaitZc1UPRLucY4trxgDbyiJM=
+X-Mailgun-Sending-Ip: 198.61.254.15
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 601f98658e43a988b7be10f2 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sun, 07 Feb 2021 07:36:05
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 81162C433ED; Sun,  7 Feb 2021 07:36:05 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id C702EC433C6;
+        Sun,  7 Feb 2021 07:36:04 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <YB0UvM6t+BSqQkkk@krava>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Date:   Sun, 07 Feb 2021 15:36:04 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Bean Huo <huobean@gmail.com>
+Cc:     Avri Altman <Avri.Altman@wdc.com>, daejun7.park@samsung.com,
+        Greg KH <gregkh@linuxfoundation.org>, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, asutoshd@codeaurora.org,
+        stanley.chu@mediatek.com, bvanassche@acm.org,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>,
+        SEUNGUK SHIN <seunguk.shin@samsung.com>
+Subject: Re: [PATCH v19 3/3] scsi: ufs: Prepare HPB read for cached sub-region
+In-Reply-To: <12a011cd895dc9be5ec6c4f964b6011af492f06d.camel@gmail.com>
+References: <20210129052848epcms2p6e5797efd94e6282b76ad9ae6c99e3ab5@epcms2p6>
+ <CGME20210129052848epcms2p6e5797efd94e6282b76ad9ae6c99e3ab5@epcms2p5>
+ <20210129053042epcms2p538e7fa396c3c2104594c44e48be53eb8@epcms2p5>
+ <7f25ccb1d857131baa1c0424c4542e33@codeaurora.org>
+ <b6a8652c00411e3f71d33e7a6322f49eb5701039.camel@gmail.com>
+ <DM6PR04MB657522B94AB436CF096460F6FCB29@DM6PR04MB6575.namprd04.prod.outlook.com>
+ <12a011cd895dc9be5ec6c4f964b6011af492f06d.camel@gmail.com>
+Message-ID: <ba7943ab40720df96a9fedb04ab0e4c8@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jiri,
-
-On 2/5/2021 5:49 PM, Jiri Olsa wrote:
-> On Fri, Jan 29, 2021 at 03:08:54PM +0800, Jin Yao wrote:
+On 2021-02-05 23:08, Bean Huo wrote:
+> On Fri, 2021-02-05 at 14:06 +0000, Avri Altman wrote:
+>> > > > +     put_unaligned_be64(ppn, &cdb[6]);
+>> > >
+>> > > You are assuming the HPB entries read out by "HPB Read Buffer"
+>> > > cmd
+>> > > are
+>> > > in Little
+>> > > Endian, which is why you are using put_unaligned_be64 here.
+>> > > However,
+>> > > this assumption
+>> > > is not right for all the other flash vendors - HPB entries read
+>> > > out
+>> > > by
+>> > > "HPB Read Buffer"
+>> > > cmd may come in Big Endian, if so, their random read performance
+>> > > are
+>> > > screwed.
+>> >
+>> > For this question, it is very hard to make a correct format since
+>> > the
+>> > Spec doesn't give a clear definition. Should we have a default
+>> > format,
+>> > if there is conflict, and then add quirk or add a vendor-specific
+>> > table?
+>> >
+>> > Hi Avri
+>> > Do you have a good idea?
+>> 
+>> I don't know.  Better let Daejun answer this.
+>> This was working for me for both Galaxy S20 (Exynos) as well as
+>> Xiaomi Mi10 (8250).
+>> 
 > 
-> SNIP
-> 
->> +			}
->> +		}
->> +
->>   		if (!ret)
->>   			al->filtered |= (1 << HIST_FILTER__SYMBOL);
->>   	}
->> diff --git a/tools/perf/util/symbol.c b/tools/perf/util/symbol.c
->> index 64a039cbba1b..2c13f6acda7f 100644
->> --- a/tools/perf/util/symbol.c
->> +++ b/tools/perf/util/symbol.c
->> @@ -2406,6 +2406,39 @@ int setup_intlist(struct intlist **list, const char *list_str,
->>   	return 0;
->>   }
->>   
->> +static int setup_addrlist(struct intlist **addr_list, struct strlist *sym_list)
->> +{
->> +	struct str_node *pos, *tmp;
->> +	unsigned long val;
->> +	char *sep;
->> +	int err = 0, i = 0;
->> +
->> +	*addr_list = intlist__new(NULL);
->> +	if (!*addr_list)
->> +		return -1;
->> +
->> +	strlist__for_each_entry_safe(pos, tmp, sym_list) {
->> +		val = strtoul(pos->s, &sep, 16);
->> +		if (*sep != ',' && *sep != '\0')
->> +			continue;
-> 
-> I think you also need to check that val is valid and errno
-> (check other strtoul we call in perf)
-> because above could pass for:
-> 
-> 	$ ./perf script -S ",7fd0f1b69a13"
-> 	ls 651468 410180.795577:      90098 cycles:u:      7fd0f1b69a13 __GI___tunables_init+0x73 (/usr/lib64/ld-2.32.so)
-> 
+> Thanks, I tested Daejun's patchset before, it is also ok (I don't know
+> which version patchset). maybe we can keep current implementation as
+> default, then if there is conflict, and submit the quirk.
 > 
 
-Now I think this may be OK because that's not the pattern matching. It just matches the 7fd0f1b69a13 
-in address list.
+Yeah, you've tested it, are you sure that Micron's UFS devices are OK
+with this specific code line?
 
-And we also need to support the address + symbol combination, such as,
+Micron UFS FW team has confirmed that Micron's HPB entries read out by
+"HPB Buffer Read" cmd are in big-endian byte ordering.
 
-$ ./perf script -S "ffffffff9a51de2a,put_cmsg"
-          swapper     0 [007] 347304.359521:      44937   cycles:  ffffffff9a51de2a rcu_core+0x29a 
-([kernel.kallsyms])
-     avahi-daemon   580 [007] 347304.468122:      57176   cycles:  ffffffff9af4764e put_cmsg+0xde 
-([kernel.kallsyms])
+If Micron FW team is right, I am pretty sure that you would have seen
+random read performance regression on Micron UFS devices caused by
+invalid HPB entry format in HPB Read cmd UPIU (which leads to L2P cache
+miss in device side all the time) during your test.
 
-So the idea is when we can get a valid address from -S list, we add the address to intlist for 
-address comparison otherwise we still leave it to symbol list for symbol comparison.
+Can Guo.
 
-Anyway, I will post v3 patch for review.
-
-Thanks
-Jin Yao
-
-> plus check for " " so we could do:
+> Thanks,
+> Bean
 > 
-> 	$ ./perf script -S "7fd0f1b69a13 ,7fd0f1b5e189"
-> 	ls 651468 410180.796055:     190731 cycles:u:      7fd0f1b5e189 _dl_relocate_object+0x4b9 (/usr/lib64/ld-2.32.so)
-> 
-> 	$ ./perf script -S "7fd0f1b69a13,7fd0f1b5e189"
-> 	ls 651468 410180.795577:      90098 cycles:u:      7fd0f1b69a13 __GI___tunables_init+0x73 (/usr/lib64/ld-2.32.so)
-> 	ls 651468 410180.796055:     190731 cycles:u:      7fd0f1b5e189 _dl_relocate_object+0x4b9 (/usr/lib64/ld-2.32.so)
-> 
-> 
-> thanks,
-> jirka
-> 
+>> Thanks,
+>> Avri
