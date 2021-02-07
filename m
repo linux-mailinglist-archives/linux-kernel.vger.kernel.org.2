@@ -2,144 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 434C731249D
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 15:14:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B066A3124A2
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 15:17:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230161AbhBGOOI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Feb 2021 09:14:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42052 "EHLO
+        id S230186AbhBGOPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Feb 2021 09:15:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230132AbhBGONr (ORCPT
+        with ESMTP id S230163AbhBGOOL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Feb 2021 09:13:47 -0500
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C714C06174A
-        for <linux-kernel@vger.kernel.org>; Sun,  7 Feb 2021 06:13:06 -0800 (PST)
-Received: by mail-lj1-x22a.google.com with SMTP id v15so13397179ljk.13
-        for <linux-kernel@vger.kernel.org>; Sun, 07 Feb 2021 06:13:06 -0800 (PST)
+        Sun, 7 Feb 2021 09:14:11 -0500
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 113E3C061786
+        for <linux-kernel@vger.kernel.org>; Sun,  7 Feb 2021 06:13:31 -0800 (PST)
+Received: by mail-wm1-x32d.google.com with SMTP id i5so2234435wmq.2
+        for <linux-kernel@vger.kernel.org>; Sun, 07 Feb 2021 06:13:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
+        d=chrisdown.name; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=16o/Z+5upyUHDrLVmHwI5TdllWSqlH3kjJsNlYfK/dI=;
-        b=sdAob03aN01bGphLyuq7yn+DUdeoZNHe6b2eGUb+pt5y+edC/5QzINLkJNO/66iLB1
-         2VUex09f5JS4nx0CoeFX8sYgN1spfZ/ohSTEYDArUKugvdQqFMQFTuAVqZxZ8xtoFCYO
-         mODdUWMUJy6f96sGAWGA3rwJyv6s8i+5DnZfnQNk4PZT2buMqNfVRgtjSwUBiPbvZafJ
-         nfAAmtsdTAwuHvDOf+dVVQhE5dv02M0LrY1pJ3z5e+hfdhawLg5MPtyIdGvKb2xaZLqq
-         ooRIJqPZtwRqqpGOVip/uHBYIQQ3/BEgS5tp6mksYBNasj8ioCfJd75uCUg59EiuwXxv
-         jslA==
+         :content-disposition:in-reply-to:user-agent;
+        bh=DzycL/Z08ICnL6EIGg9bduNGDWkRGyuAWxX+VA81rHA=;
+        b=j0riZoK3kpoXTxaF8etREr3dSBu8Qm0Su+VN632qv7OnN/HkzXInF0m6/vnMg4l3qJ
+         XTKRtO4/NRMei8ukCbmDfm0JKtuo5sCSP0RnmJ02eLr7DB2TVoTwQPBO53Jvm39fsNml
+         wPrLEbS3BDTsdy301O+OZEc1YbIfBya0SayB0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=16o/Z+5upyUHDrLVmHwI5TdllWSqlH3kjJsNlYfK/dI=;
-        b=DH3wtcTq0tO4CTf9wVNBm85beFPGAZrAf+H4Dc/FCL7AQIoSkwILLC8mXktDLplkDP
-         WrSsAzAPDNaSq2D0oJaPiMHBZpwqZLlNFjESI40AtZqFigPnEgUIMaMqU0aT86JSWb0R
-         1pw32HaWrYdtWV63+bV69oJ8SJrP8X1I07Hpm8shB1EXDve09ko8XzrzNt+zvuKFkcAs
-         YvMbp1TIq5UXK0kC0mxRuUluxgBp5e+y915xxmTmT0hJwaqfl/jOYs96g1HyJ+8XCcDU
-         R75e8pwVHzUOYAytcZ415/WzxUbQn2ZCOt2k2Sl6nhU3Qf3rn8nXU3o5sY03JSSBM8J0
-         GOQg==
-X-Gm-Message-State: AOAM5327bJaOmFUi70SVW0hSjhpC2/sTGT9mcuuZaDBULWL1EEi03owp
-        /+5ddb799Xp2aZ8PecNpc5iw9Q==
-X-Google-Smtp-Source: ABdhPJwGYjyqV9o9D15MhutySTWgowfjEJaTA+lLGBeJ4qML63CfUyt+eIf0QhR4L3y92geYFyFOjA==
-X-Received: by 2002:a2e:a58f:: with SMTP id m15mr8198871ljp.214.1612707184921;
-        Sun, 07 Feb 2021 06:13:04 -0800 (PST)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id a1sm1713974lfi.202.2021.02.07.06.13.04
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=DzycL/Z08ICnL6EIGg9bduNGDWkRGyuAWxX+VA81rHA=;
+        b=NCR8WMJSYdpkZhwlyVhYszq+6Yfrg1jqvc6ZfAhBFFkkmpWUnyRhKhnonngKn4Ekon
+         cqF5iICnBzDsHPC2/WTlS/ziGOh6q6fPy7lZLve/Ul3YrvDbZWBNsqLVtHhnTdH6Bg5G
+         IH2R64Drv4h/CbqhNgeuJSlaWe+h1WdDXlvP6goU4a04LNZv7GobNtdpk7nnQXazXAfm
+         ftNT0fidLl8jp5l1Enj1LEOUAWTx5DG8htgat8hO/s4SdCPo9P6e3rF7p1IFVXzbnZVv
+         kbktArWbqTsj+k7Wl3csGnVKZsV0vG/WHtsQ7+afJUJgAB2c7RXyM0qY3vnCqFqRLHKC
+         uecA==
+X-Gm-Message-State: AOAM530d4JeRtzjltmg2S9VkayEoozbJ5llSs5jjQ5Y5JBEfIgrN+Bob
+        s3A2JseK2bgREhVcR1tLyHtgtEL8a/zMR2wZ
+X-Google-Smtp-Source: ABdhPJzL5qCa8SXoD+AHQOX0YZvRbRW4DHAM018MmghGG++f9V3lSj+qPydm56SbzapSRCbqejkI9A==
+X-Received: by 2002:a1c:4c03:: with SMTP id z3mr2433100wmf.82.1612707209516;
+        Sun, 07 Feb 2021 06:13:29 -0800 (PST)
+Received: from localhost ([2a01:4b00:8432:8a00:63de:dd93:20be:f460])
+        by smtp.gmail.com with ESMTPSA id q4sm22825430wrg.22.2021.02.07.06.13.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 07 Feb 2021 06:13:04 -0800 (PST)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id 54ED6102656; Sun,  7 Feb 2021 17:13:04 +0300 (+03)
-Date:   Sun, 7 Feb 2021 17:13:04 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC v1 09/26] x86/tdx: Handle CPUID via #VE
-Message-ID: <20210207141304.kdjg732lzh5uzz7i@box>
-References: <cover.1612563142.git.sathyanarayanan.kuppuswamy@linux.intel.com>
- <e45fcb584cd9fd67e6585ad8a904659a8b2ff9a5.1612563142.git.sathyanarayanan.kuppuswamy@linux.intel.com>
- <CALCETrW3+mzHaCUcWC1YUSwiuHkDWo=S4xnavk0CMcBiZd17+Q@mail.gmail.com>
+        Sun, 07 Feb 2021 06:13:29 -0800 (PST)
+Date:   Sun, 7 Feb 2021 14:13:28 +0000
+From:   Chris Down <chris@chrisdown.name>
+To:     Joe Perches <joe@perches.com>
+Cc:     Petr Mladek <pmladek@suse.com>, linux-kernel@vger.kernel.org,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        John Ogness <john.ogness@linutronix.de>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>, kernel-team@fb.com,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jason Baron <jbaron@akamai.com>,
+        Kees Cook <keescook@chromium.org>, linux-api@vger.kernel.org
+Subject: Re: [PATCH] printk: Userspace format enumeration support
+Message-ID: <YB/1iHwwTi9dOv38@chrisdown.name>
+References: <YBwU0G+P0vb9wTwm@chrisdown.name>
+ <YB11jybvFCb95S9e@alley>
+ <YB3Fwh827m0F+y3n@chrisdown.name>
+ <49124db60cdc88c4e9fcca1bbc9767432ad5a93b.camel@perches.com>
+ <YB8IcCqOJA7vzqiJ@chrisdown.name>
+ <dc6cf90d978e012b0d698a698935d526ca4b0a1c.camel@perches.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <CALCETrW3+mzHaCUcWC1YUSwiuHkDWo=S4xnavk0CMcBiZd17+Q@mail.gmail.com>
+In-Reply-To: <dc6cf90d978e012b0d698a698935d526ca4b0a1c.camel@perches.com>
+User-Agent: Mutt/2.0.5 (da5e3282) (2021-01-21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 05, 2021 at 03:42:01PM -0800, Andy Lutomirski wrote:
-> On Fri, Feb 5, 2021 at 3:39 PM Kuppuswamy Sathyanarayanan
-> <sathyanarayanan.kuppuswamy@linux.intel.com> wrote:
-> >
-> > From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-> >
-> > TDX has three classes of CPUID leaves: some CPUID leaves
-> > are always handled by the CPU, others are handled by the TDX module,
-> > and some others are handled by the VMM. Since the VMM cannot directly
-> > intercept the instruction these are reflected with a #VE exception
-> > to the guest, which then converts it into a TDCALL to the VMM,
-> > or handled directly.
-> >
-> > The TDX module EAS has a full list of CPUID leaves which are handled
-> > natively or by the TDX module in 16.2. Only unknown CPUIDs are handled by
-> > the #VE method. In practice this typically only applies to the
-> > hypervisor specific CPUIDs unknown to the native CPU.
-> >
-> > Therefore there is no risk of causing this in early CPUID code which
-> > runs before the #VE handler is set up because it will never access
-> > those exotic CPUID leaves.
-> >
-> > Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-> > Reviewed-by: Andi Kleen <ak@linux.intel.com>
-> > Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-> > ---
-> >  arch/x86/kernel/tdx.c | 32 ++++++++++++++++++++++++++++++++
-> >  1 file changed, 32 insertions(+)
-> >
-> > diff --git a/arch/x86/kernel/tdx.c b/arch/x86/kernel/tdx.c
-> > index 5d961263601e..e98058c048b5 100644
-> > --- a/arch/x86/kernel/tdx.c
-> > +++ b/arch/x86/kernel/tdx.c
-> > @@ -172,6 +172,35 @@ static int tdx_write_msr_safe(unsigned int msr, unsigned int low,
-> >         return ret || r10 ? -EIO : 0;
-> >  }
-> >
-> > +static void tdx_handle_cpuid(struct pt_regs *regs)
-> > +{
-> > +       register long r10 asm("r10") = TDVMCALL_STANDARD;
-> > +       register long r11 asm("r11") = EXIT_REASON_CPUID;
-> > +       register long r12 asm("r12") = regs->ax;
-> > +       register long r13 asm("r13") = regs->cx;
-> > +       register long r14 asm("r14");
-> > +       register long r15 asm("r15");
-> > +       register long rcx asm("rcx");
-> > +       long ret;
-> > +
-> > +       /* Allow to pass R10, R11, R12, R13, R14 and R15 down to the VMM */
-> > +       rcx = BIT(10) | BIT(11) | BIT(12) | BIT(13) | BIT(14) | BIT(15);
-> > +
-> > +       asm volatile(TDCALL
-> > +                       : "=a"(ret), "=r"(r10), "=r"(r11), "=r"(r12), "=r"(r13),
-> > +                         "=r"(r14), "=r"(r15)
-> > +                       : "a"(TDVMCALL), "r"(rcx), "r"(r10), "r"(r11), "r"(r12),
-> > +                         "r"(r13)
-> > +                       : );
-> 
-> Some "+" constraints would make this simpler.  But I think you should
-> factor the TDCALL helper out into its own function.
+Joe Perches writes:
+>> There are certainly printks which can't be trivially monitored using the printk
+>> format alone, but the vast majority of the ones that are monitored _do_ have
+>> meaningful formats and can be monitored over time. No solution to this is going
+>> to catch every single case, especially when so much of the information can be
+>> generated dyamically, but this patchset still goes a long way to making printk
+>> monitoring more tractable for use cases like the one described in the
+>> changelog.
+>
+>For the _vast_ majority of printk strings, this can easily be found
+>and compared using a trivial modification to strings.
 
-Factor out TDCALL into a helper is tricky: different TDCALLs have
-different list of registers passed to VMM.
+There are several issues with your proposed approach that make it unsuitable 
+for use as part of a reliable production environment:
 
--- 
- Kirill A. Shutemov
+1. It misses printk() formats without KERN_SOH
+
+printk() formats without KERN_SOH are legal and use MESSAGE_LOGLEVEL_DEFAULT.  
+On my test kernel, your proposed patch loses >5% of printk formats -- over 200 
+messages -- due to this, including critical ones like those about hardware or 
+other errors.
+
+2. Users don't always have the kernel image available
+
+Many of our machines and many of the machines of others like us do not boot 
+using local storage, but instead use PXE or other technologies where the kernel 
+may not be stored during runtime.
+
+As is described in the changelog, it is necessary to be able to vary 
+remediations not only based on what is already in /dev/kmsg, but also to be 
+able to make decisions about our methodology based on what's _supported_ in the 
+running kernel at runtime, and your proposed approach makes this not viable.
+
+3. `KERN_SOH + level' can appear in other places than just printk strings
+
+KERN_SOH is just ASCII '\001' -- it's not distinctive or unique, even when 
+paired with a check for something that looks like a level after it. For this 
+reason, your proposed patch results in a non-trivial amount of non-printk 
+related garbage in its output. For example:
+
+     % binutils/strings -k /tmp/vmlinux | head -5
+     3L)s
+     3L)s
+     c,[]A\
+     c(L)c
+     d$pL)d$`u4
+
+Fundamentally, one cannot use a tool which just determines whether something is 
+printable to determine semantic intent.
+
+4. strings(1) output cannot differentiate embedded newlines and new formats
+
+The following has exactly the same output from strings(1), but will manifest 
+completely differently at printk() time:
+
+     printk(KERN_ERR "line one\nline two\nline three\n");
+     printk("line four\n");
+
+With strings, the hypothetical output would be:*
+
+     3line one\nline two\nline three\nline four\n
+
+* "line four\n" would also be missing with your current -k check.
+
+But this makes it impossible to distinguish between this, compared to:
+
+     printk(KERN_ERR "line one\nline two\n");
+     printk("line three\n");
+     printk("line four\n");
+
+The originally posted patch _does_ differentiate between these cases, using \0 
+as a reliable separator. Its outputs are, respectively:
+
+     \0013line one\nline two\nline three\0\nline four\n\0
+     \0013line one\nline two\n\0line three\nline four\n\0
+
+This isn't just a theoretical concern -- there are plenty of places which use 
+multiline printks, and we must be able to distinguish between that and 
+_multiple_ printks. Not being able to differentiate cases like these would 
+dramatically reduce the effectiveness of printk enumeration, as we can no 
+longer ascertain which formats will always be used together (for example, in 
+the case of sequences of printks guarded by conditionals, which are all over 
+the place).
+
+5. strings(1) is not contextually aware, and cannot be made to act as if it is
+
+strings has no idea about what it is reading, which is why it is more than 
+happy to output the kind of meaningless output shown in #3. There are plenty of 
+places across the kernel where there might be a sequence of bytes which the 
+strings utility happens to interpret as being semantically meaningful, but in 
+reality just happens to be an unrelated sequence of coincidentally printable 
+bytes that just happens to contain a \001.
+
+I appreciate your willingness to propose other solutions, but for these 
+reasons, the proposed strings(1) patch would not suffice as an interface for 
+printk enumeration.
