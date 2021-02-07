@@ -2,177 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C77A3122CE
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 09:38:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87FAB3122D0
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 09:38:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229717AbhBGIhv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Feb 2021 03:37:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59718 "EHLO mail.kernel.org"
+        id S229536AbhBGIi0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Feb 2021 03:38:26 -0500
+Received: from marcansoft.com ([212.63.210.85]:50108 "EHLO mail.marcansoft.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229646AbhBGIfd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Feb 2021 03:35:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CB48764E72;
-        Sun,  7 Feb 2021 08:34:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612686892;
-        bh=A888IaNSu2puuK4G07jua8gvDnPrfTuVGtEQP35oN9A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=0Nmx60DOiWfBPaUAgsjI6TnhllIu6VSGe/8EQ9zHSy2ZM4pfxmXzNUTO083Db5UU1
-         I60XWNw45jX64rdrAtLxV0DQDUqymUn49z6NYluD1+3GAFzBhzXrxRgrRF2pegYOPy
-         5LdyJWr7XUYkp5dxZwrlfBb+tW2cB5lxYfJMbt0o=
-Date:   Sun, 7 Feb 2021 09:34:49 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Mahak gupta <gmahak1@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org,
-        Richard Yeh <rcy@google.com>, benchan@chromium.org,
-        Todd Poynor <toddpoynor@google.com>,
-        Rob Springer <rspringer@google.com>
-Subject: Re: [PATCH] staging: gasket: Align code to match with open
- parenthesis and fix the lines ending with open parenthesis
-Message-ID: <YB+mKfTaadKs7QCN@kroah.com>
-References: <CAPqi7VBLxAsjXKpVc_u6q44mVXMJf8dERh7OnR3cjZRD0-t4eg@mail.gmail.com>
+        id S229522AbhBGIhH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Feb 2021 03:37:07 -0500
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (No client certificate requested)
+        (Authenticated sender: marcan@marcan.st)
+        by mail.marcansoft.com (Postfix) with ESMTPSA id 3A3F742856;
+        Sun,  7 Feb 2021 08:36:14 +0000 (UTC)
+To:     Arnd Bergmann <arnd@kernel.org>, Marc Zyngier <maz@kernel.org>
+Cc:     SoC Team <soc@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Olof Johansson <olof@lixom.net>
+References: <20210204203951.52105-1-marcan@marcan.st>
+ <20210204203951.52105-11-marcan@marcan.st> <87h7mpky0f.wl-maz@kernel.org>
+ <CAK8P3a0-Qk1WAUaCWeX8Zypphpadan3YAOES9t7LFYBOJkXKog@mail.gmail.com>
+From:   Hector Martin 'marcan' <marcan@marcan.st>
+Subject: Re: [PATCH 10/18] arm64: Introduce FIQ support
+Message-ID: <cb721f28-d5e9-3381-2d04-746c0aa2a0d3@marcan.st>
+Date:   Sun, 7 Feb 2021 17:36:12 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPqi7VBLxAsjXKpVc_u6q44mVXMJf8dERh7OnR3cjZRD0-t4eg@mail.gmail.com>
+In-Reply-To: <CAK8P3a0-Qk1WAUaCWeX8Zypphpadan3YAOES9t7LFYBOJkXKog@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: es-ES
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Feb 07, 2021 at 01:11:36PM +0530, Mahak gupta wrote:
-> This patch fixes warnings of checkpatch.pl. According to the coding style
-> of linux, code should be aligned properly to match with open parenthesis
-> and lines should not end with open parenthesis.
+On 07/02/2021 01.22, Arnd Bergmann wrote:
+> * In the fiq handler code, check if normal interrupts were enabled
+>    when the fiq hit. Normally they are enabled, so just proceed to
+>    handle the timer and ipi directly
 > 
-> Signed-off-by: mhk19 <gmahak1@gmail.com>
-> ---
->  drivers/staging/gasket/gasket_ioctl.c | 18 ++++++++----------
->  1 file changed, 8 insertions(+), 10 deletions(-)
+> * if irq was disabled, defer the handling by doing a self-ipi
+>    through the aic's ipi method, and handle it from there
+>    when dealing with the next interrupt once interrupts get
+>    enabled.
 > 
-> diff --git a/drivers/staging/gasket/gasket_ioctl.c
-> b/drivers/staging/gasket/gasket_ioctl.c
-> index e3047d36d8db..a966231bad42 100644
-> --- a/drivers/staging/gasket/gasket_ioctl.c
-> +++ b/drivers/staging/gasket/gasket_ioctl.c
-> @@ -40,7 +40,7 @@ static int gasket_set_event_fd(struct gasket_dev
-> *gasket_dev,
-> 
->  /* Read the size of the page table. */
->  static int gasket_read_page_table_size(struct gasket_dev *gasket_dev,
-> -       struct gasket_page_table_ioctl __user *argp)
-> +                                      struct gasket_page_table_ioctl
-> __user *argp)
->  {
->         int ret = 0;
->         struct gasket_page_table_ioctl ibuf;
-> @@ -51,8 +51,7 @@ static int gasket_read_page_table_size(struct gasket_dev
-> *gasket_dev,
->         if (ibuf.page_table_index >= gasket_dev->num_page_tables)
->                 return -EFAULT;
-> 
-> -       ibuf.size = gasket_page_table_num_entries(
-> -               gasket_dev->page_table[ibuf.page_table_index]);
-> +       ibuf.size =
-> gasket_page_table_num_entries(gasket_dev->page_table[ibuf.page_table_index]);
-> 
->         trace_gasket_ioctl_page_table_data(ibuf.page_table_index, ibuf.size,
->                                            ibuf.host_address,
-> @@ -66,7 +65,7 @@ static int gasket_read_page_table_size(struct gasket_dev
-> *gasket_dev,
-> 
->  /* Read the size of the simple page table. */
->  static int gasket_read_simple_page_table_size(struct gasket_dev
-> *gasket_dev,
-> -       struct gasket_page_table_ioctl __user *argp)
-> +                                             struct
-> gasket_page_table_ioctl __user *argp)
->  {
->         int ret = 0;
->         struct gasket_page_table_ioctl ibuf;
-> @@ -92,7 +91,7 @@ static int gasket_read_simple_page_table_size(struct
-> gasket_dev *gasket_dev,
-> 
->  /* Set the boundary between the simple and extended page tables. */
->  static int gasket_partition_page_table(struct gasket_dev *gasket_dev,
-> -       struct gasket_page_table_ioctl __user *argp)
-> +                                      struct gasket_page_table_ioctl
-> __user *argp)
->  {
->         int ret;
->         struct gasket_page_table_ioctl ibuf;
-> @@ -107,8 +106,8 @@ static int gasket_partition_page_table(struct
-> gasket_dev *gasket_dev,
-> 
->         if (ibuf.page_table_index >= gasket_dev->num_page_tables)
->                 return -EFAULT;
-> -       max_page_table_size = gasket_page_table_max_size(
-> -               gasket_dev->page_table[ibuf.page_table_index]);
-> +       max_page_table_size = gasket_page_table_max_size
-> +               (gasket_dev->page_table[ibuf.page_table_index]);
-> 
->         if (ibuf.size > max_page_table_size) {
->                 dev_dbg(gasket_dev->dev,
-> @@ -119,8 +118,7 @@ static int gasket_partition_page_table(struct
-> gasket_dev *gasket_dev,
-> 
->         mutex_lock(&gasket_dev->mutex);
-> 
-> -       ret = gasket_page_table_partition(
-> -               gasket_dev->page_table[ibuf.page_table_index], ibuf.size);
-> +       ret =
-> gasket_page_table_partition(gasket_dev->page_table[ibuf.page_table_index],
-> ibuf.size);
->         mutex_unlock(&gasket_dev->mutex);
-> 
->         return ret;
-> @@ -183,7 +181,7 @@ static int gasket_unmap_buffers(struct gasket_dev
-> *gasket_dev,
->   * corresponding memory.
->   */
->  static int gasket_config_coherent_allocator(struct gasket_dev *gasket_dev,
-> -       struct gasket_coherent_alloc_config_ioctl __user *argp)
-> +                                           struct
-> gasket_coherent_alloc_config_ioctl __user *argp)
->  {
->         int ret;
->         struct gasket_coherent_alloc_config_ioctl ibuf;
-> --
-> 2.17.1
+> This would be similar to the soft-disable feature on powerpc, which
+> never actually turns off interrupts from regular kernel code but
+> just checks a flag in local_irq_enable that gets set when a
+> hardirq happened.
 
-Hi,
+Case #2 seems messy. In AIC, we'd have to either:
 
-This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
-a patch that has triggered this response.  He used to manually respond
-to these common problems, but in order to save his sanity (he kept
-writing the same thing over and over, yet to different people), I was
-created.  Hopefully you will not take offence and will fix the problem
-in your patch and resubmit it so that it can be accepted into the Linux
-kernel tree.
+* Disable FIQs, and hope that doesn't confuse any save/restore code 
+going on, then set a flag and check it in *both* the IRQ and FIQ path 
+since either might trigger depending on what happens next, or
+* Mask the relevant timer, which we'd then need to make sure does not 
+confuse the timer code (Unmask it again when we fire the interrupt? But 
+what if the timer code intended to mask it in the interim?)
 
-You are receiving this message because of the following common error(s)
-as indicated below:
+Neither sounds particularly clean to me... if we had FIQ status masking 
+registers this would be more reasonable, but I'm not sure I'd want the 
+AIC driver to mess with neither DAIF nor the timer registers. It's bad 
+enough that it has to read the latter already (and I hope I can find a 
+better way of doing that...).
 
-- Your patch is malformed (tabs converted to spaces, linewrapped, etc.)
-  and can not be applied.  Please read the file,
-  Documentation/email-clients.txt in order to fix this.
+Plus I don't know if the vector entry code and other scaffolding between 
+the vector and the AIC driver would be happy with, effectively, 
+recursive interrupts. This could work with a carefully controlled path 
+to make sure it doesn't break things, but I'm not so sure about the 
+current "just point FIQ and IRQ to the same place" approach here.
 
-- You sent multiple patches, yet no indication of which ones should be
-  applied in which order.  Greg could just guess, but if you are
-  receiving this email, he guessed wrong and the patches didn't apply.
-  Please read the section entitled "The canonical patch format" in the
-  kernel file, Documentation/SubmittingPatches for a description of how
-  to do this so that Greg has a chance to apply these correctly.
-
-- It looks like you did not use your "real" name for the patch on either
-  the Signed-off-by: line, or the From: line (both of which have to
-  match).  Please read the kernel file, Documentation/SubmittingPatches
-  for how to do this correctly.
-
-If you wish to discuss this problem further, or you have questions about
-how to resolve this issue, please feel free to respond to this email and
-Greg will reply once he has dug out from the pending patches received
-from other developers.
-
-thanks,
-
-greg k-h's patch email bot
+-- 
+Hector Martin "marcan" (marcan@marcan.st)
+Public Key: https://mrcn.st/pub
