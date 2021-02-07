@@ -2,156 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FBD03126EB
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 19:49:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6035B3126C5
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 19:42:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230075AbhBGSqo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Feb 2021 13:46:44 -0500
-Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:49776 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230034AbhBGSn6 (ORCPT
+        id S229807AbhBGSlq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Feb 2021 13:41:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42824 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229760AbhBGSlT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Feb 2021 13:43:58 -0500
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 117IUPmw027844;
-        Sun, 7 Feb 2021 10:43:07 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=pfpt0220; bh=YyIJ/1eDbCh0foaOPgcKNNopcXPvlFkHzZZvwgJfM/4=;
- b=dM2EmSeXOG9Yb/fxeYrJM0TT9ok+ev2aA68lL3teTYl5LopVAedtFwaYx9HwQ1RBbjjy
- Dhcb8de0rLWCDxMFWGgb6TmYjVwB1VEJSH88vX2+Hz3JfZIKgYUHOudWJt/PC7xD3xdL
- wXjZetags4pFBMBu+y4xn1L7FdEQqFj4KJZ5NKNSPLmDDKQ8He2NF5h5QTP2gl6yHPfD
- qR+aiKnXH2wqV60ILZ+ta8Z3TjOl3jNdPVPpMKq+DQvkZtYRXGgoHVSwmdqVwmGJZStK
- 053fsLoC++bbwKzmElFO8bD1vKFs1C/JiE5bcEVc/bjrUiUNpNhJP4AoF0mUOvBmcnxA CA== 
-Received: from dc5-exch02.marvell.com ([199.233.59.182])
-        by mx0b-0016f401.pphosted.com with ESMTP id 36hugq2ex2-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Sun, 07 Feb 2021 10:43:07 -0800
-Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Sun, 7 Feb
- 2021 10:43:05 -0800
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Sun, 7 Feb 2021 10:43:05 -0800
-Received: from stefan-pc.marvell.com (stefan-pc.marvell.com [10.5.25.21])
-        by maili.marvell.com (Postfix) with ESMTP id 5788C3F7040;
-        Sun,  7 Feb 2021 10:43:01 -0800 (PST)
-From:   <stefanc@marvell.com>
-To:     <netdev@vger.kernel.org>
-CC:     <thomas.petazzoni@bootlin.com>, <davem@davemloft.net>,
-        <nadavh@marvell.com>, <ymarkman@marvell.com>,
-        <linux-kernel@vger.kernel.org>, <stefanc@marvell.com>,
-        <kuba@kernel.org>, <linux@armlinux.org.uk>, <mw@semihalf.com>,
-        <andrew@lunn.ch>, <rmk+kernel@armlinux.org.uk>,
-        <atenart@kernel.org>, <devicetree@vger.kernel.org>,
-        <robh+dt@kernel.org>, <sebastian.hesselbarth@gmail.com>,
-        <gregory.clement@bootlin.com>,
-        <linux-arm-kernel@lists.infradead.org>
-Subject: [PATCH v9 net-next 15/15] net: mvpp2: add TX FC firmware check
-Date:   Sun, 7 Feb 2021 20:38:57 +0200
-Message-ID: <1612723137-18045-16-git-send-email-stefanc@marvell.com>
-X-Mailer: git-send-email 1.9.1
-In-Reply-To: <1612723137-18045-1-git-send-email-stefanc@marvell.com>
-References: <1612723137-18045-1-git-send-email-stefanc@marvell.com>
+        Sun, 7 Feb 2021 13:41:19 -0500
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5721AC06174A
+        for <linux-kernel@vger.kernel.org>; Sun,  7 Feb 2021 10:40:39 -0800 (PST)
+Received: by mail-lf1-x12a.google.com with SMTP id m22so18874519lfg.5
+        for <linux-kernel@vger.kernel.org>; Sun, 07 Feb 2021 10:40:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=c02vozesVICThimYMoVWUbqmQGVyvpyJgeGdYKbjc10=;
+        b=cyXy0jjgdW5l6NbPrNn+CEdkegkl0qo4uL1N9bxEhmsBzOQx1mNeT7+dgcj7s2UOCV
+         3cs58Sf77lLZA3LwCkMJq7RGQhBSrv2SPxQFW0JlGGZf8IGPzCmsgYi0Y0FauZiJjwLh
+         AbJ4PfzEgMFiao5ZJ4fOi00dPtM/TK0Kf0Pag=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=c02vozesVICThimYMoVWUbqmQGVyvpyJgeGdYKbjc10=;
+        b=a5eWEVQC3IjPXonx89SlLCTy2uE8L8VyVwmFH3mVG/gk5zalYzvXTAviNE/mtzhivN
+         BJ4Qf03QhhltFAonqCoYmU9YNiimZkHAKcTzS1zTDiRrrg0OPYZWOclOUF3i7Lj2W8Wu
+         NzEg+Zs1lwa/6xT0uRDvfEHBB3/cIe8pG9IfXxs+TvQHV8uiudCUwP3MHi8q/LEhZIX3
+         uOO85Ueu0iz7RnfhEfMhamsaGvAihdhaMAwkeki/L6eVGyS40bl1tlUgyZIZr2Eb292l
+         FGG7Byr1eC6BKbvR/+VgfA+LEEUncVoYFfuRjY4my/UcLdIV3qCfjVesvdszvGFacK6z
+         SUhQ==
+X-Gm-Message-State: AOAM533xEuNn/zDwXRddVNh3wjmewHp+KJ7lU0mX4wK6hEDo9WhIPIcW
+        cp5WFqWhgk1jRFNDXO41LtQep9nWEMT3Uw==
+X-Google-Smtp-Source: ABdhPJx41BGRbDKxG/ZK2/ywR/s278W5CVqWm+sBmI6Ojj5yWljLRXAh4Gn9UuV9O2jbFXiYAkJueA==
+X-Received: by 2002:ac2:5ccb:: with SMTP id f11mr8559227lfq.410.1612723237583;
+        Sun, 07 Feb 2021 10:40:37 -0800 (PST)
+Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com. [209.85.167.51])
+        by smtp.gmail.com with ESMTPSA id z2sm1784298lfc.62.2021.02.07.10.40.35
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 07 Feb 2021 10:40:36 -0800 (PST)
+Received: by mail-lf1-f51.google.com with SMTP id m22so18874446lfg.5
+        for <linux-kernel@vger.kernel.org>; Sun, 07 Feb 2021 10:40:35 -0800 (PST)
+X-Received: by 2002:a19:c14c:: with SMTP id r73mr7956825lff.201.1612723235473;
+ Sun, 07 Feb 2021 10:40:35 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-02-07_10:2021-02-05,2021-02-07 signatures=0
+References: <20210207104022.GA32127@zn.tnic> <CAHk-=widXSyJ8W3vRrqO-zNP12A+odxg2J2_-oOUskz33wtfqA@mail.gmail.com>
+ <20210207175814.GF32127@zn.tnic> <CAHk-=wi5z9S7x94SKYNj6qSHBqz+OD76GW=MDzo-KN2Fzm-V4Q@mail.gmail.com>
+ <541146c6-d809-1041-7417-547d7248e3cd@intel.com>
+In-Reply-To: <541146c6-d809-1041-7417-547d7248e3cd@intel.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sun, 7 Feb 2021 10:40:19 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wiSYia4kRUpwSBrKoZzd_pJpWqt-UF_oQdcjcU2+pxmQA@mail.gmail.com>
+Message-ID: <CAHk-=wiSYia4kRUpwSBrKoZzd_pJpWqt-UF_oQdcjcU2+pxmQA@mail.gmail.com>
+Subject: Re: [GIT PULL] x86/urgent for v5.11-rc7
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     Borislav Petkov <bp@suse.de>, Steven Rostedt <rostedt@goodmis.org>,
+        x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefan Chulski <stefanc@marvell.com>
+On Sun, Feb 7, 2021 at 10:32 AM Dave Hansen <dave.hansen@intel.com> wrote:
+>
+> My understanding is that AMD has documented support for Shadow Stacks:
+>
+>         https://www.amd.com/system/files/TechDocs/24592.pdf
+>
+> But has not yet released any documentation about IBT.  IBT seems to be
+> Intel-only, at least in the short term.  There may be more, but the
+> "Tiger Lake" CPUs are the only ones I know of off the top of my head
+> that are in the wild:
 
-Patch check that TX FC firmware is running in CM3.
-If not, global TX FC would be disabled.
+Ahh, ok. I clearly didn't look at the details, just the overview of
+"supports CET".
 
-Signed-off-by: Stefan Chulski <stefanc@marvell.com>
----
- drivers/net/ethernet/marvell/mvpp2/mvpp2.h      |  1 +
- drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c | 42 ++++++++++++++++----
- 2 files changed, 36 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2.h b/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
-index b61a1ba..da87152 100644
---- a/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
-+++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
-@@ -828,6 +828,7 @@
- 
- #define MSS_THRESHOLD_STOP	768
- #define MSS_THRESHOLD_START	1024
-+#define MSS_FC_MAX_TIMEOUT	5000
- 
- /* RX buffer constants */
- #define MVPP2_SKB_SHINFO_SIZE \
-diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-index 4d0a398..fed4521 100644
---- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-+++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-@@ -931,6 +931,34 @@ static void mvpp2_bm_pool_update_fc(struct mvpp2_port *port,
- 	spin_unlock_irqrestore(&port->priv->mss_spinlock, flags);
- }
- 
-+static int mvpp2_enable_global_fc(struct mvpp2 *priv)
-+{
-+	int val, timeout = 0;
-+
-+	/* Enable global flow control. In this stage global
-+	 * flow control enabled, but still disabled per port.
-+	 */
-+	val = mvpp2_cm3_read(priv, MSS_FC_COM_REG);
-+	val |= FLOW_CONTROL_ENABLE_BIT;
-+	mvpp2_cm3_write(priv, MSS_FC_COM_REG, val);
-+
-+	/* Check if Firmware running and disable FC if not*/
-+	val |= FLOW_CONTROL_UPDATE_COMMAND_BIT;
-+	mvpp2_cm3_write(priv, MSS_FC_COM_REG, val);
-+
-+	while (timeout < MSS_FC_MAX_TIMEOUT) {
-+		val = mvpp2_cm3_read(priv, MSS_FC_COM_REG);
-+
-+		if (!(val & FLOW_CONTROL_UPDATE_COMMAND_BIT))
-+			return 0;
-+		usleep_range(10, 20);
-+		timeout++;
-+	}
-+
-+	priv->global_tx_fc = false;
-+	return -EOPNOTSUPP;
-+}
-+
- /* Release buffer to BM */
- static inline void mvpp2_bm_pool_put(struct mvpp2_port *port, int pool,
- 				     dma_addr_t buf_dma_addr,
-@@ -7263,7 +7291,7 @@ static int mvpp2_probe(struct platform_device *pdev)
- 	struct resource *res;
- 	void __iomem *base;
- 	int i, shared;
--	int err, val;
-+	int err;
- 
- 	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
- 	if (!priv)
-@@ -7487,13 +7515,13 @@ static int mvpp2_probe(struct platform_device *pdev)
- 		goto err_port_probe;
- 	}
- 
--	/* Enable global flow control. In this stage global
--	 * flow control enabled, but still disabled per port.
--	 */
- 	if (priv->global_tx_fc && priv->hw_version != MVPP21) {
--		val = mvpp2_cm3_read(priv, MSS_FC_COM_REG);
--		val |= FLOW_CONTROL_ENABLE_BIT;
--		mvpp2_cm3_write(priv, MSS_FC_COM_REG, val);
-+		err = mvpp2_enable_global_fc(priv);
-+		if (err) {
-+			dev_warn(&pdev->dev, "CM3 firmware not running, version should be higher than 18.09 ");
-+			dev_warn(&pdev->dev, "and chip revision B0\n");
-+			dev_warn(&pdev->dev, "Flow control not supported\n");
-+		}
- 	}
- 
- 	mvpp2_dbgfs_init(priv, pdev->name);
--- 
-1.9.1
-
+           Linus
