@@ -2,199 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42CCA31243A
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 13:14:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 63E2431243D
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 13:18:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229651AbhBGMOZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Feb 2021 07:14:25 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:11698 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229506AbhBGMOW (ORCPT
+        id S229698AbhBGMSm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Feb 2021 07:18:42 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:36998 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229536AbhBGMSk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Feb 2021 07:14:22 -0500
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DYSgh1VZ9zlH6k;
-        Sun,  7 Feb 2021 20:11:44 +0800 (CST)
-Received: from [10.174.184.42] (10.174.184.42) by
- DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
- 14.3.498.0; Sun, 7 Feb 2021 20:13:19 +0800
-Subject: Re: [RFC PATCH 05/11] iommu/arm-smmu-v3: Merge a span of page to
- block descriptor
-To:     Robin Murphy <robin.murphy@arm.com>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <kvm@vger.kernel.org>,
-        <kvmarm@lists.cs.columbia.edu>, <iommu@lists.linux-foundation.org>,
-        "Will Deacon" <will@kernel.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        "Marc Zyngier" <maz@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>
-References: <20210128151742.18840-1-zhukeqian1@huawei.com>
- <20210128151742.18840-6-zhukeqian1@huawei.com>
- <af03aa13-9fd1-d7d1-6e55-fd59ff9d0688@arm.com>
-CC:     Kirti Wankhede <kwankhede@nvidia.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        <wanghaibin.wang@huawei.com>, <jiangkunkun@huawei.com>,
-        <yuzenghui@huawei.com>, <lushenming@huawei.com>
-From:   Keqian Zhu <zhukeqian1@huawei.com>
-Message-ID: <682f6b24-ecfb-d462-0d1f-5c3ba53136c0@huawei.com>
-Date:   Sun, 7 Feb 2021 20:13:18 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        Sun, 7 Feb 2021 07:18:40 -0500
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 117C33vL048620;
+        Sun, 7 Feb 2021 07:17:55 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=QIlxd2fdXA5CfY+R6nqE4Bz4SBJ6hiiVZ3YbWcm6FRM=;
+ b=q8JEV2C2kda0Hm0+sRbjayQp8Ep2NWdAXCzP/QCn5956roR5PjcA6Lg+g/klW7WX7FSD
+ BPtA7cFUvshvyaI3W4wVouHqw2DjgNYvPSxoTSdGO1eZAjuxtaEsmnOcD0tj0IUVkJk+
+ o/JsUNnOLfMOUWAMcCGpRN1ALupsnm27qQuOWmXfSDZfMatFbmDQ3ZwdqEI8ITzTksZF
+ RFdZGADpQtASUD6G3BT7GHaYQAbiY0x8q+Oye7uWik+wd35iHmFJloSKBqZorilXFSu5
+ +NkMETY5TVu3WYq84qemEatW1xTz2hQv/EUZLQCdrLdyI+o+xagGAe0NKGvJ3lQY5bS9 AA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36jaa6n4a3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 07 Feb 2021 07:17:55 -0500
+Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 117C3UsF049397;
+        Sun, 7 Feb 2021 07:17:54 -0500
+Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36jaa6n49p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 07 Feb 2021 07:17:54 -0500
+Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
+        by ppma06fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 117CGhR2000973;
+        Sun, 7 Feb 2021 12:17:52 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma06fra.de.ibm.com with ESMTP id 36hjch0hhb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 07 Feb 2021 12:17:52 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 117CHnET42598816
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sun, 7 Feb 2021 12:17:49 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 46856A404D;
+        Sun,  7 Feb 2021 12:17:49 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C8282A4040;
+        Sun,  7 Feb 2021 12:17:48 +0000 (GMT)
+Received: from osiris (unknown [9.171.9.57])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Sun,  7 Feb 2021 12:17:48 +0000 (GMT)
+Date:   Sun, 7 Feb 2021 13:17:47 +0100
+From:   Heiko Carstens <hca@linux.ibm.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Seth Forshee <seth.forshee@canonical.com>,
+        Hugh Dickins <hughd@google.com>,
+        Chris Down <chris@chrisdown.name>,
+        Amir Goldstein <amir73il@gmail.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        linux-mm@kvack.org, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Alexander Egorenkov <egorenar@linux.vnet.ibm.com>
+Subject: Re: [PATCH] tmpfs: Disallow CONFIG_TMPFS_INODE64 on s390
+Message-ID: <20210207121747.GA15061@osiris>
+References: <20210205230620.518245-1-seth.forshee@canonical.com>
+ <20210205160551.cf57c4293ba5ccb8eb648c11@linux-foundation.org>
 MIME-Version: 1.0
-In-Reply-To: <af03aa13-9fd1-d7d1-6e55-fd59ff9d0688@arm.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.184.42]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210205160551.cf57c4293ba5ccb8eb648c11@linux-foundation.org>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-02-07_06:2021-02-05,2021-02-07 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=966
+ priorityscore=1501 suspectscore=0 clxscore=1011 malwarescore=0 mlxscore=0
+ phishscore=0 adultscore=0 bulkscore=0 spamscore=0 impostorscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102070087
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Robin,
-
-On 2021/2/5 3:52, Robin Murphy wrote:
-> On 2021-01-28 15:17, Keqian Zhu wrote:
->> From: jiangkunkun <jiangkunkun@huawei.com>
->>
->> When stop dirty log tracking, we need to recover all block descriptors
->> which are splited when start dirty log tracking. This adds a new
->> interface named merge_page in iommu layer and arm smmuv3 implements it,
->> which reinstall block mappings and unmap the span of page mappings.
->>
->> It's caller's duty to find contiuous physical memory.
->>
->> During merging page, other interfaces are not expected to be working,
->> so race condition does not exist. And we flush all iotlbs after the merge
->> procedure is completed to ease the pressure of iommu, as we will merge a
->> huge range of page mappings in general.
+On Fri, Feb 05, 2021 at 04:05:51PM -0800, Andrew Morton wrote:
+> On Fri,  5 Feb 2021 17:06:20 -0600 Seth Forshee <seth.forshee@canonical.com> wrote:
 > 
-> Again, I think we need better reasoning than "race conditions don't exist because we don't expect them to exist".
-Sure, because they can't. ;-)
-
+> > This feature requires ino_t be 64-bits, which is true for every
+> > 64-bit architecture but s390, so prevent this option from being
+> > selected there.
+> > 
 > 
->> Co-developed-by: Keqian Zhu <zhukeqian1@huawei.com>
->> Signed-off-by: Kunkun Jiang <jiangkunkun@huawei.com>
->> ---
->>   drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 20 ++++++
->>   drivers/iommu/io-pgtable-arm.c              | 78 +++++++++++++++++++++
->>   drivers/iommu/iommu.c                       | 75 ++++++++++++++++++++
->>   include/linux/io-pgtable.h                  |  2 +
->>   include/linux/iommu.h                       | 10 +++
->>   5 files changed, 185 insertions(+)
->>
->> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
->> index 5469f4fca820..2434519e4bb6 100644
->> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
->> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
->> @@ -2529,6 +2529,25 @@ static size_t arm_smmu_split_block(struct iommu_domain *domain,
->>       return ops->split_block(ops, iova, size);
->>   }
-[...]
-
->> +
->> +size_t iommu_merge_page(struct iommu_domain *domain, unsigned long iova,
->> +            size_t size, int prot)
->> +{
->> +    phys_addr_t phys;
->> +    dma_addr_t p, i;
->> +    size_t cont_size, merged_size;
->> +    size_t merged = 0;
->> +
->> +    while (size) {
->> +        phys = iommu_iova_to_phys(domain, iova);
->> +        cont_size = PAGE_SIZE;
->> +        p = phys + cont_size;
->> +        i = iova + cont_size;
->> +
->> +        while (cont_size < size && p == iommu_iova_to_phys(domain, i)) {
->> +            p += PAGE_SIZE;
->> +            i += PAGE_SIZE;
->> +            cont_size += PAGE_SIZE;
->> +        }
->> +
->> +        merged_size = __iommu_merge_page(domain, iova, phys, cont_size,
->> +                prot);
+> The previous patch nicely described the end-user impact of the bug. 
+> This is especially important when requesting a -stable backport.
 > 
-> This is incredibly silly. The amount of time you'll spend just on walking the tables in all those iova_to_phys() calls is probably significantly more than it would take the low-level pagetable code to do the entire operation for itself. At this level, any knowledge of how mappings are actually constructed is lost once __iommu_map() returns, so we just don't know, and for this operation in particular there seems little point in trying to guess - the driver backend still has to figure out whether something we *think* might me mergeable actually is, so it's better off doing the entire operation in a single pass by itself.
->
-> There's especially little point in starting all this work *before* checking that it's even possible...
->
-> Robin.
-
-Well, this looks silly indeed. But the iova->phys info is only stored in pgtable. It seems that there is no other method to find continuous physical address :-( (actually, the vfio_iommu_replay() has similar logic).
-
-We put the finding procedure of continuous physical address in common iommu layer, because this is a common logic for all types of iommu driver.
-
-If a vendor iommu driver thinks (iova, phys, cont_size) is not merge-able, it can make its own decision to map them. This keeps same as iommu_map(), which provides (iova, paddr, pgsize) to vendor driver, and vendor driver can make its own decision to map them.
-
-Do I understand your idea correctly?
-
-Thanks,
-Keqian
+> Here's what I ended up with:
 > 
->> +        iova += merged_size;
->> +        size -= merged_size;
->> +        merged += merged_size;
->> +
->> +        if (merged_size != cont_size)
->> +            break;
->> +    }
->> +    iommu_flush_iotlb_all(domain);
->> +
->> +    return merged;
->> +}
->> +EXPORT_SYMBOL_GPL(iommu_merge_page);
->> +
->>   void iommu_get_resv_regions(struct device *dev, struct list_head *list)
->>   {
->>       const struct iommu_ops *ops = dev->bus->iommu_ops;
->> diff --git a/include/linux/io-pgtable.h b/include/linux/io-pgtable.h
->> index b87c6f4ecaa2..754b62a1bbaf 100644
->> --- a/include/linux/io-pgtable.h
->> +++ b/include/linux/io-pgtable.h
->> @@ -164,6 +164,8 @@ struct io_pgtable_ops {
->>                       unsigned long iova);
->>       size_t (*split_block)(struct io_pgtable_ops *ops, unsigned long iova,
->>                     size_t size);
->> +    size_t (*merge_page)(struct io_pgtable_ops *ops, unsigned long iova,
->> +                 phys_addr_t phys, size_t size, int prot);
->>   };
->>     /**
->> diff --git a/include/linux/iommu.h b/include/linux/iommu.h
->> index abeb811098a5..ac2b0b1bce0f 100644
->> --- a/include/linux/iommu.h
->> +++ b/include/linux/iommu.h
->> @@ -260,6 +260,8 @@ struct iommu_ops {
->>                      enum iommu_attr attr, void *data);
->>       size_t (*split_block)(struct iommu_domain *domain, unsigned long iova,
->>                     size_t size);
->> +    size_t (*merge_page)(struct iommu_domain *domain, unsigned long iova,
->> +                 phys_addr_t phys, size_t size, int prot);
->>         /* Request/Free a list of reserved regions for a device */
->>       void (*get_resv_regions)(struct device *dev, struct list_head *list);
->> @@ -513,6 +515,8 @@ extern int iommu_domain_set_attr(struct iommu_domain *domain, enum iommu_attr,
->>                    void *data);
->>   extern size_t iommu_split_block(struct iommu_domain *domain, unsigned long iova,
->>                   size_t size);
->> +extern size_t iommu_merge_page(struct iommu_domain *domain, unsigned long iova,
->> +                   size_t size, int prot);
->>     /* Window handling function prototypes */
->>   extern int iommu_domain_window_enable(struct iommu_domain *domain, u32 wnd_nr,
->> @@ -913,6 +917,12 @@ static inline size_t iommu_split_block(struct iommu_domain *domain,
->>       return 0;
->>   }
->>   +static inline size_t iommu_merge_page(struct iommu_domain *domain,
->> +                      unsigned long iova, size_t size, int prot)
->> +{
->> +    return -EINVAL;
->> +}
->> +
->>   static inline int  iommu_device_register(struct iommu_device *iommu)
->>   {
->>       return -ENODEV;
->>
-> .
 > 
+> From: Seth Forshee <seth.forshee@canonical.com>
+> Subject: tmpfs: disallow CONFIG_TMPFS_INODE64 on s390
+> 
+> Currently there is an assumption in tmpfs that 64-bit architectures also
+> have a 64-bit ino_t.  This is not true on s390 which has a 32-bit ino_t. 
+> With CONFIG_TMPFS_INODE64=y tmpfs mounts will get 64-bit inode numbers and
+> display "inode64" in the mount options, but passing the "inode64" mount
+> option will fail.  This leads to the following behavior:
+> 
+>  # mkdir mnt
+>  # mount -t tmpfs nodev mnt
+>  # mount -o remount,rw mnt
+>  mount: /home/ubuntu/mnt: mount point not mounted or bad option.
+> 
+> As mount sees "inode64" in the mount options and thus passes it in the
+> options for the remount.
+> 
+> 
+> So prevent CONFIG_TMPFS_INODE64 from being selected on s390.
+> 
+> Link: https://lkml.kernel.org/r/20210205230620.518245-1-seth.forshee@canonical.com
+> Fixes: ea3271f7196c ("tmpfs: support 64-bit inums per-sb")
+> Signed-off-by: Seth Forshee <seth.forshee@canonical.com>
+> Cc: Chris Down <chris@chrisdown.name>
+> Cc: Hugh Dickins <hughd@google.com>
+> Cc: Amir Goldstein <amir73il@gmail.com>
+> Cc: Heiko Carstens <hca@linux.ibm.com>
+> Cc: Vasily Gorbik <gor@linux.ibm.com>
+> Cc: Christian Borntraeger <borntraeger@de.ibm.com>
+> Cc: <stable@vger.kernel.org>	[5.9+]
+> Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+> ---
+> 
+>  fs/Kconfig |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> --- a/fs/Kconfig~tmpfs-disallow-config_tmpfs_inode64-on-s390
+> +++ a/fs/Kconfig
+> @@ -203,7 +203,7 @@ config TMPFS_XATTR
+>  
+>  config TMPFS_INODE64
+>  	bool "Use 64-bit ino_t by default in tmpfs"
+> -	depends on TMPFS && 64BIT
+> +	depends on TMPFS && 64BIT && !S390
+
+Heh, it's sort of funny that we have a similar patch, which
+unfortunately was/is not yet on our external features branch,
+which does exactly the same.
+
+In any case:
+
+Acked-by: Heiko Carstens <hca@linux.ibm.com>
