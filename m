@@ -2,93 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0883231278A
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 22:32:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 735AA31278D
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 22:32:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229590AbhBGVah (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Feb 2021 16:30:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49832 "EHLO mail.kernel.org"
+        id S229669AbhBGVaz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Feb 2021 16:30:55 -0500
+Received: from vps0.lunn.ch ([185.16.172.187]:53836 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229506AbhBGVaf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Feb 2021 16:30:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7487B64D73;
-        Sun,  7 Feb 2021 21:29:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612733395;
-        bh=UM201XN02AyvaNkOA+1uIWpv5Jk/Sypvw2TcXtJX+C4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qtQwMgBhvVeEhX2yVc8gTVIzX2bmfw8gQYGqP324NRqoSPm8/JHRmKrLkd64z27NE
-         68avo5UBUZvenZdQ4Pq9XRvwJG9huYhbPCtRTJca9H566qsEhshX9EaWylMfVeDH/l
-         OpzkOew0HKF2TvyEdYM3UCkO/nKj0XRV8ycSUyGg+zviMSBFSqqnRoJauLkIZHULMq
-         mCAnzXsi1/oSdI7z1sZYmBaC4K1VVsToBiYEFR5ktD6hygiiy6cgXYYMZ5oYP1qqEg
-         QU552/Tk3U1R+wF3wd5T31XrsxwDM/r/tsqjptNF7buCwcoaIQhu26YKM/PREfTn+W
-         t0hXMb4GQ/Yhg==
-Date:   Sun, 7 Feb 2021 23:29:46 +0200
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Dave Hansen <dave.hansen@intel.com>, Borislav Petkov <bp@alien8.de>
-Cc:     linux-sgx@vger.kernel.org,
-        Haitao Huang <haitao.huang@linux.intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Sean Christopherson <seanjc@google.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] x86/sgx: Maintain encl->refcount for each
- encl->mm_list entry
-Message-ID: <YCBbynuhKKjqkzzk@kernel.org>
-References: <20210205182840.2260-1-jarkko@kernel.org>
- <20210205182840.2260-2-jarkko@kernel.org>
- <b874673d-9d58-0d6f-ce2d-ef4d33ac5115@intel.com>
+        id S229506AbhBGVau (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Feb 2021 16:30:50 -0500
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1l8rd5-004iEQ-BC; Sun, 07 Feb 2021 22:30:03 +0100
+Date:   Sun, 7 Feb 2021 22:30:03 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     stefanc@marvell.com
+Cc:     netdev@vger.kernel.org, thomas.petazzoni@bootlin.com,
+        davem@davemloft.net, nadavh@marvell.com, ymarkman@marvell.com,
+        linux-kernel@vger.kernel.org, kuba@kernel.org,
+        linux@armlinux.org.uk, mw@semihalf.com, rmk+kernel@armlinux.org.uk,
+        atenart@kernel.org, devicetree@vger.kernel.org, robh+dt@kernel.org,
+        sebastian.hesselbarth@gmail.com, gregory.clement@bootlin.com,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v9 net-next 01/15] doc: marvell: add CM3 address space
+ and PPv2.3 description
+Message-ID: <YCBb2xWGXjNqBWPl@lunn.ch>
+References: <1612723137-18045-1-git-send-email-stefanc@marvell.com>
+ <1612723137-18045-2-git-send-email-stefanc@marvell.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <b874673d-9d58-0d6f-ce2d-ef4d33ac5115@intel.com>
+In-Reply-To: <1612723137-18045-2-git-send-email-stefanc@marvell.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 05, 2021 at 11:36:57AM -0800, Dave Hansen wrote:
-> On 2/5/21 10:28 AM, Jarkko Sakkinen wrote:
-> > This has been shown in tests:
-> > 
-> > [  +0.000008] WARNING: CPU: 3 PID: 7620 at kernel/rcu/srcutree.c:374 cleanup_srcu_struct+0xed/0x100
-> > 
-> > There are two functions that drain encl->mm_list:
-> > 
-> > - sgx_release() (i.e. VFS release) removes the remaining mm_list entries.
-> > - sgx_mmu_notifier_release() removes mm_list entry for the registered
-> >   process, if it still exists.
+On Sun, Feb 07, 2021 at 08:38:43PM +0200, stefanc@marvell.com wrote:
+> From: Stefan Chulski <stefanc@marvell.com>
 > 
-> Jarkko, I like your approach.  This actually has the potential to be a
-> lot more understandable than the fix we settled on before.
-
-Yeah, it's more like by-the-book use of refcount, each processs gets
-a reference. This way things should be always serialized correctly.
-
-> But I think the explanation needs some tweaking, and I think I can take
-> it a step further to make it even more straightforward.  The issue here
-> isn't *really* mm_list, it's this:
+> Patch adds CM3 address space PPv2.3 description.
 > 
-> 	encl_mm->encl = encl;
-
-Agreed.
-
-This was also in center of thinking when I did this new patch.
-
-> That literally establishes a encl_mm to encl reference and needs a
-> reference count.  That reference remains until 'encl_mm' is freed.  I
-> don't think mm_list needs to even be taken into account.
+> Signed-off-by: Stefan Chulski <stefanc@marvell.com>
+> ---
+>  Documentation/devicetree/bindings/net/marvell-pp2.txt | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
 > 
-> The most straightforward way to fix this is to take a refcount at
-> "encl_mm->encl = encl" and release it at kfree(encl_mm).  That makes a
-> *lot* of logical sense to me, and it's also trivial to audit.
-> 
-> Totally untested patch attached (adapted directly from yours).
+> diff --git a/Documentation/devicetree/bindings/net/marvell-pp2.txt b/Documentation/devicetree/bindings/net/marvell-pp2.txt
+> index b783976..1eb480a 100644
+> --- a/Documentation/devicetree/bindings/net/marvell-pp2.txt
+> +++ b/Documentation/devicetree/bindings/net/marvell-pp2.txt
+> @@ -1,5 +1,6 @@
+>  * Marvell Armada 375 Ethernet Controller (PPv2.1)
+>    Marvell Armada 7K/8K Ethernet Controller (PPv2.2)
+> +  Marvell CN913X Ethernet Controller (PPv2.3)
+>  
+>  Required properties:
+>  
+> @@ -12,7 +13,7 @@ Required properties:
+>  	- common controller registers
+>  	- LMS registers
+>  	- one register area per Ethernet port
+> -  For "marvell,armada-7k-pp2", must contain the following register
+> +  For "marvell,armada-7k-pp2" used by 7K/8K and CN913X, must contain the following register
+>    sets:
+>  	- packet processor registers
+>  	- networking interfaces registers
 
-I tested this version, and it also seems to work. Boris, can you
-pick this refined version from Dave's attachment or do you prefer
-that I do a re-send?
+Hi Stefan
 
-/Jarkko
+Shouldn't there be an entry here describing what the third register
+set is?
