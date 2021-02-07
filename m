@@ -2,46 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D658D312478
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 14:03:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0615B31247D
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 14:07:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229845AbhBGNDB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Feb 2021 08:03:01 -0500
-Received: from mail2.protonmail.ch ([185.70.40.22]:18181 "EHLO
-        mail2.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229692AbhBGNC7 (ORCPT
+        id S229751AbhBGNGc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Feb 2021 08:06:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55990 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229491AbhBGNGb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Feb 2021 08:02:59 -0500
-Date:   Sun, 07 Feb 2021 13:02:00 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=emersion.fr;
-        s=protonmail3; t=1612702936;
-        bh=DBVKJjxxXtX1ZvoEUH+R+KQiMwBS89Owh4tS6f2FPXs=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=LqpNKw0eRp7dr6YIgzogwKcpHRCoqLES81Qk7v7aEph7u1PUZ/FEpRHNl8EBelINl
-         iQcedVDjprleNswm2693iIWro8MSC884RGo0zSuXHLHyL8bLaYvj3xmdzm7ENSTfrh
-         Wylo+T1H5Tui2insnntI9K14+fiqEdy59sjnJYMYFmFFtYcwp3E28qI9/fKnKj41RM
-         IERgMoK4RXbemlahLOWDZcGblm/2/qHHABXId823EDx1Uk8mKE4w3lSha4pO7rEU5t
-         KWiauut8tXZSlasIgbLVmTU3/ICHaQQ5W6CD0N64fmwpbjg4O364PvzdmPhxoMWVNi
-         JYJ01HDY0mWWA==
-To:     Marcin Raszka <djraszit@gmail.com>
-From:   Simon Ser <contact@emersion.fr>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Reply-To: Simon Ser <contact@emersion.fr>
-Subject: Re: [PATCH] I was wondering why I can't set the resolution to 2560x1080, while in windows 7 I can without a problem. I looked at the radeon driver code and found it doesn't support this resolution. So I made some changes. I added the hdmi_mhz parameter. In cmdline I set radeon.hdmi_mhz=190 Only tested on the Radeon HD 5830
-Message-ID: <eaIUkjPeScDh6sT15RwxrsEfKG73yvqIrfVsRDK9Ey3v2rNZ_e_riEaBomCImXXeHV8XgCBlziwwZIqu0E7tgR7xIqWPVBe4fcdxuSNj1vk=@emersion.fr>
-In-Reply-To: <20210207093952.7087-1-djraszit@gmail.com>
-References: <20210207093952.7087-1-djraszit@gmail.com>
+        Sun, 7 Feb 2021 08:06:31 -0500
+Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28755C06174A
+        for <linux-kernel@vger.kernel.org>; Sun,  7 Feb 2021 05:05:49 -0800 (PST)
+Received: from ramsan.of.borg ([84.195.186.194])
+        by albert.telenet-ops.be with bizsmtp
+        id SD5l2400L4C55Sk06D5lA8; Sun, 07 Feb 2021 14:05:46 +0100
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1l8jl3-004Bdf-Cd; Sun, 07 Feb 2021 14:05:45 +0100
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1l8jl2-008vr9-Q3; Sun, 07 Feb 2021 14:05:44 +0100
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Henk Vergonet <Henk.Vergonet@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] uapi: map_to_7segment: Update example in documentation
+Date:   Sun,  7 Feb 2021 14:05:43 +0100
+Message-Id: <20210207130543.2128980-1-geert@linux-m68k.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Please keep the commit message short. You probbly want to send this patch
-to amd-gfx@lists.freedesktop.org instead of dri-devel.
+The device_attribute .show() and .store() methods gained an extra
+parameter in v2.6.13, but the example in the documentation for the
+7-segment header file was never updated.  Add the missing parameters.
+
+While at it, get rid of the (misspelled) deprecated symbolic
+permissions, and switch to DEVICE_ATTR_RW(), which was introduced in
+v3.11
+
+Fixes: 54b6f35c99974e99 ("[PATCH] Driver core: change device_attribute callbacks")
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+This time with a modern address for Greg.
+
+ include/uapi/linux/map_to_7segment.h | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
+
+diff --git a/include/uapi/linux/map_to_7segment.h b/include/uapi/linux/map_to_7segment.h
+index 13a06e5e966e53d2..8b02088f96e3733e 100644
+--- a/include/uapi/linux/map_to_7segment.h
++++ b/include/uapi/linux/map_to_7segment.h
+@@ -45,17 +45,22 @@
+  * In device drivers it is recommended, if required, to make the char map
+  * accessible via the sysfs interface using the following scheme:
+  *
+- * static ssize_t show_map(struct device *dev, char *buf) {
++ * static ssize_t map_seg7_show(struct device *dev,
++ *				struct device_attribute *attr, char *buf)
++ * {
+  *	memcpy(buf, &map_seg7, sizeof(map_seg7));
+  *	return sizeof(map_seg7);
+  * }
+- * static ssize_t store_map(struct device *dev, const char *buf, size_t cnt) {
++ * static ssize_t map_seg7_store(struct device *dev,
++ *				 struct device_attribute *attr, const char *buf,
++ *				 size_t cnt)
++ * {
+  *	if(cnt != sizeof(map_seg7))
+  *		return -EINVAL;
+  *	memcpy(&map_seg7, buf, cnt);
+  *	return cnt;
+  * }
+- * static DEVICE_ATTR(map_seg7, PERMS_RW, show_map, store_map);
++ * static DEVICE_ATTR_RW(map_seg7);
+  *
+  * History:
+  * 2005-05-31	RFC linux-kernel@vger.kernel.org
+-- 
+2.25.1
+
