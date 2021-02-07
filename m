@@ -2,176 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BC383120C7
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 02:49:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE9B63120CC
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 02:58:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229683AbhBGBtW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Feb 2021 20:49:22 -0500
-Received: from mail-eopbgr1320040.outbound.protection.outlook.com ([40.107.132.40]:37555
-        "EHLO APC01-PU1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229570AbhBGBtP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Feb 2021 20:49:15 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OZtOtqw2LmaxJSTH/15013Kc6qBIr75GztWiJ3WufyM7CU3NpseUOkCCtnD6GcEhyC06osYX36xzd5I+qrPLiSM+rdvT/wsr4Ia+Thm48rCOFx73AXzlzp0bjaYo/bjZ4aWQ8AXEnAdRWIaaXdrdCvLg5QO22CtcG+xdBhIynxd1dN9RjJLHRIJC31U4v9TD/No6H9awXsLkX304WB564bfercDTDZDvdY1u/MiHpk01bDXf4M3l7Bdrqutbt+YJxtiwimcD41cz3pU36XdWUj0LMEujxCK4TMSkTYZVSMHH0yoTgmTfAafMdrvl1q3bwc7dvviSu64lIdK73AHZFw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=umm3y3bQubx0X/I6KPbyLDmZvWBbk+//v6izfuFUV4M=;
- b=D230jluVZJRf7Vee5POx1oW3tO7a+N+ULwL3F7FH4AjRxKGvJOpz4mlXLDeudn9A0ntqgyiCtsz7S/eXF8ZwG4pikkCHQoFTbA3R4EPjmP77d6101NMaz+zsSFCEUEM+gU002HuIelYlrmVKe7dUG0T9ID5h73IoEcc1mjg+a+3WVP1AW2ufKo3zBTwFjU+9u1u/2HmgQreK2fnRWu/gXq5nCVOtohKU7PtfJKTRuZVYkqUgdx+Jgs14aQz4/JyafMD9LL1B5dIS8itnT/IjVmmIuaGvPpmgt2gbzOpiYhNM05ty6M3ksRjp3AYDJPsbC824tK8GznLzWH0IuzqY5w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oppo.com; dmarc=pass action=none header.from=oppo.com;
- dkim=pass header.d=oppo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oppo.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=umm3y3bQubx0X/I6KPbyLDmZvWBbk+//v6izfuFUV4M=;
- b=YwZwZieJflumxrPFVZHTjQ9OkxanZ9SwL4RdKIVBSaM+yVHgZhSGv2oqbCYJ0Gfa12ChKe0PsJv5JZHVKxQxb7X0r47ROSMWfPRfDfgq1173V1ugusmO6AJat+U1pjX7JZeOaihDAiPFbH8jDJXqMrEdjCe8UZkFCNdlLbMxs9g=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=oppo.com;
-Received: from SG2PR02MB4108.apcprd02.prod.outlook.com (2603:1096:4:96::19) by
- SG2PR02MB3575.apcprd02.prod.outlook.com (2603:1096:4:36::22) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3805.24; Sun, 7 Feb 2021 01:47:39 +0000
-Received: from SG2PR02MB4108.apcprd02.prod.outlook.com
- ([fe80::1143:a7b7:6bd4:83b3]) by SG2PR02MB4108.apcprd02.prod.outlook.com
- ([fe80::1143:a7b7:6bd4:83b3%7]) with mapi id 15.20.3805.030; Sun, 7 Feb 2021
- 01:47:38 +0000
-Subject: Re: [fuse-devel] [PATCH] fuse: avoid deadlock when write fuse inode
-To:     fuse-devel@lists.sourceforge.net, miklos@szeredi.hu
-Cc:     guoweichao@oppo.com, zhangshiming@oppo.com,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-References: <20210202040830.26043-1-huangjianan@oppo.com>
- <ced84fb1-0dc1-a18f-0e61-556cd9e28003@oppo.com>
-From:   Huang Jianan <huangjianan@oppo.com>
-Message-ID: <888b7732-abb3-3025-6e91-0d5cb5675efd@oppo.com>
-Date:   Sun, 7 Feb 2021 09:47:35 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
-In-Reply-To: <ced84fb1-0dc1-a18f-0e61-556cd9e28003@oppo.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [58.255.79.104]
-X-ClientProxiedBy: HK2PR02CA0132.apcprd02.prod.outlook.com
- (2603:1096:202:16::16) To SG2PR02MB4108.apcprd02.prod.outlook.com
- (2603:1096:4:96::19)
+        id S229608AbhBGB5p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Feb 2021 20:57:45 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:12858 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229548AbhBGB5o (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 6 Feb 2021 20:57:44 -0500
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4DYC0p1g6Yz7hJb;
+        Sun,  7 Feb 2021 09:55:38 +0800 (CST)
+Received: from [10.174.184.42] (10.174.184.42) by
+ DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
+ 14.3.498.0; Sun, 7 Feb 2021 09:56:49 +0800
+Subject: Re: [RFC PATCH 01/11] iommu/arm-smmu-v3: Add feature detection for
+ HTTU
+To:     Robin Murphy <robin.murphy@arm.com>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <kvm@vger.kernel.org>,
+        <kvmarm@lists.cs.columbia.edu>, <iommu@lists.linux-foundation.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>
+References: <20210128151742.18840-1-zhukeqian1@huawei.com>
+ <20210128151742.18840-2-zhukeqian1@huawei.com>
+ <f8be5718-d4d9-0565-eaf0-b5a128897d15@arm.com>
+ <df1b8fb2-b853-e797-0072-9dbdffc4ff67@huawei.com>
+ <5ada4a8b-8852-f83c-040a-9ef5dac51de2@arm.com>
+ <94375ed6-1e25-b592-8bb0-e433e7a09b4c@arm.com>
+CC:     Mark Rutland <mark.rutland@arm.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Marc Zyngier <maz@kernel.org>, <jiangkunkun@huawei.com>,
+        Kirti Wankhede <kwankhede@nvidia.com>, <lushenming@huawei.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        James Morse <james.morse@arm.com>,
+        "Catalin Marinas" <catalin.marinas@arm.com>,
+        <wanghaibin.wang@huawei.com>, Will Deacon <will@kernel.org>
+From:   Keqian Zhu <zhukeqian1@huawei.com>
+Message-ID: <e3ace87c-a57f-ede9-834a-8bbbcced728a@huawei.com>
+Date:   Sun, 7 Feb 2021 09:56:48 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [10.118.0.32] (58.255.79.104) by HK2PR02CA0132.apcprd02.prod.outlook.com (2603:1096:202:16::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.19 via Frontend Transport; Sun, 7 Feb 2021 01:47:37 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 9b9e2691-72ab-46e9-fbed-08d8cb0a5972
-X-MS-TrafficTypeDiagnostic: SG2PR02MB3575:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SG2PR02MB3575EFBCB9B0C7DBEF3E2B90C3B09@SG2PR02MB3575.apcprd02.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: YLurmXsx3jvC3+9888NknzDkKamocW9u8zcScTQM3INgCpGNnh6s0Y2it0Fn/C6vmXxg7i8Yd8G5gXFLKoWM375FHBhLGyQz8Aoperc/RjlAQsurDWpmekYt+BfxT6rNrw+7LQ6RkMW4/WiPAiuNsvM6Qxk35NUZseUSrh26w5vmgONMu+KqC+qJJ8lgTMMU0L5HlzFzQOdK22Y4ubSplJRVFxuywPPbJFBvQFYsnwieD4UI+PkEIcqzkVcW7WCq28UI+C6i6rwFSz0dfufPa3kfyTO71A6pR1StbxR2vM/hCNpzJvTRqj7TsyeFh3H2jgqoXBGC3X1UjvNkcr+M+LMIEEtG1W+DeleQ2jBnuN1phkKMHYhGPRKs14uDvPAlv9TgARtLwamSenrEHojiokgFR0ueoTGZObiTWUz+wQAehpwzpHudObV24pgtyUXLxGyEnlcgufM9WrWquA3PZ/OOeaMk/P/jbSakBojnHkVErssvFGJySMAiy5fH4X6E0dSoG6f1FKW3h1wx6ptzcEuW9FnM5btE3eOnPEoZHpPK9DfoEros0zSMdT35HqXGVL3BkJ0EuYwFnsiBmaPr/dWmmBjZEON6hLDgW9mZ45wEO+71IlRXDKeXcTXcUY1S
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SG2PR02MB4108.apcprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(346002)(376002)(366004)(39860400002)(136003)(4326008)(16526019)(31686004)(186003)(26005)(36756003)(2906002)(5660300002)(8936002)(8676002)(86362001)(956004)(2616005)(66476007)(66946007)(52116002)(66556008)(83380400001)(16576012)(478600001)(316002)(53546011)(31696002)(6486002)(11606006)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?NUg3MFRYbkFYNHdOY3JNQzBiYTRzY2x5eVZDVnNIY3dJQXhHaEF3MmwxOHBI?=
- =?utf-8?B?K2xUSm1VNS91UGk0eGtIWTAxRW1qZzlYa1UzcFJXS3hVTC8vLy92SERIWjFG?=
- =?utf-8?B?M3BNRmc1TEkwN1owYVFRMmZDTEYzUlJmNS80OTRMemlBVW9EMVFiM1dCYUF2?=
- =?utf-8?B?cVBKSktJa1QxTFBPelJXSm5xcU15L3crT2dqQm9iL2EyWXRHR21RWTFHbkdX?=
- =?utf-8?B?dlYvdTJnWFhWWCtCd08veEQxQmpjbW41YUVBVitPWm96UlptaEplTFJNZytU?=
- =?utf-8?B?STNweFVnRlNSWmhQMUVFNm9DZmRJeGlDYlppVTQ4Y0V0SVdWOEpGTHBUb1kx?=
- =?utf-8?B?N0orL1BuVXRRSDdpRzZEQlFmTEFYNXVMUzQvWUFqY2NyQSs5SlhYMG5hUnAv?=
- =?utf-8?B?NVNZN2NsN3JydEw4SDl1aTY4T3dHRHJ4M0MrMDNMaTdKL3lmMFJObWtOOTJZ?=
- =?utf-8?B?MUp1Z2I3a0dEdDVadStDUmdkM0l1TXRWWTNpcGlTR0s0ckliRkM2ZjgzWG92?=
- =?utf-8?B?S2IvbFg1emhxLzNFaHc1SHFxRExJL0p5M1VvWjFwMkhaMGQwTjFPanBnbUJp?=
- =?utf-8?B?bkF3d3BPMmFNUUdjMUJDbERPRWt6Z09jaG5pYm42UTQ4MnJ4SnpzcG9Vck4x?=
- =?utf-8?B?bTlCemtiYlZqNWR4eFpTYW13VWt1KzRYdThYb1FJbC85VXp5ZEdxd0FjT25F?=
- =?utf-8?B?MlJrWnFaVWJON0FqVG91bHdjNEd3NzkrdFN2amRWYnN1NXFjUEZJZHZGd1ZS?=
- =?utf-8?B?dG02cVk2NGR3akpTTG51dkhCbitUVXhpNEFGY3NhM1BFZDJLM0FrdjR2T3g3?=
- =?utf-8?B?d096dUIyalU1Ri81MXdBSlhFVHJqOE5Cd1B6YzQwQVFIMzhUZ0t1ZUt2R0pQ?=
- =?utf-8?B?MFJlb083eGlIdnBweDV2Tm9NbTY1bGlrZkNCQnRlV0lieUh6VUF5UWMwbzdJ?=
- =?utf-8?B?bGVLeUNub0ordXNkd0NXekM5Y2x0NjF1ZzhJNnQ5eE5iakplVzRGRE84VFNU?=
- =?utf-8?B?OFpTbWM5c1RSK1djYmYvOVYrZlBhc29UVlhnclJrL3BDb2NEMStNZHJHOTBV?=
- =?utf-8?B?MW5TdXhWYm8rQWROV28xWVlVS3huUllSTVRZNFNjbk1yYUVlTjYyWnJWYWp2?=
- =?utf-8?B?bjJBTkdVbTRFSlRrcDRBQ3UvbzRCU2NZY3NkaVlvM0RBQktpVXV5VS9xaFhu?=
- =?utf-8?B?aDNCMU15SWFkMVpaMngxTXVUK0Q0Q1NFM2JQZjhucmtCNEY4UFV2aXRNYmZr?=
- =?utf-8?B?R1orN2FlT1VXSUZoTlVuMDFhQS9QbEJyTmVFaEdRYy93cnpQSEpaVHRnemtL?=
- =?utf-8?B?bEg1eEh5VDNla3hibS9SS2duYWxOanpHWlV6dXk2NEpQY2ZRTUozajJWQTZC?=
- =?utf-8?B?OHR4OGdGSTFWT2ZBMDZUaDl0NVB2ZWl4NGNoQkZtWEVyZlB3VzY5QkFWMTJJ?=
- =?utf-8?B?WU9JdnNtY0RVY3FOQUVRU3BtbHk0TDhSNHZ4Q1NzVEx3SUNUSUcvTnpKOXUy?=
- =?utf-8?B?Vm1qZ1hNSDVQSmNydGdoSzdwakNISnNYVnV4cnJsMlRwdEJPRTlPN0RPcjV3?=
- =?utf-8?B?QVc0eGpjREFTS3Vic05qQTJCRU5ZalpkUitkZDFrUW40ZmlTK2Fpd3M0aWJy?=
- =?utf-8?B?QWc2RVJsMXpJWlY5WU8xenNNQkk4VWIxSjdLeEIzaFdSNFI1a2p0V1loUUFN?=
- =?utf-8?B?SmhWMXhKa3dFOS9jc2VjT1libmx4WllKbEV4UFNhZGNyYmVLeU91Y01HRlF4?=
- =?utf-8?Q?hcRIRfgjIvHw8zPAPWE8XCgxuQp1vQoOYOX6QIK?=
-X-OriginatorOrg: oppo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9b9e2691-72ab-46e9-fbed-08d8cb0a5972
-X-MS-Exchange-CrossTenant-AuthSource: SG2PR02MB4108.apcprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Feb 2021 01:47:38.7692
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f1905eb1-c353-41c5-9516-62b4a54b5ee6
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: UnLtyeipSymbGODDt66h2wkHPjNwTLIkeOT5mJbuPr5dgCryOk4+GagLJyaE5tdNvesVX/TZ4g17I7/W0WysGA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SG2PR02MB3575
+In-Reply-To: <94375ed6-1e25-b592-8bb0-e433e7a09b4c@arm.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.184.42]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-friendly ping ... 😁
+Hi Robin,
 
-On 2021/2/2 12:11, Huang Jianan via fuse-devel wrote:
-> Hi all,
->
->
-> This patch works well in our product, but I am not sure this is the 
-> correct
->
-> way to solve this problem. I think that the inode->i_count shouldn't be
->
-> zero after iput is executed in dentry_unlink_inode, then the inode won't
->
-> be writeback. But i haven't found where iget is missing.
->
->
-> Thanks,
->
-> Jianan
->
-> On 2021/2/2 12:08, Huang Jianan wrote:
->> We found the following deadlock situations in low memory scenarios:
->> Thread A                         Thread B
->> - __writeback_single_inode
->>   - fuse_write_inode
->>    - fuse_simple_request
->>     - __fuse_request_send
->>      - request_wait_answer
->>                                   - fuse_dev_splice_read
->>                                    - fuse_copy_fill
->>                                     - __alloc_pages_direct_reclaim
->>                                      - do_shrink_slab
->>                                       - super_cache_scan
->>                                        - shrink_dentry_list
->>                                         - dentry_unlink_inode
->>                                          - iput_final
->>                                           - inode_wait_for_writeback
+On 2021/2/6 0:11, Robin Murphy wrote:
+> On 2021-02-05 11:48, Robin Murphy wrote:
+>> On 2021-02-05 09:13, Keqian Zhu wrote:
+>>> Hi Robin and Jean,
+>>>
+>>> On 2021/2/5 3:50, Robin Murphy wrote:
+>>>> On 2021-01-28 15:17, Keqian Zhu wrote:
+>>>>> From: jiangkunkun <jiangkunkun@huawei.com>
+>>>>>
+>>>>> The SMMU which supports HTTU (Hardware Translation Table Update) can
+>>>>> update the access flag and the dirty state of TTD by hardware. It is
+>>>>> essential to track dirty pages of DMA.
+>>>>>
+>>>>> This adds feature detection, none functional change.
+>>>>>
+>>>>> Co-developed-by: Keqian Zhu <zhukeqian1@huawei.com>
+>>>>> Signed-off-by: Kunkun Jiang <jiangkunkun@huawei.com>
+>>>>> ---
+>>>>>    drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 16 ++++++++++++++++
+>>>>>    drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h |  8 ++++++++
+>>>>>    include/linux/io-pgtable.h                  |  1 +
+>>>>>    3 files changed, 25 insertions(+)
+>>>>>
+>>>>> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+>>>>> index 8ca7415d785d..0f0fe71cc10d 100644
+>>>>> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+>>>>> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+>>>>> @@ -1987,6 +1987,7 @@ static int arm_smmu_domain_finalise(struct iommu_domain *domain,
+>>>>>            .pgsize_bitmap    = smmu->pgsize_bitmap,
+>>>>>            .ias        = ias,
+>>>>>            .oas        = oas,
+>>>>> +        .httu_hd    = smmu->features & ARM_SMMU_FEAT_HTTU_HD,
+>>>>>            .coherent_walk    = smmu->features & ARM_SMMU_FEAT_COHERENCY,
+>>>>>            .tlb        = &arm_smmu_flush_ops,
+>>>>>            .iommu_dev    = smmu->dev,
+>>>>> @@ -3224,6 +3225,21 @@ static int arm_smmu_device_hw_probe(struct arm_smmu_device *smmu)
+>>>>>        if (reg & IDR0_HYP)
+>>>>>            smmu->features |= ARM_SMMU_FEAT_HYP;
+>>>>>    +    switch (FIELD_GET(IDR0_HTTU, reg)) {
+>>>>
+>>>> We need to accommodate the firmware override as well if we need this to be meaningful. Jean-Philippe is already carrying a suitable patch in the SVA stack[1].
+>>> Robin, Thanks for pointing it out.
+>>>
+>>> Jean, I see that the IORT HTTU flag overrides the hardware register info unconditionally. I have some concern about it:
+>>>
+>>> If the override flag has HTTU but hardware doesn't support it, then driver will use this feature but receive access fault or permission fault from SMMU unexpectedly.
+>>> 1) If IOPF is not supported, then kernel can not work normally.
+>>> 2) If IOPF is supported, kernel will perform useless actions, such as HTTU based dma dirty tracking (this series).
 >>
->> The request and inode processed by Thread A and B are the same, which
->> causes a deadlock. To avoid this, we remove the __GFP_FS flag when
->> allocating memory in fuse_copy_fill, so there will be no memory
->> reclaimation in super_cache_scan.
+>> Yes, if the IORT describes the SMMU incorrectly, things will not work well. Just like if it describes the wrong base address or the wrong interrupt numbers, things will also not work well. The point is that incorrect firmware can be updated in the field fairly easily; incorrect hardware can not.
 >>
->> Signed-off-by: Huang Jianan <huangjianan@oppo.com>
->> Signed-off-by: Guo Weichao <guoweichao@oppo.com>
->> ---
->>   fs/fuse/dev.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
+>> Say the SMMU designer hard-codes the ID register field to 0x2 because the SMMU itself is capable of HTTU, and they assume it's always going to be wired up coherently, but then a customer integrates it to a non-coherent interconnect. Firmware needs to override that value to prevent an OS thinking that the claimed HTTU capability is ever going to work.
 >>
->> diff --git a/fs/fuse/dev.c b/fs/fuse/dev.c
->> index 588f8d1240aa..e580b9d04c25 100644
->> --- a/fs/fuse/dev.c
->> +++ b/fs/fuse/dev.c
->> @@ -721,7 +721,7 @@ static int fuse_copy_fill(struct fuse_copy_state 
->> *cs)
->>               if (cs->nr_segs >= cs->pipe->max_usage)
->>                   return -EIO;
->>   -            page = alloc_page(GFP_HIGHUSER);
->> +            page = alloc_page(GFP_HIGHUSER & ~__GFP_FS);
->>               if (!page)
->>                   return -ENOMEM;
->
->
+>> Or say the SMMU *is* integrated correctly, but due to an erratum discovered later in the interconnect or SMMU itself, it turns out DBM doesn't always work reliably, but AF is still OK. Firmware needs to downgrade the indicated level of support from that which was intended to that which works reliably.
+>>
+>> Or say someone forgets to set an integration tieoff so their SMMU reports 0x0 even though it and the interconnect *can* happily support HTTU. In that case, firmware may want to upgrade the value to *allow* an OS to use HTTU despite the ID register being wrong.
+>>
+>>> As the IORT spec doesn't give an explicit explanation for HTTU override, can we comprehend it as a mask for HTTU related hardware register?
+>>> So the logic becomes: smmu->feature = HTTU override & IDR0_HTTU;
+>>
+>> No, it literally states that the OS must use the value of the firmware field *instead* of the value from the hardware field.
+> 
+> Oops, apologies for an oversight there - I've been reviewing IORT spec updates lately so naturally had the newest version open already. Turns out these descriptions were only clarified in the most recent release, so if you were looking at an older document they *were* horribly vague.
+Yep, my local version is E which was released at July 2020. I download the version E.a just now, thanks. ;-)
+
+Thanks,
+Keqian
