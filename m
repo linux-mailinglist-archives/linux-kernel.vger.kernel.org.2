@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72A8F312385
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 11:36:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23AE6312395
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 11:40:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229716AbhBGKg0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Feb 2021 05:36:26 -0500
-Received: from inva020.nxp.com ([92.121.34.13]:50648 "EHLO inva020.nxp.com"
+        id S229720AbhBGKhO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Feb 2021 05:37:14 -0500
+Received: from inva021.nxp.com ([92.121.34.21]:38528 "EHLO inva021.nxp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229611AbhBGKgT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Feb 2021 05:36:19 -0500
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id E28C31A195E;
-        Sun,  7 Feb 2021 11:35:31 +0100 (CET)
+        id S229522AbhBGKgU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Feb 2021 05:36:20 -0500
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 329CD200E46;
+        Sun,  7 Feb 2021 11:35:33 +0100 (CET)
 Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id BB4C71A03DA;
-        Sun,  7 Feb 2021 11:35:26 +0100 (CET)
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id EA29D2019AC;
+        Sun,  7 Feb 2021 11:35:27 +0100 (CET)
 Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 404094028B;
-        Sun,  7 Feb 2021 11:35:20 +0100 (CET)
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 6F3AA4030C;
+        Sun,  7 Feb 2021 11:35:21 +0100 (CET)
 From:   Shengjiu Wang <shengjiu.wang@nxp.com>
 To:     lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
         tiwai@suse.com, alsa-devel@alsa-project.org,
@@ -27,9 +27,9 @@ To:     lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
         nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
         linuxppc-dev@lists.ozlabs.org, robh+dt@kernel.org,
         devicetree@vger.kernel.org
-Subject: [PATCH v2 3/7] ASoC: dt-bindings: fsl_rpmsg: Add binding doc for rpmsg cpu dai driver
-Date:   Sun,  7 Feb 2021 18:23:51 +0800
-Message-Id: <1612693435-31418-4-git-send-email-shengjiu.wang@nxp.com>
+Subject: [PATCH v2 4/7] ASoC: imx-audio-rpmsg: Add rpmsg_driver for audio channel
+Date:   Sun,  7 Feb 2021 18:23:52 +0800
+Message-Id: <1612693435-31418-5-git-send-email-shengjiu.wang@nxp.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1612693435-31418-1-git-send-email-shengjiu.wang@nxp.com>
 References: <1612693435-31418-1-git-send-email-shengjiu.wang@nxp.com>
@@ -38,103 +38,204 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-fsl_rpmsg cpu dai driver is driver for rpmsg audio, which is mainly used
-for getting the user's configuration from device tree and configure the
-clocks which is used by Cortex-M core. So in this document define the
-needed property.
+This driver is used to accept the message from rpmsg audio
+channel, and if this driver is probed, it will help to register
+the platform driver, the platform driver will use this
+audio channel to send and receive message to and from Cortex-M
+core.
 
 Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 ---
- .../devicetree/bindings/sound/fsl,rpmsg.yaml  | 80 +++++++++++++++++++
- 1 file changed, 80 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/fsl,rpmsg.yaml
+ sound/soc/fsl/Kconfig           |   4 +
+ sound/soc/fsl/Makefile          |   1 +
+ sound/soc/fsl/imx-audio-rpmsg.c | 151 ++++++++++++++++++++++++++++++++
+ 3 files changed, 156 insertions(+)
+ create mode 100644 sound/soc/fsl/imx-audio-rpmsg.c
 
-diff --git a/Documentation/devicetree/bindings/sound/fsl,rpmsg.yaml b/Documentation/devicetree/bindings/sound/fsl,rpmsg.yaml
+diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
+index a688c3c2efbc..84d9f0f1f75b 100644
+--- a/sound/soc/fsl/Kconfig
++++ b/sound/soc/fsl/Kconfig
+@@ -126,6 +126,10 @@ config SND_SOC_IMX_PCM_DMA
+ 	tristate
+ 	select SND_SOC_GENERIC_DMAENGINE_PCM
+ 
++config SND_SOC_IMX_AUDIO_RPMSG
++	tristate
++	depends on RPMSG
++
+ config SND_SOC_IMX_AUDMUX
+ 	tristate "Digital Audio Mux module support"
+ 	help
+diff --git a/sound/soc/fsl/Makefile b/sound/soc/fsl/Makefile
+index b63802f345cc..f08f3cd07ff5 100644
+--- a/sound/soc/fsl/Makefile
++++ b/sound/soc/fsl/Makefile
+@@ -60,6 +60,7 @@ obj-$(CONFIG_SND_SOC_IMX_AUDMUX) += snd-soc-imx-audmux.o
+ 
+ obj-$(CONFIG_SND_SOC_IMX_PCM_FIQ) += imx-pcm-fiq.o
+ obj-$(CONFIG_SND_SOC_IMX_PCM_DMA) += imx-pcm-dma.o
++obj-$(CONFIG_SND_SOC_IMX_AUDIO_RPMSG) += imx-audio-rpmsg.o
+ 
+ # i.MX Machine Support
+ snd-soc-eukrea-tlv320-objs := eukrea-tlv320.o
+diff --git a/sound/soc/fsl/imx-audio-rpmsg.c b/sound/soc/fsl/imx-audio-rpmsg.c
 new file mode 100644
-index 000000000000..2d3ce10d42fc
+index 000000000000..145edb1492b4
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/fsl,rpmsg.yaml
-@@ -0,0 +1,80 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/fsl,rpmsg.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
++++ b/sound/soc/fsl/imx-audio-rpmsg.c
+@@ -0,0 +1,151 @@
++// SPDX-License-Identifier: GPL-2.0+
++// Copyright 2017-2020 NXP
 +
-+title: NXP Audio RPMSG CPU DAI Controller
++#include <linux/module.h>
++#include <linux/rpmsg.h>
++#include "imx-pcm-rpmsg.h"
 +
-+maintainers:
-+  - Shengjiu Wang <shengjiu.wang@nxp.com>
++/*
++ * struct imx_audio_rpmsg: private data
++ *
++ * @rpmsg_pdev: pointer of platform device
++ */
++struct imx_audio_rpmsg {
++	struct platform_device *rpmsg_pdev;
++};
 +
-+properties:
-+  compatible:
-+    enum:
-+      - fsl,imx7ulp-rpmsg
-+      - fsl,imx8mn-rpmsg
-+      - fsl,imx8mm-rpmsg
-+      - fsl,imx8mp-rpmsg
++static int imx_audio_rpmsg_cb(struct rpmsg_device *rpdev, void *data, int len,
++			      void *priv, u32 src)
++{
++	struct imx_audio_rpmsg *rpmsg = dev_get_drvdata(&rpdev->dev);
++	struct rpmsg_info *info = platform_get_drvdata(rpmsg->rpmsg_pdev);
++	struct rpmsg_r_msg *r_msg = (struct rpmsg_r_msg *)data;
++	struct rpmsg_msg *msg;
++	unsigned long flags;
 +
-+  clocks:
-+    items:
-+      - description: Peripheral clock for register access
-+      - description: Master clock
-+      - description: DMA clock for DMA register access
-+      - description: Parent clock for multiple of 8kHz sample rates
-+      - description: Parent clock for multiple of 11kHz sample rates
-+    minItems: 5
++	dev_dbg(&rpdev->dev, "get from%d: cmd:%d. %d\n",
++		src, r_msg->header.cmd, r_msg->param.resp);
 +
-+  clock-names:
-+    items:
-+      - const: ipg
-+      - const: mclk
-+      - const: dma
-+      - const: pll8k
-+      - const: pll11k
-+    minItems: 5
++	switch (r_msg->header.type) {
++	case MSG_TYPE_C:
++		/* TYPE C is notification from M core */
++		switch (r_msg->header.cmd) {
++		case TX_PERIOD_DONE:
++			spin_lock_irqsave(&info->lock[TX], flags);
++			msg = &info->msg[TX_PERIOD_DONE + MSG_TYPE_A_NUM];
 +
-+  power-domains:
-+    maxItems: 1
++			/*
++			 * Low power mode: get the buffer pointer from
++			 * receive msg.
++			 */
++			if (r_msg->header.major == 1 &&
++			    r_msg->header.minor == 2)
++				msg->r_msg.param.buffer_tail =
++						r_msg->param.buffer_tail;
++			else
++				msg->r_msg.param.buffer_tail++;
 +
-+  fsl,audioindex:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: instance index for rpmsg image
++			msg->r_msg.param.buffer_tail %= info->num_period[TX];
++			spin_unlock_irqrestore(&info->lock[TX], flags);
++			info->callback[TX](info->callback_param[TX]);
++			break;
++		case RX_PERIOD_DONE:
++			spin_lock_irqsave(&info->lock[RX], flags);
++			msg = &info->msg[RX_PERIOD_DONE + MSG_TYPE_A_NUM];
 +
-+  fsl,version:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: rpmsg image version index
++			if (r_msg->header.major == 1 &&
++			    r_msg->header.minor == 2)
++				msg->r_msg.param.buffer_tail =
++						r_msg->param.buffer_tail;
++			else
++				msg->r_msg.param.buffer_tail++;
 +
-+  fsl,buffer-size:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: pre allocate dma buffer size
++			msg->r_msg.param.buffer_tail %= info->num_period[1];
++			spin_unlock_irqrestore(&info->lock[RX], flags);
++			info->callback[RX](info->callback_param[RX]);
++			break;
++		default:
++			dev_warn(&rpdev->dev, "unknown msg command\n");
++			break;
++		}
++		break;
++	case MSG_TYPE_B:
++		/* TYPE B is response msg */
++		memcpy(&info->r_msg, r_msg, sizeof(struct rpmsg_r_msg));
++		complete(&info->cmd_complete);
++		break;
++	default:
++		dev_warn(&rpdev->dev, "unknown msg type\n");
++		break;
++	}
 +
-+  fsl,enable-lpa:
-+    $ref: /schemas/types.yaml#/definitions/flag
-+    description: enable low power audio path.
++	return 0;
++}
 +
-+  fsl,codec-type:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: Sometimes the codec is registered by
-+                 driver not the device tree, this items
-+                 can be used to distinguish codecs
++static int imx_audio_rpmsg_probe(struct rpmsg_device *rpdev)
++{
++	struct imx_audio_rpmsg *data;
++	int ret = 0;
 +
-+required:
-+  - compatible
-+  - fsl,audioindex
-+  - fsl,version
-+  - fsl,buffer-size
++	dev_info(&rpdev->dev, "new channel: 0x%x -> 0x%x!\n",
++		 rpdev->src, rpdev->dst);
 +
-+additionalProperties: false
++	data = devm_kzalloc(&rpdev->dev, sizeof(*data), GFP_KERNEL);
++	if (!data)
++		return -ENOMEM;
 +
-+examples:
-+  - |
-+    rpmsg_audio: rpmsg_audio {
-+        compatible = "fsl,imx8mn-rpmsg";
-+        fsl,audioindex = <0> ;
-+        fsl,version = <2>;
-+        fsl,buffer-size = <0x6000000>;
-+        fsl,enable-lpa;
-+        status = "okay";
-+    };
++	dev_set_drvdata(&rpdev->dev, data);
++
++	/* Register platform driver for rpmsg routine */
++	data->rpmsg_pdev = platform_device_register_data(&rpdev->dev,
++							 IMX_PCM_DRV_NAME,
++							 PLATFORM_DEVID_NONE,
++							 NULL, 0);
++	if (IS_ERR(data->rpmsg_pdev)) {
++		dev_err(&rpdev->dev, "failed to register rpmsg platform.\n");
++		ret = PTR_ERR(data->rpmsg_pdev);
++	}
++
++	return ret;
++}
++
++static void imx_audio_rpmsg_remove(struct rpmsg_device *rpdev)
++{
++	struct imx_audio_rpmsg *data = dev_get_drvdata(&rpdev->dev);
++
++	if (data->rpmsg_pdev)
++		platform_device_unregister(data->rpmsg_pdev);
++
++	dev_info(&rpdev->dev, "audio rpmsg driver is removed\n");
++}
++
++static struct rpmsg_device_id imx_audio_rpmsg_id_table[] = {
++	{ .name	= "rpmsg-audio-channel" },
++	{ },
++};
++
++static struct rpmsg_driver imx_audio_rpmsg_driver = {
++	.drv.name	= "imx_audio_rpmsg",
++	.drv.owner	= THIS_MODULE,
++	.id_table	= imx_audio_rpmsg_id_table,
++	.probe		= imx_audio_rpmsg_probe,
++	.callback	= imx_audio_rpmsg_cb,
++	.remove		= imx_audio_rpmsg_remove,
++};
++
++static int __init imx_audio_rpmsg_init(void)
++{
++	return register_rpmsg_driver(&imx_audio_rpmsg_driver);
++}
++
++static void __exit imx_audio_rpmsg_exit(void)
++{
++	unregister_rpmsg_driver(&imx_audio_rpmsg_driver);
++}
++module_init(imx_audio_rpmsg_init);
++module_exit(imx_audio_rpmsg_exit);
++
++MODULE_DESCRIPTION("Freescale SoC Audio RPMSG interface");
++MODULE_AUTHOR("Shengjiu Wang <shengjiu.wang@nxp.com>");
++MODULE_ALIAS("platform:imx_audio_rpmsg");
++MODULE_LICENSE("GPL v2");
 -- 
 2.27.0
 
