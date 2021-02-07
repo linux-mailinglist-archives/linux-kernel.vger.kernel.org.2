@@ -2,88 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C6EC312610
+	by mail.lfdr.de (Postfix) with ESMTP id EEFB6312611
 	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 17:38:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229683AbhBGQhQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Feb 2021 11:37:16 -0500
-Received: from netrider.rowland.org ([192.131.102.5]:54785 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S229590AbhBGQhO (ORCPT
+        id S229590AbhBGQiX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Feb 2021 11:38:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44826 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229690AbhBGQiT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Feb 2021 11:37:14 -0500
-Received: (qmail 666614 invoked by uid 1000); 7 Feb 2021 11:36:32 -0500
-Date:   Sun, 7 Feb 2021 11:36:32 -0500
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     syzbot <syzbot+d4ebc877b1223f20d5a0@syzkaller.appspotmail.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Cc:     andreyknvl@google.com, andriy.shevchenko@linux.intel.com,
-        gregkh@linuxfoundation.org, johan@kernel.org,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-media@vger.kernel.org, mathias.nyman@linux.intel.com,
-        syzkaller-bugs@googlegroups.com
-Subject: Re: WARNING in go7007_usb_onboard_write_interrupt/usb_submit_urb
-Message-ID: <20210207163632.GA666362@rowland.harvard.edu>
-References: <000000000000ef60e905baba29d0@google.com>
+        Sun, 7 Feb 2021 11:38:19 -0500
+Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01C81C06174A
+        for <linux-kernel@vger.kernel.org>; Sun,  7 Feb 2021 08:37:39 -0800 (PST)
+Received: by mail-ot1-x333.google.com with SMTP id k10so9568466otl.2
+        for <linux-kernel@vger.kernel.org>; Sun, 07 Feb 2021 08:37:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:sender:from:date:message-id:subject:to;
+        bh=CkxeOit7LCDTD8ggEqhPCW9Pe/kiWdUVMpJgxhA7c7I=;
+        b=FXm4Bbr508Dm4uVqZnMmjTEJIlhDlRdxFhYYbN0t6znhgUgb2mfOFC+GtgQUHsPw+Y
+         dmzluAoHtoQCOhs9HZ2H73uhSiyv56vzSR5IZKT3TFzXdTc3j8iHKq+I3UyJrwpr04VR
+         RBnKXwTXTzz/8nWi8TrKkbPis7Dj3iDKxS89c4I2okHk+o9V510IMunelpv06aZmII65
+         sWXEqW9kygbluzhcHlch/5edDwHZEO09IZC8mZUuWv1IUlAFOFD5ru2rMSqj72MMgpDh
+         gv1Ch1GVmC62mf7//CweEiUxAnRJJ5hRd0NDxm1EhEBFmgaZkYxGWl6BpByw4tpCwmo9
+         +PIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to;
+        bh=CkxeOit7LCDTD8ggEqhPCW9Pe/kiWdUVMpJgxhA7c7I=;
+        b=OWhVYrOtCzqeovD3Gqvs65iD0g0y5RgRCF/BFGVDtTLiR01KSkRC02tgX03WGLcT40
+         FYCH3+33hIcmXDbCCX+ky0krido3P9AmWh3rknxALcKTauzDewt8b2/Z2m+VPlm62vEH
+         mG9jc0MRwtlIqqVnV+EBaM8wiR29UvNU8E0UXvv0iZtBY8fh58nSkUSCakwhxyf1auaJ
+         Z34o4IbxGDv9nxRBtSLUUgJKBqzprpl3dkjvTfuJzcVcHYeW4JPpJlhpnYVCTjAFYPpV
+         CpbitZ3fBuatynSD3Bi5BhtkBNCvpD+C96cmdoPYV/UxLQenHiVbNTSDNljhxobaobaO
+         0O8Q==
+X-Gm-Message-State: AOAM5327cu6aFNHGJ0a9Pc8YnqwPzbItwlUECbD+zgPvxfQhD9VKIubh
+        9ogkw2RhdVgFcomvLJQQBmzUBw49zKv+n8vFWEQ=
+X-Google-Smtp-Source: ABdhPJwxdqJrblFJgrQlX3IJLHceLFYh1Q5OXAczIMEYGxha2th3XJ63VWHDXTC+5GwX1N/wslRJQ8IooqPigbToqWM=
+X-Received: by 2002:a9d:19c9:: with SMTP id k67mr10027303otk.292.1612715858374;
+ Sun, 07 Feb 2021 08:37:38 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <000000000000ef60e905baba29d0@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: marianhasan2011@gmail.com
+Received: by 2002:a54:4101:0:0:0:0:0 with HTTP; Sun, 7 Feb 2021 08:37:37 -0800 (PST)
+From:   "Mr. Alain Nkontchou" <mralainnkontchou503@gmail.com>
+Date:   Sun, 7 Feb 2021 08:37:37 -0800
+X-Google-Sender-Auth: wA3GjMzfm00jvcQlGxsw-c87ky0
+Message-ID: <CAJiL0FvdgLPjAeaOqu-fgfjfg_yHQ+t4tZMEUzWW9_1CLsAxvg@mail.gmail.com>
+Subject: Important business relationship
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hans:
+-- 
+I am Mr. Alain Nkontchou, banker contacting you based on my interests
+to develop a mutual business relationship with someone in your
+country. I decided to solicit for your assistance to execute this
+transaction due to some circumstances beyond my control. In fact, the
+deal will be made known to you upon receiving a positive response from
+you.
 
-On Sat, Feb 06, 2021 at 11:40:13PM -0800, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    64eaa0fa platform/chrome: cros_ec_typec: Fix call to typec..
-> git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-testing
-> console output: https://syzkaller.appspot.com/x/log.txt?x=12d5c090d00000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=29ec25b819cb42f3
-> dashboard link: https://syzkaller.appspot.com/bug?extid=d4ebc877b1223f20d5a0
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16b47dd8d00000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=164896c4d00000
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+d4ebc877b1223f20d5a0@syzkaller.appspotmail.com
-> 
-> usb 1-1: New USB device strings: Mfr=1, Product=2, SerialNumber=3
-> usb 1-1: SerialNumber: syz
-> usb 1-1: config 0 descriptor??
-> ------------[ cut here ]------------
-> usb 1-1: BOGUS urb xfer, pipe 2 != type 3
-> WARNING: CPU: 0 PID: 2608 at drivers/usb/core/urb.c:493 usb_submit_urb+0xd27/0x1540 drivers/usb/core/urb.c:493
-> Modules linked in:
-> CPU: 0 PID: 2608 Comm: kworker/0:2 Not tainted 5.11.0-rc5-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> Workqueue: usb_hub_wq hub_event
-> RIP: 0010:usb_submit_urb+0xd27/0x1540 drivers/usb/core/urb.c:493
-> Code: 84 d4 02 00 00 e8 e9 e9 ba fd 4c 89 ef e8 f1 3d 1d ff 41 89 d8 44 89 e1 4c 89 f2 48 89 c6 48 c7 c7 00 6a 61 86 e8 31 ee f9 01 <0f> 0b e9 81 f8 ff ff e8 bd e9 ba fd 48 81 c5 30 06 00 00 e9 ad f7
-> RSP: 0018:ffffc90006cf6c70 EFLAGS: 00010286
-> RAX: 0000000000000000 RBX: 0000000000000003 RCX: 0000000000000000
-> RDX: ffff88810a895040 RSI: ffffffff81299db3 RDI: fffff52000d9ed80
-> RBP: ffff88810155f8a0 R08: 0000000000000001 R09: 0000000000000000
-> R10: ffffffff8149c4ab R11: 0000000000000000 R12: 0000000000000002
-> R13: ffff8881121670a0 R14: ffff8881031c06e0 R15: ffff888102b46f00
-> FS:  0000000000000000(0000) GS:ffff8881f6800000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 000055bfb7b520d0 CR3: 000000010a1f1000 CR4: 00000000001506f0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->  usb_start_wait_urb+0x101/0x4c0 drivers/usb/core/message.c:58
->  usb_internal_control_msg drivers/usb/core/message.c:102 [inline]
->  usb_control_msg+0x31c/0x4a0 drivers/usb/core/message.c:153
->  go7007_usb_onboard_write_interrupt+0x26a/0x340 drivers/media/usb/go7007/go7007-usb.c:735
-
-It looks like the go7007 driver isn't very careful about checking that 
-the endpoints it uses have the right types.  In particular, this bug was 
-caused by not checking that ep2 is a control endpoint (highly unusual to 
-have a control endpoint other than 0, but allowed).
-
-Alan Stern
+Regards,
+Mr. Alain Nkontchou.
