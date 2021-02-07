@@ -2,213 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAEBE3125FB
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 17:22:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B104312602
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 17:27:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229491AbhBGQWH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Feb 2021 11:22:07 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:31411 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229638AbhBGQWA (ORCPT
+        id S229636AbhBGQ0y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Feb 2021 11:26:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42382 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229506AbhBGQ0w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Feb 2021 11:22:00 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612714833;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=FZqyDugOGOW0JQq4JTJQ1tDgFP/xH2dXqvp4jbAWnlA=;
-        b=RmgIofntqJBxbB2NSQAwYGxcjqzapGgewbxjKILKQYenodoE+oCkAPWQ9RHM2qL0cpjcnJ
-        6SCn+1ImcrtSu69VOACk4XBVTkc0CX0NSWUqc/hsW7JjSPjlnmn29Z+l4WhD4RAOqYUZn7
-        ZVKquqQNSqZncCaS0IcW4ytyKBEtnC8=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-164-SLLlD35rMbOtohfy0pAK0g-1; Sun, 07 Feb 2021 11:20:31 -0500
-X-MC-Unique: SLLlD35rMbOtohfy0pAK0g-1
-Received: by mail-ed1-f70.google.com with SMTP id p18so11790061edr.20
-        for <linux-kernel@vger.kernel.org>; Sun, 07 Feb 2021 08:20:31 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=FZqyDugOGOW0JQq4JTJQ1tDgFP/xH2dXqvp4jbAWnlA=;
-        b=MJuhZm6PBgrdbcU93Amr4cKfIH+wO4kNWtlYHh91FfPVwlmXDk4T7OklpmgjxwXO90
-         e9qRjYAm0Y7KVpai1o/eYuy4iImShneAl+xiBGIe7/KyIr5fouUARaWH5HTW35S89P+x
-         ZrKDJOpH/pn3vRPsaFs2Ir1jj7rG7g3fpw1UqRqjt0gMgaspQ9XiQ/CLitGy7gup39yo
-         ebIVTIT9vDoeyTGDWIOm9QFgUEIyE8JDmkf2Jh3N3DsGuZ0y52NPbdy0CC9fuTRZ394u
-         pIDS/rgFltJT3rZ9H0nlRb74iwjFmoa6k6wk0fXdJCgGN/yNbRXeumjPE4XjP4L0dYa9
-         XuFQ==
-X-Gm-Message-State: AOAM531HMB6NwrT3Av3kLCsyu4K0udZpoBPZpD2Nq1lUPi05DMrt65OO
-        RloXbfxuq9EG/NbNV1/GTLngcMJ7GYd2xuunQkOahAloS6mcQyJxBREV1v4rZ+SA9j78rmqPem0
-        +t9JmTGyB51uvvDlTlzsvvrtC
-X-Received: by 2002:aa7:cb0d:: with SMTP id s13mr13143851edt.221.1612714830403;
-        Sun, 07 Feb 2021 08:20:30 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxSdcDNfe71ti67oDmkvTssos1+0OxTMKiTicFwRsqODDXrK/rf1JmpCvBGtLbnaWdb2ccmlQ==
-X-Received: by 2002:aa7:cb0d:: with SMTP id s13mr13143828edt.221.1612714830149;
-        Sun, 07 Feb 2021 08:20:30 -0800 (PST)
-Received: from redhat.com (bzq-79-180-2-31.red.bezeqint.net. [79.180.2.31])
-        by smtp.gmail.com with ESMTPSA id w3sm7043867eja.52.2021.02.07.08.20.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 07 Feb 2021 08:20:29 -0800 (PST)
-Date:   Sun, 7 Feb 2021 11:20:25 -0500
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jorgen Hansen <jhansen@vmware.com>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Alexander Popov <alex.popov@linux.com>, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stsp2@yandex.ru, oxffffaa@gmail.com
-Subject: Re: [RFC PATCH v4 00/17] virtio/vsock: introduce SOCK_SEQPACKET
- support
-Message-ID: <20210207111954-mutt-send-email-mst@kernel.org>
-References: <20210207151259.803917-1-arseny.krasnov@kaspersky.com>
+        Sun, 7 Feb 2021 11:26:52 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BAC2C06174A
+        for <linux-kernel@vger.kernel.org>; Sun,  7 Feb 2021 08:26:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:Message-ID:
+        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=oyOjEuJbaUrZDVi6UGKFq49upkI+s55d99FAd7+Mq7w=; b=qbvGukdAbhx4ukLix1XzXe3ubg
+        VZs6q8VrGPboR1IsRvsJhE07wh0WeYDjgMv17EquwBMJp6IVN0FNUNB11NuEB4ls9mLcxu9eVAjnm
+        Pw3W2PXghA3x1puBVaK0iLdR+8UFZ3RUev9OqWmi1TXkXhad9SiK3LVw4U5voPL1ez4hdYAN0GyV6
+        JzvrsojyPybHB5ygNgFzez3pu0fadojegg6K/jzoHQSc38uOQpBCQAHJx5YuvwaGg/dzjWFDerHHu
+        wblBBeZ/vE3IFq7S7ASLokdKRaBJfwGqaP8p6sMo/q3mAqaN+kB73qdXQ+FfX/OryvCcTg6BDvrqG
+        ljrxeMdQ==;
+Received: from [2001:4bb8:184:7d04:4590:5583:6cb7:77c7] (helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1l8msw-004uha-Gz; Sun, 07 Feb 2021 16:26:08 +0000
+Date:   Sun, 7 Feb 2021 17:26:05 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org
+Subject: [GIT PULL] dma-mapping fix for 5.11
+Message-ID: <YCAUnVvH3rA24ZCa@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210207151259.803917-1-arseny.krasnov@kaspersky.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Feb 07, 2021 at 06:12:56PM +0300, Arseny Krasnov wrote:
-> 	This patchset impelements support of SOCK_SEQPACKET for virtio
-> transport.
-> 	As SOCK_SEQPACKET guarantees to save record boundaries, so to
-> do it, two new packet operations were added: first for start of record
->  and second to mark end of record(SEQ_BEGIN and SEQ_END later). Also,
-> both operations carries metadata - to maintain boundaries and payload
-> integrity. Metadata is introduced by adding special header with two
-> fields - message count and message length:
-> 
-> 	struct virtio_vsock_seq_hdr {
-> 		__le32  msg_cnt;
-> 		__le32  msg_len;
-> 	} __attribute__((packed));
-> 
-> 	This header is transmitted as payload of SEQ_BEGIN and SEQ_END
-> packets(buffer of second virtio descriptor in chain) in the same way as
-> data transmitted in RW packets. Payload was chosen as buffer for this
-> header to avoid touching first virtio buffer which carries header of
-> packet, because someone could check that size of this buffer is equal
-> to size of packet header. To send record, packet with start marker is
-> sent first(it's header contains length of record and counter), then
-> counter is incremented and all data is sent as usual 'RW' packets and
-> finally SEQ_END is sent(it also carries counter of message, which is
-> counter of SEQ_BEGIN + 1), also after sedning SEQ_END counter is
-> incremented again. On receiver's side, length of record is known from
-> packet with start record marker. To check that no packets were dropped
-> by transport, counters of two sequential SEQ_BEGIN and SEQ_END are
-> checked(counter of SEQ_END must be bigger that counter of SEQ_BEGIN by
-> 1) and length of data between two markers is compared to length in
-> SEQ_BEGIN header.
-> 	Now as  packets of one socket are not reordered neither on
-> vsock nor on vhost transport layers, such markers allows to restore
-> original record on receiver's side. If user's buffer is smaller that
-> record length, when all out of size data is dropped.
-> 	Maximum length of datagram is not limited as in stream socket,
-> because same credit logic is used. Difference with stream socket is
-> that user is not woken up until whole record is received or error
-> occurred. Implementation also supports 'MSG_EOR' and 'MSG_TRUNC' flags.
-> 	Tests also implemented.
-> 
->  Arseny Krasnov (17):
->   af_vsock: update functions for connectible socket
->   af_vsock: separate wait data loop
->   af_vsock: separate receive data loop
->   af_vsock: implement SEQPACKET receive loop
->   af_vsock: separate wait space loop
->   af_vsock: implement send logic for SEQPACKET
->   af_vsock: rest of SEQPACKET support
->   af_vsock: update comments for stream sockets
->   virtio/vsock: dequeue callback for SOCK_SEQPACKET
->   virtio/vsock: fetch length for SEQPACKET record
->   virtio/vsock: add SEQPACKET receive logic
->   virtio/vsock: rest of SOCK_SEQPACKET support
->   virtio/vsock: setup SEQPACKET ops for transport
->   vhost/vsock: setup SEQPACKET ops for transport
->   vsock_test: add SOCK_SEQPACKET tests
->   loopback/vsock: setup SEQPACKET ops for transport
->   virtio/vsock: simplify credit update function API
-> 
->  drivers/vhost/vsock.c                   |   8 +-
->  include/linux/virtio_vsock.h            |  15 +
->  include/net/af_vsock.h                  |   9 +
->  include/uapi/linux/virtio_vsock.h       |  16 +
->  net/vmw_vsock/af_vsock.c                | 588 +++++++++++++++-------
->  net/vmw_vsock/virtio_transport.c        |   5 +
->  net/vmw_vsock/virtio_transport_common.c | 316 ++++++++++--
->  net/vmw_vsock/vsock_loopback.c          |   5 +
->  tools/testing/vsock/util.c              |  32 +-
->  tools/testing/vsock/util.h              |   3 +
->  tools/testing/vsock/vsock_test.c        | 126 +++++
->  11 files changed, 895 insertions(+), 228 deletions(-)
-> 
->  TODO:
->  - What to do, when server doesn't support SOCK_SEQPACKET. In current
->    implementation RST is replied in the same way when listening port
->    is not found. I think that current RST is enough,because case when
->    server doesn't support SEQ_PACKET is same when listener missed(e.g.
->    no listener in both cases).
+The following changes since commit dd86e7fa07a3ec33c92c957ea7b642c4702516a0:
 
-   - virtio spec patch
+  Merge tag 'pci-v5.11-fixes-2' of git://git.kernel.org/pub/scm/linux/kernel/git/helgaas/pci (2021-02-04 16:05:40 -0800)
 
->  v3 -> v4:
->  - callbacks for loopback transport
->  - SEQPACKET specific metadata moved from packet header to payload
->    and called 'virtio_vsock_seq_hdr'
->  - record integrity check:
->    1) SEQ_END operation was added, which marks end of record.
->    2) Both SEQ_BEGIN and SEQ_END carries counter which is incremented
->       on every marker send.
->  - af_vsock.c: socket operations for STREAM and SEQPACKET call same
->    functions instead of having own "gates" differs only by names:
->    'vsock_seqpacket/stream_getsockopt()' now replaced with
->    'vsock_connectible_getsockopt()'.
->  - af_vsock.c: 'seqpacket_dequeue' callback returns error and flag that
->    record ready. There is no need to return number of copied bytes,
->    because case when record received successfully is checked at virtio
->    transport layer, when SEQ_END is processed. Also user doesn't need
->    number of copied bytes, because 'recv()' from SEQPACKET could return
->    error, length of users's buffer or length of whole record(both are
->    known in af_vsock.c).
->  - af_vsock.c: both wait loops in af_vsock.c(for data and space) moved
->    to separate functions because now both called from several places.
->  - af_vsock.c: 'vsock_assign_transport()' checks that 'new_transport'
->    pointer is not NULL and returns 'ESOCKTNOSUPPORT' instead of 'ENODEV'
->    if failed to use transport.
->  - tools/testing/vsock/vsock_test.c: rename tests
-> 
->  v2 -> v3:
->  - patches reorganized: split for prepare and implementation patches
->  - local variables are declared in "Reverse Christmas tree" manner
->  - virtio_transport_common.c: valid leXX_to_cpu() for vsock header
->    fields access
->  - af_vsock.c: 'vsock_connectible_*sockopt()' added as shared code
->    between stream and seqpacket sockets.
->  - af_vsock.c: loops in '__vsock_*_recvmsg()' refactored.
->  - af_vsock.c: 'vsock_wait_data()' refactored.
-> 
->  v1 -> v2:
->  - patches reordered: af_vsock.c related changes now before virtio vsock
->  - patches reorganized: more small patches, where +/- are not mixed
->  - tests for SOCK_SEQPACKET added
->  - all commit messages updated
->  - af_vsock.c: 'vsock_pre_recv_check()' inlined to
->    'vsock_connectible_recvmsg()'
->  - af_vsock.c: 'vsock_assign_transport()' returns ENODEV if transport
->    was not found
->  - virtio_transport_common.c: transport callback for seqpacket dequeue
->  - virtio_transport_common.c: simplified
->    'virtio_transport_recv_connected()'
->  - virtio_transport_common.c: send reset on socket and packet type
-> 			      mismatch.
-> 
-> -- 
-> 2.25.1
+are available in the Git repository at:
 
+  git://git.infradead.org/users/hch/dma-mapping.git tags/dma-mapping-5.11-2
+
+for you to fetch changes up to 9f5f8ec50165630cfc49897410b30997d4d677b5:
+
+  dma-mapping: benchmark: use u8 for reserved field in uAPI structure (2021-02-05 12:48:46 +0100)
+
+----------------------------------------------------------------
+dma-mapping fixes for 5.11:
+
+ - fix a 32 vs 64-bit padding issue in the new benchmark code
+   (Barry Song)
+
+----------------------------------------------------------------
+Barry Song (1):
+      dma-mapping: benchmark: use u8 for reserved field in uAPI structure
+
+ kernel/dma/map_benchmark.c                      | 2 +-
+ tools/testing/selftests/dma/dma_map_benchmark.c | 4 +++-
+ 2 files changed, 4 insertions(+), 2 deletions(-)
