@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13A0C3127EA
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 23:37:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39BDB3127EB
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 23:39:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229618AbhBGWgh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Feb 2021 17:36:37 -0500
-Received: from mga12.intel.com ([192.55.52.136]:21457 "EHLO mga12.intel.com"
+        id S229629AbhBGWiB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Feb 2021 17:38:01 -0500
+Received: from mga03.intel.com ([134.134.136.65]:50231 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229506AbhBGWgf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Feb 2021 17:36:35 -0500
-IronPort-SDR: 2GB0225zWJSZrCU4AgsmfJsZDO50jvK5mPu6WcRQumVUG5uJoa+SX2KNL0bPmZ6rnQoYyMT5Ow
- wmcOJRc47yBA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9888"; a="160790608"
+        id S229506AbhBGWh7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Feb 2021 17:37:59 -0500
+IronPort-SDR: bI98z3VZ3prz7Y9u7NYaooUQkvtXMoo2cb9d4IAhdMcmyQym18q3hRtRsIsmMHKy+N7AEQJIuy
+ z9L34twn/t6A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9888"; a="181699511"
 X-IronPort-AV: E=Sophos;i="5.81,160,1610438400"; 
-   d="scan'208";a="160790608"
+   d="scan'208";a="181699511"
 Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Feb 2021 14:35:55 -0800
-IronPort-SDR: bZnvWqUZxS50GoB/LjPE5sXXRNIze6snbQhJjTUwQwpF7AD51SkWhbmz5tI32nw/wHBoUdziVe
- rRC8XwOrz6Gg==
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Feb 2021 14:37:17 -0800
+IronPort-SDR: 10BPne042QQI8wcgqw+OFVPPo0RaptW/BQhPVLu5c99hpHjeEAOFA4MVOf/EhU0eVVPqw3XizL
+ f98UHx1HjuNw==
 X-IronPort-AV: E=Sophos;i="5.81,160,1610438400"; 
-   d="scan'208";a="376885526"
+   d="scan'208";a="376885720"
 Received: from yramx-mobl1.amr.corp.intel.com (HELO [10.213.174.131]) ([10.213.174.131])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Feb 2021 14:35:54 -0800
-Subject: Re: [GIT PULL] x86/urgent for v5.11-rc7
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Borislav Petkov <bp@suse.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Steven Rostedt <rostedt@goodmis.org>, x86-ml <x86@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
-References: <20210207104022.GA32127@zn.tnic>
- <CAHk-=widXSyJ8W3vRrqO-zNP12A+odxg2J2_-oOUskz33wtfqA@mail.gmail.com>
- <20210207175814.GF32127@zn.tnic>
- <661b9809-2c6a-5fc8-163b-a159b84c9ab8@intel.com>
- <CAADnVQ+Sqna6X2a3MKaBv7xmdCcj-aD=prp8OggTTwCjoVN_0A@mail.gmail.com>
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Feb 2021 14:37:17 -0800
+Subject: Re: [PATCH v8] x86/sgx: Maintain encl->refcount for each
+ encl->mm_list entry
+To:     Jarkko Sakkinen <jarkko@kernel.org>, linux-sgx@vger.kernel.org
+Cc:     Haitao Huang <haitao.huang@linux.intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Jethro Beekman <jethro@fortanix.com>,
+        linux-kernel@vger.kernel.org
+References: <20210207221401.29933-1-jarkko@kernel.org>
 From:   Dave Hansen <dave.hansen@intel.com>
 Autocrypt: addr=dave.hansen@intel.com; keydata=
  xsFNBE6HMP0BEADIMA3XYkQfF3dwHlj58Yjsc4E5y5G67cfbt8dvaUq2fx1lR0K9h1bOI6fC
@@ -80,29 +80,26 @@ Autocrypt: addr=dave.hansen@intel.com; keydata=
  OPsw5tV/LmQ5GXH0JQ/TZXWygyRFyyI2FqNTx4WHqUn3yFj8rwTAU1tluRUYyeLy0ayUlKBH
  ybj0N71vWO936MqP6haFERzuPAIpxj2ezwu0xb1GjTk4ynna6h5GjnKgdfOWoRtoWndMZxbA
  z5cecg==
-Message-ID: <0ea22b5e-9bf5-37d5-0020-03ad2bd48923@intel.com>
-Date:   Sun, 7 Feb 2021 14:35:54 -0800
+Message-ID: <41238875-988f-fbb1-af2b-2e667ba8861d@intel.com>
+Date:   Sun, 7 Feb 2021 14:37:17 -0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <CAADnVQ+Sqna6X2a3MKaBv7xmdCcj-aD=prp8OggTTwCjoVN_0A@mail.gmail.com>
+In-Reply-To: <20210207221401.29933-1-jarkko@kernel.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/7/21 12:44 PM, Alexei Starovoitov wrote:
->>> It probably is an item on some Intel manager's to-enable list. So far,
->>> the CET enablement concentrates only on userspace but dhansen might know
->>> more about future plans. CCed.
->> It's definitely on our radar to look at after CET userspace.
-> What is the desired timeline to enable CET in the kernel ?
-> I think for bpf and tracing it will be mostly straightforward to deal
-> with extra endbr64 insn in front of the fentry nop.
-> Just trying to figure when this work needs to be done.
+> This has been shown in tests:
+> 
+> [  +0.000008] WARNING: CPU: 3 PID: 7620 at kernel/rcu/srcutree.c:374 cleanup_srcu_struct+0xed/0x100
+> 
+> This is essentially a use-after free, although SRCU notices it as
+> an SRCU cleanup in an invalid context.
+...
 
-Yu-cheng?  Any idea when you're going to start hacking on the in-kernel
-IBT bits?
+Acked-by: Dave Hansen <dave.hansen@linux.intel.com
 
