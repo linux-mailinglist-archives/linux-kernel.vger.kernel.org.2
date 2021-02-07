@@ -2,155 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B709312615
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 17:42:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03F6F31261A
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 17:46:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229720AbhBGQmL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Feb 2021 11:42:11 -0500
-Received: from vps0.lunn.ch ([185.16.172.187]:53506 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229491AbhBGQmJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Feb 2021 11:42:09 -0500
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1l8n7f-004ghT-5o; Sun, 07 Feb 2021 17:41:19 +0100
-Date:   Sun, 7 Feb 2021 17:41:19 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     stefanc@marvell.com
-Cc:     netdev@vger.kernel.org, thomas.petazzoni@bootlin.com,
-        davem@davemloft.net, nadavh@marvell.com, ymarkman@marvell.com,
-        linux-kernel@vger.kernel.org, kuba@kernel.org,
-        linux@armlinux.org.uk, mw@semihalf.com, rmk+kernel@armlinux.org.uk,
-        atenart@kernel.org, devicetree@vger.kernel.org, robh+dt@kernel.org,
-        sebastian.hesselbarth@gmail.com, gregory.clement@bootlin.com,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [RESEND PATCH v8 net-next 03/15] net: mvpp2: add CM3 SRAM memory
- map
-Message-ID: <YCAYL+jEVijKQqaa@lunn.ch>
-References: <1612685964-21890-1-git-send-email-stefanc@marvell.com>
- <1612685964-21890-4-git-send-email-stefanc@marvell.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1612685964-21890-4-git-send-email-stefanc@marvell.com>
+        id S229626AbhBGQqB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Feb 2021 11:46:01 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:11652 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229445AbhBGQp6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Feb 2021 11:45:58 -0500
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 117GWuDQ106151;
+        Sun, 7 Feb 2021 11:45:11 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=content-type :
+ mime-version : subject : from : in-reply-to : date : cc :
+ content-transfer-encoding : message-id : references : to; s=pp1;
+ bh=P/nx59+Gbnp+sQZMxdpPOZ7n/OYnKxlisKnmjIUM5fc=;
+ b=BkPaq1kCV9h66BwCssd0VyRul6irQuI5Oo5indQBlDTbvHLcOGbFNHI76sf8tOGnc+OQ
+ X2SFkedLxPz8/Y+viYCPMPlW2rI0EHCmF3NJL/+DzyCJNlNSKUicfAyOGLgXtwydUjo4
+ QvivuLbEa3eIP8hApD4EarAdxwFNWnKsCY4DO83BHaolUTTx5VtlRHApB1lzjgTFEBJF
+ 5MXhlmxHbjWFwpbGfU8z8pJAXeerWQM47ySwx4yzXFnN8sGDoTfPR7009Q9HjS03siBm
+ 5adVtHq5/H96kPo275hB/PeMVIP0lZezCR1qML39N16kluoN6sV8O4AB6eFPSpZ9igUV Kg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36jk5d0r37-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 07 Feb 2021 11:45:11 -0500
+Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 117GX8oJ106498;
+        Sun, 7 Feb 2021 11:45:10 -0500
+Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36jk5d0r2p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 07 Feb 2021 11:45:10 -0500
+Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
+        by ppma01fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 117Ghk0N001573;
+        Sun, 7 Feb 2021 16:45:08 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma01fra.de.ibm.com with ESMTP id 36hjr80km1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 07 Feb 2021 16:45:08 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 117Gj51O20382006
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sun, 7 Feb 2021 16:45:05 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6BC60AE05D;
+        Sun,  7 Feb 2021 16:45:05 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 222DCAE04D;
+        Sun,  7 Feb 2021 16:45:03 +0000 (GMT)
+Received: from [9.79.226.154] (unknown [9.79.226.154])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Sun,  7 Feb 2021 16:45:02 +0000 (GMT)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
+Subject: Re: [PATCH 6/9] perf report: Support instruction latency
+From:   Athira Rajeev <atrajeev@linux.vnet.ibm.com>
+In-Reply-To: <2f2ede9e-b098-4921-59e2-1289bdc87ba1@linux.intel.com>
+Date:   Sun, 7 Feb 2021 22:15:00 +0530
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>, mingo@kernel.org,
+        linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, eranian@google.com,
+        namhyung@kernel.org, jolsa@redhat.com, ak@linux.intel.com,
+        yao.jin@linux.intel.com, maddy@linux.vnet.ibm.com
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <D97FEF4F-DD88-4760-885E-9A6161A9B48B@linux.vnet.ibm.com>
+References: <1612296553-21962-1-git-send-email-kan.liang@linux.intel.com>
+ <1612296553-21962-7-git-send-email-kan.liang@linux.intel.com>
+ <A90940CE-3DFB-4774-BA46-0C5FEB4953A0@linux.vnet.ibm.com>
+ <27633871-eda5-7faa-8783-84dd49f8a6cd@linux.intel.com>
+ <6F377E9D-89F8-414F-A2CC-C96797697159@linux.vnet.ibm.com>
+ <2f2ede9e-b098-4921-59e2-1289bdc87ba1@linux.intel.com>
+To:     "Liang, Kan" <kan.liang@linux.intel.com>
+X-Mailer: Apple Mail (2.3608.120.23.2.4)
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-02-07_08:2021-02-05,2021-02-07 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 spamscore=0
+ clxscore=1015 suspectscore=0 lowpriorityscore=0 bulkscore=0
+ mlxlogscore=999 adultscore=0 impostorscore=0 mlxscore=0 phishscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102070117
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Feb 07, 2021 at 10:19:12AM +0200, stefanc@marvell.com wrote:
-> From: Stefan Chulski <stefanc@marvell.com>
-> 
-> This patch adds CM3 memory map and CM3 read/write callbacks.
-> No functionality changes.
-> 
-> Signed-off-by: Stefan Chulski <stefanc@marvell.com>
-> ---
->  drivers/net/ethernet/marvell/mvpp2/mvpp2.h      |  7 +++
->  drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c | 63 +++++++++++++++++++-
->  2 files changed, 67 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2.h b/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
-> index 6bd7e40..aec9179 100644
-> --- a/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
-> +++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
-> @@ -748,6 +748,9 @@
->  #define MVPP2_TX_FIFO_THRESHOLD(kb)	\
->  		((kb) * 1024 - MVPP2_TX_FIFO_THRESHOLD_MIN)
->  
-> +/* MSS Flow control */
-> +#define MSS_SRAM_SIZE	0x800
-> +
->  /* RX buffer constants */
->  #define MVPP2_SKB_SHINFO_SIZE \
->  	SKB_DATA_ALIGN(sizeof(struct skb_shared_info))
-> @@ -925,6 +928,7 @@ struct mvpp2 {
->  	/* Shared registers' base addresses */
->  	void __iomem *lms_base;
->  	void __iomem *iface_base;
-> +	void __iomem *cm3_base;
->  
->  	/* On PPv2.2, each "software thread" can access the base
->  	 * register through a separate address space, each 64 KB apart
-> @@ -996,6 +1000,9 @@ struct mvpp2 {
->  
->  	/* page_pool allocator */
->  	struct page_pool *page_pool[MVPP2_PORT_MAX_RXQ];
-> +
-> +	/* CM3 SRAM pool */
-> +	struct gen_pool *sram_pool;
->  };
->  
->  struct mvpp2_pcpu_stats {
-> diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-> index a07cf60..307f9fd 100644
-> --- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-> +++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-> @@ -25,6 +25,7 @@
->  #include <linux/of_net.h>
->  #include <linux/of_address.h>
->  #include <linux/of_device.h>
-> +#include <linux/genalloc.h>
->  #include <linux/phy.h>
->  #include <linux/phylink.h>
->  #include <linux/phy/phy.h>
-> @@ -6846,6 +6847,44 @@ static int mvpp2_init(struct platform_device *pdev, struct mvpp2 *priv)
->  	return 0;
->  }
->  
-> +static int mvpp2_get_sram(struct platform_device *pdev,
-> +			  struct mvpp2 *priv)
-> +{
-> +	struct device_node *dn = pdev->dev.of_node;
-> +	static bool defer_once;
-> +	struct resource *res;
-> +
-> +	if (has_acpi_companion(&pdev->dev)) {
-> +		res = platform_get_resource(pdev, IORESOURCE_MEM, 2);
-> +		if (!res) {
-> +			dev_warn(&pdev->dev, "ACPI is too old, Flow control not supported\n");
-> +			return 0;
-> +		}
-> +		priv->cm3_base = devm_ioremap_resource(&pdev->dev, res);
-> +		if (IS_ERR(priv->cm3_base))
-> +			return PTR_ERR(priv->cm3_base);
-> +	} else {
-> +		priv->sram_pool = of_gen_pool_get(dn, "cm3-mem", 0);
-> +		if (!priv->sram_pool) {
-> +			if (!defer_once) {
-> +				defer_once = true;
-> +				/* Try defer once */
-> +				return -EPROBE_DEFER;
-> +			}
-> +			dev_warn(&pdev->dev, "DT is too old, Flow control not supported\n");
-> +			return -ENOMEM;
-> +		}
-> +		/* cm3_base allocated with offset zero into the SRAM since mapping size
-> +		 * is equal to requested size.
-> +		 */
-> +		priv->cm3_base = (void __iomem *)gen_pool_alloc(priv->sram_pool,
-> +								MSS_SRAM_SIZE);
-> +		if (!priv->cm3_base)
-> +			return -ENOMEM;
-> +	}
 
-For v2 i asked:
 
-> I'm wondering if using a pool even makes sense. The ACPI case just
-> ioremap() the memory region. Either this memory is dedicated, and
-> then there is no need to use a pool, or the memory is shared, and at
-> some point the ACPI code is going to run into problems when some
-> other driver also wants access.
+> On 05-Feb-2021, at 8:21 PM, Liang, Kan <kan.liang@linux.intel.com> =
+wrote:
+>=20
+>=20
+>=20
+> On 2/5/2021 7:55 AM, Athira Rajeev wrote:
+>>>> Because in other archs, the var2_w of =E2=80=98perf_sample_weight=E2=80=
+=99 could be used to capture something else than the Local INSTR =
+Latency.
+>>>> Can we have some weak function to populate the header string ?
+>>> I agree that the var2_w has different meanings among architectures. =
+We should not force it to data->ins_lat.
+>>>=20
+>>> The patch as below should fix it. Does it work for you?
+>> My point about weak function was actually for the arch specific =
+header string. But I guess we should not force it to data->ins_lat
+>=20
+> Yes, I don't think PowerPC should force var2_w to data->ins_lat. I =
+think you can create your own field.
+>=20
+>> as you mentioned. I checked the below patch defining an =
+=E2=80=98arch_perf_parse_sample_weight' for powerpc and it works.
+>> But one observation is that, for cases with kernel having support for =
+PERF_SAMPLE_WEIGHT_STRUCT but missing arch specific support for  =
+=E2=80=98arch_perf_parse_sample_weight', it will report =E2=80=98Local =
+Weight=E2=80=99 wrongly since weak function takes it as 64 bit. Not sure =
+if that is a valid case to consider though.
+>=20
+> Currently, the PERF_SAMPLE_WEIGHT_STRUCT is only enabled on X86 by =
+default.
+> =
+https://lore.kernel.org/lkml/1612296553-21962-6-git-send-email-kan.liang@l=
+inux.intel.com/
+>=20
+> For PowerPC, the PERF_SAMPLE_WEIGHT is still the default setting. =
+There is no way to set PERF_SAMPLE_WEIGHT_STRUCT via perf tool.
+> I don't think the above case will happen.
 
-There was never an answer to this.
+Yes.=20
 
-Also, the defer_once stuff is odd. You don't see any other driver do
-this. The core decides when to give up probing a device. This is
-partially an API problem. of_gen_pool_get() gives you no idea why it
-failed. Is the property missing, or has the SRAM not probed yet. If
-the answer to my question is yes, a pool does make sense, it would be
-good to add an of_gen_pool_get_optional() which returns
-ERR_PTR(-EPROBE_DEFER) if the property is in DT, but is not yet
-available, NULL if the properties does not exist, and a pointer if
-everything goes well.
+I tested with kernel changes from perf/core branch of =
+git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git
+And perf tools side changes from tmp.perf/core branch of =
+git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git along with =
+the above change.=20
+The default setting for powerpc works with out breaking anything and =
+verified using =E2=80=9Cperf mem record <workload>=E2=80=9D
 
-     Andrew
+Tested-by: Athira Rajeev <atrajeev@linux.vnet.ibm.com>
+
+Thanks
+Athira Rajeev
+>=20
+> Thanks,
+> Kan
+
