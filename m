@@ -2,153 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63E2431243D
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 13:18:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E38E1312441
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 13:23:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229698AbhBGMSm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Feb 2021 07:18:42 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:36998 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229536AbhBGMSk (ORCPT
+        id S229719AbhBGMVB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Feb 2021 07:21:01 -0500
+Received: from mail-io1-f69.google.com ([209.85.166.69]:34872 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229536AbhBGMUy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Feb 2021 07:18:40 -0500
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 117C33vL048620;
-        Sun, 7 Feb 2021 07:17:55 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=QIlxd2fdXA5CfY+R6nqE4Bz4SBJ6hiiVZ3YbWcm6FRM=;
- b=q8JEV2C2kda0Hm0+sRbjayQp8Ep2NWdAXCzP/QCn5956roR5PjcA6Lg+g/klW7WX7FSD
- BPtA7cFUvshvyaI3W4wVouHqw2DjgNYvPSxoTSdGO1eZAjuxtaEsmnOcD0tj0IUVkJk+
- o/JsUNnOLfMOUWAMcCGpRN1ALupsnm27qQuOWmXfSDZfMatFbmDQ3ZwdqEI8ITzTksZF
- RFdZGADpQtASUD6G3BT7GHaYQAbiY0x8q+Oye7uWik+wd35iHmFJloSKBqZorilXFSu5
- +NkMETY5TVu3WYq84qemEatW1xTz2hQv/EUZLQCdrLdyI+o+xagGAe0NKGvJ3lQY5bS9 AA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36jaa6n4a3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 07 Feb 2021 07:17:55 -0500
-Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 117C3UsF049397;
-        Sun, 7 Feb 2021 07:17:54 -0500
-Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36jaa6n49p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 07 Feb 2021 07:17:54 -0500
-Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
-        by ppma06fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 117CGhR2000973;
-        Sun, 7 Feb 2021 12:17:52 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma06fra.de.ibm.com with ESMTP id 36hjch0hhb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 07 Feb 2021 12:17:52 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 117CHnET42598816
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sun, 7 Feb 2021 12:17:49 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 46856A404D;
-        Sun,  7 Feb 2021 12:17:49 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C8282A4040;
-        Sun,  7 Feb 2021 12:17:48 +0000 (GMT)
-Received: from osiris (unknown [9.171.9.57])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Sun,  7 Feb 2021 12:17:48 +0000 (GMT)
-Date:   Sun, 7 Feb 2021 13:17:47 +0100
-From:   Heiko Carstens <hca@linux.ibm.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Seth Forshee <seth.forshee@canonical.com>,
-        Hugh Dickins <hughd@google.com>,
-        Chris Down <chris@chrisdown.name>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-mm@kvack.org, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Alexander Egorenkov <egorenar@linux.vnet.ibm.com>
-Subject: Re: [PATCH] tmpfs: Disallow CONFIG_TMPFS_INODE64 on s390
-Message-ID: <20210207121747.GA15061@osiris>
-References: <20210205230620.518245-1-seth.forshee@canonical.com>
- <20210205160551.cf57c4293ba5ccb8eb648c11@linux-foundation.org>
+        Sun, 7 Feb 2021 07:20:54 -0500
+Received: by mail-io1-f69.google.com with SMTP id a1so9779276ios.2
+        for <linux-kernel@vger.kernel.org>; Sun, 07 Feb 2021 04:20:37 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=uy5iahHtrkhtuGWBUOjHZCHJGctmLx/PrUVxcGcyiTc=;
+        b=O6gjdSmK6BkzkOANJTy2eg9dqH6QENw5nWjqt7wyQj1UDIdKhxayQ5cMlozyRCbIL0
+         bSsQp5dC1Fn4ug6WbIxhToUjHtvkXUisqZSCMiddl82Bu/4ZUBFvAO/7Zrlbgt8w7HvZ
+         FTCDaTtn8IP0z8MpHrxgdlBeylaP9bPdNc7N4K1jbD0zIsvwSFGBBx0f7nf8+4KcJHY3
+         ce7ekLflrzTIKLu1ASJND+F2atE1NNsNV4piw2feszWn8N2y+r+og3ExPTO0pMQYHePq
+         4/mZ5OR0voWsOG+6mw8SYv7QMgde1vtQ6+eZpZtvVtNwQyB4+iY1WXrU1yG/P5drK+8K
+         LTJA==
+X-Gm-Message-State: AOAM530bv0qo3PhKf8pqP15oGSsBx6yG8MrUZXetFYCt/E3TwC8wuj0x
+        PchRAHWgV96N7rX7XwGIjbahR+l8Sg1F+xnmNS2dgJsMATuY
+X-Google-Smtp-Source: ABdhPJxhiwze/IfwTbaJblPobCBE7W6hqeyttA1ll/pmhbjzexydnHB4iTyg4B1K0soRmcTpDZj0cmoDxovWZeW/ylotDFoV/DZs
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210205160551.cf57c4293ba5ccb8eb648c11@linux-foundation.org>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-02-07_06:2021-02-05,2021-02-07 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=966
- priorityscore=1501 suspectscore=0 clxscore=1011 malwarescore=0 mlxscore=0
- phishscore=0 adultscore=0 bulkscore=0 spamscore=0 impostorscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102070087
+X-Received: by 2002:a92:d0d:: with SMTP id 13mr11249451iln.36.1612700412606;
+ Sun, 07 Feb 2021 04:20:12 -0800 (PST)
+Date:   Sun, 07 Feb 2021 04:20:12 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000038fcd705babe13b5@google.com>
+Subject: KMSAN: uninit-value in ext4_inode_journal_mode
+From:   syzbot <syzbot+b2ffafb709f9a29ec5b4@syzkaller.appspotmail.com>
+To:     glider@google.com, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 05, 2021 at 04:05:51PM -0800, Andrew Morton wrote:
-> On Fri,  5 Feb 2021 17:06:20 -0600 Seth Forshee <seth.forshee@canonical.com> wrote:
-> 
-> > This feature requires ino_t be 64-bits, which is true for every
-> > 64-bit architecture but s390, so prevent this option from being
-> > selected there.
-> > 
-> 
-> The previous patch nicely described the end-user impact of the bug. 
-> This is especially important when requesting a -stable backport.
-> 
-> Here's what I ended up with:
-> 
-> 
-> From: Seth Forshee <seth.forshee@canonical.com>
-> Subject: tmpfs: disallow CONFIG_TMPFS_INODE64 on s390
-> 
-> Currently there is an assumption in tmpfs that 64-bit architectures also
-> have a 64-bit ino_t.  This is not true on s390 which has a 32-bit ino_t. 
-> With CONFIG_TMPFS_INODE64=y tmpfs mounts will get 64-bit inode numbers and
-> display "inode64" in the mount options, but passing the "inode64" mount
-> option will fail.  This leads to the following behavior:
-> 
->  # mkdir mnt
->  # mount -t tmpfs nodev mnt
->  # mount -o remount,rw mnt
->  mount: /home/ubuntu/mnt: mount point not mounted or bad option.
-> 
-> As mount sees "inode64" in the mount options and thus passes it in the
-> options for the remount.
-> 
-> 
-> So prevent CONFIG_TMPFS_INODE64 from being selected on s390.
-> 
-> Link: https://lkml.kernel.org/r/20210205230620.518245-1-seth.forshee@canonical.com
-> Fixes: ea3271f7196c ("tmpfs: support 64-bit inums per-sb")
-> Signed-off-by: Seth Forshee <seth.forshee@canonical.com>
-> Cc: Chris Down <chris@chrisdown.name>
-> Cc: Hugh Dickins <hughd@google.com>
-> Cc: Amir Goldstein <amir73il@gmail.com>
-> Cc: Heiko Carstens <hca@linux.ibm.com>
-> Cc: Vasily Gorbik <gor@linux.ibm.com>
-> Cc: Christian Borntraeger <borntraeger@de.ibm.com>
-> Cc: <stable@vger.kernel.org>	[5.9+]
-> Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-> ---
-> 
->  fs/Kconfig |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> --- a/fs/Kconfig~tmpfs-disallow-config_tmpfs_inode64-on-s390
-> +++ a/fs/Kconfig
-> @@ -203,7 +203,7 @@ config TMPFS_XATTR
->  
->  config TMPFS_INODE64
->  	bool "Use 64-bit ino_t by default in tmpfs"
-> -	depends on TMPFS && 64BIT
-> +	depends on TMPFS && 64BIT && !S390
+Hello,
 
-Heh, it's sort of funny that we have a similar patch, which
-unfortunately was/is not yet on our external features branch,
-which does exactly the same.
+syzbot found the following issue on:
 
-In any case:
+HEAD commit:    73d62e81 kmsan: random: prevent boot-time reports in _mix_..
+git tree:       https://github.com/google/kmsan.git master
+console output: https://syzkaller.appspot.com/x/log.txt?x=152188c4d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=df698232b2ac45c9
+dashboard link: https://syzkaller.appspot.com/bug?extid=b2ffafb709f9a29ec5b4
+compiler:       Debian clang version 11.0.1-2
+userspace arch: i386
 
-Acked-by: Heiko Carstens <hca@linux.ibm.com>
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+b2ffafb709f9a29ec5b4@syzkaller.appspotmail.com
+
+=====================================================
+BUG: KMSAN: uninit-value in ext4_inode_journal_mode+0x28b/0x4f0 syzkaller/managers/upstream-kmsan-gce-386/kernel/fs/ext4/ext4_jbd2.c:16
+CPU: 1 PID: 8577 Comm: syz-executor.0 Not tainted 5.10.0-rc4-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack syzkaller/managers/upstream-kmsan-gce-386/kernel/lib/dump_stack.c:77 [inline]
+ dump_stack+0x21c/0x280 syzkaller/managers/upstream-kmsan-gce-386/kernel/lib/dump_stack.c:118
+ kmsan_report+0xfb/0x1e0 syzkaller/managers/upstream-kmsan-gce-386/kernel/mm/kmsan/kmsan_report.c:118
+ __msan_warning+0x5f/0xa0 syzkaller/managers/upstream-kmsan-gce-386/kernel/mm/kmsan/kmsan_instr.c:197
+ ext4_inode_journal_mode+0x28b/0x4f0 syzkaller/managers/upstream-kmsan-gce-386/kernel/fs/ext4/ext4_jbd2.c:16
+ ext4_should_journal_data syzkaller/managers/upstream-kmsan-gce-386/kernel/fs/ext4/ext4_jbd2.h:467 [inline]
+ ext4_evict_inode+0x1bb/0x2b30 syzkaller/managers/upstream-kmsan-gce-386/kernel/fs/ext4/inode.c:201
+ evict+0x4b5/0xec0 syzkaller/managers/upstream-kmsan-gce-386/kernel/fs/inode.c:578
+ iput_final syzkaller/managers/upstream-kmsan-gce-386/kernel/fs/inode.c:1654 [inline]
+ iput+0xb06/0xec0 syzkaller/managers/upstream-kmsan-gce-386/kernel/fs/inode.c:1680
+ __ext4_new_inode+0x3dd2/0x9c70 syzkaller/managers/upstream-kmsan-gce-386/kernel/fs/ext4/ialloc.c:1354
+ ext4_create+0x47e/0x960 syzkaller/managers/upstream-kmsan-gce-386/kernel/fs/ext4/namei.c:2619
+ lookup_open syzkaller/managers/upstream-kmsan-gce-386/kernel/fs/namei.c:3104 [inline]
+ open_last_lookups syzkaller/managers/upstream-kmsan-gce-386/kernel/fs/namei.c:3178 [inline]
+ path_openat+0x2b71/0x6a30 syzkaller/managers/upstream-kmsan-gce-386/kernel/fs/namei.c:3366
+ do_filp_open+0x2b8/0x710 syzkaller/managers/upstream-kmsan-gce-386/kernel/fs/namei.c:3396
+ do_sys_openat2+0xa92/0x1150 syzkaller/managers/upstream-kmsan-gce-386/kernel/fs/open.c:1168
+ do_sys_open syzkaller/managers/upstream-kmsan-gce-386/kernel/fs/open.c:1184 [inline]
+ __do_compat_sys_openat syzkaller/managers/upstream-kmsan-gce-386/kernel/fs/open.c:1242 [inline]
+ __se_compat_sys_openat+0x2ae/0x310 syzkaller/managers/upstream-kmsan-gce-386/kernel/fs/open.c:1240
+ __ia32_compat_sys_openat+0x56/0x70 syzkaller/managers/upstream-kmsan-gce-386/kernel/fs/open.c:1240
+ do_syscall_32_irqs_on syzkaller/managers/upstream-kmsan-gce-386/kernel/arch/x86/entry/common.c:80 [inline]
+ __do_fast_syscall_32+0x102/0x160 syzkaller/managers/upstream-kmsan-gce-386/kernel/arch/x86/entry/common.c:139
+ do_fast_syscall_32+0x6a/0xc0 syzkaller/managers/upstream-kmsan-gce-386/kernel/arch/x86/entry/common.c:162
+ do_SYSENTER_32+0x73/0x90 syzkaller/managers/upstream-kmsan-gce-386/kernel/arch/x86/entry/common.c:205
+ entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
+RIP: 0023:0xf7f79549
+Code: 03 74 c0 01 10 05 03 74 b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 8d b4 26 00 00 00 00 8d b4 26 00 00 00 00
+RSP: 002b:00000000f55525fc EFLAGS: 00000296 ORIG_RAX: 0000000000000127
+RAX: ffffffffffffffda RBX: 00000000ffffff9c RCX: 00000000200004c0
+RDX: 0000000000000042 RSI: 0000000000000180 RDI: 0000000000000000
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+
+Uninit was created at:
+ kmsan_save_stack_with_flags+0x3c/0x90 syzkaller/managers/upstream-kmsan-gce-386/kernel/mm/kmsan/kmsan.c:121
+ kmsan_alloc_page+0xd3/0x1f0 syzkaller/managers/upstream-kmsan-gce-386/kernel/mm/kmsan/kmsan_shadow.c:274
+ __alloc_pages_nodemask+0x827/0xf90 syzkaller/managers/upstream-kmsan-gce-386/kernel/mm/page_alloc.c:4989
+ alloc_pages_current+0x7b6/0xb60 syzkaller/managers/upstream-kmsan-gce-386/kernel/mm/mempolicy.c:2271
+ alloc_pages syzkaller/managers/upstream-kmsan-gce-386/kernel/./include/linux/gfp.h:547 [inline]
+ alloc_slab_page syzkaller/managers/upstream-kmsan-gce-386/kernel/mm/slub.c:1630 [inline]
+ allocate_slab+0x346/0x11a0 syzkaller/managers/upstream-kmsan-gce-386/kernel/mm/slub.c:1773
+ new_slab syzkaller/managers/upstream-kmsan-gce-386/kernel/mm/slub.c:1834 [inline]
+ new_slab_objects syzkaller/managers/upstream-kmsan-gce-386/kernel/mm/slub.c:2593 [inline]
+ ___slab_alloc+0xd42/0x1930 syzkaller/managers/upstream-kmsan-gce-386/kernel/mm/slub.c:2756
+ __slab_alloc syzkaller/managers/upstream-kmsan-gce-386/kernel/mm/slub.c:2796 [inline]
+ slab_alloc_node syzkaller/managers/upstream-kmsan-gce-386/kernel/mm/slub.c:2871 [inline]
+ slab_alloc syzkaller/managers/upstream-kmsan-gce-386/kernel/mm/slub.c:2915 [inline]
+ kmem_cache_alloc+0xb71/0x1040 syzkaller/managers/upstream-kmsan-gce-386/kernel/mm/slub.c:2920
+ ext4_alloc_inode+0x5e/0x870 syzkaller/managers/upstream-kmsan-gce-386/kernel/fs/ext4/super.c:1294
+ alloc_inode syzkaller/managers/upstream-kmsan-gce-386/kernel/fs/inode.c:234 [inline]
+ new_inode_pseudo+0xa7/0x580 syzkaller/managers/upstream-kmsan-gce-386/kernel/fs/inode.c:930
+ new_inode+0x5a/0x3d0 syzkaller/managers/upstream-kmsan-gce-386/kernel/fs/inode.c:959
+ __ext4_new_inode+0x3a0/0x9c70 syzkaller/managers/upstream-kmsan-gce-386/kernel/fs/ext4/ialloc.c:956
+ ext4_symlink+0x8a4/0x19a0 syzkaller/managers/upstream-kmsan-gce-386/kernel/fs/ext4/namei.c:3336
+ vfs_symlink+0x6c4/0x8f0 syzkaller/managers/upstream-kmsan-gce-386/kernel/fs/namei.c:3960
+ do_symlinkat+0x389/0x930 syzkaller/managers/upstream-kmsan-gce-386/kernel/fs/namei.c:3987
+ __do_sys_symlink syzkaller/managers/upstream-kmsan-gce-386/kernel/fs/namei.c:4006 [inline]
+ __se_sys_symlink+0x74/0x90 syzkaller/managers/upstream-kmsan-gce-386/kernel/fs/namei.c:4004
+ __ia32_sys_symlink+0x3e/0x60 syzkaller/managers/upstream-kmsan-gce-386/kernel/fs/namei.c:4004
+ do_syscall_32_irqs_on syzkaller/managers/upstream-kmsan-gce-386/kernel/arch/x86/entry/common.c:80 [inline]
+ __do_fast_syscall_32+0x102/0x160 syzkaller/managers/upstream-kmsan-gce-386/kernel/arch/x86/entry/common.c:139
+ do_fast_syscall_32+0x6a/0xc0 syzkaller/managers/upstream-kmsan-gce-386/kernel/arch/x86/entry/common.c:162
+ do_SYSENTER_32+0x73/0x90 syzkaller/managers/upstream-kmsan-gce-386/kernel/arch/x86/entry/common.c:205
+ entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
+=====================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
