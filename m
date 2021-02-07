@@ -2,95 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B6D53126B1
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 19:33:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 173F63126B2
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 19:33:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229821AbhBGScU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Feb 2021 13:32:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40886 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229806AbhBGScQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Feb 2021 13:32:16 -0500
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58329C06174A
-        for <linux-kernel@vger.kernel.org>; Sun,  7 Feb 2021 10:31:34 -0800 (PST)
-Received: by mail-pf1-x436.google.com with SMTP id t29so8259463pfg.11
-        for <linux-kernel@vger.kernel.org>; Sun, 07 Feb 2021 10:31:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
-        h=content-transfer-encoding:from:mime-version:subject:date:message-id
-         :references:cc:in-reply-to:to;
-        bh=sJpbKfQz1Sf/lqNXg6DE2DivxCyn6HYIoM7Gm7iJ2x8=;
-        b=Yw/rM/DQ4mpgg6RlV5bUpQHz9uDQxiMulb7nPPOysw6sPTP6G1p9thtNdXirNIhUYd
-         rvfMIIdim1BlcDDxtRLSoA388VpH6fGt1I1e2nwb6A45S0XpC37O6ftBCyorjN7P44m8
-         Wv4Fj/OsumTdrVhTZQAy4VCi6n+RfVRJ8+T+CerqNckoynOBGUnxUfiaFtGx+SiB8+WK
-         zTke2Yf8d1R9olK64hcKnEwImagixLg6WZ48boLHQeeoSV0Jz0FDDsEk3NwhOoA36vUE
-         a2QICY9vSHkDfzXfDj+BLxtobkHFg2IWXSTh6IfjUz5EtzrVPImlWV12pZmE9S02v8K0
-         1vkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:from:mime-version
-         :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=sJpbKfQz1Sf/lqNXg6DE2DivxCyn6HYIoM7Gm7iJ2x8=;
-        b=SysGuhsjQD4A+9R7RwRYfgz3pCrdxuWoB9n4JT+l/S8d0BCpm9KzRtnE4JkbNRHJCw
-         B7Go7l8ZbTFYiiqj/Mh1ISpIaJM1/gjnaCkzivCNza3OtSQCniTjZpwA4i17EQqiflMd
-         JOuetrCyXi+6YCqiAsGpXSpsToIm8CpAD8jepVX/Cpp1DAB+85xSWghievMcGKkXqddX
-         RDzBKomrT/Ygq7nVLh03LOU4CCR5YhUmNn66ofZR63x46YpiWPBOrktr2fcFLOeK0/W3
-         fCM+ilrnfMIm2zmnxWV6f/wo6dZwtd0Tt5S1vhpxG1bNW+SQww6wJ3zoKN8YS94zUshl
-         735w==
-X-Gm-Message-State: AOAM533Q/UMaXVKOY0ZTLx2iylMFxKgcjlOyKEFNpD1h73PjajgUNAJ3
-        eLVMog4LMnCyJ0stzq9JzapODQ==
-X-Google-Smtp-Source: ABdhPJyOXcn++rC64ZJOxXLIgUX6hH/ticPcUuR8LbmlAurjFNLUrCMT0wlN0ISxvFIWCcy2rhloCw==
-X-Received: by 2002:aa7:9a46:0:b029:1db:57ba:5e2 with SMTP id x6-20020aa79a460000b02901db57ba05e2mr5206071pfj.5.1612722693934;
-        Sun, 07 Feb 2021 10:31:33 -0800 (PST)
-Received: from ?IPv6:2601:646:c200:1ef2:1cfc:6e60:639b:3d2f? ([2601:646:c200:1ef2:1cfc:6e60:639b:3d2f])
-        by smtp.gmail.com with ESMTPSA id it6sm7019904pjb.15.2021.02.07.10.31.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 07 Feb 2021 10:31:33 -0800 (PST)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Andy Lutomirski <luto@amacapital.net>
-Mime-Version: 1.0 (1.0)
+        id S229745AbhBGSdW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Feb 2021 13:33:22 -0500
+Received: from mga18.intel.com ([134.134.136.126]:41725 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229564AbhBGSdP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Feb 2021 13:33:15 -0500
+IronPort-SDR: S1alTEQBSREfPr4SZz3OdvvmnAxIwhG0Cnx+tPJZbCEpIIpQUWfYSsrvfokRmdEfEOZsmaDTwp
+ fUexXoErm6Hg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9888"; a="169307908"
+X-IronPort-AV: E=Sophos;i="5.81,160,1610438400"; 
+   d="scan'208";a="169307908"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Feb 2021 10:32:34 -0800
+IronPort-SDR: bY6cfzXRJrKLEJw864kReNn1ryiI+38UtjAnlzykxFwoEbrj7/dRkI27X2Y/N5o/bizzwir+PF
+ G/ETJBlpuwfA==
+X-IronPort-AV: E=Sophos;i="5.81,160,1610438400"; 
+   d="scan'208";a="376838498"
+Received: from yramx-mobl1.amr.corp.intel.com (HELO [10.213.174.131]) ([10.213.174.131])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Feb 2021 10:32:33 -0800
 Subject: Re: [GIT PULL] x86/urgent for v5.11-rc7
-Date:   Sun, 7 Feb 2021 10:31:32 -0800
-Message-Id: <2BFAADF3-EBAA-46D6-B1F6-7A41CB85DA1C@amacapital.net>
-References: <661b9809-2c6a-5fc8-163b-a159b84c9ab8@intel.com>
-Cc:     Borislav Petkov <bp@suse.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Steven Rostedt <rostedt@goodmis.org>, x86-ml <x86@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>
-In-Reply-To: <661b9809-2c6a-5fc8-163b-a159b84c9ab8@intel.com>
-To:     Dave Hansen <dave.hansen@intel.com>
-X-Mailer: iPhone Mail (18D52)
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Borislav Petkov <bp@suse.de>
+Cc:     Steven Rostedt <rostedt@goodmis.org>, x86-ml <x86@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>
+References: <20210207104022.GA32127@zn.tnic>
+ <CAHk-=widXSyJ8W3vRrqO-zNP12A+odxg2J2_-oOUskz33wtfqA@mail.gmail.com>
+ <20210207175814.GF32127@zn.tnic>
+ <CAHk-=wi5z9S7x94SKYNj6qSHBqz+OD76GW=MDzo-KN2Fzm-V4Q@mail.gmail.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <541146c6-d809-1041-7417-547d7248e3cd@intel.com>
+Date:   Sun, 7 Feb 2021 10:32:33 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <CAHk-=wi5z9S7x94SKYNj6qSHBqz+OD76GW=MDzo-KN2Fzm-V4Q@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-> On Feb 7, 2021, at 10:19 AM, Dave Hansen <dave.hansen@intel.com> wrote:
->=20
-> =EF=BB=BFOn 2/7/21 9:58 AM, Borislav Petkov wrote:
->>> On Sun, Feb 07, 2021 at 09:49:18AM -0800, Linus Torvalds wrote:
->>> On Sun, Feb 7, 2021 at 2:40 AM Borislav Petkov <bp@suse.de> wrote:
->>>> - Disable CET instrumentation in the kernel so that gcc doesn't add
->>>> ENDBR64 to kernel code and thus confuse tracing.
->>> So this is clearly the right thing to do for now, but I wonder if
->>> people have a plan for actually enabling CET and endbr at cpl0 at some
->>> point?
+On 2/7/21 10:15 AM, Linus Torvalds wrote:
+> On Sun, Feb 7, 2021 at 9:58 AM Borislav Petkov <bp@suse.de> wrote:
 >> It probably is an item on some Intel manager's to-enable list. So far,
 >> the CET enablement concentrates only on userspace but dhansen might know
 >> more about future plans. CCed.
->=20
-> It's definitely on our radar to look at after CET userspace.
->=20
-> The only question for me is whether it will be worth doing with the
-> exiting kernel entry/exit architecture.
+> I think the new Ryzen 5000 series also supports CET, but I don't have
+> any machines to check.
 
-I assume you mean: is anyone sufficiently inspired to try to handle NMI corr=
-ectly?  I have a whole pile of nacks saved up for incorrect implementations,=
- although I will try to wrap them in polite explanations of precisely what i=
-s wrong :)
+Intel wraps up Shadow Stacks and Indirect Branch Tracking (IBT) under
+the CET umbrella, although they can be implemented totally independently.
 
-(I=E2=80=99ve contemplated doing this myself, and it doesn=E2=80=99t sound f=
-un at all.)=
+I actually forget about the IBT half most of the time because the kernel
+code to implement userspace support is a much lighter lift than shadow
+stacks.
+
+My understanding is that AMD has documented support for Shadow Stacks:
+
+	https://www.amd.com/system/files/TechDocs/24592.pdf
+
+But has not yet released any documentation about IBT.  IBT seems to be
+Intel-only, at least in the short term.  There may be more, but the
+"Tiger Lake" CPUs are the only ones I know of off the top of my head
+that are in the wild:
+
+> https://ark.intel.com/content/www/us/en/ark/products/208661/intel-core-i7-1160g7-processor-12m-cache-up-to-4-40-ghz-with-ipu.html
+
