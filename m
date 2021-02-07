@@ -2,74 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C78FD3120F5
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 03:48:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4942C3120FE
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 03:52:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229587AbhBGCrp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 6 Feb 2021 21:47:45 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:11687 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229506AbhBGCrn (ORCPT
+        id S229727AbhBGCvZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 6 Feb 2021 21:51:25 -0500
+Received: from mail-pg1-f169.google.com ([209.85.215.169]:38316 "EHLO
+        mail-pg1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229690AbhBGCvV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 6 Feb 2021 21:47:43 -0500
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DYD654X70zlD5s;
-        Sun,  7 Feb 2021 10:45:17 +0800 (CST)
-Received: from [10.67.102.118] (10.67.102.118) by
- DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
- 14.3.498.0; Sun, 7 Feb 2021 10:46:50 +0800
-Subject: Re: [PATCH 3/3] crypto: hisilicon/sec - fixes shash test error
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-CC:     <wangzhou1@hisilicon.com>, <xuzaibo@huawei.com>,
-        <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        "Ard Biesheuvel" <ardb@kernel.org>
-References: <1612519857-30714-1-git-send-email-liulongfang@huawei.com>
- <1612519857-30714-4-git-send-email-liulongfang@huawei.com>
- <20210205114435.GA17031@gondor.apana.org.au>
-From:   liulongfang <liulongfang@huawei.com>
-Message-ID: <70c0e041-9bcc-aa67-a0ad-a1a202f2e708@huawei.com>
-Date:   Sun, 7 Feb 2021 10:46:50 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Sat, 6 Feb 2021 21:51:21 -0500
+Received: by mail-pg1-f169.google.com with SMTP id m2so1269384pgq.5;
+        Sat, 06 Feb 2021 18:51:06 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=rnLaQW7jn1tU44mIZoa/y5WEV3NcdRCQdqW5OmbPOS8=;
+        b=WdzszSSyko9XaC1W3iGAGtdZmqCdNb0T6ZvBrcG7X6AtInbw0F0yGtuvcuY7WmmDa/
+         ZalSG2QYdnzKMGjJO5myI5ZwwCkgVomMJxpXPNzyEdZkrBkwnDKz2LY96ej77mv/KrfC
+         EQ/Leiua9ZZtFsBXxqouBF4J9W8tywvElSyjOo8xcIfkbP9GEd8ODjaOAbZ7p5mBqO/x
+         p6OvvfZAi0xOV7ESSO4f10VK45r10Z3TW/Suho9O2iKpVe9VxChE/2HS6eDGgXmwPpcX
+         HqSDq5aKLwABz2CYrRaS4DO/Zidu5Siht4ILEDfl0wou9JmOvGYQQgNiFBV/IqkJhyOq
+         cdkQ==
+X-Gm-Message-State: AOAM531fEyhg7ueSTiKXeZ2BSQ56n3nnLMM59iB4f8mnrruD1tfjS46g
+        mWEO7J9L9+gyomW1AqsQbYiUnE9zzBQ=
+X-Google-Smtp-Source: ABdhPJz8WRP5zFEHlKiaH+nmC6DWDj3S1DgBEVSfsTyqRGz4IAFCm52O28jwMUYcoztoEIrjSlPz7Q==
+X-Received: by 2002:a05:6a00:1:b029:1c1:2d5f:dc16 with SMTP id h1-20020a056a000001b02901c12d5fdc16mr11841244pfk.55.1612666240825;
+        Sat, 06 Feb 2021 18:50:40 -0800 (PST)
+Received: from ?IPv6:2601:647:4000:d7:7d2:d17b:df07:7747? ([2601:647:4000:d7:7d2:d17b:df07:7747])
+        by smtp.gmail.com with ESMTPSA id i7sm14562240pfc.50.2021.02.06.18.50.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 06 Feb 2021 18:50:40 -0800 (PST)
+Subject: Re: [PATCH v3 3/3] scsi: ufs: Fix wrong Task Tag used in task
+ management request UPIUs
+To:     Can Guo <cang@codeaurora.org>
+Cc:     jaegeuk@kernel.org, asutoshd@codeaurora.org,
+        nguyenb@codeaurora.org, hongwus@codeaurora.org,
+        linux-scsi@vger.kernel.org, kernel-team@android.com,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Sujit Reddy Thumma <sthumma@codeaurora.org>,
+        Vinayak Holikatti <vinholikatti@gmail.com>,
+        Yaniv Gardi <ygardi@codeaurora.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <1611807365-35513-1-git-send-email-cang@codeaurora.org>
+ <1611807365-35513-4-git-send-email-cang@codeaurora.org>
+ <8351747f-0ec9-3c66-1bdf-b4b73fcee698@acm.org>
+ <f0d1c6a196a044198647df6ca4b06efb@codeaurora.org>
+ <cd83aa1d-444e-d4ba-c363-517dbf07891a@acm.org>
+ <cf50ecf7a245674f8aee917455a7ccfa@codeaurora.org>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <00ae0fb0-4c35-686b-857c-b6cba40be83a@acm.org>
+Date:   Sat, 6 Feb 2021 18:50:37 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-In-Reply-To: <20210205114435.GA17031@gondor.apana.org.au>
-Content-Type: text/plain; charset="gbk"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.102.118]
-X-CFilter-Loop: Reflected
+In-Reply-To: <cf50ecf7a245674f8aee917455a7ccfa@codeaurora.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/2/5 19:44, Herbert Xu write:
-> On Fri, Feb 05, 2021 at 06:10:57PM +0800, Longfang Liu wrote:
->> If this configuration item is not turned on,
->> the allocation of crypto_tfm will fail when
->> the shash algorithm calculates the hash
->> through the software.
->>
->> Signed-off-by: Longfang Liu <liulongfang@huawei.com>
->> ---
->>  arch/arm64/configs/defconfig | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
->> index 8383016..7cfc9b6 100644
->> --- a/arch/arm64/configs/defconfig
->> +++ b/arch/arm64/configs/defconfig
->> @@ -117,7 +117,7 @@ CONFIG_KVM=y
->>  CONFIG_ARM64_CRYPTO=y
->>  CONFIG_CRYPTO_SHA1_ARM64_CE=y
->>  CONFIG_CRYPTO_SHA2_ARM64_CE=y
->> -CONFIG_CRYPTO_SHA512_ARM64_CE=m
->> +CONFIG_CRYPTO_SHA512_ARM64_CE=y
+On 2/4/21 10:09 PM, Can Guo wrote:
+> That code is wrong. The Task Tag in Dword_0 should be the real tag we
+> allocated for TMR. The transfer request Task Tag which we are trying to
+> abort is given in Dword_5, which is the Input Parameter 3 of the TMR UPIU.
+> I am not sure why the author gave hba->nutrs + req->tag as the Task Tag
+> of one TMR, the commit msg abot this part is not quite informative....
 > 
-> If this is truly needed then it should be enabled through Kconfig.
+> Table 10.22 — Task Management Request UPIU
+> TASK MANAGEMENT REQUEST UPIU
+> ----------------------------------
+> |0         |1      |2   |3       |
+> ----------------------------------
+> |xx00 0100b| Flags |LUN |Task Tag|
+> ----------------------------------
+> ...
+> 16 (MSB)   |17     |18  |19 (LSB)|
+> ----------------------------------
+> Input Parameter 2
+> ----------------------------------
 > 
-> Cheers,
-> 
-Hi Herbert,
-The option select CRYPTO_SHA512 already exists in Kconfig.
-Can I change it to this: select CRYPTO_SHA512 || CRYPTO_SHA512_ARM64_CE
-Thanks,
-Longfang Liu.
+> Table 10.24 — Task Management Input Parameters
+> Field Description
+> Input Parameter 2 LSB: Task Tag of the task/command operated by the task
+> management function.
+
+Thanks for the clarification. Feel free to add the following to this patch:
+
+Reviewed-by: Bart Van Assche <bvanassche@acm.org>
