@@ -2,132 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6461231223C
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 08:38:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9561A31223E
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 08:40:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229590AbhBGHhO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Feb 2021 02:37:14 -0500
-Received: from so15.mailgun.net ([198.61.254.15]:23849 "EHLO so15.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229506AbhBGHhJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Feb 2021 02:37:09 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1612683406; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=vFvvHLjgjdxstAnQa5f3esWGzIkB2tiB9mU/LldaNe8=;
- b=vxgudXWB4TI5vfcn8lIxBrAiE+1+5zqBY3BOt3sS60m/RMUxYEozqM0yoAqFVwRgO1w5EtxD
- EGpDuyq6+E7D2Dh+DH2AY3b46ypG21yQUxqVrKkjTuWkDjQMYnaqKv+MEQFNcR+/f5KWEo/f
- YiEaitZc1UPRLucY4trxgDbyiJM=
-X-Mailgun-Sending-Ip: 198.61.254.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
- 601f98658e43a988b7be10f2 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sun, 07 Feb 2021 07:36:05
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 81162C433ED; Sun,  7 Feb 2021 07:36:05 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id C702EC433C6;
-        Sun,  7 Feb 2021 07:36:04 +0000 (UTC)
+        id S229623AbhBGHjP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Feb 2021 02:39:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42968 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229506AbhBGHjM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Feb 2021 02:39:12 -0500
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A31DC06174A
+        for <linux-kernel@vger.kernel.org>; Sat,  6 Feb 2021 23:38:32 -0800 (PST)
+Received: by mail-pj1-x1042.google.com with SMTP id my11so8131892pjb.1
+        for <linux-kernel@vger.kernel.org>; Sat, 06 Feb 2021 23:38:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=LBlVJrHdtvYtBj0sfMBU5d9IOU/AmL+1AaFBRumib+4=;
+        b=dziuLnsnUcY5nc1k0Ua43YystHR+I6epVRuiP2nfkSblKYJMYrph9iB+j6wdCL7gBH
+         J7cHl9nwD+Xj93i1BUwS1DE+A4L39BVIlPSvwcf/FK79tWOk0zcUdLPf+XZ1kG9dLXcP
+         OliSEQga8Io3rUiAJGB7OdGBekzbWpk2NDRtr+PHn9MDxWRjIa8ixSpW2vcz37wP0s3H
+         fgOUVnpOVsmm24lzOmOIoJ0t9/YLpKSBijyK6muCKSqmzx9+Hol+lqjHSbW4AdD9YkkT
+         I5tqD0BiCfFiSMi2ZRjNaxFuAzborY18ZZImuhu+0MCqbN/r0mANYPAj3aJhfLKxT+eG
+         K3YQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=LBlVJrHdtvYtBj0sfMBU5d9IOU/AmL+1AaFBRumib+4=;
+        b=gIxENrEOwoeLzy7wC1E/bNksgkjvKJS9KNQhPnn3baBKXUDOqQP5JGjsf+sx/D/3Jj
+         LOd+3uigr8LaG757emQ0eiM1Hg0kuFg9RHxmx6rKb7sQTYAeKrocRiPfPatN6c/KPYkU
+         QxsgXvUym+A4TDFOcIHh/mR8MMLg77gWs/t4YWi8uhCox+IWcSjiUSlH+vulQvY8lQfk
+         sItP485NaPwYso/vUMVGKYXqoeJD74BzM/cFhY9dH6WlI1qv6Q2qfpu35i/XM6CtEJj8
+         5bBqTel7+dqsi1DRq1MHcWYgZrsoOMXOhk6pvyKgBXWB8NHDSi79s26Msw7jFCkO/ECj
+         oYPA==
+X-Gm-Message-State: AOAM533NrHdA2wopWnCHCzJEPrMnxk+HRWFu6phzqLmvvWtkryvgidXE
+        NGPvT+XhrjBXvoOCmxLwZOCZjQcQxtk=
+X-Google-Smtp-Source: ABdhPJyTikUVV/KubRr3cD37P9PrHPOYYv0KNqBdfGVNJKkfl3yZ8vKeJyaHK2Q2L1BSYtMe+q3c6Q==
+X-Received: by 2002:a17:90a:4a94:: with SMTP id f20mr11520527pjh.97.1612683511646;
+        Sat, 06 Feb 2021 23:38:31 -0800 (PST)
+Received: from localhost ([2402:3a80:11d2:b946:a2a4:c5ff:fe20:7222])
+        by smtp.gmail.com with ESMTPSA id e15sm9213835pgr.81.2021.02.06.23.38.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 06 Feb 2021 23:38:31 -0800 (PST)
+Date:   Sun, 7 Feb 2021 13:08:27 +0530
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     devel@driverdev.osuosl.org, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: emxx_udc: Fix incorrectly defined global
+Message-ID: <20210207073827.7l7h3475tqgxxfte@apollo>
+References: <20210207000030.256592-1-memxor@gmail.com>
+ <20210207173441.2902acac@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Sun, 07 Feb 2021 15:36:04 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Bean Huo <huobean@gmail.com>
-Cc:     Avri Altman <Avri.Altman@wdc.com>, daejun7.park@samsung.com,
-        Greg KH <gregkh@linuxfoundation.org>, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, asutoshd@codeaurora.org,
-        stanley.chu@mediatek.com, bvanassche@acm.org,
-        ALIM AKHTAR <alim.akhtar@samsung.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        BoRam Shin <boram.shin@samsung.com>,
-        SEUNGUK SHIN <seunguk.shin@samsung.com>
-Subject: Re: [PATCH v19 3/3] scsi: ufs: Prepare HPB read for cached sub-region
-In-Reply-To: <12a011cd895dc9be5ec6c4f964b6011af492f06d.camel@gmail.com>
-References: <20210129052848epcms2p6e5797efd94e6282b76ad9ae6c99e3ab5@epcms2p6>
- <CGME20210129052848epcms2p6e5797efd94e6282b76ad9ae6c99e3ab5@epcms2p5>
- <20210129053042epcms2p538e7fa396c3c2104594c44e48be53eb8@epcms2p5>
- <7f25ccb1d857131baa1c0424c4542e33@codeaurora.org>
- <b6a8652c00411e3f71d33e7a6322f49eb5701039.camel@gmail.com>
- <DM6PR04MB657522B94AB436CF096460F6FCB29@DM6PR04MB6575.namprd04.prod.outlook.com>
- <12a011cd895dc9be5ec6c4f964b6011af492f06d.camel@gmail.com>
-Message-ID: <ba7943ab40720df96a9fedb04ab0e4c8@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210207173441.2902acac@canb.auug.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-02-05 23:08, Bean Huo wrote:
-> On Fri, 2021-02-05 at 14:06 +0000, Avri Altman wrote:
->> > > > +     put_unaligned_be64(ppn, &cdb[6]);
->> > >
->> > > You are assuming the HPB entries read out by "HPB Read Buffer"
->> > > cmd
->> > > are
->> > > in Little
->> > > Endian, which is why you are using put_unaligned_be64 here.
->> > > However,
->> > > this assumption
->> > > is not right for all the other flash vendors - HPB entries read
->> > > out
->> > > by
->> > > "HPB Read Buffer"
->> > > cmd may come in Big Endian, if so, their random read performance
->> > > are
->> > > screwed.
->> >
->> > For this question, it is very hard to make a correct format since
->> > the
->> > Spec doesn't give a clear definition. Should we have a default
->> > format,
->> > if there is conflict, and then add quirk or add a vendor-specific
->> > table?
->> >
->> > Hi Avri
->> > Do you have a good idea?
->> 
->> I don't know.  Better let Daejun answer this.
->> This was working for me for both Galaxy S20 (Exynos) as well as
->> Xiaomi Mi10 (8250).
->> 
+On Sun, Feb 07, 2021 at 12:04:41PM IST, Stephen Rothwell wrote:
 > 
-> Thanks, I tested Daejun's patchset before, it is also ok (I don't know
-> which version patchset). maybe we can keep current implementation as
-> default, then if there is conflict, and submit the quirk.
-> 
+> Given that drivers/staging/emxx_udc/emxx_udc.h is only included by
+> drivers/staging/emxx_udc/emxx_udc.c, shouldn't these variables just be
+> declared static in emxx_udc.c and removed from emxx_udc.h?
+>
 
-Yeah, you've tested it, are you sure that Micron's UFS devices are OK
-with this specific code line?
+Either would be correct. I went this way because it was originally trying to
+(incorrectly) define a global variable instead. I guess they can be static now
+and when more users are added, the linkage can be adjusted as needed.
 
-Micron UFS FW team has confirmed that Micron's HPB entries read out by
-"HPB Buffer Read" cmd are in big-endian byte ordering.
+Here's another version of the patch:
 
-If Micron FW team is right, I am pretty sure that you would have seen
-random read performance regression on Micron UFS devices caused by
-invalid HPB entry format in HPB Read cmd UPIU (which leads to L2P cache
-miss in device side all the time) during your test.
+--
+From 5835ad916ceeba620c85bc32f52ecd69f21f8dab Mon Sep 17 00:00:00 2001
+From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date: Sun, 7 Feb 2021 12:53:39 +0530
+Subject: [PATCH] staging: emxx_udc: Make incorrectly defined global static
 
-Can Guo.
+The global gpio_desc pointer and int vbus_irq were defined in the header,
+instead put the definitions in the translation unit and make them static as
+there's only a single consumer in emxx_udc.c.
 
-> Thanks,
-> Bean
-> 
->> Thanks,
->> Avri
+This fixes the following sparse warnings for this driver:
+drivers/staging/emxx_udc/emxx_udc.c: note: in included file:
+drivers/staging/emxx_udc/emxx_udc.h:23:18: warning: symbol 'vbus_gpio' was not
+declared. Should it be static?
+drivers/staging/emxx_udc/emxx_udc.h:24:5: warning: symbol 'vbus_irq' was not 
+declared. Should it be static?
+
+Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+---
+ drivers/staging/emxx_udc/emxx_udc.c | 3 +++
+ drivers/staging/emxx_udc/emxx_udc.h | 2 --
+ 2 files changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/staging/emxx_udc/emxx_udc.c b/drivers/staging/emxx_udc/emxx_udc.c
+index a30b4f5b1..3536c03ff 100644
+--- a/drivers/staging/emxx_udc/emxx_udc.c
++++ b/drivers/staging/emxx_udc/emxx_udc.c
+@@ -34,6 +34,9 @@
+ #define	DRIVER_DESC	"EMXX UDC driver"
+ #define	DMA_ADDR_INVALID	(~(dma_addr_t)0)
+ 
++static struct gpio_desc *vbus_gpio;
++static int vbus_irq;
++
+ static const char	driver_name[] = "emxx_udc";
+ static const char	driver_desc[] = DRIVER_DESC;
+ 
+diff --git a/drivers/staging/emxx_udc/emxx_udc.h b/drivers/staging/emxx_udc/emxx_udc.h
+index bca614d69..c9e37a1b8 100644
+--- a/drivers/staging/emxx_udc/emxx_udc.h
++++ b/drivers/staging/emxx_udc/emxx_udc.h
+@@ -20,8 +20,6 @@
+ /* below hacked up for staging integration */
+ #define GPIO_VBUS 0 /* GPIO_P153 on KZM9D */
+ #define INT_VBUS 0 /* IRQ for GPIO_P153 */
+-struct gpio_desc *vbus_gpio;
+-int vbus_irq;
+ 
+ /*------------ Board dependence(Wait) */
+ 
+-- 
+2.29.2
+
+-- 
+Kartikeya
