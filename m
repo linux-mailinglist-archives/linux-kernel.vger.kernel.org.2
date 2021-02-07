@@ -2,90 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D94A31225E
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 09:04:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 855FA312260
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 09:04:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229615AbhBGIDk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Feb 2021 03:03:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55540 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229506AbhBGIDi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Feb 2021 03:03:38 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8C78B64E6E;
-        Sun,  7 Feb 2021 08:02:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612684977;
-        bh=+2GOPQfQ4+OGkWO4z8VvIgNpg1iWJMavGhhiikAuIws=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=MG7mOniryz/9bO42HvTNUW0HQTZ/oiyGnwMgf0SQxEidmEG+YDx2r0PGtHx3sqBff
-         +/i6KQYRCLHCH4WlMRGRFSDljbLr95Y8OGRwm/HbiHXQo1rATSZVjP0pzjMHo/iWqr
-         r9WgzCAqge5jzGp12+ZoZqvE2/M79+YwhK/o84nO7HOq1RnIMLhuD/CCy8lXVkhGZy
-         nscN4x7vSpAO50PVbCz4jT+XrtLIL1G1uCKUY4IfTrAW7kVATNx9RaE/NLfiCzA3X9
-         ep9aSRPxH22TeY2Epk9t81FlVh1Uoi74LmqC3fQoLgif921cDqV5aekC6/wjpQluRj
-         mqeTDDCGoFwZw==
-Received: by mail-oi1-f174.google.com with SMTP id k204so10850239oih.3;
-        Sun, 07 Feb 2021 00:02:57 -0800 (PST)
-X-Gm-Message-State: AOAM532J7Gg+/LrcUb1jyUjqC0yAge6fM7v17V6ILymEqkjL/Z2WUeiy
-        GMb+lpgN8kHPEXo2K+vvJhUFPCUN8h4YPLFZJ3A=
-X-Google-Smtp-Source: ABdhPJwC5eO4QD0RoLtO/CoO8wP/aqK89IJIw7DDVeqsPIBc/is/fm7XxPyPHThPIclijpri2TdtTQfbALQgTuM/6Kw=
-X-Received: by 2002:aca:b6c1:: with SMTP id g184mr7989702oif.47.1612684976939;
- Sun, 07 Feb 2021 00:02:56 -0800 (PST)
-MIME-Version: 1.0
-References: <1612519857-30714-1-git-send-email-liulongfang@huawei.com>
- <1612519857-30714-4-git-send-email-liulongfang@huawei.com>
- <20210205114435.GA17031@gondor.apana.org.au> <70c0e041-9bcc-aa67-a0ad-a1a202f2e708@huawei.com>
-In-Reply-To: <70c0e041-9bcc-aa67-a0ad-a1a202f2e708@huawei.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Sun, 7 Feb 2021 09:02:45 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXF71nPwMVNM-xwo2UNXW6xq3G=QTCNahLNS7fCfhdSMsA@mail.gmail.com>
-Message-ID: <CAMj1kXF71nPwMVNM-xwo2UNXW6xq3G=QTCNahLNS7fCfhdSMsA@mail.gmail.com>
-Subject: Re: [PATCH 3/3] crypto: hisilicon/sec - fixes shash test error
-To:     liulongfang <liulongfang@huawei.com>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>, wangzhou1@hisilicon.com,
-        Zaibo Xu <xuzaibo@huawei.com>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S229646AbhBGIDz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Feb 2021 03:03:55 -0500
+Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:50175 "EHLO
+        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229506AbhBGIDw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Feb 2021 03:03:52 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UO3XEeI_1612684972;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UO3XEeI_1612684972)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Sun, 07 Feb 2021 16:02:56 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     krzk@kernel.org
+Cc:     thierry.reding@gmail.com, jonathanh@nvidia.com,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH v2] memory: tegra186-emc: Replace DEFINE_SIMPLE_ATTRIBUTE with DEFINE_DEBUGFS_ATTRIBUTE
+Date:   Sun,  7 Feb 2021 16:02:50 +0800
+Message-Id: <1612684970-125948-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 7 Feb 2021 at 03:47, liulongfang <liulongfang@huawei.com> wrote:
->
-> On 2021/2/5 19:44, Herbert Xu write:
-> > On Fri, Feb 05, 2021 at 06:10:57PM +0800, Longfang Liu wrote:
-> >> If this configuration item is not turned on,
-> >> the allocation of crypto_tfm will fail when
-> >> the shash algorithm calculates the hash
-> >> through the software.
-> >>
-> >> Signed-off-by: Longfang Liu <liulongfang@huawei.com>
-> >> ---
-> >>  arch/arm64/configs/defconfig | 2 +-
-> >>  1 file changed, 1 insertion(+), 1 deletion(-)
-> >>
-> >> diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-> >> index 8383016..7cfc9b6 100644
-> >> --- a/arch/arm64/configs/defconfig
-> >> +++ b/arch/arm64/configs/defconfig
-> >> @@ -117,7 +117,7 @@ CONFIG_KVM=y
-> >>  CONFIG_ARM64_CRYPTO=y
-> >>  CONFIG_CRYPTO_SHA1_ARM64_CE=y
-> >>  CONFIG_CRYPTO_SHA2_ARM64_CE=y
-> >> -CONFIG_CRYPTO_SHA512_ARM64_CE=m
-> >> +CONFIG_CRYPTO_SHA512_ARM64_CE=y
-> >
-> > If this is truly needed then it should be enabled through Kconfig.
-> >
-> > Cheers,
-> >
-> Hi Herbert,
-> The option select CRYPTO_SHA512 already exists in Kconfig.
+Fix the following coccicheck warning:
 
-In that case, how can the shash TFM allocation fail?
+drivers/memory/tegra/tegra186-emc.c:158:0-23: WARNING:
+tegra186_emc_debug_max_rate_fops should be defined with
+DEFINE_DEBUGFS_ATTRIBUTE.
 
-> Can I change it to this: select CRYPTO_SHA512 || CRYPTO_SHA512_ARM64_CE
+drivers/memory/tegra/tegra186-emc.c:128:0-23: WARNING:
+tegra186_emc_debug_min_rate_fops should be defined with
+DEFINE_DEBUGFS_ATTRIBUTE.
 
-No, you cannot select expressions like that.
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+---
+Changes in v2:
+  - Stripped unrelated parts of the paths (./). 
 
-Could you please explain the problem you are trying to solve?
+ drivers/memory/tegra/tegra186-emc.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/memory/tegra/tegra186-emc.c b/drivers/memory/tegra/tegra186-emc.c
+index fa8af17..d65e7c2 100644
+--- a/drivers/memory/tegra/tegra186-emc.c
++++ b/drivers/memory/tegra/tegra186-emc.c
+@@ -125,9 +125,9 @@ static int tegra186_emc_debug_min_rate_set(void *data, u64 rate)
+ 	return 0;
+ }
+ 
+-DEFINE_SIMPLE_ATTRIBUTE(tegra186_emc_debug_min_rate_fops,
+-			tegra186_emc_debug_min_rate_get,
+-			tegra186_emc_debug_min_rate_set, "%llu\n");
++DEFINE_DEBUGFS_ATTRIBUTE(tegra186_emc_debug_min_rate_fops,
++			  tegra186_emc_debug_min_rate_get,
++			  tegra186_emc_debug_min_rate_set, "%llu\n");
+ 
+ static int tegra186_emc_debug_max_rate_get(void *data, u64 *rate)
+ {
+@@ -155,9 +155,9 @@ static int tegra186_emc_debug_max_rate_set(void *data, u64 rate)
+ 	return 0;
+ }
+ 
+-DEFINE_SIMPLE_ATTRIBUTE(tegra186_emc_debug_max_rate_fops,
+-			tegra186_emc_debug_max_rate_get,
+-			tegra186_emc_debug_max_rate_set, "%llu\n");
++DEFINE_DEBUGFS_ATTRIBUTE(tegra186_emc_debug_max_rate_fops,
++			  tegra186_emc_debug_max_rate_get,
++			  tegra186_emc_debug_max_rate_set, "%llu\n");
+ 
+ static int tegra186_emc_probe(struct platform_device *pdev)
+ {
+-- 
+1.8.3.1
+
