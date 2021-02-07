@@ -2,79 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A3DF31277D
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 22:12:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2DFD312782
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 22:17:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229636AbhBGVM3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Feb 2021 16:12:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48518 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229491AbhBGVM0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Feb 2021 16:12:26 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B7EB964E35;
-        Sun,  7 Feb 2021 21:11:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1612732306;
-        bh=+XdaDQexeZGU5UTGEhbJS1Xe1ktEJS5gwq1IiBErUQ0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=SjqD7IjDs/KREf+vNjGLvZa0iRykgVeh2eA6BRJ9FfUnxcsUeKqgd9R+ShT7+aPTI
-         +PFC8QFzfiHCbRS/JSc3iudvGcOkB5Uq/Lp2Ry+OqmxgAjp/U88uk1q5mJagj+bd5T
-         M8Xp2j58dzcuCoxtX9n/e9QRXEKtqlTZHAUpyWEA=
-Date:   Sun, 7 Feb 2021 13:11:45 -0800
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     NeilBrown <neilb@suse.de>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Xin Long <lucien.xin@gmail.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vlad Yasevich <vyasevich@gmail.com>,
-        Neil Horman <nhorman@tuxdriver.com>,
-        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-sctp@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH 0/3] Fix some seq_file users that were recently broken
-Message-Id: <20210207131145.ea12b9944c54ad2f10932bc3@linux-foundation.org>
-In-Reply-To: <20210206142924.2bfc3cf5@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-References: <161248518659.21478.2484341937387294998.stgit@noble1>
-        <20210205143550.58d3530918459eafa918ad0c@linux-foundation.org>
-        <20210206142924.2bfc3cf5@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S229692AbhBGVQX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Feb 2021 16:16:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47612 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229581AbhBGVQW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Feb 2021 16:16:22 -0500
+Received: from antares.kleine-koenig.org (antares.kleine-koenig.org [IPv6:2a01:4f8:c0c:3a97::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2ABCC06174A
+        for <linux-kernel@vger.kernel.org>; Sun,  7 Feb 2021 13:15:41 -0800 (PST)
+Received: by antares.kleine-koenig.org (Postfix, from userid 1000)
+        id 59707AF2DF8; Sun,  7 Feb 2021 22:15:39 +0100 (CET)
+From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <uwe@kleine-koenig.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH] driver core: platform: Emit a warning if a remove callback returned non-zero
+Date:   Sun,  7 Feb 2021 22:15:37 +0100
+Message-Id: <20210207211537.19992-1-uwe@kleine-koenig.org>
+X-Mailer: git-send-email 2.29.2
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 6 Feb 2021 14:29:24 -0800 Jakub Kicinski <kuba@kernel.org> wrote:
+The driver core ignores the return value of a bus' remove callback. However
+a driver returning an error code is a hint that there is a problem,
+probably a driver author who expects that returning e.g. -EBUSY has any
+effect.
 
-> On Fri, 5 Feb 2021 14:35:50 -0800 Andrew Morton wrote:
-> > On Fri, 05 Feb 2021 11:36:30 +1100 NeilBrown <neilb@suse.de> wrote:
-> > 
-> > > A recent change to seq_file broke some users which were using seq_file
-> > > in a non-"standard" way ...  though the "standard" isn't documented, so
-> > > they can be excused.  The result is a possible leak - of memory in one
-> > > case, of references to a 'transport' in the other.
-> > > 
-> > > These three patches:
-> > >  1/ document and explain the problem
-> > >  2/ fix the problem user in x86
-> > >  3/ fix the problem user in net/sctp
-> > 
-> > 1f4aace60b0e ("fs/seq_file.c: simplify seq_file iteration code and
-> > interface") was August 2018, so I don't think "recent" applies here?
-> > 
-> > I didn't look closely, but it appears that the sctp procfs file is
-> > world-readable.  So we gave unprivileged userspace the ability to leak
-> > kernel memory?
-> > 
-> > So I'm thinking that we aim for 5.12-rc1 on all three patches with a cc:stable?
-> 
-> I'd rather take the sctp patch sooner, we'll send another batch 
-> of networking fixes for 5.11, anyway. Would that be okay with you?
+The right thing to do would be to make struct platform_driver::remove()
+return void. With the immense number of platform drivers this is however a
+big quest and I hope to prevent at least a few new drivers that return an
+error code here.
 
-Sure.
+Signed-off-by: Uwe Kleine-König <uwe@kleine-koenig.org>
+---
+ drivers/base/platform.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/base/platform.c b/drivers/base/platform.c
+index 95fd1549f87d..1a869e277109 100644
+--- a/drivers/base/platform.c
++++ b/drivers/base/platform.c
+@@ -1461,13 +1461,16 @@ static int platform_remove(struct device *_dev)
+ {
+ 	struct platform_driver *drv = to_platform_driver(_dev->driver);
+ 	struct platform_device *dev = to_platform_device(_dev);
+-	int ret = 0;
+ 
+-	if (drv->remove)
+-		ret = drv->remove(dev);
++	if (drv->remove) {
++		int ret = drv->remove(dev);
++
++		if (ret)
++			dev_warn(_dev, "remove callback returned a non-zero value. This will be ignored.\n");
++	}
+ 	dev_pm_domain_detach(_dev, true);
+ 
+-	return ret;
++	return 0;
+ }
+ 
+ static void platform_shutdown(struct device *_dev)
+-- 
+2.29.2
+
