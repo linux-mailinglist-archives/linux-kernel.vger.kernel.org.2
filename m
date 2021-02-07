@@ -2,41 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94A773127C9
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 23:16:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BAC2E3127CF
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 23:17:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229590AbhBGWOz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Feb 2021 17:14:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53004 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229506AbhBGWOx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Feb 2021 17:14:53 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D6AF64DEE;
-        Sun,  7 Feb 2021 22:14:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612736052;
-        bh=yLI+r9yxF4Usf8nmWDKhF8GsMG4dnZXjsjBHn97UbFA=;
-        h=From:To:Cc:Subject:Date:From;
-        b=pjN08tdXYOqee5+QsBDHbxXXQ72z6Q2HoAJH+PQdR6sqaWHagDVPO3cLUP7Zd0p3C
-         WgdSG02zADag9+UkzedE6vX0CuAFpfVxbuKXBnpD5239yR2QVzQPjQfMNDzKvT7Kjv
-         j7cKthdU4enD2/9VPE+4oa0ZkR1kl5BdcLPxurJfHruYJN2Tpgn6DuFiD+ey5r6o5W
-         XrpFKs/DwsfwWcv9o3tnpLsVSBKhrYXqJlykVLAdi9faRCRWPGL/pp8h6s+k0iSSnd
-         BDm0QqsIMZr35GDOCTHP3HXBcrS/7hQorvy+qo9+K97U4ZtcRQtk04aIt7wzxE5WKO
-         bAM0WBc5pph4Q==
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     linux-sgx@vger.kernel.org
-Cc:     dave.hansen@intel.com, Jarkko Sakkinen <jarkko@kernel.org>,
-        Haitao Huang <haitao.huang@linux.intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Jethro Beekman <jethro@fortanix.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v8] x86/sgx: Maintain encl->refcount for each encl->mm_list entry
-Date:   Mon,  8 Feb 2021 00:14:01 +0200
-Message-Id: <20210207221401.29933-1-jarkko@kernel.org>
+        id S229646AbhBGWQy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Feb 2021 17:16:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60512 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229506AbhBGWQw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Feb 2021 17:16:52 -0500
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F2DAC06174A;
+        Sun,  7 Feb 2021 14:16:12 -0800 (PST)
+Received: by mail-lf1-x12d.google.com with SMTP id d3so19420063lfg.10;
+        Sun, 07 Feb 2021 14:16:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=amw+arajV2h5jip6V0/FYm9nsxnyFJgWfDun4yL2hWo=;
+        b=Qxz3qIx4N/K/ylzxBOh9LpEAJVJER0i3fj5x5/b4eYTiPdgZowWin7i0TJhL3YBGYX
+         nqUU4rin5JIo4EF9yw/Ct4YDapLRWVueBm8FZguVaNpmhpn+GUSOGOmHQfmxdEFFuC8Q
+         813WjLZU5WM+3YdNjdP3GZc3hhKDoeAQ+3MLzwtsQuRjmFv8VXnCZ9LMS87ggn6rN8XO
+         a10sgapTHYd7EqRAsKEysMqnlXuw5Tq4yMN53oCC8rKkoZ5naGSafn231Ih80kr3ro0R
+         QjVuXaiMF5Rp3GSxU1lln7BDoxWUMov4gzapyFc+Rl2Tgj+MrexZG5WmBVVlMKGqGCQX
+         UtXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=amw+arajV2h5jip6V0/FYm9nsxnyFJgWfDun4yL2hWo=;
+        b=Je20lzumsezgDfAP2CJ6rJRtNzPAReP+L5hWVT0CXJEakDpJAyNPq2LaBCmPSadMZL
+         IzibS6DFGC2QM6Hh0nADWVwVhRCT08n9QxILyhFEq0GE/L0gfzVe4bWOIKXX1M0NzV5O
+         EYm01xcnW8WvrhWstClcgNppP7eZpN1ZmPMh6rQrBwLMG2RP7ZSmQrXJwrtEfP5TbiQk
+         OBoKN6smJA/tDk75dkf8xCSUFOQ0vaJ91l0WOKHWJuZVax5gU8+wSKomlaZ5Hmy60BB7
+         GTokmZDgVOFitI4E4xeY0mM7iVWujaE78uQGgUKqy64DDDsbHhmeeh/cpUDrq7Vti3dq
+         ZJ1g==
+X-Gm-Message-State: AOAM531XX5ecHHQ/yRN0s2DE3fntsPHD6RGBHgczPrTOk7mxzIRk2cix
+        AlwSKP9ALLnyym8thhEgOS++lgJq58BchQ==
+X-Google-Smtp-Source: ABdhPJyjaJRB143WhUN8+rLijJv2/iICLgKR/rcd245VCxOBQw4+5emTlBYz3D77P7u2f2YLo877sg==
+X-Received: by 2002:ac2:5639:: with SMTP id b25mr8348018lff.370.1612736170304;
+        Sun, 07 Feb 2021 14:16:10 -0800 (PST)
+Received: from localhost.localdomain (h-158-174-22-164.NA.cust.bahnhof.se. [158.174.22.164])
+        by smtp.gmail.com with ESMTPSA id y25sm1873866lfe.20.2021.02.07.14.16.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 07 Feb 2021 14:16:09 -0800 (PST)
+From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
+To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>
+Cc:     Vidya Sagar <vidyas@nvidia.com>, Jingoo Han <jingoohan1@gmail.com>,
+        linux-pci@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>
+Subject: [PATCH] PCI: tegra: Constify static structs
+Date:   Sun,  7 Feb 2021 23:16:04 +0100
+Message-Id: <20210207221604.48910-1-rikard.falkeborn@gmail.com>
 X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -44,103 +67,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This has been shown in tests:
+The only usage of them is to assign their address to the 'ops' field in
+the pcie_port and the dw_pcie_ep structs, both which are pointers to
+const. Make them const to allow the compiler to put them in read-only
+memory.
 
-[  +0.000008] WARNING: CPU: 3 PID: 7620 at kernel/rcu/srcutree.c:374 cleanup_srcu_struct+0xed/0x100
-
-This is essentially a use-after free, although SRCU notices it as
-an SRCU cleanup in an invalid context.
-
-== Background ==
-
-SGX has a data structure (struct sgx_encl_mm) which keeps per-mm SGX
-metadata.  This is separate from 'struct sgx_encl' because, in theory,
-an enclave can be mapped from more than one mm.  sgx_encl_mm includes
-a pointer back to the sgx_encl.
-
-This means that sgx_encl must have a longer lifetime than all of the
-sgx_encl_mm's that point to it.  That's usually the case: sgx_encl_mm
-is freed only after the mmu_notifier is unregistered in sgx_release().
-
-However, there's a race.  If the process is exiting,
-sgx_mmu_notifier_release() can be called in parallel with sgx_release()
-instead of being called *by* it.  The mmu_notifier path keeps encl_mm
-alive past when sgx_encl can be freed.  This inverts the lifetime rules
-and means that sgx_mmu_notifier_release() can access a freed sgx_encl.
-
-== Fix ==
-
-Increase encl->refcount when encl_mm->encl is established. Release
-this reference encl_mm is freed.  This ensures that 'encl' outlives
-'encl_mm'.
-
-Fixes: 1728ab54b4be ("x86/sgx: Add a page reclaimer")
-Cc: Dave Hansen <dave.hansen@linux.intel.com
-Reported-by: Haitao Huang <haitao.huang@linux.intel.com>
-Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
 ---
-v8:
-- Slight adjustments on call sites suggested by Dave, to make things
-  more clear and obvious. Otherwise, semantically same as v7:
-  https://lore.kernel.org/linux-sgx/b874673d-9d58-0d6f-ce2d-ef4d33ac5115@intel.com/
-  Contains also long description written by Dave.
-v7:
-- No changes from v6. Resend of
-  https://patchwork.kernel.org/project/intel-sgx/patch/20210204143845.39697-1-jarkko@kernel.org/
-v6:
-- Maintain refcount for each encl->mm_list entry.
-v5:
-- To make sure that the instance does not get deleted use kref_get()
-  kref_put(). This also removes the need for additional
-  synchronize_srcu().
-v4:
-- Rewrite the commit message.
-- Just change the call order. *_expedited() is out of scope for this
-  bug fix.
-v3: Fine-tuned tags, and added missing change log for v2.
-v2: Switch to synchronize_srcu_expedited().
+ drivers/pci/controller/dwc/pcie-tegra194.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
- arch/x86/kernel/cpu/sgx/driver.c | 3 +++
- arch/x86/kernel/cpu/sgx/encl.c   | 5 +++++
- 2 files changed, 8 insertions(+)
-
-diff --git a/arch/x86/kernel/cpu/sgx/driver.c b/arch/x86/kernel/cpu/sgx/driver.c
-index f2eac41bb4ff..8ce6d8371cfb 100644
---- a/arch/x86/kernel/cpu/sgx/driver.c
-+++ b/arch/x86/kernel/cpu/sgx/driver.c
-@@ -72,6 +72,9 @@ static int sgx_release(struct inode *inode, struct file *file)
- 		synchronize_srcu(&encl->srcu);
- 		mmu_notifier_unregister(&encl_mm->mmu_notifier, encl_mm->mm);
- 		kfree(encl_mm);
-+
-+		/* 'encl_mm' is gone, put encl_mm->encl reference: */
-+		kref_put(&encl->refcount, sgx_encl_release);
- 	}
+diff --git a/drivers/pci/controller/dwc/pcie-tegra194.c b/drivers/pci/controller/dwc/pcie-tegra194.c
+index 6fa216e52d14..18acd48e8e9b 100644
+--- a/drivers/pci/controller/dwc/pcie-tegra194.c
++++ b/drivers/pci/controller/dwc/pcie-tegra194.c
+@@ -1019,7 +1019,7 @@ static const struct dw_pcie_ops tegra_dw_pcie_ops = {
+ 	.stop_link = tegra_pcie_dw_stop_link,
+ };
  
- 	kref_put(&encl->refcount, sgx_encl_release);
-diff --git a/arch/x86/kernel/cpu/sgx/encl.c b/arch/x86/kernel/cpu/sgx/encl.c
-index 20a2dd5ba2b4..7449ef33f081 100644
---- a/arch/x86/kernel/cpu/sgx/encl.c
-+++ b/arch/x86/kernel/cpu/sgx/encl.c
-@@ -473,6 +473,9 @@ static void sgx_mmu_notifier_free(struct mmu_notifier *mn)
- {
- 	struct sgx_encl_mm *encl_mm = container_of(mn, struct sgx_encl_mm, mmu_notifier);
+-static struct dw_pcie_host_ops tegra_pcie_dw_host_ops = {
++static const struct dw_pcie_host_ops tegra_pcie_dw_host_ops = {
+ 	.host_init = tegra_pcie_dw_host_init,
+ };
  
-+	/* 'encl_mm' is going away, put encl_mm->encl reference: */
-+	kref_put(&encl_mm->encl->refcount, sgx_encl_release);
-+
- 	kfree(encl_mm);
+@@ -1881,7 +1881,7 @@ tegra_pcie_ep_get_features(struct dw_pcie_ep *ep)
+ 	return &tegra_pcie_epc_features;
  }
  
-@@ -526,6 +529,8 @@ int sgx_encl_mm_add(struct sgx_encl *encl, struct mm_struct *mm)
- 	if (!encl_mm)
- 		return -ENOMEM;
- 
-+	/* Grab a refcount for the encl_mm->encl reference: */
-+	kref_get(&encl->refcount);
- 	encl_mm->encl = encl;
- 	encl_mm->mm = mm;
- 	encl_mm->mmu_notifier.ops = &sgx_mmu_notifier_ops;
+-static struct dw_pcie_ep_ops pcie_ep_ops = {
++static const struct dw_pcie_ep_ops pcie_ep_ops = {
+ 	.raise_irq = tegra_pcie_ep_raise_irq,
+ 	.get_features = tegra_pcie_ep_get_features,
+ };
 -- 
 2.30.0
 
