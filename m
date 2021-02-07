@@ -2,106 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FBC03126A4
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 19:21:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38ACA3126A9
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Feb 2021 19:31:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229725AbhBGSUC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Feb 2021 13:20:02 -0500
-Received: from mga01.intel.com ([192.55.52.88]:52067 "EHLO mga01.intel.com"
+        id S229570AbhBGS3u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Feb 2021 13:29:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57372 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229638AbhBGSUA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Feb 2021 13:20:00 -0500
-IronPort-SDR: zGZCzOed7USXSwjwpbxNkXc6vL20dedQqHJ5atorORliys0xVRz2tvvVdm7Gi8cgphoiWV99L6
- kISXa6gIb61A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9888"; a="200671300"
-X-IronPort-AV: E=Sophos;i="5.81,160,1610438400"; 
-   d="scan'208";a="200671300"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Feb 2021 10:19:16 -0800
-IronPort-SDR: 1Eb65m608fZEnL/EIPW/PYnn6NnrOy3mnTeWGbFOYN/A2NN8UKn9/mr0+cHFF7dAwwUHoT24gO
- iR362I4+sCZg==
-X-IronPort-AV: E=Sophos;i="5.81,160,1610438400"; 
-   d="scan'208";a="376835646"
-Received: from yramx-mobl1.amr.corp.intel.com (HELO [10.213.174.131]) ([10.213.174.131])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Feb 2021 10:19:16 -0800
-Subject: Re: [GIT PULL] x86/urgent for v5.11-rc7
-To:     Borislav Petkov <bp@suse.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>, x86-ml <x86@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>
-References: <20210207104022.GA32127@zn.tnic>
- <CAHk-=widXSyJ8W3vRrqO-zNP12A+odxg2J2_-oOUskz33wtfqA@mail.gmail.com>
- <20210207175814.GF32127@zn.tnic>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <661b9809-2c6a-5fc8-163b-a159b84c9ab8@intel.com>
-Date:   Sun, 7 Feb 2021 10:19:14 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20210207175814.GF32127@zn.tnic>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S229445AbhBGS3s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Feb 2021 13:29:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 7488164DDD;
+        Sun,  7 Feb 2021 18:29:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612722548;
+        bh=kWwuqdEBEO0BC2yHvOEJmSzkLX9BsYmMkjaWNDuuYRg=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=e6WD1lviKHT7J/uEuOlxp1IhzJKE0W9qCd5shQg449Giim53W18FT6LzSdI40+HUb
+         GUdyS1ns5Xz/Do6xaxbdkNllkOJ8ei1/Uc8ScLBKCBYjbXTCvldDFkkrIEMkL7BsCd
+         PbiiZQyHJ95PYe1yuyQ27i/3Chlj+fruAYupBP5lEw0GLmtYJ6KbJe47b8bwWpSW2f
+         300/TRSkohYyjr14A0X6z8T4FYgGpB/xMCVm9CrtN6ewcFWwZxs550V6q+niaaVClx
+         awpbkPrDZZxGXl28gqGqC1hKMMf7vlhMM/b9KmOM3Z1SUzPjh/S3IGhBXd+NlO/j9W
+         7S9ZE/tDdaA5g==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 5654B609FE;
+        Sun,  7 Feb 2021 18:29:08 +0000 (UTC)
+Subject: Re: [GIT PULL] Kbuild fixes for v5.11-rc7
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <CAK7LNAQsGyFpJcXYoeH7_vAzsw+9K1w0tDdHN=vxKDO+a-v70A@mail.gmail.com>
+References: <CAK7LNAQsGyFpJcXYoeH7_vAzsw+9K1w0tDdHN=vxKDO+a-v70A@mail.gmail.com>
+X-PR-Tracked-List-Id: <linux-kbuild.vger.kernel.org>
+X-PR-Tracked-Message-Id: <CAK7LNAQsGyFpJcXYoeH7_vAzsw+9K1w0tDdHN=vxKDO+a-v70A@mail.gmail.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git tags/kbuild-fixes-v5.11-2
+X-PR-Tracked-Commit-Id: efe6e3068067212b85c2d0474b5ee3b2d0c7adab
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 2db138bb9fa10f5652f55d3c3f427af54626a086
+Message-Id: <161272254829.27145.9788210364439647296.pr-tracker-bot@kernel.org>
+Date:   Sun, 07 Feb 2021 18:29:08 +0000
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/7/21 9:58 AM, Borislav Petkov wrote:
-> On Sun, Feb 07, 2021 at 09:49:18AM -0800, Linus Torvalds wrote:
->> On Sun, Feb 7, 2021 at 2:40 AM Borislav Petkov <bp@suse.de> wrote:
->>> - Disable CET instrumentation in the kernel so that gcc doesn't add
->>> ENDBR64 to kernel code and thus confuse tracing.
->> So this is clearly the right thing to do for now, but I wonder if
->> people have a plan for actually enabling CET and endbr at cpl0 at some
->> point?
-> It probably is an item on some Intel manager's to-enable list. So far,
-> the CET enablement concentrates only on userspace but dhansen might know
-> more about future plans. CCed.
+The pull request you sent on Sun, 7 Feb 2021 11:32:52 +0900:
 
-It's definitely on our radar to look at after CET userspace.
+> git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git tags/kbuild-fixes-v5.11-2
 
-The only question for me is whether it will be worth doing with the
-exiting kernel entry/exit architecture.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/2db138bb9fa10f5652f55d3c3f427af54626a086
+
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
