@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D9DA313990
+	by mail.lfdr.de (Postfix) with ESMTP id 2C33C31398F
 	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 17:35:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232019AbhBHQfJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 11:35:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55766 "EHLO mail.kernel.org"
+        id S231269AbhBHQey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 11:34:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55764 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231452AbhBHPNa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S231743AbhBHPNa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 8 Feb 2021 10:13:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A8D6664EFF;
-        Mon,  8 Feb 2021 15:10:26 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D44B64F00;
+        Mon,  8 Feb 2021 15:10:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612797027;
-        bh=Vw21LDfqvR1vAbR9fbUI1B2If3KKTuMXwiCW1ovarE0=;
+        s=korg; t=1612797030;
+        bh=W4shUEBm82+PdHKxOiO3QIVumzaP82iQQXRNNA665Xg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WXszzOgjo3OgFuXDLWtcVG5rRk/vTk6JECVLYim9ImU9KLuAU3VVDGQhRhMX+rVLG
-         1YJl+FYlNxn7oEUpI5DCpMuZSj40VKybbuKNTuoiopTcBzNjKdAX4xtfaYOOAeRDGH
-         mhIYZMgKaifTG2AkBiff3RFgKWoL+p3FwHmn3qXA=
+        b=OAR8gpy0+9Oy8wW/pVJ5ZSKaGWnKiDihrU1c2k7tLJBYv/yzODrAFIg6BnTN6c6o1
+         5ZLl64Uz5B2+SY+kk9USNDb4VOaJncJoxa4wSG88rLjXgXpEY9pAHc4tAT+UwbDAwU
+         ZwvDR/N4FeiijDQu9oaVTbUMRAi6YH2iMa7WwsCo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Felix Fietkau <nbd@nbd.name>,
-        Johannes Berg <johannes.berg@intel.com>
-Subject: [PATCH 5.4 33/65] mac80211: fix station rate table updates on assoc
-Date:   Mon,  8 Feb 2021 16:01:05 +0100
-Message-Id: <20210208145811.507439369@linuxfoundation.org>
+        stable@vger.kernel.org, pierre.gondois@arm.com,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Subject: [PATCH 5.4 34/65] fgraph: Initialize tracing_graph_pause at task creation
+Date:   Mon,  8 Feb 2021 16:01:06 +0100
+Message-Id: <20210208145811.547133434@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210208145810.230485165@linuxfoundation.org>
 References: <20210208145810.230485165@linuxfoundation.org>
@@ -39,51 +39,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Felix Fietkau <nbd@nbd.name>
+From: Steven Rostedt (VMware) <rostedt@goodmis.org>
 
-commit 18fe0fae61252b5ae6e26553e2676b5fac555951 upstream.
+commit 7e0a9220467dbcfdc5bc62825724f3e52e50ab31 upstream.
 
-If the driver uses .sta_add, station entries are only uploaded after the sta
-is in assoc state. Fix early station rate table updates by deferring them
-until the sta has been uploaded.
+On some archs, the idle task can call into cpu_suspend(). The cpu_suspend()
+will disable or pause function graph tracing, as there's some paths in
+bringing down the CPU that can have issues with its return address being
+modified. The task_struct structure has a "tracing_graph_pause" atomic
+counter, that when set to something other than zero, the function graph
+tracer will not modify the return address.
+
+The problem is that the tracing_graph_pause counter is initialized when the
+function graph tracer is enabled. This can corrupt the counter for the idle
+task if it is suspended in these architectures.
+
+   CPU 1				CPU 2
+   -----				-----
+  do_idle()
+    cpu_suspend()
+      pause_graph_tracing()
+          task_struct->tracing_graph_pause++ (0 -> 1)
+
+				start_graph_tracing()
+				  for_each_online_cpu(cpu) {
+				    ftrace_graph_init_idle_task(cpu)
+				      task-struct->tracing_graph_pause = 0 (1 -> 0)
+
+      unpause_graph_tracing()
+          task_struct->tracing_graph_pause-- (0 -> -1)
+
+The above should have gone from 1 to zero, and enabled function graph
+tracing again. But instead, it is set to -1, which keeps it disabled.
+
+There's no reason that the field tracing_graph_pause on the task_struct can
+not be initialized at boot up.
 
 Cc: stable@vger.kernel.org
-Signed-off-by: Felix Fietkau <nbd@nbd.name>
-Link: https://lore.kernel.org/r/20210201083324.3134-1-nbd@nbd.name
-[use rcu_access_pointer() instead since we won't dereference here]
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Fixes: 380c4b1411ccd ("tracing/function-graph-tracer: append the tracing_graph_flag")
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=211339
+Reported-by: pierre.gondois@arm.com
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/mac80211/driver-ops.c |    5 ++++-
- net/mac80211/rate.c       |    3 ++-
- 2 files changed, 6 insertions(+), 2 deletions(-)
+ init/init_task.c      |    3 ++-
+ kernel/trace/fgraph.c |    2 --
+ 2 files changed, 2 insertions(+), 3 deletions(-)
 
---- a/net/mac80211/driver-ops.c
-+++ b/net/mac80211/driver-ops.c
-@@ -125,8 +125,11 @@ int drv_sta_state(struct ieee80211_local
- 	} else if (old_state == IEEE80211_STA_AUTH &&
- 		   new_state == IEEE80211_STA_ASSOC) {
- 		ret = drv_sta_add(local, sdata, &sta->sta);
--		if (ret == 0)
-+		if (ret == 0) {
- 			sta->uploaded = true;
-+			if (rcu_access_pointer(sta->sta.rates))
-+				drv_sta_rate_tbl_update(local, sdata, &sta->sta);
-+		}
- 	} else if (old_state == IEEE80211_STA_ASSOC &&
- 		   new_state == IEEE80211_STA_AUTH) {
- 		drv_sta_remove(local, sdata, &sta->sta);
---- a/net/mac80211/rate.c
-+++ b/net/mac80211/rate.c
-@@ -934,7 +934,8 @@ int rate_control_set_rates(struct ieee80
- 	if (old)
- 		kfree_rcu(old, rcu_head);
+--- a/init/init_task.c
++++ b/init/init_task.c
+@@ -171,7 +171,8 @@ struct task_struct init_task
+ 	.lockdep_recursion = 0,
+ #endif
+ #ifdef CONFIG_FUNCTION_GRAPH_TRACER
+-	.ret_stack	= NULL,
++	.ret_stack		= NULL,
++	.tracing_graph_pause	= ATOMIC_INIT(0),
+ #endif
+ #if defined(CONFIG_TRACING) && defined(CONFIG_PREEMPTION)
+ 	.trace_recursion = 0,
+--- a/kernel/trace/fgraph.c
++++ b/kernel/trace/fgraph.c
+@@ -367,7 +367,6 @@ static int alloc_retstack_tasklist(struc
+ 		}
  
--	drv_sta_rate_tbl_update(hw_to_local(hw), sta->sdata, pubsta);
-+	if (sta->uploaded)
-+		drv_sta_rate_tbl_update(hw_to_local(hw), sta->sdata, pubsta);
- 
- 	ieee80211_sta_set_expected_throughput(pubsta, sta_get_expected_throughput(sta));
- 
+ 		if (t->ret_stack == NULL) {
+-			atomic_set(&t->tracing_graph_pause, 0);
+ 			atomic_set(&t->trace_overrun, 0);
+ 			t->curr_ret_stack = -1;
+ 			t->curr_ret_depth = -1;
+@@ -462,7 +461,6 @@ static DEFINE_PER_CPU(struct ftrace_ret_
+ static void
+ graph_init_task(struct task_struct *t, struct ftrace_ret_stack *ret_stack)
+ {
+-	atomic_set(&t->tracing_graph_pause, 0);
+ 	atomic_set(&t->trace_overrun, 0);
+ 	t->ftrace_timestamp = 0;
+ 	/* make curr_ret_stack visible before we add the ret_stack */
 
 
