@@ -2,64 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7222C313D7A
+	by mail.lfdr.de (Postfix) with ESMTP id E47F9313D7B
 	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 19:29:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235714AbhBHS1x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 13:27:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33616 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232049AbhBHP6P (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 10:58:15 -0500
-X-Greylist: delayed 66354 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 08 Feb 2021 07:57:34 PST
-Received: from angie.orcam.me.uk (angie.orcam.me.uk [IPv6:2001:4190:8020::4])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BA6DEC061786;
-        Mon,  8 Feb 2021 07:57:34 -0800 (PST)
-Received: by angie.orcam.me.uk (Postfix, from userid 500)
-        id 90BE19200B4; Mon,  8 Feb 2021 16:57:33 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by angie.orcam.me.uk (Postfix) with ESMTP id 8AC289200B3;
-        Mon,  8 Feb 2021 16:57:33 +0100 (CET)
-Date:   Mon, 8 Feb 2021 16:57:33 +0100 (CET)
-From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
-To:     Christoph Hellwig <hch@lst.de>
-cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        iommu@lists.linux-foundation.org
-Subject: Re: [PATCH 5/6] driver core: lift dma_default_coherent into common
- code
-In-Reply-To: <20210208145024.3320420-6-hch@lst.de>
-Message-ID: <alpine.DEB.2.21.2102081654060.35623@angie.orcam.me.uk>
-References: <20210208145024.3320420-1-hch@lst.de> <20210208145024.3320420-6-hch@lst.de>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        id S235736AbhBHS14 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 13:27:56 -0500
+Received: from mga02.intel.com ([134.134.136.20]:28252 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232708AbhBHQBv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 11:01:51 -0500
+IronPort-SDR: Y6mwRYz3aEgGmlXqC4jfG5IOzgONhOFXylht1gjMxOl9kMesE2cRfXRR4HoKKBln8rb+VDed9K
+ C/0jY5umwpXQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9889"; a="168856926"
+X-IronPort-AV: E=Sophos;i="5.81,162,1610438400"; 
+   d="scan'208";a="168856926"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2021 08:00:02 -0800
+IronPort-SDR: c7CLfHt80+yA9azdHJbQbf/tW/fO0BK07Yg65VDZyucPJhA4OLtCCZecbKygHGqrQD3ZgcMgHn
+ PIo1yhQwaBIA==
+X-IronPort-AV: E=Sophos;i="5.81,162,1610438400"; 
+   d="scan'208";a="509511001"
+Received: from eshan-mobl.amr.corp.intel.com ([10.213.174.93])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2021 08:00:01 -0800
+Message-ID: <37cf77123be66e14f517a59576cdaba9c5787d0d.camel@linux.intel.com>
+Subject: Re: [PATCH] HID: intel-ish-hid: ipc: Add Tiger Lake H PCI device ID
+From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+To:     You-Sheng Yang <vicamo.yang@canonical.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Mon, 08 Feb 2021 08:00:00 -0800
+In-Reply-To: <20210204083315.122952-1-vicamo.yang@canonical.com>
+References: <20210204083315.122952-1-vicamo.yang@canonical.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 8 Feb 2021, Christoph Hellwig wrote:
+On Thu, 2021-02-04 at 16:33 +0800, You-Sheng Yang wrote:
+> Added Tiger Lake H PCI device ID to the supported device list.
+> 
+> Signed-off-by: You-Sheng Yang <vicamo.yang@canonical.com>
+Acked-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
 
-> diff --git a/arch/mips/mti-malta/malta-setup.c b/arch/mips/mti-malta/malta-setup.c
-> index e98cc977a735b2..f8c9663e7faa10 100644
-> --- a/arch/mips/mti-malta/malta-setup.c
-> +++ b/arch/mips/mti-malta/malta-setup.c
-> @@ -143,7 +143,7 @@ static void __init plat_setup_iocoherency(void)
->  			pr_crit("IOCU OPERATION DISABLED BY SWITCH - DEFAULTING TO SW IO COHERENCY\n");
->  	}
+> ---
+>  drivers/hid/intel-ish-hid/ipc/hw-ish.h  | 1 +
+>  drivers/hid/intel-ish-hid/ipc/pci-ish.c | 1 +
+>  2 files changed, 2 insertions(+)
+> 
+> diff --git a/drivers/hid/intel-ish-hid/ipc/hw-ish.h
+> b/drivers/hid/intel-ish-hid/ipc/hw-ish.h
+> index 1fb294ca463e..21b0e6123754 100644
+> --- a/drivers/hid/intel-ish-hid/ipc/hw-ish.h
+> +++ b/drivers/hid/intel-ish-hid/ipc/hw-ish.h
+> @@ -27,6 +27,7 @@
+>  #define CMP_H_DEVICE_ID		0x06FC
+>  #define EHL_Ax_DEVICE_ID	0x4BB3
+>  #define TGL_LP_DEVICE_ID	0xA0FC
+> +#define TGL_H_DEVICE_ID		0x43FC
 >  
-> -	if (supported)
-> +	if (supported) {
->  		if (dma_force_noncoherent) {
->  			pr_info("Hardware DMA cache coherency disabled\n");
->  			return;
+>  #define	REVISION_ID_CHT_A0	0x6
+>  #define	REVISION_ID_CHT_Ax_SI	0x0
+> diff --git a/drivers/hid/intel-ish-hid/ipc/pci-ish.c
+> b/drivers/hid/intel-ish-hid/ipc/pci-ish.c
+> index c6d48a8648b7..6dea657b7b15 100644
+> --- a/drivers/hid/intel-ish-hid/ipc/pci-ish.c
+> +++ b/drivers/hid/intel-ish-hid/ipc/pci-ish.c
+> @@ -37,6 +37,7 @@ static const struct pci_device_id ish_pci_tbl[] = {
+>  	{PCI_DEVICE(PCI_VENDOR_ID_INTEL, CMP_H_DEVICE_ID)},
+>  	{PCI_DEVICE(PCI_VENDOR_ID_INTEL, EHL_Ax_DEVICE_ID)},
+>  	{PCI_DEVICE(PCI_VENDOR_ID_INTEL, TGL_LP_DEVICE_ID)},
+> +	{PCI_DEVICE(PCI_VENDOR_ID_INTEL, TGL_H_DEVICE_ID)},
+>  	{0, }
+>  };
+>  MODULE_DEVICE_TABLE(pci, ish_pci_tbl);
 
- I think this has to go with 1/6; otherwise compilation breaks between 
-then and now AFAICT.
-
- Do you need to have this verified anyhow?  I only have a non-coherent 5Kc 
-Malta though.
-
-  Maciej
