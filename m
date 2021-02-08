@@ -2,75 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02C333135BF
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 15:54:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 185F53135C2
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 15:54:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233170AbhBHOyB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 09:54:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47716 "EHLO
+        id S233041AbhBHOya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 09:54:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233152AbhBHOwo (ORCPT
+        with ESMTP id S233025AbhBHOxi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 09:52:44 -0500
-Received: from michel.telenet-ops.be (michel.telenet-ops.be [IPv6:2a02:1800:110:4::f00:18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A54BC061786
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 06:51:58 -0800 (PST)
-Received: from ramsan.of.borg ([84.195.186.194])
-        by michel.telenet-ops.be with bizsmtp
-        id Seru240184C55Sk06eruDq; Mon, 08 Feb 2021 15:51:56 +0100
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1l97tK-004eBQ-Ae; Mon, 08 Feb 2021 15:51:54 +0100
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1l97tJ-001lok-UC; Mon, 08 Feb 2021 15:51:53 +0100
-From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     Anson Huang <Anson.Huang@nxp.com>, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Cc:     Fabio Estevam <festevam@gmail.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH] gpio: GPIO_MXS should not default to y, unconditionally
-Date:   Mon,  8 Feb 2021 15:51:53 +0100
-Message-Id: <20210208145153.422093-1-geert+renesas@glider.be>
-X-Mailer: git-send-email 2.25.1
+        Mon, 8 Feb 2021 09:53:38 -0500
+Received: from mail-vk1-xa2f.google.com (mail-vk1-xa2f.google.com [IPv6:2607:f8b0:4864:20::a2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E542C061794
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 06:52:39 -0800 (PST)
+Received: by mail-vk1-xa2f.google.com with SMTP id s124so818650vkb.1
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 06:52:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Y8cQCEgdPFE8xw1N0t+r/wceVgSKQwGQt1gshTBTA/w=;
+        b=alpVJbdMsp+cA4m1fRF7oc91ToOAMiUG3qmsFJvHLTgLEDVe2YKlyNWZjuXEm0+9B5
+         tI+v40mJamGojR0eSN1f1NT9DRZGVussJ5bnWO5uayHegaNhE4tZyvQWv5WpRvKBeRnm
+         uQQzhETRO/OBzSmXkCgmv1QDy3nprRgWuhNjY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Y8cQCEgdPFE8xw1N0t+r/wceVgSKQwGQt1gshTBTA/w=;
+        b=JZ+cuK55AOVIk2UNyLqZCP6pPY3XSKhZrWI6XrEnpYxx2fy5P71h+N/9Kq8ctPfgjW
+         5W+gtFDttIkanUghCL0bVJEzf9/5nJxCxD/giXuUOVRQYJicrswokRFkcgJlV23q7tzB
+         UzLIprF1lPEpaA/rAn6pbN/QY2Njijc3TnAhEeHOlfAvVJGjMjOafGisvS90Kgezly/v
+         FPtlav21COoE4OHXXX90DbZhKdxOWl3Wm5bvQa/PdxQi/eSPkTFqCBwxYyq/LNT/ibCg
+         YDZlWyat2H9dUlHZV9iZak6fMBABHPt3zCsY3aY3PjZK7pdcx1Hpymo4bl8SKG4wN1Tx
+         ZXBQ==
+X-Gm-Message-State: AOAM5323gsBmAENBI9Py6WBFsJvoK9dvlGYVfoUKmtY9EGUscTeLn8wf
+        I4nScktLByo7/2943Qs7NlF+o1RqtreDGdIgqQpUcA==
+X-Google-Smtp-Source: ABdhPJyQPCy2cA69mGHBT2lFImqi32A7W4sz4zMmBMBHG0ztyW3F8v3uSO92T8TdzGXthZXdEfXnGob2ymMrfjahfQU=
+X-Received: by 2002:a1f:1d0e:: with SMTP id d14mr10273523vkd.14.1612795957900;
+ Mon, 08 Feb 2021 06:52:37 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210203130501.GY308988@casper.infradead.org> <CAJfpegs3YWybmH7iKDLQ-KwmGieS1faO1uSZ-ADB0UFYOFPEnQ@mail.gmail.com>
+ <20210203135827.GZ308988@casper.infradead.org> <CAJfpegvHFHcCPtyJ+w6uRx+hLH9JAT46WJktF_nez-ZZAria7A@mail.gmail.com>
+ <20210203142802.GA308988@casper.infradead.org> <CAJfpegtW5-XObARX87A8siTJNxTCkzXG=QY5tTRXVUvHXXZn3g@mail.gmail.com>
+ <20210203145620.GB308988@casper.infradead.org> <CAJfpegvV19DT+nQcW5OiLsGWjnp9-DoLAY16S60PewSLcKLTMA@mail.gmail.com>
+ <20210208020002.GM4626@dread.disaster.area> <CAJfpeguTt+0099BE6DsVFW_jht_AD8_rtuSyxcz=r+JAnazQGA@mail.gmail.com>
+ <20210208140217.GQ308988@casper.infradead.org>
+In-Reply-To: <20210208140217.GQ308988@casper.infradead.org>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Mon, 8 Feb 2021 15:52:26 +0100
+Message-ID: <CAJfpegvGdA7ZgPvSph8=4Z_57qDH0ss+fYuob7_3n-BjsQqw9w@mail.gmail.com>
+Subject: Re: [PATCH 00/18] new API for FS_IOC_[GS]ETFLAGS/FS_IOC_FS[GS]ETXATTR
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Dave Chinner <david@fromorbit.com>,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andreas Dilger <adilger@dilger.ca>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        Dave Kleikamp <shaggy@kernel.org>,
+        David Sterba <dsterba@suse.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Jan Kara <jack@suse.cz>,
+        Joel Becker <jlbec@evilplan.org>,
+        Mike Marshall <hubcap@omnibond.com>,
+        Richard Weinberger <richard@nod.at>,
+        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
+        "Theodore Ts'o" <tytso@mit.edu>, Tyler Hicks <code@tyhicks.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Merely enabling CONFIG_COMPILE_TEST should not enable additional code.
-To fix this, restrict the automatic enabling of GPIO_MXS to ARCH_MXS,
-and ask the user in case of compile-testing.
+On Mon, Feb 8, 2021 at 3:02 PM Matthew Wilcox <willy@infradead.org> wrote:
+>
+> On Mon, Feb 08, 2021 at 09:25:22AM +0100, Miklos Szeredi wrote:
+> > On Mon, Feb 8, 2021 at 3:00 AM Dave Chinner <david@fromorbit.com> wrote:
+> > >
+> > > On Wed, Feb 03, 2021 at 04:03:06PM +0100, Miklos Szeredi wrote:
+> > > > On Wed, Feb 3, 2021 at 3:56 PM Matthew Wilcox <willy@infradead.org> wrote:
+> > > >
+> > > > > But let's talk specifics.  What does CIFS need to contact the server for?
+> > > > > Could it be cached earlier?
+> > > >
+> > > > I don't understand what CIFS is doing, and I don't really care.   This
+> > > > is the sort of operation where adding a couple of network roundtrips
+> > > > so that the client can obtain the credentials required to perform the
+> > > > operation doesn't really matter.  We won't have thousands of chattr(1)
+> > > > calls per second.
+> > >
+> > > Incorrect.
+> >
+> > Okay, I was wrong.
+> >
+> > Still, CIFS may very well be able to perform these operations without
+> > a struct file.   But even if it can't, I'd still only add the file
+> > pointer as an *optional hint* from the VFS, not as the primary object
+> > as Matthew suggested.
+> >
+> > I stand by my choice of /struct dentry/ as the object to pass to these
+> > operations.
+>
+> Why the dentry?  This is an inode operation.  Why doesn't it take an
+> inode as its primary object?
 
-Fixes: 6876ca311bfca5d7 ("gpio: mxs: add COMPILE_TEST support for GPIO_MXS")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
----
- drivers/gpio/Kconfig | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+If we pass struct file to the op, then that limits callers to those
+that have an open file.  E.g. it would be difficult to introduce a
+path based userspace API for getting/changing these attributes.
 
-diff --git a/drivers/gpio/Kconfig b/drivers/gpio/Kconfig
-index 5fdf526fe973da38..412728ff2ab45c0d 100644
---- a/drivers/gpio/Kconfig
-+++ b/drivers/gpio/Kconfig
-@@ -442,8 +442,9 @@ config GPIO_MXC
- 	select GENERIC_IRQ_CHIP
- 
- config GPIO_MXS
--	def_bool y
-+	bool "Freescale MXS GPIO support" if COMPILE_TEST
- 	depends on ARCH_MXS || COMPILE_TEST
-+	default y if ARCH_MXS
- 	select GPIO_GENERIC
- 	select GENERIC_IRQ_CHIP
- 
--- 
-2.25.1
+Passing a dentry instead of an inode has no such problem, since the
+dentry is always available, whether coming from an open file or a
+path.  Some inode operations do pass a dentry instead of an inode
+(readlink, getattr, setattr) and some filesystems take advantage of
+this.
 
+Thanks,
+Miklos
