@@ -2,144 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E2483131E2
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 13:12:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 207DD3131E6
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 13:13:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229750AbhBHMLh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 07:11:37 -0500
-Received: from mail.netline.ch ([148.251.143.178]:51254 "EHLO
-        netline-mail3.netline.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233437AbhBHLuR (ORCPT
+        id S230265AbhBHMMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 07:12:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36858 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233462AbhBHLvW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 06:50:17 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by netline-mail3.netline.ch (Postfix) with ESMTP id 1EB102A6046;
-        Mon,  8 Feb 2021 12:49:31 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at netline-mail3.netline.ch
-Received: from netline-mail3.netline.ch ([127.0.0.1])
-        by localhost (netline-mail3.netline.ch [127.0.0.1]) (amavisd-new, port 10024)
-        with LMTP id OJzn5Nd4XMaf; Mon,  8 Feb 2021 12:49:30 +0100 (CET)
-Received: from thor (24.99.2.85.dynamic.wline.res.cust.swisscom.ch [85.2.99.24])
-        by netline-mail3.netline.ch (Postfix) with ESMTPSA id 641222A6042;
-        Mon,  8 Feb 2021 12:49:30 +0100 (CET)
-Received: from [::1]
-        by thor with esmtp (Exim 4.94)
-        (envelope-from <michel@daenzer.net>)
-        id 1l952n-001pI0-CW; Mon, 08 Feb 2021 12:49:29 +0100
-To:     Daniel Vetter <daniel@ffwll.ch>, Kees Cook <keescook@chromium.org>,
-        "airlied@gmail.com" <airlied@gmail.com>
-Cc:     Will Drewry <wad@chromium.org>, Jann Horn <jannh@google.com>,
-        intel-gfx <intel-gfx@lists.freedesktop.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Chris Wilson <chris@chris-wilson.co.uk>
-References: <20210205163752.11932-1-chris@chris-wilson.co.uk>
- <202102051030.1AF01772D@keescook>
- <CAKMK7uHnOA9CuRxcKkcqG8duOw_3dZobkThcV7Q_swMXVoLCkQ@mail.gmail.com>
-From:   =?UTF-8?Q?Michel_D=c3=a4nzer?= <michel@daenzer.net>
-Subject: Re: [PATCH] kernel: Expose SYS_kcmp by default
-Message-ID: <5a940e13-8996-e9e5-251e-a9af294a39ff@daenzer.net>
-Date:   Mon, 8 Feb 2021 12:49:29 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Mon, 8 Feb 2021 06:51:22 -0500
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49416C06178A;
+        Mon,  8 Feb 2021 03:50:12 -0800 (PST)
+Received: by mail-ej1-x635.google.com with SMTP id bl23so24124693ejb.5;
+        Mon, 08 Feb 2021 03:50:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2hQUMprtetu+UvLxropQiA6dOXEkpGb4/+OXA3Y0o2E=;
+        b=QKMeCXB1QLNt7s9DCwOXXLyDLXDCgN2X72vq5cR34jUvunGX4bpBduSNxPcjLmejcv
+         TyToD8AWUPl5fClQUJKSlDNUKb/slnnTY8EzIMVN9ams4qqpOQS36XjPwYfq9PNPlJT9
+         /TcnA9WJKPd5fIMdbAAWXFDP9QGKpNP4HHqcJZ30ni0nkN+SYbQgkCC1lCCfvXF7RoCE
+         UVqxun7bYK26oO9LKR61Sc16rDewwgv8/l48ZH0o+sfkTrPzQaBJgreHmz6UIbXcLbTx
+         TVn/Y8GclXvtgCRwxOVRkudEpCT0pX3WysvScSzGEDSD73ymGm1ja1lnMenp3ea8QX3W
+         S6Uw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2hQUMprtetu+UvLxropQiA6dOXEkpGb4/+OXA3Y0o2E=;
+        b=gWOhF3aby/R4p6FBseJ9O3rSeZPTf94MkrcB0yM75SY0Xxay8HCQ61GiiW9hCVoCs0
+         yb6+pO1fg0hyYUrJvJDLQGbL7qveiS1/7WUC4qFomE5mFHmuLd9V/oAnGEk/sqY2MLO8
+         226G6ii477B/1vW4WHNtONQ0Qp8pPM1IDldj6CXGmxdBQ+DASXJO0viv+D2OdwJdUVKD
+         Lh4skSLrHbZUX2AUNnvKBJg/YDGVVInYL9/k4OOUwOaPYXWPjKBdQ6ytlSNKZDNsdDtc
+         +K9frtIQJocXAdd/xGu3ldP52zXnjphm+PWgaY8Uzzbc3uRdRrlQgRP+z5GzW4hUdK0o
+         +8zA==
+X-Gm-Message-State: AOAM532V2J6fAyfliuBeHBOAX/vgYNo4urdftp/fW0NU4pFe+dcaQMZr
+        bA+HbiZ45UYstPEFWeH2LQY0hp6xFZZIJ2trqfl+NmgvOECP7g==
+X-Google-Smtp-Source: ABdhPJz2U5X6jzPaCYmWdfFZMTHRwfpQcvW+bJl23QVFJ6SreRILEv5d7DOyImgDssJsPUe+ZNpM0f6I0u1JnaUkQmc=
+X-Received: by 2002:a17:906:af86:: with SMTP id mj6mr16528360ejb.509.1612785010950;
+ Mon, 08 Feb 2021 03:50:10 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAKMK7uHnOA9CuRxcKkcqG8duOw_3dZobkThcV7Q_swMXVoLCkQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-CA
-Content-Transfer-Encoding: 8bit
+References: <1612784101-14353-1-git-send-email-konishi.ryusuke@gmail.com>
+In-Reply-To: <1612784101-14353-1-git-send-email-konishi.ryusuke@gmail.com>
+From:   Ryusuke Konishi <konishi.ryusuke@gmail.com>
+Date:   Mon, 8 Feb 2021 20:50:01 +0900
+Message-ID: <CAKFNMok_h7pDFmy-h3DALawpUkTK=diHBUAGGP5eRhpMY2EUQA@mail.gmail.com>
+Subject: Re: [PATCH] nilfs2: make splice write available again
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-nilfs <linux-nilfs@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-02-05 9:53 p.m., Daniel Vetter wrote:
-> On Fri, Feb 5, 2021 at 7:37 PM Kees Cook <keescook@chromium.org> wrote:
->>
->> On Fri, Feb 05, 2021 at 04:37:52PM +0000, Chris Wilson wrote:
->>> Userspace has discovered the functionality offered by SYS_kcmp and has
->>> started to depend upon it. In particular, Mesa uses SYS_kcmp for
->>> os_same_file_description() in order to identify when two fd (e.g. device
->>> or dmabuf) point to the same struct file. Since they depend on it for
->>> core functionality, lift SYS_kcmp out of the non-default
->>> CONFIG_CHECKPOINT_RESTORE into the selectable syscall category.
->>>
->>> Signed-off-by: Chris Wilson <chris@chris-wilson.co.uk>
->>> Cc: Kees Cook <keescook@chromium.org>
->>> Cc: Andy Lutomirski <luto@amacapital.net>
->>> Cc: Will Drewry <wad@chromium.org>
->>> Cc: Andrew Morton <akpm@linux-foundation.org>
->>> Cc: Dave Airlie <airlied@gmail.com>
->>> Cc: Daniel Vetter <daniel@ffwll.ch>
->>> Cc: Lucas Stach <l.stach@pengutronix.de>
->>> ---
->>>   init/Kconfig                                  | 11 +++++++++++
->>>   kernel/Makefile                               |  2 +-
->>>   tools/testing/selftests/seccomp/seccomp_bpf.c |  2 +-
->>>   3 files changed, 13 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/init/Kconfig b/init/Kconfig
->>> index b77c60f8b963..f62fca13ac5b 100644
->>> --- a/init/Kconfig
->>> +++ b/init/Kconfig
->>> @@ -1194,6 +1194,7 @@ endif # NAMESPACES
->>>   config CHECKPOINT_RESTORE
->>>        bool "Checkpoint/restore support"
->>>        select PROC_CHILDREN
->>> +     select KCMP
->>>        default n
->>>        help
->>>          Enables additional kernel features in a sake of checkpoint/restore.
->>> @@ -1737,6 +1738,16 @@ config ARCH_HAS_MEMBARRIER_CALLBACKS
->>>   config ARCH_HAS_MEMBARRIER_SYNC_CORE
->>>        bool
->>>
->>> +config KCMP
->>> +     bool "Enable kcmp() system call" if EXPERT
->>> +     default y
->>
->> I would expect this to be not default-y, especially if
->> CHECKPOINT_RESTORE does a "select" on it.
->>
->> This is a really powerful syscall, but it is bounded by ptrace access
->> controls, and uses pointer address obfuscation, so it may be okay to
->> expose this. As it is, at least Ubuntu already has
->> CONFIG_CHECKPOINT_RESTORE, so really, there's probably not much
->> difference on exposure.
->>
->> So, if you drop the "default y", I'm fine with this.
-> 
-> It was maybe stupid, but our userspace started relying on fd
-> comaprison through sys_kcomp. So for better or worse, if you want to
-> run the mesa3d gl/vk stacks, you need this.
+Hi Andrew,
 
-That's overstating things somewhat. The vast majority of applications 
-will work fine regardless (as they did before Mesa started using this 
-functionality). Only some special ones will run into issues, because the 
-user-space drivers incorrectly assume two file descriptors reference 
-different descriptions.
+Please send this to upstream.  This fixes a regression of splice() on nilfs2.
 
+Thanks,
+Ryusuke Konishi
 
-> Was maybe not the brighest ideas, but since enough distros had this
-> enabled by defaults,
-
-Right, that (and the above) is why I considered it fair game to use. 
-What should I have done instead? (TBH I was surprised that this 
-functionality isn't generally available)
-
-> it wasn't really discovered, and now we're
-> shipping this everywhere.
-
-You're making it sound like this snuck in secretly somehow, which is not 
-true of course.
-
-
-> Ofc we can leave the default n, but the select if CONFIG_DRM is
-> unfortunately needed I think.
-
-Per above, not sure this is really true.
-
-
--- 
-Earthling Michel Dänzer               |               https://redhat.com
-Libre software enthusiast             |             Mesa and X developer
+On Mon, Feb 8, 2021 at 8:35 PM Ryusuke Konishi
+<konishi.ryusuke@gmail.com> wrote:
+>
+> From: Joachim Henke <joachim.henke@t-systems.com>
+>
+> Since 5.10, splice() or sendfile() to NILFS2 return EINVAL. This was
+> caused by commit 36e2c7421f02 ("fs: don't allow splice read/write
+> without explicit ops").
+>
+> This patch initializes the splice_write field in file_operations, like
+> most file systems do, to restore the functionality.
+>
+> Signed-off-by: Joachim Henke <joachim.henke@t-systems.com>
+> Signed-off-by: Ryusuke Konishi <konishi.ryusuke@gmail.com>
+> Tested-by: Ryusuke Konishi <konishi.ryusuke@gmail.com>
+> Cc: stable@vger.kernel.org # 5.10+
+> ---
+>  fs/nilfs2/file.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/fs/nilfs2/file.c b/fs/nilfs2/file.c
+> index 64bc81363c6c..e1bd592ce700 100644
+> --- a/fs/nilfs2/file.c
+> +++ b/fs/nilfs2/file.c
+> @@ -141,6 +141,7 @@ static int nilfs_file_mmap(struct file *file, struct vm_area_struct *vma)
+>         /* .release     = nilfs_release_file, */
+>         .fsync          = nilfs_sync_file,
+>         .splice_read    = generic_file_splice_read,
+> +       .splice_write   = iter_file_splice_write,
+>  };
+>
+>  const struct inode_operations nilfs_file_inode_operations = {
+> --
+> 1.8.3.1
+>
