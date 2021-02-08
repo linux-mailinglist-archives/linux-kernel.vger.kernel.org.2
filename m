@@ -2,78 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 365C0312B9C
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 09:24:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71561312BA8
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 09:26:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229787AbhBHIXT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 03:23:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37836 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229793AbhBHIWs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 03:22:48 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 440D164E83;
-        Mon,  8 Feb 2021 08:22:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612772524;
-        bh=AHqK70hwRArUPlmaNBqcB/l3xwgWWlC+IUF7sEqQJoo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Euxtba8pgMfQVOo5vvJdqevmIr468+acgFi8a67qB4zqSVCugAzPaXlpN2CM1qcOs
-         k8KiMQXs/GtnGjGeYDZuuJkt2T2slyvHkZpmUyxGoZF4Au2OhQgAz9KNG8uxl1OIGM
-         WSTRUgpyNwvLKVjVdF4n6PaTu9DRYG+HldN9C41A=
-Date:   Mon, 8 Feb 2021 09:22:01 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <uwe@kleine-koenig.org>
-Cc:     Tomas Winkler <tomas.winkler@intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-watchdog@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] mei: bus: simplify mei_cl_device_remove()
-Message-ID: <YCD0qdaOG1pb+gPM@kroah.com>
-References: <20210208073705.428185-1-uwe@kleine-koenig.org>
- <20210208073705.428185-2-uwe@kleine-koenig.org>
+        id S230075AbhBHI0A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 03:26:00 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:12149 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229698AbhBHIZz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 03:25:55 -0500
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DYzZD3NXzz165Gr;
+        Mon,  8 Feb 2021 16:23:48 +0800 (CST)
+Received: from huawei.com (10.175.104.175) by DGGEMS409-HUB.china.huawei.com
+ (10.3.19.209) with Microsoft SMTP Server id 14.3.498.0; Mon, 8 Feb 2021
+ 16:25:04 +0800
+From:   Miaohe Lin <linmiaohe@huawei.com>
+To:     <akpm@linux-foundation.org>, <mike.kravetz@oracle.com>
+CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        <linmiaohe@huawei.com>
+Subject: [PATCH] mm/hugetlb: use helper huge_page_size() to get hugepage size
+Date:   Mon, 8 Feb 2021 03:24:50 -0500
+Message-ID: <20210208082450.15716-1-linmiaohe@huawei.com>
+X-Mailer: git-send-email 2.19.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210208073705.428185-2-uwe@kleine-koenig.org>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.104.175]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 08, 2021 at 08:37:04AM +0100, Uwe Kleine-König wrote:
-> The driver core only calls a bus' remove function when there is actually
-> a driver and a device. So drop the needless check and assign cldrv earlier.
-> 
-> (Side note: The check for cldev being non-NULL is broken anyhow, because
-> to_mei_cl_device() is a wrapper around container_of() for a member that is
-> not the first one. So cldev only can become NULL if dev is (void *)0xc
-> (for archs with 32 bit pointers) or (void *)0x18 (for archs with 64 bit
-> pointers).)
-> 
-> Signed-off-by: Uwe Kleine-König <uwe@kleine-koenig.org>
-> ---
->  drivers/misc/mei/bus.c | 6 +-----
->  1 file changed, 1 insertion(+), 5 deletions(-)
-> 
-> diff --git a/drivers/misc/mei/bus.c b/drivers/misc/mei/bus.c
-> index 2907db260fba..50d617e7467e 100644
-> --- a/drivers/misc/mei/bus.c
-> +++ b/drivers/misc/mei/bus.c
-> @@ -878,13 +878,9 @@ static int mei_cl_device_probe(struct device *dev)
->  static int mei_cl_device_remove(struct device *dev)
->  {
->  	struct mei_cl_device *cldev = to_mei_cl_device(dev);
-> -	struct mei_cl_driver *cldrv;
-> +	struct mei_cl_driver *cldrv = to_mei_cl_driver(dev->driver);
->  	int ret = 0;
->  
-> -	if (!cldev || !dev->driver)
+We can use helper huge_page_size() to get the hugepage size directly to
+simplify the code slightly.
 
-Yes, anyone checking that the results of a container_of() wrapper can be
-NULL is not checking anything at all :)
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+---
+ mm/hugetlb.c | 14 ++++++--------
+ 1 file changed, 6 insertions(+), 8 deletions(-)
 
-thanks for the cleanups, I'll go queue them up.
+diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+index 18628f8dbfb0..6cdb59d8f663 100644
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -3199,7 +3199,7 @@ void __init hugetlb_add_hstate(unsigned int order)
+ 	BUG_ON(order == 0);
+ 	h = &hstates[hugetlb_max_hstate++];
+ 	h->order = order;
+-	h->mask = ~((1ULL << (order + PAGE_SHIFT)) - 1);
++	h->mask = ~(huge_page_size(h) - 1);
+ 	for (i = 0; i < MAX_NUMNODES; ++i)
+ 		INIT_LIST_HEAD(&h->hugepage_freelists[i]);
+ 	INIT_LIST_HEAD(&h->hugepage_activelist);
+@@ -3474,7 +3474,7 @@ void hugetlb_report_meminfo(struct seq_file *m)
+ 	for_each_hstate(h) {
+ 		unsigned long count = h->nr_huge_pages;
+ 
+-		total += (PAGE_SIZE << huge_page_order(h)) * count;
++		total += huge_page_size(h) * count;
+ 
+ 		if (h == &default_hstate)
+ 			seq_printf(m,
+@@ -3487,10 +3487,10 @@ void hugetlb_report_meminfo(struct seq_file *m)
+ 				   h->free_huge_pages,
+ 				   h->resv_huge_pages,
+ 				   h->surplus_huge_pages,
+-				   (PAGE_SIZE << huge_page_order(h)) / 1024);
++				   huge_page_size(h) / SZ_1K);
+ 	}
+ 
+-	seq_printf(m, "Hugetlb:        %8lu kB\n", total / 1024);
++	seq_printf(m, "Hugetlb:        %8lu kB\n", total / SZ_1K);
+ }
+ 
+ int hugetlb_report_node_meminfo(char *buf, int len, int nid)
+@@ -3524,7 +3524,7 @@ void hugetlb_show_meminfo(void)
+ 				h->nr_huge_pages_node[nid],
+ 				h->free_huge_pages_node[nid],
+ 				h->surplus_huge_pages_node[nid],
+-				1UL << (huge_page_order(h) + PAGE_SHIFT - 10));
++				huge_page_size(h) >> 10);
+ }
+ 
+ void hugetlb_report_usage(struct seq_file *m, struct mm_struct *mm)
+@@ -3647,9 +3647,7 @@ static int hugetlb_vm_op_split(struct vm_area_struct *vma, unsigned long addr)
+ 
+ static unsigned long hugetlb_vm_op_pagesize(struct vm_area_struct *vma)
+ {
+-	struct hstate *hstate = hstate_vma(vma);
+-
+-	return 1UL << huge_page_shift(hstate);
++	return huge_page_size(hstate_vma(vma));
+ }
+ 
+ /*
+-- 
+2.19.1
 
-greg k-h
