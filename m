@@ -2,58 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E41F5314160
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 22:13:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 78AC63141A0
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 22:24:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235514AbhBHVMX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 16:12:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49708 "EHLO mail.kernel.org"
+        id S236572AbhBHVXB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 16:23:01 -0500
+Received: from so15.mailgun.net ([198.61.254.15]:18999 "EHLO so15.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236633AbhBHUKb (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 15:10:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8E4EB64E6C;
-        Mon,  8 Feb 2021 20:09:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612814982;
-        bh=gVJAtbx29cJxJNKpnEs/PoWRKoOnpq4fML2WVxj+MF0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=efHwM3iuWZPaGh75XYZkTBINL5LDBTYkauCcvZZ7iRQ63vc+dPOh8Hryrvzz+eOPf
-         EjlqiZdwYsep6UosNjfktc3tyP7LfXzOMdh91n+JIfBwMALPirpE0TpjzgOAr8MTJL
-         bxbHBIWcE6aQAK0hSrDLcuCbIUCv5yvAHgxHFauPP/ry/ORV2on+ZyLY0EFsjKzzEV
-         4+zXTftfh62FO79NjqGBjhM/Nmz0HZt0f/plPIDo4s8U3ZmAgllEHOkxDEEBc+S1QX
-         Ujk0B69Qq00z5RthctABzCaTa5RHu0UZfDyJ9hqBqbVvU8U/E8kUHl3DNQ18e1W6Jv
-         sKGDsJZkWYLWA==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 749DA40513; Mon,  8 Feb 2021 17:09:40 -0300 (-03)
-Date:   Mon, 8 Feb 2021 17:09:40 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jin Yao <yao.jin@linux.intel.com>
-Cc:     jolsa@kernel.org, peterz@infradead.org, mingo@redhat.com,
-        alexander.shishkin@linux.intel.com, Linux-kernel@vger.kernel.org,
-        ak@linux.intel.com, kan.liang@intel.com, yao.jin@intel.com
-Subject: Re: [PATCH v3 2/2] perf script: Support filtering by hex address
-Message-ID: <20210208200940.GT920417@kernel.org>
-References: <20210207080935.31784-1-yao.jin@linux.intel.com>
- <20210207080935.31784-2-yao.jin@linux.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210207080935.31784-2-yao.jin@linux.intel.com>
-X-Url:  http://acmel.wordpress.com
+        id S236710AbhBHUMJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 15:12:09 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1612815118; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=pF/H3tz47abRO9pnlfNLvpGP6QEDv7YTlTn7Ou/sjps=; b=Zfu64rhc33QZr18eY3Fa8cjFBoDCdf8F3W92eBWWFmOw1D3hYSNrXVyRiCvz5p3YSCjRJKQU
+ z4j/cfhsFAQI9iOZudVNbgHz/CyVuld7d7T4J27b4WYvQh/QPBVbvGnPj07OSJSuY+DV4sss
+ UXEw6XmLKUhN9J71U8AWHbbH2aQ=
+X-Mailgun-Sending-Ip: 198.61.254.15
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 60219ae2e4842e91287f3397 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 08 Feb 2021 20:11:14
+ GMT
+Sender: bbhatt=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 0A540C43461; Mon,  8 Feb 2021 20:11:14 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from malabar-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbhatt)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id E2E55C433C6;
+        Mon,  8 Feb 2021 20:11:12 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org E2E55C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=bbhatt@codeaurora.org
+From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
+To:     manivannan.sadhasivam@linaro.org
+Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
+        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
+        loic.poulain@linaro.org, carl.yin@quectel.com,
+        naveen.kumar@quectel.com, Bhaumik Bhatt <bbhatt@codeaurora.org>
+Subject: [PATCH v3 0/3] Serialize execution environment changes for MHI
+Date:   Mon,  8 Feb 2021 12:10:59 -0800
+Message-Id: <1612815062-4738-1-git-send-email-bbhatt@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Sun, Feb 07, 2021 at 04:09:35PM +0800, Jin Yao escreveu:
-> 
-> Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
-> ---
->  v3:
->    Update setup_addrlist:
->    1. Add more checks for strtoul (errno, space and etc). 
->    2. Don't break when detect an invalid address, just save the
->       valid address to addr_list. 
+v3:
+-Update commit text to accurately reflect changes and reasoning based on reviews
 
-Thanks, tested and applied.
+v2:
+-Add patch to clear devices when moving execution environments
 
-- Arnaldo
+During full boot chain firmware download, the PM state worker downloads the AMSS
+image after waiting for the SBL execution environment change in PBL mode itself.
+Since getting rid of the firmware load worker thread, this design needs to
+change and MHI host must download the AMSS image from the SBL mode of PM state
+worker thread instead of blocking waits for SBL EE in PBL transition processing.
+
+Ensure that EE changes are handled only from appropriate places and occur
+one after another and handle only PBL or RDDM EE changes as critical events
+directly from the interrupt handler and the status callback is given to the
+controller drivers promptly.
+
+When moving from SBL to AMSS EE, clear SBL specific client devices by calling
+remove callbacks for them so they are not left opened in a different execution
+environment.
+
+Bhaumik Bhatt (3):
+  bus: mhi: core: Clear devices when moving execution environments
+  bus: mhi: core: Download AMSS image from appropriate function
+  bus: mhi: core: Process execution environment changes serially
+
+ drivers/bus/mhi/core/boot.c     | 44 ++++++++++++++++++++---------------------
+ drivers/bus/mhi/core/internal.h |  1 +
+ drivers/bus/mhi/core/main.c     | 36 +++++++++++++++++++++++----------
+ drivers/bus/mhi/core/pm.c       | 10 ++++++++--
+ 4 files changed, 56 insertions(+), 35 deletions(-)
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
