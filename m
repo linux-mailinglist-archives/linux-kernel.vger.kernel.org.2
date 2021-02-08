@@ -2,105 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01669312FEA
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 12:00:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 103B7312FF4
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 12:00:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232633AbhBHK7R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 05:59:17 -0500
-Received: from mx2.suse.de ([195.135.220.15]:52168 "EHLO mx2.suse.de"
+        id S232807AbhBHK7r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 05:59:47 -0500
+Received: from mx2.suse.de ([195.135.220.15]:52294 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232554AbhBHKwK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 05:52:10 -0500
+        id S232478AbhBHKwc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 05:52:32 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1612781483; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1612781506; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=XKk2PET/f9qNuvf7nanooRSg83l7JBZ1VosjaVLv5Ps=;
-        b=e9UtpokbF6fi0pxElC4p1PwXwmOVndw2KQt7dhC6iEVrMSf9LpjM1icoierv4AJKNlcWWB
-        m/mrsmy3iycBc2AW0di72WG7yB5xOLvH9OlRuud6i5L+6nayIOxAoGOFKnDHpXbMvP6rDS
-        /IXghosceH/GCA5VWljWQmL16eiLCKM=
+        bh=HqDzYZJj1JL8yulwepFTzNw6Mh0UlkDMkwLo91us+Nw=;
+        b=NW6cSXQt5vKQIC6IyRBjI03RsTggfacnmMQkPXVlyHTYQnhUREooi7Orv+OqfRI7917Lxz
+        3nZxkT5RnnKOC3tcopxasEwHneBW4NQ+AZ2h7Uzl6P3ycEWbNjYfJ5Lj058U4V6l82Ro1L
+        1F8EZ3u1FlnDVFRaGEZB3SZ5/MOrsnY=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 7AA6AAD57;
-        Mon,  8 Feb 2021 10:51:23 +0000 (UTC)
-Subject: Re: [PATCH 7/7] xen/evtchn: read producer index only once
-To:     =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
-Cc:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org
-References: <20210206104932.29064-1-jgross@suse.com>
- <20210206104932.29064-8-jgross@suse.com>
- <72334160-cffe-2d8a-23b7-2ea9ab1d803a@suse.com>
- <626f500a-494a-0141-7bf3-94fb86b47ed4@suse.com>
-From:   Jan Beulich <jbeulich@suse.com>
-Message-ID: <e88526ac-6972-fe08-c58f-ea872cbdcc14@suse.com>
-Date:   Mon, 8 Feb 2021 11:51:22 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        by mx2.suse.de (Postfix) with ESMTP id 0DE41AC6E;
+        Mon,  8 Feb 2021 10:51:46 +0000 (UTC)
+Date:   Mon, 8 Feb 2021 11:51:45 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org, Hagen Paul Pfeifer <hagen@jauu.net>,
+        Palmer Dabbelt <palmerdabbelt@google.com>
+Subject: Re: [PATCH v17 08/10] PM: hibernate: disable when there are active
+ secretmem users
+Message-ID: <YCEXwUYepeQvEWTf@dhcp22.suse.cz>
+References: <20210208084920.2884-1-rppt@kernel.org>
+ <20210208084920.2884-9-rppt@kernel.org>
+ <YCEP/bmqm0DsvCYN@dhcp22.suse.cz>
+ <38c0cad4-ac55-28e4-81c6-4e0414f0620a@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <626f500a-494a-0141-7bf3-94fb86b47ed4@suse.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <38c0cad4-ac55-28e4-81c6-4e0414f0620a@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08.02.2021 11:41, Jürgen Groß wrote:
-> On 08.02.21 10:48, Jan Beulich wrote:
->> On 06.02.2021 11:49, Juergen Gross wrote:
->>> In evtchn_read() use READ_ONCE() for reading the producer index in
->>> order to avoid the compiler generating multiple accesses.
->>>
->>> Signed-off-by: Juergen Gross <jgross@suse.com>
->>> ---
->>>   drivers/xen/evtchn.c | 2 +-
->>>   1 file changed, 1 insertion(+), 1 deletion(-)
->>>
->>> diff --git a/drivers/xen/evtchn.c b/drivers/xen/evtchn.c
->>> index 421382c73d88..f6b199b597bf 100644
->>> --- a/drivers/xen/evtchn.c
->>> +++ b/drivers/xen/evtchn.c
->>> @@ -211,7 +211,7 @@ static ssize_t evtchn_read(struct file *file, char __user *buf,
->>>   			goto unlock_out;
->>>   
->>>   		c = u->ring_cons;
->>> -		p = u->ring_prod;
->>> +		p = READ_ONCE(u->ring_prod);
->>>   		if (c != p)
->>>   			break;
->>
->> Why only here and not also in
->>
->> 		rc = wait_event_interruptible(u->evtchn_wait,
->> 					      u->ring_cons != u->ring_prod);
->>
->> or in evtchn_poll()? I understand it's not needed when
->> ring_prod_lock is held, but that's not the case in the two
->> afaics named places. Plus isn't the same then true for
->> ring_cons and ring_cons_mutex, i.e. aren't the two named
->> places plus evtchn_interrupt() also in need of READ_ONCE()
->> for ring_cons?
+On Mon 08-02-21 11:32:11, David Hildenbrand wrote:
+> On 08.02.21 11:18, Michal Hocko wrote:
+> > On Mon 08-02-21 10:49:18, Mike Rapoport wrote:
+> > > From: Mike Rapoport <rppt@linux.ibm.com>
+> > > 
+> > > It is unsafe to allow saving of secretmem areas to the hibernation
+> > > snapshot as they would be visible after the resume and this essentially
+> > > will defeat the purpose of secret memory mappings.
+> > > 
+> > > Prevent hibernation whenever there are active secret memory users.
+> > 
+> > Does this feature need any special handling? As it is effectivelly
+> > unevictable memory then it should behave the same as other mlock, ramfs
+> > which should already disable hibernation as those cannot be swapped out,
+> > no?
+> > 
 > 
-> The problem solved here is the further processing using "p" multiple
-> times. p must not be silently replaced with u->ring_prod by the
-> compiler, so I probably should reword the commit message to say:
+> Why should unevictable memory not go to swap when hibernating? We're merely
+> dumping all of our system RAM (including any unmovable allocations) to swap
+> storage and the system is essentially completely halted.
 > 
-> ... in order to not allow the compiler to refetch p.
-
-I still wouldn't understand the change (and the lack of
-further changes) then: The first further use of p is
-outside the loop, alongside one of c. IOW why would c
-then not need treating the same as p?
-
-I also still don't see the difference between latching a
-value into a local variable vs a "freestanding" access -
-neither are guaranteed to result in exactly one memory
-access afaict.
-
-And of course there's also our beloved topic of access
-tearing here: READ_ONCE() also excludes that (at least as
-per its intentions aiui).
-
-Jan
+My understanding is that mlock is never really made visible via swap
+storage.
+-- 
+Michal Hocko
+SUSE Labs
