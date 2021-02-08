@@ -2,257 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA570312D30
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 10:25:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A161B312D31
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 10:25:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231364AbhBHJYn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 04:24:43 -0500
-Received: from smtprelay-out1.synopsys.com ([149.117.87.133]:49590 "EHLO
-        smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231391AbhBHJEA (ORCPT
+        id S231387AbhBHJYx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 04:24:53 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:60459 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231492AbhBHJGM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 04:04:00 -0500
-Received: from mailhost.synopsys.com (badc-mailhost1.synopsys.com [10.192.0.17])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        Mon, 8 Feb 2021 04:06:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612775083;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=WXD9znX1LdItJUy6y1iJLv4XS7dOC3t0iP2BAP+1AjE=;
+        b=biRlE3qEuHzprYJU6YKfiPpBRXmwCrW5T9ra4NIGExsSgG+HLok4CLfQgl0pPhwTd1FCFM
+        00wW77EIiA5LLIVBaoSjKcjq1hZqgo7tKczxu3JNgQOc//5RK/WcT4ZjN5uS/QAInYO6Hn
+        HA7lfTYWmg6DnuieEUO2kyQhgRxut20=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-504-_1iTII52N3e7GVm1wDeq2w-1; Mon, 08 Feb 2021 04:04:40 -0500
+X-MC-Unique: _1iTII52N3e7GVm1wDeq2w-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id 43C2DC00AA;
-        Mon,  8 Feb 2021 09:02:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
-        t=1612774959; bh=fD60HcuRa9SaRB6iuoF1HAYKIk7KKRRPpxKJsR1dmA0=;
-        h=From:To:CC:Subject:Date:References:In-Reply-To:From;
-        b=eKH6/o5X81tpa+0qpY5zGAIKa5D5t4QQP+tkHwZzzvnmWOE5K9uJm1ZmCax+HxRZz
-         Qx3HtvPAFed652QFeakZyCXuUbAbba6r20OUsHVUv5XLnKLdYYEdnJZHIC2uPMh5aL
-         h3K19qxGqAEiq41Ndk467VEtKbFDdRtb2lPxB3dFiSQkX3y3Jbaq2h9ugeE2P1EHy1
-         S+PFbolzFwhJ+lNilDQeSxIXHrdMG4ZtbBgsWX6SMGAX0IESf736ByFT0Kc7RDN6iB
-         Ve9JmzvWu52lQNvmNoPak60JuHgiXKetilHzJR5VaA0QM3l7789UyUjtLidP9dSqG2
-         7gT4tIZcM3+Sw==
-Received: from o365relay-in.synopsys.com (us03-o365relay3.synopsys.com [10.4.161.139])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mailhost.synopsys.com (Postfix) with ESMTPS id A4F6EA0083;
-        Mon,  8 Feb 2021 09:02:37 +0000 (UTC)
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11lp2175.outbound.protection.outlook.com [104.47.56.175])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client CN "mail.protection.outlook.com", Issuer "GlobalSign Organization Validation CA - SHA256 - G3" (verified OK))
-        by o365relay-in.synopsys.com (Postfix) with ESMTPS id A0AF58020F;
-        Mon,  8 Feb 2021 09:02:35 +0000 (UTC)
-Authentication-Results: o365relay-in.synopsys.com; dmarc=pass (p=reject dis=none) header.from=synopsys.com
-Authentication-Results: o365relay-in.synopsys.com; spf=pass smtp.mailfrom=gustavo@synopsys.com
-Authentication-Results: o365relay-in.synopsys.com;
-        dkim=pass (1024-bit key; unprotected) header.d=synopsys.com header.i=@synopsys.com header.b="pM2aeUZn";
-        dkim-atps=neutral
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=E161IAAf8+wrJFNABIEmnU2lYdYQNqEiHtShMBlC3eRhHx4BBubLexdNNgu+UG4vXDOSXCsfLYk/e/F8D9bCI5EotjBo+Ex5D5J88Cb1E9ezS8efepwJRfi5Ftpy+ieLP5vh2ItaCBcjcpHNyaWHbS8Er8jg8mHET6pYO1MSvz00pDLZ69KnBHTk9BU5a4EFHnPTAGUZIyvOSPAH1z4zophvxwqL1eplxOrNm2jOuWTgMyb52Wm8H9RLD0peOnxYQCpWzsYdGOn0lzWRoHEKfKx1rvhfP1o46lfmF+YOxE7f5seuxQDPMsTtpR8ntOanSyxJxg376QjxCIqUzv0u3Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=j+OOXKPgEiJfOH3cAGpx4nYcq7lCNY6m8XwQzPGSI2k=;
- b=aA0teT+GuhJ4yHixJphwFOkVSWajf1fIBLkTtiSJSovKrkrl2piQUvklMxGyBH/mr5/H7ywecxqErVNU0q0OhwoUgz/wkAgSmihoS09C7h6BZ8cgY6K5wdP5Y6zeAXYzHiEgKvC4E1tzMQMcaPFuizXdirZTW2l+3iXlDCSekHyns5LldV7kVecvPOa8QW0pKSnwI4YG6DfZJ+mMrQlQ2abmISJbVo/YTGIWnohBrVTG0tuNMWDErLk80kkOX3+1uRQDSErfmfRQH3zhmut9gi+Bh20X27euLtem/DlCCdL4fNfp6AH7VvhRJnsPiQLtr1JMelZAqkpFpWFr3eHsag==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=synopsys.com; dmarc=pass action=none header.from=synopsys.com;
- dkim=pass header.d=synopsys.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=synopsys.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=j+OOXKPgEiJfOH3cAGpx4nYcq7lCNY6m8XwQzPGSI2k=;
- b=pM2aeUZntGFgqvWYW7cxZaaZE6ROMWCZ9GKoZT8gwGj6LwnLRXcNAADbf3wrZmzd+xBKnco1WGNcYxzl9HodyVCxsINzdE+EE69hAwRvGIV1ywEpAzFEUO5e4M+hZGyyZu4QnOdH1uBdjMtBr5BS5LOPLnVro3ZQ5TCl9gBF/fQ=
-Received: from DM5PR12MB1835.namprd12.prod.outlook.com (2603:10b6:3:10c::9) by
- DM6PR12MB4124.namprd12.prod.outlook.com (2603:10b6:5:221::20) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3825.27; Mon, 8 Feb 2021 09:02:33 +0000
-Received: from DM5PR12MB1835.namprd12.prod.outlook.com
- ([fe80::508b:bdb3:d353:9052]) by DM5PR12MB1835.namprd12.prod.outlook.com
- ([fe80::508b:bdb3:d353:9052%10]) with mapi id 15.20.3825.030; Mon, 8 Feb 2021
- 09:02:33 +0000
-X-SNPS-Relay: synopsys.com
-From:   Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>
-To:     Leon Romanovsky <leon@kernel.org>
-CC:     "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
-        Derek Kiernan <derek.kiernan@xilinx.com>,
-        Dragan Cvetic <dragan.cvetic@xilinx.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jonathan Corbet <corbet@lwn.net>
-Subject: RE: [RESEND PATCH v3 3/5] misc: Add Synopsys DesignWare xData IP
- driver to Kconfig
-Thread-Topic: [RESEND PATCH v3 3/5] misc: Add Synopsys DesignWare xData IP
- driver to Kconfig
-Thread-Index: AQHW+YRmGBnxvsJypEizlZ4KoFWTsKpN5okAgAAYmxA=
-Date:   Mon, 8 Feb 2021 09:02:33 +0000
-Message-ID: <DM5PR12MB183571E6A6B1A8F23E6DE1E4DA8F9@DM5PR12MB1835.namprd12.prod.outlook.com>
-References: <cover.1612284945.git.gustavo.pimentel@synopsys.com>
- <850ba8b075a65f753bbb802b9af23839624908bd.1612284945.git.gustavo.pimentel@synopsys.com>
- <20210208073408.GC4656@unreal>
-In-Reply-To: <20210208073408.GC4656@unreal>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-dg-ref: =?us-ascii?Q?PG1ldGE+PGF0IG5tPSJib2R5LnR4dCIgcD0iYzpcdXNlcnNcZ3VzdGF2b1xh?=
- =?us-ascii?Q?cHBkYXRhXHJvYW1pbmdcMDlkODQ5YjYtMzJkMy00YTQwLTg1ZWUtNmI4NGJh?=
- =?us-ascii?Q?MjllMzViXG1zZ3NcbXNnLTVlMjRiZjFiLTY5ZWMtMTFlYi05OGU2LWY4OTRj?=
- =?us-ascii?Q?MjczODA0MlxhbWUtdGVzdFw1ZTI0YmYxZC02OWVjLTExZWItOThlNi1mODk0?=
- =?us-ascii?Q?YzI3MzgwNDJib2R5LnR4dCIgc3o9IjEwOTQiIHQ9IjEzMjU3MjQ4NTQ4Nzgw?=
- =?us-ascii?Q?NzA5NSIgaD0iR1RpN2NLVWhkRW1MMDdhNlh3ZXdHVzZnQlpVPSIgaWQ9IiIg?=
- =?us-ascii?Q?Ymw9IjAiIGJvPSIxIiBjaT0iY0FBQUFFUkhVMVJTUlVGTkNnVUFBQlFKQUFC?=
- =?us-ascii?Q?M3luMGcrZjNXQVVjTXZJL2hwcVQ4Und5OGorR21wUHdPQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUhBQUFBQ2tDQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUVBQVFBQkFBQUFOclNWM2dBQUFBQUFBQUFBQUFBQUFKNEFBQUJtQUdrQWJn?=
- =?us-ascii?Q?QmhBRzRBWXdCbEFGOEFjQUJzQUdFQWJnQnVBR2tBYmdCbkFGOEFkd0JoQUhR?=
- =?us-ascii?Q?QVpRQnlBRzBBWVFCeUFHc0FBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?RUFBQUFBQUFBQUFnQUFBQUFBbmdBQUFHWUFid0IxQUc0QVpBQnlBSGtBWHdC?=
- =?us-ascii?Q?d0FHRUFjZ0IwQUc0QVpRQnlBSE1BWHdCbkFHWUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQVFBQUFBQUFBQUFDQUFB?=
- =?us-ascii?Q?QUFBQ2VBQUFBWmdCdkFIVUFiZ0JrQUhJQWVRQmZBSEFBWVFCeUFIUUFiZ0Js?=
- =?us-ascii?Q?QUhJQWN3QmZBSE1BWVFCdEFITUFkUUJ1QUdjQVh3QmpBRzhBYmdCbUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUJBQUFBQUFBQUFBSUFBQUFBQUo0QUFBQm1BRzhB?=
- =?us-ascii?Q?ZFFCdUFHUUFjZ0I1QUY4QWNBQmhBSElBZEFCdUFHVUFjZ0J6QUY4QWN3QmhB?=
- =?us-ascii?Q?RzBBY3dCMUFHNEFad0JmQUhJQVpRQnpBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFFQUFBQUFBQUFBQWdBQUFBQUFuZ0FBQUdZQWJ3QjFBRzRBWkFCeUFIa0FY?=
- =?us-ascii?Q?d0J3QUdFQWNnQjBBRzRBWlFCeUFITUFYd0J6QUcwQWFRQmpBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBUUFBQUFBQUFBQUNB?=
- =?us-ascii?Q?QUFBQUFDZUFBQUFaZ0J2QUhVQWJnQmtBSElBZVFCZkFIQUFZUUJ5QUhRQWJn?=
- =?us-ascii?Q?QmxBSElBY3dCZkFITUFkQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQkFBQUFBQUFBQUFJQUFBQUFBSjRBQUFCbUFH?=
- =?us-ascii?Q?OEFkUUJ1QUdRQWNnQjVBRjhBY0FCaEFISUFkQUJ1QUdVQWNnQnpBRjhBZEFC?=
- =?us-ascii?Q?ekFHMEFZd0FBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUVBQUFBQUFBQUFBZ0FBQUFBQW5nQUFBR1lBYndCMUFHNEFaQUJ5QUhr?=
- =?us-ascii?Q?QVh3QndBR0VBY2dCMEFHNEFaUUJ5QUhNQVh3QjFBRzBBWXdBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFRQUFBQUFBQUFB?=
- =?us-ascii?Q?Q0FBQUFBQUNlQUFBQVp3QjBBSE1BWHdCd0FISUFid0JrQUhVQVl3QjBBRjhB?=
- =?us-ascii?Q?ZEFCeUFHRUFhUUJ1QUdrQWJnQm5BQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFCQUFBQUFBQUFBQUlBQUFBQUFKNEFBQUJ6?=
- =?us-ascii?Q?QUdFQWJBQmxBSE1BWHdCaEFHTUFZd0J2QUhVQWJnQjBBRjhBY0FCc0FHRUFi?=
- =?us-ascii?Q?Z0FBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBRUFBQUFBQUFBQUFnQUFBQUFBbmdBQUFITUFZUUJzQUdVQWN3QmZB?=
- =?us-ascii?Q?SEVBZFFCdkFIUUFaUUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQVFBQUFBQUFB?=
- =?us-ascii?Q?QUFDQUFBQUFBQ2VBQUFBY3dCdUFIQUFjd0JmQUd3QWFRQmpBR1VBYmdCekFH?=
- =?us-ascii?Q?VUFYd0IwQUdVQWNnQnRBRjhBTVFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUJBQUFBQUFBQUFBSUFBQUFBQUo0QUFB?=
- =?us-ascii?Q?QnpBRzRBY0FCekFGOEFiQUJwQUdNQVpRQnVBSE1BWlFCZkFIUUFaUUJ5QUcw?=
- =?us-ascii?Q?QVh3QnpBSFFBZFFCa0FHVUFiZ0IwQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFFQUFBQUFBQUFBQWdBQUFBQUFuZ0FBQUhZQVp3QmZBR3NBWlFC?=
- =?us-ascii?Q?NUFIY0Fid0J5QUdRQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBUUFBQUFB?=
- =?us-ascii?Q?QUFBQUNBQUFBQUFBPSIvPjwvbWV0YT4=3D?=
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=synopsys.com;
-x-originating-ip: [89.155.14.32]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: e316b34c-9b53-4be9-46da-08d8cc1045bc
-x-ms-traffictypediagnostic: DM6PR12MB4124:
-x-microsoft-antispam-prvs: <DM6PR12MB412412719995DF6E030BBDECDA8F9@DM6PR12MB4124.namprd12.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:4714;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: KRHrbMo6C8TfZgG5t8+3+InzAuVXqs8g8b15B+J37orgVy6p2tvtZePL7a/0x80eWgXStaohV6RQhrBZtgT9FAaRVFbjIPcYrFjkPNR4UXzIXJu4X1olOxEK0kC9diZHGp2kz5hHu79t+sz5ZF7uyNdRpC+BmfiVcSAjPPF8KdOXidFgw4ob1IlnfTH7NsV/XNykKhAeF/kvqu8Xy3T9tkTOL7S7GB2J7KzOTTYiL1lakEeS1iS8c91Z0oQ2NHTg9csUjXaMTfNPPJBhCVHurU7FcI9FUVF0RJx+m6zTKJx61HTZ1VcRNKvCmR9iPKCE7F5xyKktSOSyveq3j4grgHe+kTxIVUUBJGiufFskxrWzFxgm5put9eEmm9CL73SKi2jY46ggi0rRMTJLnZlzzA5MXNcL1oim5lQKHZZL1k1rUbctabTz4gryNfnEBaGXrhXpKkD86+LqhE7EreuEHTJYzeIs1WTK01HsNluOCM10MC2Mclexmf1wzDXSAeeQ9xmKSnbk217p/5g3HvxSCQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR12MB1835.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(346002)(39860400002)(396003)(366004)(136003)(186003)(54906003)(26005)(64756008)(316002)(33656002)(66946007)(76116006)(53546011)(7416002)(66556008)(71200400001)(6506007)(9686003)(4744005)(55016002)(8936002)(6916009)(7696005)(86362001)(2906002)(5660300002)(52536014)(66476007)(8676002)(66446008)(478600001)(4326008);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?G0/ieCqApZ2S1bpxOSVEqW1PzNXnq4AY3sp77gp7fxKK2edTafuaSCfGTpTY?=
- =?us-ascii?Q?DN7o7UZ/DXOJ5VkltuQjgNFVIt9CUyuE+6Nio/7134B3TexAMoBFfP99956X?=
- =?us-ascii?Q?JoVI1lklxLm/6q7nuY8mJ9H99upX89iBIcqKGwVuS+RMKvGSg3pECyid+cge?=
- =?us-ascii?Q?jQoY5JRzEKrZxICrEZjlNRSfEDFDl6gXxhp3e2v/voWTnovtT00+c3czKy+Y?=
- =?us-ascii?Q?TUjOz9jK7ZUiFTQ1opx1hFxD0wX6/i9cqmmuMLakyigVuwk5FSZ0Ic2ygS5H?=
- =?us-ascii?Q?aLD0uRrDz17SqgOkQFYwHdl2FhmqbOXH4u3z9j3Yty4AmKn3IRGQPZu2jYBF?=
- =?us-ascii?Q?veU1U47DdpL4q4k9DxLSqSjqGBWgHYLoDI3aSocROQTSTq/LJLnsTk0PLJ1g?=
- =?us-ascii?Q?FWLlZfTDdhkQsuxhFxPd94iyVhpHvW2WVwR3X8FI9pTRk7/utYGPnx1wkXTB?=
- =?us-ascii?Q?bNalz2uZ0D/mf0it8fi9C7ytuIF6J6sVcbio8vBYaaBcNJVCbLgtNrD5nUGL?=
- =?us-ascii?Q?PriCCJQo7XgFYRxIY7fHKASQ5/WHWhvkekxzbjcazlFLKp7OIsT1RY+e16A0?=
- =?us-ascii?Q?CdngkV7dg0pe8U/FQczvguY1MUJC2MDgDx2B2uRa87u5RQ6vBJtyHQHpO392?=
- =?us-ascii?Q?b3FQymmQw3KE5Bs6YH/jTGho17IhFJoz4zy3fj8VE9A8g3O/n/xM92w0/fXb?=
- =?us-ascii?Q?lgIdsan4Hry3uM7Cm/wpI48ktgFMd7eQlIsu+yrFbtL9Tsr20Hvezq6Opyan?=
- =?us-ascii?Q?GRd6iqRCwxOp7Cg2dAZBwaSABzD7Ahwxs+KpnEZh4CX42f9XXYx1MGT5YpYg?=
- =?us-ascii?Q?qKGG2jWLA0syVa/FZya2H0+uRS/htHpkn0F9cUuiTmqcfaO83K9TGSESc3Q3?=
- =?us-ascii?Q?+VzjkTGFEkSVbAR1RIw/Htf0yDONK6rxFhuBM9S0Zr8YJIa48LYsZuXxYP7B?=
- =?us-ascii?Q?znwE58WnQntYGDHBukPHTaETDrnZDoxtwYy/1JUxBlNv4+84sAKjAUtLa240?=
- =?us-ascii?Q?AfjHIKD/Kfwd5BKL2SWSPJWaM8Ld/KZnULjveU3cVJCdRWWxhs5fDJuqXkT6?=
- =?us-ascii?Q?TF7VWukzkGytPMQrmwrhrX30TwIPmt4a9GTUGp1oL06ZRS4D7U4ufbc/4zB2?=
- =?us-ascii?Q?EMHu/UADmygKeCLxKHu2ilNnhLdsl4eryzrawukVlK0K+StuHkDdMqERJgpQ?=
- =?us-ascii?Q?Ap7h/TPwB5Br4ggsQoDDP+slLiQLEUjj4QYEulIslyoR45Lpefba4GwfgShE?=
- =?us-ascii?Q?jL1EtlzwD2GKcQRPPsDFAiRjSA2w9bIdQehTE6yLszlIIlKyKmOA5a5Ay1UO?=
- =?us-ascii?Q?fQI=3D?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CB11D804036;
+        Mon,  8 Feb 2021 09:04:38 +0000 (UTC)
+Received: from [10.72.12.29] (ovpn-12-29.pek2.redhat.com [10.72.12.29])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id F29BE60C8F;
+        Mon,  8 Feb 2021 09:04:29 +0000 (UTC)
+Subject: Re: [PATCH v1] vdpa/mlx5: Restore the hardware used index after
+ change map
+To:     Eli Cohen <elic@nvidia.com>
+Cc:     Si-Wei Liu <si-wei.liu@oracle.com>, mst@redhat.com,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, lulu@redhat.com
+References: <20210204073618.36336-1-elic@nvidia.com>
+ <81f5ce4f-cdb0-26cd-0dce-7ada824b1b86@oracle.com>
+ <f2206fa2-0ddc-1858-54e7-71614b142e46@redhat.com>
+ <20210208063736.GA166546@mtl-vdi-166.wap.labs.mlnx>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <0d592ed0-3cea-cfb0-9b7b-9d2755da3f12@redhat.com>
+Date:   Mon, 8 Feb 2021 17:04:27 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-OriginatorOrg: synopsys.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM5PR12MB1835.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e316b34c-9b53-4be9-46da-08d8cc1045bc
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Feb 2021 09:02:33.3625
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: c33c9f88-1eb7-4099-9700-16013fd9e8aa
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 6KdOPQ2/avdijPXmu7LwAzbNpQoh6/CYUBGBrts38Z1r04WXwFCdmNvG1sRkJfdy4T7TiC+B665M9wnOmB0lWw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4124
+In-Reply-To: <20210208063736.GA166546@mtl-vdi-166.wap.labs.mlnx>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 8, 2021 at 7:34:8, Leon Romanovsky <leon@kernel.org> wrote:
 
-> On Tue, Feb 02, 2021 at 05:56:36PM +0100, Gustavo Pimentel wrote:
-> > Add Synopsys DesignWare xData IP driver to Kconfig.
-> >
-> > This driver enables/disables the PCIe traffic generator module
-> > pertain to the Synopsys DesignWare prototype.
-> >
-> > Signed-off-by: Gustavo Pimentel <gustavo.pimentel@synopsys.com>
-> > ---
-> >  drivers/misc/Kconfig | 11 +++++++++++
-> >  1 file changed, 11 insertions(+)
-> >
-> > diff --git a/drivers/misc/Kconfig b/drivers/misc/Kconfig
-> > index fafa8b0..6d5783f 100644
-> > --- a/drivers/misc/Kconfig
-> > +++ b/drivers/misc/Kconfig
-> > @@ -423,6 +423,17 @@ config SRAM
-> >  config SRAM_EXEC
-> >  	bool
-> >
-> > +config DW_XDATA_PCIE
-> > +	depends on PCI
-> > +	tristate "Synopsys DesignWare xData PCIe driver"
-> > +	default	n
->=20
-> "N" is a default option and not needed to be stated explicitly.
+On 2021/2/8 下午2:37, Eli Cohen wrote:
+> On Mon, Feb 08, 2021 at 12:27:18PM +0800, Jason Wang wrote:
+>> On 2021/2/6 上午7:07, Si-Wei Liu wrote:
+>>>
+>>> On 2/3/2021 11:36 PM, Eli Cohen wrote:
+>>>> When a change of memory map occurs, the hardware resources are destroyed
+>>>> and then re-created again with the new memory map. In such case, we need
+>>>> to restore the hardware available and used indices. The driver failed to
+>>>> restore the used index which is added here.
+>>>>
+>>>> Also, since the driver also fails to reset the available and used
+>>>> indices upon device reset, fix this here to avoid regression caused by
+>>>> the fact that used index may not be zero upon device reset.
+>>>>
+>>>> Fixes: 1a86b377aa21 ("vdpa/mlx5: Add VDPA driver for supported mlx5
+>>>> devices")
+>>>> Signed-off-by: Eli Cohen <elic@nvidia.com>
+>>>> ---
+>>>> v0 -> v1:
+>>>> Clear indices upon device reset
+>>>>
+>>>>    drivers/vdpa/mlx5/net/mlx5_vnet.c | 18 ++++++++++++++++++
+>>>>    1 file changed, 18 insertions(+)
+>>>>
+>>>> diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c
+>>>> b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+>>>> index 88dde3455bfd..b5fe6d2ad22f 100644
+>>>> --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
+>>>> +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+>>>> @@ -87,6 +87,7 @@ struct mlx5_vq_restore_info {
+>>>>        u64 device_addr;
+>>>>        u64 driver_addr;
+>>>>        u16 avail_index;
+>>>> +    u16 used_index;
+>>>>        bool ready;
+>>>>        struct vdpa_callback cb;
+>>>>        bool restore;
+>>>> @@ -121,6 +122,7 @@ struct mlx5_vdpa_virtqueue {
+>>>>        u32 virtq_id;
+>>>>        struct mlx5_vdpa_net *ndev;
+>>>>        u16 avail_idx;
+>>>> +    u16 used_idx;
+>>>>        int fw_state;
+>>>>          /* keep last in the struct */
+>>>> @@ -804,6 +806,7 @@ static int create_virtqueue(struct mlx5_vdpa_net
+>>>> *ndev, struct mlx5_vdpa_virtque
+>>>>          obj_context = MLX5_ADDR_OF(create_virtio_net_q_in, in,
+>>>> obj_context);
+>>>>        MLX5_SET(virtio_net_q_object, obj_context, hw_available_index,
+>>>> mvq->avail_idx);
+>>>> +    MLX5_SET(virtio_net_q_object, obj_context, hw_used_index,
+>>>> mvq->used_idx);
+>>>>        MLX5_SET(virtio_net_q_object, obj_context,
+>>>> queue_feature_bit_mask_12_3,
+>>>>             get_features_12_3(ndev->mvdev.actual_features));
+>>>>        vq_ctx = MLX5_ADDR_OF(virtio_net_q_object, obj_context,
+>>>> virtio_q_context);
+>>>> @@ -1022,6 +1025,7 @@ static int connect_qps(struct mlx5_vdpa_net
+>>>> *ndev, struct mlx5_vdpa_virtqueue *m
+>>>>    struct mlx5_virtq_attr {
+>>>>        u8 state;
+>>>>        u16 available_index;
+>>>> +    u16 used_index;
+>>>>    };
+>>>>      static int query_virtqueue(struct mlx5_vdpa_net *ndev, struct
+>>>> mlx5_vdpa_virtqueue *mvq,
+>>>> @@ -1052,6 +1056,7 @@ static int query_virtqueue(struct
+>>>> mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtqueu
+>>>>        memset(attr, 0, sizeof(*attr));
+>>>>        attr->state = MLX5_GET(virtio_net_q_object, obj_context, state);
+>>>>        attr->available_index = MLX5_GET(virtio_net_q_object,
+>>>> obj_context, hw_available_index);
+>>>> +    attr->used_index = MLX5_GET(virtio_net_q_object, obj_context,
+>>>> hw_used_index);
+>>>>        kfree(out);
+>>>>        return 0;
+>>>>    @@ -1535,6 +1540,16 @@ static void teardown_virtqueues(struct
+>>>> mlx5_vdpa_net *ndev)
+>>>>        }
+>>>>    }
+>>>>    +static void clear_virtqueues(struct mlx5_vdpa_net *ndev)
+>>>> +{
+>>>> +    int i;
+>>>> +
+>>>> +    for (i = ndev->mvdev.max_vqs - 1; i >= 0; i--) {
+>>>> +        ndev->vqs[i].avail_idx = 0;
+>>>> +        ndev->vqs[i].used_idx = 0;
+>>>> +    }
+>>>> +}
+>>>> +
+>>>>    /* TODO: cross-endian support */
+>>>>    static inline bool mlx5_vdpa_is_little_endian(struct mlx5_vdpa_dev
+>>>> *mvdev)
+>>>>    {
+>>>> @@ -1610,6 +1625,7 @@ static int save_channel_info(struct
+>>>> mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtqu
+>>>>            return err;
+>>>>          ri->avail_index = attr.available_index;
+>>>> +    ri->used_index = attr.used_index;
+>>>>        ri->ready = mvq->ready;
+>>>>        ri->num_ent = mvq->num_ent;
+>>>>        ri->desc_addr = mvq->desc_addr;
+>>>> @@ -1654,6 +1670,7 @@ static void restore_channels_info(struct
+>>>> mlx5_vdpa_net *ndev)
+>>>>                continue;
+>>>>              mvq->avail_idx = ri->avail_index;
+>>>> +        mvq->used_idx = ri->used_index;
+>>>>            mvq->ready = ri->ready;
+>>>>            mvq->num_ent = ri->num_ent;
+>>>>            mvq->desc_addr = ri->desc_addr;
+>>>> @@ -1768,6 +1785,7 @@ static void mlx5_vdpa_set_status(struct
+>>>> vdpa_device *vdev, u8 status)
+>>>>        if (!status) {
+>>>>            mlx5_vdpa_info(mvdev, "performing device reset\n");
+>>>>            teardown_driver(ndev);
+>>>> +        clear_virtqueues(ndev);
+>>> The clearing looks fine at the first glance, as it aligns with the other
+>>> state cleanups floating around at the same place. However, the thing is
+>>> get_vq_state() is supposed to be called right after to get sync'ed with
+>>> the latest internal avail_index from device while vq is stopped. The
+>>> index was saved in the driver software at vq suspension, but before the
+>>> virtq object is destroyed. We shouldn't clear the avail_index too early.
+>>
+>> Good point.
+>>
+>> There's a limitation on the virtio spec and vDPA framework that we can not
+>> simply differ device suspending from device reset.
+>>
+> Are you talking about live migration where you reset the device but
+> still want to know how far it progressed in order to continue from the
+> same place in the new VM?
 
-Ok, I will remove it.
-Thanks.
 
->=20
-> Thanks
+Yes. So if we want to support live migration at we need:
 
+in src node:
+1) suspend the device
+2) get last_avail_idx via get_vq_state()
+
+in the dst node:
+3) set last_avail_idx via set_vq_state()
+4) resume the device
+
+So you can see, step 2 requires the device/driver not to forget the 
+last_avail_idx.
+
+The annoying thing is that, in the virtio spec there's no definition of 
+device suspending. So we reuse set_status(0) right now for vq 
+suspending. Then if we forget last_avail_idx in set_status(0), it will 
+break the assumption of step 2).
+
+
+>
+>> Need to think about that. I suggest a new state in [1], the issue is that
+>> people doesn't like the asynchronous API that it introduces.
+>>
+>>
+>>> Possibly it can be postponed to where VIRTIO_CONFIG_S_DRIVER_OK gets set
+>>> again, i.e. right before the setup_driver() in mlx5_vdpa_set_status()?
+>>
+>> Looks like a good workaround.
+
+
+Rethink of this, this won't work for the step 4), if we reuse the 
+S_DRING_OK for resuming.
+
+The most clean way is to invent the feature in virtio spec and implement 
+that in the driver.
+
+Thanks
+
+
+
+>>
+>> Thanks
+>>
+>>
+>>> -Siwei
+>>
+>> [1]
+>> https://lists.oasis-open.org/archives/virtio-comment/202012/msg00029.html
+>>
+>>
+>>>> mlx5_vdpa_destroy_mr(&ndev->mvdev);
+>>>>            ndev->mvdev.status = 0;
+>>>>            ndev->mvdev.mlx_features = 0;
 
