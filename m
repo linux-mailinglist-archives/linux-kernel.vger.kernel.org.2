@@ -2,80 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 271423141B3
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 22:28:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7776B3141B8
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 22:28:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234865AbhBHV1f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 16:27:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34200 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236838AbhBHUWw (ORCPT
+        id S236633AbhBHV15 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 16:27:57 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:33366 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S236716AbhBHUXw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 15:22:52 -0500
-Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 501D6C061788;
-        Mon,  8 Feb 2021 12:22:12 -0800 (PST)
-Received: by mail-qk1-x733.google.com with SMTP id u20so15811122qku.7;
-        Mon, 08 Feb 2021 12:22:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Gn15PAlGit56jnPrfE4giJ8DHCVtKKDYLe8OW80tVPI=;
-        b=H1jXjFfaMN/gc1QyGO6x/sApCno+Py7+Ij7ty7jYwhBus7J8cCS9ZkySc4QW6btGJ/
-         RSBGvSRlYhD4EOr2DBnTHuCpF9z/Kyygbx2FMEH7ZpYOgWiXMZi6R4hSxoTmdouWdmxN
-         sqmENksJxaH7GExFm0q5DE9uoaF+WUT4O9Sot+eLobMJJg+1/Jd41PUcjrCaH2mZ2L/U
-         Q2W+Yy/V4+a1sfTPoE4lUQd/d0tUDxCOP0XfcIyt7liNWgvubBsgMMfkd+PRIH/UMWRF
-         PWtIyCSPfvQ01S1j72EGjoZPpmJqSnDN918hl6zZVU2S/U7MkzS+4aaVdqGFCkN5lE4K
-         1Qig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Gn15PAlGit56jnPrfE4giJ8DHCVtKKDYLe8OW80tVPI=;
-        b=fR7GjSR5Ben+m4rfZ70A53K79Ehag4ufg16JflOuaQ1lWjpX6OWWQRUm2mjWHn8/8W
-         0n4O8Ip2zT7J16Rc5GqlZ3OE7DIuVAXCuB8/1oTyijSFqiYuMNSTNTQbYbR3sTrha+3Y
-         nDf6lB+GU163ruZAh+DJg/uUVS71lcEyYPHGn6OadXUxKvfJklrm+E//6Jmft/UTfT/8
-         Q3g1J9sDa0R4GVBL1++m06GCXdMKHG7Hy7Hw1FXIx/D7Y/lw6DYs8VWXmMbW1QPN5tIC
-         5H5BRxvyDwHuNc8qsrZhw1BanxK7pwRhJJVKUlScTnhxy44HyzcN0qItm8/bMCI1+aZ5
-         Z1UA==
-X-Gm-Message-State: AOAM531gFoDWry2AM4woMdl+T2Ws81aBCcFsdYNo4hRkJJI+G8upGIit
-        DfuFbSJL915zrUxm4iOqMuxiy8Xa8ltwsQ==
-X-Google-Smtp-Source: ABdhPJw7ZK5t8XDEA+yQNq9RsIJxJ+wmat/4JPeLtVt7Q6u9VisCMAvqpiML1XzUW48Mq6mRCErUPQ==
-X-Received: by 2002:a37:6f01:: with SMTP id k1mr18738029qkc.252.1612815730914;
-        Mon, 08 Feb 2021 12:22:10 -0800 (PST)
-Received: from theldus.codes ([2804:d45:9905:9600:c57:100:d8b8:6ad3])
-        by smtp.gmail.com with ESMTPSA id l24sm7821260qtr.16.2021.02.08.12.22.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Feb 2021 12:22:10 -0800 (PST)
-Date:   Mon, 8 Feb 2021 17:22:07 -0300
-From:   Davidson Francis <davidsondfgl@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.10 000/120] 5.10.15-rc1 review
-Message-ID: <20210208202207.GA6005@theldus.codes>
-References: <20210208145818.395353822@linuxfoundation.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210208145818.395353822@linuxfoundation.org>
+        Mon, 8 Feb 2021 15:23:52 -0500
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 118K28vk096043;
+        Mon, 8 Feb 2021 15:23:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=cqqi4Dsx+0JwYgph7hkabIg4dfB0Eib0Ys3DHCjRCX4=;
+ b=dJ1WmoCCLp36kaN/IYU7GMg+3xrEbZjGI9U4BrNioXq+1o0OeQi+a1TvMKizHT3rD41i
+ meCV2wzTKdRN/xAUTxxpxG8B4lDlaVJHz09MQ74eHvrbqh958PZlbX8MCkmkfN5kytUC
+ mWfVkrqJHJiFccWE5ia/vs7aen8D6O8SLXJ4TD281MPPMmb9Oizuh2GlKHqVzXnsX8Tf
+ 1u6vWPK68035M+Tcim5CTf4trL2ILYtgu4rKIcY4b2zJ+bZm9qzfh84ZMNm2DOS7315g
+ OdwVgQU+T3xbYRl7xHW12r3DHD9sab+UZzG2mTD9Qa2Cc//w74xUV47ajrqTgyQGIG0t 8w== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 36kbs30t50-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 08 Feb 2021 15:23:03 -0500
+Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 118K3WSe103024;
+        Mon, 8 Feb 2021 15:23:03 -0500
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 36kbs30t4h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 08 Feb 2021 15:23:02 -0500
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 118K7blH019956;
+        Mon, 8 Feb 2021 20:23:01 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma04ams.nl.ibm.com with ESMTP id 36hjr8abnu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 08 Feb 2021 20:23:00 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 118KMnln32702738
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 8 Feb 2021 20:22:49 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BC1D64C04A;
+        Mon,  8 Feb 2021 20:22:58 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A76364C040;
+        Mon,  8 Feb 2021 20:22:55 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.48.239])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon,  8 Feb 2021 20:22:55 +0000 (GMT)
+Message-ID: <27f73411fc1d6ce6dd16a29344d729d9aa760250.camel@linux.ibm.com>
+Subject: Re: [PATCH 0/3] support for duplicate measurement of integrity
+ critical data
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Tushar Sugandhi <tusharsu@linux.microsoft.com>,
+        stephen.smalley.work@gmail.com, casey@schaufler-ca.com,
+        agk@redhat.com, snitzer@redhat.com, gmazyland@gmail.com,
+        paul@paul-moore.com
+Cc:     tyhicks@linux.microsoft.com, sashal@kernel.org, jmorris@namei.org,
+        nramas@linux.microsoft.com, linux-integrity@vger.kernel.org,
+        selinux@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dm-devel@redhat.com
+Date:   Mon, 08 Feb 2021 15:22:54 -0500
+In-Reply-To: <20210130004519.25106-1-tusharsu@linux.microsoft.com>
+References: <20210130004519.25106-1-tusharsu@linux.microsoft.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-02-08_11:2021-02-08,2021-02-08 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 suspectscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 spamscore=0 bulkscore=0
+ priorityscore=1501 mlxlogscore=999 adultscore=0 malwarescore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102080117
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 08, 2021 at 03:59:47PM +0100, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.15 release.
-> There are 120 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+Hi Tushar,
 
-Compiled and boot tested for x86_64, no dmesg regressions found.
+On Fri, 2021-01-29 at 16:45 -0800, Tushar Sugandhi wrote:
+> IMA does not measure duplicate buffer data since TPM extend is a very
+> expensive operation.  However, in some cases for integrity critical
+> data, the measurement of duplicate data is necessary to accurately
+> determine the current state of the system.  Eg, SELinux state changing
+> from 'audit', to 'enforcing', and back to 'audit' again.  In this
+> example, currently, IMA will not measure the last state change to
+> 'audit'.  This limits the ability of attestation services to accurately
+> determine the current state of the integrity critical data on the
+> system.
+> 
+> This series addresses this gap by providing the ability to measure
+> duplicate entries for integrity critical data, driven by policy.
 
-Tested-by: Davidson Francis <davidsondfgl@gmail.com>
+The same reason for re-measuring buffer data is equally applicable to
+files.  In both cases, the file or the buffer isn't re-measured if it
+already exists in the htable.   Please don't limit this patch set to
+just buffer data.
 
-Regards,
-Davidson Francis
+thanks,
+
+Mimi
 
