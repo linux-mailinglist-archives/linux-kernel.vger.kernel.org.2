@@ -2,86 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F77E314036
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 21:18:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FB66314037
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 21:18:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236815AbhBHUR4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 15:17:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42904 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235833AbhBHSwQ (ORCPT
+        id S235483AbhBHUSL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 15:18:11 -0500
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:39764 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233805AbhBHSxx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 13:52:16 -0500
-Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03FEEC061788
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 10:51:34 -0800 (PST)
-Received: by mail-qk1-x730.google.com with SMTP id b14so1928774qkk.0
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 10:51:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=FREB4k4pL+/EwQVi/jq4eIfgwfGwgd8/O2V49WmG3yI=;
-        b=ayKBiVUeDmZgutOHEL4vMvTvHca+pVKQbcb658vawwG09uauE5m3ic5gN6c9JkzeTX
-         HGjYLobolsvKN/n9h49zmwT9Nf+FhGtdx+spz++X3Q0NB3znozLYOu+Qdt8ShcpBJ7gJ
-         Wgoe4nJSIHNuvgGHCdn9+HAGCM3L8K90nEXC7tOC9Ht1wLXziklRqWIiN7+njvhCJxGV
-         u8wDnYz+fsyNBQKkwR8jDwcXvXBHHeXX/L28GBohrBDWsLiCtakt8qbuEYDTbHafl2NP
-         jN6MmoSdE5Gryh2iz+rHB+pGMoQ2Q/eY5JpUSeBnyruSNGaJ1wjwA5t8B4qAF5p52D2d
-         jb5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=FREB4k4pL+/EwQVi/jq4eIfgwfGwgd8/O2V49WmG3yI=;
-        b=N4t8/eVBeNTT2jHl7CafGaVGIBfQEPcNhV5kUq66cKMqrvP3zCd4zAb4YLXMinPjH0
-         3zZyzfoOMMIkn5m8WNKnn4zaJrLTgLa3YoD7xYdDiHzOpL8MPP97zuFWxC9nb2F66AFu
-         JBiEek4n9/iODfcZUDkHl2gR2vY89Zmdq05W71TwPiGBsaNHkmFTRX5Mj09QdY20Z393
-         H95ic2cKr4srL3/26EdZZQ0YEmA/inXlSDLJGF2YBe2j3vAhiPMo4GzprQWDeBI6ae4Q
-         BHpLqXpFadd1GAZC8nhe/4sJI6cmU78wwzpg3cMWtZJNO9RTfJqt58JTGszuaGDy/KPH
-         WEXQ==
-X-Gm-Message-State: AOAM53317i+NrWYgitDpDFxGuPCqCRlEQ3l/M6pLcNaHRnimyOR4gKYt
-        gfX/OlQb6fWcd3Y7w3Zbd0lDdA==
-X-Google-Smtp-Source: ABdhPJyWgaNBTCVawkQVPK0b06TB5cBGj1xy2Hg+/c/xFkZeuj/u1FCWtQfIhSeg/PKdKxAppdWkGg==
-X-Received: by 2002:a37:5905:: with SMTP id n5mr18045893qkb.191.1612810294198;
-        Mon, 08 Feb 2021 10:51:34 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
-        by smtp.gmail.com with ESMTPSA id w188sm17159979qkc.19.2021.02.08.10.51.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Feb 2021 10:51:33 -0800 (PST)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1l9BdF-0052Tc-8p; Mon, 08 Feb 2021 14:51:33 -0400
-Date:   Mon, 8 Feb 2021 14:51:33 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Peter Xu <peterx@redhat.com>, dan.j.williams@intel.com
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH 0/2] KVM: do not assume PTE is writable after follow_pfn
-Message-ID: <20210208185133.GW4718@ziepe.ca>
-References: <20210205103259.42866-1-pbonzini@redhat.com>
- <20210205181411.GB3195@xz-x1>
+        Mon, 8 Feb 2021 13:53:53 -0500
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: ezequiel)
+        with ESMTPSA id 881841F44B0B
+Message-ID: <fa453b6516f709b23bb046a1d956f0598966cd99.camel@collabora.com>
+Subject: Re: linux-next: build warning after merge of the v4l-dvb tree
+From:   Ezequiel Garcia <ezequiel@collabora.com>
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Date:   Mon, 08 Feb 2021 15:53:00 -0300
+In-Reply-To: <20210208184014.55128fb5@coco.lan>
+References: <20210208233716.16d962ad@canb.auug.org.au>
+         <56cd99bbf526b43507579b5775bac5f885319866.camel@collabora.com>
+         <20210208164618.GY32460@paasikivi.fi.intel.com>
+         <4af499f5931d6b04a42787ae17525c63247573e6.camel@collabora.com>
+         <20210208184014.55128fb5@coco.lan>
+Organization: Collabora
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.2-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210205181411.GB3195@xz-x1>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 05, 2021 at 01:14:11PM -0500, Peter Xu wrote:
+On Mon, 2021-02-08 at 18:40 +0100, Mauro Carvalho Chehab wrote:
+> Em Mon, 08 Feb 2021 13:57:56 -0300
+> Ezequiel Garcia <ezequiel@collabora.com> escreveu:
+> 
+> > On Mon, 2021-02-08 at 18:46 +0200, Sakari Ailus wrote:
+> > > Hi Ezequiel,
+> > > 
+> > > Thanks for addressing this.
+> > > 
+> > > On Mon, Feb 08, 2021 at 01:42:21PM -0300, Ezequiel Garcia wrote:  
+> > > > Hi Stephen,
+> > > > 
+> > > > On Mon, 2021-02-08 at 23:37 +1100, Stephen Rothwell wrote:  
+> > > > > Hi all,
+> > > > > 
+> > > > > After merging the v4l-dvb tree, today's linux-next build (htmldocs)
+> > > > > produced this warning:
+> > > > > 
+> > > > > include/media/v4l2-async.h:178: warning: expecting prototype for v4l2_async_notifier_add_fwnode_subdev(). Prototype was for
+> > > > > __v4l2_async_notifier_add_fwnode_subdev() instead
+> > > > > include/media/v4l2-async.h:207: warning: expecting prototype for v4l2_async_notifier_add_fwnode_remote_subdev(). Prototype was for
+> > > > > __v4l2_async_notifier_add_fwnode_remote_subdev() instead
+> > > > > include/media/v4l2-async.h:230: warning: expecting prototype for v4l2_async_notifier_add_i2c_subdev(). Prototype was for
+> > > > > __v4l2_async_notifier_add_i2c_subdev() instead
+> > > > > 
+> > > > > Maybe introduced by commit
+> > > > > 
+> > > > >   c1cc23625062 ("media: v4l2-async: Discourage use of v4l2_async_notifier_add_subdev")
+> > > > >   
+> > > > 
+> > > > Thanks for spotting this. Should be fixed by:
+> > > > 
+> > > > diff --git a/include/media/v4l2-async.h b/include/media/v4l2-async.h
+> > > > index 6f22daa6f067..3785445282fc 100644
+> > > > --- a/include/media/v4l2-async.h
+> > > > +++ b/include/media/v4l2-async.h
+> > > > @@ -157,7 +157,7 @@ int __v4l2_async_notifier_add_subdev(struct v4l2_async_notifier *notifier,
+> > > >                                    struct v4l2_async_subdev *asd);
+> > > >  
+> > > >  /**
+> > > > - * v4l2_async_notifier_add_fwnode_subdev - Allocate and add a fwnode async
+> > > > + * __v4l2_async_notifier_add_fwnode_subdev - Allocate and add a fwnode async  
+> > > 
+> > > The problem with the approach is that this no longer documents the API that
+> > > drivers are intended to use, but the intermediate one.
+> 
+> Yep. the better would be to keep documenting what will be used.
+> 
 
-> But I do have a question on why dax as the only user needs to pass in the
-> notifier to follow_pte() for initialization.
+Is there a way to silence/ignore the warning for a specific function(s)?
 
-Not sure either, why does DAX opencode something very much like
-page_mkclean() with dax_entry_mkclean()?
+Ezequiel 
 
-Also it looks like DAX uses the wrong notifier, it calls
-MMU_NOTIFY_CLEAR but page_mkclean_one() uses
-MMU_NOTIFY_PROTECTION_PAGE for the same PTE modification sequence??
-
-page_mkclean() has some technique to make the notifier have the right
-size without becoming entangled in the PTL locks..
-
-Jason
