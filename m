@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA44A3138D4
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 17:06:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F0EE3138D3
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 17:06:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233326AbhBHQFc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 11:05:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56624 "EHLO mail.kernel.org"
+        id S233568AbhBHQFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 11:05:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56626 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231712AbhBHPKR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S233039AbhBHPKR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 8 Feb 2021 10:10:17 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0BB4964ECE;
-        Mon,  8 Feb 2021 15:07:05 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E024164ED3;
+        Mon,  8 Feb 2021 15:07:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612796826;
-        bh=EP0As8b8o54ANmz+T5tH6zr/XFh5VoStjihUNb4XJ2A=;
+        s=korg; t=1612796829;
+        bh=p3pdBOXEm9sCnNMBb9NfCLPMjcdD5ya/XoThH5uT9vQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=r/7/SSMGsKy80YHQ9zRVLm5D6Caqp4l3AP803gLkMJkPNFYM5wHYvgfuNXyCSC7Fl
-         wUkO7eUjPNK8/Zav1oUwhl1RURsPIXRSnpvvkdqDWPTB4ZaoUuw9rtLo08GFvvX5Ky
-         TKzIXv1/Mis5M7YB5G0JH+OtJAQvj/I7lxLnTqUc=
+        b=Dxy9j1ddyjYwcbYL6+TrvGNjRxoZKWXWACljTGMHGKAmoyjyIp/XCaRtSl9jnWO8Z
+         Cq4Y2O3lCCp55Y+KkkeE+LmDF1vOP+l5xcsbSt6Bv5ePIzUkU7fOQfKRx4fi474ebL
+         ZTwnvTdGXUufNLb5hVgrNypW2YYTPt3ubZjiqnmI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zyta Szpak <zr@semihalf.com>,
-        Shawn Guo <shawnguo@kernel.org>,
+        stable@vger.kernel.org, Xie He <xie.he.0141@gmail.com>,
+        Martin Schiller <ms@dev.tdt.de>,
+        Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 05/30] arm64: dts: ls1046a: fix dcfg address range
-Date:   Mon,  8 Feb 2021 16:00:51 +0100
-Message-Id: <20210208145805.470299974@linuxfoundation.org>
+Subject: [PATCH 4.14 06/30] net: lapb: Copy the skb before sending a packet
+Date:   Mon,  8 Feb 2021 16:00:52 +0100
+Message-Id: <20210208145805.513373363@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210208145805.239714726@linuxfoundation.org>
 References: <20210208145805.239714726@linuxfoundation.org>
@@ -40,35 +41,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zyta Szpak <zr@semihalf.com>
+From: Xie He <xie.he.0141@gmail.com>
 
-[ Upstream commit aa880c6f3ee6dbd0d5ab02026a514ff8ea0a3328 ]
+[ Upstream commit 88c7a9fd9bdd3e453f04018920964c6f848a591a ]
 
-Dcfg was overlapping with clockgen address space which resulted
-in failure in memory allocation for dcfg. According regs description
-dcfg size should not be bigger than 4KB.
+When sending a packet, we will prepend it with an LAPB header.
+This modifies the shared parts of a cloned skb, so we should copy the
+skb rather than just clone it, before we prepend the header.
 
-Signed-off-by: Zyta Szpak <zr@semihalf.com>
-Fixes: 8126d88162a5 ("arm64: dts: add QorIQ LS1046A SoC support")
-Signed-off-by: Shawn Guo <shawnguo@kernel.org>
+In "Documentation/networking/driver.rst" (the 2nd point), it states
+that drivers shouldn't modify the shared parts of a cloned skb when
+transmitting.
+
+The "dev_queue_xmit_nit" function in "net/core/dev.c", which is called
+when an skb is being sent, clones the skb and sents the clone to
+AF_PACKET sockets. Because the LAPB drivers first remove a 1-byte
+pseudo-header before handing over the skb to us, if we don't copy the
+skb before prepending the LAPB header, the first byte of the packets
+received on AF_PACKET sockets can be corrupted.
+
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Signed-off-by: Xie He <xie.he.0141@gmail.com>
+Acked-by: Martin Schiller <ms@dev.tdt.de>
+Link: https://lore.kernel.org/r/20210201055706.415842-1-xie.he.0141@gmail.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/freescale/fsl-ls1046a.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/lapb/lapb_out.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1046a.dtsi b/arch/arm64/boot/dts/freescale/fsl-ls1046a.dtsi
-index c8ff0baddf1d0..cb49d21e317c0 100644
---- a/arch/arm64/boot/dts/freescale/fsl-ls1046a.dtsi
-+++ b/arch/arm64/boot/dts/freescale/fsl-ls1046a.dtsi
-@@ -304,7 +304,7 @@
+diff --git a/net/lapb/lapb_out.c b/net/lapb/lapb_out.c
+index eda726e22f645..621c66f001177 100644
+--- a/net/lapb/lapb_out.c
++++ b/net/lapb/lapb_out.c
+@@ -87,7 +87,8 @@ void lapb_kick(struct lapb_cb *lapb)
+ 		skb = skb_dequeue(&lapb->write_queue);
  
- 		dcfg: dcfg@1ee0000 {
- 			compatible = "fsl,ls1046a-dcfg", "syscon";
--			reg = <0x0 0x1ee0000 0x0 0x10000>;
-+			reg = <0x0 0x1ee0000 0x0 0x1000>;
- 			big-endian;
- 		};
- 
+ 		do {
+-			if ((skbn = skb_clone(skb, GFP_ATOMIC)) == NULL) {
++			skbn = skb_copy(skb, GFP_ATOMIC);
++			if (!skbn) {
+ 				skb_queue_head(&lapb->write_queue, skb);
+ 				break;
+ 			}
 -- 
 2.27.0
 
