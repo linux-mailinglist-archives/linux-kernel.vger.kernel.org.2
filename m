@@ -2,139 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 407013128F2
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 03:32:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A11313128F5
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 03:32:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229711AbhBHC1t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Feb 2021 21:27:49 -0500
-Received: from m12-16.163.com ([220.181.12.16]:34658 "EHLO m12-16.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229611AbhBHC1r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Feb 2021 21:27:47 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=3HDPhqmHgPvzBuo5bl
-        I2uMvrIMia8BZyw9nwfQ+vqKI=; b=Y4ota/G6yNF4/LUE1s52Kq4wpCSuEi4eTD
-        0r68GOs2swLcQxe5vJ7hnpY/T6FKrRMn6uv9bIHf5zi+Emry9vpRC6oVHxyjHgbq
-        9kIZGIYAxaOU8f+bhdiyBy3jGPKgBqNraDbi8JO6ncEjtsAhi+oa8PW51wq1JgYk
-        HxcZPZRPk=
-Received: from wengjianfeng.ccdomain.com (unknown [119.137.53.134])
-        by smtp12 (Coremail) with SMTP id EMCowAAnK08goSBgmyBxbA--.45753S2;
-        Mon, 08 Feb 2021 10:25:37 +0800 (CST)
-From:   samirweng1979 <samirweng1979@163.com>
-To:     kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org,
-        lee.jones@linaro.org
-Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        wengjianfeng <wengjianfeng@yulong.com>
-Subject: [PATCH RESEND] wl1251: cmd: remove redundant assignment
-Date:   Mon,  8 Feb 2021 10:25:35 +0800
-Message-Id: <20210208022535.17672-1-samirweng1979@163.com>
-X-Mailer: git-send-email 2.15.0.windows.1
-X-CM-TRANSID: EMCowAAnK08goSBgmyBxbA--.45753S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxJF45uw15ArW5AFW8tF1DKFg_yoW5Jw13pF
-        93u347tr98tr1UXrWrZw4kZa9ag3W8JrW7GrWDu34qqF1ayr4FkrZ0gFy09F98ua9YyrW3
-        tFZ0gF4rWF1DCFUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jtBMtUUUUU=
-X-Originating-IP: [119.137.53.134]
-X-CM-SenderInfo: pvdpx25zhqwiqzxzqiywtou0bp/1tbiHQIzsVSIpToLCwAAse
+        id S229725AbhBHC27 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 7 Feb 2021 21:28:59 -0500
+Received: from szxga02-in.huawei.com ([45.249.212.188]:3008 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229611AbhBHC25 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Feb 2021 21:28:57 -0500
+Received: from DGGEMM404-HUB.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4DYqfS6xxczRCKl;
+        Mon,  8 Feb 2021 10:26:56 +0800 (CST)
+Received: from dggpemm100010.china.huawei.com (7.185.36.24) by
+ DGGEMM404-HUB.china.huawei.com (10.3.20.212) with Microsoft SMTP Server (TLS)
+ id 14.3.498.0; Mon, 8 Feb 2021 10:27:06 +0800
+Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
+ dggpemm100010.china.huawei.com (7.185.36.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2106.2; Mon, 8 Feb 2021 10:27:06 +0800
+Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
+ dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.2106.006;
+ Mon, 8 Feb 2021 10:27:06 +0800
+From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+To:     Matthew Wilcox <willy@infradead.org>
+CC:     "Wangzhou (B)" <wangzhou1@hisilicon.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "jgg@ziepe.ca" <jgg@ziepe.ca>,
+        "kevin.tian@intel.com" <kevin.tian@intel.com>,
+        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "Liguozhu (Kenneth)" <liguozhu@hisilicon.com>,
+        "zhangfei.gao@linaro.org" <zhangfei.gao@linaro.org>,
+        "chensihang (A)" <chensihang1@hisilicon.com>
+Subject: RE: [RFC PATCH v3 1/2] mempinfd: Add new syscall to provide memory
+ pin
+Thread-Topic: [RFC PATCH v3 1/2] mempinfd: Add new syscall to provide memory
+ pin
+Thread-Index: AQHW/SrsWWMRpilf2UC1Pz29QqsBVqpMsX2AgACQE1D//7IVAIAAi2xQ
+Date:   Mon, 8 Feb 2021 02:27:06 +0000
+Message-ID: <b4e2acc237e44ffe916135e96ad3ef20@hisilicon.com>
+References: <1612685884-19514-1-git-send-email-wangzhou1@hisilicon.com>
+ <1612685884-19514-2-git-send-email-wangzhou1@hisilicon.com>
+ <20210207213409.GL308988@casper.infradead.org>
+ <f4b2d7db8a1047d9952cbbfaf9e27824@hisilicon.com>
+ <20210208013056.GM308988@casper.infradead.org>
+In-Reply-To: <20210208013056.GM308988@casper.infradead.org>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.126.200.200]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+MIME-Version: 1.0
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: wengjianfeng <wengjianfeng@yulong.com>
-
--ENOMEM has been used as a return value,it is not necessary to
-assign it, and if kzalloc fail,not need free it,so just return
--ENOMEM when kzalloc fail.
-
-Signed-off-by: wengjianfeng <wengjianfeng@yulong.com>
----
- drivers/net/wireless/ti/wl1251/cmd.c | 36 ++++++++++++------------------------
- 1 file changed, 12 insertions(+), 24 deletions(-)
-
-diff --git a/drivers/net/wireless/ti/wl1251/cmd.c b/drivers/net/wireless/ti/wl1251/cmd.c
-index e1095b8..498c8db 100644
---- a/drivers/net/wireless/ti/wl1251/cmd.c
-+++ b/drivers/net/wireless/ti/wl1251/cmd.c
-@@ -175,10 +175,8 @@ int wl1251_cmd_vbm(struct wl1251 *wl, u8 identity,
- 	wl1251_debug(DEBUG_CMD, "cmd vbm");
- 
- 	vbm = kzalloc(sizeof(*vbm), GFP_KERNEL);
--	if (!vbm) {
--		ret = -ENOMEM;
--		goto out;
--	}
-+	if (!vbm)
-+		return -ENOMEM;
- 
- 	/* Count and period will be filled by the target */
- 	vbm->tim.bitmap_ctrl = bitmap_control;
-@@ -213,10 +211,8 @@ int wl1251_cmd_data_path_rx(struct wl1251 *wl, u8 channel, bool enable)
- 	wl1251_debug(DEBUG_CMD, "cmd data path");
- 
- 	cmd = kzalloc(sizeof(*cmd), GFP_KERNEL);
--	if (!cmd) {
--		ret = -ENOMEM;
--		goto out;
--	}
-+	if (!cmd)
-+		return -ENOMEM;
- 
- 	cmd->channel = channel;
- 
-@@ -279,10 +275,8 @@ int wl1251_cmd_join(struct wl1251 *wl, u8 bss_type, u8 channel,
- 	u8 *bssid;
- 
- 	join = kzalloc(sizeof(*join), GFP_KERNEL);
--	if (!join) {
--		ret = -ENOMEM;
--		goto out;
--	}
-+	if (!join)
-+		return -ENOMEM;
- 
- 	wl1251_debug(DEBUG_CMD, "cmd join%s ch %d %d/%d",
- 		     bss_type == BSS_TYPE_IBSS ? " ibss" : "",
-@@ -324,10 +318,8 @@ int wl1251_cmd_ps_mode(struct wl1251 *wl, u8 ps_mode)
- 	wl1251_debug(DEBUG_CMD, "cmd set ps mode");
- 
- 	ps_params = kzalloc(sizeof(*ps_params), GFP_KERNEL);
--	if (!ps_params) {
--		ret = -ENOMEM;
--		goto out;
--	}
-+	if (!ps_params)
-+		return -ENOMEM;
- 
- 	ps_params->ps_mode = ps_mode;
- 	ps_params->send_null_data = 1;
-@@ -356,10 +348,8 @@ int wl1251_cmd_read_memory(struct wl1251 *wl, u32 addr, void *answer,
- 	wl1251_debug(DEBUG_CMD, "cmd read memory");
- 
- 	cmd = kzalloc(sizeof(*cmd), GFP_KERNEL);
--	if (!cmd) {
--		ret = -ENOMEM;
--		goto out;
--	}
-+	if (!cmd)
-+		return -ENOMEM;
- 
- 	WARN_ON(len > MAX_READ_SIZE);
- 	len = min_t(size_t, len, MAX_READ_SIZE);
-@@ -401,10 +391,8 @@ int wl1251_cmd_template_set(struct wl1251 *wl, u16 cmd_id,
- 	cmd_len = ALIGN(sizeof(*cmd) + buf_len, 4);
- 
- 	cmd = kzalloc(cmd_len, GFP_KERNEL);
--	if (!cmd) {
--		ret = -ENOMEM;
--		goto out;
--	}
-+	if (!cmd)
-+		return -ENOMEM;
- 
- 	cmd->size = cpu_to_le16(buf_len);
- 
--- 
-1.9.1
 
 
+> -----Original Message-----
+> From: owner-linux-mm@kvack.org [mailto:owner-linux-mm@kvack.org] On Behalf Of
+> Matthew Wilcox
+> Sent: Monday, February 8, 2021 2:31 PM
+> To: Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>
+> Cc: Wangzhou (B) <wangzhou1@hisilicon.com>; linux-kernel@vger.kernel.org;
+> iommu@lists.linux-foundation.org; linux-mm@kvack.org;
+> linux-arm-kernel@lists.infradead.org; linux-api@vger.kernel.org; Andrew
+> Morton <akpm@linux-foundation.org>; Alexander Viro <viro@zeniv.linux.org.uk>;
+> gregkh@linuxfoundation.org; jgg@ziepe.ca; kevin.tian@intel.com;
+> jean-philippe@linaro.org; eric.auger@redhat.com; Liguozhu (Kenneth)
+> <liguozhu@hisilicon.com>; zhangfei.gao@linaro.org; chensihang (A)
+> <chensihang1@hisilicon.com>
+> Subject: Re: [RFC PATCH v3 1/2] mempinfd: Add new syscall to provide memory
+> pin
+> 
+> On Sun, Feb 07, 2021 at 10:24:28PM +0000, Song Bao Hua (Barry Song) wrote:
+> > > > In high-performance I/O cases, accelerators might want to perform
+> > > > I/O on a memory without IO page faults which can result in dramatically
+> > > > increased latency. Current memory related APIs could not achieve this
+> > > > requirement, e.g. mlock can only avoid memory to swap to backup device,
+> > > > page migration can still trigger IO page fault.
+> > >
+> > > Well ... we have two requirements.  The application wants to not take
+> > > page faults.  The system wants to move the application to a different
+> > > NUMA node in order to optimise overall performance.  Why should the
+> > > application's desires take precedence over the kernel's desires?  And why
+> > > should it be done this way rather than by the sysadmin using numactl to
+> > > lock the application to a particular node?
+> >
+> > NUMA balancer is just one of many reasons for page migration. Even one
+> > simple alloc_pages() can cause memory migration in just single NUMA
+> > node or UMA system.
+> >
+> > The other reasons for page migration include but are not limited to:
+> > * memory move due to CMA
+> > * memory move due to huge pages creation
+> >
+> > Hardly we can ask users to disable the COMPACTION, CMA and Huge Page
+> > in the whole system.
+> 
+> You're dodging the question.  Should the CMA allocation fail because
+> another application is using SVA?
+> 
+> I would say no.  
+
+I would say no as well.
+
+While IOMMU is enabled, CMA almost has one user only: IOMMU driver
+as other drivers will depend on iommu to use non-contiguous memory
+though they are still calling dma_alloc_coherent().
+
+In iommu driver, dma_alloc_coherent is called during initialization
+and there is no new allocation afterwards. So it wouldn't cause
+runtime impact on SVA performance. Even there is new allocations,
+CMA will fall back to general alloc_pages() and iommu drivers are
+almost allocating small memory for command queues.
+
+So I would say general compound pages, huge pages, especially
+transparent huge pages, would be bigger concerns than CMA for
+internal page migration within one NUMA. 
+
+Not like CMA, general alloc_pages() can get memory by moving
+pages other than those pinned.
+
+And there is no guarantee we can always bind the memory of
+SVA applications to single one NUMA, so NUMA balancing is
+still a concern.
+
+But I agree we need a way to make CMA success while the userspace
+pages are pinned. Since pin has been viral in many drivers, I
+assume there is a way to handle this. Otherwise, APIs like 
+V4L2_MEMORY_USERPTR[1] will possibly make CMA fail as there
+is no guarantee that usersspace will allocate unmovable memory
+and there is no guarantee the fallback path- alloc_pages() can
+succeed while allocating big memory.
+
+Will investigate more.
+
+> The application using SVA should take the one-time
+> performance hit from having its memory moved around.
+
+Sometimes I also feel SVA is doomed to suffer from performance
+impact due to page migration. But we are still trying to
+extend its use cases to high-performance I/O.
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/media/v4l2-core/videobuf-dma-sg.c
+
+Thanks
+Barry
