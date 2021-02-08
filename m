@@ -2,205 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9C3D3131F6
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 13:16:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D76C03131FB
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 13:16:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229629AbhBHMPV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 07:15:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37658 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233390AbhBHLyd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 06:54:33 -0500
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4798C061793
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 03:53:53 -0800 (PST)
-Received: by mail-pg1-x536.google.com with SMTP id m2so3318502pgq.5
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 03:53:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to;
-        bh=IKrzWtZo6NXq70WLpxCFCdMLYDPK+LxjIU9XIftehpE=;
-        b=IWEO1EiXvk7oS7MEKE54gmXQ0blml4NiwDJlyaSR4ijtfdH0bnDiKqJdL82gUCi0lu
-         UiGidlTSvnO4+2g+jWYmdBAaJTLmPhXyyzvUyf8gr88gBJQ/3trDUbjlvdgCsCw6NQHg
-         9AMIkueoHdDWTfGEhDm1XK12S5fDybHONxi8A=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to;
-        bh=IKrzWtZo6NXq70WLpxCFCdMLYDPK+LxjIU9XIftehpE=;
-        b=cMBbdE64UZZkptPftAkiQD6zyd63WjoDCfeNv7vrUmSTubTOUwJhryvh8qk6Rn4RMv
-         S6LOa4uTOupVmKpbQcrYnmRTdw/HArX0laLGiNZaUjEG2CkHyS3PssRpGbGkBklARFBm
-         BtRCj1yGMLzhfnlHvk0mUTxYe6ysJu3c83VHcQPvUr3tLQBwebDFZg91DWcBvKARdFdB
-         7c7kgzCj0nt2w2cc/Bs7HD6sSBp/Y01ouVNyNVKyKWal6uk1Pkoc4nfVZNnmMLb0+SfI
-         wV0H/rbswHan9+d9j8fSvIq44o1K61VdCCKftf0Anu7ioqAzJKmeJLOTs7NkOaGGwPey
-         UiaA==
-X-Gm-Message-State: AOAM531tJ2ZG/BgDPoB/dlM4iyf+vWV52ZAehYg+gHz4grN7b16cLydw
-        NyYzejrrTQk3VQIr0X+bQb/lLjUnlW7yi9X87uEdBmVkgRlNNJdnlSwVsUoDmGegS3xVwO+OHhh
-        GxJPBraArRc6ojo8ksk4Vyw6+B17RnQS4uLjVP8WSTi/AHptlSJwgwtrC7RVqNSZ0claq3eG2ll
-        oPT20vo9AHAkaDpHV9
-X-Google-Smtp-Source: ABdhPJy+G/Xnc3EBeFF+LHVb4gnf4qVUaGT40yDcO1ZhNb8sBuKs7/OH0podtlqCHNxKPpXSd44duQ==
-X-Received: by 2002:a63:6f8a:: with SMTP id k132mr17237134pgc.59.1612785232731;
-        Mon, 08 Feb 2021 03:53:52 -0800 (PST)
-Received: from [10.230.40.53] ([192.19.152.250])
-        by smtp.gmail.com with ESMTPSA id a37sm18912454pgm.79.2021.02.08.03.53.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Feb 2021 03:53:51 -0800 (PST)
-Subject: Re: [PATCH v2] brcmfmac: add support for CQM RSSI notifications
-To:     =?UTF-8?Q?Alvin_=c5=a0ipraga?= <ALSI@bang-olufsen.dk>,
-        Arend van Spriel <aspriel@gmail.com>,
-        Franky Lin <franky.lin@broadcom.com>,
-        Hante Meuleman <hante.meuleman@broadcom.com>,
-        Chi-hsien Lin <chi-hsien.lin@infineon.com>,
-        Wright Feng <wright.feng@infineon.com>,
-        Chung-hsien Hsu <chung-hsien.hsu@infineon.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
-        "brcm80211-dev-list.pdl@broadcom.com" 
-        <brcm80211-dev-list.pdl@broadcom.com>,
-        "SHA-cyfmac-dev-list@infineon.com" <SHA-cyfmac-dev-list@infineon.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20210114163641.2427591-1-alsi@bang-olufsen.dk>
-From:   Arend Van Spriel <arend.vanspriel@broadcom.com>
-Message-ID: <a8a021d2-259d-4f09-3c25-af2ea0fd91dc@broadcom.com>
-Date:   Mon, 8 Feb 2021 12:53:47 +0100
+        id S231193AbhBHMPx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 07:15:53 -0500
+Received: from mx2.suse.de ([195.135.220.15]:36812 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232854AbhBHLz0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 06:55:26 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1612785280; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Lzj0M0ODVg7irUOYnOdjiNxBrgsVBdOtnhI9h2vRceY=;
+        b=GqVgYoTCsAEXTwhIkrKe4y4fnUSBbqbfH23KdRhYyjhWoTUQxU2YjCKiSMxHC0q7DR7pAj
+        BjGXzvTTXLSBHZOJetheHO6MsUo02OPb8NcEhBwEO5KrdYtca0SdCU0+ZoRAlBl5pJ6eUr
+        VBFfB0utZwpC7HNrBYRpT1Y4P/IPkW8=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 400A8AEC2;
+        Mon,  8 Feb 2021 11:54:40 +0000 (UTC)
+Subject: Re: [PATCH 7/7] xen/evtchn: read producer index only once
+To:     =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+Cc:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org
+References: <20210206104932.29064-1-jgross@suse.com>
+ <20210206104932.29064-8-jgross@suse.com>
+ <72334160-cffe-2d8a-23b7-2ea9ab1d803a@suse.com>
+ <626f500a-494a-0141-7bf3-94fb86b47ed4@suse.com>
+ <e88526ac-6972-fe08-c58f-ea872cbdcc14@suse.com>
+ <d0ca217c-ecc9-55f7-abb1-30a687a46b31@suse.com>
+From:   Jan Beulich <jbeulich@suse.com>
+Message-ID: <a30db278-087b-554c-d5bf-1317e14e8508@suse.com>
+Date:   Mon, 8 Feb 2021 12:54:39 +0100
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <20210114163641.2427591-1-alsi@bang-olufsen.dk>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000edcc5405bad1d2ab"
+In-Reply-To: <d0ca217c-ecc9-55f7-abb1-30a687a46b31@suse.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000edcc5405bad1d2ab
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+On 08.02.2021 11:59, Jürgen Groß wrote:
+> On 08.02.21 11:51, Jan Beulich wrote:
+>> On 08.02.2021 11:41, Jürgen Groß wrote:
+>>> On 08.02.21 10:48, Jan Beulich wrote:
+>>>> On 06.02.2021 11:49, Juergen Gross wrote:
+>>>>> In evtchn_read() use READ_ONCE() for reading the producer index in
+>>>>> order to avoid the compiler generating multiple accesses.
+>>>>>
+>>>>> Signed-off-by: Juergen Gross <jgross@suse.com>
+>>>>> ---
+>>>>>    drivers/xen/evtchn.c | 2 +-
+>>>>>    1 file changed, 1 insertion(+), 1 deletion(-)
+>>>>>
+>>>>> diff --git a/drivers/xen/evtchn.c b/drivers/xen/evtchn.c
+>>>>> index 421382c73d88..f6b199b597bf 100644
+>>>>> --- a/drivers/xen/evtchn.c
+>>>>> +++ b/drivers/xen/evtchn.c
+>>>>> @@ -211,7 +211,7 @@ static ssize_t evtchn_read(struct file *file, char __user *buf,
+>>>>>    			goto unlock_out;
+>>>>>    
+>>>>>    		c = u->ring_cons;
+>>>>> -		p = u->ring_prod;
+>>>>> +		p = READ_ONCE(u->ring_prod);
+>>>>>    		if (c != p)
+>>>>>    			break;
+>>>>
+>>>> Why only here and not also in
+>>>>
+>>>> 		rc = wait_event_interruptible(u->evtchn_wait,
+>>>> 					      u->ring_cons != u->ring_prod);
+>>>>
+>>>> or in evtchn_poll()? I understand it's not needed when
+>>>> ring_prod_lock is held, but that's not the case in the two
+>>>> afaics named places. Plus isn't the same then true for
+>>>> ring_cons and ring_cons_mutex, i.e. aren't the two named
+>>>> places plus evtchn_interrupt() also in need of READ_ONCE()
+>>>> for ring_cons?
+>>>
+>>> The problem solved here is the further processing using "p" multiple
+>>> times. p must not be silently replaced with u->ring_prod by the
+>>> compiler, so I probably should reword the commit message to say:
+>>>
+>>> ... in order to not allow the compiler to refetch p.
+>>
+>> I still wouldn't understand the change (and the lack of
+>> further changes) then: The first further use of p is
+>> outside the loop, alongside one of c. IOW why would c
+>> then not need treating the same as p?
+> 
+> Its value wouldn't change, as ring_cons is being modified only at
+> the bottom of this function, and nowhere else (apart from the reset
+> case, but this can't run concurrently due to ring_cons_mutex).
+> 
+>> I also still don't see the difference between latching a
+>> value into a local variable vs a "freestanding" access -
+>> neither are guaranteed to result in exactly one memory
+>> access afaict.
+> 
+> READ_ONCE() is using a pointer to volatile, so any refetching by
+> the compiler would be a bug.
 
-On 1/14/2021 5:36 PM, 'Alvin =C5=A0ipraga' via BRCM80211-DEV-LIST,PDL wrote=
-:
-> Add support for CQM RSSI measurement reporting and advertise the
-> NL80211_EXT_FEATURE_CQM_RSSI_LIST feature. This enables a userspace
-> supplicant such as iwd to be notified of changes in the RSSI for roaming
-> and signal monitoring purposes.
+Of course, but this wasn't my point. I was contrasting
 
-Reviewed-by: Arend van Spriel <arend.vanspriel@broadcom.com>
-> Signed-off-by: Alvin =C5=A0ipraga <alsi@bang-olufsen.dk>
-> ---
-> v1 -> v2:
-> - clarify firmware behaviour in a comment
-> - fix detection of upper bound RSSI transition
-> - improve clamping of min/max RSSI values
-> - remove unnecessary check on last RSSI value
-> ---
->   .../broadcom/brcm80211/brcmfmac/cfg80211.c    | 87 +++++++++++++++++++
->   .../broadcom/brcm80211/brcmfmac/cfg80211.h    |  6 ++
->   .../broadcom/brcm80211/brcmfmac/fwil_types.h  | 28 ++++++
->   3 files changed, 121 insertions(+)
+		c = u->ring_cons;
+		p = u->ring_prod;
 
---=20
-This electronic communication and the information and any files transmitted=
-=20
-with it, or attached to it, are confidential and are intended solely for=20
-the use of the individual or entity to whom it is addressed and may contain=
-=20
-information that is confidential, legally privileged, protected by privacy=
-=20
-laws, or otherwise restricted from disclosure to anyone else. If you are=20
-not the intended recipient or the person responsible for delivering the=20
-e-mail to the intended recipient, you are hereby notified that any use,=20
-copying, distributing, dissemination, forwarding, printing, or copying of=
-=20
-this e-mail is strictly prohibited. If you received this e-mail in error,=
-=20
-please return the e-mail to the sender, delete it from your computer, and=
-=20
-destroy any printed copy of it.
+which you change with
 
---000000000000edcc5405bad1d2ab
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+		rc = wait_event_interruptible(u->evtchn_wait,
+					      u->ring_cons != u->ring_prod);
 
-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
-pra5sIx/TR6gNtLG9MpND9zQt5j42hInkP81vqu9DG8lovoPMuR0JVpFRbPjHZ07cLqqbFMVS/8z
-53iSewIDAQABo4IB0zCCAc8wDgYDVR0PAQH/BAQDAgWgMIGeBggrBgEFBQcBAQSBkTCBjjBNBggr
-BgEFBQcwAoZBaHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NwZXJzb25hbHNp
-Z24yc2hhMmczb2NzcC5jcnQwPQYIKwYBBQUHMAGGMWh0dHA6Ly9vY3NwMi5nbG9iYWxzaWduLmNv
-bS9nc3BlcnNvbmFsc2lnbjJzaGEyZzMwTQYDVR0gBEYwRDBCBgorBgEEAaAyASgKMDQwMgYIKwYB
-BQUHAgEWJmh0dHBzOi8vd3d3Lmdsb2JhbHNpZ24uY29tL3JlcG9zaXRvcnkvMAkGA1UdEwQCMAAw
-RAYDVR0fBD0wOzA5oDegNYYzaHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9nc3BlcnNvbmFsc2ln
-bjJzaGEyZzMuY3JsMCcGA1UdEQQgMB6BHGFyZW5kLnZhbnNwcmllbEBicm9hZGNvbS5jb20wEwYD
-VR0lBAwwCgYIKwYBBQUHAwQwHwYDVR0jBBgwFoAUaXKCYjFnlUSFd5GAxAQ2SZ17C2EwHQYDVR0O
-BBYEFHAaaA+cRo3vYiA6aKVu1bOs4YAYMA0GCSqGSIb3DQEBCwUAA4IBAQCYLdyC8SuyQV6oa5uH
-kGtqz9FCJC/9gSclQLM8dZLHF3FYX8LlcQg/3Ct5I29YLK3T/r35B2zGljtXqVOIeSEz7sDXfGNy
-3dnLIafB1y04e7aR+thVn5Rp1YTF01FUWYbZrixlVuKvjn8vtKC+HhAoDCxvqnqEuA/8Usn7B0/N
-uOA46oQTLe3kjdIgXWJ29JWVqFUavYdcK0+0zyfeMBCTO6heYABeMP3wzYHfcuFDhqldTCpumqhZ
-WwHVQUbAn+xLMIQpycIQFoJIGJX4MeaTSMfLNP2w7nP2uLNgIeleF284vS0XVkBXSCgIGylP4SN+
-HQYrv7fVCbtp+c7nFvP7MYICbzCCAmsCAQEwbTBdMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQR2xv
-YmFsU2lnbiBudi1zYTEzMDEGA1UEAxMqR2xvYmFsU2lnbiBQZXJzb25hbFNpZ24gMiBDQSAtIFNI
-QTI1NiAtIEczAgxR3m7Pj6LvQiWjJy0wDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIE
-IDTfGBVPqhak9g/Qi3y9lTLCfeKCCA0huqvwBJRrbRp1MBgGCSqGSIb3DQEJAzELBgkqhkiG9w0B
-BwEwHAYJKoZIhvcNAQkFMQ8XDTIxMDIwODExNTM1M1owaQYJKoZIhvcNAQkPMVwwWjALBglghkgB
-ZQMEASowCwYJYIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQow
-CwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQAd4OFhO/HZ1tgMIM80
-S6vFUejSv0LCVboj/bRYjGLohryuwRn9Fe8MlTKTSsVWacan6ldVQsBG8NC7HFhMt5tJeBRCC+xK
-vx762+SJ1YJkjl960Hh2Rq1wbBiG2Rochz2azfKSNUV3s0oc4zn8k2oRb6h/eZ8wX3F2xVuhYj3Y
-nIa5sSQbC6Eg63CcfbQhWxhAf+fU5JFqihOUswpYTPCvnXYjX4gbV26Bhf7d0J8xmYRmwPGXnvo2
-/YNSDVGK4DP/2ByTuyDJaY9cAWyNxQaXBUI2zmum/HI7tvD9KP018hm/uBMWaE2zwx3Yb+671/5b
-hmWLTSkJu++pTOhB7guo
---000000000000edcc5405bad1d2ab--
+which you leave alone.
+
+Jan
