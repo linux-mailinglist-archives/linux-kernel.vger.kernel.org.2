@@ -2,477 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B6B73142C5
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 23:22:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B494A3142E0
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 23:25:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230330AbhBHWVz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 17:21:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47290 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229691AbhBHWVp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 17:21:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E36BA64E50;
-        Mon,  8 Feb 2021 22:21:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612822863;
-        bh=cCcse22k3F5hwlh+xLYbIavpMoccTElGkl+EA0oSb1s=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=kNbs6KxKn/eGC6SqxaFvK62sb9uIcNSNT5rZJD3AD99C4ZhxFEn9SYt2q3zkHzLPP
-         CrrzQ0omw4w5ugc6/Hln0fBc3pYgqE8QkIXUbNWlXsRFRzVf8KofJHcG0jNiehPDNp
-         GM5I9TZNVWl6MPMM6Tm7S4teuRGLWtWO7Nt6h4tueoHMMQmXLE5K9r3Sm3zCLke54F
-         1klSXF2lhIjY0xSdih0WG4DoNCylbdOEQt9teWfOPorF26FpYuuXSFwlKUVhEna4bm
-         s6iWjxRjpfMjfULHz/7ywjj2z61Q00ZFruPBCLc/NXluazQG1PcblFiZ2bpti1bory
-         QpAjm3Ts9B64Q==
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <1612675154-2747-4-git-send-email-hsin-hsiung.wang@mediatek.com>
-References: <1612675154-2747-1-git-send-email-hsin-hsiung.wang@mediatek.com> <1612675154-2747-4-git-send-email-hsin-hsiung.wang@mediatek.com>
-Subject: Re: [PATCH v6 3/4] spmi: mediatek: Add support for MT6873/8192
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com,
-        Project_Global_Chrome_Upstream_Group@mediatek.com
-To:     Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, drinkcat@chromium.org
-Date:   Mon, 08 Feb 2021 14:21:01 -0800
-Message-ID: <161282286152.4172033.2089037988542209363@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+        id S231561AbhBHWZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 17:25:04 -0500
+Received: from mout.kundenserver.de ([212.227.17.13]:42489 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229707AbhBHWYs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 17:24:48 -0500
+Received: from orion.localdomain ([95.115.15.83]) by mrelayeu.kundenserver.de
+ (mreue107 [212.227.15.183]) with ESMTPSA (Nemesis) id
+ 1MeC1p-1ljgCS3lKB-00bN0A; Mon, 08 Feb 2021 23:22:12 +0100
+From:   "Enrico Weigelt, metux IT consult" <info@metux.net>
+To:     linux-kernel@vger.kernel.org
+Cc:     rafael@kernel.org, info@metux.net, linus.walleij@linaro.org,
+        bgolaszewski@baylibre.com, robh+dt@kernel.org,
+        frowand.list@gmail.com, pantelis.antoniou@konsulko.com,
+        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org
+Subject: RFC: oftree based setup of composite board devices
+Date:   Mon,  8 Feb 2021 23:21:51 +0100
+Message-Id: <20210208222203.22335-1-info@metux.net>
+X-Mailer: git-send-email 2.11.0
+X-Provags-ID: V03:K1:YGOCpHnsbsGtUlGB7/BvinIydpkYaAdvOutF/AgpVbrM2wKznfV
+ U9iKqmh3uBYiyET8bTw6HuViAsU7a2/46bjPr583UuARsy9PdeUdE/sT1/hXHTvOhVBx+e4
+ Ediemtnu34I2U7JliOiBL/xSD7AmBuQj0zBO68MWIyKd5F3lR3+Z/GMenVWYbnv0TCsu1g3
+ DboH0WgcSg1no8w5B0HGA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:hzv4C31OEQw=:Ly6KlmmdeRHiHk6PzwaLQ1
+ qHHcmi+WM0fri6LCcuJ1STJoum22XN4zHwAM3dc9xgz+yrjWr/jmvtdc3E7X3x/qjNu3dSlJG
+ 8iwk+L+tlNUD7Xh2+q/lZ57HIJaI6XimTKr9bdvDJtEbTLmdJ2scGLwwIW7vmecVP0n08KQy0
+ JQOl6dlUCLn4khIq7+kyq5eGCnwEY+wtfpMYRSaWBe7AzWEpoVHU/NWC66ooxG9Q6vkQj7kfl
+ R5e0dqYCi2a6OHHIbRjrf1MVTFsuj96pG72GWlpymJCL8a8gMMhyhaKLGgKCPU93eG3HGSXiw
+ 0BSq354rjf2L+oUg5zoLXGPMC1Xb3e6a5/REGMnX8eQX0dHlJXCf45nWdlaA6vSkWD3PXSIcl
+ 3o6DtA8SS0KgakGNuvhEgdDUEwbZ4R9RzpB2OJC0IaZUAP6B3BcFi9610PPMl
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Hsin-Hsiung Wang (2021-02-06 21:19:13)
-> diff --git a/drivers/spmi/Kconfig b/drivers/spmi/Kconfig
-> index a53bad541f1a..418848840999 100644
-> --- a/drivers/spmi/Kconfig
-> +++ b/drivers/spmi/Kconfig
-> @@ -25,4 +25,13 @@ config SPMI_MSM_PMIC_ARB
->           This is required for communicating with Qualcomm PMICs and
->           other devices that have the SPMI interface.
-> =20
-> +config SPMI_MTK_PMIF
-> +       tristate "Mediatek SPMI Controller (PMIC Arbiter)"
-> +       help
-> +         If you say yes to this option, support will be included for the
-> +         built-in SPMI PMIC Arbiter interface on Mediatek family
-> +         processors.
-> +
-> +         This is required for communicating with Mediatek PMICs and
-> +         other devices that have the SPMI interface.
+Hello folks,
 
-Preferably add another newline here to unstick the 'endif'
+here's an RFC for using compiled-in dtb's for initializing board devices
+that can't be probed via bus'es or firmware.
 
->  endif
-> diff --git a/drivers/spmi/spmi-mtk-pmif.c b/drivers/spmi/spmi-mtk-pmif.c
-> new file mode 100644
-> index 000000000000..4ac4643f89f3
-> --- /dev/null
-> +++ b/drivers/spmi/spmi-mtk-pmif.c
-> @@ -0,0 +1,488 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +//
-> +// Copyright (c) 2021 MediaTek Inc.
-> +
-> +#include <linux/clk.h>
-> +#include <linux/iopoll.h>
-> +#include <linux/module.h>
-> +#include <linux/of_device.h>
-> +#include <linux/spmi.h>
-> +
-> +#define SWINF_IDLE     0x00
-> +#define SWINF_WFVLDCLR 0x06
-> +
-> +#define GET_SWINF(x)   (((x) >> 1) & 0x7)
-> +
-> +#define PMIF_CMD_REG_0         0
-> +#define PMIF_CMD_REG           1
-> +#define PMIF_CMD_EXT_REG       2
-> +#define PMIF_CMD_EXT_REG_LONG  3
-> +
-> +#define PMIF_DELAY_US   10
-> +#define PMIF_TIMEOUT_US (10 * 1000)
-> +
-> +#define PMIF_CHAN_OFFSET 0x5
-> +
-> +#define PMIF_MAX_CLKS  3
-> +
-> +#define SPMI_OP_ST_BUSY 1
-> +
-> +struct ch_reg {
-> +       u32 ch_sta;
-> +       u32 wdata;
-> +       u32 rdata;
-> +       u32 ch_send;
-> +       u32 ch_rdy;
-> +};
-> +
-> +struct pmif_data {
-> +       const u32       *regs;
-> +       const u32       *spmimst_regs;
-> +       u32     soc_chan;
+Use cases are boards with non-oftree firmware (ACPI, etc) where certain
+platform devices can't be directly enumerated via firmware. Traditionally
+we had to write board specific drivers that check for board identification
+(DMI strings, etc), then initialize the actual devices and their links
+(eg. gpio<->leds/buttons, ...). Often this can be expressed just by DT.
 
-Is this used?
+This patch queue does a bunch of preparations in oftree code, so we can
+support multiple fully independent DT's (not using DT overlays). And then
+adds a generic driver parses compiled-in fdt blobs, checks for mathing
+DMI strings and initializes the devices. As an example, the last patch
+adds an alternative implementation for the PC engines APU2/3/4 board
+family based on device tree.
 
-> +};
-> +
-> +struct pmif {
-> +       void __iomem    *base;
-> +       void __iomem    *spmimst_base;
-> +       raw_spinlock_t  lock;
+The approach can be easily be extended to other kinds of composite devices,
+eg. PCI cards or USB dongles.
 
-Why is the spinlock raw? Is it used in hard irq handling?
 
-> +       struct ch_reg   chan;
-> +       struct clk_bulk_data clks[PMIF_MAX_CLKS];
-> +       u32 nclks;
-> +       const struct pmif_data *data;
-> +};
-> +
-> +static const char * const pmif_clock_names[] =3D {
-> +       "pmif_sys_ck", "pmif_tmr_ck", "spmimst_clk_mux",
-> +};
-> +
-> +enum pmif_regs {
-> +       PMIF_INIT_DONE,
-> +       PMIF_INF_EN,
-> +       PMIF_ARB_EN,
-> +       PMIF_CMDISSUE_EN,
-> +       PMIF_TIMER_CTRL,
-> +       PMIF_SPI_MODE_CTRL,
-> +       PMIF_IRQ_EVENT_EN_0,
-> +       PMIF_IRQ_FLAG_0,
-> +       PMIF_IRQ_CLR_0,
-> +       PMIF_IRQ_EVENT_EN_1,
-> +       PMIF_IRQ_FLAG_1,
-> +       PMIF_IRQ_CLR_1,
-> +       PMIF_IRQ_EVENT_EN_2,
-> +       PMIF_IRQ_FLAG_2,
-> +       PMIF_IRQ_CLR_2,
-> +       PMIF_IRQ_EVENT_EN_3,
-> +       PMIF_IRQ_FLAG_3,
-> +       PMIF_IRQ_CLR_3,
-> +       PMIF_IRQ_EVENT_EN_4,
-> +       PMIF_IRQ_FLAG_4,
-> +       PMIF_IRQ_CLR_4,
-> +       PMIF_WDT_EVENT_EN_0,
-> +       PMIF_WDT_FLAG_0,
-> +       PMIF_WDT_EVENT_EN_1,
-> +       PMIF_WDT_FLAG_1,
-> +       PMIF_SWINF_0_STA,
-> +       PMIF_SWINF_0_WDATA_31_0,
-> +       PMIF_SWINF_0_RDATA_31_0,
-> +       PMIF_SWINF_0_ACC,
-> +       PMIF_SWINF_0_VLD_CLR,
-> +       PMIF_SWINF_1_STA,
-> +       PMIF_SWINF_1_WDATA_31_0,
-> +       PMIF_SWINF_1_RDATA_31_0,
-> +       PMIF_SWINF_1_ACC,
-> +       PMIF_SWINF_1_VLD_CLR,
-> +       PMIF_SWINF_2_STA,
-> +       PMIF_SWINF_2_WDATA_31_0,
-> +       PMIF_SWINF_2_RDATA_31_0,
-> +       PMIF_SWINF_2_ACC,
-> +       PMIF_SWINF_2_VLD_CLR,
-> +       PMIF_SWINF_3_STA,
-> +       PMIF_SWINF_3_WDATA_31_0,
-> +       PMIF_SWINF_3_RDATA_31_0,
-> +       PMIF_SWINF_3_ACC,
-> +       PMIF_SWINF_3_VLD_CLR,
-> +};
-> +
-> +static const u32 mt6873_regs[] =3D {
-> +       [PMIF_INIT_DONE] =3D      0x0000,
-> +       [PMIF_INF_EN] =3D         0x0024,
-> +       [PMIF_ARB_EN] =3D         0x0150,
-> +       [PMIF_CMDISSUE_EN] =3D    0x03B4,
-> +       [PMIF_TIMER_CTRL] =3D     0x03E0,
-> +       [PMIF_SPI_MODE_CTRL] =3D  0x0400,
-> +       [PMIF_IRQ_EVENT_EN_0] =3D 0x0418,
-> +       [PMIF_IRQ_FLAG_0] =3D     0x0420,
-> +       [PMIF_IRQ_CLR_0] =3D      0x0424,
-> +       [PMIF_IRQ_EVENT_EN_1] =3D 0x0428,
-> +       [PMIF_IRQ_FLAG_1] =3D     0x0430,
-> +       [PMIF_IRQ_CLR_1] =3D      0x0434,
-> +       [PMIF_IRQ_EVENT_EN_2] =3D 0x0438,
-> +       [PMIF_IRQ_FLAG_2] =3D     0x0440,
-> +       [PMIF_IRQ_CLR_2] =3D      0x0444,
-> +       [PMIF_IRQ_EVENT_EN_3] =3D 0x0448,
-> +       [PMIF_IRQ_FLAG_3] =3D     0x0450,
-> +       [PMIF_IRQ_CLR_3] =3D      0x0454,
-> +       [PMIF_IRQ_EVENT_EN_4] =3D 0x0458,
-> +       [PMIF_IRQ_FLAG_4] =3D     0x0460,
-> +       [PMIF_IRQ_CLR_4] =3D      0x0464,
-> +       [PMIF_WDT_EVENT_EN_0] =3D 0x046C,
-> +       [PMIF_WDT_FLAG_0] =3D     0x0470,
-> +       [PMIF_WDT_EVENT_EN_1] =3D 0x0474,
-> +       [PMIF_WDT_FLAG_1] =3D     0x0478,
-> +       [PMIF_SWINF_0_ACC] =3D    0x0C00,
-> +       [PMIF_SWINF_0_WDATA_31_0] =3D     0x0C04,
-> +       [PMIF_SWINF_0_RDATA_31_0] =3D     0x0C14,
-> +       [PMIF_SWINF_0_VLD_CLR] =3D        0x0C24,
-> +       [PMIF_SWINF_0_STA] =3D    0x0C28,
-> +       [PMIF_SWINF_1_ACC] =3D    0x0C40,
-> +       [PMIF_SWINF_1_WDATA_31_0] =3D     0x0C44,
-> +       [PMIF_SWINF_1_RDATA_31_0] =3D     0x0C54,
-> +       [PMIF_SWINF_1_VLD_CLR] =3D        0x0C64,
-> +       [PMIF_SWINF_1_STA] =3D    0x0C68,
-> +       [PMIF_SWINF_2_ACC] =3D    0x0C80,
-> +       [PMIF_SWINF_2_WDATA_31_0] =3D     0x0C84,
-> +       [PMIF_SWINF_2_RDATA_31_0] =3D     0x0C94,
-> +       [PMIF_SWINF_2_VLD_CLR] =3D        0x0CA4,
-> +       [PMIF_SWINF_2_STA] =3D    0x0CA8,
-> +       [PMIF_SWINF_3_ACC] =3D    0x0CC0,
-> +       [PMIF_SWINF_3_WDATA_31_0] =3D     0x0CC4,
-> +       [PMIF_SWINF_3_RDATA_31_0] =3D     0x0CD4,
-> +       [PMIF_SWINF_3_VLD_CLR] =3D        0x0CE4,
-> +       [PMIF_SWINF_3_STA] =3D    0x0CE8,
-> +};
-> +
-> +enum spmi_regs {
-> +       SPMI_OP_ST_CTRL,
-> +       SPMI_GRP_ID_EN,
-> +       SPMI_OP_ST_STA,
-> +       SPMI_MST_SAMPL,
-> +       SPMI_MST_REQ_EN,
-> +       SPMI_REC_CTRL,
-> +       SPMI_REC0,
-> +       SPMI_REC1,
-> +       SPMI_REC2,
-> +       SPMI_REC3,
-> +       SPMI_REC4,
-> +       SPMI_MST_DBG,
-> +};
-> +
-> +static const u32 mt6873_spmi_regs[] =3D {
+Yet some drawbacks of the current implementation:
 
-There's only one of these so far. Is there going to be a different
-register layout in the future? If we can avoid the indirection it would
-be ideal.
+ * individual FDT's can't be modularized yet (IMHO, we don't have DMI-based
+   modprobing anyways)
+ * can't reconfigure or attach to devices outside the individual DT's
+   (eg. probed by PCI, etc)
 
-> +       [SPMI_OP_ST_CTRL] =3D     0x0000,
-> +       [SPMI_GRP_ID_EN] =3D      0x0004,
-> +       [SPMI_OP_ST_STA] =3D      0x0008,
-> +       [SPMI_MST_SAMPL] =3D      0x000c,
-> +       [SPMI_MST_REQ_EN] =3D     0x0010,
-> +       [SPMI_REC_CTRL] =3D       0x0040,
-> +       [SPMI_REC0] =3D           0x0044,
-> +       [SPMI_REC1] =3D           0x0048,
-> +       [SPMI_REC2] =3D           0x004c,
-> +       [SPMI_REC3] =3D           0x0050,
-> +       [SPMI_REC4] =3D           0x0054,
-> +       [SPMI_MST_DBG] =3D        0x00fc,
-> +};
-> +
-> +static u32 pmif_readl(struct pmif *arb, enum pmif_regs reg)
-> +{
-> +       return readl(arb->base + arb->data->regs[reg]);
-> +}
-> +
-> +static void pmif_writel(struct pmif *arb, u32 val, enum pmif_regs reg)
-> +{
-> +       writel(val, arb->base + arb->data->regs[reg]);
-> +}
-> +
-> +static void mtk_spmi_writel(struct pmif *arb, u32 val, enum spmi_regs re=
-g)
-> +{
-> +       writel(val, arb->spmimst_base + arb->data->spmimst_regs[reg]);
-> +}
-> +
-> +static bool pmif_is_fsm_vldclr(struct pmif *arb)
-> +{
-> +       u32 reg_rdata;
-> +
-> +       reg_rdata =3D pmif_readl(arb, arb->chan.ch_sta);
-> +       return GET_SWINF(reg_rdata) =3D=3D SWINF_WFVLDCLR;
-> +}
-> +
-> +static int pmif_arb_cmd(struct spmi_controller *ctrl, u8 opc, u8 sid)
-> +{
-> +       struct pmif *arb =3D spmi_controller_get_drvdata(ctrl);
-> +       u32 rdata, cmd;
-> +       int ret;
-> +
-> +       /* Check for argument validation. */
-> +       if (sid & ~0xf) {
-> +               dev_err(&ctrl->dev, "exceed the max slv id\n");
-> +               return -EINVAL;
-> +       }
-> +
-> +       /* Check the opcode */
-> +       if (opc < SPMI_CMD_RESET || opc > SPMI_CMD_WAKEUP)
-> +               return -EINVAL;
-> +
-> +       cmd =3D opc - SPMI_CMD_RESET;
-> +
-> +       mtk_spmi_writel(arb, (cmd << 0x4) | sid, SPMI_OP_ST_CTRL);
-> +       ret =3D readl_poll_timeout_atomic(arb->spmimst_base + arb->data->=
-spmimst_regs[SPMI_OP_ST_STA],
-> +                                       rdata, (rdata & SPMI_OP_ST_BUSY) =
-=3D=3D SPMI_OP_ST_BUSY,
-> +                                       PMIF_DELAY_US, PMIF_TIMEOUT_US);
-> +       if (ret < 0)
-> +               dev_err(&ctrl->dev, "timeout, err =3D %d\n", ret);
-> +
-> +       return ret;
-> +}
-> +
-> +static int pmif_spmi_read_cmd(struct spmi_controller *ctrl, u8 opc, u8 s=
-id,
-> +                             u16 addr, u8 *buf, size_t len)
-> +{
-> +       struct pmif *arb =3D spmi_controller_get_drvdata(ctrl);
-> +       struct ch_reg *inf_reg;
-> +       int ret;
-> +       u32 data, cmd;
-> +       unsigned long flags;
-> +
-> +       /* Check for argument validation. */
-> +       if (sid & ~0xf) {
-> +               dev_err(&ctrl->dev, "exceed the max slv id\n");
-> +               return -EINVAL;
-> +       }
-> +
-> +       if (len > 4) {
-> +               dev_err(&ctrl->dev, "pmif supports 1..4 bytes per trans, =
-but:%zu requested", len);
-> +               return -EINVAL;
-> +       }
-> +
-> +       if (opc >=3D 0x60 && opc <=3D 0x7f)
-> +               opc =3D PMIF_CMD_REG;
-> +       else if ((opc >=3D 0x20 && opc <=3D 0x2f) || (opc >=3D 0x38 && op=
-c <=3D 0x3f))
-> +               opc =3D PMIF_CMD_EXT_REG_LONG;
-> +       else
-> +               return -EINVAL;
-> +
-> +       raw_spin_lock_irqsave(&arb->lock, flags);
-> +
-> +       /* Wait for Software Interface FSM state to be IDLE. */
-> +       inf_reg =3D &arb->chan;
-> +       ret =3D readl_poll_timeout_atomic(arb->base + arb->data->regs[inf=
-_reg->ch_sta],
-> +                                       data, GET_SWINF(data) =3D=3D SWIN=
-F_IDLE,
-> +                                       PMIF_DELAY_US, PMIF_TIMEOUT_US);
-> +       if (ret < 0) {
-> +               /* set channel ready if the data has transferred */
-> +               if (pmif_is_fsm_vldclr(arb))
-> +                       pmif_writel(arb, 1, inf_reg->ch_rdy);
-> +               dev_err(&ctrl->dev, "failed to wait for SWINF_IDLE\n");
-> +               goto out;
-> +       }
-> +
-> +       /* Send the command. */
-> +       cmd =3D (opc << 30) | (sid << 24) | ((len - 1) << 16) | addr;
-> +       pmif_writel(arb, cmd, inf_reg->ch_send);
-> +
-> +       /*
-> +        * Wait for Software Interface FSM state to be WFVLDCLR,
-> +        * read the data and clear the valid flag.
-> +        */
-> +       ret =3D readl_poll_timeout_atomic(arb->base + arb->data->regs[inf=
-_reg->ch_sta],
-> +                                       data, GET_SWINF(data) =3D=3D SWIN=
-F_WFVLDCLR,
-> +                                       PMIF_DELAY_US, PMIF_TIMEOUT_US);
-> +       if (ret < 0) {
-> +               dev_err(&ctrl->dev, "failed to wait for SWINF_WFVLDCLR\n"=
-);
-> +               goto out;
-> +       }
-> +
-> +       data =3D pmif_readl(arb, inf_reg->rdata);
-> +       memcpy(buf, &data, len);
-> +       pmif_writel(arb, 1, inf_reg->ch_rdy);
-> +
-> +out:
-> +       raw_spin_unlock_irqrestore(&arb->lock, flags);
-> +       if (ret < 0)
-> +               return ret;
-> +
-> +       return 0;
-> +}
-> +
-> +static int pmif_spmi_write_cmd(struct spmi_controller *ctrl, u8 opc, u8 =
-sid,
-> +                              u16 addr, const u8 *buf, size_t len)
-> +{
-> +       struct pmif *arb =3D spmi_controller_get_drvdata(ctrl);
-> +       struct ch_reg *inf_reg;
-> +       int ret;
-> +       u32 data, cmd;
-> +       unsigned long flags;
-> +
-> +       /* Check for argument validation. */
-> +       if (sid & ~0xf) {
-> +               dev_err(&ctrl->dev, "exceed the max slv id\n");
 
-Feels like something we should push up into the core framework instead
-of having each driver figure out.
+have fun,
 
-> +               return -EINVAL;
-> +       }
-> +
-> +       if (len > 4) {
-> +               dev_err(&ctrl->dev, "pmif supports 1..4 bytes per trans, =
-but:%zu requested", len);
+--mtx
 
-Feels like something we should push up into the core framework instead
-of having each driver figure out.
-
-> +               return -EINVAL;
-> +       }
-> +
-> +       /* Check the opcode */
-> +       if (opc >=3D 0x40 && opc <=3D 0x5F)
-> +               opc =3D PMIF_CMD_REG;
-> +       else if ((opc <=3D 0xF) || (opc >=3D 0x30 && opc <=3D 0x37))
-> +               opc =3D PMIF_CMD_EXT_REG_LONG;
-> +       else if (opc >=3D 0x80)
-> +               opc =3D PMIF_CMD_REG_0;
-> +       else
-> +               return -EINVAL;
-> +
-> +       raw_spin_lock_irqsave(&arb->lock, flags);
-> +
-> +       /* Wait for Software Interface FSM state to be IDLE. */
-> +       inf_reg =3D &arb->chan;
-> +       ret =3D readl_poll_timeout_atomic(arb->base + arb->data->regs[inf=
-_reg->ch_sta],
-> +                                       data, GET_SWINF(data) =3D=3D SWIN=
-F_IDLE,
-> +                                       PMIF_DELAY_US, PMIF_TIMEOUT_US);
-> +       if (ret < 0) {
-> +               /* set channel ready if the data has transferred */
-> +               if (pmif_is_fsm_vldclr(arb))
-> +                       pmif_writel(arb, 1, inf_reg->ch_rdy);
-> +               dev_err(&ctrl->dev, "failed to wait for SWINF_IDLE\n");
-> +               goto out;
-> +       }
-> +
-> +       /* Set the write data. */
-> +       memcpy(&data, buf, len);
-> +       pmif_writel(arb, data, inf_reg->wdata);
-> +
-> +       /* Send the command. */
-> +       cmd =3D (opc << 30) | BIT(29) | (sid << 24) | ((len - 1) << 16) |=
- addr;
-> +       pmif_writel(arb, cmd, inf_reg->ch_send);
-
-What is BIT 29? Is that special somehow?
-
-> +
-> +out:
-> +       raw_spin_unlock_irqrestore(&arb->lock, flags);
-> +       if (ret < 0)
-> +               return ret;
-> +
-> +       return 0;
-> +}
-> +
