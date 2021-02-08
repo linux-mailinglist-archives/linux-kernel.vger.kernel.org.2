@@ -2,137 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3100C313D6B
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 19:27:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F727313D71
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 19:27:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235620AbhBHS0K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 13:26:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60302 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231359AbhBHPvF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 10:51:05 -0500
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E808EC061786
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 07:50:24 -0800 (PST)
-Received: by mail-wm1-x32a.google.com with SMTP id o10so135434wmc.1
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 07:50:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=scylladb-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:organization:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=Qcbtr1LdWWW5bciKMkCu87TpuKaqvnxst2wajR8RZW8=;
-        b=KUsHg8NGb+T2B4xF99XcgIfb/RaSHEja0/y1aGBLaOv+2CLKU8AaZ5Votph+yZQDX2
-         nXOjhoQnV3QBiwbiIMIf7I4N0JXvpllgI9t8ajzVn1ahe9rV5x+xNC3HJ1qSdlgoV1VJ
-         Y0u23WrXUkwNhWDXltRMAmtPluATW4tdm7qA6yYQv9XuqB6AzO5rMYrdBFfcpdmVJjht
-         2wdbfPzMAWxaNLu1TN4v8mnCsPmiKp07L4v7nMoaxYLCIR0UXhfZF8S4VgkM5gPmpIJp
-         2c+b6wrr8dRKj8yLUgtrbkpzPSzy9Bbk1uCb3YnS+o82czmzt3/urU/gkaWkB5FCrng9
-         TYWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-transfer-encoding:content-language;
-        bh=Qcbtr1LdWWW5bciKMkCu87TpuKaqvnxst2wajR8RZW8=;
-        b=tBsiH+I+ijCNEp3r7fKrJvfaWlew0PaZRm+3K4fwFF7C2y4BeXSLJu6nDm/RlGVG7K
-         rbxAnq6C4fJa88CW2ZnZpV7numS9Cprysgbt2OmwfBD2wEybt5uU8HoPMPuicMqGXJJE
-         JkHTpy0oLa6uQETycJAxB9kpe1c7oUqhcmwQC9bO98bIE+O3YcsU5wEkNQ9G74z9tGII
-         Xl74HTipTuJerJQpJzfAvYx+UtvBXnVlmIsZHJI8T3tCvl/eHx4rnBC4SPQsfyrH/Tue
-         THVHVzFBPfJntFr7AbDcYfS+m4keR1ORM9/xHwh1Iji+ZYYVghm7dDxyiUi7UJPNwQLS
-         3jiw==
-X-Gm-Message-State: AOAM532oqf8dd3eQBRMnwckg2BDAP6CY700Jb+bh2KcjhhxQH+s6qvKV
-        vrL0+UQydviSTKP29ALsBnvskw==
-X-Google-Smtp-Source: ABdhPJxNwMJK4nbL44Z8eihFpHQDQVbnhmaXtunWragEFnRiizr+xHZTjmQ9l5tDztZZdkwG7fvR1w==
-X-Received: by 2002:a7b:ce93:: with SMTP id q19mr15356415wmj.65.1612799423642;
-        Mon, 08 Feb 2021 07:50:23 -0800 (PST)
-Received: from [10.0.0.1] (system.cloudius-systems.com. [199.203.229.89])
-        by smtp.gmail.com with ESMTPSA id m18sm29493995wrx.17.2021.02.08.07.50.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Feb 2021 07:50:22 -0800 (PST)
-Subject: Re: Linux 4.9.256
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, stable@vger.kernel.org
-Cc:     lwn@lwn.net, jslaby@suse.cz
-References: <1612535085125226@kroah.com>
-From:   Avi Kivity <avi@scylladb.com>
-Organization: ScyllaDB
-Message-ID: <23a28990-c465-f813-52a4-f7f3db007f9d@scylladb.com>
-Date:   Mon, 8 Feb 2021 17:50:21 +0200
+        id S233498AbhBHS1N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 13:27:13 -0500
+Received: from marcansoft.com ([212.63.210.85]:38724 "EHLO mail.marcansoft.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234141AbhBHPv7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 10:51:59 -0500
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: marcan@marcan.st)
+        by mail.marcansoft.com (Postfix) with ESMTPSA id DE5D94207F;
+        Mon,  8 Feb 2021 15:51:11 +0000 (UTC)
+Subject: Re: [PATCH 08/18] arm64: cpufeature: Add a feature for FIQ support
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     soc@kernel.org, linux-arm-kernel@lists.infradead.org,
+        robh+dt@kernel.org, Arnd Bergmann <arnd@kernel.org>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        Olof Johansson <olof@lixom.net>
+References: <20210204203951.52105-1-marcan@marcan.st>
+ <20210204203951.52105-9-marcan@marcan.st> <87im75l2lp.wl-maz@kernel.org>
+ <d110504f-2461-8b41-72cc-72681d775a97@marcan.st>
+ <87czxalrwc.wl-maz@kernel.org>
+From:   Hector Martin <marcan@marcan.st>
+Message-ID: <271fc761-d782-31b8-d97b-907041f15289@marcan.st>
+Date:   Tue, 9 Feb 2021 00:51:09 +0900
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-In-Reply-To: <1612535085125226@kroah.com>
+In-Reply-To: <87czxalrwc.wl-maz@kernel.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: es-ES
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/02/2021 16.26, Greg Kroah-Hartman wrote:
-> I'm announcing the release of the 4.9.256 kernel.
->
-> This, and the 4.4.256 release are a little bit "different" than normal.
->
-> This contains only 1 patch, just the version bump from .255 to .256 which ends
-> up causing the userspace-visable LINUX_VERSION_CODE to behave a bit differently
-> than normal due to the "overflow".
->
-> With this release, KERNEL_VERSION(4, 9, 256) is the same as KERNEL_VERSION(4, 10, 0).
+On 08/02/2021 20.29, Marc Zyngier wrote:
+> I'm not sure we want to trust the FW on that particular front (no
+> offence intended...;-).
 
+Hey, I don't even *use* the timers IRQs; if they are unmasked it's 
+iBoot's fault! :-)
 
-I think this is a bad idea. Many kernel features can only be discovered 
-by checking the kernel version. If a feature was introduced in 4.10, 
-then an application can be tricked into thinking a 4.9 kernel has it.
+> That is my current take on this patch. Nothing in the arm64 kernel
+> expects a FIQ today, so *when* a FIQ fires is pretty much irrelevant,
+> as long as we handle it properly (panic). Keeping the two bits in sync
+> is trivial, and shouldn't carry material overhead.
 
+Sounds good then, and again that simplifies a ton of stuff. Will go for 
+that in v2.
 
-IMO, better to stop LINUX_VERSION_CODE at 255 and introduce a 
-LINUX_VERSION_CODE_IMPROVED that has more bits for patchlevel.
+> Aside from the lack of programmable priority, the lack of convenient
+> masking for per-CPU interrupts is a bit of an issue...
 
+Yeah... we'll see how that goes.
 
-> Nothing in the kernel build itself breaks with this change, but given that this
-> is a userspace visible change, and some crazy tools (like glibc and gcc) have
-> logic that checks the kernel version for different reasons, I wanted to do this
-> release as an "empty" release to ensure that everything still works properly.
-
-
-Even if glibc and gcc work, other programs may not.
-
-
-I have two such cases. They don't depend on 4.9, but they're examples of 
-features that are not discoverable by other means.
-
-
-
-> So, this is a YOU MUST UPGRADE requirement of a release.  If you rely on the
-> 4.9.y kernel, please throw this release into your test builds and rebuild the
-> world and let us know if anything breaks, or if all is well.
->
-> Go forth and do full system rebuilds!  Yocto and Gentoo are great for this, as
-> will systems that use buildroot.
->
-> I'll try to hold off on doing a "real" 4.9.y release for a 9eek to give
-> everyone a chance to test this out and get back to me.  The pending patches in
-> the 4.9.y queue are pretty serious, so I am loath to wait longer than that,
-> consider yourself warned...
->
-> The updated 4.9.y git tree can be found at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git linux-4.9.y
-> and can be browsed at the normal kernel.org git web browser:
-> 	https://git.kernel.org/?p=linux/kernel/git/stable/linux-stable.git;a=summary
->
-> thanks,
->
-> greg k-h
->
-> ------------
->
->   Makefile |    2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> Greg Kroah-Hartman (1):
->        Linux 4.9.256
->
->
+-- 
+Hector Martin (marcan@marcan.st)
+Public Key: https://mrcn.st/pub
