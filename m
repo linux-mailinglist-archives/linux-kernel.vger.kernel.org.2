@@ -2,188 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B20B8313E3E
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 19:57:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B246313E42
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 19:59:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235976AbhBHS5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 13:57:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33008 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234659AbhBHRMW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 12:12:22 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A652164E56;
-        Mon,  8 Feb 2021 17:11:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612804300;
-        bh=8cInwpZNrYUI7sgeSOftaZrRVoDlxmqJ198FGdjRkU8=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=Dn18xGM8xxbDaxNMJpwdbwY31Lphou5h/L+rnp6R+QQqUCaOPWarkiYTcQ17g1F0P
-         dVTRnX6Z16LzE5LQFzGxP+LEyUwJKakTtWcqYnrDeOz/YkuY1Z2Ubc1uC2+8LXnHaN
-         k9wFqoZ/a82vpB/MzUyyXKqmFHPgk6UYG7/KSDruYYA1pmZB96R/vHev8JdxD3Oqng
-         W623jIHNFFMBwIxYwVnOiZO43i8QOrfsUzzWZJKoV+Ro+AfyBSjXGaLhTHKW0xAWVf
-         jFmWLqcPMQ0FF9AGKhSdXfdBriwY3Wnfe+rxcDD6Hoxw4mQHLbzXBUclBQxCnm3KPd
-         mNkTUMLLgC27w==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 44C0B35237DC; Mon,  8 Feb 2021 09:11:40 -0800 (PST)
-Date:   Mon, 8 Feb 2021 09:11:40 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Brian Foster <bfoster@redhat.com>
-Cc:     Paul Menzel <pmenzel@molgen.mpg.de>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        linux-xfs@vger.kernel.org, Josh Triplett <josh@joshtriplett.org>,
-        rcu@vger.kernel.org, it+linux-rcu@molgen.mpg.de,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: rcu: INFO: rcu_sched self-detected stall on CPU: Workqueue:
- xfs-conv/md0 xfs_end_io
-Message-ID: <20210208171140.GV2743@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <1b07e849-cffd-db1f-f01b-2b8b45ce8c36@molgen.mpg.de>
- <20210205171240.GN2743@paulmck-ThinkPad-P72>
- <20210208140724.GA126859@bfoster>
- <20210208145723.GT2743@paulmck-ThinkPad-P72>
- <20210208154458.GB126859@bfoster>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+        id S231569AbhBHS6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 13:58:05 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:44050 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234767AbhBHRQX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 12:16:23 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 118HDpqE087179;
+        Mon, 8 Feb 2021 17:14:57 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=corp-2020-01-29;
+ bh=dKvU0UUYEyA9tuy09aeAgZwcUw48dj9vqzHRYi5wA1w=;
+ b=SUxe/h+7BRFwkR0/7Bh3ZzHHMkOwJlcauSoZmP/JBwrP+ZWdSmtXKDYY73ciaUO61vQg
+ tfAhOAKaNUDUslOXLKiqoQr4RGcbvw3I1srGJbmQNZZrCwnVhCXtft/km5SP6zWvaMox
+ g/BetJaetzd/Wd8FI5NYB5GT+sAHBbdJjPLNDvjD6NFGeg+FvAOMZC8VUzjVGEXngD5H
+ 03xZxaoRU4juFRW2gpJb842Nh4GT4sxxWuPcMsuWrnGigCCZ/md3Yo8vR4cwxxuN+Vah
+ dxQUexAFCEbLEkbq8E+5xHbdahgQ8X316+1PHvYf0Y7w29LUY+PJ6DS5LcKPJHJGLgAx LA== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2130.oracle.com with ESMTP id 36hgmacs55-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 08 Feb 2021 17:14:57 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 118H060d075694;
+        Mon, 8 Feb 2021 17:14:57 GMT
+Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2100.outbound.protection.outlook.com [104.47.58.100])
+        by aserp3030.oracle.com with ESMTP id 36j4pmm242-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 08 Feb 2021 17:14:57 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=B2qOQp3mAlqN3hpt823r75XwDzagXTl2WNz9cI2jUtBU/SJ5uArWyv7Qaq08vrlNOe7HkN3jyNDSmcSNt5Kvbp8Kk2qLp0lmfIqRTQKAQcewbbJ3eWFVQJHAhJWQcEKKhYzv72fBv6gVv7q4DTopAyjY2AULrVrwXTL8+L1mRTv2tVuoVe+M/wdT/x8Ed/S71jjjjRkU6us7NXDIP1ps/5sikW0G5uUxHpE9GtAd01qnjUPPS5SCePeWxc2KjURwrjsbUBapLLJLJ9s+wI1R//EQYPdIRZRkDe2MngIVf+8MfAnItbqATaabl0R55i4XxqjYN3Pw4b3XciyhThW66g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=dKvU0UUYEyA9tuy09aeAgZwcUw48dj9vqzHRYi5wA1w=;
+ b=OrE461Yx+u6INxbodIWGPxV/WHnA8E6DHxpwkSTr/kuRGftFRhNWUxlyc5tPCMCpQmlHDSWkThYecdyHA+kqxR4kiTgh48xeAAzRTQTzaB2piZU5PDb8iCgEsWe2trUK9jQuh17JrqPC/eXpKkaBBMi4ydDnejl2tDvx+IslB/ZIyPSPrKBNZb9o7QXX2CMkfJ+ACQIbxssRcV6PHlLorwO8e2nRIh5+qYBOJIrWHQOLsp4A37//CegruPjRIyB4UpK8NJtm7wWuEEcvuuQbfXgC9UBwfxKEi0SR+fx0eVAgNnSo6B7iOQ3uxsbamuhSfKBDMxPCA7nRD+F1lWAQqA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=dKvU0UUYEyA9tuy09aeAgZwcUw48dj9vqzHRYi5wA1w=;
+ b=ue+CRyHeUvVgg0kJszKFdlLDQ1ZKLi5lZ+3XBr5EKWjei6f5mfn32zT7AgI4cmjVzf7haSAj4SQEEwEC29NEWr/g+UqSBjhqORySuf3tp/6xEeNCM7O4Dbs4kfJVC7SPanUbGPOM4jIjnP03ubrRb1pNX+sXIWGmH4iqLxUNU/k=
+Authentication-Results: lst.de; dkim=none (message not signed)
+ header.d=none;lst.de; dmarc=none action=none header.from=oracle.com;
+Received: from BYAPR10MB2999.namprd10.prod.outlook.com (2603:10b6:a03:85::27)
+ by BYAPR10MB3544.namprd10.prod.outlook.com (2603:10b6:a03:121::33) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.28; Mon, 8 Feb
+ 2021 17:14:55 +0000
+Received: from BYAPR10MB2999.namprd10.prod.outlook.com
+ ([fe80::e180:1ba2:d87:456]) by BYAPR10MB2999.namprd10.prod.outlook.com
+ ([fe80::e180:1ba2:d87:456%4]) with mapi id 15.20.3825.030; Mon, 8 Feb 2021
+ 17:14:54 +0000
+Date:   Mon, 8 Feb 2021 12:14:49 -0500
+From:   Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Martin Radev <martin.b.radev@gmail.com>, m.szyprowski@samsung.com,
+        robin.murphy@arm.com, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, joro@8bytes.org,
+        kirill.shutemov@linux.intel.com, thomas.lendacky@amd.com,
+        robert.buhren@sect.tu-berlin.de, file@sect.tu-berlin.de,
+        mathias.morbitzer@aisec.fraunhofer.de,
+        virtualization@lists.linux-foundation.org, kvm@vger.kernel.org
+Subject: Re: [PATCH] swiotlb: Validate bounce size in the sync/unmap path
+Message-ID: <YCFxiTB//Iz6aIhk@Konrads-MacBook-Pro.local>
+References: <X/27MSbfDGCY9WZu@martin>
+ <20210113113017.GA28106@lst.de>
+ <YAV0uhfkimXn1izW@martin>
+ <20210203124922.GB16923@lst.de>
+ <20210203193638.GA325136@fedora>
+ <20210205175852.GA1021@lst.de>
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210208154458.GB126859@bfoster>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210205175852.GA1021@lst.de>
+X-Originating-IP: [138.3.200.11]
+X-ClientProxiedBy: BYAPR03CA0032.namprd03.prod.outlook.com
+ (2603:10b6:a02:a8::45) To BYAPR10MB2999.namprd10.prod.outlook.com
+ (2603:10b6:a03:85::27)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from Konrads-MacBook-Pro.local (138.3.200.11) by BYAPR03CA0032.namprd03.prod.outlook.com (2603:10b6:a02:a8::45) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.23 via Frontend Transport; Mon, 8 Feb 2021 17:14:52 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 17dc5ca3-99d9-449d-5942-08d8cc550dad
+X-MS-TrafficTypeDiagnostic: BYAPR10MB3544:
+X-Microsoft-Antispam-PRVS: <BYAPR10MB3544FB12003524324804690B898F9@BYAPR10MB3544.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: KtIrktXmwCSm7TDQADR0YEH25YumfGxFpFU/8qeCN9AiJ01sRRetjV6Gyg+tkBFZyisl2XPtdfitA76nopPm9/Ck13ZS9BPP3L3wrMtt0TKlVhbjBNfOZY297EHZuknE/XuMBbnYJD5iRkpw2TWWlgW1zqIuEmLbFmq6gYenu9dzOUFzOjVoWi7wbdxm56OQiiNPw5h3ueF8MxzxB/hPBHbcog5hL4doHW3z+96KJA5aOLCzT2EJVXzfhHU1F47VXVZyOM54WMsIIJxftzF8l2Pdqtb+OoYh3rUA1rN42SDlVLynp0J7G8xR44Igp7ZDx7iE4AKByZlhKjhSPkceoaZ8vg5/wlA+ZF3ucH9N070J2f8zYLBUGgaJmDGjaM2a2u+isqkyHr962ZAv/ngemabN9mVjwB02LQqZa7BjHfY9D3R9LP0pjMhgAfMDOxTw5/7nPT2GosBgy4mvLujDQlEjrU151S9vgvj2v3/0EbvIzFL25YhhpqAgbSs5aZrjlep6tMwFhIQqS6E14kEU6w==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB2999.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(39860400002)(376002)(396003)(136003)(346002)(6506007)(7416002)(4326008)(6666004)(8676002)(186003)(16526019)(6916009)(956004)(2906002)(5660300002)(66556008)(66476007)(66946007)(83380400001)(478600001)(316002)(9686003)(55016002)(26005)(86362001)(52116002)(8936002)(7696005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?Zfjn9oOjpRAcVOWmWZpMz0YvfhRPbOwo1+x6a3/ZyDoTDhZ6zFTwzOrYScBT?=
+ =?us-ascii?Q?Uadl/anUFAKhz75+WIplcDglggx9dsRfIDv9U4QbPml0NWO3IvGLv/U9BAj1?=
+ =?us-ascii?Q?MRneq2sCmrKYx49yBXsaXWvXHH0gOrWOHue2ntUkAFlIU7U4uK4icr4jLX18?=
+ =?us-ascii?Q?E0oY6srbexAG+NxKzI8+algzk9nkKfydJDjbvrBTBlj23gQKWQkwRclU2lwf?=
+ =?us-ascii?Q?FtwSVS9sBBZo62rC/oLosIyZYEOXXdfUeDBVR3xQaKRXemcoE8LKJOzWTrkg?=
+ =?us-ascii?Q?juYiA1n5GJtGrJ8ojEZmp5M5Ovh5x5thqj3yqyPGu1I2BlYvWLyFaWyLzlcE?=
+ =?us-ascii?Q?wOPvOMyUugNyCmgtPrcIOLb9x4iE9SNHwPMKOvJ1qu15XSqMxTU5X4MqVzUW?=
+ =?us-ascii?Q?shMTSLs59r5Ej1rV32zGZJ6XWkPzTsvjVHrEwdagbbbNjVz3zV7IElxshtbE?=
+ =?us-ascii?Q?+07nHma+Xjx/q7SIASvL8IfWRj+FQanAV/YTIFismxCVYwqcSvPf+bQSr6fY?=
+ =?us-ascii?Q?hYCSDQpr9S6WqnHq0J0LRylHSJYCcltTrVV9rPJWj95M/hHva89QnsTyzRuf?=
+ =?us-ascii?Q?hvTWP9mNKIhSB7FA5UjeA1Q0N1JKPhDZVAfNB9cCF1ulw6W3Qqp/AGAEfYRl?=
+ =?us-ascii?Q?QotMpxyw9wdI2zxsVvwO8zYTrCdcKQDKisLLwKI4P2WW9QwBReF9pM9HojaP?=
+ =?us-ascii?Q?/eG9cpc0bOPJCxXsVEGZ7MRiQI+ba/qCz2rqxR7v42ZA7EhLL3iFutDnvg6N?=
+ =?us-ascii?Q?ZY/v84DQDHkEt5MVLZnGiVaFQvaT/SCqRIZJxgcgDtGKVyp41WXDz+4Y20L+?=
+ =?us-ascii?Q?2MuAgvEl+e9zL60a94WquoLpZfH1M/QC/vPz9D2M+gKNoFW61wQ1KcXBI9wp?=
+ =?us-ascii?Q?odge8h6kVZi/6CDM2JAjhLxptfEFjbHYva5iEHKaFpuJAgsuUl9ABflkw+w3?=
+ =?us-ascii?Q?jwXsBFFyfITwpnFFMYkB2uQxvoh8Q33KI2wfhRJg+WeIN5FS2NwmxMAVfeby?=
+ =?us-ascii?Q?VXs2qrk4+aBFVIOiAf9XB4TY96kDO8BCdPqGrzWJJjSUrmGtbs3HRLFNmqE/?=
+ =?us-ascii?Q?z4K8QXCwDylh5AkVt47AzJG/yPXkea+JgUv/4pZwfnDiTSutWs+Dzl1WbePN?=
+ =?us-ascii?Q?5JVmMJ2Y2BS/A527Jz01s+VEKPg1RX02tqusbNObc0IaWf4Jhow2QnbpkV1P?=
+ =?us-ascii?Q?AFW3dJsG90MGQHfbezETlVVKDcRzdUouulxe8Yun+ThJKhcEM3V4ZCUlylwJ?=
+ =?us-ascii?Q?w+XhVrgVlcHUpbzu/knVovMEHyNCQEvVakDwKsWucIKuy3tvhFD6i2F/7mGV?=
+ =?us-ascii?Q?IWFGt3VOn5fR4Cx4Lw32AU/e?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 17dc5ca3-99d9-449d-5942-08d8cc550dad
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB2999.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Feb 2021 17:14:54.8155
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: voenw09IqNRBluIO61Eps/EjkXX/9QyAKecH4lW2Ryw0QE9OxVFNvPkbO7bJhQtYBSmG12PkXj5uOWoEmzq0vA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR10MB3544
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9889 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 adultscore=0
+ mlxlogscore=999 malwarescore=0 bulkscore=0 phishscore=0 spamscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102080108
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9889 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ spamscore=0 lowpriorityscore=0 phishscore=0 adultscore=0 impostorscore=0
+ suspectscore=0 mlxscore=0 clxscore=1015 mlxlogscore=999 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102080109
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 08, 2021 at 10:44:58AM -0500, Brian Foster wrote:
-> On Mon, Feb 08, 2021 at 06:57:24AM -0800, Paul E. McKenney wrote:
-> > On Mon, Feb 08, 2021 at 09:07:24AM -0500, Brian Foster wrote:
-> > > On Fri, Feb 05, 2021 at 09:12:40AM -0800, Paul E. McKenney wrote:
-> > > > On Fri, Feb 05, 2021 at 08:29:06AM +0100, Paul Menzel wrote:
-> > > > > Dear Linux folks,
-> > > > > 
-> > > > > 
-> > > > > On a Dell PowerEdge T630/0NT78X, BIOS 2.8.0 05/23/2018 with Linux 5.4.57, we
-> > > > > twice saw a self-detected stall on a CPU (October 27th, 2020, January 18th,
-> > > > > 2021).
-> > > > > 
-> > > > > Both times, the workqueue is `xfs-conv/md0 xfs_end_io`.
-> > > > > 
-> > > > > ```
-> > > > > [    0.000000] Linux version 5.4.57.mx64.340
-> > > > > (root@theinternet.molgen.mpg.de) (gcc version 7.5.0 (GCC)) #1 SMP Tue Aug 11
-> > > > > 13:20:33 CEST 2020
-> > > > > […]
-> > > > > [48962.981257] rcu: INFO: rcu_sched self-detected stall on CPU
-> > > > > [48962.987511] rcu: 	4-....: (20999 ticks this GP)
-> > > > > idle=fe6/1/0x4000000000000002 softirq=3630188/3630188 fqs=4696
-> > > > > [48962.998805] 	(t=21017 jiffies g=14529009 q=32263)
-> > > > > [48963.004074] Task dump for CPU 4:
-> > > > > [48963.007689] kworker/4:2     R  running task        0 25587      2
-> > > > > 0x80004008
-> > > > > [48963.015591] Workqueue: xfs-conv/md0 xfs_end_io
-> > > > > [48963.020570] Call Trace:
-> > > > > [48963.023311]  <IRQ>
-> > > > > [48963.025560]  sched_show_task+0x11e/0x150
-> > > > > [48963.029957]  rcu_dump_cpu_stacks+0x70/0xa0
-> > > > > [48963.034545]  rcu_sched_clock_irq+0x502/0x770
-> > > > > [48963.039322]  ? tick_sched_do_timer+0x60/0x60
-> > > > > [48963.044106]  update_process_times+0x24/0x60
-> > > > > [48963.048791]  tick_sched_timer+0x37/0x70
-> > > > > [48963.053089]  __hrtimer_run_queues+0x11f/0x2b0
-> > > > > [48963.057960]  ? recalibrate_cpu_khz+0x10/0x10
-> > > > > [48963.062744]  hrtimer_interrupt+0xe5/0x240
-> > > > > [48963.067235]  smp_apic_timer_interrupt+0x6f/0x130
-> > > > > [48963.072407]  apic_timer_interrupt+0xf/0x20
-> > > > > [48963.076994]  </IRQ>
-> > > > > [48963.079347] RIP: 0010:_raw_spin_unlock_irqrestore+0xa/0x10
-> > > > > [48963.085491] Code: f3 90 83 e8 01 75 e8 65 8b 3d 42 0f 56 7e e8 ed ea 5e
-> > > > > ff 48 29 e8 4c 39 e8 76 cf 80 0b 08 eb 8c 0f 1f 44 00 00 c6 07 00 56 9d <c3>
-> > > > > 0f 1f 44 00 00 0f 1f 44 00 00 b8 00 fe ff ff f0 0f c1 07 56 9d
-> > > > > [48963.106524] RSP: 0018:ffffc9000738fd40 EFLAGS: 00000202 ORIG_RAX:
-> > > > > ffffffffffffff13
-> > > > > [48963.115003] RAX: ffffffff82407588 RBX: ffffffff82407580 RCX:
-> > > > > ffffffff82407588
-> > > > > [48963.122994] RDX: ffffffff82407588 RSI: 0000000000000202 RDI:
-> > > > > ffffffff82407580
-> > > > > [48963.130989] RBP: 0000000000000202 R08: ffffffff8203ea00 R09:
-> > > > > 0000000000000001
-> > > > > [48963.138982] R10: ffffc9000738fbb8 R11: 0000000000000001 R12:
-> > > > > ffffffff82407588
-> > > > > [48963.146976] R13: ffffea005e7ae600 R14: ffff8897b7e5a040 R15:
-> > > > > ffffea005e7ae600
-> > > > > [48963.154971]  wake_up_page_bit+0xe0/0x100
-> > > > > [48963.159366]  xfs_destroy_ioend+0xce/0x1c0
-> > > > > [48963.163857]  xfs_end_ioend+0xcf/0x1a0
-> > > > > [48963.167958]  xfs_end_io+0xa4/0xd0
-> > > > > [48963.171672]  process_one_work+0x1e5/0x410
-> > > > > [48963.176163]  worker_thread+0x2d/0x3c0
-> > > > > [48963.180265]  ? cancel_delayed_work+0x90/0x90
-> > > > > [48963.185048]  kthread+0x117/0x130
-> > > > > [48963.188663]  ? kthread_create_worker_on_cpu+0x70/0x70
-> > > > > [48963.194321]  ret_from_fork+0x35/0x40
-> > > > > ```
-> > > > > 
-> > > > > As it’s just log level INFO, is there anything what should be done, or was
-> > > > > the system probably just “overloaded”?
-> > > > 
-> > > > I am assuming that you are building your kernel with CONFIG_PREEMPT_NONE=y
-> > > > rather than CONFIG_PREEMPT_VOLUNTARY=y.
-> > > > 
-> > > > If so, and if the problem is that you are temporarily overdriving xfs I/O,
-> > > > one approach would be as follows:
-> > > > 
-> > > > ------------------------------------------------------------------------
-> > > > 
-> > > > diff --git a/fs/xfs/xfs_aops.c b/fs/xfs/xfs_aops.c
-> > > > index f16d5f1..06be426 100644
-> > > > --- a/fs/xfs/xfs_aops.c
-> > > > +++ b/fs/xfs/xfs_aops.c
-> > > > @@ -390,6 +390,7 @@ xfs_end_io(
-> > > >  		list_del_init(&ioend->io_list);
-> > > >  		xfs_ioend_try_merge(ioend, &completion_list);
-> > > >  		xfs_end_ioend(ioend);
-> > > > +		cond_resched();
-> > > >  	}
-> > > >  }
-> > > >  
-> > > > ------------------------------------------------------------------------
-> > > 
-> > > FWIW, this looks quite similar to the problem I attempted to fix with
-> > > these patches:
-> > > 
-> > > https://lore.kernel.org/linux-xfs/20201002153357.56409-1-bfoster@redhat.com/
+On Fri, Feb 05, 2021 at 06:58:52PM +0100, Christoph Hellwig wrote:
+> On Wed, Feb 03, 2021 at 02:36:38PM -0500, Konrad Rzeszutek Wilk wrote:
+> > > So what?  If you guys want to provide a new capability you'll have to do
+> > > work.  And designing a new protocol based around the fact that the
+> > > hardware/hypervisor is not trusted and a copy is always required makes
+> > > a lot of more sense than throwing in band aids all over the place.
 > > 
-> > Looks plausible to me!  Do you plan to re-post taking the feedback
-> > into account?
+> > If you don't trust the hypervisor, what would this capability be in?
 > 
-> There was a v2 inline that incorporated some directed feedback.
-> Otherwise there were questions and ideas about making the whole thing
-> faster, but I've no idea if that addresses the problem or not (if so,
-> that would be an entirely different set of patches). I'll wait and see
-> what Darrick thinks about this and rebase/repost if the approach is
-> agreeable..
-
-There is always the school of thought that says that the best way to
-get people to focus on this is to rebase and repost.  Otherwise, they
-are all too likely to assume that you lost interest in this.
-
-							Thanx, Paul
-
-> Brian
+> Well, they don't trust the hypervisor to not attack the guest somehow,
+> except through the data read.  I never really understood the concept,
+> as it leaves too many holes.
 > 
-> > 							Thanx, Paul
-> > 
-> > > Brian
-> > > 
-> > > > 
-> > > > If you have instead built with CONFIG_PREEMPT_VOLUNTARY=y, then your
-> > > > problem is likely massive lock contention in wake_up_page_bit(), or
-> > > > perhaps someone having failed to release that lock.  The usual way to
-> > > > work this out is by enabling lockdep (CONFIG_PROVE_LOCKING=y), but this
-> > > > is often not what you want enabled in production.
-> > > > 
-> > > > Darrick, thoughts from an xfs perspective?
-> > > > 
-> > > > 							Thanx, Paul
-> > > > 
-> > > 
-> > 
-> 
+> But the point is that these schemes want to force bounce buffering
+> because they think it is more secure.  And if that is what you want
+> you better have protocol build around the fact that each I/O needs
+> to use bounce buffers, so you make those buffers the actual shared
+> memory use for communication, and build the protocol around it.
+
+Right. That is what the SWIOTLB pool ends up being as it is allocated at
+bootup where the guest tells the hypervisor - these are shared and
+clear-text.
+
+> E.g. you don't force the ridiculous NVMe PRP offset rules on the block
+> layer, just to make a complicated swiotlb allocation that needs to
+> preserve the alignment just do I/O.  But instead you have a trivial
+
+I agree that NVMe is being silly. It could have allocated the coherent
+pool and use that and do its own offset within that. That would in
+essence carve out a static pool within the SWIOTLB static one..
+
+TTM does that - it has its own DMA machinery on top of DMA API to deal
+with its "passing" buffers from one application to another and the fun
+of keeping track of that.
+
+> ring buffer or whatever because you know I/O will be copied anyway
+> and none of all the hard work higher layers do to make the I/O suitable
+> for a normal device apply.
+
+I lost you here. Sorry, are you saying have a simple ring protocol
+(like NVME has), where the ring entries (SG or DMA phys) are statically
+allocated and whenever NVME driver gets data from user-space it
+would copy it in there?
+
