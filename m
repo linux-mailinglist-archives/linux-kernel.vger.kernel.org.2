@@ -2,115 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68BCA313170
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 12:54:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BBEA313174
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 12:55:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233234AbhBHLyB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 06:54:01 -0500
-Received: from mga05.intel.com ([192.55.52.43]:17790 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233379AbhBHLcv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 06:32:51 -0500
-IronPort-SDR: L9Pt/0YL0s4BWtTwzZe6DsrXRR6+pWHp/9Mzh+toIeX8ad6z8Ak5fscpiVCppC1S2V/xuL86xm
- cY8LorCmUEhg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9888"; a="266529388"
-X-IronPort-AV: E=Sophos;i="5.81,161,1610438400"; 
-   d="scan'208";a="266529388"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2021 03:31:06 -0800
-IronPort-SDR: wKC0xb71HFAS2oNzCVfz/ORnkv6TRYolKG6RZoIR6+w81WOg+MSC41NPQTPWv+wiBrX0RDQiha
- 1Ysr64QsUqsA==
-X-IronPort-AV: E=Sophos;i="5.81,161,1610438400"; 
-   d="scan'208";a="395350823"
-Received: from aantonov-mobl.ccr.corp.intel.com (HELO [10.249.226.173]) ([10.249.226.173])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2021 03:31:03 -0800
-Subject: Re: [PATCH v4 1/5] perf stat: Add AGGR_PCIE_PORT mode
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Ian Rogers <irogers@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>
-References: <20210203135830.38568-1-alexander.antonov@linux.intel.com>
- <20210203135830.38568-2-alexander.antonov@linux.intel.com>
- <CAM9d7ciCGd+mkLOyJciB4Oe6XEoFyKx_=zhnK1SDnDM3=0M5NQ@mail.gmail.com>
-From:   Alexander Antonov <alexander.antonov@linux.intel.com>
-Message-ID: <b3cb656f-a57b-544a-67eb-3d25e85dc6b0@linux.intel.com>
-Date:   Mon, 8 Feb 2021 14:30:21 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S232956AbhBHLy4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 06:54:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33392 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232256AbhBHLfN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 06:35:13 -0500
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCCC5C061786
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 03:34:05 -0800 (PST)
+Received: by mail-ej1-x62b.google.com with SMTP id f14so24039187ejc.8
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 03:34:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SIdoO/BXrCF5ZGx1sncTZthErRH1ESME+fQ4iZ40G4Y=;
+        b=R4FfWcgnRp7kfMDn8OHGmLFT1VfRqhYLNtKbqtkWdlb75NiARoNYeuQ8plgw69PUvK
+         SrMHBkIe3taDYqbOgv3c7/zQ+MxGUpsl5Jfwyzx4OaASuL8ztU0r+HTymMJR6J0YvC16
+         zIfDdvWJe+eVik/zwfB7GuuftSM9ixQbVyhf0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SIdoO/BXrCF5ZGx1sncTZthErRH1ESME+fQ4iZ40G4Y=;
+        b=DYODFsTRueBRuKpk7N0g3gAmn0961mZVlTyy1mZBud5Cr9EdvH6V5y/Ye/W49cbrfQ
+         NaSPFjHveSr+yH9xCrj+1y+w5KU8qVeAW50aveeXJQAeuy5C8PxaePoF4Tw2kdbzv/qy
+         jYYpjIyCZdJzIqwhOHJgF+fUKabWfqA/hg5IJYd6oOZ8EHO7SFGNuyAeqD4iJGROCyiM
+         m42ZbIa+OiPkuzPTi/b2e6qpWsjlxCB5dbrzGuB/mmMfzuB9gClaxLeonLbaRCY8ww/n
+         7vwZ+OEipa0wzeYoupdtQER1UceGhYA++72U61dfCC9zCB70s+ksup91dDVjU1nWSZ+F
+         qvgw==
+X-Gm-Message-State: AOAM530brQhos0dPpj1HnjLtEUhmTj0IRIJkgoSdUpB6YHdz6jVA09jt
+        cxVG1w9WYKZF9ShXWw4ui2zaDj3BAcDskg==
+X-Google-Smtp-Source: ABdhPJzP3iP8rHJpGjLJOmKy9wfjwqTs9XWloUJ+jqqHAbZK5sqDllVJT6+ZFj9ebkzA5kt2+/mNHQ==
+X-Received: by 2002:a17:906:b001:: with SMTP id v1mr16423006ejy.217.1612784044140;
+        Mon, 08 Feb 2021 03:34:04 -0800 (PST)
+Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com. [209.85.221.48])
+        by smtp.gmail.com with ESMTPSA id i13sm8421683ejj.2.2021.02.08.03.34.03
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 08 Feb 2021 03:34:03 -0800 (PST)
+Received: by mail-wr1-f48.google.com with SMTP id g6so3657922wrs.11
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 03:34:03 -0800 (PST)
+X-Received: by 2002:a5d:6404:: with SMTP id z4mr6111438wru.103.1612784042646;
+ Mon, 08 Feb 2021 03:34:02 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAM9d7ciCGd+mkLOyJciB4Oe6XEoFyKx_=zhnK1SDnDM3=0M5NQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+References: <20210202095110.1215346-1-hch@lst.de> <20210207184855.GA27553@lst.de>
+In-Reply-To: <20210207184855.GA27553@lst.de>
+From:   Tomasz Figa <tfiga@chromium.org>
+Date:   Mon, 8 Feb 2021 20:33:50 +0900
+X-Gmail-Original-Message-ID: <CAAFQd5BzAvgiTLGFse+ZWUrFtZ1Ysf+p+e-4rW8gq_iP0xhWEA@mail.gmail.com>
+Message-ID: <CAAFQd5BzAvgiTLGFse+ZWUrFtZ1Ysf+p+e-4rW8gq_iP0xhWEA@mail.gmail.com>
+Subject: Re: add a new dma_alloc_noncontiguous API v2
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Ricardo Ribalda <ribalda@chromium.org>,
+        Sergey Senozhatsky <senozhatsky@google.com>,
+        "open list:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/4/2021 3:07 PM, Namhyung Kim wrote:
-> Hello,
+Hi Christoph,
+
+On Mon, Feb 8, 2021 at 3:49 AM Christoph Hellwig <hch@lst.de> wrote:
 >
-> On Wed, Feb 3, 2021 at 10:58 PM Alexander Antonov
-> <alexander.antonov@linux.intel.com> wrote:
->> Adding AGGR_PCIE_PORT mode to be able to distinguish aggr_mode
->> for root ports in following patches.
-> I'm not sure adding the AGGR_PCIE_PORT is the right way.
-> In my understanding, the aggr mode is to specify how we aggregate
-> counter values of a single event from different cpus.  But this seems
-> to aggregate counter values from different events.  Also the new
-> mode is basically the same as AGGR_GLOBAL.
+> Any comments?
 >
-> As you will add stat_config.iostat_run to distinguish the iostat
-> command, probably we just want to use the global aggr mode
-> (and it's the default!) and get rid of the AGGR_PCIE_PORT.
->
-> Thoughts?
->
-> Thanks,
-> Namhyung
-Hello Namhyung,
 
-Actually, you are right. We aggregate counter values from different 
-events of a
-single IIO stack (PCIe root port) to calculate metrics for this IO stack.
-But the reason is to prevent using of '-e' and '-M' options in 'iostat' mode
-because it can be a reason for the mess in the output that can confuse 
-users.
+Sorry for the delay. The whole series looks very good to me. Thanks a lot.
 
-There is an idea to use your suggestion for this part:
+Reviewed-by: Tomasz Figa <tfiga@chromium.org>
 
-status = iostat_prepare(...);
-if (status < 0)
-         goto out;
-if (status == IOSTAT_LIST)
-         iostat_list(...);
-else
-         ...
+Best regards,
+Tomasz
 
-So, we can check if evlist is empty inside iostat_prepare(). If not, print
-a warning, for example, "The -e and -M options are not supported. All chosen
-events/metrics will be dropped". Then we can free of evlist by using
-evlist__delete(), create new one by using evlist__new() and fill the evlist.
-
-In this case the body of iostat_prepare() function would be:
-
-iostat_prepare()
-{
-     If (!is_evlist_empty) {
-         pr_warning();
-         evlist__delete();
-         evlist__new()
-     }
-
-     iostat_event_group();
-}
-
-It will allow to get rid of the AGGR_PCIE_PORT.
-What do you think?
-
-Thank you,
-Alexander
+> On Tue, Feb 02, 2021 at 10:51:03AM +0100, Christoph Hellwig wrote:
+> > Hi all,
+> >
+> > this series adds the new noncontiguous DMA allocation API requested by
+> > various media driver maintainers.
+> >
+> > Changes since v1:
+> >  - document that flush_kernel_vmap_range and invalidate_kernel_vmap_range
+> >    must be called once an allocation is mapped into KVA
+> >  - add dma-debug support
+> >  - remove the separate dma_handle argument, and instead create fully formed
+> >    DMA mapped scatterlists
+> >  - use a directional allocation in uvcvideo
+> >  - call invalidate_kernel_vmap_range from uvcvideo
+> > _______________________________________________
+> > iommu mailing list
+> > iommu@lists.linux-foundation.org
+> > https://lists.linuxfoundation.org/mailman/listinfo/iommu
+> ---end quoted text---
