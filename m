@@ -2,239 +2,729 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07B613141C5
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 22:29:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C65BB3141C6
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 22:29:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235811AbhBHV2m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 16:28:42 -0500
-Received: from mga12.intel.com ([192.55.52.136]:30752 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236842AbhBHUag (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 15:30:36 -0500
-IronPort-SDR: olbiQ4eTQ5q2KCozq5WRAzhNzQkuRS4Ms+QZkzyDTdbe+265WzQTzDp8ZQnje1aklAoAhc9jsG
- 0pc+Xs1K5zXQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9889"; a="160931003"
-X-IronPort-AV: E=Sophos;i="5.81,163,1610438400"; 
-   d="scan'208";a="160931003"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2021 12:29:54 -0800
-IronPort-SDR: xI3AtQtotIwi0/0FtdfX4vDXZQimvtD4pivPRKOCtKqDWUx2nANuCh35IK4RhE9gb/AaBe4VgU
- iabOwTuuoldQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,163,1610438400"; 
-   d="scan'208";a="398530243"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by orsmga007.jf.intel.com with ESMTP; 08 Feb 2021 12:29:53 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Mon, 8 Feb 2021 12:29:53 -0800
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2
- via Frontend Transport; Mon, 8 Feb 2021 12:29:53 -0800
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.101)
- by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.1713.5; Mon, 8 Feb 2021 12:29:52 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=iNsZuOSGvrg9sg8P/rOdG9oi2rF4mfaAgMmhgYbSulfRlxxQVj+CtJClp3b9NOilbfqvuyYPsWXLBgIkNtAXG9YUhIftLpfChkVWSenG+/sJQ0M1QTju2fTFnWV8+vGc8RKiwjcIbKYtvhMDP+B5Eh4cBc8JR5a6OIhxs7MhRIUd1Q74R0/2qbR/RglPei6nZJdeKC/2lkeGByo7m3NMAoxUv8z0/oJgDSIWmYDnSl9uwQpnH8F/ILB6Qv7KAc8+vkZwkwwbJp01m739mWViy0ZVpLoS56dq3N8D4juYpMaPrn3QtVNrAUgp/bibezwMR1zubc8vi8Sd427AVTwevg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xT8tN+LgwnZ7BQyT5E0gIoj78HvjjWI9d9cRIzwQoEM=;
- b=LnYEP9wl33nfvG2MT2jvxZDpL1epg72zongjGZ7dKAWOytNLkouD/jwU9CD2yyWYY2MOhTO+vao1qt8KATxZDkKF6mgwolHsKh8pB7miMPnJnGfCxdAqGKcAw6RMDKfDYNgIj5rdo1kU02wOkBiFZj09TtNUOspmc8U+x5geE0mQbrt2A9TuDxW3NYEovVQKVCNbUzdIViefeme8OV/Maaci5PSR0MmpXrJWa6BlzB+ABKezekSF6F0UdmwkCD5laAxXN0gohg46iVszSi2h5HIyTJ/ILNEQSbilS/koPrLemKwPQhpUJ4fdKjgoP3xti11DKxU12IaIM7jBDeFxRA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xT8tN+LgwnZ7BQyT5E0gIoj78HvjjWI9d9cRIzwQoEM=;
- b=CgB/rZP3LDlaHcm8RuivTTpQA0zn5VruuphQIPm0LYRkY43eKo+34RQkToXQ1Q0iZDCVA4yxkwLXEr3lzjNWitPhkJRAskviJ5FLKOo3bWTNFcOmXj8PmkLtlZJokbpwcRb6oqErpQ0HPrrvggtzj7eqwHEEg3nlbOElsqXPoKc=
-Received: from PH0PR11MB4855.namprd11.prod.outlook.com (2603:10b6:510:41::12)
- by PH0PR11MB4967.namprd11.prod.outlook.com (2603:10b6:510:41::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.23; Mon, 8 Feb
- 2021 20:29:51 +0000
-Received: from PH0PR11MB4855.namprd11.prod.outlook.com
- ([fe80::78e6:b455:ce90:fcb0]) by PH0PR11MB4855.namprd11.prod.outlook.com
- ([fe80::78e6:b455:ce90:fcb0%6]) with mapi id 15.20.3825.030; Mon, 8 Feb 2021
- 20:29:51 +0000
-From:   "Bae, Chang Seok" <chang.seok.bae@intel.com>
-To:     Jann Horn <jannh@google.com>
-CC:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@suse.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        "Brown, Len" <len.brown@intel.com>,
-        "Hansen, Dave" <dave.hansen@intel.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>,
-        "Dave Martin" <Dave.Martin@arm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        "Luck, Tony" <tony.luck@intel.com>,
-        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
-        "libc-alpha@sourceware.org" <libc-alpha@sourceware.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        "kernel list" <linux-kernel@vger.kernel.org>,
-        Hiroshi Shimamoto <h-shimamoto@ct.jp.nec.com>,
-        Roland McGrath <roland@redhat.com>,
-        "Sang, Oliver" <oliver.sang@intel.com>
-Subject: Re: [PATCH v2 3/4] x86/signal: Prevent an alternate stack overflow
- before a signal delivery
-Thread-Topic: [PATCH v2 3/4] x86/signal: Prevent an alternate stack overflow
- before a signal delivery
-Thread-Index: AQHWvqcjVskyJoXuH0ORuPNb6HHBoanRpbwAgAX6YYCAAAWAAIB3j2EA
-Date:   Mon, 8 Feb 2021 20:29:50 +0000
-Message-ID: <81DF502F-9327-4365-AD17-21CFAE94ED0B@intel.com>
-References: <20201119190237.626-1-chang.seok.bae@intel.com>
- <20201119190237.626-4-chang.seok.bae@intel.com>
- <CAG48ez1aKtwYMEHfGX6_FuX9fOruwvCqEGYVL8eLdV8bg-wHCQ@mail.gmail.com>
- <B2D7D498-D118-447E-93C6-DB03D42CBA4E@intel.com>
- <CAG48ez1JK6pMT2UD1v0FwiCQq48FbE5Eb0d3tK=kK4Sg0TG7OQ@mail.gmail.com>
-In-Reply-To: <CAG48ez1JK6pMT2UD1v0FwiCQq48FbE5Eb0d3tK=kK4Sg0TG7OQ@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3608.120.23.2.4)
-authentication-results: google.com; dkim=none (message not signed)
- header.d=none;google.com; dmarc=none action=none header.from=intel.com;
-x-originating-ip: [73.189.248.82]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: f5f4a5bd-0bd0-41cd-f81c-08d8cc70493d
-x-ms-traffictypediagnostic: PH0PR11MB4967:
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <PH0PR11MB4967EFCD77418CBB09AAA6C5D88F9@PH0PR11MB4967.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:1388;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: wnbaaPXnE8N00PwIYLLrSKLbDMLJQPD0WRLftadbI9aGvRjN6lPPkadL0lCu+FCnp21d2b1AVBSFugab2rr1aj2BlU3PWJtLW6neYvUiSQCSYEx4jhtnZpQWCTist+p6ok8BUrF/DcjJskyqayk9OSbOqlqi2udf7Q9jpR8jVdGKGJul5bVLbuqLZe0vsreVN2CyW76lSeRPQbCjSM8oJ6TKDgx2wsNGZaT+kFjZ+sZCnG4dKD0yGWIW9FWXgZFghA2wDNSLQpn5qe9xCm19Xt17UZDt19WiLP3q9gk5E2D6+rO0om9jcvdSCJCj+4jEJhra3U68WMxeqe4JC/23pZRd4bLePMY/F0X1XOU6uAfyjbqwHU6hxqbCwlk9RTu2WPAYuyK2S6ed8skkLiDZp3aevS1IMacdfc0zl+xHbufrVrYwslh5+zXgKtdVEgap4yebzhIpAkjlujKzvvLUvQeynGkBk98LFMYNTczNAV8CEzyCNzhy/kTlAt2lhVzbIg9WMS2D1i7xKN8DIcrRWQL2pUqvCq8a6eIyeyN1BGVGJoqGPVAHg5hJ5bs/cqyS+iBzJh7936Ecv7Q78fxLpw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB4855.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(39860400002)(376002)(136003)(346002)(366004)(66556008)(2616005)(64756008)(66476007)(66946007)(36756003)(8936002)(6506007)(76116006)(66446008)(186003)(26005)(53546011)(33656002)(5660300002)(91956017)(316002)(478600001)(83380400001)(54906003)(71200400001)(6486002)(4326008)(6512007)(8676002)(7416002)(6916009)(2906002)(86362001)(107886003)(45980500001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?XQvfWYrtbyvdX8/o1vu7Up/XJLTgoYNeB3guXtS6sy66o8rsoopfEuK/SH2W?=
- =?us-ascii?Q?r4Pgp+Bup+FK61x6fQQGwA7tnEBRHnFyUUAgMb6kMC+mNgtAibEEdlLKKtau?=
- =?us-ascii?Q?ciOjjhwzacpfgBQocwo7MjfVH8ya4PzZjUqxISJFuseIfOmF7aLlGt4OViOc?=
- =?us-ascii?Q?KNg/WsGaXc8FNANYYmzlW7GKMYBAbsVpS8lrBMFov/YTyrxSPmF6wX/iJneC?=
- =?us-ascii?Q?SrFOrhHWpQ1bABuqrE/iInE0xlkqN7nDlfnKgTFTzolOa842mjKcd6rUgsx6?=
- =?us-ascii?Q?USlV7AkGxKRfqAd+GlcCjPdzSkvfBwshWA1WLqmfPRqVB6NjZaL0cSDFX6qR?=
- =?us-ascii?Q?i6CzF9ij4LDNQMmbn6M2nPK/YxzwI8Mq7zlc6WM0OCEqn4tBlCRTH9S5ov/R?=
- =?us-ascii?Q?yaweqNZpgPh1ypGUPD3xb4Yt1qEUpAZy2BdXl0AHy3rHzsdy1ByKUlJt5+3t?=
- =?us-ascii?Q?yuJ2UX0dUtGJz6OsXvc7r93pU/B1fYfJafpIKisAyRTjzlCS20WilAvAqclf?=
- =?us-ascii?Q?UBsYIpTHEFl5oU4xxptAdTpLNgosPRnjoWMfhAanqdJl9DgF6Iy8zsGqwSmQ?=
- =?us-ascii?Q?Kz+F08o9HD5AEPvymaSw/PP05NwwE2emNe2AgCVP+w+havpczu4zq2lH3Nmb?=
- =?us-ascii?Q?PAd6YupdRG9j23Xq53GpANgVNZu2YnUI7VIo27GN9g6bDqDzaFpZ3uQaRjwQ?=
- =?us-ascii?Q?2Y6ENy2Xm/Zfz1QaHE6vD8bR7SxnKO7g1NdvlHFJyFMP+WyrftUASSeRDktr?=
- =?us-ascii?Q?NbDlFHRC36gmRBlIeLdQiqHMrpQdjt4tYpNfFm8Rdw+k1/bV+ah+nKc5HTdu?=
- =?us-ascii?Q?ayulKoqxji8AEV3iHQqLLdX2uQuG7Sc6QX/FNKpS+SETgusUW7vK02hTLUEn?=
- =?us-ascii?Q?RfcvHe/6GRjFttbIFlvhJ9DyULDKdc/pBJ7Dj2PRZJw05vNc0j1d5JdQyZNG?=
- =?us-ascii?Q?G8yWnSQ0AEz2HLTeEAcET+ojCHSme+sOzf4rvmvmpYUL+4WeQxh6We4nfV0s?=
- =?us-ascii?Q?1C/000kyJnhbQq1yNvnE9jIyoCxINTEUI4c2twIPRVf781N97w3I6ZY34juq?=
- =?us-ascii?Q?z7+nIPFuPb7H73pBL/mrUXm3EbCZ2R1/1QgMlVp0gxTCuHZa6gO9jF962BWe?=
- =?us-ascii?Q?nUEowFxFwPk+C3h56HEf9hyrQFdVOxpvth4sIQevw5pcQ6wJFBCHmaYiEw2J?=
- =?us-ascii?Q?2oqIrFjjBYgLj6umdj3hiHM2XACS/fsMrzqmb2PUaDiRa8YAc5g3AKgDYe0p?=
- =?us-ascii?Q?5v2K1flVNCnonT/bpFF7qyujKkCiVvk2KlKLlv7imlohAm/OlZJLvc6GVJrT?=
- =?us-ascii?Q?tOkzjsDIpWh36gz9MdnrxhfN?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <393536D3FB7EA04EAF6ADF503A496856@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S236146AbhBHV3M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 16:29:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35906 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236833AbhBHUau (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 15:30:50 -0500
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A352C061786
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 12:30:07 -0800 (PST)
+Received: by mail-io1-xd34.google.com with SMTP id f20so2892249ioo.10
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 12:30:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xmx/787Pino9PGS06GeHxZ33XpFO28TsNo217IU43u0=;
+        b=ZD6vpKeuAZcClsJUAJcQ/16279Ex90Tx8ROaS/0A45GO7/JUbp5fI8e6AnsuYRpxnn
+         jRuT6ADUfp5VkiH9Bz4ODvezHTDmwHnKwQT5t/FF3X/+kXaluZTptb5G4EKKaaTYT+hX
+         r2i1TAM1pZMWBW/NQ988MmKs4WUGHiEWFp4nN0a3NbxFz6++oCbWoYC4joLc9b63ajEj
+         kcA6+vNB0lNYg3nI+S5bMzLdDnHA2Ctj7UOZ1rIsN94nUcHJ08V/mOLTetdjr8OJaX/d
+         jaJUrszSeNNZP8nzVcki/pz5nMW+hP6xvVPwq+ZMt7bdyalto+WEKFu13R0fIeb7ahLW
+         iUng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xmx/787Pino9PGS06GeHxZ33XpFO28TsNo217IU43u0=;
+        b=Z4KH6srKkYGMKw33sIkdDxX7sWe+sM9L/OGikfM/7U2XdNRaLLVVouM/t9qdI4vHf4
+         S4vfpV9RuNu0va4/YpiNPCvArx9TVYgAbz6MkIQ1RKwgsT3qDWbM9qR0DNYAF30Bi55v
+         UM7E9H6bnCbBzThBXva513aA8eKp+TwqJg6bV7/7qkMQDDH2lDoi/OeJswk6dvyvDbgB
+         +xxlgKrbE+x//yfvMeESAtVKUynirp3b3bdFhi9AaV+tXLzpmNamdrU7w7bQjjGPGxuP
+         RdCeduu2WprgUnNh7Q3Pdo3Dx65CbiEv3CH7Agkdig6V13nnQUKTBs4X8fBq255mIzeA
+         zeeQ==
+X-Gm-Message-State: AOAM532rPWEIT4/m+73TeyTAKrsSAILQyxajx8cNk0xKREwOUZlXL8IR
+        VA2sR9yojJRh9y4NGICET+76lqJUQuPikrenTQduUA==
+X-Google-Smtp-Source: ABdhPJxUHwjBBAXX5fXTIQXCldvwv5UcHgrkSmORRGhNZAVPgGe6aqMo+AuAxQHqq7GsLz1D27b9SvgvFCqtODKLjzs=
+X-Received: by 2002:a02:30cb:: with SMTP id q194mr19381548jaq.57.1612816206425;
+ Mon, 08 Feb 2021 12:30:06 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB4855.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f5f4a5bd-0bd0-41cd-f81c-08d8cc70493d
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Feb 2021 20:29:50.8981
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: dsX7rN4jy8Jq/dtvVLwym70CGYyneEYlTt7lSncXC9w3A/N6wBm58SuY/0E7Aosqsm8ICx1xLzXLI4Tmv/eQ8HkhXTpq0hUUcA2R80OTYWw=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB4967
-X-OriginatorOrg: intel.com
+References: <20210208090841.333724-1-wangyanan55@huawei.com> <20210208090841.333724-3-wangyanan55@huawei.com>
+In-Reply-To: <20210208090841.333724-3-wangyanan55@huawei.com>
+From:   Ben Gardon <bgardon@google.com>
+Date:   Mon, 8 Feb 2021 12:29:55 -0800
+Message-ID: <CANgfPd_yrtEmmm4_O+WaZTMXmW5gxQmJiwMk0JAswkrH+aYjsw@mail.gmail.com>
+Subject: Re: [RFC PATCH 2/2] KVM: selftests: Add a test for kvm page table code
+To:     Yanan Wang <wangyanan55@huawei.com>
+Cc:     kvm <kvm@vger.kernel.org>, linux-kselftest@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Andrew Jones <drjones@redhat.com>,
+        Marc Zyngier <maz@kernel.org>, Peter Xu <peterx@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Aaron Lewis <aaronlewis@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        wanghaibin.wang@huawei.com, yuzenghui@huawei.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Nov 24, 2020, at 10:41, Jann Horn <jannh@google.com> wrote:
-> On Tue, Nov 24, 2020 at 7:22 PM Bae, Chang Seok
-> <chang.seok.bae@intel.com> wrote:
->>> On Nov 20, 2020, at 15:04, Jann Horn <jannh@google.com> wrote:
->>> On Thu, Nov 19, 2020 at 8:40 PM Chang S. Bae <chang.seok.bae@intel.com>=
- wrote:
->>>>=20
->>>> diff --git a/arch/x86/kernel/signal.c b/arch/x86/kernel/signal.c
->>>> index ee6f1ceaa7a2..cee41d684dc2 100644
->>>> --- a/arch/x86/kernel/signal.c
->>>> +++ b/arch/x86/kernel/signal.c
->>>> @@ -251,8 +251,13 @@ get_sigframe(struct k_sigaction *ka, struct pt_re=
-gs *regs, size_t frame_size,
->>>>=20
->>>>       /* This is the X/Open sanctioned signal stack switching.  */
->>>>       if (ka->sa.sa_flags & SA_ONSTACK) {
->>>> -               if (sas_ss_flags(sp) =3D=3D 0)
->>>> +               if (sas_ss_flags(sp) =3D=3D 0) {
->>>> +                       /* If the altstack might overflow, die with SI=
-GSEGV: */
->>>> +                       if (!altstack_size_ok(current))
->>>> +                               return (void __user *)-1L;
->>>> +
->>>>                       sp =3D current->sas_ss_sp + current->sas_ss_size=
-;
->>>> +               }
->>>=20
->>> A couple lines further down, we have this (since commit 14fc9fbc700d):
->>>=20
->>>       /*
->>>        * If we are on the alternate signal stack and would overflow it,=
- don't.
->>>        * Return an always-bogus address instead so we will die with SIG=
-SEGV.
->>>        */
->>>       if (onsigstack && !likely(on_sig_stack(sp)))
->>>               return (void __user *)-1L;
->>>=20
->>> Is that not working?
->>=20
->> onsigstack is set at the beginning here. If a signal hits under normal s=
-tack,
->> this flag is not set. Then it will miss the overflow.
->>=20
->> The added check allows to detect the sigaltstack overflow (always).
->=20
-> Ah, I think I understand what you're trying to do. But wouldn't the
-> better approach be to ensure that the existing on_sig_stack() check is
-> also used if we just switched to the signal stack? Something like:
->=20
-> diff --git a/arch/x86/kernel/signal.c b/arch/x86/kernel/signal.c
-> index be0d7d4152ec..2f57842fb4d6 100644
-> --- a/arch/x86/kernel/signal.c
-> +++ b/arch/x86/kernel/signal.c
-> @@ -237,7 +237,7 @@ get_sigframe(struct k_sigaction *ka, struct
-> pt_regs *regs, size_t frame_size,
->        unsigned long math_size =3D 0;
->        unsigned long sp =3D regs->sp;
->        unsigned long buf_fx =3D 0;
-> -       int onsigstack =3D on_sig_stack(sp);
-> +       bool onsigstack =3D on_sig_stack(sp);
->        int ret;
->=20
->        /* redzone */
-> @@ -246,8 +246,10 @@ get_sigframe(struct k_sigaction *ka, struct
-> pt_regs *regs, size_t frame_size,
->=20
->        /* This is the X/Open sanctioned signal stack switching.  */
->        if (ka->sa.sa_flags & SA_ONSTACK) {
-> -               if (sas_ss_flags(sp) =3D=3D 0)
-> +               if (sas_ss_flags(sp) =3D=3D 0) {
->                        sp =3D current->sas_ss_sp + current->sas_ss_size;
-> +                       onsigstack =3D true;
+On Mon, Feb 8, 2021 at 1:08 AM Yanan Wang <wangyanan55@huawei.com> wrote:
+>
+> This test serves as a performance tester and a bug reproducer for
+> kvm page table code (GPA->HPA mappings), so it gives guidance for
+> people trying to make some improvement for kvm.
+>
+> The function guest_code() is designed to cover conditions where a single vcpu
+> or multiple vcpus access guest pages within the same memory range, in three
+> VM stages(before dirty-logging, during dirty-logging, after dirty-logging).
+> Besides, the backing source memory type(ANONYMOUS/THP/HUGETLB) of the tested
+> memory region can be specified by users, which means normal page mappings or
+> block mappings can be chosen by users to be created in the test.
+>
+> If use of ANONYMOUS memory is specified, kvm will create page mappings for the
+> tested memory region before dirty-logging, and update attributes of the page
+> mappings from RO to RW during dirty-logging. If use of THP/HUGETLB memory is
+> specified, kvm will create block mappings for the tested memory region before
+> dirty-logging, and split the blcok mappings into page mappings during
+> dirty-logging, and coalesce the page mappings back into block mappings after
+> dirty-logging is stopped.
+>
+> So in summary, as a performance tester, this test can present the performance
+> of kvm creating/updating normal page mappings, or the performance of kvm
+> creating/splitting/recovering block mappings, through execution time.
+>
+> When we need to coalesce the page mappings back to block mappings after dirty
+> logging is stopped, we have to firstly invalidate *all* the TLB entries for the
+> page mappings right before installation of the block entry, because a TLB conflict
+> abort error could occur if we can't invalidate the TLB entries fully. We have
+> hit this TLB conflict twice on aarch64 software implementation and fixed it.
+> As this test can imulate process from dirty-logging enabled to dirty-logging
+> stopped of a VM with block mappings, so it can also reproduce this TLB conflict
+> abort due to inadequate TLB invalidation when coalescing tables.
+>
+> Signed-off-by: Yanan Wang <wangyanan55@huawei.com>
 
-FWIW, here.=20
+Thanks for sending this! Happy to see more tests for weird TLB
+flushing edge cases and races.
 
-Thanks to the report by Oliver via the kernel test robot, I realized that
-this needs to be conditional on the SS_AUTODISARM tag like, :
+Just out of curiosity, were you unable to replicate the bug with the
+dirty_log_perf_test and setting the wr_fract option?
+With "KVM: selftests: Disable dirty logging with vCPUs running"
+(https://lkml.org/lkml/2021/2/2/1431), the dirty_log_perf_test has
+most of the same features as this one.
+Please correct me if I'm wrong, but it seems like the major difference
+here is a more careful pattern of which pages are dirtied when.
 
-    onsigstack =3D !(current->sas_ss_flags & SS_AUTODISARM);
+Within Google we have a system for pre-specifying sets of arguments to
+e.g. the dirty_log_perf_test. I wonder if something similar, even as
+simple as a script that just runs dirty_log_perf_test several times
+would be helpful for cases where different arguments are needed for
+the test to cover different specific cases. Even with this test, for
+example, I assume the test doesn't work very well with just 1 vCPU,
+but it's still a good default in the test, so having some kind of
+configuration (lite) file would be useful.
 
-Thanks,
-Chang=
+> ---
+>  tools/testing/selftests/kvm/Makefile          |   3 +
+>  .../selftests/kvm/kvm_page_table_test.c       | 518 ++++++++++++++++++
+>  2 files changed, 521 insertions(+)
+>  create mode 100644 tools/testing/selftests/kvm/kvm_page_table_test.c
+>
+> diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
+> index fe41c6a0fa67..697318019bd4 100644
+> --- a/tools/testing/selftests/kvm/Makefile
+> +++ b/tools/testing/selftests/kvm/Makefile
+> @@ -62,6 +62,7 @@ TEST_GEN_PROGS_x86_64 += x86_64/tsc_msrs_test
+>  TEST_GEN_PROGS_x86_64 += demand_paging_test
+>  TEST_GEN_PROGS_x86_64 += dirty_log_test
+>  TEST_GEN_PROGS_x86_64 += dirty_log_perf_test
+> +TEST_GEN_PROGS_x86_64 += kvm_page_table_test
+>  TEST_GEN_PROGS_x86_64 += kvm_create_max_vcpus
+>  TEST_GEN_PROGS_x86_64 += set_memory_region_test
+>  TEST_GEN_PROGS_x86_64 += steal_time
+> @@ -71,6 +72,7 @@ TEST_GEN_PROGS_aarch64 += aarch64/get-reg-list-sve
+>  TEST_GEN_PROGS_aarch64 += demand_paging_test
+>  TEST_GEN_PROGS_aarch64 += dirty_log_test
+>  TEST_GEN_PROGS_aarch64 += dirty_log_perf_test
+> +TEST_GEN_PROGS_aarch64 += kvm_page_table_test
+>  TEST_GEN_PROGS_aarch64 += kvm_create_max_vcpus
+>  TEST_GEN_PROGS_aarch64 += set_memory_region_test
+>  TEST_GEN_PROGS_aarch64 += steal_time
+> @@ -80,6 +82,7 @@ TEST_GEN_PROGS_s390x += s390x/resets
+>  TEST_GEN_PROGS_s390x += s390x/sync_regs_test
+>  TEST_GEN_PROGS_s390x += demand_paging_test
+>  TEST_GEN_PROGS_s390x += dirty_log_test
+> +TEST_GEN_PROGS_s390x += kvm_page_table_test
+>  TEST_GEN_PROGS_s390x += kvm_create_max_vcpus
+>  TEST_GEN_PROGS_s390x += set_memory_region_test
+>
+> diff --git a/tools/testing/selftests/kvm/kvm_page_table_test.c b/tools/testing/selftests/kvm/kvm_page_table_test.c
+> new file mode 100644
+> index 000000000000..b09c05288937
+> --- /dev/null
+> +++ b/tools/testing/selftests/kvm/kvm_page_table_test.c
+> @@ -0,0 +1,518 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * KVM page table test
+> + * Based on dirty_log_test.c
+> + * Based on dirty_log_perf_test.c
+> + *
+> + * Copyright (C) 2018, Red Hat, Inc.
+> + * Copyright (C) 2020, Google, Inc.
+> + * Copyright (C) 2021, Huawei, Inc.
+> + *
+> + * Make sure that enough THP/HUGETLB pages have been allocated on systems
+> + * to cover the testing memory region before running this program, if you
+> + * wish to create block mappings in this test.
+> + */
+> +
+> +#define _GNU_SOURCE /* for program_invocation_name */
+> +
+> +#include <stdio.h>
+> +#include <stdlib.h>
+> +#include <time.h>
+> +#include <pthread.h>
+> +
+> +#include "test_util.h"
+> +#include "kvm_util.h"
+> +#include "processor.h"
+> +#include "guest_modes.h"
+> +
+> +#define TEST_MEM_SLOT_INDEX             1
+> +
+> +/* Default size(1GB) of the memory for testing */
+> +#define DEFAULT_TEST_MEM_SIZE          (1 << 30)
+> +
+> +/* Default guest test virtual memory offset */
+> +#define DEFAULT_GUEST_TEST_MEM         0xc0000000
+> +
+> +/* Different memory accessing types for a vcpu */
+> +enum access_type {
+> +       ACCESS_TYPE_READ,
+> +       ACCESS_TYPE_WRITE,
+> +       NUM_ACCESS_TYPES,
+> +};
+> +
+> +/* Different memory accessing stages for a vcpu */
+> +enum test_stage {
+> +       KVM_CREATE_MAPPINGS,
+> +       KVM_UPDATE_MAPPINGS,
+> +       KVM_ADJUST_MAPPINGS,
+> +       KVM_BEFORE_MAPPINGS,
+
+NIT: this might be easier to understand if it was first, since AFAIK
+KVM_BEFORE_MAPPINGS is the first state chronologically.
+
+> +       NUM_TEST_STAGES,
+> +};
+> +
+> +static const char * const access_type_string[] = {
+> +       "ACCESS_TYPE_READ ",
+> +       "ACCESS_TYPE_WRITE",
+> +};
+> +
+> +static const char * const test_stage_string[] = {
+> +       "KVM_CREATE_MAPPINGS",
+> +       "KVM_UPDATE_MAPPINGS",
+> +       "KVM_ADJUST_MAPPINGS",
+> +       "KVM_BEFORE_MAPPINGS",
+> +};
+> +
+> +struct perf_test_vcpu_args {
+> +       int vcpu_id;
+> +       enum access_type vcpu_access_type;
+> +};
+> +
+> +struct perf_test_args {
+> +       struct kvm_vm *vm;
+> +       uint64_t guest_test_virt_mem;
+> +       uint64_t host_page_size;
+> +       uint64_t host_num_pages;
+> +       uint64_t block_page_size;
+> +       uint64_t block_num_pages;
+> +       uint64_t host_pages_perblock;
+
+Is block a more common term in ARM than in x86? I don't think it makes
+too much difference, but most of the test's and code I've looked at
+use "huge page" to refer to 2M mappings and "large page" to refer
+generically to mappings bigger than the base page size. Unless block
+has some other specific meaning, I'd suggest:
+
+uint64_t large_page_size;
+uint64_t large_page_num_pages;
+uint64_t host_pages_per_large_page;
+
+or
+
+uint64_t lpage_size;
+uint64_t lpage_num_pages;
+uint64_t host_pages_per_lpage;
+
+and so on through the file.
+
+> +       enum vm_mem_backing_src_type backing_src_type;
+> +       struct perf_test_vcpu_args vcpu_args[KVM_MAX_VCPUS];
+> +};
+> +
+> +/*
+> + * Guest variables. Use addr_gva2hva() if these variables need
+> + * to be changed in host.
+> + */
+> +static enum test_stage guest_test_stage;
+> +
+> +/* Host variables */
+> +static uint32_t nr_vcpus = 1;
+> +static struct perf_test_args perf_test_args;
+> +static enum test_stage *current_stage;
+> +static enum test_stage vcpu_last_completed_stage[KVM_MAX_VCPUS];
+> +static bool host_quit;
+> +
+> +/*
+> + * Guest physical memory offset of the testing memory slot.
+> + * This will be set to the topmost valid physical address minus
+> + * the test memory size.
+> + */
+> +static uint64_t guest_test_phys_mem;
+> +
+> +/*
+> + * Guest virtual memory offset of the testing memory slot.
+> + * Must not conflict with identity mapped test code.
+> + */
+> +static uint64_t guest_test_virt_mem = DEFAULT_GUEST_TEST_MEM;
+> +
+> +static void guest_code(int vcpu_id)
+> +{
+> +       struct perf_test_vcpu_args *vcpu_args = &perf_test_args.vcpu_args[vcpu_id];
+> +       enum vm_mem_backing_src_type src_type = perf_test_args.backing_src_type;
+> +       uint64_t host_page_size = perf_test_args.host_page_size;
+> +       uint64_t host_num_pages = perf_test_args.host_num_pages;
+> +       uint64_t block_page_size = perf_test_args.block_page_size;
+> +       uint64_t block_num_pages = perf_test_args.block_num_pages;
+> +       uint64_t host_pages_perblock = perf_test_args.host_pages_perblock;
+> +       uint64_t half = host_pages_perblock / 2;
+> +       enum access_type vcpu_access_type;
+> +       enum test_stage stage;
+> +       uint64_t addr;
+> +       int i, j;
+> +
+> +       /* Make sure vCPU args data structure is not corrupt */
+> +       GUEST_ASSERT(vcpu_args->vcpu_id == vcpu_id);
+> +       vcpu_access_type = vcpu_args->vcpu_access_type;
+> +
+> +       while (true) {
+> +               stage = READ_ONCE(guest_test_stage);
+> +               addr = perf_test_args.guest_test_virt_mem;
+> +
+> +               switch (stage) {
+> +               /*
+> +                * Before dirty-logging, vCPUs concurrently access the first
+> +                * 8 bytes of pages within the same memory range with different
+> +                * and random access types(read or write). Then KVM will create
+> +                * mappings for them (page mappings or block mappings).
+> +                */
+> +               case KVM_CREATE_MAPPINGS:
+> +                       for (i = 0; i < block_num_pages; i++) {
+> +                               if (vcpu_access_type == ACCESS_TYPE_READ)
+> +                                       READ_ONCE(*(uint64_t *)addr);
+> +                               else
+> +                                       *(uint64_t *)addr = 0x0123456789ABCDEF;
+> +
+> +                               addr += block_page_size;
+> +                       }
+> +                       break;
+> +
+> +               /*
+> +                * During dirty-logging, KVM will only update attributes of the
+> +                * normal page mappings from RO to RW if backing source type is
+> +                * anonymous, and will split the block mappings into normal page
+> +                * mappings if backing source type is THP or HUGETLB.
+> +                */
+> +               case KVM_UPDATE_MAPPINGS:
+> +                       if (src_type == VM_MEM_SRC_ANONYMOUS) {
+> +                               for (i = 0; i < host_num_pages; i++) {
+> +                                       *(uint64_t *)addr = 0x0123456789ABCDEF;
+> +                                       addr += host_page_size;
+> +                               }
+> +                               break;
+> +                       }
+> +
+> +                       for (i = 0; i < block_num_pages; i++) {
+> +                               /* Write to the first host page of each block */
+> +                               *(uint64_t *)addr = 0x0123456789ABCDEF;
+> +
+> +                               /* Create half new page mappings for each block */
+
+suggestion:
+/*
+ * Access the middle page in each large page region. Since dirty
+logging is enabled,
+ * this will create a new mapping at the smallest page granularity.
+ */
+
+
+> +                               addr += host_page_size * half;
+> +                               for (j = half; j < host_pages_perblock; j++) {
+> +                                       READ_ONCE(*(uint64_t *)addr);
+> +                                       addr += host_page_size;
+> +                               }
+> +                       }
+> +                       break;
+> +
+> +               /*
+> +                * After dirty-logging is stopped, vCPUs concurrently read from
+> +                * every single host page. Then KVM will coalesce the splitted
+> +                * page mappings back to block mappings. And a TLB conflict abort
+> +                * could occur here if TLB entries of the page mappings are not
+> +                * fully invalidated.
+> +                */
+> +               case KVM_ADJUST_MAPPINGS:
+> +                       for (i = 0; i < host_num_pages; i++) {
+> +                               READ_ONCE(*(uint64_t *)addr);
+> +                               addr += host_page_size;
+> +                       }
+> +                       break;
+> +
+> +               default:
+> +                       break;
+> +               }
+> +
+> +               GUEST_SYNC(1);
+> +       }
+> +}
+> +
+> +static void *vcpu_worker(void *data)
+> +{
+> +       int ret;
+> +       struct perf_test_vcpu_args *vcpu_args = data;
+> +       struct kvm_vm *vm = perf_test_args.vm;
+> +       int vcpu_id = vcpu_args->vcpu_id;
+> +       struct kvm_run *run;
+> +       struct timespec start;
+> +       struct timespec ts_diff;
+> +       enum test_stage stage;
+> +
+> +       vcpu_args_set(vm, vcpu_id, 1, vcpu_id);
+> +       run = vcpu_state(vm, vcpu_id);
+> +
+> +       while (!READ_ONCE(host_quit)) {
+> +               clock_gettime(CLOCK_MONOTONIC, &start);
+> +               ret = _vcpu_run(vm, vcpu_id);
+> +               ts_diff = timespec_diff_now(start);
+> +
+> +               TEST_ASSERT(ret == 0, "vcpu_run failed: %d\n", ret);
+> +
+> +               TEST_ASSERT(get_ucall(vm, vcpu_id, NULL) == UCALL_SYNC,
+> +                           "Invalid guest sync status: exit_reason=%s\n",
+> +                           exit_reason_str(run->exit_reason));
+> +
+> +               pr_debug("Got sync event from vCPU %d\n", vcpu_id);
+> +               stage = READ_ONCE(*current_stage);
+> +               vcpu_last_completed_stage[vcpu_id] = stage;
+> +               pr_debug("vCPU %d has completed stage %s\n"
+> +                        "execution time is: %ld.%.9lds\n\n",
+> +                        vcpu_id, test_stage_string[stage],
+> +                        ts_diff.tv_sec, ts_diff.tv_nsec);
+> +
+> +               while (stage == READ_ONCE(*current_stage) &&
+> +                      !READ_ONCE(host_quit)) {}
+> +       }
+> +
+> +       return NULL;
+> +}
+> +
+> +struct test_params {
+> +       enum vm_mem_backing_src_type backing_src_type;
+> +       uint64_t backing_src_granule;
+
+Nit: suggest changing this to block_page_size (or large_page_size) as
+you use below. (block|large)_page_size is easier for me to read.
+
+> +       uint64_t test_mem_size;
+> +       uint64_t phys_offset;
+> +};
+> +
+> +static struct kvm_vm *pre_init_before_test(enum vm_guest_mode mode, void *arg)
+> +{
+> +       struct test_params *p = arg;
+> +       struct perf_test_vcpu_args *vcpu_args;
+> +       uint64_t guest_page_size, guest_num_pages, host_page_size;
+> +       uint64_t block_page_size = p->backing_src_granule;
+> +       uint64_t test_mem_size = p->test_mem_size, test_num_pages;
+> +       void * host_test_mem;
+> +       struct kvm_vm *vm;
+> +       int vcpu_id;
+> +
+> +       guest_page_size = vm_guest_mode_params[mode].page_size;
+> +       host_page_size = getpagesize();
+> +
+> +       /*
+> +        * Ensure that testing memory size is aligned to guest page size,
+> +        * host page size and block page size, and that block page size
+> +        * is aligned to host page size.
+> +        */
+> +       TEST_ASSERT(test_mem_size % guest_page_size == 0,
+> +                   "Testing memory size is not guest page size aligned.");
+> +       TEST_ASSERT(test_mem_size % block_page_size  == 0,
+> +                   "Testing memory size is not block page size aligned.");
+> +       TEST_ASSERT(block_page_size % host_page_size == 0,
+> +                   "Block page size is not host page size aligned.");
+> +
+> +       guest_num_pages = test_mem_size / guest_page_size;
+> +       test_num_pages = test_mem_size / MIN_PAGE_SIZE;
+> +       vm = vm_create_with_vcpus(mode, nr_vcpus, test_num_pages, 0, guest_code, NULL);
+> +
+> +       if (!p->phys_offset) {
+> +               guest_test_phys_mem = (vm_get_max_gfn(vm) -
+> +                                      guest_num_pages) * guest_page_size;
+> +               guest_test_phys_mem &= ~(block_page_size - 1);
+> +       } else {
+> +               guest_test_phys_mem = p->phys_offset;
+> +       }
+> +
+> +       /*
+> +        * Ensure that guest physical offset of the testing memory slot is
+> +        * block page size aligned, so that block mappings can be created
+> +        * successfully by KVM.
+> +        */
+> +       TEST_ASSERT(guest_test_phys_mem % block_page_size == 0,
+> +                   "Guest physical offset is not block page size aligned.");
+> +#ifdef __s390x__
+> +       /* Align to 1M (segment size) */
+> +       guest_test_phys_mem &= ~((1 << 20) - 1);
+> +#endif
+> +
+> +       /* Set up the shared data structure perf_test_args */
+> +       perf_test_args.vm = vm;
+> +       perf_test_args.guest_test_virt_mem = guest_test_virt_mem;
+> +       perf_test_args.host_page_size = host_page_size;
+> +       perf_test_args.host_num_pages = test_mem_size / host_page_size;
+> +       perf_test_args.block_page_size = block_page_size;
+> +       perf_test_args.block_num_pages = test_mem_size / block_page_size;
+> +       perf_test_args.host_pages_perblock = block_page_size / host_page_size;
+> +       perf_test_args.backing_src_type = p->backing_src_type;
+> +
+> +       for(vcpu_id = 0; vcpu_id < KVM_MAX_VCPUS; vcpu_id++) {
+> +               vcpu_args = &perf_test_args.vcpu_args[vcpu_id];
+> +               vcpu_args->vcpu_id = vcpu_id;
+> +               vcpu_args->vcpu_access_type = random() % NUM_ACCESS_TYPES;
+> +               pr_debug("Set access type of vCPU %d as %s\n",
+> +                        access_type_string[vcpu_args->vcpu_access_type]);
+> +
+> +               vcpu_last_completed_stage[vcpu_id] = NUM_TEST_STAGES;
+> +       }
+> +
+> +       /* Add an extra memory slot with specified backing source type */
+> +       vm_userspace_mem_region_add(vm, p->backing_src_type,
+> +                                   guest_test_phys_mem,
+> +                                   TEST_MEM_SLOT_INDEX,
+> +                                   guest_num_pages, 0);
+> +
+> +       /* Do mapping for the testing memory slot */
+> +       virt_map(vm, guest_test_virt_mem, guest_test_phys_mem, guest_num_pages, 0);
+> +
+> +       /* Cache the HVA pointer of the region */
+> +       host_test_mem = addr_gpa2hva(vm, (vm_paddr_t)guest_test_phys_mem);
+> +
+> +       /* Export shared structure perf_test_args to guest */
+> +       ucall_init(vm, NULL);
+> +       sync_global_to_guest(vm, perf_test_args);
+> +
+> +       current_stage = addr_gva2hva(vm, (vm_vaddr_t)(&guest_test_stage));
+> +       *current_stage = NUM_TEST_STAGES;
+> +
+> +       pr_info("Testing guest mode: %s\n", vm_guest_mode_string(mode));
+> +       pr_info("Testing backing source type: %s\n",
+> +               vm_mem_backing_src_type_string(p->backing_src_type));
+> +       pr_info("Testing backing source granule: 0x%lx\n", block_page_size);
+> +       pr_info("Testing memory size: 0x%lx\n", test_mem_size);
+> +       pr_info("Guest physical test memory offset: 0x%lx\n",
+> +               guest_test_phys_mem);
+> +       pr_info("Host  virtual  test memory offset: 0x%lx\n",
+> +               (uint64_t)host_test_mem);
+> +       pr_info("Number of testing vCPUs: %d\n", nr_vcpus);
+> +
+> +       return vm;
+> +}
+> +
+> +static void run_test(enum vm_guest_mode mode, void *arg)
+> +{
+> +       pthread_t *vcpu_threads;
+> +       struct kvm_vm *vm;
+> +       int vcpu_id;
+> +       enum test_stage stage;
+> +       struct timespec start;
+> +       struct timespec ts_diff;
+> +
+> +       /* Create VM with vCPUs and make some pre-initialization */
+> +       vm = pre_init_before_test(mode, arg);
+> +
+> +       vcpu_threads = malloc(nr_vcpus * sizeof(*vcpu_threads));
+> +       TEST_ASSERT(vcpu_threads, "Memory allocation failed");
+> +
+> +       host_quit = false;
+> +       stage = KVM_BEFORE_MAPPINGS;
+> +       *current_stage = stage;
+> +
+> +       for (vcpu_id = 0; vcpu_id < nr_vcpus; vcpu_id++) {
+> +               pthread_create(&vcpu_threads[vcpu_id], NULL, vcpu_worker,
+> +                              &perf_test_args.vcpu_args[vcpu_id]);
+> +       }
+> +       for (vcpu_id = 0; vcpu_id < nr_vcpus; vcpu_id++) {
+> +               while (READ_ONCE(vcpu_last_completed_stage[vcpu_id]) != stage)
+> +                       pr_debug("Waiting for vCPU %d to complete stage %s\n",
+> +                                vcpu_id, test_stage_string[stage]);
+> +       }
+> +       pr_info("Started all vCPUs successfully\n");
+> +
+> +       /* Test the stage of KVM creating mappings */
+> +       clock_gettime(CLOCK_MONOTONIC, &start);
+> +       stage = KVM_CREATE_MAPPINGS;
+> +       *current_stage = stage;
+> +
+> +       for (vcpu_id = 0; vcpu_id < nr_vcpus; vcpu_id++) {
+> +               while (READ_ONCE(vcpu_last_completed_stage[vcpu_id]) != stage)
+> +                       pr_debug("Waiting for vCPU %d to complete stage %s\n",
+> +                                vcpu_id, test_stage_string[stage]);
+> +       }
+> +
+> +       ts_diff = timespec_diff_now(start);
+> +       pr_info("KVM_CREATE_MAPPINGS: total execution time: %ld.%.9lds\n\n",
+> +               ts_diff.tv_sec, ts_diff.tv_nsec);
+> +
+> +       /* Test the stage of KVM updating mappings */
+> +       vm_mem_region_set_flags(vm, TEST_MEM_SLOT_INDEX, KVM_MEM_LOG_DIRTY_PAGES);
+> +
+> +       clock_gettime(CLOCK_MONOTONIC, &start);
+> +       stage = KVM_UPDATE_MAPPINGS;
+> +       *current_stage = stage;
+> +
+> +       for (vcpu_id = 0; vcpu_id < nr_vcpus; vcpu_id++) {
+> +               while (READ_ONCE(vcpu_last_completed_stage[vcpu_id]) != stage)
+> +                       pr_debug("Waiting for vCPU %d to complete stage %s\n",
+> +                                vcpu_id, test_stage_string[stage]);
+> +       }
+> +
+> +       ts_diff = timespec_diff_now(start);
+> +       pr_info("KVM_UPDATE_MAPPINGS: total execution time: %ld.%.9lds\n\n",
+> +               ts_diff.tv_sec, ts_diff.tv_nsec);
+> +
+> +       /* Test the stage of KVM adjusting mappings */
+> +       vm_mem_region_set_flags(vm, TEST_MEM_SLOT_INDEX, 0);
+> +
+> +       clock_gettime(CLOCK_MONOTONIC, &start);
+> +       stage = KVM_ADJUST_MAPPINGS;
+> +       *current_stage = stage;
+> +
+> +       for (vcpu_id = 0; vcpu_id < nr_vcpus; vcpu_id++) {
+> +               while (READ_ONCE(vcpu_last_completed_stage[vcpu_id]) != stage)
+> +                       pr_debug("Waiting for vCPU %d to complete stage %s\n",
+> +                                vcpu_id, test_stage_string[stage]);
+> +       }
+> +
+> +       ts_diff = timespec_diff_now(start);
+> +       pr_info("KVM_ADJUST_MAPPINGS: total execution time: %ld.%.9lds\n\n",
+> +               ts_diff.tv_sec, ts_diff.tv_nsec);
+> +
+> +       /* Tell the vcpu thread to quit */
+> +       host_quit = true;
+> +       for (vcpu_id = 0; vcpu_id < nr_vcpus; vcpu_id++)
+> +               pthread_join(vcpu_threads[vcpu_id], NULL);
+> +
+> +       free(vcpu_threads);
+> +       ucall_uninit(vm);
+> +       kvm_vm_free(vm);
+> +}
+> +
+> +static void vm_mem_backing_src_types_help(void)
+> +{
+> +       int i;
+> +
+> +       printf(" -t: specify backing source type of the testing memory region\n"
+> +              "     (default: VM_MEM_SRC_ANONYMOUS)\n"
+> +              "     Backing source type IDs:\n");
+> +
+> +       for (i = 0; i < NUM_VM_BACKING_SRC_TYPES; i++)
+> +               printf("         %d:    %s\n", i,  vm_mem_backing_src_type_string(i));
+> +}
+> +
+> +static void help(char *name)
+> +{
+> +       puts("");
+> +       printf("usage: %s [-h] [-m mode] [-t type] [-g granule] [-p offset] "
+> +              "[-s size] [-v vcpus]\n", name);
+> +       puts("");
+> +       guest_modes_help();
+> +       vm_mem_backing_src_types_help();
+> +       printf(" -g: specify granule of the backing source pages. e.g. 2M or 1G.\n"
+> +              "     (default: host page size)\n");
+
+I'm not sure that 1G page support is fully implemented in this test.
+At minimum, I believe a flag is needed in the call to
+vm_userspace_mem_region_add, but it might be cleaner to add a
+VM_MEM_SRC_ANONYMOUS_1G_HUGETLB backing src type that causes the flag
+to be added in vm_userspace_mem_region_add.
+
+
+> +       printf(" -p: specify guest physical test memory offset\n"
+> +              "     must be aligned to granule of the backing source pages.\n"
+> +              "     Warning: a low offset can conflict with the loaded test code.\n");
+> +       printf(" -s: specify size of the memory region for testing. e.g. 10M or 3G.\n"
+> +              "     must be aligned to granule of the backing source pages.\n"
+> +              "     (default: 1G)\n");
+> +       printf(" -v: specify the number of vCPUs to run\n"
+> +              "     (default: 1)\n");
+> +       puts("");
+> +       exit(0);
+> +}
+> +
+> +int main(int argc, char *argv[])
+> +{
+> +       int max_vcpus = kvm_check_cap(KVM_CAP_MAX_VCPUS);
+> +       struct test_params p = {
+> +               .backing_src_type = VM_MEM_SRC_ANONYMOUS,
+> +               .backing_src_granule = getpagesize(),
+> +               .test_mem_size = DEFAULT_TEST_MEM_SIZE,
+> +       };
+> +       int opt, type;
+> +
+> +       guest_modes_append_default();
+> +
+> +       while ((opt = getopt(argc, argv, "hm:t:g:p:s:v:")) != -1) {
+> +               switch (opt) {
+> +               case 'm':
+> +                       guest_modes_cmdline(optarg);
+> +                       break;
+> +               case 't':
+> +                       type = strtoul(optarg, NULL, 10);
+> +                       TEST_ASSERT(type < NUM_VM_BACKING_SRC_TYPES,
+> +                                   "Backing source type ID %d too big", type);
+> +                       p.backing_src_type = type;
+> +                       break;
+> +               case 'g':
+> +                       p.backing_src_granule = parse_size(optarg);
+> +                       break;
+> +               case 'p':
+> +                       p.phys_offset = strtoull(optarg, NULL, 0);
+> +                       break;
+> +               case 's':
+> +                       p.test_mem_size = parse_size(optarg);
+> +                       break;
+> +               case 'v':
+> +                       nr_vcpus = atoi(optarg);
+> +                       TEST_ASSERT(nr_vcpus > 0 && nr_vcpus <= max_vcpus,
+> +                                   "Invalid number of vcpus, must be between 1 and %d", max_vcpus);
+> +                       break;
+> +               case 'h':
+> +               default:
+> +                       help(argv[0]);
+> +                       break;
+> +               }
+> +       }
+> +
+> +       for_each_guest_mode(run_test, &p);
+> +
+> +       return 0;
+> +}
+> --
+> 2.23.0
+>
