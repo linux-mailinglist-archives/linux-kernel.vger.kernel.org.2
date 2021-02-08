@@ -2,170 +2,555 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BAAE3143EB
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 00:36:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D6AD3143F1
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 00:38:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231301AbhBHXgr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 18:36:47 -0500
-Received: from userp2120.oracle.com ([156.151.31.85]:58416 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230519AbhBHXgR (ORCPT
+        id S230519AbhBHXh1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 18:37:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47580 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229720AbhBHXhR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 18:36:17 -0500
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 118NOUER149491;
-        Mon, 8 Feb 2021 23:35:29 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=POYpBYt3+KxDmyUbp+MzcOudNXbZt7Zq8mS8+HAxE78=;
- b=Tdyjq4ewbUlJ0Qi2cIzw2xyiWRqdOq/oIQXmnfaCtF+p44SEEozxQ1aDWsdso2kOdSvV
- Xltw5msaruw9PWCG/+XpzvnFlPuTYKtw6OfDPsKWx1IuGCIP1pmyOsSLxZtpQpgvC8n8
- bDo5FfAv5yTRQ79cUchxBw3ABLLuNa+MRCh2jjREYCZgK7oYZTVkMZbEQik/LnKFMeWW
- ZBJF18RIFLJYsY1hnZacFO1XhlsGPNxZslEFVdFdruPraaOoZRxomCqW7ZESq/j/24t6
- ijrwipd2/X7yXVafO3L82cDUJFKimB1Y3qKmucRJa6XfvEhaUt8Qv1k5AfCRB2VrzB2R Yg== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2120.oracle.com with ESMTP id 36hkrmwpyn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 08 Feb 2021 23:35:29 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 118NQZd1156628;
-        Mon, 8 Feb 2021 23:35:29 GMT
-Received: from nam02-sn1-obe.outbound.protection.outlook.com (mail-sn1nam02lp2059.outbound.protection.outlook.com [104.47.36.59])
-        by userp3020.oracle.com with ESMTP id 36j4vqhu68-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 08 Feb 2021 23:35:29 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=oWaylq31GoAWTade8UFzPHUgagvx5bwWSt54sNe3H8G3D5US+N3w9n27clkdNvyexPSl6EMty0MJmTKjpRfjAj2YYV/+dmO9W6aI5I0kVZGS8fsIwCPBnvziQKJrFI4pTsW5N2alLQNujtGY0s3ZcxvcNC/8drEH9GR69yr5LTadp/YcqojlrC+0EsP38ayVVsm4oVyUyjg5SFaRxwnV+WaNLrq2so+zVuNywud963qBvvq0dbNCtarZIk+BhCzsoBxYTR+SK0ntHvSuQKQrT07KbVOQz0wtSrstbS4P8X+Z9ocwOLSWK+NFkJrM3N5Z0+9FZx9D7WHPQyQRBQ8INg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=POYpBYt3+KxDmyUbp+MzcOudNXbZt7Zq8mS8+HAxE78=;
- b=efVuE/EOBradGKK28j85Gz0iEcVR0gm0ijkDvnaTAJtdWxNNlb/3kGCLkLd5tn8OTriyO9ISwRDJ7baT3oQLqzk1Mb+4FdeY53HiFCaCa1JQ7HOsdFdttwBahzfy/Aj50eYADJEk5vUpNH5XipeEMm6NzJjXuHG2bGDkhT7OoGhGAHZV5J7CnwwY1tc9S/BkIhLMEywcm8OptWRlW+GZmuCOdJq9OBDfaXWxx8276LF0XriHfPMC4p7bHid5eIma883i1IH9C9JMzwAnugffd+byyzJUHS44J+b1dnNzwaOKBwRJ5lCLU1F2rYkfmmHeX3/c3TBg+qIsQz0KBlfXWQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Mon, 8 Feb 2021 18:37:17 -0500
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF219C061786
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 15:36:37 -0800 (PST)
+Received: by mail-pg1-x532.google.com with SMTP id o7so11304247pgl.1
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 15:36:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=POYpBYt3+KxDmyUbp+MzcOudNXbZt7Zq8mS8+HAxE78=;
- b=kAxMb+fKO9P4iXR2GPe4rDzmfCR4j4IG47gE1snivWfutyE3lynJQOA3EVQK8mgiNiVhfq7AL4tzI1ZfeIL2r/MCvZSS7B3YrSm6rVkxIh3FlvBgEFQY8YkIqXA2JtQuLN3cSEVclM+cUKDy0DRcq/lBW0vKSnGWnoVmHe/cOm0=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=oracle.com;
-Received: from BYAPR10MB3288.namprd10.prod.outlook.com (2603:10b6:a03:156::21)
- by BY5PR10MB3937.namprd10.prod.outlook.com (2603:10b6:a03:1fe::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.29; Mon, 8 Feb
- 2021 23:35:27 +0000
-Received: from BYAPR10MB3288.namprd10.prod.outlook.com
- ([fe80::f489:4e25:63e0:c721]) by BYAPR10MB3288.namprd10.prod.outlook.com
- ([fe80::f489:4e25:63e0:c721%7]) with mapi id 15.20.3825.030; Mon, 8 Feb 2021
- 23:35:27 +0000
-Subject: Re: [PATCH 5/7] xen/events: add per-xenbus device event statistics
- and settings
-To:     Juergen Gross <jgross@suse.com>, xen-devel@lists.xenproject.org,
-        linux-kernel@vger.kernel.org
-Cc:     Stefano Stabellini <sstabellini@kernel.org>
-References: <20210206104932.29064-1-jgross@suse.com>
- <20210206104932.29064-6-jgross@suse.com>
-From:   Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Message-ID: <d218749d-92c7-f995-a282-2490fb13a458@oracle.com>
-Date:   Mon, 8 Feb 2021 18:35:24 -0500
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.7.0
-In-Reply-To: <20210206104932.29064-6-jgross@suse.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [138.3.200.35]
-X-ClientProxiedBy: BYAPR05CA0001.namprd05.prod.outlook.com
- (2603:10b6:a03:c0::14) To BYAPR10MB3288.namprd10.prod.outlook.com
- (2603:10b6:a03:156::21)
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ngEKfsdbVxpmMVxd+vbzJVrz+oqCOnnmtyjfOzmWIns=;
+        b=vZEvNWEsyhSwEzGMf53sGmVlo4HZvzcwmBl9rszuW7RHcIks6fZBG+Kl3mZI9zvDMG
+         nRO/T6aHuJEzxMtOGCZC0nkqfansW0KWGxdZo19OD+BMqrYHajw9Gw6s+g4a4aY9KfZ3
+         FDxGQ/FVa5CzuuzC3d7wCFhT3N3ed7r9KIQmeM9PlYo6b4WT65/Rezl6nexq7EmBjZ4o
+         LS5/xx+yYFIhI6NMUp3+2LgRkeWBI1WTQl7LsLfhH2b6fauQ3SM7OVYIoax0B4R5sxkF
+         tTJWxRQkSiQjhQzylT9AJVaS+rZjlYpavenX8aPpaSgytAcw4osOYTFMJJxZgFGy2MG7
+         /3sw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=ngEKfsdbVxpmMVxd+vbzJVrz+oqCOnnmtyjfOzmWIns=;
+        b=hTkLcHh5Zu+O9HZQjRGxZMZHEfzwJ+hQtjy4yJ3YwkDiZ7IDZjb2BfG46Vc9P+AqeW
+         bQLpobjj2SaWTpu7UISf8dzjLxtnBtQHlsF7gG0i0uZzm8biXgc5S9SfslKGo1EJlvnu
+         Kb3TJs9xW+UCmsKUzClpizAfteMLSGtcISc+C01++fndJWXwUMbFw5uwfMKD+cgsy6Rw
+         uIJ92GS6dho8t3G+KxKmu9jqbXDaTHKuhDD3FIrLNtwdNNWQSP2+I7Suz1L1ScL3W2x3
+         qt9auzovoLrppJzI3MjXKnedUTqwDoJVhSPc2TNDcSyfY/Hnwvkfy8I3+RqsYPiX9lhs
+         AUpQ==
+X-Gm-Message-State: AOAM533Okyu9hMF2NJgRPO3CeGEUCXTqxdsTMVqvHT1K9L8jruZyaWny
+        pEKXpQqf69aUeGdUA3O9Yac=
+X-Google-Smtp-Source: ABdhPJzwYGncVz3IYMhn0vQ6jAbTc3k015wj9Qq9Bh/TPEZcb1RZVE4D+zsrMLd9caSZUaqbW5uKmA==
+X-Received: by 2002:a63:7f10:: with SMTP id a16mr19568702pgd.416.1612827397258;
+        Mon, 08 Feb 2021 15:36:37 -0800 (PST)
+Received: from google.com ([2620:15c:211:201:1557:50ce:fb7a:a325])
+        by smtp.gmail.com with ESMTPSA id z4sm6738719pgv.73.2021.02.08.15.36.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Feb 2021 15:36:35 -0800 (PST)
+Sender: Minchan Kim <minchan.kim@gmail.com>
+Date:   Mon, 8 Feb 2021 15:36:33 -0800
+From:   Minchan Kim <minchan@kernel.org>
+To:     John Hubbard <jhubbard@nvidia.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, gregkh@linuxfoundation.org,
+        surenb@google.com, joaodias@google.com, willy@infradead.org
+Subject: Re: [PATCH v2] mm: cma: support sysfs
+Message-ID: <YCHLAdabGmm7kqSH@google.com>
+References: <20210208180142.2765456-1-minchan@kernel.org>
+ <e01c111b-fb20-0586-c7a9-dd6d922c0e57@nvidia.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [10.74.101.99] (138.3.200.35) by BYAPR05CA0001.namprd05.prod.outlook.com (2603:10b6:a03:c0::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.10 via Frontend Transport; Mon, 8 Feb 2021 23:35:26 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 6f78cb41-f1ae-452f-772d-08d8cc8a36fa
-X-MS-TrafficTypeDiagnostic: BY5PR10MB3937:
-X-Microsoft-Antispam-PRVS: <BY5PR10MB393773417F2FF631053B40E58A8F9@BY5PR10MB3937.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:475;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: uWcgWUmJhvzm0ZV2r+ItGjccmzjlbQWj5MjTgggVIlNkfM3FeOsnXbH6LvFewtLboDowpB1OMeLxuiC8mAaeyX3ki/VEh6jcf9HPWce8KHcTR39VdrfVcXWlyyOUbKe7Ga0k8n1YeLsIVyOH3UJBWK0+9INjdEAiybNjTPmCGQNddf4E56rA/qHHzVuWCjIM288BkWI5ccJBqXABonpA565nRBd+bnpe/3VnmUFyEYv21YrRyw9s7LGF5HiFBjcfQanrlsZuAEYfE4KRypLhz1c4rtM1xP98+QfKS/CWG33qLyg5K6Ts20m3eXnCTfN2WRNysxN+p2Ho8czzhCq30PEIhsGSJ7GaULx1KLROql8NLnsipqnqlkfZcZQarZyIrdsadVvfhrSQ5l6/56J+spxvzFPeOxOl1IBl/3LF0FkPtIQ6sHFZozMpwpH6jl33ijjjMXKMVUbwVODftRT2tOX50Gti3rq78Yhy0w9oRgz42KzJTfNlDNsCbFQ3SesOo7nFEwGKBglYpFMLKhrJb/kNHgimmfRTFi5yRfgmePRh1wDaJFh58oMqEwj4wuc5FaTMtetWAyXscWiNGqDzNw5BCDdG1bpRo7BABVFfsHk=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB3288.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(396003)(366004)(136003)(346002)(39860400002)(316002)(6486002)(186003)(16526019)(2906002)(31696002)(26005)(16576012)(478600001)(83380400001)(36756003)(44832011)(31686004)(53546011)(4744005)(956004)(2616005)(66946007)(4326008)(5660300002)(8936002)(66556008)(8676002)(86362001)(66476007)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?aDF0NkhDcXA5OVdRSitIWnNvc0VMMGVCNnV0eG9pMjBBcS90YnJhb2lJOFlP?=
- =?utf-8?B?NDl2WGZtTDhZb3dRM2NKaFRCSlVXWit2RE1oMFlGdlJzZjVwUGljNjBKTHdH?=
- =?utf-8?B?bTZmMmx5MnQrMVp1OERCTHFheEFRNGQxQlV3ODB1ZnBNUXBjMHExdmtiMXVR?=
- =?utf-8?B?U1F2UmJVWGlLM3BvL1h4QU9sSm44R0Q0aVNRZEl5bC9HTWhCdm9wQjdvVzNI?=
- =?utf-8?B?bnJJNkVPRWE2TnJUenAzRXZINFp4aVNYNnFwQ0lIY1kzQm1qSnlIejJZQUVP?=
- =?utf-8?B?RFpKNWttL3Q1SFYzQS9jYXJuSU54NWJDRmkyVCt4L1pDbFpJMDdWV0dFdWFl?=
- =?utf-8?B?UjFqWlZIMC9vWGxtY29XVVBJa0ZTRGpKMW1BWVVMRUJPRlZHZldFeEUwZVNJ?=
- =?utf-8?B?TlhTbnZiU2ZSVUhjLzBsQUs1K2x6c1JNakFhVHJtcTJvTmYxb0RmQkpOV0E2?=
- =?utf-8?B?U0crTDgxemxMOW4rZXEzK1RkeStSdXZwSlFTYm9LQTNNYWl0ejVrbEhpRUds?=
- =?utf-8?B?Mm8xMU80VGo5R1RoYWNBWlcyTEVNSDFTWVY3R0FzOGZ2TCsrZHh0b1p6eTFn?=
- =?utf-8?B?cENzazh3c2xZdFgzcmJIOW9kc2paL0VSTlhQbnoxQlJVUktuSGtJVjQzUEZn?=
- =?utf-8?B?YTA1WDBXMVNMR0FWQUxJS1NHR05Wak93SEp1cEFSUEkxaGVkWmVVQ3dBR1hH?=
- =?utf-8?B?YUpmQjhMQ01UY0x5M3BjTUM1emNkSVBiK082YzE2TVJXZXlhN1ZGb0l0dVFT?=
- =?utf-8?B?ZUpjeDd3eGxMNUtjL0dybHhxQ0phM2FmY0lMZHFNUGxpbi9IaTh0WEk1cXh3?=
- =?utf-8?B?UDF5V05jeWx0aXBhNzBpN2E4ZWtJOGVaZGM5NjNaZzREV3doY3psbmY0d0Ja?=
- =?utf-8?B?VzB1bDcyTDhxZ1FabUZxaldoOGFKRFVKT3ljYWR3cHgrU0IxcGkyUlZtQ2Ji?=
- =?utf-8?B?MHkxamxGMzdGVEQvZkhZVXQxM3psOW5MNk1GUTQ5cHl3Uk1tVXBpRWNEK2w0?=
- =?utf-8?B?d255aXArdjd6TVlEblNicGJKcGhDWkI1amdsYjFyaldOcDROODhHYVlUNFlN?=
- =?utf-8?B?cG9xTXJiRS9qbEd4VTd1alE3bEpYZXFJbk5HQVJ4aDZaWm01ZWNvamlyNmQr?=
- =?utf-8?B?T1JDTHFWNnRLSmlWTG1mazBlSTFyM1ZJQU5wQUNVSjFjWHJJd1FDVVRiRnZH?=
- =?utf-8?B?NXRaMEhjekVFcmdydWhPU0VDZDhuVC90ektrZUhrbHNMQkhrUWpKTWFaQTBx?=
- =?utf-8?B?YjFLR2RrcXFLVE9tVXZ1SkpWZGlRTXJZeTNyR1pmT2FxMVRtNGFKL05Sckl1?=
- =?utf-8?B?Y284a3NpWXhLVTM1Q1R1VGZETlNqYVRKd3ZNUG8wUmF1V0tBRlVyWlN0N2Iz?=
- =?utf-8?B?RXhlSnFxUUkxL0p1REJ4SnNCNzZCclNpYVNUYTdkMThiK3BOWG9LUi9rdXRm?=
- =?utf-8?B?cGJ3R2xQRVBjcjhNeHBUOE1tTUpxcjdLUjgxVUt2cnRRK3RlUjNNalJBZ1V3?=
- =?utf-8?B?THhveHJlcHVtUXJ2ZC81ZlZoME1RaUErNEJmazBBUlc3Y3MyWjdQYUJFWmhY?=
- =?utf-8?B?ZG1KMms5K2x4WmV3bjYzZ1l2MWZUMElTcXFoVHFINUhvNVFLaWpRNHptVWpB?=
- =?utf-8?B?MS9QUmVGa2RITkpSQkdSYmEzdDduR1ZINkc1VHVWc2NHTUZkb2dlbjhWL0Vv?=
- =?utf-8?B?NmgzTGRNc0psL2VmcS9SYk0vT3ZCUWFJTE9kT1ViQzRHQzdDOTN6SXVieHJF?=
- =?utf-8?Q?ueUk4QPbLN70cWBAWKT6vljmShqMRWhrTYC15Vq?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6f78cb41-f1ae-452f-772d-08d8cc8a36fa
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB3288.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Feb 2021 23:35:27.4871
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: rVdI3luxQnN5IFlbz7g9GQexEkVL+N4Z/v8g3IxRnc+tj1rEBcM//VjFq/z4V/1U6CVwzD3ciNN7BOBT0gBqRr20gFEIwk1n4xWOzDRFsjQ=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR10MB3937
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9889 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 adultscore=0
- mlxlogscore=999 mlxscore=0 suspectscore=0 malwarescore=0 phishscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102080130
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9889 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 malwarescore=0
- priorityscore=1501 bulkscore=0 spamscore=0 impostorscore=0 mlxscore=0
- suspectscore=0 mlxlogscore=999 adultscore=0 clxscore=1015
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102080130
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e01c111b-fb20-0586-c7a9-dd6d922c0e57@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Feb 08, 2021 at 01:34:06PM -0800, John Hubbard wrote:
+> On 2/8/21 10:01 AM, Minchan Kim wrote:
+> > Since CMA is getting used more widely, it's more important to
+> > keep monitoring CMA statistics for system health since it's
+> > directly related to user experience.
+> > 
+> > This patch introduces sysfs for the CMA and exposes stats below
+> > to keep monitor for telemetric in the system.
+> 
+> Or:
+> 
+> This patch introduces sysfs statistics for CMA, in order to provide
+> some basic monitoring of the CMA allocator.
 
-On 2/6/21 5:49 AM, Juergen Gross wrote:
-> Add sysfs nodes for each xenbus device showing event statistics (number
-> of events and spurious events, number of associated event channels)
-> and for setting a spurious event threshold in case a frontend is
-> sending too many events without being rogue on purpose.
->
-> Signed-off-by: Juergen Gross <jgross@suse.com>
-> ---
->  drivers/xen/events/events_base.c  | 27 ++++++++++++-
->  drivers/xen/xenbus/xenbus_probe.c | 66 +++++++++++++++++++++++++++++++
->  include/xen/xenbus.h              |  7 ++++
->  3 files changed, 98 insertions(+), 2 deletions(-)
+Yub, take it.
+
+> 
+> > 
+> >   * the number of CMA page allocation attempts
+> >   * the number of CMA page allocation failures
+> > 
+> > With those per-CMA statistics, we could know how CMA allocadtion
+> > failure rate for each usecases.
+> 
+> Maybe:
+> 
+> These two values allow the user to calcuate the allocation
+> failure rate for each CMA area.
+
+Good to me.
+
+> 
+> > 
+> > e.g.)
+> >    /sys/kernel/mm/cma/WIFI/cma_alloc_pages_[attempt|fail]
+> >    /sys/kernel/mm/cma/SENSOR/cma_alloc_pages_[attempt|fail]
+> >    /sys/kernel/mm/cma/BLUETOOTH/cma_alloc_pages_[attempt|fail]
+> > 
+> > Signed-off-by: Minchan Kim <minchan@kernel.org>
+> > ---
+> > 
+> >  From v1 - https://lore.kernel.org/linux-mm/20210203155001.4121868-1-minchan@kernel.org/
+> >   * fix sysfs build and refactoring - willy
+> >   * rename and drop some attributes - jhubbard
+> > 
+> >   Documentation/ABI/testing/sysfs-kernel-mm-cma |  25 ++++
+> >   mm/Kconfig                                    |   7 ++
+> >   mm/Makefile                                   |   1 +
+> >   mm/cma.c                                      |   6 +-
+> >   mm/cma.h                                      |  18 +++
+> >   mm/cma_sysfs.c                                | 114 ++++++++++++++++++
+> >   6 files changed, 170 insertions(+), 1 deletion(-)
+> >   create mode 100644 Documentation/ABI/testing/sysfs-kernel-mm-cma
+> >   create mode 100644 mm/cma_sysfs.c
+> > 
+> > diff --git a/Documentation/ABI/testing/sysfs-kernel-mm-cma b/Documentation/ABI/testing/sysfs-kernel-mm-cma
+> > new file mode 100644
+> > index 000000000000..68bdcc8c7681
+> > --- /dev/null
+> > +++ b/Documentation/ABI/testing/sysfs-kernel-mm-cma
+> > @@ -0,0 +1,25 @@
+> > +What:		/sys/kernel/mm/cma/
+> > +Date:		Feb 2021
+> > +Contact:	Minchan Kim <minchan@kernel.org>
+> > +Description:
+> > +		/sys/kernel/mm/cma/ contains a number of subdirectories by
+> > +		cma-heap name. The subdirectory contains a number of files
+> > +		to represent cma allocation statistics.
+> > +
+> > +		There are number of files under
+> > +				/sys/kernel/mm/cma/<cma-heap-name> directory
+> > +
+> > +			- cma_alloc_pages_attempt
+> > +			- cma_alloc_pages_fail
+> 
+> How about this instead:
+> Description:
+> 		/sys/kernel/mm/cma/ contains a subdirectory for each CMA heap name (also
+>         sometimes called CMA areas).
+> 
+>         Each CMA heap subdirectory (that is, each
+>         /sys/kernel/mm/cma/<cma-heap-name> directory) contains the following
+>         items:
+> 
+> 			cma_alloc_pages_attempt
+> 			cma_alloc_pages_fail
+> 
+
+Yub.
+
+> 
+> > +
+> > +What:		/sys/kernel/mm/cma/<cma-heap-name>/cma_alloc_pages_attempt
+> 
+> Actually, shall we change that from "attempt" to "attempts"? Otherwise, the
+> language is a little odd there.
+
+Sure.
+
+> 
+> > +Date:		Feb 2021
+> > +Contact:	Minchan Kim <minchan@kernel.org>
+> > +Description:
+> > +		the number of pages CMA API tried to allocate
+> > +
+> > +What:		/sys/kernel/mm/cma/<cma-heap-name>/cma_alloc_pages_fail
+> > +Date:		Feb 2021
+> > +Contact:	Minchan Kim <minchan@kernel.org>
+> > +Description:
+> > +		the number of pages CMA API failed to allocate
+> > diff --git a/mm/Kconfig b/mm/Kconfig
+> > index ec35bf406439..ad7e9c065657 100644
+> > --- a/mm/Kconfig
+> > +++ b/mm/Kconfig
+> > @@ -513,6 +513,13 @@ config CMA_DEBUGFS
+> >   	help
+> >   	  Turns on the DebugFS interface for CMA.
+> > +config CMA_SYSFS
+> > +	bool "CMA information through sysfs interface"
+> > +	depends on CMA && SYSFS
+> > +	help
+> > +	  This option exposes some sysfs attributes to get information
+> > +	  from CMA.
+> > +
+> >   config CMA_AREAS
+> >   	int "Maximum count of the CMA areas"
+> >   	depends on CMA
+> > diff --git a/mm/Makefile b/mm/Makefile
+> > index b2a564eec27f..0ae764e5b1a8 100644
+> > --- a/mm/Makefile
+> > +++ b/mm/Makefile
+> > @@ -109,6 +109,7 @@ obj-$(CONFIG_CMA)	+= cma.o
+> >   obj-$(CONFIG_MEMORY_BALLOON) += balloon_compaction.o
+> >   obj-$(CONFIG_PAGE_EXTENSION) += page_ext.o
+> >   obj-$(CONFIG_CMA_DEBUGFS) += cma_debug.o
+> > +obj-$(CONFIG_CMA_SYSFS)	+= cma_sysfs.o
+> 
+> Remove the unnecessary tab there, none of the other nearby lines have one.
+
+Oops.
+
+> 
+> >   obj-$(CONFIG_USERFAULTFD) += userfaultfd.o
+> >   obj-$(CONFIG_IDLE_PAGE_TRACKING) += page_idle.o
+> >   obj-$(CONFIG_DEBUG_PAGE_REF) += debug_page_ref.o
+> > diff --git a/mm/cma.c b/mm/cma.c
+> > index 23d4a97c834a..0611202d6e7d 100644
+> > --- a/mm/cma.c
+> > +++ b/mm/cma.c
+> > @@ -447,9 +447,10 @@ struct page *cma_alloc(struct cma *cma, size_t count, unsigned int align,
+> >   	offset = cma_bitmap_aligned_offset(cma, align);
+> >   	bitmap_maxno = cma_bitmap_maxno(cma);
+> >   	bitmap_count = cma_bitmap_pages_to_bits(cma, count);
+> > +	cma_sysfs_alloc_count(cma, count);
+> >   	if (bitmap_count > bitmap_maxno)
+> > -		return NULL;
+> > +		goto out;
+> >   	for (;;) {
+> >   		mutex_lock(&cma->lock);
+> > @@ -504,6 +505,9 @@ struct page *cma_alloc(struct cma *cma, size_t count, unsigned int align,
+> >   			__func__, count, ret);
+> >   		cma_debug_show_areas(cma);
+> >   	}
+> > +out:
+> > +	if (!page)
+> > +		cma_sysfs_fail(cma, count);
+> >   	pr_debug("%s(): returned %p\n", __func__, page);
+> >   	return page;
+> > diff --git a/mm/cma.h b/mm/cma.h
+> > index 42ae082cb067..49a8ceddd9e8 100644
+> > --- a/mm/cma.h
+> > +++ b/mm/cma.h
+> > @@ -3,6 +3,14 @@
+> >   #define __MM_CMA_H__
+> >   #include <linux/debugfs.h>
+> > +#include <linux/kobject.h>
+> > +
+> > +struct cma_stat {
+> > +	spinlock_t lock;
+> > +	unsigned long pages_attempt;	/* the number of CMA page allocation attempts */
+> > +	unsigned long pages_fail;	/* the number of CMA page allocation failures */
+> > +	struct kobject kobj;
+> > +};
+> >   struct cma {
+> >   	unsigned long   base_pfn;
+> > @@ -16,6 +24,9 @@ struct cma {
+> >   	struct debugfs_u32_array dfs_bitmap;
+> >   #endif
+> >   	char name[CMA_MAX_NAME];
+> > +#ifdef CONFIG_CMA_SYSFS
+> > +	struct cma_stat	*stat;
+> 
+> This should not be a pointer. By making it a pointer, you've added a bunch of pointless
+> extra code to the implementation.
+
+Originally, I went with the object lifetime with struct cma as you
+suggested to make code simple. However, Greg KH wanted to have
+release for kobj_type since it is consistent with other kboject
+handling.
 
 
-This needs Documentation/ABI update.
-
-
--boris
-
+> 
+> Here's a diff to implement the non-pointer way, and also to fix a build error in this
+> patch (missing semicolon):
+> 
+> diff --git a/Documentation/ABI/testing/sysfs-kernel-mm-cma
+> b/Documentation/ABI/testing/sysfs-kernel-mm-cma
+> index 68bdcc8c7681..f3769b4e1a3c 100644
+> --- a/Documentation/ABI/testing/sysfs-kernel-mm-cma
+> +++ b/Documentation/ABI/testing/sysfs-kernel-mm-cma
+> @@ -2,15 +2,15 @@ What:		/sys/kernel/mm/cma/
+>  Date:		Feb 2021
+>  Contact:	Minchan Kim <minchan@kernel.org>
+>  Description:
+> -		/sys/kernel/mm/cma/ contains a number of subdirectories by
+> -		cma-heap name. The subdirectory contains a number of files
+> -		to represent cma allocation statistics.
+> +		/sys/kernel/mm/cma/ contains a subdirectory for each CMA heap name (also
+> +        sometimes called CMA areas).
+> 
+> -		There are number of files under
+> -				/sys/kernel/mm/cma/<cma-heap-name> directory
+> +        Each CMA heap subdirectory (that is, each
+> +        /sys/kernel/mm/cma/<cma-heap-name> directory) contains the following
+> +        items:
+> 
+> -			- cma_alloc_pages_attempt
+> -			- cma_alloc_pages_fail
+> +			cma_alloc_pages_attempt
+> +			cma_alloc_pages_fail
+> 
+>  What:		/sys/kernel/mm/cma/<cma-heap-name>/cma_alloc_pages_attempt
+>  Date:		Feb 2021
+> diff --git a/mm/cma.h b/mm/cma.h
+> index 49a8ceddd9e8..1e109830f553 100644
+> --- a/mm/cma.h
+> +++ b/mm/cma.h
+> @@ -25,7 +25,7 @@ struct cma {
+>  #endif
+>  	char name[CMA_MAX_NAME];
+>  #ifdef CONFIG_CMA_SYSFS
+> -	struct cma_stat	*stat;
+> +	struct cma_stat	stat;
+>  #endif
+>  };
+> 
+> diff --git a/mm/cma_sysfs.c b/mm/cma_sysfs.c
+> index 1f6b9f785825..52905694b6b7 100644
+> --- a/mm/cma_sysfs.c
+> +++ b/mm/cma_sysfs.c
+> @@ -11,20 +11,18 @@
+> 
+>  #include "cma.h"
+> 
+> -static struct cma_stat *cma_stats;
+> -
+>  void cma_sysfs_alloc_count(struct cma *cma, size_t count)
+>  {
+> -	spin_lock(&cma->stat->lock);
+> -	cma->stat->pages_attempt += count;
+> -	spin_unlock(&cma->stat->lock);
+> +	spin_lock(&cma->stat.lock);
+> +	cma->stat.pages_attempt += count;
+> +	spin_unlock(&cma->stat.lock);
+>  }
+> 
+>  void cma_sysfs_fail(struct cma *cma, size_t count)
+>  {
+> -	spin_lock(&cma->stat->lock);
+> -	cma->stat->pages_fail += count;
+> -	spin_unlock(&cma->stat->lock);
+> +	spin_lock(&cma->stat.lock);
+> +	cma->stat.pages_fail += count;
+> +	spin_unlock(&cma->stat.lock);
+>  }
+> 
+>  #define CMA_ATTR_RO(_name) \
+> @@ -50,13 +48,6 @@ static ssize_t cma_alloc_pages_fail_show(struct kobject *kobj,
+>  }
+>  CMA_ATTR_RO(cma_alloc_pages_fail);
+> 
+> -static void cma_kobj_release(struct kobject *kobj)
+> -{
+> -	struct cma_stat *stat = container_of(kobj, struct cma_stat, kobj);
+> -
+> -	kfree(stat);
+> -}
+> -
+>  static struct attribute *cma_attrs[] = {
+>  	&cma_alloc_pages_attempt_attr.attr,
+>  	&cma_alloc_pages_fail_attr.attr,
+> @@ -65,7 +56,6 @@ static struct attribute *cma_attrs[] = {
+>  ATTRIBUTE_GROUPS(cma);
+> 
+>  static struct kobj_type cma_ktype = {
+> -	.release = cma_kobj_release,
+>  	.sysfs_ops = &kobj_sysfs_ops,
+>  	.default_groups = cma_groups
+>  };
+> @@ -81,32 +71,23 @@ static int __init cma_sysfs_init(void)
+>  		return -ENOMEM;
+>  	}
+> 
+> -	cma_stats = kzalloc(array_size(sizeof(struct cma_stat),
+> -				cma_area_count), GFP_KERNEL);
+> -	if (!cma_stats) {
+> -		pr_err("failed to create cma_stats\n");
+> -		goto out;
+> -	}
+> -
+>  	do {
+>  		cma = &cma_areas[i];
+> -		cma->stat = &cma_stats[i];
+> -		spin_lock_init(&cma->stat->lock);
+> -		if (kobject_init_and_add(&cma->stat->kobj, &cma_ktype,
+> +		spin_lock_init(&cma->stat.lock);
+> +		if (kobject_init_and_add(&cma->stat.kobj, &cma_ktype,
+>  					cma_kobj, "%s", cma->name)) {
+> -			kobject_put(&cma->stat->kobj);
+> +			kobject_put(&cma->stat.kobj);
+>  			goto out;
+>  		}
+> -	} while (++i < cma_area_count)
+> +	} while (++i < cma_area_count);
+> 
+>  	return 0;
+>  out:
+>  	while (--i >= 0) {
+>  		cma = &cma_areas[i];
+> -		kobject_put(&cma->stat->kobj);
+> +		kobject_put(&cma->stat.kobj);
+>  	}
+> 
+> -	kfree(cma_stats);
+>  	kobject_put(cma_kobj);
+> 
+>  	return -ENOMEM;
+> 
+> > +#endif
+> >   };
+> >   extern struct cma cma_areas[MAX_CMA_AREAS];
+> > @@ -26,4 +37,11 @@ static inline unsigned long cma_bitmap_maxno(struct cma *cma)
+> >   	return cma->count >> cma->order_per_bit;
+> >   }
+> > +#ifdef CONFIG_CMA_SYSFS
+> > +void cma_sysfs_alloc_count(struct cma *cma, size_t count);
+> > +void cma_sysfs_fail(struct cma *cma, size_t count);
+> > +#else
+> > +static inline void cma_sysfs_alloc_count(struct cma *cma, size_t count) {};
+> > +static inline void cma_sysfs_fail(struct cma *cma, size_t count) {};
+> > +#endif
+> >   #endif
+> > diff --git a/mm/cma_sysfs.c b/mm/cma_sysfs.c
+> > new file mode 100644
+> > index 000000000000..1f6b9f785825
+> > --- /dev/null
+> > +++ b/mm/cma_sysfs.c
+> > @@ -0,0 +1,114 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/*
+> > + * CMA SysFS Interface
+> > + *
+> > + * Copyright (c) 2021 Minchan Kim <minchan@kernel.org>
+> > + */
+> > +
+> > +#include <linux/cma.h>
+> > +#include <linux/kernel.h>
+> > +#include <linux/slab.h>
+> > +
+> > +#include "cma.h"
+> > +
+> > +static struct cma_stat *cma_stats;
+> 
+> I don't know what that's for but it definitely is not needed if you make cma.stat
+> not a pointer, and not in any other case either.
+> 
+> > +
+> > +void cma_sysfs_alloc_count(struct cma *cma, size_t count)
+> > +{
+> > +	spin_lock(&cma->stat->lock);
+> > +	cma->stat->pages_attempt += count;
+> > +	spin_unlock(&cma->stat->lock);
+> > +}
+> > +
+> > +void cma_sysfs_fail(struct cma *cma, size_t count)
+> > +{
+> > +	spin_lock(&cma->stat->lock);
+> > +	cma->stat->pages_fail += count;
+> > +	spin_unlock(&cma->stat->lock);
+> > +}
+> > +
+> > +#define CMA_ATTR_RO(_name) \
+> > +	static struct kobj_attribute _name##_attr = __ATTR_RO(_name)
+> > +
+> > +static struct kobject *cma_kobj;
+> > +
+> > +static ssize_t cma_alloc_pages_attempt_show(struct kobject *kobj,
+> > +			struct kobj_attribute *attr, char *buf)
+> > +{
+> > +	struct cma_stat *stat = container_of(kobj, struct cma_stat, kobj);
+> > +
+> > +	return sysfs_emit(buf, "%lu\n", stat->pages_attempt);
+> > +}
+> > +CMA_ATTR_RO(cma_alloc_pages_attempt);
+> > +
+> > +static ssize_t cma_alloc_pages_fail_show(struct kobject *kobj,
+> > +			struct kobj_attribute *attr, char *buf)
+> > +{
+> > +	struct cma_stat *stat = container_of(kobj, struct cma_stat, kobj);
+> > +
+> > +	return sysfs_emit(buf, "%lu\n", stat->pages_fail);
+> > +}
+> > +CMA_ATTR_RO(cma_alloc_pages_fail);
+> > +
+> > +static void cma_kobj_release(struct kobject *kobj)
+> > +{
+> > +	struct cma_stat *stat = container_of(kobj, struct cma_stat, kobj);
+> > +
+> > +	kfree(stat);
+> > +}
+> > +
+> > +static struct attribute *cma_attrs[] = {
+> > +	&cma_alloc_pages_attempt_attr.attr,
+> > +	&cma_alloc_pages_fail_attr.attr,
+> > +	NULL,
+> > +};
+> > +ATTRIBUTE_GROUPS(cma);
+> > +
+> > +static struct kobj_type cma_ktype = {
+> > +	.release = cma_kobj_release,
+> > +	.sysfs_ops = &kobj_sysfs_ops,
+> > +	.default_groups = cma_groups
+> > +};
+> > +
+> > +static int __init cma_sysfs_init(void)
+> > +{
+> > +	int i = 0;
+> > +	struct cma *cma;
+> > +
+> > +	cma_kobj = kobject_create_and_add("cma", mm_kobj);
+> > +	if (!cma_kobj) {
+> > +		pr_err("failed to create cma kobject\n");
+> > +		return -ENOMEM;
+> > +	}
+> > +
+> > +	cma_stats = kzalloc(array_size(sizeof(struct cma_stat),
+> > +				cma_area_count), GFP_KERNEL);
+> > +	if (!cma_stats) {
+> > +		pr_err("failed to create cma_stats\n");
+> > +		goto out;
+> > +	}
+> > +
+> > +	do {
+> > +		cma = &cma_areas[i];
+> > +		cma->stat = &cma_stats[i];
+> > +		spin_lock_init(&cma->stat->lock);
+> > +		if (kobject_init_and_add(&cma->stat->kobj, &cma_ktype,
+> > +					cma_kobj, "%s", cma->name)) {
+> > +			kobject_put(&cma->stat->kobj);
+> > +			goto out;
+> > +		}
+> > +	} while (++i < cma_area_count)
+> 
+> This clearly is not going to compile! Don't forget to build and test the
+> patches.
+> 
+> > +
+> > +	return 0;
+> > +out:
+> > +	while (--i >= 0) {
+> > +		cma = &cma_areas[i];
+> > +		kobject_put(&cma->stat->kobj);
+> > +	}
+> > +
+> > +	kfree(cma_stats);
+> > +	kobject_put(cma_kobj);
+> > +
+> > +	return -ENOMEM;
+> > +}
+> > +subsys_initcall(cma_sysfs_init);
+> > 
+> 
+> thanks,
+> -- 
+> John Hubbard
+> NVIDIA
