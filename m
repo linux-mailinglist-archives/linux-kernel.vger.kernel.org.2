@@ -2,116 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 012EE3131F5
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 13:16:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 031663131EC
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 13:14:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230176AbhBHMOz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 07:14:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37386 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233561AbhBHLxS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 06:53:18 -0500
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EABDC061786;
-        Mon,  8 Feb 2021 03:52:38 -0800 (PST)
-Received: by mail-pf1-x432.google.com with SMTP id x136so2994343pfc.2;
-        Mon, 08 Feb 2021 03:52:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=li63n/VAZtM2nG+NNvpp/FSX+mYLuMQuNa5PbgMs78g=;
-        b=ONCyIo3LQY78/wjuDf4j+MAV8gqQ5Hctlihc1EljMqbxkb9kPtiO+jRWBT+AZPpIyp
-         Z89Y7kQu9tWVhM22RZ55g9C9TrI/mmhT3Ssi1kn6W4sD4VUiFtjOkNTzFYeFGttqbtqW
-         cgjRCDbk18+4aWp3TguQUEIzyOwsnZcUYpY7dwnrskEZNfP6zTsrktbcnuYyauOgK6nN
-         VoCg4RR3CdTXys5hdIZTnhvWlrs0PxShV4YMAJMlBMmpbnpbTgEAUK1lQomG0NGUD4iX
-         tzswiBUKRdwtl+5xBVOsXQENg+GgjI+SkHpG1TyNu0DJW+cUupxDHYvoIJmDhz4Lo0xk
-         kgHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=li63n/VAZtM2nG+NNvpp/FSX+mYLuMQuNa5PbgMs78g=;
-        b=dPsd4eVy3uog7mt7pBrQY+sqnAR5kBBRoLJ8XX9DHQwpu4dcbcWejOPBWpL4cOq9BR
-         Wf+871tsGNtUfvtNprQK2FZs3GWu5aEJ4k8up9ouTlR5gk2HU2UfCDxRVNfCC1Q1e4PU
-         +uynI5y3mquzHV9zBvI/RupV3vMLy9ksAaGtkDpfsQ+lLb6MoEdyJrZH9gXYLWcvCw5w
-         N0u+Xtpg++UKSkFYYnPVWgHQlVKLzQsTMeFNekaq454C+6TxfxB38nb+toFPRYyfWmQQ
-         gkltYmTwZeekqfdmPeRvm6W46pbeAhmynjW2TPUN7eGaYxJNa/itGIC0KO5LiyA4ZSxV
-         FJyA==
-X-Gm-Message-State: AOAM532UFgLh5xC8Lm3hSBoWWqKv5NhXPslKvn+1f2qQgnkhfq/7zNrp
-        Zu6WzRMXv8jNCQrl8dQndWk=
-X-Google-Smtp-Source: ABdhPJwFnmlDq/ot2AF18aA6m+LPYo0qO3qeHs+M2zEtfnCq52A+EZku+TMLmYgyll4K5EhJ0ON1kQ==
-X-Received: by 2002:aa7:9e08:0:b029:1c9:b30b:d971 with SMTP id y8-20020aa79e080000b02901c9b30bd971mr17692939pfq.72.1612785158086;
-        Mon, 08 Feb 2021 03:52:38 -0800 (PST)
-Received: from lenovo.spreadtrum.com ([117.18.48.82])
-        by smtp.gmail.com with ESMTPSA id a9sm12875564pfr.204.2021.02.08.03.52.35
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 08 Feb 2021 03:52:37 -0800 (PST)
-From:   Orson Zhai <orsonzhai@gmail.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Jassi Brar <jassisinghbrar@gmail.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>
-Cc:     Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, haidong.yao@unisoc.com,
-        Orson Zhai <orson.zhai@unisoc.com>
-Subject: [PATCH 3/3] dt-bindings: mailbox: Add interrupt-names to SPRD mailbox
-Date:   Mon,  8 Feb 2021 19:51:04 +0800
-Message-Id: <1612785064-3072-3-git-send-email-orsonzhai@gmail.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1612785064-3072-1-git-send-email-orsonzhai@gmail.com>
-References: <1612785064-3072-1-git-send-email-orsonzhai@gmail.com>
+        id S231968AbhBHMOM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 07:14:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39338 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233466AbhBHLwq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 06:52:46 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D08864E56;
+        Mon,  8 Feb 2021 11:52:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612785124;
+        bh=khj0Ksstxc70pqDkTZPUJ+hyC/Zp9C28p+//y1Izqto=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=VvzvTa2CGSU8UkdTZrHmjfVeGkhd0XP7bI1HvBXw/V8QYFT1n9oPXWw3P4dCeh9dp
+         tCULJOL68X5Z3jNqhPLL5AEiqe+lcpuCh0agkKYK3FJT0wybkh7Bp19yf91R8Pflak
+         HOI0rKKPO3vrtR1vrzPjMbolzWlDN4nZj8thr4+cuqzyBbIs1RGwzEjP4Be9M8emAP
+         Lv5vFes0K36m8a+xQE4YITlivDNLMTIHb99O1Ra1Gvlg2qvfXNE4Q+P5X0jlVlz4JX
+         TmJYjy+CZiQ0J+AaWkwPO36/DYtDMUkkEQ3cIPSo+79MspG7YMmnOTet1h+C9B91o3
+         AwBHSmtUNL3kA==
+Date:   Mon, 8 Feb 2021 11:51:12 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Shengjiu Wang <shengjiu.wang@nxp.com>
+Cc:     lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
+        festevam@gmail.com, linuxppc-dev@lists.ozlabs.org,
+        robh+dt@kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH v2 2/7] ASoC: fsl_rpmsg: Add CPU DAI driver for audio
+ base on rpmsg
+Message-ID: <20210208115112.GD8645@sirena.org.uk>
+References: <1612693435-31418-1-git-send-email-shengjiu.wang@nxp.com>
+ <1612693435-31418-3-git-send-email-shengjiu.wang@nxp.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="P+33d92oIH25kiaB"
+Content-Disposition: inline
+In-Reply-To: <1612693435-31418-3-git-send-email-shengjiu.wang@nxp.com>
+X-Cookie: You will triumph over your enemy.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Orson Zhai <orson.zhai@unisoc.com>
 
-We add an optional supp-outbox interrupt support to driver and change to
-describe interrupts with names for easy configuration in device tree files.
+--P+33d92oIH25kiaB
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Signed-off-by: Orson Zhai <orson.zhai@unisoc.com>
----
- Documentation/devicetree/bindings/mailbox/sprd-mailbox.yaml | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+On Sun, Feb 07, 2021 at 06:23:50PM +0800, Shengjiu Wang wrote:
 
-diff --git a/Documentation/devicetree/bindings/mailbox/sprd-mailbox.yaml b/Documentation/devicetree/bindings/mailbox/sprd-mailbox.yaml
-index 26a5cca..bb775a4 100644
---- a/Documentation/devicetree/bindings/mailbox/sprd-mailbox.yaml
-+++ b/Documentation/devicetree/bindings/mailbox/sprd-mailbox.yaml
-@@ -22,9 +22,15 @@ properties:
-       - description: outbox registers' base address
- 
-   interrupts:
-+    minItems: 2
-+    maxItems: 3
-+
-+  interrupt-names:
-     items:
--      - description: inbox interrupt
--      - description: outbox interrupt
-+      enum:
-+        - inbox
-+        - outbox
-+        - supp-outbox
- 
-   clocks:
-     maxItems: 1
-@@ -40,6 +46,7 @@ required:
-   - compatible
-   - reg
-   - interrupts
-+  - interrupt-names
-   - "#mbox-cells"
-   - clocks
-   - clock-names
-@@ -56,5 +63,6 @@ examples:
-       clock-names = "enable";
-       clocks = <&aon_gate 53>;
-       interrupts = <GIC_SPI 28 IRQ_TYPE_LEVEL_HIGH>, <GIC_SPI 29 IRQ_TYPE_LEVEL_HIGH>;
-+      interrupt-names = "inbox", "outbox";
-     };
- ...
--- 
-2.7.4
+> +static int fsl_rpmsg_hw_params(struct snd_pcm_substream *substream,
+> +			       struct snd_pcm_hw_params *params,
+> +			       struct snd_soc_dai *dai)
+> +{
 
+...
+
+> +	ret = clk_prepare_enable(rpmsg->mclk);
+> +	if (ret)
+> +		dev_err(dai->dev, "failed to enable mclk: %d\n", ret);
+> +
+> +	return ret;
+> +}
+> +
+> +static int fsl_rpmsg_hw_free(struct snd_pcm_substream *substream,
+> +			     struct snd_soc_dai *dai)
+> +{
+> +	struct fsl_rpmsg *rpmsg = snd_soc_dai_get_drvdata(dai);
+> +
+> +	clk_disable_unprepare(rpmsg->mclk);
+
+hw_params() can be called multiple times and there's no need for it to
+be balanced with hw_free(), I'd move this to a different callback (DAPM
+should work well).
+
+--P+33d92oIH25kiaB
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmAhJbAACgkQJNaLcl1U
+h9AJqwf/X2Soo9XPi4+IXcHpXJMeYJEz2SrnSt4si8m1Bri4Ow7pyiSeFmffguOV
+s768sMvqLorPsUHuRjMXB9NHG9hAkV/avnPqptxPH722QegXhi7ej0+kxrhrtyhf
+ZefpKevO5qjvYMagXCqbRUBTHZMY0aACqCvWfLqsmC0LtSA4OHCiSHJFQKvsdxIA
+MJmUyvPr9KP5z4mwD+yRO6jdTztZw4693lVUyYcRLDuCHelBhDZ0Gs4R3QGPTuI6
+PKLJlxZ2P6R95mLc4ygvk4AUbsm8z5yzFoMzF3zyifwrD2PLe3X/0x/TGeUniLPZ
+xAu7MVI9SOtCn+IlfAcoHK43UmMJgg==
+=LRAl
+-----END PGP SIGNATURE-----
+
+--P+33d92oIH25kiaB--
