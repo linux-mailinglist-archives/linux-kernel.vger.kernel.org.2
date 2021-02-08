@@ -2,157 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22C56314000
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 21:12:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42062314011
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 21:13:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235261AbhBHULB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 15:11:01 -0500
-Received: from mail-wm1-f48.google.com ([209.85.128.48]:35832 "EHLO
-        mail-wm1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233317AbhBHSiI (ORCPT
+        id S236728AbhBHUMs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 15:12:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40358 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235716AbhBHSkW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 13:38:08 -0500
-Received: by mail-wm1-f48.google.com with SMTP id j21so106327wmj.0;
-        Mon, 08 Feb 2021 10:37:50 -0800 (PST)
+        Mon, 8 Feb 2021 13:40:22 -0500
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1806C061788;
+        Mon,  8 Feb 2021 10:39:40 -0800 (PST)
+Received: by mail-pg1-x52a.google.com with SMTP id c132so10804387pga.3;
+        Mon, 08 Feb 2021 10:39:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=OXsP7etvkquZcgLN+0ZBxKek7pWgCF6Ku7uGUtKs97I=;
+        b=icFUkUZSlauoM1BcKvcJzDZLoo8oo1wZ+HtBsaFkgDhDjF9+P3Oezy9+bt52sdLtV1
+         Zoz79tnmx+uRhxgw8ZGE3QqFsRiXTpcQkpN8Av/i+gUOsw8fBVMiiZ0WamTWJbPC4LwA
+         wiT4CInCqo+OtLbwbAx4SnBXuSY12diFilkpepCOac5aUXh+tpgxnMl15asmx4j/nrNN
+         SihUmP3RhZpWUzQHA873Vm3QvvP9oz2bb8+sNXNITu7+X2qFDFRDmV3xjiMTPnFAJ/7D
+         Ui3M/Wbjv2XdZRTzHNqh90b0A3E2sq/EZ+UmIm48/9cH+MAXXRtVw87EI+UbAKQbwNYG
+         /kKw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=LCazIuYzBZltynFuvPO11MbeG9djR0YG9Vn4Gd94Mj8=;
-        b=QGfiMaFFqYMrxxD9dr1LLO2QXdRd8oDIAgBVmNmZGKSQV9jfes9BxzduerLUDqcL7r
-         WxpxAIbE8v10JbwjQE4DN1A8ci3mYwklZgnxvdnAsdXx00pK5puCCZ+NNnAQtOVaxk+X
-         ndB3UF3nPAu2BCoiZ+KNh8zq8JtQxLhIEITCBborkWXw839IiaYmElWpcSLDXS0lp/g8
-         ddU+b0mkLa6q4N2kDc9kAxBe7UgAbcxfqF4jUKOBlkNe52u1hpj14p84W6acKVsfSpOq
-         BjiNjZ9uVRXuJKtkx0QLIxY9Mw2DHS/D9yOVhAHaIkAM8DFWxb3uvt0R99IenYKqhtni
-         bknw==
-X-Gm-Message-State: AOAM533oPjCIelrBHnvxyBYve31smROscGcFpvRYOSYps5g5XUfuBZQP
-        fakfR2yhbFRAA/d7t5W/E04=
-X-Google-Smtp-Source: ABdhPJx5+93U+Vf00VOHmUASuEOURE6VEeP94SC6giYw0Z/wDYFCVRw7Hu+lyDXt+hRbtNuLKTqKbA==
-X-Received: by 2002:a1c:39d5:: with SMTP id g204mr92727wma.127.1612809444236;
-        Mon, 08 Feb 2021 10:37:24 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id x15sm13363628wro.66.2021.02.08.10.37.22
+        bh=OXsP7etvkquZcgLN+0ZBxKek7pWgCF6Ku7uGUtKs97I=;
+        b=V1VZgxjc5x+dfMDV2lfM9zZiCfOztIeUhK9AfQOYgvl6htb1+SDwWNvwpoaLby27AG
+         A2uhe5K3otVWd9tjkIQhBdbcQz5S+fHWDE4V7IWZzFp2HJGkQadGpYipE7rR2YeHDK+o
+         nNX2W+fE8LVdDx55v9KA9rZ40nLBl9LUxOiXmZK3QvT+hFvAALVA351UrX3UJKaTcW5u
+         CSkaQkSINUAdMaJqjbSALX00nQ2HWpCNp9piF21Ks4JYiheNtvEgKh8feO4IjVNKvmhf
+         lmaXShwxywBN3sDUC5BNGAsz9s+YHZ+97cheFM8AAzXbr4wuC7V+2QFCgmIgvPgkeNn2
+         gQmg==
+X-Gm-Message-State: AOAM533QcyxpmHWtRUzC1mAw7JHAHwdpTHJY8XrK3zFgP5CNXBxoR6wK
+        ZHNXMUGaSeVsLYvktkHAuXE=
+X-Google-Smtp-Source: ABdhPJzZJmkotHvueFLxVOfrROL778amS3T+8zb8OezYdn81GGHSUROAUWugiwoa3hMKn176NcODwg==
+X-Received: by 2002:a65:44c5:: with SMTP id g5mr18523114pgs.295.1612809580033;
+        Mon, 08 Feb 2021 10:39:40 -0800 (PST)
+Received: from gmail.com ([2601:600:9b7f:872e:a655:30fb:7373:c762])
+        by smtp.gmail.com with ESMTPSA id c23sm9222470pfi.47.2021.02.08.10.39.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Feb 2021 10:37:23 -0800 (PST)
-Date:   Mon, 8 Feb 2021 19:37:21 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Hector Martin <marcan@marcan.st>
-Cc:     soc@kernel.org, linux-arm-kernel@lists.infradead.org,
-        Marc Zyngier <maz@kernel.org>, robh+dt@kernel.org,
-        Arnd Bergmann <arnd@kernel.org>, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, Olof Johansson <olof@lixom.net>
-Subject: Re: [PATCH 05/18] tty: serial: samsung_tty: add support for Apple
- UARTs
-Message-ID: <20210208183721.4gc7vyfgtpk7nch3@kozik-lap>
-References: <20210204203951.52105-1-marcan@marcan.st>
- <20210204203951.52105-6-marcan@marcan.st>
- <20210208105451.yumjjunjeyrglfnw@kozik-lap>
- <11d36c47-45c6-03ee-2d08-6692b5d0e241@marcan.st>
+        Mon, 08 Feb 2021 10:39:39 -0800 (PST)
+Date:   Mon, 8 Feb 2021 10:37:52 -0800
+From:   Andrei Vagin <avagin@gmail.com>
+To:     Keno Fischer <keno@juliacomputing.com>
+Cc:     Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-api@vger.kernel.org,
+        Anthony Steinhauser <asteinhauser@google.com>,
+        Dave Martin <Dave.Martin@arm.com>, Kyle Huey <khuey@pernos.co>,
+        Robert O'Callahan <roc@pernos.co>
+Subject: Re: [PATCH 0/3 v2] arm64/ptrace: allow to get all registers on
+ syscall traps
+Message-ID: <20210208183752.GB559391@gmail.com>
+References: <20210201194012.524831-1-avagin@gmail.com>
+ <CABV8kRzg1BaKdAhqXU3hONhfPAHj6Nbw0wLBC1Lo7PN1UA0CoA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=koi8-r
 Content-Disposition: inline
-In-Reply-To: <11d36c47-45c6-03ee-2d08-6692b5d0e241@marcan.st>
+In-Reply-To: <CABV8kRzg1BaKdAhqXU3hONhfPAHj6Nbw0wLBC1Lo7PN1UA0CoA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 09, 2021 at 01:10:02AM +0900, Hector Martin wrote:
-> On 08/02/2021 19.54, Krzysztof Kozlowski wrote:
-> > > +enum s3c24xx_irq_type {
-> > > +	IRQ_DISCRETE = 0,
-> > > +	IRQ_S3C6400 = 1,
-> > > +	IRQ_APPLE = 2,
-> > 
-> > It seems you add the third structure to differentiate type of UART.
-> > There is already port type and s3c24xx_serial_drv_data, no need for
-> > third structure (kind of similar to tries of Tamseel Shams in recent
-> > patches). It's too much. Instead, differentiate by port type or prepare
-> > own set of uart_ops if it's really different (like you did with startup
-> > op).
+On Mon, Feb 01, 2021 at 07:11:12PM -0500, Keno Fischer wrote:
+> Hi Andrei,
 > 
-> This ties into little changes in a bunch of places, so separate uart_ops
-> callbacks for every one of those would end up duplicating a lot of code :(
+> > This series introduces the PTRACE_O_ARM64_RAW_REGS option. If it is set,
+> > PTRACE_GETREGSET returns values of all registers, and PTRACE_SETREGSET
+> > allows to change any of them.
 > 
-> That list is just used to map the port type to something that only
-> represents the type of IRQs, but its only real purpose for the indirection
-> is so I can do "== IRQ_DISCRETE" in some codepaths to mean "not apple or
-> S3C6400".
-> 
-> e.g.
-> 
->     if (s3c24xx_irq_type(port) == IRQ_DISCRETE)
->         free_irq(ourport->rx_irq, ourport);
-> 
-> Would have to become
-> 
->     if (port->type != IRQ_S3C6400 && port->type != IRQ_APPLE)
->         free_irq(ourport->rx_irq, ourport);
-> 
-> or
-> 
->     switch (port->type) {
->     case IRQ_S3C6400:
->     case IRQ_APPLE:
->         break;
->     default:
->         free_irq(ourport->rx_irq, ourport);
->     }
-> 
-> Which one do you prefer?
+> thanks for picking this up. I meant to work on this, but unfortunately ran out
+> of time to be able to push it through, so I'm glad you're working on
+> it, since it
+> does absolutely need to get fixed. Besides this issue, the other problem we
+> ran into when trying to port our ptracer to aarch64 is that orig_x0 is not
+> accessible through the ptrace interface on aarch64, which can cause tricky
+> behavior around restarts.
 
-The latter, especially that switches will appear quite a lot in such
-case.
+Could you describe the problem in more details? I wonder whether we have
+the same thing in CRIU...
 
-However this pattern (== IRQ_DISCRETE) appears only in three places so
-it should not be the main case considered here.
+> We managed to work around that in the end,
+> but it's painful. If we're fixing the kernel here anyway, I'm wondering if
+> we might want to address that as well while we're at it.
 
-However I saw later you actually replaced the
-s3c24xx_serial_has_interrupt_mask(), so it's not that bad.
+Sure let think how to do this properly.
 
-In most of your code, there will be actually a switch with all three
-cases.
+In this case, I think the ptrace option isn't a good choise. I don't
+think that it is a good idea to change the layout of regset depending on
+options...
+
+Thanks,
+Andrei
 
 > 
-> Aside: Marc didn't like introducing new port types into uapi, but if we
-> don't do that then we need a "real" port type in drv_data that isn't the
-> uapi-exposed port or something along those lines, with a separate enum
-> containing all the true port type values for that.
-
-Looking at Greg's comment, we can get rid of the PORT_ stuff entirely.
-First of all, PORT_S3C2410 == PORT_S3C2412, so this define is not
-accurate.
-
-This leaves us with three types (s3c2400, s3c2440, s3c6410 and Apple).
-The s3c2440 could be removed with adding a new "ucon_mask" field to
-s3c24xx_serial_drv_data.
-
-This would end with s3c24xx, s3c6410 and Apple - quite nice choice.
-
-> 
-> > >   	/* Startup sequence is different for s3c64xx and higher SoC's */
-> > > -	if (s3c24xx_serial_has_interrupt_mask(port))
-> > > +	case IRQ_S3C6400:
-> > >   		s3c24xx_serial_ops.startup = s3c64xx_serial_startup;
-> > 
-> > Don't overwrite specific ops. It's difficult to see then which ops are
-> > being used. Instead create a new set of uart_ops matching the needs.
-> 
-> s3c24xx_serial_ops was already doing that here, but I can move that to a a
-> separate uart_ops too.
-
-You're right. This one would have to be improved before your change.
-Instead of replacing specific op calls in startup, I think it's better
-to have entirely separate ops instance for each variant:
-
-static const struct uart_ops s3c24xx_serial_ops;
-static const struct uart_ops s3c64xx_serial_ops;
-static const struct uart_ops s5l_serial_ops;
-
-This allows to add a "const", since uart_port takes such const pointer.
-
-Still during s3c24xx_serial_probe() correct ops would have to be
-assigned, but at least all ops are easily visible.
-
-Best regards,
-Krzysztof
-
+> Keno
