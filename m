@@ -2,165 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48A8B312FE2
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 11:59:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 033A6312FE5
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 11:59:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232750AbhBHK5t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 05:57:49 -0500
-Received: from esa4.hc3370-68.iphmx.com ([216.71.155.144]:23379 "EHLO
-        esa4.hc3370-68.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232395AbhBHKrW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 05:47:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=citrix.com; s=securemail; t=1612781233;
-  h=subject:to:cc:references:from:message-id:date:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=KTAhKbc8ItfP/8f/ZVtVH7mdz7uVY/mhTn0Uoxu7XQ4=;
-  b=SwW8QgJw76iUS0i71HEAF3ysxCmd6Vd+OT66U+EMpz1RXu4b7oEhApYJ
-   4k7YFTfyD2YnKefBtUyLxYRIWEDv0pm9688XEI0NcbPsCYV7AYZmVKX2e
-   G/1cHTW/ZRNgXvi/JEspqLejbfkSfiNC6YZTRU7ossKZ1jfiPQLfD+pWh
-   w=;
-Authentication-Results: esa4.hc3370-68.iphmx.com; dkim=pass (signature verified) header.i=@citrix.onmicrosoft.com
-IronPort-SDR: dLXmBGtmA5SK9mLVGnfJ5CwbCEpIfdJepfI+K//9UEPkFe/WYAMwhCpW1kbX2JY7Mgiiy6zT/t
- MgP9ZnPhZ7jNe0QmV5gPCxIBaJ9/DFDdk0mw7sk10PXeBxsh6jMYtYP7F5qIR+sHYauwMfMe+o
- xK51HjPdrlP7T1HZ12+9FFSNVFaGy+sNgH1xpYbupRWq/OOJmlmUS65rN7sLTIsLAd7zHHXVDS
- hntvuBe2/4c59edQA6Aid2ZNvb0WwKVW4yyo8mVOeHHIaS/WfGLi3cyfdnUfXdeZoBIoUGJg3M
- GMg=
-X-SBRS: 5.2
-X-MesageID: 38109484
-X-Ironport-Server: esa4.hc3370-68.iphmx.com
-X-Remote-IP: 162.221.156.83
-X-Policy: $RELAYED
-X-IronPort-AV: E=Sophos;i="5.81,161,1610427600"; 
-   d="scan'208";a="38109484"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZitFKSKKOhP1dbIzVOi/kUfoIOhPjzI8OS24C5WkEv/JZI4dCHtHJBzl+yQmpUb0FrRSZF5LbbF5V1yv+v1i82/YIerPTl+8wb5hz9RFtorKjtIZiTpBjkkiNwqo1M1CtOseUR3S+I1aouIasZ12UapvPQacFNeigdO95bGmHlUb/rQeGnveXgQds2IQc9ckWS3zughSB6dINEKcP4MZxJpd3Qv569PBQBVIcsvPQmeBuI3oh/3iXsge9iEsWU42VkYOyweiaSUAKlbtqxmFBTCgHi+ou0qLt0n5fYq3H67bQ8slbLweb9A2CD/bTJWAddMjNmnnJKC2v1eu7Jb0vA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KTAhKbc8ItfP/8f/ZVtVH7mdz7uVY/mhTn0Uoxu7XQ4=;
- b=aQSUZ3Jba6eFbxJFXSpUsp0Cljtcb4YTA7+qWnlpTG80CmOJwda335H3OcqHDVkRGF2URlpH6Ho0xwiWHdDLwAa1FHeFTD4N4xMymrGCpLpWj/eJw0/Xp6DeSSmYOlEZLGrK65jOX+Uh/2KfLpRM0nm/PxZt5cYD0w069nkGTEF1VAqcjUQHMTGcDSKAozusyxCK78rd0U2/lAxAYaVWr9QXnWaYGYdwGmTG3upadjt2d2e8dgaeZKhtS20rkwvWVCjeI8bZwqr7cl/OAq338AFquhdJAGEVvQYQ66+2EVlijhEXad4fW5tety1pMgiw5uuuixWHf3i1zpM0mldHEw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=citrix.com; dmarc=pass action=none header.from=citrix.com;
- dkim=pass header.d=citrix.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=citrix.onmicrosoft.com; s=selector2-citrix-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KTAhKbc8ItfP/8f/ZVtVH7mdz7uVY/mhTn0Uoxu7XQ4=;
- b=oGLjqoGfJ8mpbXHIk8yY3Mp/qKI0opKoC0/VAQ4EehagjowU907ZnZR+AULJYdvFmcs35VP3JCX2ZszO9zsEXHLvTrLwsThC7rOTt/OxsH0MVhKvJT5vJDptSdBISiE3KkobsC5utB3FAJDJ2/WMfG7qFc1/ufODGFbV3vw1NmQ=
-Subject: Re: [PATCH 6/7] xen/evtch: use smp barriers for user event ring
-To:     Jan Beulich <jbeulich@suse.com>
-CC:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Juergen Gross <jgross@suse.com>,
-        <linux-kernel@vger.kernel.org>, <xen-devel@lists.xenproject.org>
-References: <20210206104932.29064-1-jgross@suse.com>
- <20210206104932.29064-7-jgross@suse.com>
- <2d354cad-3413-a416-0bc1-01d03e1f41cd@citrix.com>
- <dfa40af0-2706-2540-c59a-6593c1c0553a@suse.com>
- <e68f76a5-27ce-a6d8-88a3-1e8fa1c30659@citrix.com>
- <def49076-f943-9418-86b0-2aafbd0bf7de@suse.com>
-From:   Andrew Cooper <andrew.cooper3@citrix.com>
-Message-ID: <f2a71421-7169-f3c8-9799-66dd8e07459d@citrix.com>
-Date:   Mon, 8 Feb 2021 10:45:07 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
-In-Reply-To: <def49076-f943-9418-86b0-2aafbd0bf7de@suse.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-GB
-X-ClientProxiedBy: LO4P123CA0096.GBRP123.PROD.OUTLOOK.COM
- (2603:10a6:600:191::11) To BYAPR03MB4728.namprd03.prod.outlook.com
- (2603:10b6:a03:13a::24)
+        id S232866AbhBHK6k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 05:58:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47518 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232333AbhBHKuO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 05:50:14 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B3F9C64E8A;
+        Mon,  8 Feb 2021 10:47:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1612781242;
+        bh=aEmETdAAaqlh641eroVBM3hnbdYUk9TPTg1/0fBiOdg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KoBZknK/t/arwDGGPinIqqLC5St7DRWfxSLKxzuC558dyJ+cvOVjamOGOZWxtAt9I
+         Fnp6lqlbJiuFbz7XJG68VsKN6EjOgQHWjsBxKvY07Pe4CH8PIUoWlPNMYiXd6lDsDT
+         Jedu9uJU1lZURZGGODarxd/SWVYCOvADEzIyrChE=
+Date:   Mon, 8 Feb 2021 11:47:19 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Yicong Yang <yangyicong@hisilicon.com>
+Cc:     jdelvare@suse.com, linux@roeck-us.net, giometti@enneenne.com,
+        abbotti@mev.co.uk, hsweeten@visionengravers.com, kw@linux.com,
+        helgaas@kernel.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        devel@driverdev.osuosl.org, linux-kbuild@vger.kernel.org,
+        masahiroy@kernel.org, michal.lkml@markovi.net,
+        linuxarm@openeuler.org, prime.zeng@huawei.com
+Subject: Re: [PATCH 1/4] driver core: Use subdir-ccflags-* to inherit debug
+ flag
+Message-ID: <YCEWtxYgbRPET4Sr@kroah.com>
+References: <1612518255-23052-1-git-send-email-yangyicong@hisilicon.com>
+ <1612518255-23052-2-git-send-email-yangyicong@hisilicon.com>
+ <YB0Vk6ERJ3lFc3WD@kroah.com>
+ <08017751-a1be-ea07-50de-73d14ab6d57e@hisilicon.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 72475f3f-8efe-4915-2a52-08d8cc1e9d98
-X-MS-TrafficTypeDiagnostic: BY5PR03MB5153:
-X-Microsoft-Antispam-PRVS: <BY5PR03MB5153E3CDB939AA8B01E7AAFEBA8F9@BY5PR03MB5153.namprd03.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: H2I1amvuTChn+tCPiOxf4+h1ktKuLuEekRNJQup3NpdC6vmpHxtPOK6R5WROPp1l79FZH3Cp0qxkH98NtjytBAWQTrggqo8Yaj1SnkZJHr2w1jRiCZdNbLmOenDqRYRrXebqHPDhXEki6dFUEGBuP0WCZcU61GsjZthHlgSpxwvxD56jDs7k9Gr4+4TgDi3hJLT2TUtG62LK/qaNmI7CfHFemJTlupq8qYPmyK1N5Fy6MPwzH5SWKge4VEaPOumtaYzABWzBX4AueBhW4i41gNCJnjFeJarFAa/O5S581Iptf6eEn8wUZpccwTd6ErbS3qh/m3/h0XVZsfLVgNsDRKKs7LPlqjtiJVWfU73f+H46s3DvyW13PVH6BMS0NV7zr+KrwtXjDWRN2e2qxY6NUeA3Thle5Bfg9JDAnnghhpK7/tLwBdpLYIiEMniaYXL+vtB4Mg1nIz19vl4qc5W8iBLO4ZoL0vOW9hv2DFYy3EoysntsWGagNOtdpR0lGUJsYZyOBPE7woWnj2G1eWX9Ef8sA3AQllzuJuzjbIpvma7cUzFb3n9EiUkBXnqGmukKgXcNQDliLPflTuGsNYabGml/rixY5LroVh5J7+pyKcQ=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR03MB4728.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(366004)(376002)(39860400002)(396003)(346002)(31696002)(2906002)(66946007)(36756003)(478600001)(6486002)(31686004)(54906003)(4326008)(8936002)(6916009)(316002)(5660300002)(6666004)(16576012)(2616005)(53546011)(26005)(86362001)(8676002)(186003)(956004)(16526019)(66556008)(66476007)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?YzBpTlVGK3hMdThGTk1EOVVVbjQyQm12TTJjSW05WWIwVHJPNHBMTUR4amh5?=
- =?utf-8?B?VENnNXh1Ti9ucUZ6WnVMRTA3RkRXemREUUZBVnh6WmlPVnNpZjZvVEliTHZE?=
- =?utf-8?B?dXU3UjQweDNqQlRQM1k1OFQ3cFBwQ2RYQUcvcmJoOVpqU056Y0dIRmFOblEr?=
- =?utf-8?B?S3hkZzRkODZ0bmdVY2p4TmxGcmw4cUJ1V0xnR3ZKL05XblpHR2h3Wk9QQUww?=
- =?utf-8?B?YlI4bHcrUTBNWDEvME8yT1NzemdGK1g1NGQ3Mkw1Q3Qzb1RaWWJZL00wMlNz?=
- =?utf-8?B?cVNvSVJXR081UjI2b20xUlJkZW1FcHdLakRJY2FWeGdMa2JMMWVZdDN2UWtW?=
- =?utf-8?B?ME1ieExtaWQ5R0tzSkZnNkR3VWprYlhMb1VWS3VMcU1UOG1tRmlZMzZPVkJw?=
- =?utf-8?B?VXBQVitFRk5Wa0xvdDhlQUFUdmFTNHBiT0pyejNGNFlKMjZEVHdnbVpnb3hU?=
- =?utf-8?B?MU5wWGNYQS91d21KUStsQzNKNkljWTJmb0ZBU3VWZ2xxN0UrdkJUSEFOei9G?=
- =?utf-8?B?MHRvTVZHc3pFQ1dyRXBvd1VBWGszaXdqZHJzMUZFYytVeFV3cGY5OWpZR05N?=
- =?utf-8?B?K0VWTXBlbFFBenpHTWxKZVJZWUFvQXdoM0JPaE5nNEJudU5Vc2FOZXVQQ2lF?=
- =?utf-8?B?a05zUGRZdGZ5cXhKcHpIaGZqV0dmNDNiSlpEK25JL2hLTXkwOUJFK2NuOGZT?=
- =?utf-8?B?Wnh4ZDU0TmN1Z1BieVozamVvRm1CTzRocmkvdTNyMmVTTDlsQi9lQTlNSmdL?=
- =?utf-8?B?d1I2OVc3TkM2LzMrTzQzY29LRXhzS0NkSWFtQmt1SkZuWi9rTXU1UnNIS1ZU?=
- =?utf-8?B?WGZNZ2NDa0FYbzNSa2t3QXBZRUUxQlMvOVNwNlVzcGpKZEpNb0s3SHJMN2ZE?=
- =?utf-8?B?WEgxdWJlME9FWjVmc1dJM1YyZklCb1NsN2pJRzg3L1BQZHdXTTJmYi9FMUJh?=
- =?utf-8?B?S2x5UHpTam5XQWVxSGowWDM3d2dxaVBDQ3JhMEJscnZZcHIrVXhnYWx3bTBt?=
- =?utf-8?B?ZDNRWWN3NzloRVlUZHJxbXIyOXZtb2s3SE9yNjFlNS8wUUw0czZXSXBmZEdN?=
- =?utf-8?B?UnJrYVYxa21xTzRvTnZwMGlSaEZKM3N3RDJCTERrQWRnV2pwd0IxYVlYQmNQ?=
- =?utf-8?B?YWhWWWV4WVhIUWNrWDZkbWtwQzc2VkM3ZVBUNXR3MVVkVUVzYndYYWFZTW5F?=
- =?utf-8?B?Q1RtSTM3R3NkN1ZQa2RsYUVpeUtaOXBwWHFCbndqRDlxVE51UnJhcTl2TG1w?=
- =?utf-8?B?QWEyQklBREQxZ1FmaUVwWVVETk9GNVN6U05VZElVOGo0bEgzMXJzSnJvL0tD?=
- =?utf-8?B?SlE5OTFOT0NlSmNKbUVLRytxTjB2ZmNUMEdxeFRZZmEyc01VVk5XbFk3NjN0?=
- =?utf-8?B?WEp0dGk2Zm04NFoxVVFvZHR3OW9xY2lqQmI2eDFTeEFWODN3N2Judjl2R1NX?=
- =?utf-8?B?OXdoSnB4RUpvUWZwVDVtZFJ4VlkraVVtaDFJbkVqZHhSQWtWWlB3VzBwR2cr?=
- =?utf-8?B?S2dHS1IrRFJNaDZvQWxZMksxdmtkUzlRSUpHRUpqRHRraGNGbFhxOUJOTkMv?=
- =?utf-8?B?eXdRWnNVMlpFc2JMSlRSVjRCemxwSUtmTEhiTjZGMGdYNThWNmR4NFlyeDR6?=
- =?utf-8?B?SkdqNC91Q1ZDelJHaWlDcG0rL1QwV1R5N0tCYzJ4bDVqNUQzNlkwVHEwaHRY?=
- =?utf-8?B?MmswL3FvYTFwZm1jTzBhdnllYmk3dVU2K3dxSTN1NWlZUXE2dkZ6bmVyeGhi?=
- =?utf-8?Q?htMe1yvQhFI8stNoOw4SpJPXh85ptrHmuzUTmD1?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 72475f3f-8efe-4915-2a52-08d8cc1e9d98
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR03MB4728.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Feb 2021 10:45:14.1333
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 335836de-42ef-43a2-b145-348c2ee9ca5b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 43hiNtLVWtxhfBbIbGRUgT3J7Pu6a8zkvJkHblBGNbXRqWT3OVkfOisoE6VU4u5JVYqHiTsspG6EZQEPRwT7+6AzoTFLT8Jsq3Sv7TyYJpU=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR03MB5153
-X-OriginatorOrg: citrix.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <08017751-a1be-ea07-50de-73d14ab6d57e@hisilicon.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/02/2021 10:36, Jan Beulich wrote:
-> On 08.02.2021 11:23, Andrew Cooper wrote:
->> On 08/02/2021 09:50, Jan Beulich wrote:
->>> On 08.02.2021 10:44, Andrew Cooper wrote:
->>>> On 06/02/2021 10:49, Juergen Gross wrote:
->>>>> The ring buffer for user events is used in the local system only, so
->>>>> smp barriers are fine for ensuring consistency.
->>>>>
->>>>> Reported-by: Andrew Cooper <andrew.cooper3@citrix.com>
->>>>> Signed-off-by: Juergen Gross <jgross@suse.com>
->>>> These need to be virt_* to not break in UP builds (on non-x86).
->>> Initially I though so, too, but isn't the sole vCPU of such a
->>> VM getting re-scheduled to a different pCPU in the hypervisor
->>> an implied barrier anyway?
->> Yes, but that isn't relevant to why UP builds break.
->>
->> smp_*() degrade to compiler barriers in UP builds, and while that's
->> mostly fine for x86 read/write, its not fine for ARM barriers.
-> Hmm, I may not know enough of Arm's memory model - are you saying
-> Arm CPUs aren't even self-coherent, i.e. later operations (e.g.
-> the consuming of ring contents) won't observe earlier ones (the
-> updating of ring contents) when only a single physical CPU is
-> involved in all of this? (I did mention the hypervisor level
-> context switch simply because that's the only way multiple CPUs
-> can get involved.)
+On Mon, Feb 08, 2021 at 06:44:52PM +0800, Yicong Yang wrote:
+> Hi Greg,
+> 
+> On 2021/2/5 17:53, Greg KH wrote:
+> > On Fri, Feb 05, 2021 at 05:44:12PM +0800, Yicong Yang wrote:
+> >> From: Junhao He <hejunhao2@hisilicon.com>
+> >>
+> >> Use subdir-ccflags-* instead of ccflags-* to inherit the debug
+> >> settings from Kconfig when traversing subdirectories.
+> > 
+> > That says what you do, but not _why_ you are doing it.
+> 
+> i'll illustrate the reason and reword the commit.
+> 
+> > 
+> > What does this offer in benefit of the existing way?  What is it fixing?
+> > Why do this "churn"?
+> 
+> currently we have added ccflags-$(CONFIG_DEBUG_DRIVER) := -DDEBUG in the Makefile
+> of driver/base and driver/base/power, but not in the subdirectory
+> driver/base/firmware_loader. we cannot turn the debug on for subdirectory
+> firmware_loader if we config DEBUG_DRIVER and there is no kconfig option
+> for the it.
 
-In this case, no - see my later reply.  I'd mistaken the two ends of
-this ring.  As they're both inside the same guest, its fine.
+Is that necessary?  Does that directory need it?
 
-For cases such as the xenstore/console ring, the semantics required
-really are SMP, even if the guest is built UP.  These cases really will
-break when smp_rmb() etc degrade to just a compiler barrier on
-architectures with weaker semantics than x86.
+thanks,
 
-~Andrew
+greg k-h
