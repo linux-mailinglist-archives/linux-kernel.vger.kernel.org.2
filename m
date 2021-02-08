@@ -2,86 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B14B313FD1
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 21:02:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11642313FD7
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 21:03:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233242AbhBHUB6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 15:01:58 -0500
-Received: from mail.skyhub.de ([5.9.137.197]:42148 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233251AbhBHSVA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 13:21:00 -0500
-Received: from zn.tnic (p200300ec2f073f0023a6d1f14b392727.dip0.t-ipconnect.de [IPv6:2003:ec:2f07:3f00:23a6:d1f1:4b39:2727])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 7CAD61EC04D1;
-        Mon,  8 Feb 2021 19:20:12 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1612808412;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=qeF+mQeeKnzlVS28rZchr2a9Z1+kGh/ZuRWejrk4LHk=;
-        b=RyHFSrVqG/V+VmsocywmZDdM4WcsK//kIh7Oaaiji5e3Gs2wJIJKSn8xv1kgJANIL1D8N1
-        ShAAXcxGx5SBiCN96gwGM5AFDdhXJJVn/0/Jgmv2e0kDuGVm9DLVbGfgiK4fA2MNrngX7Z
-        aB9OHNbXk/TJCLE6MbJLJELNmqpiNHw=
-Date:   Mon, 8 Feb 2021 19:20:09 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>
-Subject: Re: [PATCH v19 06/25] x86/cet: Add control-protection fault handler
-Message-ID: <20210208182009.GE18227@zn.tnic>
-References: <20210203225547.32221-1-yu-cheng.yu@intel.com>
- <20210203225547.32221-7-yu-cheng.yu@intel.com>
- <20210205135927.GH17488@zn.tnic>
- <2d829cba-784e-635a-e0c5-a7b334fa9b40@intel.com>
+        id S236632AbhBHUCy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 15:02:54 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:38300 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235486AbhBHSV0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 13:21:26 -0500
+Date:   Mon, 08 Feb 2021 18:20:43 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1612808444;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=eE0FKRQGePEyRQMV2K5lLY6GFa0S0xi++VAfzftjR9k=;
+        b=EbfZ+6hmBCmOIoNbHWATbH8GfNxwGKTVKMIPdKRa/91QDDz7yPGijVJGEW6QghiL9qyMEP
+        wFqc8Nnvamuzo9Lkbd1T7kgUbNAQh4PNtnQUrnnZn1CLxuLKa7+Rzqog1t/ecExqm0RZu/
+        A/X2088gt3GxQIZkBtZ8UZhrzGRIWLlUFCMV1OhPdbOsiv6ZYBPDgI3GY+DYMeIqw2Wv+k
+        9HzhB4yCVgyz/Zpm+SqATiIa0WeB2MQM2tPF+BJgOXVOcnNGI9T+MnkjesjZZGq8ICBt8m
+        iyHBqGdWetBejIH4TH4+s5J2eJulgawGXg6gsSqXpINytF9CRsgUGwk48ELlLw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1612808444;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=eE0FKRQGePEyRQMV2K5lLY6GFa0S0xi++VAfzftjR9k=;
+        b=eW6v6LBxjf2PYVpm83vl/G1tCm3H3+M75mYd2Gxiz9cdfbxLYvUGTcVp9oLCvYSeUOjFvz
+        lXb7kl7xsm7lvPAg==
+From:   "tip-bot2 for Jarkko Sakkinen" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/urgent] x86/sgx: Maintain encl->refcount for each
+ encl->mm_list entry
+Cc:     Haitao Huang <haitao.huang@linux.intel.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Borislav Petkov <bp@suse.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210207221401.29933-1-jarkko@kernel.org>
+References: <20210207221401.29933-1-jarkko@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <2d829cba-784e-635a-e0c5-a7b334fa9b40@intel.com>
+Message-ID: <161280844318.23325.9475103452435627384.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 05, 2021 at 10:00:21AM -0800, Yu, Yu-cheng wrote:
-> The ratelimit here is only for #CP, and its rate is not counted together
-> with other types of faults.  If a task gets here, it will exit.  The only
-> condition the ratelimit will trigger is when multiple tasks hit #CP at once,
-> which is unlikely.  Are you suggesting that we do not need the ratelimit
-> here?
+The following commit has been merged into the x86/urgent branch of tip:
 
-I'm trying to first find out why is it there.
+Commit-ID:     2ade0d60939bcd54197c133b03b460fe62a4ec47
+Gitweb:        https://git.kernel.org/tip/2ade0d60939bcd54197c133b03b460fe62a4ec47
+Author:        Jarkko Sakkinen <jarkko@kernel.org>
+AuthorDate:    Mon, 08 Feb 2021 00:14:01 +02:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Mon, 08 Feb 2021 19:11:30 +01:00
 
-Is this something you've hit during testing and thought, oh well, this
-needs a ratelimit or was it added just because?
+x86/sgx: Maintain encl->refcount for each encl->mm_list entry
 
--- 
-Regards/Gruss,
-    Boris.
+This has been shown in tests:
 
-https://people.kernel.org/tglx/notes-about-netiquette
+[  +0.000008] WARNING: CPU: 3 PID: 7620 at kernel/rcu/srcutree.c:374 cleanup_srcu_struct+0xed/0x100
+
+This is essentially a use-after free, although SRCU notices it as
+an SRCU cleanup in an invalid context.
+
+== Background ==
+
+SGX has a data structure (struct sgx_encl_mm) which keeps per-mm SGX
+metadata.  This is separate from struct sgx_encl because, in theory,
+an enclave can be mapped from more than one mm.  sgx_encl_mm includes
+a pointer back to the sgx_encl.
+
+This means that sgx_encl must have a longer lifetime than all of the
+sgx_encl_mm's that point to it.  That's usually the case: sgx_encl_mm
+is freed only after the mmu_notifier is unregistered in sgx_release().
+
+However, there's a race.  If the process is exiting,
+sgx_mmu_notifier_release() can be called in parallel with sgx_release()
+instead of being called *by* it.  The mmu_notifier path keeps encl_mm
+alive past when sgx_encl can be freed.  This inverts the lifetime rules
+and means that sgx_mmu_notifier_release() can access a freed sgx_encl.
+
+== Fix ==
+
+Increase encl->refcount when encl_mm->encl is established. Release
+this reference when encl_mm is freed. This ensures that encl outlives
+encl_mm.
+
+ [ bp: Massage commit message. ]
+
+Fixes: 1728ab54b4be ("x86/sgx: Add a page reclaimer")
+Reported-by: Haitao Huang <haitao.huang@linux.intel.com>
+Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Acked-by: Dave Hansen <dave.hansen@linux.intel.com>
+Link: https://lkml.kernel.org/r/20210207221401.29933-1-jarkko@kernel.org
+---
+ arch/x86/kernel/cpu/sgx/driver.c | 3 +++
+ arch/x86/kernel/cpu/sgx/encl.c   | 5 +++++
+ 2 files changed, 8 insertions(+)
+
+diff --git a/arch/x86/kernel/cpu/sgx/driver.c b/arch/x86/kernel/cpu/sgx/driver.c
+index f2eac41..8ce6d83 100644
+--- a/arch/x86/kernel/cpu/sgx/driver.c
++++ b/arch/x86/kernel/cpu/sgx/driver.c
+@@ -72,6 +72,9 @@ static int sgx_release(struct inode *inode, struct file *file)
+ 		synchronize_srcu(&encl->srcu);
+ 		mmu_notifier_unregister(&encl_mm->mmu_notifier, encl_mm->mm);
+ 		kfree(encl_mm);
++
++		/* 'encl_mm' is gone, put encl_mm->encl reference: */
++		kref_put(&encl->refcount, sgx_encl_release);
+ 	}
+ 
+ 	kref_put(&encl->refcount, sgx_encl_release);
+diff --git a/arch/x86/kernel/cpu/sgx/encl.c b/arch/x86/kernel/cpu/sgx/encl.c
+index ee50a50..f65564a 100644
+--- a/arch/x86/kernel/cpu/sgx/encl.c
++++ b/arch/x86/kernel/cpu/sgx/encl.c
+@@ -481,6 +481,9 @@ static void sgx_mmu_notifier_free(struct mmu_notifier *mn)
+ {
+ 	struct sgx_encl_mm *encl_mm = container_of(mn, struct sgx_encl_mm, mmu_notifier);
+ 
++	/* 'encl_mm' is going away, put encl_mm->encl reference: */
++	kref_put(&encl_mm->encl->refcount, sgx_encl_release);
++
+ 	kfree(encl_mm);
+ }
+ 
+@@ -534,6 +537,8 @@ int sgx_encl_mm_add(struct sgx_encl *encl, struct mm_struct *mm)
+ 	if (!encl_mm)
+ 		return -ENOMEM;
+ 
++	/* Grab a refcount for the encl_mm->encl reference: */
++	kref_get(&encl->refcount);
+ 	encl_mm->encl = encl;
+ 	encl_mm->mm = mm;
+ 	encl_mm->mmu_notifier.ops = &sgx_mmu_notifier_ops;
