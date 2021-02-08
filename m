@@ -2,62 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 906DF31428B
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 23:08:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FB05314297
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 23:10:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229637AbhBHWIC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 17:08:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44366 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230090AbhBHWHy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 17:07:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2DA0664E27;
-        Mon,  8 Feb 2021 22:07:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612822034;
-        bh=d45fruyMe2LIRicqFUcbjfSPAJ46rlT885i916wbg1M=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=Rs/SGVlc5JYIWflp/bjz/2kv7Uf1Wopy2HTaSlo5yvxmjcx03ByKlXeJA4I3EZFx0
-         0TIZZuY/TVTqaNtl1sjKQ9jP0jlB914X6JY40yQGOqRJO+nLq403dOcGt0r06mTxf4
-         5sIAqMmgtFm5cau9bko2C0wJ5k3RdnEjcC9a+glDrQLIXVLcc3roEuoRyMUCW78r3J
-         5fDZ7TXSfC3QRdMcqjREvl7Pf81ICj7YFN4ui9/p358cgzui19iRDpfoSPLtQuDPYF
-         jJQgJPQULDCXSOOQEyREvnsEJYXkytV7uzeUQy85yUALxtIA0eCiHeyoVibDN+72kK
-         L7Uy7fJLn0tAw==
-Content-Type: text/plain; charset="utf-8"
+        id S230379AbhBHWKJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 17:10:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57152 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230070AbhBHWKC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 17:10:02 -0500
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06318C06178B
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 14:09:22 -0800 (PST)
+Received: by mail-pg1-x52c.google.com with SMTP id b21so11147664pgk.7
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 14:09:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=38VT3hWqKMUm7tkdIa0rxqDQIUu+ZlIx5NyHu+US69g=;
+        b=Df8S0Nqs2l9Bi30+BNDkjlqd9wkXJLPEP8ux/xR3e+IfA7wGl2Ooh1tdDm1SxLL0QY
+         wJkh5GwA3wUUd7USONUM7sC1idGUpV7/t1/7Om74uvEcm/wRSi6UiArPmvEnmwrqIwT/
+         pdA3N44RLKHsealjq+fk1QWqSlU9TATzhll8o=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=38VT3hWqKMUm7tkdIa0rxqDQIUu+ZlIx5NyHu+US69g=;
+        b=OWcWZ9IkSxEeVokNBnRJ09Yl+NzFUr/PM9d1mcq1GQESMeGz1vHM9cVP/Po7M5QGiO
+         AQgcb+KrX5cQynKhzcNjyAyYC0AlFKsSNgREZG9uG9biE5rUEmNby4xVA8jgTePsX2CF
+         5NYyixOV0hqV+58LNLNMefHvf0LuicK0cCAM2DcmkaQY9qBQAxbqsShFsvbvQNbhJwSO
+         AHwXANJylOa6aOfz9nh3/hY7xHYDGYP17++XEGLKWuZUI1X4Xcichz6VYutgyBcvkdva
+         OAomHjr9SYXLZZWA4mkkU8Q1f5A0D5Z73hhwIUHikQoplmX3m/Af/oIN7zjY4/NAsKdb
+         ZyQQ==
+X-Gm-Message-State: AOAM531je2RMzuasf3Vr+6G1fFT6wrWtrBwVfWxf09LqPW8+4nllzP/f
+        F6z2xwIALxhnIEh/dg9eOyasww==
+X-Google-Smtp-Source: ABdhPJy90g+Kshz5nzG72wCp16Y3O/DaG8dcZrtExU+ZalEx9WcGHqnhfD9DFKLUAriQOStZvjH8Aw==
+X-Received: by 2002:a63:7cc:: with SMTP id 195mr19020003pgh.145.1612822161395;
+        Mon, 08 Feb 2021 14:09:21 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id z12sm11550925pfn.150.2021.02.08.14.09.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Feb 2021 14:09:20 -0800 (PST)
+Date:   Mon, 8 Feb 2021 14:09:19 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>, linux-cxl@vger.kernel.org,
+        Ben Widawsky <ben.widawsky@intel.com>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Chris Browy <cbrowy@avery-design.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Jon Masters <jcm@jonmasters.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Rafael Wysocki <rafael.j.wysocki@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        daniel.lll@alibaba-inc.com,
+        "John Groves (jgroves)" <jgroves@micron.com>,
+        "Kelley, Sean V" <sean.v.kelley@intel.com>
+Subject: Re: [PATCH 08/14] taint: add taint for direct hardware access
+Message-ID: <202102081406.CDE33FB8@keescook>
+References: <20210130002438.1872527-1-ben.widawsky@intel.com>
+ <20210130002438.1872527-9-ben.widawsky@intel.com>
+ <CAPcyv4iPXqO5FL4_bmMQaSvmUm9FVrPv9yPJr3Q4DQWYf4t5hQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <1612812784-26369-1-git-send-email-subbaram@codeaurora.org>
-References: <1612812784-26369-1-git-send-email-subbaram@codeaurora.org>
-Subject: Re: [PATCH] spmi: spmi-pmic-arb: Fix hw_irq overflow
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org,
-        David Collins <collinsd@codeaurora.org>,
-        Subbaraman Narayanamurthy <subbaram@codeaurora.org>,
-        stable@vger.kernel.org
-To:     Subbaraman Narayanamurthy <subbaram@codeaurora.org>,
-        linux-kernel@vger.kernel.org
-Date:   Mon, 08 Feb 2021 14:07:12 -0800
-Message-ID: <161282203270.4168818.14030280893762596656@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAPcyv4iPXqO5FL4_bmMQaSvmUm9FVrPv9yPJr3Q4DQWYf4t5hQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Subbaraman Narayanamurthy (2021-02-08 11:33:04)
-> Currently, when handling the SPMI summary interrupt, the hw_irq
-> number is calculated based on SID, Peripheral ID, IRQ index and
-> APID. This is then passed to irq_find_mapping() to see if a
-> mapping exists for this hw_irq and if available, invoke the
-> interrupt handler. Since the IRQ index uses an "int" type, hw_irq
-> which is of unsigned long data type can take a large value when
-> SID has its MSB set to 1 and the type conversion happens. Because
-> of this, irq_find_mapping() returns 0 as there is no mapping
-> for this hw_irq. This ends up invoking cleanup_irq() as if
-> the interrupt is spurious whereas it is actually a valid
-> interrupt. Fix this by using the proper data type (u32) for id.
->=20
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Subbaraman Narayanamurthy <subbaram@codeaurora.org>
-> ---
+On Mon, Feb 08, 2021 at 02:00:33PM -0800, Dan Williams wrote:
+> [ add Jon Corbet as I'd expect him to be Cc'd on anything that
+> generically touches Documentation/ like this, and add Kees as the last
+> person who added a taint (tag you're it) ]
+> 
+> Jon, Kees, are either of you willing to ack this concept?
+> 
+> Top-posting to add more context for the below:
+> 
+> This taint is proposed because it has implications for
+> CONFIG_LOCK_DOWN_KERNEL among other things. These CXL devices
+> implement memory like DDR would, but unlike DDR there are
+> administrative / configuration commands that demand kernel
+> coordination before they can be sent. The posture taken with this
+> taint is "guilty until proven innocent" for commands that have yet to
+> be explicitly allowed by the driver. This is different than NVME for
+> example where an errant vendor-defined command could destroy data on
+> the device, but there is no wider threat to system integrity. The
+> taint allows a pressure release valve for any and all commands to be
+> sent, but flagged with WARN_TAINT_ONCE if the driver has not
+> explicitly enabled it on an allowed list of known-good / kernel
+> coordinated commands.
+> 
+> On Fri, Jan 29, 2021 at 4:25 PM Ben Widawsky <ben.widawsky@intel.com> wrote:
+> >
+> > For drivers that moderate access to the underlying hardware it is
+> > sometimes desirable to allow userspace to bypass restrictions. Once
+> > userspace has done this, the driver can no longer guarantee the sanctity
+> > of either the OS or the hardware. When in this state, it is helpful for
+> > kernel developers to be made aware (via this taint flag) of this fact
+> > for subsequent bug reports.
+> >
+> > Example usage:
+> > - Hardware xyzzy accepts 2 commands, waldo and fred.
+> > - The xyzzy driver provides an interface for using waldo, but not fred.
+> > - quux is convinced they really need the fred command.
+> > - xyzzy driver allows quux to frob hardware to initiate fred.
+> >   - kernel gets tainted.
+> > - turns out fred command is borked, and scribbles over memory.
+> > - developers laugh while closing quux's subsequent bug report.
 
-Applied to spmi-next
+But a taint flag only lasts for the current boot. If this is a drive, it
+could still be compromised after reboot. It sounds like this taint is
+really only for ephemeral things? "vendor shenanigans" is a pretty giant
+scope ...
+
+-Kees
+
+> >
+> > Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
+> > ---
+> >  Documentation/admin-guide/sysctl/kernel.rst   | 1 +
+> >  Documentation/admin-guide/tainted-kernels.rst | 6 +++++-
+> >  include/linux/kernel.h                        | 3 ++-
+> >  kernel/panic.c                                | 1 +
+> >  4 files changed, 9 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/Documentation/admin-guide/sysctl/kernel.rst b/Documentation/admin-guide/sysctl/kernel.rst
+> > index 1d56a6b73a4e..3e1eada53504 100644
+> > --- a/Documentation/admin-guide/sysctl/kernel.rst
+> > +++ b/Documentation/admin-guide/sysctl/kernel.rst
+> > @@ -1352,6 +1352,7 @@ ORed together. The letters are seen in "Tainted" line of Oops reports.
+> >   32768  `(K)`  kernel has been live patched
+> >   65536  `(X)`  Auxiliary taint, defined and used by for distros
+> >  131072  `(T)`  The kernel was built with the struct randomization plugin
+> > +262144  `(H)`  The kernel has allowed vendor shenanigans
+> >  ======  =====  ==============================================================
+> >
+> >  See :doc:`/admin-guide/tainted-kernels` for more information.
+> > diff --git a/Documentation/admin-guide/tainted-kernels.rst b/Documentation/admin-guide/tainted-kernels.rst
+> > index ceeed7b0798d..ee2913316344 100644
+> > --- a/Documentation/admin-guide/tainted-kernels.rst
+> > +++ b/Documentation/admin-guide/tainted-kernels.rst
+> > @@ -74,7 +74,7 @@ a particular type of taint. It's best to leave that to the aforementioned
+> >  script, but if you need something quick you can use this shell command to check
+> >  which bits are set::
+> >
+> > -       $ for i in $(seq 18); do echo $(($i-1)) $(($(cat /proc/sys/kernel/tainted)>>($i-1)&1));done
+> > +       $ for i in $(seq 19); do echo $(($i-1)) $(($(cat /proc/sys/kernel/tainted)>>($i-1)&1));done
+> >
+> >  Table for decoding tainted state
+> >  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > @@ -100,6 +100,7 @@ Bit  Log  Number  Reason that got the kernel tainted
+> >   15  _/K   32768  kernel has been live patched
+> >   16  _/X   65536  auxiliary taint, defined for and used by distros
+> >   17  _/T  131072  kernel was built with the struct randomization plugin
+> > + 18  _/H  262144  kernel has allowed vendor shenanigans
+> >  ===  ===  ======  ========================================================
+> >
+> >  Note: The character ``_`` is representing a blank in this table to make reading
+> > @@ -175,3 +176,6 @@ More detailed explanation for tainting
+> >       produce extremely unusual kernel structure layouts (even performance
+> >       pathological ones), which is important to know when debugging. Set at
+> >       build time.
+> > +
+> > + 18) ``H`` Kernel has allowed direct access to hardware and can no longer make
+> > +     any guarantees about the stability of the device or driver.
+> > diff --git a/include/linux/kernel.h b/include/linux/kernel.h
+> > index f7902d8c1048..bc95486f817e 100644
+> > --- a/include/linux/kernel.h
+> > +++ b/include/linux/kernel.h
+> > @@ -443,7 +443,8 @@ extern enum system_states {
+> >  #define TAINT_LIVEPATCH                        15
+> >  #define TAINT_AUX                      16
+> >  #define TAINT_RANDSTRUCT               17
+> > -#define TAINT_FLAGS_COUNT              18
+> > +#define TAINT_RAW_PASSTHROUGH          18
+> > +#define TAINT_FLAGS_COUNT              19
+> >  #define TAINT_FLAGS_MAX                        ((1UL << TAINT_FLAGS_COUNT) - 1)
+> >
+> >  struct taint_flag {
+> > diff --git a/kernel/panic.c b/kernel/panic.c
+> > index 332736a72a58..dff22bd80eaf 100644
+> > --- a/kernel/panic.c
+> > +++ b/kernel/panic.c
+> > @@ -386,6 +386,7 @@ const struct taint_flag taint_flags[TAINT_FLAGS_COUNT] = {
+> >         [ TAINT_LIVEPATCH ]             = { 'K', ' ', true },
+> >         [ TAINT_AUX ]                   = { 'X', ' ', true },
+> >         [ TAINT_RANDSTRUCT ]            = { 'T', ' ', true },
+> > +       [ TAINT_RAW_PASSTHROUGH ]       = { 'H', ' ', true },
+> >  };
+> >
+> >  /**
+> > --
+> > 2.30.0
+> >
+
+-- 
+Kees Cook
