@@ -2,129 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EB17312EF6
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 11:27:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41353312F00
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 11:30:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232360AbhBHK0q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 05:26:46 -0500
-Received: from so15.mailgun.net ([198.61.254.15]:26381 "EHLO so15.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232079AbhBHKOh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 05:14:37 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1612779245; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=uAwapH+3DR+8U2adWBEQpmzcm9L8gQHwJvHS+TvS18Q=;
- b=sTzmDIm19jkOKUBnahCFk0WBBPG7IgCR4cb77ZOF4VYSFnd2aEWZXMNQ1eqFiaJfJ+J60sih
- 6MNRtU1yYPJopUsSN4ydiONh0uFfA+qlEHDhpN6Y59lQTYunxTvRHVmQbgY91gUldd6ZT1rh
- Rtdxi6AEC/ou0lqgods5arpVMe8=
-X-Mailgun-Sending-Ip: 198.61.254.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 60210ed034db06ef7933211e (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 08 Feb 2021 10:13:36
- GMT
-Sender: bgodavar=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 98286C43461; Mon,  8 Feb 2021 10:13:36 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: bgodavar)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id DF147C433ED;
-        Mon,  8 Feb 2021 10:13:35 +0000 (UTC)
+        id S232499AbhBHK30 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 05:29:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44586 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232128AbhBHKPo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 05:15:44 -0500
+Received: from mail-oo1-xc2b.google.com (mail-oo1-xc2b.google.com [IPv6:2607:f8b0:4864:20::c2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0562C061786
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 02:15:03 -0800 (PST)
+Received: by mail-oo1-xc2b.google.com with SMTP id f26so1000064oog.5
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 02:15:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vCMmRzeRUvjiDoTmyzXxUn/Korqg8Etx51tp2C17oVg=;
+        b=F3iTrEZ3iULk4I5TLTDKE5hqXWLowDwwMZ0ds6BMCd7y/FP0OCH4Jk4FuxzeoTEf3J
+         xSpol477x+ZB9VMfjXkKz0PrImqS619nJi+pHochlvZk2coeDmsJAkAKDHr+2dxuAXso
+         BjXIJhNrSrmzBncmBgvh9kJZnmiz4bJSX48lSeRiQlLHYmosCZVjQCldwvIIcUnzTVIv
+         Kk2sDbrCau/ygmncrLr57RJEa61sPn7Cz2Uej26Xl8eWuACqQrG5b1wF66AeoYe9jTx9
+         O6UGmSdA6uDMlKzL7ED1fWvvEJro8l4OqvD5qkNZEdMFTNLwiQxOnybapylmPQqjaxys
+         VENQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vCMmRzeRUvjiDoTmyzXxUn/Korqg8Etx51tp2C17oVg=;
+        b=RhZrcsKKiDL2YeEnKs1cBG2LtUwQFF6W3eWUDYmldQVsbabbnFvNufZ3CSlMHUs9V9
+         NYZxKcbH+l8WpQCZHfkvWK68QaE4W7gsl0P9UsRRCmtvMpFr0q4KzrxTs1ttYsMJfbrx
+         eIUv7fTSPmfnbzbQVfZDDkYK570OezoG4GKOSbFs9LAHKmLPtJhR/t18rIyWEN4ZcmQV
+         VkKFImBL3cXOgW5mUMKN3ucv6UHRmkOJkuu52e+00hOeCL+FoSrKmZpr8Rf9rx8I3kRT
+         w7n+R7kTcsLTwK4ZRwYwSaVj4tGSSbpQ7Vw9g4en3rcHJLsSspsYo/8mr9jPh/mEQtTM
+         /+Pg==
+X-Gm-Message-State: AOAM533W62HQ3YFEp9nc6YHKQJLbWMc0+8iXzXZViBi77+7NHulQ0x9U
+        wOvPJJ+8eZwjeXDjrq5EHWc=
+X-Google-Smtp-Source: ABdhPJy+b0GzW0jKEOCa0mciq9BdyBuax03BFKIo4Gkibq1omDLr8z/86pN0zQH4MLZZs0C9upYXZg==
+X-Received: by 2002:a4a:8555:: with SMTP id l21mr12150459ooh.27.1612779303251;
+        Mon, 08 Feb 2021 02:15:03 -0800 (PST)
+Received: from localhost.localdomain ([50.236.19.102])
+        by smtp.gmail.com with ESMTPSA id t3sm607226otb.36.2021.02.08.02.14.54
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 08 Feb 2021 02:15:02 -0800 (PST)
+From:   Yafang Shao <laoar.shao@gmail.com>
+To:     andriy.shevchenko@linux.intel.com, david@redhat.com,
+        vbabka@suse.cz, willy@infradead.org, cl@linux.com,
+        linmiaohe@huawei.com, penberg@kernel.org, rientjes@google.com,
+        iamjoonsoo.kim@lge.com, akpm@linux-foundation.org,
+        pmladek@suse.com, rostedt@goodmis.org,
+        sergey.senozhatsky@gmail.com, joe@perches.com
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Yafang Shao <laoar.shao@gmail.com>
+Subject: [PATCH v3 0/3] mm, vsprintf: introduce new format to dump full information of page flags 
+Date:   Mon,  8 Feb 2021 18:14:36 +0800
+Message-Id: <20210208101439.55474-1-laoar.shao@gmail.com>
+X-Mailer: git-send-email 2.24.3 (Apple Git-128)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 08 Feb 2021 15:43:35 +0530
-From:   bgodavar@codeaurora.org
-To:     Venkata Lakshmi Narayana Gubba <gubbaven@codeaurora.org>,
-        Kalle Valo <kvalo@codeaurora.org>
-Cc:     marcel@holtmann.org, johan.hedberg@gmail.com, mka@chromium.org,
-        linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
-        hemantg@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        rjliao@codeaurora.org, hbandi@codeaurora.org,
-        abhishekpandit@chromium.org
-Subject: Re: [PATCH v1] Bluetooth: hci_qca:Fixed issue during suspend
-In-Reply-To: <1612539436-8498-1-git-send-email-gubbaven@codeaurora.org>
-References: <1612539436-8498-1-git-send-email-gubbaven@codeaurora.org>
-Message-ID: <844435eeea74c6bdc9d1c64cf6ed86f9@codeaurora.org>
-X-Sender: bgodavar@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+ Kalle Valo for +1T
+The existed pGp shows the names of page flags only, rather than the full
+information including section, node, zone, last cpuipid and kasan tag.
+While it is not easy to parse these information manually because there
+are so many flavors. We'd better interpret them in printf.
 
-On 2021-02-05 21:07, Venkata Lakshmi Narayana Gubba wrote:
-> If BT SoC is running with ROM FW then just return in
-> qca_suspend function as ROM FW does not support
-> in-band sleep.
-> 
-> Fixes: 2be43abac5a8 ("Bluetooth: hci_qca: Wait for timeout during 
-> suspend")
-> Signed-off-by: Venkata Lakshmi Narayana Gubba <gubbaven@codeaurora.org>
-> ---
->  drivers/bluetooth/hci_qca.c | 12 +++++++++++-
->  1 file changed, 11 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/bluetooth/hci_qca.c b/drivers/bluetooth/hci_qca.c
-> index ff2fb68..de36af6 100644
-> --- a/drivers/bluetooth/hci_qca.c
-> +++ b/drivers/bluetooth/hci_qca.c
-> @@ -77,7 +77,8 @@ enum qca_flags {
->  	QCA_MEMDUMP_COLLECTION,
->  	QCA_HW_ERROR_EVENT,
->  	QCA_SSR_TRIGGERED,
-> -	QCA_BT_OFF
-> +	QCA_BT_OFF,
-> +	QCA_ROM_FW
->  };
-> 
->  enum qca_capabilities {
-> @@ -1664,6 +1665,7 @@ static int qca_setup(struct hci_uart *hu)
->  	if (ret)
->  		return ret;
-> 
-> +	clear_bit(QCA_ROM_FW, &qca->flags);
->  	/* Patch downloading has to be done without IBS mode */
->  	set_bit(QCA_IBS_DISABLED, &qca->flags);
-> 
-> @@ -1721,12 +1723,14 @@ static int qca_setup(struct hci_uart *hu)
->  		hu->hdev->cmd_timeout = qca_cmd_timeout;
->  	} else if (ret == -ENOENT) {
->  		/* No patch/nvm-config found, run with original fw/config */
-> +		set_bit(QCA_ROM_FW, &qca->flags);
->  		ret = 0;
->  	} else if (ret == -EAGAIN) {
->  		/*
->  		 * Userspace firmware loader will return -EAGAIN in case no
->  		 * patch/nvm-config is found, so run with original fw/config.
->  		 */
-> +		set_bit(QCA_ROM_FW, &qca->flags);
->  		ret = 0;
->  	}
-> 
-> @@ -2103,6 +2107,12 @@ static int __maybe_unused qca_suspend(struct 
-> device *dev)
-> 
->  	set_bit(QCA_SUSPENDING, &qca->flags);
-> 
-> +	/* if BT SoC is running with default firmware then it does not
-> +	 * support in-band sleep
-> +	 */
-> +	if (test_bit(QCA_ROM_FW, &qca->flags))
-> +		return 0;
-> +
->  	/* During SSR after memory dump collection, controller will be
->  	 * powered off and then powered on.If controller is powered off
->  	 * during SSR then we should wait until SSR is completed.
+To avoid breaking some tools which parsing pGp via debugfs or affecting
+the printf buffer, other new formats are introduced, so the user can choose
+what and in which order they want, suggested by Andy. These new introduced
+format as follows,
+    pGpb: print other information first and then the names of page flags
+    pGpl: print the names of page flags first and then the other info
+
+The differece between them looks like the difference between big-endian and
+little-endian, that's why they are named like that. The examples of the
+output as follows,
+    %pGpb 0x17ffffc0010200(node=0|zone=2|lastcpupid=0x1fffff|slab|head)
+    %pGpl 0x17ffffc0010200(slab|head|node=0|zone=2|lastcpupid=0x1fffff)
+
+To be compitable with the existed format of pGp, the new introduced ones
+also use '|' as the separator, then the user tools parsing pGp won't
+need to make change, suggested by Matthew.
+
+The doc and test cases are also updated. Below is the output of the
+test cases,
+[ 4299.847655] test_printf: loaded.
+[ 4299.848301] test_printf: all 404 tests passed
+[ 4299.850371] test_printf: unloaded.
+
+This patchset also includes some code cleanup in mm/slub.c.
+
+v3:
+- coding improvement, per Joe and Andy
+- the possible impact on debugfs and the fix of it, per Joe and Matthew
+- introduce new format instead of changing pGp, per Andy
+
+v2:
+- various coding improvement, per Joe, Miaohe, Vlastimil and Andy
+- remove the prefix completely in patch #2, per Vlastimil
+- Update the test cases, per Andy
+
+Yafang Shao (3):
+  mm, slub: use pGp to print page flags
+  mm, slub: don't combine pr_err with INFO
+  vsprintf: introduce new format to dump full information of page flags
+
+ Documentation/core-api/printk-formats.rst |   2 +
+ lib/test_printf.c                         | 126 +++++++++++++++++++---
+ lib/vsprintf.c                            | 115 +++++++++++++++++++-
+ mm/slub.c                                 |  13 +--
+ 4 files changed, 233 insertions(+), 23 deletions(-)
+
+-- 
+2.17.1
+
