@@ -2,78 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 352F8313D9C
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 19:34:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 357B7313D99
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 19:34:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235590AbhBHSdr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 13:33:47 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:35373 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233139AbhBHQTR (ORCPT
+        id S235788AbhBHSdD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 13:33:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38138 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232677AbhBHQTI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 11:19:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612801071;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=CFslgI4BdX7W8W1Jxi7aVjgoo9QpMFhu3ejcV0QAAXo=;
-        b=elUaNjopgJm77Yby7BQafYflUS1Qs40zHajO3D1MOvE5PhSyJte280244Xsx2eZWgHNzPX
-        L+TiQfCguZ4WFpeK9HNszJsOxbE7PMOPTHZHsqo3jHrdWPLU/mceQKmi9GMA0e164nVI/l
-        fBLNtwCayuTB4hTQIlicDEFocQ20eHY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-80-D4XTqdr-N8OYL04EYtxZsQ-1; Mon, 08 Feb 2021 11:17:49 -0500
-X-MC-Unique: D4XTqdr-N8OYL04EYtxZsQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Mon, 8 Feb 2021 11:19:08 -0500
+Received: from mail.marcansoft.com (marcansoft.com [IPv6:2a01:298:fe:f::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0E45C061786;
+        Mon,  8 Feb 2021 08:18:27 -0800 (PST)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DA5261966321;
-        Mon,  8 Feb 2021 16:17:47 +0000 (UTC)
-Received: from steredhat.redhat.com (ovpn-115-25.ams2.redhat.com [10.36.115.25])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 59D5A19C59;
-        Mon,  8 Feb 2021 16:17:42 +0000 (UTC)
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     virtualization@lists.linux-foundation.org
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Parav Pandit <parav@nvidia.com>, Eli Cohen <elic@nvidia.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] vdpa/mlx5: fix param validation in mlx5_vdpa_get_config()
-Date:   Mon,  8 Feb 2021 17:17:41 +0100
-Message-Id: <20210208161741.104939-1-sgarzare@redhat.com>
+        (Authenticated sender: marcan@marcan.st)
+        by mail.marcansoft.com (Postfix) with ESMTPSA id B33B54207F;
+        Mon,  8 Feb 2021 16:18:23 +0000 (UTC)
+Subject: Re: [PATCH 05/18] tty: serial: samsung_tty: add support for Apple
+ UARTs
+To:     Marc Zyngier <maz@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     soc@kernel.org, linux-arm-kernel@lists.infradead.org,
+        robh+dt@kernel.org, Arnd Bergmann <arnd@kernel.org>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        Olof Johansson <olof@lixom.net>,
+        Krzysztof Kozlowski <krzk@kernel.org>
+References: <20210204203951.52105-1-marcan@marcan.st>
+ <20210204203951.52105-6-marcan@marcan.st> <87lfc1l4lo.wl-maz@kernel.org>
+ <e842f37d-d788-2d34-05e4-86ef94aed8f5@marcan.st>
+ <73116feaa00de9173d1f2c35ce16e08f@kernel.org>
+From:   Hector Martin <marcan@marcan.st>
+Message-ID: <7adf8ede-f7ff-7c62-d0fd-9ab4eaf25741@marcan.st>
+Date:   Tue, 9 Feb 2021 01:18:21 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+In-Reply-To: <73116feaa00de9173d1f2c35ce16e08f@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: es-ES
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It's legal to have 'offset + len' equal to
-sizeof(struct virtio_net_config), since 'ndev->config' is a
-'struct virtio_net_config', so we can safely copy its content under
-this condition.
+On 08/02/2021 19.34, Marc Zyngier wrote:
+> On 2021-02-07 09:12, Hector Martin 'marcan' wrote:
+>> On 06/02/2021 22.15, Marc Zyngier wrote:
+>>> Do you actually need a new port type here? Looking at the driver
+>>> itself, it is mainly used to work out the IRQ model. Maybe introducing
+>>> a new irq_type field in the port structure would be better than
+>>> exposing this to userspace (which should see something that is exactly
+>>> the same as a S3C UART).
+>>
+>> Well... every S3C variant already has its own port type here.
+>>
+>> #define PORT_S3C2410    55
+>> #define PORT_S3C2440    61
+>> #define PORT_S3C2400    67
+>> #define PORT_S3C2412    73
+>> #define PORT_S3C6400    84
+>>
+>> If we don't introduce a new one, which one should we pretend to be? :)
+> 
+> Pick one! :D
 
-Fixes: 1a86b377aa21 ("vdpa/mlx5: Add VDPA driver for supported mlx5 devices")
-Cc: stable@vger.kernel.org
-Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
----
- drivers/vdpa/mlx5/net/mlx5_vnet.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+*queries /dev/urandom* :-)
 
-diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-index dc88559a8d49..10e9b09932eb 100644
---- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
-+++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-@@ -1820,7 +1820,7 @@ static void mlx5_vdpa_get_config(struct vdpa_device *vdev, unsigned int offset,
- 	struct mlx5_vdpa_dev *mvdev = to_mvdev(vdev);
- 	struct mlx5_vdpa_net *ndev = to_mlx5_vdpa_ndev(mvdev);
- 
--	if (offset + len < sizeof(struct virtio_net_config))
-+	if (offset + len <= sizeof(struct virtio_net_config))
- 		memcpy(buf, (u8 *)&ndev->config + offset, len);
- }
- 
+>> I agree that it might make sense to merge all of these into one,
+>> though; I don't know what the original reason for splitting them out
+>> is. But now that they're part of the userspace API, this might not be
+>> a good idea. Though, unsurprisingly, some googling suggests there are
+>> zero users of these defines in userspace.
+> 
+> I don't think we can do that, but I don't think we should keep adding
+> to this unless there is a very good reason. Greg would know, I expect.
+
+Greg, what do you think? Add more PORT_ UART types for Samsung variants, 
+or overload one of the existing ones and deal with it in the driver?
+
 -- 
-2.29.2
-
+Hector Martin (marcan@marcan.st)
+Public Key: https://mrcn.st/pub
