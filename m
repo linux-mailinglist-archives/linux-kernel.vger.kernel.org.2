@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22FAB313972
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 17:30:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5A57313928
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 17:20:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234401AbhBHQaX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 11:30:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56402 "EHLO mail.kernel.org"
+        id S233524AbhBHQTh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 11:19:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55494 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233390AbhBHPNJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 10:13:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4689C64EA4;
-        Mon,  8 Feb 2021 15:09:43 +0000 (UTC)
+        id S233271AbhBHPMb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 10:12:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 82F4A64F03;
+        Mon,  8 Feb 2021 15:09:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612796983;
-        bh=06UISuueafKnvCsvOUKs4efLyGgYir3jjkFATP7Lw/A=;
+        s=korg; t=1612796958;
+        bh=n8e4KDMTUgBJGCkluNV1ps2kzCVAbIdfze3YYt15lOs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BN6m4VfzjqjEzXIvLhLd0Lu88rVjVT6rGcW5AqaT3oEkvrypVKSFdzRzqqLaf5AFB
-         uaRWk4viW75hfsq+hcqf3vsf9OBzStFx0a+su8i1bQeOvzrhSDkROwdz7pGPNhN8/7
-         W5TF5ZI/hPCTelbCxjSPaIiJ4iq2SSa06/d09w68=
+        b=y7uFjAo56t48lCIanK1pA8+jg/66HvumgAfJ7CjTk9Wfmr5f1THPSmI9y0T+FCLc5
+         Va3PP2MHforiUbyg/3VYwMSOHyqtpkcgyys70fT0UyBKIeV+FQ89qKyJfcEQm6DJLb
+         PAnlbozo4EVndR5ptc0H/nwhOWsjm9yGFr2fuVvA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Loris Reiff <loris.reiff@liblor.ch>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Stanislav Fomichev <sdf@google.com>,
+        stable@vger.kernel.org, Johannes Berg <johannes.berg@intel.com>,
+        Richard Weinberger <richard@nod.at>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 09/65] bpf, cgroup: Fix problematic bounds check
-Date:   Mon,  8 Feb 2021 16:00:41 +0100
-Message-Id: <20210208145810.599465221@linuxfoundation.org>
+Subject: [PATCH 5.4 10/65] um: virtio: free vu_dev only with the contained struct device
+Date:   Mon,  8 Feb 2021 16:00:42 +0100
+Message-Id: <20210208145810.635083551@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210208145810.230485165@linuxfoundation.org>
 References: <20210208145810.230485165@linuxfoundation.org>
@@ -41,37 +40,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Loris Reiff <loris.reiff@liblor.ch>
+From: Johannes Berg <johannes.berg@intel.com>
 
-[ Upstream commit f4a2da755a7e1f5d845c52aee71336cee289935a ]
+[ Upstream commit f4172b084342fd3f9e38c10650ffe19eac30d8ce ]
 
-Since ctx.optlen is signed, a larger value than max_value could be
-passed, as it is later on used as unsigned, which causes a WARN_ON_ONCE
-in the copy_to_user.
+Since struct device is refcounted, we shouldn't free the vu_dev
+immediately when it's removed from the platform device, but only
+when the references actually all go away. Move the freeing to
+the release to accomplish that.
 
-Fixes: 0d01da6afc54 ("bpf: implement getsockopt and setsockopt hooks")
-Signed-off-by: Loris Reiff <loris.reiff@liblor.ch>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Reviewed-by: Stanislav Fomichev <sdf@google.com>
-Link: https://lore.kernel.org/bpf/20210122164232.61770-2-loris.reiff@liblor.ch
+Fixes: 5d38f324993f ("um: drivers: Add virtio vhost-user driver")
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Signed-off-by: Richard Weinberger <richard@nod.at>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/bpf/cgroup.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/um/drivers/virtio_uml.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
-index 5b2413eb79db4..c2f0aa818b7af 100644
---- a/kernel/bpf/cgroup.c
-+++ b/kernel/bpf/cgroup.c
-@@ -1131,7 +1131,7 @@ int __cgroup_bpf_run_filter_getsockopt(struct sock *sk, int level,
- 		goto out;
+diff --git a/arch/um/drivers/virtio_uml.c b/arch/um/drivers/virtio_uml.c
+index 179b41ad63baf..18618af3835f9 100644
+--- a/arch/um/drivers/virtio_uml.c
++++ b/arch/um/drivers/virtio_uml.c
+@@ -959,6 +959,7 @@ static void virtio_uml_release_dev(struct device *d)
  	}
  
--	if (ctx.optlen > max_optlen) {
-+	if (ctx.optlen > max_optlen || ctx.optlen < 0) {
- 		ret = -EFAULT;
- 		goto out;
- 	}
+ 	os_close_file(vu_dev->sock);
++	kfree(vu_dev);
+ }
+ 
+ /* Platform device */
+@@ -977,7 +978,7 @@ static int virtio_uml_probe(struct platform_device *pdev)
+ 	if (!pdata)
+ 		return -EINVAL;
+ 
+-	vu_dev = devm_kzalloc(&pdev->dev, sizeof(*vu_dev), GFP_KERNEL);
++	vu_dev = kzalloc(sizeof(*vu_dev), GFP_KERNEL);
+ 	if (!vu_dev)
+ 		return -ENOMEM;
+ 
 -- 
 2.27.0
 
