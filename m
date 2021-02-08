@@ -2,186 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8690313D97
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 19:34:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 454A0313D98
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 19:34:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235755AbhBHSc7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 13:32:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37756 "EHLO
+        id S235772AbhBHSdB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 13:33:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231283AbhBHQRV (ORCPT
+        with ESMTP id S234334AbhBHQRp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 11:17:21 -0500
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0CCDC061786;
-        Mon,  8 Feb 2021 08:16:41 -0800 (PST)
-Received: by mail-pf1-x42b.google.com with SMTP id m6so10033487pfk.1;
-        Mon, 08 Feb 2021 08:16:41 -0800 (PST)
+        Mon, 8 Feb 2021 11:17:45 -0500
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81F14C061788
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 08:17:05 -0800 (PST)
+Received: by mail-wr1-x42a.google.com with SMTP id h12so1580580wrw.6
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 08:17:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WsJCNxoOgawUj7Zr3PeZyr3znV20VI9UZXxnXDXzdvs=;
-        b=U0OD2796M2UhURPNe4IChEOVyT/iAmYNvaDyk30Rqz9ncMVbwvASefx+TLV/Lqbunw
-         1KmGPVpqLXajRiDDHRTcb83gUCO+FNJpH2utz+SZQ99OCaeaSKzVV+k5/Pz/k2IfLhf5
-         H19aU9TDyuwDC6TbDu4CnhjufcmNEeSzAC9H24HORJMfbQBGIboVlee0FLAjMLd9Aukp
-         vGmMl69XEdRIU5pv8JrxtaOM2nhzLrrDuUtCYtT7P17JcGYG1IDvySaQEvDIsGRujrbg
-         wJdw0tPeC89VzCLkD1RB+YMSlwEdeSrmlLJM2jTad4KdtZunXpyl4+il47IFIV3EBLBV
-         0qMA==
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=aaBKMnRXM76VUB0Qoag8JdTNr4XL1er0J91Eb9Bg540=;
+        b=Q5o5BVqtOKxv7+VCMcZ+h49qvYsbkLeOdPqyKzh5GM6YlClJ8vu9nBRgsVjFH+4H4/
+         taXKbqrMQeXZeT/dTOKtXZpmnkhXbdAuHDe9w+yyMIQrex0yXzC6asrXkQ6SjqD0Lcyp
+         KOjhaxgALsRTgUQ4LXiHinQOIy8PjEBbz1mqvEoDHhxcanjVWNOPo36Bn3R1z+m2MkLT
+         /HqwDeJyqgMsE31cTha3KDGuxjTjwohjmi/iQI0BSlsE/4lliOn9Vytbr5hyqb+4Qxb6
+         ldcw+UtBoKgdj8VRbMpxhrYUqqHQ0CDQ8YYcGAo1zcVCgQgQiOQ1DAuta0JSXgCtB3P8
+         VsUQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WsJCNxoOgawUj7Zr3PeZyr3znV20VI9UZXxnXDXzdvs=;
-        b=FLY1JLwbHOWtAsWWT07QQR3mtZMmMCIMaqU0kLB6lTNW57LPni+lAHpxaNTB2/igUB
-         lhc793WjaBtYT2XQTRVSYWYAMSrivcSWMzfH37nmLSNg2jaWoTuW/fsB1yb4fhYhAw6n
-         gdn5afiXbRCOMc8ArY8nNM4vhSQiKkt+HMcCfLq6OfwoYuNtQ0nxo7n2jnYmf7EN48Wq
-         AX1uoGdGkMIocIPOUi5pbvQloZdyheaxHj478pOvrcHh19YqjUgn9JGb8CdGB7PoM3ny
-         k65LQZFfKkq1b+kdK5ZcbzwH9cBfsM++1eufmpoKWYIN70MepqG5eUUy0avnitIogbrh
-         M+0A==
-X-Gm-Message-State: AOAM530yt7gEj+wuvcnFiGwQ4zmai5sYN3QL0/1rzEahhO+LhJMckrc3
-        EduzwSecdFpBf02uEcOFthkzp65KAE5K7Q/2Eto=
-X-Google-Smtp-Source: ABdhPJw19SlZGykBCKiYzgNJdxkHEeiF9SWOqGXarLbhcReCBD7gKOEt8vefovgT+spNPLLK3TJjhbkGCYx15o14r9Y=
-X-Received: by 2002:a62:445:0:b029:19c:162b:bbef with SMTP id
- 66-20020a6204450000b029019c162bbbefmr19016500pfe.40.1612801001178; Mon, 08
- Feb 2021 08:16:41 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=aaBKMnRXM76VUB0Qoag8JdTNr4XL1er0J91Eb9Bg540=;
+        b=FiE11i0pMTFbrYEaxyVYrxsdxLbJ6XZuWh2glVOQ24rL2AhsclNWieHmppycJJoxWt
+         B7uBZ2Bb6KBbhPp8W0mX4HhSqQ+DfAJT9EO5TWa0KC9SAYLPZboMexFNaS8t4FfU9Cxg
+         ph7JsXz2mTIhIc9ruM29HiXxyzGLfHHLK56EdJpzS0+5hDkmZAwFH4pe8NkQVWyEbWQv
+         pv+I5yF5C+XqB9H7lyYl2bG7MkhLnALBcHVS+d+AjDIH+D6ha6MfW4mDHokIYXscZrFA
+         +e4c6/DEY1n9Rikmm3cen/u+RCOzWotMaPtMdMJmB31wqyHYZyf+3Ia43Zv5MWhPFgaq
+         deyA==
+X-Gm-Message-State: AOAM532WXGHzTBtdd/ES3Diwp2+sgPHvT0Tj5/XtIPe7N7zGJ9eqGjbv
+        o4N91w2K7Z5VMLZbPj/9+cCf4w==
+X-Google-Smtp-Source: ABdhPJxnnCQSjQogvNvpcKbraMOutlLvkJdfzRF8nhXIrYaq59QP+GzyEZfiWFITnEnwC6L5Tnfxpg==
+X-Received: by 2002:adf:fc8a:: with SMTP id g10mr21425065wrr.189.1612801024340;
+        Mon, 08 Feb 2021 08:17:04 -0800 (PST)
+Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.googlemail.com with ESMTPSA id q24sm20742143wmq.24.2021.02.08.08.17.03
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 08 Feb 2021 08:17:03 -0800 (PST)
+Subject: Re: [PATCH v2 2/7] ASoC: codec: lpass-rx-macro: add support for lpass
+ rx macro
+To:     Mark Brown <broonie@kernel.org>
+Cc:     perex@perex.cz, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, lgirdwood@gmail.com,
+        devicetree@vger.kernel.org, robh+dt@kernel.org
+References: <20210208141719.23305-1-srinivas.kandagatla@linaro.org>
+ <20210208141719.23305-3-srinivas.kandagatla@linaro.org>
+ <20210208160830.GI8645@sirena.org.uk>
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <1397a895-c205-ae1a-5319-28cfacaa4ecb@linaro.org>
+Date:   Mon, 8 Feb 2021 16:17:02 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-References: <20210208151244.16338-1-calvin.johnson@oss.nxp.com> <20210208151244.16338-11-calvin.johnson@oss.nxp.com>
-In-Reply-To: <20210208151244.16338-11-calvin.johnson@oss.nxp.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 8 Feb 2021 18:16:24 +0200
-Message-ID: <CAHp75Vf5Tdr=e=fU==EsXv08h7uyAu6Sw8poQgrRUYtvVSM5zQ@mail.gmail.com>
-Subject: Re: [net-next PATCH v5 10/15] net: mdio: Add ACPI support code for mdio
-To:     Calvin Johnson <calvin.johnson@oss.nxp.com>
-Cc:     Grant Likely <grant.likely@arm.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Jeremy Linton <jeremy.linton@arm.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        Cristi Sovaiala <cristian.sovaiala@nxp.com>,
-        Florin Laurentiu Chiculita <florinlaurentiu.chiculita@nxp.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Madalin Bucur <madalin.bucur@oss.nxp.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Pieter Jansen Van Vuuren <pieter.jansenvv@bamboosystems.io>,
-        Jon <jon@solid-run.com>, Saravana Kannan <saravanak@google.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "linux.cj" <linux.cj@gmail.com>,
-        Diana Madalina Craciun <diana.craciun@nxp.com>,
-        netdev <netdev@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210208160830.GI8645@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 8, 2021 at 5:14 PM Calvin Johnson
-<calvin.johnson@oss.nxp.com> wrote:
->
-> Define acpi_mdiobus_register() to Register mii_bus and create PHYs for
-> each ACPI child node.
-
-...
-
-> +/**
-> + * acpi_mdiobus_register - Register mii_bus and create PHYs from the ACPI ASL.
-
-> + *
-
-Redundant blank line.
-
-> + * @mdio: pointer to mii_bus structure
-> + * @fwnode: pointer to fwnode of MDIO bus.
-> + *
-> + * This function registers the mii_bus structure and registers a phy_device
-> + * for each child node of @fwnode.
-> + */
-> +int acpi_mdiobus_register(struct mii_bus *mdio, struct fwnode_handle *fwnode)
-> +{
-> +       struct fwnode_handle *child;
-> +       u32 addr;
-> +       int ret;
-> +
-> +       /* Mask out all PHYs from auto probing. */
-
-> +       mdio->phy_mask = ~0;
-
-I would rather see GENMASK(31, 0) here because in case the type of the
-variable is changed we will need to amend this anyway.
-
-> +       ret = mdiobus_register(mdio);
-> +       if (ret)
-> +               return ret;
-
-> +       mdio->dev.fwnode = fwnode;
-
-Shouldn't it be rather ACPI_SET_COMPANION() as other bus / drivers do?
-
-> +/* Loop over the child nodes and register a phy_device for each PHY */
-
-Indentation.
-
-> +       fwnode_for_each_child_node(fwnode, child) {
-> +               ret = acpi_get_local_address(ACPI_HANDLE_FWNODE(child), &addr);
-
-> +               if ((ret) || addr >= PHY_MAX_ADDR)
-
-Too many parentheses.
-
-> +                       continue;
-> +
-> +               ret = fwnode_mdiobus_register_phy(mdio, child, addr);
-> +               if (ret == -ENODEV)
-> +                       dev_err(&mdio->dev,
-> +                               "MDIO device at address %d is missing.\n",
-> +                               addr);
-> +       }
-> +       return 0;
-> +}
-
-...
-
-> +/*
-> + * ACPI helpers for the MDIO (Ethernet PHY) API
-> + *
-> + */
-
-It's one line AFAICT!
-
-...
-
-> +#include <linux/device.h>
-> +#include <linux/phy.h>
-
-This seems a bit inconsistent with the below.
-I see the user of mdiobus_register(). It's the only header should be
-included. Everything else would be forward declared like
-
-struct fwnode_handle;
-
-> +#if IS_ENABLED(CONFIG_ACPI_MDIO)
-> +int acpi_mdiobus_register(struct mii_bus *mdio, struct fwnode_handle *fwnode);
-> +#else /* CONFIG_ACPI_MDIO */
-> +static inline int acpi_mdiobus_register(struct mii_bus *mdio, struct fwnode_handle *fwnode)
-> +{
-> +       /*
-> +        * Fall back to mdiobus_register() function to register a bus.
-> +        * This way, we don't have to keep compat bits around in drivers.
-> +        */
-> +
-> +       return mdiobus_register(mdio);
-> +}
-> +#endif
 
 
--- 
-With Best Regards,
-Andy Shevchenko
+On 08/02/2021 16:08, Mark Brown wrote:
+>> +	SOC_SINGLE_EXT("RX_Softclip Enable", SND_SOC_NOPM, 0, 1, 0,
+>> +		     rx_macro_soft_clip_enable_get,
+>> +		     rx_macro_soft_clip_enable_put),
+>> +	SOC_SINGLE_EXT("AUX_HPF Enable", SND_SOC_NOPM, 0, 1, 0,
+>> +			rx_macro_aux_hpf_mode_get,
+>> +			rx_macro_aux_hpf_mode_put),
+> These are simple on/off controls so should end in Switch AFAICT.
+
+Yes it makes sense!
+> Otherwise this looks good.
+Thanks, will fix this and send a new version!
+
+--srini
