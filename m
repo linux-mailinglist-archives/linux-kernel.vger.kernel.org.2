@@ -2,180 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8551B312FE4
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 11:59:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01669312FEA
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 12:00:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232846AbhBHK6d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 05:58:33 -0500
-Received: from mx2.suse.de ([195.135.220.15]:45882 "EHLO mx2.suse.de"
+        id S232633AbhBHK7R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 05:59:17 -0500
+Received: from mx2.suse.de ([195.135.220.15]:52168 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232344AbhBHKuP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 05:50:15 -0500
+        id S232554AbhBHKwK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 05:52:10 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1612781364; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1612781483; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=AoNPQu/CYREU8WklaThDeR8slY2WA4SdP9WlHLHnBzw=;
-        b=jma/SuHJFiVwWmdQgxuuc5UeAWopcfBTEw8DCQRtoftzdON6/M5kdrXEyR3vdFiEHz5+3z
-        +k49ofL8c4eTE7h3/Kadmh5PQ6WOsbRHozNCmH84n+jx2ZjkfHcB/bfE9B5UepeC/waV30
-        P1KXrH4oDz6ocDZLYC+6hSCotDNBb+I=
+        bh=XKk2PET/f9qNuvf7nanooRSg83l7JBZ1VosjaVLv5Ps=;
+        b=e9UtpokbF6fi0pxElC4p1PwXwmOVndw2KQt7dhC6iEVrMSf9LpjM1icoierv4AJKNlcWWB
+        m/mrsmy3iycBc2AW0di72WG7yB5xOLvH9OlRuud6i5L+6nayIOxAoGOFKnDHpXbMvP6rDS
+        /IXghosceH/GCA5VWljWQmL16eiLCKM=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C2769AD62;
-        Mon,  8 Feb 2021 10:49:23 +0000 (UTC)
-Date:   Mon, 8 Feb 2021 11:49:22 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org, Hagen Paul Pfeifer <hagen@jauu.net>,
-        Palmer Dabbelt <palmerdabbelt@google.com>
-Subject: Re: [PATCH v17 07/10] mm: introduce memfd_secret system call to
- create "secret" memory areas
-Message-ID: <YCEXMgXItY7xMbIS@dhcp22.suse.cz>
-References: <20210208084920.2884-1-rppt@kernel.org>
- <20210208084920.2884-8-rppt@kernel.org>
+        by mx2.suse.de (Postfix) with ESMTP id 7AA6AAD57;
+        Mon,  8 Feb 2021 10:51:23 +0000 (UTC)
+Subject: Re: [PATCH 7/7] xen/evtchn: read producer index only once
+To:     =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+Cc:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org
+References: <20210206104932.29064-1-jgross@suse.com>
+ <20210206104932.29064-8-jgross@suse.com>
+ <72334160-cffe-2d8a-23b7-2ea9ab1d803a@suse.com>
+ <626f500a-494a-0141-7bf3-94fb86b47ed4@suse.com>
+From:   Jan Beulich <jbeulich@suse.com>
+Message-ID: <e88526ac-6972-fe08-c58f-ea872cbdcc14@suse.com>
+Date:   Mon, 8 Feb 2021 11:51:22 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210208084920.2884-8-rppt@kernel.org>
+In-Reply-To: <626f500a-494a-0141-7bf3-94fb86b47ed4@suse.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 08-02-21 10:49:17, Mike Rapoport wrote:
-> From: Mike Rapoport <rppt@linux.ibm.com>
+On 08.02.2021 11:41, Jürgen Groß wrote:
+> On 08.02.21 10:48, Jan Beulich wrote:
+>> On 06.02.2021 11:49, Juergen Gross wrote:
+>>> In evtchn_read() use READ_ONCE() for reading the producer index in
+>>> order to avoid the compiler generating multiple accesses.
+>>>
+>>> Signed-off-by: Juergen Gross <jgross@suse.com>
+>>> ---
+>>>   drivers/xen/evtchn.c | 2 +-
+>>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>>
+>>> diff --git a/drivers/xen/evtchn.c b/drivers/xen/evtchn.c
+>>> index 421382c73d88..f6b199b597bf 100644
+>>> --- a/drivers/xen/evtchn.c
+>>> +++ b/drivers/xen/evtchn.c
+>>> @@ -211,7 +211,7 @@ static ssize_t evtchn_read(struct file *file, char __user *buf,
+>>>   			goto unlock_out;
+>>>   
+>>>   		c = u->ring_cons;
+>>> -		p = u->ring_prod;
+>>> +		p = READ_ONCE(u->ring_prod);
+>>>   		if (c != p)
+>>>   			break;
+>>
+>> Why only here and not also in
+>>
+>> 		rc = wait_event_interruptible(u->evtchn_wait,
+>> 					      u->ring_cons != u->ring_prod);
+>>
+>> or in evtchn_poll()? I understand it's not needed when
+>> ring_prod_lock is held, but that's not the case in the two
+>> afaics named places. Plus isn't the same then true for
+>> ring_cons and ring_cons_mutex, i.e. aren't the two named
+>> places plus evtchn_interrupt() also in need of READ_ONCE()
+>> for ring_cons?
 > 
-> Introduce "memfd_secret" system call with the ability to create memory
-> areas visible only in the context of the owning process and not mapped not
-> only to other processes but in the kernel page tables as well.
+> The problem solved here is the further processing using "p" multiple
+> times. p must not be silently replaced with u->ring_prod by the
+> compiler, so I probably should reword the commit message to say:
 > 
-> The secretmem feature is off by default and the user must explicitly enable
-> it at the boot time.
-> 
-> Once secretmem is enabled, the user will be able to create a file
-> descriptor using the memfd_secret() system call. The memory areas created
-> by mmap() calls from this file descriptor will be unmapped from the kernel
-> direct map and they will be only mapped in the page table of the owning mm.
+> ... in order to not allow the compiler to refetch p.
 
-Is this really true? I guess you meant to say that the memory will
-visible only via page tables to anybody who can mmap the respective file
-descriptor. There is nothing like an owning mm as the fd is inherently a
-shareable resource and the ownership becomes a very vague and hard to
-define term.
+I still wouldn't understand the change (and the lack of
+further changes) then: The first further use of p is
+outside the loop, alongside one of c. IOW why would c
+then not need treating the same as p?
 
-> The file descriptor based memory has several advantages over the
-> "traditional" mm interfaces, such as mlock(), mprotect(), madvise(). It
-> paves the way for VMMs to remove the secret memory range from the process;
+I also still don't see the difference between latching a
+value into a local variable vs a "freestanding" access -
+neither are guaranteed to result in exactly one memory
+access afaict.
 
-I do not understand how it helps to remove the memory from the process
-as the interface explicitly allows to add a memory that is removed from
-all other processes via direct map.
+And of course there's also our beloved topic of access
+tearing here: READ_ONCE() also excludes that (at least as
+per its intentions aiui).
 
-> there may be situations where sharing is useful and file descriptor based
-> approach allows to seal the operations.
-
-It would be great to expand on this some more.
-
-> As secret memory implementation is not an extension of tmpfs or hugetlbfs,
-> usage of a dedicated system call rather than hooking new functionality into
-> memfd_create(2) emphasises that memfd_secret(2) has different semantics and
-> allows better upwards compatibility.
-
-What is this supposed to mean? What are differences?
-
-> The secret memory remains accessible in the process context using uaccess
-> primitives, but it is not exposed to the kernel otherwise; secret memory
-> areas are removed from the direct map and functions in the
-> follow_page()/get_user_page() family will refuse to return a page that
-> belongs to the secret memory area.
-> 
-> Once there will be a use case that will require exposing secretmem to the
-> kernel it will be an opt-in request in the system call flags so that user
-> would have to decide what data can be exposed to the kernel.
->
-> Removing of the pages from the direct map may cause its fragmentation on
-> architectures that use large pages to map the physical memory which affects
-> the system performance. However, the original Kconfig text for
-> CONFIG_DIRECT_GBPAGES said that gigabyte pages in the direct map "... can
-> improve the kernel's performance a tiny bit ..." (commit 00d1c5e05736
-> ("x86: add gbpages switches")) and the recent report [1] showed that "...
-> although 1G mappings are a good default choice, there is no compelling
-> evidence that it must be the only choice". Hence, it is sufficient to have
-> secretmem disabled by default with the ability of a system administrator to
-> enable it at boot time.
-
-OK, this looks like a reasonable compromise for the initial
-implementation. Documentation of the command line parameter should be
-very explicit about this though.
-
-> The secretmem mappings are locked in memory so they cannot exceed
-> RLIMIT_MEMLOCK. Since these mappings are already locked an attempt to
-> mlock() secretmem range would fail and mlockall() will ignore secretmem
-> mappings.
-
-What about munlock?
-
-> Pages in the secretmem regions are unevictable and unmovable to avoid
-> accidental exposure of the sensitive data via swap or during page
-> migration.
-> 
-> A page that was a part of the secret memory area is cleared when it is
-> freed to ensure the data is not exposed to the next user of that page.
-> 
-> The following example demonstrates creation of a secret mapping (error
-> handling is omitted):
-> 
-> 	fd = memfd_secret(0);
-> 	ftruncate(fd, MAP_SIZE);
-> 	ptr = mmap(NULL, MAP_SIZE, PROT_READ | PROT_WRITE,
-> 		   MAP_SHARED, fd, 0);
-
-Please also list usecases which you are aware of as well.
-
-I am also missing some more information about the implementation. E.g.
-does this memory live on an unevictable LRU and therefore participates
-into stats. What about memcg accounting. What is the cross fork (CoW)/exec
-behavior. How is the memory reflected in OOM situation? Is a shared
-mapping enforced?
-
-Anyway, thanks for improving the changelog. This is definitely much more
-informative.
-
-> [1] https://lore.kernel.org/linux-mm/213b4567-46ce-f116-9cdf-bbd0c884eb3c@linux.intel.com/
-
-I have only glanced through the implementation and it looks sane. I will
-have a closer look later but this should be pretty simple with the
-proposed semantic.
--- 
-Michal Hocko
-SUSE Labs
+Jan
