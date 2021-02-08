@@ -2,101 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C3A2313EA1
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 20:15:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A178313E78
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 20:07:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236089AbhBHTOs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 14:14:48 -0500
-Received: from mail.baikalelectronics.com ([87.245.175.226]:58176 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234985AbhBHR4h (ORCPT
+        id S232306AbhBHTG7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 14:06:59 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59271 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233845AbhBHRrl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 12:56:37 -0500
-Date:   Mon, 8 Feb 2021 20:44:41 +0300
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Andrew Lunn <andrew@lunn.ch>
-CC:     Serge Semin <fancer.lancer@gmail.com>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Joao Pinto <Joao.Pinto@synopsys.com>,
-        Jose Abreu <Jose.Abreu@synopsys.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
-        Vyacheslav Mitrofanov 
-        <Vyacheslav.Mitrofanov@baikalelectronics.ru>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        <netdev@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 01/20] net: phy: realtek: Fix events detection failure in
- LPI mode
-Message-ID: <20210208174441.z4nnugkaadhmgnum@mobilestation>
-References: <20210208140341.9271-1-Sergey.Semin@baikalelectronics.ru>
- <20210208140341.9271-2-Sergey.Semin@baikalelectronics.ru>
- <YCFYaFYgFikj/Gqz@lunn.ch>
+        Mon, 8 Feb 2021 12:47:41 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612806333;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6j+efg3xmPiFB+8guUKGE2KcwzlVHhdGqHaFHLxwOMk=;
+        b=FmmSn/QLbNCYrHJt5sYez6IoABtLaNYevlPJzMy7OhEhtc/LbvixCn9NUq5jTN5EN4kkMv
+        Kc9MXtR6FZUSrQIPXHit6VpKF7e+UIhL0T3PMMmKBZbpipSzrH1T1rvQizQVpwhjVOHOF9
+        imS7/3xh0VVJCE7cAlkmMgFzZAC3Cmk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-219-JoaKQ2AhPxqaurSj2b4yLg-1; Mon, 08 Feb 2021 12:45:29 -0500
+X-MC-Unique: JoaKQ2AhPxqaurSj2b4yLg-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2032F107ACC7;
+        Mon,  8 Feb 2021 17:45:27 +0000 (UTC)
+Received: from bfoster (ovpn-114-152.rdu2.redhat.com [10.10.114.152])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 2D2A35C22A;
+        Mon,  8 Feb 2021 17:45:25 +0000 (UTC)
+Date:   Mon, 8 Feb 2021 12:45:23 -0500
+From:   Brian Foster <bfoster@redhat.com>
+To:     "Darrick J. Wong" <djwong@kernel.org>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Paul Menzel <pmenzel@molgen.mpg.de>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        linux-xfs@vger.kernel.org, Josh Triplett <josh@joshtriplett.org>,
+        rcu@vger.kernel.org, it+linux-rcu@molgen.mpg.de,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: rcu: INFO: rcu_sched self-detected stall on CPU: Workqueue:
+ xfs-conv/md0 xfs_end_io
+Message-ID: <20210208174523.GC126859@bfoster>
+References: <1b07e849-cffd-db1f-f01b-2b8b45ce8c36@molgen.mpg.de>
+ <20210205171240.GN2743@paulmck-ThinkPad-P72>
+ <20210208140724.GA126859@bfoster>
+ <20210208145723.GT2743@paulmck-ThinkPad-P72>
+ <20210208154458.GB126859@bfoster>
+ <20210208171140.GV2743@paulmck-ThinkPad-P72>
+ <20210208172824.GA7209@magnolia>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <YCFYaFYgFikj/Gqz@lunn.ch>
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210208172824.GA7209@magnolia>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 08, 2021 at 04:27:36PM +0100, Andrew Lunn wrote:
-> On Mon, Feb 08, 2021 at 05:03:22PM +0300, Serge Semin wrote:
-> > It has been noticed that RTL8211E PHY stops detecting and reporting events
-> > when EEE is successfully advertised and RXC stopping in LPI is enabled.
-> > The freeze happens right after 3.0.10 bit (PC1R "Clock Stop Enable"
-> > register) is set. At the same time LED2 stops blinking as if EEE mode has
-> > been disabled. Notably the network traffic still flows through the PHY
-> > with no obvious problem. Anyway if any MDIO read procedure is performed
-> > after the "RXC stop in LPI" mode is enabled PHY gets to be unfrozen, LED2
-> > starts blinking and PHY interrupts happens again. The problem has been
-> > noticed on RTL8211E PHY working together with DW GMAC 3.73a MAC and
-> > reporting its event via a dedicated IRQ signal. (Obviously the problem has
-> > been unnoticed in the polling mode, since it gets naturally fixed by the
-> > periodic MDIO read procedure from the PHY status register - BMSR.)
+On Mon, Feb 08, 2021 at 09:28:24AM -0800, Darrick J. Wong wrote:
+> On Mon, Feb 09, 2021 at 09:11:40AM -0800, Paul E. McKenney wrote:
+> > On Mon, Feb 08, 2021 at 10:44:58AM -0500, Brian Foster wrote:
+> > > On Mon, Feb 08, 2021 at 06:57:24AM -0800, Paul E. McKenney wrote:
+> > > > On Mon, Feb 08, 2021 at 09:07:24AM -0500, Brian Foster wrote:
+> > > > > On Fri, Feb 05, 2021 at 09:12:40AM -0800, Paul E. McKenney wrote:
+> > > > > > On Fri, Feb 05, 2021 at 08:29:06AM +0100, Paul Menzel wrote:
+> > > > > > > Dear Linux folks,
+> > > > > > > 
+> > > > > > > 
+> > > > > > > On a Dell PowerEdge T630/0NT78X, BIOS 2.8.0 05/23/2018 with Linux 5.4.57, we
+> > > > > > > twice saw a self-detected stall on a CPU (October 27th, 2020, January 18th,
+> > > > > > > 2021).
+> > > > > > > 
+> > > > > > > Both times, the workqueue is `xfs-conv/md0 xfs_end_io`.
+> > > > > > > 
+> > > > > > > ```
+> > > > > > > [    0.000000] Linux version 5.4.57.mx64.340
+> > > > > > > (root@theinternet.molgen.mpg.de) (gcc version 7.5.0 (GCC)) #1 SMP Tue Aug 11
+> > > > > > > 13:20:33 CEST 2020
+> > > > > > > […]
+> > > > > > > [48962.981257] rcu: INFO: rcu_sched self-detected stall on CPU
+> > > > > > > [48962.987511] rcu: 	4-....: (20999 ticks this GP)
+> > > > > > > idle=fe6/1/0x4000000000000002 softirq=3630188/3630188 fqs=4696
+> > > > > > > [48962.998805] 	(t=21017 jiffies g=14529009 q=32263)
+> > > > > > > [48963.004074] Task dump for CPU 4:
+> > > > > > > [48963.007689] kworker/4:2     R  running task        0 25587      2
+> > > > > > > 0x80004008
+> > > > > > > [48963.015591] Workqueue: xfs-conv/md0 xfs_end_io
+> > > > > > > [48963.020570] Call Trace:
+> > > > > > > [48963.023311]  <IRQ>
+> > > > > > > [48963.025560]  sched_show_task+0x11e/0x150
+> > > > > > > [48963.029957]  rcu_dump_cpu_stacks+0x70/0xa0
+> > > > > > > [48963.034545]  rcu_sched_clock_irq+0x502/0x770
+> > > > > > > [48963.039322]  ? tick_sched_do_timer+0x60/0x60
+> > > > > > > [48963.044106]  update_process_times+0x24/0x60
+> > > > > > > [48963.048791]  tick_sched_timer+0x37/0x70
+> > > > > > > [48963.053089]  __hrtimer_run_queues+0x11f/0x2b0
+> > > > > > > [48963.057960]  ? recalibrate_cpu_khz+0x10/0x10
+> > > > > > > [48963.062744]  hrtimer_interrupt+0xe5/0x240
+> > > > > > > [48963.067235]  smp_apic_timer_interrupt+0x6f/0x130
+> > > > > > > [48963.072407]  apic_timer_interrupt+0xf/0x20
+> > > > > > > [48963.076994]  </IRQ>
+> > > > > > > [48963.079347] RIP: 0010:_raw_spin_unlock_irqrestore+0xa/0x10
+> > > > > > > [48963.085491] Code: f3 90 83 e8 01 75 e8 65 8b 3d 42 0f 56 7e e8 ed ea 5e
+> > > > > > > ff 48 29 e8 4c 39 e8 76 cf 80 0b 08 eb 8c 0f 1f 44 00 00 c6 07 00 56 9d <c3>
+> > > > > > > 0f 1f 44 00 00 0f 1f 44 00 00 b8 00 fe ff ff f0 0f c1 07 56 9d
+> > > > > > > [48963.106524] RSP: 0018:ffffc9000738fd40 EFLAGS: 00000202 ORIG_RAX:
+> > > > > > > ffffffffffffff13
+> > > > > > > [48963.115003] RAX: ffffffff82407588 RBX: ffffffff82407580 RCX:
+> > > > > > > ffffffff82407588
+> > > > > > > [48963.122994] RDX: ffffffff82407588 RSI: 0000000000000202 RDI:
+> > > > > > > ffffffff82407580
+> > > > > > > [48963.130989] RBP: 0000000000000202 R08: ffffffff8203ea00 R09:
+> > > > > > > 0000000000000001
+> > > > > > > [48963.138982] R10: ffffc9000738fbb8 R11: 0000000000000001 R12:
+> > > > > > > ffffffff82407588
+> > > > > > > [48963.146976] R13: ffffea005e7ae600 R14: ffff8897b7e5a040 R15:
+> > > > > > > ffffea005e7ae600
+> > > > > > > [48963.154971]  wake_up_page_bit+0xe0/0x100
+> > > > > > > [48963.159366]  xfs_destroy_ioend+0xce/0x1c0
+> > > > > > > [48963.163857]  xfs_end_ioend+0xcf/0x1a0
+> > > > > > > [48963.167958]  xfs_end_io+0xa4/0xd0
+> > > > > > > [48963.171672]  process_one_work+0x1e5/0x410
+> > > > > > > [48963.176163]  worker_thread+0x2d/0x3c0
+> > > > > > > [48963.180265]  ? cancel_delayed_work+0x90/0x90
+> > > > > > > [48963.185048]  kthread+0x117/0x130
+> > > > > > > [48963.188663]  ? kthread_create_worker_on_cpu+0x70/0x70
+> > > > > > > [48963.194321]  ret_from_fork+0x35/0x40
+> > > > > > > ```
+> > > > > > > 
+> > > > > > > As it’s just log level INFO, is there anything what should be done, or was
+> > > > > > > the system probably just “overloaded”?
+> > > > > > 
+> > > > > > I am assuming that you are building your kernel with CONFIG_PREEMPT_NONE=y
+> > > > > > rather than CONFIG_PREEMPT_VOLUNTARY=y.
+> > > > > > 
+> > > > > > If so, and if the problem is that you are temporarily overdriving xfs I/O,
+> > > > > > one approach would be as follows:
+> > > > > > 
+> > > > > > ------------------------------------------------------------------------
+> > > > > > 
+> > > > > > diff --git a/fs/xfs/xfs_aops.c b/fs/xfs/xfs_aops.c
+> > > > > > index f16d5f1..06be426 100644
+> > > > > > --- a/fs/xfs/xfs_aops.c
+> > > > > > +++ b/fs/xfs/xfs_aops.c
+> > > > > > @@ -390,6 +390,7 @@ xfs_end_io(
+> > > > > >  		list_del_init(&ioend->io_list);
+> > > > > >  		xfs_ioend_try_merge(ioend, &completion_list);
+> > > > > >  		xfs_end_ioend(ioend);
+> > > > > > +		cond_resched();
+> > > > > >  	}
+> > > > > >  }
+> > > > > >  
+> > > > > > ------------------------------------------------------------------------
+> > > > > 
+> > > > > FWIW, this looks quite similar to the problem I attempted to fix with
+> > > > > these patches:
+> > > > > 
+> > > > > https://lore.kernel.org/linux-xfs/20201002153357.56409-1-bfoster@redhat.com/
+> > > > 
+> > > > Looks plausible to me!  Do you plan to re-post taking the feedback
+> > > > into account?
+> > > 
+> > > There was a v2 inline that incorporated some directed feedback.
+> > > Otherwise there were questions and ideas about making the whole thing
+> > > faster, but I've no idea if that addresses the problem or not (if so,
+> > > that would be an entirely different set of patches). I'll wait and see
+> > > what Darrick thinks about this and rebase/repost if the approach is
+> > > agreeable..
 > > 
-> > In order to fix that problem we suggest to locally re-implement the MMD
-> > write method for RTL8211E PHY and perform a dummy read right after the
-> > PC1R register is accessed to enable the RXC stopping in LPI mode.
+> > There is always the school of thought that says that the best way to
+> > get people to focus on this is to rebase and repost.  Otherwise, they
+> > are all too likely to assume that you lost interest in this.
 > 
-> Hi Serge
+> I was hoping that a better solution would emerge for clearing
+> PageWriteback on hundreds of thousands of pages, but nothing easy popped
+> out.
 > 
-> Is this listed in an Errata from Realtek?
-
-Hi Andrew,
-
-I honestly tried to find any doc with a glimpse of errata for RTL8211E
-PHY, but with no luck. Official datasheet didn't have any info regarding
-possible hw bugs too. Thus I had no choice but to find a fix of the
-problem myself.
-
-It took me some time to figure out why the events weren't reported after
-the very first link setup (turned out only a full HW reset clears the
-PC1R.10 bit state). I thought it could have been connected with some
-sleep/idle/power-safe mode. So I disabled the EEE initialization in the
-STMMAC driver. It worked. Then I left the EEE mode enabled, but called the
-phy_init_eee(phy, 0) method with "clk_stop_enable==0", so PHY wouldn't
-stop RXC in LPI mode. And it wonderfully worked. Then I started to dig in
-from another side. I left "RXC disable in LPI" mode enabled and tried to
-figure out what was going on with the PHY when it stopped reporting events
-just by reading from its CSR using phytool utility. It was curious to
-discover that any attempt to read from any PHY register caused the problem
-disappearance (LED2 started blinking, events got to be reported). Since I
-did nothing but a mere reading from a random even EEE-unrelated register I
-inferred that the problem must be in some HW/PHY bug. That's how I've got
-to the patch introduced here. If you have any better idea what could be a
-reason of that weird behavior I'd be glad to test it out on my device.
-
--Sergey
-
+> The hardcoded threshold in "[PATCH v2 2/2] xfs: kick extra large ioends
+> to completion workqueue" gives me unease because who's to say if marking
+> 262,144 pages on a particular CPU will actually stall it long enough to
+> trip the hangcheck?  Is the number lower on (say) some pokey NAS box
+> with a lot of storage but a slow CPU?
 > 
->    Andrew
+> That said, /some/ threshold is probably better than no threshold.  Could
+> someone try to confirm if that series of Brian's fixes this problem too?
+> 
+
+Note that this particular report looks like it's already in wq context,
+so patch 1 by itself might be sufficient...
+
+Brian
+
+> --D
+> 
+> > 							Thanx, Paul
+> > 
+> > > Brian
+> > > 
+> > > > 							Thanx, Paul
+> > > > 
+> > > > > Brian
+> > > > > 
+> > > > > > 
+> > > > > > If you have instead built with CONFIG_PREEMPT_VOLUNTARY=y, then your
+> > > > > > problem is likely massive lock contention in wake_up_page_bit(), or
+> > > > > > perhaps someone having failed to release that lock.  The usual way to
+> > > > > > work this out is by enabling lockdep (CONFIG_PROVE_LOCKING=y), but this
+> > > > > > is often not what you want enabled in production.
+> > > > > > 
+> > > > > > Darrick, thoughts from an xfs perspective?
+> > > > > > 
+> > > > > > 							Thanx, Paul
+> > > > > > 
+> > > > > 
+> > > > 
+> > > 
+> 
+
