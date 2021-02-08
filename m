@@ -2,105 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03E8C31359F
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 15:51:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F02813135A4
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 15:51:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232963AbhBHOum (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 09:50:42 -0500
-Received: from relay04.th.seeweb.it ([5.144.164.165]:35505 "EHLO
-        relay04.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232728AbhBHOmf (ORCPT
+        id S232846AbhBHOvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 09:51:07 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:35553 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232927AbhBHOok (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 09:42:35 -0500
-Received: from [192.168.1.101] (abad44.neoplus.adsl.tpnet.pl [83.6.167.44])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        Mon, 8 Feb 2021 09:44:40 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612795395;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=hJ25Ui01C1ncQ+IMfWQfND73YP38mMdrHPvtKAqidhw=;
+        b=iFkB5Qx+rhb5IROSdhq79S9NHtvRZslfVESH3VJKVD+FiOQAfI/Q4jp2Y5Vu+8+MJNrhOU
+        xGuokUUTwbJu72D7OXftduxmtXV+Qsi8cVO7UI69nsgGQUEfxOY5PC5tETI/rvupBtalgS
+        ZYXVf5l2kEr8jQ2+jbaJdJdlFcP/v3g=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-258-Ja8sH24zPYSqpZXLVrafYw-1; Mon, 08 Feb 2021 09:43:13 -0500
+X-MC-Unique: Ja8sH24zPYSqpZXLVrafYw-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id DBFED1F671;
-        Mon,  8 Feb 2021 15:41:28 +0100 (CET)
-Subject: Re: [PATCH v2] arm64: dts: qcom: sdm845-xiaomi-beryllium: Add DSI and
- panel bits
-To:     Amit Pundir <amit.pundir@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        dt <devicetree@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>, phone-devel@vger.kernel.org
-References: <1612426177-6611-1-git-send-email-amit.pundir@linaro.org>
- <889e6ed8-133a-9416-be3b-5b2a97ea7fbb@somainline.org>
- <CAMi1Hd3bgDaqsH+txFVEnBc9dsGbrgic5TK7uq4GwqqkM6seiw@mail.gmail.com>
-From:   Konrad Dybcio <konrad.dybcio@somainline.org>
-Message-ID: <9bbeb403-2937-aebd-91ff-5682f9112dee@somainline.org>
-Date:   Mon, 8 Feb 2021 15:41:23 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 564B31966322;
+        Mon,  8 Feb 2021 14:43:11 +0000 (UTC)
+Received: from steredhat.redhat.com (ovpn-115-25.ams2.redhat.com [10.36.115.25])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 899315D9DE;
+        Mon,  8 Feb 2021 14:43:08 +0000 (UTC)
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     kuba@kernel.org
+Cc:     netdev@vger.kernel.org, Jorgen Hansen <jhansen@vmware.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Andy King <acking@vmware.com>, Wei Liu <wei.liu@kernel.org>,
+        Dmitry Torokhov <dtor@vmware.com>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        George Zhang <georgezhang@vmware.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        Stefano Garzarella <sgarzare@redhat.com>
+Subject: [PATCH net] vsock: fix locking in vsock_shutdown()
+Date:   Mon,  8 Feb 2021 15:43:07 +0100
+Message-Id: <20210208144307.83628-1-sgarzare@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <CAMi1Hd3bgDaqsH+txFVEnBc9dsGbrgic5TK7uq4GwqqkM6seiw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+In vsock_shutdown() we touched some socket fields without holding the
+socket lock, such as 'state' and 'sk_flags'.
 
->>> +      ports {
->>> +              port@1 {
->>> +                      endpoint {
->>> +                              remote-endpoint = <&tianma_nt36672a_in_0>;
->>> +                              data-lanes = <0 1 2 3>;
->>> +                      };
->>> +              };
->>> +      };
->> The endpoint has a label, you can simply use &dsi0_out {};.
-> I didn't get what you meant there. Care to point to some reference dts
-> snippet please?
+Also, after the introduction of multi-transport, we are accessing
+'vsk->transport' in vsock_send_shutdown() without holding the lock
+and this call can be made while the connection is in progress, so
+the transport can change in the meantime.
 
-sdm845.dtsi, L4139 as of v5.11-rc7:
+To avoid issues, we hold the socket lock when we enter in
+vsock_shutdown() and release it when we leave.
 
+Among the transports that implement the 'shutdown' callback, only
+hyperv_transport acquired the lock. Since the caller now holds it,
+we no longer take it.
 
-port@1 {
-                        reg = <1>;
-                        dsi0_out: endpoint {
-                        };
-                    };
+Fixes: d021c344051a ("VSOCK: Introduce VM Sockets")
+Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
+---
+ net/vmw_vsock/af_vsock.c         | 8 +++++---
+ net/vmw_vsock/hyperv_transport.c | 2 --
+ 2 files changed, 5 insertions(+), 5 deletions(-)
 
-
-This means you can essentially do:
-
-&dsi0_out {
-
-    remote-endpoint = <&tianma_nt36672a_in_0>;
-    lanes = <0 1 2 3>;
-
-};
-
-
-in your dt :)
-
-
->>> +              vddpos-supply = <&lab>;
->>> +              vddneg-supply = <&ibb>;
->> With Angelo's latest series [1] merged in, I reckon you should explicitly configure lab/ibb (like in [2]),
->> as wrong settings (which CAN BE SET BY THE BOOTLOADER in some instances!!) can lead to hardware damage.
-> So iirc in the case of beryllium device, these regulators are pre set
-> by the bootloader and I can't find any reference of we
-> setting/resetting it explicitly to switch ON the panel and display. So
-> far default lab/ibb nodes are working fine for us and I'm hesitant to
-> tinker around anything regulator related that can potentially damage
-> the hardware. Having said that, I do see lab/ibb nodes being set in
-> the downstream dts, with relevant soft-start and discharge-resistor
-> properties and I can try switching to that once the new lab/ibb
-> changes land upstream.
->
-> Regards,
-> Amit Pundir
->
-I understand your concerns, however we actually did find out that at least one device had LAB/IBB set up by the bootloader in a way that could potentially damage the electronics, so I'm just making you aware. If it works as-is, it's probably OK.
-
-
-Konrad
+diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
+index 4ea301fc2bf0..5546710d8ac1 100644
+--- a/net/vmw_vsock/af_vsock.c
++++ b/net/vmw_vsock/af_vsock.c
+@@ -943,10 +943,12 @@ static int vsock_shutdown(struct socket *sock, int mode)
+ 	 */
+ 
+ 	sk = sock->sk;
++
++	lock_sock(sk);
+ 	if (sock->state == SS_UNCONNECTED) {
+ 		err = -ENOTCONN;
+ 		if (sk->sk_type == SOCK_STREAM)
+-			return err;
++			goto out;
+ 	} else {
+ 		sock->state = SS_DISCONNECTING;
+ 		err = 0;
+@@ -955,10 +957,8 @@ static int vsock_shutdown(struct socket *sock, int mode)
+ 	/* Receive and send shutdowns are treated alike. */
+ 	mode = mode & (RCV_SHUTDOWN | SEND_SHUTDOWN);
+ 	if (mode) {
+-		lock_sock(sk);
+ 		sk->sk_shutdown |= mode;
+ 		sk->sk_state_change(sk);
+-		release_sock(sk);
+ 
+ 		if (sk->sk_type == SOCK_STREAM) {
+ 			sock_reset_flag(sk, SOCK_DONE);
+@@ -966,6 +966,8 @@ static int vsock_shutdown(struct socket *sock, int mode)
+ 		}
+ 	}
+ 
++out:
++	release_sock(sk);
+ 	return err;
+ }
+ 
+diff --git a/net/vmw_vsock/hyperv_transport.c b/net/vmw_vsock/hyperv_transport.c
+index 630b851f8150..5a3beef73461 100644
+--- a/net/vmw_vsock/hyperv_transport.c
++++ b/net/vmw_vsock/hyperv_transport.c
+@@ -479,9 +479,7 @@ static int hvs_shutdown(struct vsock_sock *vsk, int mode)
+ 	if (!(mode & SEND_SHUTDOWN))
+ 		return 0;
+ 
+-	lock_sock(sk);
+ 	hvs_shutdown_lock_held(vsk->trans, mode);
+-	release_sock(sk);
+ 	return 0;
+ }
+ 
+-- 
+2.29.2
 
