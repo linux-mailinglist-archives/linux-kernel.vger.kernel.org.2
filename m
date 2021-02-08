@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BAA03137F8
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 16:35:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C94C8313855
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 16:45:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233793AbhBHPdz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 10:33:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51776 "EHLO mail.kernel.org"
+        id S233669AbhBHPnV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 10:43:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52452 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231303AbhBHPFf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 10:05:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A8AF64EB9;
-        Mon,  8 Feb 2021 15:04:05 +0000 (UTC)
+        id S231180AbhBHPFs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 10:05:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 183F764ECA;
+        Mon,  8 Feb 2021 15:04:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612796646;
-        bh=PGJPeetesWJDEesAMPJ3w2qLtbGhSsp6tiOqVr+7FFQ=;
+        s=korg; t=1612796649;
+        bh=Nogwv7lW236FlG9laAEQyERHcHhF0IvFYA0aUlAnmuo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Bp2E69qjSeeNI9LYKvasdGbDWxxSINJORVz6cLSzoI4D62lmTuV1kWDXM2RvNgjYN
-         5DcMWJhYGyF0dtpp+736jT01tUw8X5G+SUd1pPRTzacFhK2AhxJkScTNMRANCIxrXF
-         e1SQuVCSOT/OsDlrLC+Yrm1uRp5JkBGgi2VkPI44=
+        b=OrZKehvlFIZ0DHk3ti0I+iRS4wygyQcuKg9oUDK1CbR6lFWeNwQTaTRcMONIyn8IJ
+         BzkvOMSfOKpQFDy0BT642Ap+6rFpBeTSbwG1ol0XZJbGMh09QtlFzx0HLXF0J28Brx
+         RHFaC41Ttgy7Pi6iQEs0IdA6U0zEF0tUTbEjtWoQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Felix Fietkau <nbd@nbd.name>,
-        Johannes Berg <johannes.berg@intel.com>,
+        stable@vger.kernel.org, Brian King <brking@linux.vnet.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 15/43] mac80211: fix fast-rx encryption check
-Date:   Mon,  8 Feb 2021 16:00:41 +0100
-Message-Id: <20210208145806.925814769@linuxfoundation.org>
+Subject: [PATCH 4.9 16/43] scsi: ibmvfc: Set default timeout to avoid crash during migration
+Date:   Mon,  8 Feb 2021 16:00:42 +0100
+Message-Id: <20210208145806.966964025@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210208145806.281758651@linuxfoundation.org>
 References: <20210208145806.281758651@linuxfoundation.org>
@@ -40,34 +40,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Felix Fietkau <nbd@nbd.name>
+From: Brian King <brking@linux.vnet.ibm.com>
 
-[ Upstream commit 622d3b4e39381262da7b18ca1ed1311df227de86 ]
+[ Upstream commit 764907293edc1af7ac857389af9dc858944f53dc ]
 
-When using WEP, the default unicast key needs to be selected, instead of
-the STA PTK.
+While testing live partition mobility, we have observed occasional crashes
+of the Linux partition. What we've seen is that during the live migration,
+for specific configurations with large amounts of memory, slow network
+links, and workloads that are changing memory a lot, the partition can end
+up being suspended for 30 seconds or longer. This resulted in the following
+scenario:
 
-Signed-off-by: Felix Fietkau <nbd@nbd.name>
-Link: https://lore.kernel.org/r/20201218184718.93650-5-nbd@nbd.name
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+CPU 0                          CPU 1
+-------------------------------  ----------------------------------
+scsi_queue_rq                    migration_store
+ -> blk_mq_start_request          -> rtas_ibm_suspend_me
+  -> blk_add_timer                 -> on_each_cpu(rtas_percpu_suspend_me
+              _______________________________________V
+             |
+             V
+    -> IPI from CPU 1
+     -> rtas_percpu_suspend_me
+                                     -> __rtas_suspend_last_cpu
+
+-- Linux partition suspended for > 30 seconds --
+                                      -> for_each_online_cpu(cpu)
+                                           plpar_hcall_norets(H_PROD
+ -> scsi_dispatch_cmd
+                                      -> scsi_times_out
+                                       -> scsi_abort_command
+                                        -> queue_delayed_work
+  -> ibmvfc_queuecommand_lck
+   -> ibmvfc_send_event
+    -> ibmvfc_send_crq
+     - returns H_CLOSED
+   <- returns SCSI_MLQUEUE_HOST_BUSY
+-> __blk_mq_requeue_request
+
+                                      -> scmd_eh_abort_handler
+                                       -> scsi_try_to_abort_cmd
+                                         - returns SUCCESS
+                                       -> scsi_queue_insert
+
+Normally, the SCMD_STATE_COMPLETE bit would protect against the command
+completion and the timeout, but that doesn't work here, since we don't
+check that at all in the SCSI_MLQUEUE_HOST_BUSY path.
+
+In this case we end up calling scsi_queue_insert on a request that has
+already been queued, or possibly even freed, and we crash.
+
+The patch below simply increases the default I/O timeout to avoid this race
+condition. This is also the timeout value that nearly all IBM SAN storage
+recommends setting as the default value.
+
+Link: https://lore.kernel.org/r/1610463998-19791-1-git-send-email-brking@linux.vnet.ibm.com
+Signed-off-by: Brian King <brking@linux.vnet.ibm.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/mac80211/rx.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/scsi/ibmvscsi/ibmvfc.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/net/mac80211/rx.c b/net/mac80211/rx.c
-index 9be82ed02e0e5..c38d68131d02e 100644
---- a/net/mac80211/rx.c
-+++ b/net/mac80211/rx.c
-@@ -3802,6 +3802,8 @@ void ieee80211_check_fast_rx(struct sta_info *sta)
+diff --git a/drivers/scsi/ibmvscsi/ibmvfc.c b/drivers/scsi/ibmvscsi/ibmvfc.c
+index 04b3ac17531db..7865feb8e5e83 100644
+--- a/drivers/scsi/ibmvscsi/ibmvfc.c
++++ b/drivers/scsi/ibmvscsi/ibmvfc.c
+@@ -2891,8 +2891,10 @@ static int ibmvfc_slave_configure(struct scsi_device *sdev)
+ 	unsigned long flags = 0;
  
- 	rcu_read_lock();
- 	key = rcu_dereference(sta->ptk[sta->ptk_idx]);
-+	if (!key)
-+		key = rcu_dereference(sdata->default_unicast_key);
- 	if (key) {
- 		switch (key->conf.cipher) {
- 		case WLAN_CIPHER_SUITE_TKIP:
+ 	spin_lock_irqsave(shost->host_lock, flags);
+-	if (sdev->type == TYPE_DISK)
++	if (sdev->type == TYPE_DISK) {
+ 		sdev->allow_restart = 1;
++		blk_queue_rq_timeout(sdev->request_queue, 120 * HZ);
++	}
+ 	spin_unlock_irqrestore(shost->host_lock, flags);
+ 	return 0;
+ }
 -- 
 2.27.0
 
