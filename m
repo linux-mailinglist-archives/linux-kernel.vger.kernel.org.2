@@ -2,80 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9355B314450
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 00:53:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE09B314454
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 00:53:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230127AbhBHXwR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 18:52:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50766 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229654AbhBHXwN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 18:52:13 -0500
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF7CBC061788
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 15:51:32 -0800 (PST)
-Received: by mail-lf1-x130.google.com with SMTP id m22so25587279lfg.5
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 15:51:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=f1ksRfHxQP91F2cobjQCnH7KkqQZ/RBpiypTVeBwL0o=;
-        b=Lt1l31FFOyW86MHPhM2dmlp3CnNjnRF35I7kJCzBdAjfBXZt2aOd17ubGFSh/9snq2
-         Em/eRjrj32oV9PC5MCVddOkJfTYb8UwvO1fjDEMIzusRgmdyIG3wRdcTHKIMnK58Jqrj
-         aPuSUzx/WBihzdrU/9pN3jImIs2zrz6dEfE/OBy1xlGsZamicn/FI8GdJ9e7AEUHsI1w
-         WlgQJylgHnEQUorRg5HM00epDUZpSE5mDoBp+TWgcQYket2uTBNCIqs9wTDsofITgRTW
-         6pSsP0XVm86nN+0iqMnkXlGb+BdU8QVzzR2JQ18uLADxnMszu8VvhvH4LeOpQcTMZZU3
-         JMYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=f1ksRfHxQP91F2cobjQCnH7KkqQZ/RBpiypTVeBwL0o=;
-        b=QLO9aVNYzoUo1LBEkZo0oo1nIPyJDbHiIQKSdOxw3AFFxHEBUT8sj0QluQjUGbqiub
-         Mrq7nicv1B8ln4ECG+jv2uWNZyT625Kp/CoVxqF+ieYqG7SsOIFzPDn04kQgD7kI9xN2
-         PDcx3gkYaDR5oyaVzNvXs1C3WS8y1xcey2yugKI2VQ2vtkBPAFJEpbFUbulAJZy5Ka7J
-         mg8sgo+jmz9CruJCCuqeIFWUU3yJLdWpN6hZ2N/1MlJ7KsmgCVdEqYijjSepzZiJK+gx
-         p4SCHGGd6NOk5DyidB7phTG0Ih6HWdc4iavkrQOvMd/8jVL3q4LVVqBqnYkNfmXrocTa
-         jiSg==
-X-Gm-Message-State: AOAM530pGpOSjjZNK/ThB1rwzA91bzAGWyqeR/gzqRv8+dt1CKGKlI7g
-        FMSafVmaMmzt16YPr9veVvnpcVNkqe/1iFA0RjZWMg==
-X-Google-Smtp-Source: ABdhPJwMzLsIQHn0nFSXjP8TcUTQ0TXQ8EQhTsBbFxlwIDjytkG5rhfFU2ED/MBCcaL0uN6XwAIvfDNm9L0PApMvbHg=
-X-Received: by 2002:a19:ca14:: with SMTP id a20mr6347761lfg.567.1612828291075;
- Mon, 08 Feb 2021 15:51:31 -0800 (PST)
+        id S229772AbhBHXxZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 18:53:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34724 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229554AbhBHXxV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 18:53:21 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7C8D264E76;
+        Mon,  8 Feb 2021 23:52:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612828359;
+        bh=QZD4dUqK92h1IjoKwuq2tEkAwxPOn5Zy9ZgwehUP9to=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=A7aRbeecgXRVa+nadG2O+mAD57rTY6gNh9a40iDBfYc6Vw+GCKAKMHjWhPqM0MHUX
+         Y0yThdUHdVyAdXOjHO0PILQifRNzqxBQOlY4pBGZQyOuHdO3zISe9wwLNb88sw++rQ
+         0sZ3xc1e3SdVfpU1gATyw5oUukc7TRtfMPyiaAq9ofh6FMoQJaiPbimoO88fI2KHQI
+         GJtNLUKsUbCQeGmLbYL1aQAGGB/uaXmoEzkDDjepyffPUrowW3b98nf6xTo0e9kybA
+         2ZJksPlxqPz29nmrVqtqGsNpIha12OKG1uaCZ8Givgf7nXaSr2Fz9+OrZJAGtY56Lu
+         ENv66OQAnYKvw==
+Received: by mail-qk1-f170.google.com with SMTP id b14so2822254qkk.0;
+        Mon, 08 Feb 2021 15:52:39 -0800 (PST)
+X-Gm-Message-State: AOAM531NJSoq2BSvhPa+9X3ib3R1mJRw75210bw4u9nhl9hYLtP3n7cI
+        LgrZkZ0ldFhsaInxMD4XNFriFJnWEDzTBBKxDg==
+X-Google-Smtp-Source: ABdhPJxTfRnkEIzrOwcBVmBHMl51nxdMub3448K/abBbch4wMdMZHPGjHgeXFj+XwZIeokSoymUpfbHxDRXsPL2bsiA=
+X-Received: by 2002:ae9:e915:: with SMTP id x21mr6990306qkf.311.1612828358689;
+ Mon, 08 Feb 2021 15:52:38 -0800 (PST)
 MIME-Version: 1.0
-References: <20210129030514.1231773-1-john.stultz@linaro.org> <27bd6340-617a-37a2-d17f-8e50b5d5362f@linuxfoundation.org>
-In-Reply-To: <27bd6340-617a-37a2-d17f-8e50b5d5362f@linuxfoundation.org>
-From:   John Stultz <john.stultz@linaro.org>
-Date:   Mon, 8 Feb 2021 15:51:17 -0800
-Message-ID: <CALAqxLWR0h+qzJeRVWe4gpDre7u=Kg7mgnxTv524xXEviZhZdg@mail.gmail.com>
-Subject: Re: [PATCH 1/5] kselftests: dmabuf-heaps: Fix Makefile's inclusion of
- the kernel's usr/include dir
-To:     Shuah Khan <skhan@linuxfoundation.org>
-Cc:     lkml <linux-kernel@vger.kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Brian Starkey <brian.starkey@arm.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Laura Abbott <labbott@kernel.org>,
-        Hridya Valsaraju <hridya@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Sandeep Patil <sspatil@google.com>,
-        Daniel Mentz <danielmentz@google.com>,
-        linux-media <linux-media@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-kselftest@vger.kernel.org
+References: <20210208222203.22335-1-info@metux.net> <20210208222203.22335-5-info@metux.net>
+In-Reply-To: <20210208222203.22335-5-info@metux.net>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Mon, 8 Feb 2021 17:52:27 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqKQyLcnHd-ff7z=Kk3D7scN-MGA0jKk1iwHnZj747cgGw@mail.gmail.com>
+Message-ID: <CAL_JsqKQyLcnHd-ff7z=Kk3D7scN-MGA0jKk1iwHnZj747cgGw@mail.gmail.com>
+Subject: Re: [RFC PATCH 04/12] of: base: introduce of_match_string()
+To:     "Enrico Weigelt, metux IT consult" <info@metux.net>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        devicetree@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 8, 2021 at 3:23 PM Shuah Khan <skhan@linuxfoundation.org> wrote:
-> On 1/28/21 8:05 PM, John Stultz wrote:
-> Thanks John for all these 5 fix and cleanup patches.
+On Mon, Feb 8, 2021 at 4:24 PM Enrico Weigelt, metux IT consult
+<info@metux.net> wrote:
 >
-> Applied to linux-kselftest next for 5.12-rc1
->
+> Introduce a new helper function that looks up a given propery and
 
-Great! I was just prepping to resend them :)
-Thanks so much!
--john
+typo
+
+> matches all string elements against a given string. This is useful
+> if we want to check wether one string element of some property
+
+typo
+
+
+> matches a given string.
+
+Is there a user? Didn't see one in the series, but may have missed it.
+I'd think we have some existing cases that could be converted.
+
+> Signed-off-by: Enrico Weigelt, metux IT consult <info@metux.net>
+> ---
+>  drivers/of/base.c  | 32 ++++++++++++++++++++++++++++++++
+>  include/linux/of.h |  2 ++
+>  2 files changed, 34 insertions(+)
+>
+> diff --git a/drivers/of/base.c b/drivers/of/base.c
+> index e5ef611ed233..649c2a32bb48 100644
+> --- a/drivers/of/base.c
+> +++ b/drivers/of/base.c
+> @@ -287,6 +287,38 @@ const void *of_get_property(const struct device_node *np, const char *name,
+>  EXPORT_SYMBOL(of_get_property);
+>
+>  /*
+> + * of_match_string - match a propery against given string
+> + * @node: device_node to look up at
+> + * @name: name of the property
+> + * @value: value to match against
+> + *
+> + * Look for property by name and match all string elements against value.
+> + * Returns true if the property exists and any one of the string elements
+> + * matches the given value.
+> + */
+> +bool of_match_string(const struct device_node *node, const char* name,
+> +                    const char* value)
+> +{
+> +       struct property *prop;
+> +       const char *walk;
+> +
+> +       if (!name || !value)
+> +               return false;
+> +
+> +       prop = of_find_property(node, name, NULL);
+> +       if (!prop)
+> +               return false;
+> +
+> +       for (walk=of_prop_next_string(prop, NULL); walk;
+> +            walk=of_prop_next_string(prop, walk)) {
+> +               if (strcmp(walk, value)==0)
+> +                       return true;
+> +       }
+> +       return true;
+> +}
+> +EXPORT_SYMBOL_GPL(of_match_string);
+> +
+> +/*
+>   * arch_match_cpu_phys_id - Match the given logical CPU and physical id
+>   *
+>   * @cpu: logical cpu index of a core/thread
+> diff --git a/include/linux/of.h b/include/linux/of.h
+> index dbf2c7442389..3612429632f4 100644
+> --- a/include/linux/of.h
+> +++ b/include/linux/of.h
+> @@ -355,6 +355,8 @@ extern bool of_device_is_big_endian(const struct device_node *device);
+>  extern const void *of_get_property(const struct device_node *node,
+>                                 const char *name,
+>                                 int *lenp);
+> +extern bool of_match_string(const struct device_node *node, const char* name,
+> +                           const char* value);
+>  extern struct device_node *of_get_cpu_node(int cpu, unsigned int *thread);
+>  extern struct device_node *of_get_next_cpu_node(struct device_node *prev);
+>  extern struct device_node *of_get_cpu_state_node(struct device_node *cpu_node,
+> --
+> 2.11.0
+>
