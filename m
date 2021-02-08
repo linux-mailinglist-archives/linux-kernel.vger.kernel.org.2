@@ -2,85 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20913312A2F
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 06:46:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A970A312A3E
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 06:50:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229621AbhBHFoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 00:44:09 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:25879 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229587AbhBHFoG (ORCPT
+        id S229651AbhBHFtM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 00:49:12 -0500
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:9573 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229503AbhBHFtC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 00:44:06 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612762960;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2rurmJQ4opTwfFXGQeyUIRfP+jPm6sD9BukDZ25cciA=;
-        b=RUJplFY/TCs/w7sN7p7B2zvoL9NTftT3eZUljOTqGGnrB7yXCogzlu4YauFqr7GdNEf782
-        LnImN8Ly3X3xRkhrHbosJCc04l8MUBvrHcE9dn68GgAKThKAqG4I1r5ieZhGpXRsGB9gCQ
-        X+w+Cpt/sjq8M3i+LGXFf7cSJ7BVaHY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-134-IDOr3tdoNKeQ4hMRY90kYw-1; Mon, 08 Feb 2021 00:42:37 -0500
-X-MC-Unique: IDOr3tdoNKeQ4hMRY90kYw-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 10C68869ECC;
-        Mon,  8 Feb 2021 05:42:36 +0000 (UTC)
-Received: from [10.72.13.185] (ovpn-13-185.pek2.redhat.com [10.72.13.185])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E66DC5D9D5;
-        Mon,  8 Feb 2021 05:42:28 +0000 (UTC)
-Subject: Re: [PATCH V3 16/19] virtio-pci: introduce modern device module
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, shahafs@mellanox.com,
-        lulu@redhat.com, sgarzare@redhat.com, rdunlap@infradead.org
-References: <20210104065503.199631-1-jasowang@redhat.com>
- <20210104065503.199631-17-jasowang@redhat.com>
- <20210205103214-mutt-send-email-mst@kernel.org>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <24cb3ebe-1248-3e31-0716-cf498cf1d728@redhat.com>
-Date:   Mon, 8 Feb 2021 13:42:27 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 8 Feb 2021 00:49:02 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B6020d0a60000>; Sun, 07 Feb 2021 21:48:22 -0800
+Received: from mtl-vdi-166.wap.labs.mlnx (172.20.145.6) by
+ HQMAIL107.nvidia.com (172.20.187.13) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3; Mon, 8 Feb 2021 05:48:20 +0000
+Date:   Mon, 8 Feb 2021 07:48:16 +0200
+From:   Eli Cohen <elic@nvidia.com>
+To:     Si-Wei Liu <si-wei.liu@oracle.com>
+CC:     <mst@redhat.com>, <jasowang@redhat.com>,
+        <linux-kernel@vger.kernel.org>,
+        <virtualization@lists.linux-foundation.org>,
+        <netdev@vger.kernel.org>
+Subject: Re: [PATCH 3/3] mlx5_vdpa: defer clear_virtqueues to until DRIVER_OK
+Message-ID: <20210208054816.GC137517@mtl-vdi-166.wap.labs.mlnx>
+References: <1612614564-4220-1-git-send-email-si-wei.liu@oracle.com>
+ <1612614564-4220-3-git-send-email-si-wei.liu@oracle.com>
 MIME-Version: 1.0
-In-Reply-To: <20210205103214-mutt-send-email-mst@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <1612614564-4220-3-git-send-email-si-wei.liu@oracle.com>
+User-Agent: Mutt/1.9.5 (bf161cf53efb) (2018-04-13)
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1612763302; bh=pzMBuwiRWPHolizp590FGjmhEg9704U0QfdQdV3HCkA=;
+        h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+         Content-Type:Content-Disposition:In-Reply-To:User-Agent:
+         X-Originating-IP:X-ClientProxiedBy;
+        b=AuPjjMUW5UVtOQtPvtlWG2brZc/tBvp1k+pa3XbGySG9PiujkR+ArlJuUeWw9noXC
+         JsBEaddaq2k87jcjA04wXjHTzv0qt775w/pcS8SOnUXq+zEJVSi8TMwEZlyKNa50td
+         zyGWzhEOWgmZZ4hNLlmAH3FoggoFsOaYgCKEOUsqfK9K2fyGHKDCR2PyWApUISi8oO
+         TuxvPQPDZ8CI6BgNjOwxuwNJjLnPN1zpK5tAPvr27i331yHkPhUYipgrUtEG8YXcDT
+         zYkYVYz6MQ0una51GbY6BePMuPXhyEBC359iORrOWqzUOjqAKO628XLmdgO+1MWDdy
+         541ykjhQ1c3Ow==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, Feb 06, 2021 at 04:29:24AM -0800, Si-Wei Liu wrote:
+> While virtq is stopped,  get_vq_state() is supposed to
+> be  called to  get  sync'ed  with  the latest internal
+> avail_index from device. The saved avail_index is used
+> to restate  the virtq  once device is started.  Commit
+> b35ccebe3ef7 introduced the clear_virtqueues() routine
+> to  reset  the saved  avail_index,  however, the index
+> gets cleared a bit earlier before get_vq_state() tries
+> to read it. This would cause consistency problems when
+> virtq is restarted, e.g. through a series of link down
+> and link up events. We  could  defer  the  clearing of
+> avail_index  to  until  the  device  is to be started,
+> i.e. until  VIRTIO_CONFIG_S_DRIVER_OK  is set again in
+> set_status().
 
-On 2021/2/5 下午11:34, Michael S. Tsirkin wrote:
-> On Mon, Jan 04, 2021 at 02:55:00PM +0800, Jason Wang wrote:
->> Signed-off-by: Jason Wang<jasowang@redhat.com>
-> I don't exactly get why we need to split the modern driver out,
-> and it can confuse people who are used to be seeing virtio-pci.
 
+Not sure I understand the scenario. You are talking about reset of the
+device followed by up/down events on the interface. How can you trigger
+this?
 
-The virtio-pci module still there. No user visible changes. Just some 
-codes that could be shared with other driver were split out.
-
-
->
-> The vdpa thing so far looks like a development tool, why do
-> we care that it depends on a bit of extra code?
-
-
-If I'm not misunderstanding, trying to share codes is proposed by you here:
-
-https://lkml.org/lkml/2020/6/10/232
-
-We also had the plan to convert IFCVF to use this library.
-
-Thanks
-
->
-
+> 
+> Fixes: b35ccebe3ef7 ("vdpa/mlx5: Restore the hardware used index after change map")
+> Signed-off-by: Si-Wei Liu <si-wei.liu@oracle.com>
+> ---
+>  drivers/vdpa/mlx5/net/mlx5_vnet.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> index aa6f8cd..444ab58 100644
+> --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> @@ -1785,7 +1785,6 @@ static void mlx5_vdpa_set_status(struct vdpa_device *vdev, u8 status)
+>  	if (!status) {
+>  		mlx5_vdpa_info(mvdev, "performing device reset\n");
+>  		teardown_driver(ndev);
+> -		clear_virtqueues(ndev);
+>  		mlx5_vdpa_destroy_mr(&ndev->mvdev);
+>  		ndev->mvdev.status = 0;
+>  		++mvdev->generation;
+> @@ -1794,6 +1793,7 @@ static void mlx5_vdpa_set_status(struct vdpa_device *vdev, u8 status)
+>  
+>  	if ((status ^ ndev->mvdev.status) & VIRTIO_CONFIG_S_DRIVER_OK) {
+>  		if (status & VIRTIO_CONFIG_S_DRIVER_OK) {
+> +			clear_virtqueues(ndev);
+>  			err = setup_driver(ndev);
+>  			if (err) {
+>  				mlx5_vdpa_warn(mvdev, "failed to setup driver\n");
+> -- 
+> 1.8.3.1
+> 
