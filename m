@@ -2,134 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC23D312F0A
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 11:32:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51E05312F0C
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 11:33:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230270AbhBHKbs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 05:31:48 -0500
-Received: from mail-ot1-f53.google.com ([209.85.210.53]:40157 "EHLO
-        mail-ot1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232295AbhBHKSx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 05:18:53 -0500
-Received: by mail-ot1-f53.google.com with SMTP id i20so13664733otl.7;
-        Mon, 08 Feb 2021 02:18:37 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sYbVgLIX+r79AC92zSDbMeMyYfHTGLVOZJrkvK6/LKQ=;
-        b=ZKqKt2Gu/vTRGswruTe5S42pl3uzvr5Uvfs+RW8XMNCmeEjjpQ7DYmH2yAv2KFldiC
-         XtfHqlsOaL+fZs2d6NPjHiz7VekaGYrkVbS8f/QhiUEXvHwpKQax8GLyCJIqcDN1PZPP
-         wFsQHnceK7HgxKVx/ckv+wMyFGzqNsyvuZp5UgTmYS+z51+2Ya9YjTAYOkzLhobQcpsx
-         BjMorwCqec3NZJulGuADSIiVIBj4PAknhm7HHa42ECFyqLpKwVPX7+ubY9p4N6HKtcXw
-         TThdyFeShkp1QZeHtvrEQdFXJ8o7nh0Nj1V+M/AQHmLEkpt1GagjTRYwjolJB1zOOSOX
-         VROA==
-X-Gm-Message-State: AOAM531ku60lkbDSeMMZYUCM8wuOm+9pFEUypKH+Rw0lbMNbiqAWxke8
-        EBHn5WTUyLlTQXXcZuRZiZaOhwFa5RMYJikq5Zs=
-X-Google-Smtp-Source: ABdhPJzuE0WnFgQq2prS/EOzWrbfsuwPgtDDyydII7UXbUSgS/+JtVjC5DE9GL+Ns+9OFXHsGmG2zJDO4CdNX8b02MU=
-X-Received: by 2002:a9d:77d6:: with SMTP id w22mr1010723otl.145.1612779492055;
- Mon, 08 Feb 2021 02:18:12 -0800 (PST)
+        id S232133AbhBHKcY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 05:32:24 -0500
+Received: from mx2.suse.de ([195.135.220.15]:36056 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232022AbhBHKT1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 05:19:27 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1612779520; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=FUp0sifzo5QTEnzB7ndOii0XZdyCiwTOujlpEkca5cM=;
+        b=Qbcw7jgSXKtAlANhPWc3Z7/0P5cS0SLsNfxe79dJAeSLS9zxSZIOgKQ4yx4VXh5YB1FVB+
+        55fvFklw7TEoDwyW+2lRw/2LHy5r5yY1UMZg1l8F3aOG1GEwyEbsXAG9lTduRQH97GtReJ
+        rWtcW7iHCW8MI13TZHpHq96oAWB7ik8=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 6C932AD62;
+        Mon,  8 Feb 2021 10:18:40 +0000 (UTC)
+Date:   Mon, 8 Feb 2021 11:18:37 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org, Hagen Paul Pfeifer <hagen@jauu.net>,
+        Palmer Dabbelt <palmerdabbelt@google.com>
+Subject: Re: [PATCH v17 08/10] PM: hibernate: disable when there are active
+ secretmem users
+Message-ID: <YCEP/bmqm0DsvCYN@dhcp22.suse.cz>
+References: <20210208084920.2884-1-rppt@kernel.org>
+ <20210208084920.2884-9-rppt@kernel.org>
 MIME-Version: 1.0
-References: <20210207000030.256592-1-memxor@gmail.com> <20210207173441.2902acac@canb.auug.org.au>
- <20210207073827.7l7h3475tqgxxfte@apollo>
-In-Reply-To: <20210207073827.7l7h3475tqgxxfte@apollo>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 8 Feb 2021 11:18:01 +0100
-Message-ID: <CAMuHMdVE+a4gMwa206=CWCUzAPD9N5nnvsPa1avWq_t1isfizQ@mail.gmail.com>
-Subject: Re: [PATCH] staging: emxx_udc: Fix incorrectly defined global
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        driverdevel <devel@driverdev.osuosl.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Nishad Kamdar <nishadkamdar@gmail.com>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210208084920.2884-9-rppt@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kumar,
+On Mon 08-02-21 10:49:18, Mike Rapoport wrote:
+> From: Mike Rapoport <rppt@linux.ibm.com>
+> 
+> It is unsafe to allow saving of secretmem areas to the hibernation
+> snapshot as they would be visible after the resume and this essentially
+> will defeat the purpose of secret memory mappings.
+> 
+> Prevent hibernation whenever there are active secret memory users.
 
-CC Nishad, Magnus, linux-renesas-soc,
+Does this feature need any special handling? As it is effectivelly
+unevictable memory then it should behave the same as other mlock, ramfs
+which should already disable hibernation as those cannot be swapped out,
+no?
 
-On Sun, Feb 7, 2021 at 8:40 AM Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
-> On Sun, Feb 07, 2021 at 12:04:41PM IST, Stephen Rothwell wrote:
-> > Given that drivers/staging/emxx_udc/emxx_udc.h is only included by
-> > drivers/staging/emxx_udc/emxx_udc.c, shouldn't these variables just be
-> > declared static in emxx_udc.c and removed from emxx_udc.h?
-> >
->
-> Either would be correct. I went this way because it was originally trying to
-> (incorrectly) define a global variable instead. I guess they can be static now
-> and when more users are added, the linkage can be adjusted as needed.
->
-> Here's another version of the patch:
->
-> --
-> From 5835ad916ceeba620c85bc32f52ecd69f21f8dab Mon Sep 17 00:00:00 2001
-> From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> Date: Sun, 7 Feb 2021 12:53:39 +0530
-> Subject: [PATCH] staging: emxx_udc: Make incorrectly defined global static
->
-> The global gpio_desc pointer and int vbus_irq were defined in the header,
-> instead put the definitions in the translation unit and make them static as
-> there's only a single consumer in emxx_udc.c.
->
-> This fixes the following sparse warnings for this driver:
-> drivers/staging/emxx_udc/emxx_udc.c: note: in included file:
-> drivers/staging/emxx_udc/emxx_udc.h:23:18: warning: symbol 'vbus_gpio' was not
-> declared. Should it be static?
-> drivers/staging/emxx_udc/emxx_udc.h:24:5: warning: symbol 'vbus_irq' was not
-> declared. Should it be static?
->
-> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-
-Thanks for your patch!
-
-> --- a/drivers/staging/emxx_udc/emxx_udc.c
-> +++ b/drivers/staging/emxx_udc/emxx_udc.c
-> @@ -34,6 +34,9 @@
->  #define        DRIVER_DESC     "EMXX UDC driver"
->  #define        DMA_ADDR_INVALID        (~(dma_addr_t)0)
->
-> +static struct gpio_desc *vbus_gpio;
-> +static int vbus_irq;
-
-While I agree these must be static, I expect the driver to be still
-broken, as vbus_gpio is never set?
-
-Commit 48101806c52203f6 ("Staging: emxx_udc: Switch to the gpio
-descriptor interface") introduced both variables, which was presumably
-never tested.
-
-Magnus: perhaps we should just remove this driver?
-
-> +
->  static const char      driver_name[] = "emxx_udc";
->  static const char      driver_desc[] = DRIVER_DESC;
->
-> diff --git a/drivers/staging/emxx_udc/emxx_udc.h b/drivers/staging/emxx_udc/emxx_udc.h
-> index bca614d69..c9e37a1b8 100644
-> --- a/drivers/staging/emxx_udc/emxx_udc.h
-> +++ b/drivers/staging/emxx_udc/emxx_udc.h
-> @@ -20,8 +20,6 @@
->  /* below hacked up for staging integration */
->  #define GPIO_VBUS 0 /* GPIO_P153 on KZM9D */
->  #define INT_VBUS 0 /* IRQ for GPIO_P153 */
-> -struct gpio_desc *vbus_gpio;
-> -int vbus_irq;
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+-- 
+Michal Hocko
+SUSE Labs
