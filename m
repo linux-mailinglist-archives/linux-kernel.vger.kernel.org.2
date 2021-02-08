@@ -2,34 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8262F313AA9
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 18:18:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C8FF313A80
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 18:10:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234865AbhBHRSD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 12:18:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35480 "EHLO mail.kernel.org"
+        id S231549AbhBHRIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 12:08:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35490 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232971AbhBHPYS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S232995AbhBHPYS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 8 Feb 2021 10:24:18 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6272964E7E;
-        Mon,  8 Feb 2021 15:14:40 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C5DC64EB1;
+        Mon,  8 Feb 2021 15:14:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612797281;
-        bh=8YW3oxQxDg2BQZaZrAlhicuAJwSozWcrjoH/2iVDBE8=;
+        s=korg; t=1612797283;
+        bh=eeZLm0gwuVMKgd8oJsyfhkpWbsqf7K69YBI0Pzqy5h0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RuWvCh7AayV914djhhL7rBnHTK3A1pxeJXO1tuB5S4ny1NvBNkvVMHvhGl0eKluCX
-         cyrutfJ+7chpijiDXK5ZFXJAtBZyHVdP6r+2g+T02zwvnRmuSaqXkX1L3Sf1blTsIu
-         y2OSkKom7v6VHFaSrTlVwT9Dp8WVGRuCNaev7mLg=
+        b=TySWFwSx0Ia8hLDzyv9CS0ZjDoN2AhlbM2ZFw3DjQ94W7mp1wehOJEM0upJULK+dX
+         YugJHrS0eUaxVMbWkEDz9PBcyjwTJ44LjL6kuNlLHYrMaTUul7cJ1GGGx4gtBNMSQW
+         r0Ich+B3xqwpdET8cd3ksXm2ffB73/+QY2scEIiQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Liangyan <liangyan.peng@linux.alibaba.com>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
+        stable@vger.kernel.org, Icenowy Zheng <icenowy@aosc.io>,
         Miklos Szeredi <mszeredi@redhat.com>
-Subject: [PATCH 5.10 054/120] ovl: fix dentry leak in ovl_get_redirect
-Date:   Mon,  8 Feb 2021 16:00:41 +0100
-Message-Id: <20210208145820.577049939@linuxfoundation.org>
+Subject: [PATCH 5.10 055/120] ovl: avoid deadlock on directory ioctl
+Date:   Mon,  8 Feb 2021 16:00:42 +0100
+Message-Id: <20210208145820.615921124@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210208145818.395353822@linuxfoundation.org>
 References: <20210208145818.395353822@linuxfoundation.org>
@@ -41,88 +39,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Liangyan <liangyan.peng@linux.alibaba.com>
+From: Miklos Szeredi <mszeredi@redhat.com>
 
-commit e04527fefba6e4e66492f122cf8cc6314f3cf3bf upstream.
+commit b854cc659dcb80f172cb35dbedc15d39d49c383f upstream.
 
-We need to lock d_parent->d_lock before dget_dlock, or this may
-have d_lockref updated parallelly like calltrace below which will
-cause dentry->d_lockref leak and risk a crash.
+The function ovl_dir_real_file() currently uses the inode lock to serialize
+writes to the od->upperfile field.
 
-     CPU 0                                CPU 1
-ovl_set_redirect                       lookup_fast
-  ovl_get_redirect                       __d_lookup
-    dget_dlock
-      //no lock protection here            spin_lock(&dentry->d_lock)
-      dentry->d_lockref.count++            dentry->d_lockref.count++
+However, this function will get called by ovl_ioctl_set_flags(), which
+utilizes the inode lock too.  In this case ovl_dir_real_file() will try to
+claim a lock that is owned by a function in its call stack, which won't get
+released before ovl_dir_real_file() returns.
 
-[   49.799059] PGD 800000061fed7067 P4D 800000061fed7067 PUD 61fec5067 PMD 0
-[   49.799689] Oops: 0002 [#1] SMP PTI
-[   49.800019] CPU: 2 PID: 2332 Comm: node Not tainted 4.19.24-7.20.al7.x86_64 #1
-[   49.800678] Hardware name: Alibaba Cloud Alibaba Cloud ECS, BIOS 8a46cfe 04/01/2014
-[   49.801380] RIP: 0010:_raw_spin_lock+0xc/0x20
-[   49.803470] RSP: 0018:ffffac6fc5417e98 EFLAGS: 00010246
-[   49.803949] RAX: 0000000000000000 RBX: ffff93b8da3446c0 RCX: 0000000a00000000
-[   49.804600] RDX: 0000000000000001 RSI: 000000000000000a RDI: 0000000000000088
-[   49.805252] RBP: 0000000000000000 R08: 0000000000000000 R09: ffffffff993cf040
-[   49.805898] R10: ffff93b92292e580 R11: ffffd27f188a4b80 R12: 0000000000000000
-[   49.806548] R13: 00000000ffffff9c R14: 00000000fffffffe R15: ffff93b8da3446c0
-[   49.807200] FS:  00007ffbedffb700(0000) GS:ffff93b927880000(0000) knlGS:0000000000000000
-[   49.807935] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[   49.808461] CR2: 0000000000000088 CR3: 00000005e3f74006 CR4: 00000000003606a0
-[   49.809113] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[   49.809758] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[   49.810410] Call Trace:
-[   49.810653]  d_delete+0x2c/0xb0
-[   49.810951]  vfs_rmdir+0xfd/0x120
-[   49.811264]  do_rmdir+0x14f/0x1a0
-[   49.811573]  do_syscall_64+0x5b/0x190
-[   49.811917]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-[   49.812385] RIP: 0033:0x7ffbf505ffd7
-[   49.814404] RSP: 002b:00007ffbedffada8 EFLAGS: 00000297 ORIG_RAX: 0000000000000054
-[   49.815098] RAX: ffffffffffffffda RBX: 00007ffbedffb640 RCX: 00007ffbf505ffd7
-[   49.815744] RDX: 0000000004449700 RSI: 0000000000000000 RDI: 0000000006c8cd50
-[   49.816394] RBP: 00007ffbedffaea0 R08: 0000000000000000 R09: 0000000000017d0b
-[   49.817038] R10: 0000000000000000 R11: 0000000000000297 R12: 0000000000000012
-[   49.817687] R13: 00000000072823d8 R14: 00007ffbedffb700 R15: 00000000072823d8
-[   49.818338] Modules linked in: pvpanic cirrusfb button qemu_fw_cfg atkbd libps2 i8042
-[   49.819052] CR2: 0000000000000088
-[   49.819368] ---[ end trace 4e652b8aa299aa2d ]---
-[   49.819796] RIP: 0010:_raw_spin_lock+0xc/0x20
-[   49.821880] RSP: 0018:ffffac6fc5417e98 EFLAGS: 00010246
-[   49.822363] RAX: 0000000000000000 RBX: ffff93b8da3446c0 RCX: 0000000a00000000
-[   49.823008] RDX: 0000000000000001 RSI: 000000000000000a RDI: 0000000000000088
-[   49.823658] RBP: 0000000000000000 R08: 0000000000000000 R09: ffffffff993cf040
-[   49.825404] R10: ffff93b92292e580 R11: ffffd27f188a4b80 R12: 0000000000000000
-[   49.827147] R13: 00000000ffffff9c R14: 00000000fffffffe R15: ffff93b8da3446c0
-[   49.828890] FS:  00007ffbedffb700(0000) GS:ffff93b927880000(0000) knlGS:0000000000000000
-[   49.830725] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[   49.832359] CR2: 0000000000000088 CR3: 00000005e3f74006 CR4: 00000000003606a0
-[   49.834085] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[   49.835792] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Fix by replacing the open coded compare and exchange by an explicit atomic
+op.
 
-Cc: <stable@vger.kernel.org>
-Fixes: a6c606551141 ("ovl: redirect on rename-dir")
-Signed-off-by: Liangyan <liangyan.peng@linux.alibaba.com>
-Reviewed-by: Joseph Qi <joseph.qi@linux.alibaba.com>
-Suggested-by: Al Viro <viro@zeniv.linux.org.uk>
+Fixes: 61536bed2149 ("ovl: support [S|G]ETFLAGS and FS[S|G]ETXATTR ioctls for directories")
+Cc: stable@vger.kernel.org # v5.10
+Reported-by: Icenowy Zheng <icenowy@aosc.io>
+Tested-by: Icenowy Zheng <icenowy@aosc.io>
 Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/overlayfs/dir.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/overlayfs/readdir.c |   23 +++++++----------------
+ 1 file changed, 7 insertions(+), 16 deletions(-)
 
---- a/fs/overlayfs/dir.c
-+++ b/fs/overlayfs/dir.c
-@@ -992,8 +992,8 @@ static char *ovl_get_redirect(struct den
+--- a/fs/overlayfs/readdir.c
++++ b/fs/overlayfs/readdir.c
+@@ -865,7 +865,7 @@ struct file *ovl_dir_real_file(const str
  
- 		buflen -= thislen;
- 		memcpy(&buf[buflen], name, thislen);
--		tmp = dget_dlock(d->d_parent);
- 		spin_unlock(&d->d_lock);
-+		tmp = dget_parent(d);
+ 	struct ovl_dir_file *od = file->private_data;
+ 	struct dentry *dentry = file->f_path.dentry;
+-	struct file *realfile = od->realfile;
++	struct file *old, *realfile = od->realfile;
  
- 		dput(d);
- 		d = tmp;
+ 	if (!OVL_TYPE_UPPER(ovl_path_type(dentry)))
+ 		return want_upper ? NULL : realfile;
+@@ -874,29 +874,20 @@ struct file *ovl_dir_real_file(const str
+ 	 * Need to check if we started out being a lower dir, but got copied up
+ 	 */
+ 	if (!od->is_upper) {
+-		struct inode *inode = file_inode(file);
+-
+ 		realfile = READ_ONCE(od->upperfile);
+ 		if (!realfile) {
+ 			struct path upperpath;
+ 
+ 			ovl_path_upper(dentry, &upperpath);
+ 			realfile = ovl_dir_open_realfile(file, &upperpath);
++			if (IS_ERR(realfile))
++				return realfile;
+ 
+-			inode_lock(inode);
+-			if (!od->upperfile) {
+-				if (IS_ERR(realfile)) {
+-					inode_unlock(inode);
+-					return realfile;
+-				}
+-				smp_store_release(&od->upperfile, realfile);
+-			} else {
+-				/* somebody has beaten us to it */
+-				if (!IS_ERR(realfile))
+-					fput(realfile);
+-				realfile = od->upperfile;
++			old = cmpxchg_release(&od->upperfile, NULL, realfile);
++			if (old) {
++				fput(realfile);
++				realfile = old;
+ 			}
+-			inode_unlock(inode);
+ 		}
+ 	}
+ 
 
 
