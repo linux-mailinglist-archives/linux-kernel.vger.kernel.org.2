@@ -2,101 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EB3E314231
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 22:48:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFC6E314232
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 22:48:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236965AbhBHVrP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 16:47:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35390 "EHLO mail.kernel.org"
+        id S236983AbhBHVrj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 16:47:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35556 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236257AbhBHV0T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 16:26:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 023D364E6F;
-        Mon,  8 Feb 2021 21:25:31 +0000 (UTC)
+        id S236260AbhBHV1F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 16:27:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E27F164E6C;
+        Mon,  8 Feb 2021 21:26:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612819538;
-        bh=ibRblMMQB/f4N6UUddTxgf3Y0DdL2/6jIMsoXEp/dFU=;
+        s=k20201202; t=1612819582;
+        bh=Y8G7gf2IwGjBXBF5ErxQfWKVOLSdVIOpGEIG67JA2AY=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=EbeA5IstB6PsRvXyj6rFpshYxdeBcj7ak4hAm+xhqzO9/xK16bZnvJsymuZuJtfaU
-         6C4vzGBY4ceak1voPKgvAzKTj1zqZqB4mXDsyht+FHrCYclZFOTikE/XisjmfEXoaN
-         GYKLmW76MK5fY9SlAoS5leUt1F3HQxe9AU++M5qJwXQkISykZiJHQBGGq+cfFuli4h
-         lMGYthqSk9gHiuxIosF7L/uqZRRbdyGLGpC/8C6KMgXJQmQIqHMhMS7drLlrrCYYmG
-         iHatanR76Pk54PBvSG4VzKTs0W3yzCufp9S9+zEWTj8rkBoX5+AWPhx0sqV6LTkuh1
-         NHdlFm3chD6YA==
-Date:   Mon, 8 Feb 2021 23:25:26 +0200
+        b=Eerdn/7TBUJNWh5JSQGQanhkCbXO6r8i+07ORvc0kNlXTv/gMu3WAJsIb2RYRWrDl
+         NzMmvcDn3iTmjaUTOACFOeq+fWRq6saXTmy51YQtoTk38Gte4b+P8L19Xbwx0L6ml+
+         Ea3Z7Qd3D+MldYIlVvyh5Yb26npCORZwTE+3wJTir9k1lgaS6eZYPXQ4zFo0WChRGs
+         fUiJgsx/cCeor6w8T2f3XtMihtpacVS0+tPYSqs4uM0k3MR4YWV+vaapoyzoPPxAl+
+         yFpPIEmRq4D/vlPxshoMK56Hm/B9URPT2mlstPmtBfgreYHioAYDlS64KLgxO+QeoG
+         FSPZy/knOHzIQ==
+Date:   Mon, 8 Feb 2021 23:26:05 +0200
 From:   Mike Rapoport <rppt@kernel.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Andrea Arcangeli <aarcange@redhat.com>,
-        Baoquan He <bhe@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
         David Hildenbrand <david@redhat.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
         "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        =?utf-8?Q?=C5=81ukasz?= Majczak <lma@semihalf.com>,
-        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>, Qian Cai <cai@lca.pw>,
-        "Sarvela, Tomi P" <tomi.p.sarvela@intel.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Shuah Khan <shuah@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, stable@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH v5 1/1] mm: refactor initialization of struct page for
- holes in memory layout
-Message-ID: <20210208212526.GW242749@kernel.org>
-References: <20210208110820.6269-1-rppt@kernel.org>
- <20210208131100.7273d249a5d00cac0d247fcf@linux-foundation.org>
+        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org, Hagen Paul Pfeifer <hagen@jauu.net>,
+        Palmer Dabbelt <palmerdabbelt@google.com>
+Subject: Re: [PATCH v17 07/10] mm: introduce memfd_secret system call to
+ create "secret" memory areas
+Message-ID: <20210208212605.GX242749@kernel.org>
+References: <20210208084920.2884-1-rppt@kernel.org>
+ <20210208084920.2884-8-rppt@kernel.org>
+ <YCEXMgXItY7xMbIS@dhcp22.suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210208131100.7273d249a5d00cac0d247fcf@linux-foundation.org>
+In-Reply-To: <YCEXMgXItY7xMbIS@dhcp22.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 08, 2021 at 01:11:00PM -0800, Andrew Morton wrote:
-> On Mon,  8 Feb 2021 13:08:20 +0200 Mike Rapoport <rppt@kernel.org> wrote:
+On Mon, Feb 08, 2021 at 11:49:22AM +0100, Michal Hocko wrote:
+> On Mon 08-02-21 10:49:17, Mike Rapoport wrote:
+> > From: Mike Rapoport <rppt@linux.ibm.com>
+> > 
+> > Introduce "memfd_secret" system call with the ability to create memory
+> > areas visible only in the context of the owning process and not mapped not
+> > only to other processes but in the kernel page tables as well.
+> > 
+> > The secretmem feature is off by default and the user must explicitly enable
+> > it at the boot time.
+> > 
+> > Once secretmem is enabled, the user will be able to create a file
+> > descriptor using the memfd_secret() system call. The memory areas created
+> > by mmap() calls from this file descriptor will be unmapped from the kernel
+> > direct map and they will be only mapped in the page table of the owning mm.
 > 
-> > There could be struct pages that are not backed by actual physical memory.
-> > This can happen when the actual memory bank is not a multiple of
-> > SECTION_SIZE or when an architecture does not register memory holes
-> > reserved by the firmware as memblock.memory.
-> > 
-> > Such pages are currently initialized using init_unavailable_mem() function
-> > that iterates through PFNs in holes in memblock.memory and if there is a
-> > struct page corresponding to a PFN, the fields of this page are set to
-> > default values and it is marked as Reserved.
-> > 
-> > init_unavailable_mem() does not take into account zone and node the page
-> > belongs to and sets both zone and node links in struct page to zero.
-> > 
-> > On a system that has firmware reserved holes in a zone above ZONE_DMA, for
-> > instance in a configuration below:
-> > 
-> > 	# grep -A1 E820 /proc/iomem
-> > 	7a17b000-7a216fff : Unknown E820 type
-> > 	7a217000-7bffffff : System RAM
-> > 
-> > unset zone link in struct page will trigger
-> > 
-> > 	VM_BUG_ON_PAGE(!zone_spans_pfn(page_zone(page), pfn), page);
-> > 
-> > because there are pages in both ZONE_DMA32 and ZONE_DMA (unset zone link
-> > in struct page) in the same pageblock.
-> > 
-> > ...
-> >
-> > 
-> > Fixes: 73a6e474cb37 ("mm: memmap_init: iterate over memblock regions rather
-> > that check each PFN")
+> Is this really true? I guess you meant to say that the memory will
+> visible only via page tables to anybody who can mmap the respective file
+> descriptor. There is nothing like an owning mm as the fd is inherently a
+> shareable resource and the ownership becomes a very vague and hard to
+> define term.
+
+Hmm, it seems I've been dragging this paragraph from the very first
+mmap(MAP_EXCLUSIVE) rfc and nobody (including myself) noticed the
+inconsistency.
+ 
+> > The file descriptor based memory has several advantages over the
+> > "traditional" mm interfaces, such as mlock(), mprotect(), madvise(). It
+> > paves the way for VMMs to remove the secret memory range from the process;
 > 
-> What are your thoughts on the priority of this (rather large!) fix? 
-> Are such systems sufficiently common to warrant a 5.11 merge?  -stable?
+> I do not understand how it helps to remove the memory from the process
+> as the interface explicitly allows to add a memory that is removed from
+> all other processes via direct map.
 
-I don't know how common are such systems, but the bug is exposed only for
-builds with DEBUG_VM=y, so after problems with previous versions discovered
-by various CI systems I'd say to hold it off till 5.11 is out.
+The current implementation does not help to remove the memory from the
+process, but using fd-backed memory seems a better interface to remove
+guest memory from host mappings than mmap. As Andy nicely put it:
 
-If this time the fix works it'll make it to -stable anyway :)
+"Getting fd-backed memory into a guest will take some possibly major work in
+the kernel, but getting vma-backed memory into a guest without mapping it
+in the host user address space seems much, much worse."
+ 
+> > As secret memory implementation is not an extension of tmpfs or hugetlbfs,
+> > usage of a dedicated system call rather than hooking new functionality into
+> > memfd_create(2) emphasises that memfd_secret(2) has different semantics and
+> > allows better upwards compatibility.
+> 
+> What is this supposed to mean? What are differences?
 
+Well, the phrasing could be better indeed. That supposed to mean that
+they differ in the semantics behind the file descriptor: memfd_create
+implements sealing for shmem and hugetlbfs while memfd_secret implements
+memory hidden from the kernel.
+ 
+> > The secretmem mappings are locked in memory so they cannot exceed
+> > RLIMIT_MEMLOCK. Since these mappings are already locked an attempt to
+> > mlock() secretmem range would fail and mlockall() will ignore secretmem
+> > mappings.
+> 
+> What about munlock?
+
+Isn't this implied? ;-)
+I'll add a sentence about it.
+ 
 -- 
 Sincerely yours,
 Mike.
