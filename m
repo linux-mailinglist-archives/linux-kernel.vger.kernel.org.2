@@ -2,235 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCD5C312AEC
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 07:48:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B0B7312AED
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 07:48:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230020AbhBHGsC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 01:48:02 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:12148 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229988AbhBHGrw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 01:47:52 -0500
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DYxNx3JPHz165ZG;
-        Mon,  8 Feb 2021 14:45:37 +0800 (CST)
-Received: from [10.174.176.61] (10.174.176.61) by
- DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
- 14.3.498.0; Mon, 8 Feb 2021 14:46:53 +0800
-Subject: Re: [PATCH v14 00/11] support reserving crashkernel above 4G on arm64
- kdump
-To:     <mingo@redhat.com>, <tglx@linutronix.de>, <rppt@kernel.org>,
-        <dyoung@redhat.com>, <bhe@redhat.com>, <catalin.marinas@arm.com>,
-        <will@kernel.org>, <nsaenzjulienne@suse.de>, <corbet@lwn.net>,
-        <John.P.donnelly@oracle.com>, <bhsharma@redhat.com>,
-        <prabhakar.pkin@gmail.com>
-References: <20210130071025.65258-1-chenzhou10@huawei.com>
-CC:     <horms@verge.net.au>, <robh+dt@kernel.org>, <arnd@arndb.de>,
-        <james.morse@arm.com>, <xiexiuqi@huawei.com>,
-        <guohanjun@huawei.com>, <huawei.libin@huawei.com>,
-        <wangkefeng.wang@huawei.com>, <linux-doc@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <kexec@lists.infradead.org>
-From:   chenzhou <chenzhou10@huawei.com>
-Message-ID: <3b3cbe38-69bc-bbc5-2d75-d2ce3dd07e4f@huawei.com>
-Date:   Mon, 8 Feb 2021 14:46:52 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        id S229839AbhBHGsw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 01:48:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57200 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229993AbhBHGsh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 01:48:37 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 978EC64E6D;
+        Mon,  8 Feb 2021 06:47:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612766876;
+        bh=kQATBibazqnNCmN8dcGfS5T7v+WBIVLbjyFvnpYwQdw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=gw3TI3PNLQk1cQ1dyOFGagIq18ghucI70xiSo1HbNnnErndBFGRhpvtMk5F9Ly706
+         BBZEwwpa2Mjp9IHfa3DZ/sERUtmK0/AnxleiecIvx5RTvVdQ/5buOkvCpYWtl9wwd4
+         0M03oJ/rnDMZeLoqZKF0TQOGHdyMdYjjDaFUocMGY0y1MSltRF/7gowQ58rHI1I1vB
+         kowLUUZVziqA6UH4D8nUHCb7JOqeK1T3BnIxWsbobj6h+RnTxzx0cgredyFfzVRtcj
+         YwkEAJs/C9XI7q6fObvL64+cpchOXXfY1GyXIPRLU7sXI1Z1o+g6t/whepXKtGslEr
+         nOikoYmfawLIA==
+Received: by mail-oi1-f174.google.com with SMTP id l3so4626587oii.2;
+        Sun, 07 Feb 2021 22:47:56 -0800 (PST)
+X-Gm-Message-State: AOAM531mVo5NQ8Un6W5db3AMEuJWlgk6ZnfM1jjKGiYLEMqvHMMdYZp+
+        3/JMs0fUQqAm02ndt+x1l6K5AD/SQT4vfb8e9ts=
+X-Google-Smtp-Source: ABdhPJwwWUwurEJrYiXDO0EfWR7tpo3sJbLcMU1kqQtlGqZShcPpn3vAYzW1vE2iX8YDEg8UTyOBTiY+rg9WRtP1Vcg=
+X-Received: by 2002:aca:b6c1:: with SMTP id g184mr10460313oif.47.1612766875935;
+ Sun, 07 Feb 2021 22:47:55 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210130071025.65258-1-chenzhou10@huawei.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.176.61]
-X-CFilter-Loop: Reflected
+References: <1611299395-675-1-git-send-email-yumeng18@huawei.com>
+ <1611299395-675-5-git-send-email-yumeng18@huawei.com> <20210128050354.GA30874@gondor.apana.org.au>
+ <CAMj1kXHvY9JveFyhtETALCH=AFGMGVbGGFMNDGc6ZVngEKbyDQ@mail.gmail.com>
+ <ff63fffd-2d65-337f-d802-adcf4352fdc3@linux.ibm.com> <20210129030004.GA3463@gondor.apana.org.au>
+ <20210208063541.ribifj3445djxfy5@altlinux.org>
+In-Reply-To: <20210208063541.ribifj3445djxfy5@altlinux.org>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Mon, 8 Feb 2021 07:47:44 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXF18T11WQm6coYOO8yD7g=AxSBDP1QjWghWRVAp6dCJ8w@mail.gmail.com>
+Message-ID: <CAMj1kXF18T11WQm6coYOO8yD7g=AxSBDP1QjWghWRVAp6dCJ8w@mail.gmail.com>
+Subject: Re: [PATCH v7 4/7] crypto: add ecc curve and expose them
+To:     Vitaly Chikunov <vt@altlinux.org>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        Stefan Berger <stefanb@linux.ibm.com>,
+        Meng Yu <yumeng18@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Zaibo Xu <xuzaibo@huawei.com>, wangzhou1@hisilicon.com,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Daniele Alessandrelli <daniele.alessandrelli@linux.intel.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        "Khurana, Prabhjot" <prabhjot.khurana@intel.com>,
+        "Reshetova, Elena" <elena.reshetova@intel.com>,
+        Patrick Uiterwijk <patrick@puiterwijk.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
-
-Friendly ping...
-
-
-On 2021/1/30 15:10, Chen Zhou wrote:
-> There are following issues in arm64 kdump:
-> 1. We use crashkernel=X to reserve crashkernel below 4G, which
-> will fail when there is no enough low memory.
-> 2. If reserving crashkernel above 4G, in this case, crash dump
-> kernel will boot failure because there is no low memory available
-> for allocation.
+On Mon, 8 Feb 2021 at 07:37, Vitaly Chikunov <vt@altlinux.org> wrote:
 >
-> To solve these issues, change the behavior of crashkernel=X.
-> crashkernel=X tries low allocation in DMA zone and fall back to high
-> allocation if it fails.
+> Herbert,
 >
-> We can also use "crashkernel=X,high" to select a high region above
-> DMA zone, which also tries to allocate at least 256M low memory in
-> DMA zone automatically and "crashkernel=Y,low" can be used to allocate
-> specified size low memory.
+> On Fri, Jan 29, 2021 at 02:00:04PM +1100, Herbert Xu wrote:
+> > On Thu, Jan 28, 2021 at 09:49:41PM -0500, Stefan Berger wrote:
+> > >
+> > > In my patch series I initially had registered the akciphers under the names
+> > > ecc-nist-p192 and ecc-nist-p256 but now, in V4, joined them together as
+> > > 'ecdsa'. This may be too generic for a name. Maybe it should be called
+> > > ecsda-nist for the NIST family.
+> >
+> > What I'm proposing is specifying the curve in the name as well, i.e.,
+> > ecdsa-nist-p192 instead of just ecdsa or ecdsa-nist.
+> >
+> > This simplifies the task of handling hardware that only supports a
+> > subset of curves.
 >
-> When reserving crashkernel in high memory, some low memory is reserved
-> for crash dump kernel devices. So there may be two regions reserved for
-> crash dump kernel.
-> In order to distinct from the high region and make no effect to the use
-> of existing kexec-tools, rename the low region as "Crash kernel (low)",
-> and pass the low region by reusing DT property
-> "linux,usable-memory-range". We made the low memory region as the last
-> range of "linux,usable-memory-range" to keep compatibility with existing
-> user-space and older kdump kernels.
->
-> Besides, we need to modify kexec-tools:
-> arm64: support more than one crash kernel regions(see [1])
->
-> Another update is document about DT property 'linux,usable-memory-range':
-> schemas: update 'linux,usable-memory-range' node schema(see [2])
->
-> This patchset contains the following eleven patches:
-> 0001-x86-kdump-replace-the-hard-coded-alignment-with-macr.patch
-> 0002-x86-kdump-make-the-lower-bound-of-crash-kernel-reser.patch
-> 0003-x86-kdump-use-macro-CRASH_ADDR_LOW_MAX-in-functions-.patch
-> 0004-x86-kdump-move-xen_pv_domain-check-and-insert_resour.patch
-> 0005-x86-kdump-move-reserve_crashkernel-_low-into-crash_c.patch
-> 0006-x86-elf-Move-vmcore_elf_check_arch_cross-to-arch-x86.patch
-> 0007-arm64-kdump-introduce-some-macroes-for-crash-kernel-.patch
-> 0008-arm64-kdump-reimplement-crashkernel-X.patch
-> 0009-x86-arm64-Add-ARCH_WANT_RESERVE_CRASH_KERNEL-config.patch
-> 0010-arm64-kdump-add-memory-for-devices-by-DT-property-li.patch
-> 0011-kdump-update-Documentation-about-crashkernel.patch
->
-> 0001-0004 are some x86 cleanups which prepares for making
-> functionsreserve_crashkernel[_low]() generic.
-> 0005 makes functions reserve_crashkernel[_low]() generic.
-> 0006 fix compiling warning.
-> 0007-0009 reimplements arm64 crashkernel=X.
-> 0010 adds memory for devices by DT property linux,usable-memory-range.
-> 0011 updates the doc.
->
-> Changes since [v13]
-> - Rebased on top of 5.11-rc5.
-> - Introduce config CONFIG_ARCH_WANT_RESERVE_CRASH_KERNEL.
-> Since reserve_crashkernel[_low]() implementations are quite similar on
-> other architectures, so have CONFIG_ARCH_WANT_RESERVE_CRASH_KERNEL in
-> arch/Kconfig and select this by X86 and ARM64.
-> - Some minor cleanup.
->
-> Changes since [v12]
-> - Rebased on top of 5.10-rc1.
-> - Keep CRASH_ALIGN as 16M suggested by Dave.
-> - Drop patch "kdump: add threshold for the required memory".
-> - Add Tested-by from John.
->
-> Changes since [v11]
-> - Rebased on top of 5.9-rc4.
-> - Make the function reserve_crashkernel() of x86 generic.
-> Suggested by Catalin, make the function reserve_crashkernel() of x86 generic
-> and arm64 use the generic version to reimplement crashkernel=X.
->
-> Changes since [v10]
-> - Reimplement crashkernel=X suggested by Catalin, Many thanks to Catalin.
->
-> Changes since [v9]
-> - Patch 1 add Acked-by from Dave.
-> - Update patch 5 according to Dave's comments.
-> - Update chosen schema.
->
-> Changes since [v8]
-> - Reuse DT property "linux,usable-memory-range".
-> Suggested by Rob, reuse DT property "linux,usable-memory-range" to pass the low
-> memory region.
-> - Fix kdump broken with ZONE_DMA reintroduced.
-> - Update chosen schema.
->
-> Changes since [v7]
-> - Move x86 CRASH_ALIGN to 2M
-> Suggested by Dave and do some test, move x86 CRASH_ALIGN to 2M.
-> - Update Documentation/devicetree/bindings/chosen.txt.
-> Add corresponding documentation to Documentation/devicetree/bindings/chosen.txt
-> suggested by Arnd.
-> - Add Tested-by from Jhon and pk.
->
-> Changes since [v6]
-> - Fix build errors reported by kbuild test robot.
->
-> Changes since [v5]
-> - Move reserve_crashkernel_low() into kernel/crash_core.c.
-> - Delete crashkernel=X,high.
-> - Modify crashkernel=X,low.
-> If crashkernel=X,low is specified simultaneously, reserve spcified size low
-> memory for crash kdump kernel devices firstly and then reserve memory above 4G.
-> In addition, rename crashk_low_res as "Crash kernel (low)" for arm64, and then
-> pass to crash dump kernel by DT property "linux,low-memory-range".
-> - Update Documentation/admin-guide/kdump/kdump.rst.
->
-> Changes since [v4]
-> - Reimplement memblock_cap_memory_ranges for multiple ranges by Mike.
->
-> Changes since [v3]
-> - Add memblock_cap_memory_ranges back for multiple ranges.
-> - Fix some compiling warnings.
->
-> Changes since [v2]
-> - Split patch "arm64: kdump: support reserving crashkernel above 4G" as
-> two. Put "move reserve_crashkernel_low() into kexec_core.c" in a separate
-> patch.
->
-> Changes since [v1]:
-> - Move common reserve_crashkernel_low() code into kernel/kexec_core.c.
-> - Remove memblock_cap_memory_ranges() i added in v1 and implement that
-> in fdt_enforce_memory_region().
-> There are at most two crash kernel regions, for two crash kernel regions
-> case, we cap the memory range [min(regs[*].start), max(regs[*].end)]
-> and then remove the memory range in the middle.
->
-> [1]: http://lists.infradead.org/pipermail/kexec/2020-June/020737.html
-> [2]: https://github.com/robherring/dt-schema/pull/19 
-> [v1]: https://lkml.org/lkml/2019/4/2/1174
-> [v2]: https://lkml.org/lkml/2019/4/9/86
-> [v3]: https://lkml.org/lkml/2019/4/9/306
-> [v4]: https://lkml.org/lkml/2019/4/15/273
-> [v5]: https://lkml.org/lkml/2019/5/6/1360
-> [v6]: https://lkml.org/lkml/2019/8/30/142
-> [v7]: https://lkml.org/lkml/2019/12/23/411
-> [v8]: https://lkml.org/lkml/2020/5/21/213
-> [v9]: https://lkml.org/lkml/2020/6/28/73
-> [v10]: https://lkml.org/lkml/2020/7/2/1443
-> [v11]: https://lkml.org/lkml/2020/8/1/150
-> [v12]: https://lkml.org/lkml/2020/9/7/1037
-> [v13]: https://lkml.org/lkml/2020/10/31/34
->
-> Chen Zhou (11):
->   x86: kdump: replace the hard-coded alignment with macro CRASH_ALIGN
->   x86: kdump: make the lower bound of crash kernel reservation
->     consistent
->   x86: kdump: use macro CRASH_ADDR_LOW_MAX in functions
->     reserve_crashkernel()
->   x86: kdump: move xen_pv_domain() check and insert_resource() to
->     setup_arch()
->   x86: kdump: move reserve_crashkernel[_low]() into crash_core.c
->   x86/elf: Move vmcore_elf_check_arch_cross to
->     arch/x86/include/asm/elf.h
->   arm64: kdump: introduce some macroes for crash kernel reservation
->   arm64: kdump: reimplement crashkernel=X
->   x86, arm64: Add ARCH_WANT_RESERVE_CRASH_KERNEL config
->   arm64: kdump: add memory for devices by DT property
->     linux,usable-memory-range
->   kdump: update Documentation about crashkernel
->
->  Documentation/admin-guide/kdump/kdump.rst     |  22 ++-
->  .../admin-guide/kernel-parameters.txt         |  11 +-
->  arch/Kconfig                                  |   3 +
->  arch/arm64/Kconfig                            |   1 +
->  arch/arm64/include/asm/kexec.h                |  10 ++
->  arch/arm64/kernel/setup.c                     |  13 +-
->  arch/arm64/mm/init.c                          | 111 +++++-------
->  arch/x86/Kconfig                              |   2 +
->  arch/x86/include/asm/elf.h                    |   3 +
->  arch/x86/include/asm/kexec.h                  |  31 +++-
->  arch/x86/kernel/setup.c                       | 163 ++----------------
->  include/linux/crash_core.h                    |   3 +
->  include/linux/kexec.h                         |   2 -
->  kernel/crash_core.c                           | 156 +++++++++++++++++
->  kernel/kexec_core.c                           |  17 --
->  15 files changed, 303 insertions(+), 245 deletions(-)
+> So, if some implementation supports multiple curves (like EC-RDSA
+> currently supports 5 curves), it should add 5 ecrdsa-{a,b,c,..}
+> algorithms with actually the same top level implementation?
+> Right?
 >
 
+Yes. The only difference will be the init() function, which can be
+used to set the TFM properties that define which curve is being used.
+The other routines can be generic, and refer to those properties if
+the behavior is curve-specific.
+
+
+>
+> > There is a parallel discussion of exactly what curves we should
+> > support in the kernel.  Personally if there is a user in the kernel
+> > for it then I'm happy to see it added.  In your specific case, as
+> > long as your use of the algorithm in x509 is accepted then I don't
+> > have any problems with adding support in the Crypto API.
+> >
+> > Cheers,
+> > --
+> > Email: Herbert Xu <herbert@gondor.apana.org.au>
+> > Home Page: http://gondor.apana.org.au/~herbert/
+> > PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
