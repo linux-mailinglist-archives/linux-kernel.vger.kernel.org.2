@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C5E1313930
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 17:22:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E29D6313932
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 17:22:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234342AbhBHQVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 11:21:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56852 "EHLO mail.kernel.org"
+        id S231713AbhBHQWG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 11:22:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55764 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233341AbhBHPMe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 10:12:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 530A464EAC;
-        Mon,  8 Feb 2021 15:09:26 +0000 (UTC)
+        id S233153AbhBHPMj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 10:12:39 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 21E7C64EF7;
+        Mon,  8 Feb 2021 15:09:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612796966;
-        bh=HM0XlfwS6bkLvk0EzFap5NM6LxYLMPb4FCeFAwji3uE=;
+        s=korg; t=1612796969;
+        bh=UV3Efl6CKs8qeOYnS9d6yxg4CDBBDMs3pgHOmtryJNA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rnH+9R9z0oBDL7sa83mnd8O2p73F43QPDFz3/BZ38GaX+bjDqudcBwLsGAeqipLxH
-         otG/TwpQ9VqEOUivMv0tNn2NTLvzfoWQv2+jJoYUY3SIQWZecNkxSPJQLv819JiaH7
-         3RrA9ebo6q2j3laC3/FOJhVEg6M6q7OX9KqPivAk=
+        b=XdXiwgNvA/wj9PFxEh6mw37sVBgZzgcdfl+TAfmNXKMQ9QY2DTmVK24S4gblxhICu
+         vx41qET32KW+DPfQ1DHJu/kELeQrpDTlIF4zYJCOLBwXxypmqXNpABmgO9BpC18b0a
+         ZNqpXyai6eoIDUn0xRM3R43a87uRYh3hG3fpqjUY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christoph Schemmel <christoph.schemmel@gmail.com>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 5.4 03/65] USB: serial: option: Adding support for Cinterion MV31
-Date:   Mon,  8 Feb 2021 16:00:35 +0100
-Message-Id: <20210208145810.376001682@linuxfoundation.org>
+        stable@vger.kernel.org, Shawn Guo <shawn.guo@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 04/65] arm64: dts: qcom: c630: keep both touchpad devices enabled
+Date:   Mon,  8 Feb 2021 16:00:36 +0100
+Message-Id: <20210208145810.409407829@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210208145810.230485165@linuxfoundation.org>
 References: <20210208145810.230485165@linuxfoundation.org>
@@ -40,70 +40,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christoph Schemmel <christoph.schemmel@gmail.com>
+From: Shawn Guo <shawn.guo@linaro.org>
 
-commit e478d6029dca9d8462f426aee0d32896ef64f10f upstream.
+[ Upstream commit a9164910c5ceed63551280a4a0b85d37ac2b19a5 ]
 
-Adding support for Cinterion device MV31 for enumeration with
-PID 0x00B3 and 0x00B7.
+Indicated by AML code in ACPI table, the touchpad in-use could be found
+on two possible slave addresses on &i2c3, i.e. hid@15 and hid@2c.  And
+which one is in-use can be determined by reading another address on the
+I2C bus.  Unfortunately, for DT boot, there is currently no support in
+firmware to make this check and patch DT accordingly.  This results in
+a non-functional touchpad on those C630 devices with hid@2c.
 
-usb-devices output for 0x00B3
-T:  Bus=04 Lev=01 Prnt=01 Port=00 Cnt=01 Dev#=  6 Spd=5000 MxCh= 0
-D:  Ver= 3.20 Cls=ef(misc ) Sub=02 Prot=01 MxPS= 9 #Cfgs=  1
-P:  Vendor=1e2d ProdID=00b3 Rev=04.14
-S:  Manufacturer=Cinterion
-S:  Product=Cinterion PID 0x00B3 USB Mobile Broadband
-S:  SerialNumber=b3246eed
-C:  #Ifs= 6 Cfg#= 1 Atr=a0 MxPwr=896mA
-I:  If#=0x0 Alt= 0 #EPs= 1 Cls=02(commc) Sub=0e Prot=00 Driver=cdc_mbim
-I:  If#=0x1 Alt= 1 #EPs= 2 Cls=0a(data ) Sub=00 Prot=02 Driver=cdc_mbim
-I:  If#=0x2 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=option
-I:  If#=0x3 Alt= 0 #EPs= 1 Cls=ff(vend.) Sub=ff Prot=ff Driver=cdc_wdm
-I:  If#=0x4 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=option
-I:  If#=0x5 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=30 Driver=option
+As i2c-hid driver will stop probing the device if there is nothing on
+the slave address, we can actually keep both devices enabled in DT, and
+i2c-hid driver will only probe the existing one.  The only problem is
+that we cannot set up pinctrl in both device nodes, as two devices with
+the same pinctrl will cause pin conflict that makes the second device
+fail to probe.  Let's move the pinctrl state up to parent node to solve
+this problem.  As the pinctrl state of parent node is already defined in
+sdm845.dtsi, it ends up with overwriting pinctrl-0 with i2c3_hid_active
+state added in there.
 
-usb-devices output for 0x00B7
-T:  Bus=04 Lev=01 Prnt=01 Port=00 Cnt=01 Dev#=  5 Spd=5000 MxCh= 0
-D:  Ver= 3.20 Cls=ef(misc ) Sub=02 Prot=01 MxPS= 9 #Cfgs=  1
-P:  Vendor=1e2d ProdID=00b7 Rev=04.14
-S:  Manufacturer=Cinterion
-S:  Product=Cinterion PID 0x00B3 USB Mobile Broadband
-S:  SerialNumber=b3246eed
-C:  #Ifs= 4 Cfg#= 1 Atr=a0 MxPwr=896mA
-I:  If#=0x0 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=ff Prot=ff Driver=qmi_wwan
-I:  If#=0x1 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=option
-I:  If#=0x2 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=option
-I:  If#=0x3 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=30 Driver=option
-
-Signed-off-by: Christoph Schemmel <christoph.schemmel@gmail.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 11d0e4f28156 ("arm64: dts: qcom: c630: Polish i2c-hid devices")
+Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
+Link: https://lore.kernel.org/r/20210102045940.26874-1-shawn.guo@linaro.org
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/serial/option.c |    6 ++++++
- 1 file changed, 6 insertions(+)
+ arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts | 10 ++--------
+ 1 file changed, 2 insertions(+), 8 deletions(-)
 
---- a/drivers/usb/serial/option.c
-+++ b/drivers/usb/serial/option.c
-@@ -425,6 +425,8 @@ static void option_instat_callback(struc
- #define CINTERION_PRODUCT_AHXX_2RMNET		0x0084
- #define CINTERION_PRODUCT_AHXX_AUDIO		0x0085
- #define CINTERION_PRODUCT_CLS8			0x00b0
-+#define CINTERION_PRODUCT_MV31_MBIM		0x00b3
-+#define CINTERION_PRODUCT_MV31_RMNET		0x00b7
+diff --git a/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts b/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
+index f539b3655f6b9..e638f216dbfb3 100644
+--- a/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
++++ b/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
+@@ -243,6 +243,8 @@
+ &i2c3 {
+ 	status = "okay";
+ 	clock-frequency = <400000>;
++	/* Overwrite pinctrl-0 from sdm845.dtsi */
++	pinctrl-0 = <&qup_i2c3_default &i2c3_hid_active>;
  
- /* Olivetti products */
- #define OLIVETTI_VENDOR_ID			0x0b3c
-@@ -1914,6 +1916,10 @@ static const struct usb_device_id option
- 	{ USB_DEVICE(SIEMENS_VENDOR_ID, CINTERION_PRODUCT_HC25_MDMNET) },
- 	{ USB_DEVICE(SIEMENS_VENDOR_ID, CINTERION_PRODUCT_HC28_MDM) }, /* HC28 enumerates with Siemens or Cinterion VID depending on FW revision */
- 	{ USB_DEVICE(SIEMENS_VENDOR_ID, CINTERION_PRODUCT_HC28_MDMNET) },
-+	{ USB_DEVICE_INTERFACE_CLASS(CINTERION_VENDOR_ID, CINTERION_PRODUCT_MV31_MBIM, 0xff),
-+	  .driver_info = RSVD(3)},
-+	{ USB_DEVICE_INTERFACE_CLASS(CINTERION_VENDOR_ID, CINTERION_PRODUCT_MV31_RMNET, 0xff),
-+	  .driver_info = RSVD(0)},
- 	{ USB_DEVICE(OLIVETTI_VENDOR_ID, OLIVETTI_PRODUCT_OLICARD100),
- 	  .driver_info = RSVD(4) },
- 	{ USB_DEVICE(OLIVETTI_VENDOR_ID, OLIVETTI_PRODUCT_OLICARD120),
+ 	tsel: hid@15 {
+ 		compatible = "hid-over-i2c";
+@@ -250,9 +252,6 @@
+ 		hid-descr-addr = <0x1>;
+ 
+ 		interrupts-extended = <&tlmm 37 IRQ_TYPE_LEVEL_HIGH>;
+-
+-		pinctrl-names = "default";
+-		pinctrl-0 = <&i2c3_hid_active>;
+ 	};
+ 
+ 	tsc2: hid@2c {
+@@ -261,11 +260,6 @@
+ 		hid-descr-addr = <0x20>;
+ 
+ 		interrupts-extended = <&tlmm 37 IRQ_TYPE_LEVEL_HIGH>;
+-
+-		pinctrl-names = "default";
+-		pinctrl-0 = <&i2c3_hid_active>;
+-
+-		status = "disabled";
+ 	};
+ };
+ 
+-- 
+2.27.0
+
 
 
