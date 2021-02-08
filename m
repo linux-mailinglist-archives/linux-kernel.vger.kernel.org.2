@@ -2,97 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F7E83128DB
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 03:03:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B473D3128DE
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 03:03:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229704AbhBHCBY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Feb 2021 21:01:24 -0500
-Received: from mail109.syd.optusnet.com.au ([211.29.132.80]:54405 "EHLO
-        mail109.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229537AbhBHCBN (ORCPT
+        id S229719AbhBHCCF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Feb 2021 21:02:05 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:55664 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229570AbhBHCCC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Feb 2021 21:01:13 -0500
-Received: from dread.disaster.area (pa49-181-52-82.pa.nsw.optusnet.com.au [49.181.52.82])
-        by mail109.syd.optusnet.com.au (Postfix) with ESMTPS id CDDAA1140C21;
-        Mon,  8 Feb 2021 13:00:03 +1100 (AEDT)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1l8vqM-00BtB6-3Z; Mon, 08 Feb 2021 13:00:02 +1100
-Date:   Mon, 8 Feb 2021 13:00:02 +1100
-From:   Dave Chinner <david@fromorbit.com>
-To:     Miklos Szeredi <miklos@szeredi.hu>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Miklos Szeredi <mszeredi@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andreas Dilger <adilger@dilger.ca>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Dave Kleikamp <shaggy@kernel.org>,
-        David Sterba <dsterba@suse.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, Jan Kara <jack@suse.cz>,
-        Joel Becker <jlbec@evilplan.org>,
-        Matthew Garrett <matthew.garrett@nebula.com>,
-        Mike Marshall <hubcap@omnibond.com>,
-        Richard Weinberger <richard@nod.at>,
-        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
-        Theodore Ts'o <tytso@mit.edu>, Tyler Hicks <code@tyhicks.com>
-Subject: Re: [PATCH 00/18] new API for FS_IOC_[GS]ETFLAGS/FS_IOC_FS[GS]ETXATTR
-Message-ID: <20210208020002.GM4626@dread.disaster.area>
-References: <20210203124112.1182614-1-mszeredi@redhat.com>
- <20210203130501.GY308988@casper.infradead.org>
- <CAJfpegs3YWybmH7iKDLQ-KwmGieS1faO1uSZ-ADB0UFYOFPEnQ@mail.gmail.com>
- <20210203135827.GZ308988@casper.infradead.org>
- <CAJfpegvHFHcCPtyJ+w6uRx+hLH9JAT46WJktF_nez-ZZAria7A@mail.gmail.com>
- <20210203142802.GA308988@casper.infradead.org>
- <CAJfpegtW5-XObARX87A8siTJNxTCkzXG=QY5tTRXVUvHXXZn3g@mail.gmail.com>
- <20210203145620.GB308988@casper.infradead.org>
- <CAJfpegvV19DT+nQcW5OiLsGWjnp9-DoLAY16S60PewSLcKLTMA@mail.gmail.com>
+        Sun, 7 Feb 2021 21:02:02 -0500
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 11820AkW123340;
+        Sun, 7 Feb 2021 20:00:10 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1612749610;
+        bh=cUtFIfOlkE66hKZ1iSDwIL9jGzTqS4QxLAUcpT4MTbM=;
+        h=Subject:From:To:CC:References:Date:In-Reply-To;
+        b=apsu4RILEZPLAGEaHnF7AHIxBXnqVsHiIrfJNRUxWE9k4p00Fibsx4Hh8JAMM5eGc
+         MSTyzFqD8sBnIJ562Xr7lFcGOEb7I8Q/G3tid/MpGf6Iygj74Mhbofy8hM+CD7d/kW
+         Qq2+En/2/+KkTOGFb+zks4j20TMRza3RHrWg72NM=
+Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 11820ANp120619
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Sun, 7 Feb 2021 20:00:10 -0600
+Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Sun, 7 Feb
+ 2021 20:00:09 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Sun, 7 Feb 2021 20:00:09 -0600
+Received: from [10.250.232.75] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 118205jW070770;
+        Sun, 7 Feb 2021 20:00:06 -0600
+Subject: Re: [PATCH v7 0/2] PCI: cadence: Retrain Link to work around Gen2
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+To:     Nadeem Athani <nadeem@cadence.com>, <tjoseph@cadence.com>,
+        <lorenzo.pieralisi@arm.com>, <robh@kernel.org>,
+        <bhelgaas@google.com>, <linux-omap@vger.kernel.org>,
+        <linux-pci@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <mparab@cadence.com>, <sjakhade@cadence.com>,
+        <pthombar@cadence.com>
+References: <20201230120515.2348-1-nadeem@cadence.com>
+ <15abdca0-d1e1-64b7-4a9a-d7549f035e01@ti.com>
+Message-ID: <c9cd405b-024c-cc80-586a-7fd3d28dfd96@ti.com>
+Date:   Mon, 8 Feb 2021 07:30:04 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJfpegvV19DT+nQcW5OiLsGWjnp9-DoLAY16S60PewSLcKLTMA@mail.gmail.com>
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=Ubgvt5aN c=1 sm=1 tr=0 cx=a_idp_d
-        a=7pwokN52O8ERr2y46pWGmQ==:117 a=7pwokN52O8ERr2y46pWGmQ==:17
-        a=kj9zAlcOel0A:10 a=qa6Q16uM49sA:10 a=JfrnYn6hAAAA:8 a=7-415B0cAAAA:8
-        a=JXGzyL3g34njaGKGXqwA:9 a=CjuIK1q_8ugA:10 a=1CNFftbPRP8L7MoqJWF3:22
-        a=biEYGPWJfzWAr4FL6Ov7:22
+In-Reply-To: <15abdca0-d1e1-64b7-4a9a-d7549f035e01@ti.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 03, 2021 at 04:03:06PM +0100, Miklos Szeredi wrote:
-> On Wed, Feb 3, 2021 at 3:56 PM Matthew Wilcox <willy@infradead.org> wrote:
+Hi Lorenzo, Rob,
+
+On 12/01/21 12:45 pm, Kishon Vijay Abraham I wrote:
 > 
-> > But let's talk specifics.  What does CIFS need to contact the server for?
-> > Could it be cached earlier?
 > 
-> I don't understand what CIFS is doing, and I don't really care.   This
-> is the sort of operation where adding a couple of network roundtrips
-> so that the client can obtain the credentials required to perform the
-> operation doesn't really matter.  We won't have thousands of chattr(1)
-> calls per second.
+> On 30/12/20 5:35 pm, Nadeem Athani wrote:
+>> Cadence controller will not initiate autonomous speed change if strapped
+>> as Gen2. The Retrain Link bit is set as quirk to enable this speed change.
+>> Adding a quirk flag for defective IP. In future IP revisions this will not
+>> be applicable.
+>>
+>> Version history:
+>> Changes in v7:
+>> - Changing the commit title of patch 1 in this series.
+>> - Added a return value for function cdns_pcie_retrain().
+>> Changes in v6:
+>> - Move the position of function cdns_pcie_host_wait_for_link to remove
+>>   compilation error. No changes in code. Separate patch for this.
+>> Changes in v5:
+>> - Remove the compatible string based setting of quirk flag.
+>> - Removed additional Link Up Check
+>> - Removed quirk from pcie-cadence-plat.c and added in pci-j721e.c
+>> Changes in v4:
+>> - Added a quirk flag based on a new compatible string.
+>> - Change of api for link up: cdns_pcie_host_wait_for_link().
+>> Changes in v3:
+>> - To set retrain link bit,checking device capability & link status.
+>> - 32bit read in place of 8bit.
+>> - Minor correction in patch comment.
+>> - Change in variable & macro name.
+>> Changes in v2:
+>> - 16bit read in place of 8bit.
+> 
+> Could get GEN2 card enumerated in GEN2 mode in J7ES EVM.
+> 
+> Tested-by: Kishon Vijay Abraham I <kishon@ti.com>
 
-Incorrect.
+Can this series be merged?
 
-The xfs utilities can do recursive directory traversal to change
-things like the project ID across an entire directory tree. Or to
-change extent size hints.
+Thanks
+Kishon
 
-We also have 'xfs_io -c "lsattr -R" ...' and 'lsprog -R' which will
-do a recursive descent to list the requested attributes of all
-directories and files in the tree...
-
-So, yeah, we do indeed do thousands of these fsxattr based
-operations a second, sometimes tens of thousands a second or more,
-and sometimes they are issued in bulk in performance critical paths
-for container build/deployment operations....
-
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+> 
+> Thanks
+> Kishon
+>>
+>> Nadeem Athani (2):
+>>   PCI: cadence: Shifting of a function to support new code.
+>>   PCI: cadence: Retrain Link to work around Gen2 training defect.
+>>
+>>  drivers/pci/controller/cadence/pci-j721e.c         |  3 +
+>>  drivers/pci/controller/cadence/pcie-cadence-host.c | 70 ++++++++++++++++------
+>>  drivers/pci/controller/cadence/pcie-cadence.h      | 11 +++-
+>>  3 files changed, 65 insertions(+), 19 deletions(-)
+>>
