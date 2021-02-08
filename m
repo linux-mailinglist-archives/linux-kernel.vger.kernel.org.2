@@ -2,146 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27DE9313EF8
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 20:30:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33AD0313EC2
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 20:21:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236323AbhBHT3p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 14:29:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46606 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235171AbhBHSCk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 13:02:40 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D4F9164ED0;
-        Mon,  8 Feb 2021 17:58:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612807135;
-        bh=y7eQowfWRCiPs6rqvJgWxNBr3H42kcUQxHDrWQVFBLM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dxuMEheQD32mZCSNgXYYpfNFVYR8uqNhN2S8vpB5cPtAz5X6Zj7pUHX/0QLHnXv/Y
-         JzQILtTHf395nPcpuCi7Bx7cqat8+HQwvUDOZCtMb9+DjnP5f+ZSLzFLLqGqkkJSCW
-         qnasDvtEj9zvgb+jtvPBK5r/LjHt19eGheG8Qx5LqjceuBQ2X1CWNzWnDTw2uk7e7b
-         tnhyTTtB9Cr3u91Aj83mq7kicYidi/bKFEpcXsnfWKnAUAbH/IkaI9bK4FSiLqS+d2
-         vtn4AbeEqH0GUCbjA6Vr4A7Fxg4pP01IMzTt5gNEzY+/8x5q4qUFbMM3cVxZsDh8Wz
-         cjLcHkHqhSmcw==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+        id S236106AbhBHTVK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 14:21:10 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:38158 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235184AbhBHSAG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 13:00:06 -0500
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1612807155;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=d/K1nflfjUlbsBR3cGwm/oQjA++u+sJaiD0qsOu7S2s=;
+        b=CHIBhRcS9EzzfV/puEcjPtfyZq14OpnWy94x/5xqEeK0HD9eFrDljq/dTT6dy9ZKTjviFQ
+        MGHzHOyVpa+QPrQiyqsLPjFWCxz57fKJcRkuSQ3TbSfeA8aC4CEMg63jOGQy36tON9WnhH
+        FXCPhxIkc1tjeFdI1nWXgbFNmAqSIg3Gf5rxY58W12Ogf3RrKvmv5LNEl0Exa1gbdGVtE2
+        /FUi6oQ+L25oJhzHFKLgX2xd+fgMgs6Io1bEFCOnsDAaM0QaxgGZqHXkqxNVDdkrufn0Jx
+        1y60ALM6UeklQge91NhzcJ4O/AqhCekCvRCVLJwGTk/0KnOBa4Nc34PWbgbnag==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1612807155;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=d/K1nflfjUlbsBR3cGwm/oQjA++u+sJaiD0qsOu7S2s=;
+        b=4wR+m38B5LyACURm932IzQakUfaUt5rUysmpS8y054un9uavzWSlLGMvv9GSXfneHTzHA6
+        a3f2+iCqIeMEA0BQ==
+To:     linux-kernel@vger.kernel.org
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Nitesh Narayan Lal <nitesh@redhat.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>, abelits@marvell.com,
-        davem@davemloft.net, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.10 35/36] Revert "lib: Restrict cpumask_local_spread to houskeeping CPUs"
-Date:   Mon,  8 Feb 2021 12:58:05 -0500
-Message-Id: <20210208175806.2091668-35-sashal@kernel.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210208175806.2091668-1-sashal@kernel.org>
-References: <20210208175806.2091668-1-sashal@kernel.org>
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Miguel Ojeda Sandonis <miguel.ojeda.sandonis@gmail.com>
+Subject: [PATCH] auxdisplay: Remove in_interrupt() usage.
+Date:   Mon,  8 Feb 2021 18:58:24 +0100
+Message-Id: <20210208175824.381484-1-bigeasy@linutronix.de>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+charlcd_write() is invoked as a VFS->write() callback and as such it is
+always invoked from preemptible context and may sleep.
 
-[ Upstream commit 2452483d9546de1c540f330469dc4042ff089731 ]
+charlcd_puts() is invoked from register/unregister callback which is
+preemtible. The reboot notifier callback is also invoked from
+preemptible context.
 
-This reverts commit 1abdfe706a579a702799fce465bceb9fb01d407c.
+Therefore there is no need to use `in_interrupt()' to figure out if it
+is save to sleep because it always is.
+Using `schedule()' to schedule (an be friendly to others) is
+discouraged and `cond_resched()' should be used instead.
 
-This change is broken and not solving any problem it claims to solve.
+Remove `in_interrupt()' and use `cond_resched()' to schedule every 32
+iteration if needed.
 
-Robin reported that cpumask_local_spread() now returns any cpu out of
-cpu_possible_mask in case that NOHZ_FULL is disabled (runtime or compile
-time). It can also return any offline or not-present CPU in the
-housekeeping mask. Before that it was returning a CPU out of
-online_cpu_mask.
-
-While the function is racy against CPU hotplug if the caller does not
-protect against it, the actual use cases are not caring much about it as
-they use it mostly as hint for:
-
- - the user space affinity hint which is unused by the kernel
- - memory node selection which is just suboptimal
- - network queue affinity which might fail but is handled gracefully
-
-But the occasional fail vs. hotplug is very different from returning
-anything from possible_cpu_mask which can have a large amount of offline
-CPUs obviously.
-
-The changelog of the commit claims:
-
- "The current implementation of cpumask_local_spread() does not respect
-  the isolated CPUs, i.e., even if a CPU has been isolated for Real-Time
-  task, it will return it to the caller for pinning of its IRQ
-  threads. Having these unwanted IRQ threads on an isolated CPU adds up
-  to a latency overhead."
-
-The only correct part of this changelog is:
-
- "The current implementation of cpumask_local_spread() does not respect
-  the isolated CPUs."
-
-Everything else is just disjunct from reality.
-
-Reported-by: Robin Murphy <robin.murphy@arm.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: Nitesh Narayan Lal <nitesh@redhat.com>
-Cc: Marcelo Tosatti <mtosatti@redhat.com>
-Cc: abelits@marvell.com
-Cc: davem@davemloft.net
-Link: https://lore.kernel.org/r/87y2g26tnt.fsf@nanos.tec.linutronix.de
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: Miguel Ojeda Sandonis <miguel.ojeda.sandonis@gmail.com>
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 ---
- lib/cpumask.c | 16 +++++-----------
- 1 file changed, 5 insertions(+), 11 deletions(-)
+ drivers/auxdisplay/charlcd.c | 16 ++++------------
+ 1 file changed, 4 insertions(+), 12 deletions(-)
 
-diff --git a/lib/cpumask.c b/lib/cpumask.c
-index 85da6ab4fbb5a..fb22fb266f937 100644
---- a/lib/cpumask.c
-+++ b/lib/cpumask.c
-@@ -6,7 +6,6 @@
- #include <linux/export.h>
- #include <linux/memblock.h>
- #include <linux/numa.h>
--#include <linux/sched/isolation.h>
- 
- /**
-  * cpumask_next - get the next cpu in a cpumask
-@@ -206,27 +205,22 @@ void __init free_bootmem_cpumask_var(cpumask_var_t mask)
-  */
- unsigned int cpumask_local_spread(unsigned int i, int node)
- {
--	int cpu, hk_flags;
--	const struct cpumask *mask;
-+	int cpu;
- 
--	hk_flags = HK_FLAG_DOMAIN | HK_FLAG_MANAGED_IRQ;
--	mask = housekeeping_cpumask(hk_flags);
- 	/* Wrap: we always want a cpu. */
--	i %= cpumask_weight(mask);
-+	i %= num_online_cpus();
- 
- 	if (node == NUMA_NO_NODE) {
--		for_each_cpu(cpu, mask) {
-+		for_each_cpu(cpu, cpu_online_mask)
- 			if (i-- == 0)
- 				return cpu;
--		}
- 	} else {
- 		/* NUMA first. */
--		for_each_cpu_and(cpu, cpumask_of_node(node), mask) {
-+		for_each_cpu_and(cpu, cpumask_of_node(node), cpu_online_mask)
- 			if (i-- == 0)
- 				return cpu;
--		}
- 
--		for_each_cpu(cpu, mask) {
-+		for_each_cpu(cpu, cpu_online_mask) {
- 			/* Skip NUMA nodes, done above. */
- 			if (cpumask_test_cpu(cpu, cpumask_of_node(node)))
- 				continue;
--- 
-2.27.0
+diff --git a/drivers/auxdisplay/charlcd.c b/drivers/auxdisplay/charlcd.c
+index f43430e9dceed..fbfce95919f72 100644
+--- a/drivers/auxdisplay/charlcd.c
++++ b/drivers/auxdisplay/charlcd.c
+@@ -470,12 +470,8 @@ static ssize_t charlcd_write(struct file *file, const =
+char __user *buf,
+ 	char c;
+=20
+ 	for (; count-- > 0; (*ppos)++, tmp++) {
+-		if (!in_interrupt() && (((count + 1) & 0x1f) =3D=3D 0))
+-			/*
+-			 * let's be a little nice with other processes
+-			 * that need some CPU
+-			 */
+-			schedule();
++		if (((count + 1) & 0x1f) =3D=3D 0)
++			cond_resched();
+=20
+ 		if (get_user(c, tmp))
+ 			return -EFAULT;
+@@ -537,12 +533,8 @@ static void charlcd_puts(struct charlcd *lcd, const ch=
+ar *s)
+ 	int count =3D strlen(s);
+=20
+ 	for (; count-- > 0; tmp++) {
+-		if (!in_interrupt() && (((count + 1) & 0x1f) =3D=3D 0))
+-			/*
+-			 * let's be a little nice with other processes
+-			 * that need some CPU
+-			 */
+-			schedule();
++		if (((count + 1) & 0x1f) =3D=3D 0)
++			cond_resched();
+=20
+ 		charlcd_write_char(lcd, *tmp);
+ 	}
+--=20
+2.30.0
 
