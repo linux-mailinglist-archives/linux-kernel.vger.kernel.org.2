@@ -2,102 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91E84312B06
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 08:17:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC9EE312B09
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 08:20:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229992AbhBHHRP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 02:17:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34398 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229608AbhBHHRJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 02:17:09 -0500
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5BC8C06174A;
-        Sun,  7 Feb 2021 23:16:28 -0800 (PST)
-Received: by mail-ej1-x631.google.com with SMTP id p20so22949676ejb.6;
-        Sun, 07 Feb 2021 23:16:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=krqWjImkL2aI2UxmellDdSuNGZ6V2RDP8gOeRiAmdmg=;
-        b=qJVc36k8sBxNw2X02X+MJik2TCKX76BRTZGkc28zSjpfBWhdCvgtPxOF3bbFGwZorX
-         yQbqJb3omUNY6hAvX/7utnFP/Jslo8ZzGMmcw4Ac32i8zcerZuHTny+1E8IlsrWrJKpi
-         YUhSLYqczc9VpYVyy+mgA0b6xX/Q43kz+QZtQlaZSp4+pm/RKA5kDGZAE9J6lVreUEI7
-         kSn+wfZPp581R7Tl4CdrQqPl6AMKgkqjrKDJrGuvKzi+4NKYgkM+odx4+V3TKsCadcZJ
-         IYdNp3Scx0PSjfcrkmjJezuBAJtoST6dlAdLHbwL4YN+KMnHiD6Hj/mLlxAI7HUyeKRg
-         MZdw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=krqWjImkL2aI2UxmellDdSuNGZ6V2RDP8gOeRiAmdmg=;
-        b=sSLunMrLxGnkQofKXgin1aIjyGYCA+0v2ZexGJ6NdN7yb3WGATH4RITd0qvfy4jV5o
-         5qq9+ksLWK/N0wjTjt/DyrlHm7TzwlRFTp9LWOKIxOaVn1Dm+EQkLq2WXGRDrG1oNBhR
-         b7+9V9gH3t7G9eF2dDFufi3byhvAExpcKoWyxbNCf48Vq5Kua3GxKuyCBHeWUua/iAuV
-         CPHynXdN5B+MwI1ekQbEDCdei901CrO/Gu/Fyp/rnLTUCjzBbNzuDyMAjGoei2bSuhHR
-         IzB+jC0vm08GKFQ8nGX30gg647KezjGiFWPzwdKJV0uQBpIL+7wjl9FPjAY+e2sqtKQ5
-         LbMA==
-X-Gm-Message-State: AOAM530QcdqbfEaqp3tIT7tmr9sV28AHQY+BG7J/McM+Q8w1aUXZxbCr
-        666OdDG2NLBE1BjQcKOUkwQ=
-X-Google-Smtp-Source: ABdhPJyKkJ+xmxPCgvpMetHKmyyHLONSRFLlkA6IPTTWWCLsCmEB8YEVSkXWpIFguOsmFbbzjR9R2w==
-X-Received: by 2002:a17:906:5857:: with SMTP id h23mr15170797ejs.465.1612768587484;
-        Sun, 07 Feb 2021 23:16:27 -0800 (PST)
-Received: from felia.fritz.box ([2001:16b8:2d8e:7300:842e:a74a:35f3:bd06])
-        by smtp.gmail.com with ESMTPSA id b4sm3278152edh.40.2021.02.07.23.16.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 07 Feb 2021 23:16:26 -0800 (PST)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-To:     =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        bcm-kernel-feedback-list@broadcom.com, linux-pm@vger.kernel.org
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
-        Pia Eichinger <pia.eichinger@st.oth-regensburg.de>,
-        Joe Perches <joe@perches.com>, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH] MAINTAINERS: rectify BROADCOM PMB (POWER MANAGEMENT BUS) DRIVER
-Date:   Mon,  8 Feb 2021 08:16:19 +0100
-Message-Id: <20210208071619.3234-1-lukas.bulwahn@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        id S229876AbhBHHSd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 02:18:33 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:26970 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229608AbhBHHSa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 02:18:30 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4DYy5s2WXcz9tyb0;
+        Mon,  8 Feb 2021 08:17:37 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id i4YqNbed2Zye; Mon,  8 Feb 2021 08:17:37 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4DYy5s0zWmz9tyZx;
+        Mon,  8 Feb 2021 08:17:37 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 537738B798;
+        Mon,  8 Feb 2021 08:17:41 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id E4Xlc0eCwMdv; Mon,  8 Feb 2021 08:17:41 +0100 (CET)
+Received: from po16121vm.idsi0.si.c-s.fr (po15451.idsi0.si.c-s.fr [172.25.230.103])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id DE7CB8B75B;
+        Mon,  8 Feb 2021 08:17:40 +0100 (CET)
+Received: by po16121vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id BDF8267312; Mon,  8 Feb 2021 07:17:40 +0000 (UTC)
+Message-Id: <5ae4d545e3ac58e133d2599e0deb88843cb494fc.1612768623.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH] powerpc/32: Preserve cr1 in exception prolog stack check to
+ fix build error
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Mon,  8 Feb 2021 07:17:40 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 8bcac4011ebe ("soc: bcm: add PM driver for Broadcom's PMB") includes
-a new MAINTAINERS section BROADCOM PMB (POWER MANAGEMENT BUS) DRIVER with
-'drivers/soc/bcm/bcm-pmb.c', but the file was actually added at
-'drivers/soc/bcm/bcm63xx/bcm-pmb.c'.
+THREAD_ALIGN_SHIFT = THREAD_SHIFT + 1 = PAGE_SHIFT + 1
+Maximum PAGE_SHIFT is 18 for 256k pages so
+THREAD_ALIGN_SHIFT is 19 at the maximum.
 
-Hence, ./scripts/get_maintainer.pl --self-test=patterns complains:
+No need to clobber cr1, it can be preserved when moving r1
+into CR when we check stack overflow.
 
-  warning: no file matches  F:    drivers/soc/bcm/bcm-pmb.c
+This reduces the number of instructions in Machine Check Exception
+prolog and fixes a build failure reported by the kernel test robot
+on v5.10 stable when building with RTAS + VMAP_STACK + KVM. That
+build failure is due to too many instructions in the prolog hence
+not fitting between 0x200 and 0x300. Allthough the problem doesn't
+show up in mainline, it is still worth the change.
 
-Point the file entry to the right location.
-
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Reported-by: kernel test robot <lkp@intel.com>
+Fixes: 98bf2d3f4970 ("powerpc/32s: Fix RTAS machine check with VMAP stack")
+Cc: stable@vger.kernel.org
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 ---
-applies cleanly on next-20210205
+ arch/powerpc/kernel/head_32.h        | 2 +-
+ arch/powerpc/kernel/head_book3s_32.S | 6 ------
+ 2 files changed, 1 insertion(+), 7 deletions(-)
 
-Rafal, please ack.
-Florian, please pick this minor fixup patch for soc next tree.
-
- MAINTAINERS | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 6b507e8d7828..c23731c88dc2 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -3647,7 +3647,7 @@ M:	bcm-kernel-feedback-list@broadcom.com
- L:	linux-pm@vger.kernel.org
- S:	Maintained
- T:	git git://github.com/broadcom/stblinux.git
--F:	drivers/soc/bcm/bcm-pmb.c
-+F:	drivers/soc/bcm/bcm63xx/bcm-pmb.c
- F:	include/dt-bindings/soc/bcm-pmb.h
- 
- BROADCOM SPECIFIC AMBA DRIVER (BCMA)
+diff --git a/arch/powerpc/kernel/head_32.h b/arch/powerpc/kernel/head_32.h
+index a2f72c966baf..abc7b603ab65 100644
+--- a/arch/powerpc/kernel/head_32.h
++++ b/arch/powerpc/kernel/head_32.h
+@@ -47,7 +47,7 @@
+ 	lwz	r1,TASK_STACK-THREAD(r1)
+ 	addi	r1, r1, THREAD_SIZE - INT_FRAME_SIZE
+ 1:
+-	mtcrf	0x7f, r1
++	mtcrf	0x3f, r1
+ 	bt	32 - THREAD_ALIGN_SHIFT, stack_overflow
+ #else
+ 	subi	r11, r1, INT_FRAME_SIZE		/* use r1 if kernel */
+diff --git a/arch/powerpc/kernel/head_book3s_32.S b/arch/powerpc/kernel/head_book3s_32.S
+index 54140f4927e5..10e6aa88b1ff 100644
+--- a/arch/powerpc/kernel/head_book3s_32.S
++++ b/arch/powerpc/kernel/head_book3s_32.S
+@@ -278,12 +278,6 @@ MachineCheck:
+ 7:	EXCEPTION_PROLOG_2
+ 	addi	r3,r1,STACK_FRAME_OVERHEAD
+ #ifdef CONFIG_PPC_CHRP
+-#ifdef CONFIG_VMAP_STACK
+-	mfspr	r4, SPRN_SPRG_THREAD
+-	tovirt(r4, r4)
+-	lwz	r4, RTAS_SP(r4)
+-	cmpwi	cr1, r4, 0
+-#endif
+ 	beq	cr1, machine_check_tramp
+ 	twi	31, 0, 0
+ #else
 -- 
-2.17.1
+2.25.0
 
