@@ -2,109 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A2B0314308
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 23:32:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3B16314321
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 23:42:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231814AbhBHWbk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 17:31:40 -0500
-Received: from vps0.lunn.ch ([185.16.172.187]:56466 "EHLO vps0.lunn.ch"
+        id S230213AbhBHWmF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 17:42:05 -0500
+Received: from smtp-out.xnet.cz ([178.217.244.18]:48479 "EHLO smtp-out.xnet.cz"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230055AbhBHWbc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 17:31:32 -0500
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1l9F3M-004x80-Hv; Mon, 08 Feb 2021 23:30:44 +0100
-Date:   Mon, 8 Feb 2021 23:30:44 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Tobias Waldekranz <tobias@waldekranz.com>,
-        Vadym Kochan <vadym.kochan@plvision.eu>,
-        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        Mickey Rachamim <mickeyr@marvell.com>,
-        linux-kernel@vger.kernel.org,
-        Vladimir Oltean <vladimir.oltean@nxp.com>
-Subject: Re: [PATCH net-next 5/7] net: marvell: prestera: add LAG support
-Message-ID: <YCG7lEncISjQwEOk@lunn.ch>
-References: <20210203165458.28717-1-vadym.kochan@plvision.eu>
- <20210203165458.28717-6-vadym.kochan@plvision.eu>
- <20210204211647.7b9a8ebf@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <87v9b249oq.fsf@waldekranz.com>
- <20210208130557.56b14429@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        id S229623AbhBHWmD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 17:42:03 -0500
+Received: from meh.true.cz (meh.true.cz [108.61.167.218])
+        (Authenticated sender: petr@true.cz)
+        by smtp-out.xnet.cz (Postfix) with ESMTPSA id 77D793ADE;
+        Mon,  8 Feb 2021 23:41:17 +0100 (CET)
+Received: by meh.true.cz (OpenSMTPD) with ESMTP id f7b814b6;
+        Mon, 8 Feb 2021 23:40:59 +0100 (CET)
+From:   =?UTF-8?q?Petr=20=C5=A0tetiar?= <ynezz@true.cz>
+To:     Tomasz Duszynski <tomasz.duszynski@octakon.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>
+Cc:     =?UTF-8?q?Petr=20=C5=A0tetiar?= <ynezz@true.cz>,
+        stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] iio: chemical: scd30: fix Oops due to missing parent device
+Date:   Mon,  8 Feb 2021 23:39:47 +0100
+Message-Id: <20210208223947.32344-1-ynezz@true.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210208130557.56b14429@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > I took a quick look at it, and what I found left me very puzzled. I hope
-> > you do not mind me asking a generic question about the policy around
-> > switchdev drivers. If someone published a driver using something similar
-> > to the following configuration flow:
-> > 
-> > iproute2  daemon(SDK)
-> >    |        ^    |
-> >    :        :    : user/kernel boundary
-> >    v        |    |
-> > netlink     |    |
-> >    |        |    |
-> >    v        |    |
-> >  driver     |    |
-> >    |        |    |
-> >    '--------'    |
-> >                  : kernel/hardware boundary
-> >                  v
-> >                 ASIC
-> > 
-> > My guess is that they would be (rightly IMO) told something along the
-> > lines of "we do not accept drivers that are just shims for proprietary
-> > SDKs".
-> > 
-> > But it seems like if that same someone has enough area to spare in their
-> > ASIC to embed a CPU, it is perfectly fine to run that same SDK on it,
-> > call it "firmware", and then push a shim driver into the kernel tree.
-> > 
-> > iproute2
-> >    |
-> >    :               user/kernel boundary
-> >    v
-> > netlink
-> >    |
-> >    v
-> >  driver
-> >    |
-> >    |
-> >    :               kernel/hardware boundary
-> >    '-------------.
-> >                  v
-> >              daemon(SDK)
-> >                  |
-> >                  v
-> >                 ASIC
-> > 
-> > What have we, the community, gained by this? In the old world, the
-> > vendor usually at least had to ship me the SDK in source form. Having
-> > seen the inside of some of those sausage factories, they are not the
-> > kinds of code bases that I want at the bottom of my stack; even less so
-> > in binary form where I am entirely at the vendor's mercy for bugfixes.
-> > 
-> > We are talking about a pure Ethernet fabric here, so there is no fig
-> > leaf of "regulatory requirements" to hide behind, in contrast to WiFi
-> > for example.
-> > 
-> > Is it the opinion of the netdev community that it is OK for vendors to
-> > use this model?
+My machine Oopsed while testing SCD30 sensor in interrupt driven mode:
 
-What i find interesting is the comparison between Microchip Sparx5 and
-Marvell Prestera. They offer similar capabilities. Both have a CPU on
-them. As you say Marvell is pushing their SDK into this CPU, black
-box. Microchip decided to open everything, no firmware, the kernel
-driver is directly accessing the hardware, the datasheet is available,
-and microchip engineers are here on the list.
+ Unable to handle kernel NULL pointer dereference at virtual address 00000188
+ pgd = (ptrval)
+ [00000188] *pgd=00000000
+ Internal error: Oops: 5 [#1] SMP ARM
+ Modules linked in:
+ CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.4.96+ #473
+ Hardware name: Freescale i.MX6 Quad/DualLite (Device Tree)
+ PC is at _raw_spin_lock_irqsave+0x10/0x4c
+ LR is at devres_add+0x18/0x38
+ ...
+ [<8070ecac>] (_raw_spin_lock_irqsave) from [<804916a8>] (devres_add+0x18/0x38)
+ [<804916a8>] (devres_add) from [<805ef708>] (devm_iio_trigger_alloc+0x5c/0x7c)
+ [<805ef708>] (devm_iio_trigger_alloc) from [<805f0a90>] (scd30_probe+0x1d4/0x3f0)
+ [<805f0a90>] (scd30_probe) from [<805f10fc>] (scd30_i2c_probe+0x54/0x64)
+ [<805f10fc>] (scd30_i2c_probe) from [<80583390>] (i2c_device_probe+0x150/0x278)
+ [<80583390>] (i2c_device_probe) from [<8048e6c0>] (really_probe+0x1f8/0x360)
 
-I really hope that Sparx5 takes off, and displaces Prestera. In terms
-of being able to solve issues, we the community can work with
-Sparx5. Prestera is too much a black box.
+I've found out, that it's due to missing parent/owner device in iio_dev struct
+which then leads to NULL pointer dereference during spinlock while registering
+the device resource via devres_add().
 
-	Andrew
+Cc: <stable@vger.kernel.org> # v5.9+
+Fixes: 64b3d8b1b0f5 ("iio: chemical: scd30: add core driver")
+Signed-off-by: Petr Štetiar <ynezz@true.cz>
+---
+ drivers/iio/chemical/scd30_core.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/iio/chemical/scd30_core.c b/drivers/iio/chemical/scd30_core.c
+index 4d0d798c7cd3..33aa6eb1963d 100644
+--- a/drivers/iio/chemical/scd30_core.c
++++ b/drivers/iio/chemical/scd30_core.c
+@@ -697,6 +697,7 @@ int scd30_probe(struct device *dev, int irq, const char *name, void *priv,
+ 
+ 	dev_set_drvdata(dev, indio_dev);
+ 
++	indio_dev->dev.parent = dev;
+ 	indio_dev->info = &scd30_info;
+ 	indio_dev->name = name;
+ 	indio_dev->channels = scd30_channels;
