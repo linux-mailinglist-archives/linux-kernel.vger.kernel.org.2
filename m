@@ -2,95 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1215D3141D8
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 22:33:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CFE333141EB
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 22:36:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236894AbhBHVdC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 16:33:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38606 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233773AbhBHUnZ (ORCPT
+        id S236357AbhBHVei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 16:34:38 -0500
+Received: from mail107.syd.optusnet.com.au ([211.29.132.53]:53884 "EHLO
+        mail107.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231835AbhBHUog (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 15:43:25 -0500
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58559C061788
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 12:42:45 -0800 (PST)
-Received: by mail-io1-xd2e.google.com with SMTP id n2so16461827iom.7
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 12:42:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=NYkpRIKoQEziEfmxZHcyacDzEAn9HqZQPpM6B68wbgg=;
-        b=Ufp4qTP6R8yxFdPeI1A6XodAcAFmJAQ223I6fycZ8IUeuLE9T7+kJ2ngaE0jPEuucx
-         E1c1hPK30k02Dkd66svllSBF1u+rXCOGHvvDAFSHBumyl7/ntStyO2wYd0jXQ9erACyJ
-         qLCQxGZwS5JGDDetpHFt2bD8ubiX5b1TT4988=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=NYkpRIKoQEziEfmxZHcyacDzEAn9HqZQPpM6B68wbgg=;
-        b=GjfW4lT5/3NCXs8Eu8w6McuxbmH+wbe65SVpYfIm9GheB6g9MfJ9XcoVAsGgwrUQUH
-         xDrcH2aHEe/r4R9E0Kbk9BsM4JmGkoSNH7MIjnXLryBtw2KCw1zeT81D8UlCTYoPSq/V
-         cKTX3v6TQkpfv0unmDHd0tpgkKK05pGTNmW5EcktdAZrQkd13hr0FxniYfGpjp2VjGWD
-         DKAYYKXJ5veOZVPinIFzmNZguMFI+KP2xw13eD/d+KrpeIHQJRMr3p2fj48G4uDHF8By
-         R2ABOXJ7/u8B3gdpKGa++jVs4b2tMK3aztMh6cIqW0V2PYRTR2wFcQA+YluBBmxeeQ2L
-         xV8A==
-X-Gm-Message-State: AOAM531hADP9DzkSfdGcPZmCk/laFTQe3phwzLbrsLHbFxiO+OTUYIuh
-        QyHKCww2L0TXu0obC20b3YGsqg==
-X-Google-Smtp-Source: ABdhPJxxAwDRVXrUwmE4LtCFsi7pcA6rtNOki4SFW7uB7Tt7rVOC5aqoi0t4NCxXLApkha8uOWPm+g==
-X-Received: by 2002:a02:9a02:: with SMTP id b2mr19870894jal.51.1612816964889;
-        Mon, 08 Feb 2021 12:42:44 -0800 (PST)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id l20sm9404113ioh.49.2021.02.08.12.42.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Feb 2021 12:42:44 -0800 (PST)
-Subject: Re: [PATCH 4.19 00/38] 4.19.175-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        stable@vger.kernel.org, Shuah Khan <skhan@linuxfoundation.org>
-References: <20210208145806.141056364@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <40e3c9f5-7e84-6259-7ba7-ca07b7e2c30c@linuxfoundation.org>
-Date:   Mon, 8 Feb 2021 13:42:43 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        Mon, 8 Feb 2021 15:44:36 -0500
+Received: from dread.disaster.area (pa49-181-52-82.pa.nsw.optusnet.com.au [49.181.52.82])
+        by mail107.syd.optusnet.com.au (Postfix) with ESMTPS id BC69B1105FA6;
+        Tue,  9 Feb 2021 07:43:15 +1100 (AEDT)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1l9DNK-00D6JC-OS; Tue, 09 Feb 2021 07:43:14 +1100
+Date:   Tue, 9 Feb 2021 07:43:14 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     "Darrick J. Wong" <djwong@kernel.org>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Brian Foster <bfoster@redhat.com>,
+        Paul Menzel <pmenzel@molgen.mpg.de>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        linux-xfs@vger.kernel.org, Josh Triplett <josh@joshtriplett.org>,
+        rcu@vger.kernel.org, it+linux-rcu@molgen.mpg.de,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: rcu: INFO: rcu_sched self-detected stall on CPU: Workqueue:
+ xfs-conv/md0 xfs_end_io
+Message-ID: <20210208204314.GY4662@dread.disaster.area>
+References: <1b07e849-cffd-db1f-f01b-2b8b45ce8c36@molgen.mpg.de>
+ <20210205171240.GN2743@paulmck-ThinkPad-P72>
+ <20210208140724.GA126859@bfoster>
+ <20210208145723.GT2743@paulmck-ThinkPad-P72>
+ <20210208154458.GB126859@bfoster>
+ <20210208171140.GV2743@paulmck-ThinkPad-P72>
+ <20210208172824.GA7209@magnolia>
 MIME-Version: 1.0
-In-Reply-To: <20210208145806.141056364@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210208172824.GA7209@magnolia>
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=F8MpiZpN c=1 sm=1 tr=0 cx=a_idp_d
+        a=7pwokN52O8ERr2y46pWGmQ==:117 a=7pwokN52O8ERr2y46pWGmQ==:17
+        a=kj9zAlcOel0A:10 a=qa6Q16uM49sA:10 a=7-415B0cAAAA:8
+        a=IutluZyxhPRxE9LQjgIA:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/8/21 8:00 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.19.175 release.
-> There are 38 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Mon, Feb 08, 2021 at 09:28:24AM -0800, Darrick J. Wong wrote:
+> On Mon, Feb 09, 2021 at 09:11:40AM -0800, Paul E. McKenney wrote:
+> > On Mon, Feb 08, 2021 at 10:44:58AM -0500, Brian Foster wrote:
+> > > There was a v2 inline that incorporated some directed feedback.
+> > > Otherwise there were questions and ideas about making the whole thing
+> > > faster, but I've no idea if that addresses the problem or not (if so,
+> > > that would be an entirely different set of patches). I'll wait and see
+> > > what Darrick thinks about this and rebase/repost if the approach is
+> > > agreeable..
+> > 
+> > There is always the school of thought that says that the best way to
+> > get people to focus on this is to rebase and repost.  Otherwise, they
+> > are all too likely to assume that you lost interest in this.
 > 
-> Responses should be made by Wed, 10 Feb 2021 14:57:55 +0000.
-> Anything received after that time might be too late.
+> I was hoping that a better solution would emerge for clearing
+> PageWriteback on hundreds of thousands of pages, but nothing easy popped
+> out.
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.175-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+> The hardcoded threshold in "[PATCH v2 2/2] xfs: kick extra large ioends
+> to completion workqueue" gives me unease because who's to say if marking
+> 262,144 pages on a particular CPU will actually stall it long enough to
+> trip the hangcheck?  Is the number lower on (say) some pokey NAS box
+> with a lot of storage but a slow CPU?
 
-Compiled and booted on my test system. No dmesg regressions.
+It's also not the right thing to do given the IO completion
+workqueue is a bound workqueue. Anything that is doing large amounts
+of CPU intensive work should be on a unbound workqueue so that the
+scheduler can bounce it around different CPUs as needed.
 
-Tested-by: Shuah Khan <skhan@linuxfoundation.org>
+Quite frankly, the problem is a huge long ioend chain being built by
+the submission code. We need to keep ioend completion overhead down.
+It runs in either softirq or bound workqueue context and so
+individual items of work that are performed in this context must not
+be -unbounded- in size or time. Unbounded ioend chains are bad for
+IO latency, they are bad for memory reclaim and they are bad for CPU
+scheduling.
 
-thanks,
--- Shuah
+As I've said previously, we gain nothing by aggregating ioends past
+a few tens of megabytes of submitted IO. The batching gains are
+completely diminished once we've got enough IO in flight to keep the
+submission queue full. We're talking here about gigabytes of
+sequential IOs in a single ioend chain which are 2-3 orders of
+magnitude larger than needed for optimal background IO submission
+and completion efficiency and throughput. IOWs, we really should be
+limiting the ioend chain length at submission time, not trying to
+patch over bad completion behaviour that results from sub-optimal IO
+submission behaviour...
+
+> That said, /some/ threshold is probably better than no threshold.  Could
+> someone try to confirm if that series of Brian's fixes this problem too?
+
+262144 pages is still too much work to be doing in a single softirq
+IO completion callback. It's likely to be too much work for a bound
+workqueue, too, especially when you consider that the workqueue
+completion code will merge sequential ioends into one ioend, hence
+making the IO completion loop counts bigger and latency problems worse
+rather than better...
+
+Cheers,
+
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
