@@ -2,94 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20598314039
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 21:19:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 74CC5314038
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 21:19:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236410AbhBHUTL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 15:19:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43364 "EHLO
+        id S234864AbhBHUSn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 15:18:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233463AbhBHSyZ (ORCPT
+        with ESMTP id S233373AbhBHSye (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 13:54:25 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A13E5C061788;
-        Mon,  8 Feb 2021 10:53:45 -0800 (PST)
-Received: from zn.tnic (p200300ec2f073f00132389f64ded89c1.dip0.t-ipconnect.de [IPv6:2003:ec:2f07:3f00:1323:89f6:4ded:89c1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 23DF21EC0512;
-        Mon,  8 Feb 2021 19:53:44 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1612810424;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=1uhG+yA903nD3x6ie0DaKdIZW5ha5ZFqYz7PTiHf344=;
-        b=LLIESv4cbsLI3itmuUSvfVcbCedzuZ1ZazsOyimWXj7EhAc0/OZiaJMJMw946UBnU6WiQ7
-        gVYf+bA1Lr/0EzmtW2rmpjCSpu1W8GDhP75Vr3dvIsQw3Ri+tq3dVrZudshCbmVt3p6e7L
-        GD3vH8fVko0z0dgGi0id9CON9ReQ1aA=
-Date:   Mon, 8 Feb 2021 19:53:41 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>
-Subject: Re: [PATCH v19 06/25] x86/cet: Add control-protection fault handler
-Message-ID: <20210208185341.GF18227@zn.tnic>
-References: <20210203225547.32221-1-yu-cheng.yu@intel.com>
- <20210203225547.32221-7-yu-cheng.yu@intel.com>
- <20210205135927.GH17488@zn.tnic>
- <2d829cba-784e-635a-e0c5-a7b334fa9b40@intel.com>
- <20210208182009.GE18227@zn.tnic>
- <690bc3b9-2890-e68d-5e4b-cda5c21b496b@intel.com>
+        Mon, 8 Feb 2021 13:54:34 -0500
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50E89C06178A
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 10:53:54 -0800 (PST)
+Received: by mail-pg1-x532.google.com with SMTP id j5so2023608pgb.11
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 10:53:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qEpFRJ4PlevumLlf2VLKCFT28k/4UaTOkUzDF1cwLJU=;
+        b=FBM4S1y2yuAqEbUGuv8z+KUXYA1QWNF6PLzh53subvR45JrIq8JwVxHYRVvmJY/Uo6
+         fETZkDFEB6Zg7ktCV1nKgSFlzqFU701SxZ1wEucCf/Z7XrTpS3lXVFSHb/hYekBCPxPr
+         BUIOKtWTICJO2oCkhaWSCcyQ7UDaCE1nF0qRbn+BFXdgiYqMleSiCLtM19Fc/HCTldu9
+         t/OL2/cltUDatq8Cd/SzfPLEPwvH5qpbEmtrcm1Vx33Ku6AdWNIjCNGPA+CQb+kwgEPq
+         w8BIuwzB2zPJc3F90WIhwJDJ9OOCtMLPsRslcr71d3gvSqP8VdTIUG6MvojY7SQGSL5h
+         dRvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qEpFRJ4PlevumLlf2VLKCFT28k/4UaTOkUzDF1cwLJU=;
+        b=eW9u+uVyZFa3Kak0iAkcfoT9imq8T2yF2pbSUXAqlBRVdVOFr8qZRV51MyWSQeTMRU
+         1UznEVOnmDPub3LktAGGt+BdAzI6kHi/umyDhvO2uwqhtBqBxlT63NDElhJUIniCukYK
+         W1hei1DNrwiHITeEolnrG9wSJseacdCCyhBTUrq6b4I5pKZdCMJHc1x2+Tss9ZASSOu6
+         taAGmYvImdAZw9jQ8vMeG191dEx/6g9IeFL5O2/2P6vkVH1aUOt9kmoDQBtWuylTgMM8
+         OqRMfBlDA2s3jWXNJIObkoIJ1ULWUlcJZ7miqsCg3oYWNzgg5xBMUzalhNYrvQ4aKQXv
+         vr9w==
+X-Gm-Message-State: AOAM5320coeK19/CQnrB/c7y4Om+XJ1o37HLWwmw6J1SDQqV/LHwtC3+
+        eeCEJqO4NwLrcK+nTELRqe1ylM2KwnFUo5kcC77G2g==
+X-Google-Smtp-Source: ABdhPJy8zdfOBPn7HnTs9Aax934SSyW3YL61eKkAqdxwpgInp49o/jl5fBnioGqq4uUVouRlds6COcNXSoG/TpuVJ7E=
+X-Received: by 2002:a65:4184:: with SMTP id a4mr18800831pgq.384.1612810433706;
+ Mon, 08 Feb 2021 10:53:53 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <690bc3b9-2890-e68d-5e4b-cda5c21b496b@intel.com>
+References: <20210206000854.2037923-1-dlatypov@google.com>
+In-Reply-To: <20210206000854.2037923-1-dlatypov@google.com>
+From:   Brendan Higgins <brendanhiggins@google.com>
+Date:   Mon, 8 Feb 2021 10:53:42 -0800
+Message-ID: <CAFd5g46p+Bj+ibSCai3c8TLh9a4aYajgQBpAWbKmnaE_xsXVXA@mail.gmail.com>
+Subject: Re: [PATCH v4 0/3] kunit: support running subsets of test suites from kunit.py
+To:     Daniel Latypov <dlatypov@google.com>
+Cc:     David Gow <davidgow@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 08, 2021 at 10:50:07AM -0800, Yu, Yu-cheng wrote:
-> I have not run into the situation.  Initially it was there because other
-> faults have it.
+On Fri, Feb 5, 2021 at 4:09 PM Daniel Latypov <dlatypov@google.com> wrote:
+>
+> When using `kunit.py run` to run tests, users must populate a
+> `kunitconfig` file to select the options the tests are hidden behind and
+> all their dependencies.
+>
+> The patch [1] to allow specifying a path to kunitconfig promises to make
+> this nicer as we can have checked in files corresponding to different
+> sets of tests.
+>
+> But it's still annoying
+> 1) when trying to run a subet of tests
+> 2) when you want to run tests that don't have such a pre-existing
+> kunitconfig and selecting all the necessary options is tricky.
+>
+> This patch series aims to alleviate both:
+> 1) `kunit.py run 'my-suite-*'`
+> I.e. use my current kunitconfig, but just run suites that match this glob
+> 2) `kunit.py run --alltests 'my-suite-*'`
+> I.e. use allyesconfig so I don't have to worry about writing a
+> kunitconfig at all.
+>
+> See the first commit message for more details and discussion about
+> future work.
+>
+> This patch series also includes a bugfix for a latent bug that can't be
+> triggered right now but has worse consequences as a result of the
+> changes needed to plumb in this suite name glob.
+>
+> [1] https://lore.kernel.org/linux-kselftest/20210201205514.3943096-1-dlatypov@google.com/
 
-Which other faults?
-
-> When you asked, I went through it and put out my reasoning.
-
-What does that mean?
-
-> I think it still makes sense to keep it.
-
-Because you have a hunch or you actually have an objective reason why?
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Tested-by: Brendan Higgins <brendanhiggins@google.com>
