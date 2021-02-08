@@ -2,83 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10FAF313101
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 12:37:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47AC6313109
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 12:40:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233136AbhBHLg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 06:36:58 -0500
-Received: from mailoutvs33.siol.net ([185.57.226.224]:56659 "EHLO
-        mail.siol.net" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S232854AbhBHLUL (ORCPT
+        id S233372AbhBHLie (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 06:38:34 -0500
+Received: from mail29.static.mailgun.info ([104.130.122.29]:50455 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233061AbhBHLUO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 06:20:11 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by mail.siol.net (Postfix) with ESMTP id AFB935220A4;
-        Mon,  8 Feb 2021 12:19:00 +0100 (CET)
-X-Virus-Scanned: amavisd-new at psrvmta10.zcs-production.pri
-Received: from mail.siol.net ([127.0.0.1])
-        by localhost (psrvmta10.zcs-production.pri [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id cBk2nonlnVtu; Mon,  8 Feb 2021 12:19:00 +0100 (CET)
-Received: from mail.siol.net (localhost [127.0.0.1])
-        by mail.siol.net (Postfix) with ESMTPS id 63D4F522137;
-        Mon,  8 Feb 2021 12:19:00 +0100 (CET)
-Received: from kista.localnet (cpe-86-58-58-53.static.triera.net [86.58.58.53])
-        (Authenticated sender: jernej.skrabec@siol.net)
-        by mail.siol.net (Postfix) with ESMTPA id BAF935220A4;
-        Mon,  8 Feb 2021 12:18:58 +0100 (CET)
-From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@siol.net>
-To:     linux-sunxi@googlegroups.com
-Cc:     Maxime Ripard <mripard@kernel.org>,
-        Mike Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-sunxi <linux-sunxi@googlegroups.com>,
-        Andre Heider <a.heider@gmail.com>, wens@kernel.org
-Subject: Re: Re: [linux-sunxi] [PATCH 4/5] drm/sun4i: Fix H6 HDMI PHY configuration
-Date:   Mon, 08 Feb 2021 12:18:58 +0100
-Message-ID: <2739213.CQdApTN3EZ@kista>
-In-Reply-To: <CAGb2v64BpizczmSJdompGosFwWWayNscWvW-7oARLgwNNo=teQ@mail.gmail.com>
-References: <20210204184710.1880895-1-jernej.skrabec@siol.net> <20210204184710.1880895-5-jernej.skrabec@siol.net> <CAGb2v64BpizczmSJdompGosFwWWayNscWvW-7oARLgwNNo=teQ@mail.gmail.com>
+        Mon, 8 Feb 2021 06:20:14 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1612783190; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=ZfPBl6SItvH/px01pEtiPLgUOmFev1HLYNK3j7R8gw8=;
+ b=S0aBdSu4Ji+5K+QDepJyb6uUhqXffU1mRD76TjVVyDDdZkYaYrjatV9hHaewXZgHREPDzYjs
+ BizKHAa21t2TNKIDcq8hC6TdGMokWU74fSBloqzw4hPoEf3sFXHUi7+ANvdW3X61MaHgWu/k
+ Z0g5v/YnUevci2izyWENxd6ESL8=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 60211e3a3919dfb455999bb6 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 08 Feb 2021 11:19:22
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 4E7B0C433CA; Mon,  8 Feb 2021 11:19:21 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        MISSING_DATE,MISSING_MID,SPF_FAIL,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8BAC2C433C6;
+        Mon,  8 Feb 2021 11:19:17 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 8BAC2C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH] mwl8k: assign value when defining variables
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20210203061625.588-1-samirweng1979@163.com>
+References: <20210203061625.588-1-samirweng1979@163.com>
+To:     samirweng1979 <samirweng1979@163.com>
+Cc:     buytenh@wantstofly.org, davem@davemloft.net, kuba@kernel.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        wengjianfeng <wengjianfeng@yulong.com>
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
+Message-Id: <20210208111921.4E7B0C433CA@smtp.codeaurora.org>
+Date:   Mon,  8 Feb 2021 11:19:21 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dne petek, 05. februar 2021 ob 04:22:56 CET je Chen-Yu Tsai napisal(a):
-> On Fri, Feb 5, 2021 at 2:48 AM Jernej Skrabec <jernej.skrabec@siol.net> 
-wrote:
-> >
-> > cpce value for 594 MHz is set differently in BSP driver. Fix that.
-> >
-> > Fixes: c71c9b2fee17 ("drm/sun4i: Add support for Synopsys HDMI PHY")
-> > Tested-by: Andre Heider <a.heider@gmail.com>
-> > Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
+samirweng1979 <samirweng1979@163.com> wrote:
+
+> From: wengjianfeng <wengjianfeng@yulong.com>
 > 
-> Reviewed-by: Chen-Yu Tsai <wens@csie.org>
-
-Thanks, but I figured that this change is not the proper one. It still gives me 
-issues with my TV. Proper change is to fix current and voltage settings below. 
-I'll replace this patch in v2.
-
-Best regards,
-Jernej
-
+> define refilled and then assign value to it, which should do
+> that at the same time.
 > 
-> -- 
-> You received this message because you are subscribed to the Google Groups 
-"linux-sunxi" group.
-> To unsubscribe from this group and stop receiving emails from it, send an 
-email to linux-sunxi+unsubscribe@googlegroups.com.
-> To view this discussion on the web, visit https://groups.google.com/d/msgid/
-linux-sunxi/
-CAGb2v64BpizczmSJdompGosFwWWayNscWvW-7oARLgwNNo%3DteQ%40mail.gmail.com.
-> 
+> Signed-off-by: wengjianfeng <wengjianfeng@yulong.com>
 
+Patch applied to wireless-drivers-next.git, thanks.
+
+bb779d476ff7 mwl8k: assign value when defining variables
+
+-- 
+https://patchwork.kernel.org/project/linux-wireless/patch/20210203061625.588-1-samirweng1979@163.com/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
