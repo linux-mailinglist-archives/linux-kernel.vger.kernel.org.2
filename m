@@ -2,84 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A09D313100
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 12:37:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10FAF313101
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 12:37:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233231AbhBHLgY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 06:36:24 -0500
-Received: from mail29.static.mailgun.info ([104.130.122.29]:25670 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233033AbhBHLTe (ORCPT
+        id S233136AbhBHLg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 06:36:58 -0500
+Received: from mailoutvs33.siol.net ([185.57.226.224]:56659 "EHLO
+        mail.siol.net" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S232854AbhBHLUL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 06:19:34 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1612783162; h=Date: Message-Id: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=CjSNkhSZwOHg96R34OlXfiyVg10ciFV0CePHfLR49Ek=;
- b=dxd69MU/v6Zxr4v6tyw+vjIBHy9IXR6FfscSHPTqCw3uDpDTS4B4xce6NSu9Oxj8QPcnrc6f
- fNqllCsivF7nq1hrzWfnvJrx1FssfcCbuGkcMO7gOw+diztKPhYoqlR+YfRskngZBi9zIcfw
- GV8LXSW5Wos/vwifbhicrrjbBu4=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 60211e0081f6c45dce8a2212 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 08 Feb 2021 11:18:24
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 02B72C433ED; Mon,  8 Feb 2021 11:18:23 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        MISSING_DATE,MISSING_MID,SPF_FAIL,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 52FC6C433C6;
-        Mon,  8 Feb 2021 11:18:21 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 52FC6C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-Content-Type: text/plain; charset="utf-8"
+        Mon, 8 Feb 2021 06:20:11 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by mail.siol.net (Postfix) with ESMTP id AFB935220A4;
+        Mon,  8 Feb 2021 12:19:00 +0100 (CET)
+X-Virus-Scanned: amavisd-new at psrvmta10.zcs-production.pri
+Received: from mail.siol.net ([127.0.0.1])
+        by localhost (psrvmta10.zcs-production.pri [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id cBk2nonlnVtu; Mon,  8 Feb 2021 12:19:00 +0100 (CET)
+Received: from mail.siol.net (localhost [127.0.0.1])
+        by mail.siol.net (Postfix) with ESMTPS id 63D4F522137;
+        Mon,  8 Feb 2021 12:19:00 +0100 (CET)
+Received: from kista.localnet (cpe-86-58-58-53.static.triera.net [86.58.58.53])
+        (Authenticated sender: jernej.skrabec@siol.net)
+        by mail.siol.net (Postfix) with ESMTPA id BAF935220A4;
+        Mon,  8 Feb 2021 12:18:58 +0100 (CET)
+From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@siol.net>
+To:     linux-sunxi@googlegroups.com
+Cc:     Maxime Ripard <mripard@kernel.org>,
+        Mike Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-sunxi <linux-sunxi@googlegroups.com>,
+        Andre Heider <a.heider@gmail.com>, wens@kernel.org
+Subject: Re: Re: [linux-sunxi] [PATCH 4/5] drm/sun4i: Fix H6 HDMI PHY configuration
+Date:   Mon, 08 Feb 2021 12:18:58 +0100
+Message-ID: <2739213.CQdApTN3EZ@kista>
+In-Reply-To: <CAGb2v64BpizczmSJdompGosFwWWayNscWvW-7oARLgwNNo=teQ@mail.gmail.com>
+References: <20210204184710.1880895-1-jernej.skrabec@siol.net> <20210204184710.1880895-5-jernej.skrabec@siol.net> <CAGb2v64BpizczmSJdompGosFwWWayNscWvW-7oARLgwNNo=teQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH] wl1251: cmd: remove redundant assignment
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20210203060306.2832-1-samirweng1979@163.com>
-References: <20210203060306.2832-1-samirweng1979@163.com>
-To:     samirweng1979 <samirweng1979@163.com>
-Cc:     davem@davemloft.net, kuba@kernel.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        wengjianfeng <wengjianfeng@yulong.com>
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
-Message-Id: <20210208111824.02B72C433ED@smtp.codeaurora.org>
-Date:   Mon,  8 Feb 2021 11:18:24 +0000 (UTC)
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-samirweng1979 <samirweng1979@163.com> wrote:
-
-> From: wengjianfeng <wengjianfeng@yulong.com>
+Dne petek, 05. februar 2021 ob 04:22:56 CET je Chen-Yu Tsai napisal(a):
+> On Fri, Feb 5, 2021 at 2:48 AM Jernej Skrabec <jernej.skrabec@siol.net> 
+wrote:
+> >
+> > cpce value for 594 MHz is set differently in BSP driver. Fix that.
+> >
+> > Fixes: c71c9b2fee17 ("drm/sun4i: Add support for Synopsys HDMI PHY")
+> > Tested-by: Andre Heider <a.heider@gmail.com>
+> > Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
 > 
-> -ENOMEM has been used as a return value,it is not necessary to
-> assign it, and if kzalloc fail,not need free it,so just return
-> -ENOMEM when kzalloc fail.
+> Reviewed-by: Chen-Yu Tsai <wens@csie.org>
+
+Thanks, but I figured that this change is not the proper one. It still gives me 
+issues with my TV. Proper change is to fix current and voltage settings below. 
+I'll replace this patch in v2.
+
+Best regards,
+Jernej
+
 > 
-> Signed-off-by: wengjianfeng <wengjianfeng@yulong.com>
+> -- 
+> You received this message because you are subscribed to the Google Groups 
+"linux-sunxi" group.
+> To unsubscribe from this group and stop receiving emails from it, send an 
+email to linux-sunxi+unsubscribe@googlegroups.com.
+> To view this discussion on the web, visit https://groups.google.com/d/msgid/
+linux-sunxi/
+CAGb2v64BpizczmSJdompGosFwWWayNscWvW-7oARLgwNNo%3DteQ%40mail.gmail.com.
+> 
 
-Patch applied to wireless-drivers-next.git, thanks.
-
-05d7f3307488 wl1251: cmd: remove redundant assignment
-
--- 
-https://patchwork.kernel.org/project/linux-wireless/patch/20210203060306.2832-1-samirweng1979@163.com/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
