@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 407E2313A21
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 17:54:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 138FA313A27
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 17:55:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233602AbhBHQxt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 11:53:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60178 "EHLO mail.kernel.org"
+        id S234485AbhBHQzV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 11:55:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60340 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233657AbhBHPTq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 10:19:46 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 894E364EED;
-        Mon,  8 Feb 2021 15:12:52 +0000 (UTC)
+        id S233676AbhBHPT7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 10:19:59 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EBCE864EEF;
+        Mon,  8 Feb 2021 15:13:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612797173;
-        bh=zNhMlsgq60S4BnOolyPrz6VRVJNFAno/8PIq7TpNZnw=;
+        s=korg; t=1612797185;
+        bh=Zk2KCZTe6/qssRwcZtFFtA2lsFkVDuRzGXaQJNmAsMM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MKslhgqaxHwqMT1F7EJZGJmZnO/bNaY650C3Ano3jr4wmY+LSR56y4zmGCY8RBzBy
-         RomURF1y5swL37JFn7zGOlFNuRfXdsyHc7gILs0m1mtfSTtBmvBlhpDeo0X5S/24d3
-         FsNv3dIxVyIi0EkIIi7GpMQUV4/Mj8ILO4OXE0F8=
+        b=LUSfjZ6CSgmJVUYAVpj7NY7ne/0AuuqTfntiouSiV5mSyer2CQ6LNd/mkqtuh06oy
+         fFB0LmgtjYM9oI7VpMbbKZWBDwNCeff+iFU3EPRVKAje/7fOPaPb7Ehd7BogfpOQdw
+         a06uhEMmY061LIA3GQu6U2uDXshIbt+jPn+UdQLA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sandy Huang <hjc@rock-chips.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        stable@vger.kernel.org, Marek Vasut <marex@denx.de>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Patrice Chotard <patrice.chotard@st.com>,
+        Patrick Delaunay <patrick.delaunay@st.com>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 018/120] arm64: dts: rockchip: fix vopl iommu irq on px30
-Date:   Mon,  8 Feb 2021 16:00:05 +0100
-Message-Id: <20210208145819.122937497@linuxfoundation.org>
+Subject: [PATCH 5.10 021/120] ARM: dts: stm32: Connect card-detect signal on DHCOM
+Date:   Mon,  8 Feb 2021 16:00:08 +0100
+Message-Id: <20210208145819.253484068@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210208145818.395353822@linuxfoundation.org>
 References: <20210208145818.395353822@linuxfoundation.org>
@@ -42,37 +45,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sandy Huang <hjc@rock-chips.com>
+From: Marek Vasut <marex@denx.de>
 
-[ Upstream commit 656c648354e1561fa4f445b0b3252ec1d24e3951 ]
+[ Upstream commit 1a9b001237f85d3cf11a408c2daca6a2245b2add ]
 
-The vop-mmu shares the irq with its matched vop but not the vpu.
+The DHCOM SoM uSD slot card detect signal is connected to GPIO PG1,
+describe it in the DT.
 
-Fixes: 7053e06b1422 ("arm64: dts: rockchip: add core dtsi file for PX30 SoCs")
-Signed-off-by: Sandy Huang <hjc@rock-chips.com>
-Signed-off-by: Heiko Stuebner <heiko@sntech.de>
-Reviewed-by: Ezequiel Garcia <ezequiel@collabora.com>
-Reviewed-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-Tested-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-Link: https://lore.kernel.org/r/20210108110627.3231226-1-heiko@sntech.de
+Fixes: 34e0c7847dcf ("ARM: dts: stm32: Add DH Electronics DHCOM STM32MP1 SoM and PDK2 board")
+Signed-off-by: Marek Vasut <marex@denx.de>
+Cc: Alexandre Torgue <alexandre.torgue@st.com>
+Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>
+Cc: Patrice Chotard <patrice.chotard@st.com>
+Cc: Patrick Delaunay <patrick.delaunay@st.com>
+Cc: linux-stm32@st-md-mailman.stormreply.com
+To: linux-arm-kernel@lists.infradead.org
+Signed-off-by: Alexandre Torgue <alexandre.torgue@foss.st.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/rockchip/px30.dtsi | 2 +-
+ arch/arm/boot/dts/stm32mp15xx-dhcom-som.dtsi | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/rockchip/px30.dtsi b/arch/arm64/boot/dts/rockchip/px30.dtsi
-index 2695ea8cda142..64193292d26c3 100644
---- a/arch/arm64/boot/dts/rockchip/px30.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/px30.dtsi
-@@ -1097,7 +1097,7 @@
- 	vopl_mmu: iommu@ff470f00 {
- 		compatible = "rockchip,iommu";
- 		reg = <0x0 0xff470f00 0x0 0x100>;
--		interrupts = <GIC_SPI 79 IRQ_TYPE_LEVEL_HIGH>;
-+		interrupts = <GIC_SPI 78 IRQ_TYPE_LEVEL_HIGH>;
- 		interrupt-names = "vopl_mmu";
- 		clocks = <&cru ACLK_VOPL>, <&cru HCLK_VOPL>;
- 		clock-names = "aclk", "iface";
+diff --git a/arch/arm/boot/dts/stm32mp15xx-dhcom-som.dtsi b/arch/arm/boot/dts/stm32mp15xx-dhcom-som.dtsi
+index f796a6150313e..90523a44d2541 100644
+--- a/arch/arm/boot/dts/stm32mp15xx-dhcom-som.dtsi
++++ b/arch/arm/boot/dts/stm32mp15xx-dhcom-som.dtsi
+@@ -353,7 +353,7 @@
+ 	pinctrl-0 = <&sdmmc1_b4_pins_a &sdmmc1_dir_pins_a>;
+ 	pinctrl-1 = <&sdmmc1_b4_od_pins_a &sdmmc1_dir_pins_a>;
+ 	pinctrl-2 = <&sdmmc1_b4_sleep_pins_a &sdmmc1_dir_sleep_pins_a>;
+-	broken-cd;
++	cd-gpios = <&gpiog 1 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+ 	st,sig-dir;
+ 	st,neg-edge;
+ 	st,use-ckin;
 -- 
 2.27.0
 
