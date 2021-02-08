@@ -2,133 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A608B31336F
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 14:40:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF24B31337E
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 14:41:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229848AbhBHNkI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 08:40:08 -0500
-Received: from mail-il1-f199.google.com ([209.85.166.199]:41417 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229720AbhBHNkE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 08:40:04 -0500
-Received: by mail-il1-f199.google.com with SMTP id d11so12341931ilu.8
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 05:39:48 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=h2/YosjFPBZfZBpQdvSX2mMYZbxmoF5yYgAmopWyVyM=;
-        b=F+3KIgpPulynJwcWukpFsEmrwLJut20nRXx36ftaNXg/U1WP9Aw8hldrqDSnjQixcM
-         v/HDxfrWp9na1bkdDm92gJfdkaojvCzgQR1Jz5V41y5IrOQC6OgOyxhpjHQQi3vP1qt/
-         d2SSr7RR87McXTZPY2ZvFpRqiUAI08a4kTj6zpSWVgyGxj/sq4ykzF34rwRgEzvTK6JR
-         NxDyuTsAM5MbOLTQQ5dZ0/u4s0/J4lGSP5aDDbqs54/20vNAdQbkfSSnNCbDLbguTzNa
-         SOlhwldvwdMP5hK3+TE/o7NaBH1l2KORYKQG7kq2DueJvzVQWr/jXmiU2rbMM27OKXCE
-         d68w==
-X-Gm-Message-State: AOAM532+XigaJpASyYLYEX8jOyT4FWhUoPrkkuJH2tKE+r+0FZrb8fvh
-        Cjh/TeVJh8OSs0LswiJJhdsfOC+iqRT3Shw/3XSVjySv3Bl/
-X-Google-Smtp-Source: ABdhPJyxwTTuavyuzPhsGp7jiGF9oZAiU3Bazv9yajE/zfsSjhhp4LNutcQ6zouYi8HnEugMoGXWzFOUiGxZa8+29UnhTDSkZqoI
+        id S230499AbhBHNl2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 08:41:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59002 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229611AbhBHNlQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 08:41:16 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7B8746186A;
+        Mon,  8 Feb 2021 13:40:35 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.lan)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1l96mH-00Cn0C-9k; Mon, 08 Feb 2021 13:40:33 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     netdev@vger.kernel.org, yangbo.lu@nxp.com, john.stultz@linaro.org,
+        tglx@linutronix.de, pbonzini@redhat.com, seanjc@google.com,
+        richardcochran@gmail.com, Mark.Rutland@arm.com, will@kernel.org,
+        suzuki.poulose@arm.com, Andre.Przywara@arm.com,
+        steven.price@arm.com, lorenzo.pieralisi@arm.com,
+        sudeep.holla@arm.com
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        kvmarm@lists.cs.columbia.edu, kvm@vger.kernel.org,
+        Steve.Capper@arm.com, justin.he@arm.com, jianyong.wu@arm.com,
+        kernel-team@android.com
+Subject: [PATCH v18 0/7] KVM: arm64: Add host/guest KVM-PTP support
+Date:   Mon,  8 Feb 2021 13:40:22 +0000
+Message-Id: <20210208134029.3269384-1-maz@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-X-Received: by 2002:a92:2e05:: with SMTP id v5mr16827403ile.241.1612791563411;
- Mon, 08 Feb 2021 05:39:23 -0800 (PST)
-Date:   Mon, 08 Feb 2021 05:39:23 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000003be5f605bad34c09@google.com>
-Subject: linux-next boot error: kernel panic: VFS: Unable to mount root fs on unknown-block(0,0)
-From:   syzbot <syzbot+b22ad1a79afb8da726c5@syzkaller.appspotmail.com>
-To:     axboe@kernel.dk, gregkh@linuxfoundation.org, hare@suse.de,
-        jack@suse.cz, linux-kernel@vger.kernel.org,
-        linux-next@vger.kernel.org, sfr@canb.auug.org.au,
-        syzkaller-bugs@googlegroups.com, tj@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: netdev@vger.kernel.org, yangbo.lu@nxp.com, john.stultz@linaro.org, tglx@linutronix.de, pbonzini@redhat.com, seanjc@google.com, richardcochran@gmail.com, Mark.Rutland@arm.com, will@kernel.org, suzuki.poulose@arm.com, Andre.Przywara@arm.com, steven.price@arm.com, lorenzo.pieralisi@arm.com, sudeep.holla@arm.com, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, kvm@vger.kernel.org, Steve.Capper@arm.com, justin.he@arm.com, jianyong.wu@arm.com, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Given that this series[0] has languished in my Inbox for the best of the
+past two years, and in an effort to eventually get it merged, I've
+taken the liberty to pick it up and do the changes I wanted to see
+instead of waiting to go through yet another round.
 
-syzbot found the following issue on:
+All the patches have a link to their original counterpart (though I
+have squashed a couple of them where it made sense). Tested both 64
+and 32bit guests for a good measure. Of course, I claim full
+responsibility for any bug introduced here.
 
-HEAD commit:    8d374d0d Add linux-next specific files for 20210208
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=13de8a40d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=ced6adcf6aff98d6
-dashboard link: https://syzkaller.appspot.com/bug?extid=b22ad1a79afb8da726c5
+* From v17 [1]:
+  - Fixed compilation issue on 32bit systems not selecting
+    CONFIG_HAVE_ARM_SMCCC_DISCOVERY
+  - Fixed KVM service discovery not properly parsing the reply
+    from the hypervisor
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+b22ad1a79afb8da726c5@syzkaller.appspotmail.com
+* From v16 [0]:
+  - Moved the KVM service discovery to its own file, plugged it into
+    PSCI instead of the arch code, dropped the inlining, made use of
+    asm/hypervisor.h.
+  - Tidied-up the namespacing
+  - Cleanup the hypercall handler
+  - De-duplicate the guest code
+  - Tidied-up arm64-specific documentation
+  - Dropped the generic PTP documentation as it needs a new location,
+    and some cleanup
+  - Squashed hypercall documentation and capability into the
+    main KVM patch
+  - Rebased on top of 5.11-rc4
 
-netconsole: network logging started
-gtp: GTP module loaded (pdp ctx size 104 bytes)
-rdma_rxe: loaded
-cfg80211: Loading compiled-in X.509 certificates for regulatory database
-cfg80211: Loaded X.509 cert 'sforshee: 00b28ddf47aef9cea7'
-ALSA device list:
-  #0: Dummy 1
-  #1: Loopback 1
-  #2: Virtual MIDI Card 1
-md: Waiting for all devices to be available before autodetect
-md: If you don't use raid, use raid=noautodetect
-md: Autodetecting RAID arrays.
-md: autorun ...
-md: ... autorun DONE.
-VFS: Cannot open root device "sda1" or unknown-block(0,0): error -6
-Please append a correct "root=" boot option; here are the available partitions:
-0100            4096 ram0 
- (driver?)
-0101            4096 ram1 
- (driver?)
-0102            4096 ram2 
- (driver?)
-0103            4096 ram3 
- (driver?)
-0104            4096 ram4 
- (driver?)
-0105            4096 ram5 
- (driver?)
-0106            4096 ram6 
- (driver?)
-0107            4096 ram7 
- (driver?)
-0108            4096 ram8 
- (driver?)
-0109            4096 ram9 
- (driver?)
-010a            4096 ram10 
- (driver?)
-010b            4096 ram11 
- (driver?)
-010c            4096 ram12 
- (driver?)
-010d            4096 ram13 
- (driver?)
-010e            4096 ram14 
- (driver?)
-010f            4096 ram15 
- (driver?)
-1f00             128 mtdblock0 
- (driver?)
-Kernel panic - not syncing: VFS: Unable to mount root fs on unknown-block(0,0)
-CPU: 1 PID: 1 Comm: swapper/0 Not tainted 5.11.0-rc6-next-20210208-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:120
- panic+0x306/0x73d kernel/panic.c:231
- mount_block_root+0x3f8/0x4dd init/do_mounts.c:445
- mount_root+0x1af/0x1f5 init/do_mounts.c:561
- prepare_namespace+0x1ff/0x234 init/do_mounts.c:613
- kernel_init_freeable+0x671/0x689 init/main.c:1550
- kernel_init+0xd/0x1b8 init/main.c:1426
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
-Kernel Offset: disabled
-Rebooting in 86400 seconds..
+[0] https://lore.kernel.org/r/20201209060932.212364-1-jianyong.wu@arm.com
+[1] https://lore.kernel.org/r/20210202141204.3134855-1-maz@kernel.org
 
+Jianyong Wu (4):
+  ptp: Reorganize ptp_kvm.c to make it arch-independent
+  clocksource: Add clocksource id for arm arch counter
+  KVM: arm64: Add support for the KVM PTP service
+  ptp: arm/arm64: Enable ptp_kvm for arm/arm64
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+Thomas Gleixner (1):
+  time: Add mechanism to recognize clocksource in time_get_snapshot
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Will Deacon (2):
+  arm/arm64: Probe for the presence of KVM hypervisor
+  KVM: arm64: Advertise KVM UID to guests via SMCCC
+
+ Documentation/virt/kvm/api.rst              |  9 ++
+ Documentation/virt/kvm/arm/index.rst        |  1 +
+ Documentation/virt/kvm/arm/ptp_kvm.rst      | 25 ++++++
+ arch/arm/include/asm/hypervisor.h           |  3 +
+ arch/arm64/include/asm/hypervisor.h         |  3 +
+ arch/arm64/kvm/arm.c                        |  1 +
+ arch/arm64/kvm/hypercalls.c                 | 80 +++++++++++++++--
+ drivers/clocksource/arm_arch_timer.c        | 36 ++++++++
+ drivers/firmware/psci/psci.c                |  2 +
+ drivers/firmware/smccc/Makefile             |  2 +-
+ drivers/firmware/smccc/kvm_guest.c          | 50 +++++++++++
+ drivers/firmware/smccc/smccc.c              |  1 +
+ drivers/ptp/Kconfig                         |  2 +-
+ drivers/ptp/Makefile                        |  2 +
+ drivers/ptp/ptp_kvm_arm.c                   | 28 ++++++
+ drivers/ptp/{ptp_kvm.c => ptp_kvm_common.c} | 84 +++++-------------
+ drivers/ptp/ptp_kvm_x86.c                   | 97 +++++++++++++++++++++
+ include/linux/arm-smccc.h                   | 41 +++++++++
+ include/linux/clocksource.h                 |  6 ++
+ include/linux/clocksource_ids.h             | 12 +++
+ include/linux/ptp_kvm.h                     | 19 ++++
+ include/linux/timekeeping.h                 | 12 +--
+ include/uapi/linux/kvm.h                    |  1 +
+ kernel/time/clocksource.c                   |  2 +
+ kernel/time/timekeeping.c                   |  1 +
+ 25 files changed, 442 insertions(+), 78 deletions(-)
+ create mode 100644 Documentation/virt/kvm/arm/ptp_kvm.rst
+ create mode 100644 drivers/firmware/smccc/kvm_guest.c
+ create mode 100644 drivers/ptp/ptp_kvm_arm.c
+ rename drivers/ptp/{ptp_kvm.c => ptp_kvm_common.c} (60%)
+ create mode 100644 drivers/ptp/ptp_kvm_x86.c
+ create mode 100644 include/linux/clocksource_ids.h
+ create mode 100644 include/linux/ptp_kvm.h
+
+-- 
+2.29.2
+
