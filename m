@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 510F3313A74
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 18:08:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 345F3313AC4
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 18:24:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233713AbhBHRHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 12:07:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35736 "EHLO mail.kernel.org"
+        id S234919AbhBHRXZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 12:23:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33886 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233805AbhBHPWk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 10:22:40 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7CB6264F14;
-        Mon,  8 Feb 2021 15:14:02 +0000 (UTC)
+        id S233792AbhBHPWU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 10:22:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3937164F13;
+        Mon,  8 Feb 2021 15:14:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612797243;
-        bh=8QIcW8Y4hwePRXMByCKTs9+X5M//JabLGU8P20oDLLU=;
+        s=korg; t=1612797245;
+        bh=ALOmynC92w/tAhOU/v5HC6dA2Wo1l4i9lToY8jFORhg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hSNTe9sEQSg7beE2Vr8lA7skAiOf8dt8SqBZtM2xIiuYvSf4j9UGPSZYNEuG2creG
-         47kGIM3F9pJqPzWVWUM15LM0RL2Rmb8Nf0Fh1BdQDmqlImLoJUaIe4vrrZDLkGORWB
-         pGkxeuS1Kew6daFTXQe9xLTm98FfC2q244kpLHHk=
+        b=QyWp8+7kxp4mWEgfhDhd0FnKtE1hAEEP1tip6zBPUSn01b5mTBpYwpUNYeX+lZTBJ
+         Fy7KnauDsbr2184p1qo0Y4TuKCM5/x7+8lUHFDAqgIF3gfg24DqaajWmM4LxYNletI
+         M1CcTT033Wv8qZ12u2ftQeRFfj9Om46ifXynL67o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Maxim Mikityanskiy <maximmi@mellanox.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
+        stable@vger.kernel.org, Maor Dickman <maord@nvidia.com>,
+        Roi Dayan <roid@nvidia.com>,
         Saeed Mahameed <saeedm@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 042/120] net/mlx5e: Update max_opened_tc also when channels are closed
-Date:   Mon,  8 Feb 2021 16:00:29 +0100
-Message-Id: <20210208145820.095162436@linuxfoundation.org>
+Subject: [PATCH 5.10 043/120] net/mlx5e: Release skb in case of failure in tc update skb
+Date:   Mon,  8 Feb 2021 16:00:30 +0100
+Message-Id: <20210208145820.134710885@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210208145818.395353822@linuxfoundation.org>
 References: <20210208145818.395353822@linuxfoundation.org>
@@ -41,46 +41,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maxim Mikityanskiy <maximmi@mellanox.com>
+From: Maor Dickman <maord@nvidia.com>
 
-[ Upstream commit 5a2ba25a55c4dc0f143567c99aede768b6628ebd ]
+[ Upstream commit a34ffec8af8ff1c730697a99e09ec7b74a3423b6 ]
 
-max_opened_tc is used for stats, so that potentially non-zero stats
-won't disappear when num_tc decreases. However, mlx5e_setup_tc_mqprio
-fails to update it in the flow where channels are closed.
+In case of failure in tc update skb the packet is dropped
+without freeing the skb.
 
-This commit fixes it. The new value of priv->channels.params.num_tc is
-always checked on exit. In case of errors it will just be the old value,
-and in case of success it will be the updated value.
+Fixed by freeing the skb in case failure in tc update skb.
 
-Fixes: 05909babce53 ("net/mlx5e: Avoid reset netdev stats on configuration changes")
-Signed-off-by: Maxim Mikityanskiy <maximmi@mellanox.com>
-Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
+Fixes: d6d27782864f ("net/mlx5: E-Switch, Restore chain id on miss")
+Fixes: c75690972228 ("net/mlx5e: Add tc chains offload support for nic flows")
+Signed-off-by: Maor Dickman <maord@nvidia.com>
+Reviewed-by: Roi Dayan <roid@nvidia.com>
 Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/en_main.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ drivers/net/ethernet/mellanox/mlx5/core/en_rx.c | 16 ++++++++++++----
+ 1 file changed, 12 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-index c9b5d7f29911e..42848db8f8dd6 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-@@ -3593,12 +3593,10 @@ static int mlx5e_setup_tc_mqprio(struct mlx5e_priv *priv,
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
+index 6628a0197b4e0..6d2ba8b84187c 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
+@@ -1262,8 +1262,10 @@ static void mlx5e_handle_rx_cqe(struct mlx5e_rq *rq, struct mlx5_cqe64 *cqe)
+ 	mlx5e_complete_rx_cqe(rq, cqe, cqe_bcnt, skb);
  
- 	err = mlx5e_safe_switch_channels(priv, &new_channels,
- 					 mlx5e_num_channels_changed_ctx, NULL);
--	if (err)
--		goto out;
+ 	if (mlx5e_cqe_regb_chain(cqe))
+-		if (!mlx5e_tc_update_skb(cqe, skb))
++		if (!mlx5e_tc_update_skb(cqe, skb)) {
++			dev_kfree_skb_any(skb);
+ 			goto free_wqe;
++		}
  
--	priv->max_opened_tc = max_t(u8, priv->max_opened_tc,
--				    new_channels.params.num_tc);
- out:
-+	priv->max_opened_tc = max_t(u8, priv->max_opened_tc,
-+				    priv->channels.params.num_tc);
- 	mutex_unlock(&priv->state_lock);
- 	return err;
- }
+ 	napi_gro_receive(rq->cq.napi, skb);
+ 
+@@ -1316,8 +1318,10 @@ static void mlx5e_handle_rx_cqe_rep(struct mlx5e_rq *rq, struct mlx5_cqe64 *cqe)
+ 	if (rep->vlan && skb_vlan_tag_present(skb))
+ 		skb_vlan_pop(skb);
+ 
+-	if (!mlx5e_rep_tc_update_skb(cqe, skb, &tc_priv))
++	if (!mlx5e_rep_tc_update_skb(cqe, skb, &tc_priv)) {
++		dev_kfree_skb_any(skb);
+ 		goto free_wqe;
++	}
+ 
+ 	napi_gro_receive(rq->cq.napi, skb);
+ 
+@@ -1371,8 +1375,10 @@ static void mlx5e_handle_rx_cqe_mpwrq_rep(struct mlx5e_rq *rq, struct mlx5_cqe64
+ 
+ 	mlx5e_complete_rx_cqe(rq, cqe, cqe_bcnt, skb);
+ 
+-	if (!mlx5e_rep_tc_update_skb(cqe, skb, &tc_priv))
++	if (!mlx5e_rep_tc_update_skb(cqe, skb, &tc_priv)) {
++		dev_kfree_skb_any(skb);
+ 		goto mpwrq_cqe_out;
++	}
+ 
+ 	napi_gro_receive(rq->cq.napi, skb);
+ 
+@@ -1528,8 +1534,10 @@ static void mlx5e_handle_rx_cqe_mpwrq(struct mlx5e_rq *rq, struct mlx5_cqe64 *cq
+ 	mlx5e_complete_rx_cqe(rq, cqe, cqe_bcnt, skb);
+ 
+ 	if (mlx5e_cqe_regb_chain(cqe))
+-		if (!mlx5e_tc_update_skb(cqe, skb))
++		if (!mlx5e_tc_update_skb(cqe, skb)) {
++			dev_kfree_skb_any(skb);
+ 			goto mpwrq_cqe_out;
++		}
+ 
+ 	napi_gro_receive(rq->cq.napi, skb);
+ 
 -- 
 2.27.0
 
