@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0C533138F1
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 17:10:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F062B313953
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 17:26:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233614AbhBHQKR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 11:10:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55484 "EHLO mail.kernel.org"
+        id S233544AbhBHQZ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 11:25:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55768 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230396AbhBHPLI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 10:11:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A867464EE2;
-        Mon,  8 Feb 2021 15:08:11 +0000 (UTC)
+        id S232699AbhBHPI5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 10:08:57 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 41C7564ECB;
+        Mon,  8 Feb 2021 15:06:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612796892;
-        bh=06hEZrRGOnpTbsSSHJ9pExtgDiLR4Uhpw1wwfp0K2Lk=;
+        s=korg; t=1612796806;
+        bh=8nH3qRivrO5E+F6y1Ttt6BSVl0UawVdXt1IkzWevB7k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=w2fCJ8op96RmsB5JKsr70OrINRaT7GreVuMA0a0K12MKZpICBZBKctVvb9WgQSp73
-         HhV0ufBpEzgaMp0XUMDrdj+w6T4CUk1i3DC2nT/Sp1DpmQAt3rQb/RNrdQI+lb/k54
-         D1Y211tsyVvpzwFClfin4MnXSrh/VfdnC9jb1JEc=
+        b=2cbd6n2DtKG9nuovLGwYn8wRrP4leE+GtbjMEQ3wpjSc41VVYGavhkegEApGWKwxL
+         NFEpjO63zib3du3EbTYAzScdhyleiCUpenYMQhu76LzOZyGCW2clZruoQ8DNFcbmCv
+         kGph+A3+9WOjKmCEKonzk0g5MGPKxKqnAYMdz5G8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 4.19 25/38] KVM: SVM: Treat SVM as unsupported when running as an SEV guest
+        stable@vger.kernel.org, Nikolay Borisov <nborisov@suse.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Borislav Petkov <bp@suse.de>,
+        Seth Forshee <seth.forshee@canonical.com>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>
+Subject: [PATCH 4.14 26/30] x86/build: Disable CET instrumentation in the kernel
 Date:   Mon,  8 Feb 2021 16:01:12 +0100
-Message-Id: <20210208145807.174106622@linuxfoundation.org>
+Message-Id: <20210208145806.298526525@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210208145806.141056364@linuxfoundation.org>
-References: <20210208145806.141056364@linuxfoundation.org>
+In-Reply-To: <20210208145805.239714726@linuxfoundation.org>
+References: <20210208145805.239714726@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,48 +42,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Christopherson <seanjc@google.com>
+From: Josh Poimboeuf <jpoimboe@redhat.com>
 
-commit ccd85d90ce092bdb047a7f6580f3955393833b22 upstream.
+commit 20bf2b378729c4a0366a53e2018a0b70ace94bcd upstream.
 
-Don't let KVM load when running as an SEV guest, regardless of what
-CPUID says.  Memory is encrypted with a key that is not accessible to
-the host (L0), thus it's impossible for L0 to emulate SVM, e.g. it'll
-see garbage when reading the VMCB.
+With retpolines disabled, some configurations of GCC, and specifically
+the GCC versions 9 and 10 in Ubuntu will add Intel CET instrumentation
+to the kernel by default. That breaks certain tracing scenarios by
+adding a superfluous ENDBR64 instruction before the fentry call, for
+functions which can be called indirectly.
 
-Technically, KVM could decrypt all memory that needs to be accessible to
-the L0 and use shadow paging so that L0 does not need to shadow NPT, but
-exposing such information to L0 largely defeats the purpose of running as
-an SEV guest.  This can always be revisited if someone comes up with a
-use case for running VMs inside SEV guests.
+CET instrumentation isn't currently necessary in the kernel, as CET is
+only supported in user space. Disable it unconditionally and move it
+into the x86's Makefile as CET/CFI... enablement should be a per-arch
+decision anyway.
 
-Note, VMLOAD, VMRUN, etc... will also #GP on GPAs with C-bit set, i.e. KVM
-is doomed even if the SEV guest is debuggable and the hypervisor is willing
-to decrypt the VMCB.  This may or may not be fixed on CPUs that have the
-SVME_ADDR_CHK fix.
+ [ bp: Massage and extend commit message. ]
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Sean Christopherson <seanjc@google.com>
-Message-Id: <20210202212017.2486595-1-seanjc@google.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Fixes: 29be86d7f9cb ("kbuild: add -fcf-protection=none when using retpoline flags")
+Reported-by: Nikolay Borisov <nborisov@suse.com>
+Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+Tested-by: Nikolay Borisov <nborisov@suse.com>
+Cc: <stable@vger.kernel.org>
+Cc: Seth Forshee <seth.forshee@canonical.com>
+Cc: Masahiro Yamada <yamada.masahiro@socionext.com>
+Link: https://lkml.kernel.org/r/20210128215219.6kct3h2eiustncws@treble
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/kvm/svm.c |    5 +++++
- 1 file changed, 5 insertions(+)
+ Makefile          |    6 ------
+ arch/x86/Makefile |    3 +++
+ 2 files changed, 3 insertions(+), 6 deletions(-)
 
---- a/arch/x86/kvm/svm.c
-+++ b/arch/x86/kvm/svm.c
-@@ -892,6 +892,11 @@ static int has_svm(void)
- 		return 0;
- 	}
+--- a/Makefile
++++ b/Makefile
+@@ -844,12 +844,6 @@ KBUILD_CFLAGS   += $(call cc-option,-Wer
+ # change __FILE__ to the relative path from the srctree
+ KBUILD_CFLAGS	+= $(call cc-option,-fmacro-prefix-map=$(srctree)/=)
  
-+	if (sev_active()) {
-+		pr_info("KVM is unsupported when running as an SEV guest\n");
-+		return 0;
-+	}
+-# ensure -fcf-protection is disabled when using retpoline as it is
+-# incompatible with -mindirect-branch=thunk-extern
+-ifdef CONFIG_RETPOLINE
+-KBUILD_CFLAGS += $(call cc-option,-fcf-protection=none)
+-endif
+-
+ # use the deterministic mode of AR if available
+ KBUILD_ARFLAGS := $(call ar-option,D)
+ 
+--- a/arch/x86/Makefile
++++ b/arch/x86/Makefile
+@@ -138,6 +138,9 @@ else
+         KBUILD_CFLAGS += -mno-red-zone
+         KBUILD_CFLAGS += -mcmodel=kernel
+ 
++	# Intel CET isn't enabled in the kernel
++	KBUILD_CFLAGS += $(call cc-option,-fcf-protection=none)
 +
- 	return 1;
- }
- 
+         # -funit-at-a-time shrinks the kernel .text considerably
+         # unfortunately it makes reading oopses harder.
+         KBUILD_CFLAGS += $(call cc-option,-funit-at-a-time)
 
 
