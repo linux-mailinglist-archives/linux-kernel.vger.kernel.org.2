@@ -2,96 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 747703134D8
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 15:19:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 312263134F2
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 15:21:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232836AbhBHORs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 09:17:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37070 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232333AbhBHODG (ORCPT
+        id S232330AbhBHOUu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 09:20:50 -0500
+Received: from mail.baikalelectronics.com ([87.245.175.226]:57164 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232682AbhBHOE2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 09:03:06 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3164CC061788;
-        Mon,  8 Feb 2021 06:02:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=mIwF8HmqKUBLjBFyeS1Mjx7gZY+Wus4iD1MoxhHXTdc=; b=ekWLTDcknhWy0j6/589jbaOVx0
-        LF0ACLiIM8xIUoCsjVWxirkhtfbxpSxIdt9iug61kvF+6/HThXmtNQYXHi5bZy04xAkTeZyfe5ChG
-        Yjpq3SFRO8QnaecJcY3xadIZiw41tWlehb0S08A6qURrq9lo75fdikzL+Gc5VkhKE2k97Kb5Z7UrR
-        mWlBkfgfe1VJ/lRB8RfZkKD1ASvGoFSNfhTTqkSZpKS5F2PREEiuXV7+kTARvQtPZSljrcmJVAHKw
-        qunY1/GVkzBCL0Lvi6sf2cxcrak+wQZvuGNrMsCkaQDs3g2rS7ttQBcLPnetcu03f5ezFF6QWgwLl
-        RkcNqb2g==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1l977J-00637g-EP; Mon, 08 Feb 2021 14:02:18 +0000
-Date:   Mon, 8 Feb 2021 14:02:17 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Miklos Szeredi <miklos@szeredi.hu>
-Cc:     Dave Chinner <david@fromorbit.com>,
-        Miklos Szeredi <mszeredi@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andreas Dilger <adilger@dilger.ca>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Dave Kleikamp <shaggy@kernel.org>,
-        David Sterba <dsterba@suse.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, Jan Kara <jack@suse.cz>,
-        Joel Becker <jlbec@evilplan.org>,
-        Mike Marshall <hubcap@omnibond.com>,
-        Richard Weinberger <richard@nod.at>,
-        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
-        Theodore Ts'o <tytso@mit.edu>, Tyler Hicks <code@tyhicks.com>
-Subject: Re: [PATCH 00/18] new API for FS_IOC_[GS]ETFLAGS/FS_IOC_FS[GS]ETXATTR
-Message-ID: <20210208140217.GQ308988@casper.infradead.org>
-References: <20210203130501.GY308988@casper.infradead.org>
- <CAJfpegs3YWybmH7iKDLQ-KwmGieS1faO1uSZ-ADB0UFYOFPEnQ@mail.gmail.com>
- <20210203135827.GZ308988@casper.infradead.org>
- <CAJfpegvHFHcCPtyJ+w6uRx+hLH9JAT46WJktF_nez-ZZAria7A@mail.gmail.com>
- <20210203142802.GA308988@casper.infradead.org>
- <CAJfpegtW5-XObARX87A8siTJNxTCkzXG=QY5tTRXVUvHXXZn3g@mail.gmail.com>
- <20210203145620.GB308988@casper.infradead.org>
- <CAJfpegvV19DT+nQcW5OiLsGWjnp9-DoLAY16S60PewSLcKLTMA@mail.gmail.com>
- <20210208020002.GM4626@dread.disaster.area>
- <CAJfpeguTt+0099BE6DsVFW_jht_AD8_rtuSyxcz=r+JAnazQGA@mail.gmail.com>
+        Mon, 8 Feb 2021 09:04:28 -0500
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Joao Pinto <Joao.Pinto@synopsys.com>,
+        Jose Abreu <Jose.Abreu@synopsys.com>
+CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        Vyacheslav Mitrofanov 
+        <Vyacheslav.Mitrofanov@baikalelectronics.ru>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        <netdev@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH 00/20] net: stmmac: Obvious cleanups and several fixes
+Date:   Mon, 8 Feb 2021 17:03:21 +0300
+Message-ID: <20210208140341.9271-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJfpeguTt+0099BE6DsVFW_jht_AD8_rtuSyxcz=r+JAnazQGA@mail.gmail.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 08, 2021 at 09:25:22AM +0100, Miklos Szeredi wrote:
-> On Mon, Feb 8, 2021 at 3:00 AM Dave Chinner <david@fromorbit.com> wrote:
-> >
-> > On Wed, Feb 03, 2021 at 04:03:06PM +0100, Miklos Szeredi wrote:
-> > > On Wed, Feb 3, 2021 at 3:56 PM Matthew Wilcox <willy@infradead.org> wrote:
-> > >
-> > > > But let's talk specifics.  What does CIFS need to contact the server for?
-> > > > Could it be cached earlier?
-> > >
-> > > I don't understand what CIFS is doing, and I don't really care.   This
-> > > is the sort of operation where adding a couple of network roundtrips
-> > > so that the client can obtain the credentials required to perform the
-> > > operation doesn't really matter.  We won't have thousands of chattr(1)
-> > > calls per second.
-> >
-> > Incorrect.
-> 
-> Okay, I was wrong.
-> 
-> Still, CIFS may very well be able to perform these operations without
-> a struct file.   But even if it can't, I'd still only add the file
-> pointer as an *optional hint* from the VFS, not as the primary object
-> as Matthew suggested.
-> 
-> I stand by my choice of /struct dentry/ as the object to pass to these
-> operations.
+This series consists of a preparation patches before adding DW MAC GPIOs
+and final Baikal-T1 GMAC support. (The later will be done in the framework
+of the Generic DW MAC glue-driver though.) It's mainly about cleaning the
+code up here and there by removing unused data and macro names, but also
+includes several bugs and design fixes.
 
-Why the dentry?  This is an inode operation.  Why doesn't it take an
-inode as its primary object?
+The patchset starts from fixing the Realtek PHYs driver. In particular it
+has been discovered that disabling RXC in LPI (EEE) causes RTL8211E PHY
+partial freeze until the next MDIO read operation from the PHY CSRs. We
+suggest to fix that problem by dummy reading from the MMD Data register
+each time the PC1R.10 bit is intended to be set.
+
+Then the series evolves in a set of bug fixes discovered in the main
+STMMAC driver code. First of all the cleanup-on-error path has been
+incorrectly implemented in the DMA descriptor allocation procedure due to
+which in case Tx DMA resources allocation failures the Rx DMA descriptors
+will be left unfreed. Secondly it has been discovered that the MTL IRQs
+handling procedure didn't do that quite well, so any MTL RX overflow
+errors will be handled for queues with higher order too, which most likely
+isn't what the code author originally intended. Thirdly the DW MAC reset
+control de-assetion should be performed after the MDIO-bus
+de-registration, because the later may need to access PHY registers, which
+is supposed to be done via the MAC SMA interface. Fourthly we've found out
+that DW MAC v4.x code was using a generic dwmac4_disable_dma_irq() method
+to disable DMA IRQs instead of having the dedicated
+dwmac410_disable_dma_irq() method utilized. That didn't cause any problem
+because the modified bits matches in both IP-core revisions, but for
+consistency we suggest to fix that. Fifthly for the same reason of the
+naming consistency the GMAC_INT_STATUS_PMT macro constant should be used
+instead of GMAC_INT_DISABLE_PMT to check the PMT IRQs status. Finally it's
+strange that the problem hasn't been discovered before, but it is most
+likely wrong to initialized Tx/Rx DMA descriptors, and then clean them up.
+That specifically concerns the Tx DMA descriptors initialization procedure
+in the Chain-mode. Please the patch for details.
+
+The patchset then proceed with multiple optimizations and cleanups
+performed here and there in the code: fix typo in the XGMAC_L3_ADDR3 macro
+name, discard unused mii_irq array from the private data, discard nothing
+changing Rx copybreak ethtool setting, discard redundant index variable
+usage in the dirty_rx initialization method, discard dwmac1000_dma_ops
+declaration from dwmac100.h, move DMA Tx/Rx init methods to the DW MAC lib
+since they match for DW MAC and DW GMA IP-cores, discard pointless
+STMMAC_RESETING flag, discard conditional service task execution since
+it's called from CMWQ anyway (it's also errors prone, since any event
+happening during the service task execution will be lost), add 'cause' arg
+to the service task executioner to generalize the deferred events handling
+interface. Finally in the framework of the code cleanup procedure we
+suggest to extend the stmmac_hw_teardown() functionality with all the
+necessary hardware cleanups, which for some reason were directly performed
+in the network device release callback. That concerns PTP clocks
+disabling, DMA channels and MAC Tx/Rx de-activation.
+
+Note the STMMAC driver is having much more weak design patterns and style
+problems (like calculating the total number of queues every time it's
+needed, or antagonist/cleanup methods absence while having the reversal
+code added in the remove/cleanup paths), than what is fixed in the
+framework of this series, which make the code hard to read, comprehend,
+maintain and extend with new features. Most likely the situation turned to
+be like that due to a long history of the driver evolving to support many
+different IP-core versions and vendor-specific MAC extensions. Anyway it
+would have taken not a single patches series to fix all of the problems.
+Since it hasn't been my primary target, here in this series I've
+introduced the cleanups and fixes, which prepared the corresponding parts
+of the code for easier alterations in the framework of adding the DW MAC
+GPIOs and Baikal-T1 GMAC support into the driver.
+
+The series is supposed to be applied on top of the last revision of the
+next patchset:
+Link: https://lore.kernel.org/netdev/20201214091616.13545-1-Sergey.Semin@baikalelectronics.ru/
+otherwise a few patches won't get merged in cleanly.
+
+Fixes: 7bac4e1ec3ca ("net: stmmac: stmmac interrupt treatment prepared for multiple queues")
+Fixes: 021bd5e36970 ("net: stmmac: Let TX and RX interrupts be independently enabled/disabled")
+Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+Cc: Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>
+Cc: Vyacheslav Mitrofanov <Vyacheslav.Mitrofanov@baikalelectronics.ru>
+Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>
+Cc: Russell King <linux@armlinux.org.uk>
+Cc: Andrew Lunn <andrew@lunn.ch>
+Cc: Heiner Kallweit <hkallweit1@gmail.com>
+Cc: netdev@vger.kernel.org
+Cc: linux-stm32@st-md-mailman.stormreply.com
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org
+
+Serge Semin (20):
+  net: phy: realtek: Fix events detection failure in LPI mode
+  net: stmmac: Free Rx descs on Tx allocation failure
+  net: stmmac: Fix false MTL RX overflow handling for higher queues
+  net: stmmac: Assert reset control after MDIO de-registration
+  net: stmmac: Use dwmac410_disable_dma_irq for DW MAC v4.10 DMA
+  net: stmmac: Use LPI IRQ status-related macro in DW MAC1000 isr
+  net: stmmac: Clear descriptors before initializing them
+  net: stmmac: Fix typo in the XGMAC_L3_ADDR3 macro name
+  net: stmmac: Discard mii_irq array from private data
+  net: stmmac: Discard Rx copybreak ethtool setting
+  net: stmmac: Discard index usage in the dirty_rx init
+  net: stmmac: Discard dwmac1000_dma_ops declaration from dwmac100.h
+  net: stmmac: Move DMA Tx/Rx init methods to DW MAC lib
+  net: stmmac: Add DW GMAC disable LPI IRQ mask macro
+  net: stmmac: Discard STMMAC_RESETING flag
+  net: stmmac: Discard conditional service task execution
+  net: stmmac: Add 'cause' arg to the service task executioner
+  net: stmmac: Move PTP clock enabling to PTP-init method
+  net: stmmac: Move DMA stop procedure to HW-setup antagonist
+  net: stmmac: Move MAC Tx/Rx disabling to HW-setup antagonist
+
+ .../net/ethernet/stmicro/stmmac/dwmac1000.h   |  2 +-
+ .../ethernet/stmicro/stmmac/dwmac1000_core.c  |  2 +-
+ .../ethernet/stmicro/stmmac/dwmac1000_dma.c   | 20 +----
+ .../ethernet/stmicro/stmmac/dwmac100_dma.c    | 20 +----
+ .../net/ethernet/stmicro/stmmac/dwmac4_dma.c  |  2 +-
+ .../net/ethernet/stmicro/stmmac/dwmac_dma.h   |  4 +
+ .../net/ethernet/stmicro/stmmac/dwmac_lib.c   | 14 ++++
+ .../net/ethernet/stmicro/stmmac/dwxgmac2.h    |  2 +-
+ drivers/net/ethernet/stmicro/stmmac/stmmac.h  |  5 --
+ .../ethernet/stmicro/stmmac/stmmac_ethtool.c  | 39 ---------
+ .../net/ethernet/stmicro/stmmac/stmmac_main.c | 81 +++++++++----------
+ drivers/net/phy/realtek.c                     | 37 +++++++++
+ 12 files changed, 102 insertions(+), 126 deletions(-)
+
+-- 
+2.29.2
+
