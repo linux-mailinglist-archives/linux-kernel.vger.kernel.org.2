@@ -2,110 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19AF7313CE5
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 19:13:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D2259313CF2
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 19:14:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235389AbhBHSM6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 13:12:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58220 "EHLO
+        id S235183AbhBHSOa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 13:14:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234065AbhBHPl0 (ORCPT
+        with ESMTP id S234033AbhBHPm1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 10:41:26 -0500
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2039C061786
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 07:40:43 -0800 (PST)
-Received: by mail-pj1-x102e.google.com with SMTP id t2so3825933pjq.2
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 07:40:43 -0800 (PST)
+        Mon, 8 Feb 2021 10:42:27 -0500
+Received: from mail-oo1-xc31.google.com (mail-oo1-xc31.google.com [IPv6:2607:f8b0:4864:20::c31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D58C6C061788;
+        Mon,  8 Feb 2021 07:41:46 -0800 (PST)
+Received: by mail-oo1-xc31.google.com with SMTP id q4so3526169ood.8;
+        Mon, 08 Feb 2021 07:41:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/Qc/45eRqfQBEqGJzHaK7yd+vGYvqGu3tixgC95meQM=;
-        b=ADAdFY96oK/I7o3ug5tJCI7osmm84XxY6ZcJC1dr4wp6o5mwqhiAYugzWpzgFwyunC
-         yTTyCZolYCEXb0kYEL0SQmTfBsVq26Ucyq3osiHJGYd0PMeu2Umivj0RyLa7TePa62Ug
-         oHNg9zblMo28u90xXEhH3HawKmkSWlNGl77MSEa8O1qGDw49+21SpVx3NaMGIIxTRWae
-         Hvbr6lsA+MQnxlXQjsuTANo6nw3cEJLkQNeFJIWOIzGUkHzze2RLN40mPePiDoRtAIuf
-         B6UTnJo9LBBRA7mzAQdgV8vwEigVzvTP96KXzRDHOTVnWEG9eM7jTTV0apzhCdwIatmx
-         U0zw==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=sxdNpbaxjlgrI7y1xjMXjF7UFp2IQQ7kDEnaAjSJx9g=;
+        b=YfIiYx/BKZ4rZeX8RpLOTQsQ/KtLpC8M6vxPN/XhchXntph3d2A7qVunw33G3PREa0
+         F+D2/WFlIa/yxvdNhzJ9UufatBB0/30XR7OCSbrAuPtQySZh6fH0VlX+20Q5nP8rbqt9
+         MqOz/KG5w9mdSYoW08j54YMvejJIKhVcHGQGR6c1beANVWZvAOeRgcMtc7UI49l8oZNM
+         cummtSiQEjqXpj61hbgNBBG3uFiUmnVdrYI4TzQuxqwcg71ZeFOVsp8NvX68SL47B2rb
+         cQs6UJ9HED2gjXaL6iSIH7rfPRBsJOY9c8sa+MlvIB8piR3LC+RxN1Yw8Eq+X+xQpRcc
+         aCOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/Qc/45eRqfQBEqGJzHaK7yd+vGYvqGu3tixgC95meQM=;
-        b=lnq52uZJQ2XAbarFp24Td+kjK5r+WAIS8EWP3r+4L5nijI8Qy6M/QQIs6uWiLZDTtd
-         r9O1oABsgIXhZPWdc2IXLDWAcBVxqbl9PPQdVFmJIWeiorGAqUBsFWydhZakQbqu3/7i
-         +ywazgz7kHVuSIn+yDoOOpsBuzLcjmCu4zz+CfTthiQT4RxCU1gveEytFbkeIlRb88Uu
-         pwOeAeHzLDymCuMF62r5h8UPfFQLOx5L8MmYhIxhY63AlYVX4ozV6WsnuYj+6kspTpKa
-         u3zecefVK2uxcv8NeGPmNRHU/VW8miN8uQB1KlIs7SQIwAS1gbEo1XAHqJ6yaLIaiHMJ
-         faFg==
-X-Gm-Message-State: AOAM533+QO/HPOW+0AMuMQujL2jjCdhI9/rRpmwwQ61TZLCXcI4MlJsw
-        aLFNPPdp7UqZu5LywOQEofh/9Cnhmwz6Ak+VpIkBFA==
-X-Google-Smtp-Source: ABdhPJx9zpu9jF8CnSyo6G801+5B1HD3eq8nP3UGL8LEyz4STIsURtt7Sc3jnaVGYGfUwSGbK0Mk3RN9e1GusuYSmII=
-X-Received: by 2002:a17:90a:b702:: with SMTP id l2mr17651515pjr.13.1612798843383;
- Mon, 08 Feb 2021 07:40:43 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=sxdNpbaxjlgrI7y1xjMXjF7UFp2IQQ7kDEnaAjSJx9g=;
+        b=E5V/9Cw9Pf4AwtJcb3RcKDW0Ly1KcHVfcq3dylvewGjtQO0rqCqEo1/wTw1Btv1aCJ
+         HlM5txq+1zFiOgXinz8JHWgQhfJsMHs77kb1GVrFvAIxVQpELE8yMj/wcZaMykr7VSQD
+         0D0bRAKRAGWeEnI8eF9a43h+6hyivjzs+HXWCjuCHs/E1LylijUWJ/giiFyH5sLWmEnr
+         4ywTE4rUEWaGPItXCxG7/hjLqNSX+3c/wBbIObWushfi5Yu8i4rs3tp7Kmo8NTkMHNnz
+         yCzlZfAOP3F00kKtVwt7Pe+xrIX0VzWil0JEnYzfMas48PhwOmfsE/d0a7hMl130AO6x
+         G/CQ==
+X-Gm-Message-State: AOAM532k9HL3RElgtTGjdLMG9kiFnDQ/LaKkzjrB20ivDrUUqXNACnHT
+        Fo8bujjI07Og4t8DgqJOk6isZF7y2C4=
+X-Google-Smtp-Source: ABdhPJwH0fwOOUu+Q0WPK3ANFlUUkzoJcW31wN26ZavLe1t95+GxV7PDkRUbDf4XQVe/bhFngUx0qQ==
+X-Received: by 2002:a4a:d031:: with SMTP id w17mr5052846oor.33.1612798906284;
+        Mon, 08 Feb 2021 07:41:46 -0800 (PST)
+Received: from Davids-MacBook-Pro.local ([8.48.134.33])
+        by smtp.googlemail.com with ESMTPSA id d17sm1097652ooh.32.2021.02.08.07.41.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 08 Feb 2021 07:41:45 -0800 (PST)
+Subject: Re: [PATCH iproute2-next V3] devlink: add support for port params
+ get/set
+To:     Oleksandr Mazur <oleksandr.mazur@plvision.eu>,
+        netdev@vger.kernel.org
+Cc:     jiri@nvidia.com, davem@davemloft.net, linux-kernel@vger.kernel.org,
+        kuba@kernel.org
+References: <20210202130445.5950-1-oleksandr.mazur@plvision.eu>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <c22aaccf-59a9-d3bc-8eb3-0496f17c8dc3@gmail.com>
+Date:   Mon, 8 Feb 2021 08:41:43 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
+ Gecko/20100101 Thunderbird/78.7.0
 MIME-Version: 1.0
-References: <20210206054124.6743-1-songmuchun@bytedance.com>
- <YCDcAy39BbPItdGY@jagdpanzerIV.localdomain> <CAMZfGtVBVSuH=HGNs7KFOtixSviy_stoZsiG4au0RUkUnH-0rQ@mail.gmail.com>
- <YCE4tIrz/u/RkDc/@jagdpanzerIV.localdomain>
-In-Reply-To: <YCE4tIrz/u/RkDc/@jagdpanzerIV.localdomain>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Mon, 8 Feb 2021 23:40:07 +0800
-Message-ID: <CAMZfGtX-bHXoF_4rU+WzDNp+LmZj3CHWmurEvjCZBCyM2uiDMw@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v2] printk: fix deadlock when kernel panic
-To:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-Cc:     Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        john.ogness@linutronix.de,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210202130445.5950-1-oleksandr.mazur@plvision.eu>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 8, 2021 at 9:12 PM Sergey Senozhatsky
-<sergey.senozhatsky@gmail.com> wrote:
->
-> On (21/02/08 16:49), Muchun Song wrote:
-> > On Mon, Feb 8, 2021 at 2:38 PM Sergey Senozhatsky
-> > <sergey.senozhatsky@gmail.com> wrote:
-> > >
-> > > On (21/02/06 13:41), Muchun Song wrote:
-> > > > We found a deadlock bug on our server when the kernel panic. It can be
-> > > > described in the following diagram.
-> > > >
-> > > > CPU0:                                         CPU1:
-> > > > panic                                         rcu_dump_cpu_stacks
-> > > >   kdump_nmi_shootdown_cpus                      nmi_trigger_cpumask_backtrace
-> > > >     register_nmi_handler(crash_nmi_callback)      printk_safe_flush
-> > > >                                                     __printk_safe_flush
-> > > >                                                       raw_spin_lock_irqsave(&read_lock)
-> > > >     // send NMI to other processors
-> > > >     apic_send_IPI_allbutself(NMI_VECTOR)
-> > > >                                                         // NMI interrupt, dead loop
-> > > >                                                         crash_nmi_callback
-> > >
-> > > At what point does this decrement num_online_cpus()? Any chance that
-> > > panic CPU can apic_send_IPI_allbutself() and printk_safe_flush_on_panic()
-> > > before num_online_cpus() becomes 1?
-> >
-> > I took a closer look at the code. IIUC, It seems that there is no point
-> > which decreases num_online_cpus.
->
-> So then this never re-inits the safe_read_lock?
+On 2/2/21 6:04 AM, Oleksandr Mazur wrote:
+> Add implementation for the port parameters
+> getting/setting.
+> Add bash completion for port param.
+> Add man description for port param.
+> 
+> Example:
+> $ devlink dev param set netdevsim/netdevsim0/0 name test_port_parameter value false cmode runtime
+> 
+> $ devlink port param show netdevsim/netdevsim0/0 name test_port_parameter
+> netdevsim/netdevsim0/0:
+>   name test_port_parameter type driver-specific
+>     values:
+>       cmode runtime value false
+> 
+> $ devlink port  -jp param show netdevsim/netdevsim0/0 name test_port_parameter
+> {
+>     "param": {
+>         "netdevsim/netdevsim0/0": [ {
+>                 "name": "test_port_parameter",
+>                 "type": "driver-specific",
+>                 "values": [ {
+>                         "cmode": "runtime",
+>                         "value": false
+>                     } ]
+>             } ]
+>     }
+> }
+> 
+> Signed-off-by: Oleksandr Mazur <oleksandr.mazur@plvision.eu>
+> ---
+> V3:
+>     1) Add usage example;
+>     2) Remove stray newline in code;
+> V2:
+>     1) Add bash completion for port param;
+>     2) Add man decsription / examples for port param;
+> 
+>  bash-completion/devlink |  55 ++++++++
+>  devlink/devlink.c       | 274 +++++++++++++++++++++++++++++++++++++++-
+>  man/man8/devlink-port.8 |  65 ++++++++++
+>  3 files changed, 388 insertions(+), 6 deletions(-)
+> 
 
-Right. If we encounter this case, we do not flush printk
-buffer. So, it seems my previous patch is the right fix.
-Right?
+does not apply to iproute2-next. please rebase
 
-https://lore.kernel.org/patchwork/patch/1373563/
-
->
->                if (num_online_cpus() > 1)
->                        return;
->
->                debug_locks_off();
->                raw_spin_lock_init(&safe_read_lock);
->
->         -ss
