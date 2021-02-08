@@ -2,208 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 381D5313251
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 13:29:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9A51313253
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 13:30:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231233AbhBHM3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 07:29:20 -0500
-Received: from mail-ed1-f44.google.com ([209.85.208.44]:40432 "EHLO
-        mail-ed1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231978AbhBHMOO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 07:14:14 -0500
-Received: by mail-ed1-f44.google.com with SMTP id s3so17758072edi.7;
-        Mon, 08 Feb 2021 04:13:53 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=FpLR5cZzlQKftepQVrprWEOfxdWH5lN8lHi/n2VPC5I=;
-        b=dmkd0Se7o++odq7cIpoeIIVIdCtMpIv8OKo9mLkiwwlKO7wlvuvFBNJvtvWeoHBjgU
-         5d0qIz8uIKE3/Z+F6XFEPZo4faQKRP0GKWQ/QI28x1Vp0u9p6V/q1EQLAZilJwCQZHX+
-         xI9Rb2coYByW3seAV64FW3A9YrizMUHOxfYrkw1ZwOXs5eIvZ49HrQfNl5+wrsaE87V/
-         kUGUd5nikDqlnrvpu4zloRHbGNq3oxWzUXDksncn8pwsierxU/s0rH6CPH9JG9F2gGMm
-         JzkC4/f/7mczqdIeUaRz4Ez2Qez3Ao/GhK8lmMRFyYlRytKLNPlANhw3DjiRv1JLHX0Z
-         DQig==
-X-Gm-Message-State: AOAM532ccRAoo/+1rczkczeST2+QXZxCaaF/ucCsRBXNAx/vyKkBnP8x
-        rZ9qJmL05zo25Ow0SuwrPe8=
-X-Google-Smtp-Source: ABdhPJzKOvT2pcfH6hm8UXtb6quo0MW5QUh99YT16bBy/QZjt+x9tofllOvobrLzWCCU+gDST0jy1g==
-X-Received: by 2002:a05:6402:1711:: with SMTP id y17mr16628083edu.72.1612786408134;
-        Mon, 08 Feb 2021 04:13:28 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id hr31sm8330971ejc.125.2021.02.08.04.13.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Feb 2021 04:13:26 -0800 (PST)
-Date:   Mon, 8 Feb 2021 13:13:25 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Hector Martin 'marcan' <marcan@marcan.st>
-Cc:     soc@kernel.org, linux-arm-kernel@lists.infradead.org,
-        Marc Zyngier <maz@kernel.org>, robh+dt@kernel.org,
-        Arnd Bergmann <arnd@kernel.org>, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, Olof Johansson <olof@lixom.net>
-Subject: Re: [PATCH 18/18] arm64: apple: Add initial Mac Mini 2020 (M1)
- devicetree
-Message-ID: <20210208121325.owjjd7nfbdanszny@kozik-lap>
-References: <20210204203951.52105-1-marcan@marcan.st>
- <20210204203951.52105-19-marcan@marcan.st>
- <20210208110441.25qc6yken4effd6c@kozik-lap>
- <cd67b2ce-9676-31b4-85f7-de1ec9b2bf72@marcan.st>
+        id S230160AbhBHM3r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 07:29:47 -0500
+Received: from mx2.suse.de ([195.135.220.15]:50032 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230319AbhBHMPE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 07:15:04 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1612786454; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=YkL31YCnyHYbb7t23TaR8QRiNbERTptF7wXzJLL1Vxo=;
+        b=f6+8KpM2onabGcpcXQyUEuf2Tz0jJbgqS9S25f4GYpXaFlrQJeFMiR0nSmfFIILRXAFi/D
+        CHRNDrFYiA/HyMMwMls90LLIPO0p6n9ZzVr1Xl+qs/Wp8cpEY1kF6KD7/GClbtpZoCDncK
+        Z3KzAvtPmxBw//0U7enbXBF6dX3j/fo=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 4C4C1AEC2;
+        Mon,  8 Feb 2021 12:14:14 +0000 (UTC)
+To:     Julien Grall <julien@xen.org>, xen-devel@lists.xenproject.org,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        netdev@vger.kernel.org, linux-scsi@vger.kernel.org
+Cc:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        stable@vger.kernel.org,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        =?UTF-8?Q?Roger_Pau_Monn=c3=a9?= <roger.pau@citrix.com>,
+        Jens Axboe <axboe@kernel.dk>, Wei Liu <wei.liu@kernel.org>,
+        Paul Durrant <paul@xen.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+References: <20210206104932.29064-1-jgross@suse.com>
+ <bd63694e-ac0c-7954-ec00-edad05f8da1c@xen.org>
+ <eeb62129-d9fc-2155-0e0f-aff1fbb33fbc@suse.com>
+ <fcf3181b-3efc-55f5-687c-324937b543e6@xen.org>
+ <7aaeeb3d-1e1b-6166-84e9-481153811b62@suse.com>
+ <6f547bb5-777a-6fc2-eba2-cccb4adfca87@xen.org>
+ <0d623c98-a714-1639-cc53-f58ba3f08212@suse.com>
+ <28399fd1-9fe8-f31a-6ee8-e78de567155b@xen.org>
+From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+Subject: Re: [PATCH 0/7] xen/events: bug fixes and some diagnostic aids
+Message-ID: <1831964f-185e-31bb-2446-778f2c18d71b@suse.com>
+Date:   Mon, 8 Feb 2021 13:14:13 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <cd67b2ce-9676-31b4-85f7-de1ec9b2bf72@marcan.st>
+In-Reply-To: <28399fd1-9fe8-f31a-6ee8-e78de567155b@xen.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="hIAoLX3MJuQazBJLmWBlWtXZWpRDvRYID"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 08, 2021 at 08:56:53PM +0900, Hector Martin 'marcan' wrote:
-> On 08/02/2021 20.04, Krzysztof Kozlowski wrote:
-> > apple
-> > 
-> > Don't make things different for this one platform (comparing to all
-> > other platforms). Apple is not that special. :)
-> 
-> AAPL is the old vendor prefix used in the PowerPC era. I'm happy to use
-> `apple`, as long as we're OK with having two different prefixes for the same
-> vendor, one for PPC and one for ARM64. I've seen opinions go both ways on
-> this one :)
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--hIAoLX3MJuQazBJLmWBlWtXZWpRDvRYID
+Content-Type: multipart/mixed; boundary="qiVuDEdwEs52OcBCUZRJfP80UdZbnlZdc";
+ protected-headers="v1"
+From: =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+To: Julien Grall <julien@xen.org>, xen-devel@lists.xenproject.org,
+ linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+ netdev@vger.kernel.org, linux-scsi@vger.kernel.org
+Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+ Stefano Stabellini <sstabellini@kernel.org>, stable@vger.kernel.org,
+ Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+ =?UTF-8?Q?Roger_Pau_Monn=c3=a9?= <roger.pau@citrix.com>,
+ Jens Axboe <axboe@kernel.dk>, Wei Liu <wei.liu@kernel.org>,
+ Paul Durrant <paul@xen.org>, "David S. Miller" <davem@davemloft.net>,
+ Jakub Kicinski <kuba@kernel.org>
+Message-ID: <1831964f-185e-31bb-2446-778f2c18d71b@suse.com>
+Subject: Re: [PATCH 0/7] xen/events: bug fixes and some diagnostic aids
+References: <20210206104932.29064-1-jgross@suse.com>
+ <bd63694e-ac0c-7954-ec00-edad05f8da1c@xen.org>
+ <eeb62129-d9fc-2155-0e0f-aff1fbb33fbc@suse.com>
+ <fcf3181b-3efc-55f5-687c-324937b543e6@xen.org>
+ <7aaeeb3d-1e1b-6166-84e9-481153811b62@suse.com>
+ <6f547bb5-777a-6fc2-eba2-cccb4adfca87@xen.org>
+ <0d623c98-a714-1639-cc53-f58ba3f08212@suse.com>
+ <28399fd1-9fe8-f31a-6ee8-e78de567155b@xen.org>
+In-Reply-To: <28399fd1-9fe8-f31a-6ee8-e78de567155b@xen.org>
 
-Thanks for explanation. I propose to choose just "apple". Sticking to
-old vendor name is not a requirement - we have few vendor prefixes which
-were marked as deprecated because we switched to a better one.
+--qiVuDEdwEs52OcBCUZRJfP80UdZbnlZdc
+Content-Type: multipart/mixed;
+ boundary="------------910DD0FAB41FE5DC74A08D00"
+Content-Language: en-US
 
-> 
-> > > + * Copyright 2021 Hector Martin <marcan@marcan.st>
-> > 
-> > A lot here might be difficult to reverse-egineer or figure out by
-> > ourself, so usually people rely on vendor sources (the open source
-> > compliance package). Didn't you receive such for the iOS (or whatever
-> > was on your Mac)?
-> 
-> Apple source drops are sparse (they don't even include things like the
-> irqchip driver, only the very core OS code) and APSL licensed, which is a
-> license incompatible with the GPL. Worse, they've moved to a partial-blob
-> model with the M1; M1-compatible XNU source code drops now include a .a blob
-> with startup and CPU-specific code, for which no source code is provided.
-> (to be clear: Apple does not ship Linux for these machines)
-> 
-> Honestly, beyond what's in this patchset and a few more details about CPU
-> registers like performance monitoring stuff that exist in public XNU drops
-> but I haven't looked into yet, Apple's source code drops are going to be
-> practically useless to us from here on out. It's all binaries after this.
-> 
-> Apple device trees are not open source at all; those are provided by iBoot
-> and ship with device firmware, which is not openly licensed. Those device
-> trees are OF-inspired, but otherwise in a different format and structure to
-> Linux device trees.
-> 
-> Since there is zero Apple-published code or data with a license compatible
-> with the Linux kernel to be used here, there can be zero copyright lines
-> claiming any submissions are copyright Apple from us, because that would
-> imply a license violation has occurred. I am treating this as I would any
-> other no-source reverse engineering project, that is, ensuring that I only
-> look at Apple code (binaries, source, devicetrees, whatever) to understand
-> how the hardware functions, build documentation for it (at least in my head,
-> but I am also trying to document things on our wiki as I go), and then write
-> original code to drive it from Linux, unrelated to whatever Apple was doing.
+This is a multi-part message in MIME format.
+--------------910DD0FAB41FE5DC74A08D00
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
 
-Makes sense. In such case it's indeed your work. Since you introduce it,
-the DTSes are usually licensed with (GPL-2.0+ OR MIT).
+On 08.02.21 11:40, Julien Grall wrote:
+> Hi Juergen,
+>=20
+> On 08/02/2021 10:22, J=C3=BCrgen Gro=C3=9F wrote:
+>> On 08.02.21 10:54, Julien Grall wrote:
+>>> ... I don't really see how the difference matter here. The idea is to=
+=20
+>>> re-use what's already existing rather than trying to re-invent the=20
+>>> wheel with an extra lock (or whatever we can come up).
+>>
+>> The difference is that the race is occurring _before_ any IRQ is
+>> involved. So I don't see how modification of IRQ handling would help.
+>=20
+> Roughly our current IRQ handling flow (handle_eoi_irq()) looks like:
+>=20
+> if ( irq in progress )
+> {
+>  =C2=A0 set IRQS_PENDING
+>  =C2=A0 return;
+> }
+>=20
+> do
+> {
+>  =C2=A0 clear IRQS_PENDING
+>  =C2=A0 handle_irq()
+> } while (IRQS_PENDING is set)
+>=20
+> IRQ handling flow like handle_fasteoi_irq() looks like:
+>=20
+> if ( irq in progress )
+>  =C2=A0 return;
+>=20
+> handle_irq()
+>=20
+> The latter flow would catch "spurious" interrupt and ignore them. So it=
+=20
+> would handle nicely the race when changing the event affinity.
 
-> 
-> We're also trying to avoid looking at any Apple stuff in general as much as
-> possible, preferring black-box approaches where feasible, to minimize
-> exposure. For example, I only looked at an (outdated, arm32 era) AIC
-> register name list in XNU to write the AIC driver; there is no actual AIC
-> driver code in the source, and instead of decompiling Apple's binary blob
-> AIC driver module, I figured out how the hardware actually worked via
-> probing and experimentation. The entire userspace GPU stack is being reverse
-> engineered via a black-box approach, without any decompilation. I'm going to
-> see what I can do about the kernel driver in the future, and prefer some
-> kind of mmio tracing solution if I can get it all to work on macOS.
-> 
-> As for this file specifically: while I am obviously looking at Apple's DTs
-> to figure out things like register offsets and what hardware exists, those
-> are facts, and facts are not copyrightable, and thus Apple does not hold any
-> copyright interest over this code as I submitted it. Short of verbatim
-> copying and pasting of entire nodes with bespoke property names (which would
-> never fly here anyway because Apple does things very differently from Linux
-> DTs when you get down into the details), it would be extremely hard to argue
-> that translating hardware information from decompiled Apple DTs to Linux DTs
-> would constitute a copyright violation, since the entire purpose of DTs is
-> to describe hardware facts.
-> 
-> You can read more about our reverse engineering and copyright policy at
-> https://alx.sh/re - if you have any suggestions or spot anything
-> problematic, please let me know.
-> 
-> (I'm actually probably going to change that copyright line to "The Asahi
-> Linux Contributors" for v2, if that's okay with the kernel folks, to be in
-> line with our other projects; I defaulted to my name since so far I'm the
-> only contributor to these files, but I expect other people to throw PRs at
-> me in the future and the history to end up with more names here)
+Sure? Isn't "irq in progress" being reset way before our "lateeoi" is
+issued, thus having the same problem again? And I think we want to keep
+the lateeoi behavior in order to be able to control event storms.
 
-The copyrights matter more in case the need to relicense the work or
-some copyright-infringement cases. If you use generic alias - The Asahi
-contributors - how it would be possible to find people with actual
-copyrights? For example to ask them about relicense permission?  Unless
-it's an official body (e.g. foundation or company).  Therefore I propose
-to stick to real names and include other contributors once they
-contribute.
 
-However this are just my thoughts, not a really professional opinion
-about copyright aspects.
+Juergen
 
-> 
-> > I guess Rob will comment on the dt-bindings more... but for me a generic
-> > "arm-platform" is too generic. What's the point of it? I didn't see any
-> > of such generic compatibles in other platforms.
-> 
-> This is a hack for patches #11/#12 to use, and I expect it will go away once
-> we figure out how to properly handle that problem (which needs further
-> discussion). Sorry for the noise, this should not be there in the final
-> version.
-> 
-> > > +		bootargs = "earlycon";
-> > 
-> > This should not be hard-coded in DTS. Pass it from bootloader.
-> 
-> My apologies, this was garbage left over from before I had bootargs support
-> in the bootloader. Will be gone for v2.
-> 
-> > > +	clk24: clk24 {
-> > 
-> > Just "clock". Node names should be generic.
-> 
-> Really? Almost every other device device tree uses unique clock node names.
+--------------910DD0FAB41FE5DC74A08D00
+Content-Type: application/pgp-keys;
+ name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment;
+ filename="OpenPGP_0xB0DE9DD628BF132F.asc"
 
-Yes, really, devicetree/ePAPR spec:
-"The name of a node should be somewhat generic, reflecting the function
-of the device and not its precise programming model. If appropriate, the
-name should be one of the following choices:"
+-----BEGIN PGP PUBLIC KEY BLOCK-----
 
-Multiple other boards and people (including myself...) made the same
-mistake of adding specific names. Even some platform maintainers still
-don't get it or never cared to look at DT spec. :)
+xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
+cWx
+w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
+f8Z
+d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
+9bf
+IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
+G7/
+377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
+3Jv
+c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
+QIe
+AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
+hpw
+dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
+MbD
+1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
+oPH
+Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
+5QL
++qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
+2Vu
+IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
+QoL
+BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
+Wf0
+teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
+/nu
+AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
+ITT
+d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
+XBK
+7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
+80h
+SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
+AcD
+AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
+FOX
+gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
+jnD
+kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
+N51
+N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
+otu
+fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
+tqS
+EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
+hsD
+BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
+g3O
+ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
+dM7
+wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
+D+j
+LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
+V2x
+AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
+Eaw
+QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
+nHI
+s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
+wgn
+BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
+bVF
+LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
+pEd
+IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
+QAB
+wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
+Tbe
+8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
+vJz
+Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
+VGi
+wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
+svi
+uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
+zXs
+ZDn8R38=3D
+=3D2wuH
+-----END PGP PUBLIC KEY BLOCK-----
 
-> 
-> > > +		compatible = "fixed-clock";
-> > > +		#clock-cells = <0>;
-> > > +		clock-frequency = <24000000>;
-> > > +		clock-output-names = "clk24";
-> > 
-> > What clock is it? Part of board or SoC? Isn't it a work-around for
-> > missing clock drivers?
-> 
-> The clock topology isn't entirely known yet; I'm submitting this as an
-> initial bring-up patchset and indeed there should be a clockchip driver in
-> the future. The UART driver wants a clock to be able to calculate baud
-> rates. I figured we can get away with a fixed-clock for now while that part
-> of the SoC gets figured out.
+--------------910DD0FAB41FE5DC74A08D00--
 
-Such workaround is ok, but maybe add a comment that it's a workaround so
-far.
+--qiVuDEdwEs52OcBCUZRJfP80UdZbnlZdc--
 
-Best regards,
-Krzysztof
+--hIAoLX3MJuQazBJLmWBlWtXZWpRDvRYID
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
 
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmAhKxUFAwAAAAAACgkQsN6d1ii/Ey/X
+GwgAhB+De5IgMGnLjs2xXuEsjs1CoaFMv6yM53+0stHNws/f9YhqD6Kd0pD3uEC4cy4Fthz6T3c8
+J/lq5sS+jmbxUG1UGG8TJjmDK63oSwAqIBU+aefIRsOjLeMGuWxSy+wpvkAllz9iTrJmPg40i+u2
+LXDclNuKGEnAAyIUEhfbITMYSsV6K7UTZKiiRC2K42nPyxn9e2KNBtCcGgttYvkop35e3ejDYBoc
+QpffC1v/HZOkDBXWqSdffwRlQeQAVhBLwYkXk6J8zynxTqmT5GQJUkhfn4MZQqdGlItysPwuIgQl
+kY567Mvsh2aL2O4yNPzEcNpzfKS8wqoZbjAOU+XsuA==
+=VlL/
+-----END PGP SIGNATURE-----
+
+--hIAoLX3MJuQazBJLmWBlWtXZWpRDvRYID--
