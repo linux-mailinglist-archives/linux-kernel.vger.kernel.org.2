@@ -2,147 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71EBA312A21
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 06:35:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28367312A23
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 06:39:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229679AbhBHFfM convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 8 Feb 2021 00:35:12 -0500
-Received: from szxga08-in.huawei.com ([45.249.212.255]:2825 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229609AbhBHFfK (ORCPT
+        id S229711AbhBHFfx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 00:35:53 -0500
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:8714 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229609AbhBHFfr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 00:35:10 -0500
-Received: from DGGEMM406-HUB.china.huawei.com (unknown [172.30.72.57])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4DYvmB4nCwz13rcr;
-        Mon,  8 Feb 2021 13:32:10 +0800 (CST)
-Received: from dggpemm100012.china.huawei.com (7.185.36.212) by
- DGGEMM406-HUB.china.huawei.com (10.3.20.214) with Microsoft SMTP Server (TLS)
- id 14.3.498.0; Mon, 8 Feb 2021 13:34:23 +0800
-Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
- dggpemm100012.china.huawei.com (7.185.36.212) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2106.2; Mon, 8 Feb 2021 13:34:23 +0800
-Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
- dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.2106.006;
- Mon, 8 Feb 2021 13:34:23 +0800
-From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-To:     David Rientjes <rientjes@google.com>
-CC:     Matthew Wilcox <willy@infradead.org>,
-        "Wangzhou (B)" <wangzhou1@hisilicon.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "jgg@ziepe.ca" <jgg@ziepe.ca>,
-        "kevin.tian@intel.com" <kevin.tian@intel.com>,
-        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "Liguozhu (Kenneth)" <liguozhu@hisilicon.com>,
-        "zhangfei.gao@linaro.org" <zhangfei.gao@linaro.org>,
-        "chensihang (A)" <chensihang1@hisilicon.com>
-Subject: RE: [RFC PATCH v3 1/2] mempinfd: Add new syscall to provide memory
- pin
-Thread-Topic: [RFC PATCH v3 1/2] mempinfd: Add new syscall to provide memory
- pin
-Thread-Index: AQHW/SrsWWMRpilf2UC1Pz29QqsBVqpMsX2AgACQE1D//789gIAAtGdg
-Date:   Mon, 8 Feb 2021 05:34:23 +0000
-Message-ID: <9343d5ebeff3423c8055323fe83a0796@hisilicon.com>
-References: <1612685884-19514-1-git-send-email-wangzhou1@hisilicon.com>
- <1612685884-19514-2-git-send-email-wangzhou1@hisilicon.com>
- <20210207213409.GL308988@casper.infradead.org>
- <f4b2d7db8a1047d9952cbbfaf9e27824@hisilicon.com>
- <90aca1e9-61b5-88d-d28c-369e6973559e@google.com>
-In-Reply-To: <90aca1e9-61b5-88d-d28c-369e6973559e@google.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.126.200.200]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        Mon, 8 Feb 2021 00:35:47 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B6020cd8b0000>; Sun, 07 Feb 2021 21:35:07 -0800
+Received: from mtl-vdi-166.wap.labs.mlnx (172.20.145.6) by
+ HQMAIL107.nvidia.com (172.20.187.13) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3; Mon, 8 Feb 2021 05:35:04 +0000
+Date:   Mon, 8 Feb 2021 07:35:00 +0200
+From:   Eli Cohen <elic@nvidia.com>
+To:     Si-Wei Liu <si-wei.liu@oracle.com>
+CC:     <mst@redhat.com>, <jasowang@redhat.com>,
+        <linux-kernel@vger.kernel.org>,
+        <virtualization@lists.linux-foundation.org>,
+        <netdev@vger.kernel.org>
+Subject: Re: [PATCH 2/3] mlx5_vdpa: fix feature negotiation across device
+ reset
+Message-ID: <20210208053500.GA137517@mtl-vdi-166.wap.labs.mlnx>
+References: <1612614564-4220-1-git-send-email-si-wei.liu@oracle.com>
+ <1612614564-4220-2-git-send-email-si-wei.liu@oracle.com>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <1612614564-4220-2-git-send-email-si-wei.liu@oracle.com>
+User-Agent: Mutt/1.9.5 (bf161cf53efb) (2018-04-13)
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1612762507; bh=/bt91ojGTfU/NFiqHuMYnIol4RfQVN8e4gHDbfiF45I=;
+        h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+         Content-Type:Content-Disposition:In-Reply-To:User-Agent:
+         X-Originating-IP:X-ClientProxiedBy;
+        b=j9ttjT1pDapYqiN+WH++D9JM/pB7ZXbSTizJE8f6pxtYrqtBLmMz7Bqy7JXPAzBcM
+         oKY1Czqb3BphVpwHT2uVUsbf6w+qtFdKg7Cds4dLnkx42poAJxf6UL4SYfkwlTQE2x
+         05iGGvmeZwqs7T/x8WpfFNCI3TV9uzkX9wBRB2KNmD7fex4EN0mg5EZO8d7rsA8Xh9
+         4lxhsa2vhWP/hTCq3LsVOzkdH3gW7Pj6aE5oLemTKzWrJ4Cw/aoalHxHlpYAI21uwu
+         1YsUHCMfb62ZLcYu/2Um76C8lccBZuDq/g41Aj89Rvh+/YSLMDcWq287ooApo0zved
+         oLrikGbfqhbeQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-> -----Original Message-----
-> From: David Rientjes [mailto:rientjes@google.com]
-> Sent: Monday, February 8, 2021 3:18 PM
-> To: Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>
-> Cc: Matthew Wilcox <willy@infradead.org>; Wangzhou (B)
-> <wangzhou1@hisilicon.com>; linux-kernel@vger.kernel.org;
-> iommu@lists.linux-foundation.org; linux-mm@kvack.org;
-> linux-arm-kernel@lists.infradead.org; linux-api@vger.kernel.org; Andrew
-> Morton <akpm@linux-foundation.org>; Alexander Viro <viro@zeniv.linux.org.uk>;
-> gregkh@linuxfoundation.org; jgg@ziepe.ca; kevin.tian@intel.com;
-> jean-philippe@linaro.org; eric.auger@redhat.com; Liguozhu (Kenneth)
-> <liguozhu@hisilicon.com>; zhangfei.gao@linaro.org; chensihang (A)
-> <chensihang1@hisilicon.com>
-> Subject: RE: [RFC PATCH v3 1/2] mempinfd: Add new syscall to provide memory
-> pin
+On Sat, Feb 06, 2021 at 04:29:23AM -0800, Si-Wei Liu wrote:
+> The mlx_features denotes the capability for which
+> set of virtio features is supported by device. In
+> principle, this field needs not be cleared during
+> virtio device reset, as this capability is static
+> and does not change across reset.
 > 
-> On Sun, 7 Feb 2021, Song Bao Hua (Barry Song) wrote:
+> In fact, the current code may have the assumption
+> that mlx_features can be reloaded from firmware
+> via the .get_features ops after device is reset
+> (via the .set_status ops), which is unfortunately
+> not true. The userspace VMM might save a copy
+> of backend capable features and won't call into
+> kernel again to get it on reset. This causes all
+> virtio features getting disabled on newly created
+> virtqs after device reset, while guest would hold
+> mismatched view of available features. For e.g.,
+> the guest may still assume tx checksum offload
+> is available after reset and feature negotiation,
+> causing frames with bogus (incomplete) checksum
+> transmitted on the wire.
 > 
-> > NUMA balancer is just one of many reasons for page migration. Even one
-> > simple alloc_pages() can cause memory migration in just single NUMA
-> > node or UMA system.
-> >
-> > The other reasons for page migration include but are not limited to:
-> > * memory move due to CMA
-> > * memory move due to huge pages creation
-> >
-> > Hardly we can ask users to disable the COMPACTION, CMA and Huge Page
-> > in the whole system.
-> >
+> Signed-off-by: Si-Wei Liu <si-wei.liu@oracle.com>
+> ---
+>  drivers/vdpa/mlx5/net/mlx5_vnet.c | 1 -
+>  1 file changed, 1 deletion(-)
 > 
-> What about only for mlocked memory, i.e. disable
-> vm.compact_unevictable_allowed?
+> diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> index b8416c4..aa6f8cd 100644
+> --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> @@ -1788,7 +1788,6 @@ static void mlx5_vdpa_set_status(struct vdpa_device *vdev, u8 status)
+>  		clear_virtqueues(ndev);
+>  		mlx5_vdpa_destroy_mr(&ndev->mvdev);
+>  		ndev->mvdev.status = 0;
+> -		ndev->mvdev.mlx_features = 0;
+>  		++mvdev->generation;
+>  		return;
+>  	}
+
+Since we assume that device capabilities don't change, I think I would
+get the features through a call done in mlx5v_probe after the netdev
+object is created and change mlx5_vdpa_get_features() to just return
+ndev->mvdev.mlx_features.
+
+Did you actually see this issue in action? If you did, can you share
+with us how you trigerred this?
+
+> -- 
+> 1.8.3.1
 > 
-> Adding syscalls is a big deal, we can make a reasonable inference that
-> we'll have to support this forever if it's merged.  I haven't seen mention
-> of what other unevictable memory *should* be migratable that would be
-> adversely affected if we disable that sysctl.  Maybe that gets you part of
-> the way there and there are some other deficiencies, but it seems like a
-> good start would be to describe how CONFIG_NUMA_BALANCING=n +
-> vm.compact_unevcitable_allowed + mlock() doesn't get you mostly there and
-> then look into what's missing.
-> 
-
-I believe it can resolve the performance problem for the SVA
-applications if we disable vm.compact_unevcitable_allowed and
-NUMA_BALANCE, and use mlock().
-
-The problem is that it is insensible to ask users to disable
-unevictable_allowed or numa balancing of the whole system
-only because there is one SVA application in the system.
-
-SVA, for itself, is a mechanism to let cpu and devices share same
-address space. In a typical server system, there are many processes,
-the better way would be only changing the behavior of the specific
-process rather than changing the whole system. It is hard to ask
-users to do that only because there is a SVA monster.
-Plus, this might negatively affect those applications not using SVA.
-
-> If it's a very compelling case where there simply are no alternatives, it
-> would make sense.  Alternative is to find a more generic way, perhaps in
-> combination with vm.compact_unevictable_allowed, to achieve what you're
-> looking to do that can be useful even beyond your originally intended use
-> case.
-
-sensible. Actually pin is exactly the way to disable migration for specific
-pages AKA. disabling "vm.compact_unevictable_allowed" on those pages.
-
-It is hard to differentiate what pages should not be migrated. Only apps
-know that as even SVA applications can allocate many non-IO pages which
-should be able to move.
-
-Thanks
-Barry
