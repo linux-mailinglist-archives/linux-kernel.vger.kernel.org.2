@@ -2,16 +2,16 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED0F2313498
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 15:10:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E18A313477
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 15:07:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231767AbhBHOJn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 09:09:43 -0500
-Received: from mail.baikalelectronics.com ([87.245.175.226]:57074 "EHLO
+        id S231483AbhBHOGr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 09:06:47 -0500
+Received: from mail.baikalelectronics.com ([87.245.175.226]:57078 "EHLO
         mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231876AbhBHN5s (ORCPT
+        with ESMTP id S231909AbhBHN5v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 08:57:48 -0500
+        Mon, 8 Feb 2021 08:57:51 -0500
 From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
 To:     Rob Herring <robh+dt@kernel.org>,
         Giuseppe Cavallaro <peppe.cavallaro@st.com>,
@@ -34,9 +34,9 @@ CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
         <linux-stm32@st-md-mailman.stormreply.com>,
         <linux-arm-kernel@lists.infradead.org>,
         <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2 12/24] net: stmmac: Directly call reverse methods in stmmac_probe_config_dt()
-Date:   Mon, 8 Feb 2021 16:55:56 +0300
-Message-ID: <20210208135609.7685-13-Sergey.Semin@baikalelectronics.ru>
+Subject: [PATCH v2 13/24] net: stmmac: Fix clocks left enabled on glue-probes failure
+Date:   Mon, 8 Feb 2021 16:55:57 +0300
+Message-ID: <20210208135609.7685-14-Sergey.Semin@baikalelectronics.ru>
 In-Reply-To: <20210208135609.7685-1-Sergey.Semin@baikalelectronics.ru>
 References: <20210208135609.7685-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
@@ -47,97 +47,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Calling an antagonistic method from the corresponding protagonist isn't
-good from maintainability point of view, since prevents us from directly
-adding a functionality in the later, which needs to be reverted in the
-former. Since that's what we are about to do in order to fix the commit
-573c0b9c4e0 ("stmmac: move stmmac_clk, pclk, clk_ptp_ref and stmmac_rst to
-platform structure"), let's replace the stmmac_remove_config_dt() method
-invocation in stmmac_probe_config_dt() with direct reversal procedures.
+The generic clocks request and preparation have been moved from
+stmmac_dvr_probe()/stmmac_init_ptp() to the stmmac_probe_config_dt()
+method in the framework of commit f573c0b9c4e0 ("stmmac: move stmmac_clk,
+pclk, clk_ptp_ref and stmmac_rst to platform structure"). At the same time
+the clocks disabling and reset assertion have been left in
+stmmac_dvr_remove() instead of also being moved to the symmetric
+antagonistic method - stmmac_remove_config_dt(). Due to that all the glue
+drivers probe cleanup-on-failure paths don't perform the generic clocks
+disable/unprepare procedure, which of course is wrong. Fix it by moving
+the clocks disable/unprepare methods invocation to the
+stmmac_remove_config_dt() function.
 
 Fixes: f573c0b9c4e0 ("stmmac: move stmmac_clk, pclk, clk_ptp_ref and stmmac_rst to platform structure")
 Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
 ---
- .../ethernet/stmicro/stmmac/stmmac_platform.c | 23 ++++++++++---------
- 1 file changed, 12 insertions(+), 11 deletions(-)
+ drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c     | 2 ++
+ drivers/net/ethernet/stmicro/stmmac/stmmac_main.c     | 2 --
+ drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c | 4 +++-
+ 3 files changed, 5 insertions(+), 3 deletions(-)
 
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
+index 103d2448e9e0..56b914b5527a 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
+@@ -665,6 +665,8 @@ static void intel_eth_pci_remove(struct pci_dev *pdev)
+ 
+ 	pci_free_irq_vectors(pdev);
+ 
++	clk_disable_unprepare(priv->plat->stmmac_clk);
++
+ 	clk_unregister_fixed_rate(priv->plat->stmmac_clk);
+ 
+ 	pcim_iounmap_regions(pdev, BIT(0));
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+index 26b971cd4da5..b371842d9337 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+@@ -5157,8 +5157,6 @@ int stmmac_dvr_remove(struct device *dev)
+ 	phylink_destroy(priv->phylink);
+ 	if (priv->plat->stmmac_rst)
+ 		reset_control_assert(priv->plat->stmmac_rst);
+-	clk_disable_unprepare(priv->plat->pclk);
+-	clk_disable_unprepare(priv->plat->stmmac_clk);
+ 	if (priv->hw->pcs != STMMAC_PCS_TBI &&
+ 	    priv->hw->pcs != STMMAC_PCS_RTBI)
+ 		stmmac_mdio_unregister(ndev);
 diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
-index 1815fe36b62f..c9feac70ca77 100644
+index c9feac70ca77..ff66c470f07f 100644
 --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
 +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
-@@ -402,7 +402,6 @@ stmmac_probe_config_dt(struct platform_device *pdev, const char **mac)
- 	struct device_node *np = pdev->dev.of_node;
- 	struct plat_stmmacenet_data *plat;
- 	struct stmmac_dma_cfg *dma_cfg;
--	void *ret;
- 	int rc;
- 
- 	plat = devm_kzalloc(&pdev->dev, sizeof(*plat), GFP_KERNEL);
-@@ -458,7 +457,7 @@ stmmac_probe_config_dt(struct platform_device *pdev, const char **mac)
- 	/* To Configure PHY by using all device-tree supported properties */
- 	rc = stmmac_dt_phy(plat, np, &pdev->dev);
- 	if (rc)
--		return ERR_PTR(rc);
-+		goto error_dt_phy_parse;
- 
- 	of_property_read_u32(np, "tx-fifo-depth", &plat->tx_fifo_size);
- 
-@@ -536,8 +535,8 @@ stmmac_probe_config_dt(struct platform_device *pdev, const char **mac)
- 	dma_cfg = devm_kzalloc(&pdev->dev, sizeof(*dma_cfg),
- 			       GFP_KERNEL);
- 	if (!dma_cfg) {
--		stmmac_remove_config_dt(pdev, plat);
--		return ERR_PTR(-ENOMEM);
-+		rc = -ENOMEM;
-+		goto error_dma_cfg_alloc;
- 	}
- 	plat->dma_cfg = dma_cfg;
- 
-@@ -564,10 +563,8 @@ stmmac_probe_config_dt(struct platform_device *pdev, const char **mac)
- 	plat->axi = stmmac_axi_setup(pdev);
- 
- 	rc = stmmac_mtl_setup(pdev, plat);
--	if (rc) {
--		stmmac_remove_config_dt(pdev, plat);
--		return ERR_PTR(rc);
--	}
-+	if (rc)
-+		goto error_dma_cfg_alloc;
- 
- 	/* clock setup */
- 	if (!of_device_is_compatible(np, "snps,dwc-qos-ethernet-4.10")) {
-@@ -582,7 +579,7 @@ stmmac_probe_config_dt(struct platform_device *pdev, const char **mac)
- 
- 	plat->pclk = devm_clk_get_optional(&pdev->dev, "pclk");
- 	if (IS_ERR(plat->pclk)) {
--		ret = plat->pclk;
-+		rc = PTR_ERR(plat->pclk);
- 		goto error_pclk_get;
- 	}
- 	clk_prepare_enable(plat->pclk);
-@@ -601,7 +598,7 @@ stmmac_probe_config_dt(struct platform_device *pdev, const char **mac)
- 	plat->stmmac_rst = devm_reset_control_get_optional(&pdev->dev,
- 							   STMMAC_RESOURCE_NAME);
- 	if (IS_ERR(plat->stmmac_rst)) {
--		ret = plat->stmmac_rst;
-+		rc = PTR_ERR(plat->stmmac_rst);
- 		goto error_hw_init;
- 	}
- 
-@@ -611,8 +608,12 @@ stmmac_probe_config_dt(struct platform_device *pdev, const char **mac)
- 	clk_disable_unprepare(plat->pclk);
- error_pclk_get:
- 	clk_disable_unprepare(plat->stmmac_clk);
-+error_dma_cfg_alloc:
-+	of_node_put(plat->mdio_node);
-+error_dt_phy_parse:
-+	of_node_put(plat->phy_node);
- 
--	return ret;
-+	return ERR_PTR(rc);
+@@ -621,11 +621,13 @@ stmmac_probe_config_dt(struct platform_device *pdev, const char **mac)
+  * @pdev: platform_device structure
+  * @plat: driver data platform structure
+  *
+- * Release resources claimed by stmmac_probe_config_dt().
++ * Disable and release resources claimed by stmmac_probe_config_dt().
+  */
+ void stmmac_remove_config_dt(struct platform_device *pdev,
+ 			     struct plat_stmmacenet_data *plat)
+ {
++	clk_disable_unprepare(plat->pclk);
++	clk_disable_unprepare(plat->stmmac_clk);
+ 	of_node_put(plat->phy_node);
+ 	of_node_put(plat->mdio_node);
  }
- 
- /**
 -- 
 2.29.2
 
