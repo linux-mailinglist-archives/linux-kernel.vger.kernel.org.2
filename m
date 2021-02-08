@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08C61313902
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 17:13:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA44A3138D4
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 17:06:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231835AbhBHQNS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 11:13:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55768 "EHLO mail.kernel.org"
+        id S233326AbhBHQFc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 11:05:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56624 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231995AbhBHPLj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 10:11:39 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 578A264EE7;
-        Mon,  8 Feb 2021 15:08:40 +0000 (UTC)
+        id S231712AbhBHPKR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 10:10:17 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0BB4964ECE;
+        Mon,  8 Feb 2021 15:07:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612796920;
-        bh=NqXv7MiDfSAas23UZ7y5XWx6QI+fE1q6ngNEVJcUs3w=;
+        s=korg; t=1612796826;
+        bh=EP0As8b8o54ANmz+T5tH6zr/XFh5VoStjihUNb4XJ2A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CKXiigX/D4PjKQ71sup2VXp02mT6xHOBgajJwrVONL5IkkvXSYRsFAUT4spGGAoIe
-         0B8LXKFlcv9ns3H6VbAPZ0nS2YqXaFcubQ6M2RS0GxAFvsWJ/nKk+MsID70+7GuwmG
-         8KCXI7tOOnJCpN0LB9C80diB7OjNRtbm9UPMU8qA=
+        b=r/7/SSMGsKy80YHQ9zRVLm5D6Caqp4l3AP803gLkMJkPNFYM5wHYvgfuNXyCSC7Fl
+         wUkO7eUjPNK8/Zav1oUwhl1RURsPIXRSnpvvkdqDWPTB4ZaoUuw9rtLo08GFvvX5Ky
+         TKzIXv1/Mis5M7YB5G0JH+OtJAQvj/I7lxLnTqUc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Barret Rhoden <brho@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.19 04/38] elfcore: fix building with clang
+        stable@vger.kernel.org, Zyta Szpak <zr@semihalf.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 05/30] arm64: dts: ls1046a: fix dcfg address range
 Date:   Mon,  8 Feb 2021 16:00:51 +0100
-Message-Id: <20210208145806.310937132@linuxfoundation.org>
+Message-Id: <20210208145805.470299974@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210208145806.141056364@linuxfoundation.org>
-References: <20210208145806.141056364@linuxfoundation.org>
+In-Reply-To: <20210208145805.239714726@linuxfoundation.org>
+References: <20210208145805.239714726@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,110 +40,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Zyta Szpak <zr@semihalf.com>
 
-commit 6e7b64b9dd6d96537d816ea07ec26b7dedd397b9 upstream.
+[ Upstream commit aa880c6f3ee6dbd0d5ab02026a514ff8ea0a3328 ]
 
-kernel/elfcore.c only contains weak symbols, which triggers a bug with
-clang in combination with recordmcount:
+Dcfg was overlapping with clockgen address space which resulted
+in failure in memory allocation for dcfg. According regs description
+dcfg size should not be bigger than 4KB.
 
-  Cannot find symbol for section 2: .text.
-  kernel/elfcore.o: failed
-
-Move the empty stubs into linux/elfcore.h as inline functions.  As only
-two architectures use these, just use the architecture specific Kconfig
-symbols to key off the declaration.
-
-Link: https://lkml.kernel.org/r/20201204165742.3815221-2-arnd@kernel.org
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Cc: Nathan Chancellor <natechancellor@gmail.com>
-Cc: Nick Desaulniers <ndesaulniers@google.com>
-Cc: Barret Rhoden <brho@google.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Zyta Szpak <zr@semihalf.com>
+Fixes: 8126d88162a5 ("arm64: dts: add QorIQ LS1046A SoC support")
+Signed-off-by: Shawn Guo <shawnguo@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/elfcore.h |   22 ++++++++++++++++++++++
- kernel/Makefile         |    1 -
- kernel/elfcore.c        |   26 --------------------------
- 3 files changed, 22 insertions(+), 27 deletions(-)
- delete mode 100644 kernel/elfcore.c
+ arch/arm64/boot/dts/freescale/fsl-ls1046a.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/include/linux/elfcore.h
-+++ b/include/linux/elfcore.h
-@@ -58,6 +58,7 @@ static inline int elf_core_copy_task_xfp
- }
- #endif
+diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1046a.dtsi b/arch/arm64/boot/dts/freescale/fsl-ls1046a.dtsi
+index c8ff0baddf1d0..cb49d21e317c0 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-ls1046a.dtsi
++++ b/arch/arm64/boot/dts/freescale/fsl-ls1046a.dtsi
+@@ -304,7 +304,7 @@
  
-+#if defined(CONFIG_UM) || defined(CONFIG_IA64)
- /*
-  * These functions parameterize elf_core_dump in fs/binfmt_elf.c to write out
-  * extra segments containing the gate DSO contents.  Dumping its
-@@ -72,5 +73,26 @@ elf_core_write_extra_phdrs(struct coredu
- extern int
- elf_core_write_extra_data(struct coredump_params *cprm);
- extern size_t elf_core_extra_data_size(void);
-+#else
-+static inline Elf_Half elf_core_extra_phdrs(void)
-+{
-+	return 0;
-+}
-+
-+static inline int elf_core_write_extra_phdrs(struct coredump_params *cprm, loff_t offset)
-+{
-+	return 1;
-+}
-+
-+static inline int elf_core_write_extra_data(struct coredump_params *cprm)
-+{
-+	return 1;
-+}
-+
-+static inline size_t elf_core_extra_data_size(void)
-+{
-+	return 0;
-+}
-+#endif
+ 		dcfg: dcfg@1ee0000 {
+ 			compatible = "fsl,ls1046a-dcfg", "syscon";
+-			reg = <0x0 0x1ee0000 0x0 0x10000>;
++			reg = <0x0 0x1ee0000 0x0 0x1000>;
+ 			big-endian;
+ 		};
  
- #endif /* _LINUX_ELFCORE_H */
---- a/kernel/Makefile
-+++ b/kernel/Makefile
-@@ -92,7 +92,6 @@ obj-$(CONFIG_TASK_DELAY_ACCT) += delayac
- obj-$(CONFIG_TASKSTATS) += taskstats.o tsacct.o
- obj-$(CONFIG_TRACEPOINTS) += tracepoint.o
- obj-$(CONFIG_LATENCYTOP) += latencytop.o
--obj-$(CONFIG_ELFCORE) += elfcore.o
- obj-$(CONFIG_FUNCTION_TRACER) += trace/
- obj-$(CONFIG_TRACING) += trace/
- obj-$(CONFIG_TRACE_CLOCK) += trace/
---- a/kernel/elfcore.c
-+++ /dev/null
-@@ -1,26 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0
--#include <linux/elf.h>
--#include <linux/fs.h>
--#include <linux/mm.h>
--#include <linux/binfmts.h>
--#include <linux/elfcore.h>
--
--Elf_Half __weak elf_core_extra_phdrs(void)
--{
--	return 0;
--}
--
--int __weak elf_core_write_extra_phdrs(struct coredump_params *cprm, loff_t offset)
--{
--	return 1;
--}
--
--int __weak elf_core_write_extra_data(struct coredump_params *cprm)
--{
--	return 1;
--}
--
--size_t __weak elf_core_extra_data_size(void)
--{
--	return 0;
--}
+-- 
+2.27.0
+
 
 
