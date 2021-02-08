@@ -2,25 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20F9A312EB7
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 11:17:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 807BC312EE5
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 11:24:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230018AbhBHKQj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 05:16:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59658 "EHLO mail.kernel.org"
+        id S232323AbhBHKYE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 05:24:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33020 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231398AbhBHKFB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 05:05:01 -0500
+        id S232315AbhBHKHo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 05:07:44 -0500
 Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A34C864E8C;
-        Mon,  8 Feb 2021 10:04:20 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EDC2C64EA6;
+        Mon,  8 Feb 2021 10:04:35 +0000 (UTC)
 Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.lan)
         by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94)
         (envelope-from <maz@kernel.org>)
-        id 1l93Iz-00Ck14-1b; Mon, 08 Feb 2021 09:58:05 +0000
+        id 1l93J1-00Ck14-AD; Mon, 08 Feb 2021 09:58:08 +0000
 From:   Marc Zyngier <maz@kernel.org>
 To:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
         linux-kernel@vger.kernel.org
@@ -39,9 +39,9 @@ Cc:     Catalin Marinas <catalin.marinas@arm.com>,
         Julien Thierry <julien.thierry.kdev@gmail.com>,
         Suzuki K Poulose <suzuki.poulose@arm.com>,
         kernel-team@android.com
-Subject: [PATCH v7 16/23] arm64: Add an aliasing facility for the idreg override
-Date:   Mon,  8 Feb 2021 09:57:25 +0000
-Message-Id: <20210208095732.3267263-17-maz@kernel.org>
+Subject: [PATCH v7 17/23] arm64: Make kvm-arm.mode={nvhe, protected} an alias of id_aa64mmfr1.vh=0
+Date:   Mon,  8 Feb 2021 09:57:26 +0000
+Message-Id: <20210208095732.3267263-18-maz@kernel.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210208095732.3267263-1-maz@kernel.org>
 References: <20210208095732.3267263-1-maz@kernel.org>
@@ -55,79 +55,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order to map the override of idregs to options that a user
-can easily understand, let's introduce yet another option
-array, which maps an option to the corresponding idreg options.
+Admitedly, passing id_aa64mmfr1.vh=0 on the command-line isn't
+that easy to understand, and it is likely that users would much
+prefer write "kvm-arm.mode=nvhe", or "...=protected".
+
+So here you go. This has the added advantage that we can now
+always honor the "kvm-arm.mode=protected" option, even when
+booting on a VHE system.
 
 Signed-off-by: Marc Zyngier <maz@kernel.org>
-Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
+Acked-by: Catalin Marinas <catalin.marinas@arm.com>
 Acked-by: David Brazdil <dbrazdil@google.com>
 ---
- arch/arm64/kernel/idreg-override.c | 17 ++++++++++++++---
- 1 file changed, 14 insertions(+), 3 deletions(-)
+ Documentation/admin-guide/kernel-parameters.txt | 3 +++
+ arch/arm64/kernel/idreg-override.c              | 2 ++
+ arch/arm64/kvm/arm.c                            | 3 +++
+ 3 files changed, 8 insertions(+)
 
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index 9e3cdb271d06..2786fd39a047 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -2257,6 +2257,9 @@
+ 	kvm-arm.mode=
+ 			[KVM,ARM] Select one of KVM/arm64's modes of operation.
+ 
++			nvhe: Standard nVHE-based mode, without support for
++			      protected guests.
++
+ 			protected: nVHE-based mode with support for guests whose
+ 				   state is kept private from the host.
+ 				   Not valid if the kernel is running in EL2.
 diff --git a/arch/arm64/kernel/idreg-override.c b/arch/arm64/kernel/idreg-override.c
-index 2da11bf60195..226bac544e20 100644
+index 226bac544e20..b994d689d6fb 100644
 --- a/arch/arm64/kernel/idreg-override.c
 +++ b/arch/arm64/kernel/idreg-override.c
-@@ -16,6 +16,8 @@
- 
- #define FTR_DESC_NAME_LEN	20
- #define FTR_DESC_FIELD_LEN	10
-+#define FTR_ALIAS_NAME_LEN	30
-+#define FTR_ALIAS_OPTION_LEN	80
- 
- struct ftr_set_desc {
- 	char 				name[FTR_DESC_NAME_LEN];
-@@ -39,6 +41,12 @@ static const struct ftr_set_desc * const regs[] __initconst = {
- 	&mmfr1,
+@@ -45,6 +45,8 @@ static const struct {
+ 	char	alias[FTR_ALIAS_NAME_LEN];
+ 	char	feature[FTR_ALIAS_OPTION_LEN];
+ } aliases[] __initconst = {
++	{ "kvm-arm.mode=nvhe",		"id_aa64mmfr1.vh=0" },
++	{ "kvm-arm.mode=protected",	"id_aa64mmfr1.vh=0" },
  };
  
-+static const struct {
-+	char	alias[FTR_ALIAS_NAME_LEN];
-+	char	feature[FTR_ALIAS_OPTION_LEN];
-+} aliases[] __initconst = {
-+};
-+
  static int __init find_field(const char *cmdline,
- 			     const struct ftr_set_desc *reg, int f, u64 *v)
- {
-@@ -81,7 +89,7 @@ static void __init match_options(const char *cmdline)
- 	}
- }
- 
--static __init void __parse_cmdline(const char *cmdline)
-+static __init void __parse_cmdline(const char *cmdline, bool parse_aliases)
- {
- 	do {
- 		char buf[256];
-@@ -105,6 +113,9 @@ static __init void __parse_cmdline(const char *cmdline)
- 
- 		match_options(buf);
- 
-+		for (i = 0; parse_aliases && i < ARRAY_SIZE(aliases); i++)
-+			if (parameq(buf, aliases[i].alias))
-+				__parse_cmdline(aliases[i].feature, false);
- 	} while (1);
- }
- 
-@@ -127,14 +138,14 @@ static __init void parse_cmdline(void)
- 		if (!prop)
- 			goto out;
- 
--		__parse_cmdline(prop);
-+		__parse_cmdline(prop, true);
- 
- 		if (!IS_ENABLED(CONFIG_CMDLINE_EXTEND))
- 			return;
+diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+index 04c44853b103..597565a65ca2 100644
+--- a/arch/arm64/kvm/arm.c
++++ b/arch/arm64/kvm/arm.c
+@@ -1966,6 +1966,9 @@ static int __init early_kvm_mode_cfg(char *arg)
+ 		return 0;
  	}
  
- out:
--	__parse_cmdline(CONFIG_CMDLINE);
-+	__parse_cmdline(CONFIG_CMDLINE, true);
++	if (strcmp(arg, "nvhe") == 0 && !WARN_ON(is_kernel_in_hyp_mode()))
++		return 0;
++
+ 	return -EINVAL;
  }
- 
- /* Keep checkers quiet */
+ early_param("kvm-arm.mode", early_kvm_mode_cfg);
 -- 
 2.29.2
 
