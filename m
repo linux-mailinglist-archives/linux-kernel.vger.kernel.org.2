@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9437C3139F7
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 17:46:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DEF9B313A02
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 17:49:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234545AbhBHQq5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 11:46:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:32772 "EHLO mail.kernel.org"
+        id S234637AbhBHQrw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 11:47:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:32838 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233570AbhBHPQN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 10:16:13 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 575B364E8F;
-        Mon,  8 Feb 2021 15:11:22 +0000 (UTC)
+        id S233573AbhBHPQP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 10:16:15 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 361E864E8A;
+        Mon,  8 Feb 2021 15:11:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612797082;
-        bh=1nXBXdKfOELf7jr8kGkf0QOzPMOZdhYj2GdyYwNJQ0g=;
+        s=korg; t=1612797085;
+        bh=knllIAyGDKAAm8UOv+igvPm3nf81/hPKr0A59HVe6Js=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QlrJx4PpfGoI1rnrPsATX7xx5Mdm70Xd2xrCDUDwkBcfNRTB1r/NqG55yM3R41nvY
-         tdTZPqwGqQ9PWzIq7BhZW9E+OvK5J7f5v6y5ALJcfCJEzgU79W/vVB8tHhr46418KE
-         JCtZHCayTbxI9y7jw45EzCR5EAz/jGi5RUnHBBCk=
+        b=ohz0J8b3RJPsuUmmEEsoOs8gwQhccL2OsrQhRwbrdczvhJlo6VXioUaxg2Swl3ovM
+         RERhkmeVifmpDh/+3MR6xAFKyRmJYti4Skldp86kygwfo6cj+fCHs690d7Vi5jJKKF
+         tActp1WvsMA2Q/c/IEKk012KZAguydJ+6oiFX9F0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Heiner Kallweit <hkallweit1@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
+        stable@vger.kernel.org,
+        Hermann Lauer <Hermann.Lauer@uni-heidelberg.de>,
+        Maxime Ripard <maxime@cerno.tech>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 19/65] r8169: fix WoL on shutdown if CONFIG_DEBUG_SHIRQ is set
-Date:   Mon,  8 Feb 2021 16:00:51 +0100
-Message-Id: <20210208145810.979039645@linuxfoundation.org>
+Subject: [PATCH 5.4 20/65] ARM: dts: sun7i: a20: bananapro: Fix ethernet phy-mode
+Date:   Mon,  8 Feb 2021 16:00:52 +0100
+Message-Id: <20210208145811.014578733@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210208145810.230485165@linuxfoundation.org>
 References: <20210208145810.230485165@linuxfoundation.org>
@@ -40,44 +41,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Heiner Kallweit <hkallweit1@gmail.com>
+From: Hermann Lauer <Hermann.Lauer@uni-heidelberg.de>
 
-[ Upstream commit cc9f07a838c4988ed244d0907cb71d54b85482a5 ]
+[ Upstream commit a900cac3750b9f0b8f5ed0503d9c6359532f644d ]
 
-So far phy_disconnect() is called before free_irq(). If CONFIG_DEBUG_SHIRQ
-is set and interrupt is shared, then free_irq() creates an "artificial"
-interrupt by calling the interrupt handler. The "link change" flag is set
-in the interrupt status register, causing phylib to eventually call
-phy_suspend(). Because the net_device is detached from the PHY already,
-the PHY driver can't recognize that WoL is configured and powers down the
-PHY.
+BPi Pro needs TX and RX delay for Gbit to work reliable and avoid high
+packet loss rates. The realtek phy driver overrides the settings of the
+pull ups for the delays, so fix this for BananaPro.
 
-Fixes: f1e911d5d0df ("r8169: add basic phylib support")
-Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
-Link: https://lore.kernel.org/r/fe732c2c-a473-9088-3974-df83cfbd6efd@gmail.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Fix the phy-mode description to correctly reflect this so that the
+implementation doesn't reconfigure the delays incorrectly. This
+happened with commit bbc4d71d6354 ("net: phy: realtek: fix rtl8211e
+rx/tx delay config").
+
+Fixes: 10662a33dcd9 ("ARM: dts: sun7i: Add dts file for Bananapro board")
+Signed-off-by: Hermann Lauer <Hermann.Lauer@uni-heidelberg.de>
+Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+Link: https://lore.kernel.org/r/20210128111842.GA11919@lemon.iwr.uni-heidelberg.de
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/realtek/r8169_main.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/arm/boot/dts/sun7i-a20-bananapro.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/realtek/r8169_main.c b/drivers/net/ethernet/realtek/r8169_main.c
-index 366ca1b5da5cc..1e8244ec5b332 100644
---- a/drivers/net/ethernet/realtek/r8169_main.c
-+++ b/drivers/net/ethernet/realtek/r8169_main.c
-@@ -6419,10 +6419,10 @@ static int rtl8169_close(struct net_device *dev)
- 
- 	cancel_work_sync(&tp->wk.work);
- 
--	phy_disconnect(tp->phydev);
--
- 	free_irq(pci_irq_vector(pdev, 0), tp);
- 
-+	phy_disconnect(tp->phydev);
-+
- 	dma_free_coherent(&pdev->dev, R8169_RX_RING_BYTES, tp->RxDescArray,
- 			  tp->RxPhyAddr);
- 	dma_free_coherent(&pdev->dev, R8169_TX_RING_BYTES, tp->TxDescArray,
+diff --git a/arch/arm/boot/dts/sun7i-a20-bananapro.dts b/arch/arm/boot/dts/sun7i-a20-bananapro.dts
+index 01ccff756996d..5740f9442705c 100644
+--- a/arch/arm/boot/dts/sun7i-a20-bananapro.dts
++++ b/arch/arm/boot/dts/sun7i-a20-bananapro.dts
+@@ -110,7 +110,7 @@
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&gmac_rgmii_pins>;
+ 	phy-handle = <&phy1>;
+-	phy-mode = "rgmii";
++	phy-mode = "rgmii-id";
+ 	phy-supply = <&reg_gmac_3v3>;
+ 	status = "okay";
+ };
 -- 
 2.27.0
 
