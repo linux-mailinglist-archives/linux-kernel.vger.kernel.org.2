@@ -2,82 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36639312F34
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 11:40:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9F2C312F32
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 11:39:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232507AbhBHKj7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 05:39:59 -0500
-Received: from mail-ej1-f41.google.com ([209.85.218.41]:44967 "EHLO
-        mail-ej1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232403AbhBHK2p (ORCPT
+        id S232487AbhBHKj3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 05:39:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47444 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232439AbhBHK26 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 05:28:45 -0500
-Received: by mail-ej1-f41.google.com with SMTP id w1so23683114ejf.11;
-        Mon, 08 Feb 2021 02:28:25 -0800 (PST)
+        Mon, 8 Feb 2021 05:28:58 -0500
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFC29C06178B
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 02:28:03 -0800 (PST)
+Received: by mail-pg1-x52e.google.com with SMTP id j5so1113953pgb.11
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 02:28:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=HTp7udRkA3dd9a95DV07tgoiccHtwyBSjPKDtzZunfo=;
+        b=e0Tn0I9XipZXByn0gqAsbWHGHwvggsizgJKiSlTjUCw6e26/D4lxqNzturp76cfDzY
+         aPf72M1s2NE+7EZu81q/TMpPlh6nHZ6YJVgginoB8q6iubUk/4eEqN39psNOdFb3qQUL
+         6nX+swa3yUsWz++0cCXzfXFw44RFcrxfJ4vjVug4PC1zOe0bLnvjQXkdYmkWXbyDth6X
+         r3Cxbxe+fYEvLjMk+KmOhnpYYScKA/PgBRTr1V17mcoOM3ZaugAO2poZljsOZiRfPHn1
+         ZYcphn3COqjQ0aR0PQnaLBgJ5KUjRQN8MF9LyOrliQCmgkW79IgQR8ZWaou0AA0rLzp9
+         p57w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/sXUHbfTSNaWe0Vrtyl40wVJaY9DiX1LwKI8X9Eee5A=;
-        b=IfQeUUVL+02pYuTuXc8mRMMx03+XuEgNZHFj/v8k5xbzQUX/+vUhdy32r7rXV2j5ei
-         +XNcnR3/nQo7LzLb/9b3fvBS9j4ebKRMDRWTTOg3cHtxaJeLe1QRfjxlgGcb12aTRDNy
-         2vzkX7KuanODLABhhaxc1bj/2/Qqm1KjqNKL3Hw3tEiylb0GM6s9FkU/tP/s2YvUp7CF
-         EBpiG7sVG0XcDqqmy0ZvIu0a3ph2AzJX6b7pFaqs1mi4N/1av+kP1CC16uGk7WiCDSGh
-         /AGeWX5q7sIVZaAdsovE9RheEBGa65ktNjovF7atI5D33TXH74Q4ZaJX+DfsdOZ+Ut2+
-         BbJA==
-X-Gm-Message-State: AOAM533yA7Yt2xNDpob9wkT8nqvkQPH7hUngMHZI81EsNTSXriSQXLZl
-        AOnW9cCDBuD2f3dMKI+1vDI=
-X-Google-Smtp-Source: ABdhPJy0w+9yYbPmP5ReyAJ8xWSe+CjI2MLaTbf6iSDnOvs1rvvIS/VC0J1GAivNVnbfEQN34Rlpyw==
-X-Received: by 2002:a17:906:6bc5:: with SMTP id t5mr11941692ejs.253.1612780053394;
-        Mon, 08 Feb 2021 02:27:33 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id b3sm9289294edw.14.2021.02.08.02.27.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Feb 2021 02:27:32 -0800 (PST)
-Date:   Mon, 8 Feb 2021 11:27:30 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Hector Martin <marcan@marcan.st>
-Cc:     soc@kernel.org, linux-arm-kernel@lists.infradead.org,
-        Marc Zyngier <maz@kernel.org>, robh+dt@kernel.org,
-        Arnd Bergmann <arnd@kernel.org>, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, Olof Johansson <olof@lixom.net>
-Subject: Re: [PATCH 01/18] dt-bindings: vendor-prefixes: add AAPL prefix
-Message-ID: <20210208102730.p4nhsl35oowsklv2@kozik-lap>
-References: <20210204203951.52105-1-marcan@marcan.st>
- <20210204203951.52105-2-marcan@marcan.st>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HTp7udRkA3dd9a95DV07tgoiccHtwyBSjPKDtzZunfo=;
+        b=NFLwkgdqOpxz8ndb21oOXOWaqhdlGxsmn4q73Aa7yXsjxtx9Wn8UnVC7Kqso6duzUp
+         WPZii20gmzT/M6BaACVsGtRk0Djp4GDCz6zA7jt7Z80Bx7vLtxoqDP5ALMTUJ3OEuRfT
+         FtkcVMSEy6hRso77kyeafn48N8Wh5N963YOS2fx7cI+fyctN8wYG7r8HZa8+c8FW2jta
+         NUWv9ou5J/MBXtDPPqdZXOGtxe6nlpstZzozYS8JFU8+5/RnLeANwHHcXthf1P/CGJ6w
+         vOfZ6+XioXAZLSNXlXJq973oPfbj7c3rz7oqU9k4/8lw/ncFHjbJ1qXcLBpewFU61kfn
+         LE/g==
+X-Gm-Message-State: AOAM531qtyTd1X2PFethb+pKCgfIiq17/X5Lc0xYdiykvu6k7gZHTBIT
+        gXO6KEX46C3I+ukh+r3Ml5j5ItXFvExLK4abmQ4gbg==
+X-Google-Smtp-Source: ABdhPJxB34MNMwiU8/Kb3s3oSCJIPktd60uCekFOnvb0yo//2g/M2/R4HDZA4Ujeew57zrKclcJII8arYrvBJ52Hd8Q=
+X-Received: by 2002:a65:654e:: with SMTP id a14mr16656393pgw.265.1612780083089;
+ Mon, 08 Feb 2021 02:28:03 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210204203951.52105-2-marcan@marcan.st>
+References: <1612689000-64577-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+In-Reply-To: <1612689000-64577-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+From:   Robert Foss <robert.foss@linaro.org>
+Date:   Mon, 8 Feb 2021 11:27:51 +0100
+Message-ID: <CAG3jFytz7p+3g_tboutC2qCNeNqZnTUJcn-cH-5TAmaWaCPByQ@mail.gmail.com>
+Subject: Re: [PATCH] drm: bridge: convert sysfs sprintf/snprintf family to sysfs_emit
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Cc:     Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 05, 2021 at 05:39:34AM +0900, Hector Martin wrote:
-> Amusingly, this wasn't yet documented, even though this vendor prefix
-> has been used since time immemorial on PPC.
-> 
-> Signed-off-by: Hector Martin <marcan@marcan.st>
+Hey Jiapeng,
+
+Thanks for the patch. Feel free to add my r-b.
+Reviewed-by: Robert Foss <robert.foss@linaro.org>
+
+On Sun, 7 Feb 2021 at 10:12, Jiapeng Chong
+<jiapeng.chong@linux.alibaba.com> wrote:
+>
+> Fix the following coccicheck warning:
+>
+> drivers/gpu/drm/bridge/lontium-lt9611uxc.c:858:8-16: WARNING: use
+> scnprintf or sprintf.
+>
+> Reported-by: Abaci Robot<abaci@linux.alibaba.com>
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 > ---
->  Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-> index 041ae90b0d8f..d7950c723472 100644
-> --- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
-> +++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-> @@ -25,6 +25,8 @@ patternProperties:
->    # Keep list in alphabetical order.
->    "^70mai,.*":
->      description: 70mai Co., Ltd.
-> +  "^AAPL,.*":
-
-All prefixes are lower case... see ABB below (not mentioning that the
-company name is not APPLE), so just "apple".
-
-> +    description: Apple Inc.
->    "^abb,.*":
->      description: ABB
-
-Best regards,
-Krzysztof
+>  drivers/gpu/drm/bridge/lontium-lt9611uxc.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/bridge/lontium-lt9611uxc.c b/drivers/gpu/drm/bridge/lontium-lt9611uxc.c
+> index fee2795..3cac16d 100644
+> --- a/drivers/gpu/drm/bridge/lontium-lt9611uxc.c
+> +++ b/drivers/gpu/drm/bridge/lontium-lt9611uxc.c
+> @@ -855,7 +855,7 @@ static ssize_t lt9611uxc_firmware_show(struct device *dev, struct device_attribu
+>  {
+>         struct lt9611uxc *lt9611uxc = dev_get_drvdata(dev);
+>
+> -       return snprintf(buf, PAGE_SIZE, "%02x\n", lt9611uxc->fw_version);
+> +       return sysfs_emit(buf, "%02x\n", lt9611uxc->fw_version);
+>  }
+>
+>  static DEVICE_ATTR_RW(lt9611uxc_firmware);
+> --
+> 1.8.3.1
+>
