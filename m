@@ -2,104 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02B8C312E8E
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 11:09:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ABE2312EBE
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 11:19:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231645AbhBHKHo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 05:07:44 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:58008 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232160AbhBHJ66 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 04:58:58 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612778248;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=RvZB2MDYfZF1qZTLhRJJTQFx3HJrD/c9ga0gap1r0Iw=;
-        b=SY4IsF6SbgAXHXwZXWd/uot+WYhV2HiugtUpgGTcGriZF3p8N89XasnQEsYrcLIyRt1WA/
-        RMwqzBbegV3EHaJKHmPYoVW7I3FO/WTf67Rt5WGbL+8r26TJH/Q7T4yL6Ar+/wP16NwmUj
-        9Td+r8CmfXgwIiXyMdeDSNlUD+cjxfc=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-12-TcL9EBgFMX678JzZKcQE0w-1; Mon, 08 Feb 2021 04:57:25 -0500
-X-MC-Unique: TcL9EBgFMX678JzZKcQE0w-1
-Received: by mail-ej1-f69.google.com with SMTP id gv53so3959367ejc.19
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 01:57:25 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=RvZB2MDYfZF1qZTLhRJJTQFx3HJrD/c9ga0gap1r0Iw=;
-        b=PI0guts7hQ7BhiI+78ZmyjZ53nIrZDwt5Lf0xCFJAEuY6T1KyTwdgaw51yKPSmaiG0
-         7SUC+9rOF58P/YNlu9vziYOQmoxNwq3UV8gdr/dTJN4yrTHq4nJO2CTna78wRUi/V3r1
-         avsQ+sjezLxNrYZBmePTZDW7fDGcbitIU7Swy85tDG4JJMyNyi1hdGtD0xCgmFxtwU0p
-         jWwB8/YkbOS5Qg5wVlnRmT8oPlbG+93pRtTD1fEYktoRx0ClJRx1Ywro4pg7dIKCadeG
-         2KN8CjYkIUTtI8s6AzcTm6z7Fa/EydfP/8n/rnGkZLkXO5s9R5gckB9kakGv1/w0WCt1
-         Xt3w==
-X-Gm-Message-State: AOAM533nmsvtk28PlHC2XOZKjLzxcz5jOkLUqxvhyZuM7caBxTExsHVY
-        BxWXr9TjcSE5flDx6BOdDj1GiEHgPkoBpNFW473KFkc7Xrbd/GRoxe1lfqQWGyA8T/m9tPRPvjP
-        h/GtJ+IpH5hliS6sCl0/Y/9/7
-X-Received: by 2002:a17:906:69c2:: with SMTP id g2mr15591526ejs.249.1612778244679;
-        Mon, 08 Feb 2021 01:57:24 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxuMkDMU86Gua486YyYkyE3So25auj8KdRwJTxDrTGf27Ev7G+jbzxJNKOribW4cbFKzGSizw==
-X-Received: by 2002:a17:906:69c2:: with SMTP id g2mr15591508ejs.249.1612778244420;
-        Mon, 08 Feb 2021 01:57:24 -0800 (PST)
-Received: from redhat.com (bzq-79-180-2-31.red.bezeqint.net. [79.180.2.31])
-        by smtp.gmail.com with ESMTPSA id mh4sm5533387ejb.122.2021.02.08.01.57.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Feb 2021 01:57:23 -0800 (PST)
-Date:   Mon, 8 Feb 2021 04:57:20 -0500
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     kernel test robot <oliver.sang@intel.com>
-Cc:     Dongli Zhang <dongli.zhang@oracle.com>,
-        Eli Cohen <elic@nvidia.com>, Jason Wang <jasowang@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        lkp@intel.com, virtualization@lists.linux-foundation.org,
-        kvm@vger.kernel.org, netdev@vger.kernel.org, pbonzini@redhat.com,
-        stefanha@redhat.com, joe.jin@oracle.com,
-        aruna.ramakrishna@oracle.com, parav@nvidia.com
-Subject: Re: [vdpa_sim_net] 79991caf52:
- net/ipv4/ipmr.c:#RCU-list_traversed_in_non-reader_section
-Message-ID: <20210208045641-mutt-send-email-mst@kernel.org>
-References: <20210123080853.4214-1-dongli.zhang@oracle.com>
- <20210207030330.GB17282@xsang-OptiPlex-9020>
+        id S232204AbhBHKS2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 05:18:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59712 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231797AbhBHKFE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 05:05:04 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 570C564E88;
+        Mon,  8 Feb 2021 10:04:23 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.lan)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1l93Is-00Ck14-W6; Mon, 08 Feb 2021 09:57:59 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        David Brazdil <dbrazdil@google.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Jing Zhang <jingzhangos@google.com>,
+        Ajay Patil <pajay@qti.qualcomm.com>,
+        Prasad Sodagudi <psodagud@codeaurora.org>,
+        Srinivas Ramana <sramana@codeaurora.org>,
+        Hector Martin <marcan@marcan.st>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kernel-team@android.com
+Subject: [PATCH v7 11/23] arm64: cpufeature: Use IDreg override in __read_sysreg_by_encoding()
+Date:   Mon,  8 Feb 2021 09:57:20 +0000
+Message-Id: <20210208095732.3267263-12-maz@kernel.org>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210208095732.3267263-1-maz@kernel.org>
+References: <20210208095732.3267263-1-maz@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210207030330.GB17282@xsang-OptiPlex-9020>
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org, catalin.marinas@arm.com, will@kernel.org, mark.rutland@arm.com, dbrazdil@google.com, alexandru.elisei@arm.com, ardb@kernel.org, jingzhangos@google.com, pajay@qti.qualcomm.com, psodagud@codeaurora.org, sramana@codeaurora.org, marcan@marcan.st, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Feb 07, 2021 at 11:03:30AM +0800, kernel test robot wrote:
-> 
-> Greeting,
-> 
-> FYI, we noticed the following commit (built with gcc-9):
-> 
-> commit: 79991caf5202c7989928be534727805f8f68bb8d ("vdpa_sim_net: Add support for user supported devices")
-> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git Dongli-Zhang/vhost-scsi-alloc-vhost_scsi-with-kvzalloc-to-avoid-delay/20210129-191605
-> 
-> 
-> in testcase: trinity
-> version: trinity-static-x86_64-x86_64-f93256fb_2019-08-28
-> with following parameters:
-> 
-> 	runtime: 300s
-> 
-> test-description: Trinity is a linux system call fuzz tester.
-> test-url: http://codemonkey.org.uk/projects/trinity/
-> 
-> 
-> on test machine: qemu-system-x86_64 -enable-kvm -cpu SandyBridge -smp 2 -m 8G
-> 
-> caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
-> 
+__read_sysreg_by_encoding() is used by a bunch of cpufeature helpers,
+which should take the feature override into account. Let's do that.
 
-Parav want to take a look?
+For a good measure (and because we are likely to need to further
+down the line), make this helper available to the rest of the
+non-modular kernel.
 
+Code that needs to know the *real* features of a CPU can still
+use read_sysreg_s(), and find the bare, ugly truth.
+
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+Acked-by: David Brazdil <dbrazdil@google.com>
+Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
+---
+ arch/arm64/include/asm/cpufeature.h |  1 +
+ arch/arm64/kernel/cpufeature.c      | 15 +++++++++++++--
+ 2 files changed, 14 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm64/include/asm/cpufeature.h b/arch/arm64/include/asm/cpufeature.h
+index b1f53147e2b2..b5bf7af68691 100644
+--- a/arch/arm64/include/asm/cpufeature.h
++++ b/arch/arm64/include/asm/cpufeature.h
+@@ -606,6 +606,7 @@ void __init setup_cpu_features(void);
+ void check_local_cpu_capabilities(void);
+ 
+ u64 read_sanitised_ftr_reg(u32 id);
++u64 __read_sysreg_by_encoding(u32 sys_id);
+ 
+ static inline bool cpu_supports_mixed_endian_el0(void)
+ {
+diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
+index a4e5c619a516..97da9ed4b79d 100644
+--- a/arch/arm64/kernel/cpufeature.c
++++ b/arch/arm64/kernel/cpufeature.c
+@@ -1148,14 +1148,17 @@ u64 read_sanitised_ftr_reg(u32 id)
+ EXPORT_SYMBOL_GPL(read_sanitised_ftr_reg);
+ 
+ #define read_sysreg_case(r)	\
+-	case r:		return read_sysreg_s(r)
++	case r:		val = read_sysreg_s(r); break;
+ 
+ /*
+  * __read_sysreg_by_encoding() - Used by a STARTING cpu before cpuinfo is populated.
+  * Read the system register on the current CPU
+  */
+-static u64 __read_sysreg_by_encoding(u32 sys_id)
++u64 __read_sysreg_by_encoding(u32 sys_id)
+ {
++	struct arm64_ftr_reg *regp;
++	u64 val;
++
+ 	switch (sys_id) {
+ 	read_sysreg_case(SYS_ID_PFR0_EL1);
+ 	read_sysreg_case(SYS_ID_PFR1_EL1);
+@@ -1198,6 +1201,14 @@ static u64 __read_sysreg_by_encoding(u32 sys_id)
+ 		BUG();
+ 		return 0;
+ 	}
++
++	regp  = get_arm64_ftr_reg(sys_id);
++	if (regp) {
++		val &= ~regp->override->mask;
++		val |= (regp->override->val & regp->override->mask);
++	}
++
++	return val;
+ }
+ 
+ #include <linux/irqchip/arm-gic-v3.h>
 -- 
-MST
+2.29.2
 
