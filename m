@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E96C313923
+	by mail.lfdr.de (Postfix) with ESMTP id DE998313924
 	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 17:19:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233255AbhBHQS0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 11:18:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55484 "EHLO mail.kernel.org"
+        id S234001AbhBHQSk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 11:18:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56630 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230029AbhBHPMa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S232762AbhBHPMa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 8 Feb 2021 10:12:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 27EEF64EF3;
-        Mon,  8 Feb 2021 15:09:05 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1FED064EF6;
+        Mon,  8 Feb 2021 15:09:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612796946;
-        bh=Wd+JpcgZvLvZ/X7urxLrmpeqS9dSu8H7T3ma+p33YZY=;
+        s=korg; t=1612796949;
+        bh=W/2o5MaR2BjFR8GMc42gVrAmNAJbB88oaycMtQ+zfgc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sPfy7aN+BBCVHHUbf8D109rfKTFa3C/8IjFLIx4xcsU3tWCcRbNFFtggKrjFyKBvW
-         V/2zGSyiGIq5O9F/oowv8BoPANsT82ekK5A6oQllGik8i5bh+QqcVSvC6/592xOZ0n
-         mGhvDRedEoYbWetvo6xn0nn8ApOxUMTlMtbMtjgM=
+        b=K8O9YBrHSIsAz+XI1xKlurp4z6QYVTbIvvJgCmu7SCWabnsLJ1lP649QweyQfKRSP
+         4BuCXz0nXXhy2Qtg3FuJwfepgd+Ma3+JqV4lbvXIFCmXpZ57+ai7es8Ek8e31yPabC
+         C0CsuNfi95tNYmlOvoCBALGVAgswyop3VYfp0/eU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Slava Bacherikov <mail@slava.cc>,
-        Vadim Fedorenko <vfedorenko@novek.ru>,
+        stable@vger.kernel.org, DENG Qingfang <dqfext@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.19 37/38] net: ip_tunnel: fix mtu calculation
-Date:   Mon,  8 Feb 2021 16:01:24 +0100
-Message-Id: <20210208145807.658300098@linuxfoundation.org>
+Subject: [PATCH 4.19 38/38] net: dsa: mv88e6xxx: override existent unicast portvec in port_fdb_add
+Date:   Mon,  8 Feb 2021 16:01:25 +0100
+Message-Id: <20210208145807.694600084@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210208145806.141056364@linuxfoundation.org>
 References: <20210208145806.141056364@linuxfoundation.org>
@@ -40,80 +40,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vadim Fedorenko <vfedorenko@novek.ru>
+From: DENG Qingfang <dqfext@gmail.com>
 
-commit 28e104d00281ade30250b24e098bf50887671ea4 upstream.
+commit f72f2fb8fb6be095b98af5d740ac50cffd0b0cae upstream.
 
-dev->hard_header_len for tunnel interface is set only when header_ops
-are set too and already contains full overhead of any tunnel encapsulation.
-That's why there is not need to use this overhead twice in mtu calc.
+Having multiple destination ports for a unicast address does not make
+sense.
+Make port_db_load_purge override existent unicast portvec instead of
+adding a new port bit.
 
-Fixes: fdafed459998 ("ip_gre: set dev->hard_header_len and dev->needed_headroom properly")
-Reported-by: Slava Bacherikov <mail@slava.cc>
-Signed-off-by: Vadim Fedorenko <vfedorenko@novek.ru>
-Link: https://lore.kernel.org/r/1611959267-20536-1-git-send-email-vfedorenko@novek.ru
+Fixes: 884729399260 ("net: dsa: mv88e6xxx: handle multiple ports in ATU")
+Signed-off-by: DENG Qingfang <dqfext@gmail.com>
+Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
+Link: https://lore.kernel.org/r/20210130134334.10243-1-dqfext@gmail.com
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/ipv4/ip_tunnel.c |   16 +++++++---------
- 1 file changed, 7 insertions(+), 9 deletions(-)
+ drivers/net/dsa/mv88e6xxx/chip.c |    6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
---- a/net/ipv4/ip_tunnel.c
-+++ b/net/ipv4/ip_tunnel.c
-@@ -330,7 +330,7 @@ static int ip_tunnel_bind_dev(struct net
+--- a/drivers/net/dsa/mv88e6xxx/chip.c
++++ b/drivers/net/dsa/mv88e6xxx/chip.c
+@@ -1658,7 +1658,11 @@ static int mv88e6xxx_port_db_load_purge(
+ 		if (!entry.portvec)
+ 			entry.state = MV88E6XXX_G1_ATU_DATA_STATE_UNUSED;
+ 	} else {
+-		entry.portvec |= BIT(port);
++		if (state == MV88E6XXX_G1_ATU_DATA_STATE_UC_STATIC)
++			entry.portvec = BIT(port);
++		else
++			entry.portvec |= BIT(port);
++
+ 		entry.state = state;
  	}
  
- 	dev->needed_headroom = t_hlen + hlen;
--	mtu -= (dev->hard_header_len + t_hlen);
-+	mtu -= t_hlen;
- 
- 	if (mtu < IPV4_MIN_MTU)
- 		mtu = IPV4_MIN_MTU;
-@@ -360,7 +360,7 @@ static struct ip_tunnel *ip_tunnel_creat
- 	nt = netdev_priv(dev);
- 	t_hlen = nt->hlen + sizeof(struct iphdr);
- 	dev->min_mtu = ETH_MIN_MTU;
--	dev->max_mtu = IP_MAX_MTU - dev->hard_header_len - t_hlen;
-+	dev->max_mtu = IP_MAX_MTU - t_hlen;
- 	ip_tunnel_add(itn, nt);
- 	return nt;
- 
-@@ -502,12 +502,11 @@ static int tnl_update_pmtu(struct net_de
- 			    const struct iphdr *inner_iph)
- {
- 	struct ip_tunnel *tunnel = netdev_priv(dev);
--	int pkt_size = skb->len - tunnel->hlen - dev->hard_header_len;
-+	int pkt_size = skb->len - tunnel->hlen;
- 	int mtu;
- 
- 	if (df)
--		mtu = dst_mtu(&rt->dst) - dev->hard_header_len
--					- sizeof(struct iphdr) - tunnel->hlen;
-+		mtu = dst_mtu(&rt->dst) - (sizeof(struct iphdr) + tunnel->hlen);
- 	else
- 		mtu = skb_dst(skb) ? dst_mtu(skb_dst(skb)) : dev->mtu;
- 
-@@ -935,7 +934,7 @@ int __ip_tunnel_change_mtu(struct net_de
- {
- 	struct ip_tunnel *tunnel = netdev_priv(dev);
- 	int t_hlen = tunnel->hlen + sizeof(struct iphdr);
--	int max_mtu = IP_MAX_MTU - dev->hard_header_len - t_hlen;
-+	int max_mtu = IP_MAX_MTU - t_hlen;
- 
- 	if (new_mtu < ETH_MIN_MTU)
- 		return -EINVAL;
-@@ -1112,10 +1111,9 @@ int ip_tunnel_newlink(struct net_device
- 
- 	mtu = ip_tunnel_bind_dev(dev);
- 	if (tb[IFLA_MTU]) {
--		unsigned int max = IP_MAX_MTU - dev->hard_header_len - nt->hlen;
-+		unsigned int max = IP_MAX_MTU - (nt->hlen + sizeof(struct iphdr));
- 
--		mtu = clamp(dev->mtu, (unsigned int)ETH_MIN_MTU,
--			    (unsigned int)(max - sizeof(struct iphdr)));
-+		mtu = clamp(dev->mtu, (unsigned int)ETH_MIN_MTU, max);
- 	}
- 
- 	err = dev_set_mtu(dev, mtu);
 
 
