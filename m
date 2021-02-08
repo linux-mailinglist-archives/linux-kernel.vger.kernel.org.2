@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93F86314164
+	by mail.lfdr.de (Postfix) with ESMTP id 23FAA314163
 	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 22:13:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236189AbhBHVM7 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 8 Feb 2021 16:12:59 -0500
-Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:51688 "EHLO
+        id S235953AbhBHVM4 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 8 Feb 2021 16:12:56 -0500
+Received: from us-smtp-delivery-44.mimecast.com ([205.139.111.44]:30705 "EHLO
         us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236645AbhBHUKe (ORCPT
+        by vger.kernel.org with ESMTP id S236641AbhBHUKe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 8 Feb 2021 15:10:34 -0500
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-491-wmpNve_ENICiyGt6DWSPCA-1; Mon, 08 Feb 2021 15:09:32 -0500
-X-MC-Unique: wmpNve_ENICiyGt6DWSPCA-1
+ us-mta-488-AkClS90HME6j6s5poFhl1g-1; Mon, 08 Feb 2021 15:09:34 -0500
+X-MC-Unique: AkClS90HME6j6s5poFhl1g-1
 Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6EDC380196E;
-        Mon,  8 Feb 2021 20:09:30 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2013D192D791;
+        Mon,  8 Feb 2021 20:09:33 +0000 (UTC)
 Received: from krava.redhat.com (unknown [10.40.194.115])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 31BB519C59;
-        Mon,  8 Feb 2021 20:09:28 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C548819C59;
+        Mon,  8 Feb 2021 20:09:30 +0000 (UTC)
 From:   Jiri Olsa <jolsa@kernel.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>
 Cc:     lkml <linux-kernel@vger.kernel.org>,
@@ -35,9 +35,9 @@ Cc:     lkml <linux-kernel@vger.kernel.org>,
         Michael Petlan <mpetlan@redhat.com>,
         Ian Rogers <irogers@google.com>,
         Alexei Budankov <abudankov@huawei.com>
-Subject: [PATCH 07/24] perf daemon: Add config file change check
-Date:   Mon,  8 Feb 2021 21:08:51 +0100
-Message-Id: <20210208200908.1019149-8-jolsa@kernel.org>
+Subject: [PATCH 08/24] perf daemon: Add background support
+Date:   Mon,  8 Feb 2021 21:08:52 +0100
+Message-Id: <20210208200908.1019149-9-jolsa@kernel.org>
 In-Reply-To: <20210208200908.1019149-1-jolsa@kernel.org>
 References: <20210208200908.1019149-1-jolsa@kernel.org>
 MIME-Version: 1.0
@@ -52,221 +52,116 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adding support to detect daemon's config file changes
-and re-read the configuration when that happens.
+Adding support to put daemon process in the background.
 
-Using inotify file descriptor plugged into the main
-fdarray object for polling.
-
-Example:
-
-  # cat ~/.perfconfig
-  [daemon]
-  base=/opt/perfdata
-
-  [session-cycles]
-  run = -m 10M -e cycles --overwrite --switch-output -a
-
-Starting the daemon:
-
-  # perf daemon start
-
-Check sessions:
-
-  # perf daemon
-  [772262:daemon] base: /opt/perfdata
-  [772263:cycles] perf record -m 10M -e cycles --overwrite --switch-output -a
-
-Change '-m 10M' to '-m 20M', and check daemon log:
-
-  # tail -f /opt/perfdata/output
-  [2021-01-02 20:31:41.234045] daemon started (pid 772262)
-  [2021-01-02 20:31:41.235072] reconfig: ruining session [cycles:772263]: -m 10M -e cycles --overwrite --switch-output -a
-  [2021-01-02 20:32:08.310137] reconfig: session 'cycles' killed
-  [2021-01-02 20:32:08.310847] reconfig: ruining session [cycles:772338]: -m 20M -e cycles --overwrite --switch-output -a
-
-And the session list:
-
-  # perf daemon
-  [772262:daemon] base: /opt/perfdata
-  [772338:cycles] perf record -m 20M -e cycles --overwrite --switch-output -a
-
-Note the changed '-m 20M' option is in place.
+It's now enabled by default and -f option is added to
+keep daemon process on the console for debugging.
 
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- tools/perf/builtin-daemon.c | 100 ++++++++++++++++++++++++++++++++++--
- 1 file changed, 97 insertions(+), 3 deletions(-)
+ tools/perf/Documentation/perf-daemon.txt |  4 ++
+ tools/perf/builtin-daemon.c              | 62 ++++++++++++++++++++++++
+ 2 files changed, 66 insertions(+)
 
+diff --git a/tools/perf/Documentation/perf-daemon.txt b/tools/perf/Documentation/perf-daemon.txt
+index 173b3f9f3a41..af5916d1c3e0 100644
+--- a/tools/perf/Documentation/perf-daemon.txt
++++ b/tools/perf/Documentation/perf-daemon.txt
+@@ -56,6 +56,10 @@ START COMMAND
+ -------------
+ The start command creates the daemon process.
+ 
++-f::
++--foreground::
++	Do not put the process in background.
++
+ 
+ CONFIG FILE
+ -----------
 diff --git a/tools/perf/builtin-daemon.c b/tools/perf/builtin-daemon.c
-index 15b328f6bd9a..bdddaa2ea388 100644
+index bdddaa2ea388..2d7f282809b6 100644
 --- a/tools/perf/builtin-daemon.c
 +++ b/tools/perf/builtin-daemon.c
-@@ -12,6 +12,8 @@
- #include <stdio.h>
- #include <unistd.h>
- #include <errno.h>
-+#include <sys/inotify.h>
-+#include <libgen.h>
- #include <sys/types.h>
- #include <sys/socket.h>
- #include <sys/un.h>
-@@ -75,6 +77,7 @@ struct daemon_session {
- struct daemon {
- 	const char		*config;
- 	char			*config_real;
-+	char			*config_base;
- 	const char		*base_user;
- 	char			*base;
- 	struct list_head	 sessions;
-@@ -530,6 +533,7 @@ static void daemon__exit(struct daemon *daemon)
- 		daemon_session__remove(session);
- 
- 	free(daemon->config_real);
-+	free(daemon->config_base);
- 	free(daemon->base);
+@@ -675,10 +675,61 @@ static int setup_config(struct daemon *daemon)
+ 	return daemon->config_real ? 0 : -1;
  }
  
-@@ -566,6 +570,84 @@ static int daemon__reconfig(struct daemon *daemon)
- 	return 0;
- }
- 
-+static int setup_config_changes(struct daemon *daemon)
++static int go_background(struct daemon *daemon)
 +{
-+	char *basen = strdup(daemon->config_real);
-+	char *dirn  = strdup(daemon->config_real);
-+	char *base, *dir;
-+	int fd, wd = -1;
++	int pid, fd;
 +
-+	if (!dirn || !basen)
-+		goto out;
++	pid = fork();
++	if (pid < 0)
++		return -1;
 +
-+	fd = inotify_init1(IN_NONBLOCK|O_CLOEXEC);
++	if (pid > 0)
++		return 1;
++
++	if (setsid() < 0)
++		return -1;
++
++	umask(0);
++
++	if (chdir(daemon->base)) {
++		perror("failed: chdir");
++		return -1;
++	}
++
++	fd = open("output", O_RDWR|O_CREAT|O_TRUNC, 0644);
 +	if (fd < 0) {
-+		perror("failed: inotify_init");
-+		goto out;
++		perror("failed: open");
++		return -1;
 +	}
 +
-+	dir = dirname(dirn);
-+	base = basename(basen);
-+	pr_debug("config file: %s, dir: %s\n", base, dir);
-+
-+	wd = inotify_add_watch(fd, dir, IN_CLOSE_WRITE);
-+	if (wd >= 0) {
-+		daemon->config_base = strdup(base);
-+		if (!daemon->config_base) {
-+			close(fd);
-+			wd = -1;
-+		}
-+	} else {
-+		perror("failed: inotify_add_watch");
++	if (fcntl(fd, F_SETFD, FD_CLOEXEC)) {
++		perror("failed: fcntl FD_CLOEXEC");
++		close(fd);
++		return -1;
 +	}
 +
-+out:
-+	free(basen);
-+	free(dirn);
-+	return wd < 0 ? -1 : fd;
-+}
++	close(0);
++	dup2(fd, 1);
++	dup2(fd, 2);
++	close(fd);
 +
-+static bool process_inotify_event(struct daemon *daemon, char *buf, ssize_t len)
-+{
-+	char *p = buf;
-+
-+	while (p < (buf + len)) {
-+		struct inotify_event *event = (struct inotify_event *) p;
-+
-+		/*
-+		 * We monitor config directory, check if our
-+		 * config file was changes.
-+		 */
-+		if ((event->mask & IN_CLOSE_WRITE) &&
-+		    !(event->mask & IN_ISDIR)) {
-+			if (!strcmp(event->name, daemon->config_base))
-+				return true;
-+		}
-+		p += sizeof(*event) + event->len;
++	daemon->out = fdopen(1, "w");
++	if (!daemon->out) {
++		close(1);
++		close(2);
++		return -1;
 +	}
-+	return false;
-+}
 +
-+static int handle_config_changes(struct daemon *daemon, int conf_fd,
-+				 bool *config_changed)
-+{
-+	char buf[4096];
-+	ssize_t len;
-+
-+	while (!(*config_changed)) {
-+		len = read(conf_fd, buf, sizeof(buf));
-+		if (len == -1) {
-+			if (errno != EAGAIN) {
-+				perror("failed: read");
-+				return -1;
-+			}
-+			return 0;
-+		}
-+		*config_changed = process_inotify_event(daemon, buf, len);
-+	}
++	setbuf(daemon->out, NULL);
 +	return 0;
 +}
 +
- static int setup_config(struct daemon *daemon)
+ static int __cmd_start(struct daemon *daemon, struct option parent_options[],
+ 		       int argc, const char **argv)
  {
- 	if (daemon->base_user) {
-@@ -600,8 +682,8 @@ static int __cmd_start(struct daemon *daemon, struct option parent_options[],
++	bool foreground = false;
+ 	struct option start_options[] = {
++		OPT_BOOLEAN('f', "foreground", &foreground, "stay on console"),
  		OPT_PARENT(parent_options),
  		OPT_END()
  	};
--	int sock_fd = -1;
--	int sock_pos;
-+	int sock_fd = -1, conf_fd = -1;
-+	int sock_pos, file_pos;
- 	struct fdarray fda;
- 	int err = 0;
+@@ -699,6 +750,17 @@ static int __cmd_start(struct daemon *daemon, struct option parent_options[],
+ 	if (setup_server_config(daemon))
+ 		return -1;
  
-@@ -622,16 +704,24 @@ static int __cmd_start(struct daemon *daemon, struct option parent_options[],
- 
- 	pr_info("daemon started (pid %d)\n", getpid());
- 
--	fdarray__init(&fda, 1);
-+	fdarray__init(&fda, 2);
- 
- 	sock_fd = setup_server_socket(daemon);
- 	if (sock_fd < 0)
- 		goto out;
- 
-+	conf_fd = setup_config_changes(daemon);
-+	if (conf_fd < 0)
-+		goto out;
++	if (!foreground) {
++		err = go_background(daemon);
++		if (err) {
++			/* original process, exit normally */
++			if (err == 1)
++				err = 0;
++			daemon__exit(daemon);
++			return err;
++		}
++	}
 +
- 	sock_pos = fdarray__add(&fda, sock_fd, POLLIN|POLLERR|POLLHUP, 0);
- 	if (sock_pos < 0)
- 		goto out;
+ 	debug_set_file(daemon->out);
+ 	debug_set_display_time(true);
  
-+	file_pos = fdarray__add(&fda, conf_fd, POLLIN|POLLERR|POLLHUP, 0);
-+	if (file_pos < 0)
-+		goto out;
-+
- 	signal(SIGINT, sig_handler);
- 	signal(SIGTERM, sig_handler);
- 
-@@ -643,6 +733,8 @@ static int __cmd_start(struct daemon *daemon, struct option parent_options[],
- 
- 			if (fda.entries[sock_pos].revents & POLLIN)
- 				err = handle_server_socket(daemon, sock_fd);
-+			if (fda.entries[file_pos].revents & POLLIN)
-+				err = handle_config_changes(daemon, conf_fd, &reconfig);
- 
- 			if (reconfig)
- 				err = setup_server_config(daemon);
-@@ -657,6 +749,8 @@ static int __cmd_start(struct daemon *daemon, struct option parent_options[],
- 
- 	if (sock_fd != -1)
- 		close(sock_fd);
-+	if (conf_fd != -1)
-+		close(conf_fd);
- 
- 	pr_info("daemon exited\n");
- 	fclose(daemon->out);
 -- 
 2.29.2
 
