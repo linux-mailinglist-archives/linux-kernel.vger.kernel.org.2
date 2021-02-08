@@ -2,105 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 132A5313BA6
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 18:55:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ABEE313BC6
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 18:58:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233967AbhBHRyH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 12:54:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56266 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229913AbhBHPcc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 10:32:32 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DB13C061793;
-        Mon,  8 Feb 2021 07:31:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=tdwCgKoyLdHxRuD+Ock+CY1gFHQqJYRvjdWG9ShjOkY=; b=zU/66JgRfM3qSDf+yVQGplFKy
-        365CNDWp7LAaZkjasaEkkS9zdxY9mFrU7lvKhaut2GV1Ldn4/Fij0JXoLSfivEaHY9RLDom9KJ3dD
-        MA3nRv/2W6bgJRVSxydYqGIjiNQR5Q23I0A91aNIdjgp8TcdQwsFxmWf2l7PMpgPZ0YqZaoAgXA2B
-        cpr8PNOGalTRQrkS5nsYuJTuPJDt/PcJoLAx42ZUSBpyVY9im2aHU4b3wjeCPzzcCZpNB2rxJBFfg
-        jCTsl0+X7RuBRskZz01elt+0+w3Ww0lp+GfXzhiyDE4wGLYeIYG6LiS6mmEdUv13JUT9xjeSpFtSn
-        LnmJIFeXQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:40812)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1l98VN-0002Bx-JF; Mon, 08 Feb 2021 15:31:13 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1l98VL-00039T-3P; Mon, 08 Feb 2021 15:31:11 +0000
-Date:   Mon, 8 Feb 2021 15:31:11 +0000
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Calvin Johnson <calvin.johnson@oss.nxp.com>
-Cc:     Grant Likely <grant.likely@arm.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Jeremy Linton <jeremy.linton@arm.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Cristi Sovaiala <cristian.sovaiala@nxp.com>,
-        Florin Laurentiu Chiculita <florinlaurentiu.chiculita@nxp.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Madalin Bucur <madalin.bucur@oss.nxp.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Pieter Jansen Van Vuuren <pieter.jansenvv@bamboosystems.io>,
-        Jon <jon@solid-run.com>, Saravana Kannan <saravanak@google.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
-        linux-kernel@vger.kernel.org, linux.cj@gmail.com,
-        Diana Madalina Craciun <diana.craciun@nxp.com>,
-        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-acpi@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: Re: [net-next PATCH v5 13/15] phylink: introduce
- phylink_fwnode_phy_connect()
-Message-ID: <20210208153111.GK1463@shell.armlinux.org.uk>
-References: <20210208151244.16338-1-calvin.johnson@oss.nxp.com>
- <20210208151244.16338-14-calvin.johnson@oss.nxp.com>
+        id S235199AbhBHR54 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 12:57:56 -0500
+Received: from marcansoft.com ([212.63.210.85]:33448 "EHLO mail.marcansoft.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229623AbhBHPcN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 10:32:13 -0500
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (No client certificate requested)
+        (Authenticated sender: marcan@marcan.st)
+        by mail.marcansoft.com (Postfix) with ESMTPSA id D408541F47;
+        Mon,  8 Feb 2021 15:31:20 +0000 (UTC)
+To:     Marc Zyngier <maz@kernel.org>, Arnd Bergmann <arnd@kernel.org>
+Cc:     SoC Team <soc@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Olof Johansson <olof@lixom.net>
+References: <20210204203951.52105-1-marcan@marcan.st>
+ <20210204203951.52105-16-marcan@marcan.st> <87eehqlxlr.wl-maz@kernel.org>
+ <CAK8P3a25eFFrMG-9QknFZ6Ckc3-gkiLK=jQdnyTMgn-z4X0RHQ@mail.gmail.com>
+ <87a6selrkt.wl-maz@kernel.org>
+From:   Hector Martin <marcan@marcan.st>
+Subject: Re: [PATCH 15/18] irqchip/apple-aic: Add support for the Apple
+ Interrupt Controller
+Message-ID: <c699ab0c-39a0-6b0a-9409-db506ac6f824@marcan.st>
+Date:   Tue, 9 Feb 2021 00:31:18 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210208151244.16338-14-calvin.johnson@oss.nxp.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+In-Reply-To: <87a6selrkt.wl-maz@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: es-ES
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 08, 2021 at 08:42:42PM +0530, Calvin Johnson wrote:
-> +int phylink_fwnode_phy_connect(struct phylink *pl,
-> +			       struct fwnode_handle *fwnode,
-> +			       u32 flags)
-> +{
-> +	struct fwnode_handle *phy_fwnode;
-> +	struct phy_device *phy_dev;
-> +	int ret;
-> +
-> +	if (is_of_node(fwnode)) {
-> +		/* Fixed links and 802.3z are handled without needing a PHY */
-> +		if (pl->cfg_link_an_mode == MLO_AN_FIXED ||
-> +		    (pl->cfg_link_an_mode == MLO_AN_INBAND &&
-> +		     phy_interface_mode_is_8023z(pl->link_interface)))
-> +			return 0;
+On 08/02/2021 20.36, Marc Zyngier wrote:
+> On Mon, 08 Feb 2021 10:29:23 +0000,
+> Arnd Bergmann <arnd@kernel.org> wrote:
+>>
+>> On Mon, Feb 8, 2021 at 10:25 AM Marc Zyngier <maz@kernel.org> wrote:
+>>> On Thu, 04 Feb 2021 20:39:48 +0000, Hector Martin <marcan@marcan.st> wrote:
+>>
+>>>> +{
+>>>> +     return readl(ic->base + reg);
+>>>
+>>> Please consider using the _relaxed accessors, as I don't think any of
+>>> these interacts with memory (apart from IPIs, of course).
+>>
+>> MSI interrupts require serializing with DMA, so at the minimum I think there
+>> needs to be something that ensures that DMA from device into memory
+>> has completed before delivering the completion interrupt to a driver. This
+>> may already be implied when the AIC is entered, but this is hard to know
+>> without actual hardware specs.
+> 
+> If there is a sync with memory required, it should happen at the point
+> where it is Acked, not when masked/unmasked or anything else. And
+> given that you want to sync with an external agent (the DMA producer),
+> the DMB generated by readl won't save you, as it only orders CPU
+> accesses AFAICT.
 
-This difference between ACPI and DT really needs to be described in the
-commit description.
+Found an doc that talks about this, but then... how does the current 
+Linux code work anyway for normal use cases?
 
-For example, why is it acceptable to have a PHY in fixed-link mode if
-we're using ACPI, and not DT?
+https://elinux.org/images/7/73/Deacon-weak-to-weedy.pdf
 
-If we look at the phylink code, accepting a PHY when in fixed-link mode
-is basically not supported... so why should ACPI allow this?
+That says dmb is not enough for DMA-control to DMA-data dependencies due 
+to speculation, which is what we have here and the situation I described 
+(with an IRQ along the way, but that's irrelevant). But that's what 
+readl does: a read followed by a dmb(oshld) followed by a control 
+dependency (but that needs an isb to take effect). How does this not 
+break drivers that read DMA-accessed memory after a readl of a status 
+register? I thought that was the point of the non-relaxed functions.
 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+Hector Martin (marcan@marcan.st)
+Public Key: https://mrcn.st/pub
