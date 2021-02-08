@@ -2,226 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A190F313231
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 13:25:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B21B2313233
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 13:26:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231654AbhBHMXA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 07:23:00 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:36322 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233540AbhBHMB0 (ORCPT
+        id S232069AbhBHMX2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 07:23:28 -0500
+Received: from hostingweb31-40.netsons.net ([89.40.174.40]:40111 "EHLO
+        hostingweb31-40.netsons.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233465AbhBHMBp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 07:01:26 -0500
-Date:   Mon, 08 Feb 2021 12:00:40 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1612785641;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=jCKvnKwdBITWs+pR/aAENyN98e8CEIfhMSxgk6gy6Ec=;
-        b=fKd3E6mSrxN1SWz0k6Q/lTyui6isxdl7KiKTEUhuD2jihfaZ66c0CYI11Vr5ZM2MKn0p+j
-        9+ZqHYugQny5NS5O3SkJT/AcJVNbHYD+NN0+c6YRHT9FV6j90EkHea2P/uDumPm+LD05W3
-        2Tl0DdkRNKz1hkhugSFa+CRn0Cg4SQApxQ4CIFaP1nZAmOn4hv0LJHc1zq0AoN43Bgpve5
-        jeeeVxqHhvcMKnx4g3QCwq+/gtBq3hWAtz9rUEY7guldFmTuZRjDmJ8HfbhgC/CC2/n+dF
-        OCbMMqG4ccSNm5LcNA5g+BwKQ0AsQ/OctTDpVV/ppNju3im4gJ8EKdXTJx1knw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1612785641;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=jCKvnKwdBITWs+pR/aAENyN98e8CEIfhMSxgk6gy6Ec=;
-        b=3VY7LchirP3fR1MPzEeRtFBID2DwF2H9a7aqNCjN80hjQ12oCTRbNWpM1KFEWlP/z8d0Vh
-        N2LnkafNWtSsw0Bg==
-From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] static_call: Pull some static_call declarations to
- the type headers
-Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Frederic Weisbecker <frederic@kernel.org>, x86@kernel.org,
+        Mon, 8 Feb 2021 07:01:45 -0500
+Received: from [185.56.157.72] (port=42748 helo=[192.168.101.73])
+        by hostingweb31.netsons.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <luca@lucaceresoli.net>)
+        id 1l95Di-00AE2N-P5; Mon, 08 Feb 2021 13:00:46 +0100
+Subject: Re: [PATCH V3 2/2] clk: vc5: Add support for optional load
+ capacitance
+To:     Adam Ford <aford173@gmail.com>, linux-clk@vger.kernel.org
+Cc:     aford@beaconembedded.com,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20210118141223.123667-4-frederic@kernel.org>
-References: <20210118141223.123667-4-frederic@kernel.org>
+References: <20210207185140.3653350-1-aford173@gmail.com>
+ <20210207185140.3653350-2-aford173@gmail.com>
+From:   Luca Ceresoli <luca@lucaceresoli.net>
+Message-ID: <9fabc42a-cd04-7971-d6c2-b0ea0b70f655@lucaceresoli.net>
+Date:   Mon, 8 Feb 2021 13:00:46 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Message-ID: <161278564067.23325.10974479398151772834.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20210207185140.3653350-2-aford173@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - hostingweb31.netsons.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - lucaceresoli.net
+X-Get-Message-Sender-Via: hostingweb31.netsons.net: authenticated_id: luca+lucaceresoli.net/only user confirmed/virtual account not confirmed
+X-Authenticated-Sender: hostingweb31.netsons.net: luca@lucaceresoli.net
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the sched/core branch of tip:
+Hi Adam,
+On 07/02/21 19:51, Adam Ford wrote:
+> There are two registers which can set the load capacitance for
+> XTAL1 and XTAL2. These are optional registers when using an
+> external crystal.  Parse the device tree and set the
+> corresponding registers accordingly.
+> 
+> Signed-off-by: Adam Ford <aford173@gmail.com>
 
-Commit-ID:     407bc881b21d9b6cd14dd9b09adffc2d8e45fbe9
-Gitweb:        https://git.kernel.org/tip/407bc881b21d9b6cd14dd9b09adffc2d8e45fbe9
-Author:        Peter Zijlstra <peterz@infradead.org>
-AuthorDate:    Mon, 18 Jan 2021 15:12:18 +01:00
-Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Fri, 05 Feb 2021 17:19:54 +01:00
+Reviewed-by: Luca Ceresoli <luca@lucaceresoli.net>
 
-static_call: Pull some static_call declarations to the type headers
-
-Some static call declarations are going to be needed on low level header
-files. Move the necessary material to the dedicated static call types
-header to avoid inclusion dependency hell.
-
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20210118141223.123667-4-frederic@kernel.org
----
- include/linux/static_call.h             | 21 +-------------------
- include/linux/static_call_types.h       | 27 ++++++++++++++++++++++++-
- tools/include/linux/static_call_types.h | 27 ++++++++++++++++++++++++-
- 3 files changed, 54 insertions(+), 21 deletions(-)
-
-diff --git a/include/linux/static_call.h b/include/linux/static_call.h
-index 695da4c..a2c0645 100644
---- a/include/linux/static_call.h
-+++ b/include/linux/static_call.h
-@@ -107,26 +107,10 @@ extern void arch_static_call_transform(void *site, void *tramp, void *func, bool
- 
- #define STATIC_CALL_TRAMP_ADDR(name) &STATIC_CALL_TRAMP(name)
- 
--/*
-- * __ADDRESSABLE() is used to ensure the key symbol doesn't get stripped from
-- * the symbol table so that objtool can reference it when it generates the
-- * .static_call_sites section.
-- */
--#define __static_call(name)						\
--({									\
--	__ADDRESSABLE(STATIC_CALL_KEY(name));				\
--	&STATIC_CALL_TRAMP(name);					\
--})
--
- #else
- #define STATIC_CALL_TRAMP_ADDR(name) NULL
- #endif
- 
--
--#define DECLARE_STATIC_CALL(name, func)					\
--	extern struct static_call_key STATIC_CALL_KEY(name);		\
--	extern typeof(func) STATIC_CALL_TRAMP(name);
--
- #define static_call_update(name, func)					\
- ({									\
- 	BUILD_BUG_ON(!__same_type(*(func), STATIC_CALL_TRAMP(name)));	\
-@@ -174,7 +158,6 @@ extern int static_call_text_reserved(void *start, void *end);
- 	};								\
- 	ARCH_DEFINE_STATIC_CALL_NULL_TRAMP(name)
- 
--#define static_call(name)	__static_call(name)
- #define static_call_cond(name)	(void)__static_call(name)
- 
- #define EXPORT_STATIC_CALL(name)					\
-@@ -207,7 +190,6 @@ struct static_call_key {
- 	};								\
- 	ARCH_DEFINE_STATIC_CALL_NULL_TRAMP(name)
- 
--#define static_call(name)	__static_call(name)
- #define static_call_cond(name)	(void)__static_call(name)
- 
- static inline
-@@ -252,9 +234,6 @@ struct static_call_key {
- 		.func = NULL,						\
- 	}
- 
--#define static_call(name)						\
--	((typeof(STATIC_CALL_TRAMP(name))*)(STATIC_CALL_KEY(name).func))
--
- static inline void __static_call_nop(void) { }
- 
- /*
-diff --git a/include/linux/static_call_types.h b/include/linux/static_call_types.h
-index 89135bb..08f78b1 100644
---- a/include/linux/static_call_types.h
-+++ b/include/linux/static_call_types.h
-@@ -4,6 +4,7 @@
- 
- #include <linux/types.h>
- #include <linux/stringify.h>
-+#include <linux/compiler.h>
- 
- #define STATIC_CALL_KEY_PREFIX		__SCK__
- #define STATIC_CALL_KEY_PREFIX_STR	__stringify(STATIC_CALL_KEY_PREFIX)
-@@ -32,4 +33,30 @@ struct static_call_site {
- 	s32 key;
- };
- 
-+#define DECLARE_STATIC_CALL(name, func)					\
-+	extern struct static_call_key STATIC_CALL_KEY(name);		\
-+	extern typeof(func) STATIC_CALL_TRAMP(name);
-+
-+#ifdef CONFIG_HAVE_STATIC_CALL
-+
-+/*
-+ * __ADDRESSABLE() is used to ensure the key symbol doesn't get stripped from
-+ * the symbol table so that objtool can reference it when it generates the
-+ * .static_call_sites section.
-+ */
-+#define __static_call(name)						\
-+({									\
-+	__ADDRESSABLE(STATIC_CALL_KEY(name));				\
-+	&STATIC_CALL_TRAMP(name);					\
-+})
-+
-+#define static_call(name)	__static_call(name)
-+
-+#else
-+
-+#define static_call(name)						\
-+	((typeof(STATIC_CALL_TRAMP(name))*)(STATIC_CALL_KEY(name).func))
-+
-+#endif /* CONFIG_HAVE_STATIC_CALL */
-+
- #endif /* _STATIC_CALL_TYPES_H */
-diff --git a/tools/include/linux/static_call_types.h b/tools/include/linux/static_call_types.h
-index 89135bb..08f78b1 100644
---- a/tools/include/linux/static_call_types.h
-+++ b/tools/include/linux/static_call_types.h
-@@ -4,6 +4,7 @@
- 
- #include <linux/types.h>
- #include <linux/stringify.h>
-+#include <linux/compiler.h>
- 
- #define STATIC_CALL_KEY_PREFIX		__SCK__
- #define STATIC_CALL_KEY_PREFIX_STR	__stringify(STATIC_CALL_KEY_PREFIX)
-@@ -32,4 +33,30 @@ struct static_call_site {
- 	s32 key;
- };
- 
-+#define DECLARE_STATIC_CALL(name, func)					\
-+	extern struct static_call_key STATIC_CALL_KEY(name);		\
-+	extern typeof(func) STATIC_CALL_TRAMP(name);
-+
-+#ifdef CONFIG_HAVE_STATIC_CALL
-+
-+/*
-+ * __ADDRESSABLE() is used to ensure the key symbol doesn't get stripped from
-+ * the symbol table so that objtool can reference it when it generates the
-+ * .static_call_sites section.
-+ */
-+#define __static_call(name)						\
-+({									\
-+	__ADDRESSABLE(STATIC_CALL_KEY(name));				\
-+	&STATIC_CALL_TRAMP(name);					\
-+})
-+
-+#define static_call(name)	__static_call(name)
-+
-+#else
-+
-+#define static_call(name)						\
-+	((typeof(STATIC_CALL_TRAMP(name))*)(STATIC_CALL_KEY(name).func))
-+
-+#endif /* CONFIG_HAVE_STATIC_CALL */
-+
- #endif /* _STATIC_CALL_TYPES_H */
+-- 
+Luca
