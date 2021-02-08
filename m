@@ -2,159 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52710313322
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 14:20:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A541313326
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 14:20:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230526AbhBHNTS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 08:19:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55566 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230274AbhBHNSA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 08:18:00 -0500
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97E37C061786;
-        Mon,  8 Feb 2021 05:17:19 -0800 (PST)
-Received: by mail-lj1-x234.google.com with SMTP id a22so1173899ljp.10;
-        Mon, 08 Feb 2021 05:17:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=5nW48CLp2tSEECQN82LkUl7IcpW33qmtAruE9r3YZHA=;
-        b=YwxruBbJig8dChg9Kt5du26Oa401hw8GJP8J/SxzS7l22HbuV/w+uaXdemK7vkkMRw
-         E7WqUb6FH0tz2zL8OKn6RYrD2ePNesCVrPWcdXX7nYfONmEprjgia5U6C4Y0QFFvsF3u
-         DmdfNr4qV1bb/OUjuNOnhf1gJJHVnAM6oya2wt8TK1aDlRSpcMwNLj9iXx9jlsXsqFCy
-         ZMARM9haLDzomyTj/6Mw8nzKQyFUybrQeoT82f8f/CqyXnnTaLNNdqjvwuptGWM3Amho
-         9f4lPIc2xJmakfcUNve4hdbd4XfiZXAtkBOGFc3Q5gvFN5n15KmWat5Fv/FAFN2p5lYP
-         fLdg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to:user-agent;
-        bh=5nW48CLp2tSEECQN82LkUl7IcpW33qmtAruE9r3YZHA=;
-        b=TpxS+PiZYWJFs6qci3AODgQc5S5CIv8qFza6AnI2dRv18Pfu5FT3WX0N7XeOl42RUd
-         nLiI+o1+O0JNDlt1VOpury5UH1Y2fyfJhvzVve6oo0OK2+GJ2D2e8W7er39I+SWciN+c
-         SpPZcIAeopiC4MfqcLu2v0EptpnjyUcPcv2ppG8wIDhGPQAnkTkLfuZKTMAdLY7DU67K
-         VCc4a/WRh2vn6UnD2LsiGueclaZNOaUccD0jo2Kn3zi8lKW81bORpVEV/2hRYiJoYP4y
-         YLvBYfuFh0L58RNdQtey2YV0H34IPKcHIIKKHpko/bAmOQf16GvfNOi0HqyTkdjfxeYC
-         3bTg==
-X-Gm-Message-State: AOAM530Zx8fXt0wmSDxqGBwKKLRT4YnNI62FCoqUmYHS5VRWZrmISeyE
-        VzUuFag/mRdGfh0YU1XMxEo=
-X-Google-Smtp-Source: ABdhPJwLIG6AspA/H4FizjACjpQ/W4CsTSw5WcdircCGtEFvyRB+/xye+DpnfbsIbSY5XmaYpZSSRw==
-X-Received: by 2002:a2e:9750:: with SMTP id f16mr10933455ljj.15.1612790238167;
-        Mon, 08 Feb 2021 05:17:18 -0800 (PST)
-Received: from ikhorn (ip-0439.rusanovka-net.kiev.ua. [94.244.4.57])
-        by smtp.gmail.com with ESMTPSA id p10sm2006356lji.137.2021.02.08.05.17.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Feb 2021 05:17:17 -0800 (PST)
-Date:   Mon, 8 Feb 2021 15:17:15 +0200
-From:   Ivan Khoronzhuk <ivan.khoronzhuk@gmail.com>
-To:     Jinyang He <hejinyang@loongson.cn>
-Cc:     Ivan Khoronzhuk <ikhoronz@cisco.com>, linux-mips@vger.kernel.org,
-        tsbogend@alpha.franken.de, linux-kernel@vger.kernel.org,
-        yangtiezhu@loongson.cn, rppt@kernel.org
-Subject: Re: [PATCH] mips: kernel: setup: fix crash kernel resource allocation
-Message-ID: <20210208131714.GA4740@ikhorn>
-Mail-Followup-To: Jinyang He <hejinyang@loongson.cn>,
-        Ivan Khoronzhuk <ikhoronz@cisco.com>, linux-mips@vger.kernel.org,
-        tsbogend@alpha.franken.de, linux-kernel@vger.kernel.org,
-        yangtiezhu@loongson.cn, rppt@kernel.org
-References: <20210206125940.111766-1-ikhoronz@cisco.com>
- <01729c08-c5e3-e9c0-2ddb-a5289e536153@loongson.cn>
+        id S229623AbhBHNUd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 08:20:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55838 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231209AbhBHNTl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 08:19:41 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 19E2164E8C;
+        Mon,  8 Feb 2021 13:18:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612790340;
+        bh=V8l77nGfH8viK0lg21lyfDivRFNKcdkT4YjQ7wzkRbE=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=ltupn+ZP4BiBWYAK+vVGENeSNIcw2s7BWyHgmUggnPNhbyZL7VrVXJq6nk2bXTKkx
+         KSL7+PyLDy7zIcr7E1rEPNIx1ytbf7zmqOGu0nHFPEjfMj+2OOkyRYye2hussDEOXv
+         MOrzApkTgn1FwOVl8WX6kJff3m0j30hBzYDFy/o8XQrtUpJgjIiwMmbKuC3EO6i0BQ
+         B5768uJtcwahsGbtlLAOKxXkmof2fzC7tHBuSSXTZMhB0zL3n0F4JhgC7CqySUFdkV
+         76k/CAWAeQh5LE4kinHXpri346A6ixs+FJFnwEweS4tk/SYavcmcw7LpkJZ+NxZo4D
+         fJUu1R2R4KY2A==
+Message-ID: <c649c66a0fc75de0338712edc5df088ee8fe86b3.camel@kernel.org>
+Subject: Re: [PATCH] fcntl: make F_GETOWN(EX) return 0 on dead owner task
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Pavel Tikhomirov <ptikhomirov@virtuozzo.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>
+Cc:     "J. Bruce Fields" <bfields@fieldses.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Andrei Vagin <avagin@gmail.com>
+Date:   Mon, 08 Feb 2021 08:18:58 -0500
+In-Reply-To: <ff782e1e-6fe9-4730-2528-76dc07211e0a@virtuozzo.com>
+References: <20210203124156.425775-1-ptikhomirov@virtuozzo.com>
+         <20210203193201.GD2172@grain>
+         <88739f26-63b0-be1d-4e6d-def01633323e@virtuozzo.com>
+         <20210203221726.GF2172@grain>
+         <948beb902296da5bb5d1a0db705ecb190623af84.camel@kernel.org>
+         <ff782e1e-6fe9-4730-2528-76dc07211e0a@virtuozzo.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+User-Agent: Evolution 3.38.3 (3.38.3-1.fc33) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <01729c08-c5e3-e9c0-2ddb-a5289e536153@loongson.cn>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Feb 07, 2021 at 11:19:03AM +0800, Jinyang He wrote:
->On 02/06/2021 08:59 PM, Ivan Khoronzhuk wrote:
->
->>In order to avoid crash kernel corruption, its memory is reserved
->>early in memblock and as result, in time when resources are inited
->>it's not present in memblock.memory, so crash kernel memory is out
->>of ranges listed with for_each_mem_range(). To avoid it and still
->>keep memory reserved lets reseve it out of loop by inserting it in
->>iomem_resource.
->
->Hi, Ivan,
->
->I'm not familiar with memblock. If the following my ideas show my
->ignorance, please forgive me.
->
->First, not only the crash kernel is reserved early in memblock, but also
->code, data, and bss are also reserved in bootmem_init():
->
->    /* Reserve memory occupied by kernel. */
->    memblock_reserve(__pa_symbol(&_text),
->            __pa_symbol(&_end) - __pa_symbol(&_text));
->
->(CONFIG_NUMA is not enabled. NUMA platform reserved them is earlier.)
->
->If there is something unsuitable with the crash kernel, is there something
->unsuitable with the kernel memory?
->
->
->Then, for_each_mem_range() is normal memory. Although memblock_reserve()
->has used before that, it just adds memory to memblock.reserved. That means
->it will still appear in memblock.memory. Thus, here I have a question,
->do we need to use replace for_each_mem_range with for_each_mem_range_rev?
+On Mon, 2021-02-08 at 15:57 +0300, Pavel Tikhomirov wrote:
+> 
+> On 2/8/21 3:31 PM, Jeff Layton wrote:
+> > On Thu, 2021-02-04 at 01:17 +0300, Cyrill Gorcunov wrote:
+> > > On Thu, Feb 04, 2021 at 12:35:42AM +0300, Pavel Tikhomirov wrote:
+> > > > 
+> > > > AFAICS if pid is held only by 1) fowner refcount and by 2) single process
+> > > > (without threads, group and session for simplicity), on process exit we go
+> > > > through:
+> > > > 
+> > > > do_exit
+> > > >    exit_notify
+> > > >      release_task
+> > > >        __exit_signal
+> > > >          __unhash_process
+> > > >            detach_pid
+> > > >              __change_pid
+> > > >                free_pid
+> > > >                  idr_remove
+> > > > 
+> > > > So pid is removed from idr, and after that alloc_pid can reuse pid numbers
+> > > > even if old pid structure is still alive and is still held by fowner.
+> > > ...
+> > > > Hope this answers your question, Thanks!
+> > > 
+> > > Yeah, indeed, thanks! So the change is sane still I'm
+> > > a bit worried about backward compatibility, gimme some
+> > > time I'll try to refresh my memory first, in a couple
+> > > of days or weekend (though here are a number of experienced
+> > > developers CC'ed maybe they reply even faster).
+> > 
+> > I always find it helpful to refer to the POSIX spec [1] for this sort of
+> > thing. In this case, it says:
+> > 
+> > F_GETOWN
+> >      If fildes refers to a socket, get the process ID or process group ID
+> > specified to receive SIGURG signals when out-of-band data is available.
+> > Positive values shall indicate a process ID; negative values, other than
+> > -1, shall indicate a process group ID; the value zero shall indicate
+> > that no SIGURG signals are to be sent. If fildes does not refer to a
+> > socket, the results are unspecified.
+> > 
+> > In the event that the PID is reused, the kernel won't send signals to
+> > the replacement task, correct?
+> 
+> Correct. Looks like only places to send signal to owner are send_sigio() 
+> and send_sigurg() (at least nobody else dereferences fown->pid_type). 
+> And in both places we lookup for task to send signal to with pid_task() 
+> or do_each_pid_task() (similar to what I do in patch) and will not find 
+> any task if pid was reused. Thus no signal would be sent.
+> 
 
-Reserve doesn't mean it's present in memblock.memory, if it memory was not
-added before, like it's supposed. In my canse, seems like to local issue it
-wasn't, that's why it was not present. So, traverse direction won't solve
-this obviously.
+Thanks for confirming it. I queued it up for linux-next (with a small
+amendment to the changelog), and it should be there later today or
+tomorrow. It might not hurt to roll up a manpage patch too if you have
+the cycles. It'd be nice to spell out what a 0 return means there.
 
->
->Finally, thank you for the patch, it makes me think a lot.
->
->Thanks,
->Jinyang
->
->>Fixes: a94e4f24ec83 ("MIPS: init: Drop boot_mem_map")
->>Signed-off-by: Ivan Khoronzhuk <ikhoronz@cisco.com>
->>---
->>Based on linux-next/master
->>
->>  arch/mips/kernel/setup.c | 8 +++++---
->>  1 file changed, 5 insertions(+), 3 deletions(-)
->>
->>diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
->>index 3785c72bc3bc..25e376ef2f2a 100644
->>--- a/arch/mips/kernel/setup.c
->>+++ b/arch/mips/kernel/setup.c
->>@@ -473,14 +473,15 @@ static void __init mips_parse_crashkernel(void)
->>  	crashk_res.end	 = crash_base + crash_size - 1;
->>  }
->>-static void __init request_crashkernel(struct resource *res)
->>+static void __init request_crashkernel(void)
->>  {
->>  	int ret;
->>  	if (crashk_res.start == crashk_res.end)
->>  		return;
->>-	ret = request_resource(res, &crashk_res);
->>+	/* The crashk resource shoud be located in normal mem */
->>+	ret = insert_resource(&iomem_resource, &crashk_res);
->>  	if (!ret)
->>  		pr_info("Reserving %ldMB of memory at %ldMB for crashkernel\n",
->>  			(unsigned long)(resource_size(&crashk_res) >> 20),
->>@@ -734,8 +735,9 @@ static void __init resource_init(void)
->>  		request_resource(res, &code_resource);
->>  		request_resource(res, &data_resource);
->>  		request_resource(res, &bss_resource);
->>-		request_crashkernel(res);
->>  	}
->>+
->>+	request_crashkernel();
->>  }
->>  #ifdef CONFIG_SMP
->
+> > Assuming that's the case, then this patch
+> > looks fine to me too. I'll plan to pick it for linux-next later today,
+> > and we can hopefully get this into v5.12.
+> > 
+> > [1]: https://pubs.opengroup.org/onlinepubs/9699919799/functions/fcntl.html#tag_16_122
+> > 
+> 
+> Thanks for finding it!
+> 
 
+No problem. That site is worth bookmarking for this sort of thing... ;)
 -- 
-Regards,
-Ivan Khoronzhuk
+Jeff Layton <jlayton@kernel.org>
+
