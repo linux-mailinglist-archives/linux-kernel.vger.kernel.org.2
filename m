@@ -2,209 +2,292 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65297312B66
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 09:03:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EBAF312B70
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 09:05:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230165AbhBHICb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 03:02:31 -0500
-Received: from mailout1.samsung.com ([203.254.224.24]:47269 "EHLO
-        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230154AbhBHIB5 (ORCPT
+        id S229704AbhBHID5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 03:03:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44356 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230199AbhBHIDZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 03:01:57 -0500
-Received: from epcas2p4.samsung.com (unknown [182.195.41.56])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20210208080114epoutp01e9a51a5da06adcc08950c71e13e3718e~htu3hH6FI0305403054epoutp01S
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 08:01:14 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20210208080114epoutp01e9a51a5da06adcc08950c71e13e3718e~htu3hH6FI0305403054epoutp01S
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1612771274;
-        bh=ze1z1lQbFdnnFuFNdA6+aObS93VSOFjbwRiBaL0SMrM=;
-        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
-        b=e6bwgNL9VyTpSuuDnPg+3JEB0+zKdzR4yvAwkMpwjhY4q+G9I/4Yd22BhZoMuKTQm
-         6CzIE2A4F4Ri4m/ieCP3mGn0dpI2d/UqhylDfzk+M1E4ARG3w6XiT2aHMdSpYIh62h
-         vEm4n7TDkLT/HJnSnyZ36z+27VeHoK3MyvbQzlck=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas2p1.samsung.com (KnoxPortal) with ESMTP id
-        20210208080112epcas2p1e1368084510f791f633dcf2681a1271d~htu2Ec_Cs0326103261epcas2p1L;
-        Mon,  8 Feb 2021 08:01:12 +0000 (GMT)
-Received: from epsmges2p1.samsung.com (unknown [182.195.40.185]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 4DYz461TFZz4x9Q9; Mon,  8 Feb
-        2021 08:01:10 +0000 (GMT)
-X-AuditID: b6c32a45-337ff7000001297d-85-6020efc6dd8b
-Received: from epcas2p2.samsung.com ( [182.195.41.54]) by
-        epsmges2p1.samsung.com (Symantec Messaging Gateway) with SMTP id
-        B8.D7.10621.6CFE0206; Mon,  8 Feb 2021 17:01:10 +0900 (KST)
-Mime-Version: 1.0
-Subject: RE: Re: [PATCH v19 2/3] scsi: ufs: L2P map management for HPB read
-Reply-To: daejun7.park@samsung.com
-Sender: Daejun Park <daejun7.park@samsung.com>
-From:   Daejun Park <daejun7.park@samsung.com>
-To:     Can Guo <cang@codeaurora.org>,
-        Daejun Park <daejun7.park@samsung.com>
-CC:     Greg KH <gregkh@linuxfoundation.org>,
-        "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "huobean@gmail.com" <huobean@gmail.com>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        BoRam Shin <boram.shin@samsung.com>,
-        SEUNGUK SHIN <seunguk.shin@samsung.com>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-In-Reply-To: <652fa8013c26df497049abe923eb1b97@codeaurora.org>
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <20210208080109epcms2p6ec657586e6afa269876d4f6205af2a3c@epcms2p6>
-Date:   Mon, 08 Feb 2021 17:01:09 +0900
-X-CMS-MailID: 20210208080109epcms2p6ec657586e6afa269876d4f6205af2a3c
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-X-CPGSPASS: Y
-X-CPGSPASS: Y
-CMS-TYPE: 102P
-X-Brightmail-Tracker: H4sIAAAAAAAAA52TbUxTVxjHd+4tbUFKLgXngfFSLtEIkdIWWk83avwwlxowY86NbMbBTbmh
-        TGib3qKOfbAZUJAXlSGwsIobcyJY1sFaqBAja5GBmdk6BiovwiImA2EwjRFwLKMvTLOP+/bL
-        P8/z/J+Xc7g438aJ5OZrDLReQxWQ7CBWtytBljS4JMgR9U8FoJnmbja6ZhrioLnVUTZyTfzB
-        QQ3Lqzh6ZL0UgOacCah9JguVfGVlI/MtI4ZqztjZqOVON4ZGes1sVHXbwUatP/yNoQlbEPra
-        fhegU40WFmr5so+1N0w58mu6cuR0Daa82jTFUZ5t6QfK6+ctHGXp8HWW8s8H4yzlaVs7UD7u
-        ilGW91dhmUHvG0EapVep84/RAlqj0ubma/IU5DuH3khCpECtZQwK8rAYSYRiuVSYKhdKdh95
-        VSwSSaSkQEMV0gryRJI/mxToVbqNaAPNGPS0it6Q9HsZA5VHCxmqkCnS5AlV2kJScIwqKNrI
-        I5P3pKlpKpfWC3Jmgbpz8ltc92nsie/MTtwI1sMrQSAXEqmw1l7FqgRBXD7hALCk0RJQCbhc
-        HhEK1x1hnpgwIh2uVX2CeZhPkNDqbuL4dCEc/80CPMwmdsHGoWmvHk7sh0/qrgR4auKEkQ1N
-        N1sDfGY8+Fn5A5aPX4E9rXZvciCxBw5Pz/n1nXDlUg3u463w7pVFziYvDV4APg6HZfdu+WNC
-        4cxqn1+PgIN9y5iPT0L75BrwNAGJagBdV8f9TSTDsYpOrxmPOADXZi97C7GI7fDiwvd+s9eh
-        qXTAyzgRC3sWzbhnKTiRAK29yR6ERDwcGGdtjmXsfMb5L+NECKxwrf+rO5pn/a3tgN+sWrGz
-        IL7p+aabXvBqeu71BcDbwcu0jinMoxmJTvziobuA9+Un7nOAusVloRNgXOAEkIuT4by3TsXk
-        8Hm51EfFtF6brS8qoBknKN6YshaP3KrSbnwdjSFbLBNJZNKU1JQUaar0f8tSiUwmkkuRVCZB
-        5DYeI5rJ5hN5lIE+StM6Wr9pjnEDI42YreLh/rJSdUhRmzpq6Oi8gnIPPBNVr52vnLKWLB+6
-        nz2QM9FPKl6aX5kdS+vaNfq0s8J8s6zn/gIWQZbM2DJj6890DNcsnVyQh3NWZJGfm5o76lGr
-        a+pGFkYMjp37UeEObeHjwRFP322zHXZn1gyb2NWxdXEfHr8Dln+pm3dIC7hxTMPvtWGBT+L5
-        pqyP3Tv3YZz6ZMHj97KiJ8t29FpGyi+k9zXUZVgy8+NUB2XSgzq37YDgtdtOsbnt2o3L0dPy
-        5o4tguAOqXY0TZS4JThkLSbDnnzxXuIH8owjiuCO3W9H8QNjUBIIe1Tx5rao9OhuQ+fPxYsN
-        23/6i3QtH39Ishg1JU7E9Qz1D18NDtDHBAAA
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210129052848epcms2p6e5797efd94e6282b76ad9ae6c99e3ab5
-References: <652fa8013c26df497049abe923eb1b97@codeaurora.org>
-        <20210129052848epcms2p6e5797efd94e6282b76ad9ae6c99e3ab5@epcms2p6>
-        <20210129053005epcms2p323338fbb83459d2786fc0ef92701b147@epcms2p3>
-        <CGME20210129052848epcms2p6e5797efd94e6282b76ad9ae6c99e3ab5@epcms2p6>
+        Mon, 8 Feb 2021 03:03:25 -0500
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23548C061756
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 00:02:44 -0800 (PST)
+Received: by mail-pf1-x431.google.com with SMTP id q131so9180795pfq.10
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 00:02:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=+fQMr/aWmvkb1F5+ZUar0gqCKuXntBn/7P21Qz1XhdU=;
+        b=XL5pl6h6S5sdi7FHBEN9AblYYdRHALT5fKHT4cBqeoMBNsqGg0pKWRUgEO5UZvA2Mu
+         lTOqFaa2yAwLSPDb8dd4WgxDWDhsO2KiEVkRU8QT4UhNtt0OlxXfp84BUxbLT4XqoSEJ
+         3e/fBrruIFZhBD0Ma7Rwn1/airOkq8KC4IRv39pEJ6kYBJnX0eQlM2mJef7uz5fy1Evw
+         N1SQhSg8/KdTsduBl/BCadKwJfbCnG5P2iUv3w+16xvbxo1yMRYxyhCnbu3h1qfdlTwU
+         ovGaJ6Vu0RZOQhhkU45zv9wSm59UniGToTd6U/1GcOiV4IJ94SXKq4jDogRe9ufD4JWq
+         /6uA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=+fQMr/aWmvkb1F5+ZUar0gqCKuXntBn/7P21Qz1XhdU=;
+        b=P9p6Oyc1w8iacJYykpsztz/vZRWxaKELBaTx2scE6oiHu1G8XUUFls7Age4bZ9qvs8
+         EKEWVtzesBycP5oRj/rwadGLlwxAaQc5a6Go7LKe/apiZo9d/ydXqVsSNrQWxZf0TNhs
+         RdynRRZfoFQzwNIR/JA3/2/j1Zb1ZAago3TAE0vpwgmMVAfuiaxfkzuW8K5W+sQw8rF2
+         X5Rdp6Ydeq+2HyNGFkFMU9PlUOy+jCcxihF++ax+NZRrrpcTr6T/nOohK+lO3a/MC/Le
+         zFLXsK4ocsFADiLtryN2cq6yV8ehPamtRJCPh55158LrmPNd3Krt6KSt5VrnD/RPVWGT
+         pAfA==
+X-Gm-Message-State: AOAM533IYJdXnNCQVeuMm/2VodWEH73iF6/TJB6qhEKlL/sVj7vUqPHe
+        Dt3qvn9rMOFinRQADRnsK2uZcg==
+X-Google-Smtp-Source: ABdhPJxMW+K+z4Xvhnqd+px5TwsN/RVFGfV86Uy014rjXfgrS9M5BnwSQ0HfsnLvFyB4P8WwdRCsJQ==
+X-Received: by 2002:a63:505d:: with SMTP id q29mr15785019pgl.89.1612771363525;
+        Mon, 08 Feb 2021 00:02:43 -0800 (PST)
+Received: from localhost.localdomain ([110.226.34.123])
+        by smtp.gmail.com with ESMTPSA id 62sm16029223pfg.160.2021.02.08.00.02.40
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 08 Feb 2021 00:02:42 -0800 (PST)
+From:   Sumit Garg <sumit.garg@linaro.org>
+To:     kgdb-bugreport@lists.sourceforge.net
+Cc:     jason.wessel@windriver.com, daniel.thompson@linaro.org,
+        dianders@chromium.org, linux-kernel@vger.kernel.org,
+        Sumit Garg <sumit.garg@linaro.org>
+Subject: [PATCH v3] kdb: Refactor env variables get/set code
+Date:   Mon,  8 Feb 2021 13:32:22 +0530
+Message-Id: <1612771342-16883-1-git-send-email-sumit.garg@linaro.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +
-> > +static void ufshpb_kick_map_work(struct ufshpb_lu *hpb)
-> > +{
-> > +        bool ret = true;
->  
-> -> ret = false;
->  
-> > +        unsigned long flags;
-> > +
-> > +        spin_lock_irqsave(&hpb->rsp_list_lock, flags);
-> > +        if (!list_empty(&hpb->lh_inact_rgn) || 
-> > !list_empty(&hpb->lh_act_srgn))
-> > +                ret = false;
->  
-> -> ret = true;
+Add two new kdb environment access methods as kdb_setenv() and
+kdb_printenv() in order to abstract out environment access code
+from kdb command functions.
 
-Thanks, I will fix it.
-  
-> > +        spin_unlock_irqrestore(&hpb->rsp_list_lock, flags);
-> > +
-> > +        if (ret)
-> > +                queue_work(ufshpb_wq, &hpb->map_work);
-> > +}
-> > +
-> > +static bool ufshpb_is_hpb_rsp_valid(struct ufs_hba *hba,
-> > +                                         struct ufshcd_lrb *lrbp,
-> > +                                         struct utp_hpb_rsp *rsp_field)
-> > +{
-> > +        if (be16_to_cpu(rsp_field->sense_data_len) != DEV_SENSE_SEG_LEN ||
-> > +            rsp_field->desc_type != DEV_DES_TYPE ||
-> > +            rsp_field->additional_len != DEV_ADDITIONAL_LEN ||
-> > +            rsp_field->hpb_op == HPB_RSP_NONE ||
->  
-> HPB_RSP_NONE is checked again in switch-case, no need of this line.
+Also, replace (char *)0 with NULL as an initializer for environment
+variables array.
 
-OK, I agree.
+Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
+---
 
-> > +static void ufshpb_rsp_req_region_update(struct ufshpb_lu *hpb,
-> > +                                         struct utp_hpb_rsp *rsp_field)
-> > +{
-> > +        int i, rgn_idx, srgn_idx;
-> > +
-> > +        BUILD_BUG_ON(sizeof(struct ufshpb_active_field) != 
-> > HPB_ACT_FIELD_SIZE);
-> > +        /*
-> > +         * If the active region and the inactive region are the same,
-> > +         * we will inactivate this region.
-> > +         * The device could check this (region inactivated) and
-> > +         * will response the proper active region information
-> > +         */
-> > +        spin_lock(&hpb->rsp_list_lock);
-> > +        for (i = 0; i < rsp_field->active_rgn_cnt; i++) {
-> > +                rgn_idx =
-> > +                        be16_to_cpu(rsp_field->hpb_active_field[i].active_rgn);
-> > +                srgn_idx =
-> > +                        be16_to_cpu(rsp_field->hpb_active_field[i].active_srgn);
-> > +
-> > +                dev_dbg(&hpb->sdev_ufs_lu->sdev_dev,
-> > +                        "activate(%d) region %d - %d\n", i, rgn_idx, srgn_idx);
-> > +                ufshpb_update_active_info(hpb, rgn_idx, srgn_idx);
-> > +                hpb->stats.rb_active_cnt++;
-> > +        }
-> > +
-> > +        for (i = 0; i < rsp_field->inactive_rgn_cnt; i++) {
-> > +                rgn_idx = be16_to_cpu(rsp_field->hpb_inactive_field[i]);
-> > +                dev_dbg(&hpb->sdev_ufs_lu->sdev_dev,
-> > +                        "inactivate(%d) region %d\n", i, rgn_idx);
-> > +                ufshpb_update_inactive_info(hpb, rgn_idx);
-> > +                hpb->stats.rb_inactive_cnt++;
-> > +        }
-> > +        spin_unlock(&hpb->rsp_list_lock);
-> > +
-> > +        dev_dbg(&hpb->sdev_ufs_lu->sdev_dev, "Noti: #ACT %u #INACT %u\n",
-> > +                rsp_field->active_rgn_cnt, rsp_field->inactive_rgn_cnt);
-> > +
-> > +        queue_work(ufshpb_wq, &hpb->map_work);
-> > +}
-> > +
-> > +/*
-> > + * This function will parse recommended active subregion information 
-> > in sense
-> > + * data field of response UPIU with SAM_STAT_GOOD state.
-> > + */
-> > +void ufshpb_rsp_upiu(struct ufs_hba *hba, struct ufshcd_lrb *lrbp)
-> > +{
-> > +        struct ufshpb_lu *hpb = ufshpb_get_hpb_data(lrbp->cmd->device);
-> > +        struct utp_hpb_rsp *rsp_field;
-> > +        int data_seg_len;
-> > +
-> > +        if (!hpb)
-> > +                return;
->  
-> You are assuming HPB recommandations only come in responses to LUs
-> with HPB enabled, but the specs says the recommandations can come
-> in any responses with GOOD status, meaning you should check the *hpb
-> which belongs to the LUN in res_field, but not the one belongs to
-> lrbp->cmd->device.
+Changes in v3:
+- Remove redundant '\0' char assignment.
+- Pick up Doug's review tag.
 
-I will add codes for checking lun to prevent getting wrong HPB
-recommandations.
+Changes in v2:
+- Get rid of code motion to separate kdb_env.c file.
+- Replace (char *)0 with NULL.
+- Use kernel-doc style function comments.
+- s/kdb_prienv/kdb_printenv/
 
-Thanks,
-Daejun  
+ kernel/debug/kdb/kdb_main.c | 164 ++++++++++++++++++++++++--------------------
+ 1 file changed, 91 insertions(+), 73 deletions(-)
+
+diff --git a/kernel/debug/kdb/kdb_main.c b/kernel/debug/kdb/kdb_main.c
+index 588062a..69b8f55 100644
+--- a/kernel/debug/kdb/kdb_main.c
++++ b/kernel/debug/kdb/kdb_main.c
+@@ -142,40 +142,40 @@ static const int __nkdb_err = ARRAY_SIZE(kdbmsgs);
+ 
+ static char *__env[] = {
+ #if defined(CONFIG_SMP)
+- "PROMPT=[%d]kdb> ",
++	"PROMPT=[%d]kdb> ",
+ #else
+- "PROMPT=kdb> ",
++	"PROMPT=kdb> ",
+ #endif
+- "MOREPROMPT=more> ",
+- "RADIX=16",
+- "MDCOUNT=8",			/* lines of md output */
+- KDB_PLATFORM_ENV,
+- "DTABCOUNT=30",
+- "NOSECT=1",
+- (char *)0,
+- (char *)0,
+- (char *)0,
+- (char *)0,
+- (char *)0,
+- (char *)0,
+- (char *)0,
+- (char *)0,
+- (char *)0,
+- (char *)0,
+- (char *)0,
+- (char *)0,
+- (char *)0,
+- (char *)0,
+- (char *)0,
+- (char *)0,
+- (char *)0,
+- (char *)0,
+- (char *)0,
+- (char *)0,
+- (char *)0,
+- (char *)0,
+- (char *)0,
+- (char *)0,
++	"MOREPROMPT=more> ",
++	"RADIX=16",
++	"MDCOUNT=8",		/* lines of md output */
++	KDB_PLATFORM_ENV,
++	"DTABCOUNT=30",
++	"NOSECT=1",
++	NULL,
++	NULL,
++	NULL,
++	NULL,
++	NULL,
++	NULL,
++	NULL,
++	NULL,
++	NULL,
++	NULL,
++	NULL,
++	NULL,
++	NULL,
++	NULL,
++	NULL,
++	NULL,
++	NULL,
++	NULL,
++	NULL,
++	NULL,
++	NULL,
++	NULL,
++	NULL,
++	NULL,
+ };
+ 
+ static const int __nenv = ARRAY_SIZE(__env);
+@@ -318,6 +318,63 @@ int kdbgetintenv(const char *match, int *value)
+ }
+ 
+ /*
++ * kdb_setenv() - Alter an existing environment variable or create a new one.
++ * @var: Name of the variable
++ * @val: Value of the variable
++ *
++ * Return: Zero on success, a kdb diagnostic on failure.
++ */
++static int kdb_setenv(const char *var, const char *val)
++{
++	int i;
++	char *ep;
++	size_t varlen, vallen;
++
++	varlen = strlen(var);
++	vallen = strlen(val);
++	ep = kdballocenv(varlen + vallen + 2);
++	if (ep == (char *)0)
++		return KDB_ENVBUFFULL;
++
++	sprintf(ep, "%s=%s", var, val);
++
++	for (i = 0; i < __nenv; i++) {
++		if (__env[i]
++		 && ((strncmp(__env[i], var, varlen) == 0)
++		   && ((__env[i][varlen] == '\0')
++		    || (__env[i][varlen] == '=')))) {
++			__env[i] = ep;
++			return 0;
++		}
++	}
++
++	/*
++	 * Wasn't existing variable.  Fit into slot.
++	 */
++	for (i = 0; i < __nenv-1; i++) {
++		if (__env[i] == (char *)0) {
++			__env[i] = ep;
++			return 0;
++		}
++	}
++
++	return KDB_ENVFULL;
++}
++
++/*
++ * kdb_printenv() - Display the current environment variables.
++ */
++static void kdb_printenv(void)
++{
++	int i;
++
++	for (i = 0; i < __nenv; i++) {
++		if (__env[i])
++			kdb_printf("%s\n", __env[i]);
++	}
++}
++
++/*
+  * kdbgetularg - This function will convert a numeric string into an
+  *	unsigned long value.
+  * Parameters:
+@@ -374,10 +431,6 @@ int kdbgetu64arg(const char *arg, u64 *value)
+  */
+ int kdb_set(int argc, const char **argv)
+ {
+-	int i;
+-	char *ep;
+-	size_t varlen, vallen;
+-
+ 	/*
+ 	 * we can be invoked two ways:
+ 	 *   set var=value    argv[1]="var", argv[2]="value"
+@@ -422,37 +475,7 @@ int kdb_set(int argc, const char **argv)
+ 	 * Tokenizer squashed the '=' sign.  argv[1] is variable
+ 	 * name, argv[2] = value.
+ 	 */
+-	varlen = strlen(argv[1]);
+-	vallen = strlen(argv[2]);
+-	ep = kdballocenv(varlen + vallen + 2);
+-	if (ep == (char *)0)
+-		return KDB_ENVBUFFULL;
+-
+-	sprintf(ep, "%s=%s", argv[1], argv[2]);
+-
+-	ep[varlen+vallen+1] = '\0';
+-
+-	for (i = 0; i < __nenv; i++) {
+-		if (__env[i]
+-		 && ((strncmp(__env[i], argv[1], varlen) == 0)
+-		   && ((__env[i][varlen] == '\0')
+-		    || (__env[i][varlen] == '=')))) {
+-			__env[i] = ep;
+-			return 0;
+-		}
+-	}
+-
+-	/*
+-	 * Wasn't existing variable.  Fit into slot.
+-	 */
+-	for (i = 0; i < __nenv-1; i++) {
+-		if (__env[i] == (char *)0) {
+-			__env[i] = ep;
+-			return 0;
+-		}
+-	}
+-
+-	return KDB_ENVFULL;
++	return kdb_setenv(argv[1], argv[2]);
+ }
+ 
+ static int kdb_check_regs(void)
+@@ -2055,12 +2078,7 @@ static int kdb_lsmod(int argc, const char **argv)
+ 
+ static int kdb_env(int argc, const char **argv)
+ {
+-	int i;
+-
+-	for (i = 0; i < __nenv; i++) {
+-		if (__env[i])
+-			kdb_printf("%s\n", __env[i]);
+-	}
++	kdb_printenv();
+ 
+ 	if (KDB_DEBUG(MASK))
+ 		kdb_printf("KDBDEBUG=0x%x\n",
+-- 
+2.7.4
+
