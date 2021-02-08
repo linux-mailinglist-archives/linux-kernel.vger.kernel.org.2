@@ -2,151 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94EF5312B03
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 08:17:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91E84312B06
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 08:17:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229947AbhBHHO4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 02:14:56 -0500
-Received: from mail-vi1eur05on2092.outbound.protection.outlook.com ([40.107.21.92]:63008
-        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229717AbhBHHOy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 02:14:54 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jgr2u/WAI2pZ/OuVigyR9A7xkvkrl9lD+sOEvaTClHURoOPjcJU5jP/5xEdum46uy6j1ho2zLVDELP6pXBsF12aujojQ2gQL7aN1ARrLTnh6LUw85QMW/WCQAEpNtRvBJxe9Ct2cXPdip3rlhzB4ETlUZC2B1kQuT9wbTXkhJB3LRO3lrt4Z140cZnZWf0/8JsqN6S9fFDg9AiHaCQGd9xJFMyULC+dheD0xHL4GeQhYDwVOZ9qM2nqdKSn6tuX5+IpXSHUiI8fyER6c9mDsTTGzcBZTfAxPYeSRrOCBKPXS+v0rwnZEIAVly6et+q9r41tqWLCyed0OmfCxS1cVOw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KdpvFjZ8x30yDiuzNxG+/UMYwd+t3ep4aPclFGiYqac=;
- b=YuhdYwGWmvC8m+C/RjZods1pZAOBakX+oS6y9AC7tJ2mx4RjZ6GejEjG9eWPiFY8XaFFdnB6GaOAeJ+Bp3tsdLfjBcV/BWEUNrZqGHTcdmEcFQwPgni9eNe/Eox8SRd1JBvMyDML/pcDpw9QgC6qOqlLiNu+uLBjxgXqh71zRhfiN/tN/x+2mLACMoX6z8G6q5J6W5ZT2mfJZwqBHBxh8QYwM6hD9VzD+p6v2AEfID8smQob7vs+bCOkCSfB5H2IROvBMonoVJdKHFO8GYOx+dPmFMlxyGndaU8H0igwZFjKgvfUd9md5SQcJnqiu66GkAyX3Yixkkc/Kw/3aFnMgA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nokia.com; dmarc=pass action=none header.from=nokia.com;
- dkim=pass header.d=nokia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nokia.onmicrosoft.com;
- s=selector1-nokia-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KdpvFjZ8x30yDiuzNxG+/UMYwd+t3ep4aPclFGiYqac=;
- b=N65PsLQ2YnXeeodANOY3vUVBIx2PZQ5qynjiFC8tv0LtIl2hm2SRw7XgekJ2jBkGHcNmBoLyHVpNd+Ozqvf7Iy5XAmL4Q9pq3c1VH0hHH3lNrgUI1ELRXxCxBP+iz43VPgVIa7M4R5hnJLWr25xbqbyusmAMelrd9YLxvhBUYqc=
-Authentication-Results: alliedtelesis.co.nz; dkim=none (message not signed)
- header.d=none;alliedtelesis.co.nz; dmarc=none action=none
- header.from=nokia.com;
-Received: from (2603:10a6:208:6e::15) by
- AM0PR0702MB3825.eurprd07.prod.outlook.com (2603:10a6:208:23::31) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.8; Mon, 8 Feb
- 2021 07:14:06 +0000
-Received: from AM0PR07MB4531.eurprd07.prod.outlook.com
- ([fe80::e965:2884:260b:b29a]) by AM0PR07MB4531.eurprd07.prod.outlook.com
- ([fe80::e965:2884:260b:b29a%3]) with mapi id 15.20.3846.023; Mon, 8 Feb 2021
- 07:14:06 +0000
-Subject: Re: [PATCH] staging: octeon: remove braces from single-line block
-To:     Phillip Potter <phil@philpotter.co.uk>, gregkh@linuxfoundation.org
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        f.fainelli@gmail.com, andrew@lunn.ch, davem@davemloft.net,
-        chris.packham@alliedtelesis.co.nz
-References: <20210206201701.5273-1-phil@philpotter.co.uk>
-From:   Alexander Sverdlin <alexander.sverdlin@nokia.com>
-Message-ID: <51bab7d2-2f37-b4de-71b5-47cfe8857f02@nokia.com>
-Date:   Mon, 8 Feb 2021 08:14:02 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
-In-Reply-To: <20210206201701.5273-1-phil@philpotter.co.uk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [131.228.32.169]
-X-ClientProxiedBy: AM9P191CA0005.EURP191.PROD.OUTLOOK.COM
- (2603:10a6:20b:21c::10) To AM0PR07MB4531.eurprd07.prod.outlook.com
- (2603:10a6:208:6e::15)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from ulegcpsvhp1.emea.nsn-net.net (131.228.32.169) by AM9P191CA0005.EURP191.PROD.OUTLOOK.COM (2603:10a6:20b:21c::10) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.19 via Frontend Transport; Mon, 8 Feb 2021 07:14:05 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 1f52b2a0-4b30-410f-73d5-08d8cc011ed4
-X-MS-TrafficTypeDiagnostic: AM0PR0702MB3825:
-X-Microsoft-Antispam-PRVS: <AM0PR0702MB3825F19FA6B91013B56FBE13888F9@AM0PR0702MB3825.eurprd07.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4714;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: MiIhaNGUIYdlQkvdMsa2RA1hVNtSYCuQcpkj9YbwWpxD82TOJbMf7oldJPm7hv06Hn5ImC8y7xDSzWRRQlriyyyCtao0SLSg44hNsYK3TraPIj4eLcf8/ZwGf4MW96v/a5QpZOApONlXQMwjgR83ikBCLp/w+tS8UJunGQDiTowR40nSZQraRNLbm4cxKe7StBZGH+QOE8u1IISFz8XYE9x+1hI1ZEm6WqiMMR8yE2TGHoUyihkgmRsQxvk82TlEMtI/lb8HpbTsfYscSOQO88T8ro1gQqbxiYX3Z9RRhaiu5dcYbBZqAMBeFaMNfQrAMgaCBrn4IcfkZJ3+bhAtDYjotHJwKt7ptyYZDNOj8SziaDDGl6U434hF3UDQGFsNvLDi5NIgz25V066GxFgPWAfJjYSOtEhng/sH2W8wh83bDT/1axEb00vGzL0IN6x18FzxXs3WcPH1zAqnkpr/RFBw5/Png1Nf8plhKlxfyF7K/wHAzpapqhdH3ml2BGmyBSuXsaRS5XBQ8L9ziA697KziBLlKNtmxk0ZA8jT8yoN6sbWUgwhkACNMuj8gEwGQtK0nnlXXbeS9aZSDd4JaBSRQttmAS6WxDm/xO5z7muA=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR07MB4531.eurprd07.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(366004)(396003)(39860400002)(136003)(478600001)(6486002)(316002)(86362001)(8676002)(31696002)(8936002)(66476007)(83380400001)(5660300002)(66946007)(6512007)(36756003)(66556008)(2616005)(53546011)(44832011)(6506007)(2906002)(52116002)(16526019)(31686004)(26005)(4326008)(956004)(186003)(6666004)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?NUN3RjgxTU9tYkMrbHJUTFpXVlZxNjVDTFE0TU5qbEphWTlXaW50R3Uwb1l1?=
- =?utf-8?B?V2dyaXZ6Nm01UUlOYnVhYmpLQlFQSHU1L3BNQzJjbDd3eGJPNzFRMWxpUzBo?=
- =?utf-8?B?cTJ5OVBDMUdPQm90dXNRbXVCTUJtdlZVNlhXM0ZTcXRIRWUxNkF2WjBVUnF5?=
- =?utf-8?B?UVBocVkvNHBobHJvTlFDQm5ZNmMwaUgxTUYxTERIWXdyUWkyWENnZmdrR3hh?=
- =?utf-8?B?KzZiNnVUcHQ1bDFsQURuVloxTDhaUDNERllvOGdIYkdnVlJmdkhvVnNNK2dj?=
- =?utf-8?B?STlWQ3hrVkVPdXA3eFN5UHhsdGZOWHRZV3V3aGt2VXZRNVh4L3I1T2tNZ3Rw?=
- =?utf-8?B?SXFLeGFtdlNoWll0emh0dCt6dlFxK3A3bWM1ZkFVQUhNOVhVL2kvUXM2Qk5Z?=
- =?utf-8?B?L2djZEVGbXZ5dWJCaExxUlJ4eG0xaW1QWStXQ2xMcDAvZ0djQ1M0WXZnNmVo?=
- =?utf-8?B?K0pPdmNRK2FVQm1aQUprS0VRVGlNd3E5VzdqbytuNHNYWUR2Um5KMzVveGZE?=
- =?utf-8?B?R0FSbHd5V0dMVVlIY0I2RUxSMWpnZnRCcUtpNlRzaTFTYVdJNDU2UWY4OHFa?=
- =?utf-8?B?Q3A5MHBoRUVVQjdRQ0QvYTJFMHFMenU4T3hsWEw0TUV4NkdaQ2dsM25EaktL?=
- =?utf-8?B?c0NkY2lGcXFNcnF5ZHF5ZGZnSVZQelptM1RRcXppWVQrQ25JYWNLSWZPYUEz?=
- =?utf-8?B?U1hUd0VkNkdHUW9LcWJYS1RDOFFDa2NBdTNJYnBUNk5uOERzWWVWdWgzRENO?=
- =?utf-8?B?MnNFNWcweGxWKzV3WjVQeXFLZVV4cHE3emhtdTdRU3hORzhMWnBaUkdzcjRO?=
- =?utf-8?B?VE9tNmVSWDBxMk8yWTZrZy9uTEhBdXY0MTduREp3YVIxdFZEZzIrNXc3M0Vi?=
- =?utf-8?B?ZzRJWnIzNTU3MUlhMHFSOTVWcTQxUkdpYmpiaGc1UXFTV3ltWXlodVVjQ0RL?=
- =?utf-8?B?NDNTYTFJRnR1eENYYjgzWWFMdFlEcnRSK2lVVCtic1pRZHVEZitxYkgzSWZ2?=
- =?utf-8?B?NmNrU3pLUVBRWVJGSU5IY2ZjNkJqNjl0aFBNT0Fka1JwbEN5NDE5cFBHN3I3?=
- =?utf-8?B?V0UvRTVkeFVZRzlRSDlTU08xTTNnSjdnYWtqRGdaemw0Q2liQWdxNWl1d3BM?=
- =?utf-8?B?SGp5Qkk4RXJRbmJZZWlLVzV2UzNITGRxOU1kRVR6dkVGVWNNd2ZnT3ZEZ3V3?=
- =?utf-8?B?M0ZJT0tGRytYWW0zaWlqeURyU0s2UjExaFV0S2VDWDBuRXhTYTZ1SjYzUTdr?=
- =?utf-8?B?UERtckdpNmgva0V0RGZPTS82eHB3OUlGUGdSNysvWktZWG4yZTZpODBhc3Vp?=
- =?utf-8?B?YmpSVGtPclZIb0ZqL1F1Q0NsNVNpTkhXKy9NQUpsakdjdERpZUVDWmhNODBn?=
- =?utf-8?B?bGEzUjRHbHp2N0RoUm16VURDVGxvOHo5VDRHNHhUV1ZuNWRyOGk3RmNPcUpH?=
- =?utf-8?B?dFJ0Wlc5SXRzRnB6TGZaaTVKUUwvcFRYYXgyU3B5Rko0Q1BvcWR3YTVUUVht?=
- =?utf-8?B?RnR5N0JLSE5IektyUFFEQ2xDajdLTVBvMktDbzZqWCtER1RKMUhwRWZUU1Fj?=
- =?utf-8?B?TktmUnAyQmV0cStZdWQyZWpJbmgvM3B2L3JucE5BWkJuNlk0MkVPek5zL3dJ?=
- =?utf-8?B?K0NiZFlWRlRMWkFMLzIvNzNLVHgzbWFHQzdjY0lpYk5mVHBGTENSMnBSTDRD?=
- =?utf-8?B?SmFGdmpwclo1c0hTN0s5UnNMQytBT1IvRHNaWkx5blNKaWtsNTJ2QjdIVGZt?=
- =?utf-8?Q?RNWVPPruNFn3mfKn1KQKl9wQZDTVsqIagrNysm8?=
-X-OriginatorOrg: nokia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1f52b2a0-4b30-410f-73d5-08d8cc011ed4
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR07MB4531.eurprd07.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Feb 2021 07:14:06.1426
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 5d471751-9675-428d-917b-70f44f9630b0
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: GCGr3TDdVoo3WDoTRdaDasWn1CxFItINyCSg8ag0otzhq0ukD9SL5nlCgo30m97SlLu+ihvrTOQkvTJn1FA0zbzxt71G/ku2ridaXpFjVHY=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR0702MB3825
+        id S229992AbhBHHRP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 02:17:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34398 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229608AbhBHHRJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 02:17:09 -0500
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5BC8C06174A;
+        Sun,  7 Feb 2021 23:16:28 -0800 (PST)
+Received: by mail-ej1-x631.google.com with SMTP id p20so22949676ejb.6;
+        Sun, 07 Feb 2021 23:16:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=krqWjImkL2aI2UxmellDdSuNGZ6V2RDP8gOeRiAmdmg=;
+        b=qJVc36k8sBxNw2X02X+MJik2TCKX76BRTZGkc28zSjpfBWhdCvgtPxOF3bbFGwZorX
+         yQbqJb3omUNY6hAvX/7utnFP/Jslo8ZzGMmcw4Ac32i8zcerZuHTny+1E8IlsrWrJKpi
+         YUhSLYqczc9VpYVyy+mgA0b6xX/Q43kz+QZtQlaZSp4+pm/RKA5kDGZAE9J6lVreUEI7
+         kSn+wfZPp581R7Tl4CdrQqPl6AMKgkqjrKDJrGuvKzi+4NKYgkM+odx4+V3TKsCadcZJ
+         IYdNp3Scx0PSjfcrkmjJezuBAJtoST6dlAdLHbwL4YN+KMnHiD6Hj/mLlxAI7HUyeKRg
+         MZdw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=krqWjImkL2aI2UxmellDdSuNGZ6V2RDP8gOeRiAmdmg=;
+        b=sSLunMrLxGnkQofKXgin1aIjyGYCA+0v2ZexGJ6NdN7yb3WGATH4RITd0qvfy4jV5o
+         5qq9+ksLWK/N0wjTjt/DyrlHm7TzwlRFTp9LWOKIxOaVn1Dm+EQkLq2WXGRDrG1oNBhR
+         b7+9V9gH3t7G9eF2dDFufi3byhvAExpcKoWyxbNCf48Vq5Kua3GxKuyCBHeWUua/iAuV
+         CPHynXdN5B+MwI1ekQbEDCdei901CrO/Gu/Fyp/rnLTUCjzBbNzuDyMAjGoei2bSuhHR
+         IzB+jC0vm08GKFQ8nGX30gg647KezjGiFWPzwdKJV0uQBpIL+7wjl9FPjAY+e2sqtKQ5
+         LbMA==
+X-Gm-Message-State: AOAM530QcdqbfEaqp3tIT7tmr9sV28AHQY+BG7J/McM+Q8w1aUXZxbCr
+        666OdDG2NLBE1BjQcKOUkwQ=
+X-Google-Smtp-Source: ABdhPJyKkJ+xmxPCgvpMetHKmyyHLONSRFLlkA6IPTTWWCLsCmEB8YEVSkXWpIFguOsmFbbzjR9R2w==
+X-Received: by 2002:a17:906:5857:: with SMTP id h23mr15170797ejs.465.1612768587484;
+        Sun, 07 Feb 2021 23:16:27 -0800 (PST)
+Received: from felia.fritz.box ([2001:16b8:2d8e:7300:842e:a74a:35f3:bd06])
+        by smtp.gmail.com with ESMTPSA id b4sm3278152edh.40.2021.02.07.23.16.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 07 Feb 2021 23:16:26 -0800 (PST)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To:     =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        bcm-kernel-feedback-list@broadcom.com, linux-pm@vger.kernel.org
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
+        Pia Eichinger <pia.eichinger@st.oth-regensburg.de>,
+        Joe Perches <joe@perches.com>, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH] MAINTAINERS: rectify BROADCOM PMB (POWER MANAGEMENT BUS) DRIVER
+Date:   Mon,  8 Feb 2021 08:16:19 +0100
+Message-Id: <20210208071619.3234-1-lukas.bulwahn@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
+Commit 8bcac4011ebe ("soc: bcm: add PM driver for Broadcom's PMB") includes
+a new MAINTAINERS section BROADCOM PMB (POWER MANAGEMENT BUS) DRIVER with
+'drivers/soc/bcm/bcm-pmb.c', but the file was actually added at
+'drivers/soc/bcm/bcm63xx/bcm-pmb.c'.
 
-On 06/02/2021 21:17, Phillip Potter wrote:
-> This removes the braces from the if statement that checks the
-> physical node return value in cvm_oct_phy_setup_device, as this
-> block contains only one statement. Fixes a style warning.
-> 
-> Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
+Hence, ./scripts/get_maintainer.pl --self-test=patterns complains:
 
-Reviewed-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
+  warning: no file matches  F:    drivers/soc/bcm/bcm-pmb.c
 
-> ---
->  drivers/staging/octeon/ethernet-mdio.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/drivers/staging/octeon/ethernet-mdio.c b/drivers/staging/octeon/ethernet-mdio.c
-> index 0bf545849b11..b0fd083a5bf2 100644
-> --- a/drivers/staging/octeon/ethernet-mdio.c
-> +++ b/drivers/staging/octeon/ethernet-mdio.c
-> @@ -146,9 +146,8 @@ int cvm_oct_phy_setup_device(struct net_device *dev)
->  		goto no_phy;
->  
->  	phy_node = of_parse_phandle(priv->of_node, "phy-handle", 0);
-> -	if (!phy_node && of_phy_is_fixed_link(priv->of_node)) {
-> +	if (!phy_node && of_phy_is_fixed_link(priv->of_node))
->  		phy_node = of_node_get(priv->of_node);
-> -	}
->  	if (!phy_node)
->  		goto no_phy;
->  
+Point the file entry to the right location.
 
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+---
+applies cleanly on next-20210205
+
+Rafal, please ack.
+Florian, please pick this minor fixup patch for soc next tree.
+
+ MAINTAINERS | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 6b507e8d7828..c23731c88dc2 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -3647,7 +3647,7 @@ M:	bcm-kernel-feedback-list@broadcom.com
+ L:	linux-pm@vger.kernel.org
+ S:	Maintained
+ T:	git git://github.com/broadcom/stblinux.git
+-F:	drivers/soc/bcm/bcm-pmb.c
++F:	drivers/soc/bcm/bcm63xx/bcm-pmb.c
+ F:	include/dt-bindings/soc/bcm-pmb.h
+ 
+ BROADCOM SPECIFIC AMBA DRIVER (BCMA)
 -- 
-Best regards,
-Alexander Sverdlin.
+2.17.1
+
