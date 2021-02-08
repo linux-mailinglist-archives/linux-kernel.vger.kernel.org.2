@@ -2,60 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD0D2313E39
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 19:57:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A2E0313E35
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 19:57:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235939AbhBHS4x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 13:56:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60862 "EHLO mail.kernel.org"
+        id S234391AbhBHS4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 13:56:01 -0500
+Received: from mga03.intel.com ([134.134.136.65]:40243 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233881AbhBHRKu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 12:10:50 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7D03364E42;
-        Mon,  8 Feb 2021 17:10:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612804209;
-        bh=7uUo3YXFXC5nIVh3LILzTBFaX9nJh+b3T5BtdbM4i2M=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kuyutIsJgH8w6TgZ05o7oIfPDh+ARPFyLROTO01tzSYu05dfKIto9bXp7+vz+BrMd
-         bumh+c2VM+w5Jmumq93nolSRvipGpBMUFpFNXoqiRxXHC+AhheC7rtPXkRXVHJ12/p
-         FsaSgtkf/YzmRNZ/y1XGiZN20s1BPkH8VX6qf4kYFun0jTJuBSq+cPmdmmfaR4MZEp
-         Qk1nX1dLyu775WF43T1iE12XN0mCfP7gid0/zKSAuGdA8bl1hXEic9y8tsuSi8gAjx
-         WBtCZVuVoHpTcQJb7CNbleDo5wd+IKo0+vlp1HXSIWIixwwdAhN85VCJ/5Kpu8dLUI
-         y8VojSyrv9AGQ==
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     linux-kernel@vger.kernel.org,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org,
-        Russell King <linux@armlinux.org.uk>
-Cc:     kernel test robot <lkp@intel.com>, Arnd Bergmann <arnd@arndb.de>
-Subject: Re: (subset) [PATCH 1/2] ARM: s3c: irq-s3c24xx: include headers for missing declarations
-Date:   Mon,  8 Feb 2021 18:10:04 +0100
-Message-Id: <161280419391.2772.5165098009561753713.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210206133615.119804-1-krzk@kernel.org>
-References: <20210206133615.119804-1-krzk@kernel.org>
+        id S231751AbhBHRLA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 12:11:00 -0500
+IronPort-SDR: SO/NykpxqBC2cB9DNdeDhvQ8IsjsQNFKqspa4T6zd7aR9C/Z4sNx9mvbGenMR9lI4s7uo3KgTM
+ lqrB3Fq5FXGA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9889"; a="181812383"
+X-IronPort-AV: E=Sophos;i="5.81,162,1610438400"; 
+   d="scan'208";a="181812383"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2021 09:10:13 -0800
+IronPort-SDR: lCIbErkhTTnRzrxOb/bfSV6k3l/arQ7tGPt3/CI1aP+592kMq0VVRsdr7hR/q6ZX4jx9Z5GUAR
+ ZcwTI/VnL4vg==
+X-IronPort-AV: E=Sophos;i="5.81,162,1610438400"; 
+   d="scan'208";a="398464226"
+Received: from rhweight-mobl2.amr.corp.intel.com (HELO [10.0.2.4]) ([10.209.12.237])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2021 09:10:13 -0800
+Subject: Re: [PATCH v5 1/1] fpga: dfl: afu: harden port enable logic
+To:     Moritz Fischer <mdf@kernel.org>
+Cc:     linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
+        trix@redhat.com, lgoncalv@redhat.com, yilun.xu@intel.com,
+        hao.wu@intel.com, matthew.gerlach@intel.com,
+        Matthew Gerlach <matthew.gerlach@linux.intel.com>
+References: <20210205182521.275887-1-russell.h.weight@intel.com>
+ <YB8AD46GfmVpC7xh@epycbox.lan>
+From:   Russ Weight <russell.h.weight@intel.com>
+Message-ID: <546df09e-1702-0b95-bb7d-421933293c30@intel.com>
+Date:   Mon, 8 Feb 2021 09:10:10 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YB8AD46GfmVpC7xh@epycbox.lan>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 6 Feb 2021 14:36:14 +0100, Krzysztof Kozlowski wrote:
-> Include headers to fix W=1 build warnings:
-> 
->   arch/arm/mach-s3c/irq-s3c24xx.c:389:5: warning:
->     no previous prototype for ‘s3c24xx_set_fiq’ [-Wmissing-prototypes]
->   arch/arm/mach-s3c/irq-s3c24xx.c:683:13: warning:
->     no previous prototype for ‘s3c2410_init_irq’ [-Wmissing-prototypes]
 
-Applied, thanks!
 
-[1/2] ARM: s3c: irq-s3c24xx: include headers for missing declarations
-      commit: 49dc85ca3c78d938d9eb41e05efcd85c92626e84
+On 2/6/21 12:46 PM, Moritz Fischer wrote:
+> Russ,
+>
+> On Fri, Feb 05, 2021 at 10:25:21AM -0800, Russ Weight wrote:
+>> Port enable is not complete until ACK = 0. Change
+>> __afu_port_enable() to guarantee that the enable process
+>> is complete by polling for ACK == 0.
+>>
+>> Reviewed-by: Tom Rix <trix@redhat.com>
+>> Reviewed-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
+>> Signed-off-by: Russ Weight <russell.h.weight@intel.com>
+>> ---
+>> v5:
+>>   - Added Reviewed-by tag to commit message
+>> v4:
+>>   - Added a dev_warn() call for the -EINVAL case of afu_port_err_clear()
+>>   - Modified dev_err() message in __afu_port_disable() to say "disable"
+>>     instead of "reset"
+>> v3:
+>>   - afu_port_err_clear() changed to prioritize port_enable failure over
+>>     other a detected mismatch in port errors.
+>>   - reorganized code in port_reset() to be more readable.
+>> v2:
+>>   - Fixed typo in commit message
+>> ---
+>>  drivers/fpga/dfl-afu-error.c | 10 ++++++----
+>>  drivers/fpga/dfl-afu-main.c  | 33 +++++++++++++++++++++++----------
+>>  drivers/fpga/dfl-afu.h       |  2 +-
+>>  3 files changed, 30 insertions(+), 15 deletions(-)
+>>
+>> diff --git a/drivers/fpga/dfl-afu-error.c b/drivers/fpga/dfl-afu-error.c
+>> index c4691187cca9..601e599fc33d 100644
+>> --- a/drivers/fpga/dfl-afu-error.c
+>> +++ b/drivers/fpga/dfl-afu-error.c
+>> @@ -52,7 +52,7 @@ static int afu_port_err_clear(struct device *dev, u64 err)
+>>  	struct dfl_feature_platform_data *pdata = dev_get_platdata(dev);
+>>  	struct platform_device *pdev = to_platform_device(dev);
+>>  	void __iomem *base_err, *base_hdr;
+>> -	int ret = -EBUSY;
+>> +	int enable_ret = 0, ret = -EBUSY;
+>>  	u64 v;
+>>  
+>>  	base_err = dfl_get_feature_ioaddr_by_id(dev, PORT_FEATURE_ID_ERROR);
+>> @@ -96,18 +96,20 @@ static int afu_port_err_clear(struct device *dev, u64 err)
+>>  		v = readq(base_err + PORT_FIRST_ERROR);
+>>  		writeq(v, base_err + PORT_FIRST_ERROR);
+>>  	} else {
+>> +		dev_warn(dev, "__func__: received 0x%llx, expected 0x%llx\n",
+>> +			 v, err);
+>>  		ret = -EINVAL;
+>>  	}
+>>  
+>>  	/* Clear mask */
+>>  	__afu_port_err_mask(dev, false);
+>>  
+>> -	/* Enable the Port by clear the reset */
+>> -	__afu_port_enable(pdev);
+>> +	/* Enable the Port by clearing the reset */
+>> +	enable_ret = __afu_port_enable(pdev);
+>>  
+>>  done:
+>>  	mutex_unlock(&pdata->lock);
+>> -	return ret;
+>> +	return enable_ret ? enable_ret : ret;
+> Help me understand (sorry if I'm slow here ...), you set ret to -EINVAL,
+> but then we only care if enabling the port worked?
+Port errors are represented in a bitmask. To clear the errors, the same bitmask is
+expected to be written to the "errors" sysfs node. It is considered an error
+(EINVAL) if the values do not match. This would most likely be a user error.
 
-Best regards,
--- 
-Krzysztof Kozlowski <krzk@kernel.org>
+The second error case is that we fail to enable the port. This is a
+critical/fatal HW error, indicating that the PR region can not be accessed.
+
+The EINVAL still has meaning (I have added an informative warning message for this
+case), but it is not as serious as the inability to re-enable the port. So we are
+prioritizing the more critical error code.
+
+- Russ
+>
+> I'm not sure I follow the logic (doesn't mean it's wrong :) ).
+>>  }
+>>  
+>>  static ssize_t errors_show(struct device *dev, struct device_attribute *attr,
+>> diff --git a/drivers/fpga/dfl-afu-main.c b/drivers/fpga/dfl-afu-main.c
+>> index 753cda4b2568..77dadaae5b8f 100644
+>> --- a/drivers/fpga/dfl-afu-main.c
+>> +++ b/drivers/fpga/dfl-afu-main.c
+>> @@ -21,6 +21,9 @@
+>>  
+>>  #include "dfl-afu.h"
+>>  
+>> +#define RST_POLL_INVL 10 /* us */
+>> +#define RST_POLL_TIMEOUT 1000 /* us */
+>> +
+>>  /**
+>>   * __afu_port_enable - enable a port by clear reset
+>>   * @pdev: port platform device.
+>> @@ -32,7 +35,7 @@
+>>   *
+>>   * The caller needs to hold lock for protection.
+>>   */
+>> -void __afu_port_enable(struct platform_device *pdev)
+>> +int __afu_port_enable(struct platform_device *pdev)
+>>  {
+>>  	struct dfl_feature_platform_data *pdata = dev_get_platdata(&pdev->dev);
+>>  	void __iomem *base;
+>> @@ -41,7 +44,7 @@ void __afu_port_enable(struct platform_device *pdev)
+>>  	WARN_ON(!pdata->disable_count);
+>>  
+>>  	if (--pdata->disable_count != 0)
+>> -		return;
+>> +		return 0;
+>>  
+>>  	base = dfl_get_feature_ioaddr_by_id(&pdev->dev, PORT_FEATURE_ID_HEADER);
+>>  
+>> @@ -49,10 +52,20 @@ void __afu_port_enable(struct platform_device *pdev)
+>>  	v = readq(base + PORT_HDR_CTRL);
+>>  	v &= ~PORT_CTRL_SFTRST;
+>>  	writeq(v, base + PORT_HDR_CTRL);
+>> -}
+>>  
+>> -#define RST_POLL_INVL 10 /* us */
+>> -#define RST_POLL_TIMEOUT 1000 /* us */
+>> +	/*
+>> +	 * HW clears the ack bit to indicate that the port is fully out
+>> +	 * of reset.
+>> +	 */
+>> +	if (readq_poll_timeout(base + PORT_HDR_CTRL, v,
+>> +			       !(v & PORT_CTRL_SFTRST_ACK),
+>> +			       RST_POLL_INVL, RST_POLL_TIMEOUT)) {
+>> +		dev_err(&pdev->dev, "timeout, failure to enable device\n");
+>> +		return -ETIMEDOUT;
+>> +	}
+>> +
+>> +	return 0;
+>> +}
+>>  
+>>  /**
+>>   * __afu_port_disable - disable a port by hold reset
+>> @@ -86,7 +99,7 @@ int __afu_port_disable(struct platform_device *pdev)
+>>  	if (readq_poll_timeout(base + PORT_HDR_CTRL, v,
+>>  			       v & PORT_CTRL_SFTRST_ACK,
+>>  			       RST_POLL_INVL, RST_POLL_TIMEOUT)) {
+>> -		dev_err(&pdev->dev, "timeout, fail to reset device\n");
+>> +		dev_err(&pdev->dev, "timeout, failure to disable device\n");
+>>  		return -ETIMEDOUT;
+>>  	}
+>>  
+>> @@ -111,9 +124,9 @@ static int __port_reset(struct platform_device *pdev)
+>>  
+>>  	ret = __afu_port_disable(pdev);
+>>  	if (!ret)
+>> -		__afu_port_enable(pdev);
+>> +		return ret;
+>>  
+>> -	return ret;
+>> +	return __afu_port_enable(pdev);
+>>  }
+>>  
+>>  static int port_reset(struct platform_device *pdev)
+>> @@ -872,11 +885,11 @@ static int afu_dev_destroy(struct platform_device *pdev)
+>>  static int port_enable_set(struct platform_device *pdev, bool enable)
+>>  {
+>>  	struct dfl_feature_platform_data *pdata = dev_get_platdata(&pdev->dev);
+>> -	int ret = 0;
+>> +	int ret;
+>>  
+>>  	mutex_lock(&pdata->lock);
+>>  	if (enable)
+>> -		__afu_port_enable(pdev);
+>> +		ret = __afu_port_enable(pdev);
+>>  	else
+>>  		ret = __afu_port_disable(pdev);
+>>  	mutex_unlock(&pdata->lock);
+>> diff --git a/drivers/fpga/dfl-afu.h b/drivers/fpga/dfl-afu.h
+>> index 576e94960086..e5020e2b1f3d 100644
+>> --- a/drivers/fpga/dfl-afu.h
+>> +++ b/drivers/fpga/dfl-afu.h
+>> @@ -80,7 +80,7 @@ struct dfl_afu {
+>>  };
+>>  
+>>  /* hold pdata->lock when call __afu_port_enable/disable */
+>> -void __afu_port_enable(struct platform_device *pdev);
+>> +int __afu_port_enable(struct platform_device *pdev);
+>>  int __afu_port_disable(struct platform_device *pdev);
+>>  
+>>  void afu_mmio_region_init(struct dfl_feature_platform_data *pdata);
+>> -- 
+>> 2.25.1
+>>
+> Thanks,
+> Moritz
+
