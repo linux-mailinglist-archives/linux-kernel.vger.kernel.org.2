@@ -2,122 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D854312F3F
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 11:42:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DBEA312F42
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 11:42:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232596AbhBHKlj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 05:41:39 -0500
-Received: from so15.mailgun.net ([198.61.254.15]:48283 "EHLO so15.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232341AbhBHKbt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 05:31:49 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1612780288; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=/UDWVXp1aV6QxsVm4lZslyXiXsVQduZouKiblUKIWPs=;
- b=PpdFgelyczujR6hK8OgveEiNgPL7RpeDtHNbWByzSY65/Ym7MjTNnlEDZgpk6e+dnNPIS37T
- 4G//VvrV50+vxE1oQQfYvqwdPkRJkb5lKqofr++isRY2VjkLxyToCMmrdlWU11AE++pot3fu
- Ga82d5IhJblpddF+tMgD8AuGHhc=
-X-Mailgun-Sending-Ip: 198.61.254.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 602112d9f112b7872c21e70c (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 08 Feb 2021 10:30:49
- GMT
-Sender: nitirawa=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 0B202C433C6; Mon,  8 Feb 2021 10:30:48 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: nitirawa)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 1428AC433CA;
-        Mon,  8 Feb 2021 10:30:47 +0000 (UTC)
+        id S232492AbhBHKmE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 05:42:04 -0500
+Received: from esa6.hc3370-68.iphmx.com ([216.71.155.175]:16847 "EHLO
+        esa6.hc3370-68.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231899AbhBHKct (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 05:32:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=citrix.com; s=securemail; t=1612780369;
+  h=subject:to:cc:references:from:message-id:date:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=DZUx01oQax/iYUlWe97Je4a/eksVcPW2+BdzIcW+Xfk=;
+  b=fhFeSYufvWjGeVBP0qJXh6Xgo6fIRA/TXgv8wCV3k9gPRo9kdadVX3SF
+   oPhoQShs+GVV9Abc0uPsz9fwvdxOdWGZsTb2GAiP6697htNxA2p0cDghz
+   XyK+x9zam6U8iRbKP5uMpDNU74iCIO0/olMe34MZsMEW2VCe7QXXOiCii
+   4=;
+Authentication-Results: esa6.hc3370-68.iphmx.com; dkim=pass (signature verified) header.i=@citrix.onmicrosoft.com
+IronPort-SDR: 28c8XnO8/zFeeNVyIbqMLb8LB/GzluumD0GZLmwM2hAjdrV/NtEemG4LHXnWPEf8CoLA+XkbFY
+ x0FxiF0JDvPP+FMCS1qI1SGQ2oXrxecmuVIL2li+jSWywE+YriYP1Yk3Iv6J7aQrih2uvuaXUo
+ RP32mOwW1VYmCP/GyzkDnYtX5nt9UNEJIf87nLlySEh0NA3IdgcCOorEuGIkKyF9tabwJnZlOY
+ M9uGG9crrA06ElzSLZoG9SeubTGfNW6L0h+VE6gdbvUu5j8v/EQtvzcjRGhOohsx3/W4YZasj7
+ PQo=
+X-SBRS: 5.2
+X-MesageID: 36957211
+X-Ironport-Server: esa6.hc3370-68.iphmx.com
+X-Remote-IP: 162.221.156.83
+X-Policy: $RELAYED
+X-IronPort-AV: E=Sophos;i="5.81,161,1610427600"; 
+   d="scan'208";a="36957211"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VmkdMkIzKGI5cnd8KEcS8MRFD6tVmQ5spXKjCA0Z22kAgr+NyhUOUByRqzaLTjKfxSBAvVfxZBrVXsUz7xMOIGRxVVDF673bSVezoGdfRgivq9Rkrwr9n2fpXuWSZKM3sJV20YKw0m+4ZyXis6cdb2aYoEY6tMIyF2VqYEIBz8BL816cVatXUZMNj/8gD5Lj60ldWwUpg7u8c2llgxrD9VL2yZUexm40MbVbzCUX62xu12dixRgoISNZXbBdo2u/JCFHXMvLYsVhLEoCBUbGLrxAfyMmnPm/5wfKvUee9YySWZ6PivDpDxnaG4s2wiOZdItsbjLFp+C88odvQIGpZg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=DZUx01oQax/iYUlWe97Je4a/eksVcPW2+BdzIcW+Xfk=;
+ b=nsMo0+jt8oun7j2KU4Q4gP8epCLmooXq6KOxoeQWr2hViGPYP1ytHQFTXqx1cxTiNwlsbX6VOxTviQBAoq0bKZbIcNKd0N4+Fc+6mF4MMJS7bh1NyrgSD2zQ2jR0D1FBonLx2rdYR8XRo0dgn1oZadZDY2mk/Z30ZSyCf1qjF281A9EkjpTwspEQXhhwdLfCUGgonfNR9VTfKjyM3iNCb8DmT5gejaRlDix/4vMyMNRFVHzShIIIMR3xAPjJGRVq+DTf7nt6U39orV8IebWB1E98KvIcLX5HiPaoaqP3flajhgorClzXQZP2wHGqxJx7rtsz9IdPS0qYOpNPHsL69A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=citrix.com; dmarc=pass action=none header.from=citrix.com;
+ dkim=pass header.d=citrix.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=citrix.onmicrosoft.com; s=selector2-citrix-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=DZUx01oQax/iYUlWe97Je4a/eksVcPW2+BdzIcW+Xfk=;
+ b=Bow2+BJPaP5Cv4pFBouR0+Yf6ZFuJKAlTmG7hNvZ0KAQgjIbCAu9JGxo8clNcNRQylod07VxScoie4u7ibjgfnqZav3ny8Lo3GUpEDPfoVkZ+FekfLZeEmKR+kapAkrDFr1WIR1amsQpp0o+iSeszgWUw25hrQwi19Hqd8/Ucqg=
+Subject: Re: [PATCH 6/7] xen/evtch: use smp barriers for user event ring
+To:     =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>,
+        Jan Beulich <jbeulich@suse.com>
+CC:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <xen-devel@lists.xenproject.org>
+References: <20210206104932.29064-1-jgross@suse.com>
+ <20210206104932.29064-7-jgross@suse.com>
+ <2d354cad-3413-a416-0bc1-01d03e1f41cd@citrix.com>
+ <dfa40af0-2706-2540-c59a-6593c1c0553a@suse.com>
+ <e68f76a5-27ce-a6d8-88a3-1e8fa1c30659@citrix.com>
+ <60ca5c18-bbf5-5d3d-1af6-f4692077c44e@suse.com>
+From:   Andrew Cooper <andrew.cooper3@citrix.com>
+Message-ID: <bac45a67-087b-636f-3a74-db266f970cda@citrix.com>
+Date:   Mon, 8 Feb 2021 10:31:33 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
+In-Reply-To: <60ca5c18-bbf5-5d3d-1af6-f4692077c44e@suse.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-GB
+X-ClientProxiedBy: LO2P123CA0050.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:600:1::14) To BYAPR03MB4728.namprd03.prod.outlook.com
+ (2603:10b6:a03:13a::24)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 08 Feb 2021 16:00:47 +0530
-From:   nitirawa@codeaurora.org
-To:     Avri Altman <Avri.Altman@wdc.com>
-Cc:     asutoshd@codeaurora.org, cang@codeaurora.org,
-        stummala@codeaurora.org, vbadigan@codeaurora.org,
-        alim.akhtar@samsung.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, stanley.chu@mediatek.com,
-        beanhuo@micron.com, bvanassche@acm.org, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V1 0/3] scsi: ufs: Add a vops to configure VCC voltage
- level
-In-Reply-To: <48fbd86b319697fced61317bd15c4779@codeaurora.org>
-References: <1611852899-2171-1-git-send-email-nitirawa@codeaurora.org>
- <DM6PR04MB6575D0348161330D21A9B6C5FCB79@DM6PR04MB6575.namprd04.prod.outlook.com>
- <48fbd86b319697fced61317bd15c4779@codeaurora.org>
-Message-ID: <2fb825d458fb87a522b4a64370ee83b1@codeaurora.org>
-X-Sender: nitirawa@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 80187434-e7e1-4c8e-9ea3-08d8cc1cb88d
+X-MS-TrafficTypeDiagnostic: SJ0PR03MB5823:
+X-Microsoft-Antispam-PRVS: <SJ0PR03MB58238E99987B9F8C0153A683BA8F9@SJ0PR03MB5823.namprd03.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4714;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Rnwve+rxlTHlYchZQFF8Vqx6rf0WC/8ejvQxxppxDCmsOlKnPbJ8T48kpweIf3ApNgl4OX1HeHa9szh5J1KnX6jsB1nMXYBAreWls1M05LWVcDdghWaOpjvKdC1PCrcJtojWNxTukDxISNqqEvFikMjs3tl5/yUvT3RtEjBAytq6ok8ZUW+0xXuFsRVooLanjso6OzMYk1220y5FkMQJRil3plgEj2f7eqFSRHiRwqSQi+4MRHjIIKYlPdWcAdFo/Y+EbCKW3nHEBBX0aNPH0RSbhY1QL0aw9UIg3GmlkEccpgDRNABhazy9UQeOvVzlETEYLLYyuUcezpgPLjJEc3Nkn2pS7mqyfDSKiRBMvja+k53XpHEMzD9FIo/d06lBQ5xDUfVRTE8p+MTuDLIkK3pmqX3dTabVn2zxNo2h1LmZJpTTRBdQOMPhu7IMwm5OvGWVzXer5mVS8bluXkTpBA0jtFrdkYTD3vSbUU4cdt+rhr2oOWLMWx7Zb2E47DB50PzViHBub8iLtKGvfjCGlediufH6dbb7kMcW/Ou+ewKX3L4nyOqTWuDtplpzEkdW9fd0YyYra63pq3Gy4qEr5IRtBi7GloPrPyZvkfBpNvE=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR03MB4728.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(136003)(39860400002)(396003)(346002)(2616005)(956004)(83380400001)(66574015)(316002)(66476007)(53546011)(16576012)(66946007)(8936002)(66556008)(31686004)(478600001)(86362001)(31696002)(36756003)(6666004)(110136005)(54906003)(2906002)(6486002)(4326008)(8676002)(186003)(16526019)(26005)(5660300002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?eWRVTmgyblc0czZUc1d2M0czelduZEN5bTMweEhQdTRGRzBuNWdpdkRmc3ll?=
+ =?utf-8?B?cUNEeGtNTVM5RXdrYlFhMkQ1K2JPTDMvOEdRVFkrRndFQWZESXJiVnZWRTJr?=
+ =?utf-8?B?Wk9nY2wzSzhHVTNyKysyN1NyZmFpT3Y5OWEyYTVnVGtIRzRwQnlvRWd2LzFt?=
+ =?utf-8?B?d3FTdkt3azJOQlJsMmczYzdSK0hFUTBJNFFCUitmaGVBczdKb1BDV1dmVEo5?=
+ =?utf-8?B?cWllcTh5Wkd1N3hxQkFzQW9mVVNJTWtjcDMyaUl3ZkJmVnI2TEtNalNGdE9R?=
+ =?utf-8?B?c0NMOGIyV2t2elFqNHZ3QUNjNVk0THNiUlkxK0N3UGViODhUUkRJSUd6VUlv?=
+ =?utf-8?B?QmZXLzJ3ZENNWGpCYm1Zb0VDQ3N4NkZ0NVlMeGRJY04rdkc5dno0VGF2REg4?=
+ =?utf-8?B?dk1pWDJuMVZvVlRkb2F5Rk0vOUY4UysvdGFxSDk1NGtaM1JjY2VVMGpRVEx2?=
+ =?utf-8?B?MlRYLzZvUTRkR1E2TTcwYlVBT1N5MENaWDZNMFJaVEVlc3BoaDB6dUNIUUQ2?=
+ =?utf-8?B?M0hlMnQ2dGV2ZUVPT3NJcXpHMHZMQ3JSZHVrSkdRMEt2Q0pSWkJFekdvUEV3?=
+ =?utf-8?B?WVkrUHdDK0JxMXhvbVR2cmpJSTh2Q2lHR1RkUHNXVklFMUpmMFdFWC9yTXk0?=
+ =?utf-8?B?UngwWXh4M1A1T0dQQkQ0ZXlzc21FajhTMTdQUk9NLzV3ZzdTQWxFRVlIcURW?=
+ =?utf-8?B?dmJ2OVNTQmpIYTJxbEtHOS9NYTVQanFwekpCNy9URXU1ODdxZXc5ZVBpVEFj?=
+ =?utf-8?B?UklSaHYyMDRnRDlBZEUrVytnSUtJZzBlUlNlVHBYZXh6Z3c5ZzhPVExWOHI4?=
+ =?utf-8?B?RzM1T1g0eHBVL2RLcGFKRTFzZFBpTHJBZ0pJWmI1ZHRqNG5ZbUFGeXU3YThW?=
+ =?utf-8?B?TzI1SFFGekp5RVVCVE9jM3l5QW9lSU8yaGNhMUdCWFZRM1FXaUN0Y0lDOUhQ?=
+ =?utf-8?B?eHcvN1NtMExjZEJuMFUxQ1BlVWwzUFNiS3liOW1kUzVHV1I5ZGx2cVc3RVdU?=
+ =?utf-8?B?aGZpeXlzN1M1bm1oVmw1UUI4dkNWdjJqeXJTa0tkU2VPemk4YUw4Sm9tbTBt?=
+ =?utf-8?B?ajdXTkQ2L2ZVZkhWQS9SOVNjQ29lQStMbW52dHc1aXJvcm5CZjZXa2pSd3dD?=
+ =?utf-8?B?TnN5VW8vVXVFWVF6c1hJVGhGTC9SZENuNHdHZEhNdGJISGdSTVdSa3NERS9D?=
+ =?utf-8?B?V0hZbFptWWNzRkFVczV5VUZNUktUdzd0SDd0c0srWVgxMTNKZThYTWRJMyt3?=
+ =?utf-8?B?c1hvNlIydHJoaTZpeGFEcGY1YUdjWktWNU1UM25yMWw0ZlF6SVVNUEtUcEZC?=
+ =?utf-8?B?dDBneWgxWGloUmZYVnNVTWlvL1huZ243MmFwUEFacHVId0t0dUFMRVlCTGVt?=
+ =?utf-8?B?am5yRUswMG81UkhyZDJ5RWwwNnE4MkM3WG1pVGlTVUFEcVlLcTNrZ2hKMnBG?=
+ =?utf-8?B?LzFnNlFnSWZCWWZvek9yN1F5eDFmQS9MU2s5bWRLNFQ5eldJc3VlWUZCYitu?=
+ =?utf-8?B?VjVsOFBqa2lPcTVPNEppVjdNTmMyZkl0bmxFcGpZbTAzTm03SDVXcFk2WkNh?=
+ =?utf-8?B?US91cmoxSjFTVlRNMWxORlprWm41T1M1ZFJjL1hadG56cXRyZnBZaVlxelZy?=
+ =?utf-8?B?R3BQMGplQ3dEZmhrZjJtQW54VVZkaVpyYVNKVWtzbVlwRDNzcWxkR3UvdXI3?=
+ =?utf-8?B?bDhFUEtVWFVHcDQvNElnUmcxWkEza0R3WHRtUTJqRGdQbXgrRjBqVThGeFNm?=
+ =?utf-8?Q?ZV8sQnEYMRxnkYFhsr37tD7Qx6diu5OQXeQwAf1?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 80187434-e7e1-4c8e-9ea3-08d8cc1cb88d
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR03MB4728.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Feb 2021 10:31:40.1534
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 335836de-42ef-43a2-b145-348c2ee9ca5b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: YuAdKviTi76TRNXnW7hUxfaEtDBnw5QPNOwPNMiTzDAMBSQUkg7Manjp+ehVuHUMmiuEW07m2cjNC+uume8GZHlU83q1FP9UdhJtUiWOkpA=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR03MB5823
+X-OriginatorOrg: citrix.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-02-01 14:01, nitirawa@codeaurora.org wrote:
-> On 2021-01-31 19:32, Avri Altman wrote:
->>> 
->>> UFS specification allows different VCC configurations for UFS 
->>> devices,
->>> for example,
->>>         (1)2.70V - 3.60V (For UFS 2.x devices)
->>>         (2)2.40V - 2.70V (For UFS 3.x devices)
->>> For platforms supporting both ufs 2.x (2.7v-3.6v) and
->>> ufs 3.x (2.4v-2.7v), the voltage requirements (VCC) is 2.4v-3.6v.
->>> So to support this, we need to start the ufs device initialization 
->>> with
->>> the common VCC voltage(2.7v) and after reading the device descriptor 
->>> we
->>> need to switch to the correct range(vcc min and vcc max) of VCC 
->>> voltage
->>> as per UFS device type since 2.7v is the marginal voltage as per 
->>> specs
->>> for both type of devices.
->>> 
->>> Once VCC regulator supply has been intialised to 2.7v and UFS device
->>> type is read from device descriptor, we follows below steps to
->>> change the VCC voltage values.
->>> 
->>> 1. Set the device to SLEEP state.
->>> 2. Disable the Vcc Regulator.
->>> 3. Set the vcc voltage according to the device type and reenable
->>>    the regulator.
->>> 4. Set the device mode back to ACTIVE.
->>> 
->>> The above changes are done in vendor specific file by
->>> adding a vops which will be needed for platform
->>> supporting both ufs 2.x and ufs 3.x devices.
->> The flow should be generic - isn't it?
->> Why do you need the entire flow to be vendor-specific?
->> Why not just the parameters vendor-specific?
->> 
->> Thanks,
->> Avri
-> 
-> Hi Avri,
-> This vops change was done as per the below mail thread
-> discussion where it was decided to go with vops and
-> let vendors handle it, until specs provides more clarity.
-> 
-> https://www.spinics.net/lists/kernel/msg3754995.html
-> 
-> Regards,
-> Nitin
+On 08/02/2021 10:25, Jürgen Groß wrote:
+> On 08.02.21 11:23, Andrew Cooper wrote:
+>> On 08/02/2021 09:50, Jan Beulich wrote:
+>>> On 08.02.2021 10:44, Andrew Cooper wrote:
+>>>> On 06/02/2021 10:49, Juergen Gross wrote:
+>>>>> The ring buffer for user events is used in the local system only, so
+>>>>> smp barriers are fine for ensuring consistency.
+>>>>>
+>>>>> Reported-by: Andrew Cooper <andrew.cooper3@citrix.com>
+>>>>> Signed-off-by: Juergen Gross <jgross@suse.com>
+>>>> These need to be virt_* to not break in UP builds (on non-x86).
+>>> Initially I though so, too, but isn't the sole vCPU of such a
+>>> VM getting re-scheduled to a different pCPU in the hypervisor
+>>> an implied barrier anyway?
+>>
+>> Yes, but that isn't relevant to why UP builds break.
+>>
+>> smp_*() degrade to compiler barriers in UP builds, and while that's
+>> mostly fine for x86 read/write, its not fine for ARM barriers.
+>>
+>> virt_*() exist specifically to be smp_*() which don't degrade to broken
+>> in UP builds.
+>
+> But the barrier is really only necessary to serialize accesses within
+> the guest against each other. There is no guest outside party involved.
+>
+> In case you are right this would mean that UP guests are all broken on
+> Arm.
 
-Hi Avri,
-Please let me know if you have any further comments on this.
+Oh - right.  This is a ring between the interrupt handler and a task. 
+Not a ring between the guest and something else.
 
-Regards,
-Nitin
+In which case smp_*() are correct.  Sorry for the noise.
+
+~Andrew
