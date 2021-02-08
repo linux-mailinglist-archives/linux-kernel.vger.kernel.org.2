@@ -2,193 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFDB9314185
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 22:19:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F26D7314183
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 22:19:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236219AbhBHVRv convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 8 Feb 2021 16:17:51 -0500
-Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:34385 "EHLO
-        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236682AbhBHUKx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 15:10:53 -0500
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-419-k4XV6-cnNEu-tODbtJgXtA-1; Mon, 08 Feb 2021 15:09:58 -0500
-X-MC-Unique: k4XV6-cnNEu-tODbtJgXtA-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BA498192D786;
-        Mon,  8 Feb 2021 20:09:56 +0000 (UTC)
-Received: from krava.redhat.com (unknown [10.40.194.115])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 7CF2519C59;
-        Mon,  8 Feb 2021 20:09:54 +0000 (UTC)
-From:   Jiri Olsa <jolsa@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Ian Rogers <irogers@google.com>,
-        Alexei Budankov <abudankov@huawei.com>
-Subject: [PATCH 17/24] perf daemon: Add up time for daemon/session list
-Date:   Mon,  8 Feb 2021 21:09:01 +0100
-Message-Id: <20210208200908.1019149-18-jolsa@kernel.org>
-In-Reply-To: <20210208200908.1019149-1-jolsa@kernel.org>
-References: <20210208200908.1019149-1-jolsa@kernel.org>
+        id S235673AbhBHVRS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 16:17:18 -0500
+Received: from retiisi.eu ([95.216.213.190]:57106 "EHLO hillosipuli.retiisi.eu"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236677AbhBHUKw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 15:10:52 -0500
+Received: from lanttu.localdomain (lanttu-e.localdomain [192.168.1.64])
+        by hillosipuli.retiisi.eu (Postfix) with ESMTP id D78D4634C89;
+        Mon,  8 Feb 2021 22:08:33 +0200 (EET)
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-media@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        dri-devel@lists.freedesktop.org, hverkuil@xs4all.nl,
+        laurent.pinchart@ideasonboard.com, mchehab@kernel.org,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Joe Perches <joe@perches.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Subject: [PATCH v6 1/3] lib/vsprintf: Add support for printing V4L2 and DRM fourccs
+Date:   Mon,  8 Feb 2021 22:09:01 +0200
+Message-Id: <20210208200903.28084-2-sakari.ailus@linux.intel.com>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210208200903.28084-1-sakari.ailus@linux.intel.com>
+References: <20210208200903.28084-1-sakari.ailus@linux.intel.com>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=jolsa@kernel.org
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: kernel.org
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset=WINDOWS-1252
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Display up time for both daemon and sessions.
+Add a printk modifier %p4cc (for pixel format) for printing V4L2 and DRM
+pixel formats denoted by fourccs. The fourcc encoding is the same for both
+so the same implementation can be used.
 
-Example:
-
-  # cat ~/.perfconfig
-  [daemon]
-  base=/opt/perfdata
-
-  [session-cycles]
-  run = -m 10M -e cycles --overwrite --switch-output -a
-
-  [session-sched]
-  run = -m 20M -e sched:* --overwrite --switch-output -a
-
-Starting the daemon:
-
-  # perf daemon start
-
-Get the details with up time:
-
-  # perf daemon -v
-  [778315:daemon] base: /opt/perfdata
-    output:  /opt/perfdata/output
-    lock:    /opt/perfdata/lock
-    up:      15 minutes
-  [778316:cycles] perf record -m 20M -e cycles --overwrite --switch-output -a
-    base:    /opt/perfdata/session-cycles
-    output:  /opt/perfdata/session-cycles/output
-    control: /opt/perfdata/session-cycles/control
-    ack:     /opt/perfdata/session-cycles/ack
-    up:      10 minutes
-  [778317:sched] perf record -m 20M -e sched:* --overwrite --switch-output -a
-    base:    /opt/perfdata/session-sched
-    output:  /opt/perfdata/session-sched/output
-    control: /opt/perfdata/session-sched/control
-    ack:     /opt/perfdata/session-sched/ack
-    up:      2 minutes
-
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+Suggested-by: Mauro Carvalho Chehab <mchehab@kernel.org>
+Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+Reviewed-by: Petr Mladek <pmladek@suse.com>
+Reviewed-by: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
 ---
- tools/perf/builtin-daemon.c | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
+ Documentation/core-api/printk-formats.rst | 16 +++++++
+ lib/test_printf.c                         | 17 ++++++++
+ lib/vsprintf.c                            | 51 +++++++++++++++++++++++
+ scripts/checkpatch.pl                     |  6 ++-
+ 4 files changed, 88 insertions(+), 2 deletions(-)
 
-diff --git a/tools/perf/builtin-daemon.c b/tools/perf/builtin-daemon.c
-index 11f9fac4cf12..90ef14353804 100644
---- a/tools/perf/builtin-daemon.c
-+++ b/tools/perf/builtin-daemon.c
-@@ -25,6 +25,7 @@
- #include <sys/wait.h>
- #include <poll.h>
- #include <sys/stat.h>
-+#include <time.h>
- #include "builtin.h"
- #include "perf.h"
- #include "debug.h"
-@@ -80,6 +81,7 @@ struct daemon_session {
- 	int				 pid;
- 	struct list_head		 list;
- 	enum daemon_session_state	 state;
-+	time_t				 start;
- };
+diff --git a/Documentation/core-api/printk-formats.rst b/Documentation/core-api/printk-formats.rst
+index 160e710d992f..da2aa065dc42 100644
+--- a/Documentation/core-api/printk-formats.rst
++++ b/Documentation/core-api/printk-formats.rst
+@@ -567,6 +567,22 @@ For printing netdev_features_t.
  
- struct daemon {
-@@ -93,6 +95,7 @@ struct daemon {
- 	FILE			*out;
- 	char			 perf[PATH_MAX];
- 	int			 signal_fd;
-+	time_t			 start;
- };
+ Passed by reference.
  
- static struct daemon __daemon = {
-@@ -335,6 +338,8 @@ static int daemon_session__run(struct daemon_session *session,
- 		return -1;
- 	}
- 
-+	session->start = time(NULL);
++V4L2 and DRM FourCC code (pixel format)
++---------------------------------------
 +
- 	session->pid = fork();
- 	if (session->pid < 0)
- 		return -1;
-@@ -666,6 +671,7 @@ static int cmd_session_list(struct daemon *daemon, union cmd *cmd, FILE *out)
++::
++
++	%p4cc
++
++Print a FourCC code used by V4L2 or DRM, including format endianness and
++its numerical value as hexadecimal.
++
++Passed by reference.
++
++Examples::
++
++	%p4cc	BG12 little-endian (0x32314742)
++
+ Thanks
+ ======
+ 
+diff --git a/lib/test_printf.c b/lib/test_printf.c
+index 7d60f24240a4..78c94159d9d5 100644
+--- a/lib/test_printf.c
++++ b/lib/test_printf.c
+@@ -647,6 +647,22 @@ static void __init fwnode_pointer(void)
+ 	software_node_unregister_nodes(softnodes);
+ }
+ 
++static void __init fourcc_pointer(void)
++{
++	struct {
++		u32 code;
++		char *str;
++	} const try[] = {
++		{ 0x20104646, "FF(10) little-endian (0x20104646)", },
++		{ 0xa0104646, "FF(10) big-endian (0xa0104646)", },
++		{ 0x10111213, "(13)(12)(11)(10) little-endian (0x10111213)", },
++	};
++	unsigned int i;
++
++	for (i = 0; i < ARRAY_SIZE(try); i++)
++		test(try[i].str, "%p4cc", &try[i].code);
++}
++
+ static void __init
+ errptr(void)
  {
- 	char csv_sep = cmd->list.csv_sep;
- 	struct daemon_session *session;
-+	time_t curr = time(NULL);
+@@ -692,6 +708,7 @@ test_pointer(void)
+ 	flags();
+ 	errptr();
+ 	fwnode_pointer();
++	fourcc_pointer();
+ }
  
- 	if (csv_sep) {
- 		fprintf(out, "%d%c%s%c%s%c%s/%s",
-@@ -680,6 +686,10 @@ static int cmd_session_list(struct daemon *daemon, union cmd *cmd, FILE *out)
- 			/* lock */
- 			csv_sep, daemon->base, "lock");
+ static void __init selftest(void)
+diff --git a/lib/vsprintf.c b/lib/vsprintf.c
+index 3b53c73580c5..ef50557e07b3 100644
+--- a/lib/vsprintf.c
++++ b/lib/vsprintf.c
+@@ -1733,6 +1733,54 @@ char *netdev_bits(char *buf, char *end, const void *addr,
+ 	return special_hex_number(buf, end, num, size);
+ }
  
-+		fprintf(out, "%c%lu",
-+			/* session up time */
-+			csv_sep, (curr - daemon->start) / 60);
++static noinline_for_stack
++char *fourcc_string(char *buf, char *end, const u32 *fourcc,
++		    struct printf_spec spec, const char *fmt)
++{
++	char output[sizeof("(xx)(xx)(xx)(xx) little-endian (0x01234567)")];
++	char *p = output;
++	unsigned int i;
++	u32 val;
 +
- 		fprintf(out, "\n");
- 	} else {
- 		fprintf(out, "[%d:daemon] base: %s\n", getpid(), daemon->base);
-@@ -688,6 +698,8 @@ static int cmd_session_list(struct daemon *daemon, union cmd *cmd, FILE *out)
- 				daemon->base, SESSION_OUTPUT);
- 			fprintf(out, "  lock:    %s/lock\n",
- 				daemon->base);
-+			fprintf(out, "  up:      %lu minutes\n",
-+				(curr - daemon->start) / 60);
- 		}
- 	}
- 
-@@ -713,6 +725,10 @@ static int cmd_session_list(struct daemon *daemon, union cmd *cmd, FILE *out)
- 				/* session ack */
- 				csv_sep, session->base, SESSION_ACK);
- 
-+			fprintf(out, "%c%lu",
-+				/* session up time */
-+				csv_sep, (curr - session->start) / 60);
++	if (fmt[1] != 'c' || fmt[2] != 'c')
++		return error_string(buf, end, "(%p4?)", spec);
 +
- 			fprintf(out, "\n");
- 		} else {
- 			fprintf(out, "[%d:%s] perf record %s\n",
-@@ -727,6 +743,8 @@ static int cmd_session_list(struct daemon *daemon, union cmd *cmd, FILE *out)
- 				session->base, SESSION_CONTROL);
- 			fprintf(out, "  ack:     %s/%s\n",
- 				session->base, SESSION_ACK);
-+			fprintf(out, "  up:      %lu minutes\n",
-+				(curr - session->start) / 60);
- 		}
- 	}
- 
-@@ -1226,6 +1244,8 @@ static int __cmd_start(struct daemon *daemon, struct option parent_options[],
- 	if (argc)
- 		usage_with_options(daemon_usage, start_options);
- 
-+	daemon->start = time(NULL);
++	if (check_pointer(&buf, end, fourcc, spec))
++		return buf;
 +
- 	if (setup_config(daemon)) {
- 		pr_err("failed: config not found\n");
- 		return -1;
++	val = *fourcc & ~BIT(31);
++
++	for (i = 0; i < sizeof(*fourcc); i++) {
++		unsigned char c = val >> (i * 8);
++
++		/* Weed out spaces */
++		if (c == ' ')
++			continue;
++
++		/* Print non-control ASCII characters as-is */
++		if (isascii(c) && isprint(c)) {
++			*p++ = c;
++			continue;
++		}
++
++		*p++ = '(';
++		p = hex_byte_pack(p, c);
++		*p++ = ')';
++	}
++
++	strcpy(p, *fourcc & BIT(31) ? " big-endian" : " little-endian");
++	p += strlen(p);
++
++	*p++ = ' ';
++	*p++ = '(';
++	p = special_hex_number(p, output + sizeof(output) - 2, *fourcc,
++			       sizeof(u32));
++	*p++ = ')';
++	*p = '\0';
++
++	return string(buf, end, output, spec);
++}
++
+ static noinline_for_stack
+ char *address_val(char *buf, char *end, const void *addr,
+ 		  struct printf_spec spec, const char *fmt)
+@@ -2162,6 +2210,7 @@ char *fwnode_string(char *buf, char *end, struct fwnode_handle *fwnode,
+  *       correctness of the format string and va_list arguments.
+  * - 'K' For a kernel pointer that should be hidden from unprivileged users
+  * - 'NF' For a netdev_features_t
++ * - '4cc' V4L2 or DRM FourCC code, with endianness and raw numerical value.
+  * - 'h[CDN]' For a variable-length buffer, it prints it as a hex string with
+  *            a certain separator (' ' by default):
+  *              C colon
+@@ -2259,6 +2308,8 @@ char *pointer(const char *fmt, char *buf, char *end, void *ptr,
+ 		return restricted_pointer(buf, end, ptr, spec);
+ 	case 'N':
+ 		return netdev_bits(buf, end, ptr, spec, fmt);
++	case '4':
++		return fourcc_string(buf, end, ptr, spec, fmt);
+ 	case 'a':
+ 		return address_val(buf, end, ptr, spec, fmt);
+ 	case 'd':
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 92e888ed939f..79858e07d023 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -6557,9 +6557,11 @@ sub process {
+ 					$specifier = $1;
+ 					$extension = $2;
+ 					$qualifier = $3;
+-					if ($extension !~ /[SsBKRraEehMmIiUDdgVCbGNOxtf]/ ||
++					if ($extension !~ /[4SsBKRraEehMmIiUDdgVCbGNOxtf]/ ||
+ 					    ($extension eq "f" &&
+-					     defined $qualifier && $qualifier !~ /^w/)) {
++					     defined $qualifier && $qualifier !~ /^w/) ||
++					    ($extension eq "4" &&
++					     defined $qualifier && $qualifier !~ /^cc/)) {
+ 						$bad_specifier = $specifier;
+ 						last;
+ 					}
 -- 
 2.29.2
 
