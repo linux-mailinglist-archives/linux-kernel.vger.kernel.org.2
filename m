@@ -2,117 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BA22314468
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 00:58:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D05931446E
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 01:00:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229892AbhBHX6h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 18:58:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52116 "EHLO
+        id S230071AbhBHX7T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 18:59:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229981AbhBHX6a (ORCPT
+        with ESMTP id S229854AbhBHX7M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 18:58:30 -0500
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0CCFC06178C
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 15:57:49 -0800 (PST)
-Received: by mail-yb1-xb2a.google.com with SMTP id l8so4036126ybe.12
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 15:57:49 -0800 (PST)
+        Mon, 8 Feb 2021 18:59:12 -0500
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66591C061794
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 15:58:19 -0800 (PST)
+Received: by mail-yb1-xb31.google.com with SMTP id 133so3712396ybd.5
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 15:58:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=3BKcbNNOjiBO2ETX8rA0e94Kcv/0Lli4UWrEe/qIvRE=;
-        b=KNC+VPHlDueVrMXq1S5/C3olGud4OPz1qXgkjrqCAGN6Esj3rrVX1vx7ruKisOPefR
-         MkzSFhRx1oSEp7RaPuVS9x1eluitBSwsVEiIuof3ZJn2MAx4+N5a2I+vf7ZzeM7v3ji0
-         7c4SiozsLlDdy1uva4nIDpkMHKl7COC/++5GRQNKxT7AX0nKR9iVrlP99HXE65FFKGZE
-         zGA3xLaox1T4twIexyMsH2qJpW3Q4q/G8EK7CC7TApJDRDLNTjnGaG+x1yDl49jv5hYt
-         oXm0cSYXegRY7Ht9qCunkDZ7RMYK771pzpJjr46Ne4DCKEp6LuD11FpTkVcqpvKHLHiS
-         RupQ==
+        bh=lzfzZMa99tyYou47Mwj80zUT6xShIhy0DCTdQpmeONY=;
+        b=D+W9iv9dxMOLzV38cOBUWqeHFAdyFUAntsifLuYxuifdJrBNL+fvmNmCr+pBy+5OH+
+         FLaKWl5s64QQQ38lyrP44rPLnsnHS0SJG4aB8YCAIvjDJB8ehxH/Eug3fXs1whfuED7M
+         vzaFSFUkI5Z+yW2Tv2FVBAuhCBiziPsvtvbdAH8ni9iAQILynnECUU0KXKrisaKIyLjK
+         YYFAoCkPmw4pVh8g6DSxnJLGgW69VkEEDAoeBaj1UHCHdF2I93DvRTlHgpmNoli+wyuU
+         1+oigLqxQgxqoaojN2VgmOAatX785VoBPLzF5qfL15W73L/ZchxyY/43071lIh+FSp4p
+         XyEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=3BKcbNNOjiBO2ETX8rA0e94Kcv/0Lli4UWrEe/qIvRE=;
-        b=W7J67TLiKAabAfQwP1R0hEv8BexrfGASmhP3HdXYGNY0TNrvgP1u/fIkWl5QY2L3e0
-         BHXUdGsSbQO1XfT3qv9LhBmUZhfcPz8KNN42tqC84sf6pXNGg9UHvHfeXET0+3Thl/4c
-         Tf3WFJACjCDBhNpJcv1E3efBipHnCih5L78Hc7/SQJE+D57/ezHD+Yv1OmoXgSbPxQHr
-         kVZnRXPMjkrWT8wa0Er05L/XDWeJKWdYKnj/rxYPBJY7LaBQamCdkKL5bm357+VhwZRy
-         c5P6PWxXY8t7plnfBGDwVJdfWCQjBdYQ1WoY/ZQHa5owHtSmL+0YcdrrZ1r6XHtxRTH0
-         46ww==
-X-Gm-Message-State: AOAM531HorS/ClBLuO3kDAUMwHonDTudjtKG3g4nQ8nvxbYmaHluTIe0
-        WA40njwaKQ5p3/GPQk/prhdznrZ+ELdbfMrgQiQ5HA==
-X-Google-Smtp-Source: ABdhPJyWSN7D3Y6ZE8yWgCF8LiMpKCeSFyCoZ713kZRoDVbY3Hxuk2zkhBte1avCHvyEJ0NFmPIP3IBl22VvJgpOlqU=
-X-Received: by 2002:a25:3345:: with SMTP id z66mr29775941ybz.466.1612828669020;
- Mon, 08 Feb 2021 15:57:49 -0800 (PST)
+        bh=lzfzZMa99tyYou47Mwj80zUT6xShIhy0DCTdQpmeONY=;
+        b=Yi9D9whAep6g28r5NAAVuFnzHIfsGmo+7s4wmRcW6hncBCEJtxK4mtlm9LZrqNcmvw
+         jDo88rKhw8NG+Kuoog4bwdl0o3gnrjeUijVGIJ4IqQgHp0m5IUlZLCduU841pjmdhNpM
+         5NdJQ7cfcKKU83NzcyOV6K9LuV+IJMFG0jpiWfvXTXf218URGj03d7Fz725lLgcxy4m9
+         3T5uMJJJa1QiWJKuJMxt0crVZzTPngU0xb9adZO+zKhagt8v/0cFckGF2jb/vH7BBkSc
+         7uFmRRMjd4ganFD7KRk2jYmIvS4/wv0t4JlWsSZDBN/nPz3Qr0Sc1ao+vMPtIqGNQ0Tj
+         eN1A==
+X-Gm-Message-State: AOAM5316G/Pwk6IBLQfN/TBJNCcUxRl6cx7zDy94MUoTW8rEjMQsSVrb
+        /TccwTLo8DdDGP37dojbNMGdD5Bv5OXMpnqJHFMV+g==
+X-Google-Smtp-Source: ABdhPJyAXDDajPxUin26EaZ6WYmNbnx+MV0PQk6+6hcdJXnBoS8YGggKUmEoepWIRge4HC3iY3buh8Y6znCQ6rVtX4E=
+X-Received: by 2002:a25:af0b:: with SMTP id a11mr22574164ybh.228.1612828698549;
+ Mon, 08 Feb 2021 15:58:18 -0800 (PST)
 MIME-Version: 1.0
-References: <CGME20210205222651eucas1p28ef87073dea33c1c5224c14aa203bec5@eucas1p2.samsung.com>
- <20210205222644.2357303-1-saravanak@google.com> <7b486072-453d-a344-bdfc-dec58a35c8f5@samsung.com>
-In-Reply-To: <7b486072-453d-a344-bdfc-dec58a35c8f5@samsung.com>
+References: <20210121225712.1118239-1-saravanak@google.com>
+ <CGME20210204115252eucas1p2d145686f7a5dc7e7a04dddd0b0f2286c@eucas1p2.samsung.com>
+ <20210121225712.1118239-3-saravanak@google.com> <9692dfc9-4c63-71c9-b52b-d0feba466695@samsung.com>
+ <CAGETcx_KDA55Ti=5CHw48BP1L2Xo64=AFFe+17g27n=P-KUrow@mail.gmail.com>
+ <6b606a5d-0435-1e9d-ac61-a8dacf051067@samsung.com> <CAMuHMdWqZonpeyk59b=o_3EKOQx4TxUZE4Jeo-Kxy_o_3CQvnQ@mail.gmail.com>
+ <CAGETcx9Rqa7PygjSiQvadm7C2bpxS2rCf5oB_pFhjh+ESV-WQA@mail.gmail.com>
+ <CAMuHMdUt4tSEO_Hcf4AgVY_jqZ6Bsyk2+f2P3gQRQk0UfgSSjQ@mail.gmail.com>
+ <CAGETcx9YN6uC3XJ_J+PLxvHBVFK-h2X3Qh+kuKDceN5XSt3ZuQ@mail.gmail.com>
+ <CAMuHMdVyTOp9PU0rO+YkpzE68VtGdy-bMOwmE_PJx2fiwwpMzQ@mail.gmail.com>
+ <CAGETcx93cee=aH+cOyf-xmYGSHcn6AfBHC=fOw7By6=8JzT56Q@mail.gmail.com>
+ <CAGETcx8+de7RYcUZQzq4WvdK_Qq9ZsJ_SuXw4rX9EZ+sXWtu+A@mail.gmail.com> <ab39d157-a150-3f34-ec3a-047821f7c2a8@samsung.com>
+In-Reply-To: <ab39d157-a150-3f34-ec3a-047821f7c2a8@samsung.com>
 From:   Saravana Kannan <saravanak@google.com>
-Date:   Mon, 8 Feb 2021 15:57:13 -0800
-Message-ID: <CAGETcx9fpiy02+2_kRvtWos1usqA3gtCXqULsN906o70VKVGYA@mail.gmail.com>
-Subject: Re: [PATCH v4 0/8] Make fw_devlink=on more forgiving
+Date:   Mon, 8 Feb 2021 15:57:42 -0800
+Message-ID: <CAGETcx8bK_PXZ_=O+ZG6ef8324qbaqgPNfcuLas6a9KFB_MzHg@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] of: property: Add fw_devlink support for interrupts
 To:     Marek Szyprowski <m.szyprowski@samsung.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Kevin Hilman <khilman@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Len Brown <len.brown@intel.com>, Len Brown <lenb@kernel.org>,
-        Pavel Machek <pavel@ucw.cz>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
         Rob Herring <robh+dt@kernel.org>,
         Frank Rowand <frowand.list@gmail.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
         "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Android Kernel Team <kernel-team@android.com>
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Android Kernel Team <kernel-team@android.com>,
+        Rob Herring <robh@kernel.org>,
+        Thierry Reding <treding@nvidia.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 8, 2021 at 12:40 AM Marek Szyprowski
+On Mon, Feb 8, 2021 at 12:14 AM Marek Szyprowski
 <m.szyprowski@samsung.com> wrote:
 >
 > Hi Saravana,
 >
-> On 05.02.2021 23:26, Saravana Kannan wrote:
-> > There are a lot of devices/drivers where they never have a struct device
-> > created for them or the driver initializes the hardware without ever
-> > binding to the struct device.
+> On 06.02.2021 05:32, Saravana Kannan wrote:
+> > On Fri, Feb 5, 2021 at 9:55 AM Saravana Kannan <saravanak@google.com> wrote:
+> >> On Fri, Feb 5, 2021 at 9:52 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> >>> On Fri, Feb 5, 2021 at 6:20 PM Saravana Kannan <saravanak@google.com> wrote:
+> >>>> On Fri, Feb 5, 2021 at 2:20 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> >>>>> On Fri, Feb 5, 2021 at 11:06 AM Saravana Kannan <saravanak@google.com> wrote:
+> >>>>>> On Fri, Feb 5, 2021 at 12:06 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> >>>>>>> On Fri, Feb 5, 2021 at 8:38 AM Marek Szyprowski
+> >>>>>>> <m.szyprowski@samsung.com> wrote:
+> >>>>>>>> On 04.02.2021 22:31, Saravana Kannan wrote:
+> >>>>>>>>> On Thu, Feb 4, 2021 at 3:52 AM Marek Szyprowski
+> >>>>>>>>> <m.szyprowski@samsung.com> wrote:
+> >>>>>>>>>> On 21.01.2021 23:57, Saravana Kannan wrote:
+> >>>>>>>>>>> This allows fw_devlink to create device links between consumers of an
+> >>>>>>>>>>> interrupt and the supplier of the interrupt.
+> >>>>>>>>>>>
+> >>>>>>>>>>> Cc: Marc Zyngier <maz@kernel.org>
+> >>>>>>>>>>> Cc: Kevin Hilman <khilman@baylibre.com>
+> >>>>>>>>>>> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> >>>>>>>>>>> Reviewed-by: Rob Herring <robh@kernel.org>
+> >>>>>>>>>>> Reviewed-by: Thierry Reding <treding@nvidia.com>
+> >>>>>>>>>>> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+> >>>>>>>>>>> Signed-off-by: Saravana Kannan <saravanak@google.com>
+> >>>>>>>>>> This patch landed some time ago in linux-next as commit 4104ca776ba3
+> >>>>>>>>>> ("of: property: Add fw_devlink support for interrupts"). It breaks MMC
+> >>>>>>>>>> host controller operation on ARM Juno R1 board (the mmci@50000 device
+> >>>>>>>>>> defined in arch/arm64/boot/dts/arm/juno-motherboard.dtsi). I didn't
+> >>>>>>>>> I grepped around and it looks like the final board file is this or
+> >>>>>>>>> whatever includes it?
+> >>>>>>>>> arch/arm64/boot/dts/arm/juno-base.dtsi
+> >>>>>>>> The final board file is arch/arm64/boot/dts/arm/juno-r1.dts
+> >>>>>>>>> This patch just finds the interrupt-parent and then tries to use that
+> >>>>>>>>> as a supplier if "interrupts" property is listed. But the only
+> >>>>>>>>> interrupt parent I can see is:
+> >>>>>>>>>           gic: interrupt-controller@2c010000 {
+> >>>>>>>>>                   compatible = "arm,gic-400", "arm,cortex-a15-gic";
+> >>>>>>>>>
+> >>>>>>>>> And the driver uses IRQCHIP_DECLARE() and hence should be pretty much
+> >>>>>>>>> a NOP since those suppliers are never devices and are ignored.
+> >>>>>>>>> $ git grep "arm,gic-400" -- drivers/
+> >>>>>>>>> drivers/irqchip/irq-gic.c:IRQCHIP_DECLARE(gic_400, "arm,gic-400", gic_of_init);
+> >>>>>>>>>
+> >>>>>>>>> This doesn't make any sense. Am I looking at the right files? Am I
+> >>>>>>>>> missing something?
+> >>>>>>>> Okay, I've added displaying a list of deferred devices when mounting
+> >>>>>>>> rootfs fails and got following items:
+> >>>>>>>>
+> >>>>>>>> Deferred devices:
+> >>>>>>>> 18000000.ethernet        platform: probe deferral - supplier
+> >>>>>>>> bus@8000000:motherboard-bus not ready
+> >>>>>>>> 1c050000.mmci    amba: probe deferral - supplier
+> >>>>>>>> bus@8000000:motherboard-bus not ready
+> >>>>>>>> 1c1d0000.gpio    amba: probe deferral - supplier
+> >>>>>>>> bus@8000000:motherboard-bus not ready
+> >>>>>>>> 2b600000.iommu   platform: probe deferral - wait for supplier
+> >>>>>>>> scpi-power-domains
+> >>>>>>>> 7ff50000.hdlcd   platform: probe deferral - wait for supplier scpi-clk
+> >>>>>>>> 7ff60000.hdlcd   platform: probe deferral - wait for supplier scpi-clk
+> >>>>>>>> 1c060000.kmi     amba: probe deferral - supplier
+> >>>>>>>> bus@8000000:motherboard-bus not ready
+> >>>>>>>> 1c070000.kmi     amba: probe deferral - supplier
+> >>>>>>>> bus@8000000:motherboard-bus not ready
+> >>>>>>>> 1c170000.rtc     amba: probe deferral - supplier
+> >>>>>>>> bus@8000000:motherboard-bus not ready
+> >>>>>>>> 1c0f0000.wdt     amba: probe deferral - supplier
+> >>>>>>>> bus@8000000:motherboard-bus not ready
+> >>>>>>>> gpio-keys
+> >>>>>>>> Kernel panic - not syncing: VFS: Unable to mount root fs on
+> >>>>>>>> unknown-block(0,0)
+> >>>>>>>>
+> >>>>>>>> I don't see the 'bus@8000000:motherboard-bus' on the deferred devices
+> >>>>>>>> list, so it looks that device core added a link to something that is not
+> >>>>>>>> a platform device...
+> >>>>>> Probe deferred devices (even platform devices) not showing up in that
+> >>>>>> list is not unusual. That's because devices end up on that list only
+> >>>>>> after a driver for them is matched and then it fails.
+> >>>>>>
+> >>>>>>> Lemme guess: bus@8000000 is a simple bus, but it has an
+> >>>>>>> interrupt-map, and the devlink code doesn't follow the mapping?
+> >>>>>>>
+> >>>>>> No, what's happening is that (and this is something I just learned)
+> >>>>>> that if a parent has an "#interrupt-cells" property, it becomes your
+> >>>>>> interrupt parent. In this case, the motherboard-bus (still a platform
+> >>>>>> device) is the parent, but it never probes (because it's simple-bus
+> >>>>>> and "arm,vexpress,v2p-p1"). But it becomes the interrupt parent. And
+> >>>>>> this mmci device is marked as a consumer of this bus (while still a
+> >>>>>> grand-child). Yeah, I'm working on patches (multiple rewrites) to take
+> >>>>>> care of cases like this.
+> >>>>> One more reason to scrap the different handling of "simple-bus" and
+> >>>>> "simple-pm-bus", and use drivers/bus/simple-pm-bus.c, which is a
+> >>>>> platform device driver, for both? (like I originally intended ;-)
+> >>>> I'm not sure if this will cause more issues since people are used to
+> >>>> simple-bus not needing a driver. I'm afraid to open that pandora's
+> >>>> box. Maybe last resort if I don't have any other options.
+> >>>>
+> >>>> But keeping that aside, I'm confused how interrupts are even working
+> >>>> if the parent is a DT node with no driver (let alone a device). Any
+> >>>> ideas on what's going on or what I'm misunderstanding?
+> >>> No driver is needed, as the interrupts are just translated by the map,
+> >>> and passed to another interrupt controller, which does have a driver.
+> >>>
+> >>> Cfr. Section 2.4.3 "Interrupt Nexus Properties" in the DeviceTree
+> >>> Specification (https://protect2.fireeye.com/v1/url?k=72fff987-2d64c09f-72fe72c8-0cc47a314e9a-fd7dac11a78508f3&q=1&e=c0dbf5ca-130b-4aac-a011-447e82ca1914&u=https%3A%2F%2Fwww.devicetree.org%2F).
+> >>>
+> >> Yeah, I need to add interrupt-map support. Sigh. Only so many things I
+> >> can fix at a time. Let me know if you want to help.
+> >>
+> > Marek,
 > >
-> > This series is intended to avoid any boot regressions due to such
-> > devices/drivers when fw_devlink=on and also address the handling of
-> > optional suppliers.
-> >
-> > Patch 1 and 2 addresses the issue of firmware nodes that look like
-> > they'll have struct devices created for them, but will never actually
-> > have struct devices added for them. For example, DT nodes with a
-> > compatible property that don't have devices added for them.
-> >
-> > Patch 3 and 4 allow for handling optional DT bindings.
-> >
-> > Patch 5 sets up a generic API to handle drivers that never bind with
-> > their devices.
-> >
-> > Patch 6 through 8 update different frameworks to use the new API.
+> > After reading the DT spec and poking at the code, I THINK this code is
+> > correct. Can you give it a shot? If it works, then I can clean it up,
+> > roll in interrupts-extended and send a patch.
 >
-> This patchset fixes probing issue observed on various Exynos based
-> boards even with commit c09a3e6c97f0 ("soc: samsung: pm_domains: Convert
-> to regular platform driver") reverted. Thanks!
+> Yep, this fixes this issue. Fell free to add:
+>
+> Reported-by: Marek Szyprowski <m.szyprowski@samsung.com>
 >
 > Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
 >
 
-Thanks for testing!
+Thanks! I'll send out the proper patch.
 
 -Saravana
