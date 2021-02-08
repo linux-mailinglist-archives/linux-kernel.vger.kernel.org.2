@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2A7D312B25
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 08:38:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 504BA312B26
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 08:38:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230001AbhBHHhq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 02:37:46 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40784 "EHLO
+        id S230023AbhBHHhu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 02:37:50 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49499 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229751AbhBHHhd (ORCPT
+        by vger.kernel.org with ESMTP id S229881AbhBHHhf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 02:37:33 -0500
+        Mon, 8 Feb 2021 02:37:35 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612769766;
+        s=mimecast20190719; t=1612769768;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=hPAubHAlkGX30PBG5/0RoaT0SoUvSxPRk2VFQPqXOtQ=;
-        b=VmP+ioJ2OdlicKK5H4ihFiXL2Zv8GRuPCu0Q9boijk0fg/Gl59bvR8L0Sn+OikS945hEQy
-        QrJQUL5TcPNo7Ij76Ie02ZtJXAJtrDBh8iCgd2Fso7D29fw9chQ8FQBj5ktIXp4Kv/f710
-        Id391irxV74giv/wfDAfDAJIzEw6eZM=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-3-oF24Y5tBPLCsry52Htqw6A-1; Mon, 08 Feb 2021 02:36:05 -0500
-X-MC-Unique: oF24Y5tBPLCsry52Htqw6A-1
-Received: by mail-ed1-f69.google.com with SMTP id ck25so12706055edb.16
-        for <linux-kernel@vger.kernel.org>; Sun, 07 Feb 2021 23:36:04 -0800 (PST)
+        bh=L4bFBUnmaAnFS+YUr01yc5GSdgKepLaAje8ZfQ7GYuo=;
+        b=MipJ6SlS8BZSP4l6X0LRRV/cXqAiIEjnVDEwZEQrfCUMVsMeSIAnCNpj46nsH60QzSziSH
+        VO/zlaAVuNEk8AG5b7nBZuN4wiX3PKyuOi9Rh+mZQeD0fE4P5Of6cTQUyWdTdoD5tm5Hz1
+        rLXA7Ax9I+j0FJEheETN3eevyTZAYuc=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-221-cKBWyiNONwOgsS44UF4TRA-1; Mon, 08 Feb 2021 02:36:07 -0500
+X-MC-Unique: cKBWyiNONwOgsS44UF4TRA-1
+Received: by mail-ed1-f71.google.com with SMTP id t9so12697994edd.3
+        for <linux-kernel@vger.kernel.org>; Sun, 07 Feb 2021 23:36:06 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=hPAubHAlkGX30PBG5/0RoaT0SoUvSxPRk2VFQPqXOtQ=;
-        b=OqVB0M/SxbWAtTQd8pKWgEuK+dHHR6/7QOZiiwjmedyXHp32oU6SQbgVd0V8vbX9kM
-         wpIPxsNnvJtBW5QjSCh7zQlriXIZ+efVoV9tHeNh2ucMppev8b8gvvwf0Ty3BMH6k33M
-         1xOR34JuM+zYZGElcAuf4wsPFGwfcd0mFIihPui1d0AO5tOzgcE9TTaPvZ0GA0Cuu+jj
-         GIvBWYCCyo1RorXPOPCPMvQjnIVBM7upjZTxEXHCVI6x3c0qqnP1ty3zE2Js7UQeLIrF
-         eO7R9GkNvu5zGVcbKEXY8B1lDmF6fJVFhyX/xBFvQBVe70Eqk9P0weWmkc2p2iYaW1qn
-         HZ5g==
-X-Gm-Message-State: AOAM530nLyYzsGGXmgPbZ4ILVMICfIE29ILjeTGl/obqDTAdQYX5XS85
-        e0dLUWaurg1H7zCM6fhsyNOUQ2qfxbadhR/4i7/GPmieZiohA+92Zd17b5AOiY6UFedpHbR6jZY
-        bPumd2nFrRW85uW9oa3JSjs1e
-X-Received: by 2002:aa7:c0cd:: with SMTP id j13mr15856142edp.156.1612769763835;
-        Sun, 07 Feb 2021 23:36:03 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzoF60DX/I0MJUZMqxdEG2A3rqxhFnwKfwkiuM3uxNDESAugDI6P4xhE5xvx8CZFaeQhjKOKA==
-X-Received: by 2002:aa7:c0cd:: with SMTP id j13mr15856120edp.156.1612769763645;
-        Sun, 07 Feb 2021 23:36:03 -0800 (PST)
+        bh=L4bFBUnmaAnFS+YUr01yc5GSdgKepLaAje8ZfQ7GYuo=;
+        b=prTbRZXDtKb878zpxHAj0VQ9M/4b7gJztIJlTS3URHCC1NN4dPVngXnUbLcw6Fw1AM
+         Zm0lagjaci+0raTICCT/dF5vK4AlEDDlnBEDB5lqtg2Gl3/o0eapf1ELw+QfYYiVrkm5
+         ZxD1atxy3hxuxjkAeXCDFnuiaQH9bheKB/nqW4ti9ianmZ3nLtczMy7GVrby83wrd+/t
+         s9Sk3LhIowaq8dogPUCAO5cm3yJSEzggEuSVORkoS+n1V4RiXqLYZdKJsqjKmagyL4mT
+         Jx275CS8j6DxHsrfdbsY4vePNtT/hJOi/f9ZHK3KVTfVWF/myPzZKt15YLxDd1up0SPR
+         I6Kw==
+X-Gm-Message-State: AOAM533xvuWOM7moJkmuT59gQ1itEviE7T2JvyGdeModDKCH7JaH6WaM
+        5UaBPW5I2Bs6qvYfjNGOiIWgR/U82NU8NFygWsjpK4J6lPYCoPALp95y4BNvNRnqTY2hDv3Xqa9
+        QLEAwRzibqdh3bS03JI1px1bu
+X-Received: by 2002:a05:6402:2707:: with SMTP id y7mr15410751edd.5.1612769765767;
+        Sun, 07 Feb 2021 23:36:05 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzk5Pmf3tHmMTmeAvk3vV/hcPpmXpszwa7PFXlA8gYyCMyYKp5avikXFTDRkTFP1IxRCsacCw==
+X-Received: by 2002:a05:6402:2707:: with SMTP id y7mr15410735edd.5.1612769765570;
+        Sun, 07 Feb 2021 23:36:05 -0800 (PST)
 Received: from localhost.localdomain.com ([151.34.162.6])
-        by smtp.gmail.com with ESMTPSA id ec18sm8116317ejb.24.2021.02.07.23.36.02
+        by smtp.gmail.com with ESMTPSA id ec18sm8116317ejb.24.2021.02.07.23.36.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 07 Feb 2021 23:36:03 -0800 (PST)
+        Sun, 07 Feb 2021 23:36:05 -0800 (PST)
 From:   Juri Lelli <juri.lelli@redhat.com>
 To:     peterz@infradead.org, mingo@redhat.com, vincent.guittot@linaro.org,
         tglx@linutronix.de
@@ -58,9 +58,9 @@ Cc:     linux-kernel@vger.kernel.org, rostedt@goodmis.org,
         dietmar.eggemann@arm.com, bristot@redhat.com, bsegall@google.com,
         mgorman@suse.de, lgoncalv@redhat.com, williams@redhat.com,
         Juri Lelli <juri.lelli@redhat.com>
-Subject: [PATCH 1/2] sched/features: Fix hrtick reprogramming
-Date:   Mon,  8 Feb 2021 08:35:53 +0100
-Message-Id: <20210208073554.14629-2-juri.lelli@redhat.com>
+Subject: [PATCH 2/2] sched/features: Distinguish between NORMAL and DEADLINE hrtick
+Date:   Mon,  8 Feb 2021 08:35:54 +0100
+Message-Id: <20210208073554.14629-3-juri.lelli@redhat.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210208073554.14629-1-juri.lelli@redhat.com>
 References: <20210208073554.14629-1-juri.lelli@redhat.com>
@@ -70,29 +70,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hung tasks and RCU stall cases were reported on systems which were not
-100% busy. Investigation of such unexpected cases (no sign of potential
-starvation caused by tasks hogging the system) pointed out that the
-periodic sched tick timer wasn't serviced anymore after a certain point
-and that caused all machinery that depends on it (timers, RCU, etc.) to
-stop working as well. This issues was however only reproducible if
-HRTICK was enabled.
+The HRTICK feature has traditionally been servicing configurations that
+need precise preemptions point for NORMAL tasks. More recently, the
+feature has been extended to also service DEADLINE tasks with stringent
+runtime enforcement needs (e.g., runtime < 1ms with HZ=1000).
 
-Looking at core dumps it was found that the rbtree of the hrtimer base
-used also for the hrtick was corrupted (i.e. next as seen from the base
-root and actual leftmost obtained by traversing the tree are different).
-Same base is also used for periodic tick hrtimer, which might get "lost"
-if the rbtree gets corrupted.
+Enabling HRTICK sched feature currently enables the additional timer and
+task tick for both classes, which might introduced undesired overhead
+for no additional benefit if one needed it only for one of the cases.
 
-Much alike what described in commit 1f71addd34f4c ("tick/sched: Do not
-mess with an enqueued hrtimer") there is a race window between
-hrtimer_set_expires() in hrtick_start and hrtimer_start_expires() in
-__hrtick_restart() in which the former might be operating on an already
-queued hrtick hrtimer, which might lead to corruption of the base.
+Separate HRTICK sched feature in two (and leave the traditional case
+name unmodified) so that it can be selectively enabled when needed.
 
-Use hrtick_start() (which removes the timer before enqueuing it back) to
-ensure hrtick hrtimer reprogramming is entirely guarded by the base
-lock, so that no race conditions can occur.
+With
+
+$ echo HRTICK > /sys/kernel/debug/sched_features
+
+the NORMAL/fair hrtick gets enabled.
+
+With
+
+$ echo HRTICK_DL > /sys/kernel/debug/sched_features
+
+the DEADLINE hrtick gets enabled.
 
 Co-developed-by: Daniel Bristot de Oliveira <bristot@redhat.com>
 Signed-off-by: Daniel Bristot de Oliveira <bristot@redhat.com>
@@ -100,56 +100,128 @@ Co-developed-by: Luis Claudio R. Goncalves <lgoncalv@redhat.com>
 Signed-off-by: Luis Claudio R. Goncalves <lgoncalv@redhat.com>
 Signed-off-by: Juri Lelli <juri.lelli@redhat.com>
 ---
- kernel/sched/core.c  | 8 +++-----
- kernel/sched/sched.h | 1 +
- 2 files changed, 4 insertions(+), 5 deletions(-)
+ kernel/sched/core.c     |  2 +-
+ kernel/sched/deadline.c |  4 ++--
+ kernel/sched/fair.c     |  4 ++--
+ kernel/sched/features.h |  1 +
+ kernel/sched/sched.h    | 26 ++++++++++++++++++++++++--
+ 5 files changed, 30 insertions(+), 7 deletions(-)
 
 diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index be3a956c2d23..d2d79a2c30f5 100644
+index d2d79a2c30f5..15e2d7c1ac1a 100644
 --- a/kernel/sched/core.c
 +++ b/kernel/sched/core.c
-@@ -355,8 +355,9 @@ static enum hrtimer_restart hrtick(struct hrtimer *timer)
- static void __hrtick_restart(struct rq *rq)
- {
- 	struct hrtimer *timer = &rq->hrtick_timer;
-+	ktime_t time = rq->hrtick_time;
+@@ -4955,7 +4955,7 @@ static void __sched notrace __schedule(bool preempt)
  
--	hrtimer_start_expires(timer, HRTIMER_MODE_ABS_PINNED_HARD);
-+	hrtimer_start(timer, time, HRTIMER_MODE_ABS_PINNED_HARD);
+ 	schedule_debug(prev, preempt);
+ 
+-	if (sched_feat(HRTICK))
++	if (sched_feat(HRTICK) || sched_feat(HRTICK_DL))
+ 		hrtick_clear(rq);
+ 
+ 	local_irq_disable();
+diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
+index 1508d126e88b..7e28777b652c 100644
+--- a/kernel/sched/deadline.c
++++ b/kernel/sched/deadline.c
+@@ -1832,7 +1832,7 @@ static void set_next_task_dl(struct rq *rq, struct task_struct *p, bool first)
+ 	if (!first)
+ 		return;
+ 
+-	if (hrtick_enabled(rq))
++	if (hrtick_enabled_dl(rq))
+ 		start_hrtick_dl(rq, p);
+ 
+ 	if (rq->curr->sched_class != &dl_sched_class)
+@@ -1895,7 +1895,7 @@ static void task_tick_dl(struct rq *rq, struct task_struct *p, int queued)
+ 	 * not being the leftmost task anymore. In that case NEED_RESCHED will
+ 	 * be set and schedule() will start a new hrtick for the next task.
+ 	 */
+-	if (hrtick_enabled(rq) && queued && p->dl.runtime > 0 &&
++	if (hrtick_enabled_dl(rq) && queued && p->dl.runtime > 0 &&
+ 	    is_leftmost(p, &rq->dl))
+ 		start_hrtick_dl(rq, p);
  }
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 59b645e3c4fd..8a8bd7b13634 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -5429,7 +5429,7 @@ static void hrtick_update(struct rq *rq)
+ {
+ 	struct task_struct *curr = rq->curr;
+ 
+-	if (!hrtick_enabled(rq) || curr->sched_class != &fair_sched_class)
++	if (!hrtick_enabled_fair(rq) || curr->sched_class != &fair_sched_class)
+ 		return;
+ 
+ 	if (cfs_rq_of(&curr->se)->nr_running < sched_nr_latency)
+@@ -7116,7 +7116,7 @@ done: __maybe_unused;
+ 	list_move(&p->se.group_node, &rq->cfs_tasks);
+ #endif
+ 
+-	if (hrtick_enabled(rq))
++	if (hrtick_enabled_fair(rq))
+ 		hrtick_start_fair(rq, p);
+ 
+ 	update_misfit_status(p, rq);
+diff --git a/kernel/sched/features.h b/kernel/sched/features.h
+index e875eabb6600..1bc2b158fc51 100644
+--- a/kernel/sched/features.h
++++ b/kernel/sched/features.h
+@@ -38,6 +38,7 @@ SCHED_FEAT(CACHE_HOT_BUDDY, true)
+ SCHED_FEAT(WAKEUP_PREEMPTION, true)
+ 
+ SCHED_FEAT(HRTICK, false)
++SCHED_FEAT(HRTICK_DL, false)
+ SCHED_FEAT(DOUBLE_TICK, false)
  
  /*
-@@ -380,7 +381,6 @@ static void __hrtick_start(void *arg)
- void hrtick_start(struct rq *rq, u64 delay)
- {
- 	struct hrtimer *timer = &rq->hrtick_timer;
--	ktime_t time;
- 	s64 delta;
- 
- 	/*
-@@ -388,9 +388,7 @@ void hrtick_start(struct rq *rq, u64 delay)
- 	 * doesn't make sense and can cause timer DoS.
- 	 */
- 	delta = max_t(s64, delay, 10000LL);
--	time = ktime_add_ns(timer->base->get_time(), delta);
--
--	hrtimer_set_expires(timer, time);
-+	rq->hrtick_time = ktime_add_ns(timer->base->get_time(), delta);
- 
- 	if (rq == this_rq())
- 		__hrtick_restart(rq);
 diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 6edc67df3554..3e16dff206b3 100644
+index 3e16dff206b3..ed0f347ab2f9 100644
 --- a/kernel/sched/sched.h
 +++ b/kernel/sched/sched.h
-@@ -1030,6 +1030,7 @@ struct rq {
- 	call_single_data_t	hrtick_csd;
- #endif
- 	struct hrtimer		hrtick_timer;
-+	ktime_t 		hrtick_time;
- #endif
+@@ -2104,17 +2104,39 @@ extern const_debug unsigned int sysctl_sched_migration_cost;
+  */
+ static inline int hrtick_enabled(struct rq *rq)
+ {
+-	if (!sched_feat(HRTICK))
+-		return 0;
+ 	if (!cpu_active(cpu_of(rq)))
+ 		return 0;
+ 	return hrtimer_is_hres_active(&rq->hrtick_timer);
+ }
  
- #ifdef CONFIG_SCHEDSTATS
++static inline int hrtick_enabled_fair(struct rq *rq)
++{
++	if (!sched_feat(HRTICK))
++		return 0;
++	return hrtick_enabled(rq);
++}
++
++static inline int hrtick_enabled_dl(struct rq *rq)
++{
++	if (!sched_feat(HRTICK_DL))
++		return 0;
++	return hrtick_enabled(rq);
++}
++
+ void hrtick_start(struct rq *rq, u64 delay);
+ 
+ #else
+ 
++static inline int hrtick_enabled_fair(struct rq *rq)
++{
++	return 0;
++}
++
++static inline int hrtick_enabled_dl(struct rq *rq)
++{
++	return 0;
++}
++
+ static inline int hrtick_enabled(struct rq *rq)
+ {
+ 	return 0;
 -- 
 2.29.2
 
