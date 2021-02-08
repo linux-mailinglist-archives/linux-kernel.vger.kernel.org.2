@@ -2,120 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A541313326
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 14:20:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 301E931332A
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 14:23:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229623AbhBHNUd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 08:20:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55838 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231209AbhBHNTl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 08:19:41 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 19E2164E8C;
-        Mon,  8 Feb 2021 13:18:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612790340;
-        bh=V8l77nGfH8viK0lg21lyfDivRFNKcdkT4YjQ7wzkRbE=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=ltupn+ZP4BiBWYAK+vVGENeSNIcw2s7BWyHgmUggnPNhbyZL7VrVXJq6nk2bXTKkx
-         KSL7+PyLDy7zIcr7E1rEPNIx1ytbf7zmqOGu0nHFPEjfMj+2OOkyRYye2hussDEOXv
-         MOrzApkTgn1FwOVl8WX6kJff3m0j30hBzYDFy/o8XQrtUpJgjIiwMmbKuC3EO6i0BQ
-         B5768uJtcwahsGbtlLAOKxXkmof2fzC7tHBuSSXTZMhB0zL3n0F4JhgC7CqySUFdkV
-         76k/CAWAeQh5LE4kinHXpri346A6ixs+FJFnwEweS4tk/SYavcmcw7LpkJZ+NxZo4D
-         fJUu1R2R4KY2A==
-Message-ID: <c649c66a0fc75de0338712edc5df088ee8fe86b3.camel@kernel.org>
-Subject: Re: [PATCH] fcntl: make F_GETOWN(EX) return 0 on dead owner task
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Pavel Tikhomirov <ptikhomirov@virtuozzo.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>
-Cc:     "J. Bruce Fields" <bfields@fieldses.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andrei Vagin <avagin@gmail.com>
-Date:   Mon, 08 Feb 2021 08:18:58 -0500
-In-Reply-To: <ff782e1e-6fe9-4730-2528-76dc07211e0a@virtuozzo.com>
-References: <20210203124156.425775-1-ptikhomirov@virtuozzo.com>
-         <20210203193201.GD2172@grain>
-         <88739f26-63b0-be1d-4e6d-def01633323e@virtuozzo.com>
-         <20210203221726.GF2172@grain>
-         <948beb902296da5bb5d1a0db705ecb190623af84.camel@kernel.org>
-         <ff782e1e-6fe9-4730-2528-76dc07211e0a@virtuozzo.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-User-Agent: Evolution 3.38.3 (3.38.3-1.fc33) 
+        id S230258AbhBHNX0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 08:23:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56276 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230378AbhBHNVO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 08:21:14 -0500
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22BBAC061786;
+        Mon,  8 Feb 2021 05:20:34 -0800 (PST)
+Received: by mail-pj1-x102e.google.com with SMTP id d2so8772940pjs.4;
+        Mon, 08 Feb 2021 05:20:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=43IC4vJISybrKqjEwmCAdbs+nuXdxdgaNeFuc9odOHw=;
+        b=HrhJa4+qz9MBnqkl1dpwWAfUy+D87NtUpL3vJjyQVg56K7HxBm8/282D8m7DtaeV0j
+         TmfbY1dyHkOmOGDwArzox/sQNRyXY7+YfCTYeBCTRk/jlUNMptkxC+8BNQHHr76PVAg/
+         nzjYlF5ayvSiSkdHwNOYyJ3QT5QKA4jqDovcUJI7KNAdgjhHyZ6OjSuhM4wXBonMUdQQ
+         MClxHKA29stTSp0vPcbd9jr36OzKgXCeud1Q8wLurzw3poJIWZJGBXpQqOd1tffHBTF3
+         px5QA8cn7C2onVPWK5vrpKWL7NOUwJhIfJRlQkhqSOCJ0KDRA1/GJ64pwdaSsnUebSpA
+         fsYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=43IC4vJISybrKqjEwmCAdbs+nuXdxdgaNeFuc9odOHw=;
+        b=QnSLgcVNjiR/0HGUQ+ZPDEimo19PCVeRlzuoAJl+kRrq+xkV/PDX3CtGYHKbHNkSvx
+         3y5IRQzJdb88mMbzdKVuXQOhonVxr6pAs41en9jrThS4JAYSCefelsO6UCHSXsfQ8KcN
+         v8i8n3wG2dCh+ON1rOBgNnl9yn2MFwbfoiQcYlRRNguoJKHHhIRQsgOGHorZwRwPg/2N
+         wsY32JCmqUR2FK7lr/dAT/zV7MfxVubajZI+F2HXNayR5fHatccPEkYtCNPo9gf2wC+m
+         RmLsaSJSzMWG/Ro618g6zu+M1dUhwLanuraLJfdHQP7/PJtESy8u2pVaBpaszmnxS2VW
+         9f3Q==
+X-Gm-Message-State: AOAM531e+vGEU4QWXKl/NegM9oydMOhkU3ErccyG9kKl+9ivNsKg1ISV
+        nEWVJ7NtPv68peGs3BZAknSkQFxp8WMcyQS23qGFJmvWomQm2A==
+X-Google-Smtp-Source: ABdhPJyHtZ7soyYy7EdDvIyxrmBRYkKl4b+hem5pSs0LcdUmBKde5nRqlFJD9H7jPaCD1LPiFBozXl13n8n9L9AjQbc=
+X-Received: by 2002:a17:902:be14:b029:e1:bec9:f4a7 with SMTP id
+ r20-20020a170902be14b02900e1bec9f4a7mr16632466pls.21.1612790433573; Mon, 08
+ Feb 2021 05:20:33 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210208085954.30050-1-nikita.shubin@maquefel.me> <20210208085954.30050-3-nikita.shubin@maquefel.me>
+In-Reply-To: <20210208085954.30050-3-nikita.shubin@maquefel.me>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 8 Feb 2021 15:20:17 +0200
+Message-ID: <CAHp75VdV72fkpYgGqgebHfnN+VcVv04YvPxazpu1ZYsjMFP6Ow@mail.gmail.com>
+Subject: Re: [PATCH v5 2/7] gpio: ep93xx: Fix single irqchip with multi gpiochips
+To:     Nikita Shubin <nikita.shubin@maquefel.me>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Alexander Sverdlin <alexander.sverdlin@gmail.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-02-08 at 15:57 +0300, Pavel Tikhomirov wrote:
-> 
-> On 2/8/21 3:31 PM, Jeff Layton wrote:
-> > On Thu, 2021-02-04 at 01:17 +0300, Cyrill Gorcunov wrote:
-> > > On Thu, Feb 04, 2021 at 12:35:42AM +0300, Pavel Tikhomirov wrote:
-> > > > 
-> > > > AFAICS if pid is held only by 1) fowner refcount and by 2) single process
-> > > > (without threads, group and session for simplicity), on process exit we go
-> > > > through:
-> > > > 
-> > > > do_exit
-> > > >    exit_notify
-> > > >      release_task
-> > > >        __exit_signal
-> > > >          __unhash_process
-> > > >            detach_pid
-> > > >              __change_pid
-> > > >                free_pid
-> > > >                  idr_remove
-> > > > 
-> > > > So pid is removed from idr, and after that alloc_pid can reuse pid numbers
-> > > > even if old pid structure is still alive and is still held by fowner.
-> > > ...
-> > > > Hope this answers your question, Thanks!
-> > > 
-> > > Yeah, indeed, thanks! So the change is sane still I'm
-> > > a bit worried about backward compatibility, gimme some
-> > > time I'll try to refresh my memory first, in a couple
-> > > of days or weekend (though here are a number of experienced
-> > > developers CC'ed maybe they reply even faster).
-> > 
-> > I always find it helpful to refer to the POSIX spec [1] for this sort of
-> > thing. In this case, it says:
-> > 
-> > F_GETOWN
-> >      If fildes refers to a socket, get the process ID or process group ID
-> > specified to receive SIGURG signals when out-of-band data is available.
-> > Positive values shall indicate a process ID; negative values, other than
-> > -1, shall indicate a process group ID; the value zero shall indicate
-> > that no SIGURG signals are to be sent. If fildes does not refer to a
-> > socket, the results are unspecified.
-> > 
-> > In the event that the PID is reused, the kernel won't send signals to
-> > the replacement task, correct?
-> 
-> Correct. Looks like only places to send signal to owner are send_sigio() 
-> and send_sigurg() (at least nobody else dereferences fown->pid_type). 
-> And in both places we lookup for task to send signal to with pid_task() 
-> or do_each_pid_task() (similar to what I do in patch) and will not find 
-> any task if pid was reused. Thus no signal would be sent.
-> 
+On Mon, Feb 8, 2021 at 11:00 AM Nikita Shubin <nikita.shubin@maquefel.me> wrote:
+>
+> Fixes the following warnings which results in interrupts disabled on
+> port B/F:
+>
+> gpio gpiochip1: (B): detected irqchip that is shared with multiple gpiochips: please fix the driver.
+> gpio gpiochip5: (F): detected irqchip that is shared with multiple gpiochips: please fix the driver.
+>
+> - added separate irqchip for each interrupt capable gpiochip
+> - provided unique names for each irqchip
 
-Thanks for confirming it. I queued it up for linux-next (with a small
-amendment to the changelog), and it should be there later today or
-tomorrow. It might not hurt to roll up a manpage patch too if you have
-the cycles. It'd be nice to spell out what a 0 return means there.
+...
 
-> > Assuming that's the case, then this patch
-> > looks fine to me too. I'll plan to pick it for linux-next later today,
-> > and we can hopefully get this into v5.12.
-> > 
-> > [1]: https://pubs.opengroup.org/onlinepubs/9699919799/functions/fcntl.html#tag_16_122
-> > 
-> 
-> Thanks for finding it!
-> 
+> +static void ep93xx_init_irq_chip(struct device *dev, struct irq_chip *ic, const char *label)
+> +{
 
-No problem. That site is worth bookmarking for this sort of thing... ;)
+> +       ic->name = devm_kasprintf(dev, GFP_KERNEL, "gpio-irq-%s", label);
+
+Is the label being NULL okay?
+
+> +       ic->irq_ack = ep93xx_gpio_irq_ack;
+> +       ic->irq_mask_ack = ep93xx_gpio_irq_mask_ack;
+> +       ic->irq_mask = ep93xx_gpio_irq_mask;
+> +       ic->irq_unmask = ep93xx_gpio_irq_unmask;
+> +       ic->irq_set_type = ep93xx_gpio_irq_type;
+> +}
+
+...
+
+> -               girq->chip = &ep93xx_gpio_irq_chip;
+
+I don't see where you remove that static structure.
+
 -- 
-Jeff Layton <jlayton@kernel.org>
-
+With Best Regards,
+Andy Shevchenko
