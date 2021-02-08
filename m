@@ -2,115 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F20B63130D1
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 12:28:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49AAF3130ED
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 12:33:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233332AbhBHL2J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 06:28:09 -0500
-Received: from mga03.intel.com ([134.134.136.65]:51226 "EHLO mga03.intel.com"
+        id S233324AbhBHLcM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 06:32:12 -0500
+Received: from mx01-muc.bfs.de ([193.174.230.67]:36895 "EHLO mx01-muc.bfs.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232902AbhBHLMu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 06:12:50 -0500
-IronPort-SDR: cYFfbF7VRHtIBDypg/2E+s2fYln3If/hP8+ufgskeXVObsy4rUD8GULEHdDoa29Qp4EG+niYEw
- LxSuglM/gcGQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9888"; a="181760489"
-X-IronPort-AV: E=Sophos;i="5.81,161,1610438400"; 
-   d="scan'208";a="181760489"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2021 03:11:00 -0800
-IronPort-SDR: tQPxxlIxpgU2syF+t+y9/8vgr96RxgVSdqB1ryYM3UPrbvR2D4MYql2e8nyZDkEvcykN4FKdS0
- hOIBPdZZ0vHg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,161,1610438400"; 
-   d="scan'208";a="395345985"
-Received: from zhangyu-optiplex-7040.bj.intel.com ([10.238.154.148])
-  by orsmga008.jf.intel.com with ESMTP; 08 Feb 2021 03:10:56 -0800
-From:   Yu Zhang <yu.c.zhang@linux.intel.com>
-To:     zhenyuw@linux.intel.com, zhi.a.wang@intel.com
-Cc:     jani.nikula@linux.intel.com, joonas.lahtinen@linux.intel.com,
-        rodrigo.vivi@intel.com, airlied@linux.ie, daniel@ffwll.ch,
-        intel-gvt-dev@lists.freedesktop.org,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Subject: [PATCH] drm/i915/gvt/kvmgt: Fix the build failure in kvmgt.
-Date:   Tue,  9 Feb 2021 02:52:10 +0800
-Message-Id: <20210208185210.6002-1-yu.c.zhang@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
+        id S232347AbhBHLP6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 06:15:58 -0500
+X-Greylist: delayed 583 seconds by postgrey-1.27 at vger.kernel.org; Mon, 08 Feb 2021 06:15:53 EST
+Received: from SRVEX01-SZ.bfs.intern (exchange-sz.bfs.de [10.129.90.31])
+        by mx01-muc.bfs.de (Postfix) with ESMTPS id B10F22047A;
+        Mon,  8 Feb 2021 12:05:02 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bfs.de; s=dkim201901;
+        t=1612782302;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=fxpjNCvWyShQs0o1xq2uDFgwlPhrqmfb2L5lPzxXM3M=;
+        b=OFLyk+a+Z8eVqnoDxE/QHZVfJq9ru1nkBWO4mH7cAUviwaY7WxARb/7PiqiiHpt8dAGrNz
+        xTdvNxve4nAq9UE2r0GIuhJPOZYrC3xjMuSfw7iqWuUhL2vbyQGj8+Zufk0IIg4CTXCt/c
+        B1/ab2fbTZBCl1ReXrkAi+pz7F11XsReMBD4bBq3F3JVCsszmRBbim0A7+3miEYwI+OBV+
+        SV1IIiAxpbIjjsH+WXHUxakTvlTAhWwhniOHBkxTcJEStsXRuPOL9MVGlC0k35KyN71vzU
+        3QXRVCkjE6ZiUSw0aXShWxkXUQHRig38ydperu5MYTGpitet1sJMGWyNM9vDfg==
+Received: from SRVEX01-SZ.bfs.intern (10.129.90.31) by SRVEX01-SZ.bfs.intern
+ (10.129.90.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2176.2; Mon, 8 Feb 2021
+ 12:05:01 +0100
+Received: from SRVEX01-SZ.bfs.intern ([fe80::7d2d:f9cb:2761:d24a]) by
+ SRVEX01-SZ.bfs.intern ([fe80::7d2d:f9cb:2761:d24a%13]) with mapi id
+ 15.01.2176.002; Mon, 8 Feb 2021 12:05:01 +0100
+From:   Walter Harms <wharms@bfs.de>
+To:     =?iso-8859-1?Q?Christian_K=F6nig?= <christian.koenig@amd.com>,
+        Colin King <colin.king@canonical.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        "David Airlie" <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        Huang Rui <ray.huang@amd.com>,
+        Junwei Zhang <Jerry.Zhang@amd.com>,
+        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>
+CC:     "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: AW: [PATCH] drm/amdgpu: fix potential integer overflow on shift of a
+ int
+Thread-Topic: [PATCH] drm/amdgpu: fix potential integer overflow on shift of a
+ int
+Thread-Index: AQHW/aZibC6c7NmnTEaIp1k5r3gR16pN6nEAgAAuR34=
+Date:   Mon, 8 Feb 2021 11:05:01 +0000
+Message-ID: <3aed86cfb8014badbcbc4ee9f007976d@bfs.de>
+References: <20210207230751.8576-1-colin.king@canonical.com>,<c6c99dba-aea9-304c-2246-e24632955479@amd.com>
+In-Reply-To: <c6c99dba-aea9-304c-2246-e24632955479@amd.com>
+Accept-Language: de-DE, en-US
+Content-Language: de-DE
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.137.16.39]
+x-tm-as-product-ver: SMEX-14.0.0.3080-8.6.1012-25960.007
+x-tm-as-result: No-10--6.720600-5.000000
+x-tmase-matchedrid: lfH7Ftdh6lTRubRCcrbc5grcxrzwsv5u3dCmvEa6IiHgYNP0+4v1nuhN
+        0jwIx2vHzn+cUF7VynIdD9u7d6Y7FKN1pQF++HP3XFf6l1YcdowBDya2JbH/+rZ52dbbIRC11t2
+        9KLWKRj6byHEAgTCz2nD4B0GOmh08ipQL3tF+LWYoSebb2328i4Y+RHPfLBFEZRL+gCLSlhcTw7
+        jCStQ0rnghiIvM4QIVF5qQsg8KVCCZQ6EsnBvpj3YZxYoZm58FnyQFaVgMM2AiB3Nk/d/KP6xIj
+        SYfsSaZpsX84hgxtppmaTFBWBkYZHYRnQp9B8yrhVNduS+1i+96i696PjRPiFjBUeMsjed6lcHM
+        CyWAI7MGOdbFG3K/Wb1Odlcux5HWv1l2Uvx6idpWdFebWIc3VsRB0bsfrpPIcSqbxBgG0w72wx8
+        FaxvvRiPj7iuobbW2LdXivd77fLD2Oot69ouQubHgvpw09rhJzph8hz1Y0dXA51S6Y1zM1eO4aG
+        TUmfUKhw0KiQrko1bn97Tpk1RUclMrCGEFu0pWavaGrHEVCAms7r0bSXKIZA==
+x-tm-as-user-approved-sender: No
+x-tm-as-user-blocked-sender: No
+x-tmase-result: 10--6.720600-5.000000
+x-tmase-version: SMEX-14.0.0.3080-8.6.1012-25960.007
+x-tm-snts-smtp: 92B2D6A4070B1EEB7945842EE8C97399B33CFA6A7FB59C2DB058153D8A2724F32000:9
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-Spam-Status: No, score=0.00
+X-Spamd-Result: default: False [0.00 / 7.00];
+         ARC_NA(0.00)[];
+         TO_DN_EQ_ADDR_SOME(0.00)[];
+         HAS_XOIP(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         BAYES_SPAM(0.00)[16.99%];
+         DKIM_SIGNED(0.00)[bfs.de:s=dkim201901];
+         RCPT_COUNT_SEVEN(0.00)[11];
+         RCVD_NO_TLS_LAST(0.10)[];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         RCVD_COUNT_TWO(0.00)[2];
+         MID_RHS_MATCH_FROM(0.00)[]
+Authentication-Results: mx01-muc.bfs.de;
+        none
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Previously, commit 531810caa9f4 ("KVM: x86/mmu: Use
-an rwlock for the x86 MMU") replaced KVM's mmu_lock
-with type rwlock_t. This will cause a build failure
-in kvmgt, which uses the same lock when trying to add/
-remove some GFNs to/from the page tracker. Fix it with
-write_lock/unlocks in kvmgt.
+i am curious:
+what is the win to have a unsigned 64 bit integer in the first
+place ?
 
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Signed-off-by: Yu Zhang <yu.c.zhang@linux.intel.com>
----
- drivers/gpu/drm/i915/gvt/kvmgt.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+re,
+ wh
+________________________________________
+Von: Christian K=F6nig <christian.koenig@amd.com>
+Gesendet: Montag, 8. Februar 2021 10:17:42
+An: Colin King; Alex Deucher; David Airlie; Daniel Vetter; Huang Rui; Junwe=
+i Zhang; amd-gfx@lists.freedesktop.org; dri-devel@lists.freedesktop.org
+Cc: kernel-janitors@vger.kernel.org; linux-kernel@vger.kernel.org
+Betreff: Re: [PATCH] drm/amdgpu: fix potential integer overflow on shift of=
+ a int
 
-diff --git a/drivers/gpu/drm/i915/gvt/kvmgt.c b/drivers/gpu/drm/i915/gvt/kvmgt.c
-index 60f1a386dd06..b4348256ae95 100644
---- a/drivers/gpu/drm/i915/gvt/kvmgt.c
-+++ b/drivers/gpu/drm/i915/gvt/kvmgt.c
-@@ -1703,7 +1703,7 @@ static int kvmgt_page_track_add(unsigned long handle, u64 gfn)
- 		return -EINVAL;
- 	}
- 
--	spin_lock(&kvm->mmu_lock);
-+	write_lock(&kvm->mmu_lock);
- 
- 	if (kvmgt_gfn_is_write_protected(info, gfn))
- 		goto out;
-@@ -1712,7 +1712,7 @@ static int kvmgt_page_track_add(unsigned long handle, u64 gfn)
- 	kvmgt_protect_table_add(info, gfn);
- 
- out:
--	spin_unlock(&kvm->mmu_lock);
-+	write_unlock(&kvm->mmu_lock);
- 	srcu_read_unlock(&kvm->srcu, idx);
- 	return 0;
- }
-@@ -1737,7 +1737,7 @@ static int kvmgt_page_track_remove(unsigned long handle, u64 gfn)
- 		return -EINVAL;
- 	}
- 
--	spin_lock(&kvm->mmu_lock);
-+	write_lock(&kvm->mmu_lock);
- 
- 	if (!kvmgt_gfn_is_write_protected(info, gfn))
- 		goto out;
-@@ -1746,7 +1746,7 @@ static int kvmgt_page_track_remove(unsigned long handle, u64 gfn)
- 	kvmgt_protect_table_del(info, gfn);
- 
- out:
--	spin_unlock(&kvm->mmu_lock);
-+	write_unlock(&kvm->mmu_lock);
- 	srcu_read_unlock(&kvm->srcu, idx);
- 	return 0;
- }
-@@ -1772,7 +1772,7 @@ static void kvmgt_page_track_flush_slot(struct kvm *kvm,
- 	struct kvmgt_guest_info *info = container_of(node,
- 					struct kvmgt_guest_info, track_node);
- 
--	spin_lock(&kvm->mmu_lock);
-+	write_lock(&kvm->mmu_lock);
- 	for (i = 0; i < slot->npages; i++) {
- 		gfn = slot->base_gfn + i;
- 		if (kvmgt_gfn_is_write_protected(info, gfn)) {
-@@ -1781,7 +1781,7 @@ static void kvmgt_page_track_flush_slot(struct kvm *kvm,
- 			kvmgt_protect_table_del(info, gfn);
- 		}
- 	}
--	spin_unlock(&kvm->mmu_lock);
-+	write_unlock(&kvm->mmu_lock);
- }
- 
- static bool __kvmgt_vgpu_exist(struct intel_vgpu *vgpu, struct kvm *kvm)
--- 
-2.17.1
+Am 08.02.21 um 00:07 schrieb Colin King:
+> From: Colin Ian King <colin.king@canonical.com>
+>
+> The left shift of int 32 bit integer constant 1 is evaluated using 32
+> bit arithmetic and then assigned to an unsigned 64 bit integer. In the
+> case where *frag is 32 or more this can lead to an oveflow.  Avoid this
+> by shifting 1ULL.
+
+Well that can't happen. Take a look at the code in that function:
+
+>                 max_frag =3D 31;
+...
+>         if (*frag >=3D max_frag) {
+>                 *frag =3D max_frag;
+>                 *frag_end =3D end & ~((1ULL << max_frag) - 1);
+>         } else {
+>                 *frag_end =3D start + (1 << *frag);
+>         }
+
+But I'm fine with applying the patch if it silences your warning.
+
+Regards,
+Christian.
+
+>
+> Addresses-Coverity: ("Unintentional integer overflow")
+> Fixes: dfcd99f6273e ("drm/amdgpu: meld together VM fragment and huge page=
+ handling")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
+>   drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c b/drivers/gpu/drm/amd=
+/amdgpu/amdgpu_vm.c
+> index 9d19078246c8..53a925600510 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
+> @@ -1412,7 +1412,7 @@ static void amdgpu_vm_fragment(struct amdgpu_vm_upd=
+ate_params *params,
+>               *frag =3D max_frag;
+>               *frag_end =3D end & ~((1ULL << max_frag) - 1);
+>       } else {
+> -             *frag_end =3D start + (1 << *frag);
+> +             *frag_end =3D start + (1ULL << *frag);
+>       }
+>   }
+>
 
