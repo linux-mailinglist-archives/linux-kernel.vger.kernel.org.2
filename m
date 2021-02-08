@@ -2,93 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D95B43132ED
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 14:08:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 146933132E9
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 14:06:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230302AbhBHNIJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 08:08:09 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:11704 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229707AbhBHNIF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 08:08:05 -0500
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DZ5qP2qLFzlHfL;
-        Mon,  8 Feb 2021 21:05:37 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.24) by
- DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
- 14.3.498.0; Mon, 8 Feb 2021 21:07:13 +0800
-From:   Qi Liu <liuqi115@huawei.com>
-To:     <john.garry@huawei.com>, <zhangshaokun@hisilicon.com>,
-        <will@kernel.org>, <mark.rutland@arm.com>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>
-Subject: [PATCH] drivers/perf: Simplify the SMMUv3 PMU event attributes
-Date:   Mon, 8 Feb 2021 21:04:58 +0800
-Message-ID: <1612789498-12957-1-git-send-email-liuqi115@huawei.com>
-X-Mailer: git-send-email 2.8.1
+        id S230249AbhBHNGc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 08:06:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53880 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229637AbhBHNG0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 08:06:26 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5D55964E87;
+        Mon,  8 Feb 2021 13:05:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612789545;
+        bh=n2isI83IkIAKm3kI0g0ECHwrDnwL6N3NRCask2v11K4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=tXnPlTunpFwu92+fPzbML8iTK5bFD47r16JYOL15YDq8sUvWgYSWCYcog0bcY6osU
+         xh+lzTTdf2dw06caWv1MO6c7XzUQPhI+NCh7ghzDWUQf6xcS8dhhrco7GjR7I34rmJ
+         AAk9CI3OMOEn6Zj6FjRfSEt9lA8PTIdfLFjar5HRx9sysZXAL4ErUAR5aqsPFOYObq
+         j80ngkwleGb9hiojaxB8NTYqF8n7QxPtWBTwhJ/lB5lNT4F/Ku1Ckf4BKdGuZKcJ28
+         xE5qRkCgxdLD2MZsM8eBJ2tGU/FJ3PdOZEDi+ETdJ+hGgglVpfQJhVh1xacyv5JQ+p
+         ra0oJKj0Bi0Hg==
+Received: by mail-ed1-f48.google.com with SMTP id y8so17967014ede.6;
+        Mon, 08 Feb 2021 05:05:45 -0800 (PST)
+X-Gm-Message-State: AOAM530uUifeRgy2R8rKXYjlA4n+oz6qozRRtc5BIjNxAqp3bzBLFxii
+        Sast/sGY6CBG659a2Z6hK47fnFIaHWEksJcT2yo=
+X-Google-Smtp-Source: ABdhPJy3MugBCN3vcLgylnGQXqUOP8EwHKtj6Zh2dKo2/+J+UzdE0VRMpo4trg91VeezDp2qc7vylA2ODRRIJwGyK5o=
+X-Received: by 2002:a05:6402:d05:: with SMTP id eb5mr16789013edb.143.1612789543824;
+ Mon, 08 Feb 2021 05:05:43 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+References: <CGME20210208114447epcas2p3507f22a555355ac7710c5ca220853e0e@epcas2p3.samsung.com>
+ <20210208114538.134766-1-taehyun.cho@samsung.com>
+In-Reply-To: <20210208114538.134766-1-taehyun.cho@samsung.com>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Date:   Mon, 8 Feb 2021 14:05:31 +0100
+X-Gmail-Original-Message-ID: <CAJKOXPeeopnjvdbNb=QA-wS+jcrAzgpouV2DFWe+ydGFE2J68A@mail.gmail.com>
+Message-ID: <CAJKOXPeeopnjvdbNb=QA-wS+jcrAzgpouV2DFWe+ydGFE2J68A@mail.gmail.com>
+Subject: Re: [PATCH] usb: dwc3: make USB_DWC3_EXYNOS independent
+To:     taehyun cho <taehyun.cho@samsung.com>
+Cc:     balbi@kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-samsung-soc@vger.kernel.org" 
+        <linux-samsung-soc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For each PMU event, there is a SMMU_EVENT_ATTR(xx, XX) and
-&smmu_event_attr_xx.attr.attr. Let's redefine the SMMU_EVENT_ATTR
-to simplify the smmu_pmu_events.
+On Mon, 8 Feb 2021 at 12:51, taehyun cho <taehyun.cho@samsung.com> wrote:
+>
+> 'ARCH_EXYNOS' is no more used. 'USB_DWC3_EXYNOS' is glue layer
 
-Signed-off-by: Qi Liu <liuqi115@huawei.com>
----
- drivers/perf/arm_smmuv3_pmu.c | 32 +++++++++++++-------------------
- 1 file changed, 13 insertions(+), 19 deletions(-)
+As a maintainer of Samsung Exynos SoC, I am very surprised to hear
+that ARCH_EXYNOS is not used anymore... Quite contrary, in my opinion
+it is still used. You need to rephrase this sentence, because it's not
+possible to understand in current form.
 
-diff --git a/drivers/perf/arm_smmuv3_pmu.c b/drivers/perf/arm_smmuv3_pmu.c
-index 8ff7a67..4c8cb1b 100644
---- a/drivers/perf/arm_smmuv3_pmu.c
-+++ b/drivers/perf/arm_smmuv3_pmu.c
-@@ -509,27 +509,21 @@ static ssize_t smmu_pmu_event_show(struct device *dev,
- 	return sprintf(page, "event=0x%02llx\n", pmu_attr->id);
- }
+> which can be used with Synopsys DWC3 controller on Exynos SoCs.
+> 'USB_DWC3_EXYNOS' can be used from Exynos5 to Exynos9.
 
--#define SMMU_EVENT_ATTR(name, config) \
--	PMU_EVENT_ATTR(name, smmu_event_attr_##name, \
--		       config, smmu_pmu_event_show)
--SMMU_EVENT_ATTR(cycles, 0);
--SMMU_EVENT_ATTR(transaction, 1);
--SMMU_EVENT_ATTR(tlb_miss, 2);
--SMMU_EVENT_ATTR(config_cache_miss, 3);
--SMMU_EVENT_ATTR(trans_table_walk_access, 4);
--SMMU_EVENT_ATTR(config_struct_access, 5);
--SMMU_EVENT_ATTR(pcie_ats_trans_rq, 6);
--SMMU_EVENT_ATTR(pcie_ats_trans_passed, 7);
-+#define SMMU_EVENT_ATTR(name, config)					\
-+	(&((struct perf_pmu_events_attr) {				\
-+		.attr = __ATTR(name, 0444, smmu_pmu_event_show, NULL),	\
-+		.id = config,						\
-+	}).attr.attr)
+Please provide here the answer to "why you want to remove
+ARCH_EXYNOS". Quite precise answer, please.
 
- static struct attribute *smmu_pmu_events[] = {
--	&smmu_event_attr_cycles.attr.attr,
--	&smmu_event_attr_transaction.attr.attr,
--	&smmu_event_attr_tlb_miss.attr.attr,
--	&smmu_event_attr_config_cache_miss.attr.attr,
--	&smmu_event_attr_trans_table_walk_access.attr.attr,
--	&smmu_event_attr_config_struct_access.attr.attr,
--	&smmu_event_attr_pcie_ats_trans_rq.attr.attr,
--	&smmu_event_attr_pcie_ats_trans_passed.attr.attr,
-+	SMMU_EVENT_ATTR(cycles, 0),
-+	SMMU_EVENT_ATTR(transaction, 1),
-+	SMMU_EVENT_ATTR(tlb_miss, 2),
-+	SMMU_EVENT_ATTR(config_cache_miss, 3),
-+	SMMU_EVENT_ATTR(trans_table_walk_access, 4),
-+	SMMU_EVENT_ATTR(config_struct_access, 5),
-+	SMMU_EVENT_ATTR(pcie_ats_trans_rq, 6),
-+	SMMU_EVENT_ATTR(pcie_ats_trans_passed, 7),
- 	NULL
- };
+In future, please Cc lists and people responsible for this drivers:
+scripts/get_maintainer.pl -f drivers/usb/dwc3/dwc3-exynos.c
 
---
-2.8.1
-
+Best regards,
+Krzysztof
