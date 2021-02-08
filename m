@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C94C8313855
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 16:45:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CDEFC313800
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 16:35:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233669AbhBHPnV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 10:43:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52452 "EHLO mail.kernel.org"
+        id S233971AbhBHPfJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 10:35:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52242 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231180AbhBHPFs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 10:05:48 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 183F764ECA;
-        Mon,  8 Feb 2021 15:04:08 +0000 (UTC)
+        id S231302AbhBHPFq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 10:05:46 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C792664EBC;
+        Mon,  8 Feb 2021 15:04:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612796649;
-        bh=Nogwv7lW236FlG9laAEQyERHcHhF0IvFYA0aUlAnmuo=;
+        s=korg; t=1612796652;
+        bh=z4eELWqiKpoLXarkTLEvEzlB9IJ1xLXSWxQO2miv9u8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OrZKehvlFIZ0DHk3ti0I+iRS4wygyQcuKg9oUDK1CbR6lFWeNwQTaTRcMONIyn8IJ
-         BzkvOMSfOKpQFDy0BT642Ap+6rFpBeTSbwG1ol0XZJbGMh09QtlFzx0HLXF0J28Brx
-         RHFaC41Ttgy7Pi6iQEs0IdA6U0zEF0tUTbEjtWoQ=
+        b=bfC2lurFlOwJntPccKNsR2yQJABrjUpZVAjqjt6mNWgkeVtVPMsFsM/YLaqZh5j2u
+         hMQy+FvRxewx6rSsOpVFTt9FhUErjNDTxA8cuZdZq8yBQfxEGca0kFha3r12VFJaVO
+         31Jq2D6JHtplAt+y3XwugIH0cNj6lOli5jHR8Uw8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Brian King <brking@linux.vnet.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 16/43] scsi: ibmvfc: Set default timeout to avoid crash during migration
-Date:   Mon,  8 Feb 2021 16:00:42 +0100
-Message-Id: <20210208145806.966964025@linuxfoundation.org>
+Subject: [PATCH 4.9 17/43] objtool: Dont fail on missing symbol table
+Date:   Mon,  8 Feb 2021 16:00:43 +0100
+Message-Id: <20210208145807.003381621@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210208145806.281758651@linuxfoundation.org>
 References: <20210208145806.281758651@linuxfoundation.org>
@@ -40,83 +42,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Brian King <brking@linux.vnet.ibm.com>
+From: Josh Poimboeuf <jpoimboe@redhat.com>
 
-[ Upstream commit 764907293edc1af7ac857389af9dc858944f53dc ]
+[ Upstream commit 1d489151e9f9d1647110277ff77282fe4d96d09b ]
 
-While testing live partition mobility, we have observed occasional crashes
-of the Linux partition. What we've seen is that during the live migration,
-for specific configurations with large amounts of memory, slow network
-links, and workloads that are changing memory a lot, the partition can end
-up being suspended for 30 seconds or longer. This resulted in the following
-scenario:
+Thanks to a recent binutils change which doesn't generate unused
+symbols, it's now possible for thunk_64.o be completely empty without
+CONFIG_PREEMPTION: no text, no data, no symbols.
 
-CPU 0                          CPU 1
--------------------------------  ----------------------------------
-scsi_queue_rq                    migration_store
- -> blk_mq_start_request          -> rtas_ibm_suspend_me
-  -> blk_add_timer                 -> on_each_cpu(rtas_percpu_suspend_me
-              _______________________________________V
-             |
-             V
-    -> IPI from CPU 1
-     -> rtas_percpu_suspend_me
-                                     -> __rtas_suspend_last_cpu
+We could edit the Makefile to only build that file when
+CONFIG_PREEMPTION is enabled, but that will likely create confusion
+if/when the thunks end up getting used by some other code again.
 
--- Linux partition suspended for > 30 seconds --
-                                      -> for_each_online_cpu(cpu)
-                                           plpar_hcall_norets(H_PROD
- -> scsi_dispatch_cmd
-                                      -> scsi_times_out
-                                       -> scsi_abort_command
-                                        -> queue_delayed_work
-  -> ibmvfc_queuecommand_lck
-   -> ibmvfc_send_event
-    -> ibmvfc_send_crq
-     - returns H_CLOSED
-   <- returns SCSI_MLQUEUE_HOST_BUSY
--> __blk_mq_requeue_request
+Just ignore it and move on.
 
-                                      -> scmd_eh_abort_handler
-                                       -> scsi_try_to_abort_cmd
-                                         - returns SUCCESS
-                                       -> scsi_queue_insert
-
-Normally, the SCMD_STATE_COMPLETE bit would protect against the command
-completion and the timeout, but that doesn't work here, since we don't
-check that at all in the SCSI_MLQUEUE_HOST_BUSY path.
-
-In this case we end up calling scsi_queue_insert on a request that has
-already been queued, or possibly even freed, and we crash.
-
-The patch below simply increases the default I/O timeout to avoid this race
-condition. This is also the timeout value that nearly all IBM SAN storage
-recommends setting as the default value.
-
-Link: https://lore.kernel.org/r/1610463998-19791-1-git-send-email-brking@linux.vnet.ibm.com
-Signed-off-by: Brian King <brking@linux.vnet.ibm.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Reported-by: Nathan Chancellor <natechancellor@gmail.com>
+Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
+Reviewed-by: Miroslav Benes <mbenes@suse.cz>
+Tested-by: Nathan Chancellor <natechancellor@gmail.com>
+Link: https://github.com/ClangBuiltLinux/linux/issues/1254
+Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/ibmvscsi/ibmvfc.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ tools/objtool/elf.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/scsi/ibmvscsi/ibmvfc.c b/drivers/scsi/ibmvscsi/ibmvfc.c
-index 04b3ac17531db..7865feb8e5e83 100644
---- a/drivers/scsi/ibmvscsi/ibmvfc.c
-+++ b/drivers/scsi/ibmvscsi/ibmvfc.c
-@@ -2891,8 +2891,10 @@ static int ibmvfc_slave_configure(struct scsi_device *sdev)
- 	unsigned long flags = 0;
+diff --git a/tools/objtool/elf.c b/tools/objtool/elf.c
+index d84c28eac262d..0ba5bb51bd93c 100644
+--- a/tools/objtool/elf.c
++++ b/tools/objtool/elf.c
+@@ -226,8 +226,11 @@ static int read_symbols(struct elf *elf)
  
- 	spin_lock_irqsave(shost->host_lock, flags);
--	if (sdev->type == TYPE_DISK)
-+	if (sdev->type == TYPE_DISK) {
- 		sdev->allow_restart = 1;
-+		blk_queue_rq_timeout(sdev->request_queue, 120 * HZ);
-+	}
- 	spin_unlock_irqrestore(shost->host_lock, flags);
- 	return 0;
- }
+ 	symtab = find_section_by_name(elf, ".symtab");
+ 	if (!symtab) {
+-		WARN("missing symbol table");
+-		return -1;
++		/*
++		 * A missing symbol table is actually possible if it's an empty
++		 * .o file.  This can happen for thunk_64.o.
++		 */
++		return 0;
+ 	}
+ 
+ 	symbols_nr = symtab->sh.sh_size / symtab->sh.sh_entsize;
 -- 
 2.27.0
 
