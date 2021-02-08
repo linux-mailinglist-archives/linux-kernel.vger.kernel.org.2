@@ -2,95 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C962B313295
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 13:42:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51F29313296
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 13:42:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231347AbhBHMln (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 07:41:43 -0500
-Received: from mail-40133.protonmail.ch ([185.70.40.133]:17558 "EHLO
-        mail-40133.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231756AbhBHMit (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 07:38:49 -0500
-Date:   Mon, 08 Feb 2021 12:37:42 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1612787866; bh=koAMeATYJYWKmkFiz3wj+nM7gDgJYPD0x5UJ1gcespo=;
-        h=Date:To:From:Cc:Reply-To:Subject:From;
-        b=a6WMNoFmMqa0DSoaxn/SdvYQwTY+MQyEcCVxUJ00mURZdp8lg2LUC7OPODuhmmXGw
-         loPJv2L0iKeN7nZQCcXqQ233p7LPNLyZkahtEbf53ALNVmJ4ajiqq1J0KAvgCFTIMN
-         OHbUQy3DQBDTFP6GphtqZFnfex1HhaqFTA5zxrQGangF6SFSn2mIx7K4mv19BeVxzV
-         dSoqb3RvhIn7q/zY1kwVD0/bx1oSLP1zEjt8t35Kbu7YWLTxjxP+mk47YunuCq60wK
-         lDb3wsEzvPpfydmHELCTmQUqHWZiVNTv9GwGP84tH71hIvHY/+w6lRC3B/w4cmmdxT
-         3lDpVmzqX8X7w==
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     Paul Cercueil <paul@crapouillou.net>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Youling Tang <tangyouling@loongson.cn>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Xingxing Su <suxingxing@loongson.cn>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Paul Burton <paulburton@kernel.org>,
-        Hassan Naveed <hnaveed@wavecomp.com>,
-        linux-mips@vger.kernel.org, stable@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: [PATCH mips-fixes] MIPS: compressed: fix build with enabled UBSAN
-Message-ID: <20210208123645.101354-1-alobakin@pm.me>
+        id S232183AbhBHMm0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 07:42:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49400 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232058AbhBHMkS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 07:40:18 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C71A164E29;
+        Mon,  8 Feb 2021 12:39:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1612787977;
+        bh=e8N7E+idCiScn0l+JIgyUjIPa5njsG1vWvbX6Fe8g24=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Vcu1uWrANUkNaju9IIylSh8b0wmPor3CYuRkpgNxa7D2X1io3QH/8n8lCmvdy2Prk
+         leUtoA6en+aMEnpragmLeCdgbnx6C7WiWCZSh+XttE+SPj6TaG3u+Ihanqs/r++IjT
+         zOBwpAxyXsNlVBnA37lUyG1hBTyPPr67vewYdLCY=
+Date:   Mon, 8 Feb 2021 13:39:34 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org
+Subject: Re: [PATCH 5.10 00/57] 5.10.14-rc1 review
+Message-ID: <YCExBoL9c0OQz/WY@kroah.com>
+References: <20210205140655.982616732@linuxfoundation.org>
+ <20210206160225.GD175716@roeck-us.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210206160225.GD175716@roeck-us.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 1e35918ad9d1 ("MIPS: Enable Undefined Behavior Sanitizer
-UBSAN") added a possibility to build the entire kernel with UBSAN
-instrumentation for MIPS, with the exception for VDSO.
-However, self-extracting head wasn't been added to exceptions, so
-this occurs:
+On Sat, Feb 06, 2021 at 08:02:25AM -0800, Guenter Roeck wrote:
+> On Fri, Feb 05, 2021 at 03:06:26PM +0100, Greg Kroah-Hartman wrote:
+> > This is the start of the stable review cycle for the 5.10.14 release.
+> > There are 57 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> > 
+> > Responses should be made by Sun, 07 Feb 2021 14:06:42 +0000.
+> > Anything received after that time might be too late.
+> > 
+> 
+> Build results:
+> 	total: 154 pass: 154 fail: 0
+> Qemu test results:
+> 	total: 427 pass: 427 fail: 0
+> 
+> Tested-by: Guenter Roeck <linux@roeck-us.net>
 
-mips-alpine-linux-musl-ld: arch/mips/boot/compressed/decompress.o:
-in function `FSE_buildDTable_wksp':
-decompress.c:(.text.FSE_buildDTable_wksp+0x278): undefined reference
-to `__ubsan_handle_shift_out_of_bounds'
-mips-alpine-linux-musl-ld: decompress.c:(.text.FSE_buildDTable_wksp+0x2a8):
-undefined reference to `__ubsan_handle_shift_out_of_bounds'
-mips-alpine-linux-musl-ld: decompress.c:(.text.FSE_buildDTable_wksp+0x2c4):
-undefined reference to `__ubsan_handle_shift_out_of_bounds'
-mips-alpine-linux-musl-ld: arch/mips/boot/compressed/decompress.o:
-decompress.c:(.text.FSE_buildDTable_raw+0x9c): more undefined references
-to `__ubsan_handle_shift_out_of_bounds' follow
-
-Add UBSAN_SANITIZE :=3D n to mips/boot/compressed/Makefile to exclude
-it from instrumentation scope and fix this issue.
-
-Fixes: 1e35918ad9d1 ("MIPS: Enable Undefined Behavior Sanitizer UBSAN")
-Cc: stable@vger.kernel.org # 5.0+
-Signed-off-by: Alexander Lobakin <alobakin@pm.me>
----
- arch/mips/boot/compressed/Makefile | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/mips/boot/compressed/Makefile b/arch/mips/boot/compressed=
-/Makefile
-index 47cd9dc7454a..f93f72bcba97 100644
---- a/arch/mips/boot/compressed/Makefile
-+++ b/arch/mips/boot/compressed/Makefile
-@@ -37,6 +37,7 @@ KBUILD_AFLAGS :=3D $(KBUILD_AFLAGS) -D__ASSEMBLY__ \
- # Prevents link failures: __sanitizer_cov_trace_pc() is not linked in.
- KCOV_INSTRUMENT=09=09:=3D n
- GCOV_PROFILE :=3D n
-+UBSAN_SANITIZE :=3D n
-=20
- # decompressor objects (linked with vmlinuz)
- vmlinuzobjs-y :=3D $(obj)/head.o $(obj)/decompress.o $(obj)/string.o
---=20
-2.30.0
-
-
+Great, thanks for testing!
