@@ -2,36 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F8DE3138DF
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 17:07:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C71E3138BC
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 17:01:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234186AbhBHQHs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 11:07:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56506 "EHLO mail.kernel.org"
+        id S229637AbhBHQAG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 11:00:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55686 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233263AbhBHPK7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 10:10:59 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4E99864EBE;
-        Mon,  8 Feb 2021 15:08:00 +0000 (UTC)
+        id S232574AbhBHPIw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 10:08:52 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8D5E964EB9;
+        Mon,  8 Feb 2021 15:06:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612796880;
-        bh=yM1yKpIsH1SVBWXEtrA81hq1B2LFhZyLkWgvd5v9p6o=;
+        s=korg; t=1612796798;
+        bh=9IFmgXGAY9NN91yoqN9q28CFRoY0hzaLhHvv6EKm45E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cYHQfDrwhbLf/IiMzHUXJj5bCqbhwQMC9eaJw5IsVk0h18t96Drv9T3TfW4lkhTnT
-         uyUUN//1Dn8WEN2ZRkCX+Pxh1F9OtaqooPdTtGLsDgcS4fi4CO1s4vV+rEl8m5Pl3N
-         pX+uIhMkd+1FfAk2PghlbptvV9+UveLnF7XpSjNQ=
+        b=a5ogHkgtSg6eNFpedEgri8n+vgHPcTXHbG0emL/v3aGWH02cUzJ82YXwi0nL1itpn
+         8ixWT75bL/NwMpUBYZt3Ys19QjECcXweo9f1BiH+smwO5sicRjqRPUwEbuBjqX4gQF
+         opbaoS2KX8NpD1sEN41tWecP/RwlzCWi3HvtpAm0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Aurelien Aptel <aaptel@suse.com>,
-        Shyam Prasad N <nspmangalore@gmail.com>,
-        Steve French <stfrench@microsoft.com>
-Subject: [PATCH 4.19 21/38] cifs: report error instead of invalid when revalidating a dentry fails
-Date:   Mon,  8 Feb 2021 16:01:08 +0100
-Message-Id: <20210208145807.002040003@linuxfoundation.org>
+        stable@vger.kernel.org, Muchun Song <songmuchun@bytedance.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        David Hildenbrand <david@redhat.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.14 23/30] mm: hugetlb: fix a race between isolating and freeing page
+Date:   Mon,  8 Feb 2021 16:01:09 +0100
+Message-Id: <20210208145806.188273509@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210208145806.141056364@linuxfoundation.org>
-References: <20210208145806.141056364@linuxfoundation.org>
+In-Reply-To: <20210208145805.239714726@linuxfoundation.org>
+References: <20210208145805.239714726@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,74 +45,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Aurelien Aptel <aaptel@suse.com>
+From: Muchun Song <songmuchun@bytedance.com>
 
-commit 21b200d091826a83aafc95d847139b2b0582f6d1 upstream.
+commit 0eb2df2b5629794020f75e94655e1994af63f0d4 upstream.
 
-Assuming
-- //HOST/a is mounted on /mnt
-- //HOST/b is mounted on /mnt/b
+There is a race between isolate_huge_page() and __free_huge_page().
 
-On a slow connection, running 'df' and killing it while it's
-processing /mnt/b can make cifs_get_inode_info() returns -ERESTARTSYS.
+  CPU0:                                     CPU1:
 
-This triggers the following chain of events:
-=> the dentry revalidation fail
-=> dentry is put and released
-=> superblock associated with the dentry is put
-=> /mnt/b is unmounted
+  if (PageHuge(page))
+                                            put_page(page)
+                                              __free_huge_page(page)
+                                                  spin_lock(&hugetlb_lock)
+                                                  update_and_free_page(page)
+                                                    set_compound_page_dtor(page,
+                                                      NULL_COMPOUND_DTOR)
+                                                  spin_unlock(&hugetlb_lock)
+    isolate_huge_page(page)
+      // trigger BUG_ON
+      VM_BUG_ON_PAGE(!PageHead(page), page)
+      spin_lock(&hugetlb_lock)
+      page_huge_active(page)
+        // trigger BUG_ON
+        VM_BUG_ON_PAGE(!PageHuge(page), page)
+      spin_unlock(&hugetlb_lock)
 
-This patch makes cifs_d_revalidate() return the error instead of 0
-(invalid) when cifs_revalidate_dentry() fails, except for ENOENT (file
-deleted) and ESTALE (file recreated).
+When we isolate a HugeTLB page on CPU0.  Meanwhile, we free it to the
+buddy allocator on CPU1.  Then, we can trigger a BUG_ON on CPU0, because
+it is already freed to the buddy allocator.
 
-Signed-off-by: Aurelien Aptel <aaptel@suse.com>
-Suggested-by: Shyam Prasad N <nspmangalore@gmail.com>
-Reviewed-by: Shyam Prasad N <nspmangalore@gmail.com>
-CC: stable@vger.kernel.org
-Signed-off-by: Steve French <stfrench@microsoft.com>
+Link: https://lkml.kernel.org/r/20210115124942.46403-5-songmuchun@bytedance.com
+Fixes: c8721bbbdd36 ("mm: memory-hotplug: enable memory hotplug to handle hugepage")
+Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
+Acked-by: Michal Hocko <mhocko@suse.com>
+Reviewed-by: Oscar Salvador <osalvador@suse.de>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Yang Shi <shy828301@gmail.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/cifs/dir.c |   22 ++++++++++++++++++++--
- 1 file changed, 20 insertions(+), 2 deletions(-)
+ mm/hugetlb.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/fs/cifs/dir.c
-+++ b/fs/cifs/dir.c
-@@ -840,6 +840,7 @@ static int
- cifs_d_revalidate(struct dentry *direntry, unsigned int flags)
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -4865,9 +4865,9 @@ bool isolate_huge_page(struct page *page
  {
- 	struct inode *inode;
-+	int rc;
+ 	bool ret = true;
  
- 	if (flags & LOOKUP_RCU)
- 		return -ECHILD;
-@@ -849,8 +850,25 @@ cifs_d_revalidate(struct dentry *direntr
- 		if ((flags & LOOKUP_REVAL) && !CIFS_CACHE_READ(CIFS_I(inode)))
- 			CIFS_I(inode)->time = 0; /* force reval */
- 
--		if (cifs_revalidate_dentry(direntry))
--			return 0;
-+		rc = cifs_revalidate_dentry(direntry);
-+		if (rc) {
-+			cifs_dbg(FYI, "cifs_revalidate_dentry failed with rc=%d", rc);
-+			switch (rc) {
-+			case -ENOENT:
-+			case -ESTALE:
-+				/*
-+				 * Those errors mean the dentry is invalid
-+				 * (file was deleted or recreated)
-+				 */
-+				return 0;
-+			default:
-+				/*
-+				 * Otherwise some unexpected error happened
-+				 * report it as-is to VFS layer
-+				 */
-+				return rc;
-+			}
-+		}
- 		else {
- 			/*
- 			 * If the inode wasn't known to be a dfs entry when
+-	VM_BUG_ON_PAGE(!PageHead(page), page);
+ 	spin_lock(&hugetlb_lock);
+-	if (!page_huge_active(page) || !get_page_unless_zero(page)) {
++	if (!PageHeadHuge(page) || !page_huge_active(page) ||
++	    !get_page_unless_zero(page)) {
+ 		ret = false;
+ 		goto unlock;
+ 	}
 
 
