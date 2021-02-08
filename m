@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC05F3138F6
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 17:11:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B10A53138F8
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 17:12:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231833AbhBHQLE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 11:11:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56630 "EHLO mail.kernel.org"
+        id S231259AbhBHQLT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 11:11:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55494 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232437AbhBHPLJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 10:11:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 41E3464EC6;
-        Mon,  8 Feb 2021 15:08:17 +0000 (UTC)
+        id S233285AbhBHPLQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 10:11:16 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4611164EBF;
+        Mon,  8 Feb 2021 15:08:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612796897;
-        bh=1n7OXbikigR1itgKGGTavr6sOJoICHAu215AJBgE0UU=;
+        s=korg; t=1612796900;
+        bh=knE+Sry8wET3NPoTsA8H3lstdcgKQmlNIU94BXEZHYA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HqOyTvRv09OPwEeWc58Pun9K9xV1btWs/heNPlRHAmtIlWrWH53bZIHx4MBro8mku
-         vW+e0CC41g8JoFBhCyjXuDd7dwImZMvlWaOQkzGvMr9LAjN6V3ZSNIcCRDpsrYf5ig
-         pDITypUs96uRhubtFKD3M5zp37rwqU+xs6Mmz6Pg=
+        b=FQtIUF0mS1kVB1lO9Pg8wQG3xdziTKW5VhcZhqcQ8tM2nq1BnxbvR1ASFTafK9wDu
+         ja80McQswWCFMnffJWTkbGGDTBhOt8ToinyaxDnVwCQNBVAgtyGxzpFyNKueSxF6Cc
+         ZyJRBxCF3gPdx6jWJMVa6vFIA41EDrKDZqH+xAyI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Muchun Song <songmuchun@bytedance.com>,
-        Michal Hocko <mhocko@suse.com>,
         Mike Kravetz <mike.kravetz@oracle.com>,
         Oscar Salvador <osalvador@suse.de>,
+        Michal Hocko <mhocko@suse.com>,
         David Hildenbrand <david@redhat.com>,
         Yang Shi <shy828301@gmail.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.19 27/38] mm: hugetlbfs: fix cannot migrate the fallocated HugeTLB page
-Date:   Mon,  8 Feb 2021 16:01:14 +0100
-Message-Id: <20210208145807.250973848@linuxfoundation.org>
+Subject: [PATCH 4.19 28/38] mm: hugetlb: fix a race between freeing and dissolving the page
+Date:   Mon,  8 Feb 2021 16:01:15 +0100
+Message-Id: <20210208145807.286891562@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210208145806.141056364@linuxfoundation.org>
 References: <20210208145806.141056364@linuxfoundation.org>
@@ -47,22 +47,42 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Muchun Song <songmuchun@bytedance.com>
 
-commit 585fc0d2871c9318c949fbf45b1f081edd489e96 upstream.
+commit 7ffddd499ba6122b1a07828f023d1d67629aa017 upstream.
 
-If a new hugetlb page is allocated during fallocate it will not be
-marked as active (set_page_huge_active) which will result in a later
-isolate_huge_page failure when the page migration code would like to
-move that page.  Such a failure would be unexpected and wrong.
+There is a race condition between __free_huge_page()
+and dissolve_free_huge_page().
 
-Only export set_page_huge_active, just leave clear_page_huge_active as
-static.  Because there are no external users.
+  CPU0:                         CPU1:
 
-Link: https://lkml.kernel.org/r/20210115124942.46403-3-songmuchun@bytedance.com
-Fixes: 70c3547e36f5 (hugetlbfs: add hugetlbfs_fallocate())
+  // page_count(page) == 1
+  put_page(page)
+    __free_huge_page(page)
+                                dissolve_free_huge_page(page)
+                                  spin_lock(&hugetlb_lock)
+                                  // PageHuge(page) && !page_count(page)
+                                  update_and_free_page(page)
+                                  // page is freed to the buddy
+                                  spin_unlock(&hugetlb_lock)
+      spin_lock(&hugetlb_lock)
+      clear_page_huge_active(page)
+      enqueue_huge_page(page)
+      // It is wrong, the page is already freed
+      spin_unlock(&hugetlb_lock)
+
+The race window is between put_page() and dissolve_free_huge_page().
+
+We should make sure that the page is already on the free list when it is
+dissolved.
+
+As a result __free_huge_page would corrupt page(s) already in the buddy
+allocator.
+
+Link: https://lkml.kernel.org/r/20210115124942.46403-4-songmuchun@bytedance.com
+Fixes: c8721bbbdd36 ("mm: memory-hotplug: enable memory hotplug to handle hugepage")
 Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-Acked-by: Michal Hocko <mhocko@suse.com>
 Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
 Reviewed-by: Oscar Salvador <osalvador@suse.de>
+Acked-by: Michal Hocko <mhocko@suse.com>
 Cc: David Hildenbrand <david@redhat.com>
 Cc: Yang Shi <shy828301@gmail.com>
 Cc: <stable@vger.kernel.org>
@@ -70,47 +90,91 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/hugetlbfs/inode.c    |    3 ++-
- include/linux/hugetlb.h |    3 +++
- mm/hugetlb.c            |    2 +-
- 3 files changed, 6 insertions(+), 2 deletions(-)
+ mm/hugetlb.c |   39 +++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 39 insertions(+)
 
---- a/fs/hugetlbfs/inode.c
-+++ b/fs/hugetlbfs/inode.c
-@@ -654,9 +654,10 @@ static long hugetlbfs_fallocate(struct f
- 
- 		mutex_unlock(&hugetlb_fault_mutex_table[hash]);
- 
-+		set_page_huge_active(page);
- 		/*
- 		 * unlock_page because locked by add_to_page_cache()
--		 * page_put due to reference from alloc_huge_page()
-+		 * put_page() due to reference from alloc_huge_page()
- 		 */
- 		unlock_page(page);
- 		put_page(page);
---- a/include/linux/hugetlb.h
-+++ b/include/linux/hugetlb.h
-@@ -541,6 +541,9 @@ static inline void set_huge_swap_pte_at(
- 	set_huge_pte_at(mm, addr, ptep, pte);
- }
- #endif
-+
-+void set_page_huge_active(struct page *page);
-+
- #else	/* CONFIG_HUGETLB_PAGE */
- struct hstate {};
- #define alloc_huge_page(v, a, r) NULL
 --- a/mm/hugetlb.c
 +++ b/mm/hugetlb.c
-@@ -1201,7 +1201,7 @@ bool page_huge_active(struct page *page)
+@@ -68,6 +68,21 @@ DEFINE_SPINLOCK(hugetlb_lock);
+ static int num_fault_mutexes;
+ struct mutex *hugetlb_fault_mutex_table ____cacheline_aligned_in_smp;
+ 
++static inline bool PageHugeFreed(struct page *head)
++{
++	return page_private(head + 4) == -1UL;
++}
++
++static inline void SetPageHugeFreed(struct page *head)
++{
++	set_page_private(head + 4, -1UL);
++}
++
++static inline void ClearPageHugeFreed(struct page *head)
++{
++	set_page_private(head + 4, 0);
++}
++
+ /* Forward declaration */
+ static int hugetlb_acct_memory(struct hstate *h, long delta);
+ 
+@@ -858,6 +873,7 @@ static void enqueue_huge_page(struct hst
+ 	list_move(&page->lru, &h->hugepage_freelists[nid]);
+ 	h->free_huge_pages++;
+ 	h->free_huge_pages_node[nid]++;
++	SetPageHugeFreed(page);
  }
  
- /* never called for tail page */
--static void set_page_huge_active(struct page *page)
-+void set_page_huge_active(struct page *page)
+ static struct page *dequeue_huge_page_node_exact(struct hstate *h, int nid)
+@@ -875,6 +891,7 @@ static struct page *dequeue_huge_page_no
+ 		return NULL;
+ 	list_move(&page->lru, &h->hugepage_activelist);
+ 	set_page_refcounted(page);
++	ClearPageHugeFreed(page);
+ 	h->free_huge_pages--;
+ 	h->free_huge_pages_node[nid]--;
+ 	return page;
+@@ -1305,6 +1322,7 @@ static void prep_new_huge_page(struct hs
+ 	set_hugetlb_cgroup(page, NULL);
+ 	h->nr_huge_pages++;
+ 	h->nr_huge_pages_node[nid]++;
++	ClearPageHugeFreed(page);
+ 	spin_unlock(&hugetlb_lock);
+ }
+ 
+@@ -1500,6 +1518,7 @@ int dissolve_free_huge_page(struct page
  {
- 	VM_BUG_ON_PAGE(!PageHeadHuge(page), page);
- 	SetPagePrivate(&page[1]);
+ 	int rc = -EBUSY;
+ 
++retry:
+ 	/* Not to disrupt normal path by vainly holding hugetlb_lock */
+ 	if (!PageHuge(page))
+ 		return 0;
+@@ -1516,6 +1535,26 @@ int dissolve_free_huge_page(struct page
+ 		int nid = page_to_nid(head);
+ 		if (h->free_huge_pages - h->resv_huge_pages == 0)
+ 			goto out;
++
++		/*
++		 * We should make sure that the page is already on the free list
++		 * when it is dissolved.
++		 */
++		if (unlikely(!PageHugeFreed(head))) {
++			spin_unlock(&hugetlb_lock);
++			cond_resched();
++
++			/*
++			 * Theoretically, we should return -EBUSY when we
++			 * encounter this race. In fact, we have a chance
++			 * to successfully dissolve the page if we do a
++			 * retry. Because the race window is quite small.
++			 * If we seize this opportunity, it is an optimization
++			 * for increasing the success rate of dissolving page.
++			 */
++			goto retry;
++		}
++
+ 		/*
+ 		 * Move PageHWPoison flag from head page to the raw error page,
+ 		 * which makes any subpages rather than the error page reusable.
 
 
