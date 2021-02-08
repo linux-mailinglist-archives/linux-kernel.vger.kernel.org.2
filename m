@@ -2,183 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9901C31290B
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 03:48:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F4C031291E
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 03:59:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229615AbhBHCpt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Feb 2021 21:45:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32940 "EHLO
+        id S229611AbhBHC4R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Feb 2021 21:56:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229537AbhBHCpr (ORCPT
+        with ESMTP id S229537AbhBHC4Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Feb 2021 21:45:47 -0500
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1979AC06174A;
-        Sun,  7 Feb 2021 18:45:07 -0800 (PST)
-Received: by mail-io1-xd32.google.com with SMTP id u20so13444184iot.9;
-        Sun, 07 Feb 2021 18:45:07 -0800 (PST)
+        Sun, 7 Feb 2021 21:56:16 -0500
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF3C9C06174A
+        for <linux-kernel@vger.kernel.org>; Sun,  7 Feb 2021 18:55:35 -0800 (PST)
+Received: by mail-pf1-x436.google.com with SMTP id j12so8756749pfj.12
+        for <linux-kernel@vger.kernel.org>; Sun, 07 Feb 2021 18:55:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=mtjqJol7vTXvy12x0z4hkAgj+mfxoJ3qfBWD1xOomkQ=;
-        b=ThbthEM8x/MN0Ii2BGBE7KfrUhIQnLkQjy+HpJ0fAFDuiNjc0fF7PbR88eBhBuMQSP
-         uzpYnvxDW8NJ+ZnCzSUR/TSvGCx1kT0M5Jg7ge90GANv31RFpfLQPUWfaXjP9kKcFj75
-         RxuGGmCBbV7sNe2JXF3Gzyzqiiv+6BXXGbMJoDKr7wHaVFVRQtPes1EBweHQe+OBoMUl
-         1Zk9FlgD5pOOx0R9YwsO4MD7Pt4QHm4j288loRcx79kBjfoSk75dzKrJ0wj3GdNIl9IS
-         fxztWLSqM+6FcvcqAboJRkeGMexcUGEUtDiwG7H3LMwnss5p+pVCLCGLFA/38CThnrhX
-         qHbQ==
+        h=from:to:cc:subject:date:message-id;
+        bh=cRQhiF2GEiPjRDo8n2Y99tRPesoEHMgxfbNm4llEXVw=;
+        b=YvzighEBZPgRI0+B7YbURV5Uei8SR77KtaA/mEz3JnyIBexL5pWA/HLsYS8WPNrn+1
+         CSipSRXJueQVKSi1n0XJOZ4PoT7vRsE2/RsWCJ3EyEjvL9G/437TCXNc1VKwnvpfTylp
+         ETH7oezyngV3YIS2XZS340OmzVvSLAZN+lXU/sQSY4jEDzr/xHst7yebuT569oxO5gPP
+         LiRDroRXK2sgmKQM1xKeK6xhpvmUahg3aX4UZyYl2Rvr6a5MZfu5afnmHfVvhdkwAtpE
+         ASiepLulkJpcz74/ivCaR74dkalFhpMCBJtKSROvrCU6JHh8zBCZZ4Rmxzj1yN0n6YLD
+         nDTA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=mtjqJol7vTXvy12x0z4hkAgj+mfxoJ3qfBWD1xOomkQ=;
-        b=fs906nqtV4VnWigzh6gwpodXGLhFmYB6CnKh2jrv2ADUw+RUa6NNwVG/FjhZW5fVlr
-         2z4WYEsDUhXHvjqsON/PBKW3ZGXqfv2p6l93b7Rz1uKSMi259zbytb/TG0m7E5Dl7Y9N
-         9t3YT8ieP+94s0KjxS04SCNmfeZsCkdY5OcTV1i1RVXzxoo/SNXwy+VGoHmH8CNJRWr/
-         TTQWOViFTohHUawgRGtwFd+7yQwpDZoxEqX9bSfUMMNsxd9+LnyCSsL1hSznks0IMTQN
-         /GskTvrYxumKOMCExgzUBirtm9jqEZJROVw5SbmiY8kXhmGm9dK7yu5/tcxVEKo1qCXb
-         88Sw==
-X-Gm-Message-State: AOAM532qKvOJ3psgoLQFcLEFiEPImcbj5eolANC+rYbKl+qDnmQ3i36z
-        3xgsbDSzwjI3708r3Alkjs0vpmC56VvkQbBOu4s=
-X-Google-Smtp-Source: ABdhPJwmnoIadfnQ/N1tpZUnigHgJWhIf/n1td9ullFgkxkut+NlLxeHhXQ+tBu9xyEw7AzaESfBwdEacxOQDOOAfxA=
-X-Received: by 2002:a05:6602:150a:: with SMTP id g10mr13772834iow.75.1612752306223;
- Sun, 07 Feb 2021 18:45:06 -0800 (PST)
-MIME-Version: 1.0
-References: <20210204220741.GA920417@kernel.org>
-In-Reply-To: <20210204220741.GA920417@kernel.org>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Mon, 8 Feb 2021 03:44:54 +0100
-Message-ID: <CA+icZUXngJL2WXRyeWDjTyBYbXc0uC0_C69nBH9bq4sr_TAx5g@mail.gmail.com>
-Subject: Re: ANNOUNCE: pahole v1.20 (gcc11 DWARF5's default, lots of ELF
- sections, BTF)
-To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-Cc:     dwarves@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        bpf@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
-        Jan Engelhardt <jengelh@inai.de>,
-        Domenico Andreoli <cavok@debian.org>,
-        Matthias Schwarzott <zzam@gentoo.org>,
-        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
-        Mark Wieelard <mjw@redhat.com>,
-        Paul Moore <paul@paul-moore.com>,
-        Ondrej Mosnacek <omosnace@redhat.com>,
-        =?UTF-8?Q?Daniel_P=2E_Berrang=C3=A9?= <berrange@redhat.com>,
-        Tom Stellard <tstellar@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=cRQhiF2GEiPjRDo8n2Y99tRPesoEHMgxfbNm4llEXVw=;
+        b=CH4xOkcrKaFKbU6zTUg9hBOeFNzHGYEiCoTCV+Zp1gJYfzuUdOZD8N5MVFu1BMVFms
+         sPhyXtaFch5f1OJakTA3wtRTBMklQUDs4CNR3zXYynZP2toGyqNwTVdhDYizM5fkIcAE
+         +WOWpQKu4a6gVsb+k8v94LJKzXQkKsuH+eCK7WEsq1Y3AuSgRjtLJXY8K7soZMQIxrBp
+         1XLCNOLsxPtpifEDeLVo4p6NHbJtg7JoFSy1CYcXKQN2Xg3zMGmbzxTIuYQCf4dddvl5
+         iiCCBQ6lGj2cuNUiZXMQ81QVJc56N1pTi1mNPZ1q7VSTpuRBYpzi67kHmNwDtoQYkii7
+         KcCg==
+X-Gm-Message-State: AOAM530YJVh2fi9u6WxSRY7/100OQ7kUKT9LV6k23b3MFpZ3PubF3srF
+        62XiFqSx6PA9a52aIKe1rtw=
+X-Google-Smtp-Source: ABdhPJxlyrOhirfCn4YYSv0rzIFzBuoTySDyB8uyOX7zJBXiw4W9hm42DYdBV+Uwg7TuLHRfa4iDAA==
+X-Received: by 2002:a63:70f:: with SMTP id 15mr14818934pgh.250.1612752934934;
+        Sun, 07 Feb 2021 18:55:34 -0800 (PST)
+Received: from mahak-Inspiron-7570 ([103.153.208.42])
+        by smtp.gmail.com with ESMTPSA id w13sm16759704pfc.7.2021.02.07.18.55.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 07 Feb 2021 18:55:34 -0800 (PST)
+From:   Mahak Gupta <gmahak1@gmail.com>
+To:     linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org,
+        gregkh@linuxfoundation.org, rcy@google.com, benchan@chromium.org,
+        toddpoynor@google.com, rspringer@google.com
+Cc:     Mahak Gupta <gmahak1@gmail.com>
+Subject: [PATCH] staging: gasket: fix indentation and lines ending with open parenthesis
+Date:   Mon,  8 Feb 2021 08:25:08 +0530
+Message-Id: <20210208025508.25714-1-gmahak1@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 4, 2021 at 11:07 PM Arnaldo Carvalho de Melo
-<arnaldo.melo@gmail.com> wrote:
->
-> Hi,
->
->         The v1.20 release of pahole and its friends is out, mostly
-> addressing problems related to gcc 11 defaulting to DWARF5 for -g,
-> available at the usual places:
->
-> Main git repo:
->
->    git://git.kernel.org/pub/scm/devel/pahole/pahole.git
->
-> Mirror git repo:
->
->    https://github.com/acmel/dwarves.git
->
-> tarball + gpg signature:
->
->    https://fedorapeople.org/~acme/dwarves/dwarves-1.20.tar.xz
->    https://fedorapeople.org/~acme/dwarves/dwarves-1.20.tar.bz2
->    https://fedorapeople.org/~acme/dwarves/dwarves-1.20.tar.sign
->
+This patch fixes warnings of 'checkpatch.pl'. According to
+Linux coding guidelines, code should be aligned properly to
+match with open parenthesis and lines should not end with
+open parenthesis.
 
-FYI:
-Debian now ships dwarves package version 1.20-1 in unstable.
+Signed-off-by: Mahak Gupta <gmahak1@gmail.com>
+---
+Changes since v1:
+ - Use temporary variables to shorten long lines. This variable was used multiple times.
+---
+ drivers/staging/gasket/gasket_ioctl.c | 42 ++++++++++++++-------------
+ 1 file changed, 22 insertions(+), 20 deletions(-)
 
-Just a small nit to this release and its tagging:
+diff --git a/drivers/staging/gasket/gasket_ioctl.c b/drivers/staging/gasket/gasket_ioctl.c
+index e3047d36d8db..aa65f4fbf860 100644
+--- a/drivers/staging/gasket/gasket_ioctl.c
++++ b/drivers/staging/gasket/gasket_ioctl.c
+@@ -40,10 +40,11 @@ static int gasket_set_event_fd(struct gasket_dev *gasket_dev,
+ 
+ /* Read the size of the page table. */
+ static int gasket_read_page_table_size(struct gasket_dev *gasket_dev,
+-	struct gasket_page_table_ioctl __user *argp)
++				       struct gasket_page_table_ioctl __user *argp)
+ {
+ 	int ret = 0;
+ 	struct gasket_page_table_ioctl ibuf;
++	struct gasket_page_table *table;
+ 
+ 	if (copy_from_user(&ibuf, argp, sizeof(struct gasket_page_table_ioctl)))
+ 		return -EFAULT;
+@@ -51,8 +52,8 @@ static int gasket_read_page_table_size(struct gasket_dev *gasket_dev,
+ 	if (ibuf.page_table_index >= gasket_dev->num_page_tables)
+ 		return -EFAULT;
+ 
+-	ibuf.size = gasket_page_table_num_entries(
+-		gasket_dev->page_table[ibuf.page_table_index]);
++	table = gasket_dev->page_table[ibuf.page_table_index];
++	ibuf.size = gasket_page_table_num_entries(table);
+ 
+ 	trace_gasket_ioctl_page_table_data(ibuf.page_table_index, ibuf.size,
+ 					   ibuf.host_address,
+@@ -66,10 +67,11 @@ static int gasket_read_page_table_size(struct gasket_dev *gasket_dev,
+ 
+ /* Read the size of the simple page table. */
+ static int gasket_read_simple_page_table_size(struct gasket_dev *gasket_dev,
+-	struct gasket_page_table_ioctl __user *argp)
++					      struct gasket_page_table_ioctl __user *argp)
+ {
+ 	int ret = 0;
+ 	struct gasket_page_table_ioctl ibuf;
++	struct gasket_page_table *table;
+ 
+ 	if (copy_from_user(&ibuf, argp, sizeof(struct gasket_page_table_ioctl)))
+ 		return -EFAULT;
+@@ -77,8 +79,8 @@ static int gasket_read_simple_page_table_size(struct gasket_dev *gasket_dev,
+ 	if (ibuf.page_table_index >= gasket_dev->num_page_tables)
+ 		return -EFAULT;
+ 
+-	ibuf.size =
+-		gasket_page_table_num_simple_entries(gasket_dev->page_table[ibuf.page_table_index]);
++	table = gasket_dev->page_table[ibuf.page_table_index];
++	ibuf.size = gasket_page_table_num_simple_entries(table);
+ 
+ 	trace_gasket_ioctl_page_table_data(ibuf.page_table_index, ibuf.size,
+ 					   ibuf.host_address,
+@@ -92,11 +94,12 @@ static int gasket_read_simple_page_table_size(struct gasket_dev *gasket_dev,
+ 
+ /* Set the boundary between the simple and extended page tables. */
+ static int gasket_partition_page_table(struct gasket_dev *gasket_dev,
+-	struct gasket_page_table_ioctl __user *argp)
++				       struct gasket_page_table_ioctl __user *argp)
+ {
+ 	int ret;
+ 	struct gasket_page_table_ioctl ibuf;
+ 	uint max_page_table_size;
++	struct gasket_page_table *table;
+ 
+ 	if (copy_from_user(&ibuf, argp, sizeof(struct gasket_page_table_ioctl)))
+ 		return -EFAULT;
+@@ -107,8 +110,8 @@ static int gasket_partition_page_table(struct gasket_dev *gasket_dev,
+ 
+ 	if (ibuf.page_table_index >= gasket_dev->num_page_tables)
+ 		return -EFAULT;
+-	max_page_table_size = gasket_page_table_max_size(
+-		gasket_dev->page_table[ibuf.page_table_index]);
++	table = gasket_dev->page_table[ibuf.page_table_index];
++	max_page_table_size = gasket_page_table_max_size(table);
+ 
+ 	if (ibuf.size > max_page_table_size) {
+ 		dev_dbg(gasket_dev->dev,
+@@ -119,8 +122,7 @@ static int gasket_partition_page_table(struct gasket_dev *gasket_dev,
+ 
+ 	mutex_lock(&gasket_dev->mutex);
+ 
+-	ret = gasket_page_table_partition(
+-		gasket_dev->page_table[ibuf.page_table_index], ibuf.size);
++	ret = gasket_page_table_partition(table, ibuf.size);
+ 	mutex_unlock(&gasket_dev->mutex);
+ 
+ 	return ret;
+@@ -131,6 +133,7 @@ static int gasket_map_buffers(struct gasket_dev *gasket_dev,
+ 			      struct gasket_page_table_ioctl __user *argp)
+ {
+ 	struct gasket_page_table_ioctl ibuf;
++	struct gasket_page_table *table;
+ 
+ 	if (copy_from_user(&ibuf, argp, sizeof(struct gasket_page_table_ioctl)))
+ 		return -EFAULT;
+@@ -142,13 +145,12 @@ static int gasket_map_buffers(struct gasket_dev *gasket_dev,
+ 	if (ibuf.page_table_index >= gasket_dev->num_page_tables)
+ 		return -EFAULT;
+ 
+-	if (gasket_page_table_are_addrs_bad(gasket_dev->page_table[ibuf.page_table_index],
+-					    ibuf.host_address,
++	table = gasket_dev->page_table[ibuf.page_table_index];
++	if (gasket_page_table_are_addrs_bad(table, ibuf.host_address,
+ 					    ibuf.device_address, ibuf.size))
+ 		return -EINVAL;
+ 
+-	return gasket_page_table_map(gasket_dev->page_table[ibuf.page_table_index],
+-				     ibuf.host_address, ibuf.device_address,
++	return gasket_page_table_map(table, ibuf.host_address, ibuf.device_address,
+ 				     ibuf.size / PAGE_SIZE);
+ }
+ 
+@@ -157,6 +159,7 @@ static int gasket_unmap_buffers(struct gasket_dev *gasket_dev,
+ 				struct gasket_page_table_ioctl __user *argp)
+ {
+ 	struct gasket_page_table_ioctl ibuf;
++	struct gasket_page_table *table;
+ 
+ 	if (copy_from_user(&ibuf, argp, sizeof(struct gasket_page_table_ioctl)))
+ 		return -EFAULT;
+@@ -168,12 +171,11 @@ static int gasket_unmap_buffers(struct gasket_dev *gasket_dev,
+ 	if (ibuf.page_table_index >= gasket_dev->num_page_tables)
+ 		return -EFAULT;
+ 
+-	if (gasket_page_table_is_dev_addr_bad(gasket_dev->page_table[ibuf.page_table_index],
+-					      ibuf.device_address, ibuf.size))
++	table = gasket_dev->page_table[ibuf.page_table_index];
++	if (gasket_page_table_is_dev_addr_bad(table, ibuf.device_address, ibuf.size))
+ 		return -EINVAL;
+ 
+-	gasket_page_table_unmap(gasket_dev->page_table[ibuf.page_table_index],
+-				ibuf.device_address, ibuf.size / PAGE_SIZE);
++	gasket_page_table_unmap(table, ibuf.device_address, ibuf.size / PAGE_SIZE);
+ 
+ 	return 0;
+ }
+@@ -183,7 +185,7 @@ static int gasket_unmap_buffers(struct gasket_dev *gasket_dev,
+  * corresponding memory.
+  */
+ static int gasket_config_coherent_allocator(struct gasket_dev *gasket_dev,
+-	struct gasket_coherent_alloc_config_ioctl __user *argp)
++					    struct gasket_coherent_alloc_config_ioctl __user *argp)
+ {
+ 	int ret;
+ 	struct gasket_coherent_alloc_config_ioctl ibuf;
+-- 
+2.17.1
 
-You did:
-commit 0d415f68c468b77c5bf8e71965cd08c6efd25fc4 ("pahole: Prep 1.20")
-
-Is this new?
-
-The release before:
-commit dd15aa4b0a6421295cbb7c3913429142fef8abe0 ("dwarves: Prep v1.19")
-
-- Sedat -
-
-> Best Regards,
->
->  - Arnaldo
->
-> v1.20:
->
-> BTF encoder:
->
->   - Improve ELF error reporting using elf_errmsg(elf_errno()).
->
->   - Improve objcopy error handling.
->
->   - Fix handling of 'restrict' qualifier, that was being treated as a 'const'.
->
->   - Support SHN_XINDEX in st_shndx symbol indexes, to handle ELF objects with
->     more than 65534 sections, for instance, which happens with kernels built
->     with 'KCFLAGS="-ffunction-sections -fdata-sections", Other cases may
->     include when using FG-ASLR, LTO.
->
->   - Cope with functions without a name, as seen sometimes when building kernel
->     images with some versions of clang, when a SEGFAULT was taking place.
->
->   - Fix BTF variable generation for kernel modules, not skipping variables at
->     offset zero.
->
->   - Fix address size to match what is in the ELF file being processed, to fix using
->     a 64-bit pahole binary to generate BTF for a 32-bit vmlinux image.
->
->   - Use kernel module ftrace addresses when finding which functions to encode,
->     which increases the number of functions encoded.
->
-> libbpf:
->
->   - Allow use of packaged version, for distros wanting to dynamically link with
->     the system's libbpf package instead of using the libbpf git submodule shipped
->     in pahole's source code.
->
-> DWARF loader:
->
->   - Support DW_AT_data_bit_offset
->
->     This appeared in DWARF4 but is supported only in gcc's -gdwarf-5,
->     support it in a way that makes the output be the same for both cases.
->
->       $ gcc -gdwarf-5 -c examples/dwarf5/bf.c
->       $ pahole bf.o
->       struct pea {
->             long int                   a:1;                  /*     0: 0  8 */
->             long int                   b:1;                  /*     0: 1  8 */
->             long int                   c:1;                  /*     0: 2  8 */
->
->             /* XXX 29 bits hole, try to pack */
->             /* Bitfield combined with next fields */
->
->             int                        after_bitfield;       /*     4     4 */
->
->             /* size: 8, cachelines: 1, members: 4 */
->             /* sum members: 4 */
->             /* sum bitfield members: 3 bits, bit holes: 1, sum bit holes: 29 bits */
->             /* last cacheline: 8 bytes */
->       };
->
->   - DW_FORM_implicit_const in attr_numeric() and attr_offset()
->
->   - Support DW_TAG_GNU_call_site, its the standardized rename of the previously supported
->     DW_TAG_GNU_call_site.
->
-> build:
->
->     - Fix compilation on 32-bit architectures.
->
-> Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
