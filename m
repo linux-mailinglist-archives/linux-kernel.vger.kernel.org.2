@@ -2,25 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 807BC312EE5
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 11:24:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23CEC312EBC
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 11:19:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232323AbhBHKYE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 05:24:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33020 "EHLO mail.kernel.org"
+        id S231460AbhBHKRO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 05:17:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59606 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232315AbhBHKHo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 05:07:44 -0500
+        id S230510AbhBHKFA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 05:05:00 -0500
 Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EDC2C64EA6;
-        Mon,  8 Feb 2021 10:04:35 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AA3C564E45;
+        Mon,  8 Feb 2021 10:04:18 +0000 (UTC)
 Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.lan)
         by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94)
         (envelope-from <maz@kernel.org>)
-        id 1l93J1-00Ck14-AD; Mon, 08 Feb 2021 09:58:08 +0000
+        id 1l93J4-00Ck14-2n; Mon, 08 Feb 2021 09:58:10 +0000
 From:   Marc Zyngier <maz@kernel.org>
 To:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
         linux-kernel@vger.kernel.org
@@ -39,9 +39,9 @@ Cc:     Catalin Marinas <catalin.marinas@arm.com>,
         Julien Thierry <julien.thierry.kdev@gmail.com>,
         Suzuki K Poulose <suzuki.poulose@arm.com>,
         kernel-team@android.com
-Subject: [PATCH v7 17/23] arm64: Make kvm-arm.mode={nvhe, protected} an alias of id_aa64mmfr1.vh=0
-Date:   Mon,  8 Feb 2021 09:57:26 +0000
-Message-Id: <20210208095732.3267263-18-maz@kernel.org>
+Subject: [PATCH v7 18/23] KVM: arm64: Document HVC_VHE_RESTART stub hypercall
+Date:   Mon,  8 Feb 2021 09:57:27 +0000
+Message-Id: <20210208095732.3267263-19-maz@kernel.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210208095732.3267263-1-maz@kernel.org>
 References: <20210208095732.3267263-1-maz@kernel.org>
@@ -55,64 +55,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Admitedly, passing id_aa64mmfr1.vh=0 on the command-line isn't
-that easy to understand, and it is likely that users would much
-prefer write "kvm-arm.mode=nvhe", or "...=protected".
-
-So here you go. This has the added advantage that we can now
-always honor the "kvm-arm.mode=protected" option, even when
-booting on a VHE system.
+For completeness, let's document the HVC_VHE_RESTART stub.
 
 Signed-off-by: Marc Zyngier <maz@kernel.org>
-Acked-by: Catalin Marinas <catalin.marinas@arm.com>
 Acked-by: David Brazdil <dbrazdil@google.com>
 ---
- Documentation/admin-guide/kernel-parameters.txt | 3 +++
- arch/arm64/kernel/idreg-override.c              | 2 ++
- arch/arm64/kvm/arm.c                            | 3 +++
- 3 files changed, 8 insertions(+)
+ Documentation/virt/kvm/arm/hyp-abi.rst | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 9e3cdb271d06..2786fd39a047 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -2257,6 +2257,9 @@
- 	kvm-arm.mode=
- 			[KVM,ARM] Select one of KVM/arm64's modes of operation.
+diff --git a/Documentation/virt/kvm/arm/hyp-abi.rst b/Documentation/virt/kvm/arm/hyp-abi.rst
+index 83cadd8186fa..4d43fbc25195 100644
+--- a/Documentation/virt/kvm/arm/hyp-abi.rst
++++ b/Documentation/virt/kvm/arm/hyp-abi.rst
+@@ -58,6 +58,15 @@ these functions (see arch/arm{,64}/include/asm/virt.h):
+   into place (arm64 only), and jump to the restart address while at HYP/EL2.
+   This hypercall is not expected to return to its caller.
  
-+			nvhe: Standard nVHE-based mode, without support for
-+			      protected guests.
++* ::
 +
- 			protected: nVHE-based mode with support for guests whose
- 				   state is kept private from the host.
- 				   Not valid if the kernel is running in EL2.
-diff --git a/arch/arm64/kernel/idreg-override.c b/arch/arm64/kernel/idreg-override.c
-index 226bac544e20..b994d689d6fb 100644
---- a/arch/arm64/kernel/idreg-override.c
-+++ b/arch/arm64/kernel/idreg-override.c
-@@ -45,6 +45,8 @@ static const struct {
- 	char	alias[FTR_ALIAS_NAME_LEN];
- 	char	feature[FTR_ALIAS_OPTION_LEN];
- } aliases[] __initconst = {
-+	{ "kvm-arm.mode=nvhe",		"id_aa64mmfr1.vh=0" },
-+	{ "kvm-arm.mode=protected",	"id_aa64mmfr1.vh=0" },
- };
- 
- static int __init find_field(const char *cmdline,
-diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
-index 04c44853b103..597565a65ca2 100644
---- a/arch/arm64/kvm/arm.c
-+++ b/arch/arm64/kvm/arm.c
-@@ -1966,6 +1966,9 @@ static int __init early_kvm_mode_cfg(char *arg)
- 		return 0;
- 	}
- 
-+	if (strcmp(arg, "nvhe") == 0 && !WARN_ON(is_kernel_in_hyp_mode()))
-+		return 0;
++    x0 = HVC_VHE_RESTART (arm64 only)
 +
- 	return -EINVAL;
- }
- early_param("kvm-arm.mode", early_kvm_mode_cfg);
++  Attempt to upgrade the kernel's exception level from EL1 to EL2 by enabling
++  the VHE mode. This is conditioned by the CPU supporting VHE, the EL2 MMU
++  being off, and VHE not being disabled by any other means (command line
++  option, for example).
++
+ Any other value of r0/x0 triggers a hypervisor-specific handling,
+ which is not documented here.
+ 
 -- 
 2.29.2
 
