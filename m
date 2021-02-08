@@ -2,89 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5116F313DE1
+	by mail.lfdr.de (Postfix) with ESMTP id C1FA0313DE2
 	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 19:43:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235915AbhBHSnY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 13:43:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43744 "EHLO
+        id S235932AbhBHSn2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 13:43:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234145AbhBHQpL (ORCPT
+        with ESMTP id S234546AbhBHQpq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 11:45:11 -0500
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01D32C06178C
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 08:44:30 -0800 (PST)
-Received: by mail-ej1-x631.google.com with SMTP id w2so25832054ejk.13
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 08:44:29 -0800 (PST)
+        Mon, 8 Feb 2021 11:45:46 -0500
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81C4EC061788
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 08:45:06 -0800 (PST)
+Received: by mail-ed1-x52b.google.com with SMTP id q2so19106692edi.4
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 08:45:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=F5h9xONdIWO5O+NZW8RLLN3OmuA966870wfg1CztF70=;
-        b=GuFBMRbnPQ8pXKUdxj0VtNYSL300l5WkcePJdYmjXzfi7LGaVwJlT6ujKwJLw3kOq/
-         C/V/WcVNkp3pWAVyhNBXqtorF/P30JYsm4dBdwnxp50KmlP2HRTEOr/z4BMirtRJfwz9
-         19nMSlyffU0AfKRVDXw6wxPd5keybnQB9bQsjKphz4eP7dF+eVQrraIkDDRovjbFVlOy
-         Xk6O5m7sAv+fCLWPpRCzX2yNaq2trCh1JLV9bTt3cNJTjQ63yF/DgSY8W8BGDCkAJdse
-         BaTxgRiEoLjcs3C7EDhQDW45qEECjjUINMuKJOXySgEIeaIHKhR5uePUog0uldRTvgW6
-         8OAg==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=1lDzdrErHVic1wgVj90rBpN4+RPebZWSQvJBmMEuVb0=;
+        b=myMFcu1sKys+C2nmMRr8rlN55YZSgynl+Ra65AIX2Pzs4L2mN30MBfBniZrC8L151B
+         yToLpWekUpRkIIxYTOIjYJMn10I99v6iaQGuUb9zfh126akmDCewDS1rBJmYOzN1BIQv
+         nVQwPb4tthkcFafH83h5pFsllYkNG/BiJG/UAuDFft0A/mtMzSdBcRIBexKNTKJ4xPmo
+         BK3fAjr9q24FWP8DvavWKMurJeb+Ce6YNGsVtC0F8gWrEzjbhuN7e7leC/FbgPKc3L/V
+         QSrzsUH9nL4KDorRI8u3173C0vKvrXlBJkt3jcxWbPjJu3ACWslpQOAII4bvRUG5NgIv
+         GvMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=F5h9xONdIWO5O+NZW8RLLN3OmuA966870wfg1CztF70=;
-        b=Y7BtaA1d17TGOlMcu9I2sBF9GdRkloX8nSrGNUJndP6HgD74oXMnDPW8qehcFsIE8J
-         4MUkCcFSdb+ud3cWmlrtYhVbFh/XahcxSJfuVSEDCqNbseFBMiEZ5CfR0srF9glDgctD
-         oCiI7exDBeXkFxF/QdEvhoKop+iOOk341xngg5zvGTFXQ56e4BDOc1OXZTU+Uva0C2bS
-         8l6FI5/eV6GOovoJeYW8akNeI9eDcNXAbRfSiWfiVusJIz92o6VTDrCGMfg4BgfdTc8i
-         X0nHuxdeg2kyD2//2HFoim/9kKBynOl9M8orYEuSW7paY1niTjLTPTDQ28qgVkQx2r16
-         +m5w==
-X-Gm-Message-State: AOAM532beWhN8YwQ716uVn9SQanHB12CrP5FctetKabL/p+o+Q6lSQ40
-        OuFOvnzZn4bDwxR1/GJFVIoFCzHXhABUZBl0eJAbqA==
-X-Google-Smtp-Source: ABdhPJyKqV2vMeSrf8JQ+AtG+5a/mZmdZnTnaSiQz01HCyKyFWXKOg/sJgmNIlk0XZRVJK95ma4QX+ZTc/IXqh3MNsY=
-X-Received: by 2002:a17:906:8053:: with SMTP id x19mr17403771ejw.470.1612802668667;
- Mon, 08 Feb 2021 08:44:28 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=1lDzdrErHVic1wgVj90rBpN4+RPebZWSQvJBmMEuVb0=;
+        b=AIMlAPUcIIWdx4W40+o3qAJvsYPDUiXdjuwj0Qc00fqt0FjaZR3B6t3Iu+nQqjheSu
+         7C59onQdEfzNtU14sBPiBHMl5QbRb3UlnsHE77DTOKDcOHxj2/oPsyW9wmPNVNOi88rx
+         H/cKSn8yVVC8FDS1gdRtDOuKO9f6Y8aNob0fsMTLwlxdwS4S91W3h/YqsvseH6Y7P+Vw
+         sXf8RN1EZtDIQHGMtKQ/1NVY+7i+bgme+DOmF+dURVsrZCfde7oGTYshPv+SGi2PCDBx
+         wf4mdEUHSPO6b1yySs6nMLthP1vIfSH71rX1CbH001HqzaEXaSI7tocCh0RjhofbP8Dz
+         1xBQ==
+X-Gm-Message-State: AOAM5314EBjMqg+FbYyhc/T0HYK+urnOPlIfS5qAMkk70tvDngNeVM15
+        mY/5mG/xwvNKbxgAlQo7UA==
+X-Google-Smtp-Source: ABdhPJzc7PxtB1S80jnNwciIvtczzpCeg0Zsz1YSn/W0Zx1Qh/lQXRgK35R6y9nCdWzNDGcFU+a7Vw==
+X-Received: by 2002:aa7:d618:: with SMTP id c24mr3384708edr.7.1612802705294;
+        Mon, 08 Feb 2021 08:45:05 -0800 (PST)
+Received: from localhost.localdomain ([46.53.253.245])
+        by smtp.gmail.com with ESMTPSA id o11sm9746214eds.19.2021.02.08.08.45.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Feb 2021 08:45:04 -0800 (PST)
+Date:   Mon, 8 Feb 2021 19:45:03 +0300
+From:   Alexey Dobriyan <adobriyan@gmail.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     mingo@redhat.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/5] sched: make struct task_struct::state 32-bit
+Message-ID: <20210208164503.GA32698@localhost.localdomain>
+References: <20210206151832.GA487103@localhost.localdomain>
+ <YCETqt8Vqb8R6qmA@hirez.programming.kicks-ass.net>
+ <20210208143025.GA10066@localhost.localdomain>
+ <20210208145245.GA11701@localhost.localdomain>
+ <YCFX7zuwp0haWZFl@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-References: <20210205132505.20173-1-sakari.ailus@linux.intel.com> <20210205132505.20173-8-sakari.ailus@linux.intel.com>
-In-Reply-To: <20210205132505.20173-8-sakari.ailus@linux.intel.com>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Mon, 8 Feb 2021 17:44:17 +0100
-Message-ID: <CAMpxmJU7J9JBSwCN+GLDpuOL=iZ1PH=oZZuGiAyovuf2TQ=o9A@mail.gmail.com>
-Subject: Re: [PATCH v10 7/7] at24: Support probing while off
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     linux-i2c <linux-i2c@vger.kernel.org>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rajmohan Mani <rajmohan.mani@intel.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Bingbu Cao <bingbu.cao@intel.com>,
-        Chiranjeevi Rapolu <chiranjeevi.rapolu@intel.com>,
-        Hyungwoo Yang <hyungwoo.yang@intel.com>,
-        linux-media <linux-media@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <YCFX7zuwp0haWZFl@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 5, 2021 at 2:25 PM Sakari Ailus
-<sakari.ailus@linux.intel.com> wrote:
->
-> In certain use cases (where the chip is part of a camera module, and the
-> camera module is wired together with a camera privacy LED), powering on
-> the device during probe is undesirable. Add support for the at24 to
-> execute probe while being powered off. For this to happen, a hint in form
-> of a device property is required from the firmware.
->
-> Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
-> Reviewed-by: Tomasz Figa <tfiga@chromium.org>
-> ---
+On Mon, Feb 08, 2021 at 04:25:35PM +0100, Peter Zijlstra wrote:
+> On Mon, Feb 08, 2021 at 05:52:45PM +0300, Alexey Dobriyan wrote:
+> > On Mon, Feb 08, 2021 at 05:30:25PM +0300, Alexey Dobriyan wrote:
+> > > On Mon, Feb 08, 2021 at 11:34:18AM +0100, Peter Zijlstra wrote:
+> > > > On Sat, Feb 06, 2021 at 06:18:32PM +0300, Alexey Dobriyan wrote:
+> > > > 
+> > > > > Silently delete "extern" from prototypes.
+> > > > 
+> > > > NAK, extern is right.
+> > > 
+> > > Extern is only necessary for variables.
+> > 
+> > Specifically C17, 6.2.2 p5 (linkage of identifiers):
+> > 
+> > 	if the declaration of an identifier for a function has no
+> > 	storage-class specifier, its linkage is determined exactly as if
+> > 	it were declared with the storage-class specifier "extern".
+> > 
+> > This is why nothing happens if "extern" is deleted.
+> 
+> I know, but I still very much like extern on the function declarations
+> too. It tells me the definition isn't to be found in this TU.
 
-I'll ack this but I still claim that the name
-acpi_dev_state_low_power() is super misleading for this use-case and
-I've been saying that for 10 versions now with everyone just ignoring
-my remarks. :/
-
-Acked-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+What can I say. The absense of function body should tell that.
