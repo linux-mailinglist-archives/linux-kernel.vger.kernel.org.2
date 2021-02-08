@@ -2,160 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33BDE313190
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 12:57:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 669F431318D
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 12:56:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231752AbhBHL5D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 06:57:03 -0500
-Received: from lb1-smtp-cloud8.xs4all.net ([194.109.24.21]:50625 "EHLO
-        lb1-smtp-cloud8.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233158AbhBHLfy (ORCPT
+        id S233212AbhBHL4a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 06:56:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33608 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232597AbhBHLfs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 06:35:54 -0500
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud8.xs4all.net with ESMTPA
-        id 94oiljJHbW4yN94olllQl1; Mon, 08 Feb 2021 12:34:59 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1612784099; bh=cLTN0V3qwtMIWrnNtULMVFYHebjAit9FEOYQIKf/ZKQ=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=bJN2xKL8e0aueqyS9mkZtOV30Mxt9hSvyzz2lmz1EADnsLAKKVC/XTv+SJMMfPSr6
-         /WERsnzKOGxCcZpvrxzChBDrHwVwyywp7HM4sPBW+qdDrBZTWnQ0Hl/VVyQ3H7nPjf
-         wa9M8Y3IeeCVQkKf1C6c9ZPLXLFNGGDssexj1nPE/F1g1YWpuo68cHCX4Sjr5TEFXL
-         XdxVjYqQyFTUalFAABcsLsolRpfbyo1sYff+b50b6vDoi32q2lcGMlkVOFSlYNNBdz
-         4j2rVsOiF1AVMcKyyNz1DevGero1GNOfFdSJLah948NWnD4SQrASlbf1CnzuclQ6rD
-         tXTnANbz0WcRw==
-Subject: Re: [PATCH v8 1/5] media: i2c: Add driver for RDACM21 camera module
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        kieran.bingham+renesas@ideasonboard.com,
-        niklas.soderlund+renesas@ragnatech.se, geert@linux-m68k.org,
-        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Hyun Kwon <hyunk@xilinx.com>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        sergei.shtylyov@gmail.com
-References: <20210114170429.139762-1-jacopo+renesas@jmondi.org>
- <20210114170429.139762-2-jacopo+renesas@jmondi.org>
- <0b118385-70bc-01eb-8ddf-829c604d533b@xs4all.nl>
- <YCEgcPv1TWe0DN50@pendragon.ideasonboard.com>
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-Message-ID: <c0db4607-7e2b-ac88-c9d2-d1c5f75bbf86@xs4all.nl>
-Date:   Mon, 8 Feb 2021 12:34:55 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
-MIME-Version: 1.0
-In-Reply-To: <YCEgcPv1TWe0DN50@pendragon.ideasonboard.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4xfOycAfiYUOVJsJb7JPsJESzYmcPtMQxq949LJ7Q/77adpWZ/KIcaGZfUIc/PVFTioaiDRDStdqbVy9u3ehwQaWoGQ+eShkClJ7v5Ks5QD/xfakT7+QXo
- FPOcIY0fkYaMwD74S6yjxfbmlfQbWcgVPmbfRcwlGuICqCOG0VgfEHJuyNpnnyEgSQQp7qVdWB39gs6caHVHi7A8bZRo5xYavkvu/V4MsNBNAOuna07IqlI4
- S2Ql8kvIbGV7u9fK6keGSdV4XqmJ20eks+kyWD27HN7UF+TeDYsgs7z9nJ/GR/eP2uIK523Sp0PnRpkiDlEA5v+yGCJJelZQb7BVyjA20mxzS/tnWOBQZ3R7
- vDLePzwvQaRVOdBy3SPyEqMovjcuDXDO9NwjSApr4w5Lg2lBr1Xv9NngWeRihUaBTaG3zi2iHvfvXv5z0XUJKdU6I8HjOE4AFVPwZpg5kQnM03EVrX89zvJf
- 6GPEFvF+6pgpvLqHFnN3Ky9lIaH2lWL2xFnpJkCGyidXswh2ZCZkseEX/ly95eLjKKMp3u1FOl5Dq1QlNPQJJizpCDQRCHLmD31aFkKObZVfvZax8HY9ZTl+
- Uv0OAHgTajbYeTq9KxRbXwv10btwT2TwoiJr1notw5TF7Q==
+        Mon, 8 Feb 2021 06:35:48 -0500
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A266C06174A;
+        Mon,  8 Feb 2021 03:35:06 -0800 (PST)
+Received: by mail-pg1-x52d.google.com with SMTP id t11so6339292pgu.8;
+        Mon, 08 Feb 2021 03:35:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=3Ph8qsKmXSqFKVv7QVwyNev8raeZwIr8Rm9tqiLL8AY=;
+        b=TG/s4IiQ6uTzTy6DW5yj2V2Pesqv+sw6iXbp4YQ8u8xFKYjsyjz2HG5KdO5Sn5+Omi
+         BMRSf6BaaJ93P706w/iDvr1RZd7WtcadR49k+ST7NgNQxiu0DHvZi0ATO6YzztkkV3T2
+         JPn0Dyaqp5w2UlutPpp59wI+9WZpcw2uhuJSXsmzucQyO1StFZbQs6vCBjevyePMOpID
+         zfwzwcJ6RAVBZTNa4tCZ74b+Dg7w3z/t4t77DtgQmY8QQNwkdfRdU8RBhg0UbXbXgJ4r
+         TEZEgOi0tOQjZBMqMkzvo6ywJ4xVrqvaINd8KsaITNa5+hUxIh6Qpn1RdVMNrhfe70LE
+         Bxrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=3Ph8qsKmXSqFKVv7QVwyNev8raeZwIr8Rm9tqiLL8AY=;
+        b=EewGZytW3o/HU/v/oLuAOY5dbllorXe33KHDdKwHcfAWnMzO+1GqPZDBqqXAe+Mg79
+         UDzm3Po3q+AlaWn6RG+xLQL1bUj5JPBui5LQlePLPpIb03Ak70Sg3VC3RwIYRFvGjk/o
+         HvKwkShepnP/88j4qKICx0Vas1TwPvz6cficJp3J3DqEtfSGnaPMYmqdQeW0sGfHwMYg
+         /TKZUQ0mWk2GoR5YTLtiOoHagC+I80At5IRIJ/MLTOvzZAGoUAdFaK9ZZ8KtG/mPhp0F
+         WjlMDGuuTFRENUb9QEc66FELKpgsEHIsGr1LnbHiY1pmimZ83gQJbpR+PpN9iwtIT5o8
+         BNbw==
+X-Gm-Message-State: AOAM531drN9wHZpJcM/gtWg3dX9kCem4QdhQ2qmjefdgyQFn7Beb+1pn
+        hKc6MWSsOj3CcBSl4aLPRo/35bwRgqlHBQ==
+X-Google-Smtp-Source: ABdhPJwW15qeHMwaldoFUpXF83MdyNgUfwsQWFGcDf6X/Kxe/hYqH6lLSOuSghbl9OMh0Y9SKO2ZJw==
+X-Received: by 2002:a63:e10b:: with SMTP id z11mr16504368pgh.40.1612784105660;
+        Mon, 08 Feb 2021 03:35:05 -0800 (PST)
+Received: from carrot.localdomain (i121-118-80-41.s42.a014.ap.plala.or.jp. [121.118.80.41])
+        by smtp.gmail.com with ESMTPSA id c77sm4816103pfb.138.2021.02.08.03.35.03
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 08 Feb 2021 03:35:04 -0800 (PST)
+From:   Ryusuke Konishi <konishi.ryusuke@gmail.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-nilfs <linux-nilfs@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: [PATCH] nilfs2: make splice write available again
+Date:   Mon,  8 Feb 2021 20:35:01 +0900
+Message-Id: <1612784101-14353-1-git-send-email-konishi.ryusuke@gmail.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/02/2021 12:28, Laurent Pinchart wrote:
-> Hi Hans,
-> 
-> On Mon, Feb 08, 2021 at 12:21:01PM +0100, Hans Verkuil wrote:
->> On 14/01/2021 18:04, Jacopo Mondi wrote:
->>> The RDACM21 is a GMSL camera supporting 1280x1080 resolution images
->>> developed by IMI based on an Omnivision OV10640 sensor, an Omnivision
->>> OV490 ISP and a Maxim MAX9271 GMSL serializer.
->>>
->>> The driver uses the max9271 library module, to maximize code reuse with
->>> other camera module drivers using the same serializer, such as rdacm20.
->>>
->>> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
->>> Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
->>> ---
->>>  MAINTAINERS                 |  12 +
->>>  drivers/media/i2c/Kconfig   |  13 +
->>>  drivers/media/i2c/Makefile  |   2 +
->>>  drivers/media/i2c/rdacm21.c | 623 ++++++++++++++++++++++++++++++++++++
->>>  4 files changed, 650 insertions(+)
->>>  create mode 100644 drivers/media/i2c/rdacm21.c
->>>
->>> diff --git a/MAINTAINERS b/MAINTAINERS
->>> index 14adf87d90c7..1822d73ed615 100644
->>> --- a/MAINTAINERS
->>> +++ b/MAINTAINERS
->>> @@ -14967,6 +14967,18 @@ F:	drivers/media/i2c/max9271.c
->>>  F:	drivers/media/i2c/max9271.h
->>>  F:	drivers/media/i2c/rdacm20.c
->>>
->>> +RDACM21 Camera Sensor
->>> +M:	Jacopo Mondi <jacopo+renesas@jmondi.org>
->>> +M:	Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
->>> +M:	Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
->>> +M:	Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
->>> +L:	linux-media@vger.kernel.org
->>> +S:	Maintained
->>> +F:	Documentation/devicetree/bindings/media/i2c/rdacm2x-gmsl.yaml
->>> +F:	drivers/media/i2c/max9271.c
->>> +F:	drivers/media/i2c/max9271.h
->>> +F:	drivers/media/i2c/rdacm21.c
->>> +
->>>  RDC R-321X SoC
->>>  M:	Florian Fainelli <florian@openwrt.org>
->>>  S:	Maintained
->>> diff --git a/drivers/media/i2c/Kconfig b/drivers/media/i2c/Kconfig
->>> index 2b9d81e4794a..d500edb8638b 100644
->>> --- a/drivers/media/i2c/Kconfig
->>> +++ b/drivers/media/i2c/Kconfig
->>> @@ -1212,6 +1212,19 @@ config VIDEO_RDACM20
->>>  	  This camera should be used in conjunction with a GMSL
->>>  	  deserialiser such as the MAX9286.
->>>
->>> +config VIDEO_RDACM21
->>> +	tristate "IMI RDACM21 camera support"
->>> +	depends on I2C
->>> +	select V4L2_FWNODE
->>> +	select VIDEO_V4L2_SUBDEV_API
->>> +	select MEDIA_CONTROLLER
->>> +	help
->>> +	  This driver supports the IMI RDACM21 GMSL camera, used in
->>> +	  ADAS systems.
->>> +
->>> +	  This camera should be used in conjunction with a GMSL
->>> +	  deserialiser such as the MAX9286.
->>> +
->>>  config VIDEO_RJ54N1
->>>  	tristate "Sharp RJ54N1CB0C sensor support"
->>>  	depends on I2C && VIDEO_V4L2
->>> diff --git a/drivers/media/i2c/Makefile b/drivers/media/i2c/Makefile
->>> index a3149dce21bb..85b1edc62508 100644
->>> --- a/drivers/media/i2c/Makefile
->>> +++ b/drivers/media/i2c/Makefile
->>> @@ -124,6 +124,8 @@ obj-$(CONFIG_VIDEO_IMX355)	+= imx355.o
->>>  obj-$(CONFIG_VIDEO_MAX9286)	+= max9286.o
->>>  rdacm20-camera_module-objs	:= rdacm20.o max9271.o
->>>  obj-$(CONFIG_VIDEO_RDACM20)	+= rdacm20-camera_module.o
->>> +rdacm21-camera_module-objs	:= rdacm21.o max9271.o
->>> +obj-$(CONFIG_VIDEO_RDACM21)	+= rdacm21-camera_module.o
->>>  obj-$(CONFIG_VIDEO_ST_MIPID02) += st-mipid02.o
->>
->> This isn't right. The max9271 code exports various functions, but since it is
->> included with *two* modules (rdacm20/1-camera_module.ko) it is exported twice.
->>
->> Since max9271 is not a self-contained driver it should not export symbols.
-> 
-> Shouldn't we instead make max9271 a stand-alone module ?
+From: Joachim Henke <joachim.henke@t-systems.com>
 
-If that makes sense, then that's the alternative option. I don't know if it
-can be used with anything else but rdacm20/21.
+Since 5.10, splice() or sendfile() to NILFS2 return EINVAL. This was
+caused by commit 36e2c7421f02 ("fs: don't allow splice read/write
+without explicit ops").
 
-Either way, this needs to be fixed.
+This patch initializes the splice_write field in file_operations, like
+most file systems do, to restore the functionality.
 
-Regards,
+Signed-off-by: Joachim Henke <joachim.henke@t-systems.com>
+Signed-off-by: Ryusuke Konishi <konishi.ryusuke@gmail.com>
+Tested-by: Ryusuke Konishi <konishi.ryusuke@gmail.com>
+Cc: stable@vger.kernel.org # 5.10+
+---
+ fs/nilfs2/file.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-	Hans
-
-> 
->> Can you provide a patch fixing that?
-> 
+diff --git a/fs/nilfs2/file.c b/fs/nilfs2/file.c
+index 64bc81363c6c..e1bd592ce700 100644
+--- a/fs/nilfs2/file.c
++++ b/fs/nilfs2/file.c
+@@ -141,6 +141,7 @@ static int nilfs_file_mmap(struct file *file, struct vm_area_struct *vma)
+ 	/* .release	= nilfs_release_file, */
+ 	.fsync		= nilfs_sync_file,
+ 	.splice_read	= generic_file_splice_read,
++	.splice_write   = iter_file_splice_write,
+ };
+ 
+ const struct inode_operations nilfs_file_inode_operations = {
+-- 
+1.8.3.1
 
