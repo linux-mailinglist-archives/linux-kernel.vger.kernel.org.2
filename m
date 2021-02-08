@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13AF8313A9A
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 18:16:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88DD9313A76
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 18:08:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233953AbhBHRP0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 12:15:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35838 "EHLO mail.kernel.org"
+        id S234725AbhBHRIE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 12:08:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35868 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233740AbhBHPZd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 10:25:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 59D5364F17;
-        Mon,  8 Feb 2021 15:15:17 +0000 (UTC)
+        id S233881AbhBHPX0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 10:23:26 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8AEFD64F0F;
+        Mon,  8 Feb 2021 15:14:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612797318;
-        bh=ELAml083cyW8aO8DbweNgWdGcfj93nsKC4DYHD+NvnY=;
+        s=korg; t=1612797254;
+        bh=csgGPtw0nfHMpqHzEKYlrXpCeoxyEDunEzrWeE+k//I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HdCUbjiqFkLCw4QUhL7sDjIZfmIQ4kIZLIMO0Efy6TwSmScRTVRlLwmkJGLufUdig
-         y7SlyojHGATmkcBXNR/ybM5y0+WztocL7iz8fqjiyjPXVL82VJTTjy0kaq4WFwgB6l
-         By0xmSLmFeD5wfN4fidvqkfYASZItON21nUosKBQ=
+        b=AB3XeuvbSyjd+jnx/xFzZPsvq3zMCYl3V2mnIAxz5coQWEynt+PwewegIvfDclKcK
+         TABi5LCaOWuT9tOW9MzUQvtPkiH/sxz7aEMGQryBzcp5qmOx2tIwJSwW4hSOd6Aq/O
+         +BbOxv7TdnkIlMyTbQOFPClGgR6ufZ59HD5TltB8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Loris Reiff <loris.reiff@liblor.ch>,
+        stable@vger.kernel.org, Pan Bian <bianpan2016@163.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Stanislav Fomichev <sdf@google.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 026/120] bpf, cgroup: Fix optlen WARN_ON_ONCE toctou
-Date:   Mon,  8 Feb 2021 16:00:13 +0100
-Message-Id: <20210208145819.440605452@linuxfoundation.org>
+        KP Singh <kpsingh@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 028/120] bpf, inode_storage: Put file handler if no storage was found
+Date:   Mon,  8 Feb 2021 16:00:15 +0100
+Message-Id: <20210208145819.516525622@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210208145818.395353822@linuxfoundation.org>
 References: <20210208145818.395353822@linuxfoundation.org>
@@ -41,44 +40,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Loris Reiff <loris.reiff@liblor.ch>
+From: Pan Bian <bianpan2016@163.com>
 
-[ Upstream commit bb8b81e396f7afbe7c50d789e2107512274d2a35 ]
+[ Upstream commit b9557caaf872271671bdc1ef003d72f421eb72f6 ]
 
-A toctou issue in `__cgroup_bpf_run_filter_getsockopt` can trigger a
-WARN_ON_ONCE in a check of `copy_from_user`.
+Put file f if inode_storage_ptr() returns NULL.
 
-`*optlen` is checked to be non-negative in the individual getsockopt
-functions beforehand. Changing `*optlen` in a race to a negative value
-will result in a `copy_from_user(ctx.optval, optval, ctx.optlen)` with
-`ctx.optlen` being a negative integer.
-
-Fixes: 0d01da6afc54 ("bpf: implement getsockopt and setsockopt hooks")
-Signed-off-by: Loris Reiff <loris.reiff@liblor.ch>
+Fixes: 8ea636848aca ("bpf: Implement bpf_local_storage for inodes")
+Signed-off-by: Pan Bian <bianpan2016@163.com>
 Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Reviewed-by: Stanislav Fomichev <sdf@google.com>
-Link: https://lore.kernel.org/bpf/20210122164232.61770-1-loris.reiff@liblor.ch
+Acked-by: KP Singh <kpsingh@kernel.org>
+Link: https://lore.kernel.org/bpf/20210121020856.25507-1-bianpan2016@163.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/bpf/cgroup.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ kernel/bpf/bpf_inode_storage.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
-index 96555a8a2c545..6ec8f02f463b6 100644
---- a/kernel/bpf/cgroup.c
-+++ b/kernel/bpf/cgroup.c
-@@ -1442,6 +1442,11 @@ int __cgroup_bpf_run_filter_getsockopt(struct sock *sk, int level,
- 			goto out;
- 		}
+diff --git a/kernel/bpf/bpf_inode_storage.c b/kernel/bpf/bpf_inode_storage.c
+index dbc1dbdd2cbf0..c2a501cd90eba 100644
+--- a/kernel/bpf/bpf_inode_storage.c
++++ b/kernel/bpf/bpf_inode_storage.c
+@@ -125,8 +125,12 @@ static int bpf_fd_inode_storage_update_elem(struct bpf_map *map, void *key,
  
-+		if (ctx.optlen < 0) {
-+			ret = -EFAULT;
-+			goto out;
-+		}
-+
- 		if (copy_from_user(ctx.optval, optval,
- 				   min(ctx.optlen, max_optlen)) != 0) {
- 			ret = -EFAULT;
+ 	fd = *(int *)key;
+ 	f = fget_raw(fd);
+-	if (!f || !inode_storage_ptr(f->f_inode))
++	if (!f)
++		return -EBADF;
++	if (!inode_storage_ptr(f->f_inode)) {
++		fput(f);
+ 		return -EBADF;
++	}
+ 
+ 	sdata = bpf_local_storage_update(f->f_inode,
+ 					 (struct bpf_local_storage_map *)map,
 -- 
 2.27.0
 
