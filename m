@@ -2,192 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC4BD312A1E
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 06:34:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71EBA312A21
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 06:35:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229636AbhBHFd7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 00:33:59 -0500
-Received: from bilbo.ozlabs.org ([203.11.71.1]:39263 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229482AbhBHFd4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 00:33:56 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DYvnN0MTLz9sS8;
-        Mon,  8 Feb 2021 16:33:11 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1612762392;
-        bh=9rIlokdK+AByWUkDe961EHvrZ4GpKUcGdkxAKlqUIus=;
-        h=Date:From:To:Cc:Subject:From;
-        b=jKTK3dEb4B8MHacY4vlMYWGoziFVMMwLKpH2MnFHzzbgLA3IcblX5rFHG59kGvljI
-         /rQWzlVirOB3E3XBzVb2qjcnM0VS2o+Dln4btLHS9dDY9x2pk8SxaeJy1hwiUkkKA8
-         VnP1vph+JN7wc18VP7pxIOlD2xT8oEJ1Op3TyAIjzfLdU0/6aiVBD3/t9CJnnflfcY
-         w6hNXiUox5fPac4+yon1eWedFFRHNZgCIDJLuVMXl58T0j6aZfdCzqFXsw1Xh+xz+Z
-         usc+Kfvm5Z1MdweYgLYiSMKPaH978fbMduQ3rBXE6pRhvXtoazjeb40CkBE55vLJIt
-         pYQOHKmj652hA==
-Date:   Mon, 8 Feb 2021 16:33:08 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Paolo Bonzini <pbonzini@redhat.com>, KVM <kvm@vger.kernel.org>
-Cc:     Ben Gardon <bgardon@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the kvm tree
-Message-ID: <20210208163308.26c3c1c4@canb.auug.org.au>
+        id S229679AbhBHFfM convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 8 Feb 2021 00:35:12 -0500
+Received: from szxga08-in.huawei.com ([45.249.212.255]:2825 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229609AbhBHFfK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 00:35:10 -0500
+Received: from DGGEMM406-HUB.china.huawei.com (unknown [172.30.72.57])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4DYvmB4nCwz13rcr;
+        Mon,  8 Feb 2021 13:32:10 +0800 (CST)
+Received: from dggpemm100012.china.huawei.com (7.185.36.212) by
+ DGGEMM406-HUB.china.huawei.com (10.3.20.214) with Microsoft SMTP Server (TLS)
+ id 14.3.498.0; Mon, 8 Feb 2021 13:34:23 +0800
+Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
+ dggpemm100012.china.huawei.com (7.185.36.212) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2106.2; Mon, 8 Feb 2021 13:34:23 +0800
+Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
+ dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.2106.006;
+ Mon, 8 Feb 2021 13:34:23 +0800
+From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+To:     David Rientjes <rientjes@google.com>
+CC:     Matthew Wilcox <willy@infradead.org>,
+        "Wangzhou (B)" <wangzhou1@hisilicon.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "jgg@ziepe.ca" <jgg@ziepe.ca>,
+        "kevin.tian@intel.com" <kevin.tian@intel.com>,
+        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "Liguozhu (Kenneth)" <liguozhu@hisilicon.com>,
+        "zhangfei.gao@linaro.org" <zhangfei.gao@linaro.org>,
+        "chensihang (A)" <chensihang1@hisilicon.com>
+Subject: RE: [RFC PATCH v3 1/2] mempinfd: Add new syscall to provide memory
+ pin
+Thread-Topic: [RFC PATCH v3 1/2] mempinfd: Add new syscall to provide memory
+ pin
+Thread-Index: AQHW/SrsWWMRpilf2UC1Pz29QqsBVqpMsX2AgACQE1D//789gIAAtGdg
+Date:   Mon, 8 Feb 2021 05:34:23 +0000
+Message-ID: <9343d5ebeff3423c8055323fe83a0796@hisilicon.com>
+References: <1612685884-19514-1-git-send-email-wangzhou1@hisilicon.com>
+ <1612685884-19514-2-git-send-email-wangzhou1@hisilicon.com>
+ <20210207213409.GL308988@casper.infradead.org>
+ <f4b2d7db8a1047d9952cbbfaf9e27824@hisilicon.com>
+ <90aca1e9-61b5-88d-d28c-369e6973559e@google.com>
+In-Reply-To: <90aca1e9-61b5-88d-d28c-369e6973559e@google.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.126.200.200]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/c61//hhvxvgVY0ig/e=VO62";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/c61//hhvxvgVY0ig/e=VO62
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi all,
 
-After merging the kvm tree, today's linux-next build (x86_64 allmodconfig)
-failed like this:
+> -----Original Message-----
+> From: David Rientjes [mailto:rientjes@google.com]
+> Sent: Monday, February 8, 2021 3:18 PM
+> To: Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>
+> Cc: Matthew Wilcox <willy@infradead.org>; Wangzhou (B)
+> <wangzhou1@hisilicon.com>; linux-kernel@vger.kernel.org;
+> iommu@lists.linux-foundation.org; linux-mm@kvack.org;
+> linux-arm-kernel@lists.infradead.org; linux-api@vger.kernel.org; Andrew
+> Morton <akpm@linux-foundation.org>; Alexander Viro <viro@zeniv.linux.org.uk>;
+> gregkh@linuxfoundation.org; jgg@ziepe.ca; kevin.tian@intel.com;
+> jean-philippe@linaro.org; eric.auger@redhat.com; Liguozhu (Kenneth)
+> <liguozhu@hisilicon.com>; zhangfei.gao@linaro.org; chensihang (A)
+> <chensihang1@hisilicon.com>
+> Subject: RE: [RFC PATCH v3 1/2] mempinfd: Add new syscall to provide memory
+> pin
+> 
+> On Sun, 7 Feb 2021, Song Bao Hua (Barry Song) wrote:
+> 
+> > NUMA balancer is just one of many reasons for page migration. Even one
+> > simple alloc_pages() can cause memory migration in just single NUMA
+> > node or UMA system.
+> >
+> > The other reasons for page migration include but are not limited to:
+> > * memory move due to CMA
+> > * memory move due to huge pages creation
+> >
+> > Hardly we can ask users to disable the COMPACTION, CMA and Huge Page
+> > in the whole system.
+> >
+> 
+> What about only for mlocked memory, i.e. disable
+> vm.compact_unevictable_allowed?
+> 
+> Adding syscalls is a big deal, we can make a reasonable inference that
+> we'll have to support this forever if it's merged.  I haven't seen mention
+> of what other unevictable memory *should* be migratable that would be
+> adversely affected if we disable that sysctl.  Maybe that gets you part of
+> the way there and there are some other deficiencies, but it seems like a
+> good start would be to describe how CONFIG_NUMA_BALANCING=n +
+> vm.compact_unevcitable_allowed + mlock() doesn't get you mostly there and
+> then look into what's missing.
+> 
 
-drivers/gpu/drm/i915/gvt/kvmgt.c: In function 'kvmgt_page_track_add':
-drivers/gpu/drm/i915/gvt/kvmgt.c:1706:12: error: passing argument 1 of 'spi=
-n_lock' from incompatible pointer type [-Werror=3Dincompatible-pointer-type=
-s]
- 1706 |  spin_lock(&kvm->mmu_lock);
-      |            ^~~~~~~~~~~~~~
-      |            |
-      |            rwlock_t *
-In file included from include/linux/wait.h:9,
-                 from include/linux/pid.h:6,
-                 from include/linux/sched.h:14,
-                 from include/linux/ratelimit.h:6,
-                 from include/linux/dev_printk.h:16,
-                 from include/linux/device.h:15,
-                 from drivers/gpu/drm/i915/gvt/kvmgt.c:32:
-include/linux/spinlock.h:352:51: note: expected 'spinlock_t *' {aka 'struct=
- spinlock *'} but argument is of type 'rwlock_t *'
-  352 | static __always_inline void spin_lock(spinlock_t *lock)
-      |                                       ~~~~~~~~~~~~^~~~
-drivers/gpu/drm/i915/gvt/kvmgt.c:1715:14: error: passing argument 1 of 'spi=
-n_unlock' from incompatible pointer type [-Werror=3Dincompatible-pointer-ty=
-pes]
- 1715 |  spin_unlock(&kvm->mmu_lock);
-      |              ^~~~~~~~~~~~~~
-      |              |
-      |              rwlock_t *
-In file included from include/linux/wait.h:9,
-                 from include/linux/pid.h:6,
-                 from include/linux/sched.h:14,
-                 from include/linux/ratelimit.h:6,
-                 from include/linux/dev_printk.h:16,
-                 from include/linux/device.h:15,
-                 from drivers/gpu/drm/i915/gvt/kvmgt.c:32:
-include/linux/spinlock.h:392:53: note: expected 'spinlock_t *' {aka 'struct=
- spinlock *'} but argument is of type 'rwlock_t *'
-  392 | static __always_inline void spin_unlock(spinlock_t *lock)
-      |                                         ~~~~~~~~~~~~^~~~
-drivers/gpu/drm/i915/gvt/kvmgt.c: In function 'kvmgt_page_track_remove':
-drivers/gpu/drm/i915/gvt/kvmgt.c:1740:12: error: passing argument 1 of 'spi=
-n_lock' from incompatible pointer type [-Werror=3Dincompatible-pointer-type=
-s]
- 1740 |  spin_lock(&kvm->mmu_lock);
-      |            ^~~~~~~~~~~~~~
-      |            |
-      |            rwlock_t *
-In file included from include/linux/wait.h:9,
-                 from include/linux/pid.h:6,
-                 from include/linux/sched.h:14,
-                 from include/linux/ratelimit.h:6,
-                 from include/linux/dev_printk.h:16,
-                 from include/linux/device.h:15,
-                 from drivers/gpu/drm/i915/gvt/kvmgt.c:32:
-include/linux/spinlock.h:352:51: note: expected 'spinlock_t *' {aka 'struct=
- spinlock *'} but argument is of type 'rwlock_t *'
-  352 | static __always_inline void spin_lock(spinlock_t *lock)
-      |                                       ~~~~~~~~~~~~^~~~
-drivers/gpu/drm/i915/gvt/kvmgt.c:1749:14: error: passing argument 1 of 'spi=
-n_unlock' from incompatible pointer type [-Werror=3Dincompatible-pointer-ty=
-pes]
- 1749 |  spin_unlock(&kvm->mmu_lock);
-      |              ^~~~~~~~~~~~~~
-      |              |
-      |              rwlock_t *
-In file included from include/linux/wait.h:9,
-                 from include/linux/pid.h:6,
-                 from include/linux/sched.h:14,
-                 from include/linux/ratelimit.h:6,
-                 from include/linux/dev_printk.h:16,
-                 from include/linux/device.h:15,
-                 from drivers/gpu/drm/i915/gvt/kvmgt.c:32:
-include/linux/spinlock.h:392:53: note: expected 'spinlock_t *' {aka 'struct=
- spinlock *'} but argument is of type 'rwlock_t *'
-  392 | static __always_inline void spin_unlock(spinlock_t *lock)
-      |                                         ~~~~~~~~~~~~^~~~
-drivers/gpu/drm/i915/gvt/kvmgt.c: In function 'kvmgt_page_track_flush_slot':
-drivers/gpu/drm/i915/gvt/kvmgt.c:1775:12: error: passing argument 1 of 'spi=
-n_lock' from incompatible pointer type [-Werror=3Dincompatible-pointer-type=
-s]
- 1775 |  spin_lock(&kvm->mmu_lock);
-      |            ^~~~~~~~~~~~~~
-      |            |
-      |            rwlock_t *
-In file included from include/linux/wait.h:9,
-                 from include/linux/pid.h:6,
-                 from include/linux/sched.h:14,
-                 from include/linux/ratelimit.h:6,
-                 from include/linux/dev_printk.h:16,
-                 from include/linux/device.h:15,
-                 from drivers/gpu/drm/i915/gvt/kvmgt.c:32:
-include/linux/spinlock.h:352:51: note: expected 'spinlock_t *' {aka 'struct=
- spinlock *'} but argument is of type 'rwlock_t *'
-  352 | static __always_inline void spin_lock(spinlock_t *lock)
-      |                                       ~~~~~~~~~~~~^~~~
-drivers/gpu/drm/i915/gvt/kvmgt.c:1784:14: error: passing argument 1 of 'spi=
-n_unlock' from incompatible pointer type [-Werror=3Dincompatible-pointer-ty=
-pes]
- 1784 |  spin_unlock(&kvm->mmu_lock);
-      |              ^~~~~~~~~~~~~~
-      |              |
-      |              rwlock_t *
-In file included from include/linux/wait.h:9,
-                 from include/linux/pid.h:6,
-                 from include/linux/sched.h:14,
-                 from include/linux/ratelimit.h:6,
-                 from include/linux/dev_printk.h:16,
-                 from include/linux/device.h:15,
-                 from drivers/gpu/drm/i915/gvt/kvmgt.c:32:
-include/linux/spinlock.h:392:53: note: expected 'spinlock_t *' {aka 'struct=
- spinlock *'} but argument is of type 'rwlock_t *'
-  392 | static __always_inline void spin_unlock(spinlock_t *lock)
-      |                                         ~~~~~~~~~~~~^~~~
-cc1: all warnings being treated as errors
+I believe it can resolve the performance problem for the SVA
+applications if we disable vm.compact_unevcitable_allowed and
+NUMA_BALANCE, and use mlock().
 
-Caused by commit
+The problem is that it is insensible to ask users to disable
+unevictable_allowed or numa balancing of the whole system
+only because there is one SVA application in the system.
 
-  531810caa9f4 ("KVM: x86/mmu: Use an rwlock for the x86 MMU")
+SVA, for itself, is a mechanism to let cpu and devices share same
+address space. In a typical server system, there are many processes,
+the better way would be only changing the behavior of the specific
+process rather than changing the whole system. It is hard to ask
+users to do that only because there is a SVA monster.
+Plus, this might negatively affect those applications not using SVA.
 
-I have used the kvm tree from next-20210204 for today.
+> If it's a very compelling case where there simply are no alternatives, it
+> would make sense.  Alternative is to find a more generic way, perhaps in
+> combination with vm.compact_unevictable_allowed, to achieve what you're
+> looking to do that can be useful even beyond your originally intended use
+> case.
 
---=20
-Cheers,
-Stephen Rothwell
+sensible. Actually pin is exactly the way to disable migration for specific
+pages AKA. disabling "vm.compact_unevictable_allowed" on those pages.
 
---Sig_/c61//hhvxvgVY0ig/e=VO62
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+It is hard to differentiate what pages should not be migrated. Only apps
+know that as even SVA applications can allocate many non-IO pages which
+should be able to move.
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAgzRQACgkQAVBC80lX
-0Gw8iwf/d01iOYnYDHyTx9KmplUiLQNYjWelr0b83aGkewL7dIP5qTa25DQLm420
-9qXXz9Cybpf7Xae9p4IznkRE1Q3GSCNe1964o8F5DMXgQBt52HDDYaT8dqLzcjvL
-zLbtuDMOiOS8d/yXg2a0xJYDqUTrkIbiXLYF54NUicDUA2uZIvI7U37OJIPzEaeA
-Y1+yibQeeJ4KPXFjuwDLEcloKAqLohtvMYUmQKefzOaQfEbQLjhVqeBHZtXL2JCz
-OIk0cJMx2LnucpulurjNYdmdGJYFL+ZK+aluCZM66lYSKaWmNqf7u6u1yCRemLxv
-Y80H25NAuVyjaFbzf2RDIxLUT8Aibw==
-=AJwD
------END PGP SIGNATURE-----
-
---Sig_/c61//hhvxvgVY0ig/e=VO62--
+Thanks
+Barry
