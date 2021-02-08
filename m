@@ -2,143 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 026CE314251
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 22:53:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1DC5314256
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 22:54:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237096AbhBHVxN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 16:53:13 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:47546 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236978AbhBHVvM (ORCPT
+        id S235956AbhBHVxv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 16:53:51 -0500
+Received: from mail-oi1-f174.google.com ([209.85.167.174]:38838 "EHLO
+        mail-oi1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237059AbhBHVxF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 16:51:12 -0500
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 118LWp3f183106;
-        Mon, 8 Feb 2021 16:50:21 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=ty9/RD73F+2obMKPNYY6TEK+gUiCqlJXpqHfEHG7Kvk=;
- b=OhAFPu2tI/5jFP80NP4Jfrf+m7bLy1Ha7NthNTsStnMcNFom5hOKCSQI+0gK+i11BLPW
- nJofii+XZQ+3yDrqz4HNS5zTRdxtWEofRKqEqoJ2iWGDpUMou8XLTqfEioqfkxpUCezy
- tEAcCAgBhcnBAxeITj1kB6vgofjWTRBLIbFvJ2FhEzn3/ea1tmojFWgM9OzqaG4ykZvk
- asRT+CRKufCV26gMNRykRtILxH01l4fwtvnhgarYTA2blFibg8oQK70hIdfwEekVfl+P
- VQOzWIlu6fu22GPb1IlNGSXblFi3mTvzRiecDP1htWMNAGZYEq8Qqo7+2YgNBtUVgtWX cQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36kcx0gvwr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 08 Feb 2021 16:50:21 -0500
-Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 118LmKBa048415;
-        Mon, 8 Feb 2021 16:50:21 -0500
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36kcx0gvvs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 08 Feb 2021 16:50:20 -0500
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 118LjcUP017414;
-        Mon, 8 Feb 2021 21:50:18 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma03fra.de.ibm.com with ESMTP id 36hskb14g7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 08 Feb 2021 21:50:18 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 118LoFfw41877916
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 8 Feb 2021 21:50:15 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8E9EBA405C;
-        Mon,  8 Feb 2021 21:50:15 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9619FA405F;
-        Mon,  8 Feb 2021 21:50:13 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.48.239])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon,  8 Feb 2021 21:50:13 +0000 (GMT)
-Message-ID: <9bd1eaab236f095f1dbdc01752c3c6f487f33525.camel@linux.ibm.com>
-Subject: Re: Migration to trusted keys: sealing user-provided key?
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Jan =?ISO-8859-1?Q?L=FCbbe?= <jlu@pengutronix.de>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        James Bottomley <jejb@linux.ibm.com>,
-        David Howells <dhowells@redhat.com>, keyrings@vger.kernel.org,
-        Sumit Garg <sumit.garg@linaro.org>
-Cc:     linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, kernel@pengutronix.de
-Date:   Mon, 08 Feb 2021 16:50:12 -0500
-In-Reply-To: <b6ee219924e7195070062b6453931595faa640af.camel@pengutronix.de>
-References: <74830d4f-5a76-8ba8-aad0-0d79f7c01af9@pengutronix.de>
-         <6dc99fd9ffbc5f405c5f64d0802d1399fc6428e4.camel@kernel.org>
-         <d1bed49f89495ceb529355cb41655a208fdb2197.camel@linux.ibm.com>
-         <8b9477e150d7c939dc0def3ebb4443efcc83cd85.camel@pengutronix.de>
-         <d4eeefa0c13395e91850630e22d0d9e3690f43ac.camel@linux.ibm.com>
-         <64472434a367060ddce6e03425156b8312a5ad6c.camel@pengutronix.de>
-         <bd3246ebb4eae526c84efe2d27c6fadff662b0c8.camel@linux.ibm.com>
-         <0be34899c9686b95cd22aa016f466523579cbeed.camel@pengutronix.de>
-         <e9e7814c35d9ce5a6351a960081bf3c6b90bdca7.camel@linux.ibm.com>
-         <b6ee219924e7195070062b6453931595faa640af.camel@pengutronix.de>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
-Mime-Version: 1.0
+        Mon, 8 Feb 2021 16:53:05 -0500
+Received: by mail-oi1-f174.google.com with SMTP id h6so17289648oie.5;
+        Mon, 08 Feb 2021 13:52:49 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=U8tnst308e6RauLdVa5a7TNIbxkAWuY5AsfA0wur2Dk=;
+        b=oPz0PnknK607g+EhHarUWG6eLOaNAxRXpeVGo2SjcXvTxysmSK2LYT5bNuI2B0LMs2
+         I3zkKTEnZ+TvjXhr++WjQkJx3XFsEWpmT5iAJCarCNqbmnkzqmcs4pADxL+uf3YE58hc
+         jyK8fOnXZrRJfBqkKO2l9aBi61Q8vuu1vGGV9y0XhdTxXq3fJa05nAu9pSfP+9P67nRm
+         Va6kL9wU+kRGZ05WlNZ6SvR0Ap/N0JqGad/XUezz6ERRGZqDLk0CFV4B5K9gdJ6uvCMd
+         0NbF5XFWsQdLr6jBU4gcKRTTY4ZFGSIRywNnCMk6ziPGazxbTHej7NZdP0vWgGIB51gf
+         I8KQ==
+X-Gm-Message-State: AOAM530gkCOTW8xSbVETc+NUnKb8UK1XS038vURZdqWMk/LVpCU5sGmw
+        8D8wRFEIedFtUWhvM1Mvug==
+X-Google-Smtp-Source: ABdhPJyujBb8um9slbs8pmbjX48fp1di4TFtFS/wbVUEAmUdc/fIQmMdKAfXk+Pfz8wf0F7yNniuSw==
+X-Received: by 2002:aca:5a57:: with SMTP id o84mr569707oib.0.1612821144124;
+        Mon, 08 Feb 2021 13:52:24 -0800 (PST)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id n93sm3878402ota.37.2021.02.08.13.52.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Feb 2021 13:52:23 -0800 (PST)
+Received: (nullmailer pid 2085478 invoked by uid 1000);
+        Mon, 08 Feb 2021 21:52:22 -0000
+Date:   Mon, 8 Feb 2021 15:52:22 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Jonathan =?iso-8859-1?Q?Neusch=E4fer?= <j.neuschaefer@gmx.net>
+Cc:     Benjamin Fair <benjaminfair@google.com>,
+        Tali Perry <tali.perry1@gmail.com>, openbmc@lists.ozlabs.org,
+        Tomer Maimon <tmaimon77@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Patrick Venture <venture@google.com>,
+        Nancy Yuen <yuenn@google.com>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Avi Fishman <avifishman70@gmail.com>
+Subject: Re: [PATCH v2 1/2] dt-bindings: arm: Convert nuvoton,npcm750 binding
+ to YAML
+Message-ID: <20210208215222.GA2085425@robh.at.kernel.org>
+References: <20210116010907.3475405-1-j.neuschaefer@gmx.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-02-08_13:2021-02-08,2021-02-08 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 malwarescore=0
- suspectscore=0 mlxscore=0 mlxlogscore=972 bulkscore=0 lowpriorityscore=0
- phishscore=0 priorityscore=1501 spamscore=0 clxscore=1015 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102080122
+In-Reply-To: <20210116010907.3475405-1-j.neuschaefer@gmx.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-02-08 at 15:38 +0100, Jan Lübbe wrote:
-
-> As it seems that this feature would not be appropriate for all use-cases and
-> threat models, I wonder if making it optional would be acceptable. Something
-> like:
+On Sat, 16 Jan 2021 02:09:05 +0100, Jonathan Neuschäfer wrote:
+> The general trend is to have devicetree bindings in YAML format, to
+> allow automatic validation of bindings and devicetrees.
 > 
-> config TRUSTED_KEYS_IMPORT
-
-To me "IMPORT" implies from a trusted source, which this is not. 
-Perhaps "UNSAFE_IMPORT", "DEBUGGING_IMPORT, "DEVELOPMENT_IMPORT", ...
-
-Defining a Kconfig with any of these names and the other changes below,
-makes it very clear using predefined key data is not recommended.  My
-concern with extending trusted keys to new trust sources is the
-implication that the security/integrity is equivalent to the existing
-discrete TPM.
-
->         bool "Allow creating TRUSTED KEYS from existing key material"
->         depends on TRUSTED_KEYS
-
-Missing "default n"
-
->         help
->           This option adds support for creating new trusted keys from existing 
->           key material supplied by userspace, instead of using random numbers.
->           As with random trusted keys, userspace cannot extract the plain-text 
-
-Once defined, as with random trusted keys, userspace cannot ...
-
->           key material again and will only ever see encrypted blobs.
->           
->           This option should *only* be enabled for use in a trusted
->           environment (such as during debugging/development or in a secured
->           factory). Also, consider using 'keyctl padd' instead of 'keyctl add' 
-
-Even the "secured factory" is not a good idea.  Please limit the usage
-to debugging/development.
-
->           to avoid exposing the plain-text key on the process command line.
+> Convert the NPCM SoC family's binding to YAML before it accumulates more
+> entries.
 > 
->           If you are unsure as to whether this is required, answer N.
+> The nuvoton,npcm750-evb compatible string is introduced to keep the
+> structure of the binding a little simpler.
+> 
+> Signed-off-by: Jonathan Neuschäfer <j.neuschaefer@gmx.net>
+> ---
+> 
+> If someone else wants to be listed as the maintainer, please let me
+> know.
+> 
+> 
+> v2:
+> - Fix indentation to satisfy yamllint
+> - Fix $schema line
+> 
+> v1:
+> - https://lore.kernel.org/lkml/20210108224008.705687-1-j.neuschaefer@gmx.net/
+> ---
+>  .../devicetree/bindings/arm/npcm/npcm.txt     |  6 -----
+>  .../devicetree/bindings/arm/npcm/npcm.yaml    | 23 +++++++++++++++++++
+>  2 files changed, 23 insertions(+), 6 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/arm/npcm/npcm.txt
+>  create mode 100644 Documentation/devicetree/bindings/arm/npcm/npcm.yaml
+> 
 
-The above would be fine.
-
-thanks,
-
-Mimi
-
+Reviewed-by: Rob Herring <robh@kernel.org>
