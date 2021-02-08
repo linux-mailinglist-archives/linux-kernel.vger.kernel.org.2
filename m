@@ -2,75 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E8463140A1
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 21:38:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B3CE3140A2
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 21:38:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234245AbhBHUiR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 15:38:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38734 "EHLO mail.kernel.org"
+        id S235147AbhBHUib (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 15:38:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39076 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236163AbhBHTWD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 14:22:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E960D64DC3;
-        Mon,  8 Feb 2021 19:21:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612812083;
-        bh=J+Toa4VghZj+wvqsaR/Th+yW7a2hvMnxN0zHE32Q8rs=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=IRJjB0RtouhXZNuT9YFz/9r3+iKLyeStKC52O+iBBcv8Tg0oZKDmrRHEXMQn9QdrF
-         awbwFt5U7OIUkc9vjqLBVoqamdMw9oBL3No/PY21WQj1mU+XFgsHWXCeF0Y6xFj570
-         NqtXT1qL50gf4yhlKw+S9g0hy5L4w0j1mnYsUUf9RTwjkq6sW/e1PM9RiEmkLBWv9d
-         9HeBQ7bW81x0Cy10c2hSge2M27r8qNPdBSD8BJ1AFCtf9KIYJwaxWzwAgyX7Zq+zij
-         2+vJrsqV2LU4I9nzXviMhjkbmSwwmL8tdl5ahza57mc+5sHUaDieEiJo7/xVYJtDz3
-         GxvZoXLPLTkmg==
-Content-Type: text/plain; charset="utf-8"
+        id S235030AbhBHTXo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 14:23:44 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3F19664E8B;
+        Mon,  8 Feb 2021 19:23:00 +0000 (UTC)
+Date:   Mon, 8 Feb 2021 14:22:58 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Yordan Karadzhov <y.karadz@gmail.com>
+Subject: [GIT PULL] tracing: Fix output of top level event "enable" file
+Message-ID: <20210208142258.643b54a3@gandalf.local.home>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210208121752.2255465-2-jernej.skrabec@siol.net>
-References: <20210208121752.2255465-1-jernej.skrabec@siol.net> <20210208121752.2255465-2-jernej.skrabec@siol.net>
-Subject: Re: [PATCH v2 1/5] clk: sunxi-ng: mp: fix parent rate change flag check
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     mturquette@baylibre.com, airlied@linux.ie, daniel@ffwll.ch,
-        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-sunxi@googlegroups.com, Andre Heider <a.heider@gmail.com>
-To:     Jernej Skrabec <jernej.skrabec@siol.net>, mripard@kernel.org,
-        wens@csie.org
-Date:   Mon, 08 Feb 2021 11:21:21 -0800
-Message-ID: <161281208140.76967.6089044756544560133@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Jernej Skrabec (2021-02-08 04:17:48)
-> CLK_SET_RATE_PARENT flag is checked on parent clock instead of current
-> one. Fix that.
->=20
-> Fixes: 3f790433c3cb ("clk: sunxi-ng: Adjust MP clock parent rate when all=
-owed")
-> Reviewed-by: Chen-Yu Tsai <wens@csie.org>
-> Tested-by: Andre Heider <a.heider@gmail.com>
-> Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
-> ---
->  drivers/clk/sunxi-ng/ccu_mp.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/drivers/clk/sunxi-ng/ccu_mp.c b/drivers/clk/sunxi-ng/ccu_mp.c
-> index fa4ecb915590..5f40be6d2dfd 100644
-> --- a/drivers/clk/sunxi-ng/ccu_mp.c
-> +++ b/drivers/clk/sunxi-ng/ccu_mp.c
-> @@ -108,7 +108,7 @@ static unsigned long ccu_mp_round_rate(struct ccu_mux=
-_internal *mux,
->         max_m =3D cmp->m.max ?: 1 << cmp->m.width;
->         max_p =3D cmp->p.max ?: 1 << ((1 << cmp->p.width) - 1);
-> =20
-> -       if (!(clk_hw_get_flags(hw) & CLK_SET_RATE_PARENT)) {
-> +       if (!(clk_hw_get_flags(&cmp->common.hw) & CLK_SET_RATE_PARENT)) {
+Steven Rostedt (VMware) <rostedt@goodmis.org>
 
-This is also clk_hw_can_set_rate_parent()
+Linus,
 
->                 ccu_mp_find_best(*parent_rate, rate, max_m, max_p, &m, &p=
-);
->                 rate =3D *parent_rate / p / m;
->         } else {
+tracing: Fix output of top level event "enable" file
+
+When writing a tool for enabling events in the tracing system,
+an anomaly was discovered. The top level event "enable" file would
+never show "1" when all events were enabled. The system and event
+"enable" files worked as expected. The reason was because the top
+level event "enable" file included the "ftrace" tracer events,
+which are not controlled by the "enable" file and would cause the
+output to be wrong. This appears to have been a bug since it was created.
+
+
+Please pull the latest trace-v5.11-rc7 tree, which can be found at:
+
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git
+trace-v5.11-rc7
+
+Tag SHA1: 3587b86427167a0380d98a8d744a2beb1fa8a9d6
+Head SHA1: 256cfdd6fdf70c6fcf0f7c8ddb0ebd73ce8f3bc9
+
+
+Steven Rostedt (VMware) (1):
+      tracing: Do not count ftrace events in top level enable output
+
+----
+ kernel/trace/trace_events.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+---------------------------
+commit 256cfdd6fdf70c6fcf0f7c8ddb0ebd73ce8f3bc9
+Author: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Date:   Fri Feb 5 15:40:04 2021 -0500
+
+    tracing: Do not count ftrace events in top level enable output
+    
+    The file /sys/kernel/tracing/events/enable is used to enable all events by
+    echoing in "1", or disabling all events when echoing in "0". To know if all
+    events are enabled, disabled, or some are enabled but not all of them,
+    cating the file should show either "1" (all enabled), "0" (all disabled), or
+    "X" (some enabled but not all of them). This works the same as the "enable"
+    files in the individule system directories (like tracing/events/sched/enable).
+    
+    But when all events are enabled, the top level "enable" file shows "X". The
+    reason is that its checking the "ftrace" events, which are special events
+    that only exist for their format files. These include the format for the
+    function tracer events, that are enabled when the function tracer is
+    enabled, but not by the "enable" file. The check includes these events,
+    which will always be disabled, and even though all true events are enabled,
+    the top level "enable" file will show "X" instead of "1".
+    
+    To fix this, have the check test the event's flags to see if it has the
+    "IGNORE_ENABLE" flag set, and if so, not test it.
+    
+    Cc: stable@vger.kernel.org
+    Fixes: 553552ce1796c ("tracing: Combine event filter_active and enable into single flags field")
+    Reported-by: "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+    Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+
+diff --git a/kernel/trace/trace_events.c b/kernel/trace/trace_events.c
+index e9d28eeccb7e..d387b774ceeb 100644
+--- a/kernel/trace/trace_events.c
++++ b/kernel/trace/trace_events.c
+@@ -1212,7 +1212,8 @@ system_enable_read(struct file *filp, char __user *ubuf, size_t cnt,
+ 	mutex_lock(&event_mutex);
+ 	list_for_each_entry(file, &tr->events, list) {
+ 		call = file->event_call;
+-		if (!trace_event_name(call) || !call->class || !call->class->reg)
++		if ((call->flags & TRACE_EVENT_FL_IGNORE_ENABLE) ||
++		    !trace_event_name(call) || !call->class || !call->class->reg)
+ 			continue;
+ 
+ 		if (system && strcmp(call->class->system, system->name) != 0)
