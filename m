@@ -2,520 +2,332 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44CE6312DFA
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 10:55:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4145A312DB5
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 10:48:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232113AbhBHJwm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 04:52:42 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:12492 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231860AbhBHJmi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 04:42:38 -0500
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DZ1GJ1FT9zjKfN;
-        Mon,  8 Feb 2021 17:40:08 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.24) by
- DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
- 14.3.498.0; Mon, 8 Feb 2021 17:41:21 +0800
-From:   Meng Yu <yumeng18@huawei.com>
-To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
-        <marcel@holtmann.org>, <johan.hedberg@gmail.com>,
-        <luiz.dentz@gmail.com>, <tudor.ambarus@microchip.com>
-CC:     <linux-crypto@vger.kernel.org>, <xuzaibo@huawei.com>,
-        <wangzhou1@hisilicon.com>, <yumeng18@huawei.com>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH v8 9/9] crypto: hisilicon/hpre - add 'CURVE25519' algorithm
-Date:   Mon, 8 Feb 2021 17:38:57 +0800
-Message-ID: <1612777137-51067-10-git-send-email-yumeng18@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1612777137-51067-1-git-send-email-yumeng18@huawei.com>
-References: <1612777137-51067-1-git-send-email-yumeng18@huawei.com>
+        id S231820AbhBHJr3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 04:47:29 -0500
+Received: from mx2.suse.de ([195.135.220.15]:55460 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231734AbhBHJl7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 04:41:59 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1612777262; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=fF169tx56y6mupjIvrPQt9dqN5xV/kHLsueKWM8xvUg=;
+        b=MoSRipFUt6ufW8TtS8lzbiX5/FVZJzmez4YJCZRHeMBFobJx4wUaMpOEY0Ksoxlj08E0EB
+        BMga+pAmqKxvJzr+h92HO0x1eYAOFojiRnJ+LvHFYMgWcOQM2yxISYYR1UJ41qM4vIXkKZ
+        9dFMw0ot34fjhu/eiJLf+M+wr0MVcMQ=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id EAB7EAE53;
+        Mon,  8 Feb 2021 09:41:01 +0000 (UTC)
+To:     Julien Grall <julien@xen.org>, xen-devel@lists.xenproject.org,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        netdev@vger.kernel.org, linux-scsi@vger.kernel.org
+Cc:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        stable@vger.kernel.org,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        =?UTF-8?Q?Roger_Pau_Monn=c3=a9?= <roger.pau@citrix.com>,
+        Jens Axboe <axboe@kernel.dk>, Wei Liu <wei.liu@kernel.org>,
+        Paul Durrant <paul@xen.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+References: <20210206104932.29064-1-jgross@suse.com>
+ <bd63694e-ac0c-7954-ec00-edad05f8da1c@xen.org>
+ <eeb62129-d9fc-2155-0e0f-aff1fbb33fbc@suse.com>
+ <fcf3181b-3efc-55f5-687c-324937b543e6@xen.org>
+From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+Subject: Re: [PATCH 0/7] xen/events: bug fixes and some diagnostic aids
+Message-ID: <7aaeeb3d-1e1b-6166-84e9-481153811b62@suse.com>
+Date:   Mon, 8 Feb 2021 10:41:00 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+In-Reply-To: <fcf3181b-3efc-55f5-687c-324937b543e6@xen.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="GMBB9RCSmiMsxNr0VEDv5TlmxZ6GktJjs"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable 'CURVE25519' algorithm in Kunpeng 930.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--GMBB9RCSmiMsxNr0VEDv5TlmxZ6GktJjs
+Content-Type: multipart/mixed; boundary="k4gyNUY4aI5Lw9phW38uxpSLf7g9cDz0D";
+ protected-headers="v1"
+From: =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+To: Julien Grall <julien@xen.org>, xen-devel@lists.xenproject.org,
+ linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+ netdev@vger.kernel.org, linux-scsi@vger.kernel.org
+Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+ Stefano Stabellini <sstabellini@kernel.org>, stable@vger.kernel.org,
+ Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+ =?UTF-8?Q?Roger_Pau_Monn=c3=a9?= <roger.pau@citrix.com>,
+ Jens Axboe <axboe@kernel.dk>, Wei Liu <wei.liu@kernel.org>,
+ Paul Durrant <paul@xen.org>, "David S. Miller" <davem@davemloft.net>,
+ Jakub Kicinski <kuba@kernel.org>
+Message-ID: <7aaeeb3d-1e1b-6166-84e9-481153811b62@suse.com>
+Subject: Re: [PATCH 0/7] xen/events: bug fixes and some diagnostic aids
+References: <20210206104932.29064-1-jgross@suse.com>
+ <bd63694e-ac0c-7954-ec00-edad05f8da1c@xen.org>
+ <eeb62129-d9fc-2155-0e0f-aff1fbb33fbc@suse.com>
+ <fcf3181b-3efc-55f5-687c-324937b543e6@xen.org>
+In-Reply-To: <fcf3181b-3efc-55f5-687c-324937b543e6@xen.org>
 
-Signed-off-by: Meng Yu <yumeng18@huawei.com>
-Reviewed-by: Zaibo Xu <xuzaibo@huawei.com>
----
- drivers/crypto/hisilicon/Kconfig            |   1 +
- drivers/crypto/hisilicon/hpre/hpre.h        |   2 +
- drivers/crypto/hisilicon/hpre/hpre_crypto.c | 366 +++++++++++++++++++++++++++-
- 3 files changed, 361 insertions(+), 8 deletions(-)
+--k4gyNUY4aI5Lw9phW38uxpSLf7g9cDz0D
+Content-Type: multipart/mixed;
+ boundary="------------8545B5C2DC00D006FC21850E"
+Content-Language: en-US
 
-diff --git a/drivers/crypto/hisilicon/Kconfig b/drivers/crypto/hisilicon/Kconfig
-index 8431926..c45adb1 100644
---- a/drivers/crypto/hisilicon/Kconfig
-+++ b/drivers/crypto/hisilicon/Kconfig
-@@ -65,6 +65,7 @@ config CRYPTO_DEV_HISI_HPRE
- 	depends on UACCE || UACCE=n
- 	depends on ARM64 || (COMPILE_TEST && 64BIT)
- 	depends on ACPI
-+	select CRYPTO_LIB_CURVE25519_GENERIC
- 	select CRYPTO_DEV_HISI_QM
- 	select CRYPTO_DH
- 	select CRYPTO_RSA
-diff --git a/drivers/crypto/hisilicon/hpre/hpre.h b/drivers/crypto/hisilicon/hpre/hpre.h
-index 5a8091a..53a2832 100644
---- a/drivers/crypto/hisilicon/hpre/hpre.h
-+++ b/drivers/crypto/hisilicon/hpre/hpre.h
-@@ -82,6 +82,8 @@ enum hpre_alg_type {
- 	HPRE_ALG_DH_G2 = 0x4,
- 	HPRE_ALG_DH = 0x5,
- 	HPRE_ALG_ECC_MUL = 0xD,
-+	/* shared by x25519 and x448, but x448 is not supported now */
-+	HPRE_ALG_CURVE25519_MUL = 0x10,
- };
- 
- struct hpre_sqe {
-diff --git a/drivers/crypto/hisilicon/hpre/hpre_crypto.c b/drivers/crypto/hisilicon/hpre/hpre_crypto.c
-index 49df0ab..a8fc2b4 100644
---- a/drivers/crypto/hisilicon/hpre/hpre_crypto.c
-+++ b/drivers/crypto/hisilicon/hpre/hpre_crypto.c
-@@ -1,6 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0
- /* Copyright (c) 2019 HiSilicon Limited. */
- #include <crypto/akcipher.h>
-+#include <crypto/curve25519.h>
- #include <crypto/dh.h>
- #include <crypto/ecc_curve.h>
- #include <crypto/ecdh.h>
-@@ -96,6 +97,16 @@ struct hpre_ecdh_ctx {
- 	dma_addr_t dma_g;
- };
- 
-+struct hpre_curve25519_ctx {
-+	/* low address: p->a->k */
-+	unsigned char *p;
-+	dma_addr_t dma_p;
-+
-+	/* gx coordinate */
-+	unsigned char *g;
-+	dma_addr_t dma_g;
-+};
-+
- struct hpre_ctx {
- 	struct hisi_qp *qp;
- 	struct hpre_asym_request **req_list;
-@@ -108,6 +119,7 @@ struct hpre_ctx {
- 		struct hpre_rsa_ctx rsa;
- 		struct hpre_dh_ctx dh;
- 		struct hpre_ecdh_ctx ecdh;
-+		struct hpre_curve25519_ctx curve25519;
- 	};
- 	/* for ecc algorithms */
- 	unsigned int curve_id;
-@@ -122,6 +134,7 @@ struct hpre_asym_request {
- 		struct akcipher_request *rsa;
- 		struct kpp_request *dh;
- 		struct kpp_request *ecdh;
-+		struct kpp_request *curve25519;
- 	} areq;
- 	int err;
- 	int req_id;
-@@ -444,7 +457,6 @@ static void hpre_alg_cb(struct hisi_qp *qp, void *resp)
- 	struct hpre_sqe *sqe = resp;
- 	struct hpre_asym_request *req = ctx->req_list[le16_to_cpu(sqe->tag)];
- 
--
- 	if (unlikely(!req)) {
- 		atomic64_inc(&dfx[HPRE_INVALID_REQ_CNT].value);
- 		return;
-@@ -1174,6 +1186,12 @@ static void hpre_ecc_clear_ctx(struct hpre_ctx *ctx, bool is_clear_all,
- 		memzero_explicit(ctx->ecdh.p + shift, sz);
- 		dma_free_coherent(dev, sz << 3, ctx->ecdh.p, ctx->ecdh.dma_p);
- 		ctx->ecdh.p = NULL;
-+	} else if (!is_ecdh && ctx->curve25519.p) {
-+		/* curve25519: p->a->k */
-+		memzero_explicit(ctx->curve25519.p + shift, sz);
-+		dma_free_coherent(dev, sz << 2, ctx->curve25519.p,
-+				  ctx->curve25519.dma_p);
-+		ctx->curve25519.p = NULL;
- 	}
- 
- 	hpre_ctx_clear(ctx, is_clear_all);
-@@ -1601,6 +1619,312 @@ static void hpre_ecdh_exit_tfm(struct crypto_kpp *tfm)
- 	hpre_ecc_clear_ctx(ctx, true, true);
- }
- 
-+static void hpre_curve25519_fill_curve(struct hpre_ctx *ctx, const void *buf,
-+				       unsigned int len)
-+{
-+	u8 secret[CURVE25519_KEY_SIZE] = { 0 };
-+	unsigned int sz = ctx->key_sz;
-+	const struct ecc_curve *curve;
-+	unsigned int shift = sz << 1;
-+	void *p;
-+
-+	/*
-+	 * The key from 'buf' is in little-endian, we should preprocess it as
-+	 * the description in rfc7748: "k[0] &= 248, k[31] &= 127, k[31] |= 64",
-+	 * then convert it to big endian. Only in this way, the result can be
-+	 * the same as the software curve-25519 that exists in crypto.
-+	 */
-+	memcpy(secret, buf, len);
-+	curve25519_clamp_secret(secret);
-+	hpre_key_to_big_end(secret, CURVE25519_KEY_SIZE);
-+
-+	p = ctx->curve25519.p + sz - len;
-+
-+	curve = ecc_get_curve25519();
-+
-+	/* fill curve parameters */
-+	fill_curve_param(p, curve->p, len, curve->g.ndigits);
-+	fill_curve_param(p + sz, curve->a, len, curve->g.ndigits);
-+	memcpy(p + shift, secret, len);
-+	fill_curve_param(p + shift + sz, curve->g.x, len, curve->g.ndigits);
-+	memzero_explicit(secret, CURVE25519_KEY_SIZE);
-+}
-+
-+static int hpre_curve25519_set_param(struct hpre_ctx *ctx, const void *buf,
-+				     unsigned int len)
-+{
-+	struct device *dev = HPRE_DEV(ctx);
-+	unsigned int sz = ctx->key_sz;
-+	unsigned int shift = sz << 1;
-+
-+	/* p->a->k->gx */
-+	if (!ctx->curve25519.p) {
-+		ctx->curve25519.p = dma_alloc_coherent(dev, sz << 2,
-+						       &ctx->curve25519.dma_p,
-+						       GFP_KERNEL);
-+		if (!ctx->curve25519.p)
-+			return -ENOMEM;
-+	}
-+
-+	ctx->curve25519.g = ctx->curve25519.p + shift + sz;
-+	ctx->curve25519.dma_g = ctx->curve25519.dma_p + shift + sz;
-+
-+	hpre_curve25519_fill_curve(ctx, buf, len);
-+
-+	return 0;
-+}
-+
-+static int hpre_curve25519_set_secret(struct crypto_kpp *tfm, const void *buf,
-+				      unsigned int len)
-+{
-+	struct hpre_ctx *ctx = kpp_tfm_ctx(tfm);
-+	struct device *dev = HPRE_DEV(ctx);
-+	int ret = -EINVAL;
-+
-+	if (len != CURVE25519_KEY_SIZE ||
-+	    !crypto_memneq(buf, curve25519_null_point, CURVE25519_KEY_SIZE)) {
-+		dev_err(dev, "key is null or key len is not 32bytes!\n");
-+		return ret;
-+	}
-+
-+	/* Free old secret if any */
-+	hpre_ecc_clear_ctx(ctx, false, false);
-+
-+	ctx->key_sz = CURVE25519_KEY_SIZE;
-+	ret = hpre_curve25519_set_param(ctx, buf, CURVE25519_KEY_SIZE);
-+	if (ret) {
-+		dev_err(dev, "failed to set curve25519 param, ret = %d!\n", ret);
-+		hpre_ecc_clear_ctx(ctx, false, false);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static void hpre_curve25519_hw_data_clr_all(struct hpre_ctx *ctx,
-+					    struct hpre_asym_request *req,
-+					    struct scatterlist *dst,
-+					    struct scatterlist *src)
-+{
-+	struct device *dev = HPRE_DEV(ctx);
-+	struct hpre_sqe *sqe = &req->req;
-+	dma_addr_t dma;
-+
-+	dma = le64_to_cpu(sqe->in);
-+	if (unlikely(!dma))
-+		return;
-+
-+	if (src && req->src)
-+		dma_free_coherent(dev, ctx->key_sz, req->src, dma);
-+
-+	dma = le64_to_cpu(sqe->out);
-+	if (unlikely(!dma))
-+		return;
-+
-+	if (req->dst)
-+		dma_free_coherent(dev, ctx->key_sz, req->dst, dma);
-+	if (dst)
-+		dma_unmap_single(dev, dma, ctx->key_sz, DMA_FROM_DEVICE);
-+}
-+
-+static void hpre_curve25519_cb(struct hpre_ctx *ctx, void *resp)
-+{
-+	struct hpre_dfx *dfx = ctx->hpre->debug.dfx;
-+	struct hpre_asym_request *req = NULL;
-+	struct kpp_request *areq;
-+	u64 overtime_thrhld;
-+	int ret;
-+
-+	ret = hpre_alg_res_post_hf(ctx, resp, (void **)&req);
-+	areq = req->areq.curve25519;
-+	areq->dst_len = ctx->key_sz;
-+
-+	overtime_thrhld = atomic64_read(&dfx[HPRE_OVERTIME_THRHLD].value);
-+	if (overtime_thrhld && hpre_is_bd_timeout(req, overtime_thrhld))
-+		atomic64_inc(&dfx[HPRE_OVER_THRHLD_CNT].value);
-+
-+	hpre_key_to_big_end(sg_virt(areq->dst), CURVE25519_KEY_SIZE);
-+
-+	hpre_curve25519_hw_data_clr_all(ctx, req, areq->dst, areq->src);
-+	kpp_request_complete(areq, ret);
-+
-+	atomic64_inc(&dfx[HPRE_RECV_CNT].value);
-+}
-+
-+static int hpre_curve25519_msg_request_set(struct hpre_ctx *ctx,
-+					   struct kpp_request *req)
-+{
-+	struct hpre_asym_request *h_req;
-+	struct hpre_sqe *msg;
-+	int req_id;
-+	void *tmp;
-+
-+	if (unlikely(req->dst_len < ctx->key_sz)) {
-+		req->dst_len = ctx->key_sz;
-+		return -EINVAL;
-+	}
-+
-+	tmp = kpp_request_ctx(req);
-+	h_req = PTR_ALIGN(tmp, HPRE_ALIGN_SZ);
-+	h_req->cb = hpre_curve25519_cb;
-+	h_req->areq.curve25519 = req;
-+	msg = &h_req->req;
-+	memset(msg, 0, sizeof(*msg));
-+	msg->key = cpu_to_le64(ctx->curve25519.dma_p);
-+
-+	msg->dw0 |= cpu_to_le32(0x1U << HPRE_SQE_DONE_SHIFT);
-+	msg->task_len1 = (ctx->key_sz >> HPRE_BITS_2_BYTES_SHIFT) - 1;
-+	h_req->ctx = ctx;
-+
-+	req_id = hpre_add_req_to_ctx(h_req);
-+	if (req_id < 0)
-+		return -EBUSY;
-+
-+	msg->tag = cpu_to_le16((u16)req_id);
-+	return 0;
-+}
-+
-+static int hpre_curve25519_src_init(struct hpre_asym_request *hpre_req,
-+				    struct scatterlist *data, unsigned int len)
-+{
-+	struct hpre_sqe *msg = &hpre_req->req;
-+	struct hpre_ctx *ctx = hpre_req->ctx;
-+	struct device *dev = HPRE_DEV(ctx);
-+	u8 p[CURVE25519_KEY_SIZE] = { 0 };
-+	const struct ecc_curve *curve;
-+	dma_addr_t dma = 0;
-+	u8 *ptr;
-+
-+	if (len != CURVE25519_KEY_SIZE) {
-+		dev_err(dev, "sourc_data len is not 32bytes, len = %u!\n", len);
-+		return -EINVAL;
-+	}
-+
-+	ptr = dma_alloc_coherent(dev, ctx->key_sz, &dma, GFP_KERNEL);
-+	if (unlikely(!ptr))
-+		return -ENOMEM;
-+
-+	scatterwalk_map_and_copy(ptr, data, 0, len, 0);
-+
-+	if (!crypto_memneq(ptr, curve25519_null_point, CURVE25519_KEY_SIZE)) {
-+		dev_err(dev, "gx is null!\n");
-+		goto err;
-+	}
-+
-+	/*
-+	 * Src_data(gx) is in little-endian order, MSB in the final byte should
-+	 * be masked as discribed in RFC7748, then transform it to big-endian
-+	 * form, then hisi_hpre can use the data.
-+	 */
-+	ptr[31] &= 0x7f;
-+	hpre_key_to_big_end(ptr, CURVE25519_KEY_SIZE);
-+
-+	curve = ecc_get_curve25519();
-+
-+	fill_curve_param(p, curve->p, CURVE25519_KEY_SIZE, curve->g.ndigits);
-+	if (memcmp(ptr, p, ctx->key_sz) >= 0) {
-+		dev_err(dev, "gx is out of p!\n");
-+		goto err;
-+	}
-+
-+	hpre_req->src = ptr;
-+	msg->in = cpu_to_le64(dma);
-+	return 0;
-+
-+err:
-+	dma_free_coherent(dev, ctx->key_sz, ptr, dma);
-+	return -EINVAL;
-+}
-+
-+static int hpre_curve25519_dst_init(struct hpre_asym_request *hpre_req,
-+				    struct scatterlist *data, unsigned int len)
-+{
-+	struct hpre_sqe *msg = &hpre_req->req;
-+	struct hpre_ctx *ctx = hpre_req->ctx;
-+	struct device *dev = HPRE_DEV(ctx);
-+	dma_addr_t dma = 0;
-+
-+	if (!data || !sg_is_last(data) || len != ctx->key_sz) {
-+		dev_err(dev, "data or data length is illegal!\n");
-+		return -EINVAL;
-+	}
-+
-+	hpre_req->dst = NULL;
-+	dma = dma_map_single(dev, sg_virt(data), len, DMA_FROM_DEVICE);
-+	if (unlikely(dma_mapping_error(dev, dma))) {
-+		dev_err(dev, "dma map data err!\n");
-+		return -ENOMEM;
-+	}
-+
-+	msg->out = cpu_to_le64(dma);
-+	return 0;
-+}
-+
-+static int hpre_curve25519_compute_value(struct kpp_request *req)
-+{
-+	struct crypto_kpp *tfm = crypto_kpp_reqtfm(req);
-+	struct hpre_ctx *ctx = kpp_tfm_ctx(tfm);
-+	struct device *dev = HPRE_DEV(ctx);
-+	void *tmp = kpp_request_ctx(req);
-+	struct hpre_asym_request *hpre_req = PTR_ALIGN(tmp, HPRE_ALIGN_SZ);
-+	struct hpre_sqe *msg = &hpre_req->req;
-+	int ret;
-+
-+	ret = hpre_curve25519_msg_request_set(ctx, req);
-+	if (unlikely(ret)) {
-+		dev_err(dev, "failed to set curve25519 request, ret = %d!\n", ret);
-+		return ret;
-+	}
-+
-+	if (req->src) {
-+		ret = hpre_curve25519_src_init(hpre_req, req->src, req->src_len);
-+		if (unlikely(ret)) {
-+			dev_err(dev, "failed to init src data, ret = %d!\n",
-+				ret);
-+			goto clear_all;
-+		}
-+	} else {
-+		msg->in = cpu_to_le64(ctx->curve25519.dma_g);
-+	}
-+
-+	ret = hpre_curve25519_dst_init(hpre_req, req->dst, req->dst_len);
-+	if (unlikely(ret)) {
-+		dev_err(dev, "failed to init dst data, ret = %d!\n", ret);
-+		goto clear_all;
-+	}
-+
-+	msg->dw0 = cpu_to_le32(le32_to_cpu(msg->dw0) | HPRE_ALG_CURVE25519_MUL);
-+	ret = hpre_send(ctx, msg);
-+	if (likely(!ret))
-+		return -EINPROGRESS;
-+
-+clear_all:
-+	hpre_rm_req_from_ctx(hpre_req);
-+	hpre_curve25519_hw_data_clr_all(ctx, hpre_req, req->dst, req->src);
-+	return ret;
-+}
-+
-+static unsigned int hpre_curve25519_max_size(struct crypto_kpp *tfm)
-+{
-+	struct hpre_ctx *ctx = kpp_tfm_ctx(tfm);
-+
-+	return ctx->key_sz;
-+}
-+
-+static int hpre_curve25519_init_tfm(struct crypto_kpp *tfm)
-+{
-+	struct hpre_ctx *ctx = kpp_tfm_ctx(tfm);
-+
-+	return hpre_ctx_init(ctx, HPRE_V3_ECC_ALG_TYPE);
-+}
-+
-+static void hpre_curve25519_exit_tfm(struct crypto_kpp *tfm)
-+{
-+	struct hpre_ctx *ctx = kpp_tfm_ctx(tfm);
-+
-+	hpre_ecc_clear_ctx(ctx, true, false);
-+}
-+
- static struct akcipher_alg rsa = {
- 	.sign = hpre_rsa_dec,
- 	.verify = hpre_rsa_enc,
-@@ -1725,6 +2049,24 @@ static struct kpp_alg ecdh_nist_p521 = {
- 	},
- };
- 
-+static struct kpp_alg curve25519_alg = {
-+	.set_secret = hpre_curve25519_set_secret,
-+	.generate_public_key = hpre_curve25519_compute_value,
-+	.compute_shared_secret = hpre_curve25519_compute_value,
-+	.max_size = hpre_curve25519_max_size,
-+	.init = hpre_curve25519_init_tfm,
-+	.exit = hpre_curve25519_exit_tfm,
-+	.reqsize = sizeof(struct hpre_asym_request) + HPRE_ALIGN_SZ,
-+	.base = {
-+		.cra_ctxsize = sizeof(struct hpre_ctx),
-+		.cra_priority = HPRE_CRYPTO_ALG_PRI,
-+		.cra_name = "curve25519",
-+		.cra_driver_name = "hpre-curve25519",
-+		.cra_module = THIS_MODULE,
-+	},
-+};
-+
-+
- static int hpre_register_ecdh(void)
- {
- 	int ret;
-@@ -1789,22 +2131,30 @@ int hpre_algs_register(struct hisi_qm *qm)
- 
- 	if (qm->ver >= QM_HW_V3) {
- 		ret = hpre_register_ecdh();
-+		if (ret)
-+			goto reg_err;
-+		ret = crypto_register_kpp(&curve25519_alg);
- 		if (ret) {
--#ifdef CONFIG_CRYPTO_DH
--			crypto_unregister_kpp(&dh);
--#endif
--			crypto_unregister_akcipher(&rsa);
--			return ret;
-+			hpre_unregister_ecdh();
-+			goto reg_err;
- 		}
- 	}
--
- 	return 0;
-+
-+reg_err:
-+#ifdef CONFIG_CRYPTO_DH
-+	crypto_unregister_kpp(&dh);
-+#endif
-+	crypto_unregister_akcipher(&rsa);
-+	return ret;
- }
- 
- void hpre_algs_unregister(struct hisi_qm *qm)
- {
--	if (qm->ver >= QM_HW_V3)
-+	if (qm->ver >= QM_HW_V3) {
-+		crypto_unregister_kpp(&curve25519_alg);
- 		hpre_unregister_ecdh();
-+	}
- 
- #ifdef CONFIG_CRYPTO_DH
- 	crypto_unregister_kpp(&dh);
--- 
-2.8.1
+This is a multi-part message in MIME format.
+--------------8545B5C2DC00D006FC21850E
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
 
+On 08.02.21 10:11, Julien Grall wrote:
+> Hi Juergen,
+>=20
+> On 07/02/2021 12:58, J=C3=BCrgen Gro=C3=9F wrote:
+>> On 06.02.21 19:46, Julien Grall wrote:
+>>> Hi Juergen,
+>>>
+>>> On 06/02/2021 10:49, Juergen Gross wrote:
+>>>> The first three patches are fixes for XSA-332. The avoid WARN splats=
+
+>>>> and a performance issue with interdomain events.
+>>>
+>>> Thanks for helping to figure out the problem. Unfortunately, I still =
+
+>>> see reliably the WARN splat with the latest Linux master=20
+>>> (1e0d27fce010) + your first 3 patches.
+>>>
+>>> I am using Xen 4.11 (1c7d984645f9) and dom0 is forced to use the 2L=20
+>>> events ABI.
+>>>
+>>> After some debugging, I think I have an idea what's went wrong. The=20
+>>> problem happens when the event is initially bound from vCPU0 to a=20
+>>> different vCPU.
+>>>
+>>> =C2=A0From the comment in xen_rebind_evtchn_to_cpu(), we are masking =
+the=20
+>>> event to prevent it being delivered on an unexpected vCPU. However, I=
+=20
+>>> believe the following can happen:
+>>>
+>>> vCPU0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 | vCPU1
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0 |
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0 | Call xen_rebind_evtchn_to_cpu()
+>>> receive event X=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0 |
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0 | mask event X
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0 | bind to vCPU1
+>>> <vCPU descheduled>=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | unmask=
+ event X
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0 |
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0 | receive event X
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0 |
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0 | handle_edge_irq(X)
+>>> handle_edge_irq(X)=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 =
+-> handle_irq_event()
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0 -> set IRQD_IN_PROGRESS
+>>> =C2=A0=C2=A0-> set IRQS_PENDING=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0 |
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0 -> evtchn_interrupt()
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0 -> clear IRQD_IN_PROGRESS
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 -> IRQS_PENDING is set
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 -> handle_irq_event()
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0 -> evtchn_interrupt()
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0=C2=A0 -> WARN()
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0 |
+>>>
+>>> All the lateeoi handlers expect a ONESHOT semantic and=20
+>>> evtchn_interrupt() is doesn't tolerate any deviation.
+>>>
+>>> I think the problem was introduced by 7f874a0447a9 ("xen/events: fix =
+
+>>> lateeoi irq acknowledgment") because the interrupt was disabled=20
+>>> previously. Therefore we wouldn't do another iteration in=20
+>>> handle_edge_irq().
+>>
+>> I think you picked the wrong commit for blaming, as this is just
+>> the last patch of the three patches you were testing.
+>=20
+> I actually found the right commit for blaming but I copied the=20
+> information from the wrong shell :/. The bug was introduced by:
+>=20
+> c44b849cee8c ("xen/events: switch user event channels to lateeoi model"=
+)
+>=20
+>>
+>>> Aside the handlers, I think it may impact the defer EOI mitigation=20
+>>> because in theory if a 3rd vCPU is joining the party (let say vCPU A =
+
+>>> migrate the event from vCPU B to vCPU C). So info->{eoi_cpu,=20
+>>> irq_epoch, eoi_time} could possibly get mangled?
+>>>
+>>> For a fix, we may want to consider to hold evtchn_rwlock with the=20
+>>> write permission. Although, I am not 100% sure this is going to=20
+>>> prevent everything.
+>>
+>> It will make things worse, as it would violate the locking hierarchy
+>> (xen_rebind_evtchn_to_cpu() is called with the IRQ-desc lock held).
+>=20
+> Ah, right.
+>=20
+>>
+>> On a first glance I think we'll need a 3rd masking state ("temporarily=
+
+>> masked") in the second patch in order to avoid a race with lateeoi.
+>>
+>> In order to avoid the race you outlined above we need an "event is bei=
+ng
+>> handled" indicator checked via test_and_set() semantics in
+>> handle_irq_for_port() and reset only when calling clear_evtchn().
+>=20
+> It feels like we are trying to workaround the IRQ flow we are using=20
+> (i.e. handle_edge_irq()).
+
+I'm not really sure this is the main problem here. According to your
+analysis the main problem is occurring when handling the event, not when
+handling the IRQ: the event is being received on two vcpus.
+
+Our problem isn't due to the IRQ still being pending, but due it being
+raised again, which should happen for a one shot IRQ the same way.
+
+But maybe I'm misunderstanding your idea.
+
+
+Juergen
+
+--------------8545B5C2DC00D006FC21850E
+Content-Type: application/pgp-keys;
+ name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment;
+ filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
+cWx
+w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
+f8Z
+d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
+9bf
+IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
+G7/
+377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
+3Jv
+c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
+QIe
+AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
+hpw
+dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
+MbD
+1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
+oPH
+Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
+5QL
++qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
+2Vu
+IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
+QoL
+BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
+Wf0
+teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
+/nu
+AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
+ITT
+d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
+XBK
+7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
+80h
+SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
+AcD
+AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
+FOX
+gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
+jnD
+kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
+N51
+N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
+otu
+fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
+tqS
+EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
+hsD
+BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
+g3O
+ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
+dM7
+wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
+D+j
+LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
+V2x
+AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
+Eaw
+QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
+nHI
+s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
+wgn
+BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
+bVF
+LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
+pEd
+IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
+QAB
+wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
+Tbe
+8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
+vJz
+Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
+VGi
+wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
+svi
+uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
+zXs
+ZDn8R38=3D
+=3D2wuH
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------8545B5C2DC00D006FC21850E--
+
+--k4gyNUY4aI5Lw9phW38uxpSLf7g9cDz0D--
+
+--GMBB9RCSmiMsxNr0VEDv5TlmxZ6GktJjs
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmAhBywFAwAAAAAACgkQsN6d1ii/Ey+X
+7Qf+OnrlhZHoEZMFLJ8YuxArgwY/dc0hT9fYNejZag9l2vEAND4Z36Oqpy4lMt9l1wsocKvxEhhF
+pSpzfvQWh9qFvJbNZtU3gSfVM6z8XQ+FXWlr2vfGOqMmYTZKKcZrMtTmL0spDeb4EDwM1G86mtZ4
+88bV0RVAoliWwy5CUk5MyZyHwYOC3YeH3VP7K3kBLy4F1gopdOrTWHvI50FFrTBavw1ZnCRTzlgj
+qYWYHD2ztYmPtDEtlSsfcyxj2+xur511a16/B/RfP0f+g1maWYySmaxhVFNQa+icHKzu8VgfenHR
+sXi1Zu4uQNMf/zQXInigQg8IPawMiI2GTHjN+tovog==
+=fwXt
+-----END PGP SIGNATURE-----
+
+--GMBB9RCSmiMsxNr0VEDv5TlmxZ6GktJjs--
