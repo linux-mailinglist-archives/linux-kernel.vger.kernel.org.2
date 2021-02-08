@@ -2,89 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4679313E64
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 20:04:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C321313E65
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 20:04:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236145AbhBHTDO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 14:03:14 -0500
-Received: from mail-ot1-f54.google.com ([209.85.210.54]:36162 "EHLO
-        mail-ot1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234987AbhBHRc6 (ORCPT
+        id S236162AbhBHTDS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 14:03:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54548 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234466AbhBHRfV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 12:32:58 -0500
-Received: by mail-ot1-f54.google.com with SMTP id 100so8228642otg.3;
-        Mon, 08 Feb 2021 09:32:42 -0800 (PST)
+        Mon, 8 Feb 2021 12:35:21 -0500
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E155C06178A
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 09:34:30 -0800 (PST)
+Received: by mail-pl1-x62e.google.com with SMTP id a16so8188432plh.8
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 09:34:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=QAxmqoEOSrSGuDIGX8UTYzw6McBlWP+GhOSfkix9wjk=;
+        b=GYKgxaI9CMbwk19YePl5gkV9bFRlQlO+2w4ie9BtNOhNrbyAWWGR+Y+3iewmYreiwM
+         AcuaTVg0YMEGW4+If05PFEmmP6byd2Bkvgc1rEpIl0waXziJKxojCrDTvk3Hfr7DekQs
+         voaohLE/fiu8RgJr439mqQRGm+BCqa6PHfvgWCQbZmdP429FcFuKdNCn4mBJ8ODJ+l6e
+         EKAgGIRwR1p2R6y5+ueeLFMmmpRsnQaL/S1Bdgs5YX1wL9gx7fOCDK6QPr9JkG7cxIrU
+         SxT+REOCJhe/o6zBXD/r/iTjFvGjblVd5gt6hhApMm6ZhSpxt5obkRlAjOGkCN9LAMuW
+         as7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=CJGZSCJAur/5Hm+o5HKIZJ3m/1BQyOjxp7i5ki4kvKg=;
-        b=FI4kHoVs+Ih3QpTR9XpLHWJXjph9OtP0qEm/RW2M4OQcNjdtVfEOscGrLEWv6WreEv
-         8ReF2b+esWXrfv23VrpRkmTL4/jr8NqaK3i3YyFT6XwggmNEQE8Ea/04nRXztjYuLhDm
-         7+/VmgfOPfa8zCHwF6bXPWb4GL7kgDmpw4cIib38JpZL/SC/+fyyCRriDUn3QQdi0Pcm
-         Ox3gWyPu+qeZR47reYHVRwfs5r3ZdUSc4lfCrRsD4bkRjHiKG5EV5b5Wzw+VMf97WAUm
-         kwDraLficWFXQZisaJVlBOq63nN/9YBBvgF+ZVpT06nt53h0lMMkHK9GfpkPtYUmhG4o
-         wCSw==
-X-Gm-Message-State: AOAM530UapH0uhCn5gSwFzkrSiH0lzoMVkBLOHkZU/9rSvU6cnt7l0os
-        H0l/eYiNbfAyJkxUIWIX+Q==
-X-Google-Smtp-Source: ABdhPJw4/R4KH0mvoPgQxyLxAdM16oo9jlsjZpjjo7ro5BZRGiRShXk92zZZg3RgRWmLqj4kALEs9w==
-X-Received: by 2002:a9d:640b:: with SMTP id h11mr13124079otl.224.1612805537064;
-        Mon, 08 Feb 2021 09:32:17 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id y65sm1324246oie.50.2021.02.08.09.32.15
+        bh=QAxmqoEOSrSGuDIGX8UTYzw6McBlWP+GhOSfkix9wjk=;
+        b=lw7jo5c61LB9d9byUugcuqDoRO2jliA4J5QvBM775CloWyjY43Z8+mXDDzKXSF/YOJ
+         9AmjMaAPuP1uJlKfBxwdziOzDnfGeThBorITcmdqoNIbSDn22sVEiqbJIQK2pFvgFfF7
+         Oq/m874DE+db2RGfhaw+pxoL2TzDXQWSCzS9/VdnaqC0WkoZW/dyL9LowrYP+T/4Sm61
+         Rrmk+Qn+SaWkystHpylJNGdeODGOxL26YFJEPKzCllZDD7DDVvhriyECNiloOo9oV7L6
+         s3QuG9o/FijE/NLAkrUVkHIvJc72QB4MJ/j+/PNC1NMmFMRPilSc4FmYnMt4ZDHySBrj
+         rVKw==
+X-Gm-Message-State: AOAM530fKePYTPVIAOPiBvtCirNcY17yh2u4O7YBwR+1tZSIUOe1IEAJ
+        BV/N/41tyDWHUNixEwQz747JbA==
+X-Google-Smtp-Source: ABdhPJxAHbPUbnYUWT4fo9NEUczHKy8t+ddayCH4TfZBjZgySsIvYVhlFut7hHzwwykqsbkh6CuQoQ==
+X-Received: by 2002:a17:90b:4a0b:: with SMTP id kk11mr18055807pjb.95.1612805669921;
+        Mon, 08 Feb 2021 09:34:29 -0800 (PST)
+Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id f127sm14038890pgc.48.2021.02.08.09.34.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Feb 2021 09:32:16 -0800 (PST)
-Received: (nullmailer pid 1578321 invoked by uid 1000);
-        Mon, 08 Feb 2021 17:32:15 -0000
-Date:   Mon, 8 Feb 2021 11:32:15 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Hector Martin <marcan@marcan.st>, Arnd Bergmann <arnd@kernel.org>,
-        devicetree@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
-        linux-kernel@vger.kernel.org, soc@kernel.org,
-        Olof Johansson <olof@lixom.net>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 01/18] dt-bindings: vendor-prefixes: add AAPL prefix
-Message-ID: <20210208173215.GA1567700@robh.at.kernel.org>
-References: <20210204203951.52105-1-marcan@marcan.st>
- <20210204203951.52105-2-marcan@marcan.st>
- <20210208102730.p4nhsl35oowsklv2@kozik-lap>
+        Mon, 08 Feb 2021 09:34:28 -0800 (PST)
+Date:   Mon, 8 Feb 2021 10:34:26 -0700
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Leo Yan <leo.yan@linaro.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Daniel Kiss <Daniel.Kiss@arm.com>,
+        Denis Nikitin <denik@chromium.org>,
+        Al Grant <al.grant@arm.com>, coresight@lists.linaro.org,
+        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 2/8] tools headers UAPI: Update tools' copy of
+ linux/coresight-pmu.h
+Message-ID: <20210208173426.GA2077938@xps15>
+References: <20210206150833.42120-1-leo.yan@linaro.org>
+ <20210206150833.42120-3-leo.yan@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210208102730.p4nhsl35oowsklv2@kozik-lap>
+In-Reply-To: <20210206150833.42120-3-leo.yan@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 08, 2021 at 11:27:30AM +0100, Krzysztof Kozlowski wrote:
-> On Fri, Feb 05, 2021 at 05:39:34AM +0900, Hector Martin wrote:
-> > Amusingly, this wasn't yet documented, even though this vendor prefix
-> > has been used since time immemorial on PPC.
-> > 
-> > Signed-off-by: Hector Martin <marcan@marcan.st>
-> > ---
-> >  Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
-> >  1 file changed, 2 insertions(+)
-> > 
-> > diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-> > index 041ae90b0d8f..d7950c723472 100644
-> > --- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
-> > +++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-> > @@ -25,6 +25,8 @@ patternProperties:
-> >    # Keep list in alphabetical order.
-> >    "^70mai,.*":
-> >      description: 70mai Co., Ltd.
-> > +  "^AAPL,.*":
+On Sat, Feb 06, 2021 at 11:08:27PM +0800, Leo Yan wrote:
+> To get the changes in the commit:
 > 
-> All prefixes are lower case... see ABB below (not mentioning that the
-> company name is not APPLE), so just "apple".
+>   "coresight: etm-perf: Clarify comment on perf options".
+> 
+> Signed-off-by: Leo Yan <leo.yan@linaro.org>
+> Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
 
-Grep the kernel tree for 'AAPL,'. It comes from the the ticker symbol 
-which early on was the preferred form, but we've tended to move away 
-from that. The DT Apple ships (which is *very* different) uses both 
-forms.
+Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 
-So keep what exists already or have old AAPL and new apple?
-
-Rob
+> ---
+>  tools/include/linux/coresight-pmu.h | 17 ++++++++++++-----
+>  1 file changed, 12 insertions(+), 5 deletions(-)
+> 
+> diff --git a/tools/include/linux/coresight-pmu.h b/tools/include/linux/coresight-pmu.h
+> index b0e35eec6499..5dc47cfdcf07 100644
+> --- a/tools/include/linux/coresight-pmu.h
+> +++ b/tools/include/linux/coresight-pmu.h
+> @@ -10,11 +10,18 @@
+>  #define CORESIGHT_ETM_PMU_NAME "cs_etm"
+>  #define CORESIGHT_ETM_PMU_SEED  0x10
+>  
+> -/* ETMv3.5/PTM's ETMCR config bit */
+> -#define ETM_OPT_CYCACC  12
+> -#define ETM_OPT_CTXTID	14
+> -#define ETM_OPT_TS      28
+> -#define ETM_OPT_RETSTK	29
+> +/*
+> + * Below are the definition of bit offsets for perf option, and works as
+> + * arbitrary values for all ETM versions.
+> + *
+> + * Most of them are orignally from ETMv3.5/PTM's ETMCR config, therefore,
+> + * ETMv3.5/PTM doesn't define ETMCR config bits with prefix "ETM3_" and
+> + * directly use below macros as config bits.
+> + */
+> +#define ETM_OPT_CYCACC		12
+> +#define ETM_OPT_CTXTID		14
+> +#define ETM_OPT_TS		28
+> +#define ETM_OPT_RETSTK		29
+>  
+>  /* ETMv4 CONFIGR programming bits for the ETM OPTs */
+>  #define ETM4_CFG_BIT_CYCACC	4
+> -- 
+> 2.25.1
+> 
