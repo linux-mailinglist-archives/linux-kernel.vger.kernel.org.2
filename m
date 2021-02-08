@@ -2,74 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D196E313E0A
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 19:51:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C37A8313E13
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 19:54:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233867AbhBHSvQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 13:51:16 -0500
-Received: from foss.arm.com ([217.140.110.172]:38352 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233896AbhBHQ6L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 11:58:11 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2E53F142F;
-        Mon,  8 Feb 2021 08:56:42 -0800 (PST)
-Received: from e119884-lin.cambridge.arm.com (e119884-lin.cambridge.arm.com [10.1.196.72])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4D12A3F719;
-        Mon,  8 Feb 2021 08:56:40 -0800 (PST)
-From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
-To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kasan-dev@googlegroups.com
-Cc:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Subject: [PATCH v12 7/7] kasan: don't run tests in async mode
-Date:   Mon,  8 Feb 2021 16:56:17 +0000
-Message-Id: <20210208165617.9977-8-vincenzo.frascino@arm.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210208165617.9977-1-vincenzo.frascino@arm.com>
-References: <20210208165617.9977-1-vincenzo.frascino@arm.com>
+        id S235838AbhBHSwV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 13:52:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46670 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233586AbhBHQ6o (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 11:58:44 -0500
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CB77C061786;
+        Mon,  8 Feb 2021 08:58:04 -0800 (PST)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: ezequiel)
+        with ESMTPSA id E79481F412A7
+Message-ID: <4af499f5931d6b04a42787ae17525c63247573e6.camel@collabora.com>
+Subject: Re: linux-next: build warning after merge of the v4l-dvb tree
+From:   Ezequiel Garcia <ezequiel@collabora.com>
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Date:   Mon, 08 Feb 2021 13:57:56 -0300
+In-Reply-To: <20210208164618.GY32460@paasikivi.fi.intel.com>
+References: <20210208233716.16d962ad@canb.auug.org.au>
+         <56cd99bbf526b43507579b5775bac5f885319866.camel@collabora.com>
+         <20210208164618.GY32460@paasikivi.fi.intel.com>
+Organization: Collabora
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.2-1 
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrey Konovalov <andreyknvl@google.com>
+On Mon, 2021-02-08 at 18:46 +0200, Sakari Ailus wrote:
+> Hi Ezequiel,
+> 
+> Thanks for addressing this.
+> 
+> On Mon, Feb 08, 2021 at 01:42:21PM -0300, Ezequiel Garcia wrote:
+> > Hi Stephen,
+> > 
+> > On Mon, 2021-02-08 at 23:37 +1100, Stephen Rothwell wrote:
+> > > Hi all,
+> > > 
+> > > After merging the v4l-dvb tree, today's linux-next build (htmldocs)
+> > > produced this warning:
+> > > 
+> > > include/media/v4l2-async.h:178: warning: expecting prototype for v4l2_async_notifier_add_fwnode_subdev(). Prototype was for
+> > > __v4l2_async_notifier_add_fwnode_subdev() instead
+> > > include/media/v4l2-async.h:207: warning: expecting prototype for v4l2_async_notifier_add_fwnode_remote_subdev(). Prototype was for
+> > > __v4l2_async_notifier_add_fwnode_remote_subdev() instead
+> > > include/media/v4l2-async.h:230: warning: expecting prototype for v4l2_async_notifier_add_i2c_subdev(). Prototype was for
+> > > __v4l2_async_notifier_add_i2c_subdev() instead
+> > > 
+> > > Maybe introduced by commit
+> > > 
+> > >   c1cc23625062 ("media: v4l2-async: Discourage use of v4l2_async_notifier_add_subdev")
+> > > 
+> > 
+> > Thanks for spotting this. Should be fixed by:
+> > 
+> > diff --git a/include/media/v4l2-async.h b/include/media/v4l2-async.h
+> > index 6f22daa6f067..3785445282fc 100644
+> > --- a/include/media/v4l2-async.h
+> > +++ b/include/media/v4l2-async.h
+> > @@ -157,7 +157,7 @@ int __v4l2_async_notifier_add_subdev(struct v4l2_async_notifier *notifier,
+> >                                    struct v4l2_async_subdev *asd);
+> >  
+> >  /**
+> > - * v4l2_async_notifier_add_fwnode_subdev - Allocate and add a fwnode async
+> > + * __v4l2_async_notifier_add_fwnode_subdev - Allocate and add a fwnode async
+> 
+> The problem with the approach is that this no longer documents the API that
+> drivers are intended to use, but the intermediate one. I guess fixing
+> this properly could require changes to kerneldoc so I have no objections to
+> the approach.
+> 
 
-Asynchronous KASAN mode doesn't guarantee that a tag fault will be
-detected immediately and causes tests to fail. Forbid running them
-in asynchronous mode.
+Right, but do we have any other solution here?
 
-Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
----
- lib/test_kasan.c | 4 ++++
- 1 file changed, 4 insertions(+)
+> >   *                             subdev to the notifier's master asd_list.
+> >   *
+> >   * @notifier: pointer to &struct v4l2_async_notifier
+> > @@ -181,7 +181,7 @@ __v4l2_async_notifier_add_fwnode_subdev(struct v4l2_async_notifier *notifier,
+> >                                                    sizeof(__type)))
+> >  
+> >  /**
+> > - * v4l2_async_notifier_add_fwnode_remote_subdev - Allocate and add a fwnode
+> > + * __v4l2_async_notifier_add_fwnode_remote_subdev - Allocate and add a fwnode
+> >   *                                               remote async subdev to the
+> >   *                                               notifier's master asd_list.
+> >   *
+> > @@ -210,7 +210,7 @@ __v4l2_async_notifier_add_fwnode_remote_subdev(struct v4l2_async_notifier *notif
+> >                                                           sizeof(__type)))
+> >  
+> >  /**
+> > - * v4l2_async_notifier_add_i2c_subdev - Allocate and add an i2c async
+> > + * __v4l2_async_notifier_add_i2c_subdev - Allocate and add an i2c async
+> >   *                             subdev to the notifier's master asd_list.
+> >   *
+> >   * @notifier: pointer to &struct v4l2_async_notifier
+> > @@ -228,7 +228,7 @@ struct v4l2_async_subdev *
+> >  __v4l2_async_notifier_add_i2c_subdev(struct v4l2_async_notifier *notifier,
+> >                                      int adapter_id, unsigned short address,
+> >                                      unsigned int asd_struct_size);
+> > -#define v4l2_async_notifier_add_i2c_subdev(__notifier, __adap, __addr, __type) \
+> > +#define v4l2_async_notifier_i2c(__notifier, __adap, __addr, __type)    \
+> 
+> I guess this change was not intentional?
+> 
 
-diff --git a/lib/test_kasan.c b/lib/test_kasan.c
-index 7285dcf9fcc1..f82d9630cae1 100644
---- a/lib/test_kasan.c
-+++ b/lib/test_kasan.c
-@@ -51,6 +51,10 @@ static int kasan_test_init(struct kunit *test)
- 		kunit_err(test, "can't run KASAN tests with KASAN disabled");
- 		return -1;
- 	}
-+	if (kasan_flag_async) {
-+		kunit_err(test, "can't run KASAN tests in async mode");
-+		return -1;
-+	}
- 
- 	multishot = kasan_save_enable_multi_shot();
- 	hw_set_tagging_report_once(false);
--- 
-2.30.0
+Indeed :)
+
+Thanks,
+Ezequiel
 
