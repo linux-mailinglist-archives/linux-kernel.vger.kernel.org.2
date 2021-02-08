@@ -2,89 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 058CF313BAC
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 18:56:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BDABE313B12
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 18:38:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235087AbhBHRz0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 12:55:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38210 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232102AbhBHPdL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 10:33:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D260764E30;
-        Mon,  8 Feb 2021 15:28:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612798119;
-        bh=E7hU2wEwkcreSsMPj7hBL43uJ3QeTlwgc/mdeP/tNz0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qwKpXfWlnBjmXoMGfiMTArXWSorGJf4lwq5D3KZk1oYvtxD0whPof+fZ+0UDKbCht
-         2EgEmF+2LB0GHQseKAPlSvUA/u19Scd2N9QHBNVQqw8yoV5EPFBXfETnfbj2LMpwYT
-         TvsQjvB/AA8mo2RNMpLYrxa4zuUJA5l4DzSweJwRs9Wse47/0KwfZapIIGqZp9eSD0
-         2EGdXir1RCmNksgEb/uGw3UNfvp8fdOWYht14dMtE4dUNsDrRkTB/TATWXlkSq0FWq
-         6/posQ67uzYk5Y5EC0WCSDS/TomEIP5IwmaBm6zdn1gMMfEmc0vOQKZu04FxRvYIFu
-         JBMYvCbIf4m9Q==
-Received: from johan by xi.lan with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1l98T8-0003zs-1b; Mon, 08 Feb 2021 16:28:54 +0100
-Date:   Mon, 8 Feb 2021 16:28:54 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <uwe@kleine-koenig.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 1/2] USB: serial: Drop if with an always false
- condition
-Message-ID: <YCFYtv/yC124CTaR@hovoldconsulting.com>
-References: <20210208143149.963644-1-uwe@kleine-koenig.org>
+        id S234967AbhBHRhs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 12:37:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55792 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232985AbhBHPaJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 10:30:09 -0500
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5E2CC061786
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 07:29:23 -0800 (PST)
+Received: by mail-lj1-x235.google.com with SMTP id b16so1836344lji.13
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 07:29:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=aCncr06HFR/a+c50zDJYOOKsupY7QedQ1/Znu9nx90I=;
+        b=rb48P4AVmUWpoRDfnjOU9W9cbB0dSXJW6wNynZnvbBVY9L8mLew4SrLorwoRK4JTIe
+         xD4xcQa8t0+9GqSuO9aYuz1iF/obqxZw2n1MiFDZa4b2ZROUdCadatFj6eM5nmbX28WT
+         zIuBrM7k2VO8CnVAObKS7JMS9nkpAb+iHAcuaF4HXlJTVuv4Eekn+kXVVJrDVXgFEyqh
+         YkfQd1O24YSAOMwgIIyINhaoSAgN6jFcGQ+ZQd57/+WcCwqsPqRDxDAqI7Oe1JnSTjFL
+         Qjbf/0iVYdhAyc5sbYR9PIEswRBghE/yq3YPMzircnpQPDCry5BO9WJZUbL2PrNaeYkF
+         2tkQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=aCncr06HFR/a+c50zDJYOOKsupY7QedQ1/Znu9nx90I=;
+        b=WycuQDDFJblPYa8A1+3EiCxMML9lOUzUCbPaFUO02Ug1kmm2hmYn1LtT26l6lA40nE
+         fqkQsNYc4Zzh3fSSZ6bNwSV81DRTDR3Eadxo0TtIz0GU/nAbpcelBf7ZLWdYlgiq5A/d
+         orFs1Rn7c6e4Dt135p5SI6ebocjTqtV50D9I58AzJomqaeEFZxVCAvCgcvgTX5g2RsbZ
+         FvPW/tZhLq+0IZVw1gXlBKP0MJbVdNh3I1KCt3FSTwhL5/kSnx2u3MVAhNNAEyOvaNHq
+         hT3bGvJ0Hy+Ge76Q2YHqnUe6EHDnmClrUwPRXChQrnfX9LKdsNBW7xOwshp33li32OiU
+         pxCw==
+X-Gm-Message-State: AOAM531yDsQRL5oS1SmXESp7ArzIXUKpIW7m8me/n/UT9Gtrlm+oTlzM
+        inLZ9PcGzpxsJb8d/PBDu5ILrxN60cQgxUAFe1Y9RZ9h2TpkAQ==
+X-Google-Smtp-Source: ABdhPJwTwyGmBeQr/tVG5WDM+5H5Wq92fJ08FaXI2gPeQbzGYl/SXcnxl68K4JcwFTK62feKa3pFu4T0Eu0dGDL9LMw=
+X-Received: by 2002:a2e:b355:: with SMTP id q21mr1498593lja.209.1612798162273;
+ Mon, 08 Feb 2021 07:29:22 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210208143149.963644-1-uwe@kleine-koenig.org>
+References: <20210128183141.28097-1-valentin.schneider@arm.com>
+ <20210128183141.28097-4-valentin.schneider@arm.com> <CAKfTPtADn0X8=ENfvG5dhzM1KbTD+JCCoOm-i8=bVkh0ZBM2Xg@mail.gmail.com>
+ <jhjv9b61md0.mognet@arm.com> <CAKfTPtB_aJE0uDmARvKGe8_oX0Goaada_C5HKy7aaTbFGLxU-A@mail.gmail.com>
+ <jhjsg6a1doz.mognet@arm.com>
+In-Reply-To: <jhjsg6a1doz.mognet@arm.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Mon, 8 Feb 2021 16:29:11 +0100
+Message-ID: <CAKfTPtA0FXsz7_T+t4WfYjhwuGNeKzbJJJoZNkD6Gz6yDf_ebA@mail.gmail.com>
+Subject: Re: [PATCH 3/8] sched/fair: Tweak misfit-related capacity checks
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Quentin Perret <qperret@google.com>,
+        Pavan Kondeti <pkondeti@codeaurora.org>,
+        Rik van Riel <riel@surriel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 08, 2021 at 03:31:48PM +0100, Uwe Kleine-König wrote:
-> In a bus remove function the passed device is always valid, so there is
-> no need to check for it being NULL.
-> 
-> (Side note: The check for port being non-NULL is broken anyhow, because
-> to_usb_serial_port() is a wrapper around container_of() for a member that is
-> not the first one. So port can hardly become NULL.)
+On Fri, 5 Feb 2021 at 21:07, Valentin Schneider
+<valentin.schneider@arm.com> wrote:
+>
+> On 05/02/21 18:17, Vincent Guittot wrote:
+> > On Fri, 5 Feb 2021 at 18:00, Valentin Schneider
+> >> >> @@ -8253,7 +8260,7 @@ check_cpu_capacity(struct rq *rq, struct sched_domain *sd)
+> >> >>  static inline int check_misfit_status(struct rq *rq, struct sched_domain *sd)
+> >> >>  {
+> >> >>         return rq->misfit_task_load &&
+> >> >> -               (rq->cpu_capacity_orig < rq->rd->max_cpu_capacity ||
+> >> >> +               (capacity_greater(rq->rd->max_cpu_capacity, rq->cpu_capacity_orig) ||
+> >> >
+> >> > Why do you add a margin here whereas there was no margin before ?
+> >> >
+> >>
+> >> Comparing capacities without any sort of filter can lead to ping-ponging
+> >> tasks around (capacity values very easily fluctuate by +/- 1, if not more).
+> >
+> > max_cpu_capacity reflects the max of the cpu_capacity_orig values
+> > don't aim to change and can be considered as static values.
+> > It would be better to fix this rounding problem (if any) in
+> > topology_get_cpu_scale instead of computing a margin every time it's
+> > used
+> >
+>
+> That's embarrassing, I was convinced we had something updating
+> rd->max_cpu_capacity with actual rq->capacity values... But as you point
+> out that's absolutely not the case, it's all based on rq->capacity_orig,
+> which completely invalidates patch 5/8.
+>
+> Welp.
+>
+> Perhaps I can still keep 5/8 with something like
+>
+>   if (!rq->misfit_task_load)
+>           return false;
+>
+>   do {
+>           if (capacity_greater(group->sgc->max_capacity, rq->cpu_capacity))
+>                   return true;
+>
+>           group = group->next;
+>   } while (group != sd->groups);
 
-Right, this check was just broken. I don't think it was even intended to
-catch a NULL struct device pointer. Note that there's two more in
-match() and probe() that I'll remove in a follow up.
+I don't catch what you want to achieve with this  while loop compared
+to the original condition which is :
+trigger a load_balance :
+- if there is CPU with higher original capacity
+- or if the capacity of this cpu has significantly reduced because of
+pressure and there is maybe others with more capacity even if it's one
+with highest original capacity
 
-> Signed-off-by: Uwe Kleine-König <uwe@kleine-koenig.org>
-> ---
->  drivers/usb/serial/bus.c | 6 +-----
->  1 file changed, 1 insertion(+), 5 deletions(-)
-> 
-> diff --git a/drivers/usb/serial/bus.c b/drivers/usb/serial/bus.c
-> index eb0195cf37dd..d862ed656414 100644
-> --- a/drivers/usb/serial/bus.c
-> +++ b/drivers/usb/serial/bus.c
-> @@ -87,15 +87,11 @@ static int usb_serial_device_probe(struct device *dev)
->  static int usb_serial_device_remove(struct device *dev)
->  {
->  	struct usb_serial_driver *driver;
-> -	struct usb_serial_port *port;
-> +	struct usb_serial_port *port = to_usb_serial_port(dev);
->  	int retval = 0;
->  	int minor;
->  	int autopm_err;
->  
-> -	port = to_usb_serial_port(dev);
-> -	if (!port)
-> -		return -ENODEV;
-> -
->  	/*
->  	 * Make sure suspend/resume doesn't race against port_remove.
->  	 *
-> 
-> base-commit: 5c8fe583cce542aa0b84adc939ce85293de36e5e
-
-Both patches now applied, thanks.
-
-Johan
+>
+>   return false;
+>
+> This works somewhat well for big.LITTLE, but for DynamIQ systems under a
+> single L3 this ends up iterating over all the CPUs :/
