@@ -2,36 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0BD73138AE
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 16:59:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01C37313866
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 16:47:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234236AbhBHP5o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 10:57:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52602 "EHLO mail.kernel.org"
+        id S232774AbhBHPqs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 10:46:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52242 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231742AbhBHPIY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 10:08:24 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9CFEB64EA4;
-        Mon,  8 Feb 2021 15:06:14 +0000 (UTC)
+        id S233036AbhBHPGi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 10:06:38 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9967464EC4;
+        Mon,  8 Feb 2021 15:05:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612796775;
-        bh=sgZNTaKXwwwXQlM0K3aanaOnETzRUYJM3oRZyiP2r3o=;
+        s=korg; t=1612796706;
+        bh=Zr3a50vF2KkXLHkbobMc06uOnXhcEsQBL39Nd4bbvhc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qiVrvtmTq2Zip3DcvWFvf6O1g41lJY0I0mtusSrpVW5VmohGpQ22f3QzGVMMv8s3U
-         4G8SXGKKHhwyV4BfGmTnRZCdE9uTjgYV6Tu4oANom8vx4rSNw6EdHsfy2RgasHwXyY
-         7Od+kPfBUMBylEWpxSXn3tf5Mx/wEs3r9yTo+rWA=
+        b=Sio7x1ZL3fmhLKNKQvlIjFH3eydaWIhMOkirh8ZCHOF+hdV3seWBMSAP+JSysMS1B
+         p46oDzxWiT1CAWS0aMWugwtC4BNQmospI658VEpvoSwRhPCw03lo+8eGBNHv/GlRBv
+         vEcelrI4jVawEZiPTZoIDc0T+89t0w+134GHcRMw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Andreas Hartmann <andihartmann@01019freenet.de>,
-        Mathias Nyman <mathias.nyman@linux.intel.com>
-Subject: [PATCH 4.14 16/30] xhci: fix bounce buffer usage for non-sg list case
+        stable@vger.kernel.org, Muchun Song <songmuchun@bytedance.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        David Hildenbrand <david@redhat.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.9 36/43] mm: hugetlb: remove VM_BUG_ON_PAGE from page_huge_active
 Date:   Mon,  8 Feb 2021 16:01:02 +0100
-Message-Id: <20210208145805.906903926@linuxfoundation.org>
+Message-Id: <20210208145807.768478692@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210208145805.239714726@linuxfoundation.org>
-References: <20210208145805.239714726@linuxfoundation.org>
+In-Reply-To: <20210208145806.281758651@linuxfoundation.org>
+References: <20210208145806.281758651@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,82 +45,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mathias Nyman <mathias.nyman@linux.intel.com>
+From: Muchun Song <songmuchun@bytedance.com>
 
-commit d4a610635400ccc382792f6be69427078541c678 upstream.
+commit ecbf4724e6061b4b01be20f6d797d64d462b2bc8 upstream.
 
-xhci driver may in some special cases need to copy small amounts
-of payload data to a bounce buffer in order to meet the boundary
-and alignment restrictions set by the xHCI specification.
+The page_huge_active() can be called from scan_movable_pages() which do
+not hold a reference count to the HugeTLB page.  So when we call
+page_huge_active() from scan_movable_pages(), the HugeTLB page can be
+freed parallel.  Then we will trigger a BUG_ON which is in the
+page_huge_active() when CONFIG_DEBUG_VM is enabled.  Just remove the
+VM_BUG_ON_PAGE.
 
-In the majority of these cases the data is in a sg list, and
-driver incorrectly assumed data is always in urb->sg when using
-the bounce buffer.
-
-If data instead is contiguous, and in urb->transfer_buffer, we may still
-need to bounce buffer a small part if data starts very close (less than
-packet size) to a 64k boundary.
-
-Check if sg list is used before copying data to/from it.
-
-Fixes: f9c589e142d0 ("xhci: TD-fragment, align the unsplittable case with a bounce buffer")
-Cc: stable@vger.kernel.org
-Reported-by: Andreas Hartmann <andihartmann@01019freenet.de>
-Tested-by: Andreas Hartmann <andihartmann@01019freenet.de>
-Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
-Link: https://lore.kernel.org/r/20210203113702.436762-2-mathias.nyman@linux.intel.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Link: https://lkml.kernel.org/r/20210115124942.46403-6-songmuchun@bytedance.com
+Fixes: 7e1f049efb86 ("mm: hugetlb: cleanup using paeg_huge_active()")
+Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
+Acked-by: Michal Hocko <mhocko@suse.com>
+Reviewed-by: Oscar Salvador <osalvador@suse.de>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Yang Shi <shy828301@gmail.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/host/xhci-ring.c |   31 ++++++++++++++++++++-----------
- 1 file changed, 20 insertions(+), 11 deletions(-)
+ mm/hugetlb.c |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
---- a/drivers/usb/host/xhci-ring.c
-+++ b/drivers/usb/host/xhci-ring.c
-@@ -681,11 +681,16 @@ static void xhci_unmap_td_bounce_buffer(
- 	dma_unmap_single(dev, seg->bounce_dma, ring->bounce_buf_len,
- 			 DMA_FROM_DEVICE);
- 	/* for in tranfers we need to copy the data from bounce to sg */
--	len = sg_pcopy_from_buffer(urb->sg, urb->num_sgs, seg->bounce_buf,
--			     seg->bounce_len, seg->bounce_offs);
--	if (len != seg->bounce_len)
--		xhci_warn(xhci, "WARN Wrong bounce buffer read length: %zu != %d\n",
--				len, seg->bounce_len);
-+	if (urb->num_sgs) {
-+		len = sg_pcopy_from_buffer(urb->sg, urb->num_sgs, seg->bounce_buf,
-+					   seg->bounce_len, seg->bounce_offs);
-+		if (len != seg->bounce_len)
-+			xhci_warn(xhci, "WARN Wrong bounce buffer read length: %zu != %d\n",
-+				  len, seg->bounce_len);
-+	} else {
-+		memcpy(urb->transfer_buffer + seg->bounce_offs, seg->bounce_buf,
-+		       seg->bounce_len);
-+	}
- 	seg->bounce_len = 0;
- 	seg->bounce_offs = 0;
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -1210,8 +1210,7 @@ struct hstate *size_to_hstate(unsigned l
+  */
+ bool page_huge_active(struct page *page)
+ {
+-	VM_BUG_ON_PAGE(!PageHuge(page), page);
+-	return PageHead(page) && PagePrivate(&page[1]);
++	return PageHeadHuge(page) && PagePrivate(&page[1]);
  }
-@@ -3252,12 +3257,16 @@ static int xhci_align_td(struct xhci_hcd
  
- 	/* create a max max_pkt sized bounce buffer pointed to by last trb */
- 	if (usb_urb_dir_out(urb)) {
--		len = sg_pcopy_to_buffer(urb->sg, urb->num_sgs,
--				   seg->bounce_buf, new_buff_len, enqd_len);
--		if (len != new_buff_len)
--			xhci_warn(xhci,
--				"WARN Wrong bounce buffer write length: %zu != %d\n",
--				len, new_buff_len);
-+		if (urb->num_sgs) {
-+			len = sg_pcopy_to_buffer(urb->sg, urb->num_sgs,
-+						 seg->bounce_buf, new_buff_len, enqd_len);
-+			if (len != new_buff_len)
-+				xhci_warn(xhci, "WARN Wrong bounce buffer write length: %zu != %d\n",
-+					  len, new_buff_len);
-+		} else {
-+			memcpy(seg->bounce_buf, urb->transfer_buffer + enqd_len, new_buff_len);
-+		}
-+
- 		seg->bounce_dma = dma_map_single(dev, seg->bounce_buf,
- 						 max_pkt, DMA_TO_DEVICE);
- 	} else {
+ /* never called for tail page */
 
 
