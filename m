@@ -2,91 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BAC231311E
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 12:43:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65838313124
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 12:43:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233311AbhBHLmB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 06:42:01 -0500
-Received: from mail29.static.mailgun.info ([104.130.122.29]:55157 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233248AbhBHLXX (ORCPT
+        id S233427AbhBHLm5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 06:42:57 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:12898 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233039AbhBHLXn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 06:23:23 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1612783378; h=Date: Message-Id: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=kaePMlCE2vwAdOb7Uk4NZAv0qMBL0UMQf1qtACerNDs=;
- b=dcGs1JyDyiF2lETnsh+WnxopKK8MUT1C/pMieDIYC+DqtYgucDPhk7CMoDliWMaf2oD0CbxM
- EMRAeXJo4OYwd8KdDuABfzVjVyiwIE3nVg/3LDXQMZd0TN4+5R/zZIjWTpRy4+fuxymfTK8c
- Aar2S6cwV9lbLPt3cyFMCeJkGOk=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 60211eed830f898bac3d73d9 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 08 Feb 2021 11:22:21
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id A18EAC43464; Mon,  8 Feb 2021 11:22:21 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        MISSING_DATE,MISSING_MID,SPF_FAIL autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 27F94C433ED;
-        Mon,  8 Feb 2021 11:22:18 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 27F94C433ED
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-Content-Type: text/plain; charset="utf-8"
+        Mon, 8 Feb 2021 06:23:43 -0500
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4DZ3Wk0320zjK2N;
+        Mon,  8 Feb 2021 19:21:54 +0800 (CST)
+Received: from DESKTOP-TMVL5KK.china.huawei.com (10.174.187.128) by
+ DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
+ 14.3.498.0; Mon, 8 Feb 2021 19:22:52 +0800
+From:   Yanan Wang <wangyanan55@huawei.com>
+To:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
+        "Catalin Marinas" <catalin.marinas@arm.com>,
+        James Morse <james.morse@arm.com>,
+        "Julien Thierry" <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Gavin Shan <gshan@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        <kvmarm@lists.cs.columbia.edu>,
+        <linux-arm-kernel@lists.infradead.org>, <kvm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <wanghaibin.wang@huawei.com>, <zhukeqian1@huawei.com>,
+        <yuzenghui@huawei.com>, Yanan Wang <wangyanan55@huawei.com>
+Subject: [RFC PATCH 0/4] KVM: arm64: Improve efficiency of stage2 page table
+Date:   Mon, 8 Feb 2021 19:22:46 +0800
+Message-ID: <20210208112250.163568-1-wangyanan55@huawei.com>
+X-Mailer: git-send-email 2.8.4.windows.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH] wl3501: fix alignment constraints
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20210204162653.3113749-1-arnd@kernel.org>
-References: <20210204162653.3113749-1-arnd@kernel.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
-Message-Id: <20210208112221.A18EAC43464@smtp.codeaurora.org>
-Date:   Mon,  8 Feb 2021 11:22:21 +0000 (UTC)
+Content-Type: text/plain
+X-Originating-IP: [10.174.187.128]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Arnd Bergmann <arnd@kernel.org> wrote:
+Hi,
 
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> struct wl3501_80211_tx_hdr contains a ieee80211_hdr structure, which is
-> required to have at least two byte alignment, and this conflicts with
-> the __packed attribute:
-> 
-> wireless/wl3501.h:553:1: warning: alignment 1 of 'struct wl3501_80211_tx_hdr' is less than 2 [-Wpacked-not-aligned]
-> 
-> Mark wl3501_80211_tx_hdr itself as having two-byte alignment to ensure the
-> inner structure is properly aligned.
-> 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+This series makes some efficiency improvement of stage2 page table code,
+and there are some test results to present the performance changes, which
+were tested by a kvm selftest [1] that I have post:
+[1] https://lore.kernel.org/lkml/20210208090841.333724-1-wangyanan55@huawei.com/ 
 
-Patch applied to wireless-drivers-next.git, thanks.
+About patch 1:
+We currently uniformly clean dcache in user_mem_abort() before calling the
+fault handlers, if we take a translation fault and the pfn is cacheable.
+But if there are concurrent translation faults on the same page or block,
+clean of dcache for the first time is necessary while the others are not.
 
-fb1bc2ce3a55 wl3501: fix alignment constraints
+By moving clean of dcache to the map handler, we can easily identify the
+conditions where CMOs are really needed and avoid the unnecessary ones.
+As it's a time consuming process to perform CMOs especially when flushing
+a block range, so this solution reduces much load of kvm and improve the
+efficiency of creating mappings.
+
+Test results:
+(1) when 20 vCPUs concurrently access 20G ram (all 1G hugepages):
+KVM create block mappings time: 52.83s -> 3.70s
+KVM recover block mappings time(after dirty-logging): 52.0s -> 2.87s
+
+(2) when 40 vCPUs concurrently access 20G ram (all 1G hugepages):
+KVM creating block mappings time: 104.56s -> 3.70s
+KVM recover block mappings time(after dirty-logging): 103.93s -> 2.96s
+
+About patch 2, 3:
+When KVM needs to coalesce the normal page mappings into a block mapping,
+we currently invalidate the old table entry first followed by invalidation
+of TLB, then unmap the page mappings, and install the block entry at last.
+
+It will cost a lot of time to unmap the numerous page mappings, which means
+the table entry will be left invalid for a long time before installation of
+the block entry, and this will cause many spurious translation faults.
+
+So let's quickly install the block entry at first to ensure uninterrupted
+memory access of the other vCPUs, and then unmap the page mappings after
+installation. This will reduce most of the time when the table entry is
+invalid, and avoid most of the unnecessary translation faults.
+
+Test results based on patch 1:
+(1) when 20 vCPUs concurrently access 20G ram (all 1G hugepages):
+KVM recover block mappings time(after dirty-logging): 2.87s -> 0.30s
+
+(2) when 40 vCPUs concurrently access 20G ram (all 1G hugepages):
+KVM recover block mappings time(after dirty-logging): 2.96s -> 0.35s
+
+So combined with patch 1, it makes a big difference of KVM creating mappings
+and recovering block mappings with not much code change.
+
+About patch 4:
+A new method to distinguish cases of memcache allocations is introduced.
+By comparing fault_granule and vma_pagesize, cases that require allocations
+from memcache and cases that don't can be distinguished completely.
+
+---
+
+Details of test results
+platform: HiSilicon Kunpeng920 (FWB not supported)
+host kernel: Linux mainline (v5.11-rc6)
+
+(1) performance change of patch 1
+cmdline: ./kvm_page_table_test -m 4 -t 2 -g 1G -s 20G -v 20
+	   (20 vcpus, 20G memory, block mappings(granule 1G))
+Before patch: KVM_CREATE_MAPPINGS: 52.8338s 52.8327s 52.8336s 52.8255s 52.8303s
+After  patch: KVM_CREATE_MAPPINGS:  3.7022s  3.7031s  3.7028s  3.7012s  3.7024s
+
+Before patch: KVM_ADJUST_MAPPINGS: 52.0466s 52.0473s 52.0550s 52.0518s 52.0467s
+After  patch: KVM_ADJUST_MAPPINGS:  2.8787s  2.8781s  2.8785s  2.8742s  2.8759s
+
+cmdline: ./kvm_page_table_test -m 4 -t 2 -g 1G -s 20G -v 40
+	   (40 vcpus, 20G memory, block mappings(granule 1G))
+Before patch: KVM_CREATE_MAPPINGS: 104.560s 104.556s 104.554s 104.556s 104.550s
+After  patch: KVM_CREATE_MAPPINGS:  3.7011s  3.7103s  3.7005s  3.7024s  3.7106s
+
+Before patch: KVM_ADJUST_MAPPINGS: 103.931s 103.936s 103.927s 103.942s 103.927s
+After  patch: KVM_ADJUST_MAPPINGS:  2.9621s  2.9648s  2.9474s  2.9587s  2.9603s
+
+(2) performance change of patch 2, 3(based on patch 1)
+cmdline: ./kvm_page_table_test -m 4 -t 2 -g 1G -s 20G -v 1
+	   (1 vcpu, 20G memory, block mappings(granule 1G))
+Before patch: KVM_ADJUST_MAPPINGS: 2.8241s 2.8234s 2.8245s 2.8230s 2.8652s
+After  patch: KVM_ADJUST_MAPPINGS: 0.2444s 0.2442s 0.2423s 0.2441s 0.2429s
+
+cmdline: ./kvm_page_table_test -m 4 -t 2 -g 1G -s 20G -v 20
+	   (20 vcpus, 20G memory, block mappings(granule 1G))
+Before patch: KVM_ADJUST_MAPPINGS: 2.8787s 2.8781s 2.8785s 2.8742s 2.8759s
+After  patch: KVM_ADJUST_MAPPINGS: 0.3008s 0.3004s 0.2974s 0.2917s 0.2900s
+
+cmdline: ./kvm_page_table_test -m 4 -t 2 -g 1G -s 20G -v 40
+	   (40 vcpus, 20G memory, block mappings(granule 1G))
+Before patch: KVM_ADJUST_MAPPINGS: 2.9621s 2.9648s 2.9474s 2.9587s 2.9603s
+After  patch: KVM_ADJUST_MAPPINGS: 0.3541s 0.3694s 0.3656s 0.3693s 0.3687s
+
+---
+
+Yanan Wang (4):
+  KVM: arm64: Move the clean of dcache to the map handler
+  KVM: arm64: Add an independent API for coalescing tables
+  KVM: arm64: Install the block entry before unmapping the page mappings
+  KVM: arm64: Distinguish cases of memcache allocations completely
+
+ arch/arm64/include/asm/kvm_mmu.h | 16 -------
+ arch/arm64/kvm/hyp/pgtable.c     | 82 +++++++++++++++++++++-----------
+ arch/arm64/kvm/mmu.c             | 39 ++++++---------
+ 3 files changed, 69 insertions(+), 68 deletions(-)
 
 -- 
-https://patchwork.kernel.org/project/linux-wireless/patch/20210204162653.3113749-1-arnd@kernel.org/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+2.23.0
 
