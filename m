@@ -2,155 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FC6F314097
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 21:37:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3CD0314098
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 21:37:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229939AbhBHUgC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 15:36:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37766 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236105AbhBHTRb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 14:17:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 29B2664E85;
-        Mon,  8 Feb 2021 19:16:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612811809;
-        bh=n+pBStucWf+JfyK8Sz4l0A9bjt78b6JU+WbJiyAUaUY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Ncfa4ehbzB2JS4l41iYUetkNFD/HOATUWpwZrharTkYK9FBSep9vKa9qKBBaQdwH0
-         LBZ2pMUXb68HIXV9qxf/Z95KBIkAMgNjriGYVpJFJpombDvmyz9vJ8JfLddhGTeumd
-         J1xvvN2bFaxP5+KmeMCXlhR5QkvxyPVko9hXrtn0rUyjjeUoLoi68Z7yUtspsZIisg
-         IZUyAGi9/lQT6bNcAnhxkC//yfLR01iY6OitQzkTkeHdnamn7+CN07Ih0SBOBKxtXF
-         1xuJWuQIWP5+mTZZS6+ikLwURcDlTepjGyrrIaynNZsqN0Z1xqx3898HFFpAgrGzyE
-         5UluqAzR4e2jw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 9E99D40513; Mon,  8 Feb 2021 16:16:45 -0300 (-03)
-Date:   Mon, 8 Feb 2021 16:16:45 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     kan.liang@linux.intel.com
-Cc:     peterz@infradead.org, mingo@kernel.org,
-        linux-kernel@vger.kernel.org, tglx@linutronix.de, bp@alien8.de,
-        namhyung@kernel.org, jolsa@redhat.com, ak@linux.intel.com,
-        yao.jin@linux.intel.com, alexander.shishkin@linux.intel.com,
-        adrian.hunter@intel.com
-Subject: Re: [PATCH 46/49] perf stat: Filter out unmatched aggregation for
- hybrid event
-Message-ID: <20210208191645.GQ920417@kernel.org>
-References: <1612797946-18784-1-git-send-email-kan.liang@linux.intel.com>
- <1612797946-18784-47-git-send-email-kan.liang@linux.intel.com>
+        id S232795AbhBHUgp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 15:36:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48468 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236187AbhBHTRx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 14:17:53 -0500
+Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A340C06178A;
+        Mon,  8 Feb 2021 11:17:13 -0800 (PST)
+Received: by mail-il1-x130.google.com with SMTP id y15so13816443ilj.11;
+        Mon, 08 Feb 2021 11:17:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JeycJMVrT1Dsbk9XtCwjyUvDzF/dcIodjFIrjeRF9Uw=;
+        b=j5xqL69DpZ9yPEm4gQOwSpBh2g5smaE9P2MPnP62rEWZEHts61LsIe6SFn3sG3qtfs
+         PSaANvdV5epXdO7HiH01tzIBK7qJDojZ3UmYVCYcmsV5HFyM31F5KHSy1xmL2qCMF84T
+         W+lb2Sx28TQ48v9om0X9Ik3YO+2/XB9FojBHit1x2SVl4YPBXVyGdmkqyoRSzf42j3XP
+         CtuiuzZ8F6YfRoa1homosSqsngcHVEldPdPHCCNV7lJdMs/avY801gGEzhkAEuybX/ib
+         TGE6xVpSl4hR1ClnnfAO3DBj1TtrkS5VcNeu6UhlVmrMo5YWf9DaqiqUrCUzSL/CDDDj
+         Ge0A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JeycJMVrT1Dsbk9XtCwjyUvDzF/dcIodjFIrjeRF9Uw=;
+        b=JAYo8hJF0Xlch47Q7Ka5AfiiJwZ4F4Zwby1xXHWTBF/Kll8+o0LRTIXBFDkT3CBenn
+         Yg9jxRgpO9NiOx/SzigSqM6672c+8Hle49TObF7Iv5E8xjcRM+ArSqilUAOIaZZwMH7Q
+         KOytLmfilye6FNd+UKc2s0uCU/Bkp609+2GUxrRt5TyDNB6WtB9Gf1LKw3hxyLcVDON0
+         DkFl8ZcVfUnJChMqTUQ1k5BEYePULaCrtMd5CZ9trL+67/F+iPfs7LlZvtU03DOJbjfw
+         tpN6nySwMORjZtFhOPkKL2T8vsqaSRZpPj+2U0SgqXeE7ql1niDHAk+M33Jia2IwcT0Z
+         gwFQ==
+X-Gm-Message-State: AOAM532vH5GB9wI4g/9sa6WTa+A7mRwE4LnpCxwVBMjr5nqweK6fJLNn
+        IOXf7on9blQHg03IXe+IAAc=
+X-Google-Smtp-Source: ABdhPJwd2VKq6K3S7zfgm6zF0SnaIRJ8zrSyJR3bE1Y72wItD6hLqv+XlHFG52YX4wJIR2g1SOPtWw==
+X-Received: by 2002:a92:c248:: with SMTP id k8mr17387977ilo.141.1612811832591;
+        Mon, 08 Feb 2021 11:17:12 -0800 (PST)
+Received: from localhost.localdomain (tunnel525895-pt.tunnel.tserv15.lax1.ipv6.he.net. [2001:470:c:1200::2])
+        by smtp.googlemail.com with ESMTPSA id j25sm9429645iog.27.2021.02.08.11.17.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Feb 2021 11:17:11 -0800 (PST)
+From:   Tianling Shen <cnsztl@gmail.com>
+To:     Rob Herring <robh+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
+        Jagan Teki <jagan@amarulasolutions.com>,
+        Johan Jonker <jbx6244@gmail.com>,
+        Tianling Shen <cnsztl@gmail.com>,
+        Emmanuel Vadot <manu@freebsd.org>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <uwe@kleine-koenig.org>,
+        David Bauer <mail@david-bauer.net>,
+        Tobias Schramm <t.schramm@manjaro.org>,
+        Marty Jones <mj8263788@gmail.com>,
+        Jensen Huang <jensenhuang@friendlyarm.com>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] dt-bindings: Add doc for FriendlyARM NanoPi R4S
+Date:   Tue,  9 Feb 2021 03:16:45 +0800
+Message-Id: <20210208191646.6511-1-cnsztl@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1612797946-18784-47-git-send-email-kan.liang@linux.intel.com>
-X-Url:  http://acmel.wordpress.com
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, Feb 08, 2021 at 07:25:43AM -0800, kan.liang@linux.intel.com escreveu:
-> From: Jin Yao <yao.jin@linux.intel.com>
-> 
-> perf-stat has supported some aggregation modes, such as --per-core,
-> --per-socket and etc. While for hybrid event, it may only available
-> on part of cpus. So for --per-core, we need to filter out the
-> unavailable cores, for --per-socket, filter out the unavailable
-> sockets, and so on.
-> 
-> Before:
-> 
-> root@otcpl-adl-s-2:~# ./perf stat --per-core -e cpu_core/cycles/ -a -- sleep 1
-> 
->  Performance counter stats for 'system wide':
-> 
-> S0-D0-C0           2            311,114      cycles [cpu_core]
+Add devicetree binding documentation for the FriendlyARM NanoPi R4S.
 
-Why not use the pmu style event name, i.e.:
+Signed-off-by: Tianling Shen <cnsztl@gmail.com>
+---
+ Documentation/devicetree/bindings/arm/rockchip.yaml | 1 +
+ 1 file changed, 1 insertion(+)
 
-S0-D0-C0           2            311,114        cpu_core/cycles/
-
-?
-
-> S0-D0-C4           2             59,784      cycles [cpu_core]
-> S0-D0-C8           2            121,287      cycles [cpu_core]
-> S0-D0-C12          2          2,690,245      cycles [cpu_core]
-> S0-D0-C16          2          2,060,545      cycles [cpu_core]
-> S0-D0-C20          2          3,632,251      cycles [cpu_core]
-> S0-D0-C24          2            775,736      cycles [cpu_core]
-> S0-D0-C28          2            742,020      cycles [cpu_core]
-> S0-D0-C32          0      <not counted>      cycles [cpu_core]
-> S0-D0-C33          0      <not counted>      cycles [cpu_core]
-> S0-D0-C34          0      <not counted>      cycles [cpu_core]
-> S0-D0-C35          0      <not counted>      cycles [cpu_core]
-> S0-D0-C36          0      <not counted>      cycles [cpu_core]
-> S0-D0-C37          0      <not counted>      cycles [cpu_core]
-> S0-D0-C38          0      <not counted>      cycles [cpu_core]
-> S0-D0-C39          0      <not counted>      cycles [cpu_core]
-> 
->        1.001779842 seconds time elapsed
-> 
-> After:
-> 
-> root@otcpl-adl-s-2:~# ./perf stat --per-core -e cpu_core/cycles/ -a -- sleep 1
-> 
->  Performance counter stats for 'system wide':
-> 
-> S0-D0-C0           2          1,088,230      cycles [cpu_core]
-> S0-D0-C4           2             57,228      cycles [cpu_core]
-> S0-D0-C8           2             98,327      cycles [cpu_core]
-> S0-D0-C12          2          2,741,955      cycles [cpu_core]
-> S0-D0-C16          2          2,090,432      cycles [cpu_core]
-> S0-D0-C20          2          3,192,108      cycles [cpu_core]
-> S0-D0-C24          2          2,910,752      cycles [cpu_core]
-> S0-D0-C28          2            388,696      cycles [cpu_core]
-> 
-> Reviewed-by: Andi Kleen <ak@linux.intel.com>
-> Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
-> ---
->  tools/perf/util/stat-display.c | 20 ++++++++++++++++++++
->  1 file changed, 20 insertions(+)
-> 
-> diff --git a/tools/perf/util/stat-display.c b/tools/perf/util/stat-display.c
-> index 21a3f80..fa11572 100644
-> --- a/tools/perf/util/stat-display.c
-> +++ b/tools/perf/util/stat-display.c
-> @@ -630,6 +630,20 @@ static void aggr_cb(struct perf_stat_config *config,
->  	}
->  }
->  
-> +static bool aggr_id_hybrid_matched(struct perf_stat_config *config,
-> +				   struct evsel *counter, struct aggr_cpu_id id)
-> +{
-> +	struct aggr_cpu_id s;
-> +
-> +	for (int i = 0; i < evsel__nr_cpus(counter); i++) {
-> +		s = config->aggr_get_id(config, evsel__cpus(counter), i);
-> +		if (cpu_map__compare_aggr_cpu_id(s, id))
-> +			return true;
-> +	}
-> +
-> +	return false;
-> +}
-> +
->  static void print_counter_aggrdata(struct perf_stat_config *config,
->  				   struct evsel *counter, int s,
->  				   char *prefix, bool metric_only,
-> @@ -643,6 +657,12 @@ static void print_counter_aggrdata(struct perf_stat_config *config,
->  	double uval;
->  
->  	ad.id = id = config->aggr_map->map[s];
-> +
-> +	if (perf_pmu__hybrid_exist() &&
-> +	    !aggr_id_hybrid_matched(config, counter, id)) {
-> +		return;
-> +	}
-> +
->  	ad.val = ad.ena = ad.run = 0;
->  	ad.nr = 0;
->  	if (!collect_data(config, counter, aggr_cb, &ad))
-> -- 
-> 2.7.4
-> 
-
+diff --git a/Documentation/devicetree/bindings/arm/rockchip.yaml b/Documentation/devicetree/bindings/arm/rockchip.yaml
+index ef4544ad6f82..b85ebf2c8d52 100644
+--- a/Documentation/devicetree/bindings/arm/rockchip.yaml
++++ b/Documentation/devicetree/bindings/arm/rockchip.yaml
+@@ -133,6 +133,7 @@ properties:
+               - friendlyarm,nanopc-t4
+               - friendlyarm,nanopi-m4
+               - friendlyarm,nanopi-neo4
++              - friendlyarm,nanopi-r4s
+           - const: rockchip,rk3399
+ 
+       - description: GeekBuying GeekBox
 -- 
+2.17.1
 
-- Arnaldo
