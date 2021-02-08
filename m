@@ -2,110 +2,276 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15A77313AA7
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 18:18:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A7012313A92
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 18:14:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234846AbhBHRR5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 12:17:57 -0500
-Received: from mga17.intel.com ([192.55.52.151]:9937 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232525AbhBHPYD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 10:24:03 -0500
-IronPort-SDR: eNmXbxa2bq/7fmbx7u1aErWzDb20PokeUmy4tsIxK2qSOcsFnBYYZnsx8ldM5cD8PWG9MCrL0M
- qXg/45WM2eNw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9888"; a="161479707"
-X-IronPort-AV: E=Sophos;i="5.81,162,1610438400"; 
-   d="scan'208";a="161479707"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2021 07:23:15 -0800
-IronPort-SDR: 4+2YA9AuhuB4uOlU7aTdKYD5yCc4FRvmzcWeX7UoY6C14CkAmDdX0GUSwTJlF2ZtApPwwl7h1p
- n6UXPFJ7PQ4w==
-X-IronPort-AV: E=Sophos;i="5.81,162,1610438400"; 
-   d="scan'208";a="418827376"
-Received: from chongkea-mobl1.amr.corp.intel.com (HELO [10.212.141.69]) ([10.212.141.69])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2021 07:23:14 -0800
-Subject: Re: [PATCH v1] kvm: x86: Revise guest_fpu xcomp_bv field
-To:     Jing Liu <jing2.liu@linux.intel.com>, pbonzini@redhat.com
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210208161659.63020-1-jing2.liu@linux.intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <4e4b37d1-e2f8-6757-003c-d19ae8184088@intel.com>
-Date:   Mon, 8 Feb 2021 07:23:13 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20210208161659.63020-1-jing2.liu@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+        id S233367AbhBHRNj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 12:13:39 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:53974 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233653AbhBHPZG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 10:25:06 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 118F9v0t067703;
+        Mon, 8 Feb 2021 15:24:04 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : content-transfer-encoding : content-type :
+ mime-version; s=corp-2020-01-29;
+ bh=h3WAS1yXgiJm+imXNuBpOM6GWsUUcpzF/yKJmLCwomo=;
+ b=jIrCJiYdpWe7ZGWnHaHUnRDh3ZuEkJrBbcZDb1alogNPbutkgtmLshJhJw+fZhPPOTdX
+ FrfOnnB8kHIrL1IsMiKvPTGpqcPGdh3AlqIDcrncnBlneQEuzImwQ74UD0JJAVciSgyv
+ zbFxCGjLG1VaRxbvuYb8q3X0fJktWJXPRXatmkQTHgjjwD1SizHn6vnXajtDzdMN8eBF
+ PYY4CWI9h/f1DPLnNROuBSauDSdjlDaLZv37CRlHB67/l6joEwGafDN3Hh1WsBI2HEvK
+ /laenXxfZ/b1KsG4x+46vDX3MO74q4OmWAZ9yDCo7RoD3SptCJmgJPVlRIIHmwFi7IbO JA== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2130.oracle.com with ESMTP id 36hgmacbxn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 08 Feb 2021 15:24:04 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 118F9twH153309;
+        Mon, 8 Feb 2021 15:24:04 GMT
+Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2173.outbound.protection.outlook.com [104.47.59.173])
+        by aserp3030.oracle.com with ESMTP id 36j4pmf6w4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 08 Feb 2021 15:24:03 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=c3RXWM5dGK3S1youJ/8qPOngZNWfCbGAfgGIvfIzXtuKwKmXeGAk1IyUgn9HxYc2t4fJImhzTaGCer2cJLBunceppHu5PhhcLxHbqEKV2q4/QbSBagev8isAC/NsxKkcgVJ7ay8qlU1eetEv5HE6zqXg/9zSRazDt37avbwOzfoWHEIjfpXBpu0nqxQn+1D8ij2dX5sxnwbQwEWCS/fyOE9dIBvuwcEGfOJQlhgp0PfH1QDjdjOprqnZWziO27sRb8e1vnK7hvXpOnU+2wkJbBo7BQPnyciqm1H6963k3i4nyDTrY56aRRVqxIAii4WUN48yDOw8ao4X1fsHuoHWQA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=h3WAS1yXgiJm+imXNuBpOM6GWsUUcpzF/yKJmLCwomo=;
+ b=gkvoK8KmuQxdyEeZshEs+m1CXEze3Ly6zxsCxatf2oKpSLQvYp/mXhBzLmP4w1xZdT26Na7YYhRrQ0RPdiPqSlCN7ltEtLR4IixZdwgIgK2pGm97MxGOorhpBhK6mAEF817beQRF4LX2tQGldddaal0ZEjgst/SOCTE1ef9QPlqzi2KAuE1wJHwLgsEymKR67WofhJoXVHCHYiXRpm08gIUqIjdlj16/v9ZJnxG3YMifXSIjbdw3JWrEovj1RjNP07n9wpXPe5uKZzxrG5FKg0e5c3BW0NlClCVdyyNesVOD8SvvPlcH6X8fh6ZKl77DucyiEw48A/WJcgEp9ILqyQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=h3WAS1yXgiJm+imXNuBpOM6GWsUUcpzF/yKJmLCwomo=;
+ b=ticWqCeqSRoJ77duM3RU8nIM7eBhnNxRjnDTnNG7GFbiRz8QftlffvrDp9unt+slC4dJKENbsNjdLB9Ifms2USOKkgfvnwSApuVr4cySqvmrDjUG0R+GXh8uy2h+FjX5y5uShkev2Vwub/vQWYn/uZgeNZ26563MM/NoglY8Sb8=
+Authentication-Results: linux.alibaba.com; dkim=none (message not signed)
+ header.d=none;linux.alibaba.com; dmarc=none action=none
+ header.from=oracle.com;
+Received: from CH2PR10MB4118.namprd10.prod.outlook.com (2603:10b6:610:a4::8)
+ by CH2PR10MB4005.namprd10.prod.outlook.com (2603:10b6:610:f::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.30; Mon, 8 Feb
+ 2021 15:24:02 +0000
+Received: from CH2PR10MB4118.namprd10.prod.outlook.com
+ ([fe80::b4f8:316f:3a25:faac]) by CH2PR10MB4118.namprd10.prod.outlook.com
+ ([fe80::b4f8:316f:3a25:faac%7]) with mapi id 15.20.3825.030; Mon, 8 Feb 2021
+ 15:24:01 +0000
+From:   Dave Kleikamp <dave.kleikamp@oracle.com>
+To:     Yang Li <yang.lee@linux.alibaba.com>
+Cc:     jfs-discussion@lists.sourceforge.net, linux-kernel@vger.kernel.org
+Subject: [PATCH v3] jfs: turn diLog(), dataLog() and txLog() into void functions
+Date:   Mon,  8 Feb 2021 09:23:54 -0600
+Message-Id: <20210208152354.880319-1-dave.kleikamp@oracle.com>
+X-Mailer: git-send-email 2.30.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [68.201.65.98]
+X-ClientProxiedBy: SA0PR13CA0027.namprd13.prod.outlook.com
+ (2603:10b6:806:130::32) To CH2PR10MB4118.namprd10.prod.outlook.com
+ (2603:10b6:610:a4::8)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from shaggy-t450.localdomain (68.201.65.98) by SA0PR13CA0027.namprd13.prod.outlook.com (2603:10b6:806:130::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.11 via Frontend Transport; Mon, 8 Feb 2021 15:24:01 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: d8ea4b79-d101-42ea-fb9f-08d8cc459013
+X-MS-TrafficTypeDiagnostic: CH2PR10MB4005:
+X-Microsoft-Antispam-PRVS: <CH2PR10MB40057D26B300B955BFB5E023878F9@CH2PR10MB4005.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:923;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Hg60qxJLxsKjGPC7W94Yc5xCDiTHLHD0QWvDWIeMDJADdzQdfV4Wut7en1z55X4gC+kYuQwpaIggcyTWpnxDy5rm/NYaoMp/ALrQRtdBFMZfrn8Y7tHz7nn3w3F/noyhhfHDEQgkWfqIfA7j+1TY8zHf4fue+gR/sKBMDEXBA92G4SzMjyW7kCuzz2oj0ygqsQxc6aGad4eoVUdLiR7OOeszj+00MyPegZtluafrV+uVc7fEZzVjMe4PYa6IdDxLyU3MpXU6SZrwwEeKMOSrByFaZssedyp/B2dvBBqUqmOyZqde4CTdfWQk/vVpiqtyc9ZEjfRrEeg8V+TFSTMIFT6REo/6fLY+ryY9KZbl08QvwcQsbiRg6fZrtjIZvIdGXuzG8UC5P9u4+yduXEQ40PAUfffA4nPvVC6PGwmdAT7jjGIU19YQVi4mHn9io1xRfFEwTjghwBeEIplrkUOuXXY4nnvi4Io0bk4uO1lgOPtwjAKrlQ2Gd91dYHEjNK/MdRlqj3QjbXIzGP/ZkwBXgg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH2PR10MB4118.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(39860400002)(346002)(396003)(366004)(136003)(8936002)(52116002)(66556008)(66476007)(6666004)(6512007)(66946007)(4326008)(2616005)(86362001)(5660300002)(83380400001)(6506007)(1076003)(44832011)(16526019)(2906002)(186003)(26005)(956004)(6486002)(36756003)(478600001)(6916009)(8676002)(316002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?FEl3IhN9yQX00cJSpR4m8WEOdeSoxdX1WSy767djiRhh0dCrpsqjtCpuT7Df?=
+ =?us-ascii?Q?PzQYPOrmL1yE2wgdNapNt/gH9kHdNrv8RCAVv8eRUh9psUycTxNg5oOYOH/8?=
+ =?us-ascii?Q?RyWYMPqxXwiZtpapPt0bEM2Esd7zQVs+YBuM2wKwiFNRRrRBcZJBz266dbS/?=
+ =?us-ascii?Q?qkyiSpejkvqf+nnr9G7qipPe0yF5UmITphcBlkF1zICeEH5cuID+VB6jtInE?=
+ =?us-ascii?Q?4vPAzICDB7CUGXFC/BCbDzKGbR6M7BmE3qg61CuyA8KeU6bXYiCdaQfVibeQ?=
+ =?us-ascii?Q?rYLWDG0kMytybwU/cIPLFdk/aotaUkJcguCjAiX/Uf+N9iCOCcbmb4JDsXu9?=
+ =?us-ascii?Q?XHWVrRawVEAdUDRZg5dy2wUxWhDKRVUEtD0OokC5Q6PNbvYorgLpHZUWYbjz?=
+ =?us-ascii?Q?i48M3q83moNhIA9p1aoIgyEc0BXcOWoSnOgKFPR/MaA7AnU+HudXIRIi7+Z+?=
+ =?us-ascii?Q?gB3HqjPSGJblGo2l0Eis56CBLgCfG3+ezOgE8j/7J6Ct9pB4azsnCbb07xVt?=
+ =?us-ascii?Q?vi0+VbGiouaVwauqQzx7USomiUaP9mlZrjK6ABY4dDIPXnAE6JeVdzzVM8WL?=
+ =?us-ascii?Q?hAEy0xPqAbM917oS7RpoOfzh9ErTYuBZVOBl+b83j7QHpUAkcyjrI4IS/+tw?=
+ =?us-ascii?Q?lfpBUsWGteQHy5pc3H/Cs+JWCurY+fbOsvx9EIf5QGC5bxJ8N6x1HwCPOpoU?=
+ =?us-ascii?Q?NDmfW23+co+SlkAhfagJLr4r/fS3nfdkUgrGTDbCaWZNYDJSEvIvvHDHUftZ?=
+ =?us-ascii?Q?MxS9r1SECiS2FPmmrDSV64NdJNcr4cfJfk+i+qkR0jqwpeTZ/IoBUV2r0YPv?=
+ =?us-ascii?Q?wtunD3KqcBLVasE4RY16MtmEK5nUF6EtEueV0oKTxzwfk8JC8bD+iUpoxGed?=
+ =?us-ascii?Q?EAXLZjf/ibxc2X0rdODwce2VXR7Ln+BbvfNqmqGwvAecyMSpKhxx7tWlCgOM?=
+ =?us-ascii?Q?NFqJdz6q44NGM2PE6r6qFFxqBactQDCjMyhQDq/aCgQM3S7MQ7mBL7ATUDEI?=
+ =?us-ascii?Q?sSlXSNwOZXeGD71Tqwp7S2hWpdkFCnhbAN+Chtm/sQCNCu3dBg3iFHDzijGu?=
+ =?us-ascii?Q?s6RnHfiwZ07aPDqU8VjB4jr61nVt/XNB4nDGhKb7Lgem4MFTvketktCBAAg3?=
+ =?us-ascii?Q?vdOS5OqzAa8DZQfs9f0W6hsOWL4uKfHl/sDdqy8UZ33bZaDdbNKec2733E/p?=
+ =?us-ascii?Q?Rrt6coYvmzPN4un/bz8G8AcNy/rpgUEctvEZ870GmiUiisC3QLM1/T9fLRz4?=
+ =?us-ascii?Q?lu/Di+oiE592UK1PGYD64ewXlw+PgrkftKzaPd4Q5ioUQGAfsD8tAniFpVxl?=
+ =?us-ascii?Q?bSQCrIWJCUyUne64K+4ZR/Gk?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d8ea4b79-d101-42ea-fb9f-08d8cc459013
+X-MS-Exchange-CrossTenant-AuthSource: CH2PR10MB4118.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Feb 2021 15:24:01.6735
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 5AhFfzGHHCfQxiQH0O5FKdNHxv8ltuTwwohS18kbNZPHaM6Tp8+Z8Qs6A4wHsRZ6WjSjwYBbQhmThGvONnxUmoG0XumZPpGcbOYm9p0kEt0=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR10MB4005
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9888 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 adultscore=0
+ mlxlogscore=941 malwarescore=0 bulkscore=0 phishscore=0 spamscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102080104
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9888 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ spamscore=0 lowpriorityscore=0 phishscore=0 adultscore=0 impostorscore=0
+ suspectscore=0 mlxscore=0 clxscore=1015 mlxlogscore=999 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102080104
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/8/21 8:16 AM, Jing Liu wrote:
-> -#define XSTATE_COMPACTION_ENABLED (1ULL << 63)
-> -
->  static void fill_xsave(u8 *dest, struct kvm_vcpu *vcpu)
->  {
->  	struct xregs_state *xsave = &vcpu->arch.guest_fpu->state.xsave;
-> @@ -4494,7 +4492,8 @@ static void load_xsave(struct kvm_vcpu *vcpu, u8 *src)
->  	/* Set XSTATE_BV and possibly XCOMP_BV.  */
->  	xsave->header.xfeatures = xstate_bv;
->  	if (boot_cpu_has(X86_FEATURE_XSAVES))
-> -		xsave->header.xcomp_bv = host_xcr0 | XSTATE_COMPACTION_ENABLED;
-> +		xsave->header.xcomp_bv = XCOMP_BV_COMPACTED_FORMAT |
-> +					 xfeatures_mask_all;
+From: Yang Li <yang.lee@linux.alibaba.com>
 
-Are 'host_xcr0' and 'xfeatures_mask_all' really interchangeable?  If so,
-shouldn't we just remove 'host_xcr0' everywhere?
+These functions always return '0' and no callers use the return value.
+So make it a void function.
+
+This eliminates the following coccicheck warning:
+./fs/jfs/jfs_txnmgr.c:1365:5-7: Unneeded variable: "rc". Return "0" on
+line 1414
+./fs/jfs/jfs_txnmgr.c:1422:5-7: Unneeded variable: "rc". Return "0" on
+line 1527
+
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+Signed-off-by: Dave Kleikamp <dave.kleikamp@oracle.com>
+---
+
+Changes in v3
+- don't check return value of txLog() in txCommit() (Dave Kleikamp)
+
+Changes in v2
+-turn functions forward references to void type.
+
+ fs/jfs/jfs_txnmgr.c | 35 ++++++++++++++++-------------------
+ 1 file changed, 16 insertions(+), 19 deletions(-)
+
+diff --git a/fs/jfs/jfs_txnmgr.c b/fs/jfs/jfs_txnmgr.c
+index dca8edd2378c..053295cd7bc6 100644
+--- a/fs/jfs/jfs_txnmgr.c
++++ b/fs/jfs/jfs_txnmgr.c
+@@ -148,10 +148,10 @@ static struct {
+ /*
+  * forward references
+  */
+-static int diLog(struct jfs_log * log, struct tblock * tblk, struct lrd * lrd,
+-		struct tlock * tlck, struct commit * cd);
+-static int dataLog(struct jfs_log * log, struct tblock * tblk, struct lrd * lrd,
+-		struct tlock * tlck);
++static void diLog(struct jfs_log *log, struct tblock *tblk, struct lrd *lrd,
++		struct tlock *tlck, struct commit *cd);
++static void dataLog(struct jfs_log *log, struct tblock *tblk, struct lrd *lrd,
++		struct tlock *tlck);
+ static void dtLog(struct jfs_log * log, struct tblock * tblk, struct lrd * lrd,
+ 		struct tlock * tlck);
+ static void mapLog(struct jfs_log * log, struct tblock * tblk, struct lrd * lrd,
+@@ -159,8 +159,8 @@ static void mapLog(struct jfs_log * log, struct tblock * tblk, struct lrd * lrd,
+ static void txAllocPMap(struct inode *ip, struct maplock * maplock,
+ 		struct tblock * tblk);
+ static void txForce(struct tblock * tblk);
+-static int txLog(struct jfs_log * log, struct tblock * tblk,
+-		struct commit * cd);
++static void txLog(struct jfs_log *log, struct tblock *tblk,
++		struct commit *cd);
+ static void txUpdateMap(struct tblock * tblk);
+ static void txRelease(struct tblock * tblk);
+ static void xtLog(struct jfs_log * log, struct tblock * tblk, struct lrd * lrd,
+@@ -1256,8 +1256,7 @@ int txCommit(tid_t tid,		/* transaction identifier */
+ 	 *
+ 	 * txUpdateMap() resets XAD_NEW in XAD.
+ 	 */
+-	if ((rc = txLog(log, tblk, &cd)))
+-		goto TheEnd;
++	txLog(log, tblk, &cd);
+ 
+ 	/*
+ 	 * Ensure that inode isn't reused before
+@@ -1365,9 +1364,8 @@ int txCommit(tid_t tid,		/* transaction identifier */
+  *
+  * RETURN :
+  */
+-static int txLog(struct jfs_log * log, struct tblock * tblk, struct commit * cd)
++static void txLog(struct jfs_log *log, struct tblock *tblk, struct commit *cd)
+ {
+-	int rc = 0;
+ 	struct inode *ip;
+ 	lid_t lid;
+ 	struct tlock *tlck;
+@@ -1414,7 +1412,7 @@ static int txLog(struct jfs_log * log, struct tblock * tblk, struct commit * cd)
+ 		}
+ 	}
+ 
+-	return rc;
++	return;
+ }
+ 
+ /*
+@@ -1422,10 +1420,9 @@ static int txLog(struct jfs_log * log, struct tblock * tblk, struct commit * cd)
+  *
+  * function:	log inode tlock and format maplock to update bmap;
+  */
+-static int diLog(struct jfs_log * log, struct tblock * tblk, struct lrd * lrd,
+-		 struct tlock * tlck, struct commit * cd)
++static void diLog(struct jfs_log *log, struct tblock *tblk, struct lrd *lrd,
++		 struct tlock *tlck, struct commit *cd)
+ {
+-	int rc = 0;
+ 	struct metapage *mp;
+ 	pxd_t *pxd;
+ 	struct pxd_lock *pxdlock;
+@@ -1527,7 +1524,7 @@ static int diLog(struct jfs_log * log, struct tblock * tblk, struct lrd * lrd,
+ 	}
+ #endif				/* _JFS_WIP */
+ 
+-	return rc;
++	return;
+ }
+ 
+ /*
+@@ -1535,8 +1532,8 @@ static int diLog(struct jfs_log * log, struct tblock * tblk, struct lrd * lrd,
+  *
+  * function:	log data tlock
+  */
+-static int dataLog(struct jfs_log * log, struct tblock * tblk, struct lrd * lrd,
+-	    struct tlock * tlck)
++static void dataLog(struct jfs_log *log, struct tblock *tblk, struct lrd *lrd,
++	    struct tlock *tlck)
+ {
+ 	struct metapage *mp;
+ 	pxd_t *pxd;
+@@ -1562,7 +1559,7 @@ static int dataLog(struct jfs_log * log, struct tblock * tblk, struct lrd * lrd,
+ 		metapage_homeok(mp);
+ 		discard_metapage(mp);
+ 		tlck->mp = NULL;
+-		return 0;
++		return;
+ 	}
+ 
+ 	PXDaddress(pxd, mp->index);
+@@ -1573,7 +1570,7 @@ static int dataLog(struct jfs_log * log, struct tblock * tblk, struct lrd * lrd,
+ 	/* mark page as homeward bound */
+ 	tlck->flag |= tlckWRITEPAGE;
+ 
+-	return 0;
++	return;
+ }
+ 
+ /*
+-- 
+2.30.0
+
