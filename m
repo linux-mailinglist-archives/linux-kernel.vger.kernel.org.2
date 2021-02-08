@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEAB7313871
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 16:49:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9627E3138A3
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 16:56:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233437AbhBHPs1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 10:48:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52046 "EHLO mail.kernel.org"
+        id S234174AbhBHP4P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 10:56:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55232 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232375AbhBHPHP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 10:07:15 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D4D8064EC6;
-        Mon,  8 Feb 2021 15:05:45 +0000 (UTC)
+        id S230264AbhBHPIM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 10:08:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0834564EC2;
+        Mon,  8 Feb 2021 15:05:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612796746;
-        bh=cjp3aPPStVrdYd0iUQnGVnAVoHFokagR218pTgX6f3s=;
+        s=korg; t=1612796757;
+        bh=liUZjemuX4P1yam1jd92H6v+ONRJGO6qtZ6S8SaJg8s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VTqGXJ1XyMi2H8TctFuAOnPCHC12AITdis8mhJcJ81rCefsxePuzuBPB+ngzhV3Jj
-         GA7FrMYI5pe7uE8Ux4lt0H0ByRGM27xCoLCIHoWlorSaSVfQA/yv+156+Ra4yYeOz7
-         iBnXC+jtmm+NAeEXcuJt+N2pqx4UjymvxlBbCMIk=
+        b=Qwx0x1Xc8xxKvQi6ahPNJmNhJelmRT54oUPQXCWfWOYwk6ZlEBtgdeR+AI7XoMwYo
+         +BjBcyu684IA4F+Yx8L0xk/7pXPV1QIFHFdW12P1I4W2rQzcuQaecAmoETTo7PPH91
+         hrPnZDgDvN8Avqj+1KFxuY4f1N08Eoh9VxK4C4K0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Andreas Hartmann <andihartmann@01019freenet.de>,
-        Mathias Nyman <mathias.nyman@linux.intel.com>
-Subject: [PATCH 4.9 30/43] xhci: fix bounce buffer usage for non-sg list case
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [PATCH 4.14 10/30] USB: gadget: legacy: fix an error code in eth_bind()
 Date:   Mon,  8 Feb 2021 16:00:56 +0100
-Message-Id: <20210208145807.528389981@linuxfoundation.org>
+Message-Id: <20210208145805.670424572@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210208145806.281758651@linuxfoundation.org>
-References: <20210208145806.281758651@linuxfoundation.org>
+In-Reply-To: <20210208145805.239714726@linuxfoundation.org>
+References: <20210208145805.239714726@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,82 +38,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mathias Nyman <mathias.nyman@linux.intel.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-commit d4a610635400ccc382792f6be69427078541c678 upstream.
+commit 3e1f4a2e1184ae6ad7f4caf682ced9554141a0f4 upstream.
 
-xhci driver may in some special cases need to copy small amounts
-of payload data to a bounce buffer in order to meet the boundary
-and alignment restrictions set by the xHCI specification.
+This code should return -ENOMEM if the allocation fails but it currently
+returns success.
 
-In the majority of these cases the data is in a sg list, and
-driver incorrectly assumed data is always in urb->sg when using
-the bounce buffer.
-
-If data instead is contiguous, and in urb->transfer_buffer, we may still
-need to bounce buffer a small part if data starts very close (less than
-packet size) to a 64k boundary.
-
-Check if sg list is used before copying data to/from it.
-
-Fixes: f9c589e142d0 ("xhci: TD-fragment, align the unsplittable case with a bounce buffer")
-Cc: stable@vger.kernel.org
-Reported-by: Andreas Hartmann <andihartmann@01019freenet.de>
-Tested-by: Andreas Hartmann <andihartmann@01019freenet.de>
-Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
-Link: https://lore.kernel.org/r/20210203113702.436762-2-mathias.nyman@linux.intel.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 9b95236eebdb ("usb: gadget: ether: allocate and init otg descriptor by otg capabilities")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Link: https://lore.kernel.org/r/YBKE9rqVuJEOUWpW@mwanda
+Cc: stable <stable@vger.kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/host/xhci-ring.c |   31 ++++++++++++++++++++-----------
- 1 file changed, 20 insertions(+), 11 deletions(-)
+ drivers/usb/gadget/legacy/ether.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/drivers/usb/host/xhci-ring.c
-+++ b/drivers/usb/host/xhci-ring.c
-@@ -692,11 +692,16 @@ void xhci_unmap_td_bounce_buffer(struct
- 	dma_unmap_single(dev, seg->bounce_dma, ring->bounce_buf_len,
- 			 DMA_FROM_DEVICE);
- 	/* for in tranfers we need to copy the data from bounce to sg */
--	len = sg_pcopy_from_buffer(urb->sg, urb->num_sgs, seg->bounce_buf,
--			     seg->bounce_len, seg->bounce_offs);
--	if (len != seg->bounce_len)
--		xhci_warn(xhci, "WARN Wrong bounce buffer read length: %zu != %d\n",
--				len, seg->bounce_len);
-+	if (urb->num_sgs) {
-+		len = sg_pcopy_from_buffer(urb->sg, urb->num_sgs, seg->bounce_buf,
-+					   seg->bounce_len, seg->bounce_offs);
-+		if (len != seg->bounce_len)
-+			xhci_warn(xhci, "WARN Wrong bounce buffer read length: %zu != %d\n",
-+				  len, seg->bounce_len);
-+	} else {
-+		memcpy(urb->transfer_buffer + seg->bounce_offs, seg->bounce_buf,
-+		       seg->bounce_len);
-+	}
- 	seg->bounce_len = 0;
- 	seg->bounce_offs = 0;
- }
-@@ -3196,12 +3201,16 @@ static int xhci_align_td(struct xhci_hcd
+--- a/drivers/usb/gadget/legacy/ether.c
++++ b/drivers/usb/gadget/legacy/ether.c
+@@ -407,8 +407,10 @@ static int eth_bind(struct usb_composite
+ 		struct usb_descriptor_header *usb_desc;
  
- 	/* create a max max_pkt sized bounce buffer pointed to by last trb */
- 	if (usb_urb_dir_out(urb)) {
--		len = sg_pcopy_to_buffer(urb->sg, urb->num_sgs,
--				   seg->bounce_buf, new_buff_len, enqd_len);
--		if (len != new_buff_len)
--			xhci_warn(xhci,
--				"WARN Wrong bounce buffer write length: %zu != %d\n",
--				len, new_buff_len);
-+		if (urb->num_sgs) {
-+			len = sg_pcopy_to_buffer(urb->sg, urb->num_sgs,
-+						 seg->bounce_buf, new_buff_len, enqd_len);
-+			if (len != new_buff_len)
-+				xhci_warn(xhci, "WARN Wrong bounce buffer write length: %zu != %d\n",
-+					  len, new_buff_len);
-+		} else {
-+			memcpy(seg->bounce_buf, urb->transfer_buffer + enqd_len, new_buff_len);
+ 		usb_desc = usb_otg_descriptor_alloc(gadget);
+-		if (!usb_desc)
++		if (!usb_desc) {
++			status = -ENOMEM;
+ 			goto fail1;
 +		}
-+
- 		seg->bounce_dma = dma_map_single(dev, seg->bounce_buf,
- 						 max_pkt, DMA_TO_DEVICE);
- 	} else {
+ 		usb_otg_descriptor_init(gadget, usb_desc);
+ 		otg_desc[0] = usb_desc;
+ 		otg_desc[1] = NULL;
 
 
