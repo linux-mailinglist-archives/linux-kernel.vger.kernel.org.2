@@ -2,96 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27152313A8F
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 18:13:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 63A62313AB4
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 18:20:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229565AbhBHRND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 12:13:03 -0500
-Received: from verein.lst.de ([213.95.11.211]:41809 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233682AbhBHPZR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 10:25:17 -0500
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 3C0C868AFE; Mon,  8 Feb 2021 16:24:31 +0100 (CET)
-Date:   Mon, 8 Feb 2021 16:24:30 +0100
-From:   Christoph Hellwig <hch@lst.de>
-To:     Shiyang Ruan <ruansy.fnst@cn.fujitsu.com>
-Cc:     linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-fsdevel@vger.kernel.org,
-        darrick.wong@oracle.com, dan.j.williams@intel.com,
-        willy@infradead.org, jack@suse.cz, viro@zeniv.linux.org.uk,
-        linux-btrfs@vger.kernel.org, ocfs2-devel@oss.oracle.com,
-        david@fromorbit.com, hch@lst.de, rgoldwyn@suse.de
-Subject: Re: [PATCH 6/7] fs/xfs: Handle CoW for fsdax write() path
-Message-ID: <20210208152430.GF12872@lst.de>
-References: <20210207170924.2933035-1-ruansy.fnst@cn.fujitsu.com> <20210207170924.2933035-7-ruansy.fnst@cn.fujitsu.com>
+        id S230479AbhBHRTe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 12:19:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54994 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233789AbhBHP0Z (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 10:26:25 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86589C06178A
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 07:25:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=x5UbF+te/cQIVuHKZWDvcWmhKTo4cjeLAYLOlS/MEVQ=; b=dfVGvTyFl76Cmq+Q9dh3depEKl
+        S/4Cc2J7DGKaVLtIKhhcXyeNTLtAXroMCtxRpa9fubwgJqRU43FtFV6tcl+BNXBQlIyKRXZthsosy
+        x2bpOLGhr3cov1IEaZZgwi2X7Ajsh/9rLoyO2/aHvtii0iUnT/ir4eInGwuIvO49WFnmjlsK95WE/
+        JdfOn1yH/bQqe+j8/68Cvl631HLrwVUrNkOs0K+4HvRSPm1ykg9XctIzE6ZGdwEFtNLgfIiy77N7F
+        s5IruDgDpN1TgzcL5qRFpAYRcc1QeUrq8tbDR/zxsGEihjj+3y8KcntBx7CF7QHnkErKp3pugX2nW
+        Ag/ropvw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1l98Pw-006903-AF; Mon, 08 Feb 2021 15:25:38 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 845723056DE;
+        Mon,  8 Feb 2021 16:25:35 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 6CC9A20D8A033; Mon,  8 Feb 2021 16:25:35 +0100 (CET)
+Date:   Mon, 8 Feb 2021 16:25:35 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Alexey Dobriyan <adobriyan@gmail.com>
+Cc:     mingo@redhat.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/5] sched: make struct task_struct::state 32-bit
+Message-ID: <YCFX7zuwp0haWZFl@hirez.programming.kicks-ass.net>
+References: <20210206151832.GA487103@localhost.localdomain>
+ <YCETqt8Vqb8R6qmA@hirez.programming.kicks-ass.net>
+ <20210208143025.GA10066@localhost.localdomain>
+ <20210208145245.GA11701@localhost.localdomain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210207170924.2933035-7-ruansy.fnst@cn.fujitsu.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <20210208145245.GA11701@localhost.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> --- a/fs/xfs/xfs_bmap_util.c
-> +++ b/fs/xfs/xfs_bmap_util.c
-> @@ -977,10 +977,14 @@ xfs_free_file_space(
->  	if (offset + len > XFS_ISIZE(ip))
->  		len = XFS_ISIZE(ip) - offset;
->  	error = iomap_zero_range(VFS_I(ip), offset, len, NULL,
-> -			&xfs_buffered_write_iomap_ops);
-> +		  IS_DAX(VFS_I(ip)) ?
-> +		  &xfs_direct_write_iomap_ops : &xfs_buffered_write_iomap_ops);
->  	if (error)
->  		return error;
-> +	if (xfs_is_reflink_inode(ip))
-> +		xfs_reflink_end_cow(ip, offset, len);
+On Mon, Feb 08, 2021 at 05:52:45PM +0300, Alexey Dobriyan wrote:
+> On Mon, Feb 08, 2021 at 05:30:25PM +0300, Alexey Dobriyan wrote:
+> > On Mon, Feb 08, 2021 at 11:34:18AM +0100, Peter Zijlstra wrote:
+> > > On Sat, Feb 06, 2021 at 06:18:32PM +0300, Alexey Dobriyan wrote:
+> > > 
+> > > > Silently delete "extern" from prototypes.
+> > > 
+> > > NAK, extern is right.
+> > 
+> > Extern is only necessary for variables.
+> 
+> Specifically C17, 6.2.2 p5 (linkage of identifiers):
+> 
+> 	if the declaration of an identifier for a function has no
+> 	storage-class specifier, its linkage is determined exactly as if
+> 	it were declared with the storage-class specifier "extern".
+> 
+> This is why nothing happens if "extern" is deleted.
 
-Maybe we need to add (back) and xfs_zero_range helper that encapsulates
-the details?
-
->  	trace_xfs_file_dax_write(ip, count, pos);
->  	ret = dax_iomap_rw(iocb, from, &xfs_direct_write_iomap_ops);
-> -	if (ret > 0 && iocb->ki_pos > i_size_read(inode)) {
-> -		i_size_write(inode, iocb->ki_pos);
-> -		error = xfs_setfilesize(ip, pos, ret);
-> +	if (ret > 0) {
-> +		if (iocb->ki_pos > i_size_read(inode)) {
-> +			i_size_write(inode, iocb->ki_pos);
-> +			error = xfs_setfilesize(ip, pos, ret);
-> +		}
-> +		if (xfs_is_cow_inode(ip))
-> +			xfs_reflink_end_cow(ip, pos, ret);
-
-Nitpick, but I'd just goto out for ret <= 0 to reduce the indentation a
-bit.
-
->  	}
->  out:
->  	xfs_iunlock(ip, iolock);
-> diff --git a/fs/xfs/xfs_iomap.c b/fs/xfs/xfs_iomap.c
-> index 7b9ff824e82d..d6d4cc0f084e 100644
-> --- a/fs/xfs/xfs_iomap.c
-> +++ b/fs/xfs/xfs_iomap.c
-> @@ -765,13 +765,14 @@ xfs_direct_write_iomap_begin(
->  		goto out_unlock;
->  
->  	if (imap_needs_cow(ip, flags, &imap, nimaps)) {
-> +		bool need_convert = flags & IOMAP_DIRECT || IS_DAX(inode);
->  		error = -EAGAIN;
->  		if (flags & IOMAP_NOWAIT)
->  			goto out_unlock;
->  
->  		/* may drop and re-acquire the ilock */
->  		error = xfs_reflink_allocate_cow(ip, &imap, &cmap, &shared,
-> -				&lockmode, flags & IOMAP_DIRECT);
-> +				&lockmode, need_convert);
-
-Why not:
-
-		error = xfs_reflink_allocate_cow(ip, &imap, &cmap, &shared,
-				&lockmode,
-				(flags & IOMAP_DIRECT) || IS_DAX(inode));
-
-?
+I know, but I still very much like extern on the function declarations
+too. It tells me the definition isn't to be found in this TU.
