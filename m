@@ -2,289 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6C76313274
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 13:35:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A5DC313267
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 13:34:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232282AbhBHMeq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 07:34:46 -0500
-Received: from mx2.suse.de ([195.135.220.15]:37150 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230159AbhBHM1R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 07:27:17 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1612787186; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=SQ+7QYr8QMBro3PDGDYzBHa7DUmRvP2svzPWxpQQUX8=;
-        b=NBhu0ghoq1b25VBtos7db92mRomDBXsIrBe0B5cuQkfVxbzmSbH8c0Adp0qyH5plfEwTVD
-        B8qmh+yoIwyNywegV+FeuzQyaKnGUg/MYgMeGPExVhouvatMqskg+CE+OIKv+hzKTjcCRH
-        s9r7MPv36HivI+wTC/ZU8cDPhGvYT98=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 27B9EAC6E;
-        Mon,  8 Feb 2021 12:26:26 +0000 (UTC)
-Subject: Re: [PATCH 7/7] xen/evtchn: read producer index only once
-To:     Jan Beulich <jbeulich@suse.com>
-Cc:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org
-References: <20210206104932.29064-1-jgross@suse.com>
- <20210206104932.29064-8-jgross@suse.com>
- <72334160-cffe-2d8a-23b7-2ea9ab1d803a@suse.com>
- <626f500a-494a-0141-7bf3-94fb86b47ed4@suse.com>
- <e88526ac-6972-fe08-c58f-ea872cbdcc14@suse.com>
- <d0ca217c-ecc9-55f7-abb1-30a687a46b31@suse.com>
- <a30db278-087b-554c-d5bf-1317e14e8508@suse.com>
- <9d725a1b-ec8e-c078-5ec6-9c4899d4c7aa@suse.com>
- <58ec68aa-6d86-62dd-f28a-a4e5754b0fdf@suse.com>
-From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
-Message-ID: <3b415b97-da42-c680-90e2-8b984934b846@suse.com>
-Date:   Mon, 8 Feb 2021 13:26:25 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S232568AbhBHMdR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 07:33:17 -0500
+Received: from mail-dm6nam12on2083.outbound.protection.outlook.com ([40.107.243.83]:52705
+        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231720AbhBHMVk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 07:21:40 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hIHfFTNowJIjoNkesF1agL5IOg6g3ra0fB7HYLYUMV2GMx2zGzRFf8htDnP2eZTeCzbiPaxioeJgsmfV1kQR6bqsAy9lX+nInlgGHT68eSLl8FmpGnSVjcBuC1OcYbKeAbDv74Gpi++bNxG1j4mjEiOBRTD1aCNELKzmR0/61Fq0d9OSK/6YI84GlRzk7v7AxyBuQEGm/gQP+fhQXp1VK2LtXxdih+QmJFhwMSio9UmLcBq/b7c33xKpI+GkhC7G5H4w0nNv9LY2hy5zlBIOsYrXz4HH2yNg0KUuppJyxFIR8GqP+bcxlSXeCn9dJ7uGRoVfZrxT3rG8Y3XXaVB1Ag==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vT+EueukOylDdBEVUO390+exXUCzT3sjm67EIvFUPT0=;
+ b=S2aOAporjhEpmrJ6PghbycgzfBFKpwUeAGAyYsaqVFUw/iEO7p8wj7rhE49bc7IaxGblXVkqX5sm7uJ0G4IkA9/JLFwyAePSdAsbsnuLaBWYrSeWH/yxSw/0i1IbSfDjZUl4eJx4pJygZZOvqhi8DoeyAn1tDNiD3xM7b1SXmmkN9nt7UXZ+85vdKmfzdpQeYgKjyxjf9pvyftCI3gg32/rXnHMSGMiTgLL9G8WLaPR1gODoGpKexDPAhbxK4JTJu6SB8z9BNYLR/srahhmlZtn6klSYwQ9IIo2jlJmwRIJEPvyjARlaNbjTp+N5carjk23osKuMViQ7+0v767ilDQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vT+EueukOylDdBEVUO390+exXUCzT3sjm67EIvFUPT0=;
+ b=cRIgQN4Vhvduud0NLgu4uUGYmHp1bwyQtPVxufii33iqVMJ353uayhL8WTEeB0LeEjdi/qp7ZvsIatkehQhlteKxaagSEflTiO4+qfQJUds0fAQJLQfsARBe03xwJFUHC0qgMgVl8A4ckid6laGd3Qx3EY8sJOGssrJuyKEbsG8=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from BYAPR12MB4597.namprd12.prod.outlook.com (2603:10b6:a03:10b::14)
+ by BYAPR12MB2789.namprd12.prod.outlook.com (2603:10b6:a03:72::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.17; Mon, 8 Feb
+ 2021 12:20:43 +0000
+Received: from BYAPR12MB4597.namprd12.prod.outlook.com
+ ([fe80::a95a:7202:81db:1972]) by BYAPR12MB4597.namprd12.prod.outlook.com
+ ([fe80::a95a:7202:81db:1972%7]) with mapi id 15.20.3825.030; Mon, 8 Feb 2021
+ 12:20:43 +0000
+From:   Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+To:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org
+Cc:     joro@8bytes.org, will@kernel.org,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+Subject: [PATCH] iommu/amd: Fix performance counter initialization
+Date:   Mon,  8 Feb 2021 06:27:12 -0600
+Message-Id: <20210208122712.5048-1-suravee.suthikulpanit@amd.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-Originating-IP: [165.204.78.2]
+X-ClientProxiedBy: SN4PR0501CA0134.namprd05.prod.outlook.com
+ (2603:10b6:803:2c::12) To BYAPR12MB4597.namprd12.prod.outlook.com
+ (2603:10b6:a03:10b::14)
 MIME-Version: 1.0
-In-Reply-To: <58ec68aa-6d86-62dd-f28a-a4e5754b0fdf@suse.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="WTBwUd9oY26fDvPcG0MkYtgFJNLMgtSRj"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from ethanolx5673host.amd.com (165.204.78.2) by SN4PR0501CA0134.namprd05.prod.outlook.com (2603:10b6:803:2c::12) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.11 via Frontend Transport; Mon, 8 Feb 2021 12:20:42 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: add04125-9116-405f-f2f0-08d8cc2bf495
+X-MS-TrafficTypeDiagnostic: BYAPR12MB2789:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR12MB278915558AB11D2B2762F2F9F38F9@BYAPR12MB2789.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: zvuERM6cjiZN6oJOGuzbKkBfe4WaMdBDNZMaRDv/XJyz7+Gw1Nj5M3eWoPentCYnpOpOWd2DkaKars/ykhhk9jA5dXqt1V1TweBIOEWzp28OHl74n3+MPHWx9zlFT6D6lMOfiqgKO6XL5A7PZsSVmOONHa25QROHOdZlnyBw0E6UlOrQhPuzvp49PGpijQ2LlDCVJiii2j4hOPgEI8uDuG1SPx+C1XcM+kizusB+k92tSDq2A53n3oCtBC4JHonlOJwBQPpmBSMpRAnDVQLDQM/46zCyVoP4iRPeDTwFzTpRGY0MTpNbDNbvD3w+25cqs6jdlHZJb8lueR17XlyNtE9TCtsehfT5r345CPRCDu+9Im2pz9AgOT7gLNWzlC72dJqatViiyXN+8rXTD+CNUT23fA+4g06m2r260GAmy/W0iXCNRBCv8d0xjGhWlcGVxua8uHrjaFSBzmTyjpKMSVqB8Ujfu74tmgZb+s2M7hzMkWOA53gyly5EU+bWpqjiKmDq4w+PqXoyG3P1w2BWInu6r6ReNSkUQ27ux9tzMtpIWroIZkv+VAKZEqqDiCpcb9/b+ZEkLIIIvPWPBZ6dt5dckyxKEr5ltpbPm9pySiA=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB4597.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(396003)(136003)(346002)(366004)(376002)(956004)(478600001)(86362001)(5660300002)(36756003)(8936002)(8676002)(2906002)(1076003)(6666004)(66476007)(316002)(83380400001)(186003)(6486002)(966005)(16526019)(26005)(66556008)(52116002)(4326008)(44832011)(2616005)(66946007)(7696005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?vsRxLPTyQJjuSDumVVMXq/kdAfjvb1r5nmhxLjX3CKP0L6QlkKuZWDl/DC6U?=
+ =?us-ascii?Q?9+FNl3TukIO8VD9f+nU1c5IYV/d/FSIgmPH+HNxSA93kb/6y+KWh4ht/8cha?=
+ =?us-ascii?Q?tepvcKBuEFBNWqkh1xlaxO0aFq41mbUHPtI5W1OOKjWnKbpNmzqjSf/W9CaB?=
+ =?us-ascii?Q?8Oi/khXgg34Ak5NzvBzwo5Uj0c9HKdwCVr1Fh2iCVWZudZkACvAuYp8fTFLy?=
+ =?us-ascii?Q?eVO7yqpyBPZBlmaPjLkIj0YM20MwvFJa1oO0hYSZOxM0Hwa5hcdkV1t0ryop?=
+ =?us-ascii?Q?KvYAAdqL5DKcElPCdhLYJR6wt/6qHVkTg/LJlcBXghNKjxKaqz8ZPDBLCXWx?=
+ =?us-ascii?Q?b7Vpwb4hZ7Y2T/tHpSZjAQdrufsyswZQzY3lV9CufhjFpEdqSvRSdF/p+EZl?=
+ =?us-ascii?Q?J6o6SnsYgY+P8ttfkaL5bCpkp/RUytumw3Ew2oXepLZBsv8Leg6TuOW/IJeQ?=
+ =?us-ascii?Q?gNeqoHBPNJavAYYxyJ/g9DTgKc7YvXqXnW/rRUJqLpZILnuIlYf3ZgVCr/ok?=
+ =?us-ascii?Q?vWJzt++L1BoBgUg1g8K00+XiGRxnqAH5Jh27zKl1WP0oDGTVzCe+6LbqCx58?=
+ =?us-ascii?Q?PYWod0c+iud1HMkf/u4+iFi9/Pm/DS2eiXC1fHBuuyNQ2pi272iNyI+UcTjr?=
+ =?us-ascii?Q?7RFZjxLjLmCsKhajNcNHE30Baf4aTRVTrXYxnd54vchmUbs8YdCswd3q5iuI?=
+ =?us-ascii?Q?QshU6kmSu8KwqEVFRlF1EMEBYgZPthARYn8qZv6+EsZtvkCzppnA15+rQLu2?=
+ =?us-ascii?Q?Aa3klH9bbT881pPEuyuk9xK5gRowFQaLk/+4c4rhHaX6/gHu2peGeY4fh/IV?=
+ =?us-ascii?Q?9LGA2eKbsqoYm/Qh5ZGHWDwAa6eLkfK4seFLbPFcd89/5SuM2kiai1U1ntJr?=
+ =?us-ascii?Q?ZpBMr4tQ7RqNkdZGeLkj7k1USpBlmyUI8dMcbkxlItuNhWeRIjax5NTAxqt7?=
+ =?us-ascii?Q?CJFMiLGQHeqASUx+457lt1Kdc13ndOqS9fXg8VWsHScelvCswuIrTJyPAHIY?=
+ =?us-ascii?Q?YBp/XSe7qS9es5jgRG/Uw1zo2hLX5LrdwyZPeBOc0kO2BvUkBEkP7IB+U9xq?=
+ =?us-ascii?Q?p5RTGAvhQR9FKQiT9h2f6N2TRy6uAcBtcstBsphIVqk0I6HWdIVgCixWsWqK?=
+ =?us-ascii?Q?MXsypy5OgVpG6FXnH2xs3jWjCuCh+2amB41qybRD3Qvdx797zT8JNFFpXT6w?=
+ =?us-ascii?Q?Ri8ZhvVy6CNREsfwgD21DSS9hsL+hLS7hl246bKEbDYWKW4ziDsk6zchJ6sU?=
+ =?us-ascii?Q?YN46z6ytWmbrHUr2DTzRc/XIQZSwCteNJq/rNmLZaq+gSqZRBdY0G/QwhBXO?=
+ =?us-ascii?Q?woiJ0wnJnlnGN4SVeneYVxKQ?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: add04125-9116-405f-f2f0-08d8cc2bf495
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB4597.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Feb 2021 12:20:43.6240
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: hGwWk0etmxleosEFIg573aIQpI9OANPCcIYjTTYThi46hnoNjr0oZdUIrmt2zH8AOZHElflzKRYfBW3WVN7Vxg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR12MB2789
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---WTBwUd9oY26fDvPcG0MkYtgFJNLMgtSRj
-Content-Type: multipart/mixed; boundary="MDIa9lEOeplKStXf1FoGsrJ4sUihE6Ekg";
- protected-headers="v1"
-From: =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
-To: Jan Beulich <jbeulich@suse.com>
-Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>,
- Stefano Stabellini <sstabellini@kernel.org>, linux-kernel@vger.kernel.org,
- xen-devel@lists.xenproject.org
-Message-ID: <3b415b97-da42-c680-90e2-8b984934b846@suse.com>
-Subject: Re: [PATCH 7/7] xen/evtchn: read producer index only once
-References: <20210206104932.29064-1-jgross@suse.com>
- <20210206104932.29064-8-jgross@suse.com>
- <72334160-cffe-2d8a-23b7-2ea9ab1d803a@suse.com>
- <626f500a-494a-0141-7bf3-94fb86b47ed4@suse.com>
- <e88526ac-6972-fe08-c58f-ea872cbdcc14@suse.com>
- <d0ca217c-ecc9-55f7-abb1-30a687a46b31@suse.com>
- <a30db278-087b-554c-d5bf-1317e14e8508@suse.com>
- <9d725a1b-ec8e-c078-5ec6-9c4899d4c7aa@suse.com>
- <58ec68aa-6d86-62dd-f28a-a4e5754b0fdf@suse.com>
-In-Reply-To: <58ec68aa-6d86-62dd-f28a-a4e5754b0fdf@suse.com>
+Certain AMD platforms enable power gating feature for IOMMU PMC,
+which prevents the IOMMU driver from updating the counter while
+trying to validate the PMC functionality in the init_iommu_perf_ctr().
+This results in disabling PMC support and the following error message:
 
---MDIa9lEOeplKStXf1FoGsrJ4sUihE6Ekg
-Content-Type: multipart/mixed;
- boundary="------------6878FD23673DD896F00CC86D"
-Content-Language: en-US
+    "AMD-Vi: Unable to read/write to IOMMU perf counter"
 
-This is a multi-part message in MIME format.
---------------6878FD23673DD896F00CC86D
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
+To workaround this issue, disable power gating temporarily by programming
+the counter source to non-zero value while validating the counter,
+and restore the prior state afterward.
 
-On 08.02.21 13:23, Jan Beulich wrote:
-> On 08.02.2021 13:15, J=C3=BCrgen Gro=C3=9F wrote:
->> On 08.02.21 12:54, Jan Beulich wrote:
->>> On 08.02.2021 11:59, J=C3=BCrgen Gro=C3=9F wrote:
->>>> On 08.02.21 11:51, Jan Beulich wrote:
->>>>> On 08.02.2021 11:41, J=C3=BCrgen Gro=C3=9F wrote:
->>>>>> On 08.02.21 10:48, Jan Beulich wrote:
->>>>>>> On 06.02.2021 11:49, Juergen Gross wrote:
->>>>>>>> In evtchn_read() use READ_ONCE() for reading the producer index =
-in
->>>>>>>> order to avoid the compiler generating multiple accesses.
->>>>>>>>
->>>>>>>> Signed-off-by: Juergen Gross <jgross@suse.com>
->>>>>>>> ---
->>>>>>>>      drivers/xen/evtchn.c | 2 +-
->>>>>>>>      1 file changed, 1 insertion(+), 1 deletion(-)
->>>>>>>>
->>>>>>>> diff --git a/drivers/xen/evtchn.c b/drivers/xen/evtchn.c
->>>>>>>> index 421382c73d88..f6b199b597bf 100644
->>>>>>>> --- a/drivers/xen/evtchn.c
->>>>>>>> +++ b/drivers/xen/evtchn.c
->>>>>>>> @@ -211,7 +211,7 @@ static ssize_t evtchn_read(struct file *file=
-, char __user *buf,
->>>>>>>>      			goto unlock_out;
->>>>>>>>     =20
->>>>>>>>      		c =3D u->ring_cons;
->>>>>>>> -		p =3D u->ring_prod;
->>>>>>>> +		p =3D READ_ONCE(u->ring_prod);
->>>>>>>>      		if (c !=3D p)
->>>>>>>>      			break;
->>>>>>>
->>>>>>> Why only here and not also in
->>>>>>>
->>>>>>> 		rc =3D wait_event_interruptible(u->evtchn_wait,
->>>>>>> 					      u->ring_cons !=3D u->ring_prod);
->>>>>>>
->>>>>>> or in evtchn_poll()? I understand it's not needed when
->>>>>>> ring_prod_lock is held, but that's not the case in the two
->>>>>>> afaics named places. Plus isn't the same then true for
->>>>>>> ring_cons and ring_cons_mutex, i.e. aren't the two named
->>>>>>> places plus evtchn_interrupt() also in need of READ_ONCE()
->>>>>>> for ring_cons?
->>>>>>
->>>>>> The problem solved here is the further processing using "p" multip=
-le
->>>>>> times. p must not be silently replaced with u->ring_prod by the
->>>>>> compiler, so I probably should reword the commit message to say:
->>>>>>
->>>>>> ... in order to not allow the compiler to refetch p.
->>>>>
->>>>> I still wouldn't understand the change (and the lack of
->>>>> further changes) then: The first further use of p is
->>>>> outside the loop, alongside one of c. IOW why would c
->>>>> then not need treating the same as p?
->>>>
->>>> Its value wouldn't change, as ring_cons is being modified only at
->>>> the bottom of this function, and nowhere else (apart from the reset
->>>> case, but this can't run concurrently due to ring_cons_mutex).
->>>>
->>>>> I also still don't see the difference between latching a
->>>>> value into a local variable vs a "freestanding" access -
->>>>> neither are guaranteed to result in exactly one memory
->>>>> access afaict.
->>>>
->>>> READ_ONCE() is using a pointer to volatile, so any refetching by
->>>> the compiler would be a bug.
->>>
->>> Of course, but this wasn't my point. I was contrasting
->>>
->>> 		c =3D u->ring_cons;
->>> 		p =3D u->ring_prod;
->>>
->>> which you change with
->>>
->>> 		rc =3D wait_event_interruptible(u->evtchn_wait,
->>> 					      u->ring_cons !=3D u->ring_prod);
->>>
->>> which you leave alone.
->>
->> Can you point out which problem might arise from that?
->=20
-> Not any particular active one. Yet enhancing some accesses
-> but not others seems to me like a recipe for new problems
-> down the road.
+Tested-by: Tj (Elloe Linux) <ml.linux@elloe.vision>
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=201753
+Signed-off-by: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+---
+ drivers/iommu/amd/init.c | 45 ++++++++++++++++++++++++++++++----------
+ 1 file changed, 34 insertions(+), 11 deletions(-)
 
-I already reasoned that the usage of READ_ONCE() is due to storing the
-value in a local variable which needs to be kept constant during the
-following processing (no refetches by the compiler). This reasoning
-very clearly doesn't apply to the other accesses.
+diff --git a/drivers/iommu/amd/init.c b/drivers/iommu/amd/init.c
+index 83d8ab2aed9f..01da76dc1caa 100644
+--- a/drivers/iommu/amd/init.c
++++ b/drivers/iommu/amd/init.c
+@@ -12,6 +12,7 @@
+ #include <linux/acpi.h>
+ #include <linux/list.h>
+ #include <linux/bitmap.h>
++#include <linux/delay.h>
+ #include <linux/slab.h>
+ #include <linux/syscore_ops.h>
+ #include <linux/interrupt.h>
+@@ -254,6 +255,8 @@ static enum iommu_init_state init_state = IOMMU_START_STATE;
+ static int amd_iommu_enable_interrupts(void);
+ static int __init iommu_go_to_state(enum iommu_init_state state);
+ static void init_device_table_dma(void);
++static int iommu_pc_get_set_reg(struct amd_iommu *iommu, u8 bank, u8 cntr,
++				u8 fxn, u64 *value, bool is_write);
+ 
+ static bool amd_iommu_pre_enabled = true;
+ 
+@@ -1712,13 +1715,11 @@ static int __init init_iommu_all(struct acpi_table_header *table)
+ 	return 0;
+ }
+ 
+-static int iommu_pc_get_set_reg(struct amd_iommu *iommu, u8 bank, u8 cntr,
+-				u8 fxn, u64 *value, bool is_write);
+-
+-static void init_iommu_perf_ctr(struct amd_iommu *iommu)
++static void __init init_iommu_perf_ctr(struct amd_iommu *iommu)
+ {
++	int retry;
+ 	struct pci_dev *pdev = iommu->dev;
+-	u64 val = 0xabcd, val2 = 0, save_reg = 0;
++	u64 val = 0xabcd, val2 = 0, save_reg, save_src;
+ 
+ 	if (!iommu_feature(iommu, FEATURE_PC))
+ 		return;
+@@ -1726,17 +1727,39 @@ static void init_iommu_perf_ctr(struct amd_iommu *iommu)
+ 	amd_iommu_pc_present = true;
+ 
+ 	/* save the value to restore, if writable */
+-	if (iommu_pc_get_set_reg(iommu, 0, 0, 0, &save_reg, false))
++	if (iommu_pc_get_set_reg(iommu, 0, 0, 0, &save_reg, false) ||
++	    iommu_pc_get_set_reg(iommu, 0, 0, 8, &save_src, false))
+ 		goto pc_false;
+ 
+-	/* Check if the performance counters can be written to */
+-	if ((iommu_pc_get_set_reg(iommu, 0, 0, 0, &val, true)) ||
+-	    (iommu_pc_get_set_reg(iommu, 0, 0, 0, &val2, false)) ||
+-	    (val != val2))
++	/*
++	 * Disable power gating by programing the performance counter
++	 * source to 20 (i.e. counts the reads and writes from/to IOMMU
++	 * Reserved Register [MMIO Offset 1FF8h] that are ignored.),
++	 * which never get incremented during this init phase.
++	 * (Note: The event is also deprecated.)
++	 */
++	val = 20;
++	if (iommu_pc_get_set_reg(iommu, 0, 0, 8, &val, true))
+ 		goto pc_false;
+ 
++	/* Check if the performance counters can be written to */
++	val = 0xabcd;
++	for (retry = 5; retry; retry--) {
++		if (iommu_pc_get_set_reg(iommu, 0, 0, 0, &val, true) ||
++		    iommu_pc_get_set_reg(iommu, 0, 0, 0, &val2, false) ||
++		    val2)
++			break;
++
++		/* Wait about 20 msec for power gating to disable and retry. */
++		msleep(20);
++	}
++
+ 	/* restore */
+-	if (iommu_pc_get_set_reg(iommu, 0, 0, 0, &save_reg, true))
++	if (iommu_pc_get_set_reg(iommu, 0, 0, 0, &save_reg, true) ||
++	    iommu_pc_get_set_reg(iommu, 0, 0, 8, &save_src, true))
++		goto pc_false;
++
++	if (val != val2)
+ 		goto pc_false;
+ 
+ 	pci_info(pdev, "IOMMU performance counters supported\n");
+-- 
+2.17.1
 
-
-Juergen
-
---------------6878FD23673DD896F00CC86D
-Content-Type: application/pgp-keys;
- name="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment;
- filename="OpenPGP_0xB0DE9DD628BF132F.asc"
-
------BEGIN PGP PUBLIC KEY BLOCK-----
-
-xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
-cWx
-w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
-f8Z
-d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
-9bf
-IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
-G7/
-377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
-3Jv
-c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
-QIe
-AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
-hpw
-dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
-MbD
-1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
-oPH
-Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
-5QL
-+qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
-2Vu
-IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
-QoL
-BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
-Wf0
-teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
-/nu
-AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
-ITT
-d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
-XBK
-7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
-80h
-SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
-AcD
-AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
-FOX
-gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
-jnD
-kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
-N51
-N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
-otu
-fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
-tqS
-EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
-hsD
-BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
-g3O
-ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
-dM7
-wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
-D+j
-LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
-V2x
-AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
-Eaw
-QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
-nHI
-s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
-wgn
-BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
-bVF
-LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
-pEd
-IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
-QAB
-wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
-Tbe
-8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
-vJz
-Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
-VGi
-wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
-svi
-uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
-zXs
-ZDn8R38=3D
-=3D2wuH
------END PGP PUBLIC KEY BLOCK-----
-
---------------6878FD23673DD896F00CC86D--
-
---MDIa9lEOeplKStXf1FoGsrJ4sUihE6Ekg--
-
---WTBwUd9oY26fDvPcG0MkYtgFJNLMgtSRj
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmAhLfEFAwAAAAAACgkQsN6d1ii/Ey8R
-Rgf8C9FHzSBje9COydLv/CIZmaPgaS9mAru5hs+MoSQ3Z8L7dTglPbeMgxJIn9eLZiXge9wBozBE
-y+hoLcPoh8HXm1SWcUaRbORPDVmlLtOntSkWDrrBXGZMToAXG5MUgMOwXM53yvCR07F0iKBFDatl
-kqWUJ4UoHNoOdmpdbXDAiCPjDNILfm2TORxq71KlkMUz0oi12+P0IrVMqv+K4U1uSxQJDFkBBSJg
-XTBUSNgE2kvXCnbEkYAhgu+a6gHhCLrWsokIwDxU4JglHwsU11+buxLiy9FKzh8MMtMbzFd4ZyLC
-Aty/MyF8GJXuM6yLRG2EtpYEiXOm2lZpaLdP6S7gGA==
-=inSB
------END PGP SIGNATURE-----
-
---WTBwUd9oY26fDvPcG0MkYtgFJNLMgtSRj--
