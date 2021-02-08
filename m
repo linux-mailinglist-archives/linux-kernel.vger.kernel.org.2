@@ -2,274 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4C13313257
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 13:31:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F73F313259
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 13:32:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230146AbhBHMbK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 07:31:10 -0500
-Received: from mx2.suse.de ([195.135.220.15]:51176 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231318AbhBHMQS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 07:16:18 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1612786530; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=RKXtbcsoovvaCUMeOTZHe5m8aYHItg1m+gJCpla7VS8=;
-        b=X5fxVB+wboUGoTTgV9YtK1DA66r0Wjs0HMGrY68aayv1ZUq5YQT4nJulsXvEVL4gL+alGf
-        9bKmTzNpqrpYzS8PWAQvryIIC4kMHz/YznN7n00ypcV6bGmkpwwqyzRkdOW0to55i9Wj3W
-        xHMG7Z8yC7E/TG5EfZPOWe0BL0e5vUQ=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 8C9C8AD2E;
-        Mon,  8 Feb 2021 12:15:30 +0000 (UTC)
-Subject: Re: [PATCH 7/7] xen/evtchn: read producer index only once
-To:     Jan Beulich <jbeulich@suse.com>
-Cc:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org
-References: <20210206104932.29064-1-jgross@suse.com>
- <20210206104932.29064-8-jgross@suse.com>
- <72334160-cffe-2d8a-23b7-2ea9ab1d803a@suse.com>
- <626f500a-494a-0141-7bf3-94fb86b47ed4@suse.com>
- <e88526ac-6972-fe08-c58f-ea872cbdcc14@suse.com>
- <d0ca217c-ecc9-55f7-abb1-30a687a46b31@suse.com>
- <a30db278-087b-554c-d5bf-1317e14e8508@suse.com>
-From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
-Message-ID: <9d725a1b-ec8e-c078-5ec6-9c4899d4c7aa@suse.com>
-Date:   Mon, 8 Feb 2021 13:15:29 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S229706AbhBHMbY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 07:31:24 -0500
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:32768 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231221AbhBHMRA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 07:17:00 -0500
+Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 118C6eaW015218;
+        Mon, 8 Feb 2021 13:16:11 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : from : to
+ : cc : references : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=qSPgnDaVcYXLgXMYfLkZmQi/PO7kBCONBUiTM7tRhFA=;
+ b=rcuAP3FjRzR+hXRX6c+/8omKXg490l5mPSsh0NKaGbAtUQu6ivN7JgwIyQ9cVr4g+e4V
+ TFDGgvTkJ52ytNyaDbyYdqB6xcasqn16hz9pp1btA1Zb/Icy7yGikxJyjHLLpNliGHIk
+ Q1/0o2aWLyITOoy6K1sEwp5bu8xwigBKsbmlCxvQwKwpyhSTpHzLWLATXqVCAlcAsiTC
+ KijckF25OXsFrgoo350dn3uXertKM/jpBlLATdgRo/6M4ESEUkVF2oTuE8YDRnWq8b9u
+ 6w1kXjVAJ1Kl43Meen69HCYp/AXjkElHLb6Hul+9aA8DFi8nW9xPmdNBiK3JMbPFUqd9 Gw== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 36hr2c1uua-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 08 Feb 2021 13:16:11 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id EF32F10002A;
+        Mon,  8 Feb 2021 13:16:09 +0100 (CET)
+Received: from Webmail-eu.st.com (gpxdag2node6.st.com [10.75.127.70])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id C0EC9241AF6;
+        Mon,  8 Feb 2021 13:16:09 +0100 (CET)
+Received: from lmecxl0504.lme.st.com (10.75.127.122) by GPXDAG2NODE6.st.com
+ (10.75.127.70) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 8 Feb
+ 2021 13:16:09 +0100
+Subject: Re: [PATCH 1/2] mmc: mmci: enable MMC_CAP_NEED_RSP_BUSY
+From:   Yann GAUTIER <yann.gautier@foss.st.com>
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+CC:     Russell King <linux@armlinux.org.uk>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        <ludovic.barre@foss.st.com>,
+        =?UTF-8?Q?Marek_Va=c5=a1ut?= <marex@denx.de>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210204120547.15381-1-yann.gautier@foss.st.com>
+ <20210204120547.15381-2-yann.gautier@foss.st.com>
+ <CAPDyKFqdtK33HSW_AM0s9172V=cBM6wnKuHubXSOGCVqJ8nzFg@mail.gmail.com>
+ <e31df871-ae1a-7c80-d741-0813f90532c7@foss.st.com>
+Message-ID: <1c1814dc-f87b-ef5c-24b4-b9a6ec570dbc@foss.st.com>
+Date:   Mon, 8 Feb 2021 13:16:08 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <a30db278-087b-554c-d5bf-1317e14e8508@suse.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="YuKOlcDS7YODQvUINCuHNtInK5LAZedtz"
+In-Reply-To: <e31df871-ae1a-7c80-d741-0813f90532c7@foss.st.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.75.127.122]
+X-ClientProxiedBy: GPXDAG2NODE6.st.com (10.75.127.70) To GPXDAG2NODE6.st.com
+ (10.75.127.70)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-02-08_06:2021-02-08,2021-02-08 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---YuKOlcDS7YODQvUINCuHNtInK5LAZedtz
-Content-Type: multipart/mixed; boundary="wyQF6qxm371oj8AGDLzN5uM2V34m93hPf";
- protected-headers="v1"
-From: =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
-To: Jan Beulich <jbeulich@suse.com>
-Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>,
- Stefano Stabellini <sstabellini@kernel.org>, linux-kernel@vger.kernel.org,
- xen-devel@lists.xenproject.org
-Message-ID: <9d725a1b-ec8e-c078-5ec6-9c4899d4c7aa@suse.com>
-Subject: Re: [PATCH 7/7] xen/evtchn: read producer index only once
-References: <20210206104932.29064-1-jgross@suse.com>
- <20210206104932.29064-8-jgross@suse.com>
- <72334160-cffe-2d8a-23b7-2ea9ab1d803a@suse.com>
- <626f500a-494a-0141-7bf3-94fb86b47ed4@suse.com>
- <e88526ac-6972-fe08-c58f-ea872cbdcc14@suse.com>
- <d0ca217c-ecc9-55f7-abb1-30a687a46b31@suse.com>
- <a30db278-087b-554c-d5bf-1317e14e8508@suse.com>
-In-Reply-To: <a30db278-087b-554c-d5bf-1317e14e8508@suse.com>
-
---wyQF6qxm371oj8AGDLzN5uM2V34m93hPf
-Content-Type: multipart/mixed;
- boundary="------------E4AB4358A9365B6EDCA7EB62"
-Content-Language: en-US
-
-This is a multi-part message in MIME format.
---------------E4AB4358A9365B6EDCA7EB62
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-
-On 08.02.21 12:54, Jan Beulich wrote:
-> On 08.02.2021 11:59, J=C3=BCrgen Gro=C3=9F wrote:
->> On 08.02.21 11:51, Jan Beulich wrote:
->>> On 08.02.2021 11:41, J=C3=BCrgen Gro=C3=9F wrote:
->>>> On 08.02.21 10:48, Jan Beulich wrote:
->>>>> On 06.02.2021 11:49, Juergen Gross wrote:
->>>>>> In evtchn_read() use READ_ONCE() for reading the producer index in=
-
->>>>>> order to avoid the compiler generating multiple accesses.
->>>>>>
->>>>>> Signed-off-by: Juergen Gross <jgross@suse.com>
->>>>>> ---
->>>>>>     drivers/xen/evtchn.c | 2 +-
->>>>>>     1 file changed, 1 insertion(+), 1 deletion(-)
->>>>>>
->>>>>> diff --git a/drivers/xen/evtchn.c b/drivers/xen/evtchn.c
->>>>>> index 421382c73d88..f6b199b597bf 100644
->>>>>> --- a/drivers/xen/evtchn.c
->>>>>> +++ b/drivers/xen/evtchn.c
->>>>>> @@ -211,7 +211,7 @@ static ssize_t evtchn_read(struct file *file, =
-char __user *buf,
->>>>>>     			goto unlock_out;
->>>>>>    =20
->>>>>>     		c =3D u->ring_cons;
->>>>>> -		p =3D u->ring_prod;
->>>>>> +		p =3D READ_ONCE(u->ring_prod);
->>>>>>     		if (c !=3D p)
->>>>>>     			break;
->>>>>
->>>>> Why only here and not also in
->>>>>
->>>>> 		rc =3D wait_event_interruptible(u->evtchn_wait,
->>>>> 					      u->ring_cons !=3D u->ring_prod);
->>>>>
->>>>> or in evtchn_poll()? I understand it's not needed when
->>>>> ring_prod_lock is held, but that's not the case in the two
->>>>> afaics named places. Plus isn't the same then true for
->>>>> ring_cons and ring_cons_mutex, i.e. aren't the two named
->>>>> places plus evtchn_interrupt() also in need of READ_ONCE()
->>>>> for ring_cons?
->>>>
->>>> The problem solved here is the further processing using "p" multiple=
-
->>>> times. p must not be silently replaced with u->ring_prod by the
->>>> compiler, so I probably should reword the commit message to say:
->>>>
->>>> ... in order to not allow the compiler to refetch p.
+On 2/5/21 1:19 PM, Yann GAUTIER wrote:
+> On 2/5/21 10:53 AM, Ulf Hansson wrote:
+>> - trimmed cc-list
+>>
+>> On Thu, 4 Feb 2021 at 13:08, <yann.gautier@foss.st.com> wrote:
 >>>
->>> I still wouldn't understand the change (and the lack of
->>> further changes) then: The first further use of p is
->>> outside the loop, alongside one of c. IOW why would c
->>> then not need treating the same as p?
+>>> From: Yann Gautier <yann.gautier@foss.st.com>
+>>>
+>>> To properly manage commands awaiting R1B responses, the capability
+>>> MMC_CAP_NEED_RSP_BUSY is enabled in mmci driver, for variants that
+>>> manage busy detection.
+>>> This R1B management needs both the flags MMC_CAP_NEED_RSP_BUSY and
+>>> MMC_CAP_WAIT_WHILE_BUSY to be enabled together.
 >>
->> Its value wouldn't change, as ring_cons is being modified only at
->> the bottom of this function, and nowhere else (apart from the reset
->> case, but this can't run concurrently due to ring_cons_mutex).
+>> Would it be possible for you to share a little bit more about the
+>> problem? Like under what circumstances does things screw up?
 >>
->>> I also still don't see the difference between latching a
->>> value into a local variable vs a "freestanding" access -
->>> neither are guaranteed to result in exactly one memory
->>> access afaict.
+>> Is the issue only occurring when the cmd->busy_timeout becomes larger
+>> than host->max_busy_timeout. Or even in other cases?
 >>
->> READ_ONCE() is using a pointer to volatile, so any refetching by
->> the compiler would be a bug.
->=20
-> Of course, but this wasn't my point. I was contrasting
->=20
-> 		c =3D u->ring_cons;
-> 		p =3D u->ring_prod;
->=20
-> which you change with
->=20
-> 		rc =3D wait_event_interruptible(u->evtchn_wait,
-> 					      u->ring_cons !=3D u->ring_prod);
->=20
-> which you leave alone.
+>>>
+>>> Signed-off-by: Yann Gautier <yann.gautier@foss.st.com>
+>>> ---
+>>>   drivers/mmc/host/mmci.c | 2 +-
+>>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>>
+>>> diff --git a/drivers/mmc/host/mmci.c b/drivers/mmc/host/mmci.c
+>>> index 1bc674577ff9..bf6971fdd1a6 100644
+>>> --- a/drivers/mmc/host/mmci.c
+>>> +++ b/drivers/mmc/host/mmci.c
+>>> @@ -2148,7 +2148,7 @@ static int mmci_probe(struct amba_device *dev,
+>>>                  if (variant->busy_dpsm_flag)
+>>>                          mmci_write_datactrlreg(host,
+>>>                                                 
+>>> host->variant->busy_dpsm_flag);
+>>> -               mmc->caps |= MMC_CAP_WAIT_WHILE_BUSY;
+>>> +               mmc->caps |= MMC_CAP_WAIT_WHILE_BUSY | 
+>>> MMC_CAP_NEED_RSP_BUSY;
+>>
+>> This isn't correct as the ux500 (and likely also other legacy
+>> variants) don't need this. I have tried it in the past and it works
+>> fine for ux500 without MMC_CAP_NEED_RSP_BUSY.
+>>
+>> The difference is rather that the busy detection for stm32 variants
+>> needs a corresponding HW busy timeout to be set (its
+>> variant->busy_timeout flag is set). Perhaps we can use that
+>> information instead?
+>>
+>> Note that, MMC_CAP_NEED_RSP_BUSY, means that cmd->busy_timeout will
+>> not be set by the core for erase commands, CMD5 and CMD6.
+>>
+>> By looking at the code in mmci_start_command(), it looks like we will
+>> default to a timeout of 10s, when cmd->busy_timeout isn't set. At
+>> least for some erase requests, that won't be sufficient. Would it be
+>> possible to disable the HW busy timeout in some way - and maybe use a
+>> software timeout instead? Maybe I already asked Ludovic about this?
+>> :-)
+>>
+>> BTW, did you check that the MMCIDATATIMER does get the correct value
+>> set for the timer in mmci_start_command() and if
+>> host->max_busy_timeout gets correctly set in
+>> mmci_set_max_busy_timeout()?
+>>
+>> [...]
+>>
+>> Kind regards
+>> Uffe
+>>
+> 
+> Hi Ulf,
+> 
+> Thanks for the hints.
+> I'll check all of that and get back with updated patches.
+> 
+> As I tried to explain in the cover letter and in reply to Adrian, I saw
+> a freeze (BUSYD0) in test 37 during MMC_ERASE command  with 
+> SECURE_ERASE_ARG, when running this test just after test 36 (or any 
+> other write test). But maybe, as you said that's mostly a incorrect 
+> timeout issue.
+> 
+> Regards,
+> Yann
 
-Can you point out which problem might arise from that?
+Hi,
+
+I made some extra tests, and the timeout value set in MMCIDATATIMER 
+correspond to the one computed:
+card->ext_csd.erase_group_def is set to 1 in mmc_init_card()
+In mmc_mmc_erase_timeout(), we have:
+erase_timeout = card->ext_csd.hc_erase_timeout; // 300ms * 0x07 (for the 
+eMMC card I have: THGBMDG5D1LBAIL
+erase_timeout *= card->ext_csd.sec_erase_mult; // 0xDC
+erase_timeout *= qty; // 32 (from = 0x1d0000, to = 0x20ffff)
+
+This leads to a timeout of 14784000ms (~4 hours).
+The max_busy_timeout is 86767ms.
+
+After those 4 hours, I get this message:
+mmc1: Card stuck being busy! __mmc_poll_for_busy
+
+The second erase with MMC_ERASE_ARG finds an erase timeout of 67200ms, 
+and uses R1B command.
+But as the first erase failed, the DPSMACT is still enabled, the busy 
+timeout doesn't seem to happen. Something may be missing in the error path.
+
+Anyway, I'll push an update of the second patch of the series, and just 
+drop this first one.
 
 
-Juergen
-
---------------E4AB4358A9365B6EDCA7EB62
-Content-Type: application/pgp-keys;
- name="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment;
- filename="OpenPGP_0xB0DE9DD628BF132F.asc"
-
------BEGIN PGP PUBLIC KEY BLOCK-----
-
-xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
-cWx
-w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
-f8Z
-d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
-9bf
-IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
-G7/
-377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
-3Jv
-c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
-QIe
-AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
-hpw
-dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
-MbD
-1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
-oPH
-Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
-5QL
-+qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
-2Vu
-IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
-QoL
-BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
-Wf0
-teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
-/nu
-AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
-ITT
-d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
-XBK
-7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
-80h
-SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
-AcD
-AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
-FOX
-gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
-jnD
-kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
-N51
-N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
-otu
-fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
-tqS
-EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
-hsD
-BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
-g3O
-ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
-dM7
-wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
-D+j
-LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
-V2x
-AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
-Eaw
-QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
-nHI
-s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
-wgn
-BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
-bVF
-LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
-pEd
-IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
-QAB
-wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
-Tbe
-8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
-vJz
-Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
-VGi
-wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
-svi
-uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
-zXs
-ZDn8R38=3D
-=3D2wuH
------END PGP PUBLIC KEY BLOCK-----
-
---------------E4AB4358A9365B6EDCA7EB62--
-
---wyQF6qxm371oj8AGDLzN5uM2V34m93hPf--
-
---YuKOlcDS7YODQvUINCuHNtInK5LAZedtz
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmAhK2EFAwAAAAAACgkQsN6d1ii/Ey8H
-9wf+MPuO3ggydQhCAfAfX21hvC2kwrm+cuFYLd6oNmNNUUxwMFRpU2he8VbAF/pzFZNm/ikIfmQe
-Yr5Oeaa2WYDZq0NjGB3khtK11dreh0Ec5F6Z14uMxnTuezK+q7jJPvr7q09NXFPYlJKS458DmWM7
-sIoCYNvRpVJdC//ZX/ybvaCMq3+wC6ySJgtFcbxUxQgB5t5oqnvTnVAOZzs0TaT4UKm7JlpDsH+j
-WcpWyPx8Km5TIqHgM+SvfEPMOXMmPeB4zj1/YPh4koj/YDTA64DWirN6dcf6W2Eq2MbBXr7+u0fO
-4OpZ2B/ld6d1WG2/FhGqIcixUlm1pJo3i6W+ZWioKA==
-=Jxbh
------END PGP SIGNATURE-----
-
---YuKOlcDS7YODQvUINCuHNtInK5LAZedtz--
+Regards,
+Yann
