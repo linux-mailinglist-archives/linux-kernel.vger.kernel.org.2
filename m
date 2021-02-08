@@ -2,32 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C39B531385B
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 16:45:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A7A8313865
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 16:47:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233130AbhBHPoc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 10:44:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52068 "EHLO mail.kernel.org"
+        id S232676AbhBHPqR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 10:46:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51776 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232690AbhBHPG3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S232774AbhBHPG3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 8 Feb 2021 10:06:29 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7154A64EE3;
-        Mon,  8 Feb 2021 15:04:54 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5D94E64E8A;
+        Mon,  8 Feb 2021 15:04:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612796695;
-        bh=bJJtpk2EAQTf2zp91XPIaJD+lqMxr/92d9ylY371Ddg=;
+        s=korg; t=1612796698;
+        bh=1B5uALRLICfV9TWV/llmgG8y96SQqcS4IxY09JRtY3k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Q1ICX63XxzF8Sf9EBpzoi5oaMgI6TJAtZ7BIcgEBMw4WZaq2V3Iy+bRdt5W9OqywD
-         Wpt0F6ExEhpo3SePYYY+KMDDmcPo/f4Uv1rlQfsIq9S2As6kS0QvGaZ1KZ4V1BhiKm
-         qKWFf/+cXyIjt7xDWJsj9Y6XBx6BLCRhNXoMI8fw=
+        b=YrrgivUDUfzwjeyE40CiBT7hgeeMYoNSI+YkNs3Du6UU7yaN0RQfVdkJp475cDZ5t
+         0atb1jRrCcC6Z6GBlAFoh2sxLZFWkBhnK2OGBKDSET1FjJOjS2bUGN+pSoPjH3lGN1
+         guo77AS+c8a78xFsNHfmP89sFQFYjhg1D2DoHAe0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Fengnan Chang <fengnanchang@gmail.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Subject: [PATCH 4.9 32/43] mmc: core: Limit retries when analyse of SDIO tuples fails
-Date:   Mon,  8 Feb 2021 16:00:58 +0100
-Message-Id: <20210208145807.614886928@linuxfoundation.org>
+        stable@vger.kernel.org, Russell King <rmk+kernel@armlinux.org.uk>
+Subject: [PATCH 4.9 33/43] ARM: footbridge: fix dc21285 PCI configuration accessors
+Date:   Mon,  8 Feb 2021 16:00:59 +0100
+Message-Id: <20210208145807.655853093@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210208145806.281758651@linuxfoundation.org>
 References: <20210208145806.281758651@linuxfoundation.org>
@@ -39,50 +38,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fengnan Chang <fengnanchang@gmail.com>
+From: Russell King <rmk+kernel@armlinux.org.uk>
 
-commit f92e04f764b86e55e522988e6f4b6082d19a2721 upstream.
+commit 39d3454c3513840eb123b3913fda6903e45ce671 upstream.
 
-When analysing tuples fails we may loop indefinitely to retry. Let's avoid
-this by using a 10s timeout and bail if not completed earlier.
+Building with gcc 4.9.2 reveals a latent bug in the PCI accessors
+for Footbridge platforms, which causes a fatal alignment fault
+while accessing IO memory. Fix this by making the assembly volatile.
 
-Signed-off-by: Fengnan Chang <fengnanchang@gmail.com>
 Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20210123033230.36442-1-fengnanchang@gmail.com
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/mmc/core/sdio_cis.c |    6 ++++++
- 1 file changed, 6 insertions(+)
+ arch/arm/mach-footbridge/dc21285.c |   12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
---- a/drivers/mmc/core/sdio_cis.c
-+++ b/drivers/mmc/core/sdio_cis.c
-@@ -24,6 +24,8 @@
- #include "sdio_cis.h"
- #include "sdio_ops.h"
- 
-+#define SDIO_READ_CIS_TIMEOUT_MS  (10 * 1000) /* 10s */
-+
- static int cistpl_vers_1(struct mmc_card *card, struct sdio_func *func,
- 			 const unsigned char *buf, unsigned size)
- {
-@@ -269,6 +271,8 @@ static int sdio_read_cis(struct mmc_card
- 
- 	do {
- 		unsigned char tpl_code, tpl_link;
-+		unsigned long timeout = jiffies +
-+			msecs_to_jiffies(SDIO_READ_CIS_TIMEOUT_MS);
- 
- 		ret = mmc_io_rw_direct(card, 0, 0, ptr++, 0, &tpl_code);
- 		if (ret)
-@@ -321,6 +325,8 @@ static int sdio_read_cis(struct mmc_card
- 			prev = &this->next;
- 
- 			if (ret == -ENOENT) {
-+				if (time_after(jiffies, timeout))
-+					break;
- 				/* warn about unknown tuples */
- 				pr_warn_ratelimited("%s: queuing unknown"
- 				       " CIS tuple 0x%02x (%u bytes)\n",
+--- a/arch/arm/mach-footbridge/dc21285.c
++++ b/arch/arm/mach-footbridge/dc21285.c
+@@ -69,15 +69,15 @@ dc21285_read_config(struct pci_bus *bus,
+ 	if (addr)
+ 		switch (size) {
+ 		case 1:
+-			asm("ldrb	%0, [%1, %2]"
++			asm volatile("ldrb	%0, [%1, %2]"
+ 				: "=r" (v) : "r" (addr), "r" (where) : "cc");
+ 			break;
+ 		case 2:
+-			asm("ldrh	%0, [%1, %2]"
++			asm volatile("ldrh	%0, [%1, %2]"
+ 				: "=r" (v) : "r" (addr), "r" (where) : "cc");
+ 			break;
+ 		case 4:
+-			asm("ldr	%0, [%1, %2]"
++			asm volatile("ldr	%0, [%1, %2]"
+ 				: "=r" (v) : "r" (addr), "r" (where) : "cc");
+ 			break;
+ 		}
+@@ -103,17 +103,17 @@ dc21285_write_config(struct pci_bus *bus
+ 	if (addr)
+ 		switch (size) {
+ 		case 1:
+-			asm("strb	%0, [%1, %2]"
++			asm volatile("strb	%0, [%1, %2]"
+ 				: : "r" (value), "r" (addr), "r" (where)
+ 				: "cc");
+ 			break;
+ 		case 2:
+-			asm("strh	%0, [%1, %2]"
++			asm volatile("strh	%0, [%1, %2]"
+ 				: : "r" (value), "r" (addr), "r" (where)
+ 				: "cc");
+ 			break;
+ 		case 4:
+-			asm("str	%0, [%1, %2]"
++			asm volatile("str	%0, [%1, %2]"
+ 				: : "r" (value), "r" (addr), "r" (where)
+ 				: "cc");
+ 			break;
 
 
