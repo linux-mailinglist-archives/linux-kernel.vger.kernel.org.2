@@ -2,179 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E798D314186
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 22:19:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F4A431417D
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 22:17:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236319AbhBHVR4 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 8 Feb 2021 16:17:56 -0500
-Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:42245 "EHLO
-        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234033AbhBHUK5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 15:10:57 -0500
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-57-3f2eNTMtOriJU0u0r5FPPw-1; Mon, 08 Feb 2021 15:10:01 -0500
-X-MC-Unique: 3f2eNTMtOriJU0u0r5FPPw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 78B5E192D786;
-        Mon,  8 Feb 2021 20:09:59 +0000 (UTC)
-Received: from krava.redhat.com (unknown [10.40.194.115])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 1D22619C59;
-        Mon,  8 Feb 2021 20:09:56 +0000 (UTC)
-From:   Jiri Olsa <jolsa@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Ian Rogers <irogers@google.com>,
-        Alexei Budankov <abudankov@huawei.com>
-Subject: [PATCH 18/24] perf daemon: Add examples to man page
-Date:   Mon,  8 Feb 2021 21:09:02 +0100
-Message-Id: <20210208200908.1019149-19-jolsa@kernel.org>
-In-Reply-To: <20210208200908.1019149-1-jolsa@kernel.org>
-References: <20210208200908.1019149-1-jolsa@kernel.org>
+        id S234972AbhBHVRE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 16:17:04 -0500
+Received: from retiisi.eu ([95.216.213.190]:57136 "EHLO hillosipuli.retiisi.eu"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236674AbhBHUKw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 15:10:52 -0500
+Received: from lanttu.localdomain (lanttu-e.localdomain [192.168.1.64])
+        by hillosipuli.retiisi.eu (Postfix) with ESMTP id EE691634C8C;
+        Mon,  8 Feb 2021 22:08:33 +0200 (EET)
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-media@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        dri-devel@lists.freedesktop.org, hverkuil@xs4all.nl,
+        laurent.pinchart@ideasonboard.com, mchehab@kernel.org,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Joe Perches <joe@perches.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Subject: [PATCH v6 2/3] v4l: ioctl: Use %p4cc printk modifier to print FourCC codes
+Date:   Mon,  8 Feb 2021 22:09:02 +0200
+Message-Id: <20210208200903.28084-3-sakari.ailus@linux.intel.com>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210208200903.28084-1-sakari.ailus@linux.intel.com>
+References: <20210208200903.28084-1-sakari.ailus@linux.intel.com>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=jolsa@kernel.org
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: kernel.org
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset=WINDOWS-1252
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adding usage examples to the man page.
+Now that we can print FourCC codes directly using printk, make use of the
+feature in V4L2 core.
 
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
 ---
- tools/perf/Documentation/perf-daemon.txt | 98 ++++++++++++++++++++++++
- 1 file changed, 98 insertions(+)
+ drivers/media/v4l2-core/v4l2-ioctl.c | 85 +++++++---------------------
+ 1 file changed, 21 insertions(+), 64 deletions(-)
 
-diff --git a/tools/perf/Documentation/perf-daemon.txt b/tools/perf/Documentation/perf-daemon.txt
-index 90b20bea6356..f558f8e4bc9b 100644
---- a/tools/perf/Documentation/perf-daemon.txt
-+++ b/tools/perf/Documentation/perf-daemon.txt
-@@ -41,6 +41,10 @@ for time and size.
- Each session is started with control setup (with perf record --control
- options).
+diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-core/v4l2-ioctl.c
+index 31d1342e61e8..31662c3a8c9e 100644
+--- a/drivers/media/v4l2-core/v4l2-ioctl.c
++++ b/drivers/media/v4l2-core/v4l2-ioctl.c
+@@ -265,13 +265,9 @@ static void v4l_print_fmtdesc(const void *arg, bool write_only)
+ {
+ 	const struct v4l2_fmtdesc *p = arg;
  
-+Sessions are configured through config file, see CONFIG FILE section
-+with EXAMPLES.
-+
-+
- OPTIONS
- -------
- -v::
-@@ -105,6 +109,100 @@ session-<NAME>.run:
- Each perf record session is run in daemon.base/<NAME> directory.
+-	pr_cont("index=%u, type=%s, flags=0x%x, pixelformat=%c%c%c%c, mbus_code=0x%04x, description='%.*s'\n",
++	pr_cont("index=%u, type=%s, flags=0x%x, pixelformat=%p4cc, mbus_code=0x%04x, description='%.*s'\n",
+ 		p->index, prt_names(p->type, v4l2_type_names),
+-		p->flags, (p->pixelformat & 0xff),
+-		(p->pixelformat >>  8) & 0xff,
+-		(p->pixelformat >> 16) & 0xff,
+-		(p->pixelformat >> 24) & 0xff,
+-		p->mbus_code,
++		p->flags, &p->pixelformat, p->mbus_code,
+ 		(int)sizeof(p->description), p->description);
+ }
  
+@@ -293,12 +289,8 @@ static void v4l_print_format(const void *arg, bool write_only)
+ 	case V4L2_BUF_TYPE_VIDEO_CAPTURE:
+ 	case V4L2_BUF_TYPE_VIDEO_OUTPUT:
+ 		pix = &p->fmt.pix;
+-		pr_cont(", width=%u, height=%u, pixelformat=%c%c%c%c, field=%s, bytesperline=%u, sizeimage=%u, colorspace=%d, flags=0x%x, ycbcr_enc=%u, quantization=%u, xfer_func=%u\n",
+-			pix->width, pix->height,
+-			(pix->pixelformat & 0xff),
+-			(pix->pixelformat >>  8) & 0xff,
+-			(pix->pixelformat >> 16) & 0xff,
+-			(pix->pixelformat >> 24) & 0xff,
++		pr_cont(", width=%u, height=%u, pixelformat=%p4cc, field=%s, bytesperline=%u, sizeimage=%u, colorspace=%d, flags=0x%x, ycbcr_enc=%u, quantization=%u, xfer_func=%u\n",
++			pix->width, pix->height, &pix->pixelformat,
+ 			prt_names(pix->field, v4l2_field_names),
+ 			pix->bytesperline, pix->sizeimage,
+ 			pix->colorspace, pix->flags, pix->ycbcr_enc,
+@@ -307,12 +299,8 @@ static void v4l_print_format(const void *arg, bool write_only)
+ 	case V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE:
+ 	case V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE:
+ 		mp = &p->fmt.pix_mp;
+-		pr_cont(", width=%u, height=%u, format=%c%c%c%c, field=%s, colorspace=%d, num_planes=%u, flags=0x%x, ycbcr_enc=%u, quantization=%u, xfer_func=%u\n",
+-			mp->width, mp->height,
+-			(mp->pixelformat & 0xff),
+-			(mp->pixelformat >>  8) & 0xff,
+-			(mp->pixelformat >> 16) & 0xff,
+-			(mp->pixelformat >> 24) & 0xff,
++		pr_cont(", width=%u, height=%u, format=%p4cc, field=%s, colorspace=%d, num_planes=%u, flags=0x%x, ycbcr_enc=%u, quantization=%u, xfer_func=%u\n",
++			mp->width, mp->height, &mp->pixelformat,
+ 			prt_names(mp->field, v4l2_field_names),
+ 			mp->colorspace, mp->num_planes, mp->flags,
+ 			mp->ycbcr_enc, mp->quantization, mp->xfer_func);
+@@ -337,13 +325,9 @@ static void v4l_print_format(const void *arg, bool write_only)
+ 	case V4L2_BUF_TYPE_VBI_CAPTURE:
+ 	case V4L2_BUF_TYPE_VBI_OUTPUT:
+ 		vbi = &p->fmt.vbi;
+-		pr_cont(", sampling_rate=%u, offset=%u, samples_per_line=%u, sample_format=%c%c%c%c, start=%u,%u, count=%u,%u\n",
++		pr_cont(", sampling_rate=%u, offset=%u, samples_per_line=%u, sample_format=%p4cc, start=%u,%u, count=%u,%u\n",
+ 			vbi->sampling_rate, vbi->offset,
+-			vbi->samples_per_line,
+-			(vbi->sample_format & 0xff),
+-			(vbi->sample_format >>  8) & 0xff,
+-			(vbi->sample_format >> 16) & 0xff,
+-			(vbi->sample_format >> 24) & 0xff,
++			vbi->samples_per_line, &vbi->sample_format,
+ 			vbi->start[0], vbi->start[1],
+ 			vbi->count[0], vbi->count[1]);
+ 		break;
+@@ -360,21 +344,13 @@ static void v4l_print_format(const void *arg, bool write_only)
+ 	case V4L2_BUF_TYPE_SDR_CAPTURE:
+ 	case V4L2_BUF_TYPE_SDR_OUTPUT:
+ 		sdr = &p->fmt.sdr;
+-		pr_cont(", pixelformat=%c%c%c%c\n",
+-			(sdr->pixelformat >>  0) & 0xff,
+-			(sdr->pixelformat >>  8) & 0xff,
+-			(sdr->pixelformat >> 16) & 0xff,
+-			(sdr->pixelformat >> 24) & 0xff);
++		pr_cont(", pixelformat=%p4cc\n", &sdr->pixelformat);
+ 		break;
+ 	case V4L2_BUF_TYPE_META_CAPTURE:
+ 	case V4L2_BUF_TYPE_META_OUTPUT:
+ 		meta = &p->fmt.meta;
+-		pr_cont(", dataformat=%c%c%c%c, buffersize=%u\n",
+-			(meta->dataformat >>  0) & 0xff,
+-			(meta->dataformat >>  8) & 0xff,
+-			(meta->dataformat >> 16) & 0xff,
+-			(meta->dataformat >> 24) & 0xff,
+-			meta->buffersize);
++		pr_cont(", dataformat=%p4cc, buffersize=%u\n",
++			&meta->dataformat, meta->buffersize);
+ 		break;
+ 	}
+ }
+@@ -383,15 +359,10 @@ static void v4l_print_framebuffer(const void *arg, bool write_only)
+ {
+ 	const struct v4l2_framebuffer *p = arg;
  
-+EXAMPLES
-+--------
-+Example with 2 record sessions:
-+
-+  # cat ~/.perfconfig
-+  [daemon]
-+  base=/opt/perfdata
-+
-+  [session-cycles]
-+  run = -m 10M -e cycles --overwrite --switch-output -a
-+
-+  [session-sched]
-+  run = -m 20M -e sched:* --overwrite --switch-output -a
-+
-+
-+Starting the daemon:
-+
-+  # perf daemon start
-+
-+
-+Check sessions:
-+
-+  # perf daemon
-+  [603349:daemon] base: /opt/perfdata
-+  [603350:cycles] perf record -m 10M -e cycles --overwrite --switch-output -a
-+  [603351:sched] perf record -m 20M -e sched:* --overwrite --switch-output -a
-+
-+First line is daemon process info with configured daemon base.
-+
-+
-+Check sessions with more info:
-+
-+  # perf daemon -v
-+  [603349:daemon] base: /opt/perfdata
-+    output:  /opt/perfdata/output
-+    lock:    /opt/perfdata/lock
-+    up:      1 minutes
-+  [603350:cycles] perf record -m 10M -e cycles --overwrite --switch-output -a
-+    base:    /opt/perfdata/session-cycles
-+    output:  /opt/perfdata/session-cycles/output
-+    control: /opt/perfdata/session-cycles/control
-+    ack:     /opt/perfdata/session-cycles/ack
-+    up:      1 minutes
-+  [603351:sched] perf record -m 20M -e sched:* --overwrite --switch-output -a
-+    base:    /opt/perfdata/session-sched
-+    output:  /opt/perfdata/session-sched/output
-+    control: /opt/perfdata/session-sched/control
-+    ack:     /opt/perfdata/session-sched/ack
-+    up:      1 minutes
-+
-+The 'base' path is daemon/session base.
-+The 'lock' file is daemon's lock file guarding that no other
-+daemon is running on top of the base.
-+The 'output' file is perf record output for specific session.
-+The 'control' and 'ack' files are perf control files.
-+The 'up' number shows minutes daemon/session is running.
-+
-+
-+Make sure control session is online:
-+
-+  # perf daemon ping
-+  OK   cycles
-+  OK   sched
-+
-+
-+Send USR2 signal to session 'cycles' to generate perf.data file:
-+
-+  # perf daemon signal --session cycles
-+  signal 12 sent to session 'cycles [603452]'
-+
-+  # tail -2  /opt/perfdata/session-cycles/output
-+  [ perf record: dump data: Woken up 1 times ]
-+  [ perf record: Dump perf.data.2020123017013149 ]
-+
-+
-+Send USR2 signal to all sessions:
-+
-+  # perf daemon signal
-+  signal 12 sent to session 'cycles [603452]'
-+  signal 12 sent to session 'sched [603453]'
-+
-+  # tail -2  /opt/perfdata/session-cycles/output
-+  [ perf record: dump data: Woken up 1 times ]
-+  [ perf record: Dump perf.data.2020123017024689 ]
-+  # tail -2  /opt/perfdata/session-sched/output
-+  [ perf record: dump data: Woken up 1 times ]
-+  [ perf record: Dump perf.data.2020123017024713 ]
-+
-+
-+Stop daemon:
-+
-+  # perf daemon stop
-+
-+
- SEE ALSO
- --------
- linkperf:perf-record[1], linkperf:perf-config[1]
+-	pr_cont("capability=0x%x, flags=0x%x, base=0x%p, width=%u, height=%u, pixelformat=%c%c%c%c, bytesperline=%u, sizeimage=%u, colorspace=%d\n",
+-			p->capability, p->flags, p->base,
+-			p->fmt.width, p->fmt.height,
+-			(p->fmt.pixelformat & 0xff),
+-			(p->fmt.pixelformat >>  8) & 0xff,
+-			(p->fmt.pixelformat >> 16) & 0xff,
+-			(p->fmt.pixelformat >> 24) & 0xff,
+-			p->fmt.bytesperline, p->fmt.sizeimage,
+-			p->fmt.colorspace);
++	pr_cont("capability=0x%x, flags=0x%x, base=0x%p, width=%u, height=%u, pixelformat=%p4cc, bytesperline=%u, sizeimage=%u, colorspace=%d\n",
++		p->capability, p->flags, p->base, p->fmt.width, p->fmt.height,
++		&p->fmt.pixelformat, p->fmt.bytesperline, p->fmt.sizeimage,
++		p->fmt.colorspace);
+ }
+ 
+ static void v4l_print_buftype(const void *arg, bool write_only)
+@@ -761,13 +732,8 @@ static void v4l_print_frmsizeenum(const void *arg, bool write_only)
+ {
+ 	const struct v4l2_frmsizeenum *p = arg;
+ 
+-	pr_cont("index=%u, pixelformat=%c%c%c%c, type=%u",
+-			p->index,
+-			(p->pixel_format & 0xff),
+-			(p->pixel_format >>  8) & 0xff,
+-			(p->pixel_format >> 16) & 0xff,
+-			(p->pixel_format >> 24) & 0xff,
+-			p->type);
++	pr_cont("index=%u, pixelformat=%p4cc, type=%u",
++		p->index, &p->pixel_format, p->type);
+ 	switch (p->type) {
+ 	case V4L2_FRMSIZE_TYPE_DISCRETE:
+ 		pr_cont(", wxh=%ux%u\n",
+@@ -793,13 +759,8 @@ static void v4l_print_frmivalenum(const void *arg, bool write_only)
+ {
+ 	const struct v4l2_frmivalenum *p = arg;
+ 
+-	pr_cont("index=%u, pixelformat=%c%c%c%c, wxh=%ux%u, type=%u",
+-			p->index,
+-			(p->pixel_format & 0xff),
+-			(p->pixel_format >>  8) & 0xff,
+-			(p->pixel_format >> 16) & 0xff,
+-			(p->pixel_format >> 24) & 0xff,
+-			p->width, p->height, p->type);
++	pr_cont("index=%u, pixelformat=%p4cc, wxh=%ux%u, type=%u",
++		p->index, &p->pixel_format, p->width, p->height, p->type);
+ 	switch (p->type) {
+ 	case V4L2_FRMIVAL_TYPE_DISCRETE:
+ 		pr_cont(", fps=%d/%d\n",
+@@ -1459,12 +1420,8 @@ static void v4l_fill_fmtdesc(struct v4l2_fmtdesc *fmt)
+ 				return;
+ 			WARN(1, "Unknown pixelformat 0x%08x\n", fmt->pixelformat);
+ 			flags = 0;
+-			snprintf(fmt->description, sz, "%c%c%c%c%s",
+-					(char)(fmt->pixelformat & 0x7f),
+-					(char)((fmt->pixelformat >> 8) & 0x7f),
+-					(char)((fmt->pixelformat >> 16) & 0x7f),
+-					(char)((fmt->pixelformat >> 24) & 0x7f),
+-					(fmt->pixelformat & (1UL << 31)) ? "-BE" : "");
++			snprintf(fmt->description, sz, "%p4cc",
++				 &fmt->pixelformat);
+ 			break;
+ 		}
+ 	}
 -- 
 2.29.2
 
