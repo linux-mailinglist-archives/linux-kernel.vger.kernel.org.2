@@ -2,198 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8FDA3132D0
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 13:57:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03ED93132D6
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 13:59:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230048AbhBHM5j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 07:57:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51136 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229729AbhBHM53 (ORCPT
+        id S230213AbhBHM6o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 07:58:44 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:58105 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230184AbhBHM6e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 07:57:29 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99D6EC061788
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 04:56:48 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id l10so17045373ybt.6
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 04:56:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=sQapmmmD1H+xp8DLEh2Jo59f71Qc7V57DYbFZYvaoAY=;
-        b=OuvN92SqUW+TAnggwqjIb2dlgpxNei1LU6zL/tAyxL48x74UE9j2SP1xkbflB+HLWf
-         81BI1v95NBcVmy68BqAri1q6pZDbZvLTwmVqUQDOq+RZLugpXZa7Jt+nsfbkTwPkcDpF
-         YyegRzS6Z0GpRq/tVfmFm5vyPdS5yXKsnwyw2YtVHNhOzjSPrpIPSHJVjRpkslvp+J9G
-         +gPe8V4pbQ4N5/nAGBQv6b59NeMstXsYpTr5iVLkrm1Q08tq0AAclcJ2PieVQILiTRrR
-         6zvYMG5JQFItRPjtC+zdLQk/UbIES8OOKqLy1dZJ16Wb4mnEA361eFXYkvDZD3rDjQ3P
-         GQLw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=sQapmmmD1H+xp8DLEh2Jo59f71Qc7V57DYbFZYvaoAY=;
-        b=q6FZvZSOYk/qoalh6kVEDbaWz/483rqmBt7Wd/Z+hg3zAx7+xq0UwpsmOgwNtFlW9n
-         YKPRYpJaNShOIoV/kG5AWE8WwzTzjqCkYRc4QPjtIQKJ0mMYuhrZln/OLxSGLySUtHkI
-         /j3vkdtec6D7qRAPPIvKjCdPsaVpdPkGCObHoG12iTxnZR0rbkLYL26Q1zVJkehvhEu2
-         jCIsdiMbSSdgmN1+w3M/Slj46dlrHFQ1qFo/QdATZGBK6LfEfEJWJIYhzNEwOASGJ1L8
-         ZZNx/iOAsxZbatsKaFUnH5UJ84DgFlslBhkG2uX/NXECYZqWDZHh3WlQ4WcLFmwhBAO+
-         Wp2g==
-X-Gm-Message-State: AOAM531UKEF7g5BPapI4/5BSn/TTgpRt9oA1jXx+ZZPw70xYTqgT26CF
-        POA3hMHkIN4DiFzQjRUprGyq7cbCDl4G
-X-Google-Smtp-Source: ABdhPJxIwr1scQCsqW2E/bPKYUfRfRXkiadxgU/MWblekS4Dgnu0T5GCv14TtEkQEHCbpH2XlJ+0Lhd7zMNv
-Sender: "leoliou via sendgmr" <leoliou@leoliou.ntc.corp.google.com>
-X-Received: from leoliou.ntc.corp.google.com ([2401:fa00:fc:202:9995:e502:106b:c601])
- (user=leoliou job=sendgmr) by 2002:a25:264b:: with SMTP id
- m72mr25645047ybm.486.1612789007205; Mon, 08 Feb 2021 04:56:47 -0800 (PST)
-Date:   Mon,  8 Feb 2021 20:56:28 +0800
-Message-Id: <20210208125628.2758665-1-leoliou@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.30.0.478.g8a0d178c01-goog
-Subject: [PATCH] scsi: ufs: create a hook for unipro dme control
-From:   Leo Liou <leoliou@google.com>
-To:     agross@kernel.org, bjorn.andersson@linaro.org,
-        alim.akhtar@samsung.com, avri.altman@wdc.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, stanley.chu@mediatek.com,
-        cang@codeaurora.org, asutoshd@codeaurora.org, beanhuo@micron.com,
-        jaegeuk@kernel.org, adrian.hunter@intel.com, satyat@google.com,
-        essuuj@gmail.com, linux-arm-msm@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     leoliou@google.com
-Content-Type: text/plain; charset="UTF-8"
+        Mon, 8 Feb 2021 07:58:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612789024;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=mlx2QrIxat+f3xVBHwBJupZMEshhECpMGCDjBF0L/0U=;
+        b=cYHLi4hmkUUEI5l+Wh4vK4HCZDnXa65BLeAjoXxddJPVo2L3+e9E3lbwXiLh4h40BAgEjV
+        mh6t/5S3BIsdniysD+3y8vZnX1RA+53ey8bEfxNMpzZQ9HQNMODFEUv1QDxq4q4gw8ncMC
+        lKrd7jgrIauojNYgSWOOqBBjiM2J/L0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-308-C5FGhgQvNrueAgzPIQttpQ-1; Mon, 08 Feb 2021 07:57:03 -0500
+X-MC-Unique: C5FGhgQvNrueAgzPIQttpQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5AEA891133;
+        Mon,  8 Feb 2021 12:57:01 +0000 (UTC)
+Received: from oldenburg.str.redhat.com (ovpn-112-116.ams2.redhat.com [10.36.112.116])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7C32E5C1D0;
+        Mon,  8 Feb 2021 12:56:59 +0000 (UTC)
+From:   Florian Weimer <fweimer@redhat.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, stable@vger.kernel.org, lwn@lwn.net,
+        jslaby@suse.cz
+Subject: Re: Linux 4.9.256
+References: <1612535085125226@kroah.com>
+Date:   Mon, 08 Feb 2021 13:57:12 +0100
+In-Reply-To: <1612535085125226@kroah.com> (Greg Kroah-Hartman's message of
+        "Fri, 5 Feb 2021 15:26:18 +0100")
+Message-ID: <87czxa3efr.fsf@oldenburg.str.redhat.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Based on ufshci spec, it defines that "Offset C0h to FFh" belong
-to vendor specific. If cpu vendor doesn't support these commands, it
-makes the dme errors:
+* Greg Kroah-Hartman:
 
-ufs: dme-set: attr-id 0xd041 val 0x1fff failed 0 retries
-ufs: dme-set: attr-id 0xd042 val 0xffff failed 0 retries
-ufs: dme-set: attr-id 0xd043 val 0x7fff failed 0 retries
+> I'm announcing the release of the 4.9.256 kernel.
+>
+> This, and the 4.4.256 release are a little bit "different" than normal.
+>
+> This contains only 1 patch, just the version bump from .255 to .256 which ends
+> up causing the userspace-visable LINUX_VERSION_CODE to behave a bit differently
+> than normal due to the "overflow".
+>
+> With this release, KERNEL_VERSION(4, 9, 256) is the same as KERNEL_VERSION(4, 10, 0).
+>
+> Nothing in the kernel build itself breaks with this change, but given
+> that this is a userspace visible change, and some crazy tools (like
+> glibc and gcc) have logic that checks the kernel version for different
+> reasons, I wanted to do this release as an "empty" release to ensure
+> that everything still works properly.
 
-Create a hook for unipro vendor-specific commands.
+I'm looking at this from a glibc perspective.  glibc took the
+KERNEL_VERSION definition and embedded the bit layout into the
+/etc/ld.so.cache, as part of the file format.  Exact impact is still
+unclear at this point.
 
-Signed-off-by: Leo Liou <leoliou@google.com>
----
- drivers/scsi/ufs/ufs-qcom.c | 11 +++++++++++
- drivers/scsi/ufs/ufs-qcom.h |  5 +++++
- drivers/scsi/ufs/ufshcd.c   |  7 +------
- drivers/scsi/ufs/ufshcd.h   |  8 ++++++++
- drivers/scsi/ufs/unipro.h   |  4 ----
- 5 files changed, 25 insertions(+), 10 deletions(-)
-
-diff --git a/drivers/scsi/ufs/ufs-qcom.c b/drivers/scsi/ufs/ufs-qcom.c
-index 2206b1e4b774..f2a925587029 100644
---- a/drivers/scsi/ufs/ufs-qcom.c
-+++ b/drivers/scsi/ufs/ufs-qcom.c
-@@ -759,6 +759,16 @@ static int ufs_qcom_pwr_change_notify(struct ufs_hba *hba,
- 	return ret;
- }
- 
-+static void ufs_qcom_unipro_dme_set(struct ufs_hba *hba)
-+{
-+	ufshcd_dme_set(hba, UIC_ARG_MIB(DME_LocalFC0ProtectionTimeOutVal),
-+		       DL_FC0ProtectionTimeOutVal_Default);
-+	ufshcd_dme_set(hba, UIC_ARG_MIB(DME_LocalTC0ReplayTimeOutVal),
-+		       DL_TC0ReplayTimeOutVal_Default);
-+	ufshcd_dme_set(hba, UIC_ARG_MIB(DME_LocalAFC0ReqTimeOutVal),
-+		       DL_AFC0ReqTimeOutVal_Default);
-+}
-+
- static int ufs_qcom_quirk_host_pa_saveconfigtime(struct ufs_hba *hba)
- {
- 	int err;
-@@ -1469,6 +1479,7 @@ static const struct ufs_hba_variant_ops ufs_hba_qcom_vops = {
- 	.hce_enable_notify      = ufs_qcom_hce_enable_notify,
- 	.link_startup_notify    = ufs_qcom_link_startup_notify,
- 	.pwr_change_notify	= ufs_qcom_pwr_change_notify,
-+	.unipro_dme_set		= ufs_qcom_unipro_dme_set,
- 	.apply_dev_quirks	= ufs_qcom_apply_dev_quirks,
- 	.suspend		= ufs_qcom_suspend,
- 	.resume			= ufs_qcom_resume,
-diff --git a/drivers/scsi/ufs/ufs-qcom.h b/drivers/scsi/ufs/ufs-qcom.h
-index 8208e3a3ef59..83db97caaa1b 100644
---- a/drivers/scsi/ufs/ufs-qcom.h
-+++ b/drivers/scsi/ufs/ufs-qcom.h
-@@ -124,6 +124,11 @@ enum {
- /* QUniPro Vendor specific attributes */
- #define PA_VS_CONFIG_REG1	0x9000
- #define DME_VS_CORE_CLK_CTRL	0xD002
-+
-+#define DME_LocalFC0ProtectionTimeOutVal	0xD041
-+#define DME_LocalTC0ReplayTimeOutVal		0xD042
-+#define DME_LocalAFC0ReqTimeOutVal		0xD043
-+
- /* bit and mask definitions for DME_VS_CORE_CLK_CTRL attribute */
- #define DME_VS_CORE_CLK_CTRL_CORE_CLK_DIV_EN_BIT		BIT(8)
- #define DME_VS_CORE_CLK_CTRL_MAX_CORE_CLK_1US_CYCLES_MASK	0xFF
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index fb32d122f2e3..8ba2ce8c5d0c 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -4231,12 +4231,7 @@ static int ufshcd_change_power_mode(struct ufs_hba *hba,
- 	ufshcd_dme_set(hba, UIC_ARG_MIB(PA_PWRMODEUSERDATA5),
- 			DL_AFC1ReqTimeOutVal_Default);
- 
--	ufshcd_dme_set(hba, UIC_ARG_MIB(DME_LocalFC0ProtectionTimeOutVal),
--			DL_FC0ProtectionTimeOutVal_Default);
--	ufshcd_dme_set(hba, UIC_ARG_MIB(DME_LocalTC0ReplayTimeOutVal),
--			DL_TC0ReplayTimeOutVal_Default);
--	ufshcd_dme_set(hba, UIC_ARG_MIB(DME_LocalAFC0ReqTimeOutVal),
--			DL_AFC0ReqTimeOutVal_Default);
-+	ufshcd_vops_unipro_dme_set(hba);
- 
- 	ret = ufshcd_uic_change_pwr_mode(hba, pwr_mode->pwr_rx << 4
- 			| pwr_mode->pwr_tx);
-diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
-index aa9ea3552323..b8c90bee7503 100644
---- a/drivers/scsi/ufs/ufshcd.h
-+++ b/drivers/scsi/ufs/ufshcd.h
-@@ -311,6 +311,7 @@ struct ufs_pwr_mode_info {
-  * @pwr_change_notify: called before and after a power mode change
-  *			is carried out to allow vendor spesific capabilities
-  *			to be set.
-+ * @unipro_dme_set: called when vendor speicific control is needed
-  * @setup_xfer_req: called before any transfer request is issued
-  *                  to set some things
-  * @setup_task_mgmt: called before any task management request is issued
-@@ -342,6 +343,7 @@ struct ufs_hba_variant_ops {
- 					enum ufs_notify_change_status status,
- 					struct ufs_pa_layer_attr *,
- 					struct ufs_pa_layer_attr *);
-+	void    (*unipro_dme_set)(struct ufs_hba *hba);
- 	void	(*setup_xfer_req)(struct ufs_hba *, int, bool);
- 	void	(*setup_task_mgmt)(struct ufs_hba *, int, u8);
- 	void    (*hibern8_notify)(struct ufs_hba *, enum uic_cmd_dme,
-@@ -1161,6 +1163,12 @@ static inline int ufshcd_vops_pwr_change_notify(struct ufs_hba *hba,
- 	return -ENOTSUPP;
- }
- 
-+static inline void ufshcd_vops_unipro_dme_set(struct ufs_hba *hba)
-+{
-+	if (hba->vops && hba->vops->unipro_dme_set)
-+		return hba->vops->unipro_dme_set(hba);
-+}
-+
- static inline void ufshcd_vops_setup_xfer_req(struct ufs_hba *hba, int tag,
- 					bool is_scsi_cmd)
- {
-diff --git a/drivers/scsi/ufs/unipro.h b/drivers/scsi/ufs/unipro.h
-index 8e9e486a4f7b..224162e5afd8 100644
---- a/drivers/scsi/ufs/unipro.h
-+++ b/drivers/scsi/ufs/unipro.h
-@@ -192,10 +192,6 @@
- #define DL_TC1ReplayTimeOutVal_Default		65535
- #define DL_AFC1ReqTimeOutVal_Default		32767
- 
--#define DME_LocalFC0ProtectionTimeOutVal	0xD041
--#define DME_LocalTC0ReplayTimeOutVal		0xD042
--#define DME_LocalAFC0ReqTimeOutVal		0xD043
--
- /* PA power modes */
- enum {
- 	FAST_MODE	= 1,
+Thanks,
+Florian
 -- 
-2.30.0.478.g8a0d178c01-goog
+Red Hat GmbH, https://de.redhat.com/ , Registered seat: Grasbrunn,
+Commercial register: Amtsgericht Muenchen, HRB 153243,
+Managing Directors: Charles Cachera, Brian Klemm, Laurie Krebs, Michael O'Neill
 
