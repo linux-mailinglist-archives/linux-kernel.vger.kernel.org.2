@@ -2,71 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F61931413E
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 22:06:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C670314140
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 22:07:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234966AbhBHVG2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 16:06:28 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:35310 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236653AbhBHT54 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 14:57:56 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612814190;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Mwlt0efdnbsq04VvTqWwNbBfoFtRj5KAfY+i7K4qdOY=;
-        b=AwpAXe7fM7+PZ4JVqlsOHrdvlfgxh++a6Y45uhPRwQlm6tnP5ankh+vp/EGq6lNWcSMnqc
-        SaGBP5XLFAYP7oFFXrKtp5cC5Tfu0J398s7Usm46LyLVKDzLDX7WyqO765SM6pX0SJbSeD
-        F8J5i9W7juivbKRQkHcPhpi7PtDiwMc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-420-AXNhtgXZPPG8sy0tzkTo4A-1; Mon, 08 Feb 2021 14:56:28 -0500
-X-MC-Unique: AXNhtgXZPPG8sy0tzkTo4A-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E652679EC0;
-        Mon,  8 Feb 2021 19:56:25 +0000 (UTC)
-Received: from treble (ovpn-120-159.rdu2.redhat.com [10.10.120.159])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 449F160C04;
-        Mon,  8 Feb 2021 19:56:25 +0000 (UTC)
-Date:   Mon, 8 Feb 2021 13:56:18 -0600
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     x86@kernel.org
-Cc:     linux-kernel@vger.kernel.org, Ivan Babrou <ivan@cloudflare.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH 2/2] x86/unwind/orc: Silence warnings caused by missing
- ORC data
-Message-ID: <20210208195618.3gngafmybdircj46@treble>
-References: <cover.1612534649.git.jpoimboe@redhat.com>
- <06d02c4bbb220bd31668db579278b0352538efbb.1612534649.git.jpoimboe@redhat.com>
+        id S235198AbhBHVGi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 16:06:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47330 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235235AbhBHT7V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 14:59:21 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E843C64E66;
+        Mon,  8 Feb 2021 19:58:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1612814320;
+        bh=xsVnUONVU12AQRO6QNzMNapi548nvENqlk3IOoifORg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ITMxK80yGma4CLdDdizhZPcd+9wHtJWS3fzTtVvrxoo5oyOx+YgPwGPZRKAsgzjDu
+         uoC6QWKV6xlE55648MN1pky2gpFn9glNgm7h0JlNLgPj5Db+UD/K7Xj6Z24D+mTawB
+         /GxfLPnGNTkx9dzR+ypQcJNzB4fD+kwsxZ7ItIcw=
+Date:   Mon, 8 Feb 2021 20:58:37 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Mukul Mehar <mukulmehar02@gmail.com>
+Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH]: checkpatch: Fixed styling issue
+Message-ID: <YCGX7Yj90jwQYh0L@kroah.com>
+References: <20210208195116.GA19781@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <06d02c4bbb220bd31668db579278b0352538efbb.1612534649.git.jpoimboe@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+In-Reply-To: <20210208195116.GA19781@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 05, 2021 at 08:24:03AM -0600, Josh Poimboeuf wrote:
-> The ORC unwinder attempts to fall back to frame pointers when ORC data
-> is missing for a given instruction.  It sets state->error, but then
-> tries to keep going as a best-effort type of thing.  That may result in
-> further warnings if the unwinder gets lost.
+On Tue, Feb 09, 2021 at 01:21:16AM +0530, Mukul Mehar wrote:
+
+> >From 29bcaf0066003983da29b1e026b985c0727b091a Mon Sep 17 00:00:00 2001
+> From: Mukul Mehar <mukulmehar02@gmail.com>
+> Date: Mon, 8 Feb 2021 01:03:06 +0530
+> Subject: [PATCH] Drivers: staging: most: sound: Fixed style issue.
 > 
-> Until we have some way to register generated code with the unwinder,
-> missing ORC will be expected, and occasionally going off the rails will
-> also be expected.  So don't warn about it.
+> This patch fixes a warning, of the line ending with a '(',
+> generated by checkpatch.pl.
+> This is my first patch.
 > 
-> Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
+> Signed-off-by: Mukul Mehar <mukulmehar02@gmail.com>
+> ---
+>  drivers/staging/most/sound/sound.c | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/staging/most/sound/sound.c b/drivers/staging/most/sound/sound.c
+> index 3a1a59058042..4dd1bf95d1ce 100644
+> --- a/drivers/staging/most/sound/sound.c
+> +++ b/drivers/staging/most/sound/sound.c
+> @@ -228,12 +228,12 @@ static int playback_thread(void *data)
+>  		struct mbo *mbo = NULL;
+>  		bool period_elapsed = false;
+>  
+> -		wait_event_interruptible(
+> -			channel->playback_waitq,
+> -			kthread_should_stop() ||
+> -			(channel->is_stream_running &&
+> -			 (mbo = most_get_mbo(channel->iface, channel->id,
+> -					     &comp))));
+> +		wait_event_interruptible(channel->playback_waitq,
+> +					 kthread_should_stop() ||
+> +					 (channel->is_stream_running &&
+> +					 (mbo = most_get_mbo(channel->iface,
+> +					 channel->id,
+> +					 &comp))));
+>  		if (!mbo)
+>  			continue;
+>  
+> -- 
+> 2.25.1
 
-Cc: stable@vger.kernel.org
 
--- 
-Josh
+Again, all of the things that my bot found last time are still relevant
+here.  Please fix them all.
 
+thanks,
+
+greg k-h
