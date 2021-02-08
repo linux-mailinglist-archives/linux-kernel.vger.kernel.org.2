@@ -2,201 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EC083130CC
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 12:27:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0F423130D6
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 12:29:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233121AbhBHL1D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 06:27:03 -0500
-Received: from mga17.intel.com ([192.55.52.151]:44579 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232670AbhBHLMa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 06:12:30 -0500
-IronPort-SDR: 8DsPo0kFK3zbbjOBYrwXBRq5+UkfBGTsMOcuKF7eArlSgfbSw+p6DvYpYU5emd9YPeIFCyI/cw
- 3qGClCNZMMpg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9888"; a="161445974"
-X-IronPort-AV: E=Sophos;i="5.81,161,1610438400"; 
-   d="scan'208";a="161445974"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2021 03:11:49 -0800
-IronPort-SDR: e/2aMYPsgB0iavTaYJAI7kdF/a2ofXD2ykrHQjpC7e5as5C4lWp0UOYJlJIeqW9a8akiivd9NP
- lVD8gImj68UQ==
-X-IronPort-AV: E=Sophos;i="5.81,161,1610438400"; 
-   d="scan'208";a="418743050"
-Received: from anveshag-mobl1.amr.corp.intel.com (HELO intel.com) ([10.209.119.193])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2021 03:11:47 -0800
-Date:   Mon, 8 Feb 2021 06:11:45 -0500
-From:   Rodrigo Vivi <rodrigo.vivi@intel.com>
-To:     Lyude Paul <lyude@redhat.com>
-Cc:     dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
-        intel-gfx@lists.freedesktop.org, David Airlie <airlied@linux.ie>,
-        open list <linux-kernel@vger.kernel.org>,
-        Sean Paul <seanpaul@chromium.org>
-Subject: Re: [RFC v3 04/10] drm/i915/dpcd_bl: Handle drm_dpcd_read/write()
- return values correctly
-Message-ID: <20210208111145.GA4798@intel.com>
-References: <20210205234515.1216538-1-lyude@redhat.com>
- <20210205234515.1216538-5-lyude@redhat.com>
+        id S233235AbhBHL2r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 06:28:47 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:50558 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232525AbhBHLNe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 06:13:34 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 118BAbgI025685;
+        Mon, 8 Feb 2021 11:12:36 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=nvwahBSZXplQiMBwEr0U7duRvv9FAMET36RKzGB3kl8=;
+ b=hiaVjMO43NnXDNgfE+kyJm9RWLNV++FYHnCUmZLJg9rYnpTJrCvPK2+7LutsxjtDKSOU
+ DHlOGLkO4CBHCIn1Wp5ea3LvlpGpdf/Ce36+DA/LWiaG0tU63RybVuDxVTyF2EyYOeDo
+ a3s0R6HzrdC/ujajhW07E96vewvfWmfqXC/5JA22S+r7O11duMK+hErV1haQLrtAG7e3
+ HRHa4yiWiGH/oKbvGtRMCguo1TUk32toTJ7AUeDtC1uGn+q7n8T9sPYeM2b3J7kqiF6e
+ /mp5e15AtQPEp7sGbuuF3v/KXglMLz70I8PePiLZjDSCUduwL5yX7v4U7tvi5iU6g86a iA== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2130.oracle.com with ESMTP id 36hjhqkhqy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 08 Feb 2021 11:12:35 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 118BBJc1131794;
+        Mon, 8 Feb 2021 11:12:34 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3020.oracle.com with ESMTP id 36j50ymusx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 08 Feb 2021 11:12:34 +0000
+Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 118BCWRl014609;
+        Mon, 8 Feb 2021 11:12:32 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 08 Feb 2021 03:12:31 -0800
+Date:   Mon, 8 Feb 2021 14:12:23 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Daniel Latypov <dlatypov@google.com>
+Cc:     kbuild@lists.01.org, Brendan Higgins <brendanhiggins@google.com>,
+        David Gow <davidgow@google.com>, lkp@intel.com,
+        kbuild-all@lists.01.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>
+Subject: Re: [PATCH 1/3] kunit: add kunit.filter_glob cmdline option to
+ filter suites
+Message-ID: <20210208111223.GK20820@kadam>
+References: <20210203234116.839819-2-dlatypov@google.com>
+ <20210204071100.GB2696@kadam>
+ <CAGS_qxpOWG_chZEAtKFPPbcfet=ZQYeo9_3k5tHSj4WHCfMToA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210205234515.1216538-5-lyude@redhat.com>
+In-Reply-To: <CAGS_qxpOWG_chZEAtKFPPbcfet=ZQYeo9_3k5tHSj4WHCfMToA@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-IMR: 1
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9888 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 bulkscore=0 adultscore=0
+ mlxlogscore=999 phishscore=0 spamscore=0 suspectscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102080075
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9888 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 impostorscore=0
+ priorityscore=1501 bulkscore=0 suspectscore=0 mlxscore=0 phishscore=0
+ lowpriorityscore=0 mlxlogscore=999 clxscore=1015 spamscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102080075
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 05, 2021 at 06:45:08PM -0500, Lyude Paul wrote:
-> This is kind of an annoying aspect of DRM's DP helpers:
-> drm_dp_dpcd_readb/writeb() return the size of bytes read/written on
-> success, thus we want to check against that instead of checking if the
-> return value is less than 0.
+On Thu, Feb 04, 2021 at 09:30:43AM -0800, Daniel Latypov wrote:
+> On Wed, Feb 3, 2021 at 11:13 PM Dan Carpenter <dan.carpenter@oracle.com> wrote:
+> >
+> > Hi Daniel,
+> >
+> > url:    https://github.com/0day-ci/linux/commits/Daniel-Latypov/kunit-support-running-subsets-of-test-suites-from/20210204-074405 
+> > base:   88bb507a74ea7d75fa49edd421eaa710a7d80598
+> > config: x86_64-randconfig-m001-20210202 (attached as .config)
+> > compiler: gcc-9 (Debian 9.3.0-15) 9.3.0
+> >
+> > If you fix the issue, kindly add following tag as appropriate
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+> >
+> > smatch warnings:
+> > lib/kunit/executor.c:110 kunit_run_all_tests() error: double free of 'suite_set.start'
+> >
+> > vim +110 lib/kunit/executor.c
+> >
+> > 8c0d884986ba22 Brendan Higgins 2020-08-04   96  int kunit_run_all_tests(void)
+> > aac35468ca20a3 Alan Maguire    2020-08-04   97  {
+> > aac35468ca20a3 Alan Maguire    2020-08-04   98          struct kunit_suite * const * const *suites;
+> > aac35468ca20a3 Alan Maguire    2020-08-04   99
+> > d5554dd78a454b Daniel Latypov  2021-02-03  100          struct suite_set suite_set = kunit_filter_suites();
+> > 45dcbb6f5ef78b Brendan Higgins 2020-08-04  101
+> > d5554dd78a454b Daniel Latypov  2021-02-03  102          kunit_print_tap_header(&suite_set);
+> > d5554dd78a454b Daniel Latypov  2021-02-03  103
+> > d5554dd78a454b Daniel Latypov  2021-02-03  104          for (suites = suite_set.start; suites < suite_set.end; suites++)
+> > aac35468ca20a3 Alan Maguire    2020-08-04  105                  __kunit_test_suites_init(*suites);
+> > aac35468ca20a3 Alan Maguire    2020-08-04  106
+> > d5554dd78a454b Daniel Latypov  2021-02-03  107          if (filter_glob) { /* a copy was made of each array */
+> > d5554dd78a454b Daniel Latypov  2021-02-03  108                  for (suites = suite_set.start; suites < suite_set.end; suites++)
+> >                                                                      ^^^^^^^^^^^^^^^^^^^^^^^^
+> > This will free "suite_set.start" will in the first iteration through the
+> > loop
 > 
-> I'll probably be fixing this in the near future once I start doing DP work
-> again, also because I'd rather not mix a tree-wide refactor like that in
-> with a patch series intended to be around introducing DP backlight helpers.
-> So, for now let's just handle the return values from each function
-> correctly.
+> Ah, the loop is supposed to contain `kfree(*suites)`.
+> I'll fix the patch and resend.
 > 
-> Signed-off-by: Lyude Paul <lyude@redhat.com>
+> I'm not familiar with conventions but it feels like adding Reported-by
+> on the amended patch would almost imply the report suggested the need
+> for the ability to filter suites.
+> So I'll add an informal attribution in the cover letter.
+> 
+> Thanks!
 
-Reviewed-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
+These emails are autogenerated by the kbuild bot and I just look them
+over and hit forward.
 
-> ---
->  .../drm/i915/display/intel_dp_aux_backlight.c | 41 +++++++++----------
->  1 file changed, 19 insertions(+), 22 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c b/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
-> index 62294967f430..c37ccc8538cb 100644
-> --- a/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
-> +++ b/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
-> @@ -107,7 +107,7 @@ intel_dp_aux_supports_hdr_backlight(struct intel_connector *connector)
->  	u8 tcon_cap[4];
->  
->  	ret = drm_dp_dpcd_read(aux, INTEL_EDP_HDR_TCON_CAP0, tcon_cap, sizeof(tcon_cap));
-> -	if (ret < 0)
-> +	if (ret != sizeof(tcon_cap))
->  		return false;
->  
->  	if (!(tcon_cap[1] & INTEL_EDP_HDR_TCON_BRIGHTNESS_NITS_CAP))
-> @@ -137,7 +137,7 @@ intel_dp_aux_hdr_get_backlight(struct intel_connector *connector, enum pipe pipe
->  	u8 tmp;
->  	u8 buf[2] = { 0 };
->  
-> -	if (drm_dp_dpcd_readb(&intel_dp->aux, INTEL_EDP_HDR_GETSET_CTRL_PARAMS, &tmp) < 0) {
-> +	if (drm_dp_dpcd_readb(&intel_dp->aux, INTEL_EDP_HDR_GETSET_CTRL_PARAMS, &tmp) != 1) {
->  		drm_err(&i915->drm, "Failed to read current backlight mode from DPCD\n");
->  		return 0;
->  	}
-> @@ -153,7 +153,8 @@ intel_dp_aux_hdr_get_backlight(struct intel_connector *connector, enum pipe pipe
->  		return panel->backlight.max;
->  	}
->  
-> -	if (drm_dp_dpcd_read(&intel_dp->aux, INTEL_EDP_BRIGHTNESS_NITS_LSB, buf, sizeof(buf)) < 0) {
-> +	if (drm_dp_dpcd_read(&intel_dp->aux, INTEL_EDP_BRIGHTNESS_NITS_LSB, buf,
-> +			     sizeof(buf)) != sizeof(buf)) {
->  		drm_err(&i915->drm, "Failed to read brightness from DPCD\n");
->  		return 0;
->  	}
-> @@ -172,7 +173,8 @@ intel_dp_aux_hdr_set_aux_backlight(const struct drm_connector_state *conn_state,
->  	buf[0] = level & 0xFF;
->  	buf[1] = (level & 0xFF00) >> 8;
->  
-> -	if (drm_dp_dpcd_write(&intel_dp->aux, INTEL_EDP_BRIGHTNESS_NITS_LSB, buf, 4) < 0)
-> +	if (drm_dp_dpcd_write(&intel_dp->aux, INTEL_EDP_BRIGHTNESS_NITS_LSB, buf,
-> +			      sizeof(buf)) != sizeof(buf))
->  		drm_err(dev, "Failed to write brightness level to DPCD\n");
->  }
->  
-> @@ -203,7 +205,7 @@ intel_dp_aux_hdr_enable_backlight(const struct intel_crtc_state *crtc_state,
->  	u8 old_ctrl, ctrl;
->  
->  	ret = drm_dp_dpcd_readb(&intel_dp->aux, INTEL_EDP_HDR_GETSET_CTRL_PARAMS, &old_ctrl);
-> -	if (ret < 0) {
-> +	if (ret != 1) {
->  		drm_err(&i915->drm, "Failed to read current backlight control mode: %d\n", ret);
->  		return;
->  	}
-> @@ -221,7 +223,7 @@ intel_dp_aux_hdr_enable_backlight(const struct intel_crtc_state *crtc_state,
->  	}
->  
->  	if (ctrl != old_ctrl)
-> -		if (drm_dp_dpcd_writeb(&intel_dp->aux, INTEL_EDP_HDR_GETSET_CTRL_PARAMS, ctrl) < 0)
-> +		if (drm_dp_dpcd_writeb(&intel_dp->aux, INTEL_EDP_HDR_GETSET_CTRL_PARAMS, ctrl) != 1)
->  			drm_err(&i915->drm, "Failed to configure DPCD brightness controls\n");
->  }
->  
-> @@ -277,8 +279,7 @@ static void set_vesa_backlight_enable(struct intel_dp *intel_dp, bool enable)
->  	if (!(intel_dp->edp_dpcd[1] & DP_EDP_BACKLIGHT_AUX_ENABLE_CAP))
->  		return;
->  
-> -	if (drm_dp_dpcd_readb(&intel_dp->aux, DP_EDP_DISPLAY_CONTROL_REGISTER,
-> -			      &reg_val) < 0) {
-> +	if (drm_dp_dpcd_readb(&intel_dp->aux, DP_EDP_DISPLAY_CONTROL_REGISTER, &reg_val) != 1) {
->  		drm_dbg_kms(&i915->drm, "Failed to read DPCD register 0x%x\n",
->  			    DP_EDP_DISPLAY_CONTROL_REGISTER);
->  		return;
-> @@ -332,8 +333,8 @@ static u32 intel_dp_aux_vesa_get_backlight(struct intel_connector *connector, en
->  	if (!intel_dp_aux_vesa_backlight_dpcd_mode(connector))
->  		return connector->panel.backlight.max;
->  
-> -	if (drm_dp_dpcd_read(&intel_dp->aux, DP_EDP_BACKLIGHT_BRIGHTNESS_MSB,
-> -			     &read_val, sizeof(read_val)) < 0) {
-> +	if (drm_dp_dpcd_read(&intel_dp->aux, DP_EDP_BACKLIGHT_BRIGHTNESS_MSB, &read_val,
-> +			     sizeof(read_val)) != sizeof(read_val)) {
->  		drm_dbg_kms(&i915->drm, "Failed to read DPCD register 0x%x\n",
->  			    DP_EDP_BACKLIGHT_BRIGHTNESS_MSB);
->  		return 0;
-> @@ -365,8 +366,8 @@ intel_dp_aux_vesa_set_backlight(const struct drm_connector_state *conn_state,
->  		vals[0] = (level & 0xFF00) >> 8;
->  		vals[1] = (level & 0xFF);
->  	}
-> -	if (drm_dp_dpcd_write(&intel_dp->aux, DP_EDP_BACKLIGHT_BRIGHTNESS_MSB,
-> -			      vals, sizeof(vals)) < 0) {
-> +	if (drm_dp_dpcd_write(&intel_dp->aux, DP_EDP_BACKLIGHT_BRIGHTNESS_MSB, vals,
-> +			      sizeof(vals)) != sizeof(vals)) {
->  		drm_dbg_kms(&i915->drm,
->  			    "Failed to write aux backlight level\n");
->  		return;
-> @@ -401,9 +402,8 @@ intel_dp_aux_vesa_enable_backlight(const struct intel_crtc_state *crtc_state,
->  		new_dpcd_buf &= ~DP_EDP_BACKLIGHT_CONTROL_MODE_MASK;
->  		new_dpcd_buf |= DP_EDP_BACKLIGHT_CONTROL_MODE_DPCD;
->  
-> -		if (drm_dp_dpcd_writeb(&intel_dp->aux,
-> -				       DP_EDP_PWMGEN_BIT_COUNT,
-> -				       pwmgen_bit_count) < 0)
-> +		if (drm_dp_dpcd_writeb(&intel_dp->aux, DP_EDP_PWMGEN_BIT_COUNT,
-> +				       pwmgen_bit_count) != 1)
->  			drm_dbg_kms(&i915->drm,
->  				    "Failed to write aux pwmgen bit count\n");
->  
-> @@ -424,11 +424,9 @@ intel_dp_aux_vesa_enable_backlight(const struct intel_crtc_state *crtc_state,
->  	}
->  
->  	if (new_dpcd_buf != dpcd_buf) {
-> -		if (drm_dp_dpcd_writeb(&intel_dp->aux,
-> -			DP_EDP_BACKLIGHT_MODE_SET_REGISTER, new_dpcd_buf) < 0) {
-> -			drm_dbg_kms(&i915->drm,
-> -				    "Failed to write aux backlight mode\n");
-> -		}
-> +		if (drm_dp_dpcd_writeb(&intel_dp->aux, DP_EDP_BACKLIGHT_MODE_SET_REGISTER,
-> +				       new_dpcd_buf) != 1)
-> +			drm_dbg_kms(&i915->drm, "Failed to write aux backlight mode\n");
->  	}
->  
->  	intel_dp_aux_vesa_set_backlight(conn_state, level);
-> @@ -519,8 +517,7 @@ static u32 intel_dp_aux_vesa_calc_max_backlight(struct intel_connector *connecto
->  	}
->  
->  	drm_dbg_kms(&i915->drm, "Using eDP pwmgen bit count of %d\n", pn);
-> -	if (drm_dp_dpcd_writeb(&intel_dp->aux,
-> -			       DP_EDP_PWMGEN_BIT_COUNT, pn) < 0) {
-> +	if (drm_dp_dpcd_writeb(&intel_dp->aux, DP_EDP_PWMGEN_BIT_COUNT, pn) != 1) {
->  		drm_dbg_kms(&i915->drm,
->  			    "Failed to write aux pwmgen bit count\n");
->  		return max_backlight;
-> -- 
-> 2.29.2
-> 
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+regards,
+dan carpenter
+
