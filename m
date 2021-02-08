@@ -2,158 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 681A2313CE9
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 19:13:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19AF7313CE5
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 19:13:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235605AbhBHSNo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 13:13:44 -0500
-Received: from foss.arm.com ([217.140.110.172]:36986 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233438AbhBHPkn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 10:40:43 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BB9C11FB;
-        Mon,  8 Feb 2021 07:39:56 -0800 (PST)
-Received: from [10.57.43.128] (unknown [10.57.43.128])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D1E6E3F719;
-        Mon,  8 Feb 2021 07:39:52 -0800 (PST)
-Subject: Re: [PATCH 4/4] perf tools: determine if LR is the return address
-To:     Alexandre Truong <alexandre.truong@arm.com>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
-Cc:     John Garry <john.garry@huawei.com>, Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Kemeng Shi <shikemeng@huawei.com>,
-        Ian Rogers <irogers@google.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Al Grant <al.grant@arm.com>,
-        Wilco Dijkstra <wilco.dijkstra@arm.com>
-References: <20210122161854.5289-1-alexandre.truong@arm.com>
- <20210122161854.5289-4-alexandre.truong@arm.com>
-From:   James Clark <james.clark@arm.com>
-Message-ID: <3184a838-9784-eb86-09ad-ceadabcd3381@arm.com>
-Date:   Mon, 8 Feb 2021 17:39:46 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S235389AbhBHSM6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 13:12:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58220 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234065AbhBHPl0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 10:41:26 -0500
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2039C061786
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 07:40:43 -0800 (PST)
+Received: by mail-pj1-x102e.google.com with SMTP id t2so3825933pjq.2
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 07:40:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/Qc/45eRqfQBEqGJzHaK7yd+vGYvqGu3tixgC95meQM=;
+        b=ADAdFY96oK/I7o3ug5tJCI7osmm84XxY6ZcJC1dr4wp6o5mwqhiAYugzWpzgFwyunC
+         yTTyCZolYCEXb0kYEL0SQmTfBsVq26Ucyq3osiHJGYd0PMeu2Umivj0RyLa7TePa62Ug
+         oHNg9zblMo28u90xXEhH3HawKmkSWlNGl77MSEa8O1qGDw49+21SpVx3NaMGIIxTRWae
+         Hvbr6lsA+MQnxlXQjsuTANo6nw3cEJLkQNeFJIWOIzGUkHzze2RLN40mPePiDoRtAIuf
+         B6UTnJo9LBBRA7mzAQdgV8vwEigVzvTP96KXzRDHOTVnWEG9eM7jTTV0apzhCdwIatmx
+         U0zw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/Qc/45eRqfQBEqGJzHaK7yd+vGYvqGu3tixgC95meQM=;
+        b=lnq52uZJQ2XAbarFp24Td+kjK5r+WAIS8EWP3r+4L5nijI8Qy6M/QQIs6uWiLZDTtd
+         r9O1oABsgIXhZPWdc2IXLDWAcBVxqbl9PPQdVFmJIWeiorGAqUBsFWydhZakQbqu3/7i
+         +ywazgz7kHVuSIn+yDoOOpsBuzLcjmCu4zz+CfTthiQT4RxCU1gveEytFbkeIlRb88Uu
+         pwOeAeHzLDymCuMF62r5h8UPfFQLOx5L8MmYhIxhY63AlYVX4ozV6WsnuYj+6kspTpKa
+         u3zecefVK2uxcv8NeGPmNRHU/VW8miN8uQB1KlIs7SQIwAS1gbEo1XAHqJ6yaLIaiHMJ
+         faFg==
+X-Gm-Message-State: AOAM533+QO/HPOW+0AMuMQujL2jjCdhI9/rRpmwwQ61TZLCXcI4MlJsw
+        aLFNPPdp7UqZu5LywOQEofh/9Cnhmwz6Ak+VpIkBFA==
+X-Google-Smtp-Source: ABdhPJx9zpu9jF8CnSyo6G801+5B1HD3eq8nP3UGL8LEyz4STIsURtt7Sc3jnaVGYGfUwSGbK0Mk3RN9e1GusuYSmII=
+X-Received: by 2002:a17:90a:b702:: with SMTP id l2mr17651515pjr.13.1612798843383;
+ Mon, 08 Feb 2021 07:40:43 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210122161854.5289-4-alexandre.truong@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210206054124.6743-1-songmuchun@bytedance.com>
+ <YCDcAy39BbPItdGY@jagdpanzerIV.localdomain> <CAMZfGtVBVSuH=HGNs7KFOtixSviy_stoZsiG4au0RUkUnH-0rQ@mail.gmail.com>
+ <YCE4tIrz/u/RkDc/@jagdpanzerIV.localdomain>
+In-Reply-To: <YCE4tIrz/u/RkDc/@jagdpanzerIV.localdomain>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Mon, 8 Feb 2021 23:40:07 +0800
+Message-ID: <CAMZfGtX-bHXoF_4rU+WzDNp+LmZj3CHWmurEvjCZBCyM2uiDMw@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v2] printk: fix deadlock when kernel panic
+To:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+Cc:     Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        john.ogness@linutronix.de,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Feb 8, 2021 at 9:12 PM Sergey Senozhatsky
+<sergey.senozhatsky@gmail.com> wrote:
+>
+> On (21/02/08 16:49), Muchun Song wrote:
+> > On Mon, Feb 8, 2021 at 2:38 PM Sergey Senozhatsky
+> > <sergey.senozhatsky@gmail.com> wrote:
+> > >
+> > > On (21/02/06 13:41), Muchun Song wrote:
+> > > > We found a deadlock bug on our server when the kernel panic. It can be
+> > > > described in the following diagram.
+> > > >
+> > > > CPU0:                                         CPU1:
+> > > > panic                                         rcu_dump_cpu_stacks
+> > > >   kdump_nmi_shootdown_cpus                      nmi_trigger_cpumask_backtrace
+> > > >     register_nmi_handler(crash_nmi_callback)      printk_safe_flush
+> > > >                                                     __printk_safe_flush
+> > > >                                                       raw_spin_lock_irqsave(&read_lock)
+> > > >     // send NMI to other processors
+> > > >     apic_send_IPI_allbutself(NMI_VECTOR)
+> > > >                                                         // NMI interrupt, dead loop
+> > > >                                                         crash_nmi_callback
+> > >
+> > > At what point does this decrement num_online_cpus()? Any chance that
+> > > panic CPU can apic_send_IPI_allbutself() and printk_safe_flush_on_panic()
+> > > before num_online_cpus() becomes 1?
+> >
+> > I took a closer look at the code. IIUC, It seems that there is no point
+> > which decreases num_online_cpus.
+>
+> So then this never re-inits the safe_read_lock?
 
+Right. If we encounter this case, we do not flush printk
+buffer. So, it seems my previous patch is the right fix.
+Right?
 
-On 22/01/2021 18:18, Alexandre Truong wrote:
+https://lore.kernel.org/patchwork/patch/1373563/
 
-> +}
-> +
-> +static int add_entry(struct unwind_entry *entry, void *arg)
-> +{
-> +	struct entries *entries = arg;
-> +
-> +	entries->stack[entries->i++] = entry->ip;
-> +	return 0;
-> +}
-> +
-> +u64 get_leaf_frame_caller_aarch64(struct perf_sample *sample, struct thread *thread)
-> +{
-> +	u64 leaf_frame;
-> +	struct entries entries = {{0, 0}, 0};
-> +
-> +	if (get_leaf_frame_caller_enabled(sample))
-> +		return 0;
-> +
-> +	unwind__get_entries(add_entry, &entries, thread, sample, 2);
-> +	leaf_frame = callchain_param.order == ORDER_CALLER ?
-> +		entries.stack[0] : entries.stack[1];
-> +
-> +	if (leaf_frame + 1 == sample->user_regs.regs[PERF_REG_ARM64_LR])
-> +		return sample->user_regs.regs[PERF_REG_ARM64_LR];
-
-Hi Alex,
-
-From your other reply about your investigation it looks like the check against PERF_REG_ARM64_LR isn't
-required because libunwind won't return a value if it's not correct. Whether it's equal to the LR or not.
-
-And PERF_REG_ARM64_LR points to the instruction _after_ the call site. i.e. where to return to,
-not where the call was made from. So just leaf_frame rather than leaf_frame+1 would be more accurate.
-
-I was also looking at unwind_entry in machine.c which is similar to your add_entry function and saw that it
-does some extra bits like this:
-
-	if (symbol_conf.hide_unresolved && entry->ms.sym == NULL)
-		return 0;
-
-	if (append_inlines(cursor, &entry->ms, entry->ip) == 0)
-		return 0;
-
-	/*
-	 * Convert entry->ip from a virtual address to an offset in
-	 * its corresponding binary.
-	 */
-	if (entry->ms.map)
-		addr = map__map_ip(entry->ms.map, entry->ip);
-
-I have a feeling you will also need to do those on your values returned from libunwind to make it 100%
-equivalent.
-
-James
-
-> +	return 0;
-> +}
-> diff --git a/tools/perf/util/arm-frame-pointer-unwind-support.h b/tools/perf/util/arm-frame-pointer-unwind-support.h
-> new file mode 100644
-> index 000000000000..16dc03fa9abe
-> --- /dev/null
-> +++ b/tools/perf/util/arm-frame-pointer-unwind-support.h
-> @@ -0,0 +1,7 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#ifndef __PERF_ARM_FRAME_POINTER_UNWIND_SUPPORT_H
-> +#define __PERF_ARM_FRAME_POINTER_UNWIND_SUPPORT_H
-> +
-> +u64 get_leaf_frame_caller_aarch64(struct perf_sample *sample, struct thread *thread);
-> +
-> +#endif /* __PERF_ARM_FRAME_POINTER_UNWIND_SUPPORT_H */
-> diff --git a/tools/perf/util/machine.c b/tools/perf/util/machine.c
-> index 40082d70eec1..bc6147e46c89 100644
-> --- a/tools/perf/util/machine.c
-> +++ b/tools/perf/util/machine.c
-> @@ -34,6 +34,7 @@
->  #include "bpf-event.h"
->  #include <internal/lib.h> // page_size
->  #include "cgroup.h"
-> +#include "arm-frame-pointer-unwind-support.h"
->  
->  #include <linux/ctype.h>
->  #include <symbol/kallsyms.h>
-> @@ -2671,10 +2672,12 @@ static int find_prev_cpumode(struct ip_callchain *chain, struct thread *thread,
->  	return err;
->  }
->  
-> -static u64 get_leaf_frame_caller(struct perf_sample *sample __maybe_unused,
-> -		struct thread *thread __maybe_unused)
-> +static u64 get_leaf_frame_caller(struct perf_sample *sample, struct thread *thread)
->  {
-> -	return 0;
-> +	if (strncmp(thread->maps->machine->env->arch, "aarch64", 7) == 0)
-> +		return get_leaf_frame_caller_aarch64(sample, thread);
-> +	else
-> +		return 0;
->  }
->  
->  static int thread__resolve_callchain_sample(struct thread *thread,
-> 
+>
+>                if (num_online_cpus() > 1)
+>                        return;
+>
+>                debug_locks_off();
+>                raw_spin_lock_init(&safe_read_lock);
+>
+>         -ss
