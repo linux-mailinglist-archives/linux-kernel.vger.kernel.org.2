@@ -2,55 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D94F313216
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 13:20:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DCD3B313223
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 13:21:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233201AbhBHMS0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 07:18:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39120 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233541AbhBHMBY (ORCPT
+        id S231882AbhBHMU1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 07:20:27 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:36320 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233530AbhBHMBX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 07:01:24 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E800C06178A;
-        Mon,  8 Feb 2021 04:00:44 -0800 (PST)
+        Mon, 8 Feb 2021 07:01:23 -0500
 Date:   Mon, 08 Feb 2021 12:00:40 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1612785641;
+        s=2020; t=1612785640;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=+G6jSrut1/Vug3A+sj27MDFOKf4FE4+qEg33j0S8O1c=;
-        b=puCbVUMhub1EohZ7Ub1w1JUCGEolalHGeHgZa0q2suxqXSdGi6qJa2CmVSkppZW9Rt3rWh
-        W5MqWKos9ci535H1cIDBnhpsgA/Jgpjbn8FXoL5elcAhKNKGfshLE6vg8qx+xS6uagSl25
-        3qX30TZ3zLMEcBEXsJDekx793yRtSvqhvPyMtYrs6nXqIoHt68fNaid33ESYYmi0K8nIv8
-        U55GETbukmbqzWLJ7muY5DyEKC648uS9qvTPardhCTv9nh0ICtekLcrBJTkcNfFMWKkfnh
-        2Ev3d5ei1HspoNgzMyXYxao4QMnQA/R3l703/sO5y8SZVZ7RNnn0GOgIeF14FQ==
+        bh=K7wbrJ0+ogR0lTF3Z7V1ZkFjcGjRMt3dTQAKlyMVbM4=;
+        b=2sGakl9R1BW+eh97THZAj+92Da2Pnvi+ydReGCuZ6STnQ85IgvZ+SOizaelSspTCJ8tRBN
+        GZuQio6uPTJD1hSmIh3q7klgqprWsO1ULQnt4yE5VSAb8+0p4FiuIVogLaGeH0MY5uPKj7
+        MaUliJhgDIvib4a+4HMBdC4jKRsJmVyJ3LNnr84u/1rqNnGlVepWEEqE6C9GSQaHKKY0xQ
+        tRPzUToxirm6aIeeI46GpvLIX2/9FQkyCFDNtzxDcZNFM0agfJ7aRlWkkzPnJ+iuYlvz6/
+        RYx96GGOf68WZZRs6zYcuwi6KM2vrH3N77/4x1m7VnG+xPtIQItc6tFvaDiw6w==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1612785641;
+        s=2020e; t=1612785640;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=+G6jSrut1/Vug3A+sj27MDFOKf4FE4+qEg33j0S8O1c=;
-        b=nPmInSqRscdW5zfm6SfscqK7lwINo3Q1RQd14QePi4239CGHF98syebijmrEGdF9AY1dCa
-        aew6rLn94NKuk3Aw==
-From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
+        bh=K7wbrJ0+ogR0lTF3Z7V1ZkFjcGjRMt3dTQAKlyMVbM4=;
+        b=v/JUfufRzNe9p0xuAJCLD/uZWd2Nn8CLemM80G24fcXN8x95/VPySxVidqkatngGythsTA
+        fiML7GZT9gf+SDAw==
+From:   "tip-bot2 for Frederic Weisbecker" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] static_call/x86: Add __static_call_return0()
-Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Frederic Weisbecker <frederic@kernel.org>, x86@kernel.org,
+Subject: [tip: sched/core] static_call: Provide DEFINE_STATIC_CALL_RET0()
+Cc:     Frederic Weisbecker <frederic@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20210118141223.123667-2-frederic@kernel.org>
-References: <20210118141223.123667-2-frederic@kernel.org>
+In-Reply-To: <20210118141223.123667-3-frederic@kernel.org>
+References: <20210118141223.123667-3-frederic@kernel.org>
 MIME-Version: 1.0
-Message-ID: <161278564044.23325.17664780821329997538.tip-bot2@tip-bot2>
+Message-ID: <161278564018.23325.14384880539197440259.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -61,135 +58,94 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the sched/core branch of tip:
 
-Commit-ID:     2f44200d3f3d6e6abab4e5529335f7852936f3a1
-Gitweb:        https://git.kernel.org/tip/2f44200d3f3d6e6abab4e5529335f7852936f3a1
-Author:        Peter Zijlstra <peterz@infradead.org>
-AuthorDate:    Mon, 18 Jan 2021 15:12:16 +01:00
+Commit-ID:     50ace20f2cfecd90c88edaf58400b362f42f2960
+Gitweb:        https://git.kernel.org/tip/50ace20f2cfecd90c88edaf58400b362f42f2960
+Author:        Frederic Weisbecker <frederic@kernel.org>
+AuthorDate:    Mon, 18 Jan 2021 15:12:17 +01:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
 CommitterDate: Fri, 05 Feb 2021 17:19:55 +01:00
 
-static_call/x86: Add __static_call_return0()
+static_call: Provide DEFINE_STATIC_CALL_RET0()
 
-Provide a stub function that return 0 and wire up the static call site
-patching to replace the CALL with a single 5 byte instruction that
-clears %RAX, the return value register.
+DECLARE_STATIC_CALL() must pass the original function targeted for a
+given static call. But DEFINE_STATIC_CALL() may want to initialize it as
+off. In this case we can't pass NULL (for functions without return value)
+or __static_call_return0 (for functions returning a value) directly
+to DEFINE_STATIC_CALL() as that may trigger a static call redeclaration
+with a different function prototype. Type casts neither can work around
+that as they don't get along with typeof().
 
-The function can be cast to any function pointer type that has a
-single %RAX return (including pointers). Also provide a version that
-returns an int for convenience. We are clearing the entire %RAX register
-in any case, whether the return value is 32 or 64 bits, since %RAX is
-always a scratch register anyway.
+The proper way to do that for functions that don't return a value is
+to use DEFINE_STATIC_CALL_NULL(). But functions returning a actual value
+don't have an equivalent yet.
 
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Provide DEFINE_STATIC_CALL_RET0() to solve this situation.
+
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20210118141223.123667-2-frederic@kernel.org
+Link: https://lkml.kernel.org/r/20210118141223.123667-3-frederic@kernel.org
 ---
- arch/x86/kernel/static_call.c | 17 +++++++++++++++--
- include/linux/static_call.h   | 12 ++++++++++++
- kernel/static_call.c          |  5 +++++
- 3 files changed, 32 insertions(+), 2 deletions(-)
+ include/linux/static_call.h | 22 ++++++++++++++--------
+ 1 file changed, 14 insertions(+), 8 deletions(-)
 
-diff --git a/arch/x86/kernel/static_call.c b/arch/x86/kernel/static_call.c
-index ca9a380..9442c41 100644
---- a/arch/x86/kernel/static_call.c
-+++ b/arch/x86/kernel/static_call.c
-@@ -11,14 +11,26 @@ enum insn_type {
- 	RET = 3,  /* tramp / site cond-tail-call */
- };
- 
-+/*
-+ * data16 data16 xorq %rax, %rax - a single 5 byte instruction that clears %rax
-+ * The REX.W cancels the effect of any data16.
-+ */
-+static const u8 xor5rax[] = { 0x66, 0x66, 0x48, 0x31, 0xc0 };
-+
- static void __ref __static_call_transform(void *insn, enum insn_type type, void *func)
- {
-+	const void *emulate = NULL;
- 	int size = CALL_INSN_SIZE;
- 	const void *code;
- 
- 	switch (type) {
- 	case CALL:
- 		code = text_gen_insn(CALL_INSN_OPCODE, insn, func);
-+		if (func == &__static_call_return0) {
-+			emulate = code;
-+			code = &xor5rax;
-+		}
-+
- 		break;
- 
- 	case NOP:
-@@ -41,7 +53,7 @@ static void __ref __static_call_transform(void *insn, enum insn_type type, void 
- 	if (unlikely(system_state == SYSTEM_BOOTING))
- 		return text_poke_early(insn, code, size);
- 
--	text_poke_bp(insn, code, size, NULL);
-+	text_poke_bp(insn, code, size, emulate);
- }
- 
- static void __static_call_validate(void *insn, bool tail)
-@@ -54,7 +66,8 @@ static void __static_call_validate(void *insn, bool tail)
- 			return;
- 	} else {
- 		if (opcode == CALL_INSN_OPCODE ||
--		    !memcmp(insn, ideal_nops[NOP_ATOMIC5], 5))
-+		    !memcmp(insn, ideal_nops[NOP_ATOMIC5], 5) ||
-+		    !memcmp(insn, xor5rax, 5))
- 			return;
- 	}
- 
 diff --git a/include/linux/static_call.h b/include/linux/static_call.h
-index a2c0645..bd6735d 100644
+index bd6735d..d69dd8b 100644
 --- a/include/linux/static_call.h
 +++ b/include/linux/static_call.h
-@@ -142,6 +142,8 @@ extern void __static_call_update(struct static_call_key *key, void *tramp, void 
- extern int static_call_mod_init(struct module *mod);
- extern int static_call_text_reserved(void *start, void *end);
+@@ -144,13 +144,13 @@ extern int static_call_text_reserved(void *start, void *end);
  
-+extern long __static_call_return0(void);
-+
- #define DEFINE_STATIC_CALL(name, _func)					\
+ extern long __static_call_return0(void);
+ 
+-#define DEFINE_STATIC_CALL(name, _func)					\
++#define __DEFINE_STATIC_CALL(name, _func, _func_init)			\
  	DECLARE_STATIC_CALL(name, _func);				\
  	struct static_call_key STATIC_CALL_KEY(name) = {		\
-@@ -206,6 +208,11 @@ static inline int static_call_text_reserved(void *start, void *end)
- 	return 0;
- }
+-		.func = _func,						\
++		.func = _func_init,					\
+ 		.type = 1,						\
+ 	};								\
+-	ARCH_DEFINE_STATIC_CALL_TRAMP(name, _func)
++	ARCH_DEFINE_STATIC_CALL_TRAMP(name, _func_init)
  
-+static inline long __static_call_return0(void)
-+{
-+	return 0;
-+}
-+
- #define EXPORT_STATIC_CALL(name)					\
- 	EXPORT_SYMBOL(STATIC_CALL_KEY(name));				\
- 	EXPORT_SYMBOL(STATIC_CALL_TRAMP(name))
-@@ -222,6 +229,11 @@ struct static_call_key {
+ #define DEFINE_STATIC_CALL_NULL(name, _func)				\
+ 	DECLARE_STATIC_CALL(name, _func);				\
+@@ -178,12 +178,12 @@ struct static_call_key {
  	void *func;
  };
  
-+static inline long __static_call_return0(void)
-+{
-+	return 0;
-+}
-+
- #define DEFINE_STATIC_CALL(name, _func)					\
+-#define DEFINE_STATIC_CALL(name, _func)					\
++#define __DEFINE_STATIC_CALL(name, _func, _func_init)			\
  	DECLARE_STATIC_CALL(name, _func);				\
  	struct static_call_key STATIC_CALL_KEY(name) = {		\
-diff --git a/kernel/static_call.c b/kernel/static_call.c
-index 84565c2..0bc11b5 100644
---- a/kernel/static_call.c
-+++ b/kernel/static_call.c
-@@ -438,6 +438,11 @@ int __init static_call_init(void)
+-		.func = _func,						\
++		.func = _func_init,					\
+ 	};								\
+-	ARCH_DEFINE_STATIC_CALL_TRAMP(name, _func)
++	ARCH_DEFINE_STATIC_CALL_TRAMP(name, _func_init)
+ 
+ #define DEFINE_STATIC_CALL_NULL(name, _func)				\
+ 	DECLARE_STATIC_CALL(name, _func);				\
+@@ -234,10 +234,10 @@ static inline long __static_call_return0(void)
+ 	return 0;
  }
- early_initcall(static_call_init);
  
-+long __static_call_return0(void)
-+{
-+	return 0;
-+}
+-#define DEFINE_STATIC_CALL(name, _func)					\
++#define __DEFINE_STATIC_CALL(name, _func, _func_init)			\
+ 	DECLARE_STATIC_CALL(name, _func);				\
+ 	struct static_call_key STATIC_CALL_KEY(name) = {		\
+-		.func = _func,						\
++		.func = _func_init,					\
+ 	}
+ 
+ #define DEFINE_STATIC_CALL_NULL(name, _func)				\
+@@ -286,4 +286,10 @@ static inline int static_call_text_reserved(void *start, void *end)
+ 
+ #endif /* CONFIG_HAVE_STATIC_CALL */
+ 
++#define DEFINE_STATIC_CALL(name, _func)					\
++	__DEFINE_STATIC_CALL(name, _func, _func)
 +
- #ifdef CONFIG_STATIC_CALL_SELFTEST
- 
- static int func_a(int x)
++#define DEFINE_STATIC_CALL_RET0(name, _func)				\
++	__DEFINE_STATIC_CALL(name, _func, __static_call_return0)
++
+ #endif /* _LINUX_STATIC_CALL_H */
