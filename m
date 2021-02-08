@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA1F5313B03
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 18:34:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F5BE313AFB
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 18:32:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234875AbhBHRdg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 12:33:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36416 "EHLO mail.kernel.org"
+        id S232620AbhBHRcM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 12:32:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37400 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233470AbhBHP3e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 10:29:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 65A1964E50;
-        Mon,  8 Feb 2021 15:16:53 +0000 (UTC)
+        id S232400AbhBHP3N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 10:29:13 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D963764F2C;
+        Mon,  8 Feb 2021 15:16:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612797414;
-        bh=oKL58fKocLIGBEmXqpkzY7Q7KGHXNyGg5yjf+FxwM8k=;
+        s=korg; t=1612797391;
+        bh=+ilpT1PhqISqHoReyBiQkxJUbTKBcAk0zlMlZUFCXOI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oJ3CEF5ovOmK0okbFYf9g3g5BiqED2I1m4UcsPwrTABQe9PvAcCCpXIqpLXt8wYec
-         zgddKRnKI4bO4KmvJm3wHyktajqrjJt6phmhPjEMTHFirWLqr5Xo5bnbPwcQ65u0hA
-         yNKuz3pqTmwcmJak0ceat/o/F3PLd1VAgLodErEg=
+        b=QetT1jA5uBLo6Dz6r77+CnwWjobHVGZx23lFPr6BdvLh96VCcy/dL8/eKlNM5YuA0
+         abaJph1eOegA5ht6Unf0vkS9HDmJ9QdLmpL2lMOan9xwbynqdSSqX0pdw/ZA9j/y+3
+         lBf3yh211MZQU4+8KfI0z91kgug7T24ECPjZwrbk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Andreas Hartmann <andihartmann@01019freenet.de>,
-        Mathias Nyman <mathias.nyman@linux.intel.com>
-Subject: [PATCH 5.10 069/120] xhci: fix bounce buffer usage for non-sg list case
-Date:   Mon,  8 Feb 2021 16:00:56 +0100
-Message-Id: <20210208145821.163155500@linuxfoundation.org>
+        stable@vger.kernel.org, Jonny Barker <jonny@jonnybarker.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: [PATCH 5.10 092/120] KVM: x86: Update emulator context mode if SYSENTER xfers to 64-bit mode
+Date:   Mon,  8 Feb 2021 16:01:19 +0100
+Message-Id: <20210208145822.068123770@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210208145818.395353822@linuxfoundation.org>
 References: <20210208145818.395353822@linuxfoundation.org>
@@ -40,82 +40,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mathias Nyman <mathias.nyman@linux.intel.com>
+From: Sean Christopherson <seanjc@google.com>
 
-commit d4a610635400ccc382792f6be69427078541c678 upstream.
+commit 943dea8af21bd896e0d6c30ea221203fb3cd3265 upstream.
 
-xhci driver may in some special cases need to copy small amounts
-of payload data to a bounce buffer in order to meet the boundary
-and alignment restrictions set by the xHCI specification.
+Set the emulator context to PROT64 if SYSENTER transitions from 32-bit
+userspace (compat mode) to a 64-bit kernel, otherwise the RIP update at
+the end of x86_emulate_insn() will incorrectly truncate the new RIP.
 
-In the majority of these cases the data is in a sg list, and
-driver incorrectly assumed data is always in urb->sg when using
-the bounce buffer.
+Note, this bug is mostly limited to running an Intel virtual CPU model on
+an AMD physical CPU, as other combinations of virtual and physical CPUs
+do not trigger full emulation.  On Intel CPUs, SYSENTER in compatibility
+mode is legal, and unconditionally transitions to 64-bit mode.  On AMD
+CPUs, SYSENTER is illegal in compatibility mode and #UDs.  If the vCPU is
+AMD, KVM injects a #UD on SYSENTER in compat mode.  If the pCPU is Intel,
+SYSENTER will execute natively and not trigger #UD->VM-Exit (ignoring
+guest TLB shenanigans).
 
-If data instead is contiguous, and in urb->transfer_buffer, we may still
-need to bounce buffer a small part if data starts very close (less than
-packet size) to a 64k boundary.
-
-Check if sg list is used before copying data to/from it.
-
-Fixes: f9c589e142d0 ("xhci: TD-fragment, align the unsplittable case with a bounce buffer")
+Fixes: fede8076aab4 ("KVM: x86: handle wrap around 32-bit address space")
 Cc: stable@vger.kernel.org
-Reported-by: Andreas Hartmann <andihartmann@01019freenet.de>
-Tested-by: Andreas Hartmann <andihartmann@01019freenet.de>
-Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
-Link: https://lore.kernel.org/r/20210203113702.436762-2-mathias.nyman@linux.intel.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Jonny Barker <jonny@jonnybarker.com>
+[sean: wrote changelog]
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+Message-Id: <20210202165546.2390296-1-seanjc@google.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/host/xhci-ring.c |   31 ++++++++++++++++++++-----------
- 1 file changed, 20 insertions(+), 11 deletions(-)
+ arch/x86/kvm/emulate.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/drivers/usb/host/xhci-ring.c
-+++ b/drivers/usb/host/xhci-ring.c
-@@ -699,11 +699,16 @@ static void xhci_unmap_td_bounce_buffer(
- 	dma_unmap_single(dev, seg->bounce_dma, ring->bounce_buf_len,
- 			 DMA_FROM_DEVICE);
- 	/* for in tranfers we need to copy the data from bounce to sg */
--	len = sg_pcopy_from_buffer(urb->sg, urb->num_sgs, seg->bounce_buf,
--			     seg->bounce_len, seg->bounce_offs);
--	if (len != seg->bounce_len)
--		xhci_warn(xhci, "WARN Wrong bounce buffer read length: %zu != %d\n",
--				len, seg->bounce_len);
-+	if (urb->num_sgs) {
-+		len = sg_pcopy_from_buffer(urb->sg, urb->num_sgs, seg->bounce_buf,
-+					   seg->bounce_len, seg->bounce_offs);
-+		if (len != seg->bounce_len)
-+			xhci_warn(xhci, "WARN Wrong bounce buffer read length: %zu != %d\n",
-+				  len, seg->bounce_len);
-+	} else {
-+		memcpy(urb->transfer_buffer + seg->bounce_offs, seg->bounce_buf,
-+		       seg->bounce_len);
-+	}
- 	seg->bounce_len = 0;
- 	seg->bounce_offs = 0;
- }
-@@ -3275,12 +3280,16 @@ static int xhci_align_td(struct xhci_hcd
+--- a/arch/x86/kvm/emulate.c
++++ b/arch/x86/kvm/emulate.c
+@@ -2879,6 +2879,8 @@ static int em_sysenter(struct x86_emulat
+ 	ops->get_msr(ctxt, MSR_IA32_SYSENTER_ESP, &msr_data);
+ 	*reg_write(ctxt, VCPU_REGS_RSP) = (efer & EFER_LMA) ? msr_data :
+ 							      (u32)msr_data;
++	if (efer & EFER_LMA)
++		ctxt->mode = X86EMUL_MODE_PROT64;
  
- 	/* create a max max_pkt sized bounce buffer pointed to by last trb */
- 	if (usb_urb_dir_out(urb)) {
--		len = sg_pcopy_to_buffer(urb->sg, urb->num_sgs,
--				   seg->bounce_buf, new_buff_len, enqd_len);
--		if (len != new_buff_len)
--			xhci_warn(xhci,
--				"WARN Wrong bounce buffer write length: %zu != %d\n",
--				len, new_buff_len);
-+		if (urb->num_sgs) {
-+			len = sg_pcopy_to_buffer(urb->sg, urb->num_sgs,
-+						 seg->bounce_buf, new_buff_len, enqd_len);
-+			if (len != new_buff_len)
-+				xhci_warn(xhci, "WARN Wrong bounce buffer write length: %zu != %d\n",
-+					  len, new_buff_len);
-+		} else {
-+			memcpy(seg->bounce_buf, urb->transfer_buffer + enqd_len, new_buff_len);
-+		}
-+
- 		seg->bounce_dma = dma_map_single(dev, seg->bounce_buf,
- 						 max_pkt, DMA_TO_DEVICE);
- 	} else {
+ 	return X86EMUL_CONTINUE;
+ }
 
 
