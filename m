@@ -2,96 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 031663131EC
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 13:14:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41DF53131EA
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 13:14:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231968AbhBHMOM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 07:14:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39338 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233466AbhBHLwq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 06:52:46 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D08864E56;
-        Mon,  8 Feb 2021 11:52:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612785124;
-        bh=khj0Ksstxc70pqDkTZPUJ+hyC/Zp9C28p+//y1Izqto=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VvzvTa2CGSU8UkdTZrHmjfVeGkhd0XP7bI1HvBXw/V8QYFT1n9oPXWw3P4dCeh9dp
-         tCULJOL68X5Z3jNqhPLL5AEiqe+lcpuCh0agkKYK3FJT0wybkh7Bp19yf91R8Pflak
-         HOI0rKKPO3vrtR1vrzPjMbolzWlDN4nZj8thr4+cuqzyBbIs1RGwzEjP4Be9M8emAP
-         Lv5vFes0K36m8a+xQE4YITlivDNLMTIHb99O1Ra1Gvlg2qvfXNE4Q+P5X0jlVlz4JX
-         TmJYjy+CZiQ0J+AaWkwPO36/DYtDMUkkEQ3cIPSo+79MspG7YMmnOTet1h+C9B91o3
-         AwBHSmtUNL3kA==
-Date:   Mon, 8 Feb 2021 11:51:12 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Shengjiu Wang <shengjiu.wang@nxp.com>
-Cc:     lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
-        festevam@gmail.com, linuxppc-dev@lists.ozlabs.org,
-        robh+dt@kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v2 2/7] ASoC: fsl_rpmsg: Add CPU DAI driver for audio
- base on rpmsg
-Message-ID: <20210208115112.GD8645@sirena.org.uk>
-References: <1612693435-31418-1-git-send-email-shengjiu.wang@nxp.com>
- <1612693435-31418-3-git-send-email-shengjiu.wang@nxp.com>
+        id S231894AbhBHMNs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 07:13:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37266 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233449AbhBHLwo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 06:52:44 -0500
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C0D5C06178B
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 03:52:04 -0800 (PST)
+Received: by mail-wr1-x42e.google.com with SMTP id r21so475443wrr.9
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 03:52:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=P8sbwZJksTHY0g7J4gwBmmOhoWBgz9PyjuC/t9xFYc4=;
+        b=og8oHOy20CdNUnjmh4a5BFlhL/JHUeymZ5PBKhTZik+VO6CHT9e4mzp6yRIxNsehQi
+         lLgV4cA6iFbCSbj7MWBsHZb7U5E+7zrVNvU5G+vTy01ehcqCOlRCJLgTt4Rakjr3BQyw
+         cClxPHXYeybfWlhEO5T7kBUyQz2FECUYiP6HniQrwSCOxHsgz/zwHMWtLwTyS5YvRZSG
+         3fYc5hhoMYi/dyx32MIWyX/0QSgUbqsR3m0NQPjhYDkk4q36DIR5OpO2vBy6LuPyzeTh
+         UitCbPqf8+JO3n/9/nigR47F77IFqqSVupxZEqR24a3CejkjYVWST919IEjUvYod9dcW
+         2ScQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=P8sbwZJksTHY0g7J4gwBmmOhoWBgz9PyjuC/t9xFYc4=;
+        b=HAdGCDOrtzAufNWWnpOwe4TnK1TP+0iGw5sxRbm9CzJnccN4FLmqGW/m04NTMWSR1R
+         /+/mxK5aqQePPUocYO93FQbDFEw9EBMdWuAfftxW8CVHO1hDnF2aSvkccY9s2N9B83LJ
+         zKS5+neDWDcaSdAJvt3oD+0iwfdfTYlbb7/zEHeNIN2b62RGurtgFm4F5AcUwlLKYKAW
+         57yAUBDBkjaVj+AWW4iLe93+9/JcxRI8vTqNYM5t+TTxITKuEQkTLjQrZMaa6ppawk2Q
+         Zb9cIkkF81dAUncynRhrgVs+/TA3E9aVsI5aD69nj279BMn8ZTm9mmUOW/xgrAMgV36I
+         Rh9Q==
+X-Gm-Message-State: AOAM531aPuvW2FG3sFW7hBKecut+JlmfjrZcX+Cp+LhgYlMnf86PqQHs
+        eEd8CRtTCDaIOKX3EoVnTZME+7WJ126Q5g==
+X-Google-Smtp-Source: ABdhPJzbVPAxOaCpXmvkC8F2ttifA1FDEkebSqYL4jke6VNrz9r29Gom+z/dOybf4mUE2YoHLnkVmg==
+X-Received: by 2002:a5d:50d2:: with SMTP id f18mr20356764wrt.338.1612785123105;
+        Mon, 08 Feb 2021 03:52:03 -0800 (PST)
+Received: from localhost.localdomain ([212.45.67.2])
+        by smtp.googlemail.com with ESMTPSA id f7sm27980549wre.78.2021.02.08.03.52.02
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 08 Feb 2021 03:52:02 -0800 (PST)
+From:   Georgi Djakov <georgi.djakov@linaro.org>
+To:     akpm@linux-foundation.org, linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org, pdaly@codeaurora.org,
+        georgi.djakov@linaro.org
+Subject: [PATCH] mm: cma: Print region name on failure
+Date:   Mon,  8 Feb 2021 13:52:00 +0200
+Message-Id: <20210208115200.20286-1-georgi.djakov@linaro.org>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="P+33d92oIH25kiaB"
-Content-Disposition: inline
-In-Reply-To: <1612693435-31418-3-git-send-email-shengjiu.wang@nxp.com>
-X-Cookie: You will triumph over your enemy.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Patrick Daly <pdaly@codeaurora.org>
 
---P+33d92oIH25kiaB
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Print the name of the cma region for convienience. This is useful
+information to have when cma_alloc() fails.
 
-On Sun, Feb 07, 2021 at 06:23:50PM +0800, Shengjiu Wang wrote:
+Signed-off-by: Patrick Daly <pdaly@codeaurora.org>
+Signed-off-by: Georgi Djakov <georgi.djakov@linaro.org>
+---
+ mm/cma.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-> +static int fsl_rpmsg_hw_params(struct snd_pcm_substream *substream,
-> +			       struct snd_pcm_hw_params *params,
-> +			       struct snd_soc_dai *dai)
-> +{
-
-...
-
-> +	ret = clk_prepare_enable(rpmsg->mclk);
-> +	if (ret)
-> +		dev_err(dai->dev, "failed to enable mclk: %d\n", ret);
-> +
-> +	return ret;
-> +}
-> +
-> +static int fsl_rpmsg_hw_free(struct snd_pcm_substream *substream,
-> +			     struct snd_soc_dai *dai)
-> +{
-> +	struct fsl_rpmsg *rpmsg = snd_soc_dai_get_drvdata(dai);
-> +
-> +	clk_disable_unprepare(rpmsg->mclk);
-
-hw_params() can be called multiple times and there's no need for it to
-be balanced with hw_free(), I'd move this to a different callback (DAPM
-should work well).
-
---P+33d92oIH25kiaB
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmAhJbAACgkQJNaLcl1U
-h9AJqwf/X2Soo9XPi4+IXcHpXJMeYJEz2SrnSt4si8m1Bri4Ow7pyiSeFmffguOV
-s768sMvqLorPsUHuRjMXB9NHG9hAkV/avnPqptxPH722QegXhi7ej0+kxrhrtyhf
-ZefpKevO5qjvYMagXCqbRUBTHZMY0aACqCvWfLqsmC0LtSA4OHCiSHJFQKvsdxIA
-MJmUyvPr9KP5z4mwD+yRO6jdTztZw4693lVUyYcRLDuCHelBhDZ0Gs4R3QGPTuI6
-PKLJlxZ2P6R95mLc4ygvk4AUbsm8z5yzFoMzF3zyifwrD2PLe3X/0x/TGeUniLPZ
-xAu7MVI9SOtCn+IlfAcoHK43UmMJgg==
-=LRAl
------END PGP SIGNATURE-----
-
---P+33d92oIH25kiaB--
+diff --git a/mm/cma.c b/mm/cma.c
+index 23d4a97c834a..9ca6eaa0e52e 100644
+--- a/mm/cma.c
++++ b/mm/cma.c
+@@ -500,8 +500,8 @@ struct page *cma_alloc(struct cma *cma, size_t count, unsigned int align,
+ 	}
+ 
+ 	if (ret && !no_warn) {
+-		pr_err("%s: alloc failed, req-size: %zu pages, ret: %d\n",
+-			__func__, count, ret);
++		pr_err("%s: %s: alloc failed, req-size: %zu pages, ret: %d\n",
++		       __func__, cma->name, cma->count, ret);
+ 		cma_debug_show_areas(cma);
+ 	}
+ 
