@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83E2E313C91
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 19:08:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33AFE313CDA
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 19:11:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235350AbhBHSIA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 13:08:00 -0500
-Received: from mga14.intel.com ([192.55.52.115]:62838 "EHLO mga14.intel.com"
+        id S235499AbhBHSKy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 13:10:54 -0500
+Received: from mga14.intel.com ([192.55.52.115]:62780 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234111AbhBHPiZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 10:38:25 -0500
-IronPort-SDR: tDX+TUNIuKPbELxeQRIhr0Er3IdZZRomdHaToP9MzdRmdGQ2Y8Fx3iQttn5+/wGpnriv4rZ228
- r7JpoRdY90kQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9889"; a="180951953"
+        id S232951AbhBHPkP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 10:40:15 -0500
+IronPort-SDR: IaIvcLkojd5z0RcSZ+QO9xZmn/BaczDFQft+XPPMAiKL9ThQ7gQtIus9S8+pzlEwYQWe0ubcyD
+ IczA8qF2uWOg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9889"; a="180951954"
 X-IronPort-AV: E=Sophos;i="5.81,162,1610438400"; 
-   d="scan'208";a="180951953"
+   d="scan'208";a="180951954"
 Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2021 07:30:15 -0800
-IronPort-SDR: 1ENtMY45kw+ATOjzeD/lbVbPHy+e56Jpnxufx9RpC4epiFQ5U0eM7v7aj04ELZWUvC9YFKSbOU
- RMiaHZN3V6IQ==
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2021 07:30:16 -0800
+IronPort-SDR: T5WFWo68vi0mqIQBnpQir4DpplAjqk+aXaeOpyzPMVldYZgzNmafd2pZdvCENSX4tLUDivp+GO
+ 0nAojvnbbO/w==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.81,162,1610438400"; 
-   d="scan'208";a="358820657"
+   d="scan'208";a="358820667"
 Received: from otc-lr-04.jf.intel.com ([10.54.39.41])
-  by orsmga003.jf.intel.com with ESMTP; 08 Feb 2021 07:30:14 -0800
+  by orsmga003.jf.intel.com with ESMTP; 08 Feb 2021 07:30:16 -0800
 From:   kan.liang@linux.intel.com
 To:     peterz@infradead.org, acme@kernel.org, mingo@kernel.org,
         linux-kernel@vger.kernel.org
@@ -32,9 +32,9 @@ Cc:     tglx@linutronix.de, bp@alien8.de, namhyung@kernel.org,
         jolsa@redhat.com, ak@linux.intel.com, yao.jin@linux.intel.com,
         alexander.shishkin@linux.intel.com, adrian.hunter@intel.com,
         Kan Liang <kan.liang@linux.intel.com>
-Subject: [PATCH 14/49] perf/x86: Remove temporary pmu assignment in event_init
-Date:   Mon,  8 Feb 2021 07:25:11 -0800
-Message-Id: <1612797946-18784-15-git-send-email-kan.liang@linux.intel.com>
+Subject: [PATCH 15/49] perf/x86: Factor out x86_pmu_show_pmu_cap
+Date:   Mon,  8 Feb 2021 07:25:12 -0800
+Message-Id: <1612797946-18784-16-git-send-email-kan.liang@linux.intel.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1612797946-18784-1-git-send-email-kan.liang@linux.intel.com>
 References: <1612797946-18784-1-git-send-email-kan.liang@linux.intel.com>
@@ -44,54 +44,77 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Kan Liang <kan.liang@linux.intel.com>
 
-The temporary pmu assignment in event_init is unnecessary.
+The PMU capabilities are different among hybrid PMUs. Perf should dump
+the PMU capabilities information for each hybrid PMU.
 
-The assignment was introduced by commit 8113070d6639 ("perf_events:
-Add fast-path to the rescheduling code"). At that time, event->pmu is
-not assigned yet when initializing an event. The assignment is required.
-However, from commit 7e5b2a01d2ca ("perf: provide PMU when initing
-events"), the event->pmu is provided before event_init is invoked.
-The temporary pmu assignment in event_init should be removed.
+Factor out x86_pmu_show_pmu_cap() which shows the PMU capabilities
+information. The function will be reused later when registering a
+dedicated hybrid PMU.
 
 Reviewed-by: Andi Kleen <ak@linux.intel.com>
 Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
 ---
- arch/x86/events/core.c | 11 -----------
- 1 file changed, 11 deletions(-)
+ arch/x86/events/core.c       | 25 ++++++++++++++++---------
+ arch/x86/events/perf_event.h |  3 +++
+ 2 files changed, 19 insertions(+), 9 deletions(-)
 
 diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
-index 29dee3f..bdcd3ad 100644
+index bdcd3ad..bbd87b7 100644
 --- a/arch/x86/events/core.c
 +++ b/arch/x86/events/core.c
-@@ -2294,7 +2294,6 @@ static int validate_group(struct perf_event *event)
+@@ -1979,6 +1979,20 @@ perf_guest_get_msrs_nop(int *nr)
+ 	return NULL;
+ }
  
- static int x86_pmu_event_init(struct perf_event *event)
++void x86_pmu_show_pmu_cap(int num_counters, int num_counters_fixed,
++			  u64 intel_ctrl)
++{
++	pr_info("... version:                %d\n",     x86_pmu.version);
++	pr_info("... bit width:              %d\n",     x86_pmu.cntval_bits);
++	pr_info("... generic registers:      %d\n",     num_counters);
++	pr_info("... value mask:             %016Lx\n", x86_pmu.cntval_mask);
++	pr_info("... max period:             %016Lx\n", x86_pmu.max_period);
++	pr_info("... fixed-purpose events:   %lu\n",
++			hweight64((((1ULL << num_counters_fixed) - 1)
++					<< INTEL_PMC_IDX_FIXED) & intel_ctrl));
++	pr_info("... event mask:             %016Lx\n", intel_ctrl);
++}
++
+ static int __init init_hw_perf_events(void)
  {
--	struct pmu *tmp;
- 	int err;
+ 	struct x86_pmu_quirk *quirk;
+@@ -2039,15 +2053,8 @@ static int __init init_hw_perf_events(void)
  
- 	switch (event->attr.type) {
-@@ -2309,20 +2308,10 @@ static int x86_pmu_event_init(struct perf_event *event)
+ 	pmu.attr_update = x86_pmu.attr_update;
  
- 	err = __x86_pmu_event_init(event);
- 	if (!err) {
--		/*
--		 * we temporarily connect event to its pmu
--		 * such that validate_group() can classify
--		 * it as an x86 event using is_x86_event()
--		 */
--		tmp = event->pmu;
--		event->pmu = &pmu;
--
- 		if (event->group_leader != event)
- 			err = validate_group(event);
- 		else
- 			err = validate_event(event);
--
--		event->pmu = tmp;
- 	}
- 	if (err) {
- 		if (event->destroy)
+-	pr_info("... version:                %d\n",     x86_pmu.version);
+-	pr_info("... bit width:              %d\n",     x86_pmu.cntval_bits);
+-	pr_info("... generic registers:      %d\n",     x86_pmu.num_counters);
+-	pr_info("... value mask:             %016Lx\n", x86_pmu.cntval_mask);
+-	pr_info("... max period:             %016Lx\n", x86_pmu.max_period);
+-	pr_info("... fixed-purpose events:   %lu\n",
+-			hweight64((((1ULL << x86_pmu.num_counters_fixed) - 1)
+-					<< INTEL_PMC_IDX_FIXED) & x86_pmu.intel_ctrl));
+-	pr_info("... event mask:             %016Lx\n", x86_pmu.intel_ctrl);
++	x86_pmu_show_pmu_cap(x86_pmu.num_counters, x86_pmu.num_counters_fixed,
++			     x86_pmu.intel_ctrl);
+ 
+ 	if (!x86_pmu.read)
+ 		x86_pmu.read = _x86_pmu_read;
+diff --git a/arch/x86/events/perf_event.h b/arch/x86/events/perf_event.h
+index 560410c..d5fcc15 100644
+--- a/arch/x86/events/perf_event.h
++++ b/arch/x86/events/perf_event.h
+@@ -1089,6 +1089,9 @@ void x86_pmu_enable_event(struct perf_event *event);
+ 
+ int x86_pmu_handle_irq(struct pt_regs *regs);
+ 
++void x86_pmu_show_pmu_cap(int num_counters, int num_counters_fixed,
++			  u64 intel_ctrl);
++
+ extern struct event_constraint emptyconstraint;
+ 
+ extern struct event_constraint unconstrained;
 -- 
 2.7.4
 
