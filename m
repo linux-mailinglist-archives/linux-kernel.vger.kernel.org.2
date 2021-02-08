@@ -2,105 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91466313576
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 15:45:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9505431358C
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 15:48:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231947AbhBHOo3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 09:44:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40846 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233173AbhBHOZV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 09:25:21 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D36EBC061786;
-        Mon,  8 Feb 2021 06:21:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=PpJHE1jhhcZJ5XSixE7dqR0H/LdzaFtWtbMNUpSjYyI=; b=d/q/AV2/ZOstIsnIKGshZup5T
-        WYMEXB69o9g4nyrY7XzyckkSDJUkmuahEY1R658pffr8zLzaDog7a0ds0JS9d5sSJutOKxLFytdUZ
-        8GS4K8f138sO3i1A62YkursMf0n4Dkb2fdPVJbX8KeYiZb8lvz1ht4FhF2l6lm3OHM1ax/dJ7Jvsm
-        TPGODMjOZx1+EJU8obQg4BJN/qlhMc+10fc3ZQCa+yjX40F3znJxUvcA8hBgY0znObDAlObI2LNgN
-        7sPOzBxJG4kk4hTciED4AhGpXagli02AFZLmNGWG4hhGlYtaglPzqPg3nKo7Q8wNTwuziFkgL1I6n
-        fmiJC2sRw==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:40794)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1l97Pa-00023v-Jb; Mon, 08 Feb 2021 14:21:10 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1l97PZ-00037D-7x; Mon, 08 Feb 2021 14:21:09 +0000
-Date:   Mon, 8 Feb 2021 14:21:09 +0000
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        netdev@vger.kernel.org, Sascha Hauer <s.hauer@pengutronix.de>,
-        linux-kernel@vger.kernel.org,
-        Philippe Schenker <philippe.schenker@toradex.com>,
-        linux-imx@nxp.com, kernel@pengutronix.de,
-        David Jander <david@protonic.nl>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Fabio Estevam <festevam@gmail.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Heiner Kallweit <hkallweit1@gmail.com>
-Subject: Re: [PATCH v1 5/7] ARM i.MX6q: remove Atheros AR8035 SmartEEE fixup
-Message-ID: <20210208142107.GJ1463@shell.armlinux.org.uk>
-References: <20210203091857.16936-1-o.rempel@pengutronix.de>
- <20210203091857.16936-6-o.rempel@pengutronix.de>
- <20210203095628.GP1463@shell.armlinux.org.uk>
- <20210208092038.cjmnycyctsapgy7w@pengutronix.de>
+        id S233146AbhBHOsC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 09:48:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46292 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232392AbhBHOg4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 09:36:56 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C615864E84;
+        Mon,  8 Feb 2021 14:22:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612794132;
+        bh=xIHe2+hcXIQgWZj5/3i+bzgVb55TqVHLBWaYhZTHQdg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=AIZ1gs/VkdWv/NA9eXdH9lr/xDqumLmZqWlBHXrQMwS2fsP2LdbfCkuDOYRTaL1QU
+         Kpz51pMedBcjOvkyIkPYorgRKP1St/3+loEyoK8iouJXqAkref5gIP8T20CTiDqzqt
+         w+i9bwvVnnV0gnfENqLl2SEC1WC+JxfFdyWTWLUvRUAChb7K8iLTRYTkBE/5b5nqFk
+         MwMoY39dFeRErnSNvdrqwzOCvfQudgAirLjxMfKBihousmM2NR0hkukhBlUPzXGTEO
+         u/Uer7uT+1T9LiBvhwo5QmpqTSJuqVQUSbcAivzRw5GbjWU7dj32Up5GDzzWBA7zYo
+         fxp7iYkh1zbBg==
+Received: by mail-qk1-f174.google.com with SMTP id t63so14506679qkc.1;
+        Mon, 08 Feb 2021 06:22:12 -0800 (PST)
+X-Gm-Message-State: AOAM5301R2L60L4FGYfoyiGTAV+k1R+QLGxbhMJ9AgSrjM7lbVaMDNW9
+        a8aK21lgZiD/Tz9ZouQvVah1sSni31NVH2jWgw==
+X-Google-Smtp-Source: ABdhPJzm/lIL5vDH1+nWzRP0x8pc6Iq9ovJzNcqQnvnNyHnP6QKWMQPt+FemAsjqdSqBaYByOIRYIKw1paJ1leULFPs=
+X-Received: by 2002:ae9:f20b:: with SMTP id m11mr17389999qkg.464.1612794131744;
+ Mon, 08 Feb 2021 06:22:11 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210208092038.cjmnycyctsapgy7w@pengutronix.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+References: <cover.1611904394.git.viresh.kumar@linaro.org> <3683a542d4141cfcf9c2524a40a9ee75b657c1c2.1611904394.git.viresh.kumar@linaro.org>
+ <20210204015409.GA3150757@robh.at.kernel.org> <20210208111813.oql6jmeaxuq3btz7@vireshk-i7>
+In-Reply-To: <20210208111813.oql6jmeaxuq3btz7@vireshk-i7>
+From:   Rob Herring <robh@kernel.org>
+Date:   Mon, 8 Feb 2021 08:21:59 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqK+eM_RrzXnbm2GJGJuVwAjEz1TeTux18Hc727vovbqDA@mail.gmail.com>
+Message-ID: <CAL_JsqK+eM_RrzXnbm2GJGJuVwAjEz1TeTux18Hc727vovbqDA@mail.gmail.com>
+Subject: Re: [PATCH V7 6/6] of: unittest: Statically apply overlays using fdtoverlay
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Frank Rowand <frowand.list@gmail.com>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Anmar Oueja <anmar.oueja@linaro.org>,
+        Bill Mills <bill.mills@linaro.org>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        devicetree@vger.kernel.org, Michal Marek <michal.lkml@markovi.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 08, 2021 at 10:20:38AM +0100, Oleksij Rempel wrote:
-> On Wed, Feb 03, 2021 at 09:56:28AM +0000, Russell King - ARM Linux admin wrote:
-> > That is the historical fix for this problem, but there is a better
-> > solution now in net-next - configuring the Tw parameter for gigabit
-> > connections. That solves the random link drop issue when EEE is
-> > enabled.
-> 
-> Do you mean this properties?
->   qca,smarteee-tw-us-1g
->   qca,smarteee-tw-us-100m
-> 
-> Do you have some recommendations, which values can be here used? Are
-> they same for all MACs? Or, can we calculate this values automatically?
+On Mon, Feb 8, 2021 at 5:18 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+>
+> On 03-02-21, 19:54, Rob Herring wrote:
+> > diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
+> > index b00855b247e0..886d2e6c58f0 100644
+> > --- a/scripts/Makefile.lib
+> > +++ b/scripts/Makefile.lib
+> > @@ -66,6 +66,9 @@ multi-used   := $(multi-used-y) $(multi-used-m)
+> >  real-obj-y := $(foreach m, $(obj-y), $(if $(strip $($(m:.o=-objs)) $($(m:.o=-y)) $($(m:.o=-))),$($(m:.o=-objs)) $($(m:.o=-y)),$(m)))
+> >  real-obj-m := $(foreach m, $(obj-m), $(if $(strip $($(m:.o=-objs)) $($(m:.o=-y)) $($(m:.o=-m)) $($(m:.o=-))),$($(m:.o=-objs)) $($(m:.o=-y)) $($(m:.o=-m)),$(m)))
+> >
+> > +real-dtb-y := $(foreach m,$(dtb-y), $(if $(strip $($(m:.dtb=-dtbs))),$($(m:.dtb=-dtbs)),))
+>
+> Sorry for my lack of knowledge, but what does (m:.dtb=-dtbs) do
+> exactly ?
 
-I don't think there's a way to "calculate" them.
+In string 'm' replace '.dtb' with '-dtbs'. Then we get the value of
+that variable.
 
-The AR8035 default is 17us for 1G and 23us for 100M. Increasing the
-1G Tw to 26us or 27us fixes it on several different Solidrun platforms
-(iMX6 Hummingboards and Cubox-i, and LX2160A based). The boards all
-have differing layouts, so I don't think it's layout or SoC specific
-(which is good news.)
+>
+> > +dtb-y += $(real-dtb-y)
+> > +
+> >  always-y += $(always-m)
+> >
+> >  # hostprogs-always-y += foo
+> > @@ -332,6 +335,15 @@ $(obj)/%.dtb: $(src)/%.dts $(DTC) FORCE
+> >  $(obj)/%.dtbo: $(src)/%.dts $(DTC) FORCE
+> >       $(call if_changed_dep,dtc)
+> >
+> > +
+> > +quiet_cmd_fdtoverlay = DTOVL   $@
+> > +      cmd_fdtoverlay = $(objtree)/scripts/dtc/fdtoverlay -o $@ -i $(real-prereqs)
+> > +
+> > +.SECONDEXPANSION:
+> > +
+> > +$(obj)/%.dtb: $$(addprefix $$(obj)/,$$(%-dtbs)) FORCE
+> > +     $(call if_changed,fdtoverlay)
+> > +
+> >  DT_CHECKER ?= dt-validate
+> >  DT_BINDING_DIR := Documentation/devicetree/bindings
+> >  # DT_TMP_SCHEMA may be overridden from Documentation/devicetree/bindings/Makefile
+>
+> I tried to test a dtbo from arch/ code like this:
+>
+> diff --git a/arch/arm64/boot/dts/hisilicon/Makefile b/arch/arm64/boot/dts/hisilicon/Makefile
+> index f4d68caeba83..0ee9d7dc8e07 100644
+> --- a/arch/arm64/boot/dts/hisilicon/Makefile
+> +++ b/arch/arm64/boot/dts/hisilicon/Makefile
+> @@ -6,3 +6,8 @@ dtb-$(CONFIG_ARCH_HISI) += hi6220-hikey.dtb
+>  dtb-$(CONFIG_ARCH_HISI) += hip05-d02.dtb
+>  dtb-$(CONFIG_ARCH_HISI) += hip06-d03.dtb
+>  dtb-$(CONFIG_ARCH_HISI) += hip07-d05.dtb
+> +
+> +DTC_FLAGS_hi3660-hikey960 += -@
+> +
+> +test1-dtbs := hi3660-hikey960.dtb hi3660-hikey960-overlay.dtbo
+> +dtb-y += test1.dtb
+> diff --git a/arch/arm64/boot/dts/hisilicon/hi3660-hikey960-overlay.dts b/arch/arm64/boot/dts/hisilicon/hi3660-hikey960-overlay.dts
+> new file mode 100644
+> index 000000000000..1235a911caae
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/hisilicon/hi3660-hikey960-overlay.dts
+> @@ -0,0 +1,16 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/dts-v1/;
+> +/plugin/;
+> +
+> +&dwmmc2 {
+> +       #address-cells = <0x1>;
+> +       #size-cells = <0x0>;
+> +
+> +       wlcore2: wlcore@5 {
+> +               compatible = "ti,wl1837";
+> +               reg = <2>;
+> +               interrupt-parent = <&gpio22>;
+> +               interrupts = <3 1>;
+> +               test = <1>;
+> +       };
+> +};
+>
+> Even after your patch there are some issues I am facing:
+>
+> 1. dtbs_check doesn't test hi3660-hikey960-overlay.dts. I also tried
+>    to add it to dtbo-y +=, but that didn't do anything as well.
+>
+> I expected this to work as we have this in scripts/Makefile.lib:
+>
+>  ifneq ($(CHECK_DTBS),)
+>  extra-y += $(patsubst %.dtb,%.dt.yaml, $(dtb-y))
+> +extra-y += $(patsubst %.dtbo,%.dt.yaml, $(dtb-y))
+>  extra-$(CONFIG_OF_ALL_DTBS) += $(patsubst %.dtb,%.dt.yaml, $(dtb-))
+> +extra-$(CONFIG_OF_ALL_DTBS) += $(patsubst %.dtbo,%.dt.yaml, $(dtb-))
+>  endif
 
-These figures have been arrived at by repetitive long-term testing and
-observing whether there are sporadic link drops over these platforms.
+I'll have to try that out. I think that should work.
 
-> Beside, I have seen this patch: "ARM: dts: imx6qdl-sr-som: fix some
-> cubox-i platforms"
+> 2. This fails dtbs_check as it tries to run it for the source file of
+>    test1.dtb
+>
+> $ make ARCH=arm64 O=../barm64/ -j8 CROSS_COMPILE=aarch64-linux-gnu- dtbs_check
+> make[1]: Entering directory '/mnt/ssd/all/work/repos/devel/barm64'
+> make[3]: *** No rule to make target 'arch/arm64/boot/dts/hisilicon/test1.dt.yaml', needed by '__build'.  Stop.
+> /mnt/ssd/all/work/repos/devel/linux/scripts/Makefile.build:496: recipe for target 'arch/arm64/boot/dts/hisilicon' failed
+> make[2]: *** [arch/arm64/boot/dts/hisilicon] Error 2
+> make[2]: *** Waiting for unfinished jobs....
+> /mnt/ssd/all/work/repos/devel/linux/Makefile:1345: recipe for target 'dtbs' failed
+> make[1]: *** [dtbs] Error 2
+> make[1]: Leaving directory '/mnt/ssd/all/work/repos/devel/barm64'
+> Makefile:185: recipe for target '__sub-make' failed
+> make: *** [__sub-make] Error 2
+>
+> I am not sure how to fix this.
 
-That's for a different problem: moving these settings to DT broke
-some Cubox-i platforms because of the weird ways that the AR8035
-configures the address bits, using the LED pin. Tying a LED to the
-LED pin is not sufficient to guarantee that a board always configures
-the PHY to a particular address, so it can appear on address 0 or 4
-depending on noise, temperature, supply voltage, and PHY chip
-thresholds.
+Even if we fixed the make rules, it's not going to work with
+validation. There's some information from source files that we
+maintain in yaml output, but is lost in dtb output. For example, the
+sizes of /bits/ syntax are maintained. For now, I think we'll want to
+just validate base and overlays separately. We may need to turn off
+checks in overlays for required properties as they may be incomplete.
+We already do that on disabled nodes.
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+Rob
