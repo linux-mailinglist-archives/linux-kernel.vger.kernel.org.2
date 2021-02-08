@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB1DF313600
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 16:05:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 253903136C5
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 16:16:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230286AbhBHPEf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 10:04:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51500 "EHLO mail.kernel.org"
+        id S233469AbhBHPPB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 10:15:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52238 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230308AbhBHPCp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 10:02:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7603C64E87;
-        Mon,  8 Feb 2021 15:02:04 +0000 (UTC)
+        id S231782AbhBHPDo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 10:03:44 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3845464EB1;
+        Mon,  8 Feb 2021 15:02:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612796525;
-        bh=Mzk8iVW0bXvR+xwKJcfLtk0w3FjKjKD2YZUI7HS/ycY=;
+        s=korg; t=1612796552;
+        bh=zvZu11juC4Hap7y//fmhDTOkV3LesKGV9s3ZOA+39GQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=L4nlL/0IbpLVi8tL4oAQ+Gi4+6oGxIQf83MlwADXzB79FgoLkalAREDcYs20hWeUW
-         B0Qd2pfbv1BZNw2Rec8Amb1AQeGiEKY1oal6lqlJd9kcbX1G3ItDmNWbYi+Rbi5Au+
-         GqKzeC5MjurzUeOvN5Z+J78snUb6uZy91iTZDci4=
+        b=WYtK0PdCo69bexfgbO9MNit5dxUfg+7Hx/8sVA3guC4reom/lC08EoDrfyrcC2iuO
+         EP+Bq02739s0/9lT3OROMEcP41CXiNPfWU6COvkrwsypWp3EZcTRaKrIOJAT3oDFbO
+         4nD2UWYl/JE/Gv2BaMW+pbK/i4czefRGlDpJt4XA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>, gzobqq@gmail.com,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH 4.4 11/38] futex: Handle faults correctly for PI futexes
-Date:   Mon,  8 Feb 2021 16:00:33 +0100
-Message-Id: <20210208145805.738279656@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Javed Hasan <jhasan@marvell.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 13/38] scsi: libfc: Avoid invoking response handler twice if ep is already completed
+Date:   Mon,  8 Feb 2021 16:00:35 +0100
+Message-Id: <20210208145805.821547745@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210208145805.279815326@linuxfoundation.org>
 References: <20210208145805.279815326@linuxfoundation.org>
@@ -40,123 +40,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lee Jones <lee.jones@linaro.org>
+From: Javed Hasan <jhasan@marvell.com>
 
-From: Thomas Gleixner <tglx@linutronix.de>
+[ Upstream commit b2b0f16fa65e910a3ec8771206bb49ee87a54ac5 ]
 
-fixup_pi_state_owner() tries to ensure that the state of the rtmutex,
-pi_state and the user space value related to the PI futex are consistent
-before returning to user space. In case that the user space value update
-faults and the fault cannot be resolved by faulting the page in via
-fault_in_user_writeable() the function returns with -EFAULT and leaves
-the rtmutex and pi_state owner state inconsistent.
+A race condition exists between the response handler getting called because
+of exchange_mgr_reset() (which clears out all the active XIDs) and the
+response we get via an interrupt.
 
-A subsequent futex_unlock_pi() operates on the inconsistent pi_state and
-releases the rtmutex despite not owning it which can corrupt the RB tree of
-the rtmutex and cause a subsequent kernel stack use after free.
+Sequence of events:
 
-It was suggested to loop forever in fixup_pi_state_owner() if the fault
-cannot be resolved, but that results in runaway tasks which is especially
-undesired when the problem happens due to a programming error and not due
-to malice.
+	 rport ba0200: Port timeout, state PLOGI
+	 rport ba0200: Port entered PLOGI state from PLOGI state
+	 xid 1052: Exchange timer armed : 20000 msecs      xid timer armed here
+	 rport ba0200: Received LOGO request while in state PLOGI
+	 rport ba0200: Delete port
+	 rport ba0200: work event 3
+	 rport ba0200: lld callback ev 3
+	 bnx2fc: rport_event_hdlr: event = 3, port_id = 0xba0200
+	 bnx2fc: ba0200 - rport not created Yet!!
+	 /* Here we reset any outstanding exchanges before
+	 freeing rport using the exch_mgr_reset() */
+	 xid 1052: Exchange timer canceled
+	 /* Here we got two responses for one xid */
+	 xid 1052: invoking resp(), esb 20000000 state 3
+	 xid 1052: invoking resp(), esb 20000000 state 3
+	 xid 1052: fc_rport_plogi_resp() : ep->resp_active 2
+	 xid 1052: fc_rport_plogi_resp() : ep->resp_active 2
 
-As the user space value cannot be fixed up, the proper solution is to make
-the rtmutex and the pi_state consistent so both have the same owner. This
-leaves the user space value out of sync. Any subsequent operation on the
-futex will fail because the 10th rule of PI futexes (pi_state owner and
-user space value are consistent) has been violated.
+Skip the response if the exchange is already completed.
 
-As a consequence this removes the inept attempts of 'fixing' the situation
-in case that the current task owns the rtmutex when returning with an
-unresolvable fault by unlocking the rtmutex which left pi_state::owner and
-rtmutex::owner out of sync in a different and only slightly less dangerous
-way.
-
-Fixes: 1b7558e457ed ("futexes: fix fault handling in futex_lock_pi")
-Reported-by: gzobqq@gmail.com
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Cc: stable@vger.kernel.org
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Link: https://lore.kernel.org/r/20201215194731.2326-1-jhasan@marvell.com
+Signed-off-by: Javed Hasan <jhasan@marvell.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/futex.c |   38 ++++++++++++++++++++------------------
- 1 file changed, 20 insertions(+), 18 deletions(-)
+ drivers/scsi/libfc/fc_exch.c | 16 ++++++++++++++--
+ 1 file changed, 14 insertions(+), 2 deletions(-)
 
---- a/kernel/futex.c
-+++ b/kernel/futex.c
-@@ -1012,7 +1012,8 @@ static void exit_pi_state_list(struct ta
-  *	FUTEX_OWNER_DIED bit. See [4]
-  *
-  * [10] There is no transient state which leaves owner and user space
-- *	TID out of sync.
-+ *	TID out of sync. Except one error case where the kernel is denied
-+ *	write access to the user address, see fixup_pi_state_owner().
-  */
- 
- /*
-@@ -2357,6 +2358,24 @@ handle_fault:
- 	if (!err)
- 		goto retry;
- 
-+	/*
-+	 * fault_in_user_writeable() failed so user state is immutable. At
-+	 * best we can make the kernel state consistent but user state will
-+	 * be most likely hosed and any subsequent unlock operation will be
-+	 * rejected due to PI futex rule [10].
-+	 *
-+	 * Ensure that the rtmutex owner is also the pi_state owner despite
-+	 * the user space value claiming something different. There is no
-+	 * point in unlocking the rtmutex if current is the owner as it
-+	 * would need to wait until the next waiter has taken the rtmutex
-+	 * to guarantee consistent state. Keep it simple. Userspace asked
-+	 * for this wreckaged state.
-+	 *
-+	 * The rtmutex has an owner - either current or some other
-+	 * task. See the EAGAIN loop above.
-+	 */
-+	pi_state_update_owner(pi_state, rt_mutex_owner(&pi_state->pi_mutex));
-+
- 	return err;
- }
- 
-@@ -2742,13 +2761,6 @@ retry_private:
- 	if (res)
- 		ret = (res < 0) ? res : 0;
- 
--	/*
--	 * If fixup_owner() faulted and was unable to handle the fault, unlock
--	 * it and return the fault to userspace.
--	 */
--	if (ret && (rt_mutex_owner(&q.pi_state->pi_mutex) == current))
--		rt_mutex_futex_unlock(&q.pi_state->pi_mutex);
--
- 	/* Unqueue and drop the lock */
- 	unqueue_me_pi(&q);
- 
-@@ -3053,8 +3065,6 @@ static int futex_wait_requeue_pi(u32 __u
- 		if (q.pi_state && (q.pi_state->owner != current)) {
- 			spin_lock(q.lock_ptr);
- 			ret = fixup_pi_state_owner(uaddr2, &q, current);
--			if (ret && rt_mutex_owner(&q.pi_state->pi_mutex) == current)
--				rt_mutex_futex_unlock(&q.pi_state->pi_mutex);
- 			/*
- 			 * Drop the reference to the pi state which
- 			 * the requeue_pi() code acquired for us.
-@@ -3091,14 +3101,6 @@ static int futex_wait_requeue_pi(u32 __u
- 		if (res)
- 			ret = (res < 0) ? res : 0;
- 
--		/*
--		 * If fixup_pi_state_owner() faulted and was unable to handle
--		 * the fault, unlock the rt_mutex and return the fault to
--		 * userspace.
--		 */
--		if (ret && rt_mutex_owner(pi_mutex) == current)
--			rt_mutex_futex_unlock(pi_mutex);
--
- 		/* Unqueue and drop the lock. */
- 		unqueue_me_pi(&q);
+diff --git a/drivers/scsi/libfc/fc_exch.c b/drivers/scsi/libfc/fc_exch.c
+index b20c575564e43..a088f74a157c7 100644
+--- a/drivers/scsi/libfc/fc_exch.c
++++ b/drivers/scsi/libfc/fc_exch.c
+@@ -1577,8 +1577,13 @@ static void fc_exch_recv_seq_resp(struct fc_exch_mgr *mp, struct fc_frame *fp)
+ 		rc = fc_exch_done_locked(ep);
+ 		WARN_ON(fc_seq_exch(sp) != ep);
+ 		spin_unlock_bh(&ep->ex_lock);
+-		if (!rc)
++		if (!rc) {
+ 			fc_exch_delete(ep);
++		} else {
++			FC_EXCH_DBG(ep, "ep is completed already,"
++					"hence skip calling the resp\n");
++			goto skip_resp;
++		}
  	}
+ 
+ 	/*
+@@ -1597,6 +1602,7 @@ static void fc_exch_recv_seq_resp(struct fc_exch_mgr *mp, struct fc_frame *fp)
+ 	if (!fc_invoke_resp(ep, sp, fp))
+ 		fc_frame_free(fp);
+ 
++skip_resp:
+ 	fc_exch_release(ep);
+ 	return;
+ rel:
+@@ -1841,10 +1847,16 @@ static void fc_exch_reset(struct fc_exch *ep)
+ 
+ 	fc_exch_hold(ep);
+ 
+-	if (!rc)
++	if (!rc) {
+ 		fc_exch_delete(ep);
++	} else {
++		FC_EXCH_DBG(ep, "ep is completed already,"
++				"hence skip calling the resp\n");
++		goto skip_resp;
++	}
+ 
+ 	fc_invoke_resp(ep, sp, ERR_PTR(-FC_EX_CLOSED));
++skip_resp:
+ 	fc_seq_set_resp(sp, NULL, ep->arg);
+ 	fc_exch_release(ep);
+ }
+-- 
+2.27.0
+
 
 
