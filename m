@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 764AE313A6F
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 18:06:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EC3F313A77
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 18:08:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232645AbhBHRGa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 12:06:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34492 "EHLO mail.kernel.org"
+        id S234782AbhBHRIK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 12:08:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35872 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233835AbhBHPXA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 10:23:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6C0D464F0B;
-        Mon,  8 Feb 2021 15:14:16 +0000 (UTC)
+        id S233882AbhBHPX0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 10:23:26 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 30DD264F0D;
+        Mon,  8 Feb 2021 15:14:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612797257;
-        bh=gz2PSsCqWuf2hYJt7PX4NrYBeN4Tg5hYqLFc2wVAiBY=;
+        s=korg; t=1612797259;
+        bh=VCP2BdcDMCLOM2jMjfkSqwT1vdsv3Yzv0WvdlgvYLgQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GUhGZKRz5MeT7R+O58iijRjwNXQUywcGoAtOlIhSsfHqvieowZf8aDJ+k5TYIGOmX
-         KdDu8lGxAQO/lsWL6B9k2g/f4Y3z15E+HDAP14WVamztdnCOc9+CTT05u2gSYGmsnO
-         MVomK0mki/+4A80eSEJfW49Vg1TDlrUxxYGO0DZ4=
+        b=zbuJNaVJcazXntSz2ns0hQr/v5vZqZk4NkvBae+Hjh/Traa+Ax7XDpiri3Bo0wb4m
+         H06RoWdaCs4Y78fO+OCp6aqvjLuPsDg94MgP4nLvoAJ5Em+OOskox8Hq1V0zNQTGZr
+         YiJLbb/UoF7oOEooh2yFOenMyuqcSfz4CSy9FKMQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Heiner Kallweit <hkallweit1@gmail.com>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Alex Elder <elder@linaro.org>,
         Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 046/120] r8169: fix WoL on shutdown if CONFIG_DEBUG_SHIRQ is set
-Date:   Mon,  8 Feb 2021 16:00:33 +0100
-Message-Id: <20210208145820.261784113@linuxfoundation.org>
+Subject: [PATCH 5.10 047/120] net: ipa: pass correct dma_handle to dma_free_coherent()
+Date:   Mon,  8 Feb 2021 16:00:34 +0100
+Message-Id: <20210208145820.298703097@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210208145818.395353822@linuxfoundation.org>
 References: <20210208145818.395353822@linuxfoundation.org>
@@ -40,44 +41,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Heiner Kallweit <hkallweit1@gmail.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit cc9f07a838c4988ed244d0907cb71d54b85482a5 ]
+[ Upstream commit 4ace7a6e287b7e3b33276cd9fe870c326f880480 ]
 
-So far phy_disconnect() is called before free_irq(). If CONFIG_DEBUG_SHIRQ
-is set and interrupt is shared, then free_irq() creates an "artificial"
-interrupt by calling the interrupt handler. The "link change" flag is set
-in the interrupt status register, causing phylib to eventually call
-phy_suspend(). Because the net_device is detached from the PHY already,
-the PHY driver can't recognize that WoL is configured and powers down the
-PHY.
+The "ring->addr = addr;" assignment is done a few lines later so we
+can't use "ring->addr" yet.  The correct dma_handle is "addr".
 
-Fixes: f1e911d5d0df ("r8169: add basic phylib support")
-Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
-Link: https://lore.kernel.org/r/fe732c2c-a473-9088-3974-df83cfbd6efd@gmail.com
+Fixes: 650d1603825d ("soc: qcom: ipa: the generic software interface")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Reviewed-by: Alex Elder <elder@linaro.org>
+Link: https://lore.kernel.org/r/YBjpTU2oejkNIULT@mwanda
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/realtek/r8169_main.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/ipa/gsi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/realtek/r8169_main.c b/drivers/net/ethernet/realtek/r8169_main.c
-index 64b77d415a525..75f774347f6d1 100644
---- a/drivers/net/ethernet/realtek/r8169_main.c
-+++ b/drivers/net/ethernet/realtek/r8169_main.c
-@@ -4753,10 +4753,10 @@ static int rtl8169_close(struct net_device *dev)
- 
- 	cancel_work_sync(&tp->wk.work);
- 
--	phy_disconnect(tp->phydev);
--
- 	free_irq(pci_irq_vector(pdev, 0), tp);
- 
-+	phy_disconnect(tp->phydev);
-+
- 	dma_free_coherent(&pdev->dev, R8169_RX_RING_BYTES, tp->RxDescArray,
- 			  tp->RxPhyAddr);
- 	dma_free_coherent(&pdev->dev, R8169_TX_RING_BYTES, tp->TxDescArray,
+diff --git a/drivers/net/ipa/gsi.c b/drivers/net/ipa/gsi.c
+index 6bfac1efe037c..4a68da7115d19 100644
+--- a/drivers/net/ipa/gsi.c
++++ b/drivers/net/ipa/gsi.c
+@@ -1256,7 +1256,7 @@ static int gsi_ring_alloc(struct gsi *gsi, struct gsi_ring *ring, u32 count)
+ 	/* Hardware requires a 2^n ring size, with alignment equal to size */
+ 	ring->virt = dma_alloc_coherent(dev, size, &addr, GFP_KERNEL);
+ 	if (ring->virt && addr % size) {
+-		dma_free_coherent(dev, size, ring->virt, ring->addr);
++		dma_free_coherent(dev, size, ring->virt, addr);
+ 		dev_err(dev, "unable to alloc 0x%zx-aligned ring buffer\n",
+ 			size);
+ 		return -EINVAL;	/* Not a good error value, but distinct */
 -- 
 2.27.0
 
