@@ -2,143 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9327D312F74
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 11:50:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07439312F78
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 11:51:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229741AbhBHKtr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 05:49:47 -0500
-Received: from mx2.suse.de ([195.135.220.15]:57660 "EHLO mx2.suse.de"
+        id S232239AbhBHKvK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 05:51:10 -0500
+Received: from so15.mailgun.net ([198.61.254.15]:23131 "EHLO so15.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232344AbhBHKi7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 05:38:59 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 2109AAEB3;
-        Mon,  8 Feb 2021 10:38:16 +0000 (UTC)
-From:   Oscar Salvador <osalvador@suse.de>
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Michal Hocko <mhocko@kernel.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Oscar Salvador <osalvador@suse.de>
-Subject: [RFC PATCH 2/2] mm,page_alloc: Make alloc_contig_range handle free hugetlb pages
-Date:   Mon,  8 Feb 2021 11:38:12 +0100
-Message-Id: <20210208103812.32056-3-osalvador@suse.de>
-X-Mailer: git-send-email 2.13.7
-In-Reply-To: <20210208103812.32056-1-osalvador@suse.de>
-References: <20210208103812.32056-1-osalvador@suse.de>
+        id S232447AbhBHKj1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 05:39:27 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1612780742; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=gHHW9t8XRWnujhHiEyRdWOS3KbhDsL4evfJXjkWAVR8=;
+ b=Mwwlb7ZAV1HghKyThoM09/4hMthQmFqU7U/z7BQY3OgH4yHopFlYFaQZwLWuDy7atsItarwP
+ 7NyhiruVmSPw673B6kfSYfwYOFxAF7BK5gSunxLzaZ7u3YafcS3j3R/ugS7pniI6k5Cc9vjj
+ 9TCtvQRkkOGxZ/TN8yhaDlCoRMs=
+X-Mailgun-Sending-Ip: 198.61.254.15
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 602114a981f6c45dce6ab817 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 08 Feb 2021 10:38:33
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id EE4E3C433ED; Mon,  8 Feb 2021 10:38:32 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        MISSING_DATE,MISSING_MID,SPF_FAIL,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id DF897C433C6;
+        Mon,  8 Feb 2021 10:38:29 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org DF897C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: Re: rtlwifi: use tasklet_setup to initialize rx_work_tasklet
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20210126171550.3066-1-kernel@esmil.dk>
+References: <20210126171550.3066-1-kernel@esmil.dk>
+To:     Emil Renner Berthing <kernel@esmil.dk>
+Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Ping-Ke Shih <pkshih@realtek.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Allen Pais <allen.lkml@gmail.com>,
+        Romain Perier <romain.perier@gmail.com>,
+        linux-kernel@vger.kernel.org
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
+Message-Id: <20210208103832.EE4E3C433ED@smtp.codeaurora.org>
+Date:   Mon,  8 Feb 2021 10:38:32 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Free hugetlb pages are trickier to handle as to in order to guarantee
-no userspace appplication disruption, we need to replace the
-current free hugepage with a new one.
+Emil Renner Berthing <kernel@esmil.dk> wrote:
 
-In order to do that, a new function called alloc_and_dissolve_huge_page
-in introduced.
-This function will first try to get a new fresh hugetlb page, and if it
-succeeds, it will dissolve the old one.
+> In commit d3ccc14dfe95 most of the tasklets in this driver was
+> updated to the new API. However for the rx_work_tasklet only the
+> type of the callback was changed from
+>   void _rtl_rx_work(unsigned long data)
+> to
+>   void _rtl_rx_work(struct tasklet_struct *t).
+> 
+> The initialization of rx_work_tasklet was still open-coded and the
+> function pointer just cast into the old type, and hence nothing sets
+> rx_work_tasklet.use_callback = true and the callback was still called as
+> 
+>   t->func(t->data);
+> 
+> with uninitialized/zero t->data.
+> 
+> Commit 6b8c7574a5f8 changed the casting of _rtl_rx_work a bit and
+> initialized t->data to a pointer to the tasklet cast to an unsigned
+> long.
+> 
+> This way calling t->func(t->data) might actually work through all the
+> casting, but it still doesn't update the code to use the new tasklet
+> API.
+> 
+> Let's use the new tasklet_setup to initialize rx_work_tasklet properly
+> and set rx_work_tasklet.use_callback = true so that the callback is
+> called as
+> 
+>   t->callback(t);
+> 
+> without all the casting.
+> 
+> Signed-off-by: Emil Renner Berthing <kernel@esmil.dk>
+> Acked-by: Willem de Bruijn <willemb@google.com>
 
-Signed-off-by: Oscar Salvador <osalvador@suse.de>
----
- include/linux/hugetlb.h |  6 ++++++
- mm/compaction.c         | 11 +++++++++++
- mm/hugetlb.c            | 35 +++++++++++++++++++++++++++++++++++
- 3 files changed, 52 insertions(+)
+Patch applied to wireless-drivers-next.git, thanks.
 
-diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
-index ebca2ef02212..f81afcb86e89 100644
---- a/include/linux/hugetlb.h
-+++ b/include/linux/hugetlb.h
-@@ -505,6 +505,7 @@ struct huge_bootmem_page {
- 	struct hstate *hstate;
- };
- 
-+bool alloc_and_dissolve_huge_page(struct page *page);
- struct page *alloc_huge_page(struct vm_area_struct *vma,
- 				unsigned long addr, int avoid_reserve);
- struct page *alloc_huge_page_nodemask(struct hstate *h, int preferred_nid,
-@@ -773,6 +774,11 @@ static inline void huge_ptep_modify_prot_commit(struct vm_area_struct *vma,
- #else	/* CONFIG_HUGETLB_PAGE */
- struct hstate {};
- 
-+static inline bool alloc_and_dissolve_huge_page(struct page *page)
-+{
-+	return false;
-+}
-+
- static inline struct page *alloc_huge_page(struct vm_area_struct *vma,
- 					   unsigned long addr,
- 					   int avoid_reserve)
-diff --git a/mm/compaction.c b/mm/compaction.c
-index 89cd2e60da29..7969ddc10856 100644
---- a/mm/compaction.c
-+++ b/mm/compaction.c
-@@ -952,6 +952,17 @@ isolate_migratepages_block(struct compact_control *cc, unsigned long low_pfn,
- 					low_pfn += compound_nr(page) - 1;
- 					goto isolate_success_no_list;
- 				}
-+			} else {
-+				/*
-+				 * Free hugetlb page. Allocate a new one and
-+				 * dissolve this is if succeed.
-+				 */
-+				if (alloc_and_dissolve_huge_page(page)) {
-+					unsigned long order = buddy_order_unsafe(page);
-+
-+					low_pfn += (1UL << order) - 1;
-+					continue;
-+				}
- 			}
- 			goto isolate_fail;
- 		}
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index 18f6ee317900..79ffbb64c4ee 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -2253,6 +2253,41 @@ static void restore_reserve_on_error(struct hstate *h,
- 	}
- }
- 
-+bool alloc_and_dissolve_huge_page(struct page *page)
-+{
-+	NODEMASK_ALLOC(nodemask_t, nodes_allowed, GFP_KERNEL);
-+	struct page *head;
-+	struct hstate *h;
-+	bool ret = false;
-+	int nid;
-+
-+	if (!nodes_allowed)
-+		return ret;
-+
-+	spin_lock(&hugetlb_lock);
-+	head = compound_head(page);
-+	h = page_hstate(head);
-+	nid = page_to_nid(head);
-+	spin_unlock(&hugetlb_lock);
-+
-+	init_nodemask_of_node(nodes_allowed, nid);
-+
-+	/*
-+	 * Before dissolving the page, we need to allocate a new one,
-+	 * so the pool remains stable.
-+	 */
-+	if (alloc_pool_huge_page(h, nodes_allowed, NULL)) {
-+		/*
-+		 * Ok, we have a free hugetlb-page to replace this
-+		 * one. Dissolve the old page.
-+		 */
-+		if (!dissolve_free_huge_page(page))
-+			ret = true;
-+	}
-+
-+	return ret;
-+}
-+
- struct page *alloc_huge_page(struct vm_area_struct *vma,
- 				    unsigned long addr, int avoid_reserve)
- {
+ca04217add8e rtlwifi: use tasklet_setup to initialize rx_work_tasklet
+
 -- 
-2.16.3
+https://patchwork.kernel.org/project/linux-wireless/patch/20210126171550.3066-1-kernel@esmil.dk/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
