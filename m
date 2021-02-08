@@ -2,149 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D8C2314219
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 22:44:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AFBF631421B
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 22:44:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236677AbhBHVmK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 16:42:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43634 "EHLO
+        id S236923AbhBHVmg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 16:42:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231956AbhBHVGu (ORCPT
+        with ESMTP id S235973AbhBHVJS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 16:06:50 -0500
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FF81C061788
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 13:06:10 -0800 (PST)
-Received: by mail-oi1-x234.google.com with SMTP id v193so11683903oie.8
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 13:06:10 -0800 (PST)
+        Mon, 8 Feb 2021 16:09:18 -0500
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3982C061788
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 13:08:38 -0800 (PST)
+Received: by mail-pl1-x631.google.com with SMTP id 8so8495178plc.10
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 13:08:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=vQz50O/ktJ04W7QSg0aQ+K5LizhyaY13N/jjRfnL8MQ=;
-        b=VrgGYFARM6Ani9Qes+VGPFt+MtqItSmYYxUeYwlIhRCQqMDqT5A5dW9uoAuc4n4Lmb
-         HOzyq4tL31RhQQ2JNHlodj/G4uJ9HJyq5nE93+DiaCDyo79ticWaFtY/q5J/LQvrS8Qq
-         tWCIL98eTNQBCIg5qB9ZFRe7q0paeE3NdXwbM=
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=YJm8/HDh14/f+tvsioH0OsNm+NiMBDPt1A1hbcOg0gk=;
+        b=qA9gL7bax5VaTfb1Q9le4KTA55ZfmYpH0hVaoV/PU5clxXs5TH6zlJsJ6o3iNmMc2p
+         ugjId/IW5Cb2ocoyafHz7IB/3r1P3I2/n42iFdtZ9dviXc/012e+M8t6tcK9bt5VE4ZX
+         Tf/opz3MzVjFq8hJR9kO9eealXMb4730WNixibvjK5L9DigF1E5JQZn+0UssADzrTuzv
+         8/ZArRt5kZQYb3NJO4BuTfXLAz8aolJ+BdVt94HKJFyJJgnuTMe5xXaEZu3wNAYY+45V
+         WwYfEf9ZH7RO3WpH5m4NaatvvD0MSTniosvaP+OgBkdf4Iq0+vGXZLfalExQSuBcIYQy
+         bQ8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=vQz50O/ktJ04W7QSg0aQ+K5LizhyaY13N/jjRfnL8MQ=;
-        b=LptZrmnmHwI58VGdW2BU40Hqc24T5cIeK2V2sGoOt29unSqCgrlL0VmNLEzjt4jUIo
-         GkaT34wlortBCsKKOSZPQun8WP5g75+VYN5Vb8pu7d9938jtkj7MpBUzgvtigW+6gUbT
-         myTcMaUb8RGgmK4wHngx6GpPQSQhSCJYWsmtXkzJU55vUcNy8EMSSiqAalDQMtNqnOdJ
-         shc/LwVXClbNgZzp+PUSjZj4FsUFRDnLfqVgPese8F+CU+FesICSsoF9HblrFiZjDtz2
-         4PYGxPjRKAFic0Vj2sli5fWN06yAKSdOtOqMOmsCdvLEGa95CPqkFHLE5mctDBSS04Hn
-         99MA==
-X-Gm-Message-State: AOAM5339Lb11LKSZ7gd2P/Qbkm/hIlngqNQUulqaUmpvwxb4g1uuejhz
-        rScrwPwOHF9hH4A+owlSMKNQazVvViaNwZ9qbIcLsA==
-X-Google-Smtp-Source: ABdhPJxXb5B/81zAt68xBP4U4swR34xTMrllQbQD2cTBMCEgDgID6RHPJmVY8X+xFjUiEHTQz30hepiShmiZprp8dv8=
-X-Received: by 2002:aca:1906:: with SMTP id l6mr410002oii.101.1612818369680;
- Mon, 08 Feb 2021 13:06:09 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=YJm8/HDh14/f+tvsioH0OsNm+NiMBDPt1A1hbcOg0gk=;
+        b=i4Lad0ISoAyN+mFei28rVHrzEWs1Kz+CXt8VZShbQ62nBTFM+1i3jRzBPXIEWZXW7L
+         3EutH1H+rJIkf5t5oo7T4xDhCwB8q963xpe6toPoYLqcOdeIAc50p84m1DWyyGLXi10W
+         bTBAgf2fzgTMkd9LE+LwwIiCr1t1P1h78zakLCTT96BB/3cRdj6x8duCcOXU4iUE1xs5
+         SpciiXz86F+sWVLRZDxroqd/TrllgcGmibi7XQmcaRReMGe79MfVNs5O29ANBrwWciQD
+         HLcxuxJ3Qo19L+KM7Lmk7PBFHSvu2KxnRWmeAY8nAj2F0n44OiHmJo8tzDIy8zps4iBX
+         rsqQ==
+X-Gm-Message-State: AOAM531wdQBZJIO3nlRIKz45fQn/sRyKIoZvsy4Y65QtRJrBc9K+VYmQ
+        67AzsObpX2BBVqLt0udMI/A=
+X-Google-Smtp-Source: ABdhPJy0MkXjn1dSSn/gaCaXWvjjnzPKS1eo6r6pTqGzH5m/3fFoP4yGSNUtV30YcgrVm2fAXKyisQ==
+X-Received: by 2002:a17:90b:611:: with SMTP id gb17mr699915pjb.192.1612818518410;
+        Mon, 08 Feb 2021 13:08:38 -0800 (PST)
+Received: from localhost (g186.222-224-165.ppp.wakwak.ne.jp. [222.224.165.186])
+        by smtp.gmail.com with ESMTPSA id t21sm4185317pfe.174.2021.02.08.13.08.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Feb 2021 13:08:37 -0800 (PST)
+Date:   Tue, 9 Feb 2021 06:08:35 +0900
+From:   Stafford Horne <shorne@gmail.com>
+To:     Jan Henrik Weinstock <jan.weinstock@rwth-aachen.de>
+Cc:     geert@linux-m68k.org, jonas@southpole.se,
+        stefan.kristiansson@saunalahti.fi, openrisc@lists.librecores.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] Use devicetree to determine present cpus (v2)
+Message-ID: <20210208210835.GO2002709@lianli.shorne-pla.net>
+References: <9dc6c716-c5da-4214-96d8-e088db29d403@rwthex-s2-a.rwth-ad.de>
 MIME-Version: 1.0
-References: <20210206054748.378300-1-john.stultz@linaro.org>
- <20210206054748.378300-2-john.stultz@linaro.org> <YCENrGofdwVg2LMe@phenom.ffwll.local>
- <CALAqxLV2Sikxnr3-k94nqcF5vz+jsekhhUrmXEKkwzwwu4up8g@mail.gmail.com>
-In-Reply-To: <CALAqxLV2Sikxnr3-k94nqcF5vz+jsekhhUrmXEKkwzwwu4up8g@mail.gmail.com>
-From:   Daniel Vetter <daniel@ffwll.ch>
-Date:   Mon, 8 Feb 2021 22:05:58 +0100
-Message-ID: <CAKMK7uECMOO5jx4433uDuMq=MBaBEYaLe6ysrT_pshrr6Bf9dA@mail.gmail.com>
-Subject: Re: [RFC][PATCH 2/2] dma-buf: heaps: Fix the name used when exporting
- dmabufs to be the actual heap name
-To:     John Stultz <john.stultz@linaro.org>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Liam Mark <lmark@codeaurora.org>,
-        Chris Goldsworthy <cgoldswo@codeaurora.org>,
-        Laura Abbott <labbott@kernel.org>,
-        Brian Starkey <Brian.Starkey@arm.com>,
-        Hridya Valsaraju <hridya@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Sandeep Patil <sspatil@google.com>,
-        Daniel Mentz <danielmentz@google.com>,
-        =?UTF-8?Q?=C3=98rjan_Eide?= <orjan.eide@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Simon Ser <contact@emersion.fr>,
-        James Jones <jajones@nvidia.com>,
-        linux-media <linux-media@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9dc6c716-c5da-4214-96d8-e088db29d403@rwthex-s2-a.rwth-ad.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 8, 2021 at 9:51 PM John Stultz <john.stultz@linaro.org> wrote:
-> On Mon, Feb 8, 2021 at 2:08 AM Daniel Vetter <daniel@ffwll.ch> wrote:
-> > On Sat, Feb 06, 2021 at 05:47:48AM +0000, John Stultz wrote:
-> > > By default dma_buf_export() sets the exporter name to be
-> > > KBUILD_MODNAME. Unfortunately this may not be identical to the
-> > > string used as the heap name (ie: "system" vs "system_heap").
-> > >
-> > > This can cause some minor confusion with tooling, and there is
-> > > the future potential where multiple heap types may be exported
-> > > by the same module (but would all have the same name).
-> > >
-> > > So to avoid all this, set the exporter exp_name to the heap name.
-> > >
-> > > Cc: Daniel Vetter <daniel@ffwll.ch>
-> > > Cc: Sumit Semwal <sumit.semwal@linaro.org>
-> > > Cc: Liam Mark <lmark@codeaurora.org>
-> > > Cc: Chris Goldsworthy <cgoldswo@codeaurora.org>
-> > > Cc: Laura Abbott <labbott@kernel.org>
-> > > Cc: Brian Starkey <Brian.Starkey@arm.com>
-> > > Cc: Hridya Valsaraju <hridya@google.com>
-> > > Cc: Suren Baghdasaryan <surenb@google.com>
-> > > Cc: Sandeep Patil <sspatil@google.com>
-> > > Cc: Daniel Mentz <danielmentz@google.com>
-> > > Cc: =C3=98rjan Eide <orjan.eide@arm.com>
-> > > Cc: Robin Murphy <robin.murphy@arm.com>
-> > > Cc: Ezequiel Garcia <ezequiel@collabora.com>
-> > > Cc: Simon Ser <contact@emersion.fr>
-> > > Cc: James Jones <jajones@nvidia.com>
-> > > Cc: linux-media@vger.kernel.org
-> > > Cc: dri-devel@lists.freedesktop.org
-> > > Signed-off-by: John Stultz <john.stultz@linaro.org>
-> >
-> > Looks reasonable to me.
-> >
-> > I guess the main worry is "does this mean heap names become uapi", in
-> > which case I'm maybe not so sure anymore how this will tie into the
-> > overall gpu memory accounting story.
-> >
-> > Since for dma-buf heaps one name per buffer is perfectly fine, since
-> > dma-buf heaps aren't very dynamic. But on discrete gpu drivers buffers
-> > move, so baking in the assumption that "exporter name =3D resource usag=
-e for
-> > this buffer" is broken.
->
-> I suspect I'm missing a subtlety in what you're describing. My sense
-> of the exporter name doesn't account for a buffer's usage, it just
-> describes what code allocated it and implicitly which dmabuf_ops
-> handles it.  Maybe could you give a more specific example of what
-> you're hoping to avoid?
+Thanks Jan,
 
-Just paranoia really - on the linux side where we allocate most
-buffers (even shared ones) with the driver, that allocator info isn't
-that meaningful, it really just tells you which code
-allocated/exported that dma-buf.
+I was able to take these 2 mails and merge them together to a single patch.
 
-But on Android, where all shared buffers come from specific heaps, it
-is rather meaningful information. So I wondered whether e.g. the
-android dmabuf debug tool uses that to collect per-heap stats, but
-sounds like no right now. Plus with the chat we've had I think we have
-a long-term plan for how to expose that information properly.
+I will send the result for review in a bit.
 
-> To me this patch is mostly just a consistency/least-surprise thing, so
-> the heaps exporter name matches the string used for the heap's chardev
-> device (the interface used to allocate it) in output like
-> debugfs/dma_buf/bufinfo.
+Next time please learn some git/linux kernel developer basics.  It will
+help make this more smooth inthe future.  THe code changes you made were great
+and I hope to see more in the future. :)
 
-Yeah for debug this makes sense. a-b: me if you want that somewhere on
-the patches.
--Daniel
---=20
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Some tips:
+  - Use 'git rebase -i', and the fixup/squash command to merge two or more
+    commits.  Also, there you should add the summary as you did in your mail
+    in the git commit message.
+  - Use 'git format-patch -o patch-dir -v2 <batch-base-commit-id>' to create
+    your patch.
+  - Use './scripts/checkpatch.pl patch-dir/<patch-name>.patch' to check your
+    patch before you send it.  If any issues use 'git rebase' or 'git commit
+   --amend' to fix up the checkpatch issues then test and create a new patch.
+  - Use './scripts/get-maintainers.pl' with 'git send-email' like this below.
+
+Some links:
+  - https://www.kernel.org/doc/html/latest/process/submitting-patches.html
+  - http://nickdesaulniers.github.io/blog/2017/05/16/submitting-your-first-patch-to-the-linux-kernel-and-responding-to-feedback/
+    (explains --cc-cmd, you can also add --no-rolestats to .get_maintainer.conf`
+  - https://thoughtbot.com/blog/git-interactive-rebase-squash-amend-rewriting-history
+    (explain rebase squash fixup)
+
+
+This is usually what I do after testing.
+
+    $ git lo   # my custom alias: lo = log --pretty=format:'%C(yellow)%cd %C(green)%h %C(blue)%<(16)%aN%Creset %s %C(auto)%d%Creset' --decorate --date=short -n10
+    2021-02-09 8f722f67452f Jan Henrik Weinstock openrisc: Use devicetree to determine present cpus  (HEAD -> or1k-5.12-updates)
+    2021-01-25 2261352157a9 Stafford Horne   Merge remote-tracking branch 'openrisc/or1k-5.11-fixes' into or1k-5.12-updates  (shorne/or1k-5.12-updates, shorne/for-next, openrisc/for-next, for-next)
+    2021-01-21 3706f9f76a4f Geert Uytterhoeven drivers/soc/litex: Add restart handler
+    2021-01-20 031c7a8cd6fc Geert Uytterhoeven openrisc: io: Add missing __iomem annotation to iounmap()  (shorne/or1k-5.11-fixes, openrisc/or1k-5.11-fixes, or1k-5.11-fixes)
+    2021-01-18 803c72c8547c Masahiro Yamada  openrisc: add arch/openrisc/Kbuild
+    2021-01-14 4f70d150294b Gabriel Somlo    drivers/soc/litex: make 'litex_[set|get]_reg()' methods private
+    2021-01-14 51f109228308 Gabriel Somlo    drivers/soc/litex: support 32-bit subregisters, 64-bit CPUs
+    2021-01-14 ffa4ebc48971 Gabriel Somlo    drivers/soc/litex: s/LITEX_REG_SIZE/LITEX_SUBREG_ALIGN/g
+    2021-01-14 b5d3061ea2e6 Gabriel Somlo    drivers/soc/litex: separate MMIO from subregister offset calculation
+    2021-01-14 9d93a9e8aab3 Gabriel Somlo    drivers/soc/litex: move generic accessors to litex.h
+
+    $ git format-patch -v3 -o patches/ 2261352157a9
+    patches/v3-0001-openrisc-Use-devicetree-to-determine-present-cpus.patch
+
+    # Below a warning is printed but I think its OK as we can use NR_CPUS in smp.c
+    $ ./scripts/checkpatch.pl patches/v3-0001-openrisc-Use-devicetree-to-determine-present-cpus.patch
+    WARNING: usage of NR_CPUS is often wrong - consider using cpu_possible(), num_possible_cpus(), for_each_possible_cpu(), etc
+    #45: FILE: arch/openrisc/kernel/smp.c:73:
+    +               if (cpu_id < NR_CPUS)
+
+    total: 0 errors, 1 warnings, 45 lines checked
+
+    NOTE: For some of the reported defects, checkpatch may be able to
+	  mechanically convert to the typical style using --fix or --fix-inplace.
+
+    patches/v3-0001-openrisc-Use-devicetree-to-determine-present-cpus.patch has style problems, please review.
+
+    NOTE: If any of the errors are false positives, please report
+	  them to the maintainer, see CHECKPATCH in MAINTAINERS.
+
+    $ git send-email --to linux-kernel --cc-cmd ./scripts/get_maintainer.pl patches/v3-0001-openrisc-Use-devicetree-to-determine-present-cpus.patch
+    patches/v3-0001-openrisc-Use-devicetree-to-determine-present-cpus.patch
+
+-Stafford
+
+On Mon, Feb 08, 2021 at 03:28:32PM +0100, Jan Henrik Weinstock wrote:
+> Signed-off-by: Jan Henrik Weinstock <jan.weinstock@rwth-aachen.de>
+> ---
+>  arch/openrisc/kernel/smp.c | 31 +++++++++++++++----------------
+>  1 file changed, 15 insertions(+), 16 deletions(-)
+> 
+> diff --git a/arch/openrisc/kernel/smp.c b/arch/openrisc/kernel/smp.c
+> index 75be7e34f..83cbf43d4 100644
+> --- a/arch/openrisc/kernel/smp.c
+> +++ b/arch/openrisc/kernel/smp.c
+> @@ -61,32 +61,31 @@ void __init smp_prepare_boot_cpu(void)
+>  
+>  void __init smp_init_cpus(void)
+>  {
+> -	int i;
+> +	struct device_node* cpu;
+> +	u32 cpu_id;
+> +
+> +	for_each_of_cpu_node(cpu) {
+> +		if (of_property_read_u32(cpu, "reg", &cpu_id)) {
+> +			pr_warn("%s missing reg property", cpu->full_name);
+> +			continue;
+> +		}
+>  
+> -	for (i = 0; i < NR_CPUS; i++)
+> -		set_cpu_possible(i, true);
+> +		if (cpu_id < NR_CPUS)
+> +			set_cpu_possible(cpu_id, true);
+> +	}
+>  }
+>  
+>  void __init smp_prepare_cpus(unsigned int max_cpus)
+>  {
+> -	u32 cpu_id;
+> -	struct device_node *cpu, *cpus;
+> +	unsigned int cpu;
+>  
+>  	/*
+>  	 * Initialise the present map, which describes the set of CPUs
+>  	 * actually populated at the present time.
+>  	 */
+> -	cpus = of_find_node_by_path("/cpus");
+> -	for_each_child_of_node(cpus, cpu) {
+> -		if (of_property_read_u32(cpu, "reg", &cpu_id)) {
+> -			pr_warn("%s missing reg property", cpu->full_name);
+> -			continue;
+> -		}
+> -
+> -		if (cpu_id >= max_cpus)
+> -			continue;
+> -
+> -		set_cpu_present(cpu_id, true);
+> +	for_each_possible_cpu(cpu) {
+> +		if (cpu < max_cpus)
+> +			set_cpu_present(cpu, true);
+>  	}
+>  }
+>  
+> -- 
+> 2.17.1
+> 
