@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBDF3313A62
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 18:03:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 510F3313A74
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 18:08:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234829AbhBHRC4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 12:02:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33696 "EHLO mail.kernel.org"
+        id S233713AbhBHRHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 12:07:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35736 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233785AbhBHPWF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 10:22:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9D8D664F07;
-        Mon,  8 Feb 2021 15:13:59 +0000 (UTC)
+        id S233805AbhBHPWk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 10:22:40 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7CB6264F14;
+        Mon,  8 Feb 2021 15:14:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612797240;
-        bh=2MQPMAkgMPo/VJGnxnLOjW/zkJE5VCXS4+EgBMoETnU=;
+        s=korg; t=1612797243;
+        bh=8QIcW8Y4hwePRXMByCKTs9+X5M//JabLGU8P20oDLLU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GckTAHhIav5v4/wxx+Jtko1X37O4BB3emiQfaQJcN1n+2IkqmDWpIE/fP6JQ0jvfn
-         +jRBFUMFf5/O9tjp6REJORCadJONkR4H5BOjjJPhv9M1IKzMR7WQnwSysNBJA2l6kV
-         nsNmbj9t7ZQ7Zxph3L+24YMuwJ4exoXXKEcctjls=
+        b=hSNTe9sEQSg7beE2Vr8lA7skAiOf8dt8SqBZtM2xIiuYvSf4j9UGPSZYNEuG2creG
+         47kGIM3F9pJqPzWVWUM15LM0RL2Rmb8Nf0Fh1BdQDmqlImLoJUaIe4vrrZDLkGORWB
+         pGkxeuS1Kew6daFTXQe9xLTm98FfC2q244kpLHHk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Maor Gottlieb <maorg@nvidia.com>,
-        Alaa Hleihel <alaa@nvidia.com>, Mark Bloch <mbloch@nvidia.com>,
+        stable@vger.kernel.org, Maxim Mikityanskiy <maximmi@mellanox.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
         Saeed Mahameed <saeedm@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 041/120] net/mlx5: Fix leak upon failure of rule creation
-Date:   Mon,  8 Feb 2021 16:00:28 +0100
-Message-Id: <20210208145820.054485499@linuxfoundation.org>
+Subject: [PATCH 5.10 042/120] net/mlx5e: Update max_opened_tc also when channels are closed
+Date:   Mon,  8 Feb 2021 16:00:29 +0100
+Message-Id: <20210208145820.095162436@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210208145818.395353822@linuxfoundation.org>
 References: <20210208145818.395353822@linuxfoundation.org>
@@ -41,54 +41,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maor Gottlieb <maorg@nvidia.com>
+From: Maxim Mikityanskiy <maximmi@mellanox.com>
 
-[ Upstream commit a5bfe6b4675e0eefbd9418055b5cc6e89af27eb4 ]
+[ Upstream commit 5a2ba25a55c4dc0f143567c99aede768b6628ebd ]
 
-When creation of a new rule that requires allocation of an FTE fails,
-need to call to tree_put_node on the FTE in order to release its'
-resource.
+max_opened_tc is used for stats, so that potentially non-zero stats
+won't disappear when num_tc decreases. However, mlx5e_setup_tc_mqprio
+fails to update it in the flow where channels are closed.
 
-Fixes: cefc23554fc2 ("net/mlx5: Fix FTE cleanup")
-Signed-off-by: Maor Gottlieb <maorg@nvidia.com>
-Reviewed-by: Alaa Hleihel <alaa@nvidia.com>
-Reviewed-by: Mark Bloch <mbloch@nvidia.com>
+This commit fixes it. The new value of priv->channels.params.num_tc is
+always checked on exit. In case of errors it will just be the old value,
+and in case of success it will be the updated value.
+
+Fixes: 05909babce53 ("net/mlx5e: Avoid reset netdev stats on configuration changes")
+Signed-off-by: Maxim Mikityanskiy <maximmi@mellanox.com>
+Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
 Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/fs_core.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/net/ethernet/mellanox/mlx5/core/en_main.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/fs_core.c b/drivers/net/ethernet/mellanox/mlx5/core/fs_core.c
-index 634c2bfd25be1..79fc5755735fa 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/fs_core.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/fs_core.c
-@@ -1764,6 +1764,7 @@ search_again_locked:
- 		if (!fte_tmp)
- 			continue;
- 		rule = add_rule_fg(g, spec, flow_act, dest, dest_num, fte_tmp);
-+		/* No error check needed here, because insert_fte() is not called */
- 		up_write_ref_node(&fte_tmp->node, false);
- 		tree_put_node(&fte_tmp->node, false);
- 		kmem_cache_free(steering->ftes_cache, fte);
-@@ -1816,6 +1817,8 @@ skip_search:
- 		up_write_ref_node(&g->node, false);
- 		rule = add_rule_fg(g, spec, flow_act, dest, dest_num, fte);
- 		up_write_ref_node(&fte->node, false);
-+		if (IS_ERR(rule))
-+			tree_put_node(&fte->node, false);
- 		return rule;
- 	}
- 	rule = ERR_PTR(-ENOENT);
-@@ -1914,6 +1917,8 @@ search_again_locked:
- 	up_write_ref_node(&g->node, false);
- 	rule = add_rule_fg(g, spec, flow_act, dest, dest_num, fte);
- 	up_write_ref_node(&fte->node, false);
-+	if (IS_ERR(rule))
-+		tree_put_node(&fte->node, false);
- 	tree_put_node(&g->node, false);
- 	return rule;
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+index c9b5d7f29911e..42848db8f8dd6 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+@@ -3593,12 +3593,10 @@ static int mlx5e_setup_tc_mqprio(struct mlx5e_priv *priv,
  
+ 	err = mlx5e_safe_switch_channels(priv, &new_channels,
+ 					 mlx5e_num_channels_changed_ctx, NULL);
+-	if (err)
+-		goto out;
+ 
+-	priv->max_opened_tc = max_t(u8, priv->max_opened_tc,
+-				    new_channels.params.num_tc);
+ out:
++	priv->max_opened_tc = max_t(u8, priv->max_opened_tc,
++				    priv->channels.params.num_tc);
+ 	mutex_unlock(&priv->state_lock);
+ 	return err;
+ }
 -- 
 2.27.0
 
