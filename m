@@ -2,95 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14F203141E7
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 22:34:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 406463141EE
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 22:36:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236468AbhBHVd5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 16:33:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38826 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233355AbhBHUog (ORCPT
+        id S231542AbhBHVfn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 16:35:43 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:37186 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233512AbhBHUqi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 15:44:36 -0500
-Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35AD1C061788
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 12:43:44 -0800 (PST)
-Received: by mail-il1-x12e.google.com with SMTP id a16so14065972ilq.5
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 12:43:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=807lxy1fYZaU0OxFWMzgZCdayMWMKzd8L2WDBpZVTMY=;
-        b=aDVSDmwP9uP1GA8PNHtbI/ALs2TPNfefwKiMwGfoQgcXVcS7DbAU0JrgGCzpIc+hh4
-         2eOZEJ6gclKzN8gaILOixUFPR2+aB6/BoBhc8lPcG+NKALcKpHRwj7YCdQWXP2LkdyYe
-         9Ob7O7RMCvhcLzzeDh+XEcYQZ/r64PEVN7VxY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=807lxy1fYZaU0OxFWMzgZCdayMWMKzd8L2WDBpZVTMY=;
-        b=SomH+//KPrjNANhSl4yrO0SOsjxliSBi+VU3gGv1j5wy4CJYd2UJWlXwYbEnNEMTul
-         fxLWs9y5ZgAVN8NS4I1nf4tC7j4KJptH4KZrCZrcIza20FOsT92JGkI3z64krG8sgNJE
-         Pp2iE3a97w7OeFHVgOdY0NLu9E24R3i3VvipXW/ja2eBR6n1CXsrICvv7MwZpz/h1G96
-         DdSuX4l0Q0W+45xXUr9kbK0PNOkrxPy0s7CqS1FemwRShTIb7/0GJoKTddmjxOeH0j1J
-         95V+LYeuas5/OjQtLXz9ddaxcH2P3vjjMIeVT117jG0eu+7Yv3YrJN7VJSXXLer1IkoO
-         zU+Q==
-X-Gm-Message-State: AOAM532P/QFP7hAEOlAHQpI4kqcuXY69gik8ZRkJeEnp0J0MK+avF4fx
-        kOAHe99lP6VNiS/De6ZxUfGGWg==
-X-Google-Smtp-Source: ABdhPJyvAqvZEF+1/i5WJsS4TeAG9ffvNNTWPGRlHUrabfeglPU4ZaHQVJBndNVyCPwLjADNoRhmjg==
-X-Received: by 2002:a92:c265:: with SMTP id h5mr16418423ild.225.1612817023687;
-        Mon, 08 Feb 2021 12:43:43 -0800 (PST)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id c19sm9298144ile.17.2021.02.08.12.43.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Feb 2021 12:43:43 -0800 (PST)
-Subject: Re: [PATCH 4.4 00/38] 4.4.257-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        stable@vger.kernel.org, Shuah Khan <skhan@linuxfoundation.org>
-References: <20210208145805.279815326@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <6a64f222-59c3-f6a6-50ac-ac95e6591b36@linuxfoundation.org>
-Date:   Mon, 8 Feb 2021 13:43:42 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
-MIME-Version: 1.0
-In-Reply-To: <20210208145805.279815326@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+        Mon, 8 Feb 2021 15:46:38 -0500
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 118KWXgA050385;
+        Mon, 8 Feb 2021 15:45:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=USpxUQd0VGEWjHopywgNAUX7w1A/s/fmhQc03dwNPds=;
+ b=OIEDAoMsQyk0NbOF7l7V4lhSPyQXlN8cij9YNPHTX2k0FNwGGetWZp42hgL7aZvITJyA
+ WTpVp+xoBhUeE8XaI/Df+6ngjv+FI/JdaFYFFPUjQId46JFF1aBhKOPBJZ686u6yM0zy
+ GUDMcJMejXpNbJyqV8YB1g6iwBc3BM9Vy6eIlwiaWZFDR9J99P6P7WTl6ivHLjXPj6l2
+ KdsGDEGdW2waGODzVSs5ylroIFFXfn4lX4Tptp8GfYYg93UyjpjRQIHHziYkZAX6nOsU
+ /Th5IrCvE8me76yfEXTTp+MKYkpc8Ubhya3iK7oZrwj/MgZ6WGqN9J5uErj4LrZ7FHXw Rw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36kbpw1d73-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 08 Feb 2021 15:45:37 -0500
+Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 118KWcVO050839;
+        Mon, 8 Feb 2021 15:45:36 -0500
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36kbpw1d6e-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 08 Feb 2021 15:45:36 -0500
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 118K8gOT011901;
+        Mon, 8 Feb 2021 20:45:34 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma03ams.nl.ibm.com with ESMTP id 36hqda26b6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 08 Feb 2021 20:45:34 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 118KjVg147251940
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 8 Feb 2021 20:45:31 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C485B4203F;
+        Mon,  8 Feb 2021 20:45:31 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6712E42041;
+        Mon,  8 Feb 2021 20:45:28 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.48.239])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon,  8 Feb 2021 20:45:28 +0000 (GMT)
+Message-ID: <059e77ffa861680ccac7fd94251fedc7cffe7a7e.camel@linux.ibm.com>
+Subject: Re: [PATCH 1/3] IMA: add policy condition to measure duplicate
+ critical data
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Tushar Sugandhi <tusharsu@linux.microsoft.com>,
+        stephen.smalley.work@gmail.com, casey@schaufler-ca.com,
+        agk@redhat.com, snitzer@redhat.com, gmazyland@gmail.com,
+        paul@paul-moore.com
+Cc:     tyhicks@linux.microsoft.com, sashal@kernel.org, jmorris@namei.org,
+        nramas@linux.microsoft.com, linux-integrity@vger.kernel.org,
+        selinux@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dm-devel@redhat.com
+Date:   Mon, 08 Feb 2021 15:45:27 -0500
+In-Reply-To: <20210130004519.25106-2-tusharsu@linux.microsoft.com>
+References: <20210130004519.25106-1-tusharsu@linux.microsoft.com>
+         <20210130004519.25106-2-tusharsu@linux.microsoft.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-02-08_13:2021-02-08,2021-02-08 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 mlxscore=0
+ adultscore=0 phishscore=0 clxscore=1015 mlxlogscore=999 bulkscore=0
+ spamscore=0 malwarescore=0 lowpriorityscore=0 priorityscore=1501
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102080119
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/8/21 8:00 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.4.257 release.
-> There are 38 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 10 Feb 2021 14:57:55 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.4.257-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.4.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+Hi Tushar,
 
-Compiled and booted on my test system. No dmesg regressions.
+On Fri, 2021-01-29 at 16:45 -0800, Tushar Sugandhi wrote:
+> IMA needs to support duplicate measurements of integrity
+> critical data to accurately determine the current state of that data
+> on the system.  Further, since measurement of duplicate data is not
+> required for all the use cases, it needs to be policy driven.
+> 
+> Define "allow_dup", a new IMA policy condition, for the IMA func
+> CRITICAL_DATA to allow duplicate buffer measurement of integrity
+> critical data.
+> 
+> Limit the ability to measure duplicate buffer data when action is
+> "measure" and func is CRITICAL_DATA.
 
-Tested-by: Shuah Khan <skhan@linuxfoundation.org>
+Why?!
+
+> 
+> Signed-off-by: Tushar Sugandhi <tusharsu@linux.microsoft.com>
+> ---
+> 
+> diff --git a/security/integrity/ima/ima_policy.c b/security/integrity/ima/ima_policy.c
+> index 9b45d064a87d..b89eb768dd05 100644
+> --- a/security/integrity/ima/ima_policy.c
+> +++ b/security/integrity/ima/ima_policy.c
+> @@ -35,6 +35,7 @@
+>  #define IMA_FSNAME	0x0200
+>  #define IMA_KEYRINGS	0x0400
+>  #define IMA_LABEL	0x0800
+> +#define IMA_ALLOW_DUP	0x1000
+>  
+>  #define UNKNOWN		0
+>  #define MEASURE		0x0001	/* same as IMA_MEASURE */
+> @@ -87,6 +88,7 @@ struct ima_rule_entry {
+>  	char *fsname;
+>  	struct ima_rule_opt_list *keyrings; /* Measure keys added to these keyrings */
+>  	struct ima_rule_opt_list *label; /* Measure data grouped under this label */
+
+Defining a new boolean entry shouldn't be necessary.    The other
+boolean values are just stored in "flags".
+
+>  	struct ima_template_desc *template;
+>  };
 
 thanks,
--- Shuah
+
+Mimi
+
