@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A58F2313D25
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 19:21:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF793313D21
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 19:21:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235558AbhBHSVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 13:21:09 -0500
-Received: from mga09.intel.com ([134.134.136.24]:27842 "EHLO mga09.intel.com"
+        id S235531AbhBHSUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 13:20:40 -0500
+Received: from mga09.intel.com ([134.134.136.24]:27508 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234096AbhBHPp2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 10:45:28 -0500
-IronPort-SDR: a4g9SrE2+9+UxAqqmyao/tcXRNTDXkYgwwb5Us79/6FiSZPCUi/oaNEQfKsv4vOyuHjfl82SZU
- ZjLBbuvPscVQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9889"; a="181874632"
+        id S234094AbhBHPp1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 10:45:27 -0500
+IronPort-SDR: IFFgjaReJtVYMJz3f9IdDKr1fbHTzsI4a6O9ZNGzu8QbYVctXQTiqYQ6Wb9tQY9pNe2C2B/tib
+ HS/oyI6/QTSw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9889"; a="181874633"
 X-IronPort-AV: E=Sophos;i="5.81,162,1610438400"; 
-   d="scan'208";a="181874632"
+   d="scan'208";a="181874633"
 Received: from orsmga003.jf.intel.com ([10.7.209.27])
   by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2021 07:30:37 -0800
-IronPort-SDR: mmZOV23r7U4XxhQ3Qy0Jo+A/LTHBAD5BeiDY7hGHjRk0ifkFiCixQ52KRdswtRrCzOEGJjfxf4
- LbKqIQLmaI1w==
+IronPort-SDR: yde6U8lU1kE08M/PM2PsJTjlFWapCiPOsB7UMO2OklB7UAYNp1eV1O+ceu19RoMqAGbBcfZNty
+ LEnXSk3Uo+Vg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.81,162,1610438400"; 
-   d="scan'208";a="358820931"
+   d="scan'208";a="358820934"
 Received: from otc-lr-04.jf.intel.com ([10.54.39.41])
   by orsmga003.jf.intel.com with ESMTP; 08 Feb 2021 07:30:37 -0800
 From:   kan.liang@linux.intel.com
@@ -31,9 +31,9 @@ To:     peterz@infradead.org, acme@kernel.org, mingo@kernel.org,
 Cc:     tglx@linutronix.de, bp@alien8.de, namhyung@kernel.org,
         jolsa@redhat.com, ak@linux.intel.com, yao.jin@linux.intel.com,
         alexander.shishkin@linux.intel.com, adrian.hunter@intel.com
-Subject: [PATCH 45/49] perf stat: Merge event counts from all hybrid PMUs
-Date:   Mon,  8 Feb 2021 07:25:42 -0800
-Message-Id: <1612797946-18784-46-git-send-email-kan.liang@linux.intel.com>
+Subject: [PATCH 46/49] perf stat: Filter out unmatched aggregation for hybrid event
+Date:   Mon,  8 Feb 2021 07:25:43 -0800
+Message-Id: <1612797946-18784-47-git-send-email-kan.liang@linux.intel.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1612797946-18784-1-git-send-email-kan.liang@linux.intel.com>
 References: <1612797946-18784-1-git-send-email-kan.liang@linux.intel.com>
@@ -43,111 +43,96 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Jin Yao <yao.jin@linux.intel.com>
 
-For hybrid events, by default stat aggregates and reports the event counts
-per pmu.
+perf-stat has supported some aggregation modes, such as --per-core,
+--per-socket and etc. While for hybrid event, it may only available
+on part of cpus. So for --per-core, we need to filter out the
+unavailable cores, for --per-socket, filter out the unavailable
+sockets, and so on.
 
-root@otcpl-adl-s-2:~# ./perf stat -e cycles -a -- sleep 1
+Before:
 
- Performance counter stats for 'system wide':
-
-        17,291,386      cycles [cpu_core]
-         1,556,803      cycles [cpu_atom]
-
-       1.002154118 seconds time elapsed
-
-Sometime, it's also useful to aggregate event counts from all PMUs.
-Create a new option '--hybrid-merge' to enable that behavior and report
-the counts without PMUs.
-
-root@otcpl-adl-s-2:~# ./perf stat -e cycles -a --hybrid-merge -- sleep 1
+root@otcpl-adl-s-2:~# ./perf stat --per-core -e cpu_core/cycles/ -a -- sleep 1
 
  Performance counter stats for 'system wide':
 
-        19,041,587      cycles
+S0-D0-C0           2            311,114      cycles [cpu_core]
+S0-D0-C4           2             59,784      cycles [cpu_core]
+S0-D0-C8           2            121,287      cycles [cpu_core]
+S0-D0-C12          2          2,690,245      cycles [cpu_core]
+S0-D0-C16          2          2,060,545      cycles [cpu_core]
+S0-D0-C20          2          3,632,251      cycles [cpu_core]
+S0-D0-C24          2            775,736      cycles [cpu_core]
+S0-D0-C28          2            742,020      cycles [cpu_core]
+S0-D0-C32          0      <not counted>      cycles [cpu_core]
+S0-D0-C33          0      <not counted>      cycles [cpu_core]
+S0-D0-C34          0      <not counted>      cycles [cpu_core]
+S0-D0-C35          0      <not counted>      cycles [cpu_core]
+S0-D0-C36          0      <not counted>      cycles [cpu_core]
+S0-D0-C37          0      <not counted>      cycles [cpu_core]
+S0-D0-C38          0      <not counted>      cycles [cpu_core]
+S0-D0-C39          0      <not counted>      cycles [cpu_core]
 
-       1.002195329 seconds time elapsed
+       1.001779842 seconds time elapsed
+
+After:
+
+root@otcpl-adl-s-2:~# ./perf stat --per-core -e cpu_core/cycles/ -a -- sleep 1
+
+ Performance counter stats for 'system wide':
+
+S0-D0-C0           2          1,088,230      cycles [cpu_core]
+S0-D0-C4           2             57,228      cycles [cpu_core]
+S0-D0-C8           2             98,327      cycles [cpu_core]
+S0-D0-C12          2          2,741,955      cycles [cpu_core]
+S0-D0-C16          2          2,090,432      cycles [cpu_core]
+S0-D0-C20          2          3,192,108      cycles [cpu_core]
+S0-D0-C24          2          2,910,752      cycles [cpu_core]
+S0-D0-C28          2            388,696      cycles [cpu_core]
 
 Reviewed-by: Andi Kleen <ak@linux.intel.com>
 Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
 ---
- tools/perf/Documentation/perf-stat.txt | 7 +++++++
- tools/perf/builtin-stat.c              | 3 ++-
- tools/perf/util/stat-display.c         | 3 ++-
- tools/perf/util/stat.h                 | 1 +
- 4 files changed, 12 insertions(+), 2 deletions(-)
+ tools/perf/util/stat-display.c | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
 
-diff --git a/tools/perf/Documentation/perf-stat.txt b/tools/perf/Documentation/perf-stat.txt
-index b0e357d..3d083a3 100644
---- a/tools/perf/Documentation/perf-stat.txt
-+++ b/tools/perf/Documentation/perf-stat.txt
-@@ -418,6 +418,13 @@ Multiple events are created from a single event specification when:
- 2. Aliases, which are listed immediately after the Kernel PMU events
-    by perf list, are used.
- 
-+--hybrid-merge::
-+Merge the hybrid event counts from all PMUs.
-+
-+For hybrid events, by default stat aggregates and reports the event counts
-+per pmu. But sometime, it's also useful to aggregate event counts from all
-+PMUs. This option enables that behavior and reports the counts without PMUs.
-+
- --smi-cost::
- Measure SMI cost if msr/aperf/ and msr/smi/ events are supported.
- 
-diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
-index bfe7305..d367cfe 100644
---- a/tools/perf/builtin-stat.c
-+++ b/tools/perf/builtin-stat.c
-@@ -1184,6 +1184,7 @@ static struct option stat_options[] = {
- 	OPT_SET_UINT('A', "no-aggr", &stat_config.aggr_mode,
- 		    "disable CPU count aggregation", AGGR_NONE),
- 	OPT_BOOLEAN(0, "no-merge", &stat_config.no_merge, "Do not merge identical named events"),
-+	OPT_BOOLEAN(0, "hybrid-merge", &stat_config.hybrid_merge, "Merge identical named hybrid events"),
- 	OPT_STRING('x', "field-separator", &stat_config.csv_sep, "separator",
- 		   "print counts with custom separator"),
- 	OPT_CALLBACK('G', "cgroup", &evsel_list, "name",
-@@ -2379,7 +2380,7 @@ int cmd_stat(int argc, const char **argv)
- 
- 	evlist__check_cpu_maps(evsel_list);
- 
--	if (perf_pmu__hybrid_exist())
-+	if (perf_pmu__hybrid_exist() && !stat_config.hybrid_merge)
- 		stat_config.no_merge = true;
- 
- 	/*
 diff --git a/tools/perf/util/stat-display.c b/tools/perf/util/stat-display.c
-index 961d5ac..21a3f80 100644
+index 21a3f80..fa11572 100644
 --- a/tools/perf/util/stat-display.c
 +++ b/tools/perf/util/stat-display.c
-@@ -568,6 +568,7 @@ static void collect_all_aliases(struct perf_stat_config *config, struct evsel *c
- 		    !strcmp(alias->pmu_name, counter->pmu_name) ||
- 		    (evsel__is_hybrid_event(alias) &&
- 		     evsel__is_hybrid_event(counter) &&
-+		     !config->hybrid_merge &&
- 		     strcmp(alias->pmu_name, counter->pmu_name)))
- 			break;
- 		alias->merged_stat = true;
-@@ -585,7 +586,7 @@ static bool collect_data(struct perf_stat_config *config, struct evsel *counter,
- 	cb(config, counter, data, true);
- 	if (config->no_merge)
- 		uniquify_event_name(counter);
--	else if (counter->auto_merge_stats)
-+	else if (counter->auto_merge_stats || config->hybrid_merge)
- 		collect_all_aliases(config, counter, cb, data);
- 	return true;
+@@ -630,6 +630,20 @@ static void aggr_cb(struct perf_stat_config *config,
+ 	}
  }
-diff --git a/tools/perf/util/stat.h b/tools/perf/util/stat.h
-index d85c292..80f6715 100644
---- a/tools/perf/util/stat.h
-+++ b/tools/perf/util/stat.h
-@@ -123,6 +123,7 @@ struct perf_stat_config {
- 	bool			 ru_display;
- 	bool			 big_num;
- 	bool			 no_merge;
-+	bool			 hybrid_merge;
- 	bool			 walltime_run_table;
- 	bool			 all_kernel;
- 	bool			 all_user;
+ 
++static bool aggr_id_hybrid_matched(struct perf_stat_config *config,
++				   struct evsel *counter, struct aggr_cpu_id id)
++{
++	struct aggr_cpu_id s;
++
++	for (int i = 0; i < evsel__nr_cpus(counter); i++) {
++		s = config->aggr_get_id(config, evsel__cpus(counter), i);
++		if (cpu_map__compare_aggr_cpu_id(s, id))
++			return true;
++	}
++
++	return false;
++}
++
+ static void print_counter_aggrdata(struct perf_stat_config *config,
+ 				   struct evsel *counter, int s,
+ 				   char *prefix, bool metric_only,
+@@ -643,6 +657,12 @@ static void print_counter_aggrdata(struct perf_stat_config *config,
+ 	double uval;
+ 
+ 	ad.id = id = config->aggr_map->map[s];
++
++	if (perf_pmu__hybrid_exist() &&
++	    !aggr_id_hybrid_matched(config, counter, id)) {
++		return;
++	}
++
+ 	ad.val = ad.ena = ad.run = 0;
+ 	ad.nr = 0;
+ 	if (!collect_data(config, counter, aggr_cb, &ad))
 -- 
 2.7.4
 
