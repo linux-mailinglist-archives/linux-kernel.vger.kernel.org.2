@@ -2,111 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE32D313EA3
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 20:15:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE708313EA6
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 20:16:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235394AbhBHTPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 14:15:08 -0500
-Received: from mx2.suse.de ([195.135.220.15]:46648 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235146AbhBHR45 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 12:56:57 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1612806968; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=qwX5AXIbxXOiec6IOEaZx2uQnDbXmhCzt+dVXpbysvA=;
-        b=EVBIKarOePQu94XVdxLXJJnkOl+DUYKHHxFANZoOe6CB21HFXP9fzT1oUvfNWTXYUiVqZ8
-        2DQlyXuxgB+ZdmH25poZbJG3fgAhqVaLFM/nE8rQ+9/bO68q7WNuKXqn2yUt9SA/N1l8e1
-        9Yu9/8qOFvUEcTlIJO8LscB/o0bLMV0=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 29846AD62;
-        Mon,  8 Feb 2021 17:56:08 +0000 (UTC)
-Date:   Mon, 8 Feb 2021 18:56:07 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Richard Fitzgerald <rf@opensource.cirrus.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Shuah Khan <shuah@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, patches@opensource.cirrus.com
-Subject: Re: [PATCH v4 2/4] lib: vsprintf: Fix handling of number field
- widths in vsscanf
-Message-ID: <YCF7N0Fc9WC9flyd@alley>
-References: <20210203165009.6299-1-rf@opensource.cirrus.com>
- <20210203165009.6299-2-rf@opensource.cirrus.com>
- <YBr9c44Dvq1ZNrEa@smile.fi.intel.com>
- <YBwiQ+l6yqs+g+rr@alley>
- <5bfefab6-7a1b-6f5f-319c-8897dbb79a5b@opensource.cirrus.com>
- <CAHp75VcARyR4YvnWoVk1gnR8v7u_YJPnV0x3Mbe7iLMrvpbSAQ@mail.gmail.com>
+        id S236096AbhBHTQD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 14:16:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59356 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234978AbhBHR5Y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 12:57:24 -0500
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84C47C061797
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 09:56:44 -0800 (PST)
+Received: from zn.tnic (p200300ec2f073f0023a6d1f14b392727.dip0.t-ipconnect.de [IPv6:2003:ec:2f07:3f00:23a6:d1f1:4b39:2727])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id D2F771EC04C2;
+        Mon,  8 Feb 2021 18:56:42 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1612807002;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=2JLTZK7Um6zaEjKpd2T6QZeRWlyTYoCQQV+lk35yvAQ=;
+        b=TihGHaKa9tovhESzxfy6HRwn4+DDjUzZXhYeftw06ik2E4gCflAFkUrXGAyZAKghwxztkr
+        9Ih2gSKDGdQYxR1qsx0b9RunIbrwdZpfNT65HSVfwXPdmZpxX+ySpzsSQ/LAazpmIZ7REP
+        uTERNgdt3TlIB8Jfkmo911kAPxIVzeY=
+Date:   Mon, 8 Feb 2021 18:56:40 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     kan.liang@linux.intel.com
+Cc:     peterz@infradead.org, acme@kernel.org, mingo@kernel.org,
+        linux-kernel@vger.kernel.org, tglx@linutronix.de,
+        namhyung@kernel.org, jolsa@redhat.com, ak@linux.intel.com,
+        yao.jin@linux.intel.com, alexander.shishkin@linux.intel.com,
+        adrian.hunter@intel.com,
+        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Len Brown <len.brown@intel.com>,
+        Tony Luck <tony.luck@intel.com>
+Subject: Re: [PATCH 02/49] x86/cpu: Describe hybrid CPUs in cpuinfo_x86
+Message-ID: <20210208175640.GD18227@zn.tnic>
+References: <1612797946-18784-1-git-send-email-kan.liang@linux.intel.com>
+ <1612797946-18784-3-git-send-email-kan.liang@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAHp75VcARyR4YvnWoVk1gnR8v7u_YJPnV0x3Mbe7iLMrvpbSAQ@mail.gmail.com>
+In-Reply-To: <1612797946-18784-3-git-send-email-kan.liang@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 2021-02-05 14:50:56, Andy Shevchenko wrote:
-> On Fri, Feb 5, 2021 at 1:35 PM Richard Fitzgerald
-> <rf@opensource.cirrus.com> wrote:
-> > On 04/02/2021 16:35, Petr Mladek wrote:
-> > > On Wed 2021-02-03 21:45:55, Andy Shevchenko wrote:
-> > >> On Wed, Feb 03, 2021 at 04:50:07PM +0000, Richard Fitzgerald wrote:
-> > >> This allows max_char to be an unsigned type.
-> > >>
-> > >> Moreover...
-> > >>
-> > >>> +   return _parse_integer_limit(s, base, p, INT_MAX);
-> > >>
-> > >> You have inconsistency with INT_MAX vs, size_t above.
-> > >
-> > > Ah, this was on my request. INT_MAX is already used on many other
-> > > locations in vsnprintf() for this purpose.
-> >
-> > I originally had UINT_MAX and changed on Petr's request to be
-> > consistent with other code. (Sorry Andy - my mistake not including
-> > you on the earlier review versions).
-> >
-> > But 0 < INT_MAX < UINT_MAX, so ok to pass to an unsigned. And as Petr
-> > said on his original review, INT_MAX is "big enough".
-> 
-> Some code has INT_MAX, some has UINT_MAX, while the parameter is size_t.
+On Mon, Feb 08, 2021 at 07:24:59AM -0800, kan.liang@linux.intel.com wrote:
+> diff --git a/arch/x86/include/asm/processor.h b/arch/x86/include/asm/processor.h
+> index c20a52b..1f25ac9 100644
+> --- a/arch/x86/include/asm/processor.h
+> +++ b/arch/x86/include/asm/processor.h
+> @@ -139,6 +139,16 @@ struct cpuinfo_x86 {
+>  	u32			microcode;
+>  	/* Address space bits used by the cache internally */
+>  	u8			x86_cache_bits;
+> +	/*
+> +	 * In hybrid processors, there is a CPU type and a native model ID. The
+> +	 * CPU type (x86_cpu_type[31:24]) describes the type of micro-
+> +	 * architecture families. The native model ID (x86_cpu_type[23:0])
+> +	 * describes a specific microarchitecture version. Combining both
+> +	 * allows to uniquely identify a CPU.
+> +	 *
+> +	 * Please note that the native model ID is not related to x86_model.
+> +	 */
+> +	u32			x86_cpu_type;
 
-Yeah, if I remember correctly I wanted to have INT_MAX everywhere but
-I did not want to nitpick about it in the later versions. It looked
-like an arbitrary number anyway.
+Why are you adding it here instead of simply using
+X86_FEATURE_HYBRID_CPU at the call site?
 
-> I think all of these inconsistencies should have a comment either in
-> the code, or in the commit message, or in the cover letter (depending
-> on the importance).
-> Or being fixed to be more consistent with existing code. Whichever you
-> consider better.
+How many uses in this patchset?
 
-OK, you made me to do some archaeology. The INT_MAX limit has
-been added into vsnprintf() in 2.6.2 by the commit:
+/me searches...
 
-Author: Linus Torvalds <torvalds@home.osdl.org>
-Date:   Mon Feb 2 21:17:29 2004 -0800
+Exactly one.
 
-    Warn loudly if somebody passes a negative value as
-    the size to "vsnprintf()".
+Just query X86_FEATURE_HYBRID_CPU at the call site and read what you
+need from CPUID and use it there - no need for this.
 
-    That's a pretty clear case of overflow.
+Thx.
 
+-- 
+Regards/Gruss,
+    Boris.
 
-It might catch problems. And the limit seems to have worked all the time.
-
-IMHO, it would make sense to have INT_MAX limit also in
-_parse_integer_limit() and WARN() when a larger value is passed.
-
-By other words, it would mean to add this check and use INT_MAX
-everywhere in this patch.
-
-Best Regards,
-Petr
+https://people.kernel.org/tglx/notes-about-netiquette
