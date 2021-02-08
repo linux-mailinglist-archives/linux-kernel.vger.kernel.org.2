@@ -2,90 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 486FC3132AF
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 13:45:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E58793132B4
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 13:47:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231956AbhBHMpt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 07:45:49 -0500
-Received: from ozlabs.org ([203.11.71.1]:34091 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232599AbhBHMpP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 07:45:15 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DZ5M471Lgz9sS8;
-        Mon,  8 Feb 2021 23:44:32 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1612788273;
-        bh=wuccNvh4clTwslzNj7DcFPyJwndj//XGY2JKmfFh2lM=;
-        h=Date:From:To:Cc:Subject:From;
-        b=m9WCofIuWbYmSfCJTYUfb22pwChHr0vl+c5VaWVYXboDPjOzaRRr4IPLUVn40bjZg
-         fF7TLq8Lu+VQLZ/ufgHuaAVq8BmiMqs7zA+vhfCYB8tNyOeK8zJdzQvfr8unO+VKoK
-         nqi4tVjdUUWHfcmMjx0gTLiJHiN/UwZWdPcn5s4zg+8RW+IEAA3/MqXneWn1x9+rCv
-         HHhZ+7dMNWJOfEXquXWN7mIv71rJDVcjsC2nspCzENpgkWPLhhANoKuJj4bwtxdTCo
-         wTe8lvyHkJA3x6cV6mmqdcDgMXt4LAgcViXgDr7JAQess0JeviU7IhU5ldi/wTaEvs
-         12wx2eV8eR9aw==
-Date:   Mon, 8 Feb 2021 23:44:31 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     "Darrick J. Wong" <djwong@kernel.org>,
-        David Chinner <david@fromorbit.com>, linux-xfs@vger.kernel.org
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the xfs tree
-Message-ID: <20210208234431.54e51b57@canb.auug.org.au>
+        id S232268AbhBHMq5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 07:46:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48864 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230208AbhBHMqt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 07:46:49 -0500
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CD31C06174A;
+        Mon,  8 Feb 2021 04:46:09 -0800 (PST)
+Received: by mail-lj1-x235.google.com with SMTP id f19so16787273ljn.5;
+        Mon, 08 Feb 2021 04:46:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=rDzbovQf+m2HT1RtAwhlf4DB2G60MVFL22m+m2kRh44=;
+        b=aKUlItJqmZN42uNmYGm0cxo8S5689U20hHbe8+k/oLO8sCoaudZJfVq69UqLqj/ggX
+         4FIXFFv9FhPmncJdgJEUP9KEOIFhEDX8tO21DHrDpiuzzGC71Y1turdx9UHwUTqKVREy
+         VPefGkjKFXlXbANhcpeaYgYStLMjblZLFoE9Vce30y8UzCWtHYfUwKkXYes2FhbpLoQA
+         SkiBmanpK2Sl+QbPEBo7wHYhZ6IQ0LHLHQP4zR0wDYh0JTfM78oWi3VRNUO78wrmclfd
+         TafExqrccELWYoj/0NeelruId7APHqJAsBGyXW0DHev7rkcyZ8rPQ6vtBMDIVAHffXN5
+         NmVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=rDzbovQf+m2HT1RtAwhlf4DB2G60MVFL22m+m2kRh44=;
+        b=ooxn1uoJGVlpBhxlgrD62qr8cL74P8/lBlyXCnf3iCNEgB/cPP1waUv4fBp5xDvVCb
+         02y2MusUl0mJrSnXb1/zY60FcyxhIfprIOgsKyO7UQ3PVKA3B2bNFRl1bbFdXRGOGG19
+         yik3KSF3xzHKhWNkVk6v0PgPNCHaQFQFN7zbYo/oL0KbOB5sLOy2W2oon2os4OjKdr9y
+         O5MQycGttn39UJOIHFXOzgnAtVGLylgy/qkqohQQPBOJq4QKKkXXRq5zEQqwyq59KtiE
+         rOugKVPOpl38FERbP+c06veENk2WsZ2pcmJXyY6iEkkBhmS7nHP6BFPFsYWEYzXGaW2b
+         ekMg==
+X-Gm-Message-State: AOAM533k7cp12lZDGJRVh/kuhiYzoJWhRTqbe7gB5wTbId+4cZHNyB4v
+        0uIDlDd+9Kn2ON5D9aH0790=
+X-Google-Smtp-Source: ABdhPJzADCb8cqg8rUQrAcRiB0GUTTFxKFwjuGap4sU0gozxdG0omVaHaAJrMxFJ4i4fM8nW8qhY1g==
+X-Received: by 2002:a2e:b176:: with SMTP id a22mr5674497ljm.204.1612788367779;
+        Mon, 08 Feb 2021 04:46:07 -0800 (PST)
+Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
+        by smtp.gmail.com with ESMTPSA id r19sm308713lff.214.2021.02.08.04.46.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Feb 2021 04:46:07 -0800 (PST)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
+Date:   Mon, 8 Feb 2021 13:46:05 +0100
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Daniel Axtens <dja@axtens.net>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: Re: [PATCH 2/2] kvfree_rcu: Use same set of flags as for
+ single-argument
+Message-ID: <20210208124605.GB1920@pc638.lan>
+References: <20210129200505.5273-1-urezki@gmail.com>
+ <20210129200505.5273-2-urezki@gmail.com>
+ <20210204220427.GM2743@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/MSUL0f/DYybToo1iaLTiAjm";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210204220427.GM2743@paulmck-ThinkPad-P72>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/MSUL0f/DYybToo1iaLTiAjm
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Thu, Feb 04, 2021 at 02:04:27PM -0800, Paul E. McKenney wrote:
+> On Fri, Jan 29, 2021 at 09:05:05PM +0100, Uladzislau Rezki (Sony) wrote:
+> > Running an rcuscale stress-suite can lead to "Out of memory"
+> > of a system. This can happen under high memory pressure with
+> > a small amount of physical memory.
+> > 
+> > For example a KVM test configuration with 64 CPUs and 512 megabytes
+> > can lead to of memory after running rcuscale with below parameters:
+> > 
+> > ../kvm.sh --torture rcuscale --allcpus --duration 10 --kconfig CONFIG_NR_CPUS=64 \
+> > --bootargs "rcuscale.kfree_rcu_test=1 rcuscale.kfree_nthreads=16 rcuscale.holdoff=20 \
+> >   rcuscale.kfree_loops=10000 torture.disable_onoff_at_boot" --trust-make
+> > 
+> > <snip>
+> > [   12.054448] kworker/1:1H invoked oom-killer: gfp_mask=0x2cc0(GFP_KERNEL|__GFP_NOWARN), order=0, oom_score_adj=0
+> > [   12.055303] CPU: 1 PID: 377 Comm: kworker/1:1H Not tainted 5.11.0-rc3+ #510
+> > [   12.055416] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.12.0-1 04/01/2014
+> > [   12.056485] Workqueue: events_highpri fill_page_cache_func
+> > [   12.056485] Call Trace:
+> > [   12.056485]  dump_stack+0x57/0x6a
+> > [   12.056485]  dump_header+0x4c/0x30a
+> > [   12.056485]  ? del_timer_sync+0x20/0x30
+> > [   12.056485]  out_of_memory.cold.47+0xa/0x7e
+> > [   12.056485]  __alloc_pages_slowpath.constprop.123+0x82f/0xc00
+> > [   12.056485]  __alloc_pages_nodemask+0x289/0x2c0
+> > [   12.056485]  __get_free_pages+0x8/0x30
+> > [   12.056485]  fill_page_cache_func+0x39/0xb0
+> > [   12.056485]  process_one_work+0x1ed/0x3b0
+> > [   12.056485]  ? process_one_work+0x3b0/0x3b0
+> > [   12.060485]  worker_thread+0x28/0x3c0
+> > [   12.060485]  ? process_one_work+0x3b0/0x3b0
+> > [   12.060485]  kthread+0x138/0x160
+> > [   12.060485]  ? kthread_park+0x80/0x80
+> > [   12.060485]  ret_from_fork+0x22/0x30
+> > [   12.062156] Mem-Info:
+> > [   12.062350] active_anon:0 inactive_anon:0 isolated_anon:0
+> > [   12.062350]  active_file:0 inactive_file:0 isolated_file:0
+> > [   12.062350]  unevictable:0 dirty:0 writeback:0
+> > [   12.062350]  slab_reclaimable:2797 slab_unreclaimable:80920
+> > [   12.062350]  mapped:1 shmem:2 pagetables:8 bounce:0
+> > [   12.062350]  free:10488 free_pcp:1227 free_cma:0
+> > ...
+> > [   12.101610] Out of memory and no killable processes...
+> > [   12.102042] Kernel panic - not syncing: System is deadlocked on memory
+> > [   12.102583] CPU: 1 PID: 377 Comm: kworker/1:1H Not tainted 5.11.0-rc3+ #510
+> > [   12.102600] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.12.0-1 04/01/2014
+> > <snip>
+> > 
+> > Having a fallback mechanism we should not go with "GFP_KERNEL | __GFP_NOWARN"
+> > that implies a "hard" page request involving OOM killer. Replace such set with
+> > the same as the one used for a single argument.
+> > 
+> > Thus it will follow same rules:
+> >     a) minimize a fallback hitting;
+> >     b) avoid of OOM invoking;
+> >     c) do a light-wait page request;
+> >     d) avoid of dipping into the emergency reserves.
+> > 
+> > With this change an rcuscale and the parameters which are in question
+> > never runs into "Kernel panic".
+> > 
+> > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> 
+> I did have some misgivings about this one, but after a closer look at
+> the GFP flags you suggest along with offlist discussions it looks like
+> what needs to happen.  So thank you for persisting!  ;-)
+> 
+> I did the usual wordsmithing as shown below, so please check to make
+> sure that I did not mess anything up.
+> 
+Looks good to me, i mean a rewording of the commit message :)
 
-Hi all,
-
-After merging the xfs tree, today's linux-next build (htmldocs) produced
-this warning:
-
-Documentation/admin-guide/xfs.rst:531: WARNING: Malformed table.
-No bottom table border found or no blank line after table bottom.
-
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D     =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-  Knob           Description
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D     =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Documentation/admin-guide/xfs.rst:534: WARNING: Blank line required after t=
-able.
-Documentation/admin-guide/xfs.rst:536: WARNING: Definition list ends withou=
-t a blank line; unexpected unindent.
-Documentation/admin-guide/xfs.rst:538: WARNING: Unexpected indentation.
-
-Introduced by commit
-
-  f83d436aef5d ("xfs: increase the default parallelism levels of pwork clie=
-nts")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/MSUL0f/DYybToo1iaLTiAjm
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAhMi8ACgkQAVBC80lX
-0Gx4Xwf/WAhwaaci/wegNCsb6SWGikaurVcWQYE4VWOvOu2M5BY/a7GQRGsfbYfA
-rZCYiqfc8Ozxyc1Py3M2mpu17FMhQnrQvmmf8PK2PhEBK0IInUqr2ZlEosaLPnGS
-VlB1eRFb615WXckSb3hO7U2ugNKb0Cy8k5GUuZy3ix9L/KzWzw9A1e+iqr233ozg
-ZoJy8AaucWUN9pXKzr0bc3F8P99fEDYM8LiUVQzqX33xhIReqLkJ+7L7UXMJDZdC
-ExQilsCFGG553sRZDtt2pNtD0fsMWCL1dNKNQybyuaC4GJQMCevIkuy7YbZuj+FT
-r5gM7iBlX/I2b9RXse7RpUPF6aZlUw==
-=MxB1
------END PGP SIGNATURE-----
-
---Sig_/MSUL0f/DYybToo1iaLTiAjm--
+--
+Vlad Rezki
