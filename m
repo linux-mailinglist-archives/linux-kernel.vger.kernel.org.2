@@ -2,140 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C86B313DA5
+	by mail.lfdr.de (Postfix) with ESMTP id ED9F3313DA6
 	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 19:37:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235803AbhBHSff (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 13:35:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38842 "EHLO
+        id S235606AbhBHSgT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 13:36:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234346AbhBHQWV (ORCPT
+        with ESMTP id S234356AbhBHQWo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 11:22:21 -0500
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90DE9C061788;
-        Mon,  8 Feb 2021 08:21:40 -0800 (PST)
-Received: by mail-pj1-x102e.google.com with SMTP id l18so9065027pji.3;
-        Mon, 08 Feb 2021 08:21:40 -0800 (PST)
+        Mon, 8 Feb 2021 11:22:44 -0500
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC3F3C061786
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 08:22:03 -0800 (PST)
+Received: by mail-lf1-x130.google.com with SMTP id u25so23193374lfc.2
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 08:22:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=FwkWha3g7oAGpB4ws7tQE2d1Ep3IiBneyrvjPgo+ZlY=;
-        b=c0r5N8jxVF6gKwrWgIFk8pzpa5inqJJ8IxXFim69z2u09lU41usZE+nCWufo8wzGbX
-         xQGTDDnnAMsMXQm4FA2+T7yT8T1Na/dsKGh9ru3rKRUcNdTBa+DnwhHcePl67AGtIvNe
-         fpKd1YiEuHmTv5UkLgVVYWCXVlNkOIn++vtiXyisvc7woTn4YLg3U1YENvqFW33tfkZN
-         VJv/o7M3bNp6zDQeKw6ksavdZKHzZo2ehclHD4qqHJPCrweuWN4ikyFN7aWYEJQwWyKF
-         dZ0DgxYyplPOGOLf85OWqLj64XccoT2gZzJDqgjGiX9JoCGzmkIM+kfKjL6JURNQJeMF
-         FNMw==
+        bh=GdxvUtXp4Dqblal4t1woOOfdpya8vhckK+KFXfo2gXU=;
+        b=HIT5+1Q26PvRfVDEutrb9AqwApucsxmSbI4kwALzoYreCOhm/6moCbIhAuaLOzpFuS
+         zNswZo5S2hyTzJ1Jc60ZjAEguHkds3u9AynesK00aUPsTa/WAMm6LJzSC7yesiMxmDKR
+         VC7gfCFvp/bIaDaAOTdSYy9j5HNdWm9dtyraR+zGpID6nbu0XD7ahplJUeDMkgLD0PqL
+         XgSw3iGajHJYQIdjF89Jk2SI0M2Zwa1h0vfg2biuI/T5w53vpbfWN/QLDJWGM+Sdgvkf
+         jGAnCNfUSbWNVSDGUWJspPEM5lsmbVTuk5A5tJTYEFyYxsVSVnf54szJggy1yETVXkwa
+         mh7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=FwkWha3g7oAGpB4ws7tQE2d1Ep3IiBneyrvjPgo+ZlY=;
-        b=QcFgnZx7oEXV5Zd4qAd+YxNHmEvsiNj64X4wVAjm6NA02yHqu2kDQGWaRFSbfKFAWT
-         oFdbYCdBw1YlxqjyrdiJLEwyxJ83YMGA5fbf5PiI1gXoOSxVLuTjkfWRBXm+c7otgSmv
-         XIZpqvcABpyMAI05Q+gve0vGs8BTEFvGIDIQPodqay4XSQlTg/TGxPezCjJlgD+nJNtx
-         97pYDdP8UuNEQYtBcL4lMxcf52Tat3SQ6IOW2F0zkgQ4JvARpLMdMokJtoaPnQneTN0K
-         WGu+5f8JaixnFylUF9/oLgkz+zbTCT5kJO3cHpHW9W/WrZZBZpRDPfNKeZtCWluzeTnG
-         mHjg==
-X-Gm-Message-State: AOAM5308OJ4WCChoaZZaaAPw2N0C1Xr3RG3Nyj3QBe/setfJWvpi7k9I
-        W7S/3xuP9b/lODU7CXVe7qwFm0oe8P+k3VChYUU=
-X-Google-Smtp-Source: ABdhPJzb6rIZJDKS/VoraARCNlcsJfBDoL00x231IpA5pGuxpSRJ5AtRSTI37rFBU7VtykBXo28JwAtQX5qXW9rTlBo=
-X-Received: by 2002:a17:90a:644a:: with SMTP id y10mr18283260pjm.129.1612801300072;
- Mon, 08 Feb 2021 08:21:40 -0800 (PST)
+        bh=GdxvUtXp4Dqblal4t1woOOfdpya8vhckK+KFXfo2gXU=;
+        b=YpYwupUhVyk7unhMwqOckbLi55lpBCHhdlagaIXcIyBwtAQE3ZoIriKhyCwEmsuolM
+         BR5v6x+hEr1ouRbmtk+B/YbhJtO/ZL7/iyknCDu9E05yaEfATozYfJOW7hDkS9pf7cIm
+         9uKR7wsYsMnc2mmydiQA9VrBIwbQ3lIcB6RLEReW0kCYb/lLqb2QvAOT6BUz72gRPOvg
+         Upibe/2vQ3E+b2RY1NKPY/osZUSnk1AfdWJ21Snsyc8zyyOxC7bAXSi6CUjU5vBeHtEC
+         GuftZrTJbL4lgdwaemZR/NZA5cBevfbJSsgww9nYwQt2lQrbKWtCL1vjOPYom76c/Fwe
+         dOkw==
+X-Gm-Message-State: AOAM531yO5k3peVIzBV46cxAecfm7gG+b9S6yJVyviJAYrToWTvJnbJB
+        DAXegRMyPFOM29kFUFKWxR+GjG9GMPGt7DdhhOyNVw==
+X-Google-Smtp-Source: ABdhPJxFK26SWm08SQ5mP8Ms278CGu34ExsH5M+WMpB9/2JwB75TGg06wM9r8eLLkeRz/QzWdcryxeUT4N2rrpSNMFs=
+X-Received: by 2002:ac2:5e62:: with SMTP id a2mr3063991lfr.277.1612801322234;
+ Mon, 08 Feb 2021 08:22:02 -0800 (PST)
 MIME-Version: 1.0
-References: <20210208151244.16338-1-calvin.johnson@oss.nxp.com> <20210208151244.16338-16-calvin.johnson@oss.nxp.com>
-In-Reply-To: <20210208151244.16338-16-calvin.johnson@oss.nxp.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 8 Feb 2021 18:21:22 +0200
-Message-ID: <CAHp75VcL1A3CxyS+KVwJsdhtQh3R12aUonPfstSgtzO4bRc1Zw@mail.gmail.com>
-Subject: Re: [net-next PATCH v5 15/15] net: dpaa2-mac: Add ACPI support for
- DPAA2 MAC driver
-To:     Calvin Johnson <calvin.johnson@oss.nxp.com>
-Cc:     Grant Likely <grant.likely@arm.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Jeremy Linton <jeremy.linton@arm.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        Cristi Sovaiala <cristian.sovaiala@nxp.com>,
-        Florin Laurentiu Chiculita <florinlaurentiu.chiculita@nxp.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Madalin Bucur <madalin.bucur@oss.nxp.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Pieter Jansen Van Vuuren <pieter.jansenvv@bamboosystems.io>,
-        Jon <jon@solid-run.com>, Saravana Kannan <saravanak@google.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "linux.cj" <linux.cj@gmail.com>,
-        Diana Madalina Craciun <diana.craciun@nxp.com>,
-        netdev <netdev@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Ioana Radulescu <ruxandra.radulescu@nxp.com>,
-        Jakub Kicinski <kuba@kernel.org>
+References: <20210128183141.28097-1-valentin.schneider@arm.com> <20210128183141.28097-9-valentin.schneider@arm.com>
+In-Reply-To: <20210128183141.28097-9-valentin.schneider@arm.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Mon, 8 Feb 2021 17:21:50 +0100
+Message-ID: <CAKfTPtDBPREA2oBXZ0=-396Dxh5WMYgNTF+=6d_+K-WVjq3Sag@mail.gmail.com>
+Subject: Re: [PATCH 8/8] sched/fair: Relax task_hot() for misfit tasks
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Quentin Perret <qperret@google.com>,
+        Pavan Kondeti <pkondeti@codeaurora.org>,
+        Rik van Riel <riel@surriel.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 8, 2021 at 5:15 PM Calvin Johnson
-<calvin.johnson@oss.nxp.com> wrote:
+On Thu, 28 Jan 2021 at 19:32, Valentin Schneider
+<valentin.schneider@arm.com> wrote:
 >
-> Modify dpaa2_mac_connect() to support ACPI along with DT.
-> Modify dpaa2_mac_get_node() to get the dpmac fwnode from either
-> DT or ACPI.
+> Misfit tasks can and will be preempted by the stopper to migrate them over
+> to a higher-capacity CPU. However, when runnable but not current misfit
+> tasks are scanned by the load balancer (i.e. detach_tasks()), the
+> task_hot() ratelimiting logic may prevent us from enqueuing said task onto
+> a higher-capacity CPU.
 >
-> Replace of_get_phy_mode with fwnode_get_phy_mode to get
-> phy-mode for a dpmac_node.
+> Align detach_tasks() with the active-balance logic and let it pick a
+> cache-hot misfit task when the destination CPU can provide a capacity
+> uplift.
 >
-> Use helper function phylink_fwnode_phy_connect() to find phy_dev and
-> connect to mac->phylink.
+> Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
+> ---
+>  kernel/sched/fair.c | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
+>
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index cba9f97d9beb..c2351b87824f 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -7484,6 +7484,17 @@ static int task_hot(struct task_struct *p, struct lb_env *env)
+>         if (env->sd->flags & SD_SHARE_CPUCAPACITY)
+>                 return 0;
+>
+> +       /*
+> +        * On a (sane) asymmetric CPU capacity system, the increase in compute
+> +        * capacity should offset any potential performance hit caused by a
+> +        * migration.
+> +        */
+> +       if (sd_has_asym_cpucapacity(env->sd) &&
+> +           env->idle != CPU_NOT_IDLE &&
+> +           !task_fits_capacity(p, capacity_of(env->src_cpu)) &&
+> +           cpu_capacity_greater(env->dst_cpu, env->src_cpu))
 
-...
+Why not using env->migration_type to directly detect that it's a
+misfit task active migration ?
 
-> +       if (is_of_node(dev->parent->fwnode)) {
-> +               dpmacs = of_find_node_by_name(NULL, "dpmacs");
-> +               if (!dpmacs)
-> +                       return NULL;
-> +               parent = of_fwnode_handle(dpmacs);
-> +       } else if (is_acpi_node(dev->parent->fwnode)) {
-
-> +               parent = dev->parent->fwnode;
-
-dev_fwnode(dev->parent) ?
-
-> +       }
-
-...
-
-> +               if (err) {
->                         continue;
-
-> +               } else if (id == dpmac_id) {
-
-Useless 'else'
-
-> +                       if (is_of_node(dev->parent->fwnode))
-
-dev_fwnode() ?
-
-> +                               of_node_put(dpmacs);
-> +                       return child;
-> +               }
-
-...
-
-> +       if (is_of_node(dev->parent->fwnode))
-
-Ditto ?
-
-> +               of_node_put(dpmacs);
-
---
-With Best Regards,
-Andy Shevchenko
+> +               return 0;
+> +
+>         /*
+>          * Buddy candidates are cache hot:
+>          */
+> --
+> 2.27.0
+>
