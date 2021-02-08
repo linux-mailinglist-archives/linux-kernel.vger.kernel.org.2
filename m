@@ -2,35 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 659D73139EA
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 17:45:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D06B3139C4
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 17:41:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233823AbhBHQoS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 11:44:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56648 "EHLO mail.kernel.org"
+        id S234509AbhBHQkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 11:40:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60178 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233516AbhBHPOt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 10:14:49 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 32ACD64ECF;
-        Mon,  8 Feb 2021 15:10:59 +0000 (UTC)
+        id S231782AbhBHPPP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 10:15:15 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E151B64ECC;
+        Mon,  8 Feb 2021 15:11:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612797059;
-        bh=1tIf1/ts3LmImnt+l2+rS1rHr4ljQ4b0tGcspUITR7I=;
+        s=korg; t=1612797062;
+        bh=+eNF35DoJrXJpVdyv1WkaPTZ4N2uXYixGb+GnufcBMA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=I41v4RnU98KSrUcyKlDZ7XQtIgpEcnb5KnlwK8fDUTXmPvZTioDlkwpLfbyXnKw8p
-         LaBFgMMpUssolw4kfPsw9AZ6/ZkDp75EZI9VdQbeesWrOPd+R08E1ouBiS3FPKv/jv
-         UvEoSyTftK8gcUxAog94EOclu/apffkITbktBgi0=
+        b=TwOezqdjhssBNv9Pf4e7lc59fpateJWjhv9hzG5UV91wwwV6H76PU8S8oFXq4V1JL
+         YUO260t0QoDD/juEXyF1rTJfK1Etd4xdDU3ymJtJEfplBBaASIWZgVZ7RUSg6ObzQ0
+         VfXMTRXDq5RnzMhopL0tyFJ1K6yT9li4Bxis7gXQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stylon Wang <stylon.wang@amd.com>,
-        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-        Anson Jacob <Anson.Jacob@amd.com>,
-        Daniel Wheeler <daniel.wheeler@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>
-Subject: [PATCH 5.4 43/65] drm/amd/display: Revert "Fix EDID parsing after resume from suspend"
-Date:   Mon,  8 Feb 2021 16:01:15 +0100
-Message-Id: <20210208145811.884368771@linuxfoundation.org>
+        stable@vger.kernel.org, Thorsten Leemhuis <linux@leemhuis.info>,
+        Christoph Hellwig <hch@lst.de>
+Subject: [PATCH 5.4 44/65] nvme-pci: avoid the deepest sleep state on Kingston A2000 SSDs
+Date:   Mon,  8 Feb 2021 16:01:16 +0100
+Message-Id: <20210208145811.922714357@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210208145810.230485165@linuxfoundation.org>
 References: <20210208145810.230485165@linuxfoundation.org>
@@ -42,34 +39,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stylon Wang <stylon.wang@amd.com>
+From: Thorsten Leemhuis <linux@leemhuis.info>
 
-commit 1a10e5244778169a5a53a527d7830cf0438132a1 upstream.
+commit 538e4a8c571efdf131834431e0c14808bcfb1004 upstream.
 
-This reverts commit b24bdc37d03a0478189e20a50286092840f414fa.
-It caused memory leak after S3 on 4K HDMI displays.
+Some Kingston A2000 NVMe SSDs sooner or later get confused and stop
+working when they use the deepest APST sleep while running Linux. The
+system then crashes and one has to cold boot it to get the SSD working
+again.
 
-Signed-off-by: Stylon Wang <stylon.wang@amd.com>
-Reviewed-by: Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
-Acked-by: Anson Jacob <Anson.Jacob@amd.com>
-Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
-Cc: stable@vger.kernel.org
+Kingston seems to known about this since at least mid-September 2020:
+https://bbs.archlinux.org/viewtopic.php?pid=1926994#p1926994
+
+Someone working for a German company representing Kingston to the German
+press confirmed to me Kingston engineering is aware of the issue and
+investigating; the person stated that to their current knowledge only
+the deepest APST sleep state causes trouble. Therefore, make Linux avoid
+it for now by applying the NVME_QUIRK_NO_DEEPEST_PS to this SSD.
+
+I have two such SSDs, but it seems the problem doesn't occur with them.
+I hence couldn't verify if this patch really fixes the problem, but all
+the data in front of me suggests it should.
+
+This patch can easily be reverted or improved upon if a better solution
+surfaces.
+
+FWIW, there are many reports about the issue scattered around the web;
+most of the users disabled APST completely to make things work, some
+just made Linux avoid the deepest sleep state:
+
+https://bugzilla.kernel.org/show_bug.cgi?id=195039#c65
+https://bugzilla.kernel.org/show_bug.cgi?id=195039#c73
+https://bugzilla.kernel.org/show_bug.cgi?id=195039#c74
+https://bugzilla.kernel.org/show_bug.cgi?id=195039#c78
+https://bugzilla.kernel.org/show_bug.cgi?id=195039#c79
+https://bugzilla.kernel.org/show_bug.cgi?id=195039#c80
+https://askubuntu.com/questions/1222049/nvmekingston-a2000-sometimes-stops-giving-response-in-ubuntu-18-04dell-inspir
+https://community.acer.com/en/discussion/604326/m-2-nvme-ssd-aspire-517-51g-issue-compatibility-kingston-a2000-linux-ubuntu
+
+For the record, some data from 'nvme id-ctrl /dev/nvme0'
+
+NVME Identify Controller:
+vid       : 0x2646
+ssvid     : 0x2646
+mn        : KINGSTON SA2000M81000G
+fr        : S5Z42105
+[...]
+ps    0 : mp:9.00W operational enlat:0 exlat:0 rrt:0 rrl:0
+          rwt:0 rwl:0 idle_power:- active_power:-
+ps    1 : mp:4.60W operational enlat:0 exlat:0 rrt:1 rrl:1
+          rwt:1 rwl:1 idle_power:- active_power:-
+ps    2 : mp:3.80W operational enlat:0 exlat:0 rrt:2 rrl:2
+          rwt:2 rwl:2 idle_power:- active_power:-
+ps    3 : mp:0.0450W non-operational enlat:2000 exlat:2000 rrt:3 rrl:3
+          rwt:3 rwl:3 idle_power:- active_power:-
+ps    4 : mp:0.0040W non-operational enlat:15000 exlat:15000 rrt:4 rrl:4
+          rwt:4 rwl:4 idle_power:- active_power:-
+
+Cc: stable@vger.kernel.org # 4.14+
+Signed-off-by: Thorsten Leemhuis <linux@leemhuis.info>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c |    2 --
- 1 file changed, 2 deletions(-)
+ drivers/nvme/host/pci.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-@@ -1434,8 +1434,6 @@ amdgpu_dm_update_connector_after_detect(
- 
- 			drm_connector_update_edid_property(connector,
- 							   aconnector->edid);
--			drm_add_edid_modes(connector, aconnector->edid);
--
- 			if (aconnector->dc_link->aux_mode)
- 				drm_dp_cec_set_edid(&aconnector->dm_dp_aux.aux,
- 						    aconnector->edid);
+--- a/drivers/nvme/host/pci.c
++++ b/drivers/nvme/host/pci.c
+@@ -3161,6 +3161,8 @@ static const struct pci_device_id nvme_i
+ 	{ PCI_DEVICE(0x1c5c, 0x1504),   /* SK Hynix PC400 */
+ 		.driver_data = NVME_QUIRK_DISABLE_WRITE_ZEROES, },
+ 	{ PCI_DEVICE_CLASS(PCI_CLASS_STORAGE_EXPRESS, 0xffffff) },
++	{ PCI_DEVICE(0x2646, 0x2263),   /* KINGSTON A2000 NVMe SSD  */
++		.driver_data = NVME_QUIRK_NO_DEEPEST_PS, },
+ 	{ PCI_DEVICE(PCI_VENDOR_ID_APPLE, 0x2001),
+ 		.driver_data = NVME_QUIRK_SINGLE_VECTOR },
+ 	{ PCI_DEVICE(PCI_VENDOR_ID_APPLE, 0x2003) },
 
 
