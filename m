@@ -2,100 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D321F3128E1
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 03:20:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5184B3128E2
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 03:20:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229669AbhBHCS4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Feb 2021 21:18:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55464 "EHLO
+        id S229705AbhBHCTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Feb 2021 21:19:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229565AbhBHCSz (ORCPT
+        with ESMTP id S229650AbhBHCTT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Feb 2021 21:18:55 -0500
-Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC828C061786
-        for <linux-kernel@vger.kernel.org>; Sun,  7 Feb 2021 18:18:14 -0800 (PST)
-Received: by mail-il1-x130.google.com with SMTP id y15so11349193ilj.11
-        for <linux-kernel@vger.kernel.org>; Sun, 07 Feb 2021 18:18:14 -0800 (PST)
+        Sun, 7 Feb 2021 21:19:19 -0500
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0408C06178A
+        for <linux-kernel@vger.kernel.org>; Sun,  7 Feb 2021 18:18:39 -0800 (PST)
+Received: by mail-io1-xd2e.google.com with SMTP id u8so13356393ior.13
+        for <linux-kernel@vger.kernel.org>; Sun, 07 Feb 2021 18:18:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=XSBwCQhIiL7WoW30Wg1JyXmwITq5X3TRIbKEv5Zbwd4=;
-        b=aQ4fvSLxKak589bkgvtFHLWFPLXJ1jYNQEGn2MiAgo4WDFUklqm3ZslZFEwU+V6c4y
-         Ri2xMmxkjHK7raR+UbWYZ3NDRvXoSaaTJn+U210nt95J1klI5rTDku/nrpiE71pvPDy2
-         12b1Ow+x2AWKFoMRqN874RpVtuNURym1Fk2UIbAbABVOnWV8mH1SDyc8ZNqCNv0YNvW5
-         CmBjYoB+t5Yv1WWCpFqgqB7hpG4kBIJpDkXroVyLHRrScz3hjeNSmcP0iM3IZ2NoLNyS
-         seWdDRGAtQN3nt+gi6WpTQcmCMAedYVcBuvEi0+YNyGZ585w+mPr8/ifZQcRGfi6W1tG
-         j6sg==
+         :subject:to;
+        bh=J6sjjEGjfADY4vZtjQCJ46nWlyZNjX5V4f6ytqlF/5M=;
+        b=uB4fPZLEdLn9XfrLJ32vRuUPmqc1WKnxtw+JZj1FSKdKnSdm+LFllOQ7O1GFPe8VDK
+         rc5nfBjK3jSkaSZyFFFAUf03r4Ae3TacNBySloX8QFR2uU2wRwHpD0KagkqTSxHpf9W8
+         HZNlqNXznGGki+OGcrO3pdyR9IfSUdggtFU6Vob90/W5DdSsLfBkqwjLQNua4Msvfe40
+         UN/WfysuvDlU+e9LCj4MhWcN16uQQ2YGHHpeSDWT0LyNoQwjb3TelbX0X+0imp0ac+kM
+         TExcwmM3z8Lu6Ul5hHxd96s7fR39dfFfxkvQ41TnajKV1NJsQVTG5sG/oF/MEImltqoT
+         4CTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=XSBwCQhIiL7WoW30Wg1JyXmwITq5X3TRIbKEv5Zbwd4=;
-        b=uBauPuRm+jHD6asX4lezAD+VA0NoUYDzKp8kLakdj45k8kRfFjaehiLy/7vMKcMKVv
-         8JV3jKMvEhkkMJ2YI8uLuvB6//euEG5gkLDRbcj27ZUOnknm6PlBzZVsdRla+g37x1O8
-         VZvoqbKv4rAcPjRhfzCaFm1PhYuK0V2e8Z38BPHCAJGu79bAUDP2/IV5QaYvachsC+kd
-         D2tj9BJrb/Pv5I4zt/FQj1C5L4PlUP2g3EyM+7EjhfQhSXuIobZzCvK1lzveMGPK1A+V
-         OeTXNyzY2XYHCUR8WBj7yxSusnGcEvQgz/nQ1RTmCXbz8dIvzgygHu87pDHv0npy09/Y
-         iNOg==
-X-Gm-Message-State: AOAM5324tVyiEjYx+/7iRCUN+T6lzdiQsk17JUjbQyLlQgzQCibnXiXI
-        W0zvWe1uH7ZGRJ2VgKPGoneTuNXzIUysgp50+/c=
-X-Google-Smtp-Source: ABdhPJyaffUfa2FHmraU2AhVABXIPl7gszkVKSGfn0IITKZeRil1eUQRWK9lCMiY6m740Mc4HTUHfVrE6P3H93Nc8R0=
-X-Received: by 2002:a92:ce46:: with SMTP id a6mr14023226ilr.10.1612750694254;
- Sun, 07 Feb 2021 18:18:14 -0800 (PST)
+         :from:date:message-id:subject:to;
+        bh=J6sjjEGjfADY4vZtjQCJ46nWlyZNjX5V4f6ytqlF/5M=;
+        b=D6bIeOj20mpLyeIGvZEBFFfCP5dwokV5wCoaoa9WGDEoUftdowMeqDoeGGIT0dAZLo
+         MaPdsfMKCdAW+9yN7ZUdHGfQ2lPRROnKKGsX/CD9XZ9tIOx5wGwsnnFYedko0kPzEH2Y
+         AicEcTrlLqdErebQ3gDaq4MjKGM73oaJjQu95lOhPUojmYzpikbWSTivUoit6gsofpha
+         uVtsUtgDO53vXSrAHMu8CXBuo+LN8Zu136lMohHt99aSTVaj/+rhB1OcdR84JPVLwB6D
+         yBVoNW6/hQfDLm6jkDoYVADfBayjJGKShHw0CYyH1qRk8FRhn2SAvtiS6YdzAo/vze4j
+         ZMWw==
+X-Gm-Message-State: AOAM5309LrdS1wKGCetOjZTsywbmyQFHHpzpbVoGYTCU4tae//BFmZFI
+        OPwdOn1mB4JfZoqwxEiFKCi1ojACHsVSbLlgj2ZJCL3XHpI=
+X-Google-Smtp-Source: ABdhPJzDLwV2caKR9rf/wJkMd2Rl3Ai0i8VbS16F932xFK5bWcEJ9XPTI2h88YXtrFQ1B9fpWJezuHTfzyyM7+g2ymo=
+X-Received: by 2002:a05:6638:3795:: with SMTP id w21mr15443221jal.65.1612750719231;
+ Sun, 07 Feb 2021 18:18:39 -0800 (PST)
 MIME-Version: 1.0
 References: <CA+icZUUhzpmoD_XrHtnFUGSpXHrVOTnVG9Q_Tek8oA8isHZe=Q@mail.gmail.com>
- <CAP045Aot_wYcwXVtfB9NmS98NGZumER39q8piN1ucgHCcpc8OA@mail.gmail.com>
-In-Reply-To: <CAP045Aot_wYcwXVtfB9NmS98NGZumER39q8piN1ucgHCcpc8OA@mail.gmail.com>
+ <YCB3cd/XjYnoOBxE@OpenSuse>
+In-Reply-To: <YCB3cd/XjYnoOBxE@OpenSuse>
 Reply-To: sedat.dilek@gmail.com
 From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Mon, 8 Feb 2021 03:18:03 +0100
-Message-ID: <CA+icZUW-9stFCoJRk_sPoyktoykue77eh7SF+SaSNyKAqmx7LA@mail.gmail.com>
+Date:   Mon, 8 Feb 2021 03:18:28 +0100
+Message-ID: <CA+icZUWbN3WaD-UyVB4yswi5f-kEcG+Zci4giR_ku+k+da2WFA@mail.gmail.com>
 Subject: Re: [Linux v5.11-rc7] x86: entry: Leftover of _TIF_SINGLESTEP define?
-To:     Kyle Huey <me@kylehuey.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Gabriel Krisman Bertazi <krisman@collabora.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        open list <linux-kernel@vger.kernel.org>
+        Kyle Huey <me@kylehuey.com>, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 8, 2021 at 12:25 AM Kyle Huey <me@kylehuey.com> wrote:
+On Mon, Feb 8, 2021 at 12:27 AM Bhaskar Chowdhury <unixbhaskar@gmail.com> wrote:
 >
-> On Sun, Feb 7, 2021 at 3:09 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
+> On 00:08 Mon 08 Feb 2021, Sedat Dilek wrote:
+> >Hi,
 > >
-> > Hi,
+> >congrats to Linux v5.11-rc7.
 > >
-> > congrats to Linux v5.11-rc7.
+> >after commit 6342adcaa683 ("entry: Ensure trap after single-step on
+> >system call return"):
 > >
-> > after commit 6342adcaa683 ("entry: Ensure trap after single-step on
-> > system call return"):
+> >$ git grep '\_TIF_SINGLESTEP' arch/x86/
+> >arch/x86/include/asm/thread_info.h:#define _TIF_SINGLESTEP
+> > (1 << TIF_SINGLESTEP)
 > >
-> > $ git grep '\_TIF_SINGLESTEP' arch/x86/
-> > arch/x86/include/asm/thread_info.h:#define _TIF_SINGLESTEP
-> >  (1 << TIF_SINGLESTEP)
-> >
-> > Is this a leftover and can be removed (now)?
-> >
-> > Thanks.
-> >
-> > Regards,
-> > - Sedat -
-> >
-> > [1] https://marc.info/?l=linux-kernel&m=161273724611262&w=2
-> > [2] https://git.kernel.org/linus/6342adcaa683
+> Does it failed the build???
 >
-> Yes it looks like that can be removed now.
+> Just curious??
 >
 
-Hi Kylem
+No, it is simply a leftover.
+Kyle confirmed.
 
-Thanks for the confirmation.
+I was able to build and boot into bare metal.
 
-Shall I send a patch?
-With an ACK of you or mention in the commit message?
 
 - Sedat -
+
+> >Is this a leftover and can be removed (now)?
+> >
+> >Thanks.
+> >
+> >Regards,
+> >- Sedat -
+> >
+> >[1] https://marc.info/?l=linux-kernel&m=161273724611262&w=2
+> >[2] https://git.kernel.org/linus/6342adcaa683
