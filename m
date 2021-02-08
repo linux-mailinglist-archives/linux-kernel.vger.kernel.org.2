@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E00BE31386F
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 16:48:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 699F6313881
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 16:51:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234173AbhBHPsJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 10:48:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52656 "EHLO mail.kernel.org"
+        id S231723AbhBHPvX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 10:51:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52066 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231723AbhBHPHD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 10:07:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4851864EBD;
-        Mon,  8 Feb 2021 15:05:34 +0000 (UTC)
+        id S232066AbhBHPHP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 10:07:15 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1EF2464EBF;
+        Mon,  8 Feb 2021 15:05:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612796734;
-        bh=uNdtUiPu/JXuxmabfk74niAlwlkvOOeoAi5s2CdvdPk=;
+        s=korg; t=1612796737;
+        bh=GKITYz5xisbQHlg5N2WH7Loow+BaDEjuJ9GMbpCFAGA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=J6HDwnXba5lTeJEH2aNzHJkyRkmJ5lJ0GrIX+6xIk0WwfGFtJWAyayV0CSOL4uXQb
-         Dc8G0frhMuROYGPUXo8ukUsn5w94HvBFEp+Evsb02egNH3NFpuWpVqCdHrj9B8M0Wn
-         2rbhUPdx3z284mWVCXuXPmukcRu4KHe4kDn/C04k=
+        b=qdmFYHkt6QsvCj5CpprTLgaHEYcxtZoRwlBqte+MunjGdtZBIdC9fLflF55Agujud
+         UIcFRLT3mhCColk09uMyGyeT/3MB9Tk5zgX6XYFvEAmZTNIRwLI1GNKao73ONwjgHx
+         9qOoDcm6UuFxpIt3yEYFwfaU3oxzr+vbfsp/9TrY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pete Zaitcev <zaitcev@redhat.com>,
-        Jeremy Figgins <kernel@jeremyfiggins.com>
-Subject: [PATCH 4.9 26/43] USB: usblp: dont call usb_set_interface if theres a single alt
-Date:   Mon,  8 Feb 2021 16:00:52 +0100
-Message-Id: <20210208145807.382485465@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Gerhard Klostermeier <gerhard.klostermeier@syss.de>,
+        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
+Subject: [PATCH 4.9 27/43] usb: dwc2: Fix endpoint direction check in ep_from_windex
+Date:   Mon,  8 Feb 2021 16:00:53 +0100
+Message-Id: <20210208145807.413970171@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210208145806.281758651@linuxfoundation.org>
 References: <20210208145806.281758651@linuxfoundation.org>
@@ -39,51 +40,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jeremy Figgins <kernel@jeremyfiggins.com>
+From: Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
 
-commit d8c6edfa3f4ee0d45d7ce5ef18d1245b78774b9d upstream.
+commit f670e9f9c8cac716c3506c6bac9e997b27ad441a upstream.
 
-Some devices, such as the Winbond Electronics Corp. Virtual Com Port
-(Vendor=0416, ProdId=5011), lockup when usb_set_interface() or
-usb_clear_halt() are called. This device has only a single
-altsetting, so it should not be necessary to call usb_set_interface().
+dwc2_hsotg_process_req_status uses ep_from_windex() to retrieve
+the endpoint for the index provided in the wIndex request param.
 
-Acked-by: Pete Zaitcev <zaitcev@redhat.com>
-Signed-off-by: Jeremy Figgins <kernel@jeremyfiggins.com>
-Link: https://lore.kernel.org/r/YAy9kJhM/rG8EQXC@watson
-Cc: stable <stable@vger.kernel.org>
+In a test-case with a rndis gadget running and sending a malformed
+packet to it like:
+    dev.ctrl_transfer(
+        0x82,      # bmRequestType
+        0x00,       # bRequest
+        0x0000,     # wValue
+        0x0001,     # wIndex
+        0x00       # wLength
+    )
+it is possible to cause a crash:
+
+[  217.533022] dwc2 ff300000.usb: dwc2_hsotg_process_req_status: USB_REQ_GET_STATUS
+[  217.559003] Unable to handle kernel read from unreadable memory at virtual address 0000000000000088
+...
+[  218.313189] Call trace:
+[  218.330217]  ep_from_windex+0x3c/0x54
+[  218.348565]  usb_gadget_giveback_request+0x10/0x20
+[  218.368056]  dwc2_hsotg_complete_request+0x144/0x184
+
+This happens because ep_from_windex wants to compare the endpoint
+direction even if index_to_ep() didn't return an endpoint due to
+the direction not matching.
+
+The fix is easy insofar that the actual direction check is already
+happening when calling index_to_ep() which will return NULL if there
+is no endpoint for the targeted direction, so the offending check
+can go away completely.
+
+Fixes: c6f5c050e2a7 ("usb: dwc2: gadget: add bi-directional endpoint support")
+Cc: stable@vger.kernel.org
+Reported-by: Gerhard Klostermeier <gerhard.klostermeier@syss.de>
+Signed-off-by: Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
+Link: https://lore.kernel.org/r/20210127103919.58215-1-heiko@sntech.de
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/class/usblp.c |   19 +++++++++++--------
- 1 file changed, 11 insertions(+), 8 deletions(-)
+ drivers/usb/dwc2/gadget.c |    8 +-------
+ 1 file changed, 1 insertion(+), 7 deletions(-)
 
---- a/drivers/usb/class/usblp.c
-+++ b/drivers/usb/class/usblp.c
-@@ -1349,14 +1349,17 @@ static int usblp_set_protocol(struct usb
- 	if (protocol < USBLP_FIRST_PROTOCOL || protocol > USBLP_LAST_PROTOCOL)
- 		return -EINVAL;
+--- a/drivers/usb/dwc2/gadget.c
++++ b/drivers/usb/dwc2/gadget.c
+@@ -942,7 +942,6 @@ static void dwc2_hsotg_complete_oursetup
+ static struct dwc2_hsotg_ep *ep_from_windex(struct dwc2_hsotg *hsotg,
+ 					   u32 windex)
+ {
+-	struct dwc2_hsotg_ep *ep;
+ 	int dir = (windex & USB_DIR_IN) ? 1 : 0;
+ 	int idx = windex & 0x7F;
  
--	alts = usblp->protocol[protocol].alt_setting;
--	if (alts < 0)
--		return -EINVAL;
--	r = usb_set_interface(usblp->dev, usblp->ifnum, alts);
--	if (r < 0) {
--		printk(KERN_ERR "usblp: can't set desired altsetting %d on interface %d\n",
--			alts, usblp->ifnum);
--		return r;
-+	/* Don't unnecessarily set the interface if there's a single alt. */
-+	if (usblp->intf->num_altsetting > 1) {
-+		alts = usblp->protocol[protocol].alt_setting;
-+		if (alts < 0)
-+			return -EINVAL;
-+		r = usb_set_interface(usblp->dev, usblp->ifnum, alts);
-+		if (r < 0) {
-+			printk(KERN_ERR "usblp: can't set desired altsetting %d on interface %d\n",
-+				alts, usblp->ifnum);
-+			return r;
-+		}
- 	}
+@@ -952,12 +951,7 @@ static struct dwc2_hsotg_ep *ep_from_win
+ 	if (idx > hsotg->num_of_eps)
+ 		return NULL;
  
- 	usblp->bidir = (usblp->protocol[protocol].epread != NULL);
+-	ep = index_to_ep(hsotg, idx, dir);
+-
+-	if (idx && ep->dir_in != dir)
+-		return NULL;
+-
+-	return ep;
++	return index_to_ep(hsotg, idx, dir);
+ }
+ 
+ /**
 
 
