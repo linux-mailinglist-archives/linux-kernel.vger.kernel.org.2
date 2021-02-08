@@ -2,95 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BC573130AA
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 12:23:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E8083130C7
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 12:27:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233230AbhBHLXJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 06:23:09 -0500
-Received: from mail-io1-f72.google.com ([209.85.166.72]:54404 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232994AbhBHLKz (ORCPT
+        id S233260AbhBHLZ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 06:25:57 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:57712 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S232301AbhBHLM2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 06:10:55 -0500
-Received: by mail-io1-f72.google.com with SMTP id g7so11248228ion.21
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 03:10:39 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=mPCbokCYCpjU+f1kvG8q1JfzTyfLjf02MHrBI6a5DbU=;
-        b=qK/lXEiSkm0hNNBEvVCGQsOjeuPaYX7u3jxK+zBlVZMqnhhphzcyQeli8sXJXwoyvu
-         tG7EidZ2/cbzfHrKACOBES98t8DxFGgCUlPkjrxw66cIVEQwHke4RrI0zit5yqARnuGY
-         82Q7vecPqrh66npNMY8J0WgXE5lpVWUiQFpkqNeXAQprHA/tM3xOW0P4gPPMsYpRQRHG
-         MuMWJJcuVuIS6sC+BhJYuADxNHONl4d0SXorNFKjs6uuw4H1yg3Ocu2ksFDyiY3QMfU7
-         krgF1J3z+272EGIbHv/7dspnRFLrimLektmuW22cMFDUkSNvsEBNpKgTSC7DshKzAZDL
-         748w==
-X-Gm-Message-State: AOAM530wJAkeq87orSpEFd9MCrq+MhERDh/t3gKHApekqGvfvoPtzNVE
-        hbV22Bpv/Ucq4sHjMdiM3a5g3Jq/yEu9/SWa+yVON6B+a9LA
-X-Google-Smtp-Source: ABdhPJyTQRZEntJC1YlvSEsMdoQld4jNf2v4AzyxA8gpMEGEm/BZqSh0APYLDYj0OrDeFSXLY8cCAFpf2bQ6DOlvlcvSIBn8fP2S
+        Mon, 8 Feb 2021 06:12:28 -0500
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 118B3T9o020361;
+        Mon, 8 Feb 2021 06:11:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=pakubhC/bKDxrxp1q59W2jEv0vufHIDblQmhSmH/KZg=;
+ b=AOJraINU24Tt5c5XPMjGhsParnW90G5gOnOTKuOT2M7YgFnO/kHpZOya0TFO38i2HRib
+ bZRvnRGWjSIIpYALdqozJ8EUD8unaZ0dp5rrFC/SVxZqt9h97FInspcSkooACbHRqffV
+ Y0xDaQDN5ZIfkPOUG9plsctQ5T9drTdTpaTUiQ4SrDX+tXSHMc6pUyTaIOezT1QCC23g
+ Gm1ysFH8qPptkgcbA+CoxTKqkAYGECxGiCtM4DaS9A6swr6+i6g+Fhtcl5Ert6HKW+dR
+ dz5pWUYNtaGaIRlzBTbh+pBZQKqknrN8e9Iydp+NjWcqSSExwUp6jS297PztyR/b+ke2 3w== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 36k43a0ckd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 08 Feb 2021 06:11:08 -0500
+Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 118B4DAN025188;
+        Mon, 8 Feb 2021 06:11:07 -0500
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 36k43a0ch9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 08 Feb 2021 06:11:07 -0500
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+        by ppma04fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 118B36Ki015504;
+        Mon, 8 Feb 2021 11:11:05 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma04fra.de.ibm.com with ESMTP id 36hjr890ms-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 08 Feb 2021 11:11:04 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 118BB1iU39518476
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 8 Feb 2021 11:11:02 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DF62A4203F;
+        Mon,  8 Feb 2021 11:11:01 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B17A742049;
+        Mon,  8 Feb 2021 11:10:59 +0000 (GMT)
+Received: from [9.199.47.177] (unknown [9.199.47.177])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon,  8 Feb 2021 11:10:59 +0000 (GMT)
+Subject: Re: [PATCH v2] powerpc/uprobes: Validation for prefixed instruction
+To:     "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>
+Cc:     mpe@ellerman.id.au, oleg@redhat.com, rostedt@goodmis.org,
+        paulus@samba.org, jniethe5@gmail.com, naveen.n.rao@linux.ibm.com,
+        sandipan@linux.ibm.com, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org,
+        Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+References: <20210204104703.273429-1-ravi.bangoria@linux.ibm.com>
+ <20210204130821.GK210@DESKTOP-TDPLP67.localdomain>
+ <20210204161211.GM210@DESKTOP-TDPLP67.localdomain>
+From:   Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+Message-ID: <a685dcd5-4e2a-dcdc-ae10-eeaf826db362@linux.ibm.com>
+Date:   Mon, 8 Feb 2021 16:40:58 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-X-Received: by 2002:a6b:3b53:: with SMTP id i80mr14479074ioa.203.1612782614531;
- Mon, 08 Feb 2021 03:10:14 -0800 (PST)
-Date:   Mon, 08 Feb 2021 03:10:14 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000d6d06a05bad13604@google.com>
-Subject: memory leak in qrtr_create
-From:   syzbot <syzbot+35a511c72ea7356cdcf3@syzkaller.appspotmail.com>
-To:     bjorn.andersson@linaro.org, davem@davemloft.net, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, loic.poulain@linaro.org,
-        manivannan.sadhasivam@linaro.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210204161211.GM210@DESKTOP-TDPLP67.localdomain>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-02-08_03:2021-02-08,2021-02-08 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ lowpriorityscore=0 mlxlogscore=999 malwarescore=0 priorityscore=1501
+ adultscore=0 clxscore=1015 suspectscore=0 spamscore=0 mlxscore=0
+ phishscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102080074
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-syzbot found the following issue on:
-
-HEAD commit:    13391c60 Merge branch 'linus' of git://git.kernel.org/pub/..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=15eb761b500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=e7e6ee96c9292f22
-dashboard link: https://syzkaller.appspot.com/bug?extid=35a511c72ea7356cdcf3
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=103c58a0d00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1040bc54d00000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+35a511c72ea7356cdcf3@syzkaller.appspotmail.com
-
-Warning: Permanently added '10.128.0.186' (ECDSA) to the list of known hosts.
-executing program
-executing program
-BUG: memory leak
-unreferenced object 0xffff88810127da40 (size 824):
-  comm "syz-executor472", pid 8431, jiffies 4294942269 (age 13.980s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    2a 00 01 40 00 00 00 00 00 00 00 00 00 00 00 00  *..@............
-  backtrace:
-    [<0000000041c0b1fe>] sk_prot_alloc+0x3e/0x1c0 net/core/sock.c:1679
-    [<00000000f73c2f2d>] sk_alloc+0x30/0x3f0 net/core/sock.c:1739
-    [<0000000069049cba>] qrtr_create+0x4d/0xb0 net/qrtr/qrtr.c:1258
-    [<0000000077afae5e>] __sock_create+0x1ab/0x2b0 net/socket.c:1406
-    [<000000007f58f353>] sock_create net/socket.c:1457 [inline]
-    [<000000007f58f353>] __sys_socket+0x6f/0x140 net/socket.c:1499
-    [<00000000217ba93a>] __do_sys_socket net/socket.c:1508 [inline]
-    [<00000000217ba93a>] __se_sys_socket net/socket.c:1506 [inline]
-    [<00000000217ba93a>] __x64_sys_socket+0x1a/0x20 net/socket.c:1506
-    [<00000000632eec5e>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<00000000a6403a3c>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
 
+On 2/4/21 9:42 PM, Naveen N. Rao wrote:
+> On 2021/02/04 06:38PM, Naveen N. Rao wrote:
+>> On 2021/02/04 04:17PM, Ravi Bangoria wrote:
+>>> Don't allow Uprobe on 2nd word of a prefixed instruction. As per
+>>> ISA 3.1, prefixed instruction should not cross 64-byte boundary.
+>>> So don't allow Uprobe on such prefixed instruction as well.
+>>>
+>>> There are two ways probed instruction is changed in mapped pages.
+>>> First, when Uprobe is activated, it searches for all the relevant
+>>> pages and replace instruction in them. In this case, if we notice
+>>> that probe is on the 2nd word of prefixed instruction, error out
+>>> directly. Second, when Uprobe is already active and user maps a
+>>> relevant page via mmap(), instruction is replaced via mmap() code
+>>> path. But because Uprobe is invalid, entire mmap() operation can
+>>> not be stopped. In this case just print an error and continue.
+>>>
+>>> Signed-off-by: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+>>> ---
+>>> v1: http://lore.kernel.org/r/20210119091234.76317-1-ravi.bangoria@linux.ibm.com
+>>> v1->v2:
+>>>    - Instead of introducing new arch hook from verify_opcode(), use
+>>>      existing hook arch_uprobe_analyze_insn().
+>>>    - Add explicit check for prefixed instruction crossing 64-byte
+>>>      boundary. If probe is on such instruction, throw an error.
+>>>
+>>>   arch/powerpc/kernel/uprobes.c | 66 ++++++++++++++++++++++++++++++++++-
+>>>   1 file changed, 65 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/arch/powerpc/kernel/uprobes.c b/arch/powerpc/kernel/uprobes.c
+>>> index e8a63713e655..485d19a2a31f 100644
+>>> --- a/arch/powerpc/kernel/uprobes.c
+>>> +++ b/arch/powerpc/kernel/uprobes.c
+>>> @@ -7,6 +7,7 @@
+>>>    * Adapted from the x86 port by Ananth N Mavinakayanahalli <ananth@in.ibm.com>
+>>>    */
+>>>   #include <linux/kernel.h>
+>>> +#include <linux/highmem.h>
+>>>   #include <linux/sched.h>
+>>>   #include <linux/ptrace.h>
+>>>   #include <linux/uprobes.h>
+>>> @@ -28,6 +29,69 @@ bool is_trap_insn(uprobe_opcode_t *insn)
+>>>   	return (is_trap(*insn));
+>>>   }
+>>>   
+>>> +#ifdef CONFIG_PPC64
+>>> +static int get_instr(struct mm_struct *mm, unsigned long addr, u32 *instr)
+>>> +{
+>>> +	struct page *page;
+>>> +	struct vm_area_struct *vma;
+>>> +	void *kaddr;
+>>> +	unsigned int gup_flags = FOLL_FORCE | FOLL_SPLIT_PMD;
+>>> +
+>>> +	if (get_user_pages_remote(mm, addr, 1, gup_flags, &page, &vma, NULL) <= 0)
+>>> +		return -EINVAL;
+>>> +
+>>> +	kaddr = kmap_atomic(page);
+>>> +	*instr = *((u32 *)(kaddr + (addr & ~PAGE_MASK)));
+>>> +	kunmap_atomic(kaddr);
+>>> +	put_page(page);
+>>> +	return 0;
+>>> +}
+>>> +
+>>> +static int validate_prefixed_instr(struct mm_struct *mm, unsigned long addr)
+>>> +{
+>>> +	struct ppc_inst inst;
+>>> +	u32 prefix, suffix;
+>>> +
+>>> +	/*
+>>> +	 * No need to check if addr is pointing to beginning of the
+>>> +	 * page. Even if probe is on a suffix of page-unaligned
+>>> +	 * prefixed instruction, hw will raise exception and kernel
+>>> +	 * will send SIGBUS.
+>>> +	 */
+>>> +	if (!(addr & ~PAGE_MASK))
+>>> +		return 0;
+>>> +
+>>> +	if (get_instr(mm, addr, &prefix) < 0)
+>>> +		return -EINVAL;
+>>> +	if (get_instr(mm, addr + 4, &suffix) < 0)
+>>> +		return -EINVAL;
+>>> +
+>>> +	inst = ppc_inst_prefix(prefix, suffix);
+>>> +	if (ppc_inst_prefixed(inst) && (addr & 0x3F) == 0x3C) {
+>>> +		printk_ratelimited("Cannot register a uprobe on 64 byte "
+>> 		^^^^^^^^^^^^^^^^^^ pr_info_ratelimited()
+>>
+>> It should be sufficient to check the primary opcode to determine if it
+>> is a prefixed instruction. You don't have to read the suffix. I see that
+>> we don't have a helper to do this currently, so you could do:
+>>
+>> 	if (ppc_inst_primary_opcode(ppc_inst(prefix)) == 1)
+> 
+> Seeing the kprobes code, I realized that we have to check for another
+> scenario (Thanks, Jordan!). If this is the suffix of a prefix
+> instruction for which a uprobe has already been installed, then the
+> previous word will be a 'trap' instruction. You need to check if there
+> is a uprobe at the previous word, and if the original instruction there
+> was a prefix instruction.
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+Yes, this patch will fail to detect such scenario. I think I should
+read the instruction directly from file, like what copy_insn() does.
+With that, I'll get original instruction rather that 'trap'.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+I'll think more along this line.
+
+Ravi
