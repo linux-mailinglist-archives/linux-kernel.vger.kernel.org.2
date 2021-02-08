@@ -2,200 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A16A1312AAC
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 07:29:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B62A312ABC
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 07:33:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229679AbhBHG3C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 01:29:02 -0500
-Received: from relay4-d.mail.gandi.net ([217.70.183.196]:44203 "EHLO
-        relay4-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229581AbhBHG3A (ORCPT
+        id S229969AbhBHGcV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 01:32:21 -0500
+Received: from new3-smtp.messagingengine.com ([66.111.4.229]:47775 "EHLO
+        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229715AbhBHGaK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 01:29:00 -0500
-X-Originating-IP: 82.65.183.113
-Received: from [172.16.5.113] (82-65-183-113.subs.proxad.net [82.65.183.113])
-        (Authenticated sender: alex@ghiti.fr)
-        by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id CCB10E0007;
-        Mon,  8 Feb 2021 06:28:13 +0000 (UTC)
-From:   Alex Ghiti <alex@ghiti.fr>
-Subject: Re: [PATCH v2 1/1] riscv/kasan: add KASAN_VMALLOC support
-To:     Palmer Dabbelt <palmer@dabbelt.com>, nylon7@andestech.com
-Cc:     aou@eecs.berkeley.edu, nickhu@andestech.com, alankao@andestech.com,
-        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
-        nylon7717@gmail.com, glider@google.com,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        aryabinin@virtuozzo.com, linux-riscv@lists.infradead.org,
-        dvyukov@google.com
-References: <mhng-443fd141-b9a3-4be6-a056-416877f99ea4@palmerdabbelt-glaptop>
-Message-ID: <2b2f3038-3e27-8763-cf78-3fbbfd2100a0@ghiti.fr>
-Date:   Mon, 8 Feb 2021 01:28:13 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Mon, 8 Feb 2021 01:30:10 -0500
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailnew.nyi.internal (Postfix) with ESMTP id DC4A4580219;
+        Mon,  8 Feb 2021 01:29:03 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Mon, 08 Feb 2021 01:29:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm1; bh=A0MotY/oB5vQ6s3LwI/wq+/t1E
+        JXxwjHD9hCvZwPy3M=; b=TbEH4tEqFzjbSB55Gcv6A1JpeK9Rd+PRH3ME3Z/YQP
+        n9Jlgep7cjdvIlyupcLjgkfTrBGQzIpGd0jrAjGtFMERSqL+baQGrBraN30y8u7I
+        1lLEFJkYQo3pZegZ/UjKFOATT2dptgfdWJ6ssOIQxGmLCD4Kqc8SFoxRRqWVgLvg
+        TJ4g3QYAupg4m7vojGl8OCHkUqJ3alxMq1LKCPPukwp55i8G/KUMq0JZc0qIVhdQ
+        G8fBDVcqFsqMwmj4fUSv+RsjpX60QsdzIQV6ipVdAh570E6ZIV9nvvuqZmU7kSH3
+        wWaFL6d52VCOFCP9n1wy4mkOfz3Bspz9EjRSzRNf+YlA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=A0MotY/oB5vQ6s3Lw
+        I/wq+/t1EJXxwjHD9hCvZwPy3M=; b=p+sIQpUejjsOR+UZXaBjLHhgwe27v/xIZ
+        nAKXKwbHJygp8YAoKreub+fS2A2SvYOC7+K95T4sNRHC36FaSxy4yXvpMYTscYlm
+        1GB2OY5+f4abh18vPQiOc1oTDjSI+GjRpyUz936j4wMVEZ6lG+dqEmOTv5hIPuvY
+        HxKR+2+TLaKgwtu0J6Kfia+pwaY8zQNc+ncjG+1uvJ+Tb4bRrh/A+22cr48FSBPa
+        dfo7v6KEL7iMeEqh6GqIoRYjbI/AgN2HXZzvs6oUrC4nDet+sly4mVCDw7W2s+39
+        LAcMVPAkvQugC2qsAPUVANVkztFssUWCfasd1sPCug0NUZAv/5Muw==
+X-ME-Sender: <xms:LNogYHG3u25YDLp4_-NQnGhyo4LfSGwkycaqGHZgXfownIhXgAu7VQ>
+    <xme:LNogYEW93i4big21XN4vEBOfij_kfL4mYtzxBCWDwSvZkYwoSdCci-NWA_f69KACp
+    g7OvDeYFE76-8B_Ow>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrhedvgdelgecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefhvffufffkofgggfestdekredtredttdenucfhrhhomhepufgrmhhuvghlucfj
+    ohhllhgrnhguuceoshgrmhhuvghlsehshhholhhlrghnugdrohhrgheqnecuggftrfgrth
+    htvghrnhepieetkefhheduudfgledtudefjeejfeegveehkeeufffhhfejkeehiefftdev
+    tdevnecukfhppeejtddrudefhedrudegkedrudehudenucevlhhushhtvghrufhiiigvpe
+    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehsrghmuhgvlhesshhhohhllhgrnhgurdho
+    rhhg
+X-ME-Proxy: <xmx:LNogYJLs3lvpSCHQ295AW8a_Yep1aIgtrUsgfjlxSU6Z-6F-VKkaIg>
+    <xmx:LNogYFFS8V2Mnu_McbbeMczqZbw3V6LDw9_2P3PU1OLAJWZTUkWVNg>
+    <xmx:LNogYNWWpCxzfnrwqBq4IaF_2dLK7TSPtFSd5RONbcXQ7BHFe7T8wA>
+    <xmx:L9ogYGuJJDEiCvuKtZfVzCNAZA-KAt2iMv3SLuO9mZ83G_lWVF8QwQ>
+Received: from titanium.stl.sholland.net (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 5110B108005B;
+        Mon,  8 Feb 2021 01:29:00 -0500 (EST)
+From:   Samuel Holland <samuel@sholland.org>
+To:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Corentin Labbe <clabbe@baylibre.com>
+Cc:     Ondrej Jirman <megous@megous.com>, netdev@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-sunxi@googlegroups.com, Samuel Holland <samuel@sholland.org>
+Subject: [PATCH net-next RESEND 0/5] dwmac-sun8i cleanup and shutdown hook
+Date:   Mon,  8 Feb 2021 00:28:53 -0600
+Message-Id: <20210208062859.11429-1-samuel@sholland.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <mhng-443fd141-b9a3-4be6-a056-416877f99ea4@palmerdabbelt-glaptop>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: fr
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nylon,
+These patches clean up some things I noticed while fixing suspend/resume
+behavior. The first four are minor code improvements. The last one adds
+a shutdown hook to minimize power consumption on boards without a PMIC.
 
-Le 1/22/21 à 10:56 PM, Palmer Dabbelt a écrit :
-> On Fri, 15 Jan 2021 21:58:35 PST (-0800), nylon7@andestech.com wrote:
->> It references to x86/s390 architecture.
->> >> So, it doesn't map the early shadow page to cover VMALLOC space.
->>
->> Prepopulate top level page table for the range that would otherwise be
->> empty.
->>
->> lower levels are filled dynamically upon memory allocation while
->> booting.
+Now that the fixes series is merged, I'm resending this series rebased
+on top of net-next and with Chen-Yu's Reviewed-by tags.
 
-I think we can improve the changelog a bit here with something like that:
+Samuel Holland (5):
+  net: stmmac: dwmac-sun8i: Return void from PHY unpower
+  net: stmmac: dwmac-sun8i: Remove unnecessary PHY power check
+  net: stmmac: dwmac-sun8i: Use reset_control_reset
+  net: stmmac: dwmac-sun8i: Minor probe function cleanup
+  net: stmmac: dwmac-sun8i: Add a shutdown callback
 
-"KASAN vmalloc space used to be mapped using kasan early shadow page. 
-KASAN_VMALLOC requires the top-level of the kernel page table to be 
-properly populated, lower levels being filled dynamically upon memory 
-allocation at runtime."
+ .../net/ethernet/stmicro/stmmac/dwmac-sun8i.c | 31 ++++++++++++-------
+ 1 file changed, 19 insertions(+), 12 deletions(-)
 
->>
->> Signed-off-by: Nylon Chen <nylon7@andestech.com>
->> Signed-off-by: Nick Hu <nickhu@andestech.com>
->> ---
->>  arch/riscv/Kconfig         |  1 +
->>  arch/riscv/mm/kasan_init.c | 57 +++++++++++++++++++++++++++++++++++++-
->>  2 files changed, 57 insertions(+), 1 deletion(-)
->>
->> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
->> index 81b76d44725d..15a2c8088bbe 100644
->> --- a/arch/riscv/Kconfig
->> +++ b/arch/riscv/Kconfig
->> @@ -57,6 +57,7 @@ config RISCV
->>      select HAVE_ARCH_JUMP_LABEL
->>      select HAVE_ARCH_JUMP_LABEL_RELATIVE
->>      select HAVE_ARCH_KASAN if MMU && 64BIT
->> +    select HAVE_ARCH_KASAN_VMALLOC if MMU && 64BIT
->>      select HAVE_ARCH_KGDB
->>      select HAVE_ARCH_KGDB_QXFER_PKT
->>      select HAVE_ARCH_MMAP_RND_BITS if MMU
->> diff --git a/arch/riscv/mm/kasan_init.c b/arch/riscv/mm/kasan_init.c
->> index 12ddd1f6bf70..4b9149f963d3 100644
->> --- a/arch/riscv/mm/kasan_init.c
->> +++ b/arch/riscv/mm/kasan_init.c
->> @@ -9,6 +9,19 @@
->>  #include <linux/pgtable.h>
->>  #include <asm/tlbflush.h>
->>  #include <asm/fixmap.h>
->> +#include <asm/pgalloc.h>
->> +
->> +static __init void *early_alloc(size_t size, int node)
->> +{
->> +    void *ptr = memblock_alloc_try_nid(size, size,
->> +        __pa(MAX_DMA_ADDRESS), MEMBLOCK_ALLOC_ACCESSIBLE, node);
->> +
->> +    if (!ptr)
->> +        panic("%pS: Failed to allocate %zu bytes align=%zx nid=%d 
->> from=%llx\n",
->> +            __func__, size, size, node, (u64)__pa(MAX_DMA_ADDRESS));
->> +
->> +    return ptr;
->> +}
->>
->>  extern pgd_t early_pg_dir[PTRS_PER_PGD];
->>  asmlinkage void __init kasan_early_init(void)
->> @@ -83,6 +96,40 @@ static void __init populate(void *start, void *end)
->>      memset(start, 0, end - start);
->>  }
->>
->> +void __init kasan_shallow_populate(void *start, void *end)
->> +{
->> +    unsigned long vaddr = (unsigned long)start & PAGE_MASK;
->> +    unsigned long vend = PAGE_ALIGN((unsigned long)end);
->> +    unsigned long pfn;
->> +    int index;
->> +    void *p;
->> +    pud_t *pud_dir, *pud_k;
->> +    pgd_t *pgd_dir, *pgd_k;
->> +    p4d_t *p4d_dir, *p4d_k;
->> +
->> +    while (vaddr < vend) {
->> +        index = pgd_index(vaddr);
->> +        pfn = csr_read(CSR_SATP) & SATP_PPN;
+-- 
+2.26.2
 
-At this point in the boot process, we know that we use swapper_pg_dir so 
-no need to read SATP.
-
->> +        pgd_dir = (pgd_t *)pfn_to_virt(pfn) + index;
-
-Here, this pgd_dir assignment is overwritten 2 lines below, so no need 
-for it.
-
->> +        pgd_k = init_mm.pgd + index;
->> +        pgd_dir = pgd_offset_k(vaddr);
-
-pgd_offset_k(vaddr) = init_mm.pgd + pgd_index(vaddr) so pgd_k == pgd_dir.
-
->> +        set_pgd(pgd_dir, *pgd_k);
->> +
->> +        p4d_dir = p4d_offset(pgd_dir, vaddr);
->> +        p4d_k  = p4d_offset(pgd_k, vaddr);
->> +
->> +        vaddr = (vaddr + PUD_SIZE) & PUD_MASK;
-
-Why do you increase vaddr *before* populating the first one ? And 
-pud_addr_end does that properly: it returns the next pud address if it 
-does not go beyond end address to map.
-
->> +        pud_dir = pud_offset(p4d_dir, vaddr);
->> +        pud_k = pud_offset(p4d_k, vaddr);
->> +
->> +        if (pud_present(*pud_dir)) {
->> +            p = early_alloc(PAGE_SIZE, NUMA_NO_NODE);
->> +            pud_populate(&init_mm, pud_dir, p);
-
-init_mm is not needed here.
-
->> +        }
->> +        vaddr += PAGE_SIZE;
-
-Why do you need to add PAGE_SIZE ? vaddr already points to the next pud.
-
-It seems like this patch tries to populate userspace page table whereas 
-at this point in the boot process, only swapper_pg_dir is used or am I 
-missing something ?
-
-Thanks,
-
-Alex
-
->> +    }
->> +}
->> +
->>  void __init kasan_init(void)
->>  {
->>      phys_addr_t _start, _end;
->> @@ -90,7 +137,15 @@ void __init kasan_init(void)
->>
->>      kasan_populate_early_shadow((void *)KASAN_SHADOW_START,
->>                      (void *)kasan_mem_to_shadow((void *)
->> -                                VMALLOC_END));
->> +                                VMEMMAP_END));
->> +    if (IS_ENABLED(CONFIG_KASAN_VMALLOC))
->> +        kasan_shallow_populate(
->> +            (void *)kasan_mem_to_shadow((void *)VMALLOC_START),
->> +            (void *)kasan_mem_to_shadow((void *)VMALLOC_END));
->> +    else
->> +        kasan_populate_early_shadow(
->> +            (void *)kasan_mem_to_shadow((void *)VMALLOC_START),
->> +            (void *)kasan_mem_to_shadow((void *)VMALLOC_END));
->>
->>      for_each_mem_range(i, &_start, &_end) {
->>          void *start = (void *)_start; >
-> Thanks, this is on for-next.
-> 
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
