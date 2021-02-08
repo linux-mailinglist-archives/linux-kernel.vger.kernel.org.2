@@ -2,71 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F200231422A
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 22:46:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87E5831422D
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 22:47:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236939AbhBHVqM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 16:46:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46878 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236331AbhBHVVy (ORCPT
+        id S233331AbhBHVqe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 16:46:34 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:32500 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234685AbhBHVXe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 16:21:54 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05505C061788
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 13:21:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=O86lNpBRnEs3afDwWTUQ9xX0klYvN5RBrVkkBYUenXk=; b=Ifxj6MBivODlzSxqgWEv6GG6EB
-        sPXNpzVIZRxjOLl26t3TMSnwm330607ESm7Hfc2Vl3W5MkPjGATg2FThUI0x4pQNsJN3ncXOvO0vy
-        2i3DndUZ6jpn6Hel8mVLvUXjlHwyMDAk06/QhqOV68DlhMCx+mfmsd2vZoK/0a3S2LlrlLxrMO6ru
-        wQBvNQOa0jTuaPASxNZw6c7zbJd/LLtvIqMb/QAuPLtHS9yDGUXJvrZM8qqSM16UfbjQ188frrr04
-        N46Z0gI3/7aB3+HiwDy9IESkmcWBwgx1wlVXvvli2pq7rclR8nni27xUQqy5erZNfDva2mJjEDxeO
-        6/jTSCMw==;
-Received: from [2601:1c0:6280:3f0::cf3b]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l9Dy3-0000yK-10; Mon, 08 Feb 2021 21:21:11 +0000
-Subject: Re: [PATCH]: checkpatch: Fixed styling issue
-To:     Mukul Mehar <mukulmehar02@gmail.com>, gregkh@linuxfoundation.org
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-References: <20210208195116.GA19781@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <912a1fcf-4298-5416-805d-3571df66d4d8@infradead.org>
-Date:   Mon, 8 Feb 2021 13:21:07 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Mon, 8 Feb 2021 16:23:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612819322;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7rPLQAElgHees9+1oAOIuOVL0/2tuTufKerlPtBFQmU=;
+        b=UoJhOfj3YYNlJom5YNtz+YJdTRM+plrcfjlYz6PwBuizVG2u4od6iuaXGJigj1bmQQBkIl
+        SdLthbVKLwck17AxEeboA2cm2jRouFg6qAJsEubvhzfFqXu7foDg0mzI9bWBKsrr6HgotD
+        oaFvoO7YKn6JcMX1T5lm0eNyNsFVdfg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-356-PhagjMyaO0Czeap8eyEjTg-1; Mon, 08 Feb 2021 16:21:58 -0500
+X-MC-Unique: PhagjMyaO0Czeap8eyEjTg-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B5318107ACE3;
+        Mon,  8 Feb 2021 21:21:56 +0000 (UTC)
+Received: from treble (ovpn-120-159.rdu2.redhat.com [10.10.120.159])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id AD4AF1346F;
+        Mon,  8 Feb 2021 21:21:55 +0000 (UTC)
+Date:   Mon, 8 Feb 2021 15:21:53 -0600
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: linux-next: Tree for Feb 8 (objtool: warnings: 5)
+Message-ID: <20210208212153.vs2v7k2c55a3syvo@treble>
+References: <20210208235246.01cb4daf@canb.auug.org.au>
+ <2000eae0-89f4-a88f-a113-7fa47f16def7@infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <20210208195116.GA19781@gmail.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <2000eae0-89f4-a88f-a113-7fa47f16def7@infradead.org>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/8/21 11:51 AM, Mukul Mehar wrote:
+On Mon, Feb 08, 2021 at 11:30:59AM -0800, Randy Dunlap wrote:
+> On 2/8/21 4:52 AM, Stephen Rothwell wrote:
+> > Hi all,
+> > 
+> > Changes since 20210205:
+> > 
+> 
+> on x86_64:
+> 
+> objtool warnings: (from 3 different randconfig builds)
+> 
+> drivers/input/touchscreen/elants_i2c.o: warning: objtool: elants_i2c_initialize() falls through to next function elants_i2c_resume()
 
-More comments (probably duplicates):
+Randy, can you share the .o?  (you may need to gzip it, still waiting on
+corporate IT to allow me to receive .o files)
 
-a. The "checkpatch:" in the subject says that you are making a patch
-to the "checkpatch" script. You are not doing that. The subject should
-be more like: "staging: most: fix a style issue in sound.c" e.g.
+> fs/select.o: warning: objtool: do_sys_poll()+0x8e9: call to __ubsan_handle_sub_overflow() with UACCESS enabled
+> lib/iov_iter.o: warning: objtool: iovec_from_user.part.12()+0x2db: call to __ubsan_handle_add_overflow() with UACCESS enabled
 
-b. This comment:
-This is my first patch.
+Peter, we need the patch to prevent UBSAN with gcc7?
 
-should not be in the comment message. If included at all, it should be
-after the "---" line, like so:
+> vmlinux.o: warning: objtool: do_machine_check()+0x7ee: call to queue_task_work() leaves .noinstr.text section
+> vmlinux.o: warning: objtool: lock_is_held_type()+0x107: call to warn_bogus_irq_restore() leaves .noinstr.text section
 
----
-This is my first patch.
+Peter?
 
-<then the diffstat>.
-
-
-thanks.
 -- 
-~Randy
+Josh
 
