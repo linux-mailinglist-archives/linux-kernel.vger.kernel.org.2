@@ -2,268 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26EDB313B99
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 18:53:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FD44313AFD
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 18:33:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233570AbhBHRxO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 12:53:14 -0500
-Received: from mga09.intel.com ([134.134.136.24]:27508 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233960AbhBHPcb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 10:32:31 -0500
-IronPort-SDR: vERitAeSajm4WrARp8pHJ4EePwIlPfZ/RWcNz3mRdB2h/W0xmsr/ico2ibKsJ2Tf829GxFU3KQ
- +8u/N0HWOpmA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9889"; a="181874623"
-X-IronPort-AV: E=Sophos;i="5.81,162,1610438400"; 
-   d="scan'208";a="181874623"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2021 07:30:37 -0800
-IronPort-SDR: ttzch8cFWylH7NWHaoZJ+NeYxiWb3vSTdprddBd21ETfLJs20VLbX0hFd1HHWDk6xRTwCilDRO
- HQb9noOQnEHQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,162,1610438400"; 
-   d="scan'208";a="358820906"
-Received: from otc-lr-04.jf.intel.com ([10.54.39.41])
-  by orsmga003.jf.intel.com with ESMTP; 08 Feb 2021 07:30:36 -0800
-From:   kan.liang@linux.intel.com
-To:     peterz@infradead.org, acme@kernel.org, mingo@kernel.org,
+        id S234957AbhBHRcu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 12:32:50 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:31210 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233081AbhBHP30 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 10:29:26 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612798078;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Yq0Ti4bvg/0tu+i0KOgAFNuIbTb2acty2w5AsnsSKZY=;
+        b=WYdqwXAOBBt6vXNCF7F61K4OGVvekAU99o0U0pUPHLhTI1k2oBf+C8XDxBDt6w6/IkgjEX
+        ZCADKwj26EmkDtbQcU+aCyUjn9P1etDnphak5DpfIuKDWGW5b73XxYHfq5D1P7rwDI88zg
+        gHWgxTJXvYajonW1uWpkhu0495K4iqY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-314-cXkYk-baOmOqIGYjRUMP7Q-1; Mon, 08 Feb 2021 10:27:54 -0500
+X-MC-Unique: cXkYk-baOmOqIGYjRUMP7Q-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 76B6F107ACE3;
+        Mon,  8 Feb 2021 15:27:52 +0000 (UTC)
+Received: from [10.36.112.10] (ovpn-112-10.ams2.redhat.com [10.36.112.10])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 32EDE1002388;
+        Mon,  8 Feb 2021 15:27:47 +0000 (UTC)
+Subject: Re: [RFC v4 3/3] vfio: platform: reset: add msi support
+To:     Vikas Gupta <vikas.gupta@broadcom.com>, alex.williamson@redhat.com,
+        cohuck@redhat.com, kvm@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Cc:     tglx@linutronix.de, bp@alien8.de, namhyung@kernel.org,
-        jolsa@redhat.com, ak@linux.intel.com, yao.jin@linux.intel.com,
-        alexander.shishkin@linux.intel.com, adrian.hunter@intel.com
-Subject: [PATCH 38/49] perf list: Display pmu prefix for partially supported hybrid cache events
-Date:   Mon,  8 Feb 2021 07:25:35 -0800
-Message-Id: <1612797946-18784-39-git-send-email-kan.liang@linux.intel.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1612797946-18784-1-git-send-email-kan.liang@linux.intel.com>
-References: <1612797946-18784-1-git-send-email-kan.liang@linux.intel.com>
+Cc:     vikram.prakash@broadcom.com, srinath.mannam@broadcom.com,
+        ashwin.kamath@broadcom.com, zachary.schroff@broadcom.com,
+        manish.kurup@broadcom.com
+References: <20201214174514.22006-1-vikas.gupta@broadcom.com>
+ <20210129172421.43299-1-vikas.gupta@broadcom.com>
+ <20210129172421.43299-4-vikas.gupta@broadcom.com>
+From:   Auger Eric <eric.auger@redhat.com>
+Message-ID: <27d82212-0d68-3df8-8741-cd79a21f2b48@redhat.com>
+Date:   Mon, 8 Feb 2021 16:27:45 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
+MIME-Version: 1.0
+In-Reply-To: <20210129172421.43299-4-vikas.gupta@broadcom.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jin Yao <yao.jin@linux.intel.com>
+Hi Vikas,
 
-Part of hardware cache events are only available on one cpu pmu.
-For example, 'L1-dcache-load-misses' is only available on cpu_core.
-perf list should clearly report this info.
+On 1/29/21 6:24 PM, Vikas Gupta wrote:
+> Add msi support for Broadcom FlexRm device.
+> 
+> Signed-off-by: Vikas Gupta <vikas.gupta@broadcom.com>
+> ---
+>  .../platform/reset/vfio_platform_bcmflexrm.c  | 72 ++++++++++++++++++-
+>  1 file changed, 70 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/vfio/platform/reset/vfio_platform_bcmflexrm.c b/drivers/vfio/platform/reset/vfio_platform_bcmflexrm.c
+> index 96064ef8f629..6ca4ca12575b 100644
+> --- a/drivers/vfio/platform/reset/vfio_platform_bcmflexrm.c
+> +++ b/drivers/vfio/platform/reset/vfio_platform_bcmflexrm.c
+> @@ -21,7 +21,9 @@
+>  #include <linux/init.h>
+>  #include <linux/io.h>
+>  #include <linux/kernel.h>
+> +#include <linux/msi.h>
+>  #include <linux/module.h>
+> +#include <linux/vfio.h>
+>  
+>  #include "../vfio_platform_private.h"
+>  
+> @@ -33,6 +35,9 @@
+>  #define RING_VER					0x000
+>  #define RING_CONTROL					0x034
+>  #define RING_FLUSH_DONE					0x038
+> +#define RING_MSI_ADDR_LS				0x03c
+> +#define RING_MSI_ADDR_MS				0x040
+> +#define RING_MSI_DATA_VALUE				0x064
+>  
+>  /* Register RING_CONTROL fields */
+>  #define CONTROL_FLUSH_SHIFT				5
+> @@ -105,8 +110,71 @@ static int vfio_platform_bcmflexrm_reset(struct vfio_platform_device *vdev)
+>  	return ret;
+>  }
+>  
+> -module_vfio_reset_handler("brcm,iproc-flexrm-mbox",
+> -			  vfio_platform_bcmflexrm_reset);
+> +static u32 bcm_num_msi(struct vfio_platform_device *vdev)
+Please use the same prefix as for reset, ie. vfio_platform_bcmflexrm_get_msi
+> +{
+> +	struct vfio_platform_region *reg = &vdev->regions[0];> +
+> +	return (reg->size / RING_REGS_SIZE);
+> +}
+> +
+> +static void bcm_write_msi(struct vfio_platform_device *vdev,
+vfio_platform_bcmflexrm_msi_write?
+> +		struct msi_desc *desc,
+> +		struct msi_msg *msg)
+> +{
+> +	int i;
+> +	int hwirq = -1;
+> +	int msi_src;
+> +	void __iomem *ring;
+> +	struct vfio_platform_region *reg = &vdev->regions[0];
+> +
+> +	if (!reg)
+> +		return;
+why do you need this check? For this to be called, SET_IRQ IOCTL must
+have been called. This can only happen after vfio_platform_open which
+first calls vfio_platform_regions_init and then vfio_platform_irq_init
+> +
+> +	for (i = 0; i < vdev->num_irqs; i++)
+> +		if (vdev->irqs[i].type == VFIO_IRQ_TYPE_MSI)
+> +			hwirq = vdev->irqs[i].ctx[0].hwirq;
+nit: It would have been easier to record in vdev the last index of wired
+interrupts and just add the index of the MSI
+> +
+> +	if (hwirq < 0)
+> +		return;
+> +
+> +	msi_src = desc->irq - hwirq;
+> +
+> +	if (!reg->ioaddr) {
+> +		reg->ioaddr = ioremap(reg->addr, reg->size);
+> +		if (!reg->ioaddr)
+pr_warn_once("")?
+> +			return;
+> +	}
+> +
+> +	ring = reg->ioaddr + msi_src * RING_REGS_SIZE;
+> +
+> +	writel_relaxed(msg->address_lo, ring + RING_MSI_ADDR_LS);
+> +	writel_relaxed(msg->address_hi, ring + RING_MSI_ADDR_MS);
+> +	writel_relaxed(msg->data, ring + RING_MSI_DATA_VALUE);
+> +}
+> +
+> +static struct vfio_platform_reset_node vfio_platform_bcmflexrm_reset_node = {
+> +	.owner = THIS_MODULE,
+> +	.compat = "brcm,iproc-flexrm-mbox",
+> +	.of_reset = vfio_platform_bcmflexrm_reset,
+> +	.of_get_msi = bcm_num_msi,
+> +	.of_msi_write = bcm_write_msi
+> +};
+> +
+> +static int __init vfio_platform_bcmflexrm_reset_module_init(void)
+> +{
+> +	__vfio_platform_register_reset(&vfio_platform_bcmflexrm_reset_node);
+> +
+> +	return 0;
+> +}
+> +
+> +static void __exit vfio_platform_bcmflexrm_reset_module_exit(void)
+> +{
+> +	vfio_platform_unregister_reset("brcm,iproc-flexrm-mbox",
+> +				       vfio_platform_bcmflexrm_reset);
+> +}
+> +
+> +module_init(vfio_platform_bcmflexrm_reset_module_init);
+> +module_exit(vfio_platform_bcmflexrm_reset_module_exit);
+>  
+>  MODULE_LICENSE("GPL v2");
+>  MODULE_AUTHOR("Anup Patel <anup.patel@broadcom.com>");
+> 
 
-root@otcpl-adl-s-2:~# ./perf list
+I think you should move the whole series in PATCH now.
 
-Before:
-  L1-dcache-load-misses                              [Hardware cache event]
-  L1-dcache-loads                                    [Hardware cache event]
-  L1-dcache-stores                                   [Hardware cache event]
-  L1-icache-load-misses                              [Hardware cache event]
-  L1-icache-loads                                    [Hardware cache event]
-  LLC-load-misses                                    [Hardware cache event]
-  LLC-loads                                          [Hardware cache event]
-  LLC-store-misses                                   [Hardware cache event]
-  LLC-stores                                         [Hardware cache event]
-  branch-load-misses                                 [Hardware cache event]
-  branch-loads                                       [Hardware cache event]
-  dTLB-load-misses                                   [Hardware cache event]
-  dTLB-loads                                         [Hardware cache event]
-  dTLB-store-misses                                  [Hardware cache event]
-  dTLB-stores                                        [Hardware cache event]
-  iTLB-load-misses                                   [Hardware cache event]
-  node-load-misses                                   [Hardware cache event]
-  node-loads                                         [Hardware cache event]
-  node-store-misses                                  [Hardware cache event]
-  node-stores                                        [Hardware cache event]
+Thanks
 
-After:
-  L1-dcache-loads                                    [Hardware cache event]
-  L1-dcache-stores                                   [Hardware cache event]
-  L1-icache-load-misses                              [Hardware cache event]
-  LLC-load-misses                                    [Hardware cache event]
-  LLC-loads                                          [Hardware cache event]
-  LLC-store-misses                                   [Hardware cache event]
-  LLC-stores                                         [Hardware cache event]
-  branch-load-misses                                 [Hardware cache event]
-  branch-loads                                       [Hardware cache event]
-  cpu_atom/L1-icache-loads/                          [Hardware cache event]
-  cpu_core/L1-dcache-load-misses/                    [Hardware cache event]
-  cpu_core/node-load-misses/                         [Hardware cache event]
-  cpu_core/node-loads/                               [Hardware cache event]
-  dTLB-load-misses                                   [Hardware cache event]
-  dTLB-loads                                         [Hardware cache event]
-  dTLB-store-misses                                  [Hardware cache event]
-  dTLB-stores                                        [Hardware cache event]
-  iTLB-load-misses                                   [Hardware cache event]
-
-Now we can clearly see 'L1-dcache-load-misses' is only available
-on cpu_core.
-
-If without pmu prefix, it indicates the event is available on both
-cpu_core and cpu_atom.
-
-Reviewed-by: Andi Kleen <ak@linux.intel.com>
-Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
----
- tools/perf/util/parse-events.c | 79 +++++++++++++++++++++++++++++++++++++-----
- tools/perf/util/pmu.c          | 11 ++++++
- tools/perf/util/pmu.h          |  2 ++
- 3 files changed, 84 insertions(+), 8 deletions(-)
-
-diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
-index bba7db3..ddf6f79 100644
---- a/tools/perf/util/parse-events.c
-+++ b/tools/perf/util/parse-events.c
-@@ -2809,7 +2809,7 @@ int is_valid_tracepoint(const char *event_string)
- 	return 0;
- }
- 
--static bool is_event_supported(u8 type, unsigned config)
-+static bool is_event_supported(u8 type, u64 config)
- {
- 	bool ret = true;
- 	int open_return;
-@@ -2929,10 +2929,21 @@ void print_sdt_events(const char *subsys_glob, const char *event_glob,
- 
- int print_hwcache_events(const char *event_glob, bool name_only)
- {
--	unsigned int type, op, i, evt_i = 0, evt_num = 0;
--	char name[64];
--	char **evt_list = NULL;
-+	unsigned int type, op, i, evt_i = 0, evt_num = 0, npmus;
-+	char name[64], new_name[128];
-+	char **evt_list = NULL, **evt_pmus = NULL;
- 	bool evt_num_known = false;
-+	struct perf_pmu *pmu = NULL;
-+
-+	if (!perf_pmu__hybrid_exist())
-+		 perf_pmu__scan(NULL);
-+
-+	npmus = perf_pmu__hybrid_npmus();
-+	if (npmus) {
-+		evt_pmus = zalloc(sizeof(char *) * npmus);
-+		if (!evt_pmus)
-+			goto out_enomem;
-+	}
- 
- restart:
- 	if (evt_num_known) {
-@@ -2948,20 +2959,61 @@ int print_hwcache_events(const char *event_glob, bool name_only)
- 				continue;
- 
- 			for (i = 0; i < PERF_COUNT_HW_CACHE_RESULT_MAX; i++) {
-+				unsigned int hybrid_supported = 0, j;
-+				bool supported;
-+
- 				__evsel__hw_cache_type_op_res_name(type, op, i, name, sizeof(name));
- 				if (event_glob != NULL && !strglobmatch(name, event_glob))
- 					continue;
- 
--				if (!is_event_supported(PERF_TYPE_HW_CACHE,
--							type | (op << 8) | (i << 16)))
--					continue;
-+				if (!perf_pmu__hybrid_exist()) {
-+					if (!is_event_supported(PERF_TYPE_HW_CACHE,
-+								type | (op << 8) | (i << 16))) {
-+						continue;
-+					}
-+				} else {
-+					perf_pmu__for_each_hybrid_pmus(pmu) {
-+						if (!evt_num_known) {
-+							evt_num++;
-+							continue;
-+						}
-+
-+						supported = is_event_supported(
-+									PERF_TYPE_HW_CACHE_PMU,
-+									type | (op << 8) | (i << 16) |
-+									((__u64)pmu->type << PERF_PMU_TYPE_SHIFT));
-+						if (supported) {
-+							snprintf(new_name, sizeof(new_name), "%s/%s/",
-+								 pmu->name, name);
-+							evt_pmus[hybrid_supported] = strdup(new_name);
-+							hybrid_supported++;
-+						}
-+					}
-+
-+					if (hybrid_supported == 0)
-+						continue;
-+				}
- 
- 				if (!evt_num_known) {
- 					evt_num++;
- 					continue;
- 				}
- 
--				evt_list[evt_i] = strdup(name);
-+				if ((hybrid_supported == 0) ||
-+				    (hybrid_supported == npmus)) {
-+					evt_list[evt_i] = strdup(name);
-+					if (npmus > 0) {
-+						for (j = 0; j < npmus; j++)
-+							zfree(&evt_pmus[j]);
-+					}
-+				} else {
-+					for (j = 0; j < hybrid_supported; j++) {
-+						evt_list[evt_i++] = evt_pmus[j];
-+						evt_pmus[j] = NULL;
-+					}
-+					continue;
-+				}
-+
- 				if (evt_list[evt_i] == NULL)
- 					goto out_enomem;
- 				evt_i++;
-@@ -2973,6 +3025,13 @@ int print_hwcache_events(const char *event_glob, bool name_only)
- 		evt_num_known = true;
- 		goto restart;
- 	}
-+
-+	for (evt_i = 0; evt_i < evt_num; evt_i++) {
-+		if (!evt_list[evt_i])
-+			break;
-+	}
-+
-+	evt_num = evt_i;
- 	qsort(evt_list, evt_num, sizeof(char *), cmp_string);
- 	evt_i = 0;
- 	while (evt_i < evt_num) {
-@@ -2991,6 +3050,10 @@ int print_hwcache_events(const char *event_glob, bool name_only)
- 	for (evt_i = 0; evt_i < evt_num; evt_i++)
- 		zfree(&evt_list[evt_i]);
- 	zfree(&evt_list);
-+
-+	for (evt_i = 0; evt_i < npmus; evt_i++)
-+		zfree(&evt_pmus[evt_i]);
-+	zfree(&evt_pmus);
- 	return evt_num;
- 
- out_enomem:
-diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
-index ca2fc67..5ebb0da 100644
---- a/tools/perf/util/pmu.c
-+++ b/tools/perf/util/pmu.c
-@@ -1901,3 +1901,14 @@ char *perf_pmu__hybrid_type_to_pmu(const char *type)
- 	free(pmu_name);
- 	return NULL;;
- }
-+
-+int perf_pmu__hybrid_npmus(void)
-+{
-+	struct perf_pmu *pmu;
-+	int n = 0;
-+
-+	perf_pmu__for_each_hybrid_pmus(pmu)
-+		n++;
-+
-+	return n;
-+}
-diff --git a/tools/perf/util/pmu.h b/tools/perf/util/pmu.h
-index ccffc05..4bd7473 100644
---- a/tools/perf/util/pmu.h
-+++ b/tools/perf/util/pmu.h
-@@ -143,4 +143,6 @@ static inline bool perf_pmu__hybrid_exist(void)
- 	return !list_empty(&perf_pmu__hybrid_pmus);
- }
- 
-+int perf_pmu__hybrid_npmus(void);
-+
- #endif /* __PMU_H */
--- 
-2.7.4
+Eric
 
