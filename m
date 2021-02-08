@@ -2,82 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D1903138AF
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 16:59:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2126B31392B
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 17:21:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234255AbhBHP5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 10:57:48 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:58387 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230442AbhBHPIY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 10:08:24 -0500
-Received: from 1.general.cking.uk.vpn ([10.172.193.212])
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1l988U-0002fU-6W; Mon, 08 Feb 2021 15:07:34 +0000
-Subject: Re: [PATCH] HID: logitech-dj: fix unintentional integer overflow on
- left shift
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Nestor Lopez Casado <nlopezcasad@logitech.com>,
-        linux-input@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210207232120.8885-1-colin.king@canonical.com>
- <20210208150610.GI2696@kadam>
-From:   Colin Ian King <colin.king@canonical.com>
-Message-ID: <7f79107a-93ad-251d-33bd-9a2cf2748aa9@canonical.com>
-Date:   Mon, 8 Feb 2021 15:07:33 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S234157AbhBHQUi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 11:20:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56646 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233256AbhBHPMb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 10:12:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7ECCB64EF8;
+        Mon,  8 Feb 2021 15:09:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1612796955;
+        bh=3nRlWCm+8YL67GyuAGDyZxFxDTcon2WA4hWtDC1wdoI=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=k5nfrlBcRa30YYaoaoK+5SaztV1ShZ7d7lsmPEmhPNS/lJzNuHERM9IaoCrtqE2AG
+         r1rGhCnYXIfLxiJKzrMUAm11WcsCpZoqWkVETZWFY9XzZloyW3QIfvldTBZ0bvg5Be
+         8jAUfRvGIEoz5VCMFY06hYLxwtpXQ55V51bbt+I8=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Pho Tran <pho.tran@silabs.com>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 5.4 01/65] USB: serial: cp210x: add pid/vid for WSDA-200-USB
+Date:   Mon,  8 Feb 2021 16:00:33 +0100
+Message-Id: <20210208145810.291660702@linuxfoundation.org>
+X-Mailer: git-send-email 2.30.0
+In-Reply-To: <20210208145810.230485165@linuxfoundation.org>
+References: <20210208145810.230485165@linuxfoundation.org>
+User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
-In-Reply-To: <20210208150610.GI2696@kadam>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/02/2021 15:06, Dan Carpenter wrote:
-> On Sun, Feb 07, 2021 at 11:21:20PM +0000, Colin King wrote:
->> From: Colin Ian King <colin.king@canonical.com>
->>
->> Shifting the integer value 1 is evaluated using 32-bit rithmetic
->> and then used in an expression that expects a 64-bit value, so
->> there is potentially an integer overflow. Fix this by using th
->> BIT_ULL macro to perform the shift and avoid the overflow.
->>
->> Addresses-Coverity: ("Uninitentional integer overflow")
->> Fixes: 534a7b8e10ec ("HID: Add full support for Logitech Unifying receivers")
->> Signed-off-by: Colin Ian King <colin.king@canonical.com>
->> ---
->>  drivers/hid/hid-logitech-dj.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/hid/hid-logitech-dj.c b/drivers/hid/hid-logitech-dj.c
->> index 45e7e0bdd382..747f41be0603 100644
->> --- a/drivers/hid/hid-logitech-dj.c
->> +++ b/drivers/hid/hid-logitech-dj.c
->> @@ -1035,7 +1035,7 @@ static void logi_dj_recv_forward_null_report(struct dj_receiver_dev *djrcv_dev,
->>  	memset(reportbuffer, 0, sizeof(reportbuffer));
->>  
->>  	for (i = 0; i < NUMBER_OF_HID_REPORTS; i++) {
->                         ^^^^^^^^^^^^^^^^^^^^^
-> This is 32, so it can't be undefined.
+From: Pho Tran <Pho.Tran@silabs.com>
 
-Urgh, looks like coverity is being overly pedantic here. :-(
+commit 3c4f6ecd93442f4376a58b38bb40ee0b8c46e0e6 upstream.
 
-> 
->> -		if (djdev->reports_supported & (1 << i)) {
->> +		if (djdev->reports_supported & BIT_ULL(i)) {
->>  			reportbuffer[0] = i;
->>  			if (hid_input_report(djdev->hdev,
->>  					     HID_INPUT_REPORT,
-> 
-> regards,
-> dan carpenter
-> 
+Information pid/vid of WSDA-200-USB, Lord corporation company:
+vid: 199b
+pid: ba30
+
+Signed-off-by: Pho Tran <pho.tran@silabs.com>
+[ johan: amend comment with product name ]
+Cc: stable@vger.kernel.org
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ drivers/usb/serial/cp210x.c |    1 +
+ 1 file changed, 1 insertion(+)
+
+--- a/drivers/usb/serial/cp210x.c
++++ b/drivers/usb/serial/cp210x.c
+@@ -201,6 +201,7 @@ static const struct usb_device_id id_tab
+ 	{ USB_DEVICE(0x1901, 0x0194) },	/* GE Healthcare Remote Alarm Box */
+ 	{ USB_DEVICE(0x1901, 0x0195) },	/* GE B850/B650/B450 CP2104 DP UART interface */
+ 	{ USB_DEVICE(0x1901, 0x0196) },	/* GE B850 CP2105 DP UART interface */
++	{ USB_DEVICE(0x199B, 0xBA30) }, /* LORD WSDA-200-USB */
+ 	{ USB_DEVICE(0x19CF, 0x3000) }, /* Parrot NMEA GPS Flight Recorder */
+ 	{ USB_DEVICE(0x1ADB, 0x0001) }, /* Schweitzer Engineering C662 Cable */
+ 	{ USB_DEVICE(0x1B1C, 0x1C00) }, /* Corsair USB Dongle */
+
 
