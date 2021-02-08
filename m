@@ -2,121 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FB35313A0D
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 17:50:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D61731399B
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 17:38:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233985AbhBHQus (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 11:50:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60022 "EHLO mail.kernel.org"
+        id S234498AbhBHQhq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 11:37:46 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:42268 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233590AbhBHPRV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 10:17:21 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6565E64ED9;
-        Mon,  8 Feb 2021 15:11:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612797115;
-        bh=Qw10iDakeKlKSD45FkVc7ubZSlS3MT3oiOaDHsMZPnk=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yHnLDMTVZFIVrJ+VyTMjNTvNAgFyruLNTXmeZ6RMB025jqVRsIwZvg5vtRSVk9rOl
-         FJ25oIdCWj2dAyrsVuh06CWDpKveWKBvBTbZs97WcXeBjasrX823ODchN88d39FVNH
-         /F8dYmdxmNuoE3h24e9GMYq07S1IeoxltfA34OGY=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alexander Ovechkin <ovov@yandex-team.ru>,
-        Alexander Kuznetsov <wwfq@yandex-team.ru>,
-        Dmitry Monakhov <dmtrmonakhov@yandex-team.ru>,
-        Dmitry Yakunin <zeil@yandex-team.ru>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.4 64/65] net: sched: replaced invalid qdisc tree flush helper in qdisc_replace
-Date:   Mon,  8 Feb 2021 16:01:36 +0100
-Message-Id: <20210208145812.696087611@linuxfoundation.org>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210208145810.230485165@linuxfoundation.org>
-References: <20210208145810.230485165@linuxfoundation.org>
-User-Agent: quilt/0.66
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        id S232705AbhBHPNj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 10:13:39 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4DZ8bT6fWNzB09ZH;
+        Mon,  8 Feb 2021 16:10:29 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id k_jGyOKY9R3r; Mon,  8 Feb 2021 16:10:29 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4DZ8bT5t4dzB09ZC;
+        Mon,  8 Feb 2021 16:10:29 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 3A0878B7B2;
+        Mon,  8 Feb 2021 16:10:35 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id p3AFaVxZowSO; Mon,  8 Feb 2021 16:10:35 +0100 (CET)
+Received: from po16121vm.idsi0.si.c-s.fr (po15451.idsi0.si.c-s.fr [172.25.230.103])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id E426E8B7BA;
+        Mon,  8 Feb 2021 16:10:34 +0100 (CET)
+Received: by po16121vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id D9F8E6733E; Mon,  8 Feb 2021 15:10:34 +0000 (UTC)
+Message-Id: <1eddb42cb12092b1e3d72608d182c365db3da41d.1612796617.git.christophe.leroy@csgroup.eu>
+In-Reply-To: <cover.1612796617.git.christophe.leroy@csgroup.eu>
+References: <cover.1612796617.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH v5 15/22] powerpc/32: Remove verification of MSR_PR on syscall
+ in the ASM entry
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>, npiggin@gmail.com,
+        msuchanek@suse.de
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Mon,  8 Feb 2021 15:10:34 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Ovechkin <ovov@yandex-team.ru>
+system_call_exception() checks MSR_PR and BUGs if a syscall
+is issued from kernel mode.
 
-commit 938e0fcd3253efdef8924714158911286d08cfe1 upstream.
+No need to handle it anymore from the ASM entry code.
 
-Commit e5f0e8f8e456 ("net: sched: introduce and use qdisc tree flush/purge helpers")
-introduced qdisc tree flush/purge helpers, but erroneously used flush helper
-instead of purge helper in qdisc_replace function.
-This issue was found in our CI, that tests various qdisc setups by configuring
-qdisc and sending data through it. Call of invalid helper sporadically leads
-to corruption of vt_tree/cf_tree of hfsc_class that causes kernel oops:
+null_syscall reduction 2 cycles (348 => 346 cycles)
 
- Oops: 0000 [#1] SMP PTI
- CPU: 1 PID: 0 Comm: swapper/1 Not tainted 5.11.0-8f6859df #1
- Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.10.2-0-g5f4c7b1-prebuilt.qemu-project.org 04/01/2014
- RIP: 0010:rb_insert_color+0x18/0x190
- Code: c3 31 c0 c3 0f 1f 40 00 66 2e 0f 1f 84 00 00 00 00 00 48 8b 07 48 85 c0 0f 84 05 01 00 00 48 8b 10 f6 c2 01 0f 85 34 01 00 00 <48> 8b 4a 08 49 89 d0 48 39 c1 74 7d 48 85 c9 74 32 f6 01 01 75 2d
- RSP: 0018:ffffc900000b8bb0 EFLAGS: 00010246
- RAX: ffff8881ef4c38b0 RBX: ffff8881d956e400 RCX: ffff8881ef4c38b0
- RDX: 0000000000000000 RSI: ffff8881d956f0a8 RDI: ffff8881d956e4b0
- RBP: 0000000000000000 R08: 000000d5c4e249da R09: 1600000000000000
- R10: ffffc900000b8be0 R11: ffffc900000b8b28 R12: 0000000000000001
- R13: 000000000000005a R14: ffff8881f0905000 R15: ffff8881f0387d00
- FS:  0000000000000000(0000) GS:ffff8881f8b00000(0000) knlGS:0000000000000000
- CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
- CR2: 0000000000000008 CR3: 00000001f4796004 CR4: 0000000000060ee0
- Call Trace:
-  <IRQ>
-  init_vf.isra.19+0xec/0x250 [sch_hfsc]
-  hfsc_enqueue+0x245/0x300 [sch_hfsc]
-  ? fib_rules_lookup+0x12a/0x1d0
-  ? __dev_queue_xmit+0x4b6/0x930
-  ? hfsc_delete_class+0x250/0x250 [sch_hfsc]
-  __dev_queue_xmit+0x4b6/0x930
-  ? ip6_finish_output2+0x24d/0x590
-  ip6_finish_output2+0x24d/0x590
-  ? ip6_output+0x6c/0x130
-  ip6_output+0x6c/0x130
-  ? __ip6_finish_output+0x110/0x110
-  mld_sendpack+0x224/0x230
-  mld_ifc_timer_expire+0x186/0x2c0
-  ? igmp6_group_dropped+0x200/0x200
-  call_timer_fn+0x2d/0x150
-  run_timer_softirq+0x20c/0x480
-  ? tick_sched_do_timer+0x60/0x60
-  ? tick_sched_timer+0x37/0x70
-  __do_softirq+0xf7/0x2cb
-  irq_exit+0xa0/0xb0
-  smp_apic_timer_interrupt+0x74/0x150
-  apic_timer_interrupt+0xf/0x20
-  </IRQ>
-
-Fixes: e5f0e8f8e456 ("net: sched: introduce and use qdisc tree flush/purge helpers")
-Signed-off-by: Alexander Ovechkin <ovov@yandex-team.ru>
-Reported-by: Alexander Kuznetsov <wwfq@yandex-team.ru>
-Acked-by: Dmitry Monakhov <dmtrmonakhov@yandex-team.ru>
-Acked-by: Dmitry Yakunin <zeil@yandex-team.ru>
-Acked-by: Cong Wang <xiyou.wangcong@gmail.com>
-Link: https://lore.kernel.org/r/20210201200049.299153-1-ovov@yandex-team.ru
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 ---
- include/net/sch_generic.h |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/powerpc/kernel/entry_32.S   | 30 ------------------------------
+ arch/powerpc/kernel/head_32.h    |  3 ---
+ arch/powerpc/kernel/head_booke.h |  3 ---
+ 3 files changed, 36 deletions(-)
 
---- a/include/net/sch_generic.h
-+++ b/include/net/sch_generic.h
-@@ -1158,7 +1158,7 @@ static inline struct Qdisc *qdisc_replac
- 	old = *pold;
- 	*pold = new;
- 	if (old != NULL)
--		qdisc_tree_flush_backlog(old);
-+		qdisc_purge_queue(old);
- 	sch_tree_unlock(sch);
+diff --git a/arch/powerpc/kernel/entry_32.S b/arch/powerpc/kernel/entry_32.S
+index bbf7ecea6fe0..cffe58e63356 100644
+--- a/arch/powerpc/kernel/entry_32.S
++++ b/arch/powerpc/kernel/entry_32.S
+@@ -421,36 +421,6 @@ ret_from_kernel_thread:
+ 	li	r3,0
+ 	b	ret_from_syscall
  
- 	return old;
-
+-	/*
+-	 * System call was called from kernel. We get here with SRR1 in r9.
+-	 * Mark the exception as recoverable once we have retrieved SRR0,
+-	 * trap a warning and return ENOSYS with CR[SO] set.
+-	 */
+-	.globl	ret_from_kernel_syscall
+-ret_from_kernel_syscall:
+-	mfspr	r9, SPRN_SRR0
+-	mfspr	r10, SPRN_SRR1
+-#if !defined(CONFIG_4xx) && !defined(CONFIG_BOOKE)
+-	LOAD_REG_IMMEDIATE(r11, MSR_KERNEL & ~(MSR_IR|MSR_DR))
+-	mtmsr	r11
+-#endif
+-
+-0:	trap
+-	EMIT_BUG_ENTRY 0b,__FILE__,__LINE__, BUGFLAG_WARNING
+-
+-	li	r3, ENOSYS
+-	crset	so
+-#if defined(CONFIG_PPC_8xx) && defined(CONFIG_PERF_EVENTS)
+-	mtspr	SPRN_NRI, r0
+-#endif
+-	mtspr	SPRN_SRR0, r9
+-	mtspr	SPRN_SRR1, r10
+-	rfi
+-#ifdef CONFIG_40x
+-	b .	/* Prevent prefetch past rfi */
+-#endif
+-_ASM_NOKPROBE_SYMBOL(ret_from_kernel_syscall)
+-
+ /*
+  * Top-level page fault handling.
+  * This is in assembler because if do_page_fault tells us that
+diff --git a/arch/powerpc/kernel/head_32.h b/arch/powerpc/kernel/head_32.h
+index fea7fe00a690..282d8fd443a9 100644
+--- a/arch/powerpc/kernel/head_32.h
++++ b/arch/powerpc/kernel/head_32.h
+@@ -118,8 +118,6 @@
+ .macro SYSCALL_ENTRY trapno
+ 	mfspr	r9, SPRN_SRR1
+ 	mfspr	r10, SPRN_SRR0
+-	andi.	r11, r9, MSR_PR
+-	beq-	99f
+ 	LOAD_REG_IMMEDIATE(r11, MSR_KERNEL)		/* can take exceptions */
+ 	lis	r12, 1f@h
+ 	ori	r12, r12, 1f@l
+@@ -174,7 +172,6 @@
+ 3:
+ #endif
+ 	b	transfer_to_syscall		/* jump to handler */
+-99:	b	ret_from_kernel_syscall
+ .endm
+ 
+ .macro save_dar_dsisr_on_stack reg1, reg2, sp
+diff --git a/arch/powerpc/kernel/head_booke.h b/arch/powerpc/kernel/head_booke.h
+index db931f1167aa..bfbd240cc8a2 100644
+--- a/arch/powerpc/kernel/head_booke.h
++++ b/arch/powerpc/kernel/head_booke.h
+@@ -106,10 +106,8 @@ ALT_FTR_SECTION_END_IFSET(CPU_FTR_EMB_HV)
+ #endif
+ 	mfspr	r9, SPRN_SRR1
+ 	BOOKE_CLEAR_BTB(r11)
+-	andi.	r11, r9, MSR_PR
+ 	lwz	r11, TASK_STACK - THREAD(r10)
+ 	rlwinm	r12,r12,0,4,2	/* Clear SO bit in CR */
+-	beq-	99f
+ 	ALLOC_STACK_FRAME(r11, THREAD_SIZE - INT_FRAME_SIZE)
+ 	stw	r12, _CCR(r11)		/* save various registers */
+ 	mflr	r12
+@@ -155,7 +153,6 @@ ALT_FTR_SECTION_END_IFSET(CPU_FTR_EMB_HV)
+ 
+ 3:
+ 	b	transfer_to_syscall	/* jump to handler */
+-99:	b	ret_from_kernel_syscall
+ .endm
+ 
+ /* To handle the additional exception priority levels on 40x and Book-E
+-- 
+2.25.0
 
