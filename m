@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F4C031291E
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 03:59:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83581312925
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 04:04:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229611AbhBHC4R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Feb 2021 21:56:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35150 "EHLO
+        id S229629AbhBHDAA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Feb 2021 22:00:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229537AbhBHC4Q (ORCPT
+        with ESMTP id S229537AbhBHC76 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Feb 2021 21:56:16 -0500
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF3C9C06174A
-        for <linux-kernel@vger.kernel.org>; Sun,  7 Feb 2021 18:55:35 -0800 (PST)
-Received: by mail-pf1-x436.google.com with SMTP id j12so8756749pfj.12
-        for <linux-kernel@vger.kernel.org>; Sun, 07 Feb 2021 18:55:35 -0800 (PST)
+        Sun, 7 Feb 2021 21:59:58 -0500
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E699C06174A
+        for <linux-kernel@vger.kernel.org>; Sun,  7 Feb 2021 18:59:18 -0800 (PST)
+Received: by mail-pg1-x534.google.com with SMTP id b21so9271938pgk.7
+        for <linux-kernel@vger.kernel.org>; Sun, 07 Feb 2021 18:59:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id;
         bh=cRQhiF2GEiPjRDo8n2Y99tRPesoEHMgxfbNm4llEXVw=;
-        b=YvzighEBZPgRI0+B7YbURV5Uei8SR77KtaA/mEz3JnyIBexL5pWA/HLsYS8WPNrn+1
-         CSipSRXJueQVKSi1n0XJOZ4PoT7vRsE2/RsWCJ3EyEjvL9G/437TCXNc1VKwnvpfTylp
-         ETH7oezyngV3YIS2XZS340OmzVvSLAZN+lXU/sQSY4jEDzr/xHst7yebuT569oxO5gPP
-         LiRDroRXK2sgmKQM1xKeK6xhpvmUahg3aX4UZyYl2Rvr6a5MZfu5afnmHfVvhdkwAtpE
-         ASiepLulkJpcz74/ivCaR74dkalFhpMCBJtKSROvrCU6JHh8zBCZZ4Rmxzj1yN0n6YLD
-         nDTA==
+        b=ZBxi0jfUIhrsQXwB+yZwsKCq0/6iEdKrbrqkHslqKUDwz4/m10VgN3iVG1Au07HaAp
+         VTC7v3N6uU3kpYq0mUdNFOlLxGCua1nntBZ12IV5IV5HLzhHSKeHELfjBESZw5EU70k5
+         nB1pOXIZ1wcFLYkI1Bvqc/1xq2xZ70Xlid4vXSAj4scoVuP39twAi+V0O3YVFjNXKYSL
+         f/U/kOWNbRmLD6HYTBILIqXaEFGnJKX/NvsTWqM7LY1q++g9t98ktW8pOGhIk8qb4W5q
+         LQ+myPID6th6Mf5wCW258ua8MV06aFFVEIxsw3r/0m1vtpa8RCVa0KTbMgCzdevv8g+i
+         4aiQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id;
         bh=cRQhiF2GEiPjRDo8n2Y99tRPesoEHMgxfbNm4llEXVw=;
-        b=CH4xOkcrKaFKbU6zTUg9hBOeFNzHGYEiCoTCV+Zp1gJYfzuUdOZD8N5MVFu1BMVFms
-         sPhyXtaFch5f1OJakTA3wtRTBMklQUDs4CNR3zXYynZP2toGyqNwTVdhDYizM5fkIcAE
-         +WOWpQKu4a6gVsb+k8v94LJKzXQkKsuH+eCK7WEsq1Y3AuSgRjtLJXY8K7soZMQIxrBp
-         1XLCNOLsxPtpifEDeLVo4p6NHbJtg7JoFSy1CYcXKQN2Xg3zMGmbzxTIuYQCf4dddvl5
-         iiCCBQ6lGj2cuNUiZXMQ81QVJc56N1pTi1mNPZ1q7VSTpuRBYpzi67kHmNwDtoQYkii7
-         KcCg==
-X-Gm-Message-State: AOAM530YJVh2fi9u6WxSRY7/100OQ7kUKT9LV6k23b3MFpZ3PubF3srF
-        62XiFqSx6PA9a52aIKe1rtw=
-X-Google-Smtp-Source: ABdhPJxlyrOhirfCn4YYSv0rzIFzBuoTySDyB8uyOX7zJBXiw4W9hm42DYdBV+Uwg7TuLHRfa4iDAA==
-X-Received: by 2002:a63:70f:: with SMTP id 15mr14818934pgh.250.1612752934934;
-        Sun, 07 Feb 2021 18:55:34 -0800 (PST)
+        b=b5NvWw9LKkTSitte/kVoa3qh1J+us9FDOSg7rcrusZxv7W0u7S0/udghjk+gPTAl1a
+         JlNSQ0Cv3UGUK+rrQkKtT7xhxyWS67N8i8vVd7C8yAUTz8+CLqo+NKA2Lpaff9FOntxn
+         r4AezLm12vlpyl7bJRGiU7t/7QQt+bEda7MGLKF+zqxOy4yZJP5Ar6eX/CGdeUPWmbGG
+         hKwXywLrsibwTrTvCrDMHYG3aFb7giJg3LtmFCUUIk+AmOsN/gbtrFpUJI1viCfDaAF0
+         kbU8Pln0ARdpTQoifwvQZEq3RfKcDT3o5QO7vHLuC2oI9xmk6fLwkQBfFpzKkQyGFmJw
+         dEkA==
+X-Gm-Message-State: AOAM5308Kv1DX/8OIEeLG1fLqSOx+1prcUEYaAE0jw1/rTGzTlagZTsq
+        lM6dKZB5s4mqmksOKyQJYpI=
+X-Google-Smtp-Source: ABdhPJyrDYjBkjTNMd70wDRpdhsIwHFFGtWhjpLo2ind8f7JKNWyosISjnIKosY0HPto1BKdirpH2w==
+X-Received: by 2002:a63:d446:: with SMTP id i6mr15123872pgj.446.1612753158006;
+        Sun, 07 Feb 2021 18:59:18 -0800 (PST)
 Received: from mahak-Inspiron-7570 ([103.153.208.42])
-        by smtp.gmail.com with ESMTPSA id w13sm16759704pfc.7.2021.02.07.18.55.33
+        by smtp.gmail.com with ESMTPSA id v19sm13875984pjh.37.2021.02.07.18.59.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 07 Feb 2021 18:55:34 -0800 (PST)
+        Sun, 07 Feb 2021 18:59:17 -0800 (PST)
 From:   Mahak Gupta <gmahak1@gmail.com>
 To:     linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org,
         gregkh@linuxfoundation.org, rcy@google.com, benchan@chromium.org,
         toddpoynor@google.com, rspringer@google.com
 Cc:     Mahak Gupta <gmahak1@gmail.com>
-Subject: [PATCH] staging: gasket: fix indentation and lines ending with open parenthesis
-Date:   Mon,  8 Feb 2021 08:25:08 +0530
-Message-Id: <20210208025508.25714-1-gmahak1@gmail.com>
+Subject: [PATCH v2] staging: gasket: fix indentation and lines ending with open parenthesis
+Date:   Mon,  8 Feb 2021 08:29:04 +0530
+Message-Id: <20210208025904.25928-1-gmahak1@gmail.com>
 X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
