@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9EE4313A8A
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 18:13:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0758313A88
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 18:13:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234721AbhBHRMa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 12:12:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36398 "EHLO mail.kernel.org"
+        id S234613AbhBHRLw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 12:11:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36400 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233496AbhBHPYn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S231769AbhBHPYn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 8 Feb 2021 10:24:43 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BAB9264EFC;
-        Mon,  8 Feb 2021 15:14:51 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8239664EB8;
+        Mon,  8 Feb 2021 15:14:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612797292;
-        bh=Yp/JbjYEv+yzF3KH6PNQ+0pEHAgGmN42C0Z9eSCJrRQ=;
+        s=korg; t=1612797295;
+        bh=GoW/9O9cNjlzdIf3oMZObP/PxFY753fJ58IUR99Fxog=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=beTqfSh9Ej7xvS3YdTl0biQGLHTaoFsad7FIBRBzNyZbi+1n5XCJydIc0WDl0Ye4t
-         SUcHU8Ob4aUZvBR/Tclt6Qwa4k3XDbboqPvmcUX8QSJV3uQTGNVdKYUVcI5jxAb4WO
-         /+2KRtiBLqrkwsSUEx7RNtp3F/8H8IQlhIyrjGv4=
+        b=rsBNSjqCYV2kmy/AAjh+pNU3yIvTB351l9vizaVdwostU+L+HyoqVfKlhB+Nf3v1K
+         Eb2j3ny6dev2pVQqbmyCequPiOc/8Cp88inboPkKLM0Q+6Ers3NuGdlxnn8JIkc54H
+         yZ9oXbhHfArobndesdgKhSylMRtWmDWMetpI3EaA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Felix Fietkau <nbd@nbd.name>,
-        Johannes Berg <johannes.berg@intel.com>
-Subject: [PATCH 5.10 057/120] mac80211: fix station rate table updates on assoc
-Date:   Mon,  8 Feb 2021 16:00:44 +0100
-Message-Id: <20210208145820.696287050@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Quanyang Wang <quanyang.wang@windriver.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: [PATCH 5.10 058/120] gpiolib: free device name on error path to fix kmemleak
+Date:   Mon,  8 Feb 2021 16:00:45 +0100
+Message-Id: <20210208145820.738503145@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210208145818.395353822@linuxfoundation.org>
 References: <20210208145818.395353822@linuxfoundation.org>
@@ -39,51 +40,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Felix Fietkau <nbd@nbd.name>
+From: Quanyang Wang <quanyang.wang@windriver.com>
 
-commit 18fe0fae61252b5ae6e26553e2676b5fac555951 upstream.
+commit c351bb64cbe67029c68dea3adbec1b9508c6ff0f upstream.
 
-If the driver uses .sta_add, station entries are only uploaded after the sta
-is in assoc state. Fix early station rate table updates by deferring them
-until the sta has been uploaded.
+In gpiochip_add_data_with_key, we should check the return value of
+dev_set_name to ensure that device name is allocated successfully
+and then add a label on the error path to free device name to fix
+kmemleak as below:
 
+unreferenced object 0xc2d6fc40 (size 64):
+  comm "kworker/0:1", pid 16, jiffies 4294937425 (age 65.120s)
+  hex dump (first 32 bytes):
+    67 70 69 6f 63 68 69 70 30 00 1a c0 54 63 1a c0  gpiochip0...Tc..
+    0c ed 84 c0 48 ed 84 c0 3c ee 84 c0 10 00 00 00  ....H...<.......
+  backtrace:
+    [<962810f7>] kobject_set_name_vargs+0x2c/0xa0
+    [<f50797e6>] dev_set_name+0x2c/0x5c
+    [<94abbca9>] gpiochip_add_data_with_key+0xfc/0xce8
+    [<5c4193e0>] omap_gpio_probe+0x33c/0x68c
+    [<3402f137>] platform_probe+0x58/0xb8
+    [<7421e210>] really_probe+0xec/0x3b4
+    [<000f8ada>] driver_probe_device+0x58/0xb4
+    [<67e0f7f7>] bus_for_each_drv+0x80/0xd0
+    [<4de545dc>] __device_attach+0xe8/0x15c
+    [<2e4431e7>] bus_probe_device+0x84/0x8c
+    [<c18b1de9>] device_add+0x384/0x7c0
+    [<5aff2995>] of_platform_device_create_pdata+0x8c/0xb8
+    [<061c3483>] of_platform_bus_create+0x198/0x230
+    [<5ee6d42a>] of_platform_populate+0x60/0xb8
+    [<2647300f>] sysc_probe+0xd18/0x135c
+    [<3402f137>] platform_probe+0x58/0xb8
+
+Signed-off-by: Quanyang Wang <quanyang.wang@windriver.com>
 Cc: stable@vger.kernel.org
-Signed-off-by: Felix Fietkau <nbd@nbd.name>
-Link: https://lore.kernel.org/r/20210201083324.3134-1-nbd@nbd.name
-[use rcu_access_pointer() instead since we won't dereference here]
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/mac80211/driver-ops.c |    5 ++++-
- net/mac80211/rate.c       |    3 ++-
- 2 files changed, 6 insertions(+), 2 deletions(-)
+ drivers/gpio/gpiolib.c |   10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
---- a/net/mac80211/driver-ops.c
-+++ b/net/mac80211/driver-ops.c
-@@ -125,8 +125,11 @@ int drv_sta_state(struct ieee80211_local
- 	} else if (old_state == IEEE80211_STA_AUTH &&
- 		   new_state == IEEE80211_STA_ASSOC) {
- 		ret = drv_sta_add(local, sdata, &sta->sta);
--		if (ret == 0)
-+		if (ret == 0) {
- 			sta->uploaded = true;
-+			if (rcu_access_pointer(sta->sta.rates))
-+				drv_sta_rate_tbl_update(local, sdata, &sta->sta);
-+		}
- 	} else if (old_state == IEEE80211_STA_ASSOC &&
- 		   new_state == IEEE80211_STA_AUTH) {
- 		drv_sta_remove(local, sdata, &sta->sta);
---- a/net/mac80211/rate.c
-+++ b/net/mac80211/rate.c
-@@ -960,7 +960,8 @@ int rate_control_set_rates(struct ieee80
- 	if (old)
- 		kfree_rcu(old, rcu_head);
+--- a/drivers/gpio/gpiolib.c
++++ b/drivers/gpio/gpiolib.c
+@@ -602,7 +602,11 @@ int gpiochip_add_data_with_key(struct gp
+ 		ret = gdev->id;
+ 		goto err_free_gdev;
+ 	}
+-	dev_set_name(&gdev->dev, GPIOCHIP_NAME "%d", gdev->id);
++
++	ret = dev_set_name(&gdev->dev, GPIOCHIP_NAME "%d", gdev->id);
++	if (ret)
++		goto err_free_ida;
++
+ 	device_initialize(&gdev->dev);
+ 	dev_set_drvdata(&gdev->dev, gdev);
+ 	if (gc->parent && gc->parent->driver)
+@@ -616,7 +620,7 @@ int gpiochip_add_data_with_key(struct gp
+ 	gdev->descs = kcalloc(gc->ngpio, sizeof(gdev->descs[0]), GFP_KERNEL);
+ 	if (!gdev->descs) {
+ 		ret = -ENOMEM;
+-		goto err_free_ida;
++		goto err_free_dev_name;
+ 	}
  
--	drv_sta_rate_tbl_update(hw_to_local(hw), sta->sdata, pubsta);
-+	if (sta->uploaded)
-+		drv_sta_rate_tbl_update(hw_to_local(hw), sta->sdata, pubsta);
- 
- 	ieee80211_sta_set_expected_throughput(pubsta, sta_get_expected_throughput(sta));
- 
+ 	if (gc->ngpio == 0) {
+@@ -767,6 +771,8 @@ err_free_label:
+ 	kfree_const(gdev->label);
+ err_free_descs:
+ 	kfree(gdev->descs);
++err_free_dev_name:
++	kfree(dev_name(&gdev->dev));
+ err_free_ida:
+ 	ida_free(&gpio_ida, gdev->id);
+ err_free_gdev:
 
 
