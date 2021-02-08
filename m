@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AC0F313DFC
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 19:48:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98EF5313DFB
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 19:48:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235898AbhBHSr6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 13:47:58 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:57950 "EHLO
+        id S235926AbhBHSsB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 13:48:01 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:57865 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234533AbhBHQzb (ORCPT
+        by vger.kernel.org with ESMTP id S234561AbhBHQzh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 11:55:31 -0500
+        Mon, 8 Feb 2021 11:55:37 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612803242;
+        s=mimecast20190719; t=1612803248;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
         bh=mpKQMznskIi3xd4XqVYyI2LFxEbTfjM/cP6CMM6SQOg=;
-        b=IO3Ryh0wNecKBR4rpMLzL9eyj7yblL7tuPe84BweJCRxvcdu+G/aODerEsDFq93cuaHp5J
-        eRagsn+TF5QIJkx/HBGhEtXQ+WJYSBL+3hmuQndT1qTWdIpHbOfEDvxLMcwIYAkhyg7BIV
-        n/Ef+phcZB9E6nxxPWs51HbIYSRkRQk=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-226-rRnrIFoCPsaJsntTU6aprQ-1; Mon, 08 Feb 2021 11:54:00 -0500
-X-MC-Unique: rRnrIFoCPsaJsntTU6aprQ-1
-Received: by mail-wr1-f69.google.com with SMTP id d7so13732013wri.23
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 08:54:00 -0800 (PST)
+        b=ETErfhGexfWSiTgPHhQ7bhtUYEbKuWG3Y0E3TYLSOC2aliji8e9tyrkBu/vjkZ71/2SN2T
+        ZvxeO2iwxEDq4foa2IvaY+tgXdyTIQRtEcRuna6G2VRiuoeEu/4yvWNBevDAAL0BMPYLWf
+        x52/iuSOzr7JIFsF3xlMgds6K03l61k=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-38-8E9BI7kvOm6PHLUqZTR3cw-1; Mon, 08 Feb 2021 11:54:06 -0500
+X-MC-Unique: 8E9BI7kvOm6PHLUqZTR3cw-1
+Received: by mail-wr1-f72.google.com with SMTP id c1so13726251wrx.2
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 08:54:06 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
         bh=mpKQMznskIi3xd4XqVYyI2LFxEbTfjM/cP6CMM6SQOg=;
-        b=HU+ON8GgXLNrGQ4Fzb72qNt3mDC9BoO8wGAbozDIyTo5qmezWr9LI1Mr7XjdP9+Kpg
-         Z0Ju5E7nGdFMdSS4nL4qsdyvki6tjBrMIAKNShBgBw3EPNpIoazR2qzf2zyg5dugCMNY
-         Lqnqd9qxpEyrojR0YPc512IbHB/c4HA8UyfgdSDWJYTNsuW8uPMvwP4TNdWFG701hW4S
-         M3XudIi1Lo+gyAc6WGPiu95l2ja+nK41CMX313xnxGOl56ttzkXQzLxp/WHFtRY7Umyc
-         y1isNqQRurL6W9RWP3BVRFK+BJiR+sHAxIv9oA9LpLePUF6Z0/UkOy4IJzYEIqfl4rD3
-         UMdg==
-X-Gm-Message-State: AOAM533kC+jsm+iPftz2JWnXpV+ELXJ8g2fHkZBoV07nMmC6z9xufwYk
-        XB5r4jLWtEcsvfPZDeaVLra3j9KYmLbCVDFuElP8xrao1HYLA4Cwz4Gj95FS1x5rIyiq7AjDWMK
-        ZeDPNQEGjf8ycwbvES3Frm9wjrYvW8TF/E55Pf0KNyRLIrHPOm6py1tXFBO/oM2U79NzgiUgP79
-        8M
-X-Received: by 2002:adf:f18a:: with SMTP id h10mr20539798wro.299.1612803238818;
-        Mon, 08 Feb 2021 08:53:58 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyC7yZtx0zmzU25QtL4DFvRA5vG2h2e+LjUBP2VpEPAtzjMnRkJwQ9BCEXF4w5AEFDn4Bds7g==
-X-Received: by 2002:adf:f18a:: with SMTP id h10mr20539768wro.299.1612803238553;
-        Mon, 08 Feb 2021 08:53:58 -0800 (PST)
+        b=gtLSiOLF6fGMt4FK/n4WQn4CzBgnT49bgJV3ihm3aC57wgkZk5rooOKY4c8iOLgZ97
+         sy5JxK4PeNMeSIbeTeCKlP4KfwGkftoysci+2TAI/jbN4T7X2Id8KYb6nrgQ5bwzIVWR
+         o6alL4sHh1s6rtZ01670XwQHNkuKB8WexpMhbKr6PhWjGMdW6tv/Hbek6pwyi8PhEKnA
+         M/zKHf5WYabBMwXBQEV9SxesvySOfU1wOJYgvUSw4FOVpKdZ9+MwnQgsxu9ngcN593tv
+         GAMhoyT0Q/PE4ve57zBAw5gjeSyZvZb4HQGgfmQfACZ6ktSlYcRSrCy/aRa5csQK2uMV
+         9vHQ==
+X-Gm-Message-State: AOAM530bbNYLcvwAV24c9j3wCpJMBbEqbIGH+ZvJ41aBKt6MFqtQdaO+
+        kYmaO/EoCPdB1Uar3oIGobG1hQirNGPpMWTjK5D04T9IA0a4i2DicOSNeBf1hZFiX4VX5vKfa02
+        VfgiASqhqpwDxjIEdh3OeKtJyaoKsb3bhH/PL90j+xnrNwcuH9CF2E4w3qHwUK6E2oBT2ezlOFh
+        y2
+X-Received: by 2002:adf:eed0:: with SMTP id a16mr20416865wrp.107.1612803245389;
+        Mon, 08 Feb 2021 08:54:05 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJy8pxFlOHeM/dPCCDsq9XQ/lmv0eCa7/y9Fce/lb6TsQPH7+aFoiq+PYgblQA0ScfhfpD1ZQA==
+X-Received: by 2002:adf:eed0:: with SMTP id a16mr20416842wrp.107.1612803245123;
+        Mon, 08 Feb 2021 08:54:05 -0800 (PST)
 Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id z15sm28050792wrs.25.2021.02.08.08.53.56
+        by smtp.gmail.com with ESMTPSA id u3sm33878972wre.54.2021.02.08.08.54.03
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Feb 2021 08:53:57 -0800 (PST)
-Subject: Re: [PATCH for 4.19] Fix unsynchronized access to sev members through
+        Mon, 08 Feb 2021 08:54:04 -0800 (PST)
+Subject: Re: [PATCH for 5.4] Fix unsynchronized access to sev members through
  svm_register_enc_region
 To:     Peter Gonda <pgonda@google.com>, stable@vger.kernel.org
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
@@ -63,14 +63,14 @@ Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Brijesh Singh <brijesh.singh@amd.com>,
         Sean Christopherson <seanjc@google.com>, x86@kernel.org,
         kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210208164840.769333-1-pgonda@google.com>
+References: <20210208164855.772287-1-pgonda@google.com>
 From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <2654c1ab-0178-e980-8573-3893e0bbcd60@redhat.com>
-Date:   Mon, 8 Feb 2021 17:53:56 +0100
+Message-ID: <0adf1e40-4398-9a52-2293-d77efa52b35e@redhat.com>
+Date:   Mon, 8 Feb 2021 17:54:02 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.6.0
 MIME-Version: 1.0
-In-Reply-To: <20210208164840.769333-1-pgonda@google.com>
+In-Reply-To: <20210208164855.772287-1-pgonda@google.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
