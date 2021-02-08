@@ -2,157 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89949314210
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 22:42:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D8C2314219
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 22:44:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235799AbhBHVls (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 16:41:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59834 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235208AbhBHVGj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 16:06:39 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5BF1164E8C;
-        Mon,  8 Feb 2021 21:05:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612818358;
-        bh=FK1I/k8wX1BxFESt2f7/PabmUo1u8EhCiol1GuP7Enw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=chwcVp/RravmxujX3V/5ZSkSMQp/n79yAFzPDtuNg5I39lKIW8NNrJPnj0Vqwb+M1
-         +Ba/uWsMhkWs1dnN/84I6OK//0U0lpeSmyalZuTNKM+2n8HeItA++9eFfhCVwn5oAE
-         trBtEpiZRFPqvxXEKXs9t4kdygg9I8f6VkQg7ecAUgMll4R4PsDdkpDwc9eP6QxLjt
-         mWOYl2v1MHePRQCW2nMjgr/BhrtEw/+FfKHNqkCxugDUFZH1jTOm2CyIhyMuUZkAY2
-         xzayHH1wdsAbT6bDpYSXwaoBzeEccHv7LE9OiW7ET1qObc7Mb/FIM70VoU2zE3NvyN
-         h3vHwW22VINqQ==
-Date:   Mon, 8 Feb 2021 13:05:57 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Tobias Waldekranz <tobias@waldekranz.com>
-Cc:     Vadym Kochan <vadym.kochan@plvision.eu>,
-        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        Mickey Rachamim <mickeyr@marvell.com>,
-        linux-kernel@vger.kernel.org,
-        Vladimir Oltean <vladimir.oltean@nxp.com>
-Subject: Re: [PATCH net-next 5/7] net: marvell: prestera: add LAG support
-Message-ID: <20210208130557.56b14429@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <87v9b249oq.fsf@waldekranz.com>
-References: <20210203165458.28717-1-vadym.kochan@plvision.eu>
-        <20210203165458.28717-6-vadym.kochan@plvision.eu>
-        <20210204211647.7b9a8ebf@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <87v9b249oq.fsf@waldekranz.com>
+        id S236677AbhBHVmK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 16:42:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43634 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231956AbhBHVGu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 16:06:50 -0500
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FF81C061788
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 13:06:10 -0800 (PST)
+Received: by mail-oi1-x234.google.com with SMTP id v193so11683903oie.8
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 13:06:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=vQz50O/ktJ04W7QSg0aQ+K5LizhyaY13N/jjRfnL8MQ=;
+        b=VrgGYFARM6Ani9Qes+VGPFt+MtqItSmYYxUeYwlIhRCQqMDqT5A5dW9uoAuc4n4Lmb
+         HOzyq4tL31RhQQ2JNHlodj/G4uJ9HJyq5nE93+DiaCDyo79ticWaFtY/q5J/LQvrS8Qq
+         tWCIL98eTNQBCIg5qB9ZFRe7q0paeE3NdXwbM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=vQz50O/ktJ04W7QSg0aQ+K5LizhyaY13N/jjRfnL8MQ=;
+        b=LptZrmnmHwI58VGdW2BU40Hqc24T5cIeK2V2sGoOt29unSqCgrlL0VmNLEzjt4jUIo
+         GkaT34wlortBCsKKOSZPQun8WP5g75+VYN5Vb8pu7d9938jtkj7MpBUzgvtigW+6gUbT
+         myTcMaUb8RGgmK4wHngx6GpPQSQhSCJYWsmtXkzJU55vUcNy8EMSSiqAalDQMtNqnOdJ
+         shc/LwVXClbNgZzp+PUSjZj4FsUFRDnLfqVgPese8F+CU+FesICSsoF9HblrFiZjDtz2
+         4PYGxPjRKAFic0Vj2sli5fWN06yAKSdOtOqMOmsCdvLEGa95CPqkFHLE5mctDBSS04Hn
+         99MA==
+X-Gm-Message-State: AOAM5339Lb11LKSZ7gd2P/Qbkm/hIlngqNQUulqaUmpvwxb4g1uuejhz
+        rScrwPwOHF9hH4A+owlSMKNQazVvViaNwZ9qbIcLsA==
+X-Google-Smtp-Source: ABdhPJxXb5B/81zAt68xBP4U4swR34xTMrllQbQD2cTBMCEgDgID6RHPJmVY8X+xFjUiEHTQz30hepiShmiZprp8dv8=
+X-Received: by 2002:aca:1906:: with SMTP id l6mr410002oii.101.1612818369680;
+ Mon, 08 Feb 2021 13:06:09 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20210206054748.378300-1-john.stultz@linaro.org>
+ <20210206054748.378300-2-john.stultz@linaro.org> <YCENrGofdwVg2LMe@phenom.ffwll.local>
+ <CALAqxLV2Sikxnr3-k94nqcF5vz+jsekhhUrmXEKkwzwwu4up8g@mail.gmail.com>
+In-Reply-To: <CALAqxLV2Sikxnr3-k94nqcF5vz+jsekhhUrmXEKkwzwwu4up8g@mail.gmail.com>
+From:   Daniel Vetter <daniel@ffwll.ch>
+Date:   Mon, 8 Feb 2021 22:05:58 +0100
+Message-ID: <CAKMK7uECMOO5jx4433uDuMq=MBaBEYaLe6ysrT_pshrr6Bf9dA@mail.gmail.com>
+Subject: Re: [RFC][PATCH 2/2] dma-buf: heaps: Fix the name used when exporting
+ dmabufs to be the actual heap name
+To:     John Stultz <john.stultz@linaro.org>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Liam Mark <lmark@codeaurora.org>,
+        Chris Goldsworthy <cgoldswo@codeaurora.org>,
+        Laura Abbott <labbott@kernel.org>,
+        Brian Starkey <Brian.Starkey@arm.com>,
+        Hridya Valsaraju <hridya@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Sandeep Patil <sspatil@google.com>,
+        Daniel Mentz <danielmentz@google.com>,
+        =?UTF-8?Q?=C3=98rjan_Eide?= <orjan.eide@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Simon Ser <contact@emersion.fr>,
+        James Jones <jajones@nvidia.com>,
+        linux-media <linux-media@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 08 Feb 2021 20:54:29 +0100 Tobias Waldekranz wrote:
-> On Thu, Feb 04, 2021 at 21:16, Jakub Kicinski <kuba@kernel.org> wrote:
-> > On Wed,  3 Feb 2021 18:54:56 +0200 Vadym Kochan wrote:  
-> >> From: Serhiy Boiko <serhiy.boiko@plvision.eu>
-> >> 
-> >> The following features are supported:
-> >> 
-> >>     - LAG basic operations
-> >>         - create/delete LAG
-> >>         - add/remove a member to LAG
-> >>         - enable/disable member in LAG
-> >>     - LAG Bridge support
-> >>     - LAG VLAN support
-> >>     - LAG FDB support
-> >> 
-> >> Limitations:
-> >> 
-> >>     - Only HASH lag tx type is supported
-> >>     - The Hash parameters are not configurable. They are applied
-> >>       during the LAG creation stage.
-> >>     - Enslaving a port to the LAG device that already has an
-> >>       upper device is not supported.  
+On Mon, Feb 8, 2021 at 9:51 PM John Stultz <john.stultz@linaro.org> wrote:
+> On Mon, Feb 8, 2021 at 2:08 AM Daniel Vetter <daniel@ffwll.ch> wrote:
+> > On Sat, Feb 06, 2021 at 05:47:48AM +0000, John Stultz wrote:
+> > > By default dma_buf_export() sets the exporter name to be
+> > > KBUILD_MODNAME. Unfortunately this may not be identical to the
+> > > string used as the heap name (ie: "system" vs "system_heap").
+> > >
+> > > This can cause some minor confusion with tooling, and there is
+> > > the future potential where multiple heap types may be exported
+> > > by the same module (but would all have the same name).
+> > >
+> > > So to avoid all this, set the exporter exp_name to the heap name.
+> > >
+> > > Cc: Daniel Vetter <daniel@ffwll.ch>
+> > > Cc: Sumit Semwal <sumit.semwal@linaro.org>
+> > > Cc: Liam Mark <lmark@codeaurora.org>
+> > > Cc: Chris Goldsworthy <cgoldswo@codeaurora.org>
+> > > Cc: Laura Abbott <labbott@kernel.org>
+> > > Cc: Brian Starkey <Brian.Starkey@arm.com>
+> > > Cc: Hridya Valsaraju <hridya@google.com>
+> > > Cc: Suren Baghdasaryan <surenb@google.com>
+> > > Cc: Sandeep Patil <sspatil@google.com>
+> > > Cc: Daniel Mentz <danielmentz@google.com>
+> > > Cc: =C3=98rjan Eide <orjan.eide@arm.com>
+> > > Cc: Robin Murphy <robin.murphy@arm.com>
+> > > Cc: Ezequiel Garcia <ezequiel@collabora.com>
+> > > Cc: Simon Ser <contact@emersion.fr>
+> > > Cc: James Jones <jajones@nvidia.com>
+> > > Cc: linux-media@vger.kernel.org
+> > > Cc: dri-devel@lists.freedesktop.org
+> > > Signed-off-by: John Stultz <john.stultz@linaro.org>
 > >
-> > Tobias, Vladimir, you worked on LAG support recently, would you mind
-> > taking a look at this one?  
-> 
-> I took a quick look at it, and what I found left me very puzzled. I hope
-> you do not mind me asking a generic question about the policy around
-> switchdev drivers. If someone published a driver using something similar
-> to the following configuration flow:
-> 
-> iproute2  daemon(SDK)
->    |        ^    |
->    :        :    : user/kernel boundary
->    v        |    |
-> netlink     |    |
->    |        |    |
->    v        |    |
->  driver     |    |
->    |        |    |
->    '--------'    |
->                  : kernel/hardware boundary
->                  v
->                 ASIC
-> 
-> My guess is that they would be (rightly IMO) told something along the
-> lines of "we do not accept drivers that are just shims for proprietary
-> SDKs".
-> 
-> But it seems like if that same someone has enough area to spare in their
-> ASIC to embed a CPU, it is perfectly fine to run that same SDK on it,
-> call it "firmware", and then push a shim driver into the kernel tree.
-> 
-> iproute2
->    |
->    :               user/kernel boundary
->    v
-> netlink
->    |
->    v
->  driver
->    |
->    |
->    :               kernel/hardware boundary
->    '-------------.
->                  v
->              daemon(SDK)
->                  |
->                  v
->                 ASIC
-> 
-> What have we, the community, gained by this? In the old world, the
-> vendor usually at least had to ship me the SDK in source form. Having
-> seen the inside of some of those sausage factories, they are not the
-> kinds of code bases that I want at the bottom of my stack; even less so
-> in binary form where I am entirely at the vendor's mercy for bugfixes.
-> 
-> We are talking about a pure Ethernet fabric here, so there is no fig
-> leaf of "regulatory requirements" to hide behind, in contrast to WiFi
-> for example.
-> 
-> Is it the opinion of the netdev community that it is OK for vendors to
-> use this model?
+> > Looks reasonable to me.
+> >
+> > I guess the main worry is "does this mean heap names become uapi", in
+> > which case I'm maybe not so sure anymore how this will tie into the
+> > overall gpu memory accounting story.
+> >
+> > Since for dma-buf heaps one name per buffer is perfectly fine, since
+> > dma-buf heaps aren't very dynamic. But on discrete gpu drivers buffers
+> > move, so baking in the assumption that "exporter name =3D resource usag=
+e for
+> > this buffer" is broken.
+>
+> I suspect I'm missing a subtlety in what you're describing. My sense
+> of the exporter name doesn't account for a buffer's usage, it just
+> describes what code allocated it and implicitly which dmabuf_ops
+> handles it.  Maybe could you give a more specific example of what
+> you're hoping to avoid?
 
-I ask myself that question pretty much every day. Sadly I have no clear
-answer.
+Just paranoia really - on the linux side where we allocate most
+buffers (even shared ones) with the driver, that allocator info isn't
+that meaningful, it really just tells you which code
+allocated/exported that dma-buf.
 
-Silicon is cheap, you can embed a reasonable ARM or Risc-V core in the
-chip for the area and power draw comparable to one high speed serdes
-lane.
+But on Android, where all shared buffers come from specific heaps, it
+is rather meaningful information. So I wondered whether e.g. the
+android dmabuf debug tool uses that to collect per-heap stats, but
+sounds like no right now. Plus with the chat we've had I think we have
+a long-term plan for how to expose that information properly.
 
-The drivers landing in the kernel are increasingly meaningless. My day
-job is working for a hyperscaler. Even though we have one of the most
-capable kernel teams on the planet most of issues with HW we face
-result in "something is wrong with the FW, let's call the vendor".
+> To me this patch is mostly just a consistency/least-surprise thing, so
+> the heaps exporter name matches the string used for the heap's chardev
+> device (the interface used to allocate it) in output like
+> debugfs/dma_buf/bufinfo.
 
-And even when I say "drivers landing" it is an overstatement.
-If you look at high speed anything these days the drivers cover
-multiple generations of hardware, seems like ~5 years ago most
-NIC vendors reached sufficient FW saturation to cover up differences
-between HW generations.
-
-At the same time some FW is necessary. Certain chip functions, are 
-best driven by a micro-controller running a tight control loop. 
-The complexity of FW is a spectrum, from basic to Qualcomm. 
-The problem is there is no way for us to know what FW is hiding
-by just looking at the driver.
-
-Where do we draw the line? 
-
-Personally I'd really like to see us pushing back stronger.
+Yeah for debug this makes sense. a-b: me if you want that somewhere on
+the patches.
+-Daniel
+--=20
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
