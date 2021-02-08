@@ -2,112 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FD9231336B
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 14:36:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A608B31336F
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 14:40:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230481AbhBHNfu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 08:35:50 -0500
-Received: from mx2.suse.de ([195.135.220.15]:35012 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229752AbhBHNfb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 08:35:31 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1612791284; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=tPdxySZddbQD9qXDKMPnVWIQTa7PPiE4Qwe7qfgymrs=;
-        b=Ws1lDxg/c1OUiwJ+n1TiJoYFn0hPPDdML5K4+HkUiiEWmfvzMQjPpO3/qn1jln4ONS/kQr
-        iAi2I/2SSVcImlpMcLn9sGvyK1nH8qeEtezsgDdAsfxEiDnjlAtRKDe8fv4OppLwE1jcQF
-        IWgpduuoLm3r0wY2pkrb6rXd+NrR404=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id EAC5AAE47;
-        Mon,  8 Feb 2021 13:34:43 +0000 (UTC)
-Date:   Mon, 8 Feb 2021 14:34:37 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org, Hagen Paul Pfeifer <hagen@jauu.net>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Subject: Re: [PATCH v17 08/10] PM: hibernate: disable when there are active
- secretmem users
-Message-ID: <YCE97c9tDkdf+A6P@dhcp22.suse.cz>
-References: <20210208084920.2884-9-rppt@kernel.org>
- <YCEP/bmqm0DsvCYN@dhcp22.suse.cz>
- <38c0cad4-ac55-28e4-81c6-4e0414f0620a@redhat.com>
- <YCEXwUYepeQvEWTf@dhcp22.suse.cz>
- <a488a0bb-def5-0249-99e2-4643787cef69@redhat.com>
- <YCEZAWOv63KYglJZ@dhcp22.suse.cz>
- <770690dc-634a-78dd-0772-3aba1a3beba8@redhat.com>
- <21f4e742-1aab-f8ba-f0e7-40faa6d6c0bb@redhat.com>
- <5db6ac46-d4e1-3c68-22a0-94f2ecde8801@redhat.com>
- <YCEr1JS8k/nDbcVR@dhcp22.suse.cz>
+        id S229848AbhBHNkI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 08:40:08 -0500
+Received: from mail-il1-f199.google.com ([209.85.166.199]:41417 "EHLO
+        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229720AbhBHNkE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 08:40:04 -0500
+Received: by mail-il1-f199.google.com with SMTP id d11so12341931ilu.8
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 05:39:48 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=h2/YosjFPBZfZBpQdvSX2mMYZbxmoF5yYgAmopWyVyM=;
+        b=F+3KIgpPulynJwcWukpFsEmrwLJut20nRXx36ftaNXg/U1WP9Aw8hldrqDSnjQixcM
+         v/HDxfrWp9na1bkdDm92gJfdkaojvCzgQR1Jz5V41y5IrOQC6OgOyxhpjHQQi3vP1qt/
+         d2SSr7RR87McXTZPY2ZvFpRqiUAI08a4kTj6zpSWVgyGxj/sq4ykzF34rwRgEzvTK6JR
+         NxDyuTsAM5MbOLTQQ5dZ0/u4s0/J4lGSP5aDDbqs54/20vNAdQbkfSSnNCbDLbguTzNa
+         SOlhwldvwdMP5hK3+TE/o7NaBH1l2KORYKQG7kq2DueJvzVQWr/jXmiU2rbMM27OKXCE
+         d68w==
+X-Gm-Message-State: AOAM532+XigaJpASyYLYEX8jOyT4FWhUoPrkkuJH2tKE+r+0FZrb8fvh
+        Cjh/TeVJh8OSs0LswiJJhdsfOC+iqRT3Shw/3XSVjySv3Bl/
+X-Google-Smtp-Source: ABdhPJyxwTTuavyuzPhsGp7jiGF9oZAiU3Bazv9yajE/zfsSjhhp4LNutcQ6zouYi8HnEugMoGXWzFOUiGxZa8+29UnhTDSkZqoI
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YCEr1JS8k/nDbcVR@dhcp22.suse.cz>
+X-Received: by 2002:a92:2e05:: with SMTP id v5mr16827403ile.241.1612791563411;
+ Mon, 08 Feb 2021 05:39:23 -0800 (PST)
+Date:   Mon, 08 Feb 2021 05:39:23 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000003be5f605bad34c09@google.com>
+Subject: linux-next boot error: kernel panic: VFS: Unable to mount root fs on unknown-block(0,0)
+From:   syzbot <syzbot+b22ad1a79afb8da726c5@syzkaller.appspotmail.com>
+To:     axboe@kernel.dk, gregkh@linuxfoundation.org, hare@suse.de,
+        jack@suse.cz, linux-kernel@vger.kernel.org,
+        linux-next@vger.kernel.org, sfr@canb.auug.org.au,
+        syzkaller-bugs@googlegroups.com, tj@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Btw. I do not see Rafael involved. Maybe he can add some insight to
-this. Please note that the patch in question is
-http://lkml.kernel.org/r/20210208084920.2884-9-rppt@kernel.org and
-the full series is http://lkml.kernel.org/r/20210208084920.2884-1-rppt@kernel.org
+Hello,
 
-On Mon 08-02-21 13:17:26, Michal Hocko wrote:
-> On Mon 08-02-21 12:26:31, David Hildenbrand wrote:
-> [...]
-> > My F33 system happily hibernates to disk, even with an application that
-> > succeeded in din doing an mlockall().
-> > 
-> > And it somewhat makes sense. Even my freshly-booted, idle F33 has
-> > 
-> > $ cat /proc/meminfo  | grep lock
-> > Mlocked:            4860 kB
-> > 
-> > So, stopping to hibernate with mlocked memory would essentially prohibit any
-> > modern Linux distro to hibernate ever.
-> 
-> My system seems to be completely fine without mlocked memory. It would
-> be interesting to see who mlocks memory on your system and check whether
-> the expectated mlock semantic really works for those. This should be
-> documented at least.
-> -- 
-> Michal Hocko
-> SUSE Labs
+syzbot found the following issue on:
 
--- 
-Michal Hocko
-SUSE Labs
+HEAD commit:    8d374d0d Add linux-next specific files for 20210208
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=13de8a40d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=ced6adcf6aff98d6
+dashboard link: https://syzkaller.appspot.com/bug?extid=b22ad1a79afb8da726c5
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+b22ad1a79afb8da726c5@syzkaller.appspotmail.com
+
+netconsole: network logging started
+gtp: GTP module loaded (pdp ctx size 104 bytes)
+rdma_rxe: loaded
+cfg80211: Loading compiled-in X.509 certificates for regulatory database
+cfg80211: Loaded X.509 cert 'sforshee: 00b28ddf47aef9cea7'
+ALSA device list:
+  #0: Dummy 1
+  #1: Loopback 1
+  #2: Virtual MIDI Card 1
+md: Waiting for all devices to be available before autodetect
+md: If you don't use raid, use raid=noautodetect
+md: Autodetecting RAID arrays.
+md: autorun ...
+md: ... autorun DONE.
+VFS: Cannot open root device "sda1" or unknown-block(0,0): error -6
+Please append a correct "root=" boot option; here are the available partitions:
+0100            4096 ram0 
+ (driver?)
+0101            4096 ram1 
+ (driver?)
+0102            4096 ram2 
+ (driver?)
+0103            4096 ram3 
+ (driver?)
+0104            4096 ram4 
+ (driver?)
+0105            4096 ram5 
+ (driver?)
+0106            4096 ram6 
+ (driver?)
+0107            4096 ram7 
+ (driver?)
+0108            4096 ram8 
+ (driver?)
+0109            4096 ram9 
+ (driver?)
+010a            4096 ram10 
+ (driver?)
+010b            4096 ram11 
+ (driver?)
+010c            4096 ram12 
+ (driver?)
+010d            4096 ram13 
+ (driver?)
+010e            4096 ram14 
+ (driver?)
+010f            4096 ram15 
+ (driver?)
+1f00             128 mtdblock0 
+ (driver?)
+Kernel panic - not syncing: VFS: Unable to mount root fs on unknown-block(0,0)
+CPU: 1 PID: 1 Comm: swapper/0 Not tainted 5.11.0-rc6-next-20210208-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:120
+ panic+0x306/0x73d kernel/panic.c:231
+ mount_block_root+0x3f8/0x4dd init/do_mounts.c:445
+ mount_root+0x1af/0x1f5 init/do_mounts.c:561
+ prepare_namespace+0x1ff/0x234 init/do_mounts.c:613
+ kernel_init_freeable+0x671/0x689 init/main.c:1550
+ kernel_init+0xd/0x1b8 init/main.c:1426
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+Kernel Offset: disabled
+Rebooting in 86400 seconds..
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
