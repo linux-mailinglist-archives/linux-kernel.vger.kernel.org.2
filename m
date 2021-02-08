@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2E88313768
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 16:26:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B8CD313756
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 16:24:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233100AbhBHPYt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 10:24:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52602 "EHLO mail.kernel.org"
+        id S231320AbhBHPXh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 10:23:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52604 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232930AbhBHPEe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S232964AbhBHPEe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 8 Feb 2021 10:04:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8E56764EC3;
-        Mon,  8 Feb 2021 15:03:08 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 68D6164EBF;
+        Mon,  8 Feb 2021 15:03:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612796589;
-        bh=PIvAXajXlDm6uxsTVk8m4cPi9wnjRkFg096EugYd7Yw=;
+        s=korg; t=1612796592;
+        bh=IKSH5/TuTDFRzQkrVbev8vn0IWqX0o7v1pV26SueFSc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TCG2uRhHYnr8XNUFno2lnN0/HUx8RfrwE/XUy+s42EC/gbSQVIyO8FvSNyGB170Tr
-         0xvAaKbTBxkDuUwjzlNBMvd8K/lu7XScvNsR/QGEvYi98MnfoXoq9+ZuNuojwZr8JA
-         QgF/aTYtiU7nqowPDuKCNjBPY0c1ArZl8NWcMH5c=
+        b=BSA8o3/1aG44Lc/5cMj8ehrrZTdTSFy2TTj8VP7O45A8/z7pj3lBKMgrzFfS0UNrm
+         dXvxolkDYC5kcJ7GoMUbpBm6pB1VLxfwmZ7Kgm4j6XYyD6DF/TU9pDoleyAJRa3m+F
+         gtnzgn/hHjfZKq+p18Yjy9hIQSqi4JAf7N2ZyR4Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Muchun Song <songmuchun@bytedance.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        David Hildenbrand <david@redhat.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.4 33/38] mm: hugetlb: remove VM_BUG_ON_PAGE from page_huge_active
-Date:   Mon,  8 Feb 2021 16:00:55 +0100
-Message-Id: <20210208145806.558714124@linuxfoundation.org>
+        stable@vger.kernel.org, Nikolay Borisov <nborisov@suse.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Borislav Petkov <bp@suse.de>,
+        Seth Forshee <seth.forshee@canonical.com>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>
+Subject: [PATCH 4.4 34/38] x86/build: Disable CET instrumentation in the kernel
+Date:   Mon,  8 Feb 2021 16:00:56 +0100
+Message-Id: <20210208145806.593263839@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210208145805.279815326@linuxfoundation.org>
 References: <20210208145805.279815326@linuxfoundation.org>
@@ -45,44 +42,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Muchun Song <songmuchun@bytedance.com>
+From: Josh Poimboeuf <jpoimboe@redhat.com>
 
-commit ecbf4724e6061b4b01be20f6d797d64d462b2bc8 upstream.
+commit 20bf2b378729c4a0366a53e2018a0b70ace94bcd upstream.
 
-The page_huge_active() can be called from scan_movable_pages() which do
-not hold a reference count to the HugeTLB page.  So when we call
-page_huge_active() from scan_movable_pages(), the HugeTLB page can be
-freed parallel.  Then we will trigger a BUG_ON which is in the
-page_huge_active() when CONFIG_DEBUG_VM is enabled.  Just remove the
-VM_BUG_ON_PAGE.
+With retpolines disabled, some configurations of GCC, and specifically
+the GCC versions 9 and 10 in Ubuntu will add Intel CET instrumentation
+to the kernel by default. That breaks certain tracing scenarios by
+adding a superfluous ENDBR64 instruction before the fentry call, for
+functions which can be called indirectly.
 
-Link: https://lkml.kernel.org/r/20210115124942.46403-6-songmuchun@bytedance.com
-Fixes: 7e1f049efb86 ("mm: hugetlb: cleanup using paeg_huge_active()")
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
-Acked-by: Michal Hocko <mhocko@suse.com>
-Reviewed-by: Oscar Salvador <osalvador@suse.de>
-Cc: David Hildenbrand <david@redhat.com>
-Cc: Yang Shi <shy828301@gmail.com>
+CET instrumentation isn't currently necessary in the kernel, as CET is
+only supported in user space. Disable it unconditionally and move it
+into the x86's Makefile as CET/CFI... enablement should be a per-arch
+decision anyway.
+
+ [ bp: Massage and extend commit message. ]
+
+Fixes: 29be86d7f9cb ("kbuild: add -fcf-protection=none when using retpoline flags")
+Reported-by: Nikolay Borisov <nborisov@suse.com>
+Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+Tested-by: Nikolay Borisov <nborisov@suse.com>
 Cc: <stable@vger.kernel.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Seth Forshee <seth.forshee@canonical.com>
+Cc: Masahiro Yamada <yamada.masahiro@socionext.com>
+Link: https://lkml.kernel.org/r/20210128215219.6kct3h2eiustncws@treble
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- mm/hugetlb.c |    3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ Makefile          |    6 ------
+ arch/x86/Makefile |    3 +++
+ 2 files changed, 3 insertions(+), 6 deletions(-)
 
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -1184,8 +1184,7 @@ struct hstate *size_to_hstate(unsigned l
-  */
- bool page_huge_active(struct page *page)
- {
--	VM_BUG_ON_PAGE(!PageHuge(page), page);
--	return PageHead(page) && PagePrivate(&page[1]);
-+	return PageHeadHuge(page) && PagePrivate(&page[1]);
- }
+--- a/Makefile
++++ b/Makefile
+@@ -830,12 +830,6 @@ KBUILD_CFLAGS   += $(call cc-option,-Wer
+ # Prohibit date/time macros, which would make the build non-deterministic
+ KBUILD_CFLAGS   += $(call cc-option,-Werror=date-time)
  
- /* never called for tail page */
+-# ensure -fcf-protection is disabled when using retpoline as it is
+-# incompatible with -mindirect-branch=thunk-extern
+-ifdef CONFIG_RETPOLINE
+-KBUILD_CFLAGS += $(call cc-option,-fcf-protection=none)
+-endif
+-
+ # use the deterministic mode of AR if available
+ KBUILD_ARFLAGS := $(call ar-option,D)
+ 
+--- a/arch/x86/Makefile
++++ b/arch/x86/Makefile
+@@ -137,6 +137,9 @@ else
+         KBUILD_CFLAGS += -mno-red-zone
+         KBUILD_CFLAGS += -mcmodel=kernel
+ 
++	# Intel CET isn't enabled in the kernel
++	KBUILD_CFLAGS += $(call cc-option,-fcf-protection=none)
++
+         # -funit-at-a-time shrinks the kernel .text considerably
+         # unfortunately it makes reading oopses harder.
+         KBUILD_CFLAGS += $(call cc-option,-funit-at-a-time)
 
 
