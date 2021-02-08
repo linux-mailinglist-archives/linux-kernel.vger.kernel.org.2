@@ -2,160 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59185312F2E
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 11:39:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 388D7312F31
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 11:39:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232624AbhBHKiU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 05:38:20 -0500
-Received: from www262.sakura.ne.jp ([202.181.97.72]:61707 "EHLO
-        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232185AbhBHK0p (ORCPT
+        id S232319AbhBHKjA convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 8 Feb 2021 05:39:00 -0500
+Received: from szxga08-in.huawei.com ([45.249.212.255]:2829 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232400AbhBHK2b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 05:26:45 -0500
-Received: from fsav103.sakura.ne.jp (fsav103.sakura.ne.jp [27.133.134.230])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 118AQ0io058112;
-        Mon, 8 Feb 2021 19:26:00 +0900 (JST)
-        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav103.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav103.sakura.ne.jp);
- Mon, 08 Feb 2021 19:26:00 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav103.sakura.ne.jp)
-Received: from localhost.localdomain (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 118APtcd057991
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
-        Mon, 8 Feb 2021 19:26:00 +0900 (JST)
-        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-From:   Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org,
-        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
-        Dmitry Vyukov <dvyukov@google.com>
-Subject: [PATCH v5] lockdep: Allow tuning tracing capacity constants.
-Date:   Mon,  8 Feb 2021 19:25:51 +0900
-Message-Id: <20210208102551.5256-1-penguin-kernel@I-love.SAKURA.ne.jp>
-X-Mailer: git-send-email 2.18.4
+        Mon, 8 Feb 2021 05:28:31 -0500
+Received: from DGGEMM406-HUB.china.huawei.com (unknown [172.30.72.57])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4DZ2GM73B9z13rm3;
+        Mon,  8 Feb 2021 18:25:15 +0800 (CST)
+Received: from dggemm751-chm.china.huawei.com (10.1.198.57) by
+ DGGEMM406-HUB.china.huawei.com (10.3.20.214) with Microsoft SMTP Server (TLS)
+ id 14.3.498.0; Mon, 8 Feb 2021 18:27:27 +0800
+Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
+ dggemm751-chm.china.huawei.com (10.1.198.57) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2106.2; Mon, 8 Feb 2021 18:27:27 +0800
+Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
+ dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.2106.006;
+ Mon, 8 Feb 2021 18:27:27 +0800
+From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+To:     Valentin Schneider <valentin.schneider@arm.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
+        "mgorman@suse.de" <mgorman@suse.de>,
+        "mingo@kernel.org" <mingo@kernel.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>,
+        "morten.rasmussen@arm.com" <morten.rasmussen@arm.com>,
+        "linuxarm@openeuler.org" <linuxarm@openeuler.org>,
+        "xuwei (O)" <xuwei5@huawei.com>,
+        "Liguozhu (Kenneth)" <liguozhu@hisilicon.com>,
+        "tiantao (H)" <tiantao6@hisilicon.com>,
+        wanghuiqiang <wanghuiqiang@huawei.com>,
+        "Zengtao (B)" <prime.zeng@hisilicon.com>,
+        Jonathan Cameron <jonathan.cameron@huawei.com>,
+        "guodong.xu@linaro.org" <guodong.xu@linaro.org>,
+        Meelis Roos <mroos@linux.ee>
+Subject: RE: [RFC PATCH 2/2] Revert "sched/topology: Warn when NUMA diameter >
+ 2"
+Thread-Topic: [RFC PATCH 2/2] Revert "sched/topology: Warn when NUMA diameter
+ > 2"
+Thread-Index: AQHW+kT3/IERTgfM8kOk26NOzGLwD6pOEW/Q
+Date:   Mon, 8 Feb 2021 10:27:27 +0000
+Message-ID: <73c0ed52b665468cb0aa0086f85da60c@hisilicon.com>
+References: <20210203155432.10293-1-valentin.schneider@arm.com>
+ <20210203155432.10293-3-valentin.schneider@arm.com>
+In-Reply-To: <20210203155432.10293-3-valentin.schneider@arm.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.126.200.200]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+MIME-Version: 1.0
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since syzkaller continues various test cases until the kernel crashes,
-syzkaller tends to examine more locking dependencies than normal systems.
-As a result, syzbot is reporting that the fuzz testing was terminated
-due to hitting upper limits lockdep can track [1] [2] [3]. Since analysis
-via /proc/lockdep* did not show any obvious culprit [4] [5], we have no
-choice but allow tuning tracing capacity constants.
 
-[1] https://syzkaller.appspot.com/bug?id=3d97ba93fb3566000c1c59691ea427370d33ea1b
-[2] https://syzkaller.appspot.com/bug?id=381cb436fe60dc03d7fd2a092b46d7f09542a72a
-[3] https://syzkaller.appspot.com/bug?id=a588183ac34c1437fc0785e8f220e88282e5a29f
-[4] https://lkml.kernel.org/r/4b8f7a57-fa20-47bd-48a0-ae35d860f233@i-love.sakura.ne.jp
-[5] https://lkml.kernel.org/r/1c351187-253b-2d49-acaf-4563c63ae7d2@i-love.sakura.ne.jp
 
-Reported-by: syzbot <syzbot+cd0ec5211ac07c18c049@syzkaller.appspotmail.com>
-Reported-by: syzbot <syzbot+91fd909b6e62ebe06131@syzkaller.appspotmail.com>
-Reported-by: syzbot <syzbot+62ebe501c1ce9a91f68c@syzkaller.appspotmail.com>
-References: https://lkml.kernel.org/r/1595640639-9310-1-git-send-email-penguin-kernel@I-love.SAKURA.ne.jp
-Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Acked-by: Dmitry Vyukov <dvyukov@google.com>
----
- kernel/locking/lockdep.c           |  2 +-
- kernel/locking/lockdep_internals.h |  8 +++---
- lib/Kconfig.debug                  | 40 ++++++++++++++++++++++++++++++
- 3 files changed, 45 insertions(+), 5 deletions(-)
+> -----Original Message-----
+> From: Valentin Schneider [mailto:valentin.schneider@arm.com]
+> Sent: Thursday, February 4, 2021 4:55 AM
+> To: linux-kernel@vger.kernel.org
+> Cc: vincent.guittot@linaro.org; mgorman@suse.de; mingo@kernel.org;
+> peterz@infradead.org; dietmar.eggemann@arm.com; morten.rasmussen@arm.com;
+> linuxarm@openeuler.org; xuwei (O) <xuwei5@huawei.com>; Liguozhu (Kenneth)
+> <liguozhu@hisilicon.com>; tiantao (H) <tiantao6@hisilicon.com>; wanghuiqiang
+> <wanghuiqiang@huawei.com>; Zengtao (B) <prime.zeng@hisilicon.com>; Jonathan
+> Cameron <jonathan.cameron@huawei.com>; guodong.xu@linaro.org; Song Bao Hua
+> (Barry Song) <song.bao.hua@hisilicon.com>; Meelis Roos <mroos@linux.ee>
+> Subject: [RFC PATCH 2/2] Revert "sched/topology: Warn when NUMA diameter > 2"
+> 
+> The scheduler topology code can now figure out what to do with such
+> topologies.
+> 
+> This reverts commit b5b217346de85ed1b03fdecd5c5076b34fbb2f0b.
+> 
+> Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
 
-diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
-index bdaf4829098c..65b3777e8089 100644
---- a/kernel/locking/lockdep.c
-+++ b/kernel/locking/lockdep.c
-@@ -1391,7 +1391,7 @@ static int add_lock_to_list(struct lock_class *this,
- /*
-  * For good efficiency of modular, we use power of 2
-  */
--#define MAX_CIRCULAR_QUEUE_SIZE		4096UL
-+#define MAX_CIRCULAR_QUEUE_SIZE		(1UL << CONFIG_LOCKDEP_CIRCULAR_QUEUE_BITS)
- #define CQ_MASK				(MAX_CIRCULAR_QUEUE_SIZE-1)
- 
- /*
-diff --git a/kernel/locking/lockdep_internals.h b/kernel/locking/lockdep_internals.h
-index de49f9e1c11b..ecb8662e7a4e 100644
---- a/kernel/locking/lockdep_internals.h
-+++ b/kernel/locking/lockdep_internals.h
-@@ -99,16 +99,16 @@ static const unsigned long LOCKF_USED_IN_IRQ_READ =
- #define MAX_STACK_TRACE_ENTRIES	262144UL
- #define STACK_TRACE_HASH_SIZE	8192
- #else
--#define MAX_LOCKDEP_ENTRIES	32768UL
-+#define MAX_LOCKDEP_ENTRIES	(1UL << CONFIG_LOCKDEP_BITS)
- 
--#define MAX_LOCKDEP_CHAINS_BITS	16
-+#define MAX_LOCKDEP_CHAINS_BITS	CONFIG_LOCKDEP_CHAINS_BITS
- 
- /*
-  * Stack-trace: tightly packed array of stack backtrace
-  * addresses. Protected by the hash_lock.
-  */
--#define MAX_STACK_TRACE_ENTRIES	524288UL
--#define STACK_TRACE_HASH_SIZE	16384
-+#define MAX_STACK_TRACE_ENTRIES	(1UL << CONFIG_LOCKDEP_STACK_TRACE_BITS)
-+#define STACK_TRACE_HASH_SIZE	(1 << CONFIG_LOCKDEP_STACK_TRACE_HASH_BITS)
- #endif
- 
- /*
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index 7937265ef879..4cb84b499636 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -1332,6 +1332,46 @@ config LOCKDEP
- config LOCKDEP_SMALL
- 	bool
- 
-+config LOCKDEP_BITS
-+	int "Bitsize for MAX_LOCKDEP_ENTRIES"
-+	depends on LOCKDEP && !LOCKDEP_SMALL
-+	range 10 30
-+	default 15
-+	help
-+	  Try increasing this value if you hit "BUG: MAX_LOCKDEP_ENTRIES too low!" message.
-+
-+config LOCKDEP_CHAINS_BITS
-+	int "Bitsize for MAX_LOCKDEP_CHAINS"
-+	depends on LOCKDEP && !LOCKDEP_SMALL
-+	range 10 30
-+	default 16
-+	help
-+	  Try increasing this value if you hit "BUG: MAX_LOCKDEP_CHAINS too low!" message.
-+
-+config LOCKDEP_STACK_TRACE_BITS
-+	int "Bitsize for MAX_STACK_TRACE_ENTRIES"
-+	depends on LOCKDEP && !LOCKDEP_SMALL
-+	range 10 30
-+	default 19
-+	help
-+	  Try increasing this value if you hit "BUG: MAX_STACK_TRACE_ENTRIES too low!" message.
-+
-+config LOCKDEP_STACK_TRACE_HASH_BITS
-+	int "Bitsize for STACK_TRACE_HASH_SIZE"
-+	depends on LOCKDEP && !LOCKDEP_SMALL
-+	range 10 30
-+	default 14
-+	help
-+	  Try increasing this value if you need large MAX_STACK_TRACE_ENTRIES.
-+
-+config LOCKDEP_CIRCULAR_QUEUE_BITS
-+	int "Bitsize for elements in circular_queue struct"
-+	depends on LOCKDEP
-+	range 10 30
-+	default 12
-+	help
-+	  Try increasing this value if you hit "lockdep bfs error:-1" warning due to __cq_enqueue() failure.
-+
- config DEBUG_LOCKDEP
- 	bool "Lock dependency engine debugging"
- 	depends on DEBUG_KERNEL && LOCKDEP
--- 
-2.18.4
+Yes, this is fine. I actually have seen some other problems we need
+to consider.
+
+The current code is probably well consolidated for machines with
+2 hops or less. Thus, even after we fix the 3-hops span issue, I
+can still see some other issue.
+
+For example, if we change the sd flags and remove the SD_BALANCE
+flags for the last hops in sd_init(), we are able to see large
+score increase in unixbench.
+
+		if (sched_domains_numa_distance[tl->numa_level] > node_reclaim_distance ||
+			is_3rd_hops_domain(...)) {
+			sd->flags &= ~(SD_BALANCE_EXEC |
+				       SD_BALANCE_FORK |
+				       SD_WAKE_AFFINE);
+		}
+
+So guess something needs to be tuned for machines with 3 hops or more.
+
+But we need a kernel which has the fix of 3-hops issue before we can
+do more work.
+
+> ---
+>  kernel/sched/topology.c | 33 ---------------------------------
+>  1 file changed, 33 deletions(-)
+> 
+> diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
+> index a8f69f234258..0fa41aab74e0 100644
+> --- a/kernel/sched/topology.c
+> +++ b/kernel/sched/topology.c
+> @@ -688,7 +688,6 @@ cpu_attach_domain(struct sched_domain *sd, struct
+> root_domain *rd, int cpu)
+>  {
+>  	struct rq *rq = cpu_rq(cpu);
+>  	struct sched_domain *tmp;
+> -	int numa_distance = 0;
+> 
+>  	/* Remove the sched domains which do not contribute to scheduling. */
+>  	for (tmp = sd; tmp; ) {
+> @@ -720,38 +719,6 @@ cpu_attach_domain(struct sched_domain *sd, struct
+> root_domain *rd, int cpu)
+>  			sd->child = NULL;
+>  	}
+> 
+> -	for (tmp = sd; tmp; tmp = tmp->parent)
+> -		numa_distance += !!(tmp->flags & SD_NUMA);
+> -
+> -	/*
+> -	 * FIXME: Diameter >=3 is misrepresented.
+> -	 *
+> -	 * Smallest diameter=3 topology is:
+> -	 *
+> -	 *   node   0   1   2   3
+> -	 *     0:  10  20  30  40
+> -	 *     1:  20  10  20  30
+> -	 *     2:  30  20  10  20
+> -	 *     3:  40  30  20  10
+> -	 *
+> -	 *   0 --- 1 --- 2 --- 3
+> -	 *
+> -	 * NUMA-3	0-3		N/A		N/A		0-3
+> -	 *  groups:	{0-2},{1-3}					{1-3},{0-2}
+> -	 *
+> -	 * NUMA-2	0-2		0-3		0-3		1-3
+> -	 *  groups:	{0-1},{1-3}	{0-2},{2-3}	{1-3},{0-1}	{2-3},{0-2}
+> -	 *
+> -	 * NUMA-1	0-1		0-2		1-3		2-3
+> -	 *  groups:	{0},{1}		{1},{2},{0}	{2},{3},{1}	{3},{2}
+> -	 *
+> -	 * NUMA-0	0		1		2		3
+> -	 *
+> -	 * The NUMA-2 groups for nodes 0 and 3 are obviously buggered, as the
+> -	 * group span isn't a subset of the domain span.
+> -	 */
+> -	WARN_ONCE(numa_distance > 2, "Shortest NUMA path spans too many nodes\n");
+> -
+>  	sched_domain_debug(sd, cpu);
+> 
+>  	rq_attach_root(rq, rd);
+> --
+> 2.27.0
+
+Thanks
+Barry
 
