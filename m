@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72A423139EE
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 17:46:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 78A063139FA
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 17:47:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233800AbhBHQpL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 11:45:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58716 "EHLO mail.kernel.org"
+        id S232050AbhBHQrG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 11:47:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60982 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230303AbhBHPP7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 10:15:59 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 85D3464ED1;
-        Mon,  8 Feb 2021 15:11:13 +0000 (UTC)
+        id S233564AbhBHPQM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 10:16:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 74D7164E54;
+        Mon,  8 Feb 2021 15:11:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612797074;
-        bh=vJw3/se5p5IgzQrAXmzA1rjxPEZXb6shSptwNaI/XTw=;
+        s=korg; t=1612797077;
+        bh=wsePVODvHzqZzM2F4SMDDr4A52UH3jf6jXA59xBor3E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YzBEG7h1+E+q4P/zvUohbI7BSbysqBI+m1uh0g49k1EpGeXe15pCQeX+U2imPoUK2
-         7mq0nWwPmiHAPr3G7UV8j+fmsZR6zAJBhPF7iVdnDnIiCyx/p+F+JHpSzTAuz5JlEu
-         6neRtrxgQaKWJpKIi5B9aPMXs2Ryh6Ve12ZGl9f0=
+        b=n1HARHMkUcblyrxL0LsETBeNBdQ9LCbYMqyvV4zv8UEUueqmdyfpS9SDmy5mVOqt2
+         J/kEq/JPWpLeEFxqyQ1F60B3gTBXZDI67XuZNuTyuMUZCC3aCRlJnXhd49AvEZVb02
+         1X2Oj0yPl+EldiSMF1b++mvGXq233AIRIA5BnGN8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Maor Gottlieb <maorg@nvidia.com>,
-        Alaa Hleihel <alaa@nvidia.com>, Mark Bloch <mbloch@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
+        stable@vger.kernel.org, Xie He <xie.he.0141@gmail.com>,
+        Martin Schiller <ms@dev.tdt.de>,
+        Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 16/65] net/mlx5: Fix leak upon failure of rule creation
-Date:   Mon,  8 Feb 2021 16:00:48 +0100
-Message-Id: <20210208145810.873577004@linuxfoundation.org>
+Subject: [PATCH 5.4 17/65] net: lapb: Copy the skb before sending a packet
+Date:   Mon,  8 Feb 2021 16:00:49 +0100
+Message-Id: <20210208145810.907176671@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210208145810.230485165@linuxfoundation.org>
 References: <20210208145810.230485165@linuxfoundation.org>
@@ -41,54 +41,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maor Gottlieb <maorg@nvidia.com>
+From: Xie He <xie.he.0141@gmail.com>
 
-[ Upstream commit a5bfe6b4675e0eefbd9418055b5cc6e89af27eb4 ]
+[ Upstream commit 88c7a9fd9bdd3e453f04018920964c6f848a591a ]
 
-When creation of a new rule that requires allocation of an FTE fails,
-need to call to tree_put_node on the FTE in order to release its'
-resource.
+When sending a packet, we will prepend it with an LAPB header.
+This modifies the shared parts of a cloned skb, so we should copy the
+skb rather than just clone it, before we prepend the header.
 
-Fixes: cefc23554fc2 ("net/mlx5: Fix FTE cleanup")
-Signed-off-by: Maor Gottlieb <maorg@nvidia.com>
-Reviewed-by: Alaa Hleihel <alaa@nvidia.com>
-Reviewed-by: Mark Bloch <mbloch@nvidia.com>
-Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
+In "Documentation/networking/driver.rst" (the 2nd point), it states
+that drivers shouldn't modify the shared parts of a cloned skb when
+transmitting.
+
+The "dev_queue_xmit_nit" function in "net/core/dev.c", which is called
+when an skb is being sent, clones the skb and sents the clone to
+AF_PACKET sockets. Because the LAPB drivers first remove a 1-byte
+pseudo-header before handing over the skb to us, if we don't copy the
+skb before prepending the LAPB header, the first byte of the packets
+received on AF_PACKET sockets can be corrupted.
+
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Signed-off-by: Xie He <xie.he.0141@gmail.com>
+Acked-by: Martin Schiller <ms@dev.tdt.de>
+Link: https://lore.kernel.org/r/20210201055706.415842-1-xie.he.0141@gmail.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/fs_core.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ net/lapb/lapb_out.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/fs_core.c b/drivers/net/ethernet/mellanox/mlx5/core/fs_core.c
-index 4944c40436f08..11e12761b0a6e 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/fs_core.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/fs_core.c
-@@ -1697,6 +1697,7 @@ search_again_locked:
- 		if (!fte_tmp)
- 			continue;
- 		rule = add_rule_fg(g, spec, flow_act, dest, dest_num, fte_tmp);
-+		/* No error check needed here, because insert_fte() is not called */
- 		up_write_ref_node(&fte_tmp->node, false);
- 		tree_put_node(&fte_tmp->node, false);
- 		kmem_cache_free(steering->ftes_cache, fte);
-@@ -1745,6 +1746,8 @@ skip_search:
- 		up_write_ref_node(&g->node, false);
- 		rule = add_rule_fg(g, spec, flow_act, dest, dest_num, fte);
- 		up_write_ref_node(&fte->node, false);
-+		if (IS_ERR(rule))
-+			tree_put_node(&fte->node, false);
- 		return rule;
- 	}
- 	rule = ERR_PTR(-ENOENT);
-@@ -1844,6 +1847,8 @@ search_again_locked:
- 	up_write_ref_node(&g->node, false);
- 	rule = add_rule_fg(g, spec, flow_act, dest, dest_num, fte);
- 	up_write_ref_node(&fte->node, false);
-+	if (IS_ERR(rule))
-+		tree_put_node(&fte->node, false);
- 	tree_put_node(&g->node, false);
- 	return rule;
+diff --git a/net/lapb/lapb_out.c b/net/lapb/lapb_out.c
+index 7a4d0715d1c32..a966d29c772d9 100644
+--- a/net/lapb/lapb_out.c
++++ b/net/lapb/lapb_out.c
+@@ -82,7 +82,8 @@ void lapb_kick(struct lapb_cb *lapb)
+ 		skb = skb_dequeue(&lapb->write_queue);
  
+ 		do {
+-			if ((skbn = skb_clone(skb, GFP_ATOMIC)) == NULL) {
++			skbn = skb_copy(skb, GFP_ATOMIC);
++			if (!skbn) {
+ 				skb_queue_head(&lapb->write_queue, skb);
+ 				break;
+ 			}
 -- 
 2.27.0
 
