@@ -2,32 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B69E53139E9
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 17:44:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 659D73139EA
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 17:45:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233619AbhBHQnu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 11:43:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56628 "EHLO mail.kernel.org"
+        id S233823AbhBHQoS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 11:44:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56648 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233512AbhBHPOt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S233516AbhBHPOt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 8 Feb 2021 10:14:49 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5DF3064E50;
-        Mon,  8 Feb 2021 15:10:55 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 32ACD64ECF;
+        Mon,  8 Feb 2021 15:10:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612797055;
-        bh=AFF/PXZT9j9GHOqC0+qWXIv9B1RA08FedsN6s7hczMw=;
+        s=korg; t=1612797059;
+        bh=1tIf1/ts3LmImnt+l2+rS1rHr4ljQ4b0tGcspUITR7I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nreZYoVyTx4S05UhBkD6Km3mSpn4LwV6io25d0ZAatuFfIWVplTgWItkwpnPjMCKy
-         DWh87OA1A3hah1A/yUA7S2yxfGyavZib22wnmXl7wERjzhV9UwzTjhRn82TxoyeIkA
-         7CBLHVOSvExI2b9Kx2o0DAKqpiUln2jM4rL/6jh0=
+        b=I41v4RnU98KSrUcyKlDZ7XQtIgpEcnb5KnlwK8fDUTXmPvZTioDlkwpLfbyXnKw8p
+         LaBFgMMpUssolw4kfPsw9AZ6/ZkDp75EZI9VdQbeesWrOPd+R08E1ouBiS3FPKv/jv
+         UvEoSyTftK8gcUxAog94EOclu/apffkITbktBgi0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Fengnan Chang <fengnanchang@gmail.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Subject: [PATCH 5.4 42/65] mmc: core: Limit retries when analyse of SDIO tuples fails
-Date:   Mon,  8 Feb 2021 16:01:14 +0100
-Message-Id: <20210208145811.843817731@linuxfoundation.org>
+        stable@vger.kernel.org, Stylon Wang <stylon.wang@amd.com>,
+        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+        Anson Jacob <Anson.Jacob@amd.com>,
+        Daniel Wheeler <daniel.wheeler@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>
+Subject: [PATCH 5.4 43/65] drm/amd/display: Revert "Fix EDID parsing after resume from suspend"
+Date:   Mon,  8 Feb 2021 16:01:15 +0100
+Message-Id: <20210208145811.884368771@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210208145810.230485165@linuxfoundation.org>
 References: <20210208145810.230485165@linuxfoundation.org>
@@ -39,50 +42,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fengnan Chang <fengnanchang@gmail.com>
+From: Stylon Wang <stylon.wang@amd.com>
 
-commit f92e04f764b86e55e522988e6f4b6082d19a2721 upstream.
+commit 1a10e5244778169a5a53a527d7830cf0438132a1 upstream.
 
-When analysing tuples fails we may loop indefinitely to retry. Let's avoid
-this by using a 10s timeout and bail if not completed earlier.
+This reverts commit b24bdc37d03a0478189e20a50286092840f414fa.
+It caused memory leak after S3 on 4K HDMI displays.
 
-Signed-off-by: Fengnan Chang <fengnanchang@gmail.com>
+Signed-off-by: Stylon Wang <stylon.wang@amd.com>
+Reviewed-by: Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
+Acked-by: Anson Jacob <Anson.Jacob@amd.com>
+Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20210123033230.36442-1-fengnanchang@gmail.com
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/mmc/core/sdio_cis.c |    6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c |    2 --
+ 1 file changed, 2 deletions(-)
 
---- a/drivers/mmc/core/sdio_cis.c
-+++ b/drivers/mmc/core/sdio_cis.c
-@@ -20,6 +20,8 @@
- #include "sdio_cis.h"
- #include "sdio_ops.h"
+--- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
++++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+@@ -1434,8 +1434,6 @@ amdgpu_dm_update_connector_after_detect(
  
-+#define SDIO_READ_CIS_TIMEOUT_MS  (10 * 1000) /* 10s */
-+
- static int cistpl_vers_1(struct mmc_card *card, struct sdio_func *func,
- 			 const unsigned char *buf, unsigned size)
- {
-@@ -266,6 +268,8 @@ static int sdio_read_cis(struct mmc_card
- 
- 	do {
- 		unsigned char tpl_code, tpl_link;
-+		unsigned long timeout = jiffies +
-+			msecs_to_jiffies(SDIO_READ_CIS_TIMEOUT_MS);
- 
- 		ret = mmc_io_rw_direct(card, 0, 0, ptr++, 0, &tpl_code);
- 		if (ret)
-@@ -318,6 +322,8 @@ static int sdio_read_cis(struct mmc_card
- 			prev = &this->next;
- 
- 			if (ret == -ENOENT) {
-+				if (time_after(jiffies, timeout))
-+					break;
- 				/* warn about unknown tuples */
- 				pr_warn_ratelimited("%s: queuing unknown"
- 				       " CIS tuple 0x%02x (%u bytes)\n",
+ 			drm_connector_update_edid_property(connector,
+ 							   aconnector->edid);
+-			drm_add_edid_modes(connector, aconnector->edid);
+-
+ 			if (aconnector->dc_link->aux_mode)
+ 				drm_dp_cec_set_edid(&aconnector->dm_dp_aux.aux,
+ 						    aconnector->edid);
 
 
