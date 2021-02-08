@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0758313A88
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 18:13:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06D86313A99
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 18:16:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234613AbhBHRLw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 12:11:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36400 "EHLO mail.kernel.org"
+        id S233779AbhBHRPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 12:15:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36416 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231769AbhBHPYn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 10:24:43 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8239664EB8;
-        Mon,  8 Feb 2021 15:14:54 +0000 (UTC)
+        id S233643AbhBHPZC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 10:25:02 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4455064E30;
+        Mon,  8 Feb 2021 15:14:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612797295;
-        bh=GoW/9O9cNjlzdIf3oMZObP/PxFY753fJ58IUR99Fxog=;
+        s=korg; t=1612797297;
+        bh=8l3FQnYQfwTbOKjaY2vEaE7BDc0y6lwOTki7DGNVPwE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rsBNSjqCYV2kmy/AAjh+pNU3yIvTB351l9vizaVdwostU+L+HyoqVfKlhB+Nf3v1K
-         Eb2j3ny6dev2pVQqbmyCequPiOc/8Cp88inboPkKLM0Q+6Ers3NuGdlxnn8JIkc54H
-         yZ9oXbhHfArobndesdgKhSylMRtWmDWMetpI3EaA=
+        b=0vg0sxy1LPCNt/1QZ1ZdjisCH4Mt9XciyxbaXqrIz1Z0eLVXqZKu0BaY/JVheXNMD
+         xreD5Q7ngOpyucyx5bOgMGwTzL1U1WRPYXXgP+rpQE9uoAiibd7I3NoD1QdEyvGmj2
+         4Bjijy+NHaHr+93ghM4roh00Q7d/UkYys/PwlVj4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Quanyang Wang <quanyang.wang@windriver.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH 5.10 058/120] gpiolib: free device name on error path to fix kmemleak
-Date:   Mon,  8 Feb 2021 16:00:45 +0100
-Message-Id: <20210208145820.738503145@linuxfoundation.org>
+        stable@vger.kernel.org, pierre.gondois@arm.com,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Subject: [PATCH 5.10 059/120] fgraph: Initialize tracing_graph_pause at task creation
+Date:   Mon,  8 Feb 2021 16:00:46 +0100
+Message-Id: <20210208145820.781159363@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210208145818.395353822@linuxfoundation.org>
 References: <20210208145818.395353822@linuxfoundation.org>
@@ -40,78 +39,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Quanyang Wang <quanyang.wang@windriver.com>
+From: Steven Rostedt (VMware) <rostedt@goodmis.org>
 
-commit c351bb64cbe67029c68dea3adbec1b9508c6ff0f upstream.
+commit 7e0a9220467dbcfdc5bc62825724f3e52e50ab31 upstream.
 
-In gpiochip_add_data_with_key, we should check the return value of
-dev_set_name to ensure that device name is allocated successfully
-and then add a label on the error path to free device name to fix
-kmemleak as below:
+On some archs, the idle task can call into cpu_suspend(). The cpu_suspend()
+will disable or pause function graph tracing, as there's some paths in
+bringing down the CPU that can have issues with its return address being
+modified. The task_struct structure has a "tracing_graph_pause" atomic
+counter, that when set to something other than zero, the function graph
+tracer will not modify the return address.
 
-unreferenced object 0xc2d6fc40 (size 64):
-  comm "kworker/0:1", pid 16, jiffies 4294937425 (age 65.120s)
-  hex dump (first 32 bytes):
-    67 70 69 6f 63 68 69 70 30 00 1a c0 54 63 1a c0  gpiochip0...Tc..
-    0c ed 84 c0 48 ed 84 c0 3c ee 84 c0 10 00 00 00  ....H...<.......
-  backtrace:
-    [<962810f7>] kobject_set_name_vargs+0x2c/0xa0
-    [<f50797e6>] dev_set_name+0x2c/0x5c
-    [<94abbca9>] gpiochip_add_data_with_key+0xfc/0xce8
-    [<5c4193e0>] omap_gpio_probe+0x33c/0x68c
-    [<3402f137>] platform_probe+0x58/0xb8
-    [<7421e210>] really_probe+0xec/0x3b4
-    [<000f8ada>] driver_probe_device+0x58/0xb4
-    [<67e0f7f7>] bus_for_each_drv+0x80/0xd0
-    [<4de545dc>] __device_attach+0xe8/0x15c
-    [<2e4431e7>] bus_probe_device+0x84/0x8c
-    [<c18b1de9>] device_add+0x384/0x7c0
-    [<5aff2995>] of_platform_device_create_pdata+0x8c/0xb8
-    [<061c3483>] of_platform_bus_create+0x198/0x230
-    [<5ee6d42a>] of_platform_populate+0x60/0xb8
-    [<2647300f>] sysc_probe+0xd18/0x135c
-    [<3402f137>] platform_probe+0x58/0xb8
+The problem is that the tracing_graph_pause counter is initialized when the
+function graph tracer is enabled. This can corrupt the counter for the idle
+task if it is suspended in these architectures.
 
-Signed-off-by: Quanyang Wang <quanyang.wang@windriver.com>
+   CPU 1				CPU 2
+   -----				-----
+  do_idle()
+    cpu_suspend()
+      pause_graph_tracing()
+          task_struct->tracing_graph_pause++ (0 -> 1)
+
+				start_graph_tracing()
+				  for_each_online_cpu(cpu) {
+				    ftrace_graph_init_idle_task(cpu)
+				      task-struct->tracing_graph_pause = 0 (1 -> 0)
+
+      unpause_graph_tracing()
+          task_struct->tracing_graph_pause-- (0 -> -1)
+
+The above should have gone from 1 to zero, and enabled function graph
+tracing again. But instead, it is set to -1, which keeps it disabled.
+
+There's no reason that the field tracing_graph_pause on the task_struct can
+not be initialized at boot up.
+
 Cc: stable@vger.kernel.org
-Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Fixes: 380c4b1411ccd ("tracing/function-graph-tracer: append the tracing_graph_flag")
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=211339
+Reported-by: pierre.gondois@arm.com
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpio/gpiolib.c |   10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+ init/init_task.c      |    3 ++-
+ kernel/trace/fgraph.c |    2 --
+ 2 files changed, 2 insertions(+), 3 deletions(-)
 
---- a/drivers/gpio/gpiolib.c
-+++ b/drivers/gpio/gpiolib.c
-@@ -602,7 +602,11 @@ int gpiochip_add_data_with_key(struct gp
- 		ret = gdev->id;
- 		goto err_free_gdev;
- 	}
--	dev_set_name(&gdev->dev, GPIOCHIP_NAME "%d", gdev->id);
-+
-+	ret = dev_set_name(&gdev->dev, GPIOCHIP_NAME "%d", gdev->id);
-+	if (ret)
-+		goto err_free_ida;
-+
- 	device_initialize(&gdev->dev);
- 	dev_set_drvdata(&gdev->dev, gdev);
- 	if (gc->parent && gc->parent->driver)
-@@ -616,7 +620,7 @@ int gpiochip_add_data_with_key(struct gp
- 	gdev->descs = kcalloc(gc->ngpio, sizeof(gdev->descs[0]), GFP_KERNEL);
- 	if (!gdev->descs) {
- 		ret = -ENOMEM;
--		goto err_free_ida;
-+		goto err_free_dev_name;
- 	}
+--- a/init/init_task.c
++++ b/init/init_task.c
+@@ -198,7 +198,8 @@ struct task_struct init_task
+ 	.lockdep_recursion = 0,
+ #endif
+ #ifdef CONFIG_FUNCTION_GRAPH_TRACER
+-	.ret_stack	= NULL,
++	.ret_stack		= NULL,
++	.tracing_graph_pause	= ATOMIC_INIT(0),
+ #endif
+ #if defined(CONFIG_TRACING) && defined(CONFIG_PREEMPTION)
+ 	.trace_recursion = 0,
+--- a/kernel/trace/fgraph.c
++++ b/kernel/trace/fgraph.c
+@@ -395,7 +395,6 @@ static int alloc_retstack_tasklist(struc
+ 		}
  
- 	if (gc->ngpio == 0) {
-@@ -767,6 +771,8 @@ err_free_label:
- 	kfree_const(gdev->label);
- err_free_descs:
- 	kfree(gdev->descs);
-+err_free_dev_name:
-+	kfree(dev_name(&gdev->dev));
- err_free_ida:
- 	ida_free(&gpio_ida, gdev->id);
- err_free_gdev:
+ 		if (t->ret_stack == NULL) {
+-			atomic_set(&t->tracing_graph_pause, 0);
+ 			atomic_set(&t->trace_overrun, 0);
+ 			t->curr_ret_stack = -1;
+ 			t->curr_ret_depth = -1;
+@@ -490,7 +489,6 @@ static DEFINE_PER_CPU(struct ftrace_ret_
+ static void
+ graph_init_task(struct task_struct *t, struct ftrace_ret_stack *ret_stack)
+ {
+-	atomic_set(&t->tracing_graph_pause, 0);
+ 	atomic_set(&t->trace_overrun, 0);
+ 	t->ftrace_timestamp = 0;
+ 	/* make curr_ret_stack visible before we add the ret_stack */
 
 
