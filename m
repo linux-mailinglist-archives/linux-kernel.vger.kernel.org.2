@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B4513136FC
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 16:19:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31CE43136DC
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 16:17:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233384AbhBHPSK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 10:18:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52064 "EHLO mail.kernel.org"
+        id S233466AbhBHPQe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 10:16:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52062 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232859AbhBHPD5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 10:03:57 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A8A5C64E8A;
-        Mon,  8 Feb 2021 15:02:51 +0000 (UTC)
+        id S232854AbhBHPD4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 10:03:56 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9FE3E64EBA;
+        Mon,  8 Feb 2021 15:02:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612796572;
-        bh=vI7ctVkbdPVnwQH6bjkIpC1+6VwQIp0RYP3vi4fcqRw=;
+        s=korg; t=1612796575;
+        bh=v8111njtkhgxdRXQZg+MMAsXlsBPdA6A0HwAUrHxhHQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wboeOgQZtChrE4IYXCS97c4zzoqciVTxRtNuBCyjDb2BZEWX4vO6E0xbA2BDr+A5Y
-         mqtXSYkT5fGca++EBxFUf78qA0sQN2sd7yXEW84EoEhlRIkTP+OkHrNGN6mNr3ztss
-         hMGaVamTnWJ9OCSDCjpElYkYUk4bwt9wTFvzg0dM=
+        b=W31gZi5pJQyD/MIxnRgWxfQ9YFF3NTY5doaMDMJLlw2fKuMagWfU0WglZXYGSwIzq
+         blUMT/Ou0tv/TzoVUDs+8sSJW9lBvbSx10X7PH4ZQ4u4jQVNqdlV4m73/Es3KSbFwy
+         JyOZTE7u/DAnHisNoRGDXwHpbAJZ4rwX1hkxiRdE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Aurelien Aptel <aaptel@suse.com>,
-        Shyam Prasad N <nspmangalore@gmail.com>,
-        Steve French <stfrench@microsoft.com>
-Subject: [PATCH 4.4 28/38] cifs: report error instead of invalid when revalidating a dentry fails
-Date:   Mon,  8 Feb 2021 16:00:50 +0100
-Message-Id: <20210208145806.384124458@linuxfoundation.org>
+        stable@vger.kernel.org, Fengnan Chang <fengnanchang@gmail.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Subject: [PATCH 4.4 29/38] mmc: core: Limit retries when analyse of SDIO tuples fails
+Date:   Mon,  8 Feb 2021 16:00:51 +0100
+Message-Id: <20210208145806.420787766@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210208145805.279815326@linuxfoundation.org>
 References: <20210208145805.279815326@linuxfoundation.org>
@@ -40,74 +39,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Aurelien Aptel <aaptel@suse.com>
+From: Fengnan Chang <fengnanchang@gmail.com>
 
-commit 21b200d091826a83aafc95d847139b2b0582f6d1 upstream.
+commit f92e04f764b86e55e522988e6f4b6082d19a2721 upstream.
 
-Assuming
-- //HOST/a is mounted on /mnt
-- //HOST/b is mounted on /mnt/b
+When analysing tuples fails we may loop indefinitely to retry. Let's avoid
+this by using a 10s timeout and bail if not completed earlier.
 
-On a slow connection, running 'df' and killing it while it's
-processing /mnt/b can make cifs_get_inode_info() returns -ERESTARTSYS.
-
-This triggers the following chain of events:
-=> the dentry revalidation fail
-=> dentry is put and released
-=> superblock associated with the dentry is put
-=> /mnt/b is unmounted
-
-This patch makes cifs_d_revalidate() return the error instead of 0
-(invalid) when cifs_revalidate_dentry() fails, except for ENOENT (file
-deleted) and ESTALE (file recreated).
-
-Signed-off-by: Aurelien Aptel <aaptel@suse.com>
-Suggested-by: Shyam Prasad N <nspmangalore@gmail.com>
-Reviewed-by: Shyam Prasad N <nspmangalore@gmail.com>
-CC: stable@vger.kernel.org
-Signed-off-by: Steve French <stfrench@microsoft.com>
+Signed-off-by: Fengnan Chang <fengnanchang@gmail.com>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20210123033230.36442-1-fengnanchang@gmail.com
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/cifs/dir.c |   22 ++++++++++++++++++++--
- 1 file changed, 20 insertions(+), 2 deletions(-)
+ drivers/mmc/core/sdio_cis.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
---- a/fs/cifs/dir.c
-+++ b/fs/cifs/dir.c
-@@ -831,6 +831,7 @@ static int
- cifs_d_revalidate(struct dentry *direntry, unsigned int flags)
+--- a/drivers/mmc/core/sdio_cis.c
++++ b/drivers/mmc/core/sdio_cis.c
+@@ -24,6 +24,8 @@
+ #include "sdio_cis.h"
+ #include "sdio_ops.h"
+ 
++#define SDIO_READ_CIS_TIMEOUT_MS  (10 * 1000) /* 10s */
++
+ static int cistpl_vers_1(struct mmc_card *card, struct sdio_func *func,
+ 			 const unsigned char *buf, unsigned size)
  {
- 	struct inode *inode;
-+	int rc;
+@@ -263,6 +265,8 @@ static int sdio_read_cis(struct mmc_card
  
- 	if (flags & LOOKUP_RCU)
- 		return -ECHILD;
-@@ -840,8 +841,25 @@ cifs_d_revalidate(struct dentry *direntr
- 		if ((flags & LOOKUP_REVAL) && !CIFS_CACHE_READ(CIFS_I(inode)))
- 			CIFS_I(inode)->time = 0; /* force reval */
+ 	do {
+ 		unsigned char tpl_code, tpl_link;
++		unsigned long timeout = jiffies +
++			msecs_to_jiffies(SDIO_READ_CIS_TIMEOUT_MS);
  
--		if (cifs_revalidate_dentry(direntry))
--			return 0;
-+		rc = cifs_revalidate_dentry(direntry);
-+		if (rc) {
-+			cifs_dbg(FYI, "cifs_revalidate_dentry failed with rc=%d", rc);
-+			switch (rc) {
-+			case -ENOENT:
-+			case -ESTALE:
-+				/*
-+				 * Those errors mean the dentry is invalid
-+				 * (file was deleted or recreated)
-+				 */
-+				return 0;
-+			default:
-+				/*
-+				 * Otherwise some unexpected error happened
-+				 * report it as-is to VFS layer
-+				 */
-+				return rc;
-+			}
-+		}
- 		else {
- 			/*
- 			 * If the inode wasn't known to be a dfs entry when
+ 		ret = mmc_io_rw_direct(card, 0, 0, ptr++, 0, &tpl_code);
+ 		if (ret)
+@@ -315,6 +319,8 @@ static int sdio_read_cis(struct mmc_card
+ 			prev = &this->next;
+ 
+ 			if (ret == -ENOENT) {
++				if (time_after(jiffies, timeout))
++					break;
+ 				/* warn about unknown tuples */
+ 				pr_warn_ratelimited("%s: queuing unknown"
+ 				       " CIS tuple 0x%02x (%u bytes)\n",
 
 
