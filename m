@@ -2,151 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 250E031412E
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 22:04:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E53C6314130
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 22:04:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235337AbhBHVDG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 16:03:06 -0500
-Received: from mail-db8eur05on2083.outbound.protection.outlook.com ([40.107.20.83]:27328
-        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S236337AbhBHTuQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 14:50:16 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Mmv45th85F85rDtCP2MEd9iPdK1nwyXuXvpc9AdBkFga4jDPhEJ0gpaqlP8LAz9YimKojiUptOqw0Kj+2f7vBAB1BIbboe0miDEpZlW7ICKO+bC/83XWvlBXq0/TM4mXC1BKpVMu3aRkIvpTAVi4hYu5s2B4fGoAFpLa4M7aG5fvmPWZg85uCPrmKHfyrHY+dxAeNbn6S10RH+elAdSfZVhYxXPIHpxjqluHXUuN7ue22958Fa2/td3QnfySYAPC9JGBCPgHNSmuwNEfhOAnxd9F5pYaV8hXGfNKohgqZdTtsy3S6Bo0cH2fkrOHhYt5xUswtWOHJvodFbGrCQPtmA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rpf+xxQoXNUJ96ScAF1rApqoZSwoQXawPQEr0Y71Ndg=;
- b=JLRoudCJ2CL8Hfaw3ovV6PleFvalRE1sMlyYEt2+Pp6Ixl5J3IRj4MVpjxd47S9WAhxpMMa7GHfoQda5ZhbSQlPE1Fow0qgKvkHVhZercEZ+YeJPHSMf3Si2gkMZcPy3+DrRYfN46uIhEvf/HvuzGJ9RJFfv9t3vKheG5FxPElGXOB/Ye4nuBUYN5eehm1FJ4APHYZtFu1UYgSjJOrPaWRcZDg13yNkl84UrugVOOLXJzKwACkahFgok24Myj3g/PmB5GSRT1bEFO5jj4mE1bcyIvG7DjM0iTGb0TRVAiMbQatSi7EtuBZerS3njZyvxEhMIZBIn2FVdFRqmGfxrrg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rpf+xxQoXNUJ96ScAF1rApqoZSwoQXawPQEr0Y71Ndg=;
- b=ZOV8gPhoNuQlqsdNLTV34sy91Y98bFZLG6kFubtLvAz10Yqs8blKeGDuTZ7FKESLpbsrA2+EIjjsxjWBkteZTKrAc1xTuA2bTJ+48H8riP+i8HYpnHb8+0TfrVocu1vB47yM6IXtP+ZfGR8srZdggkvhCTZ9hnUmExt4C/jOX7E=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=nxp.com;
-Received: from VI1PR04MB4046.eurprd04.prod.outlook.com (2603:10a6:803:4d::29)
- by VI1PR04MB5040.eurprd04.prod.outlook.com (2603:10a6:803:60::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.30; Mon, 8 Feb
- 2021 19:49:27 +0000
-Received: from VI1PR04MB4046.eurprd04.prod.outlook.com
- ([fe80::f02d:1e2b:185:c4e1]) by VI1PR04MB4046.eurprd04.prod.outlook.com
- ([fe80::f02d:1e2b:185:c4e1%6]) with mapi id 15.20.3825.030; Mon, 8 Feb 2021
- 19:49:27 +0000
-Subject: Re: [PATCH 15/20] crypto: caam: caamalg_qi2: Supply a couple of
- 'fallback' related descriptions
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Aymen Sghaier <aymen.sghaier@nxp.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>
-References: <20210204111000.2800436-1-lee.jones@linaro.org>
- <20210204111000.2800436-16-lee.jones@linaro.org>
-From:   =?UTF-8?Q?Horia_Geant=c4=83?= <horia.geanta@nxp.com>
-Message-ID: <963b9e57-8077-5392-1d91-a5971e8d8ac5@nxp.com>
-Date:   Mon, 8 Feb 2021 21:49:24 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
-In-Reply-To: <20210204111000.2800436-16-lee.jones@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [78.97.206.147]
-X-ClientProxiedBy: AM0PR10CA0010.EURPRD10.PROD.OUTLOOK.COM
- (2603:10a6:208:17c::20) To VI1PR04MB4046.eurprd04.prod.outlook.com
- (2603:10a6:803:4d::29)
+        id S235572AbhBHVDO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 16:03:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55866 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236468AbhBHTwD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 14:52:03 -0500
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87273C061788
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 11:51:22 -0800 (PST)
+Received: by mail-pl1-x62e.google.com with SMTP id y10so8402514plk.7
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 11:51:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=z7235IYrakBb6fWLOTNBUn6GDzbQ4d/+zMoc7KivaN0=;
+        b=gcyUeLri2O6xxsqIVv8E/ak26CnmsYD6amccPp3Q9zvgKMo9Vv7yjQAYIdPfzoRqk1
+         OYaqy5AEsw+aXIhsQZ1BZFORUlWv90ewFWIf8D8XhtAH74tHes+pYTMm2VOluxmvuLBx
+         bSqiFqmPJ16to5Yjk5x6esEP5YeU1whd+HumP/iuC8f9w62iaBVSvEi8z+OK55lkIMYa
+         J2My+Fyz3K8teJ0bIxp/J/N+c3d6HCDdpchfWMn1KD+Pq2gOsg0YEg9zBFid9+54RIZ3
+         pE3wkWgOHg7hMg7opxuZX8NVfAbdANkTdcL0a5piq9ZqPcQWQKjYWqQ/2Q9Nusfuue77
+         6DHQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=z7235IYrakBb6fWLOTNBUn6GDzbQ4d/+zMoc7KivaN0=;
+        b=kLYON86cJX5xt71P2r0ih3zdO7dRS9ipdWG50j5019g4YzsmdyqJH/QCZZQWxYFlti
+         u8M6ayCeYFeE7jI0ZsCz4QpHRosYF6rI3IsnyU5ObF/jY9VyOAwxHMjuNuuLH68lHaZA
+         RuOxNjdOaWfXHBvdQ4JXm78LZouFhi4jtvLEQ5boZcn65y+osGAefIVKQcwd/LKx+kph
+         z2/REZSDEKV7IGIAZdVtIxF9by+bqnivHf5c382hyLL0L7nGx9XE8I9L/9lJj3BSfcRV
+         CsZSatHqcisa0zYeFk8QwxIuDwBQtnLyd8IOzIY/lQYQ0o3W0gTJ0JmAPC4c3xeYBU+k
+         Wkcg==
+X-Gm-Message-State: AOAM530FxlhCiow+etTbjXU1dQHIz3Y3WVzJg848asP+w+p6TTlFzpF8
+        27iauH6Uy2/EjbaTkIUfy/C7gz7sqITPII78
+X-Google-Smtp-Source: ABdhPJw7Uc19LTmFovJWF/BJcNO3fZQEzrl+tZDJiYJQgGsky1QT3m7LQrth+Kc84xnMRg+M7ECBHA==
+X-Received: by 2002:a17:90a:4e1:: with SMTP id g88mr395729pjg.7.1612813882094;
+        Mon, 08 Feb 2021 11:51:22 -0800 (PST)
+Received: from gmail.com ([2405:201:5c0a:f013:d397:a5d5:ecd3:3bbe])
+        by smtp.gmail.com with ESMTPSA id v19sm103359pjg.50.2021.02.08.11.51.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Feb 2021 11:51:21 -0800 (PST)
+Date:   Tue, 9 Feb 2021 01:21:16 +0530
+From:   Mukul Mehar <mukulmehar02@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Subject: [PATCH]: checkpatch: Fixed styling issue
+Message-ID: <20210208195116.GA19781@gmail.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.0.129] (78.97.206.147) by AM0PR10CA0010.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:17c::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.19 via Frontend Transport; Mon, 8 Feb 2021 19:49:25 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: f07ead86-9c4a-4939-28a9-08d8cc6aa42c
-X-MS-TrafficTypeDiagnostic: VI1PR04MB5040:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR04MB5040FE090E2C5695F8BF44D5988F9@VI1PR04MB5040.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: LDEAhFaVcbxUauiCVqI1tsN5HIKYjeP5rJubBWsYjJXR9t84/adivz3gcilOj7VH3z2veVIfvkxRgCmnTnRE5tsGtIuCtFKSXx5GtJgQe0b4RHkLsUtwsXAxuF+qGjpIrPuB5WybTPLXR4fgiISo8g7tWa/HjdG/XsCm6xsU+doe9KW/O1gBEgIJk/KXrNoQvgVZBI1xgLZrA8iGeIe25EPbgy7C41IU82rfZKjLVwNufjs67Z5nynDqr7ijtaEesOQ4sEQcP8ku0i1YWwXkRxd6FOWi4jdH3xlNDkeEMCNKGL3MQdpDaLeAIt95BVfAcLOSGq/ZXU4/gymod2NmQx1pyxz/nFEH15VoxC8uoFMbCUFdeL4speOmhyFuBC9LHjz9kfhJ9lbYD5nsW6qWJA83fjas/yT3fTegE8hjRwUVh5vKUT4EfCp+sObNh4PQXegkGSa5Th7gatjVpuSVUEWeQLK8o3enoTv3anudRV8cbOR6I++ngG0KGW9u6nczbnzHhA42BElesKGh0AWNOs/pzcMkxUZhkjc6OySF0xmh9GUOoTIzONWty2yU+lm239fJR5Jms2TdD4vJKklh23BpD+sjwozbfFLZR1HleP8=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB4046.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(39860400002)(376002)(366004)(346002)(136003)(54906003)(6486002)(2616005)(31686004)(2906002)(5660300002)(66476007)(66946007)(4326008)(8676002)(16576012)(66556008)(6916009)(53546011)(83380400001)(8936002)(16526019)(186003)(26005)(956004)(86362001)(31696002)(316002)(478600001)(52116002)(36756003)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?YzNMblhCb1F3b0E2Rzgxd0hwRU9LQTlzUzFid1ZnbFJsZ2xnNUwwTHBJU2l1?=
- =?utf-8?B?YlZVeis0Myt5Wm4wQmtSVm53ZDk3Y0J6Qjg2Y0lhQVFFb0ZocFl1WTdpU05y?=
- =?utf-8?B?VkI3anhzQXEzLzlJd21KZEpyK3ZFbVNIM3dMeVdxZzBqM1ZEWld4UnJIK2pP?=
- =?utf-8?B?QW93U1gzdksxZlJTckhQUXVlVGE3ckZqdEFMZ3dZVWovT0NQWXlOWG9mUVN2?=
- =?utf-8?B?UERmMkRBMXk4M2ZJTnhQTUwwVUZyVjRTSlRVVkF3TS9PamJLNXlYUzE5bU9p?=
- =?utf-8?B?THllUkV6V0lucW5qcHF2LzVqY3JENUp1VDdWc0dDR3ZpQ0hiM2RVTjE3WWRw?=
- =?utf-8?B?eWszRHVaTk1CeWxaTVNpdnU2SGprYXhXVnpSQVFhOVhaS3ZqV1VnUjBudmVV?=
- =?utf-8?B?NEVUS2FVbnZ3YmVNRnM2NGY1S2NqNWhobW44L3BqNHQzZ1hzTHBBUEhta2g3?=
- =?utf-8?B?SURRMEJOVmtlcVhXSUZ4MkZRK0dBL2UxT3FkOHVFZ1VhNDF2blNRc2FMT0tB?=
- =?utf-8?B?cWN2NlZBOUZXczRYZ2toODlpSVZaMTB6ZVIybmpFZEpsWWJTb05wRlVia0c4?=
- =?utf-8?B?TlN6SUM5cWZja0ZXZ3RuRGhibTNONHU4a21lOWg5VS8yN0VWTXhGc0ZZNnlS?=
- =?utf-8?B?dzEwRXlHNVNTQzZtVjJyTVZYcmx4YjF3OVpWYzJaTTZ3L1BPdEtLZ2JmWjha?=
- =?utf-8?B?MUFtYklOTWgyYnNYN3RQQnN1NFpjejhiUEJmaVRMRXovTnQzWk9venhlNjlM?=
- =?utf-8?B?STFSeGVVRWNTTDlrdTMrMGh1VExNNm9PVFRmRS9iZDZMVWxpT2lTR2E4WlZ4?=
- =?utf-8?B?S1pvY2J0L0NtRjcwbkFDejJQemRmNGEzZ05xQWZZVkZRSWpUMWRsZ002cjFW?=
- =?utf-8?B?N2EvNk9qNi9HL08rUWZhaFV3ZnlzTTVqa0M4dlJxakJDV0F3N3NDZlp3aDFT?=
- =?utf-8?B?SFdRTVRyZ0RkdHB3cTNaUEFpakc0VTl0VDVTV25iczJIazVIbzR0YldCNHRo?=
- =?utf-8?B?bzdBYVZ5ZmlwK2gxL2tBWlkxd3Y3L0d0QWFBL3pjT3p2a1U1UEtqemRsTkVZ?=
- =?utf-8?B?QmtDbDB1aUMxOWlTdXcxRDFJTkFUOE1WNlFGVHVuSG1nK2R6TnNUcHpWWm5H?=
- =?utf-8?B?eFZMaEc3SVVxaVlVZVBTcEZacFBHSHlndGt6TG56SlRRUlZqMFVqZWpGZkVC?=
- =?utf-8?B?ZnB1WFY3dlVSTmp2dUtKSzZoZGtLWkc1bFA0NmY5dVFEZEg5UVhpZGViTFFZ?=
- =?utf-8?B?Njk0RERxSlZHZXdDOXVDVlM2dTVoekpidmcxZGVVKyt4OEVPamVHY3NOdXIw?=
- =?utf-8?B?c1hlRndxL1h0SnkzeUlDL2dGaGlHWUUzQ1RBU05TN2IwbkQ4L1ViZ3RmNnNp?=
- =?utf-8?B?ekJrdThpZlFzY0dRb2pEdnJOanZMZUVxQWZodG05Q0NxWCtHRFNoUGp6cEtT?=
- =?utf-8?B?UE9SdktPNHhPUk1QWkkxZWE0Rm04cTF2UmNUTk9IUXhsWlJtMUxla1RlUHMy?=
- =?utf-8?B?SlZxejVaNkFleXhJSUQyS1lEWXFDVnlkeWs2b3pJOG1YUW1OaVV4TmNJbkhW?=
- =?utf-8?B?N2ZLWjBubjZlOGszQXc5YUZnMnlxZHMwc29UbnJuVTNPaFo5MCtSaytUREd3?=
- =?utf-8?B?K1ZQQVpVeUVUNmU5ZmVYSXBEc1ZTelF0TElJeFFDMG5uUWxKSGlSUkxOdTVa?=
- =?utf-8?B?akk5dHJtbytmTjB2RzBtWllBL3crS2pEV0phTEtwTWRTWTcrSGhpd0hBUXJI?=
- =?utf-8?Q?ZsJNo+X5tc9NoxtjJLpA3Ll8Kog5on2AOXsrUjN?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f07ead86-9c4a-4939-28a9-08d8cc6aa42c
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB4046.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Feb 2021 19:49:26.7541
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: hE4uONDzD4tEhL/fBP7wrdopNJ+PXHXT6312MAbtTN/1kLylr79r4lL/Zk5FLewXUUb3DyN633ftLIk6PQmy0Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB5040
+Content-Type: multipart/mixed; boundary="FL5UXtIhxfXey3p5"
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/4/2021 1:10 PM, Lee Jones wrote:
-> Fixes the following W=1 kernel build warning(s):
-> 
->  drivers/crypto/caam/caamalg_qi2.c:87: warning: Function parameter or member 'xts_key_fallback' not described in 'caam_ctx'
->  drivers/crypto/caam/caamalg_qi2.c:87: warning: Function parameter or member 'fallback' not described in 'caam_ctx'
-> 
-> Cc: "Horia Geantă" <horia.geanta@nxp.com>
-> Cc: Aymen Sghaier <aymen.sghaier@nxp.com>
-> Cc: Herbert Xu <herbert@gondor.apana.org.au>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: linux-crypto@vger.kernel.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> ---
->  drivers/crypto/caam/caamalg_qi2.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/crypto/caam/caamalg_qi2.c b/drivers/crypto/caam/caamalg_qi2.c
-> index a780e627838ae..22e45c5bf2023 100644
-> --- a/drivers/crypto/caam/caamalg_qi2.c
-> +++ b/drivers/crypto/caam/caamalg_qi2.c
-> @@ -71,6 +71,8 @@ struct caam_skcipher_alg {
->   * @adata: authentication algorithm details
->   * @cdata: encryption algorithm details
->   * @authsize: authentication tag (a.k.a. ICV / MAC) size
-> + * @xts_key_fallback: whether to set the fallback key
-true if fallback tfm needs to be used due to unsupported xts key lengths.
 
-> + * @fallback: the fallback key
-xts fallback tfm
+--FL5UXtIhxfXey3p5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Horia
+
+--FL5UXtIhxfXey3p5
+Content-Type: text/x-diff; charset=us-ascii
+Content-Disposition: attachment; filename="first_patch.patch"
+
+From 29bcaf0066003983da29b1e026b985c0727b091a Mon Sep 17 00:00:00 2001
+From: Mukul Mehar <mukulmehar02@gmail.com>
+Date: Mon, 8 Feb 2021 01:03:06 +0530
+Subject: [PATCH] Drivers: staging: most: sound: Fixed style issue.
+
+This patch fixes a warning, of the line ending with a '(',
+generated by checkpatch.pl.
+This is my first patch.
+
+Signed-off-by: Mukul Mehar <mukulmehar02@gmail.com>
+---
+ drivers/staging/most/sound/sound.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/staging/most/sound/sound.c b/drivers/staging/most/sound/sound.c
+index 3a1a59058042..4dd1bf95d1ce 100644
+--- a/drivers/staging/most/sound/sound.c
++++ b/drivers/staging/most/sound/sound.c
+@@ -228,12 +228,12 @@ static int playback_thread(void *data)
+ 		struct mbo *mbo = NULL;
+ 		bool period_elapsed = false;
+ 
+-		wait_event_interruptible(
+-			channel->playback_waitq,
+-			kthread_should_stop() ||
+-			(channel->is_stream_running &&
+-			 (mbo = most_get_mbo(channel->iface, channel->id,
+-					     &comp))));
++		wait_event_interruptible(channel->playback_waitq,
++					 kthread_should_stop() ||
++					 (channel->is_stream_running &&
++					 (mbo = most_get_mbo(channel->iface,
++					 channel->id,
++					 &comp))));
+ 		if (!mbo)
+ 			continue;
+ 
+-- 
+2.25.1
+
+--FL5UXtIhxfXey3p5--
