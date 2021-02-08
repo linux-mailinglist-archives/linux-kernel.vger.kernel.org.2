@@ -2,202 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8727B3137D8
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 16:32:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67A16313863
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 16:46:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233416AbhBHPcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 10:32:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50426 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232183AbhBHPFL (ORCPT
+        id S233356AbhBHPpl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 10:45:41 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31487 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232839AbhBHPGb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 10:05:11 -0500
-Received: from mail-ua1-x932.google.com (mail-ua1-x932.google.com [IPv6:2607:f8b0:4864:20::932])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 989C1C06178A
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 07:04:30 -0800 (PST)
-Received: by mail-ua1-x932.google.com with SMTP id i3so4764914uai.3
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 07:04:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Jl1PZS6Z4xx6ic0CScHYnCftVci+4yGkziwnsAGCYoI=;
-        b=cz6rcclIQelMUkfinCmu0NuCPhuVYHrGtze5sLLSgPjgCJyg+rSCmqs+30bCrV9PK1
-         UJktsXblbQNfPlD0E8STVOJg1Ww39HKBWBYAd8+ThRD5TiqK5Jqe8LDGvUk9VrqzQnJJ
-         /PS714l61/Kw+HfpJTy2DucqZjk5Sa979Tzibskl/8VwY7f7A9FO5SGHBcRyvZ4ijl+J
-         lTHYITvQ3bf7d+hrn20jSByzgeEy/sNGa87AS5vKuy5SMflPGsRrmMjjIjVoTzEATlkb
-         zXMHBnwQPGC3jxav5OlckrNEStmfEj+roppi2X255c0XxBNkPhlKcpjgZUvBt0fFqxfX
-         /nWw==
+        Mon, 8 Feb 2021 10:06:31 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612796699;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Cl3oAHniZYvmE61bZxJR1DSVbEaXGjJGBlodlSQeSUQ=;
+        b=XwBszQP3+rPnYOrHKaw9LG9PjvqNJzVXMNvJjKLcdGo67FbvfbcPbFpma/oWjby5HBLCaw
+        4vW+yslhAomA1OHNDIGggy3GN2C6T5tuNbaC3rLVinuyMKK8hjN5aWfZuSvZPJWxjbf7A+
+        VDaol7aiataWJrq6zwacJOQbdYmfzak=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-195-tNkLHfqCOX-gfb2sZptBxw-1; Mon, 08 Feb 2021 10:04:57 -0500
+X-MC-Unique: tNkLHfqCOX-gfb2sZptBxw-1
+Received: by mail-wm1-f69.google.com with SMTP id b62so8863676wmc.5
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 07:04:56 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Jl1PZS6Z4xx6ic0CScHYnCftVci+4yGkziwnsAGCYoI=;
-        b=ZQzdykyjFLSaTvKD1rKRUVM9GIO9xuXcD9AY146uEAMLpMfS30bOGDSqg0PcFTztWP
-         Cd4PVKNgtB/pyGgQCgCOpldyVqcWom3xoq14+XPKLD8Thaf1n9xKkR8UCwHyZgKetVap
-         TaF40vU5Wpg13TjgrVio4YVSVwlR3NYMwwoxUm6A5FyR002P8Aj1UkSaayc7Dc1jnWg1
-         SE9l3Ap9aIYZ3CkYbq3fIlfAmXoJFaipctlcUrXBAD5VnK95IKxrNaiWMHdCeR6JJgQS
-         9FhU+fKYR3gL9KPtSkVjHtXILrVg2XKdvYj+VluinOOvwZ0et8nOp1af+TdFqBuj79Bv
-         DK2g==
-X-Gm-Message-State: AOAM530UI6e4EDH/PNNBuIfX9KPf7X+TTChL5lg/2vsPJyyncRU6X4yt
-        +kc2pr2VBan0WUUHWJmulnZvr1YgACa03RH/rWnkow==
-X-Google-Smtp-Source: ABdhPJxdmmqm8yd6jaDr+v6FqBsRK/ZYOcQC+aRvXzq8qQbnJM/n8/zETFz2ZizJ8xD8URSFCgQD93lJBLwroLEjgs4=
-X-Received: by 2002:ab0:3496:: with SMTP id c22mr10780274uar.100.1612796669681;
- Mon, 08 Feb 2021 07:04:29 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=Cl3oAHniZYvmE61bZxJR1DSVbEaXGjJGBlodlSQeSUQ=;
+        b=FsqNqZVpgd3zXxELI2NsGgNBiKmHEF+YLpbmYueB7aglV9QTt990oeRJh5ugjLeQkD
+         Q5PLIxCgqBCDDvokqs8sttJcECTB16P1AaA1YPKRx6y0ZOw4XzPNe9KNhwpE3WdA0JWV
+         FCB+4y6b4RA+AWEYltY9EaJuaz0g0KpcaEKB+QmIi3GCnra0bNFXu5yPu8161iSSXtc/
+         +mILVacm/mwcisfppae88NMVf6HiKaQWkxWZijV8bh8+CZWuv4yKfq6pl/lZ8X5s2frj
+         AHzL73mJIb5YVZQD2snao1wqgt8JBHzBcurubjfpttkhde7VX2QfQuBKpMh9Dr6WyUzS
+         usWQ==
+X-Gm-Message-State: AOAM532LQ1q0LUiJWxhNa0HBjzwK+RNdYRCNsoG4aH/26UXimBau871m
+        egMcVFaST5UUEg9AlUkLPco+bnQlnXZpWxzP4XY2vi1zrT1gJSBD03DJaswPo5bn5tguvAv8s/F
+        dVdQ8V+rhXFfnsaTIJnR7qXhK
+X-Received: by 2002:a1c:1b12:: with SMTP id b18mr14619694wmb.157.1612796684055;
+        Mon, 08 Feb 2021 07:04:44 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxoKb+gxkOEG0jqY4GX8H5Cgl0BMI05v7tvt5vtO2d+9BUB98uAqlYTJNGX9S72vSypyNqkDA==
+X-Received: by 2002:a1c:1b12:: with SMTP id b18mr14619225wmb.157.1612796675563;
+        Mon, 08 Feb 2021 07:04:35 -0800 (PST)
+Received: from steredhat (host-79-34-249-199.business.telecomitalia.it. [79.34.249.199])
+        by smtp.gmail.com with ESMTPSA id w11sm8297071wmi.37.2021.02.08.07.04.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Feb 2021 07:04:34 -0800 (PST)
+Date:   Mon, 8 Feb 2021 16:04:31 +0100
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     kuba@kernel.org, davem@davemloft.net
+Cc:     netdev@vger.kernel.org, Jorgen Hansen <jhansen@vmware.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Andy King <acking@vmware.com>, Wei Liu <wei.liu@kernel.org>,
+        Dmitry Torokhov <dtor@vmware.com>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        George Zhang <georgezhang@vmware.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org
+Subject: Re: [PATCH net] vsock: fix locking in vsock_shutdown()
+Message-ID: <20210208150431.jtgeyyf5qackl62b@steredhat>
+References: <20210208144307.83628-1-sgarzare@redhat.com>
 MIME-Version: 1.0
-References: <20210204120547.15381-1-yann.gautier@foss.st.com>
- <20210204120547.15381-2-yann.gautier@foss.st.com> <CAPDyKFqdtK33HSW_AM0s9172V=cBM6wnKuHubXSOGCVqJ8nzFg@mail.gmail.com>
- <e31df871-ae1a-7c80-d741-0813f90532c7@foss.st.com> <1c1814dc-f87b-ef5c-24b4-b9a6ec570dbc@foss.st.com>
-In-Reply-To: <1c1814dc-f87b-ef5c-24b4-b9a6ec570dbc@foss.st.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Mon, 8 Feb 2021 16:03:53 +0100
-Message-ID: <CAPDyKFq26Q3jwwJ71vp6s-+ux3jUnL6+m2FEzfi_gh5z8meqrw@mail.gmail.com>
-Subject: Re: [PATCH 1/2] mmc: mmci: enable MMC_CAP_NEED_RSP_BUSY
-To:     Yann GAUTIER <yann.gautier@foss.st.com>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        ludovic.barre@foss.st.com,
-        =?UTF-8?B?TWFyZWsgVmHFoXV0?= <marex@denx.de>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210208144307.83628-1-sgarzare@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 8 Feb 2021 at 13:16, Yann GAUTIER <yann.gautier@foss.st.com> wrote:
+On Mon, Feb 08, 2021 at 03:43:07PM +0100, Stefano Garzarella wrote:
+>In vsock_shutdown() we touched some socket fields without holding the
+>socket lock, such as 'state' and 'sk_flags'.
 >
-> On 2/5/21 1:19 PM, Yann GAUTIER wrote:
-> > On 2/5/21 10:53 AM, Ulf Hansson wrote:
-> >> - trimmed cc-list
-> >>
-> >> On Thu, 4 Feb 2021 at 13:08, <yann.gautier@foss.st.com> wrote:
-> >>>
-> >>> From: Yann Gautier <yann.gautier@foss.st.com>
-> >>>
-> >>> To properly manage commands awaiting R1B responses, the capability
-> >>> MMC_CAP_NEED_RSP_BUSY is enabled in mmci driver, for variants that
-> >>> manage busy detection.
-> >>> This R1B management needs both the flags MMC_CAP_NEED_RSP_BUSY and
-> >>> MMC_CAP_WAIT_WHILE_BUSY to be enabled together.
-> >>
-> >> Would it be possible for you to share a little bit more about the
-> >> problem? Like under what circumstances does things screw up?
-> >>
-> >> Is the issue only occurring when the cmd->busy_timeout becomes larger
-> >> than host->max_busy_timeout. Or even in other cases?
-> >>
-> >>>
-> >>> Signed-off-by: Yann Gautier <yann.gautier@foss.st.com>
-> >>> ---
-> >>>   drivers/mmc/host/mmci.c | 2 +-
-> >>>   1 file changed, 1 insertion(+), 1 deletion(-)
-> >>>
-> >>> diff --git a/drivers/mmc/host/mmci.c b/drivers/mmc/host/mmci.c
-> >>> index 1bc674577ff9..bf6971fdd1a6 100644
-> >>> --- a/drivers/mmc/host/mmci.c
-> >>> +++ b/drivers/mmc/host/mmci.c
-> >>> @@ -2148,7 +2148,7 @@ static int mmci_probe(struct amba_device *dev,
-> >>>                  if (variant->busy_dpsm_flag)
-> >>>                          mmci_write_datactrlreg(host,
-> >>>
-> >>> host->variant->busy_dpsm_flag);
-> >>> -               mmc->caps |= MMC_CAP_WAIT_WHILE_BUSY;
-> >>> +               mmc->caps |= MMC_CAP_WAIT_WHILE_BUSY |
-> >>> MMC_CAP_NEED_RSP_BUSY;
-> >>
-> >> This isn't correct as the ux500 (and likely also other legacy
-> >> variants) don't need this. I have tried it in the past and it works
-> >> fine for ux500 without MMC_CAP_NEED_RSP_BUSY.
-> >>
-> >> The difference is rather that the busy detection for stm32 variants
-> >> needs a corresponding HW busy timeout to be set (its
-> >> variant->busy_timeout flag is set). Perhaps we can use that
-> >> information instead?
-> >>
-> >> Note that, MMC_CAP_NEED_RSP_BUSY, means that cmd->busy_timeout will
-> >> not be set by the core for erase commands, CMD5 and CMD6.
-> >>
-> >> By looking at the code in mmci_start_command(), it looks like we will
-> >> default to a timeout of 10s, when cmd->busy_timeout isn't set. At
-> >> least for some erase requests, that won't be sufficient. Would it be
-> >> possible to disable the HW busy timeout in some way - and maybe use a
-> >> software timeout instead? Maybe I already asked Ludovic about this?
-> >> :-)
-> >>
-> >> BTW, did you check that the MMCIDATATIMER does get the correct value
-> >> set for the timer in mmci_start_command() and if
-> >> host->max_busy_timeout gets correctly set in
-> >> mmci_set_max_busy_timeout()?
-> >>
-> >> [...]
-> >>
-> >> Kind regards
-> >> Uffe
-> >>
-> >
-> > Hi Ulf,
-> >
-> > Thanks for the hints.
-> > I'll check all of that and get back with updated patches.
-> >
-> > As I tried to explain in the cover letter and in reply to Adrian, I saw
-> > a freeze (BUSYD0) in test 37 during MMC_ERASE command  with
-> > SECURE_ERASE_ARG, when running this test just after test 36 (or any
-> > other write test). But maybe, as you said that's mostly a incorrect
-> > timeout issue.
-> >
-> > Regards,
-> > Yann
+>Also, after the introduction of multi-transport, we are accessing
+>'vsk->transport' in vsock_send_shutdown() without holding the lock
+>and this call can be made while the connection is in progress, so
+>the transport can change in the meantime.
 >
-> Hi,
+>To avoid issues, we hold the socket lock when we enter in
+>vsock_shutdown() and release it when we leave.
 >
-> I made some extra tests, and the timeout value set in MMCIDATATIMER
-> correspond to the one computed:
-> card->ext_csd.erase_group_def is set to 1 in mmc_init_card()
-> In mmc_mmc_erase_timeout(), we have:
-> erase_timeout = card->ext_csd.hc_erase_timeout; // 300ms * 0x07 (for the
-> eMMC card I have: THGBMDG5D1LBAIL
-> erase_timeout *= card->ext_csd.sec_erase_mult; // 0xDC
-> erase_timeout *= qty; // 32 (from = 0x1d0000, to = 0x20ffff)
+>Among the transports that implement the 'shutdown' callback, only
+>hyperv_transport acquired the lock. Since the caller now holds it,
+>we no longer take it.
 >
-> This leads to a timeout of 14784000ms (~4 hours).
-> The max_busy_timeout is 86767ms.
+>Fixes: d021c344051a ("VSOCK: Introduce VM Sockets")
+>Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
+>---
+> net/vmw_vsock/af_vsock.c         | 8 +++++---
+> net/vmw_vsock/hyperv_transport.c | 2 --
+> 2 files changed, 5 insertions(+), 5 deletions(-)
 >
-> After those 4 hours, I get this message:
-> mmc1: Card stuck being busy! __mmc_poll_for_busy
-
-Okay, I see.
-
-This means that we end up polling for busy in __mmc_poll_for_busy().
-However, not by using CMD13 but rather with the ->card_busy() ops (as
-mmci has this callback set).
-
-Could it be that the ->card_busy() callback isn't working correctly
-for the stm32 variant?
-
-What happens if you temporarily drop the assignment of the
-->card_busy() callback, thus force the mmc core to poll with CMD13
-instead? Would this work?
-
+>diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
+>index 4ea301fc2bf0..5546710d8ac1 100644
+>--- a/net/vmw_vsock/af_vsock.c
+>+++ b/net/vmw_vsock/af_vsock.c
+>@@ -943,10 +943,12 @@ static int vsock_shutdown(struct socket *sock, int mode)
+> 	 */
 >
-> The second erase with MMC_ERASE_ARG finds an erase timeout of 67200ms,
-> and uses R1B command.
-> But as the first erase failed, the DPSMACT is still enabled, the busy
-> timeout doesn't seem to happen. Something may be missing in the error path.
-
-Assuming the eMMC card completed the first erase operation
-successfully, then yes, the second erase should work.
-
-However, what if the eMMC actually failed with the first erase? How can we know?
-
+> 	sk = sock->sk;
+>+
+>+	lock_sock(sk);
+> 	if (sock->state == SS_UNCONNECTED) {
+> 		err = -ENOTCONN;
+> 		if (sk->sk_type == SOCK_STREAM)
+>-			return err;
+>+			goto out;
+> 	} else {
+> 		sock->state = SS_DISCONNECTING;
+> 		err = 0;
+>@@ -955,10 +957,8 @@ static int vsock_shutdown(struct socket *sock, int mode)
+> 	/* Receive and send shutdowns are treated alike. */
+> 	mode = mode & (RCV_SHUTDOWN | SEND_SHUTDOWN);
+> 	if (mode) {
+>-		lock_sock(sk);
+> 		sk->sk_shutdown |= mode;
+> 		sk->sk_state_change(sk);
+>-		release_sock(sk);
 >
-> Anyway, I'll push an update of the second patch of the series, and just
-> drop this first one.
+> 		if (sk->sk_type == SOCK_STREAM) {
+> 			sock_reset_flag(sk, SOCK_DONE);
+>@@ -966,6 +966,8 @@ static int vsock_shutdown(struct socket *sock, int mode)
+> 		}
+> 	}
 >
+>+out:
+>+	release_sock(sk);
+> 	return err;
+> }
 >
-> Regards,
-> Yann
+>diff --git a/net/vmw_vsock/hyperv_transport.c b/net/vmw_vsock/hyperv_transport.c
+>index 630b851f8150..5a3beef73461 100644
+>--- a/net/vmw_vsock/hyperv_transport.c
+>+++ b/net/vmw_vsock/hyperv_transport.c
+>@@ -479,9 +479,7 @@ static int hvs_shutdown(struct vsock_sock *vsk, int mode)
+> 	if (!(mode & SEND_SHUTDOWN))
+> 		return 0;
+>
+>-	lock_sock(sk);
+> 	hvs_shutdown_lock_held(vsk->trans, mode);
+>-	release_sock(sk);
 
-Kind regards
-Uffe
+Ooops, removing these lines, 'sk' is not used anymore in hvs_shutdown(), 
+I'll send v2 ASAP:
+
+../net/vmw_vsock/hyperv_transport.c: In function ‘hvs_shutdown’:
+../net/vmw_vsock/hyperv_transport.c:477:15: warning: unused variable ‘sk’ [-Wunused-variable]
+   477 |  struct sock *sk = sk_vsock(vsk);
+       |               ^~
+
+Since I'm here, I had a doubt whether to separate this modification or 
+leave it in this patch.
+
+What do you suggest?
+
+I did it this way because by modifying only the caller, we would have a 
+nested lock.
+
+This way instead we are sure that if we backport this patch, we don't 
+forget to touch hvs_shutdown() as well.
+
+Thanks,
+Stefano
+
