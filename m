@@ -2,36 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35E6C313A91
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 18:14:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54E51313A9C
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 18:16:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234813AbhBHRMu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 12:12:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35288 "EHLO mail.kernel.org"
+        id S232556AbhBHRPv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 12:15:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36638 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233652AbhBHPZD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 10:25:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2EEF064EFE;
-        Mon,  8 Feb 2021 15:15:08 +0000 (UTC)
+        id S233781AbhBHPZp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 10:25:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CBBD364F15;
+        Mon,  8 Feb 2021 15:15:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612797309;
-        bh=26T8cT0RofmtLrSZ8OpSoIxmAcCnX9pAreY292Av5UI=;
+        s=korg; t=1612797312;
+        bh=ENr10oo4+echbZs6T0K0LX0onPBQjQdwBvim5b1/xLk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OPN3IhHYfP9AotW3r54fgiRRjmabOQz5nM34vNZ79Sg1X0V83dvbLj5tLgVQMQP53
-         DmEMduuQ3ROIk+8w6qQrJLmaJUzrJ9w2yigXaiKvMWv3zil4CaaockisZ412p+Ao/9
-         zWVSHQZ7Mw0qlA9s6zAd7vIGLGdBg6tAxut2Tx5o=
+        b=tlslHvW5G53DW4lwFXQFat0J7ZO3/uh+w8k6f9mp6Zh+Q1FlfX9K4RigWXQEqwwms
+         WSBzzpxqcejh3yk0cJtvXk7tB5mFAbjIS7cdbbirzIZRb541Cv5WVZDYSs0xNNtoYF
+         KqUaO2J9gFXFagwVwFB5Zn59InaNir+bWfsEt130=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+df400f2f24a1677cd7e0@syzkaller.appspotmail.com,
-        Vadim Fedorenko <vfedorenko@novek.ru>,
-        David Howells <dhowells@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>,
+        stable@vger.kernel.org, Zyta Szpak <zr@semihalf.com>,
+        Shawn Guo <shawnguo@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 033/120] rxrpc: Fix deadlock around release of dst cached on udp tunnel
-Date:   Mon,  8 Feb 2021 16:00:20 +0100
-Message-Id: <20210208145819.712876071@linuxfoundation.org>
+Subject: [PATCH 5.10 034/120] arm64: dts: ls1046a: fix dcfg address range
+Date:   Mon,  8 Feb 2021 16:00:21 +0100
+Message-Id: <20210208145819.754921766@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210208145818.395353822@linuxfoundation.org>
 References: <20210208145818.395353822@linuxfoundation.org>
@@ -43,106 +40,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Howells <dhowells@redhat.com>
+From: Zyta Szpak <zr@semihalf.com>
 
-[ Upstream commit 5399d52233c47905bbf97dcbaa2d7a9cc31670ba ]
+[ Upstream commit aa880c6f3ee6dbd0d5ab02026a514ff8ea0a3328 ]
 
-AF_RXRPC sockets use UDP ports in encap mode.  This causes socket and dst
-from an incoming packet to get stolen and attached to the UDP socket from
-whence it is leaked when that socket is closed.
+Dcfg was overlapping with clockgen address space which resulted
+in failure in memory allocation for dcfg. According regs description
+dcfg size should not be bigger than 4KB.
 
-When a network namespace is removed, the wait for dst records to be cleaned
-up happens before the cleanup of the rxrpc and UDP socket, meaning that the
-wait never finishes.
-
-Fix this by moving the rxrpc (and, by dependence, the afs) private
-per-network namespace registrations to the device group rather than subsys
-group.  This allows cached rxrpc local endpoints to be cleared and their
-UDP sockets closed before we try waiting for the dst records.
-
-The symptom is that lines looking like the following:
-
-	unregister_netdevice: waiting for lo to become free
-
-get emitted at regular intervals after running something like the
-referenced syzbot test.
-
-Thanks to Vadim for tracking this down and work out the fix.
-
-Reported-by: syzbot+df400f2f24a1677cd7e0@syzkaller.appspotmail.com
-Reported-by: Vadim Fedorenko <vfedorenko@novek.ru>
-Fixes: 5271953cad31 ("rxrpc: Use the UDP encap_rcv hook")
-Signed-off-by: David Howells <dhowells@redhat.com>
-Acked-by: Vadim Fedorenko <vfedorenko@novek.ru>
-Link: https://lore.kernel.org/r/161196443016.3868642.5577440140646403533.stgit@warthog.procyon.org.uk
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Zyta Szpak <zr@semihalf.com>
+Fixes: 8126d88162a5 ("arm64: dts: add QorIQ LS1046A SoC support")
+Signed-off-by: Shawn Guo <shawnguo@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/afs/main.c        | 6 +++---
- net/rxrpc/af_rxrpc.c | 6 +++---
- 2 files changed, 6 insertions(+), 6 deletions(-)
+ arch/arm64/boot/dts/freescale/fsl-ls1046a.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/afs/main.c b/fs/afs/main.c
-index accdd8970e7c0..b2975256dadbd 100644
---- a/fs/afs/main.c
-+++ b/fs/afs/main.c
-@@ -193,7 +193,7 @@ static int __init afs_init(void)
- 		goto error_cache;
- #endif
+diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1046a.dtsi b/arch/arm64/boot/dts/freescale/fsl-ls1046a.dtsi
+index 1fa39bacff4b3..0b4545012d43e 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-ls1046a.dtsi
++++ b/arch/arm64/boot/dts/freescale/fsl-ls1046a.dtsi
+@@ -385,7 +385,7 @@
  
--	ret = register_pernet_subsys(&afs_net_ops);
-+	ret = register_pernet_device(&afs_net_ops);
- 	if (ret < 0)
- 		goto error_net;
- 
-@@ -213,7 +213,7 @@ static int __init afs_init(void)
- error_proc:
- 	afs_fs_exit();
- error_fs:
--	unregister_pernet_subsys(&afs_net_ops);
-+	unregister_pernet_device(&afs_net_ops);
- error_net:
- #ifdef CONFIG_AFS_FSCACHE
- 	fscache_unregister_netfs(&afs_cache_netfs);
-@@ -244,7 +244,7 @@ static void __exit afs_exit(void)
- 
- 	proc_remove(afs_proc_symlink);
- 	afs_fs_exit();
--	unregister_pernet_subsys(&afs_net_ops);
-+	unregister_pernet_device(&afs_net_ops);
- #ifdef CONFIG_AFS_FSCACHE
- 	fscache_unregister_netfs(&afs_cache_netfs);
- #endif
-diff --git a/net/rxrpc/af_rxrpc.c b/net/rxrpc/af_rxrpc.c
-index 0a2f4817ec6cf..41671af6b33f9 100644
---- a/net/rxrpc/af_rxrpc.c
-+++ b/net/rxrpc/af_rxrpc.c
-@@ -990,7 +990,7 @@ static int __init af_rxrpc_init(void)
- 		goto error_security;
- 	}
- 
--	ret = register_pernet_subsys(&rxrpc_net_ops);
-+	ret = register_pernet_device(&rxrpc_net_ops);
- 	if (ret)
- 		goto error_pernet;
- 
-@@ -1035,7 +1035,7 @@ error_key_type:
- error_sock:
- 	proto_unregister(&rxrpc_proto);
- error_proto:
--	unregister_pernet_subsys(&rxrpc_net_ops);
-+	unregister_pernet_device(&rxrpc_net_ops);
- error_pernet:
- 	rxrpc_exit_security();
- error_security:
-@@ -1057,7 +1057,7 @@ static void __exit af_rxrpc_exit(void)
- 	unregister_key_type(&key_type_rxrpc);
- 	sock_unregister(PF_RXRPC);
- 	proto_unregister(&rxrpc_proto);
--	unregister_pernet_subsys(&rxrpc_net_ops);
-+	unregister_pernet_device(&rxrpc_net_ops);
- 	ASSERTCMP(atomic_read(&rxrpc_n_tx_skbs), ==, 0);
- 	ASSERTCMP(atomic_read(&rxrpc_n_rx_skbs), ==, 0);
+ 		dcfg: dcfg@1ee0000 {
+ 			compatible = "fsl,ls1046a-dcfg", "syscon";
+-			reg = <0x0 0x1ee0000 0x0 0x10000>;
++			reg = <0x0 0x1ee0000 0x0 0x1000>;
+ 			big-endian;
+ 		};
  
 -- 
 2.27.0
