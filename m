@@ -2,114 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85E10313DBE
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 19:41:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C95FC313DC3
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 19:41:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235130AbhBHSkD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 13:40:03 -0500
-Received: from mx2.suse.de ([195.135.220.15]:45864 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234476AbhBHQeL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 11:34:11 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 0F242AE30;
-        Mon,  8 Feb 2021 16:33:30 +0000 (UTC)
-Subject: Re: [PATCH v3 2/3] mm, slub: don't combine pr_err with INFO
-To:     Yafang Shao <laoar.shao@gmail.com>,
-        andriy.shevchenko@linux.intel.com, david@redhat.com,
-        willy@infradead.org, cl@linux.com, linmiaohe@huawei.com,
-        penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com,
-        akpm@linux-foundation.org, pmladek@suse.com, rostedt@goodmis.org,
-        sergey.senozhatsky@gmail.com, joe@perches.com
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20210208101439.55474-1-laoar.shao@gmail.com>
- <20210208101439.55474-3-laoar.shao@gmail.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <af67d20c-ca5a-7506-b009-a31c266c3395@suse.cz>
-Date:   Mon, 8 Feb 2021 17:33:25 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S235636AbhBHSkg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 13:40:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42246 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233634AbhBHQiP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 11:38:15 -0500
+Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B66F6C061786;
+        Mon,  8 Feb 2021 08:37:35 -0800 (PST)
+Received: by mail-qt1-x82d.google.com with SMTP id z32so10705228qtd.8;
+        Mon, 08 Feb 2021 08:37:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :organization:user-agent:mime-version:content-transfer-encoding;
+        bh=0HGJhzf1G3q3frtQdQfHf7vZn5MRVAT2xn4qaxvZi1U=;
+        b=ZCnSrK8LjbN2c5cFVRG8Y/oJxehO4A8/tz5FWWPFXPIFK20ClWGSl1ycugUiWZv96X
+         gnzaSQox2p06FwUSGLgIjEcfLTyaVjRP3zWJ0jDIJ3pBkNuSYszTkRDAFNGc0Z+2vPmj
+         kE5KOYOGtCJ8rO1KdQXK8f29i7lWJcft/u45IPrhagQnf+B2Iho/kXPiCy2Idhksu8Gy
+         JrQo92inlAM87m/A/agpxNoW3/F2ASQXN0ZG33LgSo08ttpQpdqBGtQ7z0WFU3zPtDm8
+         LGXi1Ad9ZyFxGDBwWOmAypp/fg0KxfxrToUsRIEge7jkM8qFAj7UzxuQYPn6c3ikH7Pz
+         L9bw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:organization:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=0HGJhzf1G3q3frtQdQfHf7vZn5MRVAT2xn4qaxvZi1U=;
+        b=AyNMldO+d8X2/a2LlWI7k4m86XaSaDL/HuGELu1mWgxVeC2Anewq6m1cALD8yUc6oy
+         mYAHH7AOmb1+6zQfwlyagYPADUn/A10vXEaMn/89wG8Gle1s1MRi6Tdxcl3rlbrIMd9Q
+         WfDPvnKFRSu2PlkVXY59ok0Q5/YzSH0NA1F9MARHnPzE/LeUlPNWPy/Ocv2BCOy3OXKd
+         DMQ7b06xUuCttctcEl/JkWc+/bDndQfLvJbMfo6X01ZiJbfIAlN0InsCe1uqHpkRochv
+         rJFNODg6VoKWVF7xec8E0ZJC6Nf6+qgZw1cXylS3uHqE1lza5ON8319FjrvSrQUWHQpr
+         5CLg==
+X-Gm-Message-State: AOAM532g3pB2iB1GnewBgDYOhF9YgQYoOTLRnpIUS1Q7Gxk8JVFRecNh
+        K7n8mnwc7SyUyd0tbgEZ3RM=
+X-Google-Smtp-Source: ABdhPJxNBkhFgcpxYqi/I81KZzI4gTQD8gRxnBMkUmMMD7+YFyASMpNVveQ5vs6x229sbqpsjBgABw==
+X-Received: by 2002:a05:622a:44d:: with SMTP id o13mr9623179qtx.378.1612802254979;
+        Mon, 08 Feb 2021 08:37:34 -0800 (PST)
+Received: from li-908e0a4c-2250-11b2-a85c-f027e903211b.ibm.com (186-249-147-196.dynamic.desktop.com.br. [186.249.147.196])
+        by smtp.gmail.com with ESMTPSA id c17sm16409866qka.16.2021.02.08.08.37.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Feb 2021 08:37:33 -0800 (PST)
+Message-ID: <5f267a8aec5b8199a580c96ab2b1a3c27de4eb09.camel@gmail.com>
+Subject: Re: [PATCH v2 1/1] powerpc/kvm: Save Timebase Offset to fix
+ sched_clock() while running guest code.
+From:   Leonardo Bras <leobras.c@gmail.com>
+To:     Nicholas Piggin <npiggin@gmail.com>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Jordan Niethe <jniethe5@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     kvm-ppc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org
+Date:   Mon, 08 Feb 2021 13:37:04 -0300
+In-Reply-To: <1612579579.ztbklit4un.astroid@bobo.none>
+References: <20210205060643.233481-1-leobras.c@gmail.com>
+         <1612506268.6rrvx34gzu.astroid@bobo.none>
+         <7e231b91e41c3f3586ba2fd604c40f1716db228d.camel@gmail.com>
+         <1612579579.ztbklit4un.astroid@bobo.none>
+Organization: IBM
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.3 (3.38.3-1.fc33) 
 MIME-Version: 1.0
-In-Reply-To: <20210208101439.55474-3-laoar.shao@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/8/21 11:14 AM, Yafang Shao wrote:
-> It is strange to combine "pr_err" with "INFO", so let's remove the
-> prefix completely.
-> This patch is motivated by David's comment[1].
-> 
-> - before the patch
-> [ 8846.517809] INFO: Slab 0x00000000f42a2c60 objects=33 used=3 fp=0x0000000060d32ca8 flags=0x17ffffc0010200(slab|head)
-> 
-> - after the patch
-> [ 6343.396602] Slab 0x000000004382e02b objects=33 used=3 fp=0x000000009ae06ffc flags=0x17ffffc0010200(slab|head)
-> 
-> [1]. https://lore.kernel.org/linux-mm/b9c0f2b6-e9b0-0c36-ebdd-2bc684c5a762@redhat.com/#t
-> 
-> Suggested-by: Vlastimil Babka <vbabka@suse.cz>
-> Cc: David Hildenbrand <david@redhat.com>
-> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+Hello Nick,
 
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
+On Sat, 2021-02-06 at 13:03 +1000, Nicholas Piggin wrote:
+> Excerpts from Leonardo Bras's message of February 5, 2021 5:01 pm:
+> > Hey Nick, thanks for reviewing :)
+> > 
+> > On Fri, 2021-02-05 at 16:28 +1000, Nicholas Piggin wrote:
+> > > Excerpts from Leonardo Bras's message of February 5, 2021 4:06 pm:
+> > > > Before guest entry, TBU40 register is changed to reflect guest timebase.
+> > > > After exitting guest, the register is reverted to it's original value.
+> > > > 
+> > > > If one tries to get the timestamp from host between those changes, it
+> > > > will present an incorrect value.
+> > > > 
+> > > > An example would be trying to add a tracepoint in
+> > > > kvmppc_guest_entry_inject_int(), which depending on last tracepoint
+> > > > acquired could actually cause the host to crash.
+> > > > 
+> > > > Save the Timebase Offset to PACA and use it on sched_clock() to always
+> > > > get the correct timestamp.
+> > > 
+> > > Ouch. Not sure how reasonable it is to half switch into guest registers 
+> > > and expect to call into the wider kernel, fixing things up as we go. 
+> > > What if mftb is used in other places?
+> > 
+> > IIUC, the CPU is not supposed to call anything as host between guest
+> > entry and guest exit, except guest-related cases, like
+> 
+> When I say "call", I'm including tracing in that. If a function is not 
+> marked as no trace, then it will call into the tracing subsystem.
+> 
+> > kvmppc_guest_entry_inject_int(), but anyway, if something calls mftb it
+> > will still get the same value as before.
+> 
+> Right, so it'll be out of whack again.
+> 
+> > This is only supposed to change stuff that depends on sched_clock, like
+> > Tracepoints, that can happen in those exceptions.
+> 
+> If they depend on sched_clock that's one thing. Do they definitely have 
+> no dependencies on mftb from other calls?
 
-> ---
->  mm/slub.c | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
+We could change that on get_tb() or mftb() @ timebase.h, which would
+have a broader reach, but would not reach any mftb from asm code.
+
+> > > Especially as it doesn't seem like there is a reason that function _has_
+> > > to be called after the timebase is switched to guest, that's just how 
+> > > the code is structured.
+> > 
+> > Correct, but if called, like in rb routines, used by tracepoints, the
+> > difference between last tb and current (lower) tb may cause the CPU to
+> > trap PROGRAM exception, crashing host. 
 > 
-> diff --git a/mm/slub.c b/mm/slub.c
-> index 87ff086e68a4..2514c37ab4e4 100644
-> --- a/mm/slub.c
-> +++ b/mm/slub.c
-> @@ -612,7 +612,7 @@ static void print_track(const char *s, struct track *t, unsigned long pr_time)
->  	if (!t->addr)
->  		return;
->  
-> -	pr_err("INFO: %s in %pS age=%lu cpu=%u pid=%d\n",
-> +	pr_err("%s in %pS age=%lu cpu=%u pid=%d\n",
->  	       s, (void *)t->addr, pr_time - t->when, t->cpu, t->pid);
->  #ifdef CONFIG_STACKTRACE
->  	{
-> @@ -638,7 +638,7 @@ void print_tracking(struct kmem_cache *s, void *object)
->  
->  static void print_page_info(struct page *page)
->  {
-> -	pr_err("INFO: Slab 0x%p objects=%u used=%u fp=0x%p flags=%#lx(%pGp)\n",
-> +	pr_err("Slab 0x%p objects=%u used=%u fp=0x%p flags=%#lx(%pGp)\n",
->  	       page, page->objects, page->inuse, page->freelist,
->  	       page->flags, &page->flags);
->  
-> @@ -695,7 +695,7 @@ static void print_trailer(struct kmem_cache *s, struct page *page, u8 *p)
->  
->  	print_page_info(page);
->  
-> -	pr_err("INFO: Object 0x%p @offset=%tu fp=0x%p\n\n",
-> +	pr_err("Object 0x%p @offset=%tu fp=0x%p\n\n",
->  	       p, p - addr, get_freepointer(s, p));
->  
->  	if (s->flags & SLAB_RED_ZONE)
-> @@ -788,7 +788,7 @@ static int check_bytes_and_report(struct kmem_cache *s, struct page *page,
->  		end--;
->  
->  	slab_bug(s, "%s overwritten", what);
-> -	pr_err("INFO: 0x%p-0x%p @offset=%tu. First byte 0x%x instead of 0x%x\n",
-> +	pr_err("0x%p-0x%p @offset=%tu. First byte 0x%x instead of 0x%x\n",
->  					fault, end - 1, fault - addr,
->  					fault[0], value);
->  	print_trailer(s, page, object);
-> @@ -3854,7 +3854,7 @@ static void list_slab_objects(struct kmem_cache *s, struct page *page,
->  	for_each_object(p, s, addr, page->objects) {
->  
->  		if (!test_bit(__obj_to_index(s, addr, p), map)) {
-> -			pr_err("INFO: Object 0x%p @offset=%tu\n", p, p - addr);
-> +			pr_err("Object 0x%p @offset=%tu\n", p, p - addr);
->  			print_tracking(s, p);
->  		}
->  	}
+> Yes, so I agree with Michael any function that is involved when we begin 
+> to switch into guest context (or have not completed switching back to 
+> host going the other way) should be marked as no trace (noinstr even, 
+> perhaps).
+
+Sure, that would avoid having to get paca->tb_offset for every mftb()
+called, and avoid inconsistencies when different ways to get time are
+used in code.
+
+On the other hand, it would make it very hard to debug functions like
+kvmppc_guest_entry_inject_int() as I am doing right now.
+
 > 
+> > > As a local hack to work out a bug okay. If you really need it upstream 
+> > > could you put it under a debug config option?
+> > 
+> > You mean something that is automatically selected whenever those
+> > configs are enabled? 
+> > 
+> > CONFIG_TRACEPOINT && CONFIG_KVM_BOOK3S_HANDLER && CONFIG_PPC_BOOK3S_64
+> > 
+> > Or something the user need to select himself in menuconfig?
+> 
+> Yeah I meant a default n thing under powerpc kernel debugging somewhere.
+
+So, IIUC all we can do is split this in 2 changes:
+1 - Adding notrace to those functions
+2 - Introducing a kernel debug config that reverts (1) and 'fixes' mftb
+
+If that's correct, I have some ideas we can use. 
+
+For debug option, should we add the offset on get_tb() or mftb()?
+
+Another option would be to adding this tb_offset only in the routines
+used by tracing. But this could probably mean having to add a function
+in arch-generic code, but still an option.
+
+What do you think?
+
+> 
+> Thanks,
+> Nick
+
+Thank you!
+Leonardo Bras
 
