@@ -2,90 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1D763131E7
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 13:13:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E2483131E2
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 13:12:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230194AbhBHMMZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 07:12:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36744 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231927AbhBHLuV (ORCPT
+        id S229750AbhBHMLh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 07:11:37 -0500
+Received: from mail.netline.ch ([148.251.143.178]:51254 "EHLO
+        netline-mail3.netline.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233437AbhBHLuR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 06:50:21 -0500
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 903AEC061786;
-        Mon,  8 Feb 2021 03:49:41 -0800 (PST)
-Received: by mail-qt1-x82b.google.com with SMTP id s11so6259526qtq.10;
-        Mon, 08 Feb 2021 03:49:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ZAzz6WCrRO0WwDk5gFhUxBwBiElBJr4tyLf2C1wPfSo=;
-        b=na37QjRHLCIfd/oN9TZWbCUm3ccHHQrUq4egqsjOHdG4/+vrRJJ/YJbnVyxlLcDH5i
-         SAr1YY9HBB/ln26deqUe/iWeXykQKxmwbjUBZmfGX7tQxp8aFiyXIR7+puuEgT/43F5A
-         YmWr84kWpmtIOXyUyrGUkg/889nQnkafbvbw+av0QEi3rAC9uziP3EvkRwvdS8Ed80je
-         uL1+2DApfoEPuHSYwp6AtFWuNR7SbPsUfl+8JUMnSGJr6JvY53t1ovxID0+q616haVVA
-         5URcEr9PCuXTxUTR6exJrdiSZey0NFhlunoDaCd35wzG46pglY7cgZYTdx0CeIsG5tGk
-         QZ3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ZAzz6WCrRO0WwDk5gFhUxBwBiElBJr4tyLf2C1wPfSo=;
-        b=tdtb/jIl9eZ0rt1zZeOuLQVxK7PC7HsMGMsFqJ+lCDCS0qcT/JQO5HXR3VMvwPtNQ8
-         seeNrL1Rg88MYsbuTSDrr7OCNobv8yh+xQUzAG7cmlPfoC4d/ZqRgBmfI7aNAsNOpvTz
-         NnZKXDNTFVuby8p6XBe/pLnxzO8L6iQRWpprT0u/Iy2Sf3MH94qLSO2IPraLTQ4ehPcN
-         u2fgtkRfil/Yoiqjj/dsV/+c8hxbESBUgTGsekArSLdBzSbmC1q7Q83gsFBaR1JQJ2lS
-         XCggQdbOytM1ad9qd4loMjDDhgByePSQlAcQOZR6kUCUd/IMqfQEKsxQ/nQVluojkpYu
-         7UqQ==
-X-Gm-Message-State: AOAM531DxiK0Egeaf8zDhmCgq9L8Laxn93i/BkfFHiKptDXMT7Mb9SoJ
-        VkJSK6JWQD9hbKq4HVyNogQ=
-X-Google-Smtp-Source: ABdhPJzF+nn9wbkJ94K5YQA+Kw9uTY/OwyR4ObXWP9Bvbuj3oPYSqbrOxb2l2eabv0tVzmSLFVVlHw==
-X-Received: by 2002:ac8:1c6a:: with SMTP id j39mr15412695qtk.326.1612784980002;
-        Mon, 08 Feb 2021 03:49:40 -0800 (PST)
-Received: from localhost.localdomain ([156.146.37.175])
-        by smtp.gmail.com with ESMTPSA id o12sm4450878qko.117.2021.02.08.03.49.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Feb 2021 03:49:39 -0800 (PST)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     broonie@kernel.org, linux-spi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: [PATCH V2] include: linux: spi: Change provied to provided in the file spi.h
-Date:   Mon,  8 Feb 2021 17:19:28 +0530
-Message-Id: <20210208114928.32241-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.20.1
+        Mon, 8 Feb 2021 06:50:17 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by netline-mail3.netline.ch (Postfix) with ESMTP id 1EB102A6046;
+        Mon,  8 Feb 2021 12:49:31 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at netline-mail3.netline.ch
+Received: from netline-mail3.netline.ch ([127.0.0.1])
+        by localhost (netline-mail3.netline.ch [127.0.0.1]) (amavisd-new, port 10024)
+        with LMTP id OJzn5Nd4XMaf; Mon,  8 Feb 2021 12:49:30 +0100 (CET)
+Received: from thor (24.99.2.85.dynamic.wline.res.cust.swisscom.ch [85.2.99.24])
+        by netline-mail3.netline.ch (Postfix) with ESMTPSA id 641222A6042;
+        Mon,  8 Feb 2021 12:49:30 +0100 (CET)
+Received: from [::1]
+        by thor with esmtp (Exim 4.94)
+        (envelope-from <michel@daenzer.net>)
+        id 1l952n-001pI0-CW; Mon, 08 Feb 2021 12:49:29 +0100
+To:     Daniel Vetter <daniel@ffwll.ch>, Kees Cook <keescook@chromium.org>,
+        "airlied@gmail.com" <airlied@gmail.com>
+Cc:     Will Drewry <wad@chromium.org>, Jann Horn <jannh@google.com>,
+        intel-gfx <intel-gfx@lists.freedesktop.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Chris Wilson <chris@chris-wilson.co.uk>
+References: <20210205163752.11932-1-chris@chris-wilson.co.uk>
+ <202102051030.1AF01772D@keescook>
+ <CAKMK7uHnOA9CuRxcKkcqG8duOw_3dZobkThcV7Q_swMXVoLCkQ@mail.gmail.com>
+From:   =?UTF-8?Q?Michel_D=c3=a4nzer?= <michel@daenzer.net>
+Subject: Re: [PATCH] kernel: Expose SYS_kcmp by default
+Message-ID: <5a940e13-8996-e9e5-251e-a9af294a39ff@daenzer.net>
+Date:   Mon, 8 Feb 2021 12:49:29 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
+In-Reply-To: <CAKMK7uHnOA9CuRxcKkcqG8duOw_3dZobkThcV7Q_swMXVoLCkQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-CA
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2021-02-05 9:53 p.m., Daniel Vetter wrote:
+> On Fri, Feb 5, 2021 at 7:37 PM Kees Cook <keescook@chromium.org> wrote:
+>>
+>> On Fri, Feb 05, 2021 at 04:37:52PM +0000, Chris Wilson wrote:
+>>> Userspace has discovered the functionality offered by SYS_kcmp and has
+>>> started to depend upon it. In particular, Mesa uses SYS_kcmp for
+>>> os_same_file_description() in order to identify when two fd (e.g. device
+>>> or dmabuf) point to the same struct file. Since they depend on it for
+>>> core functionality, lift SYS_kcmp out of the non-default
+>>> CONFIG_CHECKPOINT_RESTORE into the selectable syscall category.
+>>>
+>>> Signed-off-by: Chris Wilson <chris@chris-wilson.co.uk>
+>>> Cc: Kees Cook <keescook@chromium.org>
+>>> Cc: Andy Lutomirski <luto@amacapital.net>
+>>> Cc: Will Drewry <wad@chromium.org>
+>>> Cc: Andrew Morton <akpm@linux-foundation.org>
+>>> Cc: Dave Airlie <airlied@gmail.com>
+>>> Cc: Daniel Vetter <daniel@ffwll.ch>
+>>> Cc: Lucas Stach <l.stach@pengutronix.de>
+>>> ---
+>>>   init/Kconfig                                  | 11 +++++++++++
+>>>   kernel/Makefile                               |  2 +-
+>>>   tools/testing/selftests/seccomp/seccomp_bpf.c |  2 +-
+>>>   3 files changed, 13 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/init/Kconfig b/init/Kconfig
+>>> index b77c60f8b963..f62fca13ac5b 100644
+>>> --- a/init/Kconfig
+>>> +++ b/init/Kconfig
+>>> @@ -1194,6 +1194,7 @@ endif # NAMESPACES
+>>>   config CHECKPOINT_RESTORE
+>>>        bool "Checkpoint/restore support"
+>>>        select PROC_CHILDREN
+>>> +     select KCMP
+>>>        default n
+>>>        help
+>>>          Enables additional kernel features in a sake of checkpoint/restore.
+>>> @@ -1737,6 +1738,16 @@ config ARCH_HAS_MEMBARRIER_CALLBACKS
+>>>   config ARCH_HAS_MEMBARRIER_SYNC_CORE
+>>>        bool
+>>>
+>>> +config KCMP
+>>> +     bool "Enable kcmp() system call" if EXPERT
+>>> +     default y
+>>
+>> I would expect this to be not default-y, especially if
+>> CHECKPOINT_RESTORE does a "select" on it.
+>>
+>> This is a really powerful syscall, but it is bounded by ptrace access
+>> controls, and uses pointer address obfuscation, so it may be okay to
+>> expose this. As it is, at least Ubuntu already has
+>> CONFIG_CHECKPOINT_RESTORE, so really, there's probably not much
+>> difference on exposure.
+>>
+>> So, if you drop the "default y", I'm fine with this.
+> 
+> It was maybe stupid, but our userspace started relying on fd
+> comaprison through sys_kcomp. So for better or worse, if you want to
+> run the mesa3d gl/vk stacks, you need this.
 
-s/provied/provided/
+That's overstating things somewhat. The vast majority of applications 
+will work fine regardless (as they did before Mesa started using this 
+functionality). Only some special ones will run into issues, because the 
+user-space drivers incorrectly assume two file descriptors reference 
+different descriptions.
 
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
----
-Changes from V1:
-  As Mark pointed out change provide to provided for the context
 
- include/linux/spi/spi.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> Was maybe not the brighest ideas, but since enough distros had this
+> enabled by defaults,
 
-diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
-index aa09fdc8042d..79f89fd250de 100644
---- a/include/linux/spi/spi.h
-+++ b/include/linux/spi/spi.h
-@@ -624,7 +624,7 @@ struct spi_controller {
+Right, that (and the above) is why I considered it fair game to use. 
+What should I have done instead? (TBH I was surprised that this 
+functionality isn't generally available)
 
- 	/*
- 	 * These hooks are for drivers that use a generic implementation
--	 * of transfer_one_message() provied by the core.
-+	 * of transfer_one_message() provided by the core.
- 	 */
- 	void (*set_cs)(struct spi_device *spi, bool enable);
- 	int (*transfer_one)(struct spi_controller *ctlr, struct spi_device *spi,
---
-2.20.1
+> it wasn't really discovered, and now we're
+> shipping this everywhere.
 
+You're making it sound like this snuck in secretly somehow, which is not 
+true of course.
+
+
+> Ofc we can leave the default n, but the select if CONFIG_DRM is
+> unfortunately needed I think.
+
+Per above, not sure this is really true.
+
+
+-- 
+Earthling Michel Dänzer               |               https://redhat.com
+Libre software enthusiast             |             Mesa and X developer
