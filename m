@@ -2,107 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BBEA313174
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 12:55:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C05C231318C
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 12:56:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232956AbhBHLy4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 06:54:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33392 "EHLO
+        id S232014AbhBHL4H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 06:56:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232256AbhBHLfN (ORCPT
+        with ESMTP id S229888AbhBHLfQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 06:35:13 -0500
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCCC5C061786
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 03:34:05 -0800 (PST)
-Received: by mail-ej1-x62b.google.com with SMTP id f14so24039187ejc.8
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 03:34:05 -0800 (PST)
+        Mon, 8 Feb 2021 06:35:16 -0500
+Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0B04C06178A;
+        Mon,  8 Feb 2021 03:34:22 -0800 (PST)
+Received: by mail-qk1-x72a.google.com with SMTP id b14so377942qkk.0;
+        Mon, 08 Feb 2021 03:34:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SIdoO/BXrCF5ZGx1sncTZthErRH1ESME+fQ4iZ40G4Y=;
-        b=R4FfWcgnRp7kfMDn8OHGmLFT1VfRqhYLNtKbqtkWdlb75NiARoNYeuQ8plgw69PUvK
-         SrMHBkIe3taDYqbOgv3c7/zQ+MxGUpsl5Jfwyzx4OaASuL8ztU0r+HTymMJR6J0YvC16
-         zIfDdvWJe+eVik/zwfB7GuuftSM9ixQbVyhf0=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8c7/ro2vJNlZ1YPxBzjYpBjlaYBZBnvlVnHyBqp94XA=;
+        b=sxFqmqcW1AQlLTPNsfY1Ovcf0Z8TJ184KZ+gQGe10cLczSttIKdWBkbmMG33gcF1Zy
+         T6m2xulS5HFazdWSljvg3LrBAnwVAkC3DmxPVCtWzSNubb/j5xjA1N5Bz0jRagDOaByD
+         WDAIBuflZKuECMQFaPUzsVLwq3IogLiSZHdtEHu/rWiRKT0wnOUaF0cyJNdZ2OZwjeQ2
+         vmhmZl9X/EBcRyBpb4KDlLNjIDrsjWzmJ7EIF1hGrcig0Yi5UJhxWh5/zeld9jmx32hB
+         b+DcYaa8uSa0ca8t651ZRmMAlnHRv4/MQhA+mps+aLtfTr6TrDozsMfPLqAfDvcNLrKT
+         EZHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SIdoO/BXrCF5ZGx1sncTZthErRH1ESME+fQ4iZ40G4Y=;
-        b=DYODFsTRueBRuKpk7N0g3gAmn0961mZVlTyy1mZBud5Cr9EdvH6V5y/Ye/W49cbrfQ
-         NaSPFjHveSr+yH9xCrj+1y+w5KU8qVeAW50aveeXJQAeuy5C8PxaePoF4Tw2kdbzv/qy
-         jYYpjIyCZdJzIqwhOHJgF+fUKabWfqA/hg5IJYd6oOZ8EHO7SFGNuyAeqD4iJGROCyiM
-         m42ZbIa+OiPkuzPTi/b2e6qpWsjlxCB5dbrzGuB/mmMfzuB9gClaxLeonLbaRCY8ww/n
-         7vwZ+OEipa0wzeYoupdtQER1UceGhYA++72U61dfCC9zCB70s+ksup91dDVjU1nWSZ+F
-         qvgw==
-X-Gm-Message-State: AOAM530brQhos0dPpj1HnjLtEUhmTj0IRIJkgoSdUpB6YHdz6jVA09jt
-        cxVG1w9WYKZF9ShXWw4ui2zaDj3BAcDskg==
-X-Google-Smtp-Source: ABdhPJzP3iP8rHJpGjLJOmKy9wfjwqTs9XWloUJ+jqqHAbZK5sqDllVJT6+ZFj9ebkzA5kt2+/mNHQ==
-X-Received: by 2002:a17:906:b001:: with SMTP id v1mr16423006ejy.217.1612784044140;
-        Mon, 08 Feb 2021 03:34:04 -0800 (PST)
-Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com. [209.85.221.48])
-        by smtp.gmail.com with ESMTPSA id i13sm8421683ejj.2.2021.02.08.03.34.03
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Feb 2021 03:34:03 -0800 (PST)
-Received: by mail-wr1-f48.google.com with SMTP id g6so3657922wrs.11
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 03:34:03 -0800 (PST)
-X-Received: by 2002:a5d:6404:: with SMTP id z4mr6111438wru.103.1612784042646;
- Mon, 08 Feb 2021 03:34:02 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8c7/ro2vJNlZ1YPxBzjYpBjlaYBZBnvlVnHyBqp94XA=;
+        b=jIRmcHY4oxxi2T6aKOD7Fji0JPapQRKL515PUhyIQL/rUgxKmxFHFz3UwPipyBmjiT
+         sVd/tyiE7zlqiHjqmYSAjKUnoXxdYmizPRmYmk5EZcotwrqd5vl0CFZlzZ7Ek+zrPa2Z
+         Q+YBqiWelDtC9hKq31zSTBWOPhYNvTtQ3KRk/RuV8/fuZaZ5yLHI8iwAmym4E9XD226r
+         TiDPjONOt7l/UQQreaDt/pwYkktmPBQjqxc88QNMpcpQQrnjJRcrjA78AmUEKiLqZpsj
+         j9Rv68I5+LQkG3po5FHh9tJ20kvyCjb1cl+bY5FbMLxuQbu0H5PCyHscWC7eN2SrNLu7
+         QULg==
+X-Gm-Message-State: AOAM532TtpJad+0beQ2JGKcQfF7j7gc16ZYKWNbZg+EgntD5IomkPRU2
+        iwqXoqag7cK5PRKhAbQ0+yM=
+X-Google-Smtp-Source: ABdhPJxaWBNV0Q3hng7qIy1PlfOBk1uwF1Lemg+xSAYoj9DWTJVKaFqzfhm+LsQF8VKz3S/5ZEC9WA==
+X-Received: by 2002:a37:63d4:: with SMTP id x203mr16066014qkb.105.1612784061917;
+        Mon, 08 Feb 2021 03:34:21 -0800 (PST)
+Received: from localhost.localdomain ([156.146.37.175])
+        by smtp.gmail.com with ESMTPSA id i15sm16862613qka.103.2021.02.08.03.34.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Feb 2021 03:34:21 -0800 (PST)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     broonie@kernel.org, linux-spi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: [PATCH] include: linux: spi: Change provied to provide in the file spi.h
+Date:   Mon,  8 Feb 2021 17:03:59 +0530
+Message-Id: <20210208113359.31269-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <20210202095110.1215346-1-hch@lst.de> <20210207184855.GA27553@lst.de>
-In-Reply-To: <20210207184855.GA27553@lst.de>
-From:   Tomasz Figa <tfiga@chromium.org>
-Date:   Mon, 8 Feb 2021 20:33:50 +0900
-X-Gmail-Original-Message-ID: <CAAFQd5BzAvgiTLGFse+ZWUrFtZ1Ysf+p+e-4rW8gq_iP0xhWEA@mail.gmail.com>
-Message-ID: <CAAFQd5BzAvgiTLGFse+ZWUrFtZ1Ysf+p+e-4rW8gq_iP0xhWEA@mail.gmail.com>
-Subject: Re: add a new dma_alloc_noncontiguous API v2
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Ricardo Ribalda <ribalda@chromium.org>,
-        Sergey Senozhatsky <senozhatsky@google.com>,
-        "open list:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christoph,
 
-On Mon, Feb 8, 2021 at 3:49 AM Christoph Hellwig <hch@lst.de> wrote:
->
-> Any comments?
->
+s/provied/provide/
 
-Sorry for the delay. The whole series looks very good to me. Thanks a lot.
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+ include/linux/spi/spi.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Reviewed-by: Tomasz Figa <tfiga@chromium.org>
+diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
+index aa09fdc8042d..2cd4bf488ecd 100644
+--- a/include/linux/spi/spi.h
++++ b/include/linux/spi/spi.h
+@@ -624,7 +624,7 @@ struct spi_controller {
 
-Best regards,
-Tomasz
+ 	/*
+ 	 * These hooks are for drivers that use a generic implementation
+-	 * of transfer_one_message() provied by the core.
++	 * of transfer_one_message() provide by the core.
+ 	 */
+ 	void (*set_cs)(struct spi_device *spi, bool enable);
+ 	int (*transfer_one)(struct spi_controller *ctlr, struct spi_device *spi,
+--
+2.20.1
 
-> On Tue, Feb 02, 2021 at 10:51:03AM +0100, Christoph Hellwig wrote:
-> > Hi all,
-> >
-> > this series adds the new noncontiguous DMA allocation API requested by
-> > various media driver maintainers.
-> >
-> > Changes since v1:
-> >  - document that flush_kernel_vmap_range and invalidate_kernel_vmap_range
-> >    must be called once an allocation is mapped into KVA
-> >  - add dma-debug support
-> >  - remove the separate dma_handle argument, and instead create fully formed
-> >    DMA mapped scatterlists
-> >  - use a directional allocation in uvcvideo
-> >  - call invalidate_kernel_vmap_range from uvcvideo
-> > _______________________________________________
-> > iommu mailing list
-> > iommu@lists.linux-foundation.org
-> > https://lists.linuxfoundation.org/mailman/listinfo/iommu
-> ---end quoted text---
