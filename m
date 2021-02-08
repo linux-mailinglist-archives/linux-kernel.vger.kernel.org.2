@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 685BC3138D1
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 17:05:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 111403138C7
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 17:03:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232295AbhBHQFA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 11:05:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55484 "EHLO mail.kernel.org"
+        id S234238AbhBHQDB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 11:03:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55686 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232058AbhBHPKS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 10:10:18 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3A33964ED1;
-        Mon,  8 Feb 2021 15:07:31 +0000 (UTC)
+        id S232518AbhBHPKV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 10:10:21 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DC01A64E87;
+        Mon,  8 Feb 2021 15:07:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612796851;
-        bh=KG1jUyKNhhK7D2gPQ91xlDllQmpZOqc+ut+AV3pptsU=;
+        s=korg; t=1612796854;
+        bh=xreMSYQFGwd+0WnAYSHYKeoO+6nLb7sQx5ybv7JJe/M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0oB0zRWaCfq0VPCk9nTtEM1c5uwn2z6GF5BJrh05oYtg/67bL+Kz761P++xeZYPZm
-         S/xrFkq9lAivESigrCas8thXQIpkgmsSp5ibelFriMzFmgp0OrL91QLrRT/DHiK93u
-         hzpNRniL7nypbfQUXIOoVvLWAM9F/4TuCofGHD38=
+        b=qRKApsoJHPKJn4pSbUI/8SSccNRq7IQuvE1xdIbvsAwaZqbBSlj/ESbvLWvZMkPuv
+         14u9V3hGu+vGbAGHNLsPeTK73AXUB4kqc8xU6y8DyALmRzCvVKs7CJsqevbR6HtT98
+         Xw/xoVaEJ4zZB8Xt19zYY/qx43KASxevCPnKGD38=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pete Zaitcev <zaitcev@redhat.com>,
-        Jeremy Figgins <kernel@jeremyfiggins.com>
-Subject: [PATCH 4.19 12/38] USB: usblp: dont call usb_set_interface if theres a single alt
-Date:   Mon,  8 Feb 2021 16:00:59 +0100
-Message-Id: <20210208145806.627176710@linuxfoundation.org>
+        stable@vger.kernel.org, Tho Vu <tho.vu.wh@renesas.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+Subject: [PATCH 4.19 13/38] usb: renesas_usbhs: Clear pipe running flag in usbhs_pkt_pop()
+Date:   Mon,  8 Feb 2021 16:01:00 +0100
+Message-Id: <20210208145806.663348705@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210208145806.141056364@linuxfoundation.org>
 References: <20210208145806.141056364@linuxfoundation.org>
@@ -39,51 +39,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jeremy Figgins <kernel@jeremyfiggins.com>
+From: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
 
-commit d8c6edfa3f4ee0d45d7ce5ef18d1245b78774b9d upstream.
+commit 9917f0e3cdba7b9f1a23f70e3f70b1a106be54a8 upstream.
 
-Some devices, such as the Winbond Electronics Corp. Virtual Com Port
-(Vendor=0416, ProdId=5011), lockup when usb_set_interface() or
-usb_clear_halt() are called. This device has only a single
-altsetting, so it should not be necessary to call usb_set_interface().
+Should clear the pipe running flag in usbhs_pkt_pop(). Otherwise,
+we cannot use this pipe after dequeue was called while the pipe was
+running.
 
-Acked-by: Pete Zaitcev <zaitcev@redhat.com>
-Signed-off-by: Jeremy Figgins <kernel@jeremyfiggins.com>
-Link: https://lore.kernel.org/r/YAy9kJhM/rG8EQXC@watson
+Fixes: 8355b2b3082d ("usb: renesas_usbhs: fix the behavior of some usbhs_pkt_handle")
+Reported-by: Tho Vu <tho.vu.wh@renesas.com>
+Signed-off-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+Link: https://lore.kernel.org/r/1612183640-8898-1-git-send-email-yoshihiro.shimoda.uh@renesas.com
 Cc: stable <stable@vger.kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/class/usblp.c |   19 +++++++++++--------
- 1 file changed, 11 insertions(+), 8 deletions(-)
+ drivers/usb/renesas_usbhs/fifo.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/usb/class/usblp.c
-+++ b/drivers/usb/class/usblp.c
-@@ -1327,14 +1327,17 @@ static int usblp_set_protocol(struct usb
- 	if (protocol < USBLP_FIRST_PROTOCOL || protocol > USBLP_LAST_PROTOCOL)
- 		return -EINVAL;
+--- a/drivers/usb/renesas_usbhs/fifo.c
++++ b/drivers/usb/renesas_usbhs/fifo.c
+@@ -126,6 +126,7 @@ struct usbhs_pkt *usbhs_pkt_pop(struct u
+ 		}
  
--	alts = usblp->protocol[protocol].alt_setting;
--	if (alts < 0)
--		return -EINVAL;
--	r = usb_set_interface(usblp->dev, usblp->ifnum, alts);
--	if (r < 0) {
--		printk(KERN_ERR "usblp: can't set desired altsetting %d on interface %d\n",
--			alts, usblp->ifnum);
--		return r;
-+	/* Don't unnecessarily set the interface if there's a single alt. */
-+	if (usblp->intf->num_altsetting > 1) {
-+		alts = usblp->protocol[protocol].alt_setting;
-+		if (alts < 0)
-+			return -EINVAL;
-+		r = usb_set_interface(usblp->dev, usblp->ifnum, alts);
-+		if (r < 0) {
-+			printk(KERN_ERR "usblp: can't set desired altsetting %d on interface %d\n",
-+				alts, usblp->ifnum);
-+			return r;
-+		}
+ 		usbhs_pipe_clear_without_sequence(pipe, 0, 0);
++		usbhs_pipe_running(pipe, 0);
+ 
+ 		__usbhsf_pkt_del(pkt);
  	}
- 
- 	usblp->bidir = (usblp->protocol[protocol].epread != NULL);
 
 
