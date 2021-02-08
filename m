@@ -2,126 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C321313E65
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 20:04:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A54A8313E69
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 20:04:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236162AbhBHTDS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 14:03:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54548 "EHLO
+        id S229623AbhBHTD0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 14:03:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234466AbhBHRfV (ORCPT
+        with ESMTP id S233156AbhBHRf5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 12:35:21 -0500
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E155C06178A
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 09:34:30 -0800 (PST)
-Received: by mail-pl1-x62e.google.com with SMTP id a16so8188432plh.8
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 09:34:30 -0800 (PST)
+        Mon, 8 Feb 2021 12:35:57 -0500
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCAF8C06178C
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 09:35:16 -0800 (PST)
+Received: by mail-ej1-x629.google.com with SMTP id w1so26169710ejf.11
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 09:35:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=QAxmqoEOSrSGuDIGX8UTYzw6McBlWP+GhOSfkix9wjk=;
-        b=GYKgxaI9CMbwk19YePl5gkV9bFRlQlO+2w4ie9BtNOhNrbyAWWGR+Y+3iewmYreiwM
-         AcuaTVg0YMEGW4+If05PFEmmP6byd2Bkvgc1rEpIl0waXziJKxojCrDTvk3Hfr7DekQs
-         voaohLE/fiu8RgJr439mqQRGm+BCqa6PHfvgWCQbZmdP429FcFuKdNCn4mBJ8ODJ+l6e
-         EKAgGIRwR1p2R6y5+ueeLFMmmpRsnQaL/S1Bdgs5YX1wL9gx7fOCDK6QPr9JkG7cxIrU
-         SxT+REOCJhe/o6zBXD/r/iTjFvGjblVd5gt6hhApMm6ZhSpxt5obkRlAjOGkCN9LAMuW
-         as7w==
+        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rk8hBnqzSk8IKdehPpMR21St3g94W00HJk2pGpZRlUM=;
+        b=QhTtHeK4ZKTuLys3oD1ge2sDBy25LyBIlEb6rq0+qySZxVVbbXsJAxCtEVCdDmMTl4
+         xJGa8G4tHKClDCp26tjcgxYm16FeSmIpK+4i7WHnI+XE2uRBwY0lYjXSuIas/15OJt6j
+         tIaPvQ+/kTOaDd6ZYQOevDvu8PIBU5OsbEXiL+XEEoZlk0H5Km4oZlZ51d3LwmbPqOAi
+         fewTdelXJC8xS93sqoBs4f0d5De8Hp3x5fJ3xy3+1KeEA1XlNY3DWze+W2pUDB/pqWKj
+         kEl1d/WXeDsRXO5mwXmwG6lR+EQfdrduR1Jfe6cw09ilje/B1akvhfFbAB6ZXDVhcgaT
+         HS3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=QAxmqoEOSrSGuDIGX8UTYzw6McBlWP+GhOSfkix9wjk=;
-        b=lw7jo5c61LB9d9byUugcuqDoRO2jliA4J5QvBM775CloWyjY43Z8+mXDDzKXSF/YOJ
-         9AmjMaAPuP1uJlKfBxwdziOzDnfGeThBorITcmdqoNIbSDn22sVEiqbJIQK2pFvgFfF7
-         Oq/m874DE+db2RGfhaw+pxoL2TzDXQWSCzS9/VdnaqC0WkoZW/dyL9LowrYP+T/4Sm61
-         Rrmk+Qn+SaWkystHpylJNGdeODGOxL26YFJEPKzCllZDD7DDVvhriyECNiloOo9oV7L6
-         s3QuG9o/FijE/NLAkrUVkHIvJc72QB4MJ/j+/PNC1NMmFMRPilSc4FmYnMt4ZDHySBrj
-         rVKw==
-X-Gm-Message-State: AOAM530fKePYTPVIAOPiBvtCirNcY17yh2u4O7YBwR+1tZSIUOe1IEAJ
-        BV/N/41tyDWHUNixEwQz747JbA==
-X-Google-Smtp-Source: ABdhPJxAHbPUbnYUWT4fo9NEUczHKy8t+ddayCH4TfZBjZgySsIvYVhlFut7hHzwwykqsbkh6CuQoQ==
-X-Received: by 2002:a17:90b:4a0b:: with SMTP id kk11mr18055807pjb.95.1612805669921;
-        Mon, 08 Feb 2021 09:34:29 -0800 (PST)
-Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id f127sm14038890pgc.48.2021.02.08.09.34.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Feb 2021 09:34:28 -0800 (PST)
-Date:   Mon, 8 Feb 2021 10:34:26 -0700
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Leo Yan <leo.yan@linaro.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Daniel Kiss <Daniel.Kiss@arm.com>,
-        Denis Nikitin <denik@chromium.org>,
-        Al Grant <al.grant@arm.com>, coresight@lists.linaro.org,
-        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 2/8] tools headers UAPI: Update tools' copy of
- linux/coresight-pmu.h
-Message-ID: <20210208173426.GA2077938@xps15>
-References: <20210206150833.42120-1-leo.yan@linaro.org>
- <20210206150833.42120-3-leo.yan@linaro.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rk8hBnqzSk8IKdehPpMR21St3g94W00HJk2pGpZRlUM=;
+        b=O9hD+/gIlUJbQc+d7yk09WIWZ/u4hYagwsRwI2fEFJ7/W1hRTRk1qiYVLRI7rGRYL+
+         3SDvh3WHYKxjK9svL5nV1WVNcJsJuIg+VOUQC5EkrmxIcPtSgBSSWM4UtZcgXr6+lki8
+         UPpasB1yWQpsJaJWJYp+ZrhTVf6iKsc+0rJnjGNSoTMGns88qHiuYlXdguxTdWyKWlxc
+         n1xlEGPKMiVsjHrwNr+1pNWA3TkqJo9JkT4+d7sX5Ybd6HuRs9M4hvdt1yWok7U3Z8hC
+         lhllKVcT+naU3SwXls9WAfRsatP0YPyHRQ8HWaCgohzLrJY2BAVwOkFPh6mmVVD5/j/G
+         hvpA==
+X-Gm-Message-State: AOAM530FU1kLysSq/CFyka5ghKhq83GZ8SltkAYTvbkDtALHQV7fR4tU
+        MoHQYg82Pb6j1VXpYX+1STUA+ReK/kpmQBC0VwAttA==
+X-Google-Smtp-Source: ABdhPJztUCCKCvHw2ApoSKFKrVrK62dPz1Txw2JJsmk5m6cJ/R0froV9I9Y/DbVNUnQzMb7w2imKagFhA3Eejldzgho=
+X-Received: by 2002:a17:906:24d1:: with SMTP id f17mr17887566ejb.503.1612805715256;
+ Mon, 08 Feb 2021 09:35:15 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210206150833.42120-3-leo.yan@linaro.org>
+References: <f81afd12-91ed-27c9-58d6-e59e7e1178c0@intel.com>
+ <0A886D87-1979-419C-86DE-EA2FABDFF3EB@amacapital.net> <YCFwo5tD3Jad6F69@google.com>
+In-Reply-To: <YCFwo5tD3Jad6F69@google.com>
+From:   Andy Lutomirski <luto@amacapital.net>
+Date:   Mon, 8 Feb 2021 09:35:03 -0800
+Message-ID: <CALCETrWC8qEFuUBdknaU-u_BbB1+HEibAKSjygH_bX0fYR1hYg@mail.gmail.com>
+Subject: Re: [RFC v1 09/26] x86/tdx: Handle CPUID via #VE
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Dave Hansen <dave.hansen@intel.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Andy Lutomirski <luto@kernel.org>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Feb 06, 2021 at 11:08:27PM +0800, Leo Yan wrote:
-> To get the changes in the commit:
-> 
->   "coresight: etm-perf: Clarify comment on perf options".
-> 
-> Signed-off-by: Leo Yan <leo.yan@linaro.org>
-> Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+On Mon, Feb 8, 2021 at 9:11 AM Sean Christopherson <seanjc@google.com> wrote:
+>
+> On Sun, Feb 07, 2021, Andy Lutomirski wrote:
+> >
 
-Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+> > How much of the register state is revealed to the VMM when we do a TDVMCALL?
+> > Presumably we should fully sanitize all register state that shows up in
+> > cleartext on the other end, and we should treat all regs that can be modified
+> > by the VMM as clobbered.
+>
+> The guest gets to choose, with a few restrictions.  RSP cannot be exposed to the
+> host.  RAX, RCX, R10, and R11 are always exposed as they hold mandatory info
+> about the TDVMCALL (TDCALL fn, GPR mask, GHCI vs. vendor, and TDVMCALL fn).  All
+> other GPRs are exposed and clobbered if their bit in RCX is set, otherwise they
+> are saved/restored by the TDX-Module.
+>
+> I agree with Dave, pass everything required by the GHCI in the main routine, and
+> sanitize and save/restore all such GPRs.
 
-> ---
->  tools/include/linux/coresight-pmu.h | 17 ++++++++++++-----
->  1 file changed, 12 insertions(+), 5 deletions(-)
-> 
-> diff --git a/tools/include/linux/coresight-pmu.h b/tools/include/linux/coresight-pmu.h
-> index b0e35eec6499..5dc47cfdcf07 100644
-> --- a/tools/include/linux/coresight-pmu.h
-> +++ b/tools/include/linux/coresight-pmu.h
-> @@ -10,11 +10,18 @@
->  #define CORESIGHT_ETM_PMU_NAME "cs_etm"
->  #define CORESIGHT_ETM_PMU_SEED  0x10
->  
-> -/* ETMv3.5/PTM's ETMCR config bit */
-> -#define ETM_OPT_CYCACC  12
-> -#define ETM_OPT_CTXTID	14
-> -#define ETM_OPT_TS      28
-> -#define ETM_OPT_RETSTK	29
-> +/*
-> + * Below are the definition of bit offsets for perf option, and works as
-> + * arbitrary values for all ETM versions.
-> + *
-> + * Most of them are orignally from ETMv3.5/PTM's ETMCR config, therefore,
-> + * ETMv3.5/PTM doesn't define ETMCR config bits with prefix "ETM3_" and
-> + * directly use below macros as config bits.
-> + */
-> +#define ETM_OPT_CYCACC		12
-> +#define ETM_OPT_CTXTID		14
-> +#define ETM_OPT_TS		28
-> +#define ETM_OPT_RETSTK		29
->  
->  /* ETMv4 CONFIGR programming bits for the ETM OPTs */
->  #define ETM4_CFG_BIT_CYCACC	4
-> -- 
-> 2.25.1
-> 
+Sounds okay to me.
