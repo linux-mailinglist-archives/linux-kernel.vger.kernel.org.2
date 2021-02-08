@@ -2,133 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56C5431401A
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 21:15:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE945314026
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 21:17:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236762AbhBHUOQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 15:14:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40578 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235728AbhBHSlW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 13:41:22 -0500
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76D1AC06178A
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 10:40:41 -0800 (PST)
-Received: by mail-qv1-xf49.google.com with SMTP id t18so11227846qva.6
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 10:40:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=H9qB3jddJUOiem40qnE4VNfE96DiVHMNVUIiz3DWDnA=;
-        b=OSxYfK3dabPv8tJszQgtCOZqGIaOISBkbN3FDZhJ6HWrPpAOOVAQhHEY6THhas9pV/
-         F5A627x9q/0IJzaIDgwVPS035Gw88VxW8YyDmjkYuOG7r8KIaTvPzGNGsnCzo483hRVe
-         t4gBMsqE+1ceWYYEioSzIHHmL7KpeVl+E6TNKPFeUl5ZyxzUs7v3LYt/NOKJ8IIV+gdv
-         YH9DPbS546+/GdwOo2/8PBrzjPENUp2LA2L54+82eYdBEOILHNiIZ/gc1X4lr5u3DZ/F
-         4ErPQ451EuWbWegvetp3oUqWqxqf8U1mogspr4ZibqSaWZyV9V4TtB6mao1Pc1aBvcjd
-         34sA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=H9qB3jddJUOiem40qnE4VNfE96DiVHMNVUIiz3DWDnA=;
-        b=ATtqmEo+WJRZLF7+XgAo14QoQadpqq8+segt7EwaBB/A8+SCtIM5SXW5Jhc2J8bQ2z
-         zBwCctCwTeZ94WuqrvknU4Zhwcv6PLStmAatHVWIC5fcoKmz85dE6wQVRLPU8sMJDR8X
-         +r1UOmmn3K9FXZeXNfCzUSuDZckt1p6070C5dP3J8xB6Ol1LuFJSSxSwf6nEq7OKPkNz
-         Y1h6StxfoM6awaKL+SzLMMUowys171gRAu++kHc+2zFV497xYTls973U3YreDZv9hvBH
-         c7pdS8Nv5o/fj7Cw9xrmiVTHIPf7Jo8HBuKwJdHcI4c+2FlJKu5dPFFrqVuWgYzJRc1d
-         6wnQ==
-X-Gm-Message-State: AOAM531rwmtcvTwZgizJMcWzyVl+RwPM7MYK3GctFajPPtcXpaz0E+vO
-        oKciGtPy7fk/6Mg56UaUW32HjIk3hLlmsJiJ
-X-Google-Smtp-Source: ABdhPJzSTUaCTxZYjBF058uNJK2c/itP+NEV/iFWV4Mxc/d/k+Ag8gL3Dm65t7OaKUMhS1Maikf9IX68CyO4ri5A
-Sender: "andreyknvl via sendgmr" <andreyknvl@andreyknvl3.muc.corp.google.com>
-X-Received: from andreyknvl3.muc.corp.google.com ([2a00:79e0:15:13:55a0:b27b:af1c:327])
- (user=andreyknvl job=sendgmr) by 2002:a0c:c1cb:: with SMTP id
- v11mr13766499qvh.59.1612809640525; Mon, 08 Feb 2021 10:40:40 -0800 (PST)
-Date:   Mon,  8 Feb 2021 19:40:36 +0100
-Message-Id: <6678d77ceffb71f1cff2cf61560e2ffe7bb6bfe9.1612808820.git.andreyknvl@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.30.0.478.g8a0d178c01-goog
-Subject: [PATCH] kasan: fix stack traces dependency for HW_TAGS
-From:   Andrey Konovalov <andreyknvl@google.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>
-Cc:     Will Deacon <will.deacon@arm.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Andrey Konovalov <andreyknvl@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S236711AbhBHUQP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 15:16:15 -0500
+Received: from mx3.molgen.mpg.de ([141.14.17.11]:58971 "EHLO mx1.molgen.mpg.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S235767AbhBHSmH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 13:42:07 -0500
+Received: from [192.168.0.5] (ip5f5aed2c.dynamic.kabel-deutschland.de [95.90.237.44])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: buczek)
+        by mx.molgen.mpg.de (Postfix) with ESMTPSA id E23A620647914;
+        Mon,  8 Feb 2021 19:41:15 +0100 (CET)
+Subject: Re: md_raid: mdX_raid6 looping after sync_action "check" to "idle"
+ transition
+To:     Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
+        Song Liu <song@kernel.org>, linux-raid@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        it+raid@molgen.mpg.de
+References: <aa9567fd-38e1-7b9c-b3e1-dc2fdc055da5@molgen.mpg.de>
+ <b289ae15-ff82-b36e-4be4-a1c8bbdbacd7@cloud.ionos.com>
+ <37c158cb-f527-34f5-2482-cae138bc8b07@molgen.mpg.de>
+ <efb8d47b-ab9b-bdb9-ee2f-fb1be66343b1@molgen.mpg.de>
+ <55e30408-ac63-965f-769f-18be5fd5885c@molgen.mpg.de>
+ <d95aa962-9750-c27c-639a-2362bdb32f41@cloud.ionos.com>
+ <30576384-682c-c021-ff16-bebed8251365@molgen.mpg.de>
+ <cdc0b03c-db53-35bc-2f75-93bbca0363b5@molgen.mpg.de>
+ <bc342de0-98d2-1733-39cd-cc1999777ff3@molgen.mpg.de>
+ <c3390ab0-d038-f1c3-5544-67ae9c8408b1@cloud.ionos.com>
+ <a27c5a64-62bf-592c-e547-1e8e904e3c97@molgen.mpg.de>
+ <6c7008df-942e-13b1-2e70-a058e96ab0e9@cloud.ionos.com>
+ <12f09162-c92f-8fbb-8382-cba6188bfb29@molgen.mpg.de>
+ <6757d55d-ada8-9b7e-b7fd-2071fe905466@cloud.ionos.com>
+ <93d8d623-8aec-ad91-490c-a414c4926fb2@molgen.mpg.de>
+ <0bb7c8d8-6b96-ce70-c5ee-ba414de10561@cloud.ionos.com>
+ <e271e183-20e9-8ca2-83eb-225d4d7ab5db@molgen.mpg.de>
+ <1cdfceb6-f39b-70e1-3018-ea14dbe257d9@cloud.ionos.com>
+From:   Donald Buczek <buczek@molgen.mpg.de>
+Message-ID: <7733de01-d1b0-e56f-db6a-137a752f7236@molgen.mpg.de>
+Date:   Mon, 8 Feb 2021 19:41:14 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <1cdfceb6-f39b-70e1-3018-ea14dbe257d9@cloud.ionos.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, whether the alloc/free stack traces collection is enabled by
-default for hardware tag-based KASAN depends on CONFIG_DEBUG_KERNEL.
-The intention for this dependency was to only enable collection on slow
-debug kernels due to a significant perf and memory impact.
+Dear Guoqing,
 
-As it turns out, CONFIG_DEBUG_KERNEL is not considered a debug option
-and is enabled on many productions kernels including Android and Ubuntu.
-As the result, this dependency is pointless and only complicates the code
-and documentation.
+On 08.02.21 15:53, Guoqing Jiang wrote:
+> 
+> 
+> On 2/8/21 12:38, Donald Buczek wrote:
+>>> 5. maybe don't hold reconfig_mutex when try to unregister sync_thread, like this.
+>>>
+>>>          /* resync has finished, collect result */
+>>>          mddev_unlock(mddev);
+>>>          md_unregister_thread(&mddev->sync_thread);
+>>>          mddev_lock(mddev);
+>>
+>> As above: While we wait for the sync thread to terminate, wouldn't it be a problem, if another user space operation takes the mutex?
+> 
+> I don't think other places can be blocked while hold mutex, otherwise these places can cause potential deadlock. Please try above two lines change. And perhaps others have better idea.
 
-Having stack traces collection disabled by default would make the hardware
-mode work differently to to the software ones, which is confusing.
+Yes, this works. No deadlock after >11000 seconds,
 
-This change removes the dependency and enables stack traces collection
-by default.
+(Time till deadlock from previous runs/seconds: 1723, 37, 434, 1265, 3500, 1136, 109, 1892, 1060, 664, 84, 315, 12, 820 )
 
-Looking into the future, this default might makes sense for production
-kernels, assuming we implement a fast stack trace collection approach.
-
-Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
----
- Documentation/dev-tools/kasan.rst | 3 +--
- mm/kasan/hw_tags.c                | 8 ++------
- 2 files changed, 3 insertions(+), 8 deletions(-)
-
-diff --git a/Documentation/dev-tools/kasan.rst b/Documentation/dev-tools/kasan.rst
-index 1651d961f06a..a248ac3941be 100644
---- a/Documentation/dev-tools/kasan.rst
-+++ b/Documentation/dev-tools/kasan.rst
-@@ -163,8 +163,7 @@ particular KASAN features.
- - ``kasan=off`` or ``=on`` controls whether KASAN is enabled (default: ``on``).
- 
- - ``kasan.stacktrace=off`` or ``=on`` disables or enables alloc and free stack
--  traces collection (default: ``on`` for ``CONFIG_DEBUG_KERNEL=y``, otherwise
--  ``off``).
-+  traces collection (default: ``on``).
- 
- - ``kasan.fault=report`` or ``=panic`` controls whether to only print a KASAN
-   report or also panic the kernel (default: ``report``).
-diff --git a/mm/kasan/hw_tags.c b/mm/kasan/hw_tags.c
-index e529428e7a11..d558799b25b3 100644
---- a/mm/kasan/hw_tags.c
-+++ b/mm/kasan/hw_tags.c
-@@ -134,12 +134,8 @@ void __init kasan_init_hw_tags(void)
- 
- 	switch (kasan_arg_stacktrace) {
- 	case KASAN_ARG_STACKTRACE_DEFAULT:
--		/*
--		 * Default to enabling stack trace collection for
--		 * debug kernels.
--		 */
--		if (IS_ENABLED(CONFIG_DEBUG_KERNEL))
--			static_branch_enable(&kasan_flag_stacktrace);
-+		/* Default to enabling stack trace collection. */
-+		static_branch_enable(&kasan_flag_stacktrace);
- 		break;
- 	case KASAN_ARG_STACKTRACE_OFF:
- 		/* Do nothing, kasan_flag_stacktrace keeps its default value. */
--- 
-2.30.0.478.g8a0d178c01-goog
-
+Best
+   Donald
+> 
+> Thanks,
+> Guoqing
