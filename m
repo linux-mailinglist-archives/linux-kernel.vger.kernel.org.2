@@ -2,100 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CBE8312FD1
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 11:56:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88427312FD8
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 11:56:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232772AbhBHKzM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 05:55:12 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:34965 "EHLO
+        id S232603AbhBHK4M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 05:56:12 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43545 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232679AbhBHKnI (ORCPT
+        by vger.kernel.org with ESMTP id S232735AbhBHKnl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 05:43:08 -0500
+        Mon, 8 Feb 2021 05:43:41 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612780898;
+        s=mimecast20190719; t=1612780934;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=E8ybXA8c9mSioRzW+0/Reesj0ONr5p9VGIF8lBxAzkM=;
-        b=O4pfYm9oWZ4kNiOxbJb1nsivZPEG47WAViPfLuFymsczn917bqWAFApCIcL+YWRwxhDft3
-        v+cJPfW7qBsHAFd4sbbeM4dNFbI69pJ7oTprX3hvBUhu8a2Fe2m0WOqKPXgtC0eTmKEE8B
-        SM9fMIJz5Qj3PR0j0fge80/j0KFqWyA=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-490-KveiCOiAMTyRUUYhB43SaA-1; Mon, 08 Feb 2021 05:41:36 -0500
-X-MC-Unique: KveiCOiAMTyRUUYhB43SaA-1
-Received: by mail-ej1-f69.google.com with SMTP id by8so337678ejc.1
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 02:41:36 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=E8ybXA8c9mSioRzW+0/Reesj0ONr5p9VGIF8lBxAzkM=;
-        b=MWSNAA7+er+hE6gwDnkixIsn8HaSwMj+w9FfTkIUzKjGGobUf3sfGeYhmdXWKNmN/e
-         c9RJFS83n8x9syGIQu5yxQv0RSNfPugRoSPZV75gL37o1tno3WTz8aVw0oWaZrGaXLbO
-         AL5OOs6OoHqy82A91lTYzRR4Lr8r1YaTfPAg8Qv0f1ncbLpfJXI8QGowvD0e6QP7Zgij
-         bRwrH5kNyYr9kBmxW5Vq6I6G3CXQsXSZ+D/Z6CuDWHA9XfGU8zHrD8ZyqR5+unETJl0i
-         F/ZCyYgG7TpDDDR6NYDdaS90BGQ63rKxiI167AlNY61wAaYVAma5R9SF6T11HJEs4Rgw
-         YUIQ==
-X-Gm-Message-State: AOAM530/YhiRfdKFSZpM4kPiHDX1ZKR52egYEekts2331bpjPuqg/N2q
-        RAFP+E+olHHcZVtgfaE+4+07eNycTxmcW8gF+DBsUuQD3Tm/X+rPH0GNUSPRfUAvax6i09UkBNl
-        o8OEuwFYC0eNUT0IK9JiKFAKy
-X-Received: by 2002:a17:906:d7bc:: with SMTP id pk28mr10871095ejb.370.1612780895127;
-        Mon, 08 Feb 2021 02:41:35 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzUjvugi/UkGHl5KGDf3fmcfCvhjFf3sf/CJUxG586Q88cwfYTCBYLNLLyuT/hJHgo4jXeexQ==
-X-Received: by 2002:a17:906:d7bc:: with SMTP id pk28mr10871082ejb.370.1612780894887;
-        Mon, 08 Feb 2021 02:41:34 -0800 (PST)
-Received: from localhost.localdomain ([151.29.106.174])
-        by smtp.gmail.com with ESMTPSA id g2sm8272848ejk.108.2021.02.08.02.41.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Feb 2021 02:41:34 -0800 (PST)
-Date:   Mon, 8 Feb 2021 11:41:31 +0100
-From:   Juri Lelli <juri.lelli@redhat.com>
-To:     trix@redhat.com
-Cc:     mingo@redhat.com, peterz@infradead.org, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] sched/deadline: fix BUG_ON() ENQUEUE_REPLENISH check
-Message-ID: <20210208104131.GB5756@localhost.localdomain>
-References: <20210206204851.3673588-1-trix@redhat.com>
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=yx6OCfShF0609v+W3vjhiUcxaTTyjoM+WtY0G5Wv7+4=;
+        b=VJjYe6RQsazlIPbqdkEvBw9Y+Ur9/bGHkeUlDHtVyzovySUC1uc+PPDOWV2ujHs0fJFc8o
+        gamYmt9NjD7iv3vvMM6LZJrmMdu9gtBMBZ1qGSFWwYRL0rkh2Nm7ZAbl5Y+fozZPAA+3w0
+        KlmhyocnKFZJdStUkr4behoCUIMZEJc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-205-6-5c_2iNNOiCQ_Xc4LVApQ-1; Mon, 08 Feb 2021 05:42:11 -0500
+X-MC-Unique: 6-5c_2iNNOiCQ_Xc4LVApQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2AE4CC7407;
+        Mon,  8 Feb 2021 10:42:09 +0000 (UTC)
+Received: from sirius.home.kraxel.org (ovpn-112-170.ams2.redhat.com [10.36.112.170])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id ED29072163;
+        Mon,  8 Feb 2021 10:42:02 +0000 (UTC)
+Received: by sirius.home.kraxel.org (Postfix, from userid 1000)
+        id 0F1BB18000AF; Mon,  8 Feb 2021 11:42:01 +0100 (CET)
+From:   Gerd Hoffmann <kraxel@redhat.com>
+To:     dri-devel@lists.freedesktop.org
+Cc:     Gerd Hoffmann <kraxel@redhat.com>,
+        Tong Zhang <ztong0001@gmail.com>,
+        Dave Airlie <airlied@redhat.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        virtualization@lists.linux-foundation.org (open list:DRM DRIVER FOR QXL
+        VIRTUAL GPU),
+        spice-devel@lists.freedesktop.org (open list:DRM DRIVER FOR QXL VIRTUAL
+        GPU), linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] drm/qxl: properly handle device init failures
+Date:   Mon,  8 Feb 2021 11:41:49 +0100
+Message-Id: <20210208104149.423758-1-kraxel@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210206204851.3673588-1-trix@redhat.com>
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Specifically do not try release resources which where
+not allocated in the first place.
 
-On 06/02/21 12:48, trix@redhat.com wrote:
-> From: Tom Rix <trix@redhat.com>
-> 
-> When the BUG_ON check for (flags != ENQUEUE_REPLENISH) was created, the
-> flag was set to ENQUEUE_REPLENISH in rt_mutex_setprio(), now it is or-ed
-> in.  So the checking logic needs to change.
-> 
-> Fixes: 1de64443d755 ("sched/core: Fix task and run queue sched_info::run_delay inconsistencies")
-> Signed-off-by: Tom Rix <trix@redhat.com>
-> ---
->  kernel/sched/deadline.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
-> index 1508d126e88b..f50d20b7fe7c 100644
-> --- a/kernel/sched/deadline.c
-> +++ b/kernel/sched/deadline.c
-> @@ -1561,7 +1561,7 @@ static void enqueue_task_dl(struct rq *rq, struct task_struct *p, int flags)
->  		 * the throttle.
->  		 */
->  		p->dl.dl_throttled = 0;
-> -		BUG_ON(!is_dl_boosted(&p->dl) || flags != ENQUEUE_REPLENISH);
-> +		BUG_ON(!is_dl_boosted(&p->dl) || !(flags & ENQUEUE_REPLENISH));
+Cc: Tong Zhang <ztong0001@gmail.com>
+Signed-off-by: Gerd Hoffmann <kraxel@redhat.com>
+---
+ drivers/gpu/drm/qxl/qxl_display.c | 3 +++
+ drivers/gpu/drm/qxl/qxl_kms.c     | 4 ++++
+ 2 files changed, 7 insertions(+)
 
-Uhu, isn't this actually the else branch of "if (is_dl_boosted())"? If
-yes, I don't see how this is not always triggering. :-/
-
-Thanks,
-Juri
+diff --git a/drivers/gpu/drm/qxl/qxl_display.c b/drivers/gpu/drm/qxl/qxl_display.c
+index c326412136c5..ec50d2cfd4e1 100644
+--- a/drivers/gpu/drm/qxl/qxl_display.c
++++ b/drivers/gpu/drm/qxl/qxl_display.c
+@@ -1183,6 +1183,9 @@ int qxl_destroy_monitors_object(struct qxl_device *qdev)
+ {
+ 	int ret;
+ 
++	if (!qdev->monitors_config_bo)
++		return 0;
++
+ 	qdev->monitors_config = NULL;
+ 	qdev->ram_header->monitors_config = 0;
+ 
+diff --git a/drivers/gpu/drm/qxl/qxl_kms.c b/drivers/gpu/drm/qxl/qxl_kms.c
+index 66d74aaaee06..4dc5ad13f12c 100644
+--- a/drivers/gpu/drm/qxl/qxl_kms.c
++++ b/drivers/gpu/drm/qxl/qxl_kms.c
+@@ -288,6 +288,10 @@ void qxl_device_fini(struct qxl_device *qdev)
+ {
+ 	int cur_idx;
+ 
++	/* check if qxl_device_init() was successful (gc_work is initialized last) */
++	if (!qdev->gc_work.func)
++		return;
++
+ 	for (cur_idx = 0; cur_idx < 3; cur_idx++) {
+ 		if (!qdev->current_release_bo[cur_idx])
+ 			continue;
+-- 
+2.29.2
 
