@@ -2,87 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6ABEE313BC6
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 18:58:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E200313BE4
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 18:59:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235199AbhBHR54 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 12:57:56 -0500
-Received: from marcansoft.com ([212.63.210.85]:33448 "EHLO mail.marcansoft.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229623AbhBHPcN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 10:32:13 -0500
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        id S233768AbhBHR6P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 12:58:15 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:51949 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233439AbhBHPef (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 10:34:35 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612798388;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=gg+S9OF2FeNhBwYh2FsUw8uSn6rQJ+TaKCRN/fl/paY=;
+        b=W8iq84zhFkXlyJPvuLqA0zP8RDJhfHt96e+boMez5yOCCPphBkTdVatoq10Q/GHs9TuP6i
+        Fef6DECBHu3hbkHdz3FsJ5X5PMWss0Iq30m3vuByIFx7QWrGUisu7bK/ZvIEmFuLaMiiuj
+        IZXuqFxt1wCwzy4FULTpvA2lx1YEHcE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-100-cDQmanLKO2ibwJ3RVV6koA-1; Mon, 08 Feb 2021 10:33:04 -0500
+X-MC-Unique: cDQmanLKO2ibwJ3RVV6koA-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: marcan@marcan.st)
-        by mail.marcansoft.com (Postfix) with ESMTPSA id D408541F47;
-        Mon,  8 Feb 2021 15:31:20 +0000 (UTC)
-To:     Marc Zyngier <maz@kernel.org>, Arnd Bergmann <arnd@kernel.org>
-Cc:     SoC Team <soc@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        Olof Johansson <olof@lixom.net>
-References: <20210204203951.52105-1-marcan@marcan.st>
- <20210204203951.52105-16-marcan@marcan.st> <87eehqlxlr.wl-maz@kernel.org>
- <CAK8P3a25eFFrMG-9QknFZ6Ckc3-gkiLK=jQdnyTMgn-z4X0RHQ@mail.gmail.com>
- <87a6selrkt.wl-maz@kernel.org>
-From:   Hector Martin <marcan@marcan.st>
-Subject: Re: [PATCH 15/18] irqchip/apple-aic: Add support for the Apple
- Interrupt Controller
-Message-ID: <c699ab0c-39a0-6b0a-9409-db506ac6f824@marcan.st>
-Date:   Tue, 9 Feb 2021 00:31:18 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5458180196E;
+        Mon,  8 Feb 2021 15:33:03 +0000 (UTC)
+Received: from treble (ovpn-113-27.rdu2.redhat.com [10.10.113.27])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 368765C1D0;
+        Mon,  8 Feb 2021 15:33:02 +0000 (UTC)
+Date:   Mon, 8 Feb 2021 09:33:00 -0600
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Borislav Petkov <bp@suse.de>,
+        Dave Hansen <dave.hansen@intel.com>, x86-ml <x86@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        live-patching@vger.kernel.org
+Subject: Re: [GIT PULL] x86/urgent for v5.11-rc7
+Message-ID: <20210208153300.m5skwcxxrdpo37iz@treble>
+References: <20210207104022.GA32127@zn.tnic>
+ <CAHk-=widXSyJ8W3vRrqO-zNP12A+odxg2J2_-oOUskz33wtfqA@mail.gmail.com>
+ <20210207175814.GF32127@zn.tnic>
+ <CAHk-=wi5z9S7x94SKYNj6qSHBqz+OD76GW=MDzo-KN2Fzm-V4Q@mail.gmail.com>
+ <20210207224540.ercf5657pftibyaw@treble>
+ <20210208100206.3b74891e@gandalf.local.home>
 MIME-Version: 1.0
-In-Reply-To: <87a6selrkt.wl-maz@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: es-ES
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210208100206.3b74891e@gandalf.local.home>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/02/2021 20.36, Marc Zyngier wrote:
-> On Mon, 08 Feb 2021 10:29:23 +0000,
-> Arnd Bergmann <arnd@kernel.org> wrote:
->>
->> On Mon, Feb 8, 2021 at 10:25 AM Marc Zyngier <maz@kernel.org> wrote:
->>> On Thu, 04 Feb 2021 20:39:48 +0000, Hector Martin <marcan@marcan.st> wrote:
->>
->>>> +{
->>>> +     return readl(ic->base + reg);
->>>
->>> Please consider using the _relaxed accessors, as I don't think any of
->>> these interacts with memory (apart from IPIs, of course).
->>
->> MSI interrupts require serializing with DMA, so at the minimum I think there
->> needs to be something that ensures that DMA from device into memory
->> has completed before delivering the completion interrupt to a driver. This
->> may already be implied when the AIC is entered, but this is hard to know
->> without actual hardware specs.
+On Mon, Feb 08, 2021 at 10:02:06AM -0500, Steven Rostedt wrote:
+> On Sun, 7 Feb 2021 16:45:40 -0600
+> Josh Poimboeuf <jpoimboe@redhat.com> wrote:
 > 
-> If there is a sync with memory required, it should happen at the point
-> where it is Acked, not when masked/unmasked or anything else. And
-> given that you want to sync with an external agent (the DMA producer),
-> the DMB generated by readl won't save you, as it only orders CPU
-> accesses AFAICT.
+> > > I do suspect involved people should start thinking about how they want
+> > > to deal with functions starting with
+> > > 
+> > >         endbr64
+> > >         call __fentry__
+> > > 
+> > > instead of the call being at the very top of the function.  
+> > 
+> > FWIW, objtool's already fine with it (otherwise we would have discovered
+> > the need to disable fcf-protection much sooner).
+> 
+> And this doesn't really affect tracing (note, another user that might be
+> affected is live kernel patching).
 
-Found an doc that talks about this, but then... how does the current 
-Linux code work anyway for normal use cases?
+Good point, livepatch is indeed affected.  Is there a better way to get
+the "call __fentry__" address for a given function?
 
-https://elinux.org/images/7/73/Deacon-weak-to-weedy.pdf
 
-That says dmb is not enough for DMA-control to DMA-data dependencies due 
-to speculation, which is what we have here and the situation I described 
-(with an IRQ along the way, but that's irrelevant). But that's what 
-readl does: a read followed by a dmb(oshld) followed by a control 
-dependency (but that needs an isb to take effect). How does this not 
-break drivers that read DMA-accessed memory after a readl of a status 
-register? I thought that was the point of the non-relaxed functions.
+/*
+ * Convert a function address into the appropriate ftrace location.
+ *
+ * Usually this is just the address of the function, but on some architectures
+ * it's more complicated so allow them to provide a custom behaviour.
+ */
+#ifndef klp_get_ftrace_location
+static unsigned long klp_get_ftrace_location(unsigned long faddr)
+{
+	return faddr;
+}
+#endif
 
 -- 
-Hector Martin (marcan@marcan.st)
-Public Key: https://mrcn.st/pub
+Josh
+
