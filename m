@@ -2,16 +2,16 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE1633133CE
+	by mail.lfdr.de (Postfix) with ESMTP id 6C5473133CD
 	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 14:53:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231404AbhBHNxk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 08:53:40 -0500
-Received: from mail.baikalelectronics.com ([87.245.175.226]:56562 "EHLO
+        id S231617AbhBHNxZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 08:53:25 -0500
+Received: from mail.baikalelectronics.com ([87.245.175.226]:56578 "EHLO
         mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230352AbhBHNwz (ORCPT
+        with ESMTP id S231531AbhBHNwv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 08:52:55 -0500
+        Mon, 8 Feb 2021 08:52:51 -0500
 From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
 To:     Felipe Balbi <balbi@kernel.org>,
         Bjorn Andersson <bjorn.andersson@linaro.org>,
@@ -19,14 +19,15 @@ To:     Felipe Balbi <balbi@kernel.org>,
         Florian Fainelli <f.fainelli@gmail.com>,
         Rob Herring <robh+dt@kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Santosh Shilimkar <ssantosh@kernel.org>
+        Alexey Brodkin <abrodkin@synopsys.com>,
+        Vineet Gupta <vgupta@synopsys.com>
 CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
         Serge Semin <fancer.lancer@gmail.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v5 02/10] arm: dts: keystone: Correct DWC USB3 compatible string
-Date:   Mon, 8 Feb 2021 16:51:46 +0300
-Message-ID: <20210208135154.6645-3-Sergey.Semin@baikalelectronics.ru>
+        <devicetree@vger.kernel.org>, <linux-snps-arc@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v5 03/10] arc: dts: Harmonize EHCI/OHCI DT nodes name
+Date:   Mon, 8 Feb 2021 16:51:47 +0300
+Message-ID: <20210208135154.6645-4-Sergey.Semin@baikalelectronics.ru>
 In-Reply-To: <20210208135154.6645-1-Sergey.Semin@baikalelectronics.ru>
 References: <20210208135154.6645-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
@@ -37,42 +38,114 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Syonpsys IP cores are supposed to be defined with "snps" vendor-prefix.
-Use it instead of the deprecated "synopsys" one.
+In accordance with the Generic EHCI/OHCI bindings the corresponding node
+name is suppose to comply with the Generic USB HCD DT schema, which
+requires the USB nodes to have the name acceptable by the regexp:
+"^usb(@.*)?" . Make sure the "generic-ehci" and "generic-ohci"-compatible
+nodes are correctly named.
 
 Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
+Acked-by: Alexey Brodkin <abrodkin@synopsys.com>
+Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- arch/arm/boot/dts/keystone-k2e.dtsi | 2 +-
- arch/arm/boot/dts/keystone.dtsi     | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ arch/arc/boot/dts/axc003.dtsi        | 4 ++--
+ arch/arc/boot/dts/axc003_idu.dtsi    | 4 ++--
+ arch/arc/boot/dts/axs10x_mb.dtsi     | 4 ++--
+ arch/arc/boot/dts/hsdk.dts           | 4 ++--
+ arch/arc/boot/dts/vdk_axs10x_mb.dtsi | 2 +-
+ 5 files changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/arch/arm/boot/dts/keystone-k2e.dtsi b/arch/arm/boot/dts/keystone-k2e.dtsi
-index 2d94faf31fab..fa1b8499c5a7 100644
---- a/arch/arm/boot/dts/keystone-k2e.dtsi
-+++ b/arch/arm/boot/dts/keystone-k2e.dtsi
-@@ -79,7 +79,7 @@ keystone_usb1: usb@25000000 {
- 			status = "disabled";
+diff --git a/arch/arc/boot/dts/axc003.dtsi b/arch/arc/boot/dts/axc003.dtsi
+index cd1edcf4f95e..3434c8131ecd 100644
+--- a/arch/arc/boot/dts/axc003.dtsi
++++ b/arch/arc/boot/dts/axc003.dtsi
+@@ -103,11 +103,11 @@ ethernet@18000 {
+ 			dma-coherent;
+ 		};
  
- 			usb1: dwc3@25010000 {
--				compatible = "synopsys,dwc3";
-+				compatible = "snps,dwc3";
- 				reg = <0x25010000 0x70000>;
- 				interrupts = <GIC_SPI 414 IRQ_TYPE_EDGE_RISING>;
- 				usb-phy = <&usb1_phy>, <&usb1_phy>;
-diff --git a/arch/arm/boot/dts/keystone.dtsi b/arch/arm/boot/dts/keystone.dtsi
-index c298675a29a5..8d046a1b690c 100644
---- a/arch/arm/boot/dts/keystone.dtsi
-+++ b/arch/arm/boot/dts/keystone.dtsi
-@@ -218,7 +218,7 @@ keystone_usb0: usb@2680000 {
- 			status = "disabled";
+-		ehci@40000 {
++		usb@40000 {
+ 			dma-coherent;
+ 		};
  
- 			usb0: dwc3@2690000 {
--				compatible = "synopsys,dwc3";
-+				compatible = "snps,dwc3";
- 				reg = <0x2690000 0x70000>;
- 				interrupts = <GIC_SPI 393 IRQ_TYPE_EDGE_RISING>;
- 				usb-phy = <&usb_phy>, <&usb_phy>;
+-		ohci@60000 {
++		usb@60000 {
+ 			dma-coherent;
+ 		};
+ 
+diff --git a/arch/arc/boot/dts/axc003_idu.dtsi b/arch/arc/boot/dts/axc003_idu.dtsi
+index 70779386ca79..67556f4b7057 100644
+--- a/arch/arc/boot/dts/axc003_idu.dtsi
++++ b/arch/arc/boot/dts/axc003_idu.dtsi
+@@ -110,11 +110,11 @@ ethernet@18000 {
+ 			dma-coherent;
+ 		};
+ 
+-		ehci@40000 {
++		usb@40000 {
+ 			dma-coherent;
+ 		};
+ 
+-		ohci@60000 {
++		usb@60000 {
+ 			dma-coherent;
+ 		};
+ 
+diff --git a/arch/arc/boot/dts/axs10x_mb.dtsi b/arch/arc/boot/dts/axs10x_mb.dtsi
+index 99d3e7175bf7..b64435385304 100644
+--- a/arch/arc/boot/dts/axs10x_mb.dtsi
++++ b/arch/arc/boot/dts/axs10x_mb.dtsi
+@@ -87,13 +87,13 @@ gmac: ethernet@18000 {
+ 			mac-address = [00 00 00 00 00 00]; /* Filled in by U-Boot */
+ 		};
+ 
+-		ehci@40000 {
++		usb@40000 {
+ 			compatible = "generic-ehci";
+ 			reg = < 0x40000 0x100 >;
+ 			interrupts = < 8 >;
+ 		};
+ 
+-		ohci@60000 {
++		usb@60000 {
+ 			compatible = "generic-ohci";
+ 			reg = < 0x60000 0x100 >;
+ 			interrupts = < 8 >;
+diff --git a/arch/arc/boot/dts/hsdk.dts b/arch/arc/boot/dts/hsdk.dts
+index dcaa44e408ac..fdd4f7f635d3 100644
+--- a/arch/arc/boot/dts/hsdk.dts
++++ b/arch/arc/boot/dts/hsdk.dts
+@@ -234,7 +234,7 @@ phy0: ethernet-phy@0 { /* Micrel KSZ9031 */
+ 			};
+ 		};
+ 
+-		ohci@60000 {
++		usb@60000 {
+ 			compatible = "snps,hsdk-v1.0-ohci", "generic-ohci";
+ 			reg = <0x60000 0x100>;
+ 			interrupts = <15>;
+@@ -242,7 +242,7 @@ ohci@60000 {
+ 			dma-coherent;
+ 		};
+ 
+-		ehci@40000 {
++		usb@40000 {
+ 			compatible = "snps,hsdk-v1.0-ehci", "generic-ehci";
+ 			reg = <0x40000 0x100>;
+ 			interrupts = <15>;
+diff --git a/arch/arc/boot/dts/vdk_axs10x_mb.dtsi b/arch/arc/boot/dts/vdk_axs10x_mb.dtsi
+index cbb179770293..90a412026e64 100644
+--- a/arch/arc/boot/dts/vdk_axs10x_mb.dtsi
++++ b/arch/arc/boot/dts/vdk_axs10x_mb.dtsi
+@@ -46,7 +46,7 @@ ethernet@18000 {
+ 			clock-names = "stmmaceth";
+ 		};
+ 
+-		ehci@40000 {
++		usb@40000 {
+ 			compatible = "generic-ehci";
+ 			reg = < 0x40000 0x100 >;
+ 			interrupts = < 8 >;
 -- 
 2.29.2
 
