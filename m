@@ -2,87 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BD64312E68
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 11:06:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E40D5312E90
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 11:09:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232073AbhBHKBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 05:01:09 -0500
-Received: from mx2.suse.de ([195.135.220.15]:35330 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232094AbhBHJvS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 04:51:18 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1612777831; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=DBsRDf6sKqoMXs8BxrjoloByzTHcZkFKh1qcJfej7kE=;
-        b=RxLdmpgIP2mi8IiqRZ8SAFMocjqnRTOjFH2a8wzNNG3Zam8FkcECpEIB1U0+xH5owzyP7q
-        S0kfhi3+LbYmQib6RH4JkfgEhk+vEl1tKs105T7c8HR6vUAB8vci4uGyHYxqjjLNg47t0d
-        Nq8qNK2qyrr65vSyHTHMbjBYjVWP6Vo=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id A5A65AE56;
-        Mon,  8 Feb 2021 09:50:31 +0000 (UTC)
-Date:   Mon, 8 Feb 2021 10:50:29 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Muchun Song <songmuchun@bytedance.com>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [External] Re: [PATCH] mm: memcontrol: remove rcu_read_lock from
- get_mem_cgroup_from_page
-Message-ID: <YCEJZWJkPpvYa9Xq@dhcp22.suse.cz>
-References: <20210205062719.74431-1-songmuchun@bytedance.com>
- <YB0DnAlCaQza4Uf9@dhcp22.suse.cz>
- <CAMZfGtVhBrwgkJVwiah6eDsppSf8fYp+uZ=tZmHBLDFeTmQX3w@mail.gmail.com>
- <YB0euLiMU+T/9bMK@dhcp22.suse.cz>
- <YB2LTIeTPN72Xrxj@cmpxchg.org>
+        id S232366AbhBHKIT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 05:08:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41182 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232166AbhBHKAJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 05:00:09 -0500
+Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A90AC0617AB
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 01:52:06 -0800 (PST)
+Received: by mail-oi1-x231.google.com with SMTP id l19so2505218oih.6
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 01:52:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=EpKxIqmOlqMl7mzttLPN+VwSDt9L8MOcCkjs1vmLiI8=;
+        b=KLWyl72HIYL2VlsjKIxcvR6IOlc+aubrFGsX9wWWy0WDBsiZ1VMg+20IlOl94PPdZ+
+         o6+qaT9T4WQgu1ZEiu6krhGInALOWGoXbbOEk/uKrqK7ZJaTBQqcT1A8vNukNFBFHJ9o
+         +tNbz7F66EdYEBgQSmE9tsKGQ8sFKS27AgtGtgXcUoebezGouiSRDqzl+aTD3P5Vxex3
+         MmxHqPipuBolGjxf2D/c1AVNuUOkjEG9htTpHYoDZ8h50cvmSHFy0RW92aBhxNxsYXCH
+         WK57NVHpMxgUvF+ur160GTFQwvC1V50krRh9qIHxrL0K9toDKyns8kQwr2peqjxfLqFl
+         SO+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=EpKxIqmOlqMl7mzttLPN+VwSDt9L8MOcCkjs1vmLiI8=;
+        b=KCxpVo8Vi2+/vs1EUQEgf0prp0TXh71lxYAFnEqmJKK6HnPuSJ/NAYlSWNLmdM9ScE
+         MTz4FEgh5C90lxnsJo3KEsqqxN7qlqeHSsqvwcJshiAVJdDljIgbYYuEV6qJGLaQ1tQG
+         6/bw/claXRObzdRhgOx7SSpCH/ZCtKE+PErrvgcycIE2QeihKy0+oS26XkdrQ2gF2WOQ
+         o8xSutfSjKhfNS73ITo9TwKAjREkfirJPcpnNECVGApHzUYgsnt3dc6LBVMR1prdOGyc
+         ULmd7+mrxaPmdjAv8Ng9WX7gMn1hn0xiHDqIh5MsyVU6HFbouUenqJbLIv/y7e+AKn5H
+         RvSA==
+X-Gm-Message-State: AOAM530U8+Tc3OlxQ+zct6AxaTNriE6NfLkgAUPy86smaCb4aUkJ+isy
+        EoyR3kQWhLKC/s8hairGOUHLmHxHkxhFqj9hZdsY1A==
+X-Google-Smtp-Source: ABdhPJzqX48E1X2LlNnRaBS/1DHj27pVaPPRP4oqqLOwu8qC/WvaUZEVaueH0eqpwRGMp6njk+uirSLd+7a9aQtkLQQ=
+X-Received: by 2002:aca:c505:: with SMTP id v5mr30902oif.172.1612777925613;
+ Mon, 08 Feb 2021 01:52:05 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YB2LTIeTPN72Xrxj@cmpxchg.org>
+References: <YCB4Sgk5g5B2Nu09@arch-chirva.localdomain> <YCCFGc97d2U5yUS7@arch-chirva.localdomain>
+ <YCCIgMHkzh/xT4ex@arch-chirva.localdomain>
+In-Reply-To: <YCCIgMHkzh/xT4ex@arch-chirva.localdomain>
+From:   Marco Elver <elver@google.com>
+Date:   Mon, 8 Feb 2021 10:51:54 +0100
+Message-ID: <CANpmjNO9B8KivLB8OnOFzK+M7wf=BGayfJy2+Dr2r2obk_s-fw@mail.gmail.com>
+Subject: =?UTF-8?B?UmU6IFBST0JMRU06IDUuMTEuMC1yYzcgZmFpbHMgdG8gY29tcGlsZSB3aXRoIGVycm9yOg==?=
+        =?UTF-8?B?IOKAmC1taW5kaXJlY3QtYnJhbmNo4oCZIGFuZCDigJgtZmNmLXByb3RlY3Rpb27igJkgYXJlIG5vdCBj?=
+        =?UTF-8?B?b21wYXRpYmxl?=
+To:     Stuart Little <achirvasub@gmail.com>
+Cc:     Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>, nborisov@suse.com,
+        Borislav Petkov <bp@suse.de>, seth.forshee@canonical.com,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        linux-toolchains@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 05-02-21 13:15:40, Johannes Weiner wrote:
-> On Fri, Feb 05, 2021 at 11:32:24AM +0100, Michal Hocko wrote:
-> > On Fri 05-02-21 17:14:30, Muchun Song wrote:
-> > > On Fri, Feb 5, 2021 at 4:36 PM Michal Hocko <mhocko@suse.com> wrote:
-> > > >
-> > > > On Fri 05-02-21 14:27:19, Muchun Song wrote:
-> > > > > The get_mem_cgroup_from_page() is called under page lock, so the page
-> > > > > memcg cannot be changed under us.
-> > > >
-> > > > Where is the page lock enforced?
-> > > 
-> > > Because it is called from alloc_page_buffers(). This path is under
-> > > page lock.
-> > 
-> > I do not see any page lock enforecement there. There is not even a
-> > comment requiring that. Can we grow more users where this is not the
-> > case? There is no actual relation between alloc_page_buffers and
-> > get_mem_cgroup_from_page except that the former is the only _current_
-> > existing user. I would be careful to dictate locking based solely on
-> > that.
-> 
-> Since alloc_page_buffers() holds the page lock throughout the entire
-> time it uses the memcg, there is no actual reason for it to use RCU or
-> even acquire an additional reference on the css. We know it's pinned,
-> the charge pins it, and the page lock pins the charge. It can neither
-> move to a different cgroup nor be uncharged.
-> 
-> So what do you say we switch alloc_page_buffers() to page_memcg()?
-> 
-> And because that removes the last user of get_mem_cgroup_from_page(),
-> we can kill it off and worry about a good interface once a consumer
-> materializes for it.
+On Mon, 8 Feb 2021 at 01:40, Stuart Little <achirvasub@gmail.com> wrote:
+>
+> And for good measure: reverting that commit
+>
+> 20bf2b378729c4a0366a53e2018a0b70ace94bcd
+>
+> flagged by the bisect right on top of the current tree compiles fine.
+>
+> On Sun, Feb 07, 2021 at 07:26:01PM -0500, Stuart Little wrote:
+> > The result of the bisect on the issue reported in the previous message:
+> >
+> > --- cut ---
+> >
+> > 20bf2b378729c4a0366a53e2018a0b70ace94bcd is the first bad commit
+> > commit 20bf2b378729c4a0366a53e2018a0b70ace94bcd
+> > Author: Josh Poimboeuf <jpoimboe@redhat.com>
+> > Date:   Thu Jan 28 15:52:19 2021 -0600
+> >
+> >     x86/build: Disable CET instrumentation in the kernel
+> >
+> >     With retpolines disabled, some configurations of GCC, and specifica=
+lly
+> >     the GCC versions 9 and 10 in Ubuntu will add Intel CET instrumentat=
+ion
+> >     to the kernel by default. That breaks certain tracing scenarios by
+> >     adding a superfluous ENDBR64 instruction before the fentry call, fo=
+r
+> >     functions which can be called indirectly.
+> >
+> >     CET instrumentation isn't currently necessary in the kernel, as CET=
+ is
+> >     only supported in user space. Disable it unconditionally and move i=
+t
+> >     into the x86's Makefile as CET/CFI... enablement should be a per-ar=
+ch
+> >     decision anyway.
+> >
+> >      [ bp: Massage and extend commit message. ]
+> >
+> >     Fixes: 29be86d7f9cb ("kbuild: add -fcf-protection=3Dnone when using=
+ retpoline flags")
+> >     Reported-by: Nikolay Borisov <nborisov@suse.com>
+> >     Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
+> >     Signed-off-by: Borislav Petkov <bp@suse.de>
+> >     Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+> >     Tested-by: Nikolay Borisov <nborisov@suse.com>
+> >     Cc: <stable@vger.kernel.org>
+> >     Cc: Seth Forshee <seth.forshee@canonical.com>
+> >     Cc: Masahiro Yamada <yamada.masahiro@socionext.com>
+> >     Link: https://lkml.kernel.org/r/20210128215219.6kct3h2eiustncws@tre=
+ble
+> >
+> >  Makefile          | 6 ------
+> >  arch/x86/Makefile | 3 +++
+> >  2 files changed, 3 insertions(+), 6 deletions(-)
+> >
+> > --- end ---
+> >
+> > On Sun, Feb 07, 2021 at 06:31:22PM -0500, Stuart Little wrote:
+> > > I am trying to compile on an x86_64 host for a 32-bit system; my conf=
+ig is at
+> > >
+> > > https://termbin.com/v8jl
+> > >
+> > > I am getting numerous errors of the form
+> > >
+> > > ./include/linux/kasan-checks.h:17:1: error: =E2=80=98-mindirect-branc=
+h=E2=80=99 and =E2=80=98-fcf-protection=E2=80=99 are not compatible
 
-Yes, this makes much more sense than impose a weird locking rules to a
-more general purpose helper. Thanks!
--- 
-Michal Hocko
-SUSE Labs
+This is an empty static inline function...
+
+> > > and
+> > >
+> > > ./include/linux/kcsan-checks.h:143:6: error: =E2=80=98-mindirect-bran=
+ch=E2=80=99 and =E2=80=98-fcf-protection=E2=80=99 are not compatible
+
+... and so is this. I think these have very little to do with the
+problem that you reported. My guess is they show up because these are
+included very early.
+
+> > > and
+> > >
+> > > ./arch/x86/include/asm/arch_hweight.h:16:1: error: =E2=80=98-mindirec=
+t-branch=E2=80=99 and =E2=80=98-fcf-protection=E2=80=99 are not compatible
+> > >
+> > > (those include files indicated whom I should add to this list; apolog=
+ies if this reaches you in error).
+> > >
+> > > The full log of the build is at
+> > >
+> > > https://termbin.com/wbgs
+
+The commonality between all these errors is that they originate from
+compiling arch/x86/entry/vdso/vdso32/vclock_gettime.c.
+
+Is the build system adding special flags for vdso? In which case, it's
+probably just GCC complaining about every function definition (static
+inline or otherwise) for that TU if (for whatever reason) it's
+delaying the flag compatibility check until it inspects function
+attributes.
+
+And indeed, I can see:
+
+  RETPOLINE_VDSO_CFLAGS_GCC :=3D -mindirect-branch=3Dthunk-inline
+-mindirect-branch-register
+
+And taking any test source with even an empty function definition:
+
+  > gcc -mindirect-branch=3Dthunk-inline -fcf-protection test.c
+  > test.c: In function =E2=80=98main=E2=80=99:
+  > test.c:6:1: error: =E2=80=98-mindirect-branch=E2=80=99 and =E2=80=98-fc=
+f-protection=E2=80=99 are
+not compatible
+
+> > > 5.11.0-rc6 built fine last week on this same setup.
+
+Thanks,
+-- Marco
