@@ -2,91 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C383D314233
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 22:48:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76A6A314234
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 22:48:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237013AbhBHVru (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 16:47:50 -0500
-Received: from vmicros1.altlinux.org ([194.107.17.57]:39638 "EHLO
-        vmicros1.altlinux.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236320AbhBHV2b (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 16:28:31 -0500
-Received: from imap.altlinux.org (imap.altlinux.org [194.107.17.38])
-        by vmicros1.altlinux.org (Postfix) with ESMTP id 2849772C8B4;
-        Tue,  9 Feb 2021 00:27:46 +0300 (MSK)
-Received: from altlinux.org (sole.flsd.net [185.75.180.6])
-        by imap.altlinux.org (Postfix) with ESMTPSA id 05B704A474B;
-        Tue,  9 Feb 2021 00:27:46 +0300 (MSK)
-Date:   Tue, 9 Feb 2021 00:27:45 +0300
-From:   Vitaly Chikunov <vt@altlinux.org>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        Stefan Berger <stefanb@linux.ibm.com>,
-        Meng Yu <yumeng18@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Zaibo Xu <xuzaibo@huawei.com>, wangzhou1@hisilicon.com,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Daniele Alessandrelli <daniele.alessandrelli@linux.intel.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        "Khurana, Prabhjot" <prabhjot.khurana@intel.com>,
-        "Reshetova, Elena" <elena.reshetova@intel.com>,
-        Patrick Uiterwijk <patrick@puiterwijk.org>
-Subject: Re: [PATCH v7 4/7] crypto: add ecc curve and expose them
-Message-ID: <20210208212745.yi5shr4gkmdqy4xl@altlinux.org>
-References: <1611299395-675-1-git-send-email-yumeng18@huawei.com>
- <1611299395-675-5-git-send-email-yumeng18@huawei.com>
- <20210128050354.GA30874@gondor.apana.org.au>
- <CAMj1kXHvY9JveFyhtETALCH=AFGMGVbGGFMNDGc6ZVngEKbyDQ@mail.gmail.com>
- <ff63fffd-2d65-337f-d802-adcf4352fdc3@linux.ibm.com>
- <20210129030004.GA3463@gondor.apana.org.au>
- <20210208063541.ribifj3445djxfy5@altlinux.org>
- <CAMj1kXF18T11WQm6coYOO8yD7g=AxSBDP1QjWghWRVAp6dCJ8w@mail.gmail.com>
+        id S237046AbhBHVry (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 16:47:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36220 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236288AbhBHV3s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 16:29:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A648464E6F;
+        Mon,  8 Feb 2021 21:28:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612819747;
+        bh=BHP7iz8fCkGAAZDbGkYOw5wU43VUzE8VWkEzgL/I5DY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qL100s6mgIPyUjqubn6qZY/kMCsj1KEQZdirnkXADWmg0iVj7hfwIQ3IyHN4+oznZ
+         sKVq1m3+0ySh0eOSN1oIzlM8FbtudrJ3CE2DwvdNGhMPCh3lBCQg2N+kNymfamdpqT
+         XCPvnHR85Ke8iqXZ+XZTaKdCsMDq3TH8SWa1ajgh8qTJqRGpTRsgpXnc3gRC7gshD4
+         AXtH79cnaN9/ayJxdS78B84cPXS5Rtc2XoOXe9toc6RfKcnPk7iQVK9JPIdZqSYlwY
+         nUdImrFVP5JU69KSlGnPav89Q/NWipnWsKDgUR1IQOb4hc851nIVO3OzJ5l3fxoOYv
+         1GdeKPuy4OdKA==
+Date:   Mon, 8 Feb 2021 23:28:51 +0200
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org, Hagen Paul Pfeifer <hagen@jauu.net>,
+        Palmer Dabbelt <palmerdabbelt@google.com>
+Subject: Re: [PATCH v17 08/10] PM: hibernate: disable when there are active
+ secretmem users
+Message-ID: <20210208212851.GY242749@kernel.org>
+References: <20210208084920.2884-1-rppt@kernel.org>
+ <20210208084920.2884-9-rppt@kernel.org>
+ <YCEP/bmqm0DsvCYN@dhcp22.suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=koi8-r
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAMj1kXF18T11WQm6coYOO8yD7g=AxSBDP1QjWghWRVAp6dCJ8w@mail.gmail.com>
+In-Reply-To: <YCEP/bmqm0DsvCYN@dhcp22.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ard,
-
-On Mon, Feb 08, 2021 at 07:47:44AM +0100, Ard Biesheuvel wrote:
-> On Mon, 8 Feb 2021 at 07:37, Vitaly Chikunov <vt@altlinux.org> wrote:
-> >
-> > Herbert,
-> >
-> > On Fri, Jan 29, 2021 at 02:00:04PM +1100, Herbert Xu wrote:
-> > > On Thu, Jan 28, 2021 at 09:49:41PM -0500, Stefan Berger wrote:
-> > > >
-> > > > In my patch series I initially had registered the akciphers under the names
-> > > > ecc-nist-p192 and ecc-nist-p256 but now, in V4, joined them together as
-> > > > 'ecdsa'. This may be too generic for a name. Maybe it should be called
-> > > > ecsda-nist for the NIST family.
-> > >
-> > > What I'm proposing is specifying the curve in the name as well, i.e.,
-> > > ecdsa-nist-p192 instead of just ecdsa or ecdsa-nist.
-> > >
-> > > This simplifies the task of handling hardware that only supports a
-> > > subset of curves.
-> >
-> > So, if some implementation supports multiple curves (like EC-RDSA
-> > currently supports 5 curves), it should add 5 ecrdsa-{a,b,c,..}
-> > algorithms with actually the same top level implementation?
-> > Right?
-> >
+On Mon, Feb 08, 2021 at 11:18:37AM +0100, Michal Hocko wrote:
+> On Mon 08-02-21 10:49:18, Mike Rapoport wrote:
+> > From: Mike Rapoport <rppt@linux.ibm.com>
+> > 
+> > It is unsafe to allow saving of secretmem areas to the hibernation
+> > snapshot as they would be visible after the resume and this essentially
+> > will defeat the purpose of secret memory mappings.
+> > 
+> > Prevent hibernation whenever there are active secret memory users.
 > 
-> Yes. The only difference will be the init() function, which can be
-> used to set the TFM properties that define which curve is being used.
-> The other routines can be generic, and refer to those properties if
-> the behavior is curve-specific.
+> Does this feature need any special handling? As it is effectivelly
+> unevictable memory then it should behave the same as other mlock, ramfs
+> which should already disable hibernation as those cannot be swapped out,
+> no?
 
-Thanks. This may be good!
+As David already said, hibernation does not care about mlocked memory, so
+this feature requires a special handling.
 
-JFYI. There is possible non-hardware accelerated implementations
-for ECC algorithms which (perhaps) may never go to the kernel source,
-because they are generated code. For example
-  https://gitlab.com/nisec/ecckiila
-
+-- 
+Sincerely yours,
+Mike.
