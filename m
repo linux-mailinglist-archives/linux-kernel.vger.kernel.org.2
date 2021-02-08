@@ -2,159 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52C84312C36
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 09:50:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6C92312C43
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 09:52:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230156AbhBHIth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 03:49:37 -0500
-Received: from mailout2.w1.samsung.com ([210.118.77.12]:37743 "EHLO
-        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230363AbhBHIlC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 03:41:02 -0500
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20210208084015euoutp02dc1dea16d9327b89641656bc65377a0c~huQ79Ygwv2005820058euoutp02w
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 08:40:15 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20210208084015euoutp02dc1dea16d9327b89641656bc65377a0c~huQ79Ygwv2005820058euoutp02w
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1612773615;
-        bh=KNOrNrL+72nponq8j81Mwa76MDVPefX2wsyg2rqCJ3k=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=OzPfFMgeKTqGebk3pGIZDzUyPBmOD5j9Md0WMrpEIJS6aKALJ+3XDOdho+g0So/+H
-         hzxDA6ObV49y6yWSCqhqKj5PEnSTkXzaXyhopL4qTM8iQi4cqDX6dIqMyEmtAz0iPr
-         jenzLxlqE1RROIhRdQlDINIpLD+u6SVLcfzR5+HI=
-Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20210208084015eucas1p2a79133d1a5611ec48bf32385b99c0d4c~huQ7fykwT2617926179eucas1p2m;
-        Mon,  8 Feb 2021 08:40:15 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges3new.samsung.com (EUCPMTA) with SMTP id 53.0B.45488.EE8F0206; Mon,  8
-        Feb 2021 08:40:15 +0000 (GMT)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20210208084014eucas1p2f462f219c6e46c6eaec2ae88c03c9507~huQ65A-6w2626126261eucas1p2M;
-        Mon,  8 Feb 2021 08:40:14 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20210208084014eusmtrp29991457435cf7013f14c44f4b49aab41~huQ63_fnl0368203682eusmtrp2Q;
-        Mon,  8 Feb 2021 08:40:14 +0000 (GMT)
-X-AuditID: cbfec7f5-c77ff7000000b1b0-eb-6020f8eef31b
-Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
-        eusmgms1.samsung.com (EUCPMTA) with SMTP id 15.36.21957.EE8F0206; Mon,  8
-        Feb 2021 08:40:14 +0000 (GMT)
-Received: from [106.210.134.192] (unknown [106.210.134.192]) by
-        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20210208084013eusmtip2d038ff27818d7ead02c16b59f934df21~huQ5xo5Ko3214432144eusmtip20;
-        Mon,  8 Feb 2021 08:40:13 +0000 (GMT)
-Subject: Re: [PATCH v4 0/8] Make fw_devlink=on more forgiving
-To:     Saravana Kannan <saravanak@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Kevin Hilman <khilman@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Len Brown <len.brown@intel.com>, Len Brown <lenb@kernel.org>,
-        Pavel Machek <pavel@ucw.cz>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
+        id S230185AbhBHIvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 03:51:03 -0500
+Received: from muru.com ([72.249.23.125]:58752 "EHLO muru.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230398AbhBHImE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 03:42:04 -0500
+Received: from atomide.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id E962A80A3;
+        Mon,  8 Feb 2021 08:40:45 +0000 (UTC)
+Date:   Mon, 8 Feb 2021 10:40:26 +0200
+From:   Tony Lindgren <tony@atomide.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Arnd Bergmann <arnd@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
+        arm-soc <arm@kernel.org>, SoC Team <soc@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/SAMSUNG EXYNOS ARM ARCHITECTURES" 
+        <linux-samsung-soc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Sylwester Nawrocki <snawrocki@kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
         Frank Rowand <frowand.list@gmail.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-acpi@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        kernel-team@android.com
-From:   Marek Szyprowski <m.szyprowski@samsung.com>
-Message-ID: <7b486072-453d-a344-bdfc-dec58a35c8f5@samsung.com>
-Date:   Mon, 8 Feb 2021 09:40:13 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0)
-        Gecko/20100101 Thunderbird/78.7.0
+        Rob Herring <robh+dt@kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Maxime Ripard <mripard@kernel.org>
+Subject: Re: [GIT PULL 2/3] ARM: dts: samsung: DTS for v5.12
+Message-ID: <YCD4+pb4MfuA1b9e@atomide.com>
+References: <20210125191240.11278-1-krzk@kernel.org>
+ <20210125191240.11278-3-krzk@kernel.org>
+ <20210206134531.l5vpzlmev4v3f3uo@kozik-lap>
+ <CAK8P3a0Kgn9PTHjsU7MbJPC8vatvb9KYJJKWxrx7zQzTNgK10g@mail.gmail.com>
+ <CAMuHMdWZ8QmiQCmiW9AvCpviNZeuaxThSo_4Xb2DGEs9hMTKMQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210205222644.2357303-1-saravanak@google.com>
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprCJsWRmVeSWpSXmKPExsWy7djP87rvfygkGCxtYLR4cqCd0WL+kXOs
-        FjPf/GezeHZrL5NF8+L1bBY7totYPN38mMli1hSg0M6Hb9kslu/rZ7T42HOP1WJh2xIWi8u7
-        5rBZfO49wmixc85JVouLp1wt7p46ymYx98tUZovWvUfYLboO/WWz+HdtI4vF5k1AseNrwx3E
-        Pbbt3sbq8f5GK7vHzll32T0WbCr1WLznJZPHplWdbB53ru1h83h37hy7x6HDHYwe++euYfdY
-        3DeZ1WPF6u/sHp83yQXwRnHZpKTmZJalFunbJXBlLG7+xFJwk7Pi8rqjjA2MT9i7GDk5JARM
-        JBad28rUxcjFISSwglHiycFF7BDOF0aJ7tULmCGcz4wSD37+ZINpOdH1lREisZxRYs7Jq1At
-        Hxkl+k83MoNUCQvYSjSdXgLWLiKwhUVi4641YFuYBT4Bzer+xgpSxSZgKNH1tgtoLgcHr4Cd
-        xLYVUSBhFgEVibW/pzGC2KICSRLLb/5hArF5BQQlTs58wgJicwrYSBx+8g5sGbOAvMT2t3Og
-        bHGJW0/mg+2SEOjikrhypo8F4m4Xie+7DkLZwhKvjm+BBoGMxP+dMA3NjBIPz61lh3B6GCUu
-        N81ghKiylrhz7hfYpcwCmhLrd+lDhB0lvvZOYQYJSwjwSdx4KwhxBJ/EpG3TocK8Eh1tQhDV
-        ahKzjq+DW3vwwiXmCYxKs5C8NgvJO7OQvDMLYe8CRpZVjOKppcW56anFxnmp5XrFibnFpXnp
-        esn5uZsYgQn39L/jX3cwrnj1Ue8QIxMH4yFGCQ5mJRHewE65BCHelMTKqtSi/Pii0pzU4kOM
-        0hwsSuK8u7auiRcSSE8sSc1OTS1ILYLJMnFwSjUwxb3meeT1KbQ3aGPey+lt6168m+SQtHL7
-        DF2+RO3vJgtDFy7u6Zy+SGUXf0Msm0lmwpZ7jyaycn7yOp5kIvl9O4vjTNUY1dvcc2I07q+V
-        7vSwXdrG/VqtQNQsTStifcfdubeEMgv6Z+35Vt+afdWi1nPZU+Hbmt5LNkd+tZ/X/HXiKo7g
-        98/enOM6otK4q/zgboMzx/c3mbCkSew8/onX5fy6L1fqjvyR/Ht0jf/iT5LPHC3mXw9eb3JB
-        tMxjrkOuxwGVzVtL3nBHLM16O//rJSe7kny5K9Z5gWkR33KK1xYWqM1lYgp1feqceiPC9SGX
-        o+B+qR+t3ukGuqurfT70micfPLtI/3DJV4l3cx4GK7EUZyQaajEXFScCABW41o0nBAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrGKsWRmVeSWpSXmKPExsVy+t/xe7rvfigkGMxaL2zx5EA7o8X8I+dY
-        LWa++c9m8ezWXiaL5sXr2Sx2bBexeLr5MZPFrClAoZ0P37JZLN/Xz2jxseceq8XCtiUsFpd3
-        zWGz+Nx7hNFi55yTrBYXT7la3D11lM1i7pepzBate4+wW3Qd+stm8e/aRhaLzZuAYsfXhjuI
-        e2zbvY3V4/2NVnaPnbPusnss2FTqsXjPSyaPTas62TzuXNvD5vHu3Dl2j0OHOxg99s9dw+6x
-        uG8yq8eK1d/ZPT5vkgvgjdKzKcovLUlVyMgvLrFVija0MNIztLTQMzKx1DM0No+1MjJV0rez
-        SUnNySxLLdK3S9DLWNz8iaXgJmfF5XVHGRsYn7B3MXJySAiYSJzo+srYxcjFISSwlFFi+/om
-        FoiEjMTJaQ2sELawxJ9rXWwQRe8ZJRbens4GkhAWsJVoOr2EGSQhIrCNRWLylW0sIA6zwCdG
-        iWW7ITJCAv2MEneOzQObxSZgKNH1FmQWBwevgJ3EthVRIGEWARWJtb+nMYLYogJJEo9v3WcC
-        sXkFBCVOznwCdhKngI3E4SfvmEFsZgEziXmbH0LZ8hLb386BssUlbj2ZzzSBUWgWkvZZSFpm
-        IWmZhaRlASPLKkaR1NLi3PTcYkO94sTc4tK8dL3k/NxNjMAEs+3Yz807GOe9+qh3iJGJg/EQ
-        owQHs5IIb2CnXIIQb0piZVVqUX58UWlOavEhRlOgfyYyS4km5wNTXF5JvKGZgamhiZmlgaml
-        mbGSOO/WuWvihQTSE0tSs1NTC1KLYPqYODilGpg4aq5ncM+YvSbIvNmA+W7ROnfPD1tkfmhe
-        FZVbXN7r+aG1vE/Walt21EWRvNdbH0w70S30UFhq/7OAK4vnPy3ravO2POSq+b7LPObRkg/y
-        acd//9zj/3ySyKkrNTdTw+SXuUifm7pqkZ6BlN/qtqCbx51dUqzdPiz86zvdwlSBqazLWv3V
-        9uOmRx8ybErReHX2jgOPTvmlXXsyTm1S+mx+6/yGSxONP1ssDlx57PCv58WZFlsuJ1quezrl
-        6e7j13c1eE/c5LH8RZuRZrxC6Zp38Uk3IkP3LF+xLZk7z7mab04Iq1vWC9WyfcYdNmc02B+p
-        PsrVavdSZ0vZsPbV4v1+B+ff3xDxz7jrderN91dWK7EUZyQaajEXFScCANPuL3K5AwAA
-X-CMS-MailID: 20210208084014eucas1p2f462f219c6e46c6eaec2ae88c03c9507
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20210205222651eucas1p28ef87073dea33c1c5224c14aa203bec5
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20210205222651eucas1p28ef87073dea33c1c5224c14aa203bec5
-References: <CGME20210205222651eucas1p28ef87073dea33c1c5224c14aa203bec5@eucas1p2.samsung.com>
-        <20210205222644.2357303-1-saravanak@google.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdWZ8QmiQCmiW9AvCpviNZeuaxThSo_4Xb2DGEs9hMTKMQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Saravana,
+* Geert Uytterhoeven <geert@linux-m68k.org> [210206 19:48]:
+> On Sat, Feb 6, 2021 at 3:36 PM Arnd Bergmann <arnd@kernel.org> wrote:
+> > What do others think about this? Should we generally assume
+> > that breaking old kernels with new dtbs is acceptable, or should
+> > we try to avoid it if possible, the same way we try to avoid
+> > breaking new kernels with old dtbs? Should this be a platform
+> > specific policy or should we try to handle all platforms the same
+> > way?
+> 
+> For Renesas SoCs, we typically only consider compatibility of new
+> kernels with old DTBs, not the other way around.
+> However, most DTB updates are due to new hardware support, so using the
+> new DTB with an old kernel usually just means no newly documented
+> hardware, or new feature, is being used by the old kernel.
+> 
+> In case there was a real issue fixed, and using the new DTB with the old
+> kernel would cause a regression, and we're aware of it, we do make sure
+> the DTS update is postponed until the corresponding driver update has
+> hit upstream.
 
-On 05.02.2021 23:26, Saravana Kannan wrote:
-> There are a lot of devices/drivers where they never have a struct device
-> created for them or the driver initializes the hardware without ever
-> binding to the struct device.
->
-> This series is intended to avoid any boot regressions due to such
-> devices/drivers when fw_devlink=on and also address the handling of
-> optional suppliers.
->
-> Patch 1 and 2 addresses the issue of firmware nodes that look like
-> they'll have struct devices created for them, but will never actually
-> have struct devices added for them. For example, DT nodes with a
-> compatible property that don't have devices added for them.
->
-> Patch 3 and 4 allow for handling optional DT bindings.
->
-> Patch 5 sets up a generic API to handle drivers that never bind with
-> their devices.
->
-> Patch 6 through 8 update different frameworks to use the new API.
+Yeah agreed. Adding new devicetree properties should not be a problem
+for device drivers.
 
-This patchset fixes probing issue observed on various Exynos based 
-boards even with commit c09a3e6c97f0 ("soc: samsung: pm_domains: Convert 
-to regular platform driver") reverted. Thanks!
+For renamed devicetree properties, the driver won't be aware of them
+if a newer dtb is used. The only thing the driver can possibly do at
+this point is maybe warn about some missing old property and bail out.
 
-Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
+Making sure the driver changes are in place first helps a bit..
+But naturally fixing the driver in advance won't help booting kernels
+before the driver changes with a newer dtb :)
 
-Best regards
+What helps though is to make sure git bisect works for building and
+booting already at -rc1 kernel to make debugging the issue easy. As
+-rc1 is used typically as the merge base the problem causing branches
+can be tested separately that way.
 
--- 
-Marek Szyprowski, PhD
-Samsung R&D Institute Poland
+Regards,
 
+Tony
