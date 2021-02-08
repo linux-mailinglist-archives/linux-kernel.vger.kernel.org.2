@@ -2,124 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 215AB313DC2
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 19:41:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85D5A313DB8
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 19:40:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235702AbhBHSkP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 13:40:15 -0500
-Received: from wout3-smtp.messagingengine.com ([64.147.123.19]:50263 "EHLO
-        wout3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234472AbhBHQeB (ORCPT
+        id S234934AbhBHSje (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 13:39:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41324 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229545AbhBHQd4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 11:34:01 -0500
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.west.internal (Postfix) with ESMTP id 66E82C57;
-        Mon,  8 Feb 2021 11:33:12 -0500 (EST)
-Received: from imap1 ([10.202.2.51])
-  by compute6.internal (MEProxy); Mon, 08 Feb 2021 11:33:12 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
-        mime-version:message-id:in-reply-to:references:date:from:to:cc
-        :subject:content-type; s=fm1; bh=n7mEeE03QkrJQx6plBZg3N2RUe67uZA
-        xAJrUkBEULTE=; b=pCNIuO2eYLdPoPWTwWLqMJgnevbmVKkyEM66knJsEtvY8yo
-        mzN7Eg7o4Y4J1Dmo4yV6APz3Y3aWfBi636O9yNQwcTCUuqzITKw4ZwkqDYAeya2Q
-        5dD/ERlASH5j4U+vPRFOKNmMMTWx/lSTcV98OItT4E7gkIiRVEUWKt0Eft8dE40N
-        XDM6wJf7eNf8ZWT7a+MG6R6ej0cUHRxCKGncK2LE/F0vFutG1Xp8jZGob0bLpRrv
-        VfVXfUEq4I9VoZYc96hJO4ymZQOiefc0Llt95Hvci1xbXss1U6jD/L0Yh9h1gRJ1
-        LW9Q486nl40w4oOgXz/JDhFWALqM/jWzPswKEVA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=n7mEeE
-        03QkrJQx6plBZg3N2RUe67uZAxAJrUkBEULTE=; b=uUsLqvgTgtqYnqGzTWQa1c
-        mJbLoV0B/2DtJrMeq2y5/fKXVYr14PCjUkqe+5+hj4Nev3VcV3i1K5QkJ7+DO/Ui
-        e8jyL1dxs3C4khUDROC7oNJEU0BCf8zWRLBO+PD64kuPg+rMZ2TvW8j+1JOxu5zg
-        qsv4guk2crBginhG0+ApeZk1AXxUGbjNHjgqHws3zf960M49fu/4NBtAqNiiv/nT
-        gsGE+jK7IjqIUtbd8SdH4HNhq1qGhZXKYJh+xMa4YpYSlmE7pIfv89HLQQ2CafQ6
-        iyxZsaSstPk9+LhETxAzLMYEfR0Ft5ssHF2xdKqsT13k8vdBOCSrwAFyTYoPFHVw
-        ==
-X-ME-Sender: <xms:xmchYM6Y6HjUHbTRuzTDnwaIytR43ueI86rQO8fGl_yvpbBuh5LSOw>
-    <xme:xmchYN4_MD5j0izwse942nndYBmA0q1FxFMTDs1zhZWTGATccAzKp8w8hzSYy7CV8
-    epqZwwN6GMLhPlS2Ag>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrheefgdeklecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvufgtsehttdertderreejnecuhfhrohhmpedflfhirgig
-    uhhnucgjrghnghdfuceojhhirgiguhhnrdihrghnghesfhhlhihgohgrthdrtghomheqne
-    cuggftrfgrthhtvghrnhepgefgfeeujeffhedufeehleejleffjefhjedvtedtvdeftdeg
-    ueevjeelleevgfefnecuffhomhgrihhnpehtqdgvshdqthdrhhhupdhgvghnvgigrdhssg
-    enucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehjihgr
-    gihunhdrhigrnhhgsehflhihghhorghtrdgtohhm
-X-ME-Proxy: <xmx:xmchYLf99C_TEcgfTEzCZojSBzlx-hdQw93nuXpD1M2pFl8vuoD12w>
-    <xmx:xmchYBLd2WJgwxUOKBB5HgwIjqAqZkpkpDAfGG5GRfeGfknI24GGDQ>
-    <xmx:xmchYAIRPXhWze1m0d9YKmD0YY2wk7twxoVbvlklbCFOeiCZFXmCtw>
-    <xmx:yGchYHV8hN3JiArM_sTApbXmIWuefBc9TwTu695A05zqoT3u5_hV_Q>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id E01B5130005D; Mon,  8 Feb 2021 11:33:10 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-93-gef6c4048e6-fm-20210128.002-gef6c4048
-Mime-Version: 1.0
-Message-Id: <76dbc72a-32fd-4de3-bc36-3eb0d0eebb44@www.fastmail.com>
-In-Reply-To: <1612790085-14436-1-git-send-email-yangtiezhu@loongson.cn>
-References: <1612790085-14436-1-git-send-email-yangtiezhu@loongson.cn>
-Date:   Tue, 09 Feb 2021 00:32:49 +0800
-From:   "Jiaxun Yang" <jiaxun.yang@flygoat.com>
-To:     "Tiezhu Yang" <yangtiezhu@loongson.cn>,
-        "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>
-Cc:     "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        linux-kernel@vger.kernel.org, "Xuefeng Li" <lixuefeng@loongson.cn>
-Subject: =?UTF-8?Q?Re:_[PATCH]_MIPS:_Make_check_condition_for_SDBBP_consistent_wi?=
- =?UTF-8?Q?th_EJTAG_spec?=
-Content-Type: text/plain
+        Mon, 8 Feb 2021 11:33:56 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E453C06178A
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 08:33:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=hGiWVAMkh3J18K54lFBdPSUwqfZTeBYTlisCRNS4agk=; b=rHXX9igingjzDgZbeeQUVzMZB0
+        aTGuIE7EmHevBvAPn6Ztim0rfZtLYcrAYU0awFeim99wVDKdwjNZ7Ku0PEowwMXhki+BnMa+d7k1J
+        GVp5CSVzMCXrXu/dXIqhPT57/N0PVJqdN0E0WhRa5gpFYCZq2TVid7TezaFD7utwk/cEhcJztIwVX
+        2RUYXjrFI4n3A7azGVynM4Yd06WVasf6W02BXHNN3UCP/w+38qDVmR+joyVJXcOQz5a77ascYc5J2
+        Fz5qiXGSAW4y3y6NZLV4wzoYiH3NrMWOwtApd6XlrUs09UVUrkhkWqMx4QJZrBnclJ8HPixRIX2P2
+        5t6nRA2Q==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1l99TJ-0000RD-1A; Mon, 08 Feb 2021 16:33:09 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 22F16301324;
+        Mon,  8 Feb 2021 17:33:07 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 072512018B25B; Mon,  8 Feb 2021 17:33:07 +0100 (CET)
+Date:   Mon, 8 Feb 2021 17:33:06 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Andi Kleen <ak@linux.intel.com>
+Cc:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        linux-kernel@vger.kernel.org,
+        Sean Christopherson <sean.j.christopherson@intel.com>
+Subject: Re: [RFC v1 05/26] x86/traps: Add #VE support for TDX guest
+Message-ID: <YCFnwnzgHXNGKW+M@hirez.programming.kicks-ass.net>
+References: <cover.1612563142.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <48a702f536ccf953eee5778023ed6d1a452f6dcf.1612563142.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <YCEQiDNSHTGBXBcj@hirez.programming.kicks-ass.net>
+ <20210208162301.GA365765@tassilo.jf.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210208162301.GA365765@tassilo.jf.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On Mon, Feb 8, 2021, at 9:14 PM, Tiezhu Yang wrote:
-> According to MIPS EJTAG Specification [1], a Debug Breakpoint
-> exception occurs when an SDBBP instruction is executed, the
-> CP0_DEBUG bit DBp indicates that a Debug Breakpoint exception
-> occurred, just check bit DBp for SDBBP is more accurate.
+On Mon, Feb 08, 2021 at 08:23:01AM -0800, Andi Kleen wrote:
+> > Which is supposedly then set up to avoid #VE during the syscall gap,
+> > yes? Which then results in #VE not having to be IST.
 > 
-> [1] http://www.t-es-t.hu/download/mips/md00047f.pdf
+> Yes that is currently true because all memory is pre-accepted.
 > 
-> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-> ---
->  arch/mips/kernel/genex.S | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+> If we ever do lazy accept we would need to make sure the memory accessed in
+> the syscall gap is already accepted, or move over to an IST.
+
+I think we're going to mandate the entry text/data will have to be
+pre-accepted to avoid IST. ISTs really are crap.
+
+> > > +#ifdef CONFIG_INTEL_TDX_GUEST
+> > > +DEFINE_IDTENTRY(exc_virtualization_exception)
+> > > +{
+> > > +	struct ve_info ve;
+> > > +	int ret;
+> > > +
+> > > +	RCU_LOCKDEP_WARN(!rcu_is_watching(), "entry code didn't wake RCU");
+> > > +
+> > > +	/* Consume #VE info before re-enabling interrupts */
+> > 
+> > So what happens if NMI happens here, and triggers a nested #VE ?
 > 
-> diff --git a/arch/mips/kernel/genex.S b/arch/mips/kernel/genex.S
-> index bcce32a..6336826 100644
-> --- a/arch/mips/kernel/genex.S
-> +++ b/arch/mips/kernel/genex.S
-> @@ -349,8 +349,8 @@ NESTED(ejtag_debug_handler, PT_SIZE, sp)
->  	MTC0	k0, CP0_DESAVE
->  	mfc0	k0, CP0_DEBUG
->  
-> -	sll	k0, k0, 30	# Check for SDBBP.
-> -	bgez	k0, ejtag_return
-> +	andi	k0, k0, 0x2	# Check for SDBBP.
-> +	beqz	k0, ejtag_return
-
-You'd better define a marco for it to prevent further confusion.
-
-Btw I'm curious about how do kernel receive EJTAG exception?
-In my understanding there are only two possible EJTAG exception vectors,
-0xbfc00480 and DSEG one. Both of them are reachable by kernel.
-How do this piece of code work?
-
-Thanks.
-
-- Jiaxun
-
->  
->  #ifdef CONFIG_SMP
->  1:	PTR_LA	k0, ejtag_debug_buffer_spinlock
-> -- 
-> 2.1.0
+> Yes that's a gap. We should probably bail out and reexecute the original
+> instruction. The VE handler would need to set a flag for that.
 > 
->
+> Or alternatively the NMI always gets the VE information and puts
+> it on some internal stack, but that would seem clunkier.
 
--- 
-- Jiaxun
+The same is possible with MCE and #DB I imagine.
