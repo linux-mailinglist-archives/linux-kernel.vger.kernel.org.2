@@ -2,95 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A201D3143E1
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 00:36:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B9FD3143EA
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 00:36:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230413AbhBHXfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 18:35:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47100 "EHLO
+        id S231178AbhBHXgj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 18:36:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229545AbhBHXfN (ORCPT
+        with ESMTP id S229910AbhBHXgO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 18:35:13 -0500
-Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F061C06178C
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 15:34:27 -0800 (PST)
-Received: by mail-io1-xd35.google.com with SMTP id n14so16934561iog.3
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 15:34:27 -0800 (PST)
+        Mon, 8 Feb 2021 18:36:14 -0500
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D473C061786
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 15:35:34 -0800 (PST)
+Received: by mail-yb1-xb2d.google.com with SMTP id m76so16387859ybf.0
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 15:35:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=V7Ob39M3ldXlW/GI0Jg+VGMohhMLQXcOc9XaUahvpys=;
-        b=C5viCxca4UjAdE93kvt0OcC3dUAaVccRiqZyAihDKopyqCRgFiqNbeSWb/YAgMFyqG
-         3l477/lC1kuKWYo/FjXtzvzaDEHqSc1gCWcftkybq61C4K8+emNWFY5T16Qc6lgBdaTM
-         MWYFz5+yqTBXJ+Ygjd1BCd46ck+x/ZYvRqRaM=
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8+WfYcK1+ZV8R23zYWi1zlMlBGGvpKMkA8UnDsJm1Oc=;
+        b=aq0w3Rjj+uR7KU5tlbnt8SRF9CFdEuy0AjgqgYqNKMir3fsFHUIThfxfnu6aqGB7eT
+         vs+u57fNuc/O7ZRw5aKGWiem1cEzcuXK+XxIdxgfxTBXHmTIQp3KZHyvYv3tdTODaAav
+         QoqPkDQGqZRxy0sKbdCT1rSSH9CVQWQGCrrH6bCFRUureuu+/e1sQxNUJJLoQ7V7oq1C
+         /4WafwSXw2fU1fJ/QJAqBNP3vkfOAwZW/LHSpQi4qMfFU4IM0iQKD94nDyXeN9KFJ9pM
+         RSovOiSyfkjD/d67bVKM0uYGDgggNUXN0564+kGokV4Qpic30xP48LDt4BmbI0KgTAsy
+         trcw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=V7Ob39M3ldXlW/GI0Jg+VGMohhMLQXcOc9XaUahvpys=;
-        b=PpYOTeKWswpJkrFvEEdvBZr6XmPSldVLqnIm0PdYKCa9lUOLyM3UpXGroMjxbPcsy3
-         ay4RA3dB0oXIR1YpQ8vBiELa9aFucdJecvtfP1R6XVfxHQrRB+iTG0x2KJ+HNKJ+/SQQ
-         r8+jfP6HaztMHJdu5q2gCNdZVyOFaOC3I+oIulKdmCaYUR+3yjYV6/vIvNILVKXOXnAg
-         UiURU+PA2T0LmMq1VEBq2FvOTU+edu7OU3vlir2iRoTkNlnZ5T0GfIND81ultVl1w+Ff
-         VbG2/UWnybOZYBYaKZDBPZqrdPb75UD5NobRdWMmmwnyV9DjIYvgpfqV+jJm7NgMoTHB
-         SxFw==
-X-Gm-Message-State: AOAM5300CcSnM/ISeYG86CIxWlcDX4komS9I6C9Sxq3RA83eGHcNOVRe
-        WtCXN5JT3v45e5UXyDADPXvxfA==
-X-Google-Smtp-Source: ABdhPJyDujO1fHiggWVRXAcgc6GBD/zoOQgp/rrkApaDJuyUftIAbAr/cdeBOXHbp6PfLAO4AHFJrg==
-X-Received: by 2002:a02:9083:: with SMTP id x3mr16989646jaf.17.1612827267102;
-        Mon, 08 Feb 2021 15:34:27 -0800 (PST)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id o15sm9552363ilt.68.2021.02.08.15.34.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Feb 2021 15:34:26 -0800 (PST)
-Subject: Re: [PATCH] selftests/x86/ldt_gdt: remove unneeded semicolon
-To:     Yang Li <yang.lee@linux.alibaba.com>, shuah@kernel.org
-Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <1612683730-104353-1-git-send-email-yang.lee@linux.alibaba.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <ba8e276a-7e80-9315-2f70-772aabe326db@linuxfoundation.org>
-Date:   Mon, 8 Feb 2021 16:34:26 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8+WfYcK1+ZV8R23zYWi1zlMlBGGvpKMkA8UnDsJm1Oc=;
+        b=V0d/SsOAyU48ZeKSF2TNae3lGbs6tsJ06Aip06MmaBpl+UETLm2JFHs0L05+5b3O+8
+         tdFJz78GylDtypazYssxTqSHF6GSqXlvnEtp4wC1jJiRYpx4HGL0Y4ouidJ067VHda7l
+         5BZPI/Ps9PY1B9EQSlgXLEPIKIAZvu7zsM4kzmC6bnpODPy5WeNBK8c6HL9ae4clqEJU
+         Lr314r7Y+QLHhShl5YYnooHaJS8E30BXyx2OzXBXLYHV59kzfc+G4s2YIHB9htyH2d85
+         UnH/nSgl1Q4WcpdXUM4IqE+2PK94XdSWfzoNL6PhPPiKTgdoTIkOEcPiIZLVjd5susNu
+         3huQ==
+X-Gm-Message-State: AOAM5302hfY48n8cf7pg8WFgjYjt3jr2ZqTV76nC1moj2Z87tgYUJoOX
+        dmLEG4fsnGbCOmZ3FCIbSGPtqH+fvl+icjTxGQ82rw==
+X-Google-Smtp-Source: ABdhPJxvfXuvovy4qYPt4qo+kIvhWQQydMERIf2YxT9yDyTigYeTY9JT7AKMlyJ6w7jOmvoinijXVeHNTqdDkwzfQ44=
+X-Received: by 2002:a25:aa43:: with SMTP id s61mr2791520ybi.32.1612827333706;
+ Mon, 08 Feb 2021 15:35:33 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <1612683730-104353-1-git-send-email-yang.lee@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210205222644.2357303-1-saravanak@google.com>
+ <20210205222644.2357303-9-saravanak@google.com> <CAL_JsqJc8XRAL5Bj5LpH0M528K7ZL=wSqt8t=ibwjWutjCgB-Q@mail.gmail.com>
+In-Reply-To: <CAL_JsqJc8XRAL5Bj5LpH0M528K7ZL=wSqt8t=ibwjWutjCgB-Q@mail.gmail.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Mon, 8 Feb 2021 15:34:57 -0800
+Message-ID: <CAGETcx9Ynzqx5vo+mqi9EGr+bVs8MBzO5sHhZiT+sB8Q_+7dPA@mail.gmail.com>
+Subject: Re: [PATCH v4 8/8] clk: Mark fwnodes when their clock provider is added/removed
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Kevin Hilman <khilman@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Len Brown <len.brown@intel.com>, Len Brown <lenb@kernel.org>,
+        Pavel Machek <pavel@ucw.cz>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "open list:THERMAL" <linux-pm@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "open list:ACPI FOR ARM64 (ACPI/arm64)" <linux-acpi@vger.kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Android Kernel Team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/7/21 12:42 AM, Yang Li wrote:
-> Eliminate the following coccicheck warning:
-> ./tools/testing/selftests/x86/ldt_gdt.c:610:2-3: Unneeded semicolon
-> 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
-> ---
->   tools/testing/selftests/x86/ldt_gdt.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/tools/testing/selftests/x86/ldt_gdt.c b/tools/testing/selftests/x86/ldt_gdt.c
-> index 1aef72d..3a29346 100644
-> --- a/tools/testing/selftests/x86/ldt_gdt.c
-> +++ b/tools/testing/selftests/x86/ldt_gdt.c
-> @@ -607,7 +607,7 @@ static void do_multicpu_tests(void)
->   
->   		failures++;
->   		asm volatile ("mov %0, %%ss" : : "rm" (orig_ss));
-> -	};
-> +	}
->   
->   	ftx = 100;  /* Kill the thread. */
->   	syscall(SYS_futex, &ftx, FUTEX_WAKE, 0, NULL, NULL, 0);
-> 
+On Mon, Feb 8, 2021 at 7:39 AM Rob Herring <robh+dt@kernel.org> wrote:
+>
+> On Fri, Feb 5, 2021 at 4:27 PM Saravana Kannan <saravanak@google.com> wrote:
+> >
+> > This allows fw_devlink to recognize clock provider drivers that don't
+> > use the device-driver model to initialize the device. fw_devlink will
+> > use this information to make sure consumers of such clock providers
+> > aren't indefinitely blocked from probing, waiting for the power domain
+> > device to appear and bind to a driver.
+>
+> Don't we have cases that are a mixture? IOW, a subset of the clock
+> provider is initialized early, then the full driver takes over. You'd
+> want consumers that are not a driver to succeed, but drivers to defer
+> until the full driver is up.
 
-Thank you. Now applied to linux-kselftest next for 5.12-rc1
+You probably just made a typo, but to clarify, this is about ignoring
+suppliers that never bind. So, in your case the clock device is the
+supplier.
 
-thanks,
--- Shuah
+To answer your question, consumer devices added after the full
+supplier driver takes over will still have device links created to the
+supplier clock device. But consumers added before the full driver
+takes over won't. So, nothing is worse off with fw_devlink=on and we
+get way more dependency tracking (device links) created than what we
+have today.
+
+-Saravana
