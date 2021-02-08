@@ -2,68 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95162313DD9
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 19:43:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 63A15313DDF
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 19:43:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235765AbhBHSmf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 13:42:35 -0500
-Received: from mail-oi1-f181.google.com ([209.85.167.181]:46606 "EHLO
-        mail-oi1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234522AbhBHQlt (ORCPT
+        id S235883AbhBHSnO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 13:43:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43306 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234602AbhBHQnK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 11:41:49 -0500
-Received: by mail-oi1-f181.google.com with SMTP id k25so16204451oik.13;
-        Mon, 08 Feb 2021 08:41:34 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ThLQib0vbE0ELv0+iOCjIn3TgGjZaF25CvVRr6GIWa8=;
-        b=MsgG2YV7HrFj8EsRzkJ2sa07SikmjKpmJPYRmhybNP7DUV84E5KzYbKfFnGZ+V+IdT
-         iPkYSPoTaXP/pDfjkqcbh/XSoFnnJ21Gdk5MDOUN7XMkX5zFM6gyHEy0HbyTd/ZjWYGy
-         D0edG/mbMCE+ofGMguX/mvVAhlKolTiuquEyWh9jTbXDv247O7yzxDdr7g1IUB4iQQUw
-         J8BeG6Q6ev72MnlTielHkjJX6GaRLkfpa2HVd9OOil5Is6ylf3/h/BENcwggq0pPz0pg
-         n4ZC+mxBzMueS6EQ9UTtdALa7EbGAAZ0ihpbS0XQUOFSzz0sZATceetSEXFnAkO/m0hu
-         qnkg==
-X-Gm-Message-State: AOAM5325b8Cbc8zkPdt2nIyGblt0lITahGt/rjst11mZwUtNlEmM/ggo
-        hdv7nHozYzSrYWzYgz31/Q4oU1gmjf1qdBbVw4k=
-X-Google-Smtp-Source: ABdhPJwtL0j0/DDGI/WQfni1MRlfErfRVstv1DaehZlL1UKUwiMqb8f+NvdoWRvTQSjsGi2g31g2A9hlEmgrSVMsA8Q=
-X-Received: by 2002:aca:d14:: with SMTP id 20mr12267922oin.157.1612802469189;
- Mon, 08 Feb 2021 08:41:09 -0800 (PST)
-MIME-Version: 1.0
-References: <b2393aa6-747f-56e0-707a-96bfc54d9a0f@linuxfoundation.org>
-In-Reply-To: <b2393aa6-747f-56e0-707a-96bfc54d9a0f@linuxfoundation.org>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Mon, 8 Feb 2021 17:40:58 +0100
-Message-ID: <CAJZ5v0ivhnNs=FdW8hkchTxWHJGZ=M28az1kvU3M5Y4XLXAe3Q@mail.gmail.com>
-Subject: Re: [GIT PULL] cpupower update for Linux 5.12-rc1
-To:     Shuah Khan <skhan@linuxfoundation.org>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Thomas Renninger <trenn@suse.com>,
-        Linux PM <linux-pm@vger.kernel.org>,
+        Mon, 8 Feb 2021 11:43:10 -0500
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9C12C061788;
+        Mon,  8 Feb 2021 08:42:29 -0800 (PST)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: ezequiel)
+        with ESMTPSA id D105E1F450D7
+Message-ID: <56cd99bbf526b43507579b5775bac5f885319866.camel@collabora.com>
+Subject: Re: linux-next: build warning after merge of the v4l-dvb tree
+From:   Ezequiel Garcia <ezequiel@collabora.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Nathan Fontenot <nathan.fontenot@amd.com>, rrichter@amd.com,
-        Ivan Babrou <ivan@cloudflare.com>
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Date:   Mon, 08 Feb 2021 13:42:21 -0300
+In-Reply-To: <20210208233716.16d962ad@canb.auug.org.au>
+References: <20210208233716.16d962ad@canb.auug.org.au>
+Organization: Collabora
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.2-1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 8, 2021 at 5:11 PM Shuah Khan <skhan@linuxfoundation.org> wrote:
->
-> Hi Rafael,
->
-> Please pull the following cpupower update for Linux 5.12-rc1
->
-> This cpupower update for Linux 5.12-rc1 consists of:
->
-> - Updates to the cpupower command to add support for AMD family 0x19
->    and cleanup the code to remove many of the family checks to make
->    future family updates easier.
->
-> - Adding Makefile dependencies for install targets to allow building
->    cpupower in parallel rather than serially.
->
-> diff is attached.
+Hi Stephen,
 
-Pulled, thanks!
+On Mon, 2021-02-08 at 23:37 +1100, Stephen Rothwell wrote:
+> Hi all,
+> 
+> After merging the v4l-dvb tree, today's linux-next build (htmldocs)
+> produced this warning:
+> 
+> include/media/v4l2-async.h:178: warning: expecting prototype for v4l2_async_notifier_add_fwnode_subdev(). Prototype was for
+> __v4l2_async_notifier_add_fwnode_subdev() instead
+> include/media/v4l2-async.h:207: warning: expecting prototype for v4l2_async_notifier_add_fwnode_remote_subdev(). Prototype was for
+> __v4l2_async_notifier_add_fwnode_remote_subdev() instead
+> include/media/v4l2-async.h:230: warning: expecting prototype for v4l2_async_notifier_add_i2c_subdev(). Prototype was for
+> __v4l2_async_notifier_add_i2c_subdev() instead
+> 
+> Maybe introduced by commit
+> 
+>   c1cc23625062 ("media: v4l2-async: Discourage use of v4l2_async_notifier_add_subdev")
+> 
+
+Thanks for spotting this. Should be fixed by:
+
+diff --git a/include/media/v4l2-async.h b/include/media/v4l2-async.h
+index 6f22daa6f067..3785445282fc 100644
+--- a/include/media/v4l2-async.h
++++ b/include/media/v4l2-async.h
+@@ -157,7 +157,7 @@ int __v4l2_async_notifier_add_subdev(struct v4l2_async_notifier *notifier,
+ 				   struct v4l2_async_subdev *asd);
+ 
+ /**
+- * v4l2_async_notifier_add_fwnode_subdev - Allocate and add a fwnode async
++ * __v4l2_async_notifier_add_fwnode_subdev - Allocate and add a fwnode async
+  *				subdev to the notifier's master asd_list.
+  *
+  * @notifier: pointer to &struct v4l2_async_notifier
+@@ -181,7 +181,7 @@ __v4l2_async_notifier_add_fwnode_subdev(struct v4l2_async_notifier *notifier,
+ 						   sizeof(__type)))
+ 
+ /**
+- * v4l2_async_notifier_add_fwnode_remote_subdev - Allocate and add a fwnode
++ * __v4l2_async_notifier_add_fwnode_remote_subdev - Allocate and add a fwnode
+  *						  remote async subdev to the
+  *						  notifier's master asd_list.
+  *
+@@ -210,7 +210,7 @@ __v4l2_async_notifier_add_fwnode_remote_subdev(struct v4l2_async_notifier *notif
+ 							  sizeof(__type)))
+ 
+ /**
+- * v4l2_async_notifier_add_i2c_subdev - Allocate and add an i2c async
++ * __v4l2_async_notifier_add_i2c_subdev - Allocate and add an i2c async
+  *				subdev to the notifier's master asd_list.
+  *
+  * @notifier: pointer to &struct v4l2_async_notifier
+@@ -228,7 +228,7 @@ struct v4l2_async_subdev *
+ __v4l2_async_notifier_add_i2c_subdev(struct v4l2_async_notifier *notifier,
+ 				     int adapter_id, unsigned short address,
+ 				     unsigned int asd_struct_size);
+-#define v4l2_async_notifier_add_i2c_subdev(__notifier, __adap, __addr, __type)	\
++#define v4l2_async_notifier_i2c(__notifier, __adap, __addr, __type)	\
+ ((__type *)__v4l2_async_notifier_add_i2c_subdev(__notifier, __adap, __addr,	\
+ 						sizeof(__type)))
+ 
+
+I'll send a fix for Mauro.
+
+Best regards,
+Ezequiel
+
