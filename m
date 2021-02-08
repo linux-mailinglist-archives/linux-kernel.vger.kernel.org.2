@@ -2,87 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05F15312D7B
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 10:40:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70BDF312D7F
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 10:41:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231710AbhBHJjO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 04:39:14 -0500
-Received: from foss.arm.com ([217.140.110.172]:58852 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231421AbhBHJXt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 04:23:49 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0B1221FB;
-        Mon,  8 Feb 2021 01:23:02 -0800 (PST)
-Received: from [10.57.5.103] (unknown [10.57.5.103])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DA0563F719;
-        Mon,  8 Feb 2021 01:23:00 -0800 (PST)
-Subject: Re: [PATCH] memory: samsung: exynos5422-dmc: Correct function names
- in kerneldoc
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-References: <20210206111715.20774-1-krzk@kernel.org>
-Cc:     linux-pm@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <7bb5b6af-a075-3b84-2864-1c7d75c188f0@arm.com>
-Date:   Mon, 8 Feb 2021 09:22:59 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S231809AbhBHJkU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 04:40:20 -0500
+Received: from mail29.static.mailgun.info ([104.130.122.29]:17871 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230218AbhBHJYH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 04:24:07 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1612776228; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=I/bB5csHyQa5LojQBmfZSqE+Dm4Nn4V/dZ5cfnA1UYE=;
+ b=T7wF63BJP0J3c8RUmhw1AhynIoJ+UHUUwAC7u3dqs22RZYJg4upVi8hOHVjRCL3hISRqkk4j
+ KfCkVybmFdjab1bguc2UStAzTRx5rDyPCxUUJXw8EYfcder4/2MJWGaQwvXgbrZVxB4XiKFD
+ R9y6Mln4GEKt2r2HpyzDldgxk/0=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 6021030134db06ef790e834c (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 08 Feb 2021 09:23:13
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 108FEC43464; Mon,  8 Feb 2021 09:23:12 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 23D27C433CA;
+        Mon,  8 Feb 2021 09:23:12 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <20210206111715.20774-1-krzk@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Date:   Mon, 08 Feb 2021 17:23:12 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     daejun7.park@samsung.com
+Cc:     Greg KH <gregkh@linuxfoundation.org>, avri.altman@wdc.com,
+        jejb@linux.ibm.com, martin.petersen@oracle.com,
+        asutoshd@codeaurora.org, stanley.chu@mediatek.com,
+        huobean@gmail.com, bvanassche@acm.org,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>,
+        SEUNGUK SHIN <seunguk.shin@samsung.com>
+Subject: Re: [PATCH v19 2/3] scsi: ufs: L2P map management for HPB read
+In-Reply-To: <20210208085346epcms2p1c11b70be9d258df66cb2ca4542835fac@epcms2p1>
+References: <88b608e2e133ba7ccd5bb452898848fd@codeaurora.org>
+ <5bd43da52369a56f18867fa18efb3020@codeaurora.org>
+ <20210129052848epcms2p6e5797efd94e6282b76ad9ae6c99e3ab5@epcms2p6>
+ <20210129053005epcms2p323338fbb83459d2786fc0ef92701b147@epcms2p3>
+ <20210208080333epcms2p59403f0acbc9730c9a605d265836a956d@epcms2p5>
+ <CGME20210129052848epcms2p6e5797efd94e6282b76ad9ae6c99e3ab5@epcms2p1>
+ <20210208085346epcms2p1c11b70be9d258df66cb2ca4542835fac@epcms2p1>
+Message-ID: <5b9f5edbe26930765ee4adaa786db7da@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2021-02-08 16:53, Daejun Park wrote:
+>>>> @@ -342,13 +1208,14 @@ void ufshpb_suspend(struct ufs_hba *hba)
+>>>> >          struct scsi_device *sdev;
+>>>> >
+>>>> >          shost_for_each_device(sdev, hba->host) {
+>>>> > -                hpb = sdev->hostdata;
+>>>> > +                hpb = ufshpb_get_hpb_data(sdev);
+>>>> >                  if (!hpb)
+>>>> >                          continue;
+>>>> >
+>>>> >                  if (ufshpb_get_state(hpb) != HPB_PRESENT)
+>>>> >                          continue;
+>>>> >                  ufshpb_set_state(hpb, HPB_SUSPEND);
+>>>> > +                ufshpb_cancel_jobs(hpb);
+>>>> 
+>>>> Here may have a dead lock problem - in the case of runtime suspend,
+>>>> when ufshpb_suspend() is invoked, all of hba's children scsi devices
+>>>> are in RPM_SUSPENDED state. When this line tries to cancel a running
+>>>> map work, i.e. when ufshpb_get_map_req() calls below lines, it will
+>>>> be stuck at blk_queue_enter().
+>>>> 
+>>>> req = blk_get_request(hpb->sdev_ufs_lu->request_queue,
+>>>>                       REQ_OP_SCSI_IN, 0);
+>>>> 
+>>>> Please check block layer power management, and see also commit
+>>>> d55d15a33
+>>>> ("scsi: block: Do not accept any requests while suspended").
+>>> 
+>>> I am agree with your comment.
+>>> How about add BLK_MQ_REQ_NOWAIT flag on blk_get_request() to avoid
+>>> hang?
+>>> 
+>> 
+>> That won't work - BLK_MQ_REQ_NOWAIT allows one to fast fail from
+>> blk_mq_get_tag(),
+>> but blk_queue_enter() comes before __blk_mq_alloc_request();
+>> 
+> In blk_queue_enter(), BLK_MQ_REQ_NOWAIT flag can make error than wait 
+> rpm
+> resume. Please refer following code.
 
+Oops, sorry, my memory needs to be refreshed on that part.
 
-On 2/6/21 11:17 AM, Krzysztof Kozlowski wrote:
-> Correct kerneldoc to fix W=1 warnings:
+But will BLK_MQ_REQ_NOWAIT flag breaks your original purpose? When
+runtime suspend is out of the picture, if traffic is heavy on the
+request queue, map_work() will be stopped frequently once it is
+not able to get a request from the queue - that shall pull down the
+efficiency of one map_work(), that may hurt random performance...
+
+Can Guo.
+
 > 
->      drivers/memory/samsung/exynos5422-dmc.c:290: warning:
->          expecting prototype for find_target_freq_id(). Prototype was for find_target_freq_idx() instead
->      drivers/memory/samsung/exynos5422-dmc.c:1015: warning:
->          expecting prototype for exynos5_dmc_align_initial_frequency(). Prototype was for exynos5_dmc_align_init_freq() instead
+> int blk_queue_enter(struct request_queue *q, blk_mq_req_flags_t flags)
+> {
+> 	const bool pm = flags & BLK_MQ_REQ_PM;
 > 
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-
-Thank you Krzysztof for looking at this.
-LGTM
-
-Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
-
-Regards,
-Lukasz
-
-
-
-> ---
->   drivers/memory/samsung/exynos5422-dmc.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
+> 	while (true) {
+> 		bool success = false;
 > 
-> diff --git a/drivers/memory/samsung/exynos5422-dmc.c b/drivers/memory/samsung/exynos5422-dmc.c
-> index c5ee4121a4d2..1dabb509dec3 100644
-> --- a/drivers/memory/samsung/exynos5422-dmc.c
-> +++ b/drivers/memory/samsung/exynos5422-dmc.c
-> @@ -278,7 +278,7 @@ static int exynos5_counters_disable_edev(struct exynos5_dmc *dmc)
->   }
->   
->   /**
-> - * find_target_freq_id() - Finds requested frequency in local DMC configuration
-> + * find_target_freq_idx() - Finds requested frequency in local DMC configuration
->    * @dmc:	device for which the information is checked
->    * @target_rate:	requested frequency in KHz
->    *
-> @@ -998,7 +998,7 @@ static struct devfreq_dev_profile exynos5_dmc_df_profile = {
->   };
->   
->   /**
-> - * exynos5_dmc_align_initial_frequency() - Align initial frequency value
-> + * exynos5_dmc_align_init_freq() - Align initial frequency value
->    * @dmc:	device for which the frequency is going to be set
->    * @bootloader_init_freq:	initial frequency set by the bootloader in KHz
->    *
+> 		rcu_read_lock();
+> 		if (percpu_ref_tryget_live(&q->q_usage_counter)) {
+> 			/*
+> 			 * The code that increments the pm_only counter is
+> 			 * responsible for ensuring that that counter is
+> 			 * globally visible before the queue is unfrozen.
+> 			 */
+> 			if ((pm && queue_rpm_status(q) != RPM_SUSPENDED) ||
+> 			    !blk_queue_pm_only(q)) {
+> 				success = true;
+> 			} else {
+> 				percpu_ref_put(&q->q_usage_counter);
+> 			}
+> 		}
+> 		rcu_read_unlock();
 > 
+> 		if (success)
+> 			return 0;
+> 
+> 		if (flags & BLK_MQ_REQ_NOWAIT)
+> 			return -EBUSY;	<-- out from the function.
+> 
+> Thanks,
+> Daejun
