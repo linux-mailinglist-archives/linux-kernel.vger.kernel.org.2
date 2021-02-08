@@ -2,40 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2ADB314006
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 21:12:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B397D314012
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 21:13:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233317AbhBHUL4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 15:11:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57894 "EHLO mail.kernel.org"
+        id S236743AbhBHUMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 15:12:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58140 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235710AbhBHSjg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 13:39:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B47A760C3F;
-        Mon,  8 Feb 2021 18:38:54 +0000 (UTC)
+        id S235686AbhBHSkM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 13:40:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C962F64E6C;
+        Mon,  8 Feb 2021 18:39:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612809535;
-        bh=SJZ0NVTsr2Wlxcsv1fv1kCF7qQH9E81Nonfp1RQf2jc=;
+        s=k20201202; t=1612809569;
+        bh=5IBhQ7c3BzKenFcsQ0x87dAwNhuhz1U+iCIXHPWQyxM=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=aKgHoLgsSGyJMiXx+Ih+Tk1rC/2eMKt2fZf5+Sx31/ElTclR/w2bWqwtCygNbuWfj
-         Yj4FV7LzG+aY+XAg//9s83baQAdpuEHLct4DpQyoyrF1NxO8ikj1i3vSemmIz55rcF
-         KYDTVM1vcWpw66bXt7A1jTuj2M7bGRjf23/9FC6strvhdxFvbbZ2AbYrlO4owsSy1m
-         xxqGkD7bWvBRQ3T/3HIOMseF7m0M7utgOvqpi4qz3ZM+3IBGkb4Arh4EjPyqiWo6xd
-         rz90DTRAEU5TZ8/mmYFsmIZX8BA/aZWB5tBZTfyTdoZFmo1fteGJI+ch/wEloUKCcg
-         0N8WQPz3D1i8g==
+        b=VU2VcT7TaDO3lBZ+GiDsY1XzFCoiEFRHjkWoyS5jY75bIxBkybh+BXvUmZR3aQexr
+         i5/tDc4C08lpVQ6qJWPmzIg4cjhfZuowj47xMC1wkaV05c6mSTupTFN+IhSfIq/Fxs
+         DTHkE4k3cBun8UqU0mmmDvlDQnYIlVSOO2GOv7tK9/Vm4Rn0BKHp881myK23Y9NMei
+         l3AEJUcKYtBlrfOvjaQaiQTiwBDnVk0YqrwCylJf9hABDBIkCsKohzRxg5NrC4XZjH
+         AoCt9qt7JjwtYz2JujdAeicrUJLpNmVH2b1xvTDhsrbIsP6duqD3JfJ4xw26EKb6Ct
+         BqF7FZYwICdcQ==
 From:   Mark Brown <broonie@kernel.org>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Takashi Iwai <tiwai@suse.com>
+To:     Lee Jones <lee.jones@linaro.org>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        od@zcrc.me, Christophe Branchereau <cbranchereau@gmail.com>,
-        devicetree@vger.kernel.org, linux-mips@vger.kernel.org
-In-Reply-To: <20210123140958.12895-1-paul@crapouillou.net>
-References: <20210123140958.12895-1-paul@crapouillou.net>
-Subject: Re: [PATCH 1/3] dt-bindings: sound/ingenic: Add compatible strings for JZ4760(B) SoC
-Message-Id: <161280948305.10741.16478273980568461792.b4-ty@kernel.org>
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        patches@opensource.cirrus.com,
+        Charles Keepax <ckeepax@opensource.cirrus.com>
+In-Reply-To: <20210120214957.140232-1-hdegoede@redhat.com>
+References: <20210120214957.140232-1-hdegoede@redhat.com>
+Subject: Re: (subset) [PATCH v4 0/5] MFD/ASoC: Add support for Intel Bay Trail boards with WM5102 codec
+Message-Id: <161280948306.10741.6212553639750410303.b4-ty@kernel.org>
 Date:   Mon, 08 Feb 2021 18:38:03 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
@@ -44,12 +46,19 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 23 Jan 2021 14:09:56 +0000, Paul Cercueil wrote:
-> Add the ingenic,jz4760b-codec and ingenic,jz4760-codec compatible
-> strings.
+On Wed, 20 Jan 2021 22:49:52 +0100, Hans de Goede wrote:
+> Here is v4 of my series to add support for Intel Bay Trail based devices
+> which use a WM5102 codec for audio output/input.
 > 
-> In the process, convert the previous compatible strings to use an enum
-> instead.
+> This was developed and tested on a Lenovo Yoga Tablet 1051L.
+> 
+> The MFD and ASoC parts do not have any build-time dependencies
+> on each other. But the follow-up jack-detect series does have
+> patches depending on each-other and on this series. So IMHO it
+> would be best if this entire series would be merged through the
+> MFD tree to make merging the follow-up series easier.
+> 
+> [...]
 
 Applied to
 
@@ -57,12 +66,10 @@ Applied to
 
 Thanks!
 
-[1/3] dt-bindings: sound/ingenic: Add compatible strings for JZ4760(B) SoC
-      commit: 45a90d4aba1781aa382d4aeedebcac7cc78e1927
-[2/3] ASoC: codec/ingenic: Depend on MACH_INGENIC
-      commit: bad929b81ce25bba1c3e9d91848ffdc166974256
-[3/3] ASoC: codec: Add driver for JZ4760 internal codec
-      commit: d9cd22e9c87cb61488d00f7279cfb2abf5238879
+[4/5] ASoC: Intel: Add DMI quirk table to soc_intel_is_byt_cr()
+      commit: 8ade6d8b02b1ead741bd4f6c42921035caab6560
+[5/5] ASoC: Intel: bytcr_wm5102: Add machine driver for BYT/WM5102
+      commit: 9a87fc1e061900e81ab13d823e85012a78849244
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
