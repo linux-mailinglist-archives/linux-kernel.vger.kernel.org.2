@@ -2,117 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 173A0314071
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 21:27:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A2CB314070
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 21:27:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236807AbhBHU1D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 15:27:03 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:22714 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236030AbhBHTCm (ORCPT
+        id S236805AbhBHU0e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 15:26:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45146 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235986AbhBHTCe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 14:02:42 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612810876;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=qsOZdP6JaGBCys6lI8Ps0nCa4t1QI6F4FQf8RXTti5c=;
-        b=cMCW3tFy/xnkG44LXmfpmHPxrd5ewSzu5hIx80ebRQw8033N4UyJ6PBbpwfhw1b8HiekdD
-        HYgK0kSmGPs8zK9oktq762okbuk8R39eK9CHdTlcoe/NfuQVsqkNUL0VDVp7kpEj91WHrJ
-        F3/e0g4GDQvKocL+Twr2j3WhFdM8u8Y=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-410-lIfo_S48NqCz7Jxgr8kpjQ-1; Mon, 08 Feb 2021 14:01:14 -0500
-X-MC-Unique: lIfo_S48NqCz7Jxgr8kpjQ-1
-Received: by mail-ej1-f70.google.com with SMTP id q11so13011008ejd.0
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 11:01:14 -0800 (PST)
+        Mon, 8 Feb 2021 14:02:34 -0500
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11484C061788
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 11:01:54 -0800 (PST)
+Received: by mail-lj1-x22c.google.com with SMTP id a17so18548054ljq.2
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 11:01:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=8pqhdeRC3f5+oXF00/LNR4GyCgSd0C0aI5uiNvoPwIQ=;
+        b=oNU15KazCL+KgVUExu0qk8wT3Ae19v82VIJ906txss4RN00b1Izwrm48c/DDcbFBrP
+         gP2le+VheSKZspNNFTDLshUTqgU6qJUrxQDD0RvotT65wwg3vM3k6pQv6Wvdro6vkhzK
+         g4uvTRLcyZrg+rTjVXEG3OQ/dP0pgj2D3cv3p0IIIz70W/vfS9glJl/H60Vs6H6sq7Nx
+         RvnRdR3knB1Iq0rDvGZipj0ysbf1Y7cVij6u6ms+ooJg1GxJzXc/3cfEJUeXdhSh99te
+         JyuPyHe/hThZ/U5vnHqvGxXflq0hpQV8jwmYq7TkjKthO7oxtgPex164BujoZDWedpBU
+         lJ/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=qsOZdP6JaGBCys6lI8Ps0nCa4t1QI6F4FQf8RXTti5c=;
-        b=SDlpPWDjjH+93mCqUZuWBO0hYQGZmkA7nceya0pRO+DiDpx2czMMMpmh1bKF1rBT9m
-         oh8gPTStImKlmRU39Nx4SlMrOfU/h2BLxoXyWZP4BUv49sruuLrUvoVb6n+/kSoxJ0YB
-         FSzRTde1RSOD5GzmnOLzJCX9IY4KHSvS3wOOJcsR4DhCctkAEbvo2laFrRHXHMbwOJBf
-         OeWdNiWhYV4E+zLQSBUffiD6j0XNvYq7t2RCGHbMe0x94mnUwQ4SIe1IWBKPgFzL4svY
-         DaduLoEyOnANUdLA0SOlKICTFPeBh6syrO7dmMS5gNyzfAyTa4VgDGEDxZNN9ozLweO+
-         SBvQ==
-X-Gm-Message-State: AOAM532fVWIresIFrnvOAYQ55dGI6VCf5gJgAMk8K6higYp7MSzZUSt5
-        tts3wag7Fdyn1rsmHEEff/IroXBT1ajjhBbuwGHF7g3MnUc7xxZPZrZOsE/WswSGNKJAikQ2++o
-        Aldfb5MZP9Jsx1oYgyTxj+6ic0bjss+Tr3Ayz85gY3vBT2iyvPxM9s+VMPH6TbJ6Jnyp4MHKBsI
-        6B
-X-Received: by 2002:aa7:d58b:: with SMTP id r11mr18480102edq.241.1612810872969;
-        Mon, 08 Feb 2021 11:01:12 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzrKaV6M4wNhPDX70JYnsrA7SHTqWJx6bMT62GOn1cJQvQVqzhPKKQ7HGRLi0rlL6RL/liZ5Q==
-X-Received: by 2002:aa7:d58b:: with SMTP id r11mr18480077edq.241.1612810872685;
-        Mon, 08 Feb 2021 11:01:12 -0800 (PST)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id kv24sm8947329ejc.117.2021.02.08.11.01.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Feb 2021 11:01:12 -0800 (PST)
-Subject: Re: [PATCH] Platform: OLPC: Constify static struct regulator_ops
-To:     Rikard Falkeborn <rikard.falkeborn@gmail.com>,
-        Mark Gross <mgross@linux.intel.com>
-Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210206232152.58046-1-rikard.falkeborn@gmail.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <1c0f6456-56cd-0778-fda1-98d810963225@redhat.com>
-Date:   Mon, 8 Feb 2021 20:01:11 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=8pqhdeRC3f5+oXF00/LNR4GyCgSd0C0aI5uiNvoPwIQ=;
+        b=aWYzESAcYm4kZHiytRT/VNJJVQrcnDulXa1at+iGJRTr9F7sxTdGRMJO6GtilurMQS
+         g8oMS1N7nhMmTDfAflKf7b3DIyHWT+ITy7dTgGAUFzeA0O885Kk9HyHi/u9RWudniORt
+         p0cvx/pcXVmZzBuhEJFDROIFLORxv4cdRLd1X2kZiwUgcJvGuhaDo6fol8CJ2vxNJnq+
+         0eXLimRw821EBcJxasZ0Obd23yMWYE31SwY+okotTR60ICrw4XZe1pQeFovnGvL/EEhS
+         3QeCmzT1yxEwnmw+w6mQDLQvjcuOnyU8LcNtETEUjH650U73SgD+5/rnepP/fAyKSVzT
+         x1TQ==
+X-Gm-Message-State: AOAM532GgCf5uO3C/U4FueB9Mc3iPgpEBPMWhSgIAii+lClF/qzcmpA9
+        T7is1bzdkUlhCAO7Y+KT1ic=
+X-Google-Smtp-Source: ABdhPJyVdxzMzjalyUYM8ESVucaFT3SUi9SJB1qRrWnXO/EZJDW0sDX7LqLI/sHiRfbW2x9fm0kKHg==
+X-Received: by 2002:a2e:81c7:: with SMTP id s7mr6786278ljg.178.1612810912524;
+        Mon, 08 Feb 2021 11:01:52 -0800 (PST)
+Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
+        by smtp.gmail.com with ESMTPSA id j5sm2190773lfu.139.2021.02.08.11.01.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Feb 2021 11:01:51 -0800 (PST)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
+Date:   Mon, 8 Feb 2021 20:01:50 +0100
+To:     Serapheim Dimitropoulos <serapheim.dimitro@delphix.com>
+Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, osandov@osandov.com,
+        serapheim@delphix.com
+Subject: Re: [PATCH] mm/vmalloc: use rb_tree instead of list for vread()
+ lookups
+Message-ID: <20210208190150.GA22808@pc638.lan>
+References: <20210208155303.10523-1-serapheim@delphix.com>
 MIME-Version: 1.0
-In-Reply-To: <20210206232152.58046-1-rikard.falkeborn@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210208155303.10523-1-serapheim@delphix.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 2/7/21 12:21 AM, Rikard Falkeborn wrote:
-> The only usage of it is to assign its address to the ops field in the
-> regulator_desc struct, which is a pointer to const struct regulator_ops.
-> Make it const to allow the compiler to put it in read-only memory.
+On Mon, Feb 08, 2021 at 03:53:03PM +0000, Serapheim Dimitropoulos wrote:
+> vread() has been linearly searching vmap_area_list for looking up
+> vmalloc areas to read from. These same areas are also tracked by
+> a rb_tree (vmap_area_root) which offers logarithmic lookup.
 > 
-> Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
-
-Thank you for your patch, I've applied this patch to my review-hans 
-branch:
-https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
-
-Note it will show up in my review-hans branch once I've pushed my
-local branch there, which might take a while.
-
-Once I've run some tests on this branch the patches there will be
-added to the platform-drivers-x86/for-next branch and eventually
-will be included in the pdx86 pull-request to Linus for the next
-merge-window.
-
-Regards,
-
-Hans
-
+> This patch modifies vread() to use the rb_tree structure instead
+> of the list and the speedup for heavy /proc/kcore readers can
+> be pretty significant. Below are the wall clock measurements of
+> a Python application that leverages the drgn debugging library
+> to read and interpret data read from /proc/kcore.
+> 
+> Before the patch:
+> -----
+> $ time sudo sdb -e 'dbuf | head 2500 | wc'
+> (unsigned long)2500
+> 
+> real	0m21.128s
+> user	0m2.321s
+> sys	0m19.227s
+> -----
+> 
+> With the patch:
+> -----
+> $ time sudo sdb -e 'dbuf | head 2500 | wc'
+> (unsigned long)2500
+> 
+> real	0m1.870s
+> user	0m1.628s
+> sys	0m0.660s
+> -----
+> 
+> Signed-off-by: Serapheim Dimitropoulos <serapheim@delphix.com>
 > ---
->  drivers/platform/olpc/olpc-ec.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  mm/vmalloc.c | 19 ++++++++++++-------
+>  1 file changed, 12 insertions(+), 7 deletions(-)
 > 
-> diff --git a/drivers/platform/olpc/olpc-ec.c b/drivers/platform/olpc/olpc-ec.c
-> index 72dbbea0005c..4ff5c3a12991 100644
-> --- a/drivers/platform/olpc/olpc-ec.c
-> +++ b/drivers/platform/olpc/olpc-ec.c
-> @@ -386,7 +386,7 @@ static int dcon_regulator_is_enabled(struct regulator_dev *rdev)
->  	return ec->dcon_enabled ? 1 : 0;
->  }
+> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+> index 49ab9b6c001d..86343b879938 100644
+> --- a/mm/vmalloc.c
+> +++ b/mm/vmalloc.c
+> @@ -2851,6 +2851,7 @@ long vread(char *buf, char *addr, unsigned long count)
+>  {
+>  	struct vmap_area *va;
+>  	struct vm_struct *vm;
+> +	struct rb_node *node;
+>  	char *vaddr, *buf_start = buf;
+>  	unsigned long buflen = count;
+>  	unsigned long n;
+> @@ -2860,17 +2861,15 @@ long vread(char *buf, char *addr, unsigned long count)
+>  		count = -(unsigned long) addr;
 >  
-> -static struct regulator_ops dcon_regulator_ops = {
-> +static const struct regulator_ops dcon_regulator_ops = {
->  	.enable		= dcon_regulator_enable,
->  	.disable	= dcon_regulator_disable,
->  	.is_enabled	= dcon_regulator_is_enabled,
-> 
+>  	spin_lock(&vmap_area_lock);
+> -	list_for_each_entry(va, &vmap_area_list, list) {
+> -		if (!count)
+> -			break;
+> -
+> +	va = __find_vmap_area((unsigned long)addr);
+> +	if (!va)
+> +		goto finished;
+> +	while (count) {
+>  		if (!va->vm)
+> -			continue;
+> +			goto next_node;
+>  
+>  		vm = va->vm;
+>  		vaddr = (char *) vm->addr;
+> -		if (addr >= vaddr + get_vm_area_size(vm))
+> -			continue;
+>  		while (addr < vaddr) {
+>  			if (count == 0)
+>  				goto finished;
+> @@ -2889,6 +2888,12 @@ long vread(char *buf, char *addr, unsigned long count)
+>  		buf += n;
+>  		addr += n;
+>  		count -= n;
+> +
+> +next_node:
+> +		node = rb_next(&va->rb_node);
+> +		if (!node)
+> +			break;
+> +		va = rb_entry(node, struct vmap_area, rb_node);
+>
+You can also improve it. Instead of rb_next() you can directly access
+to a "next" element via "va->list" making it O(1) complexity.
 
+--
+Vlad Rezki
