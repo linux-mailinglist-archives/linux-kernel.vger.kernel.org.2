@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30C143138E9
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 17:09:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 077EC313947
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 17:25:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234256AbhBHQI6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 11:08:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56402 "EHLO mail.kernel.org"
+        id S234381AbhBHQY1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 11:24:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55254 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233220AbhBHPKy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 10:10:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D387664EE3;
-        Mon,  8 Feb 2021 15:07:53 +0000 (UTC)
+        id S232728AbhBHPJv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 10:09:51 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D30F64ED2;
+        Mon,  8 Feb 2021 15:07:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612796874;
-        bh=nWE8prE+g082V2ukI4f+8bi9yIYRgdKWnNSP6749RXM=;
+        s=korg; t=1612796823;
+        bh=huxOI+WBBQL1Zh3IS1gpGthK6ntLMapQtRtoWWHhMDc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=l3i1bOLEC2yyJ2+WPOlBAhOt7iuyaGvvX76btMWTvKDAFhlYpLlxCeJz2P1K97Pjp
-         epYGjDs/YwnAr956zWb5XMZtl67krnNcPCcYRWe9OFYLVU64b2GFUsSb4NyMywCBX1
-         wK4JmqF5nNH7Iy5hNYKB/wDFXPz/Jv+EawXCIfkw=
+        b=GDtVrzUFE9nS/PODCHDrR5EmuSrhRpqMAVKTUrSc0MMgUckl2slifi10bpVXHHDBX
+         DYNWooQX51+/cKuvDX/M79OoX3SYEgAjNgYwMSC0r6NGgkw2P2ZUQIN9XSJ8xmYKJP
+         uVTvJgB9yhMmxD9cKHkzpDw1dx04akSzojhYK4Pg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chenxin Jin <bg4akv@hotmail.com>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.19 02/38] USB: serial: cp210x: add new VID/PID for supporting Teraoka AD2000
-Date:   Mon,  8 Feb 2021 16:00:49 +0100
-Message-Id: <20210208145806.236912121@linuxfoundation.org>
+        stable@vger.kernel.org, Alexey Dobriyan <adobriyan@gmail.com>,
+        Po-Hsu Lin <po-hsu.lin@canonical.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 04/30] Input: i8042 - unbreak Pegatron C15B
+Date:   Mon,  8 Feb 2021 16:00:50 +0100
+Message-Id: <20210208145805.429374799@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210208145806.141056364@linuxfoundation.org>
-References: <20210208145806.141056364@linuxfoundation.org>
+In-Reply-To: <20210208145805.239714726@linuxfoundation.org>
+References: <20210208145805.239714726@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,31 +41,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chenxin Jin <bg4akv@hotmail.com>
+From: Alexey Dobriyan <adobriyan@gmail.com>
 
-commit 43377df70480f82919032eb09832e9646a8a5efb upstream.
+[ Upstream commit a3a9060ecad030e2c7903b2b258383d2c716b56c ]
 
-Teraoka AD2000 uses the CP210x driver, but the chip VID/PID is
-customized with 0988/0578. We need the driver to support the new
-VID/PID.
+g++ reports
 
-Signed-off-by: Chenxin Jin <bg4akv@hotmail.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+	drivers/input/serio/i8042-x86ia64io.h:225:3: error: ‘.matches’ designator used multiple times in the same initializer list
+
+C99 semantics is that last duplicated initialiser wins,
+so DMI entry gets overwritten.
+
+Fixes: a48491c65b51 ("Input: i8042 - add ByteSpeed touchpad to noloop table")
+Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
+Acked-by: Po-Hsu Lin <po-hsu.lin@canonical.com>
+Link: https://lore.kernel.org/r/20201228072335.GA27766@localhost.localdomain
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/serial/cp210x.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/input/serio/i8042-x86ia64io.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/drivers/usb/serial/cp210x.c
-+++ b/drivers/usb/serial/cp210x.c
-@@ -61,6 +61,7 @@ static const struct usb_device_id id_tab
- 	{ USB_DEVICE(0x08e6, 0x5501) }, /* Gemalto Prox-PU/CU contactless smartcard reader */
- 	{ USB_DEVICE(0x08FD, 0x000A) }, /* Digianswer A/S , ZigBee/802.15.4 MAC Device */
- 	{ USB_DEVICE(0x0908, 0x01FF) }, /* Siemens RUGGEDCOM USB Serial Console */
-+	{ USB_DEVICE(0x0988, 0x0578) }, /* Teraoka AD2000 */
- 	{ USB_DEVICE(0x0B00, 0x3070) }, /* Ingenico 3070 */
- 	{ USB_DEVICE(0x0BED, 0x1100) }, /* MEI (TM) Cashflow-SC Bill/Voucher Acceptor */
- 	{ USB_DEVICE(0x0BED, 0x1101) }, /* MEI series 2000 Combo Acceptor */
+diff --git a/drivers/input/serio/i8042-x86ia64io.h b/drivers/input/serio/i8042-x86ia64io.h
+index b256e3006a6fb..844875df8cad7 100644
+--- a/drivers/input/serio/i8042-x86ia64io.h
++++ b/drivers/input/serio/i8042-x86ia64io.h
+@@ -223,6 +223,8 @@ static const struct dmi_system_id __initconst i8042_dmi_noloop_table[] = {
+ 			DMI_MATCH(DMI_SYS_VENDOR, "PEGATRON CORPORATION"),
+ 			DMI_MATCH(DMI_PRODUCT_NAME, "C15B"),
+ 		},
++	},
++	{
+ 		.matches = {
+ 			DMI_MATCH(DMI_SYS_VENDOR, "ByteSpeed LLC"),
+ 			DMI_MATCH(DMI_PRODUCT_NAME, "ByteSpeed Laptop C15B"),
+-- 
+2.27.0
+
 
 
