@@ -2,77 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84058314049
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 21:21:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D743B31404D
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 21:23:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236742AbhBHUVL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 15:21:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33460 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235738AbhBHS4R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 13:56:17 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B8E564E5A;
-        Mon,  8 Feb 2021 18:55:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612810536;
-        bh=6XeN35G9UlVNuxLXpbyh0VdjeHy0JkSCJxqfLwM5g8c=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oSFMHHFRRY4vi9HgDYo24Ms3T355mSmr8K5TIkkyvsqkjY7J6To0cn8QM6x0sPgDg
-         ReQ6LDMf0XNq6Oj/QO5//ArCAWMbunbrDYchVMjBzvYmV9a7Wzdgv2BLSDHdnB+y7K
-         oYKzDgxK0+FNsWCe3yrpOZZHXZJf10T8WkZObtw7maeDkU0eCHwkabgdL6PcCOEtC1
-         420N6fO6HWXP996jp5yOo7sQ5LWNPNzyQnkbN7QORHf9mZJ4sKJh3YQeuK/RnpwZGX
-         Y9gaGqQoYTez4wqPbIY3OSGHmaF3dr6snas+9RyTM3fdsPOCZumoDY9OX05udo/rGX
-         adGg7xZrGNMTg==
-Date:   Mon, 8 Feb 2021 13:55:35 -0500
-From:   Sasha Levin <sashal@kernel.org>
-To:     Johannes Berg <johannes@sipsolutions.net>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        Arnd Bergmann <arnd@arndb.de>, Jessica Yu <jeyu@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH AUTOSEL 4.9 4/4] init/gcov: allow CONFIG_CONSTRUCTORS on
- UML to fix module gcov
-Message-ID: <20210208185535.GB4035784@sasha-vm>
-References: <20210208180000.2092497-1-sashal@kernel.org>
- <20210208180000.2092497-4-sashal@kernel.org>
- <69e7fbb93740c0116c358a2f40aadb2dbde702fe.camel@sipsolutions.net>
+        id S236785AbhBHUVz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 15:21:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43812 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235878AbhBHS4e (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 13:56:34 -0500
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F5EAC06178B
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 10:55:49 -0800 (PST)
+Received: by mail-pf1-x42a.google.com with SMTP id q131so10282484pfq.10
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 10:55:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=N4KhQPQ6emhLg5aJ4b7dThJbGJewBnLMix1/QSQMqOA=;
+        b=SOzX6/jCm+05D0b/F4L0OfnNCZ+3/22OT8te5W4qnWAMm56snQxMxI+5v1L8wTfflj
+         m/SRcAEM+ENa5LQQpWkkNWXHlrz0S9r/gQQ6oJ1cxsyGcYKjt3B/yyHriscmwIh9NOUq
+         GXguzHrcce0Tx+lKtDfomwEKWqT9eXpbt3hTKHVOgDZePsB3c6y0vCFlD1kjcXVg5BxS
+         QmTyVb2zbtOB0k2kzvPPRUlIuTvHGvXPZLwb/u+crDxKpXUItlB3OQXwZTeahrfMN9zS
+         XgrOVBDbGRZ9ep0CgDc7Uzy59ApznxhmJzr0NWK4Dk1d2AmtF5MuA/GmDLaa6diupeX8
+         njIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=N4KhQPQ6emhLg5aJ4b7dThJbGJewBnLMix1/QSQMqOA=;
+        b=fpKaUVqP7LG/JPsAydSzdXtoq+E9cXtr5tobt3aA66itto+tjjgzJjaEMoE07t9E3N
+         dmvKona6aKRkNeydmbMxCg2ZLMeRx8cU+NYDcl8p7PCSPqakwcEYcEWU0i6wdxLR0e1B
+         sGPQqnTnz5LQ+u997x3kXD2FCRY/il5rUbvsZAkSr0wfGCBzbgdpIcEhCYDN+l0kM0Oh
+         laqYpae4/sollNiZEmlHH07zUJFFVGlnZUErlR2x/9lsAbmZIEGum95dPR4LJx6ib+qW
+         tKt4PILHo7fCKc7HMJ4i08lkNmuUG2YpyxN1FDkg+YO/iwscOYc322FYcmdBYzZvCjBG
+         li3w==
+X-Gm-Message-State: AOAM533fvkxnW+R8nBgDudLcJZX9dJppMoHnzQ1QXpXnWFAReLI615+3
+        QAgjrTfYsIzsVlZiWVuZyxgkEg==
+X-Google-Smtp-Source: ABdhPJzYRj43AK6KfV8pLfoL75pOWCUL2YG1YlxxwOUPuEJhKfWiBXL06aHlIgJtCrEdwAYusTd4fA==
+X-Received: by 2002:a63:7cf:: with SMTP id 198mr18333758pgh.448.1612810549041;
+        Mon, 08 Feb 2021 10:55:49 -0800 (PST)
+Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id 1sm45336pjk.34.2021.02.08.10.55.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Feb 2021 10:55:48 -0800 (PST)
+Date:   Mon, 8 Feb 2021 11:55:46 -0700
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Leo Yan <leo.yan@linaro.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Daniel Kiss <Daniel.Kiss@arm.com>,
+        Denis Nikitin <denik@chromium.org>,
+        Al Grant <al.grant@arm.com>, coresight@lists.linaro.org,
+        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 5/8] perf cs-etm: Support PID tracing in config
+Message-ID: <20210208185546.GB2077938@xps15>
+References: <20210206150833.42120-1-leo.yan@linaro.org>
+ <20210206150833.42120-6-leo.yan@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <69e7fbb93740c0116c358a2f40aadb2dbde702fe.camel@sipsolutions.net>
+In-Reply-To: <20210206150833.42120-6-leo.yan@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 08, 2021 at 07:25:21PM +0100, Johannes Berg wrote:
->On Mon, 2021-02-08 at 18:00 +0000, Sasha Levin wrote:
->> From: Johannes Berg <johannes.berg@intel.com>
->>
->> [ Upstream commit 55b6f763d8bcb5546997933105d66d3e6b080e6a ]
->>
->> On ARCH=um, loading a module doesn't result in its constructors getting
->> called, which breaks module gcov since the debugfs files are never
->> registered.  On the other hand, in-kernel constructors have already been
->> called by the dynamic linker, so we can't call them again.
->>
->> Get out of this conundrum by allowing CONFIG_CONSTRUCTORS to be
->> selected, but avoiding the in-kernel constructor calls.
->>
->> Also remove the "if !UML" from GCOV selecting CONSTRUCTORS now, since we
->> really do want CONSTRUCTORS, just not kernel binary ones.
->>
->> Link: https://lkml.kernel.org/r/20210120172041.c246a2cac2fb.I1358f584b76f1898373adfed77f4462c8705b736@changeid
->>
->
->
->While I don't really *object* to this getting backported, it's also a
->(development) corner case that somebody wants gcov and modules in
->ARCH=um ... I'd probably not backport this.
+On Sat, Feb 06, 2021 at 11:08:30PM +0800, Leo Yan wrote:
+> From: Suzuki K Poulose <suzuki.poulose@arm.com>
+> 
+> If the kernel is running at EL2, the pid of a task is exposed via VMID
+> instead of the CONTEXTID.  Add support for this in the perf tool.
+> 
+> This patch respects user setting if user has specified any configs
+> from "contextid", "contextid1" or "contextid2"; otherwise, it
+> dynamically sets config based on PMU format "contextid".
+> 
+> Cc: Mike Leach <mike.leach@linaro.org>
+> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+> Cc: Al Grant <al.grant@arm.com>
+> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+> Co-developed-by: Leo Yan <leo.yan@linaro.org>
+> Signed-off-by: Leo Yan <leo.yan@linaro.org>
+> Reviewed-by: Mike Leach <mike.leach@linaro.org>
 
-I'll drop it then, thanks!
+Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 
--- 
-Thanks,
-Sasha
+> ---
+>  tools/include/linux/coresight-pmu.h |  3 ++
+>  tools/perf/arch/arm/util/cs-etm.c   | 61 +++++++++++++++++++++++------
+>  2 files changed, 52 insertions(+), 12 deletions(-)
+> 
+> diff --git a/tools/include/linux/coresight-pmu.h b/tools/include/linux/coresight-pmu.h
+> index 5dc47cfdcf07..4ac5c081af93 100644
+> --- a/tools/include/linux/coresight-pmu.h
+> +++ b/tools/include/linux/coresight-pmu.h
+> @@ -20,14 +20,17 @@
+>   */
+>  #define ETM_OPT_CYCACC		12
+>  #define ETM_OPT_CTXTID		14
+> +#define ETM_OPT_CTXTID2		15
+>  #define ETM_OPT_TS		28
+>  #define ETM_OPT_RETSTK		29
+>  
+>  /* ETMv4 CONFIGR programming bits for the ETM OPTs */
+>  #define ETM4_CFG_BIT_CYCACC	4
+>  #define ETM4_CFG_BIT_CTXTID	6
+> +#define ETM4_CFG_BIT_VMID	7
+>  #define ETM4_CFG_BIT_TS		11
+>  #define ETM4_CFG_BIT_RETSTK	12
+> +#define ETM4_CFG_BIT_VMID_OPT	15
+>  
+>  static inline int coresight_get_trace_id(int cpu)
+>  {
+> diff --git a/tools/perf/arch/arm/util/cs-etm.c b/tools/perf/arch/arm/util/cs-etm.c
+> index c25c878fd06c..fa6f91a7c8a1 100644
+> --- a/tools/perf/arch/arm/util/cs-etm.c
+> +++ b/tools/perf/arch/arm/util/cs-etm.c
+> @@ -67,6 +67,7 @@ static int cs_etm_set_context_id(struct auxtrace_record *itr,
+>  	char path[PATH_MAX];
+>  	int err = -EINVAL;
+>  	u32 val;
+> +	u64 contextid;
+>  
+>  	ptr = container_of(itr, struct cs_etm_recording, itr);
+>  	cs_etm_pmu = ptr->cs_etm_pmu;
+> @@ -86,25 +87,59 @@ static int cs_etm_set_context_id(struct auxtrace_record *itr,
+>  		goto out;
+>  	}
+>  
+> +	/* User has configured for PID tracing, respects it. */
+> +	contextid = evsel->core.attr.config &
+> +			(BIT(ETM_OPT_CTXTID) | BIT(ETM_OPT_CTXTID2));
+> +
+>  	/*
+> -	 * TRCIDR2.CIDSIZE, bit [9-5], indicates whether contextID tracing
+> -	 * is supported:
+> -	 *  0b00000 Context ID tracing is not supported.
+> -	 *  0b00100 Maximum of 32-bit Context ID size.
+> -	 *  All other values are reserved.
+> +	 * If user doesn't configure the contextid format, parse PMU format and
+> +	 * enable PID tracing according to the "contextid" format bits:
+> +	 *
+> +	 *   If bit ETM_OPT_CTXTID is set, trace CONTEXTIDR_EL1;
+> +	 *   If bit ETM_OPT_CTXTID2 is set, trace CONTEXTIDR_EL2.
+>  	 */
+> -	val = BMVAL(val, 5, 9);
+> -	if (!val || val != 0x4) {
+> -		err = -EINVAL;
+> -		goto out;
+> +	if (!contextid)
+> +		contextid = perf_pmu__format_bits(&cs_etm_pmu->format,
+> +						  "contextid");
+> +
+> +	if (contextid & BIT(ETM_OPT_CTXTID)) {
+> +		/*
+> +		 * TRCIDR2.CIDSIZE, bit [9-5], indicates whether contextID
+> +		 * tracing is supported:
+> +		 *  0b00000 Context ID tracing is not supported.
+> +		 *  0b00100 Maximum of 32-bit Context ID size.
+> +		 *  All other values are reserved.
+> +		 */
+> +		val = BMVAL(val, 5, 9);
+> +		if (!val || val != 0x4) {
+> +			pr_err("%s: CONTEXTIDR_EL1 isn't supported\n",
+> +			       CORESIGHT_ETM_PMU_NAME);
+> +			err = -EINVAL;
+> +			goto out;
+> +		}
+> +	}
+> +
+> +	if (contextid & BIT(ETM_OPT_CTXTID2)) {
+> +		/*
+> +		 * TRCIDR2.VMIDOPT[30:29] != 0 and
+> +		 * TRCIDR2.VMIDSIZE[14:10] == 0b00100 (32bit virtual contextid)
+> +		 * We can't support CONTEXTIDR in VMID if the size of the
+> +		 * virtual context id is < 32bit.
+> +		 * Any value of VMIDSIZE >= 4 (i.e, > 32bit) is fine for us.
+> +		 */
+> +		if (!BMVAL(val, 29, 30) || BMVAL(val, 10, 14) < 4) {
+> +			pr_err("%s: CONTEXTIDR_EL2 isn't supported\n",
+> +			       CORESIGHT_ETM_PMU_NAME);
+> +			err = -EINVAL;
+> +			goto out;
+> +		}
+>  	}
+>  
+>  	/* All good, let the kernel know */
+> -	evsel->core.attr.config |= (1 << ETM_OPT_CTXTID);
+> +	evsel->core.attr.config |= contextid;
+>  	err = 0;
+>  
+>  out:
+> -
+>  	return err;
+>  }
+>  
+> @@ -489,7 +524,9 @@ static u64 cs_etmv4_get_config(struct auxtrace_record *itr)
+>  		config |= BIT(ETM4_CFG_BIT_TS);
+>  	if (config_opts & BIT(ETM_OPT_RETSTK))
+>  		config |= BIT(ETM4_CFG_BIT_RETSTK);
+> -
+> +	if (config_opts & BIT(ETM_OPT_CTXTID2))
+> +		config |= BIT(ETM4_CFG_BIT_VMID) |
+> +			  BIT(ETM4_CFG_BIT_VMID_OPT);
+>  	return config;
+>  }
+>  
+> -- 
+> 2.25.1
+> 
