@@ -2,112 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D680313DB1
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 19:38:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C6CA313DB3
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 19:38:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235773AbhBHShx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 13:37:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40610 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232126AbhBHQah (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 11:30:37 -0500
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75718C061786;
-        Mon,  8 Feb 2021 08:29:57 -0800 (PST)
-Received: by mail-io1-xd32.google.com with SMTP id f67so13807721ioa.1;
-        Mon, 08 Feb 2021 08:29:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WKAu6jD3NL3DoGYOV4wpMs/eBqMreW9BWe9TouHno28=;
-        b=t+n9EqsKjvJPZUktEJHY+YK/Q836VAqg8nac9cEhOzzIeDgSLCyp1x/qnYDK3up0G3
-         uAWVElBWycUsApd/NOdKZJ8iX4+BIHS6iDrMRNlNoRixQp+PLz/hhuEByeh6eJiQAW97
-         VrtV1hVA30jR9nLjxP7kwtDAlbvqgpYOGLxebHpvDwoOAoLLaEdwcFBH2qZy0ynEP5T+
-         tzulSk4iUc1rnfB66QFVUGtlzBUskn86k1XlCDyHfqtrxRLOisjTfuYeomU0rXy8HA2v
-         9OimlF+Qdlozlak5llGiegi3DpOhbQEDNhfg59uvBnIXadxc1/poFWY/hMMpwiLmv9Ks
-         U0xw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WKAu6jD3NL3DoGYOV4wpMs/eBqMreW9BWe9TouHno28=;
-        b=NcWZGFEUkb+NPaOpYrYJFG7UcRv/6hRRxoIrlKpiweBUDjl5zIFo7lclRktmUU5W7Z
-         qOExvS8Ofbc8GN0atg3ze2f7z9pGlQNgNKyF1szPn7gOy6oa9/UFsF/foGM8ZjLsPIkh
-         96AZeQiOT74s7TfG/ubW2K7ZI9MWIDpSjade+rh6udKWVqinUNlxVNQiOMxynvP8Lxm5
-         aUazSKKYZS/dW36M3Ty9KyJzPEqsYe4j0mfetETkLlY2HLzSmOphOQLwJi+BGMwwy5z3
-         8TIFAEQU8fnd7wZN9pJI60bJi5NMOQfMBnOhGsFaySvL1rWb7lmaJkaooA1Chz2CLpz/
-         Ulew==
-X-Gm-Message-State: AOAM533ubBECbY+/qi8F6ExbmRjGGdu6Au0PNzz3XGU9pNgDkEtSnEQj
-        7oqp0d7JLTxyzrQrfAVoq8Jcm+5PbiQ0oYterxaIvNdo9q7O0A==
-X-Google-Smtp-Source: ABdhPJz+Xyotw2FoQ4teva9Gi/DKoX3WPEglSKT6yJ3EeRE9Kd/+E9J64braPlsOJf4ZAhrfhr16jye98dNIxDBn9NU=
-X-Received: by 2002:a05:6638:b12:: with SMTP id a18mr18850969jab.114.1612801796769;
- Mon, 08 Feb 2021 08:29:56 -0800 (PST)
+        id S233746AbhBHSh6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 13:37:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51578 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233595AbhBHQbG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 11:31:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B02B364D87;
+        Mon,  8 Feb 2021 16:30:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612801826;
+        bh=fQFemOSgifpQI5wwJyQgh1a2E7JZ/QeOPL5Rh0GR4f4=;
+        h=Date:From:To:Cc:Subject:From;
+        b=YgFNhZtmzhuq9k++dNKsRqYefk0X4+fTPp7t0GGz3M4S3MLcHKOVlN9ZtrGrfFTqW
+         UT09fplJQzm1bUqsSKVoomfdBM8mWNi9yg3XpX1cqbZLhlo98boAhLc6CBI+iZAoTz
+         jOs0XEpvYZmjX1pQpPVp3t0zxZZXK5g661bVnDsp0Cggwt/HqWtm8tO0EFsKzO6seP
+         PQBhxMFeGcBBMTIhEdLQAL1PbgmiCpxHm3Tn/VtZlst7RJtgSk4sOh1rPlxWEAj5ku
+         mA6QmdLdpxzUYxVKJ3uAANKWjpvh1IJpXpa0fbpCOmJ3X/bo+3gM6rFmXP1cn/R/r6
+         4F8hZXCU/QuWQ==
+Date:   Mon, 8 Feb 2021 18:30:22 +0200
+From:   Oded Gabbay <ogabbay@kernel.org>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: [git pull] habanalabs second pull request for kernel 5.12
+Message-ID: <20210208163022.GA5745@CORE.localdomain>
 MIME-Version: 1.0
-References: <20210208062859.11429-1-samuel@sholland.org> <20210208062859.11429-5-samuel@sholland.org>
-In-Reply-To: <20210208062859.11429-5-samuel@sholland.org>
-From:   Alexander Duyck <alexander.duyck@gmail.com>
-Date:   Mon, 8 Feb 2021 08:29:45 -0800
-Message-ID: <CAKgT0Ue3GAWbjZcX7aFxuM-iY-Ga2E0JOTftUqPBQC_dEGz_Eg@mail.gmail.com>
-Subject: Re: [PATCH net-next RESEND 3/5] net: stmmac: dwmac-sun8i: Use reset_control_reset
-To:     Samuel Holland <samuel@sholland.org>
-Cc:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Corentin Labbe <clabbe@baylibre.com>,
-        Ondrej Jirman <megous@megous.com>,
-        Netdev <netdev@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        LKML <linux-kernel@vger.kernel.org>, linux-sunxi@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Feb 7, 2021 at 10:32 PM Samuel Holland <samuel@sholland.org> wrote:
->
-> Use the appropriate function instead of reimplementing it,
-> and update the error message to match the code.
->
-> Reviewed-by: Chen-Yu Tsai <wens@csie.org>
-> Signed-off-by: Samuel Holland <samuel@sholland.org>
-> ---
->  drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c | 6 ++----
->  1 file changed, 2 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c
-> index 3c3d0b99d3e8..0e8d88417251 100644
-> --- a/drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c
-> +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c
-> @@ -806,11 +806,9 @@ static int sun8i_dwmac_power_internal_phy(struct stmmac_priv *priv)
->         /* Make sure the EPHY is properly reseted, as U-Boot may leave
->          * it at deasserted state, and thus it may fail to reset EMAC.
->          */
-> -       reset_control_assert(gmac->rst_ephy);
-> -
-> -       ret = reset_control_deassert(gmac->rst_ephy);
-> +       ret = reset_control_reset(gmac->rst_ephy);
->         if (ret) {
-> -               dev_err(priv->device, "Cannot deassert internal phy\n");
-> +               dev_err(priv->device, "Cannot reset internal PHY\n");
->                 clk_disable_unprepare(gmac->ephy_clk);
->                 return ret;
->         }
+Hi Greg,
 
-I'm assuming you have exclusive access to the phy and this isn't a
-shared line? Just wanting to confirm since the function call has the
-following comment in the header for the documentation.
+This is habanalabs second pull request for the merge window of
+kernel 5.12.
+It contains important fixes, especially in the firmware-related code.
+Details are in the tag.
 
- * Consumers must not use reset_control_(de)assert on shared reset lines when
- * reset_control_reset has been used.
- *
+Thanks,
+Oded
 
-If that is the case it might not hurt to add some documentation to
-your call to reset_control_reset here explaining that it is safe to do
-so since you have exclusive access.
+The following changes since commit 369aea84595189200a2e6b028f556a7efa0ec489:
+
+  mei: implement client dma setup. (2021-02-06 15:48:11 +0100)
+
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/ogabbay/linux.git tags/misc-habanalabs-next-2021-02-08
+
+for you to fetch changes up to da5dfbb97a82ff698e1dc7b229d4d4f5759dad2b:
+
+  habanalabs/gaudi: don't enable clock gating on DMA5 (2021-02-08 18:20:08 +0200)
+
+----------------------------------------------------------------
+This tag contains the following changes for 5.12-rc1:
+
+- Improve communication protocol with device CPU CP application.
+  The change prevents random (rare) out-of-sync errors.
+
+- Notify F/W to start sending events only after initialization of
+  device is done. This fixes the issue where fatal events were received
+  but ignored.
+
+- Fix integer handling (static analysis warning).
+
+- Always fetch HBM ECC errors from F/W (if available).
+
+- Minor fix in GAUDI-specific initialization code.
+
+----------------------------------------------------------------
+Oded Gabbay (4):
+      habanalabs: fix integer handling issue
+      habanalabs: enable F/W events after init done
+      habanalabs: return block size + block ID
+      habanalabs/gaudi: don't enable clock gating on DMA5
+
+Ofir Bitton (2):
+      habanalabs: improve communication protocol with cpucp
+      habanalabs: support fetching first available user CQ
+
+Ohad Sharabi (2):
+      habanalabs/gaudi: use HBM_ECC_EN bit for ECC ERR
+      habanalabs: update security map after init CPU Qs
+
+ drivers/misc/habanalabs/common/device.c            | 23 ++++++++--
+ drivers/misc/habanalabs/common/firmware_if.c       | 14 ++++++-
+ drivers/misc/habanalabs/common/habanalabs.h        | 15 +++++--
+ drivers/misc/habanalabs/common/habanalabs_ioctl.c  |  3 +-
+ drivers/misc/habanalabs/common/memory.c            | 19 +++++----
+ drivers/misc/habanalabs/common/mmu/mmu.c           |  2 +-
+ drivers/misc/habanalabs/gaudi/gaudi.c              | 49 ++++++++++++++++++----
+ drivers/misc/habanalabs/goya/goya.c                | 27 +++++++++---
+ .../misc/habanalabs/include/common/hl_boot_if.h    |  5 +++
+ include/uapi/misc/habanalabs.h                     | 30 ++++++++++---
+ 10 files changed, 148 insertions(+), 39 deletions(-)
