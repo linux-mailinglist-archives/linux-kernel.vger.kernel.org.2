@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD9F9313A58
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 18:01:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A29B313A54
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 18:01:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234727AbhBHRB0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 12:01:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33696 "EHLO mail.kernel.org"
+        id S234716AbhBHRAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 12:00:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33886 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230125AbhBHPTt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 10:19:49 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A23664EBF;
-        Mon,  8 Feb 2021 15:13:02 +0000 (UTC)
+        id S233680AbhBHPUE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 10:20:04 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CB18964ECA;
+        Mon,  8 Feb 2021 15:13:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612797182;
-        bh=/Izv91zcxQEaeZ1igCpWGrDY2izGsbwaRvgM/JEiTOQ=;
+        s=korg; t=1612797188;
+        bh=MsM9oUK9ZNJ5Co8FGluwdbOGnL3frypyRg1qO6YYZ/s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UWbqLLhC9EsopaZHbfrZHsIlJNmbHnm70XcdIppEtkJQoy+szghh1+H19gm94dCA9
-         5afWOemRuZ8DMilPfARuW9XtlgXNb0jZWWSiJdXWSkl6xKbiBmLJiCw7IZl65Aogzy
-         FeyeWbGMISPhsJ6gOs0HLG3aUAmRNkWAGlyiFro8=
+        b=txc4lqxyQer5yrfMJXaMwicW2vDIHxJwvMIZz7aKKAi0JBdLiRgigVM8mmgqXlu7s
+         0NnvN8ZWwuV3hHvODui2lMAcBtrKdotU1DdNH4kfisqu64D1SRyxY+kHdNZseEfVsf
+         HcyyJ7nuY+mJHYMs29/choVnv823G9OfULmwmW3w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -31,9 +31,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-stm32@st-md-mailman.stormreply.com,
         Alexandre Torgue <alexandre.torgue@foss.st.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 020/120] ARM: dts: stm32: Fix polarity of the DH DRC02 uSD card detect
-Date:   Mon,  8 Feb 2021 16:00:07 +0100
-Message-Id: <20210208145819.207162197@linuxfoundation.org>
+Subject: [PATCH 5.10 022/120] ARM: dts: stm32: Disable WP on DHCOM uSD slot
+Date:   Mon,  8 Feb 2021 16:00:09 +0100
+Message-Id: <20210208145819.292288083@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210208145818.395353822@linuxfoundation.org>
 References: <20210208145818.395353822@linuxfoundation.org>
@@ -47,12 +47,11 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Marek Vasut <marex@denx.de>
 
-[ Upstream commit a0572c0734e4926ac51a31f97c12f752e1cdc7c8 ]
+[ Upstream commit 063a60634d48ee89f697371c9850c9370e494f22 ]
 
-The uSD card detect signal on the DH DRC02 is active-high, with
-a default pull down resistor on the board. Invert the polarity.
+The uSD slot has no WP detection, disable it.
 
-Fixes: fde180f06d7b ("ARM: dts: stm32: Add DHSOM based DRC02 board")
+Fixes: 34e0c7847dcf ("ARM: dts: stm32: Add DH Electronics DHCOM STM32MP1 SoM and PDK2 board")
 Signed-off-by: Marek Vasut <marex@denx.de>
 Cc: Alexandre Torgue <alexandre.torgue@st.com>
 Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>
@@ -60,28 +59,24 @@ Cc: Patrice Chotard <patrice.chotard@st.com>
 Cc: Patrick Delaunay <patrick.delaunay@st.com>
 Cc: linux-stm32@st-md-mailman.stormreply.com
 To: linux-arm-kernel@lists.infradead.org
---
-Note that this could not be tested on prototype SoMs, now that it is
-tested, this issue surfaced, so it needs to be fixed.
 Signed-off-by: Alexandre Torgue <alexandre.torgue@foss.st.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/stm32mp15xx-dhcom-drc02.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm/boot/dts/stm32mp15xx-dhcom-som.dtsi | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm/boot/dts/stm32mp15xx-dhcom-drc02.dtsi b/arch/arm/boot/dts/stm32mp15xx-dhcom-drc02.dtsi
-index 62ab23824a3e7..3299a42d80633 100644
---- a/arch/arm/boot/dts/stm32mp15xx-dhcom-drc02.dtsi
-+++ b/arch/arm/boot/dts/stm32mp15xx-dhcom-drc02.dtsi
-@@ -104,7 +104,7 @@
- 	 * are used for on-board microSD slot instead.
- 	 */
- 	/delete-property/broken-cd;
--	cd-gpios = <&gpioi 10 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
-+	cd-gpios = <&gpioi 10 GPIO_ACTIVE_HIGH>;
- 	disable-wp;
- };
- 
+diff --git a/arch/arm/boot/dts/stm32mp15xx-dhcom-som.dtsi b/arch/arm/boot/dts/stm32mp15xx-dhcom-som.dtsi
+index 90523a44d2541..2d027dafb7bce 100644
+--- a/arch/arm/boot/dts/stm32mp15xx-dhcom-som.dtsi
++++ b/arch/arm/boot/dts/stm32mp15xx-dhcom-som.dtsi
+@@ -354,6 +354,7 @@
+ 	pinctrl-1 = <&sdmmc1_b4_od_pins_a &sdmmc1_dir_pins_a>;
+ 	pinctrl-2 = <&sdmmc1_b4_sleep_pins_a &sdmmc1_dir_sleep_pins_a>;
+ 	cd-gpios = <&gpiog 1 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
++	disable-wp;
+ 	st,sig-dir;
+ 	st,neg-edge;
+ 	st,use-ckin;
 -- 
 2.27.0
 
