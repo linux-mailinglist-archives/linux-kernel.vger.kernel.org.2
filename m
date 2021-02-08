@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94482313809
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 16:36:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BAA03137F8
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 16:35:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233428AbhBHPfy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 10:35:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52068 "EHLO mail.kernel.org"
+        id S233793AbhBHPdz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 10:33:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51776 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233035AbhBHPFS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 10:05:18 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0E81164EB1;
-        Mon,  8 Feb 2021 15:04:02 +0000 (UTC)
+        id S231303AbhBHPFf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 10:05:35 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A8AF64EB9;
+        Mon,  8 Feb 2021 15:04:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612796643;
-        bh=Zvqg1nRY9Yd74NqJXqL+7wfMCrTCrSeCzg3OY0waGHs=;
+        s=korg; t=1612796646;
+        bh=PGJPeetesWJDEesAMPJ3w2qLtbGhSsp6tiOqVr+7FFQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bdWI5NI5w5dqvW5WSuuF7pUwgrwWPSq2Vy44pQORcnfGAwkyvd4vRhuHDI1W86iyL
-         F1oJk8jxn23/kSAQo5Dxi4H4zji3IvhyUC2dzgd1zV6Mb8n6PCm6ZCMtWOQAuX0/U+
-         uImWSA5+cKK6wKevt2zWuvEWZqpOobU/t/2cOzzg=
+        b=Bp2E69qjSeeNI9LYKvasdGbDWxxSINJORVz6cLSzoI4D62lmTuV1kWDXM2RvNgjYN
+         5DcMWJhYGyF0dtpp+736jT01tUw8X5G+SUd1pPRTzacFhK2AhxJkScTNMRANCIxrXF
+         e1SQuVCSOT/OsDlrLC+Yrm1uRp5JkBGgi2VkPI44=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Javed Hasan <jhasan@marvell.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Felix Fietkau <nbd@nbd.name>,
+        Johannes Berg <johannes.berg@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 14/43] scsi: libfc: Avoid invoking response handler twice if ep is already completed
-Date:   Mon,  8 Feb 2021 16:00:40 +0100
-Message-Id: <20210208145806.885270226@linuxfoundation.org>
+Subject: [PATCH 4.9 15/43] mac80211: fix fast-rx encryption check
+Date:   Mon,  8 Feb 2021 16:00:41 +0100
+Message-Id: <20210208145806.925814769@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210208145806.281758651@linuxfoundation.org>
 References: <20210208145806.281758651@linuxfoundation.org>
@@ -40,89 +40,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Javed Hasan <jhasan@marvell.com>
+From: Felix Fietkau <nbd@nbd.name>
 
-[ Upstream commit b2b0f16fa65e910a3ec8771206bb49ee87a54ac5 ]
+[ Upstream commit 622d3b4e39381262da7b18ca1ed1311df227de86 ]
 
-A race condition exists between the response handler getting called because
-of exchange_mgr_reset() (which clears out all the active XIDs) and the
-response we get via an interrupt.
+When using WEP, the default unicast key needs to be selected, instead of
+the STA PTK.
 
-Sequence of events:
-
-	 rport ba0200: Port timeout, state PLOGI
-	 rport ba0200: Port entered PLOGI state from PLOGI state
-	 xid 1052: Exchange timer armed : 20000 msecs      xid timer armed here
-	 rport ba0200: Received LOGO request while in state PLOGI
-	 rport ba0200: Delete port
-	 rport ba0200: work event 3
-	 rport ba0200: lld callback ev 3
-	 bnx2fc: rport_event_hdlr: event = 3, port_id = 0xba0200
-	 bnx2fc: ba0200 - rport not created Yet!!
-	 /* Here we reset any outstanding exchanges before
-	 freeing rport using the exch_mgr_reset() */
-	 xid 1052: Exchange timer canceled
-	 /* Here we got two responses for one xid */
-	 xid 1052: invoking resp(), esb 20000000 state 3
-	 xid 1052: invoking resp(), esb 20000000 state 3
-	 xid 1052: fc_rport_plogi_resp() : ep->resp_active 2
-	 xid 1052: fc_rport_plogi_resp() : ep->resp_active 2
-
-Skip the response if the exchange is already completed.
-
-Link: https://lore.kernel.org/r/20201215194731.2326-1-jhasan@marvell.com
-Signed-off-by: Javed Hasan <jhasan@marvell.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Felix Fietkau <nbd@nbd.name>
+Link: https://lore.kernel.org/r/20201218184718.93650-5-nbd@nbd.name
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/libfc/fc_exch.c | 16 ++++++++++++++--
- 1 file changed, 14 insertions(+), 2 deletions(-)
+ net/mac80211/rx.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/scsi/libfc/fc_exch.c b/drivers/scsi/libfc/fc_exch.c
-index d0a86ef806522..59fd6101f188b 100644
---- a/drivers/scsi/libfc/fc_exch.c
-+++ b/drivers/scsi/libfc/fc_exch.c
-@@ -1585,8 +1585,13 @@ static void fc_exch_recv_seq_resp(struct fc_exch_mgr *mp, struct fc_frame *fp)
- 		rc = fc_exch_done_locked(ep);
- 		WARN_ON(fc_seq_exch(sp) != ep);
- 		spin_unlock_bh(&ep->ex_lock);
--		if (!rc)
-+		if (!rc) {
- 			fc_exch_delete(ep);
-+		} else {
-+			FC_EXCH_DBG(ep, "ep is completed already,"
-+					"hence skip calling the resp\n");
-+			goto skip_resp;
-+		}
- 	}
+diff --git a/net/mac80211/rx.c b/net/mac80211/rx.c
+index 9be82ed02e0e5..c38d68131d02e 100644
+--- a/net/mac80211/rx.c
++++ b/net/mac80211/rx.c
+@@ -3802,6 +3802,8 @@ void ieee80211_check_fast_rx(struct sta_info *sta)
  
- 	/*
-@@ -1605,6 +1610,7 @@ static void fc_exch_recv_seq_resp(struct fc_exch_mgr *mp, struct fc_frame *fp)
- 	if (!fc_invoke_resp(ep, sp, fp))
- 		fc_frame_free(fp);
- 
-+skip_resp:
- 	fc_exch_release(ep);
- 	return;
- rel:
-@@ -1848,10 +1854,16 @@ static void fc_exch_reset(struct fc_exch *ep)
- 
- 	fc_exch_hold(ep);
- 
--	if (!rc)
-+	if (!rc) {
- 		fc_exch_delete(ep);
-+	} else {
-+		FC_EXCH_DBG(ep, "ep is completed already,"
-+				"hence skip calling the resp\n");
-+		goto skip_resp;
-+	}
- 
- 	fc_invoke_resp(ep, sp, ERR_PTR(-FC_EX_CLOSED));
-+skip_resp:
- 	fc_seq_set_resp(sp, NULL, ep->arg);
- 	fc_exch_release(ep);
- }
+ 	rcu_read_lock();
+ 	key = rcu_dereference(sta->ptk[sta->ptk_idx]);
++	if (!key)
++		key = rcu_dereference(sdata->default_unicast_key);
+ 	if (key) {
+ 		switch (key->conf.cipher) {
+ 		case WLAN_CIPHER_SUITE_TKIP:
 -- 
 2.27.0
 
