@@ -2,81 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96644313E8D
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 20:11:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87555313E8E
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 20:11:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236048AbhBHTKp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 14:10:45 -0500
-Received: from foss.arm.com ([217.140.110.172]:39190 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234365AbhBHRuA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 12:50:00 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A75101042;
-        Mon,  8 Feb 2021 09:49:10 -0800 (PST)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4997E3F73D;
-        Mon,  8 Feb 2021 09:49:09 -0800 (PST)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Quentin Perret <qperret@google.com>,
-        Pavan Kondeti <pkondeti@codeaurora.org>,
-        Rik van Riel <riel@surriel.com>
-Subject: Re: [PATCH 3/8] sched/fair: Tweak misfit-related capacity checks
-In-Reply-To: <CAKfTPtA0FXsz7_T+t4WfYjhwuGNeKzbJJJoZNkD6Gz6yDf_ebA@mail.gmail.com>
-References: <20210128183141.28097-1-valentin.schneider@arm.com> <20210128183141.28097-4-valentin.schneider@arm.com> <CAKfTPtADn0X8=ENfvG5dhzM1KbTD+JCCoOm-i8=bVkh0ZBM2Xg@mail.gmail.com> <jhjv9b61md0.mognet@arm.com> <CAKfTPtB_aJE0uDmARvKGe8_oX0Goaada_C5HKy7aaTbFGLxU-A@mail.gmail.com> <jhjsg6a1doz.mognet@arm.com> <CAKfTPtA0FXsz7_T+t4WfYjhwuGNeKzbJJJoZNkD6Gz6yDf_ebA@mail.gmail.com>
-User-Agent: Notmuch/0.21 (http://notmuchmail.org) Emacs/26.3 (x86_64-pc-linux-gnu)
-Date:   Mon, 08 Feb 2021 17:49:00 +0000
-Message-ID: <jhjmtwe1mcz.mognet@arm.com>
+        id S236073AbhBHTLJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 14:11:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57936 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234992AbhBHRuz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 12:50:55 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A923C061794;
+        Mon,  8 Feb 2021 09:50:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=UkfFdgNX9ewseD8DQkTcogcfdbSnU1zlfGHBdnEbdZE=; b=ZZF57D67T0uW2+eX2W2hDAuxHq
+        o+eth4xhEXUIpAwK1aG2TEK3HJ6ZymGrAE4KV9nksRpqnIICRwsG+mg4ZgtOoRjj+UveZJIA+zB2s
+        kWaSAU9F7WyRPQ69Wr1CWVz3KeCIsr7LfBpE/nhnHGBrAr5RJw6gwB58wGceNobUWOeS87tlDpoh5
+        QcBVRelkNekE6x2xEFde1bX4Vyun1CbdsY9l0U9gKx/JRbdPjMvpsGZRrGacfHsySZoCaRXBHHymY
+        WJOhisLKoAvFH9OH2ySsD04uAAicxQ96/tnZISulbbFSLWev89je+UIueVI9A6gO6q/2d0WyUwhRN
+        tXpMbFuQ==;
+Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1l9Afn-006J2K-Lw; Mon, 08 Feb 2021 17:50:07 +0000
+Date:   Mon, 8 Feb 2021 17:50:07 +0000
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     masahiroy@kernel.org, michal.lkml@markovi.net,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        gregkh@linuxfoundation.org
+Subject: Re: [PATCH] kbuild: simplify access to the kernel's version
+Message-ID: <20210208175007.GA1501867@infradead.org>
+References: <20210207161352.2044572-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210207161352.2044572-1-sashal@kernel.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/02/21 16:29, Vincent Guittot wrote:
-> On Fri, 5 Feb 2021 at 21:07, Valentin Schneider
-> <valentin.schneider@arm.com> wrote:
->>
->> Perhaps I can still keep 5/8 with something like
->>
->>   if (!rq->misfit_task_load)
->>           return false;
->>
->>   do {
->>           if (capacity_greater(group->sgc->max_capacity, rq->cpu_capacity))
->>                   return true;
->>
->>           group = group->next;
->>   } while (group != sd->groups);
->
-> I don't catch what you want to achieve with this  while loop compared
-> to the original condition which is :
-> trigger a load_balance :
-> - if there is CPU with higher original capacity
-> - or if the capacity of this cpu has significantly reduced because of
-> pressure and there is maybe others with more capacity even if it's one
-> with highest original capacity
->
+On Sun, Feb 07, 2021 at 11:13:52AM -0500, Sasha Levin wrote:
+> +		(u8)(LINUX_VERSION_MAJOR), (u8)(LINUX_VERSION_PATCHLEVEL),
+> +		(u16)(LINUX_VERSION_SUBLEVEL));
 
-If we had a root-domain-wide (dynamic) capacity maximum, we could make
-check_misfit_status() return false if the CPU *is* pressured but there is
-no better alternative - e.g. if all other CPUs are pressured even worse.
+No need for the casts and braces.
 
-This isn't a correctness issue as the nohz load-balance will just not
-migrate the misfit task, but it would be nice to prevent the nohz kick
-altogether.
-
-I might ditch this for now and revisit it later.
-
->>
->>   return false;
->>
->> This works somewhat well for big.LITTLE, but for DynamIQ systems under a
->> single L3 this ends up iterating over all the CPUs :/
+Otherwise this looks good, but please also kill off KERNEL_VERSION
+and LINUX_KERNEL_VERSION entirely while you're at it.
