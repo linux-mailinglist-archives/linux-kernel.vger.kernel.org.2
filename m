@@ -2,190 +2,274 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49837313256
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 13:30:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D4C13313257
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 13:31:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231722AbhBHMab (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 07:30:31 -0500
-Received: from mail-dm6nam12on2043.outbound.protection.outlook.com ([40.107.243.43]:34304
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231148AbhBHMPu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 07:15:50 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CM6EiUZs71SgnFYE1ns+0wDl4tmIrd1lxi1p0Hc2KXsIs3zKLlExWSDas5+pjx3U2CF/lAWs4y2sZujnZq35Ksaf6P3BqntIYKQcyV1J6UmVgzbN+ziZzu10FTuZ8CVfIVFmINXt+d9S+/FlhVZqUqM62bdoXgVL4LK8ZF2qp2KntQ+YM5l7Cvaionzq+8fh7aNYIOkCHyIFEP4e3tLGOTD3B1+p6P8JplTUnNBEZNgEtNJ8APfEYSWWz33Ja+1Mt6PQa+YosC6rdMuj2wpq5PcxKqxrkovmiNk/McMJYOmN4/nPM/GxFnlnPsSygjhgbMmogAfT47J8OQJzXZbAzg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=c7cp3d5PdEbwJD96QXJ6NN3uF8k8qzXjcQ1n1dC/U4M=;
- b=Ky15JuauYGy4rsP5inwOlYPVxYCRxBr+QJByy1eZ6Y+URzWJxBSJfXXoHAR8Se01Xh7PnyOnyLtMjqz697OH1etG4+uoDbYRAuiSd+6EaJe4QZIrxQcyiiVYFdRynZLuplHjKg2NOl3lZ3kYyAkQMrVKvmMnWNboo+JwqznUAPrU3THn19Fg8Phk1IkldEGl2Fx+siPL7zyF0ntqyJGDXwHCTB+FcA7RIGEr+gWw3+VZZByXM78sCqV6IOeALaC6z9AHcjzBF7FLzeuoLohecYrulEzrlas7KU5WlfzUarcagXar2KPdf4B2bL9m/ii2pIQ1ApWz1/byTW/Fvoyuig==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=c7cp3d5PdEbwJD96QXJ6NN3uF8k8qzXjcQ1n1dC/U4M=;
- b=On3XXYJycuLoQL+S2ug2DqK+0VfsDaywBb6tpJzXAnA/ltZck8tzk2rfDWKNzKEemEFHki/hiYivVrF8h5fA06PlwOtQhXvxJtpUkxqtPVAvex71cKip2qgC3oE28VR/mgqQPQ5bBTTDeZt83ayQKMDL5lSjAY8lv+g0xvEEDuw=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
- by MN2PR12MB4343.namprd12.prod.outlook.com (2603:10b6:208:26f::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.17; Mon, 8 Feb
- 2021 12:14:56 +0000
-Received: from MN2PR12MB3775.namprd12.prod.outlook.com
- ([fe80::c1ff:dcf1:9536:a1f2]) by MN2PR12MB3775.namprd12.prod.outlook.com
- ([fe80::c1ff:dcf1:9536:a1f2%2]) with mapi id 15.20.3825.030; Mon, 8 Feb 2021
- 12:14:55 +0000
-Subject: Re: [PATCH] drm/amdgpu: fix potential integer overflow on shift of a
- int
-To:     Walter Harms <wharms@bfs.de>,
-        Colin King <colin.king@canonical.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, Huang Rui <ray.huang@amd.com>,
-        Junwei Zhang <Jerry.Zhang@amd.com>,
-        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>
-Cc:     "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20210207230751.8576-1-colin.king@canonical.com>
- <c6c99dba-aea9-304c-2246-e24632955479@amd.com>
- <3aed86cfb8014badbcbc4ee9f007976d@bfs.de>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
-Message-ID: <877bdf13-08d3-b471-40fb-02941cce3e4e@amd.com>
-Date:   Mon, 8 Feb 2021 13:14:49 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-In-Reply-To: <3aed86cfb8014badbcbc4ee9f007976d@bfs.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [2a02:908:1252:fb60:be8a:bd56:1f94:86e7]
-X-ClientProxiedBy: AM4PR05CA0028.eurprd05.prod.outlook.com (2603:10a6:205::41)
- To MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
+        id S230146AbhBHMbK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 07:31:10 -0500
+Received: from mx2.suse.de ([195.135.220.15]:51176 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231318AbhBHMQS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 07:16:18 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1612786530; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=RKXtbcsoovvaCUMeOTZHe5m8aYHItg1m+gJCpla7VS8=;
+        b=X5fxVB+wboUGoTTgV9YtK1DA66r0Wjs0HMGrY68aayv1ZUq5YQT4nJulsXvEVL4gL+alGf
+        9bKmTzNpqrpYzS8PWAQvryIIC4kMHz/YznN7n00ypcV6bGmkpwwqyzRkdOW0to55i9Wj3W
+        xHMG7Z8yC7E/TG5EfZPOWe0BL0e5vUQ=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 8C9C8AD2E;
+        Mon,  8 Feb 2021 12:15:30 +0000 (UTC)
+Subject: Re: [PATCH 7/7] xen/evtchn: read producer index only once
+To:     Jan Beulich <jbeulich@suse.com>
+Cc:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org
+References: <20210206104932.29064-1-jgross@suse.com>
+ <20210206104932.29064-8-jgross@suse.com>
+ <72334160-cffe-2d8a-23b7-2ea9ab1d803a@suse.com>
+ <626f500a-494a-0141-7bf3-94fb86b47ed4@suse.com>
+ <e88526ac-6972-fe08-c58f-ea872cbdcc14@suse.com>
+ <d0ca217c-ecc9-55f7-abb1-30a687a46b31@suse.com>
+ <a30db278-087b-554c-d5bf-1317e14e8508@suse.com>
+From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+Message-ID: <9d725a1b-ec8e-c078-5ec6-9c4899d4c7aa@suse.com>
+Date:   Mon, 8 Feb 2021 13:15:29 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2a02:908:1252:fb60:be8a:bd56:1f94:86e7] (2a02:908:1252:fb60:be8a:bd56:1f94:86e7) by AM4PR05CA0028.eurprd05.prod.outlook.com (2603:10a6:205::41) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.20 via Frontend Transport; Mon, 8 Feb 2021 12:14:53 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: f643ca1c-307f-4a66-a7af-08d8cc2b2526
-X-MS-TrafficTypeDiagnostic: MN2PR12MB4343:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MN2PR12MB4343A284A015D17CEED93379838F9@MN2PR12MB4343.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: spGpbA4CIkWtOQ9ynagqgpYWCs2jVUlF1/bvuSlsIHautJJDZ8yShf424guU2OBTxGn7Dg0MITVvb7lbuezdzHR64NSloBtW6DJcQv/gpkbDdEBpwEKWg/grOBwnmnzWetg6yKCG4o2s3DJg5dV04zXWI0dM0aTxcQRFJArToZwsfMTXE1ORVN1vHf9ulRT1T0K33Ppql7HUw9EgUGheuhAnD1SKT85MdceLXbwhyoqHhZKalT0peJMCCGKSDhJVBr4wJqblAaVGxs65Vnp2qLsZuqx+JcD1AWKuXu5KnHRu36eX/dDyQ9MIx7hMxDOqrFWYgTkEltny9Utp0nmbV0cD1IbkWEwnFdKoIG6IBQJSIraSab9A/a9RqdSmR9CY8b12LytmKdsYqBFVgMwa8AbTI5e9RQUajaoyqDgHlGIWGGMk+cCAHJOws0GZ8SwbQLDXWRnHThRZoiPQSQHnadWAFwGsDwl12l5HDukZYZ8gPyUHOeGUgWqYUz9K4zmRtSxA4LL2MgaMJ1DbnZUowo52WZJxohYc14EgNrn92O26Hi9isA99QSAuitI3bTpyVbkMY5ExW3PQBijp4aPI1WbaCytK0gOn86fTFBnJ2XQ=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(366004)(396003)(39860400002)(136003)(36756003)(54906003)(5660300002)(186003)(8936002)(2616005)(478600001)(86362001)(6666004)(16526019)(31696002)(110136005)(66946007)(316002)(4326008)(66476007)(31686004)(66556008)(8676002)(66574015)(83380400001)(52116002)(2906002)(6486002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?akI4eU51YXNmRFk4eEY4UmFveFVaTm1EMnNLVS9zM3NWbXpKMWxPZ1VJbU02?=
- =?utf-8?B?eW1vRGorVUZ3eFQ4U1psV0ROQVZnQUtZZTZpUnBUZXdMSTdKenhJVDdFMjFa?=
- =?utf-8?B?dkF6dHZCbW9rTnpKWjB4QzZxbUFjVFFhV01QL0RUaUtuSWVZTkpRamthZERI?=
- =?utf-8?B?RGgrQ1RCK2NTNHRLVnpNMnA3ZWJXcjl6RWdwN2s2TmhOeXV3Q0xuL3NTbHc4?=
- =?utf-8?B?OVhla0FaMXhtcXVlOGdqdUVQWklKd2E3S08vKzVPamx3NTNPRS9lTzJVTzhk?=
- =?utf-8?B?cCtRY0NQTzViK3FJY1NvMThVbXRxSjRSd1BBTzlYU3pXenYxcGk0MXJpNVB4?=
- =?utf-8?B?dk1FenVhS2MwR0Fnd1ZRZVlacWpCNjl1VVpzOVhzOE1nUC9WQi9ST3BpYURZ?=
- =?utf-8?B?MkdzN01Fak5PUHBpOGU3RzdrOTRCTmVzZGd1QnRDeGJNd3RRa0pIZUJtQ1VP?=
- =?utf-8?B?OWVwRE96aXhDektNREtOWHN5Z1h5TDNjNC9ZQzZwejg4WXNyUk9YOVQ2OHV3?=
- =?utf-8?B?VFc5NjFtb2hXejlQT3YxUXQ4cjNCSHc5WGhjSjdyOTdEeElDTjVyRkhEeERk?=
- =?utf-8?B?bzlETTh4ZnhLMFBwZGlOUDJIL0IvL1JYMzg3ZWx0SGNPaGhwMjZpUjJzcGNw?=
- =?utf-8?B?WHhRRFZpVXlkcGFVcWE1SFdiWnd5aTNSWWFuZnpySGdQKzZqREd2ME9hNzFT?=
- =?utf-8?B?U0lwSjdrS1ptZ0krdjlQRjAwYVJkdHZ6VjdaK3ZSQldRem14RWJwbnNVc0k4?=
- =?utf-8?B?OEZIUFMyT1Jza3AvSWpwVG1MdkVZbkZsSXY4WlorekxwWExHOFYxMzdnK1pz?=
- =?utf-8?B?cDJ0THRNUU9qdXFVa0laWGh4bmFFRUlZTlBCMFNBOVAxaks4SFNBN3dwQmQ1?=
- =?utf-8?B?dHZzWXJPbUZMYVV5TDlQSHBmWFRHMDdDZUVUalhIUU5tMlhVTWtpN0tsVjVY?=
- =?utf-8?B?QzJRaHVRemhQOTg1Y3dhR0dTQk80YlJMd3NEMGYyQWxhWmJjN290VElIMkRr?=
- =?utf-8?B?SUtKZFRrNTZlcTMybWFkNm5jTmx5TTAvakJNaEVGZlBHRDkyZFlFVUF5SzA4?=
- =?utf-8?B?UHkwSzdWbXhPRUFPNmpoaXVRb01BeTBzdm1LR1VMRjY0MEJ6N0pDb25Jamoz?=
- =?utf-8?B?a0hZUlpDQWpQYmZjVlNyc1BySUorNVJqUzEzNVBkUVBxeGJ0c1JQSEEwVFk1?=
- =?utf-8?B?bDZ3SHBsOEFWS2VhNU4wc3MzRGF4VTFqcHhkN1M4eHMxdjlDMDlISVlkQm1z?=
- =?utf-8?B?NDFWeEdwTjV1TmFDc1JDZkRWK1dQUVNLSjhLa1pQdlF1YnZYWFhKeXRwaUxR?=
- =?utf-8?B?aTJZandxYmo1a0drMm5jd2RISk51amp2SjdQNFBseFc4L2VMSUV2RkF1dHI2?=
- =?utf-8?B?T2NNcCtYbzZVbWx2REFSOHFmQ094dVIyaUpNWkxkVDB5V1VWTTVaMUxJRnJk?=
- =?utf-8?B?eWQwQnN0RzhUUEpPTTlvdklxY3hSQ2JEUExidGZLTmdWakhBVmN4N2ZobjBM?=
- =?utf-8?B?ZW9qOEVSbmh6RUZsSElPRzErejNnMjhuT3RmNnlwZndtL2tGNU9BOVExekps?=
- =?utf-8?B?dlRsS01ranZjdjZpbWVOZWhVc3IwSno1bi8vaVdHRWI4ZW1VYkZnVlg4MFZR?=
- =?utf-8?B?SklMZ2Z5VFZWRlM2WDdXMjlpT3lnejFENkFDZlA4Z1dHd0RaWnVEVjN3Vllw?=
- =?utf-8?B?MEdYREgwSGlabmFjSEFWaC9POVM0dS9pVlMxNEVvL2RzU2VTRmhzUzVJMVl5?=
- =?utf-8?B?QUgxTTRQdXZmVHo4b1p1NWxyc3ZKUHZTaVh6NTNtVTlVOE1iRkViT1hxS2ph?=
- =?utf-8?B?R3ZRbEIxSmoxUkxWZG1UOWtDbGxwY1ZDOTBxZXJmNS9idUxFWmM2eUI4b0kz?=
- =?utf-8?Q?qJ/lpnMZWwSOy?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f643ca1c-307f-4a66-a7af-08d8cc2b2526
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Feb 2021 12:14:55.8941
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: SRQoA3+6S55jpvZitHIQsLu6zmRZiCo/bjMnBNjhlTuTtaAEgnpqittC1LCYky1U
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4343
+In-Reply-To: <a30db278-087b-554c-d5bf-1317e14e8508@suse.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="YuKOlcDS7YODQvUINCuHNtInK5LAZedtz"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For start and end?  The hardware has 48 bit address space and that won't 
-fit into 32bits.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--YuKOlcDS7YODQvUINCuHNtInK5LAZedtz
+Content-Type: multipart/mixed; boundary="wyQF6qxm371oj8AGDLzN5uM2V34m93hPf";
+ protected-headers="v1"
+From: =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+To: Jan Beulich <jbeulich@suse.com>
+Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+ Stefano Stabellini <sstabellini@kernel.org>, linux-kernel@vger.kernel.org,
+ xen-devel@lists.xenproject.org
+Message-ID: <9d725a1b-ec8e-c078-5ec6-9c4899d4c7aa@suse.com>
+Subject: Re: [PATCH 7/7] xen/evtchn: read producer index only once
+References: <20210206104932.29064-1-jgross@suse.com>
+ <20210206104932.29064-8-jgross@suse.com>
+ <72334160-cffe-2d8a-23b7-2ea9ab1d803a@suse.com>
+ <626f500a-494a-0141-7bf3-94fb86b47ed4@suse.com>
+ <e88526ac-6972-fe08-c58f-ea872cbdcc14@suse.com>
+ <d0ca217c-ecc9-55f7-abb1-30a687a46b31@suse.com>
+ <a30db278-087b-554c-d5bf-1317e14e8508@suse.com>
+In-Reply-To: <a30db278-087b-554c-d5bf-1317e14e8508@suse.com>
 
-Only the fragment handling can't do more than 2GB at the same time.
+--wyQF6qxm371oj8AGDLzN5uM2V34m93hPf
+Content-Type: multipart/mixed;
+ boundary="------------E4AB4358A9365B6EDCA7EB62"
+Content-Language: en-US
 
-Christian.
+This is a multi-part message in MIME format.
+--------------E4AB4358A9365B6EDCA7EB62
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
 
-Am 08.02.21 um 12:05 schrieb Walter Harms:
-> i am curious:
-> what is the win to have a unsigned 64 bit integer in the first
-> place ?
->
-> re,
->   wh
-> ________________________________________
-> Von: Christian König <christian.koenig@amd.com>
-> Gesendet: Montag, 8. Februar 2021 10:17:42
-> An: Colin King; Alex Deucher; David Airlie; Daniel Vetter; Huang Rui; Junwei Zhang; amd-gfx@lists.freedesktop.org; dri-devel@lists.freedesktop.org
-> Cc: kernel-janitors@vger.kernel.org; linux-kernel@vger.kernel.org
-> Betreff: Re: [PATCH] drm/amdgpu: fix potential integer overflow on shift of a int
->
-> Am 08.02.21 um 00:07 schrieb Colin King:
->> From: Colin Ian King <colin.king@canonical.com>
+On 08.02.21 12:54, Jan Beulich wrote:
+> On 08.02.2021 11:59, J=C3=BCrgen Gro=C3=9F wrote:
+>> On 08.02.21 11:51, Jan Beulich wrote:
+>>> On 08.02.2021 11:41, J=C3=BCrgen Gro=C3=9F wrote:
+>>>> On 08.02.21 10:48, Jan Beulich wrote:
+>>>>> On 06.02.2021 11:49, Juergen Gross wrote:
+>>>>>> In evtchn_read() use READ_ONCE() for reading the producer index in=
+
+>>>>>> order to avoid the compiler generating multiple accesses.
+>>>>>>
+>>>>>> Signed-off-by: Juergen Gross <jgross@suse.com>
+>>>>>> ---
+>>>>>>     drivers/xen/evtchn.c | 2 +-
+>>>>>>     1 file changed, 1 insertion(+), 1 deletion(-)
+>>>>>>
+>>>>>> diff --git a/drivers/xen/evtchn.c b/drivers/xen/evtchn.c
+>>>>>> index 421382c73d88..f6b199b597bf 100644
+>>>>>> --- a/drivers/xen/evtchn.c
+>>>>>> +++ b/drivers/xen/evtchn.c
+>>>>>> @@ -211,7 +211,7 @@ static ssize_t evtchn_read(struct file *file, =
+char __user *buf,
+>>>>>>     			goto unlock_out;
+>>>>>>    =20
+>>>>>>     		c =3D u->ring_cons;
+>>>>>> -		p =3D u->ring_prod;
+>>>>>> +		p =3D READ_ONCE(u->ring_prod);
+>>>>>>     		if (c !=3D p)
+>>>>>>     			break;
+>>>>>
+>>>>> Why only here and not also in
+>>>>>
+>>>>> 		rc =3D wait_event_interruptible(u->evtchn_wait,
+>>>>> 					      u->ring_cons !=3D u->ring_prod);
+>>>>>
+>>>>> or in evtchn_poll()? I understand it's not needed when
+>>>>> ring_prod_lock is held, but that's not the case in the two
+>>>>> afaics named places. Plus isn't the same then true for
+>>>>> ring_cons and ring_cons_mutex, i.e. aren't the two named
+>>>>> places plus evtchn_interrupt() also in need of READ_ONCE()
+>>>>> for ring_cons?
+>>>>
+>>>> The problem solved here is the further processing using "p" multiple=
+
+>>>> times. p must not be silently replaced with u->ring_prod by the
+>>>> compiler, so I probably should reword the commit message to say:
+>>>>
+>>>> ... in order to not allow the compiler to refetch p.
+>>>
+>>> I still wouldn't understand the change (and the lack of
+>>> further changes) then: The first further use of p is
+>>> outside the loop, alongside one of c. IOW why would c
+>>> then not need treating the same as p?
 >>
->> The left shift of int 32 bit integer constant 1 is evaluated using 32
->> bit arithmetic and then assigned to an unsigned 64 bit integer. In the
->> case where *frag is 32 or more this can lead to an oveflow.  Avoid this
->> by shifting 1ULL.
-> Well that can't happen. Take a look at the code in that function:
->
->>                  max_frag = 31;
-> ...
->>          if (*frag >= max_frag) {
->>                  *frag = max_frag;
->>                  *frag_end = end & ~((1ULL << max_frag) - 1);
->>          } else {
->>                  *frag_end = start + (1 << *frag);
->>          }
-> But I'm fine with applying the patch if it silences your warning.
->
-> Regards,
-> Christian.
->
->> Addresses-Coverity: ("Unintentional integer overflow")
->> Fixes: dfcd99f6273e ("drm/amdgpu: meld together VM fragment and huge page handling")
->> Signed-off-by: Colin Ian King <colin.king@canonical.com>
->> ---
->>    drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c | 2 +-
->>    1 file changed, 1 insertion(+), 1 deletion(-)
+>> Its value wouldn't change, as ring_cons is being modified only at
+>> the bottom of this function, and nowhere else (apart from the reset
+>> case, but this can't run concurrently due to ring_cons_mutex).
 >>
->> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
->> index 9d19078246c8..53a925600510 100644
->> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
->> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
->> @@ -1412,7 +1412,7 @@ static void amdgpu_vm_fragment(struct amdgpu_vm_update_params *params,
->>                *frag = max_frag;
->>                *frag_end = end & ~((1ULL << max_frag) - 1);
->>        } else {
->> -             *frag_end = start + (1 << *frag);
->> +             *frag_end = start + (1ULL << *frag);
->>        }
->>    }
+>>> I also still don't see the difference between latching a
+>>> value into a local variable vs a "freestanding" access -
+>>> neither are guaranteed to result in exactly one memory
+>>> access afaict.
 >>
+>> READ_ONCE() is using a pointer to volatile, so any refetching by
+>> the compiler would be a bug.
+>=20
+> Of course, but this wasn't my point. I was contrasting
+>=20
+> 		c =3D u->ring_cons;
+> 		p =3D u->ring_prod;
+>=20
+> which you change with
+>=20
+> 		rc =3D wait_event_interruptible(u->evtchn_wait,
+> 					      u->ring_cons !=3D u->ring_prod);
+>=20
+> which you leave alone.
 
+Can you point out which problem might arise from that?
+
+
+Juergen
+
+--------------E4AB4358A9365B6EDCA7EB62
+Content-Type: application/pgp-keys;
+ name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment;
+ filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
+cWx
+w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
+f8Z
+d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
+9bf
+IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
+G7/
+377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
+3Jv
+c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
+QIe
+AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
+hpw
+dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
+MbD
+1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
+oPH
+Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
+5QL
++qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
+2Vu
+IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
+QoL
+BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
+Wf0
+teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
+/nu
+AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
+ITT
+d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
+XBK
+7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
+80h
+SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
+AcD
+AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
+FOX
+gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
+jnD
+kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
+N51
+N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
+otu
+fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
+tqS
+EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
+hsD
+BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
+g3O
+ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
+dM7
+wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
+D+j
+LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
+V2x
+AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
+Eaw
+QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
+nHI
+s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
+wgn
+BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
+bVF
+LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
+pEd
+IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
+QAB
+wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
+Tbe
+8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
+vJz
+Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
+VGi
+wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
+svi
+uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
+zXs
+ZDn8R38=3D
+=3D2wuH
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------E4AB4358A9365B6EDCA7EB62--
+
+--wyQF6qxm371oj8AGDLzN5uM2V34m93hPf--
+
+--YuKOlcDS7YODQvUINCuHNtInK5LAZedtz
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmAhK2EFAwAAAAAACgkQsN6d1ii/Ey8H
+9wf+MPuO3ggydQhCAfAfX21hvC2kwrm+cuFYLd6oNmNNUUxwMFRpU2he8VbAF/pzFZNm/ikIfmQe
+Yr5Oeaa2WYDZq0NjGB3khtK11dreh0Ec5F6Z14uMxnTuezK+q7jJPvr7q09NXFPYlJKS458DmWM7
+sIoCYNvRpVJdC//ZX/ybvaCMq3+wC6ySJgtFcbxUxQgB5t5oqnvTnVAOZzs0TaT4UKm7JlpDsH+j
+WcpWyPx8Km5TIqHgM+SvfEPMOXMmPeB4zj1/YPh4koj/YDTA64DWirN6dcf6W2Eq2MbBXr7+u0fO
+4OpZ2B/ld6d1WG2/FhGqIcixUlm1pJo3i6W+ZWioKA==
+=Jxbh
+-----END PGP SIGNATURE-----
+
+--YuKOlcDS7YODQvUINCuHNtInK5LAZedtz--
