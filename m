@@ -2,99 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 389B63133A7
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 14:50:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 867CB3133A9
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 14:50:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231243AbhBHNsJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 08:48:09 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:48294 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231443AbhBHNqZ (ORCPT
+        id S231320AbhBHNsl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 08:48:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33712 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230400AbhBHNrd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 08:46:25 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 118Dfcw5117645;
-        Mon, 8 Feb 2021 13:45:30 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=S/CuYIjuHjzFLD6mnTlI2mltUXg/4xRtQhW7gxXZHxA=;
- b=Ztm64LaUuV5sFQSFz/fKCMdhsz9sOHlWQlFks7hyBmYtnLgj2eyhgw+LjApKeADdoofC
- 51XSQC/2eCzG/OpCb1bP2NP+09DcEEHnomdi4MN+oRiQE0XnWMGRjq/mv1G40d8+JpsA
- tTnuE4ZPaiJAMPVoImYCl4y0hBtMv/U5N9yeYI/SOqFWKAU0eTvj+x+fHZQJL8TVgpFv
- 2FPywRRFzExtVODTReQITiPVOtnXuTB3ZQ/SggYcRPqxFkdV1/UHz6xCLw4daXFMfmL8
- vHh7bSzBnAgEByGLXsa1Y1K7iUqRIRYfrv7VDkOxSq95vt7aU/KCRpo0Gw53kcqNh8+/ 3A== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2130.oracle.com with ESMTP id 36hgmac18x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 08 Feb 2021 13:45:30 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 118DfJ1T007946;
-        Mon, 8 Feb 2021 13:45:28 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3020.oracle.com with ESMTP id 36j50ytayr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 08 Feb 2021 13:45:28 +0000
-Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 118DjQ4E013402;
-        Mon, 8 Feb 2021 13:45:26 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 08 Feb 2021 05:45:26 -0800
-Date:   Mon, 8 Feb 2021 16:45:17 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Youling Tang <tangyouling@loongson.cn>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        devel@driverdev.osuosl.org, linux-mediatek@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] staging: fix ignoring return value warning
-Message-ID: <20210208134517.GG2696@kadam>
-References: <1612689808-30985-1-git-send-email-tangyouling@loongson.cn>
+        Mon, 8 Feb 2021 08:47:33 -0500
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32E7CC061221;
+        Mon,  8 Feb 2021 05:46:03 -0800 (PST)
+Received: by mail-wr1-x429.google.com with SMTP id r21so959366wrr.9;
+        Mon, 08 Feb 2021 05:46:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=t7JqhDBA+qZoqkrdN9PcsP0EetWn4+vl99SpYh6ksj0=;
+        b=dmCCkeRW+O5UOMgJIBq61K/T7yrs6ECwcv6GtnoRIjrq+qT40KQzK9ap36oR2mxR3n
+         iJjgOtIQ0DPDJzh3QFlLkuqOoFRzTIDNCwEwC4r7VSrGQHDIhqrre3OxXZ9tn3P5kYOL
+         M8UiH8XO7QS5jBJSURGraZq/qSGAkB+hqy8U4BnMrNXucC6+UcywSvAh6AF9lb7jF6yX
+         LZ2RgsILhlLPL7w3XppqxMyO7P/2ZMhzo448Vs9+4UtGfkDMBunpHYYaKnJeKCDlKr4U
+         sS0Gg82NluMvk46WL8G1cYUtiF8qdYkNJJ7tuFfSmCHcwYBKF+cf+/PUlvqQGeAstL+f
+         noNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=t7JqhDBA+qZoqkrdN9PcsP0EetWn4+vl99SpYh6ksj0=;
+        b=qlVfMhmp/xACu73394WkKtvqUYVXvcltj5Xv2VlPFDOYPueztX9tOhzBO+sN4nqupx
+         58+6p8yIexpBADkIfqHejx/nvh59fBssYEcmBqJ+plfETsC/vRXX6zPo/u5xqhFnwtXr
+         Tas97FGk6gVlp3n01IEfXhxzLgd8b1vetTn2yM9w0/kJHqRKdYNC2IXOxfBXLMYxBVTf
+         RMxhglQ69kS2dC4hS3ljg0G2lyAPzBMeE/VTgb0SAMSabEHw6vpp5hOKYokflhEMKsBQ
+         dOfUyR8lOuJmjk5jXs/iDLd/5VMdoNsoUaEJt3Yfr+JR+QoTSnkbQAlFDYYZwye44RMu
+         gy7Q==
+X-Gm-Message-State: AOAM532/fogv55ldSYAU1sJKVXE87PuY7Tbq6kvgA95EFq00ElOxEZvK
+        JSvXLzaaz7mwGav9dhqi2vU9xWCZVo/CaQ==
+X-Google-Smtp-Source: ABdhPJxc04wm7pEKEuYZKZLeZnD9PBYpBeCOSWHL10ReYbPcvOIBqc112cmGEZ5PDHm6riL4LHTajA==
+X-Received: by 2002:adf:dd83:: with SMTP id x3mr19731086wrl.421.1612791961907;
+        Mon, 08 Feb 2021 05:46:01 -0800 (PST)
+Received: from stitch.. ([80.71.140.73])
+        by smtp.gmail.com with ESMTPSA id m24sm20640696wmi.24.2021.02.08.05.46.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Feb 2021 05:46:00 -0800 (PST)
+Sender: Emil Renner Berthing <emil.renner.berthing@gmail.com>
+From:   Emil Renner Berthing <kernel@esmil.dk>
+To:     =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
+        linux-mmc@vger.kernel.org
+Cc:     Emil Renner Berthing <kernel@esmil.dk>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] mmc: cb710: Use new tasklet API
+Date:   Mon,  8 Feb 2021 14:45:51 +0100
+Message-Id: <20210208134551.39696-1-kernel@esmil.dk>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1612689808-30985-1-git-send-email-tangyouling@loongson.cn>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-IMR: 1
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9888 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 bulkscore=0 adultscore=0
- mlxlogscore=999 phishscore=0 spamscore=0 suspectscore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102080093
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9888 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- spamscore=0 lowpriorityscore=0 phishscore=0 adultscore=0 impostorscore=0
- suspectscore=0 mlxscore=0 clxscore=1011 mlxlogscore=999 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102080093
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Feb 07, 2021 at 05:23:28PM +0800, Youling Tang wrote:
-> Fix the below ignoring return value warning for device_reset.
-> 
-> drivers/staging/mt7621-dma/mtk-hsdma.c:685:2: warning: ignoring return value
-> of function declared with 'warn_unused_result' attribute [-Wunused-result]
->         device_reset(&pdev->dev);
->         ^~~~~~~~~~~~ ~~~~~~~~~~
-> drivers/staging/ralink-gdma/ralink-gdma.c:836:2: warning: ignoring return value
-> of function declared with 'warn_unused_result' attribute [-Wunused-result]
->         device_reset(&pdev->dev);
->         ^~~~~~~~~~~~ ~~~~~~~~~~
-> 
+This converts the driver to use the new tasklet API introduced in
+commit 12cc923f1ccc ("tasklet: Introduce new initialization API")
 
-We can't really do this sort of fix without the hardware to test it.
-This could be the correct fix or perhaps switching to device_reset_optional()
-is the correct fix.  We can't know unless we have the hardware to test.
+Signed-off-by: Emil Renner Berthing <kernel@esmil.dk>
+---
+ drivers/mmc/host/cb710-mmc.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-People think silencing warnings is good, but it's actually bad.  The
-warning is there to show us a potential bug.  If we silence the warning
-without fixing the bug, then we it's like when your mom tells you to
-clean up the room and you instead just switch off the light.  It doesn't
-fix the problem, it only makes it harder to find.
-
-regards,
-dan carpenter
+diff --git a/drivers/mmc/host/cb710-mmc.c b/drivers/mmc/host/cb710-mmc.c
+index e84ed84ea4cc..6d623b2681c3 100644
+--- a/drivers/mmc/host/cb710-mmc.c
++++ b/drivers/mmc/host/cb710-mmc.c
+@@ -646,14 +646,14 @@ static int cb710_mmc_irq_handler(struct cb710_slot *slot)
+ 	return 1;
+ }
+ 
+-static void cb710_mmc_finish_request_tasklet(unsigned long data)
++static void cb710_mmc_finish_request_tasklet(struct tasklet_struct *t)
+ {
+-	struct mmc_host *mmc = (void *)data;
+-	struct cb710_mmc_reader *reader = mmc_priv(mmc);
++	struct cb710_mmc_reader *reader = from_tasklet(reader, t,
++						       finish_req_tasklet);
+ 	struct mmc_request *mrq = reader->mrq;
+ 
+ 	reader->mrq = NULL;
+-	mmc_request_done(mmc, mrq);
++	mmc_request_done(mmc_from_priv(reader), mrq);
+ }
+ 
+ static const struct mmc_host_ops cb710_mmc_host = {
+@@ -718,8 +718,8 @@ static int cb710_mmc_init(struct platform_device *pdev)
+ 
+ 	reader = mmc_priv(mmc);
+ 
+-	tasklet_init(&reader->finish_req_tasklet,
+-		cb710_mmc_finish_request_tasklet, (unsigned long)mmc);
++	tasklet_setup(&reader->finish_req_tasklet,
++		      cb710_mmc_finish_request_tasklet);
+ 	spin_lock_init(&reader->irq_lock);
+ 	cb710_dump_regs(chip, CB710_DUMP_REGS_MMC);
+ 
+-- 
+2.30.0
 
