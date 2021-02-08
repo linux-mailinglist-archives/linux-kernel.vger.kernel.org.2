@@ -2,139 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89999312CEB
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 10:12:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 490F5312CD5
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 10:11:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231396AbhBHJMK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 04:12:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54946 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231239AbhBHIyR (ORCPT
+        id S231315AbhBHJJv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 04:09:51 -0500
+Received: from mail-oi1-f182.google.com ([209.85.167.182]:41399 "EHLO
+        mail-oi1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231180AbhBHIxP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 03:54:17 -0500
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CE53C061788
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 00:53:34 -0800 (PST)
-Received: by mail-pf1-x432.google.com with SMTP id w18so9270050pfu.9
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 00:53:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=V1vqZme5dUkJLXAIFa1FOp/NT03yErdrlnVUsdRukuU=;
-        b=bx5T3ZXOiy8/mkGPTZZ4aQ1Ov6xqOxnsHxA6UjYIT/8cnon18UmMPPugV3JAE5y22i
-         7IjEechfqZhELNm+4KnooZUM/lYKrPFgCpNa2i7QYFBb9DuHg2z4zthizo06KK13S+J1
-         C0i7YwqWW6mAtoE+rQk/SWvcVGK2t3K2nta7D77XxmJMNHaYjXJnwleRTjgV5k0wiafQ
-         L9J14T5tnvR0Q1Vnl/9Ryv+UE8YhBjktbk1MSgZHelAP+fnjLZ1IiTkTkU0Ywr9YHSjX
-         wwf7nog71P0Y0JpsoQLnT+434CnMB6Ab93s9nMPaLS44W/3Rtr1kU3A6t+b9k35thHZj
-         2H4Q==
+        Mon, 8 Feb 2021 03:53:15 -0500
+Received: by mail-oi1-f182.google.com with SMTP id v193so9400538oie.8;
+        Mon, 08 Feb 2021 00:52:59 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=V1vqZme5dUkJLXAIFa1FOp/NT03yErdrlnVUsdRukuU=;
-        b=J7BVfTRFyeoHnbGjg6wYlRflW+HSeIoh5W3+AUqPMiiKKHMnk/fN6reiL4RomxSysF
-         kMwIZKHTHpCXGdgQC+tFgnqkqHe4TUcwHep36wC75HzD+6JMcZphdVQx5v/0d/FrC/mu
-         3IyGCGWJ/7RDaug5m2bOkIGiKoPlndk5OPfLWOxDvYN0tvo4yoHgPNzM235ICTBcNYyg
-         qDS9Iw1WUK4zoIefZjZuSkUyIVjT2FNKQ1+E4aVI+JQ5S91yP6gpqpKGTRaZGuc2gEBd
-         52ric1HSuuSjhQ2H7gu6dT/pUBA+TKYgY5PVCNEem3/WGDh2HtkyIyrD9Ielrmf/2bKQ
-         NXog==
-X-Gm-Message-State: AOAM531XBhAF3oyT9IMO5weRmZx3E6Y9B6h7f75xIu6/K1BZvPrttreC
-        OtlthuuuBFY0QjdQCwUou8IZOA==
-X-Google-Smtp-Source: ABdhPJz4JFIa9ciPD9g3DtSL6o+xw6dNMHhz3p4nYEJpmhwDnzOBGHNd3JN6X6Q9Ym/a63A95a8Hqw==
-X-Received: by 2002:aa7:8ad5:0:b029:1df:5a5a:80e1 with SMTP id b21-20020aa78ad50000b02901df5a5a80e1mr651280pfd.52.1612774413913;
-        Mon, 08 Feb 2021 00:53:33 -0800 (PST)
-Received: from localhost.localdomain ([139.177.225.254])
-        by smtp.gmail.com with ESMTPSA id g15sm17205179pfb.30.2021.02.08.00.53.23
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 08 Feb 2021 00:53:33 -0800 (PST)
-From:   Muchun Song <songmuchun@bytedance.com>
-To:     corbet@lwn.net, mike.kravetz@oracle.com, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
-        paulmck@kernel.org, mchehab+huawei@kernel.org,
-        pawan.kumar.gupta@linux.intel.com, rdunlap@infradead.org,
-        oneukum@suse.com, anshuman.khandual@arm.com, jroedel@suse.de,
-        almasrymina@google.com, rientjes@google.com, willy@infradead.org,
-        osalvador@suse.de, mhocko@suse.com, song.bao.hua@hisilicon.com,
-        david@redhat.com, naoya.horiguchi@nec.com,
-        joao.m.martins@oracle.com
-Cc:     duanxiongchun@bytedance.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org,
-        Muchun Song <songmuchun@bytedance.com>,
-        Miaohe Lin <linmiaohe@huawei.com>
-Subject: [PATCH v15 8/8] mm: hugetlb: optimize the code with the help of the compiler
-Date:   Mon,  8 Feb 2021 16:50:13 +0800
-Message-Id: <20210208085013.89436-9-songmuchun@bytedance.com>
-X-Mailer: git-send-email 2.21.0 (Apple Git-122)
-In-Reply-To: <20210208085013.89436-1-songmuchun@bytedance.com>
-References: <20210208085013.89436-1-songmuchun@bytedance.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zHudw0TAP+YeZRvB+TR6ZUnftiytNBVnLvjklahW0oo=;
+        b=tzQEalYLCl8saKCZDrhDmcgTboQ3hemZWHvXmDdeFLqydnWrRFfM+v7LY5CBEndolt
+         ub2iDdiKWidZv+LU74EYmF0/FCeb7lxhxS34jQXvhWcpHc2xdLZP2zzb10pESYTsBo4/
+         6rjCPcckvbNtXlK1Ymd9fcjstzOSSkfAoCnQ44B98OA5HlSSS39lVLHQX1DKvxl0MjbL
+         rpIZvGg+uF32gQ4Kme+pTqXRPUSbFWJcLXfd6c3/JpCzkaOkEH5i0/yHSvgc1QRHUaSz
+         t37MF1srSS+Lkz7FQ1JEwBN2/cGb+HdpaLR/clvmJklDvfym3LWEQTYMngcALVL3DQ9K
+         te5w==
+X-Gm-Message-State: AOAM531hlodfM9msX1bdih0jhFU9220uCAp7ye3LiGuZGJaV/cpfpovu
+        2khwVlR+9zXGB1o/Gl6RtWejNm5J4bXeyyphl9A=
+X-Google-Smtp-Source: ABdhPJyxve59tNdWgfofA/nLNkbqjjIxo/R+1WXcOfsVCAIYZGcgAKwETZyEVWm957bgHDuco4qw21G5ziyOd5Lq81Y=
+X-Received: by 2002:aca:744:: with SMTP id 65mr10411020oih.153.1612774353903;
+ Mon, 08 Feb 2021 00:52:33 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210208113208.35449879@canb.auug.org.au> <20210208073037.0b9fe4b9@coco.lan>
+ <CAMuHMdVTSCtwbTqBOag_sYHfDnVevZHxZyYOgHMVx936x=e1ZA@mail.gmail.com> <20210208094901.087762b8@coco.lan>
+In-Reply-To: <20210208094901.087762b8@coco.lan>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 8 Feb 2021 09:52:22 +0100
+Message-ID: <CAMuHMdXb99O9j0ji65=GqXOu1iArBgjhzYEGHmO_mM=ursDp9w@mail.gmail.com>
+Subject: Re: linux-next: build warning after merge of the v4l-dvb tree
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the "struct page size" crosses page boundaries we cannot
-make use of this feature. Let free_vmemmap_pages_per_hpage()
-return zero if that is the case, most of the functions can be
-optimized away.
+Hi Mauro,
 
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-Reviewed-by: Miaohe Lin <linmiaohe@huawei.com>
-Reviewed-by: Oscar Salvador <osalvador@suse.de>
----
- include/linux/hugetlb.h |  3 ++-
- mm/hugetlb_vmemmap.c    | 13 +++++++++++++
- 2 files changed, 15 insertions(+), 1 deletion(-)
+On Mon, Feb 8, 2021 at 9:49 AM Mauro Carvalho Chehab <mchehab@kernel.org> wrote:
+> Em Mon, 8 Feb 2021 09:33:14 +0100
+> Geert Uytterhoeven <geert@linux-m68k.org> escreveu:
+> > On Mon, Feb 8, 2021 at 7:35 AM Mauro Carvalho Chehab <mchehab@kernel.org> wrote:
+> > > Em Mon, 8 Feb 2021 11:32:08 +1100
+> > > Stephen Rothwell <sfr@canb.auug.org.au> escreveu:
+> > >
+> > > > After merging the v4l-dvb tree, today's linux-next build (x86_64
+> > > > allmodconfig) produced this warning:
+> > > >
+> > > > WARNING: modpost: drivers/media/i2c/rdacm21-camera_module: 'max9271_set_serial_link' exported twice. Previous export was in drivers/media/i2c/rdacm20-camera_module.ko
+> > > > WARNING: modpost: drivers/media/i2c/rdacm21-camera_module: 'max9271_configure_i2c' exported twice. Previous export was in drivers/media/i2c/rdacm20-camera_module.ko
+> > > > WARNING: modpost: drivers/media/i2c/rdacm21-camera_module: 'max9271_set_high_threshold' exported twice. Previous export was in drivers/media/i2c/rdacm20-camera_module.ko
+> > > > WARNING: modpost: drivers/media/i2c/rdacm21-camera_module: 'max9271_configure_gmsl_link' exported twice. Previous export was in drivers/media/i2c/rdacm20-camera_module.ko
+> > > > WARNING: modpost: drivers/media/i2c/rdacm21-camera_module: 'max9271_set_gpios' exported twice. Previous export was in drivers/media/i2c/rdacm20-camera_module.ko
+> > > > WARNING: modpost: drivers/media/i2c/rdacm21-camera_module: 'max9271_clear_gpios' exported twice. Previous export was in drivers/media/i2c/rdacm20-camera_module.ko
+> > > > WARNING: modpost: drivers/media/i2c/rdacm21-camera_module: 'max9271_enable_gpios' exported twice. Previous export was in drivers/media/i2c/rdacm20-camera_module.ko
+> > > > WARNING: modpost: drivers/media/i2c/rdacm21-camera_module: 'max9271_disable_gpios' exported twice. Previous export was in drivers/media/i2c/rdacm20-camera_module.ko
+> > > > WARNING: modpost: drivers/media/i2c/rdacm21-camera_module: 'max9271_verify_id' exported twice. Previous export was in drivers/media/i2c/rdacm20-camera_module.ko
+> > > > WARNING: modpost: drivers/media/i2c/rdacm21-camera_module: 'max9271_set_address' exported twice. Previous export was in drivers/media/i2c/rdacm20-camera_module.ko
+> > > > WARNING: modpost: drivers/media/i2c/rdacm21-camera_module: 'max9271_set_deserializer_address' exported twice. Previous export was in drivers/media/i2c/rdacm20-camera_module.ko
+> > > > WARNING: modpost: drivers/media/i2c/rdacm21-camera_module: 'max9271_set_translation' exported twice. Previous export was in drivers/media/i2c/rdacm20-camera_module.ko
+> > > >
+> > > > Introduced by commit
+> > > >
+> > > >   a59f853b3b4b ("media: i2c: Add driver for RDACM21 camera module")
+> > > >
+> > >
+> > > It sounds to be due to a Makefile mess:
+> > >
+> > >         drivers/media/i2c/Makefile:rdacm20-camera_module-objs   := rdacm20.o max9271.o
+> > >         drivers/media/i2c/Makefile:rdacm21-camera_module-objs   := rdacm21.o max9271.o
+> > >
+> > > Neither drivers should be including max9271.o as their objects, but, instead,
+> > > be addressing max9271 dependency via Kconfig.
+> >
+> > Wouldn't
+> >
+> >     obj-$(CONFIG_VIDEO_RDACM20)     += rdacm20.o max9271.o
+> >     obj-$(CONFIG_VIDEO_RDACM21)     += rdacm21.o max9271.o
+> >
+> > work, too?
+>
+> Not 100% sure, but I guess this would cause problems with allyesconfig.
 
-diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
-index 822ab2f5542a..7bfb06e16298 100644
---- a/include/linux/hugetlb.h
-+++ b/include/linux/hugetlb.h
-@@ -878,7 +878,8 @@ extern bool hugetlb_free_vmemmap_enabled;
- 
- static inline bool is_hugetlb_free_vmemmap_enabled(void)
- {
--	return hugetlb_free_vmemmap_enabled;
-+	return hugetlb_free_vmemmap_enabled &&
-+	       is_power_of_2(sizeof(struct page));
- }
- #else
- static inline bool is_hugetlb_free_vmemmap_enabled(void)
-diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
-index a67301a9d19a..2e7e1d6ee458 100644
---- a/mm/hugetlb_vmemmap.c
-+++ b/mm/hugetlb_vmemmap.c
-@@ -211,6 +211,12 @@ early_param("hugetlb_free_vmemmap", early_hugetlb_free_vmemmap_param);
-  */
- static inline unsigned int free_vmemmap_pages_per_hpage(struct hstate *h)
- {
-+	/*
-+	 * This check aims to let the compiler help us optimize the code as
-+	 * much as possible.
-+	 */
-+	if (!is_power_of_2(sizeof(struct page)))
-+		return 0;
- 	return h->nr_free_vmemmap_pages;
- }
- 
-@@ -280,6 +286,13 @@ void __init hugetlb_vmemmap_init(struct hstate *h)
- 	BUILD_BUG_ON(NR_USED_SUBPAGE >=
- 		     RESERVE_VMEMMAP_SIZE / sizeof(struct page));
- 
-+	/*
-+	 * The compiler can help us to optimize this function to null
-+	 * when the size of the struct page is not power of 2.
-+	 */
-+	if (!is_power_of_2(sizeof(struct page)))
-+		return;
-+
- 	if (!hugetlb_free_vmemmap_enabled)
- 		return;
- 
+Duplicates will be filtered out.
+An example using this method is drivers/net/ethernet/8390/Makefile.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-2.11.0
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
