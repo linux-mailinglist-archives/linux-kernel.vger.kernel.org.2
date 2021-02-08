@@ -2,160 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68C1B314221
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 22:44:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0A80314223
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 22:45:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236315AbhBHVny (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 16:43:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45734 "EHLO
+        id S236873AbhBHVob (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 16:44:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235622AbhBHVQe (ORCPT
+        with ESMTP id S235907AbhBHVUE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 16:16:34 -0500
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C010AC06178A
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 13:15:53 -0800 (PST)
-Received: by mail-wr1-x436.google.com with SMTP id g6so5902632wrs.11
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 13:15:53 -0800 (PST)
+        Mon, 8 Feb 2021 16:20:04 -0500
+Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB0A0C061786
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 13:19:22 -0800 (PST)
+Received: by mail-pj1-x104a.google.com with SMTP id ca23so323008pjb.4
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 13:19:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nl24aBu6VlDGNZ7aIznSxL6vPEfdrBS3BpNpZ57YGjw=;
-        b=XqtjWz5JeEz4SxtEHUno0fGRUwKcGm/28uayE8naVV3NhjfgWpBy6C3kFfA1NyCqaB
-         0op1dbvXUucs1zZ4dmzBVjdFwszhdWLrfCy1SEqksUKtppfjt3Wsg0PhXuBhfAjaoA5q
-         l24GYWrqJPmpkNfgBugBs3UGvq0CJGfcjqJOD9fbY0e0PKEZF3wAEgft403iUebRfHUp
-         ar26k7hcvny3Mw5vdWaN3W1VXSGL+9fciG4hthCRBot80fl+J1/ZWwzdjyywp5c4A8kZ
-         gGB1OommyQYpGk7NQfnfXbcSgbjzC0eNsnFnvKO0yWW6YI7OlUd8NktN81cS8C5R9Lci
-         e6uw==
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=mj2tFALi24MejDUAyOIZC6XcOuZLAwzBMp1DQ6QF7c4=;
+        b=R4kz3oxWh27Oa6yQGz5VU3uqmz22vN2b3nKeesahabCfAT7e9yqTnNciJeT2xfk5ou
+         IWNsYRcd58dNHirK6ZQQezlr81Zhw6QZIoaGkGWyVgHTyo+4jkg1HdNt3KuGvgqbi/+3
+         7uyVABrUZF0Knpi/7O/BdUmgOaToVrambu3GLsjcAEZoPPdP72xMaXyfDIOreA4YqhlA
+         +nB8h7pPZ0m1nUaeoqAMTAO+gMtIw/GZe7Li6nltqNfsFeRmPCE95gv/61bASA61YrW9
+         BIacRXmVAmPErl9C7oejKaSPaJF8edAKFWl979P6587nVdK2OrqlsgkpqksTH1Y2Y3wo
+         7OWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nl24aBu6VlDGNZ7aIznSxL6vPEfdrBS3BpNpZ57YGjw=;
-        b=dmNuKS2T65L5j4xGadoYlWJrax7BK5lyEmQsZcOqhbWRc2BwXRtjGWyXx8wCbY3Ge+
-         EbmZhfcf2YoYgbRLt8UmWiwtauqGcASjesgzuzTXyLxnJw546IdjsfnA/RTpwfFfpnBb
-         kISmmQdJuEwG5ZGoJ61BFlJNv68s+TFPQwEFL3/Una3a4+rdjzcg1gz0dpm3aXj0415U
-         E5nkuAz2YfoUDPVBRBiEYEkbxjJ6Hs+vm+SajDp96LuSlJ+skbXHEi5jvIGoYHWDw5sz
-         8N+Qm2DrfCWdee3dFIRC+76wq6rd40vze9l7BWg3uUk/9F1uOAMy8N0A0ToonubakJ3i
-         m+qg==
-X-Gm-Message-State: AOAM5334VWR3JM2/VBUhwUnQb8h7yNbHLG5P2L0XRus6onkzDliIniOZ
-        FhubAsEK8AZz0c8kyIzblIROPrnVd3YicKp0MNdieA==
-X-Google-Smtp-Source: ABdhPJyA2eBkS3cE7KKbo7Rs9na9pXbaSA+d9pi1IhPdrrbmQPtGARl85bTCVHPU+l8/0llSzvGY35At1dSMEGGGxRw=
-X-Received: by 2002:a5d:54ce:: with SMTP id x14mr12979919wrv.182.1612818952437;
- Mon, 08 Feb 2021 13:15:52 -0800 (PST)
-MIME-Version: 1.0
-References: <20210206150833.42120-1-leo.yan@linaro.org> <20210206150833.42120-9-leo.yan@linaro.org>
- <20210208205009.GF2077938@xps15>
-In-Reply-To: <20210208205009.GF2077938@xps15>
-From:   Mike Leach <mike.leach@linaro.org>
-Date:   Mon, 8 Feb 2021 21:15:41 +0000
-Message-ID: <CAJ9a7Vj0T7Yh8mduqAMJtmBwxjWBgEa1O5CO1gw8gYqX8hRmyQ@mail.gmail.com>
-Subject: Re: [PATCH v3 8/8] Documentation: coresight: Add PID tracing description
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc:     Leo Yan <leo.yan@linaro.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Daniel Kiss <Daniel.Kiss@arm.com>,
-        Denis Nikitin <denik@chromium.org>,
-        Al Grant <al.grant@arm.com>,
-        Coresight ML <coresight@lists.linaro.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=mj2tFALi24MejDUAyOIZC6XcOuZLAwzBMp1DQ6QF7c4=;
+        b=hBbn7M8DdtLaJOaNXyWvtONA/pcav8v6a5jBX0e7YC76OsTtYiYc5I9y0KXNcB1Wc3
+         +BZz70OR+6y+m+HLRNGzGgfL+Ilcb2HuVDpY1EkhcWBA96oTN36XPVgdaR+vE6//C5to
+         B7FYY4cNi+/hZa7gOircA4iEhHC8Y+OqzsbciMuJJf0xLoVAF+ViTV6kIjr0datiQqgW
+         I3HosPVH/w6GmJ5P9uQ8Nmkk1pUDM7RllyfabPxzDG+sJiHXCevlYW6oHypSkgY3BbvJ
+         7VsscR0nGMM/MPxcuQezn7kGaWtD9iDUuPbozjGT/IRPqoiOElJi+P+o/pTLmn96vIjh
+         3xQQ==
+X-Gm-Message-State: AOAM530Ms8aADO7Y6cFYtCkul2FwWiZzg5WNi19AGue6rkM2p5bHivq5
+        +psSPPEe943eImrT4/IzotXr+gwGym4SwQ==
+X-Google-Smtp-Source: ABdhPJyvWdjxDxa2oDucvOMapD4bizkkq8JMxC+/bmdPT4s/BwMGoHRPjIom3HD+ILKxl8qH9PapC3lGyhggoA==
+Sender: "jbhayana via sendgmr" <jbhayana@jbhayana.c.googlers.com>
+X-Received: from jbhayana.c.googlers.com ([fda3:e722:ac3:10:24:72f4:c0a8:42b2])
+ (user=jbhayana job=sendgmr) by 2002:a62:3503:0:b029:1aa:6f15:b9fe with SMTP
+ id c3-20020a6235030000b02901aa6f15b9femr19274370pfa.65.1612819162178; Mon, 08
+ Feb 2021 13:19:22 -0800 (PST)
+Date:   Mon,  8 Feb 2021 21:19:17 +0000
+Message-Id: <20210208211918.1280588-1-jbhayana@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.0.478.g8a0d178c01-goog
+Subject: [PATCH v5 0/1] Adding support for IIO SCMI based sensors
+From:   Jyoti Bhayana <jbhayana@google.com>
+To:     Jonathan Cameron <jic23@kernel.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Jyoti Bhayana <jbhayana@google.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rob Herring <robh@kernel.org>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        cristian.marussi@arm.com, sudeep.holla@arm.com,
+        egranata@google.com, mikhail.golubev@opensynergy.com,
+        Igor.Skalkin@opensynergy.com, Peter.hilber@opensynergy.com,
+        ankitarora@google.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I think Suzuki may be on holiday for two weeks. But this does appear
-to pick up both mine and his suggestions.
-Suzuki gave his conditional reviewed by in the last patch.
+Hi,
 
-Reviewed-by: Mike Leach <mike.leach@linaro.org>
+This series adds support for ARM SCMI Protocol based IIO Device.
 
+This driver provides support for Accelerometer and Gyroscope sensor using
+SCMI Sensor Protocol extensions added in the SCMIv3.0 ARM specification,
+which is available at 
 
-On Mon, 8 Feb 2021 at 20:50, Mathieu Poirier <mathieu.poirier@linaro.org> wrote:
->
-> On Sat, Feb 06, 2021 at 11:08:33PM +0800, Leo Yan wrote:
-> > After support the PID tracing for the kernel in EL1 or EL2, the usage
-> > gets more complicated.
-> >
-> > This patch gives description for the PMU formats of contextID configs,
-> > this can help users to understand how to control the knobs for PID
-> > tracing when the kernel is in different ELs.
-> >
-> > Signed-off-by: Leo Yan <leo.yan@linaro.org>
->
-> As I indicated I have picked up the kernel patches in this set and there should
-> be a new patchset sent to Arnaldo.  The only thing left is this patch and I will
-> give time to Mike and Suzuki to look at it before I add it to my tree.
->
-> Thanks,
-> Mathieu
->
-> > ---
-> >  Documentation/trace/coresight/coresight.rst | 32 +++++++++++++++++++++
-> >  1 file changed, 32 insertions(+)
-> >
-> > diff --git a/Documentation/trace/coresight/coresight.rst b/Documentation/trace/coresight/coresight.rst
-> > index 0b73acb44efa..169749efd8d1 100644
-> > --- a/Documentation/trace/coresight/coresight.rst
-> > +++ b/Documentation/trace/coresight/coresight.rst
-> > @@ -512,6 +512,38 @@ The --itrace option controls the type and frequency of synthesized events
-> >  Note that only 64-bit programs are currently supported - further work is
-> >  required to support instruction decode of 32-bit Arm programs.
-> >
-> > +2.2) Tracing PID
-> > +
-> > +The kernel can be built to write the PID value into the PE ContextID registers.
-> > +For a kernel running at EL1, the PID is stored in CONTEXTIDR_EL1.  A PE may
-> > +implement Arm Virtualization Host Extensions (VHE), which the kernel can
-> > +run at EL2 as a virtualisation host; in this case, the PID value is stored in
-> > +CONTEXTIDR_EL2.
-> > +
-> > +perf provides PMU formats that program the ETM to insert these values into the
-> > +trace data; the PMU formats are defined as below:
-> > +
-> > +  "contextid1": Available on both EL1 kernel and EL2 kernel.  When the
-> > +                kernel is running at EL1, "contextid1" enables the PID
-> > +                tracing; when the kernel is running at EL2, this enables
-> > +                tracing the PID of guest applications.
-> > +
-> > +  "contextid2": Only usable when the kernel is running at EL2.  When
-> > +                selected, enables PID tracing on EL2 kernel.
-> > +
-> > +  "contextid":  Will be an alias for the option that enables PID
-> > +                tracing.  I.e,
-> > +                contextid == contextid1, on EL1 kernel.
-> > +                contextid == contextid2, on EL2 kernel.
-> > +
-> > +perf will always enable PID tracing at the relevant EL, this is accomplished by
-> > +automatically enable the "contextid" config - but for EL2 it is possible to make
-> > +specific adjustments using configs "contextid1" and "contextid2", E.g. if a user
-> > +wants to trace PIDs for both host and guest, the two configs "contextid1" and
-> > +"contextid2" can be set at the same time:
-> > +
-> > +  perf record -e cs_etm/contextid1,contextid2/u -- vm
-> > +
-> >
-> >  Generating coverage files for Feedback Directed Optimization: AutoFDO
-> >  ---------------------------------------------------------------------
-> > --
-> > 2.25.1
-> >
+https://developer.arm.com/documentation/den0056/c/
 
+This version of the patch series has been tested using 
+version 5.4.21 branch of Android common kernel.
 
+Any feedback welcome,
 
---
-Mike Leach
-Principal Engineer, ARM Ltd.
-Manchester Design Centre. UK
+Thanks,
+
+Jyoti Bhayana
+
+v4 --> v5
+- Dropped the RFC tag
+- Added channel ext_info for raw_available
+- Incorporated the feedback comments from v4 review of the patch
+
+v3 --> v4
+- Incorporated the feedback comments from v3 review of the patch
+
+v2 --> v3
+- Incorporated the feedback comments from v2 review of the patch
+
+v1 --> v2
+- Incorporated the feedback comments from v1 review of the patch
+- Regarding the new ABI for sensor_power,sensor_max_range,
+and sensor_resolution, these are some of the sensor attributes
+which Android passes to the apps. If there is any other way of getting
+those values, please let us know
+
+Jyoti Bhayana (1):
+  iio/scmi: Adding support for IIO SCMI Based Sensors
+
+ MAINTAINERS                                |   6 +
+ drivers/firmware/arm_scmi/driver.c         |   2 +-
+ drivers/iio/common/Kconfig                 |   1 +
+ drivers/iio/common/Makefile                |   1 +
+ drivers/iio/common/scmi_sensors/Kconfig    |  18 +
+ drivers/iio/common/scmi_sensors/Makefile   |   5 +
+ drivers/iio/common/scmi_sensors/scmi_iio.c | 673 +++++++++++++++++++++
+ 7 files changed, 705 insertions(+), 1 deletion(-)
+ create mode 100644 drivers/iio/common/scmi_sensors/Kconfig
+ create mode 100644 drivers/iio/common/scmi_sensors/Makefile
+ create mode 100644 drivers/iio/common/scmi_sensors/scmi_iio.c
+
+-- 
+2.30.0.478.g8a0d178c01-goog
+
