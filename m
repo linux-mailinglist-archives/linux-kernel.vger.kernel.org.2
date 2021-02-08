@@ -2,32 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F8DC31387D
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 16:51:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47B26313887
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 16:52:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234090AbhBHPuS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 10:50:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52062 "EHLO mail.kernel.org"
+        id S231627AbhBHPvp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 10:51:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52060 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232276AbhBHPHO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 10:07:14 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E26E864E84;
-        Mon,  8 Feb 2021 15:05:39 +0000 (UTC)
+        id S230231AbhBHPHP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 10:07:15 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DD72264EC3;
+        Mon,  8 Feb 2021 15:05:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612796740;
-        bh=BCh9qFsYtLmU+r4j51UqZbeU68kz/2QYEmXzYNsGO/g=;
+        s=korg; t=1612796743;
+        bh=XNB5Kb6a/T3bRSttZEMsuYhm1giFt/X4+p086CTSXrY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VlENh6u8Mz76/GmtfniwhXpo74vZ7iI8g8u21diytJ/YhHwL8OVEC/PU30La9hkii
-         4mybTsBiTqPC7mYgF6JM0NAz+lMpwd/jC3o1pJkMafmxK4qFD5lf5xvyBF+RyX88T/
-         oLflbkcnYPA/NZiVTGU8bX9KrEmnKGd8HrkkJMuU=
+        b=nNOr3o9UP05S8ifZZ7nEee7x/kmAD1bbC3tmI9NFncHnDyvUQF2ub0F0pjpcmy2ob
+         9pnFXJwyWsAoZ+ZM7ul7BPkunbXLpzqNzCz41rZdyhniu2VBKPKS8KuQvqIWZFLgsy
+         CFk+ma5xp1aJBlmD+TePdvK4fQnT16j0SfGL/QCE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Felix Fietkau <nbd@nbd.name>,
-        Johannes Berg <johannes.berg@intel.com>
-Subject: [PATCH 4.9 28/43] mac80211: fix station rate table updates on assoc
-Date:   Mon,  8 Feb 2021 16:00:54 +0100
-Message-Id: <20210208145807.452185088@linuxfoundation.org>
+        stable@vger.kernel.org,
+        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
+        Ananth N Mavinakayanahalli <ananth@linux.ibm.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Wang ShaoBo <bobo.shaobowang@huawei.com>,
+        Cheng Jian <cj.chengjian@huawei.com>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Subject: [PATCH 4.9 29/43] kretprobe: Avoid re-registration of the same kretprobe earlier
+Date:   Mon,  8 Feb 2021 16:00:55 +0100
+Message-Id: <20210208145807.486860064@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210208145806.281758651@linuxfoundation.org>
 References: <20210208145806.281758651@linuxfoundation.org>
@@ -39,51 +44,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Felix Fietkau <nbd@nbd.name>
+From: Wang ShaoBo <bobo.shaobowang@huawei.com>
 
-commit 18fe0fae61252b5ae6e26553e2676b5fac555951 upstream.
+commit 0188b87899ffc4a1d36a0badbe77d56c92fd91dc upstream.
 
-If the driver uses .sta_add, station entries are only uploaded after the sta
-is in assoc state. Fix early station rate table updates by deferring them
-until the sta has been uploaded.
+Our system encountered a re-init error when re-registering same kretprobe,
+where the kretprobe_instance in rp->free_instances is illegally accessed
+after re-init.
+
+Implementation to avoid re-registration has been introduced for kprobe
+before, but lags for register_kretprobe(). We must check if kprobe has
+been re-registered before re-initializing kretprobe, otherwise it will
+destroy the data struct of kretprobe registered, which can lead to memory
+leak, system crash, also some unexpected behaviors.
+
+We use check_kprobe_rereg() to check if kprobe has been re-registered
+before running register_kretprobe()'s body, for giving a warning message
+and terminate registration process.
+
+Link: https://lkml.kernel.org/r/20210128124427.2031088-1-bobo.shaobowang@huawei.com
 
 Cc: stable@vger.kernel.org
-Signed-off-by: Felix Fietkau <nbd@nbd.name>
-Link: https://lore.kernel.org/r/20210201083324.3134-1-nbd@nbd.name
-[use rcu_access_pointer() instead since we won't dereference here]
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Fixes: 1f0ab40976460 ("kprobes: Prevent re-registration of the same kprobe")
+[ The above commit should have been done for kretprobes too ]
+Acked-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
+Acked-by: Ananth N Mavinakayanahalli <ananth@linux.ibm.com>
+Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
+Signed-off-by: Wang ShaoBo <bobo.shaobowang@huawei.com>
+Signed-off-by: Cheng Jian <cj.chengjian@huawei.com>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/mac80211/driver-ops.c |    5 ++++-
- net/mac80211/rate.c       |    3 ++-
- 2 files changed, 6 insertions(+), 2 deletions(-)
+ kernel/kprobes.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
---- a/net/mac80211/driver-ops.c
-+++ b/net/mac80211/driver-ops.c
-@@ -128,8 +128,11 @@ int drv_sta_state(struct ieee80211_local
- 	} else if (old_state == IEEE80211_STA_AUTH &&
- 		   new_state == IEEE80211_STA_ASSOC) {
- 		ret = drv_sta_add(local, sdata, &sta->sta);
--		if (ret == 0)
-+		if (ret == 0) {
- 			sta->uploaded = true;
-+			if (rcu_access_pointer(sta->sta.rates))
-+				drv_sta_rate_tbl_update(local, sdata, &sta->sta);
-+		}
- 	} else if (old_state == IEEE80211_STA_ASSOC &&
- 		   new_state == IEEE80211_STA_AUTH) {
- 		drv_sta_remove(local, sdata, &sta->sta);
---- a/net/mac80211/rate.c
-+++ b/net/mac80211/rate.c
-@@ -892,7 +892,8 @@ int rate_control_set_rates(struct ieee80
- 	if (old)
- 		kfree_rcu(old, rcu_head);
+--- a/kernel/kprobes.c
++++ b/kernel/kprobes.c
+@@ -1884,6 +1884,10 @@ int register_kretprobe(struct kretprobe
+ 	int i;
+ 	void *addr;
  
--	drv_sta_rate_tbl_update(hw_to_local(hw), sta->sdata, pubsta);
-+	if (sta->uploaded)
-+		drv_sta_rate_tbl_update(hw_to_local(hw), sta->sdata, pubsta);
- 
- 	return 0;
- }
++	/* If only rp->kp.addr is specified, check reregistering kprobes */
++	if (rp->kp.addr && check_kprobe_rereg(&rp->kp))
++		return -EINVAL;
++
+ 	if (kretprobe_blacklist_size) {
+ 		addr = kprobe_addr(&rp->kp);
+ 		if (IS_ERR(addr))
 
 
