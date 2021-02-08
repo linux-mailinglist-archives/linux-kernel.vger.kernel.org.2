@@ -2,120 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 185F53135C2
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 15:54:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DB103135C4
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 15:55:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233041AbhBHOya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 09:54:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47910 "EHLO
+        id S231732AbhBHOzG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 09:55:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233025AbhBHOxi (ORCPT
+        with ESMTP id S233013AbhBHOxf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 09:53:38 -0500
-Received: from mail-vk1-xa2f.google.com (mail-vk1-xa2f.google.com [IPv6:2607:f8b0:4864:20::a2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E542C061794
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 06:52:39 -0800 (PST)
-Received: by mail-vk1-xa2f.google.com with SMTP id s124so818650vkb.1
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 06:52:39 -0800 (PST)
+        Mon, 8 Feb 2021 09:53:35 -0500
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 051DAC061797
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 06:52:49 -0800 (PST)
+Received: by mail-ej1-x62b.google.com with SMTP id w1so25106709ejf.11
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 06:52:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Y8cQCEgdPFE8xw1N0t+r/wceVgSKQwGQt1gshTBTA/w=;
-        b=alpVJbdMsp+cA4m1fRF7oc91ToOAMiUG3qmsFJvHLTgLEDVe2YKlyNWZjuXEm0+9B5
-         tI+v40mJamGojR0eSN1f1NT9DRZGVussJ5bnWO5uayHegaNhE4tZyvQWv5WpRvKBeRnm
-         uQQzhETRO/OBzSmXkCgmv1QDy3nprRgWuhNjY=
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=MGSQQh7XcPLEfgtPB18NZzc+Dr/CR2C3PSnVCbtQq3U=;
+        b=dmKAJz9v6XnfdsYdWp/Mr2MWdr3HbGpkHxPNPT2xuvOQ4oG6fhS5q1kRMJ6Qu6nC8a
+         easeDqgPgje8NaGFm0GaaMmf7P+FiFDlliSdkGIGQN18Az/B4jfMl40mROcckVUXE/+i
+         piX+e64GSdhQwDprx1ER1YMKyI2nT2nhTqsxu3+KaKViAiqaoFJY+Dn31e/3BHwUze2N
+         kO7wB0UhHTqxaCH4Ze98gqH1pXJHYcKPQT/25o9I7ngw8wXG2O9XMfbkT+WJYhdOx1fe
+         iB2ul5xoJwbVc0B6iFO9DQInFsTkDFxDhjxMJiRFZLnB/YrgTK/t1ozzO8aIU+zTSvut
+         h5CQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Y8cQCEgdPFE8xw1N0t+r/wceVgSKQwGQt1gshTBTA/w=;
-        b=JZ+cuK55AOVIk2UNyLqZCP6pPY3XSKhZrWI6XrEnpYxx2fy5P71h+N/9Kq8ctPfgjW
-         5W+gtFDttIkanUghCL0bVJEzf9/5nJxCxD/giXuUOVRQYJicrswokRFkcgJlV23q7tzB
-         UzLIprF1lPEpaA/rAn6pbN/QY2Njijc3TnAhEeHOlfAvVJGjMjOafGisvS90Kgezly/v
-         FPtlav21COoE4OHXXX90DbZhKdxOWl3Wm5bvQa/PdxQi/eSPkTFqCBwxYyq/LNT/ibCg
-         YDZlWyat2H9dUlHZV9iZak6fMBABHPt3zCsY3aY3PjZK7pdcx1Hpymo4bl8SKG4wN1Tx
-         ZXBQ==
-X-Gm-Message-State: AOAM5323gsBmAENBI9Py6WBFsJvoK9dvlGYVfoUKmtY9EGUscTeLn8wf
-        I4nScktLByo7/2943Qs7NlF+o1RqtreDGdIgqQpUcA==
-X-Google-Smtp-Source: ABdhPJyQPCy2cA69mGHBT2lFImqi32A7W4sz4zMmBMBHG0ztyW3F8v3uSO92T8TdzGXthZXdEfXnGob2ymMrfjahfQU=
-X-Received: by 2002:a1f:1d0e:: with SMTP id d14mr10273523vkd.14.1612795957900;
- Mon, 08 Feb 2021 06:52:37 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=MGSQQh7XcPLEfgtPB18NZzc+Dr/CR2C3PSnVCbtQq3U=;
+        b=jofC8wf4V2LvYf6dnS+gr9bVPq+WSBcrtFs3tK7caMYYRettd60qXoidKzNcOe6KM4
+         noIJ/0Fr+3YKPqNmst8aBeC/e/kFafjuRIBHLXO2fL72pejKxoOxp5NGCMbDdkNZ4zBI
+         +ymIrWZyXjHYC9soVESV3S6jVk0HbPOZGnGrwGTJYU0pAsy0a9vKW5Id63sYgwiqBruE
+         Fu8w4Y8xdik+Pk/+2Y42yOOzgQI/9OVvYnRcpUgtGc8qdlWOZCP4P3iAmIX/PfKpILl9
+         A8D5739uG8wC0YDUMV8XN+lXfoxsXwwtz6Ic+yxnEG/dulUkTkC18G7H1BpJbFTdtPvW
+         1AFQ==
+X-Gm-Message-State: AOAM532KAB1ANQcCO4Uv2/8cOUFQr4d5QLJ7mr3uex6R2HGyZJGPuno2
+        KqjN+yt6OhTkvKzCuecgZA==
+X-Google-Smtp-Source: ABdhPJy23zX/kZKxhWRLyINmdVE393RZH+qNmhAmA+J9QnKFc3jVlmT6QNfrXn9nrOdU+WrpzbE6FQ==
+X-Received: by 2002:a17:906:d0cd:: with SMTP id bq13mr17114727ejb.75.1612795967792;
+        Mon, 08 Feb 2021 06:52:47 -0800 (PST)
+Received: from localhost.localdomain ([46.53.253.245])
+        by smtp.gmail.com with ESMTPSA id b25sm8086948ejz.100.2021.02.08.06.52.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Feb 2021 06:52:47 -0800 (PST)
+Date:   Mon, 8 Feb 2021 17:52:45 +0300
+From:   Alexey Dobriyan <adobriyan@gmail.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     mingo@redhat.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/5] sched: make struct task_struct::state 32-bit
+Message-ID: <20210208145245.GA11701@localhost.localdomain>
+References: <20210206151832.GA487103@localhost.localdomain>
+ <YCETqt8Vqb8R6qmA@hirez.programming.kicks-ass.net>
+ <20210208143025.GA10066@localhost.localdomain>
 MIME-Version: 1.0
-References: <20210203130501.GY308988@casper.infradead.org> <CAJfpegs3YWybmH7iKDLQ-KwmGieS1faO1uSZ-ADB0UFYOFPEnQ@mail.gmail.com>
- <20210203135827.GZ308988@casper.infradead.org> <CAJfpegvHFHcCPtyJ+w6uRx+hLH9JAT46WJktF_nez-ZZAria7A@mail.gmail.com>
- <20210203142802.GA308988@casper.infradead.org> <CAJfpegtW5-XObARX87A8siTJNxTCkzXG=QY5tTRXVUvHXXZn3g@mail.gmail.com>
- <20210203145620.GB308988@casper.infradead.org> <CAJfpegvV19DT+nQcW5OiLsGWjnp9-DoLAY16S60PewSLcKLTMA@mail.gmail.com>
- <20210208020002.GM4626@dread.disaster.area> <CAJfpeguTt+0099BE6DsVFW_jht_AD8_rtuSyxcz=r+JAnazQGA@mail.gmail.com>
- <20210208140217.GQ308988@casper.infradead.org>
-In-Reply-To: <20210208140217.GQ308988@casper.infradead.org>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Mon, 8 Feb 2021 15:52:26 +0100
-Message-ID: <CAJfpegvGdA7ZgPvSph8=4Z_57qDH0ss+fYuob7_3n-BjsQqw9w@mail.gmail.com>
-Subject: Re: [PATCH 00/18] new API for FS_IOC_[GS]ETFLAGS/FS_IOC_FS[GS]ETXATTR
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Dave Chinner <david@fromorbit.com>,
-        Miklos Szeredi <mszeredi@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andreas Dilger <adilger@dilger.ca>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Dave Kleikamp <shaggy@kernel.org>,
-        David Sterba <dsterba@suse.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, Jan Kara <jack@suse.cz>,
-        Joel Becker <jlbec@evilplan.org>,
-        Mike Marshall <hubcap@omnibond.com>,
-        Richard Weinberger <richard@nod.at>,
-        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
-        "Theodore Ts'o" <tytso@mit.edu>, Tyler Hicks <code@tyhicks.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210208143025.GA10066@localhost.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 8, 2021 at 3:02 PM Matthew Wilcox <willy@infradead.org> wrote:
->
-> On Mon, Feb 08, 2021 at 09:25:22AM +0100, Miklos Szeredi wrote:
-> > On Mon, Feb 8, 2021 at 3:00 AM Dave Chinner <david@fromorbit.com> wrote:
-> > >
-> > > On Wed, Feb 03, 2021 at 04:03:06PM +0100, Miklos Szeredi wrote:
-> > > > On Wed, Feb 3, 2021 at 3:56 PM Matthew Wilcox <willy@infradead.org> wrote:
-> > > >
-> > > > > But let's talk specifics.  What does CIFS need to contact the server for?
-> > > > > Could it be cached earlier?
-> > > >
-> > > > I don't understand what CIFS is doing, and I don't really care.   This
-> > > > is the sort of operation where adding a couple of network roundtrips
-> > > > so that the client can obtain the credentials required to perform the
-> > > > operation doesn't really matter.  We won't have thousands of chattr(1)
-> > > > calls per second.
-> > >
-> > > Incorrect.
-> >
-> > Okay, I was wrong.
-> >
-> > Still, CIFS may very well be able to perform these operations without
-> > a struct file.   But even if it can't, I'd still only add the file
-> > pointer as an *optional hint* from the VFS, not as the primary object
-> > as Matthew suggested.
-> >
-> > I stand by my choice of /struct dentry/ as the object to pass to these
-> > operations.
->
-> Why the dentry?  This is an inode operation.  Why doesn't it take an
-> inode as its primary object?
+On Mon, Feb 08, 2021 at 05:30:25PM +0300, Alexey Dobriyan wrote:
+> On Mon, Feb 08, 2021 at 11:34:18AM +0100, Peter Zijlstra wrote:
+> > On Sat, Feb 06, 2021 at 06:18:32PM +0300, Alexey Dobriyan wrote:
+> > 
+> > > Silently delete "extern" from prototypes.
+> > 
+> > NAK, extern is right.
+> 
+> Extern is only necessary for variables.
 
-If we pass struct file to the op, then that limits callers to those
-that have an open file.  E.g. it would be difficult to introduce a
-path based userspace API for getting/changing these attributes.
+Specifically C17, 6.2.2 p5 (linkage of identifiers):
 
-Passing a dentry instead of an inode has no such problem, since the
-dentry is always available, whether coming from an open file or a
-path.  Some inode operations do pass a dentry instead of an inode
-(readlink, getattr, setattr) and some filesystems take advantage of
-this.
+	if the declaration of an identifier for a function has no
+	storage-class specifier, its linkage is determined exactly as if
+	it were declared with the storage-class specifier "extern".
 
-Thanks,
-Miklos
+This is why nothing happens if "extern" is deleted.
