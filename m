@@ -2,87 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C05C231318C
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 12:56:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34F80313193
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 12:59:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232014AbhBHL4H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 06:56:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33456 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229888AbhBHLfQ (ORCPT
+        id S232459AbhBHL5e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 06:57:34 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51395 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232813AbhBHLgU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 06:35:16 -0500
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0B04C06178A;
-        Mon,  8 Feb 2021 03:34:22 -0800 (PST)
-Received: by mail-qk1-x72a.google.com with SMTP id b14so377942qkk.0;
-        Mon, 08 Feb 2021 03:34:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=8c7/ro2vJNlZ1YPxBzjYpBjlaYBZBnvlVnHyBqp94XA=;
-        b=sxFqmqcW1AQlLTPNsfY1Ovcf0Z8TJ184KZ+gQGe10cLczSttIKdWBkbmMG33gcF1Zy
-         T6m2xulS5HFazdWSljvg3LrBAnwVAkC3DmxPVCtWzSNubb/j5xjA1N5Bz0jRagDOaByD
-         WDAIBuflZKuECMQFaPUzsVLwq3IogLiSZHdtEHu/rWiRKT0wnOUaF0cyJNdZ2OZwjeQ2
-         vmhmZl9X/EBcRyBpb4KDlLNjIDrsjWzmJ7EIF1hGrcig0Yi5UJhxWh5/zeld9jmx32hB
-         b+DcYaa8uSa0ca8t651ZRmMAlnHRv4/MQhA+mps+aLtfTr6TrDozsMfPLqAfDvcNLrKT
-         EZHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=8c7/ro2vJNlZ1YPxBzjYpBjlaYBZBnvlVnHyBqp94XA=;
-        b=jIRmcHY4oxxi2T6aKOD7Fji0JPapQRKL515PUhyIQL/rUgxKmxFHFz3UwPipyBmjiT
-         sVd/tyiE7zlqiHjqmYSAjKUnoXxdYmizPRmYmk5EZcotwrqd5vl0CFZlzZ7Ek+zrPa2Z
-         Q+YBqiWelDtC9hKq31zSTBWOPhYNvTtQ3KRk/RuV8/fuZaZ5yLHI8iwAmym4E9XD226r
-         TiDPjONOt7l/UQQreaDt/pwYkktmPBQjqxc88QNMpcpQQrnjJRcrjA78AmUEKiLqZpsj
-         j9Rv68I5+LQkG3po5FHh9tJ20kvyCjb1cl+bY5FbMLxuQbu0H5PCyHscWC7eN2SrNLu7
-         QULg==
-X-Gm-Message-State: AOAM532TtpJad+0beQ2JGKcQfF7j7gc16ZYKWNbZg+EgntD5IomkPRU2
-        iwqXoqag7cK5PRKhAbQ0+yM=
-X-Google-Smtp-Source: ABdhPJxaWBNV0Q3hng7qIy1PlfOBk1uwF1Lemg+xSAYoj9DWTJVKaFqzfhm+LsQF8VKz3S/5ZEC9WA==
-X-Received: by 2002:a37:63d4:: with SMTP id x203mr16066014qkb.105.1612784061917;
-        Mon, 08 Feb 2021 03:34:21 -0800 (PST)
-Received: from localhost.localdomain ([156.146.37.175])
-        by smtp.gmail.com with ESMTPSA id i15sm16862613qka.103.2021.02.08.03.34.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Feb 2021 03:34:21 -0800 (PST)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     broonie@kernel.org, linux-spi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: [PATCH] include: linux: spi: Change provied to provide in the file spi.h
-Date:   Mon,  8 Feb 2021 17:03:59 +0530
-Message-Id: <20210208113359.31269-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.20.1
+        Mon, 8 Feb 2021 06:36:20 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612784082;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=bJzjfpKQDXUTrhd/jJ7jwPu/B+J6oLNodRb+ffVR+9o=;
+        b=Mh6pPlfHckP9xJNF+pMD6G4o7Vy2esnDPHVOfSC8SKb6RENRo9WQkHMOm/JvL1B8jJ2cxo
+        3tlyDKoeiOnX3o4qocYGJZZCt6ZTNkv2nET9+obAX5hw2ddfEZvvfu3admX2mrx1VLIEZD
+        UnjECkmJWbde7iGkaasehUdinq9nmEE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-213-5S6thMDWOIORihOXxYxBhg-1; Mon, 08 Feb 2021 06:34:40 -0500
+X-MC-Unique: 5S6thMDWOIORihOXxYxBhg-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B54551005501;
+        Mon,  8 Feb 2021 11:34:38 +0000 (UTC)
+Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1E0A619C71;
+        Mon,  8 Feb 2021 11:34:38 +0000 (UTC)
+From:   Paolo Bonzini <pbonzini@redhat.com>
+To:     linux-kernel@vger.kernel.org, intel-gvt-dev@lists.freedesktop.org
+Cc:     Zhenyu Wang <zhenyuw@linux.intel.com>,
+        Zhi Wang <zhi.a.wang@intel.com>,
+        intel-gfx@lists.freedesktop.org
+Subject: [FYI PATCH] i915: kvmgt: the KVM mmu_lock is now an rwlock
+Date:   Mon,  8 Feb 2021 06:34:37 -0500
+Message-Id: <20210208113437.94661-1-pbonzini@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Adjust the KVMGT page tracking callbacks.
 
-s/provied/provide/
-
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Cc: Zhenyu Wang <zhenyuw@linux.intel.com>
+Cc: Zhi Wang <zhi.a.wang@intel.com>
+Cc: intel-gvt-dev@lists.freedesktop.org
+Cc: intel-gfx@lists.freedesktop.org
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 ---
- include/linux/spi/spi.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/i915/gvt/kvmgt.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
-index aa09fdc8042d..2cd4bf488ecd 100644
---- a/include/linux/spi/spi.h
-+++ b/include/linux/spi/spi.h
-@@ -624,7 +624,7 @@ struct spi_controller {
-
- 	/*
- 	 * These hooks are for drivers that use a generic implementation
--	 * of transfer_one_message() provied by the core.
-+	 * of transfer_one_message() provide by the core.
- 	 */
- 	void (*set_cs)(struct spi_device *spi, bool enable);
- 	int (*transfer_one)(struct spi_controller *ctlr, struct spi_device *spi,
---
-2.20.1
+diff --git a/drivers/gpu/drm/i915/gvt/kvmgt.c b/drivers/gpu/drm/i915/gvt/kvmgt.c
+index 60f1a386dd06..b4348256ae95 100644
+--- a/drivers/gpu/drm/i915/gvt/kvmgt.c
++++ b/drivers/gpu/drm/i915/gvt/kvmgt.c
+@@ -1703,7 +1703,7 @@ static int kvmgt_page_track_add(unsigned long handle, u64 gfn)
+ 		return -EINVAL;
+ 	}
+ 
+-	spin_lock(&kvm->mmu_lock);
++	write_lock(&kvm->mmu_lock);
+ 
+ 	if (kvmgt_gfn_is_write_protected(info, gfn))
+ 		goto out;
+@@ -1712,7 +1712,7 @@ static int kvmgt_page_track_add(unsigned long handle, u64 gfn)
+ 	kvmgt_protect_table_add(info, gfn);
+ 
+ out:
+-	spin_unlock(&kvm->mmu_lock);
++	write_unlock(&kvm->mmu_lock);
+ 	srcu_read_unlock(&kvm->srcu, idx);
+ 	return 0;
+ }
+@@ -1737,7 +1737,7 @@ static int kvmgt_page_track_remove(unsigned long handle, u64 gfn)
+ 		return -EINVAL;
+ 	}
+ 
+-	spin_lock(&kvm->mmu_lock);
++	write_lock(&kvm->mmu_lock);
+ 
+ 	if (!kvmgt_gfn_is_write_protected(info, gfn))
+ 		goto out;
+@@ -1746,7 +1746,7 @@ static int kvmgt_page_track_remove(unsigned long handle, u64 gfn)
+ 	kvmgt_protect_table_del(info, gfn);
+ 
+ out:
+-	spin_unlock(&kvm->mmu_lock);
++	write_unlock(&kvm->mmu_lock);
+ 	srcu_read_unlock(&kvm->srcu, idx);
+ 	return 0;
+ }
+@@ -1772,7 +1772,7 @@ static void kvmgt_page_track_flush_slot(struct kvm *kvm,
+ 	struct kvmgt_guest_info *info = container_of(node,
+ 					struct kvmgt_guest_info, track_node);
+ 
+-	spin_lock(&kvm->mmu_lock);
++	write_lock(&kvm->mmu_lock);
+ 	for (i = 0; i < slot->npages; i++) {
+ 		gfn = slot->base_gfn + i;
+ 		if (kvmgt_gfn_is_write_protected(info, gfn)) {
+@@ -1781,7 +1781,7 @@ static void kvmgt_page_track_flush_slot(struct kvm *kvm,
+ 			kvmgt_protect_table_del(info, gfn);
+ 		}
+ 	}
+-	spin_unlock(&kvm->mmu_lock);
++	write_unlock(&kvm->mmu_lock);
+ }
+ 
+ static bool __kvmgt_vgpu_exist(struct intel_vgpu *vgpu, struct kvm *kvm)
+-- 
+2.26.2
 
