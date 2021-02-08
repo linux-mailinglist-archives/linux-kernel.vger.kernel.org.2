@@ -2,97 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20EE031426C
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 22:58:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C570A314273
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 22:59:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236998AbhBHV6K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 16:58:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54524 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231307AbhBHV5s (ORCPT
+        id S232542AbhBHV6j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 16:58:39 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:41835 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236918AbhBHV6N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 16:57:48 -0500
-Received: from mail.andi.de1.cc (mail.andi.de1.cc [IPv6:2a01:238:4321:8900:456f:ecd6:43e:202c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E5E5C061786;
-        Mon,  8 Feb 2021 13:57:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=kemnade.info; s=20180802; h=Content-Transfer-Encoding:Content-Type:
-        MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=muAMtb9ILWZ6iaLm4pWkawLMXFX8+VhM7QtMLbbVjO8=; b=CSepVBcl/mu1uxOGAD7x76EaSG
-        +LBzoX4IQP+rspzFB9N16nU4JP/i3Kcwahr9P/Ql2k/DNe1nbPGqc5uIiTlGT8PeiIsMn74s1kfG8
-        8yLycgCCScpr5qAROdrbkv7+lDLrEqor+QByAeBVoAXT/d8PJYHy2u7k7XXX7w5xLA9k=;
-Received: from p200300ccff06e1001a3da2fffebfd33a.dip0.t-ipconnect.de ([2003:cc:ff06:e100:1a3d:a2ff:febf:d33a] helo=aktux)
-        by mail.andi.de1.cc with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.89)
-        (envelope-from <andreas@kemnade.info>)
-        id 1l9EWT-0005aA-En; Mon, 08 Feb 2021 22:56:45 +0100
-Date:   Mon, 8 Feb 2021 22:56:44 +0100
-From:   Andreas Kemnade <andreas@kemnade.info>
-To:     Jonathan =?UTF-8?B?TmV1c2Now6RmZXI=?= <j.neuschaefer@gmx.net>
-Cc:     linux-kernel@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Uwe =?UTF-8?B?S2xlaW5lLUvDtm5pZw==?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Mark Brown <broonie@kernel.org>, allen <allen.chen@ite.com.tw>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        devicetree@vger.kernel.org, linux-pwm@vger.kernel.org,
-        linux-rtc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Heiko Stuebner <heiko@sntech.de>,
-        Josua Mayer <josua.mayer@jm0.eu>,
-        Arnd Bergmann <arnd@arndb.de>, Daniel Palmer <daniel@0x0f.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: Re: [PATCH v9 0/7] Netronix embedded controller driver for Kobo and
- Tolino ebook readers
-Message-ID: <20210208225644.3df4da99@aktux>
-In-Reply-To: <20210124214127.3631530-1-j.neuschaefer@gmx.net>
-References: <20210124214127.3631530-1-j.neuschaefer@gmx.net>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Mon, 8 Feb 2021 16:58:13 -0500
+Received: from mail-oi1-f198.google.com ([209.85.167.198])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <seth.forshee@canonical.com>)
+        id 1l9EXA-0004lZ-Rx
+        for linux-kernel@vger.kernel.org; Mon, 08 Feb 2021 21:57:29 +0000
+Received: by mail-oi1-f198.google.com with SMTP id s4so4922611oia.5
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 13:57:28 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=slTd59I7Y8E1WEkwRd821CTDk7j9skLtmaaFeE6az84=;
+        b=TCtoNI3Rg99nBaEFY4wEONGwbH5RKhRrQH/DyCAnqHN5jm5Yy6YkEv/eC2U3tXkGb3
+         vCFnkewyDZbkh2u54DzWo8AYuijws9Owkdb6S61YjATnoAO7zDlek2IAfT01rih5R3dx
+         XedbLA0SNybDpxgQSSCSKNxP8Gs8phP0dLnXC5FcCbTHzKn2Cu+/P4ywVGS31Duza3rE
+         Uq/5juo4BPXnbomY9yi0G9bFnAfFX+A9kZ5GFTtawhe1kl6/aL5R8NFUYC0djo7AZXWZ
+         ZBmP4jyutT57QQclVHkzvJI1Q/jbVJWlcYEPOu7hpyebOGvqETIvyNVzLh2bFBDajkZG
+         eBeg==
+X-Gm-Message-State: AOAM533jMmHoJWw89/iPmLr8xwjiCM8+GTIPTfwfYeo5UB1gWlM7mIrC
+        jrudWxi2dfEoFAdXJ2S70MWl40q6sNkPrn+aliqInKxvaVNfpB4oyCcPVMRPTyrXAa0lFanRBQ8
+        6i6kM2fids3Q7dVo976WWHeCPMYgOn4+c1bUKetvX+A==
+X-Received: by 2002:aca:52c3:: with SMTP id g186mr547241oib.136.1612821447890;
+        Mon, 08 Feb 2021 13:57:27 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzdmxPQ0LjgXEXekhxPlC8Xp1x895S5NdnL8KBPc+KE+eBLEBoYWh33hbrIv2kwqD1i89kT+w==
+X-Received: by 2002:aca:52c3:: with SMTP id g186mr547233oib.136.1612821447721;
+        Mon, 08 Feb 2021 13:57:27 -0800 (PST)
+Received: from localhost ([2605:a601:ac0f:820:953a:a460:6ddc:bef4])
+        by smtp.gmail.com with ESMTPSA id g3sm3839161ooi.28.2021.02.08.13.57.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Feb 2021 13:57:26 -0800 (PST)
+From:   Seth Forshee <seth.forshee@canonical.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Chris Down <chris@chrisdown.name>,
+        Amir Goldstein <amir73il@gmail.com>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>, linux-mm@kvack.org,
+        linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: [PATCH] tmpfs: disallow CONFIG_TMPFS_INODE64 on alpha
+Date:   Mon,  8 Feb 2021 15:57:26 -0600
+Message-Id: <20210208215726.608197-1-seth.forshee@canonical.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Score: -1.0 (-)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 24 Jan 2021 22:41:20 +0100
-Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net> wrote:
+As with s390, alpha is a 64-bit architecture with a 32-bit ino_t.
+With CONFIG_TMPFS_INODE64=y tmpfs mounts will get 64-bit inode
+numbers and display "inode64" in the mount options, whereas
+passing "inode64" in the mount options will fail. This leads to
+erroneous behaviours such as this:
 
-> This patchset adds basic support for the embedded controller found on
-> older ebook reader boards designed by/with the ODM Netronix Inc.[1] and
-> sold by Kobo or Tolino, for example the Kobo Aura and the Tolino Shine.
-> These drivers are based on information contained in the vendor kernel
-> sources, but in order to all information in a single place, I documented
-> the register interface of the EC on GitHub[2].
->=20
-> [1]: http://www.netronixinc.com/products.aspx?ID=3D1
-> [2]: https://github.com/neuschaefer/linux/wiki/Netronix-MSP430-embedded-c=
-ontroller
->=20
-> v9:
-> - Fixed a bug in the error handling of ntxec_probe,
->   Reported-by: kernel test robot <lkp@intel.com>
-> - Added Thierry Reding's ACK to the PWM patch
->=20
-what is the fate of this one, looks like it got all acks from
-maintainers.
+ # mkdir mnt
+ # mount -t tmpfs nodev mnt
+ # mount -o remount,rw mnt
+ mount: /home/ubuntu/mnt: mount point not mounted or bad option.
 
-Regards,
-Andreas
+Prevent CONFIG_TMPFS_INODE64 from being selected on alpha.
+
+Fixes: ea3271f7196c ("tmpfs: support 64-bit inums per-sb")
+Cc: stable@vger.kernel.org # v5.9+
+Signed-off-by: Seth Forshee <seth.forshee@canonical.com>
+---
+ fs/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/fs/Kconfig b/fs/Kconfig
+index 3347ec7bd837..da524c4d7b7e 100644
+--- a/fs/Kconfig
++++ b/fs/Kconfig
+@@ -203,7 +203,7 @@ config TMPFS_XATTR
+ 
+ config TMPFS_INODE64
+ 	bool "Use 64-bit ino_t by default in tmpfs"
+-	depends on TMPFS && 64BIT && !S390
++	depends on TMPFS && 64BIT && !(S390 || ALPHA)
+ 	default n
+ 	help
+ 	  tmpfs has historically used only inode numbers as wide as an unsigned
+-- 
+2.29.2
+
