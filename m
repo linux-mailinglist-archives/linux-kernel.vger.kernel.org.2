@@ -2,114 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2347B313FA8
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 20:54:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23232313FB7
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 20:59:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235432AbhBHTyg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 14:54:36 -0500
-Received: from mail-wr1-f42.google.com ([209.85.221.42]:44351 "EHLO
-        mail-wr1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235580AbhBHSNe (ORCPT
+        id S234975AbhBHT52 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 14:57:28 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:51207 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234033AbhBHSOi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 13:13:34 -0500
-Received: by mail-wr1-f42.google.com with SMTP id g6so5342820wrs.11;
-        Mon, 08 Feb 2021 10:13:17 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=uG44Nh0+1Z6GPKJ+sMh7UFsXf5L8CgK5m4MwsqTm8vM=;
-        b=jIf9VlxY9qXAESIYVVQ8yyiks4N/dz0BJYlqXZAY90rGLWxOuuJPRU5t5THsiZKqdS
-         Oj1UpgZAgcVpMCPPqC27LDAMyLxIKZl4s9qwaKL/2o9o6mfU3ByQ16PqT8voF/KtHNHy
-         eCStGUm0p2ItUrO55oRDLmfWQeBawSqDHq9GsnFVTwO/GtPNdMeAK/dGoRgjXFF8cbAW
-         WiXKgzH7SNbZie3sTMVJ5RYovCRQCIgg5iFYvUuysEComz05WfapqHZ16hF0/AlDoFgK
-         psjY9mYv81rE36Fk0c6u4rz3ACUoJt6YKrdIbMyVg9Ps5m0gajXNG/AybCmH1bx/7g4G
-         2dPg==
-X-Gm-Message-State: AOAM532svuTI3fuV3E1WSVHWuNc2xHTUJi9+nuBlGUOCxPXwcdgS3F72
-        nWyW3EcGDTEjbo7xN8UqCUI=
-X-Google-Smtp-Source: ABdhPJy/wKPjP7+LBFoeHW0XLxMt/V+JDUKUXKCYLCJTnC5Yurk6M5a1DiVIEb/R09EmHRvq8ISlSg==
-X-Received: by 2002:adf:e3cd:: with SMTP id k13mr84116wrm.289.1612807972155;
-        Mon, 08 Feb 2021 10:12:52 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id s23sm21317647wmc.35.2021.02.08.10.12.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Feb 2021 10:12:49 -0800 (PST)
-Date:   Mon, 8 Feb 2021 19:12:48 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Hector Martin <marcan@marcan.st>, Arnd Bergmann <arnd@kernel.org>,
-        devicetree@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
-        linux-kernel@vger.kernel.org, soc@kernel.org,
-        Olof Johansson <olof@lixom.net>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 01/18] dt-bindings: vendor-prefixes: add AAPL prefix
-Message-ID: <20210208181248.tbgffdwghlseawic@kozik-lap>
-References: <20210204203951.52105-1-marcan@marcan.st>
- <20210204203951.52105-2-marcan@marcan.st>
- <20210208102730.p4nhsl35oowsklv2@kozik-lap>
- <20210208173215.GA1567700@robh.at.kernel.org>
+        Mon, 8 Feb 2021 13:14:38 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612807991;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Vna1UpISDhhzy62RgmCODV7iVBrOXqSLXKC77p47hCA=;
+        b=CiS5pN9lGz1cUVDV93OQF/nV9RsCS7hGrACa4GzEYWmvLK2gW5szaN55qil7kh/mh4rJwJ
+        WZZgbVUu9AivXklIZolLE9ukaPfz/QNSwKryVPmor4znof7IdfT/8Qf5toa9BMvx8AmY5m
+        W4N5D753vQKpQ+IiJkLPAhiUZFch4ds=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-152-LIm0O2BmNA-BWgTWAaL5AQ-1; Mon, 08 Feb 2021 13:13:07 -0500
+X-MC-Unique: LIm0O2BmNA-BWgTWAaL5AQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A8B141936B65;
+        Mon,  8 Feb 2021 18:13:04 +0000 (UTC)
+Received: from treble (ovpn-118-142.rdu2.redhat.com [10.10.118.142])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 9924860C04;
+        Mon,  8 Feb 2021 18:13:02 +0000 (UTC)
+Date:   Mon, 8 Feb 2021 12:12:59 -0600
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Borislav Petkov <bp@suse.de>
+Cc:     AC <achirvasub@gmail.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Marco Elver <elver@google.com>, Arnd Bergmann <arnd@arndb.de>,
+        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kasan-dev@googlegroups.com, nborisov@suse.com,
+        seth.forshee@canonical.com, yamada.masahiro@socionext.com
+Subject: Re: [PATCH] x86/build: Disable CET instrumentation in the kernel for
+ 32-bit too
+Message-ID: <20210208181259.hwmnoldx627jhvlm@treble>
+References: <YCB4Sgk5g5B2Nu09@arch-chirva.localdomain>
+ <YCCFGc97d2U5yUS7@arch-chirva.localdomain>
+ <YCCIgMHkzh/xT4ex@arch-chirva.localdomain>
+ <20210208121227.GD17908@zn.tnic>
+ <82FA27E6-A46F-41E2-B7D3-2FEBEA8A4D70@gmail.com>
+ <20210208162543.GH17908@zn.tnic>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210208173215.GA1567700@robh.at.kernel.org>
+In-Reply-To: <20210208162543.GH17908@zn.tnic>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 08, 2021 at 11:32:15AM -0600, Rob Herring wrote:
-> On Mon, Feb 08, 2021 at 11:27:30AM +0100, Krzysztof Kozlowski wrote:
-> > On Fri, Feb 05, 2021 at 05:39:34AM +0900, Hector Martin wrote:
-> > > Amusingly, this wasn't yet documented, even though this vendor prefix
-> > > has been used since time immemorial on PPC.
-> > > 
-> > > Signed-off-by: Hector Martin <marcan@marcan.st>
-> > > ---
-> > >  Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
-> > >  1 file changed, 2 insertions(+)
-> > > 
-> > > diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-> > > index 041ae90b0d8f..d7950c723472 100644
-> > > --- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
-> > > +++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-> > > @@ -25,6 +25,8 @@ patternProperties:
-> > >    # Keep list in alphabetical order.
-> > >    "^70mai,.*":
-> > >      description: 70mai Co., Ltd.
-> > > +  "^AAPL,.*":
-> > 
-> > All prefixes are lower case... see ABB below (not mentioning that the
-> > company name is not APPLE), so just "apple".
+On Mon, Feb 08, 2021 at 05:25:43PM +0100, Borislav Petkov wrote:
+> On Mon, Feb 08, 2021 at 10:19:33AM -0500, AC wrote:
+> > That did fix it, thank you!
 > 
-> Grep the kernel tree for 'AAPL,'.
-
-I know it's the ticker, but the point was - we don't use tickers here
-for none of other platforms.
-
-Mentioned grep brings only one result:
-arch/powerpc/platforms/powermac/pic.c:   * cases where the APPL,interrupts property is completely
-
-so hardly an argument for backwards consistency, within the kernel.
-
-On the other hand, some DTs for iPhones mention "apple", not APPL:
-https://www.theiphonewiki.com/wiki/D211AP/Device_Tree
-https://www.theiphonewiki.com/wiki/D331AP/Device_Tree
-https://gist.github.com/bazad/1faef1a6fe396b820a43170b43e38be1
-
-Although I am not sure how reliable are the sources.
-
-> It comes from the the ticker symbol 
-> which early on was the preferred form, but we've tended to move away 
-> from that. The DT Apple ships (which is *very* different) uses both 
-> forms.
+> Thanks!
 > 
-> So keep what exists already or have old AAPL and new apple?
+> ---
+> From: Borislav Petkov <bp@suse.de>
+> Date: Mon, 8 Feb 2021 16:43:30 +0100
+> Subject: [PATCH] x86/build: Disable CET instrumentation in the kernel for 32-bit too
+> 
+> Commit
+> 
+>   20bf2b378729 ("x86/build: Disable CET instrumentation in the kernel")
+> 
+> disabled CET instrumentation which gets added by default by the Ubuntu
+> gcc9 and 10 by default, but did that only for 64-bit builds. It would
+> still fail when building a 32-bit target. So disable CET for all x86
+> builds.
+> 
+> Fixes: 20bf2b378729 ("x86/build: Disable CET instrumentation in the kernel")
+> Reported-by: AC <achirvasub@gmail.com>
+> Signed-off-by: Borislav Petkov <bp@suse.de>
+> Tested-by: AC <achirvasub@gmail.com>
+> Link: https://lkml.kernel.org/r/YCCIgMHkzh/xT4ex@arch-chirva.localdomain
 
-Hectore mention old PowerPC Apple sources were using the APPL, but it
-seems they did not end up here. What would be the point to stick to the
-old prefix if we cannot find it?
+Acked-by: Josh Poimboeuf <jpoimboe@redhat.com>
 
-Maybe they exists in other systems? I could not find such in latest
-FreeBSD, but there were not many DTSes inside.
+-- 
+Josh
 
-Best regards,
-Krzysztof
