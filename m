@@ -2,141 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2A21312F48
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 11:44:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B5F0312F4C
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 11:44:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232651AbhBHKmd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 05:42:33 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26698 "EHLO
+        id S232725AbhBHKnb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 05:43:31 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47593 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232456AbhBHKdI (ORCPT
+        by vger.kernel.org with ESMTP id S232330AbhBHKeC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 05:33:08 -0500
+        Mon, 8 Feb 2021 05:34:02 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612780302;
+        s=mimecast20190719; t=1612780356;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=K05zC1EUlyTezUmZ1LkF+HhqGZkbRd0Cfn1SraZHoC4=;
-        b=Oh3CSr4n3qZQStBSeLcQI9X4PkgXcmVMYRWE0XVBU75pesOkVlxLYWl5sYQrWbclW9JkI3
-        SzZqPF2JpIANH1stSHyI2h3u/oyVcyuInosbwbt3mlbAx7xwV2b2JdzN15PkwSnDqkr59o
-        I1oXPGXVpo/CBMM6G2rXvydHaUrbsxw=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-285-Gt5ZKkYEOY6VZXZmuDY3eQ-1; Mon, 08 Feb 2021 05:31:40 -0500
-X-MC-Unique: Gt5ZKkYEOY6VZXZmuDY3eQ-1
-Received: by mail-wr1-f72.google.com with SMTP id u3so12639900wri.19
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 02:31:40 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=K05zC1EUlyTezUmZ1LkF+HhqGZkbRd0Cfn1SraZHoC4=;
-        b=ieeQNfzjOy1HMgzijvaPhRZe0H4vtqD/KraWtde3hvq5F92YcpBs/M+HAhK1/numzP
-         cnOE8qFA3Z9crwqD0oJTUqE6KbOQudJsJhnnlzHS++Q8gZ3p3G6b7D41h6pWPomfHij3
-         2vcCIXeOrlxEWMKN4Lf5mDgVvHZ1XZ3SdvipxYULHJyEYT41X99ErnqmL7nyKeU7rWRp
-         qBzXrw/OZGUkyTA3Tmcm2IwatnQquClaPa9v6WkZK0GWoHC0RjpEhg6iKboUa2NgChLJ
-         ulcK8+w/pHXDEk6wP/DIyCUA4Jl5bnG7VfxC/61Flta9PCAcL7NxTH5fRyJxN9RXmEZ5
-         EgHg==
-X-Gm-Message-State: AOAM532BHP2CneWDjsT6s731jxuFQd09Zvl7zd1ilzSdiWo31wjZNw1H
-        THQZzSyaap7B1QKmveVTsYJf/2g5LdiD/rChAx826pkVEyfTrChg8A/j+ttnhi/rJehtISFbztV
-        SS19VLGIlL4jGiOsxIcHJSkgW
-X-Received: by 2002:a5d:4f84:: with SMTP id d4mr18901196wru.374.1612780299173;
-        Mon, 08 Feb 2021 02:31:39 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwP9s5k4d7RHre3+wLFCfyCISAOk/GvRTsic5k/x4GOrkGIKO3fRxDZ2hY9lCiWS5J/+CKzlQ==
-X-Received: by 2002:a5d:4f84:: with SMTP id d4mr18901170wru.374.1612780298938;
-        Mon, 08 Feb 2021 02:31:38 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
-        by smtp.gmail.com with ESMTPSA id d3sm31485720wrp.79.2021.02.08.02.31.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Feb 2021 02:31:38 -0800 (PST)
-Subject: Re: [PATCH v2 4/4] KVM: x86: Expose Architectural LBR CPUID and its
- XSAVES bit
-To:     "Xu, Like" <like.xu@intel.com>,
-        Sean Christopherson <seanjc@google.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Like Xu <like.xu@linux.intel.com>
-References: <20210203135714.318356-1-like.xu@linux.intel.com>
- <20210203135714.318356-5-like.xu@linux.intel.com>
- <8321d54b-173b-722b-ddce-df2f9bd7abc4@redhat.com>
- <219d869b-0eeb-9e52-ea99-3444c6ab16a3@intel.com>
- <b73a2945-11b9-38bf-845a-c64e7caa9d2e@intel.com>
- <7698fd6c-94da-e352-193f-e09e002a8961@redhat.com>
- <6f733543-200e-9ddd-240b-1f956a003ed6@intel.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <c3b916c2-5b4e-31d1-b27b-bf71b621bd7b@redhat.com>
-Date:   Mon, 8 Feb 2021 11:31:36 +0100
+        bh=gTqE4GAwIRRw8Nu7Vah8lYA78avuk6Kq3uIkNKISp9U=;
+        b=SREtDrSMxvS8bZqrF3nPI2eX301bODYy+p2eWNfPi9VQychFQSGs3suFhP+a9NrNyAeUMJ
+        /B1KF0bA1OHewhykKyyQPUfUk/RXqkciOFPHQsbuDG1pmVa7LXKzVluOQ0x59COgwgAJ3G
+        JLO/LFizdJPe5ctXDJ3ptYoZHgRGO48=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-281-shzg6BOVMaWLsYhbKcL92A-1; Mon, 08 Feb 2021 05:32:32 -0500
+X-MC-Unique: shzg6BOVMaWLsYhbKcL92A-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2E0C4835E20;
+        Mon,  8 Feb 2021 10:32:27 +0000 (UTC)
+Received: from [10.36.113.240] (ovpn-113-240.ams2.redhat.com [10.36.113.240])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 8816A5D9DD;
+        Mon,  8 Feb 2021 10:32:13 +0000 (UTC)
+Subject: Re: [PATCH v17 08/10] PM: hibernate: disable when there are active
+ secretmem users
+To:     Michal Hocko <mhocko@suse.com>, Mike Rapoport <rppt@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org, Hagen Paul Pfeifer <hagen@jauu.net>,
+        Palmer Dabbelt <palmerdabbelt@google.com>
+References: <20210208084920.2884-1-rppt@kernel.org>
+ <20210208084920.2884-9-rppt@kernel.org> <YCEP/bmqm0DsvCYN@dhcp22.suse.cz>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <38c0cad4-ac55-28e4-81c6-4e0414f0620a@redhat.com>
+Date:   Mon, 8 Feb 2021 11:32:11 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-In-Reply-To: <6f733543-200e-9ddd-240b-1f956a003ed6@intel.com>
+In-Reply-To: <YCEP/bmqm0DsvCYN@dhcp22.suse.cz>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/02/21 02:02, Xu, Like wrote:
-> On 2021/2/5 19:00, Paolo Bonzini wrote:
->> On 05/02/21 09:16, Xu, Like wrote:
->>> Hi Paolo,
->>>
->>> I am wondering if it is acceptable for you to
->>> review the minor Architecture LBR patch set without XSAVES for v5.12 ?
->>>
->>> As far as I know, the guest Arch LBR  can still work without XSAVES 
->>> support.
+On 08.02.21 11:18, Michal Hocko wrote:
+> On Mon 08-02-21 10:49:18, Mike Rapoport wrote:
+>> From: Mike Rapoport <rppt@linux.ibm.com>
 >>
->> I dopn't think it can work.  You could have two guests on the same 
->> physical CPU and the MSRs would be corrupted if the guests write to 
->> the MSR but they do not enable the LBRs.
+>> It is unsafe to allow saving of secretmem areas to the hibernation
+>> snapshot as they would be visible after the resume and this essentially
+>> will defeat the purpose of secret memory mappings.
 >>
->> Paolo
->>
-> Neither Arch LBR nor the old version of LBR have this corruption issue,
-> and we will not use XSAVES for at least LBR MSRs in the VMX transaction.
+>> Prevent hibernation whenever there are active secret memory users.
 > 
-> This is because we have reused the LBR save/restore swicth support from the
-> host perf mechanism in the legacy LBR support, which will save/restore 
-> the LBR
-> MSRs of the vcpu (thread) when the vcpu is sched in/out.
+> Does this feature need any special handling? As it is effectivelly
+> unevictable memory then it should behave the same as other mlock, ramfs
+> which should already disable hibernation as those cannot be swapped out,
+> no?
 > 
-> Therefore, if we have two guests on the same physical CPU, the usage of 
-> LBR MSRs
-> is isolated, and it's also true when we use LBR to trace the hypervisor 
-> on the host.
-> The same thing happens on the platforms which supports Arch LBR.
-> 
-> I propose that we don't support using XSAVES to save/restore Arch LRB 
-> *in the guest*
-> (just like the guest Intel PT), but use the traditional RD/WRMSR, which 
-> still works
-> like the legacy LBR.
 
-Ok, this makes sense.  I'll review the patches more carefully, looking 
-at 5.13 for the target.
+Why should unevictable memory not go to swap when hibernating? We're 
+merely dumping all of our system RAM (including any unmovable 
+allocations) to swap storage and the system is essentially completely 
+halted.
 
-Paolo
+-- 
+Thanks,
 
-> Since we already have legacy LBR support, we can add a small amount of 
-> effort (just
-> two more MSRs emulation and related CPUID exposure) to support Arch LBR 
-> w/o XSAVES.
-> 
-> I estimate that there are many issues we need to address when we 
-> supporting guests
-> to use xsaves instructions. As a rational choice, we could enable the 
-> basic Arch LBR.
-> 
-> Paolo and Sean, what do you think ?
-> 
-> ---
-> thx, likexu
-> 
+David / dhildenb
 
