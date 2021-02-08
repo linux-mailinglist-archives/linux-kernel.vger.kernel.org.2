@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5D6531392C
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 17:21:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C5E1313930
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 17:22:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234306AbhBHQUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 11:20:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55686 "EHLO mail.kernel.org"
+        id S234342AbhBHQVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 11:21:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56852 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233338AbhBHPMd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 10:12:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 59F5964EF5;
-        Mon,  8 Feb 2021 15:09:23 +0000 (UTC)
+        id S233341AbhBHPMe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 10:12:34 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 530A464EAC;
+        Mon,  8 Feb 2021 15:09:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612796964;
-        bh=nWE8prE+g082V2ukI4f+8bi9yIYRgdKWnNSP6749RXM=;
+        s=korg; t=1612796966;
+        bh=HM0XlfwS6bkLvk0EzFap5NM6LxYLMPb4FCeFAwji3uE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sH5mw3Yv8uZBYepYiQwCQzebRuteEcDYyK25PaF4AEZc+C2n1FI4qj+umJuQu0rml
-         xSdNobiojcDPjpWQTuRmSlmBhbyjkSHsjWO2s3szh5ihIcqtL2ItobC5RSGumkkZ3O
-         REmz0JBKKtWpTgbsmqDshUcdNqI/VdgLg59e/US4=
+        b=rnH+9R9z0oBDL7sa83mnd8O2p73F43QPDFz3/BZ38GaX+bjDqudcBwLsGAeqipLxH
+         otG/TwpQ9VqEOUivMv0tNn2NTLvzfoWQv2+jJoYUY3SIQWZecNkxSPJQLv819JiaH7
+         3RrA9ebo6q2j3laC3/FOJhVEg6M6q7OX9KqPivAk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chenxin Jin <bg4akv@hotmail.com>,
+        stable@vger.kernel.org,
+        Christoph Schemmel <christoph.schemmel@gmail.com>,
         Johan Hovold <johan@kernel.org>
-Subject: [PATCH 5.4 02/65] USB: serial: cp210x: add new VID/PID for supporting Teraoka AD2000
-Date:   Mon,  8 Feb 2021 16:00:34 +0100
-Message-Id: <20210208145810.332494144@linuxfoundation.org>
+Subject: [PATCH 5.4 03/65] USB: serial: option: Adding support for Cinterion MV31
+Date:   Mon,  8 Feb 2021 16:00:35 +0100
+Message-Id: <20210208145810.376001682@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210208145810.230485165@linuxfoundation.org>
 References: <20210208145810.230485165@linuxfoundation.org>
@@ -39,31 +40,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chenxin Jin <bg4akv@hotmail.com>
+From: Christoph Schemmel <christoph.schemmel@gmail.com>
 
-commit 43377df70480f82919032eb09832e9646a8a5efb upstream.
+commit e478d6029dca9d8462f426aee0d32896ef64f10f upstream.
 
-Teraoka AD2000 uses the CP210x driver, but the chip VID/PID is
-customized with 0988/0578. We need the driver to support the new
-VID/PID.
+Adding support for Cinterion device MV31 for enumeration with
+PID 0x00B3 and 0x00B7.
 
-Signed-off-by: Chenxin Jin <bg4akv@hotmail.com>
+usb-devices output for 0x00B3
+T:  Bus=04 Lev=01 Prnt=01 Port=00 Cnt=01 Dev#=  6 Spd=5000 MxCh= 0
+D:  Ver= 3.20 Cls=ef(misc ) Sub=02 Prot=01 MxPS= 9 #Cfgs=  1
+P:  Vendor=1e2d ProdID=00b3 Rev=04.14
+S:  Manufacturer=Cinterion
+S:  Product=Cinterion PID 0x00B3 USB Mobile Broadband
+S:  SerialNumber=b3246eed
+C:  #Ifs= 6 Cfg#= 1 Atr=a0 MxPwr=896mA
+I:  If#=0x0 Alt= 0 #EPs= 1 Cls=02(commc) Sub=0e Prot=00 Driver=cdc_mbim
+I:  If#=0x1 Alt= 1 #EPs= 2 Cls=0a(data ) Sub=00 Prot=02 Driver=cdc_mbim
+I:  If#=0x2 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=option
+I:  If#=0x3 Alt= 0 #EPs= 1 Cls=ff(vend.) Sub=ff Prot=ff Driver=cdc_wdm
+I:  If#=0x4 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=option
+I:  If#=0x5 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=30 Driver=option
+
+usb-devices output for 0x00B7
+T:  Bus=04 Lev=01 Prnt=01 Port=00 Cnt=01 Dev#=  5 Spd=5000 MxCh= 0
+D:  Ver= 3.20 Cls=ef(misc ) Sub=02 Prot=01 MxPS= 9 #Cfgs=  1
+P:  Vendor=1e2d ProdID=00b7 Rev=04.14
+S:  Manufacturer=Cinterion
+S:  Product=Cinterion PID 0x00B3 USB Mobile Broadband
+S:  SerialNumber=b3246eed
+C:  #Ifs= 4 Cfg#= 1 Atr=a0 MxPwr=896mA
+I:  If#=0x0 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=ff Prot=ff Driver=qmi_wwan
+I:  If#=0x1 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=option
+I:  If#=0x2 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=option
+I:  If#=0x3 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=30 Driver=option
+
+Signed-off-by: Christoph Schemmel <christoph.schemmel@gmail.com>
 Cc: stable@vger.kernel.org
 Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/serial/cp210x.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/usb/serial/option.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
---- a/drivers/usb/serial/cp210x.c
-+++ b/drivers/usb/serial/cp210x.c
-@@ -61,6 +61,7 @@ static const struct usb_device_id id_tab
- 	{ USB_DEVICE(0x08e6, 0x5501) }, /* Gemalto Prox-PU/CU contactless smartcard reader */
- 	{ USB_DEVICE(0x08FD, 0x000A) }, /* Digianswer A/S , ZigBee/802.15.4 MAC Device */
- 	{ USB_DEVICE(0x0908, 0x01FF) }, /* Siemens RUGGEDCOM USB Serial Console */
-+	{ USB_DEVICE(0x0988, 0x0578) }, /* Teraoka AD2000 */
- 	{ USB_DEVICE(0x0B00, 0x3070) }, /* Ingenico 3070 */
- 	{ USB_DEVICE(0x0BED, 0x1100) }, /* MEI (TM) Cashflow-SC Bill/Voucher Acceptor */
- 	{ USB_DEVICE(0x0BED, 0x1101) }, /* MEI series 2000 Combo Acceptor */
+--- a/drivers/usb/serial/option.c
++++ b/drivers/usb/serial/option.c
+@@ -425,6 +425,8 @@ static void option_instat_callback(struc
+ #define CINTERION_PRODUCT_AHXX_2RMNET		0x0084
+ #define CINTERION_PRODUCT_AHXX_AUDIO		0x0085
+ #define CINTERION_PRODUCT_CLS8			0x00b0
++#define CINTERION_PRODUCT_MV31_MBIM		0x00b3
++#define CINTERION_PRODUCT_MV31_RMNET		0x00b7
+ 
+ /* Olivetti products */
+ #define OLIVETTI_VENDOR_ID			0x0b3c
+@@ -1914,6 +1916,10 @@ static const struct usb_device_id option
+ 	{ USB_DEVICE(SIEMENS_VENDOR_ID, CINTERION_PRODUCT_HC25_MDMNET) },
+ 	{ USB_DEVICE(SIEMENS_VENDOR_ID, CINTERION_PRODUCT_HC28_MDM) }, /* HC28 enumerates with Siemens or Cinterion VID depending on FW revision */
+ 	{ USB_DEVICE(SIEMENS_VENDOR_ID, CINTERION_PRODUCT_HC28_MDMNET) },
++	{ USB_DEVICE_INTERFACE_CLASS(CINTERION_VENDOR_ID, CINTERION_PRODUCT_MV31_MBIM, 0xff),
++	  .driver_info = RSVD(3)},
++	{ USB_DEVICE_INTERFACE_CLASS(CINTERION_VENDOR_ID, CINTERION_PRODUCT_MV31_RMNET, 0xff),
++	  .driver_info = RSVD(0)},
+ 	{ USB_DEVICE(OLIVETTI_VENDOR_ID, OLIVETTI_PRODUCT_OLICARD100),
+ 	  .driver_info = RSVD(4) },
+ 	{ USB_DEVICE(OLIVETTI_VENDOR_ID, OLIVETTI_PRODUCT_OLICARD120),
 
 
