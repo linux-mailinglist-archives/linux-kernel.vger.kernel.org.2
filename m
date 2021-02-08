@@ -2,71 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 146933132E9
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 14:06:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F33263132EA
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 14:08:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230249AbhBHNGc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 08:06:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53880 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229637AbhBHNG0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 08:06:26 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5D55964E87;
-        Mon,  8 Feb 2021 13:05:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612789545;
-        bh=n2isI83IkIAKm3kI0g0ECHwrDnwL6N3NRCask2v11K4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=tXnPlTunpFwu92+fPzbML8iTK5bFD47r16JYOL15YDq8sUvWgYSWCYcog0bcY6osU
-         xh+lzTTdf2dw06caWv1MO6c7XzUQPhI+NCh7ghzDWUQf6xcS8dhhrco7GjR7I34rmJ
-         AAk9CI3OMOEn6Zj6FjRfSEt9lA8PTIdfLFjar5HRx9sysZXAL4ErUAR5aqsPFOYObq
-         j80ngkwleGb9hiojaxB8NTYqF8n7QxPtWBTwhJ/lB5lNT4F/Ku1Ckf4BKdGuZKcJ28
-         xE5qRkCgxdLD2MZsM8eBJ2tGU/FJ3PdOZEDi+ETdJ+hGgglVpfQJhVh1xacyv5JQ+p
-         ra0oJKj0Bi0Hg==
-Received: by mail-ed1-f48.google.com with SMTP id y8so17967014ede.6;
-        Mon, 08 Feb 2021 05:05:45 -0800 (PST)
-X-Gm-Message-State: AOAM530uUifeRgy2R8rKXYjlA4n+oz6qozRRtc5BIjNxAqp3bzBLFxii
-        Sast/sGY6CBG659a2Z6hK47fnFIaHWEksJcT2yo=
-X-Google-Smtp-Source: ABdhPJy3MugBCN3vcLgylnGQXqUOP8EwHKtj6Zh2dKo2/+J+UzdE0VRMpo4trg91VeezDp2qc7vylA2ODRRIJwGyK5o=
-X-Received: by 2002:a05:6402:d05:: with SMTP id eb5mr16789013edb.143.1612789543824;
- Mon, 08 Feb 2021 05:05:43 -0800 (PST)
+        id S229910AbhBHNHD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 08:07:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53182 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229681AbhBHNHB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 08:07:01 -0500
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8813C061786
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 05:06:20 -0800 (PST)
+Received: by mail-pj1-x102e.google.com with SMTP id t2so3583334pjq.2
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 05:06:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=tDkrlYtZmuyvnaWiBGMywioTd48GfDMumoWRGFyu84w=;
+        b=fNMPZeLvIAAx2Vpkoh6yYR/HAKpuK7SNhC9dioPe4VUOlo3LCAHkMVVBhjW2PWSr6L
+         PzunAGEo14xhBo9lPscPVJ89N+RB0G5wVJbfeMEY97nBUX1ASsEfZr61P45NKuU1eS1x
+         bOAV96ApYE7OJ+0GP07dId7IBI/5YoVJIzXt0vDsHDYvL8d6PQAUzj0AKBcXSt1WXqez
+         23ctQiCzpnHysZnwuvl4GWOFZXJxhfIbONgOP0/7lPRcywok8HXFIFJyULIbIxnD6/7z
+         +n4O45k8Y4zCdQ3W29QzcVAxb8D60shaowZ6tGffr0YWql2eUdg9+vByam3R9DlpzUpV
+         41ig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=tDkrlYtZmuyvnaWiBGMywioTd48GfDMumoWRGFyu84w=;
+        b=OUbjL4Vd4Vms290tJvZloLPZXz5zsZsPjFzgG+H5LBcdkgwwtZoELsv92P4682TmD2
+         CGfbjbQyDHNkrXJkxA5A5n+hL8EMfped4GVoHmGma5wK3k3JqFg1KWkeJX1EzkApDWOu
+         BZZKt7BE8bq9CFCSjA3OtjYBgl0Zm1u0agRzvsf6LK8WKAYC4WUXsPt9gsMKAS8zEXW0
+         pt/HmB5j7LJqTZ4QLOsuJ8rXJjLHOG/DPB1gdcO9ATH9gmCy8nE5ob1ClsOqbxmM2eA9
+         G01bJCrjnvpwGFPWoI/uS716uJreB8L8m46TaccpPiysv6zSQps8DNvDWH9uWVsAIdz2
+         bB2Q==
+X-Gm-Message-State: AOAM530iWWNJFHxlx1B32czeB2VGEgNVzE3BidpU3IqU+mpttVRd1pN0
+        unGl5flXPDSrakxnqw6RM5E4huHrXb7sFbc3
+X-Google-Smtp-Source: ABdhPJx9g2+NJpvVe8zyDIhi2SByihhU6LUFZzQVuPblT4cxP6g4d9EzlC5jn1FdaTCVHoAiKZf0kA==
+X-Received: by 2002:a17:902:eb53:b029:e1:2b0f:6a88 with SMTP id i19-20020a170902eb53b02900e12b0f6a88mr16584512pli.36.1612789580393;
+        Mon, 08 Feb 2021 05:06:20 -0800 (PST)
+Received: from gmail.com ([2405:201:5c0a:f013:cb90:bcaf:3a99:cafe])
+        by smtp.gmail.com with ESMTPSA id s21sm18413055pga.12.2021.02.08.05.06.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Feb 2021 05:06:19 -0800 (PST)
+Date:   Mon, 8 Feb 2021 18:36:14 +0530
+From:   Mukul Mehar <mukulmehar02@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     christian.gromm@microchip.com, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH]: checkpatch: Fixed styling issue
+Message-ID: <20210208130614.GA7749@gmail.com>
 MIME-Version: 1.0
-References: <CGME20210208114447epcas2p3507f22a555355ac7710c5ca220853e0e@epcas2p3.samsung.com>
- <20210208114538.134766-1-taehyun.cho@samsung.com>
-In-Reply-To: <20210208114538.134766-1-taehyun.cho@samsung.com>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Date:   Mon, 8 Feb 2021 14:05:31 +0100
-X-Gmail-Original-Message-ID: <CAJKOXPeeopnjvdbNb=QA-wS+jcrAzgpouV2DFWe+ydGFE2J68A@mail.gmail.com>
-Message-ID: <CAJKOXPeeopnjvdbNb=QA-wS+jcrAzgpouV2DFWe+ydGFE2J68A@mail.gmail.com>
-Subject: Re: [PATCH] usb: dwc3: make USB_DWC3_EXYNOS independent
-To:     taehyun cho <taehyun.cho@samsung.com>
-Cc:     balbi@kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-samsung-soc@vger.kernel.org" 
-        <linux-samsung-soc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/mixed; boundary="uAKRQypu60I7Lcqm"
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 8 Feb 2021 at 12:51, taehyun cho <taehyun.cho@samsung.com> wrote:
->
-> 'ARCH_EXYNOS' is no more used. 'USB_DWC3_EXYNOS' is glue layer
 
-As a maintainer of Samsung Exynos SoC, I am very surprised to hear
-that ARCH_EXYNOS is not used anymore... Quite contrary, in my opinion
-it is still used. You need to rephrase this sentence, because it's not
-possible to understand in current form.
+--uAKRQypu60I7Lcqm
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> which can be used with Synopsys DWC3 controller on Exynos SoCs.
-> 'USB_DWC3_EXYNOS' can be used from Exynos5 to Exynos9.
 
-Please provide here the answer to "why you want to remove
-ARCH_EXYNOS". Quite precise answer, please.
+--uAKRQypu60I7Lcqm
+Content-Type: text/x-diff; charset=us-ascii
+Content-Disposition: attachment; filename="first_patch.patch"
 
-In future, please Cc lists and people responsible for this drivers:
-scripts/get_maintainer.pl -f drivers/usb/dwc3/dwc3-exynos.c
+From 29bcaf0066003983da29b1e026b985c0727b091a Mon Sep 17 00:00:00 2001
+From: Mukul Mehar <mukulmehar02@gmail.com>
+Date: Mon, 8 Feb 2021 01:03:06 +0530
+Subject: [PATCH] Drivers: staging: most: sound: Fixed style issue.
+Signed-off-by: Mukul Mehar <mukulmehar02@gmail.com>
 
-Best regards,
-Krzysztof
+
+This patch fixes a warning, of the line ending with a '(',
+generated by checkpatch.pl.
+This is my first patch.
+---
+ drivers/staging/most/sound/sound.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/staging/most/sound/sound.c b/drivers/staging/most/sound/sound.c
+index 3a1a59058042..4dd1bf95d1ce 100644
+--- a/drivers/staging/most/sound/sound.c
++++ b/drivers/staging/most/sound/sound.c
+@@ -228,12 +228,12 @@ static int playback_thread(void *data)
+ 		struct mbo *mbo = NULL;
+ 		bool period_elapsed = false;
+ 
+-		wait_event_interruptible(
+-			channel->playback_waitq,
+-			kthread_should_stop() ||
+-			(channel->is_stream_running &&
+-			 (mbo = most_get_mbo(channel->iface, channel->id,
+-					     &comp))));
++		wait_event_interruptible(channel->playback_waitq,
++					 kthread_should_stop() ||
++					 (channel->is_stream_running &&
++					 (mbo = most_get_mbo(channel->iface,
++					 channel->id,
++					 &comp))));
+ 		if (!mbo)
+ 			continue;
+ 
+-- 
+2.25.1
+
+
+--uAKRQypu60I7Lcqm--
