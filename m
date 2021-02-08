@@ -2,110 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A016314446
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 00:49:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5427F31444A
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 00:52:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229702AbhBHXtc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 18:49:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34004 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229545AbhBHXt2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 18:49:28 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0595A64E9A;
-        Mon,  8 Feb 2021 23:48:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612828127;
-        bh=cmdwZ4a6bUBFmfrZQNo71CTGPOcdnPqfAXXmNEvqVgc=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=fUWL1mbIkWT79Zn55+uY9X7SN+LOgH+aQgHzr3yZOl6MidpFg73v3bfAWuwyWVI7E
-         /64IeyHlICat37I0hlNrJqWqstWfxj/V8v3l+dgjn8VCnZby3hFbAaU+UzZ0wrA8jE
-         bEQkKDro5hYjWCSz/X4sAkV+cnIqSTgdyjO5M8H5fZG+czuJttNc3TFwN0F/Zjljzq
-         t+wIR9A3hrtwrRclPsdYqKedGeqzTeMXNcd7NHH/JnW0swH3GOUtG9M+5S+SAYDKw2
-         +n2B+2N/UoGN4JTlJrnLC/xLCqLgYQN1DKYgEB3EICl09DN69/DzAKOajagrLqCznX
-         /oXPi7bZqlTCg==
-Received: by mail-qk1-f182.google.com with SMTP id m144so589007qke.10;
-        Mon, 08 Feb 2021 15:48:46 -0800 (PST)
-X-Gm-Message-State: AOAM533BlyLIxUsugtY+aAdUaAJhqxcLi4jUdyoZoKr/ulkn6VVvRntF
-        gEzC+FcZMNbiTmbHyQtJmQN4KxTf37BvBqVB2g==
-X-Google-Smtp-Source: ABdhPJz4iZaPmQzqGVOhAKeyDYsJNBMn2bDqkbB6EyKrP7Ns/1yQf1ahrwrNCzJMVdqI8eyffQRaHHDCUmLMybIzC5Y=
-X-Received: by 2002:ae9:f20b:: with SMTP id m11mr19942215qkg.464.1612828126133;
- Mon, 08 Feb 2021 15:48:46 -0800 (PST)
+        id S229849AbhBHXuX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 18:50:23 -0500
+Received: from pb-smtp20.pobox.com ([173.228.157.52]:58616 "EHLO
+        pb-smtp20.pobox.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229720AbhBHXuO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 18:50:14 -0500
+Received: from pb-smtp20.pobox.com (unknown [127.0.0.1])
+        by pb-smtp20.pobox.com (Postfix) with ESMTP id CBA8311DB38;
+        Mon,  8 Feb 2021 18:49:30 -0500 (EST)
+        (envelope-from junio@pobox.com)
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=pobox.com; h=from:to:cc
+        :subject:date:message-id:mime-version:content-type
+        :content-transfer-encoding; s=sasl; bh=yRv0ErEW2TlC7+onQTOXnUk0g
+        y0=; b=asiJaGNkkRRMBxitGWCwwgShzDDy6AQiMQP/AJkY2fae/OTW+cfSho4+2
+        t0lAotrYFkvAt8Idj9KjtK3/oz1BG117SAG6rsEFRajTEH6/8uz2aKc5ipmhmSw1
+        QyuRMff/oUJZ4+GsLilKmwjIRPCEzq4Gth67m2LVzrnpVtKXXM=
+DomainKey-Signature: a=rsa-sha1; c=nofws; d=pobox.com; h=from:to:cc
+        :subject:date:message-id:mime-version:content-type
+        :content-transfer-encoding; q=dns; s=sasl; b=gdpfkOwPYhOZgZtrmkc
+        9K/evxzRJDzszQ2RZhIHl7lB6YSeVoar08s36hViEnXgUalZRkYjXRjUxd9ERcF+
+        OaDOKum8kPg2+j91Dad8MHaoQKlX1qABVnQNAXc+n+q9cY3k4+m8DZWL/9Mi35Yk
+        WbNid3MXjRQ+0UBtu+utf72Y=
+Received: from pb-smtp20.sea.icgroup.com (unknown [127.0.0.1])
+        by pb-smtp20.pobox.com (Postfix) with ESMTP id B0CC711DB37;
+        Mon,  8 Feb 2021 18:49:30 -0500 (EST)
+        (envelope-from junio@pobox.com)
+Received: from pobox.com (unknown [34.74.119.39])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by pb-smtp20.pobox.com (Postfix) with ESMTPSA id D9E9911DB36;
+        Mon,  8 Feb 2021 18:49:27 -0500 (EST)
+        (envelope-from junio@pobox.com)
+From:   Junio C Hamano <gitster@pobox.com>
+To:     git@vger.kernel.org
+Cc:     Linux Kernel <linux-kernel@vger.kernel.org>,
+        git-packagers@googlegroups.com
+Subject: [ANNOUNCE] Git v2.30.1
+Date:   Mon, 08 Feb 2021 15:49:26 -0800
+Message-ID: <xmqqsg662k8p.fsf@gitster.c.googlers.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1.90 (gnu/linux)
 MIME-Version: 1.0
-References: <20210208222203.22335-1-info@metux.net>
-In-Reply-To: <20210208222203.22335-1-info@metux.net>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Mon, 8 Feb 2021 17:48:33 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqJ-bz35mUM3agYjq5x+Y+u9rL1RwesCaA-x=MW8uv5CrA@mail.gmail.com>
-Message-ID: <CAL_JsqJ-bz35mUM3agYjq5x+Y+u9rL1RwesCaA-x=MW8uv5CrA@mail.gmail.com>
-Subject: Re: RFC: oftree based setup of composite board devices
-To:     "Enrico Weigelt, metux IT consult" <info@metux.net>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        devicetree@vger.kernel.org, Johan Hovold <johan@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+X-Pobox-Relay-ID: 47D30840-6A68-11EB-B155-E43E2BB96649-77302942!pb-smtp20.pobox.com
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+Johan H
+The latest maintenance release Git v2.30.1 is now available at the
+usual places.  This is to propagate obvious fixes that have
+accumulated on the 'master' front down to the 2.30.x series.
 
-On Mon, Feb 8, 2021 at 4:22 PM Enrico Weigelt, metux IT consult
-<info@metux.net> wrote:
->
-> Hello folks,
->
-> here's an RFC for using compiled-in dtb's for initializing board devices
-> that can't be probed via bus'es or firmware.
+The tarballs are found at:
 
-I'm not convinced compiled in is the mechanism we want.
+    https://www.kernel.org/pub/software/scm/git/
 
-> Use cases are boards with non-oftree firmware (ACPI, etc) where certain
-> platform devices can't be directly enumerated via firmware. Traditionally
-> we had to write board specific drivers that check for board identification
-> (DMI strings, etc), then initialize the actual devices and their links
-> (eg. gpio<->leds/buttons, ...). Often this can be expressed just by DT.
+The following public repositories all have a copy of the 'v2.30.1'
+tag and the 'maint' branch that the tag points at:
 
-This is something I've wanted to see for a while. There's use cases
-for DT based systems too. The example I'd like to see supported are
-USB serial adapters with downstream serdev, GPIO, I2C, SPI, etc. Then
-plug more than one of those in.
+  url =3D https://kernel.googlesource.com/pub/scm/git/git
+  url =3D git://repo.or.cz/alt-git.git
+  url =3D https://github.com/gitster/git
 
-> This patch queue does a bunch of preparations in oftree code, so we can
-> support multiple fully independent DT's (not using DT overlays). And then
-> adds a generic driver parses compiled-in fdt blobs, checks for mathing
-> DMI strings and initializes the devices. As an example, the last patch
-> adds an alternative implementation for the PC engines APU2/3/4 board
-> family based on device tree.
+----------------------------------------------------------------
 
-I think there's a couple of approaches we could take. Either support
-multiple root nodes as you have done or keep a single root and add
-child nodes to them. I think the latter would be less invasive. In the
-non-DT cases, we'd just always create an empty skeleton DT. A 3rd
-variation on a DT system is we could want to create parent nodes if
-they don't exist to attach this DT to so we have a full hierarchy.
+Git v2.30.1 Release Notes
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
-I'm not saying which one we should do, just laying out some of the options.
+This release is primarily to merge fixes accumulated on the 'master'
+front to prepare for 2.31 release that are still relevant to 2.30.x
+maintenance track.
 
-> The approach can be easily be extended to other kinds of composite devices,
-> eg. PCI cards or USB dongles.
->
->
-> Yet some drawbacks of the current implementation:
->
->  * individual FDT's can't be modularized yet (IMHO, we don't have DMI-based
->    modprobing anyways)
+Fixes since v2.30
+-----------------
 
-I think we need to use either firmware loading or udev mechanisms to
-load the FDTs.
+ * "git fetch --recurse-submodules" failed to update a submodule
+   when it has an uninitialized (hence of no interest to the user)
+   sub-submodule, which has been corrected.
 
->  * can't reconfigure or attach to devices outside the individual DT's
->    (eg. probed by PCI, etc)
+ * Command line error of "git rebase" are diagnosed earlier.
 
-Not sure I follow.
+ * "git stash" did not work well in a sparsely checked out working
+   tree.
 
-Rob
+ * Some tests expect that "ls -l" output has either '-' or 'x' for
+   group executable bit, but setgid bit can be inherited from parent
+   directory and make these fields 'S' or 's' instead, causing test
+   failures.
+
+ * "git for-each-repo --config=3D<var> <cmd>" should not run <cmd> for
+   any repository when the configuration variable <var> is not defined
+   even once.
+
+ * "git mergetool --tool-help" was broken in 2.29 and failed to list
+   all the available tools.
+
+ * Fix for procedure to building CI test environment for mac.
+
+ * Newline characters in the host and path part of git:// URL are
+   now forbidden.
+
+ * When more than one commit with the same patch ID appears on one
+   side, "git log --cherry-pick A...B" did not exclude them all when a
+   commit with the same patch ID appears on the other side.  Now it
+   does.
+
+ * Documentation for "git fsck" lost stale bits that has become
+   incorrect.
+
+ * Doc for packfile URI feature has been clarified.
+
+ * The implementation of "git branch --sort" wrt the detached HEAD
+   display has always been hacky, which has been cleaned up.
+
+ * Our setting of GitHub CI test jobs were a bit too eager to give up
+   once there is even one failure found.  Tweak the knob to allow
+   other jobs keep running even when we see a failure, so that we can
+   find more failures in a single run.
+
+Also contains minor documentation updates and code clean-ups.
+
+----------------------------------------------------------------
+
+Changes since v2.30.0 are as follows:
+
+Adam Dinwoodie (1):
+      t4129: fix setfacl-related permissions failure
+
+Antonio Russo (1):
+      t6016: move to lib-log-graph.sh framework
+
+Daniel Levin (1):
+      git-p4: fix syncing file types with pattern
+
+Derrick Stolee (1):
+      for-each-repo: do nothing on empty config
+
+Elijah Newren (3):
+      t7012: add a testcase demonstrating stash apply bugs in sparse chec=
+kouts
+      stash: remove unnecessary process forking
+      stash: fix stash application in sparse-checkouts
+
+Felipe Contreras (1):
+      test: bisect-porcelain: fix location of files
+
+Jeff King (5):
+      git_connect_git(): forbid newlines in host and path
+      fsck: reject .gitmodules git:// urls with newlines
+      t5516: loosen "not our ref" error check
+      patch-ids: handle duplicate hashmap entries
+      p5303: avoid sed GNU-ism
+
+Johannes Schindelin (1):
+      SKIP_DASHED_BUILT_INS: respect `config.mak`
+
+Johannes Sixt (1):
+      annotate-tests: quote variable expansions containing path names
+
+Jonathan Tan (1):
+      Doc: clarify contents of packfile sent as URI
+
+Junio C Hamano (5):
+      parse-options: format argh like error messages
+      SubmittingPatches: tighten wording on "sign-off" procedure
+      ci/install-depends: attempt to fix "brew cask" stuff
+      Prepare for 2.30.1
+      Git 2.30.1
+
+Martin =C3=85gren (9):
+      t1300: remove duplicate test for `--file ../foo`
+      t1300: remove duplicate test for `--file no-such-file`
+      t1300: don't needlessly work with `core.foo` configs
+      pack-format.txt: document sizes at start of delta data
+      builtin/gc: don't peek into `struct lock_file`
+      commit-graph: don't peek into `struct lock_file`
+      midx: don't peek into `struct lock_file`
+      refs/files-backend: don't peek into `struct lock_file`
+      read-cache: try not to peek into `struct {lock_,temp}file`
+
+Matheus Tavares (1):
+      t4129: don't fail if setgid is set in the test directory
+
+Peter Kaestle (1):
+      submodules: fix of regression on fetching of non-init subsub-repo
+
+Philippe Blain (3):
+      gitmodules.txt: fix 'GIT_WORK_TREE' variable name
+      mergetool--lib: fix '--tool-help' to correctly show available tools
+      ci: do not cancel all jobs of a matrix if one fails
+
+Ren=C3=A9 Scharfe (1):
+      rebase: verify commit parameter
+
+Taylor Blau (2):
+      p7519: allow running without watchman prereq
+      Documentation/git-clone.txt: document race with --local
+
+Thomas Ackermann (1):
+      doc: fix some typos
+
+Utku Gultopu (1):
+      doc: remove "directory cache" from man pages
+
+Vasyl Vavrychuk (1):
+      git-send-email.txt: mention less secure app access with Gmail
+
+ZheNing Hu (1):
+      builtin/*: update usage format
+
+brian m. carlson (1):
+      docs: rephrase and clarify the git status --short format
+
+=C3=86var Arnfj=C3=B6r=C3=B0 Bjarmason (10):
+      branch: change "--local" to "--list" in comment
+      branch tests: add to --sort tests
+      ref-filter: add braces to if/else if/else chain
+      ref-filter: move "cmp_fn" assignment into "else if" arm
+      ref-filter: move ref_sorting flags to a bitfield
+      branch: sort detached HEAD based on a flag
+      branch: show "HEAD detached" first under reverse sort
+      Makefile: remove a warning about old GETTEXT_POISON flag
+      gettext.c: remove/reword a mostly-useless comment
+      fsck doc: remove ancient out-of-date diagnostics
+
