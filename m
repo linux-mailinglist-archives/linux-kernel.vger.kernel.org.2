@@ -2,34 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94AD93138BB
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 17:01:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F8DE3138DF
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 17:07:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234187AbhBHP7j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 10:59:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55494 "EHLO mail.kernel.org"
+        id S234186AbhBHQHs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 11:07:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56506 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232386AbhBHPIq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 10:08:46 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CE56364EB4;
-        Mon,  8 Feb 2021 15:06:31 +0000 (UTC)
+        id S233263AbhBHPK7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 10:10:59 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4E99864EBE;
+        Mon,  8 Feb 2021 15:08:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612796792;
-        bh=1B5uALRLICfV9TWV/llmgG8y96SQqcS4IxY09JRtY3k=;
+        s=korg; t=1612796880;
+        bh=yM1yKpIsH1SVBWXEtrA81hq1B2LFhZyLkWgvd5v9p6o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dyjZRuvLjY6PdUkoCGXZDvQeWhP/wYFm41MsLVOcDhkh78IStX2I2pT/ePtUX2iqU
-         9hr9GnD3RbOykjFECIiS13a8wkJKZV620iRwo83t/FJ1Z5c6sutyoel4lsZd0MCJvJ
-         IMPmEPv+K+eMyMZzQOhaijxXKC2QxGv0AQtTQH/o=
+        b=cYHQfDrwhbLf/IiMzHUXJj5bCqbhwQMC9eaJw5IsVk0h18t96Drv9T3TfW4lkhTnT
+         uyUUN//1Dn8WEN2ZRkCX+Pxh1F9OtaqooPdTtGLsDgcS4fi4CO1s4vV+rEl8m5Pl3N
+         pX+uIhMkd+1FfAk2PghlbptvV9+UveLnF7XpSjNQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Russell King <rmk+kernel@armlinux.org.uk>
-Subject: [PATCH 4.14 21/30] ARM: footbridge: fix dc21285 PCI configuration accessors
-Date:   Mon,  8 Feb 2021 16:01:07 +0100
-Message-Id: <20210208145806.105317042@linuxfoundation.org>
+        stable@vger.kernel.org, Aurelien Aptel <aaptel@suse.com>,
+        Shyam Prasad N <nspmangalore@gmail.com>,
+        Steve French <stfrench@microsoft.com>
+Subject: [PATCH 4.19 21/38] cifs: report error instead of invalid when revalidating a dentry fails
+Date:   Mon,  8 Feb 2021 16:01:08 +0100
+Message-Id: <20210208145807.002040003@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210208145805.239714726@linuxfoundation.org>
-References: <20210208145805.239714726@linuxfoundation.org>
+In-Reply-To: <20210208145806.141056364@linuxfoundation.org>
+References: <20210208145806.141056364@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,62 +40,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Russell King <rmk+kernel@armlinux.org.uk>
+From: Aurelien Aptel <aaptel@suse.com>
 
-commit 39d3454c3513840eb123b3913fda6903e45ce671 upstream.
+commit 21b200d091826a83aafc95d847139b2b0582f6d1 upstream.
 
-Building with gcc 4.9.2 reveals a latent bug in the PCI accessors
-for Footbridge platforms, which causes a fatal alignment fault
-while accessing IO memory. Fix this by making the assembly volatile.
+Assuming
+- //HOST/a is mounted on /mnt
+- //HOST/b is mounted on /mnt/b
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
+On a slow connection, running 'df' and killing it while it's
+processing /mnt/b can make cifs_get_inode_info() returns -ERESTARTSYS.
+
+This triggers the following chain of events:
+=> the dentry revalidation fail
+=> dentry is put and released
+=> superblock associated with the dentry is put
+=> /mnt/b is unmounted
+
+This patch makes cifs_d_revalidate() return the error instead of 0
+(invalid) when cifs_revalidate_dentry() fails, except for ENOENT (file
+deleted) and ESTALE (file recreated).
+
+Signed-off-by: Aurelien Aptel <aaptel@suse.com>
+Suggested-by: Shyam Prasad N <nspmangalore@gmail.com>
+Reviewed-by: Shyam Prasad N <nspmangalore@gmail.com>
+CC: stable@vger.kernel.org
+Signed-off-by: Steve French <stfrench@microsoft.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/arm/mach-footbridge/dc21285.c |   12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ fs/cifs/dir.c |   22 ++++++++++++++++++++--
+ 1 file changed, 20 insertions(+), 2 deletions(-)
 
---- a/arch/arm/mach-footbridge/dc21285.c
-+++ b/arch/arm/mach-footbridge/dc21285.c
-@@ -69,15 +69,15 @@ dc21285_read_config(struct pci_bus *bus,
- 	if (addr)
- 		switch (size) {
- 		case 1:
--			asm("ldrb	%0, [%1, %2]"
-+			asm volatile("ldrb	%0, [%1, %2]"
- 				: "=r" (v) : "r" (addr), "r" (where) : "cc");
- 			break;
- 		case 2:
--			asm("ldrh	%0, [%1, %2]"
-+			asm volatile("ldrh	%0, [%1, %2]"
- 				: "=r" (v) : "r" (addr), "r" (where) : "cc");
- 			break;
- 		case 4:
--			asm("ldr	%0, [%1, %2]"
-+			asm volatile("ldr	%0, [%1, %2]"
- 				: "=r" (v) : "r" (addr), "r" (where) : "cc");
- 			break;
- 		}
-@@ -103,17 +103,17 @@ dc21285_write_config(struct pci_bus *bus
- 	if (addr)
- 		switch (size) {
- 		case 1:
--			asm("strb	%0, [%1, %2]"
-+			asm volatile("strb	%0, [%1, %2]"
- 				: : "r" (value), "r" (addr), "r" (where)
- 				: "cc");
- 			break;
- 		case 2:
--			asm("strh	%0, [%1, %2]"
-+			asm volatile("strh	%0, [%1, %2]"
- 				: : "r" (value), "r" (addr), "r" (where)
- 				: "cc");
- 			break;
- 		case 4:
--			asm("str	%0, [%1, %2]"
-+			asm volatile("str	%0, [%1, %2]"
- 				: : "r" (value), "r" (addr), "r" (where)
- 				: "cc");
- 			break;
+--- a/fs/cifs/dir.c
++++ b/fs/cifs/dir.c
+@@ -840,6 +840,7 @@ static int
+ cifs_d_revalidate(struct dentry *direntry, unsigned int flags)
+ {
+ 	struct inode *inode;
++	int rc;
+ 
+ 	if (flags & LOOKUP_RCU)
+ 		return -ECHILD;
+@@ -849,8 +850,25 @@ cifs_d_revalidate(struct dentry *direntr
+ 		if ((flags & LOOKUP_REVAL) && !CIFS_CACHE_READ(CIFS_I(inode)))
+ 			CIFS_I(inode)->time = 0; /* force reval */
+ 
+-		if (cifs_revalidate_dentry(direntry))
+-			return 0;
++		rc = cifs_revalidate_dentry(direntry);
++		if (rc) {
++			cifs_dbg(FYI, "cifs_revalidate_dentry failed with rc=%d", rc);
++			switch (rc) {
++			case -ENOENT:
++			case -ESTALE:
++				/*
++				 * Those errors mean the dentry is invalid
++				 * (file was deleted or recreated)
++				 */
++				return 0;
++			default:
++				/*
++				 * Otherwise some unexpected error happened
++				 * report it as-is to VFS layer
++				 */
++				return rc;
++			}
++		}
+ 		else {
+ 			/*
+ 			 * If the inode wasn't known to be a dfs entry when
 
 
