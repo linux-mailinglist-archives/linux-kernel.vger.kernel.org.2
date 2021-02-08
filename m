@@ -2,37 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C657F313783
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 16:29:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B4513136FC
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 16:19:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233260AbhBHP1A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 10:27:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52454 "EHLO mail.kernel.org"
+        id S233384AbhBHPSK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 10:18:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52064 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232237AbhBHPE3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 10:04:29 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E0E7B64E84;
-        Mon,  8 Feb 2021 15:02:48 +0000 (UTC)
+        id S232859AbhBHPD5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 10:03:57 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A8A5C64E8A;
+        Mon,  8 Feb 2021 15:02:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612796569;
-        bh=XNB5Kb6a/T3bRSttZEMsuYhm1giFt/X4+p086CTSXrY=;
+        s=korg; t=1612796572;
+        bh=vI7ctVkbdPVnwQH6bjkIpC1+6VwQIp0RYP3vi4fcqRw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=h7aSvutQp9Os7swi3rOUtWRfVduN1S4iGXnn4gpg4BS04b7QH89OyMpVkgd+dDz7e
-         qNwPW04QiwYv1hNrMGRV5sN273lT74zhaDS0MXhJeBcWfGDi0bY5mms6Wf+a1PcMlM
-         4790zrNkHuRA8gYZu5EfzZOoCa4746umdY3zfuOA=
+        b=wboeOgQZtChrE4IYXCS97c4zzoqciVTxRtNuBCyjDb2BZEWX4vO6E0xbA2BDr+A5Y
+         mqtXSYkT5fGca++EBxFUf78qA0sQN2sd7yXEW84EoEhlRIkTP+OkHrNGN6mNr3ztss
+         hMGaVamTnWJ9OCSDCjpElYkYUk4bwt9wTFvzg0dM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-        Ananth N Mavinakayanahalli <ananth@linux.ibm.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Wang ShaoBo <bobo.shaobowang@huawei.com>,
-        Cheng Jian <cj.chengjian@huawei.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Subject: [PATCH 4.4 27/38] kretprobe: Avoid re-registration of the same kretprobe earlier
-Date:   Mon,  8 Feb 2021 16:00:49 +0100
-Message-Id: <20210208145806.352054917@linuxfoundation.org>
+        stable@vger.kernel.org, Aurelien Aptel <aaptel@suse.com>,
+        Shyam Prasad N <nspmangalore@gmail.com>,
+        Steve French <stfrench@microsoft.com>
+Subject: [PATCH 4.4 28/38] cifs: report error instead of invalid when revalidating a dentry fails
+Date:   Mon,  8 Feb 2021 16:00:50 +0100
+Message-Id: <20210208145806.384124458@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210208145805.279815326@linuxfoundation.org>
 References: <20210208145805.279815326@linuxfoundation.org>
@@ -44,52 +40,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wang ShaoBo <bobo.shaobowang@huawei.com>
+From: Aurelien Aptel <aaptel@suse.com>
 
-commit 0188b87899ffc4a1d36a0badbe77d56c92fd91dc upstream.
+commit 21b200d091826a83aafc95d847139b2b0582f6d1 upstream.
 
-Our system encountered a re-init error when re-registering same kretprobe,
-where the kretprobe_instance in rp->free_instances is illegally accessed
-after re-init.
+Assuming
+- //HOST/a is mounted on /mnt
+- //HOST/b is mounted on /mnt/b
 
-Implementation to avoid re-registration has been introduced for kprobe
-before, but lags for register_kretprobe(). We must check if kprobe has
-been re-registered before re-initializing kretprobe, otherwise it will
-destroy the data struct of kretprobe registered, which can lead to memory
-leak, system crash, also some unexpected behaviors.
+On a slow connection, running 'df' and killing it while it's
+processing /mnt/b can make cifs_get_inode_info() returns -ERESTARTSYS.
 
-We use check_kprobe_rereg() to check if kprobe has been re-registered
-before running register_kretprobe()'s body, for giving a warning message
-and terminate registration process.
+This triggers the following chain of events:
+=> the dentry revalidation fail
+=> dentry is put and released
+=> superblock associated with the dentry is put
+=> /mnt/b is unmounted
 
-Link: https://lkml.kernel.org/r/20210128124427.2031088-1-bobo.shaobowang@huawei.com
+This patch makes cifs_d_revalidate() return the error instead of 0
+(invalid) when cifs_revalidate_dentry() fails, except for ENOENT (file
+deleted) and ESTALE (file recreated).
 
-Cc: stable@vger.kernel.org
-Fixes: 1f0ab40976460 ("kprobes: Prevent re-registration of the same kprobe")
-[ The above commit should have been done for kretprobes too ]
-Acked-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
-Acked-by: Ananth N Mavinakayanahalli <ananth@linux.ibm.com>
-Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
-Signed-off-by: Wang ShaoBo <bobo.shaobowang@huawei.com>
-Signed-off-by: Cheng Jian <cj.chengjian@huawei.com>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Signed-off-by: Aurelien Aptel <aaptel@suse.com>
+Suggested-by: Shyam Prasad N <nspmangalore@gmail.com>
+Reviewed-by: Shyam Prasad N <nspmangalore@gmail.com>
+CC: stable@vger.kernel.org
+Signed-off-by: Steve French <stfrench@microsoft.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/kprobes.c |    4 ++++
- 1 file changed, 4 insertions(+)
+ fs/cifs/dir.c |   22 ++++++++++++++++++++--
+ 1 file changed, 20 insertions(+), 2 deletions(-)
 
---- a/kernel/kprobes.c
-+++ b/kernel/kprobes.c
-@@ -1884,6 +1884,10 @@ int register_kretprobe(struct kretprobe
- 	int i;
- 	void *addr;
+--- a/fs/cifs/dir.c
++++ b/fs/cifs/dir.c
+@@ -831,6 +831,7 @@ static int
+ cifs_d_revalidate(struct dentry *direntry, unsigned int flags)
+ {
+ 	struct inode *inode;
++	int rc;
  
-+	/* If only rp->kp.addr is specified, check reregistering kprobes */
-+	if (rp->kp.addr && check_kprobe_rereg(&rp->kp))
-+		return -EINVAL;
-+
- 	if (kretprobe_blacklist_size) {
- 		addr = kprobe_addr(&rp->kp);
- 		if (IS_ERR(addr))
+ 	if (flags & LOOKUP_RCU)
+ 		return -ECHILD;
+@@ -840,8 +841,25 @@ cifs_d_revalidate(struct dentry *direntr
+ 		if ((flags & LOOKUP_REVAL) && !CIFS_CACHE_READ(CIFS_I(inode)))
+ 			CIFS_I(inode)->time = 0; /* force reval */
+ 
+-		if (cifs_revalidate_dentry(direntry))
+-			return 0;
++		rc = cifs_revalidate_dentry(direntry);
++		if (rc) {
++			cifs_dbg(FYI, "cifs_revalidate_dentry failed with rc=%d", rc);
++			switch (rc) {
++			case -ENOENT:
++			case -ESTALE:
++				/*
++				 * Those errors mean the dentry is invalid
++				 * (file was deleted or recreated)
++				 */
++				return 0;
++			default:
++				/*
++				 * Otherwise some unexpected error happened
++				 * report it as-is to VFS layer
++				 */
++				return rc;
++			}
++		}
+ 		else {
+ 			/*
+ 			 * If the inode wasn't known to be a dfs entry when
 
 
