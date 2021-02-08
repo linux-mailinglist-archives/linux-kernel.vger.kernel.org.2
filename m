@@ -2,209 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBFD7312AEA
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 07:48:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCD5C312AEC
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 07:48:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229984AbhBHGqr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 01:46:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56792 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229908AbhBHGqn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 01:46:43 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3E47364E59;
-        Mon,  8 Feb 2021 06:45:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612766761;
-        bh=laV8svMkkIZgkEjMImPDqav9pFAGfCHDdtEUcbdDnvY=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=TGskujnEd6wHa7WkmlrA/txwqRTcJGBrt+G8G29pmkA5kZJTpP9p0uA0OBvZIqSvD
-         JxUKjVIlJL7BN44ZogKx96Zw8qus91VU68qdycGrSWnEl44/V2NTQUC1OLOTCdF4Gu
-         FGXrZfB1UlGCm0us6h06+bTEmrWyNdKdO1cQE50Xn9aYIA9cVXbE7c/MBRqdiuZ1jz
-         yRAPPdGXm7pgspO8bff3EiWF+togadvuTOEFB2flyG4QXvLieVjLI1n9IWbF4cIrlT
-         j4bPAIhCO/OgcnQj5qsi4LQSz7dkKfKSzdR46yYTRQHb0tQHuVB44086JDEOFAZDLc
-         NgM8lbk2wAojg==
-Subject: Re: [PATCH 00/21] [Set 2] Rid W=1 warnings from Clock
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        Andy Gross <agross@kernel.org>,
-        Avi Fishman <avifishman70@gmail.com>,
-        Benjamin Fair <benjaminfair@google.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Boris BREZILLON <boris.brezillon@free-electrons.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        =?UTF-8?Q?Emilio_L=c3=b3pez?= <emilio@elopez.com.ar>,
-        Fabio Estevam <festevam@gmail.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Jan Kotas <jank@cadence.com>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-omap@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-tegra@vger.kernel.org, Loc Ho <lho@apm.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Nancy Yuen <yuenn@google.com>,
-        Nuvoton Technologies <tali.perry@nuvoton.com>,
-        NXP Linux Team <linux-imx@nxp.com>, openbmc@lists.ozlabs.org,
-        Patrick Venture <venture@google.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Prashant Gaikwad <pgaikwad@nvidia.com>,
-        Rajan Vaja <rajan.vaja@xilinx.com>,
-        Rajeev Kumar <rajeev-dlh.kumar@st.com>,
-        Richard Woodruff <r-woodruff2@ti.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Shiraz Hashim <shiraz.linux.kernel@gmail.com>,
-        =?UTF-8?Q?S=c3=b6ren_Brinkmann?= <soren.brinkmann@xilinx.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Tali Perry <tali.perry1@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Tomer Maimon <tmaimon77@gmail.com>,
-        Viresh Kumar <vireshk@kernel.org>
-References: <20210126124540.3320214-1-lee.jones@linaro.org>
-From:   Tero Kristo <kristo@kernel.org>
-Message-ID: <b801364c-951a-af9f-d7ad-2440afe1ed88@kernel.org>
-Date:   Mon, 8 Feb 2021 08:45:50 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S230020AbhBHGsC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 01:48:02 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:12148 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229988AbhBHGrw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 01:47:52 -0500
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DYxNx3JPHz165ZG;
+        Mon,  8 Feb 2021 14:45:37 +0800 (CST)
+Received: from [10.174.176.61] (10.174.176.61) by
+ DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
+ 14.3.498.0; Mon, 8 Feb 2021 14:46:53 +0800
+Subject: Re: [PATCH v14 00/11] support reserving crashkernel above 4G on arm64
+ kdump
+To:     <mingo@redhat.com>, <tglx@linutronix.de>, <rppt@kernel.org>,
+        <dyoung@redhat.com>, <bhe@redhat.com>, <catalin.marinas@arm.com>,
+        <will@kernel.org>, <nsaenzjulienne@suse.de>, <corbet@lwn.net>,
+        <John.P.donnelly@oracle.com>, <bhsharma@redhat.com>,
+        <prabhakar.pkin@gmail.com>
+References: <20210130071025.65258-1-chenzhou10@huawei.com>
+CC:     <horms@verge.net.au>, <robh+dt@kernel.org>, <arnd@arndb.de>,
+        <james.morse@arm.com>, <xiexiuqi@huawei.com>,
+        <guohanjun@huawei.com>, <huawei.libin@huawei.com>,
+        <wangkefeng.wang@huawei.com>, <linux-doc@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <kexec@lists.infradead.org>
+From:   chenzhou <chenzhou10@huawei.com>
+Message-ID: <3b3cbe38-69bc-bbc5-2d75-d2ce3dd07e4f@huawei.com>
+Date:   Mon, 8 Feb 2021 14:46:52 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-In-Reply-To: <20210126124540.3320214-1-lee.jones@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210130071025.65258-1-chenzhou10@huawei.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.176.61]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/01/2021 14:45, Lee Jones wrote:
-> This set is part of a larger effort attempting to clean-up W=1
-> kernel builds, which are currently overwhelmingly riddled with
-> niggly little warnings.
-> 
-> This is the last set.  Clock is clean after this.
-> 
-> Lee Jones (21):
->    clk: zynq: pll: Fix kernel-doc formatting in 'clk_register_zynq_pll's
->      header
->    clk: ti: clkt_dpll: Fix some kernel-doc misdemeanours
->    clk: ti: dpll3xxx: Fix some kernel-doc headers and promote other
->      worthy ones
->    clk: qcom: clk-regmap: Provide missing description for
->      'devm_clk_register_regmap()'s dev param
->    clk: sunxi: clk-sun9i-core: Demote non-conformant kernel-doc headers
->    clk: sunxi: clk-usb: Demote obvious kernel-doc abuse
->    clk: tegra: clk-tegra30: Remove unused variable 'reg'
->    clk: clkdev: Ignore suggestion to use gnu_printf() as it's not
->      appropriate here
->    clk: tegra: cvb: Provide missing description for
->      'tegra_cvb_add_opp_table()'s align param
->    clk: ti: dpll44xx: Fix some potential doc-rot
->    clk: renesas: renesas-cpg-mssr: Fix formatting issues for
->      'smstpcr_saved's documentation
->    clk: sunxi: clk-sun6i-ar100: Demote non-conformant kernel-doc header
->    clk: qcom: gcc-ipq4019: Remove unused variable 'ret'
->    clk: clk-fixed-mmio: Demote obvious kernel-doc abuse
->    clk: clk-npcm7xx: Remove unused static const tables 'npcm7xx_gates'
->      and 'npcm7xx_divs_fx'
->    clk: qcom: mmcc-msm8974: Remove unused static const tables
->      'mmcc_xo_mmpll0_1_2_gpll0{map}'
->    clk: clk-xgene: Add description for 'mask' and fix formatting for
->      'flags'
->    clk: qcom: clk-rpm: Remove a bunch of superfluous code
->    clk: spear: Move prototype to accessible header
->    clk: imx: Move 'imx6sl_set_wait_clk()'s prototype out to accessible
->      header
->    clk: zynqmp: divider: Add missing description for 'max_div'
-> 
->   arch/arm/mach-imx/common.h             |   1 -
->   arch/arm/mach-imx/cpuidle-imx6sl.c     |   1 +
->   arch/arm/mach-imx/pm-imx6.c            |   1 +
->   arch/arm/mach-spear/generic.h          |  12 ---
->   arch/arm/mach-spear/spear13xx.c        |   1 +
->   drivers/clk/clk-fixed-mmio.c           |   2 +-
->   drivers/clk/clk-npcm7xx.c              | 108 -------------------------
->   drivers/clk/clk-xgene.c                |   5 +-
->   drivers/clk/clkdev.c                   |   7 ++
->   drivers/clk/imx/clk-imx6sl.c           |   1 +
->   drivers/clk/qcom/clk-regmap.c          |   1 +
->   drivers/clk/qcom/clk-rpm.c             |  63 ---------------
->   drivers/clk/qcom/gcc-ipq4019.c         |   7 +-
->   drivers/clk/qcom/mmcc-msm8974.c        |  16 ----
->   drivers/clk/renesas/renesas-cpg-mssr.c |   4 +-
->   drivers/clk/spear/spear1310_clock.c    |   1 +
->   drivers/clk/spear/spear1340_clock.c    |   1 +
->   drivers/clk/sunxi/clk-sun6i-ar100.c    |   2 +-
->   drivers/clk/sunxi/clk-sun9i-core.c     |   8 +-
->   drivers/clk/sunxi/clk-usb.c            |   2 +-
->   drivers/clk/tegra/clk-tegra30.c        |   5 +-
->   drivers/clk/tegra/cvb.c                |   1 +
->   drivers/clk/ti/clkt_dpll.c             |   3 +-
->   drivers/clk/ti/dpll3xxx.c              |  20 ++---
->   drivers/clk/ti/dpll44xx.c              |   6 +-
+Hi all,
 
-For the TI portions:
+Friendly ping...
 
-Reviewed-by: Tero Kristo <kristo@kernel.org>
 
->   drivers/clk/zynq/pll.c                 |  12 +--
->   drivers/clk/zynqmp/divider.c           |   1 +
->   include/linux/clk/imx.h                |  15 ++++
->   include/linux/clk/spear.h              |  23 ++++++
->   29 files changed, 92 insertions(+), 238 deletions(-)
->   create mode 100644 include/linux/clk/imx.h
->   create mode 100644 include/linux/clk/spear.h
-> 
-> Cc: Ahmad Fatoum <a.fatoum@pengutronix.de>
-> Cc: Andy Gross <agross@kernel.org>
-> Cc: Avi Fishman <avifishman70@gmail.com>
-> Cc: Benjamin Fair <benjaminfair@google.com>
-> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Cc: Boris BREZILLON <boris.brezillon@free-electrons.com>
-> Cc: Chen-Yu Tsai <wens@csie.org>
-> Cc: "Emilio López" <emilio@elopez.com.ar>
-> Cc: Fabio Estevam <festevam@gmail.com>
-> Cc: Geert Uytterhoeven <geert+renesas@glider.be>
-> Cc: Jan Kotas <jank@cadence.com>
-> Cc: Jernej Skrabec <jernej.skrabec@siol.net>
-> Cc: Jonathan Hunter <jonathanh@nvidia.com>
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-arm-msm@vger.kernel.org
-> Cc: linux-clk@vger.kernel.org
-> Cc: linux-omap@vger.kernel.org
-> Cc: linux-renesas-soc@vger.kernel.org
-> Cc: linux-tegra@vger.kernel.org
-> Cc: Loc Ho <lho@apm.com>
-> Cc: Maxime Ripard <mripard@kernel.org>
-> Cc: Michael Turquette <mturquette@baylibre.com>
-> Cc: Michal Simek <michal.simek@xilinx.com>
-> Cc: Nancy Yuen <yuenn@google.com>
-> Cc: Nuvoton Technologies <tali.perry@nuvoton.com>
-> Cc: NXP Linux Team <linux-imx@nxp.com>
-> Cc: openbmc@lists.ozlabs.org
-> Cc: Patrick Venture <venture@google.com>
-> Cc: Pengutronix Kernel Team <kernel@pengutronix.de>
-> Cc: Peter De Schrijver <pdeschrijver@nvidia.com>
-> Cc: Philipp Zabel <p.zabel@pengutronix.de>
-> Cc: Prashant Gaikwad <pgaikwad@nvidia.com>
-> Cc: Rajan Vaja <rajan.vaja@xilinx.com>
-> Cc: Rajeev Kumar <rajeev-dlh.kumar@st.com>
-> Cc: Richard Woodruff <r-woodruff2@ti.com>
-> Cc: Russell King <linux@armlinux.org.uk>
-> Cc: Sascha Hauer <s.hauer@pengutronix.de>
-> Cc: Shawn Guo <shawnguo@kernel.org>
-> Cc: Shiraz Hashim <shiraz.linux.kernel@gmail.com>
-> Cc: "Sören Brinkmann" <soren.brinkmann@xilinx.com>
-> Cc: Stephen Boyd <sboyd@kernel.org>
-> Cc: Tali Perry <tali.perry1@gmail.com>
-> Cc: Tero Kristo <kristo@kernel.org>
-> Cc: Thierry Reding <thierry.reding@gmail.com>
-> Cc: Tomer Maimon <tmaimon77@gmail.com>
-> Cc: Viresh Kumar <vireshk@kernel.org>
-> 
+On 2021/1/30 15:10, Chen Zhou wrote:
+> There are following issues in arm64 kdump:
+> 1. We use crashkernel=X to reserve crashkernel below 4G, which
+> will fail when there is no enough low memory.
+> 2. If reserving crashkernel above 4G, in this case, crash dump
+> kernel will boot failure because there is no low memory available
+> for allocation.
+>
+> To solve these issues, change the behavior of crashkernel=X.
+> crashkernel=X tries low allocation in DMA zone and fall back to high
+> allocation if it fails.
+>
+> We can also use "crashkernel=X,high" to select a high region above
+> DMA zone, which also tries to allocate at least 256M low memory in
+> DMA zone automatically and "crashkernel=Y,low" can be used to allocate
+> specified size low memory.
+>
+> When reserving crashkernel in high memory, some low memory is reserved
+> for crash dump kernel devices. So there may be two regions reserved for
+> crash dump kernel.
+> In order to distinct from the high region and make no effect to the use
+> of existing kexec-tools, rename the low region as "Crash kernel (low)",
+> and pass the low region by reusing DT property
+> "linux,usable-memory-range". We made the low memory region as the last
+> range of "linux,usable-memory-range" to keep compatibility with existing
+> user-space and older kdump kernels.
+>
+> Besides, we need to modify kexec-tools:
+> arm64: support more than one crash kernel regions(see [1])
+>
+> Another update is document about DT property 'linux,usable-memory-range':
+> schemas: update 'linux,usable-memory-range' node schema(see [2])
+>
+> This patchset contains the following eleven patches:
+> 0001-x86-kdump-replace-the-hard-coded-alignment-with-macr.patch
+> 0002-x86-kdump-make-the-lower-bound-of-crash-kernel-reser.patch
+> 0003-x86-kdump-use-macro-CRASH_ADDR_LOW_MAX-in-functions-.patch
+> 0004-x86-kdump-move-xen_pv_domain-check-and-insert_resour.patch
+> 0005-x86-kdump-move-reserve_crashkernel-_low-into-crash_c.patch
+> 0006-x86-elf-Move-vmcore_elf_check_arch_cross-to-arch-x86.patch
+> 0007-arm64-kdump-introduce-some-macroes-for-crash-kernel-.patch
+> 0008-arm64-kdump-reimplement-crashkernel-X.patch
+> 0009-x86-arm64-Add-ARCH_WANT_RESERVE_CRASH_KERNEL-config.patch
+> 0010-arm64-kdump-add-memory-for-devices-by-DT-property-li.patch
+> 0011-kdump-update-Documentation-about-crashkernel.patch
+>
+> 0001-0004 are some x86 cleanups which prepares for making
+> functionsreserve_crashkernel[_low]() generic.
+> 0005 makes functions reserve_crashkernel[_low]() generic.
+> 0006 fix compiling warning.
+> 0007-0009 reimplements arm64 crashkernel=X.
+> 0010 adds memory for devices by DT property linux,usable-memory-range.
+> 0011 updates the doc.
+>
+> Changes since [v13]
+> - Rebased on top of 5.11-rc5.
+> - Introduce config CONFIG_ARCH_WANT_RESERVE_CRASH_KERNEL.
+> Since reserve_crashkernel[_low]() implementations are quite similar on
+> other architectures, so have CONFIG_ARCH_WANT_RESERVE_CRASH_KERNEL in
+> arch/Kconfig and select this by X86 and ARM64.
+> - Some minor cleanup.
+>
+> Changes since [v12]
+> - Rebased on top of 5.10-rc1.
+> - Keep CRASH_ALIGN as 16M suggested by Dave.
+> - Drop patch "kdump: add threshold for the required memory".
+> - Add Tested-by from John.
+>
+> Changes since [v11]
+> - Rebased on top of 5.9-rc4.
+> - Make the function reserve_crashkernel() of x86 generic.
+> Suggested by Catalin, make the function reserve_crashkernel() of x86 generic
+> and arm64 use the generic version to reimplement crashkernel=X.
+>
+> Changes since [v10]
+> - Reimplement crashkernel=X suggested by Catalin, Many thanks to Catalin.
+>
+> Changes since [v9]
+> - Patch 1 add Acked-by from Dave.
+> - Update patch 5 according to Dave's comments.
+> - Update chosen schema.
+>
+> Changes since [v8]
+> - Reuse DT property "linux,usable-memory-range".
+> Suggested by Rob, reuse DT property "linux,usable-memory-range" to pass the low
+> memory region.
+> - Fix kdump broken with ZONE_DMA reintroduced.
+> - Update chosen schema.
+>
+> Changes since [v7]
+> - Move x86 CRASH_ALIGN to 2M
+> Suggested by Dave and do some test, move x86 CRASH_ALIGN to 2M.
+> - Update Documentation/devicetree/bindings/chosen.txt.
+> Add corresponding documentation to Documentation/devicetree/bindings/chosen.txt
+> suggested by Arnd.
+> - Add Tested-by from Jhon and pk.
+>
+> Changes since [v6]
+> - Fix build errors reported by kbuild test robot.
+>
+> Changes since [v5]
+> - Move reserve_crashkernel_low() into kernel/crash_core.c.
+> - Delete crashkernel=X,high.
+> - Modify crashkernel=X,low.
+> If crashkernel=X,low is specified simultaneously, reserve spcified size low
+> memory for crash kdump kernel devices firstly and then reserve memory above 4G.
+> In addition, rename crashk_low_res as "Crash kernel (low)" for arm64, and then
+> pass to crash dump kernel by DT property "linux,low-memory-range".
+> - Update Documentation/admin-guide/kdump/kdump.rst.
+>
+> Changes since [v4]
+> - Reimplement memblock_cap_memory_ranges for multiple ranges by Mike.
+>
+> Changes since [v3]
+> - Add memblock_cap_memory_ranges back for multiple ranges.
+> - Fix some compiling warnings.
+>
+> Changes since [v2]
+> - Split patch "arm64: kdump: support reserving crashkernel above 4G" as
+> two. Put "move reserve_crashkernel_low() into kexec_core.c" in a separate
+> patch.
+>
+> Changes since [v1]:
+> - Move common reserve_crashkernel_low() code into kernel/kexec_core.c.
+> - Remove memblock_cap_memory_ranges() i added in v1 and implement that
+> in fdt_enforce_memory_region().
+> There are at most two crash kernel regions, for two crash kernel regions
+> case, we cap the memory range [min(regs[*].start), max(regs[*].end)]
+> and then remove the memory range in the middle.
+>
+> [1]: http://lists.infradead.org/pipermail/kexec/2020-June/020737.html
+> [2]: https://github.com/robherring/dt-schema/pull/19 
+> [v1]: https://lkml.org/lkml/2019/4/2/1174
+> [v2]: https://lkml.org/lkml/2019/4/9/86
+> [v3]: https://lkml.org/lkml/2019/4/9/306
+> [v4]: https://lkml.org/lkml/2019/4/15/273
+> [v5]: https://lkml.org/lkml/2019/5/6/1360
+> [v6]: https://lkml.org/lkml/2019/8/30/142
+> [v7]: https://lkml.org/lkml/2019/12/23/411
+> [v8]: https://lkml.org/lkml/2020/5/21/213
+> [v9]: https://lkml.org/lkml/2020/6/28/73
+> [v10]: https://lkml.org/lkml/2020/7/2/1443
+> [v11]: https://lkml.org/lkml/2020/8/1/150
+> [v12]: https://lkml.org/lkml/2020/9/7/1037
+> [v13]: https://lkml.org/lkml/2020/10/31/34
+>
+> Chen Zhou (11):
+>   x86: kdump: replace the hard-coded alignment with macro CRASH_ALIGN
+>   x86: kdump: make the lower bound of crash kernel reservation
+>     consistent
+>   x86: kdump: use macro CRASH_ADDR_LOW_MAX in functions
+>     reserve_crashkernel()
+>   x86: kdump: move xen_pv_domain() check and insert_resource() to
+>     setup_arch()
+>   x86: kdump: move reserve_crashkernel[_low]() into crash_core.c
+>   x86/elf: Move vmcore_elf_check_arch_cross to
+>     arch/x86/include/asm/elf.h
+>   arm64: kdump: introduce some macroes for crash kernel reservation
+>   arm64: kdump: reimplement crashkernel=X
+>   x86, arm64: Add ARCH_WANT_RESERVE_CRASH_KERNEL config
+>   arm64: kdump: add memory for devices by DT property
+>     linux,usable-memory-range
+>   kdump: update Documentation about crashkernel
+>
+>  Documentation/admin-guide/kdump/kdump.rst     |  22 ++-
+>  .../admin-guide/kernel-parameters.txt         |  11 +-
+>  arch/Kconfig                                  |   3 +
+>  arch/arm64/Kconfig                            |   1 +
+>  arch/arm64/include/asm/kexec.h                |  10 ++
+>  arch/arm64/kernel/setup.c                     |  13 +-
+>  arch/arm64/mm/init.c                          | 111 +++++-------
+>  arch/x86/Kconfig                              |   2 +
+>  arch/x86/include/asm/elf.h                    |   3 +
+>  arch/x86/include/asm/kexec.h                  |  31 +++-
+>  arch/x86/kernel/setup.c                       | 163 ++----------------
+>  include/linux/crash_core.h                    |   3 +
+>  include/linux/kexec.h                         |   2 -
+>  kernel/crash_core.c                           | 156 +++++++++++++++++
+>  kernel/kexec_core.c                           |  17 --
+>  15 files changed, 303 insertions(+), 245 deletions(-)
+>
 
