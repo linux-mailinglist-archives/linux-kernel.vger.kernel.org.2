@@ -2,106 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33AD0313EC2
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 20:21:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 94764313EF2
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 20:29:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236106AbhBHTVK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 14:21:10 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:38158 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235184AbhBHSAG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 13:00:06 -0500
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1612807155;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=d/K1nflfjUlbsBR3cGwm/oQjA++u+sJaiD0qsOu7S2s=;
-        b=CHIBhRcS9EzzfV/puEcjPtfyZq14OpnWy94x/5xqEeK0HD9eFrDljq/dTT6dy9ZKTjviFQ
-        MGHzHOyVpa+QPrQiyqsLPjFWCxz57fKJcRkuSQ3TbSfeA8aC4CEMg63jOGQy36tON9WnhH
-        FXCPhxIkc1tjeFdI1nWXgbFNmAqSIg3Gf5rxY58W12Ogf3RrKvmv5LNEl0Exa1gbdGVtE2
-        /FUi6oQ+L25oJhzHFKLgX2xd+fgMgs6Io1bEFCOnsDAaM0QaxgGZqHXkqxNVDdkrufn0Jx
-        1y60ALM6UeklQge91NhzcJ4O/AqhCekCvRCVLJwGTk/0KnOBa4Nc34PWbgbnag==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1612807155;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=d/K1nflfjUlbsBR3cGwm/oQjA++u+sJaiD0qsOu7S2s=;
-        b=4wR+m38B5LyACURm932IzQakUfaUt5rUysmpS8y054un9uavzWSlLGMvv9GSXfneHTzHA6
-        a3f2+iCqIeMEA0BQ==
-To:     linux-kernel@vger.kernel.org
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Miguel Ojeda Sandonis <miguel.ojeda.sandonis@gmail.com>
-Subject: [PATCH] auxdisplay: Remove in_interrupt() usage.
-Date:   Mon,  8 Feb 2021 18:58:24 +0100
-Message-Id: <20210208175824.381484-1-bigeasy@linutronix.de>
+        id S236185AbhBHT3C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 14:29:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46562 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235148AbhBHSCk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 13:02:40 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F1F864EC2;
+        Mon,  8 Feb 2021 17:59:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612807141;
+        bh=3m9DxGXNsBBhzo/s+0wFSYIudIWh4M8a/6fbq7tYbsw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=qyYGwH82DRlTihlEq6OMlAC0e9Um7gaPTawpCjf8I49WVlJi4fBcihyQWd3HHRROz
+         dxHlkgP5iWDr+5i51hcBtl1G/Vbzx/PT4tNVFVTL6bAXjpUZvxXsrQSgs6BdpbD6Fk
+         xghR+d4Zt7t+/xAxHh3JwBIpnI7+HR7ezJohcsJ4LjjLf6IZLINn2wbTE0/49b2TKi
+         IQVJd05RTwxe/RcfxYGCZxqHaamaETLk3eD9KXUl7jfGAJ5jiyu3frIokrNpHISD+/
+         F8yhgnnRYfboZWbPd4rMWHGkopbzHEFU1fR1cxRdHKxhO41Pm5w8BKJAeQjdUdtnCH
+         vZwkVHK+KSZ2g==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Marc Zyngier <maz@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
+        Sasha Levin <sashal@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org
+Subject: [PATCH AUTOSEL 5.4 01/19] arm64: dts: rockchip: Fix PCIe DT properties on rk3399
+Date:   Mon,  8 Feb 2021 12:58:40 -0500
+Message-Id: <20210208175858.2092008-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-charlcd_write() is invoked as a VFS->write() callback and as such it is
-always invoked from preemptible context and may sleep.
+From: Marc Zyngier <maz@kernel.org>
 
-charlcd_puts() is invoked from register/unregister callback which is
-preemtible. The reboot notifier callback is also invoked from
-preemptible context.
+[ Upstream commit 43f20b1c6140896916f4e91aacc166830a7ba849 ]
 
-Therefore there is no need to use `in_interrupt()' to figure out if it
-is save to sleep because it always is.
-Using `schedule()' to schedule (an be friendly to others) is
-discouraged and `cond_resched()' should be used instead.
+It recently became apparent that the lack of a 'device_type = "pci"'
+in the PCIe root complex node for rk3399 is a violation of the PCI
+binding, as documented in IEEE Std 1275-1994. Changes to the kernel's
+parsing of the DT made such violation fatal, as drivers cannot
+probe the controller anymore.
 
-Remove `in_interrupt()' and use `cond_resched()' to schedule every 32
-iteration if needed.
+Add the missing property makes the PCIe node compliant. While we
+are at it, drop the pointless linux,pci-domain property, which only
+makes sense when there are multiple host bridges.
 
-Cc: Miguel Ojeda Sandonis <miguel.ojeda.sandonis@gmail.com>
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Link: https://lore.kernel.org/r/20200815125112.462652-3-maz@kernel.org
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/auxdisplay/charlcd.c | 16 ++++------------
- 1 file changed, 4 insertions(+), 12 deletions(-)
+ arch/arm64/boot/dts/rockchip/rk3399.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/auxdisplay/charlcd.c b/drivers/auxdisplay/charlcd.c
-index f43430e9dceed..fbfce95919f72 100644
---- a/drivers/auxdisplay/charlcd.c
-+++ b/drivers/auxdisplay/charlcd.c
-@@ -470,12 +470,8 @@ static ssize_t charlcd_write(struct file *file, const =
-char __user *buf,
- 	char c;
-=20
- 	for (; count-- > 0; (*ppos)++, tmp++) {
--		if (!in_interrupt() && (((count + 1) & 0x1f) =3D=3D 0))
--			/*
--			 * let's be a little nice with other processes
--			 * that need some CPU
--			 */
--			schedule();
-+		if (((count + 1) & 0x1f) =3D=3D 0)
-+			cond_resched();
-=20
- 		if (get_user(c, tmp))
- 			return -EFAULT;
-@@ -537,12 +533,8 @@ static void charlcd_puts(struct charlcd *lcd, const ch=
-ar *s)
- 	int count =3D strlen(s);
-=20
- 	for (; count-- > 0; tmp++) {
--		if (!in_interrupt() && (((count + 1) & 0x1f) =3D=3D 0))
--			/*
--			 * let's be a little nice with other processes
--			 * that need some CPU
--			 */
--			schedule();
-+		if (((count + 1) & 0x1f) =3D=3D 0)
-+			cond_resched();
-=20
- 		charlcd_write_char(lcd, *tmp);
- 	}
---=20
-2.30.0
+diff --git a/arch/arm64/boot/dts/rockchip/rk3399.dtsi b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
+index bb7d0aac6b9db..9d6ed8cda2c86 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3399.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
+@@ -232,6 +232,7 @@ pcie0: pcie@f8000000 {
+ 		reg = <0x0 0xf8000000 0x0 0x2000000>,
+ 		      <0x0 0xfd000000 0x0 0x1000000>;
+ 		reg-names = "axi-base", "apb-base";
++		device_type = "pci";
+ 		#address-cells = <3>;
+ 		#size-cells = <2>;
+ 		#interrupt-cells = <1>;
+@@ -250,7 +251,6 @@ pcie0: pcie@f8000000 {
+ 				<0 0 0 2 &pcie0_intc 1>,
+ 				<0 0 0 3 &pcie0_intc 2>,
+ 				<0 0 0 4 &pcie0_intc 3>;
+-		linux,pci-domain = <0>;
+ 		max-link-speed = <1>;
+ 		msi-map = <0x0 &its 0x0 0x1000>;
+ 		phys = <&pcie_phy 0>, <&pcie_phy 1>,
+-- 
+2.27.0
 
