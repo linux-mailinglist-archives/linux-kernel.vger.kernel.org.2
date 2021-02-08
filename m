@@ -2,220 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31826312ACD
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 07:38:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44836312AD1
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 07:38:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229835AbhBHGg5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 01:36:57 -0500
-Received: from so15.mailgun.net ([198.61.254.15]:32279 "EHLO so15.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229934AbhBHGf4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 01:35:56 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1612766122; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=aGCR27sxriXSP2sHRlIjaba2Ih4zgq9B75pB0sV0ugU=;
- b=FcV0ydPuwFl05INYA6bS1y8prGDGJLj1q99zMUURcqjx648A6o9Tq5zt7VCW2Otdx0PjnN9U
- 2YaE/DVmQdyCduXQimB17Wba4AdNek39qcofZtn11l3o/Ko5wF/cob0O5UqAWy1SDpbKecy0
- IiJmrwtjaHW+mWnoKKTPJyBZhgA=
-X-Mailgun-Sending-Ip: 198.61.254.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 6020db8d34db06ef79a7f74b (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 08 Feb 2021 06:34:53
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 8B1FDC43462; Mon,  8 Feb 2021 06:34:53 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 568C4C433C6;
-        Mon,  8 Feb 2021 06:34:51 +0000 (UTC)
+        id S229982AbhBHGhq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 01:37:46 -0500
+Received: from Mailgw01.mediatek.com ([1.203.163.78]:20372 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229626AbhBHGgs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 01:36:48 -0500
+X-UUID: 9b9ccf36a8f8412a87f8fd34127b7a8d-20210208
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=3N9rRASFzxmeOt/wKztN0VIoYEGnGsamx+GlAqJh9+4=;
+        b=GUGSnm/9H8jEaAidO3sdb9qdvwlFwyjmwO+0edSlA1nQh7eH+Q/ntAg0t/zf675jEsMG42KldyEJaThQlZIz5IyMSzvLFTgRXQFlpx+4PZcq+a/SUl69oQoDMoMDaI8mCnVoh6sFLgSXwJVnLQZE00sCDge0I/X72nCWe0EWSgo=;
+X-UUID: 9b9ccf36a8f8412a87f8fd34127b7a8d-20210208
+Received: from mtkcas36.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
+        (envelope-from <yong.wu@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 452771816; Mon, 08 Feb 2021 14:35:27 +0800
+Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS32N2.mediatek.inc
+ (172.27.4.72) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 8 Feb
+ 2021 14:35:25 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 8 Feb 2021 14:35:24 +0800
+Message-ID: <1612766125.19482.3.camel@mhfsdcap03>
+Subject: Re: [PATCH] MAINTAINERS: repair file pattern in MEDIATEK IOMMU
+ DRIVER
+From:   Yong Wu <yong.wu@mediatek.com>
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Joerg Roedel <joro@8bytes.org>
+CC:     <linux-mediatek@lists.infradead.org>,
+        <iommu@lists.linux-foundation.org>, Will Deacon <will@kernel.org>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
+        Pia Eichinger <pia.eichinger@st.oth-regensburg.de>,
+        Joe Perches <joe@perches.com>,
+        <kernel-janitors@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Date:   Mon, 8 Feb 2021 14:35:25 +0800
+In-Reply-To: <20210208061025.29198-1-lukas.bulwahn@gmail.com>
+References: <20210208061025.29198-1-lukas.bulwahn@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 08 Feb 2021 14:34:51 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Avri Altman <avri.altman@wdc.com>
-Cc:     "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        gregkh@linuxfoundation.org, Bart Van Assche <bvanassche@acm.org>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Daejun Park <daejun7.park@samsung.com>,
-        alim.akhtar@samsung.com, asutoshd@codeaurora.org,
-        Zang Leigang <zangleigang@hisilicon.com>,
-        Avi Shchislowski <avi.shchislowski@wdc.com>,
-        Bean Huo <beanhuo@micron.com>, stanley.chu@mediatek.com
-Subject: Re: [PATCH v2 6/9] scsi: ufshpb: Add hpb dev reset response
-In-Reply-To: <20210202083007.104050-7-avri.altman@wdc.com>
-References: <20210202083007.104050-1-avri.altman@wdc.com>
- <20210202083007.104050-7-avri.altman@wdc.com>
-Message-ID: <91845a884facd63d9e9d62e2e3424cfd@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+X-TM-SNTS-SMTP: A293A2F4DB79585306E07C30A2048CADF97377D97F56478078E0BA17EB9CA5692000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-02-02 16:30, Avri Altman wrote:
-> The spec does not define what is the host's recommended response when
-> the device send hpb dev reset response (oper 0x2).
-> 
-> We will update all active hpb regions: mark them and do that on the 
-> next
-> read.
-> 
-> Signed-off-by: Avri Altman <avri.altman@wdc.com>
-> ---
->  drivers/scsi/ufs/ufshpb.c | 54 ++++++++++++++++++++++++++++++++++++---
->  drivers/scsi/ufs/ufshpb.h |  1 +
->  2 files changed, 52 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/scsi/ufs/ufshpb.c b/drivers/scsi/ufs/ufshpb.c
-> index 49c74de539b7..28e0025507a1 100644
-> --- a/drivers/scsi/ufs/ufshpb.c
-> +++ b/drivers/scsi/ufs/ufshpb.c
-> @@ -17,6 +17,7 @@
->  #include "../sd.h"
-> 
->  #define WORK_PENDING 0
-> +#define RESET_PENDING 1
->  #define ACTIVATION_THRSHLD 4 /* 4 IOs */
->  #define EVICTION_THRSHLD (ACTIVATION_THRSHLD << 6) /* 256 IOs */
-> 
-> @@ -349,7 +350,8 @@ void ufshpb_prep(struct ufs_hba *hba, struct
-> ufshcd_lrb *lrbp)
->  		if (rgn->reads == ACTIVATION_THRSHLD)
->  			activate = true;
->  		spin_unlock_irqrestore(&rgn->rgn_lock, flags);
-> -		if (activate) {
-> +		if (activate ||
-> +		    test_and_clear_bit(RGN_FLAG_UPDATE, &rgn->rgn_flags)) {
->  			spin_lock_irqsave(&hpb->rsp_list_lock, flags);
->  			ufshpb_update_active_info(hpb, rgn_idx, srgn_idx);
->  			hpb->stats.rb_active_cnt++;
-> @@ -1068,6 +1070,24 @@ void ufshpb_rsp_upiu(struct ufs_hba *hba,
-> struct ufshcd_lrb *lrbp)
->  	case HPB_RSP_DEV_RESET:
->  		dev_warn(&hpb->sdev_ufs_lu->sdev_dev,
->  			 "UFS device lost HPB information during PM.\n");
-> +
-> +		if (hpb->is_hcm) {
-> +			struct ufshpb_lu *h;
-> +			struct scsi_device *sdev;
-> +
-> +			shost_for_each_device(sdev, hba->host) {
+T24gTW9uLCAyMDIxLTAyLTA4IGF0IDA3OjEwICswMTAwLCBMdWthcyBCdWx3YWhuIHdyb3RlOg0K
+PiBDb21taXQgNmFmNDg3Mzg1MmM0ICgiTUFJTlRBSU5FUlM6IEFkZCBlbnRyeSBmb3IgTWVkaWFU
+ZWsgSU9NTVUiKSBtZW50aW9ucw0KPiB0aGUgcGF0dGVybiAnZHJpdmVycy9pb21tdS9tdGstaW9t
+bXUqJywgYnV0IHRoZSBmaWxlcyBhcmUgYWN0dWFsbHkgbmFtZWQNCj4gd2l0aCBhbiB1bmRlcnNj
+b3JlLCBub3Qgd2l0aCBhIGh5cGhlbi4NCj4gDQo+IEhlbmNlLCAuL3NjcmlwdHMvZ2V0X21haW50
+YWluZXIucGwgLS1zZWxmLXRlc3Q9cGF0dGVybnMgY29tcGxhaW5zOg0KPiANCj4gICB3YXJuaW5n
+OiBubyBmaWxlIG1hdGNoZXMgIEY6ICAgIGRyaXZlcnMvaW9tbXUvbXRrLWlvbW11Kg0KPiANCj4g
+UmVwYWlyIHRoaXMgbWlub3IgdHlwbyBpbiB0aGUgZmlsZSBwYXR0ZXJuLg0KPiANCj4gU2lnbmVk
+LW9mZi1ieTogTHVrYXMgQnVsd2FobiA8bHVrYXMuYnVsd2FobkBnbWFpbC5jb20+DQo+IC0tLQ0K
+PiBhcHBsaWVzIGNsZWFubHkgb24gbmV4dC0yMDIxMDIwNQ0KPiANCj4gWW9uZywgcGxlYXNlIGFj
+ay4NCg0KK0pvZXJnLg0KDQpzb3JyeSBmb3IgdGhlIHR5cG8uDQoNCkFja2VkLWJ5OiBZb25nIFd1
+IDx5b25nLnd1QG1lZGlhdGVrLmNvbT4NCg0KPiBXaWxsLCBwbGVhc2UgcGljayB0aGlzIG1pbm9y
+IGZpeHVwIGZvciB5b3VyIGlvbW11LW5leHQgdHJlZS4NCj4gDQo+ICBNQUlOVEFJTkVSUyB8IDIg
+Ky0NCj4gIDEgZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlvbigrKSwgMSBkZWxldGlvbigtKQ0KPiAN
+Cj4gZGlmZiAtLWdpdCBhL01BSU5UQUlORVJTIGIvTUFJTlRBSU5FUlMNCj4gaW5kZXggNjc0ZjQy
+Mzc1YWNmLi42YjUwN2U4ZDc4MjggMTAwNjQ0DQo+IC0tLSBhL01BSU5UQUlORVJTDQo+ICsrKyBi
+L01BSU5UQUlORVJTDQo+IEBAIC0xMTIwMCw3ICsxMTIwMCw3IEBAIEw6CWlvbW11QGxpc3RzLmxp
+bnV4LWZvdW5kYXRpb24ub3JnDQo+ICBMOglsaW51eC1tZWRpYXRla0BsaXN0cy5pbmZyYWRlYWQu
+b3JnIChtb2RlcmF0ZWQgZm9yIG5vbi1zdWJzY3JpYmVycykNCj4gIFM6CVN1cHBvcnRlZA0KPiAg
+RjoJRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL2lvbW11L21lZGlhdGVrKg0KPiAt
+RjoJZHJpdmVycy9pb21tdS9tdGstaW9tbXUqDQo+ICtGOglkcml2ZXJzL2lvbW11L210a19pb21t
+dSoNCj4gIEY6CWluY2x1ZGUvZHQtYmluZGluZ3MvbWVtb3J5L210Ki1wb3J0LmgNCj4gIA0KPiAg
+TUVESUFURUsgSlBFRyBEUklWRVINCg0K
 
-I haven't test it yet, but this line shall cause recursive spin lock -
-in current code base, ufshpb_rsp_upiu() is called with host_lock held.
-
-Regards,
-
-Can Guo.
-
-> +				h = sdev->hostdata;
-> +				if (!h)
-> +					continue;
-> +
-> +				if (test_and_set_bit(RESET_PENDING,
-> +						     &h->work_data_bits))
-> +					continue;
-> +
-> +				schedule_work(&h->ufshpb_lun_reset_work);
-> +			}
-> +		}
-> +
->  		break;
->  	default:
->  		dev_notice(&hpb->sdev_ufs_lu->sdev_dev,
-> @@ -1200,6 +1220,27 @@ static void
-> ufshpb_run_inactive_region_list(struct ufshpb_lu *hpb)
->  	spin_unlock_irqrestore(&hpb->rsp_list_lock, flags);
->  }
-> 
-> +static void ufshpb_reset_work_handler(struct work_struct *work)
-> +{
-> +	struct ufshpb_lu *hpb;
-> +	struct victim_select_info *lru_info;
-> +	struct ufshpb_region *rgn;
-> +	unsigned long flags;
-> +
-> +	hpb = container_of(work, struct ufshpb_lu, ufshpb_lun_reset_work);
-> +
-> +	lru_info = &hpb->lru_info;
-> +
-> +	spin_lock_irqsave(&hpb->rgn_state_lock, flags);
-> +
-> +	list_for_each_entry(rgn, &lru_info->lh_lru_rgn, list_lru_rgn)
-> +		set_bit(RGN_FLAG_UPDATE, &rgn->rgn_flags);
-> +
-> +	spin_unlock_irqrestore(&hpb->rgn_state_lock, flags);
-> +
-> +	clear_bit(RESET_PENDING, &hpb->work_data_bits);
-> +}
-> +
->  static void ufshpb_normalization_work_handler(struct work_struct 
-> *work)
->  {
->  	struct ufshpb_lu *hpb;
-> @@ -1392,6 +1433,8 @@ static int ufshpb_alloc_region_tbl(struct
-> ufs_hba *hba, struct ufshpb_lu *hpb)
->  		} else {
->  			rgn->rgn_state = HPB_RGN_INACTIVE;
->  		}
-> +
-> +		rgn->rgn_flags = 0;
->  	}
-> 
->  	return 0;
-> @@ -1502,9 +1545,12 @@ static int ufshpb_lu_hpb_init(struct ufs_hba
-> *hba, struct ufshpb_lu *hpb)
->  	INIT_LIST_HEAD(&hpb->list_hpb_lu);
-> 
->  	INIT_WORK(&hpb->map_work, ufshpb_map_work_handler);
-> -	if (hpb->is_hcm)
-> +	if (hpb->is_hcm) {
->  		INIT_WORK(&hpb->ufshpb_normalization_work,
->  			  ufshpb_normalization_work_handler);
-> +		INIT_WORK(&hpb->ufshpb_lun_reset_work,
-> +			  ufshpb_reset_work_handler);
-> +	}
-> 
->  	hpb->map_req_cache = kmem_cache_create("ufshpb_req_cache",
->  			  sizeof(struct ufshpb_req), 0, 0, NULL);
-> @@ -1591,8 +1637,10 @@ static void ufshpb_discard_rsp_lists(struct
-> ufshpb_lu *hpb)
-> 
->  static void ufshpb_cancel_jobs(struct ufshpb_lu *hpb)
->  {
-> -	if (hpb->is_hcm)
-> +	if (hpb->is_hcm) {
-> +		cancel_work_sync(&hpb->ufshpb_lun_reset_work);
->  		cancel_work_sync(&hpb->ufshpb_normalization_work);
-> +	}
->  	cancel_work_sync(&hpb->map_work);
->  }
-> 
-> diff --git a/drivers/scsi/ufs/ufshpb.h b/drivers/scsi/ufs/ufshpb.h
-> index 71b082ee7876..e55892ceb3fc 100644
-> --- a/drivers/scsi/ufs/ufshpb.h
-> +++ b/drivers/scsi/ufs/ufshpb.h
-> @@ -184,6 +184,7 @@ struct ufshpb_lu {
->  	/* for selecting victim */
->  	struct victim_select_info lru_info;
->  	struct work_struct ufshpb_normalization_work;
-> +	struct work_struct ufshpb_lun_reset_work;
->  	unsigned long work_data_bits;
-> 
->  	/* pinned region information */
