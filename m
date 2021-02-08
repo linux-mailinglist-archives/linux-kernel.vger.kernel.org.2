@@ -2,76 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 864673143AE
+	by mail.lfdr.de (Postfix) with ESMTP id 15F423143AD
 	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 00:24:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230495AbhBHXYq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 18:24:46 -0500
-Received: from marcansoft.com ([212.63.210.85]:45304 "EHLO mail.marcansoft.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230071AbhBHXYf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 18:24:35 -0500
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (No client certificate requested)
-        (Authenticated sender: marcan@marcan.st)
-        by mail.marcansoft.com (Postfix) with ESMTPSA id 66B1B4207F;
-        Mon,  8 Feb 2021 23:23:50 +0000 (UTC)
-Subject: Re: [PATCH 05/18] tty: serial: samsung_tty: add support for Apple
- UARTs
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     soc@kernel.org, linux-arm-kernel@lists.infradead.org,
-        Marc Zyngier <maz@kernel.org>, robh+dt@kernel.org,
-        Arnd Bergmann <arnd@kernel.org>, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, Olof Johansson <olof@lixom.net>
-References: <20210204203951.52105-1-marcan@marcan.st>
- <20210204203951.52105-6-marcan@marcan.st>
- <20210208105451.yumjjunjeyrglfnw@kozik-lap>
- <11d36c47-45c6-03ee-2d08-6692b5d0e241@marcan.st>
- <20210208183721.4gc7vyfgtpk7nch3@kozik-lap>
-From:   Hector Martin <marcan@marcan.st>
-Message-ID: <d9ab5faa-5c04-00a2-a560-ff01f14afcc6@marcan.st>
-Date:   Tue, 9 Feb 2021 08:23:48 +0900
+        id S230439AbhBHXYh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 18:24:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44832 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229861AbhBHXYc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 18:24:32 -0500
+Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9D18C06178B
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 15:23:51 -0800 (PST)
+Received: by mail-oi1-x229.google.com with SMTP id v193so12053024oie.8
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 15:23:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=02Fg2L/cP5O7yEA4aDL/0wbnSxjB/HCeUwPhCj0v2gs=;
+        b=fsN5YCV/mulJoJ47yEU+cNQ+BMgru+mQR+5hsX98yZsDYTQ2eoyPicl2LApff+GBWH
+         Oill4Ay5CEe0yvmu+p55TC0osIvP+XveznYfzjSff6j7ZmulDiZP70DRfkibSFb44ihB
+         /vScocqKsR96xgZKUDi93txyQXg+NpyOn9aVM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=02Fg2L/cP5O7yEA4aDL/0wbnSxjB/HCeUwPhCj0v2gs=;
+        b=U0dlVhGutVKueTffuELtxNvlFeJpNVtGXgEy3+E7Lhgw8ee2byaMFPsUiGA3ZuE1MU
+         ZFXhI44fcdxzCZvNauu4Eejj29hagDRKu735oTaaM4DwTlCak2iRv146NXX2ck3zfcIe
+         AK0OyWiU0lkr8fvdHTNkMWBvfvNHrWb7fYtBnRzKSOsrRO3XNUQqxeaAkZma2h5IzUli
+         zllkF0Xe8eOkRGaPOOl9x+HBHuVw0EBH6fhKZd1L9SK37eH+ZOXLcIg8eA8LB8Nb2mxS
+         RtyJ1Z1ubITMyDM6DdSYCsznxyCwZgEQRCztF/MsK+OYVkNk/HrlCRup0LM2AMs4vAwq
+         jupg==
+X-Gm-Message-State: AOAM5336DZT+Q8ddYSt0xiNXAnpRVAwBu/aYbgQKAxXu+GPHSc5q7qjy
+        0nN60EIQKYW3k8O8Z5+YQrse5A==
+X-Google-Smtp-Source: ABdhPJzW4ZKjg72PScgkzDJMPPF7mK3cqkqqKQiSQt7DyqfZNSsHm7bj68ptwMEMriHGlA4GxXV62Q==
+X-Received: by 2002:aca:4508:: with SMTP id s8mr758346oia.118.1612826631286;
+        Mon, 08 Feb 2021 15:23:51 -0800 (PST)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id x13sm400036otg.79.2021.02.08.15.23.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 08 Feb 2021 15:23:50 -0800 (PST)
+Subject: Re: [PATCH 1/5] kselftests: dmabuf-heaps: Fix Makefile's inclusion of
+ the kernel's usr/include dir
+To:     John Stultz <john.stultz@linaro.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Cc:     Shuah Khan <shuah@kernel.org>,
+        Brian Starkey <brian.starkey@arm.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Laura Abbott <labbott@kernel.org>,
+        Hridya Valsaraju <hridya@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Sandeep Patil <sspatil@google.com>,
+        Daniel Mentz <danielmentz@google.com>,
+        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-kselftest@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20210129030514.1231773-1-john.stultz@linaro.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <27bd6340-617a-37a2-d17f-8e50b5d5362f@linuxfoundation.org>
+Date:   Mon, 8 Feb 2021 16:23:48 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-In-Reply-To: <20210208183721.4gc7vyfgtpk7nch3@kozik-lap>
+In-Reply-To: <20210129030514.1231773-1-john.stultz@linaro.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: es-ES
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/02/2021 03.37, Krzysztof Kozlowski wrote:
-> Looking at Greg's comment, we can get rid of the PORT_ stuff entirely.
-> First of all, PORT_S3C2410 == PORT_S3C2412, so this define is not
-> accurate.
+On 1/28/21 8:05 PM, John Stultz wrote:
+> Copied in from somewhere else, the makefile was including
+> the kerne's usr/include dir, which caused the asm/ioctl.h file
+> to be used.
 > 
-> This leaves us with three types (s3c2400, s3c2440, s3c6410 and Apple).
-> The s3c2440 could be removed with adding a new "ucon_mask" field to
-> s3c24xx_serial_drv_data.
+> Unfortunately, that file has different values for _IOC_SIZEBITS
+> and _IOC_WRITE than include/uapi/asm-generic/ioctl.h which then
+> causes the _IOCW macros to give the wrong ioctl numbers,
+> specifically for DMA_BUF_IOCTL_SYNC.
 > 
-> This would end with s3c24xx, s3c6410 and Apple - quite nice choice.
+> This patch simply removes the extra include from the Makefile
+> 
+> Cc: Shuah Khan <shuah@kernel.org>
+> Cc: Brian Starkey <brian.starkey@arm.com>
+> Cc: Sumit Semwal <sumit.semwal@linaro.org>
+> Cc: Laura Abbott <labbott@kernel.org>
+> Cc: Hridya Valsaraju <hridya@google.com>
+> Cc: Suren Baghdasaryan <surenb@google.com>
+> Cc: Sandeep Patil <sspatil@google.com>
+> Cc: Daniel Mentz <danielmentz@google.com>
+> Cc: linux-media@vger.kernel.org
+> Cc: dri-devel@lists.freedesktop.org
+> Cc: linux-kselftest@vger.kernel.org
+> Fixes: a8779927fd86c ("kselftests: Add dma-heap test")
+> Signed-off-by: John Stultz <john.stultz@linaro.org>
+> ---
+>   tools/testing/selftests/dmabuf-heaps/Makefile | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/tools/testing/selftests/dmabuf-heaps/Makefile b/tools/testing/selftests/dmabuf-heaps/Makefile
+> index 607c2acd2082..604b43ece15f 100644
+> --- a/tools/testing/selftests/dmabuf-heaps/Makefile
+> +++ b/tools/testing/selftests/dmabuf-heaps/Makefile
+> @@ -1,5 +1,5 @@
+>   # SPDX-License-Identifier: GPL-2.0
+> -CFLAGS += -static -O3 -Wl,-no-as-needed -Wall -I../../../../usr/include
+> +CFLAGS += -static -O3 -Wl,-no-as-needed -Wall
+>   
+>   TEST_GEN_PROGS = dmabuf-heap
+>   
+> 
 
-Works for me :)
+Thanks John for all these 5 fix and cleanup patches.
 
-> You're right. This one would have to be improved before your change.
-> Instead of replacing specific op calls in startup, I think it's better
-> to have entirely separate ops instance for each variant:
-> 
-> static const struct uart_ops s3c24xx_serial_ops;
-> static const struct uart_ops s3c64xx_serial_ops;
-> static const struct uart_ops s5l_serial_ops;
-> 
-> This allows to add a "const", since uart_port takes such const pointer.
-> 
-> Still during s3c24xx_serial_probe() correct ops would have to be
-> assigned, but at least all ops are easily visible.
+Applied to linux-kselftest next for 5.12-rc1
 
-Roger, will do this for v2.
-
--- 
-Hector Martin (marcan@marcan.st)
-Public Key: https://mrcn.st/pub
+thanks,
+-- Shuah
