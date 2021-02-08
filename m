@@ -2,139 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED31B3130AB
+	by mail.lfdr.de (Postfix) with ESMTP id 7BC573130AA
 	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 12:23:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233262AbhBHLX2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 06:23:28 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:52008 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233006AbhBHLLB (ORCPT
+        id S233230AbhBHLXJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 06:23:09 -0500
+Received: from mail-io1-f72.google.com ([209.85.166.72]:54404 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232994AbhBHLKz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 06:11:01 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612782569;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=AWsy2OzXmBA8/rXmMsQxJYIV8N13PgKF6jEi0HBAh2s=;
-        b=iMFIW12vG9UdE0KmjZT30eJYPr7arFPg3ZvJSw0K14H4Emfe6CkxEXQ3ygcE6bOBnYyM+N
-        jUulMVgqWeoM71viwJT0igYKT5Dpo+y/9RsiwdbkwcKf6385tjDIUCMzd82PV2C6WSZ5d1
-        YECdjmSKGWWdD6y0H+Ls79+Qj5QoEhI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-28-36nl_Jg4ME-FV6yYg7r5ig-1; Mon, 08 Feb 2021 06:09:28 -0500
-X-MC-Unique: 36nl_Jg4ME-FV6yYg7r5ig-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DD3FC835E20;
-        Mon,  8 Feb 2021 11:09:26 +0000 (UTC)
-Received: from kamzik.brq.redhat.com (unknown [10.40.193.48])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 75D1E57;
-        Mon,  8 Feb 2021 11:09:24 +0000 (UTC)
-Date:   Mon, 8 Feb 2021 12:09:18 +0100
-From:   Andrew Jones <drjones@redhat.com>
-To:     "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, Shuah Khan <shuah@kernel.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Igor Mammedov <imammedo@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] KVM: selftests: add a memslot-related performance
- benchmark
-Message-ID: <20210208110918.2rzt24qv2g67jtqo@kamzik.brq.redhat.com>
-References: <5e5d83b305077e3e65b130dbb31c131bfb831170.1612139762.git.maciej.szmigiero@oracle.com>
- <ec67677c725d9f52d4abef3cfef07eac266c15cd.1612139762.git.maciej.szmigiero@oracle.com>
+        Mon, 8 Feb 2021 06:10:55 -0500
+Received: by mail-io1-f72.google.com with SMTP id g7so11248228ion.21
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 03:10:39 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=mPCbokCYCpjU+f1kvG8q1JfzTyfLjf02MHrBI6a5DbU=;
+        b=qK/lXEiSkm0hNNBEvVCGQsOjeuPaYX7u3jxK+zBlVZMqnhhphzcyQeli8sXJXwoyvu
+         tG7EidZ2/cbzfHrKACOBES98t8DxFGgCUlPkjrxw66cIVEQwHke4RrI0zit5yqARnuGY
+         82Q7vecPqrh66npNMY8J0WgXE5lpVWUiQFpkqNeXAQprHA/tM3xOW0P4gPPMsYpRQRHG
+         MuMWJJcuVuIS6sC+BhJYuADxNHONl4d0SXorNFKjs6uuw4H1yg3Ocu2ksFDyiY3QMfU7
+         krgF1J3z+272EGIbHv/7dspnRFLrimLektmuW22cMFDUkSNvsEBNpKgTSC7DshKzAZDL
+         748w==
+X-Gm-Message-State: AOAM530wJAkeq87orSpEFd9MCrq+MhERDh/t3gKHApekqGvfvoPtzNVE
+        hbV22Bpv/Ucq4sHjMdiM3a5g3Jq/yEu9/SWa+yVON6B+a9LA
+X-Google-Smtp-Source: ABdhPJyTQRZEntJC1YlvSEsMdoQld4jNf2v4AzyxA8gpMEGEm/BZqSh0APYLDYj0OrDeFSXLY8cCAFpf2bQ6DOlvlcvSIBn8fP2S
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ec67677c725d9f52d4abef3cfef07eac266c15cd.1612139762.git.maciej.szmigiero@oracle.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+X-Received: by 2002:a6b:3b53:: with SMTP id i80mr14479074ioa.203.1612782614531;
+ Mon, 08 Feb 2021 03:10:14 -0800 (PST)
+Date:   Mon, 08 Feb 2021 03:10:14 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000d6d06a05bad13604@google.com>
+Subject: memory leak in qrtr_create
+From:   syzbot <syzbot+35a511c72ea7356cdcf3@syzkaller.appspotmail.com>
+To:     bjorn.andersson@linaro.org, davem@davemloft.net, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, loic.poulain@linaro.org,
+        manivannan.sadhasivam@linaro.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 01, 2021 at 09:10:57AM +0100, Maciej S. Szmigiero wrote:
-[...]
-> diff --git a/tools/testing/selftests/kvm/.gitignore b/tools/testing/selftests/kvm/.gitignore
-> index ce8f4ad39684..059a655053ca 100644
-> --- a/tools/testing/selftests/kvm/.gitignore
-> +++ b/tools/testing/selftests/kvm/.gitignore
-> @@ -31,3 +31,4 @@
->  /kvm_create_max_vcpus
->  /set_memory_region_test
->  /steal_time
-> +/memslot_perf_test
-> diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
-> index e7c6237d7383..2abc9e182c30 100644
-> --- a/tools/testing/selftests/kvm/Makefile
-> +++ b/tools/testing/selftests/kvm/Makefile
-> @@ -65,6 +65,7 @@ TEST_GEN_PROGS_x86_64 += dirty_log_perf_test
->  TEST_GEN_PROGS_x86_64 += kvm_create_max_vcpus
->  TEST_GEN_PROGS_x86_64 += set_memory_region_test
->  TEST_GEN_PROGS_x86_64 += steal_time
-> +TEST_GEN_PROGS_x86_64 += memslot_perf_test
-> 
->  TEST_GEN_PROGS_aarch64 += aarch64/get-reg-list
->  TEST_GEN_PROGS_aarch64 += aarch64/get-reg-list-sve
+Hello,
 
-We've been trying keep the lists in .gitignore and Makefile in alphabetic
-order. It's not really important, but seems like we should keep it now
-that we've got it. Well, except I see dirty_log_perf_test and
-dirty_log_test are out of order already...
+syzbot found the following issue on:
 
-[...]
-> +static bool prepare_vm(struct vm_data *data, int nslots, uint64_t *maxslots,
-> +		       void *guest_code, uint64_t mempages,
-> +		       struct timespec *slot_runtime)
-> +{
-> +	uint32_t max_mem_slots;
-> +	uint64_t rempages;
-> +	uint64_t guest_addr;
-> +	uint32_t slot;
-> +	struct timespec tstart;
-> +	struct sync_area *sync;
-> +
-> +	max_mem_slots = kvm_check_cap(KVM_CAP_NR_MEMSLOTS);
-> +	TEST_ASSERT(max_mem_slots > 1,
-> +		    "KVM_CAP_NR_MEMSLOTS should be greater than 1");
-> +	TEST_ASSERT(nslots > 1 || nslots == -1,
-> +		    "Slot count cap should be greater than 1");
-> +	if (nslots != -1)
-> +		max_mem_slots = min(max_mem_slots, (uint32_t)nslots);
-> +	pr_info_v("Allowed number of memory slots: %"PRIu32"\n", max_mem_slots);
-> +
-> +	TEST_ASSERT(mempages > 1,
-> +		    "Can't test without any memory");
-> +
-> +	data->npages = mempages;
-> +	data->nslots = max_mem_slots - 1;
-> +	data->pages_per_slot = mempages / data->nslots;
-> +	if (!data->pages_per_slot) {
-> +		*maxslots = mempages + 1;
-> +		return false;
-> +	}
-> +
-> +	rempages = mempages % data->nslots;
-> +	data->hva_slots = malloc(sizeof(*data->hva_slots) * data->nslots);
-> +	TEST_ASSERT(data->hva_slots, "malloc() fail");
-> +
-> +	data->vm = vm_create_default(VCPU_ID, mempages, guest_code);
-> +
-> +	vcpu_set_cpuid(data->vm, VCPU_ID, kvm_get_supported_cpuid());
+HEAD commit:    13391c60 Merge branch 'linus' of git://git.kernel.org/pub/..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=15eb761b500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=e7e6ee96c9292f22
+dashboard link: https://syzkaller.appspot.com/bug?extid=35a511c72ea7356cdcf3
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=103c58a0d00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1040bc54d00000
 
-This vcpu_set_cpuid() call, which causes problems for non-x86 builds,
-is now embedded in vm_create_default() and therefore redundant here.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+35a511c72ea7356cdcf3@syzkaller.appspotmail.com
+
+Warning: Permanently added '10.128.0.186' (ECDSA) to the list of known hosts.
+executing program
+executing program
+BUG: memory leak
+unreferenced object 0xffff88810127da40 (size 824):
+  comm "syz-executor472", pid 8431, jiffies 4294942269 (age 13.980s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    2a 00 01 40 00 00 00 00 00 00 00 00 00 00 00 00  *..@............
+  backtrace:
+    [<0000000041c0b1fe>] sk_prot_alloc+0x3e/0x1c0 net/core/sock.c:1679
+    [<00000000f73c2f2d>] sk_alloc+0x30/0x3f0 net/core/sock.c:1739
+    [<0000000069049cba>] qrtr_create+0x4d/0xb0 net/qrtr/qrtr.c:1258
+    [<0000000077afae5e>] __sock_create+0x1ab/0x2b0 net/socket.c:1406
+    [<000000007f58f353>] sock_create net/socket.c:1457 [inline]
+    [<000000007f58f353>] __sys_socket+0x6f/0x140 net/socket.c:1499
+    [<00000000217ba93a>] __do_sys_socket net/socket.c:1508 [inline]
+    [<00000000217ba93a>] __se_sys_socket net/socket.c:1506 [inline]
+    [<00000000217ba93a>] __x64_sys_socket+0x1a/0x20 net/socket.c:1506
+    [<00000000632eec5e>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+    [<00000000a6403a3c>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
 
-Otherwise this looks good to me. I'll try to find some time to test
-it on an AArch64 machine configured to use 4k pages on the host.
 
-Reviewed-by: Andrew Jones <drjones@redhat.com>
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-Thanks,
-drew
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
