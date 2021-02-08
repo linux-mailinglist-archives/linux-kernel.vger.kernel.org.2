@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC4A43140F8
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 21:54:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 465533140E5
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 21:50:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230232AbhBHUvn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 15:51:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52422 "EHLO
+        id S234765AbhBHUtW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 15:49:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236366AbhBHTgD (ORCPT
+        with ESMTP id S236384AbhBHTgD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 8 Feb 2021 14:36:03 -0500
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27409C061788;
-        Mon,  8 Feb 2021 11:35:21 -0800 (PST)
-Received: by mail-ej1-x62e.google.com with SMTP id a9so27051127ejr.2;
-        Mon, 08 Feb 2021 11:35:21 -0800 (PST)
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5550EC06178A;
+        Mon,  8 Feb 2021 11:35:23 -0800 (PST)
+Received: by mail-ej1-x62b.google.com with SMTP id w1so26978012ejf.11;
+        Mon, 08 Feb 2021 11:35:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=HlT0zQ09HCBL/EqVDeSwK4irS0GIPz8ludMUB5Yh17g=;
-        b=ne1ksQ1ulaqvrAVyWYd3SvCrOkYJsRZyHmdl7ry7mKgpfzrm5AG4cmrPhfnQRPw0rA
-         hWkUMLh87YbYjKFSR837MwRn6SRk14lg2vssHHgLuII+xqp41MBwCAE+reXCEJU4mtRi
-         124vMNc1oJ/zvK8QLW3gkQbpCzEf7Bj20e8UNxTRAapREPTPlhmdK/TuZohn0+zZl1CS
-         XbbcVAR95PCd0gg9YYn+qwfUmhGF0Bbz98vG1GU0weZDYqZtT0SG60cs/IdV5r3gsZG0
-         RkMm3VvOmaBzLvlmq5qJvfRXPadwu/ad+R6gPqYuVexpf5ACeoer2jqyC5joGToHA/lo
-         c86Q==
+        bh=CKTjcZrKPElcKyPJ5qAyLAr8f1S682D7/6q/UuWh6ys=;
+        b=tiOe0Tx+kT0lO1I85fHzss690AbbHPQLgtZ4OxesVPRHqSEhFYlHC0vJJMTECD1EQC
+         cZagIfwiywfbuA275x/5qVf5zR7DaosZIHKpovUC619wucprZA0k/BWN+GxFkcLtvxqc
+         r13yATT7mLpXXAxTKDKgx750zKe654XiuSHuBenfCXolbblSF9HC6xFOYiufCsOUDNTU
+         N3uLnVuwtiZQ2dlVOr+Z0g4pBm2lwHmOKgYB1mSPl6hTVDEYVFP6Zayrmx8GZWV+5G4x
+         YvcJzXYOJ3R33L8odNgu7BGBlNHftkZP+WO8xYvjZ0zKZBXsv2twh+6pnT2471XB26Vv
+         rhRA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=HlT0zQ09HCBL/EqVDeSwK4irS0GIPz8ludMUB5Yh17g=;
-        b=fXwd5QhKIcwMYiA1dwrrlV/6RUtqDxxzRZQwiY90Jiq2Tb4SZ19TJMF9aQF80AKIzD
-         mjLU2o5MoUwzBC+gOSl9SqtyEGWkm74Ut3O5M2tczJ+BgDeUe1z1vYKowCf51pa1bOaO
-         sSHCMmge1uTwKcRsQ9f4dVnXKeyRlcfAeBZ9zrj+5IFmcq0wpm+znWK0o1BGMUJOR7wH
-         XYsTf+nXAySy1AQJ6tKY/8qOJfZ1EiOznYhrs/rlyp6JyZF9cGlcsA0AHtHgOoyLAMhR
-         i4Ok/eqbmOfSBBZ2IirJmXUdPWasZHjADICOt6Pb8WjKhYCS0I6mvEBaJo4kpBmh3FEy
-         1vIg==
-X-Gm-Message-State: AOAM5338tHtY00h+09amA1ZhTdJeUTNFYbMSNQrVA3C9DkIrvKgEn5ts
-        pTyxc8tAXLn4jzjK7MXYS/E=
-X-Google-Smtp-Source: ABdhPJw/+HXKuVoQfHiwTXp7VsWrTjzbVin2mjMMwHb/z1appjQ4sk1vy3UBcH4rERUi4K0I6lkSAg==
-X-Received: by 2002:a17:906:a28a:: with SMTP id i10mr18643249ejz.422.1612812920334;
-        Mon, 08 Feb 2021 11:35:20 -0800 (PST)
+        bh=CKTjcZrKPElcKyPJ5qAyLAr8f1S682D7/6q/UuWh6ys=;
+        b=P/VTQBANmeJ64QhfVHD3Amx6N/n/23S4n9K/DJl0lbXudyyWcQfrAZJtT634Vbsa+P
+         VeJWC5AlTlnYq4IXhQzF9mkexh2pCVwR0yNPoy0B/NwdRKHXfbkwBMauOjgCSp9uxjBC
+         eHMxenBzs1WiZgA53RAwaBqVUfSRfq5A7mvSiFDNvnX+DpufdprBKtAr2xLPZLlushpP
+         FXPyv0x5VTqIIyHgwJKKeN+DfqL8B18p9DPKOAIpSeONQhBe7WeRM6dayj38VMwzJAeL
+         FKAbcj+Mh7/HiCRWVISqFZO8vgfDl6bayHmiaSbRkM8DidfBUiJbKlICgXIVv5QNDrCW
+         zo8g==
+X-Gm-Message-State: AOAM533Sgt/vcIO86x5OsXZN5dELich3BaNtunZnNlSXiqZnW4oYHTM4
+        T/HbG5fnFxU/VY8j26+5Mtw=
+X-Google-Smtp-Source: ABdhPJyvZZ77WkLVc4OOOnTjuMqyWftQVh5dXOCZVtOPfMhb9ucyw4ORdNE3yz7dq2NHoI+CymJW/g==
+X-Received: by 2002:a17:906:e104:: with SMTP id gj4mr18364099ejb.349.1612812922078;
+        Mon, 08 Feb 2021 11:35:22 -0800 (PST)
 Received: from xws.localdomain ([37.58.58.229])
-        by smtp.gmail.com with ESMTPSA id g9sm9241414ejp.55.2021.02.08.11.35.18
+        by smtp.gmail.com with ESMTPSA id g9sm9241414ejp.55.2021.02.08.11.35.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Feb 2021 11:35:19 -0800 (PST)
+        Mon, 08 Feb 2021 11:35:21 -0800 (PST)
 From:   Maximilian Luz <luzmaximilian@gmail.com>
 To:     Hans de Goede <hdegoede@redhat.com>
 Cc:     Maximilian Luz <luzmaximilian@gmail.com>,
         Mark Gross <mgross@linux.intel.com>,
         platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 1/6] platform/surface: Set up Surface Aggregator device registry
-Date:   Mon,  8 Feb 2021 20:35:03 +0100
-Message-Id: <20210208193508.3038055-2-luzmaximilian@gmail.com>
+Subject: [PATCH 2/6] platform/surface: aggregator_registry: Add base device hub
+Date:   Mon,  8 Feb 2021 20:35:04 +0100
+Message-Id: <20210208193508.3038055-3-luzmaximilian@gmail.com>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210208193508.3038055-1-luzmaximilian@gmail.com>
 References: <20210208193508.3038055-1-luzmaximilian@gmail.com>
@@ -65,392 +65,324 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Surface System Aggregator Module (SSAM) subsystem provides various
-functionalities, which are separated by spreading them across multiple
-devices and corresponding drivers. Parts of that functionality / some of
-those devices, however, can (as far as we currently know) not be
-auto-detected by conventional means. While older (specifically 5th- and
-6th-)generation models do advertise most of their functionality via
-standard platform devices in ACPI, newer generations do not.
+The Surface Book 3 has a detachable base part. While the top part
+(so-called clipboard) contains the CPU, touchscreen, and primary
+battery, the base contains, among other things, a keyboard, touchpad,
+and secondary battery.
 
-As we are currently also not aware of any feasible way to query said
-functionalities dynamically, this poses a problem. There is, however, a
-device in ACPI that seems to be used by Windows for identifying
-different Surface models: The Windows Surface Integration Device (WSID).
-This device seems to have a HID corresponding to the overall set of
-functionalities SSAM provides for the associated model.
-
-This commit introduces a registry providing non-detectable device
-information via software nodes. In addition, a SSAM platform hub driver
-is introduced, which takes care of creating and managing the SSAM
-devices specified in this registry. This approach allows for a
-hierarchical setup akin to ACPI and is easily extendable, e.g. via
-firmware node properties.
-
-Note that this commit only provides the basis for the platform hub and
-registry, and does not add any content to it. The registry will be
-expanded in subsequent commits.
+Those devices do not react well to being accessed when the base part is
+detached and should thus be removed and added in sync with the base. To
+facilitate this, we introduce a virtual base device hub, which
+automatically removes or adds the devices registered under it.
 
 Signed-off-by: Maximilian Luz <luzmaximilian@gmail.com>
 ---
- MAINTAINERS                                   |   1 +
- drivers/platform/surface/Kconfig              |  26 ++
- drivers/platform/surface/Makefile             |   1 +
- .../surface/surface_aggregator_registry.c     | 284 ++++++++++++++++++
- 4 files changed, 312 insertions(+)
- create mode 100644 drivers/platform/surface/surface_aggregator_registry.c
+ .../surface/surface_aggregator_registry.c     | 261 +++++++++++++++++-
+ 1 file changed, 260 insertions(+), 1 deletion(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 4fcf3df517a8..000a82f59c76 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -11826,6 +11826,7 @@ F:	Documentation/driver-api/surface_aggregator/
- F:	drivers/platform/surface/aggregator/
- F:	drivers/platform/surface/surface_acpi_notify.c
- F:	drivers/platform/surface/surface_aggregator_cdev.c
-+F:	drivers/platform/surface/surface_aggregator_registry.c
- F:	include/linux/surface_acpi_notify.h
- F:	include/linux/surface_aggregator/
- F:	include/uapi/linux/surface_aggregator/
-diff --git a/drivers/platform/surface/Kconfig b/drivers/platform/surface/Kconfig
-index 0847b2dc97bf..1cd37c041710 100644
---- a/drivers/platform/surface/Kconfig
-+++ b/drivers/platform/surface/Kconfig
-@@ -77,6 +77,32 @@ config SURFACE_AGGREGATOR_CDEV
- 	  The provided interface is intended for debugging and development only,
- 	  and should not be used otherwise.
- 
-+config SURFACE_AGGREGATOR_REGISTRY
-+	tristate "Surface System Aggregator Module Device Registry"
-+	depends on SURFACE_AGGREGATOR_BUS
-+	help
-+	  Device-registry and device-hubs for Surface System Aggregator Module
-+	  (SSAM) devices.
-+
-+	  Provides a module and driver which act as a device-registry for SSAM
-+	  client devices that cannot be detected automatically, e.g. via ACPI.
-+	  Such devices are instead provided via this registry and attached via
-+	  device hubs, also provided in this module.
-+
-+	  Devices provided via this registry are:
-+	  - Platform profile (performance-/cooling-mode) device (5th- and later
-+	    generations).
-+	  - Battery/AC devices (7th-generation).
-+	  - HID input devices (7th-generation).
-+
-+	  Select M (recommended) or Y here if you want support for the above
-+	  mentioned devices on the corresponding Surface models. Without this
-+	  module, the respective devices will not be instantiated and thus any
-+	  functionality provided by them will be missing, even when drivers for
-+	  these devices are present. In other words, this module only provides
-+	  the respective client devices. Drivers for these devices still need to
-+	  be selected via the other options.
-+
- config SURFACE_GPE
- 	tristate "Surface GPE/Lid Support Driver"
- 	depends on DMI
-diff --git a/drivers/platform/surface/Makefile b/drivers/platform/surface/Makefile
-index 990424c5f0c9..80035ee540bf 100644
---- a/drivers/platform/surface/Makefile
-+++ b/drivers/platform/surface/Makefile
-@@ -10,6 +10,7 @@ obj-$(CONFIG_SURFACE_3_POWER_OPREGION)	+= surface3_power.o
- obj-$(CONFIG_SURFACE_ACPI_NOTIFY)	+= surface_acpi_notify.o
- obj-$(CONFIG_SURFACE_AGGREGATOR)	+= aggregator/
- obj-$(CONFIG_SURFACE_AGGREGATOR_CDEV)	+= surface_aggregator_cdev.o
-+obj-$(CONFIG_SURFACE_AGGREGATOR_REGISTRY) += surface_aggregator_registry.o
- obj-$(CONFIG_SURFACE_GPE)		+= surface_gpe.o
- obj-$(CONFIG_SURFACE_HOTPLUG)		+= surface_hotplug.o
- obj-$(CONFIG_SURFACE_PRO3_BUTTON)	+= surfacepro3_button.o
 diff --git a/drivers/platform/surface/surface_aggregator_registry.c b/drivers/platform/surface/surface_aggregator_registry.c
-new file mode 100644
-index 000000000000..a051d941ad96
---- /dev/null
+index a051d941ad96..0d802804594c 100644
+--- a/drivers/platform/surface/surface_aggregator_registry.c
 +++ b/drivers/platform/surface/surface_aggregator_registry.c
-@@ -0,0 +1,284 @@
-+// SPDX-License-Identifier: GPL-2.0+
-+/*
-+ * Surface System Aggregator Module (SSAM) client device registry.
-+ *
-+ * Registry for non-platform/non-ACPI SSAM client devices, i.e. devices that
-+ * cannot be auto-detected. Provides device-hubs and performs instantiation
-+ * for these devices.
-+ *
-+ * Copyright (C) 2020-2021 Maximilian Luz <luzmaximilian@gmail.com>
-+ */
-+
-+#include <linux/acpi.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/platform_device.h>
-+#include <linux/property.h>
-+
-+#include <linux/surface_aggregator/controller.h>
-+#include <linux/surface_aggregator/device.h>
-+
-+
-+/* -- Device registry. ------------------------------------------------------ */
-+
-+/*
-+ * SSAM device names follow the SSAM module alias, meaning they are prefixed
-+ * with 'ssam:', followed by domain, category, target ID, instance ID, and
-+ * function, each encoded as two-digit hexadecimal, separated by ':'. In other
-+ * words, it follows the scheme
-+ *
-+ *      ssam:dd:cc:tt:ii:ff
-+ *
-+ * Where, 'dd', 'cc', 'tt', 'ii', and 'ff' are the two-digit hexadecimal
-+ * values mentioned above, respectively.
-+ */
-+
-+/* Root node. */
-+static const struct software_node ssam_node_root = {
-+	.name = "ssam_platform_hub",
+@@ -11,9 +11,12 @@
+ 
+ #include <linux/acpi.h>
+ #include <linux/kernel.h>
++#include <linux/limits.h>
+ #include <linux/module.h>
++#include <linux/mutex.h>
+ #include <linux/platform_device.h>
+ #include <linux/property.h>
++#include <linux/types.h>
+ 
+ #include <linux/surface_aggregator/controller.h>
+ #include <linux/surface_aggregator/device.h>
+@@ -38,6 +41,12 @@ static const struct software_node ssam_node_root = {
+ 	.name = "ssam_platform_hub",
+ };
+ 
++/* Base device hub (devices attached to Surface Book 3 base). */
++static const struct software_node ssam_node_hub_base = {
++	.name = "ssam:00:00:02:00:00",
++	.parent = &ssam_node_root,
 +};
 +
-+/* Devices for Surface Book 2. */
-+static const struct software_node *ssam_node_group_sb2[] = {
-+	&ssam_node_root,
-+	NULL,
+ /* Devices for Surface Book 2. */
+ static const struct software_node *ssam_node_group_sb2[] = {
+ 	&ssam_node_root,
+@@ -47,6 +56,7 @@ static const struct software_node *ssam_node_group_sb2[] = {
+ /* Devices for Surface Book 3. */
+ static const struct software_node *ssam_node_group_sb3[] = {
+ 	&ssam_node_root,
++	&ssam_node_hub_base,
+ 	NULL,
+ };
+ 
+@@ -177,6 +187,230 @@ static int ssam_hub_add_devices(struct device *parent, struct ssam_controller *c
+ }
+ 
+ 
++/* -- SSAM base-hub driver. ------------------------------------------------- */
++
++enum ssam_base_hub_state {
++	SSAM_BASE_HUB_UNINITIALIZED,
++	SSAM_BASE_HUB_CONNECTED,
++	SSAM_BASE_HUB_DISCONNECTED,
 +};
 +
-+/* Devices for Surface Book 3. */
-+static const struct software_node *ssam_node_group_sb3[] = {
-+	&ssam_node_root,
-+	NULL,
++struct ssam_base_hub {
++	struct ssam_device *sdev;
++
++	struct mutex lock;  /* Guards state update checks and transitions. */
++	enum ssam_base_hub_state state;
++
++	struct ssam_event_notifier notif;
 +};
 +
-+/* Devices for Surface Laptop 1. */
-+static const struct software_node *ssam_node_group_sl1[] = {
-+	&ssam_node_root,
-+	NULL,
-+};
++static SSAM_DEFINE_SYNC_REQUEST_R(ssam_bas_query_opmode, u8, {
++	.target_category = SSAM_SSH_TC_BAS,
++	.target_id       = 0x01,
++	.command_id      = 0x0d,
++	.instance_id     = 0x00,
++});
 +
-+/* Devices for Surface Laptop 2. */
-+static const struct software_node *ssam_node_group_sl2[] = {
-+	&ssam_node_root,
-+	NULL,
-+};
++#define SSAM_BAS_OPMODE_TABLET		0x00
++#define SSAM_EVENT_BAS_CID_CONNECTION	0x0c
 +
-+/* Devices for Surface Laptop 3. */
-+static const struct software_node *ssam_node_group_sl3[] = {
-+	&ssam_node_root,
-+	NULL,
-+};
-+
-+/* Devices for Surface Laptop Go. */
-+static const struct software_node *ssam_node_group_slg1[] = {
-+	&ssam_node_root,
-+	NULL,
-+};
-+
-+/* Devices for Surface Pro 5. */
-+static const struct software_node *ssam_node_group_sp5[] = {
-+	&ssam_node_root,
-+	NULL,
-+};
-+
-+/* Devices for Surface Pro 6. */
-+static const struct software_node *ssam_node_group_sp6[] = {
-+	&ssam_node_root,
-+	NULL,
-+};
-+
-+/* Devices for Surface Pro 7. */
-+static const struct software_node *ssam_node_group_sp7[] = {
-+	&ssam_node_root,
-+	NULL,
-+};
-+
-+
-+/* -- Device registry helper functions. ------------------------------------- */
-+
-+static int ssam_uid_from_string(const char *str, struct ssam_device_uid *uid)
++static int ssam_base_hub_query_state(struct ssam_base_hub *hub, enum ssam_base_hub_state *state)
 +{
-+	u8 d, tc, tid, iid, fn;
-+	int n;
++	u8 opmode;
++	int status;
 +
-+	n = sscanf(str, "ssam:%hhx:%hhx:%hhx:%hhx:%hhx", &d, &tc, &tid, &iid, &fn);
-+	if (n != 5)
-+		return -EINVAL;
++	status = ssam_retry(ssam_bas_query_opmode, hub->sdev->ctrl, &opmode);
++	if (status < 0) {
++		dev_err(&hub->sdev->dev, "failed to query base state: %d\n", status);
++		return status;
++	}
 +
-+	uid->domain = d;
-+	uid->category = tc;
-+	uid->target = tid;
-+	uid->instance = iid;
-+	uid->function = fn;
++	if (opmode != SSAM_BAS_OPMODE_TABLET)
++		*state = SSAM_BASE_HUB_CONNECTED;
++	else
++		*state = SSAM_BASE_HUB_DISCONNECTED;
 +
 +	return 0;
 +}
 +
-+static int ssam_hub_remove_devices_fn(struct device *dev, void *data)
++static ssize_t ssam_base_hub_state_show(struct device *dev, struct device_attribute *attr,
++					char *buf)
 +{
-+	if (!is_ssam_device(dev))
++	struct ssam_base_hub *hub = dev_get_drvdata(dev);
++	bool connected;
++
++	mutex_lock(&hub->lock);
++	connected = hub->state == SSAM_BASE_HUB_CONNECTED;
++	mutex_unlock(&hub->lock);
++
++	return sysfs_emit(buf, "%d\n", connected);
++}
++
++static struct device_attribute ssam_base_hub_attr_state =
++	__ATTR(state, 0444, ssam_base_hub_state_show, NULL);
++
++static struct attribute *ssam_base_hub_attrs[] = {
++	&ssam_base_hub_attr_state.attr,
++	NULL,
++};
++
++const struct attribute_group ssam_base_hub_group = {
++	.attrs = ssam_base_hub_attrs,
++};
++
++static int __ssam_base_hub_update(struct ssam_base_hub *hub, enum ssam_base_hub_state new)
++{
++	struct fwnode_handle *node = dev_fwnode(&hub->sdev->dev);
++	int status = 0;
++
++	lockdep_assert_held(hub->lock);
++
++	if (hub->state == new)
++		return 0;
++	hub->state = new;
++
++	if (hub->state == SSAM_BASE_HUB_CONNECTED)
++		status = ssam_hub_add_devices(&hub->sdev->dev, hub->sdev->ctrl, node);
++	else
++		ssam_hub_remove_devices(&hub->sdev->dev);
++
++	if (status)
++		dev_err(&hub->sdev->dev, "failed to update base-hub devices: %d\n", status);
++
++	return status;
++}
++
++static int ssam_base_hub_update(struct ssam_base_hub *hub)
++{
++	enum ssam_base_hub_state state;
++	int status;
++
++	mutex_lock(&hub->lock);
++
++	status = ssam_base_hub_query_state(hub, &state);
++	if (!status)
++		status = __ssam_base_hub_update(hub, state);
++
++	mutex_unlock(&hub->lock);
++	return status;
++}
++
++static u32 ssam_base_hub_notif(struct ssam_event_notifier *nf, const struct ssam_event *event)
++{
++	struct ssam_base_hub *hub;
++	struct ssam_device *sdev;
++	enum ssam_base_hub_state new;
++
++	hub = container_of(nf, struct ssam_base_hub, notif);
++	sdev = hub->sdev;
++
++	if (event->command_id != SSAM_EVENT_BAS_CID_CONNECTION)
 +		return 0;
 +
-+	ssam_device_remove(to_ssam_device(dev));
-+	return 0;
-+}
-+
-+static void ssam_hub_remove_devices(struct device *parent)
-+{
-+	device_for_each_child_reverse(parent, NULL, ssam_hub_remove_devices_fn);
-+}
-+
-+static int ssam_hub_add_device(struct device *parent, struct ssam_controller *ctrl,
-+			       struct fwnode_handle *node)
-+{
-+	struct ssam_device_uid uid;
-+	struct ssam_device *sdev;
-+	int status;
-+
-+	status = ssam_uid_from_string(fwnode_get_name(node), &uid);
-+	if (status)
-+		return status;
-+
-+	sdev = ssam_device_alloc(ctrl, uid);
-+	if (!sdev)
-+		return -ENOMEM;
-+
-+	sdev->dev.parent = parent;
-+	sdev->dev.fwnode = node;
-+
-+	status = ssam_device_add(sdev);
-+	if (status)
-+		ssam_device_put(sdev);
-+
-+	return status;
-+}
-+
-+static int ssam_hub_add_devices(struct device *parent, struct ssam_controller *ctrl,
-+				struct fwnode_handle *node)
-+{
-+	struct fwnode_handle *child;
-+	int status;
-+
-+	fwnode_for_each_child_node(node, child) {
-+		/*
-+		 * Try to add the device specified in the firmware node. If
-+		 * this fails with -EINVAL, the node does not specify any SSAM
-+		 * device, so ignore it and continue with the next one.
-+		 */
-+
-+		status = ssam_hub_add_device(parent, ctrl, child);
-+		if (status && status != -EINVAL)
-+			goto err;
++	if (event->length < 1) {
++		dev_err(&sdev->dev, "unexpected payload size: %u\n",
++			event->length);
++		return 0;
 +	}
 +
-+	return 0;
-+err:
-+	ssam_hub_remove_devices(parent);
-+	return status;
-+}
++	if (event->data[0])
++		new = SSAM_BASE_HUB_CONNECTED;
++	else
++		new = SSAM_BASE_HUB_DISCONNECTED;
 +
-+
-+/* -- SSAM platform/meta-hub driver. ---------------------------------------- */
-+
-+static const struct acpi_device_id ssam_platform_hub_match[] = {
-+	/* Surface Pro 4, 5, and 6 (OMBR < 0x10) */
-+	{ "MSHW0081", (unsigned long)ssam_node_group_sp5 },
-+
-+	/* Surface Pro 6 (OMBR >= 0x10) */
-+	{ "MSHW0111", (unsigned long)ssam_node_group_sp6 },
-+
-+	/* Surface Pro 7 */
-+	{ "MSHW0116", (unsigned long)ssam_node_group_sp7 },
-+
-+	/* Surface Book 2 */
-+	{ "MSHW0107", (unsigned long)ssam_node_group_sb2 },
-+
-+	/* Surface Book 3 */
-+	{ "MSHW0117", (unsigned long)ssam_node_group_sb3 },
-+
-+	/* Surface Laptop 1 */
-+	{ "MSHW0086", (unsigned long)ssam_node_group_sl1 },
-+
-+	/* Surface Laptop 2 */
-+	{ "MSHW0112", (unsigned long)ssam_node_group_sl2 },
-+
-+	/* Surface Laptop 3 (13", Intel) */
-+	{ "MSHW0114", (unsigned long)ssam_node_group_sl3 },
-+
-+	/* Surface Laptop 3 (15", AMD) */
-+	{ "MSHW0110", (unsigned long)ssam_node_group_sl3 },
-+
-+	/* Surface Laptop Go 1 */
-+	{ "MSHW0118", (unsigned long)ssam_node_group_slg1 },
-+
-+	{ },
-+};
-+MODULE_DEVICE_TABLE(acpi, ssam_platform_hub_match);
-+
-+static int ssam_platform_hub_probe(struct platform_device *pdev)
-+{
-+	const struct software_node **nodes;
-+	struct ssam_controller *ctrl;
-+	struct fwnode_handle *root;
-+	int status;
-+
-+	nodes = (const struct software_node **)acpi_device_get_match_data(&pdev->dev);
-+	if (!nodes)
-+		return -ENODEV;
++	mutex_lock(&hub->lock);
++	__ssam_base_hub_update(hub, new);
++	mutex_unlock(&hub->lock);
 +
 +	/*
-+	 * As we're adding the SSAM client devices as children under this device
-+	 * and not the SSAM controller, we need to add a device link to the
-+	 * controller to ensure that we remove all of our devices before the
-+	 * controller is removed. This also guarantees proper ordering for
-+	 * suspend/resume of the devices on this hub.
++	 * Do not return SSAM_NOTIF_HANDLED: The event should be picked up and
++	 * consumed by the detachment system driver. We're just a (more or less)
++	 * silent observer.
 +	 */
-+	ctrl = ssam_client_bind(&pdev->dev);
-+	if (IS_ERR(ctrl))
-+		return PTR_ERR(ctrl) == -ENODEV ? -EPROBE_DEFER : PTR_ERR(ctrl);
-+
-+	status = software_node_register_node_group(nodes);
-+	if (status)
-+		return status;
-+
-+	root = software_node_fwnode(&ssam_node_root);
-+	if (!root) {
-+		software_node_unregister_node_group(nodes);
-+		return -ENOENT;
-+	}
-+
-+	set_secondary_fwnode(&pdev->dev, root);
-+
-+	status = ssam_hub_add_devices(&pdev->dev, ctrl, root);
-+	if (status) {
-+		set_secondary_fwnode(&pdev->dev, NULL);
-+		software_node_unregister_node_group(nodes);
-+	}
-+
-+	platform_set_drvdata(pdev, nodes);
-+	return status;
-+}
-+
-+static int ssam_platform_hub_remove(struct platform_device *pdev)
-+{
-+	const struct software_node **nodes = platform_get_drvdata(pdev);
-+
-+	ssam_hub_remove_devices(&pdev->dev);
-+	set_secondary_fwnode(&pdev->dev, NULL);
-+	software_node_unregister_node_group(nodes);
 +	return 0;
 +}
 +
-+static struct platform_driver ssam_platform_hub_driver = {
-+	.probe = ssam_platform_hub_probe,
-+	.remove = ssam_platform_hub_remove,
++static int __maybe_unused ssam_base_hub_resume(struct device *dev)
++{
++	return ssam_base_hub_update(dev_get_drvdata(dev));
++}
++static SIMPLE_DEV_PM_OPS(ssam_base_hub_pm_ops, NULL, ssam_base_hub_resume);
++
++static int ssam_base_hub_probe(struct ssam_device *sdev)
++{
++	struct ssam_base_hub *hub;
++	int status;
++
++	hub = devm_kzalloc(&sdev->dev, sizeof(*hub), GFP_KERNEL);
++	if (!hub)
++		return -ENOMEM;
++
++	mutex_init(&hub->lock);
++
++	hub->sdev = sdev;
++	hub->state = SSAM_BASE_HUB_UNINITIALIZED;
++
++	hub->notif.base.priority = INT_MAX;  /* This notifier should run first. */
++	hub->notif.base.fn = ssam_base_hub_notif;
++	hub->notif.event.reg = SSAM_EVENT_REGISTRY_SAM;
++	hub->notif.event.id.target_category = SSAM_SSH_TC_BAS,
++	hub->notif.event.id.instance = 0,
++	hub->notif.event.mask = SSAM_EVENT_MASK_NONE;
++	hub->notif.event.flags = SSAM_EVENT_SEQUENCED;
++
++	ssam_device_set_drvdata(sdev, hub);
++
++	status = ssam_notifier_register(sdev->ctrl, &hub->notif);
++	if (status)
++		goto err_register;
++
++	status = ssam_base_hub_update(hub);
++	if (status)
++		goto err_update;
++
++	status = sysfs_create_group(&sdev->dev.kobj, &ssam_base_hub_group);
++	if (status)
++		goto err_update;
++
++	return 0;
++
++err_update:
++	ssam_notifier_unregister(sdev->ctrl, &hub->notif);
++	ssam_hub_remove_devices(&sdev->dev);
++err_register:
++	mutex_destroy(&hub->lock);
++	return status;
++}
++
++static void ssam_base_hub_remove(struct ssam_device *sdev)
++{
++	struct ssam_base_hub *hub = ssam_device_get_drvdata(sdev);
++
++	sysfs_remove_group(&sdev->dev.kobj, &ssam_base_hub_group);
++
++	ssam_notifier_unregister(sdev->ctrl, &hub->notif);
++	ssam_hub_remove_devices(&sdev->dev);
++
++	mutex_destroy(&hub->lock);
++}
++
++static const struct ssam_device_id ssam_base_hub_match[] = {
++	{ SSAM_VDEV(HUB, 0x02, SSAM_ANY_IID, 0x00) },
++	{ },
++};
++
++static struct ssam_device_driver ssam_base_hub_driver = {
++	.probe = ssam_base_hub_probe,
++	.remove = ssam_base_hub_remove,
++	.match_table = ssam_base_hub_match,
 +	.driver = {
-+		.name = "surface_aggregator_platform_hub",
-+		.acpi_match_table = ssam_platform_hub_match,
++		.name = "surface_aggregator_base_hub",
 +		.probe_type = PROBE_PREFER_ASYNCHRONOUS,
++		.pm = &ssam_base_hub_pm_ops,
 +	},
 +};
-+module_platform_driver(ssam_platform_hub_driver);
 +
-+MODULE_AUTHOR("Maximilian Luz <luzmaximilian@gmail.com>");
-+MODULE_DESCRIPTION("Device-registry for Surface System Aggregator Module");
-+MODULE_LICENSE("GPL");
++
+ /* -- SSAM platform/meta-hub driver. ---------------------------------------- */
+ 
+ static const struct acpi_device_id ssam_platform_hub_match[] = {
+@@ -277,7 +511,32 @@ static struct platform_driver ssam_platform_hub_driver = {
+ 		.probe_type = PROBE_PREFER_ASYNCHRONOUS,
+ 	},
+ };
+-module_platform_driver(ssam_platform_hub_driver);
++
++
++/* -- Module initialization. ------------------------------------------------ */
++
++static int __init ssam_device_hub_init(void)
++{
++	int status;
++
++	status = platform_driver_register(&ssam_platform_hub_driver);
++	if (status)
++		return status;
++
++	status = ssam_device_driver_register(&ssam_base_hub_driver);
++	if (status)
++		platform_driver_unregister(&ssam_platform_hub_driver);
++
++	return status;
++}
++module_init(ssam_device_hub_init);
++
++static void __exit ssam_device_hub_exit(void)
++{
++	ssam_device_driver_unregister(&ssam_base_hub_driver);
++	platform_driver_unregister(&ssam_platform_hub_driver);
++}
++module_exit(ssam_device_hub_exit);
+ 
+ MODULE_AUTHOR("Maximilian Luz <luzmaximilian@gmail.com>");
+ MODULE_DESCRIPTION("Device-registry for Surface System Aggregator Module");
 -- 
 2.30.0
 
