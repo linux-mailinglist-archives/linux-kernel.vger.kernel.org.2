@@ -2,111 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5116F3141F4
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 22:37:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 591A43141F7
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 22:38:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236758AbhBHVgg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 16:36:36 -0500
-Received: from lb2-smtp-cloud7.xs4all.net ([194.109.24.28]:40601 "EHLO
-        lb2-smtp-cloud7.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234165AbhBHUr5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 15:47:57 -0500
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud7.xs4all.net with ESMTPA
-        id 9DQvljoPhefbk9DQyl6Qwn; Mon, 08 Feb 2021 21:47:01 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1612817221; bh=hBtbVvAGLO4OYj5idcoGs6+65GhkktNma5gOZmEtlho=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=gb7GKpbCxUvGUroLptUEEfODKhxNzlpog9ZOj9u/VDQNDOsYxHM1Lg1yr7ETpWEgu
-         9dgxkAT+k/8BbpdnDuc6skxpMT31Ebpd3L6JdRjqCeTQK3+U2x8tPJttpI8hnoEztw
-         EDZrGbu4Y5v/DfMDpFVYU/aAGai+Db+RqqjH/Qjw1INA8cJECjWBGK2IE+rJXz8wxo
-         WfJz2vi7Y9MqfwRJ0DaXwcnQcx1/NtfyHTewuhPcJmq5XT6IUAB3oEpHSU+5Nyu45+
-         X8+72rEJ3y/gwPtUmN/dN9fZn4fQZwohY0D0Ei03uFFidl8L5Fj1g2Mzx2+FN/SxLa
-         TeBdhUTLd+UDg==
-Subject: Re: [PATCH AUTOSEL 5.10 14/36] media: rkisp1: uapi: change hist_bins
- array type from __u16 to __u32
-To:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Cc:     Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
-        Helen Koike <helen.koike@collabora.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-media@vger.kernel.org, devel@driverdev.osuosl.org
-References: <20210208175806.2091668-1-sashal@kernel.org>
- <20210208175806.2091668-14-sashal@kernel.org>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Message-ID: <12c8f50e-3bba-5936-6e67-55bd928a75c7@xs4all.nl>
-Date:   Mon, 8 Feb 2021 21:46:57 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
-MIME-Version: 1.0
-In-Reply-To: <20210208175806.2091668-14-sashal@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfJhCeXUzkkqo0jowHBlu9YVGkP/aghLIMh5Hkta0qWJeAWbHKN24RajccQ2yh7Zx/DpycHW76g4/m1ZTzeFTVt0CyWVY01DtTR+0DDvKDrfKsbXluWUF
- rFjWHQScFO16gKpQAQv86bhaa6kuQ/37VCKQbcRjucuopqxEy1eS3mGLd+cVjdp1hUGev6lEifcfBiye8nKL2d7z0TPn9vxTd0cummmqITqE9uHQqcdROt/e
- dZzJosd9arQlhI1gAmJoXOOEPVZtuhQ7lTrrjyU2mUWJmK+aTq/OeoNZHmzOVoj5bnfWB65Lr5iASsskDg7o7Y3Q7P39cYHMl+lKlJfaupDhI8Xp9AHfMNIX
- 7qQxWhB1BaCdxAxA/NohsX+tbbWpJ3GgM2Q16xsTW2YFf+O0e7buN3Oh1T+1n4wM8IJfy5Bq1htMaPppGKdnD/q42g0Jgt8kKgBFjcnCc3QzH1P/U04=
+        id S236822AbhBHVgw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 16:36:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57444 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234137AbhBHUuy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 15:50:54 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 4673164E74;
+        Mon,  8 Feb 2021 20:50:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612817407;
+        bh=li2NAobTJG3oc0OG+xvjZKwIuUSVHXfc4xUHq2heFdo=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=i4B/+GVFKy2Ogn0fCNGoTEcnbHboVGgd/BgxvKXRPO6vrEyrZ6vr+8uPITm4Nbq61
+         mcXce+uDOa8P3XoEMwYwNeSk1JcxWQ6EDVQoHlwp3Lib2mwFR9Y9BTOBxkcvv3iVzr
+         q8tvd1/gQkdiuLKZM3dmmBrL62xyXE6YaoV1RE/PftPMjjPhghV8Vb3JVMpzosmZJL
+         o4QA4XALDw6Szd998AnnadBPzO+QCMor49Fo+oz/aytSZplRUNlqVne4URIDo/YFay
+         TzHac4DpfILHX05G2bO+aGdQt3tuKHNeYcO+5LB2SLkrqP8UnnoSxGs+8Un5XWAS6B
+         wCT/2VIb5Yj7g==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 3278460981;
+        Mon,  8 Feb 2021 20:50:07 +0000 (UTC)
+Subject: Re: [GIT PULL] tracing: Fix output of top level event "enable" file
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20210208142258.643b54a3@gandalf.local.home>
+References: <20210208142258.643b54a3@gandalf.local.home>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20210208142258.643b54a3@gandalf.local.home>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git trace-v5.11-rc7
+X-PR-Tracked-Commit-Id: 256cfdd6fdf70c6fcf0f7c8ddb0ebd73ce8f3bc9
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: e0756cfc7d7cd08c98a53b6009c091a3f6a50be6
+Message-Id: <161281740715.23853.3666136256611303440.pr-tracker-bot@kernel.org>
+Date:   Mon, 08 Feb 2021 20:50:07 +0000
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Yordan Karadzhov <y.karadz@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/02/2021 18:57, Sasha Levin wrote:
-> From: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
-> 
-> [ Upstream commit 31f190e0ccac8b75d33fdc95a797c526cf9b149e ]
-> 
-> Each entry in the array is a 20 bits value composed of 16 bits unsigned
-> integer and 4 bits fractional part. So the type should change to __u32.
-> In addition add a documentation of how the measurements are done.
+The pull request you sent on Mon, 8 Feb 2021 14:22:58 -0500:
 
-Dafna, Helen, does it make sense at all to backport these three patches to
-when rkisp1 was a staging driver?
+> git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git trace-v5.11-rc7
 
-I would be inclined not to backport this.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/e0756cfc7d7cd08c98a53b6009c091a3f6a50be6
 
-Regards,
+Thank you!
 
-	Hans
-
-> 
-> Signed-off-by: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
-> Acked-by: Helen Koike <helen.koike@collabora.com>
-> Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
-> ---
->  drivers/staging/media/rkisp1/uapi/rkisp1-config.h | 13 +++++++++----
->  1 file changed, 9 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/staging/media/rkisp1/uapi/rkisp1-config.h b/drivers/staging/media/rkisp1/uapi/rkisp1-config.h
-> index 432cb6be55b47..c19fe059c2442 100644
-> --- a/drivers/staging/media/rkisp1/uapi/rkisp1-config.h
-> +++ b/drivers/staging/media/rkisp1/uapi/rkisp1-config.h
-> @@ -848,13 +848,18 @@ struct rkisp1_cif_isp_af_stat {
->  /**
->   * struct rkisp1_cif_isp_hist_stat - statistics histogram data
->   *
-> - * @hist_bins: measured bin counters
-> + * @hist_bins: measured bin counters. Each bin is a 20 bits unsigned fixed point
-> + *	       type. Bits 0-4 are the fractional part and bits 5-19 are the
-> + *	       integer part.
->   *
-> - * Measurement window divided into 25 sub-windows, set
-> - * with ISP_HIST_XXX
-> + * The window of the measurements area is divided to 5x5 sub-windows. The
-> + * histogram is then computed for each sub-window independently and the final
-> + * result is a weighted average of the histogram measurements on all
-> + * sub-windows. The window of the measurements area and the weight of each
-> + * sub-window are configurable using struct @rkisp1_cif_isp_hst_config.
->   */
->  struct rkisp1_cif_isp_hist_stat {
-> -	__u16 hist_bins[RKISP1_CIF_ISP_HIST_BIN_N_MAX];
-> +	__u32 hist_bins[RKISP1_CIF_ISP_HIST_BIN_N_MAX];
->  };
->  
->  /**
-> 
-
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
