@@ -2,92 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 324503132DD
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 14:00:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 733AC3132E2
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 14:02:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230344AbhBHM76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 07:59:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51592 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230298AbhBHM7h (ORCPT
+        id S230225AbhBHNCA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 08:02:00 -0500
+Received: from mail-oi1-f171.google.com ([209.85.167.171]:42374 "EHLO
+        mail-oi1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229715AbhBHNBz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 07:59:37 -0500
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDD0CC06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 04:58:56 -0800 (PST)
-Received: by mail-lf1-x12a.google.com with SMTP id v5so19864920lft.13
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 04:58:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=7e+2QeCZIF/RTfB76G03UV8gWuzCrr+kzUqC9Ip4Txc=;
-        b=gzReHfoXRHqz/CxDxuG2pYbOxlcR4jVk00/Q4Zw0I6cpUCcnsdpwpdwOaFQQFWdfPu
-         kn9HKZSWPPplowkmKTU3UD7RlQvbJcBete9noP9lTRoqJLJob5bfSSN1T5XSjD2c2L7y
-         91WwEZyiXakAaS5CRwxzgnnCt3ir1R/p9GXjwn+U3wuneaN7UXtpkDWQruWn18fFxum0
-         bhkplDDgMQOQ6o1XCpsoMYjRcOfxu1Lz2D48WT+q3FxcGqiH0/ToHWlljZj3hwNEBar2
-         REr+wIWEnQTOS/klOAQGiBiQY160FCndNk0bQNTxioG+FudkESeuROt+ylsTRGrZ1TSH
-         d2cQ==
+        Mon, 8 Feb 2021 08:01:55 -0500
+Received: by mail-oi1-f171.google.com with SMTP id u66so13549062oig.9;
+        Mon, 08 Feb 2021 05:01:39 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=7e+2QeCZIF/RTfB76G03UV8gWuzCrr+kzUqC9Ip4Txc=;
-        b=oZFZZGGcZOJoo1umIRB0UW3WH7K8oR6VYw1HwwJdtkIVMmFrkiMcfI9rY87WbDXQO9
-         rR0cBrHaC//VzVeX9x5EH8xGjXUf2qJ152y9nBZRodS6eTFQX7y/yGzDscRaPl1k832s
-         npJLG9UKRmGasV6SOHjgO2TuS5zHivpMtR/cHUkYkhY0KCVPIzukdKjKwPyjGcVf4g7G
-         WMh/xpDbepZX7ArrvgFTa8fTtmw+Vrs3juHRslIKiZCt/yg+iJAFzFAuA8uSbV/qTqBd
-         5Ti6hwBMUUcyMGhm/6rWYdyDRqRgF6bcReeg1nedRquDBbNKXF7Kec3dKzh811uDWPdC
-         SlRg==
-X-Gm-Message-State: AOAM530gL0J4o5d0GCumJYHqOg6kkl9kr682vbJt4EOhEGQPoyZn429Q
-        1Un5jQFP/RSdUefp/02oCtEO1g==
-X-Google-Smtp-Source: ABdhPJwOZcoerPukFtmudmtjfPealVwCV3D/Czvysyzfg3fSeG7P0Go6A2Y9RIw7BD/9tR/W34X/XQ==
-X-Received: by 2002:a19:6b1a:: with SMTP id d26mr1424486lfa.162.1612789135353;
-        Mon, 08 Feb 2021 04:58:55 -0800 (PST)
-Received: from jade (h-249-223.A175.priv.bahnhof.se. [98.128.249.223])
-        by smtp.gmail.com with ESMTPSA id a7sm2087969lfb.308.2021.02.08.04.58.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Feb 2021 04:58:54 -0800 (PST)
-Date:   Mon, 8 Feb 2021 13:58:53 +0100
-From:   Jens Wiklander <jens.wiklander@linaro.org>
-To:     arm@kernel.org, soc@kernel.org
-Cc:     op-tee@lists.trustedfirmware.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] OP-TEE I2C simplification for v5.12
-Message-ID: <20210208125853.GA288348@jade>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gvxc4VC9l/IR/i8ANGFEq/fIycfe1+oz586mHeCkXyY=;
+        b=GhYCTtdPmhAoGTTOBo0Z2xZtdq5R8H5pJQBiymDyXiflnQRFS9vxLex/F4gW8ZxIg9
+         zUUP9T09a027FqHwA1jW80EYbVSBpTrrjRUo8CLkgYQWQU4C8w7hAgYDLTgfjUfcVNs/
+         uQel0f2ifre/shv1rm6TfYMxakanbjCjfw9CItz+4Bne4L8Y3/ovTaNhK5zt9cT3A7Or
+         vmYSps1FAgXIKs0SFsW5OT8j31PoYezeMLQdgvGSDm3UrW48qe9XbufBe6/pawLzWVsg
+         tfiY13QjvW+Zqy5/B5RlGXmxSlOiH1W/o1BmH+fjNjSOMKfJ8YmMoBAncWFDQDIEjqH4
+         vCZw==
+X-Gm-Message-State: AOAM533pXtSg5GP1yR5T3KG5NSMCAlKmDYAycB5EoWpyh96vVVN+2WMD
+        Q3nXCfA6YXS7siMIIqz4e3qTB5emmcLC2HITLzMOIyKy
+X-Google-Smtp-Source: ABdhPJwcBBneby+U8ATEJaNGJS/dzjUdsjmsd0GNONhJ+maNLDnptpwdadyvK1u/ZgGgN2gMddShxT5nyiPV0jERB0o=
+X-Received: by 2002:a54:400b:: with SMTP id x11mr4489172oie.71.1612789274272;
+ Mon, 08 Feb 2021 05:01:14 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+References: <20210206084937.20853-1-ardb@kernel.org> <20210206104854.GC27503@dragon>
+In-Reply-To: <20210206104854.GC27503@dragon>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 8 Feb 2021 14:00:58 +0100
+Message-ID: <CAJZ5v0hMJnaHhUYib9d3yQ1CMHLE+Hu3UM4VoN=dOiyriTPmOw@mail.gmail.com>
+Subject: Re: [PATCH] Revert "ACPICA: Interpreter: fix memory leak by using
+ existing buffer"
+To:     Shawn Guo <shawn.guo@linaro.org>, Ard Biesheuvel <ardb@kernel.org>,
+        Erik Kaneda <erik.kaneda@intel.com>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Len Brown <lenb@kernel.org>,
+        Robert Moore <robert.moore@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello arm-soc maintainers,
+On Sat, Feb 6, 2021 at 11:49 AM Shawn Guo <shawn.guo@linaro.org> wrote:
+>
+> On Sat, Feb 06, 2021 at 09:49:37AM +0100, Ard Biesheuvel wrote:
+> > This reverts commit 32cf1a12cad43358e47dac8014379c2f33dfbed4.
+> >
+> > The 'exisitng buffer' in this case is the firmware provided table, and
+> > we should not modify that in place. This fixes a crash on arm64 with
+> > initrd table overrides, in which case the DSDT is not mapped with
+> > read/write permissions.
+> >
+> > Cc: Robert Moore <robert.moore@intel.com>
+> > Cc: Erik Kaneda <erik.kaneda@intel.com>
+> > Cc: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+> > Cc: Len Brown <lenb@kernel.org>
+> > Reported-by: Shawn Guo <shawn.guo@linaro.org>
+> > Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+>
+> Tested-by: Shawn Guo <shawn.guo@linaro.org>
 
-Please pull this fix eliminating a stack frame size warning and also
-simplifying I2C access in the OP-TEE driver.
+Applied, thanks!
 
-Thanks,
-Jens
-
-
-The following changes since commit e71ba9452f0b5b2e8dc8aa5445198cd9214a6a62:
-
-  Linux 5.11-rc2 (2021-01-03 15:55:30 -0800)
-
-are available in the Git repository at:
-
-  git://git.linaro.org/people/jens.wiklander/linux-tee.git tags/optee-simplify-i2c-access_for-v5.12
-
-for you to fetch changes up to 67bc809752796acb2641ca343cad5b45eef31d7c:
-
-  optee: simplify i2c access (2021-02-08 13:42:31 +0100)
-
-----------------------------------------------------------------
-Simplify i2c acess in OP-TEE driver
-
-----------------------------------------------------------------
-Arnd Bergmann (1):
-      optee: simplify i2c access
-
- drivers/tee/optee/rpc.c | 31 ++++++++++++++++---------------
- 1 file changed, 16 insertions(+), 15 deletions(-)
+Erik, the upstream will need to sync up with this revert.
