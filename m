@@ -2,65 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33A18313E8C
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 20:10:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96644313E8D
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 20:11:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235863AbhBHTKD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 14:10:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43550 "EHLO mail.kernel.org"
+        id S236048AbhBHTKp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 14:10:45 -0500
+Received: from foss.arm.com ([217.140.110.172]:39190 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232458AbhBHRtU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 12:49:20 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 56F7664E28;
-        Mon,  8 Feb 2021 17:48:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1612806519;
-        bh=zcrfBV/hRGvlrzEODhD3RrXvNDEl99yvRmZk381j244=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=mIAzVMKyC3e53aP+R23D+0TBSR5bgfCs+hMu9RwVHQTmwXPfRsbEWaqb55G7AANzq
-         3ixfmgywC//f0R/ke6GQJTWbahXArazeKLWPFPnEzuHztrZmOtvlekb60uwMMy7IkG
-         gP66ciCkAkhCtaPMI1OHzM/U3hAcqE/Jq/xLI1jU=
-Date:   Mon, 8 Feb 2021 09:48:38 -0800
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Seth Forshee <seth.forshee@canonical.com>
-Cc:     "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Hugh Dickins <hughd@google.com>,
-        Chris Down <chris@chrisdown.name>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-mm@kvack.org, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] tmpfs: Disallow CONFIG_TMPFS_INODE64 on s390
-Message-Id: <20210208094838.74c7ca910a16f33aacacb4b0@linux-foundation.org>
-In-Reply-To: <YCE3cjDNOvpeCCeA@ubuntu-x1>
-References: <20210205230620.518245-1-seth.forshee@canonical.com>
-        <20210207144831.lsrm74ypbz7i37uz@box>
-        <YCE3cjDNOvpeCCeA@ubuntu-x1>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S234365AbhBHRuA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 12:50:00 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A75101042;
+        Mon,  8 Feb 2021 09:49:10 -0800 (PST)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4997E3F73D;
+        Mon,  8 Feb 2021 09:49:09 -0800 (PST)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Quentin Perret <qperret@google.com>,
+        Pavan Kondeti <pkondeti@codeaurora.org>,
+        Rik van Riel <riel@surriel.com>
+Subject: Re: [PATCH 3/8] sched/fair: Tweak misfit-related capacity checks
+In-Reply-To: <CAKfTPtA0FXsz7_T+t4WfYjhwuGNeKzbJJJoZNkD6Gz6yDf_ebA@mail.gmail.com>
+References: <20210128183141.28097-1-valentin.schneider@arm.com> <20210128183141.28097-4-valentin.schneider@arm.com> <CAKfTPtADn0X8=ENfvG5dhzM1KbTD+JCCoOm-i8=bVkh0ZBM2Xg@mail.gmail.com> <jhjv9b61md0.mognet@arm.com> <CAKfTPtB_aJE0uDmARvKGe8_oX0Goaada_C5HKy7aaTbFGLxU-A@mail.gmail.com> <jhjsg6a1doz.mognet@arm.com> <CAKfTPtA0FXsz7_T+t4WfYjhwuGNeKzbJJJoZNkD6Gz6yDf_ebA@mail.gmail.com>
+User-Agent: Notmuch/0.21 (http://notmuchmail.org) Emacs/26.3 (x86_64-pc-linux-gnu)
+Date:   Mon, 08 Feb 2021 17:49:00 +0000
+Message-ID: <jhjmtwe1mcz.mognet@arm.com>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 8 Feb 2021 07:06:58 -0600 Seth Forshee <seth.forshee@canonical.com> wrote:
+On 08/02/21 16:29, Vincent Guittot wrote:
+> On Fri, 5 Feb 2021 at 21:07, Valentin Schneider
+> <valentin.schneider@arm.com> wrote:
+>>
+>> Perhaps I can still keep 5/8 with something like
+>>
+>>   if (!rq->misfit_task_load)
+>>           return false;
+>>
+>>   do {
+>>           if (capacity_greater(group->sgc->max_capacity, rq->cpu_capacity))
+>>                   return true;
+>>
+>>           group = group->next;
+>>   } while (group != sd->groups);
+>
+> I don't catch what you want to achieve with this  while loop compared
+> to the original condition which is :
+> trigger a load_balance :
+> - if there is CPU with higher original capacity
+> - or if the capacity of this cpu has significantly reduced because of
+> pressure and there is maybe others with more capacity even if it's one
+> with highest original capacity
+>
 
-> On Sun, Feb 07, 2021 at 05:48:31PM +0300, Kirill A. Shutemov wrote:
-> > On Fri, Feb 05, 2021 at 05:06:20PM -0600, Seth Forshee wrote:
-> > > This feature requires ino_t be 64-bits, which is true for every
-> > > 64-bit architecture but s390, so prevent this option from being
-> > > selected there.
-> > 
-> > Quick grep suggests the same for alpha. Am I wrong?
-> 
-> No, it appears you are right. Looks like my grep missed alpha somehow.
-> 
-> Andrew, do you prefer an additional patch or an updated version of the
-> previous patch?
+If we had a root-domain-wide (dynamic) capacity maximum, we could make
+check_misfit_status() return false if the CPU *is* pressured but there is
+no better alternative - e.g. if all other CPUs are pressured even worse.
 
-Doesn't matter much.  A second patch for Alpha would be best, I guess. 
-Thanks.
+This isn't a correctness issue as the nohz load-balance will just not
+migrate the misfit task, but it would be nice to prevent the nohz kick
+altogether.
 
+I might ditch this for now and revisit it later.
+
+>>
+>>   return false;
+>>
+>> This works somewhat well for big.LITTLE, but for DynamIQ systems under a
+>> single L3 this ends up iterating over all the CPUs :/
