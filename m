@@ -2,143 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1063D313D77
+	by mail.lfdr.de (Postfix) with ESMTP id 821A4313D78
 	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 19:29:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235641AbhBHS1o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 13:27:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60916 "EHLO
+        id S235666AbhBHS1s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 13:27:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234134AbhBHPx5 (ORCPT
+        with ESMTP id S234209AbhBHPx7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 10:53:57 -0500
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A61A7C061786
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 07:53:17 -0800 (PST)
-Received: by mail-pg1-x531.google.com with SMTP id e7so1536119pge.0
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 07:53:17 -0800 (PST)
+        Mon, 8 Feb 2021 10:53:59 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4619AC061788
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 07:53:19 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id i2so17475669ybl.16
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 07:53:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=delphix.com; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=bv31c/MDD+J9/ofoLSaaCjpSKbdjhNAUexmwFwimhPM=;
-        b=fWcAPommuKM/IFRTzUIO/AweTrcvpcC2yZfhuldGppsRcp5aDoCIShY0yNhUTDVBC/
-         3q0DLLYxPHjNpIEc+1KAo0tgx+RSvA+ogLIcd2ie3Pw8l1GIWqamVnBdT1b9K7mqvls3
-         m07o5G88evuPMnIQo8CowWg5mtQITzXrpMHIY=
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:cc;
+        bh=KABW1PbKP87UHlmwOVcrjPZPD/KiH4IFW6HwyHI8HLw=;
+        b=k+plAvQWKUQQEFSYtdDrmR64LjfOFfyNvE5bQyLeuXXk0gQM9M1YLhI+Kpb8Pq6RRy
+         xXUgZ8Lu748qxXqRshn9BfzpFkBuZqYWwc0HB+CQPVijF0hLdpKZa0Wx4BE7Cq3qKTcG
+         4YemrGBQUUzxrqVLCDIK+5YyUj35ExFZfnKSA5iVF/fkayXaj4lu7prTK/0JiyDIhICI
+         fXnLZV8WgGU72cjZral6rTKmmKeGcLVviG4fVVZG1/XbYWgaMoD+guk+XrCXEOwOG7++
+         Q2YwHsK7pUuG96I5oZHtxrbJLTTP4zgpIcc4M/9Rss6yk5IY9M17KM/eqzugs31WXzmT
+         5VjA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=bv31c/MDD+J9/ofoLSaaCjpSKbdjhNAUexmwFwimhPM=;
-        b=rE0qlkncHb6id5eq5gFAp1GWTSUcbtI9IyOAXghrW+/LokRDC9LEfTuWdMiQcPtb5h
-         e6bf/KRtv8Rq5ShedEJ3Hzmsw5wsHK/DbJ6UlAjILkEHxwpNKkGj2AItFJY9/eWIoQTn
-         9jnyegbB5Nl5faTQalNMvq0qxSCvNdwmO3tcYDNIA6t8c2VerqlociQAeLlwJZmOQJ2g
-         vhAI1ag2cyggTSW5F2zULfJlR+a0W9+NlRJSArwI2KRtD8v+yHd4frSKehP4/a2f6nd/
-         hSCj89LL9u+Ck1r85EssVFJ15WLdl41eFOcAziyRA+JbneX9TPS0zJXJXqxPwGWjzMXJ
-         ZU+g==
-X-Gm-Message-State: AOAM531/nktLmhAdp0DpwhkNw/3hyegWe03e6MhVuRCZ3+j4Gpt7yoKQ
-        Lf/VQvDLwTsxyxN314J2W5Dk+g==
-X-Google-Smtp-Source: ABdhPJzZVqXn4S2LaV+CAbkdMLUFRYLPB7Lbycu+tTQD4ybzSfOoN7KknTaeBTt2lt/2D6cZj9UJKw==
-X-Received: by 2002:aa7:98d2:0:b029:1da:3374:4777 with SMTP id e18-20020aa798d20000b02901da33744777mr11031393pfm.45.1612799597208;
-        Mon, 08 Feb 2021 07:53:17 -0800 (PST)
-Received: from sd-kernel.dcol2.delphix.com (DELPHIX-COR.ear1.SanJose1.Level3.net. [4.15.123.66])
-        by smtp.googlemail.com with ESMTPSA id cm7sm5048427pjb.43.2021.02.08.07.53.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Feb 2021 07:53:16 -0800 (PST)
-From:   Serapheim Dimitropoulos <serapheim.dimitro@delphix.com>
-X-Google-Original-From: Serapheim Dimitropoulos <serapheim@delphix.com>
-To:     akpm@linux-foundation.org, linux-mm@kvack.org
-Cc:     linux-kernel@vger.kernel.org, osandov@osandov.com,
-        serapheim@delphix.com
-Subject: [PATCH] mm/vmalloc: use rb_tree instead of list for vread() lookups
-Date:   Mon,  8 Feb 2021 15:53:03 +0000
-Message-Id: <20210208155303.10523-1-serapheim@delphix.com>
-X-Mailer: git-send-email 2.17.1
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :cc;
+        bh=KABW1PbKP87UHlmwOVcrjPZPD/KiH4IFW6HwyHI8HLw=;
+        b=hoS/OQVkzp0NLFmEcykVuoFfsduDe+999WyO1NT994Jnp/33YrRnPjS9IM/bGReyG5
+         +3jN7pMeQ8W+zFg48qcJ+lbDHf/Y35mK+3bN37dn5I/avOPGx7TqW+xGZHjjxAwFEPVV
+         fdWzb8HlmkDY5clYGaJozd/m/PdqEdFN23PV/HzNrAyqlIkJk4oGM0d5ufFALqp6tBFl
+         xjpO3XEP48vCr8JPuH3NU7UP3cTpTwTfog0/VC1dOrynmwWf6DNniKlmYRFReEshiHiw
+         dCxWip/RZWmBSALKri8PQnCfwJgaczAYoy/QXQyL6uOLWzIhIc0uGCKfofYy0TwkBpVL
+         WloQ==
+X-Gm-Message-State: AOAM531eHk+OHo7MOvWZe15f/e7IOO5bAi6Xf4YRK9gUUvPw19hKhc90
+        pTscc1WwPnftR7tsy2NL+o/y+ijtGHWQ/nDN7g==
+X-Google-Smtp-Source: ABdhPJy5TCKk45UVECdZNGWDZgT1hEcr/O9DAIgFSw2AggyhYlchwyA7OBiwJdM5EuiQp2ZNxIUAKTng2zlyA28byw==
+Sender: "kaleshsingh via sendgmr" <kaleshsingh@kaleshsingh.c.googlers.com>
+X-Received: from kaleshsingh.c.googlers.com ([fda3:e722:ac3:10:14:4d90:c0a8:2145])
+ (user=kaleshsingh job=sendgmr) by 2002:a25:a267:: with SMTP id
+ b94mr25868498ybi.218.1612799598492; Mon, 08 Feb 2021 07:53:18 -0800 (PST)
+Date:   Mon,  8 Feb 2021 15:53:06 +0000
+Message-Id: <20210208155315.1367371-1-kaleshsingh@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.0.478.g8a0d178c01-goog
+Subject: [PATCH v6 1/2] procfs: Allow reading fdinfo with PTRACE_MODE_READ
+From:   Kalesh Singh <kaleshsingh@google.com>
+Cc:     jannh@google.com, jeffv@google.com, keescook@chromium.org,
+        surenb@google.com, minchan@kernel.org, hridya@google.com,
+        rdunlap@infradead.org, christian.koenig@amd.com,
+        willy@infradead.org, kernel-team@android.com,
+        Kalesh Singh <kaleshsingh@google.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Alexey Gladkov <gladkov.alexey@gmail.com>,
+        NeilBrown <neilb@suse.de>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Michel Lespinasse <walken@google.com>,
+        Bernd Edlinger <bernd.edlinger@hotmail.de>,
+        Andrei Vagin <avagin@gmail.com>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-doc@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-vread() has been linearly searching vmap_area_list for looking up
-vmalloc areas to read from. These same areas are also tracked by
-a rb_tree (vmap_area_root) which offers logarithmic lookup.
+Android captures per-process system memory state when certain low memory
+events (e.g a foreground app kill) occur, to identify potential memory
+hoggers. In order to measure how much memory a process actually consumes,
+it is necessary to include the DMA buffer sizes for that process in the
+memory accounting. Since the handle to DMA buffers are raw FDs, it is
+important to be able to identify which processes have FD references to
+a DMA buffer.
 
-This patch modifies vread() to use the rb_tree structure instead
-of the list and the speedup for heavy /proc/kcore readers can
-be pretty significant. Below are the wall clock measurements of
-a Python application that leverages the drgn debugging library
-to read and interpret data read from /proc/kcore.
+Currently, DMA buffer FDs can be accounted using /proc/<pid>/fd/* and
+/proc/<pid>/fdinfo -- both are only readable by the process owner,
+as follows:
+  1. Do a readlink on each FD.
+  2. If the target path begins with "/dmabuf", then the FD is a dmabuf FD.
+  3. stat the file to get the dmabuf inode number.
+  4. Read/ proc/<pid>/fdinfo/<fd>, to get the DMA buffer size.
 
-Before the patch:
------
-$ time sudo sdb -e 'dbuf | head 2500 | wc'
-(unsigned long)2500
+Accessing other processes' fdinfo requires root privileges. This limits
+the use of the interface to debugging environments and is not suitable
+for production builds.  Granting root privileges even to a system process
+increases the attack surface and is highly undesirable.
 
-real	0m21.128s
-user	0m2.321s
-sys	0m19.227s
------
+Since fdinfo doesn't permit reading process memory and manipulating
+process state, allow accessing fdinfo under PTRACE_MODE_READ_FSCRED.
 
-With the patch:
------
-$ time sudo sdb -e 'dbuf | head 2500 | wc'
-(unsigned long)2500
-
-real	0m1.870s
-user	0m1.628s
-sys	0m0.660s
------
-
-Signed-off-by: Serapheim Dimitropoulos <serapheim@delphix.com>
+Suggested-by: Jann Horn <jannh@google.com>
+Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
 ---
- mm/vmalloc.c | 19 ++++++++++++-------
- 1 file changed, 12 insertions(+), 7 deletions(-)
+Changes in v2:
+  - Update patch description
 
-diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-index 49ab9b6c001d..86343b879938 100644
---- a/mm/vmalloc.c
-+++ b/mm/vmalloc.c
-@@ -2851,6 +2851,7 @@ long vread(char *buf, char *addr, unsigned long count)
+ fs/proc/base.c |  4 ++--
+ fs/proc/fd.c   | 15 ++++++++++++++-
+ 2 files changed, 16 insertions(+), 3 deletions(-)
+
+diff --git a/fs/proc/base.c b/fs/proc/base.c
+index b3422cda2a91..a37f9de7103f 100644
+--- a/fs/proc/base.c
++++ b/fs/proc/base.c
+@@ -3160,7 +3160,7 @@ static const struct pid_entry tgid_base_stuff[] = {
+ 	DIR("task",       S_IRUGO|S_IXUGO, proc_task_inode_operations, proc_task_operations),
+ 	DIR("fd",         S_IRUSR|S_IXUSR, proc_fd_inode_operations, proc_fd_operations),
+ 	DIR("map_files",  S_IRUSR|S_IXUSR, proc_map_files_inode_operations, proc_map_files_operations),
+-	DIR("fdinfo",     S_IRUSR|S_IXUSR, proc_fdinfo_inode_operations, proc_fdinfo_operations),
++	DIR("fdinfo",     S_IRUGO|S_IXUGO, proc_fdinfo_inode_operations, proc_fdinfo_operations),
+ 	DIR("ns",	  S_IRUSR|S_IXUGO, proc_ns_dir_inode_operations, proc_ns_dir_operations),
+ #ifdef CONFIG_NET
+ 	DIR("net",        S_IRUGO|S_IXUGO, proc_net_inode_operations, proc_net_operations),
+@@ -3504,7 +3504,7 @@ static const struct inode_operations proc_tid_comm_inode_operations = {
+  */
+ static const struct pid_entry tid_base_stuff[] = {
+ 	DIR("fd",        S_IRUSR|S_IXUSR, proc_fd_inode_operations, proc_fd_operations),
+-	DIR("fdinfo",    S_IRUSR|S_IXUSR, proc_fdinfo_inode_operations, proc_fdinfo_operations),
++	DIR("fdinfo",    S_IRUGO|S_IXUGO, proc_fdinfo_inode_operations, proc_fdinfo_operations),
+ 	DIR("ns",	 S_IRUSR|S_IXUGO, proc_ns_dir_inode_operations, proc_ns_dir_operations),
+ #ifdef CONFIG_NET
+ 	DIR("net",        S_IRUGO|S_IXUGO, proc_net_inode_operations, proc_net_operations),
+diff --git a/fs/proc/fd.c b/fs/proc/fd.c
+index cb51763ed554..585e213301f9 100644
+--- a/fs/proc/fd.c
++++ b/fs/proc/fd.c
+@@ -6,6 +6,7 @@
+ #include <linux/fdtable.h>
+ #include <linux/namei.h>
+ #include <linux/pid.h>
++#include <linux/ptrace.h>
+ #include <linux/security.h>
+ #include <linux/file.h>
+ #include <linux/seq_file.h>
+@@ -72,6 +73,18 @@ static int seq_show(struct seq_file *m, void *v)
+ 
+ static int seq_fdinfo_open(struct inode *inode, struct file *file)
  {
- 	struct vmap_area *va;
- 	struct vm_struct *vm;
-+	struct rb_node *node;
- 	char *vaddr, *buf_start = buf;
- 	unsigned long buflen = count;
- 	unsigned long n;
-@@ -2860,17 +2861,15 @@ long vread(char *buf, char *addr, unsigned long count)
- 		count = -(unsigned long) addr;
- 
- 	spin_lock(&vmap_area_lock);
--	list_for_each_entry(va, &vmap_area_list, list) {
--		if (!count)
--			break;
--
-+	va = __find_vmap_area((unsigned long)addr);
-+	if (!va)
-+		goto finished;
-+	while (count) {
- 		if (!va->vm)
--			continue;
-+			goto next_node;
- 
- 		vm = va->vm;
- 		vaddr = (char *) vm->addr;
--		if (addr >= vaddr + get_vm_area_size(vm))
--			continue;
- 		while (addr < vaddr) {
- 			if (count == 0)
- 				goto finished;
-@@ -2889,6 +2888,12 @@ long vread(char *buf, char *addr, unsigned long count)
- 		buf += n;
- 		addr += n;
- 		count -= n;
++	bool allowed = false;
++	struct task_struct *task = get_proc_task(inode);
 +
-+next_node:
-+		node = rb_next(&va->rb_node);
-+		if (!node)
-+			break;
-+		va = rb_entry(node, struct vmap_area, rb_node);
- 	}
- finished:
- 	spin_unlock(&vmap_area_lock);
++	if (!task)
++		return -ESRCH;
++
++	allowed = ptrace_may_access(task, PTRACE_MODE_READ_FSCREDS);
++	put_task_struct(task);
++
++	if (!allowed)
++		return -EACCES;
++
+ 	return single_open(file, seq_show, inode);
+ }
+ 
+@@ -307,7 +320,7 @@ static struct dentry *proc_fdinfo_instantiate(struct dentry *dentry,
+ 	struct proc_inode *ei;
+ 	struct inode *inode;
+ 
+-	inode = proc_pid_make_inode(dentry->d_sb, task, S_IFREG | S_IRUSR);
++	inode = proc_pid_make_inode(dentry->d_sb, task, S_IFREG | S_IRUGO);
+ 	if (!inode)
+ 		return ERR_PTR(-ENOENT);
+ 
 -- 
-2.17.1
+2.30.0.478.g8a0d178c01-goog
 
