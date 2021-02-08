@@ -2,190 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A938B312EF5
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 11:27:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC625312E96
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 11:09:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231960AbhBHK0H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 05:26:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33172 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232353AbhBHKIJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 05:08:09 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S232518AbhBHKJm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 05:09:42 -0500
+Received: from mail29.static.mailgun.info ([104.130.122.29]:62803 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231993AbhBHJ7w (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 04:59:52 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1612778366; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=SaZaHBLKUsOHV+ADNlGOajlR/W8Hmri2bwY0Sr/RM5U=;
+ b=pK2IddlUFyUC+3hRbB6HxyINmp4OM4r+1eoaWZwxS156MhUfoYqrGGvQE4eja/Nz3PgE2o1n
+ Vm6OTv3/EeFcyC1sBhng7Wg6RqfHgilWLCn/tM8w+ux9JAgub0t8eX16oEswJ0szvA/YRjAh
+ m9RyhtGDa/N0/v74EUFoT06Xbjg=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 60210b58f112b7872c08e0a8 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 08 Feb 2021 09:58:48
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 63587C43469; Mon,  8 Feb 2021 09:58:48 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4A8F964E9C;
-        Mon,  8 Feb 2021 10:04:42 +0000 (UTC)
-Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.lan)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1l93JA-00Ck14-Tq; Mon, 08 Feb 2021 09:58:17 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        David Brazdil <dbrazdil@google.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Jing Zhang <jingzhangos@google.com>,
-        Ajay Patil <pajay@qti.qualcomm.com>,
-        Prasad Sodagudi <psodagud@codeaurora.org>,
-        Srinivas Ramana <sramana@codeaurora.org>,
-        Hector Martin <marcan@marcan.st>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        kernel-team@android.com
-Subject: [PATCH v7 23/23] [DO NOT MERGE] arm64: Cope with CPUs stuck in VHE mode
-Date:   Mon,  8 Feb 2021 09:57:32 +0000
-Message-Id: <20210208095732.3267263-24-maz@kernel.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210208095732.3267263-1-maz@kernel.org>
-References: <20210208095732.3267263-1-maz@kernel.org>
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 74B43C433C6;
+        Mon,  8 Feb 2021 09:58:47 +0000 (UTC)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 62.31.163.78
-X-SA-Exim-Rcpt-To: linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org, catalin.marinas@arm.com, will@kernel.org, mark.rutland@arm.com, dbrazdil@google.com, alexandru.elisei@arm.com, ardb@kernel.org, jingzhangos@google.com, pajay@qti.qualcomm.com, psodagud@codeaurora.org, sramana@codeaurora.org, marcan@marcan.st, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, kernel-team@android.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 08 Feb 2021 17:58:47 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Bean Huo <huobean@gmail.com>
+Cc:     daejun7.park@samsung.com, Greg KH <gregkh@linuxfoundation.org>,
+        avri.altman@wdc.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, asutoshd@codeaurora.org,
+        stanley.chu@mediatek.com, bvanassche@acm.org,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>,
+        SEUNGUK SHIN <seunguk.shin@samsung.com>
+Subject: Re: [PATCH v19 3/3] scsi: ufs: Prepare HPB read for cached sub-region
+In-Reply-To: <a95af313ee4dfb7173b0c5a23b52d2168a94f87a.camel@gmail.com>
+References: <20210129052848epcms2p6e5797efd94e6282b76ad9ae6c99e3ab5@epcms2p6>
+ <CGME20210129052848epcms2p6e5797efd94e6282b76ad9ae6c99e3ab5@epcms2p5>
+ <20210129053042epcms2p538e7fa396c3c2104594c44e48be53eb8@epcms2p5>
+ <7f25ccb1d857131baa1c0424c4542e33@codeaurora.org>
+ <a95af313ee4dfb7173b0c5a23b52d2168a94f87a.camel@gmail.com>
+Message-ID: <8c79dfb0dc749c3c1362b57c5a9766c0@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It seems that the CPU known as Apple M1 has the terrible habit
-of being stuck with HCR_EL2.E2H==1, in violation of the architecture.
+On 2021-02-08 16:16, Bean Huo wrote:
+> On Fri, 2021-02-05 at 11:29 +0800, Can Guo wrote:
+>> > +     return ppn_table[offset];
+>> > +}
+>> > +
+>> > +static void
+>> > +ufshpb_get_pos_from_lpn(struct ufshpb_lu *hpb, unsigned long lpn,
+>> > int
+>> > *rgn_idx,
+>> > +                     int *srgn_idx, int *offset)
+>> > +{
+>> > +     int rgn_offset;
+>> > +
+>> > +     *rgn_idx = lpn >> hpb->entries_per_rgn_shift;
+>> > +     rgn_offset = lpn & hpb->entries_per_rgn_mask;
+>> > +     *srgn_idx = rgn_offset >> hpb->entries_per_srgn_shift;
+>> > +     *offset = rgn_offset & hpb->entries_per_srgn_mask;
+>> > +}
+>> > +
+>> > +static void
+>> > +ufshpb_set_hpb_read_to_upiu(struct ufshpb_lu *hpb, struct
+>> > ufshcd_lrb
+>> > *lrbp,
+>> > +                               u32 lpn, u64 ppn,  unsigned int
+>> > transfer_len)
+>> > +{
+>> > +     unsigned char *cdb = lrbp->cmd->cmnd;
+>> > +
+>> > +     cdb[0] = UFSHPB_READ;
+>> > +
+>> > +     put_unaligned_be64(ppn, &cdb[6]);
+>> 
+>> You are assuming the HPB entries read out by "HPB Read Buffer" cmd
+>> are
+>> in Little
+>> Endian, which is why you are using put_unaligned_be64 here.
+>> 
+> 
+> 
+> Actaully, here uses put_unaligned_be64 is no problem. SCSI command
+> should be big-endian filled. I Think the problem is that geting ppn
+> from HPB cache in ufshpb_get_ppn().
+> 
 
-Try and work around this deplorable state of affairs by detecting
-the stuck bit early and short-circuit the nVHE dance. It is still
-unknown whether there are many more such nuggets to be found...
+whatever...
 
-Reported-by: Hector Martin <marcan@marcan.st>
-Signed-off-by: Marc Zyngier <maz@kernel.org>
----
- arch/arm64/kernel/head.S     | 33 ++++++++++++++++++++++++++++++---
- arch/arm64/kernel/hyp-stub.S | 28 ++++++++++++++++++++++++----
- 2 files changed, 54 insertions(+), 7 deletions(-)
-
-diff --git a/arch/arm64/kernel/head.S b/arch/arm64/kernel/head.S
-index 2e116ef255e1..bce66d6bda74 100644
---- a/arch/arm64/kernel/head.S
-+++ b/arch/arm64/kernel/head.S
-@@ -477,14 +477,13 @@ EXPORT_SYMBOL(kimage_vaddr)
-  * booted in EL1 or EL2 respectively.
-  */
- SYM_FUNC_START(init_kernel_el)
--	mov_q	x0, INIT_SCTLR_EL1_MMU_OFF
--	msr	sctlr_el1, x0
--
- 	mrs	x0, CurrentEL
- 	cmp	x0, #CurrentEL_EL2
- 	b.eq	init_el2
- 
- SYM_INNER_LABEL(init_el1, SYM_L_LOCAL)
-+	mov_q	x0, INIT_SCTLR_EL1_MMU_OFF
-+	msr	sctlr_el1, x0
- 	isb
- 	mov_q	x0, INIT_PSTATE_EL1
- 	msr	spsr_el1, x0
-@@ -504,6 +503,34 @@ SYM_INNER_LABEL(init_el2, SYM_L_LOCAL)
- 	msr	vbar_el2, x0
- 	isb
- 
-+	/*
-+	 * Fruity CPUs seem to have HCR_EL2.E2H set to RES1,
-+	 * making it impossible to start in nVHE mode. Is that
-+	 * compliant with the architecture? Absolutely not!
-+	 */
-+	mrs	x0, hcr_el2
-+	and	x0, x0, #HCR_E2H
-+	cbz	x0, 1f
-+
-+	/* Switching to VHE requires a sane SCTLR_EL1 as a start */
-+	mov_q	x0, INIT_SCTLR_EL1_MMU_OFF
-+	msr_s	SYS_SCTLR_EL12, x0
-+
-+	/*
-+	 * Force an eret into a helper "function", and let it return
-+	 * to our original caller... This makes sure that we have
-+	 * initialised the basic PSTATE state.
-+	 */
-+	mov	x0, #INIT_PSTATE_EL2
-+	msr	spsr_el1, x0
-+	adr_l	x0, stick_to_vhe
-+	msr	elr_el1, x0
-+	eret
-+
-+1:
-+	mov_q	x0, INIT_SCTLR_EL1_MMU_OFF
-+	msr	sctlr_el1, x0
-+
- 	msr	elr_el2, lr
- 	mov	w0, #BOOT_CPU_MODE_EL2
- 	eret
-diff --git a/arch/arm64/kernel/hyp-stub.S b/arch/arm64/kernel/hyp-stub.S
-index 3e08dcc924b5..b55ed4af4c4a 100644
---- a/arch/arm64/kernel/hyp-stub.S
-+++ b/arch/arm64/kernel/hyp-stub.S
-@@ -27,12 +27,12 @@ SYM_CODE_START(__hyp_stub_vectors)
- 	ventry	el2_fiq_invalid			// FIQ EL2t
- 	ventry	el2_error_invalid		// Error EL2t
- 
--	ventry	el2_sync_invalid		// Synchronous EL2h
-+	ventry	elx_sync			// Synchronous EL2h
- 	ventry	el2_irq_invalid			// IRQ EL2h
- 	ventry	el2_fiq_invalid			// FIQ EL2h
- 	ventry	el2_error_invalid		// Error EL2h
- 
--	ventry	el1_sync			// Synchronous 64-bit EL1
-+	ventry	elx_sync			// Synchronous 64-bit EL1
- 	ventry	el1_irq_invalid			// IRQ 64-bit EL1
- 	ventry	el1_fiq_invalid			// FIQ 64-bit EL1
- 	ventry	el1_error_invalid		// Error 64-bit EL1
-@@ -45,7 +45,7 @@ SYM_CODE_END(__hyp_stub_vectors)
- 
- 	.align 11
- 
--SYM_CODE_START_LOCAL(el1_sync)
-+SYM_CODE_START_LOCAL(elx_sync)
- 	cmp	x0, #HVC_SET_VECTORS
- 	b.ne	1f
- 	msr	vbar_el2, x1
-@@ -71,7 +71,7 @@ SYM_CODE_START_LOCAL(el1_sync)
- 
- 9:	mov	x0, xzr
- 	eret
--SYM_CODE_END(el1_sync)
-+SYM_CODE_END(elx_sync)
- 
- // nVHE? No way! Give me the real thing!
- SYM_CODE_START_LOCAL(mutate_to_vhe)
-@@ -227,3 +227,23 @@ SYM_FUNC_START(switch_to_vhe)
- #endif
- 	ret
- SYM_FUNC_END(switch_to_vhe)
-+
-+SYM_FUNC_START(stick_to_vhe)
-+	/*
-+	 * Make sure the switch to VHE cannot fail, by overriding the
-+	 * override. This is hilarious.
-+	 */
-+	adr_l	x1, id_aa64mmfr1_override
-+	add	x1, x1, #FTR_OVR_MASK_OFFSET
-+	dc 	civac, x1
-+	dsb	sy
-+	isb
-+	ldr	x0, [x1]
-+	bic	x0, x0, #(0xf << ID_AA64MMFR1_VHE_SHIFT)
-+	str	x0, [x1]
-+
-+	mov	x0, #HVC_VHE_RESTART
-+	hvc	#0
-+	mov	x0, #BOOT_CPU_MODE_EL2
-+	ret
-+SYM_FUNC_END(stick_to_vhe)
--- 
-2.29.2
-
+> ...
+> e0000001f: 12 34 56 78 90 fa de ef
+> ...
+> 
+> +
+> +static u64 ufshpb_get_ppn(struct ufshpb_lu *hpb,
+> +			  struct ufshpb_map_ctx *mctx, int pos, int
+> *error)
+> +{
+> +	u64 *ppn_table;  // It s a 64 bits pointer
+> +	struct page *page;
+> +	int index, offset;
+> +
+> +	index = pos / (PAGE_SIZE / HPB_ENTRY_SIZE);
+> +	offset = pos % (PAGE_SIZE / HPB_ENTRY_SIZE);
+> +
+> +	page = mctx->m_page[index];
+> +	if (unlikely(!page)) {
+> +		*error = -ENOMEM;
+> +		dev_err(&hpb->sdev_ufs_lu->sdev_dev,
+> +			"error. cannot find page in mctx\n");
+> +		return 0;
+> +	}
+> +
+> +	ppn_table = page_address(page);
+> +	if (unlikely(!ppn_table)) {
+> +		*error = -ENOMEM;
+> +		dev_err(&hpb->sdev_ufs_lu->sdev_dev,
+> +			"error. cannot get ppn_table\n");
+> +		return 0;
+> +	}
+> +
+> +	return ppn_table[offset];
+> +}
+> 
+> 
+> 
+> 
+>> this assumption
+>> is not right for all the other flash vendors - HPB entries read out
+>> by
+>> "HPB Read Buffer"
+>> cmd may come in Big Endian, if so, their random read performance are
+>> screwed.
+>> Actually, I have seen at least two flash vendors acting so. I had to
+>> modify this line
+>> to get the code work properly on my setups.
+>> 
+>> Meanwhile, in your cover letter, you mentioned that the performance
+>> data
+>> is collected
+>> on a UFS2.1 device. Please re-collect the data on a real UFS3.1
+>> device
+>> and let me
+>> know the part number. Otherwise, the data is not quite convincing to
+>> us.
+>> 
+>> Regards,
+>> Can Guo.
