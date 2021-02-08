@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28CDE313919
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 17:18:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CE883138C3
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 17:03:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234299AbhBHQRk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 11:17:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55232 "EHLO mail.kernel.org"
+        id S232621AbhBHQCb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 11:02:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56630 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232955AbhBHPLr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 10:11:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3124164EEB;
-        Mon,  8 Feb 2021 15:08:45 +0000 (UTC)
+        id S232200AbhBHPKS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 10:10:18 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 85D8F64ED4;
+        Mon,  8 Feb 2021 15:07:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612796926;
-        bh=+rXr+71ROZWrElgAVo1ZF+3aCSdzVLOjlEfPqRpA8A0=;
+        s=korg; t=1612796835;
+        bh=7QAP6juxWHp+KETu5g2tT4DiAtwc6vaVDvyDdb2MMKA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XdXAy8p39g/7+s2pBHjviT3hpGcYH5feHQwekc0Du0OmilTBjgYDuplTauxagnOwt
-         lfjI5KVRJ9ZopYPklyq9CSSAz0960PDvwruXKaceGCi0Ti3ToIq20CGOGpuNtNKMLX
-         aasWiCPocVrUsRHANHq8AqYg2BOYYqWrsEUs46zY=
+        b=2I0R7qVI65eG9T7mMro/04iWLSH0QBcHjxP1f4q/OTHmakpMhmvd07TEt4xVGfn4n
+         sM+bPLGgKNAPm+2bMOl/0P8yEicL0q1lZRo6S0m4WxqgZYFAuX30gHhCX8wZWjOpA1
+         10PZ+aINuzVRCrSXIjTv22miQmX57UqdhfFcwttQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+df400f2f24a1677cd7e0@syzkaller.appspotmail.com,
-        Vadim Fedorenko <vfedorenko@novek.ru>,
-        David Howells <dhowells@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 06/38] rxrpc: Fix deadlock around release of dst cached on udp tunnel
-Date:   Mon,  8 Feb 2021 16:00:53 +0100
-Message-Id: <20210208145806.394957674@linuxfoundation.org>
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Barret Rhoden <brho@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.14 08/30] elfcore: fix building with clang
+Date:   Mon,  8 Feb 2021 16:00:54 +0100
+Message-Id: <20210208145805.582779586@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210208145806.141056364@linuxfoundation.org>
-References: <20210208145806.141056364@linuxfoundation.org>
+In-Reply-To: <20210208145805.239714726@linuxfoundation.org>
+References: <20210208145805.239714726@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,109 +43,110 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Howells <dhowells@redhat.com>
+From: Arnd Bergmann <arnd@arndb.de>
 
-[ Upstream commit 5399d52233c47905bbf97dcbaa2d7a9cc31670ba ]
+commit 6e7b64b9dd6d96537d816ea07ec26b7dedd397b9 upstream.
 
-AF_RXRPC sockets use UDP ports in encap mode.  This causes socket and dst
-from an incoming packet to get stolen and attached to the UDP socket from
-whence it is leaked when that socket is closed.
+kernel/elfcore.c only contains weak symbols, which triggers a bug with
+clang in combination with recordmcount:
 
-When a network namespace is removed, the wait for dst records to be cleaned
-up happens before the cleanup of the rxrpc and UDP socket, meaning that the
-wait never finishes.
+  Cannot find symbol for section 2: .text.
+  kernel/elfcore.o: failed
 
-Fix this by moving the rxrpc (and, by dependence, the afs) private
-per-network namespace registrations to the device group rather than subsys
-group.  This allows cached rxrpc local endpoints to be cleared and their
-UDP sockets closed before we try waiting for the dst records.
+Move the empty stubs into linux/elfcore.h as inline functions.  As only
+two architectures use these, just use the architecture specific Kconfig
+symbols to key off the declaration.
 
-The symptom is that lines looking like the following:
-
-	unregister_netdevice: waiting for lo to become free
-
-get emitted at regular intervals after running something like the
-referenced syzbot test.
-
-Thanks to Vadim for tracking this down and work out the fix.
-
-Reported-by: syzbot+df400f2f24a1677cd7e0@syzkaller.appspotmail.com
-Reported-by: Vadim Fedorenko <vfedorenko@novek.ru>
-Fixes: 5271953cad31 ("rxrpc: Use the UDP encap_rcv hook")
-Signed-off-by: David Howells <dhowells@redhat.com>
-Acked-by: Vadim Fedorenko <vfedorenko@novek.ru>
-Link: https://lore.kernel.org/r/161196443016.3868642.5577440140646403533.stgit@warthog.procyon.org.uk
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Link: https://lkml.kernel.org/r/20201204165742.3815221-2-arnd@kernel.org
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Cc: Nathan Chancellor <natechancellor@gmail.com>
+Cc: Nick Desaulniers <ndesaulniers@google.com>
+Cc: Barret Rhoden <brho@google.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/afs/main.c        | 6 +++---
- net/rxrpc/af_rxrpc.c | 6 +++---
- 2 files changed, 6 insertions(+), 6 deletions(-)
+ include/linux/elfcore.h |   22 ++++++++++++++++++++++
+ kernel/Makefile         |    1 -
+ kernel/elfcore.c        |   26 --------------------------
+ 3 files changed, 22 insertions(+), 27 deletions(-)
+ delete mode 100644 kernel/elfcore.c
 
-diff --git a/fs/afs/main.c b/fs/afs/main.c
-index 107427688eddd..8ecb127be63f9 100644
---- a/fs/afs/main.c
-+++ b/fs/afs/main.c
-@@ -190,7 +190,7 @@ static int __init afs_init(void)
- 		goto error_cache;
+--- a/include/linux/elfcore.h
++++ b/include/linux/elfcore.h
+@@ -58,6 +58,7 @@ static inline int elf_core_copy_task_xfp
+ }
  #endif
  
--	ret = register_pernet_subsys(&afs_net_ops);
-+	ret = register_pernet_device(&afs_net_ops);
- 	if (ret < 0)
- 		goto error_net;
++#if defined(CONFIG_UM) || defined(CONFIG_IA64)
+ /*
+  * These functions parameterize elf_core_dump in fs/binfmt_elf.c to write out
+  * extra segments containing the gate DSO contents.  Dumping its
+@@ -72,5 +73,26 @@ elf_core_write_extra_phdrs(struct coredu
+ extern int
+ elf_core_write_extra_data(struct coredump_params *cprm);
+ extern size_t elf_core_extra_data_size(void);
++#else
++static inline Elf_Half elf_core_extra_phdrs(void)
++{
++	return 0;
++}
++
++static inline int elf_core_write_extra_phdrs(struct coredump_params *cprm, loff_t offset)
++{
++	return 1;
++}
++
++static inline int elf_core_write_extra_data(struct coredump_params *cprm)
++{
++	return 1;
++}
++
++static inline size_t elf_core_extra_data_size(void)
++{
++	return 0;
++}
++#endif
  
-@@ -210,7 +210,7 @@ static int __init afs_init(void)
- error_proc:
- 	afs_fs_exit();
- error_fs:
--	unregister_pernet_subsys(&afs_net_ops);
-+	unregister_pernet_device(&afs_net_ops);
- error_net:
- #ifdef CONFIG_AFS_FSCACHE
- 	fscache_unregister_netfs(&afs_cache_netfs);
-@@ -241,7 +241,7 @@ static void __exit afs_exit(void)
- 
- 	proc_remove(afs_proc_symlink);
- 	afs_fs_exit();
--	unregister_pernet_subsys(&afs_net_ops);
-+	unregister_pernet_device(&afs_net_ops);
- #ifdef CONFIG_AFS_FSCACHE
- 	fscache_unregister_netfs(&afs_cache_netfs);
- #endif
-diff --git a/net/rxrpc/af_rxrpc.c b/net/rxrpc/af_rxrpc.c
-index 57f835d2442ec..fb7e3fffcb5ef 100644
---- a/net/rxrpc/af_rxrpc.c
-+++ b/net/rxrpc/af_rxrpc.c
-@@ -1010,7 +1010,7 @@ static int __init af_rxrpc_init(void)
- 		goto error_security;
- 	}
- 
--	ret = register_pernet_subsys(&rxrpc_net_ops);
-+	ret = register_pernet_device(&rxrpc_net_ops);
- 	if (ret)
- 		goto error_pernet;
- 
-@@ -1055,7 +1055,7 @@ error_key_type:
- error_sock:
- 	proto_unregister(&rxrpc_proto);
- error_proto:
--	unregister_pernet_subsys(&rxrpc_net_ops);
-+	unregister_pernet_device(&rxrpc_net_ops);
- error_pernet:
- 	rxrpc_exit_security();
- error_security:
-@@ -1077,7 +1077,7 @@ static void __exit af_rxrpc_exit(void)
- 	unregister_key_type(&key_type_rxrpc);
- 	sock_unregister(PF_RXRPC);
- 	proto_unregister(&rxrpc_proto);
--	unregister_pernet_subsys(&rxrpc_net_ops);
-+	unregister_pernet_device(&rxrpc_net_ops);
- 	ASSERTCMP(atomic_read(&rxrpc_n_tx_skbs), ==, 0);
- 	ASSERTCMP(atomic_read(&rxrpc_n_rx_skbs), ==, 0);
- 
--- 
-2.27.0
-
+ #endif /* _LINUX_ELFCORE_H */
+--- a/kernel/Makefile
++++ b/kernel/Makefile
+@@ -90,7 +90,6 @@ obj-$(CONFIG_TASK_DELAY_ACCT) += delayac
+ obj-$(CONFIG_TASKSTATS) += taskstats.o tsacct.o
+ obj-$(CONFIG_TRACEPOINTS) += tracepoint.o
+ obj-$(CONFIG_LATENCYTOP) += latencytop.o
+-obj-$(CONFIG_ELFCORE) += elfcore.o
+ obj-$(CONFIG_FUNCTION_TRACER) += trace/
+ obj-$(CONFIG_TRACING) += trace/
+ obj-$(CONFIG_TRACE_CLOCK) += trace/
+--- a/kernel/elfcore.c
++++ /dev/null
+@@ -1,26 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0
+-#include <linux/elf.h>
+-#include <linux/fs.h>
+-#include <linux/mm.h>
+-#include <linux/binfmts.h>
+-#include <linux/elfcore.h>
+-
+-Elf_Half __weak elf_core_extra_phdrs(void)
+-{
+-	return 0;
+-}
+-
+-int __weak elf_core_write_extra_phdrs(struct coredump_params *cprm, loff_t offset)
+-{
+-	return 1;
+-}
+-
+-int __weak elf_core_write_extra_data(struct coredump_params *cprm)
+-{
+-	return 1;
+-}
+-
+-size_t __weak elf_core_extra_data_size(void)
+-{
+-	return 0;
+-}
 
 
