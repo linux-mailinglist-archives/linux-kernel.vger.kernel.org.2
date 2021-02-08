@@ -2,93 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2678313B62
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 18:49:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 132A5313BA6
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 18:55:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234649AbhBHRrM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 12:47:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55972 "EHLO
+        id S233967AbhBHRyH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 12:54:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233886AbhBHPaz (ORCPT
+        with ESMTP id S229913AbhBHPcc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 10:30:55 -0500
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C161C06178C
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 07:30:14 -0800 (PST)
-Received: by mail-pg1-x52a.google.com with SMTP id b21so10424769pgk.7
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 07:30:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=EVa5iP/ZP1kIUt+ZL6wEw6hpu9lqQN04bPoh5Ps/O8k=;
-        b=SB50xgtOv2drwobrNTCxM8e1R7wRSzKZvSWvf9w54gMrS7FLzMV0SFb5/DSUr9R9xy
-         juPcTRQ6i8IJmZvPrNlhOU00XAyhXmzWppXj2SETQbihFRRqrOCjVVAUVjcQT2r31C+U
-         2gAlTRD3O7rHE/SEaIAYSVlkvhu6BYsVW1WrrnJ3iLysWw2M/oxe3cHtcBhIh3/0GBm/
-         fIXM6Uq/3b/k4v4dcQHagjrUNkX3ilDp0Uh9pnrTyjxnEV3OOKGEoB9jGDArCMzjV+M4
-         qBp/3Y3ZDJk2y36OqxRMAh4EKC/Tgns1qBW5sgdlVWztkN3j7MrPNB2e/08kdPjSNJ6R
-         FSQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=EVa5iP/ZP1kIUt+ZL6wEw6hpu9lqQN04bPoh5Ps/O8k=;
-        b=XJjLvwkc2Ycd30v5NtEkEvcztl0Ffhx5OAE/YbJEF9ldgewtfqXgZS2AxvN4bocx09
-         J8x9cFPDCmEMlv3LLW7CVJane0d3ZmR5C2DgN6RuJzxcZ1ic8xSQYCXfrg7R0wwyGsoX
-         D7nKxVvak4Tmm2orqWdI9HgMaHtbkFHHvorUUXHg/E5aTnyP5ewP4LH08EqkkbYUuICY
-         VTqxKEZ5QzGq/6fg+InnThcLXk+EvZyyDxm0c902/RgTLfyxkPlSTyVb9tAyrslAxJHU
-         lAlIvWjDuj8C+qzJUSbOmg0J0RDLEO5s1YSAPyRlNC9R53rv5ZepYfUHotjjn+vIbjnd
-         BcQA==
-X-Gm-Message-State: AOAM530A8PSW55hyTP719vTPE3Ur+Oia1JzLPToXqbSMKxhhQCfg4YhI
-        qvH3y9gV6Uc+VgjjmBoLSB2Ig2pO5JySRBoT8iP7Iw==
-X-Google-Smtp-Source: ABdhPJxmRkIV7FEKwi4Ks9SoAI+DtUo1kXi3hGwtraZqD7I2gA+9nHX+iiKNSbI78kk5xN19ZMyxo2ZNGRPJ5UobDXo=
-X-Received: by 2002:a63:724a:: with SMTP id c10mr17900352pgn.124.1612798213229;
- Mon, 08 Feb 2021 07:30:13 -0800 (PST)
-MIME-Version: 1.0
-References: <20210208151437.1357458-1-kaleshsingh@google.com>
- <20210208151437.1357458-2-kaleshsingh@google.com> <20210208152244.GS308988@casper.infradead.org>
-In-Reply-To: <20210208152244.GS308988@casper.infradead.org>
-From:   Kalesh Singh <kaleshsingh@google.com>
-Date:   Mon, 8 Feb 2021 10:30:02 -0500
-Message-ID: <CAC_TJvfkZbktznxas7donjrOnHeF4ZmTrsvPwNnWSqkkcORe9Q@mail.gmail.com>
-Subject: Re: [PATCH v5 2/2] procfs/dmabuf: Add inode number to /proc/*/fdinfo
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Jann Horn <jannh@google.com>,
-        Jeffrey Vander Stoep <jeffv@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Hridya Valsaraju <hridya@google.com>,
+        Mon, 8 Feb 2021 10:32:32 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DB13C061793;
+        Mon,  8 Feb 2021 07:31:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=tdwCgKoyLdHxRuD+Ock+CY1gFHQqJYRvjdWG9ShjOkY=; b=zU/66JgRfM3qSDf+yVQGplFKy
+        365CNDWp7LAaZkjasaEkkS9zdxY9mFrU7lvKhaut2GV1Ldn4/Fij0JXoLSfivEaHY9RLDom9KJ3dD
+        MA3nRv/2W6bgJRVSxydYqGIjiNQR5Q23I0A91aNIdjgp8TcdQwsFxmWf2l7PMpgPZ0YqZaoAgXA2B
+        cpr8PNOGalTRQrkS5nsYuJTuPJDt/PcJoLAx42ZUSBpyVY9im2aHU4b3wjeCPzzcCZpNB2rxJBFfg
+        jCTsl0+X7RuBRskZz01elt+0+w3Ww0lp+GfXzhiyDE4wGLYeIYG6LiS6mmEdUv13JUT9xjeSpFtSn
+        LnmJIFeXQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:40812)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1l98VN-0002Bx-JF; Mon, 08 Feb 2021 15:31:13 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1l98VL-00039T-3P; Mon, 08 Feb 2021 15:31:11 +0000
+Date:   Mon, 8 Feb 2021 15:31:11 +0000
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Calvin Johnson <calvin.johnson@oss.nxp.com>
+Cc:     Grant Likely <grant.likely@arm.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Jeremy Linton <jeremy.linton@arm.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Cristi Sovaiala <cristian.sovaiala@nxp.com>,
+        Florin Laurentiu Chiculita <florinlaurentiu.chiculita@nxp.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Madalin Bucur <madalin.bucur@oss.nxp.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Pieter Jansen Van Vuuren <pieter.jansenvv@bamboosystems.io>,
+        Jon <jon@solid-run.com>, Saravana Kannan <saravanak@google.com>,
         Randy Dunlap <rdunlap@infradead.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        "Cc: Android Kernel" <kernel-team@android.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Alexey Gladkov <gladkov.alexey@gmail.com>,
-        NeilBrown <neilb@suse.de>, Anand K Mistry <amistry@google.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Michel Lespinasse <walken@google.com>,
-        Bernd Edlinger <bernd.edlinger@hotmail.de>,
-        Andrei Vagin <avagin@gmail.com>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
+        linux-kernel@vger.kernel.org, linux.cj@gmail.com,
+        Diana Madalina Craciun <diana.craciun@nxp.com>,
+        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-acpi@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: Re: [net-next PATCH v5 13/15] phylink: introduce
+ phylink_fwnode_phy_connect()
+Message-ID: <20210208153111.GK1463@shell.armlinux.org.uk>
+References: <20210208151244.16338-1-calvin.johnson@oss.nxp.com>
+ <20210208151244.16338-14-calvin.johnson@oss.nxp.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210208151244.16338-14-calvin.johnson@oss.nxp.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 8, 2021 at 10:22 AM Matthew Wilcox <willy@infradead.org> wrote:
->
-> On Mon, Feb 08, 2021 at 03:14:28PM +0000, Kalesh Singh wrote:
-> > -     seq_printf(m, "pos:\t%lli\nflags:\t0%o\nmnt_id:\t%i\n",
-> > +     seq_printf(m, "pos:\t%lli\nflags:\t0%o\nmnt_id:\t%i\ninode_no:\t%lu\n",
->
-> You changed it everywhere but here ...
-Ahh sorry I missed this. Will resend with this corrected. Thanks Matthew.
->
+On Mon, Feb 08, 2021 at 08:42:42PM +0530, Calvin Johnson wrote:
+> +int phylink_fwnode_phy_connect(struct phylink *pl,
+> +			       struct fwnode_handle *fwnode,
+> +			       u32 flags)
+> +{
+> +	struct fwnode_handle *phy_fwnode;
+> +	struct phy_device *phy_dev;
+> +	int ret;
+> +
+> +	if (is_of_node(fwnode)) {
+> +		/* Fixed links and 802.3z are handled without needing a PHY */
+> +		if (pl->cfg_link_an_mode == MLO_AN_FIXED ||
+> +		    (pl->cfg_link_an_mode == MLO_AN_INBAND &&
+> +		     phy_interface_mode_is_8023z(pl->link_interface)))
+> +			return 0;
+
+This difference between ACPI and DT really needs to be described in the
+commit description.
+
+For example, why is it acceptable to have a PHY in fixed-link mode if
+we're using ACPI, and not DT?
+
+If we look at the phylink code, accepting a PHY when in fixed-link mode
+is basically not supported... so why should ACPI allow this?
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
