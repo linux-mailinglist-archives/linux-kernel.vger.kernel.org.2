@@ -2,133 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D01931414B
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 22:08:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79330314150
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 22:09:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231285AbhBHVIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 16:08:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58176 "EHLO
+        id S233864AbhBHVIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 16:08:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236612AbhBHUCw (ORCPT
+        with ESMTP id S236639AbhBHUHx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 15:02:52 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E49DC061786;
-        Mon,  8 Feb 2021 12:02:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=KEVihHrH3SS79oWMEH67DVoOPklE1uT1jn0P7NuEG4M=; b=wMhUXlj5RnosMi7s8pVfo6DDyX
-        0jkjN6g9frlYUYPUy7en2RfJlG/c1Fv5v/LYqnTXVMT4oeMwOLiOKMcdV3G1KY34QTVloDCJq61CH
-        IfuOSPhRBY0aYb8V3DL5Hpt6jARfgXoXuAIJJCEluD1+t1RvxYNHjAo+D85etPuqnW363o6/kyoSd
-        lS/fTRHpiM8HrW4TBmZLJoyHE+ISLDcR06pUh1f1CPDeEqr74wQEkrqYJGJ99R2Vp0+LcDRO8yldf
-        vzbhNFX2kUs4dsf355PbiFs/5b75pkbHekbWcrEgw1v0X3CVds/M2xBL+SuMqts1dGRmqNWh7DcLO
-        a7FLKT5w==;
-Received: from [2601:1c0:6280:3f0::cf3b]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l9CjW-0001t4-8B; Mon, 08 Feb 2021 20:02:06 +0000
-Subject: Re: [net-next PATCH v5 01/15] Documentation: ACPI: DSD: Document MDIO
- PHY
-To:     Calvin Johnson <calvin.johnson@oss.nxp.com>,
-        Grant Likely <grant.likely@arm.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Jeremy Linton <jeremy.linton@arm.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        Cristi Sovaiala <cristian.sovaiala@nxp.com>,
-        Florin Laurentiu Chiculita <florinlaurentiu.chiculita@nxp.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Madalin Bucur <madalin.bucur@oss.nxp.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Pieter Jansen Van Vuuren <pieter.jansenvv@bamboosystems.io>,
-        Jon <jon@solid-run.com>, Saravana Kannan <saravanak@google.com>
-Cc:     Laurentiu Tudor <laurentiu.tudor@nxp.com>,
-        linux-kernel@vger.kernel.org, linux.cj@gmail.com,
-        Diana Madalina Craciun <diana.craciun@nxp.com>,
-        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-acpi@vger.kernel.org, Len Brown <lenb@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>
-References: <20210208151244.16338-1-calvin.johnson@oss.nxp.com>
- <20210208151244.16338-2-calvin.johnson@oss.nxp.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <0a347d2a-f885-5b26-4477-ff267527d8c4@infradead.org>
-Date:   Mon, 8 Feb 2021 12:01:57 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Mon, 8 Feb 2021 15:07:53 -0500
+Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5753AC061786
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 12:07:13 -0800 (PST)
+Received: by mail-qv1-xf2c.google.com with SMTP id j4so7580489qvk.6
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 12:07:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=marek-ca.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=eP5/j98wp1t6sAqe5tfFmscgonRv+nQeEYYt6nNWAig=;
+        b=zeKbPy4n3j+GckYgfzXgy3Jrr2u0TvsWN7EM6jmh9pZO27kf1AMRJ8hE5LWnec/b26
+         6xzSTJlnmAjgEYi+f7SgeEyVERKXSduSd7w0B/MkglpXE5/c3OrcUCOVF1BRPqXuG846
+         ehnDG5c/7/FIz1cZbEeChApXOFgrNz0BQXel62qTvjkWT9XscOcDWDwMTv2YgVBFDcef
+         25NSdQq7PJ+SdvWqPKYDzdh+PV4Jycu90J3dy2xcQ9p9BB1nUMlxGvNsl8SgypctOgDg
+         FC+3QcqlsKSBKjYr3z8oe5BJEOeUW7YIccMubT/oq5RvyWkL/EX34aENm8kaqT4plxMx
+         WRqw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=eP5/j98wp1t6sAqe5tfFmscgonRv+nQeEYYt6nNWAig=;
+        b=lW9yyORBD75dCqWPxE4gC/UWza8M32bjxn1UrCEv+Xm4M9yDqioJLcdRAmyngbQhig
+         +n8fisVDBdi4uLjjK3fgVAe6h5IEuBcnL3b1bi4nNS9wtMktdybZxplmKAqvGjp8b03C
+         jLipyJHL4EZ26qOOvVIFFEMiOF8mOwrGaqqRc58dV3Bgobvmp6c2J7021yH53B+sTS4Y
+         ryaIpZRTVOksOweQYQ7oVem27PB/s5bsidPh4wLDZn/zGbbLwWsUZ3OlgcCENQUbhwR8
+         kmKg2T9bldY/U8jcBbqkCqoexl5/WbXeiuuOoronRMMvjlJyqL8ULEifEwxokHuhFCUJ
+         8CzA==
+X-Gm-Message-State: AOAM5306fEZZz4DDN14o869XiOS+SOXWb7B4Nr5bUmxY0lDAWjN2qhXl
+        RMliN44QBtW0WH3xFiXZ8nH0Ag==
+X-Google-Smtp-Source: ABdhPJyFOwdUIUyn/vUcIKbnbe01w02jVSNywGAvgPLr+K2tbQLcPm3G+qBjJsRptWcL06Al3DzeNg==
+X-Received: by 2002:a0c:f114:: with SMTP id i20mr2404071qvl.20.1612814832641;
+        Mon, 08 Feb 2021 12:07:12 -0800 (PST)
+Received: from localhost.localdomain (modemcable068.184-131-66.mc.videotron.ca. [66.131.184.68])
+        by smtp.gmail.com with ESMTPSA id x63sm1847433qkb.22.2021.02.08.12.07.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Feb 2021 12:07:11 -0800 (PST)
+From:   Jonathan Marek <jonathan@marek.ca>
+To:     linux-arm-msm@vger.kernel.org
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] misc: fastrpc: fix incorrect usage of dma_map_sgtable
+Date:   Mon,  8 Feb 2021 15:04:01 -0500
+Message-Id: <20210208200401.31100-1-jonathan@marek.ca>
+X-Mailer: git-send-email 2.26.1
 MIME-Version: 1.0
-In-Reply-To: <20210208151244.16338-2-calvin.johnson@oss.nxp.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-Just a couple of nits below:
+dma_map_sgtable() returns 0 on success, which is the opposite of what this
+code was doing.
 
-On 2/8/21 7:12 AM, Calvin Johnson wrote:
-> Introduce ACPI mechanism to get PHYs registered on a MDIO bus and
-> provide them to be connected to MAC.
-> 
-> Describe properties "phy-handle" and "phy-mode".
-> 
-> Signed-off-by: Calvin Johnson <calvin.johnson@oss.nxp.com>
-> ---
+Fixes: 7cd7edb89437 ("misc: fastrpc: fix common struct sg_table related issues")
+Signed-off-by: Jonathan Marek <jonathan@marek.ca>
+---
+ drivers/misc/fastrpc.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
->  Documentation/firmware-guide/acpi/dsd/phy.rst | 133 ++++++++++++++++++
->  1 file changed, 133 insertions(+)
->  create mode 100644 Documentation/firmware-guide/acpi/dsd/phy.rst
-> 
-> diff --git a/Documentation/firmware-guide/acpi/dsd/phy.rst b/Documentation/firmware-guide/acpi/dsd/phy.rst
-> new file mode 100644
-> index 000000000000..e1e99cae5eb2
-> --- /dev/null
-> +++ b/Documentation/firmware-guide/acpi/dsd/phy.rst
-> @@ -0,0 +1,133 @@
-> +.. SPDX-License-Identifier: GPL-2.0
-> +
-> +=========================
-> +MDIO bus and PHYs in ACPI
-> +=========================
-> +
-> +The PHYs on an MDIO bus [1] are probed and registered using
-> +fwnode_mdiobus_register_phy().
-> +
-> +Later, for connecting these PHYs to MAC, the PHYs registered on the
-
-                                    to a MAC,
-
-> +MDIO bus have to be referenced.
-> +
-> +This document introduces two _DSD properties that are to be used
-> +for connecting PHYs on the MDIO bus [3] to the MAC layer.
-> +
-> +These properties are defined in accordance with the "Device
-> +Properties UUID For _DSD" [2] document and the
-> +daffd814-6eba-4d8c-8a91-bc9bbf4aa301 UUID must be used in the Device
-> +Data Descriptors containing them.
-> +
-> +phy-handle
-> +----------
-
-...
-
-> +
-> +Later, during the MAC driver initialization, the registered PHY devices
-> +have to be retrieved from the MDIO bus. For this, the MAC driver need
-
-                                                                    needs
-
-> +references to the previously registered PHYs which are provided
-> +as device object references (e.g. \_SB.MDI0.PHY1).
-
-
-thanks.
+diff --git a/drivers/misc/fastrpc.c b/drivers/misc/fastrpc.c
+index 70eb5ed942d0..f12e909034ac 100644
+--- a/drivers/misc/fastrpc.c
++++ b/drivers/misc/fastrpc.c
+@@ -520,12 +520,13 @@ fastrpc_map_dma_buf(struct dma_buf_attachment *attachment,
+ {
+ 	struct fastrpc_dma_buf_attachment *a = attachment->priv;
+ 	struct sg_table *table;
++	int ret;
+ 
+ 	table = &a->sgt;
+ 
+-	if (!dma_map_sgtable(attachment->dev, table, dir, 0))
+-		return ERR_PTR(-ENOMEM);
+-
++	ret = dma_map_sgtable(attachment->dev, table, dir, 0);
++	if (ret)
++		table = ERR_PTR(ret);
+ 	return table;
+ }
+ 
 -- 
-~Randy
+2.26.1
 
