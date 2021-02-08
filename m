@@ -2,183 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AF8C31341F
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 14:59:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ED4431343B
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 15:01:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231670AbhBHN6y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 08:58:54 -0500
-Received: from mx2.suse.de ([195.135.220.15]:57580 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231772AbhBHNzO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 08:55:14 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1612792466; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=91uV9uz9kvxqMFeF7PNh9eOtHVwrzyPDe+bnWTdbzZU=;
-        b=niZgmVKnvaxQZGAkLIm1swBLmaVP0DLJTKARU7rydVR/5H1bOXJ/m4g0+NIMBJGERFoh7D
-        bJBWNaHW7Z0LEEi6F+hft2OqoP36CtIZbOaECjxiZBCBoys27f1txuxhg5QI3KPHnzq070
-        QNTZKthmEFIw24JF5iqLbiR/1rGlLW0=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 61CBCACBA;
-        Mon,  8 Feb 2021 13:54:26 +0000 (UTC)
-Date:   Mon, 8 Feb 2021 14:54:23 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH 7/8] mm: memcontrol: consolidate lruvec stat flushing
-Message-ID: <YCFCj0QSemahSMP1@dhcp22.suse.cz>
-References: <20210205182806.17220-1-hannes@cmpxchg.org>
- <20210205182806.17220-8-hannes@cmpxchg.org>
+        id S232315AbhBHOBE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 09:01:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35618 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231388AbhBHN4T (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 08:56:19 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33393C061786
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 05:55:37 -0800 (PST)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <sha@pengutronix.de>)
+        id 1l970m-0007Jz-9m; Mon, 08 Feb 2021 14:55:32 +0100
+Received: from sha by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <sha@pengutronix.de>)
+        id 1l970l-0004Si-6c; Mon, 08 Feb 2021 14:55:31 +0100
+Date:   Mon, 8 Feb 2021 14:55:31 +0100
+To:     Youling Tang <tangyouling@loongson.cn>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        devel@driverdev.osuosl.org, linux-mediatek@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] staging: fix ignoring return value warning
+Message-ID: <20210208135531.GH8233@pengutronix.de>
+References: <1612689808-30985-1-git-send-email-tangyouling@loongson.cn>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210205182806.17220-8-hannes@cmpxchg.org>
+In-Reply-To: <1612689808-30985-1-git-send-email-tangyouling@loongson.cn>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 14:53:49 up 68 days,  2:20, 102 users,  load average: 0.01, 0.06,
+ 0.08
+User-Agent: Mutt/1.10.1 (2018-07-13)
+From:   Sascha Hauer <sha@pengutronix.de>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: sha@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 05-02-21 13:28:05, Johannes Weiner wrote:
-> There are two functions to flush the per-cpu data of an lruvec into
-> the rest of the cgroup tree: when the cgroup is being freed, and when
-> a CPU disappears during hotplug. The difference is whether all CPUs or
-> just one is being collected, but the rest of the flushing code is the
-> same. Merge them into one function and share the common code.
+On Sun, Feb 07, 2021 at 05:23:28PM +0800, Youling Tang wrote:
+> Fix the below ignoring return value warning for device_reset.
 > 
-> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
-
-Yes, this looks much better/cleaner.
-
-Acked-by: Michal Hocko <mhocko@suse.com>
-
-Thanks!
-
+> drivers/staging/mt7621-dma/mtk-hsdma.c:685:2: warning: ignoring return value
+> of function declared with 'warn_unused_result' attribute [-Wunused-result]
+>         device_reset(&pdev->dev);
+>         ^~~~~~~~~~~~ ~~~~~~~~~~
+> drivers/staging/ralink-gdma/ralink-gdma.c:836:2: warning: ignoring return value
+> of function declared with 'warn_unused_result' attribute [-Wunused-result]
+>         device_reset(&pdev->dev);
+>         ^~~~~~~~~~~~ ~~~~~~~~~~
+> 
+> Signed-off-by: Youling Tang <tangyouling@loongson.cn>
 > ---
->  mm/memcontrol.c | 74 +++++++++++++++++++------------------------------
->  1 file changed, 28 insertions(+), 46 deletions(-)
+>  drivers/staging/mt7621-dma/mtk-hsdma.c    | 6 +++++-
+>  drivers/staging/ralink-gdma/ralink-gdma.c | 6 +++++-
+>  2 files changed, 10 insertions(+), 2 deletions(-)
 > 
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 5dc0bd53b64a..490357945f2c 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -2410,39 +2410,39 @@ static void drain_all_stock(struct mem_cgroup *root_memcg)
->  	mutex_unlock(&percpu_charge_mutex);
->  }
->  
-> -static int memcg_hotplug_cpu_dead(unsigned int cpu)
-> +static void memcg_flush_lruvec_page_state(struct mem_cgroup *memcg, int cpu)
->  {
-> -	struct memcg_stock_pcp *stock;
-> -	struct mem_cgroup *memcg;
-> -
-> -	stock = &per_cpu(memcg_stock, cpu);
-> -	drain_stock(stock);
-> +	int nid;
->  
-> -	for_each_mem_cgroup(memcg) {
-> +	for_each_node(nid) {
-> +		struct mem_cgroup_per_node *pn = memcg->nodeinfo[nid];
-> +		unsigned long stat[NR_VM_NODE_STAT_ITEMS];
-> +		struct batched_lruvec_stat *lstatc;
->  		int i;
->  
-> +		lstatc = per_cpu_ptr(pn->lruvec_stat_cpu, cpu);
->  		for (i = 0; i < NR_VM_NODE_STAT_ITEMS; i++) {
-> -			int nid;
-> +			stat[i] = lstatc->count[i];
-> +			lstatc->count[i] = 0;
-> +		}
->  
-> -			for_each_node(nid) {
-> -				struct batched_lruvec_stat *lstatc;
-> -				struct mem_cgroup_per_node *pn;
-> -				long x;
-> +		do {
-> +			for (i = 0; i < NR_VM_NODE_STAT_ITEMS; i++)
-> +				atomic_long_add(stat[i], &pn->lruvec_stat[i]);
-> +		} while ((pn = parent_nodeinfo(pn, nid)));
-> +	}
-> +}
->  
-> -				pn = memcg->nodeinfo[nid];
-> -				lstatc = per_cpu_ptr(pn->lruvec_stat_cpu, cpu);
-> +static int memcg_hotplug_cpu_dead(unsigned int cpu)
-> +{
-> +	struct memcg_stock_pcp *stock;
-> +	struct mem_cgroup *memcg;
->  
-> -				x = lstatc->count[i];
-> -				lstatc->count[i] = 0;
-> +	stock = &per_cpu(memcg_stock, cpu);
-> +	drain_stock(stock);
->  
-> -				if (x) {
-> -					do {
-> -						atomic_long_add(x, &pn->lruvec_stat[i]);
-> -					} while ((pn = parent_nodeinfo(pn, nid)));
-> -				}
-> -			}
-> -		}
-> -	}
-> +	for_each_mem_cgroup(memcg)
-> +		memcg_flush_lruvec_page_state(memcg, cpu);
->  
->  	return 0;
->  }
-> @@ -3636,27 +3636,6 @@ static u64 mem_cgroup_read_u64(struct cgroup_subsys_state *css,
+> diff --git a/drivers/staging/mt7621-dma/mtk-hsdma.c b/drivers/staging/mt7621-dma/mtk-hsdma.c
+> index bc4bb43..d4ffa52 100644
+> --- a/drivers/staging/mt7621-dma/mtk-hsdma.c
+> +++ b/drivers/staging/mt7621-dma/mtk-hsdma.c
+> @@ -682,7 +682,11 @@ static int mtk_hsdma_probe(struct platform_device *pdev)
+>  		return ret;
 >  	}
->  }
 >  
-> -static void memcg_flush_lruvec_page_state(struct mem_cgroup *memcg)
-> -{
-> -	int node;
-> -
-> -	for_each_node(node) {
-> -		struct mem_cgroup_per_node *pn = memcg->nodeinfo[node];
-> -		unsigned long stat[NR_VM_NODE_STAT_ITEMS] = { 0 };
-> -		struct mem_cgroup_per_node *pi;
-> -		int cpu, i;
-> -
-> -		for_each_online_cpu(cpu)
-> -			for (i = 0; i < NR_VM_NODE_STAT_ITEMS; i++)
-> -				stat[i] += per_cpu(
-> -					pn->lruvec_stat_cpu->count[i], cpu);
-> -
-> -		for (pi = pn; pi; pi = parent_nodeinfo(pi, node))
-> -			for (i = 0; i < NR_VM_NODE_STAT_ITEMS; i++)
-> -				atomic_long_add(stat[i], &pi->lruvec_stat[i]);
-> -	}
-> -}
-> -
->  #ifdef CONFIG_MEMCG_KMEM
->  static int memcg_online_kmem(struct mem_cgroup *memcg)
->  {
-> @@ -5192,12 +5171,15 @@ static void __mem_cgroup_free(struct mem_cgroup *memcg)
->  
->  static void mem_cgroup_free(struct mem_cgroup *memcg)
->  {
-> +	int cpu;
-> +
->  	memcg_wb_domain_exit(memcg);
->  	/*
->  	 * Flush percpu lruvec stats to guarantee the value
->  	 * correctness on parent's and all ancestor levels.
->  	 */
-> -	memcg_flush_lruvec_page_state(memcg);
-> +	for_each_online_cpu(cpu)
-> +		memcg_flush_lruvec_page_state(memcg, cpu);
->  	__mem_cgroup_free(memcg);
->  }
->  
-> -- 
-> 2.30.0
-> 
+> -	device_reset(&pdev->dev);
+> +	ret = device_reset(&pdev->dev);
+> +	if (ret) {
+> +		dev_err(&pdev->dev, "failed to reset device\n");
+> +		return ret;
+> +	}
+
+Normally you don't want to see this error message when -EPROBE_DEFER is
+returned because that would mean the reset controller is not yet
+available and the driver should probe later again. There is
+dev_err_probe() now for exactly this usecase.
+
+Sascha
 
 -- 
-Michal Hocko
-SUSE Labs
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
