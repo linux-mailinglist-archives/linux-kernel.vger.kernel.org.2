@@ -2,108 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18C703135C6
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 15:55:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1680A3135D5
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 15:58:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233222AbhBHOz0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 09:55:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49626 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233050AbhBHOxv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 09:53:51 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DBFC264E0B;
-        Mon,  8 Feb 2021 14:53:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612795991;
-        bh=i6f/6e4GcjdYXiSC4q7RU5ecXO577LdJe4fGuhC3+7Q=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=e0LPizB5rUAklGv6vltYdeXCuWd1OqWVWjcnZULW3E6Bfdx5PTLCfBINp7fXa/If5
-         2206YM+eT6ivp5xKk/nV0G5YyLvyxnvbIG+Vz7HKx88C1MFiGuAAwaJJPmyySISN4R
-         zkh/xMIaBK6LLleVzXn18SS28WprDFQo22i9Qkiyt20RbxQ8cjYGKrQhZXC/wxlGzA
-         DErIjyXcrlUooaSBv5QdezXlsF+yMtpEkzxw71nNEGCEpbB0y4z4Q9dIdVkwDTjnsf
-         bFobyW0wp9t7ujyVRsL/jH3mbuMvwRuKPkiQCgU2Me8v048BLAWIEzBoyDLDaZyHGs
-         TT0vA5QAsyFiQ==
-Date:   Mon, 8 Feb 2021 15:53:08 +0100
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>, stable@vger.kernel.org,
-        Ingo Molnar <mingo@kernel.org>
-Subject: Re: [PATCH 2/5] rcu/nocb: Perform deferred wake up before last
- idle's need_resched() check
-Message-ID: <20210208145308.GC3969@lothringen>
-References: <20210131230548.32970-1-frederic@kernel.org>
- <20210131230548.32970-3-frederic@kernel.org>
- <YCFOnhwQAjMMkwGN@hirez.programming.kicks-ass.net>
+        id S232491AbhBHO5Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 09:57:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48300 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233209AbhBHOzV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 09:55:21 -0500
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B6EFC06178B
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 06:54:41 -0800 (PST)
+Received: by mail-pf1-x436.google.com with SMTP id t29so9842236pfg.11
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 06:54:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloud.ionos.com; s=google;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=AYRGoYePQAzJ7LEhFJURePb+3/N+X+kqoSUl81c+Xxg=;
+        b=GHHxqHgedWlJYgkjkbcDnLpb3OWbBGZgJYIvQehnw8oIk70LBueh4uMiVEo1sLLtEU
+         fegcPAvpvCFDiDd/0BLKsUE3o2GknmUFAduY92QftR4YSsvF7OEsS6do7RnGV4VecXJf
+         hw9LxEBr/FyL+gUiaIJQB/UX2Qv8rfyiOIeSAFksmiaHqJ3+H6Gk3MWt7thkNhrGRr9K
+         OYJS2RbGi+C16zSG9BVQfaXxhmRwytMichhbsXhdA58cu6335aD+Btfu9XsMsoIoPa7d
+         1FIDBGMbRTkxEfYuzlUkdwdDwmS3AvBb8+Q7Ss3Hy2h8JAYsou0Opdyjj215AKCij9qR
+         xEsg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=AYRGoYePQAzJ7LEhFJURePb+3/N+X+kqoSUl81c+Xxg=;
+        b=TvLtq2iOO5H+51PFKEvXI0A7LrtxvsjXJAjYsJC+u4mts3JQKSQmAwSSUJQkijJTVW
+         LwzliiEZX6y9WE9MhNxZmdIS0uxCdVYn4dSEqF6Xn9n17eOPTkdYC2hoARz+SR1ksi3S
+         vCJtrV3EawOz9JZAY1lSAAQ1RIVsf+3utoYjHffDSbYjSrfsA7GX/ZaFLvZgVchrL3Cl
+         RObR1/GJYZjnHIKZqOWorvoZ2cUIx1JygD41VAkrOr2N7/hqoH8bG38KzMnYpKiD+rsO
+         QbvhMG2HlX/jkO+rCFBV2m5lUL0YVHr77gvVohKPVG0iq49w/u8pqJl43CvnXPWlWCB2
+         KXcw==
+X-Gm-Message-State: AOAM532a1Wv4Wf6vA2WFB4NCCRGiPzJ486ltTm0nU7LYZND4PaaYofdj
+        EUz9kRizmMZ1ak2SLqp6C30mvQ==
+X-Google-Smtp-Source: ABdhPJxfc/2QCJTpVg4dyshnVgR559LUcvi/kuA9m/Mz0GV0CAHUPwYobHgPYSKyW/Zg6VRaLeprtA==
+X-Received: by 2002:a65:5883:: with SMTP id d3mr18264467pgu.301.1612796078639;
+        Mon, 08 Feb 2021 06:54:38 -0800 (PST)
+Received: from [0.0.0.0] ([62.217.45.26])
+        by smtp.gmail.com with ESMTPSA id m5sm19218026pgj.11.2021.02.08.06.54.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 08 Feb 2021 06:54:37 -0800 (PST)
+Subject: Re: md_raid: mdX_raid6 looping after sync_action "check" to "idle"
+ transition
+To:     Donald Buczek <buczek@molgen.mpg.de>, Song Liu <song@kernel.org>,
+        linux-raid@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        it+raid@molgen.mpg.de
+References: <aa9567fd-38e1-7b9c-b3e1-dc2fdc055da5@molgen.mpg.de>
+ <7c5438c7-2324-cc50-db4d-512587cb0ec9@molgen.mpg.de>
+ <b289ae15-ff82-b36e-4be4-a1c8bbdbacd7@cloud.ionos.com>
+ <37c158cb-f527-34f5-2482-cae138bc8b07@molgen.mpg.de>
+ <efb8d47b-ab9b-bdb9-ee2f-fb1be66343b1@molgen.mpg.de>
+ <55e30408-ac63-965f-769f-18be5fd5885c@molgen.mpg.de>
+ <d95aa962-9750-c27c-639a-2362bdb32f41@cloud.ionos.com>
+ <30576384-682c-c021-ff16-bebed8251365@molgen.mpg.de>
+ <cdc0b03c-db53-35bc-2f75-93bbca0363b5@molgen.mpg.de>
+ <bc342de0-98d2-1733-39cd-cc1999777ff3@molgen.mpg.de>
+ <c3390ab0-d038-f1c3-5544-67ae9c8408b1@cloud.ionos.com>
+ <a27c5a64-62bf-592c-e547-1e8e904e3c97@molgen.mpg.de>
+ <6c7008df-942e-13b1-2e70-a058e96ab0e9@cloud.ionos.com>
+ <12f09162-c92f-8fbb-8382-cba6188bfb29@molgen.mpg.de>
+ <6757d55d-ada8-9b7e-b7fd-2071fe905466@cloud.ionos.com>
+ <93d8d623-8aec-ad91-490c-a414c4926fb2@molgen.mpg.de>
+ <0bb7c8d8-6b96-ce70-c5ee-ba414de10561@cloud.ionos.com>
+ <e271e183-20e9-8ca2-83eb-225d4d7ab5db@molgen.mpg.de>
+From:   Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
+Message-ID: <1cdfceb6-f39b-70e1-3018-ea14dbe257d9@cloud.ionos.com>
+Date:   Mon, 8 Feb 2021 15:53:40 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YCFOnhwQAjMMkwGN@hirez.programming.kicks-ass.net>
+In-Reply-To: <e271e183-20e9-8ca2-83eb-225d4d7ab5db@molgen.mpg.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 08, 2021 at 03:45:50PM +0100, Peter Zijlstra wrote:
-> On Mon, Feb 01, 2021 at 12:05:45AM +0100, Frederic Weisbecker wrote:
-> 
-> > diff --git a/kernel/sched/idle.c b/kernel/sched/idle.c
-> > index 305727ea0677..b601a3aa2152 100644
-> > --- a/kernel/sched/idle.c
-> > +++ b/kernel/sched/idle.c
-> > @@ -55,6 +55,7 @@ __setup("hlt", cpu_idle_nopoll_setup);
-> >  static noinline int __cpuidle cpu_idle_poll(void)
-> >  {
-> >  	trace_cpu_idle(0, smp_processor_id());
-> > +	rcu_nocb_flush_deferred_wakeup();
-> >  	stop_critical_timings();
-> >  	rcu_idle_enter();
-> >  	local_irq_enable();
-> > @@ -173,6 +174,8 @@ static void cpuidle_idle_call(void)
-> >  	struct cpuidle_driver *drv = cpuidle_get_cpu_driver(dev);
-> >  	int next_state, entered_state;
-> >  
-> > +	rcu_nocb_flush_deferred_wakeup();
-> > +
-> >  	/*
-> >  	 * Check if the idle task must be rescheduled. If it is the
-> >  	 * case, exit the function after re-enabling the local irq.
-> 
-> Ok if I do this instead?
-> 
-> --- a/kernel/sched/idle.c
-> +++ b/kernel/sched/idle.c
-> @@ -55,7 +55,6 @@ __setup("hlt", cpu_idle_nopoll_setup);
->  static noinline int __cpuidle cpu_idle_poll(void)
->  {
->  	trace_cpu_idle(0, smp_processor_id());
-> -	rcu_nocb_flush_deferred_wakeup();
->  	stop_critical_timings();
->  	rcu_idle_enter();
->  	local_irq_enable();
-> @@ -174,8 +173,6 @@ static void cpuidle_idle_call(void)
->  	struct cpuidle_driver *drv = cpuidle_get_cpu_driver(dev);
->  	int next_state, entered_state;
->  
-> -	rcu_nocb_flush_deferred_wakeup();
-> -
->  	/*
->  	 * Check if the idle task must be rescheduled. If it is the
->  	 * case, exit the function after re-enabling the local irq.
-> @@ -288,6 +285,7 @@ static void do_idle(void)
->  		}
->  
->  		arch_cpu_idle_enter();
-> +		rcu_nocb_flush_deferred_wakeup();
->  
->  		/*
->  		 * In poll mode we reenable interrupts and spin. Also if we
 
-Right, I think that should work. Nothing should call_rcu() before the
-need_resched() call. And if it does, we still have the nocb_timer to do
-the deferred wakeup in the worst case.
 
-Thanks.
+On 2/8/21 12:38, Donald Buczek wrote:
+>> 5. maybe don't hold reconfig_mutex when try to unregister sync_thread, 
+>> like this.
+>>
+>>          /* resync has finished, collect result */
+>>          mddev_unlock(mddev);
+>>          md_unregister_thread(&mddev->sync_thread);
+>>          mddev_lock(mddev);
+> 
+> As above: While we wait for the sync thread to terminate, wouldn't it be 
+> a problem, if another user space operation takes the mutex?
 
+I don't think other places can be blocked while hold mutex, otherwise 
+these places can cause potential deadlock. Please try above two lines 
+change. And perhaps others have better idea.
+
+Thanks,
+Guoqing
