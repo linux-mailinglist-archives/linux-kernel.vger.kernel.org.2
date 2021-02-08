@@ -2,33 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 596AC313A23
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 17:55:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D834D313A4F
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 18:00:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233671AbhBHQy5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 11:54:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60182 "EHLO mail.kernel.org"
+        id S234692AbhBHQ7x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 11:59:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33700 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233632AbhBHPTq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S233655AbhBHPTq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 8 Feb 2021 10:19:46 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EC58C64EE5;
-        Mon,  8 Feb 2021 15:12:43 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DEB7364EEA;
+        Mon,  8 Feb 2021 15:12:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612797164;
-        bh=m29GOr1ZNRbuTh+yg0paSYXRRR4viAiudyCE0w116cU=;
+        s=korg; t=1612797170;
+        bh=B10+OxoLNCr4GIxV+yiFgIguhmD/lkuWeMlmPWX1kHw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=I5OLdsKC2QKzrXElF/1Rjw227nevmOMnLqVb9lJdRupFlYC9uDTnhh8O5tNhtYdQL
-         f/Pj0BWiBB7tdeXaS/yggd78ukZO03o0ildeVtzGm+Pm4TV3l/nwZozHFEgL8MY4th
-         wYb7meQ6Lc6tTVvZul30VQoP/yLpfFo5eBvBf29I=
+        b=p1sJqS+b+FPdnxDzrkbFMzBFMtTJc1xj8PPjpiuR/WG2WxYIaMSG6UmpuMzWsJ5Ie
+         NkaoWEd3NyRW4hLY+VC59gzmg3XeNqHtNiXDt1A3FPECUQ0x9RuSWP4lM6MyrpEzmc
+         bUp7P3iFWCgNVilxf0Y4JxIYRTSwpVyVSpuvSCqE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Shawn Guo <shawn.guo@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        stable@vger.kernel.org,
+        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Kevin Hilman <khilman@baylibre.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 015/120] arm64: dts: qcom: c630: keep both touchpad devices enabled
-Date:   Mon,  8 Feb 2021 16:00:02 +0100
-Message-Id: <20210208145819.002423018@linuxfoundation.org>
+Subject: [PATCH 5.10 017/120] arm64: dts: amlogic: meson-g12: Set FL-adj property value
+Date:   Mon,  8 Feb 2021 16:00:04 +0100
+Message-Id: <20210208145819.080390630@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210208145818.395353822@linuxfoundation.org>
 References: <20210208145818.395353822@linuxfoundation.org>
@@ -40,71 +44,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shawn Guo <shawn.guo@linaro.org>
+From: Serge Semin <Sergey.Semin@baikalelectronics.ru>
 
-[ Upstream commit a9164910c5ceed63551280a4a0b85d37ac2b19a5 ]
+[ Upstream commit 7386a559caa6414e74578172c2bc4e636d6bd0a0 ]
 
-Indicated by AML code in ACPI table, the touchpad in-use could be found
-on two possible slave addresses on &i2c3, i.e. hid@15 and hid@2c.  And
-which one is in-use can be determined by reading another address on the
-I2C bus.  Unfortunately, for DT boot, there is currently no support in
-firmware to make this check and patch DT accordingly.  This results in
-a non-functional touchpad on those C630 devices with hid@2c.
+In accordance with the DWC USB3 bindings the property is supposed to have
+uint32 type. It's erroneous from the DT schema and driver points of view
+to declare it as boolean. As Neil suggested set it to 0x20 so not break
+the platform and to make the dtbs checker happy.
 
-As i2c-hid driver will stop probing the device if there is nothing on
-the slave address, we can actually keep both devices enabled in DT, and
-i2c-hid driver will only probe the existing one.  The only problem is
-that we cannot set up pinctrl in both device nodes, as two devices with
-the same pinctrl will cause pin conflict that makes the second device
-fail to probe.  Let's move the pinctrl state up to parent node to solve
-this problem.  As the pinctrl state of parent node is already defined in
-sdm845.dtsi, it ends up with overwriting pinctrl-0 with i2c3_hid_active
-state added in there.
-
-Fixes: 11d0e4f28156 ("arm64: dts: qcom: c630: Polish i2c-hid devices")
-Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
-Link: https://lore.kernel.org/r/20210102045940.26874-1-shawn.guo@linaro.org
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Link: https://lore.kernel.org/linux-usb/20201010224121.12672-16-Sergey.Semin@baikalelectronics.ru/
+Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Reviewed-by: Neil Armstrong <narmstrong@baylibre.com>
+Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
+Fixes: 9baf7d6be730 ("arm64: dts: meson: g12a: Add G12A USB nodes")
+Signed-off-by: Kevin Hilman <khilman@baylibre.com>
+Link: https://lore.kernel.org/r/20201210091756.18057-3-Sergey.Semin@baikalelectronics.ru
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts | 10 ++--------
- 1 file changed, 2 insertions(+), 8 deletions(-)
+ arch/arm64/boot/dts/amlogic/meson-g12-common.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts b/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
-index 76a8c996d497f..d70aae77a6e84 100644
---- a/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
-+++ b/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
-@@ -263,6 +263,8 @@
- &i2c3 {
- 	status = "okay";
- 	clock-frequency = <400000>;
-+	/* Overwrite pinctrl-0 from sdm845.dtsi */
-+	pinctrl-0 = <&qup_i2c3_default &i2c3_hid_active>;
- 
- 	tsel: hid@15 {
- 		compatible = "hid-over-i2c";
-@@ -270,9 +272,6 @@
- 		hid-descr-addr = <0x1>;
- 
- 		interrupts-extended = <&tlmm 37 IRQ_TYPE_LEVEL_HIGH>;
--
--		pinctrl-names = "default";
--		pinctrl-0 = <&i2c3_hid_active>;
- 	};
- 
- 	tsc2: hid@2c {
-@@ -281,11 +280,6 @@
- 		hid-descr-addr = <0x20>;
- 
- 		interrupts-extended = <&tlmm 37 IRQ_TYPE_LEVEL_HIGH>;
--
--		pinctrl-names = "default";
--		pinctrl-0 = <&i2c3_hid_active>;
--
--		status = "disabled";
- 	};
- };
- 
+diff --git a/arch/arm64/boot/dts/amlogic/meson-g12-common.dtsi b/arch/arm64/boot/dts/amlogic/meson-g12-common.dtsi
+index 8514fe6a275a3..a6127002573bd 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-g12-common.dtsi
++++ b/arch/arm64/boot/dts/amlogic/meson-g12-common.dtsi
+@@ -2384,7 +2384,7 @@
+ 				interrupts = <GIC_SPI 30 IRQ_TYPE_LEVEL_HIGH>;
+ 				dr_mode = "host";
+ 				snps,dis_u2_susphy_quirk;
+-				snps,quirk-frame-length-adjustment;
++				snps,quirk-frame-length-adjustment = <0x20>;
+ 				snps,parkmode-disable-ss-quirk;
+ 			};
+ 		};
 -- 
 2.27.0
 
