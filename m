@@ -2,208 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A5DC313267
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 13:34:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98961313278
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 13:37:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232568AbhBHMdR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 07:33:17 -0500
-Received: from mail-dm6nam12on2083.outbound.protection.outlook.com ([40.107.243.83]:52705
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231720AbhBHMVk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 07:21:40 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hIHfFTNowJIjoNkesF1agL5IOg6g3ra0fB7HYLYUMV2GMx2zGzRFf8htDnP2eZTeCzbiPaxioeJgsmfV1kQR6bqsAy9lX+nInlgGHT68eSLl8FmpGnSVjcBuC1OcYbKeAbDv74Gpi++bNxG1j4mjEiOBRTD1aCNELKzmR0/61Fq0d9OSK/6YI84GlRzk7v7AxyBuQEGm/gQP+fhQXp1VK2LtXxdih+QmJFhwMSio9UmLcBq/b7c33xKpI+GkhC7G5H4w0nNv9LY2hy5zlBIOsYrXz4HH2yNg0KUuppJyxFIR8GqP+bcxlSXeCn9dJ7uGRoVfZrxT3rG8Y3XXaVB1Ag==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vT+EueukOylDdBEVUO390+exXUCzT3sjm67EIvFUPT0=;
- b=S2aOAporjhEpmrJ6PghbycgzfBFKpwUeAGAyYsaqVFUw/iEO7p8wj7rhE49bc7IaxGblXVkqX5sm7uJ0G4IkA9/JLFwyAePSdAsbsnuLaBWYrSeWH/yxSw/0i1IbSfDjZUl4eJx4pJygZZOvqhi8DoeyAn1tDNiD3xM7b1SXmmkN9nt7UXZ+85vdKmfzdpQeYgKjyxjf9pvyftCI3gg32/rXnHMSGMiTgLL9G8WLaPR1gODoGpKexDPAhbxK4JTJu6SB8z9BNYLR/srahhmlZtn6klSYwQ9IIo2jlJmwRIJEPvyjARlaNbjTp+N5carjk23osKuMViQ7+0v767ilDQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vT+EueukOylDdBEVUO390+exXUCzT3sjm67EIvFUPT0=;
- b=cRIgQN4Vhvduud0NLgu4uUGYmHp1bwyQtPVxufii33iqVMJ353uayhL8WTEeB0LeEjdi/qp7ZvsIatkehQhlteKxaagSEflTiO4+qfQJUds0fAQJLQfsARBe03xwJFUHC0qgMgVl8A4ckid6laGd3Qx3EY8sJOGssrJuyKEbsG8=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from BYAPR12MB4597.namprd12.prod.outlook.com (2603:10b6:a03:10b::14)
- by BYAPR12MB2789.namprd12.prod.outlook.com (2603:10b6:a03:72::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.17; Mon, 8 Feb
- 2021 12:20:43 +0000
-Received: from BYAPR12MB4597.namprd12.prod.outlook.com
- ([fe80::a95a:7202:81db:1972]) by BYAPR12MB4597.namprd12.prod.outlook.com
- ([fe80::a95a:7202:81db:1972%7]) with mapi id 15.20.3825.030; Mon, 8 Feb 2021
- 12:20:43 +0000
-From:   Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
-To:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org
-Cc:     joro@8bytes.org, will@kernel.org,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
-Subject: [PATCH] iommu/amd: Fix performance counter initialization
-Date:   Mon,  8 Feb 2021 06:27:12 -0600
-Message-Id: <20210208122712.5048-1-suravee.suthikulpanit@amd.com>
-X-Mailer: git-send-email 2.17.1
-Content-Type: text/plain
-X-Originating-IP: [165.204.78.2]
-X-ClientProxiedBy: SN4PR0501CA0134.namprd05.prod.outlook.com
- (2603:10b6:803:2c::12) To BYAPR12MB4597.namprd12.prod.outlook.com
- (2603:10b6:a03:10b::14)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from ethanolx5673host.amd.com (165.204.78.2) by SN4PR0501CA0134.namprd05.prod.outlook.com (2603:10b6:803:2c::12) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.11 via Frontend Transport; Mon, 8 Feb 2021 12:20:42 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: add04125-9116-405f-f2f0-08d8cc2bf495
-X-MS-TrafficTypeDiagnostic: BYAPR12MB2789:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR12MB278915558AB11D2B2762F2F9F38F9@BYAPR12MB2789.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: zvuERM6cjiZN6oJOGuzbKkBfe4WaMdBDNZMaRDv/XJyz7+Gw1Nj5M3eWoPentCYnpOpOWd2DkaKars/ykhhk9jA5dXqt1V1TweBIOEWzp28OHl74n3+MPHWx9zlFT6D6lMOfiqgKO6XL5A7PZsSVmOONHa25QROHOdZlnyBw0E6UlOrQhPuzvp49PGpijQ2LlDCVJiii2j4hOPgEI8uDuG1SPx+C1XcM+kizusB+k92tSDq2A53n3oCtBC4JHonlOJwBQPpmBSMpRAnDVQLDQM/46zCyVoP4iRPeDTwFzTpRGY0MTpNbDNbvD3w+25cqs6jdlHZJb8lueR17XlyNtE9TCtsehfT5r345CPRCDu+9Im2pz9AgOT7gLNWzlC72dJqatViiyXN+8rXTD+CNUT23fA+4g06m2r260GAmy/W0iXCNRBCv8d0xjGhWlcGVxua8uHrjaFSBzmTyjpKMSVqB8Ujfu74tmgZb+s2M7hzMkWOA53gyly5EU+bWpqjiKmDq4w+PqXoyG3P1w2BWInu6r6ReNSkUQ27ux9tzMtpIWroIZkv+VAKZEqqDiCpcb9/b+ZEkLIIIvPWPBZ6dt5dckyxKEr5ltpbPm9pySiA=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB4597.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(396003)(136003)(346002)(366004)(376002)(956004)(478600001)(86362001)(5660300002)(36756003)(8936002)(8676002)(2906002)(1076003)(6666004)(66476007)(316002)(83380400001)(186003)(6486002)(966005)(16526019)(26005)(66556008)(52116002)(4326008)(44832011)(2616005)(66946007)(7696005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?vsRxLPTyQJjuSDumVVMXq/kdAfjvb1r5nmhxLjX3CKP0L6QlkKuZWDl/DC6U?=
- =?us-ascii?Q?9+FNl3TukIO8VD9f+nU1c5IYV/d/FSIgmPH+HNxSA93kb/6y+KWh4ht/8cha?=
- =?us-ascii?Q?tepvcKBuEFBNWqkh1xlaxO0aFq41mbUHPtI5W1OOKjWnKbpNmzqjSf/W9CaB?=
- =?us-ascii?Q?8Oi/khXgg34Ak5NzvBzwo5Uj0c9HKdwCVr1Fh2iCVWZudZkACvAuYp8fTFLy?=
- =?us-ascii?Q?eVO7yqpyBPZBlmaPjLkIj0YM20MwvFJa1oO0hYSZOxM0Hwa5hcdkV1t0ryop?=
- =?us-ascii?Q?KvYAAdqL5DKcElPCdhLYJR6wt/6qHVkTg/LJlcBXghNKjxKaqz8ZPDBLCXWx?=
- =?us-ascii?Q?b7Vpwb4hZ7Y2T/tHpSZjAQdrufsyswZQzY3lV9CufhjFpEdqSvRSdF/p+EZl?=
- =?us-ascii?Q?J6o6SnsYgY+P8ttfkaL5bCpkp/RUytumw3Ew2oXepLZBsv8Leg6TuOW/IJeQ?=
- =?us-ascii?Q?gNeqoHBPNJavAYYxyJ/g9DTgKc7YvXqXnW/rRUJqLpZILnuIlYf3ZgVCr/ok?=
- =?us-ascii?Q?vWJzt++L1BoBgUg1g8K00+XiGRxnqAH5Jh27zKl1WP0oDGTVzCe+6LbqCx58?=
- =?us-ascii?Q?PYWod0c+iud1HMkf/u4+iFi9/Pm/DS2eiXC1fHBuuyNQ2pi272iNyI+UcTjr?=
- =?us-ascii?Q?7RFZjxLjLmCsKhajNcNHE30Baf4aTRVTrXYxnd54vchmUbs8YdCswd3q5iuI?=
- =?us-ascii?Q?QshU6kmSu8KwqEVFRlF1EMEBYgZPthARYn8qZv6+EsZtvkCzppnA15+rQLu2?=
- =?us-ascii?Q?Aa3klH9bbT881pPEuyuk9xK5gRowFQaLk/+4c4rhHaX6/gHu2peGeY4fh/IV?=
- =?us-ascii?Q?9LGA2eKbsqoYm/Qh5ZGHWDwAa6eLkfK4seFLbPFcd89/5SuM2kiai1U1ntJr?=
- =?us-ascii?Q?ZpBMr4tQ7RqNkdZGeLkj7k1USpBlmyUI8dMcbkxlItuNhWeRIjax5NTAxqt7?=
- =?us-ascii?Q?CJFMiLGQHeqASUx+457lt1Kdc13ndOqS9fXg8VWsHScelvCswuIrTJyPAHIY?=
- =?us-ascii?Q?YBp/XSe7qS9es5jgRG/Uw1zo2hLX5LrdwyZPeBOc0kO2BvUkBEkP7IB+U9xq?=
- =?us-ascii?Q?p5RTGAvhQR9FKQiT9h2f6N2TRy6uAcBtcstBsphIVqk0I6HWdIVgCixWsWqK?=
- =?us-ascii?Q?MXsypy5OgVpG6FXnH2xs3jWjCuCh+2amB41qybRD3Qvdx797zT8JNFFpXT6w?=
- =?us-ascii?Q?Ri8ZhvVy6CNREsfwgD21DSS9hsL+hLS7hl246bKEbDYWKW4ziDsk6zchJ6sU?=
- =?us-ascii?Q?YN46z6ytWmbrHUr2DTzRc/XIQZSwCteNJq/rNmLZaq+gSqZRBdY0G/QwhBXO?=
- =?us-ascii?Q?woiJ0wnJnlnGN4SVeneYVxKQ?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: add04125-9116-405f-f2f0-08d8cc2bf495
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB4597.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Feb 2021 12:20:43.6240
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: hGwWk0etmxleosEFIg573aIQpI9OANPCcIYjTTYThi46hnoNjr0oZdUIrmt2zH8AOZHElflzKRYfBW3WVN7Vxg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR12MB2789
+        id S232076AbhBHMgs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 07:36:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45764 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231871AbhBHMcT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 07:32:19 -0500
+Received: from mail-wm1-x34a.google.com (mail-wm1-x34a.google.com [IPv6:2a00:1450:4864:20::34a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D105C06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 04:31:39 -0800 (PST)
+Received: by mail-wm1-x34a.google.com with SMTP id y9so8477103wmi.8
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 04:31:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=Tz3EEiGtqhAZQlBh+d9mhoi0ASY5WVHpqxEBNOrbNmA=;
+        b=hn5osd+w4b+f6msnUJ7+kJz24A0jojRgXS2mYqMSj5xpjKVBeGXCXLzCKt8Ftf+lbY
+         qpX4gJ0J1dO4lVRVA79nS9baDTjvoIAoXY//eu52wzA7QQodvWNW6r0xlkSfQq7cA0xZ
+         Wgb8z3+33aVi1AS0syr/5HGj2aXCwlz6yzfbR6yumylmsQVWaySmoDY0pArCp0T5H0/3
+         kNsZG8j22tkEsScalnGkV5qHqthq03zkM+nqh+/KjJRiIlmCQy4QKtmh/ZYPSp5JuBNs
+         SjKDcFhB+25GY/A2MuGmRjCBA5TplWJHyEowV6ZUaHvwP9707N0YcvoFVS7sfJrxGCLi
+         HjQQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=Tz3EEiGtqhAZQlBh+d9mhoi0ASY5WVHpqxEBNOrbNmA=;
+        b=J0tgD0+bqBjsQ8pvWcxtLDRkD4VuRDVULkFbxJcO1RmxH5GNcpgZX3WTdz11JDhuld
+         zrvkfrTXZE6qyCQSeQLQ+gmJyWtdHCV0uHXHwZcNfqtJOrQ9y8xp5koKaWrrYJQvdvUx
+         KLOqxvdwr8zrGv2uooCuvWJwznn4beniz3w1FCHdluu4pBgGGMbjkgROAtv7sikGaDi3
+         O9tzpKBEQUCn5DbVCiaJgk+h7LOQuHio9cE0Jj2GL70ID4IYRrx8ew6VaxHY/Z4Z6jPA
+         5Zg1gmkYqsCDP5I3bfzCKR8inV01A1FJI69mRIofzXSRQdGeDaEcY5wDsKSZfosGZKDq
+         w0Lg==
+X-Gm-Message-State: AOAM531WPdgWbuG6B7dt6OKmsWsiEq44UfLYXT5QsVxArYj5KdjnSVVX
+        cUFEssD2jWk4egVRmFS273RFxYsG8qLp4g==
+X-Google-Smtp-Source: ABdhPJw3Kbgr6vQqx5hgrlT75XJqxVXpDt3t2CfAv4kQvno+YIfbJIKofJ/HAfi1W8RZlOeCSMfNWpAB9Pomcg==
+Sender: "jackmanb via sendgmr" <jackmanb@beeg.c.googlers.com>
+X-Received: from beeg.c.googlers.com ([fda3:e722:ac3:10:28:9cb1:c0a8:11db])
+ (user=jackmanb job=sendgmr) by 2002:adf:8523:: with SMTP id
+ 32mr6576804wrh.275.1612787497636; Mon, 08 Feb 2021 04:31:37 -0800 (PST)
+Date:   Mon,  8 Feb 2021 12:31:22 +0000
+Message-Id: <20210208123122.956545-1-jackmanb@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.0.478.g8a0d178c01-goog
+Subject: [PATCH bpf-next] selftests/bpf: Add missing cleanup in atomic_bounds test
+From:   Brendan Jackman <jackmanb@google.com>
+To:     bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Florent Revest <revest@chromium.org>,
+        Yonghong Song <yhs@fb.com>, linux-kernel@vger.kernel.org,
+        Brendan Jackman <jackmanb@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Certain AMD platforms enable power gating feature for IOMMU PMC,
-which prevents the IOMMU driver from updating the counter while
-trying to validate the PMC functionality in the init_iommu_perf_ctr().
-This results in disabling PMC support and the following error message:
+Add missing skeleton destroy call.
 
-    "AMD-Vi: Unable to read/write to IOMMU perf counter"
-
-To workaround this issue, disable power gating temporarily by programming
-the counter source to non-zero value while validating the counter,
-and restore the prior state afterward.
-
-Tested-by: Tj (Elloe Linux) <ml.linux@elloe.vision>
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=201753
-Signed-off-by: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+Reported-by: Yonghong Song <yhs@fb.com>
+Fixes: 37086bfdc737 ("bpf: Propagate stack bounds to registers in atomics w/ BPF_FETCH")
+Signed-off-by: Brendan Jackman <jackmanb@google.com>
 ---
- drivers/iommu/amd/init.c | 45 ++++++++++++++++++++++++++++++----------
- 1 file changed, 34 insertions(+), 11 deletions(-)
+ tools/testing/selftests/bpf/prog_tests/atomic_bounds.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/iommu/amd/init.c b/drivers/iommu/amd/init.c
-index 83d8ab2aed9f..01da76dc1caa 100644
---- a/drivers/iommu/amd/init.c
-+++ b/drivers/iommu/amd/init.c
-@@ -12,6 +12,7 @@
- #include <linux/acpi.h>
- #include <linux/list.h>
- #include <linux/bitmap.h>
-+#include <linux/delay.h>
- #include <linux/slab.h>
- #include <linux/syscore_ops.h>
- #include <linux/interrupt.h>
-@@ -254,6 +255,8 @@ static enum iommu_init_state init_state = IOMMU_START_STATE;
- static int amd_iommu_enable_interrupts(void);
- static int __init iommu_go_to_state(enum iommu_init_state state);
- static void init_device_table_dma(void);
-+static int iommu_pc_get_set_reg(struct amd_iommu *iommu, u8 bank, u8 cntr,
-+				u8 fxn, u64 *value, bool is_write);
- 
- static bool amd_iommu_pre_enabled = true;
- 
-@@ -1712,13 +1715,11 @@ static int __init init_iommu_all(struct acpi_table_header *table)
- 	return 0;
- }
- 
--static int iommu_pc_get_set_reg(struct amd_iommu *iommu, u8 bank, u8 cntr,
--				u8 fxn, u64 *value, bool is_write);
--
--static void init_iommu_perf_ctr(struct amd_iommu *iommu)
-+static void __init init_iommu_perf_ctr(struct amd_iommu *iommu)
- {
-+	int retry;
- 	struct pci_dev *pdev = iommu->dev;
--	u64 val = 0xabcd, val2 = 0, save_reg = 0;
-+	u64 val = 0xabcd, val2 = 0, save_reg, save_src;
- 
- 	if (!iommu_feature(iommu, FEATURE_PC))
+diff --git a/tools/testing/selftests/bpf/prog_tests/atomic_bounds.c b/tools/testing/selftests/bpf/prog_tests/atomic_bounds.c
+index addf127068e4..290506fa1c38 100644
+--- a/tools/testing/selftests/bpf/prog_tests/atomic_bounds.c
++++ b/tools/testing/selftests/bpf/prog_tests/atomic_bounds.c
+@@ -12,4 +12,6 @@ void test_atomic_bounds(void)
+ 	skel = atomic_bounds__open_and_load();
+ 	if (CHECK(!skel, "skel_load", "couldn't load program\n"))
  		return;
-@@ -1726,17 +1727,39 @@ static void init_iommu_perf_ctr(struct amd_iommu *iommu)
- 	amd_iommu_pc_present = true;
- 
- 	/* save the value to restore, if writable */
--	if (iommu_pc_get_set_reg(iommu, 0, 0, 0, &save_reg, false))
-+	if (iommu_pc_get_set_reg(iommu, 0, 0, 0, &save_reg, false) ||
-+	    iommu_pc_get_set_reg(iommu, 0, 0, 8, &save_src, false))
- 		goto pc_false;
- 
--	/* Check if the performance counters can be written to */
--	if ((iommu_pc_get_set_reg(iommu, 0, 0, 0, &val, true)) ||
--	    (iommu_pc_get_set_reg(iommu, 0, 0, 0, &val2, false)) ||
--	    (val != val2))
-+	/*
-+	 * Disable power gating by programing the performance counter
-+	 * source to 20 (i.e. counts the reads and writes from/to IOMMU
-+	 * Reserved Register [MMIO Offset 1FF8h] that are ignored.),
-+	 * which never get incremented during this init phase.
-+	 * (Note: The event is also deprecated.)
-+	 */
-+	val = 20;
-+	if (iommu_pc_get_set_reg(iommu, 0, 0, 8, &val, true))
- 		goto pc_false;
- 
-+	/* Check if the performance counters can be written to */
-+	val = 0xabcd;
-+	for (retry = 5; retry; retry--) {
-+		if (iommu_pc_get_set_reg(iommu, 0, 0, 0, &val, true) ||
-+		    iommu_pc_get_set_reg(iommu, 0, 0, 0, &val2, false) ||
-+		    val2)
-+			break;
 +
-+		/* Wait about 20 msec for power gating to disable and retry. */
-+		msleep(20);
-+	}
-+
- 	/* restore */
--	if (iommu_pc_get_set_reg(iommu, 0, 0, 0, &save_reg, true))
-+	if (iommu_pc_get_set_reg(iommu, 0, 0, 0, &save_reg, true) ||
-+	    iommu_pc_get_set_reg(iommu, 0, 0, 8, &save_src, true))
-+		goto pc_false;
-+
-+	if (val != val2)
- 		goto pc_false;
- 
- 	pci_info(pdev, "IOMMU performance counters supported\n");
++	atomic_bounds__destroy()
+ }
+
+base-commit: 23a2d70c7a2f28eb1a8f6bc19d68d23968cad0ce
 -- 
-2.17.1
+2.30.0.478.g8a0d178c01-goog
 
