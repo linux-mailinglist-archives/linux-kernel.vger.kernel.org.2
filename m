@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC0483139CE
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 17:43:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72A423139EE
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 17:46:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232272AbhBHQmS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 11:42:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60180 "EHLO mail.kernel.org"
+        id S233800AbhBHQpL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 11:45:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58716 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233532AbhBHPPP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 10:15:15 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 88F3864ECE;
-        Mon,  8 Feb 2021 15:10:52 +0000 (UTC)
+        id S230303AbhBHPP7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 10:15:59 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 85D3464ED1;
+        Mon,  8 Feb 2021 15:11:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612797053;
-        bh=JNT0e7NOCpnGy1ts2DBGh5vktxZvKrb82RMeQtxt1s0=;
+        s=korg; t=1612797074;
+        bh=vJw3/se5p5IgzQrAXmzA1rjxPEZXb6shSptwNaI/XTw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NQ1BO0Bb6NKVz52nWjS4spFawhnG/d4mVRUAC5Np9RIl+s8xaVSQTzTpaW+rkUi3T
-         ObgzV9lg98WRmInpJFMSTA2RQWdDWoaz/51IQOOSPpRIBRT3O5P4g3XcPDYIzRuiCF
-         ra2DNp+85YE/MR8P9SVsARc57baMJBBTiKLEQ3ZY=
+        b=YzBEG7h1+E+q4P/zvUohbI7BSbysqBI+m1uh0g49k1EpGeXe15pCQeX+U2imPoUK2
+         7mq0nWwPmiHAPr3G7UV8j+fmsZR6zAJBhPF7iVdnDnIiCyx/p+F+JHpSzTAuz5JlEu
+         6neRtrxgQaKWJpKIi5B9aPMXs2Ryh6Ve12ZGl9f0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Aleksandr Loktionov <aleksandr.loktionov@intel.com>,
-        Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>,
-        Konrad Jankowski <konrad0.jankowski@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        stable@vger.kernel.org, Maor Gottlieb <maorg@nvidia.com>,
+        Alaa Hleihel <alaa@nvidia.com>, Mark Bloch <mbloch@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 15/65] i40e: Revert "i40e: dont report link up for a VF who hasnt enabled queues"
-Date:   Mon,  8 Feb 2021 16:00:47 +0100
-Message-Id: <20210208145810.828420855@linuxfoundation.org>
+Subject: [PATCH 5.4 16/65] net/mlx5: Fix leak upon failure of rule creation
+Date:   Mon,  8 Feb 2021 16:00:48 +0100
+Message-Id: <20210208145810.873577004@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210208145810.230485165@linuxfoundation.org>
 References: <20210208145810.230485165@linuxfoundation.org>
@@ -43,97 +41,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Aleksandr Loktionov <aleksandr.loktionov@intel.com>
+From: Maor Gottlieb <maorg@nvidia.com>
 
-[ Upstream commit f559a356043a55bab25a4c00505ea65c50a956fb ]
+[ Upstream commit a5bfe6b4675e0eefbd9418055b5cc6e89af27eb4 ]
 
-This reverts commit 2ad1274fa35ace5c6360762ba48d33b63da2396c
+When creation of a new rule that requires allocation of an FTE fails,
+need to call to tree_put_node on the FTE in order to release its'
+resource.
 
-VF queues were not brought up when PF was brought up after being
-downed if the VF driver disabled VFs queues during PF down.
-This could happen in some older or external VF driver implementations.
-The problem was that PF driver used vf->queues_enabled as a condition
-to decide what link-state it would send out which caused the issue.
-
-Remove the check for vf->queues_enabled in the VF link notify.
-Now VF will always be notified of the current link status.
-Also remove the queues_enabled member from i40e_vf structure as it is
-not used anymore. Otherwise VNF implementation was broken and caused
-a link flap.
-
-The original commit was a workaround to avoid breaking existing VFs though
-it's really a fault of the VF code not the PF. The commit should be safe to
-revert as all of the VFs we know of have been fixed. Also, since we now
-know there is a related bug in the workaround, removing it is preferred.
-
-Fixes: 2ad1274fa35a ("i40e: don't report link up for a VF who hasn't enabled")
-Signed-off-by: Aleksandr Loktionov <aleksandr.loktionov@intel.com>
-Signed-off-by: Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>
-Tested-by: Konrad Jankowski <konrad0.jankowski@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+Fixes: cefc23554fc2 ("net/mlx5: Fix FTE cleanup")
+Signed-off-by: Maor Gottlieb <maorg@nvidia.com>
+Reviewed-by: Alaa Hleihel <alaa@nvidia.com>
+Reviewed-by: Mark Bloch <mbloch@nvidia.com>
+Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c | 13 +------------
- drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.h |  1 -
- 2 files changed, 1 insertion(+), 13 deletions(-)
+ drivers/net/ethernet/mellanox/mlx5/core/fs_core.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c b/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c
-index c20dc689698ed..5acd599d6b9af 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c
-@@ -55,12 +55,7 @@ static void i40e_vc_notify_vf_link_state(struct i40e_vf *vf)
- 
- 	pfe.event = VIRTCHNL_EVENT_LINK_CHANGE;
- 	pfe.severity = PF_EVENT_SEVERITY_INFO;
--
--	/* Always report link is down if the VF queues aren't enabled */
--	if (!vf->queues_enabled) {
--		pfe.event_data.link_event.link_status = false;
--		pfe.event_data.link_event.link_speed = 0;
--	} else if (vf->link_forced) {
-+	if (vf->link_forced) {
- 		pfe.event_data.link_event.link_status = vf->link_up;
- 		pfe.event_data.link_event.link_speed =
- 			(vf->link_up ? VIRTCHNL_LINK_SPEED_40GB : 0);
-@@ -70,7 +65,6 @@ static void i40e_vc_notify_vf_link_state(struct i40e_vf *vf)
- 		pfe.event_data.link_event.link_speed =
- 			i40e_virtchnl_link_speed(ls->link_speed);
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/fs_core.c b/drivers/net/ethernet/mellanox/mlx5/core/fs_core.c
+index 4944c40436f08..11e12761b0a6e 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/fs_core.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/fs_core.c
+@@ -1697,6 +1697,7 @@ search_again_locked:
+ 		if (!fte_tmp)
+ 			continue;
+ 		rule = add_rule_fg(g, spec, flow_act, dest, dest_num, fte_tmp);
++		/* No error check needed here, because insert_fte() is not called */
+ 		up_write_ref_node(&fte_tmp->node, false);
+ 		tree_put_node(&fte_tmp->node, false);
+ 		kmem_cache_free(steering->ftes_cache, fte);
+@@ -1745,6 +1746,8 @@ skip_search:
+ 		up_write_ref_node(&g->node, false);
+ 		rule = add_rule_fg(g, spec, flow_act, dest, dest_num, fte);
+ 		up_write_ref_node(&fte->node, false);
++		if (IS_ERR(rule))
++			tree_put_node(&fte->node, false);
+ 		return rule;
  	}
--
- 	i40e_aq_send_msg_to_vf(hw, abs_vf_id, VIRTCHNL_OP_EVENT,
- 			       0, (u8 *)&pfe, sizeof(pfe), NULL);
- }
-@@ -2393,8 +2387,6 @@ static int i40e_vc_enable_queues_msg(struct i40e_vf *vf, u8 *msg)
- 		}
- 	}
+ 	rule = ERR_PTR(-ENOENT);
+@@ -1844,6 +1847,8 @@ search_again_locked:
+ 	up_write_ref_node(&g->node, false);
+ 	rule = add_rule_fg(g, spec, flow_act, dest, dest_num, fte);
+ 	up_write_ref_node(&fte->node, false);
++	if (IS_ERR(rule))
++		tree_put_node(&fte->node, false);
+ 	tree_put_node(&g->node, false);
+ 	return rule;
  
--	vf->queues_enabled = true;
--
- error_param:
- 	/* send the response to the VF */
- 	return i40e_vc_send_resp_to_vf(vf, VIRTCHNL_OP_ENABLE_QUEUES,
-@@ -2416,9 +2408,6 @@ static int i40e_vc_disable_queues_msg(struct i40e_vf *vf, u8 *msg)
- 	struct i40e_pf *pf = vf->pf;
- 	i40e_status aq_ret = 0;
- 
--	/* Immediately mark queues as disabled */
--	vf->queues_enabled = false;
--
- 	if (!test_bit(I40E_VF_STATE_ACTIVE, &vf->vf_states)) {
- 		aq_ret = I40E_ERR_PARAM;
- 		goto error_param;
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.h b/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.h
-index 7164b9bb294ff..f65cc0c165502 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.h
-+++ b/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.h
-@@ -99,7 +99,6 @@ struct i40e_vf {
- 	unsigned int tx_rate;	/* Tx bandwidth limit in Mbps */
- 	bool link_forced;
- 	bool link_up;		/* only valid if VF link is forced */
--	bool queues_enabled;	/* true if the VF queues are enabled */
- 	bool spoofchk;
- 	u16 num_mac;
- 	u16 num_vlan;
 -- 
 2.27.0
 
