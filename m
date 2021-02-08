@@ -2,86 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37B3B313FAA
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 20:56:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2347B313FA8
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 20:54:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231422AbhBHTzZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 14:55:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34518 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235552AbhBHSNL (ORCPT
+        id S235432AbhBHTyg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 14:54:36 -0500
+Received: from mail-wr1-f42.google.com ([209.85.221.42]:44351 "EHLO
+        mail-wr1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235580AbhBHSNe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 13:13:11 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25E93C06178A;
-        Mon,  8 Feb 2021 10:12:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description;
-        bh=M/evnVn9TCTrgOS7lMU8kDG+WlcHOHkMBOuqA/rlMNU=; b=DJioOhO3ay/e6VYsVYnspxfYu4
-        5hVJe9q3VHYjm9x8c9FP24XshRpJhNmP1RMUo0B6QDQYqjp98VGFYSUlVe8ocfhawLt5I/io8BFbd
-        bn3AZ6HkyY9CGc3BX3IfJB4KLayo9UcRA5wi0SRdxMvVbAihRkT+5+4wharpuLLBonsHo3lNuOebL
-        eLwsZyuKc3wucy0ZJhz9PyXWdRrC5oEQz4YnZCgvqMTKg8CXCm3sVjSjnBsDH0zoAomNkbIUDflmp
-        uxT2rXTr2bHyLQVAHelqvlb3myffkW02GYaAL2Ak1qo7o4wP/KaNZ5IcypBXTTUDCXVWUhTDUqoJS
-        DAdg1g8g==;
-Received: from [2601:1c0:6280:3f0::cf3b]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l9B1Q-0004Bq-TI; Mon, 08 Feb 2021 18:12:29 +0000
-Subject: Re: [PATCH V2] include: linux: spi: Change provied to provided in the
- file spi.h
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, broonie@kernel.org,
-        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210208114928.32241-1-unixbhaskar@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <6da5b770-e5d5-1994-12e8-7654493cae82@infradead.org>
-Date:   Mon, 8 Feb 2021 10:12:25 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Mon, 8 Feb 2021 13:13:34 -0500
+Received: by mail-wr1-f42.google.com with SMTP id g6so5342820wrs.11;
+        Mon, 08 Feb 2021 10:13:17 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=uG44Nh0+1Z6GPKJ+sMh7UFsXf5L8CgK5m4MwsqTm8vM=;
+        b=jIf9VlxY9qXAESIYVVQ8yyiks4N/dz0BJYlqXZAY90rGLWxOuuJPRU5t5THsiZKqdS
+         Oj1UpgZAgcVpMCPPqC27LDAMyLxIKZl4s9qwaKL/2o9o6mfU3ByQ16PqT8voF/KtHNHy
+         eCStGUm0p2ItUrO55oRDLmfWQeBawSqDHq9GsnFVTwO/GtPNdMeAK/dGoRgjXFF8cbAW
+         WiXKgzH7SNbZie3sTMVJ5RYovCRQCIgg5iFYvUuysEComz05WfapqHZ16hF0/AlDoFgK
+         psjY9mYv81rE36Fk0c6u4rz3ACUoJt6YKrdIbMyVg9Ps5m0gajXNG/AybCmH1bx/7g4G
+         2dPg==
+X-Gm-Message-State: AOAM532svuTI3fuV3E1WSVHWuNc2xHTUJi9+nuBlGUOCxPXwcdgS3F72
+        nWyW3EcGDTEjbo7xN8UqCUI=
+X-Google-Smtp-Source: ABdhPJy/wKPjP7+LBFoeHW0XLxMt/V+JDUKUXKCYLCJTnC5Yurk6M5a1DiVIEb/R09EmHRvq8ISlSg==
+X-Received: by 2002:adf:e3cd:: with SMTP id k13mr84116wrm.289.1612807972155;
+        Mon, 08 Feb 2021 10:12:52 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id s23sm21317647wmc.35.2021.02.08.10.12.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Feb 2021 10:12:49 -0800 (PST)
+Date:   Mon, 8 Feb 2021 19:12:48 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Hector Martin <marcan@marcan.st>, Arnd Bergmann <arnd@kernel.org>,
+        devicetree@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
+        linux-kernel@vger.kernel.org, soc@kernel.org,
+        Olof Johansson <olof@lixom.net>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 01/18] dt-bindings: vendor-prefixes: add AAPL prefix
+Message-ID: <20210208181248.tbgffdwghlseawic@kozik-lap>
+References: <20210204203951.52105-1-marcan@marcan.st>
+ <20210204203951.52105-2-marcan@marcan.st>
+ <20210208102730.p4nhsl35oowsklv2@kozik-lap>
+ <20210208173215.GA1567700@robh.at.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20210208114928.32241-1-unixbhaskar@gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20210208173215.GA1567700@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/8/21 3:49 AM, Bhaskar Chowdhury wrote:
+On Mon, Feb 08, 2021 at 11:32:15AM -0600, Rob Herring wrote:
+> On Mon, Feb 08, 2021 at 11:27:30AM +0100, Krzysztof Kozlowski wrote:
+> > On Fri, Feb 05, 2021 at 05:39:34AM +0900, Hector Martin wrote:
+> > > Amusingly, this wasn't yet documented, even though this vendor prefix
+> > > has been used since time immemorial on PPC.
+> > > 
+> > > Signed-off-by: Hector Martin <marcan@marcan.st>
+> > > ---
+> > >  Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
+> > >  1 file changed, 2 insertions(+)
+> > > 
+> > > diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> > > index 041ae90b0d8f..d7950c723472 100644
+> > > --- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> > > +++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> > > @@ -25,6 +25,8 @@ patternProperties:
+> > >    # Keep list in alphabetical order.
+> > >    "^70mai,.*":
+> > >      description: 70mai Co., Ltd.
+> > > +  "^AAPL,.*":
+> > 
+> > All prefixes are lower case... see ABB below (not mentioning that the
+> > company name is not APPLE), so just "apple".
 > 
-> s/provied/provided/
+> Grep the kernel tree for 'AAPL,'.
+
+I know it's the ticker, but the point was - we don't use tickers here
+for none of other platforms.
+
+Mentioned grep brings only one result:
+arch/powerpc/platforms/powermac/pic.c:   * cases where the APPL,interrupts property is completely
+
+so hardly an argument for backwards consistency, within the kernel.
+
+On the other hand, some DTs for iPhones mention "apple", not APPL:
+https://www.theiphonewiki.com/wiki/D211AP/Device_Tree
+https://www.theiphonewiki.com/wiki/D331AP/Device_Tree
+https://gist.github.com/bazad/1faef1a6fe396b820a43170b43e38be1
+
+Although I am not sure how reliable are the sources.
+
+> It comes from the the ticker symbol 
+> which early on was the preferred form, but we've tended to move away 
+> from that. The DT Apple ships (which is *very* different) uses both 
+> forms.
 > 
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+> So keep what exists already or have old AAPL and new apple?
 
-OK.
+Hectore mention old PowerPC Apple sources were using the APPL, but it
+seems they did not end up here. What would be the point to stick to the
+old prefix if we cannot find it?
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
+Maybe they exists in other systems? I could not find such in latest
+FreeBSD, but there were not many DTSes inside.
 
-> ---
-> Changes from V1:
->   As Mark pointed out change provide to provided for the context
-> 
->  include/linux/spi/spi.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
-> index aa09fdc8042d..79f89fd250de 100644
-> --- a/include/linux/spi/spi.h
-> +++ b/include/linux/spi/spi.h
-> @@ -624,7 +624,7 @@ struct spi_controller {
-> 
->  	/*
->  	 * These hooks are for drivers that use a generic implementation
-> -	 * of transfer_one_message() provied by the core.
-> +	 * of transfer_one_message() provided by the core.
->  	 */
->  	void (*set_cs)(struct spi_device *spi, bool enable);
->  	int (*transfer_one)(struct spi_controller *ctlr, struct spi_device *spi,
-> --
-> 2.20.1
-> 
-
-
--- 
-~Randy
-
+Best regards,
+Krzysztof
