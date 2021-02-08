@@ -2,106 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A6C6313135
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 12:45:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41CC0313139
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 12:46:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233343AbhBHLoq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 06:44:46 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:11703 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233070AbhBHLXs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 06:23:48 -0500
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DZ3W558lPzlHb3;
-        Mon,  8 Feb 2021 19:21:21 +0800 (CST)
-Received: from DESKTOP-TMVL5KK.china.huawei.com (10.174.187.128) by
- DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
- 14.3.498.0; Mon, 8 Feb 2021 19:22:57 +0800
-From:   Yanan Wang <wangyanan55@huawei.com>
-To:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
-        "Catalin Marinas" <catalin.marinas@arm.com>,
-        James Morse <james.morse@arm.com>,
-        "Julien Thierry" <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Gavin Shan <gshan@redhat.com>,
-        Quentin Perret <qperret@google.com>,
-        <kvmarm@lists.cs.columbia.edu>,
-        <linux-arm-kernel@lists.infradead.org>, <kvm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <wanghaibin.wang@huawei.com>, <zhukeqian1@huawei.com>,
-        <yuzenghui@huawei.com>, Yanan Wang <wangyanan55@huawei.com>
-Subject: [RFC PATCH 4/4] KVM: arm64: Distinguish cases of memcache allocations completely
-Date:   Mon, 8 Feb 2021 19:22:50 +0800
-Message-ID: <20210208112250.163568-5-wangyanan55@huawei.com>
-X-Mailer: git-send-email 2.8.4.windows.1
-In-Reply-To: <20210208112250.163568-1-wangyanan55@huawei.com>
-References: <20210208112250.163568-1-wangyanan55@huawei.com>
+        id S232573AbhBHLp6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 06:45:58 -0500
+Received: from so15.mailgun.net ([198.61.254.15]:54369 "EHLO so15.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233093AbhBHLYh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 06:24:37 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1612783447; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=94O3q+hrlwecJKOh0uEeXAGFAVqfWgT1LWYjYLGX8bE=;
+ b=WAqGyLG9Tw2UUhKacmmIXUq3edwfBdFSvb73N2aMsNKdtLogjzY92FnCQX1QV17wGgwhNOg2
+ Ws89QlT1e/GbwavPTp0nt855vBZ7LuMTMatoG5gHamIMhZnLHggIG0hNeUgU6tiHXjoFcAQ6
+ B/KEhi1gbqPyLflTNtMxyavBxcg=
+X-Mailgun-Sending-Ip: 198.61.254.15
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 60211f323919dfb4559bf54b (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 08 Feb 2021 11:23:30
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 4B57BC43464; Mon,  8 Feb 2021 11:23:29 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        MISSING_DATE,MISSING_MID,SPF_FAIL,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 02154C433ED;
+        Mon,  8 Feb 2021 11:23:25 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 02154C433ED
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.174.187.128]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 7bit
+Subject: Re: mwl8k: fix alignment constraints
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20210204162813.3159319-1-arnd@kernel.org>
+References: <20210204162813.3159319-1-arnd@kernel.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Lennert Buytenhek <buytenh@wantstofly.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Romain Perier <romain.perier@gmail.com>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Allen Pais <allen.lkml@gmail.com>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
+Message-Id: <20210208112329.4B57BC43464@smtp.codeaurora.org>
+Date:   Mon,  8 Feb 2021 11:23:29 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With a guest translation fault, the memcache pages are not needed if KVM
-is only about to install a new leaf entry into the existing page table.
-And with a guest permission fault, the memcache pages are also not needed
-for a write_fault in dirty-logging time if KVM is only about to update
-the existing leaf entry instead of collapsing a block entry into a table.
+Arnd Bergmann <arnd@kernel.org> wrote:
 
-By comparing fault_granule and vma_pagesize, cases that require allocations
-from memcache and cases that don't can be distinguished completely.
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> sturct mwl8k_dma_data contains a ieee80211_hdr structure, which is required to
+> have at least two byte alignment, and this conflicts with the __packed
+> attribute:
+> 
+> vers/net/wireless/marvell/mwl8k.c:811:1: warning: alignment 1 of 'struct mwl8k_dma_data' is less than 2 [-Wpacked-not-aligned]
+> 
+> Mark mwl8k_dma_data itself as having two-byte alignment to ensure the
+> inner structure is properly aligned.
+> 
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-Signed-off-by: Yanan Wang <wangyanan55@huawei.com>
----
- arch/arm64/kvm/mmu.c | 25 ++++++++++++-------------
- 1 file changed, 12 insertions(+), 13 deletions(-)
+Patch applied to wireless-drivers-next.git, thanks.
 
-diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
-index d151927a7d62..550498a9104e 100644
---- a/arch/arm64/kvm/mmu.c
-+++ b/arch/arm64/kvm/mmu.c
-@@ -815,19 +815,6 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
- 	gfn = fault_ipa >> PAGE_SHIFT;
- 	mmap_read_unlock(current->mm);
- 
--	/*
--	 * Permission faults just need to update the existing leaf entry,
--	 * and so normally don't require allocations from the memcache. The
--	 * only exception to this is when dirty logging is enabled at runtime
--	 * and a write fault needs to collapse a block entry into a table.
--	 */
--	if (fault_status != FSC_PERM || (logging_active && write_fault)) {
--		ret = kvm_mmu_topup_memory_cache(memcache,
--						 kvm_mmu_cache_min_pages(kvm));
--		if (ret)
--			return ret;
--	}
--
- 	mmu_seq = vcpu->kvm->mmu_notifier_seq;
- 	/*
- 	 * Ensure the read of mmu_notifier_seq happens before we call
-@@ -887,6 +874,18 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
- 	else if (cpus_have_const_cap(ARM64_HAS_CACHE_DIC))
- 		prot |= KVM_PGTABLE_PROT_X;
- 
-+	/*
-+	 * Allocations from the memcache are required only when granule of the
-+	 * lookup level where the guest fault happened exceeds vma_pagesize,
-+	 * which means new page tables will be created in the fault handlers.
-+	 */
-+	if (fault_granule > vma_pagesize) {
-+		ret = kvm_mmu_topup_memory_cache(memcache,
-+						 kvm_mmu_cache_min_pages(kvm));
-+		if (ret)
-+			return ret;
-+	}
-+
- 	/*
- 	 * Under the premise of getting a FSC_PERM fault, we just need to relax
- 	 * permissions only if vma_pagesize equals fault_granule. Otherwise,
+bfdc4d7cbe57 mwl8k: fix alignment constraints
+
 -- 
-2.23.0
+https://patchwork.kernel.org/project/linux-wireless/patch/20210204162813.3159319-1-arnd@kernel.org/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
