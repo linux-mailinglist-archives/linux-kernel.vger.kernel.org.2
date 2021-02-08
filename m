@@ -2,135 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16C1631308B
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 12:19:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52DFC3130B6
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 12:25:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233022AbhBHLTN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 06:19:13 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:27938 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S233075AbhBHLIJ (ORCPT
+        id S233041AbhBHLYF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 06:24:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55768 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232956AbhBHLHb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 06:08:09 -0500
-Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 118B1GtB142216;
-        Mon, 8 Feb 2021 06:06:25 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : subject : to : cc
- : references : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=D1045OOgRUGLm4fkj+HoCDKh84em/j3peBwyygyFmjM=;
- b=MmoyrAe2VuTpJ7kwSe3foYT6MjQ4QFFU/eMXmPk0piwijmTZ7RJoJscN3YIwfP3IHWtd
- ZdLLv7yNS0AHfTF3RbkPEPJqn778zcrr15UJHma0tZIsTJRvh9kE1LLNUgThmJI3giSu
- itTibOwDleYW236m+YdZ1if65U8mO66V4BHrAcZlDMVYZ88iPbDBIHr5EHwpS0vg4TEl
- F6FMVm7BXaHimu4Pk1aOCyKDrJqjoGjzxhhphR6oXrc+tlceyrjfl5ubIqXulWsKBZ9a
- xbO9HILZBk+96dafxtsWbpY9LOs/7ekclW6vLF2MDGRgV8ALEtLucalgHKCJDRhwaMWg 0A== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 36k0t05ydw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 08 Feb 2021 06:06:25 -0500
-Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 118B1paZ145230;
-        Mon, 8 Feb 2021 06:06:23 -0500
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 36k0t05ycd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 08 Feb 2021 06:06:23 -0500
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 118B352g030526;
-        Mon, 8 Feb 2021 11:06:21 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma06ams.nl.ibm.com with ESMTP id 36j94wh6e1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 08 Feb 2021 11:06:21 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 118B68q812059050
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 8 Feb 2021 11:06:08 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6CCC542042;
-        Mon,  8 Feb 2021 11:06:18 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 15BD242041;
-        Mon,  8 Feb 2021 11:06:16 +0000 (GMT)
-Received: from [9.199.47.177] (unknown [9.199.47.177])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon,  8 Feb 2021 11:06:15 +0000 (GMT)
-From:   Ravi Bangoria <ravi.bangoria@linux.ibm.com>
-Subject: Re: [PATCH v2] powerpc/uprobes: Validation for prefixed instruction
-To:     Oleg Nesterov <oleg@redhat.com>
-Cc:     mpe@ellerman.id.au, rostedt@goodmis.org, paulus@samba.org,
-        jniethe5@gmail.com, naveen.n.rao@linux.ibm.com,
-        sandipan@linux.ibm.com, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org,
-        Ravi Bangoria <ravi.bangoria@linux.ibm.com>
-References: <20210204104703.273429-1-ravi.bangoria@linux.ibm.com>
- <20210206180604.GA8897@redhat.com>
-Message-ID: <8fe4d62a-8873-d436-d20b-da3027103fe1@linux.ibm.com>
-Date:   Mon, 8 Feb 2021 16:36:15 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Mon, 8 Feb 2021 06:07:31 -0500
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA908C0617AA
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 03:06:49 -0800 (PST)
+Received: by mail-wm1-x331.google.com with SMTP id i5so4135847wmq.2
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 03:06:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=YCKQyJ5X4pSKK2TbNsb8boRdw0GR7LFT4BRguWXjjyI=;
+        b=NG8H9UUSvX43gPqT7atIFiGW1Hf53RneCc9N82ovlTQDtkdhQjLF8xI+K74EFIihsg
+         0hgVdQ/g29wTbAtYid5lHzGLlbCzDYlJL6GyhxueutxhN+/5WNFvx5HCs0dTlhw71siV
+         uuIDAMP0uwNGhGygPzSU9wnnEx69GfK/+J1RTqLjPrimI9+07hU43gHJsbYkOx1AQcZ2
+         QurDBUSrVL80e3UI0evOOFZeGalicP4M7F8d5q8T6TohLso4uyBzQokgCwFoNhWqLHYB
+         vt99Fiavcx0CnqAJBspQ8tdIsUQD+5UKuzyp8SXKkv/HRvDcmoJ28ZTuC0+3G+Cnu9g8
+         FCvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=YCKQyJ5X4pSKK2TbNsb8boRdw0GR7LFT4BRguWXjjyI=;
+        b=H6S2jVKerKVf/RQemBGs9SjKaCqnjGxBCF0BjiKgVdyGVFDq0pYD5unKlVHMdrwBJP
+         3OgfAwC9KJwLiMywKRCDMQV05LLjKVELrH06KbKfWHyzn3ysZKhmfz8HWsCpe4Cigr0Z
+         uohgXBvBpO4Al+aRIUgM+j6LTtxW1e3FAqL+SHvGiPoug6eVBdZHYd7wU0olRj8ZD9yB
+         HnUX0SUwOtxzO1sO4yMnUoUFIcX7A3gLOGhFZFxGN9m1m8woOecp0mqJOZSw4SiUeYBE
+         UjrG+klUrkw0IrXWLzF1yGALbsWx82H1ec9SbIEXUE1FkjUMy7u3J3maZCTv2PLgEUc6
+         KmuA==
+X-Gm-Message-State: AOAM530peNxT3GuxE95tOiasA/9sm3cZo131zLuNNG45KCVuQOB3yYxo
+        52FAH3XPmR26bIc6kpW0G7MECw==
+X-Google-Smtp-Source: ABdhPJycTndKfO4Hva6eoih56akIcC3ZddjnlFN+i/+r1mkgFIHQuNb7jnV4Lpigvq1x76HTJHnLOg==
+X-Received: by 2002:a05:600c:4f4d:: with SMTP id m13mr14358030wmq.118.1612782408117;
+        Mon, 08 Feb 2021 03:06:48 -0800 (PST)
+Received: from elver.google.com ([2a00:79e0:15:13:497f:76ef:2e62:d028])
+        by smtp.gmail.com with ESMTPSA id g16sm19401367wmi.30.2021.02.08.03.06.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Feb 2021 03:06:47 -0800 (PST)
+Date:   Mon, 8 Feb 2021 12:06:41 +0100
+From:   Marco Elver <elver@google.com>
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 mm 13/13] kasan: clarify that only first bug is
+ reported in HW_TAGS
+Message-ID: <YCEbQdE8FfUUFvuo@elver.google.com>
+References: <cover.1612546384.git.andreyknvl@google.com>
+ <00383ba88a47c3f8342d12263c24bdf95527b07d.1612546384.git.andreyknvl@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20210206180604.GA8897@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-02-08_03:2021-02-08,2021-02-08 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- priorityscore=1501 mlxscore=0 mlxlogscore=999 impostorscore=0 phishscore=0
- lowpriorityscore=0 suspectscore=0 clxscore=1015 adultscore=0 spamscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102080070
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <00383ba88a47c3f8342d12263c24bdf95527b07d.1612546384.git.andreyknvl@google.com>
+User-Agent: Mutt/2.0.2 (2020-11-20)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2/6/21 11:36 PM, Oleg Nesterov wrote:
-> On 02/04, Ravi Bangoria wrote:
->>
->> +static int get_instr(struct mm_struct *mm, unsigned long addr, u32 *instr)
->> +{
->> +	struct page *page;
->> +	struct vm_area_struct *vma;
->> +	void *kaddr;
->> +	unsigned int gup_flags = FOLL_FORCE | FOLL_SPLIT_PMD;
->> +
->> +	if (get_user_pages_remote(mm, addr, 1, gup_flags, &page, &vma, NULL) <= 0)
->> +		return -EINVAL;
+On Fri, Feb 05, 2021 at 06:34PM +0100, Andrey Konovalov wrote:
+> Hwardware tag-based KASAN only reports the first found bug. After that MTE
+> tag checking gets disabled. Clarify this in comments and documentation.
 > 
-> "vma" is not used,
+> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 
-Ok.
+Reviewed-by: Marco Elver <elver@google.com>
 
-> and I don't think you need FOLL_SPLIT_PMD.
-Isn't it needed if the target page is hugepage?
-
-> Otherwise I can't really comment this ppc-specific change.
+> ---
+>  Documentation/dev-tools/kasan.rst | 8 ++++++--
+>  mm/kasan/hw_tags.c                | 2 +-
+>  2 files changed, 7 insertions(+), 3 deletions(-)
 > 
-> To be honest, I don't even understand why do we need this fix. Sure, the
-> breakpoint in the middle of 64-bit insn won't work, why do we care? The
-> user should know what does he do.
-
-That's a valid point. This patch is to protract user from doing
-invalid thing.
-
-Though, there is one minor scenario where this patch will help. If
-the original prefixed instruction is 64 byte unaligned, and say
-user probes it, Uprobe infrastructure will emulate such instruction
-transparently without notifying user that the instruction is
-improperly aligned.
-
-> Not to mention we can't really trust get_user_pages() in that this page
-> can be modified by mm owner or debugger...
-
-As Naveen pointed out, there might be existing uprobe on the prefix
-and this patch will fail to detect such scenario. So I'm thinking to
-read the instruction directly from file backed page (like copy_insn),
-in which case I won't use get_user_pages().
-
-Thanks Oleg for the review!
-
-Ravi
+> diff --git a/Documentation/dev-tools/kasan.rst b/Documentation/dev-tools/kasan.rst
+> index e022b7506e37..1faabbe23e09 100644
+> --- a/Documentation/dev-tools/kasan.rst
+> +++ b/Documentation/dev-tools/kasan.rst
+> @@ -155,7 +155,7 @@ Boot parameters
+>  ~~~~~~~~~~~~~~~
+>  
+>  Hardware tag-based KASAN mode (see the section about various modes below) is
+> -intended for use in production as a security mitigation. Therefore it supports
+> +intended for use in production as a security mitigation. Therefore, it supports
+>  boot parameters that allow to disable KASAN competely or otherwise control
+>  particular KASAN features.
+>  
+> @@ -166,7 +166,8 @@ particular KASAN features.
+>    ``off``).
+>  
+>  - ``kasan.fault=report`` or ``=panic`` controls whether to only print a KASAN
+> -  report or also panic the kernel (default: ``report``).
+> +  report or also panic the kernel (default: ``report``). Note, that tag
+> +  checking gets disabled after the first reported bug.
+>  
+>  For developers
+>  ~~~~~~~~~~~~~~
+> @@ -296,6 +297,9 @@ Note, that enabling CONFIG_KASAN_HW_TAGS always results in in-kernel TBI being
+>  enabled. Even when kasan.mode=off is provided, or when the hardware doesn't
+>  support MTE (but supports TBI).
+>  
+> +Hardware tag-based KASAN only reports the first found bug. After that MTE tag
+> +checking gets disabled.
+> +
+>  What memory accesses are sanitised by KASAN?
+>  --------------------------------------------
+>  
+> diff --git a/mm/kasan/hw_tags.c b/mm/kasan/hw_tags.c
+> index e529428e7a11..6c9285c906b8 100644
+> --- a/mm/kasan/hw_tags.c
+> +++ b/mm/kasan/hw_tags.c
+> @@ -48,7 +48,7 @@ EXPORT_SYMBOL(kasan_flag_enabled);
+>  /* Whether to collect alloc/free stack traces. */
+>  DEFINE_STATIC_KEY_FALSE(kasan_flag_stacktrace);
+>  
+> -/* Whether panic or disable tag checking on fault. */
+> +/* Whether to panic or print a report and disable tag checking on fault. */
+>  bool kasan_flag_panic __ro_after_init;
+>  
+>  /* kasan=off/on */
+> -- 
+> 2.30.0.365.g02bc693789-goog
+> 
