@@ -2,96 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08EB2312C98
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 09:58:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A405312D04
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 10:15:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231335AbhBHI5o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 03:57:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54454 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230110AbhBHIuy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 03:50:54 -0500
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CF24C06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 00:50:06 -0800 (PST)
-Received: by mail-pg1-x52d.google.com with SMTP id o21so8355449pgn.12
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 00:50:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=y1xI4q0IE2/j0OhMlMQaNaEB2C3eai/3ilfN5as2bkI=;
-        b=AmXB/wQGRiK3d99p7ZqecuAVIoY/NYtbjqdxLM45I0xvZFDqOq6okJViFw4fL25lzx
-         /3+oaO2H9I+DV4uRL6791x2bBHUIfkVeutqfIjIZno6PdggR3UfYQ2oWpF6K5Q735igh
-         JNJQ96FoCQegwf97V0xZRvZ4LshyQ4TvTODl45y+fVuO+3JTsfNrAbXAkdYiIDtNIf17
-         yrOEtZ/1Dn4UT0OG4sBDKrg3FF1ZGfSBye5Z4fZuji1Gt7zFbaef3AoaMP8KkaVOB0CG
-         bJ2BOvavQocyhiHsS0gMD8WIgmyws/XvWkHiqnpdSpVW3Z7WyyLANbB+4dWM6nwAHg3g
-         8X6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=y1xI4q0IE2/j0OhMlMQaNaEB2C3eai/3ilfN5as2bkI=;
-        b=e08QvnNwMa0LHWru+FjZauSnz+eliEGbs0Q8SNlqJ3bPIpsRQUtnFMA9QHyOaD1ctH
-         MMHkzFfk+4kMvFphw39ZvTnlAqWckM+znP8v7I1TQmI46UI7HlmSpLd5+w0z0sbAej8u
-         ByNVaE1aSNNuEW2kWPWXZ6LaK9e4AMYpjXKKNEJGLf6XwwlZyWh5xbhY5bVlP94FBgLm
-         nf/ZimpH5OvGXjrmKOdBv3ffoOFyr80dnaDZPYNzib2eVctMXjt7eWRVnMeZNecW5jmc
-         8KdtHRbvufgDrUtiEDWEuW6X2Hco5lhyANrjhuRyDp7krw/YuVwceFDWu8XbsHAVF8VV
-         EGmQ==
-X-Gm-Message-State: AOAM5328+nKnJa1gGCaCMeJlh8I14ecULUYRK0LECVeaNN7IGfxTg1wO
-        mOuULo84EtWrCbrptrt5yrV/fWybV2PWqYtLo71QXPUg5/1TkA==
-X-Google-Smtp-Source: ABdhPJwMXTG7wUByi8LwP7JK3r2w8sXxWp8sWUXgkbnHyaZZL6qaLocaRydhrH/zDgosmHKgHRtZcC2kpZE984W53ak=
-X-Received: by 2002:a63:1f21:: with SMTP id f33mr16552090pgf.31.1612774205691;
- Mon, 08 Feb 2021 00:50:05 -0800 (PST)
+        id S231377AbhBHJNl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 04:13:41 -0500
+Received: from air.basealt.ru ([194.107.17.39]:43800 "EHLO air.basealt.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230407AbhBHIxs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 03:53:48 -0500
+X-Greylist: delayed 440 seconds by postgrey-1.27 at vger.kernel.org; Mon, 08 Feb 2021 03:53:41 EST
+Received: by air.basealt.ru (Postfix, from userid 490)
+        id 5DA05589440; Mon,  8 Feb 2021 08:45:28 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on
+        sa.local.altlinux.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-4.3 required=5.0 tests=ALL_TRUSTED,BAYES_00,
+        RP_MATCHES_RCVD autolearn=ham autolearn_force=no version=3.4.1
+Received: from nickel-ws.localdomain (obninsk.basealt.ru [217.15.195.17])
+        by air.basealt.ru (Postfix) with ESMTPSA id 7900E58943A;
+        Mon,  8 Feb 2021 08:45:26 +0000 (UTC)
+Reply-To: nickel@basealt.ru
+Subject: Re: [PATCH] Input: elantech - add LEN2146 to SMBus blacklist for
+ ThinkPad L13 Gen2
+To:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Nikolai Kostrigin <nickel@altlinux.org>
+Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>
+References: <20210208075205.3784059-1-nickel@altlinux.org>
+ <CAO-hwJJpUj=+mpqQ7eMtbtwX6CPAkt2ZpDnpmX9GUDo1EuEOiw@mail.gmail.com>
+From:   Nikolai Kostrigin <nickel@basealt.ru>
+Organization: BaseALT
+Message-ID: <126f63de-f738-a76a-9681-2029a223b070@basealt.ru>
+Date:   Mon, 8 Feb 2021 11:45:26 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-References: <20210206054124.6743-1-songmuchun@bytedance.com> <YCDcAy39BbPItdGY@jagdpanzerIV.localdomain>
-In-Reply-To: <YCDcAy39BbPItdGY@jagdpanzerIV.localdomain>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Mon, 8 Feb 2021 16:49:28 +0800
-Message-ID: <CAMZfGtVBVSuH=HGNs7KFOtixSviy_stoZsiG4au0RUkUnH-0rQ@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v2] printk: fix deadlock when kernel panic
-To:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-Cc:     Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        john.ogness@linutronix.de,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAO-hwJJpUj=+mpqQ7eMtbtwX6CPAkt2ZpDnpmX9GUDo1EuEOiw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 8, 2021 at 2:38 PM Sergey Senozhatsky
-<sergey.senozhatsky@gmail.com> wrote:
->
-> On (21/02/06 13:41), Muchun Song wrote:
-> > We found a deadlock bug on our server when the kernel panic. It can be
-> > described in the following diagram.
-> >
-> > CPU0:                                         CPU1:
-> > panic                                         rcu_dump_cpu_stacks
-> >   kdump_nmi_shootdown_cpus                      nmi_trigger_cpumask_backtrace
-> >     register_nmi_handler(crash_nmi_callback)      printk_safe_flush
-> >                                                     __printk_safe_flush
-> >                                                       raw_spin_lock_irqsave(&read_lock)
-> >     // send NMI to other processors
-> >     apic_send_IPI_allbutself(NMI_VECTOR)
-> >                                                         // NMI interrupt, dead loop
-> >                                                         crash_nmi_callback
->
-> At what point does this decrement num_online_cpus()? Any chance that
-> panic CPU can apic_send_IPI_allbutself() and printk_safe_flush_on_panic()
-> before num_online_cpus() becomes 1?
+Hi, Benjamin!
 
-I took a closer look at the code. IIUC, It seems that there is no point
-which decreases num_online_cpus.
+08.02.2021 11:06, Benjamin Tissoires пишет:
+> Hi Nikolai,
+>
+> On Mon, Feb 8, 2021 at 9:01 AM Nikolai Kostrigin <nickel@altlinux.org> wrote:
+>> ThinkPad L13 Gen2 has both touchpad and trackpoint.
+>> PNP: LEN2146 PNP0f13
+>> With the default protocol (elantech-smbus) trackpoint is not operating,
+>> while touchpad does. Changing to elantech renders both operational.
+>>
+>> Signed-off-by: Nikolai Kostrigin <nickel@altlinux.org>
+> Instead of downgrading the capabilities of the touchpad, couldn't we
+> fix the trackpoint issues?
+Yes, I consider fixing the issue would be better than downgrading
+touchpad capabilities.
+Blacklisting was the first and most obvious idea to test.
+
+I'm eager to perform additional diagnostics to choose a better solution.
+Your advice would be appreciated.
 
 >
-> >   printk_safe_flush_on_panic
-> >     printk_safe_flush
-> >       __printk_safe_flush
-> >         // deadlock
-> >         raw_spin_lock_irqsave(&read_lock)
+> I am surprised elantech doesn't work with the trackpoint, because I am
+> pretty sure I wrote patches in that regard. Which kernel version have
+> you been testing?
+The patch was tested with 5.10.13 only, but the trackpoint behaviour is
+the same on 5.4.92.
+> Cheers,
+> Benjamin
 >
->         -ss
+
+>
+>> ---
+>>  drivers/input/mouse/elantech.c | 1 +
+>>  1 file changed, 1 insertion(+)
+>>
+>> diff --git a/drivers/input/mouse/elantech.c b/drivers/input/mouse/elantech.c
+>> index 90f8765f9efc..c4c3fa5828d8 100644
+>> --- a/drivers/input/mouse/elantech.c
+>> +++ b/drivers/input/mouse/elantech.c
+>> @@ -1776,6 +1776,7 @@ static const char * const i2c_blacklist_pnp_ids[] = {
+>>          * These are known to not be working properly as bits are missing
+>>          * in elan_i2c.
+>>          */
+>> +       "LEN2146", /* ThinkPad L13 Gen2 */
+>>         NULL
+>>  };
+>>
+>> --
+>> 2.29.2
+>>
+-- 
+Best regards,
+Nikolai Kostrigin
+
