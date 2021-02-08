@@ -2,74 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5213A313310
+	by mail.lfdr.de (Postfix) with ESMTP id ADDDE313311
 	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 14:17:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230064AbhBHNQJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 08:16:09 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:50680 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229766AbhBHNPr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 08:15:47 -0500
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9CxZO1HOSFg4z0IAA--.11298S2;
-        Mon, 08 Feb 2021 21:14:47 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xuefeng Li <lixuefeng@loongson.cn>
-Subject: [PATCH] MIPS: Make check condition for SDBBP consistent with EJTAG spec
-Date:   Mon,  8 Feb 2021 21:14:45 +0800
-Message-Id: <1612790085-14436-1-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9CxZO1HOSFg4z0IAA--.11298S2
-X-Coremail-Antispam: 1UD129KBjvdXoWrZw1xZFWDXw48Gw4xKw1rWFg_yoWfZFg_Kr
-        1Ivws7uw15Jr1avr1293yfGryagw1Fg3Za9w4qqrWYvrn5C3s8A392q3Zaqrn5Wws2vrs0
-        vas8J3ZrJFs7XjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbc8FF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
-        Cr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s
-        1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0
-        cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJVW8Jw
-        ACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK6ry8MxAI
-        w28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr
-        4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxG
-        rwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8Jw
-        CI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY
-        6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUb73vUUUUU
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+        id S229611AbhBHNQU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 08:16:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54968 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230077AbhBHNPw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 08:15:52 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EABDE64E6F;
+        Mon,  8 Feb 2021 13:15:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1612790111;
+        bh=nOfFOrAI99F6FuM9bIcvzcCZh046kMP9nBtOULyoS5Y=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nzJEePtmI+1aiDT2hlGtykLk69fbZAfZCvZUlR7aXKXTOZgmHkdwpKE3KqAUHLod5
+         z6ZLa9ukkQxYL9PNc5dT7zprslDIQ6Gg5gqOmh7Cw7PuzhoXyEgcsJ1lOvGUKZFiWJ
+         znCHlL1hjM0rb5QOGqE8ObhKo7LyCIeHYkq5tvbY=
+Date:   Mon, 8 Feb 2021 14:15:07 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Mukul Mehar <mukulmehar02@gmail.com>
+Cc:     devel@driverdev.osuosl.org, christian.gromm@microchip.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH]: checkpatch: Fixed styling issue
+Message-ID: <YCE5W5C4fVQsZzV1@kroah.com>
+References: <20210208130614.GA7749@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210208130614.GA7749@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-According to MIPS EJTAG Specification [1], a Debug Breakpoint
-exception occurs when an SDBBP instruction is executed, the
-CP0_DEBUG bit DBp indicates that a Debug Breakpoint exception
-occurred, just check bit DBp for SDBBP is more accurate.
+On Mon, Feb 08, 2021 at 06:36:14PM +0530, Mukul Mehar wrote:
 
-[1] http://www.t-es-t.hu/download/mips/md00047f.pdf
+> >From 29bcaf0066003983da29b1e026b985c0727b091a Mon Sep 17 00:00:00 2001
+> From: Mukul Mehar <mukulmehar02@gmail.com>
+> Date: Mon, 8 Feb 2021 01:03:06 +0530
+> Subject: [PATCH] Drivers: staging: most: sound: Fixed style issue.
+> Signed-off-by: Mukul Mehar <mukulmehar02@gmail.com>
+> 
+> 
+> This patch fixes a warning, of the line ending with a '(',
+> generated by checkpatch.pl.
+> This is my first patch.
+> ---
+>  drivers/staging/most/sound/sound.c | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/staging/most/sound/sound.c b/drivers/staging/most/sound/sound.c
+> index 3a1a59058042..4dd1bf95d1ce 100644
+> --- a/drivers/staging/most/sound/sound.c
+> +++ b/drivers/staging/most/sound/sound.c
+> @@ -228,12 +228,12 @@ static int playback_thread(void *data)
+>  		struct mbo *mbo = NULL;
+>  		bool period_elapsed = false;
+>  
+> -		wait_event_interruptible(
+> -			channel->playback_waitq,
+> -			kthread_should_stop() ||
+> -			(channel->is_stream_running &&
+> -			 (mbo = most_get_mbo(channel->iface, channel->id,
+> -					     &comp))));
+> +		wait_event_interruptible(channel->playback_waitq,
+> +					 kthread_should_stop() ||
+> +					 (channel->is_stream_running &&
+> +					 (mbo = most_get_mbo(channel->iface,
+> +					 channel->id,
+> +					 &comp))));
+>  		if (!mbo)
+>  			continue;
+>  
+> -- 
+> 2.25.1
+> 
 
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
----
- arch/mips/kernel/genex.S | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Hi,
 
-diff --git a/arch/mips/kernel/genex.S b/arch/mips/kernel/genex.S
-index bcce32a..6336826 100644
---- a/arch/mips/kernel/genex.S
-+++ b/arch/mips/kernel/genex.S
-@@ -349,8 +349,8 @@ NESTED(ejtag_debug_handler, PT_SIZE, sp)
- 	MTC0	k0, CP0_DESAVE
- 	mfc0	k0, CP0_DEBUG
- 
--	sll	k0, k0, 30	# Check for SDBBP.
--	bgez	k0, ejtag_return
-+	andi	k0, k0, 0x2	# Check for SDBBP.
-+	beqz	k0, ejtag_return
- 
- #ifdef CONFIG_SMP
- 1:	PTR_LA	k0, ejtag_debug_buffer_spinlock
--- 
-2.1.0
+This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
+a patch that has triggered this response.  He used to manually respond
+to these common problems, but in order to save his sanity (he kept
+writing the same thing over and over, yet to different people), I was
+created.  Hopefully you will not take offence and will fix the problem
+in your patch and resubmit it so that it can be accepted into the Linux
+kernel tree.
 
+You are receiving this message because of the following common error(s)
+as indicated below:
+
+- Your patch was attached, please place it inline so that it can be
+  applied directly from the email message itself.
+
+- Your patch does not have a Signed-off-by: line.  Please read the
+  kernel file, Documentation/SubmittingPatches and resend it after
+  adding that line.  Note, the line needs to be in the body of the
+  email, before the patch, not at the bottom of the patch or in the
+  email signature.
+
+- You did not specify a description of why the patch is needed, or
+  possibly, any description at all, in the email body.  Please read the
+  section entitled "The canonical patch format" in the kernel file,
+  Documentation/SubmittingPatches for what is needed in order to
+  properly describe the change.
+
+- You did not write a descriptive Subject: for the patch, allowing Greg,
+  and everyone else, to know what this patch is all about.  Please read
+  the section entitled "The canonical patch format" in the kernel file,
+  Documentation/SubmittingPatches for what a proper Subject: line should
+  look like.
+
+If you wish to discuss this problem further, or you have questions about
+how to resolve this issue, please feel free to respond to this email and
+Greg will reply once he has dug out from the pending patches received
+from other developers.
+
+thanks,
+
+greg k-h's patch email bot
