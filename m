@@ -2,149 +2,527 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38891314237
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 22:49:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9752F314238
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 22:49:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235324AbhBHVsi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 16:48:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48842 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236676AbhBHVbF (ORCPT
+        id S234689AbhBHVtJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 16:49:09 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:17859 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234478AbhBHVes (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 16:31:05 -0500
-Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18302C06178B
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 13:30:25 -0800 (PST)
-Received: by mail-qk1-x730.google.com with SMTP id q85so3727817qke.8
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 13:30:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=9qkflY5nbnrf1GydCZmzRH2mO9Zc9djQTfZafbwHa/g=;
-        b=n+Mx8XiSpZIp2bzSh2g6O0jcWjTGzzEPa5DiVzraCS1z3aCBR7wlO4ojyvJXShXJqo
-         dErGhsLjKKXGxEO4udDchIYBWbjDTcQIGFEXN/foR//8dLWzKZFOSVsJPe9ZU60Gz3ku
-         ALAVbytloLtwAOoVkuyDyiODB5zBwwa/R5CnRGsiJbwztjwgeQ0miNWzM368nevWNycx
-         Z0eWTWRLO+N+Oz19f9i7ogGrDu3DLRq3e08oV4K7/TmaG0lH5CTxMMzdEtlcX8Jgplyz
-         K6PyW8JX+anGM6F7IruuNGlOi7PcrSYVM9d2Cfb6AG3AzVpw85b7UgE0KO478IIrv4L7
-         2t9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=9qkflY5nbnrf1GydCZmzRH2mO9Zc9djQTfZafbwHa/g=;
-        b=kb7BU2OtmwHuGeHSVD5ue8969J386ofXP1v7tWG0HF0OBHVGM5zk57Q5K428xXVvM+
-         6lyKoUR+A7isJPf+fcwvdQYFiu6xGggCPUXRiYUiuYOmqiJZXonMYCh6knf9M1W1gqku
-         lKo/xRJSt+C+vMfJJ1lDS1QUt6iO6u9jEayRBhpaII+zQCMP9Y3m3aj1mMkht/ZWZ2Ou
-         Bw0dr5dXeFTAH7m/xHrLEfq0+9asdXuNW2hLuz98GdPZVtC4JPb4N89f/f6M7hLWmFKU
-         RbgvIjtEN8IQbzdvQdoiXVceh+cmTkLgBcY0zyf49UEwBIp0PocnrrGTwE2tEb/S0f7B
-         DhAQ==
-X-Gm-Message-State: AOAM530NlvG2xLQklvUNDo2ZNAItvaG4USmlrXWYPNjxate2Obz8NFSc
-        IuG/cVpWdyFQtEmYzr6VrRke0A==
-X-Google-Smtp-Source: ABdhPJzFdGa04wz/eyZ4j9hhnXsbH3wCkpiuKEtnZzgfxA85nq9G/2jkn8TOldhN5jopR+fvtidBWA==
-X-Received: by 2002:a37:bc45:: with SMTP id m66mr4594058qkf.86.1612819824350;
-        Mon, 08 Feb 2021 13:30:24 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
-        by smtp.gmail.com with ESMTPSA id c63sm14340966qkf.8.2021.02.08.13.30.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Feb 2021 13:30:23 -0800 (PST)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1l9E6x-00560h-7w; Mon, 08 Feb 2021 17:30:23 -0400
-Date:   Mon, 8 Feb 2021 17:30:23 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        "Wangzhou (B)" <wangzhou1@hisilicon.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "kevin.tian@intel.com" <kevin.tian@intel.com>,
-        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "Liguozhu (Kenneth)" <liguozhu@hisilicon.com>,
-        "zhangfei.gao@linaro.org" <zhangfei.gao@linaro.org>,
-        "chensihang (A)" <chensihang1@hisilicon.com>
-Subject: Re: [RFC PATCH v3 1/2] mempinfd: Add new syscall to provide memory
- pin
-Message-ID: <20210208213023.GZ4718@ziepe.ca>
-References: <1612685884-19514-1-git-send-email-wangzhou1@hisilicon.com>
- <1612685884-19514-2-git-send-email-wangzhou1@hisilicon.com>
- <a587bd61-9194-4b46-c122-8b4da7b941a8@redhat.com>
- <20210208183348.GV4718@ziepe.ca>
- <0dca000a6cd34d8183062466ba7d6eaf@hisilicon.com>
+        Mon, 8 Feb 2021 16:34:48 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B6021ae4f0001>; Mon, 08 Feb 2021 13:34:07 -0800
+Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 8 Feb
+ 2021 21:34:07 +0000
+Received: from [10.2.50.67] (172.20.145.6) by DRHQMAIL107.nvidia.com
+ (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 8 Feb 2021
+ 21:34:07 +0000
+Subject: Re: [PATCH v2] mm: cma: support sysfs
+To:     Minchan Kim <minchan@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+CC:     linux-mm <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
+        <gregkh@linuxfoundation.org>, <surenb@google.com>,
+        <joaodias@google.com>, <willy@infradead.org>
+References: <20210208180142.2765456-1-minchan@kernel.org>
+From:   John Hubbard <jhubbard@nvidia.com>
+Message-ID: <e01c111b-fb20-0586-c7a9-dd6d922c0e57@nvidia.com>
+Date:   Mon, 8 Feb 2021 13:34:06 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:85.0) Gecko/20100101
+ Thunderbird/85.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0dca000a6cd34d8183062466ba7d6eaf@hisilicon.com>
+In-Reply-To: <20210208180142.2765456-1-minchan@kernel.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ DRHQMAIL107.nvidia.com (10.27.9.16)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1612820047; bh=5+gEQO0tyLL7flZev64CdMSCWcKRzeMwTHJoSIoeHDk=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=EKXTsxPz0aGSMV/WOMmOF8mGmSKTj1sAucLTbYeNtxx3C1jN0VCcNpLocvZobF4gd
+         277R0elLLIIC4be/eLuZl25l22GLi8o/s2zL/vd8JUZ5izfDvg7OwQSAmOeMV8QX2r
+         cXGyTK2jwLCQ9SUPXj+lk8ryqcHILmfZvAJjdXXFsAg3UtIpp5Xg7VJn3DEGmx/71m
+         mCdERHiP+W6euQTNa5lNmLcKqJ2QAhTE93pE5tUUeyRX/asApxF2s22xBqzpUumsde
+         QuO6sfBz/KlfFsIYyuevA/d1T/gQkeZ9F3WDEyQ0n6AP6AdrD+KGcBBSkfeRmsDwoI
+         FcM+fLSzlUjtQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 08, 2021 at 08:35:31PM +0000, Song Bao Hua (Barry Song) wrote:
+On 2/8/21 10:01 AM, Minchan Kim wrote:
+> Since CMA is getting used more widely, it's more important to
+> keep monitoring CMA statistics for system health since it's
+> directly related to user experience.
 > 
+> This patch introduces sysfs for the CMA and exposes stats below
+> to keep monitor for telemetric in the system.
+
+Or:
+
+This patch introduces sysfs statistics for CMA, in order to provide
+some basic monitoring of the CMA allocator.
+
 > 
-> > From: Jason Gunthorpe [mailto:jgg@ziepe.ca]
-> > Sent: Tuesday, February 9, 2021 7:34 AM
-> > To: David Hildenbrand <david@redhat.com>
-> > Cc: Wangzhou (B) <wangzhou1@hisilicon.com>; linux-kernel@vger.kernel.org;
-> > iommu@lists.linux-foundation.org; linux-mm@kvack.org;
-> > linux-arm-kernel@lists.infradead.org; linux-api@vger.kernel.org; Andrew
-> > Morton <akpm@linux-foundation.org>; Alexander Viro <viro@zeniv.linux.org.uk>;
-> > gregkh@linuxfoundation.org; Song Bao Hua (Barry Song)
-> > <song.bao.hua@hisilicon.com>; kevin.tian@intel.com;
-> > jean-philippe@linaro.org; eric.auger@redhat.com; Liguozhu (Kenneth)
-> > <liguozhu@hisilicon.com>; zhangfei.gao@linaro.org; chensihang (A)
-> > <chensihang1@hisilicon.com>
-> > Subject: Re: [RFC PATCH v3 1/2] mempinfd: Add new syscall to provide memory
-> > pin
-> > 
-> > On Mon, Feb 08, 2021 at 09:14:28AM +0100, David Hildenbrand wrote:
-> > 
-> > > People are constantly struggling with the effects of long term pinnings
-> > > under user space control, like we already have with vfio and RDMA.
-> > >
-> > > And here we are, adding yet another, easier way to mess with core MM in the
-> > > same way. This feels like a step backwards to me.
-> > 
-> > Yes, this seems like a very poor candidate to be a system call in this
-> > format. Much too narrow, poorly specified, and possibly security
-> > implications to allow any process whatsoever to pin memory.
-> > 
-> > I keep encouraging people to explore a standard shared SVA interface
-> > that can cover all these topics (and no, uaccel is not that
-> > interface), that seems much more natural.
-> > 
-> > I still haven't seen an explanation why DMA is so special here,
-> > migration and so forth jitter the CPU too, environments that care
-> > about jitter have to turn this stuff off.
+>   * the number of CMA page allocation attempts
+>   * the number of CMA page allocation failures
 > 
-> This paper has a good explanation:
-> https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=7482091
+> With those per-CMA statistics, we could know how CMA allocadtion
+> failure rate for each usecases.
+
+Maybe:
+
+These two values allow the user to calcuate the allocation
+failure rate for each CMA area.
+
 > 
-> mainly because page fault can go directly to the CPU and we have
-> many CPUs. But IO Page Faults go a different way, thus mean much
-> higher latency 3-80x slower than page fault:
-> events in hardware queue -> Interrupts -> cpu processing page fault
-> -> return events to iommu/device -> continue I/O.
+> e.g.)
+>    /sys/kernel/mm/cma/WIFI/cma_alloc_pages_[attempt|fail]
+>    /sys/kernel/mm/cma/SENSOR/cma_alloc_pages_[attempt|fail]
+>    /sys/kernel/mm/cma/BLUETOOTH/cma_alloc_pages_[attempt|fail]
+> 
+> Signed-off-by: Minchan Kim <minchan@kernel.org>
+> ---
+> 
+>  From v1 - https://lore.kernel.org/linux-mm/20210203155001.4121868-1-minchan@kernel.org/
+>   * fix sysfs build and refactoring - willy
+>   * rename and drop some attributes - jhubbard
+> 
+>   Documentation/ABI/testing/sysfs-kernel-mm-cma |  25 ++++
+>   mm/Kconfig                                    |   7 ++
+>   mm/Makefile                                   |   1 +
+>   mm/cma.c                                      |   6 +-
+>   mm/cma.h                                      |  18 +++
+>   mm/cma_sysfs.c                                | 114 ++++++++++++++++++
+>   6 files changed, 170 insertions(+), 1 deletion(-)
+>   create mode 100644 Documentation/ABI/testing/sysfs-kernel-mm-cma
+>   create mode 100644 mm/cma_sysfs.c
+> 
+> diff --git a/Documentation/ABI/testing/sysfs-kernel-mm-cma b/Documentation/ABI/testing/sysfs-kernel-mm-cma
+> new file mode 100644
+> index 000000000000..68bdcc8c7681
+> --- /dev/null
+> +++ b/Documentation/ABI/testing/sysfs-kernel-mm-cma
+> @@ -0,0 +1,25 @@
+> +What:		/sys/kernel/mm/cma/
+> +Date:		Feb 2021
+> +Contact:	Minchan Kim <minchan@kernel.org>
+> +Description:
+> +		/sys/kernel/mm/cma/ contains a number of subdirectories by
+> +		cma-heap name. The subdirectory contains a number of files
+> +		to represent cma allocation statistics.
+> +
+> +		There are number of files under
+> +				/sys/kernel/mm/cma/<cma-heap-name> directory
+> +
+> +			- cma_alloc_pages_attempt
+> +			- cma_alloc_pages_fail
 
-The justifications for this was migration scenarios and migration is
-short. If you take a fault on what you are migrating only then does it
-slow down the CPU.
+How about this instead:
+Description:
+		/sys/kernel/mm/cma/ contains a subdirectory for each CMA heap name (also
+         sometimes called CMA areas).
 
-Are you also working with HW where the IOMMU becomes invalidated after
-a migration and doesn't reload?
+         Each CMA heap subdirectory (that is, each
+         /sys/kernel/mm/cma/<cma-heap-name> directory) contains the following
+         items:
 
-ie not true SVA but the sort of emulated SVA we see in a lot of
-places?
+			cma_alloc_pages_attempt
+			cma_alloc_pages_fail
 
-It would be much better to work improve that to have closer sync with the
-CPU page table than to use pinning.
 
-Jason
+> +
+> +What:		/sys/kernel/mm/cma/<cma-heap-name>/cma_alloc_pages_attempt
+
+Actually, shall we change that from "attempt" to "attempts"? Otherwise, the
+language is a little odd there.
+
+> +Date:		Feb 2021
+> +Contact:	Minchan Kim <minchan@kernel.org>
+> +Description:
+> +		the number of pages CMA API tried to allocate
+> +
+> +What:		/sys/kernel/mm/cma/<cma-heap-name>/cma_alloc_pages_fail
+> +Date:		Feb 2021
+> +Contact:	Minchan Kim <minchan@kernel.org>
+> +Description:
+> +		the number of pages CMA API failed to allocate
+> diff --git a/mm/Kconfig b/mm/Kconfig
+> index ec35bf406439..ad7e9c065657 100644
+> --- a/mm/Kconfig
+> +++ b/mm/Kconfig
+> @@ -513,6 +513,13 @@ config CMA_DEBUGFS
+>   	help
+>   	  Turns on the DebugFS interface for CMA.
+>   
+> +config CMA_SYSFS
+> +	bool "CMA information through sysfs interface"
+> +	depends on CMA && SYSFS
+> +	help
+> +	  This option exposes some sysfs attributes to get information
+> +	  from CMA.
+> +
+>   config CMA_AREAS
+>   	int "Maximum count of the CMA areas"
+>   	depends on CMA
+> diff --git a/mm/Makefile b/mm/Makefile
+> index b2a564eec27f..0ae764e5b1a8 100644
+> --- a/mm/Makefile
+> +++ b/mm/Makefile
+> @@ -109,6 +109,7 @@ obj-$(CONFIG_CMA)	+= cma.o
+>   obj-$(CONFIG_MEMORY_BALLOON) += balloon_compaction.o
+>   obj-$(CONFIG_PAGE_EXTENSION) += page_ext.o
+>   obj-$(CONFIG_CMA_DEBUGFS) += cma_debug.o
+> +obj-$(CONFIG_CMA_SYSFS)	+= cma_sysfs.o
+
+Remove the unnecessary tab there, none of the other nearby lines have one.
+
+>   obj-$(CONFIG_USERFAULTFD) += userfaultfd.o
+>   obj-$(CONFIG_IDLE_PAGE_TRACKING) += page_idle.o
+>   obj-$(CONFIG_DEBUG_PAGE_REF) += debug_page_ref.o
+> diff --git a/mm/cma.c b/mm/cma.c
+> index 23d4a97c834a..0611202d6e7d 100644
+> --- a/mm/cma.c
+> +++ b/mm/cma.c
+> @@ -447,9 +447,10 @@ struct page *cma_alloc(struct cma *cma, size_t count, unsigned int align,
+>   	offset = cma_bitmap_aligned_offset(cma, align);
+>   	bitmap_maxno = cma_bitmap_maxno(cma);
+>   	bitmap_count = cma_bitmap_pages_to_bits(cma, count);
+> +	cma_sysfs_alloc_count(cma, count);
+>   
+>   	if (bitmap_count > bitmap_maxno)
+> -		return NULL;
+> +		goto out;
+>   
+>   	for (;;) {
+>   		mutex_lock(&cma->lock);
+> @@ -504,6 +505,9 @@ struct page *cma_alloc(struct cma *cma, size_t count, unsigned int align,
+>   			__func__, count, ret);
+>   		cma_debug_show_areas(cma);
+>   	}
+> +out:
+> +	if (!page)
+> +		cma_sysfs_fail(cma, count);
+>   
+>   	pr_debug("%s(): returned %p\n", __func__, page);
+>   	return page;
+> diff --git a/mm/cma.h b/mm/cma.h
+> index 42ae082cb067..49a8ceddd9e8 100644
+> --- a/mm/cma.h
+> +++ b/mm/cma.h
+> @@ -3,6 +3,14 @@
+>   #define __MM_CMA_H__
+>   
+>   #include <linux/debugfs.h>
+> +#include <linux/kobject.h>
+> +
+> +struct cma_stat {
+> +	spinlock_t lock;
+> +	unsigned long pages_attempt;	/* the number of CMA page allocation attempts */
+> +	unsigned long pages_fail;	/* the number of CMA page allocation failures */
+> +	struct kobject kobj;
+> +};
+>   
+>   struct cma {
+>   	unsigned long   base_pfn;
+> @@ -16,6 +24,9 @@ struct cma {
+>   	struct debugfs_u32_array dfs_bitmap;
+>   #endif
+>   	char name[CMA_MAX_NAME];
+> +#ifdef CONFIG_CMA_SYSFS
+> +	struct cma_stat	*stat;
+
+This should not be a pointer. By making it a pointer, you've added a bunch of pointless
+extra code to the implementation.
+
+Here's a diff to implement the non-pointer way, and also to fix a build error in this
+patch (missing semicolon):
+
+diff --git a/Documentation/ABI/testing/sysfs-kernel-mm-cma 
+b/Documentation/ABI/testing/sysfs-kernel-mm-cma
+index 68bdcc8c7681..f3769b4e1a3c 100644
+--- a/Documentation/ABI/testing/sysfs-kernel-mm-cma
++++ b/Documentation/ABI/testing/sysfs-kernel-mm-cma
+@@ -2,15 +2,15 @@ What:		/sys/kernel/mm/cma/
+  Date:		Feb 2021
+  Contact:	Minchan Kim <minchan@kernel.org>
+  Description:
+-		/sys/kernel/mm/cma/ contains a number of subdirectories by
+-		cma-heap name. The subdirectory contains a number of files
+-		to represent cma allocation statistics.
++		/sys/kernel/mm/cma/ contains a subdirectory for each CMA heap name (also
++        sometimes called CMA areas).
+
+-		There are number of files under
+-				/sys/kernel/mm/cma/<cma-heap-name> directory
++        Each CMA heap subdirectory (that is, each
++        /sys/kernel/mm/cma/<cma-heap-name> directory) contains the following
++        items:
+
+-			- cma_alloc_pages_attempt
+-			- cma_alloc_pages_fail
++			cma_alloc_pages_attempt
++			cma_alloc_pages_fail
+
+  What:		/sys/kernel/mm/cma/<cma-heap-name>/cma_alloc_pages_attempt
+  Date:		Feb 2021
+diff --git a/mm/cma.h b/mm/cma.h
+index 49a8ceddd9e8..1e109830f553 100644
+--- a/mm/cma.h
++++ b/mm/cma.h
+@@ -25,7 +25,7 @@ struct cma {
+  #endif
+  	char name[CMA_MAX_NAME];
+  #ifdef CONFIG_CMA_SYSFS
+-	struct cma_stat	*stat;
++	struct cma_stat	stat;
+  #endif
+  };
+
+diff --git a/mm/cma_sysfs.c b/mm/cma_sysfs.c
+index 1f6b9f785825..52905694b6b7 100644
+--- a/mm/cma_sysfs.c
++++ b/mm/cma_sysfs.c
+@@ -11,20 +11,18 @@
+
+  #include "cma.h"
+
+-static struct cma_stat *cma_stats;
+-
+  void cma_sysfs_alloc_count(struct cma *cma, size_t count)
+  {
+-	spin_lock(&cma->stat->lock);
+-	cma->stat->pages_attempt += count;
+-	spin_unlock(&cma->stat->lock);
++	spin_lock(&cma->stat.lock);
++	cma->stat.pages_attempt += count;
++	spin_unlock(&cma->stat.lock);
+  }
+
+  void cma_sysfs_fail(struct cma *cma, size_t count)
+  {
+-	spin_lock(&cma->stat->lock);
+-	cma->stat->pages_fail += count;
+-	spin_unlock(&cma->stat->lock);
++	spin_lock(&cma->stat.lock);
++	cma->stat.pages_fail += count;
++	spin_unlock(&cma->stat.lock);
+  }
+
+  #define CMA_ATTR_RO(_name) \
+@@ -50,13 +48,6 @@ static ssize_t cma_alloc_pages_fail_show(struct kobject *kobj,
+  }
+  CMA_ATTR_RO(cma_alloc_pages_fail);
+
+-static void cma_kobj_release(struct kobject *kobj)
+-{
+-	struct cma_stat *stat = container_of(kobj, struct cma_stat, kobj);
+-
+-	kfree(stat);
+-}
+-
+  static struct attribute *cma_attrs[] = {
+  	&cma_alloc_pages_attempt_attr.attr,
+  	&cma_alloc_pages_fail_attr.attr,
+@@ -65,7 +56,6 @@ static struct attribute *cma_attrs[] = {
+  ATTRIBUTE_GROUPS(cma);
+
+  static struct kobj_type cma_ktype = {
+-	.release = cma_kobj_release,
+  	.sysfs_ops = &kobj_sysfs_ops,
+  	.default_groups = cma_groups
+  };
+@@ -81,32 +71,23 @@ static int __init cma_sysfs_init(void)
+  		return -ENOMEM;
+  	}
+
+-	cma_stats = kzalloc(array_size(sizeof(struct cma_stat),
+-				cma_area_count), GFP_KERNEL);
+-	if (!cma_stats) {
+-		pr_err("failed to create cma_stats\n");
+-		goto out;
+-	}
+-
+  	do {
+  		cma = &cma_areas[i];
+-		cma->stat = &cma_stats[i];
+-		spin_lock_init(&cma->stat->lock);
+-		if (kobject_init_and_add(&cma->stat->kobj, &cma_ktype,
++		spin_lock_init(&cma->stat.lock);
++		if (kobject_init_and_add(&cma->stat.kobj, &cma_ktype,
+  					cma_kobj, "%s", cma->name)) {
+-			kobject_put(&cma->stat->kobj);
++			kobject_put(&cma->stat.kobj);
+  			goto out;
+  		}
+-	} while (++i < cma_area_count)
++	} while (++i < cma_area_count);
+
+  	return 0;
+  out:
+  	while (--i >= 0) {
+  		cma = &cma_areas[i];
+-		kobject_put(&cma->stat->kobj);
++		kobject_put(&cma->stat.kobj);
+  	}
+
+-	kfree(cma_stats);
+  	kobject_put(cma_kobj);
+
+  	return -ENOMEM;
+
+> +#endif
+>   };
+>   
+>   extern struct cma cma_areas[MAX_CMA_AREAS];
+> @@ -26,4 +37,11 @@ static inline unsigned long cma_bitmap_maxno(struct cma *cma)
+>   	return cma->count >> cma->order_per_bit;
+>   }
+>   
+> +#ifdef CONFIG_CMA_SYSFS
+> +void cma_sysfs_alloc_count(struct cma *cma, size_t count);
+> +void cma_sysfs_fail(struct cma *cma, size_t count);
+> +#else
+> +static inline void cma_sysfs_alloc_count(struct cma *cma, size_t count) {};
+> +static inline void cma_sysfs_fail(struct cma *cma, size_t count) {};
+> +#endif
+>   #endif
+> diff --git a/mm/cma_sysfs.c b/mm/cma_sysfs.c
+> new file mode 100644
+> index 000000000000..1f6b9f785825
+> --- /dev/null
+> +++ b/mm/cma_sysfs.c
+> @@ -0,0 +1,114 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * CMA SysFS Interface
+> + *
+> + * Copyright (c) 2021 Minchan Kim <minchan@kernel.org>
+> + */
+> +
+> +#include <linux/cma.h>
+> +#include <linux/kernel.h>
+> +#include <linux/slab.h>
+> +
+> +#include "cma.h"
+> +
+> +static struct cma_stat *cma_stats;
+
+I don't know what that's for but it definitely is not needed if you make cma.stat
+not a pointer, and not in any other case either.
+
+> +
+> +void cma_sysfs_alloc_count(struct cma *cma, size_t count)
+> +{
+> +	spin_lock(&cma->stat->lock);
+> +	cma->stat->pages_attempt += count;
+> +	spin_unlock(&cma->stat->lock);
+> +}
+> +
+> +void cma_sysfs_fail(struct cma *cma, size_t count)
+> +{
+> +	spin_lock(&cma->stat->lock);
+> +	cma->stat->pages_fail += count;
+> +	spin_unlock(&cma->stat->lock);
+> +}
+> +
+> +#define CMA_ATTR_RO(_name) \
+> +	static struct kobj_attribute _name##_attr = __ATTR_RO(_name)
+> +
+> +static struct kobject *cma_kobj;
+> +
+> +static ssize_t cma_alloc_pages_attempt_show(struct kobject *kobj,
+> +			struct kobj_attribute *attr, char *buf)
+> +{
+> +	struct cma_stat *stat = container_of(kobj, struct cma_stat, kobj);
+> +
+> +	return sysfs_emit(buf, "%lu\n", stat->pages_attempt);
+> +}
+> +CMA_ATTR_RO(cma_alloc_pages_attempt);
+> +
+> +static ssize_t cma_alloc_pages_fail_show(struct kobject *kobj,
+> +			struct kobj_attribute *attr, char *buf)
+> +{
+> +	struct cma_stat *stat = container_of(kobj, struct cma_stat, kobj);
+> +
+> +	return sysfs_emit(buf, "%lu\n", stat->pages_fail);
+> +}
+> +CMA_ATTR_RO(cma_alloc_pages_fail);
+> +
+> +static void cma_kobj_release(struct kobject *kobj)
+> +{
+> +	struct cma_stat *stat = container_of(kobj, struct cma_stat, kobj);
+> +
+> +	kfree(stat);
+> +}
+> +
+> +static struct attribute *cma_attrs[] = {
+> +	&cma_alloc_pages_attempt_attr.attr,
+> +	&cma_alloc_pages_fail_attr.attr,
+> +	NULL,
+> +};
+> +ATTRIBUTE_GROUPS(cma);
+> +
+> +static struct kobj_type cma_ktype = {
+> +	.release = cma_kobj_release,
+> +	.sysfs_ops = &kobj_sysfs_ops,
+> +	.default_groups = cma_groups
+> +};
+> +
+> +static int __init cma_sysfs_init(void)
+> +{
+> +	int i = 0;
+> +	struct cma *cma;
+> +
+> +	cma_kobj = kobject_create_and_add("cma", mm_kobj);
+> +	if (!cma_kobj) {
+> +		pr_err("failed to create cma kobject\n");
+> +		return -ENOMEM;
+> +	}
+> +
+> +	cma_stats = kzalloc(array_size(sizeof(struct cma_stat),
+> +				cma_area_count), GFP_KERNEL);
+> +	if (!cma_stats) {
+> +		pr_err("failed to create cma_stats\n");
+> +		goto out;
+> +	}
+> +
+> +	do {
+> +		cma = &cma_areas[i];
+> +		cma->stat = &cma_stats[i];
+> +		spin_lock_init(&cma->stat->lock);
+> +		if (kobject_init_and_add(&cma->stat->kobj, &cma_ktype,
+> +					cma_kobj, "%s", cma->name)) {
+> +			kobject_put(&cma->stat->kobj);
+> +			goto out;
+> +		}
+> +	} while (++i < cma_area_count)
+
+This clearly is not going to compile! Don't forget to build and test the
+patches.
+
+> +
+> +	return 0;
+> +out:
+> +	while (--i >= 0) {
+> +		cma = &cma_areas[i];
+> +		kobject_put(&cma->stat->kobj);
+> +	}
+> +
+> +	kfree(cma_stats);
+> +	kobject_put(cma_kobj);
+> +
+> +	return -ENOMEM;
+> +}
+> +subsys_initcall(cma_sysfs_init);
+> 
+
+thanks,
+-- 
+John Hubbard
+NVIDIA
