@@ -2,119 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B473D3128DE
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 03:03:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0660D3128E4
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 03:20:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229719AbhBHCCF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Feb 2021 21:02:05 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:55664 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229570AbhBHCCC (ORCPT
+        id S229618AbhBHCSp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Feb 2021 21:18:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55422 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229565AbhBHCSo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Feb 2021 21:02:02 -0500
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 11820AkW123340;
-        Sun, 7 Feb 2021 20:00:10 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1612749610;
-        bh=cUtFIfOlkE66hKZ1iSDwIL9jGzTqS4QxLAUcpT4MTbM=;
-        h=Subject:From:To:CC:References:Date:In-Reply-To;
-        b=apsu4RILEZPLAGEaHnF7AHIxBXnqVsHiIrfJNRUxWE9k4p00Fibsx4Hh8JAMM5eGc
-         MSTyzFqD8sBnIJ562Xr7lFcGOEb7I8Q/G3tid/MpGf6Iygj74Mhbofy8hM+CD7d/kW
-         Qq2+En/2/+KkTOGFb+zks4j20TMRza3RHrWg72NM=
-Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 11820ANp120619
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Sun, 7 Feb 2021 20:00:10 -0600
-Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Sun, 7 Feb
- 2021 20:00:09 -0600
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE100.ent.ti.com
- (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Sun, 7 Feb 2021 20:00:09 -0600
-Received: from [10.250.232.75] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 118205jW070770;
-        Sun, 7 Feb 2021 20:00:06 -0600
-Subject: Re: [PATCH v7 0/2] PCI: cadence: Retrain Link to work around Gen2
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-To:     Nadeem Athani <nadeem@cadence.com>, <tjoseph@cadence.com>,
-        <lorenzo.pieralisi@arm.com>, <robh@kernel.org>,
-        <bhelgaas@google.com>, <linux-omap@vger.kernel.org>,
-        <linux-pci@vger.kernel.org>,
+        Sun, 7 Feb 2021 21:18:44 -0500
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38C73C061756
+        for <linux-kernel@vger.kernel.org>; Sun,  7 Feb 2021 18:18:04 -0800 (PST)
+Received: by mail-pj1-x1035.google.com with SMTP id s24so7370071pjp.5
+        for <linux-kernel@vger.kernel.org>; Sun, 07 Feb 2021 18:18:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :mime-version;
+        bh=GAcPfGgqFaC7AQHCBuJv2BWxwOPW6rvQxJdX43h7J8I=;
+        b=RFsozuFj8ctQYWnOlHXA/Y/S/JT+BT2d1zgMTOBparInBD0Zft//MwDz9Pv3qTpRo6
+         cYnt4/eMEoTNmZaIjVO2TLhCmJ5C57vV4qvNpNJbSbEiEAYxF4yWJG4MXu8cAsWDTDo+
+         WbVbEUREEq2v/o6uVpD3zSkYM6tjdfLSWrvXySJCEv2KSD78mt+euMZNuzFuILuIrev/
+         gekJ7tvJj2hVKKklNDYczXUA/ko/19HwJDowAenLYVLrIG2SP/7gwDb1vJahO8ndfhgh
+         01X02jthq8tr3Gyytp+nR/cZpF484dMC3l0bxJqjGc6dIl8lMe9epYDH0TO4L9WbxQHy
+         xe+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:mime-version;
+        bh=GAcPfGgqFaC7AQHCBuJv2BWxwOPW6rvQxJdX43h7J8I=;
+        b=TIVRzCZ27DJL+8a1oF3/86H4T3xqz9guWCShgueAWbCJwoeX3S/+HP2twDF0DWIYPE
+         J0dGnn8DC+ofegqQlZVwGhq83kBn2Yi0pXjuyTQ+dY1WUq5HT4rH992gUFp+Q/uMeOdK
+         ByYOzw9XICKKGAIVEnD1XOkR7sBNmDNBSMhkXbnlwUXyuIbO1FMCPAP2PWOO6p0oxtBI
+         cgdpT4S7LGZxybVPs85f26SCmdNJlPh3oEI9yK1JDM50JJe+4BV5jm9EWnPgzGg4+kNu
+         DRu0j+ZX+wRCNDANjFix94qCe3AmZNCt90ToEZJ2R8fndbr3031MP3gy+mIvOiAbMlqK
+         LCbw==
+X-Gm-Message-State: AOAM532IWu7WvGjumO2MPKiqWmVT/zraCsCjb3fssNUJ5SZlSqoGy7of
+        ukwERiB98ykX1Rin59FniZmdn7t/PIHA8w==
+X-Google-Smtp-Source: ABdhPJzp7qfYhmXBu6bdi33JxaukusthN+TP0Ot/ZqOrf1qCP06tl6JjG1EiU2ivo+TK3WKChum8ew==
+X-Received: by 2002:a17:90a:b782:: with SMTP id m2mr14552165pjr.220.1612750683085;
+        Sun, 07 Feb 2021 18:18:03 -0800 (PST)
+Received: from [2620:15c:17:3:8d40:a1e2:ae2d:6c53] ([2620:15c:17:3:8d40:a1e2:ae2d:6c53])
+        by smtp.gmail.com with ESMTPSA id f33sm354958pjk.17.2021.02.07.18.18.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 07 Feb 2021 18:18:02 -0800 (PST)
+Date:   Sun, 7 Feb 2021 18:18:01 -0800 (PST)
+From:   David Rientjes <rientjes@google.com>
+To:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+cc:     Matthew Wilcox <willy@infradead.org>,
+        "Wangzhou (B)" <wangzhou1@hisilicon.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-arm-kernel@lists.infradead.org" 
         <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <mparab@cadence.com>, <sjakhade@cadence.com>,
-        <pthombar@cadence.com>
-References: <20201230120515.2348-1-nadeem@cadence.com>
- <15abdca0-d1e1-64b7-4a9a-d7549f035e01@ti.com>
-Message-ID: <c9cd405b-024c-cc80-586a-7fd3d28dfd96@ti.com>
-Date:   Mon, 8 Feb 2021 07:30:04 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "jgg@ziepe.ca" <jgg@ziepe.ca>,
+        "kevin.tian@intel.com" <kevin.tian@intel.com>,
+        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "Liguozhu (Kenneth)" <liguozhu@hisilicon.com>,
+        "zhangfei.gao@linaro.org" <zhangfei.gao@linaro.org>,
+        "chensihang (A)" <chensihang1@hisilicon.com>
+Subject: RE: [RFC PATCH v3 1/2] mempinfd: Add new syscall to provide memory
+ pin
+In-Reply-To: <f4b2d7db8a1047d9952cbbfaf9e27824@hisilicon.com>
+Message-ID: <90aca1e9-61b5-88d-d28c-369e6973559e@google.com>
+References: <1612685884-19514-1-git-send-email-wangzhou1@hisilicon.com> <1612685884-19514-2-git-send-email-wangzhou1@hisilicon.com> <20210207213409.GL308988@casper.infradead.org> <f4b2d7db8a1047d9952cbbfaf9e27824@hisilicon.com>
 MIME-Version: 1.0
-In-Reply-To: <15abdca0-d1e1-64b7-4a9a-d7549f035e01@ti.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lorenzo, Rob,
+On Sun, 7 Feb 2021, Song Bao Hua (Barry Song) wrote:
 
-On 12/01/21 12:45 pm, Kishon Vijay Abraham I wrote:
+> NUMA balancer is just one of many reasons for page migration. Even one
+> simple alloc_pages() can cause memory migration in just single NUMA
+> node or UMA system.
 > 
+> The other reasons for page migration include but are not limited to:
+> * memory move due to CMA
+> * memory move due to huge pages creation
 > 
-> On 30/12/20 5:35 pm, Nadeem Athani wrote:
->> Cadence controller will not initiate autonomous speed change if strapped
->> as Gen2. The Retrain Link bit is set as quirk to enable this speed change.
->> Adding a quirk flag for defective IP. In future IP revisions this will not
->> be applicable.
->>
->> Version history:
->> Changes in v7:
->> - Changing the commit title of patch 1 in this series.
->> - Added a return value for function cdns_pcie_retrain().
->> Changes in v6:
->> - Move the position of function cdns_pcie_host_wait_for_link to remove
->>   compilation error. No changes in code. Separate patch for this.
->> Changes in v5:
->> - Remove the compatible string based setting of quirk flag.
->> - Removed additional Link Up Check
->> - Removed quirk from pcie-cadence-plat.c and added in pci-j721e.c
->> Changes in v4:
->> - Added a quirk flag based on a new compatible string.
->> - Change of api for link up: cdns_pcie_host_wait_for_link().
->> Changes in v3:
->> - To set retrain link bit,checking device capability & link status.
->> - 32bit read in place of 8bit.
->> - Minor correction in patch comment.
->> - Change in variable & macro name.
->> Changes in v2:
->> - 16bit read in place of 8bit.
+> Hardly we can ask users to disable the COMPACTION, CMA and Huge Page
+> in the whole system.
 > 
-> Could get GEN2 card enumerated in GEN2 mode in J7ES EVM.
-> 
-> Tested-by: Kishon Vijay Abraham I <kishon@ti.com>
 
-Can this series be merged?
+What about only for mlocked memory, i.e. disable 
+vm.compact_unevictable_allowed?
 
-Thanks
-Kishon
+Adding syscalls is a big deal, we can make a reasonable inference that 
+we'll have to support this forever if it's merged.  I haven't seen mention 
+of what other unevictable memory *should* be migratable that would be 
+adversely affected if we disable that sysctl.  Maybe that gets you part of 
+the way there and there are some other deficiencies, but it seems like a 
+good start would be to describe how CONFIG_NUMA_BALANCING=n + 
+vm.compact_unevcitable_allowed + mlock() doesn't get you mostly there and 
+then look into what's missing.
 
-> 
-> Thanks
-> Kishon
->>
->> Nadeem Athani (2):
->>   PCI: cadence: Shifting of a function to support new code.
->>   PCI: cadence: Retrain Link to work around Gen2 training defect.
->>
->>  drivers/pci/controller/cadence/pci-j721e.c         |  3 +
->>  drivers/pci/controller/cadence/pcie-cadence-host.c | 70 ++++++++++++++++------
->>  drivers/pci/controller/cadence/pcie-cadence.h      | 11 +++-
->>  3 files changed, 65 insertions(+), 19 deletions(-)
->>
+If it's a very compelling case where there simply are no alternatives, it 
+would make sense.  Alternative is to find a more generic way, perhaps in 
+combination with vm.compact_unevictable_allowed, to achieve what you're 
+looking to do that can be useful even beyond your originally intended use 
+case.
