@@ -2,86 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82375313E88
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 20:10:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45E4A313E7D
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 20:09:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236137AbhBHTIS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 14:08:18 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:8163 "EHLO pegase1.c-s.fr"
+        id S236166AbhBHTIZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 14:08:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43250 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235046AbhBHRrp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 12:47:45 -0500
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4DZD420fkxzB09Zf;
-        Mon,  8 Feb 2021 18:46:58 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id bYGNs9EgU_2X; Mon,  8 Feb 2021 18:46:58 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4DZD416pSZzB09Zc;
-        Mon,  8 Feb 2021 18:46:57 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 99D6D8B7B3;
-        Mon,  8 Feb 2021 18:47:03 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id tjn8MpdDVxWz; Mon,  8 Feb 2021 18:47:03 +0100 (CET)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 32AA48B7B2;
-        Mon,  8 Feb 2021 18:47:03 +0100 (CET)
-Subject: Re: [PATCH v4 14/23] powerpc/syscall: Save r3 in regs->orig_r3
-To:     Nicholas Piggin <npiggin@gmail.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Michael Ellerman <mpe@ellerman.id.au>, msuchanek@suse.de,
-        Paul Mackerras <paulus@samba.org>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-References: <cover.1611585031.git.christophe.leroy@csgroup.eu>
- <5d375bea8f519924e110842f6b0d05e83cd04470.1611585031.git.christophe.leroy@csgroup.eu>
- <1611656262.d3l09kg9o2.astroid@bobo.none>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <792bd9e7-64c3-a783-7a42-d306d46e4aca@csgroup.eu>
-Date:   Mon, 8 Feb 2021 18:47:00 +0100
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S235053AbhBHRrt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 12:47:49 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2798164EA4;
+        Mon,  8 Feb 2021 17:47:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612806428;
+        bh=8OWNI57mi68SyM/MyTZHViIxZAiyeIOPISvzIG6bCes=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=V3IxjejXWf5M1birVBIzTGsPJvEW0Yj1RA8UF2OvUeM2UAhchlySdJx6T2myE1XE3
+         J8rX5cbUOyEdKhuFrb5qscmwKfZvHdsHWFGV24ryrny7VdO6349IcgZlqzw060DaWr
+         UlyNYeOrqZWHL72zQLIB6IdMmg3fXg5T9jZUTpCPO3P1qBnrGr46f9Cjmfo4FJfT2T
+         OM+/qGFmv+tXp90rwPgiHO6TH0yQWCbWzISfTyyLChp2Y6veaowajV8ACeCCb5ad5x
+         YW3JpeFfxJ9LNNv8mQPJCjsYpEQadfd097Q7t3kuCbtSMSZM4n0JbYb49AAFk/wz++
+         /hiqc6gkAaEfw==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <1611656262.d3l09kg9o2.astroid@bobo.none>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210118041156.50016-6-manivannan.sadhasivam@linaro.org>
+References: <20210118041156.50016-1-manivannan.sadhasivam@linaro.org> <20210118041156.50016-6-manivannan.sadhasivam@linaro.org>
+Subject: Re: [PATCH v3 5/5] clk: qcom: Add SDX55 APCS clock controller support
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     viresh.kumar@linaro.org, ulf.hansson@linaro.org,
+        bjorn.andersson@linaro.org, agross@kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        jassisinghbrar@gmail.com, mturquette@baylibre.com,
+        robh+dt@kernel.org
+Date:   Mon, 08 Feb 2021 09:47:06 -0800
+Message-ID: <161280642697.76967.2863036519515305315@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Quoting Manivannan Sadhasivam (2021-01-17 20:11:56)
+> Add a driver for the SDX55 APCS clock controller. It is part of the APCS
+> hardware block, which among other things implements also a combined mux
+> and half integer divider functionality. The APCS clock controller has 3
+> parent clocks:
+>=20
+> 1. Board XO
+> 2. Fixed rate GPLL0
+> 3. A7 PLL
+>=20
+> This is required for enabling CPU frequency scaling on SDX55-based
+> platforms.
+>=20
+> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> ---
 
-
-Le 26/01/2021 à 11:18, Nicholas Piggin a écrit :
-> Excerpts from Christophe Leroy's message of January 26, 2021 12:48 am:
->> Save r3 in regs->orig_r3 in system_call_exception()
->>
->> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
->> ---
->>   arch/powerpc/kernel/entry_64.S | 1 -
->>   arch/powerpc/kernel/syscall.c  | 2 ++
->>   2 files changed, 2 insertions(+), 1 deletion(-)
->>
->> diff --git a/arch/powerpc/kernel/entry_64.S b/arch/powerpc/kernel/entry_64.S
->> index aa1af139d947..a562a4240aa6 100644
->> --- a/arch/powerpc/kernel/entry_64.S
->> +++ b/arch/powerpc/kernel/entry_64.S
->> @@ -278,7 +278,6 @@ END_BTB_FLUSH_SECTION
->>   	std	r10,_LINK(r1)
->>   	std	r11,_TRAP(r1)
->>   	std	r12,_CCR(r1)
->> -	std	r3,ORIG_GPR3(r1)
->>   	addi	r10,r1,STACK_FRAME_OVERHEAD
->>   	ld	r11,exception_marker@toc(r2)
->>   	std	r11,-16(r10)		/* "regshere" marker */
-> 
-> This misses system_call_vectored.
-
-Oops yes, this patch was cooked before SCV where introduced. Fixes in v5.
-
-Thanks
-Christophe
+Applied to clk-next
