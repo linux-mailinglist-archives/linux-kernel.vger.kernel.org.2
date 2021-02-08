@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B784313833
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 16:39:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BE8A31383F
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 16:43:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234081AbhBHPiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 10:38:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52062 "EHLO mail.kernel.org"
+        id S234045AbhBHPlI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 10:41:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52046 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232174AbhBHPE5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 10:04:57 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AE3AE64E88;
-        Mon,  8 Feb 2021 15:03:45 +0000 (UTC)
+        id S232292AbhBHPGR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 10:06:17 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DB18064EDC;
+        Mon,  8 Feb 2021 15:04:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612796626;
-        bh=qxbqL2wn2WiMvVxuWXwglespm/qgMOjOSaH1vLuW1G8=;
+        s=korg; t=1612796686;
+        bh=fW+Erbrqny4By5bngQoLTZqJRRW8VgagnPNDxzSofz4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AMrnFJWw8GedMgwtUgIyaf1HnqgdLQ1w/AxQssouSO74biA1wA2vyc0aEgWQMub9A
-         7Rsvz8Zve8HN0zPfawkhB61psDxhJGMSNJ0wAA7cJhwND6+Pfr8sLhPN0lns+0yw7x
-         czwDuZHY9ZCsh1YLJuvgcV1kJHr2MyrSSY1yuwqw=
+        b=c+MUlj1UXV5r20o7BLBRcSjRIPMgjTZesPcRMlAC0jXMY6hu9tCEgz4bQ718AvHGQ
+         KW4N/Io0NdYHrQNtvlrBR5tHResRIAItOYpjZ4bAkWNwsAJBIW373u8jIS8g/k/B/E
+         7hPFt1RAbafVxY7WJXQ5IKQgr8IePKl0cPMPWdq0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Felipe Balbi <balbi@kernel.org>,
-        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH 4.4 12/38] usb: udc: core: Use lock when write to soft_connect
-Date:   Mon,  8 Feb 2021 16:00:34 +0100
-Message-Id: <20210208145805.783244825@linuxfoundation.org>
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Lee Jones <lee.jones@linaro.org>
+Subject: [PATCH 4.9 09/43] futex: Provide and use pi_state_update_owner()
+Date:   Mon,  8 Feb 2021 16:00:35 +0100
+Message-Id: <20210208145806.674855687@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210208145805.279815326@linuxfoundation.org>
-References: <20210208145805.279815326@linuxfoundation.org>
+In-Reply-To: <20210208145806.281758651@linuxfoundation.org>
+References: <20210208145806.281758651@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,59 +40,115 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+From: Thomas Gleixner <tglx@linutronix.de>
 
-commit c28095bc99073ddda65e4f31f6ae0d908d4d5cd8 upstream
+[ Upstream commit c5cade200ab9a2a3be9e7f32a752c8d86b502ec7 ]
 
-Use lock to guard against concurrent access for soft-connect/disconnect
-operations when writing to soft_connect sysfs.
+Updating pi_state::owner is done at several places with the same
+code. Provide a function for it and use that at the obvious places.
 
-Fixes: 2ccea03a8f7e ("usb: gadget: introduce UDC Class")
+This is also a preparation for a bug fix to avoid yet another copy of the
+same code or alternatively introducing a completely unpenetratable mess of
+gotos.
+
+Originally-by: Peter Zijlstra <peterz@infradead.org>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Cc: stable@vger.kernel.org
-Acked-by: Felipe Balbi <balbi@kernel.org>
-Signed-off-by: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
-Link: https://lore.kernel.org/r/338ea01fbd69b1985ef58f0f59af02c805ddf189.1610611437.git.Thinh.Nguyen@synopsys.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-[sudip: manual backporting to old file]
-Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/gadget/udc/udc-core.c |   13 ++++++++++---
- 1 file changed, 10 insertions(+), 3 deletions(-)
+ kernel/futex.c |   64 +++++++++++++++++++++++++++++----------------------------
+ 1 file changed, 33 insertions(+), 31 deletions(-)
 
---- a/drivers/usb/gadget/udc/udc-core.c
-+++ b/drivers/usb/gadget/udc/udc-core.c
-@@ -612,10 +612,13 @@ static ssize_t usb_udc_softconn_store(st
- 		struct device_attribute *attr, const char *buf, size_t n)
- {
- 	struct usb_udc		*udc = container_of(dev, struct usb_udc, dev);
-+	ssize_t			ret;
- 
-+	mutex_lock(&udc_lock);
- 	if (!udc->driver) {
- 		dev_err(dev, "soft-connect without a gadget driver\n");
--		return -EOPNOTSUPP;
-+		ret = -EOPNOTSUPP;
-+		goto out;
- 	}
- 
- 	if (sysfs_streq(buf, "connect")) {
-@@ -627,10 +630,14 @@ static ssize_t usb_udc_softconn_store(st
- 		usb_gadget_udc_stop(udc);
- 	} else {
- 		dev_err(dev, "unsupported command '%s'\n", buf);
--		return -EINVAL;
-+		ret = -EINVAL;
-+		goto out;
- 	}
- 
--	return n;
-+	ret = n;
-+out:
-+	mutex_unlock(&udc_lock);
-+	return ret;
+--- a/kernel/futex.c
++++ b/kernel/futex.c
+@@ -837,6 +837,29 @@ static struct futex_pi_state * alloc_pi_
+ 	return pi_state;
  }
- static DEVICE_ATTR(soft_connect, S_IWUSR, NULL, usb_udc_softconn_store);
  
++static void pi_state_update_owner(struct futex_pi_state *pi_state,
++				  struct task_struct *new_owner)
++{
++	struct task_struct *old_owner = pi_state->owner;
++
++	lockdep_assert_held(&pi_state->pi_mutex.wait_lock);
++
++	if (old_owner) {
++		raw_spin_lock(&old_owner->pi_lock);
++		WARN_ON(list_empty(&pi_state->list));
++		list_del_init(&pi_state->list);
++		raw_spin_unlock(&old_owner->pi_lock);
++	}
++
++	if (new_owner) {
++		raw_spin_lock(&new_owner->pi_lock);
++		WARN_ON(!list_empty(&pi_state->list));
++		list_add(&pi_state->list, &new_owner->pi_state_list);
++		pi_state->owner = new_owner;
++		raw_spin_unlock(&new_owner->pi_lock);
++	}
++}
++
+ /*
+  * Drops a reference to the pi_state object and frees or caches it
+  * when the last reference is gone.
+@@ -1432,26 +1455,16 @@ static int wake_futex_pi(u32 __user *uad
+ 		else
+ 			ret = -EINVAL;
+ 	}
+-	if (ret) {
+-		raw_spin_unlock_irq(&pi_state->pi_mutex.wait_lock);
+-		return ret;
+-	}
+-
+-	raw_spin_lock(&pi_state->owner->pi_lock);
+-	WARN_ON(list_empty(&pi_state->list));
+-	list_del_init(&pi_state->list);
+-	raw_spin_unlock(&pi_state->owner->pi_lock);
+ 
+-	raw_spin_lock(&new_owner->pi_lock);
+-	WARN_ON(!list_empty(&pi_state->list));
+-	list_add(&pi_state->list, &new_owner->pi_state_list);
+-	pi_state->owner = new_owner;
+-	raw_spin_unlock(&new_owner->pi_lock);
+-
+-	/*
+-	 * We've updated the uservalue, this unlock cannot fail.
+-	 */
+-	deboost = __rt_mutex_futex_unlock(&pi_state->pi_mutex, &wake_q);
++	if (!ret) {
++		/*
++		 * This is a point of no return; once we modified the uval
++		 * there is no going back and subsequent operations must
++		 * not fail.
++		 */
++		pi_state_update_owner(pi_state, new_owner);
++		deboost = __rt_mutex_futex_unlock(&pi_state->pi_mutex, &wake_q);
++	}
+ 
+ 	raw_spin_unlock_irq(&pi_state->pi_mutex.wait_lock);
+ 	spin_unlock(&hb->lock);
+@@ -2353,19 +2366,8 @@ retry:
+ 	 * We fixed up user space. Now we need to fix the pi_state
+ 	 * itself.
+ 	 */
+-	if (pi_state->owner != NULL) {
+-		raw_spin_lock_irq(&pi_state->owner->pi_lock);
+-		WARN_ON(list_empty(&pi_state->list));
+-		list_del_init(&pi_state->list);
+-		raw_spin_unlock_irq(&pi_state->owner->pi_lock);
+-	}
+-
+-	pi_state->owner = newowner;
++	pi_state_update_owner(pi_state, newowner);
+ 
+-	raw_spin_lock_irq(&newowner->pi_lock);
+-	WARN_ON(!list_empty(&pi_state->list));
+-	list_add(&pi_state->list, &newowner->pi_state_list);
+-	raw_spin_unlock_irq(&newowner->pi_lock);
+ 	return 0;
+ 
+ 	/*
 
 
