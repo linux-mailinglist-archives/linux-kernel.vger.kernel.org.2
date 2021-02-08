@@ -2,116 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B03DF312B3A
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 08:47:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF174312B3C
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 08:48:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229978AbhBHHrR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 02:47:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40902 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229587AbhBHHrP (ORCPT
+        id S230098AbhBHHsX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 02:48:23 -0500
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:11188 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229608AbhBHHsU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 02:47:15 -0500
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3D8DC06174A
-        for <linux-kernel@vger.kernel.org>; Sun,  7 Feb 2021 23:46:34 -0800 (PST)
-Received: by mail-wm1-x32c.google.com with SMTP id t142so9546154wmt.1
-        for <linux-kernel@vger.kernel.org>; Sun, 07 Feb 2021 23:46:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=foundries.io; s=google;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=VBGn5N2PWVERSgqsZWGAhtPQYhD6ApL/aUSxl/jARz0=;
-        b=YSvY04+lbWpVcY6yhIfrL8hH2CaElLUp2Wak55sU1KF9bCYN3aFKyAcXp3mHY+l+Lg
-         s/+0nRgueX9txsiPBvRb8X7gYyStdIW2+9pgPU54uB9kj+wQ8Pe7peHR4d0+8RSHsjMg
-         611Yr/8YunIPAgZctApAmN6/c/OYxqmzka9/z+UDId1kKGWFH6bizaRkjNTFpO14LTov
-         N2OVNjWCp0jS93m1fuZFtAEGhGy55G4Ialm96pywIXIgP6Gy6utDwD5FbtIKp7xCkwph
-         VCS0VRgVhScdfwATb1XPFk0ddtBAfi3iisIZTQxa4ZH4ib3RUblxeMd1SRzGkDi/eqnS
-         c/lg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=VBGn5N2PWVERSgqsZWGAhtPQYhD6ApL/aUSxl/jARz0=;
-        b=IwP7L7aGyT/1+KfszUbJXE1xWH64GS0nUGPEewEWLkmYyAXuSqCkf9HjWK9ZJjiCGN
-         2wG5DRvmzh2SbqJwmqy38AnerYeFVfyJHOO71JvUTCFozvAdwNPOTtXzlhgfQqpgG98N
-         VRcpx/0bSRTgIQsVG7xNVtk9lzHcwwx208dvZ+dBprviaCtEUOuYQBhs//b+iAZsvFzt
-         golALCcmbjYkET83gQglVxRHI/azASNZpiCnX/gJiHPl1tmQQDcMgoLcXrF1ThLnCZpU
-         H8E6+MjCWlXIaeTQ6fJh/sCkcmtRG9Y2KZOUspYpKv0MIr/w64PILaFhXrIgG92+lO/Z
-         zZaQ==
-X-Gm-Message-State: AOAM531ejuwM6nBp++foaO7mEsDwTBvDUxsAEr6Ba+hpTak8DJC1N73e
-        jShoGxouKz4rImJDekvhIBb+4A==
-X-Google-Smtp-Source: ABdhPJw1Jl2DWtfavvyRgL2esgSl11F6AVPlGcPbM33WLTZ8tF8QeDX0Zm4aP+QQQg79amGbGuy2GQ==
-X-Received: by 2002:a1c:c6:: with SMTP id 189mr7096615wma.128.1612770393014;
-        Sun, 07 Feb 2021 23:46:33 -0800 (PST)
-Received: from trex (182.red-79-146-86.dynamicip.rima-tde.net. [79.146.86.182])
-        by smtp.gmail.com with ESMTPSA id l1sm28039211wrp.40.2021.02.07.23.46.31
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sun, 07 Feb 2021 23:46:32 -0800 (PST)
-From:   "Jorge Ramirez-Ortiz, Foundries" <jorge@foundries.io>
-X-Google-Original-From: "Jorge Ramirez-Ortiz, Foundries" <JorgeRamirez-Ortiz>
-Date:   Mon, 8 Feb 2021 08:46:31 +0100
-To:     Jens Wiklander <jens.wiklander@linaro.org>
-Cc:     Jorge Ramirez-Ortiz <jorge@foundries.io>,
-        Arnd Bergmann <arnd@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        op-tee@lists.trustedfirmware.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] optee: simplify i2c access
-Message-ID: <20210208074631.GA27508@trex>
-References: <20210125113758.2430680-1-arnd@kernel.org>
- <CAHUa44GwSRB=7tFpXi2ZW-SXGipp7ErDkB2_4iGQfyH_ECAU8A@mail.gmail.com>
- <CAHUa44Fa4oCjpGQj-52nei1M+KkyxPYBsX5TDmgA3ekRPqg8GQ@mail.gmail.com>
+        Mon, 8 Feb 2021 02:48:20 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1612770499; x=1644306499;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=bQDgjZGs3K7YBKjwl0I+8ePEFmSBGZnt2EZpaNfIK9Q=;
+  b=gn5V4PMv5ZL4S8PVl7i2LK1W9Qa+09Ys1czHf1RlzEbVKVCKyLnnq7Te
+   JUqgHr1Zu84hw9tYpMlMPc2oGmLGJPB2K/lKorvoESx/w2UTAc4Bq6yKR
+   SuPY5n/eExsFnZOjFxbh9KpN8IIAXKFGuEPfeKEyvZqpqORHmTFY7jZCE
+   MxNScsmmxMLBWEY5iHDoJ75ut4xlyrlLptchyTB8TPTtWXUAdpCoy3iUf
+   /OQSN9kJ0zTD/GfArRo6Bi3HzMLnn0+/p8+KvJktI6c3fce1ZgY/1wP3C
+   olR2dBI+bhUHTgD138PQjzJWc5YemE3kpy41Zk59xSExgJPIkEiPO3l8y
+   w==;
+IronPort-SDR: 1kOSpgx1R0/NQAhcwZ31rMMeww8wucVbneeTsIswuD38ylHAF8+y7F3Pgyw5Wp5iK58i/TWbcP
+ Z1DsBzOW9gMyphhzhWTrURlQwwDz9Pk20UtAkFChYMmxHrndGPp5ENK865/DkOMKHvVb7bBr82
+ xWpotveEm1QjGqkN64mmTf/swrFUWf4KLz2u3khHzrlIDT6LFLUyBmqeZjVme79Ii7y2hikUA5
+ f19YWrUTO9D8g8XhIwcJMtx5vMBYCRXPVg7OMyoRXarYuHBiotoN6LZSfnOF2Jy4vKY0AwmeB4
+ qg4=
+X-IronPort-AV: E=Sophos;i="5.81,161,1610434800"; 
+   d="scan'208";a="105794403"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 08 Feb 2021 00:47:01 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Mon, 8 Feb 2021 00:47:01 -0700
+Received: from tyr.hegelund-hansen.dk (10.10.115.15) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
+ 15.1.1979.3 via Frontend Transport; Mon, 8 Feb 2021 00:46:59 -0700
+Message-ID: <c23acd4f56519d53e2cff634f85ae6bed25b4b09.camel@microchip.com>
+Subject: Re: [PATCH v13 3/4] phy: Add Sparx5 ethernet serdes PHY driver
+From:   Steen Hegelund <steen.hegelund@microchip.com>
+To:     Vinod Koul <vkoul@kernel.org>
+CC:     Kishon Vijay Abraham I <kishon@ti.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Lars Povlsen <lars.povlsen@microchip.com>,
+        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
+        Microchip UNG Driver List <UNGLinuxDriver@microchip.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Andrew Lunn <andrew@lunn.ch>
+Date:   Mon, 8 Feb 2021 08:46:58 +0100
+In-Reply-To: <20210204080107.GJ3079@vkoul-mobl.Dlink>
+References: <20210129130748.373831-1-steen.hegelund@microchip.com>
+         <20210129130748.373831-4-steen.hegelund@microchip.com>
+         <20210204080107.GJ3079@vkoul-mobl.Dlink>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.3 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHUa44Fa4oCjpGQj-52nei1M+KkyxPYBsX5TDmgA3ekRPqg8GQ@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/02/21, Jens Wiklander wrote:
-> Hi Jorge,
+Hi Vinod,
+
+On Thu, 2021-02-04 at 13:31 +0530, Vinod Koul wrote:
+> EXTERNAL EMAIL: Do not click links or open attachments unless you
+> know the content is safe
 > 
-> On Wed, Jan 27, 2021 at 11:41 AM Jens Wiklander
-> <jens.wiklander@linaro.org> wrote:
-> >
-> > Hi Arnd,
-> >
-> > On Mon, Jan 25, 2021 at 12:38 PM Arnd Bergmann <arnd@kernel.org> wrote:
-> > >
-> > > From: Arnd Bergmann <arnd@arndb.de>
-> > >
-> > > Storing a bogus i2c_client structure on the stack adds overhead and
-> > > causes a compile-time warning:
-> > >
-> > > drivers/tee/optee/rpc.c:493:6: error: stack frame size of 1056 bytes in function 'optee_handle_rpc' [-Werror,-Wframe-larger-than=]
-> > > void optee_handle_rpc(struct tee_context *ctx, struct optee_rpc_param *param,
-> > >
-> > > Change the implementation of handle_rpc_func_cmd_i2c_transfer() to
-> > > open-code the i2c_transfer() call, which makes it easier to read
-> > > and avoids the warning.
-> > >
-> > > Fixes: c05210ab9757 ("drivers: optee: allow op-tee to access devices on the i2c bus")
-> > > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> > > ---
-> > >  drivers/tee/optee/rpc.c | 31 ++++++++++++++++---------------
-> > >  1 file changed, 16 insertions(+), 15 deletions(-)
-> >
-> > Looks good to me.
-> > Reviewed-by: Jens Wiklander <jens.wiklander@linaro.org>
+> On 29-01-21, 14:07, Steen Hegelund wrote:
+> > Add the Microchip Sparx5 ethernet serdes PHY driver for the 6G, 10G
+> > and 25G
+> > interfaces available in the Sparx5 SoC.
+> > 
+> > Signed-off-by: Bjarni Jonasson <bjarni.jonasson@microchip.com>
+> > Signed-off-by: Steen Hegelund <steen.hegelund@microchip.com>
+> > Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+> > Reviewed-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+> > ---
+> > 
+
+...
+
+> > sdx5_rmw(SD25G_LANE_LANE_1E_LN_CFG_RXLB_EN_SET(params-
+> > >cfg_rxlb_en),
+> > +              SD25G_LANE_LANE_1E_LN_CFG_RXLB_EN,
+> > +              priv,
+> > +              SD25G_LANE_LANE_1E(sd_index));
+> > +
+> > +     sdx5_rmw(SD25G_LANE_LANE_19_LN_CFG_TXLB_EN_SET(params-
+> > >cfg_txlb_en),
+> > +              SD25G_LANE_LANE_19_LN_CFG_TXLB_EN,
+> > +              priv,
+> > +              SD25G_LANE_LANE_19(sd_index));
+> > +
+> > +     sdx5_rmw(SD25G_LANE_LANE_2E_LN_CFG_RSTN_DFEDIG_SET(0),
+> > +              SD25G_LANE_LANE_2E_LN_CFG_RSTN_DFEDIG,
+> > +              priv,
+> > +              SD25G_LANE_LANE_2E(sd_index));
+> > +
+> > +     sdx5_rmw(SD25G_LANE_LANE_2E_LN_CFG_RSTN_DFEDIG_SET(1),
+> > +              SD25G_LANE_LANE_2E_LN_CFG_RSTN_DFEDIG,
+> > +              priv,
+> > +              SD25G_LANE_LANE_2E(sd_index));
+> > +
+> > +     sdx5_rmw(SD_LANE_25G_SD_LANE_CFG_MACRO_RST_SET(0),
+> > +              SD_LANE_25G_SD_LANE_CFG_MACRO_RST,
+> > +              priv,
+> > +              SD_LANE_25G_SD_LANE_CFG(sd_index));
+> > +
+> > +     sdx5_rmw(SD25G_LANE_LANE_1C_LN_CFG_CDR_RSTN_SET(0),
+> > +              SD25G_LANE_LANE_1C_LN_CFG_CDR_RSTN,
+> > +              priv,
+> > +              SD25G_LANE_LANE_1C(sd_index));
 > 
-> Would you mind testing this?
+> This looks quite terrible :(
+> 
+> Can we do a table here for these and then write the configuration
+> table,
+> that may look better and easy to maintain ?
 
-sure, doing it this morning.
-
-btw what Arnd has done - removing the unnecessary level of indirection
-- was pretty much my initial though but I thought it was easier to
-read the way I wrote it (I guess I was wrong and I obviously missed
-the stack size increase)
-
-but yes, will test
+I will restructure this.
 
 > 
-> Thanks,
-> Jens
+> > +
+> > +     usleep_range(1000, 2000);
+> > +
+> > +     sdx5_rmw(SD25G_LANE_LANE_1C_LN_CFG_CDR_RSTN_SET(1),
+> > +              SD25G_LANE_LANE_1C_LN_CFG_CDR_RSTN,
+> > +              priv,
+> > +              SD25G_LANE_LANE_1C(sd_index));
+> > +
+> > +     usleep_range(10000, 20000);
+> > +
+> > +     sdx5_rmw(SD25G_LANE_CMU_FF_REGISTER_TABLE_INDEX_SET(0xff),
+> > +              SD25G_LANE_CMU_FF_REGISTER_TABLE_INDEX,
+> > +              priv,
+> > +              SD25G_LANE_CMU_FF(sd_index));
+> > +
+> > +     value = sdx5_rd(priv, SD25G_LANE_CMU_C0(sd_index));
+> > +     value = SD25G_LANE_CMU_C0_PLL_LOL_UDL_GET(value);
+> > +
+> > +     if (value) {
+> > +             dev_err(macro->priv->dev, "25G PLL Loss of Lock:
+> > 0x%x\n", value);
+> > +             ret = -EINVAL;
+> > +     }
+> > +
+> > +     value = sdx5_rd(priv, SD_LANE_25G_SD_LANE_STAT(sd_index));
+> > +     value = SD_LANE_25G_SD_LANE_STAT_PMA_RST_DONE_GET(value);
+> > +
+> > +     if (value != 0x1) {
+> > +             dev_err(macro->priv->dev, "25G PMA Reset failed:
+> > 0x%x\n", value);
+> > +             ret = -EINVAL;
+> 
+> continue on error..?
+
+I will change that.
+
+> 
+> > +     }
+> > +
+> > +     sdx5_rmw(SD25G_LANE_CMU_2A_R_DBG_LOL_STATUS_SET(0x1),
+> > +              SD25G_LANE_CMU_2A_R_DBG_LOL_STATUS,
+> > +              priv,
+> > +              SD25G_LANE_CMU_2A(sd_index));
+> > +
+> > +     sdx5_rmw(SD_LANE_25G_SD_SER_RST_SER_RST_SET(0x0),
+> > +              SD_LANE_25G_SD_SER_RST_SER_RST,
+> > +              priv,
+> > 
+
+...
+
+> > sdx5_inst_rmw(SD10G_LANE_LANE_0E_CFG_RXLB_EN_SET(params-
+> > >cfg_rxlb_en) |
+> > +                   SD10G_LANE_LANE_0E_CFG_TXLB_EN_SET(params-
+> > >cfg_txlb_en),
+> > +                   SD10G_LANE_LANE_0E_CFG_RXLB_EN |
+> > +                   SD10G_LANE_LANE_0E_CFG_TXLB_EN,
+> > +                   sd_inst,
+> > +                   SD10G_LANE_LANE_0E(sd_index));
+> > +
+> > +     sdx5_rmw(SD_LANE_SD_LANE_CFG_MACRO_RST_SET(0),
+> > +              SD_LANE_SD_LANE_CFG_MACRO_RST,
+> > +              priv,
+> > +              SD_LANE_SD_LANE_CFG(sd_lane_tgt));
+> > +
+> > +     sdx5_inst_rmw(SD10G_LANE_LANE_50_CFG_SSC_RESETB_SET(1),
+> > +                   SD10G_LANE_LANE_50_CFG_SSC_RESETB,
+> > +                   sd_inst,
+> > +                   SD10G_LANE_LANE_50(sd_index));
+> > +
+> > +     sdx5_rmw(SD10G_LANE_LANE_50_CFG_SSC_RESETB_SET(1),
+> > +              SD10G_LANE_LANE_50_CFG_SSC_RESETB,
+> > +              priv,
+> > +              SD10G_LANE_LANE_50(sd_index));
+> > +
+> > +     sdx5_rmw(SD_LANE_MISC_SD_125_RST_DIS_SET(params->fx_100),
+> > +              SD_LANE_MISC_SD_125_RST_DIS,
+> > +              priv,
+> > +              SD_LANE_MISC(sd_lane_tgt));
+> > +
+> > +     sdx5_rmw(SD_LANE_MISC_RX_ENA_SET(params->fx_100),
+> > +              SD_LANE_MISC_RX_ENA,
+> > +              priv,
+> > +              SD_LANE_MISC(sd_lane_tgt));
+> > +
+> > +     sdx5_rmw(SD_LANE_MISC_MUX_ENA_SET(params->fx_100),
+> > +              SD_LANE_MISC_MUX_ENA,
+> > +              priv,
+> > +              SD_LANE_MISC(sd_lane_tgt));
+> 
+> Table for this set as well as other places please
+
+I will restructure the code here as well.
+> 
+> --
+> ~Vinod
+
+Thank you for your comments.
+
+BR
+Steen
+
+
+
