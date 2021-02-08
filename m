@@ -2,167 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2D9F31357A
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 15:46:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 998F131357D
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 15:46:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232934AbhBHOpk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 09:45:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42712 "EHLO
+        id S232931AbhBHOqF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 09:46:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232620AbhBHO3W (ORCPT
+        with ESMTP id S232746AbhBHO3n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 09:29:22 -0500
-Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CFCAC061793
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 06:28:42 -0800 (PST)
-Received: by mail-qk1-x72f.google.com with SMTP id u20so14490376qku.7
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 06:28:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Bb/S4Td3g4WsPIOQ2YYmaNN30WlKMN8AhjpBjYjGqj0=;
-        b=AGt8xjxmimAt2GgQibBeNxyuBIoQiv4iNUAmZCl4cR6vSwgAAIKhOZ5gRRbQPr5NT1
-         RAjYYFg3ReGwXOm1fiExtoyCKH2YMfRJ9/XdgOog83B5uUy5aEBUZkkUCELT9IlcLvJk
-         fmKtVNpaRZy0P2w8Af42Oyr6+8PingLKA81CeRki9Y1kzhb90p7Z3KbNgljNNm5bXOof
-         PnxMgO54GemR3CNRJNmHPGapy4ovZzubYXYZh+DSuHRBkk7Y0bhscLiglAGSsSPcCHkF
-         3SgHCCajVCmKxyPWzplhBljh64dOpfRxsXLtGWSLQCFSeB8MoHqLOnjiRlGeoiiNSI5+
-         IyOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Bb/S4Td3g4WsPIOQ2YYmaNN30WlKMN8AhjpBjYjGqj0=;
-        b=awksruAeASD+Y0G03dCqQMsCKqJCY80tfnT3MDz5CL699JAFbhSdjE97X1WqdlDBkt
-         Lngt3RcCY0KrD0r4mDw6fdrj5FZGszTAjhws9q33iNvE4wjERf0B86LT8Z9ZoXJ+Uekm
-         VeK9N8fQBQQvDecttQ4bRY6MYBVNKmqAONt9JVh/ZinMrH3wvMkZCKkLYW5QGwgGKh5R
-         gNzNZH+sIu/PV1H2z5464qNGazCV5jZAgqpQxHWhEXXG2jqcuaTmm/YdAD3SY5ogWKvr
-         /pCDF3GBDEt+em1NAOeO7YyEQ+URWv+c4/VzNL7N1RxrXxgLeiCGbc1mNV1CYGMBpHpI
-         GJgw==
-X-Gm-Message-State: AOAM532h13z9UcfoVQ7zvrtNIco6IZWiUALQ6kDXGishrYcQjMGaTn67
-        SHDp90gZ/iA5W3RStmB6hujjAB53O79faCFVa7CFgp0Txi0=
-X-Google-Smtp-Source: ABdhPJytrqI9uL7jPI7+2TLa6d/SGK08PRcktyEXIqpFTUNWebsHZCgnDff2fgiXkMpga5++NKk9E6s3qJftTOZlb4Q=
-X-Received: by 2002:a05:620a:49:: with SMTP id t9mr18290718qkt.231.1612794521474;
- Mon, 08 Feb 2021 06:28:41 -0800 (PST)
+        Mon, 8 Feb 2021 09:29:43 -0500
+Received: from mail-out-3.itc.rwth-aachen.de (mail-out-3.itc.rwth-aachen.de [IPv6:2a00:8a60:1:e501::5:48])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27686C0617AB
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 06:29:01 -0800 (PST)
+X-IronPort-Anti-Spam-Filtered: true
+X-IronPort-Anti-Spam-Result: =?us-ascii?q?A2CqBwBZSiFg/5oagoZiHAEBAQEBAQcBA?=
+ =?us-ascii?q?RIBAQQEAQGCD4FTgiZplW8InG4LAQEBAQEBAQEBCAEtAgQBAYRLggQCJTgTAhA?=
+ =?us-ascii?q?BAQYBAQEBAQYEhl+GH1IbgSMBDQWDJoMHAa9yM4kdgUQJAYEuiF6FC4FcP4E4D?=
+ =?us-ascii?q?AOCNS4+ijcEgkctYZM4qHkHgWuBEpt3BSmTL49zlDKdMYRFAgICAgkCFoFtgXp?=
+ =?us-ascii?q?NJFwJglNQFwINji0XjWsBPEEyNwIGCgEBAwlPLYscAQE?=
+X-IPAS-Result: =?us-ascii?q?A2CqBwBZSiFg/5oagoZiHAEBAQEBAQcBARIBAQQEAQGCD4F?=
+ =?us-ascii?q?TgiZplW8InG4LAQEBAQEBAQEBCAEtAgQBAYRLggQCJTgTAhABAQYBAQEBAQYEh?=
+ =?us-ascii?q?l+GH1IbgSMBDQWDJoMHAa9yM4kdgUQJAYEuiF6FC4FcP4E4DAOCNS4+ijcEgkc?=
+ =?us-ascii?q?tYZM4qHkHgWuBEpt3BSmTL49zlDKdMYRFAgICAgkCFoFtgXpNJFwJglNQFwINj?=
+ =?us-ascii?q?i0XjWsBPEEyNwIGCgEBAwlPLYscAQE?=
+X-IronPort-AV: E=Sophos;i="5.81,162,1610406000"; 
+   d="scan'208";a="113311174"
+Received: from rwthex-s2-a.rwth-ad.de ([134.130.26.154])
+  by mail-in-3.itc.rwth-aachen.de with ESMTP; 08 Feb 2021 15:28:50 +0100
+Received: from io.fritz.box (2a02:908:1089:e060:794d:ff8:62d5:f86c) by
+ rwthex-s2-a.rwth-ad.de (2a00:8a60:1:e500::26:154) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2044.4; Mon, 8 Feb 2021 15:28:46 +0100
+From:   Jan Henrik Weinstock <jan.weinstock@rwth-aachen.de>
+To:     <geert@linux-m68k.org>, <jonas@southpole.se>,
+        <stefan.kristiansson@saunalahti.fi>, <shorne@gmail.com>,
+        <openrisc@lists.librecores.org>, <linux-kernel@vger.kernel.org>
+CC:     Jan Henrik Weinstock <jan.weinstock@rwth-aachen.de>
+Subject: Re: [PATCH v2] Use devicetree to determine present cpus (v2)
+Date:   Mon, 8 Feb 2021 15:28:32 +0100
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <0000000000003be5f605bad34c09@google.com>
-In-Reply-To: <0000000000003be5f605bad34c09@google.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Mon, 8 Feb 2021 15:28:30 +0100
-Message-ID: <CACT4Y+Y4rfBqsoF4DDPYoyrZYFzGNO+hNKcu1QkFNcec2VY8xQ@mail.gmail.com>
-Subject: Re: linux-next boot error: kernel panic: VFS: Unable to mount root fs
- on unknown-block(0,0)
-To:     syzbot <syzbot+b22ad1a79afb8da726c5@syzkaller.appspotmail.com>
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hannes Reinecke <hare@suse.de>, Jan Kara <jack@suse.cz>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Tejun Heo <tj@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [2a02:908:1089:e060:794d:ff8:62d5:f86c]
+X-ClientProxiedBy: rwthex-w3-b.rwth-ad.de (2a00:8a60:1:e500::26:163) To
+ rwthex-s2-a.rwth-ad.de (2a00:8a60:1:e500::26:154)
+Message-ID: <9dc6c716-c5da-4214-96d8-e088db29d403@rwthex-s2-a.rwth-ad.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 8, 2021 at 2:39 PM syzbot
-<syzbot+b22ad1a79afb8da726c5@syzkaller.appspotmail.com> wrote:
->
-> Hello,
->
-> syzbot found the following issue on:
->
-> HEAD commit:    8d374d0d Add linux-next specific files for 20210208
-> git tree:       linux-next
-> console output: https://syzkaller.appspot.com/x/log.txt?x=13de8a40d00000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=ced6adcf6aff98d6
-> dashboard link: https://syzkaller.appspot.com/bug?extid=b22ad1a79afb8da726c5
->
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+b22ad1a79afb8da726c5@syzkaller.appspotmail.com
->
-> netconsole: network logging started
-> gtp: GTP module loaded (pdp ctx size 104 bytes)
-> rdma_rxe: loaded
-> cfg80211: Loading compiled-in X.509 certificates for regulatory database
-> cfg80211: Loaded X.509 cert 'sforshee: 00b28ddf47aef9cea7'
-> ALSA device list:
->   #0: Dummy 1
->   #1: Loopback 1
->   #2: Virtual MIDI Card 1
-> md: Waiting for all devices to be available before autodetect
-> md: If you don't use raid, use raid=noautodetect
-> md: Autodetecting RAID arrays.
-> md: autorun ...
-> md: ... autorun DONE.
-> VFS: Cannot open root device "sda1" or unknown-block(0,0): error -6
+Signed-off-by: Jan Henrik Weinstock <jan.weinstock@rwth-aachen.de>
+---
+ arch/openrisc/kernel/smp.c | 31 +++++++++++++++----------------
+ 1 file changed, 15 insertions(+), 16 deletions(-)
 
-Has anything changed in linux-next related to block devices?... It was
-supposed to boot from a standard GCE VM disk, but it does not seem to
-be probed by the kernel (should be /dev/sda).
+diff --git a/arch/openrisc/kernel/smp.c b/arch/openrisc/kernel/smp.c
+index 75be7e34f..83cbf43d4 100644
+--- a/arch/openrisc/kernel/smp.c
++++ b/arch/openrisc/kernel/smp.c
+@@ -61,32 +61,31 @@ void __init smp_prepare_boot_cpu(void)
+ 
+ void __init smp_init_cpus(void)
+ {
+-	int i;
++	struct device_node* cpu;
++	u32 cpu_id;
++
++	for_each_of_cpu_node(cpu) {
++		if (of_property_read_u32(cpu, "reg", &cpu_id)) {
++			pr_warn("%s missing reg property", cpu->full_name);
++			continue;
++		}
+ 
+-	for (i = 0; i < NR_CPUS; i++)
+-		set_cpu_possible(i, true);
++		if (cpu_id < NR_CPUS)
++			set_cpu_possible(cpu_id, true);
++	}
+ }
+ 
+ void __init smp_prepare_cpus(unsigned int max_cpus)
+ {
+-	u32 cpu_id;
+-	struct device_node *cpu, *cpus;
++	unsigned int cpu;
+ 
+ 	/*
+ 	 * Initialise the present map, which describes the set of CPUs
+ 	 * actually populated at the present time.
+ 	 */
+-	cpus = of_find_node_by_path("/cpus");
+-	for_each_child_of_node(cpus, cpu) {
+-		if (of_property_read_u32(cpu, "reg", &cpu_id)) {
+-			pr_warn("%s missing reg property", cpu->full_name);
+-			continue;
+-		}
+-
+-		if (cpu_id >= max_cpus)
+-			continue;
+-
+-		set_cpu_present(cpu_id, true);
++	for_each_possible_cpu(cpu) {
++		if (cpu < max_cpus)
++			set_cpu_present(cpu, true);
+ 	}
+ }
+ 
+-- 
+2.17.1
 
-> Please append a correct "root=" boot option; here are the available partitions:
-> 0100            4096 ram0
->  (driver?)
-> 0101            4096 ram1
->  (driver?)
-> 0102            4096 ram2
->  (driver?)
-> 0103            4096 ram3
->  (driver?)
-> 0104            4096 ram4
->  (driver?)
-> 0105            4096 ram5
->  (driver?)
-> 0106            4096 ram6
->  (driver?)
-> 0107            4096 ram7
->  (driver?)
-> 0108            4096 ram8
->  (driver?)
-> 0109            4096 ram9
->  (driver?)
-> 010a            4096 ram10
->  (driver?)
-> 010b            4096 ram11
->  (driver?)
-> 010c            4096 ram12
->  (driver?)
-> 010d            4096 ram13
->  (driver?)
-> 010e            4096 ram14
->  (driver?)
-> 010f            4096 ram15
->  (driver?)
-> 1f00             128 mtdblock0
->  (driver?)
-> Kernel panic - not syncing: VFS: Unable to mount root fs on unknown-block(0,0)
-> CPU: 1 PID: 1 Comm: swapper/0 Not tainted 5.11.0-rc6-next-20210208-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> Call Trace:
->  __dump_stack lib/dump_stack.c:79 [inline]
->  dump_stack+0x107/0x163 lib/dump_stack.c:120
->  panic+0x306/0x73d kernel/panic.c:231
->  mount_block_root+0x3f8/0x4dd init/do_mounts.c:445
->  mount_root+0x1af/0x1f5 init/do_mounts.c:561
->  prepare_namespace+0x1ff/0x234 init/do_mounts.c:613
->  kernel_init_freeable+0x671/0x689 init/main.c:1550
->  kernel_init+0xd/0x1b8 init/main.c:1426
->  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
-> Kernel Offset: disabled
-> Rebooting in 86400 seconds..
->
->
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
->
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
->
-> --
-> You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/0000000000003be5f605bad34c09%40google.com.
