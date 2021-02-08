@@ -2,118 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 168B13133BA
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 14:52:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AED183133B5
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 14:51:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231325AbhBHNv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 08:51:26 -0500
-Received: from mga14.intel.com ([192.55.52.115]:54793 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230328AbhBHNvQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 08:51:16 -0500
-IronPort-SDR: Cn/VhkM8TD/Hji/Y26k/ODCZyx+QiPddrPXusPiykrYLKee6N6EoH8rvAzz4RAxv8ZjhJR3gYn
- 28aTpm5UD+Cw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9888"; a="180935005"
-X-IronPort-AV: E=Sophos;i="5.81,162,1610438400"; 
-   d="scan'208";a="180935005"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2021 05:49:28 -0800
-IronPort-SDR: ovHZr530PONsEQU7icPI/tgaTe/+PYF9KuXdIhozO4j7+WdZjrRuacYAj3YF56V/kB6EQfc0o+
- YJYPl+/7XcHQ==
-X-IronPort-AV: E=Sophos;i="5.81,162,1610438400"; 
-   d="scan'208";a="395388186"
-Received: from shaojieh-mobl.ccr.corp.intel.com (HELO localhost) ([10.249.172.136])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2021 05:49:25 -0800
-Date:   Mon, 8 Feb 2021 21:49:23 +0800
-From:   Yu Zhang <yu.c.zhang@linux.intel.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     seanjc@google.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, vkuznets@redhat.com,
-        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org
-Subject: Re: [PATCH v2] KVM: x86/MMU: Do not check unsync status for root SP.
-Message-ID: <20210208134923.smtvzeonvwxzdlwn@linux.intel.com>
-References: <20210207122254.23056-1-yu.c.zhang@linux.intel.com>
- <671ae214-22b9-1d89-75cb-0c6da5230988@redhat.com>
+        id S230476AbhBHNuw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 08:50:52 -0500
+Received: from mail.netline.ch ([148.251.143.178]:56217 "EHLO
+        netline-mail3.netline.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230228AbhBHNul (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 08:50:41 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by netline-mail3.netline.ch (Postfix) with ESMTP id 869DC2A6046;
+        Mon,  8 Feb 2021 14:49:58 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at netline-mail3.netline.ch
+Received: from netline-mail3.netline.ch ([127.0.0.1])
+        by localhost (netline-mail3.netline.ch [127.0.0.1]) (amavisd-new, port 10024)
+        with LMTP id tBmJkhbOh7G4; Mon,  8 Feb 2021 14:49:58 +0100 (CET)
+Received: from thor (24.99.2.85.dynamic.wline.res.cust.swisscom.ch [85.2.99.24])
+        by netline-mail3.netline.ch (Postfix) with ESMTPSA id 7AE7B2A6042;
+        Mon,  8 Feb 2021 14:49:57 +0100 (CET)
+Received: from [::1]
+        by thor with esmtp (Exim 4.94)
+        (envelope-from <michel@daenzer.net>)
+        id 1l96vM-001pxS-R3; Mon, 08 Feb 2021 14:49:56 +0100
+To:     Daniel Vetter <daniel@ffwll.ch>
+Cc:     Will Drewry <wad@chromium.org>, Kees Cook <keescook@chromium.org>,
+        Jann Horn <jannh@google.com>,
+        intel-gfx <intel-gfx@lists.freedesktop.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Chris Wilson <chris@chris-wilson.co.uk>
+References: <20210205163752.11932-1-chris@chris-wilson.co.uk>
+ <202102051030.1AF01772D@keescook>
+ <CAKMK7uHnOA9CuRxcKkcqG8duOw_3dZobkThcV7Q_swMXVoLCkQ@mail.gmail.com>
+ <5a940e13-8996-e9e5-251e-a9af294a39ff@daenzer.net>
+ <CAKMK7uG_0AkZpwahb7gJppo15u1isACH=FB_oMAaw-3uJiwGKQ@mail.gmail.com>
+From:   =?UTF-8?Q?Michel_D=c3=a4nzer?= <michel@daenzer.net>
+Subject: Re: [PATCH] kernel: Expose SYS_kcmp by default
+Message-ID: <36274836-1968-e712-fb15-f3e15eeb7741@daenzer.net>
+Date:   Mon, 8 Feb 2021 14:49:51 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <671ae214-22b9-1d89-75cb-0c6da5230988@redhat.com>
-User-Agent: NeoMutt/20171215
+In-Reply-To: <CAKMK7uG_0AkZpwahb7gJppo15u1isACH=FB_oMAaw-3uJiwGKQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-CA
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 08, 2021 at 12:36:57PM +0100, Paolo Bonzini wrote:
-> On 07/02/21 13:22, Yu Zhang wrote:
-> > In shadow page table, only leaf SPs may be marked as unsync.
-> > And for non-leaf SPs, we use unsync_children to keep the number
-> > of the unsynced children. In kvm_mmu_sync_root(), sp->unsync
-> > shall always be zero for the root SP, , hence no need to check
-> > it. Instead, a warning inside mmu_sync_children() is added, in
-> > case someone incorrectly used it.
-> > 
-> > Also, clarify the mmu_need_write_protect(), by moving the warning
-> > into kvm_unsync_page().
-> > 
-> > Signed-off-by: Yu Zhang <yu.c.zhang@linux.intel.com>
-> > Signed-off-by: Sean Christopherson <seanjc@google.com>
+On 2021-02-08 2:34 p.m., Daniel Vetter wrote:
+> On Mon, Feb 8, 2021 at 12:49 PM Michel Dänzer <michel@daenzer.net> wrote:
+>>
+>> On 2021-02-05 9:53 p.m., Daniel Vetter wrote:
+>>> On Fri, Feb 5, 2021 at 7:37 PM Kees Cook <keescook@chromium.org> wrote:
+>>>>
+>>>> On Fri, Feb 05, 2021 at 04:37:52PM +0000, Chris Wilson wrote:
+>>>>> Userspace has discovered the functionality offered by SYS_kcmp and has
+>>>>> started to depend upon it. In particular, Mesa uses SYS_kcmp for
+>>>>> os_same_file_description() in order to identify when two fd (e.g. device
+>>>>> or dmabuf) point to the same struct file. Since they depend on it for
+>>>>> core functionality, lift SYS_kcmp out of the non-default
+>>>>> CONFIG_CHECKPOINT_RESTORE into the selectable syscall category.
+>>>>>
+>>>>> Signed-off-by: Chris Wilson <chris@chris-wilson.co.uk>
+>>>>> Cc: Kees Cook <keescook@chromium.org>
+>>>>> Cc: Andy Lutomirski <luto@amacapital.net>
+>>>>> Cc: Will Drewry <wad@chromium.org>
+>>>>> Cc: Andrew Morton <akpm@linux-foundation.org>
+>>>>> Cc: Dave Airlie <airlied@gmail.com>
+>>>>> Cc: Daniel Vetter <daniel@ffwll.ch>
+>>>>> Cc: Lucas Stach <l.stach@pengutronix.de>
+>>>>> ---
+>>>>>    init/Kconfig                                  | 11 +++++++++++
+>>>>>    kernel/Makefile                               |  2 +-
+>>>>>    tools/testing/selftests/seccomp/seccomp_bpf.c |  2 +-
+>>>>>    3 files changed, 13 insertions(+), 2 deletions(-)
+>>>>>
+>>>>> diff --git a/init/Kconfig b/init/Kconfig
+>>>>> index b77c60f8b963..f62fca13ac5b 100644
+>>>>> --- a/init/Kconfig
+>>>>> +++ b/init/Kconfig
+>>>>> @@ -1194,6 +1194,7 @@ endif # NAMESPACES
+>>>>>    config CHECKPOINT_RESTORE
+>>>>>         bool "Checkpoint/restore support"
+>>>>>         select PROC_CHILDREN
+>>>>> +     select KCMP
+>>>>>         default n
+>>>>>         help
+>>>>>           Enables additional kernel features in a sake of checkpoint/restore.
+>>>>> @@ -1737,6 +1738,16 @@ config ARCH_HAS_MEMBARRIER_CALLBACKS
+>>>>>    config ARCH_HAS_MEMBARRIER_SYNC_CORE
+>>>>>         bool
+>>>>>
+>>>>> +config KCMP
+>>>>> +     bool "Enable kcmp() system call" if EXPERT
+>>>>> +     default y
+>>>>
+>>>> I would expect this to be not default-y, especially if
+>>>> CHECKPOINT_RESTORE does a "select" on it.
+>>>>
+>>>> This is a really powerful syscall, but it is bounded by ptrace access
+>>>> controls, and uses pointer address obfuscation, so it may be okay to
+>>>> expose this. As it is, at least Ubuntu already has
+>>>> CONFIG_CHECKPOINT_RESTORE, so really, there's probably not much
+>>>> difference on exposure.
+>>>>
+>>>> So, if you drop the "default y", I'm fine with this.
+>>>
+>>> It was maybe stupid, but our userspace started relying on fd
+>>> comaprison through sys_kcomp. So for better or worse, if you want to
+>>> run the mesa3d gl/vk stacks, you need this.
+>>
+>> That's overstating things somewhat. The vast majority of applications
+>> will work fine regardless (as they did before Mesa started using this
+>> functionality). Only some special ones will run into issues, because the
+>> user-space drivers incorrectly assume two file descriptors reference
+>> different descriptions.
+>>
+>>
+>>> Was maybe not the brighest ideas, but since enough distros had this
+>>> enabled by defaults,
+>>
+>> Right, that (and the above) is why I considered it fair game to use.
+>> What should I have done instead? (TBH I was surprised that this
+>> functionality isn't generally available)
 > 
-> This should really be more of a Co-developed-by, and there are a couple
-> adjustments that could be made in the commit message.  I've queued the patch
-> and I'll fix it up later.
+> Yeah that one is fine, but I thought we've discussed (irc or
+> something) more uses for de-duping dma-buf and stuff like that. But
+> quick grep says that hasn't landed yet, so I got a bit confused (or
+> just dreamt). Looking at this again I'm kinda surprised the drmfd
+> de-duping blows up on normal linux distros, but I guess it can all
+> happen.
 
-Indeed. Thanks for the remind, and I'll pay attention in the future. :)
+One example: GEM handle name-spaces are per file description. If 
+user-space incorrectly assumes two DRM fds are independent, when they 
+actually reference the same file description, closing a GEM handle with 
+one file descriptor will make it unusable with the other file descriptor 
+as well.
 
-B.R.
-Yu
 
+>>> Ofc we can leave the default n, but the select if CONFIG_DRM is
+>>> unfortunately needed I think.
+>>
+>> Per above, not sure this is really true.
 > 
-> Paolo
+> We seem to be going boom on linux distros now, maybe userspace got
+> more creative in abusing stuff?
+
+I don't know what you're referring to. I've only seen maybe two or three 
+reports from people who didn't enable CHECKPOINT_RESTORE in their 
+self-built kernels.
+
+
+> The entire thing is small enough that imo we don't really have to care,
+> e.g. we also unconditionally select dma-buf, despite that on most
+> systems there's only 1 gpu, and you're never going to end up with a
+> buffer sharing case that needs any of that code (aside from the
+> "here's an fd" part).
 > 
-> > ---
-> > Changes in V2:
-> > - warnings added based on Sean's suggestion.
-> > 
-> >   arch/x86/kvm/mmu/mmu.c | 12 +++++++++---
-> >   1 file changed, 9 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> > index 86af582..c4797a00cc 100644
-> > --- a/arch/x86/kvm/mmu/mmu.c
-> > +++ b/arch/x86/kvm/mmu/mmu.c
-> > @@ -1995,6 +1995,12 @@ static void mmu_sync_children(struct kvm_vcpu *vcpu,
-> >   	LIST_HEAD(invalid_list);
-> >   	bool flush = false;
-> > +	/*
-> > +	 * Only 4k SPTEs can directly be made unsync, the parent pages
-> > +	 * should never be unsyc'd.
-> > +	 */
-> > +	WARN_ON_ONCE(sp->unsync);
-> > +
-> >   	while (mmu_unsync_walk(parent, &pages)) {
-> >   		bool protected = false;
-> > @@ -2502,6 +2508,8 @@ int kvm_mmu_unprotect_page(struct kvm *kvm, gfn_t gfn)
-> >   static void kvm_unsync_page(struct kvm_vcpu *vcpu, struct kvm_mmu_page *sp)
-> >   {
-> > +	WARN_ON(sp->role.level != PG_LEVEL_4K);
-> > +
-> >   	trace_kvm_mmu_unsync_page(sp);
-> >   	++vcpu->kvm->stat.mmu_unsync;
-> >   	sp->unsync = 1;
-> > @@ -2524,7 +2532,6 @@ bool mmu_need_write_protect(struct kvm_vcpu *vcpu, gfn_t gfn,
-> >   		if (sp->unsync)
-> >   			continue;
-> > -		WARN_ON(sp->role.level != PG_LEVEL_4K);
-> >   		kvm_unsync_page(vcpu, sp);
-> >   	}
-> > @@ -3406,8 +3413,7 @@ void kvm_mmu_sync_roots(struct kvm_vcpu *vcpu)
-> >   		 * mmu_need_write_protect() describe what could go wrong if this
-> >   		 * requirement isn't satisfied.
-> >   		 */
-> > -		if (!smp_load_acquire(&sp->unsync) &&
-> > -		    !smp_load_acquire(&sp->unsync_children))
-> > +		if (!smp_load_acquire(&sp->unsync_children))
-> >   			return;
-> >   		write_lock(&vcpu->kvm->mmu_lock);
-> > 
-> 
+> But I guess we can limit to just KCMP_FILE like you suggest in another
+> reply. Just feels a bit like overkill.
+
+Making KCMP_FILE gated by DRM makes as little sense to me as by 
+CHECKPOINT_RESTORE.
+
+
+-- 
+Earthling Michel Dänzer               |               https://redhat.com
+Libre software enthusiast             |             Mesa and X developer
