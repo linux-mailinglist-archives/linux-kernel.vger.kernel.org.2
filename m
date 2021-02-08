@@ -2,296 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB08431409C
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 21:38:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FEFD31409F
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 21:38:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231946AbhBHUhV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 15:37:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48478 "EHLO
+        id S233752AbhBHUiB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 15:38:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236206AbhBHTR4 (ORCPT
+        with ESMTP id S235102AbhBHTTq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 14:17:56 -0500
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8B03C06178B;
-        Mon,  8 Feb 2021 11:17:15 -0800 (PST)
-Received: by mail-io1-xd32.google.com with SMTP id m17so5656415ioy.4;
-        Mon, 08 Feb 2021 11:17:15 -0800 (PST)
+        Mon, 8 Feb 2021 14:19:46 -0500
+Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FBC8C061786
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 11:19:05 -0800 (PST)
+Received: by mail-il1-x132.google.com with SMTP id p15so13819843ilq.8
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 11:19:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=vIfE0BvfZVoAYmQCo3XOHdikwlOFZuMhWiFKWJRteT8=;
-        b=Dhkabv8gRujAjQQwbnPhYXUUwDTw49eRqi+idVaJiHtPJzXgwYkZGR5Cvp3/wpkXqD
-         ASH9c3pArDrz71VR6dtqLdiIk1t9U4wiM7oEO3w//22NfFCZMvT1k3UEW1/dfdtw5Nr/
-         DnQBWwqzqtC7OCyMCp10Ll4AvMmPIisUC/fFU37vMRn7s+0ApgQzq+xc2cHJ9vhMSbWP
-         0YX7dqEe7NI6E/gXsIaLfkEjaXzpXIKIFhEAl2+OUwltMwxXxQk7ZUl2YBp+7b3800CF
-         6pQQRdLhhMgrTO2kLpMQrtoNujbtocLQMxwXT2PMB9tdwylWe6Puku66rQ3EFFgqUBiv
-         3Dzw==
+        d=juliacomputing.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qCfnLupVibojf6p+QXa/fy+jh7kBw6RuWeVeUdTLXwE=;
+        b=HlSddigbrczVGSDywCR6eQKGHQukIBzWukt9DJWNVuShmOKJuD68leLbzUJr8L6wyv
+         sAL8cMNVIwsZUy4iZy8L3FZNPfaYU73Vap1Zf9+1cI6yC0DIrJSlHYvBwEOZCG3BH36F
+         KBfePGV09pLgg1LKYkyWfvVxYcbhv5asBuUvtDJp9Lrs4LmuQX2GJ/TlmyPkq7cK6gTk
+         F+n9rgD6IqbMOqM/2ywib2WehuBY8PMwMB47VotdKDNjYl+x6YtLt5h3pgO9fJ2TzXRQ
+         RVKe44UQIjtJGGMn3x6+2p66HCRvuueCyWjLr5DFqahiGg1IEnOLaKHV9jovAZnuSJ55
+         fWvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=vIfE0BvfZVoAYmQCo3XOHdikwlOFZuMhWiFKWJRteT8=;
-        b=kAyRgzQZ6YA+yo9xZn1ADzrxPJUT6f9rS7MH0ODiKnFBD9um7xLeMjIEV56mj+zkZo
-         0BUOQJCu+jQLRmiXMWdTpIaQWkzJrWfxZg/FVDRo9no2txKL0M41E4Eg2or236hbm54+
-         pWlhsiDeI3cooWmyxY4xHi7yFym6De8xZ6E/+kJo/jI51I9/2RlPNbxuxNADka9XONcp
-         PvNh3cEH9Rlp333c+czPA77q/K9EDNmCPsInBpTsB6BCm/gpgFX8qMSPDLb8sgIft9SU
-         WbhHLONTaODmfLajWDfTcR7WyYYwuBusmjRDkxkh7/GEE4E0jOIV0HSAK4PFa78jRKgw
-         GHDg==
-X-Gm-Message-State: AOAM533GJAHkV2psdlDSsBl6Bb8jWZ2+3M6cAibSi0oHAEi7FCagOPRx
-        v0K1zZ9eLmTsbTw7AYp7Vp0=
-X-Google-Smtp-Source: ABdhPJzcv3bu3rRvywoNUS3tEyeCyDw4dCK3m0+rTpK/hwjjR7jMnq9bQXs9ZGRei0DRr0ImEgiDSg==
-X-Received: by 2002:a6b:b70f:: with SMTP id h15mr3269388iof.172.1612811835481;
-        Mon, 08 Feb 2021 11:17:15 -0800 (PST)
-Received: from localhost.localdomain (tunnel525895-pt.tunnel.tserv15.lax1.ipv6.he.net. [2001:470:c:1200::2])
-        by smtp.googlemail.com with ESMTPSA id j25sm9429645iog.27.2021.02.08.11.17.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Feb 2021 11:17:14 -0800 (PST)
-From:   Tianling Shen <cnsztl@gmail.com>
-To:     Rob Herring <robh+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
-        Jagan Teki <jagan@amarulasolutions.com>,
-        Johan Jonker <jbx6244@gmail.com>,
-        Tianling Shen <cnsztl@gmail.com>,
-        Emmanuel Vadot <manu@freebsd.org>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <uwe@kleine-koenig.org>,
-        David Bauer <mail@david-bauer.net>,
-        Tobias Schramm <t.schramm@manjaro.org>,
-        Marty Jones <mj8263788@gmail.com>,
-        Jensen Huang <jensenhuang@friendlyarm.com>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] rockchip: rk3399: Add support for FriendlyARM NanoPi R4S
-Date:   Tue,  9 Feb 2021 03:16:46 +0800
-Message-Id: <20210208191646.6511-2-cnsztl@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210208191646.6511-1-cnsztl@gmail.com>
-References: <20210208191646.6511-1-cnsztl@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qCfnLupVibojf6p+QXa/fy+jh7kBw6RuWeVeUdTLXwE=;
+        b=c2BIN6/QkLUMVY2WVj129lMsCydi86536LQ1jDadAWNq3c9SOMH9BUWqko7kkwxxdv
+         vP88+RazIt4e/nzI19+xvq7iqev2Wh1AvLg0bsotRFQqYHghQn0A+sGFLSV8dC6J9EnN
+         oQ2h3oJgJVTpBncyVo0yi1BsjqKLPDlLdNR5s3wxhMv7l0WNs2bCj/tlTdP3y+NMHOtP
+         6IC1tbSdBx0zt0epTrjwpUZNsjmjHD32eZU5K0qJ/Sp/YK3D2FAM9iwWvWTTCP/p3qSd
+         iJE6vQjAE/orWfZR17+jhjLW5j4wXiEPpljU+Q9j5wU3jePbWm8xs7xSTmRN7r2gFD7o
+         4ZtA==
+X-Gm-Message-State: AOAM530683WqrCTswwRLXu9feXZs4J7eLhXlUY/89RuSPqfQPtr89YqU
+        E3z8WA6XAebMsF9TpYjvQ1hX4o0CAsOUkh55wy9VrYF7KJAxBg==
+X-Google-Smtp-Source: ABdhPJxNZLD9lYS+fpPxInJSo2bM0a/KDWCemZds9jS3Kq78Mj/APwEqEMeSlaGMApriaXkdxnHlDCFBH8vE3iC8G4w=
+X-Received: by 2002:a05:6e02:1be6:: with SMTP id y6mr16174254ilv.145.1612811944425;
+ Mon, 08 Feb 2021 11:19:04 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210201194012.524831-1-avagin@gmail.com> <CABV8kRzg1BaKdAhqXU3hONhfPAHj6Nbw0wLBC1Lo7PN1UA0CoA@mail.gmail.com>
+ <20210208183752.GB559391@gmail.com>
+In-Reply-To: <20210208183752.GB559391@gmail.com>
+From:   Keno Fischer <keno@juliacomputing.com>
+Date:   Mon, 8 Feb 2021 14:18:28 -0500
+Message-ID: <CABV8kRzv54fxjXAvu1e8JYBZ7GQc_G-h7OSDWLCQ3NLA-5Ugug@mail.gmail.com>
+Subject: Re: [PATCH 0/3 v2] arm64/ptrace: allow to get all registers on
+ syscall traps
+To:     Andrei Vagin <avagin@gmail.com>
+Cc:     Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-api@vger.kernel.org,
+        Anthony Steinhauser <asteinhauser@google.com>,
+        Dave Martin <Dave.Martin@arm.com>, Kyle Huey <khuey@pernos.co>,
+        "Robert O'Callahan" <roc@pernos.co>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds support for the NanoPi R4S from FriendlyArm.
+>
+> Could you describe the problem in more details? I wonder whether we have
+> the same thing in CRIU...
+>
 
-Rockchip RK3399 SoC
-1GB DDR3 or 4GB LPDDR4 RAM
-Gigabit Ethernet (WAN)
-Gigabit Ethernet (PCIe) (LAN)
-USB 3.0 Port x 2
-MicroSD slot
-Reset button
-WAN - LAN - SYS LED
+Sure, basically the issue is that orig_x0 gets recorded at the start of the
+syscall entry, but is not otherwise part of the ptrace state. It used
+to be primarily used for resetting the argument back to its original
+value during syscall restarts, but I see it's been expanded slightly
+with the user dispatch mechanism (though as far as I can tell
+not in a way that interacts with ptrace). Basically the problem
+is that if you change the value of x0 during either the ptrace
+entry stop or a seccomp stop and then incur a syscall restart,
+the syscall will restart with the original x0 rather than with
+the modified x0, which may be unexpected. Of course,
+relatedly, if you're doing CRIU-like things you can end up
+in situations where the future behavior will depend on the
+orig_x0 value, which isn't restore-able at the moment. It's
+possible to work around all of this by keeping a local copy
+of orig_x0 and being very careful with the ptrace traps around
+restarts, but getting the logic right is extremely tricky. My
+suggestion for what I thought would be reasonable
+behavior was:
 
-[initial DTS file]
-Co-developed-by: Jensen Huang <jensenhuang@friendlyarm.com>
-Signed-off-by: Jensen Huang <jensenhuang@friendlyarm.com>
-Co-developed-by: Marty Jones <mj8263788@gmail.com>
-Signed-off-by: Marty Jones <mj8263788@gmail.com>
-Signed-off-by: Tianling Shen <cnsztl@gmail.com>
----
- arch/arm64/boot/dts/rockchip/Makefile         |   1 +
- .../boot/dts/rockchip/rk3399-nanopi-r4s.dts   | 178 ++++++++++++++++++
- 2 files changed, 179 insertions(+)
- create mode 100644 arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dts
+1. Expose orig_x0 to ptrace
+2. Set orig_x0 to x0 and set x0 to -ENOSYS at the start of the syscall
+dispatcher
+3. Use orig_x0 for syscall arguments/seccomp/restarts
 
-diff --git a/arch/arm64/boot/dts/rockchip/Makefile b/arch/arm64/boot/dts/rockchip/Makefile
-index 1ab55a124a87..eb2e13532012 100644
---- a/arch/arm64/boot/dts/rockchip/Makefile
-+++ b/arch/arm64/boot/dts/rockchip/Makefile
-@@ -34,6 +34,7 @@ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-leez-p710.dtb
- dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-nanopc-t4.dtb
- dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-nanopi-m4.dtb
- dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-nanopi-neo4.dtb
-+dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-nanopi-r4s.dtb
- dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-orangepi.dtb
- dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-pinebook-pro.dtb
- dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-puma-haikou.dtb
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dts b/arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dts
-new file mode 100644
-index 000000000000..b8e8d03eee0a
---- /dev/null
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dts
-@@ -0,0 +1,178 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+/*
-+ * FriendlyElec NanoPC-T4 board device tree source
-+ *
-+ * Copyright (c) 2020 FriendlyElec Computer Tech. Co., Ltd.
-+ * (http://www.friendlyarm.com)
-+ *
-+ * Copyright (c) 2018 Collabora Ltd.
-+ *
-+ * Copyright (c) 2020 Jensen Huang <jensenhuang@friendlyarm.com>
-+ * Copyright (c) 2020 Marty Jones <mj8263788@gmail.com>
-+ * Copyright (c) 2021 Tianling Shen <cnsztl@gmail.com>
-+ */
-+
-+/dts-v1/;
-+#include "rk3399-nanopi4.dtsi"
-+
-+/ {
-+	model = "FriendlyElec NanoPi R4S";
-+	compatible = "friendlyarm,nanopi-r4s", "rockchip,rk3399";
-+
-+	/delete-node/ gpio-leds;
-+	gpio-leds {
-+		compatible = "gpio-leds";
-+		pinctrl-0 = <&lan_led_pin>, <&sys_led_pin>, <&wan_led_pin>;
-+		pinctrl-names = "default";
-+
-+		lan_led: led-0 {
-+			gpios = <&gpio1 RK_PA1 GPIO_ACTIVE_HIGH>;
-+			label = "nanopi-r4s:green:lan";
-+		};
-+
-+		sys_led: led-1 {
-+			gpios = <&gpio0 RK_PB5 GPIO_ACTIVE_HIGH>;
-+			label = "nanopi-r4s:red:sys";
-+		};
-+
-+		wan_led: led-2 {
-+			gpios = <&gpio1 RK_PA0 GPIO_ACTIVE_HIGH>;
-+			label = "nanopi-r4s:green:wan";
-+		};
-+	};
-+
-+	/delete-node/ gpio-keys;
-+	gpio-keys {
-+		compatible = "gpio-keys";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&reset_button_pin>;
-+
-+		reset {
-+			debounce-interval = <50>;
-+			gpios = <&gpio1 RK_PC6 GPIO_ACTIVE_LOW>;
-+			label = "reset";
-+			linux,code = <KEY_RESTART>;
-+		};
-+	};
-+
-+	vdd_5v: vdd-5v {
-+		compatible = "regulator-fixed";
-+		regulator-name = "vdd_5v";
-+		regulator-always-on;
-+		regulator-boot-on;
-+	};
-+
-+	fan: pwm-fan {
-+		compatible = "pwm-fan";
-+		/*
-+		 * With 20KHz PWM and an EVERCOOL EC4007H12SA fan, these levels
-+		 * work out to 0, ~1200, ~3000, and 5000RPM respectively.
-+		 */
-+		cooling-levels = <0 12 18 255>;
-+		#cooling-cells = <2>;
-+		fan-supply = <&vdd_5v>;
-+		pwms = <&pwm1 0 50000 0>;
-+	};
-+};
-+
-+&cpu_thermal {
-+	trips {
-+		cpu_warm: cpu_warm {
-+			temperature = <55000>;
-+			hysteresis = <2000>;
-+			type = "active";
-+		};
-+
-+		cpu_hot: cpu_hot {
-+			temperature = <65000>;
-+			hysteresis = <2000>;
-+			type = "active";
-+		};
-+	};
-+
-+	cooling-maps {
-+		map2 {
-+			trip = <&cpu_warm>;
-+			cooling-device = <&fan THERMAL_NO_LIMIT 1>;
-+		};
-+
-+		map3 {
-+			trip = <&cpu_hot>;
-+			cooling-device = <&fan 2 THERMAL_NO_LIMIT>;
-+		};
-+	};
-+};
-+
-+&emmc_phy {
-+	status = "disabled";
-+};
-+
-+&fusb0 {
-+	status = "disabled";
-+};
-+
-+&pcie0 {
-+	max-link-speed = <1>;
-+	num-lanes = <1>;
-+	vpcie3v3-supply = <&vcc3v3_sys>;
-+
-+	pcie@0 {
-+		reg = <0x00000000 0 0 0 0>;
-+		#address-cells = <3>;
-+		#size-cells = <2>;
-+	};
-+};
-+
-+&pinctrl {
-+	/delete-node/ gpio-leds;
-+	gpio-leds {
-+		lan_led_pin: lan-led-pin {
-+			rockchip,pins = <1 RK_PA1 RK_FUNC_GPIO &pcfg_pull_none>;
-+		};
-+
-+		sys_led_pin: sys-led-pin {
-+			rockchip,pins = <0 RK_PB5 RK_FUNC_GPIO &pcfg_pull_none>;
-+		};
-+
-+		wan_led_pin: wan-led-pin {
-+			rockchip,pins = <1 RK_PA0 RK_FUNC_GPIO &pcfg_pull_none>;
-+		};
-+	};
-+
-+	/delete-node/ rockchip-key;
-+	rockchip-key {
-+		reset_button_pin: reset-button-pin {
-+			rockchip,pins = <1 RK_PC6 RK_FUNC_GPIO &pcfg_pull_up>;
-+		};
-+	};
-+};
-+
-+&sdhci {
-+	status = "disabled";
-+};
-+
-+&sdio0 {
-+	status = "disabled";
-+};
-+
-+&sdmmc {
-+	sd-uhs-sdr12;
-+	sd-uhs-sdr25;
-+	sd-uhs-sdr50;
-+};
-+
-+&u2phy0_host {
-+	phy-supply = <&vdd_5v>;
-+};
-+
-+&u2phy1_host {
-+	status = "disabled";
-+};
-+
-+&usbdrd_dwc3_0 {
-+	dr_mode = "host";
-+};
-+
-+&vcc3v3_sys {
-+	vin-supply = <&vcc5v0_sys>;
-+};
--- 
-2.17.1
+That's basically how rax works on x86_64 and it doesn't
+seem to cause major problems (though of course I may
+be biased by having x86_64 already work when I started the
+aarch64 port). Just the first item would be sufficient of course
+for getting rid of most of the bookkeeping. I should also say
+that, for us, the ptrace getregs call can be the throughput
+limiting operation, so it would be nice if getting the entire
+basic register set would only require one syscall. I won't
+insist on it, since we do have a solution in place that kinda
+works (and only requires the one syscall),
+but I thought I'd mention it.
 
+While we're on this topic, and in case it's helpful to anybody,
+I should also point out that the order of the ptrace-signal-stop,
+vs setup for the syscall restart differs between x86 and
+aarch64 (aarch64 sets up the restart first then delivers the
+ptrace trap/signal - x86 the other way around). I actually
+think the aarch64 behavior is saner here, but I figured I'd
+leave this breadcrumb for anybody who's writing a ptracer
+and stumbles across this.
+
+Keno
