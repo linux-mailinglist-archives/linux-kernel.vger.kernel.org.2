@@ -2,116 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DC213133AD
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 14:50:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 168B13133BA
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 14:52:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231390AbhBHNuB convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 8 Feb 2021 08:50:01 -0500
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:21465 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231404AbhBHNtp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 08:49:45 -0500
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mtapsc-5-Lck-04ekMdS203ftdU1hUA-1; Mon, 08 Feb 2021 13:48:05 +0000
-X-MC-Unique: Lck-04ekMdS203ftdU1hUA-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Mon, 8 Feb 2021 13:48:06 +0000
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Mon, 8 Feb 2021 13:48:06 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Sasha Levin' <sashal@kernel.org>,
-        "masahiroy@kernel.org" <masahiroy@kernel.org>,
-        "michal.lkml@markovi.net" <michal.lkml@markovi.net>
-CC:     "linux-kbuild@vger.kernel.org" <linux-kbuild@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-Subject: RE: [PATCH 2/3] kbuild: clamp SUBLEVEL to 255
-Thread-Topic: [PATCH 2/3] kbuild: clamp SUBLEVEL to 255
-Thread-Index: AQHW/EXgdIIsNPdi4UePFt1m8OJUzKpORpWQ
-Date:   Mon, 8 Feb 2021 13:48:06 +0000
-Message-ID: <f8aa21157d0848cda0775a174bba05b2@AcuMS.aculab.com>
-References: <20210206035033.2036180-1-sashal@kernel.org>
- <20210206035033.2036180-2-sashal@kernel.org>
-In-Reply-To: <20210206035033.2036180-2-sashal@kernel.org>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        id S231325AbhBHNv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 08:51:26 -0500
+Received: from mga14.intel.com ([192.55.52.115]:54793 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230328AbhBHNvQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 08:51:16 -0500
+IronPort-SDR: Cn/VhkM8TD/Hji/Y26k/ODCZyx+QiPddrPXusPiykrYLKee6N6EoH8rvAzz4RAxv8ZjhJR3gYn
+ 28aTpm5UD+Cw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9888"; a="180935005"
+X-IronPort-AV: E=Sophos;i="5.81,162,1610438400"; 
+   d="scan'208";a="180935005"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2021 05:49:28 -0800
+IronPort-SDR: ovHZr530PONsEQU7icPI/tgaTe/+PYF9KuXdIhozO4j7+WdZjrRuacYAj3YF56V/kB6EQfc0o+
+ YJYPl+/7XcHQ==
+X-IronPort-AV: E=Sophos;i="5.81,162,1610438400"; 
+   d="scan'208";a="395388186"
+Received: from shaojieh-mobl.ccr.corp.intel.com (HELO localhost) ([10.249.172.136])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2021 05:49:25 -0800
+Date:   Mon, 8 Feb 2021 21:49:23 +0800
+From:   Yu Zhang <yu.c.zhang@linux.intel.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     seanjc@google.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, vkuznets@redhat.com,
+        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org
+Subject: Re: [PATCH v2] KVM: x86/MMU: Do not check unsync status for root SP.
+Message-ID: <20210208134923.smtvzeonvwxzdlwn@linux.intel.com>
+References: <20210207122254.23056-1-yu.c.zhang@linux.intel.com>
+ <671ae214-22b9-1d89-75cb-0c6da5230988@redhat.com>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <671ae214-22b9-1d89-75cb-0c6da5230988@redhat.com>
+User-Agent: NeoMutt/20171215
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sasha Levin
-> Sent: 06 February 2021 03:51
+On Mon, Feb 08, 2021 at 12:36:57PM +0100, Paolo Bonzini wrote:
+> On 07/02/21 13:22, Yu Zhang wrote:
+> > In shadow page table, only leaf SPs may be marked as unsync.
+> > And for non-leaf SPs, we use unsync_children to keep the number
+> > of the unsynced children. In kvm_mmu_sync_root(), sp->unsync
+> > shall always be zero for the root SP, , hence no need to check
+> > it. Instead, a warning inside mmu_sync_children() is added, in
+> > case someone incorrectly used it.
+> > 
+> > Also, clarify the mmu_need_write_protect(), by moving the warning
+> > into kvm_unsync_page().
+> > 
+> > Signed-off-by: Yu Zhang <yu.c.zhang@linux.intel.com>
+> > Signed-off-by: Sean Christopherson <seanjc@google.com>
 > 
-> Right now if SUBLEVEL becomes larger than 255 it will overflow into the
-> territory of PATCHLEVEL, causing havoc in userspace that tests for
-> specific kernel version.
+> This should really be more of a Co-developed-by, and there are a couple
+> adjustments that could be made in the commit message.  I've queued the patch
+> and I'll fix it up later.
+
+Indeed. Thanks for the remind, and I'll pay attention in the future. :)
+
+B.R.
+Yu
+
 > 
-> While userspace code tests for MAJOR and PATCHLEVEL, it doesn't test
-> SUBLEVEL at any point as ABI changes don't happen in the context of
-> stable tree.
+> Paolo
 > 
-> Thus, to avoid overflows, simply clamp SUBLEVEL to it's maximum value in
-> the context of LINUX_VERSION_CODE. This does not affect "make
-> kernelversion" and such.
+> > ---
+> > Changes in V2:
+> > - warnings added based on Sean's suggestion.
+> > 
+> >   arch/x86/kvm/mmu/mmu.c | 12 +++++++++---
+> >   1 file changed, 9 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> > index 86af582..c4797a00cc 100644
+> > --- a/arch/x86/kvm/mmu/mmu.c
+> > +++ b/arch/x86/kvm/mmu/mmu.c
+> > @@ -1995,6 +1995,12 @@ static void mmu_sync_children(struct kvm_vcpu *vcpu,
+> >   	LIST_HEAD(invalid_list);
+> >   	bool flush = false;
+> > +	/*
+> > +	 * Only 4k SPTEs can directly be made unsync, the parent pages
+> > +	 * should never be unsyc'd.
+> > +	 */
+> > +	WARN_ON_ONCE(sp->unsync);
+> > +
+> >   	while (mmu_unsync_walk(parent, &pages)) {
+> >   		bool protected = false;
+> > @@ -2502,6 +2508,8 @@ int kvm_mmu_unprotect_page(struct kvm *kvm, gfn_t gfn)
+> >   static void kvm_unsync_page(struct kvm_vcpu *vcpu, struct kvm_mmu_page *sp)
+> >   {
+> > +	WARN_ON(sp->role.level != PG_LEVEL_4K);
+> > +
+> >   	trace_kvm_mmu_unsync_page(sp);
+> >   	++vcpu->kvm->stat.mmu_unsync;
+> >   	sp->unsync = 1;
+> > @@ -2524,7 +2532,6 @@ bool mmu_need_write_protect(struct kvm_vcpu *vcpu, gfn_t gfn,
+> >   		if (sp->unsync)
+> >   			continue;
+> > -		WARN_ON(sp->role.level != PG_LEVEL_4K);
+> >   		kvm_unsync_page(vcpu, sp);
+> >   	}
+> > @@ -3406,8 +3413,7 @@ void kvm_mmu_sync_roots(struct kvm_vcpu *vcpu)
+> >   		 * mmu_need_write_protect() describe what could go wrong if this
+> >   		 * requirement isn't satisfied.
+> >   		 */
+> > -		if (!smp_load_acquire(&sp->unsync) &&
+> > -		    !smp_load_acquire(&sp->unsync_children))
+> > +		if (!smp_load_acquire(&sp->unsync_children))
+> >   			return;
+> >   		write_lock(&vcpu->kvm->mmu_lock);
+> > 
 > 
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
-> ---
->  Makefile | 12 +++++++++---
->  1 file changed, 9 insertions(+), 3 deletions(-)
-> 
-> diff --git a/Makefile b/Makefile
-> index 49ac1b7fe8e99..157be50c691e5 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -1258,9 +1258,15 @@ define filechk_utsrelease.h
->  endef
-> 
->  define filechk_version.h
-> -	echo \#define LINUX_VERSION_CODE $(shell                         \
-> -	expr $(VERSION) \* 65536 + 0$(PATCHLEVEL) \* 256 + 0$(SUBLEVEL)); \
-> -	echo '#define KERNEL_VERSION(a,b,c) (((a) << 16) + ((b) << 8) + (c))'
-> +	if [ $(SUBLEVEL) -gt 255 ]; then                                 \
-> +		echo \#define LINUX_VERSION_CODE $(shell                 \
-> +		expr $(VERSION) \* 65536 + 0$(PATCHLEVEL) \* 256 + 255); \
-> +	else                                                             \
-> +		echo \#define LINUX_VERSION_CODE $(shell                 \
-> +		expr $(VERSION) \* 65536 + 0$(PATCHLEVEL) \* 256 + $(SUBLEVEL)); \
-> +	fi;                                                              \
-> +	echo '#define KERNEL_VERSION(a,b,c) (((a) << 16) + ((b) << 8) +  \
-> +	((c) > 255 ? 255 : (c)))'
->  endef
-
-Why not use KERNEL_VERSION to define LINUX_VERSION_CODE ?
-Basically just:
-	echo '#define LINUX_VERSION_CODE KERNEL_VERSION($(VERSION), $(PATCHLEVEL)+0, $(SUBLEVEL)+0)'
-
-If PATCHLEVEL and SUBLEVEL are guaranteed to be non-empty the +0
-can be removed.
-The patch assumes they are non-empty, the original pre-prended 0
-to stop syntax error for empty version strings.
-
-Note that the expr version will process 08 and 09.
-gcc will treat them as octal, and may error them.
-
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
-
