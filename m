@@ -2,94 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23232313FB7
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 20:59:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8AA4313FB0
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 20:57:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234975AbhBHT52 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 14:57:28 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:51207 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234033AbhBHSOi (ORCPT
+        id S231666AbhBHT4i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 14:56:38 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:17086 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235237AbhBHSOB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 13:14:38 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612807991;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Vna1UpISDhhzy62RgmCODV7iVBrOXqSLXKC77p47hCA=;
-        b=CiS5pN9lGz1cUVDV93OQF/nV9RsCS7hGrACa4GzEYWmvLK2gW5szaN55qil7kh/mh4rJwJ
-        WZZgbVUu9AivXklIZolLE9ukaPfz/QNSwKryVPmor4znof7IdfT/8Qf5toa9BMvx8AmY5m
-        W4N5D753vQKpQ+IiJkLPAhiUZFch4ds=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-152-LIm0O2BmNA-BWgTWAaL5AQ-1; Mon, 08 Feb 2021 13:13:07 -0500
-X-MC-Unique: LIm0O2BmNA-BWgTWAaL5AQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A8B141936B65;
-        Mon,  8 Feb 2021 18:13:04 +0000 (UTC)
-Received: from treble (ovpn-118-142.rdu2.redhat.com [10.10.118.142])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 9924860C04;
-        Mon,  8 Feb 2021 18:13:02 +0000 (UTC)
-Date:   Mon, 8 Feb 2021 12:12:59 -0600
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Borislav Petkov <bp@suse.de>
-Cc:     AC <achirvasub@gmail.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Marco Elver <elver@google.com>, Arnd Bergmann <arnd@arndb.de>,
-        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kasan-dev@googlegroups.com, nborisov@suse.com,
-        seth.forshee@canonical.com, yamada.masahiro@socionext.com
-Subject: Re: [PATCH] x86/build: Disable CET instrumentation in the kernel for
- 32-bit too
-Message-ID: <20210208181259.hwmnoldx627jhvlm@treble>
-References: <YCB4Sgk5g5B2Nu09@arch-chirva.localdomain>
- <YCCFGc97d2U5yUS7@arch-chirva.localdomain>
- <YCCIgMHkzh/xT4ex@arch-chirva.localdomain>
- <20210208121227.GD17908@zn.tnic>
- <82FA27E6-A46F-41E2-B7D3-2FEBEA8A4D70@gmail.com>
- <20210208162543.GH17908@zn.tnic>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+        Mon, 8 Feb 2021 13:14:01 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B60217f3d0000>; Mon, 08 Feb 2021 10:13:17 -0800
+Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 8 Feb
+ 2021 18:13:16 +0000
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.46) by
+ HQMAIL107.nvidia.com (172.20.187.13) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Mon, 8 Feb 2021 18:13:16 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=oMfMoYHcg08geZsQq02lK3cz2dRWpui0cNltFhJb8rCyST3L/dVJfP5ZHhYRt9/rtH+YgohaPKMeX9xNqueJkiRWUpmiO3TcjihuoA3hxrCDJnmAsXr3J5QA414ld14Ed/jl3UmLvK0acJaHhtsAu55/d0kKhKYRbBumB/Aat47JAx7vcSfJlenjNmXcBVaeced50koReK3bn94nC5/mF6DVlthZc4ZNnjm98IfvlZHeARJHVCNG+Wse2qBHjs4YuNivHfdnOqfF6mpe+V8/qHW+1JU0Mma/d1fTtroEYyAlBjZi9AAaigp6S9f8hSTVmalRqXP9YEjw+aQ8wDXaXQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=u9cPp2oIQq6GcYFP14tN532iDEEYJNPobmrQZRL71m4=;
+ b=CexI+7wQBkPFPVAzx7aIFilwZrtRHGwwPAGhXoJEHLTcU541SDVhByGgOfaExJHvLL3wYCsj8uk/gkpjK9UQwZboQEfrofnPQMETd8H0acFSEuJFilTTZLIZzfNa+Fdm1anPcYcEYz6KAOiaXUXGUN2sRzTqos2i4+hjGmlvqp4fh3Vqj7vM4N84GBDALUfH6+HPWqbGr6GqXYsTOrxKA3Z8yVQy7gSJI1gb2sI9kqtHAYGJ5jk7EU9zDCVk8iChyrKFtleLx30VE3W2cIyQsG2gHPowW++Qu6hgXcrZ8t4smFBKVt6bmzZSRYOCWUFn0IgPqvxoMGAE3Ue79dQTAg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB2938.namprd12.prod.outlook.com (2603:10b6:5:18a::31) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.30; Mon, 8 Feb
+ 2021 18:13:15 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::d6b:736:fa28:5e4]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::d6b:736:fa28:5e4%7]) with mapi id 15.20.3825.030; Mon, 8 Feb 2021
+ 18:13:15 +0000
+Date:   Mon, 8 Feb 2021 14:13:13 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Alexey Kardashevskiy <aik@ozlabs.ru>
+CC:     Max Gurtovoy <mgurtovoy@nvidia.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Matthew Rosato <mjrosato@linux.ibm.com>, <kvm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <liranl@nvidia.com>,
+        <oren@nvidia.com>, <tzahio@nvidia.com>, <leonro@nvidia.com>,
+        <yarong@nvidia.com>, <aviadye@nvidia.com>, <shahafs@nvidia.com>,
+        <artemp@nvidia.com>, <kwankhede@nvidia.com>, <ACurrid@nvidia.com>,
+        <gmataev@nvidia.com>, <cjia@nvidia.com>, <yishaih@nvidia.com>
+Subject: Re: [PATCH 8/9] vfio/pci: use x86 naming instead of igd
+Message-ID: <20210208181313.GH4247@nvidia.com>
+References: <20210201181454.22112b57.cohuck@redhat.com>
+ <599c6452-8ba6-a00a-65e7-0167f21eac35@linux.ibm.com>
+ <20210201114230.37c18abd@omen.home.shazbot.org>
+ <20210202170659.1c62a9e8.cohuck@redhat.com>
+ <a413334c-3319-c6a3-3d8a-0bb68a10b9c1@nvidia.com>
+ <806c138e-685c-0955-7c15-93cb1d4fe0d9@ozlabs.ru>
+ <34be24e6-7f62-9908-c56d-9e469c3b6965@nvidia.com>
+ <83ef0164-6291-c3d1-0ce5-2c9d6c97469e@ozlabs.ru>
+ <20210204125123.GI4247@nvidia.com>
+ <d69a7f3c-f552-cd25-4e15-3e894f4eb15a@ozlabs.ru>
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20210208162543.GH17908@zn.tnic>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+In-Reply-To: <d69a7f3c-f552-cd25-4e15-3e894f4eb15a@ozlabs.ru>
+X-ClientProxiedBy: BL1PR13CA0322.namprd13.prod.outlook.com
+ (2603:10b6:208:2c1::27) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.162.115.133) by BL1PR13CA0322.namprd13.prod.outlook.com (2603:10b6:208:2c1::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.11 via Frontend Transport; Mon, 8 Feb 2021 18:13:14 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1l9B29-0051kF-OY; Mon, 08 Feb 2021 14:13:13 -0400
+X-Header: ProcessedBy-CMR-outbound
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1612807997; bh=u9cPp2oIQq6GcYFP14tN532iDEEYJNPobmrQZRL71m4=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType:X-Header;
+        b=jHz/6g+LC2Yp1n27lfPuzPNZRWv7851RFe/uwp3ccBGl4UgWZg++1l7nHYygvT/kG
+         ont1xu/9Nl7N5ps5rZSXxNdZbEZAvO97ljozJjVUDv/psKhrCc2eiSqHpBmbqceLNR
+         xE7ylSS3Czh8v7DDGfgwnSPX+Q2hnHMZZG5ubIeWy7pjktid3J2KuKv49Nh3JeQjZh
+         zfk8I5/F1Mp3aRFmSGj5eUqz1Z19fvObdSW+8HafffIKY4Z0o49T22CJZn0aZ6dkug
+         U2gsa2DvL0sonddJo+bNhvKqjGL1ZgNtjyj/zdXuKK3Glkqat+C/3geMfZoAyOf49O
+         nq3F86dDEO8Cw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 08, 2021 at 05:25:43PM +0100, Borislav Petkov wrote:
-> On Mon, Feb 08, 2021 at 10:19:33AM -0500, AC wrote:
-> > That did fix it, thank you!
+On Fri, Feb 05, 2021 at 11:42:11AM +1100, Alexey Kardashevskiy wrote:
+> > A real nvswitch function?
 > 
-> Thanks!
-> 
-> ---
-> From: Borislav Petkov <bp@suse.de>
-> Date: Mon, 8 Feb 2021 16:43:30 +0100
-> Subject: [PATCH] x86/build: Disable CET instrumentation in the kernel for 32-bit too
-> 
-> Commit
-> 
->   20bf2b378729 ("x86/build: Disable CET instrumentation in the kernel")
-> 
-> disabled CET instrumentation which gets added by default by the Ubuntu
-> gcc9 and 10 by default, but did that only for 64-bit builds. It would
-> still fail when building a 32-bit target. So disable CET for all x86
-> builds.
-> 
-> Fixes: 20bf2b378729 ("x86/build: Disable CET instrumentation in the kernel")
-> Reported-by: AC <achirvasub@gmail.com>
-> Signed-off-by: Borislav Petkov <bp@suse.de>
-> Tested-by: AC <achirvasub@gmail.com>
-> Link: https://lkml.kernel.org/r/YCCIgMHkzh/xT4ex@arch-chirva.localdomain
+> What do you mean by this exactly? The cpu side of nvlink is "emulated pci
+> devices", the gpu side is not in pci space at all, the nvidia driver manages
+> it via the gpu's mmio or/and cfg space.
 
-Acked-by: Josh Poimboeuf <jpoimboe@redhat.com>
+Some versions of the nvswitch chip have a PCI-E link too, that is what
+I though this was all about when I first saw it.
 
--- 
-Josh
+So, it is really a special set of functions for NVIDIA GPU device
+assignment only applicable to P9 systems, much like IGD is for Intel
+on x86.
 
+Jason
