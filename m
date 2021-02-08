@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 531C53139DC
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 17:43:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8C933139B7
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 17:41:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234550AbhBHQmv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 11:42:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60182 "EHLO mail.kernel.org"
+        id S234327AbhBHQj5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 11:39:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56624 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233536AbhBHPPO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 10:15:14 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C035864EBA;
-        Mon,  8 Feb 2021 15:10:40 +0000 (UTC)
+        id S233513AbhBHPOt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 10:14:49 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B7F1764ECD;
+        Mon,  8 Feb 2021 15:10:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612797041;
-        bh=dULCQoKFVoxwAi9flzmk7a0AiUx6uNGdYjiB4h4mBgc=;
+        s=korg; t=1612797044;
+        bh=81GN6TDcD9uC2LArZDvYnnFtAGNAZm6PGEZzSFS7UDg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mmC8SShhyRMNxtq8K/EJQHB6mhWwTBJAj3EQpVfPwTWV7KN8oTg9ZIPh7RNcUJI0k
-         fCLzwgSr/Ym5eDnHj2ZtX0gt7Nxeacb1Qzi8/7VUfiU1Qep0D7Dwi6svebHbS0FfwM
-         6kV7HcectpYRFf1+8RDVdQQRE0nE/QVbUYAkOsgo=
+        b=H3XUYA3fxwTaCdkGts2rpAHSol/ZLQylq0814krc4AWxnxRkQvOpabsxUOO2Wqlgb
+         OBYknrFsVIDWETxPDJr16UCwIRoEvNEai8tpki19oo09vIOa5ZNFeRM3yuwBdz/tdD
+         NJ4g0MLuZaJVt9JGlikTdKErolpZp8UTWw8XjhjU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Andreas Hartmann <andihartmann@01019freenet.de>,
-        Mathias Nyman <mathias.nyman@linux.intel.com>
-Subject: [PATCH 5.4 38/65] xhci: fix bounce buffer usage for non-sg list case
-Date:   Mon,  8 Feb 2021 16:01:10 +0100
-Message-Id: <20210208145811.703123704@linuxfoundation.org>
+        stable@vger.kernel.org, Aurelien Aptel <aaptel@suse.com>,
+        Shyam Prasad N <nspmangalore@gmail.com>,
+        Steve French <stfrench@microsoft.com>
+Subject: [PATCH 5.4 39/65] cifs: report error instead of invalid when revalidating a dentry fails
+Date:   Mon,  8 Feb 2021 16:01:11 +0100
+Message-Id: <20210208145811.739646660@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210208145810.230485165@linuxfoundation.org>
 References: <20210208145810.230485165@linuxfoundation.org>
@@ -40,82 +40,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mathias Nyman <mathias.nyman@linux.intel.com>
+From: Aurelien Aptel <aaptel@suse.com>
 
-commit d4a610635400ccc382792f6be69427078541c678 upstream.
+commit 21b200d091826a83aafc95d847139b2b0582f6d1 upstream.
 
-xhci driver may in some special cases need to copy small amounts
-of payload data to a bounce buffer in order to meet the boundary
-and alignment restrictions set by the xHCI specification.
+Assuming
+- //HOST/a is mounted on /mnt
+- //HOST/b is mounted on /mnt/b
 
-In the majority of these cases the data is in a sg list, and
-driver incorrectly assumed data is always in urb->sg when using
-the bounce buffer.
+On a slow connection, running 'df' and killing it while it's
+processing /mnt/b can make cifs_get_inode_info() returns -ERESTARTSYS.
 
-If data instead is contiguous, and in urb->transfer_buffer, we may still
-need to bounce buffer a small part if data starts very close (less than
-packet size) to a 64k boundary.
+This triggers the following chain of events:
+=> the dentry revalidation fail
+=> dentry is put and released
+=> superblock associated with the dentry is put
+=> /mnt/b is unmounted
 
-Check if sg list is used before copying data to/from it.
+This patch makes cifs_d_revalidate() return the error instead of 0
+(invalid) when cifs_revalidate_dentry() fails, except for ENOENT (file
+deleted) and ESTALE (file recreated).
 
-Fixes: f9c589e142d0 ("xhci: TD-fragment, align the unsplittable case with a bounce buffer")
-Cc: stable@vger.kernel.org
-Reported-by: Andreas Hartmann <andihartmann@01019freenet.de>
-Tested-by: Andreas Hartmann <andihartmann@01019freenet.de>
-Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
-Link: https://lore.kernel.org/r/20210203113702.436762-2-mathias.nyman@linux.intel.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Aurelien Aptel <aaptel@suse.com>
+Suggested-by: Shyam Prasad N <nspmangalore@gmail.com>
+Reviewed-by: Shyam Prasad N <nspmangalore@gmail.com>
+CC: stable@vger.kernel.org
+Signed-off-by: Steve French <stfrench@microsoft.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/host/xhci-ring.c |   31 ++++++++++++++++++++-----------
- 1 file changed, 20 insertions(+), 11 deletions(-)
+ fs/cifs/dir.c |   22 ++++++++++++++++++++--
+ 1 file changed, 20 insertions(+), 2 deletions(-)
 
---- a/drivers/usb/host/xhci-ring.c
-+++ b/drivers/usb/host/xhci-ring.c
-@@ -695,11 +695,16 @@ static void xhci_unmap_td_bounce_buffer(
- 	dma_unmap_single(dev, seg->bounce_dma, ring->bounce_buf_len,
- 			 DMA_FROM_DEVICE);
- 	/* for in tranfers we need to copy the data from bounce to sg */
--	len = sg_pcopy_from_buffer(urb->sg, urb->num_sgs, seg->bounce_buf,
--			     seg->bounce_len, seg->bounce_offs);
--	if (len != seg->bounce_len)
--		xhci_warn(xhci, "WARN Wrong bounce buffer read length: %zu != %d\n",
--				len, seg->bounce_len);
-+	if (urb->num_sgs) {
-+		len = sg_pcopy_from_buffer(urb->sg, urb->num_sgs, seg->bounce_buf,
-+					   seg->bounce_len, seg->bounce_offs);
-+		if (len != seg->bounce_len)
-+			xhci_warn(xhci, "WARN Wrong bounce buffer read length: %zu != %d\n",
-+				  len, seg->bounce_len);
-+	} else {
-+		memcpy(urb->transfer_buffer + seg->bounce_offs, seg->bounce_buf,
-+		       seg->bounce_len);
-+	}
- 	seg->bounce_len = 0;
- 	seg->bounce_offs = 0;
- }
-@@ -3263,12 +3268,16 @@ static int xhci_align_td(struct xhci_hcd
+--- a/fs/cifs/dir.c
++++ b/fs/cifs/dir.c
+@@ -738,6 +738,7 @@ static int
+ cifs_d_revalidate(struct dentry *direntry, unsigned int flags)
+ {
+ 	struct inode *inode;
++	int rc;
  
- 	/* create a max max_pkt sized bounce buffer pointed to by last trb */
- 	if (usb_urb_dir_out(urb)) {
--		len = sg_pcopy_to_buffer(urb->sg, urb->num_sgs,
--				   seg->bounce_buf, new_buff_len, enqd_len);
--		if (len != new_buff_len)
--			xhci_warn(xhci,
--				"WARN Wrong bounce buffer write length: %zu != %d\n",
--				len, new_buff_len);
-+		if (urb->num_sgs) {
-+			len = sg_pcopy_to_buffer(urb->sg, urb->num_sgs,
-+						 seg->bounce_buf, new_buff_len, enqd_len);
-+			if (len != new_buff_len)
-+				xhci_warn(xhci, "WARN Wrong bounce buffer write length: %zu != %d\n",
-+					  len, new_buff_len);
-+		} else {
-+			memcpy(seg->bounce_buf, urb->transfer_buffer + enqd_len, new_buff_len);
+ 	if (flags & LOOKUP_RCU)
+ 		return -ECHILD;
+@@ -747,8 +748,25 @@ cifs_d_revalidate(struct dentry *direntr
+ 		if ((flags & LOOKUP_REVAL) && !CIFS_CACHE_READ(CIFS_I(inode)))
+ 			CIFS_I(inode)->time = 0; /* force reval */
+ 
+-		if (cifs_revalidate_dentry(direntry))
+-			return 0;
++		rc = cifs_revalidate_dentry(direntry);
++		if (rc) {
++			cifs_dbg(FYI, "cifs_revalidate_dentry failed with rc=%d", rc);
++			switch (rc) {
++			case -ENOENT:
++			case -ESTALE:
++				/*
++				 * Those errors mean the dentry is invalid
++				 * (file was deleted or recreated)
++				 */
++				return 0;
++			default:
++				/*
++				 * Otherwise some unexpected error happened
++				 * report it as-is to VFS layer
++				 */
++				return rc;
++			}
 +		}
-+
- 		seg->bounce_dma = dma_map_single(dev, seg->bounce_buf,
- 						 max_pkt, DMA_TO_DEVICE);
- 	} else {
+ 		else {
+ 			/*
+ 			 * If the inode wasn't known to be a dfs entry when
 
 
