@@ -2,108 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EFF4313234
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 13:26:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3E7F313211
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 13:19:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232226AbhBHMXm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 07:23:42 -0500
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:52752 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233603AbhBHMDU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 07:03:20 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1612785800; x=1644321800;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=ktQ5H8JYp5ZgySkZR4VfvzwHO9Mgrs/mBdNMLYeZkxM=;
-  b=Onwn1HUMmBtG8I7HFC5PwElzo8bdtjKjk/bvL0xdL2PHK2Rfxw0NGq0M
-   HU2rm+tLkAPv1I+IxobOJSZEdR5niL1+ZltXMzweG8ktKhfswNkplTdWm
-   /cPKx3WJXmckEiKlV8ttGz9s76Jqh8Pa/Wx1D2NlQce5LhhLXpioHIv3d
-   EasvHXuLIVCImxC0EtNJyXSEpSA3Vtd5D79prEm6qEJ6JwjUeBUspRz3t
-   OYIlKXhGOh4S1SUFTvzY0bj6tu/RXa6pUZXSYFfijzxTvDvGHbOrwLOvN
-   UXpDXDv2wYN+AQJEsCIOKrSn+4Z+/iGLvEaFNttk1OF2+4J8qoZq+VBjE
-   Q==;
-IronPort-SDR: rb5GGXYKJ5kzLbBo/stIFUeaIMnmsV3zR5j4y77pvHVeAUZvBwQkajr3G6WGASlqK5CiWTM4Qw
- aSx/gxlnBcnwD5emNbzpDgy9iDfxgOTelfv+qU8J/p/QJcXKCm7ncyPSpD7JialLK7EwAHzkvu
- IQ4HNNTlwV9fL/nmNvaliYycyGSTZG03dQ6+G7bD1lfay2YFQV9chkW0Az/RDXtl3Hj0l7fEAY
- RRZ6sLAjBl5Rzhf88TOb1E3qFPklbzFGZJePc02r22Pxhna/FjDbm7ZqVdnpoWAg5nA6qjx0Ku
- C18=
-X-IronPort-AV: E=Sophos;i="5.81,161,1610434800"; 
-   d="scan'208";a="105816294"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 08 Feb 2021 05:02:04 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Mon, 8 Feb 2021 05:02:04 -0700
-Received: from localhost.localdomain (10.10.115.15) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Mon, 8 Feb 2021 05:02:00 -0700
-From:   <nicolas.ferre@microchip.com>
-To:     Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        <arm@kernel.org>, <soc@kernel.org>
-CC:     Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Linux Kernel list <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>
-Subject: [GIT PULL] ARM: at91: defconfig for 5.12 #2
-Date:   Mon, 8 Feb 2021 12:57:53 +0100
-Message-ID: <20210208115753.54730-1-nicolas.ferre@microchip.com>
-X-Mailer: git-send-email 2.30.0
+        id S231779AbhBHMR6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 07:17:58 -0500
+Received: from mga14.intel.com ([192.55.52.115]:24230 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233102AbhBHMAI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 07:00:08 -0500
+IronPort-SDR: eOazuktmJKJgDsTFBHHHm5ZZ5FYGQLjua9K3cT6TTXFnvc8O44AupmBVgslWksCvw7ltV4FcZ7
+ yaZSuQ15fQxA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9888"; a="180922986"
+X-IronPort-AV: E=Sophos;i="5.81,161,1610438400"; 
+   d="scan'208";a="180922986"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2021 03:58:22 -0800
+IronPort-SDR: ncRexIF1iT0WrnVQ4ffEt9O5L2TJKdbfmlB5C8vGAAQW/Sz1kRudsPeLWGub1mJ1BnK/UUKbda
+ ncavoILoBKbg==
+X-IronPort-AV: E=Sophos;i="5.81,161,1610438400"; 
+   d="scan'208";a="395357863"
+Received: from aantonov-mobl.ccr.corp.intel.com (HELO [10.249.226.173]) ([10.249.226.173])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2021 03:58:19 -0800
+Subject: Re: [PATCH v4 3/5] perf stat: Helper functions for PCIe root ports
+ list in iostat mode
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ian Rogers <irogers@google.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>
+References: <20210203135830.38568-1-alexander.antonov@linux.intel.com>
+ <20210203135830.38568-4-alexander.antonov@linux.intel.com>
+ <CAM9d7cjs5Su824v+02rEWd5jgvt8tGsMmoXftXBsj-mTTU_xkA@mail.gmail.com>
+From:   Alexander Antonov <alexander.antonov@linux.intel.com>
+Message-ID: <db4b9f6c-2522-b4bd-fa27-980228844d92@linux.intel.com>
+Date:   Mon, 8 Feb 2021 14:58:17 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Organization: microchip
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+In-Reply-To: <CAM9d7cjs5Su824v+02rEWd5jgvt8tGsMmoXftXBsj-mTTU_xkA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nicolas Ferre <nicolas.ferre@microchip.com>
 
-Arnd, Olof,
+On 2/4/2021 3:32 PM, Namhyung Kim wrote:
+> On Wed, Feb 3, 2021 at 10:58 PM Alexander Antonov
+> <alexander.antonov@linux.intel.com> wrote:
+>> Introduce helper functions to control PCIe root ports list.
+>> These helpers will be used in the follow-up patch.
+>>
+>> Signed-off-by: Alexander Antonov <alexander.antonov@linux.intel.com>
+>> ---
+>>   tools/perf/arch/x86/util/iostat.c | 124 ++++++++++++++++++++++++++++++
+>>   1 file changed, 124 insertions(+)
+>>   create mode 100644 tools/perf/arch/x86/util/iostat.c
+>>
+>> diff --git a/tools/perf/arch/x86/util/iostat.c b/tools/perf/arch/x86/util/iostat.c
+>> new file mode 100644
+>> index 000000000000..961e540106e6
+>> --- /dev/null
+>> +++ b/tools/perf/arch/x86/util/iostat.c
+>> @@ -0,0 +1,124 @@
+>> +// SPDX-License-Identifier: GPL-2.0
+>> +/*
+>> + * perf iostat
+>> + *
+>> + * Copyright (C) 2020, Intel Corporation
+>> + *
+>> + * Authors: Alexander Antonov <alexander.antonov@linux.intel.com>
+>> + */
+>> +
+>> +#include <api/fs/fs.h>
+>> +#include <linux/kernel.h>
+>> +#include <linux/err.h>
+>> +#include <limits.h>
+>> +#include <stdio.h>
+>> +#include <string.h>
+>> +#include <errno.h>
+>> +#include <sys/types.h>
+>> +#include <sys/stat.h>
+>> +#include <fcntl.h>
+>> +#include <dirent.h>
+>> +#include <unistd.h>
+>> +#include <stdlib.h>
+>> +#include <regex.h>
+>> +#include "util/cpumap.h"
+>> +#include "util/debug.h"
+>> +#include "util/iostat.h"
+>> +#include "util/counts.h"
+>> +#include "path.h"
+>> +
+>> +struct iio_root_port {
+>> +       u32 domain;
+>> +       u8 bus;
+>> +       u8 die;
+>> +       u8 pmu_idx;
+>> +       int idx;
+>> +};
+>> +
+>> +struct iio_root_ports_list {
+>> +       struct iio_root_port **rps;
+>> +       int nr_entries;
+>> +};
+>> +
+>> +static void iio_root_port_show(FILE *output,
+>> +                              const struct iio_root_port * const rp)
+>> +{
+>> +       if (output && rp)
+>> +               fprintf(output, "S%d-uncore_iio_%d<%04x:%02x>\n",
+>> +                       rp->die, rp->pmu_idx, rp->domain, rp->bus);
+>> +}
+>> +
+>> +static struct iio_root_port *iio_root_port_new(u32 domain, u8 bus,
+>> +                                              u8 die, u8 pmu_idx)
+>> +{
+>> +       struct iio_root_port *p = calloc(1, sizeof(*p));
+>> +
+>> +       if (p) {
+>> +               p->domain = domain;
+>> +               p->bus = bus;
+>> +               p->die = die;
+>> +               p->pmu_idx = pmu_idx;
+>> +       }
+>> +       return p;
+>> +}
+>> +
+>> +static struct iio_root_ports_list *iio_root_ports_list_new(void)
+>> +{
+>> +       struct iio_root_ports_list *list = calloc(1, sizeof(*list));
+>> +
+>> +       if (list) {
+>> +               list->rps = calloc(1, sizeof(struct iio_root_port *));
+> This seems unnecessary now.
+>
+> Thanks,
+> Namhyung
+>
 
-Here is the second batch of defconfig changes for 5.12.
+Yes, you are right. Will be fixed.
 
-Thanks, best regards,
-  Nicolas
-
-The following changes since commit 00a1aa475f507454fab82f02c6230c8fb2312a12:
-
-  ARM: configs: multi_{v5,v7}: remove ATMEL_TCLIB (2021-01-02 14:06:48 +0100)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/at91/linux.git tags/at91-defconfig-5.11-2
-
-for you to fetch changes up to b33f4da7b3efcb7521399d5e18cdd15e60ab34df:
-
-  ARM: configs: sama5_defconfig: add QSPI driver (2021-02-08 09:55:00 +0100)
-
-----------------------------------------------------------------
-AT91 defconfig for 5.12, part 2:
-
-- only at91_dt_defconfig and sama5_defconfig modified
-- update to match current options, unneeded options removed
-- missing drivers added, some are on-SoC peripherals, some are helpers
-- modify legacy ATAGS or DT options to match common usage
-
-----------------------------------------------------------------
-Claudiu Beznea (1):
-      ARM: configs: at91: enable drivers for sam9x60
-
-Nicolas Ferre (5):
-      ARM: configs: sama5_defconfig: update and remove unneeded options
-      ARM: configs: at91: DT/ATAG defconfig modifications
-      ARM: configs: at91_dt_defconfig: add useful helper options
-      ARM: configs: at91_dt_defconfig: add ov7740 module
-      ARM: configs: sama5_defconfig: add QSPI driver
-
- arch/arm/configs/at91_dt_defconfig | 17 ++++++++++++-----
- arch/arm/configs/sama5_defconfig   | 14 ++------------
- 2 files changed, 14 insertions(+), 17 deletions(-)
-
--- 
-Nicolas Ferre
+Thank you,
+Alexander
+>> +               if (!list->rps) {
+>> +                       free(list);
+>> +                       list = NULL;
+>> +               }
+>> +       }
+>> +       return list;
+>> +}
+>> +
+>> +static void iio_root_ports_list_free(struct iio_root_ports_list *list)
+>> +{
+>> +       int idx;
+>> +
+>> +       if (list) {
+>> +               for (idx = 0; idx < list->nr_entries; idx++)
+>> +                       free(list->rps[idx]);
+>> +               free(list->rps);
+>> +               free(list);
+>> +       }
+>> +}
+>> +
+>> +static struct iio_root_port *iio_root_port_find_by_notation(
+>> +       const struct iio_root_ports_list * const list, u32 domain, u8 bus)
+>> +{
+>> +       int idx;
+>> +       struct iio_root_port *rp;
+>> +
+>> +       if (list) {
+>> +               for (idx = 0; idx < list->nr_entries; idx++) {
+>> +                       rp = list->rps[idx];
+>> +                       if (rp && rp->domain == domain && rp->bus == bus)
+>> +                               return rp;
+>> +               }
+>> +       }
+>> +       return NULL;
+>> +}
+>> +
+>> +static int iio_root_ports_list_insert(struct iio_root_ports_list *list,
+>> +                                     struct iio_root_port * const rp)
+>> +{
+>> +       struct iio_root_port **tmp_buf;
+>> +
+>> +       if (list && rp) {
+>> +               rp->idx = list->nr_entries++;
+>> +               tmp_buf = realloc(list->rps,
+>> +                                 list->nr_entries * sizeof(*list->rps));
+>> +               if (!tmp_buf) {
+>> +                       pr_err("Failed to realloc memory\n");
+>> +                       return -ENOMEM;
+>> +               }
+>> +               tmp_buf[rp->idx] = rp;
+>> +               list->rps = tmp_buf;
+>> +       }
+>> +       return 0;
+>> +}
+>> --
+>> 2.19.1
+>>
