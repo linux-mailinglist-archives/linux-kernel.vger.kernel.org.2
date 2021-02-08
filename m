@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70BC2314157
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 22:11:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A81B9314162
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 22:13:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232022AbhBHVLD convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 8 Feb 2021 16:11:03 -0500
-Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:56508 "EHLO
+        id S235506AbhBHVMt convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 8 Feb 2021 16:12:49 -0500
+Received: from us-smtp-delivery-44.mimecast.com ([205.139.111.44]:49573 "EHLO
         us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236608AbhBHUKO (ORCPT
+        by vger.kernel.org with ESMTP id S236616AbhBHUKR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 15:10:14 -0500
+        Mon, 8 Feb 2021 15:10:17 -0500
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-351-avzmIZN_M_eiF1ntnkvKWg-1; Mon, 08 Feb 2021 15:09:19 -0500
-X-MC-Unique: avzmIZN_M_eiF1ntnkvKWg-1
+ us-mta-492-oe-WPCGuOB-71wnW8S0T-Q-1; Mon, 08 Feb 2021 15:09:21 -0500
+X-MC-Unique: oe-WPCGuOB-71wnW8S0T-Q-1
 Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4C449107ACE3;
-        Mon,  8 Feb 2021 20:09:17 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EB83180196E;
+        Mon,  8 Feb 2021 20:09:19 +0000 (UTC)
 Received: from krava.redhat.com (unknown [10.40.194.115])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id DE78319C59;
-        Mon,  8 Feb 2021 20:09:14 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A4A7919C59;
+        Mon,  8 Feb 2021 20:09:17 +0000 (UTC)
 From:   Jiri Olsa <jolsa@kernel.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>
 Cc:     lkml <linux-kernel@vger.kernel.org>,
@@ -35,9 +35,9 @@ Cc:     lkml <linux-kernel@vger.kernel.org>,
         Michael Petlan <mpetlan@redhat.com>,
         Ian Rogers <irogers@google.com>,
         Alexei Budankov <abudankov@huawei.com>
-Subject: [PATCH 02/24] perf daemon: Add config option
-Date:   Mon,  8 Feb 2021 21:08:46 +0100
-Message-Id: <20210208200908.1019149-3-jolsa@kernel.org>
+Subject: [PATCH 03/24] perf daemon: Add base option
+Date:   Mon,  8 Feb 2021 21:08:47 +0100
+Message-Id: <20210208200908.1019149-4-jolsa@kernel.org>
 In-Reply-To: <20210208200908.1019149-1-jolsa@kernel.org>
 References: <20210208200908.1019149-1-jolsa@kernel.org>
 MIME-Version: 1.0
@@ -52,130 +52,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adding config option and base functionality that takes the option
-argument (if specified) and other system config locations and
-produces 'acting' config file path.
-
-The actual config file processing is coming in following patches.
+Adding base option allowing user to specify base directory.
+It will have precedence over config file base definition
+coming in following patches.
 
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- tools/perf/Documentation/perf-daemon.txt |  4 +++
- tools/perf/builtin-daemon.c              | 44 ++++++++++++++++++++++++
- 2 files changed, 48 insertions(+)
+ tools/perf/Documentation/perf-daemon.txt |  4 ++++
+ tools/perf/builtin-daemon.c              | 11 +++++++++++
+ 2 files changed, 15 insertions(+)
 
 diff --git a/tools/perf/Documentation/perf-daemon.txt b/tools/perf/Documentation/perf-daemon.txt
-index d05b8dab0a6a..ba3f88510aee 100644
+index ba3f88510aee..1a4158cd973e 100644
 --- a/tools/perf/Documentation/perf-daemon.txt
 +++ b/tools/perf/Documentation/perf-daemon.txt
-@@ -27,6 +27,10 @@ OPTIONS
- --verbose::
- 	Be more verbose.
+@@ -31,6 +31,10 @@ OPTIONS
+ 	Config file path. If not provided, perf will check system and default
+ 	locations (/etc/perfconfig, $HOME/.perfconfig).
  
-+--config=<PATH>::
-+	Config file path. If not provided, perf will check system and default
-+	locations (/etc/perfconfig, $HOME/.perfconfig).
++--base=<PATH>::
++	Base directory path. Each daemon instance is running on top
++	of base directory.
 +
  All generic options are available also under commands.
  
  
 diff --git a/tools/perf/builtin-daemon.c b/tools/perf/builtin-daemon.c
-index 8b13e455ac40..90b5a8ea9dda 100644
+index 90b5a8ea9dda..ce0373f453d6 100644
 --- a/tools/perf/builtin-daemon.c
 +++ b/tools/perf/builtin-daemon.c
-@@ -3,14 +3,18 @@
- #include <linux/limits.h>
- #include <string.h>
- #include <signal.h>
-+#include <stdlib.h>
+@@ -6,6 +6,7 @@
+ #include <stdlib.h>
  #include <stdio.h>
  #include <unistd.h>
++#include <errno.h>
  #include "builtin.h"
  #include "perf.h"
  #include "debug.h"
-+#include "config.h"
- #include "util.h"
- 
+@@ -15,6 +16,7 @@
  struct daemon {
-+	const char		*config;
-+	char			*config_real;
+ 	const char		*config;
+ 	char			*config_real;
++	const char		*base_user;
  	char			*base;
  	FILE			*out;
  	char			 perf[PATH_MAX];
-@@ -31,6 +35,32 @@ static void sig_handler(int sig __maybe_unused)
- 	done = true;
+@@ -38,10 +40,17 @@ static void sig_handler(int sig __maybe_unused)
+ static void daemon__exit(struct daemon *daemon)
+ {
+ 	free(daemon->config_real);
++	free(daemon->base);
  }
  
-+static void daemon__exit(struct daemon *daemon)
-+{
-+	free(daemon->config_real);
-+}
-+
-+static int setup_config(struct daemon *daemon)
-+{
-+	if (daemon->config) {
-+		char *real = realpath(daemon->config, NULL);
-+
-+		if (!real) {
-+			perror("failed: realpath");
-+			return -1;
-+		}
-+		daemon->config_real = real;
-+		return 0;
+ static int setup_config(struct daemon *daemon)
+ {
++	if (daemon->base_user) {
++		daemon->base = strdup(daemon->base_user);
++		if (!daemon->base)
++			return -ENOMEM;
 +	}
 +
-+	if (perf_config_system() && !access(perf_etc_perfconfig(), R_OK))
-+		daemon->config_real = strdup(perf_etc_perfconfig());
-+	else if (perf_config_global() && perf_home_perfconfig())
-+		daemon->config_real = strdup(perf_home_perfconfig());
-+
-+	return daemon->config_real ? 0 : -1;
-+}
-+
- static int __cmd_start(struct daemon *daemon, struct option parent_options[],
- 		       int argc, const char **argv)
- {
-@@ -44,6 +74,11 @@ static int __cmd_start(struct daemon *daemon, struct option parent_options[],
- 	if (argc)
- 		usage_with_options(daemon_usage, start_options);
+ 	if (daemon->config) {
+ 		char *real = realpath(daemon->config, NULL);
  
-+	if (setup_config(daemon)) {
-+		pr_err("failed: config not found\n");
-+		return -1;
-+	}
-+
- 	debug_set_file(daemon->out);
- 	debug_set_display_time(true);
- 
-@@ -56,6 +91,8 @@ static int __cmd_start(struct daemon *daemon, struct option parent_options[],
- 		sleep(1);
- 	}
- 
-+	daemon__exit(daemon);
-+
- 	pr_info("daemon exited\n");
- 	fclose(daemon->out);
- 	return err;
-@@ -65,6 +102,8 @@ int cmd_daemon(int argc, const char **argv)
- {
- 	struct option daemon_options[] = {
+@@ -104,6 +113,8 @@ int cmd_daemon(int argc, const char **argv)
  		OPT_INCR('v', "verbose", &verbose, "be more verbose"),
-+		OPT_STRING(0, "config", &__daemon.config,
-+			"config file", "config file path"),
+ 		OPT_STRING(0, "config", &__daemon.config,
+ 			"config file", "config file path"),
++		OPT_STRING(0, "base", &__daemon.base_user,
++			"directory", "base directory"),
  		OPT_END()
  	};
  
-@@ -82,5 +121,10 @@ int cmd_daemon(int argc, const char **argv)
- 		return -1;
- 	}
- 
-+	if (setup_config(&__daemon)) {
-+		pr_err("failed: config not found\n");
-+		return -1;
-+	}
-+
- 	return -1;
- }
 -- 
 2.29.2
 
