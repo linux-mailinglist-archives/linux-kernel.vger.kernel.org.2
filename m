@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F0EE3138D3
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 17:06:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA31B313906
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 17:16:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233568AbhBHQFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 11:05:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56626 "EHLO mail.kernel.org"
+        id S233982AbhBHQPD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 11:15:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56398 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233039AbhBHPKR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 10:10:17 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E024164ED3;
-        Mon,  8 Feb 2021 15:07:08 +0000 (UTC)
+        id S232950AbhBHPLr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 10:11:47 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3744864EE6;
+        Mon,  8 Feb 2021 15:08:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612796829;
-        bh=p3pdBOXEm9sCnNMBb9NfCLPMjcdD5ya/XoThH5uT9vQ=;
+        s=korg; t=1612796923;
+        bh=huxOI+WBBQL1Zh3IS1gpGthK6ntLMapQtRtoWWHhMDc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Dxy9j1ddyjYwcbYL6+TrvGNjRxoZKWXWACljTGMHGKAmoyjyIp/XCaRtSl9jnWO8Z
-         Cq4Y2O3lCCp55Y+KkkeE+LmDF1vOP+l5xcsbSt6Bv5ePIzUkU7fOQfKRx4fi474ebL
-         ZTwnvTdGXUufNLb5hVgrNypW2YYTPt3ubZjiqnmI=
+        b=GxtZfkh89bUTelkD2sGV1+UTTgVgZYaVgiCOruoB+1KOviwnWdH+AsRCPXj68+24s
+         FENz5X6HA7yzsXw4wCn6taERJJHmEewNk1xSa9Jk0dF7in/1EiN0dd9Ev2YN+kWvrR
+         92bQDcuYUAH88azN1KmPMYmdO2zEbGoyZXxwjnjs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xie He <xie.he.0141@gmail.com>,
-        Martin Schiller <ms@dev.tdt.de>,
-        Jakub Kicinski <kuba@kernel.org>,
+        stable@vger.kernel.org, Alexey Dobriyan <adobriyan@gmail.com>,
+        Po-Hsu Lin <po-hsu.lin@canonical.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 06/30] net: lapb: Copy the skb before sending a packet
+Subject: [PATCH 4.19 05/38] Input: i8042 - unbreak Pegatron C15B
 Date:   Mon,  8 Feb 2021 16:00:52 +0100
-Message-Id: <20210208145805.513373363@linuxfoundation.org>
+Message-Id: <20210208145806.352112568@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210208145805.239714726@linuxfoundation.org>
-References: <20210208145805.239714726@linuxfoundation.org>
+In-Reply-To: <20210208145806.141056364@linuxfoundation.org>
+References: <20210208145806.141056364@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,49 +41,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xie He <xie.he.0141@gmail.com>
+From: Alexey Dobriyan <adobriyan@gmail.com>
 
-[ Upstream commit 88c7a9fd9bdd3e453f04018920964c6f848a591a ]
+[ Upstream commit a3a9060ecad030e2c7903b2b258383d2c716b56c ]
 
-When sending a packet, we will prepend it with an LAPB header.
-This modifies the shared parts of a cloned skb, so we should copy the
-skb rather than just clone it, before we prepend the header.
+g++ reports
 
-In "Documentation/networking/driver.rst" (the 2nd point), it states
-that drivers shouldn't modify the shared parts of a cloned skb when
-transmitting.
+	drivers/input/serio/i8042-x86ia64io.h:225:3: error: ‘.matches’ designator used multiple times in the same initializer list
 
-The "dev_queue_xmit_nit" function in "net/core/dev.c", which is called
-when an skb is being sent, clones the skb and sents the clone to
-AF_PACKET sockets. Because the LAPB drivers first remove a 1-byte
-pseudo-header before handing over the skb to us, if we don't copy the
-skb before prepending the LAPB header, the first byte of the packets
-received on AF_PACKET sockets can be corrupted.
+C99 semantics is that last duplicated initialiser wins,
+so DMI entry gets overwritten.
 
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Signed-off-by: Xie He <xie.he.0141@gmail.com>
-Acked-by: Martin Schiller <ms@dev.tdt.de>
-Link: https://lore.kernel.org/r/20210201055706.415842-1-xie.he.0141@gmail.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Fixes: a48491c65b51 ("Input: i8042 - add ByteSpeed touchpad to noloop table")
+Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
+Acked-by: Po-Hsu Lin <po-hsu.lin@canonical.com>
+Link: https://lore.kernel.org/r/20201228072335.GA27766@localhost.localdomain
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/lapb/lapb_out.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/input/serio/i8042-x86ia64io.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/net/lapb/lapb_out.c b/net/lapb/lapb_out.c
-index eda726e22f645..621c66f001177 100644
---- a/net/lapb/lapb_out.c
-+++ b/net/lapb/lapb_out.c
-@@ -87,7 +87,8 @@ void lapb_kick(struct lapb_cb *lapb)
- 		skb = skb_dequeue(&lapb->write_queue);
- 
- 		do {
--			if ((skbn = skb_clone(skb, GFP_ATOMIC)) == NULL) {
-+			skbn = skb_copy(skb, GFP_ATOMIC);
-+			if (!skbn) {
- 				skb_queue_head(&lapb->write_queue, skb);
- 				break;
- 			}
+diff --git a/drivers/input/serio/i8042-x86ia64io.h b/drivers/input/serio/i8042-x86ia64io.h
+index b256e3006a6fb..844875df8cad7 100644
+--- a/drivers/input/serio/i8042-x86ia64io.h
++++ b/drivers/input/serio/i8042-x86ia64io.h
+@@ -223,6 +223,8 @@ static const struct dmi_system_id __initconst i8042_dmi_noloop_table[] = {
+ 			DMI_MATCH(DMI_SYS_VENDOR, "PEGATRON CORPORATION"),
+ 			DMI_MATCH(DMI_PRODUCT_NAME, "C15B"),
+ 		},
++	},
++	{
+ 		.matches = {
+ 			DMI_MATCH(DMI_SYS_VENDOR, "ByteSpeed LLC"),
+ 			DMI_MATCH(DMI_PRODUCT_NAME, "ByteSpeed Laptop C15B"),
 -- 
 2.27.0
 
