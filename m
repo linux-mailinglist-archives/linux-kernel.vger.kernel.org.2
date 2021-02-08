@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0498E31389D
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 16:55:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 697A831388D
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 16:53:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233831AbhBHPzI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 10:55:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52070 "EHLO mail.kernel.org"
+        id S234170AbhBHPwp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 10:52:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52064 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233210AbhBHPHs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 10:07:48 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C28AC64E88;
-        Mon,  8 Feb 2021 15:05:59 +0000 (UTC)
+        id S232502AbhBHPHO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 10:07:14 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9A97164EC7;
+        Mon,  8 Feb 2021 15:05:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612796760;
-        bh=lkDWC1K8gJ22bpFC7MEBrvSnaXmgEsTQW62dKI6GEDM=;
+        s=korg; t=1612796749;
+        bh=++MMy+Hh6lTqAavbd+e3c/YvswIUkCaoaLV+0AQlVdY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=B9MhktMGGVacSounAP2H3H4SDesuPQlyQxfjyWYMQR8lywPvftGm0od8xzQFEy7jZ
-         rN1sIq5AqtHyRts/fRwgBY0nkJOkYmremTpn/f9o7iVETAf5GXWC7CdemtCCrAk4T0
-         AFj/WmikpQeFye0dUdNCa8UE/trgdionrUHGdYqo=
+        b=bcND9dn6IiJpPPtVeG6C1VpUP0df9P7NXaZmUd+bhYmi+RX3ANM1faA+kzNi/T/ks
+         JMp77LGOdkBNXfaML4tFeidLFacF7q3zXzU7M+RvaWjsj2AagKHCK2cSpsuvLs3mHr
+         CGoWekbefFIVYilXepLmV4RdlFwJ9ArcTXYAvWLA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pete Zaitcev <zaitcev@redhat.com>,
-        Jeremy Figgins <kernel@jeremyfiggins.com>
-Subject: [PATCH 4.14 11/30] USB: usblp: dont call usb_set_interface if theres a single alt
+        stable@vger.kernel.org, Aurelien Aptel <aaptel@suse.com>,
+        Shyam Prasad N <nspmangalore@gmail.com>,
+        Steve French <stfrench@microsoft.com>
+Subject: [PATCH 4.9 31/43] cifs: report error instead of invalid when revalidating a dentry fails
 Date:   Mon,  8 Feb 2021 16:00:57 +0100
-Message-Id: <20210208145805.712379584@linuxfoundation.org>
+Message-Id: <20210208145807.572978438@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210208145805.239714726@linuxfoundation.org>
-References: <20210208145805.239714726@linuxfoundation.org>
+In-Reply-To: <20210208145806.281758651@linuxfoundation.org>
+References: <20210208145806.281758651@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,51 +40,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jeremy Figgins <kernel@jeremyfiggins.com>
+From: Aurelien Aptel <aaptel@suse.com>
 
-commit d8c6edfa3f4ee0d45d7ce5ef18d1245b78774b9d upstream.
+commit 21b200d091826a83aafc95d847139b2b0582f6d1 upstream.
 
-Some devices, such as the Winbond Electronics Corp. Virtual Com Port
-(Vendor=0416, ProdId=5011), lockup when usb_set_interface() or
-usb_clear_halt() are called. This device has only a single
-altsetting, so it should not be necessary to call usb_set_interface().
+Assuming
+- //HOST/a is mounted on /mnt
+- //HOST/b is mounted on /mnt/b
 
-Acked-by: Pete Zaitcev <zaitcev@redhat.com>
-Signed-off-by: Jeremy Figgins <kernel@jeremyfiggins.com>
-Link: https://lore.kernel.org/r/YAy9kJhM/rG8EQXC@watson
-Cc: stable <stable@vger.kernel.org>
+On a slow connection, running 'df' and killing it while it's
+processing /mnt/b can make cifs_get_inode_info() returns -ERESTARTSYS.
+
+This triggers the following chain of events:
+=> the dentry revalidation fail
+=> dentry is put and released
+=> superblock associated with the dentry is put
+=> /mnt/b is unmounted
+
+This patch makes cifs_d_revalidate() return the error instead of 0
+(invalid) when cifs_revalidate_dentry() fails, except for ENOENT (file
+deleted) and ESTALE (file recreated).
+
+Signed-off-by: Aurelien Aptel <aaptel@suse.com>
+Suggested-by: Shyam Prasad N <nspmangalore@gmail.com>
+Reviewed-by: Shyam Prasad N <nspmangalore@gmail.com>
+CC: stable@vger.kernel.org
+Signed-off-by: Steve French <stfrench@microsoft.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/class/usblp.c |   19 +++++++++++--------
- 1 file changed, 11 insertions(+), 8 deletions(-)
+ fs/cifs/dir.c |   22 ++++++++++++++++++++--
+ 1 file changed, 20 insertions(+), 2 deletions(-)
 
---- a/drivers/usb/class/usblp.c
-+++ b/drivers/usb/class/usblp.c
-@@ -1340,14 +1340,17 @@ static int usblp_set_protocol(struct usb
- 	if (protocol < USBLP_FIRST_PROTOCOL || protocol > USBLP_LAST_PROTOCOL)
- 		return -EINVAL;
+--- a/fs/cifs/dir.c
++++ b/fs/cifs/dir.c
+@@ -830,6 +830,7 @@ static int
+ cifs_d_revalidate(struct dentry *direntry, unsigned int flags)
+ {
+ 	struct inode *inode;
++	int rc;
  
--	alts = usblp->protocol[protocol].alt_setting;
--	if (alts < 0)
--		return -EINVAL;
--	r = usb_set_interface(usblp->dev, usblp->ifnum, alts);
--	if (r < 0) {
--		printk(KERN_ERR "usblp: can't set desired altsetting %d on interface %d\n",
--			alts, usblp->ifnum);
--		return r;
-+	/* Don't unnecessarily set the interface if there's a single alt. */
-+	if (usblp->intf->num_altsetting > 1) {
-+		alts = usblp->protocol[protocol].alt_setting;
-+		if (alts < 0)
-+			return -EINVAL;
-+		r = usb_set_interface(usblp->dev, usblp->ifnum, alts);
-+		if (r < 0) {
-+			printk(KERN_ERR "usblp: can't set desired altsetting %d on interface %d\n",
-+				alts, usblp->ifnum);
-+			return r;
+ 	if (flags & LOOKUP_RCU)
+ 		return -ECHILD;
+@@ -839,8 +840,25 @@ cifs_d_revalidate(struct dentry *direntr
+ 		if ((flags & LOOKUP_REVAL) && !CIFS_CACHE_READ(CIFS_I(inode)))
+ 			CIFS_I(inode)->time = 0; /* force reval */
+ 
+-		if (cifs_revalidate_dentry(direntry))
+-			return 0;
++		rc = cifs_revalidate_dentry(direntry);
++		if (rc) {
++			cifs_dbg(FYI, "cifs_revalidate_dentry failed with rc=%d", rc);
++			switch (rc) {
++			case -ENOENT:
++			case -ESTALE:
++				/*
++				 * Those errors mean the dentry is invalid
++				 * (file was deleted or recreated)
++				 */
++				return 0;
++			default:
++				/*
++				 * Otherwise some unexpected error happened
++				 * report it as-is to VFS layer
++				 */
++				return rc;
++			}
 +		}
- 	}
- 
- 	usblp->bidir = (usblp->protocol[protocol].epread != NULL);
+ 		else {
+ 			/*
+ 			 * If the inode wasn't known to be a dfs entry when
 
 
