@@ -2,123 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D3C1312FFC
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 12:01:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F8B9313008
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 12:05:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232874AbhBHLAX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 06:00:23 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:12498 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232625AbhBHKwy (ORCPT
+        id S232999AbhBHLDb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 06:03:31 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:43751 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232789AbhBHKzw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 05:52:54 -0500
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DZ2qk2zrjzjKdR;
-        Mon,  8 Feb 2021 18:50:42 +0800 (CST)
-Received: from [127.0.0.1] (10.69.38.196) by DGGEMS409-HUB.china.huawei.com
- (10.3.19.209) with Microsoft SMTP Server id 14.3.498.0; Mon, 8 Feb 2021
- 18:51:58 +0800
-Subject: Re: [PATCH 2/4] hwmon: Use subdir-ccflags-* to inherit debug flag
-To:     Bjorn Helgaas <helgaas@kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>
-CC:     <gregkh@linuxfoundation.org>, <jdelvare@suse.com>,
-        <giometti@enneenne.com>, <abbotti@mev.co.uk>,
-        <hsweeten@visionengravers.com>, <kw@linux.com>,
-        <linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>,
-        <linux-hwmon@vger.kernel.org>, <devel@driverdev.osuosl.org>,
-        <linux-kbuild@vger.kernel.org>, <masahiroy@kernel.org>,
-        <michal.lkml@markovi.net>, <prime.zeng@huawei.com>,
-        <linuxarm@openeuler.org>
-References: <20210205200859.GA193526@bjorn-Precision-5520>
-From:   Yicong Yang <yangyicong@hisilicon.com>
-Message-ID: <2513dca6-2460-5f9d-c482-ff2c179d9c94@hisilicon.com>
-Date:   Mon, 8 Feb 2021 18:51:57 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        Mon, 8 Feb 2021 05:55:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612781655;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=IunSUa46r+GP3FYouMvaCEPySjJrYeeUPt7PmYPR+8g=;
+        b=TZbwc0RLMWV4ZhPQR1uw/L4D+gfZUpZ2pzIAlsPMHt8jR7dN/9qwWFZvcr9ZXWVtfnchGo
+        gs0Wyb/FJUK+qFZG9JHdhHAlXATJ7aBURUe+2nd3ekwJSN2xnCT9bEcAsRt+tvukY2zeqP
+        yL0s+ktLiPjXOx/ENE/HgmQdtgexXu0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-148-Lv4C8j0qObOwhL8hIdcnfA-1; Mon, 08 Feb 2021 05:54:11 -0500
+X-MC-Unique: Lv4C8j0qObOwhL8hIdcnfA-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A0119CC62A;
+        Mon,  8 Feb 2021 10:54:06 +0000 (UTC)
+Received: from [10.36.113.240] (ovpn-113-240.ams2.redhat.com [10.36.113.240])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id EB0CB57;
+        Mon,  8 Feb 2021 10:53:58 +0000 (UTC)
+Subject: Re: [PATCH v17 08/10] PM: hibernate: disable when there are active
+ secretmem users
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org, Hagen Paul Pfeifer <hagen@jauu.net>,
+        Palmer Dabbelt <palmerdabbelt@google.com>
+References: <20210208084920.2884-1-rppt@kernel.org>
+ <20210208084920.2884-9-rppt@kernel.org> <YCEP/bmqm0DsvCYN@dhcp22.suse.cz>
+ <38c0cad4-ac55-28e4-81c6-4e0414f0620a@redhat.com>
+ <YCEXwUYepeQvEWTf@dhcp22.suse.cz>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <a488a0bb-def5-0249-99e2-4643787cef69@redhat.com>
+Date:   Mon, 8 Feb 2021 11:53:58 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-In-Reply-To: <20210205200859.GA193526@bjorn-Precision-5520>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <YCEXwUYepeQvEWTf@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.38.196]
-X-CFilter-Loop: Reflected
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/2/6 4:08, Bjorn Helgaas wrote:
-> On Fri, Feb 05, 2021 at 10:28:32AM -0800, Guenter Roeck wrote:
->> On Fri, Feb 05, 2021 at 05:44:13PM +0800, Yicong Yang wrote:
->>> From: Junhao He <hejunhao2@hisilicon.com>
+On 08.02.21 11:51, Michal Hocko wrote:
+> On Mon 08-02-21 11:32:11, David Hildenbrand wrote:
+>> On 08.02.21 11:18, Michal Hocko wrote:
+>>> On Mon 08-02-21 10:49:18, Mike Rapoport wrote:
+>>>> From: Mike Rapoport <rppt@linux.ibm.com>
+>>>>
+>>>> It is unsafe to allow saving of secretmem areas to the hibernation
+>>>> snapshot as they would be visible after the resume and this essentially
+>>>> will defeat the purpose of secret memory mappings.
+>>>>
+>>>> Prevent hibernation whenever there are active secret memory users.
 >>>
->>> Use subdir-ccflags-* instead of ccflags-* to inherit the debug
->>> settings from Kconfig when traversing subdirectories.
+>>> Does this feature need any special handling? As it is effectivelly
+>>> unevictable memory then it should behave the same as other mlock, ramfs
+>>> which should already disable hibernation as those cannot be swapped out,
+>>> no?
 >>>
->>> Suggested-by: Bjorn Helgaas <bhelgaas@google.com>
->>> Signed-off-by: Junhao He <hejunhao2@hisilicon.com>
->>> Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
 >>
->> What problem does this fix ? Maybe I am missing it, but I don't see
->> DEBUG being used in a subdirectory of drivers/hwmon.
-> 
-> It's my fault for raising this question [1].  Yicong fixed a real
-> problem in drivers/pci, where we are currently using
-> 
->   ccflags-$(CONFIG_PCI_DEBUG) := -DDEBUG
-> 
-> so CONFIG_PCI_DEBUG=y turns on debug in drivers/pci, but not in the
-> subdirectories.  That's surprising to users.
-> 
-> So my question was whether we should default to using subdir-ccflags
-> for -DDEBUG in general, and only use ccflags when we have
-> subdirectories that have their own debug options, e.g.,
-> 
->   drivers/i2c/Makefile:ccflags-$(CONFIG_I2C_DEBUG_CORE) := -DDEBUG
->   drivers/i2c/algos/Makefile:ccflags-$(CONFIG_I2C_DEBUG_ALGO) := -DDEBUG
->   drivers/i2c/busses/Makefile:ccflags-$(CONFIG_I2C_DEBUG_BUS) := -DDEBUG
->   drivers/i2c/muxes/Makefile:ccflags-$(CONFIG_I2C_DEBUG_BUS) := -DDEBUG
-> 
-> I mentioned drivers/hwmon along with a few others that have
-> subdirectories, do not have per-subdirectory debug options, and use
-> ccflags.  I didn't try to determine whether those subdirectories
-> currently use -DDEBUG.
-> 
-> In the case of drivers/hwmon, several drivers do use pr_debug(),
-> and CONFIG_HWMON_DEBUG_CHIP=y turns those on.  But if somebody
-> were to add pr_debug() to drivers/hwmon/occ/common.c, for example,
-> CONFIG_HWMON_DEBUG_CHIP=y would *not* turn it on.  That sounds
-> surprising to me, but if that's what you intend, that's totally fine.
+>> Why should unevictable memory not go to swap when hibernating? We're merely
+>> dumping all of our system RAM (including any unmovable allocations) to swap
+>> storage and the system is essentially completely halted.
+>>
+> My understanding is that mlock is never really made visible via swap
+> storage.
 
-i thought CONFIG_HWMON_DEBUG_CHIP=y means to enable debug including the
-subdirectories, so use subdir-ccflags-* will make sure the debug
-message on in the subdirectories, if there will be.
+"Using swap storage for hibernation" and "swapping at runtime" are two 
+different things. I might be wrong, though.
 
-please let me know if i understand wrong.
-
+-- 
 Thanks,
-Yicong
 
-> 
-> [1] https://lore.kernel.org/r/20210204161048.GA68790@bjorn-Precision-5520
-> 
->>> ---
->>>  drivers/hwmon/Makefile | 2 +-
->>>  1 file changed, 1 insertion(+), 1 deletion(-)
->>>
->>> diff --git a/drivers/hwmon/Makefile b/drivers/hwmon/Makefile
->>> index 09a86c5..1c0c089 100644
->>> --- a/drivers/hwmon/Makefile
->>> +++ b/drivers/hwmon/Makefile
->>> @@ -201,5 +201,5 @@ obj-$(CONFIG_SENSORS_XGENE)	+= xgene-hwmon.o
->>>  obj-$(CONFIG_SENSORS_OCC)	+= occ/
->>>  obj-$(CONFIG_PMBUS)		+= pmbus/
->>>  
->>> -ccflags-$(CONFIG_HWMON_DEBUG_CHIP) := -DDEBUG
->>> +subdir-ccflags-$(CONFIG_HWMON_DEBUG_CHIP) := -DDEBUG
->>>  
->>> -- 
->>> 2.8.1
->>>
-> 
-> .
-> 
+David / dhildenb
 
