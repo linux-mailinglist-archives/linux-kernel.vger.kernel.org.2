@@ -2,67 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12A41312E38
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 11:00:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E8629312E43
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 11:00:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232035AbhBHJ7i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 04:59:38 -0500
-Received: from mx2.suse.de ([195.135.220.15]:32806 "EHLO mx2.suse.de"
+        id S230406AbhBHKAE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 05:00:04 -0500
+Received: from mx2.suse.de ([195.135.220.15]:34018 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231734AbhBHJsO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 04:48:14 -0500
+        id S232021AbhBHJte (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 04:49:34 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1612777728; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=3NhcpUvwMgEF2rRU4mx1o9wN8tYHo5OlqhAF8sWXq9M=;
+        b=cumVrgkaunXuO6f9PY170PKriCorRoIVGi2zdDkYcDguu3RJ7sDt6XroUa4+2Bpkdhv2hs
+        BieJgAhpprvHACzZ/tyu106MaAMLcLVdtFAhmKhkINjYZ1TqUQilo3ICF25vqpJR76GEHE
+        u5I8/zp7ei0cTHCwYx+RXxe+5xOs1mY=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 92CADAE52;
-        Mon,  8 Feb 2021 09:47:32 +0000 (UTC)
-Date:   Mon, 8 Feb 2021 10:47:29 +0100
-From:   Borislav Petkov <bp@suse.de>
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        rcu@vger.kernel.org, Linux PM <linux-pm@vger.kernel.org>,
-        X86 ML <x86@kernel.org>, lkft-triage@lists.linaro.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>, rui.zhang@intel.com,
-        Borislav Petkov <bp@alien8.de>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Subject: Re: WARNING: at arch/x86/kernel/irq.c:390 thermal_set_handler
-Message-ID: <20210208094729.GA17908@zn.tnic>
-References: <CA+G9fYtURD4R+KT+5mFHxYNZSPbmhBF9rS+RXaFqyZhV+k-U3g@mail.gmail.com>
+        by mx2.suse.de (Postfix) with ESMTP id D20D2AC6E;
+        Mon,  8 Feb 2021 09:48:48 +0000 (UTC)
+Subject: Re: [PATCH 7/7] xen/evtchn: read producer index only once
+To:     Juergen Gross <jgross@suse.com>
+Cc:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org
+References: <20210206104932.29064-1-jgross@suse.com>
+ <20210206104932.29064-8-jgross@suse.com>
+From:   Jan Beulich <jbeulich@suse.com>
+Message-ID: <72334160-cffe-2d8a-23b7-2ea9ab1d803a@suse.com>
+Date:   Mon, 8 Feb 2021 10:48:48 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
+In-Reply-To: <20210206104932.29064-8-jgross@suse.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CA+G9fYtURD4R+KT+5mFHxYNZSPbmhBF9rS+RXaFqyZhV+k-U3g@mail.gmail.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 08, 2021 at 03:01:39PM +0530, Naresh Kamboju wrote:
-> The following kernel warning noticed on Linux next tag 20210205 while booting
-> x86_64 and i386.
+On 06.02.2021 11:49, Juergen Gross wrote:
+> In evtchn_read() use READ_ONCE() for reading the producer index in
+> order to avoid the compiler generating multiple accesses.
 > 
-> step to reproduce:
->   - Boot linux next tag 20210205 on x86_64
->   - While booting you will notice the below warning
+> Signed-off-by: Juergen Gross <jgross@suse.com>
+> ---
+>  drivers/xen/evtchn.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> 
-> [    1.046552] ------------[ cut here ]------------
-> [    1.046552] WARNING: CPU: 1 PID: 0 at arch/x86/kernel/irq.c:390
-> thermal_set_handler+0x31/0x40
+> diff --git a/drivers/xen/evtchn.c b/drivers/xen/evtchn.c
+> index 421382c73d88..f6b199b597bf 100644
+> --- a/drivers/xen/evtchn.c
+> +++ b/drivers/xen/evtchn.c
+> @@ -211,7 +211,7 @@ static ssize_t evtchn_read(struct file *file, char __user *buf,
+>  			goto unlock_out;
+>  
+>  		c = u->ring_cons;
+> -		p = u->ring_prod;
+> +		p = READ_ONCE(u->ring_prod);
+>  		if (c != p)
+>  			break;
 
-This has been reworked into:
+Why only here and not also in
 
-https://lkml.kernel.org/r/20210201142704.12495-1-bp@alien8.de
+		rc = wait_event_interruptible(u->evtchn_wait,
+					      u->ring_cons != u->ring_prod);
 
-and I'll queue it later.
+or in evtchn_poll()? I understand it's not needed when
+ring_prod_lock is held, but that's not the case in the two
+afaics named places. Plus isn't the same then true for
+ring_cons and ring_cons_mutex, i.e. aren't the two named
+places plus evtchn_interrupt() also in need of READ_ONCE()
+for ring_cons?
 
--- 
-Regards/Gruss,
-    Boris.
-
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
+Jan
