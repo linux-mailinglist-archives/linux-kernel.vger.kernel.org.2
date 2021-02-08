@@ -2,229 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F412A313D79
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 19:29:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 438B2313D7E
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 19:29:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235689AbhBHS1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 13:27:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32850 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234227AbhBHPym (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 10:54:42 -0500
-Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D38CEC061794
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 07:53:30 -0800 (PST)
-Received: by mail-qk1-x74a.google.com with SMTP id h7so5154662qkf.16
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 07:53:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:cc;
-        bh=VNkssNQYUElZc56HZgHGuABEHCbKr0AEJNaGESsvZEs=;
-        b=H+4JBdFy/5t4gOFYNbXNEDf501AK8VEP8sQR7gQWwKdaNYjC4Q0guRWbyS9dF+fCmv
-         0xV/bunq8nlf0zuHa0KBuh8FjTveHknGX8+GAhRxwNuMf0yBUJhwlFHlVPj6zavXLwDZ
-         EHrBgWITz9Jtjeq1/zVDaoaz2TLgHPrt7wJ6rbKhBp2pyM0iXOVGXheCTOZyqAvKXykH
-         voIUv1NPNrQ2EhzjWZnDr0LXQ5VKsFut7HIn5bG3706T7GZaHIJh1cyVC/yrwZnUcfKw
-         E3KRvrZb+n5TznzCe7ey+Yuug5BV9wEIYu8NQ1Iw/nZB7lbeqUFy2lWbv8NnjpCzvHeA
-         0ojA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:cc;
-        bh=VNkssNQYUElZc56HZgHGuABEHCbKr0AEJNaGESsvZEs=;
-        b=OBxS4WtfbW7HX+m3bqYCKQAfOGIhT+9oNV8Mz3ehfOLK+zgfXDBgxE3dlAXBktx4gK
-         C4d6wRyUpK06V97PXXem2dyml5BzVa3Zaf+F5vImA2jyy2lXEgzQeCeKMEaILi5bEyM8
-         6M/KGn4e0uWPPQJE8TIGUXNqDA1d+B2HAhQTK14lItz749F19UriNbwTGlR8ecKmjMjJ
-         +oGl6wZhytooI4eZQfLpQ5R4q2mUdZGgYxrixjrOs/REkvlrgY/BEaNcSWtK6QnV+p11
-         PtGyqu/X8fPP3X54I1jFoTmuXikLhpQJxLLelLiy/3PxVPeikLlaFEVBdOtO6KHPp7NE
-         vO/g==
-X-Gm-Message-State: AOAM5312+FRscGHr2rrLV6JE2GQljprgLUcmOpi/VxpozkLgWQwv2E51
-        txtCGRtja2Rb+8RGwwdwuqwmYmOkaxC/5qxV7w==
-X-Google-Smtp-Source: ABdhPJwju86cKM910it9Ni+O0XsvDOKiYv9le9dIGYsPnhL4wFUvPSedku+WxXAN+XhtB3VU93yjgtMoNm8NPNE/ig==
-Sender: "kaleshsingh via sendgmr" <kaleshsingh@kaleshsingh.c.googlers.com>
-X-Received: from kaleshsingh.c.googlers.com ([fda3:e722:ac3:10:14:4d90:c0a8:2145])
- (user=kaleshsingh job=sendgmr) by 2002:a0c:c687:: with SMTP id
- d7mr16336589qvj.17.1612799608742; Mon, 08 Feb 2021 07:53:28 -0800 (PST)
-Date:   Mon,  8 Feb 2021 15:53:07 +0000
-In-Reply-To: <20210208155315.1367371-1-kaleshsingh@google.com>
-Message-Id: <20210208155315.1367371-2-kaleshsingh@google.com>
-Mime-Version: 1.0
-References: <20210208155315.1367371-1-kaleshsingh@google.com>
-X-Mailer: git-send-email 2.30.0.478.g8a0d178c01-goog
-Subject: [PATCH v6 2/2] procfs/dmabuf: Add inode number to /proc/*/fdinfo
-From:   Kalesh Singh <kaleshsingh@google.com>
-Cc:     jannh@google.com, jeffv@google.com, keescook@chromium.org,
-        surenb@google.com, minchan@kernel.org, hridya@google.com,
-        rdunlap@infradead.org, christian.koenig@amd.com,
-        willy@infradead.org, kernel-team@android.com,
-        Kalesh Singh <kaleshsingh@google.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Alexey Gladkov <gladkov.alexey@gmail.com>,
-        Anand K Mistry <amistry@google.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Michel Lespinasse <walken@google.com>,
-        Bernd Edlinger <bernd.edlinger@hotmail.de>,
-        Andrei Vagin <avagin@gmail.com>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-doc@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-To:     unlisted-recipients:; (no To-header on input)
+        id S232283AbhBHS3C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 13:29:02 -0500
+Received: from mx01-sz.bfs.de ([194.94.69.67]:9684 "EHLO mx02-sz.bfs.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S234178AbhBHQFA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 11:05:00 -0500
+X-Greylist: delayed 525 seconds by postgrey-1.27 at vger.kernel.org; Mon, 08 Feb 2021 11:04:57 EST
+Received: from SRVEX01-SZ.bfs.intern (exchange-sz.bfs.de [10.129.90.31])
+        by mx02-sz.bfs.de (Postfix) with ESMTPS id 74B9F204F3;
+        Mon,  8 Feb 2021 16:55:17 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bfs.de; s=dkim201901;
+        t=1612799717;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=q4HzirnLJM+HViDyDhv1Iv1CcEDPj4NYgUsCPRWFOew=;
+        b=aa7jb1qMtg3IF54oaINCd8U3kJ5ybkDW3rt/h6GHNSJRpcN0o9DwwixE/Bg5YW3I8rKl+I
+        qyykWQtk1m5iFB8BZpjW07wn7jV/jQtQloFMskJuctENTMAtHOvQWCbu84f5lm3DhKPb/N
+        NMx/23sgYKlp+w3fbRwb+uQq+N3AIiNMzgbXyfCUKlUM4T4lAoz71oFEEURXsDNEKavkWD
+        iWePkaN6/0KZDCjhToopivDBD2/x+0AELN8yGHjkT+cf6BsoYVA7Wl4QrQEfqOt61ardd9
+        EzfbCYffPOuvCMOYOyZOUBK0e5csuEVpA/rGIvXdd0Kd2tPf0KCDDnBkBh2gLw==
+Received: from SRVEX01-SZ.bfs.intern (10.129.90.31) by SRVEX01-SZ.bfs.intern
+ (10.129.90.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2176.2; Mon, 8 Feb 2021
+ 16:55:16 +0100
+Received: from SRVEX01-SZ.bfs.intern ([fe80::7d2d:f9cb:2761:d24a]) by
+ SRVEX01-SZ.bfs.intern ([fe80::7d2d:f9cb:2761:d24a%13]) with mapi id
+ 15.01.2176.002; Mon, 8 Feb 2021 16:55:16 +0100
+From:   Walter Harms <wharms@bfs.de>
+To:     =?iso-8859-1?Q?Christian_K=F6nig?= <christian.koenig@amd.com>,
+        Colin King <colin.king@canonical.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        "David Airlie" <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        Huang Rui <ray.huang@amd.com>,
+        Junwei Zhang <Jerry.Zhang@amd.com>,
+        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>
+CC:     "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: AW: [PATCH] drm/amdgpu: fix potential integer overflow on shift of a
+ int
+Thread-Topic: [PATCH] drm/amdgpu: fix potential integer overflow on shift of a
+ int
+Thread-Index: AQHW/aZibC6c7NmnTEaIp1k5r3gR16pN6nEAgAAuR36AAAM1gIAATkm8
+Date:   Mon, 8 Feb 2021 15:55:16 +0000
+Message-ID: <b9d63b56e0f849f1a5a2def73c899047@bfs.de>
+References: <20210207230751.8576-1-colin.king@canonical.com>
+ <c6c99dba-aea9-304c-2246-e24632955479@amd.com>
+ <3aed86cfb8014badbcbc4ee9f007976d@bfs.de>,<877bdf13-08d3-b471-40fb-02941cce3e4e@amd.com>
+In-Reply-To: <877bdf13-08d3-b471-40fb-02941cce3e4e@amd.com>
+Accept-Language: de-DE, en-US
+Content-Language: de-DE
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.137.16.40]
+x-tm-as-product-ver: SMEX-14.0.0.3080-8.6.1012-25962.000
+x-tm-as-result: No-10--6.728500-5.000000
+x-tmase-matchedrid: dtkKbEKn3AnRubRCcrbc5grcxrzwsv5u3dCmvEa6IiFVKNUgZ3luWnLM
+        2R9NW5DWbdmNIofb74J0NVTfdsoLhdxNhdpa5boviVJZi91I9JgORjM32hn2b63DfQXYDXXmRiM
+        0r5DoZkB5MS8Z0lVS9j9wo1JHFTI2cLf/qdMcXRsjCTunWqnclng+heom5LgRAg3B8AeZrNzn9R
+        Ub2w6sFdDaNZpK9gNYEi2pD9yuIToXgRHNsAEPAMzSKGx9g8xhF8lNgsbZcW+Qh1IdwvRaDMASM
+        1FbRaAi1P0GXW6c5H7/W3GjkvPseF5Saok1/fZC72Rb2bEJC+0N5vzU/2kgxH3Oo/70kBrausTh
+        0mw9TQnfPhslDCCNNpscC5DV1Se5wxJ3bCddR8Zwju9EALAXQn0tCKdnhB581B0Hk1Q1KyLUZxE
+        AlFPo846HM5rqDwqtDGOPLcPHxZMNsOtWzwsguS5xc40Grrs8djI7RHudf/gKeUc3m2FtmpDl99
+        zmxDOhKUWv6klB9qHZzZxu20/SO8O5fvxIK4XIKKz2OxxCkpzNG0L98j8bMvraKq/vKbWfY+pdI
+        oZ/f0rVm/fNL/ipsw==
+x-tm-as-user-approved-sender: No
+x-tm-as-user-blocked-sender: No
+x-tmase-result: 10--6.728500-5.000000
+x-tmase-version: SMEX-14.0.0.3080-8.6.1012-25962.000
+x-tm-snts-smtp: AB96EA7908BCA3CC0F264015106D55C460AB61EC7E14EBC137F4B49FF802374F2000:9
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-Spam-Status: No, score=-2.76
+Authentication-Results: mx02-sz.bfs.de;
+        none
+X-Spamd-Result: default: False [-2.76 / 7.00];
+         ARC_NA(0.00)[];
+         TO_DN_EQ_ADDR_SOME(0.00)[];
+         HAS_XOIP(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         DKIM_SIGNED(0.00)[bfs.de:s=dkim201901];
+         RCPT_COUNT_SEVEN(0.00)[11];
+         NEURAL_HAM(-0.00)[-1.000];
+         RCVD_NO_TLS_LAST(0.10)[];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         RCVD_COUNT_TWO(0.00)[2];
+         MID_RHS_MATCH_FROM(0.00)[];
+         BAYES_HAM(-2.76)[98.97%]
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-And 'inode_no' field to /proc/<pid>/fdinfo/<FD> and
-/proc/<pid>/task/<tid>/fdinfo/<FD>.
+thx for info
+________________________________________
+Von: Christian K=F6nig <christian.koenig@amd.com>
+Gesendet: Montag, 8. Februar 2021 13:14:49
+An: Walter Harms; Colin King; Alex Deucher; David Airlie; Daniel Vetter; Hu=
+ang Rui; Junwei Zhang; amd-gfx@lists.freedesktop.org; dri-devel@lists.freed=
+esktop.org
+Cc: kernel-janitors@vger.kernel.org; linux-kernel@vger.kernel.org
+Betreff: Re: [PATCH] drm/amdgpu: fix potential integer overflow on shift of=
+ a int
 
-The inode numbers can be used to uniquely identify DMA buffers
-in user space and avoids a dependency on /proc/<pid>/fd/* when
-accounting per-process DMA buffer sizes.
+For start and end?  The hardware has 48 bit address space and that won't
+fit into 32bits.
 
-Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
----
-Changes in v5:
-  - Fixed tab vs spaces, per Randy
-  - Renamed inode_no to ino, per Matthew
-Changes in v4:
-  - Add inode number as common field in fdinfo, per Christian
-Changes in v3:
-  - Add documentation in proc.rst, per Randy
-Changes in v2:
-  - Update patch description
+Only the fragment handling can't do more than 2GB at the same time.
 
- Documentation/filesystems/proc.rst | 37 +++++++++++++++++++++++++-----
- fs/proc/fd.c                       |  5 ++--
- 2 files changed, 34 insertions(+), 8 deletions(-)
+Christian.
 
-diff --git a/Documentation/filesystems/proc.rst b/Documentation/filesystems/proc.rst
-index 2fa69f710e2a..7730d1c120e8 100644
---- a/Documentation/filesystems/proc.rst
-+++ b/Documentation/filesystems/proc.rst
-@@ -1902,18 +1902,20 @@ if precise results are needed.
- 3.8	/proc/<pid>/fdinfo/<fd> - Information about opened file
- ---------------------------------------------------------------
- This file provides information associated with an opened file. The regular
--files have at least three fields -- 'pos', 'flags' and 'mnt_id'. The 'pos'
--represents the current offset of the opened file in decimal form [see lseek(2)
--for details], 'flags' denotes the octal O_xxx mask the file has been
--created with [see open(2) for details] and 'mnt_id' represents mount ID of
--the file system containing the opened file [see 3.5 /proc/<pid>/mountinfo
--for details].
-+files have at least four fields -- 'pos', 'flags', 'mnt_id' and 'ino'.
-+The 'pos' represents the current offset of the opened file in decimal
-+form [see lseek(2) for details], 'flags' denotes the octal O_xxx mask the
-+file has been created with [see open(2) for details] and 'mnt_id' represents
-+mount ID of the file system containing the opened file [see 3.5
-+/proc/<pid>/mountinfo for details]. 'ino' represents the inode number of
-+the file.
- 
- A typical output is::
- 
- 	pos:	0
- 	flags:	0100002
- 	mnt_id:	19
-+	ino:	63107
- 
- All locks associated with a file descriptor are shown in its fdinfo too::
- 
-@@ -1930,6 +1932,7 @@ Eventfd files
- 	pos:	0
- 	flags:	04002
- 	mnt_id:	9
-+	ino:	63107
- 	eventfd-count:	5a
- 
- where 'eventfd-count' is hex value of a counter.
-@@ -1942,6 +1945,7 @@ Signalfd files
- 	pos:	0
- 	flags:	04002
- 	mnt_id:	9
-+	ino:	63107
- 	sigmask:	0000000000000200
- 
- where 'sigmask' is hex value of the signal mask associated
-@@ -1955,6 +1959,7 @@ Epoll files
- 	pos:	0
- 	flags:	02
- 	mnt_id:	9
-+	ino:	63107
- 	tfd:        5 events:       1d data: ffffffffffffffff pos:0 ino:61af sdev:7
- 
- where 'tfd' is a target file descriptor number in decimal form,
-@@ -1971,6 +1976,8 @@ For inotify files the format is the following::
- 
- 	pos:	0
- 	flags:	02000000
-+	mnt_id:	9
-+	ino:	63107
- 	inotify wd:3 ino:9e7e sdev:800013 mask:800afce ignored_mask:0 fhandle-bytes:8 fhandle-type:1 f_handle:7e9e0000640d1b6d
- 
- where 'wd' is a watch descriptor in decimal form, i.e. a target file
-@@ -1993,6 +2000,7 @@ For fanotify files the format is::
- 	pos:	0
- 	flags:	02
- 	mnt_id:	9
-+	ino:	63107
- 	fanotify flags:10 event-flags:0
- 	fanotify mnt_id:12 mflags:40 mask:38 ignored_mask:40000003
- 	fanotify ino:4f969 sdev:800013 mflags:0 mask:3b ignored_mask:40000000 fhandle-bytes:8 fhandle-type:1 f_handle:69f90400c275b5b4
-@@ -2017,6 +2025,7 @@ Timerfd files
- 	pos:	0
- 	flags:	02
- 	mnt_id:	9
-+	ino:	63107
- 	clockid: 0
- 	ticks: 0
- 	settime flags: 01
-@@ -2031,6 +2040,22 @@ details]. 'it_value' is remaining time until the timer expiration.
- with TIMER_ABSTIME option which will be shown in 'settime flags', but 'it_value'
- still exhibits timer's remaining time.
- 
-+DMA Buffer files
-+~~~~~~~~~~~~~~~~
-+
-+::
-+
-+	pos:	0
-+	flags:	04002
-+	mnt_id:	9
-+	ino:	63107
-+	size:   32768
-+	count:  2
-+	exp_name:  system-heap
-+
-+where 'size' is the size of the DMA buffer in bytes. 'count' is the file count of
-+the DMA buffer file. 'exp_name' is the name of the DMA buffer exporter.
-+
- 3.9	/proc/<pid>/map_files - Information about memory mapped files
- ---------------------------------------------------------------------
- This directory contains symbolic links which represent memory mapped files
-diff --git a/fs/proc/fd.c b/fs/proc/fd.c
-index 585e213301f9..822efd20b922 100644
---- a/fs/proc/fd.c
-+++ b/fs/proc/fd.c
-@@ -54,9 +54,10 @@ static int seq_show(struct seq_file *m, void *v)
- 	if (ret)
- 		return ret;
- 
--	seq_printf(m, "pos:\t%lli\nflags:\t0%o\nmnt_id:\t%i\n",
-+	seq_printf(m, "pos:\t%lli\nflags:\t0%o\nmnt_id:\t%i\nino:\t%lu\n",
- 		   (long long)file->f_pos, f_flags,
--		   real_mount(file->f_path.mnt)->mnt_id);
-+		   real_mount(file->f_path.mnt)->mnt_id,
-+		   file_inode(file)->i_ino);
- 
- 	/* show_fd_locks() never deferences files so a stale value is safe */
- 	show_fd_locks(m, file, files);
--- 
-2.30.0.478.g8a0d178c01-goog
+Am 08.02.21 um 12:05 schrieb Walter Harms:
+> i am curious:
+> what is the win to have a unsigned 64 bit integer in the first
+> place ?
+>
+> re,
+>   wh
+> ________________________________________
+> Von: Christian K=F6nig <christian.koenig@amd.com>
+> Gesendet: Montag, 8. Februar 2021 10:17:42
+> An: Colin King; Alex Deucher; David Airlie; Daniel Vetter; Huang Rui; Jun=
+wei Zhang; amd-gfx@lists.freedesktop.org; dri-devel@lists.freedesktop.org
+> Cc: kernel-janitors@vger.kernel.org; linux-kernel@vger.kernel.org
+> Betreff: Re: [PATCH] drm/amdgpu: fix potential integer overflow on shift =
+of a int
+>
+> Am 08.02.21 um 00:07 schrieb Colin King:
+>> From: Colin Ian King <colin.king@canonical.com>
+>>
+>> The left shift of int 32 bit integer constant 1 is evaluated using 32
+>> bit arithmetic and then assigned to an unsigned 64 bit integer. In the
+>> case where *frag is 32 or more this can lead to an oveflow.  Avoid this
+>> by shifting 1ULL.
+> Well that can't happen. Take a look at the code in that function:
+>
+>>                  max_frag =3D 31;
+> ...
+>>          if (*frag >=3D max_frag) {
+>>                  *frag =3D max_frag;
+>>                  *frag_end =3D end & ~((1ULL << max_frag) - 1);
+>>          } else {
+>>                  *frag_end =3D start + (1 << *frag);
+>>          }
+> But I'm fine with applying the patch if it silences your warning.
+>
+> Regards,
+> Christian.
+>
+>> Addresses-Coverity: ("Unintentional integer overflow")
+>> Fixes: dfcd99f6273e ("drm/amdgpu: meld together VM fragment and huge pag=
+e handling")
+>> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+>> ---
+>>    drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c | 2 +-
+>>    1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c b/drivers/gpu/drm/am=
+d/amdgpu/amdgpu_vm.c
+>> index 9d19078246c8..53a925600510 100644
+>> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
+>> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
+>> @@ -1412,7 +1412,7 @@ static void amdgpu_vm_fragment(struct amdgpu_vm_up=
+date_params *params,
+>>                *frag =3D max_frag;
+>>                *frag_end =3D end & ~((1ULL << max_frag) - 1);
+>>        } else {
+>> -             *frag_end =3D start + (1 << *frag);
+>> +             *frag_end =3D start + (1ULL << *frag);
+>>        }
+>>    }
+>>
 
