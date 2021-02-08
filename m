@@ -2,71 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 780683130F0
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 12:33:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 982263130E9
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 12:32:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233373AbhBHLco (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 06:32:44 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2523 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233058AbhBHLQf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 06:16:35 -0500
-Received: from fraeml734-chm.china.huawei.com (unknown [172.18.147.207])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4DZ3HB75hpz67lhd;
-        Mon,  8 Feb 2021 19:11:02 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml734-chm.china.huawei.com (10.206.15.215) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Mon, 8 Feb 2021 12:15:53 +0100
-Received: from [10.47.8.138] (10.47.8.138) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Mon, 8 Feb 2021
- 11:15:52 +0000
-Subject: Re: [Linuxarm] [PATCH v1 0/2] irqchip/gic-v3-its: don't set bitmap
- for LPI which user didn't allocate
-To:     Luo Jiaxing <luojiaxing@huawei.com>, <maz@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <linux-pci@vger.kernel.org>,
-        <linuxarm@openeuler.org>
-References: <1612781926-56206-1-git-send-email-luojiaxing@huawei.com>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <ea730f9b-c635-317d-c70d-4057590b1d1a@huawei.com>
-Date:   Mon, 8 Feb 2021 11:14:19 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        id S231288AbhBHLbh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 06:31:37 -0500
+Received: from mga18.intel.com ([134.134.136.126]:59432 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232976AbhBHLPF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 06:15:05 -0500
+IronPort-SDR: TMq7oxGPelG/nzQGQBDbqrWmT6kK6gjYXKtMj/bxc9pZ5TeO+36a2eehGgmhzA/g2WacZh7nfJ
+ i2HwyrZbD9Ag==
+X-IronPort-AV: E=McAfee;i="6000,8403,9888"; a="169378381"
+X-IronPort-AV: E=Sophos;i="5.81,161,1610438400"; 
+   d="scan'208";a="169378381"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2021 03:14:33 -0800
+IronPort-SDR: lA27CDMeGMuk8SvdsngoCIJZE8Cr75TO2q+9m0WaHjM/8MI85ZJjjpiUyAP+l3ZPRMbwzyHV3R
+ Y+7WJBzyPO4Q==
+X-IronPort-AV: E=Sophos;i="5.81,161,1610438400"; 
+   d="scan'208";a="374455211"
+Received: from anveshag-mobl1.amr.corp.intel.com (HELO intel.com) ([10.209.119.193])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2021 03:14:32 -0800
+Date:   Mon, 8 Feb 2021 06:14:30 -0500
+From:   Rodrigo Vivi <rodrigo.vivi@intel.com>
+To:     Lyude Paul <lyude@redhat.com>
+Cc:     dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org, David Airlie <airlied@linux.ie>,
+        open list <linux-kernel@vger.kernel.org>,
+        Sean Paul <seanpaul@chromium.org>
+Subject: Re: [RFC v3 07/10] drm/i915/dpcd_bl: Move VESA backlight enabling
+ code closer together
+Message-ID: <20210208111430.GC4798@intel.com>
+References: <20210205234515.1216538-1-lyude@redhat.com>
+ <20210205234515.1216538-8-lyude@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <1612781926-56206-1-git-send-email-luojiaxing@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.8.138]
-X-ClientProxiedBy: lhreml745-chm.china.huawei.com (10.201.108.195) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210205234515.1216538-8-lyude@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/02/2021 10:58, Luo Jiaxing wrote:
-> When the number of online CPUs is less than 16, we found that it will fail
-> to allocate 32 MSI interrupts (including 16 affinity interrupts) after the
-> hisi_sas module is unloaded and then reloaded.
+On Fri, Feb 05, 2021 at 06:45:11PM -0500, Lyude Paul wrote:
+> No functional changes, just move set_vesa_backlight_enable() closer to it's
+> only caller: intel_dp_aux_vesa_enable_backlight().
 > 
-> After analysis, it is found that a bug exists when the ITS releases
-> interrupt resources, and this patch set contains a bugfix patch and a patch
-> for appending debugging information.
+> Signed-off-by: Lyude Paul <lyude@redhat.com>
 
-Please note that this issue has already been reported:
-https://lore.kernel.org/lkml/fd88ce05-8aee-5b1f-5ab6-be88fa53d3aa@huawei.com/
+Reviewed-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
 
+> ---
+>  .../drm/i915/display/intel_dp_aux_backlight.c | 54 +++++++++----------
+>  1 file changed, 27 insertions(+), 27 deletions(-)
 > 
-> Luo Jiaxing (2):
->    irqchip/gic-v3-its: don't set bitmap for LPI which user didn't
->      allocate
->    genirq/msi: add an error print when __irq_domain_alloc_irqs() failed
+> diff --git a/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c b/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
+> index f5ae2fb34c1f..431758058aa0 100644
+> --- a/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
+> +++ b/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
+> @@ -270,33 +270,6 @@ intel_dp_aux_hdr_setup_backlight(struct intel_connector *connector, enum pipe pi
+>  }
+>  
+>  /* VESA backlight callbacks */
+> -static void set_vesa_backlight_enable(struct intel_connector *connector, bool enable)
+> -{
+> -	struct intel_dp *intel_dp = intel_attached_dp(connector);
+> -	struct drm_i915_private *i915 = dp_to_i915(intel_dp);
+> -	u8 reg_val = 0;
+> -
+> -	/* Early return when display use other mechanism to enable backlight. */
+> -	if (!connector->panel.backlight.edp.vesa.aux_enable)
+> -		return;
+> -
+> -	if (drm_dp_dpcd_readb(&intel_dp->aux, DP_EDP_DISPLAY_CONTROL_REGISTER, &reg_val) != 1) {
+> -		drm_dbg_kms(&i915->drm, "Failed to read DPCD register 0x%x\n",
+> -			    DP_EDP_DISPLAY_CONTROL_REGISTER);
+> -		return;
+> -	}
+> -	if (enable)
+> -		reg_val |= DP_EDP_BACKLIGHT_ENABLE;
+> -	else
+> -		reg_val &= ~(DP_EDP_BACKLIGHT_ENABLE);
+> -
+> -	if (drm_dp_dpcd_writeb(&intel_dp->aux, DP_EDP_DISPLAY_CONTROL_REGISTER,
+> -			       reg_val) != 1) {
+> -		drm_dbg_kms(&i915->drm, "Failed to %s aux backlight\n",
+> -			    enable ? "enable" : "disable");
+> -	}
+> -}
+> -
+>  static bool intel_dp_aux_vesa_backlight_dpcd_mode(struct intel_connector *connector)
+>  {
+>  	struct intel_dp *intel_dp = intel_attached_dp(connector);
+> @@ -378,6 +351,33 @@ intel_dp_aux_vesa_set_backlight(const struct drm_connector_state *conn_state,
+>  	}
+>  }
+>  
+> +static void set_vesa_backlight_enable(struct intel_connector *connector, bool enable)
+> +{
+> +	struct intel_dp *intel_dp = intel_attached_dp(connector);
+> +	struct drm_i915_private *i915 = dp_to_i915(intel_dp);
+> +	u8 reg_val = 0;
+> +
+> +	/* Early return when display use other mechanism to enable backlight. */
+> +	if (!connector->panel.backlight.edp.vesa.aux_enable)
+> +		return;
+> +
+> +	if (drm_dp_dpcd_readb(&intel_dp->aux, DP_EDP_DISPLAY_CONTROL_REGISTER, &reg_val) != 1) {
+> +		drm_dbg_kms(&i915->drm, "Failed to read DPCD register 0x%x\n",
+> +			    DP_EDP_DISPLAY_CONTROL_REGISTER);
+> +		return;
+> +	}
+> +	if (enable)
+> +		reg_val |= DP_EDP_BACKLIGHT_ENABLE;
+> +	else
+> +		reg_val &= ~(DP_EDP_BACKLIGHT_ENABLE);
+> +
+> +	if (drm_dp_dpcd_writeb(&intel_dp->aux, DP_EDP_DISPLAY_CONTROL_REGISTER,
+> +			       reg_val) != 1) {
+> +		drm_dbg_kms(&i915->drm, "Failed to %s aux backlight\n",
+> +			    enable ? "enable" : "disable");
+> +	}
+> +}
+> +
+>  static void
+>  intel_dp_aux_vesa_enable_backlight(const struct intel_crtc_state *crtc_state,
+>  				   const struct drm_connector_state *conn_state, u32 level)
+> -- 
+> 2.29.2
 > 
->   drivers/irqchip/irq-gic-v3-its.c | 4 ++++
->   kernel/irq/msi.c                 | 1 +
->   2 files changed, 5 insertions(+)
-> 
-
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
