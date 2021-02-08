@@ -2,282 +2,468 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B8DF314061
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 21:25:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA45831406F
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 21:26:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236808AbhBHUYu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 15:24:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34356 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236036AbhBHS7u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 13:59:50 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 69AA564E75;
-        Mon,  8 Feb 2021 18:59:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612810748;
-        bh=iDrgwFUXr5c8LxrLSVCXmuGNN6zhKkCoA2NeX/nvsFM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=V6KAonIvThJNW1SC6G37DE+KeB1E0H7EF8oYGSCqi0RPzbn4Q7PZvW5aoA9gNu5Ly
-         m3N28ParGRy7ClXnO1Fjh/OXMSw8P76HkHFBLHVMg6J4/rbIAVStBn7rjM/nLZSSqu
-         6p8YFertbRf321aixpk+jBu7cBayT7Vs6SfvrEu7OT6BL3uLt/XRpJx9oV8E++PTrT
-         wNWicrDjTCsfk36fHOjYp6oIPJFMkBqKjUOO/WE30UD0/zQFHH08xw1MeLGUn9+W/V
-         Yw9Lpu+Ugam+P2q1lwAFH18sSjyTjwdsFcOVDrZ50meChhE0WKRzbFDDGFl0snqH/i
-         RPiO8taOwor9Q==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id E25E240513; Mon,  8 Feb 2021 15:59:05 -0300 (-03)
-Date:   Mon, 8 Feb 2021 15:59:05 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     kan.liang@linux.intel.com
-Cc:     peterz@infradead.org, mingo@kernel.org,
-        linux-kernel@vger.kernel.org, tglx@linutronix.de, bp@alien8.de,
-        namhyung@kernel.org, jolsa@redhat.com, ak@linux.intel.com,
-        yao.jin@linux.intel.com, alexander.shishkin@linux.intel.com,
-        adrian.hunter@intel.com
-Subject: Re: [PATCH 35/49] perf parse-events: Create two hybrid hardware
- events
-Message-ID: <20210208185905.GL920417@kernel.org>
-References: <1612797946-18784-1-git-send-email-kan.liang@linux.intel.com>
- <1612797946-18784-36-git-send-email-kan.liang@linux.intel.com>
+        id S236825AbhBHU0X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 15:26:23 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42920 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235958AbhBHTBD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 14:01:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612810776;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=KtlCSpFAf3AXLa4Jj7JeGjW4QjI5cUdgdHDmCBZvUDM=;
+        b=LxDoNPjFqenJUtz+FFPPb7Zy8wTETWRW67WYOYp7RZrOBG7U5db0UHKNJvCIlksvI3BVIZ
+        ig8NbwRekuUbXhqWP+vecv0T4uZHiz8hw/HT6YrNviid+IVUnwhlzkCie4sYHhOaS8T2gX
+        Sirya2tbJOVuIwNz4Klx5AtyXjTpuAY=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-99-CW3XChxTMrG8RdZBGWD-xQ-1; Mon, 08 Feb 2021 13:59:34 -0500
+X-MC-Unique: CW3XChxTMrG8RdZBGWD-xQ-1
+Received: by mail-ed1-f72.google.com with SMTP id w14so14744179edv.6
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 10:59:33 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=KtlCSpFAf3AXLa4Jj7JeGjW4QjI5cUdgdHDmCBZvUDM=;
+        b=at/Eq6+fJGUAdoL8E6ncEXllIXGCvk93wiT1hXkWG8UjyEmTRibC7gCL669PMTlQ8o
+         u/PZ0lA0UzaAmOoLDyZ8xAqQMaQzT8VvQ73EcFO/gf9ftHbGdBQx25ZL62/zufDxPSHI
+         DrsdugN6lNU3eJVS9DlsMeAxzrYZ/aZGuWV2K84wGruxl0CofaF2c44np5LR6NSaNQ1e
+         Gh75bKzXZ+hZBMUE1qDc+2XQWfk4pfxZHv6BoaOQRzpCd8taS7xCvyD0gEj5Vp8iJnrM
+         YV61lJRYmRNv6pFRnXqVZaXmMJUbEvoEm11EOTk5UNgcLt0ktrN6cLJQy4ifVB8s9lXY
+         Mlgw==
+X-Gm-Message-State: AOAM533b8n9buNPzMHhy+ZA6e6yjJBaMdzLzITVIiycOU/CmyPESwNea
+        ZhTCVsZVlo3JlP0nrafyebOtgyz9BgC0NprCkVXzwfNuwxqVK0CeMKdXSb+DuKG9sVsEiudcJ30
+        8YjVlp9wVy5KyIiSVt2PqiOBJ
+X-Received: by 2002:a17:906:dbd0:: with SMTP id yc16mr18540602ejb.524.1612810772723;
+        Mon, 08 Feb 2021 10:59:32 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwJ8Wa728GPxGlEACOd7XaETcpGxEjLfWspzRin8ImN+5/qOH+MzmJxdhhQsgHdy7zSr6kfTg==
+X-Received: by 2002:a17:906:dbd0:: with SMTP id yc16mr18540580ejb.524.1612810772434;
+        Mon, 08 Feb 2021 10:59:32 -0800 (PST)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id ga5sm1602034ejb.114.2021.02.08.10.59.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 08 Feb 2021 10:59:31 -0800 (PST)
+Subject: Re: [PATCH] platform/surface: Add Surface Hot-Plug driver
+To:     Maximilian Luz <luzmaximilian@gmail.com>
+Cc:     Mark Gross <mgross@linux.intel.com>, linux-kernel@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org
+References: <20210205012657.1951753-1-luzmaximilian@gmail.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <c878286c-a34e-fc4e-9d1f-c133d02b7398@redhat.com>
+Date:   Mon, 8 Feb 2021 19:59:31 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1612797946-18784-36-git-send-email-kan.liang@linux.intel.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <20210205012657.1951753-1-luzmaximilian@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, Feb 08, 2021 at 07:25:32AM -0800, kan.liang@linux.intel.com escreveu:
-> From: Jin Yao <yao.jin@linux.intel.com>
-> 
-> For hardware events, they have pre-defined configs. The kernel
-> needs to know where the event comes from (e.g. from cpu_core pmu
-> or from cpu_atom pmu). But the perf type 'PERF_TYPE_HARDWARE'
-> can't carry pmu information.
-> 
-> So the kernel introduces a new type 'PERF_TYPE_HARDWARE_PMU'.
-> The new attr.config layout for PERF_TYPE_HARDWARE_PMU is:
-> 
-> 0xDD000000AA
-> AA: original hardware event ID
-> DD: PMU type ID
-> 
-> PMU type ID is retrieved from sysfs. For example,
-> 
-> cat /sys/devices/cpu_atom/type
-> 10
-> 
-> cat /sys/devices/cpu_core/type
-> 4
-> 
-> When enabling a hybrid hardware event without specified pmu, such as,
-> 'perf stat -e cycles -a', two events are created automatically. One
-> is for atom, the other is for core.
+Hi,
 
-please move the command output two chars to the right, otherwise lines
-with --- may confuse some scripts.
+On 2/5/21 2:26 AM, Maximilian Luz wrote:
+> Some Surface Book 2 and 3 models have a discrete GPU (dGPU) that is
+> hot-pluggable. On those devices, the dGPU is contained in the base,
+> which can be separated from the tablet part (containing CPU and
+> touchscreen) while the device is running.
+> 
+> It (in general) is presented as/behaves like a standard PCIe hot-plug
+> capable device, however, this device can also be put into D3cold. In
+> D3cold, the device itself is turned off and can thus not submit any
+> standard PCIe hot-plug events. To properly detect hot-(un)plugging while
+> the dGPU is in D3cold, out-of-band signaling is required. Without this,
+> the device state will only get updated during the next bus-check, eg.
+> via a manually issued lspci call.
+> 
+> This commit adds a driver to handle out-of-band PCIe hot-(un)plug events
+> on Microsoft Surface devices. On those devices, said events can be
+> detected via GPIO interrupts, which are then forwarded to the
+> corresponding ACPI DSM calls by this driver. The DSM then takes care of
+> issuing the appropriate bus-/device-check, causing the PCI core to
+> properly pick up the device change.
+> 
+> Signed-off-by: Maximilian Luz <luzmaximilian@gmail.com>
 
-> root@otcpl-adl-s-2:~# ./perf stat -e cycles -vv -a -- sleep 1
-> Control descriptor is not initialized
-> ------------------------------------------------------------
-> perf_event_attr:
->   type                             6
->   size                             120
->   config                           0x400000000
->   sample_type                      IDENTIFIER
->   read_format                      TOTAL_TIME_ENABLED|TOTAL_TIME_RUNNING
->   disabled                         1
->   inherit                          1
->   exclude_guest                    1
-> ------------------------------------------------------------
-> sys_perf_event_open: pid -1  cpu 0  group_fd -1  flags 0x8 = 3
-> sys_perf_event_open: pid -1  cpu 1  group_fd -1  flags 0x8 = 4
-> sys_perf_event_open: pid -1  cpu 2  group_fd -1  flags 0x8 = 5
-> sys_perf_event_open: pid -1  cpu 3  group_fd -1  flags 0x8 = 7
-> sys_perf_event_open: pid -1  cpu 4  group_fd -1  flags 0x8 = 8
-> sys_perf_event_open: pid -1  cpu 5  group_fd -1  flags 0x8 = 9
-> sys_perf_event_open: pid -1  cpu 6  group_fd -1  flags 0x8 = 10
-> sys_perf_event_open: pid -1  cpu 7  group_fd -1  flags 0x8 = 11
-> sys_perf_event_open: pid -1  cpu 8  group_fd -1  flags 0x8 = 12
-> sys_perf_event_open: pid -1  cpu 9  group_fd -1  flags 0x8 = 13
-> sys_perf_event_open: pid -1  cpu 10  group_fd -1  flags 0x8 = 14
-> sys_perf_event_open: pid -1  cpu 11  group_fd -1  flags 0x8 = 15
-> sys_perf_event_open: pid -1  cpu 12  group_fd -1  flags 0x8 = 16
-> sys_perf_event_open: pid -1  cpu 13  group_fd -1  flags 0x8 = 17
-> sys_perf_event_open: pid -1  cpu 14  group_fd -1  flags 0x8 = 18
-> sys_perf_event_open: pid -1  cpu 15  group_fd -1  flags 0x8 = 19
-> ------------------------------------------------------------
-> perf_event_attr:
->   type                             6
->   size                             120
->   config                           0xa00000000
->   sample_type                      IDENTIFIER
->   read_format                      TOTAL_TIME_ENABLED|TOTAL_TIME_RUNNING
->   disabled                         1
->   inherit                          1
->   exclude_guest                    1
-> ------------------------------------------------------------
-> sys_perf_event_open: pid -1  cpu 16  group_fd -1  flags 0x8 = 20
-> sys_perf_event_open: pid -1  cpu 17  group_fd -1  flags 0x8 = 21
-> sys_perf_event_open: pid -1  cpu 18  group_fd -1  flags 0x8 = 22
-> sys_perf_event_open: pid -1  cpu 19  group_fd -1  flags 0x8 = 23
-> sys_perf_event_open: pid -1  cpu 20  group_fd -1  flags 0x8 = 24
-> sys_perf_event_open: pid -1  cpu 21  group_fd -1  flags 0x8 = 25
-> sys_perf_event_open: pid -1  cpu 22  group_fd -1  flags 0x8 = 26
-> sys_perf_event_open: pid -1  cpu 23  group_fd -1  flags 0x8 = 27
-> cycles: 0: 1254337 1001292571 1001292571
-> cycles: 1: 2595141 1001279813 1001279813
-> cycles: 2: 134853 1001276406 1001276406
-> cycles: 3: 81119 1001271089 1001271089
-> cycles: 4: 251353 1001264678 1001264678
-> cycles: 5: 415593 1001259163 1001259163
-> cycles: 6: 129643 1001265312 1001265312
-> cycles: 7: 80289 1001258979 1001258979
-> cycles: 8: 169983 1001251207 1001251207
-> cycles: 9: 81981 1001245487 1001245487
-> cycles: 10: 4116221 1001245537 1001245537
-> cycles: 11: 85531 1001253097 1001253097
-> cycles: 12: 3969132 1001254270 1001254270
-> cycles: 13: 96006 1001254691 1001254691
-> cycles: 14: 385004 1001244971 1001244971
-> cycles: 15: 394446 1001251437 1001251437
-> cycles: 0: 427330 1001253457 1001253457
-> cycles: 1: 444043 1001255914 1001255914
-> cycles: 2: 97285 1001253555 1001253555
-> cycles: 3: 92071 1001260556 1001260556
-> cycles: 4: 86292 1001249896 1001249896
-> cycles: 5: 236851 1001238979 1001238979
-> cycles: 6: 100081 1001239792 1001239792
-> cycles: 7: 72836 1001243276 1001243276
-> cycles: 14240632 16020168708 16020168708
-> cycles: 1556789 8009995425 8009995425
-> 
->  Performance counter stats for 'system wide':
-> 
->         14,240,632      cycles
->          1,556,789      cycles
-> 
->        1.002261231 seconds time elapsed
-> 
-> type 6 is PERF_TYPE_HARDWARE_PMU.
-> 0x4 in 0x400000000 indicates the cpu_core pmu.
-> 0xa in 0xa00000000 indicates the cpu_atom pmu.
-> 
-> Reviewed-by: Andi Kleen <ak@linux.intel.com>
-> Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
+Thank you for your patch, I've applied this patch to my review-hans 
+branch:
+https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
+
+Note it will show up in my review-hans branch once I've pushed my
+local branch there, which might take a while.
+
+Once I've run some tests on this branch the patches there will be
+added to the platform-drivers-x86/for-next branch and eventually
+will be included in the pdx86 pull-request to Linus for the next
+merge-window.
+
+Regards,
+
+Hans
+
 > ---
->  tools/perf/util/parse-events.c | 73 ++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 73 insertions(+)
+>  MAINTAINERS                                |   6 +
+>  drivers/platform/surface/Kconfig           |  19 ++
+>  drivers/platform/surface/Makefile          |   1 +
+>  drivers/platform/surface/surface_hotplug.c | 282 +++++++++++++++++++++
+>  4 files changed, 308 insertions(+)
+>  create mode 100644 drivers/platform/surface/surface_hotplug.c
 > 
-> diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
-> index 81a6fce..1e767dc 100644
-> --- a/tools/perf/util/parse-events.c
-> +++ b/tools/perf/util/parse-events.c
-> @@ -446,6 +446,24 @@ static int config_attr(struct perf_event_attr *attr,
->  		       struct parse_events_error *err,
->  		       config_term_func_t config_term);
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 34bfa5c1aec5..4fcf3df517a8 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -11805,6 +11805,12 @@ S:	Maintained
+>  T:	git git://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git
+>  F:	drivers/platform/surface/
 >  
-> +static void config_hybrid_attr(struct perf_event_attr *attr,
-> +			       int type, int pmu_type)
+> +MICROSOFT SURFACE HOT-PLUG DRIVER
+> +M:	Maximilian Luz <luzmaximilian@gmail.com>
+> +L:	platform-driver-x86@vger.kernel.org
+> +S:	Maintained
+> +F:	drivers/platform/surface/surface_hotplug.c
+> +
+>  MICROSOFT SURFACE PRO 3 BUTTON DRIVER
+>  M:	Chen Yu <yu.c.chen@intel.com>
+>  L:	platform-driver-x86@vger.kernel.org
+> diff --git a/drivers/platform/surface/Kconfig b/drivers/platform/surface/Kconfig
+> index 83b0a4c7b352..0847b2dc97bf 100644
+> --- a/drivers/platform/surface/Kconfig
+> +++ b/drivers/platform/surface/Kconfig
+> @@ -86,6 +86,25 @@ config SURFACE_GPE
+>  	  accordingly. It is required on those devices to allow wake-ups from
+>  	  suspend by opening the lid.
+>  
+> +config SURFACE_HOTPLUG
+> +	tristate "Surface Hot-Plug Driver"
+> +	depends on GPIOLIB
+> +	help
+> +	  Driver for out-of-band hot-plug event signaling on Microsoft Surface
+> +	  devices with hot-pluggable PCIe cards.
+> +
+> +	  This driver is used on Surface Book (2 and 3) devices with a
+> +	  hot-pluggable discrete GPU (dGPU). When not in use, the dGPU on those
+> +	  devices can enter D3cold, which prevents in-band (standard) PCIe
+> +	  hot-plug signaling. Thus, without this driver, detaching the base
+> +	  containing the dGPU will not correctly update the state of the
+> +	  corresponding PCIe device if it is in D3cold. This driver adds support
+> +	  for out-of-band hot-plug notifications, ensuring that the device state
+> +	  is properly updated even when the device in question is in D3cold.
+> +
+> +	  Select M or Y here, if you want to (fully) support hot-plugging of
+> +	  dGPU devices on the Surface Book 2 and/or 3 during D3cold.
+> +
+>  config SURFACE_PRO3_BUTTON
+>  	tristate "Power/home/volume buttons driver for Microsoft Surface Pro 3/4 tablet"
+>  	depends on INPUT
+> diff --git a/drivers/platform/surface/Makefile b/drivers/platform/surface/Makefile
+> index 3eb971006877..990424c5f0c9 100644
+> --- a/drivers/platform/surface/Makefile
+> +++ b/drivers/platform/surface/Makefile
+> @@ -11,4 +11,5 @@ obj-$(CONFIG_SURFACE_ACPI_NOTIFY)	+= surface_acpi_notify.o
+>  obj-$(CONFIG_SURFACE_AGGREGATOR)	+= aggregator/
+>  obj-$(CONFIG_SURFACE_AGGREGATOR_CDEV)	+= surface_aggregator_cdev.o
+>  obj-$(CONFIG_SURFACE_GPE)		+= surface_gpe.o
+> +obj-$(CONFIG_SURFACE_HOTPLUG)		+= surface_hotplug.o
+>  obj-$(CONFIG_SURFACE_PRO3_BUTTON)	+= surfacepro3_button.o
+> diff --git a/drivers/platform/surface/surface_hotplug.c b/drivers/platform/surface/surface_hotplug.c
+> new file mode 100644
+> index 000000000000..cfcc15cfbacb
+> --- /dev/null
+> +++ b/drivers/platform/surface/surface_hotplug.c
+> @@ -0,0 +1,282 @@
+> +// SPDX-License-Identifier: GPL-2.0+
+> +/*
+> + * Surface Book (2 and later) hot-plug driver.
+> + *
+> + * Surface Book devices (can) have a hot-pluggable discrete GPU (dGPU). This
+> + * driver is responsible for out-of-band hot-plug event signaling on these
+> + * devices. It is specifically required when the hot-plug device is in D3cold
+> + * and can thus not generate PCIe hot-plug events itself.
+> + *
+> + * Event signaling is handled via ACPI, which will generate the appropriate
+> + * device-check notifications to be picked up by the PCIe hot-plug driver.
+> + *
+> + * Copyright (C) 2019-2021 Maximilian Luz <luzmaximilian@gmail.com>
+> + */
+> +
+> +#include <linux/acpi.h>
+> +#include <linux/gpio.h>
+> +#include <linux/interrupt.h>
+> +#include <linux/kernel.h>
+> +#include <linux/module.h>
+> +#include <linux/mutex.h>
+> +#include <linux/platform_device.h>
+> +
+> +static const struct acpi_gpio_params shps_base_presence_int   = { 0, 0, false };
+> +static const struct acpi_gpio_params shps_base_presence       = { 1, 0, false };
+> +static const struct acpi_gpio_params shps_device_power_int    = { 2, 0, false };
+> +static const struct acpi_gpio_params shps_device_power        = { 3, 0, false };
+> +static const struct acpi_gpio_params shps_device_presence_int = { 4, 0, false };
+> +static const struct acpi_gpio_params shps_device_presence     = { 5, 0, false };
+> +
+> +static const struct acpi_gpio_mapping shps_acpi_gpios[] = {
+> +	{ "base_presence-int-gpio",   &shps_base_presence_int,   1 },
+> +	{ "base_presence-gpio",       &shps_base_presence,       1 },
+> +	{ "device_power-int-gpio",    &shps_device_power_int,    1 },
+> +	{ "device_power-gpio",        &shps_device_power,        1 },
+> +	{ "device_presence-int-gpio", &shps_device_presence_int, 1 },
+> +	{ "device_presence-gpio",     &shps_device_presence,     1 },
+> +	{ },
+> +};
+> +
+> +/* 5515a847-ed55-4b27-8352-cd320e10360a */
+> +static const guid_t shps_dsm_guid =
+> +	GUID_INIT(0x5515a847, 0xed55, 0x4b27, 0x83, 0x52, 0xcd, 0x32, 0x0e, 0x10, 0x36, 0x0a);
+> +
+> +#define SHPS_DSM_REVISION		1
+> +
+> +enum shps_dsm_fn {
+> +	SHPS_DSM_FN_PCI_NUM_ENTRIES	= 0x01,
+> +	SHPS_DSM_FN_PCI_GET_ENTRIES	= 0x02,
+> +	SHPS_DSM_FN_IRQ_BASE_PRESENCE	= 0x03,
+> +	SHPS_DSM_FN_IRQ_DEVICE_POWER	= 0x04,
+> +	SHPS_DSM_FN_IRQ_DEVICE_PRESENCE	= 0x05,
+> +};
+> +
+> +enum shps_irq_type {
+> +	/* NOTE: Must be in order of enum shps_dsm_fn above. */
+> +	SHPS_IRQ_TYPE_BASE_PRESENCE	= 0,
+> +	SHPS_IRQ_TYPE_DEVICE_POWER	= 1,
+> +	SHPS_IRQ_TYPE_DEVICE_PRESENCE	= 2,
+> +	SHPS_NUM_IRQS,
+> +};
+> +
+> +static const char *const shps_gpio_names[] = {
+> +	[SHPS_IRQ_TYPE_BASE_PRESENCE]	= "base_presence",
+> +	[SHPS_IRQ_TYPE_DEVICE_POWER]	= "device_power",
+> +	[SHPS_IRQ_TYPE_DEVICE_PRESENCE]	= "device_presence",
+> +};
+> +
+> +struct shps_device {
+> +	struct mutex lock[SHPS_NUM_IRQS];  /* Protects update in shps_dsm_notify_irq() */
+> +	struct gpio_desc *gpio[SHPS_NUM_IRQS];
+> +	unsigned int irq[SHPS_NUM_IRQS];
+> +};
+> +
+> +#define SHPS_IRQ_NOT_PRESENT		((unsigned int)-1)
+> +
+> +static enum shps_dsm_fn shps_dsm_fn_for_irq(enum shps_irq_type type)
 > +{
-> +	/*
-> +	 * attr.config layout:
-> +	 * PERF_TYPE_HARDWARE_PMU:     0xDD000000AA
-> +	 *                             AA: hardware event ID
-> +	 *                             DD: PMU type ID
-> +	 * PERF_TYPE_HW_CACHE_PMU:     0xDD00CCBBAA
-> +	 *                             AA: hardware cache ID
-> +	 *                             BB: hardware cache op ID
-> +	 *                             CC: hardware cache op result ID
-> +	 *                             DD: PMU type ID
-> +	 */
-> +	attr->type = type;
-> +	attr->config = attr->config | ((__u64)pmu_type << PERF_PMU_TYPE_SHIFT);
+> +	return SHPS_DSM_FN_IRQ_BASE_PRESENCE + type;
 > +}
 > +
->  int parse_events_add_cache(struct list_head *list, int *idx,
->  			   char *type, char *op_result1, char *op_result2,
->  			   struct parse_events_error *err,
-> @@ -1409,6 +1427,47 @@ int parse_events_add_tracepoint(struct list_head *list, int *idx,
->  					    err, head_config);
->  }
->  
-> +static int create_hybrid_hw_event(struct parse_events_state *parse_state,
-> +				  struct list_head *list,
-> +				  struct perf_event_attr *attr,
-> +				  struct perf_pmu *pmu)
+> +static void shps_dsm_notify_irq(struct platform_device *pdev, enum shps_irq_type type)
 > +{
-> +	struct evsel *evsel;
-> +	__u32 type = attr->type;
-> +	__u64 config = attr->config;
+> +	struct shps_device *sdev = platform_get_drvdata(pdev);
+> +	acpi_handle handle = ACPI_HANDLE(&pdev->dev);
+> +	union acpi_object *result;
+> +	union acpi_object param;
+> +	int value;
 > +
-> +	config_hybrid_attr(attr, PERF_TYPE_HARDWARE_PMU, pmu->type);
-> +	evsel = __add_event(list, &parse_state->idx, attr, true, NULL,
-> +			    pmu, NULL, false, NULL);
-> +	if (evsel)
-> +		evsel->pmu_name = strdup(pmu->name);
-> +	else
+> +	mutex_lock(&sdev->lock[type]);
+> +
+> +	value = gpiod_get_value_cansleep(sdev->gpio[type]);
+> +	if (value < 0) {
+> +		mutex_unlock(&sdev->lock[type]);
+> +		dev_err(&pdev->dev, "failed to get gpio: %d (irq=%d)\n", type, value);
+> +		return;
+> +	}
+> +
+> +	dev_dbg(&pdev->dev, "IRQ notification via DSM (irq=%d, value=%d)\n", type, value);
+> +
+> +	param.type = ACPI_TYPE_INTEGER;
+> +	param.integer.value = value;
+> +
+> +	result = acpi_evaluate_dsm(handle, &shps_dsm_guid, SHPS_DSM_REVISION,
+> +				   shps_dsm_fn_for_irq(type), &param);
+> +
+> +	if (!result) {
+> +		dev_err(&pdev->dev, "IRQ notification via DSM failed (irq=%d, gpio=%d)\n",
+> +			type, value);
+> +
+> +	} else if (result->type != ACPI_TYPE_BUFFER) {
+> +		dev_err(&pdev->dev,
+> +			"IRQ notification via DSM failed: unexpected result type (irq=%d, gpio=%d)\n",
+> +			type, value);
+> +
+> +	} else if (result->buffer.length != 1 || result->buffer.pointer[0] != 0) {
+> +		dev_err(&pdev->dev,
+> +			"IRQ notification via DSM failed: unexpected result value (irq=%d, gpio=%d)\n",
+> +			type, value);
+> +	}
+> +
+> +	mutex_unlock(&sdev->lock[type]);
+> +
+> +	if (result)
+> +		ACPI_FREE(result);
+> +}
+> +
+> +static irqreturn_t shps_handle_irq(int irq, void *data)
+> +{
+> +	struct platform_device *pdev = data;
+> +	struct shps_device *sdev = platform_get_drvdata(pdev);
+> +	int type;
+> +
+> +	/* Figure out which IRQ we're handling. */
+> +	for (type = 0; type < SHPS_NUM_IRQS; type++)
+> +		if (irq == sdev->irq[type])
+> +			break;
+> +
+> +	/* We should have found our interrupt, if not: this is a bug. */
+> +	if (WARN(type >= SHPS_NUM_IRQS, "invalid IRQ number: %d\n", irq))
+> +		return IRQ_HANDLED;
+> +
+> +	/* Forward interrupt to ACPI via DSM. */
+> +	shps_dsm_notify_irq(pdev, type);
+> +	return IRQ_HANDLED;
+> +}
+> +
+> +static int shps_setup_irq(struct platform_device *pdev, enum shps_irq_type type)
+> +{
+> +	unsigned long flags = IRQF_ONESHOT | IRQF_TRIGGER_FALLING | IRQF_TRIGGER_RISING;
+> +	struct shps_device *sdev = platform_get_drvdata(pdev);
+> +	struct gpio_desc *gpiod;
+> +	acpi_handle handle = ACPI_HANDLE(&pdev->dev);
+> +	const char *irq_name;
+> +	const int dsm = shps_dsm_fn_for_irq(type);
+> +	int status, irq;
+> +
+> +	/*
+> +	 * Only set up interrupts that we actually need: The Surface Book 3
+> +	 * does not have a DSM for base presence, so don't set up an interrupt
+> +	 * for that.
+> +	 */
+> +	if (!acpi_check_dsm(handle, &shps_dsm_guid, SHPS_DSM_REVISION, BIT(dsm))) {
+> +		dev_dbg(&pdev->dev, "IRQ notification via DSM not present (irq=%d)\n", type);
+> +		return 0;
+> +	}
+> +
+> +	gpiod = devm_gpiod_get(&pdev->dev, shps_gpio_names[type], GPIOD_ASIS);
+> +	if (IS_ERR(gpiod))
+> +		return PTR_ERR(gpiod);
+> +
+> +	irq = gpiod_to_irq(gpiod);
+> +	if (irq < 0)
+> +		return irq;
+> +
+> +	irq_name = devm_kasprintf(&pdev->dev, GFP_KERNEL, "shps-irq-%d", type);
+> +	if (!irq_name)
 > +		return -ENOMEM;
 > +
-> +	attr->type = type;
-> +	attr->config = config;
+> +	status = devm_request_threaded_irq(&pdev->dev, irq, NULL, shps_handle_irq,
+> +					   flags, irq_name, pdev);
+> +	if (status)
+> +		return status;
+> +
+> +	dev_dbg(&pdev->dev, "set up irq %d as type %d\n", irq, type);
+> +
+> +	sdev->gpio[type] = gpiod;
+> +	sdev->irq[type] = irq;
+> +
 > +	return 0;
 > +}
 > +
-> +static int add_hybrid_numeric(struct parse_events_state *parse_state,
-> +			      struct list_head *list,
-> +			      struct perf_event_attr *attr,
-> +			      bool *hybrid)
+> +static int surface_hotplug_remove(struct platform_device *pdev)
 > +{
-> +	struct perf_pmu *pmu;
-> +	int ret;
+> +	struct shps_device *sdev = platform_get_drvdata(pdev);
+> +	int i;
 > +
-> +	*hybrid = false;
-> +	perf_pmu__for_each_hybrid_pmus(pmu) {
-> +		*hybrid = true;
-> +		ret = create_hybrid_hw_event(parse_state, list, attr, pmu);
-> +		if (ret)
-> +			return ret;
+> +	/* Ensure that IRQs have been fully handled and won't trigger any more. */
+> +	for (i = 0; i < SHPS_NUM_IRQS; i++) {
+> +		if (sdev->irq[i] != SHPS_IRQ_NOT_PRESENT)
+> +			disable_irq(sdev->irq[i]);
+> +
+> +		mutex_destroy(&sdev->lock[i]);
 > +	}
 > +
 > +	return 0;
 > +}
 > +
->  int parse_events_add_numeric(struct parse_events_state *parse_state,
->  			     struct list_head *list,
->  			     u32 type, u64 config,
-> @@ -1416,6 +1475,8 @@ int parse_events_add_numeric(struct parse_events_state *parse_state,
->  {
->  	struct perf_event_attr attr;
->  	LIST_HEAD(config_terms);
-> +	bool hybrid;
-> +	int ret;
->  
->  	memset(&attr, 0, sizeof(attr));
->  	attr.type = type;
-> @@ -1430,6 +1491,18 @@ int parse_events_add_numeric(struct parse_events_state *parse_state,
->  			return -ENOMEM;
->  	}
->  
-> +	/*
-> +	 * Skip the software dummy event.
-> +	 */
-> +	if (type != PERF_TYPE_SOFTWARE) {
-> +		if (!perf_pmu__hybrid_exist())
-> +			perf_pmu__scan(NULL);
+> +static int surface_hotplug_probe(struct platform_device *pdev)
+> +{
+> +	struct shps_device *sdev;
+> +	int status, i;
 > +
-> +		ret = add_hybrid_numeric(parse_state, list, &attr, &hybrid);
-> +		if (hybrid)
-> +			return ret;
+> +	/*
+> +	 * The MSHW0153 device is also present on the Surface Laptop 3,
+> +	 * however that doesn't have a hot-pluggable PCIe device. It also
+> +	 * doesn't have any GPIO interrupts/pins under the MSHW0153, so filter
+> +	 * it out here.
+> +	 */
+> +	if (gpiod_count(&pdev->dev, NULL) < 0)
+> +		return -ENODEV;
+> +
+> +	status = devm_acpi_dev_add_driver_gpios(&pdev->dev, shps_acpi_gpios);
+> +	if (status)
+> +		return status;
+> +
+> +	sdev = devm_kzalloc(&pdev->dev, sizeof(*sdev), GFP_KERNEL);
+> +	if (!sdev)
+> +		return -ENOMEM;
+> +
+> +	platform_set_drvdata(pdev, sdev);
+> +
+> +	/*
+> +	 * Initialize IRQs so that we can safely call surface_hotplug_remove()
+> +	 * on errors.
+> +	 */
+> +	for (i = 0; i < SHPS_NUM_IRQS; i++)
+> +		sdev->irq[i] = SHPS_IRQ_NOT_PRESENT;
+> +
+> +	/* Set up IRQs. */
+> +	for (i = 0; i < SHPS_NUM_IRQS; i++) {
+> +		mutex_init(&sdev->lock[i]);
+> +
+> +		status = shps_setup_irq(pdev, i);
+> +		if (status) {
+> +			dev_err(&pdev->dev, "failed to set up IRQ %d: %d\n", i, status);
+> +			goto err;
+> +		}
 > +	}
 > +
->  	return add_event(list, &parse_state->idx, &attr,
->  			 get_config_name(head_config), &config_terms);
->  }
-> -- 
-> 2.7.4
+> +	/* Ensure everything is up-to-date. */
+> +	for (i = 0; i < SHPS_NUM_IRQS; i++)
+> +		if (sdev->irq[i] != SHPS_IRQ_NOT_PRESENT)
+> +			shps_dsm_notify_irq(pdev, i);
+> +
+> +	return 0;
+> +
+> +err:
+> +	surface_hotplug_remove(pdev);
+> +	return status;
+> +}
+> +
+> +static const struct acpi_device_id surface_hotplug_acpi_match[] = {
+> +	{ "MSHW0153", 0 },
+> +	{ },
+> +};
+> +MODULE_DEVICE_TABLE(acpi, surface_hotplug_acpi_match);
+> +
+> +static struct platform_driver surface_hotplug_driver = {
+> +	.probe = surface_hotplug_probe,
+> +	.remove = surface_hotplug_remove,
+> +	.driver = {
+> +		.name = "surface_hotplug",
+> +		.acpi_match_table = surface_hotplug_acpi_match,
+> +		.probe_type = PROBE_PREFER_ASYNCHRONOUS,
+> +	},
+> +};
+> +module_platform_driver(surface_hotplug_driver);
+> +
+> +MODULE_AUTHOR("Maximilian Luz <luzmaximilian@gmail.com>");
+> +MODULE_DESCRIPTION("Surface Hot-Plug Signaling Driver for Surface Book Devices");
+> +MODULE_LICENSE("GPL");
 > 
 
--- 
-
-- Arnaldo
