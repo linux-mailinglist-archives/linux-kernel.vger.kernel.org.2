@@ -2,61 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C17C312DA4
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 10:46:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84D6B312DC3
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 10:48:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231865AbhBHJpn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 04:45:43 -0500
-Received: from mx2.suse.de ([195.135.220.15]:53912 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231421AbhBHJjV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 04:39:21 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1612777114; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ey4KeQ4wI8Ow8TBhYfMVHQwpaYnFFEiIsiUIit12DQc=;
-        b=X3B/SXktu9OMTy3gCQxKfATO0YpQH5xheJaVU3VFlUCboSnM0ZJ3XMUnFDT4Nb0M3RXbQt
-        /XfS7+BQnhF2x43SmgC72bRa4C5wB08RgIEcwa/NPXW0LO5bxZTYw4zykSZJ6+jMUiEnYr
-        rCEC9iNZdEEoaRqQbhVaGX7lqbQvV44=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 2EDB9AD62;
-        Mon,  8 Feb 2021 09:38:34 +0000 (UTC)
-Subject: Re: [PATCH 6/7] xen/evtch: use smp barriers for user event ring
-To:     Juergen Gross <jgross@suse.com>
-Cc:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org
-References: <20210206104932.29064-1-jgross@suse.com>
- <20210206104932.29064-7-jgross@suse.com>
-From:   Jan Beulich <jbeulich@suse.com>
-Message-ID: <5cef0d0e-8f03-7cd2-4246-268a67a87dc5@suse.com>
-Date:   Mon, 8 Feb 2021 10:38:33 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S231794AbhBHJse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 04:48:34 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:11701 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231749AbhBHJmN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 04:42:13 -0500
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DZ1Fn0v32zlDXl;
+        Mon,  8 Feb 2021 17:39:41 +0800 (CST)
+Received: from localhost.localdomain (10.67.165.24) by
+ DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
+ 14.3.498.0; Mon, 8 Feb 2021 17:41:19 +0800
+From:   Meng Yu <yumeng18@huawei.com>
+To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
+        <marcel@holtmann.org>, <johan.hedberg@gmail.com>,
+        <luiz.dentz@gmail.com>, <tudor.ambarus@microchip.com>
+CC:     <linux-crypto@vger.kernel.org>, <xuzaibo@huawei.com>,
+        <wangzhou1@hisilicon.com>, <yumeng18@huawei.com>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v8 0/9] add ECDH and CURVE25519 algorithms support for Kunpeng 930
+Date:   Mon, 8 Feb 2021 17:38:48 +0800
+Message-ID: <1612777137-51067-1-git-send-email-yumeng18@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-In-Reply-To: <20210206104932.29064-7-jgross@suse.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Originating-IP: [10.67.165.24]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06.02.2021 11:49, Juergen Gross wrote:
-> The ring buffer for user events is used in the local system only, so
-> smp barriers are fine for ensuring consistency.
-> 
-> Reported-by: Andrew Cooper <andrew.cooper3@citrix.com>
-> Signed-off-by: Juergen Gross <jgross@suse.com>
+1. Move  curve ID from the key into the algorithm name (like 'ecdh-nist-pxxx'
+   so we get its tfm like 'crypto_alloc_kpp("ecdh-nist-p256", 0, 0)'),
+   in 'crypto/ecc.c' (has been verified by testmgr) and 'crypto/atmel-ecc.c'
+   (only compiled, not do test), and modify 'testmgr.c' and 'net/bluetooth/smp.c'
+   (only compiled, not do test) to adapt the modification;
 
-Reviewed-by: Jan Beulich <jbeulich@suse.com>
+2. Add new elliptic(nist-p224, nist-p384, nist-p521) curve parameters
+   definitions, and reorder ECDH 'Curves IDs';
 
-Albeit I think "local system" is at least ambiguous (physical
-machine? VM?). How about something like "is local to the given
-kernel instance"?
+3. Add new file 'include/crypto/ecc_curve.h', and move 'struct ecc_point' and
+   'struct ecc_curve' definitions to it, also add new APIs 'ecc_get_curveXXX'
+   into it, with these APIs, users in kernel tree can get ECDH and
+   curve25519 parameters;
 
-Jan
+4. Add ECDH and CURVE25519 algorithms support for Kunpeng 930.
+
+v7->v8:
+- patch #3 and #5: move the curve ID from the key into the algorithm name instead
+
+v6->v7:
+- patch #4: add function interface to expose elliptic curve parameters
+- patch #4: eliminate warning by 'kernel test robot'
+- patch #5: add function interface to expose curve25519 parameters
+
+v5->v6:
+- patch #1: add a new patch (the first patch), which is the "depend on" patch before
+
+v4->v5:
+- patch #4: delete P-128 and P-320 curve, as the few using case in the kernel
+
+v3 -> v4:
+- patch #3: add new, and move ecc_curve params to "include/crypto"
+
+v2 -> v3:
+- patch #5: fix sparse warnings
+- patch #5: add 'CRYPTO_LIB_CURVE25519_GENERIC' in 'Kconfig'
+
+v1 -> v2:
+- patch #5: delete `curve25519_null_point'
+
+
+
+Meng Yu (9):
+  crypto: hisilicon/hpre - add version adapt to new algorithms
+  crypto: hisilicon/hpre - add algorithm type
+  crypto: atmel-ecc - move curve_id of ECDH from the key to algorithm
+    name
+  net/bluetooth: modify ECDH name in 'crypto_alloc_kpp'
+  crypto: move curve_id of ECDH to algorithm name
+  crypto: add new ecc curve and expose them
+  crypto: hisilicon/hpre - add 'ECDH' algorithm
+  crypto: add curve25519 params and expose them
+  crypto: hisilicon/hpre - add 'CURVE25519' algorithm
+
+ crypto/ecc.c                                |   17 +-
+ crypto/ecc.h                                |   37 +-
+ crypto/ecc_curve_defs.h                     |  124 +++
+ crypto/ecdh.c                               |   72 +-
+ crypto/ecdh_helper.c                        |    4 +-
+ crypto/testmgr.c                            |   11 +-
+ crypto/testmgr.h                            |   32 +-
+ drivers/crypto/atmel-ecc.c                  |   14 +-
+ drivers/crypto/hisilicon/Kconfig            |    1 +
+ drivers/crypto/hisilicon/hpre/hpre.h        |   17 +-
+ drivers/crypto/hisilicon/hpre/hpre_crypto.c | 1097 +++++++++++++++++++++++++--
+ drivers/crypto/hisilicon/hpre/hpre_main.c   |   12 +-
+ drivers/crypto/hisilicon/qm.c               |    4 +-
+ drivers/crypto/hisilicon/qm.h               |    4 +-
+ drivers/crypto/hisilicon/sec2/sec.h         |    4 +-
+ drivers/crypto/hisilicon/sec2/sec_crypto.c  |    4 +-
+ drivers/crypto/hisilicon/sec2/sec_crypto.h  |    4 +-
+ drivers/crypto/hisilicon/zip/zip.h          |    4 +-
+ drivers/crypto/hisilicon/zip/zip_crypto.c   |    4 +-
+ include/crypto/ecc_curve.h                  |   60 ++
+ include/crypto/ecdh.h                       |    7 +-
+ net/bluetooth/ecdh_helper.c                 |    2 -
+ net/bluetooth/selftest.c                    |    2 +-
+ net/bluetooth/smp.c                         |    6 +-
+ 24 files changed, 1370 insertions(+), 173 deletions(-)
+ create mode 100644 include/crypto/ecc_curve.h
+
+-- 
+2.8.1
+
