@@ -2,84 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBE25312BAC
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 09:27:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9C94312B9F
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 09:24:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230054AbhBHI1I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 03:27:08 -0500
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:61798 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229766AbhBHI1B (ORCPT
+        id S230063AbhBHIXu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 03:23:50 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:24705 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229993AbhBHIXW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 03:27:01 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1612772821; x=1644308821;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=4O9XH5saY2fqpcq0/ayO65f0ZdeuoVfrCXsWDgqJW/M=;
-  b=VsBWdwgCU+iA7BN21b/uIdAeelo9VlX2ke1l6rmAvo2jysMzi+vHGvq0
-   QuYEXI8cCBQGR8cD17f4VW8UQvnjXLsNk1AanEyQUcfhF9VYJldoE2JU8
-   CsJZjNDHjsfxkQSO7PPWDIosRoE7QxNzepVOmPPO2b5MFDjIrF5Jw9ub3
-   u5AKbnOWU9C7PqJLWGO7SgHWYowE8Vv2+v0ykIy4HLGXk6W+O61gpHWG7
-   Lc0SLrzbK7ewui/YzUGutP2fDl52tb+GS6130le98gsx2McMON+v6gD/U
-   ji6VWPmxg2JA0zmSQueYYB8I9xo3ImPKmoW5doi/FogXDitHJ3R6LIo4X
-   g==;
-IronPort-SDR: 37oBx8N0kdUMwfRGtrs+d0hZaPjuLdej7d3CAbSjk08DMsifORDdhdJWzDULayW38bIkq44haA
- RR/dYUr/Ni6ySCSgJ42L8lvLQ5RP7oybWF0Vea8Q4CwaG2bVaunUHxsNZvj7YpmIScrm8pokLq
- pXzD1swtr5Xb65fFzaXHHCc+nBgoYwfB+L6pbQ1W8qj4sgoA6+pLc1QX5SxYTMqde3M6APX3XI
- N6KPK13nsgYPYS4pCTF4dqPBN3/UkvByACyaQ7Vz9kX/No66dobZ/YGFhxEjl5xXECAKFCUzzw
- O64=
-X-IronPort-AV: E=Sophos;i="5.81,161,1610434800"; 
-   d="scan'208";a="114190358"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 08 Feb 2021 01:25:45 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Mon, 8 Feb 2021 01:25:45 -0700
-Received: from localhost.localdomain (10.10.115.15) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Mon, 8 Feb 2021 01:25:43 -0700
-From:   <nicolas.ferre@microchip.com>
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>
-Subject: [PATCH] ARM: configs: sama5_defconfig: add QSPI driver
-Date:   Mon, 8 Feb 2021 09:21:40 +0100
-Message-ID: <20210208082140.10995-1-nicolas.ferre@microchip.com>
-X-Mailer: git-send-email 2.30.0
+        Mon, 8 Feb 2021 03:23:22 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612772515;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=DJj/eM72zDKRzFdR3uq7IOOzFEK9yZtZ/1IHJ8Iiu80=;
+        b=T9FOA9eOG1+AFbwsOlJujTJ2rS5/iWA9VAhV4m/lcSb/vy8pxpkw8qtyLQc9QsoEQgYcUx
+        0LsgeiWsECraP8JSiA98bBEGI85xAkqvNYLcrDKJDOHfQB4+EGaJvxgtmH69XPFoJMsehO
+        dZseg7mtbyvkavxW0WUBhr9CMu2Tipk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-346-wnE7NQ8nMlC-J6d6ylO5cA-1; Mon, 08 Feb 2021 03:21:51 -0500
+X-MC-Unique: wnE7NQ8nMlC-J6d6ylO5cA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 805A4801962;
+        Mon,  8 Feb 2021 08:21:49 +0000 (UTC)
+Received: from [10.36.113.240] (ovpn-113-240.ams2.redhat.com [10.36.113.240])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1004AE14E;
+        Mon,  8 Feb 2021 08:21:42 +0000 (UTC)
+To:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        Matthew Wilcox <willy@infradead.org>
+Cc:     "Wangzhou (B)" <wangzhou1@hisilicon.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "jgg@ziepe.ca" <jgg@ziepe.ca>,
+        "kevin.tian@intel.com" <kevin.tian@intel.com>,
+        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "Liguozhu (Kenneth)" <liguozhu@hisilicon.com>,
+        "zhangfei.gao@linaro.org" <zhangfei.gao@linaro.org>,
+        "chensihang (A)" <chensihang1@hisilicon.com>
+References: <1612685884-19514-1-git-send-email-wangzhou1@hisilicon.com>
+ <1612685884-19514-2-git-send-email-wangzhou1@hisilicon.com>
+ <20210207213409.GL308988@casper.infradead.org>
+ <f4b2d7db8a1047d9952cbbfaf9e27824@hisilicon.com>
+ <20210208013056.GM308988@casper.infradead.org>
+ <b4e2acc237e44ffe916135e96ad3ef20@hisilicon.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Subject: Re: [RFC PATCH v3 1/2] mempinfd: Add new syscall to provide memory
+ pin
+Message-ID: <beb4dfb5-e9d2-a76c-f965-28cff5e4658b@redhat.com>
+Date:   Mon, 8 Feb 2021 09:21:42 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
+In-Reply-To: <b4e2acc237e44ffe916135e96ad3ef20@hisilicon.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nicolas Ferre <nicolas.ferre@microchip.com>
+On 08.02.21 03:27, Song Bao Hua (Barry Song) wrote:
+> 
+> 
+>> -----Original Message-----
+>> From: owner-linux-mm@kvack.org [mailto:owner-linux-mm@kvack.org] On Behalf Of
+>> Matthew Wilcox
+>> Sent: Monday, February 8, 2021 2:31 PM
+>> To: Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>
+>> Cc: Wangzhou (B) <wangzhou1@hisilicon.com>; linux-kernel@vger.kernel.org;
+>> iommu@lists.linux-foundation.org; linux-mm@kvack.org;
+>> linux-arm-kernel@lists.infradead.org; linux-api@vger.kernel.org; Andrew
+>> Morton <akpm@linux-foundation.org>; Alexander Viro <viro@zeniv.linux.org.uk>;
+>> gregkh@linuxfoundation.org; jgg@ziepe.ca; kevin.tian@intel.com;
+>> jean-philippe@linaro.org; eric.auger@redhat.com; Liguozhu (Kenneth)
+>> <liguozhu@hisilicon.com>; zhangfei.gao@linaro.org; chensihang (A)
+>> <chensihang1@hisilicon.com>
+>> Subject: Re: [RFC PATCH v3 1/2] mempinfd: Add new syscall to provide memory
+>> pin
+>>
+>> On Sun, Feb 07, 2021 at 10:24:28PM +0000, Song Bao Hua (Barry Song) wrote:
+>>>>> In high-performance I/O cases, accelerators might want to perform
+>>>>> I/O on a memory without IO page faults which can result in dramatically
+>>>>> increased latency. Current memory related APIs could not achieve this
+>>>>> requirement, e.g. mlock can only avoid memory to swap to backup device,
+>>>>> page migration can still trigger IO page fault.
+>>>>
+>>>> Well ... we have two requirements.  The application wants to not take
+>>>> page faults.  The system wants to move the application to a different
+>>>> NUMA node in order to optimise overall performance.  Why should the
+>>>> application's desires take precedence over the kernel's desires?  And why
+>>>> should it be done this way rather than by the sysadmin using numactl to
+>>>> lock the application to a particular node?
+>>>
+>>> NUMA balancer is just one of many reasons for page migration. Even one
+>>> simple alloc_pages() can cause memory migration in just single NUMA
+>>> node or UMA system.
+>>>
+>>> The other reasons for page migration include but are not limited to:
+>>> * memory move due to CMA
+>>> * memory move due to huge pages creation
+>>>
+>>> Hardly we can ask users to disable the COMPACTION, CMA and Huge Page
+>>> in the whole system.
+>>
+>> You're dodging the question.  Should the CMA allocation fail because
+>> another application is using SVA?
+>>
+>> I would say no.
+> 
+> I would say no as well.
+> 
+> While IOMMU is enabled, CMA almost has one user only: IOMMU driver
+> as other drivers will depend on iommu to use non-contiguous memory
+> though they are still calling dma_alloc_coherent().
+> 
+> In iommu driver, dma_alloc_coherent is called during initialization
+> and there is no new allocation afterwards. So it wouldn't cause
+> runtime impact on SVA performance. Even there is new allocations,
+> CMA will fall back to general alloc_pages() and iommu drivers are
+> almost allocating small memory for command queues.
+> 
+> So I would say general compound pages, huge pages, especially
+> transparent huge pages, would be bigger concerns than CMA for
+> internal page migration within one NUMA.
+> 
+> Not like CMA, general alloc_pages() can get memory by moving
+> pages other than those pinned.
+> 
+> And there is no guarantee we can always bind the memory of
+> SVA applications to single one NUMA, so NUMA balancing is
+> still a concern.
+> 
+> But I agree we need a way to make CMA success while the userspace
+> pages are pinned. Since pin has been viral in many drivers, I
+> assume there is a way to handle this. Otherwise, APIs like
+> V4L2_MEMORY_USERPTR[1] will possibly make CMA fail as there
+> is no guarantee that usersspace will allocate unmovable memory
+> and there is no guarantee the fallback path- alloc_pages() can
+> succeed while allocating big memory.
+> 
 
-Add Quad SPI driver to the sama5 defconfig. This driver is needed for
-sama5d2 SoC.
+Long term pinnings cannot go onto CMA-reserved memory, and there is 
+similar work to also fix ZONE_MOVABLE in that regard.
 
-Signed-off-by: Nicolas Ferre <nicolas.ferre@microchip.com>
----
- arch/arm/configs/sama5_defconfig | 1 +
- 1 file changed, 1 insertion(+)
+https://lkml.kernel.org/r/20210125194751.1275316-1-pasha.tatashin@soleen.com
 
-diff --git a/arch/arm/configs/sama5_defconfig b/arch/arm/configs/sama5_defconfig
-index b72bd38a1c45..f4c3c0652432 100644
---- a/arch/arm/configs/sama5_defconfig
-+++ b/arch/arm/configs/sama5_defconfig
-@@ -121,6 +121,7 @@ CONFIG_I2C_AT91=y
- CONFIG_I2C_GPIO=y
- CONFIG_SPI=y
- CONFIG_SPI_ATMEL=y
-+CONFIG_SPI_ATMEL_QUADSPI=y
- CONFIG_SPI_GPIO=y
- CONFIG_GPIO_SYSFS=y
- CONFIG_GPIO_SAMA5D2_PIOBU=m
+One of the reasons I detest using long term pinning of pages where it 
+could be avoided. Take VFIO and RDMA as an example: these things 
+currently can't work without them.
+
+What I read here: "DMA performance will be affected severely". That does 
+not sound like a compelling argument to me for long term pinnings. 
+Please find another way to achieve the same goal without long term 
+pinnings controlled by user space - e.g., controlling when migration 
+actually happens.
+
+For example, CMA/alloc_contig_range()/memory unplug are corner cases 
+that happen rarely, you shouldn't have to worry about them messing with 
+your DMA performance.
+
 -- 
-2.30.0
+Thanks,
+
+David / dhildenb
 
