@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 123C931387B
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 16:50:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C294313870
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 16:48:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231366AbhBHPti (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 10:49:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52238 "EHLO mail.kernel.org"
+        id S234192AbhBHPsN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 10:48:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52048 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233109AbhBHPG7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 10:06:59 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7F43264EE5;
-        Mon,  8 Feb 2021 15:05:25 +0000 (UTC)
+        id S231489AbhBHPHD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 10:07:03 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 57F1764EE6;
+        Mon,  8 Feb 2021 15:05:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612796726;
-        bh=8x0xXwb6d8bT4yeWb8qLdFWMtleAKvKaarZrqsnngz4=;
+        s=korg; t=1612796728;
+        bh=VSByKdEj4xguY8ObmVxYO9eCq2VnPqK81L7F4k1uy0o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=h6oNIjvMAU+Pg8UnALW5Err8UckrJMed0ONfKrRN1hi/xCDxvuKKSYErnRTkp2wIQ
-         miKtHONlfIHub5vXDSgKim6AJAw+5u/jW0wBDOmiqVzPR6cKA0+ycrX5saStS1Hmbf
-         7z0xdoB4nR38UDRJBH+1T+QDqe/vErk6lqL8CaPM=
+        b=oU+UHOEp27rV3bzxUKkfvjfa2E3Vu3iBmTFTqz1eeSYSKOcHzwJNOvB8zb6gd1Tn6
+         NtJo8VndTKSMVZEjqgh4/WBkJfcZLVOp+/pkcqoOfVJ8iWPIZlIZwytXsFpRH9c2mj
+         7ICyI9/ykOm1wWFwYbTXuVtUHqLlq4KPMsysm2rA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nadav Amit <namit@vmware.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Joerg Roedel <jroedel@suse.de>
-Subject: [PATCH 4.9 42/43] iommu/vt-d: Do not use flush-queue when caching-mode is on
-Date:   Mon,  8 Feb 2021 16:01:08 +0100
-Message-Id: <20210208145808.008636403@linuxfoundation.org>
+        stable@vger.kernel.org,
+        "Shih-Yuan Lee (FourDollars)" <sylee@canonical.com>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 4.9 43/43] ALSA: hda/realtek - Fix typo of pincfg for Dell quirk
+Date:   Mon,  8 Feb 2021 16:01:09 +0100
+Message-Id: <20210208145808.049751458@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210208145806.281758651@linuxfoundation.org>
 References: <20210208145806.281758651@linuxfoundation.org>
@@ -42,76 +40,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nadav Amit <namit@vmware.com>
+From: Shih-Yuan Lee (FourDollars) <sylee@canonical.com>
 
-commit 29b32839725f8c89a41cb6ee054c85f3116ea8b5 upstream.
+commit b4576de87243c32fab50dda9f8eba1e3cf13a7e2 upstream.
 
-When an Intel IOMMU is virtualized, and a physical device is
-passed-through to the VM, changes of the virtual IOMMU need to be
-propagated to the physical IOMMU. The hypervisor therefore needs to
-monitor PTE mappings in the IOMMU page-tables. Intel specifications
-provide "caching-mode" capability that a virtual IOMMU uses to report
-that the IOMMU is virtualized and a TLB flush is needed after mapping to
-allow the hypervisor to propagate virtual IOMMU mappings to the physical
-IOMMU. To the best of my knowledge no real physical IOMMU reports
-"caching-mode" as turned on.
+The PIN number for Dell headset mode of ALC3271 is wrong.
 
-Synchronizing the virtual and the physical IOMMU tables is expensive if
-the hypervisor is unaware which PTEs have changed, as the hypervisor is
-required to walk all the virtualized tables and look for changes.
-Consequently, domain flushes are much more expensive than page-specific
-flushes on virtualized IOMMUs with passthrough devices. The kernel
-therefore exploited the "caching-mode" indication to avoid domain
-flushing and use page-specific flushing in virtualized environments. See
-commit 78d5f0f500e6 ("intel-iommu: Avoid global flushes with caching
-mode.")
-
-This behavior changed after commit 13cf01744608 ("iommu/vt-d: Make use
-of iova deferred flushing"). Now, when batched TLB flushing is used (the
-default), full TLB domain flushes are performed frequently, requiring
-the hypervisor to perform expensive synchronization between the virtual
-TLB and the physical one.
-
-Getting batched TLB flushes to use page-specific invalidations again in
-such circumstances is not easy, since the TLB invalidation scheme
-assumes that "full" domain TLB flushes are performed for scalability.
-
-Disable batched TLB flushes when caching-mode is on, as the performance
-benefit from using batched TLB invalidations is likely to be much
-smaller than the overhead of the virtual-to-physical IOMMU page-tables
-synchronization.
-
-Fixes: 13cf01744608 ("iommu/vt-d: Make use of iova deferred flushing")
-Signed-off-by: Nadav Amit <namit@vmware.com>
-Cc: David Woodhouse <dwmw2@infradead.org>
-Cc: Lu Baolu <baolu.lu@linux.intel.com>
-Cc: Joerg Roedel <joro@8bytes.org>
-Cc: Will Deacon <will@kernel.org>
-Cc: stable@vger.kernel.org
-Acked-by: Lu Baolu <baolu.lu@linux.intel.com>
-Link: https://lore.kernel.org/r/20210127175317.1600473-1-namit@vmware.com
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
-Signed-off-by: Nadav Amit <namit@vmware.com>
+Fixes: fcc6c877a01f ("ALSA: hda/realtek - Support Dell headset mode for ALC3271")
+Signed-off-by: Shih-Yuan Lee (FourDollars) <sylee@canonical.com>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- drivers/iommu/intel-iommu.c |    6 ++++++
- 1 file changed, 6 insertions(+)
+ sound/pci/hda/patch_realtek.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/iommu/intel-iommu.c
-+++ b/drivers/iommu/intel-iommu.c
-@@ -3323,6 +3323,12 @@ static int __init init_dmars(void)
- 
- 		if (!ecap_pass_through(iommu->ecap))
- 			hw_pass_through = 0;
-+
-+		if (!intel_iommu_strict && cap_caching_mode(iommu->cap)) {
-+			pr_info("Disable batched IOTLB flush due to virtualization");
-+			intel_iommu_strict = 1;
-+		}
-+
- #ifdef CONFIG_INTEL_IOMMU_SVM
- 		if (pasid_enabled(iommu))
- 			intel_svm_alloc_pasid_tables(iommu);
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -6284,7 +6284,7 @@ static const struct snd_hda_pin_quirk al
+ 	SND_HDA_PIN_QUIRK(0x10ec0299, 0x1028, "Dell", ALC269_FIXUP_DELL4_MIC_NO_PRESENCE,
+ 		ALC225_STANDARD_PINS,
+ 		{0x12, 0xb7a60130},
+-		{0x13, 0xb8a60140},
++		{0x13, 0xb8a61140},
+ 		{0x17, 0x90170110}),
+ 	{}
+ };
 
 
