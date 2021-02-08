@@ -2,33 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5A57313928
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 17:20:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C2CD31392D
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 17:21:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233524AbhBHQTh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 11:19:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55494 "EHLO mail.kernel.org"
+        id S234319AbhBHQVA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 11:21:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56648 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233271AbhBHPMb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S233287AbhBHPMb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 8 Feb 2021 10:12:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 82F4A64F03;
-        Mon,  8 Feb 2021 15:09:17 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 79B9264EA1;
+        Mon,  8 Feb 2021 15:09:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612796958;
-        bh=n8e4KDMTUgBJGCkluNV1ps2kzCVAbIdfze3YYt15lOs=;
+        s=korg; t=1612796961;
+        bh=FONfckAciqoMyZq6bGdb31EHz34huYjP6AS3wVYOswE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=y7uFjAo56t48lCIanK1pA8+jg/66HvumgAfJ7CjTk9Wfmr5f1THPSmI9y0T+FCLc5
-         Va3PP2MHforiUbyg/3VYwMSOHyqtpkcgyys70fT0UyBKIeV+FQ89qKyJfcEQm6DJLb
-         PAnlbozo4EVndR5ptc0H/nwhOWsjm9yGFr2fuVvA=
+        b=ZImAs+YSfYQWKCQDWEmG1q0MD6D40wGfAYe7By+1SgMScJW8sUx6V2k6j8qSTQBFk
+         EC67Zr5I7eeIEvnox6O2mcaQ4xyH5EPnfbxOlNl9iUq1gAkeI+1diSc+cvxmtwqlKL
+         rrZlrsLm3bVYtSdm5j0QJGf5ewDznnlggqQYphSk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johannes Berg <johannes.berg@intel.com>,
-        Richard Weinberger <richard@nod.at>,
+        stable@vger.kernel.org,
+        syzbot+df400f2f24a1677cd7e0@syzkaller.appspotmail.com,
+        Vadim Fedorenko <vfedorenko@novek.ru>,
+        David Howells <dhowells@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 10/65] um: virtio: free vu_dev only with the contained struct device
-Date:   Mon,  8 Feb 2021 16:00:42 +0100
-Message-Id: <20210208145810.635083551@linuxfoundation.org>
+Subject: [PATCH 5.4 11/65] rxrpc: Fix deadlock around release of dst cached on udp tunnel
+Date:   Mon,  8 Feb 2021 16:00:43 +0100
+Message-Id: <20210208145810.671309845@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210208145810.230485165@linuxfoundation.org>
 References: <20210208145810.230485165@linuxfoundation.org>
@@ -40,43 +43,106 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+From: David Howells <dhowells@redhat.com>
 
-[ Upstream commit f4172b084342fd3f9e38c10650ffe19eac30d8ce ]
+[ Upstream commit 5399d52233c47905bbf97dcbaa2d7a9cc31670ba ]
 
-Since struct device is refcounted, we shouldn't free the vu_dev
-immediately when it's removed from the platform device, but only
-when the references actually all go away. Move the freeing to
-the release to accomplish that.
+AF_RXRPC sockets use UDP ports in encap mode.  This causes socket and dst
+from an incoming packet to get stolen and attached to the UDP socket from
+whence it is leaked when that socket is closed.
 
-Fixes: 5d38f324993f ("um: drivers: Add virtio vhost-user driver")
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
-Signed-off-by: Richard Weinberger <richard@nod.at>
+When a network namespace is removed, the wait for dst records to be cleaned
+up happens before the cleanup of the rxrpc and UDP socket, meaning that the
+wait never finishes.
+
+Fix this by moving the rxrpc (and, by dependence, the afs) private
+per-network namespace registrations to the device group rather than subsys
+group.  This allows cached rxrpc local endpoints to be cleared and their
+UDP sockets closed before we try waiting for the dst records.
+
+The symptom is that lines looking like the following:
+
+	unregister_netdevice: waiting for lo to become free
+
+get emitted at regular intervals after running something like the
+referenced syzbot test.
+
+Thanks to Vadim for tracking this down and work out the fix.
+
+Reported-by: syzbot+df400f2f24a1677cd7e0@syzkaller.appspotmail.com
+Reported-by: Vadim Fedorenko <vfedorenko@novek.ru>
+Fixes: 5271953cad31 ("rxrpc: Use the UDP encap_rcv hook")
+Signed-off-by: David Howells <dhowells@redhat.com>
+Acked-by: Vadim Fedorenko <vfedorenko@novek.ru>
+Link: https://lore.kernel.org/r/161196443016.3868642.5577440140646403533.stgit@warthog.procyon.org.uk
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/um/drivers/virtio_uml.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ fs/afs/main.c        | 6 +++---
+ net/rxrpc/af_rxrpc.c | 6 +++---
+ 2 files changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/arch/um/drivers/virtio_uml.c b/arch/um/drivers/virtio_uml.c
-index 179b41ad63baf..18618af3835f9 100644
---- a/arch/um/drivers/virtio_uml.c
-+++ b/arch/um/drivers/virtio_uml.c
-@@ -959,6 +959,7 @@ static void virtio_uml_release_dev(struct device *d)
+diff --git a/fs/afs/main.c b/fs/afs/main.c
+index c9c45d7078bd1..5cd26af2464c9 100644
+--- a/fs/afs/main.c
++++ b/fs/afs/main.c
+@@ -186,7 +186,7 @@ static int __init afs_init(void)
+ 		goto error_cache;
+ #endif
+ 
+-	ret = register_pernet_subsys(&afs_net_ops);
++	ret = register_pernet_device(&afs_net_ops);
+ 	if (ret < 0)
+ 		goto error_net;
+ 
+@@ -206,7 +206,7 @@ static int __init afs_init(void)
+ error_proc:
+ 	afs_fs_exit();
+ error_fs:
+-	unregister_pernet_subsys(&afs_net_ops);
++	unregister_pernet_device(&afs_net_ops);
+ error_net:
+ #ifdef CONFIG_AFS_FSCACHE
+ 	fscache_unregister_netfs(&afs_cache_netfs);
+@@ -237,7 +237,7 @@ static void __exit afs_exit(void)
+ 
+ 	proc_remove(afs_proc_symlink);
+ 	afs_fs_exit();
+-	unregister_pernet_subsys(&afs_net_ops);
++	unregister_pernet_device(&afs_net_ops);
+ #ifdef CONFIG_AFS_FSCACHE
+ 	fscache_unregister_netfs(&afs_cache_netfs);
+ #endif
+diff --git a/net/rxrpc/af_rxrpc.c b/net/rxrpc/af_rxrpc.c
+index 2921fc2767134..9bacec6653bac 100644
+--- a/net/rxrpc/af_rxrpc.c
++++ b/net/rxrpc/af_rxrpc.c
+@@ -976,7 +976,7 @@ static int __init af_rxrpc_init(void)
+ 		goto error_security;
  	}
  
- 	os_close_file(vu_dev->sock);
-+	kfree(vu_dev);
- }
+-	ret = register_pernet_subsys(&rxrpc_net_ops);
++	ret = register_pernet_device(&rxrpc_net_ops);
+ 	if (ret)
+ 		goto error_pernet;
  
- /* Platform device */
-@@ -977,7 +978,7 @@ static int virtio_uml_probe(struct platform_device *pdev)
- 	if (!pdata)
- 		return -EINVAL;
- 
--	vu_dev = devm_kzalloc(&pdev->dev, sizeof(*vu_dev), GFP_KERNEL);
-+	vu_dev = kzalloc(sizeof(*vu_dev), GFP_KERNEL);
- 	if (!vu_dev)
- 		return -ENOMEM;
+@@ -1021,7 +1021,7 @@ error_key_type:
+ error_sock:
+ 	proto_unregister(&rxrpc_proto);
+ error_proto:
+-	unregister_pernet_subsys(&rxrpc_net_ops);
++	unregister_pernet_device(&rxrpc_net_ops);
+ error_pernet:
+ 	rxrpc_exit_security();
+ error_security:
+@@ -1043,7 +1043,7 @@ static void __exit af_rxrpc_exit(void)
+ 	unregister_key_type(&key_type_rxrpc);
+ 	sock_unregister(PF_RXRPC);
+ 	proto_unregister(&rxrpc_proto);
+-	unregister_pernet_subsys(&rxrpc_net_ops);
++	unregister_pernet_device(&rxrpc_net_ops);
+ 	ASSERTCMP(atomic_read(&rxrpc_n_tx_skbs), ==, 0);
+ 	ASSERTCMP(atomic_read(&rxrpc_n_rx_skbs), ==, 0);
  
 -- 
 2.27.0
