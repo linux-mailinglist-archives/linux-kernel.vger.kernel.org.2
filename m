@@ -2,191 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBE3931427D
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 23:02:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8CF031427E
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 23:03:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232986AbhBHWCP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 17:02:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55316 "EHLO
+        id S233319AbhBHWDE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 17:03:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231466AbhBHWB1 (ORCPT
+        with ESMTP id S231974AbhBHWCU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 17:01:27 -0500
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9A24C06178B
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 14:00:46 -0800 (PST)
-Received: by mail-ed1-x535.google.com with SMTP id s3so20946989edi.7
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 14:00:46 -0800 (PST)
+        Mon, 8 Feb 2021 17:02:20 -0500
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A43CDC061788
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 14:01:39 -0800 (PST)
+Received: by mail-ej1-x62d.google.com with SMTP id bl23so27955857ejb.5
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 14:01:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        d=kylehuey.com; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=r89J6l710rUUDBhc44yP9Tx7/jektan0rwuh5uDDLWM=;
-        b=dsSy7+QIlUg5fJpnCw9Jd2tbEIKMm1oBaH+E8Z+UF+9JNrqf0vnWP99MMBXL4Dj6qJ
-         2cNYA+BKdops1ogWwVks3MoYZa2xMVCy/zAx5/NTrJ3ewbvfS/t5fWZxYGw0+RmygcmF
-         hI5ZEcIJZEK4e3zu0GJiHhW92iNKeo+ke7GCsPCmqOYeREGE40sC7zXYKpJvr4dLw3J4
-         g9GwkNA0sl5H9aJ8Bqz1l3mKvnuBRSaIAzfLobI1s08Xgm1ev0bRxErIZxgjG4w1w5ck
-         fSvWmtuMpa01tpXV0wjl7CYUpZKjXc8K6BhI98L8FuS1cUFdUkkEnqGJA92N4/7fSB3N
-         yttg==
+        bh=mShq+EZPqAzFmcoE5QfNWQlMbGl3Td2RAiT+iP0GQO0=;
+        b=LIeOHWTs8CppkjnjGGTVNejIohuZzj2vwuq+Wv0F6b/WKkYCpB8gDpphPXP3FlOKPN
+         5A04u0Rpo5Q3y/qX92+c+mubKZdMffhNUMN2SWto7gqKNwyDAztIYBDCEsM1k5Dgw6J5
+         PUorSLrGpmMEkj6+nnFAgbXRrx53r7Tg1WhyP9GQUJLswcVvMPdYoTE3UPO7/VO554Ry
+         UO6bWW7Vp5SYE1k54nn6jzH76jT5Ez2ONUTrXWlIJ5EwRQR6zPJrgaeH9bCjPc3POt8D
+         qaZUP4Y42CEFtwXZpNF8n86BkCNsIDtR3P5pgsa1U6BXSikRw60kvb/PICgh7CLysA88
+         MYng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=r89J6l710rUUDBhc44yP9Tx7/jektan0rwuh5uDDLWM=;
-        b=LJy6UiJKfWO75SEploAUMzMVlcNOP9dUMPdo1amhcPe57wys0Znt7We3XXLyZe59yJ
-         0oxvfjuelWD9py91A3OAuXvU6UOwer7L8UUfa5E4FwyPbQuDnVGEbZgSPwVT3xV+Y8nf
-         M3P72rBT0fhK8ITcHPIsBGiSWNHDy+Z39NzC5Q+uCPM/cUKlW/zqqvEAi0AqSk1dYXtg
-         CmXBUQMMucWLPZccN3c9cV1H9ouIA6WKLvirf+Bg1Vp1KlvSVkNSBxQZ4lBU+yN2AMjj
-         W2ftwFHnAZSpYV9SLu4iFOAMpmGP2NTtplLhuWlZIaPoYEtlyq4iVkUNLpPjU8nJ+aPO
-         YMMQ==
-X-Gm-Message-State: AOAM530CnNP89lMK1hfIQVAVe/BIr7hVyYeP99NMyl+g46NXRa0mD0mF
-        35rqTua/RKZdULCAwhRirXILDLvsq0xRalpmif3K6w==
-X-Google-Smtp-Source: ABdhPJzY6/u+KZJ6MZj37P3ZJJx43Erb+zC9cXNDhUnY3tNXxRfpzBL1HuhT2GNObnY0azh1Mn/lu14uXsB7CMBo1vw=
-X-Received: by 2002:a05:6402:5107:: with SMTP id m7mr19262106edd.52.1612821645375;
- Mon, 08 Feb 2021 14:00:45 -0800 (PST)
+        bh=mShq+EZPqAzFmcoE5QfNWQlMbGl3Td2RAiT+iP0GQO0=;
+        b=bwb4iXNlStZLNnw7tM1H0PxHilfqObYmWraTVqd3yQ+5WZfKs6DMjz9OcEQw/oTmf8
+         AA2JcnaTUaWEqvxNRYFKFgwnb9HL/rzDOCwSdF9ofbGWWXs4iPIKoes2664pF0SVjbDr
+         wnS6Z5dp1z2H1zH+VakcbwKQZlXRUxgyz9h42k6hJzRfKe5ZYBEFSun4FuML3aB5+86I
+         fnTySRVqaK3rvl7B57sQCQotNRSCsZFvMO2Zit22dMYuMQJQ+XUCJk0gZfH/oswCPoEx
+         35KFwHPY6QcBcIxxyGzn4ZDu1t1jlH34x4D3le8ekr2l2M56ywpGNTkaNPhWeXqHAfan
+         y/PA==
+X-Gm-Message-State: AOAM531R/4+uhhPwRZPfeJOtbOFGVVY3h9dJSIM6aIb55d4WY8a3FI9c
+        SpQPkQ8oHtegEq19gUh06uU9qLh/yHFIIeKEjrtsuw==
+X-Google-Smtp-Source: ABdhPJxSYjqAd+iDGcp9OLAiPy0mD8uhaA6FigkBUp2yzAGRVyv6UP6GWM/PhnsYydNLl4JDCCeE528oHXnhYsugpRI=
+X-Received: by 2002:a17:906:1241:: with SMTP id u1mr19278962eja.196.1612821698360;
+ Mon, 08 Feb 2021 14:01:38 -0800 (PST)
 MIME-Version: 1.0
-References: <20210130002438.1872527-1-ben.widawsky@intel.com> <20210130002438.1872527-9-ben.widawsky@intel.com>
-In-Reply-To: <20210130002438.1872527-9-ben.widawsky@intel.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Mon, 8 Feb 2021 14:00:33 -0800
-Message-ID: <CAPcyv4iPXqO5FL4_bmMQaSvmUm9FVrPv9yPJr3Q4DQWYf4t5hQ@mail.gmail.com>
-Subject: Re: [PATCH 08/14] taint: add taint for direct hardware access
-To:     Jonathan Corbet <corbet@lwn.net>, Kees Cook <keescook@chromium.org>
-Cc:     linux-cxl@vger.kernel.org, Ben Widawsky <ben.widawsky@intel.com>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Chris Browy <cbrowy@avery-design.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Jon Masters <jcm@jonmasters.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Rafael Wysocki <rafael.j.wysocki@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        daniel.lll@alibaba-inc.com,
-        "John Groves (jgroves)" <jgroves@micron.com>,
-        "Kelley, Sean V" <sean.v.kelley@intel.com>
+References: <20210208214327.65287-1-sedat.dilek@gmail.com>
+In-Reply-To: <20210208214327.65287-1-sedat.dilek@gmail.com>
+From:   Kyle Huey <me@kylehuey.com>
+Date:   Mon, 8 Feb 2021 14:01:27 -0800
+Message-ID: <CAP045Ar1MvSGSrL9gL3YzSbGJvs4Xt0MMuAahLZz2_B6y0UbzQ@mail.gmail.com>
+Subject: Re: [PATCH] x86: entry: Remove _TIF_SINGLESTEP define leftover
+To:     Sedat Dilek <sedat.dilek@gmail.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        Kees Cook <keescook@chromium.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[ add Jon Corbet as I'd expect him to be Cc'd on anything that
-generically touches Documentation/ like this, and add Kees as the last
-person who added a taint (tag you're it) ]
+Looks good to me.
 
-Jon, Kees, are either of you willing to ack this concept?
+- Kyle
 
-Top-posting to add more context for the below:
-
-This taint is proposed because it has implications for
-CONFIG_LOCK_DOWN_KERNEL among other things. These CXL devices
-implement memory like DDR would, but unlike DDR there are
-administrative / configuration commands that demand kernel
-coordination before they can be sent. The posture taken with this
-taint is "guilty until proven innocent" for commands that have yet to
-be explicitly allowed by the driver. This is different than NVME for
-example where an errant vendor-defined command could destroy data on
-the device, but there is no wider threat to system integrity. The
-taint allows a pressure release valve for any and all commands to be
-sent, but flagged with WARN_TAINT_ONCE if the driver has not
-explicitly enabled it on an allowed list of known-good / kernel
-coordinated commands.
-
-On Fri, Jan 29, 2021 at 4:25 PM Ben Widawsky <ben.widawsky@intel.com> wrote:
+On Mon, Feb 8, 2021 at 1:43 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
 >
-> For drivers that moderate access to the underlying hardware it is
-> sometimes desirable to allow userspace to bypass restrictions. Once
-> userspace has done this, the driver can no longer guarantee the sanctity
-> of either the OS or the hardware. When in this state, it is helpful for
-> kernel developers to be made aware (via this taint flag) of this fact
-> for subsequent bug reports.
+> After commit 6342adcaa683 ("entry: Ensure trap after single-step on
+> system call return") a _TIF_SINGLESTEP define is obsolete for arch/x86.
 >
-> Example usage:
-> - Hardware xyzzy accepts 2 commands, waldo and fred.
-> - The xyzzy driver provides an interface for using waldo, but not fred.
-> - quux is convinced they really need the fred command.
-> - xyzzy driver allows quux to frob hardware to initiate fred.
->   - kernel gets tainted.
-> - turns out fred command is borked, and scribbles over memory.
-> - developers laugh while closing quux's subsequent bug report.
+> So, remove the leftover in arch/x86/include/asm/thread_info.h file.
 >
-> Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
+> Fixes: 6342adcaa683 ("entry: Ensure trap after single-step on system call return"
+> CC: Kyle Huey <me@kylehuey.com>
+> Signed-off-by: Sedat Dilek <sedat.dilek@gmail.com>
 > ---
->  Documentation/admin-guide/sysctl/kernel.rst   | 1 +
->  Documentation/admin-guide/tainted-kernels.rst | 6 +++++-
->  include/linux/kernel.h                        | 3 ++-
->  kernel/panic.c                                | 1 +
->  4 files changed, 9 insertions(+), 2 deletions(-)
+>  arch/x86/include/asm/thread_info.h | 1 -
+>  1 file changed, 1 deletion(-)
 >
-> diff --git a/Documentation/admin-guide/sysctl/kernel.rst b/Documentation/admin-guide/sysctl/kernel.rst
-> index 1d56a6b73a4e..3e1eada53504 100644
-> --- a/Documentation/admin-guide/sysctl/kernel.rst
-> +++ b/Documentation/admin-guide/sysctl/kernel.rst
-> @@ -1352,6 +1352,7 @@ ORed together. The letters are seen in "Tainted" line of Oops reports.
->   32768  `(K)`  kernel has been live patched
->   65536  `(X)`  Auxiliary taint, defined and used by for distros
->  131072  `(T)`  The kernel was built with the struct randomization plugin
-> +262144  `(H)`  The kernel has allowed vendor shenanigans
->  ======  =====  ==============================================================
->
->  See :doc:`/admin-guide/tainted-kernels` for more information.
-> diff --git a/Documentation/admin-guide/tainted-kernels.rst b/Documentation/admin-guide/tainted-kernels.rst
-> index ceeed7b0798d..ee2913316344 100644
-> --- a/Documentation/admin-guide/tainted-kernels.rst
-> +++ b/Documentation/admin-guide/tainted-kernels.rst
-> @@ -74,7 +74,7 @@ a particular type of taint. It's best to leave that to the aforementioned
->  script, but if you need something quick you can use this shell command to check
->  which bits are set::
->
-> -       $ for i in $(seq 18); do echo $(($i-1)) $(($(cat /proc/sys/kernel/tainted)>>($i-1)&1));done
-> +       $ for i in $(seq 19); do echo $(($i-1)) $(($(cat /proc/sys/kernel/tainted)>>($i-1)&1));done
->
->  Table for decoding tainted state
->  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> @@ -100,6 +100,7 @@ Bit  Log  Number  Reason that got the kernel tainted
->   15  _/K   32768  kernel has been live patched
->   16  _/X   65536  auxiliary taint, defined for and used by distros
->   17  _/T  131072  kernel was built with the struct randomization plugin
-> + 18  _/H  262144  kernel has allowed vendor shenanigans
->  ===  ===  ======  ========================================================
->
->  Note: The character ``_`` is representing a blank in this table to make reading
-> @@ -175,3 +176,6 @@ More detailed explanation for tainting
->       produce extremely unusual kernel structure layouts (even performance
->       pathological ones), which is important to know when debugging. Set at
->       build time.
-> +
-> + 18) ``H`` Kernel has allowed direct access to hardware and can no longer make
-> +     any guarantees about the stability of the device or driver.
-> diff --git a/include/linux/kernel.h b/include/linux/kernel.h
-> index f7902d8c1048..bc95486f817e 100644
-> --- a/include/linux/kernel.h
-> +++ b/include/linux/kernel.h
-> @@ -443,7 +443,8 @@ extern enum system_states {
->  #define TAINT_LIVEPATCH                        15
->  #define TAINT_AUX                      16
->  #define TAINT_RANDSTRUCT               17
-> -#define TAINT_FLAGS_COUNT              18
-> +#define TAINT_RAW_PASSTHROUGH          18
-> +#define TAINT_FLAGS_COUNT              19
->  #define TAINT_FLAGS_MAX                        ((1UL << TAINT_FLAGS_COUNT) - 1)
->
->  struct taint_flag {
-> diff --git a/kernel/panic.c b/kernel/panic.c
-> index 332736a72a58..dff22bd80eaf 100644
-> --- a/kernel/panic.c
-> +++ b/kernel/panic.c
-> @@ -386,6 +386,7 @@ const struct taint_flag taint_flags[TAINT_FLAGS_COUNT] = {
->         [ TAINT_LIVEPATCH ]             = { 'K', ' ', true },
->         [ TAINT_AUX ]                   = { 'X', ' ', true },
->         [ TAINT_RANDSTRUCT ]            = { 'T', ' ', true },
-> +       [ TAINT_RAW_PASSTHROUGH ]       = { 'H', ' ', true },
->  };
->
->  /**
+> diff --git a/arch/x86/include/asm/thread_info.h b/arch/x86/include/asm/thread_info.h
+> index 0d751d5da702..8861967e0305 100644
+> --- a/arch/x86/include/asm/thread_info.h
+> +++ b/arch/x86/include/asm/thread_info.h
+> @@ -101,7 +101,6 @@ struct thread_info {
+>  #define _TIF_NOTIFY_RESUME     (1 << TIF_NOTIFY_RESUME)
+>  #define _TIF_SIGPENDING                (1 << TIF_SIGPENDING)
+>  #define _TIF_NEED_RESCHED      (1 << TIF_NEED_RESCHED)
+> -#define _TIF_SINGLESTEP                (1 << TIF_SINGLESTEP)
+>  #define _TIF_SSBD              (1 << TIF_SSBD)
+>  #define _TIF_SPEC_IB           (1 << TIF_SPEC_IB)
+>  #define _TIF_SPEC_FORCE_UPDATE (1 << TIF_SPEC_FORCE_UPDATE)
 > --
 > 2.30.0
 >
