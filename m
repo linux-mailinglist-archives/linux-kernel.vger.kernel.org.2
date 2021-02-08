@@ -2,56 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D13BC312D4C
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 10:30:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F12A0312D6B
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 10:38:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231344AbhBHJam (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 04:30:42 -0500
-Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:43132 "EHLO
-        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231398AbhBHJL2 (ORCPT
+        id S231767AbhBHJiN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 04:38:13 -0500
+Received: from 5.mo69.mail-out.ovh.net ([46.105.43.105]:34729 "EHLO
+        5.mo69.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229861AbhBHJV5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 04:11:28 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0UOAH5lm_1612775440;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0UOAH5lm_1612775440)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 08 Feb 2021 17:10:40 +0800
-From:   Yang Li <yang.lee@linux.alibaba.com>
-To:     herbert@gondor.apana.org.au
-Cc:     davem@davemloft.net, mpe@ellerman.id.au, benh@kernel.crashing.org,
-        paulus@samba.org, linux-crypto@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        Yang Li <yang.lee@linux.alibaba.com>
-Subject: [PATCH] crypto: sha: remove unneeded semicolon
-Date:   Mon,  8 Feb 2021 17:10:38 +0800
-Message-Id: <1612775438-126031-1-git-send-email-yang.lee@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Mon, 8 Feb 2021 04:21:57 -0500
+X-Greylist: delayed 2291 seconds by postgrey-1.27 at vger.kernel.org; Mon, 08 Feb 2021 04:21:57 EST
+Received: from player737.ha.ovh.net (unknown [10.108.42.73])
+        by mo69.mail-out.ovh.net (Postfix) with ESMTP id E1E56AEBA1
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 09:42:37 +0100 (CET)
+Received: from RCM-web9.webmail.mail.ovh.net (ip-194-187-74-233.konfederacka.maverick.com.pl [194.187.74.233])
+        (Authenticated sender: rafal@milecki.pl)
+        by player737.ha.ovh.net (Postfix) with ESMTPSA id 42C2F115B410D;
+        Mon,  8 Feb 2021 08:42:28 +0000 (UTC)
+MIME-Version: 1.0
+Date:   Mon, 08 Feb 2021 09:42:28 +0100
+From:   =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <rafal@milecki.pl>
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        bcm-kernel-feedback-list@broadcom.com, linux-pm@vger.kernel.org,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
+        Pia Eichinger <pia.eichinger@st.oth-regensburg.de>,
+        Joe Perches <joe@perches.com>, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] MAINTAINERS: rectify BROADCOM PMB (POWER MANAGEMENT BUS)
+ DRIVER
+In-Reply-To: <20210208071619.3234-1-lukas.bulwahn@gmail.com>
+References: <20210208071619.3234-1-lukas.bulwahn@gmail.com>
+User-Agent: Roundcube Webmail/1.4.10
+Message-ID: <883902e16721c9a439a7caaa897a317b@milecki.pl>
+X-Sender: rafal@milecki.pl
+X-Originating-IP: 194.187.74.233
+X-Webmail-UserID: rafal@milecki.pl
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+X-Ovh-Tracer-Id: 17977525290287992534
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduledrhedvgdduvddvucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepggffhffvufgjfhgfkfigihgtgfesthekjhdttderjeenucfhrhhomheptfgrfhgrlhgpofhilhgvtghkihcuoehrrghfrghlsehmihhlvggtkhhirdhplheqnecuggftrfgrthhtvghrnhepjeffudffgfejgfdvieegudekffefveehjeeuieekheduieduhedvieefudetheeinecukfhppedtrddtrddtrddtpdduleegrddukeejrdejgedrvdeffeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphdqohhuthdphhgvlhhopehplhgrhigvrhejfeejrdhhrgdrohhvhhdrnhgvthdpihhnvghtpedtrddtrddtrddtpdhmrghilhhfrhhomheprhgrfhgrlhesmhhilhgvtghkihdrphhlpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhg
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Eliminate the following coccicheck warning:
-./arch/powerpc/crypto/sha1-spe-glue.c:110:2-3: Unneeded semicolon
+On 2021-02-08 08:16, Lukas Bulwahn wrote:
+> Commit 8bcac4011ebe ("soc: bcm: add PM driver for Broadcom's PMB") 
+> includes
+> a new MAINTAINERS section BROADCOM PMB (POWER MANAGEMENT BUS) DRIVER 
+> with
+> 'drivers/soc/bcm/bcm-pmb.c', but the file was actually added at
+> 'drivers/soc/bcm/bcm63xx/bcm-pmb.c'.
+> 
+> Hence, ./scripts/get_maintainer.pl --self-test=patterns complains:
+> 
+>   warning: no file matches  F:    drivers/soc/bcm/bcm-pmb.c
+> 
+> Point the file entry to the right location.
+> 
+> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
----
- arch/powerpc/crypto/sha1-spe-glue.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks!
 
-diff --git a/arch/powerpc/crypto/sha1-spe-glue.c b/arch/powerpc/crypto/sha1-spe-glue.c
-index b1e577c..88e8ea7 100644
---- a/arch/powerpc/crypto/sha1-spe-glue.c
-+++ b/arch/powerpc/crypto/sha1-spe-glue.c
-@@ -107,7 +107,7 @@ static int ppc_spe_sha1_update(struct shash_desc *desc, const u8 *data,
- 
- 		src += bytes;
- 		len -= bytes;
--	};
-+	}
- 
- 	memcpy((char *)sctx->buffer, src, len);
- 	return 0;
--- 
-1.8.3.1
-
+Acked-by: Rafał Miłecki <rafal@milecki.pl>
