@@ -2,180 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 146F831327D
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 13:38:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A1EE313289
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 13:40:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232385AbhBHMhr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 07:37:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48220 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233116AbhBHMdl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 07:33:41 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C09164E29;
-        Mon,  8 Feb 2021 12:32:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612787576;
-        bh=QHwBG5t3IgPGFwvRBSet4aYWvotFTkddluPXk2FzwEo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LGsYuMrxFvuSdyzd6WJKnPijC+J71+PFg8/YbICLxaCwSbDNb1ttMyIgeldDzuU7K
-         jVwOVyfiS1oHkCi5hZIHcS6tPj1t819TtDd0tVRO4X4CwEQOtxd+7GWyHA9J7d1Z26
-         bJHOPtQ5OMPtEudEYk57VvkXVWWvEeRu0OlJ/tbpSki+9s8xzbH9n9z4skMBvja6Gh
-         vrgT0U6E1y93a6i29wKHdgffExxEPIivEkJYy2vGtrH4PTbOddnF/3DChr8E1HA/Ec
-         iPDxjPIa3EfMolUh9ps05Q942e84iNGooRiGjXHzw6uy2wsELOMU0ktvdyUjd8cUXM
-         vKCnhEFkapW1A==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 8B13140513; Mon,  8 Feb 2021 09:32:53 -0300 (-03)
-Date:   Mon, 8 Feb 2021 09:32:53 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Sedat Dilek <sedat.dilek@gmail.com>
-Cc:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        dwarves@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        bpf@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
-        Jan Engelhardt <jengelh@inai.de>,
-        Domenico Andreoli <cavok@debian.org>,
-        Matthias Schwarzott <zzam@gentoo.org>,
-        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
-        Mark Wieelard <mjw@redhat.com>,
-        Paul Moore <paul@paul-moore.com>,
-        Ondrej Mosnacek <omosnace@redhat.com>,
-        Daniel =?iso-8859-1?Q?P=2E_Berrang=E9?= <berrange@redhat.com>,
-        Tom Stellard <tstellar@redhat.com>
-Subject: Re: ANNOUNCE: pahole v1.20 (gcc11 DWARF5's default, lots of ELF
- sections, BTF)
-Message-ID: <20210208123253.GI920417@kernel.org>
-References: <20210204220741.GA920417@kernel.org>
- <CA+icZUXngJL2WXRyeWDjTyBYbXc0uC0_C69nBH9bq4sr_TAx5g@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+        id S232224AbhBHMjc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 07:39:32 -0500
+Received: from mx0a-002e3701.pphosted.com ([148.163.147.86]:13680 "EHLO
+        mx0a-002e3701.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231944AbhBHMel (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 07:34:41 -0500
+Received: from pps.filterd (m0134420.ppops.net [127.0.0.1])
+        by mx0b-002e3701.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 118CNJT7010673;
+        Mon, 8 Feb 2021 12:33:30 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=pps0720; bh=j0RhL8VBH4OHVt6f0eJH89mDxMAPe1Z2UPjEkMj1OxI=;
+ b=YLxsfGnz10PAJHgzkRw/aZNBxilOqOunhq06Z3CrpoSI2zx40pnKpWrAZWDTvWDLJzgL
+ I28mWGou2vc0C1/ZyBV+XxGKiwtEJJTVCh7RAnH9yNR9PoOZ7dIDjjXhjwID5tscBpZe
+ yYvV92d4yfG5mhy8TGthatLloh4RLVTNp9vWtByarjg0ELZQgVKnssODvUGz1dlP1PCx
+ S+6LfHlsFAJzfe16WeZZh/bL3pTP86AqsRQZ/FT3S1RdBAq7dGUEgR7feB5+HyQBbd8Z
+ +0Jt0CuPl32o2BAWF43JezYTHoBa8mUk2jujlhG2TZeX/XTOHBnYBLInSHE50XOL/UUL 2A== 
+Received: from g9t5009.houston.hpe.com (g9t5009.houston.hpe.com [15.241.48.73])
+        by mx0b-002e3701.pphosted.com with ESMTP id 36jymutwqg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 08 Feb 2021 12:33:30 +0000
+Received: from sarge.linuxathome.me (unknown [16.29.129.88])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by g9t5009.houston.hpe.com (Postfix) with ESMTPS id 0FF7E5B;
+        Mon,  8 Feb 2021 12:33:26 +0000 (UTC)
+Date:   Mon, 8 Feb 2021 12:33:24 +0000
+From:   Hedi Berriche <hedi.berriche@hpe.com>
+To:     "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Sinan Kaya <okaya@kernel.org>,
+        Russ Anderson <rja@hpe.com>, Joerg Roedel <jroedel@suse.com>,
+        stable@kernel.org, Keith Busch <kbusch@kernel.org>
+Subject: Re: [PATCH v4 1/1] PCI/ERR: don't clobber status after reset_link()
+Message-ID: <YCEvlMqx7iC6Czps@sarge.linuxathome.me>
+Mail-Followup-To: "Kuppuswamy, Sathyanarayanan" <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Bjorn Helgaas <helgaas@kernel.org>, Ashok Raj <ashok.raj@intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Sinan Kaya <okaya@kernel.org>,
+        Russ Anderson <rja@hpe.com>, Joerg Roedel <jroedel@suse.com>,
+        stable@kernel.org, Keith Busch <kbusch@kernel.org>
+References: <20210108223043.GA1477254@bjorn-Precision-5520>
+ <01c316b7-afae-5ce5-0c5a-8878310fa1f6@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Disposition: inline
-In-Reply-To: <CA+icZUXngJL2WXRyeWDjTyBYbXc0uC0_C69nBH9bq4sr_TAx5g@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <01c316b7-afae-5ce5-0c5a-8878310fa1f6@linux.intel.com>
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-HPE-SCL: -1
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-02-08_06:2021-02-08,2021-02-08 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ suspectscore=0 adultscore=0 malwarescore=0 mlxscore=0 mlxlogscore=785
+ lowpriorityscore=0 bulkscore=0 clxscore=1011 spamscore=0 phishscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102080085
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, Feb 08, 2021 at 03:44:54AM +0100, Sedat Dilek escreveu:
-> On Thu, Feb 4, 2021 at 11:07 PM Arnaldo Carvalho de Melo
-> <arnaldo.melo@gmail.com> wrote:
-> >
-> > Hi,
-> >
-> >         The v1.20 release of pahole and its friends is out, mostly
-> > addressing problems related to gcc 11 defaulting to DWARF5 for -g,
-> > available at the usual places:
-> >
-> > Main git repo:
-> >
-> >    git://git.kernel.org/pub/scm/devel/pahole/pahole.git
-> >
-> > Mirror git repo:
-> >
-> >    https://github.com/acmel/dwarves.git
-> >
-> > tarball + gpg signature:
-> >
-> >    https://fedorapeople.org/~acme/dwarves/dwarves-1.20.tar.xz
-> >    https://fedorapeople.org/~acme/dwarves/dwarves-1.20.tar.bz2
-> >    https://fedorapeople.org/~acme/dwarves/dwarves-1.20.tar.sign
-> >
-> 
-> FYI:
-> Debian now ships dwarves package version 1.20-1 in unstable.
-> 
-> Just a small nit to this release and its tagging:
-> 
-> You did:
-> commit 0d415f68c468b77c5bf8e71965cd08c6efd25fc4 ("pahole: Prep 1.20")
-> 
-> Is this new?
-> 
-> The release before:
-> commit dd15aa4b0a6421295cbb7c3913429142fef8abe0 ("dwarves: Prep v1.19")
+On Mon, Jan 25, 2021 at 09:34 Kuppuswamy, Sathyanarayanan wrote:
+>
+>
+>On 1/8/21 2:30 PM, Bjorn Helgaas wrote:
+>>Can we push this forward now?  There are several pending patches in
+>>this area from Keith and Sathyanarayanan; I haven't gotten to them
+>>yet, so not sure whether they help address any of this.
+>
+>Following two patches should also address the same issue.
+>
+>My patch:
+>
+>https://patchwork.kernel.org/project/linux-pci/patch/6f63321637fef86b6cf0beebf98b987062f9e811.1610153755.git.sathyanarayanan.kuppuswamy@linux.intel.com/
 
-Its minor but intentional, pahole is by far the most well known tool in
-dwarves, so using that name more frequently (the git repo is pahole.git
-, for instance) may help more quickly associate with the tool needed for
-BTF encoding, data analysis, etc. And since its not about only DWARF,
-perhaps transitioning to using 'pahole' more widely is interesting.
+This series does *not* fix the problem for me.
+>
+>Keith's patch:
+>
+>https://patchwork.kernel.org/project/linux-pci/patch/20210104230300.1277180-4-kbusch@kernel.org/
 
-- Arnaldo
- 
-> - Sedat -
-> 
-> > Best Regards,
-> >
-> >  - Arnaldo
-> >
-> > v1.20:
-> >
-> > BTF encoder:
-> >
-> >   - Improve ELF error reporting using elf_errmsg(elf_errno()).
-> >
-> >   - Improve objcopy error handling.
-> >
-> >   - Fix handling of 'restrict' qualifier, that was being treated as a 'const'.
-> >
-> >   - Support SHN_XINDEX in st_shndx symbol indexes, to handle ELF objects with
-> >     more than 65534 sections, for instance, which happens with kernels built
-> >     with 'KCFLAGS="-ffunction-sections -fdata-sections", Other cases may
-> >     include when using FG-ASLR, LTO.
-> >
-> >   - Cope with functions without a name, as seen sometimes when building kernel
-> >     images with some versions of clang, when a SEGFAULT was taking place.
-> >
-> >   - Fix BTF variable generation for kernel modules, not skipping variables at
-> >     offset zero.
-> >
-> >   - Fix address size to match what is in the ELF file being processed, to fix using
-> >     a 64-bit pahole binary to generate BTF for a 32-bit vmlinux image.
-> >
-> >   - Use kernel module ftrace addresses when finding which functions to encode,
-> >     which increases the number of functions encoded.
-> >
-> > libbpf:
-> >
-> >   - Allow use of packaged version, for distros wanting to dynamically link with
-> >     the system's libbpf package instead of using the libbpf git submodule shipped
-> >     in pahole's source code.
-> >
-> > DWARF loader:
-> >
-> >   - Support DW_AT_data_bit_offset
-> >
-> >     This appeared in DWARF4 but is supported only in gcc's -gdwarf-5,
-> >     support it in a way that makes the output be the same for both cases.
-> >
-> >       $ gcc -gdwarf-5 -c examples/dwarf5/bf.c
-> >       $ pahole bf.o
-> >       struct pea {
-> >             long int                   a:1;                  /*     0: 0  8 */
-> >             long int                   b:1;                  /*     0: 1  8 */
-> >             long int                   c:1;                  /*     0: 2  8 */
-> >
-> >             /* XXX 29 bits hole, try to pack */
-> >             /* Bitfield combined with next fields */
-> >
-> >             int                        after_bitfield;       /*     4     4 */
-> >
-> >             /* size: 8, cachelines: 1, members: 4 */
-> >             /* sum members: 4 */
-> >             /* sum bitfield members: 3 bits, bit holes: 1, sum bit holes: 29 bits */
-> >             /* last cacheline: 8 bytes */
-> >       };
-> >
-> >   - DW_FORM_implicit_const in attr_numeric() and attr_offset()
-> >
-> >   - Support DW_TAG_GNU_call_site, its the standardized rename of the previously supported
-> >     DW_TAG_GNU_call_site.
-> >
-> > build:
-> >
-> >     - Fix compilation on 32-bit architectures.
-> >
-> > Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Keith's series *does* fix the problem for me:
+
+Acked-by: Hedi Berriche <hedi.berriche@hpe.com>
+Tested-by: Hedi Berriche <hedi.berriche@hpe.com>
+
+Cheers,
+Hedi.
+>
+>
+>
+>-- 
+>Sathyanarayanan Kuppuswamy
+>Linux Kernel Developer
 
 -- 
-
-- Arnaldo
+Be careful of reading health books, you might die of a misprint.
+	-- Mark Twain
