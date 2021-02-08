@@ -2,198 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B1AF3131CC
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 13:08:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA2C63131D3
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 13:10:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233610AbhBHMHf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 07:07:35 -0500
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:37649 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233475AbhBHLsW (ORCPT
+        id S232839AbhBHMJJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 07:09:09 -0500
+Received: from mx0a-001ae601.pphosted.com ([67.231.149.25]:55938 "EHLO
+        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S233520AbhBHLsf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 06:48:22 -0500
-Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 118Bl2tP019426;
-        Mon, 8 Feb 2021 12:47:19 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=selector1;
- bh=uLUxLU+qfYHwwCSpsc0nmoBAGh3ZTi70jEcKsAoLbJQ=;
- b=YxYHAD4SMPuXpD4fZ35bT8RM6N7QEZp35uUEYPqg+6QUi2xw9anZAL8bRLT/2AraBKRW
- aB5tExjrqI3G11sZioyDiz8J0IUv779w4fm2IGD7/joSmf2umP7IrJWpCPsrwoSiX8YS
- K6ZXt5TQYXwwTkGy/3blk1v0DpOxr14Ntc71WwhzsVfN7cxR7b6WN7m1H2bE5G215QvW
- MpUEaMustoq1P/NEYW2KU+CcAcvEx4DPk3AgyeGWxA4ESdD7Eeie8nc0xms2xeBjWzFH
- unJ2cpT80Vghms49I29Az52cMVw3YgNmQovcWWQdK/K3GnE/tDXXQBcrsAcxDaaTaV8H Rw== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 36hr319qve-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 08 Feb 2021 12:47:19 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id AE2C510002A;
-        Mon,  8 Feb 2021 12:47:18 +0100 (CET)
-Received: from Webmail-eu.st.com (gpxdag2node6.st.com [10.75.127.70])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id A159223C7C6;
-        Mon,  8 Feb 2021 12:47:18 +0100 (CET)
-Received: from localhost (10.75.127.117) by GPXDAG2NODE6.st.com (10.75.127.70)
- with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 8 Feb 2021 12:47:17
- +0100
-From:   Amelie Delaunay <amelie.delaunay@foss.st.com>
-To:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>
-CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        Amelie Delaunay <amelie.delaunay@foss.st.com>
-Subject: [PATCH v3 2/2] phy: stm32: register usbphyc as clock provider of ck_usbo_48m clock
-Date:   Mon, 8 Feb 2021 12:46:59 +0100
-Message-ID: <20210208114659.15269-3-amelie.delaunay@foss.st.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210208114659.15269-1-amelie.delaunay@foss.st.com>
-References: <20210208114659.15269-1-amelie.delaunay@foss.st.com>
+        Mon, 8 Feb 2021 06:48:35 -0500
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+        by mx0a-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 118Bkug3001347;
+        Mon, 8 Feb 2021 05:47:20 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=PODMain02222019;
+ bh=wMueiZd7LSNAZyTxU0yN7RmQI4fUtqDmom2M6VNmWzo=;
+ b=CjiURHl2LwIWcGa2btPxarIRbYZblzjdQr+F6OFctnYi3gTg20N3v/RB0vzgrysJs+HC
+ oSPjqvuIzLbWA8KbAP9O2C2zUE6tIw+ml/2jw02WSO8FP4tfMHOiDcyoBwxk3JXlHUgl
+ jOSwn9URToPAgIldo0RAYqZI3VeAAldhZdcDG3Eg//ZzK4nffd6kjI8hDbWTJPG+AYAs
+ K7tlH2CS8/FH7LutmVlW+Q9QkgcseQlUlZrWrF9qnfn/g0910XzPN//cDJI/7PPx7aXx
+ mNjsriwT4z2LC6niCoh5NCTqXO5tu9G0BF3DhQPjeFNcrQUFuh21GYjK1AYiNWRmQ0ix Hg== 
+Received: from ediex01.ad.cirrus.com ([87.246.76.36])
+        by mx0a-001ae601.pphosted.com with ESMTP id 36jdac94qs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Mon, 08 Feb 2021 05:47:20 -0600
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Mon, 8 Feb 2021
+ 11:47:18 +0000
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
+ Transport; Mon, 8 Feb 2021 11:47:18 +0000
+Received: from [10.0.2.15] (AUSNPC0LSNW1.ad.cirrus.com [198.61.64.240])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id CF3FB45;
+        Mon,  8 Feb 2021 11:47:17 +0000 (UTC)
+Subject: Re: [PATCH v4 2/4] lib: vsprintf: Fix handling of number field widths
+ in vsscanf
+To:     Petr Mladek <pmladek@suse.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+CC:     <rostedt@goodmis.org>, <sergey.senozhatsky@gmail.com>,
+        <linux@rasmusvillemoes.dk>, <shuah@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
+        <patches@opensource.cirrus.com>
+References: <20210203165009.6299-1-rf@opensource.cirrus.com>
+ <20210203165009.6299-2-rf@opensource.cirrus.com>
+ <YBr9c44Dvq1ZNrEa@smile.fi.intel.com> <YBwiQ+l6yqs+g+rr@alley>
+From:   Richard Fitzgerald <rf@opensource.cirrus.com>
+Message-ID: <6023974a-a2ba-8bfe-a8b8-125c45e13e01@opensource.cirrus.com>
+Date:   Mon, 8 Feb 2021 11:47:17 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.117]
-X-ClientProxiedBy: GPXDAG1NODE6.st.com (10.75.127.67) To GPXDAG2NODE6.st.com
- (10.75.127.70)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-02-08_03:2021-02-08,2021-02-08 signatures=0
+In-Reply-To: <YBwiQ+l6yqs+g+rr@alley>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 phishscore=0
+ clxscore=1015 priorityscore=1501 bulkscore=0 adultscore=0 spamscore=0
+ malwarescore=0 mlxscore=0 impostorscore=0 lowpriorityscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102080081
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ck_usbo_48m is generated by usbphyc PLL and used by OTG controller
-for Full-Speed use cases with dedicated Full-Speed transceiver.
+On 04/02/2021 16:35, Petr Mladek wrote:
+> On Wed 2021-02-03 21:45:55, Andy Shevchenko wrote:
+>> On Wed, Feb 03, 2021 at 04:50:07PM +0000, Richard Fitzgerald wrote:
+>>> The existing code attempted to handle numbers by doing a strto[u]l(),
+>>> ignoring the field width, and then repeatedly dividing to extract the
+>>> field out of the full converted value. If the string contains a run of
+>>> valid digits longer than will fit in a long or long long, this would
+>>> overflow and no amount of dividing can recover the correct value.
+> 
+>> ...
+>>
+>>> +	for (; max_chars > 0; max_chars--) {
+>>
+>> Less fragile is to write
+>>
+>> 	while (max_chars--)
+> 
+> Except that the original was more obvious at least for me.
+> I always prefer more readable code when the compiler might do
+> the optimization easily. But this is my personal taste.
+> I am fine with both variants.
+> 
+>>
+>> This allows max_char to be an unsigned type.
+>>
+>> Moreover...
+>>
+>>> +	return _parse_integer_limit(s, base, p, INT_MAX);
+>>
+>> You have inconsistency with INT_MAX vs, size_t above.
+> 
+> Ah, this was on my request. INT_MAX is already used on many other
+> locations in vsnprintf() for this purpose.
+> 
 
-ck_usbo_48m is available as soon as the PLL is enabled.
-
-Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
----
-Changes in v2:
-- fix COMMON_CLK dependency issue reported by kernel test robot
----
- drivers/phy/st/Kconfig             |  1 +
- drivers/phy/st/phy-stm32-usbphyc.c | 65 ++++++++++++++++++++++++++++++
- 2 files changed, 66 insertions(+)
-
-diff --git a/drivers/phy/st/Kconfig b/drivers/phy/st/Kconfig
-index b32f44ff9033..3fc3d0781fb8 100644
---- a/drivers/phy/st/Kconfig
-+++ b/drivers/phy/st/Kconfig
-@@ -36,6 +36,7 @@ config PHY_STIH407_USB
- config PHY_STM32_USBPHYC
- 	tristate "STMicroelectronics STM32 USB HS PHY Controller driver"
- 	depends on ARCH_STM32 || COMPILE_TEST
-+	depends on COMMON_CLK
- 	select GENERIC_PHY
- 	help
- 	  Enable this to support the High-Speed USB transceivers that are part
-diff --git a/drivers/phy/st/phy-stm32-usbphyc.c b/drivers/phy/st/phy-stm32-usbphyc.c
-index d08fbb180e43..c184f4e34584 100644
---- a/drivers/phy/st/phy-stm32-usbphyc.c
-+++ b/drivers/phy/st/phy-stm32-usbphyc.c
-@@ -7,6 +7,7 @@
-  */
- #include <linux/bitfield.h>
- #include <linux/clk.h>
-+#include <linux/clk-provider.h>
- #include <linux/delay.h>
- #include <linux/iopoll.h>
- #include <linux/kernel.h>
-@@ -70,6 +71,7 @@ struct stm32_usbphyc {
- 	struct regulator *vdda1v1;
- 	struct regulator *vdda1v8;
- 	atomic_t n_pll_cons;
-+	struct clk_hw clk48_hw;
- 	int switch_setup;
- };
- 
-@@ -295,6 +297,61 @@ static const struct phy_ops stm32_usbphyc_phy_ops = {
- 	.owner = THIS_MODULE,
- };
- 
-+static int stm32_usbphyc_clk48_prepare(struct clk_hw *hw)
-+{
-+	struct stm32_usbphyc *usbphyc = container_of(hw, struct stm32_usbphyc, clk48_hw);
-+
-+	return stm32_usbphyc_pll_enable(usbphyc);
-+}
-+
-+static void stm32_usbphyc_clk48_unprepare(struct clk_hw *hw)
-+{
-+	struct stm32_usbphyc *usbphyc = container_of(hw, struct stm32_usbphyc, clk48_hw);
-+
-+	stm32_usbphyc_pll_disable(usbphyc);
-+}
-+
-+static unsigned long stm32_usbphyc_clk48_recalc_rate(struct clk_hw *hw, unsigned long parent_rate)
-+{
-+	return 48000000;
-+}
-+
-+static const struct clk_ops usbphyc_clk48_ops = {
-+	.prepare = stm32_usbphyc_clk48_prepare,
-+	.unprepare = stm32_usbphyc_clk48_unprepare,
-+	.recalc_rate = stm32_usbphyc_clk48_recalc_rate,
-+};
-+
-+static void stm32_usbphyc_clk48_unregister(void *data)
-+{
-+	struct stm32_usbphyc *usbphyc = data;
-+
-+	of_clk_del_provider(usbphyc->dev->of_node);
-+	clk_hw_unregister(&usbphyc->clk48_hw);
-+}
-+
-+static int stm32_usbphyc_clk48_register(struct stm32_usbphyc *usbphyc)
-+{
-+	struct device_node *node = usbphyc->dev->of_node;
-+	struct clk_init_data init = { };
-+	int ret = 0;
-+
-+	init.name = "ck_usbo_48m";
-+	init.ops = &usbphyc_clk48_ops;
-+
-+	usbphyc->clk48_hw.init = &init;
-+
-+	ret = clk_hw_register(usbphyc->dev, &usbphyc->clk48_hw);
-+	if (ret)
-+		return ret;
-+
-+	ret = of_clk_add_hw_provider(node, of_clk_hw_simple_get, &usbphyc->clk48_hw);
-+	if (ret)
-+		clk_hw_unregister(&usbphyc->clk48_hw);
-+
-+	return ret;
-+}
-+
- static void stm32_usbphyc_switch_setup(struct stm32_usbphyc *usbphyc,
- 				       u32 utmi_switch)
- {
-@@ -473,6 +530,12 @@ static int stm32_usbphyc_probe(struct platform_device *pdev)
- 		goto clk_disable;
- 	}
- 
-+	ret = stm32_usbphyc_clk48_register(usbphyc);
-+	if (ret) {
-+		dev_err(dev, "failed to register ck_usbo_48m clock: %d\n", ret);
-+		goto clk_disable;
-+	}
-+
- 	version = readl_relaxed(usbphyc->base + STM32_USBPHYC_VERSION);
- 	dev_info(dev, "registered rev:%lu.%lu\n",
- 		 FIELD_GET(MAJREV, version), FIELD_GET(MINREV, version));
-@@ -497,6 +560,8 @@ static int stm32_usbphyc_remove(struct platform_device *pdev)
- 		if (usbphyc->phys[port]->active)
- 			stm32_usbphyc_phy_exit(usbphyc->phys[port]->phy);
- 
-+	stm32_usbphyc_clk48_unregister(usbphyc);
-+
- 	clk_disable_unprepare(usbphyc->clk);
- 
- 	return 0;
--- 
-2.17.1
-
+Strictly speaking this should be SIZE_MAX because the argument is a
+size_t.
