@@ -2,124 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C37A8313E13
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 19:54:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F7C3313E16
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 19:54:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235838AbhBHSwV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 13:52:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46670 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233586AbhBHQ6o (ORCPT
+        id S235893AbhBHSw4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 13:52:56 -0500
+Received: from mout.kundenserver.de ([212.227.126.131]:52671 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234689AbhBHRAn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 11:58:44 -0500
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CB77C061786;
-        Mon,  8 Feb 2021 08:58:04 -0800 (PST)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: ezequiel)
-        with ESMTPSA id E79481F412A7
-Message-ID: <4af499f5931d6b04a42787ae17525c63247573e6.camel@collabora.com>
-Subject: Re: linux-next: build warning after merge of the v4l-dvb tree
-From:   Ezequiel Garcia <ezequiel@collabora.com>
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Date:   Mon, 08 Feb 2021 13:57:56 -0300
-In-Reply-To: <20210208164618.GY32460@paasikivi.fi.intel.com>
-References: <20210208233716.16d962ad@canb.auug.org.au>
-         <56cd99bbf526b43507579b5775bac5f885319866.camel@collabora.com>
-         <20210208164618.GY32460@paasikivi.fi.intel.com>
-Organization: Collabora
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.2-1 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Mon, 8 Feb 2021 12:00:43 -0500
+Received: from orion.localdomain ([95.115.15.83]) by mrelayeu.kundenserver.de
+ (mreue010 [212.227.15.167]) with ESMTPSA (Nemesis) id
+ 1MmUcL-1lZNoE1JUP-00iTIg; Mon, 08 Feb 2021 17:58:07 +0100
+From:   "Enrico Weigelt, metux IT consult" <info@metux.net>
+To:     linux-kernel@vger.kernel.org
+Cc:     robh+dt@kernel.org, frowand.list@gmail.com,
+        devicetree@vger.kernel.org
+Subject: [PATCH] of: base: improve error message in of_phandle_iterator_next()
+Date:   Mon,  8 Feb 2021 17:58:06 +0100
+Message-Id: <20210208165806.25466-1-info@metux.net>
+X-Mailer: git-send-email 2.11.0
+X-Provags-ID: V03:K1:550q3+4NZYJj/XjtVh/TKc17E963AF7x0y0SFyh8Xe8xvkP5OFD
+ a1KKYQfCbhK3MVNOD8LgerjSH2fsZX/Ft0DkLIG5YYHtuHuxBYEvD+mwLw6xK7GO/v0RwNU
+ tL+b/NLCyNWAwWcIyPgGJ4DsJxAuuZhJVr+5iIMbseWlfq0PXvjOxQ4FS1ThkxbDVghuI/g
+ ioQ3vLueoZ3E/p6EyAZ3g==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Em2hHDZMQno=:hrqFR3VrYxOTMEpAR+b3qT
+ 0qct2G9R/hS+7huDuxxCXuhrHRfVI3YlxZiL7wY2X6eDzI7ymn0RDcEcIQPS3/JkAwvL8RU6F
+ Tgp15LZQV6BgD+uyDAC/gZjWEPZQeA+V6RvLHMK1Fc1DDvUgJy0Uo38ZFhzp9f+J35gMq5U1u
+ UeMk55+ms7jvXc4xBYBk2EmhSm7CdWKogT9aZLx5vuijqo6++5RTirSy7ur2p+yUqxphx7vme
+ S+P2tWCk9WWByeAYN44eKwZ7NzzJmczJNFVVuqqhu9qXB2y5qddqTVLwQuCfDkw9oYHQ0Nhi8
+ Df6xeumLfymRj0DLOe+xxSaNrACAZ95hSLP8wlHmZGKkCdPG/ewNMRIgVKrxx+vZ1zkY/M6gO
+ 2TAfNGOHB3TTcHCV5dUVBV7Mautaf/nSH3/v1fzgy8WU/+7gdPbpao6FFd966
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-02-08 at 18:46 +0200, Sakari Ailus wrote:
-> Hi Ezequiel,
-> 
-> Thanks for addressing this.
-> 
-> On Mon, Feb 08, 2021 at 01:42:21PM -0300, Ezequiel Garcia wrote:
-> > Hi Stephen,
-> > 
-> > On Mon, 2021-02-08 at 23:37 +1100, Stephen Rothwell wrote:
-> > > Hi all,
-> > > 
-> > > After merging the v4l-dvb tree, today's linux-next build (htmldocs)
-> > > produced this warning:
-> > > 
-> > > include/media/v4l2-async.h:178: warning: expecting prototype for v4l2_async_notifier_add_fwnode_subdev(). Prototype was for
-> > > __v4l2_async_notifier_add_fwnode_subdev() instead
-> > > include/media/v4l2-async.h:207: warning: expecting prototype for v4l2_async_notifier_add_fwnode_remote_subdev(). Prototype was for
-> > > __v4l2_async_notifier_add_fwnode_remote_subdev() instead
-> > > include/media/v4l2-async.h:230: warning: expecting prototype for v4l2_async_notifier_add_i2c_subdev(). Prototype was for
-> > > __v4l2_async_notifier_add_i2c_subdev() instead
-> > > 
-> > > Maybe introduced by commit
-> > > 
-> > >   c1cc23625062 ("media: v4l2-async: Discourage use of v4l2_async_notifier_add_subdev")
-> > > 
-> > 
-> > Thanks for spotting this. Should be fixed by:
-> > 
-> > diff --git a/include/media/v4l2-async.h b/include/media/v4l2-async.h
-> > index 6f22daa6f067..3785445282fc 100644
-> > --- a/include/media/v4l2-async.h
-> > +++ b/include/media/v4l2-async.h
-> > @@ -157,7 +157,7 @@ int __v4l2_async_notifier_add_subdev(struct v4l2_async_notifier *notifier,
-> >                                    struct v4l2_async_subdev *asd);
-> >  
-> >  /**
-> > - * v4l2_async_notifier_add_fwnode_subdev - Allocate and add a fwnode async
-> > + * __v4l2_async_notifier_add_fwnode_subdev - Allocate and add a fwnode async
-> 
-> The problem with the approach is that this no longer documents the API that
-> drivers are intended to use, but the intermediate one. I guess fixing
-> this properly could require changes to kerneldoc so I have no objections to
-> the approach.
-> 
+Also print out the phandle ID on error message, as a debug aid.
 
-Right, but do we have any other solution here?
+Signed-off-by: Enrico Weigelt, metux IT consult <info@metux.net>
+---
+ drivers/of/base.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-> >   *                             subdev to the notifier's master asd_list.
-> >   *
-> >   * @notifier: pointer to &struct v4l2_async_notifier
-> > @@ -181,7 +181,7 @@ __v4l2_async_notifier_add_fwnode_subdev(struct v4l2_async_notifier *notifier,
-> >                                                    sizeof(__type)))
-> >  
-> >  /**
-> > - * v4l2_async_notifier_add_fwnode_remote_subdev - Allocate and add a fwnode
-> > + * __v4l2_async_notifier_add_fwnode_remote_subdev - Allocate and add a fwnode
-> >   *                                               remote async subdev to the
-> >   *                                               notifier's master asd_list.
-> >   *
-> > @@ -210,7 +210,7 @@ __v4l2_async_notifier_add_fwnode_remote_subdev(struct v4l2_async_notifier *notif
-> >                                                           sizeof(__type)))
-> >  
-> >  /**
-> > - * v4l2_async_notifier_add_i2c_subdev - Allocate and add an i2c async
-> > + * __v4l2_async_notifier_add_i2c_subdev - Allocate and add an i2c async
-> >   *                             subdev to the notifier's master asd_list.
-> >   *
-> >   * @notifier: pointer to &struct v4l2_async_notifier
-> > @@ -228,7 +228,7 @@ struct v4l2_async_subdev *
-> >  __v4l2_async_notifier_add_i2c_subdev(struct v4l2_async_notifier *notifier,
-> >                                      int adapter_id, unsigned short address,
-> >                                      unsigned int asd_struct_size);
-> > -#define v4l2_async_notifier_add_i2c_subdev(__notifier, __adap, __addr, __type) \
-> > +#define v4l2_async_notifier_i2c(__notifier, __adap, __addr, __type)    \
-> 
-> I guess this change was not intentional?
-> 
-
-Indeed :)
-
-Thanks,
-Ezequiel
+diff --git a/drivers/of/base.c b/drivers/of/base.c
+index 161a23631472..8a348f0d3c5e 100644
+--- a/drivers/of/base.c
++++ b/drivers/of/base.c
+@@ -1297,8 +1297,8 @@ int of_phandle_iterator_next(struct of_phandle_iterator *it)
+ 
+ 		if (it->cells_name) {
+ 			if (!it->node) {
+-				pr_err("%pOF: could not find phandle\n",
+-				       it->parent);
++				pr_err("%pOF: could not find phandle %d\n",
++				       it->parent, it->phandle);
+ 				goto err;
+ 			}
+ 
+-- 
+2.11.0
 
