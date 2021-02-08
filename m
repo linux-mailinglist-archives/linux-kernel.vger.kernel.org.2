@@ -2,80 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9632313DC5
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 19:41:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 800C3313D83
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 19:31:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232823AbhBHSlF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 13:41:05 -0500
-Received: from mga01.intel.com ([192.55.52.88]:3798 "EHLO mga01.intel.com"
+        id S235458AbhBHSa0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 13:30:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47080 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233513AbhBHQkG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 11:40:06 -0500
-IronPort-SDR: izjxfgTMlw+655kGNgrNFkcfaybfAxKsMRFLuEzsp573+IGN+kUjMRDMtZOFnP2U2c8grHutse
- 7r8olv6hXP4g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9889"; a="200801435"
-X-IronPort-AV: E=Sophos;i="5.81,162,1610438400"; 
-   d="scan'208";a="200801435"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2021 08:38:19 -0800
-IronPort-SDR: D9EfWtRan1jmZTToggEjetd8rEb9BJbuSSQbU/lDQJ+yj0JutuBTxdWy9cAsIPXsTQYxtwHYEs
- l+fwKAUPhuYw==
-X-IronPort-AV: E=Sophos;i="5.81,162,1610438400"; 
-   d="scan'208";a="377835358"
-Received: from rahaness-mobl.amr.corp.intel.com (HELO [10.212.141.76]) ([10.212.141.76])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2021 08:38:17 -0800
-Subject: Re: [PATCH] ASoC: soc-pcm: change error message to debug message
-To:     Shengjiu Wang <shengjiu.wang@nxp.com>, lgirdwood@gmail.com,
-        broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-References: <1612771965-5776-1-git-send-email-shengjiu.wang@nxp.com>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <b7f5442d-ad21-eb8a-7d90-7a8207320541@linux.intel.com>
-Date:   Mon, 8 Feb 2021 09:06:44 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S233699AbhBHQKC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 11:10:02 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D07B464DF0;
+        Mon,  8 Feb 2021 16:09:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612800562;
+        bh=0r7EFWA3/TE6ZV9vLRgre43wSwtaomAWRjcEc4vmFu0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=DOvsbfwF4KSVBmzD/1qj4FjM38TK1t5Mvh9JUpyQ8/rWuP4AbY9ZQ234D9hMWuxPi
+         ZQDRRW3D0YqpDvdEu9pyPdr8yi7M5E965qVK6m/xw10VroMsJHINt+phllwzSbabAZ
+         ZG5XHx1V2KDv3iwXStGR1mW4kj/9jpVnl6yrskiwJu7TgbBYnyaSjKbiCj/Ti+UcHw
+         UYlDmkR1+og0vCa8oJFfFSToxWLUihPaeSCmkU01Me5b6FPAdPJc7eJ6wOrDVKSdEL
+         9c0HPaCdP/TiW7R49Xqyh+tyF1/Na2v9at03ihoek+vHRa4hYENnfs5yBKVpbRe4je
+         VKa6dUO99bQug==
+Date:   Mon, 8 Feb 2021 16:08:30 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc:     perex@perex.cz, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, lgirdwood@gmail.com,
+        devicetree@vger.kernel.org, robh+dt@kernel.org
+Subject: Re: [PATCH v2 2/7] ASoC: codec: lpass-rx-macro: add support for
+ lpass rx macro
+Message-ID: <20210208160830.GI8645@sirena.org.uk>
+References: <20210208141719.23305-1-srinivas.kandagatla@linaro.org>
+ <20210208141719.23305-3-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <1612771965-5776-1-git-send-email-shengjiu.wang@nxp.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="OfrWf2Fun5Ae4m0Y"
+Content-Disposition: inline
+In-Reply-To: <20210208141719.23305-3-srinivas.kandagatla@linaro.org>
+X-Cookie: You will triumph over your enemy.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--OfrWf2Fun5Ae4m0Y
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On 2/8/21 2:12 AM, Shengjiu Wang wrote:
-> This log message should be a debug message, because it
-> doesn't return directly but continue next loop.
-> 
-> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-> ---
->   sound/soc/soc-pcm.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-> index 605acec48971..cd9e919d7b99 100644
-> --- a/sound/soc/soc-pcm.c
-> +++ b/sound/soc/soc-pcm.c
-> @@ -1344,8 +1344,8 @@ static int dpcm_add_paths(struct snd_soc_pcm_runtime *fe, int stream,
->   		/* is there a valid BE rtd for this widget */
->   		be = dpcm_get_be(card, widget, stream);
->   		if (!be) {
-> -			dev_err(fe->dev, "ASoC: no BE found for %s\n",
-> -					widget->name);
-> +			dev_dbg(fe->dev, "ASoC: no BE found for %s\n",
-> +				widget->name);
+On Mon, Feb 08, 2021 at 02:17:14PM +0000, Srinivas Kandagatla wrote:
 
-Do we really want to do this?
+> +	SOC_SINGLE_EXT("RX_Softclip Enable", SND_SOC_NOPM, 0, 1, 0,
+> +		     rx_macro_soft_clip_enable_get,
+> +		     rx_macro_soft_clip_enable_put),
+> +	SOC_SINGLE_EXT("AUX_HPF Enable", SND_SOC_NOPM, 0, 1, 0,
+> +			rx_macro_aux_hpf_mode_get,
+> +			rx_macro_aux_hpf_mode_put),
 
-This error message has historically been the means by which we detect 
-that userspace didn't set the right mixers (e.g. on Intel Baytrail) or 
-the topology was incorrect. And it's really an error in the sense that 
-you will not get audio in or out.
+These are simple on/off controls so should end in Switch AFAICT.
+Otherwise this looks good.
 
-If you demote this to dev_dbg, we'll have to ask every single user who 
-reports 'sound is broken' to enable dynamic debug traces. I really don't 
-see the benefit, this is a clear case of 'fail big and fail early', 
-partly concealing the problem doesn't make it go away but harder to 
-diagnose.
+--OfrWf2Fun5Ae4m0Y
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmAhYf4ACgkQJNaLcl1U
+h9C62gf/diIBpdPwSy/dQ9FyjTxlRvQ8YgXHyIgxJph8g1/PS6SiP9o8g6UWFbtM
+8ZVD5mqT1L+WiczOlCGy+uQwgXLL2y5GvtzcuaogTizMvjf3Vm0Qcv1CLAgxw3bj
+U/PIbxNxDuAF2v8wp6GIrtrHGYQ4oPoSWv4nq5joooXiKB+77i+XjQu2/nYsnqEy
+gBDDCYetYYdhekoQZu5E1B9neZWC3svCFG0h8lgfYnZ/WwMDc72Ix99Cvr/bW5yC
+VDHX/qrExutLOlXY3d2SWOfGgQG56p+zof74szk2A8we1LHEOfFBzN33sYBS8xyA
+jpu0IqyQTDgLc/3Huy7tCeQxaPPdvw==
+=IuI7
+-----END PGP SIGNATURE-----
+
+--OfrWf2Fun5Ae4m0Y--
