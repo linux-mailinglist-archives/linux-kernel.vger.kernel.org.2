@@ -2,294 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9727313075
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 12:16:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16C1631308B
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 12:19:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232965AbhBHLOr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 06:14:47 -0500
-Received: from mail-ed1-f54.google.com ([209.85.208.54]:45654 "EHLO
-        mail-ed1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232462AbhBHLFZ (ORCPT
+        id S233022AbhBHLTN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 06:19:13 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:27938 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S233075AbhBHLIJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 06:05:25 -0500
-Received: by mail-ed1-f54.google.com with SMTP id t5so17495798eds.12;
-        Mon, 08 Feb 2021 03:05:09 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ZnXtuKDtjfCK+Wau43axfzEHC52NhOuAsUoAI9Jo0T4=;
-        b=riQqe6kYYu34lb0WY9hZYpefBOKHzxHTSk1jpeh4fbUaO0IT85oK7kEG6Vg2k2Ou4g
-         sdk8hysA8GmJTLmuwvprMNM0stLdKKj+LOUlIlsj9ij3WWeQ4Bcy1faba16cm5M9go0u
-         Aj/zTDzsGp7uvy2HAfHZXSiUgKKbStPQBISIwqGpDDLSFSrpRu/Srn0CLyTFcbuDL1Zg
-         M3Ccgf+dDacnk8FgrCzu8iPHh81+1gBkCreEigKY/lhcqIRHgoPVjs0871YckkqoF8dW
-         KERWcdBV/ZxBltR2wJ1D2PdU0tAVp1FogFT/FlGfIquXXwR9V7MDSB3Wqu4QDWJea1hP
-         HRYA==
-X-Gm-Message-State: AOAM530JduDipcpXDtIdumsQsiV0XetJ7Lu86YP4WtA4C01mOJyDLM0T
-        b4rEech6S8zWiMMMxae4JuQ=
-X-Google-Smtp-Source: ABdhPJyTpLeaD+lc+pF/9E0BTCIWBbMdXbaxi0/0fqwRf5MYHywFNGGihVKmvcrpNDgjFNZ32RWqjw==
-X-Received: by 2002:a50:bf42:: with SMTP id g2mr16650172edk.101.1612782283762;
-        Mon, 08 Feb 2021 03:04:43 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id lc11sm3180759ejc.95.2021.02.08.03.04.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Feb 2021 03:04:42 -0800 (PST)
-Date:   Mon, 8 Feb 2021 12:04:41 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Hector Martin <marcan@marcan.st>
-Cc:     soc@kernel.org, linux-arm-kernel@lists.infradead.org,
-        Marc Zyngier <maz@kernel.org>, robh+dt@kernel.org,
-        Arnd Bergmann <arnd@kernel.org>, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, Olof Johansson <olof@lixom.net>
-Subject: Re: [PATCH 18/18] arm64: apple: Add initial Mac Mini 2020 (M1)
- devicetree
-Message-ID: <20210208110441.25qc6yken4effd6c@kozik-lap>
-References: <20210204203951.52105-1-marcan@marcan.st>
- <20210204203951.52105-19-marcan@marcan.st>
+        Mon, 8 Feb 2021 06:08:09 -0500
+Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 118B1GtB142216;
+        Mon, 8 Feb 2021 06:06:25 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : subject : to : cc
+ : references : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=D1045OOgRUGLm4fkj+HoCDKh84em/j3peBwyygyFmjM=;
+ b=MmoyrAe2VuTpJ7kwSe3foYT6MjQ4QFFU/eMXmPk0piwijmTZ7RJoJscN3YIwfP3IHWtd
+ ZdLLv7yNS0AHfTF3RbkPEPJqn778zcrr15UJHma0tZIsTJRvh9kE1LLNUgThmJI3giSu
+ itTibOwDleYW236m+YdZ1if65U8mO66V4BHrAcZlDMVYZ88iPbDBIHr5EHwpS0vg4TEl
+ F6FMVm7BXaHimu4Pk1aOCyKDrJqjoGjzxhhphR6oXrc+tlceyrjfl5ubIqXulWsKBZ9a
+ xbO9HILZBk+96dafxtsWbpY9LOs/7ekclW6vLF2MDGRgV8ALEtLucalgHKCJDRhwaMWg 0A== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 36k0t05ydw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 08 Feb 2021 06:06:25 -0500
+Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 118B1paZ145230;
+        Mon, 8 Feb 2021 06:06:23 -0500
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 36k0t05ycd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 08 Feb 2021 06:06:23 -0500
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 118B352g030526;
+        Mon, 8 Feb 2021 11:06:21 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma06ams.nl.ibm.com with ESMTP id 36j94wh6e1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 08 Feb 2021 11:06:21 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 118B68q812059050
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 8 Feb 2021 11:06:08 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6CCC542042;
+        Mon,  8 Feb 2021 11:06:18 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 15BD242041;
+        Mon,  8 Feb 2021 11:06:16 +0000 (GMT)
+Received: from [9.199.47.177] (unknown [9.199.47.177])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon,  8 Feb 2021 11:06:15 +0000 (GMT)
+From:   Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+Subject: Re: [PATCH v2] powerpc/uprobes: Validation for prefixed instruction
+To:     Oleg Nesterov <oleg@redhat.com>
+Cc:     mpe@ellerman.id.au, rostedt@goodmis.org, paulus@samba.org,
+        jniethe5@gmail.com, naveen.n.rao@linux.ibm.com,
+        sandipan@linux.ibm.com, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org,
+        Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+References: <20210204104703.273429-1-ravi.bangoria@linux.ibm.com>
+ <20210206180604.GA8897@redhat.com>
+Message-ID: <8fe4d62a-8873-d436-d20b-da3027103fe1@linux.ibm.com>
+Date:   Mon, 8 Feb 2021 16:36:15 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210204203951.52105-19-marcan@marcan.st>
+In-Reply-To: <20210206180604.GA8897@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-02-08_03:2021-02-08,2021-02-08 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ priorityscore=1501 mlxscore=0 mlxlogscore=999 impostorscore=0 phishscore=0
+ lowpriorityscore=0 suspectscore=0 clxscore=1015 adultscore=0 spamscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102080070
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 05, 2021 at 05:39:51AM +0900, Hector Martin wrote:
-> This currently supports:
+
+
+On 2/6/21 11:36 PM, Oleg Nesterov wrote:
+> On 02/04, Ravi Bangoria wrote:
+>>
+>> +static int get_instr(struct mm_struct *mm, unsigned long addr, u32 *instr)
+>> +{
+>> +	struct page *page;
+>> +	struct vm_area_struct *vma;
+>> +	void *kaddr;
+>> +	unsigned int gup_flags = FOLL_FORCE | FOLL_SPLIT_PMD;
+>> +
+>> +	if (get_user_pages_remote(mm, addr, 1, gup_flags, &page, &vma, NULL) <= 0)
+>> +		return -EINVAL;
 > 
-> * SMP (via spin-tables)
-> * AIC IRQs
-> * Serial (with earlycon)
-> * Framebuffer
+> "vma" is not used,
+
+Ok.
+
+> and I don't think you need FOLL_SPLIT_PMD.
+Isn't it needed if the target page is hugepage?
+
+> Otherwise I can't really comment this ppc-specific change.
 > 
-> A number of properties are dynamic, and based on system firmware
-> decisions that vary from version to version. These are expected
-> to be filled in by the loader.
-> 
-> Signed-off-by: Hector Martin <marcan@marcan.st>
-> ---
->  MAINTAINERS                              |   1 +
->  arch/arm64/boot/dts/Makefile             |   1 +
->  arch/arm64/boot/dts/apple/Makefile       |   2 +
->  arch/arm64/boot/dts/apple/apple-j274.dts | 143 +++++++++++++++++++++++
->  4 files changed, 147 insertions(+)
->  create mode 100644 arch/arm64/boot/dts/apple/Makefile
->  create mode 100644 arch/arm64/boot/dts/apple/apple-j274.dts
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 3a54ee5747d3..5481b5bc2ef7 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -1635,6 +1635,7 @@ C:	irc://chat.freenode.net/asahi-dev
->  T:	git https://github.com/AsahiLinux/linux.git
->  F:	Documentation/devicetree/bindings/arm/AAPL.yaml
->  F:	Documentation/devicetree/bindings/interrupt-controller/AAPL,aic.yaml
-> +F:	arch/arm64/boot/dts/AAPL/
+> To be honest, I don't even understand why do we need this fix. Sure, the
+> breakpoint in the middle of 64-bit insn won't work, why do we care? The
+> user should know what does he do.
 
-apple
+That's a valid point. This patch is to protract user from doing
+invalid thing.
 
-Don't make things different for this one platform (comparing to all
-other platforms). Apple is not that special. :)
+Though, there is one minor scenario where this patch will help. If
+the original prefixed instruction is 64 byte unaligned, and say
+user probes it, Uprobe infrastructure will emulate such instruction
+transparently without notifying user that the instruction is
+improperly aligned.
 
->  F:	drivers/irqchip/irq-apple-aic.c
->  F:	include/dt-bindings/interrupt-controller/apple-aic.h
->  
-> diff --git a/arch/arm64/boot/dts/Makefile b/arch/arm64/boot/dts/Makefile
-> index 9b1170658d60..64f055d94948 100644
-> --- a/arch/arm64/boot/dts/Makefile
-> +++ b/arch/arm64/boot/dts/Makefile
-> @@ -6,6 +6,7 @@ subdir-y += amazon
->  subdir-y += amd
->  subdir-y += amlogic
->  subdir-y += apm
-> +subdir-y += apple
->  subdir-y += arm
->  subdir-y += bitmain
->  subdir-y += broadcom
-> diff --git a/arch/arm64/boot/dts/apple/Makefile b/arch/arm64/boot/dts/apple/Makefile
-> new file mode 100644
-> index 000000000000..ec03c474efd4
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/apple/Makefile
-> @@ -0,0 +1,2 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +dtb-$(CONFIG_ARCH_APPLE) += apple-j274.dtb
-> diff --git a/arch/arm64/boot/dts/apple/apple-j274.dts b/arch/arm64/boot/dts/apple/apple-j274.dts
-> new file mode 100644
-> index 000000000000..238a1bcee066
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/apple/apple-j274.dts
-> @@ -0,0 +1,143 @@
-> +// SPDX-License-Identifier: GPL-2.0+
-> +/*
-> + * Copyright 2021 Hector Martin <marcan@marcan.st>
+> Not to mention we can't really trust get_user_pages() in that this page
+> can be modified by mm owner or debugger...
 
-A lot here might be difficult to reverse-egineer or figure out by
-ourself, so usually people rely on vendor sources (the open source
-compliance package). Didn't you receive such for the iOS (or whatever
-was on your Mac)?
+As Naveen pointed out, there might be existing uprobe on the prefix
+and this patch will fail to detect such scenario. So I'm thinking to
+read the instruction directly from file backed page (like copy_insn),
+in which case I won't use get_user_pages().
 
-> + */
-> +
-> +/dts-v1/;
-> +#include <dt-bindings/interrupt-controller/apple-aic.h>
-> +#include <dt-bindings/interrupt-controller/irq.h>
-> +
-> +/ {
-> +	model = "Apple Mac Mini M1 2020";
-> +	compatible = "AAPL,j274", "AAPL,m1", "AAPL,arm-platform";
+Thanks Oleg for the review!
 
-I guess Rob will comment on the dt-bindings more... but for me a generic
-"arm-platform" is too generic. What's the point of it? I didn't see any
-of such generic compatibles in other platforms.
-
-> +	#address-cells = <2>;
-> +	#size-cells = <2>;
-> +
-> +	chosen {
-> +		#address-cells = <2>;
-> +		#size-cells = <2>;
-> +		ranges;
-> +
-> +		bootargs = "earlycon";
-
-This should not be hard-coded in DTS. Pass it from bootloader.
-
-> +		stdout-path = "serial0:1500000";
-
-Use aliases.
-
-> +
-> +		framebuffer0: framebuffer@0 {
-> +			compatible = "AAPL,simple-framebuffer", "simple-framebuffer";
-> +			reg = <0 0 0 0>; // To be filled by loader
-> +			// Format properties will be added by loader
-
-Use /* style of comments
-
-> +			status = "disabled";
-> +		};
-> +	};
-> +
-> +	memory@800000000 {
-> +		device_type = "memory";
-> +		reg = <0 0 0 0>; // To be filled by loader
-> +	};
-> +
-> +	aliases {
-> +		serial0 = &serial0;
-> +	};
-> +
-> +	cpus {
-> +		#address-cells = <2>;
-> +		#size-cells = <0>;
-> +
-> +		cpu0: cpu@0 {
-> +			compatible = "AAPL,icestorm";
-> +			device_type = "cpu";
-> +			reg = <0x0 0x0>;
-> +			enable-method = "spin-table";
-> +			cpu-release-addr = <0 0>; // To be filled by loader
-> +		};
-> +		cpu1: cpu@1 {
-> +			compatible = "AAPL,icestorm";
-> +			device_type = "cpu";
-> +			reg = <0x0 0x1>;
-> +			enable-method = "spin-table";
-> +			cpu-release-addr = <0 0>; // To be filled by loader
-> +		};
-> +		cpu2: cpu@2 {
-> +			compatible = "AAPL,icestorm";
-> +			device_type = "cpu";
-> +			reg = <0x0 0x2>;
-> +			enable-method = "spin-table";
-> +			cpu-release-addr = <0 0>; // To be filled by loader
-> +		};
-> +		cpu3: cpu@3 {
-> +			compatible = "AAPL,icestorm";
-> +			device_type = "cpu";
-> +			reg = <0x0 0x3>;
-> +			enable-method = "spin-table";
-> +			cpu-release-addr = <0 0>; // To be filled by loader
-> +		};
-> +		cpu4: cpu@10100 {
-> +			compatible = "AAPL,firestorm";
-> +			device_type = "cpu";
-> +			reg = <0x0 0x10100>;
-> +			enable-method = "spin-table";
-> +			cpu-release-addr = <0 0>; // To be filled by loader
-> +		};
-> +		cpu5: cpu@10101 {
-> +			compatible = "AAPL,firestorm";
-> +			device_type = "cpu";
-> +			reg = <0x0 0x10101>;
-> +			enable-method = "spin-table";
-> +			cpu-release-addr = <0 0>; // To be filled by loader
-> +		};
-> +		cpu6: cpu@10102 {
-> +			compatible = "AAPL,firestorm";
-> +			device_type = "cpu";
-> +			reg = <0x0 0x10102>;
-> +			enable-method = "spin-table";
-> +			cpu-release-addr = <0 0>; // To be filled by loader
-> +		};
-> +		cpu7: cpu@10103 {
-> +			compatible = "AAPL,firestorm";
-> +			device_type = "cpu";
-> +			reg = <0x0 0x10103>;
-> +			enable-method = "spin-table";
-> +			cpu-release-addr = <0 0>; // To be filled by loader
-> +		};
-> +	};
-> +
-> +	timer {
-> +		compatible = "arm,armv8-timer";
-> +		interrupt-parent = <&aic>;
-> +		interrupts = <AIC_FIQ 0 IRQ_TYPE_LEVEL_HIGH>,
-> +				<AIC_FIQ 0 IRQ_TYPE_LEVEL_HIGH>,
-> +				<AIC_FIQ 1 IRQ_TYPE_LEVEL_HIGH>,
-> +				<AIC_FIQ 0 IRQ_TYPE_LEVEL_HIGH>;
-> +	};
-> +
-> +	clk24: clk24 {
-
-Just "clock". Node names should be generic.
-
-> +		compatible = "fixed-clock";
-> +		#clock-cells = <0>;
-> +		clock-frequency = <24000000>;
-> +		clock-output-names = "clk24";
-
-What clock is it? Part of board or SoC? Isn't it a work-around for
-missing clock drivers?
-
-> +	};
-> +
-> +	soc {
-> +		compatible = "simple-bus";
-> +		#address-cells = <2>;
-> +		#size-cells = <2>;
-> +		ranges;
-> +
-> +		aic: interrupt-controller@23b100000 {
-> +			compatible = "AAPL,m1-aic", "AAPL,aic";
-> +			#interrupt-cells = <3>;
-> +			interrupt-controller;
-> +			reg = <0x2 0x3b100000 0x0 0x8000>;
-> +		};
-> +
-> +		serial0: serial@235200000 {
-> +			compatible = "AAPL,s5l-uart";
-> +			reg = <0x2 0x35200000 0x0 0x1000>;
-> +			reg-io-width = <4>;
-> +			interrupt-parent = <&aic>;
-> +			interrupts = <AIC_IRQ 605 IRQ_TYPE_LEVEL_HIGH>;
-> +			clocks = <&clk24>, <&clk24>;
-> +			clock-names = "uart", "clk_uart_baud0";
-> +		};
-> +
-
-No blank lines at end of blocks.
-
-Best regards,
-Krzysztof
+Ravi
