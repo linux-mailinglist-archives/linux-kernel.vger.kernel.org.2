@@ -2,92 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C0B6313FEA
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 21:07:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68E0E313FEC
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 21:07:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235525AbhBHUGv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 15:06:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54766 "EHLO mail.kernel.org"
+        id S236576AbhBHUHU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 15:07:20 -0500
+Received: from foss.arm.com ([217.140.110.172]:39918 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235498AbhBHSYz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 13:24:55 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B2F7664E37;
-        Mon,  8 Feb 2021 18:24:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612808653;
-        bh=vS0fzGJmDb6WmV2rw3MiBTn3cohiaMqNhjQhgUgCtU0=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=P+DFoUvhwIbIqCm/HmDfuLMgfotPv6DmgBfMpQM0K1IzbcI5mAE6ZWNpnY6NC7+D/
-         rD/EjyVx7TI8RjMQw5YPQtJN27E5ROKD+NPwJAx+fhv8RemRCF17Jv3j2NsZxNokfl
-         hZ+8ROjQcX07i6QO28aLRLcSBBA3g0Gx++cwjsogcXdjcxNpja0vb3QT8Sw9M0vSjR
-         ANbqB9MMp85xFPnJTTZKTovNKmM+s8NBEv9oaKFblHS3Y9lo4bE4sa8n6+NYoQWQMm
-         WvkwbYFADb1c1ClwLDwJwjrD3ZcqL6TuFuCRFBcoOx9Dj0OV3Uq02CY4Ny9//K8pXZ
-         v4pWyix97d5uA==
-Content-Type: text/plain; charset="utf-8"
+        id S235475AbhBHSZn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 13:25:43 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 08BE01042;
+        Mon,  8 Feb 2021 10:24:55 -0800 (PST)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AB3C33F73D;
+        Mon,  8 Feb 2021 10:24:53 -0800 (PST)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Quentin Perret <qperret@google.com>,
+        Pavan Kondeti <pkondeti@codeaurora.org>,
+        Rik van Riel <riel@surriel.com>
+Subject: Re: [PATCH 8/8] sched/fair: Relax task_hot() for misfit tasks
+In-Reply-To: <CAKfTPtDBPREA2oBXZ0=-396Dxh5WMYgNTF+=6d_+K-WVjq3Sag@mail.gmail.com>
+References: <20210128183141.28097-1-valentin.schneider@arm.com> <20210128183141.28097-9-valentin.schneider@arm.com> <CAKfTPtDBPREA2oBXZ0=-396Dxh5WMYgNTF+=6d_+K-WVjq3Sag@mail.gmail.com>
+User-Agent: Notmuch/0.21 (http://notmuchmail.org) Emacs/26.3 (x86_64-pc-linux-gnu)
+Date:   Mon, 08 Feb 2021 18:24:47 +0000
+Message-ID: <jhjblcuv2mo.mognet@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210114221059.483390-12-angelogioacchino.delregno@somainline.org>
-References: <20210114221059.483390-1-angelogioacchino.delregno@somainline.org> <20210114221059.483390-12-angelogioacchino.delregno@somainline.org>
-Subject: Re: [PATCH v2 11/11] clk: qcom: gpucc-msm8998: Allow fabia gpupll0 rate setting
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     konrad.dybcio@somainline.org, marijn.suijten@somainline.org,
-        martin.botka@somainline.org, phone-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, agross@kernel.org,
-        bjorn.andersson@linaro.org, mturquette@baylibre.com,
-        robh+dt@kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        linux-arm-msm@vger.kernel.org
-Date:   Mon, 08 Feb 2021 10:24:12 -0800
-Message-ID: <161280865244.76967.4923517866545833837@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting AngeloGioacchino Del Regno (2021-01-14 14:10:59)
-> The GPU PLL0 is not a fixed PLL and the rate can be set on it:
-> this is necessary especially on boards which bootloader is setting
-> a very low rate on this PLL before booting Linux, which would be
-> unsuitable for postdividing to reach the maximum allowed Adreno GPU
-> frequency of 710MHz (or, actually, even 670MHz..) on this SoC.
->=20
-> To allow setting rates on the GPU PLL0, also define VCO boundaries
-> and set the CLK_SET_RATE_PARENT flag to the GPU PLL0 postdivider.
->=20
-> With this change, the Adreno GPU is now able to scale through all
-> the available frequencies.
+On 08/02/21 17:21, Vincent Guittot wrote:
+> On Thu, 28 Jan 2021 at 19:32, Valentin Schneider
+> <valentin.schneider@arm.com> wrote:
+>>
+>> Misfit tasks can and will be preempted by the stopper to migrate them over
+>> to a higher-capacity CPU. However, when runnable but not current misfit
+>> tasks are scanned by the load balancer (i.e. detach_tasks()), the
+>> task_hot() ratelimiting logic may prevent us from enqueuing said task onto
+>> a higher-capacity CPU.
+>>
+>> Align detach_tasks() with the active-balance logic and let it pick a
+>> cache-hot misfit task when the destination CPU can provide a capacity
+>> uplift.
+>>
+>> Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
+>> ---
+>>  kernel/sched/fair.c | 11 +++++++++++
+>>  1 file changed, 11 insertions(+)
+>>
+>> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+>> index cba9f97d9beb..c2351b87824f 100644
+>> --- a/kernel/sched/fair.c
+>> +++ b/kernel/sched/fair.c
+>> @@ -7484,6 +7484,17 @@ static int task_hot(struct task_struct *p, struct lb_env *env)
+>>         if (env->sd->flags & SD_SHARE_CPUCAPACITY)
+>>                 return 0;
+>>
+>> +       /*
+>> +        * On a (sane) asymmetric CPU capacity system, the increase in compute
+>> +        * capacity should offset any potential performance hit caused by a
+>> +        * migration.
+>> +        */
+>> +       if (sd_has_asym_cpucapacity(env->sd) &&
+>> +           env->idle != CPU_NOT_IDLE &&
+>> +           !task_fits_capacity(p, capacity_of(env->src_cpu)) &&
+>> +           cpu_capacity_greater(env->dst_cpu, env->src_cpu))
+>
+> Why not using env->migration_type to directly detect that it's a
+> misfit task active migration ?
+>
 
-BTW, you're probably undervolting your GPU and clocking it higher
-than it should be at the voltage from boot.
+This is admittedly a kludge. Consider the scenario described in patch 7/8,
+i.e.:
+- there's a misfit task running on a LITTLE CPU
+- a big CPU completes its work and is about to go through newidle_balance()
 
->=20
-> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@soma=
-inline.org>
-> ---
->  drivers/clk/qcom/gpucc-msm8998.c | 10 +++++++++-
->  1 file changed, 9 insertions(+), 1 deletion(-)
->=20
-> diff --git a/drivers/clk/qcom/gpucc-msm8998.c b/drivers/clk/qcom/gpucc-ms=
-m8998.c
-> index 1a518c4915b4..fedfffaf0a8d 100644
-> --- a/drivers/clk/qcom/gpucc-msm8998.c
-> +++ b/drivers/clk/qcom/gpucc-msm8998.c
-> @@ -50,6 +50,11 @@ static struct clk_branch gpucc_cxo_clk =3D {
->         },
->  };
-> =20
-> +static struct pll_vco fabia_vco[] =3D {
+Now, consider by the time that big CPU gets into load_balance(), the misfit
+task on the LITTLE CPU got preempted by a percpu kworker. As of right now,
+it's quite likely the imbalance won't be classified as group_misfit_task,
+but as group_overloaded (depends on the topology / workload, but that's a
+symptom I've been seeing).
 
-Should be const.
+Unfortunately, even if we e.g. change the misfit load-balance logic to also
+track preempted misfit tasks (rather than just the rq's current), this
+could still happen AFAICT.
 
-> +       { 249600000, 2000000000, 0 },
-> +       { 125000000, 1000000000, 1 },
-> +};
-> +
->  static const struct clk_div_table post_div_table_fabia_even[] =3D {
->         { 0x0, 1 },
->         { 0x1, 2 },
+Long story short, we already trigger an active-balance to upmigrate running
+misfit tasks, this changes task_hot() to allow any preempted task that
+doesn't fit on its CPU to be upmigrated (regardless of the imbalance
+classification).
+
+>> +               return 0;
+>> +
+>>         /*
+>>          * Buddy candidates are cache hot:
+>>          */
+>> --
+>> 2.27.0
+>>
