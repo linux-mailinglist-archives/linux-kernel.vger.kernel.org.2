@@ -2,176 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2DDE3130E4
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 12:31:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25AB73130E7
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 12:31:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233133AbhBHLbF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 06:31:05 -0500
-Received: from mga01.intel.com ([192.55.52.88]:16870 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232978AbhBHLPH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 06:15:07 -0500
-IronPort-SDR: z4g8AvilOA0RXbtLgwde2wgYosT1ChlAMCchPQA9MKvGvEViZ7A7qhK8J4FDDUZOZTHd73XSz5
- nAh8GuSK95GA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9888"; a="200751936"
-X-IronPort-AV: E=Sophos;i="5.81,161,1610438400"; 
-   d="scan'208";a="200751936"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2021 03:13:51 -0800
-IronPort-SDR: 72BhK+PYX5SXFdE5xSaBmV/sMqYWgucbXpUuZsoL6ck754NVlfg0TKmzD9cv+oeAOc+OoAyGqy
- 7pJ38Q+yx+8g==
-X-IronPort-AV: E=Sophos;i="5.81,161,1610438400"; 
-   d="scan'208";a="374455108"
-Received: from anveshag-mobl1.amr.corp.intel.com (HELO intel.com) ([10.209.119.193])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2021 03:13:49 -0800
-Date:   Mon, 8 Feb 2021 06:13:47 -0500
-From:   Rodrigo Vivi <rodrigo.vivi@intel.com>
-To:     Lyude Paul <lyude@redhat.com>
-Cc:     dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
-        intel-gfx@lists.freedesktop.org, David Airlie <airlied@linux.ie>,
-        Anshuman Gupta <anshuman.gupta@intel.com>,
-        Lucas De Marchi <lucas.demarchi@intel.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Gwan-gyeong Mun <gwan-gyeong.mun@intel.com>,
-        Manasi Navare <manasi.d.navare@intel.com>,
-        Uma Shankar <uma.shankar@intel.com>,
-        Sean Paul <seanpaul@chromium.org>,
-        Dave Airlie <airlied@redhat.com>
-Subject: Re: [RFC v3 06/10] drm/i915/dpcd_bl: Cache some backlight
- capabilities in intel_panel.backlight
-Message-ID: <20210208111347.GB4798@intel.com>
-References: <20210205234515.1216538-1-lyude@redhat.com>
- <20210205234515.1216538-7-lyude@redhat.com>
+        id S233267AbhBHLbw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 06:31:52 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:32483 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233003AbhBHLPy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 06:15:54 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612782847;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=rjBhYigDjL91xEreC6QyJ/Hq5Z8K5dAmnvBeKDYfa7U=;
+        b=e90AczawJx8pSW1PeHpMoq3ukT7qvocx5SAyi7bZilzaBD2+GapsBSzr+5jIzeiGO87gMc
+        tImXa2FZf6SvrSxbSwDNBwfEaPWR+q2teHGLN1TnmZfyoK2lwhFuDgL59kbcdXTVRxPmpv
+        552bOAv72GVZDyPUUKuOb6wqI7SI6N4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-92-kXoN8HQDORu6M_4PkL4cIg-1; Mon, 08 Feb 2021 06:14:03 -0500
+X-MC-Unique: kXoN8HQDORu6M_4PkL4cIg-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5A00B801976;
+        Mon,  8 Feb 2021 11:13:58 +0000 (UTC)
+Received: from [10.36.113.240] (ovpn-113-240.ams2.redhat.com [10.36.113.240])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 01D995C1D0;
+        Mon,  8 Feb 2021 11:13:50 +0000 (UTC)
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org, Hagen Paul Pfeifer <hagen@jauu.net>,
+        Palmer Dabbelt <palmerdabbelt@google.com>
+References: <20210208084920.2884-1-rppt@kernel.org>
+ <20210208084920.2884-9-rppt@kernel.org> <YCEP/bmqm0DsvCYN@dhcp22.suse.cz>
+ <38c0cad4-ac55-28e4-81c6-4e0414f0620a@redhat.com>
+ <YCEXwUYepeQvEWTf@dhcp22.suse.cz>
+ <a488a0bb-def5-0249-99e2-4643787cef69@redhat.com>
+ <YCEZAWOv63KYglJZ@dhcp22.suse.cz>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Subject: Re: [PATCH v17 08/10] PM: hibernate: disable when there are active
+ secretmem users
+Message-ID: <770690dc-634a-78dd-0772-3aba1a3beba8@redhat.com>
+Date:   Mon, 8 Feb 2021 12:13:49 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210205234515.1216538-7-lyude@redhat.com>
+In-Reply-To: <YCEZAWOv63KYglJZ@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 05, 2021 at 06:45:10PM -0500, Lyude Paul wrote:
-> Since we're about to be moving this code into shared DRM helpers, we might
-> as well start to cache certain backlight capabilities that can be
-> determined from the EDP DPCD, and are likely to be relevant to the majority
-> of drivers using said helpers. The main purpose of this is just to prevent
-> every driver from having to check everything against the eDP DPCD using DP
-> macros, which makes the code slightly easier to read (especially since the
-> names of some of the eDP capabilities don't exactly match up with what we
-> actually need to use them for, like DP_EDP_BACKLIGHT_BRIGHTNESS_BYTE_COUNT
-> for instance).
+On 08.02.21 11:57, Michal Hocko wrote:
+> On Mon 08-02-21 11:53:58, David Hildenbrand wrote:
+>> On 08.02.21 11:51, Michal Hocko wrote:
+>>> On Mon 08-02-21 11:32:11, David Hildenbrand wrote:
+>>>> On 08.02.21 11:18, Michal Hocko wrote:
+>>>>> On Mon 08-02-21 10:49:18, Mike Rapoport wrote:
+>>>>>> From: Mike Rapoport <rppt@linux.ibm.com>
+>>>>>>
+>>>>>> It is unsafe to allow saving of secretmem areas to the hibernation
+>>>>>> snapshot as they would be visible after the resume and this essentially
+>>>>>> will defeat the purpose of secret memory mappings.
+>>>>>>
+>>>>>> Prevent hibernation whenever there are active secret memory users.
+>>>>>
+>>>>> Does this feature need any special handling? As it is effectivelly
+>>>>> unevictable memory then it should behave the same as other mlock, ramfs
+>>>>> which should already disable hibernation as those cannot be swapped out,
+>>>>> no?
+>>>>>
+>>>>
+>>>> Why should unevictable memory not go to swap when hibernating? We're merely
+>>>> dumping all of our system RAM (including any unmovable allocations) to swap
+>>>> storage and the system is essentially completely halted.
+>>>>
+>>> My understanding is that mlock is never really made visible via swap
+>>> storage.
+>>
+>> "Using swap storage for hibernation" and "swapping at runtime" are two
+>> different things. I might be wrong, though.
 > 
-> Signed-off-by: Lyude Paul <lyude@redhat.com>
+> Well, mlock is certainly used to keep sensitive information, not only to
+> protect from major/minor faults.
+> 
 
-Reviewed-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
+I think you're right in theory, the man page mentions "Cryptographic 
+security software often handles critical bytes like passwords or secret 
+keys as data structures" ...
 
-> ---
->  .../drm/i915/display/intel_display_types.h    |  2 ++
->  .../drm/i915/display/intel_dp_aux_backlight.c | 29 ++++++++++++-------
->  2 files changed, 21 insertions(+), 10 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/i915/display/intel_display_types.h b/drivers/gpu/drm/i915/display/intel_display_types.h
-> index f4b26e1dbaaf..16824eb3ef93 100644
-> --- a/drivers/gpu/drm/i915/display/intel_display_types.h
-> +++ b/drivers/gpu/drm/i915/display/intel_display_types.h
-> @@ -265,6 +265,8 @@ struct intel_panel {
->  			struct {
->  				u8 pwmgen_bit_count;
->  				u8 pwm_freq_pre_divider;
-> +				bool lsb_reg_used;
-> +				bool aux_enable;
->  			} vesa;
->  			struct {
->  				bool sdr_uses_aux;
-> diff --git a/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c b/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
-> index 95e3e344cf40..f5ae2fb34c1f 100644
-> --- a/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
-> +++ b/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
-> @@ -270,13 +270,14 @@ intel_dp_aux_hdr_setup_backlight(struct intel_connector *connector, enum pipe pi
->  }
->  
->  /* VESA backlight callbacks */
-> -static void set_vesa_backlight_enable(struct intel_dp *intel_dp, bool enable)
-> +static void set_vesa_backlight_enable(struct intel_connector *connector, bool enable)
->  {
-> +	struct intel_dp *intel_dp = intel_attached_dp(connector);
->  	struct drm_i915_private *i915 = dp_to_i915(intel_dp);
->  	u8 reg_val = 0;
->  
->  	/* Early return when display use other mechanism to enable backlight. */
-> -	if (!(intel_dp->edp_dpcd[1] & DP_EDP_BACKLIGHT_AUX_ENABLE_CAP))
-> +	if (!connector->panel.backlight.edp.vesa.aux_enable)
->  		return;
->  
->  	if (drm_dp_dpcd_readb(&intel_dp->aux, DP_EDP_DISPLAY_CONTROL_REGISTER, &reg_val) != 1) {
-> @@ -339,9 +340,11 @@ static u32 intel_dp_aux_vesa_get_backlight(struct intel_connector *connector, en
->  			    DP_EDP_BACKLIGHT_BRIGHTNESS_MSB);
->  		return 0;
->  	}
-> -	level = read_val[0];
-> -	if (intel_dp->edp_dpcd[2] & DP_EDP_BACKLIGHT_BRIGHTNESS_BYTE_COUNT)
-> +
-> +	if (connector->panel.backlight.edp.vesa.lsb_reg_used)
->  		level = (read_val[0] << 8 | read_val[1]);
-> +	else
-> +		level = read_val[0];
->  
->  	return level;
->  }
-> @@ -359,13 +362,14 @@ intel_dp_aux_vesa_set_backlight(const struct drm_connector_state *conn_state,
->  	struct drm_i915_private *i915 = dp_to_i915(intel_dp);
->  	u8 vals[2] = { 0x0 };
->  
-> -	vals[0] = level;
-> -
->  	/* Write the MSB and/or LSB */
-> -	if (intel_dp->edp_dpcd[2] & DP_EDP_BACKLIGHT_BRIGHTNESS_BYTE_COUNT) {
-> +	if (connector->panel.backlight.edp.vesa.lsb_reg_used) {
->  		vals[0] = (level & 0xFF00) >> 8;
->  		vals[1] = (level & 0xFF);
-> +	} else {
-> +		vals[0] = level;
->  	}
-> +
->  	if (drm_dp_dpcd_write(&intel_dp->aux, DP_EDP_BACKLIGHT_BRIGHTNESS_MSB, vals,
->  			      sizeof(vals)) != sizeof(vals)) {
->  		drm_dbg_kms(&i915->drm,
-> @@ -419,14 +423,13 @@ intel_dp_aux_vesa_enable_backlight(const struct intel_crtc_state *crtc_state,
->  	}
->  
->  	intel_dp_aux_vesa_set_backlight(conn_state, level);
-> -	set_vesa_backlight_enable(intel_dp, true);
-> +	set_vesa_backlight_enable(connector, true);
->  }
->  
->  static void intel_dp_aux_vesa_disable_backlight(const struct drm_connector_state *old_conn_state,
->  						u32 level)
->  {
-> -	set_vesa_backlight_enable(enc_to_intel_dp(to_intel_encoder(old_conn_state->best_encoder)),
-> -				  false);
-> +	set_vesa_backlight_enable(to_intel_connector(old_conn_state->connector), false);
->  }
->  
->  /*
-> @@ -524,8 +527,14 @@ static u32 intel_dp_aux_vesa_calc_max_backlight(struct intel_connector *connecto
->  static int intel_dp_aux_vesa_setup_backlight(struct intel_connector *connector,
->  					     enum pipe pipe)
->  {
-> +	struct intel_dp *intel_dp = intel_attached_dp(connector);
->  	struct intel_panel *panel = &connector->panel;
->  
-> +	if (intel_dp->edp_dpcd[1] & DP_EDP_BACKLIGHT_AUX_ENABLE_CAP)
-> +		panel->backlight.edp.vesa.aux_enable = true;
-> +	if (intel_dp->edp_dpcd[2] & DP_EDP_BACKLIGHT_BRIGHTNESS_BYTE_COUNT)
-> +		panel->backlight.edp.vesa.lsb_reg_used = true;
-> +
->  	panel->backlight.max = intel_dp_aux_vesa_calc_max_backlight(connector);
->  	if (!panel->backlight.max)
->  		return -ENODEV;
-> -- 
-> 2.29.2
-> 
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+however, I am not aware of any such swap handling and wasn't able to 
+spot it quickly. Let me take a closer look.
+
+
+-- 
+Thanks,
+
+David / dhildenb
+
