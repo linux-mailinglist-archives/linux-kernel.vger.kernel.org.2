@@ -2,55 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 391E831324C
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 13:28:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F04A431324F
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 13:29:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230339AbhBHM2L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 07:28:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43384 "EHLO mail.kernel.org"
+        id S230033AbhBHM2n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 07:28:43 -0500
+Received: from ozlabs.org ([203.11.71.1]:50333 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230146AbhBHMKs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 07:10:48 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7BAAE64E60;
-        Mon,  8 Feb 2021 12:10:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612786207;
-        bh=nmgMPA9aG9SEGs9aCSG8Q2Nt83p49YoOTOJMXeC5rwE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=iXaoCKpbW6taMiwTuh+OTTaQPezm9nGCpJf1k+E1zNdz5aOCnbC5piA9IxPDl2aoE
-         ae9L6qeiXNfPEaQwnzQkjEqBmIsYkMSWSGe4HbyIeulaiGnSQ6JUyeLwB9pJmOvl9o
-         Xac9ULfyYOk9IduuKHgDX7cM0Ng5cpipe3O4jxjAXLb2O9rRN8dN4LqhZnnbSPl/7v
-         y23aOPp9Re3Xfvv0QUXrid5D/EwL9IuQqokepoiLmrQ17YN6OcqpMiuid6p9K7lvKS
-         oXPg6fSIC628udwVgApXTUcVipF4P0t3zqRwbdf3anAj+vjWLhfwhC+Ytj7lacUIwf
-         /FxqSeinS6u3A==
-Date:   Mon, 8 Feb 2021 17:40:03 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Colin King <colin.king@canonical.com>
-Cc:     Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>,
-        Sia Jee Heng <jee.heng.sia@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        dmaengine@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] dmaengine: dw-axi-dmac: remove redundant null
- check on desc
-Message-ID: <20210208121003.GE879029@vkoul-mobl.Dlink>
-References: <20210203134652.22618-1-colin.king@canonical.com>
+        id S229963AbhBHMLr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 07:11:47 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DZ4cJ0CLPz9sSC;
+        Mon,  8 Feb 2021 23:10:55 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1612786257;
+        bh=FyhNgxQbLQd+3RGhcAmFGJhNxmo9XTA1ZhcChztorps=;
+        h=Date:From:To:Cc:Subject:From;
+        b=tq82cs1YPQgAkY3Ba3qYo9Y4Ob9HxZUhnXlSNpO4/RkAceU1H5e0FiPc6tQN+nTsn
+         4yVAEmXqvhM747U9wOcgoTRj9gX0/OsFh8CdAHBWgOf0BanrlxhMK3WjVKfvSJj8eD
+         QIO4+Rxznc4/KffFJ2ZOVOoS7dGcLCK0xqv1KqYCeO2K92ZKHr0Wx7WlT391F8DMc1
+         CXkdO0THRRtKwbgEcUBx2IpKoKUQ3UdzEHHBPYNYM200zgDURhZNXNAqpWfQNen8ES
+         laFW8PA11EfGxifW/4+cU9AEcrMxtr11fB46GZHP3Up6JDWKxfTjxBIi5sc58pGCjN
+         tcSISOKSJ0POA==
+Date:   Mon, 8 Feb 2021 23:10:52 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Shaokun Zhang <zhangshaokun@hisilicon.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Yuqi Jin <jinyuqi@huawei.com>
+Subject: linux-next: manual merge of the akpm-current tree with Linus' tree
+Message-ID: <20210208231052.6af62234@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210203134652.22618-1-colin.king@canonical.com>
+Content-Type: multipart/signed; boundary="Sig_/2oMFJae6H08dtqDjxpdbqvB";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03-02-21, 13:46, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> The pointer desc is being null checked twice, the second null check
-> is redundant because desc has not been re-assigned between the
-> checks. Remove the redundant second null check on desc.
+--Sig_/2oMFJae6H08dtqDjxpdbqvB
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Applied, thanks
+Hi all,
 
--- 
-~Vinod
+Today's linux-next merge of the akpm-current tree got a conflict in:
+
+  lib/cpumask.c
+
+between commit:
+
+  2452483d9546 ("Revert "lib: Restrict cpumask_local_spread to houskeeping =
+CPUs"")
+
+from Linus' tree and commits:
+
+  9eca9bb9bd98 ("lib: optimize cpumask_local_spread()")
+  a7ac26ba236f ("lib-optimize-cpumask_local_spread-v8")
+
+from the akpm-current tree.
+
+I fixed it up (it was sufficiently messy that I just dropped the 2
+commits from the akpm-current tree for today) and can carry the fix as
+necessary. This is now fixed as far as linux-next is concerned, but any
+non trivial conflicts should be mentioned to your upstream maintainer
+when your tree is submitted for merging.  You may also want to consider
+cooperating with the maintainer of the conflicting tree to minimise any
+particularly complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/2oMFJae6H08dtqDjxpdbqvB
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAhKkwACgkQAVBC80lX
+0GyvJAf/SresCZL9+IKtWoHDUYGP4TvrsYDcV1YufG043YDlRHv1q/zPlBm7kNEX
++GdbX5jIuuYaJMjgnt3tpWO2T7CIk5BI3rI0HtfGCb4opWwGscEV+iqMh9Z/Cktk
+WjhyZDGKnS/vUcgOwMORH0IFOyftSySh6rGXWNEUkN4fS+eHYXxGs3FKb9YeE7R2
+FHhGyVbVNAtKcDUi7HvaHq19qg8WPr/xsWsmULn+xHf6rgILtphxz930djEIpwxS
+fApwicXN0W1VacD0ymHULyEz9lBo6z3sxQpLTYJPWGIkfuGowupAdujZ9LRrbdto
+07uwo8edFqEnrFw/UsbgG15ZCt0cpw==
+=MqBB
+-----END PGP SIGNATURE-----
+
+--Sig_/2oMFJae6H08dtqDjxpdbqvB--
