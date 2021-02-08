@@ -2,106 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA2C63131D3
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 13:10:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13EF73131D2
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 13:10:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232839AbhBHMJJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 07:09:09 -0500
-Received: from mx0a-001ae601.pphosted.com ([67.231.149.25]:55938 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S233520AbhBHLsf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 06:48:35 -0500
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-        by mx0a-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 118Bkug3001347;
-        Mon, 8 Feb 2021 05:47:20 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=PODMain02222019;
- bh=wMueiZd7LSNAZyTxU0yN7RmQI4fUtqDmom2M6VNmWzo=;
- b=CjiURHl2LwIWcGa2btPxarIRbYZblzjdQr+F6OFctnYi3gTg20N3v/RB0vzgrysJs+HC
- oSPjqvuIzLbWA8KbAP9O2C2zUE6tIw+ml/2jw02WSO8FP4tfMHOiDcyoBwxk3JXlHUgl
- jOSwn9URToPAgIldo0RAYqZI3VeAAldhZdcDG3Eg//ZzK4nffd6kjI8hDbWTJPG+AYAs
- K7tlH2CS8/FH7LutmVlW+Q9QkgcseQlUlZrWrF9qnfn/g0910XzPN//cDJI/7PPx7aXx
- mNjsriwT4z2LC6niCoh5NCTqXO5tu9G0BF3DhQPjeFNcrQUFuh21GYjK1AYiNWRmQ0ix Hg== 
-Received: from ediex01.ad.cirrus.com ([87.246.76.36])
-        by mx0a-001ae601.pphosted.com with ESMTP id 36jdac94qs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 08 Feb 2021 05:47:20 -0600
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Mon, 8 Feb 2021
- 11:47:18 +0000
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
- Transport; Mon, 8 Feb 2021 11:47:18 +0000
-Received: from [10.0.2.15] (AUSNPC0LSNW1.ad.cirrus.com [198.61.64.240])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id CF3FB45;
-        Mon,  8 Feb 2021 11:47:17 +0000 (UTC)
-Subject: Re: [PATCH v4 2/4] lib: vsprintf: Fix handling of number field widths
- in vsscanf
-To:     Petr Mladek <pmladek@suse.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-CC:     <rostedt@goodmis.org>, <sergey.senozhatsky@gmail.com>,
-        <linux@rasmusvillemoes.dk>, <shuah@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
-        <patches@opensource.cirrus.com>
-References: <20210203165009.6299-1-rf@opensource.cirrus.com>
- <20210203165009.6299-2-rf@opensource.cirrus.com>
- <YBr9c44Dvq1ZNrEa@smile.fi.intel.com> <YBwiQ+l6yqs+g+rr@alley>
-From:   Richard Fitzgerald <rf@opensource.cirrus.com>
-Message-ID: <6023974a-a2ba-8bfe-a8b8-125c45e13e01@opensource.cirrus.com>
-Date:   Mon, 8 Feb 2021 11:47:17 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S233559AbhBHMIg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 07:08:36 -0500
+Received: from foss.arm.com ([217.140.110.172]:33156 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232976AbhBHLs5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 06:48:57 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 772A031B;
+        Mon,  8 Feb 2021 03:47:59 -0800 (PST)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5AE623F73B;
+        Mon,  8 Feb 2021 03:47:57 -0800 (PST)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     "Song Bao Hua \(Barry Song\)" <song.bao.hua@hisilicon.com>,
+        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc:     "vincent.guittot\@linaro.org" <vincent.guittot@linaro.org>,
+        "mgorman\@suse.de" <mgorman@suse.de>,
+        "mingo\@kernel.org" <mingo@kernel.org>,
+        "peterz\@infradead.org" <peterz@infradead.org>,
+        "dietmar.eggemann\@arm.com" <dietmar.eggemann@arm.com>,
+        "morten.rasmussen\@arm.com" <morten.rasmussen@arm.com>,
+        "linuxarm\@openeuler.org" <linuxarm@openeuler.org>,
+        "xuwei \(O\)" <xuwei5@huawei.com>,
+        "Liguozhu \(Kenneth\)" <liguozhu@hisilicon.com>,
+        "tiantao \(H\)" <tiantao6@hisilicon.com>,
+        wanghuiqiang <wanghuiqiang@huawei.com>,
+        "Zengtao \(B\)" <prime.zeng@hisilicon.com>,
+        Jonathan Cameron <jonathan.cameron@huawei.com>,
+        "guodong.xu\@linaro.org" <guodong.xu@linaro.org>,
+        Meelis Roos <mroos@linux.ee>
+Subject: RE: [RFC PATCH 1/2] sched/topology: Get rid of NUMA overlapping groups
+In-Reply-To: <26e70a3275b14f248520d7a5e66e5a74@hisilicon.com>
+References: <20210203155432.10293-1-valentin.schneider@arm.com> <20210203155432.10293-2-valentin.schneider@arm.com> <26e70a3275b14f248520d7a5e66e5a74@hisilicon.com>
+User-Agent: Notmuch/0.21 (http://notmuchmail.org) Emacs/26.3 (x86_64-pc-linux-gnu)
+Date:   Mon, 08 Feb 2021 11:47:48 +0000
+Message-ID: <jhjpn1a232z.mognet@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <YBwiQ+l6yqs+g+rr@alley>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 phishscore=0
- clxscore=1015 priorityscore=1501 bulkscore=0 adultscore=0 spamscore=0
- malwarescore=0 mlxscore=0 impostorscore=0 lowpriorityscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102080081
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/02/2021 16:35, Petr Mladek wrote:
-> On Wed 2021-02-03 21:45:55, Andy Shevchenko wrote:
->> On Wed, Feb 03, 2021 at 04:50:07PM +0000, Richard Fitzgerald wrote:
->>> The existing code attempted to handle numbers by doing a strto[u]l(),
->>> ignoring the field width, and then repeatedly dividing to extract the
->>> field out of the full converted value. If the string contains a run of
->>> valid digits longer than will fit in a long or long long, this would
->>> overflow and no amount of dividing can recover the correct value.
-> 
->> ...
->>
->>> +	for (; max_chars > 0; max_chars--) {
->>
->> Less fragile is to write
->>
->> 	while (max_chars--)
-> 
-> Except that the original was more obvious at least for me.
-> I always prefer more readable code when the compiler might do
-> the optimization easily. But this is my personal taste.
-> I am fine with both variants.
-> 
->>
->> This allows max_char to be an unsigned type.
->>
->> Moreover...
->>
->>> +	return _parse_integer_limit(s, base, p, INT_MAX);
->>
->> You have inconsistency with INT_MAX vs, size_t above.
-> 
-> Ah, this was on my request. INT_MAX is already used on many other
-> locations in vsnprintf() for this purpose.
-> 
+Hi Barry,
 
-Strictly speaking this should be SIZE_MAX because the argument is a
-size_t.
+On 08/02/21 10:04, Song Bao Hua (Barry Song) wrote:
+>> -----Original Message-----
+>> From: Valentin Schneider [mailto:valentin.schneider@arm.com]
+
+>
+> Hi Valentin,
+>
+> While I like your approach, this will require more time
+> to evaluate possible influence as the approach also affects
+> all machines without 3-hops issue. So x86 platforms need to
+> be tested and benchmark is required.
+>
+> What about we firstly finish the review of "grandchild" approach
+> v2 and have a solution for kunpeng920 and Sun Fire X4600-M2
+> while not impacting other machines which haven't 3-hops issues
+> first?
+>
+
+I figured I'd toss this out while the iron was hot (and I had the topology
+crud paged in), but I ultimately agree that it's better to first go with
+something that fixes the diameter > 2 topologies and leaves the other ones
+untouched, which is exactly what you have.
+
+> I would appreciate very much if you could comment on v2:
+> https://lore.kernel.org/lkml/20210203111201.20720-1-song.bao.hua@hisilicon.com/
+>
+
+See my comment below on domain degeneration; with that taken care of I
+would say it's good to go. Have a look at what patch1+patch3 squashed
+together looks like, passing the right sd to init_overlap_sched_group()
+looks a bit neater IMO.
+
+>> +static struct sched_domain *find_node_domain(struct sched_domain *sd)
+>> +{
+>> +	struct sched_domain *parent;
+>> +
+>> +	BUG_ON(!(sd->flags & SD_NUMA));
+>> +
+>> +	/* Get to the level above NODE */
+>> +	while (sd && sd->child) {
+>> +		parent = sd;
+>> +		sd = sd->child;
+>> +
+>> +		if (!(sd->flags & SD_NUMA))
+>> +			break;
+>> +	}
+>> +	/*
+>> +	 * We're going to create cross topology level sched_group_capacity
+>> +	 * references. This can only work if the domains resulting from said
+>> +	 * levels won't be degenerated, as we need said sgc to be periodically
+>> +	 * updated: it needs to be attached to the local group of a domain
+>> +	 * that didn't get degenerated.
+>> +	 *
+>> +	 * Of course, groups aren't available yet, so we can't call the usual
+>> +	 * sd_degenerate(). Checking domain spans is the closest we get.
+>> +	 * Start from NODE's parent, and keep going up until we get a domain
+>> +	 * we're sure won't be degenerated.
+>> +	 */
+>> +	while (sd->parent &&
+>> +	       cpumask_equal(sched_domain_span(sd), sched_domain_span(parent))) {
+>> +		sd = parent;
+>> +		parent = sd->parent;
+>> +	}
+>
+> So this is because the sched_domain which doesn't contribute to scheduler
+> will be destroyed during cpu_attach_domain() since sd and parent span
+> the seam mask?
+>
+
+Yes; let's take your topology for instance:
+
+node   0   1   2   3
+    0:  10  12  20  22
+    1:  12  10  22  24
+    2:  20  22  10  12
+    3:  22  24  12  10
+
+      2       10      2
+  0 <---> 1 <---> 2 <---> 3
+
+
+Domains for node1 will look like (before any fixes are applied):
+
+NUMA<=10: span=1   groups=(1)
+NUMA<=12: span=0-1 groups=(1)->(0)
+NUMA<=20: span=0-1 groups=(0,1)
+NUMA<=22: span=0-2 groups=(0,1)->(0,2-3)
+NUMA<=24: span=0-3 groups=(0-2)->(0,2-3)
+
+As you can see, the domain representing distance <= 20 will be degenerated
+(it has a single group). If we were to e.g. add some more nodes to the left
+of node0, then we would trigger the "grandchildren logic" for node1 and
+would end up creating a reference to node1 NUMA<=20's sgc, which is a
+mistake: that domain will be degenerated, and that sgc will never be
+updated. The right thing to do here would be reference node1 NUMA<=12's
+sgc, which the above snippet does.
+
+>> +
+>> +	return parent;
+>> +}
+>> +
