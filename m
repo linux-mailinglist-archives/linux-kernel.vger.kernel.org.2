@@ -2,87 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A86D3131E8
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 13:14:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93F6F3131EF
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 13:14:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230122AbhBHMNd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 07:13:33 -0500
-Received: from mail.xenproject.org ([104.130.215.37]:50508 "EHLO
-        mail.xenproject.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233490AbhBHLvv (ORCPT
+        id S232129AbhBHMO2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 07:14:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37250 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232881AbhBHLwl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 06:51:51 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=xen.org;
-        s=20200302mail; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
-        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject;
-        bh=Yb8hwLCySjNi2+iqUZJlgDYQEPN0SidS4NbLYbSWASA=; b=0EP9GAFGUUaHqcqmkHxhIkNS/2
-        q+12rHMTFSmo7vkP8d46/QLtWVzWHba1fqhtQm1Y2z2JOKDtsVDeBpzFAfxoAa3D6PPfX4bAD4ndV
-        7rpEDV3zOiQ3K+NGx7pWQziyno6q4hapeUafIHQy//JxAUSFNREMC7hY5efEE6w/wgmo=;
-Received: from xenbits.xenproject.org ([104.239.192.120])
-        by mail.xenproject.org with esmtp (Exim 4.92)
-        (envelope-from <julien@xen.org>)
-        id 1l954G-0002lN-Lq; Mon, 08 Feb 2021 11:51:00 +0000
-Received: from [54.239.6.177] (helo=a483e7b01a66.ant.amazon.com)
-        by xenbits.xenproject.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <julien@xen.org>)
-        id 1l954G-0001gh-EF; Mon, 08 Feb 2021 11:51:00 +0000
-Subject: Re: [PATCH 7/7] xen/evtchn: read producer index only once
-To:     =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>,
-        Jan Beulich <jbeulich@suse.com>
-Cc:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org
-References: <20210206104932.29064-1-jgross@suse.com>
- <20210206104932.29064-8-jgross@suse.com>
- <72334160-cffe-2d8a-23b7-2ea9ab1d803a@suse.com>
- <626f500a-494a-0141-7bf3-94fb86b47ed4@suse.com>
- <e88526ac-6972-fe08-c58f-ea872cbdcc14@suse.com>
- <d0ca217c-ecc9-55f7-abb1-30a687a46b31@suse.com>
-From:   Julien Grall <julien@xen.org>
-Message-ID: <42e15cc4-56d1-b34b-d97e-d579e771788a@xen.org>
-Date:   Mon, 8 Feb 2021 11:50:58 +0000
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.7.1
-MIME-Version: 1.0
-In-Reply-To: <d0ca217c-ecc9-55f7-abb1-30a687a46b31@suse.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+        Mon, 8 Feb 2021 06:52:41 -0500
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5C14C06174A;
+        Mon,  8 Feb 2021 03:52:00 -0800 (PST)
+Received: by mail-pf1-x436.google.com with SMTP id 18so7415121pfz.3;
+        Mon, 08 Feb 2021 03:52:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=LfB7ydJjgNU6qdDbdeb61u1uczQgf3qmcl9sbfbMLTw=;
+        b=MDKZtz8SgocSr4SOIJfB/BuBwfQNX+yKBUQHzKIH820YxZIfw4/k4N6e9sePUmkpEV
+         slyVXhcajaz8SG8pfj61dGT7lPhBk0rigFwpOQj1h19c8jwN5IKV5/2euUO6WcWv6UvS
+         qtnTo+ouGZAVCu6YABj6Vu3fbUnclja4EEQ/PknHrH8bDx/wvanRU6fejESTRl7isVM8
+         tDQvEGCf9WuTPJD30fhaIusQ+eyW1CD+G9iRRi7T01SdiB6aVeIwURD8A2klRf/QohKQ
+         V/ijd1FU5wWA0vna+qRg+XC7rx03+ztsRgj6sa3N64EOqA0WQsHiTBDb0PSi08rhY+oY
+         L3aQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=LfB7ydJjgNU6qdDbdeb61u1uczQgf3qmcl9sbfbMLTw=;
+        b=eBFErr1JS8yBL5HEyHwqpAmaY3oHYtU90PjoSBXVWp+VVT0BJyxhzDABtfPcNDskz4
+         7NIG+2A8fiEfw8aIEmTebiQe2El+B2oaoYywuZTPJYmH67pwAj6dMBYoLdyQEFNntrez
+         7+Ckf15PobWZOiSLo1N/0cmEvHSUSzwH/NUm+w5LFx4ErqFNd2Mi6C2gh7cyBtHTextT
+         jBjge9EHYJRtGIZNd+s413GZ32Npav/NFpYSGdwAkv5aTwgPxO/qnzRr72Ub2ZKCWo+L
+         k54cmGTDimYbq3h/Z3zoj8SvbGM/T3uyxtViV0YsZ4FbFQuJ7xfxytmN9AJrGzi5S2if
+         x20g==
+X-Gm-Message-State: AOAM530merGo3hdXSWAKVXx9gsh4OdA0gxxwXyCv2Bc5nrTmV+YBEGzp
+        6HFQTlJqjHWsa2pxm9kTTB4z5Zzs2jWjGA==
+X-Google-Smtp-Source: ABdhPJwzg5PkZvis7+lR6gJTvSlytbzD8TGuD0sKsFUC9kEY+SFLp2zMTnJur5uiF2I629pXzOIEjg==
+X-Received: by 2002:a63:d257:: with SMTP id t23mr8645306pgi.290.1612785120501;
+        Mon, 08 Feb 2021 03:52:00 -0800 (PST)
+Received: from lenovo.spreadtrum.com ([117.18.48.82])
+        by smtp.gmail.com with ESMTPSA id a9sm12875564pfr.204.2021.02.08.03.51.55
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 08 Feb 2021 03:51:59 -0800 (PST)
+From:   Orson Zhai <orsonzhai@gmail.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Jassi Brar <jassisinghbrar@gmail.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>
+Cc:     Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, haidong.yao@unisoc.com,
+        Orson Zhai <orson.zhai@unisoc.com>
+Subject: [PATCH 1/3] mailbox: sprd: Introduce refcnt when clients requests/free channels
+Date:   Mon,  8 Feb 2021 19:51:02 +0800
+Message-Id: <1612785064-3072-1-git-send-email-orsonzhai@gmail.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Orson Zhai <orson.zhai@unisoc.com>
 
+Unisoc mailbox has no way to be enabled/disabled for any single channel.
+They can only be set to startup or shutdown as a whole device at same time.
 
-On 08/02/2021 10:59, Jürgen Groß wrote:
-> On 08.02.21 11:51, Jan Beulich wrote:
-> Yes, but I don't see an urgent need to fix that, as there would
-> be thousands of accesses in the kernel needing a fix. A compiler
-> tearing a naturally aligned access into multiple memory accesses
-> would be rejected as buggy from the kernel community IMO.
+Add a variable to count references to avoid mailbox FIFO being reset
+unexpectedly when clients are requesting or freeing channels.
 
-I would not be so sure. From lwn [1]:
+Also add a lock to dismiss possible conflicts from register r/w in
+different startup or shutdown threads.
 
-"In the Linux kernel, tearing of plain C-language loads has been 
-observed even given properly aligned and machine-word-sized loads.)"
+Fixes: ca27fc26cd22 ("mailbox: sprd: Add Spreadtrum mailbox driver")
+Signed-off-by: Orson Zhai <orson.zhai@unisoc.com>
+---
+ drivers/mailbox/sprd-mailbox.c | 38 +++++++++++++++++++++++++-------------
+ 1 file changed, 25 insertions(+), 13 deletions(-)
 
-And for store tearing:
-
-"Note that this tearing can happen even on properly aligned and 
-machine-word-sized accesses, and in this particular case, even for 
-volatile stores. Some might argue that this behavior constitutes a bug 
-in the compiler, but either way it illustrates the perceived value of 
-store tearing from a compiler-writer viewpoint. [...] But for properly 
-aligned machine-sized stores, WRITE_ONCE() will prevent store tearing."
-
-Cheers,
-
-[1] https://lwn.net/Articles/793253/#Load%20Tearing
-
-> 
-> 
-> Juergen
-
+diff --git a/drivers/mailbox/sprd-mailbox.c b/drivers/mailbox/sprd-mailbox.c
+index f6fab24..e606f52 100644
+--- a/drivers/mailbox/sprd-mailbox.c
++++ b/drivers/mailbox/sprd-mailbox.c
+@@ -60,6 +60,8 @@ struct sprd_mbox_priv {
+ 	struct clk		*clk;
+ 	u32			outbox_fifo_depth;
+ 
++	struct mutex		lock;
++	u32			refcnt;
+ 	struct mbox_chan	chan[SPRD_MBOX_CHAN_MAX];
+ };
+ 
+@@ -215,18 +217,22 @@ static int sprd_mbox_startup(struct mbox_chan *chan)
+ 	struct sprd_mbox_priv *priv = to_sprd_mbox_priv(chan->mbox);
+ 	u32 val;
+ 
+-	/* Select outbox FIFO mode and reset the outbox FIFO status */
+-	writel(0x0, priv->outbox_base + SPRD_MBOX_FIFO_RST);
++	mutex_lock(&priv->lock);
++	if (priv->refcnt++ == 0) {
++		/* Select outbox FIFO mode and reset the outbox FIFO status */
++		writel(0x0, priv->outbox_base + SPRD_MBOX_FIFO_RST);
+ 
+-	/* Enable inbox FIFO overflow and delivery interrupt */
+-	val = readl(priv->inbox_base + SPRD_MBOX_IRQ_MSK);
+-	val &= ~(SPRD_INBOX_FIFO_OVERFLOW_IRQ | SPRD_INBOX_FIFO_DELIVER_IRQ);
+-	writel(val, priv->inbox_base + SPRD_MBOX_IRQ_MSK);
++		/* Enable inbox FIFO overflow and delivery interrupt */
++		val = readl(priv->inbox_base + SPRD_MBOX_IRQ_MSK);
++		val &= ~(SPRD_INBOX_FIFO_OVERFLOW_IRQ | SPRD_INBOX_FIFO_DELIVER_IRQ);
++		writel(val, priv->inbox_base + SPRD_MBOX_IRQ_MSK);
+ 
+-	/* Enable outbox FIFO not empty interrupt */
+-	val = readl(priv->outbox_base + SPRD_MBOX_IRQ_MSK);
+-	val &= ~SPRD_OUTBOX_FIFO_NOT_EMPTY_IRQ;
+-	writel(val, priv->outbox_base + SPRD_MBOX_IRQ_MSK);
++		/* Enable outbox FIFO not empty interrupt */
++		val = readl(priv->outbox_base + SPRD_MBOX_IRQ_MSK);
++		val &= ~SPRD_OUTBOX_FIFO_NOT_EMPTY_IRQ;
++		writel(val, priv->outbox_base + SPRD_MBOX_IRQ_MSK);
++	}
++	mutex_unlock(&priv->lock);
+ 
+ 	return 0;
+ }
+@@ -235,9 +241,13 @@ static void sprd_mbox_shutdown(struct mbox_chan *chan)
+ {
+ 	struct sprd_mbox_priv *priv = to_sprd_mbox_priv(chan->mbox);
+ 
+-	/* Disable inbox & outbox interrupt */
+-	writel(SPRD_INBOX_FIFO_IRQ_MASK, priv->inbox_base + SPRD_MBOX_IRQ_MSK);
+-	writel(SPRD_OUTBOX_FIFO_IRQ_MASK, priv->outbox_base + SPRD_MBOX_IRQ_MSK);
++	mutex_lock(&priv->lock);
++	if (--priv->refcnt == 0) {
++		/* Disable inbox & outbox interrupt */
++		writel(SPRD_INBOX_FIFO_IRQ_MASK, priv->inbox_base + SPRD_MBOX_IRQ_MSK);
++		writel(SPRD_OUTBOX_FIFO_IRQ_MASK, priv->outbox_base + SPRD_MBOX_IRQ_MSK);
++	}
++	mutex_unlock(&priv->lock);
+ }
+ 
+ static const struct mbox_chan_ops sprd_mbox_ops = {
+@@ -266,6 +276,8 @@ static int sprd_mbox_probe(struct platform_device *pdev)
+ 		return -ENOMEM;
+ 
+ 	priv->dev = dev;
++	priv->refcnt = 0;
++	mutex_init(&priv->lock);
+ 
+ 	/*
+ 	 * The Spreadtrum mailbox uses an inbox to send messages to the target
 -- 
-Julien Grall
+2.7.4
+
