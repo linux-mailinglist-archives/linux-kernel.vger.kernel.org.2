@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEAD8313C24
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 19:03:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AEB4313D29
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 19:21:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235279AbhBHSCw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 13:02:52 -0500
-Received: from mga05.intel.com ([192.55.52.43]:34621 "EHLO mga05.intel.com"
+        id S235500AbhBHSVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 13:21:32 -0500
+Received: from mga14.intel.com ([192.55.52.115]:62811 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233035AbhBHPgF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 10:36:05 -0500
-IronPort-SDR: nNs6q+4FTs40/c370FW0o9I+LXyBffilJ/ppqhOVteWP5hTPhoQS1ZP+vikPgN/avSFQlnaU94
- 5UHXNeoqnVIQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9889"; a="266561420"
+        id S234110AbhBHPp2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 10:45:28 -0500
+IronPort-SDR: lusZoTzLGUpwNl7WCen3xubBP4HwRI/hx6Nn9Xx0BHMhxfWM67gz/smw1S9SxzZoakiDx1Raql
+ ZjVUSyVVStsg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9889"; a="180952047"
 X-IronPort-AV: E=Sophos;i="5.81,162,1610438400"; 
-   d="scan'208";a="266561420"
+   d="scan'208";a="180952047"
 Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2021 07:30:36 -0800
-IronPort-SDR: NWkX9e3rYeHTbZOQR/YGlXMUwuYOwE62Xb9gdCNrTp8PTj0OHZC70rg2IZ/Z0tQEqd3Xm6BKrS
- V/+5HHn2IbMQ==
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2021 07:30:36 -0800
+IronPort-SDR: dKTQbW3z7KCkq4eFoLyPIDxa1rlsaA58H67iVLWdu8qR3fb9OwVReWgAMpPhFhA1TSMPR1bft0
+ CxV1OE5lk8+w==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.81,162,1610438400"; 
-   d="scan'208";a="358820876"
+   d="scan'208";a="358820880"
 Received: from otc-lr-04.jf.intel.com ([10.54.39.41])
   by orsmga003.jf.intel.com with ESMTP; 08 Feb 2021 07:30:36 -0800
 From:   kan.liang@linux.intel.com
@@ -31,9 +31,9 @@ To:     peterz@infradead.org, acme@kernel.org, mingo@kernel.org,
 Cc:     tglx@linutronix.de, bp@alien8.de, namhyung@kernel.org,
         jolsa@redhat.com, ak@linux.intel.com, yao.jin@linux.intel.com,
         alexander.shishkin@linux.intel.com, adrian.hunter@intel.com
-Subject: [PATCH 30/49] perf list: Support --cputype option to list hybrid pmu events
-Date:   Mon,  8 Feb 2021 07:25:27 -0800
-Message-Id: <1612797946-18784-31-git-send-email-kan.liang@linux.intel.com>
+Subject: [PATCH 31/49] perf stat: Hybrid evsel uses its own cpus
+Date:   Mon,  8 Feb 2021 07:25:28 -0800
+Message-Id: <1612797946-18784-32-git-send-email-kan.liang@linux.intel.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1612797946-18784-1-git-send-email-kan.liang@linux.intel.com>
 References: <1612797946-18784-1-git-send-email-kan.liang@linux.intel.com>
@@ -43,352 +43,275 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Jin Yao <yao.jin@linux.intel.com>
 
-This patch supports a new option '--cputype' to list core only
-pmu events or atom only pmu events.
+On hybrid platform, atom events can be only enabled on atom CPUs. Core
+events can be only enabled on core CPUs. So for a hybrid event, it can
+be only enabled on it's own CPUs.
 
-For example,
+But what the problem for current perf is, the cpus for evsel
+(via PMU sysfs) have been merged to evsel_list->core.all_cpus.
+It might be all CPUs.
 
-perf list --cputype atom
-...
-cache:
-  core_reject_l2q.any
-       [Counts the number of request that were not accepted into the L2Q because the L2Q is FULL. Unit: cpu_atom]
-  dl1.dirty_eviction
-       [Counts all L1D cacheline (dirty) evictions caused by miss, stores, and prefetches. Does not count evictions or dirty writebacks caused by snoops.
-        Does not count a replacement unless a (dirty) line was written back. Unit: cpu_atom]
-...
+So we need to figure out one way to let the hybrid event only use it's
+own CPUs.
 
-We can see "Unit: cpu_atom" is displayed in the brief description
-section which indicate the event is atom event.
+The idea is to create a new evlist__invalidate_all_cpus to invalidate
+the evsel_list->core.all_cpus then evlist__for_each_cpu returns cpu -1
+for hybrid evsel. If cpu is -1, hybrid evsel will use it's own cpus.
 
-There are some duplicated events, e.g. inst_retired.any. This patch
-lists them all.
+We will see following code piece in patch.
 
-perf list
-  ...
-  inst_retired.any
-       [Fixed Counter: Counts the number of instructions retired. Unit: cpu_atom]
-  inst_retired.any
-       [Number of instructions retired. Fixed Counter - architectural event. Unit: cpu_core]
+if (cpu == -1 && !evlist->thread_mode)
+        evsel__enable_cpus(pos);
 
-One "inst_retired.any" is available on cpu_atom, another "inst_retired.any" is
-available on cpu_core.
-
-Each hybrid pmu event has been assigned with a pmu, this patch just compares
-the pmu name before listing the result.
+It lets the event be only enabled on event's own cpus.
 
 Reviewed-by: Andi Kleen <ak@linux.intel.com>
 Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
 ---
- tools/perf/Documentation/perf-list.txt |  4 ++++
- tools/perf/builtin-list.c              | 42 ++++++++++++++++++++++++----------
- tools/perf/util/metricgroup.c          |  6 ++++-
- tools/perf/util/metricgroup.h          |  2 +-
- tools/perf/util/parse-events.c         |  8 ++++---
- tools/perf/util/parse-events.h         |  3 ++-
- tools/perf/util/pmu.c                  | 30 ++++++++++++++++++++----
- tools/perf/util/pmu.h                  |  2 +-
- 8 files changed, 73 insertions(+), 24 deletions(-)
+ tools/perf/builtin-stat.c | 37 ++++++++++++++++++++++--
+ tools/perf/util/evlist.c  | 72 ++++++++++++++++++++++++++++++++++++++++++++---
+ tools/perf/util/evlist.h  |  4 +++
+ tools/perf/util/evsel.h   |  8 ++++++
+ 4 files changed, 115 insertions(+), 6 deletions(-)
 
-diff --git a/tools/perf/Documentation/perf-list.txt b/tools/perf/Documentation/perf-list.txt
-index 4c7db1d..4dc8d0a 100644
---- a/tools/perf/Documentation/perf-list.txt
-+++ b/tools/perf/Documentation/perf-list.txt
-@@ -39,6 +39,10 @@ any extra expressions computed by perf stat.
- --deprecated::
- Print deprecated events. By default the deprecated events are hidden.
- 
-+--cputype::
-+Print events applying cpu with this type for hybrid platform
-+(e.g. --cputype core or --cputype atom)
-+
- [[EVENT_MODIFIERS]]
- EVENT MODIFIERS
- ---------------
-diff --git a/tools/perf/builtin-list.c b/tools/perf/builtin-list.c
-index 10ab5e4..5e4bef8 100644
---- a/tools/perf/builtin-list.c
-+++ b/tools/perf/builtin-list.c
-@@ -17,16 +17,19 @@
- #include <subcmd/pager.h>
- #include <subcmd/parse-options.h>
- #include <stdio.h>
-+#include <asm/bug.h>
- 
- static bool desc_flag = true;
- static bool details_flag;
-+static const char *hybrid_type;
- 
- int cmd_list(int argc, const char **argv)
- {
--	int i;
-+	int i, ret = 0;
- 	bool raw_dump = false;
- 	bool long_desc_flag = false;
- 	bool deprecated = false;
-+	char *pmu_name = NULL;
- 	struct option list_options[] = {
- 		OPT_BOOLEAN(0, "raw-dump", &raw_dump, "Dump raw events"),
- 		OPT_BOOLEAN('d', "desc", &desc_flag,
-@@ -37,6 +40,9 @@ int cmd_list(int argc, const char **argv)
- 			    "Print information on the perf event names and expressions used internally by events."),
- 		OPT_BOOLEAN(0, "deprecated", &deprecated,
- 			    "Print deprecated events."),
-+		OPT_STRING(0, "cputype", &hybrid_type, "hybrid cpu type",
-+			   "Print events applying cpu with this type for hybrid platform "
-+			   "(e.g. core or atom)"),
- 		OPT_INCR(0, "debug", &verbose,
- 			     "Enable debugging output"),
- 		OPT_END()
-@@ -56,10 +62,16 @@ int cmd_list(int argc, const char **argv)
- 	if (!raw_dump && pager_in_use())
- 		printf("\nList of pre-defined events (to be used in -e):\n\n");
- 
-+	if (hybrid_type) {
-+		pmu_name = perf_pmu__hybrid_type_to_pmu(hybrid_type);
-+		if (!pmu_name)
-+			 WARN_ONCE(1, "WARNING: hybrid cputype is not supported!\n");
-+	}
-+
- 	if (argc == 0) {
- 		print_events(NULL, raw_dump, !desc_flag, long_desc_flag,
--				details_flag, deprecated);
--		return 0;
-+				details_flag, deprecated, pmu_name);
-+		goto out;
- 	}
- 
- 	for (i = 0; i < argc; ++i) {
-@@ -82,25 +94,27 @@ int cmd_list(int argc, const char **argv)
- 		else if (strcmp(argv[i], "pmu") == 0)
- 			print_pmu_events(NULL, raw_dump, !desc_flag,
- 						long_desc_flag, details_flag,
--						deprecated);
-+						deprecated, pmu_name);
- 		else if (strcmp(argv[i], "sdt") == 0)
- 			print_sdt_events(NULL, NULL, raw_dump);
- 		else if (strcmp(argv[i], "metric") == 0 || strcmp(argv[i], "metrics") == 0)
--			metricgroup__print(true, false, NULL, raw_dump, details_flag);
-+			metricgroup__print(true, false, NULL, raw_dump, details_flag, pmu_name);
- 		else if (strcmp(argv[i], "metricgroup") == 0 || strcmp(argv[i], "metricgroups") == 0)
--			metricgroup__print(false, true, NULL, raw_dump, details_flag);
-+			metricgroup__print(false, true, NULL, raw_dump, details_flag, pmu_name);
- 		else if ((sep = strchr(argv[i], ':')) != NULL) {
- 			int sep_idx;
- 
- 			sep_idx = sep - argv[i];
- 			s = strdup(argv[i]);
--			if (s == NULL)
--				return -1;
-+			if (s == NULL) {
-+				ret = -1;
-+				goto out;
-+			}
- 
- 			s[sep_idx] = '\0';
- 			print_tracepoint_events(s, s + sep_idx + 1, raw_dump);
- 			print_sdt_events(s, s + sep_idx + 1, raw_dump);
--			metricgroup__print(true, true, s, raw_dump, details_flag);
-+			metricgroup__print(true, true, s, raw_dump, details_flag, pmu_name);
- 			free(s);
- 		} else {
- 			if (asprintf(&s, "*%s*", argv[i]) < 0) {
-@@ -116,12 +130,16 @@ int cmd_list(int argc, const char **argv)
- 			print_pmu_events(s, raw_dump, !desc_flag,
- 						long_desc_flag,
- 						details_flag,
--						deprecated);
-+						deprecated,
-+						pmu_name);
- 			print_tracepoint_events(NULL, s, raw_dump);
- 			print_sdt_events(NULL, s, raw_dump);
--			metricgroup__print(true, true, s, raw_dump, details_flag);
-+			metricgroup__print(true, true, s, raw_dump, details_flag, pmu_name);
- 			free(s);
- 		}
- 	}
--	return 0;
-+
-+out:
-+	free(pmu_name);
-+	return ret;
- }
-diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
-index ee94d3e..df05134 100644
---- a/tools/perf/util/metricgroup.c
-+++ b/tools/perf/util/metricgroup.c
-@@ -609,7 +609,7 @@ static int metricgroup__print_sys_event_iter(struct pmu_event *pe, void *data)
+diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
+index bc84b31..afb8789 100644
+--- a/tools/perf/builtin-stat.c
++++ b/tools/perf/builtin-stat.c
+@@ -392,6 +392,18 @@ static int read_counter_cpu(struct evsel *counter, struct timespec *rs, int cpu)
+ 	return 0;
  }
  
- void metricgroup__print(bool metrics, bool metricgroups, char *filter,
--			bool raw, bool details)
-+			bool raw, bool details, const char *pmu_name)
- {
- 	struct pmu_events_map *map = perf_pmu__find_map(NULL);
- 	struct pmu_event *pe;
-@@ -635,6 +635,10 @@ void metricgroup__print(bool metrics, bool metricgroups, char *filter,
- 			break;
- 		if (!pe->metric_expr)
- 			continue;
-+		if (pmu_name && perf_pmu__is_hybrid(pe->pmu) &&
-+		    strcmp(pmu_name, pe->pmu)) {
-+			continue;
-+		}
- 		if (metricgroup__print_pmu_event(pe, metricgroups, filter,
- 						 raw, details, &groups,
- 						 metriclist) < 0)
-diff --git a/tools/perf/util/metricgroup.h b/tools/perf/util/metricgroup.h
-index ed1b939..b03111b 100644
---- a/tools/perf/util/metricgroup.h
-+++ b/tools/perf/util/metricgroup.h
-@@ -53,7 +53,7 @@ int metricgroup__parse_groups_test(struct evlist *evlist,
- 				   struct rblist *metric_events);
- 
- void metricgroup__print(bool metrics, bool groups, char *filter,
--			bool raw, bool details);
-+			bool raw, bool details, const char *pmu_name);
- bool metricgroup__has_metric(const char *metric);
- int arch_get_runtimeparam(struct pmu_event *pe __maybe_unused);
- void metricgroup__rblist_exit(struct rblist *metric_events);
-diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
-index 42c84ad..81a6fce 100644
---- a/tools/perf/util/parse-events.c
-+++ b/tools/perf/util/parse-events.c
-@@ -2893,7 +2893,8 @@ void print_symbol_events(const char *event_glob, unsigned type,
-  * Print the help text for the event symbols:
-  */
- void print_events(const char *event_glob, bool name_only, bool quiet_flag,
--			bool long_desc, bool details_flag, bool deprecated)
-+			bool long_desc, bool details_flag, bool deprecated,
-+			const char *pmu_name)
- {
- 	print_symbol_events(event_glob, PERF_TYPE_HARDWARE,
- 			    event_symbols_hw, PERF_COUNT_HW_MAX, name_only);
-@@ -2905,7 +2906,7 @@ void print_events(const char *event_glob, bool name_only, bool quiet_flag,
- 	print_hwcache_events(event_glob, name_only);
- 
- 	print_pmu_events(event_glob, name_only, quiet_flag, long_desc,
--			details_flag, deprecated);
-+			details_flag, deprecated, pmu_name);
- 
- 	if (event_glob != NULL)
- 		return;
-@@ -2931,7 +2932,8 @@ void print_events(const char *event_glob, bool name_only, bool quiet_flag,
- 
- 	print_sdt_events(NULL, NULL, name_only);
- 
--	metricgroup__print(true, true, NULL, name_only, details_flag);
-+	metricgroup__print(true, true, NULL, name_only, details_flag,
-+			   pmu_name);
- 
- 	print_libpfm_events(name_only, long_desc);
- }
-diff --git a/tools/perf/util/parse-events.h b/tools/perf/util/parse-events.h
-index e80c9b7..b875485 100644
---- a/tools/perf/util/parse-events.h
-+++ b/tools/perf/util/parse-events.h
-@@ -217,7 +217,8 @@ void parse_events_evlist_error(struct parse_events_state *parse_state,
- 			       int idx, const char *str);
- 
- void print_events(const char *event_glob, bool name_only, bool quiet,
--		  bool long_desc, bool details_flag, bool deprecated);
-+		  bool long_desc, bool details_flag, bool deprecated,
-+		  const char *pmu_name);
- 
- struct event_symbol {
- 	const char	*symbol;
-diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
-index 04447f5..9a6c973 100644
---- a/tools/perf/util/pmu.c
-+++ b/tools/perf/util/pmu.c
-@@ -1546,6 +1546,7 @@ static int cmp_sevent(const void *a, const void *b)
- {
- 	const struct sevent *as = a;
- 	const struct sevent *bs = b;
-+	int ret;
- 
- 	/* Put extra events last */
- 	if (!!as->desc != !!bs->desc)
-@@ -1561,7 +1562,13 @@ static int cmp_sevent(const void *a, const void *b)
- 	if (as->is_cpu != bs->is_cpu)
- 		return bs->is_cpu - as->is_cpu;
- 
--	return strcmp(as->name, bs->name);
-+	ret = strcmp(as->name, bs->name);
-+	if (!ret) {
-+		if (as->pmu && bs->pmu)
-+			return strcmp(as->pmu, bs->pmu);
-+	}
++static int read_counter_cpus(struct evsel *counter, struct timespec *rs)
++{
++	int cpu, nr_cpus, err = 0;
++	struct perf_cpu_map *cpus = evsel__cpus(counter);
 +
-+	return ret;
- }
- 
- static void wordwrap(char *s, int start, int max, int corr)
-@@ -1591,7 +1598,8 @@ bool is_pmu_core(const char *name)
- }
- 
- void print_pmu_events(const char *event_glob, bool name_only, bool quiet_flag,
--			bool long_desc, bool details_flag, bool deprecated)
-+			bool long_desc, bool details_flag, bool deprecated,
-+			const char *pmu_name)
- {
- 	struct perf_pmu *pmu;
- 	struct perf_pmu_alias *alias;
-@@ -1617,10 +1625,16 @@ void print_pmu_events(const char *event_glob, bool name_only, bool quiet_flag,
- 	pmu = NULL;
- 	j = 0;
- 	while ((pmu = perf_pmu__scan(pmu)) != NULL) {
-+		if (pmu_name && perf_pmu__is_hybrid(pmu->name) &&
-+		    strcmp(pmu_name, pmu->name)) {
-+			continue;
-+		}
++	nr_cpus = cpus ? cpus->nr : 1;
++	for (cpu = 0; cpu < nr_cpus; cpu++)
++		err = read_counter_cpu(counter, rs, cpu);
 +
- 		list_for_each_entry(alias, &pmu->aliases, list) {
- 			char *name = alias->desc ? alias->name :
- 				format_alias(buf, sizeof(buf), pmu, alias);
--			bool is_cpu = is_pmu_core(pmu->name);
-+			bool is_cpu = is_pmu_core(pmu->name) ||
-+				      perf_pmu__is_hybrid(pmu->name);
- 
- 			if (alias->deprecated && !deprecated)
++	return err;
++}
++
+ static int read_affinity_counters(struct timespec *rs)
+ {
+ 	struct evsel *counter;
+@@ -413,8 +425,14 @@ static int read_affinity_counters(struct timespec *rs)
+ 			if (evsel__cpu_iter_skip(counter, cpu))
  				continue;
-@@ -1653,6 +1667,7 @@ void print_pmu_events(const char *event_glob, bool name_only, bool quiet_flag,
- 			aliases[j].metric_expr = alias->metric_expr;
- 			aliases[j].metric_name = alias->metric_name;
- 			aliases[j].is_cpu = is_cpu;
-+			aliases[j].pmu = alias->pmu;
- 			j++;
+ 			if (!counter->err) {
+-				counter->err = read_counter_cpu(counter, rs,
+-								counter->cpu_iter - 1);
++				if (cpu == -1 && !evsel_list->thread_mode) {
++					counter->err = read_counter_cpus(counter, rs);
++				} else if (evsel_list->thread_mode) {
++					counter->err = read_counter_cpu(counter, rs, 0);
++				} else {
++					counter->err = read_counter_cpu(counter, rs,
++									counter->cpu_iter - 1);
++				}
+ 			}
  		}
- 		if (pmu->selectable &&
-@@ -1668,8 +1683,13 @@ void print_pmu_events(const char *event_glob, bool name_only, bool quiet_flag,
- 	qsort(aliases, len, sizeof(struct sevent), cmp_sevent);
- 	for (j = 0; j < len; j++) {
- 		/* Skip duplicates */
--		if (j > 0 && !strcmp(aliases[j].name, aliases[j - 1].name))
--			continue;
-+		if (j > 0 && !strcmp(aliases[j].name, aliases[j - 1].name)) {
-+			if (!aliases[j].pmu || !aliases[j - 1].pmu ||
-+			    !strcmp(aliases[j].pmu, aliases[j - 1].pmu)) {
-+				continue;
-+			}
-+		}
-+
- 		if (name_only) {
- 			printf("%s ", aliases[j].name);
- 			continue;
-diff --git a/tools/perf/util/pmu.h b/tools/perf/util/pmu.h
-index bb74595..5b727cf 100644
---- a/tools/perf/util/pmu.h
-+++ b/tools/perf/util/pmu.h
-@@ -107,7 +107,7 @@ struct perf_pmu *perf_pmu__scan(struct perf_pmu *pmu);
- bool is_pmu_core(const char *name);
- void print_pmu_events(const char *event_glob, bool name_only, bool quiet,
- 		      bool long_desc, bool details_flag,
--		      bool deprecated);
-+		      bool deprecated, const char *pmu_name);
- bool pmu_have_event(const char *pname, const char *name);
+ 	}
+@@ -747,6 +765,21 @@ static int __run_perf_stat(int argc, const char **argv, int run_idx)
+ 	if (group)
+ 		evlist__set_leader(evsel_list);
  
- int perf_pmu__scan_file(struct perf_pmu *pmu, const char *name, const char *fmt, ...) __scanf(3, 4);
++	/*
++	 * On hybrid platform, the cpus for evsel (via PMU sysfs) have been
++	 * merged to evsel_list->core.all_cpus. We use evlist__invalidate_all_cpus
++	 * to invalidate the evsel_list->core.all_cpus then evlist__for_each_cpu
++	 * returns cpu -1 for hybrid evsel. If cpu is -1, hybrid evsel will
++	 * use it's own cpus.
++	 */
++	if (evlist__has_hybrid_events(evsel_list)) {
++		evlist__invalidate_all_cpus(evsel_list);
++		if (!target__has_cpu(&target) ||
++		    target__has_per_thread(&target)) {
++			evsel_list->thread_mode = true;
++		}
++	}
++
+ 	if (affinity__setup(&affinity) < 0)
+ 		return -1;
+ 
+diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
+index 05363a7..626a0e7 100644
+--- a/tools/perf/util/evlist.c
++++ b/tools/perf/util/evlist.c
+@@ -375,7 +375,8 @@ bool evsel__cpu_iter_skip_no_inc(struct evsel *ev, int cpu)
+ bool evsel__cpu_iter_skip(struct evsel *ev, int cpu)
+ {
+ 	if (!evsel__cpu_iter_skip_no_inc(ev, cpu)) {
+-		ev->cpu_iter++;
++		if (cpu != -1)
++			ev->cpu_iter++;
+ 		return false;
+ 	}
+ 	return true;
+@@ -404,6 +405,16 @@ static int evlist__is_enabled(struct evlist *evlist)
+ 	return false;
+ }
+ 
++static void evsel__disable_cpus(struct evsel *evsel)
++{
++	int cpu, nr_cpus;
++	struct perf_cpu_map *cpus = evsel__cpus(evsel);
++
++	nr_cpus = cpus ? cpus->nr : 1;
++	for (cpu = 0; cpu < nr_cpus; cpu++)
++		evsel__disable_cpu(evsel, cpu);
++}
++
+ static void __evlist__disable(struct evlist *evlist, char *evsel_name)
+ {
+ 	struct evsel *pos;
+@@ -430,7 +441,12 @@ static void __evlist__disable(struct evlist *evlist, char *evsel_name)
+ 					has_imm = true;
+ 				if (pos->immediate != imm)
+ 					continue;
+-				evsel__disable_cpu(pos, pos->cpu_iter - 1);
++				if (cpu == -1 && !evlist->thread_mode)
++					evsel__disable_cpus(pos);
++				else if (evlist->thread_mode)
++					evsel__disable_cpu(pos, 0);
++				else
++					evsel__disable_cpu(pos, pos->cpu_iter - 1);
+ 			}
+ 		}
+ 		if (!has_imm)
+@@ -466,6 +482,15 @@ void evlist__disable_evsel(struct evlist *evlist, char *evsel_name)
+ 	__evlist__disable(evlist, evsel_name);
+ }
+ 
++static void evsel__enable_cpus(struct evsel *evsel)
++{
++	int cpu, nr_cpus;
++	struct perf_cpu_map *cpus = evsel__cpus(evsel);
++
++	nr_cpus = cpus ? cpus->nr : 1;
++	for (cpu = 0; cpu < nr_cpus; cpu++)
++		evsel__enable_cpu(evsel, cpu);
++}
+ static void __evlist__enable(struct evlist *evlist, char *evsel_name)
+ {
+ 	struct evsel *pos;
+@@ -485,7 +510,12 @@ static void __evlist__enable(struct evlist *evlist, char *evsel_name)
+ 				continue;
+ 			if (!evsel__is_group_leader(pos) || !pos->core.fd)
+ 				continue;
+-			evsel__enable_cpu(pos, pos->cpu_iter - 1);
++                        if (cpu == -1 && !evlist->thread_mode)
++                                evsel__enable_cpus(pos);
++                        else if (evlist->thread_mode)
++                                evsel__enable_cpu(pos, 0);
++                        else
++                                evsel__enable_cpu(pos, pos->cpu_iter - 1);
+ 		}
+ 	}
+ 	affinity__cleanup(&affinity);
+@@ -1260,6 +1290,16 @@ void evlist__set_selected(struct evlist *evlist, struct evsel *evsel)
+ 	evlist->selected = evsel;
+ }
+ 
++static void evsel__close_cpus(struct evsel *evsel)
++{
++	int cpu, nr_cpus;
++	struct perf_cpu_map *cpus = evsel__cpus(evsel);
++
++	nr_cpus = cpus ? cpus->nr : 1;
++	for (cpu = 0; cpu < nr_cpus; cpu++)
++		perf_evsel__close_cpu(&evsel->core, cpu);
++}
++
+ void evlist__close(struct evlist *evlist)
+ {
+ 	struct evsel *evsel;
+@@ -1284,7 +1324,13 @@ void evlist__close(struct evlist *evlist)
+ 		evlist__for_each_entry_reverse(evlist, evsel) {
+ 			if (evsel__cpu_iter_skip(evsel, cpu))
+ 			    continue;
+-			perf_evsel__close_cpu(&evsel->core, evsel->cpu_iter - 1);
++
++			if (cpu == -1 && !evlist->thread_mode)
++				evsel__close_cpus(evsel);
++			else if (evlist->thread_mode)
++				perf_evsel__close_cpu(&evsel->core, 0);
++			else
++				perf_evsel__close_cpu(&evsel->core, evsel->cpu_iter - 1);
+ 		}
+ 	}
+ 	affinity__cleanup(&affinity);
+@@ -2010,3 +2056,21 @@ struct evsel *evlist__find_evsel(struct evlist *evlist, int idx)
+ 	}
+ 	return NULL;
+ }
++
++bool evlist__has_hybrid_events(struct evlist *evlist)
++{
++	struct evsel *evsel;
++
++	evlist__for_each_entry(evlist, evsel) {
++		if (evsel__is_hybrid_event(evsel))
++			return true;
++	}
++
++	return false;
++}
++
++void evlist__invalidate_all_cpus(struct evlist *evlist)
++{
++	perf_cpu_map__put(evlist->core.all_cpus);
++	evlist->core.all_cpus = perf_cpu_map__empty_new(1);
++}
+diff --git a/tools/perf/util/evlist.h b/tools/perf/util/evlist.h
+index 1aae758..9741df4 100644
+--- a/tools/perf/util/evlist.h
++++ b/tools/perf/util/evlist.h
+@@ -52,6 +52,7 @@ struct evlist {
+ 	struct perf_evlist core;
+ 	int		 nr_groups;
+ 	bool		 enabled;
++	bool		 thread_mode;
+ 	int		 id_pos;
+ 	int		 is_pos;
+ 	u64		 combined_sample_type;
+@@ -353,4 +354,7 @@ int evlist__ctlfd_ack(struct evlist *evlist);
+ #define EVLIST_DISABLED_MSG "Events disabled\n"
+ 
+ struct evsel *evlist__find_evsel(struct evlist *evlist, int idx);
++void evlist__invalidate_all_cpus(struct evlist *evlist);
++
++bool evlist__has_hybrid_events(struct evlist *evlist);
+ #endif /* __PERF_EVLIST_H */
+diff --git a/tools/perf/util/evsel.h b/tools/perf/util/evsel.h
+index 5c161a2..4eb054a 100644
+--- a/tools/perf/util/evsel.h
++++ b/tools/perf/util/evsel.h
+@@ -7,9 +7,11 @@
+ #include <sys/types.h>
+ #include <linux/perf_event.h>
+ #include <linux/types.h>
++#include <string.h>
+ #include <internal/evsel.h>
+ #include <perf/evsel.h>
+ #include "symbol_conf.h"
++#include "pmu.h"
+ #include <internal/cpumap.h>
+ 
+ struct bpf_object;
+@@ -427,4 +429,10 @@ static inline bool evsel__is_dummy_event(struct evsel *evsel)
+ struct perf_env *evsel__env(struct evsel *evsel);
+ 
+ int evsel__store_ids(struct evsel *evsel, struct evlist *evlist);
++
++static inline bool evsel__is_hybrid_event(struct evsel *evsel)
++{
++	return evsel->pmu_name && perf_pmu__is_hybrid(evsel->pmu_name);
++}
++
+ #endif /* __PERF_EVSEL_H */
 -- 
 2.7.4
 
