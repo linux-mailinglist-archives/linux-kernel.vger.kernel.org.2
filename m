@@ -2,90 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABFC131358A
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 15:48:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50E9831358B
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 15:48:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232981AbhBHOry (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 09:47:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43852 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232083AbhBHOep (ORCPT
+        id S233069AbhBHOr7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 09:47:59 -0500
+Received: from mail.xenproject.org ([104.130.215.37]:51080 "EHLO
+        mail.xenproject.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232255AbhBHOgQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 09:34:45 -0500
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81894C061788
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 06:34:01 -0800 (PST)
-Received: by mail-ej1-x633.google.com with SMTP id a9so25058305ejr.2
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 06:34:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Cw2bJezjxJXzUVOhX7h38EvcUGtOt4m/8Z18cKh11zE=;
-        b=CKSXjVv/xg64+uJ7vm8UgYFjbhKvsVTlGpTEy/kGeHqhEKekoJAyrdvUPb4S64ptCK
-         tSpe5V/OPUHp12qv9T/uAB6qTOvqLDauQaENBkKz32rXhUrxi+HZp0eXCneU5BPr/91I
-         JMH4/DKkc3uevcoH+j6f6YjwNB8pRUjNAFdX/CkbH6HcM5uVLrR23VUeL3+/DUQPCS9z
-         u2KJTQv78CxCPqteRjBqyR7vibJdL5tHanvaz6Cwq6c3d7NpdvBArMgm/vQu5Dy4/f1x
-         8bhmdWKRFR4VXFv7hOfWlafFilu6Bx32ENuDlGITq5rtNR7T43Zy2dDrfbaMZxk4zl2R
-         ljLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Cw2bJezjxJXzUVOhX7h38EvcUGtOt4m/8Z18cKh11zE=;
-        b=tGIKOy3G8wzRZ8i6YWPKQd3TCAqHUWb4lz9RjdhQakeg72kUcnfe0MiXoJOt51UJ6t
-         ba85a32Hj1lnY8+yjbfbqe/4cdgZy1swjuq2y+7BkDYYxYF578KRZBW1oR6x2UmJafpD
-         tlxF4PvnRr9Q7Q5GOtXMkOaeHbodBzUCu/Ov8OEUFjtVEu4OcRaXVJ0o2bWfLo9SqaG2
-         aD4ZkJRqBDwrjVupsudAD7I9L3FDLgusaqpgunee1XutoY/JyghxhhrBJ/KRDzsmJlSy
-         R2RWkDTNMFtUJ7AXS1TS/bP3oE3D3dNSRaLpxGOTyFpcdQ6EpFBwlVyu2/gMan80OSw9
-         F8xA==
-X-Gm-Message-State: AOAM531FdtGQBp/udhlX8X6NbGkrKKa4LI51Vk7LbJQ34J779TfvCO2X
-        LNjh6QIai0nj+gmfg1eX4A==
-X-Google-Smtp-Source: ABdhPJxYyHeWrwacfNGlS4E7cJrhjaIngAiadK1mA+3UYCAcNjd/2WLpXPsbPPb6n0UtwqffzjtSOg==
-X-Received: by 2002:a17:907:9702:: with SMTP id jg2mr17461438ejc.48.1612794840348;
-        Mon, 08 Feb 2021 06:34:00 -0800 (PST)
-Received: from localhost.localdomain ([46.53.253.245])
-        by smtp.gmail.com with ESMTPSA id o11sm9520679eds.19.2021.02.08.06.33.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Feb 2021 06:33:59 -0800 (PST)
-Date:   Mon, 8 Feb 2021 17:33:58 +0300
-From:   Alexey Dobriyan <adobriyan@gmail.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     mingo@redhat.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/5] sched: make struct task_struct::state 32-bit
-Message-ID: <20210208143358.GB10066@localhost.localdomain>
-References: <20210206151832.GA487103@localhost.localdomain>
- <YCEU3SSoYneIh5t1@hirez.programming.kicks-ass.net>
+        Mon, 8 Feb 2021 09:36:16 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=xen.org;
+        s=20200302mail; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
+        MIME-Version:Date:Message-ID:References:Cc:To:From:Subject;
+        bh=aivOqaGOcSxpvU6conwQTcZ0h2NZKR4vLEU5lBoBLnM=; b=TpQqFHUGQ309Z3JMnbU0rIfpjj
+        ASrKoC0dMPhuUjLk3ViAyPeqvknYbyMrlu/ppcR+upMwaNIxtxB5uhfH28LHUOellFyF5th0KdgHs
+        jKTAv2UPTPD50GHhHJfMLTxTwKrTdbDlgJtHRIu8230PgEIb7ppiHtcCI8fRvPRQBvDo=;
+Received: from xenbits.xenproject.org ([104.239.192.120])
+        by mail.xenproject.org with esmtp (Exim 4.92)
+        (envelope-from <julien@xen.org>)
+        id 1l97dF-0005YS-Lb; Mon, 08 Feb 2021 14:35:17 +0000
+Received: from [54.239.6.177] (helo=a483e7b01a66.ant.amazon.com)
+        by xenbits.xenproject.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <julien@xen.org>)
+        id 1l97dF-0007Co-Df; Mon, 08 Feb 2021 14:35:17 +0000
+Subject: Re: [PATCH 0/7] xen/events: bug fixes and some diagnostic aids
+From:   Julien Grall <julien@xen.org>
+To:     =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>,
+        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
+        linux-block@vger.kernel.org, netdev@vger.kernel.org,
+        linux-scsi@vger.kernel.org
+Cc:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        stable@vger.kernel.org,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        =?UTF-8?Q?Roger_Pau_Monn=c3=a9?= <roger.pau@citrix.com>,
+        Jens Axboe <axboe@kernel.dk>, Wei Liu <wei.liu@kernel.org>,
+        Paul Durrant <paul@xen.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+References: <20210206104932.29064-1-jgross@suse.com>
+ <bd63694e-ac0c-7954-ec00-edad05f8da1c@xen.org>
+ <eeb62129-d9fc-2155-0e0f-aff1fbb33fbc@suse.com>
+ <fcf3181b-3efc-55f5-687c-324937b543e6@xen.org>
+ <7aaeeb3d-1e1b-6166-84e9-481153811b62@suse.com>
+ <6f547bb5-777a-6fc2-eba2-cccb4adfca87@xen.org>
+ <0d623c98-a714-1639-cc53-f58ba3f08212@suse.com>
+ <28399fd1-9fe8-f31a-6ee8-e78de567155b@xen.org>
+ <1831964f-185e-31bb-2446-778f2c18d71b@suse.com>
+ <e8c46e36-cf9e-fb30-21b5-fa662834a01a@xen.org>
+ <199b76fd-630b-a0c6-926b-3e662103ec42@suse.com>
+ <063eff75-56a5-1af7-f684-a2ed4b13c9a7@xen.org>
+ <4279cab9-9b36-e83d-bd7a-ff7cd2832054@suse.com>
+ <279b741b-09dc-c6af-bf9d-df57922fa465@xen.org>
+Message-ID: <9f07dae5-050c-da2c-edc1-e1587dbae9c4@xen.org>
+Date:   Mon, 8 Feb 2021 14:35:14 +0000
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YCEU3SSoYneIh5t1@hirez.programming.kicks-ass.net>
+In-Reply-To: <279b741b-09dc-c6af-bf9d-df57922fa465@xen.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 08, 2021 at 11:39:25AM +0100, Peter Zijlstra wrote:
-> On Sat, Feb 06, 2021 at 06:18:32PM +0300, Alexey Dobriyan wrote:
-> > 32-bit accesses are shorter than 64-bit accesses on x86_64.
-> > Nothing uses 64-bitness of struct task_struct::state.
-> > 
-> > Propagate 32-bitness to other variables and functions.
+
+
+On 08/02/2021 14:20, Julien Grall wrote:
+>>>> I believe this will be the case before our "lateeoi" handling is
+>>>> becoming active (more precise: when our IRQ handler is returning to
+>>>> handle_fasteoi_irq()), resulting in the possibility of the same race we
+>>>> are experiencing now.
+>>>
+>>> I am a bit confused what you mean by "lateeoi" handling is becoming 
+>>> active. Can you clarify?
+>>
+>> See above: the next call of the handler should be allowed only after
+>> xen_irq_lateeoi() for the IRQ has been called.
+>>
+>> If the handler is being called earlier we have the race resulting
+>> in the WARN() splats.
 > 
-> You're saving a handful of bytes, why?
+> I feel it is dislike to understand race with just words. Can you provide
 
-Eeh? To save handful of bytes.
+Sorry I meant difficult rather than dislike.
 
-> > --- a/include/linux/sched.h
-> > +++ b/include/linux/sched.h
-> > @@ -655,7 +655,7 @@ struct task_struct {
-> >  	struct thread_info		thread_info;
-> >  #endif
-> >  	/* -1 unrunnable, 0 runnable, >0 stopped: */
-> > -	volatile long			state;
-> > +	volatile int			state;
-> 
-> A much larger, but probably more useful cleanup would be to get rid of
-> that volatile.
+Cheers,
 
-volatile is separate patch. It is independent of ->state type.
-I didn't think about this specific volatile at all.
+-- 
+Julien Grall
