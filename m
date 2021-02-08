@@ -2,41 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DE3B3138C4
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 17:03:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9D9731393B
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 17:23:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233484AbhBHQCq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 11:02:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56646 "EHLO mail.kernel.org"
+        id S234377AbhBHQWx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 11:22:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56402 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233059AbhBHPKT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 10:10:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 586EA64ED0;
-        Mon,  8 Feb 2021 15:07:17 +0000 (UTC)
+        id S233296AbhBHPLr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 10:11:47 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 07DD064EEE;
+        Mon,  8 Feb 2021 15:08:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612796838;
-        bh=3TuOz8bHl4HIAeQs1ik+Ny4j3GynPyIccpbC9utCSZc=;
+        s=korg; t=1612796932;
+        bh=p3pdBOXEm9sCnNMBb9NfCLPMjcdD5ya/XoThH5uT9vQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ifjptJKXlHXqWfbtfC0zQ1iboISgMqEs+ExahJGUqN9wfSwWmb6Gygyo+mHkNNdlz
-         SQaG66kj8EyVWcuL4Weqp+87qhO8RNEyAYrvB7tuWVemSzXb6QeENWTuI+BjGze1p7
-         KgcNtuqRuVnYT54ZX5pJ1MvvbO8V897togyXAbGA=
+        b=LoTBWchDlkzzcRlAc0V08eowlS4T3HB4ypUSlGktOOneN94QGxvZ8owrzGlMD3aL9
+         vAbSn0fpAihCDnrC2DMHQ5Ok9w+7uUwM4mkFgCJXOg60UGawCuTHtEls7GyZB7BLHT
+         KHqddyDS4B9U8f7stXup7Wfq9E3x4fpsqrsw0QY8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Wei Wang <weiwan@google.com>,
-        Ido Schimmel <idosch@idosch.org>,
-        Jesse Hathaway <jesse@mbuki-mvuki.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        David Ahern <dsahern@gmail.com>,
-        Ido Schimmel <idosch@mellanox.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Carsten Schmid <carsten_schmid@mentor.com>
-Subject: [PATCH 4.14 09/30] ipv4: fix race condition between route lookup and invalidation
+        stable@vger.kernel.org, Xie He <xie.he.0141@gmail.com>,
+        Martin Schiller <ms@dev.tdt.de>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 08/38] net: lapb: Copy the skb before sending a packet
 Date:   Mon,  8 Feb 2021 16:00:55 +0100
-Message-Id: <20210208145805.625201180@linuxfoundation.org>
+Message-Id: <20210208145806.464568818@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210208145805.239714726@linuxfoundation.org>
-References: <20210208145805.239714726@linuxfoundation.org>
+In-Reply-To: <20210208145806.141056364@linuxfoundation.org>
+References: <20210208145806.141056364@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,118 +41,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wei Wang <weiwan@google.com>
+From: Xie He <xie.he.0141@gmail.com>
 
-[ upstream commit 5018c59607a511cdee743b629c76206d9c9e6d7b ]
+[ Upstream commit 88c7a9fd9bdd3e453f04018920964c6f848a591a ]
 
-Jesse and Ido reported the following race condition:
-<CPU A, t0> - Received packet A is forwarded and cached dst entry is
-taken from the nexthop ('nhc->nhc_rth_input'). Calls skb_dst_set()
+When sending a packet, we will prepend it with an LAPB header.
+This modifies the shared parts of a cloned skb, so we should copy the
+skb rather than just clone it, before we prepend the header.
 
-<t1> - Given Jesse has busy routers ("ingesting full BGP routing tables
-from multiple ISPs"), route is added / deleted and rt_cache_flush() is
-called
+In "Documentation/networking/driver.rst" (the 2nd point), it states
+that drivers shouldn't modify the shared parts of a cloned skb when
+transmitting.
 
-<CPU B, t2> - Received packet B tries to use the same cached dst entry
-from t0, but rt_cache_valid() is no longer true and it is replaced in
-rt_cache_route() by the newer one. This calls dst_dev_put() on the
-original dst entry which assigns the blackhole netdev to 'dst->dev'
+The "dev_queue_xmit_nit" function in "net/core/dev.c", which is called
+when an skb is being sent, clones the skb and sents the clone to
+AF_PACKET sockets. Because the LAPB drivers first remove a 1-byte
+pseudo-header before handing over the skb to us, if we don't copy the
+skb before prepending the LAPB header, the first byte of the packets
+received on AF_PACKET sockets can be corrupted.
 
-<CPU A, t3> - dst_input(skb) is called on packet A and it is dropped due
-to 'dst->dev' being the blackhole netdev
-
-There are 2 issues in the v4 routing code:
-1. A per-netns counter is used to do the validation of the route. That
-means whenever a route is changed in the netns, users of all routes in
-the netns needs to redo lookup. v6 has an implementation of only
-updating fn_sernum for routes that are affected.
-2. When rt_cache_valid() returns false, rt_cache_route() is called to
-throw away the current cache, and create a new one. This seems
-unnecessary because as long as this route does not change, the route
-cache does not need to be recreated.
-
-To fully solve the above 2 issues, it probably needs quite some code
-changes and requires careful testing, and does not suite for net branch.
-
-So this patch only tries to add the deleted cached rt into the uncached
-list, so user could still be able to use it to receive packets until
-it's done.
-
-Fixes: 95c47f9cf5e0 ("ipv4: call dst_dev_put() properly")
-Signed-off-by: Wei Wang <weiwan@google.com>
-Reported-by: Ido Schimmel <idosch@idosch.org>
-Reported-by: Jesse Hathaway <jesse@mbuki-mvuki.org>
-Tested-by: Jesse Hathaway <jesse@mbuki-mvuki.org>
-Acked-by: Martin KaFai Lau <kafai@fb.com>
-Cc: David Ahern <dsahern@gmail.com>
-Reviewed-by: Ido Schimmel <idosch@mellanox.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Carsten Schmid <carsten_schmid@mentor.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Signed-off-by: Xie He <xie.he.0141@gmail.com>
+Acked-by: Martin Schiller <ms@dev.tdt.de>
+Link: https://lore.kernel.org/r/20210201055706.415842-1-xie.he.0141@gmail.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/ipv4/route.c |   38 +++++++++++++++++++-------------------
- 1 file changed, 19 insertions(+), 19 deletions(-)
+ net/lapb/lapb_out.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/net/ipv4/route.c
-+++ b/net/ipv4/route.c
-@@ -1437,6 +1437,24 @@ static bool rt_bind_exception(struct rta
- 	return ret;
- }
+diff --git a/net/lapb/lapb_out.c b/net/lapb/lapb_out.c
+index eda726e22f645..621c66f001177 100644
+--- a/net/lapb/lapb_out.c
++++ b/net/lapb/lapb_out.c
+@@ -87,7 +87,8 @@ void lapb_kick(struct lapb_cb *lapb)
+ 		skb = skb_dequeue(&lapb->write_queue);
  
-+struct uncached_list {
-+	spinlock_t		lock;
-+	struct list_head	head;
-+};
-+
-+static DEFINE_PER_CPU_ALIGNED(struct uncached_list, rt_uncached_list);
-+
-+static void rt_add_uncached_list(struct rtable *rt)
-+{
-+	struct uncached_list *ul = raw_cpu_ptr(&rt_uncached_list);
-+
-+	rt->rt_uncached_list = ul;
-+
-+	spin_lock_bh(&ul->lock);
-+	list_add_tail(&rt->rt_uncached, &ul->head);
-+	spin_unlock_bh(&ul->lock);
-+}
-+
- static bool rt_cache_route(struct fib_nh *nh, struct rtable *rt)
- {
- 	struct rtable *orig, *prev, **p;
-@@ -1456,7 +1474,7 @@ static bool rt_cache_route(struct fib_nh
- 	prev = cmpxchg(p, orig, rt);
- 	if (prev == orig) {
- 		if (orig) {
--			dst_dev_put(&orig->dst);
-+			rt_add_uncached_list(orig);
- 			dst_release(&orig->dst);
- 		}
- 	} else {
-@@ -1467,24 +1485,6 @@ static bool rt_cache_route(struct fib_nh
- 	return ret;
- }
- 
--struct uncached_list {
--	spinlock_t		lock;
--	struct list_head	head;
--};
--
--static DEFINE_PER_CPU_ALIGNED(struct uncached_list, rt_uncached_list);
--
--static void rt_add_uncached_list(struct rtable *rt)
--{
--	struct uncached_list *ul = raw_cpu_ptr(&rt_uncached_list);
--
--	rt->rt_uncached_list = ul;
--
--	spin_lock_bh(&ul->lock);
--	list_add_tail(&rt->rt_uncached, &ul->head);
--	spin_unlock_bh(&ul->lock);
--}
--
- static void ipv4_dst_destroy(struct dst_entry *dst)
- {
- 	struct dst_metrics *p = (struct dst_metrics *)DST_METRICS_PTR(dst);
+ 		do {
+-			if ((skbn = skb_clone(skb, GFP_ATOMIC)) == NULL) {
++			skbn = skb_copy(skb, GFP_ATOMIC);
++			if (!skbn) {
+ 				skb_queue_head(&lapb->write_queue, skb);
+ 				break;
+ 			}
+-- 
+2.27.0
+
 
 
