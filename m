@@ -2,108 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D04B312927
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 04:04:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 571F231292F
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 04:08:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229638AbhBHDEg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Feb 2021 22:04:36 -0500
-Received: from foss.arm.com ([217.140.110.172]:55206 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229565AbhBHDEe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Feb 2021 22:04:34 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 00ADF1FB;
-        Sun,  7 Feb 2021 19:03:47 -0800 (PST)
-Received: from [192.168.0.130] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 74C8B3F719;
-        Sun,  7 Feb 2021 19:03:42 -0800 (PST)
-Subject: Re: [PATCH] mm/memtest: Add ARCH_USE_MEMTEST
-To:     Max Filippov <jcmvbkbc@gmail.com>
-Cc:     Linux Memory Management List <linux-mm@kvack.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Chris Zankel <chris@zankel.net>,
-        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org,
-        "open list:TENSILICA XTENSA PORT (xtensa)" 
-        <linux-xtensa@linux-xtensa.org>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <1612498242-31579-1-git-send-email-anshuman.khandual@arm.com>
- <CAMo8BfLXaycXgy-F=TaWzpEZZJKEhbZecxwvBVd6jTo0RJ8atQ@mail.gmail.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <dc4c19d2-62e6-389a-bb03-33bf30381a3b@arm.com>
-Date:   Mon, 8 Feb 2021 08:34:11 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S229623AbhBHDIe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Feb 2021 22:08:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37770 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229570AbhBHDIc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Feb 2021 22:08:32 -0500
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCFF7C061756;
+        Sun,  7 Feb 2021 19:07:52 -0800 (PST)
+Received: by mail-pg1-x52d.google.com with SMTP id j5so485596pgb.11;
+        Sun, 07 Feb 2021 19:07:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=EhtEZeeEA+VVGotJ/o1in6C2esDFRE7ssaKSW/qYRbY=;
+        b=YmYvKX+L0bfETG6+6bpLt3y/HSDuSQk3Gq05qlSFDHBFkRMo9Y3BnbtN/WUeq9cFM9
+         koSeSVrfnx8tatKAkY+9jTRFF5ZxXHhxbnVaE099SHlBdNqx/cM9m+w1AlJl4DN2/pV7
+         ULCXsnbxrMlKDyM9gaG5bS1urhv+VTZOrt/irFNXZVkcdkYY4lHlK1+Jlgy47dJf/IHW
+         5rdOy+uszR/LmrrqiQxnhVTSrEVNL7Z126BLa8mCzVdkY0kXPRoOs4sPfQojj+s02eAK
+         ovhEIAgTUf74b1k+S9IiTjTd6pCPwO9n29p+Bynb9BeQrsst9tTywgKTM+059gfez8Xc
+         UbIQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=EhtEZeeEA+VVGotJ/o1in6C2esDFRE7ssaKSW/qYRbY=;
+        b=h/mt6aggwe+HqZmRg941/35GD8ltRvzhzq5BYLiZlyyaZ8smK7FTegwY5OnMMZ3OuU
+         yErP+9gxvxcsWPxY0zwT+A4Tf6TzOQCOf552TQ01Q347kFkQli1qGsQA3f1J2yt3SI1B
+         +/IDfDQBFTZ1YMdbXaseyZQwb4r9n/Fe943zLzT53/2/rDy0DQ65w/jvuTUH1BpFDfEY
+         yinAt49wnc6uWwaALh6v/h7r2MgGFjWKbXRUXXEDYXFzwQ+jZIuqsnJIMpyADE4qH32n
+         zE44NCOHiGjVa0GpHJLR+U0jUhPr4qncD8A2amEoCJfylgkLtYnUUECwMe2FapK2a7va
+         lPrA==
+X-Gm-Message-State: AOAM533wRmqWRENCpvKfwtZLnQThbN+bVy74Bo5V5ExfrAdaVsUUHFoc
+        UstxEtL6YWd77ELYZBt4pOQ=
+X-Google-Smtp-Source: ABdhPJzR9UCjMHew/cXX0RbLB0aUFOgi9xX9rIP7bs5xgXu2ARIJ60PNqofThIfqxUxxOqGKLwt/5Q==
+X-Received: by 2002:a63:c911:: with SMTP id o17mr15023146pgg.102.1612753672326;
+        Sun, 07 Feb 2021 19:07:52 -0800 (PST)
+Received: from tj.ccdomain.com ([103.220.76.197])
+        by smtp.gmail.com with ESMTPSA id q17sm16970213pfl.143.2021.02.07.19.07.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 07 Feb 2021 19:07:51 -0800 (PST)
+From:   Yue Hu <zbestahu@gmail.com>
+To:     rjw@rjwysocki.net, rafael.j.wysocki@intel.com,
+        viresh.kumar@linaro.org, mingo@redhat.com, peterz@infradead.org,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org
+Cc:     dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, huyue2@yulong.com, zbestahu@163.com,
+        zhangwen@yulong.com
+Subject: [PATCH] cpufreq: schedutil: Don't use the limits_changed flag any more
+Date:   Mon,  8 Feb 2021 11:07:23 +0800
+Message-Id: <20210208030723.781-1-zbestahu@gmail.com>
+X-Mailer: git-send-email 2.29.2.windows.3
 MIME-Version: 1.0
-In-Reply-To: <CAMo8BfLXaycXgy-F=TaWzpEZZJKEhbZecxwvBVd6jTo0RJ8atQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Yue Hu <huyue2@yulong.com>
 
+The limits_changed flag was introduced by commit 600f5badb78c
+("cpufreq: schedutil: Don't skip freq update when limits change") due
+to race condition where need_freq_update is cleared in get_next_freq()
+which causes reducing the CPU frequency is ineffective while busy.
 
-On 2/5/21 1:05 PM, Max Filippov wrote:
-> On Thu, Feb 4, 2021 at 8:10 PM Anshuman Khandual
-> <anshuman.khandual@arm.com> wrote:
->>
->> early_memtest() does not get called from all architectures. Hence enabling
->> CONFIG_MEMTEST and providing a valid memtest=[1..N] kernel command line
->> option might not trigger the memory pattern tests as would be expected in
->> normal circumstances. This situation is misleading.
->>
->> The change here prevents the above mentioned problem after introducing a
->> new config option ARCH_USE_MEMTEST that should be subscribed on platforms
->> that call early_memtest(), in order to enable the config CONFIG_MEMTEST.
->> Conversely CONFIG_MEMTEST cannot be enabled on platforms where it would
->> not be tested anyway.
->>
->> Cc: Russell King <linux@armlinux.org.uk>
->> Cc: Catalin Marinas <catalin.marinas@arm.com>
->> Cc: Will Deacon <will@kernel.org>
->> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
->> Cc: Michael Ellerman <mpe@ellerman.id.au>
->> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
->> Cc: Paul Mackerras <paulus@samba.org>
->> Cc: Thomas Gleixner <tglx@linutronix.de>
->> Cc: Ingo Molnar <mingo@redhat.com>
->> Cc: Chris Zankel <chris@zankel.net>
->> Cc: Max Filippov <jcmvbkbc@gmail.com>
->> Cc: linux-arm-kernel@lists.infradead.org
->> Cc: linux-mips@vger.kernel.org
->> Cc: linuxppc-dev@lists.ozlabs.org
->> Cc: linux-xtensa@linux-xtensa.org
->> Cc: linux-mm@kvack.org
->> Cc: linux-kernel@vger.kernel.org
->> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
->> ---
->> This patch applies on v5.11-rc6 and has been tested on arm64 platform. But
->> it has been just build tested on all other platforms.
->>
->>  arch/arm/Kconfig     | 1 +
->>  arch/arm64/Kconfig   | 1 +
->>  arch/mips/Kconfig    | 1 +
->>  arch/powerpc/Kconfig | 1 +
->>  arch/x86/Kconfig     | 1 +
->>  arch/xtensa/Kconfig  | 1 +
->>  lib/Kconfig.debug    | 9 ++++++++-
->>  7 files changed, 14 insertions(+), 1 deletion(-)
-> 
-> Anshuman, entries in arch/*/Konfig files are sorted in alphabetical order,
-> please keep them that way.
+But now, the race condition above is gone because get_next_freq()
+doesn't clear the flag any more after commit 23a881852f3e ("cpufreq:
+schedutil: Don't skip freq update if need_freq_update is set").
 
-Sure, will fix up and resend.
+Moreover, need_freq_update currently will be set to true only in
+sugov_should_update_freq() if CPUFREQ_NEED_UPDATE_LIMITS is not set
+for the driver. However, limits may have changed at any time. And
+subsequent frequence update is depending on need_freq_update. So, we
+may skip this update.
 
-> 
-> Reviewed-by: Max Filippov <jcmvbkbc@gmail.com>
-> 
+Hence, let's remove it to avoid above issue and make code more simple.
+
+Signed-off-by: Yue Hu <huyue2@yulong.com>
+---
+ kernel/sched/cpufreq_schedutil.c | 11 +++--------
+ 1 file changed, 3 insertions(+), 8 deletions(-)
+
+diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
+index 41e498b..7dd85fb 100644
+--- a/kernel/sched/cpufreq_schedutil.c
++++ b/kernel/sched/cpufreq_schedutil.c
+@@ -40,7 +40,6 @@ struct sugov_policy {
+ 	struct task_struct	*thread;
+ 	bool			work_in_progress;
+ 
+-	bool			limits_changed;
+ 	bool			need_freq_update;
+ };
+ 
+@@ -89,11 +88,8 @@ static bool sugov_should_update_freq(struct sugov_policy *sg_policy, u64 time)
+ 	if (!cpufreq_this_cpu_can_update(sg_policy->policy))
+ 		return false;
+ 
+-	if (unlikely(sg_policy->limits_changed)) {
+-		sg_policy->limits_changed = false;
+-		sg_policy->need_freq_update = true;
++	if (unlikely(sg_policy->need_freq_update))
+ 		return true;
+-	}
+ 
+ 	delta_ns = time - sg_policy->last_freq_update_time;
+ 
+@@ -323,7 +319,7 @@ static bool sugov_cpu_is_busy(struct sugov_cpu *sg_cpu)
+ static inline void ignore_dl_rate_limit(struct sugov_cpu *sg_cpu, struct sugov_policy *sg_policy)
+ {
+ 	if (cpu_bw_dl(cpu_rq(sg_cpu->cpu)) > sg_cpu->bw_dl)
+-		sg_policy->limits_changed = true;
++		sg_policy->need_freq_update = true;
+ }
+ 
+ static inline bool sugov_update_single_common(struct sugov_cpu *sg_cpu,
+@@ -759,7 +755,6 @@ static int sugov_start(struct cpufreq_policy *policy)
+ 	sg_policy->last_freq_update_time	= 0;
+ 	sg_policy->next_freq			= 0;
+ 	sg_policy->work_in_progress		= false;
+-	sg_policy->limits_changed		= false;
+ 	sg_policy->cached_raw_freq		= 0;
+ 
+ 	sg_policy->need_freq_update = cpufreq_driver_test_flags(CPUFREQ_NEED_UPDATE_LIMITS);
+@@ -813,7 +808,7 @@ static void sugov_limits(struct cpufreq_policy *policy)
+ 		mutex_unlock(&sg_policy->work_lock);
+ 	}
+ 
+-	sg_policy->limits_changed = true;
++	sg_policy->need_freq_update = true;
+ }
+ 
+ struct cpufreq_governor schedutil_gov = {
+-- 
+1.9.1
+
