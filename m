@@ -2,189 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE041312B30
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 08:39:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B0DD312B31
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 08:40:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230096AbhBHHil (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 02:38:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38924 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230046AbhBHHiA (ORCPT
+        id S230097AbhBHHkR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 02:40:17 -0500
+Received: from outbound-gw.openxchange.ahost.me ([94.136.40.163]:41658 "EHLO
+        outbound-gw.openxchange.ahost.me" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229621AbhBHHkM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 02:38:00 -0500
-Received: from antares.kleine-koenig.org (antares.kleine-koenig.org [IPv6:2a01:4f8:c0c:3a97::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20B5BC06174A;
-        Sun,  7 Feb 2021 23:37:20 -0800 (PST)
-Received: by antares.kleine-koenig.org (Postfix, from userid 1000)
-        id 4884EAF3701; Mon,  8 Feb 2021 08:37:18 +0100 (CET)
-From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <uwe@kleine-koenig.org>
-To:     Tomas Winkler <tomas.winkler@intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-watchdog@vger.kernel.org
-Subject: [PATCH v2 2/2] mei: bus: change remove callback to return void
-Date:   Mon,  8 Feb 2021 08:37:05 +0100
-Message-Id: <20210208073705.428185-3-uwe@kleine-koenig.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210208073705.428185-1-uwe@kleine-koenig.org>
-References: <20210208073705.428185-1-uwe@kleine-koenig.org>
+        Mon, 8 Feb 2021 02:40:12 -0500
+X-Greylist: delayed 427 seconds by postgrey-1.27 at vger.kernel.org; Mon, 08 Feb 2021 02:40:11 EST
+Received: from localhost ([127.0.0.1] helo=outbound-gw.openxchange.ahost.me)
+        by outbound-gw.openxchange.ahost.me with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <phillip@squashfs.org.uk>)
+        id 1l918W-0004MZ-LE; Mon, 08 Feb 2021 07:39:08 +0000
+Date:   Mon, 8 Feb 2021 07:39:08 +0000 (GMT)
+From:   Phillip Lougher <phillip@squashfs.org.uk>
+To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Message-ID: <527909353.754618.1612769948607@webmail.123-reg.co.uk>
+Subject: [PATCH V2 3/4] Squashfs: add more sanity checks in inode lookup
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Priority: 3
+Importance: Normal
+X-Mailer: Open-Xchange Mailer v7.10.3-Rev30
+X-Originating-IP: 82.69.79.175
+X-Originating-Client: com.openexchange.ox.gui.dhtml
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The driver core ignores the return value of mei_cl_device_remove() so
-passing an error value doesn't solve any problem. As most mei drivers'
-remove callbacks return 0 unconditionally and returning a different value
-doesn't have any effect, change this prototype to return void and return 0
-unconditionally in mei_cl_device_remove(). The only driver that could
-return an error value is modified to emit an explicit warning in the error
-case.
+Sysbot has reported an "slab-out-of-bounds read" error which
+has been identified as being caused by a corrupted "ino_num"
+value read from the inode.  This could be because the metadata
+block is uncompressed, or because the "compression" bit has been
+corrupted (turning a compressed block into an uncompressed block).
 
-Acked-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Uwe Kleine-König <uwe@kleine-koenig.org>
+This patch adds additional sanity checks to detect this, and the
+following corruption.
+
+1. It checks against corruption of the inodes count.  This can either
+   lead to a larger table to be read, or a smaller than expected
+   table to be read.
+
+   In the case of a too large inodes count, this would often have been
+   trapped by the existing sanity checks, but this patch introduces
+   a more exact check, which can identify too small values.
+
+2. It checks the contents of the index table for corruption.
+
+Reported-by: syzbot+04419e3ff19d2970ea28@syzkaller.appspotmail.com
+Signed-off-by: Phillip Lougher <phillip@squashfs.org.uk>
+Cc: stable@vger.kernel.org
 ---
- drivers/misc/mei/bus.c           | 5 ++---
- drivers/misc/mei/hdcp/mei_hdcp.c | 7 +++++--
- drivers/nfc/microread/mei.c      | 4 +---
- drivers/nfc/pn544/mei.c          | 4 +---
- drivers/watchdog/mei_wdt.c       | 4 +---
- include/linux/mei_cl_bus.h       | 2 +-
- 6 files changed, 11 insertions(+), 15 deletions(-)
+ fs/squashfs/export.c | 41 +++++++++++++++++++++++++++++++++--------
+ 1 file changed, 33 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/misc/mei/bus.c b/drivers/misc/mei/bus.c
-index 50d617e7467e..54dddae46705 100644
---- a/drivers/misc/mei/bus.c
-+++ b/drivers/misc/mei/bus.c
-@@ -879,17 +879,16 @@ static int mei_cl_device_remove(struct device *dev)
+diff --git a/fs/squashfs/export.c b/fs/squashfs/export.c
+index ae2c87bb0fbe..3f134ba86a45 100644
+--- a/fs/squashfs/export.c
++++ b/fs/squashfs/export.c
+@@ -41,12 +41,17 @@ static long long squashfs_inode_lookup(struct super_block *sb, int ino_num)
+ 	struct squashfs_sb_info *msblk = sb->s_fs_info;
+ 	int blk = SQUASHFS_LOOKUP_BLOCK(ino_num - 1);
+ 	int offset = SQUASHFS_LOOKUP_BLOCK_OFFSET(ino_num - 1);
+-	u64 start = le64_to_cpu(msblk->inode_lookup_table[blk]);
++	u64 start;
+ 	__le64 ino;
+ 	int err;
+ 
+ 	TRACE("Entered squashfs_inode_lookup, inode_number = %d\n", ino_num);
+ 
++	if (ino_num == 0 || (ino_num - 1) >= msblk->inodes)
++		return -EINVAL;
++
++	start = le64_to_cpu(msblk->inode_lookup_table[blk]);
++
+ 	err = squashfs_read_metadata(sb, &ino, &start, &offset, sizeof(ino));
+ 	if (err < 0)
+ 		return err;
+@@ -111,7 +116,10 @@ __le64 *squashfs_read_inode_lookup_table(struct super_block *sb,
+ 		u64 lookup_table_start, u64 next_table, unsigned int inodes)
  {
- 	struct mei_cl_device *cldev = to_mei_cl_device(dev);
- 	struct mei_cl_driver *cldrv = to_mei_cl_driver(dev->driver);
--	int ret = 0;
+ 	unsigned int length = SQUASHFS_LOOKUP_BLOCK_BYTES(inodes);
++	unsigned int indexes = SQUASHFS_LOOKUP_BLOCKS(inodes);
++	int n;
+ 	__le64 *table;
++	u64 start, end;
  
- 	if (cldrv->remove)
--		ret = cldrv->remove(cldev);
-+		cldrv->remove(cldev);
+ 	TRACE("In read_inode_lookup_table, length %d\n", length);
  
- 	mei_cldev_unregister_callbacks(cldev);
+@@ -121,20 +129,37 @@ __le64 *squashfs_read_inode_lookup_table(struct super_block *sb,
+ 	if (inodes == 0)
+ 		return ERR_PTR(-EINVAL);
  
- 	mei_cl_bus_module_put(cldev);
- 	module_put(THIS_MODULE);
+-	/* length bytes should not extend into the next table - this check
+-	 * also traps instances where lookup_table_start is incorrectly larger
+-	 * than the next table start
++	/*
++	 * The computed size of the lookup table (length bytes) should exactly
++	 * match the table start and end points
+ 	 */
+-	if (lookup_table_start + length > next_table)
++	if (length != (next_table - lookup_table_start))
+ 		return ERR_PTR(-EINVAL);
  
--	return ret;
-+	return 0;
- }
+ 	table = squashfs_read_table(sb, lookup_table_start, length);
++	if (IS_ERR(table))
++		return table;
  
- static ssize_t name_show(struct device *dev, struct device_attribute *a,
-diff --git a/drivers/misc/mei/hdcp/mei_hdcp.c b/drivers/misc/mei/hdcp/mei_hdcp.c
-index 9ae9669e46ea..8447ad4b7d47 100644
---- a/drivers/misc/mei/hdcp/mei_hdcp.c
-+++ b/drivers/misc/mei/hdcp/mei_hdcp.c
-@@ -845,16 +845,19 @@ static int mei_hdcp_probe(struct mei_cl_device *cldev,
- 	return ret;
- }
- 
--static int mei_hdcp_remove(struct mei_cl_device *cldev)
-+static void mei_hdcp_remove(struct mei_cl_device *cldev)
- {
- 	struct i915_hdcp_comp_master *comp_master =
- 						mei_cldev_get_drvdata(cldev);
-+	int ret;
- 
- 	component_master_del(&cldev->dev, &mei_component_master_ops);
- 	kfree(comp_master);
- 	mei_cldev_set_drvdata(cldev, NULL);
- 
--	return mei_cldev_disable(cldev);
-+	ret = mei_cldev_disable(cldev);
-+	if (ret)
-+		dev_warn(&cldev->dev, "mei_cldev_disable() failed\n");
- }
- 
- #define MEI_UUID_HDCP GUID_INIT(0xB638AB7E, 0x94E2, 0x4EA2, 0xA5, \
-diff --git a/drivers/nfc/microread/mei.c b/drivers/nfc/microread/mei.c
-index 5dad8847a9b3..8fa7771085eb 100644
---- a/drivers/nfc/microread/mei.c
-+++ b/drivers/nfc/microread/mei.c
-@@ -44,15 +44,13 @@ static int microread_mei_probe(struct mei_cl_device *cldev,
- 	return 0;
- }
- 
--static int microread_mei_remove(struct mei_cl_device *cldev)
-+static void microread_mei_remove(struct mei_cl_device *cldev)
- {
- 	struct nfc_mei_phy *phy = mei_cldev_get_drvdata(cldev);
- 
- 	microread_remove(phy->hdev);
- 
- 	nfc_mei_phy_free(phy);
--
--	return 0;
- }
- 
- static struct mei_cl_device_id microread_mei_tbl[] = {
-diff --git a/drivers/nfc/pn544/mei.c b/drivers/nfc/pn544/mei.c
-index 579bc599f545..5c10aac085a4 100644
---- a/drivers/nfc/pn544/mei.c
-+++ b/drivers/nfc/pn544/mei.c
-@@ -42,7 +42,7 @@ static int pn544_mei_probe(struct mei_cl_device *cldev,
- 	return 0;
- }
- 
--static int pn544_mei_remove(struct mei_cl_device *cldev)
-+static void pn544_mei_remove(struct mei_cl_device *cldev)
- {
- 	struct nfc_mei_phy *phy = mei_cldev_get_drvdata(cldev);
- 
-@@ -51,8 +51,6 @@ static int pn544_mei_remove(struct mei_cl_device *cldev)
- 	pn544_hci_remove(phy->hdev);
- 
- 	nfc_mei_phy_free(phy);
--
--	return 0;
- }
- 
- static struct mei_cl_device_id pn544_mei_tbl[] = {
-diff --git a/drivers/watchdog/mei_wdt.c b/drivers/watchdog/mei_wdt.c
-index 5391bf3e6b11..53165e49c298 100644
---- a/drivers/watchdog/mei_wdt.c
-+++ b/drivers/watchdog/mei_wdt.c
-@@ -619,7 +619,7 @@ static int mei_wdt_probe(struct mei_cl_device *cldev,
- 	return ret;
- }
- 
--static int mei_wdt_remove(struct mei_cl_device *cldev)
-+static void mei_wdt_remove(struct mei_cl_device *cldev)
- {
- 	struct mei_wdt *wdt = mei_cldev_get_drvdata(cldev);
- 
-@@ -636,8 +636,6 @@ static int mei_wdt_remove(struct mei_cl_device *cldev)
- 	dbgfs_unregister(wdt);
- 
- 	kfree(wdt);
--
--	return 0;
- }
- 
- #define MEI_UUID_WD UUID_LE(0x05B79A6F, 0x4628, 0x4D7F, \
-diff --git a/include/linux/mei_cl_bus.h b/include/linux/mei_cl_bus.h
-index 959ad7d850b4..07f5ef8fc456 100644
---- a/include/linux/mei_cl_bus.h
-+++ b/include/linux/mei_cl_bus.h
-@@ -68,7 +68,7 @@ struct mei_cl_driver {
- 
- 	int (*probe)(struct mei_cl_device *cldev,
- 		     const struct mei_cl_device_id *id);
--	int (*remove)(struct mei_cl_device *cldev);
-+	void (*remove)(struct mei_cl_device *cldev);
- };
- 
- int __mei_cldev_driver_register(struct mei_cl_driver *cldrv,
+ 	/*
+-	 * table[0] points to the first inode lookup table metadata block,
+-	 * this should be less than lookup_table_start
++	 * table0], table[1], ... table[indexes - 1] store the locations
++	 * of the compressed inode lookup blocks.  Each entry should be
++	 * less than the next (i.e. table[0] < table[1]), and the difference
++	 * between them should be SQUASHFS_METADATA_SIZE or less.
++	 * table[indexes - 1] should  be less than lookup_table_start, and
++	 * again the difference should be SQUASHFS_METADATA_SIZE or less
+ 	 */
+-	if (!IS_ERR(table) && le64_to_cpu(table[0]) >= lookup_table_start) {
++	for (n = 0; n < (indexes - 1); n++) {
++		start = le64_to_cpu(table[n]);
++		end = le64_to_cpu(table[n + 1]);
++
++		if (start >= end || (end - start) > SQUASHFS_METADATA_SIZE) {
++			kfree(table);
++			return ERR_PTR(-EINVAL);
++		}
++	}
++
++	start = le64_to_cpu(table[indexes - 1]);
++	if (start >= lookup_table_start || (lookup_table_start - start) > SQUASHFS_METADATA_SIZE) {
+ 		kfree(table);
+ 		return ERR_PTR(-EINVAL);
+ 	}
 -- 
-2.29.2
-
+2.20.1
