@@ -2,307 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22A6E313579
+	by mail.lfdr.de (Postfix) with ESMTP id C2D9F31357A
 	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 15:46:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232710AbhBHOpV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 09:45:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42540 "EHLO
+        id S232934AbhBHOpk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 09:45:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231776AbhBHO2d (ORCPT
+        with ESMTP id S232620AbhBHO3W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 09:28:33 -0500
-Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 918FBC06178C;
-        Mon,  8 Feb 2021 06:27:53 -0800 (PST)
-Received: by mail-qk1-x736.google.com with SMTP id d85so14492898qkg.5;
-        Mon, 08 Feb 2021 06:27:53 -0800 (PST)
+        Mon, 8 Feb 2021 09:29:22 -0500
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CFCAC061793
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 06:28:42 -0800 (PST)
+Received: by mail-qk1-x72f.google.com with SMTP id u20so14490376qku.7
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 06:28:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=KuxNEK52/tWoYazLfm9IcbvC/RDZqE9jbqWUyvbiRuw=;
-        b=ecjvVxW5kEw6Hav+4q6Y+KpO0MUUrJr1ZvsvYap1H+4ErD76DvWS72EFgDEiMyoWwh
-         Sl8X/R43v1Qo4dlyzjWq04ip2NWheeMJoQOb5chTlHqEkjnmVvdg/dDcm5gCMQyVvtRx
-         iLJhKOqjokWaZv9pIdTG5DcBc0F4waVv90vyvZWap+QvaOfRNyTVbEYm19aXpLrUJbtK
-         tBbnCkpVX8qJLBSOr3TN64DjfEAO/LT2HS7IfTEh1bXH3kDMvWG6yrXaJBEoFP/reAE1
-         x0Cwt+yI5rvwR4tRpUV/nHs+hLTUspQDFqriX7mOeNhrMeByr3/y3dwspd+5c9OZ7LLs
-         zaKw==
+        bh=Bb/S4Td3g4WsPIOQ2YYmaNN30WlKMN8AhjpBjYjGqj0=;
+        b=AGt8xjxmimAt2GgQibBeNxyuBIoQiv4iNUAmZCl4cR6vSwgAAIKhOZ5gRRbQPr5NT1
+         RAjYYFg3ReGwXOm1fiExtoyCKH2YMfRJ9/XdgOog83B5uUy5aEBUZkkUCELT9IlcLvJk
+         fmKtVNpaRZy0P2w8Af42Oyr6+8PingLKA81CeRki9Y1kzhb90p7Z3KbNgljNNm5bXOof
+         PnxMgO54GemR3CNRJNmHPGapy4ovZzubYXYZh+DSuHRBkk7Y0bhscLiglAGSsSPcCHkF
+         3SgHCCajVCmKxyPWzplhBljh64dOpfRxsXLtGWSLQCFSeB8MoHqLOnjiRlGeoiiNSI5+
+         IyOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=KuxNEK52/tWoYazLfm9IcbvC/RDZqE9jbqWUyvbiRuw=;
-        b=ag6/aRZOgmIeG9DxOPTRaVHjFUplIDoBGrQmwFT9jZZhvi2GHQHXKjW80G90O7u+iB
-         2dNIqVLcrlF08M4kVuDIV56VsBW9jWLTBTbi2c7so/XJAXFTtmS5RdMRGbryVe58XAnJ
-         Rg6Z10TxJ5DAgsXj7wGRKMKJISX4eunUVyMZaYL4+tTaNKPzU3aEbp/F+USzIdtCx1+Z
-         98Lisxfzi0fr6320I8FrQrZu5/yueHlSX2jjW/w7+QrsxoBKwkVdRKXx9gDp4hq1NPTa
-         /Y9CSQ/zLO1jjGihLXvN8Ff4/wSr2fKgsPDyLjfMzfNj4F5lcZcVqY5aymIfYJ6qsQ+1
-         sn/Q==
-X-Gm-Message-State: AOAM530t6edfJACf+G34Og1jIQEw6TMX0YoKRPoSoxg78xc0jWrCw3gu
-        2pQsoOW7FkGd19xUjYIhZM5xAOkRHp+QyyV2sQxJ5lSk
-X-Google-Smtp-Source: ABdhPJw5MTs7DQSsm/8gq1yFT7/GGMPsCmMWmdr6YjPwVzAWhARliAOKpI/WlrMmWgcQjHt8ha5RbLvkzDkl8egFUKw=
-X-Received: by 2002:a37:c01:: with SMTP id 1mr5337773qkm.493.1612794472680;
- Mon, 08 Feb 2021 06:27:52 -0800 (PST)
+        bh=Bb/S4Td3g4WsPIOQ2YYmaNN30WlKMN8AhjpBjYjGqj0=;
+        b=awksruAeASD+Y0G03dCqQMsCKqJCY80tfnT3MDz5CL699JAFbhSdjE97X1WqdlDBkt
+         Lngt3RcCY0KrD0r4mDw6fdrj5FZGszTAjhws9q33iNvE4wjERf0B86LT8Z9ZoXJ+Uekm
+         VeK9N8fQBQQvDecttQ4bRY6MYBVNKmqAONt9JVh/ZinMrH3wvMkZCKkLYW5QGwgGKh5R
+         gNzNZH+sIu/PV1H2z5464qNGazCV5jZAgqpQxHWhEXXG2jqcuaTmm/YdAD3SY5ogWKvr
+         /pCDF3GBDEt+em1NAOeO7YyEQ+URWv+c4/VzNL7N1RxrXxgLeiCGbc1mNV1CYGMBpHpI
+         GJgw==
+X-Gm-Message-State: AOAM532h13z9UcfoVQ7zvrtNIco6IZWiUALQ6kDXGishrYcQjMGaTn67
+        SHDp90gZ/iA5W3RStmB6hujjAB53O79faCFVa7CFgp0Txi0=
+X-Google-Smtp-Source: ABdhPJytrqI9uL7jPI7+2TLa6d/SGK08PRcktyEXIqpFTUNWebsHZCgnDff2fgiXkMpga5++NKk9E6s3qJftTOZlb4Q=
+X-Received: by 2002:a05:620a:49:: with SMTP id t9mr18290718qkt.231.1612794521474;
+ Mon, 08 Feb 2021 06:28:41 -0800 (PST)
 MIME-Version: 1.0
-References: <1612785064-3072-1-git-send-email-orsonzhai@gmail.com> <1612785064-3072-2-git-send-email-orsonzhai@gmail.com>
-In-Reply-To: <1612785064-3072-2-git-send-email-orsonzhai@gmail.com>
-From:   Baolin Wang <baolin.wang7@gmail.com>
-Date:   Mon, 8 Feb 2021 22:27:47 +0800
-Message-ID: <CADBw62qJRoDGdaY8jB1pppgd8S6JnJ+A5sT+c00uXDO9wXucmg@mail.gmail.com>
-Subject: Re: [PATCH 2/3] mailbox: sprd: Add supplementary inbox support
-To:     Orson Zhai <orsonzhai@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Jassi Brar <jassisinghbrar@gmail.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Devicetree List <devicetree@vger.kernel.org>,
+References: <0000000000003be5f605bad34c09@google.com>
+In-Reply-To: <0000000000003be5f605bad34c09@google.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Mon, 8 Feb 2021 15:28:30 +0100
+Message-ID: <CACT4Y+Y4rfBqsoF4DDPYoyrZYFzGNO+hNKcu1QkFNcec2VY8xQ@mail.gmail.com>
+Subject: Re: linux-next boot error: kernel panic: VFS: Unable to mount root fs
+ on unknown-block(0,0)
+To:     syzbot <syzbot+b22ad1a79afb8da726c5@syzkaller.appspotmail.com>
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hannes Reinecke <hare@suse.de>, Jan Kara <jack@suse.cz>,
         LKML <linux-kernel@vger.kernel.org>,
-        Haidong Yao <haidong.yao@unisoc.com>,
-        Orson Zhai <orson.zhai@unisoc.com>
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Tejun Heo <tj@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 8, 2021 at 7:52 PM Orson Zhai <orsonzhai@gmail.com> wrote:
+On Mon, Feb 8, 2021 at 2:39 PM syzbot
+<syzbot+b22ad1a79afb8da726c5@syzkaller.appspotmail.com> wrote:
 >
-> From: Orson Zhai <orson.zhai@unisoc.com>
+> Hello,
 >
-> Some sensors connected to Unisoc mailbox will send data very frequently.
-> This makes channel 0 very busy and the messages from other remote cores
-> not able to be handled as soon as possible.
+> syzbot found the following issue on:
 >
-> Then a supplementary inbox is added to the host core side for transferring
-> mass but not emergency messages from the remote cores, such as step
-> counting sensor, with an independent FIFO and interrupt.
+> HEAD commit:    8d374d0d Add linux-next specific files for 20210208
+> git tree:       linux-next
+> console output: https://syzkaller.appspot.com/x/log.txt?x=13de8a40d00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=ced6adcf6aff98d6
+> dashboard link: https://syzkaller.appspot.com/bug?extid=b22ad1a79afb8da726c5
+>
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+b22ad1a79afb8da726c5@syzkaller.appspotmail.com
+>
+> netconsole: network logging started
+> gtp: GTP module loaded (pdp ctx size 104 bytes)
+> rdma_rxe: loaded
+> cfg80211: Loading compiled-in X.509 certificates for regulatory database
+> cfg80211: Loaded X.509 cert 'sforshee: 00b28ddf47aef9cea7'
+> ALSA device list:
+>   #0: Dummy 1
+>   #1: Loopback 1
+>   #2: Virtual MIDI Card 1
+> md: Waiting for all devices to be available before autodetect
+> md: If you don't use raid, use raid=noautodetect
+> md: Autodetecting RAID arrays.
+> md: autorun ...
+> md: ... autorun DONE.
+> VFS: Cannot open root device "sda1" or unknown-block(0,0): error -6
 
-So this is another part of the mailbox hardware, containing a batch of
-hardware channels? I did not see it before, its function is similar
-with inbox/outbox?
+Has anything changed in linux-next related to block devices?... It was
+supposed to boot from a standard GCE VM disk, but it does not seem to
+be probed by the kernel (should be /dev/sda).
 
+> Please append a correct "root=" boot option; here are the available partitions:
+> 0100            4096 ram0
+>  (driver?)
+> 0101            4096 ram1
+>  (driver?)
+> 0102            4096 ram2
+>  (driver?)
+> 0103            4096 ram3
+>  (driver?)
+> 0104            4096 ram4
+>  (driver?)
+> 0105            4096 ram5
+>  (driver?)
+> 0106            4096 ram6
+>  (driver?)
+> 0107            4096 ram7
+>  (driver?)
+> 0108            4096 ram8
+>  (driver?)
+> 0109            4096 ram9
+>  (driver?)
+> 010a            4096 ram10
+>  (driver?)
+> 010b            4096 ram11
+>  (driver?)
+> 010c            4096 ram12
+>  (driver?)
+> 010d            4096 ram13
+>  (driver?)
+> 010e            4096 ram14
+>  (driver?)
+> 010f            4096 ram15
+>  (driver?)
+> 1f00             128 mtdblock0
+>  (driver?)
+> Kernel panic - not syncing: VFS: Unable to mount root fs on unknown-block(0,0)
+> CPU: 1 PID: 1 Comm: swapper/0 Not tainted 5.11.0-rc6-next-20210208-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> Call Trace:
+>  __dump_stack lib/dump_stack.c:79 [inline]
+>  dump_stack+0x107/0x163 lib/dump_stack.c:120
+>  panic+0x306/0x73d kernel/panic.c:231
+>  mount_block_root+0x3f8/0x4dd init/do_mounts.c:445
+>  mount_root+0x1af/0x1f5 init/do_mounts.c:561
+>  prepare_namespace+0x1ff/0x234 init/do_mounts.c:613
+>  kernel_init_freeable+0x671/0x689 init/main.c:1550
+>  kernel_init+0xd/0x1b8 init/main.c:1426
+>  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+> Kernel Offset: disabled
+> Rebooting in 86400 seconds..
 >
-> Signed-off-by: Orson Zhai <orson.zhai@unisoc.com>
+>
 > ---
->  drivers/mailbox/sprd-mailbox.c | 93 ++++++++++++++++++++++++++++++++++--------
->  1 file changed, 75 insertions(+), 18 deletions(-)
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
 >
-> diff --git a/drivers/mailbox/sprd-mailbox.c b/drivers/mailbox/sprd-mailbox.c
-> index e606f52..74648db 100644
-> --- a/drivers/mailbox/sprd-mailbox.c
-> +++ b/drivers/mailbox/sprd-mailbox.c
-> @@ -11,6 +11,7 @@
->  #include <linux/io.h>
->  #include <linux/mailbox_controller.h>
->  #include <linux/module.h>
-> +#include <linux/of_device.h>
->  #include <linux/platform_device.h>
->  #include <linux/clk.h>
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 >
-> @@ -50,13 +51,17 @@
->  #define SPRD_OUTBOX_FIFO_NOT_EMPTY_IRQ         BIT(0)
->  #define SPRD_OUTBOX_FIFO_IRQ_MASK              GENMASK(4, 0)
->
-> +#define SPRD_OUTBOX_BASE_SPAN                  0x1000
->  #define SPRD_MBOX_CHAN_MAX                     8
-> +#define SPRD_SUPP_INBOX_ID_SC9860              6
->
->  struct sprd_mbox_priv {
->         struct mbox_controller  mbox;
->         struct device           *dev;
->         void __iomem            *inbox_base;
->         void __iomem            *outbox_base;
-> +       /*  Base register address for supplementary outbox */
-> +       void __iomem            *supp_base;
->         struct clk              *clk;
->         u32                     outbox_fifo_depth;
->
-> @@ -96,14 +101,13 @@ static u32 sprd_mbox_get_fifo_len(struct sprd_mbox_priv *priv, u32 fifo_sts)
->         return fifo_len;
->  }
->
-> -static irqreturn_t sprd_mbox_outbox_isr(int irq, void *data)
-> +static inline irqreturn_t do_outbox_isr(void __iomem *base, struct sprd_mbox_priv *priv)
-
-No need to add an explicit 'inline' tag, the compiler can do the smart
-things than us.
-
->  {
-> -       struct sprd_mbox_priv *priv = data;
->         struct mbox_chan *chan;
->         u32 fifo_sts, fifo_len, msg[2];
->         int i, id;
->
-> -       fifo_sts = readl(priv->outbox_base + SPRD_MBOX_FIFO_STS);
-> +       fifo_sts = readl(base + SPRD_MBOX_FIFO_STS);
->
->         fifo_len = sprd_mbox_get_fifo_len(priv, fifo_sts);
->         if (!fifo_len) {
-> @@ -112,23 +116,41 @@ static irqreturn_t sprd_mbox_outbox_isr(int irq, void *data)
->         }
->
->         for (i = 0; i < fifo_len; i++) {
-> -               msg[0] = readl(priv->outbox_base + SPRD_MBOX_MSG_LOW);
-> -               msg[1] = readl(priv->outbox_base + SPRD_MBOX_MSG_HIGH);
-> -               id = readl(priv->outbox_base + SPRD_MBOX_ID);
-> +               msg[0] = readl(base + SPRD_MBOX_MSG_LOW);
-> +               msg[1] = readl(base + SPRD_MBOX_MSG_HIGH);
-> +               id = readl(base + SPRD_MBOX_ID);
->
->                 chan = &priv->chan[id];
-> -               mbox_chan_received_data(chan, (void *)msg);
-> +               if (chan->cl)
-> +                       mbox_chan_received_data(chan, (void *)msg);
-> +               else
-> +                       dev_warn_ratelimited(priv->dev,
-> +                                   "message's been dropped at ch[%d]\n", id);
->
->                 /* Trigger to update outbox FIFO pointer */
-> -               writel(0x1, priv->outbox_base + SPRD_MBOX_TRIGGER);
-> +               writel(0x1, base + SPRD_MBOX_TRIGGER);
->         }
->
->         /* Clear irq status after reading all message. */
-> -       writel(SPRD_MBOX_IRQ_CLR, priv->outbox_base + SPRD_MBOX_IRQ_STS);
-> +       writel(SPRD_MBOX_IRQ_CLR, base + SPRD_MBOX_IRQ_STS);
->
->         return IRQ_HANDLED;
->  }
->
-> +static irqreturn_t sprd_mbox_outbox_isr(int irq, void *data)
-> +{
-> +       struct sprd_mbox_priv *priv = data;
-> +
-> +       return do_outbox_isr(priv->outbox_base, priv);
-> +}
-> +
-> +static irqreturn_t sprd_mbox_supp_isr(int irq, void *data)
-> +{
-> +       struct sprd_mbox_priv *priv = data;
-> +
-> +       return do_outbox_isr(priv->supp_base, priv);
-> +}
-> +
->  static irqreturn_t sprd_mbox_inbox_isr(int irq, void *data)
->  {
->         struct sprd_mbox_priv *priv = data;
-> @@ -231,6 +253,14 @@ static int sprd_mbox_startup(struct mbox_chan *chan)
->                 val = readl(priv->outbox_base + SPRD_MBOX_IRQ_MSK);
->                 val &= ~SPRD_OUTBOX_FIFO_NOT_EMPTY_IRQ;
->                 writel(val, priv->outbox_base + SPRD_MBOX_IRQ_MSK);
-> +
-> +               /* Enable supplementary outbox as the fundamental one */
-> +               if (priv->supp_base) {
-> +                       writel(0x0, priv->supp_base + SPRD_MBOX_FIFO_RST);
-> +                       val = readl(priv->supp_base + SPRD_MBOX_IRQ_MSK);
-> +                       val &= ~SPRD_OUTBOX_FIFO_NOT_EMPTY_IRQ;
-> +                       writel(val, priv->supp_base + SPRD_MBOX_IRQ_MSK);
-> +               }
->         }
->         mutex_unlock(&priv->lock);
->
-> @@ -246,6 +276,10 @@ static void sprd_mbox_shutdown(struct mbox_chan *chan)
->                 /* Disable inbox & outbox interrupt */
->                 writel(SPRD_INBOX_FIFO_IRQ_MASK, priv->inbox_base + SPRD_MBOX_IRQ_MSK);
->                 writel(SPRD_OUTBOX_FIFO_IRQ_MASK, priv->outbox_base + SPRD_MBOX_IRQ_MSK);
-> +
-> +               if (priv->supp_base)
-> +                       writel(SPRD_OUTBOX_FIFO_IRQ_MASK,
-> +                              priv->supp_base + SPRD_MBOX_IRQ_MSK);
->         }
->         mutex_unlock(&priv->lock);
->  }
-> @@ -268,8 +302,8 @@ static int sprd_mbox_probe(struct platform_device *pdev)
->  {
->         struct device *dev = &pdev->dev;
->         struct sprd_mbox_priv *priv;
-> -       int ret, inbox_irq, outbox_irq;
-> -       unsigned long id;
-> +       int ret, inbox_irq, outbox_irq, supp_irq;
-> +       unsigned long id, supp;
->
->         priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
->         if (!priv)
-> @@ -280,11 +314,15 @@ static int sprd_mbox_probe(struct platform_device *pdev)
->         mutex_init(&priv->lock);
->
->         /*
-> -        * The Spreadtrum mailbox uses an inbox to send messages to the target
-> -        * core, and uses an outbox to receive messages from other cores.
-> +        * Unisoc mailbox uses an inbox to send messages to the target
-> +        * core, and uses (an) outbox(es) to receive messages from other
-> +        * cores.
-> +        *
-> +        * Thus in general the mailbox controller supplies 2 different
-> +        * register addresses and IRQ numbers for inbox and outbox.
->          *
-> -        * Thus the mailbox controller supplies 2 different register addresses
-> -        * and IRQ numbers for inbox and outbox.
-> +        * If necessary, a supplementary inbox could be enabled optionally
-> +        * with an independent FIFO and an extra interrupt.
->          */
->         priv->inbox_base = devm_platform_ioremap_resource(pdev, 0);
->         if (IS_ERR(priv->inbox_base))
-> @@ -310,7 +348,7 @@ static int sprd_mbox_probe(struct platform_device *pdev)
->                 return ret;
->         }
->
-> -       inbox_irq = platform_get_irq(pdev, 0);
-> +       inbox_irq = platform_get_irq_byname(pdev, "inbox");
-
-I think you should put the dt changes before this patch.
-
->         if (inbox_irq < 0)
->                 return inbox_irq;
->
-> @@ -321,7 +359,7 @@ static int sprd_mbox_probe(struct platform_device *pdev)
->                 return ret;
->         }
->
-> -       outbox_irq = platform_get_irq(pdev, 1);
-> +       outbox_irq = platform_get_irq_byname(pdev, "outbox");
->         if (outbox_irq < 0)
->                 return outbox_irq;
->
-> @@ -332,6 +370,24 @@ static int sprd_mbox_probe(struct platform_device *pdev)
->                 return ret;
->         }
->
-> +       /* Supplementary outbox IRQ is optional */
-> +       supp_irq = platform_get_irq_byname(pdev, "supp-outbox");
-> +       if (supp_irq > 0) {
-> +               ret = devm_request_irq(dev, supp_irq, sprd_mbox_supp_isr,
-> +                                      IRQF_NO_SUSPEND, dev_name(dev), priv);
-> +               if (ret) {
-> +                       dev_err(dev, "failed to request outbox IRQ: %d\n", ret);
-> +                       return ret;
-> +               }
-> +
-> +               supp = (unsigned long) of_device_get_match_data(dev);
-> +               if (!supp) {
-> +                       dev_err(dev, "no supplementary outbox specified\n");
-> +                       return -ENODEV;
-> +               }
-> +               priv->supp_base = priv->outbox_base + (SPRD_OUTBOX_BASE_SPAN * supp);
-> +       }
-> +
->         /* Get the default outbox FIFO depth */
->         priv->outbox_fifo_depth =
->                 readl(priv->outbox_base + SPRD_MBOX_FIFO_DEPTH) + 1;
-> @@ -354,7 +410,8 @@ static int sprd_mbox_probe(struct platform_device *pdev)
->  }
->
->  static const struct of_device_id sprd_mbox_of_match[] = {
-> -       { .compatible = "sprd,sc9860-mailbox", },
-> +       { .compatible = "sprd,sc9860-mailbox",
-> +         .data = (void *)SPRD_SUPP_INBOX_ID_SC9860 },
->         { },
->  };
->  MODULE_DEVICE_TABLE(of, sprd_mbox_of_match);
 > --
-> 2.7.4
->
-
-
--- 
-Baolin Wang
+> You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/0000000000003be5f605bad34c09%40google.com.
