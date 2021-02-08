@@ -2,147 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BC2331326C
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 13:34:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C733931326E
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 13:34:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233001AbhBHMd3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 07:33:29 -0500
-Received: from mail-oi1-f174.google.com ([209.85.167.174]:33550 "EHLO
-        mail-oi1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232195AbhBHMXi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 07:23:38 -0500
-Received: by mail-oi1-f174.google.com with SMTP id g84so1581966oib.0
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 04:23:22 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dQEwbiMypKhbBuryhmpezZFoAPFM9BbLGoij2BA5Z4A=;
-        b=P08Eh1b7G4IoBa52wZ9xBgrPDcISlUuYeadvVcX6vHyxNsqCPoDxvtqjGuXFHGidtX
-         YG4CEUMG1+thJpSJVuqI3Us0v3pQEBcvjLLfNM5g9GTPd9aeauMxskmV9nwm1Teb6uSi
-         gY1oHJUlxx43IULY6crPnTAVv4c5uAmErSNOnLf5ywV4jwOL+DkkQowY8+OXgKrsm6KK
-         W3PZ2AuUEnZtBQbj9zvRqPwxiPUiOk58gcboDKTxspeSRdJVGe6NvjOHSJpQ1AMNLZbp
-         xytJgsp0cvetAObIuru1nNQ/2Ypk1Rs3vjXJeJ+rbp3N3jbrwQGwDFEmDoWZtgujLkHJ
-         vW8A==
-X-Gm-Message-State: AOAM532tHL1e8GTz+51PCHNXkChe71KX4+z3hjdvcaBYLOTGa/xewtPi
-        Fv085L65uocIDKl/2v7rBH3krcThT0jnBvwYW1E=
-X-Google-Smtp-Source: ABdhPJywfzB9Kk6b5rXnkwWOB6X31LNV+BNE4AyEz3vkr6HWoXyU8AZXdcKA+Fx5WNegLAVroYMvIoWDF9ciwa238WI=
-X-Received: by 2002:a54:4e88:: with SMTP id c8mr10766501oiy.148.1612786977234;
- Mon, 08 Feb 2021 04:22:57 -0800 (PST)
+        id S233144AbhBHMdl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 07:33:41 -0500
+Received: from mx2.suse.de ([195.135.220.15]:35502 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232808AbhBHMYN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 07:24:13 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1612787006; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=sAbphsKklSMr84x/HNHun/Cn+tfX3a8rPojN7H8+PsE=;
+        b=R/yfEUNZkNfprRqDy4QV5LM9vEuMUPZfykspz1LaSTCgKYi56fpfwWc8UbtajswoWLFDTd
+        A2t8imjBE3gNj90/nGueDuYq+YxMVAXlP5Yj9H/EVu1OdNOFzGkaKXBwdN5YqVf3Z+Z/0O
+        3lugsKSYA0HJlL09fa4E22cCcOSeJdQ=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id E7690B0D1;
+        Mon,  8 Feb 2021 12:23:25 +0000 (UTC)
+Subject: Re: [PATCH 7/7] xen/evtchn: read producer index only once
+To:     =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+Cc:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org
+References: <20210206104932.29064-1-jgross@suse.com>
+ <20210206104932.29064-8-jgross@suse.com>
+ <72334160-cffe-2d8a-23b7-2ea9ab1d803a@suse.com>
+ <626f500a-494a-0141-7bf3-94fb86b47ed4@suse.com>
+ <e88526ac-6972-fe08-c58f-ea872cbdcc14@suse.com>
+ <d0ca217c-ecc9-55f7-abb1-30a687a46b31@suse.com>
+ <a30db278-087b-554c-d5bf-1317e14e8508@suse.com>
+ <9d725a1b-ec8e-c078-5ec6-9c4899d4c7aa@suse.com>
+From:   Jan Beulich <jbeulich@suse.com>
+Message-ID: <58ec68aa-6d86-62dd-f28a-a4e5754b0fdf@suse.com>
+Date:   Mon, 8 Feb 2021 13:23:25 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-References: <20210129221643.GZ2002709@lianli.shorne-pla.net>
- <2a018afc-d797-3a91-ffab-e55ae3b0a795@rwth-aachen.de> <20210130230310.GC2002709@lianli.shorne-pla.net>
- <d9f4aafc-4d65-38b0-dde0-5e155836aee1@rwth-aachen.de> <20210131212752.GG2002709@lianli.shorne-pla.net>
- <6dbc27f8-5261-59c5-acba-70f6c6a74ba1@rwth-aachen.de> <20210205144317.GK2002709@lianli.shorne-pla.net>
- <CAMuHMdXzr4c4=Cg1_Lmw41cmxmMrG4P=dV0yVjuXvuR5pqyh0Q@mail.gmail.com>
- <20210205223651.GL2002709@lianli.shorne-pla.net> <CAMuHMdV5M2X+zC9e2VidEt6vNdnP1j3yeB4tJTRgkCCDCwV8hQ@mail.gmail.com>
- <20210208121648.GN2002709@lianli.shorne-pla.net>
-In-Reply-To: <20210208121648.GN2002709@lianli.shorne-pla.net>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 8 Feb 2021 13:22:46 +0100
-Message-ID: <CAMuHMdXRs_aE7NxC-nUXzskjLQTMG4--mJ23GNFELMY+S9863g@mail.gmail.com>
-Subject: Re: [PATCH v2] openrisc: use device tree to determine present cpus
-To:     Stafford Horne <shorne@gmail.com>
-Cc:     Jan Henrik Weinstock <jan.weinstock@rwth-aachen.de>,
-        Jonas Bonn <jonas@southpole.se>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        Openrisc <openrisc@lists.librecores.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <9d725a1b-ec8e-c078-5ec6-9c4899d4c7aa@suse.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stafford,
+On 08.02.2021 13:15, Jürgen Groß wrote:
+> On 08.02.21 12:54, Jan Beulich wrote:
+>> On 08.02.2021 11:59, Jürgen Groß wrote:
+>>> On 08.02.21 11:51, Jan Beulich wrote:
+>>>> On 08.02.2021 11:41, Jürgen Groß wrote:
+>>>>> On 08.02.21 10:48, Jan Beulich wrote:
+>>>>>> On 06.02.2021 11:49, Juergen Gross wrote:
+>>>>>>> In evtchn_read() use READ_ONCE() for reading the producer index in
+>>>>>>> order to avoid the compiler generating multiple accesses.
+>>>>>>>
+>>>>>>> Signed-off-by: Juergen Gross <jgross@suse.com>
+>>>>>>> ---
+>>>>>>>     drivers/xen/evtchn.c | 2 +-
+>>>>>>>     1 file changed, 1 insertion(+), 1 deletion(-)
+>>>>>>>
+>>>>>>> diff --git a/drivers/xen/evtchn.c b/drivers/xen/evtchn.c
+>>>>>>> index 421382c73d88..f6b199b597bf 100644
+>>>>>>> --- a/drivers/xen/evtchn.c
+>>>>>>> +++ b/drivers/xen/evtchn.c
+>>>>>>> @@ -211,7 +211,7 @@ static ssize_t evtchn_read(struct file *file, char __user *buf,
+>>>>>>>     			goto unlock_out;
+>>>>>>>     
+>>>>>>>     		c = u->ring_cons;
+>>>>>>> -		p = u->ring_prod;
+>>>>>>> +		p = READ_ONCE(u->ring_prod);
+>>>>>>>     		if (c != p)
+>>>>>>>     			break;
+>>>>>>
+>>>>>> Why only here and not also in
+>>>>>>
+>>>>>> 		rc = wait_event_interruptible(u->evtchn_wait,
+>>>>>> 					      u->ring_cons != u->ring_prod);
+>>>>>>
+>>>>>> or in evtchn_poll()? I understand it's not needed when
+>>>>>> ring_prod_lock is held, but that's not the case in the two
+>>>>>> afaics named places. Plus isn't the same then true for
+>>>>>> ring_cons and ring_cons_mutex, i.e. aren't the two named
+>>>>>> places plus evtchn_interrupt() also in need of READ_ONCE()
+>>>>>> for ring_cons?
+>>>>>
+>>>>> The problem solved here is the further processing using "p" multiple
+>>>>> times. p must not be silently replaced with u->ring_prod by the
+>>>>> compiler, so I probably should reword the commit message to say:
+>>>>>
+>>>>> ... in order to not allow the compiler to refetch p.
+>>>>
+>>>> I still wouldn't understand the change (and the lack of
+>>>> further changes) then: The first further use of p is
+>>>> outside the loop, alongside one of c. IOW why would c
+>>>> then not need treating the same as p?
+>>>
+>>> Its value wouldn't change, as ring_cons is being modified only at
+>>> the bottom of this function, and nowhere else (apart from the reset
+>>> case, but this can't run concurrently due to ring_cons_mutex).
+>>>
+>>>> I also still don't see the difference between latching a
+>>>> value into a local variable vs a "freestanding" access -
+>>>> neither are guaranteed to result in exactly one memory
+>>>> access afaict.
+>>>
+>>> READ_ONCE() is using a pointer to volatile, so any refetching by
+>>> the compiler would be a bug.
+>>
+>> Of course, but this wasn't my point. I was contrasting
+>>
+>> 		c = u->ring_cons;
+>> 		p = u->ring_prod;
+>>
+>> which you change with
+>>
+>> 		rc = wait_event_interruptible(u->evtchn_wait,
+>> 					      u->ring_cons != u->ring_prod);
+>>
+>> which you leave alone.
+> 
+> Can you point out which problem might arise from that?
 
-On Mon, Feb 8, 2021 at 1:16 PM Stafford Horne <shorne@gmail.com> wrote:
-> On Sat, Feb 06, 2021 at 10:33:24AM +0100, Geert Uytterhoeven wrote:
-> > On Fri, Feb 5, 2021 at 11:36 PM Stafford Horne <shorne@gmail.com> wrote:
-> > > On Fri, Feb 05, 2021 at 05:07:51PM +0100, Geert Uytterhoeven wrote:
-> > > > On Fri, Feb 5, 2021 at 3:43 PM Stafford Horne <shorne@gmail.com> wrote:
-> > > > > On Mon, Feb 01, 2021 at 12:49:31PM +0100, Jan Henrik Weinstock wrote:
-> > > > > > Use the device tree to determine the present cpus instead of assuming all
-> > > > > > CONFIG_NRCPUS are actually present in the system.
-> > > > > >
-> > > > > > Signed-off-by: Jan Henrik Weinstock <jan.weinstock@rwth-aachen.de>
-> > > > >
-> > > > > I cannot apply this patch, it seems you somehow sent it signed as a multipart
-> > > > > message via Thunderbird.
-> > > > >
-> > > > > This causes errors when trying to apply, even after I tried to manually fix the
-> > > > > patch mail:
-> > > > >
-> > > > >     Applying: openrisc: use device tree to determine present cpus
-> > > > >     error: sha1 information is lacking or useless (arch/openrisc/kernel/smp.c).
-> > > > >     error: could not build fake ancestor
-> > > > >     Patch failed at 0001 openrisc: use device tree to determine present cpus
-> > > > >
-> > > > > Can you send this using 'git send-email?'
-> > > > >
-> > > > > If not I can get it applied with some work, otherwise you can point me to a git
-> > > > > repo which I can pull it from.
-> > > >
-> > > > "b4 am 6dbc27f8-5261-59c5-acba-70f6c6a74ba1@rwth-aachen.de" works
-> > > > fine for me.
-> > > >
-> > > > git://git.kernel.org/pub/scm/utils/b4/b4.git
-> > >
-> > > Did it work?  For me I got, base not found.
-> > >
-> > >     Looking up
-> > >     https://lore.kernel.org/r/6dbc27f8-5261-59c5-acba-70f6c6a74ba1%40rwth-aachen.de
-> > >     Grabbing thread from lore.kernel.org/lkml
-> > >     Analyzing 9 messages in the thread
-> > >     Will use the latest revision: v2
-> > >     You can pick other revisions using the -vN flag
-> > >     ---
-> > >     Writing
-> > >     ./v2_20210201_jan_weinstock_openrisc_use_device_tree_to_determine_present_cpus.mbx
-> > >       [PATCH v2] openrisc: use device tree to determine present cpus
-> > >     ---
-> > >     Total patches: 1
-> > >     ---
-> > >      Link:
-> > >     https://lore.kernel.org/r/6dbc27f8-5261-59c5-acba-70f6c6a74ba1@rwth-aachen.de
-> > >      Base: not found
-> >
-> > That just means the patch contains no information w.r.t. its base, i.e.
-> > against which tree/commit it applies to.  To be ignored.
-> >
-> > >            git am
-> > >     ./v2_20210201_jan_weinstock_openrisc_use_device_tree_to_determine_present_cpus.mbx
-> >
-> > Just run the above command ;-)
-> >
-> > In addition, you can run "formail -s scripts/checkpatch.pl < *mbx" first, to
-> > run the mbox (which could contain multiple patches) through checkpatch.
->
-> Thanks for your help, but this is still not working.  See that attached patch.
-> If your patch doesn't have this corruption then please forward it.  If Jan could
-> point to a git repo or reset with 'git send-email' that would be great too.
->
-> It seems that the mailer has corrupted the patch by adding and removing
-> whitespace to each line.
->
-> I don't have a 'formail' command, but I did try 'git am' and 'checkpatch.pl' and
-> it shows:
->
->     < shorne@lianli ~/work/linux > git am v2_20210201_jan_weinstock_openrisc_use_device_tree_to_determine_present_cpus.mbx
->     Applying: openrisc: use device tree to determine present cpus
->     error: corrupt patch at line 62
+Not any particular active one. Yet enhancing some accesses
+but not others seems to me like a recipe for new problems
+down the road.
 
-Indeed, the patch is corrupt.
-Sorry for not verifying that before. I just thought you had an issue
-saving multipart patches.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Jan
