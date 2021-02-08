@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C16F5313A1E
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 17:54:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A1EB313A0B
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 17:50:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234726AbhBHQxF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 11:53:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60340 "EHLO mail.kernel.org"
+        id S233994AbhBHQuc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 11:50:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33694 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233497AbhBHPRk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 10:17:40 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E71D564EDA;
-        Mon,  8 Feb 2021 15:12:08 +0000 (UTC)
+        id S233353AbhBHPRa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 10:17:30 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BE37660238;
+        Mon,  8 Feb 2021 15:11:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612797129;
-        bh=owMGpEEyis0lUcSHly8vyZxtYSOHMUfwpI4X6GWFKVU=;
+        s=korg; t=1612797097;
+        bh=5SrLtI23WZIAEPavMoaVnodJN3n6Bm4RlGll8JcCVYU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MAi/FAzyXiilznOeuxGXvEfwc21LD663+eweVkA7ePcc53eVeBlKI++PHKkLfWQbn
-         pI0/u0fIszo5V080pYvVn6np0d0/+nMMOdk9Fzpo2dPkjIwet6ACgumvc+sxYwd4Qi
-         /zvodJOBtRL7eR6JASpIZQIdd5x9hRx9IBcMepM8=
+        b=vTPr1/cQcsfNjQjP6UbtomkghqP0QOSHbP0C1+Daw8A0rPlcnn0u8Zn5wO7wAf4iO
+         oPwV4a5jmODaJvDAcGaGaHoT7bH78ThtUdfBjktB7FiE69UeP16FiRN0Uwv/I+b8Ms
+         sOQWWOUVzC+iVq5TYZcgPIhD0/Wo3xTdTPDw3Nlw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hugh Dickins <hughd@google.com>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.4 53/65] mm: thp: fix MADV_REMOVE deadlock on shmem THP
-Date:   Mon,  8 Feb 2021 16:01:25 +0100
-Message-Id: <20210208145812.270609346@linuxfoundation.org>
+        stable@vger.kernel.org, Nadav Amit <namit@vmware.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Joerg Roedel <jroedel@suse.de>
+Subject: [PATCH 5.4 58/65] iommu/vt-d: Do not use flush-queue when caching-mode is on
+Date:   Mon,  8 Feb 2021 16:01:30 +0100
+Message-Id: <20210208145812.475560556@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210208145810.230485165@linuxfoundation.org>
 References: <20210208145810.230485165@linuxfoundation.org>
@@ -42,111 +42,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hugh Dickins <hughd@google.com>
+From: Nadav Amit <namit@vmware.com>
 
-commit 1c2f67308af4c102b4e1e6cd6f69819ae59408e0 upstream.
+commit 29b32839725f8c89a41cb6ee054c85f3116ea8b5 upstream.
 
-Sergey reported deadlock between kswapd correctly doing its usual
-lock_page(page) followed by down_read(page->mapping->i_mmap_rwsem), and
-madvise(MADV_REMOVE) on an madvise(MADV_HUGEPAGE) area doing
-down_write(page->mapping->i_mmap_rwsem) followed by lock_page(page).
+When an Intel IOMMU is virtualized, and a physical device is
+passed-through to the VM, changes of the virtual IOMMU need to be
+propagated to the physical IOMMU. The hypervisor therefore needs to
+monitor PTE mappings in the IOMMU page-tables. Intel specifications
+provide "caching-mode" capability that a virtual IOMMU uses to report
+that the IOMMU is virtualized and a TLB flush is needed after mapping to
+allow the hypervisor to propagate virtual IOMMU mappings to the physical
+IOMMU. To the best of my knowledge no real physical IOMMU reports
+"caching-mode" as turned on.
 
-This happened when shmem_fallocate(punch hole)'s unmap_mapping_range()
-reaches zap_pmd_range()'s call to __split_huge_pmd().  The same deadlock
-could occur when partially truncating a mapped huge tmpfs file, or using
-fallocate(FALLOC_FL_PUNCH_HOLE) on it.
+Synchronizing the virtual and the physical IOMMU tables is expensive if
+the hypervisor is unaware which PTEs have changed, as the hypervisor is
+required to walk all the virtualized tables and look for changes.
+Consequently, domain flushes are much more expensive than page-specific
+flushes on virtualized IOMMUs with passthrough devices. The kernel
+therefore exploited the "caching-mode" indication to avoid domain
+flushing and use page-specific flushing in virtualized environments. See
+commit 78d5f0f500e6 ("intel-iommu: Avoid global flushes with caching
+mode.")
 
-__split_huge_pmd()'s page lock was added in 5.8, to make sure that any
-concurrent use of reuse_swap_page() (holding page lock) could not catch
-the anon THP's mapcounts and swapcounts while they were being split.
+This behavior changed after commit 13cf01744608 ("iommu/vt-d: Make use
+of iova deferred flushing"). Now, when batched TLB flushing is used (the
+default), full TLB domain flushes are performed frequently, requiring
+the hypervisor to perform expensive synchronization between the virtual
+TLB and the physical one.
 
-Fortunately, reuse_swap_page() is never applied to a shmem or file THP
-(not even by khugepaged, which checks PageSwapCache before calling), and
-anonymous THPs are never created in shmem or file areas: so that
-__split_huge_pmd()'s page lock can only be necessary for anonymous THPs,
-on which there is no risk of deadlock with i_mmap_rwsem.
+Getting batched TLB flushes to use page-specific invalidations again in
+such circumstances is not easy, since the TLB invalidation scheme
+assumes that "full" domain TLB flushes are performed for scalability.
 
-Link: https://lkml.kernel.org/r/alpine.LSU.2.11.2101161409470.2022@eggly.anvils
-Fixes: c444eb564fb1 ("mm: thp: make the THP mapcount atomic against __split_huge_pmd_locked()")
-Signed-off-by: Hugh Dickins <hughd@google.com>
-Reported-by: Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
-Reviewed-by: Andrea Arcangeli <aarcange@redhat.com>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Disable batched TLB flushes when caching-mode is on, as the performance
+benefit from using batched TLB invalidations is likely to be much
+smaller than the overhead of the virtual-to-physical IOMMU page-tables
+synchronization.
+
+Fixes: 13cf01744608 ("iommu/vt-d: Make use of iova deferred flushing")
+Signed-off-by: Nadav Amit <namit@vmware.com>
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: Lu Baolu <baolu.lu@linux.intel.com>
+Cc: Joerg Roedel <joro@8bytes.org>
+Cc: Will Deacon <will@kernel.org>
+Cc: stable@vger.kernel.org
+Acked-by: Lu Baolu <baolu.lu@linux.intel.com>
+Link: https://lore.kernel.org/r/20210127175317.1600473-1-namit@vmware.com
+Signed-off-by: Joerg Roedel <jroedel@suse.de>
+Signed-off-by: Nadav Amit <namit@vmware.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- mm/huge_memory.c |   37 +++++++++++++++++++++++--------------
- 1 file changed, 23 insertions(+), 14 deletions(-)
 
---- a/mm/huge_memory.c
-+++ b/mm/huge_memory.c
-@@ -2306,7 +2306,7 @@ void __split_huge_pmd(struct vm_area_str
- {
- 	spinlock_t *ptl;
- 	struct mmu_notifier_range range;
--	bool was_locked = false;
-+	bool do_unlock_page = false;
- 	pmd_t _pmd;
+---
+ drivers/iommu/intel-iommu.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
+
+--- a/drivers/iommu/intel-iommu.c
++++ b/drivers/iommu/intel-iommu.c
+@@ -3285,6 +3285,12 @@ static int __init init_dmars(void)
  
- 	mmu_notifier_range_init(&range, MMU_NOTIFY_CLEAR, 0, vma, vma->vm_mm,
-@@ -2322,7 +2322,6 @@ void __split_huge_pmd(struct vm_area_str
- 	VM_BUG_ON(freeze && !page);
- 	if (page) {
- 		VM_WARN_ON_ONCE(!PageLocked(page));
--		was_locked = true;
- 		if (page != pmd_page(*pmd))
- 			goto out;
- 	}
-@@ -2331,19 +2330,29 @@ repeat:
- 	if (pmd_trans_huge(*pmd)) {
- 		if (!page) {
- 			page = pmd_page(*pmd);
--			if (unlikely(!trylock_page(page))) {
--				get_page(page);
--				_pmd = *pmd;
--				spin_unlock(ptl);
--				lock_page(page);
--				spin_lock(ptl);
--				if (unlikely(!pmd_same(*pmd, _pmd))) {
--					unlock_page(page);
-+			/*
-+			 * An anonymous page must be locked, to ensure that a
-+			 * concurrent reuse_swap_page() sees stable mapcount;
-+			 * but reuse_swap_page() is not used on shmem or file,
-+			 * and page lock must not be taken when zap_pmd_range()
-+			 * calls __split_huge_pmd() while i_mmap_lock is held.
-+			 */
-+			if (PageAnon(page)) {
-+				if (unlikely(!trylock_page(page))) {
-+					get_page(page);
-+					_pmd = *pmd;
-+					spin_unlock(ptl);
-+					lock_page(page);
-+					spin_lock(ptl);
-+					if (unlikely(!pmd_same(*pmd, _pmd))) {
-+						unlock_page(page);
-+						put_page(page);
-+						page = NULL;
-+						goto repeat;
-+					}
- 					put_page(page);
--					page = NULL;
--					goto repeat;
- 				}
--				put_page(page);
-+				do_unlock_page = true;
- 			}
- 		}
- 		if (PageMlocked(page))
-@@ -2353,7 +2362,7 @@ repeat:
- 	__split_huge_pmd_locked(vma, pmd, range.start, freeze);
- out:
- 	spin_unlock(ptl);
--	if (!was_locked && page)
-+	if (do_unlock_page)
- 		unlock_page(page);
- 	/*
- 	 * No need to double call mmu_notifier->invalidate_range() callback.
+ 		if (!ecap_pass_through(iommu->ecap))
+ 			hw_pass_through = 0;
++
++		if (!intel_iommu_strict && cap_caching_mode(iommu->cap)) {
++			pr_info("Disable batched IOTLB flush due to virtualization");
++			intel_iommu_strict = 1;
++		}
++
+ #ifdef CONFIG_INTEL_IOMMU_SVM
+ 		if (pasid_supported(iommu))
+ 			intel_svm_init(iommu);
 
 
