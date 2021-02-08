@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 489AF313A65
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 18:04:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18ACC313A69
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 18:05:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233039AbhBHREC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 12:04:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33700 "EHLO mail.kernel.org"
+        id S234572AbhBHRFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 12:05:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35678 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233779AbhBHPWB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 10:22:01 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C491664F0A;
-        Mon,  8 Feb 2021 15:13:53 +0000 (UTC)
+        id S233797AbhBHPW1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 10:22:27 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BD2EF64F11;
+        Mon,  8 Feb 2021 15:13:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612797234;
-        bh=F62tx6LP7JeGwQJCwT9w7adBWae/vVK9wnFblI/pk7A=;
+        s=korg; t=1612797237;
+        bh=UPqCNFt81M+uL5CRzgyQmTxC/b2UFzwF3FwFu4xd8po=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Z/QzIpQIFI/qm+eNYwBScnwhhnyjPoj1IhtxBbQwgUZUs/5Tg7udU9+0v+kKyxi6r
-         4CWrV1rugHBr1YyG+JxpOCNBCnLZIYhbUIKeVVA/mxeKrfAi2PTpB+uEdIciS82MIc
-         D9ThyBGHh3DegyzcEerYl7bRw7LVlWSBrnlhMVRg=
+        b=N6ZcBn0nZMiww86v5tNQHwfdbG0zHozjM1UqNXFB00eFmXpuhwJKQMXx0IXqNftWK
+         +eU38lPOqFITDVqWS56usPszGiMDBX4Dl6S/7d84QrKYGM9/UGABAiLq6ftyoCEZtW
+         dqpO/mSUpT70XLl5/OGimYFOiaIKCzMOIUeaDn2w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Lijun Pan <ljp@linux.ibm.com>,
-        Jakub Kicinski <kuba@kernel.org>,
+        stable@vger.kernel.org, Daniel Jurgens <danielj@nvidia.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 039/120] ibmvnic: device remove has higher precedence over reset
-Date:   Mon,  8 Feb 2021 16:00:26 +0100
-Message-Id: <20210208145819.976343427@linuxfoundation.org>
+Subject: [PATCH 5.10 040/120] net/mlx5: Fix function calculation for page trees
+Date:   Mon,  8 Feb 2021 16:00:27 +0100
+Message-Id: <20210208145820.015736246@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210208145818.395353822@linuxfoundation.org>
 References: <20210208145818.395353822@linuxfoundation.org>
@@ -42,49 +41,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lijun Pan <ljp@linux.ibm.com>
+From: Daniel Jurgens <danielj@nvidia.com>
 
-[ Upstream commit 5e9eff5dfa460cd1a74b7c1fde4fced7c04383af ]
+[ Upstream commit ed5e83a3c02948dad9dc4e68fb4e535baa5da630 ]
 
-Returning -EBUSY in ibmvnic_remove() does not actually hold the
-removal procedure since driver core doesn't care for the return
-value (see __device_release_driver() in drivers/base/dd.c
-calling dev->bus->remove()) though vio_bus_remove
-(in arch/powerpc/platforms/pseries/vio.c) records the
-return value and passes it on. [1]
+The function calculation always results in a value of 0. This works
+generally, but when the release all pages feature is enabled it will
+result in crashes.
 
-During the device removal precedure, checking for resetting
-bit is dropped so that we can continue executing all the
-cleanup calls in the rest of the remove function. Otherwise,
-it can cause latent memory leaks and kernel crashes.
-
-[1] https://lore.kernel.org/linuxppc-dev/20210117101242.dpwayq6wdgfdzirl@pengutronix.de/T/#m48f5befd96bc9842ece2a3ad14f4c27747206a53
-Reported-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-Fixes: 7d7195a026ba ("ibmvnic: Do not process device remove during device reset")
-Signed-off-by: Lijun Pan <ljp@linux.ibm.com>
-Link: https://lore.kernel.org/r/20210129043402.95744-1-ljp@linux.ibm.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Fixes: 0aa128475d33 ("net/mlx5: Maintain separate page trees for ECPF and PF functions")
+Signed-off-by: Daniel Jurgens <danielj@nvidia.com>
+Reported-by: Colin Ian King <colin.king@canonical.com>
+Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/ibm/ibmvnic.c | 5 -----
- 1 file changed, 5 deletions(-)
+ drivers/net/ethernet/mellanox/mlx5/core/pagealloc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/ibm/ibmvnic.c b/drivers/net/ethernet/ibm/ibmvnic.c
-index 627ce1a20473a..2f281d0f98070 100644
---- a/drivers/net/ethernet/ibm/ibmvnic.c
-+++ b/drivers/net/ethernet/ibm/ibmvnic.c
-@@ -5339,11 +5339,6 @@ static int ibmvnic_remove(struct vio_dev *dev)
- 	unsigned long flags;
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/pagealloc.c b/drivers/net/ethernet/mellanox/mlx5/core/pagealloc.c
+index a3e0c71831928..a44a2bad5bbb5 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/pagealloc.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/pagealloc.c
+@@ -76,7 +76,7 @@ enum {
  
- 	spin_lock_irqsave(&adapter->state_lock, flags);
--	if (test_bit(0, &adapter->resetting)) {
--		spin_unlock_irqrestore(&adapter->state_lock, flags);
--		return -EBUSY;
--	}
--
- 	adapter->state = VNIC_REMOVING;
- 	spin_unlock_irqrestore(&adapter->state_lock, flags);
+ static u32 get_function(u16 func_id, bool ec_function)
+ {
+-	return func_id & (ec_function << 16);
++	return (u32)func_id | (ec_function << 16);
+ }
  
+ static struct rb_root *page_root_per_function(struct mlx5_core_dev *dev, u32 function)
 -- 
 2.27.0
 
