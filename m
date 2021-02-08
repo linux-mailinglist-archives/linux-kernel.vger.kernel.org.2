@@ -2,112 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0660D3128E4
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 03:20:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D321F3128E1
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 03:20:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229618AbhBHCSp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Feb 2021 21:18:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55422 "EHLO
+        id S229669AbhBHCS4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Feb 2021 21:18:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229565AbhBHCSo (ORCPT
+        with ESMTP id S229565AbhBHCSz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Feb 2021 21:18:44 -0500
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38C73C061756
-        for <linux-kernel@vger.kernel.org>; Sun,  7 Feb 2021 18:18:04 -0800 (PST)
-Received: by mail-pj1-x1035.google.com with SMTP id s24so7370071pjp.5
-        for <linux-kernel@vger.kernel.org>; Sun, 07 Feb 2021 18:18:04 -0800 (PST)
+        Sun, 7 Feb 2021 21:18:55 -0500
+Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC828C061786
+        for <linux-kernel@vger.kernel.org>; Sun,  7 Feb 2021 18:18:14 -0800 (PST)
+Received: by mail-il1-x130.google.com with SMTP id y15so11349193ilj.11
+        for <linux-kernel@vger.kernel.org>; Sun, 07 Feb 2021 18:18:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :mime-version;
-        bh=GAcPfGgqFaC7AQHCBuJv2BWxwOPW6rvQxJdX43h7J8I=;
-        b=RFsozuFj8ctQYWnOlHXA/Y/S/JT+BT2d1zgMTOBparInBD0Zft//MwDz9Pv3qTpRo6
-         cYnt4/eMEoTNmZaIjVO2TLhCmJ5C57vV4qvNpNJbSbEiEAYxF4yWJG4MXu8cAsWDTDo+
-         WbVbEUREEq2v/o6uVpD3zSkYM6tjdfLSWrvXySJCEv2KSD78mt+euMZNuzFuILuIrev/
-         gekJ7tvJj2hVKKklNDYczXUA/ko/19HwJDowAenLYVLrIG2SP/7gwDb1vJahO8ndfhgh
-         01X02jthq8tr3Gyytp+nR/cZpF484dMC3l0bxJqjGc6dIl8lMe9epYDH0TO4L9WbxQHy
-         xe+Q==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=XSBwCQhIiL7WoW30Wg1JyXmwITq5X3TRIbKEv5Zbwd4=;
+        b=aQ4fvSLxKak589bkgvtFHLWFPLXJ1jYNQEGn2MiAgo4WDFUklqm3ZslZFEwU+V6c4y
+         Ri2xMmxkjHK7raR+UbWYZ3NDRvXoSaaTJn+U210nt95J1klI5rTDku/nrpiE71pvPDy2
+         12b1Ow+x2AWKFoMRqN874RpVtuNURym1Fk2UIbAbABVOnWV8mH1SDyc8ZNqCNv0YNvW5
+         CmBjYoB+t5Yv1WWCpFqgqB7hpG4kBIJpDkXroVyLHRrScz3hjeNSmcP0iM3IZ2NoLNyS
+         seWdDRGAtQN3nt+gi6WpTQcmCMAedYVcBuvEi0+YNyGZ585w+mPr8/ifZQcRGfi6W1tG
+         j6sg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:mime-version;
-        bh=GAcPfGgqFaC7AQHCBuJv2BWxwOPW6rvQxJdX43h7J8I=;
-        b=TIVRzCZ27DJL+8a1oF3/86H4T3xqz9guWCShgueAWbCJwoeX3S/+HP2twDF0DWIYPE
-         J0dGnn8DC+ofegqQlZVwGhq83kBn2Yi0pXjuyTQ+dY1WUq5HT4rH992gUFp+Q/uMeOdK
-         ByYOzw9XICKKGAIVEnD1XOkR7sBNmDNBSMhkXbnlwUXyuIbO1FMCPAP2PWOO6p0oxtBI
-         cgdpT4S7LGZxybVPs85f26SCmdNJlPh3oEI9yK1JDM50JJe+4BV5jm9EWnPgzGg4+kNu
-         DRu0j+ZX+wRCNDANjFix94qCe3AmZNCt90ToEZJ2R8fndbr3031MP3gy+mIvOiAbMlqK
-         LCbw==
-X-Gm-Message-State: AOAM532IWu7WvGjumO2MPKiqWmVT/zraCsCjb3fssNUJ5SZlSqoGy7of
-        ukwERiB98ykX1Rin59FniZmdn7t/PIHA8w==
-X-Google-Smtp-Source: ABdhPJzp7qfYhmXBu6bdi33JxaukusthN+TP0Ot/ZqOrf1qCP06tl6JjG1EiU2ivo+TK3WKChum8ew==
-X-Received: by 2002:a17:90a:b782:: with SMTP id m2mr14552165pjr.220.1612750683085;
-        Sun, 07 Feb 2021 18:18:03 -0800 (PST)
-Received: from [2620:15c:17:3:8d40:a1e2:ae2d:6c53] ([2620:15c:17:3:8d40:a1e2:ae2d:6c53])
-        by smtp.gmail.com with ESMTPSA id f33sm354958pjk.17.2021.02.07.18.18.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 07 Feb 2021 18:18:02 -0800 (PST)
-Date:   Sun, 7 Feb 2021 18:18:01 -0800 (PST)
-From:   David Rientjes <rientjes@google.com>
-To:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-cc:     Matthew Wilcox <willy@infradead.org>,
-        "Wangzhou (B)" <wangzhou1@hisilicon.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "jgg@ziepe.ca" <jgg@ziepe.ca>,
-        "kevin.tian@intel.com" <kevin.tian@intel.com>,
-        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "Liguozhu (Kenneth)" <liguozhu@hisilicon.com>,
-        "zhangfei.gao@linaro.org" <zhangfei.gao@linaro.org>,
-        "chensihang (A)" <chensihang1@hisilicon.com>
-Subject: RE: [RFC PATCH v3 1/2] mempinfd: Add new syscall to provide memory
- pin
-In-Reply-To: <f4b2d7db8a1047d9952cbbfaf9e27824@hisilicon.com>
-Message-ID: <90aca1e9-61b5-88d-d28c-369e6973559e@google.com>
-References: <1612685884-19514-1-git-send-email-wangzhou1@hisilicon.com> <1612685884-19514-2-git-send-email-wangzhou1@hisilicon.com> <20210207213409.GL308988@casper.infradead.org> <f4b2d7db8a1047d9952cbbfaf9e27824@hisilicon.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=XSBwCQhIiL7WoW30Wg1JyXmwITq5X3TRIbKEv5Zbwd4=;
+        b=uBauPuRm+jHD6asX4lezAD+VA0NoUYDzKp8kLakdj45k8kRfFjaehiLy/7vMKcMKVv
+         8JV3jKMvEhkkMJ2YI8uLuvB6//euEG5gkLDRbcj27ZUOnknm6PlBzZVsdRla+g37x1O8
+         VZvoqbKv4rAcPjRhfzCaFm1PhYuK0V2e8Z38BPHCAJGu79bAUDP2/IV5QaYvachsC+kd
+         D2tj9BJrb/Pv5I4zt/FQj1C5L4PlUP2g3EyM+7EjhfQhSXuIobZzCvK1lzveMGPK1A+V
+         OeTXNyzY2XYHCUR8WBj7yxSusnGcEvQgz/nQ1RTmCXbz8dIvzgygHu87pDHv0npy09/Y
+         iNOg==
+X-Gm-Message-State: AOAM5324tVyiEjYx+/7iRCUN+T6lzdiQsk17JUjbQyLlQgzQCibnXiXI
+        W0zvWe1uH7ZGRJ2VgKPGoneTuNXzIUysgp50+/c=
+X-Google-Smtp-Source: ABdhPJyaffUfa2FHmraU2AhVABXIPl7gszkVKSGfn0IITKZeRil1eUQRWK9lCMiY6m740Mc4HTUHfVrE6P3H93Nc8R0=
+X-Received: by 2002:a92:ce46:: with SMTP id a6mr14023226ilr.10.1612750694254;
+ Sun, 07 Feb 2021 18:18:14 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+References: <CA+icZUUhzpmoD_XrHtnFUGSpXHrVOTnVG9Q_Tek8oA8isHZe=Q@mail.gmail.com>
+ <CAP045Aot_wYcwXVtfB9NmS98NGZumER39q8piN1ucgHCcpc8OA@mail.gmail.com>
+In-Reply-To: <CAP045Aot_wYcwXVtfB9NmS98NGZumER39q8piN1ucgHCcpc8OA@mail.gmail.com>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Mon, 8 Feb 2021 03:18:03 +0100
+Message-ID: <CA+icZUW-9stFCoJRk_sPoyktoykue77eh7SF+SaSNyKAqmx7LA@mail.gmail.com>
+Subject: Re: [Linux v5.11-rc7] x86: entry: Leftover of _TIF_SINGLESTEP define?
+To:     Kyle Huey <me@kylehuey.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 7 Feb 2021, Song Bao Hua (Barry Song) wrote:
+On Mon, Feb 8, 2021 at 12:25 AM Kyle Huey <me@kylehuey.com> wrote:
+>
+> On Sun, Feb 7, 2021 at 3:09 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
+> >
+> > Hi,
+> >
+> > congrats to Linux v5.11-rc7.
+> >
+> > after commit 6342adcaa683 ("entry: Ensure trap after single-step on
+> > system call return"):
+> >
+> > $ git grep '\_TIF_SINGLESTEP' arch/x86/
+> > arch/x86/include/asm/thread_info.h:#define _TIF_SINGLESTEP
+> >  (1 << TIF_SINGLESTEP)
+> >
+> > Is this a leftover and can be removed (now)?
+> >
+> > Thanks.
+> >
+> > Regards,
+> > - Sedat -
+> >
+> > [1] https://marc.info/?l=linux-kernel&m=161273724611262&w=2
+> > [2] https://git.kernel.org/linus/6342adcaa683
+>
+> Yes it looks like that can be removed now.
+>
 
-> NUMA balancer is just one of many reasons for page migration. Even one
-> simple alloc_pages() can cause memory migration in just single NUMA
-> node or UMA system.
-> 
-> The other reasons for page migration include but are not limited to:
-> * memory move due to CMA
-> * memory move due to huge pages creation
-> 
-> Hardly we can ask users to disable the COMPACTION, CMA and Huge Page
-> in the whole system.
-> 
+Hi Kylem
 
-What about only for mlocked memory, i.e. disable 
-vm.compact_unevictable_allowed?
+Thanks for the confirmation.
 
-Adding syscalls is a big deal, we can make a reasonable inference that 
-we'll have to support this forever if it's merged.  I haven't seen mention 
-of what other unevictable memory *should* be migratable that would be 
-adversely affected if we disable that sysctl.  Maybe that gets you part of 
-the way there and there are some other deficiencies, but it seems like a 
-good start would be to describe how CONFIG_NUMA_BALANCING=n + 
-vm.compact_unevcitable_allowed + mlock() doesn't get you mostly there and 
-then look into what's missing.
+Shall I send a patch?
+With an ACK of you or mention in the commit message?
 
-If it's a very compelling case where there simply are no alternatives, it 
-would make sense.  Alternative is to find a more generic way, perhaps in 
-combination with vm.compact_unevictable_allowed, to achieve what you're 
-looking to do that can be useful even beyond your originally intended use 
-case.
+- Sedat -
