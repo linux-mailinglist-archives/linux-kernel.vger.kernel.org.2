@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11A29313909
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 17:16:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54F5F313958
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 17:26:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233285AbhBHQPs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 11:15:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56624 "EHLO mail.kernel.org"
+        id S231318AbhBHQ03 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 11:26:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55766 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233265AbhBHPLE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 10:11:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 06B2F64EDD;
-        Mon,  8 Feb 2021 15:08:08 +0000 (UTC)
+        id S232701AbhBHPI5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 10:08:57 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 65C4964EC8;
+        Mon,  8 Feb 2021 15:06:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612796889;
-        bh=yyX8PS3v61HBwJa7D5Orh4RX/CPhPx6EkEw0WVbhlks=;
+        s=korg; t=1612796804;
+        bh=J+10Mpewm2xogp0pBcdLYmuNsNgvFS3yebqvDGPNhlA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ukx0LcuJLaRpZnK1stPy4sirQr4k8nPJpdIijkMJfJ4sukwlu8VY3grwDsjgHbO4H
-         vOrgWaSttKm0ezzMBNoDwlCMCPycyxlN9AwCUyxyJu4jWp0OS1eirxD6ABmWeYUWcB
-         /FfgAINmTe+3xYjD+sZ62DHrWyBkXKnfc8LN+Q5M=
+        b=F8/P1Qio6Z811X6ffZrbR1B0CyO1DAejxyvA9/xauCMcDMcZPoyc8UuoZKILcO0cS
+         xBPS2DeUbGOOxIPuSW0yBo769yaxwvaCE0hBcd/P5eyyPn5EgjLtuHxmwIWprhLqo7
+         gpgqqQ9B2fxqzxwU6kIHsTxEEu6psI62I+Fd8Ook=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thorsten Leemhuis <linux@leemhuis.info>,
-        Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 4.19 24/38] nvme-pci: avoid the deepest sleep state on Kingston A2000 SSDs
+        stable@vger.kernel.org, Hugh Dickins <hughd@google.com>,
+        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.14 25/30] mm: thp: fix MADV_REMOVE deadlock on shmem THP
 Date:   Mon,  8 Feb 2021 16:01:11 +0100
-Message-Id: <20210208145807.131848769@linuxfoundation.org>
+Message-Id: <20210208145806.261891437@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210208145806.141056364@linuxfoundation.org>
-References: <20210208145806.141056364@linuxfoundation.org>
+In-Reply-To: <20210208145805.239714726@linuxfoundation.org>
+References: <20210208145805.239714726@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,81 +42,111 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thorsten Leemhuis <linux@leemhuis.info>
+From: Hugh Dickins <hughd@google.com>
 
-commit 538e4a8c571efdf131834431e0c14808bcfb1004 upstream.
+commit 1c2f67308af4c102b4e1e6cd6f69819ae59408e0 upstream.
 
-Some Kingston A2000 NVMe SSDs sooner or later get confused and stop
-working when they use the deepest APST sleep while running Linux. The
-system then crashes and one has to cold boot it to get the SSD working
-again.
+Sergey reported deadlock between kswapd correctly doing its usual
+lock_page(page) followed by down_read(page->mapping->i_mmap_rwsem), and
+madvise(MADV_REMOVE) on an madvise(MADV_HUGEPAGE) area doing
+down_write(page->mapping->i_mmap_rwsem) followed by lock_page(page).
 
-Kingston seems to known about this since at least mid-September 2020:
-https://bbs.archlinux.org/viewtopic.php?pid=1926994#p1926994
+This happened when shmem_fallocate(punch hole)'s unmap_mapping_range()
+reaches zap_pmd_range()'s call to __split_huge_pmd().  The same deadlock
+could occur when partially truncating a mapped huge tmpfs file, or using
+fallocate(FALLOC_FL_PUNCH_HOLE) on it.
 
-Someone working for a German company representing Kingston to the German
-press confirmed to me Kingston engineering is aware of the issue and
-investigating; the person stated that to their current knowledge only
-the deepest APST sleep state causes trouble. Therefore, make Linux avoid
-it for now by applying the NVME_QUIRK_NO_DEEPEST_PS to this SSD.
+__split_huge_pmd()'s page lock was added in 5.8, to make sure that any
+concurrent use of reuse_swap_page() (holding page lock) could not catch
+the anon THP's mapcounts and swapcounts while they were being split.
 
-I have two such SSDs, but it seems the problem doesn't occur with them.
-I hence couldn't verify if this patch really fixes the problem, but all
-the data in front of me suggests it should.
+Fortunately, reuse_swap_page() is never applied to a shmem or file THP
+(not even by khugepaged, which checks PageSwapCache before calling), and
+anonymous THPs are never created in shmem or file areas: so that
+__split_huge_pmd()'s page lock can only be necessary for anonymous THPs,
+on which there is no risk of deadlock with i_mmap_rwsem.
 
-This patch can easily be reverted or improved upon if a better solution
-surfaces.
-
-FWIW, there are many reports about the issue scattered around the web;
-most of the users disabled APST completely to make things work, some
-just made Linux avoid the deepest sleep state:
-
-https://bugzilla.kernel.org/show_bug.cgi?id=195039#c65
-https://bugzilla.kernel.org/show_bug.cgi?id=195039#c73
-https://bugzilla.kernel.org/show_bug.cgi?id=195039#c74
-https://bugzilla.kernel.org/show_bug.cgi?id=195039#c78
-https://bugzilla.kernel.org/show_bug.cgi?id=195039#c79
-https://bugzilla.kernel.org/show_bug.cgi?id=195039#c80
-https://askubuntu.com/questions/1222049/nvmekingston-a2000-sometimes-stops-giving-response-in-ubuntu-18-04dell-inspir
-https://community.acer.com/en/discussion/604326/m-2-nvme-ssd-aspire-517-51g-issue-compatibility-kingston-a2000-linux-ubuntu
-
-For the record, some data from 'nvme id-ctrl /dev/nvme0'
-
-NVME Identify Controller:
-vid       : 0x2646
-ssvid     : 0x2646
-mn        : KINGSTON SA2000M81000G
-fr        : S5Z42105
-[...]
-ps    0 : mp:9.00W operational enlat:0 exlat:0 rrt:0 rrl:0
-          rwt:0 rwl:0 idle_power:- active_power:-
-ps    1 : mp:4.60W operational enlat:0 exlat:0 rrt:1 rrl:1
-          rwt:1 rwl:1 idle_power:- active_power:-
-ps    2 : mp:3.80W operational enlat:0 exlat:0 rrt:2 rrl:2
-          rwt:2 rwl:2 idle_power:- active_power:-
-ps    3 : mp:0.0450W non-operational enlat:2000 exlat:2000 rrt:3 rrl:3
-          rwt:3 rwl:3 idle_power:- active_power:-
-ps    4 : mp:0.0040W non-operational enlat:15000 exlat:15000 rrt:4 rrl:4
-          rwt:4 rwl:4 idle_power:- active_power:-
-
-Cc: stable@vger.kernel.org # 4.14+
-Signed-off-by: Thorsten Leemhuis <linux@leemhuis.info>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
+Link: https://lkml.kernel.org/r/alpine.LSU.2.11.2101161409470.2022@eggly.anvils
+Fixes: c444eb564fb1 ("mm: thp: make the THP mapcount atomic against __split_huge_pmd_locked()")
+Signed-off-by: Hugh Dickins <hughd@google.com>
+Reported-by: Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
+Reviewed-by: Andrea Arcangeli <aarcange@redhat.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/nvme/host/pci.c |    2 ++
- 1 file changed, 2 insertions(+)
+ mm/huge_memory.c |   37 +++++++++++++++++++++++--------------
+ 1 file changed, 23 insertions(+), 14 deletions(-)
 
---- a/drivers/nvme/host/pci.c
-+++ b/drivers/nvme/host/pci.c
-@@ -2733,6 +2733,8 @@ static const struct pci_device_id nvme_i
- 	{ PCI_DEVICE(0x1d1d, 0x2601),	/* CNEX Granby */
- 		.driver_data = NVME_QUIRK_LIGHTNVM, },
- 	{ PCI_DEVICE_CLASS(PCI_CLASS_STORAGE_EXPRESS, 0xffffff) },
-+	{ PCI_DEVICE(0x2646, 0x2263),   /* KINGSTON A2000 NVMe SSD  */
-+		.driver_data = NVME_QUIRK_NO_DEEPEST_PS, },
- 	{ PCI_DEVICE(PCI_VENDOR_ID_APPLE, 0x2001) },
- 	{ PCI_DEVICE(PCI_VENDOR_ID_APPLE, 0x2003) },
- 	{ 0, }
+--- a/mm/huge_memory.c
++++ b/mm/huge_memory.c
+@@ -2198,7 +2198,7 @@ void __split_huge_pmd(struct vm_area_str
+ 	spinlock_t *ptl;
+ 	struct mm_struct *mm = vma->vm_mm;
+ 	unsigned long haddr = address & HPAGE_PMD_MASK;
+-	bool was_locked = false;
++	bool do_unlock_page = false;
+ 	pmd_t _pmd;
+ 
+ 	mmu_notifier_invalidate_range_start(mm, haddr, haddr + HPAGE_PMD_SIZE);
+@@ -2211,7 +2211,6 @@ void __split_huge_pmd(struct vm_area_str
+ 	VM_BUG_ON(freeze && !page);
+ 	if (page) {
+ 		VM_WARN_ON_ONCE(!PageLocked(page));
+-		was_locked = true;
+ 		if (page != pmd_page(*pmd))
+ 			goto out;
+ 	}
+@@ -2220,19 +2219,29 @@ repeat:
+ 	if (pmd_trans_huge(*pmd)) {
+ 		if (!page) {
+ 			page = pmd_page(*pmd);
+-			if (unlikely(!trylock_page(page))) {
+-				get_page(page);
+-				_pmd = *pmd;
+-				spin_unlock(ptl);
+-				lock_page(page);
+-				spin_lock(ptl);
+-				if (unlikely(!pmd_same(*pmd, _pmd))) {
+-					unlock_page(page);
++			/*
++			 * An anonymous page must be locked, to ensure that a
++			 * concurrent reuse_swap_page() sees stable mapcount;
++			 * but reuse_swap_page() is not used on shmem or file,
++			 * and page lock must not be taken when zap_pmd_range()
++			 * calls __split_huge_pmd() while i_mmap_lock is held.
++			 */
++			if (PageAnon(page)) {
++				if (unlikely(!trylock_page(page))) {
++					get_page(page);
++					_pmd = *pmd;
++					spin_unlock(ptl);
++					lock_page(page);
++					spin_lock(ptl);
++					if (unlikely(!pmd_same(*pmd, _pmd))) {
++						unlock_page(page);
++						put_page(page);
++						page = NULL;
++						goto repeat;
++					}
+ 					put_page(page);
+-					page = NULL;
+-					goto repeat;
+ 				}
+-				put_page(page);
++				do_unlock_page = true;
+ 			}
+ 		}
+ 		if (PageMlocked(page))
+@@ -2242,7 +2251,7 @@ repeat:
+ 	__split_huge_pmd_locked(vma, pmd, haddr, freeze);
+ out:
+ 	spin_unlock(ptl);
+-	if (!was_locked && page)
++	if (do_unlock_page)
+ 		unlock_page(page);
+ 	mmu_notifier_invalidate_range_end(mm, haddr, haddr + HPAGE_PMD_SIZE);
+ }
 
 
