@@ -2,75 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 733AC3132E2
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 14:02:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F29583132E3
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 14:04:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230225AbhBHNCA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 08:02:00 -0500
-Received: from mail-oi1-f171.google.com ([209.85.167.171]:42374 "EHLO
-        mail-oi1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229715AbhBHNBz (ORCPT
+        id S230090AbhBHNDg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 08:03:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52438 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229623AbhBHNDc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 08:01:55 -0500
-Received: by mail-oi1-f171.google.com with SMTP id u66so13549062oig.9;
-        Mon, 08 Feb 2021 05:01:39 -0800 (PST)
+        Mon, 8 Feb 2021 08:03:32 -0500
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3774C061756;
+        Mon,  8 Feb 2021 05:02:51 -0800 (PST)
+Received: by mail-lj1-x22d.google.com with SMTP id e18so16811731lja.12;
+        Mon, 08 Feb 2021 05:02:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=b7Ntd6xk8fkmmQrfnT7+pjI8yRVrY36ISzhp9gp/+qo=;
+        b=UVeArX5dnnbdSZZLXOLVozsw5KFWX5lk9rUACersqUl4CpkRCuGnY0ory/J1XjXE9p
+         M8cls28C8CxvqL0kNW0TuUOKjSESUmswORaVL0A/P/YUnuphVychrZFw7iyiNv2F7/1W
+         AT0zQZ4hgtfXbB6OvdHnSbZKPwRznrt9GXKNjRwWriPmrPm/EmUhX2bdl2pFEj+3V3nY
+         cz07yjwEjhAkatoVve5Rhgqn18EYtR2vV1hWrAgsis59QemJfV/9+VERlc5WDQ9n/14z
+         p7tFTm18GDI8DYExi4z/wnraZgHdm7cpsObgaNG5JuWnxJqKI6d2PdqqkzDHoHZkwoAg
+         eMkA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gvxc4VC9l/IR/i8ANGFEq/fIycfe1+oz586mHeCkXyY=;
-        b=GhYCTtdPmhAoGTTOBo0Z2xZtdq5R8H5pJQBiymDyXiflnQRFS9vxLex/F4gW8ZxIg9
-         zUUP9T09a027FqHwA1jW80EYbVSBpTrrjRUo8CLkgYQWQU4C8w7hAgYDLTgfjUfcVNs/
-         uQel0f2ifre/shv1rm6TfYMxakanbjCjfw9CItz+4Bne4L8Y3/ovTaNhK5zt9cT3A7Or
-         vmYSps1FAgXIKs0SFsW5OT8j31PoYezeMLQdgvGSDm3UrW48qe9XbufBe6/pawLzWVsg
-         tfiY13QjvW+Zqy5/B5RlGXmxSlOiH1W/o1BmH+fjNjSOMKfJ8YmMoBAncWFDQDIEjqH4
-         vCZw==
-X-Gm-Message-State: AOAM533pXtSg5GP1yR5T3KG5NSMCAlKmDYAycB5EoWpyh96vVVN+2WMD
-        Q3nXCfA6YXS7siMIIqz4e3qTB5emmcLC2HITLzMOIyKy
-X-Google-Smtp-Source: ABdhPJwcBBneby+U8ATEJaNGJS/dzjUdsjmsd0GNONhJ+maNLDnptpwdadyvK1u/ZgGgN2gMddShxT5nyiPV0jERB0o=
-X-Received: by 2002:a54:400b:: with SMTP id x11mr4489172oie.71.1612789274272;
- Mon, 08 Feb 2021 05:01:14 -0800 (PST)
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=b7Ntd6xk8fkmmQrfnT7+pjI8yRVrY36ISzhp9gp/+qo=;
+        b=UuX/VatsuGUo7KCO3aQHH9MhtFIGcG7CBUKHxnmm/lCnQpNJpn79SNK+hEIAcC41Bs
+         phZ0xvjO3C4BXiT0zaFzlEfjLBRoT0aOTtOljJma4kMmR/n3efpW2sOaw5zFQqashH60
+         ZJgXBrR/iDAJpFY+187Od48TB9bHkiViA5oTo5iBlSc5SRNun4FDTEQ5ScFv0UVIDv9u
+         DDFy2AdVVaDqb2UYYcrBW2gEUUJHhwb6bQlDZInkijU+/cCi+BXx+LJftdfFk8oI6mi+
+         8nOjwwY3jV2PnJG15RG0NS7KvTFqK30v8ExGFdUcVyHbIgaIhXOv6AUU6OJTbGC7kdLv
+         H/kg==
+X-Gm-Message-State: AOAM5303MtgmbItawvclJLPNoTRtR7i13NAqz4B35LKvCxKL4q24pR7Q
+        MzE6yXX5Jb7Z+oEMffS9W20=
+X-Google-Smtp-Source: ABdhPJwbX3xod7wvvEB/d3zZVGHJY5A4YWyXa2xzte6qkdeU63HZ09LRuIHNPxmICQE9S8HwPyyjjw==
+X-Received: by 2002:a2e:3c0c:: with SMTP id j12mr11121695lja.305.1612789370416;
+        Mon, 08 Feb 2021 05:02:50 -0800 (PST)
+Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
+        by smtp.gmail.com with ESMTPSA id z15sm2001117lji.110.2021.02.08.05.02.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Feb 2021 05:02:49 -0800 (PST)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
+Date:   Mon, 8 Feb 2021 14:02:48 +0100
+To:     qiang.zhang@windriver.com
+Cc:     urezki@gmail.com, paulmck@kernel.org, joel@joelfernandes.org,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4] kvfree_rcu: Release page cache under memory pressure
+Message-ID: <20210208130248.GC1920@pc638.lan>
+References: <20210207124432.10143-1-qiang.zhang@windriver.com>
 MIME-Version: 1.0
-References: <20210206084937.20853-1-ardb@kernel.org> <20210206104854.GC27503@dragon>
-In-Reply-To: <20210206104854.GC27503@dragon>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Mon, 8 Feb 2021 14:00:58 +0100
-Message-ID: <CAJZ5v0hMJnaHhUYib9d3yQ1CMHLE+Hu3UM4VoN=dOiyriTPmOw@mail.gmail.com>
-Subject: Re: [PATCH] Revert "ACPICA: Interpreter: fix memory leak by using
- existing buffer"
-To:     Shawn Guo <shawn.guo@linaro.org>, Ard Biesheuvel <ardb@kernel.org>,
-        Erik Kaneda <erik.kaneda@intel.com>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Len Brown <lenb@kernel.org>,
-        Robert Moore <robert.moore@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210207124432.10143-1-qiang.zhang@windriver.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Feb 6, 2021 at 11:49 AM Shawn Guo <shawn.guo@linaro.org> wrote:
->
-> On Sat, Feb 06, 2021 at 09:49:37AM +0100, Ard Biesheuvel wrote:
-> > This reverts commit 32cf1a12cad43358e47dac8014379c2f33dfbed4.
-> >
-> > The 'exisitng buffer' in this case is the firmware provided table, and
-> > we should not modify that in place. This fixes a crash on arm64 with
-> > initrd table overrides, in which case the DSDT is not mapped with
-> > read/write permissions.
-> >
-> > Cc: Robert Moore <robert.moore@intel.com>
-> > Cc: Erik Kaneda <erik.kaneda@intel.com>
-> > Cc: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-> > Cc: Len Brown <lenb@kernel.org>
-> > Reported-by: Shawn Guo <shawn.guo@linaro.org>
-> > Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
->
-> Tested-by: Shawn Guo <shawn.guo@linaro.org>
+Hello, Zqiang.
 
-Applied, thanks!
+Thank you for your v4!
 
-Erik, the upstream will need to sync up with this revert.
+Some small nits see below:
+
+> From: Zqiang <qiang.zhang@windriver.com>
+> 
+> Add free per-cpu existing krcp's page cache operation, when
+> the system is under memory pressure.
+> 
+> Signed-off-by: Zqiang <qiang.zhang@windriver.com>
+> Co-developed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> ---
+>  v1->v2->v3->v4:
+>  During the test a page shrinker is pretty active, because of low memory
+>  condition. callback drains it whereas kvfree_rcu() part refill it right
+>  away making kind of vicious circle.
+>  Through Vlad Rezki suggestion, to avoid this, schedule a periodic delayed
+>  work with HZ, and it's easy to do that.
+> 
+I think the commit message should be improved. Please add a clear
+description how it works, i mean its connection with shrinker, etc.
+
+>  kernel/rcu/tree.c | 50 +++++++++++++++++++++++++++++++++++++++--------
+>  1 file changed, 42 insertions(+), 8 deletions(-)
+> 
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index c1ae1e52f638..f3b772eef468 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -3139,7 +3139,7 @@ struct kfree_rcu_cpu {
+>  	bool initialized;
+>  	int count;
+>  
+> -	struct work_struct page_cache_work;
+> +	struct delayed_work page_cache_work;
+>  	atomic_t work_in_progress;
+>  	struct hrtimer hrtimer;
+>  
+> @@ -3395,7 +3395,7 @@ schedule_page_work_fn(struct hrtimer *t)
+>  	struct kfree_rcu_cpu *krcp =
+>  		container_of(t, struct kfree_rcu_cpu, hrtimer);
+>  
+> -	queue_work(system_highpri_wq, &krcp->page_cache_work);
+> +	queue_delayed_work(system_highpri_wq, &krcp->page_cache_work, 0);
+>  	return HRTIMER_NORESTART;
+>  }
+>  
+> @@ -3404,7 +3404,7 @@ static void fill_page_cache_func(struct work_struct *work)
+>  	struct kvfree_rcu_bulk_data *bnode;
+>  	struct kfree_rcu_cpu *krcp =
+>  		container_of(work, struct kfree_rcu_cpu,
+> -			page_cache_work);
+> +			page_cache_work.work);
+>  	unsigned long flags;
+>  	bool pushed;
+>  	int i;
+> @@ -3428,15 +3428,22 @@ static void fill_page_cache_func(struct work_struct *work)
+>  	atomic_set(&krcp->work_in_progress, 0);
+>  }
+>  
+> +static bool backoff_page_cache_fill;
+> +
+>  static void
+>  run_page_cache_worker(struct kfree_rcu_cpu *krcp)
+>  {
+>  	if (rcu_scheduler_active == RCU_SCHEDULER_RUNNING &&
+>  			!atomic_xchg(&krcp->work_in_progress, 1)) {
+> -		hrtimer_init(&krcp->hrtimer, CLOCK_MONOTONIC,
+> -			HRTIMER_MODE_REL);
+> -		krcp->hrtimer.function = schedule_page_work_fn;
+> -		hrtimer_start(&krcp->hrtimer, 0, HRTIMER_MODE_REL);
+> +		if (READ_ONCE(backoff_page_cache_fill)) {
+Can we just use xchg directly inside "if" statement? So we can
+get rid of below WRITE_ONCE(). It is not considered as a "hot"
+path, so it should not be an issue.
+
+> +			queue_delayed_work(system_highpri_wq, &krcp->page_cache_work, HZ);
+> +			WRITE_ONCE(backoff_page_cache_fill, false);
+> +		} else {
+> +			hrtimer_init(&krcp->hrtimer, CLOCK_MONOTONIC,
+> +				HRTIMER_MODE_REL);
+> +			krcp->hrtimer.function = schedule_page_work_fn;
+> +			hrtimer_start(&krcp->hrtimer, 0, HRTIMER_MODE_REL);
+> +		}
+>  	}
+>  }
+
+Thank you!
+
+--
+Vlad Rezki
