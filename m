@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 071173138ED
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 17:10:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABEAD31393D
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 17:23:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233071AbhBHQJi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 11:09:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56488 "EHLO mail.kernel.org"
+        id S232256AbhBHQXm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 11:23:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55232 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232824AbhBHPKA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 10:10:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EA1F264ED9;
-        Mon,  8 Feb 2021 15:06:54 +0000 (UTC)
+        id S231858AbhBHPJs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 10:09:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 63D3264ECF;
+        Mon,  8 Feb 2021 15:07:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612796815;
-        bh=/0vmvTyqyQLYYl28kytAgxlDqrUtpPoNNuM/KZX1vQA=;
+        s=korg; t=1612796821;
+        bh=PeRpHfP0z20bjDsgIF/jCZ8Y+qqhnkh0Rwhh0c3Ksy8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CI2H7VqYvwfej3HzXUdBwMtJvrSRowk/voK+X/UVZBckMdTrmn+hXoN3urdoyg2lA
-         UAJlHf2s8slEhve0TImKr8khGi5jUbdRB7rgWFYUsyPO/6GE7ahzXQqQRxHziC1urG
-         ddFm4wptN6NQgQJUMw7FQfZDp6HULOmPqXaDa+nA=
+        b=JPIQ3yIvksEYHcE3YFBM3xbhIFCFHlH6X5HoGiDR1vkoNUkWQ+Z7Rk7OReKWquy7O
+         HVSFDGXNBAeGooUxnK//nrDTvb36xbTTGO3rqrKmhF5c+gLcO6tNoQ4Gw2h73eSfAS
+         eB8m8bOrDM4+rWf37NYDBJeEC1GYMppuFou1PRD4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nadav Amit <namit@vmware.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Joerg Roedel <jroedel@suse.de>
-Subject: [PATCH 4.14 29/30] iommu/vt-d: Do not use flush-queue when caching-mode is on
-Date:   Mon,  8 Feb 2021 16:01:15 +0100
-Message-Id: <20210208145806.407716534@linuxfoundation.org>
+        stable@vger.kernel.org, DENG Qingfang <dqfext@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 4.14 30/30] net: dsa: mv88e6xxx: override existent unicast portvec in port_fdb_add
+Date:   Mon,  8 Feb 2021 16:01:16 +0100
+Message-Id: <20210208145806.449755046@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210208145805.239714726@linuxfoundation.org>
 References: <20210208145805.239714726@linuxfoundation.org>
@@ -42,76 +40,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nadav Amit <namit@vmware.com>
+From: DENG Qingfang <dqfext@gmail.com>
 
-commit 29b32839725f8c89a41cb6ee054c85f3116ea8b5 upstream.
+commit f72f2fb8fb6be095b98af5d740ac50cffd0b0cae upstream.
 
-When an Intel IOMMU is virtualized, and a physical device is
-passed-through to the VM, changes of the virtual IOMMU need to be
-propagated to the physical IOMMU. The hypervisor therefore needs to
-monitor PTE mappings in the IOMMU page-tables. Intel specifications
-provide "caching-mode" capability that a virtual IOMMU uses to report
-that the IOMMU is virtualized and a TLB flush is needed after mapping to
-allow the hypervisor to propagate virtual IOMMU mappings to the physical
-IOMMU. To the best of my knowledge no real physical IOMMU reports
-"caching-mode" as turned on.
+Having multiple destination ports for a unicast address does not make
+sense.
+Make port_db_load_purge override existent unicast portvec instead of
+adding a new port bit.
 
-Synchronizing the virtual and the physical IOMMU tables is expensive if
-the hypervisor is unaware which PTEs have changed, as the hypervisor is
-required to walk all the virtualized tables and look for changes.
-Consequently, domain flushes are much more expensive than page-specific
-flushes on virtualized IOMMUs with passthrough devices. The kernel
-therefore exploited the "caching-mode" indication to avoid domain
-flushing and use page-specific flushing in virtualized environments. See
-commit 78d5f0f500e6 ("intel-iommu: Avoid global flushes with caching
-mode.")
-
-This behavior changed after commit 13cf01744608 ("iommu/vt-d: Make use
-of iova deferred flushing"). Now, when batched TLB flushing is used (the
-default), full TLB domain flushes are performed frequently, requiring
-the hypervisor to perform expensive synchronization between the virtual
-TLB and the physical one.
-
-Getting batched TLB flushes to use page-specific invalidations again in
-such circumstances is not easy, since the TLB invalidation scheme
-assumes that "full" domain TLB flushes are performed for scalability.
-
-Disable batched TLB flushes when caching-mode is on, as the performance
-benefit from using batched TLB invalidations is likely to be much
-smaller than the overhead of the virtual-to-physical IOMMU page-tables
-synchronization.
-
-Fixes: 13cf01744608 ("iommu/vt-d: Make use of iova deferred flushing")
-Signed-off-by: Nadav Amit <namit@vmware.com>
-Cc: David Woodhouse <dwmw2@infradead.org>
-Cc: Lu Baolu <baolu.lu@linux.intel.com>
-Cc: Joerg Roedel <joro@8bytes.org>
-Cc: Will Deacon <will@kernel.org>
-Cc: stable@vger.kernel.org
-Acked-by: Lu Baolu <baolu.lu@linux.intel.com>
-Link: https://lore.kernel.org/r/20210127175317.1600473-1-namit@vmware.com
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
-Signed-off-by: Nadav Amit <namit@vmware.com>
+Fixes: 884729399260 ("net: dsa: mv88e6xxx: handle multiple ports in ATU")
+Signed-off-by: DENG Qingfang <dqfext@gmail.com>
+Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
+Link: https://lore.kernel.org/r/20210130134334.10243-1-dqfext@gmail.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- drivers/iommu/intel-iommu.c |    6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/net/dsa/mv88e6xxx/chip.c |    6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
---- a/drivers/iommu/intel-iommu.c
-+++ b/drivers/iommu/intel-iommu.c
-@@ -3338,6 +3338,12 @@ static int __init init_dmars(void)
+--- a/drivers/net/dsa/mv88e6xxx/chip.c
++++ b/drivers/net/dsa/mv88e6xxx/chip.c
+@@ -1364,7 +1364,11 @@ static int mv88e6xxx_port_db_load_purge(
+ 		if (!entry.portvec)
+ 			entry.state = MV88E6XXX_G1_ATU_DATA_STATE_UNUSED;
+ 	} else {
+-		entry.portvec |= BIT(port);
++		if (state == MV88E6XXX_G1_ATU_DATA_STATE_UC_STATIC)
++			entry.portvec = BIT(port);
++		else
++			entry.portvec |= BIT(port);
++
+ 		entry.state = state;
+ 	}
  
- 		if (!ecap_pass_through(iommu->ecap))
- 			hw_pass_through = 0;
-+
-+		if (!intel_iommu_strict && cap_caching_mode(iommu->cap)) {
-+			pr_info("Disable batched IOTLB flush due to virtualization");
-+			intel_iommu_strict = 1;
-+		}
-+
- #ifdef CONFIG_INTEL_IOMMU_SVM
- 		if (pasid_enabled(iommu))
- 			intel_svm_alloc_pasid_tables(iommu);
 
 
