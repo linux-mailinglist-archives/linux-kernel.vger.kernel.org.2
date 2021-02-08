@@ -2,141 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D30231433A
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 23:52:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC52D31434E
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 23:55:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230319AbhBHWvx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 17:51:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37824 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229609AbhBHWvn (ORCPT
+        id S231336AbhBHWyy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 17:54:54 -0500
+Received: from mail-wr1-f54.google.com ([209.85.221.54]:38789 "EHLO
+        mail-wr1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231193AbhBHWyj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 17:51:43 -0500
-Received: from mail-oo1-xc2d.google.com (mail-oo1-xc2d.google.com [IPv6:2607:f8b0:4864:20::c2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EF67C06178B
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 14:51:03 -0800 (PST)
-Received: by mail-oo1-xc2d.google.com with SMTP id x19so3829403ooj.10
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 14:51:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=2jaIFVPMabgNRI/gSMsENX64xR0X2GpzOOyOdGUnNRo=;
-        b=pBScR02E5r0TkgIM7R/gTKUoLt7Z0j2l+KmGEUVvzVD6iJ+rV1NRqIGbxRSCpN/xF9
-         6ECzsWEtkMBYUHsLOW6EmRZvwcz50tmS4Z4kiMiTfHKdQVnDJR9wum99SFr67PJhCEhZ
-         LIAGh6+XAHdhQB9YQkWu+PZsyD1WTPyCGPQIOOzymGPNz3Zg/acuqdTbeBlHqgHqbB9X
-         QenXmEk9IGatt+KNlyRpsbxQe1sY+gcou4x4VQREJS7Wkxn/y9p8kt/wMxSfTAPAzsFj
-         ohqYM+FW7JqUugev+5lDjtz30gnXn9A1GT2uGo8yxHk2lR3kD335idp9Ai8G83c7Ni6B
-         LKbQ==
+        Mon, 8 Feb 2021 17:54:39 -0500
+Received: by mail-wr1-f54.google.com with SMTP id b3so19152472wrj.5;
+        Mon, 08 Feb 2021 14:54:22 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=2jaIFVPMabgNRI/gSMsENX64xR0X2GpzOOyOdGUnNRo=;
-        b=qZu8YpNDI9qJoLiyPyNCIdKZt0nYucbg5xWLsqfe3OtY62wQ49Q+bFetKMB4FTdKBK
-         YybzXUhZlb1oga7Qzlc1zBFBkZkum5vGrFsnYgUrfsiJUJRxvV6o5wXn1hqlLnRTNFKq
-         Np5VxoohHaYUiq4wSNV//3CsOAPZHDv8BBOnipMR/fUBI0cQjOinSvvRff0HNDs7mGJa
-         MDb8GKED0k3Rl3snukBdWyKL/cLTlDRI/NmU0MVO/YCjzDnoYBcaGqdWmr9feISPppjF
-         WTAWWDlIojQ3P+yma3cBaa7DNKpJ/6O3XZ6TXi0mkJoDs71M+XoJU4K/wR4BQxBhZSk+
-         MSIg==
-X-Gm-Message-State: AOAM530/xQ9aUvcC4o0ZIXk3cSo2eQ3xwhHaKmi947PYye/xVKBrtLm5
-        q+HVonFdzuyOI41rrUYvlzsnyg==
-X-Google-Smtp-Source: ABdhPJwKMs+R/f6Grt4JROunZj+IRHTQeNwBZcyQQGNO0b5W18rmchqi31uaPJUE+MthD6a4Uan95Q==
-X-Received: by 2002:a4a:870c:: with SMTP id z12mr13898102ooh.15.1612824662639;
-        Mon, 08 Feb 2021 14:51:02 -0800 (PST)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id r25sm1079478ota.42.2021.02.08.14.50.59
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Mon, 08 Feb 2021 14:51:01 -0800 (PST)
-Date:   Mon, 8 Feb 2021 14:50:47 -0800 (PST)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Seth Forshee <seth.forshee@canonical.com>
-cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        Chris Down <chris@chrisdown.name>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-mm@kvack.org, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] tmpfs: Disallow CONFIG_TMPFS_INODE64 on s390
-In-Reply-To: <20210205160551.cf57c4293ba5ccb8eb648c11@linux-foundation.org>
-Message-ID: <alpine.LSU.2.11.2102081446340.4656@eggly.anvils>
-References: <20210205230620.518245-1-seth.forshee@canonical.com> <20210205160551.cf57c4293ba5ccb8eb648c11@linux-foundation.org>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=kS2s2dPI8ytNFZbp+yZg3gpLYqkSZkDa3K+KlRfCscc=;
+        b=X6g1SUM14CetOT8E28Ij12tvO3sKdtFYfP4eUdMWrSEnhq5VstpxEFFtEkzI+XE9ct
+         xFLCD+BgWInAou/8idYKJ0P+T30+BvANod/UiKtxb6Nvvw4QcVcv79Zn3ORoMVr5XbjX
+         tzC4pMtH9g/WIE+iLFmvJAeZBbuOeoz4LIiGTgTCA+Gz2p80EAzAFPgwN2Oi5G3A8ZzM
+         tB7FnVn9Xc1TpluQ1zAwzgPEd0YHjehqFk0lSJjeuYyyH6EbwY5JxiW/Ls1MT27Pi7+y
+         hTTGpyZ2zlf7iddiJEzMgOSt7lv0m3tlPmO5xFybEnTybqTfLKoB67Pgg6OEAJrN/TuE
+         KR3A==
+X-Gm-Message-State: AOAM530gkLMJsm/CquxUuHbqsUDxDMkyuw/7GPtpZsHE2uttBLKTis/O
+        pel5MSp6MVYuJsaTd55Tk3E=
+X-Google-Smtp-Source: ABdhPJymt7En80dZe3oV3AmeF01oXinFd+vz4l2FwpOdSJenB05fjyQ1B2jwhWUBri8ayNY6K/YUnw==
+X-Received: by 2002:a5d:4287:: with SMTP id k7mr7719744wrq.317.1612824836871;
+        Mon, 08 Feb 2021 14:53:56 -0800 (PST)
+Received: from rocinante ([95.155.85.46])
+        by smtp.gmail.com with ESMTPSA id b2sm11598136wrv.73.2021.02.08.14.53.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Feb 2021 14:53:55 -0800 (PST)
+Date:   Mon, 8 Feb 2021 23:53:54 +0100
+From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
+To:     Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>
+Cc:     "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Derek Kiernan <derek.kiernan@xilinx.com>,
+        Dragan Cvetic <dragan.cvetic@xilinx.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Bjorn Helgaas <helgaas@kernel.org>
+Subject: Re: [RESEND v4 1/6] misc: Add Synopsys DesignWare xData IP driver
+Message-ID: <YCHBAmFAOv/Joqp5@rocinante>
+References: <cover.1612390291.git.gustavo.pimentel@synopsys.com>
+ <bba090c3d9d3d90fb2dfe5f2aaa52c155d87958f.1612390291.git.gustavo.pimentel@synopsys.com>
+ <YB9EDzI7mSrzXUUB@rocinante>
+ <DM5PR12MB18354765D69889F2CD6E4D89DA8F9@DM5PR12MB1835.namprd12.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <DM5PR12MB18354765D69889F2CD6E4D89DA8F9@DM5PR12MB1835.namprd12.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 5 Feb 2021, Andrew Morton wrote:
-> On Fri,  5 Feb 2021 17:06:20 -0600 Seth Forshee <seth.forshee@canonical.com> wrote:
-> 
-> > This feature requires ino_t be 64-bits, which is true for every
-> > 64-bit architecture but s390, so prevent this option from being
-> > selected there.
-> > 
-> 
-> The previous patch nicely described the end-user impact of the bug. 
-> This is especially important when requesting a -stable backport.
-> 
-> Here's what I ended up with:
-> 
-> 
-> From: Seth Forshee <seth.forshee@canonical.com>
-> Subject: tmpfs: disallow CONFIG_TMPFS_INODE64 on s390
-> 
-> Currently there is an assumption in tmpfs that 64-bit architectures also
-> have a 64-bit ino_t.  This is not true on s390 which has a 32-bit ino_t. 
-> With CONFIG_TMPFS_INODE64=y tmpfs mounts will get 64-bit inode numbers and
-> display "inode64" in the mount options, but passing the "inode64" mount
-> option will fail.  This leads to the following behavior:
-> 
->  # mkdir mnt
->  # mount -t tmpfs nodev mnt
->  # mount -o remount,rw mnt
->  mount: /home/ubuntu/mnt: mount point not mounted or bad option.
-> 
-> As mount sees "inode64" in the mount options and thus passes it in the
-> options for the remount.
-> 
-> 
-> So prevent CONFIG_TMPFS_INODE64 from being selected on s390.
-> 
-> Link: https://lkml.kernel.org/r/20210205230620.518245-1-seth.forshee@canonical.com
-> Fixes: ea3271f7196c ("tmpfs: support 64-bit inums per-sb")
-> Signed-off-by: Seth Forshee <seth.forshee@canonical.com>
-> Cc: Chris Down <chris@chrisdown.name>
-> Cc: Hugh Dickins <hughd@google.com>
+[+cc Bjorn]
 
-Thank you Seth: now that you've fixed Kirill's alpha observation too,
-Acked-by: Hugh Dickins <hughd@google.com>
+Hi Gustavo,
 
-> Cc: Amir Goldstein <amir73il@gmail.com>
-> Cc: Heiko Carstens <hca@linux.ibm.com>
-> Cc: Vasily Gorbik <gor@linux.ibm.com>
-> Cc: Christian Borntraeger <borntraeger@de.ibm.com>
-> Cc: <stable@vger.kernel.org>	[5.9+]
-> Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-> ---
-> 
->  fs/Kconfig |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> --- a/fs/Kconfig~tmpfs-disallow-config_tmpfs_inode64-on-s390
-> +++ a/fs/Kconfig
-> @@ -203,7 +203,7 @@ config TMPFS_XATTR
->  
->  config TMPFS_INODE64
->  	bool "Use 64-bit ino_t by default in tmpfs"
-> -	depends on TMPFS && 64BIT
-> +	depends on TMPFS && 64BIT && !S390
->  	default n
->  	help
->  	  tmpfs has historically used only inode numbers as wide as an unsigned
-> _
-> 
-> 
+[...]
+> Thanks for your review. I will wait for a couple of days, before sending 
+> a new version of this patch series based on your feedback.
+
+Thank you!
+
+There might be one more change, and improvement, to be done as per
+Bjorn's feedback, see:
+
+  https://lore.kernel.org/linux-pci/20210208193516.GA406304@bjorn-Precision-5520/
+
+The code in question would be (exceprt from the patch):
+
+[...]
++static int dw_xdata_pcie_probe(struct pci_dev *pdev,
++			       const struct pci_device_id *pid)
++{
++	const struct dw_xdata_pcie_data *pdata = (void *)pid->driver_data;
++	struct dw_xdata *dw;
+[...]
++	dw->rg_region.vaddr = pcim_iomap_table(pdev)[pdata->rg_bar];
++	if (!dw->rg_region.vaddr)
++		return -ENOMEM;
+[...]
+
+Perhaps something like the following would would?
+
+void __iomem * const *iomap_table;
+
+iomap_table = pcim_iomap_table(pdev);
+if (!iomap_table)
+        return -ENOMEM;
+
+dw->rg_region.vaddr = iomap_table[pdata->rg_bar];
+if (!dw->rg_region.vaddr)
+	return -ENOMEM;
+
+With sensible error messages added, of course.  What do you think?
+
+Krzysztof
