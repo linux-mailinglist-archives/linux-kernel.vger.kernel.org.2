@@ -2,149 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BB0C314027
+	by mail.lfdr.de (Postfix) with ESMTP id DD082314028
 	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 21:17:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235853AbhBHUQ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 15:16:29 -0500
-Received: from mail-ed1-f51.google.com ([209.85.208.51]:38824 "EHLO
-        mail-ed1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235879AbhBHSnP (ORCPT
+        id S235733AbhBHURG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 15:17:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41868 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232133AbhBHSrX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 13:43:15 -0500
-Received: by mail-ed1-f51.google.com with SMTP id s11so19860158edd.5;
-        Mon, 08 Feb 2021 10:42:58 -0800 (PST)
+        Mon, 8 Feb 2021 13:47:23 -0500
+Received: from mail-oo1-xc2f.google.com (mail-oo1-xc2f.google.com [IPv6:2607:f8b0:4864:20::c2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E0A9C061786
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 10:46:43 -0800 (PST)
+Received: by mail-oo1-xc2f.google.com with SMTP id f1so817995oou.0
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 10:46:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uiy4+L1TKc0lecuM77Q8fHlOhBTJ6Asny2DXxHTJcDo=;
+        b=sCxbX8R2f2bvawMHT3qjLo0h0zjmMVkbthbZc/FGNTuQlti07fDdGZt78TBsutbnQI
+         oCY8HQ3wAvVEQ/T6y7QOVvt9XsrFxDi+cORohR5IvXM3swUFWfH3phMxyt5+CbiaUvsI
+         LkuDmSHFecb/k/x2VI2Rr67mElyyCB5aXzgHmXNJP9OtdxIfTYYz5joOSs3l2FPRuq0T
+         WTwVwprmUQAm8MXf0VOshOtXu1zPaQxD9xAGWlw9P3KPrHroqJ8XfHmCRnvxa71ezi4D
+         vRlTwa/QJDt0uzrC4S0S0HDQkT9SmEO+4kT2ANyC46ddq6KLtrj3VIna4XwyLenGInz8
+         w+cw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=o0MO6kYhDlukwe2FztGhJY4JOmsuVtg2OPvSn78DT4o=;
-        b=dAdHxwPFGIMoqa/lBmCRcIfp5CNpz6JNqivt5dX9nKDVtEltyRYdJ8/Ov7E9u6c4Hw
-         dCfcX1jGYFGTS0D0TiloDu/ZeP5eXC93kjCz+5NxUmqgsuj9aV9sF46/LqBHnIs1J6HX
-         deORHajAKcVXymltgZbh815MonPcoln1rfQDF/Fa9eJZfUySZ8bc8a0+99kstly0xJGr
-         GSnObmyz4oPQg/0btEs26NgC0elnTp8zgufFHiZZ8sLgSQpQtBhVLBgpQuaXmJHdviPY
-         wIwLux93IBgKNyiXOgKxYowullCVPK3bDtPUAR2VmcJaRAO+sTXUw6GTWSDItFNWhDr4
-         iyOg==
-X-Gm-Message-State: AOAM532EkZFUsNgr0alikqmD6chf/3rvkGYXUXN2zZOAgyIwkTEY2y5B
-        uNNZ+wtD6wzQ6s71fw6r3V8=
-X-Google-Smtp-Source: ABdhPJxPQoDmwOFtcSLnMjYpNRs+iVkrhj4hV31wgmf6XJ1MLpWB5omO8uuafc7Bk011dYwog3NnRA==
-X-Received: by 2002:a05:6402:22ce:: with SMTP id dm14mr13185754edb.256.1612809753077;
-        Mon, 08 Feb 2021 10:42:33 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id hy24sm8682518ejc.40.2021.02.08.10.42.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Feb 2021 10:42:31 -0800 (PST)
-Date:   Mon, 8 Feb 2021 19:42:30 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
-        arm-soc <arm@kernel.org>, SoC Team <soc@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/SAMSUNG EXYNOS ARM ARCHITECTURES" 
-        <linux-samsung-soc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Sylwester Nawrocki <snawrocki@kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        Tony Lindgren <tony@atomide.com>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Maxime Ripard <mripard@kernel.org>
-Subject: Re: [GIT PULL 2/3] ARM: dts: samsung: DTS for v5.12
-Message-ID: <20210208184230.onhlioflyylkx6xo@kozik-lap>
-References: <20210125191240.11278-1-krzk@kernel.org>
- <20210125191240.11278-3-krzk@kernel.org>
- <20210206134531.l5vpzlmev4v3f3uo@kozik-lap>
- <CAK8P3a0Kgn9PTHjsU7MbJPC8vatvb9KYJJKWxrx7zQzTNgK10g@mail.gmail.com>
- <CAMuHMdWZ8QmiQCmiW9AvCpviNZeuaxThSo_4Xb2DGEs9hMTKMQ@mail.gmail.com>
- <YCGBIvRfoP0BeyrP@builder.lan>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uiy4+L1TKc0lecuM77Q8fHlOhBTJ6Asny2DXxHTJcDo=;
+        b=LawboLBQ3z6c1uU47kmgpBQ2xJ9ltLQfgDbni4IVEqF96HnoO5gXQF0rxRWvba2TDn
+         zRjtpw+K/TYqxi8OGFOGnHDR3yJg+iI00O/LeEc85Dr9p78AvZUFK+k2fnGdQmVkwW+m
+         lxx7nFIuwE00dAyp9OpKRv0ELt0xhumLaF6kLhuvirGu2jvamy5CxkpId/NSetHbB/Yk
+         M9NCCVu4dycfnTZh082+bg1papiaC3gDVLE1TfqMESmid5S6E1Y/SM1K2tXX6lxrXAwK
+         yGm373WrriLTEEKrN3LwKq/cfyjDDY9/2ZU5rmWvvG43oA9HL3Zw36unvB+np05vxSbT
+         utiw==
+X-Gm-Message-State: AOAM530clFBTf5i7CxSvDQAif50evaWCtUBcCsLb5sEToM0xSV3HBEcK
+        +zxCMg35l911+HPOELrRHin5b9qK5x5fTGnI7pGJfw==
+X-Google-Smtp-Source: ABdhPJzKG3qMZs4qHobju9rjHTgVd7yAMQ7y0XNCIsRGy6N0KqdU8kcdVfEX5R+R8I47cBrzDrUM+oTLxEp2nmYQ1K8=
+X-Received: by 2002:a4a:aa8b:: with SMTP id d11mr10012285oon.36.1612810002329;
+ Mon, 08 Feb 2021 10:46:42 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YCGBIvRfoP0BeyrP@builder.lan>
+References: <6678d77ceffb71f1cff2cf61560e2ffe7bb6bfe9.1612808820.git.andreyknvl@google.com>
+In-Reply-To: <6678d77ceffb71f1cff2cf61560e2ffe7bb6bfe9.1612808820.git.andreyknvl@google.com>
+From:   Marco Elver <elver@google.com>
+Date:   Mon, 8 Feb 2021 19:46:30 +0100
+Message-ID: <CANpmjNOkWozE5q2f-w0xTKxi1nDoPy+pMuZ7T78WBMmQ=XpgJg@mail.gmail.com>
+Subject: Re: [PATCH] kasan: fix stack traces dependency for HW_TAGS
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 08, 2021 at 12:21:22PM -0600, Bjorn Andersson wrote:
-> On Sat 06 Feb 13:47 CST 2021, Geert Uytterhoeven wrote:
-> 
-> > Hi Arnd,
-> > 
-> > On Sat, Feb 6, 2021 at 3:36 PM Arnd Bergmann <arnd@kernel.org> wrote:
-> > > That said, I'm still not happy about the patch we discussed in the
-> > > other email thread[1] and I'd like to handle it a little more strictly in
-> > > the future, but I agree this wasn't obvious and we have been rather
-> > > inconsistent about it in the past, with some platform maintainers
-> > > handling it way more strictly than others.
-> > >
-> > > I've added the devicetree maintainers and a few other platform
-> > > maintainers to Cc here, maybe they can provide some further
-> > > opinions on the topic so we can come to an approach that
-> > > works for everyone.
-> > >
-> > > My summary of the thread in [1] is there was a driver bug that
-> > > required a DT binding change. Krzysztof and the other involved
-> > > parties made sure the driver handles it in a backward-compatible
-> > > way (an old dtb file will still run into the bug but keep working
-> > > with new kernels), but decided that they did not need to worry
-> > > about the opposite case (running an old kernel with an updated
-> > > dtb). I noticed the compatibility break and said that I would
-> > > prefer this to be done in a way that is compatible both ways,
-> > > or at the minimum be alerted about the binding break in the
-> > > pull request, with an explanation about why this had to be done,
-> > > even when we don't think anyone is going to be affected.
-> > >
-> > > What do others think about this? Should we generally assume
-> > > that breaking old kernels with new dtbs is acceptable, or should
-> > > we try to avoid it if possible, the same way we try to avoid
-> > > breaking new kernels with old dtbs? Should this be a platform
-> > > specific policy or should we try to handle all platforms the same
-> > > way?
-> > 
-> > For Renesas SoCs, we typically only consider compatibility of new
-> > kernels with old DTBs, not the other way around.
-> > However, most DTB updates are due to new hardware support, so using the
-> > new DTB with an old kernel usually just means no newly documented
-> > hardware, or new feature, is being used by the old kernel.
-> > 
-> 
-> This is the case for the Qualcomm tree as well, it's expected that a new
-> kernel should work with older DT. But, while we don't actively try to
-> break it, there are plenty of examples where we don't/can't give the
-> promise in the other direction.
+On Mon, 8 Feb 2021 at 19:40, Andrey Konovalov <andreyknvl@google.com> wrote:
+>
+> Currently, whether the alloc/free stack traces collection is enabled by
+> default for hardware tag-based KASAN depends on CONFIG_DEBUG_KERNEL.
+> The intention for this dependency was to only enable collection on slow
+> debug kernels due to a significant perf and memory impact.
+>
+> As it turns out, CONFIG_DEBUG_KERNEL is not considered a debug option
+> and is enabled on many productions kernels including Android and Ubuntu.
+> As the result, this dependency is pointless and only complicates the code
+> and documentation.
+>
+> Having stack traces collection disabled by default would make the hardware
+> mode work differently to to the software ones, which is confusing.
+>
+> This change removes the dependency and enables stack traces collection
+> by default.
+>
+> Looking into the future, this default might makes sense for production
+> kernels, assuming we implement a fast stack trace collection approach.
+>
+> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 
-Thanks everyone for comments.
+Reviewed-by: Marco Elver <elver@google.com>
 
-Let me steer the discussion to original topic - it's about old kernel
-and new DTB, assuming that mainline kernel bisectability is not
-affected.
+I'm in favor of this simplification.
 
-Flow looks like this:
+The fact that CONFIG_DEBUG_KERNEL cannot be relied upon to determine
+if we're running a debug kernel or not is a bit unfortunate though.
 
-0. You have existing bidings and drivers.
-1. Patch changing bindings (with new compatible) and drivers gets
-   accepted by maintainer.
-2. Patch above (bindings+drivers) goes during merge window to v5.11-rc1.
-3. Patch changing in-tree DTS to new compatible gets accepted by
-   maintainer and it is sent as v5.12-rc1 material to SoC maintainers.
+Thanks!
 
-So again: old kernel, using old bindings, new DTB.
-
-Another case is where out-of-tree user of bindings, e.g. FreeBSD, takes
-new DTS (at point of #3 above or later) but did not take the bindings.
-Such system would be broken but it's their fault - they took DTS without
-taking the bindings (which were there already for one release!).
-
-Best regards,
-Krzysztof
+> ---
+>  Documentation/dev-tools/kasan.rst | 3 +--
+>  mm/kasan/hw_tags.c                | 8 ++------
+>  2 files changed, 3 insertions(+), 8 deletions(-)
+>
+> diff --git a/Documentation/dev-tools/kasan.rst b/Documentation/dev-tools/kasan.rst
+> index 1651d961f06a..a248ac3941be 100644
+> --- a/Documentation/dev-tools/kasan.rst
+> +++ b/Documentation/dev-tools/kasan.rst
+> @@ -163,8 +163,7 @@ particular KASAN features.
+>  - ``kasan=off`` or ``=on`` controls whether KASAN is enabled (default: ``on``).
+>
+>  - ``kasan.stacktrace=off`` or ``=on`` disables or enables alloc and free stack
+> -  traces collection (default: ``on`` for ``CONFIG_DEBUG_KERNEL=y``, otherwise
+> -  ``off``).
+> +  traces collection (default: ``on``).
+>
+>  - ``kasan.fault=report`` or ``=panic`` controls whether to only print a KASAN
+>    report or also panic the kernel (default: ``report``).
+> diff --git a/mm/kasan/hw_tags.c b/mm/kasan/hw_tags.c
+> index e529428e7a11..d558799b25b3 100644
+> --- a/mm/kasan/hw_tags.c
+> +++ b/mm/kasan/hw_tags.c
+> @@ -134,12 +134,8 @@ void __init kasan_init_hw_tags(void)
+>
+>         switch (kasan_arg_stacktrace) {
+>         case KASAN_ARG_STACKTRACE_DEFAULT:
+> -               /*
+> -                * Default to enabling stack trace collection for
+> -                * debug kernels.
+> -                */
+> -               if (IS_ENABLED(CONFIG_DEBUG_KERNEL))
+> -                       static_branch_enable(&kasan_flag_stacktrace);
+> +               /* Default to enabling stack trace collection. */
+> +               static_branch_enable(&kasan_flag_stacktrace);
+>                 break;
+>         case KASAN_ARG_STACKTRACE_OFF:
+>                 /* Do nothing, kasan_flag_stacktrace keeps its default value. */
+> --
+> 2.30.0.478.g8a0d178c01-goog
+>
