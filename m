@@ -2,91 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67E62312B1D
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 08:31:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6FA0312B67
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 09:03:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229931AbhBHHao (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 02:30:44 -0500
-Received: from mga03.intel.com ([134.134.136.65]:32276 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229608AbhBHHal (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 02:30:41 -0500
-IronPort-SDR: VQu+7EA7SUiUxWGk91libdkM03jyburFS/UilediU/ZS5h4xBS1XkxvTBuqwFkSViREXNf43x9
- TgCnj7HmLB/w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9888"; a="181736692"
-X-IronPort-AV: E=Sophos;i="5.81,161,1610438400"; 
-   d="scan'208";a="181736692"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Feb 2021 23:28:55 -0800
-IronPort-SDR: XFU5j01Wyd9Xl9CirZrzX3awEEYk9O/BrVwj5noMPi6TE3nTY3u+dDvdRkvo11bz1iFUznwxDb
- cc9043pRazDA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,161,1610438400"; 
-   d="scan'208";a="398280466"
-Received: from vmmteam.bj.intel.com ([10.240.193.86])
-  by orsmga007.jf.intel.com with ESMTP; 07 Feb 2021 23:28:52 -0800
-From:   Jing Liu <jing2.liu@linux.intel.com>
-To:     pbonzini@redhat.com
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v1] kvm: x86: Revise guest_fpu xcomp_bv field
-Date:   Mon,  8 Feb 2021 11:16:59 -0500
-Message-Id: <20210208161659.63020-1-jing2.liu@linux.intel.com>
-X-Mailer: git-send-email 2.18.4
+        id S230187AbhBHICx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 03:02:53 -0500
+Received: from outbound-gw.openxchange.ahost.me ([94.136.40.163]:40200 "EHLO
+        outbound-gw.openxchange.ahost.me" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229865AbhBHICb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 03:02:31 -0500
+Received: from localhost ([127.0.0.1] helo=outbound-gw.openxchange.ahost.me)
+        by outbound-gw.openxchange.ahost.me with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <phillip@squashfs.org.uk>)
+        id 1l911d-000486-3H; Mon, 08 Feb 2021 07:32:01 +0000
+Date:   Mon, 8 Feb 2021 07:32:00 +0000 (GMT)
+From:   Phillip Lougher <phillip@squashfs.org.uk>
+To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Message-ID: <1932848714.754502.1612769521044@webmail.123-reg.co.uk>
+Subject: [PATCH V2 0/4] Squashfs: fix BIO migration regression and add
+ sanity checks
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Priority: 3
+Importance: Normal
+X-Mailer: Open-Xchange Mailer v7.10.3-Rev30
+X-Originating-IP: 82.69.79.175
+X-Originating-Client: com.openexchange.ox.gui.dhtml
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Bit 63 of the XCOMP_BV field indicates that the save area is in the
-compacted format and the remaining bits indicate the states that have
-space allocated in the save area, not only user states. Since
-fpstate_init() has initialized xcomp_bv, let's just use that.
+Hi all,
 
-Signed-off-by: Jing Liu <jing2.liu@linux.intel.com>
----
- arch/x86/kvm/x86.c | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
+Patch [1/4] fixes a regression introduced by the "migrate from ll_rw_block
+usage to BIO" patch, which has produced a number of Sysbot/Syzkaller reports.
 
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 1b404e4d7dd8..f115493f577d 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -4435,8 +4435,6 @@ static int kvm_vcpu_ioctl_x86_set_debugregs(struct kvm_vcpu *vcpu,
- 	return 0;
- }
- 
--#define XSTATE_COMPACTION_ENABLED (1ULL << 63)
--
- static void fill_xsave(u8 *dest, struct kvm_vcpu *vcpu)
- {
- 	struct xregs_state *xsave = &vcpu->arch.guest_fpu->state.xsave;
-@@ -4494,7 +4492,8 @@ static void load_xsave(struct kvm_vcpu *vcpu, u8 *src)
- 	/* Set XSTATE_BV and possibly XCOMP_BV.  */
- 	xsave->header.xfeatures = xstate_bv;
- 	if (boot_cpu_has(X86_FEATURE_XSAVES))
--		xsave->header.xcomp_bv = host_xcr0 | XSTATE_COMPACTION_ENABLED;
-+		xsave->header.xcomp_bv = XCOMP_BV_COMPACTED_FORMAT |
-+					 xfeatures_mask_all;
- 
- 	/*
- 	 * Copy each region from the non-compacted offset to the
-@@ -9912,9 +9911,6 @@ static void fx_init(struct kvm_vcpu *vcpu)
- 		return;
- 
- 	fpstate_init(&vcpu->arch.guest_fpu->state);
--	if (boot_cpu_has(X86_FEATURE_XSAVES))
--		vcpu->arch.guest_fpu->state.xsave.header.xcomp_bv =
--			host_xcr0 | XSTATE_COMPACTION_ENABLED;
- 
- 	/*
- 	 * Ensure guest xcr0 is valid for loading
--- 
-2.18.4
+Patches [2/4], [3/4], and [4/4] fix a number of filesystem corruption
+issues which have produced Sysbot reports in the id, inode and xattr
+lookup code.
 
+Each patch has been tested against the Sysbot reproducers using the given
+kernel configuration.  They have the appropriate "Reported-by:" lines
+added.
+
+Additionally, all of the reproducer filesystems are indirectly fixed by
+patch [4/4] due to the fact they all have xattr corruption which is now
+detected there.
+
+Additional testing with other configurations and architectures (32bit,
+big endian), and normal filesystems has also been done to trap any inadvertent
+regressions caused by the additional sanity checks.
+
+V2: Fix two checkpatch.pl errors.
+
+Phillip
