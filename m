@@ -2,414 +2,428 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EB30312EFF
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 11:30:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39308312F02
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 11:30:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232458AbhBHK3C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 05:29:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44674 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231825AbhBHKQE (ORCPT
+        id S231167AbhBHK37 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 05:29:59 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:20196 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232106AbhBHKSP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 05:16:04 -0500
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20875C06178B
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 02:15:24 -0800 (PST)
-Received: by mail-oi1-x232.google.com with SMTP id d20so15011111oiw.10
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 02:15:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=+XLXO2SWQmK2X0C7Wbz/yh9K6ApniIN/1/cELGqtW0Q=;
-        b=Kdy9Sqn7DCDG1wqfJ081gBqy9T8jd5LM7NLDIuSz7ngUHNiA5Iie8JOLkCIZ3gpEE6
-         RJr2mP9RkMRrqAUYu9X2+HFgiUTe5gXt5oovX+fqeJYRz+FxnY/xdQvbsad53ptWgVVT
-         pcGwZ1lx1UyDssXPknhcpPbZxU9dPav/pqdlku1gQlYBGHLlFVk+kPBVHqbX7gopsdks
-         sb6yqdxhC8r/sV6qj3bOprCNp7IvF4AqjaYZiFxwUHyia5IjnS8mvCx/RxG/cllUi8J0
-         39qsy/Z9SDEJaG/2YRf09msRgP9PDYfY4BCkmAysZDWIfSDglpZ1Cxpe7/yne/6bQx3l
-         Po3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=+XLXO2SWQmK2X0C7Wbz/yh9K6ApniIN/1/cELGqtW0Q=;
-        b=fLg75rSwQU+j6YcfLgdRmW3H3Vo5jwCgZdRXbrP8N6pSMU0yB0aAcOYoBqSnYmBOwU
-         8XJaCgv9DclBuXzqB5qc1byRWYI3E5cWxsVZO+/osgapI2Afk9DttspS05MpdaJ3qqEr
-         5VhhfOgIzg71V2ZidL3QgLH+UyxQlkKavR+GNKsU/vAdXi9RldYA3WgZFCDJIb4n+O6f
-         kbj963MfRJ/6gKnfd4yG9vepJ+eMc6s9e5ITb5UJA2Q7O52KELycs94OBJgR8hKp8Evn
-         a2YjZZ7PnsNXXZRoxHUYcPo9C4dOU+q9RFMPnu50LZCSgzvurYEkkrgghfiHCbUcy2SI
-         GMhQ==
-X-Gm-Message-State: AOAM533ktqlVbPZF1MhaZhr4ZnP/bNc/HZ2ZBpQKM7HZphJKFsjmid6B
-        vQuWcRDrrZ8il2QssL8/EzI=
-X-Google-Smtp-Source: ABdhPJwOm0jkdq4/RyBfteF+RUUKSmIJHOSKSFHjBYk3+hHt6YbAUL4kLGOc74QoxLjc7fSQI+T5lQ==
-X-Received: by 2002:aca:1c08:: with SMTP id c8mr1131514oic.7.1612779323529;
-        Mon, 08 Feb 2021 02:15:23 -0800 (PST)
-Received: from localhost.localdomain ([50.236.19.102])
-        by smtp.gmail.com with ESMTPSA id t3sm607226otb.36.2021.02.08.02.15.15
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 08 Feb 2021 02:15:23 -0800 (PST)
-From:   Yafang Shao <laoar.shao@gmail.com>
-To:     andriy.shevchenko@linux.intel.com, david@redhat.com,
-        vbabka@suse.cz, willy@infradead.org, cl@linux.com,
-        linmiaohe@huawei.com, penberg@kernel.org, rientjes@google.com,
-        iamjoonsoo.kim@lge.com, akpm@linux-foundation.org,
-        pmladek@suse.com, rostedt@goodmis.org,
-        sergey.senozhatsky@gmail.com, joe@perches.com
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Yafang Shao <laoar.shao@gmail.com>
-Subject: [PATCH v3 3/3] vsprintf: introduce new format to dump full information of page flags
-Date:   Mon,  8 Feb 2021 18:14:39 +0800
-Message-Id: <20210208101439.55474-4-laoar.shao@gmail.com>
-X-Mailer: git-send-email 2.24.3 (Apple Git-128)
-In-Reply-To: <20210208101439.55474-1-laoar.shao@gmail.com>
-References: <20210208101439.55474-1-laoar.shao@gmail.com>
+        Mon, 8 Feb 2021 05:18:15 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612779407;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=UH6UKFy93I46L5FvDLZ0Lq7YSspT8IcIYti1E/vsdVA=;
+        b=SspPQEGIgdUkdL5TiH4IpiiI6PbV74pjW/dxqTGhKnlP/AJK55jbq6MAb+iiq/pW8MnSE+
+        FsLcJhuycT1t8S6l/Lx6SXm+NU4uRPATxOrMRYmQ7OxhzbN92KArIJ9c/oMD8Tc6VmnJTB
+        agTgLPuuQhGL0unyqVRMfLxV+4kd4AU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-406-DuvnjTJPPYyCQ9_mt2Jh3w-1; Mon, 08 Feb 2021 05:16:43 -0500
+X-MC-Unique: DuvnjTJPPYyCQ9_mt2Jh3w-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 700D7189CD30;
+        Mon,  8 Feb 2021 10:16:41 +0000 (UTC)
+Received: from kamzik.brq.redhat.com (unknown [10.40.193.48])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 08F47708E2;
+        Mon,  8 Feb 2021 10:16:37 +0000 (UTC)
+Date:   Mon, 8 Feb 2021 11:16:34 +0100
+From:   Andrew Jones <drjones@redhat.com>
+To:     "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Shuah Khan <shuah@kernel.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Igor Mammedov <imammedo@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] KVM: selftests: Keep track of memslots more
+ efficiently
+Message-ID: <20210208101634.vfsr6zoxjnrguwuv@kamzik.brq.redhat.com>
+References: <5e5d83b305077e3e65b130dbb31c131bfb831170.1612139762.git.maciej.szmigiero@oracle.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5e5d83b305077e3e65b130dbb31c131bfb831170.1612139762.git.maciej.szmigiero@oracle.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The existed pGp shows the names of page flags only, rather than the full
-information including section, node, zone, last cpuipid and kasan tag.
-While it is not easy to parse these information manually because there
-are so many flavors. We'd better interpret them in printf.
+On Mon, Feb 01, 2021 at 09:10:56AM +0100, Maciej S. Szmigiero wrote:
+> From: "Maciej S. Szmigiero" <maciej.szmigiero@oracle.com>
+> 
+> The KVM selftest framework was using a simple list for keeping track of
+> the memslots currently in use.
+> This resulted in lookups and adding a single memslot being O(n), the
+> later due to linear scanning of the existing memslot set to check for
+> the presence of any conflicting entries.
+> 
+> Before this change, benchmarking high count of memslots was more or less
+> impossible as pretty much all the benchmark time was spent in the
+> selftest framework code.
+> 
+> We can simply use a rbtree for keeping track of both of gfn and hva.
+> We don't need an interval tree for hva here as we can't have overlapping
+> memslots because we allocate a completely new memory chunk for each new
+> memslot.
+> 
+> Signed-off-by: Maciej S. Szmigiero <maciej.szmigiero@oracle.com>
+> ---
+>  tools/testing/selftests/kvm/Makefile          |   2 +-
+>  tools/testing/selftests/kvm/lib/kvm_util.c    | 141 ++++++++++++++----
+>  .../selftests/kvm/lib/kvm_util_internal.h     |  15 +-
+>  tools/testing/selftests/kvm/lib/rbtree.c      |   1 +
+>  4 files changed, 124 insertions(+), 35 deletions(-)
+>  create mode 100644 tools/testing/selftests/kvm/lib/rbtree.c
+> 
+> diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
+> index fe41c6a0fa67..e7c6237d7383 100644
+> --- a/tools/testing/selftests/kvm/Makefile
+> +++ b/tools/testing/selftests/kvm/Makefile
+> @@ -33,7 +33,7 @@ ifeq ($(ARCH),s390)
+>  	UNAME_M := s390x
+>  endif
+>  
+> -LIBKVM = lib/assert.c lib/elf.c lib/io.c lib/kvm_util.c lib/sparsebit.c lib/test_util.c lib/guest_modes.c lib/perf_test_util.c
+> +LIBKVM = lib/assert.c lib/elf.c lib/io.c lib/kvm_util.c lib/rbtree.c lib/sparsebit.c lib/test_util.c lib/guest_modes.c lib/perf_test_util.c
+>  LIBKVM_x86_64 = lib/x86_64/processor.c lib/x86_64/vmx.c lib/x86_64/svm.c lib/x86_64/ucall.c lib/x86_64/handlers.S
+>  LIBKVM_aarch64 = lib/aarch64/processor.c lib/aarch64/ucall.c
+>  LIBKVM_s390x = lib/s390x/processor.c lib/s390x/ucall.c lib/s390x/diag318_test_handler.c
+> diff --git a/tools/testing/selftests/kvm/lib/kvm_util.c b/tools/testing/selftests/kvm/lib/kvm_util.c
+> index fa5a90e6c6f0..632433dbfa25 100644
+> --- a/tools/testing/selftests/kvm/lib/kvm_util.c
+> +++ b/tools/testing/selftests/kvm/lib/kvm_util.c
+> @@ -195,7 +195,9 @@ struct kvm_vm *vm_create(enum vm_guest_mode mode, uint64_t phy_pages, int perm)
+>  	TEST_ASSERT(vm != NULL, "Insufficient Memory");
+>  
+>  	INIT_LIST_HEAD(&vm->vcpus);
+> -	INIT_LIST_HEAD(&vm->userspace_mem_regions);
+> +	vm->regions.gpa_tree = RB_ROOT;
+> +	vm->regions.hva_tree = RB_ROOT;
+> +	hash_init(vm->regions.slot_hash);
+>  
+>  	vm->mode = mode;
+>  	vm->type = 0;
+> @@ -347,13 +349,14 @@ struct kvm_vm *vm_create_default(uint32_t vcpuid, uint64_t extra_mem_pages,
+>   */
+>  void kvm_vm_restart(struct kvm_vm *vmp, int perm)
+>  {
+> +	int ctr;
+>  	struct userspace_mem_region *region;
+>  
+>  	vm_open(vmp, perm);
+>  	if (vmp->has_irqchip)
+>  		vm_create_irqchip(vmp);
+>  
+> -	list_for_each_entry(region, &vmp->userspace_mem_regions, list) {
+> +	hash_for_each(vmp->regions.slot_hash, ctr, region, slot_node) {
+>  		int ret = ioctl(vmp->fd, KVM_SET_USER_MEMORY_REGION, &region->region);
+>  		TEST_ASSERT(ret == 0, "KVM_SET_USER_MEMORY_REGION IOCTL failed,\n"
+>  			    "  rc: %i errno: %i\n"
+> @@ -416,14 +419,21 @@ uint32_t kvm_vm_reset_dirty_ring(struct kvm_vm *vm)
+>  static struct userspace_mem_region *
+>  userspace_mem_region_find(struct kvm_vm *vm, uint64_t start, uint64_t end)
+>  {
+> -	struct userspace_mem_region *region;
+> +	struct rb_node *node;
+>  
+> -	list_for_each_entry(region, &vm->userspace_mem_regions, list) {
+> +	for (node = vm->regions.gpa_tree.rb_node; node; ) {
+> +		struct userspace_mem_region *region =
+> +			container_of(node, struct userspace_mem_region, gpa_node);
+>  		uint64_t existing_start = region->region.guest_phys_addr;
+>  		uint64_t existing_end = region->region.guest_phys_addr
+>  			+ region->region.memory_size - 1;
+>  		if (start <= existing_end && end >= existing_start)
+>  			return region;
+> +
+> +		if (start < existing_start)
+> +			node = node->rb_left;
+> +		else
+> +			node = node->rb_right;
+>  	}
+>  
+>  	return NULL;
+> @@ -538,11 +548,16 @@ void kvm_vm_release(struct kvm_vm *vmp)
+>  }
+>  
+>  static void __vm_mem_region_delete(struct kvm_vm *vm,
+> -				   struct userspace_mem_region *region)
+> +				   struct userspace_mem_region *region,
+> +				   bool unlink)
+>  {
+>  	int ret;
+>  
+> -	list_del(&region->list);
+> +	if (unlink) {
+> +		rb_erase(&region->gpa_node, &vm->regions.gpa_tree);
+> +		rb_erase(&region->hva_node, &vm->regions.hva_tree);
+> +		hash_del(&region->slot_node);
+> +	}
+>  
+>  	region->region.memory_size = 0;
+>  	ret = ioctl(vm->fd, KVM_SET_USER_MEMORY_REGION, &region->region);
+> @@ -561,14 +576,16 @@ static void __vm_mem_region_delete(struct kvm_vm *vm,
+>   */
+>  void kvm_vm_free(struct kvm_vm *vmp)
+>  {
+> -	struct userspace_mem_region *region, *tmp;
+> +	int ctr;
+> +	struct hlist_node *node;
+> +	struct userspace_mem_region *region;
+>  
+>  	if (vmp == NULL)
+>  		return;
+>  
+>  	/* Free userspace_mem_regions. */
+> -	list_for_each_entry_safe(region, tmp, &vmp->userspace_mem_regions, list)
+> -		__vm_mem_region_delete(vmp, region);
+> +	hash_for_each_safe(vmp->regions.slot_hash, ctr, node, region, slot_node)
+> +		__vm_mem_region_delete(vmp, region, false);
+>  
+>  	/* Free sparsebit arrays. */
+>  	sparsebit_free(&vmp->vpages_valid);
+> @@ -650,6 +667,57 @@ int kvm_memcmp_hva_gva(void *hva, struct kvm_vm *vm, vm_vaddr_t gva, size_t len)
+>  	return 0;
+>  }
+>  
+> +static void vm_userspace_mem_region_gpa_insert(struct rb_root *gpa_tree,
+> +					       struct userspace_mem_region *region)
+> +{
+> +	struct rb_node **cur, *parent;
+> +
+> +	for (cur = &gpa_tree->rb_node, parent = NULL; *cur; ) {
+> +		struct userspace_mem_region *cregion;
+> +
+> +		cregion = container_of(*cur, typeof(*cregion), gpa_node);
+> +		parent = *cur;
+> +		if (region->region.guest_phys_addr <
+> +		    cregion->region.guest_phys_addr)
+> +			cur = &(*cur)->rb_left;
+> +		else {
+> +			TEST_ASSERT(region->region.guest_phys_addr !=
+> +				    cregion->region.guest_phys_addr,
+> +				    "Duplicate GPA in region tree");
+> +
+> +			cur = &(*cur)->rb_right;
+> +		}
+> +	}
+> +
+> +	rb_link_node(&region->gpa_node, parent, cur);
+> +	rb_insert_color(&region->gpa_node, gpa_tree);
+> +}
+> +
+> +static void vm_userspace_mem_region_hva_insert(struct rb_root *hva_tree,
+> +					       struct userspace_mem_region *region)
+> +{
+> +	struct rb_node **cur, *parent;
+> +
+> +	for (cur = &hva_tree->rb_node, parent = NULL; *cur; ) {
+> +		struct userspace_mem_region *cregion;
+> +
+> +		cregion = container_of(*cur, typeof(*cregion), hva_node);
+> +		parent = *cur;
+> +		if (region->host_mem < cregion->host_mem)
+> +			cur = &(*cur)->rb_left;
+> +		else {
+> +			TEST_ASSERT(region->host_mem !=
+> +				    cregion->host_mem,
+> +				    "Duplicate HVA in region tree");
+> +
+> +			cur = &(*cur)->rb_right;
+> +		}
+> +	}
+> +
+> +	rb_link_node(&region->hva_node, parent, cur);
+> +	rb_insert_color(&region->hva_node, hva_tree);
+> +}
+> +
+>  /*
+>   * VM Userspace Memory Region Add
+>   *
+> @@ -714,7 +782,8 @@ void vm_userspace_mem_region_add(struct kvm_vm *vm,
+>  			(uint64_t) region->region.memory_size);
+>  
+>  	/* Confirm no region with the requested slot already exists. */
+> -	list_for_each_entry(region, &vm->userspace_mem_regions, list) {
+> +	hash_for_each_possible(vm->regions.slot_hash, region, slot_node,
+> +			       slot) {
+>  		if (region->region.slot != slot)
+>  			continue;
+>  
+> @@ -794,8 +863,10 @@ void vm_userspace_mem_region_add(struct kvm_vm *vm,
+>  		ret, errno, slot, flags,
+>  		guest_paddr, (uint64_t) region->region.memory_size);
+>  
+> -	/* Add to linked-list of memory regions. */
+> -	list_add(&region->list, &vm->userspace_mem_regions);
+> +	/* Add to quick lookup data structures */
+> +	vm_userspace_mem_region_gpa_insert(&vm->regions.gpa_tree, region);
+> +	vm_userspace_mem_region_hva_insert(&vm->regions.hva_tree, region);
+> +	hash_add(vm->regions.slot_hash, &region->slot_node, slot);
+>  }
+>  
+>  /*
+> @@ -818,10 +889,10 @@ memslot2region(struct kvm_vm *vm, uint32_t memslot)
+>  {
+>  	struct userspace_mem_region *region;
+>  
+> -	list_for_each_entry(region, &vm->userspace_mem_regions, list) {
+> +	hash_for_each_possible(vm->regions.slot_hash, region, slot_node,
+> +			       memslot)
+>  		if (region->region.slot == memslot)
+>  			return region;
+> -	}
+>  
+>  	fprintf(stderr, "No mem region with the requested slot found,\n"
+>  		"  requested slot: %u\n", memslot);
+> @@ -906,7 +977,7 @@ void vm_mem_region_move(struct kvm_vm *vm, uint32_t slot, uint64_t new_gpa)
+>   */
+>  void vm_mem_region_delete(struct kvm_vm *vm, uint32_t slot)
+>  {
+> -	__vm_mem_region_delete(vm, memslot2region(vm, slot));
+> +	__vm_mem_region_delete(vm, memslot2region(vm, slot), true);
+>  }
+>  
+>  /*
+> @@ -1178,16 +1249,14 @@ void *addr_gpa2hva(struct kvm_vm *vm, vm_paddr_t gpa)
+>  {
+>  	struct userspace_mem_region *region;
+>  
+> -	list_for_each_entry(region, &vm->userspace_mem_regions, list) {
+> -		if ((gpa >= region->region.guest_phys_addr)
+> -			&& (gpa <= (region->region.guest_phys_addr
+> -				+ region->region.memory_size - 1)))
+> -			return (void *) ((uintptr_t) region->host_mem
+> -				+ (gpa - region->region.guest_phys_addr));
+> +	region = userspace_mem_region_find(vm, gpa, gpa);
+> +	if (!region) {
+> +		TEST_FAIL("No vm physical memory at 0x%lx", gpa);
+> +		return NULL;
+>  	}
+>  
+> -	TEST_FAIL("No vm physical memory at 0x%lx", gpa);
+> -	return NULL;
+> +	return (void *)((uintptr_t)region->host_mem
+> +		+ (gpa - region->region.guest_phys_addr));
+>  }
+>  
+>  /*
+> @@ -1209,15 +1278,22 @@ void *addr_gpa2hva(struct kvm_vm *vm, vm_paddr_t gpa)
+>   */
+>  vm_paddr_t addr_hva2gpa(struct kvm_vm *vm, void *hva)
+>  {
+> -	struct userspace_mem_region *region;
+> +	struct rb_node *node;
+> +
+> +	for (node = vm->regions.hva_tree.rb_node; node; ) {
+> +		struct userspace_mem_region *region =
+> +			container_of(node, struct userspace_mem_region, hva_node);
+> +
+> +		if (hva >= region->host_mem) {
+> +			if (hva <= (region->host_mem
+> +				+ region->region.memory_size - 1))
+> +				return (vm_paddr_t)((uintptr_t)
+> +					region->region.guest_phys_addr
+> +					+ (hva - (uintptr_t)region->host_mem));
+>  
+> -	list_for_each_entry(region, &vm->userspace_mem_regions, list) {
+> -		if ((hva >= region->host_mem)
+> -			&& (hva <= (region->host_mem
+> -				+ region->region.memory_size - 1)))
+> -			return (vm_paddr_t) ((uintptr_t)
+> -				region->region.guest_phys_addr
+> -				+ (hva - (uintptr_t) region->host_mem));
+> +			node = node->rb_right;
+> +		} else
+> +			node = node->rb_left;
+>  	}
+>  
+>  	TEST_FAIL("No mapping to a guest physical address, hva: %p", hva);
+> @@ -1743,6 +1819,7 @@ int _kvm_ioctl(struct kvm_vm *vm, unsigned long cmd, void *arg)
+>   */
+>  void vm_dump(FILE *stream, struct kvm_vm *vm, uint8_t indent)
+>  {
+> +	int ctr;
+>  	struct userspace_mem_region *region;
+>  	struct vcpu *vcpu;
+>  
+> @@ -1750,7 +1827,7 @@ void vm_dump(FILE *stream, struct kvm_vm *vm, uint8_t indent)
+>  	fprintf(stream, "%*sfd: %i\n", indent, "", vm->fd);
+>  	fprintf(stream, "%*spage_size: 0x%x\n", indent, "", vm->page_size);
+>  	fprintf(stream, "%*sMem Regions:\n", indent, "");
+> -	list_for_each_entry(region, &vm->userspace_mem_regions, list) {
+> +	hash_for_each(vm->regions.slot_hash, ctr, region, slot_node) {
+>  		fprintf(stream, "%*sguest_phys: 0x%lx size: 0x%lx "
+>  			"host_virt: %p\n", indent + 2, "",
+>  			(uint64_t) region->region.guest_phys_addr,
+> diff --git a/tools/testing/selftests/kvm/lib/kvm_util_internal.h b/tools/testing/selftests/kvm/lib/kvm_util_internal.h
+> index 34465dc562d8..af310110602b 100644
+> --- a/tools/testing/selftests/kvm/lib/kvm_util_internal.h
+> +++ b/tools/testing/selftests/kvm/lib/kvm_util_internal.h
+> @@ -8,6 +8,9 @@
+>  #ifndef SELFTEST_KVM_UTIL_INTERNAL_H
+>  #define SELFTEST_KVM_UTIL_INTERNAL_H
+>  
+> +#include "linux/hashtable.h"
+> +#include "linux/rbtree.h"
+> +
+>  #include "sparsebit.h"
+>  
+>  #define KVM_DEV_PATH		"/dev/kvm"
+> @@ -20,7 +23,9 @@ struct userspace_mem_region {
+>  	void *host_mem;
+>  	void *mmap_start;
+>  	size_t mmap_size;
+> -	struct list_head list;
+> +	struct rb_node gpa_node;
+> +	struct rb_node hva_node;
+> +	struct hlist_node slot_node;
+>  };
+>  
+>  struct vcpu {
+> @@ -33,6 +38,12 @@ struct vcpu {
+>  	uint32_t dirty_gfns_count;
+>  };
+>  
+> +struct userspace_mem_regions {
+> +	struct rb_root gpa_tree;
+> +	struct rb_root hva_tree;
+> +	DECLARE_HASHTABLE(slot_hash, 9);
+> +};
+> +
+>  struct kvm_vm {
+>  	int mode;
+>  	unsigned long type;
+> @@ -45,7 +56,7 @@ struct kvm_vm {
+>  	unsigned int va_bits;
+>  	uint64_t max_gfn;
+>  	struct list_head vcpus;
+> -	struct list_head userspace_mem_regions;
+> +	struct userspace_mem_regions regions;
+>  	struct sparsebit *vpages_valid;
+>  	struct sparsebit *vpages_mapped;
+>  	bool has_irqchip;
+> diff --git a/tools/testing/selftests/kvm/lib/rbtree.c b/tools/testing/selftests/kvm/lib/rbtree.c
+> new file mode 100644
+> index 000000000000..a703f0194ea3
+> --- /dev/null
+> +++ b/tools/testing/selftests/kvm/lib/rbtree.c
+> @@ -0,0 +1 @@
+> +#include "../../../../lib/rbtree.c"
+>
 
-To avoid breaking some tools which parsing pGp via debugfs or affecting
-the printf buffer, other new formats are introduced, so the user can choose
-what and in which order they want, suggested by Andy. These new introduced
-format as follows,
-    pGpb: print other information first and then the names of page flags
-    pGpl: print the names of page flags first and then the other info
+We shouldn't dip into kernel code like this. We can use tools/lib/rbtree.c
+though.
 
-The differece between them looks like the difference between big-endian and
-little-endian, that's why they are named like that. The examples of the
-output as follows,
-    %pGpb 0x17ffffc0010200(node=0|zone=2|lastcpupid=0x1fffff|slab|head)
-    %pGpl 0x17ffffc0010200(slab|head|node=0|zone=2|lastcpupid=0x1fffff)
+Besides the rbtree.c thing,
 
-To be compitable with the existed format of pGp, the new introduced ones
-also use '|' as the separator, then the user tools parsing pGp won't
-need to make change, suggested by Matthew.
-
-The doc and test cases are also updated. Below is the output of the
-test cases,
-[ 4299.847655] test_printf: loaded.
-[ 4299.848301] test_printf: all 404 tests passed
-[ 4299.850371] test_printf: unloaded.
-
-Cc: David Hildenbrand <david@redhat.com>
-Cc: Joe Perches <joe@perches.com>
-Cc: Miaohe Lin <linmiaohe@huawei.com>
-Cc: Vlastimil Babka <vbabka@suse.cz>
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Matthew Wilcox <willy@infradead.org>
-Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
----
- Documentation/core-api/printk-formats.rst |   2 +
- lib/test_printf.c                         | 126 +++++++++++++++++++---
- lib/vsprintf.c                            | 115 +++++++++++++++++++-
- 3 files changed, 226 insertions(+), 17 deletions(-)
-
-diff --git a/Documentation/core-api/printk-formats.rst b/Documentation/core-api/printk-formats.rst
-index 6d26c5c6ac48..56f8e0fc3963 100644
---- a/Documentation/core-api/printk-formats.rst
-+++ b/Documentation/core-api/printk-formats.rst
-@@ -539,6 +539,8 @@ Flags bitfields such as page flags, gfp_flags
- ::
- 
- 	%pGp	referenced|uptodate|lru|active|private
-+	%pGpb	node=0|zone=2|referenced|uptodate|lru|active|private
-+	%pGpl	referenced|uptodate|lru|active|private|node=0|zone=2
- 	%pGg	GFP_USER|GFP_DMA32|GFP_NOWARN
- 	%pGv	read|exec|mayread|maywrite|mayexec|denywrite
- 
-diff --git a/lib/test_printf.c b/lib/test_printf.c
-index 7ac87f18a10f..af2945bb730a 100644
---- a/lib/test_printf.c
-+++ b/lib/test_printf.c
-@@ -569,24 +569,130 @@ netdev_features(void)
- {
- }
- 
-+static void  __init
-+page_flags_build_info(char *cmp_buf, int prefix, int sec, int node, int zone,
-+		      int last_cpupid, int kasan_tag, unsigned long *flags)
-+{
-+	unsigned long size = prefix;
-+
-+#ifdef SECTION_IN_PAGE_FLAGS
-+	*flags |= (sec & SECTIONS_MASK) << SECTIONS_PGSHIFT;
-+	snprintf(cmp_buf + size, BUF_SIZE - size, "section=%#x|", sec);
-+	size = strlen(cmp_buf);
-+#endif
-+
-+	*flags |= ((node & NODES_MASK) << NODES_PGSHIFT) |
-+		  ((zone & ZONES_MASK) << ZONES_PGSHIFT);
-+	snprintf(cmp_buf + size, BUF_SIZE - size, "node=%d|zone=%d", node, zone);
-+	size = strlen(cmp_buf);
-+
-+#ifndef LAST_CPUPID_NOT_IN_PAGE_FLAGS
-+	*flags |= (last_cpupid & LAST_CPUPID_MASK) << LAST_CPUPID_PGSHIFT;
-+	snprintf(cmp_buf + size, BUF_SIZE - size, "|lastcpupid=%#x", last_cpupid);
-+	size = strlen(cmp_buf);
-+#endif
-+
-+#if defined(CONFIG_KASAN_SW_TAGS) || defined(CONFIG_KASAN_HW_TAGS)
-+	*flags |= (tag & KASAN_TAG_MASK) << KASAN_TAG_PGSHIFT;
-+	snprintf(cmp_buf + size, BUF_SIZE - size, "|kasantag=%#x", tag);
-+	size = strlen(cmp_buf);
-+#endif
-+}
-+
- static void __init
--flags(void)
-+page_flags_build_names(char *cmp_buf, int prefix, const char *expect,
-+		       unsigned long flags, unsigned long *page_flags)
- {
-+	*page_flags |= flags;
-+	snprintf(cmp_buf + prefix, BUF_SIZE - prefix, "%s", expect);
-+}
-+
-+static void __init
-+__page_flags_test(const char *expect, unsigned long flags)
-+{
-+	test(expect, "%pGp", &flags);
-+}
-+
-+static void __init
-+page_flags_test_be(char *cmp_buf, int sec, int node, int zone,
-+		   int last_cpupid, int kasan_tag, const char *name,
-+		   unsigned long flags)
-+{
-+	unsigned long page_flags = 0;
-+	int size;
-+
-+	page_flags_build_info(cmp_buf, 0, sec, node, zone, last_cpupid,
-+			      kasan_tag, &page_flags);
-+
-+	if (*name) {
-+		size = strlen(cmp_buf);
-+		if (size < BUF_SIZE - 2) {
-+			*(cmp_buf + size) = '|';
-+			*(cmp_buf + size + 1) = '\0';
-+		}
-+		page_flags_build_names(cmp_buf, strlen(cmp_buf), name, flags, &page_flags);
-+	}
-+
-+	test(cmp_buf, "%pGpb", &page_flags);
-+}
-+
-+static void __init
-+page_flags_test_le(char *cmp_buf, int sec, int node, int zone,
-+		   int last_cpupid, int kasan_tag, const char *name,
-+		   unsigned long flags)
-+{
-+	unsigned long page_flags = 0;
-+	int size = 0;
-+
-+	if (*name) {
-+		page_flags_build_names(cmp_buf, 0, name, flags, &page_flags);
-+		size = strlen(cmp_buf);
-+		if (size < BUF_SIZE - 2) {
-+			*(cmp_buf + size) = '|';
-+			*(cmp_buf + size + 1) = '\0';
-+		}
-+		size = strlen(cmp_buf);
-+	}
-+
-+	page_flags_build_info(cmp_buf, size, sec, node, zone, last_cpupid,
-+			      kasan_tag, &page_flags);
-+
-+	test(cmp_buf, "%pGpl", &page_flags);
-+}
-+
-+static void __init
-+page_flags_test(char *cmp_buf)
-+{
-+	char *name = "uptodate|dirty|lru|active|swapbacked";
- 	unsigned long flags;
--	gfp_t gfp;
--	char *cmp_buffer;
- 
- 	flags = 0;
--	test("", "%pGp", &flags);
-+	__page_flags_test("", flags);
-+	page_flags_test_be(cmp_buf, 0, 0, 0, 0, 0, "", flags);
-+	page_flags_test_le(cmp_buf, 0, 0, 0, 0, 0, "", flags);
- 
--	/* Page flags should filter the zone id */
- 	flags = 1UL << NR_PAGEFLAGS;
--	test("", "%pGp", &flags);
-+	__page_flags_test("", flags);
- 
- 	flags |= 1UL << PG_uptodate | 1UL << PG_dirty | 1UL << PG_lru
--		| 1UL << PG_active | 1UL << PG_swapbacked;
--	test("uptodate|dirty|lru|active|swapbacked", "%pGp", &flags);
-+		 | 1UL << PG_active | 1UL << PG_swapbacked;
-+	__page_flags_test(name, flags);
-+	page_flags_test_be(cmp_buf, 1, 1, 1, 0x1fffff, 1, name, flags);
-+	page_flags_test_le(cmp_buf, 1, 1, 1, 0x1fffff, 1, name, flags);
-+}
-+
-+static void __init
-+flags(void)
-+{
-+	unsigned long flags;
-+	gfp_t gfp;
-+	char *cmp_buffer;
- 
-+	cmp_buffer = kmalloc(BUF_SIZE, GFP_KERNEL);
-+	if (!cmp_buffer)
-+		return;
-+
-+	page_flags_test(cmp_buffer);
- 
- 	flags = VM_READ | VM_EXEC | VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC
- 			| VM_DENYWRITE;
-@@ -601,10 +707,6 @@ flags(void)
- 	gfp = __GFP_ATOMIC;
- 	test("__GFP_ATOMIC", "%pGg", &gfp);
- 
--	cmp_buffer = kmalloc(BUF_SIZE, GFP_KERNEL);
--	if (!cmp_buffer)
--		return;
--
- 	/* Any flags not translated by the table should remain numeric */
- 	gfp = ~__GFP_BITS_MASK;
- 	snprintf(cmp_buffer, BUF_SIZE, "%#lx", (unsigned long) gfp);
-diff --git a/lib/vsprintf.c b/lib/vsprintf.c
-index 14c9a6af1b23..c912cc9bddb0 100644
---- a/lib/vsprintf.c
-+++ b/lib/vsprintf.c
-@@ -1916,6 +1916,115 @@ char *format_flags(char *buf, char *end, unsigned long flags,
- 	return buf;
- }
- 
-+struct page_flags_layout {
-+	int width;
-+	int shift;
-+	int mask;
-+	const struct printf_spec *spec;
-+	const char *name;
-+};
-+
-+static const struct page_flags_layout pfl[] = {
-+	{SECTIONS_WIDTH, SECTIONS_PGSHIFT, SECTIONS_MASK,
-+	 &default_dec_spec, "section"},
-+	{NODES_WIDTH, NODES_PGSHIFT, NODES_MASK,
-+	 &default_dec_spec, "node"},
-+	{ZONES_WIDTH, ZONES_PGSHIFT, ZONES_MASK,
-+	 &default_dec_spec, "zone"},
-+	{LAST_CPUPID_WIDTH, LAST_CPUPID_PGSHIFT, LAST_CPUPID_MASK,
-+	 &default_flag_spec, "lastcpupid"},
-+	{KASAN_TAG_WIDTH, KASAN_TAG_PGSHIFT, KASAN_TAG_MASK,
-+	 &default_flag_spec, "kasantag"},
-+};
-+
-+static
-+char *__format_page_flags(char *buf, char *end, unsigned long flags)
-+{
-+	DECLARE_BITMAP(mask, ARRAY_SIZE(pfl));
-+	unsigned long last;
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(pfl); i++)
-+		__assign_bit(i, mask, pfl[i].width);
-+
-+	last = find_last_bit(mask, ARRAY_SIZE(pfl));
-+
-+	for_each_set_bit(i, mask, ARRAY_SIZE(pfl)) {
-+		/* Format: Flag Name + '=' (equals sign) + Number + '|' (separator) */
-+		buf = string(buf, end, pfl[i].name, *pfl[i].spec);
-+
-+		if (buf < end)
-+			*buf = '=';
-+		buf++;
-+		buf = number(buf, end, (flags >> pfl[i].shift) & pfl[i].mask,
-+			     *pfl[i].spec);
-+
-+		/* No separator for the last entry */
-+		if (i != last) {
-+			if (buf < end)
-+				*buf = '|';
-+			buf++;
-+		}
-+	}
-+
-+	return buf;
-+}
-+
-+static
-+char *format_page_flags_be(char *buf, char *end, unsigned long flags)
-+{
-+	unsigned long mask = BIT(NR_PAGEFLAGS) - 1;
-+
-+	buf = __format_page_flags(buf, end, flags);
-+
-+	if (flags & mask) {
-+		if (buf < end)
-+			*buf = '|';
-+		buf++;
-+	}
-+
-+	return format_flags(buf, end, flags & mask, pageflag_names);
-+}
-+
-+static
-+char *format_page_flags_le(char *buf, char *end, unsigned long flags)
-+{
-+	unsigned long mask = BIT(NR_PAGEFLAGS) - 1;
-+
-+	buf = format_flags(buf, end, flags & mask, pageflag_names);
-+
-+	if (flags & mask) {
-+		if (buf < end)
-+			*buf = '|';
-+		buf++;
-+	}
-+
-+	return __format_page_flags(buf, end, flags & ~mask);
-+}
-+
-+static
-+char *format_page_flags(char *buf, char *end, void *flags_ptr,
-+			struct printf_spec spec, const char *fmt)
-+{
-+	unsigned long flags = *(unsigned long *)flags_ptr;
-+	unsigned long mask = BIT(NR_PAGEFLAGS) - 1;
-+
-+	if (strlen(fmt) == 2) {
-+		flags &= mask;
-+		return format_flags(buf, end, flags, pageflag_names);
-+	}
-+
-+	switch (fmt[2]) {
-+	case 'b':
-+		return format_page_flags_be(buf, end, flags);
-+	case 'l':
-+		return format_page_flags_le(buf, end, flags);
-+	default:
-+		flags &= mask;
-+		return format_flags(buf, end, flags, pageflag_names);
-+	}
-+}
-+
- static noinline_for_stack
- char *flags_string(char *buf, char *end, void *flags_ptr,
- 		   struct printf_spec spec, const char *fmt)
-@@ -1928,11 +2037,7 @@ char *flags_string(char *buf, char *end, void *flags_ptr,
- 
- 	switch (fmt[1]) {
- 	case 'p':
--		flags = *(unsigned long *)flags_ptr;
--		/* Remove zone id */
--		flags &= (1UL << NR_PAGEFLAGS) - 1;
--		names = pageflag_names;
--		break;
-+		return format_page_flags(buf, end, flags_ptr, spec, fmt);
- 	case 'v':
- 		flags = *(unsigned long *)flags_ptr;
- 		names = vmaflag_names;
--- 
-2.17.1
+Reviewed-by: Andrew Jones <drjones@redhat.com>
 
