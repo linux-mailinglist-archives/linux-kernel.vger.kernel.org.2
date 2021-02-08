@@ -2,80 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EFF3314074
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 21:28:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2045331407E
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 21:30:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236849AbhBHU1s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 15:27:48 -0500
-Received: from vps0.lunn.ch ([185.16.172.187]:56082 "EHLO vps0.lunn.ch"
+        id S230447AbhBHUaA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 15:30:00 -0500
+Received: from mga05.intel.com ([192.55.52.43]:54721 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235826AbhBHTEg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 14:04:36 -0500
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1l9Bou-004vFh-KW; Mon, 08 Feb 2021 20:03:36 +0100
-Date:   Mon, 8 Feb 2021 20:03:36 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc:     Serge Semin <fancer.lancer@gmail.com>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Joao Pinto <Joao.Pinto@synopsys.com>,
-        Jose Abreu <Jose.Abreu@synopsys.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
-        Vyacheslav Mitrofanov 
-        <Vyacheslav.Mitrofanov@baikalelectronics.ru>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 01/20] net: phy: realtek: Fix events detection failure in
- LPI mode
-Message-ID: <YCGLCK+1RB7pzytU@lunn.ch>
-References: <20210208140341.9271-1-Sergey.Semin@baikalelectronics.ru>
- <20210208140341.9271-2-Sergey.Semin@baikalelectronics.ru>
- <YCFYaFYgFikj/Gqz@lunn.ch>
- <20210208174441.z4nnugkaadhmgnum@mobilestation>
+        id S236028AbhBHTG1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 14:06:27 -0500
+IronPort-SDR: FLtx/Uo0TKmgpRs8REt6uoJYD14gnkSu+DcdxGN1Bx12QD2EmiR6AWTIMhLJzk7iXibapHe0na
+ SJHAAPjiJ6jg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9889"; a="266597679"
+X-IronPort-AV: E=Sophos;i="5.81,163,1610438400"; 
+   d="scan'208";a="266597679"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2021 11:04:29 -0800
+IronPort-SDR: U11Fj0FVC8pr92M/O5i2/+Qyw1XG4JcwB7u6TrOG4syTpu8p4xAjMX5hLB4TZyHsQ1nVUmSLrY
+ EH5kWVOby33Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,163,1610438400"; 
+   d="scan'208";a="377901719"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga008.fm.intel.com with ESMTP; 08 Feb 2021 11:04:28 -0800
+Received: from [10.255.228.220] (kliang2-MOBL.ccr.corp.intel.com [10.255.228.220])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by linux.intel.com (Postfix) with ESMTPS id 41D475808A1;
+        Mon,  8 Feb 2021 11:04:26 -0800 (PST)
+Subject: Re: [PATCH 02/49] x86/cpu: Describe hybrid CPUs in cpuinfo_x86
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     peterz@infradead.org, acme@kernel.org, mingo@kernel.org,
+        linux-kernel@vger.kernel.org, tglx@linutronix.de,
+        namhyung@kernel.org, jolsa@redhat.com, ak@linux.intel.com,
+        yao.jin@linux.intel.com, alexander.shishkin@linux.intel.com,
+        adrian.hunter@intel.com,
+        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Len Brown <len.brown@intel.com>,
+        Tony Luck <tony.luck@intel.com>
+References: <1612797946-18784-1-git-send-email-kan.liang@linux.intel.com>
+ <1612797946-18784-3-git-send-email-kan.liang@linux.intel.com>
+ <20210208175640.GD18227@zn.tnic>
+From:   "Liang, Kan" <kan.liang@linux.intel.com>
+Message-ID: <cddc013c-5b48-f792-058c-009e43cfe547@linux.intel.com>
+Date:   Mon, 8 Feb 2021 14:04:24 -0500
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210208174441.z4nnugkaadhmgnum@mobilestation>
+In-Reply-To: <20210208175640.GD18227@zn.tnic>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Hi Andrew,
+
+
+On 2/8/2021 12:56 PM, Borislav Petkov wrote:
+> On Mon, Feb 08, 2021 at 07:24:59AM -0800, kan.liang@linux.intel.com wrote:
+>> diff --git a/arch/x86/include/asm/processor.h b/arch/x86/include/asm/processor.h
+>> index c20a52b..1f25ac9 100644
+>> --- a/arch/x86/include/asm/processor.h
+>> +++ b/arch/x86/include/asm/processor.h
+>> @@ -139,6 +139,16 @@ struct cpuinfo_x86 {
+>>   	u32			microcode;
+>>   	/* Address space bits used by the cache internally */
+>>   	u8			x86_cache_bits;
+>> +	/*
+>> +	 * In hybrid processors, there is a CPU type and a native model ID. The
+>> +	 * CPU type (x86_cpu_type[31:24]) describes the type of micro-
+>> +	 * architecture families. The native model ID (x86_cpu_type[23:0])
+>> +	 * describes a specific microarchitecture version. Combining both
+>> +	 * allows to uniquely identify a CPU.
+>> +	 *
+>> +	 * Please note that the native model ID is not related to x86_model.
+>> +	 */
+>> +	u32			x86_cpu_type;
 > 
-> I honestly tried to find any doc with a glimpse of errata for RTL8211E
-> PHY, but with no luck. Official datasheet didn't have any info regarding
-> possible hw bugs too. Thus I had no choice but to find a fix of the
-> problem myself.
+> Why are you adding it here instead of simply using
+> X86_FEATURE_HYBRID_CPU at the call site?
 > 
-> It took me some time to figure out why the events weren't reported after
-> the very first link setup (turned out only a full HW reset clears the
-> PC1R.10 bit state). I thought it could have been connected with some
-> sleep/idle/power-safe mode. So I disabled the EEE initialization in the
-> STMMAC driver. It worked. Then I left the EEE mode enabled, but called the
-> phy_init_eee(phy, 0) method with "clk_stop_enable==0", so PHY wouldn't
-> stop RXC in LPI mode. And it wonderfully worked. Then I started to dig in
-> from another side. I left "RXC disable in LPI" mode enabled and tried to
-> figure out what was going on with the PHY when it stopped reporting events
-> just by reading from its CSR using phytool utility. It was curious to
-> discover that any attempt to read from any PHY register caused the problem
-> disappearance (LED2 started blinking, events got to be reported). Since I
-> did nothing but a mere reading from a random even EEE-unrelated register I
-> inferred that the problem must be in some HW/PHY bug. That's how I've got
-> to the patch introduced here. If you have any better idea what could be a
-> reason of that weird behavior I'd be glad to test it out on my device.
+> How many uses in this patchset?
+> 
+> /me searches...
+> 
+> Exactly one.
+> 
+> Just query X86_FEATURE_HYBRID_CPU at the call site and read what you
+> need from CPUID and use it there - no need for this.
+> 
 
-It is a reasonable explanation, and a read should not do any harm.
+I think it's good enough for perf, but I'm not sure whether other codes 
+need the CPU type information.
 
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Ricardo, do you know?
 
-    Andrew
-   
+Maybe we should implement a generic function as below for this?
+(Not test. Just use as an example.)
+
+diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
+index a66c1fd..679f5fe 100644
+--- a/arch/x86/kernel/cpu/common.c
++++ b/arch/x86/kernel/cpu/common.c
+@@ -2056,3 +2056,11 @@ void arch_smt_update(void)
+  	/* Check whether IPI broadcasting can be enabled */
+  	apic_smt_update();
+  }
++
++u32 x86_read_hybrid_type(void)
++{
++	if (cpu_feature_enabled(X86_FEATURE_HYBRID_CPU))
++		return cpuid_eax(0x0000001a);
++
++	return 0;
++}
+
+
+Thanks,
+Kan
