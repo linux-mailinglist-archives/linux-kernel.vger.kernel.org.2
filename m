@@ -2,107 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42062314011
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 21:13:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2ADB314006
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 21:12:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236728AbhBHUMs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 15:12:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40358 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235716AbhBHSkW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 13:40:22 -0500
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1806C061788;
-        Mon,  8 Feb 2021 10:39:40 -0800 (PST)
-Received: by mail-pg1-x52a.google.com with SMTP id c132so10804387pga.3;
-        Mon, 08 Feb 2021 10:39:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=OXsP7etvkquZcgLN+0ZBxKek7pWgCF6Ku7uGUtKs97I=;
-        b=icFUkUZSlauoM1BcKvcJzDZLoo8oo1wZ+HtBsaFkgDhDjF9+P3Oezy9+bt52sdLtV1
-         Zoz79tnmx+uRhxgw8ZGE3QqFsRiXTpcQkpN8Av/i+gUOsw8fBVMiiZ0WamTWJbPC4LwA
-         wiT4CInCqo+OtLbwbAx4SnBXuSY12diFilkpepCOac5aUXh+tpgxnMl15asmx4j/nrNN
-         SihUmP3RhZpWUzQHA873Vm3QvvP9oz2bb8+sNXNITu7+X2qFDFRDmV3xjiMTPnFAJ/7D
-         Ui3M/Wbjv2XdZRTzHNqh90b0A3E2sq/EZ+UmIm48/9cH+MAXXRtVw87EI+UbAKQbwNYG
-         /kKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=OXsP7etvkquZcgLN+0ZBxKek7pWgCF6Ku7uGUtKs97I=;
-        b=V1VZgxjc5x+dfMDV2lfM9zZiCfOztIeUhK9AfQOYgvl6htb1+SDwWNvwpoaLby27AG
-         A2uhe5K3otVWd9tjkIQhBdbcQz5S+fHWDE4V7IWZzFp2HJGkQadGpYipE7rR2YeHDK+o
-         nNX2W+fE8LVdDx55v9KA9rZ40nLBl9LUxOiXmZK3QvT+hFvAALVA351UrX3UJKaTcW5u
-         CSkaQkSINUAdMaJqjbSALX00nQ2HWpCNp9piF21Ks4JYiheNtvEgKh8feO4IjVNKvmhf
-         lmaXShwxywBN3sDUC5BNGAsz9s+YHZ+97cheFM8AAzXbr4wuC7V+2QFCgmIgvPgkeNn2
-         gQmg==
-X-Gm-Message-State: AOAM533QcyxpmHWtRUzC1mAw7JHAHwdpTHJY8XrK3zFgP5CNXBxoR6wK
-        ZHNXMUGaSeVsLYvktkHAuXE=
-X-Google-Smtp-Source: ABdhPJzZJmkotHvueFLxVOfrROL778amS3T+8zb8OezYdn81GGHSUROAUWugiwoa3hMKn176NcODwg==
-X-Received: by 2002:a65:44c5:: with SMTP id g5mr18523114pgs.295.1612809580033;
-        Mon, 08 Feb 2021 10:39:40 -0800 (PST)
-Received: from gmail.com ([2601:600:9b7f:872e:a655:30fb:7373:c762])
-        by smtp.gmail.com with ESMTPSA id c23sm9222470pfi.47.2021.02.08.10.39.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Feb 2021 10:39:39 -0800 (PST)
-Date:   Mon, 8 Feb 2021 10:37:52 -0800
-From:   Andrei Vagin <avagin@gmail.com>
-To:     Keno Fischer <keno@juliacomputing.com>
-Cc:     Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-api@vger.kernel.org,
-        Anthony Steinhauser <asteinhauser@google.com>,
-        Dave Martin <Dave.Martin@arm.com>, Kyle Huey <khuey@pernos.co>,
-        Robert O'Callahan <roc@pernos.co>
-Subject: Re: [PATCH 0/3 v2] arm64/ptrace: allow to get all registers on
- syscall traps
-Message-ID: <20210208183752.GB559391@gmail.com>
-References: <20210201194012.524831-1-avagin@gmail.com>
- <CABV8kRzg1BaKdAhqXU3hONhfPAHj6Nbw0wLBC1Lo7PN1UA0CoA@mail.gmail.com>
+        id S233317AbhBHUL4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 15:11:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57894 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235710AbhBHSjg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 13:39:36 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B47A760C3F;
+        Mon,  8 Feb 2021 18:38:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612809535;
+        bh=SJZ0NVTsr2Wlxcsv1fv1kCF7qQH9E81Nonfp1RQf2jc=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=aKgHoLgsSGyJMiXx+Ih+Tk1rC/2eMKt2fZf5+Sx31/ElTclR/w2bWqwtCygNbuWfj
+         Yj4FV7LzG+aY+XAg//9s83baQAdpuEHLct4DpQyoyrF1NxO8ikj1i3vSemmIz55rcF
+         KYDTVM1vcWpw66bXt7A1jTuj2M7bGRjf23/9FC6strvhdxFvbbZ2AbYrlO4owsSy1m
+         xxqGkD7bWvBRQ3T/3HIOMseF7m0M7utgOvqpi4qz3ZM+3IBGkb4Arh4EjPyqiWo6xd
+         rz90DTRAEU5TZ8/mmYFsmIZX8BA/aZWB5tBZTfyTdoZFmo1fteGJI+ch/wEloUKCcg
+         0N8WQPz3D1i8g==
+From:   Mark Brown <broonie@kernel.org>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Takashi Iwai <tiwai@suse.com>
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        od@zcrc.me, Christophe Branchereau <cbranchereau@gmail.com>,
+        devicetree@vger.kernel.org, linux-mips@vger.kernel.org
+In-Reply-To: <20210123140958.12895-1-paul@crapouillou.net>
+References: <20210123140958.12895-1-paul@crapouillou.net>
+Subject: Re: [PATCH 1/3] dt-bindings: sound/ingenic: Add compatible strings for JZ4760(B) SoC
+Message-Id: <161280948305.10741.16478273980568461792.b4-ty@kernel.org>
+Date:   Mon, 08 Feb 2021 18:38:03 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=koi8-r
-Content-Disposition: inline
-In-Reply-To: <CABV8kRzg1BaKdAhqXU3hONhfPAHj6Nbw0wLBC1Lo7PN1UA0CoA@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 01, 2021 at 07:11:12PM -0500, Keno Fischer wrote:
-> Hi Andrei,
+On Sat, 23 Jan 2021 14:09:56 +0000, Paul Cercueil wrote:
+> Add the ingenic,jz4760b-codec and ingenic,jz4760-codec compatible
+> strings.
 > 
-> > This series introduces the PTRACE_O_ARM64_RAW_REGS option. If it is set,
-> > PTRACE_GETREGSET returns values of all registers, and PTRACE_SETREGSET
-> > allows to change any of them.
-> 
-> thanks for picking this up. I meant to work on this, but unfortunately ran out
-> of time to be able to push it through, so I'm glad you're working on
-> it, since it
-> does absolutely need to get fixed. Besides this issue, the other problem we
-> ran into when trying to port our ptracer to aarch64 is that orig_x0 is not
-> accessible through the ptrace interface on aarch64, which can cause tricky
-> behavior around restarts.
+> In the process, convert the previous compatible strings to use an enum
+> instead.
 
-Could you describe the problem in more details? I wonder whether we have
-the same thing in CRIU...
+Applied to
 
-> We managed to work around that in the end,
-> but it's painful. If we're fixing the kernel here anyway, I'm wondering if
-> we might want to address that as well while we're at it.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-Sure let think how to do this properly.
+Thanks!
 
-In this case, I think the ptrace option isn't a good choise. I don't
-think that it is a good idea to change the layout of regset depending on
-options...
+[1/3] dt-bindings: sound/ingenic: Add compatible strings for JZ4760(B) SoC
+      commit: 45a90d4aba1781aa382d4aeedebcac7cc78e1927
+[2/3] ASoC: codec/ingenic: Depend on MACH_INGENIC
+      commit: bad929b81ce25bba1c3e9d91848ffdc166974256
+[3/3] ASoC: codec: Add driver for JZ4760 internal codec
+      commit: d9cd22e9c87cb61488d00f7279cfb2abf5238879
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
 Thanks,
-Andrei
-
-> 
-> Keno
+Mark
