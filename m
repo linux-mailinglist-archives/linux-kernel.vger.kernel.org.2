@@ -2,105 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 062C131287A
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 00:56:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80418312881
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 01:05:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229683AbhBGX4l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Feb 2021 18:56:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39002 "EHLO mail.kernel.org"
+        id S229611AbhBHAFR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Feb 2021 19:05:17 -0500
+Received: from mx2.suse.de ([195.135.220.15]:38508 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229564AbhBGX4i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Feb 2021 18:56:38 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 662B664E2E;
-        Sun,  7 Feb 2021 23:55:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612742157;
-        bh=HWyvZKJfjuWNmgzJfzyCnofu5H0oIg85cEfM9lGL4SU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=IdpTmVHY3NCYvqqLAz9bhRn3sTzyMPSe6DYyrkHOfhhowSOUmukC7P28nIR4vIyiK
-         17VlzLCWpG66x8KpzLyEK28MH41sWFm2H6cvjLdICIQbeu80wsOO7zskgPYuepPCyw
-         LvflBy5gwoq/9amDk3wwq+SOXKH4nZuWXi4hHoXIsDD5ECuenkJ8k9s3k0HcUrvFo8
-         yhoj2MocnwOC+DsYVeqk4m6i3bp2AEkRFzbkeBEALvxZzVgXE3dOD2z5ac4WCZn3kg
-         3WOBmwnXIWs4Ud9Fj6ynXAYEWt5KWqO9hCEUlprK/wF86eYS2TZ504QR7lUs5boYGO
-         uZuMezGm13kXA==
-Date:   Mon, 8 Feb 2021 01:55:49 +0200
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     David Howells <dhowells@redhat.com>, mchehab+huawei@kernel.org
-Cc:     sprabhu@redhat.com, christian@brauner.io, selinux@vger.kernel.org,
-        keyrings@vger.kernel.org, linux-api@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, containers@lists.linux-foundation.org
-Subject: Re: [PATCH 1/2] Add namespace tags that can be used for matching
- without pinning a ns
-Message-ID: <YCB+BRp7WIa8YoO3@kernel.org>
-References: <YByxkDi0Ruhb0AA8@kernel.org>
- <161246085160.1990927.13137391845549674518.stgit@warthog.procyon.org.uk>
- <161246085966.1990927.2555272056564793056.stgit@warthog.procyon.org.uk>
- <2094924.1612513535@warthog.procyon.org.uk>
+        id S229522AbhBHAFP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Feb 2021 19:05:15 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 0996EAB98;
+        Mon,  8 Feb 2021 00:04:34 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 76B90DA80F; Mon,  8 Feb 2021 01:02:41 +0100 (CET)
+Date:   Mon, 8 Feb 2021 01:02:41 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Amy Parker <enbyamy@gmail.com>
+Cc:     schnelle@linux.ibm.com, corbet@lwn.net, mchehab+huawei@kernel.org,
+        tsbogend@alpha.franken.de, linux-ia64@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ia64: Fix style guide breakage
+Message-ID: <20210208000241.GN1993@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Amy Parker <enbyamy@gmail.com>,
+        schnelle@linux.ibm.com, corbet@lwn.net, mchehab+huawei@kernel.org,
+        tsbogend@alpha.franken.de, linux-ia64@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210205220618.611388-1-enbyamy@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2094924.1612513535@warthog.procyon.org.uk>
+In-Reply-To: <20210205220618.611388-1-enbyamy@gmail.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 05, 2021 at 08:25:35AM +0000, David Howells wrote:
-> Jarkko Sakkinen <jarkko@kernel.org> wrote:
+On Fri, Feb 05, 2021 at 02:06:18PM -0800, Amy Parker wrote:
+> Some statements do not have proper spacing between their C
+> keywords (commonly if and for) throughout files in the ia64 tree.
+> This patch corrects this to follow the kernel code style guide.
 > 
-> > > + * init_ns_common - Initialise the common part of a namespace
-> > 
-> > Nit: init_ns_common()
-> 
-> Interesting.  The majority of code doesn't put the brackets in.
-> 
-> > I've used lately (e.g. arch/x86/kernel/cpu/sgx/ioctl.c) along the lines:
-> > 
-> > * Return:
-> > * - 0:          Initialization was successful.
-> > * - -ENOMEM:    Out of memory.
-> 
-> Actually, looking at kernel-doc.rst, this isn't necessarily the recommended
-> approach as it will much everything into one line, complete with dashes, and
-> can't handle splitting over lines.  You probably meant:
-> 
->       * Return:
->       * * 0		- OK to runtime suspend the device
->       * * -EBUSY	- Device should not be runtime suspended
+> Signed-off-by: Amy Parker <enbyamy@gmail.com>
+> ---
+>  arch/ia64/hp/common/sba_iommu.c  | 6 +++---
+>  arch/ia64/kernel/machine_kexec.c | 2 +-
+>  arch/ia64/kernel/palinfo.c       | 6 +++---
 
-A line beginning with dash, lines up just as well, as one beginning with
-an asterisk. I've also tested this with "make htmldocs".
-
-This is Mauro's response to my recent patch:
-
-https://lore.kernel.org/lkml/20210125105353.5c695d42@coco.lan/
-
-So, what I can make up from this is that they are equally good
-alternatives.
-
-What I'm not still fully registering is the dash after the return value.
-
-I mean double comma is used after parameter. Why this weird dash syntax
-is used after return value I have no idea, and the kernel-doc.rst does
-not provide any explanation.
-
-> 
-> > * Return:
-> > * - 0:          Initialization was successful.
-> > * - -ENOMEM:    Out of memory.
-> > 
-> > Looking at the implementation, I guess this is a complete representation of
-> > what it can return?
-> 
-> It isn't.  It can return at least -ENOSPC as well, but it's awkward detailing
-> the errors from functions it calls since they can change and then the
-> description here is wrong.  I'm not sure there's a perfect answer to that.
-> 
-> David
-
-What if you just add this as the last entry:
-
-* * -errno:     Otherwise.
-
-/Jarkko
+ia64 got orphaned and not maintained in 96ec72a3425d1515b6, it's just
+not really worth the time to spend the time cleaning up the code base.
