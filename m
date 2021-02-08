@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D06B3139C4
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 17:41:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55F0D3139B9
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 17:41:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234509AbhBHQkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 11:40:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60178 "EHLO mail.kernel.org"
+        id S234507AbhBHQkL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 11:40:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56630 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231782AbhBHPPP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 10:15:15 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E151B64ECC;
-        Mon,  8 Feb 2021 15:11:01 +0000 (UTC)
+        id S233520AbhBHPOt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 10:14:49 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BA6F364ED0;
+        Mon,  8 Feb 2021 15:11:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612797062;
-        bh=+eNF35DoJrXJpVdyv1WkaPTZ4N2uXYixGb+GnufcBMA=;
+        s=korg; t=1612797065;
+        bh=gjkRdFUKqHbORY7oZ1IXEXpkKVAh0vDsgCycMe2TIEY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TwOezqdjhssBNv9Pf4e7lc59fpateJWjhv9hzG5UV91wwwV6H76PU8S8oFXq4V1JL
-         YUO260t0QoDD/juEXyF1rTJfK1Etd4xdDU3ymJtJEfplBBaASIWZgVZ7RUSg6ObzQ0
-         VfXMTRXDq5RnzMhopL0tyFJ1K6yT9li4Bxis7gXQ=
+        b=fG6m15bVsVkn/3e/G/PauEAn6mFquKWHhnrzDrfsMj0ER7y+D9CnTyIVoCDfSJruW
+         /9uMgDBEr0cP5oEFI1yrz69l8yvPqKplqjQYZV64co7ohqEEVfTOyjRn5snGG8Aucl
+         kwqpWcuDjEbTFUcgTnKvlRnkCUH0ae+hpTy5qdWs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thorsten Leemhuis <linux@leemhuis.info>,
-        Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 5.4 44/65] nvme-pci: avoid the deepest sleep state on Kingston A2000 SSDs
-Date:   Mon,  8 Feb 2021 16:01:16 +0100
-Message-Id: <20210208145811.922714357@linuxfoundation.org>
+        stable@vger.kernel.org, Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: [PATCH 5.4 45/65] KVM: SVM: Treat SVM as unsupported when running as an SEV guest
+Date:   Mon,  8 Feb 2021 16:01:17 +0100
+Message-Id: <20210208145811.960794021@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210208145810.230485165@linuxfoundation.org>
 References: <20210208145810.230485165@linuxfoundation.org>
@@ -39,81 +39,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thorsten Leemhuis <linux@leemhuis.info>
+From: Sean Christopherson <seanjc@google.com>
 
-commit 538e4a8c571efdf131834431e0c14808bcfb1004 upstream.
+commit ccd85d90ce092bdb047a7f6580f3955393833b22 upstream.
 
-Some Kingston A2000 NVMe SSDs sooner or later get confused and stop
-working when they use the deepest APST sleep while running Linux. The
-system then crashes and one has to cold boot it to get the SSD working
-again.
+Don't let KVM load when running as an SEV guest, regardless of what
+CPUID says.  Memory is encrypted with a key that is not accessible to
+the host (L0), thus it's impossible for L0 to emulate SVM, e.g. it'll
+see garbage when reading the VMCB.
 
-Kingston seems to known about this since at least mid-September 2020:
-https://bbs.archlinux.org/viewtopic.php?pid=1926994#p1926994
+Technically, KVM could decrypt all memory that needs to be accessible to
+the L0 and use shadow paging so that L0 does not need to shadow NPT, but
+exposing such information to L0 largely defeats the purpose of running as
+an SEV guest.  This can always be revisited if someone comes up with a
+use case for running VMs inside SEV guests.
 
-Someone working for a German company representing Kingston to the German
-press confirmed to me Kingston engineering is aware of the issue and
-investigating; the person stated that to their current knowledge only
-the deepest APST sleep state causes trouble. Therefore, make Linux avoid
-it for now by applying the NVME_QUIRK_NO_DEEPEST_PS to this SSD.
+Note, VMLOAD, VMRUN, etc... will also #GP on GPAs with C-bit set, i.e. KVM
+is doomed even if the SEV guest is debuggable and the hypervisor is willing
+to decrypt the VMCB.  This may or may not be fixed on CPUs that have the
+SVME_ADDR_CHK fix.
 
-I have two such SSDs, but it seems the problem doesn't occur with them.
-I hence couldn't verify if this patch really fixes the problem, but all
-the data in front of me suggests it should.
-
-This patch can easily be reverted or improved upon if a better solution
-surfaces.
-
-FWIW, there are many reports about the issue scattered around the web;
-most of the users disabled APST completely to make things work, some
-just made Linux avoid the deepest sleep state:
-
-https://bugzilla.kernel.org/show_bug.cgi?id=195039#c65
-https://bugzilla.kernel.org/show_bug.cgi?id=195039#c73
-https://bugzilla.kernel.org/show_bug.cgi?id=195039#c74
-https://bugzilla.kernel.org/show_bug.cgi?id=195039#c78
-https://bugzilla.kernel.org/show_bug.cgi?id=195039#c79
-https://bugzilla.kernel.org/show_bug.cgi?id=195039#c80
-https://askubuntu.com/questions/1222049/nvmekingston-a2000-sometimes-stops-giving-response-in-ubuntu-18-04dell-inspir
-https://community.acer.com/en/discussion/604326/m-2-nvme-ssd-aspire-517-51g-issue-compatibility-kingston-a2000-linux-ubuntu
-
-For the record, some data from 'nvme id-ctrl /dev/nvme0'
-
-NVME Identify Controller:
-vid       : 0x2646
-ssvid     : 0x2646
-mn        : KINGSTON SA2000M81000G
-fr        : S5Z42105
-[...]
-ps    0 : mp:9.00W operational enlat:0 exlat:0 rrt:0 rrl:0
-          rwt:0 rwl:0 idle_power:- active_power:-
-ps    1 : mp:4.60W operational enlat:0 exlat:0 rrt:1 rrl:1
-          rwt:1 rwl:1 idle_power:- active_power:-
-ps    2 : mp:3.80W operational enlat:0 exlat:0 rrt:2 rrl:2
-          rwt:2 rwl:2 idle_power:- active_power:-
-ps    3 : mp:0.0450W non-operational enlat:2000 exlat:2000 rrt:3 rrl:3
-          rwt:3 rwl:3 idle_power:- active_power:-
-ps    4 : mp:0.0040W non-operational enlat:15000 exlat:15000 rrt:4 rrl:4
-          rwt:4 rwl:4 idle_power:- active_power:-
-
-Cc: stable@vger.kernel.org # 4.14+
-Signed-off-by: Thorsten Leemhuis <linux@leemhuis.info>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
+Cc: stable@vger.kernel.org
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+Message-Id: <20210202212017.2486595-1-seanjc@google.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/nvme/host/pci.c |    2 ++
- 1 file changed, 2 insertions(+)
+ arch/x86/kvm/svm.c        |    5 +++++
+ arch/x86/mm/mem_encrypt.c |    1 +
+ 2 files changed, 6 insertions(+)
 
---- a/drivers/nvme/host/pci.c
-+++ b/drivers/nvme/host/pci.c
-@@ -3161,6 +3161,8 @@ static const struct pci_device_id nvme_i
- 	{ PCI_DEVICE(0x1c5c, 0x1504),   /* SK Hynix PC400 */
- 		.driver_data = NVME_QUIRK_DISABLE_WRITE_ZEROES, },
- 	{ PCI_DEVICE_CLASS(PCI_CLASS_STORAGE_EXPRESS, 0xffffff) },
-+	{ PCI_DEVICE(0x2646, 0x2263),   /* KINGSTON A2000 NVMe SSD  */
-+		.driver_data = NVME_QUIRK_NO_DEEPEST_PS, },
- 	{ PCI_DEVICE(PCI_VENDOR_ID_APPLE, 0x2001),
- 		.driver_data = NVME_QUIRK_SINGLE_VECTOR },
- 	{ PCI_DEVICE(PCI_VENDOR_ID_APPLE, 0x2003) },
+--- a/arch/x86/kvm/svm.c
++++ b/arch/x86/kvm/svm.c
+@@ -889,6 +889,11 @@ static int has_svm(void)
+ 		return 0;
+ 	}
+ 
++	if (sev_active()) {
++		pr_info("KVM is unsupported when running as an SEV guest\n");
++		return 0;
++	}
++
+ 	return 1;
+ }
+ 
+--- a/arch/x86/mm/mem_encrypt.c
++++ b/arch/x86/mm/mem_encrypt.c
+@@ -375,6 +375,7 @@ bool force_dma_unencrypted(struct device
+ 
+ 	return false;
+ }
++EXPORT_SYMBOL_GPL(sev_active);
+ 
+ /* Architecture __weak replacement functions */
+ void __init mem_encrypt_free_decrypted_mem(void)
 
 
