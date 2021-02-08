@@ -2,112 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 235923134DB
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 15:19:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6026F3134DF
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 15:19:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232888AbhBHOSD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 09:18:03 -0500
-Received: from mx0a-001ae601.pphosted.com ([67.231.149.25]:9324 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S232400AbhBHODQ (ORCPT
+        id S231964AbhBHOST (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 09:18:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37118 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232435AbhBHODT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 09:03:16 -0500
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-        by mx0a-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 118Dv56D010374;
-        Mon, 8 Feb 2021 08:02:00 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=PODMain02222019;
- bh=4y/KMCv5Ll+ZgNu/hBLzOZq3keYHvT4kV6J7Uxtt17E=;
- b=PAfWsvLeasA48rPQULNCH6f1BenyHSGJbSHVqJd3cNCRB2RGh/ZrJF7uIPpHxwVccwi7
- 4gmXuB9H/BirJBLlypiZSh9zT2HzGfTI6/6F6ssGqkNIfsOs+j74L5/6brsidnVhhdtp
- HCd2LHimWJjn3ZFJZTpfQFJ+uWj3/uaWY6GsNldoQVlZ2Ya3DpmTBUuOLyl/NRZjbSfm
- 3UvtoNje1Johe9FDCKNbLCBQ25aw+RhhN76ZUm4gS5URvoY2GGLU6nsyKL4FtdJjPFO5
- jcjuEFQyOLnNw87fXaonIUV3WPeW7RIoZHJKuZudBJeHZQantkUBkAlFhlTSFDqE2xRW 1Q== 
-Received: from ediex02.ad.cirrus.com ([87.246.76.36])
-        by mx0a-001ae601.pphosted.com with ESMTP id 36jdac99p4-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 08 Feb 2021 08:02:00 -0600
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Mon, 8 Feb 2021
- 14:01:59 +0000
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
- Transport; Mon, 8 Feb 2021 14:01:59 +0000
-Received: from AUSNPC0LSNW1-debian.cirrus.com (AUSNPC0LSNW1.ad.cirrus.com [198.61.64.240])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id B14AB11CC;
-        Mon,  8 Feb 2021 14:01:58 +0000 (UTC)
-From:   Richard Fitzgerald <rf@opensource.cirrus.com>
-To:     <pmladek@suse.com>, <rostedt@goodmis.org>,
-        <sergey.senozhatsky@gmail.com>,
-        <andriy.shevchenko@linux.intel.com>, <linux@rasmusvillemoes.dk>,
-        <shuah@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
-        <patches@opensource.cirrus.com>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>
-Subject: [PATCH v5 4/4] selftests: lib: Add wrapper script for test_scanf
-Date:   Mon, 8 Feb 2021 14:01:54 +0000
-Message-ID: <20210208140154.10964-4-rf@opensource.cirrus.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210208140154.10964-1-rf@opensource.cirrus.com>
-References: <20210208140154.10964-1-rf@opensource.cirrus.com>
+        Mon, 8 Feb 2021 09:03:19 -0500
+Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C954FC06178A
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 06:02:38 -0800 (PST)
+Received: by mail-il1-x12c.google.com with SMTP id y17so12747891ili.12
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 06:02:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=yIihDZxPKVTZ1cae8PC+4utdo23XVf26uo8MplI1V+0=;
+        b=m1W98MPiWn4KqSymHwJpE0IYeZ4Kk7EKtE/yH6HlXnJnP+InMrRxcG+AHXDkf6K1m4
+         ZZFeHbBjc85xHQKYWMRu0QbYyqegM0zJHRWU8yCTos5TTZOSXDY9xxJoGSq8n0pKSXJn
+         oXRjWbdlRowm9TB9qftEVBVIvs0l1qfr18Hc4QC8qoYOd6814V728pj6UN6vQDx1pd+W
+         mX0MKpocW86nHrSM2q6I1ZNJrMpZ5DMPdsQOs+gFKciAQ4TfPfTYpZrbZ/IVb0pyXXgp
+         H1O743tZ6XyH7oqVGMOO+3nTWZ91+LqY6ltl2/E+3y69qobNurfdz+KiQ8S9V2IkY32k
+         7B/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yIihDZxPKVTZ1cae8PC+4utdo23XVf26uo8MplI1V+0=;
+        b=lvwAKGs/+2bvcrszAciiUOTcvkLp4WHgEn+QtKI034rCoJUUhwbEe+h6Y5itRP6iYK
+         QJ96YGvP4jFaBpu8iTZ+x/qXYdWRKRWIEPK9ULTgt2Z2TsyWbJXEw/6XhlOsp1d+jfbX
+         aRgiqHSjDQgOBZkOhTGZJaPsO7n/HGNu6XN6HpvePbl7RaY/EJB0JOLpU0pX2bbOj800
+         0YzS6ufuYmz4Xf3igmLaLPBRt2hCjGTRcMmiyPEjAPZmmJfXsir5K4Lt/jzIwDdrj5+l
+         M9A8jcVsu2vwOczDBjxhvKgt+fjQg88yli+eaDebHEC1EV1vh8mffqxvybbvjSKnzTGx
+         akjw==
+X-Gm-Message-State: AOAM53354Sr3ZobhBbftiy5D2QsBQvyEo23sGcBB/lSdpYE97oSqtefl
+        Ay0zgxdiktSjbp3lqxM/42JSGNOImgHALFvgl2c=
+X-Google-Smtp-Source: ABdhPJzLjfJQyfk8VbCRnosnrTVY2UPFJFyklm3HOduIZeC19YDcALQpXQJxAX3f0H8THQ+CbOh0I5mdROhUD8nUPfg=
+X-Received: by 2002:a05:6e02:1447:: with SMTP id p7mr15814152ilo.93.1612792958315;
+ Mon, 08 Feb 2021 06:02:38 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=925 phishscore=0
- clxscore=1015 priorityscore=1501 bulkscore=0 adultscore=0 spamscore=0
- malwarescore=0 mlxscore=0 impostorscore=0 lowpriorityscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102080095
+References: <20210208101439.55474-1-laoar.shao@gmail.com> <20210208122009.GN308988@casper.infradead.org>
+In-Reply-To: <20210208122009.GN308988@casper.infradead.org>
+From:   Yafang Shao <laoar.shao@gmail.com>
+Date:   Mon, 8 Feb 2021 22:02:02 +0800
+Message-ID: <CALOAHbB+xuDFnaBgQpf+1bf1SOdTkn10Mgtps8Adn7yp3_JFfw@mail.gmail.com>
+Subject: Re: [PATCH v3 0/3] mm, vsprintf: introduce new format to dump full
+ information of page flags
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Christoph Lameter <cl@linux.com>,
+        Miaohe Lin <linmiaohe@huawei.com>, penberg@kernel.org,
+        David Rientjes <rientjes@google.com>, iamjoonsoo.kim@lge.com,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Joe Perches <joe@perches.com>, Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adds a wrapper shell script for the test_scanf module.
+On Mon, Feb 8, 2021 at 8:20 PM Matthew Wilcox <willy@infradead.org> wrote:
+>
+> On Mon, Feb 08, 2021 at 06:14:36PM +0800, Yafang Shao wrote:
+> > To avoid breaking some tools which parsing pGp via debugfs or affecting
+> > the printf buffer, other new formats are introduced, so the user can choose
+> > what and in which order they want, suggested by Andy. These new introduced
+> > format as follows,
+> >     pGpb: print other information first and then the names of page flags
+> >     pGpl: print the names of page flags first and then the other info
+>
+> This is overengineering things.  We already print in little-endian order,
+> and the other information should be tacked onto the end.  Just extend
+> %pGp.  Andy's suggestion to add another flag was a bad one.
+>
 
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
-Reviewed-by: Petr Mladek <pmladek@suse.com>
-Acked-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- tools/testing/selftests/lib/Makefile | 2 +-
- tools/testing/selftests/lib/config   | 1 +
- tools/testing/selftests/lib/scanf.sh | 4 ++++
- 3 files changed, 6 insertions(+), 1 deletion(-)
- create mode 100755 tools/testing/selftests/lib/scanf.sh
+All right. I will do it in the next version.
 
-diff --git a/tools/testing/selftests/lib/Makefile b/tools/testing/selftests/lib/Makefile
-index a105f094676e..ee71fc99d5b5 100644
---- a/tools/testing/selftests/lib/Makefile
-+++ b/tools/testing/selftests/lib/Makefile
-@@ -4,6 +4,6 @@
- # No binaries, but make sure arg-less "make" doesn't trigger "run_tests"
- all:
- 
--TEST_PROGS := printf.sh bitmap.sh prime_numbers.sh strscpy.sh
-+TEST_PROGS := printf.sh bitmap.sh prime_numbers.sh scanf.sh strscpy.sh
- 
- include ../lib.mk
-diff --git a/tools/testing/selftests/lib/config b/tools/testing/selftests/lib/config
-index b80ee3f6e265..776c8c42e78d 100644
---- a/tools/testing/selftests/lib/config
-+++ b/tools/testing/selftests/lib/config
-@@ -1,4 +1,5 @@
- CONFIG_TEST_PRINTF=m
-+CONFIG_TEST_SCANTF=m
- CONFIG_TEST_BITMAP=m
- CONFIG_PRIME_NUMBERS=m
- CONFIG_TEST_STRSCPY=m
-diff --git a/tools/testing/selftests/lib/scanf.sh b/tools/testing/selftests/lib/scanf.sh
-new file mode 100755
-index 000000000000..b59b8ba561c3
---- /dev/null
-+++ b/tools/testing/selftests/lib/scanf.sh
-@@ -0,0 +1,4 @@
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0
-+# Tests the scanf infrastructure using test_scanf kernel module.
-+$(dirname $0)/../kselftest/module.sh "scanf" test_scanf
 -- 
-2.20.1
-
+Thanks
+Yafang
