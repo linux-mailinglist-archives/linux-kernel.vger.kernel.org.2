@@ -2,102 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8CF031427E
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 23:03:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F7B5314285
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 23:05:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233319AbhBHWDE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 17:03:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55510 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231974AbhBHWCU (ORCPT
+        id S229927AbhBHWEq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 17:04:46 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:39657 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229691AbhBHWEc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 17:02:20 -0500
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A43CDC061788
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 14:01:39 -0800 (PST)
-Received: by mail-ej1-x62d.google.com with SMTP id bl23so27955857ejb.5
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 14:01:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kylehuey.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mShq+EZPqAzFmcoE5QfNWQlMbGl3Td2RAiT+iP0GQO0=;
-        b=LIeOHWTs8CppkjnjGGTVNejIohuZzj2vwuq+Wv0F6b/WKkYCpB8gDpphPXP3FlOKPN
-         5A04u0Rpo5Q3y/qX92+c+mubKZdMffhNUMN2SWto7gqKNwyDAztIYBDCEsM1k5Dgw6J5
-         PUorSLrGpmMEkj6+nnFAgbXRrx53r7Tg1WhyP9GQUJLswcVvMPdYoTE3UPO7/VO554Ry
-         UO6bWW7Vp5SYE1k54nn6jzH76jT5Ez2ONUTrXWlIJ5EwRQR6zPJrgaeH9bCjPc3POt8D
-         qaZUP4Y42CEFtwXZpNF8n86BkCNsIDtR3P5pgsa1U6BXSikRw60kvb/PICgh7CLysA88
-         MYng==
+        Mon, 8 Feb 2021 17:04:32 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612821786;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=lTX0pF9nf8RNJQU7qZz8qZTgTzfq7MWAZYxVYVxWqa8=;
+        b=bY3sFMy3NOaD6WNQ4AzVLfSgaiTMS0yCqGKyor08in4jZb8fF5bFmCbaCacJd1CVefPovE
+        mr+s/DMqsLRk7U9rJZjrUNXoFOpdwqB3LCR/kI9Fk1bF2uSmcbzuxIRWzrp5arkbbN2Qo8
+        rTNM3VWaLrKe41hUMiGwZNR64AP5f2Q=
+Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
+ [209.85.222.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-474-uGSrIz9BMY6aFMIMV5g0rg-1; Mon, 08 Feb 2021 17:03:04 -0500
+X-MC-Unique: uGSrIz9BMY6aFMIMV5g0rg-1
+Received: by mail-qk1-f197.google.com with SMTP id f16so14116447qkk.20
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 14:03:03 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mShq+EZPqAzFmcoE5QfNWQlMbGl3Td2RAiT+iP0GQO0=;
-        b=bwb4iXNlStZLNnw7tM1H0PxHilfqObYmWraTVqd3yQ+5WZfKs6DMjz9OcEQw/oTmf8
-         AA2JcnaTUaWEqvxNRYFKFgwnb9HL/rzDOCwSdF9ofbGWWXs4iPIKoes2664pF0SVjbDr
-         wnS6Z5dp1z2H1zH+VakcbwKQZlXRUxgyz9h42k6hJzRfKe5ZYBEFSun4FuML3aB5+86I
-         fnTySRVqaK3rvl7B57sQCQotNRSCsZFvMO2Zit22dMYuMQJQ+XUCJk0gZfH/oswCPoEx
-         35KFwHPY6QcBcIxxyGzn4ZDu1t1jlH34x4D3le8ekr2l2M56ywpGNTkaNPhWeXqHAfan
-         y/PA==
-X-Gm-Message-State: AOAM531R/4+uhhPwRZPfeJOtbOFGVVY3h9dJSIM6aIb55d4WY8a3FI9c
-        SpQPkQ8oHtegEq19gUh06uU9qLh/yHFIIeKEjrtsuw==
-X-Google-Smtp-Source: ABdhPJxSYjqAd+iDGcp9OLAiPy0mD8uhaA6FigkBUp2yzAGRVyv6UP6GWM/PhnsYydNLl4JDCCeE528oHXnhYsugpRI=
-X-Received: by 2002:a17:906:1241:: with SMTP id u1mr19278962eja.196.1612821698360;
- Mon, 08 Feb 2021 14:01:38 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=lTX0pF9nf8RNJQU7qZz8qZTgTzfq7MWAZYxVYVxWqa8=;
+        b=AayZe4o1Xa1lBMlsiajVojn8n+LkTYRuAoKn+gWVUmZRfWxn57shyhXnqYNGp5DIZP
+         6jsmuhtZMsRGE98dY2z20gDwwlkzlXqLgoMZcmrVuxtQ2xRSuoZlehuMdmOmYXqDmV0o
+         q/66IfX71sprjufG64/cDy8qcy8cSMPsL9jqq7kt5x8npYYAuHC3ml/02TJvcyDNJZH2
+         6FHm3qZYUrn3ZKGBC9X2O6ILhmfRJaIKihN7rtEw2kqDCnsx11/HsWlTvUe5dqv/1NGf
+         e+HoQrZfw3PJXMEiLaAT1zRJPfcfP0thiTPYsiYw8gmsmR4Wts99HW5X6aJRB49UZ985
+         obOw==
+X-Gm-Message-State: AOAM533V8Yr8OJmlBpYecKxf4ubpt6noTzKgasp7zJBmVLC7elZRK2Ru
+        +GifjZPneoqMeAsH7TCq/p6+CK+VFwjjHvBGzmVvGtCliTWnsVpEl0K0fVH0A+6I82R4dmPweYO
+        DwV5+SjQ1pu0gZfksZj5dIf52
+X-Received: by 2002:ac8:1283:: with SMTP id y3mr16782058qti.328.1612821783546;
+        Mon, 08 Feb 2021 14:03:03 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxcP//hjTyuOLVPNFX+cbxbejOsxicI0aDwcP+30/uSNwdFb2okin6reP+9lxD9CelvjcyuBg==
+X-Received: by 2002:ac8:1283:: with SMTP id y3mr16781975qti.328.1612821782460;
+        Mon, 08 Feb 2021 14:03:02 -0800 (PST)
+Received: from xz-x1 (bras-vprn-toroon474qw-lp130-20-174-93-89-182.dsl.bell.ca. [174.93.89.182])
+        by smtp.gmail.com with ESMTPSA id 199sm18235920qkm.126.2021.02.08.14.03.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Feb 2021 14:03:01 -0800 (PST)
+Date:   Mon, 8 Feb 2021 17:02:59 -0500
+From:   Peter Xu <peterx@redhat.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     dan.j.williams@intel.com, Paolo Bonzini <pbonzini@redhat.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH 0/2] KVM: do not assume PTE is writable after follow_pfn
+Message-ID: <20210208220259.GA71523@xz-x1>
+References: <20210205103259.42866-1-pbonzini@redhat.com>
+ <20210205181411.GB3195@xz-x1>
+ <20210208185133.GW4718@ziepe.ca>
 MIME-Version: 1.0
-References: <20210208214327.65287-1-sedat.dilek@gmail.com>
-In-Reply-To: <20210208214327.65287-1-sedat.dilek@gmail.com>
-From:   Kyle Huey <me@kylehuey.com>
-Date:   Mon, 8 Feb 2021 14:01:27 -0800
-Message-ID: <CAP045Ar1MvSGSrL9gL3YzSbGJvs4Xt0MMuAahLZz2_B6y0UbzQ@mail.gmail.com>
-Subject: Re: [PATCH] x86: entry: Remove _TIF_SINGLESTEP define leftover
-To:     Sedat Dilek <sedat.dilek@gmail.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        Kees Cook <keescook@chromium.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210208185133.GW4718@ziepe.ca>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Looks good to me.
+On Mon, Feb 08, 2021 at 02:51:33PM -0400, Jason Gunthorpe wrote:
+> On Fri, Feb 05, 2021 at 01:14:11PM -0500, Peter Xu wrote:
+> 
+> > But I do have a question on why dax as the only user needs to pass in the
+> > notifier to follow_pte() for initialization.
+> 
+> Not sure either, why does DAX opencode something very much like
+> page_mkclean() with dax_entry_mkclean()?
+> 
+> Also it looks like DAX uses the wrong notifier, it calls
+> MMU_NOTIFY_CLEAR but page_mkclean_one() uses
+> MMU_NOTIFY_PROTECTION_PAGE for the same PTE modification sequence??
+> 
+> page_mkclean() has some technique to make the notifier have the right
+> size without becoming entangled in the PTL locks..
 
-- Kyle
+Right.  I guess it's because dax doesn't have "struct page*" on the back, so it
+can't directly use page_mkclean().  However the whole logic does look very
+similar, so maybe they can be merged in some way.
 
-On Mon, Feb 8, 2021 at 1:43 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
->
-> After commit 6342adcaa683 ("entry: Ensure trap after single-step on
-> system call return") a _TIF_SINGLESTEP define is obsolete for arch/x86.
->
-> So, remove the leftover in arch/x86/include/asm/thread_info.h file.
->
-> Fixes: 6342adcaa683 ("entry: Ensure trap after single-step on system call return"
-> CC: Kyle Huey <me@kylehuey.com>
-> Signed-off-by: Sedat Dilek <sedat.dilek@gmail.com>
-> ---
->  arch/x86/include/asm/thread_info.h | 1 -
->  1 file changed, 1 deletion(-)
->
-> diff --git a/arch/x86/include/asm/thread_info.h b/arch/x86/include/asm/thread_info.h
-> index 0d751d5da702..8861967e0305 100644
-> --- a/arch/x86/include/asm/thread_info.h
-> +++ b/arch/x86/include/asm/thread_info.h
-> @@ -101,7 +101,6 @@ struct thread_info {
->  #define _TIF_NOTIFY_RESUME     (1 << TIF_NOTIFY_RESUME)
->  #define _TIF_SIGPENDING                (1 << TIF_SIGPENDING)
->  #define _TIF_NEED_RESCHED      (1 << TIF_NEED_RESCHED)
-> -#define _TIF_SINGLESTEP                (1 << TIF_SINGLESTEP)
->  #define _TIF_SSBD              (1 << TIF_SSBD)
->  #define _TIF_SPEC_IB           (1 << TIF_SPEC_IB)
->  #define _TIF_SPEC_FORCE_UPDATE (1 << TIF_SPEC_FORCE_UPDATE)
-> --
-> 2.30.0
->
+Thanks,
+
+-- 
+Peter Xu
+
