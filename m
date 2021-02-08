@@ -2,158 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 523C4312C3B
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 09:50:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52C84312C36
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 09:50:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230393AbhBHIuT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 03:50:19 -0500
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:18401 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230244AbhBHIk2 (ORCPT
+        id S230156AbhBHIth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 03:49:37 -0500
+Received: from mailout2.w1.samsung.com ([210.118.77.12]:37743 "EHLO
+        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230363AbhBHIlC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 03:40:28 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B6020f8d40000>; Mon, 08 Feb 2021 00:39:48 -0800
-Received: from [10.2.50.67] (172.20.145.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 8 Feb
- 2021 08:39:47 +0000
-Subject: Re: [PATCH] mm: cma: support sysfs
-To:     Pintu Agarwal <pintu.ping@gmail.com>,
-        Minchan Kim <minchan@kernel.org>
-CC:     Suren Baghdasaryan <surenb@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
+        Mon, 8 Feb 2021 03:41:02 -0500
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20210208084015euoutp02dc1dea16d9327b89641656bc65377a0c~huQ79Ygwv2005820058euoutp02w
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 08:40:15 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20210208084015euoutp02dc1dea16d9327b89641656bc65377a0c~huQ79Ygwv2005820058euoutp02w
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1612773615;
+        bh=KNOrNrL+72nponq8j81Mwa76MDVPefX2wsyg2rqCJ3k=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=OzPfFMgeKTqGebk3pGIZDzUyPBmOD5j9Md0WMrpEIJS6aKALJ+3XDOdho+g0So/+H
+         hzxDA6ObV49y6yWSCqhqKj5PEnSTkXzaXyhopL4qTM8iQi4cqDX6dIqMyEmtAz0iPr
+         jenzLxlqE1RROIhRdQlDINIpLD+u6SVLcfzR5+HI=
+Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20210208084015eucas1p2a79133d1a5611ec48bf32385b99c0d4c~huQ7fykwT2617926179eucas1p2m;
+        Mon,  8 Feb 2021 08:40:15 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges3new.samsung.com (EUCPMTA) with SMTP id 53.0B.45488.EE8F0206; Mon,  8
+        Feb 2021 08:40:15 +0000 (GMT)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20210208084014eucas1p2f462f219c6e46c6eaec2ae88c03c9507~huQ65A-6w2626126261eucas1p2M;
+        Mon,  8 Feb 2021 08:40:14 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20210208084014eusmtrp29991457435cf7013f14c44f4b49aab41~huQ63_fnl0368203682eusmtrp2Q;
+        Mon,  8 Feb 2021 08:40:14 +0000 (GMT)
+X-AuditID: cbfec7f5-c77ff7000000b1b0-eb-6020f8eef31b
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id 15.36.21957.EE8F0206; Mon,  8
+        Feb 2021 08:40:14 +0000 (GMT)
+Received: from [106.210.134.192] (unknown [106.210.134.192]) by
+        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20210208084013eusmtip2d038ff27818d7ead02c16b59f934df21~huQ5xo5Ko3214432144eusmtip20;
+        Mon,  8 Feb 2021 08:40:13 +0000 (GMT)
+Subject: Re: [PATCH v4 0/8] Make fw_devlink=on more forgiving
+To:     Saravana Kannan <saravanak@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        John Dias <joaodias@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>
-References: <71c4ce84-8be7-49e2-90bd-348762b320b4@nvidia.com>
- <YBzU5uUbwa+QIwBQ@google.com>
- <34110c61-9826-4cbe-8cd4-76f5e7612dbd@nvidia.com>
- <YBzkjh5nnuNiGb6Q@google.com>
- <f6e41e39-d60b-764d-0af4-8e6977663821@nvidia.com>
- <YB1vIrgI9S/5CDxL@google.com>
- <269689b7-3b6d-55dc-9044-fbf2984089ab@nvidia.com>
- <YB24YXMJOjwokDb5@google.com>
- <CAJuCfpEaQqgsyGtzRvovpuLOELR0iRNvNF0rnih1bq0HQCTuww@mail.gmail.com>
- <cbd30192-6f9f-845c-6b1c-e21ed737781d@nvidia.com>
- <YB3K9rx7E9qMf6Is@google.com>
- <CAOuPNLj9kKFFOS_56KkJ4w3jD51WOZ+d=nubcQQeihpk4B_-Ng@mail.gmail.com>
-From:   John Hubbard <jhubbard@nvidia.com>
-Message-ID: <06f8d7c5-ba77-363e-344a-8816c5017d3f@nvidia.com>
-Date:   Mon, 8 Feb 2021 00:39:47 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:85.0) Gecko/20100101
- Thunderbird/85.0
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Kevin Hilman <khilman@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Len Brown <len.brown@intel.com>, Len Brown <lenb@kernel.org>,
+        Pavel Machek <pavel@ucw.cz>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-acpi@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        kernel-team@android.com
+From:   Marek Szyprowski <m.szyprowski@samsung.com>
+Message-ID: <7b486072-453d-a344-bdfc-dec58a35c8f5@samsung.com>
+Date:   Mon, 8 Feb 2021 09:40:13 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0)
+        Gecko/20100101 Thunderbird/78.7.0
 MIME-Version: 1.0
-In-Reply-To: <CAOuPNLj9kKFFOS_56KkJ4w3jD51WOZ+d=nubcQQeihpk4B_-Ng@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Language: en-US
+In-Reply-To: <20210205222644.2357303-1-saravanak@google.com>
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1612773588; bh=pjWWiYIgvZ4zvrt3wVUeVX1ZIwdnAzVgsTlJnj3ko0I=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=aBJhc2TJZBD8f19Gx4rn+hDyVHQqY6v1Fqw/Wx32sQLGyS6DniKIp/ohCnB4Yeuzh
-         3K6UGB+V7v3LNGlgFgwGCUWeVpZYZJTO0GO0pNDIQEQUvcxli5DbxR3NXqAdG2qK5Q
-         8nBChUOckll1fI4BUvoYLwEHJ8kK2XtdDsjrI797SLkNKzBH5iULIkEnIpsxxH8q0J
-         eQw2egyAsojWUNIWratlhW+tYLV0zJZ3fBH5geVqXyAX8xHMn8Hvj0XeabZ+3QSeoE
-         sOmZP8xIvaS0QUTFoXX9XAjiXi4b29CP6sx8hBGBX+hXNLnj0X85RxrrJ8MNfcm60N
-         F14yC4rCD0R7w==
+Content-Language: en-US
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprCJsWRmVeSWpSXmKPExsWy7djP87rvfygkGCxtYLR4cqCd0WL+kXOs
+        FjPf/GezeHZrL5NF8+L1bBY7totYPN38mMli1hSg0M6Hb9kslu/rZ7T42HOP1WJh2xIWi8u7
+        5rBZfO49wmixc85JVouLp1wt7p46ymYx98tUZovWvUfYLboO/WWz+HdtI4vF5k1AseNrwx3E
+        Pbbt3sbq8f5GK7vHzll32T0WbCr1WLznJZPHplWdbB53ru1h83h37hy7x6HDHYwe++euYfdY
+        3DeZ1WPF6u/sHp83yQXwRnHZpKTmZJalFunbJXBlLG7+xFJwk7Pi8rqjjA2MT9i7GDk5JARM
+        JBad28rUxcjFISSwglHiycFF7BDOF0aJ7tULmCGcz4wSD37+ZINpOdH1lREisZxRYs7Jq1At
+        Hxkl+k83MoNUCQvYSjSdXgLWLiKwhUVi4641YFuYBT4Bzer+xgpSxSZgKNH1tgtoLgcHr4Cd
+        xLYVUSBhFgEVibW/pzGC2KICSRLLb/5hArF5BQQlTs58wgJicwrYSBx+8g5sGbOAvMT2t3Og
+        bHGJW0/mg+2SEOjikrhypo8F4m4Xie+7DkLZwhKvjm+BBoGMxP+dMA3NjBIPz61lh3B6GCUu
+        N81ghKiylrhz7hfYpcwCmhLrd+lDhB0lvvZOYQYJSwjwSdx4KwhxBJ/EpG3TocK8Eh1tQhDV
+        ahKzjq+DW3vwwiXmCYxKs5C8NgvJO7OQvDMLYe8CRpZVjOKppcW56anFxnmp5XrFibnFpXnp
+        esn5uZsYgQn39L/jX3cwrnj1Ue8QIxMH4yFGCQ5mJRHewE65BCHelMTKqtSi/Pii0pzU4kOM
+        0hwsSuK8u7auiRcSSE8sSc1OTS1ILYLJMnFwSjUwxb3meeT1KbQ3aGPey+lt6168m+SQtHL7
+        DF2+RO3vJgtDFy7u6Zy+SGUXf0Msm0lmwpZ7jyaycn7yOp5kIvl9O4vjTNUY1dvcc2I07q+V
+        7vSwXdrG/VqtQNQsTStifcfdubeEMgv6Z+35Vt+afdWi1nPZU+Hbmt5LNkd+tZ/X/HXiKo7g
+        98/enOM6otK4q/zgboMzx/c3mbCkSew8/onX5fy6L1fqjvyR/Ht0jf/iT5LPHC3mXw9eb3JB
+        tMxjrkOuxwGVzVtL3nBHLM16O//rJSe7kny5K9Z5gWkR33KK1xYWqM1lYgp1feqceiPC9SGX
+        o+B+qR+t3ukGuqurfT70micfPLtI/3DJV4l3cx4GK7EUZyQaajEXFScCABW41o0nBAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrGKsWRmVeSWpSXmKPExsVy+t/xe7rvfigkGMxaL2zx5EA7o8X8I+dY
+        LWa++c9m8ezWXiaL5sXr2Sx2bBexeLr5MZPFrClAoZ0P37JZLN/Xz2jxseceq8XCtiUsFpd3
+        zWGz+Nx7hNFi55yTrBYXT7la3D11lM1i7pepzBate4+wW3Qd+stm8e/aRhaLzZuAYsfXhjuI
+        e2zbvY3V4/2NVnaPnbPusnss2FTqsXjPSyaPTas62TzuXNvD5vHu3Dl2j0OHOxg99s9dw+6x
+        uG8yq8eK1d/ZPT5vkgvgjdKzKcovLUlVyMgvLrFVija0MNIztLTQMzKx1DM0No+1MjJV0rez
+        SUnNySxLLdK3S9DLWNz8iaXgJmfF5XVHGRsYn7B3MXJySAiYSJzo+srYxcjFISSwlFFi+/om
+        FoiEjMTJaQ2sELawxJ9rXWwQRe8ZJRbens4GkhAWsJVoOr2EGSQhIrCNRWLylW0sIA6zwCdG
+        iWW7ITJCAv2MEneOzQObxSZgKNH1FmQWBwevgJ3EthVRIGEWARWJtb+nMYLYogJJEo9v3WcC
+        sXkFBCVOznwCdhKngI3E4SfvmEFsZgEziXmbH0LZ8hLb386BssUlbj2ZzzSBUWgWkvZZSFpm
+        IWmZhaRlASPLKkaR1NLi3PTcYkO94sTc4tK8dL3k/NxNjMAEs+3Yz807GOe9+qh3iJGJg/EQ
+        owQHs5IIb2CnXIIQb0piZVVqUX58UWlOavEhRlOgfyYyS4km5wNTXF5JvKGZgamhiZmlgaml
+        mbGSOO/WuWvihQTSE0tSs1NTC1KLYPqYODilGpg4aq5ncM+YvSbIvNmA+W7ROnfPD1tkfmhe
+        FZVbXN7r+aG1vE/Walt21EWRvNdbH0w70S30UFhq/7OAK4vnPy3ravO2POSq+b7LPObRkg/y
+        acd//9zj/3ySyKkrNTdTw+SXuUifm7pqkZ6BlN/qtqCbx51dUqzdPiz86zvdwlSBqazLWv3V
+        9uOmRx8ybErReHX2jgOPTvmlXXsyTm1S+mx+6/yGSxONP1ssDlx57PCv58WZFlsuJ1quezrl
+        6e7j13c1eE/c5LH8RZuRZrxC6Zp38Uk3IkP3LF+xLZk7z7mab04Iq1vWC9WyfcYdNmc02B+p
+        PsrVavdSZ0vZsPbV4v1+B+ff3xDxz7jrderN91dWK7EUZyQaajEXFScCANPuL3K5AwAA
+X-CMS-MailID: 20210208084014eucas1p2f462f219c6e46c6eaec2ae88c03c9507
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20210205222651eucas1p28ef87073dea33c1c5224c14aa203bec5
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20210205222651eucas1p28ef87073dea33c1c5224c14aa203bec5
+References: <CGME20210205222651eucas1p28ef87073dea33c1c5224c14aa203bec5@eucas1p2.samsung.com>
+        <20210205222644.2357303-1-saravanak@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/6/21 9:08 AM, Pintu Agarwal wrote:
-...
->> # cat meminfo | grep -i cma
->> CmaTotal:        1048576 kB
->> CmaFree:         1046872 kB
-> 
-> This CMA info was added by me way back in 2014.
-> At that time I even thought about adding this cma alloc/fail counter in vmstat.
-> That time I also had an internal patch about it but later dropped
-> (never released to mainline).
-> If required I can re-work again on this part.
-> 
-> And I have few more points to add here.
-> 1) In the past I have faced this cma allocation failure (which could
-> be common in small embedded devices).
-> Earlier it was even difficult to figure if cma failure actually happened.
-> Thus I added this simple patch:
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?h=v5.11-rc6&id=5984af1082f3b115082178ed88c47033d43b924d
-> 
-> 2) IMO just reporting CMA alloc/fail may not be enough (at times). The
-> main point is for which client/dev is this failure happening ?
-> Sometimes just tuning the size or fixing the alignment can resolve the
-> failure if we know the client. For global CMA it will be just NULL
-> (dev).
-> 
-> 3) IMO having 2 options SYSFS and DEBUGFS may confuse the
-> developer/user (personal experience). So are we going to remove the
-> DEBUGFS or merge it ?
-> 
+Hi Saravana,
 
-It is confusing to have a whole bunch of different places to find data
-about a system. Here, I think the key is to add to the Documentation/
-directory. So far, the documentation I see is:
+On 05.02.2021 23:26, Saravana Kannan wrote:
+> There are a lot of devices/drivers where they never have a struct device
+> created for them or the driver initializes the hardware without ever
+> binding to the struct device.
+>
+> This series is intended to avoid any boot regressions due to such
+> devices/drivers when fw_devlink=on and also address the handling of
+> optional suppliers.
+>
+> Patch 1 and 2 addresses the issue of firmware nodes that look like
+> they'll have struct devices created for them, but will never actually
+> have struct devices added for them. For example, DT nodes with a
+> compatible property that don't have devices added for them.
+>
+> Patch 3 and 4 allow for handling optional DT bindings.
+>
+> Patch 5 sets up a generic API to handle drivers that never bind with
+> their devices.
+>
+> Patch 6 through 8 update different frameworks to use the new API.
 
-     admin-guide/mm/cma_debugfs.rst: only covers debugfs
-     admin-guide/kernel-parameters.txt:602: for CMA kernel parameters
+This patchset fixes probing issue observed on various Exynos based 
+boards even with commit c09a3e6c97f0 ("soc: samsung: pm_domains: Convert 
+to regular platform driver") reverted. Thanks!
 
-If we add sysfs items then we will want a new .rst document that covers
-that, and lists all the places to look.
+Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
 
-So anyway, the underlying guidelines for which fs to user are approximately:
+Best regards
 
-* sysfs: used for monitoring. One value per item, stable ABI, production.
-
-* debugfs: *theoretically* not a stable ABI (we hope no one locks us in
-by doing obnoxious things that break userspace if the debugfs APIs change).
-The intention is that developers can put *anything* in there.
-
-debugfs has a firm place in debugging, and is probably a keeper here.
-
-I originally thought we should combine CMA's sysfs and debugfs items,
-but Minchan listed an example that seems to show a pretty clear need
-for monitoring of CMA areas, in production systems, and that's what
-sysfs is for.
-
-So it looks like we want both debugfs and sysfs for CMA, plus a new
-overall CMA documentation that points to everything.
-
-> 4) Sometimes CMA (or DMA) allocation failure can happen even very
-> early in boot time itself. At that time these are anyways not useful.
-> Some system may not proceed if CMA/DMA allocation is failing (again
-> personal experience).
-> ==> Anyways this is altogether is different case...
-> 
-> 5) The default max CMA areas are defined to be 7 but user can
-> configure it to any number, may be 20 or 50 (???)
-> 
-> 6) Thus I would like to propose another thing here.
-> Just like we have /proc/vmallocinfo, /proc/slabinfo, etc., we can also
-> have: /proc/cmainfo
-> Here in /proc/cmaminfo we can capute more detailed information:
-> Global CMA Data: Alloc/Free
-> Client specific data: name, size, success, fail, flags, align, etc
-> (just a random example).
-> ==> This can dynamically grow as large as possible
-> ==> It can also be enabled/disabled based on CMA config itself (no
-> additional config required)
-> 
-> Any feedback on point (6) specifically ?
-> 
-
-Well, /proc these days is for process-specific items. And CMA areas are
-system-wide. So that's an argument against it. However...if there is any
-process-specific CMA allocation info to report, then /proc is just the
-right place for it.
-
-
-thanks,
 -- 
-John Hubbard
-NVIDIA
+Marek Szyprowski, PhD
+Samsung R&D Institute Poland
+
