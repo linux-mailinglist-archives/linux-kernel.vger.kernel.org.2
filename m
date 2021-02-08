@@ -2,61 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B8FA313FD6
+	by mail.lfdr.de (Postfix) with ESMTP id 1BC94313FD5
 	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 21:03:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236606AbhBHUCu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 15:02:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53540 "EHLO mail.kernel.org"
+        id S236581AbhBHUCk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 15:02:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53538 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235561AbhBHSVU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S235510AbhBHSVU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 8 Feb 2021 13:21:20 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5276C64E84;
-        Mon,  8 Feb 2021 18:20:01 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3119E64E9C;
+        Mon,  8 Feb 2021 18:20:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612808401;
-        bh=Q2bV0W0mG9IErCZlLHYlZZENLrVP+bhFSPA37zd7yC4=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=V8AGt3XuTmxpuatBgyimbWe5UdeNMQ6RItBqIwQMpMZAulnv84nM401vN3bTpF/kF
-         Zwaw5XJBndyZgrxHL0qxPBo7WmtccPZnSBREo0CMjki18w3s8ATJhjCYShFId82AA5
-         VXssfrp1oigtUiIPmmWOZ3u8nd/Y3P3+rxOgrN/SIc29U3coxYYL/IlHA8I0fShumV
-         RxYmde97aciAbPpAcFV9R9PmGdV3ZcdmgU0EHv1uEk0ShoU6iM5hSGgBG1orYIEoNj
-         1VX9BV7y+Hyu8bpQNrvqmlUWBErkH/y4s12rAGUt07SWcoM+hJlVorA4wpTJpsv9dQ
-         LHj8ekHR41Lpw==
-Content-Type: text/plain; charset="utf-8"
+        s=k20201202; t=1612808402;
+        bh=1Wc66cvijA0/2hnpeQiER8GT9ouRZWKOdv5pXKjT79k=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=otblmeVYA7gMbyrdYky5aQLtl1Grz6AkBn5AgvpptyqNt8/IXRLL66NFsT3cR8LJR
+         1hP5p5GAPKd8xXj+Td/QLBBgZGI1uCW3xJc4qvx5GWXR43XsjXTILD58mskieWukP2
+         LmzQbT/a3ge8YyQF+XTxCAaka7yfYj3vCVY1aAx5dUIOHIpcIuyvATAS1H8gl8X7Oc
+         oVmD9qmpvAU2kkT8Q5g/pzgIJP2KwAiWLdqSH29OzXa1YBiVEFlbeiv5TEz52NRrik
+         caCxiPhwqVRGzFAp2t4XPNYsHbCdUTIiTGALNmGKm9hx2CrFENTbltU8kaWUCAHuNr
+         IdYimNy2aucow==
+Date:   Mon, 8 Feb 2021 13:20:01 -0500
+From:   Sasha Levin <sashal@kernel.org>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     masahiroy@kernel.org, michal.lkml@markovi.net,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        gregkh@linuxfoundation.org
+Subject: Re: [PATCH] kbuild: simplify access to the kernel's version
+Message-ID: <20210208182001.GA4035784@sasha-vm>
+References: <20210207161352.2044572-1-sashal@kernel.org>
+ <20210208175007.GA1501867@infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210114221059.483390-8-angelogioacchino.delregno@somainline.org>
-References: <20210114221059.483390-1-angelogioacchino.delregno@somainline.org> <20210114221059.483390-8-angelogioacchino.delregno@somainline.org>
-Subject: Re: [PATCH v2 07/11] clk: qcom: mmcc-msm8998: Set CLK_GET_RATE_NOCACHE to pixel/byte clks
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     konrad.dybcio@somainline.org, marijn.suijten@somainline.org,
-        martin.botka@somainline.org, phone-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, agross@kernel.org,
-        bjorn.andersson@linaro.org, mturquette@baylibre.com,
-        robh+dt@kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        linux-arm-msm@vger.kernel.org
-Date:   Mon, 08 Feb 2021 10:20:00 -0800
-Message-ID: <161280840018.76967.9481288975245040550@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20210208175007.GA1501867@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting AngeloGioacchino Del Regno (2021-01-14 14:10:55)
-> The pixel and byte clocks rate should not be cached, as a VCO shutdown
-> may clear the frequency setup and this may not be set again due to the
-> cached rate being present.
-> This will also be useful when shadow clocks will be implemented in
-> the DSI PLL for seamless timing/resolution switch.
->=20
-> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@soma=
-inline.org>
-> ---
+On Mon, Feb 08, 2021 at 05:50:07PM +0000, Christoph Hellwig wrote:
+>On Sun, Feb 07, 2021 at 11:13:52AM -0500, Sasha Levin wrote:
+>> +		(u8)(LINUX_VERSION_MAJOR), (u8)(LINUX_VERSION_PATCHLEVEL),
+>> +		(u16)(LINUX_VERSION_SUBLEVEL));
+>
+>No need for the casts and braces.
+>
+>Otherwise this looks good, but please also kill off KERNEL_VERSION
+>and LINUX_KERNEL_VERSION entirely while you're at it.
 
-Applied to clk-next
+I don't think there are in-tree users left?
+
+We can't remove it completely because userspace is still using it, so if
+we drop those userspace will be sad.
+
+-- 
+Thanks,
+Sasha
