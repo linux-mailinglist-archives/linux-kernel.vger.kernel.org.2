@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06815313AED
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 18:30:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6967313A61
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 18:03:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234893AbhBHR3x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 12:29:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37328 "EHLO mail.kernel.org"
+        id S234812AbhBHRCy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 12:02:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34484 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233940AbhBHP2m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 10:28:42 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1441264DFF;
-        Mon,  8 Feb 2021 15:16:27 +0000 (UTC)
+        id S231697AbhBHPSs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 10:18:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C9FF664F02;
+        Mon,  8 Feb 2021 15:12:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612797388;
-        bh=YccDqjeajWkEGxaKkOyAcu5JCWanzuFJHF2TtT2eRg8=;
+        s=korg; t=1612797132;
+        bh=/lB1CqoITpXl91Hx5Owmq4+rsmXz8vTSzRSAOHty2oI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=okd9l0tMkMpj2CVjJKdDmpafm13ByfD4cGsm/ek6bcbhyoabILrwt4yJ/zSL7He1a
-         RRxih9JUNSKZiYViNtFFsrG5m+2BwWWd/Pt8M8/eq2YH5VsL6edXnF+LwhlLWAFbSO
-         am913Qnx26ipm2iIhZaBgXZvCbB4gMYaz5WSmF48=
+        b=uYqI7/VSUHPfQPu/7YwQAaqd2KyLaFztC8DVKfKpFU+BFZ5P0KcmHXHcphT1jaGVA
+         T6ZqmC1siOMZZHxtvLLkPSFGFn+jQfa3KE1wGpMZiKizI5ioDm25UG3AQJHliQrUhu
+         9dIJJRxMvLL3WKpAlpH1ArYHDOyz+o2neSfrJnsM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Michael Roth <michael.roth@amd.com.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 5.10 091/120] KVM: x86: fix CPUID entries returned by KVM_GET_CPUID2 ioctl
-Date:   Mon,  8 Feb 2021 16:01:18 +0100
-Message-Id: <20210208145822.032288504@linuxfoundation.org>
+        stable@vger.kernel.org, Nikolay Borisov <nborisov@suse.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Borislav Petkov <bp@suse.de>,
+        Seth Forshee <seth.forshee@canonical.com>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>
+Subject: [PATCH 5.4 54/65] x86/build: Disable CET instrumentation in the kernel
+Date:   Mon,  8 Feb 2021 16:01:26 +0100
+Message-Id: <20210208145812.313985463@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210208145818.395353822@linuxfoundation.org>
-References: <20210208145818.395353822@linuxfoundation.org>
+In-Reply-To: <20210208145810.230485165@linuxfoundation.org>
+References: <20210208145810.230485165@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,41 +42,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Roth <michael.roth@amd.com>
+From: Josh Poimboeuf <jpoimboe@redhat.com>
 
-commit 181f494888d5b178ffda41bed965f187d5e5c432 upstream.
+commit 20bf2b378729c4a0366a53e2018a0b70ace94bcd upstream.
 
-Recent commit 255cbecfe0 modified struct kvm_vcpu_arch to make
-'cpuid_entries' a pointer to an array of kvm_cpuid_entry2 entries
-rather than embedding the array in the struct. KVM_SET_CPUID and
-KVM_SET_CPUID2 were updated accordingly, but KVM_GET_CPUID2 was missed.
+With retpolines disabled, some configurations of GCC, and specifically
+the GCC versions 9 and 10 in Ubuntu will add Intel CET instrumentation
+to the kernel by default. That breaks certain tracing scenarios by
+adding a superfluous ENDBR64 instruction before the fentry call, for
+functions which can be called indirectly.
 
-As a result, KVM_GET_CPUID2 currently returns random fields from struct
-kvm_vcpu_arch to userspace rather than the expected CPUID values. Fix
-this by treating 'cpuid_entries' as a pointer when copying its
-contents to userspace buffer.
+CET instrumentation isn't currently necessary in the kernel, as CET is
+only supported in user space. Disable it unconditionally and move it
+into the x86's Makefile as CET/CFI... enablement should be a per-arch
+decision anyway.
 
-Fixes: 255cbecfe0c9 ("KVM: x86: allocate vcpu->arch.cpuid_entries dynamically")
-Cc: Vitaly Kuznetsov <vkuznets@redhat.com>
-Signed-off-by: Michael Roth <michael.roth@amd.com.com>
-Message-Id: <20210128024451.1816770-1-michael.roth@amd.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+ [ bp: Massage and extend commit message. ]
+
+Fixes: 29be86d7f9cb ("kbuild: add -fcf-protection=none when using retpoline flags")
+Reported-by: Nikolay Borisov <nborisov@suse.com>
+Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+Tested-by: Nikolay Borisov <nborisov@suse.com>
+Cc: <stable@vger.kernel.org>
+Cc: Seth Forshee <seth.forshee@canonical.com>
+Cc: Masahiro Yamada <yamada.masahiro@socionext.com>
+Link: https://lkml.kernel.org/r/20210128215219.6kct3h2eiustncws@treble
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/kvm/cpuid.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ Makefile          |    6 ------
+ arch/x86/Makefile |    3 +++
+ 2 files changed, 3 insertions(+), 6 deletions(-)
 
---- a/arch/x86/kvm/cpuid.c
-+++ b/arch/x86/kvm/cpuid.c
-@@ -320,7 +320,7 @@ int kvm_vcpu_ioctl_get_cpuid2(struct kvm
- 	if (cpuid->nent < vcpu->arch.cpuid_nent)
- 		goto out;
- 	r = -EFAULT;
--	if (copy_to_user(entries, &vcpu->arch.cpuid_entries,
-+	if (copy_to_user(entries, vcpu->arch.cpuid_entries,
- 			 vcpu->arch.cpuid_nent * sizeof(struct kvm_cpuid_entry2)))
- 		goto out;
- 	return 0;
+--- a/Makefile
++++ b/Makefile
+@@ -920,12 +920,6 @@ KBUILD_CFLAGS   += $(call cc-option,-Wer
+ # change __FILE__ to the relative path from the srctree
+ KBUILD_CFLAGS	+= $(call cc-option,-fmacro-prefix-map=$(srctree)/=)
+ 
+-# ensure -fcf-protection is disabled when using retpoline as it is
+-# incompatible with -mindirect-branch=thunk-extern
+-ifdef CONFIG_RETPOLINE
+-KBUILD_CFLAGS += $(call cc-option,-fcf-protection=none)
+-endif
+-
+ include scripts/Makefile.kasan
+ include scripts/Makefile.extrawarn
+ include scripts/Makefile.ubsan
+--- a/arch/x86/Makefile
++++ b/arch/x86/Makefile
+@@ -131,6 +131,9 @@ else
+ 
+         KBUILD_CFLAGS += -mno-red-zone
+         KBUILD_CFLAGS += -mcmodel=kernel
++
++	# Intel CET isn't enabled in the kernel
++	KBUILD_CFLAGS += $(call cc-option,-fcf-protection=none)
+ endif
+ 
+ ifdef CONFIG_X86_X32
 
 
