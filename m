@@ -2,96 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80FF1312B4D
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 08:55:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E71F2312B4B
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 08:55:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230124AbhBHHz3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 02:55:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42654 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230102AbhBHHz1 (ORCPT
+        id S230133AbhBHHze (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 02:55:34 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:47484 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229959AbhBHHz2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 02:55:27 -0500
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4EB4C06174A
-        for <linux-kernel@vger.kernel.org>; Sun,  7 Feb 2021 23:54:45 -0800 (PST)
-Received: by mail-pl1-x636.google.com with SMTP id d13so7393408plg.0
-        for <linux-kernel@vger.kernel.org>; Sun, 07 Feb 2021 23:54:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=wS78z2DGzZxHA2vV2iZc+QYltD449KPzaCG39iIKaiw=;
-        b=OkRR34sqJBhvubTylHIh6sfTyq+rOJmudymq3iITTzzuwTfAcOqOHA3QA6UfoiyoGV
-         xHz431jIXhJzaRIC+/j433ndm1OwxSd0anzS+hh5sneJ6EoD/P7HwwmjX1DMCSLff6H3
-         yP75OQjOm7LhfRV0JzXPFtcuyGXs/BDEoP7NMALtLoAKt47Sax7Cixp9HYE09pW2hMaz
-         MijZR1HJiObHxT8q0KpBFLeNXZunjdCqDoGQoiHLlpau/vUQxt5S5qvvK6Ei1oBk0kck
-         CZwDMZtojYJqZKAEDMPX73lgyNbYn0vk9XdoOIRrFs3/ria3UrQrUw71mvSWAC1V0nU8
-         Z0Gg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=wS78z2DGzZxHA2vV2iZc+QYltD449KPzaCG39iIKaiw=;
-        b=cMmHkM5Tia5vRkq2Gvx3dzdYuLs+4zsnRJxEyJZupvwOgJ8DCDZNjBH8HhZYSnhAU2
-         TA/Bpanlykw2Z8NZayXG7OGwBJONJSBKNN1Tm1Bz2+BU0k5r2kRzUZtVqOukpYSq2DhC
-         sY9/jqiZ+qiiFfxygPLn5UwFctj+NgqlxK/55T6hxn6drZByUVe4HUR519Hf6mwOdVuK
-         eXHgwDhRwjV65m0jQZy4QPSVX/PG+gqdkBbVdn1dPy8nuB6pmyQnk/7k6KknH0KPzSR3
-         pCHP+3bYdximpyA9EYFzkedAUVlKA0bkBmJ1C5e8CZI4F5JUGeMK+cyX0iEfXqd1S7nH
-         FP0A==
-X-Gm-Message-State: AOAM531spZEuApyUb4T9QxaLIMAJaNY9UXRqLlhTeG2UAyhTwt29Xgyk
-        hBcwuH3dRpVYWLq0utTmR3M=
-X-Google-Smtp-Source: ABdhPJzaSEUP15ABwV/65132kurRfLzuYpf1pIoVwXe7KXDzHN2cJK9ECwD4cIJsOIPhwzVXnMVRuQ==
-X-Received: by 2002:a17:90a:4297:: with SMTP id p23mr10594796pjg.213.1612770885436;
-        Sun, 07 Feb 2021 23:54:45 -0800 (PST)
-Received: from an990131127 (42-72-181-6.emome-ip.hinet.net. [42.72.181.6])
-        by smtp.gmail.com with ESMTPSA id b24sm15106613pjp.12.2021.02.07.23.54.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 07 Feb 2021 23:54:44 -0800 (PST)
-From:   Shuhao Mai <shuhao.mai.1990@gmail.com>
-To:     Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Shuhao Mai <shuhao.mai.1990@gmail.com>
-Subject: [PATCH v2] mtd: spi-nor: winbond: Add support for w25q512jvq
-Date:   Mon,  8 Feb 2021 15:53:03 +0800
-Message-Id: <20210208075303.4200-1-shuhao.mai.1990@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201111014556.6579-1-shuhao.mai.1990@gmail.com>
-References: <20201111014556.6579-1-shuhao.mai.1990@gmail.com>
+        Mon, 8 Feb 2021 02:55:28 -0500
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id ADFD21C0B76; Mon,  8 Feb 2021 08:54:43 +0100 (CET)
+Date:   Mon, 8 Feb 2021 08:54:43 +0100
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Colin King <colin.king@canonical.com>
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Kevin Hilman <khilman@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Len Brown <len.brown@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Marc Titinger <mtitinger+renesas@baylibre.com>,
+        Lina Iyer <lina.iyer@linaro.org>, linux-pm@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] PM / Domains: Fix integer overflows on u32 bit multiplies
+Message-ID: <20210208075442.GA13982@amd>
+References: <20210207224648.8137-1-colin.king@canonical.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="XsQoSWH+UP9D9v3l"
+Content-Disposition: inline
+In-Reply-To: <20210207224648.8137-1-colin.king@canonical.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for w25q512jvq. This is of the same series chip with
-w25q256jv, which is already supported, but with size doubled and
-different JEDEC ID.
 
-Tested on Intel whitley platform with dd from/to the flash for
-read/write respectly, and flash_erase for erasing the flash.
+--XsQoSWH+UP9D9v3l
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Shuhao Mai <shuhao.mai.1990@gmail.com>
----
- drivers/mtd/spi-nor/winbond.c | 2 ++
- 1 file changed, 2 insertions(+)
+On Sun 2021-02-07 22:46:48, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+>=20
+> There are three occurrances of u32 variables being multiplied by
+> 1000 using 32 bit multiplies and the result being assigned to a
+> 64 bit signed integer.  These can potentially lead to a 32 bit
+> overflows, so fix this by casting 1000 to a UL first to force
+> a 64 bit multiply hence avoiding the overflow.
 
-diff --git a/drivers/mtd/spi-nor/winbond.c b/drivers/mtd/spi-nor/winbond.c
-index e5dfa786f190..b1d307fcdf9c 100644
---- a/drivers/mtd/spi-nor/winbond.c
-+++ b/drivers/mtd/spi-nor/winbond.c
-@@ -97,6 +97,8 @@ static const struct flash_info winbond_parts[] = {
- 			     SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
- 	{ "w25m512jv", INFO(0xef7119, 0, 64 * 1024, 1024,
- 			    SECT_4K | SPI_NOR_QUAD_READ | SPI_NOR_DUAL_READ) },
-+	{ "w25q512jvq", INFO(0xef4020, 0, 64 * 1024, 1024,
-+			     SECT_4K | SPI_NOR_QUAD_READ | SPI_NOR_DUAL_READ) },
- };
- 
- /**
--- 
-2.20.1
+Ummm. No?
 
+a) Can you imagine any situation where they result in overflow?
+
+b) How does casting to UL help on 32 bit system?
+
+Best regards,
+
+								Pavel
+
+> Addresses-Coverity: ("Unintentional integer overflow")
+> Fixes: 30f604283e05 ("PM / Domains: Allow domain power states to be read =
+=66rom DT")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
+>  drivers/base/power/domain.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+>=20
+> diff --git a/drivers/base/power/domain.c b/drivers/base/power/domain.c
+> index aaf6c83b5cf6..ddeff69126ff 100644
+> --- a/drivers/base/power/domain.c
+> +++ b/drivers/base/power/domain.c
+> @@ -2831,10 +2831,10 @@ static int genpd_parse_state(struct genpd_power_s=
+tate *genpd_state,
+> =20
+>  	err =3D of_property_read_u32(state_node, "min-residency-us", &residency=
+);
+>  	if (!err)
+> -		genpd_state->residency_ns =3D 1000 * residency;
+> +		genpd_state->residency_ns =3D 1000UL * residency;
+> =20
+> -	genpd_state->power_on_latency_ns =3D 1000 * exit_latency;
+> -	genpd_state->power_off_latency_ns =3D 1000 * entry_latency;
+> +	genpd_state->power_on_latency_ns =3D 1000UL * exit_latency;
+> +	genpd_state->power_off_latency_ns =3D 1000UL * entry_latency;
+>  	genpd_state->fwnode =3D &state_node->fwnode;
+> =20
+>  	return 0;
+
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--XsQoSWH+UP9D9v3l
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAmAg7kIACgkQMOfwapXb+vKDiQCgkJZyxGlRaw1dIv7Thley0C+0
+qkIAn3HsqdmQXesDf9whJPhztRMkU4lx
+=WTDB
+-----END PGP SIGNATURE-----
+
+--XsQoSWH+UP9D9v3l--
