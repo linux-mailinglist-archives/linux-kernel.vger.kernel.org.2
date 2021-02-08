@@ -2,70 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B451E3129B4
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 05:20:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77A393129A7
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 05:14:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229725AbhBHEQy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Feb 2021 23:16:54 -0500
-Received: from m12-14.163.com ([220.181.12.14]:37843 "EHLO m12-14.163.com"
+        id S229629AbhBHENz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Feb 2021 23:13:55 -0500
+Received: from bilbo.ozlabs.org ([203.11.71.1]:41769 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229590AbhBHEQr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Feb 2021 23:16:47 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=3PjaSyTPIF/0eA0o6d
-        2SeGzWaUYGs51QsvtN6khf1pE=; b=QlscQxfQYcjauD2p8tY0SBGqexmoXtdBDm
-        C+QVwbzMOMBr0vaC1c7+3EmezDraM12EyrjIB8cstwGXYrVHyYRtUGCZ8/cJ9JGF
-        ki7jfbhluAuw6OCt1jw8rmZZ4vsDPqmbnYJU728GuDljyOJG7aVETd0XJAuMKWPC
-        Y67im/QbQ=
-Received: from wengjianfeng.ccdomain.com (unknown [119.137.53.134])
-        by smtp10 (Coremail) with SMTP id DsCowAA303CepCBg1rL5jw--.655S2;
-        Mon, 08 Feb 2021 10:40:32 +0800 (CST)
-From:   samirweng1979 <samirweng1979@163.com>
-To:     amitkarwar@gmail.com, siva8118@gmail.com, kvalo@codeaurora.org,
-        davem@davemloft.net, kuba@kernel.org
-Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        wengjianfeng <wengjianfeng@yulong.com>
-Subject: [PATCH RESEND] rsi: remove redundant assignment
-Date:   Mon,  8 Feb 2021 10:40:29 +0800
-Message-Id: <20210208024029.24412-1-samirweng1979@163.com>
-X-Mailer: git-send-email 2.15.0.windows.1
-X-CM-TRANSID: DsCowAA303CepCBg1rL5jw--.655S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrtrWxWF1kZw1xWw1fKF4UJwb_yoW3Krb_ur
-        10qF4fWrWkG3W8Kryj9FW3Zr9Iya4UW3WrGw4qq3yfGryUtrZxAw15Crn3J3yDG34jvr9x
-        Gws7uryIva43ujkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUeg6pDUUUUU==
-X-Originating-IP: [119.137.53.134]
-X-CM-SenderInfo: pvdpx25zhqwiqzxzqiywtou0bp/1tbiHQAzsVSIpToy4wAAsN
+        id S229537AbhBHENv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Feb 2021 23:13:51 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DYt0t66nsz9sVF;
+        Mon,  8 Feb 2021 15:13:02 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1612757588;
+        bh=OO7xGWmsUnuYQgc3bx44I7oadxiJ3c+qloWk8zo8s/E=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=SQsvL45jlKpqUCEP8e1n03m12ASsrcsFM4rulmGn0o0JHZVPyDkisCyaZygcFW+w/
+         o+aNZskRfsTmGwMpW337LVHKl/7fzsO7W/0NkNFfBpab7Nq/iTWuLQYB5o7WrlGlgR
+         vrm9InatVSOATOiUKFPVdFYZ1JXjJqQkTzJjF+50Dkp6/IBYDj8ZWuJoomQ79smix5
+         Jb09M2DIY7piouMND8uNftwaBdOiAx0C8HFgF5ekV/3yH2poxd2WulSITdHQwwW01E
+         tXf52460TJkHIrDDaHHGbop5tjAoaZRaWZb+tWdI8YhTvmkDE9J66esGpcdkyVyXAX
+         oUG7BiZkbIKyw==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Rob Herring <robh@kernel.org>,
+        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Cc:     Mimi Zohar <zohar@linux.ibm.com>,
+        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
+        "AKASHI, Takahiro" <takahiro.akashi@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Will Deacon <will@kernel.org>, Joe Perches <joe@perches.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        vincenzo.frascino@arm.com, Mark Rutland <mark.rutland@arm.com>,
+        dmitry.kasatkin@gmail.com, James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Allison Randal <allison@lohutok.net>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Bhupesh Sharma <bhsharma@redhat.com>,
+        Matthias Brugger <mbrugger@suse.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>, tao.li@vivo.com,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Prakhar Srivastava <prsriva@linux.microsoft.com>,
+        balajib@linux.microsoft.com, linux-integrity@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        devicetree@vger.kernel.org,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+Subject: Re: [PATCH v16 11/12] powerpc: Use OF alloc and free for FDT
+In-Reply-To: <CAL_JsqK1Pb9nAeL84EP2U3MQgpBsm+E_0QXmzbigWXnS245WPQ@mail.gmail.com>
+References: <20210204164135.29856-1-nramas@linux.microsoft.com>
+ <20210204164135.29856-12-nramas@linux.microsoft.com>
+ <CAL_JsqK1Pb9nAeL84EP2U3MQgpBsm+E_0QXmzbigWXnS245WPQ@mail.gmail.com>
+Date:   Mon, 08 Feb 2021 15:12:59 +1100
+Message-ID: <87zh0fnqno.fsf@mpe.ellerman.id.au>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: wengjianfeng <wengjianfeng@yulong.com>
+Rob Herring <robh@kernel.org> writes:
+> On Thu, Feb 4, 2021 at 10:42 AM Lakshmi Ramasubramanian
+> <nramas@linux.microsoft.com> wrote:
+...
+>> diff --git a/arch/powerpc/kexec/elf_64.c b/arch/powerpc/kexec/elf_64.c
+>> index d0e459bb2f05..51d2d8eb6c1b 100644
+>> --- a/arch/powerpc/kexec/elf_64.c
+>> +++ b/arch/powerpc/kexec/elf_64.c
+>> @@ -19,6 +19,7 @@
+>>  #include <linux/kexec.h>
+>>  #include <linux/libfdt.h>
+>>  #include <linux/module.h>
+>> +#include <linux/of.h>
+>>  #include <linux/of_fdt.h>
+>>  #include <linux/slab.h>
+>>  #include <linux/types.h>
+>> @@ -32,7 +33,7 @@ static void *elf64_load(struct kimage *image, char *kernel_buf,
+>>         unsigned int fdt_size;
+>>         unsigned long kernel_load_addr;
+>>         unsigned long initrd_load_addr = 0, fdt_load_addr;
+>> -       void *fdt;
+>> +       void *fdt = NULL;
+>>         const void *slave_code;
+>>         struct elfhdr ehdr;
+>>         char *modified_cmdline = NULL;
+>> @@ -103,18 +104,12 @@ static void *elf64_load(struct kimage *image, char *kernel_buf,
+>>         }
+>>
+>>         fdt_size = fdt_totalsize(initial_boot_params) * 2;
+>> -       fdt = kmalloc(fdt_size, GFP_KERNEL);
+>> +       fdt = of_alloc_and_init_fdt(fdt_size);
+>>         if (!fdt) {
+>>                 pr_err("Not enough memory for the device tree.\n");
+>>                 ret = -ENOMEM;
+>>                 goto out;
+>>         }
+>> -       ret = fdt_open_into(initial_boot_params, fdt, fdt_size);
+>> -       if (ret < 0) {
+>> -               pr_err("Error setting up the new device tree.\n");
+>> -               ret = -EINVAL;
+>> -               goto out;
+>> -       }
+>>
+>>         ret = setup_new_fdt_ppc64(image, fdt, initrd_load_addr,
+>
+> The first thing this function does is call setup_new_fdt() which first
+> calls of_kexec_setup_new_fdt(). (Note, I really don't understand the
+> PPC code split. It looks like there's a 32-bit and 64-bit split, but
+> 32-bit looks broken to me. Nothing ever calls setup_new_fdt() except
+> setup_new_fdt_ppc64()).
 
-INVALID_QUEUE has been used as a return value,it is not necessary to
-assign it to q_num,so just return INVALID_QUEUE.
+I think that's because 32-bit doesn't support kexec_file_load().
 
-Signed-off-by: wengjianfeng <wengjianfeng@yulong.com>
----
- drivers/net/wireless/rsi/rsi_91x_core.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/drivers/net/wireless/rsi/rsi_91x_core.c b/drivers/net/wireless/rsi/rsi_91x_core.c
-index 2d49c5b..a48e616 100644
---- a/drivers/net/wireless/rsi/rsi_91x_core.c
-+++ b/drivers/net/wireless/rsi/rsi_91x_core.c
-@@ -193,8 +193,7 @@ static u8 rsi_core_determine_hal_queue(struct rsi_common *common)
- 		if (recontend_queue)
- 			goto get_queue_num;
- 
--		q_num = INVALID_QUEUE;
--		return q_num;
-+		return INVALID_QUEUE;
- 	}
- 
- 	common->selected_qnum = q_num;
--- 
-1.9.1
-
-
+cheers
