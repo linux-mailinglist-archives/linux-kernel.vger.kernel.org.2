@@ -2,422 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A307314434
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 00:44:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51878314430
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 00:43:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231209AbhBHXnc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 18:43:32 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:53283 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230071AbhBHXlR (ORCPT
+        id S231649AbhBHXlv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 18:41:51 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:59102 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231438AbhBHXlB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 18:41:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612827589;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=gE9U5BslqCar72kVEWsclaxt7xAzUfHLFCjpahn4dKk=;
-        b=fAFZgq7DZmLW06BN6f5C2Xv2aYI+EvLrk5JMVj2BcCUY/wSBZqS8qc53D+HIa6/e40iYyS
-        YTmReHXnqy5QW8eNo8t0YlfY+4TX+SEnNHaITyp5nMXwSn8TsyjGZu9jndwNCYiOF7H2aS
-        X+cAhDdsSZ+s1+YU1kRW/dKOrkQA8vE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-434-xGYuc_3bN2eggmu2PhXpnA-1; Mon, 08 Feb 2021 18:39:43 -0500
-X-MC-Unique: xGYuc_3bN2eggmu2PhXpnA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0FDF280402C;
-        Mon,  8 Feb 2021 23:39:42 +0000 (UTC)
-Received: from Whitewolf.redhat.com (ovpn-114-219.rdu2.redhat.com [10.10.114.219])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id BDC1B608DB;
-        Mon,  8 Feb 2021 23:39:40 +0000 (UTC)
-From:   Lyude Paul <lyude@redhat.com>
-To:     dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
-        intel-gfx@lists.freedesktop.org
-Cc:     Jani Nikula <jani.nikula@intel.com>,
-        Dave Airlie <airlied@gmail.com>, greg.depoire@gmail.com,
-        Ben Skeggs <bskeggs@redhat.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dave Airlie <airlied@redhat.com>,
-        Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
-        James Jones <jajones@nvidia.com>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [RFC v4 11/11] drm/nouveau/kms/nv50-: Add basic DPCD backlight support for nouveau
-Date:   Mon,  8 Feb 2021 18:39:01 -0500
-Message-Id: <20210208233902.1289693-12-lyude@redhat.com>
-In-Reply-To: <20210208233902.1289693-1-lyude@redhat.com>
-References: <20210208233902.1289693-1-lyude@redhat.com>
+        Mon, 8 Feb 2021 18:41:01 -0500
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 118NVBP1013790
+        for <linux-kernel@vger.kernel.org>; Mon, 8 Feb 2021 15:40:20 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=5kaplF3H6MDlvAZ2lzWWCei5T1sHu1BmlA/Lbu0P3P8=;
+ b=pUCEm5DI9m8PSaeILQI6nJSZviqtXQO3yfCs7gc2E0R9An/4NRRmvC/NRXPWykU0MZiv
+ 08FXt8OVR9g4FkdwOjJzCnKwq167L/FjbSNMykPLzD8QIh2C9QeO9sK11ubHU7UvdHIF
+ Ls+/40+q2Drg7fPKhy+aCHVjcbaabHJJ6nk= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 36jy96n03v-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 15:40:20 -0800
+Received: from intmgw001.06.ash9.facebook.com (2620:10d:c085:108::8) by
+ mail.thefacebook.com (2620:10d:c085:11d::4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Mon, 8 Feb 2021 15:40:18 -0800
+Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
+        id 94BAE62E0971; Mon,  8 Feb 2021 15:40:11 -0800 (PST)
+From:   Song Liu <songliubraving@fb.com>
+To:     <linux-kernel@vger.kernel.org>
+CC:     <bpf@vger.kernel.org>, Song Liu <songliubraving@fb.com>,
+        Andy Whitcroft <apw@canonical.com>,
+        Joe Perches <joe@perches.com>
+Subject: [PATCH] checkpatch: do not apply "initialise globals to 0" check to BPF progs
+Date:   Mon, 8 Feb 2021 15:40:02 -0800
+Message-ID: <20210208234002.3294265-1-songliubraving@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-02-08_16:2021-02-08,2021-02-08 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ malwarescore=0 mlxscore=0 phishscore=0 mlxlogscore=644 clxscore=1015
+ impostorscore=0 lowpriorityscore=0 suspectscore=0 spamscore=0 bulkscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102080130
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds support for controlling panel backlights over eDP using VESA's
-standard backlight control interface. Luckily, Nvidia was cool enough to
-never come up with their own proprietary backlight control interface (at
-least, not any that I or the laptop manufacturers I've talked to are aware
-of), so this should work for any laptop panels which support the VESA
-backlight control interface.
+BPF programs explicitly initialise global variables to 0 to make sure
+clang (v10 or older) do not put the variables in the common section.
+Skip "initialise globals to 0" check for BPF programs to elimiate error
+messages like:
 
-Note that we don't yet provide the panel backlight frequency to the DRM DP
-backlight helpers. This should be fine for the time being, since it's not
-required to get basic backlight controls working.
+    ERROR: do not initialise globals to 0
+    #19: FILE: samples/bpf/tracex1_kern.c:21:
 
-For reference: there's some mentions of PWM backlight values in
-nouveau_reg.h, but I'm not sure these are the values we would want to use.
-If we figure out how to get this information in the future, we'll have the
-benefit of more granular backlight control.
-
-Signed-off-by: Lyude Paul <lyude@redhat.com>
-Cc: Jani Nikula <jani.nikula@intel.com>
-Cc: Dave Airlie <airlied@gmail.com>
-Cc: greg.depoire@gmail.com
+Cc: Andy Whitcroft <apw@canonical.com>
+Cc: Joe Perches <joe@perches.com>
+Signed-off-by: Song Liu <songliubraving@fb.com>
 ---
- drivers/gpu/drm/nouveau/dispnv50/disp.c     |  28 ++++
- drivers/gpu/drm/nouveau/nouveau_backlight.c | 166 ++++++++++++++++++--
- drivers/gpu/drm/nouveau/nouveau_connector.h |   9 +-
- drivers/gpu/drm/nouveau/nouveau_encoder.h   |   1 +
- 4 files changed, 186 insertions(+), 18 deletions(-)
+ scripts/checkpatch.pl | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/nouveau/dispnv50/disp.c b/drivers/gpu/drm/nouveau/dispnv50/disp.c
-index 196612addfd6..4a1819b02084 100644
---- a/drivers/gpu/drm/nouveau/dispnv50/disp.c
-+++ b/drivers/gpu/drm/nouveau/dispnv50/disp.c
-@@ -31,6 +31,7 @@
- #include <linux/dma-mapping.h>
- #include <linux/hdmi.h>
- #include <linux/component.h>
-+#include <linux/iopoll.h>
- 
- #include <drm/drm_atomic.h>
- #include <drm/drm_atomic_helper.h>
-@@ -1647,15 +1648,30 @@ nv50_sor_update(struct nouveau_encoder *nv_encoder, u8 head,
- 	core->func->sor->ctrl(core, nv_encoder->or, nv_encoder->ctrl, asyh);
- }
- 
-+/* TODO: Should we extend this to PWM-only backlights?
-+ * As well, should we add a DRM helper for waiting for the backlight to acknowledge
-+ * the panel backlight has been shut off? Intel doesn't seem to do this, and uses a
-+ * fixed time delay from the vbios…
-+ */
- static void
- nv50_sor_atomic_disable(struct drm_encoder *encoder, struct drm_atomic_state *state)
- {
- 	struct nouveau_encoder *nv_encoder = nouveau_encoder(encoder);
-+	struct nouveau_drm *drm = nouveau_drm(nv_encoder->base.base.dev);
- 	struct nouveau_crtc *nv_crtc = nouveau_crtc(nv_encoder->crtc);
- 	struct nouveau_connector *nv_connector = nv50_outp_get_old_connector(state, nv_encoder);
-+	struct nouveau_backlight *backlight = nv_connector->backlight;
- 	struct drm_dp_aux *aux = &nv_connector->aux;
-+	int ret;
- 	u8 pwr;
- 
-+	if (backlight && backlight->uses_dpcd) {
-+		ret = drm_edp_backlight_disable(aux, &backlight->edp_info);
-+		if (ret < 0)
-+			NV_ERROR(drm, "Failed to disable backlight on [CONNECTOR:%d:%s]: %d\n",
-+				 nv_connector->base.base.id, nv_connector->base.name, ret);
-+	}
-+
- 	if (nv_encoder->dcb->type == DCB_OUTPUT_DP) {
- 		int ret = drm_dp_dpcd_readb(aux, DP_SET_POWER, &pwr);
- 
-@@ -1694,6 +1710,9 @@ nv50_sor_atomic_enable(struct drm_encoder *encoder, struct drm_atomic_state *sta
- 	struct drm_device *dev = encoder->dev;
- 	struct nouveau_drm *drm = nouveau_drm(dev);
- 	struct nouveau_connector *nv_connector;
-+#ifdef CONFIG_DRM_NOUVEAU_BACKLIGHT
-+	struct nouveau_backlight *backlight;
-+#endif
- 	struct nvbios *bios = &drm->vbios;
- 	bool hda = false;
- 	u8 proto = NV507D_SOR_SET_CONTROL_PROTOCOL_CUSTOM;
-@@ -1768,6 +1787,14 @@ nv50_sor_atomic_enable(struct drm_encoder *encoder, struct drm_atomic_state *sta
- 			proto = NV887D_SOR_SET_CONTROL_PROTOCOL_DP_B;
- 
- 		nv50_audio_enable(encoder, nv_crtc, nv_connector, state, mode);
-+
-+#ifdef CONFIG_DRM_NOUVEAU_BACKLIGHT
-+		backlight = nv_connector->backlight;
-+		if (backlight && backlight->uses_dpcd)
-+			drm_edp_backlight_enable(&nv_connector->aux, &backlight->edp_info,
-+						 (u16)backlight->dev->props.brightness);
-+#endif
-+
- 		break;
- 	default:
- 		BUG();
-@@ -2293,6 +2320,7 @@ nv50_disp_atomic_commit_tail(struct drm_atomic_state *state)
- 	nv50_crc_atomic_start_reporting(state);
- 	if (!flushed)
- 		nv50_crc_atomic_release_notifier_contexts(state);
-+
- 	drm_atomic_helper_commit_hw_done(state);
- 	drm_atomic_helper_cleanup_planes(dev, state);
- 	drm_atomic_helper_commit_cleanup_done(state);
-diff --git a/drivers/gpu/drm/nouveau/nouveau_backlight.c b/drivers/gpu/drm/nouveau/nouveau_backlight.c
-index 42b498e7e2bf..a11811b5e63e 100644
---- a/drivers/gpu/drm/nouveau/nouveau_backlight.c
-+++ b/drivers/gpu/drm/nouveau/nouveau_backlight.c
-@@ -42,11 +42,6 @@
- static struct ida bl_ida;
- #define BL_NAME_SIZE 15 // 12 for name + 2 for digits + 1 for '\0'
- 
--struct nouveau_backlight {
--	struct backlight_device *dev;
--	int id;
--};
--
- static bool
- nouveau_get_backlight_name(char backlight_name[BL_NAME_SIZE],
- 			   struct nouveau_backlight *bl)
-@@ -147,6 +142,98 @@ static const struct backlight_ops nv50_bl_ops = {
- 	.update_status = nv50_set_intensity,
- };
- 
-+/*
-+ * eDP brightness callbacks need to happen under lock, since we need to
-+ * enable/disable the backlight ourselves for modesets
-+ */
-+static int
-+nv50_edp_get_brightness(struct backlight_device *bd)
-+{
-+	struct drm_connector *connector = dev_get_drvdata(bd->dev.parent);
-+	struct drm_device *dev = connector->dev;
-+	struct drm_crtc *crtc;
-+	struct drm_modeset_acquire_ctx ctx;
-+	int ret = 0;
-+
-+	drm_modeset_acquire_init(&ctx, 0);
-+
-+retry:
-+	ret = drm_modeset_lock(&dev->mode_config.connection_mutex, &ctx);
-+	if (ret == -EDEADLK)
-+		goto deadlock;
-+	else if (ret < 0)
-+		goto out;
-+
-+	crtc = connector->state->crtc;
-+	if (!crtc)
-+		goto out;
-+
-+	ret = drm_modeset_lock(&crtc->mutex, &ctx);
-+	if (ret == -EDEADLK)
-+		goto deadlock;
-+	else if (ret < 0)
-+		goto out;
-+
-+	if (!crtc->state->active)
-+		goto out;
-+
-+	ret = bd->props.brightness;
-+out:
-+	drm_modeset_drop_locks(&ctx);
-+	drm_modeset_acquire_fini(&ctx);
-+	return ret;
-+deadlock:
-+	drm_modeset_backoff(&ctx);
-+	goto retry;
-+}
-+
-+static int
-+nv50_edp_set_brightness(struct backlight_device *bd)
-+{
-+	struct drm_connector *connector = dev_get_drvdata(bd->dev.parent);
-+	struct nouveau_connector *nv_connector = nouveau_connector(connector);
-+	struct drm_device *dev = connector->dev;
-+	struct drm_crtc *crtc;
-+	struct drm_dp_aux *aux = &nv_connector->aux;
-+	struct nouveau_backlight *nv_bl = nv_connector->backlight;
-+	struct drm_modeset_acquire_ctx ctx;
-+	int ret = 0;
-+
-+	drm_modeset_acquire_init(&ctx, 0);
-+retry:
-+	ret = drm_modeset_lock(&dev->mode_config.connection_mutex, &ctx);
-+	if (ret == -EDEADLK)
-+		goto deadlock;
-+	else if (ret < 0)
-+		goto out;
-+
-+	crtc = connector->state->crtc;
-+	if (!crtc)
-+		goto out;
-+
-+	ret = drm_modeset_lock(&crtc->mutex, &ctx);
-+	if (ret == -EDEADLK)
-+		goto deadlock;
-+	else if (ret < 0)
-+		goto out;
-+
-+	if (crtc->state->active)
-+		ret = drm_edp_backlight_set_level(aux, &nv_bl->edp_info, bd->props.brightness);
-+
-+out:
-+	drm_modeset_drop_locks(&ctx);
-+	drm_modeset_acquire_fini(&ctx);
-+	return ret;
-+deadlock:
-+	drm_modeset_backoff(&ctx);
-+	goto retry;
-+}
-+
-+static const struct backlight_ops nv50_edp_bl_ops = {
-+	.get_brightness = nv50_edp_get_brightness,
-+	.update_status = nv50_edp_set_brightness,
-+};
-+
- static int
- nva3_get_intensity(struct backlight_device *bd)
- {
-@@ -193,8 +280,13 @@ static const struct backlight_ops nva3_bl_ops = {
- 	.update_status = nva3_set_intensity,
- };
- 
-+/* FIXME: perform backlight probing for eDP _before_ this, this only gets called after connector
-+ * registration which happens after the initial modeset
-+ */
- static int
--nv50_backlight_init(struct nouveau_encoder *nv_encoder,
-+nv50_backlight_init(struct nouveau_backlight *bl,
-+		    struct nouveau_connector *nv_conn,
-+		    struct nouveau_encoder *nv_encoder,
- 		    struct backlight_properties *props,
- 		    const struct backlight_ops **ops)
- {
-@@ -204,6 +296,41 @@ nv50_backlight_init(struct nouveau_encoder *nv_encoder,
- 	if (!nvif_rd32(device, NV50_PDISP_SOR_PWM_CTL(ffs(nv_encoder->dcb->or) - 1)))
- 		return -ENODEV;
- 
-+	if (nv_conn->type == DCB_CONNECTOR_eDP) {
-+		int ret;
-+		u16 current_level;
-+		u8 edp_dpcd[EDP_DISPLAY_CTL_CAP_SIZE];
-+		u8 current_mode;
-+
-+		ret = drm_dp_dpcd_read(&nv_conn->aux, DP_EDP_DPCD_REV, edp_dpcd,
-+				       EDP_DISPLAY_CTL_CAP_SIZE);
-+		if (ret < 0)
-+			return ret;
-+
-+		if (drm_edp_backlight_supported(edp_dpcd)) {
-+			NV_DEBUG(drm, "DPCD backlight controls supported on %s\n",
-+				 nv_conn->base.name);
-+
-+			ret = drm_edp_backlight_init(&nv_conn->aux, &bl->edp_info, 0, edp_dpcd,
-+						     &current_level, &current_mode);
-+			if (ret < 0)
-+				return ret;
-+
-+			ret = drm_edp_backlight_enable(&nv_conn->aux, &bl->edp_info, current_level);
-+			if (ret < 0) {
-+				NV_ERROR(drm, "Failed to enable backlight on %s: %d\n",
-+					 nv_conn->base.name, ret);
-+				return ret;
-+			}
-+
-+			*ops = &nv50_edp_bl_ops;
-+			props->brightness = current_level;
-+			props->max_brightness = bl->edp_info.max;
-+			bl->uses_dpcd = true;
-+			return 0;
-+		}
-+	}
-+
- 	if (drm->client.device.info.chipset <= 0xa0 ||
- 	    drm->client.device.info.chipset == 0xaa ||
- 	    drm->client.device.info.chipset == 0xac)
-@@ -243,6 +370,10 @@ nouveau_backlight_init(struct drm_connector *connector)
- 	if (!nv_encoder)
- 		return 0;
- 
-+	bl = kzalloc(sizeof(*bl), GFP_KERNEL);
-+	if (!bl)
-+		return -ENOMEM;
-+
- 	switch (device->info.family) {
- 	case NV_DEVICE_INFO_V0_CURIE:
- 		ret = nv40_backlight_init(nv_encoder, &props, &ops);
-@@ -255,20 +386,19 @@ nouveau_backlight_init(struct drm_connector *connector)
- 	case NV_DEVICE_INFO_V0_VOLTA:
- 	case NV_DEVICE_INFO_V0_TURING:
- 	case NV_DEVICE_INFO_V0_AMPERE: //XXX: not confirmed
--		ret = nv50_backlight_init(nv_encoder, &props, &ops);
-+		ret = nv50_backlight_init(bl, nouveau_connector(connector),
-+					  nv_encoder, &props, &ops);
- 		break;
- 	default:
--		return 0;
-+		ret = 0;
-+		goto fail_alloc;
- 	}
- 
--	if (ret == -ENODEV)
--		return 0;
--	else if (ret)
--		return ret;
--
--	bl = kzalloc(sizeof(*bl), GFP_KERNEL);
--	if (!bl)
--		return -ENOMEM;
-+	if (ret) {
-+		if (ret == -ENODEV)
-+			ret = 0;
-+		goto fail_alloc;
-+	}
- 
- 	if (!nouveau_get_backlight_name(backlight_name, bl)) {
- 		NV_ERROR(drm, "Failed to retrieve a unique name for the backlight interface\n");
-@@ -285,7 +415,9 @@ nouveau_backlight_init(struct drm_connector *connector)
- 	}
- 
- 	nouveau_connector(connector)->backlight = bl;
--	bl->dev->props.brightness = bl->dev->ops->get_brightness(bl->dev);
-+	if (!bl->dev->props.brightness)
-+		bl->dev->props.brightness =
-+			bl->dev->ops->get_brightness(bl->dev);
- 	backlight_update_status(bl->dev);
- 
- 	return 0;
-diff --git a/drivers/gpu/drm/nouveau/nouveau_connector.h b/drivers/gpu/drm/nouveau/nouveau_connector.h
-index d0b859c4a80e..40f90e353540 100644
---- a/drivers/gpu/drm/nouveau/nouveau_connector.h
-+++ b/drivers/gpu/drm/nouveau/nouveau_connector.h
-@@ -46,7 +46,14 @@ struct nvkm_i2c_port;
- struct dcb_output;
- 
- #ifdef CONFIG_DRM_NOUVEAU_BACKLIGHT
--struct nouveau_backlight;
-+struct nouveau_backlight {
-+	struct backlight_device *dev;
-+
-+	struct drm_edp_backlight_info edp_info;
-+	bool uses_dpcd : 1;
-+
-+	int id;
-+};
- #endif
- 
- #define nouveau_conn_atom(p)                                                   \
-diff --git a/drivers/gpu/drm/nouveau/nouveau_encoder.h b/drivers/gpu/drm/nouveau/nouveau_encoder.h
-index 1ffcc0a491fd..77c2fed76e8b 100644
---- a/drivers/gpu/drm/nouveau/nouveau_encoder.h
-+++ b/drivers/gpu/drm/nouveau/nouveau_encoder.h
-@@ -30,6 +30,7 @@
- #include <subdev/bios/dcb.h>
- 
- #include <drm/drm_encoder_slave.h>
-+#include <drm/drm_dp_helper.h>
- #include <drm/drm_dp_mst_helper.h>
- #include "dispnv04/disp.h"
- struct nv50_head_atom;
--- 
-2.29.2
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 1afe3af1cc097..24d1856187651 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -4323,7 +4323,11 @@ sub process {
+ 		}
+=20
+ # check for global initialisers.
+-		if ($line =3D~ /^\+$Type\s*$Ident(?:\s+$Modifier)*\s*=3D\s*($zero_init=
+ializer)\s*;/) {
++# Do not apply to BPF programs (tools/testing/selftests/bpf/progs/*.c, s=
+amples/bpf/*_kern.c, *.bpf.c).
++		if ($line =3D~ /^\+$Type\s*$Ident(?:\s+$Modifier)*\s*=3D\s*($zero_init=
+ializer)\s*;/ &&
++		    $realfile !~ /^tools\/testing\/selftests\/bpf\/progs\/.*\.c/ &&
++		    $realfile !~ /^samples\/bpf\/.*_kern.c/ &&
++		    $realfile !~ /.bpf.c$/) {
+ 			if (ERROR("GLOBAL_INITIALISERS",
+ 				  "do not initialise globals to $1\n" . $herecurr) &&
+ 			    $fix) {
+--=20
+2.24.1
 
