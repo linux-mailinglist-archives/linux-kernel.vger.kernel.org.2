@@ -2,102 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9F2C312F32
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 11:39:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9861312F37
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 11:41:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232487AbhBHKj3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 05:39:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47444 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232439AbhBHK26 (ORCPT
+        id S232571AbhBHKky (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 05:40:54 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:22273 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231933AbhBHKab (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 05:28:58 -0500
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFC29C06178B
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 02:28:03 -0800 (PST)
-Received: by mail-pg1-x52e.google.com with SMTP id j5so1113953pgb.11
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 02:28:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HTp7udRkA3dd9a95DV07tgoiccHtwyBSjPKDtzZunfo=;
-        b=e0Tn0I9XipZXByn0gqAsbWHGHwvggsizgJKiSlTjUCw6e26/D4lxqNzturp76cfDzY
-         aPf72M1s2NE+7EZu81q/TMpPlh6nHZ6YJVgginoB8q6iubUk/4eEqN39psNOdFb3qQUL
-         6nX+swa3yUsWz++0cCXzfXFw44RFcrxfJ4vjVug4PC1zOe0bLnvjQXkdYmkWXbyDth6X
-         r3Cxbxe+fYEvLjMk+KmOhnpYYScKA/PgBRTr1V17mcoOM3ZaugAO2poZljsOZiRfPHn1
-         ZYcphn3COqjQ0aR0PQnaLBgJ5KUjRQN8MF9LyOrliQCmgkW79IgQR8ZWaou0AA0rLzp9
-         p57w==
+        Mon, 8 Feb 2021 05:30:31 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612780143;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=oi2Zi1UN4j9vTbRbY531ctfakDSWbSXduwEmeokxKAw=;
+        b=JVyTLbSARhrwoCcb6tKvT3tcID08/teV173a5Qh2zcoizkkD93GNdEAAhrvNTVwu6Vq1Bo
+        BJ9kOBywMiX2IH0Gt9fkSqyk8GBcZqJl6CJJcBD/23AD9ou5hZ9TSCsGaIfpGo4v3mpWdl
+        79EE4/hfAWOtqh8py2A1ewiNFHhzvSY=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-492-e5VdOWuFP86K1RgZBmGP3w-1; Mon, 08 Feb 2021 05:29:01 -0500
+X-MC-Unique: e5VdOWuFP86K1RgZBmGP3w-1
+Received: by mail-ej1-f72.google.com with SMTP id 7so1385844ejh.10
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 02:29:01 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HTp7udRkA3dd9a95DV07tgoiccHtwyBSjPKDtzZunfo=;
-        b=NFLwkgdqOpxz8ndb21oOXOWaqhdlGxsmn4q73Aa7yXsjxtx9Wn8UnVC7Kqso6duzUp
-         WPZii20gmzT/M6BaACVsGtRk0Djp4GDCz6zA7jt7Z80Bx7vLtxoqDP5ALMTUJ3OEuRfT
-         FtkcVMSEy6hRso77kyeafn48N8Wh5N963YOS2fx7cI+fyctN8wYG7r8HZa8+c8FW2jta
-         NUWv9ou5J/MBXtDPPqdZXOGtxe6nlpstZzozYS8JFU8+5/RnLeANwHHcXthf1P/CGJ6w
-         vOfZ6+XioXAZLSNXlXJq973oPfbj7c3rz7oqU9k4/8lw/ncFHjbJ1qXcLBpewFU61kfn
-         LE/g==
-X-Gm-Message-State: AOAM531qtyTd1X2PFethb+pKCgfIiq17/X5Lc0xYdiykvu6k7gZHTBIT
-        gXO6KEX46C3I+ukh+r3Ml5j5ItXFvExLK4abmQ4gbg==
-X-Google-Smtp-Source: ABdhPJxB34MNMwiU8/Kb3s3oSCJIPktd60uCekFOnvb0yo//2g/M2/R4HDZA4Ujeew57zrKclcJII8arYrvBJ52Hd8Q=
-X-Received: by 2002:a65:654e:: with SMTP id a14mr16656393pgw.265.1612780083089;
- Mon, 08 Feb 2021 02:28:03 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=oi2Zi1UN4j9vTbRbY531ctfakDSWbSXduwEmeokxKAw=;
+        b=DxRVbY+NT3891JZ5KJGLbMQuQuZ0mFWcugOW/U30kOdHyWPhX/kaNMIb9oViSeKmWl
+         /a1ec4LpEu1VJLqFJUxbMkOtuUXNmv6Y+okqLyEdUqZsCNwvTn935r6FsBKx+tyAK4il
+         FWoVQEXLqcFgCWNGQGb1RQ5x7OgjVt4AbWqDcnEOI8XfwjDoHtpEqjR9D91RgNzaetsx
+         UZNDH5u1ABfSGLqz0BzS5fnczrCWP3JLUOPJr1XW/Luc9cK4VAjsGaOcl0Rb9canNhXt
+         q7EGLtqVp0WDERLEHu+kxz2041I2B0Y+iSdjKkaNkhzQJYYzeETLID2zXlTZ3fAeuxlU
+         oEYw==
+X-Gm-Message-State: AOAM530lxRmxSX2dRbLeq58ceGQpUN46Qvqqry4FLrh+jmbWVKjOGlmG
+        arGIaVKaaRGhudBQJPiWjzNIgmJyeVxNyKG8qMVR7KHqSrD8+rHCZ8VTKZB3G1wgvmLWS2IBcpb
+        zf6vFQ2UYQyV9YvFxcG0CQ7L7
+X-Received: by 2002:a17:906:d189:: with SMTP id c9mr16608192ejz.36.1612780140100;
+        Mon, 08 Feb 2021 02:29:00 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwiuM8JRCBino8DZb9NZsSRmJgy+fRN/JE2UYUEDUSO4yCOnvnk8pmK+69QuXQocMzngfTSoQ==
+X-Received: by 2002:a17:906:d189:: with SMTP id c9mr16608184ejz.36.1612780139975;
+        Mon, 08 Feb 2021 02:28:59 -0800 (PST)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id r3sm9225309edi.49.2021.02.08.02.28.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Feb 2021 02:28:59 -0800 (PST)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [RFC PATCH] KVM: x86: Set PF_VCPU when processing IRQs to fix
+ tick-based accounting
+In-Reply-To: <20210206004218.312023-1-seanjc@google.com>
+References: <20210206004218.312023-1-seanjc@google.com>
+Date:   Mon, 08 Feb 2021 11:28:58 +0100
+Message-ID: <87lfbyonth.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-References: <1612689000-64577-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-In-Reply-To: <1612689000-64577-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-From:   Robert Foss <robert.foss@linaro.org>
-Date:   Mon, 8 Feb 2021 11:27:51 +0100
-Message-ID: <CAG3jFytz7p+3g_tboutC2qCNeNqZnTUJcn-cH-5TAmaWaCPByQ@mail.gmail.com>
-Subject: Re: [PATCH] drm: bridge: convert sysfs sprintf/snprintf family to sysfs_emit
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc:     Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey Jiapeng,
+Sean Christopherson <seanjc@google.com> writes:
 
-Thanks for the patch. Feel free to add my r-b.
-Reviewed-by: Robert Foss <robert.foss@linaro.org>
-
-On Sun, 7 Feb 2021 at 10:12, Jiapeng Chong
-<jiapeng.chong@linux.alibaba.com> wrote:
+> Temporarily set PF_VCPU while processing IRQ VM-Exits so that a tick IRQ
+> accounts the time slice to the guest.  Tick-based accounting of guest
+> time is currently broken as PF_VCPU is only set during the relatively
+> short VM-Enter sequence, which runs entirely with IRQs disabled, and IRQs
+> that occur in the guest are processed well after PF_VCPU is cleared.
 >
-> Fix the following coccicheck warning:
+> Keep PF_VCPU set across both VMX's processing of already-acked IRQs
+> (handle_exit_irqoff()) and the explicit IRQ window (SVM's processing,
+> plus ticks that occur immediately after VM-Exit on both VMX and SVM).
 >
-> drivers/gpu/drm/bridge/lontium-lt9611uxc.c:858:8-16: WARNING: use
-> scnprintf or sprintf.
->
-> Reported-by: Abaci Robot<abaci@linux.alibaba.com>
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+> Fixes: 87fa7f3e98a1 ("x86/kvm: Move context tracking where it belongs")
+> Cc: stable@vger.kernel.org
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
 > ---
->  drivers/gpu/drm/bridge/lontium-lt9611uxc.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> diff --git a/drivers/gpu/drm/bridge/lontium-lt9611uxc.c b/drivers/gpu/drm/bridge/lontium-lt9611uxc.c
-> index fee2795..3cac16d 100644
-> --- a/drivers/gpu/drm/bridge/lontium-lt9611uxc.c
-> +++ b/drivers/gpu/drm/bridge/lontium-lt9611uxc.c
-> @@ -855,7 +855,7 @@ static ssize_t lt9611uxc_firmware_show(struct device *dev, struct device_attribu
->  {
->         struct lt9611uxc *lt9611uxc = dev_get_drvdata(dev);
+> This is quite obnoxious, hence the RFC, but I can't think of a clever,
+> less ugly way to fix the accounting.
 >
-> -       return snprintf(buf, PAGE_SIZE, "%02x\n", lt9611uxc->fw_version);
-> +       return sysfs_emit(buf, "%02x\n", lt9611uxc->fw_version);
->  }
+>  arch/x86/kvm/x86.c | 8 ++++++++
+>  1 file changed, 8 insertions(+)
 >
->  static DEVICE_ATTR_RW(lt9611uxc_firmware);
-> --
-> 1.8.3.1
->
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index d9f931c63293..6ddf341cd755 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -9118,6 +9118,13 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
+>  	vcpu->mode = OUTSIDE_GUEST_MODE;
+>  	smp_wmb();
+>  
+> +	/*
+> +	 * Temporarily pretend this task is running a vCPU when potentially
+> +	 * processing an IRQ exit, including the below opening of an IRQ
+> +	 * window.  Tick-based accounting of guest time relies on PF_VCPU
+> +	 * being set when the tick IRQ handler runs.
+> +	 */
+> +	current->flags |= PF_VCPU;
+
+Should we do it only when !vtime_accounting_enabled_cpu() maybe?
+
+>  	static_call(kvm_x86_handle_exit_irqoff)(vcpu);
+>  
+>  	/*
+> @@ -9132,6 +9139,7 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
+>  	++vcpu->stat.exits;
+>  	local_irq_disable();
+>  	kvm_after_interrupt(vcpu);
+> +	current->flags &= ~PF_VCPU;
+>  
+>  	if (lapic_in_kernel(vcpu)) {
+>  		s64 delta = vcpu->arch.apic->lapic_timer.advance_expire_delta;
+
+-- 
+Vitaly
+
