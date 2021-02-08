@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93F0A3138AA
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 16:59:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A70D131388C
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 16:53:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234131AbhBHP5O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 10:57:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52656 "EHLO mail.kernel.org"
+        id S234165AbhBHPwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 10:52:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52600 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231825AbhBHPIY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 10:08:24 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EF73C64EB1;
-        Mon,  8 Feb 2021 15:06:28 +0000 (UTC)
+        id S233101AbhBHPG4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 10:06:56 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AD76264EDA;
+        Mon,  8 Feb 2021 15:05:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612796789;
-        bh=MPlU6DmuN5KYRgcqMgqMvXNtpGyOjxpEWpuSZdATfbM=;
+        s=korg; t=1612796720;
+        bh=sjEh3WyRB1j1F6mBx6x2WqmxM8cJuuK8uz0XgGh33GE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fRSp/hXpOUnvVReBORahSEzzgZBMwtz2fu7tDvGcQ2yCMKovw/tRTNydu4pJepQHh
-         zRCtDqaGX6neMTYQ0oQh81liRjoEoY50IXTt2s/EOlM911T3CyNd+aXjDLso3Sta9j
-         hGATs/w1/bUaz1zgTufgbvWFJt8CbbyEvae9PRug=
+        b=bHMv5GU248eSWYM97mPRE5rO9SmgHEFQyq8iUcouZ+nU0PJssjJDH17N7L7LPKaKI
+         n4pKys+CEHQ5UjbnrxHB9x/I8uwtveUx0TX4xj73QsH3B6jcGOH1Qmi2nqtrvF4ILS
+         3MBd5g0Gn5W6QHcgEFCGPW+wqBmBFtW2PcOrDNjw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thorsten Leemhuis <linux@leemhuis.info>,
-        Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 4.14 20/30] nvme-pci: avoid the deepest sleep state on Kingston A2000 SSDs
-Date:   Mon,  8 Feb 2021 16:01:06 +0100
-Message-Id: <20210208145806.068622064@linuxfoundation.org>
+        stable@vger.kernel.org, Stephen Berman <stephen.berman@gmx.net>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Subject: [PATCH 4.9 41/43] ACPI: thermal: Do not call acpi_thermal_check() directly
+Date:   Mon,  8 Feb 2021 16:01:07 +0100
+Message-Id: <20210208145807.972785512@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210208145805.239714726@linuxfoundation.org>
-References: <20210208145805.239714726@linuxfoundation.org>
+In-Reply-To: <20210208145806.281758651@linuxfoundation.org>
+References: <20210208145806.281758651@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,81 +40,175 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thorsten Leemhuis <linux@leemhuis.info>
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-commit 538e4a8c571efdf131834431e0c14808bcfb1004 upstream.
+commit 81b704d3e4674e09781d331df73d76675d5ad8cb upstream.
 
-Some Kingston A2000 NVMe SSDs sooner or later get confused and stop
-working when they use the deepest APST sleep while running Linux. The
-system then crashes and one has to cold boot it to get the SSD working
-again.
+Calling acpi_thermal_check() from acpi_thermal_notify() directly
+is problematic if _TMP triggers Notify () on the thermal zone for
+which it has been evaluated (which happens on some systems), because
+it causes a new acpi_thermal_notify() invocation to be queued up
+every time and if that takes place too often, an indefinite number of
+pending work items may accumulate in kacpi_notify_wq over time.
 
-Kingston seems to known about this since at least mid-September 2020:
-https://bbs.archlinux.org/viewtopic.php?pid=1926994#p1926994
+Besides, it is not really useful to queue up a new invocation of
+acpi_thermal_check() if one of them is pending already.
 
-Someone working for a German company representing Kingston to the German
-press confirmed to me Kingston engineering is aware of the issue and
-investigating; the person stated that to their current knowledge only
-the deepest APST sleep state causes trouble. Therefore, make Linux avoid
-it for now by applying the NVME_QUIRK_NO_DEEPEST_PS to this SSD.
+For these reasons, rework acpi_thermal_notify() to queue up a thermal
+check instead of calling acpi_thermal_check() directly and only allow
+one thermal check to be pending at a time.  Moreover, only allow one
+acpi_thermal_check_fn() instance at a time to run
+thermal_zone_device_update() for one thermal zone and make it return
+early if it sees other instances running for the same thermal zone.
 
-I have two such SSDs, but it seems the problem doesn't occur with them.
-I hence couldn't verify if this patch really fixes the problem, but all
-the data in front of me suggests it should.
+While at it, fold acpi_thermal_check() into acpi_thermal_check_fn(),
+as it is only called from there after the other changes made here.
 
-This patch can easily be reverted or improved upon if a better solution
-surfaces.
+[This issue appears to have been exposed by commit 6d25be5782e4
+ ("sched/core, workqueues: Distangle worker accounting from rq
+ lock"), but it is unclear why it was not visible earlier.]
 
-FWIW, there are many reports about the issue scattered around the web;
-most of the users disabled APST completely to make things work, some
-just made Linux avoid the deepest sleep state:
-
-https://bugzilla.kernel.org/show_bug.cgi?id=195039#c65
-https://bugzilla.kernel.org/show_bug.cgi?id=195039#c73
-https://bugzilla.kernel.org/show_bug.cgi?id=195039#c74
-https://bugzilla.kernel.org/show_bug.cgi?id=195039#c78
-https://bugzilla.kernel.org/show_bug.cgi?id=195039#c79
-https://bugzilla.kernel.org/show_bug.cgi?id=195039#c80
-https://askubuntu.com/questions/1222049/nvmekingston-a2000-sometimes-stops-giving-response-in-ubuntu-18-04dell-inspir
-https://community.acer.com/en/discussion/604326/m-2-nvme-ssd-aspire-517-51g-issue-compatibility-kingston-a2000-linux-ubuntu
-
-For the record, some data from 'nvme id-ctrl /dev/nvme0'
-
-NVME Identify Controller:
-vid       : 0x2646
-ssvid     : 0x2646
-mn        : KINGSTON SA2000M81000G
-fr        : S5Z42105
-[...]
-ps    0 : mp:9.00W operational enlat:0 exlat:0 rrt:0 rrl:0
-          rwt:0 rwl:0 idle_power:- active_power:-
-ps    1 : mp:4.60W operational enlat:0 exlat:0 rrt:1 rrl:1
-          rwt:1 rwl:1 idle_power:- active_power:-
-ps    2 : mp:3.80W operational enlat:0 exlat:0 rrt:2 rrl:2
-          rwt:2 rwl:2 idle_power:- active_power:-
-ps    3 : mp:0.0450W non-operational enlat:2000 exlat:2000 rrt:3 rrl:3
-          rwt:3 rwl:3 idle_power:- active_power:-
-ps    4 : mp:0.0040W non-operational enlat:15000 exlat:15000 rrt:4 rrl:4
-          rwt:4 rwl:4 idle_power:- active_power:-
-
-Cc: stable@vger.kernel.org # 4.14+
-Signed-off-by: Thorsten Leemhuis <linux@leemhuis.info>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=208877
+Reported-by: Stephen Berman <stephen.berman@gmx.net>
+Diagnosed-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Reviewed-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Tested-by: Stephen Berman <stephen.berman@gmx.net>
+Cc: All applicable <stable@vger.kernel.org>
+[bigeasy: Backported to v4.9.y, use atomic_t instead of refcount_t]
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/nvme/host/pci.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/acpi/thermal.c |   55 +++++++++++++++++++++++++++++++++----------------
+ 1 file changed, 38 insertions(+), 17 deletions(-)
 
---- a/drivers/nvme/host/pci.c
-+++ b/drivers/nvme/host/pci.c
-@@ -2588,6 +2588,8 @@ static const struct pci_device_id nvme_i
- 	{ PCI_DEVICE(0x1d1d, 0x2601),	/* CNEX Granby */
- 		.driver_data = NVME_QUIRK_LIGHTNVM, },
- 	{ PCI_DEVICE_CLASS(PCI_CLASS_STORAGE_EXPRESS, 0xffffff) },
-+	{ PCI_DEVICE(0x2646, 0x2263),   /* KINGSTON A2000 NVMe SSD  */
-+		.driver_data = NVME_QUIRK_NO_DEEPEST_PS, },
- 	{ PCI_DEVICE(PCI_VENDOR_ID_APPLE, 0x2001) },
- 	{ PCI_DEVICE(PCI_VENDOR_ID_APPLE, 0x2003) },
- 	{ 0, }
+--- a/drivers/acpi/thermal.c
++++ b/drivers/acpi/thermal.c
+@@ -188,6 +188,8 @@ struct acpi_thermal {
+ 	int tz_enabled;
+ 	int kelvin_offset;
+ 	struct work_struct thermal_check_work;
++	struct mutex thermal_check_lock;
++	atomic_t thermal_check_count;
+ };
+ 
+ /* --------------------------------------------------------------------------
+@@ -513,17 +515,6 @@ static int acpi_thermal_get_trip_points(
+ 	return 0;
+ }
+ 
+-static void acpi_thermal_check(void *data)
+-{
+-	struct acpi_thermal *tz = data;
+-
+-	if (!tz->tz_enabled)
+-		return;
+-
+-	thermal_zone_device_update(tz->thermal_zone,
+-				   THERMAL_EVENT_UNSPECIFIED);
+-}
+-
+ /* sys I/F for generic thermal sysfs support */
+ 
+ static int thermal_get_temp(struct thermal_zone_device *thermal, int *temp)
+@@ -557,6 +548,8 @@ static int thermal_get_mode(struct therm
+ 	return 0;
+ }
+ 
++static void acpi_thermal_check_fn(struct work_struct *work);
++
+ static int thermal_set_mode(struct thermal_zone_device *thermal,
+ 				enum thermal_device_mode mode)
+ {
+@@ -582,7 +575,7 @@ static int thermal_set_mode(struct therm
+ 		ACPI_DEBUG_PRINT((ACPI_DB_INFO,
+ 			"%s kernel ACPI thermal control\n",
+ 			tz->tz_enabled ? "Enable" : "Disable"));
+-		acpi_thermal_check(tz);
++		acpi_thermal_check_fn(&tz->thermal_check_work);
+ 	}
+ 	return 0;
+ }
+@@ -951,6 +944,12 @@ static void acpi_thermal_unregister_ther
+                                  Driver Interface
+    -------------------------------------------------------------------------- */
+ 
++static void acpi_queue_thermal_check(struct acpi_thermal *tz)
++{
++	if (!work_pending(&tz->thermal_check_work))
++		queue_work(acpi_thermal_pm_queue, &tz->thermal_check_work);
++}
++
+ static void acpi_thermal_notify(struct acpi_device *device, u32 event)
+ {
+ 	struct acpi_thermal *tz = acpi_driver_data(device);
+@@ -961,17 +960,17 @@ static void acpi_thermal_notify(struct a
+ 
+ 	switch (event) {
+ 	case ACPI_THERMAL_NOTIFY_TEMPERATURE:
+-		acpi_thermal_check(tz);
++		acpi_queue_thermal_check(tz);
+ 		break;
+ 	case ACPI_THERMAL_NOTIFY_THRESHOLDS:
+ 		acpi_thermal_trips_update(tz, ACPI_TRIPS_REFRESH_THRESHOLDS);
+-		acpi_thermal_check(tz);
++		acpi_queue_thermal_check(tz);
+ 		acpi_bus_generate_netlink_event(device->pnp.device_class,
+ 						  dev_name(&device->dev), event, 0);
+ 		break;
+ 	case ACPI_THERMAL_NOTIFY_DEVICES:
+ 		acpi_thermal_trips_update(tz, ACPI_TRIPS_REFRESH_DEVICES);
+-		acpi_thermal_check(tz);
++		acpi_queue_thermal_check(tz);
+ 		acpi_bus_generate_netlink_event(device->pnp.device_class,
+ 						  dev_name(&device->dev), event, 0);
+ 		break;
+@@ -1071,7 +1070,27 @@ static void acpi_thermal_check_fn(struct
+ {
+ 	struct acpi_thermal *tz = container_of(work, struct acpi_thermal,
+ 					       thermal_check_work);
+-	acpi_thermal_check(tz);
++
++	if (!tz->tz_enabled)
++		return;
++	/*
++	 * In general, it is not sufficient to check the pending bit, because
++	 * subsequent instances of this function may be queued after one of them
++	 * has started running (e.g. if _TMP sleeps).  Avoid bailing out if just
++	 * one of them is running, though, because it may have done the actual
++	 * check some time ago, so allow at least one of them to block on the
++	 * mutex while another one is running the update.
++	 */
++	if (!atomic_add_unless(&tz->thermal_check_count, -1, 1))
++		return;
++
++	mutex_lock(&tz->thermal_check_lock);
++
++	thermal_zone_device_update(tz->thermal_zone, THERMAL_EVENT_UNSPECIFIED);
++
++	atomic_inc(&tz->thermal_check_count);
++
++	mutex_unlock(&tz->thermal_check_lock);
+ }
+ 
+ static int acpi_thermal_add(struct acpi_device *device)
+@@ -1103,6 +1122,8 @@ static int acpi_thermal_add(struct acpi_
+ 	if (result)
+ 		goto free_memory;
+ 
++	atomic_set(&tz->thermal_check_count, 3);
++	mutex_init(&tz->thermal_check_lock);
+ 	INIT_WORK(&tz->thermal_check_work, acpi_thermal_check_fn);
+ 
+ 	pr_info(PREFIX "%s [%s] (%ld C)\n", acpi_device_name(device),
+@@ -1168,7 +1189,7 @@ static int acpi_thermal_resume(struct de
+ 		tz->state.active |= tz->trips.active[i].flags.enabled;
+ 	}
+ 
+-	queue_work(acpi_thermal_pm_queue, &tz->thermal_check_work);
++	acpi_queue_thermal_check(tz);
+ 
+ 	return AE_OK;
+ }
 
 
