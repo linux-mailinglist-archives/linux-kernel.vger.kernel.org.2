@@ -2,77 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FF803128F7
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 03:32:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 265623128FC
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 03:36:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229745AbhBHC3e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Feb 2021 21:29:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57732 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229611AbhBHC3b (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Feb 2021 21:29:31 -0500
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15E3FC061788
-        for <linux-kernel@vger.kernel.org>; Sun,  7 Feb 2021 18:28:51 -0800 (PST)
-Received: by mail-lj1-x233.google.com with SMTP id c18so15106933ljd.9
-        for <linux-kernel@vger.kernel.org>; Sun, 07 Feb 2021 18:28:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=prVjlOxJgxegYr5WyW9Puejur2UOLsJUAHlf/hcHxi4=;
-        b=P3vCF0PGHm1O1esy5AM5oRBJYOvhkYL9KaghBGfStowxVodRdE6aeYoKVs07gQqCRV
-         /KDTE5iE1GBcC277I9pstoXCyEU29eULNB63ExV6UmFLrRdZgK8cat9bk3XBYQWEqBKZ
-         /u53kzhG9DHRjLKqrk6f1wV8sTD2D+qeNK6tUSVqb8+zFZWF61kH4Xc8fRs9lLv3r3MI
-         6HdoVrX+/2iVx51pPmhaEOfLaGjMlZY73hR6+llJr0bs/KK4S8dT42noXnH9cMoNKDav
-         oH6zlOgD5ZCAqGqOIFzXdtV42/msvCRIF4YGwFet67mFYidyVgIrsOpZ9fhTmaF0qdpd
-         wr1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=prVjlOxJgxegYr5WyW9Puejur2UOLsJUAHlf/hcHxi4=;
-        b=j6eZQuARfAYTmaEPXZrBbIlgujG8mTCpY8K9Fpe+cJzWTGdvhk/4hLQ1ZviLDKTdW4
-         ViRzRQ3sstrW9eTNTfIe+fQjFvyDXDno3S5czRPSBhZ1pSZuBGHhnaHRW9TM/VNmzdzp
-         J4aZi8FaMFQWSd/0DnF9gEdzDLWuc7+lMVdhH+Qeb7SfFjp9AKKsl1hRgYlIfvqxMOwO
-         8MKgcRWyUAQq1G/h12cS9IBgWJFaBL7JFlacAK22E0dSAOASDk39f9JcJ9nX5l9NLoal
-         B4Ad4rYbT6Tzw3UxAnTbGbn8yRvycrD6fjy7iJNafGEZ2FIT/8qGbUkJUXVphx9Lg2PW
-         eGHA==
-X-Gm-Message-State: AOAM530zJvNRl5TFAzT3iH24KCnViOFaxMggKViZT0eHQLp3D9zxcJG6
-        I22pFtKnFR1m+fGQzqtWtGaBTw4U4fSztMHNd25j5Q==
-X-Google-Smtp-Source: ABdhPJyR2XSql3j3ajSmpY3/49a+HuQOKrA+Qf06VGVaO4rMyCBZU/zvyKPc/CticUgxxzDHes9zb693NtXnPSTSvbw=
-X-Received: by 2002:a2e:9801:: with SMTP id a1mr10029568ljj.122.1612751329278;
- Sun, 07 Feb 2021 18:28:49 -0800 (PST)
-MIME-Version: 1.0
-References: <20210205182806.17220-1-hannes@cmpxchg.org> <20210205182806.17220-8-hannes@cmpxchg.org>
-In-Reply-To: <20210205182806.17220-8-hannes@cmpxchg.org>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Sun, 7 Feb 2021 18:28:37 -0800
-Message-ID: <CALvZod4ex5V2Xs_6YHmmLJw91rjKTSZ9XobXiRx4ftj=L=A6MA@mail.gmail.com>
-Subject: Re: [PATCH 7/8] mm: memcontrol: consolidate lruvec stat flushing
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, Michal Hocko <mhocko@suse.com>,
-        Roman Gushchin <guro@fb.com>, Linux MM <linux-mm@kvack.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S229703AbhBHCeU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Feb 2021 21:34:20 -0500
+Received: from m12-14.163.com ([220.181.12.14]:54748 "EHLO m12-14.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229570AbhBHCeI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Feb 2021 21:34:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=OgKwUMofdoKu/7tnN0
+        0hu/u8x4YRxNderZkLq1lXjs8=; b=AYzWygfI+RZuDTyrucL4lp61pslPikSkJi
+        7J33R1eNLyDzYGeMIXor/NsAdjDYIGsdaUiBXz7o9cY7FTCQHt/+p1er3eguny/m
+        OA+ERuaWT3MneZlgDVjyC5hc56jIAamgfMdJ4sGzz4DL1r4gITXNaq1hl13v72Ws
+        EHf0+MINM=
+Received: from wengjianfeng.ccdomain.com (unknown [119.137.53.134])
+        by smtp10 (Coremail) with SMTP id DsCowAAHHJiooiBgSZT4jw--.508S2;
+        Mon, 08 Feb 2021 10:32:10 +0800 (CST)
+From:   samirweng1979 <samirweng1979@163.com>
+To:     buytenh@wantstofly.org, kvalo@codeaurora.org, davem@davemloft.net,
+        kuba@kernel.org, gustavoars@kernel.org, ganapathi.bhat@nxp.com,
+        romain.perier@gmail.com, allen.lkml@gmail.com,
+        christophe.jaillet@wanadoo.fr
+Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        wengjianfeng <wengjianfeng@yulong.com>
+Subject: [PATCH RESEND] mwl8k: assign value when defining variables
+Date:   Mon,  8 Feb 2021 10:32:07 +0800
+Message-Id: <20210208023207.10368-1-samirweng1979@163.com>
+X-Mailer: git-send-email 2.15.0.windows.1
+X-CM-TRANSID: DsCowAAHHJiooiBgSZT4jw--.508S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWrtrW7KF1rJry3WFy8XrWkJFb_yoWfGFgE9r
+        1IvF1agryxJr1jyr4jka13Z3sYyF15XF1ruwsFqrZxGry8Ja90vwnYkF1ftrZrCF4IvF9r
+        Wrs8J3WYy3W3XjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU5TKZtUUUUU==
+X-Originating-IP: [119.137.53.134]
+X-CM-SenderInfo: pvdpx25zhqwiqzxzqiywtou0bp/1tbirBYzsVr7sMQ+cgAAsh
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 5, 2021 at 10:28 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
->
-> There are two functions to flush the per-cpu data of an lruvec into
-> the rest of the cgroup tree: when the cgroup is being freed, and when
-> a CPU disappears during hotplug. The difference is whether all CPUs or
-> just one is being collected, but the rest of the flushing code is the
-> same. Merge them into one function and share the common code.
->
-> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+From: wengjianfeng <wengjianfeng@yulong.com>
 
-Reviewed-by: Shakeel Butt <shakeelb@google.com>
+define refilled and then assign value to it, which should do
+that at the same time.
 
-BTW what about the lruvec stats? Why not convert them to rstat as well?
+Signed-off-by: wengjianfeng <wengjianfeng@yulong.com>
+---
+ drivers/net/wireless/marvell/mwl8k.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/drivers/net/wireless/marvell/mwl8k.c b/drivers/net/wireless/marvell/mwl8k.c
+index abf3b02..435ef77 100644
+--- a/drivers/net/wireless/marvell/mwl8k.c
++++ b/drivers/net/wireless/marvell/mwl8k.c
+@@ -1208,9 +1208,8 @@ static int rxq_refill(struct ieee80211_hw *hw, int index, int limit)
+ {
+ 	struct mwl8k_priv *priv = hw->priv;
+ 	struct mwl8k_rx_queue *rxq = priv->rxq + index;
+-	int refilled;
++	int refilled = 0;
+ 
+-	refilled = 0;
+ 	while (rxq->rxd_count < MWL8K_RX_DESCS && limit--) {
+ 		struct sk_buff *skb;
+ 		dma_addr_t addr;
+-- 
+1.9.1
+
+
