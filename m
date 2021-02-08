@@ -2,115 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D329313D81
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 19:30:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9632313DC5
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 19:41:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235731AbhBHS3x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 13:29:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46686 "EHLO mail.kernel.org"
+        id S232823AbhBHSlF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 13:41:05 -0500
+Received: from mga01.intel.com ([192.55.52.88]:3798 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233959AbhBHQHc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 11:07:32 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 703C364DF0;
-        Mon,  8 Feb 2021 16:06:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612800411;
-        bh=fTuhJ5RT5eLAOUQrf/tdirgkNlz+VEc+4HXnU0SEBNY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=CE+UBgTcDUlapJhqmFejcia3qaw0B8VrsoRrETcKyAGabydxD4GrGLxeuQh4z2WIV
-         fEZUTK3eyBYKhdKsVYF1E09qTHQFS9rpK+bfnU5WcTgMyQTcStYiBjA8Or50Bygx3i
-         P+1YFg3c1WmM/GRPnWKHhQEIJrWWfa+f4JEK5X+p4uJC7vvyk//cyBqLY++9h2ZgWh
-         ZmphXs+BzmLpUhXwZE2rmbfUSSbU0Hgr8R8TFT1Ec1Ks31652+73b0yy3R61zX3+V4
-         RDb1bq8r+a9PvwCpd7w5rnK2D4g6ob+0j7PXUc/F625iJ3HNs2ZUOXcWIz6lsnxOGI
-         ytIzgvJv58S6w==
-Received: by mail-qt1-f182.google.com with SMTP id w20so10669510qta.0;
-        Mon, 08 Feb 2021 08:06:51 -0800 (PST)
-X-Gm-Message-State: AOAM531PbvIWNh1HoTpcl2TbMEO9/WPrtJDz5V86miULqnODZj7Xkuwu
-        BGddixzu6B17Ek55cks6W8S8D+0ZGQ5S6YWGBw==
-X-Google-Smtp-Source: ABdhPJzQqyDVjzf3UbUtZdEJmP0vjWtaTKE5/EstbBlrylclBdwLqosH30kf0R50qJ8YnbDKvk1GGSZilez2wJPVCUk=
-X-Received: by 2002:ac8:5c41:: with SMTP id j1mr15757118qtj.306.1612800410564;
- Mon, 08 Feb 2021 08:06:50 -0800 (PST)
+        id S233513AbhBHQkG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 11:40:06 -0500
+IronPort-SDR: izjxfgTMlw+655kGNgrNFkcfaybfAxKsMRFLuEzsp573+IGN+kUjMRDMtZOFnP2U2c8grHutse
+ 7r8olv6hXP4g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9889"; a="200801435"
+X-IronPort-AV: E=Sophos;i="5.81,162,1610438400"; 
+   d="scan'208";a="200801435"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2021 08:38:19 -0800
+IronPort-SDR: D9EfWtRan1jmZTToggEjetd8rEb9BJbuSSQbU/lDQJ+yj0JutuBTxdWy9cAsIPXsTQYxtwHYEs
+ l+fwKAUPhuYw==
+X-IronPort-AV: E=Sophos;i="5.81,162,1610438400"; 
+   d="scan'208";a="377835358"
+Received: from rahaness-mobl.amr.corp.intel.com (HELO [10.212.141.76]) ([10.212.141.76])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2021 08:38:17 -0800
+Subject: Re: [PATCH] ASoC: soc-pcm: change error message to debug message
+To:     Shengjiu Wang <shengjiu.wang@nxp.com>, lgirdwood@gmail.com,
+        broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+References: <1612771965-5776-1-git-send-email-shengjiu.wang@nxp.com>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <b7f5442d-ad21-eb8a-7d90-7a8207320541@linux.intel.com>
+Date:   Mon, 8 Feb 2021 09:06:44 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210204113551.68744-1-alexandru.tachici@analog.com>
- <20210204113551.68744-3-alexandru.tachici@analog.com> <20210206152643.53b0e01b@archlinux>
-In-Reply-To: <20210206152643.53b0e01b@archlinux>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Mon, 8 Feb 2021 10:06:39 -0600
-X-Gmail-Original-Message-ID: <CAL_Jsq+zXzqkMbq5x6GCdE_175MpTGHw3kfOKaPpuaWuAtMF-Q@mail.gmail.com>
-Message-ID: <CAL_Jsq+zXzqkMbq5x6GCdE_175MpTGHw3kfOKaPpuaWuAtMF-Q@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] dt-bindings: iio: adc: ad7124: add config nodes
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     Alexandru Tachici <alexandru.tachici@analog.com>,
-        "open list:IIO SUBSYSTEM AND DRIVERS" <linux-iio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        devicetree@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1612771965-5776-1-git-send-email-shengjiu.wang@nxp.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Feb 6, 2021 at 9:26 AM Jonathan Cameron <jic23@kernel.org> wrote:
->
-> On Thu, 4 Feb 2021 13:35:51 +0200
-> <alexandru.tachici@analog.com> wrote:
->
-> > From: Alexandru Tachici <alexandru.tachici@analog.com>
-> >
-> > Document use of configurations in device-tree bindings.
-> >
-> > Signed-off-by: Alexandru Tachici <alexandru.tachici@analog.com>
->
-> Ignoring discussing in my reply to the cover letter...
->
-> This is a breaking change as described.  We can't move properties
-> around without some sort of fullback for them being in the old
-> location.
->
-> > ---
-> >  .../bindings/iio/adc/adi,ad7124.yaml          | 72 +++++++++++++++----
-> >  1 file changed, 57 insertions(+), 15 deletions(-)
-> >
-> > diff --git a/Documentation/devicetree/bindings/iio/adc/adi,ad7124.yaml b/Documentation/devicetree/bindings/iio/adc/adi,ad7124.yaml
-> > index fb3d0dae9bae..330064461d0a 100644
-> > --- a/Documentation/devicetree/bindings/iio/adc/adi,ad7124.yaml
-> > +++ b/Documentation/devicetree/bindings/iio/adc/adi,ad7124.yaml
-> > @@ -62,20 +62,19 @@ required:
-> >    - interrupts
-> >
-> >  patternProperties:
-> > -  "^channel@([0-9]|1[0-5])$":
-> > -    $ref: "adc.yaml"
-> > +  "^config@(2[0-7])$":
-> >      type: object
-> >      description: |
-> > -      Represents the external channels which are connected to the ADC.
-> > +      Represents a channel configuration.
-> > +      See Documentation/devicetree/bindings/iio/adc/adc.txt.
->
-> adc.yaml now.
->
->
-> >
-> >      properties:
-> >        reg:
-> >          description: |
-> > -          The channel number. It can have up to 8 channels on ad7124-4
-> > -          and 16 channels on ad7124-8, numbered from 0 to 15.
-> > +          The config number. It can have up to 8 configuration.
-> >          items:
-> > -          minimum: 0
-> > -          maximum: 15
-> > +         minimum: 20
-> > +         maximum: 27
->
-> Number then 0-7 please rather than 20-27.
 
-That doesn't work. It would be creating 2 address spaces at one level
-with channel@0 and config@0. The way to address this is add a
-'configs' node with config@N children.
 
-My question here though is where does 20-27 come from. I suspect it's
-made up which isn't good either. Addresses should also be rooted in
-something in the h/w.
+On 2/8/21 2:12 AM, Shengjiu Wang wrote:
+> This log message should be a debug message, because it
+> doesn't return directly but continue next loop.
+> 
+> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+> ---
+>   sound/soc/soc-pcm.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+> index 605acec48971..cd9e919d7b99 100644
+> --- a/sound/soc/soc-pcm.c
+> +++ b/sound/soc/soc-pcm.c
+> @@ -1344,8 +1344,8 @@ static int dpcm_add_paths(struct snd_soc_pcm_runtime *fe, int stream,
+>   		/* is there a valid BE rtd for this widget */
+>   		be = dpcm_get_be(card, widget, stream);
+>   		if (!be) {
+> -			dev_err(fe->dev, "ASoC: no BE found for %s\n",
+> -					widget->name);
+> +			dev_dbg(fe->dev, "ASoC: no BE found for %s\n",
+> +				widget->name);
 
-Rob
+Do we really want to do this?
+
+This error message has historically been the means by which we detect 
+that userspace didn't set the right mixers (e.g. on Intel Baytrail) or 
+the topology was incorrect. And it's really an error in the sense that 
+you will not get audio in or out.
+
+If you demote this to dev_dbg, we'll have to ask every single user who 
+reports 'sound is broken' to enable dynamic debug traces. I really don't 
+see the benefit, this is a clear case of 'fail big and fail early', 
+partly concealing the problem doesn't make it go away but harder to 
+diagnose.
