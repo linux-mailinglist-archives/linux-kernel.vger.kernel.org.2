@@ -2,159 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6AD3313B11
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 18:38:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 058CF313BAC
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 18:56:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233890AbhBHRhm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 12:37:42 -0500
-Received: from de-out1.bosch-org.com ([139.15.230.186]:34022 "EHLO
-        de-out1.bosch-org.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229736AbhBHP30 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 10:29:26 -0500
-Received: from fe0vm1649.rbesz01.com (lb41g3-ha-dmz-psi-sl1-mailout.fe.ssn.bosch.com [139.15.230.188])
-        by fe0vms0186.rbdmz01.com (Postfix) with ESMTPS id 4DZ8zw3cszz1XLFjd;
-        Mon,  8 Feb 2021 16:28:12 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=de.bosch.com;
-        s=key3-intmail; t=1612798092;
-        bh=fP74M6HwZDCum3+vzeaerJPkseKxvj4gZV75mefECbo=; l=10;
-        h=From:Subject:From:Reply-To:Sender;
-        b=cmOvwN6KNLx7u9bSrPYwyUx05tW6Xgvqd8dthEv00cfCUKFyQCM9lLf7yNGqW2xR6
-         QPgfcpg451+pIRJAdlAjgQkpPz5AoygGb5ktP4xtKsJVctNJT+9MARpC0ylSpKDpKz
-         Oq0WeKOzBJBMGRxTCrdJdVsRJIHtFee0wepKMBdk=
-Received: from fe0vm7918.rbesz01.com (unknown [10.58.172.176])
-        by fe0vm1649.rbesz01.com (Postfix) with ESMTPS id 4DZ8zw33tPz24S;
-        Mon,  8 Feb 2021 16:28:12 +0100 (CET)
-X-AuditID: 0a3aad10-af5ff70000002230-15-6021588cc59d
-Received: from si0vm1949.rbesz01.com ( [10.58.173.29])
-        (using TLS with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by fe0vm7918.rbesz01.com (SMG Outbound) with SMTP id 94.19.08752.C8851206; Mon,  8 Feb 2021 16:28:12 +0100 (CET)
-Received: from FE-HUB2000.de.bosch.com (unknown [10.4.103.109])
-        by si0vm1949.rbesz01.com (Postfix) with ESMTPS id 4DZ8zw21ZBz6CjZP5;
-        Mon,  8 Feb 2021 16:28:12 +0100 (CET)
-Received: from luchador.grb-fir.grb.de.bosch.com (10.19.187.97) by
- FE-HUB2000.de.bosch.com (10.4.103.109) with Microsoft SMTP Server id
- 15.1.2106.2; Mon, 8 Feb 2021 16:28:11 +0100
-From:   Mark Jonas <mark.jonas@de.bosch.com>
-To:     Support Opensource <support.opensource@diasemi.com>,
-        Lee Jones <lee.jones@linaro.org>
-CC:     <linux-kernel@vger.kernel.org>, <linux-i2c@vger.kernel.org>,
-        <Adam.Thomson.Opensource@diasemi.com>,
-        <stwiss.opensource@diasemi.com>, <marek.vasut@gmail.com>,
-        <tingquan.ruan@cn.bosch.com>, <hubert.streidl@de.bosch.com>,
-        Wolfram Sang <wsa@kernel.org>,
-        Mark Jonas <mark.jonas@de.bosch.com>
-Subject: [PATCH v4] mfd: da9063: Support SMBus and I2C mode
-Date:   Mon, 8 Feb 2021 16:27:58 +0100
-Message-ID: <20210208152758.13093-1-mark.jonas@de.bosch.com>
-X-Mailer: git-send-email 2.25.1
+        id S235087AbhBHRz0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 12:55:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38210 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232102AbhBHPdL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 10:33:11 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D260764E30;
+        Mon,  8 Feb 2021 15:28:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612798119;
+        bh=E7hU2wEwkcreSsMPj7hBL43uJ3QeTlwgc/mdeP/tNz0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qwKpXfWlnBjmXoMGfiMTArXWSorGJf4lwq5D3KZk1oYvtxD0whPof+fZ+0UDKbCht
+         2EgEmF+2LB0GHQseKAPlSvUA/u19Scd2N9QHBNVQqw8yoV5EPFBXfETnfbj2LMpwYT
+         TvsQjvB/AA8mo2RNMpLYrxa4zuUJA5l4DzSweJwRs9Wse47/0KwfZapIIGqZp9eSD0
+         2EGdXir1RCmNksgEb/uGw3UNfvp8fdOWYht14dMtE4dUNsDrRkTB/TATWXlkSq0FWq
+         6/posQ67uzYk5Y5EC0WCSDS/TomEIP5IwmaBm6zdn1gMMfEmc0vOQKZu04FxRvYIFu
+         JBMYvCbIf4m9Q==
+Received: from johan by xi.lan with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1l98T8-0003zs-1b; Mon, 08 Feb 2021 16:28:54 +0100
+Date:   Mon, 8 Feb 2021 16:28:54 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <uwe@kleine-koenig.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 1/2] USB: serial: Drop if with an always false
+ condition
+Message-ID: <YCFYtv/yC124CTaR@hovoldconsulting.com>
+References: <20210208143149.963644-1-uwe@kleine-koenig.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrDLMWRmVeSWpSXmKPExsXCZbVWVrcnQjHB4GG7qMXS90uZLe5/Pcpo
-        0fH3C6PF5V1z2CyO7rnHbHH193oWi72tF5kt7u6fy+jA4bHik77Hzll32T02repk87hzbQ+b
-        x+dNcgGsUVw2Kak5mWWpRfp2CVwZB6fsZim4LFnRN+0hewNjo2gXIyeHhICJxNObt5m6GLk4
-        hASmM0lcn/SDDcJZxyixes0eqMx2Ront3y+ygLSwCWhJ3DyxgxnEFhGIlmj5egKsiFlgFZPE
-        nVW72EESwgLWEvOWdLKC2CwCKhItV9qBbA4OXgEbiZ8/8yFWy0vMvPQdrJxXQFDi5MwnYPOZ
-        geLNW2czQ9gSEgdfvGCewMg3C0nZLCRls5CULWBkXsUompZqUJZrbmlooVeUlFpcZWCol5yf
-        u4kREsACOxhvd3/QO8TIxMF4iFGCg1lJhDewUy5BiDclsbIqtSg/vqg0J7X4EKM0B4uSOK8K
-        z8Y4IYH0xJLU7NTUgtQimCwTB6dUA9Ps25cqb09e+5Q5V4Gv4G7VUd6u/r7pU+7cfr7yu/xC
-        YxvnR/Gxv89kdAT1eq82+p50OUhdIp3jlN37K6nsgR5zb4TEiPs9DrP89zHts6iShd/N4+f3
-        tYt1mQQX7NjNec3+Z80VNyNZjpmPxcU+2WebZz/8LPVGV/fiA4uF7yWZml8eK9tSeOxu7uN0
-        t8uXbn9us/WffvC2S76dI4N81o6Fc+9MKD6ZG+fJdeUwe4//MW/zmV2NPOV+ptunbF/xSmly
-        uoTFvEzHbZ8P+SqqVF3UXhY6dYvs4a7stZEWRhbGO29dnNH38XWB3MxSwYhzWv6KWqmGMcXr
-        OQyq1TSyXPYw/7D9MPmE6kSDAqW8a0osxRmJhlrMRcWJALSCjKfPAgAA
+In-Reply-To: <20210208143149.963644-1-uwe@kleine-koenig.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hubert Streidl <hubert.streidl@de.bosch.com>
+On Mon, Feb 08, 2021 at 03:31:48PM +0100, Uwe Kleine-König wrote:
+> In a bus remove function the passed device is always valid, so there is
+> no need to check for it being NULL.
+> 
+> (Side note: The check for port being non-NULL is broken anyhow, because
+> to_usb_serial_port() is a wrapper around container_of() for a member that is
+> not the first one. So port can hardly become NULL.)
 
-By default the PMIC DA9063 2-wire interface is SMBus compliant. This
-means the PMIC will automatically reset the interface when the clock
-signal ceases for more than the SMBus timeout of 35 ms.
+Right, this check was just broken. I don't think it was even intended to
+catch a NULL struct device pointer. Note that there's two more in
+match() and probe() that I'll remove in a follow up.
 
-If the I2C driver / device is not capable of creating atomic I2C
-transactions, a context change can cause a ceasing of the clock signal.
-This can happen if for example a real-time thread is scheduled. Then
-the DA9063 in SMBus mode will reset the 2-wire interface. Subsequently
-a write message could end up in the wrong register. This could cause
-unpredictable system behavior.
+> Signed-off-by: Uwe Kleine-König <uwe@kleine-koenig.org>
+> ---
+>  drivers/usb/serial/bus.c | 6 +-----
+>  1 file changed, 1 insertion(+), 5 deletions(-)
+> 
+> diff --git a/drivers/usb/serial/bus.c b/drivers/usb/serial/bus.c
+> index eb0195cf37dd..d862ed656414 100644
+> --- a/drivers/usb/serial/bus.c
+> +++ b/drivers/usb/serial/bus.c
+> @@ -87,15 +87,11 @@ static int usb_serial_device_probe(struct device *dev)
+>  static int usb_serial_device_remove(struct device *dev)
+>  {
+>  	struct usb_serial_driver *driver;
+> -	struct usb_serial_port *port;
+> +	struct usb_serial_port *port = to_usb_serial_port(dev);
+>  	int retval = 0;
+>  	int minor;
+>  	int autopm_err;
+>  
+> -	port = to_usb_serial_port(dev);
+> -	if (!port)
+> -		return -ENODEV;
+> -
+>  	/*
+>  	 * Make sure suspend/resume doesn't race against port_remove.
+>  	 *
+> 
+> base-commit: 5c8fe583cce542aa0b84adc939ce85293de36e5e
 
-The DA9063 PMIC also supports an I2C compliant mode for the 2-wire
-interface. This mode does not reset the interface when the clock
-signal ceases. Thus the problem depicted above does not occur.
+Both patches now applied, thanks.
 
-This patch tests for the bus functionality "I2C_FUNC_I2C". It can
-reasonably be assumed that the bus cannot obey SMBus timings if
-this functionality is set. SMBus commands most probably are emulated
-in this case which is prone to the latency issue described above.
-
-This patch enables the I2C bus mode if I2C_FUNC_I2C is set or
-otherwise enables the SMBus mode for a native SMBus controller
-which doesn't have I2C_FUNC_I2C set.
-
-Signed-off-by: Hubert Streidl <hubert.streidl@de.bosch.com>
-Signed-off-by: Mark Jonas <mark.jonas@de.bosch.com>
----
-Changes in v4:
-  - Remove logging of selected 2-wire bus mode.
-
-Changes in v3:
-  - busmode now contains the correct bit DA9063_TWOWIRE_TO
-
-Changes in v2:
-  - Implement proposal by Adam Thomson and Wolfram Sang to check for
-    functionality I2C_FUNC_I2C instead of introducing a new DT property.
-
- drivers/mfd/da9063-i2c.c             | 11 +++++++++++
- include/linux/mfd/da9063/registers.h |  3 +++
- 2 files changed, 14 insertions(+)
-
-diff --git a/drivers/mfd/da9063-i2c.c b/drivers/mfd/da9063-i2c.c
-index 3781d0bb7786..9450c95a3741 100644
---- a/drivers/mfd/da9063-i2c.c
-+++ b/drivers/mfd/da9063-i2c.c
-@@ -355,6 +355,7 @@ static int da9063_i2c_probe(struct i2c_client *i2c,
- 			    const struct i2c_device_id *id)
- {
- 	struct da9063 *da9063;
-+	unsigned int busmode;
- 	int ret;
- 
- 	da9063 = devm_kzalloc(&i2c->dev, sizeof(struct da9063), GFP_KERNEL);
-@@ -442,6 +443,16 @@ static int da9063_i2c_probe(struct i2c_client *i2c,
- 		return ret;
- 	}
- 
-+	busmode = i2c_check_functionality(i2c->adapter, I2C_FUNC_I2C) ?
-+		      0 : DA9063_TWOWIRE_TO;
-+
-+	ret = regmap_update_bits(da9063->regmap, DA9063_REG_CONFIG_J,
-+	      DA9063_TWOWIRE_TO, busmode);
-+	if (ret < 0) {
-+		dev_err(da9063->dev, "Failed to set 2-wire bus mode.\n");
-+		return -EIO;
-+	}
-+
- 	return da9063_device_init(da9063, i2c->irq);
- }
- 
-diff --git a/include/linux/mfd/da9063/registers.h b/include/linux/mfd/da9063/registers.h
-index 1dbabf1b3cb8..6e0f66a2e727 100644
---- a/include/linux/mfd/da9063/registers.h
-+++ b/include/linux/mfd/da9063/registers.h
-@@ -1037,6 +1037,9 @@
- #define		DA9063_NONKEY_PIN_AUTODOWN	0x02
- #define		DA9063_NONKEY_PIN_AUTOFLPRT	0x03
- 
-+/* DA9063_REG_CONFIG_J (addr=0x10F) */
-+#define DA9063_TWOWIRE_TO			0x40
-+
- /* DA9063_REG_MON_REG_5 (addr=0x116) */
- #define DA9063_MON_A8_IDX_MASK			0x07
- #define		DA9063_MON_A8_IDX_NONE		0x00
--- 
-2.25.1
-
+Johan
