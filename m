@@ -2,152 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 490AA313D68
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 19:26:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1313E313D69
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 19:26:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231429AbhBHSZN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 13:25:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59852 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234097AbhBHPtC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 10:49:02 -0500
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BF63C061788;
-        Mon,  8 Feb 2021 07:48:19 -0800 (PST)
-Received: by mail-wr1-x434.google.com with SMTP id m13so17671372wro.12;
-        Mon, 08 Feb 2021 07:48:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=wZrQti5YeMsa4slDaHx1zyDy3YoPvCDo0D+weFkrbUo=;
-        b=Dl/B+lIxr2aCLnNQFsWqau2kDOqSbMjKZGeDjVVwguQZng6ygWvaOYFjAKqeO7j+kI
-         F78V3YDJuZj1RhVOa/goOatBCh5k7coNpVhNh2mIzveBxKljTW3ImK1onFffr0yce1PE
-         I1Iiqxjyo+1qKsQYF4LlGe0jzLFo2R3JsYycx+xPcEKREAmPdye+asyVuVD8WlMv5HfG
-         eir37mLGhIf9fVLrH7TD/VfSj+/cJEVT7SOWAAjwX66T28dVkUDc5xx22Cxuza+jSL0a
-         4vRrCUkm6iD8vrPp3qe+RjoKB5mqjaAk8hOJ1+2gpOaelwAvoI/EDhgPZX4iqFzVjuFd
-         WhCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=wZrQti5YeMsa4slDaHx1zyDy3YoPvCDo0D+weFkrbUo=;
-        b=PwcoHM9gITo468g+V79jQlsthtw4ZIfyHE45HC5lGThh1NlTQSP3aoN8wQS7qJoK7g
-         1pqyrazW6Y7cV3W8eDOq66FewlYjENN7tdlGIn949H4HzsyCyd3jTLCQa5h1PqqoJWHX
-         PgTiJRe1Cz9lWHUtIZxCbiF8/9+aQxqswLbuKKC/d2xiPOFb4lxurRMq34FIUbcwJIvv
-         I9BUIy28W2d5WnLrdbcToQPBmB3Wrxyl9aIaGGYSqZlv+3VE9wdNaidgEVsnFJ+aAw9C
-         diii8emVpeDizYumcqDZ4ThPXTLY+dY20AapngXMeL87z6cx254O2FQcJvqHPTf9McrW
-         OUAw==
-X-Gm-Message-State: AOAM530wkPAQMAx5xDwb3ljKeQuC1njZSC43ptl6m9/rcQjFpZeX+Ifz
-        w8TjDT07IoIYPKR0m8CpW3U=
-X-Google-Smtp-Source: ABdhPJwxvKKXuCMS0ahEG2Pf5OV9bE+YGR5oL2rCJTaeOo6DlpeH0EmFI2Vpc94POMat1C/U5gQCJQ==
-X-Received: by 2002:adf:dcd2:: with SMTP id x18mr7810623wrm.355.1612799298377;
-        Mon, 08 Feb 2021 07:48:18 -0800 (PST)
-Received: from [192.168.1.21] ([195.245.17.255])
-        by smtp.gmail.com with ESMTPSA id 9sm32151240wra.80.2021.02.08.07.48.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Feb 2021 07:48:17 -0800 (PST)
-Message-ID: <423724a1de34c22327a17b0919bf2f1398c27706.camel@gmail.com>
-Subject: Re: [PATCH v5 2/7] gpio: ep93xx: Fix single irqchip with multi
- gpiochips
-From:   Alexander Sverdlin <alexander.sverdlin@gmail.com>
-To:     Nikita Shubin <nikita.shubin@maquefel.me>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Mon, 08 Feb 2021 16:48:17 +0100
-In-Reply-To: <20210208085954.30050-3-nikita.shubin@maquefel.me>
-References: <20210208085954.30050-1-nikita.shubin@maquefel.me>
-         <20210208085954.30050-3-nikita.shubin@maquefel.me>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.2 
+        id S235479AbhBHSZn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 13:25:43 -0500
+Received: from mail-eopbgr50076.outbound.protection.outlook.com ([40.107.5.76]:44337
+        "EHLO EUR03-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S234153AbhBHPuN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 10:50:13 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FU2Vam//HeSyBRL9g2Td9t4v6GmrO9pX9w098+wy0n84Fe8/TI9G3oX+dqABd7H3mLwXbpx8hfIHW1PQE3dGUol1qqRYzeTi8pRgZ1TQOnNTvZ+V2m90l+ygL257sv5eS9tmFIdNDwA0jwwMOF/hrjY0Xd2C6lg1T+KV5H3t53WZCbKvCE7vwvJ4QcoqSwSmgjlXXJ/Va015wEuqRjFJ/ayEMY5PjnKVtk4UkCI/7KJqSkQ4uZZvvJrigcKM5VaN54e7+f6/Y6d5Qx3V3smUc/hgpZRi6qiuq9NZhNgrINRMF5q9IqYP2s1951MnxxmeJqGv9ZccsZfYLgrEVHGwBg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0MCCtH0QRY+SSHef1HN9h2oOk3jN8mjhcYmwBylRUfI=;
+ b=Sn+r90Mzlcrfnk+lSGzrbvie/kcNxCPpAK5jApvyONUd4aa48uEnxRn7J0OxQsd2r9WwPwbzn8whltHaIwSAhCP0nwOMQ4Oh7djMaIO3rezmGJJwTIreZqmC6/i+1tb4b/jeU9JBgHcfxUsq1T/B0oL+LT8Y64NERnay1LhViQXhW4xiE7AI1EkeUEFMiOaxPysIlA8osKzpYP4noHOrDRhezdj4ESVOlwDPYegb7G/UdP9Ya0H2CgBP9R1Cg31rMS8QsElhWPHe0cZPwHa6mDv/2KhQLE/glPI+ZJqLy0B1+4iTIVcfu/M2tkYY9XIvwaHpm+DNNeeRkaOARPxHEQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0MCCtH0QRY+SSHef1HN9h2oOk3jN8mjhcYmwBylRUfI=;
+ b=b3HYnwWRvRiZFmh3ltN5tn0/rkvgIc3OWRDOVO6xO4777I4m8VX421gnfQ4fI8FmOvOQwXQg4cLB+A75Kc0JdbH+DC1qbOHpdVZdTBANdnkoVd1a/UJL94nekTo3hRrMHoXbeSZ+7jOdIouFSBbO+FpTXrL5QKGVEcpwhy3EWVY=
+Received: from VI1PR0402MB3871.eurprd04.prod.outlook.com
+ (2603:10a6:803:16::14) by VI1PR04MB7197.eurprd04.prod.outlook.com
+ (2603:10a6:800:129::17) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.23; Mon, 8 Feb
+ 2021 15:49:16 +0000
+Received: from VI1PR0402MB3871.eurprd04.prod.outlook.com
+ ([fe80::b0d0:3a81:c999:e88]) by VI1PR0402MB3871.eurprd04.prod.outlook.com
+ ([fe80::b0d0:3a81:c999:e88%3]) with mapi id 15.20.3825.030; Mon, 8 Feb 2021
+ 15:49:16 +0000
+From:   Ioana Ciornei <ioana.ciornei@nxp.com>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+CC:     Stuart Yoder <stuyoder@gmail.com>,
+        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>
+Subject: Re: [PATCH] bus: fsl-mc: Fix test for end of loop
+Thread-Topic: [PATCH] bus: fsl-mc: Fix test for end of loop
+Thread-Index: AQHW+JXWIedFA+IGmEmzK+UDvJ/0YKpOWUCAgAAO7oCAAAqMAA==
+Date:   Mon, 8 Feb 2021 15:49:16 +0000
+Message-ID: <20210208154914.h6lunbjxwmdb2bvu@skbuf>
+References: <YBf0Br9obNGZTcNI@mwanda> <20210208141803.bqbnbgvprtlo3vs6@skbuf>
+ <20210208151129.GJ2696@kadam>
+In-Reply-To: <20210208151129.GJ2696@kadam>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: oracle.com; dkim=none (message not signed)
+ header.d=none;oracle.com; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [5.12.227.87]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: ff2b8a46-de5a-4c85-3b50-08d8cc491738
+x-ms-traffictypediagnostic: VI1PR04MB7197:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <VI1PR04MB7197A9C7A222315DEFF25F96E08F9@VI1PR04MB7197.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: whR+LWyBJBhgbvg0W5mMjhr5sL2bC32uUByfiwMzChO+s2xPAuffiN6+IzEnYvTzjwAHpacKZ7LPtSZKmgwTb8fauexkAW685DjmY/FiOFx1/69X+3akyUEHZCkMUD0qNyEpzKm57MAInXWc262U3/bKzHPEFTmcktTvXCzqrfhNtbExR2q/8/HQhHH4cUsC0Ung7gOiKGZ3L/ewEYEF14Z1Hhx2CGNSvU6KwuSfsAp4vwfrs3imqybX9ZnJrny7O3Rg8+Aq4Vnvh7SG524xcG6e+Uu01AVxO0whJ7VACKXBwZFu5F60DZ9s5tnilRG6uGxZtXFicXinGOoQSoQo3qWbCRob0r52SAUcgwjuGbMn/gFrRMvL4BPoI4A6ao2//hMolLhvmFLOvygH6OkedMOl5JW2IRc3l0Z6r8s+FEUCpnXLT6A7zfwoz2WNSAAGa4qQ/7y8EDtA3pOIHjtAl5HsO3f+QUyd9E9CHKfc3AW5QIn+LnW6n09Hf7m6Aun5AulAGZOrts5mo/IW8F2T3Q==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0402MB3871.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(7916004)(4636009)(376002)(39860400002)(136003)(366004)(396003)(346002)(6506007)(8936002)(86362001)(2906002)(9686003)(6512007)(26005)(8676002)(4326008)(186003)(478600001)(1076003)(71200400001)(33716001)(91956017)(316002)(66556008)(5660300002)(64756008)(66476007)(44832011)(54906003)(83380400001)(6486002)(6916009)(66946007)(76116006)(66446008);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?cze4gtGY4cOteMHg8z5LgXuuPxSBk3B7LGswpjAo4H9KwMiSTrhZ7IyQC89K?=
+ =?us-ascii?Q?BkB+gTK9WYmDoRZ/vWk05bqbYJVi6DQCCNpIx/hjCiZcQ5Hqg7okkryos5gr?=
+ =?us-ascii?Q?XwsRdB9s1Beb4ettIsPwE5g/z9fcf+JJlRasLfrzwGNjrjc0WVs/xb4C3yqY?=
+ =?us-ascii?Q?KWFbSeDNGpHJSS55M3jaqoYKOhnslgUHx/Bu9nLsNSlXb5kHXtFsn+Red809?=
+ =?us-ascii?Q?Qex1YLc4QFZogUtw/KLnHPQPugo+Y8UfklBN/9c6QXdWRgnXGwTCDnV4Y9gS?=
+ =?us-ascii?Q?wqWLXvSAWrXDOVLc34eU9EXA/R/sJOBL88//cef60d58IHzusJH851jtUI8d?=
+ =?us-ascii?Q?3gz45p2A3dANh/xMCGjYmYX6pQAHMOLxM6BrOC3M9r4MiCNGXhVUsawvnMKp?=
+ =?us-ascii?Q?yxEaSSIZ9fgJNzw5oRFig1Wld6L1iqkP0acA0+LDX1YIbTvhnic9mbkzjh9J?=
+ =?us-ascii?Q?5DJON1hg7KZmWVeL6SpfaorFg7WJ+Q4o/6/qHb6B9HnxE/Le67iCE5iRVVfS?=
+ =?us-ascii?Q?moMDeqhgsSCmJPN3AHyWXxfA/OhE0jKvQ11TK37CumdcueZ7L5ObIGyQnWL3?=
+ =?us-ascii?Q?cFrufhoZP6QasI3ewdAEkqI7jJIVmJvKaPrNKd0eNW5+nDgxXob+EvgCRTI0?=
+ =?us-ascii?Q?dUNQyvOubDpRBGa/z5u0+j/bMHS9CIGkdYUsnoSWrJGqntgH4JvmSybHo3Ok?=
+ =?us-ascii?Q?/sxk8WwwIsnR9kYF9Q6vQ+CADwjumEhRxQ5cMOsR9M5EGynn2zr454K7gM0t?=
+ =?us-ascii?Q?frFr5bKLhqETETMK2X7Dq1CPdPyIsOyl467H2qJUf/1KwyZIm/SkLSEy/05r?=
+ =?us-ascii?Q?k1OhEEfP+6cLjDndkFrs92TK2/uTpoGV+a9NKCbf95T04MmuoZL7CdGDprmN?=
+ =?us-ascii?Q?SJ1ohEPel2ikFC4JswpzC2OXoSx/m4TAoY4+rJSSF6gpBv6b8+AplEw+fSTh?=
+ =?us-ascii?Q?RR6U7qGuOlp1tVTWqxaMBHr6kIEi8I87KKsSDiuYZnsiWKspStCu/r4BVa0I?=
+ =?us-ascii?Q?NKyPMS8Qt3zpjwpVB/JSR1B+IfJY/s4DkSKOR7BaN/svtRN0RGMI5+H6c8Uq?=
+ =?us-ascii?Q?AlsONR0WvqYlyFgk6qEmYN/pvBSNgvoaNrhATaKuhCPJoaxSzDOJn2v3Jpzz?=
+ =?us-ascii?Q?aqsHfvFriotbMRkKK+wFgMwcZKzbWT6dz1+mZiDfABQE1BPv2luan0ZjgdNW?=
+ =?us-ascii?Q?kGNK8Oshtgrh3TpDhC1+h0v4T50Orku4jLcYBtBn9mUzhd9F2MO7nC4xWORU?=
+ =?us-ascii?Q?o2R/zJ+1T8VCJADrDe/Q7z7vh5IfldU6fZGU3J8l8VaXPXYo5K/n4njO4SsN?=
+ =?us-ascii?Q?TDOe6yfdGxvleDuxGgBI3r3w?=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <C0E693604B0E2E46840A4B36D95F002B@eurprd04.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR0402MB3871.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ff2b8a46-de5a-4c85-3b50-08d8cc491738
+X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Feb 2021 15:49:16.6355
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: NOyYHWpTHflQbspJ5XJUJn64TLHvlZpuNSqnd5vg6D1XLrtTWetmYN3xDU3Me3h1xOv9J8LvxjpOcoNUiwfwQw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB7197
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Nikita,
+On Mon, Feb 08, 2021 at 06:11:29PM +0300, Dan Carpenter wrote:
+> On Mon, Feb 08, 2021 at 02:18:04PM +0000, Ioana Ciornei wrote:
+> > On Mon, Feb 01, 2021 at 03:28:54PM +0300, Dan Carpenter wrote:
+> > > The "desc" pointer can't possibly be NULL here.  If we can't find the
+> > > correct "desc" then tt points to the last element of the
+> > > fsl_mc_accepted_cmds[] array.  Fix this by testing if
+> > > "i =3D=3D FSL_MC_NUM_ACCEPTED_CMDS" instead.
+> > >=20
+> > > Fixes: 2cf1e703f066 ("bus: fsl-mc: add fsl-mc userspace support")
+> > > Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+> >=20
+> > Hi,
+> >=20
+> > I just noticed that Greg wasn't copied on the initial email.
+> >=20
+> > If you don't mind I will re-submit your patch along with other updates
+> > to the fsl-mc bus so that you don't have to bother.
+> >=20
+>=20
+> Thanks for doing that!
+>=20
+> Was Greg supposed to have been copied, though?  He's not listed in the
+> ./scripts/get_maintainer.pl output.
+>=20
 
-On Mon, 2021-02-08 at 11:59 +0300, Nikita Shubin wrote:
-> Fixes the following warnings which results in interrupts disabled on
-> port B/F:
-> 
-> gpio gpiochip1: (B): detected irqchip that is shared with multiple gpiochips: please fix the driver.
-> gpio gpiochip5: (F): detected irqchip that is shared with multiple gpiochips: please fix the driver.
-> 
-> - added separate irqchip for each interrupt capable gpiochip
-> - provided unique names for each irqchip
-> 
-> Fixes: d2b091961510 ("gpio: ep93xx: Pass irqchip when adding gpiochip")
-> Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
-
-I performed a bootup with the whole patch-series and
-confirm that the warning is gone. Thank you for looking into this!
-
-Reviewed-by: Alexander Sverdlin <alexander.sverdlin@gmail.com>
-Tested-by: Alexander Sverdlin <alexander.sverdlin@gmail.com>
-
-> ---
-> v4->v5:
-> - generate IRQ chip's names dynamicaly from label
-> ---
->  drivers/gpio/gpio-ep93xx.c | 17 ++++++++++++++++-
->  1 file changed, 16 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpio/gpio-ep93xx.c b/drivers/gpio/gpio-ep93xx.c
-> index 64d6c2b4282e..3d8eb8769470 100644
-> --- a/drivers/gpio/gpio-ep93xx.c
-> +++ b/drivers/gpio/gpio-ep93xx.c
-> @@ -38,6 +38,7 @@
->  #define EP93XX_GPIO_F_IRQ_BASE 80
->  
->  struct ep93xx_gpio_irq_chip {
-> +       struct irq_chip ic;
->         u8 irq_offset;
->         u8 int_unmasked;
->         u8 int_enabled;
-> @@ -331,6 +332,16 @@ static int ep93xx_gpio_f_to_irq(struct gpio_chip *gc, unsigned offset)
->         return EP93XX_GPIO_F_IRQ_BASE + offset;
->  }
->  
-> +static void ep93xx_init_irq_chip(struct device *dev, struct irq_chip *ic, const char *label)
-> +{
-> +       ic->name = devm_kasprintf(dev, GFP_KERNEL, "gpio-irq-%s", label);
-> +       ic->irq_ack = ep93xx_gpio_irq_ack;
-> +       ic->irq_mask_ack = ep93xx_gpio_irq_mask_ack;
-> +       ic->irq_mask = ep93xx_gpio_irq_mask;
-> +       ic->irq_unmask = ep93xx_gpio_irq_unmask;
-> +       ic->irq_set_type = ep93xx_gpio_irq_type;
-> +}
-> +
->  static int ep93xx_gpio_add_bank(struct ep93xx_gpio_chip *egc,
->                                 struct platform_device *pdev,
->                                 struct ep93xx_gpio *epg,
-> @@ -352,6 +363,8 @@ static int ep93xx_gpio_add_bank(struct ep93xx_gpio_chip *egc,
->  
->         girq = &gc->irq;
->         if (bank->has_irq || bank->has_hierarchical_irq) {
-> +               struct irq_chip *ic;
-> +
->                 gc->set_config = ep93xx_gpio_set_config;
->                 egc->eic = devm_kcalloc(dev, 1,
->                                         sizeof(*egc->eic),
-> @@ -359,7 +372,9 @@ static int ep93xx_gpio_add_bank(struct ep93xx_gpio_chip *egc,
->                 if (!egc->eic)
->                         return -ENOMEM;
->                 egc->eic->irq_offset = bank->irq;
-> -               girq->chip = &ep93xx_gpio_irq_chip;
-> +               ic = &egc->eic->ic;
-> +               ep93xx_init_irq_chip(dev, ic, bank->label);
-> +               girq->chip = ic;
->         }
->  
->         if (bank->has_irq) {
-
--- 
-Alexander Sverdlin.
-
-
+Huh, he's not listed indeed. I didn't check this before since the fsl-mc
+bus changes have always been pushed through Greg's char-misc tree.=
