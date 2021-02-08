@@ -2,66 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99B69313E96
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 20:14:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EDA0313E92
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 20:13:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236110AbhBHTMw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 14:12:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58168 "EHLO
+        id S235361AbhBHTMl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 14:12:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235036AbhBHRvz (ORCPT
+        with ESMTP id S233420AbhBHRvz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 8 Feb 2021 12:51:55 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B949BC061786
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 09:43:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=vidqzNM6LHEiqGq9XxJTqIlShemMdM/td8LbkD0squQ=; b=o3Rxjl8uLD5Ssq9HUJ1Ldk46z+
-        Ibl1ha9MY0lkcu5GprUICsUhf1BLawHBBWPzD6sfK9euURgJryG0qC6ad4PJtzDKG6F/Xkhnt4MmD
-        4GBNZiBoMyhvVify8XdY7CJWPw1vWBLbcw8RHtQPDY5hhf3lGwfz78ZVHj81rPPauggRvXealH/Nm
-        W5jPqOmrcUL4opUFK4/CxrNPmCVHxL1uWzySJ7n3OhJX0oFnSejzAr40xzx5/ejuqIaTHqR0QO3Li
-        hl2MMCKZlzyDJE4vf+5SDtcvIIov9d3r8pgQerVtYkKqv9Guzbxoa3+k/qY76d/kkgtaW141Th+Sq
-        l3rXWbPw==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1l9AYh-006IPI-NU; Mon, 08 Feb 2021 17:42:48 +0000
-Date:   Mon, 8 Feb 2021 17:42:47 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 12/12] arm64: kasan: export MTE symbols for KASAN tests
-Message-ID: <20210208174247.GA1500382@infradead.org>
-References: <cover.1612538932.git.andreyknvl@google.com>
- <068ab897dc5e73d4a8d7c919b84339216c2f99da.1612538932.git.andreyknvl@google.com>
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A30FC061788
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 09:43:36 -0800 (PST)
+Received: by mail-pf1-x42f.google.com with SMTP id u143so3952690pfc.7
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 09:43:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=RxLUe7o0XBsEMnyZ2ayM5Zt5mnJyMnV0qymbKsVL5xI=;
+        b=Fl/ILLaQ27dYD+8sqFnFsVrXGNE10dTiegetvaiJTd8Yx6XriE47wKym0jVJrTwrHf
+         BmXGbYYJjosrvsmaLpdY3H9q8eF58k8PP1WFfWPi2qffZgrb0bNsvXa+VX5kf/QlqCkg
+         zW4C1Pgh1YcHlMdx2FTREafj2nwr2qb8xCxF5CC0JuF7pQad93EkK6uHwL4TQ0IkiiDw
+         FJr4HH2jpQqHubAZoiIhJicivZ4xX7kULKs7IFpO3L7Vq8FbOv9flC917FeP7y19cUoB
+         3oGKpOxnPKNDCLpYb9Q629nRD1dx2AcBjTiqkhi/qvw1ElSP4jICnl2jLeWyNUPnju0P
+         Zh+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=RxLUe7o0XBsEMnyZ2ayM5Zt5mnJyMnV0qymbKsVL5xI=;
+        b=d9dP3OPB+oqSvoQ9C7IRqeHeBUmjsbRgmIpHkJx3yZTbO8KMD/Pt1f71P/uB2lqyJF
+         TtA+uKJdQPbXwQkS4mEoZ+urqsErGSpyeoURYZCz7F1w5K7iBxHAC42lCDGXDZG4hPXh
+         5zVX/nIEG7fL3kQxMxaisfolay+CVDQwTumGBGjyDYvSIbjX5tTRhMTbsEg6LwspQtlc
+         1rLaSFiqQ1R3wYZly5ibacCwsI3wRAB2u0VhfRJVcH5XRHsLu/v59tzgk7DVJT2pgTMA
+         vNCnX5JsaxIiQxLGlEFGudu2ovKreX6hgyyvyFysf2eCIUptpD+HUmusiBFCOw8UTt4n
+         z3jQ==
+X-Gm-Message-State: AOAM532KqDs0Q9sdJxZxogKkVx87qw2V3vm1iNmFwaOKr3vr4/zWJC1A
+        vna9inCJNqnpMkBthbkCAFbV5A==
+X-Google-Smtp-Source: ABdhPJzgH48OCVyI5hH228/HKK7dPLNGjKP1Ay4WnHabg31jANO3Rit48bQBOUDkqOCYP8c+u+pspQ==
+X-Received: by 2002:a62:8cd7:0:b029:1d9:447c:e21a with SMTP id m206-20020a628cd70000b02901d9447ce21amr14414194pfd.2.1612806215874;
+        Mon, 08 Feb 2021 09:43:35 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:e4db:abc1:a5c0:9dbc])
+        by smtp.gmail.com with ESMTPSA id c18sm9730201pfo.171.2021.02.08.09.43.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Feb 2021 09:43:35 -0800 (PST)
+Date:   Mon, 8 Feb 2021 09:43:28 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Yanan Wang <wangyanan55@huawei.com>
+Cc:     kvm@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Andrew Jones <drjones@redhat.com>,
+        Marc Zyngier <maz@kernel.org>, Ben Gardon <bgardon@google.com>,
+        Peter Xu <peterx@redhat.com>,
+        Aaron Lewis <aaronlewis@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        wanghaibin.wang@huawei.com, yuzenghui@huawei.com
+Subject: Re: [RFC PATCH 1/2] KVM: selftests: Add a macro to get string of
+ vm_mem_backing_src_type
+Message-ID: <YCF4QCPtSEFg3Qv4@google.com>
+References: <20210208090841.333724-1-wangyanan55@huawei.com>
+ <20210208090841.333724-2-wangyanan55@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <068ab897dc5e73d4a8d7c919b84339216c2f99da.1612538932.git.andreyknvl@google.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20210208090841.333724-2-wangyanan55@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 05, 2021 at 04:39:13PM +0100, Andrey Konovalov wrote:
-> Export mte_enable_kernel_sync() and mte_set_report_once() to fix:
+On Mon, Feb 08, 2021, Yanan Wang wrote:
+> Add a macro to get string of the backing source memory type, so that
+> application can add choices for source types in the help() function,
+> and users can specify which type to use for testing.
 > 
-> ERROR: modpost: "mte_enable_kernel_sync" [lib/test_kasan.ko] undefined!
-> ERROR: modpost: "mte_set_report_once" [lib/test_kasan.ko] undefined!
+> Signed-off-by: Yanan Wang <wangyanan55@huawei.com>
+> ---
+>  tools/testing/selftests/kvm/include/kvm_util.h | 3 +++
+>  tools/testing/selftests/kvm/lib/kvm_util.c     | 8 ++++++++
+>  2 files changed, 11 insertions(+)
+> 
+> diff --git a/tools/testing/selftests/kvm/include/kvm_util.h b/tools/testing/selftests/kvm/include/kvm_util.h
+> index 5cbb861525ed..f5fc29dc9ee6 100644
+> --- a/tools/testing/selftests/kvm/include/kvm_util.h
+> +++ b/tools/testing/selftests/kvm/include/kvm_util.h
+> @@ -69,7 +69,9 @@ enum vm_guest_mode {
+>  #define PTES_PER_MIN_PAGE	ptes_per_page(MIN_PAGE_SIZE)
+>  
+>  #define vm_guest_mode_string(m) vm_guest_mode_string[m]
+> +#define vm_mem_backing_src_type_string(s) vm_mem_backing_src_type_string[s]
 
-Please put this under an ifdef for the testing option that pull the
-symbols in.
+Oof, I see this is just following vm_guest_mode_string.  IMO, defining the
+string to look like a function is unnecessary and rather mean.
+
+>  extern const char * const vm_guest_mode_string[];
+> +extern const char * const vm_mem_backing_src_type_string[];
+>  
+>  struct vm_guest_mode_params {
+>  	unsigned int pa_bits;
+> @@ -83,6 +85,7 @@ enum vm_mem_backing_src_type {
+>  	VM_MEM_SRC_ANONYMOUS,
+>  	VM_MEM_SRC_ANONYMOUS_THP,
+>  	VM_MEM_SRC_ANONYMOUS_HUGETLB,
+> +	NUM_VM_BACKING_SRC_TYPES,
+>  };
+>  
+>  int kvm_check_cap(long cap);
+> diff --git a/tools/testing/selftests/kvm/lib/kvm_util.c b/tools/testing/selftests/kvm/lib/kvm_util.c
+> index fa5a90e6c6f0..a9b651c7f866 100644
+> --- a/tools/testing/selftests/kvm/lib/kvm_util.c
+> +++ b/tools/testing/selftests/kvm/lib/kvm_util.c
+> @@ -165,6 +165,14 @@ const struct vm_guest_mode_params vm_guest_mode_params[] = {
+>  _Static_assert(sizeof(vm_guest_mode_params)/sizeof(struct vm_guest_mode_params) == NUM_VM_MODES,
+>  	       "Missing new mode params?");
+>  
+> +const char * const vm_mem_backing_src_type_string[] = {
+
+A shorter name would be nice, though I don't have a good suggestion.
+
+> +	"VM_MEM_SRC_ANONYMOUS        ",
+> +	"VM_MEM_SRC_ANONYMOUS_THP    ",
+> +	"VM_MEM_SRC_ANONYMOUS_HUGETLB",
+
+It'd be more robust to explicitly assign indices, that way tweaks to
+vm_mem_backing_src_type won't cause silent breakage.  Ditto for the existing
+vm_guest_mode_string.
+
+E.g. I think something like this would work (completely untested)
+
+const char *vm_guest_mode_string(int i)
+{
+	static const char *const strings[] = {
+		[VM_MODE_P52V48_4K]	= "PA-bits:52,  VA-bits:48,  4K pages",
+		[VM_MODE_P52V48_64K]	= "PA-bits:52,  VA-bits:48, 64K pages",
+		[VM_MODE_P48V48_4K]	= "PA-bits:48,  VA-bits:48,  4K pages",
+		[VM_MODE_P48V48_64K]	= "PA-bits:48,  VA-bits:48, 64K pages",
+		[VM_MODE_P40V48_4K]	= "PA-bits:40,  VA-bits:48,  4K pages",
+		[VM_MODE_P40V48_64K]	= "PA-bits:40,  VA-bits:48, 64K pages",
+		[VM_MODE_PXXV48_4K]	= "PA-bits:ANY, VA-bits:48,  4K pages",
+	};
+
+	_Static_assert(sizeof(strings)/sizeof(char *) == NUM_VM_MODES,
+		       "Missing new mode strings?");
+
+	TEST_ASSERT(i < NUM_VM_MODES);
+
+	return strings[i];
+}
+
+
+> +};
+> +_Static_assert(sizeof(vm_mem_backing_src_type_string)/sizeof(char *) == NUM_VM_BACKING_SRC_TYPES,
+> +	       "Missing new source type strings?");
+> +
+>  /*
+>   * VM Create
+>   *
+> -- 
+> 2.23.0
+> 
