@@ -2,100 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 264123132F4
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 14:10:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FF783132FE
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 14:12:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230264AbhBHNKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 08:10:25 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:12599 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229848AbhBHNKS (ORCPT
+        id S229822AbhBHNKh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 08:10:37 -0500
+Received: from mail.xenproject.org ([104.130.215.37]:50796 "EHLO
+        mail.xenproject.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230208AbhBHNK0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 08:10:18 -0500
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DZ5tN1XMdz164TN;
-        Mon,  8 Feb 2021 21:08:12 +0800 (CST)
-Received: from [127.0.0.1] (10.69.38.196) by DGGEMS404-HUB.china.huawei.com
- (10.3.19.204) with Microsoft SMTP Server id 14.3.498.0; Mon, 8 Feb 2021
- 21:09:29 +0800
-Subject: Re: [PATCH 1/4] driver core: Use subdir-ccflags-* to inherit debug
- flag
-To:     Greg KH <gregkh@linuxfoundation.org>
-CC:     <jdelvare@suse.com>, <linux@roeck-us.net>, <giometti@enneenne.com>,
-        <abbotti@mev.co.uk>, <hsweeten@visionengravers.com>,
-        <kw@linux.com>, <helgaas@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>,
-        <linux-hwmon@vger.kernel.org>, <devel@driverdev.osuosl.org>,
-        <linux-kbuild@vger.kernel.org>, <masahiroy@kernel.org>,
-        <michal.lkml@markovi.net>, <linuxarm@openeuler.org>,
-        <prime.zeng@huawei.com>
-References: <1612518255-23052-1-git-send-email-yangyicong@hisilicon.com>
- <1612518255-23052-2-git-send-email-yangyicong@hisilicon.com>
- <YB0Vk6ERJ3lFc3WD@kroah.com>
- <08017751-a1be-ea07-50de-73d14ab6d57e@hisilicon.com>
- <YCEWtxYgbRPET4Sr@kroah.com>
-From:   Yicong Yang <yangyicong@hisilicon.com>
-Message-ID: <1f0b2f37-db56-c220-dfe1-8c376031404f@hisilicon.com>
-Date:   Mon, 8 Feb 2021 21:09:20 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        Mon, 8 Feb 2021 08:10:26 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=xen.org;
+        s=20200302mail; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
+        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject;
+        bh=uol57jO/dZDNnz0gvnYYX8iUatRwa2AiCurGg9ekwqw=; b=rqta3YaZQM7WojriayJqyS/qS9
+        XZoq87teH/mB8cvOiipmyn0hUgSsBKV/1Xs4jZlbsex3ZFVPfRWm4cxUvEUP19mCORwonG3uA9HXw
+        ckZ41cJjgLTBpOSC38lsRDbSToCHYjq8I3zqXaYe9hb9yMslD0ltn4QuzE6KNsU2RiZc=;
+Received: from xenbits.xenproject.org ([104.239.192.120])
+        by mail.xenproject.org with esmtp (Exim 4.92)
+        (envelope-from <julien@xen.org>)
+        id 1l96IE-00045Q-UI; Mon, 08 Feb 2021 13:09:30 +0000
+Received: from [54.239.6.177] (helo=a483e7b01a66.ant.amazon.com)
+        by xenbits.xenproject.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <julien@xen.org>)
+        id 1l96IE-0008Vv-Ks; Mon, 08 Feb 2021 13:09:30 +0000
+Subject: Re: [PATCH 0/7] xen/events: bug fixes and some diagnostic aids
+To:     =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>,
+        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
+        linux-block@vger.kernel.org, netdev@vger.kernel.org,
+        linux-scsi@vger.kernel.org
+Cc:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        stable@vger.kernel.org,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        =?UTF-8?Q?Roger_Pau_Monn=c3=a9?= <roger.pau@citrix.com>,
+        Jens Axboe <axboe@kernel.dk>, Wei Liu <wei.liu@kernel.org>,
+        Paul Durrant <paul@xen.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+References: <20210206104932.29064-1-jgross@suse.com>
+ <bd63694e-ac0c-7954-ec00-edad05f8da1c@xen.org>
+ <eeb62129-d9fc-2155-0e0f-aff1fbb33fbc@suse.com>
+ <fcf3181b-3efc-55f5-687c-324937b543e6@xen.org>
+ <7aaeeb3d-1e1b-6166-84e9-481153811b62@suse.com>
+ <6f547bb5-777a-6fc2-eba2-cccb4adfca87@xen.org>
+ <0d623c98-a714-1639-cc53-f58ba3f08212@suse.com>
+ <28399fd1-9fe8-f31a-6ee8-e78de567155b@xen.org>
+ <1831964f-185e-31bb-2446-778f2c18d71b@suse.com>
+ <e8c46e36-cf9e-fb30-21b5-fa662834a01a@xen.org>
+ <199b76fd-630b-a0c6-926b-3e662103ec42@suse.com>
+From:   Julien Grall <julien@xen.org>
+Message-ID: <063eff75-56a5-1af7-f684-a2ed4b13c9a7@xen.org>
+Date:   Mon, 8 Feb 2021 13:09:27 +0000
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <YCEWtxYgbRPET4Sr@kroah.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.38.196]
-X-CFilter-Loop: Reflected
+In-Reply-To: <199b76fd-630b-a0c6-926b-3e662103ec42@suse.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/2/8 18:47, Greg KH wrote:
-> On Mon, Feb 08, 2021 at 06:44:52PM +0800, Yicong Yang wrote:
->> Hi Greg,
+Hi Juergen,
+
+On 08/02/2021 12:31, Jürgen Groß wrote:
+> On 08.02.21 13:16, Julien Grall wrote:
 >>
->> On 2021/2/5 17:53, Greg KH wrote:
->>> On Fri, Feb 05, 2021 at 05:44:12PM +0800, Yicong Yang wrote:
->>>> From: Junhao He <hejunhao2@hisilicon.com>
+>>
+>> On 08/02/2021 12:14, Jürgen Groß wrote:
+>>> On 08.02.21 11:40, Julien Grall wrote:
+>>>> Hi Juergen,
 >>>>
->>>> Use subdir-ccflags-* instead of ccflags-* to inherit the debug
->>>> settings from Kconfig when traversing subdirectories.
+>>>> On 08/02/2021 10:22, Jürgen Groß wrote:
+>>>>> On 08.02.21 10:54, Julien Grall wrote:
+>>>>>> ... I don't really see how the difference matter here. The idea is 
+>>>>>> to re-use what's already existing rather than trying to re-invent 
+>>>>>> the wheel with an extra lock (or whatever we can come up).
+>>>>>
+>>>>> The difference is that the race is occurring _before_ any IRQ is
+>>>>> involved. So I don't see how modification of IRQ handling would help.
+>>>>
+>>>> Roughly our current IRQ handling flow (handle_eoi_irq()) looks like:
+>>>>
+>>>> if ( irq in progress )
+>>>> {
+>>>>    set IRQS_PENDING
+>>>>    return;
+>>>> }
+>>>>
+>>>> do
+>>>> {
+>>>>    clear IRQS_PENDING
+>>>>    handle_irq()
+>>>> } while (IRQS_PENDING is set)
+>>>>
+>>>> IRQ handling flow like handle_fasteoi_irq() looks like:
+>>>>
+>>>> if ( irq in progress )
+>>>>    return;
+>>>>
+>>>> handle_irq()
+>>>>
+>>>> The latter flow would catch "spurious" interrupt and ignore them. So 
+>>>> it would handle nicely the race when changing the event affinity.
 >>>
->>> That says what you do, but not _why_ you are doing it.
+>>> Sure? Isn't "irq in progress" being reset way before our "lateeoi" is
+>>> issued, thus having the same problem again? 
 >>
->> i'll illustrate the reason and reword the commit.
->>
->>>
->>> What does this offer in benefit of the existing way?  What is it fixing?
->>> Why do this "churn"?
->>
->> currently we have added ccflags-$(CONFIG_DEBUG_DRIVER) := -DDEBUG in the Makefile
->> of driver/base and driver/base/power, but not in the subdirectory
->> driver/base/firmware_loader. we cannot turn the debug on for subdirectory
->> firmware_loader if we config DEBUG_DRIVER and there is no kconfig option
->> for the it.
+>> Sorry I can't parse this.
 > 
-> Is that necessary?  Does that directory need it?
+> handle_fasteoi_irq() will do nothing "if ( irq in progress )". When is
+> this condition being reset again in order to be able to process another
+> IRQ?
+It is reset after the handler has been called. See handle_irq_event().
 
-there are several debug prints in firmware_loader/main.c:
+> I believe this will be the case before our "lateeoi" handling is
+> becoming active (more precise: when our IRQ handler is returning to
+> handle_fasteoi_irq()), resulting in the possibility of the same race we
+> are experiencing now.
 
-./main.c:207:   pr_debug("%s: fw-%s fw_priv=%p\n", __func__, fw_name, fw_priv);
-./main.c:245:                   pr_debug("batched request - sharing the same struct fw_priv and lookup for multiple requests\n");
-./main.c:269:   pr_debug("%s: fw-%s fw_priv=%p data=%p size=%u\n",
-./main.c:594:   pr_debug("%s: fw-%s fw_priv=%p data=%p size=%u\n",
-./main.c:605:           pr_debug("%s: fw_name-%s devm-%p released\n",
-./main.c:1175:  pr_debug("%s: %s\n", __func__, fw_name);
-./main.c:1181:  pr_debug("%s: %s ret=%d\n", __func__, fw_name, ret);
-./main.c:1214:  pr_debug("%s: %s\n", __func__, fw_name);
-./main.c:1272:          pr_debug("%s: fw: %s\n", __func__, name);
-./main.c:1389:  pr_debug("%s\n", __func__);
-./main.c:1415:  pr_debug("%s\n", __func__);
+I am a bit confused what you mean by "lateeoi" handling is becoming 
+active. Can you clarify?
 
+Note that are are other IRQ flows existing. We should have a look at 
+them before trying to fix thing ourself.
 
-> 
-> thanks,
-> 
-> greg k-h
-> 
-> .
-> 
+Although, the other issue I can see so far is handle_irq_for_port() will 
+update info->{eoi_cpu, irq_epoch, eoi_time} without any locking. But it 
+is not clear this is what you mean by "becoming active".
 
+Cheers,
+
+-- 
+Julien Grall
