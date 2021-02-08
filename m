@@ -2,56 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB3FE312F60
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 11:46:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD192312F50
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 11:44:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232254AbhBHKpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 05:45:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48786 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232395AbhBHKfI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S232246AbhBHKo3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 05:44:29 -0500
+Received: from so15.mailgun.net ([198.61.254.15]:57158 "EHLO so15.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232386AbhBHKfI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 8 Feb 2021 05:35:08 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 849B8C06178C
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 02:34:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=bRpgoLWJPHxSZ8lZ5Bw0K778uJjEstKxohuiCKTDc8M=; b=ZhvS8BWD3pgbYR7kzIseGT5Alt
-        aE5ThcQTT8ep8AIQgJJfGj0+yIPVG7aeUDGg4Wq/2T1BLxWbEp9N0bUZqdrhfW6hJYB4RoYdpGPkf
-        jZx3IZHrS6CpcaKqvl8iEZ0sX1FN68XHTPe9ok6XGAO3gWNrYGzughxVvysUFdrM0r9D19o+V0XCL
-        FfN4YTANwaQWvppdPeQaOLj7QSs/FStWDzt1id1Hy2w2///5zZ2dO7HSe8KHmwfHCB8yWHr0KMY9i
-        hFtQfpy6UATKmuw4RKu8wyU9+pXTOu70SoT4PsQXNRKmPGqayb1pRTupGMQYNu6CGqpkSf6+D7IS4
-        c469zZ3A==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l93s4-0007qQ-87; Mon, 08 Feb 2021 10:34:20 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1612780488; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=nsYYyDQ8SFTkzKHxtSgLpNnRS1loGDDt83SA7JPx+vE=;
+ b=JRvipYLtNCb089Cyz7YYg3ZFuIWtqzLW5/DrA0Xhnwkde7PGAXhthG33fXT1Ak3NQedvsIDy
+ wl/n5E9HgwrpCUrt0p8W3uFuPAB78aZkQLPqz5N2T9wmGfhaRfjco7qBuv2+RarnJFVOHzQj
+ qUZi30KWZKPPt2nyA2A4FrsbjRU=
+X-Mailgun-Sending-Ip: 198.61.254.15
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 602113acf112b7872c236a7e (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 08 Feb 2021 10:34:20
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id C1FD5C43465; Mon,  8 Feb 2021 10:34:20 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        MISSING_DATE,MISSING_MID,SPF_FAIL autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 11F103010D2;
-        Mon,  8 Feb 2021 11:34:19 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id F39A22BF248D3; Mon,  8 Feb 2021 11:34:18 +0100 (CET)
-Date:   Mon, 8 Feb 2021 11:34:18 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Alexey Dobriyan <adobriyan@gmail.com>
-Cc:     mingo@redhat.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/5] sched: make struct task_struct::state 32-bit
-Message-ID: <YCETqt8Vqb8R6qmA@hirez.programming.kicks-ass.net>
-References: <20210206151832.GA487103@localhost.localdomain>
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 66967C433C6;
+        Mon,  8 Feb 2021 10:34:18 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 66967C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210206151832.GA487103@localhost.localdomain>
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH v2] rtlwifi: rtl8821ae: style: Simplify bool comparison
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <1611632768-6293-1-git-send-email-abaci-bugfix@linux.alibaba.com>
+References: <1611632768-6293-1-git-send-email-abaci-bugfix@linux.alibaba.com>
+To:     Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
+Cc:     pkshih@realtek.com, davem@davemloft.net, kuba@kernel.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
+Message-Id: <20210208103420.C1FD5C43465@smtp.codeaurora.org>
+Date:   Mon,  8 Feb 2021 10:34:20 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Feb 06, 2021 at 06:18:32PM +0300, Alexey Dobriyan wrote:
+Jiapeng Zhong <abaci-bugfix@linux.alibaba.com> wrote:
 
-> Silently delete "extern" from prototypes.
+> Fix the following coccicheck warning:
+> ./drivers/net/wireless/realtek/rtlwifi/rtl8821ae/phy.c:3853:7-17:
+> WARNING: Comparison of 0/1 to bool variable
+> 
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
 
-NAK, extern is right.
+Please use your own email address and real name.
+
+Patch set to Changes Requested.
+
+-- 
+https://patchwork.kernel.org/project/linux-wireless/patch/1611632768-6293-1-git-send-email-abaci-bugfix@linux.alibaba.com/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
