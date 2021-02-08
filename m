@@ -2,18 +2,18 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 461F7313DCF
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 19:42:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67FCF313DE5
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 19:43:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235762AbhBHSly (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 13:41:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42998 "EHLO
+        id S235860AbhBHSnJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 13:43:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234505AbhBHQlt (ORCPT
+        with ESMTP id S234591AbhBHQm6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 11:41:49 -0500
+        Mon, 8 Feb 2021 11:42:58 -0500
 Received: from mail.kapsi.fi (mail.kapsi.fi [IPv6:2001:67c:1be8::25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5973C061786;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 030A7C0617A7;
         Mon,  8 Feb 2021 08:41:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=kapsi.fi;
          s=20161220; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
@@ -21,17 +21,17 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=kapsi.fi;
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=0IKu+HkeaJAhgzHU2yYWK31KsEfn8lTKeY9abUb5iks=; b=L0Q1HJ2q5PoVKu51YDHqKbfR3y
-        Aooi809PM+nt5Gnlr2tqz14I232iZhIr6aoCOobYV/hqXznvVqYrhlTD0H8doqAbzCkWuG37anQfr
-        ru6k+wg8GHFCXX2x4CX9U/t5MY3sx9L/M4cX1MK7/+QTQ80mVRUNi9UsUWZM56SPf0h/iYmEmsIO8
-        8syFpHXtm6/WQ/o+xjn/3dUpDb8acdsDRTSDSbfISbtd0EUMVbgOcDbVfsm0H4SBRpAxatdl2Nyb+
-        lY6U6mOdxZJ9Z5u2n2l8D2PkJZeo6WzSjDNHMO14KB8mb/+jIlsjwfSyxSaiBSf3/5/8qaU2H0ojv
-        XJui5UVQ==;
+        bh=aorvd7/8Q0iagez40K36p+HgsrbrS8WV5PQF4a7s2FM=; b=ySwDzcwlbm4PDJsfWZJRJYlsEh
+        1gQ/3jlSsnD9yMsUDmfEuW5mpJHoJ+PYH1FfHQt8axPr3HRWYG9diWakeC6Lbs+GHjLVm6atP7Dva
+        YY/gYggyUlZOqYLUwbpy2KFfaT324NgYjyBbzmLENXNx5QzUsieszbNFbHEctR3I/6heHoR8VFqks
+        P+V/sFpl6e6P/kiECFRLELyWB53nljM2ixs5tpfb+zx3QRLQijQicqP7YrYIPYXrt7vliGfvgfwLm
+        qUZYvOUAX58EkV+1WYOi+w1E8q6MHpDEt1uKvJ2JGP/Qu9HufT89UO+Ani8m6DFDBaaU/qJrbpKTK
+        JifS9MIw==;
 Received: from dsl-hkibng22-54f986-236.dhcp.inet.fi ([84.249.134.236] helo=toshino.localdomain)
         by mail.kapsi.fi with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
         (Exim 4.89)
         (envelope-from <mperttunen@nvidia.com>)
-        id 1l99at-0000Cr-0U; Mon, 08 Feb 2021 18:40:59 +0200
+        id 1l99at-0000Cr-2v; Mon, 08 Feb 2021 18:40:59 +0200
 From:   Mikko Perttunen <mperttunen@nvidia.com>
 To:     thierry.reding@gmail.com, jonathanh@nvidia.com, joro@8bytes.org,
         will@kernel.org, robh+dt@kernel.org, frowand.list@gmail.com,
@@ -40,9 +40,9 @@ Cc:     linux-tegra@vger.kernel.org, dri-devel@lists.freedesktop.org,
         iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
         devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         Mikko Perttunen <mperttunen@nvidia.com>
-Subject: [RFC PATCH 5/8] iommu/arm-smmu: Attach to host1x context device bus
-Date:   Mon,  8 Feb 2021 18:38:45 +0200
-Message-Id: <20210208163848.2504291-6-mperttunen@nvidia.com>
+Subject: [RFC PATCH 6/8] arm64: tegra: Add Host1x context stream IDs on Tegra186+
+Date:   Mon,  8 Feb 2021 18:38:46 +0200
+Message-Id: <20210208163848.2504291-7-mperttunen@nvidia.com>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210208163848.2504291-1-mperttunen@nvidia.com>
 References: <20210208163848.2504291-1-mperttunen@nvidia.com>
@@ -55,47 +55,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Set itself as the IOMMU for the host1x context device bus, containing
-"dummy" devices used for Host1x context isolation.
+Add Host1x context stream IDs on systems that support Host1x context
+isolation. Host1x and attached engines can use these stream IDs to
+allow isolation between memory used by different processes.
+
+The specified stream IDs must match those configured by the hypervisor,
+if one is present.
 
 Signed-off-by: Mikko Perttunen <mperttunen@nvidia.com>
 ---
- drivers/iommu/arm/arm-smmu/arm-smmu.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ arch/arm64/boot/dts/nvidia/tegra186.dtsi | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.c b/drivers/iommu/arm/arm-smmu/arm-smmu.c
-index d8c6bfde6a61..ec746c2a08ae 100644
---- a/drivers/iommu/arm/arm-smmu/arm-smmu.c
-+++ b/drivers/iommu/arm/arm-smmu/arm-smmu.c
-@@ -40,6 +40,7 @@
+diff --git a/arch/arm64/boot/dts/nvidia/tegra186.dtsi b/arch/arm64/boot/dts/nvidia/tegra186.dtsi
+index c567aa65418b..25a8cb1a97a6 100644
+--- a/arch/arm64/boot/dts/nvidia/tegra186.dtsi
++++ b/arch/arm64/boot/dts/nvidia/tegra186.dtsi
+@@ -1176,6 +1176,15 @@ host1x@13e00000 {
+ 		interconnect-names = "dma-mem";
  
- #include <linux/amba/bus.h>
- #include <linux/fsl/mc.h>
-+#include <linux/host1x_context_bus.h>
+ 		iommus = <&smmu TEGRA186_SID_HOST1X>;
++		nvidia,context-iommus = <
++			&smmu TEGRA186_SID_HOST1X_CTX0
++			&smmu TEGRA186_SID_HOST1X_CTX1
++			&smmu TEGRA186_SID_HOST1X_CTX2
++			&smmu TEGRA186_SID_HOST1X_CTX3
++			&smmu TEGRA186_SID_HOST1X_CTX4
++			&smmu TEGRA186_SID_HOST1X_CTX5
++			&smmu TEGRA186_SID_HOST1X_CTX6
++			&smmu TEGRA186_SID_HOST1X_CTX7>;
  
- #include "arm-smmu.h"
- 
-@@ -2087,8 +2088,20 @@ static int arm_smmu_bus_init(struct iommu_ops *ops)
- 			goto err_reset_pci_ops;
- 	}
- #endif
-+#ifdef CONFIG_TEGRA_HOST1X_CONTEXT_BUS
-+	if (!iommu_present(&host1x_context_device_bus_type)) {
-+		err = bus_set_iommu(&host1x_context_device_bus_type, ops);
-+		if (err)
-+			goto err_reset_fsl_mc_ops;
-+	}
-+#endif
-+
- 	return 0;
- 
-+err_reset_fsl_mc_ops: __maybe_unused;
-+#ifdef CONFIG_FSL_MC_BUS
-+	bus_set_iommu(&fsl_mc_bus_type, NULL);
-+#endif
- err_reset_pci_ops: __maybe_unused;
- #ifdef CONFIG_PCI
- 	bus_set_iommu(&pci_bus_type, NULL);
+ 		dpaux1: dpaux@15040000 {
+ 			compatible = "nvidia,tegra186-dpaux";
 -- 
 2.30.0
 
