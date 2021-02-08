@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E26DB3136CD
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 16:16:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 984A2313774
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 16:26:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233556AbhBHPPw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 10:15:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52048 "EHLO mail.kernel.org"
+        id S229939AbhBHPZw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 10:25:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52600 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232851AbhBHPD4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 10:03:56 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4667164EBC;
-        Mon,  8 Feb 2021 15:03:00 +0000 (UTC)
+        id S232877AbhBHPEe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 10:04:34 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E083564EC2;
+        Mon,  8 Feb 2021 15:03:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612796580;
-        bh=aSQihHmeBeMfPs0/tAyg/BaHUc0dQA01ZURtNbjvBTQ=;
+        s=korg; t=1612796586;
+        bh=6JGhG+QWvhqfsbx4HHayZXpgKRLFNuBL0nCs+ms7E+s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YyNr6+OFtzSTdUEb7Myadwa/5HBQhhg1Pa5ZCt1sFMMiKKIiVt5Fgy2mnbYgzbyYT
-         W2ZhQEkennGNPV+0Zam0xxwMgqjdSuCkbUbI1uuKmrASWNojOiAnV0Y72Sep9ybpGv
-         2pGOtfFbwooh1Q22CjaydgI33ZIKvm5QqKHiNp20=
+        b=kL4w3mTiy905JuHGFuxJ3B4S2aVXDYRWAVPPithG2MYgDTaulufGOht0Ctp1zy8G3
+         28RK/5IsMdT8JXtxTeH7QJRBj8lAQu+OsUtFQS4Uj6CUX/fjodv2WpNKcojjgzJY9W
+         NlYTOJPbzQXy/q/ZGIs/n8KSXDWiLcOv6Jle872Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Muchun Song <songmuchun@bytedance.com>,
-        Michal Hocko <mhocko@suse.com>,
         Mike Kravetz <mike.kravetz@oracle.com>,
+        Michal Hocko <mhocko@suse.com>,
         Oscar Salvador <osalvador@suse.de>,
         David Hildenbrand <david@redhat.com>,
         Yang Shi <shy828301@gmail.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.4 31/38] mm: hugetlbfs: fix cannot migrate the fallocated HugeTLB page
-Date:   Mon,  8 Feb 2021 16:00:53 +0100
-Message-Id: <20210208145806.482939172@linuxfoundation.org>
+Subject: [PATCH 4.4 32/38] mm: hugetlb: fix a race between isolating and freeing page
+Date:   Mon,  8 Feb 2021 16:00:54 +0100
+Message-Id: <20210208145806.523131512@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210208145805.279815326@linuxfoundation.org>
 References: <20210208145805.279815326@linuxfoundation.org>
@@ -47,21 +47,38 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Muchun Song <songmuchun@bytedance.com>
 
-commit 585fc0d2871c9318c949fbf45b1f081edd489e96 upstream.
+commit 0eb2df2b5629794020f75e94655e1994af63f0d4 upstream.
 
-If a new hugetlb page is allocated during fallocate it will not be
-marked as active (set_page_huge_active) which will result in a later
-isolate_huge_page failure when the page migration code would like to
-move that page.  Such a failure would be unexpected and wrong.
+There is a race between isolate_huge_page() and __free_huge_page().
 
-Only export set_page_huge_active, just leave clear_page_huge_active as
-static.  Because there are no external users.
+  CPU0:                                     CPU1:
 
-Link: https://lkml.kernel.org/r/20210115124942.46403-3-songmuchun@bytedance.com
-Fixes: 70c3547e36f5 (hugetlbfs: add hugetlbfs_fallocate())
+  if (PageHuge(page))
+                                            put_page(page)
+                                              __free_huge_page(page)
+                                                  spin_lock(&hugetlb_lock)
+                                                  update_and_free_page(page)
+                                                    set_compound_page_dtor(page,
+                                                      NULL_COMPOUND_DTOR)
+                                                  spin_unlock(&hugetlb_lock)
+    isolate_huge_page(page)
+      // trigger BUG_ON
+      VM_BUG_ON_PAGE(!PageHead(page), page)
+      spin_lock(&hugetlb_lock)
+      page_huge_active(page)
+        // trigger BUG_ON
+        VM_BUG_ON_PAGE(!PageHuge(page), page)
+      spin_unlock(&hugetlb_lock)
+
+When we isolate a HugeTLB page on CPU0.  Meanwhile, we free it to the
+buddy allocator on CPU1.  Then, we can trigger a BUG_ON on CPU0, because
+it is already freed to the buddy allocator.
+
+Link: https://lkml.kernel.org/r/20210115124942.46403-5-songmuchun@bytedance.com
+Fixes: c8721bbbdd36 ("mm: memory-hotplug: enable memory hotplug to handle hugepage")
 Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-Acked-by: Michal Hocko <mhocko@suse.com>
 Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
+Acked-by: Michal Hocko <mhocko@suse.com>
 Reviewed-by: Oscar Salvador <osalvador@suse.de>
 Cc: David Hildenbrand <david@redhat.com>
 Cc: Yang Shi <shy828301@gmail.com>
@@ -70,46 +87,22 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/hugetlbfs/inode.c    |    3 ++-
- include/linux/hugetlb.h |    3 +++
- mm/hugetlb.c            |    2 +-
- 3 files changed, 6 insertions(+), 2 deletions(-)
+ mm/hugetlb.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/fs/hugetlbfs/inode.c
-+++ b/fs/hugetlbfs/inode.c
-@@ -661,8 +661,9 @@ static long hugetlbfs_fallocate(struct f
- 
- 		mutex_unlock(&hugetlb_fault_mutex_table[hash]);
- 
-+		set_page_huge_active(page);
- 		/*
--		 * page_put due to reference from alloc_huge_page()
-+		 * put_page() due to reference from alloc_huge_page()
- 		 * unlock_page because locked by add_to_page_cache()
- 		 */
- 		put_page(page);
---- a/include/linux/hugetlb.h
-+++ b/include/linux/hugetlb.h
-@@ -506,6 +506,9 @@ static inline void hugetlb_count_sub(lon
- {
- 	atomic_long_sub(l, &mm->hugetlb_usage);
- }
-+
-+void set_page_huge_active(struct page *page);
-+
- #else	/* CONFIG_HUGETLB_PAGE */
- struct hstate {};
- #define alloc_huge_page(v, a, r) NULL
 --- a/mm/hugetlb.c
 +++ b/mm/hugetlb.c
-@@ -1189,7 +1189,7 @@ bool page_huge_active(struct page *page)
- }
- 
- /* never called for tail page */
--static void set_page_huge_active(struct page *page)
-+void set_page_huge_active(struct page *page)
+@@ -4544,9 +4544,9 @@ bool isolate_huge_page(struct page *page
  {
- 	VM_BUG_ON_PAGE(!PageHeadHuge(page), page);
- 	SetPagePrivate(&page[1]);
+ 	bool ret = true;
+ 
+-	VM_BUG_ON_PAGE(!PageHead(page), page);
+ 	spin_lock(&hugetlb_lock);
+-	if (!page_huge_active(page) || !get_page_unless_zero(page)) {
++	if (!PageHeadHuge(page) || !page_huge_active(page) ||
++	    !get_page_unless_zero(page)) {
+ 		ret = false;
+ 		goto unlock;
+ 	}
 
 
