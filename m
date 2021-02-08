@@ -2,36 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB769313623
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 16:07:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E25753136A1
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 16:14:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232420AbhBHPG3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 10:06:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51778 "EHLO mail.kernel.org"
+        id S233449AbhBHPNQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 10:13:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52242 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232380AbhBHPDU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 10:03:20 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F2FA964EB7;
-        Mon,  8 Feb 2021 15:02:34 +0000 (UTC)
+        id S232713AbhBHPDo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 10:03:44 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A1D2164EB6;
+        Mon,  8 Feb 2021 15:02:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612796555;
-        bh=KVhmUdS4Zyo2qiysiPo3/3eJXXQ/2cbzLr1owaatF9k=;
+        s=korg; t=1612796558;
+        bh=liUZjemuX4P1yam1jd92H6v+ONRJGO6qtZ6S8SaJg8s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eI27AJY95Ic+vg+6+7M2cvyvJ4f8tuS9C7mMALUaaDxuDqTQjCOEPnmH4s6xQzhG3
-         lcgBY5KYxoN4DReOmJRxu6c/twP9qMf/vT9CXPKr8Nz3ZOnoJEesQXZKTZmzsW2rjp
-         lfplzd3SRJBbDMGwxkcDNSZHnWbzPEyaYDHSdp28=
+        b=xBj117/s/kfX8MkBr+e1ZpILTIW5ge/g8ApCAyecSMlN35kQPCWAcwcNazY3gnJHr
+         Js3jP3tAAZM0WKLH1Z/UCPgeQGDQ/LfesIMer/utZnp4YGVQf8q69JCH1blzLG0040
+         fpAiLaPQG9THbOj76hOYqpSZl+y7wz7EcN1ARF/w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Barret Rhoden <brho@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.4 22/38] elfcore: fix building with clang
-Date:   Mon,  8 Feb 2021 16:00:44 +0100
-Message-Id: <20210208145806.154119176@linuxfoundation.org>
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [PATCH 4.4 23/38] USB: gadget: legacy: fix an error code in eth_bind()
+Date:   Mon,  8 Feb 2021 16:00:45 +0100
+Message-Id: <20210208145806.195759385@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210208145805.279815326@linuxfoundation.org>
 References: <20210208145805.279815326@linuxfoundation.org>
@@ -43,109 +38,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-commit 6e7b64b9dd6d96537d816ea07ec26b7dedd397b9 upstream.
+commit 3e1f4a2e1184ae6ad7f4caf682ced9554141a0f4 upstream.
 
-kernel/elfcore.c only contains weak symbols, which triggers a bug with
-clang in combination with recordmcount:
+This code should return -ENOMEM if the allocation fails but it currently
+returns success.
 
-  Cannot find symbol for section 2: .text.
-  kernel/elfcore.o: failed
-
-Move the empty stubs into linux/elfcore.h as inline functions.  As only
-two architectures use these, just use the architecture specific Kconfig
-symbols to key off the declaration.
-
-Link: https://lkml.kernel.org/r/20201204165742.3815221-2-arnd@kernel.org
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Cc: Nathan Chancellor <natechancellor@gmail.com>
-Cc: Nick Desaulniers <ndesaulniers@google.com>
-Cc: Barret Rhoden <brho@google.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Fixes: 9b95236eebdb ("usb: gadget: ether: allocate and init otg descriptor by otg capabilities")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Link: https://lore.kernel.org/r/YBKE9rqVuJEOUWpW@mwanda
+Cc: stable <stable@vger.kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- include/linux/elfcore.h |   22 ++++++++++++++++++++++
- kernel/Makefile         |    1 -
- kernel/elfcore.c        |   25 -------------------------
- 3 files changed, 22 insertions(+), 26 deletions(-)
- delete mode 100644 kernel/elfcore.c
+ drivers/usb/gadget/legacy/ether.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/include/linux/elfcore.h
-+++ b/include/linux/elfcore.h
-@@ -55,6 +55,7 @@ static inline int elf_core_copy_task_xfp
- }
- #endif
+--- a/drivers/usb/gadget/legacy/ether.c
++++ b/drivers/usb/gadget/legacy/ether.c
+@@ -407,8 +407,10 @@ static int eth_bind(struct usb_composite
+ 		struct usb_descriptor_header *usb_desc;
  
-+#if defined(CONFIG_UM) || defined(CONFIG_IA64)
- /*
-  * These functions parameterize elf_core_dump in fs/binfmt_elf.c to write out
-  * extra segments containing the gate DSO contents.  Dumping its
-@@ -69,5 +70,26 @@ elf_core_write_extra_phdrs(struct coredu
- extern int
- elf_core_write_extra_data(struct coredump_params *cprm);
- extern size_t elf_core_extra_data_size(void);
-+#else
-+static inline Elf_Half elf_core_extra_phdrs(void)
-+{
-+	return 0;
-+}
-+
-+static inline int elf_core_write_extra_phdrs(struct coredump_params *cprm, loff_t offset)
-+{
-+	return 1;
-+}
-+
-+static inline int elf_core_write_extra_data(struct coredump_params *cprm)
-+{
-+	return 1;
-+}
-+
-+static inline size_t elf_core_extra_data_size(void)
-+{
-+	return 0;
-+}
-+#endif
- 
- #endif /* _LINUX_ELFCORE_H */
---- a/kernel/Makefile
-+++ b/kernel/Makefile
-@@ -77,7 +77,6 @@ obj-$(CONFIG_TASK_DELAY_ACCT) += delayac
- obj-$(CONFIG_TASKSTATS) += taskstats.o tsacct.o
- obj-$(CONFIG_TRACEPOINTS) += tracepoint.o
- obj-$(CONFIG_LATENCYTOP) += latencytop.o
--obj-$(CONFIG_ELFCORE) += elfcore.o
- obj-$(CONFIG_FUNCTION_TRACER) += trace/
- obj-$(CONFIG_TRACING) += trace/
- obj-$(CONFIG_TRACE_CLOCK) += trace/
---- a/kernel/elfcore.c
-+++ /dev/null
-@@ -1,25 +0,0 @@
--#include <linux/elf.h>
--#include <linux/fs.h>
--#include <linux/mm.h>
--#include <linux/binfmts.h>
--#include <linux/elfcore.h>
--
--Elf_Half __weak elf_core_extra_phdrs(void)
--{
--	return 0;
--}
--
--int __weak elf_core_write_extra_phdrs(struct coredump_params *cprm, loff_t offset)
--{
--	return 1;
--}
--
--int __weak elf_core_write_extra_data(struct coredump_params *cprm)
--{
--	return 1;
--}
--
--size_t __weak elf_core_extra_data_size(void)
--{
--	return 0;
--}
+ 		usb_desc = usb_otg_descriptor_alloc(gadget);
+-		if (!usb_desc)
++		if (!usb_desc) {
++			status = -ENOMEM;
+ 			goto fail1;
++		}
+ 		usb_otg_descriptor_init(gadget, usb_desc);
+ 		otg_desc[0] = usb_desc;
+ 		otg_desc[1] = NULL;
 
 
