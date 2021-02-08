@@ -2,25 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB713312EBF
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 11:19:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A938B312EF5
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 11:27:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232234AbhBHKSg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 05:18:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59524 "EHLO mail.kernel.org"
+        id S231960AbhBHK0H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 05:26:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33172 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230360AbhBHKEz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 05:04:55 -0500
+        id S232353AbhBHKIJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 05:08:09 -0500
 Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DC4AC64E87;
-        Mon,  8 Feb 2021 10:04:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4A8F964E9C;
+        Mon,  8 Feb 2021 10:04:42 +0000 (UTC)
 Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.lan)
         by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94)
         (envelope-from <maz@kernel.org>)
-        id 1l93JA-00Ck14-4f; Mon, 08 Feb 2021 09:58:16 +0000
+        id 1l93JA-00Ck14-Tq; Mon, 08 Feb 2021 09:58:17 +0000
 From:   Marc Zyngier <maz@kernel.org>
 To:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
         linux-kernel@vger.kernel.org
@@ -39,9 +39,9 @@ Cc:     Catalin Marinas <catalin.marinas@arm.com>,
         Julien Thierry <julien.thierry.kdev@gmail.com>,
         Suzuki K Poulose <suzuki.poulose@arm.com>,
         kernel-team@android.com
-Subject: [PATCH v7 22/23] arm64: cpufeatures: Allow disabling of Pointer Auth from the command-line
-Date:   Mon,  8 Feb 2021 09:57:31 +0000
-Message-Id: <20210208095732.3267263-23-maz@kernel.org>
+Subject: [PATCH v7 23/23] [DO NOT MERGE] arm64: Cope with CPUs stuck in VHE mode
+Date:   Mon,  8 Feb 2021 09:57:32 +0000
+Message-Id: <20210208095732.3267263-24-maz@kernel.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210208095732.3267263-1-maz@kernel.org>
 References: <20210208095732.3267263-1-maz@kernel.org>
@@ -55,113 +55,137 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order to be able to disable Pointer Authentication  at runtime,
-whether it is for testing purposes, or to work around HW issues,
-let's add support for overriding the ID_AA64ISAR1_EL1.{GPI,GPA,API,APA}
-fields.
+It seems that the CPU known as Apple M1 has the terrible habit
+of being stuck with HCR_EL2.E2H==1, in violation of the architecture.
 
-This is further mapped on the arm64.nopauth command-line alias.
+Try and work around this deplorable state of affairs by detecting
+the stuck bit early and short-circuit the nVHE dance. It is still
+unknown whether there are many more such nuggets to be found...
 
+Reported-by: Hector Martin <marcan@marcan.st>
 Signed-off-by: Marc Zyngier <maz@kernel.org>
-Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
-Acked-by: David Brazdil <dbrazdil@google.com>
-Tested-by: Srinivas Ramana <sramana@codeaurora.org>
 ---
- Documentation/admin-guide/kernel-parameters.txt |  3 +++
- arch/arm64/include/asm/cpufeature.h             |  1 +
- arch/arm64/kernel/cpufeature.c                  |  4 +++-
- arch/arm64/kernel/idreg-override.c              | 16 ++++++++++++++++
- 4 files changed, 23 insertions(+), 1 deletion(-)
+ arch/arm64/kernel/head.S     | 33 ++++++++++++++++++++++++++++++---
+ arch/arm64/kernel/hyp-stub.S | 28 ++++++++++++++++++++++++----
+ 2 files changed, 54 insertions(+), 7 deletions(-)
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 7599fd0f1ad7..f9cb28a39bd0 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -376,6 +376,9 @@
- 	arm64.nobti	[ARM64] Unconditionally disable Branch Target
- 			Identification support
+diff --git a/arch/arm64/kernel/head.S b/arch/arm64/kernel/head.S
+index 2e116ef255e1..bce66d6bda74 100644
+--- a/arch/arm64/kernel/head.S
++++ b/arch/arm64/kernel/head.S
+@@ -477,14 +477,13 @@ EXPORT_SYMBOL(kimage_vaddr)
+  * booted in EL1 or EL2 respectively.
+  */
+ SYM_FUNC_START(init_kernel_el)
+-	mov_q	x0, INIT_SCTLR_EL1_MMU_OFF
+-	msr	sctlr_el1, x0
+-
+ 	mrs	x0, CurrentEL
+ 	cmp	x0, #CurrentEL_EL2
+ 	b.eq	init_el2
  
-+	arm64.nopauth	[ARM64] Unconditionally disable Pointer Authentication
-+			support
+ SYM_INNER_LABEL(init_el1, SYM_L_LOCAL)
++	mov_q	x0, INIT_SCTLR_EL1_MMU_OFF
++	msr	sctlr_el1, x0
+ 	isb
+ 	mov_q	x0, INIT_PSTATE_EL1
+ 	msr	spsr_el1, x0
+@@ -504,6 +503,34 @@ SYM_INNER_LABEL(init_el2, SYM_L_LOCAL)
+ 	msr	vbar_el2, x0
+ 	isb
+ 
++	/*
++	 * Fruity CPUs seem to have HCR_EL2.E2H set to RES1,
++	 * making it impossible to start in nVHE mode. Is that
++	 * compliant with the architecture? Absolutely not!
++	 */
++	mrs	x0, hcr_el2
++	and	x0, x0, #HCR_E2H
++	cbz	x0, 1f
 +
- 	ataflop=	[HW,M68k]
- 
- 	atarimouse=	[HW,MOUSE] Atari Mouse
-diff --git a/arch/arm64/include/asm/cpufeature.h b/arch/arm64/include/asm/cpufeature.h
-index 30917b9a760b..61177bac49fa 100644
---- a/arch/arm64/include/asm/cpufeature.h
-+++ b/arch/arm64/include/asm/cpufeature.h
-@@ -820,6 +820,7 @@ static inline unsigned int get_vmid_bits(u64 mmfr1)
- 
- extern struct arm64_ftr_override id_aa64mmfr1_override;
- extern struct arm64_ftr_override id_aa64pfr1_override;
-+extern struct arm64_ftr_override id_aa64isar1_override;
- 
- u32 get_kvm_ipa_limit(void);
- void dump_cpu_features(void);
-diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
-index 7fbeab497adb..3bce87a03717 100644
---- a/arch/arm64/kernel/cpufeature.c
-+++ b/arch/arm64/kernel/cpufeature.c
-@@ -559,6 +559,7 @@ static const struct arm64_ftr_bits ftr_raz[] = {
- 
- struct arm64_ftr_override __ro_after_init id_aa64mmfr1_override;
- struct arm64_ftr_override __ro_after_init id_aa64pfr1_override;
-+struct arm64_ftr_override __ro_after_init id_aa64isar1_override;
- 
- static const struct __ftr_reg_entry {
- 	u32			sys_id;
-@@ -604,7 +605,8 @@ static const struct __ftr_reg_entry {
- 
- 	/* Op1 = 0, CRn = 0, CRm = 6 */
- 	ARM64_FTR_REG(SYS_ID_AA64ISAR0_EL1, ftr_id_aa64isar0),
--	ARM64_FTR_REG(SYS_ID_AA64ISAR1_EL1, ftr_id_aa64isar1),
-+	ARM64_FTR_REG_OVERRIDE(SYS_ID_AA64ISAR1_EL1, ftr_id_aa64isar1,
-+			       &id_aa64isar1_override),
- 
- 	/* Op1 = 0, CRn = 0, CRm = 7 */
- 	ARM64_FTR_REG(SYS_ID_AA64MMFR0_EL1, ftr_id_aa64mmfr0),
-diff --git a/arch/arm64/kernel/idreg-override.c b/arch/arm64/kernel/idreg-override.c
-index d691e9015c62..dffb16682330 100644
---- a/arch/arm64/kernel/idreg-override.c
-+++ b/arch/arm64/kernel/idreg-override.c
-@@ -46,6 +46,18 @@ static const struct ftr_set_desc pfr1 __initconst = {
- 	},
- };
- 
-+static const struct ftr_set_desc isar1 __initconst = {
-+	.name		= "id_aa64isar1",
-+	.override	= &id_aa64isar1_override,
-+	.fields		= {
-+	        { "gpi", ID_AA64ISAR1_GPI_SHIFT },
-+	        { "gpa", ID_AA64ISAR1_GPA_SHIFT },
-+	        { "api", ID_AA64ISAR1_API_SHIFT },
-+	        { "apa", ID_AA64ISAR1_APA_SHIFT },
-+		{}
-+	},
-+};
++	/* Switching to VHE requires a sane SCTLR_EL1 as a start */
++	mov_q	x0, INIT_SCTLR_EL1_MMU_OFF
++	msr_s	SYS_SCTLR_EL12, x0
 +
- extern struct arm64_ftr_override kaslr_feature_override;
++	/*
++	 * Force an eret into a helper "function", and let it return
++	 * to our original caller... This makes sure that we have
++	 * initialised the basic PSTATE state.
++	 */
++	mov	x0, #INIT_PSTATE_EL2
++	msr	spsr_el1, x0
++	adr_l	x0, stick_to_vhe
++	msr	elr_el1, x0
++	eret
++
++1:
++	mov_q	x0, INIT_SCTLR_EL1_MMU_OFF
++	msr	sctlr_el1, x0
++
+ 	msr	elr_el2, lr
+ 	mov	w0, #BOOT_CPU_MODE_EL2
+ 	eret
+diff --git a/arch/arm64/kernel/hyp-stub.S b/arch/arm64/kernel/hyp-stub.S
+index 3e08dcc924b5..b55ed4af4c4a 100644
+--- a/arch/arm64/kernel/hyp-stub.S
++++ b/arch/arm64/kernel/hyp-stub.S
+@@ -27,12 +27,12 @@ SYM_CODE_START(__hyp_stub_vectors)
+ 	ventry	el2_fiq_invalid			// FIQ EL2t
+ 	ventry	el2_error_invalid		// Error EL2t
  
- static const struct ftr_set_desc kaslr __initconst = {
-@@ -62,6 +74,7 @@ static const struct ftr_set_desc kaslr __initconst = {
- static const struct ftr_set_desc * const regs[] __initconst = {
- 	&mmfr1,
- 	&pfr1,
-+	&isar1,
- 	&kaslr,
- };
+-	ventry	el2_sync_invalid		// Synchronous EL2h
++	ventry	elx_sync			// Synchronous EL2h
+ 	ventry	el2_irq_invalid			// IRQ EL2h
+ 	ventry	el2_fiq_invalid			// FIQ EL2h
+ 	ventry	el2_error_invalid		// Error EL2h
  
-@@ -72,6 +85,9 @@ static const struct {
- 	{ "kvm-arm.mode=nvhe",		"id_aa64mmfr1.vh=0" },
- 	{ "kvm-arm.mode=protected",	"id_aa64mmfr1.vh=0" },
- 	{ "arm64.nobti",		"id_aa64pfr1.bt=0" },
-+	{ "arm64.nopauth",
-+	  "id_aa64isar1.gpi=0 id_aa64isar1.gpa=0 "
-+	  "id_aa64isar1.api=0 id_aa64isar1.apa=0"	   },
- 	{ "nokaslr",			"kaslr.disabled=1" },
- };
+-	ventry	el1_sync			// Synchronous 64-bit EL1
++	ventry	elx_sync			// Synchronous 64-bit EL1
+ 	ventry	el1_irq_invalid			// IRQ 64-bit EL1
+ 	ventry	el1_fiq_invalid			// FIQ 64-bit EL1
+ 	ventry	el1_error_invalid		// Error 64-bit EL1
+@@ -45,7 +45,7 @@ SYM_CODE_END(__hyp_stub_vectors)
  
+ 	.align 11
+ 
+-SYM_CODE_START_LOCAL(el1_sync)
++SYM_CODE_START_LOCAL(elx_sync)
+ 	cmp	x0, #HVC_SET_VECTORS
+ 	b.ne	1f
+ 	msr	vbar_el2, x1
+@@ -71,7 +71,7 @@ SYM_CODE_START_LOCAL(el1_sync)
+ 
+ 9:	mov	x0, xzr
+ 	eret
+-SYM_CODE_END(el1_sync)
++SYM_CODE_END(elx_sync)
+ 
+ // nVHE? No way! Give me the real thing!
+ SYM_CODE_START_LOCAL(mutate_to_vhe)
+@@ -227,3 +227,23 @@ SYM_FUNC_START(switch_to_vhe)
+ #endif
+ 	ret
+ SYM_FUNC_END(switch_to_vhe)
++
++SYM_FUNC_START(stick_to_vhe)
++	/*
++	 * Make sure the switch to VHE cannot fail, by overriding the
++	 * override. This is hilarious.
++	 */
++	adr_l	x1, id_aa64mmfr1_override
++	add	x1, x1, #FTR_OVR_MASK_OFFSET
++	dc 	civac, x1
++	dsb	sy
++	isb
++	ldr	x0, [x1]
++	bic	x0, x0, #(0xf << ID_AA64MMFR1_VHE_SHIFT)
++	str	x0, [x1]
++
++	mov	x0, #HVC_VHE_RESTART
++	hvc	#0
++	mov	x0, #BOOT_CPU_MODE_EL2
++	ret
++SYM_FUNC_END(stick_to_vhe)
 -- 
 2.29.2
 
