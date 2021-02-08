@@ -2,91 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 669F431318D
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 12:56:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E184A313194
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 12:59:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233212AbhBHL4a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 06:56:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33608 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232597AbhBHLfs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 06:35:48 -0500
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A266C06174A;
-        Mon,  8 Feb 2021 03:35:06 -0800 (PST)
-Received: by mail-pg1-x52d.google.com with SMTP id t11so6339292pgu.8;
-        Mon, 08 Feb 2021 03:35:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=3Ph8qsKmXSqFKVv7QVwyNev8raeZwIr8Rm9tqiLL8AY=;
-        b=TG/s4IiQ6uTzTy6DW5yj2V2Pesqv+sw6iXbp4YQ8u8xFKYjsyjz2HG5KdO5Sn5+Omi
-         BMRSf6BaaJ93P706w/iDvr1RZd7WtcadR49k+ST7NgNQxiu0DHvZi0ATO6YzztkkV3T2
-         JPn0Dyaqp5w2UlutPpp59wI+9WZpcw2uhuJSXsmzucQyO1StFZbQs6vCBjevyePMOpID
-         zfwzwcJ6RAVBZTNa4tCZ74b+Dg7w3z/t4t77DtgQmY8QQNwkdfRdU8RBhg0UbXbXgJ4r
-         TEZEgOi0tOQjZBMqMkzvo6ywJ4xVrqvaINd8KsaITNa5+hUxIh6Qpn1RdVMNrhfe70LE
-         Bxrg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=3Ph8qsKmXSqFKVv7QVwyNev8raeZwIr8Rm9tqiLL8AY=;
-        b=EewGZytW3o/HU/v/oLuAOY5dbllorXe33KHDdKwHcfAWnMzO+1GqPZDBqqXAe+Mg79
-         UDzm3Po3q+AlaWn6RG+xLQL1bUj5JPBui5LQlePLPpIb03Ak70Sg3VC3RwIYRFvGjk/o
-         HvKwkShepnP/88j4qKICx0Vas1TwPvz6cficJp3J3DqEtfSGnaPMYmqdQeW0sGfHwMYg
-         /TKZUQ0mWk2GoR5YTLtiOoHagC+I80At5IRIJ/MLTOvzZAGoUAdFaK9ZZ8KtG/mPhp0F
-         WjlMDGuuTFRENUb9QEc66FELKpgsEHIsGr1LnbHiY1pmimZ83gQJbpR+PpN9iwtIT5o8
-         BNbw==
-X-Gm-Message-State: AOAM531drN9wHZpJcM/gtWg3dX9kCem4QdhQ2qmjefdgyQFn7Beb+1pn
-        hKc6MWSsOj3CcBSl4aLPRo/35bwRgqlHBQ==
-X-Google-Smtp-Source: ABdhPJwW15qeHMwaldoFUpXF83MdyNgUfwsQWFGcDf6X/Kxe/hYqH6lLSOuSghbl9OMh0Y9SKO2ZJw==
-X-Received: by 2002:a63:e10b:: with SMTP id z11mr16504368pgh.40.1612784105660;
-        Mon, 08 Feb 2021 03:35:05 -0800 (PST)
-Received: from carrot.localdomain (i121-118-80-41.s42.a014.ap.plala.or.jp. [121.118.80.41])
-        by smtp.gmail.com with ESMTPSA id c77sm4816103pfb.138.2021.02.08.03.35.03
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 08 Feb 2021 03:35:04 -0800 (PST)
-From:   Ryusuke Konishi <konishi.ryusuke@gmail.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-nilfs <linux-nilfs@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: [PATCH] nilfs2: make splice write available again
-Date:   Mon,  8 Feb 2021 20:35:01 +0900
-Message-Id: <1612784101-14353-1-git-send-email-konishi.ryusuke@gmail.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S233494AbhBHL6C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 06:58:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35708 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232106AbhBHLhF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 06:37:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6780F64E40;
+        Mon,  8 Feb 2021 11:36:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612784185;
+        bh=fBp9LiWsmCqhuaI9wcJM8SBAr5veZ226g9+wpY2pX+k=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ubHOUH2l2tFZUF2ynWkVVod7BUYjSKuOSrCEIvHN0ZJyFeqBx8hPUkx8ibDvJM6cp
+         nYgvBXrN7yP6JPyVxnB5Vl25KRr4gUYEtwf8ZWhdKErl70xdsLpHW/kxIlsvpTL2KU
+         7wshBHn6WQ/X9D2rLICFJKJ6l/CWRLTblBGEIZjFAboNqwhE1W6cXhnVCMmg+s3RK8
+         t3HE2TPmQBQPngHWdOQeK67EAanjk7crsmyGh7z9toVdi4bcIA4jwAmSMy7m/GHEBq
+         aCd9u393CVZ+h6B9r1/Qqj4tW0JbbTw8jCs10nzwjrpRirqCtk8wVn3xF8/6XFQklM
+         6j1XdiBtOr5PQ==
+Date:   Mon, 8 Feb 2021 12:36:18 +0100
+From:   Jessica Yu <jeyu@kernel.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Frederic Barrat <fbarrat@linux.ibm.com>,
+        Andrew Donnellan <ajd@linux.ibm.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Petr Mladek <pmladek@suse.com>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        dri-devel@lists.freedesktop.org, live-patching@vger.kernel.org,
+        linux-kbuild@vger.kernel.org
+Subject: Re: module loader dead code removal and cleanups v3
+Message-ID: <YCEiMoWRLj+lpNqS@gunter>
+References: <20210202121334.1361503-1-hch@lst.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20210202121334.1361503-1-hch@lst.de>
+X-OS:   Linux gunter 5.10.9-1-default x86_64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joachim Henke <joachim.henke@t-systems.com>
++++ Christoph Hellwig [02/02/21 13:13 +0100]:
+>Hi all,
+>
+>this series removes support for long term unused export types and
+>cleans up various loose ends in the module loader.
+>
+>Changes since v2:
+> - clean up klp_find_object_symbol a bit
+> - remove the now unused module_assert_mutex helper
+>
+>Changes since v1:
+> - move struct symsearch to module.c
+> - rework drm to not call find_module at all
+> - allow RCU-sched locking for find_module
+> - keep find_module as a public API instead of module_loaded
+> - update a few comments and commit logs
+>
+>Diffstat:
 
-Since 5.10, splice() or sendfile() to NILFS2 return EINVAL. This was
-caused by commit 36e2c7421f02 ("fs: don't allow splice read/write
-without explicit ops").
+Queued on modules-next (along with the updated patch 10).
 
-This patch initializes the splice_write field in file_operations, like
-most file systems do, to restore the functionality.
+Thanks everyone,
 
-Signed-off-by: Joachim Henke <joachim.henke@t-systems.com>
-Signed-off-by: Ryusuke Konishi <konishi.ryusuke@gmail.com>
-Tested-by: Ryusuke Konishi <konishi.ryusuke@gmail.com>
-Cc: stable@vger.kernel.org # 5.10+
----
- fs/nilfs2/file.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/fs/nilfs2/file.c b/fs/nilfs2/file.c
-index 64bc81363c6c..e1bd592ce700 100644
---- a/fs/nilfs2/file.c
-+++ b/fs/nilfs2/file.c
-@@ -141,6 +141,7 @@ static int nilfs_file_mmap(struct file *file, struct vm_area_struct *vma)
- 	/* .release	= nilfs_release_file, */
- 	.fsync		= nilfs_sync_file,
- 	.splice_read	= generic_file_splice_read,
-+	.splice_write   = iter_file_splice_write,
- };
- 
- const struct inode_operations nilfs_file_inode_operations = {
--- 
-1.8.3.1
-
+Jessica
