@@ -2,173 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31D11312E84
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 11:07:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65A04312EAE
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 11:16:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232298AbhBHKD7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 05:03:59 -0500
-Received: from mail.xenproject.org ([104.130.215.37]:49814 "EHLO
-        mail.xenproject.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231846AbhBHJ4E (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 04:56:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=xen.org;
-        s=20200302mail; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
-        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject;
-        bh=DAnR7MzHh3CuEpYPfOXRcoYHW4xu0lHgJg9s/j96+CA=; b=NQGvflJoJaq+BVdv8rdh+MkiSv
-        yol9jTaW9vwwwSHp5cMZreqBIOdubT37g1wVGnfYlYuHjdIVeTKUrOIYNxXb/NkBsEkGnK0YWRmVR
-        Oy5X/RCcavvyZ/EDQTSzY9UNWcretq8xUfp9jvHU7Azj5q1sWMdWYfbpuZTB3zCUWJ6w=;
-Received: from xenbits.xenproject.org ([104.239.192.120])
-        by mail.xenproject.org with esmtp (Exim 4.92)
-        (envelope-from <julien@xen.org>)
-        id 1l93FJ-0000fi-7C; Mon, 08 Feb 2021 09:54:17 +0000
-Received: from [54.239.6.177] (helo=a483e7b01a66.ant.amazon.com)
-        by xenbits.xenproject.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <julien@xen.org>)
-        id 1l93FI-00019w-RE; Mon, 08 Feb 2021 09:54:17 +0000
-Subject: Re: [PATCH 0/7] xen/events: bug fixes and some diagnostic aids
-To:     =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>,
-        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
-        linux-block@vger.kernel.org, netdev@vger.kernel.org,
-        linux-scsi@vger.kernel.org
-Cc:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        stable@vger.kernel.org,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        =?UTF-8?Q?Roger_Pau_Monn=c3=a9?= <roger.pau@citrix.com>,
-        Jens Axboe <axboe@kernel.dk>, Wei Liu <wei.liu@kernel.org>,
-        Paul Durrant <paul@xen.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-References: <20210206104932.29064-1-jgross@suse.com>
- <bd63694e-ac0c-7954-ec00-edad05f8da1c@xen.org>
- <eeb62129-d9fc-2155-0e0f-aff1fbb33fbc@suse.com>
- <fcf3181b-3efc-55f5-687c-324937b543e6@xen.org>
- <7aaeeb3d-1e1b-6166-84e9-481153811b62@suse.com>
-From:   Julien Grall <julien@xen.org>
-Message-ID: <6f547bb5-777a-6fc2-eba2-cccb4adfca87@xen.org>
-Date:   Mon, 8 Feb 2021 09:54:13 +0000
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.7.0
+        id S232038AbhBHKPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 05:15:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57304 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232130AbhBHJ6e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 04:58:34 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CF7D764E54;
+        Mon,  8 Feb 2021 09:57:52 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.lan)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1l93Ik-00Ck14-CI; Mon, 08 Feb 2021 09:57:50 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        David Brazdil <dbrazdil@google.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Jing Zhang <jingzhangos@google.com>,
+        Ajay Patil <pajay@qti.qualcomm.com>,
+        Prasad Sodagudi <psodagud@codeaurora.org>,
+        Srinivas Ramana <sramana@codeaurora.org>,
+        Hector Martin <marcan@marcan.st>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kernel-team@android.com
+Subject: [PATCH v7 00/23] arm64: Early CPU feature override, and applications to VHE, BTI and PAuth
+Date:   Mon,  8 Feb 2021 09:57:09 +0000
+Message-Id: <20210208095732.3267263-1-maz@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <7aaeeb3d-1e1b-6166-84e9-481153811b62@suse.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
 Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org, catalin.marinas@arm.com, will@kernel.org, mark.rutland@arm.com, dbrazdil@google.com, alexandru.elisei@arm.com, ardb@kernel.org, jingzhangos@google.com, pajay@qti.qualcomm.com, psodagud@codeaurora.org, sramana@codeaurora.org, marcan@marcan.st, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+It recently came to light that there is a need to be able to override
+some CPU features very early on, before the kernel is fully up and
+running. The reasons for this range from specific feature support
+(such as using Protected KVM on VHE HW, which is the main motivation
+for this work) to errata workaround (a feature is broken on a CPU and
+needs to be turned off, or rather not enabled).
 
+This series tries to offer a limited framework for this kind of
+problems, by allowing a set of options to be passed on the
+command-line and altering the feature set that the cpufeature
+subsystem exposes to the rest of the kernel. Note that this doesn't
+change anything for code that directly uses the CPU ID registers.
 
-On 08/02/2021 09:41, Jürgen Groß wrote:
-> On 08.02.21 10:11, Julien Grall wrote:
->> Hi Juergen,
->>
->> On 07/02/2021 12:58, Jürgen Groß wrote:
->>> On 06.02.21 19:46, Julien Grall wrote:
->>>> Hi Juergen,
->>>>
->>>> On 06/02/2021 10:49, Juergen Gross wrote:
->>>>> The first three patches are fixes for XSA-332. The avoid WARN splats
->>>>> and a performance issue with interdomain events.
->>>>
->>>> Thanks for helping to figure out the problem. Unfortunately, I still 
->>>> see reliably the WARN splat with the latest Linux master 
->>>> (1e0d27fce010) + your first 3 patches.
->>>>
->>>> I am using Xen 4.11 (1c7d984645f9) and dom0 is forced to use the 2L 
->>>> events ABI.
->>>>
->>>> After some debugging, I think I have an idea what's went wrong. The 
->>>> problem happens when the event is initially bound from vCPU0 to a 
->>>> different vCPU.
->>>>
->>>>  From the comment in xen_rebind_evtchn_to_cpu(), we are masking the 
->>>> event to prevent it being delivered on an unexpected vCPU. However, 
->>>> I believe the following can happen:
->>>>
->>>> vCPU0                | vCPU1
->>>>                  |
->>>>                  | Call xen_rebind_evtchn_to_cpu()
->>>> receive event X            |
->>>>                  | mask event X
->>>>                  | bind to vCPU1
->>>> <vCPU descheduled>        | unmask event X
->>>>                  |
->>>>                  | receive event X
->>>>                  |
->>>>                  | handle_edge_irq(X)
->>>> handle_edge_irq(X)        |  -> handle_irq_event()
->>>>                  |   -> set IRQD_IN_PROGRESS
->>>>   -> set IRQS_PENDING        |
->>>>                  |   -> evtchn_interrupt()
->>>>                  |   -> clear IRQD_IN_PROGRESS
->>>>                  |  -> IRQS_PENDING is set
->>>>                  |  -> handle_irq_event()
->>>>                  |   -> evtchn_interrupt()
->>>>                  |     -> WARN()
->>>>                  |
->>>>
->>>> All the lateeoi handlers expect a ONESHOT semantic and 
->>>> evtchn_interrupt() is doesn't tolerate any deviation.
->>>>
->>>> I think the problem was introduced by 7f874a0447a9 ("xen/events: fix 
->>>> lateeoi irq acknowledgment") because the interrupt was disabled 
->>>> previously. Therefore we wouldn't do another iteration in 
->>>> handle_edge_irq().
->>>
->>> I think you picked the wrong commit for blaming, as this is just
->>> the last patch of the three patches you were testing.
->>
->> I actually found the right commit for blaming but I copied the 
->> information from the wrong shell :/. The bug was introduced by:
->>
->> c44b849cee8c ("xen/events: switch user event channels to lateeoi model")
->>
->>>
->>>> Aside the handlers, I think it may impact the defer EOI mitigation 
->>>> because in theory if a 3rd vCPU is joining the party (let say vCPU A 
->>>> migrate the event from vCPU B to vCPU C). So info->{eoi_cpu, 
->>>> irq_epoch, eoi_time} could possibly get mangled?
->>>>
->>>> For a fix, we may want to consider to hold evtchn_rwlock with the 
->>>> write permission. Although, I am not 100% sure this is going to 
->>>> prevent everything.
->>>
->>> It will make things worse, as it would violate the locking hierarchy
->>> (xen_rebind_evtchn_to_cpu() is called with the IRQ-desc lock held).
->>
->> Ah, right.
->>
->>>
->>> On a first glance I think we'll need a 3rd masking state ("temporarily
->>> masked") in the second patch in order to avoid a race with lateeoi.
->>>
->>> In order to avoid the race you outlined above we need an "event is being
->>> handled" indicator checked via test_and_set() semantics in
->>> handle_irq_for_port() and reset only when calling clear_evtchn().
->>
->> It feels like we are trying to workaround the IRQ flow we are using 
->> (i.e. handle_edge_irq()).
-> 
-> I'm not really sure this is the main problem here. According to your
-> analysis the main problem is occurring when handling the event, not when
-> handling the IRQ: the event is being received on two vcpus.
+The series completely changes the way a VHE-capable system boots, by
+*always* booting non-VHE first, and then upgrading to VHE when deemed
+capable. Although it sounds scary, this is actually simple to
+implement (and I wish I had done that five years ago). The "upgrade to
+VHE" path is then conditioned on the VHE feature not being disabled
+from the command-line.
 
-I don't think we can easily divide the two because we rely on the IRQ 
-framework to handle the lifecycle of the event. So...
+Said command-line parsing borrows a lot from the kaslr code, and
+subsequently allows the "nokaslr" option to be moved to the new
+infrastructure (though it all looks a bit... odd).
 
-> 
-> Our problem isn't due to the IRQ still being pending, but due it being
-> raised again, which should happen for a one shot IRQ the same way.
+Further patches now add support for disabling BTI and PAuth, the
+latter being based on an initial series by Srinivas Ramana[0]. There
+is some ongoing discussions about being able to disable MTE, but no
+clear resolution on that subject yet
 
-... I don't really see how the difference matter here. The idea is to 
-re-use what's already existing rather than trying to re-invent the wheel 
-with an extra lock (or whatever we can come up).
+WARNING: this series breaks Apple M1 badly, as it is stuck in VHE
+mode. The last patch in this series papers over the problem, but it
+*isn't* a candidate for merging yet.
 
-Cheers,
+This has been tested on multiple VHE and non-VHE systems.
+
+Branch available at [7].
+
+* From v6 [6]:
+  - Greatly simplify SPE setup with VHE
+  - Simplify option parsing by reusing some of the helpers user by
+    parse_args(). The whole function cannot be used though, as it
+    does things that can't be done at the point where we parse the
+    overrides.
+  - Add a patch allowing M1 CPUs to boot. This patch shouldn't be
+    merged until we decide to support this non-architectural behaviour.
+
+* From v5 [5]:
+  - Turn most __initdata into __initconst
+  - Ensure that all strings are part of the __initconst section.
+    This is a bit ugly, but saves memory once up and running
+  - Make overrides __ro_after_init
+  - Change the command-line parsing so that the same feature can
+    be overridden multiple times, with the expected left-to-right
+    parsing order being respected
+  - Handle all space-like characters as option delimiters
+  - Collected Acks, RBs and TBs
+
+* From v4 [4]:
+  - Documentation fixes
+  - Moved the val/mask pair into a arm64_ftr_override structure,
+    leading to simpler code
+  - All arm64_ftr_reg now have a default override, which simplifies
+    the code a bit further
+  - Dropped some of the "const" attributes
+  - Renamed init_shadow_regs() to init_feature_override()
+  - Renamed struct reg_desc to struct ftr_set_desc
+  - Refactored command-line parsing
+  - Simplified handling of VHE being disabled on the cmdline
+  - Turn EL1 S1 MMU off on switch to VHE
+  - HVC_VHE_RESTART now returns an error code on failure
+  - Added missing asmlinkage and dummy prototypes
+  - Collected Acks and RBs from David, Catalin and Suzuki
+
+* From v3 [3]:
+  - Fixed the VHE_RESTART stub (duh!)
+  - Switched to using arm64_ftr_safe_value() instead of the user
+    provided value
+  - Per-feature override warning
+
+* From v2 [2]:
+  - Simplify the VHE_RESTART stub
+  - Fixed a number of spelling mistakes, and hopefully introduced a
+    few more
+  - Override features in __read_sysreg_by_encoding()
+  - Allow both BTI and PAuth to be overridden on the command line
+  - Rebased on -rc3
+
+* From v1 [1]:
+  - Fix SPE init on VHE when EL2 doesn't own SPE
+  - Fix re-init when KASLR is used
+  - Handle the resume path
+  - Rebased to 5.11-rc2
+
+[0] https://lore.kernel.org/r/1610152163-16554-1-git-send-email-sramana@codeaurora.org
+[1] https://lore.kernel.org/r/20201228104958.1848833-1-maz@kernel.org
+[2] https://lore.kernel.org/r/20210104135011.2063104-1-maz@kernel.org
+[3] https://lore.kernel.org/r/20210111132811.2455113-1-maz@kernel.org
+[4] https://lore.kernel.org/r/20210118094533.2874082-1-maz@kernel.org
+[5] https://lore.kernel.org/r/20210125105019.2946057-1-maz@kernel.org
+[6] https://lore.kernel.org/r/20210201115637.3123740-1-maz@kernel.org
+[7] https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms.git/log/?h=hack/arm64-early-cpufeature
+
+Marc Zyngier (22):
+  arm64: Fix labels in el2_setup macros
+  arm64: Fix outdated TCR setup comment
+  arm64: Turn the MMU-on sequence into a macro
+  arm64: Provide an 'upgrade to VHE' stub hypercall
+  arm64: Initialise as nVHE before switching to VHE
+  arm64: Drop early setting of MDSCR_EL2.TPMS
+  arm64: Move VHE-specific SPE setup to mutate_to_vhe()
+  arm64: Simplify init_el2_state to be non-VHE only
+  arm64: Move SCTLR_EL1 initialisation to EL-agnostic code
+  arm64: cpufeature: Add global feature override facility
+  arm64: cpufeature: Use IDreg override in __read_sysreg_by_encoding()
+  arm64: Extract early FDT mapping from kaslr_early_init()
+  arm64: cpufeature: Add an early command-line cpufeature override
+    facility
+  arm64: Allow ID_AA64MMFR1_EL1.VH to be overridden from the command
+    line
+  arm64: Honor VHE being disabled from the command-line
+  arm64: Add an aliasing facility for the idreg override
+  arm64: Make kvm-arm.mode={nvhe, protected} an alias of
+    id_aa64mmfr1.vh=0
+  KVM: arm64: Document HVC_VHE_RESTART stub hypercall
+  arm64: Move "nokaslr" over to the early cpufeature infrastructure
+  arm64: cpufeatures: Allow disabling of BTI from the command-line
+  arm64: cpufeatures: Allow disabling of Pointer Auth from the
+    command-line
+  [DO NOT MERGE] arm64: Cope with CPUs stuck in VHE mode
+
+Srinivas Ramana (1):
+  arm64: Defer enabling pointer authentication on boot core
+
+ .../admin-guide/kernel-parameters.txt         |   9 +
+ Documentation/virt/kvm/arm/hyp-abi.rst        |   9 +
+ arch/arm64/include/asm/assembler.h            |  17 ++
+ arch/arm64/include/asm/cpufeature.h           |  11 +
+ arch/arm64/include/asm/el2_setup.h            |  60 ++---
+ arch/arm64/include/asm/pointer_auth.h         |  10 +
+ arch/arm64/include/asm/setup.h                |  11 +
+ arch/arm64/include/asm/stackprotector.h       |   1 +
+ arch/arm64/include/asm/virt.h                 |   7 +-
+ arch/arm64/kernel/Makefile                    |   2 +-
+ arch/arm64/kernel/asm-offsets.c               |   3 +
+ arch/arm64/kernel/cpufeature.c                |  73 +++++-
+ arch/arm64/kernel/head.S                      |  94 +++-----
+ arch/arm64/kernel/hyp-stub.S                  | 141 +++++++++++-
+ arch/arm64/kernel/idreg-override.c            | 216 ++++++++++++++++++
+ arch/arm64/kernel/kaslr.c                     |  43 +---
+ arch/arm64/kernel/setup.c                     |  15 ++
+ arch/arm64/kernel/sleep.S                     |   1 +
+ arch/arm64/kvm/arm.c                          |   3 +
+ arch/arm64/kvm/hyp/nvhe/hyp-init.S            |   2 +-
+ arch/arm64/mm/mmu.c                           |   2 +-
+ arch/arm64/mm/proc.S                          |  16 +-
+ 22 files changed, 576 insertions(+), 170 deletions(-)
+ create mode 100644 arch/arm64/include/asm/setup.h
+ create mode 100644 arch/arm64/kernel/idreg-override.c
 
 -- 
-Julien Grall
+2.29.2
+
