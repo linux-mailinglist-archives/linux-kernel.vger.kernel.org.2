@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B16AD313E10
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 19:52:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B39B313E0E
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 19:52:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232773AbhBHSwC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 13:52:02 -0500
-Received: from foss.arm.com ([217.140.110.172]:38348 "EHLO foss.arm.com"
+        id S235807AbhBHSvg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 13:51:36 -0500
+Received: from foss.arm.com ([217.140.110.172]:38350 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233895AbhBHQ6L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S233722AbhBHQ6L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 8 Feb 2021 11:58:11 -0500
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 03B4D139F;
-        Mon,  8 Feb 2021 08:56:38 -0800 (PST)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1972613A1;
+        Mon,  8 Feb 2021 08:56:40 -0800 (PST)
 Received: from e119884-lin.cambridge.arm.com (e119884-lin.cambridge.arm.com [10.1.196.72])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 218AA3F719;
-        Mon,  8 Feb 2021 08:56:36 -0800 (PST)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 37BF63F719;
+        Mon,  8 Feb 2021 08:56:38 -0800 (PST)
 From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
 To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         kasan-dev@googlegroups.com
@@ -32,9 +32,9 @@ Cc:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
         Branislav Rankov <Branislav.Rankov@arm.com>,
         Andrey Konovalov <andreyknvl@google.com>,
         Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Subject: [PATCH v12 5/7] arm64: mte: Enable async tag check fault
-Date:   Mon,  8 Feb 2021 16:56:15 +0000
-Message-Id: <20210208165617.9977-6-vincenzo.frascino@arm.com>
+Subject: [PATCH v12 6/7] arm64: mte: Save/Restore TFSR_EL1 during suspend
+Date:   Mon,  8 Feb 2021 16:56:16 +0000
+Message-Id: <20210208165617.9977-7-vincenzo.frascino@arm.com>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210208165617.9977-1-vincenzo.frascino@arm.com>
 References: <20210208165617.9977-1-vincenzo.frascino@arm.com>
@@ -44,166 +44,108 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-MTE provides a mode that asynchronously updates the TFSR_EL1 register
-when a tag check exception is detected.
+When MTE async mode is enabled TFSR_EL1 contains the accumulative
+asynchronous tag check faults for EL1 and EL0.
 
-To take advantage of this mode the kernel has to verify the status of
-the register at:
-  1. Context switching
-  2. Return to user/EL0 (Not required in entry from EL0 since the kernel
-  did not run)
-  3. Kernel entry from EL1
-  4. Kernel exit to EL1
+During the suspend/resume operations the firmware might perform some
+operations that could change the state of the register resulting in
+a spurious tag check fault report.
 
-If the register is non-zero a trace is reported.
-
-Add the required features for EL1 detection and reporting.
-
-Note: ITFSB bit is set in the SCTLR_EL1 register hence it guaranties that
-the indirect writes to TFSR_EL1 are synchronized at exception entry to
-EL1. On the context switch path the synchronization is guarantied by the
-dsb() in __switch_to().
-The dsb(nsh) in mte_check_tfsr_exit() is provisional pending
-confirmation by the architects.
+Save/restore the state of the TFSR_EL1 register during the
+suspend/resume operations to prevent this to happen.
 
 Cc: Catalin Marinas <catalin.marinas@arm.com>
 Cc: Will Deacon <will@kernel.org>
-Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
-Acked-by: Andrey Konovalov <andreyknvl@google.com>
+Cc: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
 Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
 ---
- arch/arm64/include/asm/mte.h     | 32 ++++++++++++++++++++++++++++
- arch/arm64/kernel/entry-common.c |  6 ++++++
- arch/arm64/kernel/mte.c          | 36 ++++++++++++++++++++++++++++++++
- 3 files changed, 74 insertions(+)
+ arch/arm64/include/asm/mte.h |  4 ++++
+ arch/arm64/kernel/mte.c      | 22 ++++++++++++++++++++++
+ arch/arm64/kernel/suspend.c  |  3 +++
+ 3 files changed, 29 insertions(+)
 
 diff --git a/arch/arm64/include/asm/mte.h b/arch/arm64/include/asm/mte.h
-index d02aff9f493d..237bb2f7309d 100644
+index 237bb2f7309d..2d79bcaaeb30 100644
 --- a/arch/arm64/include/asm/mte.h
 +++ b/arch/arm64/include/asm/mte.h
-@@ -92,5 +92,37 @@ static inline void mte_assign_mem_tag_range(void *addr, size_t size)
- 
- #endif /* CONFIG_ARM64_MTE */
- 
-+#ifdef CONFIG_KASAN_HW_TAGS
-+void mte_check_tfsr_el1(void);
-+
-+static inline void mte_check_tfsr_entry(void)
+@@ -43,6 +43,7 @@ void mte_sync_tags(pte_t *ptep, pte_t pte);
+ void mte_copy_page_tags(void *kto, const void *kfrom);
+ void flush_mte_state(void);
+ void mte_thread_switch(struct task_struct *next);
++void mte_suspend_enter(void);
+ void mte_suspend_exit(void);
+ long set_mte_ctrl(struct task_struct *task, unsigned long arg);
+ long get_mte_ctrl(struct task_struct *task);
+@@ -68,6 +69,9 @@ static inline void flush_mte_state(void)
+ static inline void mte_thread_switch(struct task_struct *next)
+ {
+ }
++static inline void mte_suspend_enter(void)
 +{
-+	mte_check_tfsr_el1();
 +}
-+
-+static inline void mte_check_tfsr_exit(void)
+ static inline void mte_suspend_exit(void)
+ {
+ }
+diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
+index 3332aabda466..5c440967721b 100644
+--- a/arch/arm64/kernel/mte.c
++++ b/arch/arm64/kernel/mte.c
+@@ -25,6 +25,7 @@
+ 
+ u64 gcr_kernel_excl __ro_after_init;
+ 
++static u64 mte_suspend_tfsr_el1;
+ static bool report_fault_once = true;
+ 
+ /* Whether the MTE asynchronous mode is enabled. */
+@@ -295,12 +296,33 @@ void mte_thread_switch(struct task_struct *next)
+ 	mte_check_tfsr_el1();
+ }
+ 
++void mte_suspend_enter(void)
 +{
++	if (!system_supports_mte())
++		return;
++
 +	/*
-+	 * The asynchronous faults are sync'ed automatically with
-+	 * TFSR_EL1 on kernel entry but for exit an explicit dsb()
-+	 * is required.
++	 * The barriers are required to guarantee that the indirect writes
++	 * to TFSR_EL1 are synchronized before we save the state.
 +	 */
 +	dsb(nsh);
 +	isb();
 +
-+	mte_check_tfsr_el1();
++	/* Save SYS_TFSR_EL1 before suspend entry */
++	mte_suspend_tfsr_el1 = read_sysreg_s(SYS_TFSR_EL1);
 +}
-+#else
-+static inline void mte_check_tfsr_el1(void)
-+{
-+}
-+static inline void mte_check_tfsr_entry(void)
-+{
-+}
-+static inline void mte_check_tfsr_exit(void)
-+{
-+}
-+#endif /* CONFIG_KASAN_HW_TAGS */
 +
- #endif /* __ASSEMBLY__ */
- #endif /* __ASM_MTE_H  */
-diff --git a/arch/arm64/kernel/entry-common.c b/arch/arm64/kernel/entry-common.c
-index 5346953e4382..31666511ba67 100644
---- a/arch/arm64/kernel/entry-common.c
-+++ b/arch/arm64/kernel/entry-common.c
-@@ -37,6 +37,8 @@ static void noinstr enter_from_kernel_mode(struct pt_regs *regs)
- 	lockdep_hardirqs_off(CALLER_ADDR0);
- 	rcu_irq_enter_check_tick();
- 	trace_hardirqs_off_finish();
-+
-+	mte_check_tfsr_entry();
- }
- 
- /*
-@@ -47,6 +49,8 @@ static void noinstr exit_to_kernel_mode(struct pt_regs *regs)
- {
- 	lockdep_assert_irqs_disabled();
- 
-+	mte_check_tfsr_exit();
-+
- 	if (interrupts_enabled(regs)) {
- 		if (regs->exit_rcu) {
- 			trace_hardirqs_on_prepare();
-@@ -243,6 +247,8 @@ asmlinkage void noinstr enter_from_user_mode(void)
- 
- asmlinkage void noinstr exit_to_user_mode(void)
- {
-+	mte_check_tfsr_exit();
-+
- 	trace_hardirqs_on_prepare();
- 	lockdep_hardirqs_on_prepare(CALLER_ADDR0);
- 	user_enter_irqoff();
-diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
-index 60531afc706e..3332aabda466 100644
---- a/arch/arm64/kernel/mte.c
-+++ b/arch/arm64/kernel/mte.c
-@@ -192,6 +192,29 @@ bool mte_report_once(void)
- 	return READ_ONCE(report_fault_once);
- }
- 
-+#ifdef CONFIG_KASAN_HW_TAGS
-+void mte_check_tfsr_el1(void)
-+{
-+	u64 tfsr_el1;
-+
-+	if (!system_supports_mte())
-+		return;
-+
-+	tfsr_el1 = read_sysreg_s(SYS_TFSR_EL1);
-+
-+	if (unlikely(tfsr_el1 & SYS_TFSR_EL1_TF1)) {
-+		/*
-+		 * Note: isb() is not required after this direct write
-+		 * because there is no indirect read subsequent to it
-+		 * (per ARM DDI 0487F.c table D13-1).
-+		 */
-+		write_sysreg_s(0, SYS_TFSR_EL1);
-+
-+		kasan_report_async();
-+	}
-+}
-+#endif
-+
- static void update_sctlr_el1_tcf0(u64 tcf0)
- {
- 	/* ISB required for the kernel uaccess routines */
-@@ -257,6 +280,19 @@ void mte_thread_switch(struct task_struct *next)
- 	/* avoid expensive SCTLR_EL1 accesses if no change */
- 	if (current->thread.sctlr_tcf0 != next->thread.sctlr_tcf0)
- 		update_sctlr_el1_tcf0(next->thread.sctlr_tcf0);
-+	else
-+		isb();
-+
-+	/*
-+	 * Check if an async tag exception occurred at EL1.
-+	 *
-+	 * Note: On the context switch path we rely on the dsb() present
-+	 * in __switch_to() to guarantee that the indirect writes to TFSR_EL1
-+	 * are synchronized before this point.
-+	 * isb() above is required for the same reason.
-+	 *
-+	 */
-+	mte_check_tfsr_el1();
- }
- 
  void mte_suspend_exit(void)
+ {
+ 	if (!system_supports_mte())
+ 		return;
+ 
+ 	update_gcr_el1_excl(gcr_kernel_excl);
++
++	/* Resume SYS_TFSR_EL1 after suspend exit */
++	write_sysreg_s(mte_suspend_tfsr_el1, SYS_TFSR_EL1);
++
++	mte_check_tfsr_el1();
+ }
+ 
+ long set_mte_ctrl(struct task_struct *task, unsigned long arg)
+diff --git a/arch/arm64/kernel/suspend.c b/arch/arm64/kernel/suspend.c
+index a67b37a7a47e..16caa9b32dae 100644
+--- a/arch/arm64/kernel/suspend.c
++++ b/arch/arm64/kernel/suspend.c
+@@ -91,6 +91,9 @@ int cpu_suspend(unsigned long arg, int (*fn)(unsigned long))
+ 	unsigned long flags;
+ 	struct sleep_stack_data state;
+ 
++	/* Report any MTE async fault before going to suspend. */
++	mte_suspend_enter();
++
+ 	/*
+ 	 * From this point debug exceptions are disabled to prevent
+ 	 * updates to mdscr register (saved and restored along with
 -- 
 2.30.0
 
