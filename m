@@ -2,94 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB418312ADC
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 07:46:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DBFD7312AEA
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 07:48:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229849AbhBHGpE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 01:45:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55796 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229587AbhBHGo7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 01:44:59 -0500
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC898C06174A
-        for <linux-kernel@vger.kernel.org>; Sun,  7 Feb 2021 22:44:19 -0800 (PST)
-Received: by mail-pg1-x534.google.com with SMTP id e7so626212pge.0
-        for <linux-kernel@vger.kernel.org>; Sun, 07 Feb 2021 22:44:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=+803h1HDJSZ65Cad0OUtvZ9NiqoyELYv2f6+XgldWy0=;
-        b=Um6hny/zYIiUx7IHlv7srN/EmCf0qR9Q61d+qDDzb5pbG65J3oHz3hyBmNV0sbRsqZ
-         5UnrtIO+HdeX0bIVslqbY16aVo+7tqU+dzJx5vLWPksxrjVUeuZ8w3xl7ZDcPV55+Al3
-         MOP9U0f/0WPIcubNQmezZzO6kP8OlqmgWzZ9j21iM8xIJ49h+y+f523ExHyJwBEGkxhu
-         Fn6vbrpOS03WGVrdmvdeqWC2Plf3yLlYBbCGupDL3tnqWr9WnZ2sPEic0pjT+Mpqbp9/
-         TYBWNj92YGPr9IFTJP+BsQ/gviDYfeEMkk6PakVOK5LAHkEN9Zt2iYmUSzMC4cGCy+bU
-         YyNA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=+803h1HDJSZ65Cad0OUtvZ9NiqoyELYv2f6+XgldWy0=;
-        b=Js2935pMUkIzKKPr/220bk1XKsdsgCxTFMop+EvXaSHMkqKOfxvGhLGcx9TbCuGH83
-         Ob+uEdnt+dPuWL+CnMMioiK5q5YTzI+069pRKLOAUDFbB9nCXpwqWKOr2pO+SkLadLXx
-         3HQxU1bXbzV8+t3fr8c06JRPwr76zZILw1zgIJeTiXq2piR6jJQx1vp7OZxAvwdNq1km
-         eK7y7Kw3jh9hBsMkWhwh/dDTJmnDlEHzMWj848Ozf1ZVXaqr16eg+r3Munyt08RFY/oQ
-         L+JPNN/4S5W3/fRdfScz98Yu/kaFDSUm3fBIzmkVnsl5tTU/Jg/taBXHDJUXkHehCRwJ
-         jK5w==
-X-Gm-Message-State: AOAM533DPlAvMtJcfGppsk/YuLaQik1kFimSWq9Of10byDVSZgXGvxCU
-        0CB4Oqwo/QHL68/KjwbixIs=
-X-Google-Smtp-Source: ABdhPJy2NfZC1+rP/NfaWXD7FJ9hniCmFmc2R1tbAJ3PZPp//pppVi3bQ21qidfsth+RK3WNLKVXSQ==
-X-Received: by 2002:a65:60d1:: with SMTP id r17mr16273336pgv.210.1612766659149;
-        Sun, 07 Feb 2021 22:44:19 -0800 (PST)
-Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
-        by smtp.gmail.com with ESMTPSA id y14sm8814965pjg.52.2021.02.07.22.44.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 07 Feb 2021 22:44:18 -0800 (PST)
-Date:   Mon, 8 Feb 2021 15:44:17 +0900
-From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-kernel@vger.kernel.org, "J. Avila" <elavila@google.com>
-Subject: Re: [PATCH] printk: avoid prb_first_valid_seq() where possible
-Message-ID: <YCDdwY8mMb9JZkXn@jagdpanzerIV.localdomain>
-References: <20210205141728.18117-1-john.ogness@linutronix.de>
+        id S229984AbhBHGqr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 01:46:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56792 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229908AbhBHGqn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 01:46:43 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3E47364E59;
+        Mon,  8 Feb 2021 06:45:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612766761;
+        bh=laV8svMkkIZgkEjMImPDqav9pFAGfCHDdtEUcbdDnvY=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=TGskujnEd6wHa7WkmlrA/txwqRTcJGBrt+G8G29pmkA5kZJTpP9p0uA0OBvZIqSvD
+         JxUKjVIlJL7BN44ZogKx96Zw8qus91VU68qdycGrSWnEl44/V2NTQUC1OLOTCdF4Gu
+         FGXrZfB1UlGCm0us6h06+bTEmrWyNdKdO1cQE50Xn9aYIA9cVXbE7c/MBRqdiuZ1jz
+         yRAPPdGXm7pgspO8bff3EiWF+togadvuTOEFB2flyG4QXvLieVjLI1n9IWbF4cIrlT
+         j4bPAIhCO/OgcnQj5qsi4LQSz7dkKfKSzdR46yYTRQHb0tQHuVB44086JDEOFAZDLc
+         NgM8lbk2wAojg==
+Subject: Re: [PATCH 00/21] [Set 2] Rid W=1 warnings from Clock
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        Andy Gross <agross@kernel.org>,
+        Avi Fishman <avifishman70@gmail.com>,
+        Benjamin Fair <benjaminfair@google.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Boris BREZILLON <boris.brezillon@free-electrons.com>,
+        Chen-Yu Tsai <wens@csie.org>,
+        =?UTF-8?Q?Emilio_L=c3=b3pez?= <emilio@elopez.com.ar>,
+        Fabio Estevam <festevam@gmail.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Jan Kotas <jank@cadence.com>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-omap@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-tegra@vger.kernel.org, Loc Ho <lho@apm.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Nancy Yuen <yuenn@google.com>,
+        Nuvoton Technologies <tali.perry@nuvoton.com>,
+        NXP Linux Team <linux-imx@nxp.com>, openbmc@lists.ozlabs.org,
+        Patrick Venture <venture@google.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Prashant Gaikwad <pgaikwad@nvidia.com>,
+        Rajan Vaja <rajan.vaja@xilinx.com>,
+        Rajeev Kumar <rajeev-dlh.kumar@st.com>,
+        Richard Woodruff <r-woodruff2@ti.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Shiraz Hashim <shiraz.linux.kernel@gmail.com>,
+        =?UTF-8?Q?S=c3=b6ren_Brinkmann?= <soren.brinkmann@xilinx.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Tali Perry <tali.perry1@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Tomer Maimon <tmaimon77@gmail.com>,
+        Viresh Kumar <vireshk@kernel.org>
+References: <20210126124540.3320214-1-lee.jones@linaro.org>
+From:   Tero Kristo <kristo@kernel.org>
+Message-ID: <b801364c-951a-af9f-d7ad-2440afe1ed88@kernel.org>
+Date:   Mon, 8 Feb 2021 08:45:50 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210205141728.18117-1-john.ogness@linutronix.de>
+In-Reply-To: <20210126124540.3320214-1-lee.jones@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (21/02/05 15:23), John Ogness wrote:
-> If message sizes average larger than expected (more than 32
-> characters), the data_ring will wrap before the desc_ring. Once the
-> data_ring wraps, it will start invalidating descriptors. These
-> invalid descriptors hang around until they are eventually recycled
-> when the desc_ring wraps. Readers do not care about invalid
-> descriptors, but they still need to iterate past them. If the
-> average message size is much larger than 32 characters, then there
-> will be many invalid descriptors preceding the valid descriptors.
+On 26/01/2021 14:45, Lee Jones wrote:
+> This set is part of a larger effort attempting to clean-up W=1
+> kernel builds, which are currently overwhelmingly riddled with
+> niggly little warnings.
 > 
-> The function prb_first_valid_seq() always begins at the oldest
-> descriptor and searches for the first valid descriptor. This can
-> be rather expensive for the above scenario. And, in fact, because
-> of its heavy usage in /dev/kmsg, there have been reports of long
-> delays and even RCU stalls.
+> This is the last set.  Clock is clean after this.
 > 
-> For code that does not need to search from the oldest record,
-> replace prb_first_valid_seq() usage with prb_read_valid_*()
-> functions, which provide a start sequence number to search from.
+> Lee Jones (21):
+>    clk: zynq: pll: Fix kernel-doc formatting in 'clk_register_zynq_pll's
+>      header
+>    clk: ti: clkt_dpll: Fix some kernel-doc misdemeanours
+>    clk: ti: dpll3xxx: Fix some kernel-doc headers and promote other
+>      worthy ones
+>    clk: qcom: clk-regmap: Provide missing description for
+>      'devm_clk_register_regmap()'s dev param
+>    clk: sunxi: clk-sun9i-core: Demote non-conformant kernel-doc headers
+>    clk: sunxi: clk-usb: Demote obvious kernel-doc abuse
+>    clk: tegra: clk-tegra30: Remove unused variable 'reg'
+>    clk: clkdev: Ignore suggestion to use gnu_printf() as it's not
+>      appropriate here
+>    clk: tegra: cvb: Provide missing description for
+>      'tegra_cvb_add_opp_table()'s align param
+>    clk: ti: dpll44xx: Fix some potential doc-rot
+>    clk: renesas: renesas-cpg-mssr: Fix formatting issues for
+>      'smstpcr_saved's documentation
+>    clk: sunxi: clk-sun6i-ar100: Demote non-conformant kernel-doc header
+>    clk: qcom: gcc-ipq4019: Remove unused variable 'ret'
+>    clk: clk-fixed-mmio: Demote obvious kernel-doc abuse
+>    clk: clk-npcm7xx: Remove unused static const tables 'npcm7xx_gates'
+>      and 'npcm7xx_divs_fx'
+>    clk: qcom: mmcc-msm8974: Remove unused static const tables
+>      'mmcc_xo_mmpll0_1_2_gpll0{map}'
+>    clk: clk-xgene: Add description for 'mask' and fix formatting for
+>      'flags'
+>    clk: qcom: clk-rpm: Remove a bunch of superfluous code
+>    clk: spear: Move prototype to accessible header
+>    clk: imx: Move 'imx6sl_set_wait_clk()'s prototype out to accessible
+>      header
+>    clk: zynqmp: divider: Add missing description for 'max_div'
 > 
-> Fixes: 896fbe20b4e2333fb55 ("printk: use the lockless ringbuffer")
-> Reported-by: kernel test robot <oliver.sang@intel.com>
+>   arch/arm/mach-imx/common.h             |   1 -
+>   arch/arm/mach-imx/cpuidle-imx6sl.c     |   1 +
+>   arch/arm/mach-imx/pm-imx6.c            |   1 +
+>   arch/arm/mach-spear/generic.h          |  12 ---
+>   arch/arm/mach-spear/spear13xx.c        |   1 +
+>   drivers/clk/clk-fixed-mmio.c           |   2 +-
+>   drivers/clk/clk-npcm7xx.c              | 108 -------------------------
+>   drivers/clk/clk-xgene.c                |   5 +-
+>   drivers/clk/clkdev.c                   |   7 ++
+>   drivers/clk/imx/clk-imx6sl.c           |   1 +
+>   drivers/clk/qcom/clk-regmap.c          |   1 +
+>   drivers/clk/qcom/clk-rpm.c             |  63 ---------------
+>   drivers/clk/qcom/gcc-ipq4019.c         |   7 +-
+>   drivers/clk/qcom/mmcc-msm8974.c        |  16 ----
+>   drivers/clk/renesas/renesas-cpg-mssr.c |   4 +-
+>   drivers/clk/spear/spear1310_clock.c    |   1 +
+>   drivers/clk/spear/spear1340_clock.c    |   1 +
+>   drivers/clk/sunxi/clk-sun6i-ar100.c    |   2 +-
+>   drivers/clk/sunxi/clk-sun9i-core.c     |   8 +-
+>   drivers/clk/sunxi/clk-usb.c            |   2 +-
+>   drivers/clk/tegra/clk-tegra30.c        |   5 +-
+>   drivers/clk/tegra/cvb.c                |   1 +
+>   drivers/clk/ti/clkt_dpll.c             |   3 +-
+>   drivers/clk/ti/dpll3xxx.c              |  20 ++---
+>   drivers/clk/ti/dpll44xx.c              |   6 +-
 
-Can we please also ask the kernel test robot to test this patch?
+For the TI portions:
 
-	-ss
+Reviewed-by: Tero Kristo <kristo@kernel.org>
+
+>   drivers/clk/zynq/pll.c                 |  12 +--
+>   drivers/clk/zynqmp/divider.c           |   1 +
+>   include/linux/clk/imx.h                |  15 ++++
+>   include/linux/clk/spear.h              |  23 ++++++
+>   29 files changed, 92 insertions(+), 238 deletions(-)
+>   create mode 100644 include/linux/clk/imx.h
+>   create mode 100644 include/linux/clk/spear.h
+> 
+> Cc: Ahmad Fatoum <a.fatoum@pengutronix.de>
+> Cc: Andy Gross <agross@kernel.org>
+> Cc: Avi Fishman <avifishman70@gmail.com>
+> Cc: Benjamin Fair <benjaminfair@google.com>
+> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+> Cc: Boris BREZILLON <boris.brezillon@free-electrons.com>
+> Cc: Chen-Yu Tsai <wens@csie.org>
+> Cc: "Emilio López" <emilio@elopez.com.ar>
+> Cc: Fabio Estevam <festevam@gmail.com>
+> Cc: Geert Uytterhoeven <geert+renesas@glider.be>
+> Cc: Jan Kotas <jank@cadence.com>
+> Cc: Jernej Skrabec <jernej.skrabec@siol.net>
+> Cc: Jonathan Hunter <jonathanh@nvidia.com>
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-arm-msm@vger.kernel.org
+> Cc: linux-clk@vger.kernel.org
+> Cc: linux-omap@vger.kernel.org
+> Cc: linux-renesas-soc@vger.kernel.org
+> Cc: linux-tegra@vger.kernel.org
+> Cc: Loc Ho <lho@apm.com>
+> Cc: Maxime Ripard <mripard@kernel.org>
+> Cc: Michael Turquette <mturquette@baylibre.com>
+> Cc: Michal Simek <michal.simek@xilinx.com>
+> Cc: Nancy Yuen <yuenn@google.com>
+> Cc: Nuvoton Technologies <tali.perry@nuvoton.com>
+> Cc: NXP Linux Team <linux-imx@nxp.com>
+> Cc: openbmc@lists.ozlabs.org
+> Cc: Patrick Venture <venture@google.com>
+> Cc: Pengutronix Kernel Team <kernel@pengutronix.de>
+> Cc: Peter De Schrijver <pdeschrijver@nvidia.com>
+> Cc: Philipp Zabel <p.zabel@pengutronix.de>
+> Cc: Prashant Gaikwad <pgaikwad@nvidia.com>
+> Cc: Rajan Vaja <rajan.vaja@xilinx.com>
+> Cc: Rajeev Kumar <rajeev-dlh.kumar@st.com>
+> Cc: Richard Woodruff <r-woodruff2@ti.com>
+> Cc: Russell King <linux@armlinux.org.uk>
+> Cc: Sascha Hauer <s.hauer@pengutronix.de>
+> Cc: Shawn Guo <shawnguo@kernel.org>
+> Cc: Shiraz Hashim <shiraz.linux.kernel@gmail.com>
+> Cc: "Sören Brinkmann" <soren.brinkmann@xilinx.com>
+> Cc: Stephen Boyd <sboyd@kernel.org>
+> Cc: Tali Perry <tali.perry1@gmail.com>
+> Cc: Tero Kristo <kristo@kernel.org>
+> Cc: Thierry Reding <thierry.reding@gmail.com>
+> Cc: Tomer Maimon <tmaimon77@gmail.com>
+> Cc: Viresh Kumar <vireshk@kernel.org>
+> 
+
