@@ -2,96 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9B343141E5
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 22:34:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 500D23141EC
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 22:36:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236599AbhBHVdl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 16:33:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38736 "EHLO
+        id S236520AbhBHVfD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 16:35:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232677AbhBHUoE (ORCPT
+        with ESMTP id S230402AbhBHUon (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 15:44:04 -0500
-Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DD18C06178A
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 12:43:19 -0800 (PST)
-Received: by mail-io1-xd30.google.com with SMTP id n201so16426486iod.12
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 12:43:19 -0800 (PST)
+        Mon, 8 Feb 2021 15:44:43 -0500
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43754C06178C;
+        Mon,  8 Feb 2021 12:43:47 -0800 (PST)
+Received: by mail-pf1-x42b.google.com with SMTP id x136so3904027pfc.2;
+        Mon, 08 Feb 2021 12:43:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=kQbsD/l1cW53TzZqIiD6lhA89rJilHrW3RY1uwKWz5g=;
-        b=UMzul0jHYRvkxmLph1tNt7pUI1OyDIBdDUQmCcsBzOw3KejTWGjXu018P7r8q5MP1W
-         6lMK0I0MqV1AGmnmNnnOC5eVWVSHAxZjZ4rJ+RyMeusL3y0SnKgKiqPGlRI3NS7dQ/+D
-         MvRw2aWiCe0r2h4vnUZoMVDzzKlHNBSNGAK3s=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=obDV9I3X9Q9ETr/d7/JJJtO01x++Iqx0cP/5PJD8kOk=;
+        b=krXYUzcpYuvD1i4Y1QB/c/ebFNqSUJQasnj0UlR4ZOJhwuTXeBM4WQqNK1QfLdmYdl
+         sanEroE1KhDL8GhqPd5nsfpXjukIJgbZyZ18x0+xK3xTKwOlziFm04okzHYWrcpQ5Mfj
+         iQU7Ke85+pcGCCZSAeZ/5cfchfsXB0lq4/T1iO/ayC9qoGkHn4e29QPdhHYFweU3gXB6
+         MrDyZ6A+lPDNXs/sKni/w8Z/xtOsbB+YiRdKxgOH4vGvNLq4joNr+xuNsj4ac/UFijfa
+         mqafLQDRU7gqNmKtFFGCBk6dArQgWaMNN5FXS0ufyMgs+IvsPEG8dPpBBozPNF10I0Rn
+         CEEQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=kQbsD/l1cW53TzZqIiD6lhA89rJilHrW3RY1uwKWz5g=;
-        b=MKTuFrDjnC3eVe0E7HQwdGGKhXBmjMY/gzTwb1zzwphveezodp6PjyiYEeyRTalml4
-         jkV/vGGl6tMTXhH+/Jz2Q1JP3hkP2+/8ipeo6QJ2YPTHAE/Oa6B8AALI4mT5Uy8T2ybP
-         PIjhskL6NQa2St7bTlId+cfeDebebV7XCKrIbc763D90qX56up8kCZawkHfhkXn1ziLb
-         /QJXQzLLHzj0H1xc/8E0Zp78pwF7AJRCa8yxZLFxVTq55VQlYEEVZRlPg5faiLnPwrCD
-         j2zsbqb2D6YeCaNaOw1yjQtPqdmMl6HwRyeLgEZUr3DUzisGwsoNvrpvotRTD2P3YMqu
-         Sm4A==
-X-Gm-Message-State: AOAM531xmoMckXBIj4oXqlUGMC8W7C47g6Ii4inVQYpdIh+JB8HA/+Ef
-        XpzI+YGRa/d8LSBjysdWEmn8RA==
-X-Google-Smtp-Source: ABdhPJzMrO+dE2vHcs+fNrZzpM+bCtrcEgdw4ictUMXK7eRUtgJA4cHZC8dbAw1Umkz0KtcgK73pmw==
-X-Received: by 2002:a5d:9e56:: with SMTP id i22mr6297390ioi.43.1612816999148;
-        Mon, 08 Feb 2021 12:43:19 -0800 (PST)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id b13sm9441088iln.77.2021.02.08.12.43.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Feb 2021 12:43:18 -0800 (PST)
-Subject: Re: [PATCH 4.9 00/43] 4.9.257-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        stable@vger.kernel.org, Shuah Khan <skhan@linuxfoundation.org>
-References: <20210208145806.281758651@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <0907aa44-5f8a-ca2d-5c4c-58638afb8e82@linuxfoundation.org>
-Date:   Mon, 8 Feb 2021 13:43:17 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=obDV9I3X9Q9ETr/d7/JJJtO01x++Iqx0cP/5PJD8kOk=;
+        b=Ywx1S61xXW5h4BZGrS/S06FBTWAySupeXmJ91MyGJp1hY7An7a5ELBuralMNqekacP
+         GxTQCk8pyWZ09F0//dyv9Dy9EKDhG34cJ7j6sY034WtSIUhx6WlNhLZ0ys9Qion56YMo
+         DcnSYxFGEG19MFv6YXWLwCzt/2QrWCK1pnG2/Idzu2Xs1RvnSrcz1ae3JarWXh500gaI
+         9gAMtSov8nEAaBZoCU3m5Tx50weEaqXKsKUB/dvPdJm6K2QaplUFph0ivxdeWuBeTosL
+         /HAMEkLd+dva0zL6qoyQ7HIm91FXb56Mxyw0FGchzQuefu1myaIZdmZ1bzdD1WcX53Sj
+         bTPg==
+X-Gm-Message-State: AOAM532Iz2o1RPKHhQHWOoxK6CZ1PHCGz/fVzfLuxQc1CLdIGsMe3ucl
+        dRxej3qsModVSLsBavYowhST1fQd7t8n5y3mqAc=
+X-Google-Smtp-Source: ABdhPJzAaCj3xJyegMBtVD1UqGu/aOrXEVvKz91WjdC0gh3MwYnVNuYrDZ7UPAwQqWbt56zsMOdVKOXqiJXSEcvj7yw=
+X-Received: by 2002:a63:3d0:: with SMTP id 199mr15739479pgd.4.1612817026721;
+ Mon, 08 Feb 2021 12:43:46 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210208145806.281758651@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210208200903.28084-1-sakari.ailus@linux.intel.com> <20210208200903.28084-2-sakari.ailus@linux.intel.com>
+In-Reply-To: <20210208200903.28084-2-sakari.ailus@linux.intel.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 8 Feb 2021 22:43:30 +0200
+Message-ID: <CAHp75VciFMKrWM2zJZ6dppuL5M-7BLPGQfcnzkd9pQzY1bRWsQ@mail.gmail.com>
+Subject: Re: [PATCH v6 1/3] lib/vsprintf: Add support for printing V4L2 and
+ DRM fourccs
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Joe Perches <joe@perches.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/8/21 8:00 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.9.257 release.
-> There are 43 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 10 Feb 2021 14:57:55 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.9.257-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.9.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+On Mon, Feb 8, 2021 at 10:11 PM Sakari Ailus
+<sakari.ailus@linux.intel.com> wrote:
+>
+> Add a printk modifier %p4cc (for pixel format) for printing V4L2 and DRM
+> pixel formats denoted by fourccs. The fourcc encoding is the same for both
+> so the same implementation can be used.
 
-Compiled and booted on my test system. No dmesg regressions.
+Thank you for an update with the examples how current users will be
+converted. Below review is based on the users I had seen so far and
+assumptions made in this code. I see that it's tagged by maintainers,
+but I can't help to comment again on this. In any case the decision is
+up to them.
 
-Tested-by: Shuah Khan <skhan@linuxfoundation.org>
+...
 
-thanks,
--- Shuah
+> +V4L2 and DRM FourCC code (pixel format)
+> +---------------------------------------
+> +
+> +::
+> +
+> +       %p4cc
+> +
+> +Print a FourCC code used by V4L2 or DRM, including format endianness and
+> +its numerical value as hexadecimal.
+> +
+> +Passed by reference.
+> +
+> +Examples::
+> +
+> +       %p4cc   BG12 little-endian (0x32314742)
 
+This misses examples of the (strange) escaping cases and wiped
+whitespaces to make sure everybody understands that 'D 12' will be the
+same as 'D1 2' (side note: which I disagree on, perhaps something
+should be added into documentation why).
+
+...
+
+> +static noinline_for_stack
+> +char *fourcc_string(char *buf, char *end, const u32 *fourcc,
+> +                   struct printf_spec spec, const char *fmt)
+> +{
+
+> +       char output[sizeof("(xx)(xx)(xx)(xx) little-endian (0x01234567)")];
+
+Do we have any evidence / document / standard that the above format is
+what people would find good? From existing practices (I consider other
+printings elsewhere and users in this series) I find '(xx)' form for
+hex numbers is weird. The standard practice is to use \xHH (without
+parentheses).
+
+> +       char *p = output;
+> +       unsigned int i;
+> +       u32 val;
+> +
+> +       if (fmt[1] != 'c' || fmt[2] != 'c')
+> +               return error_string(buf, end, "(%p4?)", spec);
+> +
+> +       if (check_pointer(&buf, end, fourcc, spec))
+> +               return buf;
+> +
+> +       val = *fourcc & ~BIT(31);
+> +
+> +       for (i = 0; i < sizeof(*fourcc); i++) {
+> +               unsigned char c = val >> (i * 8);
+
+...
+
+> +               /* Weed out spaces */
+> +               if (c == ' ')
+> +                       continue;
+
+None of the existing users does that. Why?
+
+> +               /* Print non-control ASCII characters as-is */
+> +               if (isascii(c) && isprint(c)) {
+> +                       *p++ = c;
+> +                       continue;
+> +               }
+> +
+> +               *p++ = '(';
+> +               p = hex_byte_pack(p, c);
+> +               *p++ = ')';
+> +       }
+> +
+> +       strcpy(p, *fourcc & BIT(31) ? " big-endian" : " little-endian");
+> +       p += strlen(p);
+> +
+> +       *p++ = ' ';
+> +       *p++ = '(';
+
+> +       p = special_hex_number(p, output + sizeof(output) - 2, *fourcc,
+> +                              sizeof(u32));
+
+This is perfectly one line (in this file we have even longer lines).
+
+> +       *p++ = ')';
+> +       *p = '\0';
+> +
+> +       return string(buf, end, output, spec);
+> +}
+
+-- 
+With Best Regards,
+Andy Shevchenko
