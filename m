@@ -2,86 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C5AF313299
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 13:43:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83D3931329E
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 13:44:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232684AbhBHMmr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 07:42:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47548 "EHLO
+        id S232373AbhBHMna (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 07:43:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232159AbhBHMkj (ORCPT
+        with ESMTP id S231996AbhBHMlR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 07:40:39 -0500
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E78AAC061786;
-        Mon,  8 Feb 2021 04:39:58 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DZ5Fj5ZHzz9sWb;
-        Mon,  8 Feb 2021 23:39:53 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1612787994;
-        bh=Vj40pNH27cPPWhxImfXvQCPBcljRNPthB+e2t72DD+o=;
-        h=Date:From:To:Cc:Subject:From;
-        b=gOmRDRWLTmivtcAjwIxzHoL/C0mqnJVysPatAJX7MkbU2//3wiUHf5mEpzcA3MzXl
-         KMAS9HX6o3PSNl7rpc8+rO14f5QXZ1BvpFO6A4wWEp2nCZoiWzZcrj7Jm/1hJTV+Zc
-         HkiVGkfwA2ONvPp2UHMpBcA//KzUNU/NpevbmvMP6wwhHKfFDnI79LkWMbygGN6fF4
-         U0biVDkBxHxkx4Vy/yjihy8G796riKC0XpcfHFrc6MzoN/y7stRLT1OMFsYWIqIr+8
-         Lz66dMbm777vWimxDtV1NEvV0t5OeadLZUC0YyBZzTIXddwoM9Y1Bdo5YerxBJT+Q4
-         fPqywQuFn7XmQ==
-Date:   Mon, 8 Feb 2021 23:39:51 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        DRI <dri-devel@lists.freedesktop.org>
-Cc:     Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the drm-misc tree
-Message-ID: <20210208233951.2b438d99@canb.auug.org.au>
+        Mon, 8 Feb 2021 07:41:17 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07AA9C061788;
+        Mon,  8 Feb 2021 04:40:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=QYHzFu7RFjTlSdRSBJft/6IvHdnl3ucwkIIGdwOHaTI=; b=M6Vbj529/FrUUsDCBH3YO2zH/I
+        2uguc/8aT2Ymw7wv+8quB5S/whXFbGzgoXuWAqIjd7EYl3R3bRlBeIFPvol8vYs5wTKSl8akTxHkC
+        c3bbUNTzqFHA0luYYL2J8ImQEUZYg07IgPKM5XygZpPevys2G99uDtRaZwNygya08nVzHnUsKpBxs
+        fhteJcW44UUXqMCl6EdoXsucxW6mxt9LJ64iLvcB10YyLhERtLRpcZX+6WoeWuMTQGdMGMJ6j1eCs
+        WY4M2U6QPjdjcB/oO+OjdbFBRVA3n/PsFJnoZJGbxCsRlC2PewFOhZVVjjAzd041+3a6v4Q2syrD8
+        vwowdcOA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1l95pj-005xx7-8Y; Mon, 08 Feb 2021 12:40:04 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4D9BE3010D2;
+        Mon,  8 Feb 2021 13:40:02 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 34C5F20D8A013; Mon,  8 Feb 2021 13:40:02 +0100 (CET)
+Date:   Mon, 8 Feb 2021 13:40:02 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Jim Mattson <jmattson@google.com>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org, kvm@vger.kernel.org,
+        pbonzini@redhat.com, Andi Kleen <ak@linux.intel.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: Re: [PATCH RESEND] perf/x86/kvm: Add Cascade Lake Xeon steppings to
+ isolation_ucodes[]
+Message-ID: <YCExIkeNU/g0GcCD@hirez.programming.kicks-ass.net>
+References: <20210205191324.2889006-1-jmattson@google.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/1RGkhcRKW4jkWv=8QwCD5wP";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210205191324.2889006-1-jmattson@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/1RGkhcRKW4jkWv=8QwCD5wP
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Fri, Feb 05, 2021 at 11:13:24AM -0800, Jim Mattson wrote:
+> Cascade Lake Xeon parts have the same model number as Skylake Xeon
+> parts, so they are tagged with the intel_pebs_isolation
+> quirk. However, as with Skylake Xeon H0 stepping parts, the PEBS
+> isolation issue is fixed in all microcode versions.
+> 
+> Add the Cascade Lake Xeon steppings (5, 6, and 7) to the
+> isolation_ucodes[] table so that these parts benefit from Andi's
+> optimization in commit 9b545c04abd4f ("perf/x86/kvm: Avoid unnecessary
+> work in guest filtering").
+> 
+> Signed-off-by: Jim Mattson <jmattson@google.com>
 
-Hi all,
-
-After merging the drm-misc tree, today's linux-next build (htmldocs)
-produced this warning:
-
-include/drm/gpu_scheduler.h:304: warning: Function parameter or member '_sc=
-ore' not described in 'drm_gpu_scheduler'
-
-Introduced by commit
-
-  f2f12eb9c32b ("drm/scheduler: provide scheduler score externally")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/1RGkhcRKW4jkWv=8QwCD5wP
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAhMRcACgkQAVBC80lX
-0GzfxQgAg0msFiUtp0qMNFgOCSJ1KO/yXtAsPEhvu0uXIE/78WXKImTU7SFRQbIT
-pQwPF03oxeMqqN59o0VDXgpV7iM7o8PUa9u/a/ICK9+7z6z0t+PzPIeyeIwiCF2i
-SKjYhJvjX2hvAvwYfuhG/AVYQQh/+nIzdeCiJquRzDBPt3oy53kMbUh1zd4TWeZw
-IadDuJAUFLqMcYjL13HaKdIDCYwg9/8JeIGwRvEFAlXCpQjxpeCbrB5wSO7RU7A3
-3xfnX2MooI5hdlmZXlSW9JFWMJGfnNFpmwUcg05ZVPWmyihsyjwsEeQqh0VYiowJ
-6kc8+ewqdYkEOn8+eOdeC/0Ve3lNKA==
-=uovO
------END PGP SIGNATURE-----
-
---Sig_/1RGkhcRKW4jkWv=8QwCD5wP--
+Thanks!
