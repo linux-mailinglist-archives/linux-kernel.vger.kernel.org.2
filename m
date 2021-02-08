@@ -2,95 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85D5A313DB8
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 19:40:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85E10313DBE
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 19:41:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234934AbhBHSje (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 13:39:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41324 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229545AbhBHQd4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 11:33:56 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E453C06178A
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 08:33:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=hGiWVAMkh3J18K54lFBdPSUwqfZTeBYTlisCRNS4agk=; b=rHXX9igingjzDgZbeeQUVzMZB0
-        aTGuIE7EmHevBvAPn6Ztim0rfZtLYcrAYU0awFeim99wVDKdwjNZ7Ku0PEowwMXhki+BnMa+d7k1J
-        GVp5CSVzMCXrXu/dXIqhPT57/N0PVJqdN0E0WhRa5gpFYCZq2TVid7TezaFD7utwk/cEhcJztIwVX
-        2RUYXjrFI4n3A7azGVynM4Yd06WVasf6W02BXHNN3UCP/w+38qDVmR+joyVJXcOQz5a77ascYc5J2
-        Fz5qiXGSAW4y3y6NZLV4wzoYiH3NrMWOwtApd6XlrUs09UVUrkhkWqMx4QJZrBnclJ8HPixRIX2P2
-        5t6nRA2Q==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l99TJ-0000RD-1A; Mon, 08 Feb 2021 16:33:09 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 22F16301324;
-        Mon,  8 Feb 2021 17:33:07 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 072512018B25B; Mon,  8 Feb 2021 17:33:07 +0100 (CET)
-Date:   Mon, 8 Feb 2021 17:33:06 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Andi Kleen <ak@linux.intel.com>
-Cc:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        linux-kernel@vger.kernel.org,
-        Sean Christopherson <sean.j.christopherson@intel.com>
-Subject: Re: [RFC v1 05/26] x86/traps: Add #VE support for TDX guest
-Message-ID: <YCFnwnzgHXNGKW+M@hirez.programming.kicks-ass.net>
-References: <cover.1612563142.git.sathyanarayanan.kuppuswamy@linux.intel.com>
- <48a702f536ccf953eee5778023ed6d1a452f6dcf.1612563142.git.sathyanarayanan.kuppuswamy@linux.intel.com>
- <YCEQiDNSHTGBXBcj@hirez.programming.kicks-ass.net>
- <20210208162301.GA365765@tassilo.jf.intel.com>
+        id S235130AbhBHSkD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 13:40:03 -0500
+Received: from mx2.suse.de ([195.135.220.15]:45864 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234476AbhBHQeL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 11:34:11 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 0F242AE30;
+        Mon,  8 Feb 2021 16:33:30 +0000 (UTC)
+Subject: Re: [PATCH v3 2/3] mm, slub: don't combine pr_err with INFO
+To:     Yafang Shao <laoar.shao@gmail.com>,
+        andriy.shevchenko@linux.intel.com, david@redhat.com,
+        willy@infradead.org, cl@linux.com, linmiaohe@huawei.com,
+        penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com,
+        akpm@linux-foundation.org, pmladek@suse.com, rostedt@goodmis.org,
+        sergey.senozhatsky@gmail.com, joe@perches.com
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20210208101439.55474-1-laoar.shao@gmail.com>
+ <20210208101439.55474-3-laoar.shao@gmail.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <af67d20c-ca5a-7506-b009-a31c266c3395@suse.cz>
+Date:   Mon, 8 Feb 2021 17:33:25 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210208162301.GA365765@tassilo.jf.intel.com>
+In-Reply-To: <20210208101439.55474-3-laoar.shao@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 08, 2021 at 08:23:01AM -0800, Andi Kleen wrote:
-> > Which is supposedly then set up to avoid #VE during the syscall gap,
-> > yes? Which then results in #VE not having to be IST.
+On 2/8/21 11:14 AM, Yafang Shao wrote:
+> It is strange to combine "pr_err" with "INFO", so let's remove the
+> prefix completely.
+> This patch is motivated by David's comment[1].
 > 
-> Yes that is currently true because all memory is pre-accepted.
+> - before the patch
+> [ 8846.517809] INFO: Slab 0x00000000f42a2c60 objects=33 used=3 fp=0x0000000060d32ca8 flags=0x17ffffc0010200(slab|head)
 > 
-> If we ever do lazy accept we would need to make sure the memory accessed in
-> the syscall gap is already accepted, or move over to an IST.
+> - after the patch
+> [ 6343.396602] Slab 0x000000004382e02b objects=33 used=3 fp=0x000000009ae06ffc flags=0x17ffffc0010200(slab|head)
+> 
+> [1]. https://lore.kernel.org/linux-mm/b9c0f2b6-e9b0-0c36-ebdd-2bc684c5a762@redhat.com/#t
+> 
+> Suggested-by: Vlastimil Babka <vbabka@suse.cz>
+> Cc: David Hildenbrand <david@redhat.com>
+> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
 
-I think we're going to mandate the entry text/data will have to be
-pre-accepted to avoid IST. ISTs really are crap.
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
 
-> > > +#ifdef CONFIG_INTEL_TDX_GUEST
-> > > +DEFINE_IDTENTRY(exc_virtualization_exception)
-> > > +{
-> > > +	struct ve_info ve;
-> > > +	int ret;
-> > > +
-> > > +	RCU_LOCKDEP_WARN(!rcu_is_watching(), "entry code didn't wake RCU");
-> > > +
-> > > +	/* Consume #VE info before re-enabling interrupts */
-> > 
-> > So what happens if NMI happens here, and triggers a nested #VE ?
+> ---
+>  mm/slub.c | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
 > 
-> Yes that's a gap. We should probably bail out and reexecute the original
-> instruction. The VE handler would need to set a flag for that.
+> diff --git a/mm/slub.c b/mm/slub.c
+> index 87ff086e68a4..2514c37ab4e4 100644
+> --- a/mm/slub.c
+> +++ b/mm/slub.c
+> @@ -612,7 +612,7 @@ static void print_track(const char *s, struct track *t, unsigned long pr_time)
+>  	if (!t->addr)
+>  		return;
+>  
+> -	pr_err("INFO: %s in %pS age=%lu cpu=%u pid=%d\n",
+> +	pr_err("%s in %pS age=%lu cpu=%u pid=%d\n",
+>  	       s, (void *)t->addr, pr_time - t->when, t->cpu, t->pid);
+>  #ifdef CONFIG_STACKTRACE
+>  	{
+> @@ -638,7 +638,7 @@ void print_tracking(struct kmem_cache *s, void *object)
+>  
+>  static void print_page_info(struct page *page)
+>  {
+> -	pr_err("INFO: Slab 0x%p objects=%u used=%u fp=0x%p flags=%#lx(%pGp)\n",
+> +	pr_err("Slab 0x%p objects=%u used=%u fp=0x%p flags=%#lx(%pGp)\n",
+>  	       page, page->objects, page->inuse, page->freelist,
+>  	       page->flags, &page->flags);
+>  
+> @@ -695,7 +695,7 @@ static void print_trailer(struct kmem_cache *s, struct page *page, u8 *p)
+>  
+>  	print_page_info(page);
+>  
+> -	pr_err("INFO: Object 0x%p @offset=%tu fp=0x%p\n\n",
+> +	pr_err("Object 0x%p @offset=%tu fp=0x%p\n\n",
+>  	       p, p - addr, get_freepointer(s, p));
+>  
+>  	if (s->flags & SLAB_RED_ZONE)
+> @@ -788,7 +788,7 @@ static int check_bytes_and_report(struct kmem_cache *s, struct page *page,
+>  		end--;
+>  
+>  	slab_bug(s, "%s overwritten", what);
+> -	pr_err("INFO: 0x%p-0x%p @offset=%tu. First byte 0x%x instead of 0x%x\n",
+> +	pr_err("0x%p-0x%p @offset=%tu. First byte 0x%x instead of 0x%x\n",
+>  					fault, end - 1, fault - addr,
+>  					fault[0], value);
+>  	print_trailer(s, page, object);
+> @@ -3854,7 +3854,7 @@ static void list_slab_objects(struct kmem_cache *s, struct page *page,
+>  	for_each_object(p, s, addr, page->objects) {
+>  
+>  		if (!test_bit(__obj_to_index(s, addr, p), map)) {
+> -			pr_err("INFO: Object 0x%p @offset=%tu\n", p, p - addr);
+> +			pr_err("Object 0x%p @offset=%tu\n", p, p - addr);
+>  			print_tracking(s, p);
+>  		}
+>  	}
 > 
-> Or alternatively the NMI always gets the VE information and puts
-> it on some internal stack, but that would seem clunkier.
 
-The same is possible with MCE and #DB I imagine.
