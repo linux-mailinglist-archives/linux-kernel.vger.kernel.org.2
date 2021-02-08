@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEF9B313A02
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 17:49:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59D093139F2
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 17:46:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234637AbhBHQrw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 11:47:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:32838 "EHLO mail.kernel.org"
+        id S234544AbhBHQpq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 11:45:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58782 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233573AbhBHPQP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 10:16:15 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 361E864E8A;
-        Mon,  8 Feb 2021 15:11:25 +0000 (UTC)
+        id S233083AbhBHPP6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 10:15:58 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 163BF64E99;
+        Mon,  8 Feb 2021 15:11:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612797085;
-        bh=knllIAyGDKAAm8UOv+igvPm3nf81/hPKr0A59HVe6Js=;
+        s=korg; t=1612797088;
+        bh=wqWN5xytufg7GZYq8FXdxm66L7+eWAmdstwff4gsBvI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ohz0J8b3RJPsuUmmEEsoOs8gwQhccL2OsrQhRwbrdczvhJlo6VXioUaxg2Swl3ovM
-         RERhkmeVifmpDh/+3MR6xAFKyRmJYti4Skldp86kygwfo6cj+fCHs690d7Vi5jJKKF
-         tActp1WvsMA2Q/c/IEKk012KZAguydJ+6oiFX9F0=
+        b=w/peW5Dkthti0syQsMEyFsQA1JjuH6I5CvFp36+aIiV46cXEbxfSw87y21upMtYx8
+         8YUVa6Ed0rA3ECxj7JSBYI133U9UyaOCNQuKTonilr7RJBrg3EcpWdDbcE+FYkixxL
+         WI0lJuD3nUfY/ACKKOQdJt5hd7BCYeTPv50+IbIU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Hermann Lauer <Hermann.Lauer@uni-heidelberg.de>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 20/65] ARM: dts: sun7i: a20: bananapro: Fix ethernet phy-mode
-Date:   Mon,  8 Feb 2021 16:00:52 +0100
-Message-Id: <20210208145811.014578733@linuxfoundation.org>
+        Narayan Ayalasomayajula <Narayan.Ayalasomayajula@wdc.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 21/65] nvmet-tcp: fix out-of-bounds access when receiving multiple h2cdata PDUs
+Date:   Mon,  8 Feb 2021 16:00:53 +0100
+Message-Id: <20210208145811.053812315@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210208145810.230485165@linuxfoundation.org>
 References: <20210208145810.230485165@linuxfoundation.org>
@@ -41,41 +41,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hermann Lauer <Hermann.Lauer@uni-heidelberg.de>
+From: Sagi Grimberg <sagi@grimberg.me>
 
-[ Upstream commit a900cac3750b9f0b8f5ed0503d9c6359532f644d ]
+[ Upstream commit cb8563f5c735a042ea2dd7df1ad55ae06d63ffeb ]
 
-BPi Pro needs TX and RX delay for Gbit to work reliable and avoid high
-packet loss rates. The realtek phy driver overrides the settings of the
-pull ups for the delays, so fix this for BananaPro.
+When the host sends multiple h2cdata PDUs, we keep track on
+the receive progress and calculate the scatterlist index and
+offsets.
 
-Fix the phy-mode description to correctly reflect this so that the
-implementation doesn't reconfigure the delays incorrectly. This
-happened with commit bbc4d71d6354 ("net: phy: realtek: fix rtl8211e
-rx/tx delay config").
+The issue is that sg_offset should only be kept for the first
+iov entry we map in the iovec as this is the difference between
+our cursor and the sg entry offset itself.
 
-Fixes: 10662a33dcd9 ("ARM: dts: sun7i: Add dts file for Bananapro board")
-Signed-off-by: Hermann Lauer <Hermann.Lauer@uni-heidelberg.de>
-Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-Link: https://lore.kernel.org/r/20210128111842.GA11919@lemon.iwr.uni-heidelberg.de
+In addition, the sg index was calculated wrong because we should
+not round up when dividing the command byte offset with PAG_SIZE.
+
+Fixes: 872d26a391da ("nvmet-tcp: add NVMe over TCP target driver")
+Reported-by: Narayan Ayalasomayajula <Narayan.Ayalasomayajula@wdc.com>
+Tested-by: Narayan Ayalasomayajula <Narayan.Ayalasomayajula@wdc.com>
+Signed-off-by: Sagi Grimberg <sagi@grimberg.me>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/sun7i-a20-bananapro.dts | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/nvme/target/tcp.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/sun7i-a20-bananapro.dts b/arch/arm/boot/dts/sun7i-a20-bananapro.dts
-index 01ccff756996d..5740f9442705c 100644
---- a/arch/arm/boot/dts/sun7i-a20-bananapro.dts
-+++ b/arch/arm/boot/dts/sun7i-a20-bananapro.dts
-@@ -110,7 +110,7 @@
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&gmac_rgmii_pins>;
- 	phy-handle = <&phy1>;
--	phy-mode = "rgmii";
-+	phy-mode = "rgmii-id";
- 	phy-supply = <&reg_gmac_3v3>;
- 	status = "okay";
- };
+diff --git a/drivers/nvme/target/tcp.c b/drivers/nvme/target/tcp.c
+index e31823f19a0fa..9242224156f5b 100644
+--- a/drivers/nvme/target/tcp.c
++++ b/drivers/nvme/target/tcp.c
+@@ -292,7 +292,7 @@ static void nvmet_tcp_map_pdu_iovec(struct nvmet_tcp_cmd *cmd)
+ 	length = cmd->pdu_len;
+ 	cmd->nr_mapped = DIV_ROUND_UP(length, PAGE_SIZE);
+ 	offset = cmd->rbytes_done;
+-	cmd->sg_idx = DIV_ROUND_UP(offset, PAGE_SIZE);
++	cmd->sg_idx = offset / PAGE_SIZE;
+ 	sg_offset = offset % PAGE_SIZE;
+ 	sg = &cmd->req.sg[cmd->sg_idx];
+ 
+@@ -305,6 +305,7 @@ static void nvmet_tcp_map_pdu_iovec(struct nvmet_tcp_cmd *cmd)
+ 		length -= iov_len;
+ 		sg = sg_next(sg);
+ 		iov++;
++		sg_offset = 0;
+ 	}
+ 
+ 	iov_iter_kvec(&cmd->recv_msg.msg_iter, READ, cmd->iov,
 -- 
 2.27.0
 
