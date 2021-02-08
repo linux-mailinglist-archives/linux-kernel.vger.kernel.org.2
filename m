@@ -2,54 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87555313E8E
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 20:11:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CB42313E90
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 20:12:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236073AbhBHTLJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 14:11:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57936 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234992AbhBHRuz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 12:50:55 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A923C061794;
-        Mon,  8 Feb 2021 09:50:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=UkfFdgNX9ewseD8DQkTcogcfdbSnU1zlfGHBdnEbdZE=; b=ZZF57D67T0uW2+eX2W2hDAuxHq
-        o+eth4xhEXUIpAwK1aG2TEK3HJ6ZymGrAE4KV9nksRpqnIICRwsG+mg4ZgtOoRjj+UveZJIA+zB2s
-        kWaSAU9F7WyRPQ69Wr1CWVz3KeCIsr7LfBpE/nhnHGBrAr5RJw6gwB58wGceNobUWOeS87tlDpoh5
-        QcBVRelkNekE6x2xEFde1bX4Vyun1CbdsY9l0U9gKx/JRbdPjMvpsGZRrGacfHsySZoCaRXBHHymY
-        WJOhisLKoAvFH9OH2ySsD04uAAicxQ96/tnZISulbbFSLWev89je+UIueVI9A6gO6q/2d0WyUwhRN
-        tXpMbFuQ==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1l9Afn-006J2K-Lw; Mon, 08 Feb 2021 17:50:07 +0000
-Date:   Mon, 8 Feb 2021 17:50:07 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     masahiroy@kernel.org, michal.lkml@markovi.net,
-        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        gregkh@linuxfoundation.org
-Subject: Re: [PATCH] kbuild: simplify access to the kernel's version
-Message-ID: <20210208175007.GA1501867@infradead.org>
-References: <20210207161352.2044572-1-sashal@kernel.org>
+        id S235960AbhBHTLp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 14:11:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43960 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232955AbhBHRvG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 12:51:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7264764E84;
+        Mon,  8 Feb 2021 17:50:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612806625;
+        bh=NhejrOM6a43dC+qjIL+6h3IShBZ+5vhg83SJUixf2w4=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=B2FMW+2MOdXoczhKakD1wHVxvdRj+h7stgVp9ZP+Uo45f/yvqVurJUOrLAWkFhWnB
+         kGEjzROkyiEX343RtIS2TwCHKJBR0kEtRyVNbw6JdThairisxlWOrXvCCcDJF/aFoL
+         M63MygR6F+NPCeZck/5L0N5Z37wbiRIO5IKDErG5kulTT9Is+gxvvg9J3lQp0QL9pU
+         2zw72IDaGhA5LcTanZVbqB2a3QqgWe00Lk80O+PHgFqmcqMVd77YEUQpwuuAcUrfeS
+         juf4WLz1E6lvlHehOLU2LZV++JMioz/4ZlRVcGBrILGzvymMKY0pU11UwGeNSyx3vg
+         8CLXo8Sewz5/Q==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210207161352.2044572-1-sashal@kernel.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210118161442.104660-1-konrad.dybcio@somainline.org>
+References: <20210118161442.104660-1-konrad.dybcio@somainline.org>
+Subject: Re: [PATCH] clk: qcom: smd: Add missing RPM clocks for msm8992/4
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     ~postmarketos/upstreaming@lists.sr.ht,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        AngeloGioacchino Del Regno <kholk11@gmail.com>,
+        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+To:     Konrad Dybcio <konrad.dybcio@somainline.org>,
+        phone-devel@vger.kernel.org
+Date:   Mon, 08 Feb 2021 09:50:24 -0800
+Message-ID: <161280662401.76967.11809752025480357094@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Feb 07, 2021 at 11:13:52AM -0500, Sasha Levin wrote:
-> +		(u8)(LINUX_VERSION_MAJOR), (u8)(LINUX_VERSION_PATCHLEVEL),
-> +		(u16)(LINUX_VERSION_SUBLEVEL));
+Quoting Konrad Dybcio (2021-01-18 08:14:41)
+> This was omitted when first adding the clocks for these SoCs.
+>=20
 
-No need for the casts and braces.
+I believe they were omitted because the system crashed if they were
+touched. Is that still the case?
 
-Otherwise this looks good, but please also kill off KERNEL_VERSION
-and LINUX_KERNEL_VERSION entirely while you're at it.
+> Fixes: b4297844995 ("clk: qcom: smd: Add support for MSM8992/4 rpm clocks=
+")
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
+> ---
+>  drivers/clk/qcom/clk-smd-rpm.c         | 16 ++++++++++++++++
+>  include/dt-bindings/clock/qcom,rpmcc.h |  2 ++
+>  include/linux/soc/qcom/smd-rpm.h       |  1 +
+>  3 files changed, 19 insertions(+)
+>=20
+> diff --git a/drivers/clk/qcom/clk-smd-rpm.c b/drivers/clk/qcom/clk-smd-rp=
+m.c
+> index 0e1dfa89489e..91d610042a5d 100644
+> --- a/drivers/clk/qcom/clk-smd-rpm.c
+> +++ b/drivers/clk/qcom/clk-smd-rpm.c
+> @@ -624,6 +624,8 @@ static const struct rpm_smd_clk_desc rpm_clk_msm8976 =
+=3D {
+>  };
+> =20
+>  /* msm8992 */
+> +DEFINE_CLK_SMD_RPM_BRANCH(msm8992, bi_tcxo, bi_tcxo_a, QCOM_SMD_RPM_MISC=
+_CLK, 0,
+> +                                                               19200000);
+
+This rate should come from some parent clk specified in the board DTS
+file as a fixed rate clock.
+
+>  DEFINE_CLK_SMD_RPM(msm8992, pnoc_clk, pnoc_a_clk, QCOM_SMD_RPM_BUS_CLK, =
+0);
+>  DEFINE_CLK_SMD_RPM(msm8992, ocmemgx_clk, ocmemgx_a_clk, QCOM_SMD_RPM_MEM=
+_CLK, 2);
+>  DEFINE_CLK_SMD_RPM(msm8992, bimc_clk, bimc_a_clk, QCOM_SMD_RPM_MEM_CLK, =
+0);
