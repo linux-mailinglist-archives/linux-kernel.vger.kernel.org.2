@@ -2,163 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A11313128F5
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 03:32:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FF803128F7
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 03:32:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229725AbhBHC27 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 7 Feb 2021 21:28:59 -0500
-Received: from szxga02-in.huawei.com ([45.249.212.188]:3008 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229611AbhBHC25 (ORCPT
+        id S229745AbhBHC3e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Feb 2021 21:29:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57732 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229611AbhBHC3b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Feb 2021 21:28:57 -0500
-Received: from DGGEMM404-HUB.china.huawei.com (unknown [172.30.72.56])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4DYqfS6xxczRCKl;
-        Mon,  8 Feb 2021 10:26:56 +0800 (CST)
-Received: from dggpemm100010.china.huawei.com (7.185.36.24) by
- DGGEMM404-HUB.china.huawei.com (10.3.20.212) with Microsoft SMTP Server (TLS)
- id 14.3.498.0; Mon, 8 Feb 2021 10:27:06 +0800
-Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
- dggpemm100010.china.huawei.com (7.185.36.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2106.2; Mon, 8 Feb 2021 10:27:06 +0800
-Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
- dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.2106.006;
- Mon, 8 Feb 2021 10:27:06 +0800
-From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-To:     Matthew Wilcox <willy@infradead.org>
-CC:     "Wangzhou (B)" <wangzhou1@hisilicon.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "jgg@ziepe.ca" <jgg@ziepe.ca>,
-        "kevin.tian@intel.com" <kevin.tian@intel.com>,
-        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "Liguozhu (Kenneth)" <liguozhu@hisilicon.com>,
-        "zhangfei.gao@linaro.org" <zhangfei.gao@linaro.org>,
-        "chensihang (A)" <chensihang1@hisilicon.com>
-Subject: RE: [RFC PATCH v3 1/2] mempinfd: Add new syscall to provide memory
- pin
-Thread-Topic: [RFC PATCH v3 1/2] mempinfd: Add new syscall to provide memory
- pin
-Thread-Index: AQHW/SrsWWMRpilf2UC1Pz29QqsBVqpMsX2AgACQE1D//7IVAIAAi2xQ
-Date:   Mon, 8 Feb 2021 02:27:06 +0000
-Message-ID: <b4e2acc237e44ffe916135e96ad3ef20@hisilicon.com>
-References: <1612685884-19514-1-git-send-email-wangzhou1@hisilicon.com>
- <1612685884-19514-2-git-send-email-wangzhou1@hisilicon.com>
- <20210207213409.GL308988@casper.infradead.org>
- <f4b2d7db8a1047d9952cbbfaf9e27824@hisilicon.com>
- <20210208013056.GM308988@casper.infradead.org>
-In-Reply-To: <20210208013056.GM308988@casper.infradead.org>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.126.200.200]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        Sun, 7 Feb 2021 21:29:31 -0500
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15E3FC061788
+        for <linux-kernel@vger.kernel.org>; Sun,  7 Feb 2021 18:28:51 -0800 (PST)
+Received: by mail-lj1-x233.google.com with SMTP id c18so15106933ljd.9
+        for <linux-kernel@vger.kernel.org>; Sun, 07 Feb 2021 18:28:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=prVjlOxJgxegYr5WyW9Puejur2UOLsJUAHlf/hcHxi4=;
+        b=P3vCF0PGHm1O1esy5AM5oRBJYOvhkYL9KaghBGfStowxVodRdE6aeYoKVs07gQqCRV
+         /KDTE5iE1GBcC277I9pstoXCyEU29eULNB63ExV6UmFLrRdZgK8cat9bk3XBYQWEqBKZ
+         /u53kzhG9DHRjLKqrk6f1wV8sTD2D+qeNK6tUSVqb8+zFZWF61kH4Xc8fRs9lLv3r3MI
+         6HdoVrX+/2iVx51pPmhaEOfLaGjMlZY73hR6+llJr0bs/KK4S8dT42noXnH9cMoNKDav
+         oH6zlOgD5ZCAqGqOIFzXdtV42/msvCRIF4YGwFet67mFYidyVgIrsOpZ9fhTmaF0qdpd
+         wr1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=prVjlOxJgxegYr5WyW9Puejur2UOLsJUAHlf/hcHxi4=;
+        b=j6eZQuARfAYTmaEPXZrBbIlgujG8mTCpY8K9Fpe+cJzWTGdvhk/4hLQ1ZviLDKTdW4
+         ViRzRQ3sstrW9eTNTfIe+fQjFvyDXDno3S5czRPSBhZ1pSZuBGHhnaHRW9TM/VNmzdzp
+         J4aZi8FaMFQWSd/0DnF9gEdzDLWuc7+lMVdhH+Qeb7SfFjp9AKKsl1hRgYlIfvqxMOwO
+         8MKgcRWyUAQq1G/h12cS9IBgWJFaBL7JFlacAK22E0dSAOASDk39f9JcJ9nX5l9NLoal
+         B4Ad4rYbT6Tzw3UxAnTbGbn8yRvycrD6fjy7iJNafGEZ2FIT/8qGbUkJUXVphx9Lg2PW
+         eGHA==
+X-Gm-Message-State: AOAM530zJvNRl5TFAzT3iH24KCnViOFaxMggKViZT0eHQLp3D9zxcJG6
+        I22pFtKnFR1m+fGQzqtWtGaBTw4U4fSztMHNd25j5Q==
+X-Google-Smtp-Source: ABdhPJyR2XSql3j3ajSmpY3/49a+HuQOKrA+Qf06VGVaO4rMyCBZU/zvyKPc/CticUgxxzDHes9zb693NtXnPSTSvbw=
+X-Received: by 2002:a2e:9801:: with SMTP id a1mr10029568ljj.122.1612751329278;
+ Sun, 07 Feb 2021 18:28:49 -0800 (PST)
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+References: <20210205182806.17220-1-hannes@cmpxchg.org> <20210205182806.17220-8-hannes@cmpxchg.org>
+In-Reply-To: <20210205182806.17220-8-hannes@cmpxchg.org>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Sun, 7 Feb 2021 18:28:37 -0800
+Message-ID: <CALvZod4ex5V2Xs_6YHmmLJw91rjKTSZ9XobXiRx4ftj=L=A6MA@mail.gmail.com>
+Subject: Re: [PATCH 7/8] mm: memcontrol: consolidate lruvec stat flushing
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Tejun Heo <tj@kernel.org>, Michal Hocko <mhocko@suse.com>,
+        Roman Gushchin <guro@fb.com>, Linux MM <linux-mm@kvack.org>,
+        Cgroups <cgroups@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Feb 5, 2021 at 10:28 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
+>
+> There are two functions to flush the per-cpu data of an lruvec into
+> the rest of the cgroup tree: when the cgroup is being freed, and when
+> a CPU disappears during hotplug. The difference is whether all CPUs or
+> just one is being collected, but the rest of the flushing code is the
+> same. Merge them into one function and share the common code.
+>
+> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
 
+Reviewed-by: Shakeel Butt <shakeelb@google.com>
 
-> -----Original Message-----
-> From: owner-linux-mm@kvack.org [mailto:owner-linux-mm@kvack.org] On Behalf Of
-> Matthew Wilcox
-> Sent: Monday, February 8, 2021 2:31 PM
-> To: Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>
-> Cc: Wangzhou (B) <wangzhou1@hisilicon.com>; linux-kernel@vger.kernel.org;
-> iommu@lists.linux-foundation.org; linux-mm@kvack.org;
-> linux-arm-kernel@lists.infradead.org; linux-api@vger.kernel.org; Andrew
-> Morton <akpm@linux-foundation.org>; Alexander Viro <viro@zeniv.linux.org.uk>;
-> gregkh@linuxfoundation.org; jgg@ziepe.ca; kevin.tian@intel.com;
-> jean-philippe@linaro.org; eric.auger@redhat.com; Liguozhu (Kenneth)
-> <liguozhu@hisilicon.com>; zhangfei.gao@linaro.org; chensihang (A)
-> <chensihang1@hisilicon.com>
-> Subject: Re: [RFC PATCH v3 1/2] mempinfd: Add new syscall to provide memory
-> pin
-> 
-> On Sun, Feb 07, 2021 at 10:24:28PM +0000, Song Bao Hua (Barry Song) wrote:
-> > > > In high-performance I/O cases, accelerators might want to perform
-> > > > I/O on a memory without IO page faults which can result in dramatically
-> > > > increased latency. Current memory related APIs could not achieve this
-> > > > requirement, e.g. mlock can only avoid memory to swap to backup device,
-> > > > page migration can still trigger IO page fault.
-> > >
-> > > Well ... we have two requirements.  The application wants to not take
-> > > page faults.  The system wants to move the application to a different
-> > > NUMA node in order to optimise overall performance.  Why should the
-> > > application's desires take precedence over the kernel's desires?  And why
-> > > should it be done this way rather than by the sysadmin using numactl to
-> > > lock the application to a particular node?
-> >
-> > NUMA balancer is just one of many reasons for page migration. Even one
-> > simple alloc_pages() can cause memory migration in just single NUMA
-> > node or UMA system.
-> >
-> > The other reasons for page migration include but are not limited to:
-> > * memory move due to CMA
-> > * memory move due to huge pages creation
-> >
-> > Hardly we can ask users to disable the COMPACTION, CMA and Huge Page
-> > in the whole system.
-> 
-> You're dodging the question.  Should the CMA allocation fail because
-> another application is using SVA?
-> 
-> I would say no.  
-
-I would say no as well.
-
-While IOMMU is enabled, CMA almost has one user only: IOMMU driver
-as other drivers will depend on iommu to use non-contiguous memory
-though they are still calling dma_alloc_coherent().
-
-In iommu driver, dma_alloc_coherent is called during initialization
-and there is no new allocation afterwards. So it wouldn't cause
-runtime impact on SVA performance. Even there is new allocations,
-CMA will fall back to general alloc_pages() and iommu drivers are
-almost allocating small memory for command queues.
-
-So I would say general compound pages, huge pages, especially
-transparent huge pages, would be bigger concerns than CMA for
-internal page migration within one NUMA. 
-
-Not like CMA, general alloc_pages() can get memory by moving
-pages other than those pinned.
-
-And there is no guarantee we can always bind the memory of
-SVA applications to single one NUMA, so NUMA balancing is
-still a concern.
-
-But I agree we need a way to make CMA success while the userspace
-pages are pinned. Since pin has been viral in many drivers, I
-assume there is a way to handle this. Otherwise, APIs like 
-V4L2_MEMORY_USERPTR[1] will possibly make CMA fail as there
-is no guarantee that usersspace will allocate unmovable memory
-and there is no guarantee the fallback path- alloc_pages() can
-succeed while allocating big memory.
-
-Will investigate more.
-
-> The application using SVA should take the one-time
-> performance hit from having its memory moved around.
-
-Sometimes I also feel SVA is doomed to suffer from performance
-impact due to page migration. But we are still trying to
-extend its use cases to high-performance I/O.
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/media/v4l2-core/videobuf-dma-sg.c
-
-Thanks
-Barry
+BTW what about the lruvec stats? Why not convert them to rstat as well?
