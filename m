@@ -2,214 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F26D7314183
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 22:19:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E798D314186
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 22:19:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235673AbhBHVRS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 16:17:18 -0500
-Received: from retiisi.eu ([95.216.213.190]:57106 "EHLO hillosipuli.retiisi.eu"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236677AbhBHUKw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 15:10:52 -0500
-Received: from lanttu.localdomain (lanttu-e.localdomain [192.168.1.64])
-        by hillosipuli.retiisi.eu (Postfix) with ESMTP id D78D4634C89;
-        Mon,  8 Feb 2021 22:08:33 +0200 (EET)
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-media@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        dri-devel@lists.freedesktop.org, hverkuil@xs4all.nl,
-        laurent.pinchart@ideasonboard.com, mchehab@kernel.org,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Joe Perches <joe@perches.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Subject: [PATCH v6 1/3] lib/vsprintf: Add support for printing V4L2 and DRM fourccs
-Date:   Mon,  8 Feb 2021 22:09:01 +0200
-Message-Id: <20210208200903.28084-2-sakari.ailus@linux.intel.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210208200903.28084-1-sakari.ailus@linux.intel.com>
-References: <20210208200903.28084-1-sakari.ailus@linux.intel.com>
+        id S236319AbhBHVR4 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 8 Feb 2021 16:17:56 -0500
+Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:42245 "EHLO
+        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234033AbhBHUK5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 15:10:57 -0500
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-57-3f2eNTMtOriJU0u0r5FPPw-1; Mon, 08 Feb 2021 15:10:01 -0500
+X-MC-Unique: 3f2eNTMtOriJU0u0r5FPPw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 78B5E192D786;
+        Mon,  8 Feb 2021 20:09:59 +0000 (UTC)
+Received: from krava.redhat.com (unknown [10.40.194.115])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1D22619C59;
+        Mon,  8 Feb 2021 20:09:56 +0000 (UTC)
+From:   Jiri Olsa <jolsa@kernel.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Ian Rogers <irogers@google.com>,
+        Alexei Budankov <abudankov@huawei.com>
+Subject: [PATCH 18/24] perf daemon: Add examples to man page
+Date:   Mon,  8 Feb 2021 21:09:02 +0100
+Message-Id: <20210208200908.1019149-19-jolsa@kernel.org>
+In-Reply-To: <20210208200908.1019149-1-jolsa@kernel.org>
+References: <20210208200908.1019149-1-jolsa@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=jolsa@kernel.org
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: kernel.org
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=WINDOWS-1252
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a printk modifier %p4cc (for pixel format) for printing V4L2 and DRM
-pixel formats denoted by fourccs. The fourcc encoding is the same for both
-so the same implementation can be used.
+Adding usage examples to the man page.
 
-Suggested-by: Mauro Carvalho Chehab <mchehab@kernel.org>
-Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
-Reviewed-by: Petr Mladek <pmladek@suse.com>
-Reviewed-by: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- Documentation/core-api/printk-formats.rst | 16 +++++++
- lib/test_printf.c                         | 17 ++++++++
- lib/vsprintf.c                            | 51 +++++++++++++++++++++++
- scripts/checkpatch.pl                     |  6 ++-
- 4 files changed, 88 insertions(+), 2 deletions(-)
+ tools/perf/Documentation/perf-daemon.txt | 98 ++++++++++++++++++++++++
+ 1 file changed, 98 insertions(+)
 
-diff --git a/Documentation/core-api/printk-formats.rst b/Documentation/core-api/printk-formats.rst
-index 160e710d992f..da2aa065dc42 100644
---- a/Documentation/core-api/printk-formats.rst
-+++ b/Documentation/core-api/printk-formats.rst
-@@ -567,6 +567,22 @@ For printing netdev_features_t.
+diff --git a/tools/perf/Documentation/perf-daemon.txt b/tools/perf/Documentation/perf-daemon.txt
+index 90b20bea6356..f558f8e4bc9b 100644
+--- a/tools/perf/Documentation/perf-daemon.txt
++++ b/tools/perf/Documentation/perf-daemon.txt
+@@ -41,6 +41,10 @@ for time and size.
+ Each session is started with control setup (with perf record --control
+ options).
  
- Passed by reference.
++Sessions are configured through config file, see CONFIG FILE section
++with EXAMPLES.
++
++
+ OPTIONS
+ -------
+ -v::
+@@ -105,6 +109,100 @@ session-<NAME>.run:
+ Each perf record session is run in daemon.base/<NAME> directory.
  
-+V4L2 and DRM FourCC code (pixel format)
-+---------------------------------------
-+
-+::
-+
-+	%p4cc
-+
-+Print a FourCC code used by V4L2 or DRM, including format endianness and
-+its numerical value as hexadecimal.
-+
-+Passed by reference.
-+
-+Examples::
-+
-+	%p4cc	BG12 little-endian (0x32314742)
-+
- Thanks
- ======
  
-diff --git a/lib/test_printf.c b/lib/test_printf.c
-index 7d60f24240a4..78c94159d9d5 100644
---- a/lib/test_printf.c
-+++ b/lib/test_printf.c
-@@ -647,6 +647,22 @@ static void __init fwnode_pointer(void)
- 	software_node_unregister_nodes(softnodes);
- }
- 
-+static void __init fourcc_pointer(void)
-+{
-+	struct {
-+		u32 code;
-+		char *str;
-+	} const try[] = {
-+		{ 0x20104646, "FF(10) little-endian (0x20104646)", },
-+		{ 0xa0104646, "FF(10) big-endian (0xa0104646)", },
-+		{ 0x10111213, "(13)(12)(11)(10) little-endian (0x10111213)", },
-+	};
-+	unsigned int i;
++EXAMPLES
++--------
++Example with 2 record sessions:
 +
-+	for (i = 0; i < ARRAY_SIZE(try); i++)
-+		test(try[i].str, "%p4cc", &try[i].code);
-+}
++  # cat ~/.perfconfig
++  [daemon]
++  base=/opt/perfdata
 +
- static void __init
- errptr(void)
- {
-@@ -692,6 +708,7 @@ test_pointer(void)
- 	flags();
- 	errptr();
- 	fwnode_pointer();
-+	fourcc_pointer();
- }
- 
- static void __init selftest(void)
-diff --git a/lib/vsprintf.c b/lib/vsprintf.c
-index 3b53c73580c5..ef50557e07b3 100644
---- a/lib/vsprintf.c
-+++ b/lib/vsprintf.c
-@@ -1733,6 +1733,54 @@ char *netdev_bits(char *buf, char *end, const void *addr,
- 	return special_hex_number(buf, end, num, size);
- }
- 
-+static noinline_for_stack
-+char *fourcc_string(char *buf, char *end, const u32 *fourcc,
-+		    struct printf_spec spec, const char *fmt)
-+{
-+	char output[sizeof("(xx)(xx)(xx)(xx) little-endian (0x01234567)")];
-+	char *p = output;
-+	unsigned int i;
-+	u32 val;
++  [session-cycles]
++  run = -m 10M -e cycles --overwrite --switch-output -a
 +
-+	if (fmt[1] != 'c' || fmt[2] != 'c')
-+		return error_string(buf, end, "(%p4?)", spec);
++  [session-sched]
++  run = -m 20M -e sched:* --overwrite --switch-output -a
 +
-+	if (check_pointer(&buf, end, fourcc, spec))
-+		return buf;
 +
-+	val = *fourcc & ~BIT(31);
++Starting the daemon:
 +
-+	for (i = 0; i < sizeof(*fourcc); i++) {
-+		unsigned char c = val >> (i * 8);
++  # perf daemon start
 +
-+		/* Weed out spaces */
-+		if (c == ' ')
-+			continue;
 +
-+		/* Print non-control ASCII characters as-is */
-+		if (isascii(c) && isprint(c)) {
-+			*p++ = c;
-+			continue;
-+		}
++Check sessions:
 +
-+		*p++ = '(';
-+		p = hex_byte_pack(p, c);
-+		*p++ = ')';
-+	}
++  # perf daemon
++  [603349:daemon] base: /opt/perfdata
++  [603350:cycles] perf record -m 10M -e cycles --overwrite --switch-output -a
++  [603351:sched] perf record -m 20M -e sched:* --overwrite --switch-output -a
 +
-+	strcpy(p, *fourcc & BIT(31) ? " big-endian" : " little-endian");
-+	p += strlen(p);
++First line is daemon process info with configured daemon base.
 +
-+	*p++ = ' ';
-+	*p++ = '(';
-+	p = special_hex_number(p, output + sizeof(output) - 2, *fourcc,
-+			       sizeof(u32));
-+	*p++ = ')';
-+	*p = '\0';
 +
-+	return string(buf, end, output, spec);
-+}
++Check sessions with more info:
 +
- static noinline_for_stack
- char *address_val(char *buf, char *end, const void *addr,
- 		  struct printf_spec spec, const char *fmt)
-@@ -2162,6 +2210,7 @@ char *fwnode_string(char *buf, char *end, struct fwnode_handle *fwnode,
-  *       correctness of the format string and va_list arguments.
-  * - 'K' For a kernel pointer that should be hidden from unprivileged users
-  * - 'NF' For a netdev_features_t
-+ * - '4cc' V4L2 or DRM FourCC code, with endianness and raw numerical value.
-  * - 'h[CDN]' For a variable-length buffer, it prints it as a hex string with
-  *            a certain separator (' ' by default):
-  *              C colon
-@@ -2259,6 +2308,8 @@ char *pointer(const char *fmt, char *buf, char *end, void *ptr,
- 		return restricted_pointer(buf, end, ptr, spec);
- 	case 'N':
- 		return netdev_bits(buf, end, ptr, spec, fmt);
-+	case '4':
-+		return fourcc_string(buf, end, ptr, spec, fmt);
- 	case 'a':
- 		return address_val(buf, end, ptr, spec, fmt);
- 	case 'd':
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index 92e888ed939f..79858e07d023 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -6557,9 +6557,11 @@ sub process {
- 					$specifier = $1;
- 					$extension = $2;
- 					$qualifier = $3;
--					if ($extension !~ /[SsBKRraEehMmIiUDdgVCbGNOxtf]/ ||
-+					if ($extension !~ /[4SsBKRraEehMmIiUDdgVCbGNOxtf]/ ||
- 					    ($extension eq "f" &&
--					     defined $qualifier && $qualifier !~ /^w/)) {
-+					     defined $qualifier && $qualifier !~ /^w/) ||
-+					    ($extension eq "4" &&
-+					     defined $qualifier && $qualifier !~ /^cc/)) {
- 						$bad_specifier = $specifier;
- 						last;
- 					}
++  # perf daemon -v
++  [603349:daemon] base: /opt/perfdata
++    output:  /opt/perfdata/output
++    lock:    /opt/perfdata/lock
++    up:      1 minutes
++  [603350:cycles] perf record -m 10M -e cycles --overwrite --switch-output -a
++    base:    /opt/perfdata/session-cycles
++    output:  /opt/perfdata/session-cycles/output
++    control: /opt/perfdata/session-cycles/control
++    ack:     /opt/perfdata/session-cycles/ack
++    up:      1 minutes
++  [603351:sched] perf record -m 20M -e sched:* --overwrite --switch-output -a
++    base:    /opt/perfdata/session-sched
++    output:  /opt/perfdata/session-sched/output
++    control: /opt/perfdata/session-sched/control
++    ack:     /opt/perfdata/session-sched/ack
++    up:      1 minutes
++
++The 'base' path is daemon/session base.
++The 'lock' file is daemon's lock file guarding that no other
++daemon is running on top of the base.
++The 'output' file is perf record output for specific session.
++The 'control' and 'ack' files are perf control files.
++The 'up' number shows minutes daemon/session is running.
++
++
++Make sure control session is online:
++
++  # perf daemon ping
++  OK   cycles
++  OK   sched
++
++
++Send USR2 signal to session 'cycles' to generate perf.data file:
++
++  # perf daemon signal --session cycles
++  signal 12 sent to session 'cycles [603452]'
++
++  # tail -2  /opt/perfdata/session-cycles/output
++  [ perf record: dump data: Woken up 1 times ]
++  [ perf record: Dump perf.data.2020123017013149 ]
++
++
++Send USR2 signal to all sessions:
++
++  # perf daemon signal
++  signal 12 sent to session 'cycles [603452]'
++  signal 12 sent to session 'sched [603453]'
++
++  # tail -2  /opt/perfdata/session-cycles/output
++  [ perf record: dump data: Woken up 1 times ]
++  [ perf record: Dump perf.data.2020123017024689 ]
++  # tail -2  /opt/perfdata/session-sched/output
++  [ perf record: dump data: Woken up 1 times ]
++  [ perf record: Dump perf.data.2020123017024713 ]
++
++
++Stop daemon:
++
++  # perf daemon stop
++
++
+ SEE ALSO
+ --------
+ linkperf:perf-record[1], linkperf:perf-config[1]
 -- 
 2.29.2
 
