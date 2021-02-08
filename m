@@ -2,192 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A84A314095
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 21:36:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FC6F314097
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 21:37:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229554AbhBHUfj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 15:35:39 -0500
-Received: from mail-ot1-f52.google.com ([209.85.210.52]:45594 "EHLO
-        mail-ot1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236069AbhBHTPa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 14:15:30 -0500
-Received: by mail-ot1-f52.google.com with SMTP id o12so15183155ote.12;
-        Mon, 08 Feb 2021 11:15:14 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=9MpW4g/Oa/7358qxsu5N9b3A3zLC/8dOk9zLIzf9+VY=;
-        b=Zk4MBZ26nLLfcAWQQFCxSAJc4oC8VhF37gulUjG+rDuRxsr/DXd/WdrH0xK6Qu7YAo
-         KP7/q3q1FpyAJE3BFJcCRgLSnkxf3covQ0OEWupEfq+yIoAGN9kw3HXjh6upOMIjA3w8
-         +3WBpTP3mRq+TRAWAyCuHDx8Qc5fco3ZaWuZIFfaWN/GqGiDHPOX1uJw6httCl6tRQ9r
-         SR+OEM0qw6DH256MUGbpBiEwxoK0gX1hgAm++3kKPmurSpRG8vKBapsN+fh+1unUoCbF
-         QrWNXWDkEhHbdvqb25Hoo3XTHjCvYAEI5LB55ToyvDs64EejEQd+9R/AcHHP1Q6It9/r
-         ci1Q==
-X-Gm-Message-State: AOAM533TjRbaV3iQeGm35kn5OXtr3lynfpqaBWbsiRg6v8ocreVSE+Ei
-        C9qiXjbJZ5YwG0ZItybO3ntrhpE+jA==
-X-Google-Smtp-Source: ABdhPJy2Zdk/7lhRLfQ4vS7stnE58LqLxeABIlpPpWwn9WDzA3vpkWV8wHQrC0uGs0rwMLBvpmZeqQ==
-X-Received: by 2002:a9d:6e0b:: with SMTP id e11mr8799402otr.343.1612811688715;
-        Mon, 08 Feb 2021 11:14:48 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id g11sm3859816oif.9.2021.02.08.11.14.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Feb 2021 11:14:48 -0800 (PST)
-Received: (nullmailer pid 1735846 invoked by uid 1000);
-        Mon, 08 Feb 2021 19:14:47 -0000
-Date:   Mon, 8 Feb 2021 13:14:47 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Hector Martin 'marcan' <marcan@marcan.st>
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Arnd Bergmann <arnd@kernel.org>, devicetree@vger.kernel.org,
-        Marc Zyngier <maz@kernel.org>, linux-kernel@vger.kernel.org,
-        soc@kernel.org, Olof Johansson <olof@lixom.net>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 18/18] arm64: apple: Add initial Mac Mini 2020 (M1)
- devicetree
-Message-ID: <20210208191447.GA1677483@robh.at.kernel.org>
-References: <20210204203951.52105-1-marcan@marcan.st>
- <20210204203951.52105-19-marcan@marcan.st>
- <20210208110441.25qc6yken4effd6c@kozik-lap>
- <cd67b2ce-9676-31b4-85f7-de1ec9b2bf72@marcan.st>
+        id S229939AbhBHUgC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 15:36:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37766 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236105AbhBHTRb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 14:17:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 29B2664E85;
+        Mon,  8 Feb 2021 19:16:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612811809;
+        bh=n+pBStucWf+JfyK8Sz4l0A9bjt78b6JU+WbJiyAUaUY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Ncfa4ehbzB2JS4l41iYUetkNFD/HOATUWpwZrharTkYK9FBSep9vKa9qKBBaQdwH0
+         LBZ2pMUXb68HIXV9qxf/Z95KBIkAMgNjriGYVpJFJpombDvmyz9vJ8JfLddhGTeumd
+         J1xvvN2bFaxP5+KmeMCXlhR5QkvxyPVko9hXrtn0rUyjjeUoLoi68Z7yUtspsZIisg
+         IZUyAGi9/lQT6bNcAnhxkC//yfLR01iY6OitQzkTkeHdnamn7+CN07Ih0SBOBKxtXF
+         1xuJWuQIWP5+mTZZS6+ikLwURcDlTepjGyrrIaynNZsqN0Z1xqx3898HFFpAgrGzyE
+         5UluqAzR4e2jw==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 9E99D40513; Mon,  8 Feb 2021 16:16:45 -0300 (-03)
+Date:   Mon, 8 Feb 2021 16:16:45 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     kan.liang@linux.intel.com
+Cc:     peterz@infradead.org, mingo@kernel.org,
+        linux-kernel@vger.kernel.org, tglx@linutronix.de, bp@alien8.de,
+        namhyung@kernel.org, jolsa@redhat.com, ak@linux.intel.com,
+        yao.jin@linux.intel.com, alexander.shishkin@linux.intel.com,
+        adrian.hunter@intel.com
+Subject: Re: [PATCH 46/49] perf stat: Filter out unmatched aggregation for
+ hybrid event
+Message-ID: <20210208191645.GQ920417@kernel.org>
+References: <1612797946-18784-1-git-send-email-kan.liang@linux.intel.com>
+ <1612797946-18784-47-git-send-email-kan.liang@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cd67b2ce-9676-31b4-85f7-de1ec9b2bf72@marcan.st>
+In-Reply-To: <1612797946-18784-47-git-send-email-kan.liang@linux.intel.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 08, 2021 at 08:56:53PM +0900, Hector Martin 'marcan' wrote:
-> On 08/02/2021 20.04, Krzysztof Kozlowski wrote:
-> > apple
-> > 
-> > Don't make things different for this one platform (comparing to all
-> > other platforms). Apple is not that special. :)
+Em Mon, Feb 08, 2021 at 07:25:43AM -0800, kan.liang@linux.intel.com escreveu:
+> From: Jin Yao <yao.jin@linux.intel.com>
 > 
-> AAPL is the old vendor prefix used in the PowerPC era. I'm happy to use
-> `apple`, as long as we're OK with having two different prefixes for the same
-> vendor, one for PPC and one for ARM64. I've seen opinions go both ways on
-> this one :)
+> perf-stat has supported some aggregation modes, such as --per-core,
+> --per-socket and etc. While for hybrid event, it may only available
+> on part of cpus. So for --per-core, we need to filter out the
+> unavailable cores, for --per-socket, filter out the unavailable
+> sockets, and so on.
 > 
-> > > + * Copyright 2021 Hector Martin <marcan@marcan.st>
-> > 
-> > A lot here might be difficult to reverse-egineer or figure out by
-> > ourself, so usually people rely on vendor sources (the open source
-> > compliance package). Didn't you receive such for the iOS (or whatever
-> > was on your Mac)?
+> Before:
 > 
-> Apple source drops are sparse (they don't even include things like the
-> irqchip driver, only the very core OS code) and APSL licensed, which is a
-> license incompatible with the GPL. Worse, they've moved to a partial-blob
-> model with the M1; M1-compatible XNU source code drops now include a .a blob
-> with startup and CPU-specific code, for which no source code is provided.
-> (to be clear: Apple does not ship Linux for these machines)
+> root@otcpl-adl-s-2:~# ./perf stat --per-core -e cpu_core/cycles/ -a -- sleep 1
 > 
-> Honestly, beyond what's in this patchset and a few more details about CPU
-> registers like performance monitoring stuff that exist in public XNU drops
-> but I haven't looked into yet, Apple's source code drops are going to be
-> practically useless to us from here on out. It's all binaries after this.
+>  Performance counter stats for 'system wide':
 > 
-> Apple device trees are not open source at all; those are provided by iBoot
-> and ship with device firmware, which is not openly licensed. Those device
-> trees are OF-inspired, but otherwise in a different format and structure to
-> Linux device trees.
-> 
-> Since there is zero Apple-published code or data with a license compatible
-> with the Linux kernel to be used here, there can be zero copyright lines
-> claiming any submissions are copyright Apple from us, because that would
-> imply a license violation has occurred. I am treating this as I would any
-> other no-source reverse engineering project, that is, ensuring that I only
-> look at Apple code (binaries, source, devicetrees, whatever) to understand
-> how the hardware functions, build documentation for it (at least in my head,
-> but I am also trying to document things on our wiki as I go), and then write
-> original code to drive it from Linux, unrelated to whatever Apple was doing.
-> 
-> We're also trying to avoid looking at any Apple stuff in general as much as
-> possible, preferring black-box approaches where feasible, to minimize
-> exposure. For example, I only looked at an (outdated, arm32 era) AIC
-> register name list in XNU to write the AIC driver; there is no actual AIC
-> driver code in the source, and instead of decompiling Apple's binary blob
-> AIC driver module, I figured out how the hardware actually worked via
-> probing and experimentation. The entire userspace GPU stack is being reverse
-> engineered via a black-box approach, without any decompilation. I'm going to
-> see what I can do about the kernel driver in the future, and prefer some
-> kind of mmio tracing solution if I can get it all to work on macOS.
-> 
-> As for this file specifically: while I am obviously looking at Apple's DTs
-> to figure out things like register offsets and what hardware exists, those
-> are facts, and facts are not copyrightable, and thus Apple does not hold any
-> copyright interest over this code as I submitted it. Short of verbatim
-> copying and pasting of entire nodes with bespoke property names (which would
-> never fly here anyway because Apple does things very differently from Linux
-> DTs when you get down into the details), it would be extremely hard to argue
-> that translating hardware information from decompiled Apple DTs to Linux DTs
-> would constitute a copyright violation, since the entire purpose of DTs is
-> to describe hardware facts.
-> 
-> You can read more about our reverse engineering and copyright policy at
-> https://alx.sh/re - if you have any suggestions or spot anything
-> problematic, please let me know.
-> 
-> (I'm actually probably going to change that copyright line to "The Asahi
-> Linux Contributors" for v2, if that's okay with the kernel folks, to be in
-> line with our other projects; I defaulted to my name since so far I'm the
-> only contributor to these files, but I expect other people to throw PRs at
-> me in the future and the history to end up with more names here)
+> S0-D0-C0           2            311,114      cycles [cpu_core]
 
-Does there need to be a legal entity behind 'The Asahi Linux 
-Contributors' to be valid?
+Why not use the pmu style event name, i.e.:
 
-From a more practical standpoint, if we want to relicense something in 
-say 5 years from now, who do we ask for an okay?
+S0-D0-C0           2            311,114        cpu_core/cycles/
 
-> > I guess Rob will comment on the dt-bindings more... but for me a generic
-> > "arm-platform" is too generic. What's the point of it? I didn't see any
-> > of such generic compatibles in other platforms.
+?
+
+> S0-D0-C4           2             59,784      cycles [cpu_core]
+> S0-D0-C8           2            121,287      cycles [cpu_core]
+> S0-D0-C12          2          2,690,245      cycles [cpu_core]
+> S0-D0-C16          2          2,060,545      cycles [cpu_core]
+> S0-D0-C20          2          3,632,251      cycles [cpu_core]
+> S0-D0-C24          2            775,736      cycles [cpu_core]
+> S0-D0-C28          2            742,020      cycles [cpu_core]
+> S0-D0-C32          0      <not counted>      cycles [cpu_core]
+> S0-D0-C33          0      <not counted>      cycles [cpu_core]
+> S0-D0-C34          0      <not counted>      cycles [cpu_core]
+> S0-D0-C35          0      <not counted>      cycles [cpu_core]
+> S0-D0-C36          0      <not counted>      cycles [cpu_core]
+> S0-D0-C37          0      <not counted>      cycles [cpu_core]
+> S0-D0-C38          0      <not counted>      cycles [cpu_core]
+> S0-D0-C39          0      <not counted>      cycles [cpu_core]
 > 
-> This is a hack for patches #11/#12 to use, and I expect it will go away once
-> we figure out how to properly handle that problem (which needs further
-> discussion). Sorry for the noise, this should not be there in the final
-> version.
-
-I was going to ask on this. If you have a user of it, I'm okay with it. 
-Generally though, 3 or 4 levels of compatible don't really have users.
-
-> > > +		bootargs = "earlycon";
-> > 
-> > This should not be hard-coded in DTS. Pass it from bootloader.
+>        1.001779842 seconds time elapsed
 > 
-> My apologies, this was garbage left over from before I had bootargs support
-> in the bootloader. Will be gone for v2.
+> After:
 > 
-> > > +	clk24: clk24 {
-> > 
-> > Just "clock". Node names should be generic.
+> root@otcpl-adl-s-2:~# ./perf stat --per-core -e cpu_core/cycles/ -a -- sleep 1
 > 
-> Really? Almost every other device device tree uses unique clock node names.
-
-It's a WIP to be more consistent around node names. For actual
-clock controllers we have 'clock-controller(@.*)?'. There's not really 
-something established for 'fixed-clock'. We probably should define 
-something, but that goes in the schema first.
-
-> > > +		compatible = "fixed-clock";
-> > > +		#clock-cells = <0>;
-> > > +		clock-frequency = <24000000>;
-> > > +		clock-output-names = "clk24";
-> > 
-> > What clock is it? Part of board or SoC? Isn't it a work-around for
-> > missing clock drivers?
+>  Performance counter stats for 'system wide':
 > 
-> The clock topology isn't entirely known yet; I'm submitting this as an
-> initial bring-up patchset and indeed there should be a clockchip driver in
-> the future. The UART driver wants a clock to be able to calculate baud
-> rates. I figured we can get away with a fixed-clock for now while that part
-> of the SoC gets figured out.
+> S0-D0-C0           2          1,088,230      cycles [cpu_core]
+> S0-D0-C4           2             57,228      cycles [cpu_core]
+> S0-D0-C8           2             98,327      cycles [cpu_core]
+> S0-D0-C12          2          2,741,955      cycles [cpu_core]
+> S0-D0-C16          2          2,090,432      cycles [cpu_core]
+> S0-D0-C20          2          3,192,108      cycles [cpu_core]
+> S0-D0-C24          2          2,910,752      cycles [cpu_core]
+> S0-D0-C28          2            388,696      cycles [cpu_core]
+> 
+> Reviewed-by: Andi Kleen <ak@linux.intel.com>
+> Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
+> ---
+>  tools/perf/util/stat-display.c | 20 ++++++++++++++++++++
+>  1 file changed, 20 insertions(+)
+> 
+> diff --git a/tools/perf/util/stat-display.c b/tools/perf/util/stat-display.c
+> index 21a3f80..fa11572 100644
+> --- a/tools/perf/util/stat-display.c
+> +++ b/tools/perf/util/stat-display.c
+> @@ -630,6 +630,20 @@ static void aggr_cb(struct perf_stat_config *config,
+>  	}
+>  }
+>  
+> +static bool aggr_id_hybrid_matched(struct perf_stat_config *config,
+> +				   struct evsel *counter, struct aggr_cpu_id id)
+> +{
+> +	struct aggr_cpu_id s;
+> +
+> +	for (int i = 0; i < evsel__nr_cpus(counter); i++) {
+> +		s = config->aggr_get_id(config, evsel__cpus(counter), i);
+> +		if (cpu_map__compare_aggr_cpu_id(s, id))
+> +			return true;
+> +	}
+> +
+> +	return false;
+> +}
+> +
+>  static void print_counter_aggrdata(struct perf_stat_config *config,
+>  				   struct evsel *counter, int s,
+>  				   char *prefix, bool metric_only,
+> @@ -643,6 +657,12 @@ static void print_counter_aggrdata(struct perf_stat_config *config,
+>  	double uval;
+>  
+>  	ad.id = id = config->aggr_map->map[s];
+> +
+> +	if (perf_pmu__hybrid_exist() &&
+> +	    !aggr_id_hybrid_matched(config, counter, id)) {
+> +		return;
+> +	}
+> +
+>  	ad.val = ad.ena = ad.run = 0;
+>  	ad.nr = 0;
+>  	if (!collect_data(config, counter, aggr_cb, &ad))
+> -- 
+> 2.7.4
+> 
 
-That is normal. It does break compatibility between an old kernel 
-and new DT. There's not really a good way to avoid that.
+-- 
 
-Rob
+- Arnaldo
