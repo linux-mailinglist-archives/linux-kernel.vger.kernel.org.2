@@ -2,232 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5427F31444A
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 00:52:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73C3031444C
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 00:52:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229849AbhBHXuX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 18:50:23 -0500
-Received: from pb-smtp20.pobox.com ([173.228.157.52]:58616 "EHLO
-        pb-smtp20.pobox.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229720AbhBHXuO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 18:50:14 -0500
-Received: from pb-smtp20.pobox.com (unknown [127.0.0.1])
-        by pb-smtp20.pobox.com (Postfix) with ESMTP id CBA8311DB38;
-        Mon,  8 Feb 2021 18:49:30 -0500 (EST)
-        (envelope-from junio@pobox.com)
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=pobox.com; h=from:to:cc
-        :subject:date:message-id:mime-version:content-type
-        :content-transfer-encoding; s=sasl; bh=yRv0ErEW2TlC7+onQTOXnUk0g
-        y0=; b=asiJaGNkkRRMBxitGWCwwgShzDDy6AQiMQP/AJkY2fae/OTW+cfSho4+2
-        t0lAotrYFkvAt8Idj9KjtK3/oz1BG117SAG6rsEFRajTEH6/8uz2aKc5ipmhmSw1
-        QyuRMff/oUJZ4+GsLilKmwjIRPCEzq4Gth67m2LVzrnpVtKXXM=
-DomainKey-Signature: a=rsa-sha1; c=nofws; d=pobox.com; h=from:to:cc
-        :subject:date:message-id:mime-version:content-type
-        :content-transfer-encoding; q=dns; s=sasl; b=gdpfkOwPYhOZgZtrmkc
-        9K/evxzRJDzszQ2RZhIHl7lB6YSeVoar08s36hViEnXgUalZRkYjXRjUxd9ERcF+
-        OaDOKum8kPg2+j91Dad8MHaoQKlX1qABVnQNAXc+n+q9cY3k4+m8DZWL/9Mi35Yk
-        WbNid3MXjRQ+0UBtu+utf72Y=
-Received: from pb-smtp20.sea.icgroup.com (unknown [127.0.0.1])
-        by pb-smtp20.pobox.com (Postfix) with ESMTP id B0CC711DB37;
-        Mon,  8 Feb 2021 18:49:30 -0500 (EST)
-        (envelope-from junio@pobox.com)
-Received: from pobox.com (unknown [34.74.119.39])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by pb-smtp20.pobox.com (Postfix) with ESMTPSA id D9E9911DB36;
-        Mon,  8 Feb 2021 18:49:27 -0500 (EST)
-        (envelope-from junio@pobox.com)
-From:   Junio C Hamano <gitster@pobox.com>
-To:     git@vger.kernel.org
-Cc:     Linux Kernel <linux-kernel@vger.kernel.org>,
-        git-packagers@googlegroups.com
-Subject: [ANNOUNCE] Git v2.30.1
-Date:   Mon, 08 Feb 2021 15:49:26 -0800
-Message-ID: <xmqqsg662k8p.fsf@gitster.c.googlers.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1.90 (gnu/linux)
+        id S229947AbhBHXvI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 18:51:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34236 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229751AbhBHXux (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 18:50:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id E11F564E9A;
+        Mon,  8 Feb 2021 23:50:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612828212;
+        bh=NjAn8MpPTmzWARmHQFR2RzaApSx+avbx9XsS1V8KTog=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=iSxfNBrFVPoD2Y6z3cnNaOcfEzEXOnJB7E0bHeTPCQy8fY+LmIIcR1E0AGkBAnJxm
+         QW1v9CJuk6m3dttqbqzpQobs7uorl3GjfUctqmcEX/kQ+M5VJoKTpRxutUjbVHg8Vu
+         9ziowIRC7VxNNPt5+apKc3o80W7VHV6FIf7kdZqD3S7QdxSrwsDDcp3L2jHVkIeYTD
+         hlv66F1n5rRrol1sRIdEDLQZqiJrxkdfcpj6DwtKNZ5TRjLVE87umQTImnWb2ZCuHi
+         LJEewoaBhf9Ixb5/x2uzFwfc9N8D1CmmlfuG6DUYP4Bv3JlQ407BuV0mn7MGLeWJAy
+         bUF0WREiM365A==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id D8A68609D2;
+        Mon,  8 Feb 2021 23:50:12 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-X-Pobox-Relay-ID: 47D30840-6A68-11EB-B155-E43E2BB96649-77302942!pb-smtp20.pobox.com
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net] net: bridge: use switchdev for port flags set through
+ sysfs too
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161282821288.13069.16334035236215483610.git-patchwork-notify@kernel.org>
+Date:   Mon, 08 Feb 2021 23:50:12 +0000
+References: <20210207194733.1811529-1-olteanv@gmail.com>
+In-Reply-To: <20210207194733.1811529-1-olteanv@gmail.com>
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     kuba@kernel.org, davem@davemloft.net, andrew@lunn.ch,
+        vivien.didelot@gmail.com, f.fainelli@gmail.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bridge@lists.linux-foundation.org, roopa@nvidia.com,
+        nikolay@nvidia.com, jiri@resnulli.us, idosch@idosch.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The latest maintenance release Git v2.30.1 is now available at the
-usual places.  This is to propagate obvious fixes that have
-accumulated on the 'master' front down to the 2.30.x series.
+Hello:
 
-The tarballs are found at:
+This patch was applied to netdev/net-next.git (refs/heads/master):
 
-    https://www.kernel.org/pub/software/scm/git/
+On Sun,  7 Feb 2021 21:47:33 +0200 you wrote:
+> From: Vladimir Oltean <vladimir.oltean@nxp.com>
+> 
+> Looking through patchwork I don't see that there was any consensus to
+> use switchdev notifiers only in case of netlink provided port flags but
+> not sysfs (as a sort of deprecation, punishment or anything like that),
+> so we should probably keep the user interface consistent in terms of
+> functionality.
+> 
+> [...]
 
-The following public repositories all have a copy of the 'v2.30.1'
-tag and the 'maint' branch that the tag points at:
+Here is the summary with links:
+  - [net] net: bridge: use switchdev for port flags set through sysfs too
+    https://git.kernel.org/netdev/net-next/c/8043c845b63a
 
-  url =3D https://kernel.googlesource.com/pub/scm/git/git
-  url =3D git://repo.or.cz/alt-git.git
-  url =3D https://github.com/gitster/git
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-----------------------------------------------------------------
-
-Git v2.30.1 Release Notes
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-
-This release is primarily to merge fixes accumulated on the 'master'
-front to prepare for 2.31 release that are still relevant to 2.30.x
-maintenance track.
-
-Fixes since v2.30
------------------
-
- * "git fetch --recurse-submodules" failed to update a submodule
-   when it has an uninitialized (hence of no interest to the user)
-   sub-submodule, which has been corrected.
-
- * Command line error of "git rebase" are diagnosed earlier.
-
- * "git stash" did not work well in a sparsely checked out working
-   tree.
-
- * Some tests expect that "ls -l" output has either '-' or 'x' for
-   group executable bit, but setgid bit can be inherited from parent
-   directory and make these fields 'S' or 's' instead, causing test
-   failures.
-
- * "git for-each-repo --config=3D<var> <cmd>" should not run <cmd> for
-   any repository when the configuration variable <var> is not defined
-   even once.
-
- * "git mergetool --tool-help" was broken in 2.29 and failed to list
-   all the available tools.
-
- * Fix for procedure to building CI test environment for mac.
-
- * Newline characters in the host and path part of git:// URL are
-   now forbidden.
-
- * When more than one commit with the same patch ID appears on one
-   side, "git log --cherry-pick A...B" did not exclude them all when a
-   commit with the same patch ID appears on the other side.  Now it
-   does.
-
- * Documentation for "git fsck" lost stale bits that has become
-   incorrect.
-
- * Doc for packfile URI feature has been clarified.
-
- * The implementation of "git branch --sort" wrt the detached HEAD
-   display has always been hacky, which has been cleaned up.
-
- * Our setting of GitHub CI test jobs were a bit too eager to give up
-   once there is even one failure found.  Tweak the knob to allow
-   other jobs keep running even when we see a failure, so that we can
-   find more failures in a single run.
-
-Also contains minor documentation updates and code clean-ups.
-
-----------------------------------------------------------------
-
-Changes since v2.30.0 are as follows:
-
-Adam Dinwoodie (1):
-      t4129: fix setfacl-related permissions failure
-
-Antonio Russo (1):
-      t6016: move to lib-log-graph.sh framework
-
-Daniel Levin (1):
-      git-p4: fix syncing file types with pattern
-
-Derrick Stolee (1):
-      for-each-repo: do nothing on empty config
-
-Elijah Newren (3):
-      t7012: add a testcase demonstrating stash apply bugs in sparse chec=
-kouts
-      stash: remove unnecessary process forking
-      stash: fix stash application in sparse-checkouts
-
-Felipe Contreras (1):
-      test: bisect-porcelain: fix location of files
-
-Jeff King (5):
-      git_connect_git(): forbid newlines in host and path
-      fsck: reject .gitmodules git:// urls with newlines
-      t5516: loosen "not our ref" error check
-      patch-ids: handle duplicate hashmap entries
-      p5303: avoid sed GNU-ism
-
-Johannes Schindelin (1):
-      SKIP_DASHED_BUILT_INS: respect `config.mak`
-
-Johannes Sixt (1):
-      annotate-tests: quote variable expansions containing path names
-
-Jonathan Tan (1):
-      Doc: clarify contents of packfile sent as URI
-
-Junio C Hamano (5):
-      parse-options: format argh like error messages
-      SubmittingPatches: tighten wording on "sign-off" procedure
-      ci/install-depends: attempt to fix "brew cask" stuff
-      Prepare for 2.30.1
-      Git 2.30.1
-
-Martin =C3=85gren (9):
-      t1300: remove duplicate test for `--file ../foo`
-      t1300: remove duplicate test for `--file no-such-file`
-      t1300: don't needlessly work with `core.foo` configs
-      pack-format.txt: document sizes at start of delta data
-      builtin/gc: don't peek into `struct lock_file`
-      commit-graph: don't peek into `struct lock_file`
-      midx: don't peek into `struct lock_file`
-      refs/files-backend: don't peek into `struct lock_file`
-      read-cache: try not to peek into `struct {lock_,temp}file`
-
-Matheus Tavares (1):
-      t4129: don't fail if setgid is set in the test directory
-
-Peter Kaestle (1):
-      submodules: fix of regression on fetching of non-init subsub-repo
-
-Philippe Blain (3):
-      gitmodules.txt: fix 'GIT_WORK_TREE' variable name
-      mergetool--lib: fix '--tool-help' to correctly show available tools
-      ci: do not cancel all jobs of a matrix if one fails
-
-Ren=C3=A9 Scharfe (1):
-      rebase: verify commit parameter
-
-Taylor Blau (2):
-      p7519: allow running without watchman prereq
-      Documentation/git-clone.txt: document race with --local
-
-Thomas Ackermann (1):
-      doc: fix some typos
-
-Utku Gultopu (1):
-      doc: remove "directory cache" from man pages
-
-Vasyl Vavrychuk (1):
-      git-send-email.txt: mention less secure app access with Gmail
-
-ZheNing Hu (1):
-      builtin/*: update usage format
-
-brian m. carlson (1):
-      docs: rephrase and clarify the git status --short format
-
-=C3=86var Arnfj=C3=B6r=C3=B0 Bjarmason (10):
-      branch: change "--local" to "--list" in comment
-      branch tests: add to --sort tests
-      ref-filter: add braces to if/else if/else chain
-      ref-filter: move "cmp_fn" assignment into "else if" arm
-      ref-filter: move ref_sorting flags to a bitfield
-      branch: sort detached HEAD based on a flag
-      branch: show "HEAD detached" first under reverse sort
-      Makefile: remove a warning about old GETTEXT_POISON flag
-      gettext.c: remove/reword a mostly-useless comment
-      fsck doc: remove ancient out-of-date diagnostics
 
