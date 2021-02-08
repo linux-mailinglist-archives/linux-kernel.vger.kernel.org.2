@@ -2,193 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E40D5312E90
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 11:09:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 158D2312E81
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 11:06:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232366AbhBHKIT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 05:08:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41182 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232166AbhBHKAJ (ORCPT
+        id S232231AbhBHKDU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 05:03:20 -0500
+Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:52177 "EHLO
+        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232134AbhBHJxR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 05:00:09 -0500
-Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A90AC0617AB
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 01:52:06 -0800 (PST)
-Received: by mail-oi1-x231.google.com with SMTP id l19so2505218oih.6
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 01:52:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=EpKxIqmOlqMl7mzttLPN+VwSDt9L8MOcCkjs1vmLiI8=;
-        b=KLWyl72HIYL2VlsjKIxcvR6IOlc+aubrFGsX9wWWy0WDBsiZ1VMg+20IlOl94PPdZ+
-         o6+qaT9T4WQgu1ZEiu6krhGInALOWGoXbbOEk/uKrqK7ZJaTBQqcT1A8vNukNFBFHJ9o
-         +tNbz7F66EdYEBgQSmE9tsKGQ8sFKS27AgtGtgXcUoebezGouiSRDqzl+aTD3P5Vxex3
-         MmxHqPipuBolGjxf2D/c1AVNuUOkjEG9htTpHYoDZ8h50cvmSHFy0RW92aBhxNxsYXCH
-         WK57NVHpMxgUvF+ur160GTFQwvC1V50krRh9qIHxrL0K9toDKyns8kQwr2peqjxfLqFl
-         SO+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=EpKxIqmOlqMl7mzttLPN+VwSDt9L8MOcCkjs1vmLiI8=;
-        b=KCxpVo8Vi2+/vs1EUQEgf0prp0TXh71lxYAFnEqmJKK6HnPuSJ/NAYlSWNLmdM9ScE
-         MTz4FEgh5C90lxnsJo3KEsqqxN7qlqeHSsqvwcJshiAVJdDljIgbYYuEV6qJGLaQ1tQG
-         6/bw/claXRObzdRhgOx7SSpCH/ZCtKE+PErrvgcycIE2QeihKy0+oS26XkdrQ2gF2WOQ
-         o8xSutfSjKhfNS73ITo9TwKAjREkfirJPcpnNECVGApHzUYgsnt3dc6LBVMR1prdOGyc
-         ULmd7+mrxaPmdjAv8Ng9WX7gMn1hn0xiHDqIh5MsyVU6HFbouUenqJbLIv/y7e+AKn5H
-         RvSA==
-X-Gm-Message-State: AOAM530U8+Tc3OlxQ+zct6AxaTNriE6NfLkgAUPy86smaCb4aUkJ+isy
-        EoyR3kQWhLKC/s8hairGOUHLmHxHkxhFqj9hZdsY1A==
-X-Google-Smtp-Source: ABdhPJzqX48E1X2LlNnRaBS/1DHj27pVaPPRP4oqqLOwu8qC/WvaUZEVaueH0eqpwRGMp6njk+uirSLd+7a9aQtkLQQ=
-X-Received: by 2002:aca:c505:: with SMTP id v5mr30902oif.172.1612777925613;
- Mon, 08 Feb 2021 01:52:05 -0800 (PST)
-MIME-Version: 1.0
-References: <YCB4Sgk5g5B2Nu09@arch-chirva.localdomain> <YCCFGc97d2U5yUS7@arch-chirva.localdomain>
- <YCCIgMHkzh/xT4ex@arch-chirva.localdomain>
-In-Reply-To: <YCCIgMHkzh/xT4ex@arch-chirva.localdomain>
-From:   Marco Elver <elver@google.com>
-Date:   Mon, 8 Feb 2021 10:51:54 +0100
-Message-ID: <CANpmjNO9B8KivLB8OnOFzK+M7wf=BGayfJy2+Dr2r2obk_s-fw@mail.gmail.com>
-Subject: =?UTF-8?B?UmU6IFBST0JMRU06IDUuMTEuMC1yYzcgZmFpbHMgdG8gY29tcGlsZSB3aXRoIGVycm9yOg==?=
-        =?UTF-8?B?IOKAmC1taW5kaXJlY3QtYnJhbmNo4oCZIGFuZCDigJgtZmNmLXByb3RlY3Rpb27igJkgYXJlIG5vdCBj?=
-        =?UTF-8?B?b21wYXRpYmxl?=
-To:     Stuart Little <achirvasub@gmail.com>
-Cc:     Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>, nborisov@suse.com,
-        Borislav Petkov <bp@suse.de>, seth.forshee@canonical.com,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        linux-toolchains@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Mon, 8 Feb 2021 04:53:17 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R821e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UOBlCQ3_1612777945;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UOBlCQ3_1612777945)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 08 Feb 2021 17:52:34 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     ulf.hansson@linaro.org
+Cc:     lgirdwood@gmail.com, broonie@kernel.org, linux-mmc@vger.kernel.org,
+        linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] mmc: omap-hsmmc: Simplify bool comparison
+Date:   Mon,  8 Feb 2021 17:52:23 +0800
+Message-Id: <1612777943-43609-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 8 Feb 2021 at 01:40, Stuart Little <achirvasub@gmail.com> wrote:
->
-> And for good measure: reverting that commit
->
-> 20bf2b378729c4a0366a53e2018a0b70ace94bcd
->
-> flagged by the bisect right on top of the current tree compiles fine.
->
-> On Sun, Feb 07, 2021 at 07:26:01PM -0500, Stuart Little wrote:
-> > The result of the bisect on the issue reported in the previous message:
-> >
-> > --- cut ---
-> >
-> > 20bf2b378729c4a0366a53e2018a0b70ace94bcd is the first bad commit
-> > commit 20bf2b378729c4a0366a53e2018a0b70ace94bcd
-> > Author: Josh Poimboeuf <jpoimboe@redhat.com>
-> > Date:   Thu Jan 28 15:52:19 2021 -0600
-> >
-> >     x86/build: Disable CET instrumentation in the kernel
-> >
-> >     With retpolines disabled, some configurations of GCC, and specifica=
-lly
-> >     the GCC versions 9 and 10 in Ubuntu will add Intel CET instrumentat=
-ion
-> >     to the kernel by default. That breaks certain tracing scenarios by
-> >     adding a superfluous ENDBR64 instruction before the fentry call, fo=
-r
-> >     functions which can be called indirectly.
-> >
-> >     CET instrumentation isn't currently necessary in the kernel, as CET=
- is
-> >     only supported in user space. Disable it unconditionally and move i=
-t
-> >     into the x86's Makefile as CET/CFI... enablement should be a per-ar=
-ch
-> >     decision anyway.
-> >
-> >      [ bp: Massage and extend commit message. ]
-> >
-> >     Fixes: 29be86d7f9cb ("kbuild: add -fcf-protection=3Dnone when using=
- retpoline flags")
-> >     Reported-by: Nikolay Borisov <nborisov@suse.com>
-> >     Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
-> >     Signed-off-by: Borislav Petkov <bp@suse.de>
-> >     Reviewed-by: Nikolay Borisov <nborisov@suse.com>
-> >     Tested-by: Nikolay Borisov <nborisov@suse.com>
-> >     Cc: <stable@vger.kernel.org>
-> >     Cc: Seth Forshee <seth.forshee@canonical.com>
-> >     Cc: Masahiro Yamada <yamada.masahiro@socionext.com>
-> >     Link: https://lkml.kernel.org/r/20210128215219.6kct3h2eiustncws@tre=
-ble
-> >
-> >  Makefile          | 6 ------
-> >  arch/x86/Makefile | 3 +++
-> >  2 files changed, 3 insertions(+), 6 deletions(-)
-> >
-> > --- end ---
-> >
-> > On Sun, Feb 07, 2021 at 06:31:22PM -0500, Stuart Little wrote:
-> > > I am trying to compile on an x86_64 host for a 32-bit system; my conf=
-ig is at
-> > >
-> > > https://termbin.com/v8jl
-> > >
-> > > I am getting numerous errors of the form
-> > >
-> > > ./include/linux/kasan-checks.h:17:1: error: =E2=80=98-mindirect-branc=
-h=E2=80=99 and =E2=80=98-fcf-protection=E2=80=99 are not compatible
+Fix the following coccicheck warning:
 
-This is an empty static inline function...
+./drivers/mmc/host/omap_hsmmc.c:297:6-25: WARNING: Comparison of 0/1 to
+bool variable.
 
-> > > and
-> > >
-> > > ./include/linux/kcsan-checks.h:143:6: error: =E2=80=98-mindirect-bran=
-ch=E2=80=99 and =E2=80=98-fcf-protection=E2=80=99 are not compatible
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+---
+ drivers/mmc/host/omap_hsmmc.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-... and so is this. I think these have very little to do with the
-problem that you reported. My guess is they show up because these are
-included very early.
+diff --git a/drivers/mmc/host/omap_hsmmc.c b/drivers/mmc/host/omap_hsmmc.c
+index aa9cc49..a59e9c3 100644
+--- a/drivers/mmc/host/omap_hsmmc.c
++++ b/drivers/mmc/host/omap_hsmmc.c
+@@ -285,22 +285,22 @@ static int omap_hsmmc_set_pbias(struct omap_hsmmc_host *host, bool power_on)
+ 		return 0;
+ 
+ 	if (power_on) {
+-		if (host->pbias_enabled == 0) {
++		if (!host->pbias_enabled) {
+ 			ret = regulator_enable(host->pbias);
+ 			if (ret) {
+ 				dev_err(host->dev, "pbias reg enable fail\n");
+ 				return ret;
+ 			}
+-			host->pbias_enabled = 1;
++			host->pbias_enabled = true;
+ 		}
+ 	} else {
+-		if (host->pbias_enabled == 1) {
++		if (host->pbias_enabled) {
+ 			ret = regulator_disable(host->pbias);
+ 			if (ret) {
+ 				dev_err(host->dev, "pbias reg disable fail\n");
+ 				return ret;
+ 			}
+-			host->pbias_enabled = 0;
++			host->pbias_enabled = false;
+ 		}
+ 	}
+ 
+-- 
+1.8.3.1
 
-> > > and
-> > >
-> > > ./arch/x86/include/asm/arch_hweight.h:16:1: error: =E2=80=98-mindirec=
-t-branch=E2=80=99 and =E2=80=98-fcf-protection=E2=80=99 are not compatible
-> > >
-> > > (those include files indicated whom I should add to this list; apolog=
-ies if this reaches you in error).
-> > >
-> > > The full log of the build is at
-> > >
-> > > https://termbin.com/wbgs
-
-The commonality between all these errors is that they originate from
-compiling arch/x86/entry/vdso/vdso32/vclock_gettime.c.
-
-Is the build system adding special flags for vdso? In which case, it's
-probably just GCC complaining about every function definition (static
-inline or otherwise) for that TU if (for whatever reason) it's
-delaying the flag compatibility check until it inspects function
-attributes.
-
-And indeed, I can see:
-
-  RETPOLINE_VDSO_CFLAGS_GCC :=3D -mindirect-branch=3Dthunk-inline
--mindirect-branch-register
-
-And taking any test source with even an empty function definition:
-
-  > gcc -mindirect-branch=3Dthunk-inline -fcf-protection test.c
-  > test.c: In function =E2=80=98main=E2=80=99:
-  > test.c:6:1: error: =E2=80=98-mindirect-branch=E2=80=99 and =E2=80=98-fc=
-f-protection=E2=80=99 are
-not compatible
-
-> > > 5.11.0-rc6 built fine last week on this same setup.
-
-Thanks,
--- Marco
