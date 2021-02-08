@@ -2,58 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 515DF314397
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 00:18:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CE2C314399
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 00:18:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230244AbhBHXRx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 18:17:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43404 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229615AbhBHXRv (ORCPT
+        id S230352AbhBHXSF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 18:18:05 -0500
+Received: from ssl.serverraum.org ([176.9.125.105]:36011 "EHLO
+        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229615AbhBHXR6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 18:17:51 -0500
-Received: from mail.marcansoft.com (marcansoft.com [IPv6:2a01:298:fe:f::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C35CCC061786;
-        Mon,  8 Feb 2021 15:17:10 -0800 (PST)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
+        Mon, 8 Feb 2021 18:17:58 -0500
+Received: from mwalle01.fritz.box (unknown [IPv6:2a02:810c:c200:2e91:fa59:71ff:fe9b:b851])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        (Authenticated sender: marcan@marcan.st)
-        by mail.marcansoft.com (Postfix) with ESMTPSA id 562004207F;
-        Mon,  8 Feb 2021 23:17:06 +0000 (UTC)
-Subject: Re: [PATCH 01/18] dt-bindings: vendor-prefixes: add AAPL prefix
-To:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Rob Herring <robh@kernel.org>
-Cc:     Arnd Bergmann <arnd@kernel.org>, devicetree@vger.kernel.org,
-        Marc Zyngier <maz@kernel.org>, linux-kernel@vger.kernel.org,
-        soc@kernel.org, Olof Johansson <olof@lixom.net>,
-        linux-arm-kernel@lists.infradead.org
-References: <20210204203951.52105-1-marcan@marcan.st>
- <20210204203951.52105-2-marcan@marcan.st>
- <20210208102730.p4nhsl35oowsklv2@kozik-lap>
- <20210208173215.GA1567700@robh.at.kernel.org>
- <20210208181248.tbgffdwghlseawic@kozik-lap>
-From:   Hector Martin <marcan@marcan.st>
-Message-ID: <0cbe3536-2415-a2a4-75e6-0e1c6deffd42@marcan.st>
-Date:   Tue, 9 Feb 2021 08:17:03 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        by ssl.serverraum.org (Postfix) with ESMTPSA id CD65923E5F;
+        Tue,  9 Feb 2021 00:17:15 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1612826236;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=5c/pJ57U4o2ViQ39aD4KOnP9QhvaHjsYdRUFwTVjiqM=;
+        b=B9LRnagRdDQKXrj6YVcantPUw99n5a7V/t1mshSvMOloLAhK/1aHHuBFroIDc95DzB/rqx
+        jY0J5KIMKIKpW3N/V4FJlY6EGP2wU5RLzKb6bszrzQJfESmO2IloOmQmSezwBVdxIcYefS
+        iVPy5p9FCD0BHfPMGVlzzbEletAtBxM=
+From:   Michael Walle <michael@walle.cc>
+To:     bcm-kernel-feedback-list@broadcom.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Michael Walle <michael@walle.cc>
+Subject: [PATCH net-next v2] net: phy: broadcom: remove BCM5482 1000Base-BX support
+Date:   Tue,  9 Feb 2021 00:17:06 +0100
+Message-Id: <20210208231706.31789-1-michael@walle.cc>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <20210208181248.tbgffdwghlseawic@kozik-lap>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: es-ES
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Spam: Yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/02/2021 03.12, Krzysztof Kozlowski wrote:
-> Mentioned grep brings only one result:
-> arch/powerpc/platforms/powermac/pic.c:   * cases where the APPL,interrupts property is completely
+It is nowhere used in the kernel. It also seems to be lacking the
+proper fiber advertise flags. Remove it.
 
-You want to grep for 'AAPL', not 'APPL' :-)
+Signed-off-by: Michael Walle <michael@walle.cc>
+Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+---
+changes since v1:
+ - added queue to subject
+ - reworded 1000BX to 1000Base-BX
 
+ drivers/net/phy/broadcom.c | 93 +-------------------------------------
+ 1 file changed, 1 insertion(+), 92 deletions(-)
+
+diff --git a/drivers/net/phy/broadcom.c b/drivers/net/phy/broadcom.c
+index 8a4ec3222168..3142ba768313 100644
+--- a/drivers/net/phy/broadcom.c
++++ b/drivers/net/phy/broadcom.c
+@@ -361,96 +361,6 @@ static int bcm54811_config_init(struct phy_device *phydev)
+ 	return err;
+ }
+ 
+-static int bcm5482_config_init(struct phy_device *phydev)
+-{
+-	int err, reg;
+-
+-	err = bcm54xx_config_init(phydev);
+-
+-	if (phydev->dev_flags & PHY_BCM_FLAGS_MODE_1000BX) {
+-		/*
+-		 * Enable secondary SerDes and its use as an LED source
+-		 */
+-		reg = bcm_phy_read_shadow(phydev, BCM5482_SHD_SSD);
+-		bcm_phy_write_shadow(phydev, BCM5482_SHD_SSD,
+-				     reg |
+-				     BCM5482_SHD_SSD_LEDM |
+-				     BCM5482_SHD_SSD_EN);
+-
+-		/*
+-		 * Enable SGMII slave mode and auto-detection
+-		 */
+-		reg = BCM5482_SSD_SGMII_SLAVE | MII_BCM54XX_EXP_SEL_SSD;
+-		err = bcm_phy_read_exp(phydev, reg);
+-		if (err < 0)
+-			return err;
+-		err = bcm_phy_write_exp(phydev, reg, err |
+-					BCM5482_SSD_SGMII_SLAVE_EN |
+-					BCM5482_SSD_SGMII_SLAVE_AD);
+-		if (err < 0)
+-			return err;
+-
+-		/*
+-		 * Disable secondary SerDes powerdown
+-		 */
+-		reg = BCM5482_SSD_1000BX_CTL | MII_BCM54XX_EXP_SEL_SSD;
+-		err = bcm_phy_read_exp(phydev, reg);
+-		if (err < 0)
+-			return err;
+-		err = bcm_phy_write_exp(phydev, reg,
+-					err & ~BCM5482_SSD_1000BX_CTL_PWRDOWN);
+-		if (err < 0)
+-			return err;
+-
+-		/*
+-		 * Select 1000BASE-X register set (primary SerDes)
+-		 */
+-		reg = bcm_phy_read_shadow(phydev, BCM54XX_SHD_MODE);
+-		bcm_phy_write_shadow(phydev, BCM54XX_SHD_MODE,
+-				     reg | BCM54XX_SHD_MODE_1000BX);
+-
+-		/*
+-		 * LED1=ACTIVITYLED, LED3=LINKSPD[2]
+-		 * (Use LED1 as secondary SerDes ACTIVITY LED)
+-		 */
+-		bcm_phy_write_shadow(phydev, BCM5482_SHD_LEDS1,
+-			BCM5482_SHD_LEDS1_LED1(BCM_LED_SRC_ACTIVITYLED) |
+-			BCM5482_SHD_LEDS1_LED3(BCM_LED_SRC_LINKSPD2));
+-
+-		/*
+-		 * Auto-negotiation doesn't seem to work quite right
+-		 * in this mode, so we disable it and force it to the
+-		 * right speed/duplex setting.  Only 'link status'
+-		 * is important.
+-		 */
+-		phydev->autoneg = AUTONEG_DISABLE;
+-		phydev->speed = SPEED_1000;
+-		phydev->duplex = DUPLEX_FULL;
+-	}
+-
+-	return err;
+-}
+-
+-static int bcm5482_read_status(struct phy_device *phydev)
+-{
+-	int err;
+-
+-	err = genphy_read_status(phydev);
+-
+-	if (phydev->dev_flags & PHY_BCM_FLAGS_MODE_1000BX) {
+-		/*
+-		 * Only link status matters for 1000Base-X mode, so force
+-		 * 1000 Mbit/s full-duplex status
+-		 */
+-		if (phydev->link) {
+-			phydev->speed = SPEED_1000;
+-			phydev->duplex = DUPLEX_FULL;
+-		}
+-	}
+-
+-	return err;
+-}
+-
+ static int bcm5481_config_aneg(struct phy_device *phydev)
+ {
+ 	struct device_node *np = phydev->mdio.dev.of_node;
+@@ -800,8 +710,7 @@ static struct phy_driver broadcom_drivers[] = {
+ 	.phy_id_mask	= 0xfffffff0,
+ 	.name		= "Broadcom BCM5482",
+ 	/* PHY_GBIT_FEATURES */
+-	.config_init	= bcm5482_config_init,
+-	.read_status	= bcm5482_read_status,
++	.config_init	= bcm54xx_config_init,
+ 	.config_intr	= bcm_phy_config_intr,
+ 	.handle_interrupt = bcm_phy_handle_interrupt,
+ }, {
 -- 
-Hector Martin (marcan@marcan.st)
-Public Key: https://mrcn.st/pub
+2.20.1
+
