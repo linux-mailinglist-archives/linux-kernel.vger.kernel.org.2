@@ -2,209 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F4A431417D
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 22:17:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 016B9314188
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 22:19:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234972AbhBHVRE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 16:17:04 -0500
-Received: from retiisi.eu ([95.216.213.190]:57136 "EHLO hillosipuli.retiisi.eu"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236674AbhBHUKw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 15:10:52 -0500
-Received: from lanttu.localdomain (lanttu-e.localdomain [192.168.1.64])
-        by hillosipuli.retiisi.eu (Postfix) with ESMTP id EE691634C8C;
-        Mon,  8 Feb 2021 22:08:33 +0200 (EET)
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-media@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        dri-devel@lists.freedesktop.org, hverkuil@xs4all.nl,
-        laurent.pinchart@ideasonboard.com, mchehab@kernel.org,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Joe Perches <joe@perches.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Subject: [PATCH v6 2/3] v4l: ioctl: Use %p4cc printk modifier to print FourCC codes
-Date:   Mon,  8 Feb 2021 22:09:02 +0200
-Message-Id: <20210208200903.28084-3-sakari.ailus@linux.intel.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210208200903.28084-1-sakari.ailus@linux.intel.com>
-References: <20210208200903.28084-1-sakari.ailus@linux.intel.com>
+        id S236249AbhBHVSq convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 8 Feb 2021 16:18:46 -0500
+Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:44904 "EHLO
+        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236685AbhBHULB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 15:11:01 -0500
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-361-vMC6Ku-JMvC5DKLK6BUsSw-1; Mon, 08 Feb 2021 15:10:03 -0500
+X-MC-Unique: vMC6Ku-JMvC5DKLK6BUsSw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 005FA192D788;
+        Mon,  8 Feb 2021 20:10:02 +0000 (UTC)
+Received: from krava.redhat.com (unknown [10.40.194.115])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B0DF419C59;
+        Mon,  8 Feb 2021 20:09:59 +0000 (UTC)
+From:   Jiri Olsa <jolsa@kernel.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Ian Rogers <irogers@google.com>,
+        Alexei Budankov <abudankov@huawei.com>
+Subject: [PATCH 19/24] perf tests: Add daemon list command test
+Date:   Mon,  8 Feb 2021 21:09:03 +0100
+Message-Id: <20210208200908.1019149-20-jolsa@kernel.org>
+In-Reply-To: <20210208200908.1019149-1-jolsa@kernel.org>
+References: <20210208200908.1019149-1-jolsa@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=jolsa@kernel.org
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: kernel.org
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=WINDOWS-1252
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that we can print FourCC codes directly using printk, make use of the
-feature in V4L2 core.
+Adding test for basic perf daemon listing via the CSV
+output mode (-x option).
 
-Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+Checking that configured sessions display expected values.
+
+Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- drivers/media/v4l2-core/v4l2-ioctl.c | 85 +++++++---------------------
- 1 file changed, 21 insertions(+), 64 deletions(-)
+ tools/perf/tests/shell/daemon.sh | 184 +++++++++++++++++++++++++++++++
+ 1 file changed, 184 insertions(+)
+ create mode 100755 tools/perf/tests/shell/daemon.sh
 
-diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-core/v4l2-ioctl.c
-index 31d1342e61e8..31662c3a8c9e 100644
---- a/drivers/media/v4l2-core/v4l2-ioctl.c
-+++ b/drivers/media/v4l2-core/v4l2-ioctl.c
-@@ -265,13 +265,9 @@ static void v4l_print_fmtdesc(const void *arg, bool write_only)
- {
- 	const struct v4l2_fmtdesc *p = arg;
- 
--	pr_cont("index=%u, type=%s, flags=0x%x, pixelformat=%c%c%c%c, mbus_code=0x%04x, description='%.*s'\n",
-+	pr_cont("index=%u, type=%s, flags=0x%x, pixelformat=%p4cc, mbus_code=0x%04x, description='%.*s'\n",
- 		p->index, prt_names(p->type, v4l2_type_names),
--		p->flags, (p->pixelformat & 0xff),
--		(p->pixelformat >>  8) & 0xff,
--		(p->pixelformat >> 16) & 0xff,
--		(p->pixelformat >> 24) & 0xff,
--		p->mbus_code,
-+		p->flags, &p->pixelformat, p->mbus_code,
- 		(int)sizeof(p->description), p->description);
- }
- 
-@@ -293,12 +289,8 @@ static void v4l_print_format(const void *arg, bool write_only)
- 	case V4L2_BUF_TYPE_VIDEO_CAPTURE:
- 	case V4L2_BUF_TYPE_VIDEO_OUTPUT:
- 		pix = &p->fmt.pix;
--		pr_cont(", width=%u, height=%u, pixelformat=%c%c%c%c, field=%s, bytesperline=%u, sizeimage=%u, colorspace=%d, flags=0x%x, ycbcr_enc=%u, quantization=%u, xfer_func=%u\n",
--			pix->width, pix->height,
--			(pix->pixelformat & 0xff),
--			(pix->pixelformat >>  8) & 0xff,
--			(pix->pixelformat >> 16) & 0xff,
--			(pix->pixelformat >> 24) & 0xff,
-+		pr_cont(", width=%u, height=%u, pixelformat=%p4cc, field=%s, bytesperline=%u, sizeimage=%u, colorspace=%d, flags=0x%x, ycbcr_enc=%u, quantization=%u, xfer_func=%u\n",
-+			pix->width, pix->height, &pix->pixelformat,
- 			prt_names(pix->field, v4l2_field_names),
- 			pix->bytesperline, pix->sizeimage,
- 			pix->colorspace, pix->flags, pix->ycbcr_enc,
-@@ -307,12 +299,8 @@ static void v4l_print_format(const void *arg, bool write_only)
- 	case V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE:
- 	case V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE:
- 		mp = &p->fmt.pix_mp;
--		pr_cont(", width=%u, height=%u, format=%c%c%c%c, field=%s, colorspace=%d, num_planes=%u, flags=0x%x, ycbcr_enc=%u, quantization=%u, xfer_func=%u\n",
--			mp->width, mp->height,
--			(mp->pixelformat & 0xff),
--			(mp->pixelformat >>  8) & 0xff,
--			(mp->pixelformat >> 16) & 0xff,
--			(mp->pixelformat >> 24) & 0xff,
-+		pr_cont(", width=%u, height=%u, format=%p4cc, field=%s, colorspace=%d, num_planes=%u, flags=0x%x, ycbcr_enc=%u, quantization=%u, xfer_func=%u\n",
-+			mp->width, mp->height, &mp->pixelformat,
- 			prt_names(mp->field, v4l2_field_names),
- 			mp->colorspace, mp->num_planes, mp->flags,
- 			mp->ycbcr_enc, mp->quantization, mp->xfer_func);
-@@ -337,13 +325,9 @@ static void v4l_print_format(const void *arg, bool write_only)
- 	case V4L2_BUF_TYPE_VBI_CAPTURE:
- 	case V4L2_BUF_TYPE_VBI_OUTPUT:
- 		vbi = &p->fmt.vbi;
--		pr_cont(", sampling_rate=%u, offset=%u, samples_per_line=%u, sample_format=%c%c%c%c, start=%u,%u, count=%u,%u\n",
-+		pr_cont(", sampling_rate=%u, offset=%u, samples_per_line=%u, sample_format=%p4cc, start=%u,%u, count=%u,%u\n",
- 			vbi->sampling_rate, vbi->offset,
--			vbi->samples_per_line,
--			(vbi->sample_format & 0xff),
--			(vbi->sample_format >>  8) & 0xff,
--			(vbi->sample_format >> 16) & 0xff,
--			(vbi->sample_format >> 24) & 0xff,
-+			vbi->samples_per_line, &vbi->sample_format,
- 			vbi->start[0], vbi->start[1],
- 			vbi->count[0], vbi->count[1]);
- 		break;
-@@ -360,21 +344,13 @@ static void v4l_print_format(const void *arg, bool write_only)
- 	case V4L2_BUF_TYPE_SDR_CAPTURE:
- 	case V4L2_BUF_TYPE_SDR_OUTPUT:
- 		sdr = &p->fmt.sdr;
--		pr_cont(", pixelformat=%c%c%c%c\n",
--			(sdr->pixelformat >>  0) & 0xff,
--			(sdr->pixelformat >>  8) & 0xff,
--			(sdr->pixelformat >> 16) & 0xff,
--			(sdr->pixelformat >> 24) & 0xff);
-+		pr_cont(", pixelformat=%p4cc\n", &sdr->pixelformat);
- 		break;
- 	case V4L2_BUF_TYPE_META_CAPTURE:
- 	case V4L2_BUF_TYPE_META_OUTPUT:
- 		meta = &p->fmt.meta;
--		pr_cont(", dataformat=%c%c%c%c, buffersize=%u\n",
--			(meta->dataformat >>  0) & 0xff,
--			(meta->dataformat >>  8) & 0xff,
--			(meta->dataformat >> 16) & 0xff,
--			(meta->dataformat >> 24) & 0xff,
--			meta->buffersize);
-+		pr_cont(", dataformat=%p4cc, buffersize=%u\n",
-+			&meta->dataformat, meta->buffersize);
- 		break;
- 	}
- }
-@@ -383,15 +359,10 @@ static void v4l_print_framebuffer(const void *arg, bool write_only)
- {
- 	const struct v4l2_framebuffer *p = arg;
- 
--	pr_cont("capability=0x%x, flags=0x%x, base=0x%p, width=%u, height=%u, pixelformat=%c%c%c%c, bytesperline=%u, sizeimage=%u, colorspace=%d\n",
--			p->capability, p->flags, p->base,
--			p->fmt.width, p->fmt.height,
--			(p->fmt.pixelformat & 0xff),
--			(p->fmt.pixelformat >>  8) & 0xff,
--			(p->fmt.pixelformat >> 16) & 0xff,
--			(p->fmt.pixelformat >> 24) & 0xff,
--			p->fmt.bytesperline, p->fmt.sizeimage,
--			p->fmt.colorspace);
-+	pr_cont("capability=0x%x, flags=0x%x, base=0x%p, width=%u, height=%u, pixelformat=%p4cc, bytesperline=%u, sizeimage=%u, colorspace=%d\n",
-+		p->capability, p->flags, p->base, p->fmt.width, p->fmt.height,
-+		&p->fmt.pixelformat, p->fmt.bytesperline, p->fmt.sizeimage,
-+		p->fmt.colorspace);
- }
- 
- static void v4l_print_buftype(const void *arg, bool write_only)
-@@ -761,13 +732,8 @@ static void v4l_print_frmsizeenum(const void *arg, bool write_only)
- {
- 	const struct v4l2_frmsizeenum *p = arg;
- 
--	pr_cont("index=%u, pixelformat=%c%c%c%c, type=%u",
--			p->index,
--			(p->pixel_format & 0xff),
--			(p->pixel_format >>  8) & 0xff,
--			(p->pixel_format >> 16) & 0xff,
--			(p->pixel_format >> 24) & 0xff,
--			p->type);
-+	pr_cont("index=%u, pixelformat=%p4cc, type=%u",
-+		p->index, &p->pixel_format, p->type);
- 	switch (p->type) {
- 	case V4L2_FRMSIZE_TYPE_DISCRETE:
- 		pr_cont(", wxh=%ux%u\n",
-@@ -793,13 +759,8 @@ static void v4l_print_frmivalenum(const void *arg, bool write_only)
- {
- 	const struct v4l2_frmivalenum *p = arg;
- 
--	pr_cont("index=%u, pixelformat=%c%c%c%c, wxh=%ux%u, type=%u",
--			p->index,
--			(p->pixel_format & 0xff),
--			(p->pixel_format >>  8) & 0xff,
--			(p->pixel_format >> 16) & 0xff,
--			(p->pixel_format >> 24) & 0xff,
--			p->width, p->height, p->type);
-+	pr_cont("index=%u, pixelformat=%p4cc, wxh=%ux%u, type=%u",
-+		p->index, &p->pixel_format, p->width, p->height, p->type);
- 	switch (p->type) {
- 	case V4L2_FRMIVAL_TYPE_DISCRETE:
- 		pr_cont(", fps=%d/%d\n",
-@@ -1459,12 +1420,8 @@ static void v4l_fill_fmtdesc(struct v4l2_fmtdesc *fmt)
- 				return;
- 			WARN(1, "Unknown pixelformat 0x%08x\n", fmt->pixelformat);
- 			flags = 0;
--			snprintf(fmt->description, sz, "%c%c%c%c%s",
--					(char)(fmt->pixelformat & 0x7f),
--					(char)((fmt->pixelformat >> 8) & 0x7f),
--					(char)((fmt->pixelformat >> 16) & 0x7f),
--					(char)((fmt->pixelformat >> 24) & 0x7f),
--					(fmt->pixelformat & (1UL << 31)) ? "-BE" : "");
-+			snprintf(fmt->description, sz, "%p4cc",
-+				 &fmt->pixelformat);
- 			break;
- 		}
- 	}
+diff --git a/tools/perf/tests/shell/daemon.sh b/tools/perf/tests/shell/daemon.sh
+new file mode 100755
+index 000000000000..874e1fd77c7e
+--- /dev/null
++++ b/tools/perf/tests/shell/daemon.sh
+@@ -0,0 +1,184 @@
++#!/bin/sh
++# daemon operations
++# SPDX-License-Identifier: GPL-2.0
++
++check_line_first()
++{
++	local line=$1
++	local name=$2
++	local base=$3
++	local output=$4
++	local lock=$5
++	local up=$6
++
++	local line_name=`echo "${line}" | awk 'BEGIN { FS = ":" } ; { print $2 }'`
++	local line_base=`echo "${line}" | awk 'BEGIN { FS = ":" } ; { print $3 }'`
++	local line_output=`echo "${line}" | awk 'BEGIN { FS = ":" } ; { print $4 }'`
++	local line_lock=`echo "${line}" | awk 'BEGIN { FS = ":" } ; { print $5 }'`
++	local line_up=`echo "${line}" | awk 'BEGIN { FS = ":" } ; { print $6 }'`
++
++	if [ "${name}" != "${line_name}" ]; then
++		echo "FAILED: wrong name"
++		error=1
++	fi
++
++	if [ "${base}" != "${line_base}" ]; then
++		echo "FAILED: wrong base"
++		error=1
++	fi
++
++	if [ "${output}" != "${line_output}" ]; then
++		echo "FAILED: wrong output"
++		error=1
++	fi
++
++	if [ "${lock}" != "${line_lock}" ]; then
++		echo "FAILED: wrong lock"
++		error=1
++	fi
++
++	if [ "${up}" != "${line_up}" ]; then
++		echo "FAILED: wrong up"
++		error=1
++	fi
++}
++
++check_line_other()
++{
++	local line=$1
++	local name=$2
++	local run=$3
++	local base=$4
++	local output=$5
++	local control=$6
++	local ack=$7
++	local up=$8
++
++	local line_name=`echo "${line}" | awk 'BEGIN { FS = ":" } ; { print $2 }'`
++	local line_run=`echo "${line}" | awk 'BEGIN { FS = ":" } ; { print $3 }'`
++	local line_base=`echo "${line}" | awk 'BEGIN { FS = ":" } ; { print $4 }'`
++	local line_output=`echo "${line}" | awk 'BEGIN { FS = ":" } ; { print $5 }'`
++	local line_control=`echo "${line}" | awk 'BEGIN { FS = ":" } ; { print $6 }'`
++	local line_ack=`echo "${line}" | awk 'BEGIN { FS = ":" } ; { print $7 }'`
++	local line_up=`echo "${line}" | awk 'BEGIN { FS = ":" } ; { print $8 }'`
++
++	if [ "${name}" != "${line_name}" ]; then
++		echo "FAILED: wrong name"
++		error=1
++	fi
++
++	if [ "${run}" != "${line_run}" ]; then
++		echo "FAILED: wrong run"
++		error=1
++	fi
++
++	if [ "${base}" != "${line_base}" ]; then
++		echo "FAILED: wrong base"
++		error=1
++	fi
++
++	if [ "${output}" != "${line_output}" ]; then
++		echo "FAILED: wrong output"
++		error=1
++	fi
++
++	if [ "${control}" != "${line_control}" ]; then
++		echo "FAILED: wrong control"
++		error=1
++	fi
++
++	if [ "${ack}" != "${line_ack}" ]; then
++		echo "FAILED: wrong ack"
++		error=1
++	fi
++
++	if [ "${up}" != "${line_up}" ]; then
++		echo "FAILED: wrong up"
++		error=1
++	fi
++}
++
++daemon_start()
++{
++	local config=$1
++	local session=$2
++
++	perf daemon start --config ${config}
++
++	# wait for the session to ping
++	local state="FAIL"
++	while [ "${state}" != "OK" ]; do
++		state=`perf daemon ping --config ${config} --session ${session} | awk '{ print $1 }'`
++		sleep 0.05
++	done
++}
++
++daemon_exit()
++{
++	local base=$1
++	local config=$2
++
++	local line=`perf daemon --config ${config} -x: | head -1`
++	local pid=`echo "${line}" | awk 'BEGIN { FS = ":" } ; { print $1 }'`
++
++	# stop daemon
++	perf daemon stop --config ${config}
++
++	# ... and wait for the pid to go away
++	tail --pid=${pid} -f /dev/null
++}
++
++test_list()
++{
++	echo "test daemon list"
++
++	local config=$(mktemp /tmp/perf.daemon.config.XXX)
++	local base=$(mktemp -d /tmp/perf.daemon.base.XXX)
++
++	cat <<EOF > ${config}
++[daemon]
++base=BASE
++
++[session-size]
++run = -e cpu-clock
++
++[session-time]
++run = -e task-clock
++EOF
++
++	sed -i -e "s|BASE|${base}|" ${config}
++
++	# start daemon
++	daemon_start ${config} size
++
++	# check first line
++	# pid:daemon:base:base/output:base/lock
++	local line=`perf daemon --config ${config} -x: | head -1`
++	check_line_first ${line} daemon ${base} ${base}/output ${base}/lock "0"
++
++	# check 1st session
++	# pid:size:-e cpu-clock:base/size:base/size/output:base/size/control:base/size/ack:0
++	local line=`perf daemon --config ${config} -x: | head -2 | tail -1`
++	check_line_other "${line}" size "-e cpu-clock" ${base}/session-size \
++			 ${base}/session-size/output ${base}/session-size/control \
++			 ${base}/session-size/ack "0"
++
++	# check 2nd session
++	# pid:time:-e task-clock:base/time:base/time/output:base/time/control:base/time/ack:0
++	local line=`perf daemon --config ${config} -x: | head -3 | tail -1`
++	check_line_other "${line}" time "-e task-clock" ${base}/session-time \
++			 ${base}/session-time/output ${base}/session-time/control \
++			 ${base}/session-time/ack "0"
++
++	# stop daemon
++	daemon_exit ${base} ${config}
++
++	rm -rf ${base}
++	rm -f ${config}
++}
++
++error=0
++
++test_list
++
++exit ${error}
 -- 
 2.29.2
 
