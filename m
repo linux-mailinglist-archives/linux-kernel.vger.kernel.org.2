@@ -2,61 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69ED8313330
+	by mail.lfdr.de (Postfix) with ESMTP id DBAA7313331
 	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 14:24:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230396AbhBHNYV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 08:24:21 -0500
-Received: from vps0.lunn.ch ([185.16.172.187]:54924 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231216AbhBHNV4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 08:21:56 -0500
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1l96T5-004pOI-DF; Mon, 08 Feb 2021 14:20:43 +0100
-Date:   Mon, 8 Feb 2021 14:20:43 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Samuel Holland <samuel@sholland.org>
-Cc:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Corentin Labbe <clabbe@baylibre.com>,
-        Ondrej Jirman <megous@megous.com>, netdev@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-sunxi@googlegroups.com,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: [PATCH] i2c: mv64xxx: Fix check for missing clock
-Message-ID: <YCE6qwwJngcZMjmn@lunn.ch>
-References: <20210208062859.11429-1-samuel@sholland.org>
- <20210208062859.11429-2-samuel@sholland.org>
- <4f696b13-2475-49f2-5d75-f2120e159142@sholland.org>
+        id S230306AbhBHNYs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 08:24:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56440 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230429AbhBHNV6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 08:21:58 -0500
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42BA4C061788
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 05:21:18 -0800 (PST)
+Received: by mail-wm1-x32f.google.com with SMTP id o24so5532437wmh.5
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 05:21:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/j7p/US0+NqzqBFdEXGg5t/+VEYJ8Ie/dDJTmC1ksfM=;
+        b=msatjmHXDaOEevAtvgoLlshg2SK4HWE9F+DDAnKeF8wmuNdMkXO3pb2FxZ+puo/2tX
+         bOEbptCv0QPjDcZS6rN7qiiuBvxbNgnITMm3rgh3k1eQhfrMC/+tvLdeHCNl9sV1CSYt
+         Vglxmp9fm1ENYcPWF6NVuHooNCBIpHgg6E1Gi1Tr2wyr3p+1N3WOG0C787duGLGD18Tv
+         Aqyq0cb8PbmzLvyeogYx+ZCWC9B1bvRxZUr4dcqeNu3TuL8qIsm03X+b+8cbi0BtlemS
+         Ylc9vOTC8h/aXGyxtnwWsKUKJlrwuzTK/5omfRNsh5FjlkOjOQmBon73HBrVKJf5fd5F
+         XBEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/j7p/US0+NqzqBFdEXGg5t/+VEYJ8Ie/dDJTmC1ksfM=;
+        b=Rp805pO695mnlifoz8uGKVHSrcrHj7OiqAn55NbIvA2fqlFOSs2KmW5IhvcQa2/aFs
+         OF8Rdzro894xuzKehctD5H2w3vw9JK7OmhQX3UxCEGA1LwWWK1YtAX8+UHePyWRB2tbX
+         rP2r4T7Gsp6JsKfffnuyWd74kwD5T9m1Mh3ua5seOYxEzTkOoIX+SR9hsxJbSrdEV4Tm
+         0cm+yuM/BSiKoHDiD5CjZlSP6R3K1t77pudeDBPZoxurZ7nZg0Ekp2+DCYeQzd+K9+41
+         uhBv1w8V93tzyn1xKyvEdY6FZ9sDE7SuOdemcOKjHfsqBxQgFYlDyjYf8rkPKgZiuyWX
+         u9fA==
+X-Gm-Message-State: AOAM530t3dvPED3Iyob06rujjaYJvT4zBLa5GrEvM42myPKIekHo7RDz
+        es7l+EaA3QXaCbCIxt/qjxfIVHLvFkwwe3Y3GJRwXnxw4FU=
+X-Google-Smtp-Source: ABdhPJx5Cp7IP7l7os9vRt0yqXNRtYCu4Q8Bn4DDmkqmHj4tjYxVIcvdJi+pju7EAQ/72C9dClthdT5C1BsaC48CqUc=
+X-Received: by 2002:a1c:b684:: with SMTP id g126mr14458121wmf.94.1612790476846;
+ Mon, 08 Feb 2021 05:21:16 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4f696b13-2475-49f2-5d75-f2120e159142@sholland.org>
+References: <20210207202501.9494-1-rikard.falkeborn@gmail.com>
+In-Reply-To: <20210207202501.9494-1-rikard.falkeborn@gmail.com>
+From:   Sven Van Asbroeck <thesven73@gmail.com>
+Date:   Mon, 8 Feb 2021 08:21:05 -0500
+Message-ID: <CAGngYiWV43EGDDPU7K6qjFTMmniVY0eOY_BmVP5iJRdtm=-H0g@mail.gmail.com>
+Subject: Re: [PATCH] staging: fieldbus: arcx-anybus: constify static structs
+To:     Rikard Falkeborn <rikard.falkeborn@gmail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        devel@driverdev.osuosl.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 08, 2021 at 12:31:34AM -0600, Samuel Holland wrote:
-> On 2/8/21 12:28 AM, Samuel Holland wrote:
-> > In commit e5c02cf54154 ("i2c: mv64xxx: Add runtime PM support"), error
-> > pointers to optional clocks were replaced by NULL to simplify the resume
-> > callback implementation. However, that commit missed that the IS_ERR
-> > check in mv64xxx_of_config should be replaced with a NULL check. As a
-> > result, the check always passes, even for an invalid device tree.
-> 
-> Sorry, please ignore this unrelated patch. I accidentally copied it to
-> the wrong directory before sending this series.
+Hi Rikard, thank you for the contribution.
 
-Hi Samuel
+On Sun, Feb 7, 2021 at 3:25 PM Rikard Falkeborn
+<rikard.falkeborn@gmail.com> wrote:
+>
+> Constify two static structs which are never modified, to allow the
+> compiler to put them in read-only memory.
+>
+> The only usage of controller_attribute_group is to put its address in an
+> array of pointers to const struct attribute_group, and the only usage of
+> can_power_ops is to assign its address to the 'ops' field in the
+> regulator_desc struct, which is a pointer to const struct regulator_ops.
+>
+> Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
 
-This patch looks correct. But i don't see it in i2c/for-next, where as
-e5c02cf54154 is. I just want to make sure it does not get lost...
-
-	     Andrew
+Reviewed-by: Sven Van Asbroeck <TheSven73@gmail.com>
