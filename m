@@ -2,191 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C84EA314384
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 00:12:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DCD3E31438A
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 00:13:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229939AbhBHXLf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 18:11:35 -0500
-Received: from relay4-d.mail.gandi.net ([217.70.183.196]:39909 "EHLO
-        relay4-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229621AbhBHXLb (ORCPT
+        id S230134AbhBHXMg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 18:12:36 -0500
+Received: from mail-wr1-f44.google.com ([209.85.221.44]:41681 "EHLO
+        mail-wr1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229615AbhBHXMc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 18:11:31 -0500
-X-Originating-IP: 86.202.109.140
-Received: from localhost (lfbn-lyo-1-13-140.w86-202.abo.wanadoo.fr [86.202.109.140])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id 5895FE0005;
-        Mon,  8 Feb 2021 23:10:40 +0000 (UTC)
-Date:   Tue, 9 Feb 2021 00:10:40 +0100
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
-        arm-soc <arm@kernel.org>, SoC Team <soc@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/SAMSUNG EXYNOS ARM ARCHITECTURES" 
-        <linux-samsung-soc@vger.kernel.org>,
+        Mon, 8 Feb 2021 18:12:32 -0500
+Received: by mail-wr1-f44.google.com with SMTP id n6so6380398wrv.8;
+        Mon, 08 Feb 2021 15:12:16 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=bv0dTMtA9ppfQnSKtZdpg4E99WwWlpYYeDwveeo27y0=;
+        b=LxDhnEcW8JWPlMYcFv7GH87onKgr1WqKMp5INUtY7U7zbwD1m09GasFSgnZIYbl8Vc
+         yQ4QfJuI4+eznvMNeBlaLRMUTba8wOGkVd0GA28EyzssOTcy0dW7aA1/Wvbe8fvk+HBc
+         1orxsvh08OC1kRlR4EeRW8EHyS1xIPUPQJSbjKjkcIgYQ+DSTInl2d3k2mYwe4GDSdgH
+         gl+BH12WeaZ4M51VF0ZLLI/6J52Sl+Ru/jLBk6TepgKrIU0cGWTrxHkFryLKXlHn5iGh
+         wPjznBo8nuVxfREuUhOooeb3xRhqd1XLdXuW10dy7gynuFuamquH7NvCqryDAX1K0g7n
+         ihPA==
+X-Gm-Message-State: AOAM533e22YuGfBJc/Vp7kzDgFH21OMHXfzNn2y/BmGTbBx4JgTSrEAa
+        ybrebFDDn/yNfXA+PaQeGWgouJTjfsRCPJgi
+X-Google-Smtp-Source: ABdhPJw6d4JBqgH/iMVqIVlgRbPTrlG64dTk/g4NiWLR01STGosEAkq245Tx8wPcoH9hNahYyOke9w==
+X-Received: by 2002:a5d:544b:: with SMTP id w11mr22702202wrv.1.1612825910658;
+        Mon, 08 Feb 2021 15:11:50 -0800 (PST)
+Received: from rocinante ([95.155.85.46])
+        by smtp.gmail.com with ESMTPSA id z63sm1255067wme.8.2021.02.08.15.11.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Feb 2021 15:11:50 -0800 (PST)
+Date:   Tue, 9 Feb 2021 00:11:48 +0100
+From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
+To:     Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>
+Cc:     "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Sylwester Nawrocki <snawrocki@kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        Tony Lindgren <tony@atomide.com>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Maxime Ripard <mripard@kernel.org>
-Subject: Re: [GIT PULL 2/3] ARM: dts: samsung: DTS for v5.12
-Message-ID: <20210208231040.GF351084@piout.net>
-References: <20210125191240.11278-1-krzk@kernel.org>
- <20210125191240.11278-3-krzk@kernel.org>
- <20210206134531.l5vpzlmev4v3f3uo@kozik-lap>
- <CAK8P3a0Kgn9PTHjsU7MbJPC8vatvb9KYJJKWxrx7zQzTNgK10g@mail.gmail.com>
- <CAMuHMdWZ8QmiQCmiW9AvCpviNZeuaxThSo_4Xb2DGEs9hMTKMQ@mail.gmail.com>
- <YCGBIvRfoP0BeyrP@builder.lan>
- <20210208184230.onhlioflyylkx6xo@kozik-lap>
- <CAK8P3a3bsw8p2Geyo-vh1AJUfMQCCf3kpa_YB+tKmcvWHqRcEw@mail.gmail.com>
- <20210208213537.GA351084@piout.net>
- <CAK8P3a0QRcQM4rH9HgVMOHa_eATXsjRbGDXuMO7FgnA8OgPk0Q@mail.gmail.com>
+        Derek Kiernan <derek.kiernan@xilinx.com>,
+        Dragan Cvetic <dragan.cvetic@xilinx.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Corbet <corbet@lwn.net>
+Subject: Re: [RESEND v4 4/6] Documentation: misc-devices: Add Documentation
+ for dw-xdata-pcie driver
+Message-ID: <YCHFNKb5TcCYj5Uy@rocinante>
+References: <cover.1612390291.git.gustavo.pimentel@synopsys.com>
+ <2cc3a3a324d299a096f1d3e682b2039d3537b013.1612390291.git.gustavo.pimentel@synopsys.com>
+ <YB8mwrhOZ2kPL3Oo@rocinante>
+ <DM5PR12MB18357C5DF57458FD4ECA9E9BDA8F9@DM5PR12MB1835.namprd12.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAK8P3a0QRcQM4rH9HgVMOHa_eATXsjRbGDXuMO7FgnA8OgPk0Q@mail.gmail.com>
+In-Reply-To: <DM5PR12MB18357C5DF57458FD4ECA9E9BDA8F9@DM5PR12MB1835.namprd12.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/02/2021 23:14:02+0100, Arnd Bergmann wrote:
-> On Mon, Feb 8, 2021 at 10:35 PM Alexandre Belloni
-> <alexandre.belloni@bootlin.com> wrote:
-> > On 08/02/2021 20:52:37+0100, Arnd Bergmann wrote:
-> > > On Mon, Feb 8, 2021 at 7:42 PM Krzysztof Kozlowski <krzk@kernel.org> wrote:
-> > > > Let me steer the discussion to original topic - it's about old kernel
-> > > > and new DTB, assuming that mainline kernel bisectability is not
-> > > > affected.
-> > > >
-> > > > Flow looks like this:
-> > > >
-> > > > 0. You have existing bidings and drivers.
-> > > > 1. Patch changing bindings (with new compatible) and drivers gets
-> > > >    accepted by maintainer.
-> > > > 2. Patch above (bindings+drivers) goes during merge window to v5.11-rc1.
-> > > > 3. Patch changing in-tree DTS to new compatible gets accepted by
-> > > >    maintainer and it is sent as v5.12-rc1 material to SoC maintainers.
-> > > >
-> > > > So again: old kernel, using old bindings, new DTB.
-> > > >
-> >
-> > I don't think forward compatibility was ever considered. I've seen it
-> > being mentioned a few times on #armlinux but honestly this simply can't
-> > be achieved. This would mean being able to write complete DT bindings
-> > for a particular SoC at day 0 which will realistically never happen. You
-> > may noteven have a complete datasheet and even if you have a datasheet,
-> > it may not be complete or it may be missing hw errata that are
-> > discovered later on and need a new binding to handle.
+Hi Gustavo,
+
+[...]
+> > When I do the following:
+> > 
+> >   # echo 1 > /sys/kernel/dw-xdata-pcie/write
+> >   # echo 1 > /sys/kernel/dw-xdata-pcie/stop
+> >   # cat /sys/kernel/dw-xdata-pcie/write
+> > 
+> > Would output from cat above simply show "0 MB/s" then?  I wonder how
+> > someone using this new driver could tell whether "write" or "read"
+> > traffic generation has been enabled aside of reading the sysfs files,
+> > would adding "/sys/kernel/dw-xdata-pcie/active" be an overkill here?
+> > 
+> > What do you think?
 > 
-> You do not have to write the correct DT for this, the only requirement
-> is that any changes to a node are backward-compatible, which is
-> typically the case if you add properties or compatible strings without
-> removing the old one. A bugfix in this case is also backward-compatible.
+> Yes, it would display 0 MB/s. This driver is to be used mainly by the 
+> Synopsys DesignWare HW prototyping team. I don't think the general public 
+> will be interested or can use this driver, because requires a special HW 
+> block available only for this prototype.
+
+Got it.
+
+> I tried to reduce to the minimal the interfaces, to avoid possible 
+> confusion. For instance, even the /sys/kernel/dw-xdata-pcie/stop 
+> interface could be avoided, because on the driver unloading or changing 
+> the between write or read it calls the stop procedure.
+
+Oh, OK.
+ 
+> Due to the nature of the HW block, it only can allow the write or the 
+> read at some given moment, therefore based on the last command enable 
+> write or read, we know which mode is this driving working.
+> This driver will be used by the testing team on their automation scripts, 
+> thus they will know exactly the sequence input.
 > 
-> The part that can not happen instead is to write a DT that can expose
-> features that any future kernel will use.
-> 
+> Anyway, thanks for your feedback.
 
-But I think we are speaking about the other way around were you would be
-e.g. removing properties or splitting a node is multiple different
-nodes following a different understanding of the hardware.
-And in this case, any rework of the bindings will be forbidden, like
-32b7cfbd4bb2 ("ARM: dts: at91: remove deprecated ADC properties") will
-break older kernels trying to use the new dtb.
-761f6ed85417 ("ARM: dts: at91: sama5d4: use correct rtc compatible") is
-an other case.
-I'm not sure want to keep the older properties or the older compatible
-string as a fallback for this use case.
+Thank you for taking the time to add more details for me.  Much
+appreciated.
 
-> > > However, once the firmware is updated, it may no longer be possible to
-> > > go back to the old kernel in case the new one is busted.
-> > >
-> >
-> > Any serious update strategy will update both the kernel and device tree
-> > at the same time, exactly like you already have to update the initramfs
-> > with the kernel as soon as it is including kernel modules.
-> > I would expect any embedded platform to actually use a container format,
-> > like a FIT image that will ship the kernel, DT and intiramfs in a single
-> > image and will allow to sign all parts.
-> 
-> Embedded systems that do this have no requirement for backward
-> or forward compatibility at all, the only requirement for these is bisectability
-> of git commits.
-> 
-
-Yes and I can't see any drawbacks in this approach.
-
-> > > A similar problem can happen with the EBBR boot flow that relies on
-> > > a uefi-enabled firmware such as a u-boot, while using grub2 as the
-> > > actual boot loader. This is commonly supported across distros. While
-> > > grub2 can load a matching set of kernel+initrd+dtb from disk and run
-> > > that, this often fails in practice because u-boot needs to fill a
-> > > board specific set of DT properties (bootargs, detected memory,
-> > > mac address, ...). The usual way this gets handled is that u-boot loads
-> > > grub2 and the dtb from disk and then passes the modified dtb to grub,
-> > > which picks only kernel+initrd from disk and boots this with the dtb.
-> > >
-> > > The result is similar to case with dtb built into the firmware: after
-> > > upgrading the dtb that gets loaded by u-boot, grub can still pick
-> > > old kernels but they may not work as they did in the past. There are
-> > > obviously ways to work around it, but it does lead to user frustration.
-> > >
-> >
-> > Are there really any platforms with the dtb built into the firmware?
-> > I feel like this is a mythical creature used to scare people into keeping
-> > the DTB ABI stable. Aren't all the distribution already able to cope
-> > with keeping DTB and kernel in sync?
-> 
-> I think most traditional PowerPC systems fall into this category, most
-
-My understanding was that the traditional PPC systems had a small device
-tree and usually are not affected by driver changes but I may be wrong.
-
-> systems that boot using UEFI+grub (as I explained), and anyone who
-> uses a distro kernel on custom hardware with their own dtb.
-> 
-
-Aren't the ones using a distro kernel with a custom dtb more concerned
-by backward compatibility (i.e. new kernel with old dtb) rather than old
-kernel on new dtb? If they have an old dtb, an old kernel, and update to
-a new kernel, backward compatibility will ensure this continues to work.
-If then they work on updating their dtb, they still have the old one and
-can make the distribution match dtb and kernel. This is already handled
-properly by debian and I guess the other distributions as it is anyway
-already matching kernel and initramfs.
-
-This is what I have on my NAS:
-
-$ ls /boot
-config-4.12.0-1-marvell  initrd.img-4.12.0-1-marvell  uImage.bak
-config-4.13.0-1-marvell  initrd.img-4.13.0-1-marvell  uInitrd
-dtb                      initrd.img.old               uInitrd.bak
-dtb-4.12.0-1-marvell     lost+found                   vmlinuz
-dtb-4.13.0-1-marvell     System.map-4.12.0-1-marvell  vmlinuz-4.12.0-1-marvell
-dtbs                     System.map-4.13.0-1-marvell  vmlinuz-4.13.0-1-marvell
-initrd.img               uImage                       vmlinuz.old
-
-So dtbs and kernels are already matching even when the dtbs didn't
-change between 4.9 and 4.13.
-
-I don't have any solution for the UEFI+grub use case but I will also
-question the sanity of doing that ;)
-
--- 
-Alexandre Belloni, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Krzysztof
