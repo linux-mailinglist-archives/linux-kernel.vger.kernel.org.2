@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A44A313A1B
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 17:54:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C16F5313A1E
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 17:54:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234650AbhBHQwo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 11:52:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60180 "EHLO mail.kernel.org"
+        id S234726AbhBHQxF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 11:53:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60340 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233398AbhBHPRa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 10:17:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2CCBA64EE1;
-        Mon,  8 Feb 2021 15:12:05 +0000 (UTC)
+        id S233497AbhBHPRk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 10:17:40 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E71D564EDA;
+        Mon,  8 Feb 2021 15:12:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612797126;
-        bh=FcRLTV92hDDizMMyrmm6ePyVSC5ysfWszMFF5A0drqo=;
+        s=korg; t=1612797129;
+        bh=owMGpEEyis0lUcSHly8vyZxtYSOHMUfwpI4X6GWFKVU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XhEg6TV1ze9f3Ji9bjRuYVd8NTG/oVzyyWDyZIlTtilYHuDQR9vuwvcXk35exINoo
-         NWaWJq2GtEmQ4eln7+Lie1qjNuCAjOpTIop8D7orhbxVahz+k3qKLUSaobV8WUs1OD
-         WUd0/DlgLGWIlzDNYGeooXuLVsQHWtV5c90wT42Q=
+        b=MAi/FAzyXiilznOeuxGXvEfwc21LD663+eweVkA7ePcc53eVeBlKI++PHKkLfWQbn
+         pI0/u0fIszo5V080pYvVn6np0d0/+nMMOdk9Fzpo2dPkjIwet6ACgumvc+sxYwd4Qi
+         /zvodJOBtRL7eR6JASpIZQIdd5x9hRx9IBcMepM8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Rokudo Yan <wu-yan@tcl.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Vlastimil Babka <vbabka@suse.cz>,
+        stable@vger.kernel.org, Hugh Dickins <hughd@google.com>,
+        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.4 52/65] mm, compaction: move high_pfn to the for loop scope
-Date:   Mon,  8 Feb 2021 16:01:24 +0100
-Message-Id: <20210208145812.227257840@linuxfoundation.org>
+Subject: [PATCH 5.4 53/65] mm: thp: fix MADV_REMOVE deadlock on shmem THP
+Date:   Mon,  8 Feb 2021 16:01:25 +0100
+Message-Id: <20210208145812.270609346@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210208145810.230485165@linuxfoundation.org>
 References: <20210208145810.230485165@linuxfoundation.org>
@@ -42,85 +42,111 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rokudo Yan <wu-yan@tcl.com>
+From: Hugh Dickins <hughd@google.com>
 
-commit 74e21484e40bb8ce0f9828bbfe1c9fc9b04249c6 upstream.
+commit 1c2f67308af4c102b4e1e6cd6f69819ae59408e0 upstream.
 
-In fast_isolate_freepages, high_pfn will be used if a prefered one (ie
-PFN >= low_fn) not found.
+Sergey reported deadlock between kswapd correctly doing its usual
+lock_page(page) followed by down_read(page->mapping->i_mmap_rwsem), and
+madvise(MADV_REMOVE) on an madvise(MADV_HUGEPAGE) area doing
+down_write(page->mapping->i_mmap_rwsem) followed by lock_page(page).
 
-But the high_pfn is not reset before searching an free area, so when it
-was used as freepage, it may from another free area searched before.  As
-a result move_freelist_head(freelist, freepage) will have unexpected
-behavior (eg corrupt the MOVABLE freelist)
+This happened when shmem_fallocate(punch hole)'s unmap_mapping_range()
+reaches zap_pmd_range()'s call to __split_huge_pmd().  The same deadlock
+could occur when partially truncating a mapped huge tmpfs file, or using
+fallocate(FALLOC_FL_PUNCH_HOLE) on it.
 
-  Unable to handle kernel paging request at virtual address dead000000000200
-  Mem abort info:
-    ESR = 0x96000044
-    Exception class = DABT (current EL), IL = 32 bits
-    SET = 0, FnV = 0
-    EA = 0, S1PTW = 0
-  Data abort info:
-    ISV = 0, ISS = 0x00000044
-    CM = 0, WnR = 1
-  [dead000000000200] address between user and kernel address ranges
+__split_huge_pmd()'s page lock was added in 5.8, to make sure that any
+concurrent use of reuse_swap_page() (holding page lock) could not catch
+the anon THP's mapcounts and swapcounts while they were being split.
 
-  -000|list_cut_before(inline)
-  -000|move_freelist_head(inline)
-  -000|fast_isolate_freepages(inline)
-  -000|isolate_freepages(inline)
-  -000|compaction_alloc(?, ?)
-  -001|unmap_and_move(inline)
-  -001|migrate_pages([NSD:0xFFFFFF80088CBBD0] from = 0xFFFFFF80088CBD88, [NSD:0xFFFFFF80088CBBC8] get_new_p
-  -002|__read_once_size(inline)
-  -002|static_key_count(inline)
-  -002|static_key_false(inline)
-  -002|trace_mm_compaction_migratepages(inline)
-  -002|compact_zone(?, [NSD:0xFFFFFF80088CBCB0] capc = 0x0)
-  -003|kcompactd_do_work(inline)
-  -003|kcompactd([X19] p = 0xFFFFFF93227FBC40)
-  -004|kthread([X20] _create = 0xFFFFFFE1AFB26380)
-  -005|ret_from_fork(asm)
+Fortunately, reuse_swap_page() is never applied to a shmem or file THP
+(not even by khugepaged, which checks PageSwapCache before calling), and
+anonymous THPs are never created in shmem or file areas: so that
+__split_huge_pmd()'s page lock can only be necessary for anonymous THPs,
+on which there is no risk of deadlock with i_mmap_rwsem.
 
-The issue was reported on an smart phone product with 6GB ram and 3GB
-zram as swap device.
-
-This patch fixes the issue by reset high_pfn before searching each free
-area, which ensure freepage and freelist match when call
-move_freelist_head in fast_isolate_freepages().
-
-Link: http://lkml.kernel.org/r/20190118175136.31341-12-mgorman@techsingularity.net
-Link: https://lkml.kernel.org/r/20210112094720.1238444-1-wu-yan@tcl.com
-Fixes: 5a811889de10f1eb ("mm, compaction: use free lists to quickly locate a migration target")
-Signed-off-by: Rokudo Yan <wu-yan@tcl.com>
-Acked-by: Mel Gorman <mgorman@techsingularity.net>
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
+Link: https://lkml.kernel.org/r/alpine.LSU.2.11.2101161409470.2022@eggly.anvils
+Fixes: c444eb564fb1 ("mm: thp: make the THP mapcount atomic against __split_huge_pmd_locked()")
+Signed-off-by: Hugh Dickins <hughd@google.com>
+Reported-by: Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
+Reviewed-by: Andrea Arcangeli <aarcange@redhat.com>
 Cc: <stable@vger.kernel.org>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- mm/compaction.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ mm/huge_memory.c |   37 +++++++++++++++++++++++--------------
+ 1 file changed, 23 insertions(+), 14 deletions(-)
 
---- a/mm/compaction.c
-+++ b/mm/compaction.c
-@@ -1276,7 +1276,7 @@ fast_isolate_freepages(struct compact_co
+--- a/mm/huge_memory.c
++++ b/mm/huge_memory.c
+@@ -2306,7 +2306,7 @@ void __split_huge_pmd(struct vm_area_str
  {
- 	unsigned int limit = min(1U, freelist_scan_limit(cc) >> 1);
- 	unsigned int nr_scanned = 0;
--	unsigned long low_pfn, min_pfn, high_pfn = 0, highest = 0;
-+	unsigned long low_pfn, min_pfn, highest = 0;
- 	unsigned long nr_isolated = 0;
- 	unsigned long distance;
- 	struct page *page = NULL;
-@@ -1321,6 +1321,7 @@ fast_isolate_freepages(struct compact_co
- 		struct page *freepage;
- 		unsigned long flags;
- 		unsigned int order_scanned = 0;
-+		unsigned long high_pfn = 0;
+ 	spinlock_t *ptl;
+ 	struct mmu_notifier_range range;
+-	bool was_locked = false;
++	bool do_unlock_page = false;
+ 	pmd_t _pmd;
  
- 		if (!area->nr_free)
- 			continue;
+ 	mmu_notifier_range_init(&range, MMU_NOTIFY_CLEAR, 0, vma, vma->vm_mm,
+@@ -2322,7 +2322,6 @@ void __split_huge_pmd(struct vm_area_str
+ 	VM_BUG_ON(freeze && !page);
+ 	if (page) {
+ 		VM_WARN_ON_ONCE(!PageLocked(page));
+-		was_locked = true;
+ 		if (page != pmd_page(*pmd))
+ 			goto out;
+ 	}
+@@ -2331,19 +2330,29 @@ repeat:
+ 	if (pmd_trans_huge(*pmd)) {
+ 		if (!page) {
+ 			page = pmd_page(*pmd);
+-			if (unlikely(!trylock_page(page))) {
+-				get_page(page);
+-				_pmd = *pmd;
+-				spin_unlock(ptl);
+-				lock_page(page);
+-				spin_lock(ptl);
+-				if (unlikely(!pmd_same(*pmd, _pmd))) {
+-					unlock_page(page);
++			/*
++			 * An anonymous page must be locked, to ensure that a
++			 * concurrent reuse_swap_page() sees stable mapcount;
++			 * but reuse_swap_page() is not used on shmem or file,
++			 * and page lock must not be taken when zap_pmd_range()
++			 * calls __split_huge_pmd() while i_mmap_lock is held.
++			 */
++			if (PageAnon(page)) {
++				if (unlikely(!trylock_page(page))) {
++					get_page(page);
++					_pmd = *pmd;
++					spin_unlock(ptl);
++					lock_page(page);
++					spin_lock(ptl);
++					if (unlikely(!pmd_same(*pmd, _pmd))) {
++						unlock_page(page);
++						put_page(page);
++						page = NULL;
++						goto repeat;
++					}
+ 					put_page(page);
+-					page = NULL;
+-					goto repeat;
+ 				}
+-				put_page(page);
++				do_unlock_page = true;
+ 			}
+ 		}
+ 		if (PageMlocked(page))
+@@ -2353,7 +2362,7 @@ repeat:
+ 	__split_huge_pmd_locked(vma, pmd, range.start, freeze);
+ out:
+ 	spin_unlock(ptl);
+-	if (!was_locked && page)
++	if (do_unlock_page)
+ 		unlock_page(page);
+ 	/*
+ 	 * No need to double call mmu_notifier->invalidate_range() callback.
 
 
