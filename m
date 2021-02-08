@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 699F6313881
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 16:51:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F8DC31387D
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 16:51:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231723AbhBHPvX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 10:51:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52066 "EHLO mail.kernel.org"
+        id S234090AbhBHPuS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 10:50:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52062 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232066AbhBHPHP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 10:07:15 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1EF2464EBF;
-        Mon,  8 Feb 2021 15:05:36 +0000 (UTC)
+        id S232276AbhBHPHO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 10:07:14 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E26E864E84;
+        Mon,  8 Feb 2021 15:05:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612796737;
-        bh=GKITYz5xisbQHlg5N2WH7Loow+BaDEjuJ9GMbpCFAGA=;
+        s=korg; t=1612796740;
+        bh=BCh9qFsYtLmU+r4j51UqZbeU68kz/2QYEmXzYNsGO/g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qdmFYHkt6QsvCj5CpprTLgaHEYcxtZoRwlBqte+MunjGdtZBIdC9fLflF55Agujud
-         UIcFRLT3mhCColk09uMyGyeT/3MB9Tk5zgX6XYFvEAmZTNIRwLI1GNKao73ONwjgHx
-         9qOoDcm6UuFxpIt3yEYFwfaU3oxzr+vbfsp/9TrY=
+        b=VlENh6u8Mz76/GmtfniwhXpo74vZ7iI8g8u21diytJ/YhHwL8OVEC/PU30La9hkii
+         4mybTsBiTqPC7mYgF6JM0NAz+lMpwd/jC3o1pJkMafmxK4qFD5lf5xvyBF+RyX88T/
+         oLflbkcnYPA/NZiVTGU8bX9KrEmnKGd8HrkkJMuU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Gerhard Klostermeier <gerhard.klostermeier@syss.de>,
-        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
-Subject: [PATCH 4.9 27/43] usb: dwc2: Fix endpoint direction check in ep_from_windex
-Date:   Mon,  8 Feb 2021 16:00:53 +0100
-Message-Id: <20210208145807.413970171@linuxfoundation.org>
+        stable@vger.kernel.org, Felix Fietkau <nbd@nbd.name>,
+        Johannes Berg <johannes.berg@intel.com>
+Subject: [PATCH 4.9 28/43] mac80211: fix station rate table updates on assoc
+Date:   Mon,  8 Feb 2021 16:00:54 +0100
+Message-Id: <20210208145807.452185088@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210208145806.281758651@linuxfoundation.org>
 References: <20210208145806.281758651@linuxfoundation.org>
@@ -40,74 +39,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
+From: Felix Fietkau <nbd@nbd.name>
 
-commit f670e9f9c8cac716c3506c6bac9e997b27ad441a upstream.
+commit 18fe0fae61252b5ae6e26553e2676b5fac555951 upstream.
 
-dwc2_hsotg_process_req_status uses ep_from_windex() to retrieve
-the endpoint for the index provided in the wIndex request param.
+If the driver uses .sta_add, station entries are only uploaded after the sta
+is in assoc state. Fix early station rate table updates by deferring them
+until the sta has been uploaded.
 
-In a test-case with a rndis gadget running and sending a malformed
-packet to it like:
-    dev.ctrl_transfer(
-        0x82,      # bmRequestType
-        0x00,       # bRequest
-        0x0000,     # wValue
-        0x0001,     # wIndex
-        0x00       # wLength
-    )
-it is possible to cause a crash:
-
-[  217.533022] dwc2 ff300000.usb: dwc2_hsotg_process_req_status: USB_REQ_GET_STATUS
-[  217.559003] Unable to handle kernel read from unreadable memory at virtual address 0000000000000088
-...
-[  218.313189] Call trace:
-[  218.330217]  ep_from_windex+0x3c/0x54
-[  218.348565]  usb_gadget_giveback_request+0x10/0x20
-[  218.368056]  dwc2_hsotg_complete_request+0x144/0x184
-
-This happens because ep_from_windex wants to compare the endpoint
-direction even if index_to_ep() didn't return an endpoint due to
-the direction not matching.
-
-The fix is easy insofar that the actual direction check is already
-happening when calling index_to_ep() which will return NULL if there
-is no endpoint for the targeted direction, so the offending check
-can go away completely.
-
-Fixes: c6f5c050e2a7 ("usb: dwc2: gadget: add bi-directional endpoint support")
 Cc: stable@vger.kernel.org
-Reported-by: Gerhard Klostermeier <gerhard.klostermeier@syss.de>
-Signed-off-by: Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
-Link: https://lore.kernel.org/r/20210127103919.58215-1-heiko@sntech.de
+Signed-off-by: Felix Fietkau <nbd@nbd.name>
+Link: https://lore.kernel.org/r/20210201083324.3134-1-nbd@nbd.name
+[use rcu_access_pointer() instead since we won't dereference here]
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/dwc2/gadget.c |    8 +-------
- 1 file changed, 1 insertion(+), 7 deletions(-)
+ net/mac80211/driver-ops.c |    5 ++++-
+ net/mac80211/rate.c       |    3 ++-
+ 2 files changed, 6 insertions(+), 2 deletions(-)
 
---- a/drivers/usb/dwc2/gadget.c
-+++ b/drivers/usb/dwc2/gadget.c
-@@ -942,7 +942,6 @@ static void dwc2_hsotg_complete_oursetup
- static struct dwc2_hsotg_ep *ep_from_windex(struct dwc2_hsotg *hsotg,
- 					   u32 windex)
- {
--	struct dwc2_hsotg_ep *ep;
- 	int dir = (windex & USB_DIR_IN) ? 1 : 0;
- 	int idx = windex & 0x7F;
+--- a/net/mac80211/driver-ops.c
++++ b/net/mac80211/driver-ops.c
+@@ -128,8 +128,11 @@ int drv_sta_state(struct ieee80211_local
+ 	} else if (old_state == IEEE80211_STA_AUTH &&
+ 		   new_state == IEEE80211_STA_ASSOC) {
+ 		ret = drv_sta_add(local, sdata, &sta->sta);
+-		if (ret == 0)
++		if (ret == 0) {
+ 			sta->uploaded = true;
++			if (rcu_access_pointer(sta->sta.rates))
++				drv_sta_rate_tbl_update(local, sdata, &sta->sta);
++		}
+ 	} else if (old_state == IEEE80211_STA_ASSOC &&
+ 		   new_state == IEEE80211_STA_AUTH) {
+ 		drv_sta_remove(local, sdata, &sta->sta);
+--- a/net/mac80211/rate.c
++++ b/net/mac80211/rate.c
+@@ -892,7 +892,8 @@ int rate_control_set_rates(struct ieee80
+ 	if (old)
+ 		kfree_rcu(old, rcu_head);
  
-@@ -952,12 +951,7 @@ static struct dwc2_hsotg_ep *ep_from_win
- 	if (idx > hsotg->num_of_eps)
- 		return NULL;
+-	drv_sta_rate_tbl_update(hw_to_local(hw), sta->sdata, pubsta);
++	if (sta->uploaded)
++		drv_sta_rate_tbl_update(hw_to_local(hw), sta->sdata, pubsta);
  
--	ep = index_to_ep(hsotg, idx, dir);
--
--	if (idx && ep->dir_in != dir)
--		return NULL;
--
--	return ep;
-+	return index_to_ep(hsotg, idx, dir);
+ 	return 0;
  }
- 
- /**
 
 
