@@ -2,179 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC625312E96
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 11:09:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C46E312E9D
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 11:13:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232518AbhBHKJm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 05:09:42 -0500
-Received: from mail29.static.mailgun.info ([104.130.122.29]:62803 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231993AbhBHJ7w (ORCPT
+        id S232009AbhBHKKy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 05:10:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41448 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232141AbhBHKBY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 04:59:52 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1612778366; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=SaZaHBLKUsOHV+ADNlGOajlR/W8Hmri2bwY0Sr/RM5U=;
- b=pK2IddlUFyUC+3hRbB6HxyINmp4OM4r+1eoaWZwxS156MhUfoYqrGGvQE4eja/Nz3PgE2o1n
- Vm6OTv3/EeFcyC1sBhng7Wg6RqfHgilWLCn/tM8w+ux9JAgub0t8eX16oEswJ0szvA/YRjAh
- m9RyhtGDa/N0/v74EUFoT06Xbjg=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
- 60210b58f112b7872c08e0a8 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 08 Feb 2021 09:58:48
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 63587C43469; Mon,  8 Feb 2021 09:58:48 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 74B43C433C6;
-        Mon,  8 Feb 2021 09:58:47 +0000 (UTC)
+        Mon, 8 Feb 2021 05:01:24 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96F7EC061756
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 02:00:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=D5tWWKHXqUG5EZDch0gesu7dkFX2RCXASBX8rVKzm1I=; b=1PpLDVWrRhmvcYo+GoCCpTy6YJ
+        TaR35nwyQXshfjB8vqBMMbArydQmgYItuZDGJQyRR2GxVgn3cGh7b1Fd8g+hbqTFf/KJtuO2E1umC
+        cnJyxZTjtLzuOGyfL9pFSyD1yf7MK9hXdc+sZa7slLX1jCXRekp0/bUb5kbpOFTerFpWqYMGgYC01
+        mW8sEAiG96XkK6gNMWUcl2tIJQAMLYo0nOGDMFAPJJppgHzAqmGFE6qVpBPuMHmVifdrl2rV0gY60
+        cjX78vQeoAlcG0xeheg6Fq6jo05KjZS03hJMIROMTgczc4H6QpYR3VbaGhDwzdu51Xh/eY2SZ21BF
+        VRjPzqIQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1l93LH-0001cF-64; Mon, 08 Feb 2021 10:00:27 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id C25823012DF;
+        Mon,  8 Feb 2021 11:00:20 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id E3D132BF2D62E; Mon,  8 Feb 2021 11:00:20 +0100 (CET)
+Date:   Mon, 8 Feb 2021 11:00:20 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC v1 04/26] x86/tdx: Get TD execution environment information
+ via TDINFO
+Message-ID: <YCELtLeZnax8JNMU@hirez.programming.kicks-ass.net>
+References: <cover.1612563142.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <a5757dafc54932a6661fc94f51e413467b61fecf.1612563142.git.sathyanarayanan.kuppuswamy@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 08 Feb 2021 17:58:47 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Bean Huo <huobean@gmail.com>
-Cc:     daejun7.park@samsung.com, Greg KH <gregkh@linuxfoundation.org>,
-        avri.altman@wdc.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, asutoshd@codeaurora.org,
-        stanley.chu@mediatek.com, bvanassche@acm.org,
-        ALIM AKHTAR <alim.akhtar@samsung.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        BoRam Shin <boram.shin@samsung.com>,
-        SEUNGUK SHIN <seunguk.shin@samsung.com>
-Subject: Re: [PATCH v19 3/3] scsi: ufs: Prepare HPB read for cached sub-region
-In-Reply-To: <a95af313ee4dfb7173b0c5a23b52d2168a94f87a.camel@gmail.com>
-References: <20210129052848epcms2p6e5797efd94e6282b76ad9ae6c99e3ab5@epcms2p6>
- <CGME20210129052848epcms2p6e5797efd94e6282b76ad9ae6c99e3ab5@epcms2p5>
- <20210129053042epcms2p538e7fa396c3c2104594c44e48be53eb8@epcms2p5>
- <7f25ccb1d857131baa1c0424c4542e33@codeaurora.org>
- <a95af313ee4dfb7173b0c5a23b52d2168a94f87a.camel@gmail.com>
-Message-ID: <8c79dfb0dc749c3c1362b57c5a9766c0@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a5757dafc54932a6661fc94f51e413467b61fecf.1612563142.git.sathyanarayanan.kuppuswamy@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-02-08 16:16, Bean Huo wrote:
-> On Fri, 2021-02-05 at 11:29 +0800, Can Guo wrote:
->> > +     return ppn_table[offset];
->> > +}
->> > +
->> > +static void
->> > +ufshpb_get_pos_from_lpn(struct ufshpb_lu *hpb, unsigned long lpn,
->> > int
->> > *rgn_idx,
->> > +                     int *srgn_idx, int *offset)
->> > +{
->> > +     int rgn_offset;
->> > +
->> > +     *rgn_idx = lpn >> hpb->entries_per_rgn_shift;
->> > +     rgn_offset = lpn & hpb->entries_per_rgn_mask;
->> > +     *srgn_idx = rgn_offset >> hpb->entries_per_srgn_shift;
->> > +     *offset = rgn_offset & hpb->entries_per_srgn_mask;
->> > +}
->> > +
->> > +static void
->> > +ufshpb_set_hpb_read_to_upiu(struct ufshpb_lu *hpb, struct
->> > ufshcd_lrb
->> > *lrbp,
->> > +                               u32 lpn, u64 ppn,  unsigned int
->> > transfer_len)
->> > +{
->> > +     unsigned char *cdb = lrbp->cmd->cmnd;
->> > +
->> > +     cdb[0] = UFSHPB_READ;
->> > +
->> > +     put_unaligned_be64(ppn, &cdb[6]);
->> 
->> You are assuming the HPB entries read out by "HPB Read Buffer" cmd
->> are
->> in Little
->> Endian, which is why you are using put_unaligned_be64 here.
->> 
-> 
-> 
-> Actaully, here uses put_unaligned_be64 is no problem. SCSI command
-> should be big-endian filled. I Think the problem is that geting ppn
-> from HPB cache in ufshpb_get_ppn().
-> 
+On Fri, Feb 05, 2021 at 03:38:21PM -0800, Kuppuswamy Sathyanarayanan wrote:
+> +/*
+> + * TDCALL instruction is newly added in TDX architecture,
+> + * used by TD for requesting the host VMM to provide
+> + * (untrusted) services.
+> + */
+> +#define TDCALL	".byte 0x66,0x0f,0x01,0xcc"
 
-whatever...
-
-> ...
-> e0000001f: 12 34 56 78 90 fa de ef
-> ...
-> 
-> +
-> +static u64 ufshpb_get_ppn(struct ufshpb_lu *hpb,
-> +			  struct ufshpb_map_ctx *mctx, int pos, int
-> *error)
-> +{
-> +	u64 *ppn_table;  // It s a 64 bits pointer
-> +	struct page *page;
-> +	int index, offset;
-> +
-> +	index = pos / (PAGE_SIZE / HPB_ENTRY_SIZE);
-> +	offset = pos % (PAGE_SIZE / HPB_ENTRY_SIZE);
-> +
-> +	page = mctx->m_page[index];
-> +	if (unlikely(!page)) {
-> +		*error = -ENOMEM;
-> +		dev_err(&hpb->sdev_ufs_lu->sdev_dev,
-> +			"error. cannot find page in mctx\n");
-> +		return 0;
-> +	}
-> +
-> +	ppn_table = page_address(page);
-> +	if (unlikely(!ppn_table)) {
-> +		*error = -ENOMEM;
-> +		dev_err(&hpb->sdev_ufs_lu->sdev_dev,
-> +			"error. cannot get ppn_table\n");
-> +		return 0;
-> +	}
-> +
-> +	return ppn_table[offset];
-> +}
-> 
-> 
-> 
-> 
->> this assumption
->> is not right for all the other flash vendors - HPB entries read out
->> by
->> "HPB Read Buffer"
->> cmd may come in Big Endian, if so, their random read performance are
->> screwed.
->> Actually, I have seen at least two flash vendors acting so. I had to
->> modify this line
->> to get the code work properly on my setups.
->> 
->> Meanwhile, in your cover letter, you mentioned that the performance
->> data
->> is collected
->> on a UFS2.1 device. Please re-collect the data on a real UFS3.1
->> device
->> and let me
->> know the part number. Otherwise, the data is not quite convincing to
->> us.
->> 
->> Regards,
->> Can Guo.
+This needs a binutils version number.
