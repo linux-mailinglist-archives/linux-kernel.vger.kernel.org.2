@@ -2,185 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4737312FE3
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 11:59:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8551B312FE4
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 11:59:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232815AbhBHK6I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 05:58:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51732 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230020AbhBHKtH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 05:49:07 -0500
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A462C06178A
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 02:48:09 -0800 (PST)
-Received: by mail-wm1-x332.google.com with SMTP id f16so12119437wmq.5
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 02:48:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=lgGm4PB5m4Er0st2+IAu2ADnhULDfoFDJ2Jsf0woe9E=;
-        b=QhK5ZJAGnEkI3A3Z2DNmhtocdr8uInviUMncIed8Yw60g+v4JjhGra+7ogE9iuJekm
-         23cf96w5JdaoDSZJtcnr3Ivr5yjGk4yPDPLTa/mCaykYOimrYCsUGpsYs7AvB8KuTzP3
-         /K7jSYSJTaXywmR/kzbjN+gmJyZmHu4zrD+hD9tUBSAfNJd5TEm0PbeCDBNIdKg+P63D
-         jgnXCRdJj93uJ/WNNj8MMQT7CU8pwoM6zd01N3mhkQNfpaCwWtAxyErclXw5gr6UjvlF
-         h/U9EZLMThz7Ijl6rfpflzgsWxyf3rsvsE9s1oiNsyQa9AnK9iH3Sjynsw4dOHyG1NIj
-         CPJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=lgGm4PB5m4Er0st2+IAu2ADnhULDfoFDJ2Jsf0woe9E=;
-        b=TmbkwHpfHL+JjyIsOBC2P05SoLinDPLl/ffS1RGROhTrIilNcArD3f3uzg/XfxLWLp
-         F8ZooCBQbmJ6ZGmoYaGQYyaIuldGRSt48w01kbu9ukXU5gIjo5o5tR2zA4V22uaPcyxj
-         /7NWnATKtizh2PF2VkdZ6RV7Id+tKJMc153cDIAaTzxPw19u17iv6BTYFw4e+Q5P4bkb
-         nwt8+j6m8ehF/0tO6VUsui3ZoTZgnBC7scC1OMiJsH8YdbDG1F/guhWHCuEQYGK5Axic
-         mttOTRDeEHjKgOs39kzD8P8Bmid4wy164LZ+1Uw7ZXryKq1MY6oKwTlF/3fDtkjYQ0eS
-         qSyQ==
-X-Gm-Message-State: AOAM5312uGc75MYCpRf5IwTjPbd0j0643e5RZ/XnivKNW0HfDidRkL9Y
-        p/5tJTdJVJYj4m78TRmWy/9edQ==
-X-Google-Smtp-Source: ABdhPJxJ1xVrDFdzjEST4rocD/QkhguzJ9ybMCZvQBotr7Rh2p3RxFYnATJDwH4oDHDebADgcA4NLg==
-X-Received: by 2002:a1c:7905:: with SMTP id l5mr11809452wme.171.1612781287598;
-        Mon, 08 Feb 2021 02:48:07 -0800 (PST)
-Received: from elver.google.com ([2a00:79e0:15:13:4037:8827:dcff:a9da])
-        by smtp.gmail.com with ESMTPSA id u142sm20991623wmu.3.2021.02.08.02.48.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Feb 2021 02:48:06 -0800 (PST)
-Date:   Mon, 8 Feb 2021 11:48:01 +0100
-From:   Marco Elver <elver@google.com>
-To:     Andrey Konovalov <andreyknvl@google.com>
+        id S232846AbhBHK6d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 05:58:33 -0500
+Received: from mx2.suse.de ([195.135.220.15]:45882 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232344AbhBHKuP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 05:50:15 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1612781364; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=AoNPQu/CYREU8WklaThDeR8slY2WA4SdP9WlHLHnBzw=;
+        b=jma/SuHJFiVwWmdQgxuuc5UeAWopcfBTEw8DCQRtoftzdON6/M5kdrXEyR3vdFiEHz5+3z
+        +k49ofL8c4eTE7h3/Kadmh5PQ6WOsbRHozNCmH84n+jx2ZjkfHcB/bfE9B5UepeC/waV30
+        P1KXrH4oDz6ocDZLYC+6hSCotDNBb+I=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id C2769AD62;
+        Mon,  8 Feb 2021 10:49:23 +0000 (UTC)
+Date:   Mon, 8 Feb 2021 11:49:22 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Mike Rapoport <rppt@kernel.org>
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
         Catalin Marinas <catalin.marinas@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 mm 08/13] kasan, mm: optimize krealloc poisoning
-Message-ID: <YCEW4SNDDERCWd7f@elver.google.com>
-References: <cover.1612546384.git.andreyknvl@google.com>
- <9bef90327c9cb109d736c40115684fd32f49e6b0.1612546384.git.andreyknvl@google.com>
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org, Hagen Paul Pfeifer <hagen@jauu.net>,
+        Palmer Dabbelt <palmerdabbelt@google.com>
+Subject: Re: [PATCH v17 07/10] mm: introduce memfd_secret system call to
+ create "secret" memory areas
+Message-ID: <YCEXMgXItY7xMbIS@dhcp22.suse.cz>
+References: <20210208084920.2884-1-rppt@kernel.org>
+ <20210208084920.2884-8-rppt@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <9bef90327c9cb109d736c40115684fd32f49e6b0.1612546384.git.andreyknvl@google.com>
-User-Agent: Mutt/2.0.2 (2020-11-20)
+In-Reply-To: <20210208084920.2884-8-rppt@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 05, 2021 at 06:34PM +0100, Andrey Konovalov wrote:
-> Currently, krealloc() always calls ksize(), which unpoisons the whole
-> object including the redzone. This is inefficient, as kasan_krealloc()
-> repoisons the redzone for objects that fit into the same buffer.
+On Mon 08-02-21 10:49:17, Mike Rapoport wrote:
+> From: Mike Rapoport <rppt@linux.ibm.com>
 > 
-> This patch changes krealloc() instrumentation to use uninstrumented
-> __ksize() that doesn't unpoison the memory. Instead, kasan_kreallos()
-> is changed to unpoison the memory excluding the redzone.
+> Introduce "memfd_secret" system call with the ability to create memory
+> areas visible only in the context of the owning process and not mapped not
+> only to other processes but in the kernel page tables as well.
 > 
-> For objects that don't fit into the old allocation, this patch disables
-> KASAN accessibility checks when copying memory into a new object instead
-> of unpoisoning it.
+> The secretmem feature is off by default and the user must explicitly enable
+> it at the boot time.
 > 
-> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> Once secretmem is enabled, the user will be able to create a file
+> descriptor using the memfd_secret() system call. The memory areas created
+> by mmap() calls from this file descriptor will be unmapped from the kernel
+> direct map and they will be only mapped in the page table of the owning mm.
 
-Reviewed-by: Marco Elver <elver@google.com>
+Is this really true? I guess you meant to say that the memory will
+visible only via page tables to anybody who can mmap the respective file
+descriptor. There is nothing like an owning mm as the fd is inherently a
+shareable resource and the ownership becomes a very vague and hard to
+define term.
 
-Clarification below.
+> The file descriptor based memory has several advantages over the
+> "traditional" mm interfaces, such as mlock(), mprotect(), madvise(). It
+> paves the way for VMMs to remove the secret memory range from the process;
 
-> ---
->  mm/kasan/common.c | 12 ++++++++++--
->  mm/slab_common.c  | 20 ++++++++++++++------
->  2 files changed, 24 insertions(+), 8 deletions(-)
+I do not understand how it helps to remove the memory from the process
+as the interface explicitly allows to add a memory that is removed from
+all other processes via direct map.
+
+> there may be situations where sharing is useful and file descriptor based
+> approach allows to seal the operations.
+
+It would be great to expand on this some more.
+
+> As secret memory implementation is not an extension of tmpfs or hugetlbfs,
+> usage of a dedicated system call rather than hooking new functionality into
+> memfd_create(2) emphasises that memfd_secret(2) has different semantics and
+> allows better upwards compatibility.
+
+What is this supposed to mean? What are differences?
+
+> The secret memory remains accessible in the process context using uaccess
+> primitives, but it is not exposed to the kernel otherwise; secret memory
+> areas are removed from the direct map and functions in the
+> follow_page()/get_user_page() family will refuse to return a page that
+> belongs to the secret memory area.
 > 
-> diff --git a/mm/kasan/common.c b/mm/kasan/common.c
-> index 7ea643f7e69c..a8a67dca5e55 100644
-> --- a/mm/kasan/common.c
-> +++ b/mm/kasan/common.c
-> @@ -476,7 +476,7 @@ static void *____kasan_kmalloc(struct kmem_cache *cache, const void *object,
->  
->  	/*
->  	 * The object has already been unpoisoned by kasan_slab_alloc() for
-> -	 * kmalloc() or by ksize() for krealloc().
-> +	 * kmalloc() or by kasan_krealloc() for krealloc().
->  	 */
->  
->  	/*
-> @@ -526,7 +526,7 @@ void * __must_check __kasan_kmalloc_large(const void *ptr, size_t size,
->  
->  	/*
->  	 * The object has already been unpoisoned by kasan_alloc_pages() for
-> -	 * alloc_pages() or by ksize() for krealloc().
-> +	 * alloc_pages() or by kasan_krealloc() for krealloc().
->  	 */
->  
->  	/*
-> @@ -554,8 +554,16 @@ void * __must_check __kasan_krealloc(const void *object, size_t size, gfp_t flag
->  	if (unlikely(object == ZERO_SIZE_PTR))
->  		return (void *)object;
->  
-> +	/*
-> +	 * Unpoison the object's data.
-> +	 * Part of it might already have been unpoisoned, but it's unknown
-> +	 * how big that part is.
-> +	 */
-> +	kasan_unpoison(object, size);
-> +
->  	page = virt_to_head_page(object);
->  
-> +	/* Piggy-back on kmalloc() instrumentation to poison the redzone. */
->  	if (unlikely(!PageSlab(page)))
->  		return __kasan_kmalloc_large(object, size, flags);
->  	else
-> diff --git a/mm/slab_common.c b/mm/slab_common.c
-> index dad70239b54c..60a2f49df6ce 100644
-> --- a/mm/slab_common.c
-> +++ b/mm/slab_common.c
-> @@ -1140,19 +1140,27 @@ static __always_inline void *__do_krealloc(const void *p, size_t new_size,
->  	void *ret;
->  	size_t ks;
->  
-> -	if (likely(!ZERO_OR_NULL_PTR(p)) && !kasan_check_byte(p))
-> -		return NULL;
-> -
-> -	ks = ksize(p);
-> +	/* Don't use instrumented ksize to allow precise KASAN poisoning. */
-> +	if (likely(!ZERO_OR_NULL_PTR(p))) {
-> +		if (!kasan_check_byte(p))
-> +			return NULL;
+> Once there will be a use case that will require exposing secretmem to the
+> kernel it will be an opt-in request in the system call flags so that user
+> would have to decide what data can be exposed to the kernel.
+>
+> Removing of the pages from the direct map may cause its fragmentation on
+> architectures that use large pages to map the physical memory which affects
+> the system performance. However, the original Kconfig text for
+> CONFIG_DIRECT_GBPAGES said that gigabyte pages in the direct map "... can
+> improve the kernel's performance a tiny bit ..." (commit 00d1c5e05736
+> ("x86: add gbpages switches")) and the recent report [1] showed that "...
+> although 1G mappings are a good default choice, there is no compelling
+> evidence that it must be the only choice". Hence, it is sufficient to have
+> secretmem disabled by default with the ability of a system administrator to
+> enable it at boot time.
 
-Just checking: Check byte returns true if the object is not tracked by KASAN, right? I.e. if it's a KFENCE object, kasan_check_byte() always returns true.
+OK, this looks like a reasonable compromise for the initial
+implementation. Documentation of the command line parameter should be
+very explicit about this though.
 
-> +		ks = kfence_ksize(p) ?: __ksize(p);
-> +	} else
-> +		ks = 0;
->  
-> +	/* If the object still fits, repoison it precisely. */
->  	if (ks >= new_size) {
->  		p = kasan_krealloc((void *)p, new_size, flags);
->  		return (void *)p;
->  	}
->  
->  	ret = kmalloc_track_caller(new_size, flags);
-> -	if (ret && p)
-> -		memcpy(ret, p, ks);
-> +	if (ret && p) {
-> +		/* Disable KASAN checks as the object's redzone is accessed. */
-> +		kasan_disable_current();
-> +		memcpy(ret, kasan_reset_tag(p), ks);
-> +		kasan_enable_current();
-> +	}
->  
->  	return ret;
->  }
-> -- 
-> 2.30.0.365.g02bc693789-goog
+> The secretmem mappings are locked in memory so they cannot exceed
+> RLIMIT_MEMLOCK. Since these mappings are already locked an attempt to
+> mlock() secretmem range would fail and mlockall() will ignore secretmem
+> mappings.
+
+What about munlock?
+
+> Pages in the secretmem regions are unevictable and unmovable to avoid
+> accidental exposure of the sensitive data via swap or during page
+> migration.
 > 
+> A page that was a part of the secret memory area is cleared when it is
+> freed to ensure the data is not exposed to the next user of that page.
+> 
+> The following example demonstrates creation of a secret mapping (error
+> handling is omitted):
+> 
+> 	fd = memfd_secret(0);
+> 	ftruncate(fd, MAP_SIZE);
+> 	ptr = mmap(NULL, MAP_SIZE, PROT_READ | PROT_WRITE,
+> 		   MAP_SHARED, fd, 0);
+
+Please also list usecases which you are aware of as well.
+
+I am also missing some more information about the implementation. E.g.
+does this memory live on an unevictable LRU and therefore participates
+into stats. What about memcg accounting. What is the cross fork (CoW)/exec
+behavior. How is the memory reflected in OOM situation? Is a shared
+mapping enforced?
+
+Anyway, thanks for improving the changelog. This is definitely much more
+informative.
+
+> [1] https://lore.kernel.org/linux-mm/213b4567-46ce-f116-9cdf-bbd0c884eb3c@linux.intel.com/
+
+I have only glanced through the implementation and it looks sane. I will
+have a closer look later but this should be pretty simple with the
+proposed semantic.
+-- 
+Michal Hocko
+SUSE Labs
