@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04385313A6E
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 18:06:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E9F7313A6B
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 18:05:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232274AbhBHRGJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 12:06:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35838 "EHLO mail.kernel.org"
+        id S231171AbhBHRFR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 12:05:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35288 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233873AbhBHPXS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 10:23:18 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 036ED64F0E;
-        Mon,  8 Feb 2021 15:14:07 +0000 (UTC)
+        id S233834AbhBHPXB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 10:23:01 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 987B764F10;
+        Mon,  8 Feb 2021 15:14:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612797248;
-        bh=wsePVODvHzqZzM2F4SMDDr4A52UH3jf6jXA59xBor3E=;
+        s=korg; t=1612797251;
+        bh=hEpoRemxNUNq4gd+swVQvh7eAGeFc+AfgUAfeBJHV7M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TbvCAmWv/CpN6PMBZts5f6q8pzFmfP7quJ0/H0oYSuFkJ1wpr6YFU24Xv/VVJUtQm
-         KR/qDrfKb0RRclFnAduq+KkMv4NluLh0tDsT396tzyZWuUaiMbtxbjc6pn7i/9+hSW
-         l6yfj2U3sZ0LfhJqJOriEd8Tvus+fFRLBAw9WV9o=
+        b=pSNho9WlDfTpejs611IwSYlA7GWyc0vH/VNTRiQiWvZzADpaii04dyG87cO011rdn
+         /jW+6L6Dfat3DZ4AI3l5n/u2ll9F0pTRdVF8OkWnFoEb7IuC/biZYf3zHjOpDnqaMw
+         p6fy7PDLDQFsVgPaacA0j5GF61gFlAS7V75WH6FY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xie He <xie.he.0141@gmail.com>,
-        Martin Schiller <ms@dev.tdt.de>,
+        stable@vger.kernel.org, Stefan Chulski <stefanc@marvell.com>,
         Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 044/120] net: lapb: Copy the skb before sending a packet
-Date:   Mon,  8 Feb 2021 16:00:31 +0100
-Message-Id: <20210208145820.176000465@linuxfoundation.org>
+Subject: [PATCH 5.10 045/120] net: mvpp2: TCAM entry enable should be written after SRAM data
+Date:   Mon,  8 Feb 2021 16:00:32 +0100
+Message-Id: <20210208145820.221984712@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210208145818.395353822@linuxfoundation.org>
 References: <20210208145818.395353822@linuxfoundation.org>
@@ -41,49 +40,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xie He <xie.he.0141@gmail.com>
+From: Stefan Chulski <stefanc@marvell.com>
 
-[ Upstream commit 88c7a9fd9bdd3e453f04018920964c6f848a591a ]
+[ Upstream commit 43f4a20a1266d393840ce010f547486d14cc0071 ]
 
-When sending a packet, we will prepend it with an LAPB header.
-This modifies the shared parts of a cloned skb, so we should copy the
-skb rather than just clone it, before we prepend the header.
+Last TCAM data contains TCAM enable bit.
+It should be written after SRAM data before entry enabled.
 
-In "Documentation/networking/driver.rst" (the 2nd point), it states
-that drivers shouldn't modify the shared parts of a cloned skb when
-transmitting.
-
-The "dev_queue_xmit_nit" function in "net/core/dev.c", which is called
-when an skb is being sent, clones the skb and sents the clone to
-AF_PACKET sockets. Because the LAPB drivers first remove a 1-byte
-pseudo-header before handing over the skb to us, if we don't copy the
-skb before prepending the LAPB header, the first byte of the packets
-received on AF_PACKET sockets can be corrupted.
-
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Signed-off-by: Xie He <xie.he.0141@gmail.com>
-Acked-by: Martin Schiller <ms@dev.tdt.de>
-Link: https://lore.kernel.org/r/20210201055706.415842-1-xie.he.0141@gmail.com
+Fixes: 3f518509dedc ("ethernet: Add new driver for Marvell Armada 375 network unit")
+Signed-off-by: Stefan Chulski <stefanc@marvell.com>
+Link: https://lore.kernel.org/r/1612172139-28343-1-git-send-email-stefanc@marvell.com
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/lapb/lapb_out.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/marvell/mvpp2/mvpp2_prs.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/net/lapb/lapb_out.c b/net/lapb/lapb_out.c
-index 7a4d0715d1c32..a966d29c772d9 100644
---- a/net/lapb/lapb_out.c
-+++ b/net/lapb/lapb_out.c
-@@ -82,7 +82,8 @@ void lapb_kick(struct lapb_cb *lapb)
- 		skb = skb_dequeue(&lapb->write_queue);
+diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2_prs.c b/drivers/net/ethernet/marvell/mvpp2/mvpp2_prs.c
+index a30eb90ba3d28..dd590086fe6a5 100644
+--- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_prs.c
++++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_prs.c
+@@ -29,16 +29,16 @@ static int mvpp2_prs_hw_write(struct mvpp2 *priv, struct mvpp2_prs_entry *pe)
+ 	/* Clear entry invalidation bit */
+ 	pe->tcam[MVPP2_PRS_TCAM_INV_WORD] &= ~MVPP2_PRS_TCAM_INV_MASK;
  
- 		do {
--			if ((skbn = skb_clone(skb, GFP_ATOMIC)) == NULL) {
-+			skbn = skb_copy(skb, GFP_ATOMIC);
-+			if (!skbn) {
- 				skb_queue_head(&lapb->write_queue, skb);
- 				break;
- 			}
+-	/* Write tcam index - indirect access */
+-	mvpp2_write(priv, MVPP2_PRS_TCAM_IDX_REG, pe->index);
+-	for (i = 0; i < MVPP2_PRS_TCAM_WORDS; i++)
+-		mvpp2_write(priv, MVPP2_PRS_TCAM_DATA_REG(i), pe->tcam[i]);
+-
+ 	/* Write sram index - indirect access */
+ 	mvpp2_write(priv, MVPP2_PRS_SRAM_IDX_REG, pe->index);
+ 	for (i = 0; i < MVPP2_PRS_SRAM_WORDS; i++)
+ 		mvpp2_write(priv, MVPP2_PRS_SRAM_DATA_REG(i), pe->sram[i]);
+ 
++	/* Write tcam index - indirect access */
++	mvpp2_write(priv, MVPP2_PRS_TCAM_IDX_REG, pe->index);
++	for (i = 0; i < MVPP2_PRS_TCAM_WORDS; i++)
++		mvpp2_write(priv, MVPP2_PRS_TCAM_DATA_REG(i), pe->tcam[i]);
++
+ 	return 0;
+ }
+ 
 -- 
 2.27.0
 
