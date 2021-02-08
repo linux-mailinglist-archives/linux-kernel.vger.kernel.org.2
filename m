@@ -2,138 +2,294 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8632431305B
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 12:14:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9727313075
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 12:16:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233115AbhBHLNE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 06:13:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55182 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233066AbhBHLEu (ORCPT
+        id S232965AbhBHLOr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 06:14:47 -0500
+Received: from mail-ed1-f54.google.com ([209.85.208.54]:45654 "EHLO
+        mail-ed1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232462AbhBHLFZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 06:04:50 -0500
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 938C3C061788
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 03:04:10 -0800 (PST)
-Received: by mail-wr1-x435.google.com with SMTP id h12so268634wrw.6
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 03:04:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=pufLM1lgk30Z0xNUrr/sKibBHabmfyHL7QD1WY1Y8VI=;
-        b=iniQAbHQgxYyxXrODcz5H25no50robM+BRmtay9TDQp3GkR61GWi+tMIeRE+l+BwlF
-         htSJGAWcO4ZhGi6H1KpZalqoHbgu5gAGQq3qBOVFj6ypipvAtSIdeGz+dGj/WkvMZR/z
-         RKJP/FCxsrt1uxui0UJE5ztr8C4ajgkvawLkrsOMZh7qChLKx6SANqyWJLT135jItsVz
-         ketpYksjvR1NBhuFuJqgrPfEBK//yDMhN8H9ieg3Aol/Q5zo0xGwRWypit1E7FR8ak33
-         W9/Oyz5zbfACKhHz/qYEkII58OB/MGQBH/fhhsax7nl0HD4e0yDXcZX0qmEq9f1uVwHE
-         Ex/w==
+        Mon, 8 Feb 2021 06:05:25 -0500
+Received: by mail-ed1-f54.google.com with SMTP id t5so17495798eds.12;
+        Mon, 08 Feb 2021 03:05:09 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=pufLM1lgk30Z0xNUrr/sKibBHabmfyHL7QD1WY1Y8VI=;
-        b=S/ewhsNo4WPEzBqdJiXbqL9KEsGMV2SvSDlKHH/1bdTCp6Ehbn/T7zT4RgnI7V2APv
-         NhqAHLcOf8g2rlVwSzNJ5+Xfi/akREbSq7aHvunuFn6qg+4sVO/KzHzkRux7cPO8zvcY
-         Nro81kP7kZKy7kCvKJrSoexOD4RYBNJha7vdBXTND/Bo4QO9xlrI1ujWJpWdKqa05TVZ
-         IfpyRD7dt7izBVQJTdNgkzQdM4MnYCCU0Lh1LbonYTlBd3mMTHTpIebDsR6HKPLp+3x8
-         HXqlNY/NuenyXWnYeJvO3xGeIxBHAg1ZZjRkSP2WN/vmfodrGqITNyJIlWJyrEy5zZaO
-         aZAQ==
-X-Gm-Message-State: AOAM530jlY7KxTDSN/MSrPbci+z3i41I8ywwvD1XCx/IvcmhGPnf+CFD
-        h7PBt7ocDPJh3ZncGfbbht/5bw==
-X-Google-Smtp-Source: ABdhPJxsmyLQVX4sWX2FYBfjZz5gROTDQRFioLFhFldnjYhL3QwGKQjxhinXI80+MX13RPN0toHgaQ==
-X-Received: by 2002:a05:6000:192:: with SMTP id p18mr19149327wrx.69.1612782249203;
-        Mon, 08 Feb 2021 03:04:09 -0800 (PST)
-Received: from elver.google.com ([2a00:79e0:15:13:497f:76ef:2e62:d028])
-        by smtp.gmail.com with ESMTPSA id x82sm14752706wmg.31.2021.02.08.03.04.07
+         :mime-version:content-disposition:in-reply-to;
+        bh=ZnXtuKDtjfCK+Wau43axfzEHC52NhOuAsUoAI9Jo0T4=;
+        b=riQqe6kYYu34lb0WY9hZYpefBOKHzxHTSk1jpeh4fbUaO0IT85oK7kEG6Vg2k2Ou4g
+         sdk8hysA8GmJTLmuwvprMNM0stLdKKj+LOUlIlsj9ij3WWeQ4Bcy1faba16cm5M9go0u
+         Aj/zTDzsGp7uvy2HAfHZXSiUgKKbStPQBISIwqGpDDLSFSrpRu/Srn0CLyTFcbuDL1Zg
+         M3Ccgf+dDacnk8FgrCzu8iPHh81+1gBkCreEigKY/lhcqIRHgoPVjs0871YckkqoF8dW
+         KERWcdBV/ZxBltR2wJ1D2PdU0tAVp1FogFT/FlGfIquXXwR9V7MDSB3Wqu4QDWJea1hP
+         HRYA==
+X-Gm-Message-State: AOAM530JduDipcpXDtIdumsQsiV0XetJ7Lu86YP4WtA4C01mOJyDLM0T
+        b4rEech6S8zWiMMMxae4JuQ=
+X-Google-Smtp-Source: ABdhPJyTpLeaD+lc+pF/9E0BTCIWBbMdXbaxi0/0fqwRf5MYHywFNGGihVKmvcrpNDgjFNZ32RWqjw==
+X-Received: by 2002:a50:bf42:: with SMTP id g2mr16650172edk.101.1612782283762;
+        Mon, 08 Feb 2021 03:04:43 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id lc11sm3180759ejc.95.2021.02.08.03.04.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Feb 2021 03:04:08 -0800 (PST)
-Date:   Mon, 8 Feb 2021 12:04:02 +0100
-From:   Marco Elver <elver@google.com>
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 mm 11/13] kasan: inline HW_TAGS helper functions
-Message-ID: <YCEaohDsfF8MCl0N@elver.google.com>
-References: <cover.1612546384.git.andreyknvl@google.com>
- <2c94a2af0657f2b95b9337232339ff5ffa643ab5.1612546384.git.andreyknvl@google.com>
+        Mon, 08 Feb 2021 03:04:42 -0800 (PST)
+Date:   Mon, 8 Feb 2021 12:04:41 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Hector Martin <marcan@marcan.st>
+Cc:     soc@kernel.org, linux-arm-kernel@lists.infradead.org,
+        Marc Zyngier <maz@kernel.org>, robh+dt@kernel.org,
+        Arnd Bergmann <arnd@kernel.org>, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, Olof Johansson <olof@lixom.net>
+Subject: Re: [PATCH 18/18] arm64: apple: Add initial Mac Mini 2020 (M1)
+ devicetree
+Message-ID: <20210208110441.25qc6yken4effd6c@kozik-lap>
+References: <20210204203951.52105-1-marcan@marcan.st>
+ <20210204203951.52105-19-marcan@marcan.st>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <2c94a2af0657f2b95b9337232339ff5ffa643ab5.1612546384.git.andreyknvl@google.com>
-User-Agent: Mutt/2.0.2 (2020-11-20)
+In-Reply-To: <20210204203951.52105-19-marcan@marcan.st>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 05, 2021 at 06:34PM +0100, Andrey Konovalov wrote:
-> Mark all static functions in common.c and kasan.h that are used for
-> hardware tag-based KASAN as inline to avoid unnecessary function calls.
+On Fri, Feb 05, 2021 at 05:39:51AM +0900, Hector Martin wrote:
+> This currently supports:
 > 
-> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-
-Reviewed-by: Marco Elver <elver@google.com>
-
+> * SMP (via spin-tables)
+> * AIC IRQs
+> * Serial (with earlycon)
+> * Framebuffer
+> 
+> A number of properties are dynamic, and based on system firmware
+> decisions that vary from version to version. These are expected
+> to be filled in by the loader.
+> 
+> Signed-off-by: Hector Martin <marcan@marcan.st>
 > ---
->  mm/kasan/common.c | 13 +++++++------
->  1 file changed, 7 insertions(+), 6 deletions(-)
+>  MAINTAINERS                              |   1 +
+>  arch/arm64/boot/dts/Makefile             |   1 +
+>  arch/arm64/boot/dts/apple/Makefile       |   2 +
+>  arch/arm64/boot/dts/apple/apple-j274.dts | 143 +++++++++++++++++++++++
+>  4 files changed, 147 insertions(+)
+>  create mode 100644 arch/arm64/boot/dts/apple/Makefile
+>  create mode 100644 arch/arm64/boot/dts/apple/apple-j274.dts
 > 
-> diff --git a/mm/kasan/common.c b/mm/kasan/common.c
-> index 7ffb1e6de2ef..7b53291dafa1 100644
-> --- a/mm/kasan/common.c
-> +++ b/mm/kasan/common.c
-> @@ -279,7 +279,8 @@ void __kasan_poison_object_data(struct kmem_cache *cache, void *object)
->   *    based on objects indexes, so that objects that are next to each other
->   *    get different tags.
->   */
-> -static u8 assign_tag(struct kmem_cache *cache, const void *object, bool init)
-> +static inline u8 assign_tag(struct kmem_cache *cache,
-> +					const void *object, bool init)
->  {
->  	if (IS_ENABLED(CONFIG_KASAN_GENERIC))
->  		return 0xff;
-> @@ -321,8 +322,8 @@ void * __must_check __kasan_init_slab_obj(struct kmem_cache *cache,
->  	return (void *)object;
->  }
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 3a54ee5747d3..5481b5bc2ef7 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -1635,6 +1635,7 @@ C:	irc://chat.freenode.net/asahi-dev
+>  T:	git https://github.com/AsahiLinux/linux.git
+>  F:	Documentation/devicetree/bindings/arm/AAPL.yaml
+>  F:	Documentation/devicetree/bindings/interrupt-controller/AAPL,aic.yaml
+> +F:	arch/arm64/boot/dts/AAPL/
+
+apple
+
+Don't make things different for this one platform (comparing to all
+other platforms). Apple is not that special. :)
+
+>  F:	drivers/irqchip/irq-apple-aic.c
+>  F:	include/dt-bindings/interrupt-controller/apple-aic.h
 >  
-> -static bool ____kasan_slab_free(struct kmem_cache *cache, void *object,
-> -			      unsigned long ip, bool quarantine)
-> +static inline bool ____kasan_slab_free(struct kmem_cache *cache,
-> +				void *object, unsigned long ip, bool quarantine)
->  {
->  	u8 tag;
->  	void *tagged_object;
-> @@ -366,7 +367,7 @@ bool __kasan_slab_free(struct kmem_cache *cache, void *object, unsigned long ip)
->  	return ____kasan_slab_free(cache, object, ip, true);
->  }
->  
-> -static bool ____kasan_kfree_large(void *ptr, unsigned long ip)
-> +static inline bool ____kasan_kfree_large(void *ptr, unsigned long ip)
->  {
->  	if (ptr != page_address(virt_to_head_page(ptr))) {
->  		kasan_report_invalid_free(ptr, ip);
-> @@ -461,8 +462,8 @@ void * __must_check __kasan_slab_alloc(struct kmem_cache *cache,
->  	return tagged_object;
->  }
->  
-> -static void *____kasan_kmalloc(struct kmem_cache *cache, const void *object,
-> -					size_t size, gfp_t flags)
-> +static inline void *____kasan_kmalloc(struct kmem_cache *cache,
-> +				const void *object, size_t size, gfp_t flags)
->  {
->  	unsigned long redzone_start;
->  	unsigned long redzone_end;
-> -- 
-> 2.30.0.365.g02bc693789-goog
-> 
+> diff --git a/arch/arm64/boot/dts/Makefile b/arch/arm64/boot/dts/Makefile
+> index 9b1170658d60..64f055d94948 100644
+> --- a/arch/arm64/boot/dts/Makefile
+> +++ b/arch/arm64/boot/dts/Makefile
+> @@ -6,6 +6,7 @@ subdir-y += amazon
+>  subdir-y += amd
+>  subdir-y += amlogic
+>  subdir-y += apm
+> +subdir-y += apple
+>  subdir-y += arm
+>  subdir-y += bitmain
+>  subdir-y += broadcom
+> diff --git a/arch/arm64/boot/dts/apple/Makefile b/arch/arm64/boot/dts/apple/Makefile
+> new file mode 100644
+> index 000000000000..ec03c474efd4
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/apple/Makefile
+> @@ -0,0 +1,2 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +dtb-$(CONFIG_ARCH_APPLE) += apple-j274.dtb
+> diff --git a/arch/arm64/boot/dts/apple/apple-j274.dts b/arch/arm64/boot/dts/apple/apple-j274.dts
+> new file mode 100644
+> index 000000000000..238a1bcee066
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/apple/apple-j274.dts
+> @@ -0,0 +1,143 @@
+> +// SPDX-License-Identifier: GPL-2.0+
+> +/*
+> + * Copyright 2021 Hector Martin <marcan@marcan.st>
+
+A lot here might be difficult to reverse-egineer or figure out by
+ourself, so usually people rely on vendor sources (the open source
+compliance package). Didn't you receive such for the iOS (or whatever
+was on your Mac)?
+
+> + */
+> +
+> +/dts-v1/;
+> +#include <dt-bindings/interrupt-controller/apple-aic.h>
+> +#include <dt-bindings/interrupt-controller/irq.h>
+> +
+> +/ {
+> +	model = "Apple Mac Mini M1 2020";
+> +	compatible = "AAPL,j274", "AAPL,m1", "AAPL,arm-platform";
+
+I guess Rob will comment on the dt-bindings more... but for me a generic
+"arm-platform" is too generic. What's the point of it? I didn't see any
+of such generic compatibles in other platforms.
+
+> +	#address-cells = <2>;
+> +	#size-cells = <2>;
+> +
+> +	chosen {
+> +		#address-cells = <2>;
+> +		#size-cells = <2>;
+> +		ranges;
+> +
+> +		bootargs = "earlycon";
+
+This should not be hard-coded in DTS. Pass it from bootloader.
+
+> +		stdout-path = "serial0:1500000";
+
+Use aliases.
+
+> +
+> +		framebuffer0: framebuffer@0 {
+> +			compatible = "AAPL,simple-framebuffer", "simple-framebuffer";
+> +			reg = <0 0 0 0>; // To be filled by loader
+> +			// Format properties will be added by loader
+
+Use /* style of comments
+
+> +			status = "disabled";
+> +		};
+> +	};
+> +
+> +	memory@800000000 {
+> +		device_type = "memory";
+> +		reg = <0 0 0 0>; // To be filled by loader
+> +	};
+> +
+> +	aliases {
+> +		serial0 = &serial0;
+> +	};
+> +
+> +	cpus {
+> +		#address-cells = <2>;
+> +		#size-cells = <0>;
+> +
+> +		cpu0: cpu@0 {
+> +			compatible = "AAPL,icestorm";
+> +			device_type = "cpu";
+> +			reg = <0x0 0x0>;
+> +			enable-method = "spin-table";
+> +			cpu-release-addr = <0 0>; // To be filled by loader
+> +		};
+> +		cpu1: cpu@1 {
+> +			compatible = "AAPL,icestorm";
+> +			device_type = "cpu";
+> +			reg = <0x0 0x1>;
+> +			enable-method = "spin-table";
+> +			cpu-release-addr = <0 0>; // To be filled by loader
+> +		};
+> +		cpu2: cpu@2 {
+> +			compatible = "AAPL,icestorm";
+> +			device_type = "cpu";
+> +			reg = <0x0 0x2>;
+> +			enable-method = "spin-table";
+> +			cpu-release-addr = <0 0>; // To be filled by loader
+> +		};
+> +		cpu3: cpu@3 {
+> +			compatible = "AAPL,icestorm";
+> +			device_type = "cpu";
+> +			reg = <0x0 0x3>;
+> +			enable-method = "spin-table";
+> +			cpu-release-addr = <0 0>; // To be filled by loader
+> +		};
+> +		cpu4: cpu@10100 {
+> +			compatible = "AAPL,firestorm";
+> +			device_type = "cpu";
+> +			reg = <0x0 0x10100>;
+> +			enable-method = "spin-table";
+> +			cpu-release-addr = <0 0>; // To be filled by loader
+> +		};
+> +		cpu5: cpu@10101 {
+> +			compatible = "AAPL,firestorm";
+> +			device_type = "cpu";
+> +			reg = <0x0 0x10101>;
+> +			enable-method = "spin-table";
+> +			cpu-release-addr = <0 0>; // To be filled by loader
+> +		};
+> +		cpu6: cpu@10102 {
+> +			compatible = "AAPL,firestorm";
+> +			device_type = "cpu";
+> +			reg = <0x0 0x10102>;
+> +			enable-method = "spin-table";
+> +			cpu-release-addr = <0 0>; // To be filled by loader
+> +		};
+> +		cpu7: cpu@10103 {
+> +			compatible = "AAPL,firestorm";
+> +			device_type = "cpu";
+> +			reg = <0x0 0x10103>;
+> +			enable-method = "spin-table";
+> +			cpu-release-addr = <0 0>; // To be filled by loader
+> +		};
+> +	};
+> +
+> +	timer {
+> +		compatible = "arm,armv8-timer";
+> +		interrupt-parent = <&aic>;
+> +		interrupts = <AIC_FIQ 0 IRQ_TYPE_LEVEL_HIGH>,
+> +				<AIC_FIQ 0 IRQ_TYPE_LEVEL_HIGH>,
+> +				<AIC_FIQ 1 IRQ_TYPE_LEVEL_HIGH>,
+> +				<AIC_FIQ 0 IRQ_TYPE_LEVEL_HIGH>;
+> +	};
+> +
+> +	clk24: clk24 {
+
+Just "clock". Node names should be generic.
+
+> +		compatible = "fixed-clock";
+> +		#clock-cells = <0>;
+> +		clock-frequency = <24000000>;
+> +		clock-output-names = "clk24";
+
+What clock is it? Part of board or SoC? Isn't it a work-around for
+missing clock drivers?
+
+> +	};
+> +
+> +	soc {
+> +		compatible = "simple-bus";
+> +		#address-cells = <2>;
+> +		#size-cells = <2>;
+> +		ranges;
+> +
+> +		aic: interrupt-controller@23b100000 {
+> +			compatible = "AAPL,m1-aic", "AAPL,aic";
+> +			#interrupt-cells = <3>;
+> +			interrupt-controller;
+> +			reg = <0x2 0x3b100000 0x0 0x8000>;
+> +		};
+> +
+> +		serial0: serial@235200000 {
+> +			compatible = "AAPL,s5l-uart";
+> +			reg = <0x2 0x35200000 0x0 0x1000>;
+> +			reg-io-width = <4>;
+> +			interrupt-parent = <&aic>;
+> +			interrupts = <AIC_IRQ 605 IRQ_TYPE_LEVEL_HIGH>;
+> +			clocks = <&clk24>, <&clk24>;
+> +			clock-names = "uart", "clk_uart_baud0";
+> +		};
+> +
+
+No blank lines at end of blocks.
+
+Best regards,
+Krzysztof
