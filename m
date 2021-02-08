@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 301773138AD
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 16:59:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1282431386C
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 16:48:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234200AbhBHP5m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 10:57:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52608 "EHLO mail.kernel.org"
+        id S234083AbhBHPri (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 10:47:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52452 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231703AbhBHPIX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 10:08:23 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AE75E64E37;
-        Mon,  8 Feb 2021 15:06:17 +0000 (UTC)
+        id S233082AbhBHPGv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 10:06:51 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 249C164EBE;
+        Mon,  8 Feb 2021 15:05:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612796778;
-        bh=y3HFXHh4J87OKwkm0AAzriIiV39AZD39ydaNve9IVVE=;
+        s=korg; t=1612796711;
+        bh=cAtUfQ2deIWTOa9F+bv1peJGC0CcBX/K7eepwU7rZeA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cOTWX8+Z6QiMqvvn8rV9XD14DVqen97Ndu3SqZUsrDdVtDFmk1+3NQEDH9Qxi+T0m
-         h/ufM6JWyFZu2DL7spvJsS2YDOjM9H6d2io3MvQrHtYcqxJEhSoX+9H2qm4KEeTCWa
-         SXkoppt0HgvsmKiZwsJKq6oVgUV1bkUZs/fywKRo=
+        b=E7ReQxA9LV8cvz8kAiuyIpqXvXyFOqRPo19h740VMCqdW5VDNHfr7LPbN2aODvfCR
+         EMnyUZr1YTqTZmqrZbp4gxVL1f4lj1b5hFUQZdCr8iUShX0vfNJh/B8fJ9UGQJb311
+         Nceo86UoIjE8+ir8+uOd/rphAM4l9hZI4Iuer2FY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Aurelien Aptel <aaptel@suse.com>,
-        Shyam Prasad N <nspmangalore@gmail.com>,
-        Steve French <stfrench@microsoft.com>
-Subject: [PATCH 4.14 17/30] cifs: report error instead of invalid when revalidating a dentry fails
-Date:   Mon,  8 Feb 2021 16:01:03 +0100
-Message-Id: <20210208145805.943909807@linuxfoundation.org>
+        stable@vger.kernel.org, Nikolay Borisov <nborisov@suse.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Borislav Petkov <bp@suse.de>,
+        Seth Forshee <seth.forshee@canonical.com>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>
+Subject: [PATCH 4.9 38/43] x86/build: Disable CET instrumentation in the kernel
+Date:   Mon,  8 Feb 2021 16:01:04 +0100
+Message-Id: <20210208145807.853978433@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210208145805.239714726@linuxfoundation.org>
-References: <20210208145805.239714726@linuxfoundation.org>
+In-Reply-To: <20210208145806.281758651@linuxfoundation.org>
+References: <20210208145806.281758651@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,74 +42,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Aurelien Aptel <aaptel@suse.com>
+From: Josh Poimboeuf <jpoimboe@redhat.com>
 
-commit 21b200d091826a83aafc95d847139b2b0582f6d1 upstream.
+commit 20bf2b378729c4a0366a53e2018a0b70ace94bcd upstream.
 
-Assuming
-- //HOST/a is mounted on /mnt
-- //HOST/b is mounted on /mnt/b
+With retpolines disabled, some configurations of GCC, and specifically
+the GCC versions 9 and 10 in Ubuntu will add Intel CET instrumentation
+to the kernel by default. That breaks certain tracing scenarios by
+adding a superfluous ENDBR64 instruction before the fentry call, for
+functions which can be called indirectly.
 
-On a slow connection, running 'df' and killing it while it's
-processing /mnt/b can make cifs_get_inode_info() returns -ERESTARTSYS.
+CET instrumentation isn't currently necessary in the kernel, as CET is
+only supported in user space. Disable it unconditionally and move it
+into the x86's Makefile as CET/CFI... enablement should be a per-arch
+decision anyway.
 
-This triggers the following chain of events:
-=> the dentry revalidation fail
-=> dentry is put and released
-=> superblock associated with the dentry is put
-=> /mnt/b is unmounted
+ [ bp: Massage and extend commit message. ]
 
-This patch makes cifs_d_revalidate() return the error instead of 0
-(invalid) when cifs_revalidate_dentry() fails, except for ENOENT (file
-deleted) and ESTALE (file recreated).
-
-Signed-off-by: Aurelien Aptel <aaptel@suse.com>
-Suggested-by: Shyam Prasad N <nspmangalore@gmail.com>
-Reviewed-by: Shyam Prasad N <nspmangalore@gmail.com>
-CC: stable@vger.kernel.org
-Signed-off-by: Steve French <stfrench@microsoft.com>
+Fixes: 29be86d7f9cb ("kbuild: add -fcf-protection=none when using retpoline flags")
+Reported-by: Nikolay Borisov <nborisov@suse.com>
+Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+Tested-by: Nikolay Borisov <nborisov@suse.com>
+Cc: <stable@vger.kernel.org>
+Cc: Seth Forshee <seth.forshee@canonical.com>
+Cc: Masahiro Yamada <yamada.masahiro@socionext.com>
+Link: https://lkml.kernel.org/r/20210128215219.6kct3h2eiustncws@treble
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/cifs/dir.c |   22 ++++++++++++++++++++--
- 1 file changed, 20 insertions(+), 2 deletions(-)
+ Makefile          |    6 ------
+ arch/x86/Makefile |    3 +++
+ 2 files changed, 3 insertions(+), 6 deletions(-)
 
---- a/fs/cifs/dir.c
-+++ b/fs/cifs/dir.c
-@@ -841,6 +841,7 @@ static int
- cifs_d_revalidate(struct dentry *direntry, unsigned int flags)
- {
- 	struct inode *inode;
-+	int rc;
+--- a/Makefile
++++ b/Makefile
+@@ -841,12 +841,6 @@ KBUILD_CFLAGS   += $(call cc-option,-Wer
+ # change __FILE__ to the relative path from the srctree
+ KBUILD_CFLAGS	+= $(call cc-option,-fmacro-prefix-map=$(srctree)/=)
  
- 	if (flags & LOOKUP_RCU)
- 		return -ECHILD;
-@@ -850,8 +851,25 @@ cifs_d_revalidate(struct dentry *direntr
- 		if ((flags & LOOKUP_REVAL) && !CIFS_CACHE_READ(CIFS_I(inode)))
- 			CIFS_I(inode)->time = 0; /* force reval */
+-# ensure -fcf-protection is disabled when using retpoline as it is
+-# incompatible with -mindirect-branch=thunk-extern
+-ifdef CONFIG_RETPOLINE
+-KBUILD_CFLAGS += $(call cc-option,-fcf-protection=none)
+-endif
+-
+ # use the deterministic mode of AR if available
+ KBUILD_ARFLAGS := $(call ar-option,D)
  
--		if (cifs_revalidate_dentry(direntry))
--			return 0;
-+		rc = cifs_revalidate_dentry(direntry);
-+		if (rc) {
-+			cifs_dbg(FYI, "cifs_revalidate_dentry failed with rc=%d", rc);
-+			switch (rc) {
-+			case -ENOENT:
-+			case -ESTALE:
-+				/*
-+				 * Those errors mean the dentry is invalid
-+				 * (file was deleted or recreated)
-+				 */
-+				return 0;
-+			default:
-+				/*
-+				 * Otherwise some unexpected error happened
-+				 * report it as-is to VFS layer
-+				 */
-+				return rc;
-+			}
-+		}
- 		else {
- 			/*
- 			 * If the inode wasn't known to be a dfs entry when
+--- a/arch/x86/Makefile
++++ b/arch/x86/Makefile
+@@ -137,6 +137,9 @@ else
+         KBUILD_CFLAGS += -mno-red-zone
+         KBUILD_CFLAGS += -mcmodel=kernel
+ 
++	# Intel CET isn't enabled in the kernel
++	KBUILD_CFLAGS += $(call cc-option,-fcf-protection=none)
++
+         # -funit-at-a-time shrinks the kernel .text considerably
+         # unfortunately it makes reading oopses harder.
+         KBUILD_CFLAGS += $(call cc-option,-funit-at-a-time)
 
 
