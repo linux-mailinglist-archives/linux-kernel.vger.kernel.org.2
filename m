@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FD0B3138D9
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 17:06:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB48E3138D6
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 17:06:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232231AbhBHQGq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 11:06:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55764 "EHLO mail.kernel.org"
+        id S231970AbhBHQGO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 11:06:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55766 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233161AbhBHPKt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S233120AbhBHPKt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 8 Feb 2021 10:10:49 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BB56464E8A;
-        Mon,  8 Feb 2021 15:07:36 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9C21764EB7;
+        Mon,  8 Feb 2021 15:07:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612796857;
-        bh=K1gzxVXqGoGNDBjPE883pZK+9sakuF76mYnc/0In93U=;
+        s=korg; t=1612796860;
+        bh=C4b5iOsioRpDVUL7Jd1Ik8Jm38ik5r0hxDLRIlYUmxU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gIVjqqBrsiwhvYvf6l2XZL1A5qwjMntk1SHHeRyE8wS31cOTGO+LH6496MbNredJO
-         4rXI/0M4V5TqvWOAHuPFPycYMmv/8iXlzHMSIB3EC8sNIcPTh9rH3N/l5035LiYpLw
-         ihJDhrEk9J10+L9YKeOEsoSRquFrs2xxj1M+ofXQ=
+        b=EQPQYSRRuMSPlIlKcGBoxa6KtwsDFi/Qy0Vws3lgTI4sysF2lhCqIAo8QLnt4aNCe
+         O0Vmp3BU5W/N8tOwpmIdY3qfs2CuU+hD7zgEY7YXu0pAK2b+u5r3BfS8ZhPPk1XeHU
+         KIRcKqzE7j/XMolI8cipar8nn+NHSTCNVuLol33M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Gerhard Klostermeier <gerhard.klostermeier@syss.de>,
-        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
-Subject: [PATCH 4.19 14/38] usb: dwc2: Fix endpoint direction check in ep_from_windex
-Date:   Mon,  8 Feb 2021 16:01:01 +0100
-Message-Id: <20210208145806.700903899@linuxfoundation.org>
+        Gary Bisson <gary.bisson@boundarydevices.com>
+Subject: [PATCH 4.19 15/38] usb: dwc3: fix clock issue during resume in OTG mode
+Date:   Mon,  8 Feb 2021 16:01:02 +0100
+Message-Id: <20210208145806.737879729@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210208145806.141056364@linuxfoundation.org>
 References: <20210208145806.141056364@linuxfoundation.org>
@@ -40,74 +39,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
+From: Gary Bisson <gary.bisson@boundarydevices.com>
 
-commit f670e9f9c8cac716c3506c6bac9e997b27ad441a upstream.
+commit 0e5a3c8284a30f4c43fd81d7285528ece74563b5 upstream.
 
-dwc2_hsotg_process_req_status uses ep_from_windex() to retrieve
-the endpoint for the index provided in the wIndex request param.
+Commit fe8abf332b8f ("usb: dwc3: support clocks and resets for DWC3
+core") introduced clock support and a new function named
+dwc3_core_init_for_resume() which enables the clock before calling
+dwc3_core_init() during resume as clocks get disabled during suspend.
 
-In a test-case with a rndis gadget running and sending a malformed
-packet to it like:
-    dev.ctrl_transfer(
-        0x82,      # bmRequestType
-        0x00,       # bRequest
-        0x0000,     # wValue
-        0x0001,     # wIndex
-        0x00       # wLength
-    )
-it is possible to cause a crash:
+Unfortunately in this commit the DWC3_GCTL_PRTCAP_OTG case was forgotten
+and therefore during resume, a platform could call dwc3_core_init()
+without re-enabling the clocks first, preventing to resume properly.
 
-[  217.533022] dwc2 ff300000.usb: dwc2_hsotg_process_req_status: USB_REQ_GET_STATUS
-[  217.559003] Unable to handle kernel read from unreadable memory at virtual address 0000000000000088
-...
-[  218.313189] Call trace:
-[  218.330217]  ep_from_windex+0x3c/0x54
-[  218.348565]  usb_gadget_giveback_request+0x10/0x20
-[  218.368056]  dwc2_hsotg_complete_request+0x144/0x184
+So update the resume path to call dwc3_core_init_for_resume() as it
+should.
 
-This happens because ep_from_windex wants to compare the endpoint
-direction even if index_to_ep() didn't return an endpoint due to
-the direction not matching.
-
-The fix is easy insofar that the actual direction check is already
-happening when calling index_to_ep() which will return NULL if there
-is no endpoint for the targeted direction, so the offending check
-can go away completely.
-
-Fixes: c6f5c050e2a7 ("usb: dwc2: gadget: add bi-directional endpoint support")
+Fixes: fe8abf332b8f ("usb: dwc3: support clocks and resets for DWC3 core")
 Cc: stable@vger.kernel.org
-Reported-by: Gerhard Klostermeier <gerhard.klostermeier@syss.de>
-Signed-off-by: Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
-Link: https://lore.kernel.org/r/20210127103919.58215-1-heiko@sntech.de
+Signed-off-by: Gary Bisson <gary.bisson@boundarydevices.com>
+Link: https://lore.kernel.org/r/20210125161934.527820-1-gary.bisson@boundarydevices.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/dwc2/gadget.c |    8 +-------
- 1 file changed, 1 insertion(+), 7 deletions(-)
+ drivers/usb/dwc3/core.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/usb/dwc2/gadget.c
-+++ b/drivers/usb/dwc2/gadget.c
-@@ -1453,7 +1453,6 @@ static void dwc2_hsotg_complete_oursetup
- static struct dwc2_hsotg_ep *ep_from_windex(struct dwc2_hsotg *hsotg,
- 					    u32 windex)
- {
--	struct dwc2_hsotg_ep *ep;
- 	int dir = (windex & USB_DIR_IN) ? 1 : 0;
- 	int idx = windex & 0x7F;
+--- a/drivers/usb/dwc3/core.c
++++ b/drivers/usb/dwc3/core.c
+@@ -1700,7 +1700,7 @@ static int dwc3_resume_common(struct dwc
+ 		if (PMSG_IS_AUTO(msg))
+ 			break;
  
-@@ -1463,12 +1462,7 @@ static struct dwc2_hsotg_ep *ep_from_win
- 	if (idx > hsotg->num_of_eps)
- 		return NULL;
+-		ret = dwc3_core_init(dwc);
++		ret = dwc3_core_init_for_resume(dwc);
+ 		if (ret)
+ 			return ret;
  
--	ep = index_to_ep(hsotg, idx, dir);
--
--	if (idx && ep->dir_in != dir)
--		return NULL;
--
--	return ep;
-+	return index_to_ep(hsotg, idx, dir);
- }
- 
- /**
 
 
