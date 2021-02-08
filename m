@@ -2,80 +2,656 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 500D5313DA9
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 19:37:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 736B3313DAD
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 19:38:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233828AbhBHSgp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 13:36:45 -0500
-Received: from mga07.intel.com ([134.134.136.100]:56479 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234386AbhBHQYz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 11:24:55 -0500
-IronPort-SDR: R86VVuV5TWHoH7XsLokun5P0u5v+8njqJuos50hY4yxYmtFWzNcHUDA4wLUck0WAHrk/5Vp0kb
- t5PYUaEOlhBw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9889"; a="245808148"
-X-IronPort-AV: E=Sophos;i="5.81,162,1610438400"; 
-   d="scan'208";a="245808148"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2021 08:23:07 -0800
-IronPort-SDR: XgokToR/vwQMpgN/NoXF/Xw+qqURHCxxdE2gq4ZFUzA3eUV+rTJTyC/f6+dVP3Qv+vqEtxheqj
- Vy+PvYpw02Ag==
-X-IronPort-AV: E=Sophos;i="5.81,162,1610438400"; 
-   d="scan'208";a="411103555"
-Received: from tassilo.jf.intel.com ([10.54.74.11])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2021 08:23:06 -0800
-Date:   Mon, 8 Feb 2021 08:23:01 -0800
-From:   Andi Kleen <ak@linux.intel.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        linux-kernel@vger.kernel.org,
-        Sean Christopherson <sean.j.christopherson@intel.com>
-Subject: Re: [RFC v1 05/26] x86/traps: Add #VE support for TDX guest
-Message-ID: <20210208162301.GA365765@tassilo.jf.intel.com>
-References: <cover.1612563142.git.sathyanarayanan.kuppuswamy@linux.intel.com>
- <48a702f536ccf953eee5778023ed6d1a452f6dcf.1612563142.git.sathyanarayanan.kuppuswamy@linux.intel.com>
- <YCEQiDNSHTGBXBcj@hirez.programming.kicks-ass.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YCEQiDNSHTGBXBcj@hirez.programming.kicks-ass.net>
+        id S235657AbhBHShJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 13:37:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39552 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233317AbhBHQZm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 11:25:42 -0500
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED923C061786
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 08:25:01 -0800 (PST)
+Received: by mail-pf1-x430.google.com with SMTP id q20so10021787pfu.8
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 08:25:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=huaqin-corp-partner-google-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id;
+        bh=nbXSkYvSeXmqH0ll5/ZtyT+CJcQEtlXNQQNW5EA3e2U=;
+        b=QGbBSffUkM7prquintm3lyXb9gO5PBjRz/HeRxwTsDc54JsRhS7jNFVY2tJeLMMWNi
+         dDaLTirQlJg0q971cNMuatGtDnDRLgZw9B7ycT8VuWmOUrcZ2OiapZ0gy1SO9DkhfGyY
+         +Y0YPUCYVSRBucTo4On8UkPtbgqtc4xqNS+svOJAo15OoHqoyrPVj23Qd9oEf4ffX2WU
+         CZgNCqzeejrkWZK7wvrdwOzQtj5T7vJDU+/lxRyZi5OFbybtVUvX244kG+f3dYnSFe2I
+         K65YL/zfiIfjBuPC1bAi4WT2KU32uN/slZMA9T3R66RBIehskyXU2EeFSo2BQiOBeLxw
+         6TGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=nbXSkYvSeXmqH0ll5/ZtyT+CJcQEtlXNQQNW5EA3e2U=;
+        b=sa+JI4JKzodL0LwrRJAnoMd56plmDWUGgJw+fc4VBx871JE9jvT32Qrzh1C/26B7mH
+         V6CRX7KvN9Wan3QkILPf1kmv67h7eqextKLu0mXUYFDVBFRaXmKUH08pOOrThsTZhYeX
+         Vr367A7lA06XyWHNZnYc7ZgrzLiJRYAIl1XeSY2vaxiIA3cI3P/AMm2Io/AvJVnCpHeP
+         Htj3cIkZYUGQZHP2QcbZOCYTHp+bip2qh8wVO3kEHbGfhk5E+0CuRuaK+BDsZTNZT1jH
+         fQdK8N8fW+s6BCdiSnzpMB3WPZ7gpVA3aKdoaL83yUsoW5fxkC9s+cPv9j9w1k7wbmxh
+         KDqw==
+X-Gm-Message-State: AOAM533apKlAfGT35eeLyU0B4MbCUzcFDdACiXQqNHyTJH0PYyob+Bvz
+        Z22j9kOs3g+GvzxvFu/fpYbB6Q==
+X-Google-Smtp-Source: ABdhPJzRyXlhlVdrMiKx+MCJgPpmpMZO1S2GmR+Lk4gAY/zXIwCtui33u63orhwB9fSQ763aGOP1xQ==
+X-Received: by 2002:a65:5c48:: with SMTP id v8mr18075655pgr.400.1612801501199;
+        Mon, 08 Feb 2021 08:25:01 -0800 (PST)
+Received: from ubuntu.huaqin.com ([101.78.151.214])
+        by smtp.gmail.com with ESMTPSA id j17sm18747114pfh.183.2021.02.08.08.24.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Feb 2021 08:25:00 -0800 (PST)
+From:   Zhengqiao Xia <xiazhengqiao@huaqin.corp-partner.google.com>
+To:     sam@ravnborg.org, thierry.reding@gmail.com, airlied@linux.ie,
+        daniel@ffwll.ch, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+Cc:     luluboy_jian@asus.corp-partner.google.com,
+        xuxinxiong@huaqin.corp-partner.google.com,
+        Zhengqiao Xia <xiazhengqiao@huaqin.corp-partner.google.com>
+Subject: [PATCH] drm/panel: Add inx Himax8279d MIPI-DSI LCD panel
+Date:   Tue,  9 Feb 2021 00:24:53 +0800
+Message-Id: <20210208162453.7319-1-xiazhengqiao@huaqin.corp-partner.google.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Which is supposedly then set up to avoid #VE during the syscall gap,
-> yes? Which then results in #VE not having to be IST.
+Support inx Himax8279d 8.0" 1200x1920 TFT LCD panel, it is a MIPI DSI
+panel.
 
-Yes that is currently true because all memory is pre-accepted.
+Signed-off-by: Zhengqiao Xia <xiazhengqiao@huaqin.corp-partner.google.com>
+---
+ drivers/gpu/drm/panel/Kconfig                 |   9 +
+ drivers/gpu/drm/panel/Makefile                |   1 +
+ .../gpu/drm/panel/panel-innolux-himax8279d.c  | 542 ++++++++++++++++++
+ 3 files changed, 552 insertions(+)
+ create mode 100644 drivers/gpu/drm/panel/panel-innolux-himax8279d.c
 
-If we ever do lazy accept we would need to make sure the memory accessed in
-the syscall gap is already accepted, or move over to an IST.
+diff --git a/drivers/gpu/drm/panel/Kconfig b/drivers/gpu/drm/panel/Kconfig
+index b4e021ea3..853e39a84 100644
+--- a/drivers/gpu/drm/panel/Kconfig
++++ b/drivers/gpu/drm/panel/Kconfig
+@@ -123,6 +123,15 @@ config DRM_PANEL_ILITEK_ILI9881C
+ 	  Say Y if you want to enable support for panels based on the
+ 	  Ilitek ILI9881c controller.
+ 
++config DRM_PANEL_INNOLUX_HIMAX8279D
++	tristate "INX 2081101qfh032011-53g 1200x1920 video panel"
++	depends on OF
++	depends on DRM_MIPI_DSI
++	depends on BACKLIGHT_CLASS_DEVICE
++	help
++	  Say Y here if you want to support for INX 2081101qfh032011-53g
++	  1200x1920 video panel.
++
+ config DRM_PANEL_INNOLUX_P079ZCA
+ 	tristate "Innolux P079ZCA panel"
+ 	depends on OF
+diff --git a/drivers/gpu/drm/panel/Makefile b/drivers/gpu/drm/panel/Makefile
+index ebbf488c7..6440b4258 100644
+--- a/drivers/gpu/drm/panel/Makefile
++++ b/drivers/gpu/drm/panel/Makefile
+@@ -11,6 +11,7 @@ obj-$(CONFIG_DRM_PANEL_FEIXIN_K101_IM2BA02) += panel-feixin-k101-im2ba02.o
+ obj-$(CONFIG_DRM_PANEL_FEIYANG_FY07024DI26A30D) += panel-feiyang-fy07024di26a30d.o
+ obj-$(CONFIG_DRM_PANEL_ILITEK_IL9322) += panel-ilitek-ili9322.o
+ obj-$(CONFIG_DRM_PANEL_ILITEK_ILI9881C) += panel-ilitek-ili9881c.o
++obj-$(CONFIG_DRM_PANEL_INNOLUX_HIMAX8279D) += panel-innolux-himax8279d.o
+ obj-$(CONFIG_DRM_PANEL_INNOLUX_P079ZCA) += panel-innolux-p079zca.o
+ obj-$(CONFIG_DRM_PANEL_JDI_LT070ME05000) += panel-jdi-lt070me05000.o
+ obj-$(CONFIG_DRM_PANEL_KINGDISPLAY_KD097D04) += panel-kingdisplay-kd097d04.o
+diff --git a/drivers/gpu/drm/panel/panel-innolux-himax8279d.c b/drivers/gpu/drm/panel/panel-innolux-himax8279d.c
+new file mode 100644
+index 000000000..a74dbeaba
+--- /dev/null
++++ b/drivers/gpu/drm/panel/panel-innolux-himax8279d.c
+@@ -0,0 +1,542 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (c) 2021, Huaqin Telecom Technology Co., Ltd
++ * Author: Zhengqiao Xia <xiazhengqiao@huaqin.corp-partner.google.com>
++ */
++
++#include <linux/delay.h>
++#include <linux/gpio/consumer.h>
++#include <linux/module.h>
++#include <linux/of.h>
++#include <linux/of_device.h>
++#include <linux/regulator/consumer.h>
++
++#include <drm/drm_crtc.h>
++#include <drm/drm_mipi_dsi.h>
++#include <drm/drm_panel.h>
++
++#include <video/mipi_display.h>
++
++struct panel_desc {
++	const struct drm_display_mode *modes;
++	unsigned int bpc;
++
++	/**
++	 * @width_mm: width of the panel's active display area
++	 * @height_mm: height of the panel's active display area
++	 */
++	struct {
++		unsigned int width_mm;
++		unsigned int height_mm;
++	} size;
++
++	unsigned long mode_flags;
++	enum mipi_dsi_pixel_format format;
++	const struct panel_init_cmd *init_cmds;
++	unsigned int lanes;
++	bool discharge_on_disable;
++};
++
++struct inx_panel {
++	struct drm_panel base;
++	struct mipi_dsi_device *dsi;
++
++	const struct panel_desc *desc;
++
++	struct regulator *pp1800;
++	struct regulator *avee;
++	struct regulator *avdd;
++	struct gpio_desc *enable_gpio;
++
++	bool prepared_power;
++	bool prepared;
++};
++
++enum dsi_cmd_type {
++	INIT_DCS_CMD,
++	DELAY_CMD,
++};
++
++struct panel_init_cmd {
++	enum dsi_cmd_type type;
++	size_t len;
++	const char *data;
++};
++
++#define _INIT_DCS_CMD(...) { \
++	.type = INIT_DCS_CMD, \
++	.len = sizeof((char[]){__VA_ARGS__}), \
++	.data = (char[]){__VA_ARGS__} }
++
++#define _INIT_DELAY_CMD(...) { \
++	.type = DELAY_CMD,\
++	.len = sizeof((char[]){__VA_ARGS__}), \
++	.data = (char[]){__VA_ARGS__} }
++
++static const struct panel_init_cmd starry_qfh032011_53g_init_cmd[] = {
++	_INIT_DCS_CMD(0xB0, 0x05),
++	_INIT_DCS_CMD(0xC0, 0x03),
++	_INIT_DCS_CMD(0xC2, 0x03),
++	_INIT_DCS_CMD(0xD9, 0x03),
++	_INIT_DCS_CMD(0xDB, 0x03),
++	_INIT_DCS_CMD(0xB0, 0x01),
++	_INIT_DCS_CMD(0xC3, 0x4F),
++	_INIT_DCS_CMD(0xC4, 0x40),
++	_INIT_DCS_CMD(0xC5, 0x40),
++	_INIT_DCS_CMD(0xC6, 0x40),
++	_INIT_DCS_CMD(0xC7, 0x40),
++	_INIT_DCS_CMD(0xC8, 0x4D),
++	_INIT_DCS_CMD(0xC9, 0x52),
++	_INIT_DCS_CMD(0xCA, 0x51),
++	_INIT_DCS_CMD(0xCD, 0x5D),
++	_INIT_DCS_CMD(0xCE, 0x5B),
++	_INIT_DCS_CMD(0xCF, 0x4B),
++	_INIT_DCS_CMD(0xD0, 0x49),
++	_INIT_DCS_CMD(0xD1, 0x47),
++	_INIT_DCS_CMD(0xD2, 0x45),
++	_INIT_DCS_CMD(0xD3, 0x41),
++	_INIT_DCS_CMD(0xD7, 0x50),
++	_INIT_DCS_CMD(0xD8, 0x40),
++	_INIT_DCS_CMD(0xD9, 0x40),
++	_INIT_DCS_CMD(0xDA, 0x40),
++	_INIT_DCS_CMD(0xDB, 0x40),
++	_INIT_DCS_CMD(0xDC, 0x4E),
++	_INIT_DCS_CMD(0xDD, 0x52),
++	_INIT_DCS_CMD(0xDE, 0x51),
++	_INIT_DCS_CMD(0xE1, 0x5E),
++	_INIT_DCS_CMD(0xE2, 0x5C),
++	_INIT_DCS_CMD(0xE3, 0x4C),
++	_INIT_DCS_CMD(0xE4, 0x4A),
++	_INIT_DCS_CMD(0xE5, 0x48),
++	_INIT_DCS_CMD(0xE6, 0x46),
++	_INIT_DCS_CMD(0xE7, 0x42),
++	_INIT_DCS_CMD(0xB0, 0x03),
++	_INIT_DCS_CMD(0xBE, 0x03),
++	_INIT_DCS_CMD(0xCC, 0x44),
++	_INIT_DCS_CMD(0xC8, 0x07),
++	_INIT_DCS_CMD(0xC9, 0x05),
++	_INIT_DCS_CMD(0xCA, 0x42),
++	_INIT_DCS_CMD(0xCD, 0x3E),
++	_INIT_DCS_CMD(0xCF, 0x60),
++	_INIT_DCS_CMD(0xD2, 0x04),
++	_INIT_DCS_CMD(0xD3, 0x04),
++	_INIT_DCS_CMD(0xD4, 0x01),
++	_INIT_DCS_CMD(0xD5, 0x00),
++	_INIT_DCS_CMD(0xD6, 0x03),
++	_INIT_DCS_CMD(0xD7, 0x04),
++	_INIT_DCS_CMD(0xD9, 0x01),
++	_INIT_DCS_CMD(0xDB, 0x01),
++	_INIT_DCS_CMD(0xE4, 0xF0),
++	_INIT_DCS_CMD(0xE5, 0x0A),
++	_INIT_DCS_CMD(0xB0, 0x00),
++	_INIT_DCS_CMD(0xCC, 0x08),
++	_INIT_DCS_CMD(0xC2, 0x08),
++	_INIT_DCS_CMD(0xC4, 0x10),
++	_INIT_DCS_CMD(0xB0, 0x02),
++	_INIT_DCS_CMD(0xC0, 0x00),
++	_INIT_DCS_CMD(0xC1, 0x0A),
++	_INIT_DCS_CMD(0xC2, 0x20),
++	_INIT_DCS_CMD(0xC3, 0x24),
++	_INIT_DCS_CMD(0xC4, 0x23),
++	_INIT_DCS_CMD(0xC5, 0x29),
++	_INIT_DCS_CMD(0xC6, 0x23),
++	_INIT_DCS_CMD(0xC7, 0x1C),
++	_INIT_DCS_CMD(0xC8, 0x19),
++	_INIT_DCS_CMD(0xC9, 0x17),
++	_INIT_DCS_CMD(0xCA, 0x17),
++	_INIT_DCS_CMD(0xCB, 0x18),
++	_INIT_DCS_CMD(0xCC, 0x1A),
++	_INIT_DCS_CMD(0xCD, 0x1E),
++	_INIT_DCS_CMD(0xCE, 0x20),
++	_INIT_DCS_CMD(0xCF, 0x23),
++	_INIT_DCS_CMD(0xD0, 0x07),
++	_INIT_DCS_CMD(0xD1, 0x00),
++	_INIT_DCS_CMD(0xD2, 0x00),
++	_INIT_DCS_CMD(0xD3, 0x0A),
++	_INIT_DCS_CMD(0xD4, 0x13),
++	_INIT_DCS_CMD(0xD5, 0x1C),
++	_INIT_DCS_CMD(0xD6, 0x1A),
++	_INIT_DCS_CMD(0xD7, 0x13),
++	_INIT_DCS_CMD(0xD8, 0x17),
++	_INIT_DCS_CMD(0xD9, 0x1C),
++	_INIT_DCS_CMD(0xDA, 0x19),
++	_INIT_DCS_CMD(0xDB, 0x17),
++	_INIT_DCS_CMD(0xDC, 0x17),
++	_INIT_DCS_CMD(0xDD, 0x18),
++	_INIT_DCS_CMD(0xDE, 0x1A),
++	_INIT_DCS_CMD(0xDF, 0x1E),
++	_INIT_DCS_CMD(0xE0, 0x20),
++	_INIT_DCS_CMD(0xE1, 0x23),
++	_INIT_DCS_CMD(0xE2, 0x07),
++	_INIT_DCS_CMD(0X11),
++	_INIT_DELAY_CMD(120),
++	_INIT_DCS_CMD(0X29),
++	_INIT_DELAY_CMD(80),
++	{},
++};
++
++static inline struct inx_panel *to_inx_panel(struct drm_panel *panel)
++{
++	return container_of(panel, struct inx_panel, base);
++}
++
++static int inx_panel_init_dcs_cmd(struct inx_panel *inx)
++{
++	struct mipi_dsi_device *dsi = inx->dsi;
++	struct drm_panel *panel = &inx->base;
++	int i, err = 0;
++
++	if (inx->desc->init_cmds) {
++		const struct panel_init_cmd *init_cmds = inx->desc->init_cmds;
++
++		for (i = 0; init_cmds[i].len != 0; i++) {
++			const struct panel_init_cmd *cmd = &init_cmds[i];
++
++			switch (cmd->type) {
++			case DELAY_CMD:
++				msleep(cmd->data[0]);
++				err = 0;
++				break;
++
++			case INIT_DCS_CMD:
++				err = mipi_dsi_dcs_write(dsi, cmd->data[0],
++							 cmd->len <= 1 ? NULL :
++							 &cmd->data[1],
++							 cmd->len - 1);
++				break;
++
++			default:
++				err = -EINVAL;
++			}
++
++			if (err < 0) {
++				dev_err(panel->dev,
++					"failed to write command %u\n", i);
++				return err;
++			}
++		}
++	}
++	return 0;
++}
++
++static int inx_panel_enter_sleep_mode(struct inx_panel *inx)
++{
++	struct mipi_dsi_device *dsi = inx->dsi;
++	int ret;
++
++	dsi->mode_flags &= ~MIPI_DSI_MODE_LPM;
++
++	ret = mipi_dsi_dcs_set_display_off(dsi);
++	if (ret < 0)
++		return ret;
++	ret = mipi_dsi_dcs_enter_sleep_mode(dsi);
++	if (ret < 0)
++		return ret;
++
++	return 0;
++}
++
++static int inx_panel_unprepare_power(struct drm_panel *panel)
++{
++	struct inx_panel *inx = to_inx_panel(panel);
++
++	if (!inx->prepared_power)
++		return 0;
++
++	msleep(200);
++
++	if (inx->desc->discharge_on_disable) {
++		regulator_disable(inx->avee);
++		regulator_disable(inx->avdd);
++		usleep_range(5000, 7000);
++		gpiod_set_value(inx->enable_gpio, 0);
++		usleep_range(5000, 7000);
++		regulator_disable(inx->pp1800);
++	} else {
++		gpiod_set_value(inx->enable_gpio, 0);
++		usleep_range(500, 1000);
++		regulator_disable(inx->avee);
++		regulator_disable(inx->avdd);
++		usleep_range(5000, 7000);
++		regulator_disable(inx->pp1800);
++	}
++
++	inx->prepared_power = false;
++
++	return 0;
++}
++
++static int inx_panel_unprepare(struct drm_panel *panel)
++{
++	struct inx_panel *inx = to_inx_panel(panel);
++	int ret;
++
++	if (!inx->prepared)
++		return 0;
++
++	if (!inx->desc->discharge_on_disable) {
++		ret = inx_panel_enter_sleep_mode(inx);
++		if (ret < 0) {
++			dev_err(panel->dev, "failed to set panel off: %d\n",
++				ret);
++			return ret;
++		}
++	}
++
++	inx->prepared = false;
++
++	return 0;
++}
++
++static int inx_panel_prepare_power(struct drm_panel *panel)
++{
++	struct inx_panel *inx = to_inx_panel(panel);
++	int ret;
++
++	if (inx->prepared_power)
++		return 0;
++
++	gpiod_set_value(inx->enable_gpio, 0);
++	usleep_range(1000, 1500);
++
++	ret = regulator_enable(inx->pp1800);
++	if (ret < 0)
++		return ret;
++
++	usleep_range(3000, 5000);
++
++	ret = regulator_enable(inx->avdd);
++	if (ret < 0)
++		goto poweroff1v8;
++	ret = regulator_enable(inx->avee);
++	if (ret < 0)
++		goto poweroffavdd;
++
++	usleep_range(5000, 10000);
++
++	gpiod_set_value(inx->enable_gpio, 1);
++	usleep_range(1000, 2000);
++	gpiod_set_value(inx->enable_gpio, 0);
++	usleep_range(1000, 2000);
++	gpiod_set_value(inx->enable_gpio, 1);
++	usleep_range(6000, 10000);
++
++	inx->prepared_power = true;
++
++	return 0;
++
++poweroffavdd:
++	regulator_disable(inx->avdd);
++poweroff1v8:
++	usleep_range(5000, 7000);
++	regulator_disable(inx->pp1800);
++	gpiod_set_value(inx->enable_gpio, 0);
++
++	return ret;
++}
++
++static int inx_panel_prepare(struct drm_panel *panel)
++{
++	struct inx_panel *inx = to_inx_panel(panel);
++	int ret;
++
++	if (inx->prepared)
++		return 0;
++
++	ret = inx_panel_init_dcs_cmd(inx);
++	if (ret < 0) {
++		dev_err(panel->dev, "failed to init panel: %d\n", ret);
++		return ret;
++	}
++
++	inx->prepared = true;
++
++	return 0;
++}
++
++static int inx_panel_enable(struct drm_panel *panel)
++{
++	msleep(130);
++	return 0;
++}
++
++static const struct drm_display_mode starry_qfh032011_53g_default_mode = {
++	.clock = 165731,
++	.hdisplay = 1200,
++	.hsync_start = 1200 + 100,
++	.hsync_end = 1200 + 100 + 10,
++	.htotal = 1200 + 100 + 10 + 100,
++	.vdisplay = 1920,
++	.vsync_start = 1920 + 14,
++	.vsync_end = 1920 + 14 + 10,
++	.vtotal = 1920 + 14 + 10 + 15,
++	.vrefresh = 60,
++};
++
++static const struct panel_desc starry_qfh032011_53g_desc = {
++	.modes = &starry_qfh032011_53g_default_mode,
++	.bpc = 8,
++	.size = {
++		.width_mm = 135,
++		.height_mm = 216,
++	},
++	.lanes = 4,
++	.format = MIPI_DSI_FMT_RGB888,
++	.mode_flags = MIPI_DSI_MODE_VIDEO | MIPI_DSI_MODE_VIDEO_SYNC_PULSE |
++		      MIPI_DSI_MODE_LPM,
++	.init_cmds = starry_qfh032011_53g_init_cmd,
++	.discharge_on_disable = false,
++};
++
++static int inx_panel_get_modes(struct drm_panel *panel)
++{
++	struct inx_panel *inx = to_inx_panel(panel);
++	const struct drm_display_mode *m = inx->desc->modes;
++	struct drm_display_mode *mode;
++	struct drm_connector *connector = panel->connector;
++
++	mode = drm_mode_duplicate(connector->dev, m);
++	if (!mode) {
++		dev_err(panel->dev, "failed to add mode %ux%u@%u\n",
++			m->hdisplay, m->vdisplay, m->vrefresh);
++		return -ENOMEM;
++	}
++
++	mode->type = DRM_MODE_TYPE_DRIVER | DRM_MODE_TYPE_PREFERRED;
++	drm_mode_set_name(mode);
++	drm_mode_probed_add(connector, mode);
++
++	connector->display_info.width_mm = inx->desc->size.width_mm;
++	connector->display_info.height_mm = inx->desc->size.height_mm;
++	connector->display_info.bpc = inx->desc->bpc;
++
++	return 1;
++}
++
++static const struct drm_panel_funcs inx_panel_funcs = {
++	.unprepare = inx_panel_unprepare,
++	.unprepare_power = inx_panel_unprepare_power,
++	.prepare = inx_panel_prepare,
++	.prepare_power = inx_panel_prepare_power,
++	.enable = inx_panel_enable,
++	.get_modes = inx_panel_get_modes,
++};
++
++static int inx_panel_add(struct inx_panel *inx)
++{
++	struct device *dev = &inx->dsi->dev;
++	int ret;
++
++	inx->avdd = devm_regulator_get(dev, "avdd");
++	if (IS_ERR(inx->avdd))
++		return PTR_ERR(inx->avdd);
++
++	inx->avee = devm_regulator_get(dev, "avee");
++	if (IS_ERR(inx->avee))
++		return PTR_ERR(inx->avee);
++
++	inx->pp1800 = devm_regulator_get(dev, "pp1800");
++	if (IS_ERR(inx->pp1800))
++		return PTR_ERR(inx->pp1800);
++
++	inx->enable_gpio = devm_gpiod_get(dev, "enable", GPIOD_OUT_LOW);
++	if (IS_ERR(inx->enable_gpio)) {
++		dev_err(dev, "cannot get reset-gpios %ld\n",
++			PTR_ERR(inx->enable_gpio));
++		return PTR_ERR(inx->enable_gpio);
++	}
++
++	gpiod_set_value(inx->enable_gpio, 0);
++
++	drm_panel_init(&inx->base);
++	ret = of_drm_get_panel_orientation(dev->of_node,
++					   &inx->base.orientation);
++	if (ret < 0)
++		return ret;
++
++	inx->base.funcs = &inx_panel_funcs;
++	inx->base.dev = &inx->dsi->dev;
++
++	ret = drm_panel_of_backlight(&inx->base);
++	if (ret)
++		return ret;
++
++	return drm_panel_add(&inx->base);
++}
++
++static int inx_panel_probe(struct mipi_dsi_device *dsi)
++{
++	struct inx_panel *inx;
++	int ret;
++	const struct panel_desc *desc;
++
++	inx = devm_kzalloc(&dsi->dev, sizeof(*inx), GFP_KERNEL);
++	if (!inx)
++		return -ENOMEM;
++
++	desc = of_device_get_match_data(&dsi->dev);
++	dsi->lanes = desc->lanes;
++	dsi->format = desc->format;
++	dsi->mode_flags = desc->mode_flags;
++	inx->desc = desc;
++	inx->dsi = dsi;
++	ret = inx_panel_add(inx);
++	if (ret < 0)
++		return ret;
++
++	mipi_dsi_set_drvdata(dsi, inx);
++
++	ret = mipi_dsi_attach(dsi);
++	if (ret)
++		drm_panel_remove(&inx->base);
++
++	return ret;
++}
++
++static void inx_panel_shutdown(struct mipi_dsi_device *dsi)
++{
++	struct inx_panel *inx = mipi_dsi_get_drvdata(dsi);
++
++	drm_panel_disable(&inx->base);
++	drm_panel_unprepare(&inx->base);
++}
++
++static int inx_panel_remove(struct mipi_dsi_device *dsi)
++{
++	struct inx_panel *inx = mipi_dsi_get_drvdata(dsi);
++	int ret;
++
++	inx_panel_shutdown(dsi);
++
++	ret = mipi_dsi_detach(dsi);
++	if (ret < 0)
++		dev_err(&dsi->dev, "failed to detach from DSI host: %d\n", ret);
++
++	if (inx->base.dev)
++		drm_panel_remove(&inx->base);
++
++	return 0;
++}
++
++static const struct of_device_id inx_of_match[] = {
++	{ .compatible = "starry,2081101qfh032011-53g",
++	  .data = &starry_qfh032011_53g_desc
++	},
++	{ /* sentinel */ }
++};
++MODULE_DEVICE_TABLE(of, inx_of_match);
++
++static struct mipi_dsi_driver inx_panel_driver = {
++	.driver = {
++		.name = "panel-inx-2081101qfh032011-53g",
++		.of_match_table = inx_of_match,
++	},
++	.probe = inx_panel_probe,
++	.remove = inx_panel_remove,
++	.shutdown = inx_panel_shutdown,
++};
++module_mipi_dsi_driver(inx_panel_driver);
++
++MODULE_AUTHOR("Zhengqiao Xia <xiazhengqiao@huaqin.corp-partner.google.com>");
++MODULE_DESCRIPTION("INX 2081101qfh032011-53g 1200x1920 video mode panel driver");
++MODULE_LICENSE("GPL v2");
+-- 
+2.17.1
 
-> > +#ifdef CONFIG_INTEL_TDX_GUEST
-> > +DEFINE_IDTENTRY(exc_virtualization_exception)
-> > +{
-> > +	struct ve_info ve;
-> > +	int ret;
-> > +
-> > +	RCU_LOCKDEP_WARN(!rcu_is_watching(), "entry code didn't wake RCU");
-> > +
-> > +	/* Consume #VE info before re-enabling interrupts */
-> 
-> So what happens if NMI happens here, and triggers a nested #VE ?
-
-Yes that's a gap. We should probably bail out and reexecute the original
-instruction. The VE handler would need to set a flag for that.
-
-Or alternatively the NMI always gets the VE information and puts
-it on some internal stack, but that would seem clunkier.
-
-
--Andi
