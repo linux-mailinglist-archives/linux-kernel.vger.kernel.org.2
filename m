@@ -2,139 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FF783132FE
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 14:12:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DE91313303
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 14:13:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229822AbhBHNKh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 08:10:37 -0500
-Received: from mail.xenproject.org ([104.130.215.37]:50796 "EHLO
-        mail.xenproject.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230208AbhBHNK0 (ORCPT
+        id S230192AbhBHNMh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 08:12:37 -0500
+Received: from mail.netline.ch ([148.251.143.178]:54321 "EHLO
+        netline-mail3.netline.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229715AbhBHNMd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 08:10:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=xen.org;
-        s=20200302mail; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
-        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject;
-        bh=uol57jO/dZDNnz0gvnYYX8iUatRwa2AiCurGg9ekwqw=; b=rqta3YaZQM7WojriayJqyS/qS9
-        XZoq87teH/mB8cvOiipmyn0hUgSsBKV/1Xs4jZlbsex3ZFVPfRWm4cxUvEUP19mCORwonG3uA9HXw
-        ckZ41cJjgLTBpOSC38lsRDbSToCHYjq8I3zqXaYe9hb9yMslD0ltn4QuzE6KNsU2RiZc=;
-Received: from xenbits.xenproject.org ([104.239.192.120])
-        by mail.xenproject.org with esmtp (Exim 4.92)
-        (envelope-from <julien@xen.org>)
-        id 1l96IE-00045Q-UI; Mon, 08 Feb 2021 13:09:30 +0000
-Received: from [54.239.6.177] (helo=a483e7b01a66.ant.amazon.com)
-        by xenbits.xenproject.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <julien@xen.org>)
-        id 1l96IE-0008Vv-Ks; Mon, 08 Feb 2021 13:09:30 +0000
-Subject: Re: [PATCH 0/7] xen/events: bug fixes and some diagnostic aids
-To:     =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>,
-        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
-        linux-block@vger.kernel.org, netdev@vger.kernel.org,
-        linux-scsi@vger.kernel.org
-Cc:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        stable@vger.kernel.org,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        =?UTF-8?Q?Roger_Pau_Monn=c3=a9?= <roger.pau@citrix.com>,
-        Jens Axboe <axboe@kernel.dk>, Wei Liu <wei.liu@kernel.org>,
-        Paul Durrant <paul@xen.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-References: <20210206104932.29064-1-jgross@suse.com>
- <bd63694e-ac0c-7954-ec00-edad05f8da1c@xen.org>
- <eeb62129-d9fc-2155-0e0f-aff1fbb33fbc@suse.com>
- <fcf3181b-3efc-55f5-687c-324937b543e6@xen.org>
- <7aaeeb3d-1e1b-6166-84e9-481153811b62@suse.com>
- <6f547bb5-777a-6fc2-eba2-cccb4adfca87@xen.org>
- <0d623c98-a714-1639-cc53-f58ba3f08212@suse.com>
- <28399fd1-9fe8-f31a-6ee8-e78de567155b@xen.org>
- <1831964f-185e-31bb-2446-778f2c18d71b@suse.com>
- <e8c46e36-cf9e-fb30-21b5-fa662834a01a@xen.org>
- <199b76fd-630b-a0c6-926b-3e662103ec42@suse.com>
-From:   Julien Grall <julien@xen.org>
-Message-ID: <063eff75-56a5-1af7-f684-a2ed4b13c9a7@xen.org>
-Date:   Mon, 8 Feb 2021 13:09:27 +0000
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.7.1
+        Mon, 8 Feb 2021 08:12:33 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by netline-mail3.netline.ch (Postfix) with ESMTP id 3112A2A6046;
+        Mon,  8 Feb 2021 14:11:49 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at netline-mail3.netline.ch
+Received: from netline-mail3.netline.ch ([127.0.0.1])
+        by localhost (netline-mail3.netline.ch [127.0.0.1]) (amavisd-new, port 10024)
+        with LMTP id gl-1-ceqpwv5; Mon,  8 Feb 2021 14:11:48 +0100 (CET)
+Received: from thor (24.99.2.85.dynamic.wline.res.cust.swisscom.ch [85.2.99.24])
+        by netline-mail3.netline.ch (Postfix) with ESMTPSA id 963742A6042;
+        Mon,  8 Feb 2021 14:11:48 +0100 (CET)
+Received: from [::1]
+        by thor with esmtp (Exim 4.94)
+        (envelope-from <michel@daenzer.net>)
+        id 1l96KR-001pkU-U7; Mon, 08 Feb 2021 14:11:47 +0100
+From:   =?UTF-8?Q?Michel_D=c3=a4nzer?= <michel@daenzer.net>
+To:     Daniel Vetter <daniel@ffwll.ch>, Kees Cook <keescook@chromium.org>,
+        "airlied@gmail.com" <airlied@gmail.com>
+Cc:     Will Drewry <wad@chromium.org>, Jann Horn <jannh@google.com>,
+        intel-gfx <intel-gfx@lists.freedesktop.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Chris Wilson <chris@chris-wilson.co.uk>
+References: <20210205163752.11932-1-chris@chris-wilson.co.uk>
+ <202102051030.1AF01772D@keescook>
+ <CAKMK7uHnOA9CuRxcKkcqG8duOw_3dZobkThcV7Q_swMXVoLCkQ@mail.gmail.com>
+ <5a940e13-8996-e9e5-251e-a9af294a39ff@daenzer.net>
+Subject: Re: [PATCH] kernel: Expose SYS_kcmp by default
+Message-ID: <9e5de17c-9912-18b3-1e2e-8d6672818504@daenzer.net>
+Date:   Mon, 8 Feb 2021 14:11:47 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-In-Reply-To: <199b76fd-630b-a0c6-926b-3e662103ec42@suse.com>
+In-Reply-To: <5a940e13-8996-e9e5-251e-a9af294a39ff@daenzer.net>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
+Content-Language: en-CA
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Juergen,
-
-On 08/02/2021 12:31, Jürgen Groß wrote:
-> On 08.02.21 13:16, Julien Grall wrote:
->>
->>
->> On 08/02/2021 12:14, Jürgen Groß wrote:
->>> On 08.02.21 11:40, Julien Grall wrote:
->>>> Hi Juergen,
->>>>
->>>> On 08/02/2021 10:22, Jürgen Groß wrote:
->>>>> On 08.02.21 10:54, Julien Grall wrote:
->>>>>> ... I don't really see how the difference matter here. The idea is 
->>>>>> to re-use what's already existing rather than trying to re-invent 
->>>>>> the wheel with an extra lock (or whatever we can come up).
->>>>>
->>>>> The difference is that the race is occurring _before_ any IRQ is
->>>>> involved. So I don't see how modification of IRQ handling would help.
->>>>
->>>> Roughly our current IRQ handling flow (handle_eoi_irq()) looks like:
->>>>
->>>> if ( irq in progress )
->>>> {
->>>>    set IRQS_PENDING
->>>>    return;
->>>> }
->>>>
->>>> do
->>>> {
->>>>    clear IRQS_PENDING
->>>>    handle_irq()
->>>> } while (IRQS_PENDING is set)
->>>>
->>>> IRQ handling flow like handle_fasteoi_irq() looks like:
->>>>
->>>> if ( irq in progress )
->>>>    return;
->>>>
->>>> handle_irq()
->>>>
->>>> The latter flow would catch "spurious" interrupt and ignore them. So 
->>>> it would handle nicely the race when changing the event affinity.
+On 2021-02-08 12:49 p.m., Michel Dänzer wrote:
+> On 2021-02-05 9:53 p.m., Daniel Vetter wrote:
+>> On Fri, Feb 5, 2021 at 7:37 PM Kees Cook <keescook@chromium.org> wrote:
 >>>
->>> Sure? Isn't "irq in progress" being reset way before our "lateeoi" is
->>> issued, thus having the same problem again? 
+>>> On Fri, Feb 05, 2021 at 04:37:52PM +0000, Chris Wilson wrote:
+>>>> Userspace has discovered the functionality offered by SYS_kcmp and has
+>>>> started to depend upon it. In particular, Mesa uses SYS_kcmp for
+>>>> os_same_file_description() in order to identify when two fd (e.g. 
+>>>> device
+>>>> or dmabuf) point to the same struct file. Since they depend on it for
+>>>> core functionality, lift SYS_kcmp out of the non-default
+>>>> CONFIG_CHECKPOINT_RESTORE into the selectable syscall category.
+>>>>
+>>>> Signed-off-by: Chris Wilson <chris@chris-wilson.co.uk>
+>>>> Cc: Kees Cook <keescook@chromium.org>
+>>>> Cc: Andy Lutomirski <luto@amacapital.net>
+>>>> Cc: Will Drewry <wad@chromium.org>
+>>>> Cc: Andrew Morton <akpm@linux-foundation.org>
+>>>> Cc: Dave Airlie <airlied@gmail.com>
+>>>> Cc: Daniel Vetter <daniel@ffwll.ch>
+>>>> Cc: Lucas Stach <l.stach@pengutronix.de>
+>>>> ---
+>>>>   init/Kconfig                                  | 11 +++++++++++
+>>>>   kernel/Makefile                               |  2 +-
+>>>>   tools/testing/selftests/seccomp/seccomp_bpf.c |  2 +-
+>>>>   3 files changed, 13 insertions(+), 2 deletions(-)
+>>>>
+>>>> diff --git a/init/Kconfig b/init/Kconfig
+>>>> index b77c60f8b963..f62fca13ac5b 100644
+>>>> --- a/init/Kconfig
+>>>> +++ b/init/Kconfig
+>>>> @@ -1194,6 +1194,7 @@ endif # NAMESPACES
+>>>>   config CHECKPOINT_RESTORE
+>>>>        bool "Checkpoint/restore support"
+>>>>        select PROC_CHILDREN
+>>>> +     select KCMP
+>>>>        default n
+>>>>        help
+>>>>          Enables additional kernel features in a sake of 
+>>>> checkpoint/restore.
+>>>> @@ -1737,6 +1738,16 @@ config ARCH_HAS_MEMBARRIER_CALLBACKS
+>>>>   config ARCH_HAS_MEMBARRIER_SYNC_CORE
+>>>>        bool
+>>>>
+>>>> +config KCMP
+>>>> +     bool "Enable kcmp() system call" if EXPERT
+>>>> +     default y
+>>>
+>>> I would expect this to be not default-y, especially if
+>>> CHECKPOINT_RESTORE does a "select" on it.
+>>>
+>>> This is a really powerful syscall, but it is bounded by ptrace access
+>>> controls, and uses pointer address obfuscation, so it may be okay to
+>>> expose this. As it is, at least Ubuntu already has
+>>> CONFIG_CHECKPOINT_RESTORE, so really, there's probably not much
+>>> difference on exposure.
+>>>
+>>> So, if you drop the "default y", I'm fine with this.
 >>
->> Sorry I can't parse this.
+>> It was maybe stupid, but our userspace started relying on fd
+>> comaprison through sys_kcomp. So for better or worse, if you want to
+>> run the mesa3d gl/vk stacks, you need this.
 > 
-> handle_fasteoi_irq() will do nothing "if ( irq in progress )". When is
-> this condition being reset again in order to be able to process another
-> IRQ?
-It is reset after the handler has been called. See handle_irq_event().
+> That's overstating things somewhat. The vast majority of applications 
+> will work fine regardless (as they did before Mesa started using this 
+> functionality). Only some special ones will run into issues, because the 
+> user-space drivers incorrectly assume two file descriptors reference 
+> different descriptions.
+> 
+> 
+>> Was maybe not the brighest ideas, but since enough distros had this
+>> enabled by defaults,
+> 
+> Right, that (and the above) is why I considered it fair game to use. 
+> What should I have done instead? (TBH I was surprised that this 
+> functionality isn't generally available)
 
-> I believe this will be the case before our "lateeoi" handling is
-> becoming active (more precise: when our IRQ handler is returning to
-> handle_fasteoi_irq()), resulting in the possibility of the same race we
-> are experiencing now.
+In that spirit, an alternative might be to make KCMP_FILE available 
+unconditionally, and the rest of SYS_kcmp only with CHECKPOINT_RESTORE 
+as before. (Or maybe other parts of SYS_kcmp are generally useful as well?)
 
-I am a bit confused what you mean by "lateeoi" handling is becoming 
-active. Can you clarify?
-
-Note that are are other IRQ flows existing. We should have a look at 
-them before trying to fix thing ourself.
-
-Although, the other issue I can see so far is handle_irq_for_port() will 
-update info->{eoi_cpu, irq_epoch, eoi_time} without any locking. But it 
-is not clear this is what you mean by "becoming active".
-
-Cheers,
 
 -- 
-Julien Grall
+Earthling Michel Dänzer               |               https://redhat.com
+Libre software enthusiast             |             Mesa and X developer
