@@ -2,133 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D59F3129D5
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 05:42:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 105A93129E0
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 06:03:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229789AbhBHEle (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Feb 2021 23:41:34 -0500
-Received: from foss.arm.com ([217.140.110.172]:56100 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229797AbhBHEk5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Feb 2021 23:40:57 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4D80131B;
-        Sun,  7 Feb 2021 20:40:11 -0800 (PST)
-Received: from [192.168.0.130] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 60FB63F719;
-        Sun,  7 Feb 2021 20:40:05 -0800 (PST)
-Subject: Re: [RFC 0/3] mm/page_alloc: Fix pageblock_order with
- HUGETLB_PAGE_SIZE_VARIABLE
-To:     linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
-        catalin.marinas@arm.com, akpm@linux-foundation.org
-Cc:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Christoph Hellwig <hch@lst.de>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        Michal Hocko <mhocko@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Matthew Wilcox <willy@infradead.org>
-References: <1612422084-30429-1-git-send-email-anshuman.khandual@arm.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <4e90b823-0f36-3dc6-fd00-e5ba27590550@arm.com>
-Date:   Mon, 8 Feb 2021 10:10:34 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S229626AbhBHFBg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 00:01:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33626 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229453AbhBHFBd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 00:01:33 -0500
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0160C06174A
+        for <linux-kernel@vger.kernel.org>; Sun,  7 Feb 2021 21:00:49 -0800 (PST)
+Received: by mail-pl1-x630.google.com with SMTP id b8so7150148plh.12
+        for <linux-kernel@vger.kernel.org>; Sun, 07 Feb 2021 21:00:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=mUDL/WmqX24EkRBa4QdzQZhiI7NIshJxn07vKLtmMHA=;
+        b=LY7eqM4IuHwdFmMXZ763TcqaFYvBAm6w0IHOO0MK3mvSezjQNiiaPTaTB/HL2etgsH
+         6Y/9ksY3KNcfPLbicJAd3/+r72BDtw6RfeHpVOFD0nOcdgyds/KMYXdGn5KTgYeowS7T
+         y7pE2Qy+5SHxDMneBNeo5WEO3OB+K6YjzG4gpf4sYPRFLc37poMVBm9Aa2bBJrqGegEJ
+         spwyKgKNFre74yHLXI/oKS4daPzowp4LaNKyEG3MtgNOO+YwFh9uJbTGwXpz/H+xjK6x
+         e+GjcB1qZLCznqbiEDxtDm3Sv2DTw2Cywj/atDxVolAFO4H22WGe8jU6sT21M+7goBI6
+         loGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=mUDL/WmqX24EkRBa4QdzQZhiI7NIshJxn07vKLtmMHA=;
+        b=JnU6bo10mMQjaCOL9IamuhsTvC2al7D55std6Mvur3ZO40F2XHD9KfDt61q+jnbiuG
+         CdPkH9r9o0Dy9TGksy9MpCGGt+E+QLwqI50Z+p381+MTEZKQNUUHMmRnTN0QiWCuxsr2
+         ut5kbhcMYkEWIX/fVv+feqk8BpWxhALgpI2I+R0eb82F9TDtqayOXTu+tfMAdcQN4ckJ
+         d+JDHu51LN5zUhUey+uShtFy+tmLadyDCb0j1f9of0B0Tmtvt8xJx+JMnAwBZPqxsDOT
+         OM8m7ZYAKtyNjhFTlvvomeQbQPvBbW6w+Dsanjqlqi8G/RYEDOBV6hXmfMKW0S1s87x3
+         k4lQ==
+X-Gm-Message-State: AOAM533LHCApk9qd8aXFHx161tYZ9B1YTUmJ7gKGQyXVR6E0oBzFEiLm
+        9dej6M7aUGHkwOgEtc50vRiFI0y6iHmGLA==
+X-Google-Smtp-Source: ABdhPJx4Fm6fIohHWzPXLTP+l6SZlpIrrIBikCvHEmSsZQlj6zYg7esZg5fpe6urlJuDZUHS1PjIPg==
+X-Received: by 2002:a17:902:a5c9:b029:e0:8ef:1633 with SMTP id t9-20020a170902a5c9b02900e008ef1633mr14728621plq.13.1612760449162;
+        Sun, 07 Feb 2021 21:00:49 -0800 (PST)
+Received: from localhost ([122.172.59.240])
+        by smtp.gmail.com with ESMTPSA id 123sm17795177pge.88.2021.02.07.21.00.47
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 07 Feb 2021 21:00:47 -0800 (PST)
+Date:   Mon, 8 Feb 2021 10:30:45 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     kernel test robot <lkp@intel.com>
+Cc:     kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: drivers/opp/of.c:842:12: warning: stack frame size of 2064 bytes
+ in function '_of_add_opp_table_v2'
+Message-ID: <20210208050045.zjm2s27ye7cxgfxq@vireshk-i7>
+References: <202102070420.E5H63fqj-lkp@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <1612422084-30429-1-git-send-email-anshuman.khandual@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202102070420.E5H63fqj-lkp@intel.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 07-02-21, 04:09, kernel test robot wrote:
+> f47b72a15a9679 drivers/base/power/opp/of.c Viresh Kumar  2016-05-05  841  /* Initializes OPP tables based on new bindings */
+> 5ed4cecd75e902 drivers/opp/of.c            Viresh Kumar  2018-09-12 @842  static int _of_add_opp_table_v2(struct device *dev, struct opp_table *opp_table)
+> f47b72a15a9679 drivers/base/power/opp/of.c Viresh Kumar  2016-05-05  843  {
+> f47b72a15a9679 drivers/base/power/opp/of.c Viresh Kumar  2016-05-05  844  	struct device_node *np;
+> 283d55e68d8a0f drivers/opp/of.c            Viresh Kumar  2018-09-07  845  	int ret, count = 0, pstate_count = 0;
+> 3ba98324e81add drivers/opp/of.c            Viresh Kumar  2016-11-18  846  	struct dev_pm_opp *opp;
 
+I am not able to figure out why the stack frame warning will shoot off
+for this routine, using just pointers, no big allocations on stack..
 
-On 2/4/21 12:31 PM, Anshuman Khandual wrote:
-> The following warning gets triggered while trying to boot a 64K page size
-> without THP config kernel on arm64 platform.
-> 
-> WARNING: CPU: 5 PID: 124 at mm/vmstat.c:1080 __fragmentation_index+0xa4/0xc0
-> Modules linked in:
-> CPU: 5 PID: 124 Comm: kswapd0 Not tainted 5.11.0-rc6-00004-ga0ea7d62002 #159
-> Hardware name: linux,dummy-virt (DT)
-> [    8.810673] pstate: 20400005 (nzCv daif +PAN -UAO -TCO BTYPE=--)
-> [    8.811732] pc : __fragmentation_index+0xa4/0xc0
-> [    8.812555] lr : fragmentation_index+0xf8/0x138
-> [    8.813360] sp : ffff0000864079b0
-> [    8.813958] x29: ffff0000864079b0 x28: 0000000000000372
-> [    8.814901] x27: 0000000000007682 x26: ffff8000135b3948
-> [    8.815847] x25: 1fffe00010c80f48 x24: 0000000000000000
-> [    8.816805] x23: 0000000000000000 x22: 000000000000000d
-> [    8.817764] x21: 0000000000000030 x20: ffff0005ffcb4d58
-> [    8.818712] x19: 000000000000000b x18: 0000000000000000
-> [    8.819656] x17: 0000000000000000 x16: 0000000000000000
-> [    8.820613] x15: 0000000000000000 x14: ffff8000114c6258
-> [    8.821560] x13: ffff6000bff969ba x12: 1fffe000bff969b9
-> [    8.822514] x11: 1fffe000bff969b9 x10: ffff6000bff969b9
-> [    8.823461] x9 : dfff800000000000 x8 : ffff0005ffcb4dcf
-> [    8.824415] x7 : 0000000000000001 x6 : 0000000041b58ab3
-> [    8.825359] x5 : ffff600010c80f48 x4 : dfff800000000000
-> [    8.826313] x3 : ffff8000102be670 x2 : 0000000000000007
-> [    8.827259] x1 : ffff000086407a60 x0 : 000000000000000d
-> [    8.828218] Call trace:
-> [    8.828667]  __fragmentation_index+0xa4/0xc0
-> [    8.829436]  fragmentation_index+0xf8/0x138
-> [    8.830194]  compaction_suitable+0x98/0xb8
-> [    8.830934]  wakeup_kcompactd+0xdc/0x128
-> [    8.831640]  balance_pgdat+0x71c/0x7a0
-> [    8.832327]  kswapd+0x31c/0x520
-> [    8.832902]  kthread+0x224/0x230
-> [    8.833491]  ret_from_fork+0x10/0x30
-> [    8.834150] ---[ end trace 472836f79c15516b ]---
-> 
-> This warning comes from __fragmentation_index() when the requested order
-> is greater than MAX_ORDER.
-> 
-> static int __fragmentation_index(unsigned int order,
-> 				 struct contig_page_info *info)
-> {
->         unsigned long requested = 1UL << order;
-> 
->         if (WARN_ON_ONCE(order >= MAX_ORDER)) <===== Triggered here
->                 return 0;
-> 
-> Digging it further reveals that pageblock_order has been assigned a value
-> which is greater than MAX_ORDER failing the above check. But why this
-> happened ? Because HUGETLB_PAGE_ORDER for the given config on arm64 is
-> greater than MAX_ORDER.
-> 
-> The solution involves enabling HUGETLB_PAGE_SIZE_VARIABLE which would make
-> pageblock_order a variable instead of constant HUGETLB_PAGE_ORDER. But that
-> change alone also did not really work as pageblock_order still got assigned
-> as HUGETLB_PAGE_ORDER in set_pageblock_order(). HUGETLB_PAGE_ORDER needs to
-> be less than MAX_ORDER for its appropriateness as pageblock_order otherwise
-> just fallback to MAX_ORDER - 1 as before. While here it also fixes a build
-> problem via type casting MAX_ORDER in rmem_cma_setup().
-> 
-> This series applies in v5.11-rc6 and has been slightly tested on arm64. But
-> looking for some early feedbacks particularly with respect to concerns in
-> subscribing HUGETLB_PAGE_SIZE_VARIABLE on a platform where the hugetlb page
-> size is config dependent but not really a runtime variable. Even though it
-> appears that HUGETLB_PAGE_SIZE_VARIABLE is used only while computing the
-> pageblock_order, could there be other implications ?
-> 
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Robin Murphy <robin.murphy@arm.com>
-> Cc: Marek Szyprowski <m.szyprowski@samsung.com>
-> Cc: Christoph Hellwig <hch@lst.de>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: iommu@lists.linux-foundation.org
-> Cc: linux-mm@kvack.org
-> Cc: linux-kernel@vger.kernel.org
+False positive ?
 
-Probably missed some more folks, adding them here.
-
-+ Michal Hocko <mhocko@kernel.org>
-+ Vlastimil Babka <vbabka@suse.cz>
-+ Mike Kravetz <mike.kravetz@oracle.com>
-+ Matthew Wilcox <willy@infradead.org>
+-- 
+viresh
