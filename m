@@ -2,201 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D725314065
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 21:25:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 173A0314071
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 21:27:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236770AbhBHUZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 15:25:12 -0500
-Received: from cloudserver094114.home.pl ([79.96.170.134]:64290 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235977AbhBHTA5 (ORCPT
+        id S236807AbhBHU1D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 15:27:03 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:22714 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236030AbhBHTCm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 14:00:57 -0500
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_smtp) via UNIX with SMTP (IdeaSmtpServer 0.83.537)
- id 201b9415583dcdc8; Mon, 8 Feb 2021 20:00:04 +0100
-Received: from kreacher.localnet (89-64-80-68.dynamic.chello.pl [89.64.80.68])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id 1F95D6608B1;
-        Mon,  8 Feb 2021 20:00:04 +0100 (CET)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux ACPI <linux-acpi@vger.kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Hanjun Gou <gouhanjun@huawei.com>
-Subject: [PATCH v1 2/2] ACPI: OSL: Clean up printing messages
-Date:   Mon, 08 Feb 2021 19:59:57 +0100
-Message-ID: <3297462.0emgCRZMdL@kreacher>
-In-Reply-To: <4653881.kBYL0eE9gL@kreacher>
-References: <4653881.kBYL0eE9gL@kreacher>
+        Mon, 8 Feb 2021 14:02:42 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612810876;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=qsOZdP6JaGBCys6lI8Ps0nCa4t1QI6F4FQf8RXTti5c=;
+        b=cMCW3tFy/xnkG44LXmfpmHPxrd5ewSzu5hIx80ebRQw8033N4UyJ6PBbpwfhw1b8HiekdD
+        HYgK0kSmGPs8zK9oktq762okbuk8R39eK9CHdTlcoe/NfuQVsqkNUL0VDVp7kpEj91WHrJ
+        F3/e0g4GDQvKocL+Twr2j3WhFdM8u8Y=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-410-lIfo_S48NqCz7Jxgr8kpjQ-1; Mon, 08 Feb 2021 14:01:14 -0500
+X-MC-Unique: lIfo_S48NqCz7Jxgr8kpjQ-1
+Received: by mail-ej1-f70.google.com with SMTP id q11so13011008ejd.0
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 11:01:14 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=qsOZdP6JaGBCys6lI8Ps0nCa4t1QI6F4FQf8RXTti5c=;
+        b=SDlpPWDjjH+93mCqUZuWBO0hYQGZmkA7nceya0pRO+DiDpx2czMMMpmh1bKF1rBT9m
+         oh8gPTStImKlmRU39Nx4SlMrOfU/h2BLxoXyWZP4BUv49sruuLrUvoVb6n+/kSoxJ0YB
+         FSzRTde1RSOD5GzmnOLzJCX9IY4KHSvS3wOOJcsR4DhCctkAEbvo2laFrRHXHMbwOJBf
+         OeWdNiWhYV4E+zLQSBUffiD6j0XNvYq7t2RCGHbMe0x94mnUwQ4SIe1IWBKPgFzL4svY
+         DaduLoEyOnANUdLA0SOlKICTFPeBh6syrO7dmMS5gNyzfAyTa4VgDGEDxZNN9ozLweO+
+         SBvQ==
+X-Gm-Message-State: AOAM532fVWIresIFrnvOAYQ55dGI6VCf5gJgAMk8K6higYp7MSzZUSt5
+        tts3wag7Fdyn1rsmHEEff/IroXBT1ajjhBbuwGHF7g3MnUc7xxZPZrZOsE/WswSGNKJAikQ2++o
+        Aldfb5MZP9Jsx1oYgyTxj+6ic0bjss+Tr3Ayz85gY3vBT2iyvPxM9s+VMPH6TbJ6Jnyp4MHKBsI
+        6B
+X-Received: by 2002:aa7:d58b:: with SMTP id r11mr18480102edq.241.1612810872969;
+        Mon, 08 Feb 2021 11:01:12 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzrKaV6M4wNhPDX70JYnsrA7SHTqWJx6bMT62GOn1cJQvQVqzhPKKQ7HGRLi0rlL6RL/liZ5Q==
+X-Received: by 2002:aa7:d58b:: with SMTP id r11mr18480077edq.241.1612810872685;
+        Mon, 08 Feb 2021 11:01:12 -0800 (PST)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id kv24sm8947329ejc.117.2021.02.08.11.01.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 08 Feb 2021 11:01:12 -0800 (PST)
+Subject: Re: [PATCH] Platform: OLPC: Constify static struct regulator_ops
+To:     Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        Mark Gross <mgross@linux.intel.com>
+Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210206232152.58046-1-rikard.falkeborn@gmail.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <1c0f6456-56cd-0778-fda1-98d810963225@redhat.com>
+Date:   Mon, 8 Feb 2021 20:01:11 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduledrtddtgddtudcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvufffkfgjfhgggfgtsehtufertddttddvnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepgfelheffhfetffelhfelteejffetteetgfetkeejvdfhfeeftdeufeevgeevieevnecukfhppeekledrieegrdektddrieeknecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepkeelrdeigedrkedtrdeikedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedprhgtphhtthhopehlihhnuhigqdgrtghpihesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehgohhuhhgrnhhjuhhnsehhuhgrfigvihdrtghomh
-X-DCC--Metrics: v370.home.net.pl 1024; Body=3 Fuz1=3 Fuz2=3
+In-Reply-To: <20210206232152.58046-1-rikard.falkeborn@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Hi,
 
-Replace the ACPI_DEBUG_PRINT() instance in osl.c unrelated to the
-ACPICA debug with acpi_handle_debug(), add a pr_fmt() definition
-to osl.c and replace direct printk() usage in that file with the
-suitable pr_*() calls.
+On 2/7/21 12:21 AM, Rikard Falkeborn wrote:
+> The only usage of it is to assign its address to the ops field in the
+> regulator_desc struct, which is a pointer to const struct regulator_ops.
+> Make it const to allow the compiler to put it in read-only memory.
+> 
+> Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
 
-While at it, add a physical address value to the message in
-acpi_os_map_iomem() and reword a couple of messages to avoid
-using function names in them.
+Thank you for your patch, I've applied this patch to my review-hans 
+branch:
+https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
 
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
- drivers/acpi/osl.c |   35 ++++++++++++++++++-----------------
- 1 file changed, 18 insertions(+), 17 deletions(-)
+Note it will show up in my review-hans branch once I've pushed my
+local branch there, which might take a while.
 
-Index: linux-pm/drivers/acpi/osl.c
-===================================================================
---- linux-pm.orig/drivers/acpi/osl.c
-+++ linux-pm/drivers/acpi/osl.c
-@@ -9,6 +9,8 @@
-  *   Author: Matthew Wilcox <willy@linux.intel.com>
-  */
- 
-+#define pr_fmt(fmt) "ACPI: OSL: " fmt
-+
- #include <linux/module.h>
- #include <linux/kernel.h>
- #include <linux/slab.h>
-@@ -37,6 +39,7 @@
- #include "acpica/acnamesp.h"
- #include "internal.h"
- 
-+/* Definitions for ACPI_DEBUG_PRINT() */
- #define _COMPONENT		ACPI_OS_SERVICES
- ACPI_MODULE_NAME("osl");
- 
-@@ -327,7 +330,7 @@ void __iomem __ref
- 	acpi_size pg_sz;
- 
- 	if (phys > ULONG_MAX) {
--		printk(KERN_ERR PREFIX "Cannot map memory that high\n");
-+		pr_err("Cannot map memory that high: 0x%llx\n", phys);
- 		return NULL;
- 	}
- 
-@@ -528,13 +531,13 @@ acpi_os_predefined_override(const struct
- 
- 	*new_val = NULL;
- 	if (!memcmp(init_val->name, "_OS_", 4) && strlen(acpi_os_name)) {
--		printk(KERN_INFO PREFIX "Overriding _OS definition to '%s'\n",
-+		pr_info("Overriding _OS definition to '%s'\n",
- 		       acpi_os_name);
- 		*new_val = acpi_os_name;
- 	}
- 
- 	if (!memcmp(init_val->name, "_REV", 4) && acpi_rev_override) {
--		printk(KERN_INFO PREFIX "Overriding _REV return value to 5\n");
-+		pr_info("Overriding _REV return value to 5\n");
- 		*new_val = (char *)5;
- 	}
- 
-@@ -575,7 +578,7 @@ acpi_os_install_interrupt_handler(u32 gs
- 		return AE_ALREADY_ACQUIRED;
- 
- 	if (acpi_gsi_to_irq(gsi, &irq) < 0) {
--		printk(KERN_ERR PREFIX "SCI (ACPI GSI %d) not registered\n",
-+		pr_err("SCI (ACPI GSI %d) not registered\n",
- 		       gsi);
- 		return AE_OK;
- 	}
-@@ -583,7 +586,7 @@ acpi_os_install_interrupt_handler(u32 gs
- 	acpi_irq_handler = handler;
- 	acpi_irq_context = context;
- 	if (request_irq(irq, acpi_irq, IRQF_SHARED, "acpi", acpi_irq)) {
--		printk(KERN_ERR PREFIX "SCI (IRQ%d) allocation failed\n", irq);
-+		pr_err("SCI (IRQ%d) allocation failed\n", irq);
- 		acpi_irq_handler = NULL;
- 		return AE_NOT_ACQUIRED;
- 	}
-@@ -1071,7 +1074,7 @@ acpi_status acpi_os_execute(acpi_execute
- 	if (type == OSL_DEBUGGER_MAIN_THREAD) {
- 		ret = acpi_debugger_create_thread(function, context);
- 		if (ret) {
--			pr_err("Call to kthread_create() failed.\n");
-+			pr_err("Kernel thread creation failed\n");
- 			status = AE_ERROR;
- 		}
- 		goto out_thread;
-@@ -1121,8 +1124,7 @@ acpi_status acpi_os_execute(acpi_execute
- 	 */
- 	ret = queue_work_on(0, queue, &dpc->work);
- 	if (!ret) {
--		printk(KERN_ERR PREFIX
--			  "Call to queue_work() failed.\n");
-+		pr_err("Unable to queue work\n");
- 		status = AE_ERROR;
- 	}
- err_workqueue:
-@@ -1165,9 +1167,9 @@ acpi_status acpi_hotplug_schedule(struct
- {
- 	struct acpi_hp_work *hpw;
- 
--	ACPI_DEBUG_PRINT((ACPI_DB_EXEC,
--		  "Scheduling hotplug event (%p, %u) for deferred execution.\n",
--		  adev, src));
-+	acpi_handle_debug(adev->handle,
-+			  "Scheduling hotplug event %u for deferred handling\n",
-+			   src);
- 
- 	hpw = kmalloc(sizeof(*hpw), GFP_KERNEL);
- 	if (!hpw)
-@@ -1355,7 +1357,7 @@ acpi_status acpi_os_signal(u32 function,
- {
- 	switch (function) {
- 	case ACPI_SIGNAL_FATAL:
--		printk(KERN_ERR PREFIX "Fatal opcode executed\n");
-+		pr_err("Fatal opcode executed\n");
- 		break;
- 	case ACPI_SIGNAL_BREAKPOINT:
- 		/*
-@@ -1407,7 +1409,7 @@ __setup("acpi_os_name=", acpi_os_name_se
- static int __init acpi_no_auto_serialize_setup(char *str)
- {
- 	acpi_gbl_auto_serialize_methods = FALSE;
--	pr_info("ACPI: auto-serialization disabled\n");
-+	pr_info("Auto-serialization disabled\n");
- 
- 	return 1;
- }
-@@ -1712,7 +1714,7 @@ acpi_status acpi_os_release_object(acpi_
- static int __init acpi_no_static_ssdt_setup(char *s)
- {
- 	acpi_gbl_disable_ssdt_table_install = TRUE;
--	pr_info("ACPI: static SSDT installation disabled\n");
-+	pr_info("Static SSDT installation disabled\n");
- 
- 	return 0;
- }
-@@ -1721,8 +1723,7 @@ early_param("acpi_no_static_ssdt", acpi_
- 
- static int __init acpi_disable_return_repair(char *s)
- {
--	printk(KERN_NOTICE PREFIX
--	       "ACPI: Predefined validation mechanism disabled\n");
-+	pr_notice("Predefined validation mechanism disabled\n");
- 	acpi_gbl_disable_auto_repair = TRUE;
- 
- 	return 1;
-@@ -1748,7 +1749,7 @@ acpi_status __init acpi_os_initialize(vo
- 		void *rv;
- 
- 		rv = acpi_os_map_generic_address(&acpi_gbl_FADT.reset_register);
--		pr_debug(PREFIX "%s: map reset_reg %s\n", __func__,
-+		pr_debug("%s: map reset_reg %s\n", __func__,
- 			 rv ? "successful" : "failed");
- 	}
- 	acpi_os_initialized = true;
+Once I've run some tests on this branch the patches there will be
+added to the platform-drivers-x86/for-next branch and eventually
+will be included in the pdx86 pull-request to Linus for the next
+merge-window.
 
+Regards,
 
+Hans
+
+> ---
+>  drivers/platform/olpc/olpc-ec.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/platform/olpc/olpc-ec.c b/drivers/platform/olpc/olpc-ec.c
+> index 72dbbea0005c..4ff5c3a12991 100644
+> --- a/drivers/platform/olpc/olpc-ec.c
+> +++ b/drivers/platform/olpc/olpc-ec.c
+> @@ -386,7 +386,7 @@ static int dcon_regulator_is_enabled(struct regulator_dev *rdev)
+>  	return ec->dcon_enabled ? 1 : 0;
+>  }
+>  
+> -static struct regulator_ops dcon_regulator_ops = {
+> +static const struct regulator_ops dcon_regulator_ops = {
+>  	.enable		= dcon_regulator_enable,
+>  	.disable	= dcon_regulator_disable,
+>  	.is_enabled	= dcon_regulator_is_enabled,
+> 
 
