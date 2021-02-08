@@ -2,86 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1560C313DE9
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 19:43:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 445A3313DF3
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 19:46:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234445AbhBHSnj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 13:43:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44066 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234503AbhBHQqk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 11:46:40 -0500
-Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06335C061786
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 08:46:00 -0800 (PST)
-Received: by mail-qv1-xf2c.google.com with SMTP id r13so7204643qvm.11
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 08:45:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=z4+/UAUxX6/4+nPbgYcfOOvOW20Oi6mUCWX13gHCXgY=;
-        b=n+rZGS7J7T6hTq7r5Upn5tvO1h7vkY11CCBAIcmUASxzHtyardQi95qQmpG2K/da4Q
-         si2FUTkAMPjV8JGmwTKCLVCNpZpyt1p3uMPzTgAHV/tM3PfZIBNWwjmR3cNfZEX54BRO
-         qdwLvUjPG+tCppsNDyA210ZE8RSfHpatTzTYyW9pjvkDsVEN41Sqk5KTC+i5DUUcjWzP
-         oSzEllgyYeL5bIM47qNhkl1XXmOOkawKiOYKgofXl+Kpu0whPCYNDj2xkK3us2XFAdAS
-         jK7zVt6pGpPK7fzVc+KKY2oF7lwKTIHbIV6s1C5t+3hYs8u/wW3bNmtnS5UmVJResgSy
-         0KjA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=z4+/UAUxX6/4+nPbgYcfOOvOW20Oi6mUCWX13gHCXgY=;
-        b=J25+3oqez8ca48K8PQ5HB2DnuP7TyFaO8R7TkilaoZ+lzxI9ZImI4f0RpmW1Su2ZVh
-         g4iycx057t9t0W+wy6y/hftMihdZNH0iYLXcDt+pfCoYoKRM5Zgo4e3Kxib3Cfa1bTjN
-         doC0N6ko3h/PPLjzaNXP/t5CMHbWL4GGKUAY8OSJIjphSlR6hb6HsdfN9G9uJ1CpMFLp
-         Dp+fVIjFBuHpDwxfuAgRJQJi8tUNjmiV7ol44cQx/0w+on9nT9dGTW3sTUZXazqv3UPp
-         SqZuQZElURT+Yz6I2Pr3O+iOHCYeqp5j5wttCjnmfDTlzTJHLTZVla+gZf5o9TsGXgF0
-         fb2Q==
-X-Gm-Message-State: AOAM533txS0ApiYixcFTZlgqjtsPUvhqo1VNnSDHecpRC7ID+WliEBwU
-        KKmvpsmFicHnno2+XuChL6eAfw==
-X-Google-Smtp-Source: ABdhPJy1vA1cI1LOaho8Kgv1Fcgi9XIoSGsEjoFJTCWodC6JvrV0g0151q82VJfIPMcWcOYam3jCTw==
-X-Received: by 2002:ad4:40c6:: with SMTP id x6mr16677381qvp.10.1612802758643;
-        Mon, 08 Feb 2021 08:45:58 -0800 (PST)
-Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
-        by smtp.gmail.com with ESMTPSA id t71sm17182587qka.86.2021.02.08.08.45.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Feb 2021 08:45:57 -0800 (PST)
-Date:   Mon, 8 Feb 2021 11:45:56 -0500
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Chengming Zhou <zhouchengming@bytedance.com>
-Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, rostedt@goodmis.org,
-        dietmar.eggemann@arm.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] psi: Remove the redundant psi_task_tick
-Message-ID: <YCFqxEw0wJC6UGiE@cmpxchg.org>
-References: <20210207115642.75620-1-zhouchengming@bytedance.com>
+        id S235018AbhBHSqF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 13:46:05 -0500
+Received: from mga04.intel.com ([192.55.52.120]:11465 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234678AbhBHQsQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 11:48:16 -0500
+IronPort-SDR: qsdeONBKkLpGO9/dJeHGFeoK/qfvFWn58G21PHAE9OTHbWo2C7XnxCNNJ0wV8VjORcX/PuanO3
+ OD2mHDpW9oWA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9889"; a="179181609"
+X-IronPort-AV: E=Sophos;i="5.81,162,1610438400"; 
+   d="scan'208";a="179181609"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2021 08:46:22 -0800
+IronPort-SDR: B+Ir28btZSuTbBOqiRenJDSRItnbw/1bi4Wk6J9ruur0hyhbS9VCHB0mlMsKA4/7a+xYIjjnHs
+ 8cZ70rZubCvA==
+X-IronPort-AV: E=Sophos;i="5.81,162,1610438400"; 
+   d="scan'208";a="509529035"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2021 08:46:20 -0800
+Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
+        id 4C04C2082C; Mon,  8 Feb 2021 18:46:18 +0200 (EET)
+Date:   Mon, 8 Feb 2021 18:46:18 +0200
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Ezequiel Garcia <ezequiel@collabora.com>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build warning after merge of the v4l-dvb tree
+Message-ID: <20210208164618.GY32460@paasikivi.fi.intel.com>
+References: <20210208233716.16d962ad@canb.auug.org.au>
+ <56cd99bbf526b43507579b5775bac5f885319866.camel@collabora.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20210207115642.75620-1-zhouchengming@bytedance.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <56cd99bbf526b43507579b5775bac5f885319866.camel@collabora.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Feb 07, 2021 at 07:56:42PM +0800, Chengming Zhou wrote:
-> From: zhouchengming <zhouchengming@bytedance.com>
+Hi Ezequiel,
+
+Thanks for addressing this.
+
+On Mon, Feb 08, 2021 at 01:42:21PM -0300, Ezequiel Garcia wrote:
+> Hi Stephen,
 > 
-> When the current task in a cgroup is in_memstall, the corresponding psi_group
-> is in PSI_MEM_FULL state
+> On Mon, 2021-02-08 at 23:37 +1100, Stephen Rothwell wrote:
+> > Hi all,
+> > 
+> > After merging the v4l-dvb tree, today's linux-next build (htmldocs)
+> > produced this warning:
+> > 
+> > include/media/v4l2-async.h:178: warning: expecting prototype for v4l2_async_notifier_add_fwnode_subdev(). Prototype was for
+> > __v4l2_async_notifier_add_fwnode_subdev() instead
+> > include/media/v4l2-async.h:207: warning: expecting prototype for v4l2_async_notifier_add_fwnode_remote_subdev(). Prototype was for
+> > __v4l2_async_notifier_add_fwnode_remote_subdev() instead
+> > include/media/v4l2-async.h:230: warning: expecting prototype for v4l2_async_notifier_add_i2c_subdev(). Prototype was for
+> > __v4l2_async_notifier_add_i2c_subdev() instead
+> > 
+> > Maybe introduced by commit
+> > 
+> >   c1cc23625062 ("media: v4l2-async: Discourage use of v4l2_async_notifier_add_subdev")
+> > 
+> 
+> Thanks for spotting this. Should be fixed by:
+> 
+> diff --git a/include/media/v4l2-async.h b/include/media/v4l2-async.h
+> index 6f22daa6f067..3785445282fc 100644
+> --- a/include/media/v4l2-async.h
+> +++ b/include/media/v4l2-async.h
+> @@ -157,7 +157,7 @@ int __v4l2_async_notifier_add_subdev(struct v4l2_async_notifier *notifier,
+>  				   struct v4l2_async_subdev *asd);
+>  
+>  /**
+> - * v4l2_async_notifier_add_fwnode_subdev - Allocate and add a fwnode async
+> + * __v4l2_async_notifier_add_fwnode_subdev - Allocate and add a fwnode async
 
-This is correct.
+The problem with the approach is that this no longer documents the API that
+drivers are intended to use, but the intermediate one. I guess fixing
+this properly could require changes to kerneldoc so I have no objections to
+the approach.
 
-> so we can remove the redundant psi_task_tick from scheduler_tick to
-> save this periodic cost.
+>   *				subdev to the notifier's master asd_list.
+>   *
+>   * @notifier: pointer to &struct v4l2_async_notifier
+> @@ -181,7 +181,7 @@ __v4l2_async_notifier_add_fwnode_subdev(struct v4l2_async_notifier *notifier,
+>  						   sizeof(__type)))
+>  
+>  /**
+> - * v4l2_async_notifier_add_fwnode_remote_subdev - Allocate and add a fwnode
+> + * __v4l2_async_notifier_add_fwnode_remote_subdev - Allocate and add a fwnode
+>   *						  remote async subdev to the
+>   *						  notifier's master asd_list.
+>   *
+> @@ -210,7 +210,7 @@ __v4l2_async_notifier_add_fwnode_remote_subdev(struct v4l2_async_notifier *notif
+>  							  sizeof(__type)))
+>  
+>  /**
+> - * v4l2_async_notifier_add_i2c_subdev - Allocate and add an i2c async
+> + * __v4l2_async_notifier_add_i2c_subdev - Allocate and add an i2c async
+>   *				subdev to the notifier's master asd_list.
+>   *
+>   * @notifier: pointer to &struct v4l2_async_notifier
+> @@ -228,7 +228,7 @@ struct v4l2_async_subdev *
+>  __v4l2_async_notifier_add_i2c_subdev(struct v4l2_async_notifier *notifier,
+>  				     int adapter_id, unsigned short address,
+>  				     unsigned int asd_struct_size);
+> -#define v4l2_async_notifier_add_i2c_subdev(__notifier, __adap, __addr, __type)	\
+> +#define v4l2_async_notifier_i2c(__notifier, __adap, __addr, __type)	\
 
-But this isn't. It IS the task tick that makes it so. The state change
-tracking counts MEMSTALL tasks and ONCPU tasks, but it doesn't check
-whether the ONCPU task is the MEMSTALL one.
+I guess this change was not intentional?
 
-It would be possible to incorporate that into psi_task_switch(), but
-you have to be careful with the branches because that path is often
-hotter than the timer tick.
+>  ((__type *)__v4l2_async_notifier_add_i2c_subdev(__notifier, __adap, __addr,	\
+>  						sizeof(__type)))
+>  
+> 
 
-This patch by itself breaks page reclaim detection, so NAK.
+-- 
+Kind regards,
+
+Sakari Ailus
