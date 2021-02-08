@@ -2,105 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92052312F17
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 11:35:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D800312F06
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 11:32:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232364AbhBHKdn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 05:33:43 -0500
-Received: from esa2.hc3370-68.iphmx.com ([216.71.145.153]:48512 "EHLO
-        esa2.hc3370-68.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232181AbhBHKWU (ORCPT
+        id S230070AbhBHKa7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 05:30:59 -0500
+Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:41482 "EHLO
+        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232165AbhBHKS1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 05:22:20 -0500
-X-Greylist: delayed 334 seconds by postgrey-1.27 at vger.kernel.org; Mon, 08 Feb 2021 05:22:17 EST
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=citrix.com; s=securemail; t=1612779740;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=qqXwtjOco8fjJeHnQYr5Tm8x0nM5NCab4a40inMqm1A=;
-  b=fcTVzDBYpf2tKDB3IzCcNvCAf9qMNg9nBqGfbOGLQeRme9horfeefQk1
-   9EFGru3c9LRPAg4KiqqrnxGqOtx9gDk59fgAn2tiJ0o8r/bKWmTT05mfK
-   l9qOvtlgnRsuMkAE5+3cOLJNdvwZ+PdopqZj2uT4frUDZeNuKZq6zb7dF
-   A=;
-Authentication-Results: esa2.hc3370-68.iphmx.com; dkim=none (message not signed) header.i=none
-IronPort-SDR: rjLiNJ3vCQ9cpicm4ICWdmqbU0Vr/mR7YGxVzAVJ52hyZBx42ePUyqcKVcg6h7iZihXAwtKnvk
- /u2ugcsHkCr2tjlPPtTnxOG0gr7hIogThvz1V16ht6iY6ej2VQBERCF/JonZUOAMxcv1kmMigu
- t848MnWL4C9XA83gbWwfXTwIC+UvubXumL2q3pImtIFTIMF3nv5XVgU+Y3eWieoOYu+wqvg7aw
- 5/aeHo7oBKNfyDvBwrXzr6XxnepobkJpK0X8OPTp9b8GRTuQ0FaGUL8wvw83yykXckovqWbTs8
- NP0=
-X-SBRS: 5.1
-X-MesageID: 36787092
-X-Ironport-Server: esa2.hc3370-68.iphmx.com
-X-Remote-IP: 162.221.158.21
-X-Policy: $RELAYED
-X-IronPort-AV: E=Sophos;i="5.81,161,1610427600"; 
-   d="scan'208";a="36787092"
-Subject: Re: [PATCH 2/7] xen/events: don't unmask an event channel when an eoi
- is pending
-To:     Juergen Gross <jgross@suse.com>, <xen-devel@lists.xenproject.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        <stable@vger.kernel.org>, Julien Grall <julien@xen.org>
-References: <20210206104932.29064-1-jgross@suse.com>
- <20210206104932.29064-3-jgross@suse.com>
-From:   Ross Lagerwall <ross.lagerwall@citrix.com>
-Message-ID: <bdf20a87-5b4d-529e-7028-cea3eeef769b@citrix.com>
-Date:   Mon, 8 Feb 2021 10:15:31 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.2
-MIME-Version: 1.0
-In-Reply-To: <20210206104932.29064-3-jgross@suse.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Mon, 8 Feb 2021 05:18:27 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R451e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UOBlFUi_1612779461;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UOBlFUi_1612779461)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 08 Feb 2021 18:17:43 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     alexander.deucher@amd.com
+Cc:     christian.koenig@amd.com, airlied@linux.ie, daniel@ffwll.ch,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] drm/radeon: Simplify bool comparison
+Date:   Mon,  8 Feb 2021 18:17:38 +0800
+Message-Id: <1612779458-70938-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-02-06 10:49, Juergen Gross wrote:
-> An event channel should be kept masked when an eoi is pending for it.
-> When being migrated to another cpu it might be unmasked, though.
-> 
-> In order to avoid this keep two different flags for each event channel
-> to be able to distinguish "normal" masking/unmasking from eoi related
-> masking/unmasking. The event channel should only be able to generate
-> an interrupt if both flags are cleared.
-> 
-> Cc: stable@vger.kernel.org
-> Fixes: 54c9de89895e0a36047 ("xen/events: add a new late EOI evtchn framework")
-> Reported-by: Julien Grall <julien@xen.org>
-> Signed-off-by: Juergen Gross <jgross@suse.com>
-...> +static void lateeoi_ack_dynirq(struct irq_data *data)
-> +{
-> +	struct irq_info *info = info_for_irq(data->irq);
-> +	evtchn_port_t evtchn = info ? info->evtchn : 0;
-> +
-> +	if (VALID_EVTCHN(evtchn)) {
-> +		info->eoi_pending = true;
-> +		mask_evtchn(evtchn);
-> +	}
-> +}
+Fix the following coccicheck warning:
 
-Doesn't this (and the one below) need a call to clear_evtchn() to
-actually ack the pending event? Otherwise I can't see what clears
-the pending bit.
+./drivers/gpu/drm/radeon/rs690.c:190:6-35: WARNING: Comparison to bool.
 
-I tested out this patch but processes using the userspace evtchn device did
-not work very well without the clear_evtchn() call.
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+---
+ drivers/gpu/drm/radeon/rs690.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Ross
+diff --git a/drivers/gpu/drm/radeon/rs690.c b/drivers/gpu/drm/radeon/rs690.c
+index c296f94..7bc302a 100644
+--- a/drivers/gpu/drm/radeon/rs690.c
++++ b/drivers/gpu/drm/radeon/rs690.c
+@@ -187,7 +187,7 @@ static void rs690_mc_init(struct radeon_device *rdev)
+ 		/* FastFB shall be used with UMA memory. Here it is simply disabled when sideport 
+ 		 * memory is present.
+ 		 */
+-		if (rdev->mc.igp_sideport_enabled == false && radeon_fastfb == 1) {
++		if (!rdev->mc.igp_sideport_enabled && radeon_fastfb == 1) {
+ 			DRM_INFO("Direct mapping: aper base at 0x%llx, replaced by direct mapping base 0x%llx.\n", 
+ 					(unsigned long long)rdev->mc.aper_base, k8_addr);
+ 			rdev->mc.aper_base = (resource_size_t)k8_addr;
+-- 
+1.8.3.1
 
-> +
-> +static void lateeoi_mask_ack_dynirq(struct irq_data *data)
-> +{
-> +	struct irq_info *info = info_for_irq(data->irq);
-> +	evtchn_port_t evtchn = info ? info->evtchn : 0;
-> +
-> +	if (VALID_EVTCHN(evtchn)) {
-> +		info->masked = true;
-> +		info->eoi_pending = true;
-> +		mask_evtchn(evtchn);
-> +	}
-> +}
-> +
