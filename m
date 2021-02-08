@@ -2,88 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 357B7313D99
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 19:34:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C018313D9D
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 19:35:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235788AbhBHSdD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 13:33:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38138 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232677AbhBHQTI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 11:19:08 -0500
-Received: from mail.marcansoft.com (marcansoft.com [IPv6:2a01:298:fe:f::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0E45C061786;
-        Mon,  8 Feb 2021 08:18:27 -0800 (PST)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (No client certificate requested)
-        (Authenticated sender: marcan@marcan.st)
-        by mail.marcansoft.com (Postfix) with ESMTPSA id B33B54207F;
-        Mon,  8 Feb 2021 16:18:23 +0000 (UTC)
-Subject: Re: [PATCH 05/18] tty: serial: samsung_tty: add support for Apple
- UARTs
-To:     Marc Zyngier <maz@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     soc@kernel.org, linux-arm-kernel@lists.infradead.org,
-        robh+dt@kernel.org, Arnd Bergmann <arnd@kernel.org>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Olof Johansson <olof@lixom.net>,
-        Krzysztof Kozlowski <krzk@kernel.org>
-References: <20210204203951.52105-1-marcan@marcan.st>
- <20210204203951.52105-6-marcan@marcan.st> <87lfc1l4lo.wl-maz@kernel.org>
- <e842f37d-d788-2d34-05e4-86ef94aed8f5@marcan.st>
- <73116feaa00de9173d1f2c35ce16e08f@kernel.org>
-From:   Hector Martin <marcan@marcan.st>
-Message-ID: <7adf8ede-f7ff-7c62-d0fd-9ab4eaf25741@marcan.st>
-Date:   Tue, 9 Feb 2021 01:18:21 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
-MIME-Version: 1.0
-In-Reply-To: <73116feaa00de9173d1f2c35ce16e08f@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: es-ES
+        id S232791AbhBHSen (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 13:34:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49126 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232605AbhBHQTP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 11:19:15 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 900E064EA1;
+        Mon,  8 Feb 2021 16:18:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612801114;
+        bh=q8Wz1u2c1qWDv9pAcYBZRdY6dda4M4xtYNaWJPa0vZw=;
+        h=Subject:From:To:Date:From;
+        b=ovGCywDoEmpLqnQolMQPpYTcXz93pDS6OA0tt/SBHSC1oBXdsr3UD7kM0EL2ZYvLs
+         wtTAI2Vq6WYBtenhPJ8TSOagFtSdwNtbo5JsBJi73CAhgQprvqVyHniTvNaOkMvW6x
+         tXzG17n+T1rc3gL0lgO/UVzAd857ldoqdHJqNzug8Q/FLpoSzLctLT81q/H8Pt59Q/
+         B2XTSkXd1q51PyQ1H/hWEQHSOVfVLIi2+WpkkA34SWzMjYsPzKJrgVdpQOfN0/l4DA
+         QwbndfNkO/RJovNLh/Ppbb1VrNVKfN63TRZo68MtumojLrtTofdYPjRBQ5ZpTMCT64
+         GqRxFpHxCFm6w==
+Message-ID: <78a65c1c8cc1b6fbc739a91a5dfdd84be795ed1a.camel@kernel.org>
+Subject: [ANNOUNCE] 4.19.173-rt72
+From:   Tom Zanussi <zanussi@kernel.org>
+To:     LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Carsten Emde <C.Emde@osadl.org>,
+        John Kacur <jkacur@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Daniel Wagner <wagi@monom.org>,
+        Clark Williams <williams@redhat.com>,
+        "Luis Claudio R. Goncalves" <lgoncalv@redhat.com>,
+        Pavel Machek <pavel@denx.de>, Tom Zanussi <zanussi@kernel.org>
+Date:   Mon, 08 Feb 2021 10:18:32 -0600
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/02/2021 19.34, Marc Zyngier wrote:
-> On 2021-02-07 09:12, Hector Martin 'marcan' wrote:
->> On 06/02/2021 22.15, Marc Zyngier wrote:
->>> Do you actually need a new port type here? Looking at the driver
->>> itself, it is mainly used to work out the IRQ model. Maybe introducing
->>> a new irq_type field in the port structure would be better than
->>> exposing this to userspace (which should see something that is exactly
->>> the same as a S3C UART).
->>
->> Well... every S3C variant already has its own port type here.
->>
->> #define PORT_S3C2410    55
->> #define PORT_S3C2440    61
->> #define PORT_S3C2400    67
->> #define PORT_S3C2412    73
->> #define PORT_S3C6400    84
->>
->> If we don't introduce a new one, which one should we pretend to be? :)
-> 
-> Pick one! :D
+Hello RT Folks!
 
-*queries /dev/urandom* :-)
+I'm pleased to announce the 4.19.173-rt72 stable release.
 
->> I agree that it might make sense to merge all of these into one,
->> though; I don't know what the original reason for splitting them out
->> is. But now that they're part of the userspace API, this might not be
->> a good idea. Though, unsurprisingly, some googling suggests there are
->> zero users of these defines in userspace.
-> 
-> I don't think we can do that, but I don't think we should keep adding
-> to this unless there is a very good reason. Greg would know, I expect.
+This release is just an update to the new stable 4.19.173
+version and no RT specific changes have been made.
 
-Greg, what do you think? Add more PORT_ UART types for Samsung variants, 
-or overload one of the existing ones and deal with it in the driver?
+You can get this release via the git tree at:
 
--- 
-Hector Martin (marcan@marcan.st)
-Public Key: https://mrcn.st/pub
+  git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git
+
+  branch: v4.19-rt
+  Head SHA1: 0f716c5aef71ce6891b78818ba2a8a59d95ac053
+
+Or to build 4.19.173-rt72 directly, the following patches should be applied:
+
+  https://www.kernel.org/pub/linux/kernel/v4.x/linux-4.19.tar.xz
+
+  https://www.kernel.org/pub/linux/kernel/v4.x/patch-4.19.173.xz
+
+  https://www.kernel.org/pub/linux/kernel/projects/rt/4.19/patch-4.19.173-rt72.patch.xz
+
+Enjoy!
+
+   Tom
+
