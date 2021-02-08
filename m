@@ -2,82 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 769F6312F1B
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 11:35:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E805312F0E
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 11:33:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232538AbhBHKfV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 05:35:21 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:24778 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231712AbhBHKWT (ORCPT
+        id S232409AbhBHKcw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 05:32:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45908 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232159AbhBHKVq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 05:22:19 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612779649;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=2+jPd/3FVQIk0Q7688Eeo9WA6mV19wQqL9xJua3uhWQ=;
-        b=gdmSedgPqLlvc9TZrXQ0L72M1RViTTA1ni/yoodIj24X4YO6/ltW95vUlHTcBCki0a+OSZ
-        /aU1XKsVN5OW/XK8xLpPZJQKmGgXAUftxvyqJvPRE1UT8KJI8wy1QkKnuNfqHaSREtqGcC
-        amsJGW4Qv784qwkMUOqJOLXC/QJs9WU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-556-OA3UsJVMNmmFBwdz5KPmnQ-1; Mon, 08 Feb 2021 05:20:47 -0500
-X-MC-Unique: OA3UsJVMNmmFBwdz5KPmnQ-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8945410066F7;
-        Mon,  8 Feb 2021 10:20:38 +0000 (UTC)
-Received: from kamzik.brq.redhat.com (unknown [10.40.193.48])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 9E7FD100F496;
-        Mon,  8 Feb 2021 10:20:33 +0000 (UTC)
-Date:   Mon, 8 Feb 2021 11:20:27 +0100
-From:   Andrew Jones <drjones@redhat.com>
-To:     "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, Shuah Khan <shuah@kernel.org>,
+        Mon, 8 Feb 2021 05:21:46 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 925B3C061756
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 02:21:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=rpDDO6jVmzHowbcsi+/ymkIfpV51Uww6OPP3edq882A=; b=qj/HGbkwaAe6YwP4rTtO8zGezl
+        kPceUDl5YNKoBtO2Z6CNtJckX0y3nh0v4Fp0UeNlV9w2aaSBwulMe+b3u/clXk+rYTfZg0FDT//6X
+        XFW28NIuZuTB6i9D5YXp74TUAAqd6+5Oh9a+jhga9pkjJx2ATepPAhISFHoW5Fd5DvceC/9ArO3Wl
+        PRhYr+SvD5WvACYsLlJmS9T0TF3+J/y/YDX2rbZN1WzVJOHeGqT/pRbZ5gAEOtgis78OsmzsGP0ch
+        lOQHCOxWY5BkeL9C0NaVBM0gIMjVh0lMfskqkpe8oP5FxcC4I+xOkYe2nEY+1q1RRzaRAi4xSUnux
+        q/es/bmA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1l93f7-0006Ik-Tb; Mon, 08 Feb 2021 10:20:58 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5327A3010D2;
+        Mon,  8 Feb 2021 11:20:56 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 380352BF248CF; Mon,  8 Feb 2021 11:20:56 +0100 (CET)
+Date:   Mon, 8 Feb 2021 11:20:56 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
         Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Igor Mammedov <imammedo@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] KVM: selftests: Keep track of memslots more
- efficiently
-Message-ID: <20210208102027.roclkurxiibpx6su@kamzik.brq.redhat.com>
-References: <5e5d83b305077e3e65b130dbb31c131bfb831170.1612139762.git.maciej.szmigiero@oracle.com>
- <20210208101634.vfsr6zoxjnrguwuv@kamzik.brq.redhat.com>
+        linux-kernel@vger.kernel.org,
+        Sean Christopherson <sean.j.christopherson@intel.com>
+Subject: Re: [RFC v1 05/26] x86/traps: Add #VE support for TDX guest
+Message-ID: <YCEQiDNSHTGBXBcj@hirez.programming.kicks-ass.net>
+References: <cover.1612563142.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <48a702f536ccf953eee5778023ed6d1a452f6dcf.1612563142.git.sathyanarayanan.kuppuswamy@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20210208101634.vfsr6zoxjnrguwuv@kamzik.brq.redhat.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <48a702f536ccf953eee5778023ed6d1a452f6dcf.1612563142.git.sathyanarayanan.kuppuswamy@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 08, 2021 at 11:16:41AM +0100, Andrew Jones wrote:
-> > diff --git a/tools/testing/selftests/kvm/lib/rbtree.c b/tools/testing/selftests/kvm/lib/rbtree.c
-> > new file mode 100644
-> > index 000000000000..a703f0194ea3
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/kvm/lib/rbtree.c
-> > @@ -0,0 +1 @@
-> > +#include "../../../../lib/rbtree.c"
-> >
+On Fri, Feb 05, 2021 at 03:38:22PM -0800, Kuppuswamy Sathyanarayanan wrote:
+> From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
 > 
-> We shouldn't dip into kernel code like this. We can use tools/lib/rbtree.c
-> though.
+> The TDX module injects #VE exception to the guest TD in cases of
+> disallowed instructions, disallowed MSR accesses and subset of CPUID
+> leaves. Also, it's theoretically possible for CPU to inject #VE
+> exception on EPT violation, but the TDX module makes sure this does
+> not happen, as long as all memory used is properly accepted using
+> TDCALLs. You can find more details about it in, Guest-Host-Communication
+> Interface (GHCI) for Intel Trust Domain Extensions (Intel TDX)
+> specification, sec 2.3.
 > 
-> Besides the rbtree.c thing,
-
-Oops, sorry, just realized the first '..' applies to kvm's lib subdir.
-So this is already using tools/lib/rbtree.c
-
-Thanks,
-drew
-
+> Add basic infrastructure to handle #VE. If there is no handler for a
+> given #VE, since its a unexpected event (fault case), treat it as a
+> general protection fault and handle it using do_general_protection()
+> call.
 > 
-> Reviewed-by: Andrew Jones <drjones@redhat.com>
+> TDCALL[TDGETVEINFO] provides information about #VE such as exit reason.
+> 
+> More details on cases where #VE exceptions are allowed/not-allowed:
+> 
+> The #VE exception do not occur in the paranoid entry paths, like NMIs.
+> While other operations during an NMI might cause #VE, these are in the
+> NMI code that can handle nesting, so there is no concern about
+> reentrancy. This is similar to how #PF is handled in NMIs.
+> 
+> The #VE exception also cannot happen in entry/exit code with the
+> wrong gs, such as the SWAPGS code, so it's entry point does not
+> need "paranoid" handling.
 
+All of the above are arranged by using the below secure EPT for init
+text and data?
+
+> Any memory accesses can cause #VE if it causes an EPT
+> violation.  However, the VMM is only in direct control of some of the
+> EPT tables.  The Secure EPT tables are controlled by the TDX module
+> which guarantees no EPT violations will result in #VE for the guest,
+> once the memory has been accepted.
+
+Which is supposedly then set up to avoid #VE during the syscall gap,
+yes? Which then results in #VE not having to be IST.
+
+> +#ifdef CONFIG_INTEL_TDX_GUEST
+> +DEFINE_IDTENTRY(exc_virtualization_exception)
+> +{
+> +	struct ve_info ve;
+> +	int ret;
+> +
+> +	RCU_LOCKDEP_WARN(!rcu_is_watching(), "entry code didn't wake RCU");
+> +
+> +	/* Consume #VE info before re-enabling interrupts */
+
+So what happens if NMI happens here, and triggers a nested #VE ?
+
+> +	ret = tdx_get_ve_info(&ve);
+> +	cond_local_irq_enable(regs);
+> +	if (!ret)
+> +		ret = tdx_handle_virtualization_exception(regs, &ve);
+> +	/*
+> +	 * If #VE exception handler could not handle it successfully, treat
+> +	 * it as #GP(0) and handle it.
+> +	 */
+> +	if (ret)
+> +		do_general_protection(regs, 0);
+> +	cond_local_irq_disable(regs);
+> +}
+> +#endif
