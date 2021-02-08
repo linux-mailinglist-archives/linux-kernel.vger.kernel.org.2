@@ -2,199 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 281AC3128B2
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 02:18:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA9FC3128BB
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 02:28:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229705AbhBHBRy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Feb 2021 20:17:54 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:12147 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229683AbhBHBRw (ORCPT
+        id S229629AbhBHB1o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Feb 2021 20:27:44 -0500
+Received: from mailgw02.mediatek.com ([1.203.163.81]:17632 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229537AbhBHB1m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Feb 2021 20:17:52 -0500
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DYp4L2PQtz16578;
-        Mon,  8 Feb 2021 09:15:46 +0800 (CST)
-Received: from [10.174.184.42] (10.174.184.42) by
- DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
- 14.3.498.0; Mon, 8 Feb 2021 09:17:02 +0800
-Subject: Re: [RFC PATCH 06/11] iommu/arm-smmu-v3: Scan leaf TTD to sync
- hardware dirty log
-To:     Robin Murphy <robin.murphy@arm.com>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <kvm@vger.kernel.org>,
-        <kvmarm@lists.cs.columbia.edu>, <iommu@lists.linux-foundation.org>
-References: <20210128151742.18840-1-zhukeqian1@huawei.com>
- <20210128151742.18840-7-zhukeqian1@huawei.com>
- <2a731fe7-5879-8d89-7b96-d7385117b869@arm.com>
-CC:     Will Deacon <will@kernel.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        "Cornelia Huck" <cohuck@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        <wanghaibin.wang@huawei.com>, <jiangkunkun@huawei.com>,
-        <yuzenghui@huawei.com>, <lushenming@huawei.com>
-From:   Keqian Zhu <zhukeqian1@huawei.com>
-Message-ID: <02286125-408e-6f42-18e1-c761033cb9b2@huawei.com>
-Date:   Mon, 8 Feb 2021 09:17:02 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        Sun, 7 Feb 2021 20:27:42 -0500
+X-UUID: d549e7448dd746728b0d92fa4c801ba1-20210208
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=sl//92WDlRI2iEMumUvSdGMbgPdcEp2dTyyazCq87oA=;
+        b=MmAcPged8+tE2u5qb47KIkPBmuauPKQd/N6Cv4ZrKdsJVlARb/Bi/tHwdXpNo1c+CaYgcnONmxMhJm9Ogf4j/5nBukuhxpGhCVrTZTzoQEgoWcrfcdWFbizCBk2JKU2sjZQqnD6JELdn6EvYdjG7VBGCiUKfm0TDENdc0TM1qVs=;
+X-UUID: d549e7448dd746728b0d92fa4c801ba1-20210208
+Received: from mtkcas34.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
+        (envelope-from <jitao.shi@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1766470181; Mon, 08 Feb 2021 09:26:58 +0800
+Received: from MTKCAS32.mediatek.inc (172.27.4.184) by MTKMBS33N1.mediatek.inc
+ (172.27.4.75) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 8 Feb
+ 2021 09:26:56 +0800
+Received: from mszsdclx1018.gcn.mediatek.inc (10.16.6.18) by
+ MTKCAS32.mediatek.inc (172.27.4.170) with Microsoft SMTP Server id
+ 15.0.1497.2 via Frontend Transport; Mon, 8 Feb 2021 09:26:55 +0800
+From:   Jitao Shi <jitao.shi@mediatek.com>
+To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>
+CC:     <airlied@linux.ie>, <daniel@ffwll.ch>, <robh+dt@kernel.org>,
+        <matthias.bgg@gmail.com>, <srv_heupstream@mediatek.com>,
+        <yingjoe.chen@mediatek.com>, <eddie.huang@mediatek.com>,
+        <ck.hu@mediatek.com>, <dri-devel@lists.freedesktop.org>,
+        <devicetree@vger.kernel.org>, <stonea168@163.com>,
+        <huijuan.xie@mediatek.com>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>, <shuijing.li@mediatek.com>,
+        Jitao Shi <jitao.shi@mediatek.com>
+Subject: [PATCH v2 0/3] Add check for max clock rate in mode_valid
+Date:   Mon, 8 Feb 2021 09:26:50 +0800
+Message-ID: <20210208012653.196060-1-jitao.shi@mediatek.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <2a731fe7-5879-8d89-7b96-d7385117b869@arm.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.184.42]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain
+X-TM-SNTS-SMTP: 389C30CDCE24BD49C6B921257EB9C1BAB2683597C6C1DC3A254BBE6F08A763CF2000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Q2hhbmdlcyBzaW5jZSB2MToNCiAtIGZpeCBidWlsZCBlcnIuDQoNCkppdGFvIFNoaSAoMyk6DQog
+IGRybS9tZWRpYXRlazogbXRrX2RwaTogQWRkIGNoZWNrIGZvciBtYXggY2xvY2sgcmF0ZSBpbiBt
+b2RlX3ZhbGlkDQogIGRybS9tZWRpYXRlazogbXRrX2RwaTogQWRkIGRwaSBjb25maWcgZm9yIG10
+ODE5Mg0KICBkdC1iaW5kaW5nczogbWVkaWF0ZWssZHBpOiBhZGQgbXQ4MTkyIHRvIG1lZGlhdGVr
+LGRwaQ0KDQogLi4uL2Rpc3BsYXkvbWVkaWF0ZWsvbWVkaWF0ZWssZHBpLnlhbWwgICAgICAgIHwg
+IDEgKw0KIGRyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtfZHBpLmMgICAgICAgICAgICB8IDI2
+ICsrKysrKysrKysrKysrKysrKysNCiAyIGZpbGVzIGNoYW5nZWQsIDI3IGluc2VydGlvbnMoKykN
+Cg0KLS0gDQoyLjI1LjENCg==
 
-
-On 2021/2/5 3:52, Robin Murphy wrote:
-> On 2021-01-28 15:17, Keqian Zhu wrote:
->> From: jiangkunkun <jiangkunkun@huawei.com>
->>
->> During dirty log tracking, user will try to retrieve dirty log from
->> iommu if it supports hardware dirty log. This adds a new interface
-[...]
-
->>   static void arm_lpae_restrict_pgsizes(struct io_pgtable_cfg *cfg)
->>   {
->>       unsigned long granule, page_sizes;
->> @@ -957,6 +1046,7 @@ arm_lpae_alloc_pgtable(struct io_pgtable_cfg *cfg)
->>           .iova_to_phys    = arm_lpae_iova_to_phys,
->>           .split_block    = arm_lpae_split_block,
->>           .merge_page    = arm_lpae_merge_page,
->> +        .sync_dirty_log    = arm_lpae_sync_dirty_log,
->>       };
->>         return data;
->> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
->> index f1261da11ea8..69f268069282 100644
->> --- a/drivers/iommu/iommu.c
->> +++ b/drivers/iommu/iommu.c
->> @@ -2822,6 +2822,47 @@ size_t iommu_merge_page(struct iommu_domain *domain, unsigned long iova,
->>   }
->>   EXPORT_SYMBOL_GPL(iommu_merge_page);
->>   +int iommu_sync_dirty_log(struct iommu_domain *domain, unsigned long iova,
->> +             size_t size, unsigned long *bitmap,
->> +             unsigned long base_iova, unsigned long bitmap_pgshift)
->> +{
->> +    const struct iommu_ops *ops = domain->ops;
->> +    unsigned int min_pagesz;
->> +    size_t pgsize;
->> +    int ret;
->> +
->> +    min_pagesz = 1 << __ffs(domain->pgsize_bitmap);
->> +
->> +    if (!IS_ALIGNED(iova | size, min_pagesz)) {
->> +        pr_err("unaligned: iova 0x%lx size 0x%zx min_pagesz 0x%x\n",
->> +               iova, size, min_pagesz);
->> +        return -EINVAL;
->> +    }
->> +
->> +    if (!ops || !ops->sync_dirty_log) {
->> +        pr_err("don't support sync dirty log\n");
->> +        return -ENODEV;
->> +    }
->> +
->> +    while (size) {
->> +        pgsize = iommu_pgsize(domain, iova, size);
->> +
->> +        ret = ops->sync_dirty_log(domain, iova, pgsize,
->> +                      bitmap, base_iova, bitmap_pgshift);
-> 
-> Once again, we have a worst-of-both-worlds iteration that doesn't make much sense. iommu_pgsize() essentially tells you the best supported size that an IOVA range *can* be mapped with, but we're iterating a range that's already mapped, so we don't know if it's relevant, and either way it may not bear any relation to the granularity of the bitmap, which is presumably what actually matters.
-> 
-> Logically, either we should iterate at the bitmap granularity here, and the driver just says whether the given iova chunk contains any dirty pages or not, or we just pass everything through to the driver and let it do the whole job itself. Doing a little bit of both is just an overcomplicated mess.
-> 
-> I'm skimming patch #7 and pretty much the same comments apply, so I can't be bothered to repeat them there...
-> 
-> Robin.
-Sorry that I missed these comments...
-
-As I clarified in #4, due to unsuitable variable name, the @pgsize actually is the max size that meets alignment acquirement and fits into the pgsize_bitmap.
-
-All iommu interfaces acquire the @size fits into pgsize_bitmap to simplify their implementation. And the logic is very similar to "unmap" here.
-
-Thanks,
-Keqian
-
-> 
->> +        if (ret)
->> +            break;
->> +
->> +        pr_debug("dirty_log_sync: iova 0x%lx pagesz 0x%zx\n", iova,
->> +             pgsize);
->> +
->> +        iova += pgsize;
->> +        size -= pgsize;
->> +    }
->> +
->> +    return ret;
->> +}
->> +EXPORT_SYMBOL_GPL(iommu_sync_dirty_log);
->> +
->>   void iommu_get_resv_regions(struct device *dev, struct list_head *list)
->>   {
->>       const struct iommu_ops *ops = dev->bus->iommu_ops;
->> diff --git a/include/linux/io-pgtable.h b/include/linux/io-pgtable.h
->> index 754b62a1bbaf..f44551e4a454 100644
->> --- a/include/linux/io-pgtable.h
->> +++ b/include/linux/io-pgtable.h
->> @@ -166,6 +166,10 @@ struct io_pgtable_ops {
->>                     size_t size);
->>       size_t (*merge_page)(struct io_pgtable_ops *ops, unsigned long iova,
->>                    phys_addr_t phys, size_t size, int prot);
->> +    int (*sync_dirty_log)(struct io_pgtable_ops *ops,
->> +                  unsigned long iova, size_t size,
->> +                  unsigned long *bitmap, unsigned long base_iova,
->> +                  unsigned long bitmap_pgshift);
->>   };
->>     /**
->> diff --git a/include/linux/iommu.h b/include/linux/iommu.h
->> index ac2b0b1bce0f..8069c8375e63 100644
->> --- a/include/linux/iommu.h
->> +++ b/include/linux/iommu.h
->> @@ -262,6 +262,10 @@ struct iommu_ops {
->>                     size_t size);
->>       size_t (*merge_page)(struct iommu_domain *domain, unsigned long iova,
->>                    phys_addr_t phys, size_t size, int prot);
->> +    int (*sync_dirty_log)(struct iommu_domain *domain,
->> +                  unsigned long iova, size_t size,
->> +                  unsigned long *bitmap, unsigned long base_iova,
->> +                  unsigned long bitmap_pgshift);
->>         /* Request/Free a list of reserved regions for a device */
->>       void (*get_resv_regions)(struct device *dev, struct list_head *list);
->> @@ -517,6 +521,10 @@ extern size_t iommu_split_block(struct iommu_domain *domain, unsigned long iova,
->>                   size_t size);
->>   extern size_t iommu_merge_page(struct iommu_domain *domain, unsigned long iova,
->>                      size_t size, int prot);
->> +extern int iommu_sync_dirty_log(struct iommu_domain *domain, unsigned long iova,
->> +                size_t size, unsigned long *bitmap,
->> +                unsigned long base_iova,
->> +                unsigned long bitmap_pgshift);
->>     /* Window handling function prototypes */
->>   extern int iommu_domain_window_enable(struct iommu_domain *domain, u32 wnd_nr,
->> @@ -923,6 +931,15 @@ static inline size_t iommu_merge_page(struct iommu_domain *domain,
->>       return -EINVAL;
->>   }
->>   +static inline int iommu_sync_dirty_log(struct iommu_domain *domain,
->> +                       unsigned long iova, size_t size,
->> +                       unsigned long *bitmap,
->> +                       unsigned long base_iova,
->> +                       unsigned long pgshift)
->> +{
->> +    return -EINVAL;
->> +}
->> +
->>   static inline int  iommu_device_register(struct iommu_device *iommu)
->>   {
->>       return -ENODEV;
->>
-> .
-> 
