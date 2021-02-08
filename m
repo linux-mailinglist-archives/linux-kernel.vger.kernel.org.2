@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13AB731384D
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 16:43:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2837731384B
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 16:43:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234099AbhBHPmm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 10:42:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52238 "EHLO mail.kernel.org"
+        id S234024AbhBHPl7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 10:41:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52608 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231974AbhBHPGA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 10:06:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 803FC64ED4;
-        Mon,  8 Feb 2021 15:04:31 +0000 (UTC)
+        id S232037AbhBHPGD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 10:06:03 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2EE9A64ED2;
+        Mon,  8 Feb 2021 15:04:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612796672;
-        bh=ReRR/wz8Ac7403WJcliUuCXzz2LZtTQXLclE2dotSsU=;
+        s=korg; t=1612796675;
+        bh=atL13egOW38FrfCGbqyZFMt4P86QxvkYrwi6gPPumsY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1WtoieUbpxOLEw3G/+uu1eT1Bpn+FB+gIG4Pfbtbc/GD+En5fPQP4z9b/OQ/CJI8r
-         FuA2I9mjvJoeWUT1NXC9jJ7DFNJeToGWl7sqhsRlF63/4qq8AdtNuICsorZ1mR+E75
-         xK+kBEBZsY7zwU8RX+90JiFevVOV9+OLA+6YgC8E=
+        b=vmh9KJMYCm6K7AN+/IWgS/Fn4LB1KGlgOQ2iW0r6/Eu4mPEPtyWqwjwncC/EuiAJK
+         51b1Vm6EOaxxv+bkfppEhuU7ocpuDYG9AbRt/hBHCs/w63pon7U7axc+pOChtU/tgv
+         LqDjbKLRTvz2s8nc9i0/P84pM1tidK9UFxj1BxIU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -29,9 +29,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         jdesfossez@efficios.com, dvhart@infradead.org, bristot@redhat.com,
         Thomas Gleixner <tglx@linutronix.de>,
         Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH 4.9 04/43] futex,rt_mutex: Provide futex specific rt_mutex API
-Date:   Mon,  8 Feb 2021 16:00:30 +0100
-Message-Id: <20210208145806.454388395@linuxfoundation.org>
+Subject: [PATCH 4.9 05/43] futex: Remove rt_mutex_deadlock_account_*()
+Date:   Mon,  8 Feb 2021 16:00:31 +0100
+Message-Id: <20210208145806.495995163@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210208145806.281758651@linuxfoundation.org>
 References: <20210208145806.281758651@linuxfoundation.org>
@@ -45,20 +45,7 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Peter Zijlstra <peterz@infradead.org>
 
-[ Upstream commit 5293c2efda37775346885c7e924d4ef7018ea60b ]
-
-Part of what makes futex_unlock_pi() intricate is that
-rt_mutex_futex_unlock() -> rt_mutex_slowunlock() can drop
-rt_mutex::wait_lock.
-
-This means it cannot rely on the atomicy of wait_lock, which would be
-preferred in order to not rely on hb->lock so much.
-
-The reason rt_mutex_slowunlock() needs to drop wait_lock is because it can
-race with the rt_mutex fastpath, however futexes have their own fast path.
-
-Since futexes already have a bunch of separate rt_mutex accessors, complete
-that set and implement a rt_mutex variant without fastpath for them.
+These are unused and clutter up the code.
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Cc: juri.lelli@arm.com
@@ -69,198 +56,161 @@ Cc: mathieu.desnoyers@efficios.com
 Cc: jdesfossez@efficios.com
 Cc: dvhart@infradead.org
 Cc: bristot@redhat.com
-Link: http://lkml.kernel.org/r/20170322104151.702962446@infradead.org
+Link: http://lkml.kernel.org/r/20170322104151.652692478@infradead.org
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 [Lee: Back-ported to solve a dependency]
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/futex.c                  |   30 ++++++++++-----------
- kernel/locking/rtmutex.c        |   56 +++++++++++++++++++++++++++++-----------
- kernel/locking/rtmutex_common.h |    8 ++++-
- 3 files changed, 61 insertions(+), 33 deletions(-)
+ kernel/locking/rtmutex-debug.c |    9 --------
+ kernel/locking/rtmutex-debug.h |    3 --
+ kernel/locking/rtmutex.c       |   42 +++++++++++++++--------------------------
+ kernel/locking/rtmutex.h       |    2 -
+ 4 files changed, 16 insertions(+), 40 deletions(-)
 
---- a/kernel/futex.c
-+++ b/kernel/futex.c
-@@ -941,7 +941,7 @@ static void exit_pi_state_list(struct ta
- 		pi_state->owner = NULL;
- 		raw_spin_unlock_irq(&curr->pi_lock);
- 
--		rt_mutex_unlock(&pi_state->pi_mutex);
-+		rt_mutex_futex_unlock(&pi_state->pi_mutex);
- 
- 		spin_unlock(&hb->lock);
- 
-@@ -1441,20 +1441,18 @@ static int wake_futex_pi(u32 __user *uad
- 	pi_state->owner = new_owner;
- 	raw_spin_unlock(&new_owner->pi_lock);
- 
--	raw_spin_unlock_irq(&pi_state->pi_mutex.wait_lock);
--
--	deboost = rt_mutex_futex_unlock(&pi_state->pi_mutex, &wake_q);
--
- 	/*
--	 * First unlock HB so the waiter does not spin on it once he got woken
--	 * up. Second wake up the waiter before the priority is adjusted. If we
--	 * deboost first (and lose our higher priority), then the task might get
--	 * scheduled away before the wake up can take place.
-+	 * We've updated the uservalue, this unlock cannot fail.
- 	 */
-+	deboost = __rt_mutex_futex_unlock(&pi_state->pi_mutex, &wake_q);
-+
-+	raw_spin_unlock_irq(&pi_state->pi_mutex.wait_lock);
- 	spin_unlock(&hb->lock);
--	wake_up_q(&wake_q);
--	if (deboost)
-+
-+	if (deboost) {
-+		wake_up_q(&wake_q);
- 		rt_mutex_adjust_prio(current);
-+	}
- 
- 	return 0;
+--- a/kernel/locking/rtmutex-debug.c
++++ b/kernel/locking/rtmutex-debug.c
+@@ -173,12 +173,3 @@ void debug_rt_mutex_init(struct rt_mutex
+ 	lock->name = name;
  }
-@@ -2397,7 +2395,7 @@ static int fixup_owner(u32 __user *uaddr
- 		 * task acquired the rt_mutex after we removed ourself from the
- 		 * rt_mutex waiters list.
- 		 */
--		if (rt_mutex_trylock(&q->pi_state->pi_mutex)) {
-+		if (rt_mutex_futex_trylock(&q->pi_state->pi_mutex)) {
- 			locked = 1;
- 			goto out;
- 		}
-@@ -2721,7 +2719,7 @@ retry_private:
- 	if (!trylock) {
- 		ret = rt_mutex_timed_futex_lock(&q.pi_state->pi_mutex, to);
- 	} else {
--		ret = rt_mutex_trylock(&q.pi_state->pi_mutex);
-+		ret = rt_mutex_futex_trylock(&q.pi_state->pi_mutex);
- 		/* Fixup the trylock return value: */
- 		ret = ret ? 0 : -EWOULDBLOCK;
- 	}
-@@ -2744,7 +2742,7 @@ retry_private:
- 	 * it and return the fault to userspace.
- 	 */
- 	if (ret && (rt_mutex_owner(&q.pi_state->pi_mutex) == current))
--		rt_mutex_unlock(&q.pi_state->pi_mutex);
-+		rt_mutex_futex_unlock(&q.pi_state->pi_mutex);
  
- 	/* Unqueue and drop the lock */
- 	unqueue_me_pi(&q);
-@@ -3051,7 +3049,7 @@ static int futex_wait_requeue_pi(u32 __u
- 			spin_lock(q.lock_ptr);
- 			ret = fixup_pi_state_owner(uaddr2, &q, current);
- 			if (ret && rt_mutex_owner(&q.pi_state->pi_mutex) == current)
--				rt_mutex_unlock(&q.pi_state->pi_mutex);
-+				rt_mutex_futex_unlock(&q.pi_state->pi_mutex);
- 			/*
- 			 * Drop the reference to the pi state which
- 			 * the requeue_pi() code acquired for us.
-@@ -3094,7 +3092,7 @@ static int futex_wait_requeue_pi(u32 __u
- 		 * userspace.
- 		 */
- 		if (ret && rt_mutex_owner(pi_mutex) == current)
--			rt_mutex_unlock(pi_mutex);
-+			rt_mutex_futex_unlock(pi_mutex);
+-void
+-rt_mutex_deadlock_account_lock(struct rt_mutex *lock, struct task_struct *task)
+-{
+-}
+-
+-void rt_mutex_deadlock_account_unlock(struct task_struct *task)
+-{
+-}
+-
+--- a/kernel/locking/rtmutex-debug.h
++++ b/kernel/locking/rtmutex-debug.h
+@@ -9,9 +9,6 @@
+  * This file contains macros used solely by rtmutex.c. Debug version.
+  */
  
- 		/* Unqueue and drop the lock. */
- 		unqueue_me_pi(&q);
+-extern void
+-rt_mutex_deadlock_account_lock(struct rt_mutex *lock, struct task_struct *task);
+-extern void rt_mutex_deadlock_account_unlock(struct task_struct *task);
+ extern void debug_rt_mutex_init_waiter(struct rt_mutex_waiter *waiter);
+ extern void debug_rt_mutex_free_waiter(struct rt_mutex_waiter *waiter);
+ extern void debug_rt_mutex_init(struct rt_mutex *lock, const char *name);
 --- a/kernel/locking/rtmutex.c
 +++ b/kernel/locking/rtmutex.c
-@@ -1519,15 +1519,23 @@ EXPORT_SYMBOL_GPL(rt_mutex_lock_interrup
+@@ -956,8 +956,6 @@ takeit:
+ 	 */
+ 	rt_mutex_set_owner(lock, task);
  
- /*
-  * Futex variant with full deadlock detection.
-+ * Futex variants must not use the fast-path, see __rt_mutex_futex_unlock().
-  */
--int rt_mutex_timed_futex_lock(struct rt_mutex *lock,
-+int __sched rt_mutex_timed_futex_lock(struct rt_mutex *lock,
- 			      struct hrtimer_sleeper *timeout)
- {
- 	might_sleep();
- 
--	return rt_mutex_timed_fastlock(lock, TASK_INTERRUPTIBLE, timeout,
--				       RT_MUTEX_FULL_CHAINWALK,
--				       rt_mutex_slowlock);
-+	return rt_mutex_slowlock(lock, TASK_INTERRUPTIBLE,
-+				 timeout, RT_MUTEX_FULL_CHAINWALK);
-+}
-+
-+/*
-+ * Futex variant, must not use fastpath.
-+ */
-+int __sched rt_mutex_futex_trylock(struct rt_mutex *lock)
-+{
-+	return rt_mutex_slowtrylock(lock);
+-	rt_mutex_deadlock_account_lock(lock, task);
+-
+ 	return 1;
  }
  
- /**
-@@ -1586,20 +1594,38 @@ void __sched rt_mutex_unlock(struct rt_m
- EXPORT_SYMBOL_GPL(rt_mutex_unlock);
+@@ -1365,8 +1363,6 @@ static bool __sched rt_mutex_slowunlock(
  
- /**
-- * rt_mutex_futex_unlock - Futex variant of rt_mutex_unlock
-- * @lock: the rt_mutex to be unlocked
-- *
-- * Returns: true/false indicating whether priority adjustment is
-- * required or not.
-+ * Futex variant, that since futex variants do not use the fast-path, can be
-+ * simple and will not need to retry.
-  */
--bool __sched rt_mutex_futex_unlock(struct rt_mutex *lock,
--				   struct wake_q_head *wqh)
-+bool __sched __rt_mutex_futex_unlock(struct rt_mutex *lock,
-+				    struct wake_q_head *wake_q)
+ 	debug_rt_mutex_unlock(lock);
+ 
+-	rt_mutex_deadlock_account_unlock(current);
+-
+ 	/*
+ 	 * We must be careful here if the fast path is enabled. If we
+ 	 * have no waiters queued we cannot set owner to NULL here
+@@ -1432,11 +1428,10 @@ rt_mutex_fastlock(struct rt_mutex *lock,
+ 				struct hrtimer_sleeper *timeout,
+ 				enum rtmutex_chainwalk chwalk))
  {
+-	if (likely(rt_mutex_cmpxchg_acquire(lock, NULL, current))) {
+-		rt_mutex_deadlock_account_lock(lock, current);
++	if (likely(rt_mutex_cmpxchg_acquire(lock, NULL, current)))
+ 		return 0;
+-	} else
+-		return slowfn(lock, state, NULL, RT_MUTEX_MIN_CHAINWALK);
++
++	return slowfn(lock, state, NULL, RT_MUTEX_MIN_CHAINWALK);
+ }
+ 
+ static inline int
+@@ -1448,21 +1443,19 @@ rt_mutex_timed_fastlock(struct rt_mutex
+ 				      enum rtmutex_chainwalk chwalk))
+ {
+ 	if (chwalk == RT_MUTEX_MIN_CHAINWALK &&
+-	    likely(rt_mutex_cmpxchg_acquire(lock, NULL, current))) {
+-		rt_mutex_deadlock_account_lock(lock, current);
++	    likely(rt_mutex_cmpxchg_acquire(lock, NULL, current)))
+ 		return 0;
+-	} else
+-		return slowfn(lock, state, timeout, chwalk);
++
++	return slowfn(lock, state, timeout, chwalk);
+ }
+ 
+ static inline int
+ rt_mutex_fasttrylock(struct rt_mutex *lock,
+ 		     int (*slowfn)(struct rt_mutex *lock))
+ {
+-	if (likely(rt_mutex_cmpxchg_acquire(lock, NULL, current))) {
+-		rt_mutex_deadlock_account_lock(lock, current);
++	if (likely(rt_mutex_cmpxchg_acquire(lock, NULL, current)))
+ 		return 1;
+-	}
++
+ 	return slowfn(lock);
+ }
+ 
+@@ -1472,19 +1465,18 @@ rt_mutex_fastunlock(struct rt_mutex *loc
+ 				   struct wake_q_head *wqh))
+ {
+ 	WAKE_Q(wake_q);
++	bool deboost;
+ 
 -	if (likely(rt_mutex_cmpxchg_release(lock, current, NULL))) {
 -		rt_mutex_deadlock_account_unlock(current);
--		return false;
-+	lockdep_assert_held(&lock->wait_lock);
-+
-+	debug_rt_mutex_unlock(lock);
-+
-+	if (!rt_mutex_has_waiters(lock)) {
-+		lock->owner = NULL;
-+		return false; /* done */
-+	}
-+
-+	mark_wakeup_next_waiter(wake_q, lock);
-+	return true; /* deboost and wakeups */
-+}
-+
-+void __sched rt_mutex_futex_unlock(struct rt_mutex *lock)
-+{
-+	WAKE_Q(wake_q);
-+	bool deboost;
-+
-+	raw_spin_lock_irq(&lock->wait_lock);
-+	deboost = __rt_mutex_futex_unlock(lock, &wake_q);
-+	raw_spin_unlock_irq(&lock->wait_lock);
-+
-+	if (deboost) {
-+		wake_up_q(&wake_q);
++	if (likely(rt_mutex_cmpxchg_release(lock, current, NULL)))
++		return;
+ 
+-	} else {
+-		bool deboost = slowfn(lock, &wake_q);
++	deboost = slowfn(lock, &wake_q);
+ 
+-		wake_up_q(&wake_q);
++	wake_up_q(&wake_q);
+ 
+-		/* Undo pi boosting if necessary: */
+-		if (deboost)
+-			rt_mutex_adjust_prio(current);
+-	}
++	/* Undo pi boosting if necessary: */
++	if (deboost)
 +		rt_mutex_adjust_prio(current);
- 	}
--	return rt_mutex_slowunlock(lock, wqh);
  }
  
  /**
---- a/kernel/locking/rtmutex_common.h
-+++ b/kernel/locking/rtmutex_common.h
-@@ -113,8 +113,12 @@ extern int rt_mutex_wait_proxy_lock(stru
- extern bool rt_mutex_cleanup_proxy_lock(struct rt_mutex *lock,
- 				 struct rt_mutex_waiter *waiter);
- extern int rt_mutex_timed_futex_lock(struct rt_mutex *l, struct hrtimer_sleeper *to);
--extern bool rt_mutex_futex_unlock(struct rt_mutex *lock,
--				  struct wake_q_head *wqh);
-+extern int rt_mutex_futex_trylock(struct rt_mutex *l);
-+
-+extern void rt_mutex_futex_unlock(struct rt_mutex *lock);
-+extern bool __rt_mutex_futex_unlock(struct rt_mutex *lock,
-+				 struct wake_q_head *wqh);
-+
- extern void rt_mutex_adjust_prio(struct task_struct *task);
+@@ -1682,7 +1674,6 @@ void rt_mutex_init_proxy_locked(struct r
+ 	__rt_mutex_init(lock, NULL);
+ 	debug_rt_mutex_proxy_lock(lock, proxy_owner);
+ 	rt_mutex_set_owner(lock, proxy_owner);
+-	rt_mutex_deadlock_account_lock(lock, proxy_owner);
+ }
  
- #ifdef CONFIG_DEBUG_RT_MUTEXES
+ /**
+@@ -1698,7 +1689,6 @@ void rt_mutex_proxy_unlock(struct rt_mut
+ {
+ 	debug_rt_mutex_proxy_unlock(lock);
+ 	rt_mutex_set_owner(lock, NULL);
+-	rt_mutex_deadlock_account_unlock(proxy_owner);
+ }
+ 
+ /**
+--- a/kernel/locking/rtmutex.h
++++ b/kernel/locking/rtmutex.h
+@@ -11,8 +11,6 @@
+  */
+ 
+ #define rt_mutex_deadlock_check(l)			(0)
+-#define rt_mutex_deadlock_account_lock(m, t)		do { } while (0)
+-#define rt_mutex_deadlock_account_unlock(l)		do { } while (0)
+ #define debug_rt_mutex_init_waiter(w)			do { } while (0)
+ #define debug_rt_mutex_free_waiter(w)			do { } while (0)
+ #define debug_rt_mutex_lock(l)				do { } while (0)
 
 
