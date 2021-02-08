@@ -2,56 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7632E3140AF
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 21:42:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 36BD53140B1
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 21:43:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230387AbhBHUmT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 15:42:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40288 "EHLO mail.kernel.org"
+        id S232400AbhBHUmm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 15:42:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40344 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236308AbhBHT3Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 14:29:24 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B27B264DC3;
-        Mon,  8 Feb 2021 19:28:41 +0000 (UTC)
+        id S236327AbhBHT3q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 14:29:46 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5511E64E8F;
+        Mon,  8 Feb 2021 19:29:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612812521;
-        bh=s0JgrqQa+G0wPRwnpZnlE2dShxRomBj4t2pW7KWbP8I=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=JrUylQRrCmKmeeyowwSWrB44pt/GZjlrckJ/eNmUN1WqDzWej39YLeb+wAurhdk+R
-         43QBk4f3OnrR0dX7CBEbYxjycsk3VFd9x6yNZUip8ymVL3qimGTQZ4KL36GQxltJb+
-         IvV0heaGQ8w+fTMMsU5yt6Gp2MdcgLkCAQemUymwus547COdfzsANHY0/khGTc1v7F
-         AbdR8oCs30javFffP7icwC9HQZrasdv2g197sZdygVrS3b8ohpi3b6tei9vdTiaZiB
-         /S59GseQJuyqH8U/4lOT50dXeTamRjw4vq6gMVcmLjbwSAMnScQZPlU4//LPhZzk/E
-         ISJRe6gMoyWbw==
-Content-Type: text/plain; charset="utf-8"
+        s=k20201202; t=1612812544;
+        bh=Cvo5fk94tAJuS0PSMjlJnRizZOjsCEwXtSadq5Inv48=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=aUW6F0qpJgWDvCfAbGdDG72EDh45tJqA4GHIAMUm4I6MVAg3gRtMzHynpPcXHHHTP
+         sG9MMkz4Ilt4FL/qZScOdi4hDvpihUjfWv3ZayW4JpDJ3IY7Vsx5Ox1Q3Tl/jUsU9c
+         /qkUG7Ua49SHofwPrJvwK+UVRGmZLUiVwOwK/ZkSV1G4U8Uuw33EXo14405TXvWdya
+         iSJjAuVggf0pQ+1ttS72bXHFDEr1b0xshVig3dEtRzyV6lYY7er5eTgFHJ7dKbsemD
+         /Hd8DS8owl/bMw0Yck4NGLGOB0mquyo1H344tnuVu3ahAXD4ig6sv/KjZy+UU4RgMZ
+         4Nzv/RIXFewng==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 284CF40513; Mon,  8 Feb 2021 16:29:02 -0300 (-03)
+Date:   Mon, 8 Feb 2021 16:29:02 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>, od@zcrc.me,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH] perf stat: Use nftw() instead of ftw()
+Message-ID: <20210208192902.GR920417@kernel.org>
+References: <20210208181157.1324550-1-paul@crapouillou.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210120073414.69208-3-jckuo@nvidia.com>
-References: <20210120073414.69208-1-jckuo@nvidia.com> <20210120073414.69208-3-jckuo@nvidia.com>
-Subject: Re: [PATCH v7 02/14] clk: tegra: Don't enable PLLE HW sequencer at init
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-tegra@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        nkristam@nvidia.com, linux-clk@vger.kernel.org,
-        JC Kuo <jckuo@nvidia.com>, Thierry Reding <treding@nvidia.com>
-To:     JC Kuo <jckuo@nvidia.com>, gregkh@linuxfoundation.org,
-        jonathanh@nvidia.com, kishon@ti.com, mturquette@baylibre.com,
-        robh@kernel.org, thierry.reding@gmail.com
-Date:   Mon, 08 Feb 2021 11:28:40 -0800
-Message-ID: <161281252000.76967.4881086496669699756@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210208181157.1324550-1-paul@crapouillou.net>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting JC Kuo (2021-01-19 23:34:02)
-> PLLE hardware power sequencer references PEX/SATA UPHY PLL hardware
-> power sequencers' output to enable/disable PLLE. PLLE hardware power
-> sequencer has to be enabled only after PEX/SATA UPHY PLL's sequencers
-> are enabled.
->=20
-> Signed-off-by: JC Kuo <jckuo@nvidia.com>
-> Acked-by: Thierry Reding <treding@nvidia.com>
+Em Mon, Feb 08, 2021 at 06:11:57PM +0000, Paul Cercueil escreveu:
+> ftw() has been obsolete for about 12 years now.
+> 
+> Fixes: bb1c15b60b98 ("perf stat: Support regex pattern in --for-each-cgroup")
+> CC: stable@vger.kernel.org
+> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
 > ---
+> 
+> Notes:
+>     NOTE: Not runtime-tested, I have no idea what I need to do in perf
+>     to test this. But at least it compiles now with my uClibc-based
+>     toolchain.
 
-Acked-by: Stephen Boyd <sboyd@kernel.org>
+Seems safe from reading the nftw() man page, the only typeflag that this
+code is using is FTW_D and that is present in both ftw() and nftw().
+
+Applying,
+
+- Arnaldo
+ 
+>  tools/perf/util/cgroup.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/tools/perf/util/cgroup.c b/tools/perf/util/cgroup.c
+> index 5dff7e489921..f24ab4585553 100644
+> --- a/tools/perf/util/cgroup.c
+> +++ b/tools/perf/util/cgroup.c
+> @@ -161,7 +161,7 @@ void evlist__set_default_cgroup(struct evlist *evlist, struct cgroup *cgroup)
+>  
+>  /* helper function for ftw() in match_cgroups and list_cgroups */
+>  static int add_cgroup_name(const char *fpath, const struct stat *sb __maybe_unused,
+> -			   int typeflag)
+> +			   int typeflag, struct FTW *ftwbuf __maybe_unused)
+>  {
+>  	struct cgroup_name *cn;
+>  
+> @@ -209,12 +209,12 @@ static int list_cgroups(const char *str)
+>  			if (!s)
+>  				return -1;
+>  			/* pretend if it's added by ftw() */
+> -			ret = add_cgroup_name(s, NULL, FTW_D);
+> +			ret = add_cgroup_name(s, NULL, FTW_D, NULL);
+>  			free(s);
+>  			if (ret)
+>  				return -1;
+>  		} else {
+> -			if (add_cgroup_name("", NULL, FTW_D) < 0)
+> +			if (add_cgroup_name("", NULL, FTW_D, NULL) < 0)
+>  				return -1;
+>  		}
+>  
+> @@ -247,7 +247,7 @@ static int match_cgroups(const char *str)
+>  	prefix_len = strlen(mnt);
+>  
+>  	/* collect all cgroups in the cgroup_list */
+> -	if (ftw(mnt, add_cgroup_name, 20) < 0)
+> +	if (nftw(mnt, add_cgroup_name, 20, 0) < 0)
+>  		return -1;
+>  
+>  	for (;;) {
+> -- 
+> 2.30.0
+> 
+
+-- 
+
+- Arnal
