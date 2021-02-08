@@ -2,34 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 030C43139ED
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 17:45:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B69E53139E9
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 17:44:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233512AbhBHQop (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 11:44:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56626 "EHLO mail.kernel.org"
+        id S233619AbhBHQnu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 11:43:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56628 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233517AbhBHPOt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S233512AbhBHPOt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 8 Feb 2021 10:14:49 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5F4FD64ECB;
-        Mon,  8 Feb 2021 15:10:49 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5DF3064E50;
+        Mon,  8 Feb 2021 15:10:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612797050;
-        bh=PJ6Jtig7KPgqGEEqxQ1Xnv6Kxjj3F3qRz2LrumFTtHs=;
+        s=korg; t=1612797055;
+        bh=AFF/PXZT9j9GHOqC0+qWXIv9B1RA08FedsN6s7hczMw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dLS8uddC6cEtlBkhT34FXlkniNApHseNyxJvsW376e0KisizPotmAJ1kwK76oppZw
-         6GWAOPeFZwchwayxTKvtgxi6tTyxWyKbFjZSsZDGifx+HSgpCLg1sN2RyXUxDsi/YO
-         D3sGDU+A+9X4aFLNelmNanoZLCAXptpZSrZXIwwI=
+        b=nreZYoVyTx4S05UhBkD6Km3mSpn4LwV6io25d0ZAatuFfIWVplTgWItkwpnPjMCKy
+         DWh87OA1A3hah1A/yUA7S2yxfGyavZib22wnmXl7wERjzhV9UwzTjhRn82TxoyeIkA
+         7CBLHVOSvExI2b9Kx2o0DAKqpiUln2jM4rL/6jh0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pavel Shilovsky <pshilov@microsoft.com>,
-        Tom Talpey <tom@talpey.com>,
-        Shyam Prasad N <nspmangalore@gmail.com>,
-        Steve French <stfrench@microsoft.com>
-Subject: [PATCH 5.4 41/65] smb3: fix crediting for compounding when only one request in flight
-Date:   Mon,  8 Feb 2021 16:01:13 +0100
-Message-Id: <20210208145811.812309797@linuxfoundation.org>
+        stable@vger.kernel.org, Fengnan Chang <fengnanchang@gmail.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Subject: [PATCH 5.4 42/65] mmc: core: Limit retries when analyse of SDIO tuples fails
+Date:   Mon,  8 Feb 2021 16:01:14 +0100
+Message-Id: <20210208145811.843817731@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210208145810.230485165@linuxfoundation.org>
 References: <20210208145810.230485165@linuxfoundation.org>
@@ -41,57 +39,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Shilovsky <pshilov@microsoft.com>
+From: Fengnan Chang <fengnanchang@gmail.com>
 
-commit 91792bb8089b63b7b780251eb83939348ac58a64 upstream.
+commit f92e04f764b86e55e522988e6f4b6082d19a2721 upstream.
 
-Currently we try to guess if a compound request is going to
-succeed waiting for credits or not based on the number of
-requests in flight. This approach doesn't work correctly
-all the time because there may be only one request in
-flight which is going to bring multiple credits satisfying
-the compound request.
+When analysing tuples fails we may loop indefinitely to retry. Let's avoid
+this by using a 10s timeout and bail if not completed earlier.
 
-Change the behavior to fail a request only if there are no requests
-in flight at all and proceed waiting for credits otherwise.
-
-Cc: <stable@vger.kernel.org> # 5.1+
-Signed-off-by: Pavel Shilovsky <pshilov@microsoft.com>
-Reviewed-by: Tom Talpey <tom@talpey.com>
-Reviewed-by: Shyam Prasad N <nspmangalore@gmail.com>
-Signed-off-by: Steve French <stfrench@microsoft.com>
+Signed-off-by: Fengnan Chang <fengnanchang@gmail.com>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20210123033230.36442-1-fengnanchang@gmail.com
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/cifs/transport.c |   18 +++++++++++++++---
- 1 file changed, 15 insertions(+), 3 deletions(-)
+ drivers/mmc/core/sdio_cis.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
---- a/fs/cifs/transport.c
-+++ b/fs/cifs/transport.c
-@@ -659,10 +659,22 @@ wait_for_compound_request(struct TCP_Ser
- 	spin_lock(&server->req_lock);
- 	if (*credits < num) {
- 		/*
--		 * Return immediately if not too many requests in flight since
--		 * we will likely be stuck on waiting for credits.
-+		 * If the server is tight on resources or just gives us less
-+		 * credits for other reasons (e.g. requests are coming out of
-+		 * order and the server delays granting more credits until it
-+		 * processes a missing mid) and we exhausted most available
-+		 * credits there may be situations when we try to send
-+		 * a compound request but we don't have enough credits. At this
-+		 * point the client needs to decide if it should wait for
-+		 * additional credits or fail the request. If at least one
-+		 * request is in flight there is a high probability that the
-+		 * server will return enough credits to satisfy this compound
-+		 * request.
-+		 *
-+		 * Return immediately if no requests in flight since we will be
-+		 * stuck on waiting for credits.
- 		 */
--		if (server->in_flight < num - *credits) {
-+		if (server->in_flight == 0) {
- 			spin_unlock(&server->req_lock);
- 			return -ENOTSUPP;
- 		}
+--- a/drivers/mmc/core/sdio_cis.c
++++ b/drivers/mmc/core/sdio_cis.c
+@@ -20,6 +20,8 @@
+ #include "sdio_cis.h"
+ #include "sdio_ops.h"
+ 
++#define SDIO_READ_CIS_TIMEOUT_MS  (10 * 1000) /* 10s */
++
+ static int cistpl_vers_1(struct mmc_card *card, struct sdio_func *func,
+ 			 const unsigned char *buf, unsigned size)
+ {
+@@ -266,6 +268,8 @@ static int sdio_read_cis(struct mmc_card
+ 
+ 	do {
+ 		unsigned char tpl_code, tpl_link;
++		unsigned long timeout = jiffies +
++			msecs_to_jiffies(SDIO_READ_CIS_TIMEOUT_MS);
+ 
+ 		ret = mmc_io_rw_direct(card, 0, 0, ptr++, 0, &tpl_code);
+ 		if (ret)
+@@ -318,6 +322,8 @@ static int sdio_read_cis(struct mmc_card
+ 			prev = &this->next;
+ 
+ 			if (ret == -ENOENT) {
++				if (time_after(jiffies, timeout))
++					break;
+ 				/* warn about unknown tuples */
+ 				pr_warn_ratelimited("%s: queuing unknown"
+ 				       " CIS tuple 0x%02x (%u bytes)\n",
 
 
