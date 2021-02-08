@@ -2,130 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 445A3313DF3
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 19:46:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C058C313DEF
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 19:45:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235018AbhBHSqF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 13:46:05 -0500
-Received: from mga04.intel.com ([192.55.52.120]:11465 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234678AbhBHQsQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 11:48:16 -0500
-IronPort-SDR: qsdeONBKkLpGO9/dJeHGFeoK/qfvFWn58G21PHAE9OTHbWo2C7XnxCNNJ0wV8VjORcX/PuanO3
- OD2mHDpW9oWA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9889"; a="179181609"
-X-IronPort-AV: E=Sophos;i="5.81,162,1610438400"; 
-   d="scan'208";a="179181609"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2021 08:46:22 -0800
-IronPort-SDR: B+Ir28btZSuTbBOqiRenJDSRItnbw/1bi4Wk6J9ruur0hyhbS9VCHB0mlMsKA4/7a+xYIjjnHs
- 8cZ70rZubCvA==
-X-IronPort-AV: E=Sophos;i="5.81,162,1610438400"; 
-   d="scan'208";a="509529035"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2021 08:46:20 -0800
-Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
-        id 4C04C2082C; Mon,  8 Feb 2021 18:46:18 +0200 (EET)
-Date:   Mon, 8 Feb 2021 18:46:18 +0200
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Ezequiel Garcia <ezequiel@collabora.com>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build warning after merge of the v4l-dvb tree
-Message-ID: <20210208164618.GY32460@paasikivi.fi.intel.com>
-References: <20210208233716.16d962ad@canb.auug.org.au>
- <56cd99bbf526b43507579b5775bac5f885319866.camel@collabora.com>
+        id S234503AbhBHSod (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 13:44:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44180 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234560AbhBHQrL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 11:47:11 -0500
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6F71C06178B
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 08:46:30 -0800 (PST)
+Received: by mail-pf1-x42d.google.com with SMTP id b145so10070775pfb.4
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 08:46:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=bNIRDaAi2ttUX2BwT0eUxftB7rMbwd0s7iNYvsQxqIM=;
+        b=DvWmqTiXK/tfwiqP0CRyLh8rTLUNIVDh34KaTK+LeNoPkBpMUYRJ4wlrOoDkkRvBDE
+         +OzGQ9zai4tYDojdE7z0j65kmDwUE4M3rF9kWiWSS2TH7yD9OP3swFufn+S/exgDnzXh
+         Y8wl6FLvplxW7M/urXzNkR8S7lJ8vWJlg/Y9WNj9JOV7GjFQhw+TbdZ0mhl6WVPfltcn
+         vDPG+g7oulJ+1LjRbmHvnLpwRB/Jw5D5UDkphH6bMSeL7VQFwwxr3yRRb+lh4xCDQsD5
+         XGl99eh/V1HepufofyxXKpoLUS2hap6H+xhu7kZdmUVBtFcd6HEkPjpoIsF9wvWqlDVt
+         X5ZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=bNIRDaAi2ttUX2BwT0eUxftB7rMbwd0s7iNYvsQxqIM=;
+        b=G2EAjb2OEOAFQWr5Bi0CleH5Yalf9Ek5/z0b3SfUa/aWKwIQILVr5yq0uiwvabUkyS
+         JCcJrOy4Z6KW43DcrcHDSxLYpKQim8UE9K/z/SoE7KLOrBSfGovGt2Mnr8n29/D3CIce
+         3okT3XNdztFannEAmtRgnOPbibTcCS7v0AhxDnAkYLQKjk3R/xeTxsBJrbEvlxvK/Ol8
+         /kZe8Ir6c1gfjfFq+iNxoKU8lxooLalMDR6ryPkjtjwEk6mLhVYTmjdyvVeB0i8gSAcn
+         Mgscx3EmmSKDBnl4LeQ+hJtFeEsehRHDwtcxcvd6S9AaJXTqIaVy7ZW+dHeUl4uEctRX
+         fI5w==
+X-Gm-Message-State: AOAM531BXqpeVcyf90CZK3eH9XSuqDhhLrdlPw4aXfpH18pxc16YeY6m
+        nGqmZCXcOXCJQxGk63EACZCHvg==
+X-Google-Smtp-Source: ABdhPJz+mGTNSN2zKYo+/YorUukj0PKZMpOZCCARW7Yi811M3D5aANogEa3MfGD0IXUKRYHEuTGhEw==
+X-Received: by 2002:a63:1524:: with SMTP id v36mr17841967pgl.383.1612802790364;
+        Mon, 08 Feb 2021 08:46:30 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:e4db:abc1:a5c0:9dbc])
+        by smtp.gmail.com with ESMTPSA id 16sm15991358pjc.28.2021.02.08.08.46.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Feb 2021 08:46:29 -0800 (PST)
+Date:   Mon, 8 Feb 2021 08:46:23 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Andi Kleen <ak@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>, linux-kernel@vger.kernel.org,
+        Sean Christopherson <sean.j.christopherson@intel.com>
+Subject: Re: [RFC v1 05/26] x86/traps: Add #VE support for TDX guest
+Message-ID: <YCFq3y5b62NsmBhO@google.com>
+References: <cover.1612563142.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <48a702f536ccf953eee5778023ed6d1a452f6dcf.1612563142.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <YCEQiDNSHTGBXBcj@hirez.programming.kicks-ass.net>
+ <20210208162301.GA365765@tassilo.jf.intel.com>
+ <YCFnwnzgHXNGKW+M@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <56cd99bbf526b43507579b5775bac5f885319866.camel@collabora.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <YCFnwnzgHXNGKW+M@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ezequiel,
+On Mon, Feb 08, 2021, Peter Zijlstra wrote:
+> On Mon, Feb 08, 2021 at 08:23:01AM -0800, Andi Kleen wrote:
+> > > > +#ifdef CONFIG_INTEL_TDX_GUEST
+> > > > +DEFINE_IDTENTRY(exc_virtualization_exception)
+> > > > +{
+> > > > +	struct ve_info ve;
+> > > > +	int ret;
+> > > > +
+> > > > +	RCU_LOCKDEP_WARN(!rcu_is_watching(), "entry code didn't wake RCU");
+> > > > +
+> > > > +	/* Consume #VE info before re-enabling interrupts */
+> > > 
+> > > So what happens if NMI happens here, and triggers a nested #VE ?
+> > 
+> > Yes that's a gap. We should probably bail out and reexecute the original
+> > instruction. The VE handler would need to set a flag for that.
 
-Thanks for addressing this.
+No, NMI cannot happen here.  The TDX-Module "blocks" NMIs until the #VE info is
+consumed by the guest.
 
-On Mon, Feb 08, 2021 at 01:42:21PM -0300, Ezequiel Garcia wrote:
-> Hi Stephen,
+> > Or alternatively the NMI always gets the VE information and puts
+> > it on some internal stack, but that would seem clunkier.
 > 
-> On Mon, 2021-02-08 at 23:37 +1100, Stephen Rothwell wrote:
-> > Hi all,
-> > 
-> > After merging the v4l-dvb tree, today's linux-next build (htmldocs)
-> > produced this warning:
-> > 
-> > include/media/v4l2-async.h:178: warning: expecting prototype for v4l2_async_notifier_add_fwnode_subdev(). Prototype was for
-> > __v4l2_async_notifier_add_fwnode_subdev() instead
-> > include/media/v4l2-async.h:207: warning: expecting prototype for v4l2_async_notifier_add_fwnode_remote_subdev(). Prototype was for
-> > __v4l2_async_notifier_add_fwnode_remote_subdev() instead
-> > include/media/v4l2-async.h:230: warning: expecting prototype for v4l2_async_notifier_add_i2c_subdev(). Prototype was for
-> > __v4l2_async_notifier_add_i2c_subdev() instead
-> > 
-> > Maybe introduced by commit
-> > 
-> >   c1cc23625062 ("media: v4l2-async: Discourage use of v4l2_async_notifier_add_subdev")
-> > 
-> 
-> Thanks for spotting this. Should be fixed by:
-> 
-> diff --git a/include/media/v4l2-async.h b/include/media/v4l2-async.h
-> index 6f22daa6f067..3785445282fc 100644
-> --- a/include/media/v4l2-async.h
-> +++ b/include/media/v4l2-async.h
-> @@ -157,7 +157,7 @@ int __v4l2_async_notifier_add_subdev(struct v4l2_async_notifier *notifier,
->  				   struct v4l2_async_subdev *asd);
->  
->  /**
-> - * v4l2_async_notifier_add_fwnode_subdev - Allocate and add a fwnode async
-> + * __v4l2_async_notifier_add_fwnode_subdev - Allocate and add a fwnode async
+> The same is possible with MCE and #DB I imagine.
 
-The problem with the approach is that this no longer documents the API that
-drivers are intended to use, but the intermediate one. I guess fixing
-this properly could require changes to kerneldoc so I have no objections to
-the approach.
+The MCE "architecture" for a TDX guest is rather stupid.  The guest is required
+to keep CR4.MCE=1, but at least for TDX 1.0 the VMM is not allowed to inject #MC.
+So, for better or worse, #MC is a non-issue.
 
->   *				subdev to the notifier's master asd_list.
->   *
->   * @notifier: pointer to &struct v4l2_async_notifier
-> @@ -181,7 +181,7 @@ __v4l2_async_notifier_add_fwnode_subdev(struct v4l2_async_notifier *notifier,
->  						   sizeof(__type)))
->  
->  /**
-> - * v4l2_async_notifier_add_fwnode_remote_subdev - Allocate and add a fwnode
-> + * __v4l2_async_notifier_add_fwnode_remote_subdev - Allocate and add a fwnode
->   *						  remote async subdev to the
->   *						  notifier's master asd_list.
->   *
-> @@ -210,7 +210,7 @@ __v4l2_async_notifier_add_fwnode_remote_subdev(struct v4l2_async_notifier *notif
->  							  sizeof(__type)))
->  
->  /**
-> - * v4l2_async_notifier_add_i2c_subdev - Allocate and add an i2c async
-> + * __v4l2_async_notifier_add_i2c_subdev - Allocate and add an i2c async
->   *				subdev to the notifier's master asd_list.
->   *
->   * @notifier: pointer to &struct v4l2_async_notifier
-> @@ -228,7 +228,7 @@ struct v4l2_async_subdev *
->  __v4l2_async_notifier_add_i2c_subdev(struct v4l2_async_notifier *notifier,
->  				     int adapter_id, unsigned short address,
->  				     unsigned int asd_struct_size);
-> -#define v4l2_async_notifier_add_i2c_subdev(__notifier, __adap, __addr, __type)	\
-> +#define v4l2_async_notifier_i2c(__notifier, __adap, __addr, __type)	\
-
-I guess this change was not intentional?
-
->  ((__type *)__v4l2_async_notifier_add_i2c_subdev(__notifier, __adap, __addr,	\
->  						sizeof(__type)))
->  
-> 
-
--- 
-Kind regards,
-
-Sakari Ailus
+#VE->#DB->#VE would be an issue, presumably this needs to be noinstr (or whatever
+it is that prevents #DBs on functions).
