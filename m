@@ -2,99 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F56831421F
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 22:44:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC886314220
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 22:44:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237019AbhBHVnH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 16:43:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33264 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236304AbhBHVOa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 16:14:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2A15364E8F;
-        Mon,  8 Feb 2021 21:13:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612818828;
-        bh=Hsw7u4NisXSHdMbN0miFLrU3qob/BtZRKy5D0WtD4mQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DqkWj9UrgaNlN7tor4WlT/PbjHoDhVkTAWVyRtiehKqBsBIlg2zRzOAntGDW+86wx
-         t9LmuXLRYqrHRZcBc7unC6XAhPNWrMcUUEvHAvwnkCUgMKqMFZnL9bm2GNE5aC4pUI
-         g9uqZwzHwFkcQ+XmsVzR8yYGxPKdKhbTnQ7myE7Mj0cV6qw47j0NdId0MJHEqRslub
-         /el3Boy5sSLWlkjK0Pm94QQLob4G/uLz4vRWnNapLgu2mZBiTSGLPUWdmMesgwLpz4
-         8w43a6xpBzhX2L15Qekz5VMG+RTL22BH8Ov5Tcl9FLLVyaJGQwK59/7ht8rPcFYKmt
-         XQ6gGB3oh8qzg==
-Date:   Mon, 8 Feb 2021 23:13:26 +0200
-From:   Mike Rapoport <rppt@kernel.org>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
+        id S237038AbhBHVnN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 16:43:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45380 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236315AbhBHVO6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 16:14:58 -0500
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1A38C061788
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 13:14:17 -0800 (PST)
+Received: by mail-io1-xd32.google.com with SMTP id u8so16488456ior.13
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 13:14:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=atishpatra.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3FeiA79iLSDi0k0ZMiFHmOL8NHbfXhIuWSoTn/fGVeY=;
+        b=ZclT1m870hHFi+lNdB6+VkCpGEahDMU00K4AuTfI994iegwXHwBXf6+iWDUUY1LGyR
+         XFQH3YCADT7wCjJhqwG6cxOmKdutCmhDRQTxpSaqhujCxhiAqHojoEXzcYSryf/Aa+ym
+         WgChKCCtgJxmsswJzN5qFl0y+bHQj0H5ecmf0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3FeiA79iLSDi0k0ZMiFHmOL8NHbfXhIuWSoTn/fGVeY=;
+        b=gBtWYJHmZBnNsf0ntwwB6aE63bVCr4pxF5C+JD9eN6qNlFl46mDvmoL2gsHHkyxdXD
+         Dt8+XyXLkIq+TIzbaYdNfrJlI8sigJugUla6gFT3H/qbapv7VzAMGO3ppYqxtWYA62XP
+         RYIlPvLGC4zJdcKCrZzSxxqoswQvUZfc7IHxLs7OwjWzKV33XLyvE1KMXP0CQXtW1Vu7
+         1qzhZQZj+mIsL0q15GNFeojzxJ10ipd4NgkHVbUmICxDJipF+IrEfj//l3XSe3joymqz
+         k43rg1OEjfczqS2Adg0Zwn+nvE9t//mkQNpF4Y277Zm4j1f+zsyYidgilfXnL+9o5bba
+         lY7w==
+X-Gm-Message-State: AOAM530IniUfxXNCHIcmaIwPgLda7e1tYXcnJlIczXHE/fEp2B4lhJFP
+        Nn8p5kviim/36GtEm+0aXRnr7jhr8m1XvQTczsVW
+X-Google-Smtp-Source: ABdhPJy0kax2flx8hj7WBbhdgj5nWwuM1G6DARrTIESg+pfqzKkTAS3xb9t2X4Tbcm8zJFirRtRmlKFMR1eDtkR0g5M=
+X-Received: by 2002:a05:6602:2d4d:: with SMTP id d13mr16157926iow.0.1612818857262;
+ Mon, 08 Feb 2021 13:14:17 -0800 (PST)
+MIME-Version: 1.0
+References: <20210206100115.58074-1-xypron.glpk@gmx.de>
+In-Reply-To: <20210206100115.58074-1-xypron.glpk@gmx.de>
+From:   Atish Patra <atishp@atishpatra.org>
+Date:   Mon, 8 Feb 2021 13:14:06 -0800
+Message-ID: <CAOnJCUJ+CvBHt1MXzGn2Hmc2J-NZYdxf4MGka7sh1SmozTbWCg@mail.gmail.com>
+Subject: Re: [PATCH] docs: update EFI stub description
+To:     Heinrich Schuchardt <xypron.glpk@gmx.de>
+Cc:     Ard Biesheuvel <ardb@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        Albert Ou <aou@eecs.berkeley.edu>,
         Palmer Dabbelt <palmer@dabbelt.com>,
         Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org
-Subject: Re: [PATCH v17 00/10] mm: introduce memfd_secret system call to
- create "secret" memory areas
-Message-ID: <20210208211326.GV242749@kernel.org>
-References: <20210208084920.2884-1-rppt@kernel.org>
- <4996348d-5710-d77d-bb14-d84e370b4a5c@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4996348d-5710-d77d-bb14-d84e370b4a5c@redhat.com>
+        linux-riscv <linux-riscv@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 08, 2021 at 10:27:18AM +0100, David Hildenbrand wrote:
-> On 08.02.21 09:49, Mike Rapoport wrote:
-> 
-> Some questions (and request to document the answers) as we now allow to have
-> unmovable allocations all over the place and I don't see a single comment
-> regarding that in the cover letter:
-> 
-> 1. How will the issue of plenty of unmovable allocations for user space be
-> tackled in the future?
-> 
-> 2. How has this issue been documented? E.g., interaction with ZONE_MOVABLE
-> and CMA, alloc_conig_range()/alloc_contig_pages?.
+On Sat, Feb 6, 2021 at 2:02 AM Heinrich Schuchardt <xypron.glpk@gmx.de> wrote:
+>
+> * Mention RISC-V.
+> * Update code references.
+> * initrd= does not specify a path relative on the ESP but to the partition
+>   from which the EFI stub was loaded (as specified in the loaded image
+>   protocol).
+> * Mention that ACPI tables and device trees are alternatives.
+> * Provide the FDT GUID.
+>
+> Signed-off-by: Heinrich Schuchardt <xypron.glpk@gmx.de>
+> ---
+>  Documentation/admin-guide/efi-stub.rst | 47 +++++++++++++++-----------
+>  1 file changed, 27 insertions(+), 20 deletions(-)
+>
+> diff --git a/Documentation/admin-guide/efi-stub.rst b/Documentation/admin-guide/efi-stub.rst
+> index 833edb0d0bc4..9e1bb79e8655 100644
+> --- a/Documentation/admin-guide/efi-stub.rst
+> +++ b/Documentation/admin-guide/efi-stub.rst
+> @@ -8,15 +8,20 @@ it as an EFI executable. The code that modifies the bzImage header,
+>  along with the EFI-specific entry point that the firmware loader
+>  jumps to are collectively known as the "EFI boot stub", and live in
+>  arch/x86/boot/header.S and arch/x86/boot/compressed/eboot.c,
+> -respectively. For ARM the EFI stub is implemented in
+> -arch/arm/boot/compressed/efi-header.S and
+> -arch/arm/boot/compressed/efi-stub.c. EFI stub code that is shared
+> -between architectures is in drivers/firmware/efi/libstub.
+> +respectively. For ARM the EFI stub entry point is implemented in
+> +arch/arm/boot/compressed/efi-header.S.
+>
+> -For arm64, there is no compressed kernel support, so the Image itself
+> -masquerades as a PE/COFF image and the EFI stub is linked into the
+> -kernel. The arm64 EFI stub lives in arch/arm64/kernel/efi-entry.S
+> -and drivers/firmware/efi/libstub/arm64-stub.c.
+> +For ARM64 and RISC-V, there is no compressed kernel support, so the Image
+> +itself masquerades as a PE/COFF image and the EFI stub is linked into the
+> +kernel. The EFI stub entry point is in  arch/ARM64/kernel/efi-entry.S for
+> +ARM64 and in arch/riscv/kernel/efi-header.S for RISC-V.
+> +
+> +EFI stub code that is shared between architectures is in
+> +drivers/firmware/efi/libstub.
+> +
+> +The common secondary entry point efi_pe_entry() for ARM, ARM64, and RISC-V
+> +into the stub is in drivers/firmware/efi/libstub/efi-stub.c while x86 uses
+> +drivers/firmware/efi/libstub/x86-stub.c.
+>
+>  By using the EFI boot stub it's possible to boot a Linux kernel
+>  without the use of a conventional EFI boot loader, such as grub or
+> @@ -35,7 +40,7 @@ the extension the EFI firmware loader will refuse to execute it. It's
+>  not possible to execute bzImage.efi from the usual Linux file systems
+>  because EFI firmware doesn't have support for them. For ARM the
+>  arch/arm/boot/zImage should be copied to the system partition, and it
+> -may not need to be renamed. Similarly for arm64, arch/arm64/boot/Image
+> +may not need to be renamed. Similarly for ARM64, arch/arm64/boot/Image
+>  should be copied but not necessarily renamed.
+>
 
-Secretmem sets the mappings gfp mask to GFP_HIGHUSER, so it does not
-allocate movable pages at the first place.
- 
-> 3. How are the plans to support migration in the future and which interface
-> changes will be required? (Michal mentioned some good points to make this
-> configurable via the interface, we should plan ahead and document)
+Should we change the title of the paragraph to something like "How to
+install EFI image"
+ RISC-V image location can be added as well.
+>
+> @@ -55,10 +60,11 @@ multiple initrd files using the "initrd=" option. This is the only EFI
+>  stub-specific command line parameter, everything else is passed to the
+>  kernel when it boots.
+>
+> -The path to the initrd file must be an absolute path from the
+> -beginning of the ESP, relative path names do not work. Also, the path
+> -is an EFI-style path and directory elements must be separated with
+> -backslashes (\). For example, given the following directory layout::
+> +The path to the initrd file must be an absolute path from the beginning of
+> +the partition from which the kernel was loaded, relative path names do not
+> +work. Also, the path is an EFI-style path and directory elements must be
+> +separated with backslashes (\). For example, given the following directory
+> +layout::
+>
+>    fs0:>
+>         Kernels\
+> @@ -83,18 +89,19 @@ is passed to bzImage.efi.
+>  The "dtb=" option
+>  -----------------
+>
+> -For the ARM and arm64 architectures, a device tree must be provided to
+> -the kernel. Normally firmware shall supply the device tree via the
+> -EFI CONFIGURATION TABLE. However, the "dtb=" command line option can
+> -be used to override the firmware supplied device tree, or to supply
+> -one when firmware is unable to.
+> +If ACPI tables are not available, a device tree must be provided to the
+> +kernel. Normally the firmware shall supply the device tree as an EFI
+> +configuration table with GUID b1b621d5-f19c-41a5-830b-d9152c69aae0.
+> +However, the "dtb=" command line option can be used to override the
+> +firmware supplied device tree, or to supply one when firmware is unable
+> +to.
+>
+>  Please note: Firmware adds runtime configuration information to the
+>  device tree before booting the kernel. If dtb= is used to override
+>  the device tree, then any runtime data provided by firmware will be
+>  lost. The dtb= option should only be used either as a debug tool, or
+> -as a last resort when a device tree is not provided in the EFI
+> -CONFIGURATION TABLE.
+> +as a last resort when a device tree is not provided as an EFI
+> +configuration table.
+>
 
-The only interface change required is an addition of bit value for syscall
-flags, I really think it can be documented with the addition of migration
-or any other feature for that sake. 
+Some more clarification is required here as this option is only
+enabled with EFI_ARMSTUB_DTB_LOADER.
+That config option is not enabled for RISC-V to avoid legacy.
+
+>  "dtb=" is processed in the same manner as the "initrd=" option that is
+>  described above.
+> --
+> 2.30.0
+>
+>
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
+
+
 
 -- 
-Sincerely yours,
-Mike.
+Regards,
+Atish
