@@ -2,79 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 800C3313D83
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 19:31:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04858313D84
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 19:31:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235458AbhBHSa0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 13:30:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47080 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233699AbhBHQKC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 11:10:02 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D07B464DF0;
-        Mon,  8 Feb 2021 16:09:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612800562;
-        bh=0r7EFWA3/TE6ZV9vLRgre43wSwtaomAWRjcEc4vmFu0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DOvsbfwF4KSVBmzD/1qj4FjM38TK1t5Mvh9JUpyQ8/rWuP4AbY9ZQ234D9hMWuxPi
-         ZQDRRW3D0YqpDvdEu9pyPdr8yi7M5E965qVK6m/xw10VroMsJHINt+phllwzSbabAZ
-         ZG5XHx1V2KDv3iwXStGR1mW4kj/9jpVnl6yrskiwJu7TgbBYnyaSjKbiCj/Ti+UcHw
-         UYlDmkR1+og0vCa8oJFfFSToxWLUihPaeSCmkU01Me5b6FPAdPJc7eJ6wOrDVKSdEL
-         9c0HPaCdP/TiW7R49Xqyh+tyF1/Na2v9at03ihoek+vHRa4hYENnfs5yBKVpbRe4je
-         VKa6dUO99bQug==
-Date:   Mon, 8 Feb 2021 16:08:30 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc:     perex@perex.cz, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, lgirdwood@gmail.com,
-        devicetree@vger.kernel.org, robh+dt@kernel.org
-Subject: Re: [PATCH v2 2/7] ASoC: codec: lpass-rx-macro: add support for
- lpass rx macro
-Message-ID: <20210208160830.GI8645@sirena.org.uk>
-References: <20210208141719.23305-1-srinivas.kandagatla@linaro.org>
- <20210208141719.23305-3-srinivas.kandagatla@linaro.org>
+        id S235600AbhBHSam (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 13:30:42 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:59852 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230395AbhBHQKb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 11:10:31 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612800538;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=P2iBB0LyG2KCKP9pDFDKEk0ExuReKwaAb5h/pNk9dGc=;
+        b=OO2UnOMOWwN18v8ef4GKqmQ6Q23ms8urDQdfcHAGr+0n7ueKt3H9vpGjaqSh8rATHAUziE
+        b9QT2MgnJd7Z273+35OtB6N9qRgKZQViuiKihol0p6IpIMRCpk+nlgHq1BLHe961YYBpuT
+        5MgXiTdRqrCYQx0HjV/7zGXcCipsyvM=
+Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
+ [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-414-Fae-9bU0PWqdEkmuyqGiNw-1; Mon, 08 Feb 2021 11:08:57 -0500
+X-MC-Unique: Fae-9bU0PWqdEkmuyqGiNw-1
+Received: by mail-qv1-f69.google.com with SMTP id h13so10906125qvo.18
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 08:08:57 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=P2iBB0LyG2KCKP9pDFDKEk0ExuReKwaAb5h/pNk9dGc=;
+        b=IdenWeE/aCGBdjfZEf7fQSDuxyu3LqqFG5D/3/NNimwc5XPFL1XlrfL0p7xwvjqdsr
+         pruW7lHESAh+kt4Fyccsf7lk9GeUpRNXG95nn2Er+CkYy2I5ls8EFN9LINVzu+2U6r3f
+         dVWe5XUf9LyavCmlLeqbYwIo63YmCdXyT8e++nFsg0R4TABX/M48h3QbaDM4uXNeO7FC
+         SE9oVG0iQ1QF1+8+qV3bP6pR84aWVHnxWDm9Lr6edn42eEgfRK+yHTv3M8+eJFLvcj8q
+         PZFxdwq/moIqVy7IDXygiptHV0BPxy8pq9ruo0P2pzDWvmpcMaSJ+tLWlKItUjVRiUT/
+         McCw==
+X-Gm-Message-State: AOAM530JTumakn5Qj7+7gNe9+OS3dE9t4YgZrLPra+ksHHiBEGS1dM1d
+        8y3o7b0YAg88JQDFBnZEukIwrJm8Xhf9PKh3nuZnVB/TL2b/9XiGkZIe6r1bMcbytAGVGTYuFSv
+        RPEVEohEIcD+MCGpNmGJVsLrYgsc1RBJ1deyKtp6VJ11i2snbQRvQ0LKe9O7pWVnHBLe+lJ0=
+X-Received: by 2002:a0c:aed0:: with SMTP id n16mr16979491qvd.22.1612800536491;
+        Mon, 08 Feb 2021 08:08:56 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzC7Ey6ojUTMBsmlqkawNby02wq3KpLAqjGFFWc94NaN2MdU5ifFcD7iOTVHLkJhgrKQ/xW0g==
+X-Received: by 2002:a0c:aed0:: with SMTP id n16mr16979456qvd.22.1612800536147;
+        Mon, 08 Feb 2021 08:08:56 -0800 (PST)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id h5sm14968213qti.22.2021.02.08.08.08.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 08 Feb 2021 08:08:55 -0800 (PST)
+Subject: Re: [PATCHv2] PCI: Add Silicom Denmark vendor ID
+To:     =?UTF-8?Q?Martin_Hundeb=c3=b8ll?= <mhu@silicom.dk>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210208150158.2877414-1-mhu@silicom.dk>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <904cf9ee-a7a4-d592-c01a-d994f1df9a55@redhat.com>
+Date:   Mon, 8 Feb 2021 08:08:54 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="OfrWf2Fun5Ae4m0Y"
-Content-Disposition: inline
-In-Reply-To: <20210208141719.23305-3-srinivas.kandagatla@linaro.org>
-X-Cookie: You will triumph over your enemy.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210208150158.2877414-1-mhu@silicom.dk>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---OfrWf2Fun5Ae4m0Y
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On 2/8/21 7:01 AM, Martin Hundebøll wrote:
+> Update pci_ids.h with the vendor ID for Silicom Denmark. The define is
+> going to be referenced in driver(s) for FPGA accelerated smart NICs.
+>
+> Signed-off-by: Martin Hundebøll <mhu@silicom.dk>
+Reviewed-by: Tom Rix <trix@redhat.com>
+> ---
+>
+> Changes since v1:
+>  * Align commit message/shortlog with similar changes to pci_ids.h
+>
+>  include/linux/pci_ids.h | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h
+> index f968fcda338e..c119f0eb41b6 100644
+> --- a/include/linux/pci_ids.h
+> +++ b/include/linux/pci_ids.h
+> @@ -2589,6 +2589,8 @@
+>  
+>  #define PCI_VENDOR_ID_REDHAT		0x1b36
+>  
+> +#define PCI_VENDOR_ID_SILICOM_DENMARK	0x1c2c
+> +
+>  #define PCI_VENDOR_ID_AMAZON_ANNAPURNA_LABS	0x1c36
+>  
+>  #define PCI_VENDOR_ID_CIRCUITCO		0x1cc8
 
-On Mon, Feb 08, 2021 at 02:17:14PM +0000, Srinivas Kandagatla wrote:
-
-> +	SOC_SINGLE_EXT("RX_Softclip Enable", SND_SOC_NOPM, 0, 1, 0,
-> +		     rx_macro_soft_clip_enable_get,
-> +		     rx_macro_soft_clip_enable_put),
-> +	SOC_SINGLE_EXT("AUX_HPF Enable", SND_SOC_NOPM, 0, 1, 0,
-> +			rx_macro_aux_hpf_mode_get,
-> +			rx_macro_aux_hpf_mode_put),
-
-These are simple on/off controls so should end in Switch AFAICT.
-Otherwise this looks good.
-
---OfrWf2Fun5Ae4m0Y
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmAhYf4ACgkQJNaLcl1U
-h9C62gf/diIBpdPwSy/dQ9FyjTxlRvQ8YgXHyIgxJph8g1/PS6SiP9o8g6UWFbtM
-8ZVD5mqT1L+WiczOlCGy+uQwgXLL2y5GvtzcuaogTizMvjf3Vm0Qcv1CLAgxw3bj
-U/PIbxNxDuAF2v8wp6GIrtrHGYQ4oPoSWv4nq5joooXiKB+77i+XjQu2/nYsnqEy
-gBDDCYetYYdhekoQZu5E1B9neZWC3svCFG0h8lgfYnZ/WwMDc72Ix99Cvr/bW5yC
-VDHX/qrExutLOlXY3d2SWOfGgQG56p+zof74szk2A8we1LHEOfFBzN33sYBS8xyA
-jpu0IqyQTDgLc/3Huy7tCeQxaPPdvw==
-=IuI7
------END PGP SIGNATURE-----
-
---OfrWf2Fun5Ae4m0Y--
