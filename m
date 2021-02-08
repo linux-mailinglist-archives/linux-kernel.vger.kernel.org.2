@@ -2,105 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E39BB3131AE
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 13:04:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18FBD3131C8
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 13:07:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233619AbhBHMDV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 07:03:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35004 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233346AbhBHLmR (ORCPT
+        id S231948AbhBHMGB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 07:06:01 -0500
+Received: from relay6-d.mail.gandi.net ([217.70.183.198]:44791 "EHLO
+        relay6-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231784AbhBHLn7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 06:42:17 -0500
-Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15146C06174A;
-        Mon,  8 Feb 2021 03:41:37 -0800 (PST)
-Received: by mail-qk1-x72b.google.com with SMTP id q85so1677265qke.8;
-        Mon, 08 Feb 2021 03:41:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Q3dX/ZZNpyOng2mOa+cJcvgyElRSqqTL9YiiTxNE55c=;
-        b=WXHCf9NsPUkrwuXGs2bEwWIJQhK/y6CJPd0r11N9VGQeIveIdRn0noETJAZcxdoKxo
-         /k+mKxsLC6TkV/QB3moH/VmWnfyJ6ToWWILVCSi3yPjHt/2f+uTaE6Z0AAplsHh3oJ+Y
-         ADqL7qBrRXuyPKTyH753OjwevjSF1lUmbn2edokLbau+lj8FYPG+7X3grVokhdWXoiqz
-         HMWkyzprCvZw+yfsEEqO5KOu6tZNOijXaDIc3hNkis36EEpYKfuKIua9+gaBllbRX+ZC
-         HQ+OSkK08TIKnn/gcIanLZqhBvBicz4lXgUXcY1zPDNlxGoOYJ3An3Yr1ewkfGy6QTIh
-         a5Ow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to:user-agent;
-        bh=Q3dX/ZZNpyOng2mOa+cJcvgyElRSqqTL9YiiTxNE55c=;
-        b=HCOvpMzh5H1fr8SmfZ1DcMuP4H6kztFKsiih/4TteZ9/7eknPvvdsslW/4IVf7i8/v
-         BD4a4iK+0DdyD8u4fwpuLTYDLWchvY5Yi4KXtR3cHthypnnSUgsHl12k1N+lHaEH3kzt
-         Y6oAb4peKXAa/6girBQNOLmKkL3YSElQHh/tLQFRx0bNr6Iy56eVoGvrCKdE53xFH+uc
-         EYMnQbWHVJUxjoEuOIO9USHo9iH66OcMNR9A5ed1wMV9i1kZUSezx//6Acf/D4afq3Gx
-         opEZPP3lfGe9ODe/93xUNRTJEhPgqt5ztAqo9NiCKCxd/E2L1y81QzO5oVUVCshvqIsj
-         kMwQ==
-X-Gm-Message-State: AOAM5336/o/f9ZLs51+M1uCo731THgm1kael2sO4AbeqDU0tCh7Obzj8
-        NG1hcHzMn+/yIxEyy4iSgBE=
-X-Google-Smtp-Source: ABdhPJzLXDKHWMa3BaBbUoF7dsrD7IHgwpZjCUDzw2IdOQxwUW9E8d4R1CfNGfl4ODcRq1GZhGbACg==
-X-Received: by 2002:a37:b105:: with SMTP id a5mr15709490qkf.83.1612784496331;
-        Mon, 08 Feb 2021 03:41:36 -0800 (PST)
-Received: from debian ([156.146.37.175])
-        by smtp.gmail.com with ESMTPSA id 75sm14596414qta.68.2021.02.08.03.41.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Feb 2021 03:41:35 -0800 (PST)
-Date:   Mon, 8 Feb 2021 17:11:25 +0530
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        rdunlap@infradead.org
-Subject: Re: [PATCH] include: linux: spi: Change provied to provide in the
- file spi.h
-Message-ID: <20210208114123.GA21242@debian>
-Mail-Followup-To: Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, rdunlap@infradead.org
-References: <20210208113359.31269-1-unixbhaskar@gmail.com>
- <20210208113832.GC8645@sirena.org.uk>
+        Mon, 8 Feb 2021 06:43:59 -0500
+X-Originating-IP: 93.34.118.233
+Received: from uno.localdomain (93-34-118-233.ip49.fastwebnet.it [93.34.118.233])
+        (Authenticated sender: jacopo@jmondi.org)
+        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 5331AC0005;
+        Mon,  8 Feb 2021 11:42:38 +0000 (UTC)
+Date:   Mon, 8 Feb 2021 12:43:02 +0100
+From:   Jacopo Mondi <jacopo@jmondi.org>
+To:     Hans Verkuil <hverkuil@xs4all.nl>
+Cc:     Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        kieran.bingham+renesas@ideasonboard.com,
+        laurent.pinchart+renesas@ideasonboard.com,
+        niklas.soderlund+renesas@ragnatech.se, geert@linux-m68k.org,
+        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Hyun Kwon <hyunk@xilinx.com>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        sergei.shtylyov@gmail.com,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Subject: Re: [PATCH v8 1/5] media: i2c: Add driver for RDACM21 camera module
+Message-ID: <20210208114302.yxane4iifalacjnr@uno.localdomain>
+References: <20210114170429.139762-1-jacopo+renesas@jmondi.org>
+ <20210114170429.139762-2-jacopo+renesas@jmondi.org>
+ <c5fc0815-7754-1fac-af0a-ccbca922e479@xs4all.nl>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="W/nzBZO5zC0uMSeA"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210208113832.GC8645@sirena.org.uk>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <c5fc0815-7754-1fac-af0a-ccbca922e479@xs4all.nl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Hans,
 
---W/nzBZO5zC0uMSeA
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-
-On 11:38 Mon 08 Feb 2021, Mark Brown wrote:
->On Mon, Feb 08, 2021 at 05:03:59PM +0530, Bhaskar Chowdhury wrote:
->>
->> s/provied/provide/
+On Mon, Feb 08, 2021 at 12:28:52PM +0100, Hans Verkuil wrote:
+> Hi Jacopo,
 >
->Provide is a correctly spelt word but it makes no sense in context, I
->guess you mean provided.
+> On 14/01/2021 18:04, Jacopo Mondi wrote:
+> > The RDACM21 is a GMSL camera supporting 1280x1080 resolution images
+> > developed by IMI based on an Omnivision OV10640 sensor, an Omnivision
+> > OV490 ISP and a Maxim MAX9271 GMSL serializer.
+> >
+> > The driver uses the max9271 library module, to maximize code reuse with
+> > other camera module drivers using the same serializer, such as rdacm20.
+> >
+> > Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> > Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
+> > ---
+> >  MAINTAINERS                 |  12 +
+> >  drivers/media/i2c/Kconfig   |  13 +
+> >  drivers/media/i2c/Makefile  |   2 +
+> >  drivers/media/i2c/rdacm21.c | 623 ++++++++++++++++++++++++++++++++++++
+> >  4 files changed, 650 insertions(+)
+> >  create mode 100644 drivers/media/i2c/rdacm21.c
+> >
+>
+> <snip>
+>
+> > diff --git a/drivers/media/i2c/rdacm21.c b/drivers/media/i2c/rdacm21.c
+> > new file mode 100644
+> > index 000000000000..dcc21515e5a4
+> > --- /dev/null
+> > +++ b/drivers/media/i2c/rdacm21.c
+>
+> <snip>
+>
+> > +static int ov10640_initialize(struct rdacm21_device *dev)
+> > +{
+> > +	u8 val;
+> > +
+> > +	/* Power-up OV10640 by setting RESETB and PWDNB pins high. */
+> > +	ov490_write_reg(dev, OV490_GPIO_SEL0, OV490_GPIO0);
+> > +	ov490_write_reg(dev, OV490_GPIO_SEL1, OV490_SPWDN0);
+> > +	ov490_write_reg(dev, OV490_GPIO_DIRECTION0, OV490_GPIO0);
+> > +	ov490_write_reg(dev, OV490_GPIO_DIRECTION1, OV490_SPWDN0);
+> > +	ov490_write_reg(dev, OV490_GPIO_OUTPUT_VALUE0, OV490_GPIO0);
+> > +	ov490_write_reg(dev, OV490_GPIO_OUTPUT_VALUE0, OV490_SPWDN0);
+> > +	usleep_range(3000, 5000);
+> > +
+> > +	/* Read OV10640 ID to test communications. */
+> > +	ov490_write_reg(dev, OV490_SCCB_SLAVE0_DIR, OV490_SCCB_SLAVE_READ);
+> > +	ov490_write_reg(dev, OV490_SCCB_SLAVE0_ADDR_HIGH, OV10640_CHIP_ID >> 8);
+> > +	ov490_write_reg(dev, OV490_SCCB_SLAVE0_ADDR_LOW, (u8)OV10640_CHIP_ID);
+>
+> This line results in a sparse warning:
+>
+> drivers/media/i2c/rdacm21.c:348:62: warning: cast truncates bits from constant value (300a becomes a)
 
-spot on!!
+Which is intended :)
 
+>
+> Just replace with OV10640_CHIP_ID & 0xff.
 
---W/nzBZO5zC0uMSeA
-Content-Type: application/pgp-signature; name="signature.asc"
+Will send a patch on top as the series has been collected.
 
------BEGIN PGP SIGNATURE-----
+Thanks
+  j
 
-iQEzBAABCgAdFiEEnwF+nWawchZUPOuwsjqdtxFLKRUFAmAhI2AACgkQsjqdtxFL
-KRUGqAf/VYhOgaigrtoWVHWH3Yk8m11xj6BGeNcOiKIjvukGZWRIZ6IAkRypR/zn
-OmM001OdkGMxhpUY0H2LCjmB1C9wQIG/p/viGTOGHwjahhQEfOCwUkNWTwfyTH6f
-rJ+xpmbZqH99b/LglBSMKXZ7+KC3EM2uisiStQa5kw2ObF+Mw5UwR/4NixK6UKCU
-RuJ5s6A/DM6tKYlqseKIlWL1FxLJTGDLTc5FZOPyIg4v/9+BMyr3JJRGQoBqWzRf
-Vs/NWSya5enffZNHqaEzB354PEz9Wo4hU57NEh+xb54ik4ioZsN7xxbNlq2Ncmt9
-++v7U/MRATd5AfeUBEhbinq5fIiV/g==
-=y355
------END PGP SIGNATURE-----
-
---W/nzBZO5zC0uMSeA--
+>
+> Regards,
+>
+> 	Hans
