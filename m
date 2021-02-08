@@ -2,38 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A29B313A54
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 18:01:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13AF8313A9A
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 18:16:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234716AbhBHRAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 12:00:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33886 "EHLO mail.kernel.org"
+        id S233953AbhBHRP0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 12:15:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35838 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233680AbhBHPUE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 10:20:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CB18964ECA;
-        Mon,  8 Feb 2021 15:13:07 +0000 (UTC)
+        id S233740AbhBHPZd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 10:25:33 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 59D5364F17;
+        Mon,  8 Feb 2021 15:15:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612797188;
-        bh=MsM9oUK9ZNJ5Co8FGluwdbOGnL3frypyRg1qO6YYZ/s=;
+        s=korg; t=1612797318;
+        bh=ELAml083cyW8aO8DbweNgWdGcfj93nsKC4DYHD+NvnY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=txc4lqxyQer5yrfMJXaMwicW2vDIHxJwvMIZz7aKKAi0JBdLiRgigVM8mmgqXlu7s
-         0NnvN8ZWwuV3hHvODui2lMAcBtrKdotU1DdNH4kfisqu64D1SRyxY+kHdNZseEfVsf
-         HcyyJ7nuY+mJHYMs29/choVnv823G9OfULmwmW3w=
+        b=HdCUbjiqFkLCw4QUhL7sDjIZfmIQ4kIZLIMO0Efy6TwSmScRTVRlLwmkJGLufUdig
+         y7SlyojHGATmkcBXNR/ybM5y0+WztocL7iz8fqjiyjPXVL82VJTTjy0kaq4WFwgB6l
+         By0xmSLmFeD5wfN4fidvqkfYASZItON21nUosKBQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Marek Vasut <marex@denx.de>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Patrice Chotard <patrice.chotard@st.com>,
-        Patrick Delaunay <patrick.delaunay@st.com>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        stable@vger.kernel.org, Loris Reiff <loris.reiff@liblor.ch>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Stanislav Fomichev <sdf@google.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 022/120] ARM: dts: stm32: Disable WP on DHCOM uSD slot
-Date:   Mon,  8 Feb 2021 16:00:09 +0100
-Message-Id: <20210208145819.292288083@linuxfoundation.org>
+Subject: [PATCH 5.10 026/120] bpf, cgroup: Fix optlen WARN_ON_ONCE toctou
+Date:   Mon,  8 Feb 2021 16:00:13 +0100
+Message-Id: <20210208145819.440605452@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210208145818.395353822@linuxfoundation.org>
 References: <20210208145818.395353822@linuxfoundation.org>
@@ -45,38 +41,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marek Vasut <marex@denx.de>
+From: Loris Reiff <loris.reiff@liblor.ch>
 
-[ Upstream commit 063a60634d48ee89f697371c9850c9370e494f22 ]
+[ Upstream commit bb8b81e396f7afbe7c50d789e2107512274d2a35 ]
 
-The uSD slot has no WP detection, disable it.
+A toctou issue in `__cgroup_bpf_run_filter_getsockopt` can trigger a
+WARN_ON_ONCE in a check of `copy_from_user`.
 
-Fixes: 34e0c7847dcf ("ARM: dts: stm32: Add DH Electronics DHCOM STM32MP1 SoM and PDK2 board")
-Signed-off-by: Marek Vasut <marex@denx.de>
-Cc: Alexandre Torgue <alexandre.torgue@st.com>
-Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>
-Cc: Patrice Chotard <patrice.chotard@st.com>
-Cc: Patrick Delaunay <patrick.delaunay@st.com>
-Cc: linux-stm32@st-md-mailman.stormreply.com
-To: linux-arm-kernel@lists.infradead.org
-Signed-off-by: Alexandre Torgue <alexandre.torgue@foss.st.com>
+`*optlen` is checked to be non-negative in the individual getsockopt
+functions beforehand. Changing `*optlen` in a race to a negative value
+will result in a `copy_from_user(ctx.optval, optval, ctx.optlen)` with
+`ctx.optlen` being a negative integer.
+
+Fixes: 0d01da6afc54 ("bpf: implement getsockopt and setsockopt hooks")
+Signed-off-by: Loris Reiff <loris.reiff@liblor.ch>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Reviewed-by: Stanislav Fomichev <sdf@google.com>
+Link: https://lore.kernel.org/bpf/20210122164232.61770-1-loris.reiff@liblor.ch
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/stm32mp15xx-dhcom-som.dtsi | 1 +
- 1 file changed, 1 insertion(+)
+ kernel/bpf/cgroup.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/arch/arm/boot/dts/stm32mp15xx-dhcom-som.dtsi b/arch/arm/boot/dts/stm32mp15xx-dhcom-som.dtsi
-index 90523a44d2541..2d027dafb7bce 100644
---- a/arch/arm/boot/dts/stm32mp15xx-dhcom-som.dtsi
-+++ b/arch/arm/boot/dts/stm32mp15xx-dhcom-som.dtsi
-@@ -354,6 +354,7 @@
- 	pinctrl-1 = <&sdmmc1_b4_od_pins_a &sdmmc1_dir_pins_a>;
- 	pinctrl-2 = <&sdmmc1_b4_sleep_pins_a &sdmmc1_dir_sleep_pins_a>;
- 	cd-gpios = <&gpiog 1 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
-+	disable-wp;
- 	st,sig-dir;
- 	st,neg-edge;
- 	st,use-ckin;
+diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
+index 96555a8a2c545..6ec8f02f463b6 100644
+--- a/kernel/bpf/cgroup.c
++++ b/kernel/bpf/cgroup.c
+@@ -1442,6 +1442,11 @@ int __cgroup_bpf_run_filter_getsockopt(struct sock *sk, int level,
+ 			goto out;
+ 		}
+ 
++		if (ctx.optlen < 0) {
++			ret = -EFAULT;
++			goto out;
++		}
++
+ 		if (copy_from_user(ctx.optval, optval,
+ 				   min(ctx.optlen, max_optlen)) != 0) {
+ 			ret = -EFAULT;
 -- 
 2.27.0
 
