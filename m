@@ -2,228 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05FFF3139FC
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 17:47:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3DE53139F3
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 17:46:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234592AbhBHQrp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 11:47:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52734 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229584AbhBHPP6 (ORCPT
+        id S234461AbhBHQqD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 11:46:03 -0500
+Received: from mail-wm1-f46.google.com ([209.85.128.46]:53560 "EHLO
+        mail-wm1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230074AbhBHPP7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 10:15:58 -0500
-Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9979FC06178B
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 07:15:07 -0800 (PST)
-Received: by mail-qt1-x84a.google.com with SMTP id f7so9775706qtd.9
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 07:15:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:cc;
-        bh=hK7XPYDbzHjCAmYCJosLD0ZkM4W3aY4xzEu1NMmcp3s=;
-        b=o3pM7h56YZvRdDAkpdq/yKIygHJehKZJyKoxq9PMIUtUyrWMGH00JtX+M1Ipxwei+0
-         JdFGFnqw4i/sCBBfRoZJ1fvt5CVnq7gUo3nt2x0y46F7aS2Bx+DiW3eYQRhy1LrQXvGW
-         iREs2VxE0CEHH2SlI0eZNMGsQiPWmYDrzGchIjATTmrvycgejtAoXazVS6qBjfJqBdQj
-         PEful/xDuI0ByTIyK6jdwDfS0T2h+rgoOAcoxHTQ54fW/lfqJ9oB/eKRPEwFXOLXdt9t
-         m8U/6luSKL1nAuO24Hu0wOEP4979V4bEjeOCE+pTDyKDZZUIMTPANnPHzwW+rp4J4lS0
-         Pb/Q==
+        Mon, 8 Feb 2021 10:15:59 -0500
+Received: by mail-wm1-f46.google.com with SMTP id j11so12916957wmi.3;
+        Mon, 08 Feb 2021 07:15:37 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:cc;
-        bh=hK7XPYDbzHjCAmYCJosLD0ZkM4W3aY4xzEu1NMmcp3s=;
-        b=oz0JBm+0RX52hn6eW58yKhQJ+ua8aSkQNB9SK/h4y/dL32x9cpVZ67E+ARIPuT+EcO
-         f5Dhs2wDO1XeLX5ggkiJjH+FnjEEJZBpFTPrKq7XJ1ppH5TYs0zZ/ZyXSohgf08D4qBJ
-         dmqi+VVoqMF8ODxMarKanUU+2WcJc//N1CEYMvBcrLwZvOLRD5zoAkGulSBTbVaO92Jh
-         8RKkfLysV+UnvJa9M4FPfJI5hV1TBHWf6MAQ1begCQchOTcSUSMFO4Yxy5+cG6lbHveu
-         TNlcQz8d35JE8lXDbDUMkc3DIqePt3C8+zwIR2u9/5BIESzlA+1sUvtwRt3lE1T+wwbU
-         +s/w==
-X-Gm-Message-State: AOAM530uV63EV4DATtClDZuJKJ2JX0MUbEqacZFgLAmy3Rn5IGKJ4KFg
-        5EUNLbs2zfrS882ccfMwm8qgx2nT+FQoRcmAFA==
-X-Google-Smtp-Source: ABdhPJz0wwG3bWJ7OEH1KQHNkBAGuACNAA5R1SF572QNBkyVLHa9fdu7awrxhwnmMzqHYVGs6iBggtUNp/oIRCFBcw==
-Sender: "kaleshsingh via sendgmr" <kaleshsingh@kaleshsingh.c.googlers.com>
-X-Received: from kaleshsingh.c.googlers.com ([fda3:e722:ac3:10:14:4d90:c0a8:2145])
- (user=kaleshsingh job=sendgmr) by 2002:a0c:b645:: with SMTP id
- q5mr16516768qvf.9.1612797306332; Mon, 08 Feb 2021 07:15:06 -0800 (PST)
-Date:   Mon,  8 Feb 2021 15:14:28 +0000
-In-Reply-To: <20210208151437.1357458-1-kaleshsingh@google.com>
-Message-Id: <20210208151437.1357458-2-kaleshsingh@google.com>
-Mime-Version: 1.0
-References: <20210208151437.1357458-1-kaleshsingh@google.com>
-X-Mailer: git-send-email 2.30.0.478.g8a0d178c01-goog
-Subject: [PATCH v5 2/2] procfs/dmabuf: Add inode number to /proc/*/fdinfo
-From:   Kalesh Singh <kaleshsingh@google.com>
-Cc:     jannh@google.com, jeffv@google.com, keescook@chromium.org,
-        surenb@google.com, minchan@kernel.org, hridya@google.com,
-        rdunlap@infradead.org, christian.koenig@amd.com,
-        willy@infradead.org, kernel-team@android.com,
-        Kalesh Singh <kaleshsingh@google.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Alexey Gladkov <gladkov.alexey@gmail.com>,
-        NeilBrown <neilb@suse.de>, Anand K Mistry <amistry@google.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Michel Lespinasse <walken@google.com>,
-        Bernd Edlinger <bernd.edlinger@hotmail.de>,
-        Andrei Vagin <avagin@gmail.com>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-doc@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-To:     unlisted-recipients:; (no To-header on input)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=xsTtximJORmbGu92bYawlwbCWEmDlVyOMVFnk9uz3xg=;
+        b=iqMwM3ZHxW2NrYXfbnmPETC8mIIp7pjALl6Z8GuHn7suHQ4R8iRH7gDdIf8fHmmTYW
+         D/0/kmz5WfYbwgMnqU4qD8lX0/m85ZnzrQBV9GOzX4dZWDAHpEfdTSHOnof/SJTuexaY
+         dc5iSpRAKAzEBy2EbnhuqRLRjheIeIUROAhx5hmUzc+fYshw51og09A33wr2gbxjtJgA
+         bfDQMK9CHOmzyadfqez8jO885cMo4Bwe7659nLi2/5krgSMoQzpWqXGDA+JOOOWHhMQH
+         xW4U1N0ckKJNdSKlBdHqpM1Pk04OOVl/domOHTqqU6pFlzFFvYS6eOpBmBP51wWn+Qsq
+         bEOw==
+X-Gm-Message-State: AOAM533zm368T6wQILmrDVjaHYKgvk3qIx98dQaNmwr6GGk2JJetrF/V
+        3ZD7RTgnXDfboXwH8J9yJ80=
+X-Google-Smtp-Source: ABdhPJwSlYUCF1mOXmi/BAJmaTj1pe9z7KuxZRZ9lAf5aAD9OGnFuC4oOmeRFP8yg2PE/EYo3o6JDA==
+X-Received: by 2002:a7b:c753:: with SMTP id w19mr15125878wmk.41.1612797311442;
+        Mon, 08 Feb 2021 07:15:11 -0800 (PST)
+Received: from rocinante ([95.155.85.46])
+        by smtp.gmail.com with ESMTPSA id w15sm28324738wrp.15.2021.02.08.07.15.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Feb 2021 07:15:10 -0800 (PST)
+Date:   Mon, 8 Feb 2021 16:15:09 +0100
+From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
+To:     Martin =?utf-8?Q?Hundeb=C3=B8ll?= <mhu@silicom.dk>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCHv2] PCI: Add Silicom Denmark vendor ID
+Message-ID: <YCFVfc7HUuP7cn5F@rocinante>
+References: <20210208150158.2877414-1-mhu@silicom.dk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210208150158.2877414-1-mhu@silicom.dk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-And 'inode_no' field to /proc/<pid>/fdinfo/<FD> and
-/proc/<pid>/task/<tid>/fdinfo/<FD>.
+Hi Martin,
 
-The inode numbers can be used to uniquely identify DMA buffers
-in user space and avoids a dependency on /proc/<pid>/fd/* when
-accounting per-process DMA buffer sizes.
+Thank you!
 
-Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
----
-Changes in v5:
-  - Fixed tab vs spaces, per Randy
-  - Renamed inode_no to ino, per Matthew
-Changes in v4:
-  - Add inode number as common field in fdinfo, per Christian
-Changes in v3:
-  - Add documentation in proc.rst, per Randy
-Changes in v2:
-  - Update patch description
+> Update pci_ids.h with the vendor ID for Silicom Denmark. The define is
+> going to be referenced in driver(s) for FPGA accelerated smart NICs.
+> 
+> Signed-off-by: Martin Hundebøll <mhu@silicom.dk>
+> ---
+> 
+> Changes since v1:
+>  * Align commit message/shortlog with similar changes to pci_ids.h
+> 
+>  include/linux/pci_ids.h | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h
+> index f968fcda338e..c119f0eb41b6 100644
+> --- a/include/linux/pci_ids.h
+> +++ b/include/linux/pci_ids.h
+> @@ -2589,6 +2589,8 @@
+>  
+>  #define PCI_VENDOR_ID_REDHAT		0x1b36
+>  
+> +#define PCI_VENDOR_ID_SILICOM_DENMARK	0x1c2c
+> +
+>  #define PCI_VENDOR_ID_AMAZON_ANNAPURNA_LABS	0x1c36
+>  
+>  #define PCI_VENDOR_ID_CIRCUITCO		0x1cc8
+> -- 
+> 2.29.2
 
- Documentation/filesystems/proc.rst | 37 +++++++++++++++++++++++++-----
- fs/proc/fd.c                       |  5 ++--
- 2 files changed, 34 insertions(+), 8 deletions(-)
+Reviewed-by: Krzysztof Wilczyński <kw@linux.com>
 
-diff --git a/Documentation/filesystems/proc.rst b/Documentation/filesystems/proc.rst
-index 2fa69f710e2a..7730d1c120e8 100644
---- a/Documentation/filesystems/proc.rst
-+++ b/Documentation/filesystems/proc.rst
-@@ -1902,18 +1902,20 @@ if precise results are needed.
- 3.8	/proc/<pid>/fdinfo/<fd> - Information about opened file
- ---------------------------------------------------------------
- This file provides information associated with an opened file. The regular
--files have at least three fields -- 'pos', 'flags' and 'mnt_id'. The 'pos'
--represents the current offset of the opened file in decimal form [see lseek(2)
--for details], 'flags' denotes the octal O_xxx mask the file has been
--created with [see open(2) for details] and 'mnt_id' represents mount ID of
--the file system containing the opened file [see 3.5 /proc/<pid>/mountinfo
--for details].
-+files have at least four fields -- 'pos', 'flags', 'mnt_id' and 'ino'.
-+The 'pos' represents the current offset of the opened file in decimal
-+form [see lseek(2) for details], 'flags' denotes the octal O_xxx mask the
-+file has been created with [see open(2) for details] and 'mnt_id' represents
-+mount ID of the file system containing the opened file [see 3.5
-+/proc/<pid>/mountinfo for details]. 'ino' represents the inode number of
-+the file.
- 
- A typical output is::
- 
- 	pos:	0
- 	flags:	0100002
- 	mnt_id:	19
-+	ino:	63107
- 
- All locks associated with a file descriptor are shown in its fdinfo too::
- 
-@@ -1930,6 +1932,7 @@ Eventfd files
- 	pos:	0
- 	flags:	04002
- 	mnt_id:	9
-+	ino:	63107
- 	eventfd-count:	5a
- 
- where 'eventfd-count' is hex value of a counter.
-@@ -1942,6 +1945,7 @@ Signalfd files
- 	pos:	0
- 	flags:	04002
- 	mnt_id:	9
-+	ino:	63107
- 	sigmask:	0000000000000200
- 
- where 'sigmask' is hex value of the signal mask associated
-@@ -1955,6 +1959,7 @@ Epoll files
- 	pos:	0
- 	flags:	02
- 	mnt_id:	9
-+	ino:	63107
- 	tfd:        5 events:       1d data: ffffffffffffffff pos:0 ino:61af sdev:7
- 
- where 'tfd' is a target file descriptor number in decimal form,
-@@ -1971,6 +1976,8 @@ For inotify files the format is the following::
- 
- 	pos:	0
- 	flags:	02000000
-+	mnt_id:	9
-+	ino:	63107
- 	inotify wd:3 ino:9e7e sdev:800013 mask:800afce ignored_mask:0 fhandle-bytes:8 fhandle-type:1 f_handle:7e9e0000640d1b6d
- 
- where 'wd' is a watch descriptor in decimal form, i.e. a target file
-@@ -1993,6 +2000,7 @@ For fanotify files the format is::
- 	pos:	0
- 	flags:	02
- 	mnt_id:	9
-+	ino:	63107
- 	fanotify flags:10 event-flags:0
- 	fanotify mnt_id:12 mflags:40 mask:38 ignored_mask:40000003
- 	fanotify ino:4f969 sdev:800013 mflags:0 mask:3b ignored_mask:40000000 fhandle-bytes:8 fhandle-type:1 f_handle:69f90400c275b5b4
-@@ -2017,6 +2025,7 @@ Timerfd files
- 	pos:	0
- 	flags:	02
- 	mnt_id:	9
-+	ino:	63107
- 	clockid: 0
- 	ticks: 0
- 	settime flags: 01
-@@ -2031,6 +2040,22 @@ details]. 'it_value' is remaining time until the timer expiration.
- with TIMER_ABSTIME option which will be shown in 'settime flags', but 'it_value'
- still exhibits timer's remaining time.
- 
-+DMA Buffer files
-+~~~~~~~~~~~~~~~~
-+
-+::
-+
-+	pos:	0
-+	flags:	04002
-+	mnt_id:	9
-+	ino:	63107
-+	size:   32768
-+	count:  2
-+	exp_name:  system-heap
-+
-+where 'size' is the size of the DMA buffer in bytes. 'count' is the file count of
-+the DMA buffer file. 'exp_name' is the name of the DMA buffer exporter.
-+
- 3.9	/proc/<pid>/map_files - Information about memory mapped files
- ---------------------------------------------------------------------
- This directory contains symbolic links which represent memory mapped files
-diff --git a/fs/proc/fd.c b/fs/proc/fd.c
-index 585e213301f9..2c25909bf9d1 100644
---- a/fs/proc/fd.c
-+++ b/fs/proc/fd.c
-@@ -54,9 +54,10 @@ static int seq_show(struct seq_file *m, void *v)
- 	if (ret)
- 		return ret;
- 
--	seq_printf(m, "pos:\t%lli\nflags:\t0%o\nmnt_id:\t%i\n",
-+	seq_printf(m, "pos:\t%lli\nflags:\t0%o\nmnt_id:\t%i\ninode_no:\t%lu\n",
- 		   (long long)file->f_pos, f_flags,
--		   real_mount(file->f_path.mnt)->mnt_id);
-+		   real_mount(file->f_path.mnt)->mnt_id,
-+		   file_inode(file)->i_ino);
- 
- 	/* show_fd_locks() never deferences files so a stale value is safe */
- 	show_fd_locks(m, file, files);
--- 
-2.30.0.478.g8a0d178c01-goog
-
+Krzysztof
