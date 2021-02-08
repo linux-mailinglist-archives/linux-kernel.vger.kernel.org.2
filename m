@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB6C431388E
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 16:53:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93F0A3138AA
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 16:59:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232502AbhBHPwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 10:52:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52602 "EHLO mail.kernel.org"
+        id S234131AbhBHP5O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 10:57:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52656 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233103AbhBHPG4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 10:06:56 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D90B364EE2;
-        Mon,  8 Feb 2021 15:05:16 +0000 (UTC)
+        id S231825AbhBHPIY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 10:08:24 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EF73C64EB1;
+        Mon,  8 Feb 2021 15:06:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612796717;
-        bh=+BOrOTXiaHwbABXS+rIMBSrNb6isxC1bdb5cOY6MML8=;
+        s=korg; t=1612796789;
+        bh=MPlU6DmuN5KYRgcqMgqMvXNtpGyOjxpEWpuSZdATfbM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wLGplgr21MuaCIcwy4Iz2JtSBdNqWt8mX9AQw1P/mC9qkTN2HL29aRhTKRBtee867
-         e62oT5LHYo4OVnyS3PAuSwgMVf+19PbJYsfsveEC2/ZnKyjk+upCC0/S+GjQLxfz70
-         L+6E0an+GUYsRUtFGhLbi0+UZMxW7Cq2hdJnrZLs=
+        b=fRSp/hXpOUnvVReBORahSEzzgZBMwtz2fu7tDvGcQ2yCMKovw/tRTNydu4pJepQHh
+         zRCtDqaGX6neMTYQ0oQh81liRjoEoY50IXTt2s/EOlM911T3CyNd+aXjDLso3Sta9j
+         hGATs/w1/bUaz1zgTufgbvWFJt8CbbyEvae9PRug=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Benjamin Valentin <benpicco@googlemail.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Subject: [PATCH 4.9 40/43] Input: xpad - sync supported devices with fork on GitHub
+        stable@vger.kernel.org, Thorsten Leemhuis <linux@leemhuis.info>,
+        Christoph Hellwig <hch@lst.de>
+Subject: [PATCH 4.14 20/30] nvme-pci: avoid the deepest sleep state on Kingston A2000 SSDs
 Date:   Mon,  8 Feb 2021 16:01:06 +0100
-Message-Id: <20210208145807.941125185@linuxfoundation.org>
+Message-Id: <20210208145806.068622064@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210208145806.281758651@linuxfoundation.org>
-References: <20210208145806.281758651@linuxfoundation.org>
+In-Reply-To: <20210208145805.239714726@linuxfoundation.org>
+References: <20210208145805.239714726@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,69 +39,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Benjamin Valentin <benpicco@googlemail.com>
+From: Thorsten Leemhuis <linux@leemhuis.info>
 
-commit 9bbd77d5bbc9aff8cb74d805c31751f5f0691ba8 upstream.
+commit 538e4a8c571efdf131834431e0c14808bcfb1004 upstream.
 
-There is a fork of this driver on GitHub [0] that has been updated
-with new device IDs.
+Some Kingston A2000 NVMe SSDs sooner or later get confused and stop
+working when they use the deepest APST sleep while running Linux. The
+system then crashes and one has to cold boot it to get the SSD working
+again.
 
-Merge those into the mainline driver, so the out-of-tree fork is not
-needed for users of those devices anymore.
+Kingston seems to known about this since at least mid-September 2020:
+https://bbs.archlinux.org/viewtopic.php?pid=1926994#p1926994
 
-[0] https://github.com/paroj/xpad
+Someone working for a German company representing Kingston to the German
+press confirmed to me Kingston engineering is aware of the issue and
+investigating; the person stated that to their current knowledge only
+the deepest APST sleep state causes trouble. Therefore, make Linux avoid
+it for now by applying the NVME_QUIRK_NO_DEEPEST_PS to this SSD.
 
-Signed-off-by: Benjamin Valentin <benpicco@googlemail.com>
-Link: https://lore.kernel.org/r/20210121142523.1b6b050f@rechenknecht2k11
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+I have two such SSDs, but it seems the problem doesn't occur with them.
+I hence couldn't verify if this patch really fixes the problem, but all
+the data in front of me suggests it should.
+
+This patch can easily be reverted or improved upon if a better solution
+surfaces.
+
+FWIW, there are many reports about the issue scattered around the web;
+most of the users disabled APST completely to make things work, some
+just made Linux avoid the deepest sleep state:
+
+https://bugzilla.kernel.org/show_bug.cgi?id=195039#c65
+https://bugzilla.kernel.org/show_bug.cgi?id=195039#c73
+https://bugzilla.kernel.org/show_bug.cgi?id=195039#c74
+https://bugzilla.kernel.org/show_bug.cgi?id=195039#c78
+https://bugzilla.kernel.org/show_bug.cgi?id=195039#c79
+https://bugzilla.kernel.org/show_bug.cgi?id=195039#c80
+https://askubuntu.com/questions/1222049/nvmekingston-a2000-sometimes-stops-giving-response-in-ubuntu-18-04dell-inspir
+https://community.acer.com/en/discussion/604326/m-2-nvme-ssd-aspire-517-51g-issue-compatibility-kingston-a2000-linux-ubuntu
+
+For the record, some data from 'nvme id-ctrl /dev/nvme0'
+
+NVME Identify Controller:
+vid       : 0x2646
+ssvid     : 0x2646
+mn        : KINGSTON SA2000M81000G
+fr        : S5Z42105
+[...]
+ps    0 : mp:9.00W operational enlat:0 exlat:0 rrt:0 rrl:0
+          rwt:0 rwl:0 idle_power:- active_power:-
+ps    1 : mp:4.60W operational enlat:0 exlat:0 rrt:1 rrl:1
+          rwt:1 rwl:1 idle_power:- active_power:-
+ps    2 : mp:3.80W operational enlat:0 exlat:0 rrt:2 rrl:2
+          rwt:2 rwl:2 idle_power:- active_power:-
+ps    3 : mp:0.0450W non-operational enlat:2000 exlat:2000 rrt:3 rrl:3
+          rwt:3 rwl:3 idle_power:- active_power:-
+ps    4 : mp:0.0040W non-operational enlat:15000 exlat:15000 rrt:4 rrl:4
+          rwt:4 rwl:4 idle_power:- active_power:-
+
+Cc: stable@vger.kernel.org # 4.14+
+Signed-off-by: Thorsten Leemhuis <linux@leemhuis.info>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/input/joystick/xpad.c |   17 ++++++++++++++++-
- 1 file changed, 16 insertions(+), 1 deletion(-)
+ drivers/nvme/host/pci.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/drivers/input/joystick/xpad.c
-+++ b/drivers/input/joystick/xpad.c
-@@ -232,9 +232,17 @@ static const struct xpad_device {
- 	{ 0x0e6f, 0x0213, "Afterglow Gamepad for Xbox 360", 0, XTYPE_XBOX360 },
- 	{ 0x0e6f, 0x021f, "Rock Candy Gamepad for Xbox 360", 0, XTYPE_XBOX360 },
- 	{ 0x0e6f, 0x0246, "Rock Candy Gamepad for Xbox One 2015", 0, XTYPE_XBOXONE },
--	{ 0x0e6f, 0x02ab, "PDP Controller for Xbox One", 0, XTYPE_XBOXONE },
-+	{ 0x0e6f, 0x02a0, "PDP Xbox One Controller", 0, XTYPE_XBOXONE },
-+	{ 0x0e6f, 0x02a1, "PDP Xbox One Controller", 0, XTYPE_XBOXONE },
-+	{ 0x0e6f, 0x02a2, "PDP Wired Controller for Xbox One - Crimson Red", 0, XTYPE_XBOXONE },
- 	{ 0x0e6f, 0x02a4, "PDP Wired Controller for Xbox One - Stealth Series", 0, XTYPE_XBOXONE },
- 	{ 0x0e6f, 0x02a6, "PDP Wired Controller for Xbox One - Camo Series", 0, XTYPE_XBOXONE },
-+	{ 0x0e6f, 0x02a7, "PDP Xbox One Controller", 0, XTYPE_XBOXONE },
-+	{ 0x0e6f, 0x02a8, "PDP Xbox One Controller", 0, XTYPE_XBOXONE },
-+	{ 0x0e6f, 0x02ab, "PDP Controller for Xbox One", 0, XTYPE_XBOXONE },
-+	{ 0x0e6f, 0x02ad, "PDP Wired Controller for Xbox One - Stealth Series", 0, XTYPE_XBOXONE },
-+	{ 0x0e6f, 0x02b3, "Afterglow Prismatic Wired Controller", 0, XTYPE_XBOXONE },
-+	{ 0x0e6f, 0x02b8, "Afterglow Prismatic Wired Controller", 0, XTYPE_XBOXONE },
- 	{ 0x0e6f, 0x0301, "Logic3 Controller", 0, XTYPE_XBOX360 },
- 	{ 0x0e6f, 0x0346, "Rock Candy Gamepad for Xbox One 2016", 0, XTYPE_XBOXONE },
- 	{ 0x0e6f, 0x0401, "Logic3 Controller", 0, XTYPE_XBOX360 },
-@@ -313,6 +321,9 @@ static const struct xpad_device {
- 	{ 0x1bad, 0xfa01, "MadCatz GamePad", 0, XTYPE_XBOX360 },
- 	{ 0x1bad, 0xfd00, "Razer Onza TE", 0, XTYPE_XBOX360 },
- 	{ 0x1bad, 0xfd01, "Razer Onza", 0, XTYPE_XBOX360 },
-+	{ 0x20d6, 0x2001, "BDA Xbox Series X Wired Controller", 0, XTYPE_XBOXONE },
-+	{ 0x20d6, 0x281f, "PowerA Wired Controller For Xbox 360", 0, XTYPE_XBOX360 },
-+	{ 0x2e24, 0x0652, "Hyperkin Duke X-Box One pad", 0, XTYPE_XBOXONE },
- 	{ 0x24c6, 0x5000, "Razer Atrox Arcade Stick", MAP_TRIGGERS_TO_BUTTONS, XTYPE_XBOX360 },
- 	{ 0x24c6, 0x5300, "PowerA MINI PROEX Controller", 0, XTYPE_XBOX360 },
- 	{ 0x24c6, 0x5303, "Xbox Airflo wired controller", 0, XTYPE_XBOX360 },
-@@ -446,8 +457,12 @@ static const struct usb_device_id xpad_t
- 	XPAD_XBOX360_VENDOR(0x162e),		/* Joytech X-Box 360 controllers */
- 	XPAD_XBOX360_VENDOR(0x1689),		/* Razer Onza */
- 	XPAD_XBOX360_VENDOR(0x1bad),		/* Harminix Rock Band Guitar and Drums */
-+	XPAD_XBOX360_VENDOR(0x20d6),		/* PowerA Controllers */
-+	XPAD_XBOXONE_VENDOR(0x20d6),		/* PowerA Controllers */
- 	XPAD_XBOX360_VENDOR(0x24c6),		/* PowerA Controllers */
- 	XPAD_XBOXONE_VENDOR(0x24c6),		/* PowerA Controllers */
-+	XPAD_XBOXONE_VENDOR(0x2e24),		/* Hyperkin Duke X-Box One pad */
-+	XPAD_XBOX360_VENDOR(0x2f24),		/* GameSir Controllers */
- 	{ }
- };
- 
+--- a/drivers/nvme/host/pci.c
++++ b/drivers/nvme/host/pci.c
+@@ -2588,6 +2588,8 @@ static const struct pci_device_id nvme_i
+ 	{ PCI_DEVICE(0x1d1d, 0x2601),	/* CNEX Granby */
+ 		.driver_data = NVME_QUIRK_LIGHTNVM, },
+ 	{ PCI_DEVICE_CLASS(PCI_CLASS_STORAGE_EXPRESS, 0xffffff) },
++	{ PCI_DEVICE(0x2646, 0x2263),   /* KINGSTON A2000 NVMe SSD  */
++		.driver_data = NVME_QUIRK_NO_DEEPEST_PS, },
+ 	{ PCI_DEVICE(PCI_VENDOR_ID_APPLE, 0x2001) },
+ 	{ PCI_DEVICE(PCI_VENDOR_ID_APPLE, 0x2003) },
+ 	{ 0, }
 
 
