@@ -2,91 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2943A3135AC
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 15:51:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CC4A3135A5
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 15:51:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233043AbhBHOvm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 09:51:42 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:32085 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232758AbhBHOqf (ORCPT
+        id S231945AbhBHOvQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 09:51:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46430 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232805AbhBHOqn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 09:46:35 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612795510;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=wDyz1IFDSEAOIerG7E7i9OIec2MQQzh/7MUoQ35aflI=;
-        b=cFb32JV560wVXBz9LG6xx0n0qngVWx8faTQEVacBMhRwbAQiStTiwthcz8gUOzm1wjhDkE
-        4VmZ5tkZjhRZtU7fk6Y//c9b2yvE51t++wFDf011Jp+Rdxa91L2Y9UjobBc0AGk5GiBNd0
-        3OgtyKFMZhe14vx/ZEXRP8SAXJYvROc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-580-h0NjNB0VO72XsLi_FX5LlQ-1; Mon, 08 Feb 2021 09:45:08 -0500
-X-MC-Unique: h0NjNB0VO72XsLi_FX5LlQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4EC11801975;
-        Mon,  8 Feb 2021 14:45:07 +0000 (UTC)
-Received: from steredhat.redhat.com (ovpn-115-25.ams2.redhat.com [10.36.115.25])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E2FBD5D740;
-        Mon,  8 Feb 2021 14:44:55 +0000 (UTC)
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     kuba@kernel.org
-Cc:     virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Asias He <asias@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.vnet.ibm.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>
-Subject: [PATCH net] vsock/virtio: update credit only if socket is not closed
-Date:   Mon,  8 Feb 2021 15:44:54 +0100
-Message-Id: <20210208144454.84438-1-sgarzare@redhat.com>
+        Mon, 8 Feb 2021 09:46:43 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9A25C061786;
+        Mon,  8 Feb 2021 06:46:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=ezjM9RK8q9ZkDU1hNSWqUp0BpKofzQPgjLv9MoG7YR4=; b=K4Z/FZ84HTnviv3KOinJCLCc2E
+        Nd2m71fWtpnBotID/OaFotnIvBm0AKd1GEn1vvGk6E6rVTCQP9WU8h8jdrwGFLS4tTJvmWvg3CDdZ
+        l1BAY3T6RS6vFIeaILq7ONb9Yn1Rwlp2rxP4zjt+9/xt0QYWaENveK/k2CWvAbCWIQnEzxgRXYAsT
+        Tbe9lGZ74EIYG4XFAtyn35C3kFX9N+5S6MB7ZUGkpX1KofxOILj3GBjtmn8jj9xApocKZ/iRyWQW6
+        LjwCAoFtgDyL1DACAOTucmlsSx3yxSly3ujl836DHjxcT+P7khvOFmThucPXRx0sm32kmN9UiHKwj
+        OIYimmcg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1l97nX-0001A9-7H; Mon, 08 Feb 2021 14:45:55 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 943DA3010D2;
+        Mon,  8 Feb 2021 15:45:50 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 57DF22BF5C9B6; Mon,  8 Feb 2021 15:45:50 +0100 (CET)
+Date:   Mon, 8 Feb 2021 15:45:50 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>, stable@vger.kernel.org,
+        Ingo Molnar <mingo@kernel.org>
+Subject: Re: [PATCH 2/5] rcu/nocb: Perform deferred wake up before last
+ idle's need_resched() check
+Message-ID: <YCFOnhwQAjMMkwGN@hirez.programming.kicks-ass.net>
+References: <20210131230548.32970-1-frederic@kernel.org>
+ <20210131230548.32970-3-frederic@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210131230548.32970-3-frederic@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If the socket is closed or is being released, some resources used by
-virtio_transport_space_update() such as 'vsk->trans' may be released.
+On Mon, Feb 01, 2021 at 12:05:45AM +0100, Frederic Weisbecker wrote:
 
-To avoid a use after free bug we should only update the available credit
-when we are sure the socket is still open and we have the lock held.
+> diff --git a/kernel/sched/idle.c b/kernel/sched/idle.c
+> index 305727ea0677..b601a3aa2152 100644
+> --- a/kernel/sched/idle.c
+> +++ b/kernel/sched/idle.c
+> @@ -55,6 +55,7 @@ __setup("hlt", cpu_idle_nopoll_setup);
+>  static noinline int __cpuidle cpu_idle_poll(void)
+>  {
+>  	trace_cpu_idle(0, smp_processor_id());
+> +	rcu_nocb_flush_deferred_wakeup();
+>  	stop_critical_timings();
+>  	rcu_idle_enter();
+>  	local_irq_enable();
+> @@ -173,6 +174,8 @@ static void cpuidle_idle_call(void)
+>  	struct cpuidle_driver *drv = cpuidle_get_cpu_driver(dev);
+>  	int next_state, entered_state;
+>  
+> +	rcu_nocb_flush_deferred_wakeup();
+> +
+>  	/*
+>  	 * Check if the idle task must be rescheduled. If it is the
+>  	 * case, exit the function after re-enabling the local irq.
 
-Fixes: 06a8fc78367d ("VSOCK: Introduce virtio_vsock_common.ko")
-Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
----
- net/vmw_vsock/virtio_transport_common.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Ok if I do this instead?
 
-diff --git a/net/vmw_vsock/virtio_transport_common.c b/net/vmw_vsock/virtio_transport_common.c
-index 5956939eebb7..e4370b1b7494 100644
---- a/net/vmw_vsock/virtio_transport_common.c
-+++ b/net/vmw_vsock/virtio_transport_common.c
-@@ -1130,8 +1130,6 @@ void virtio_transport_recv_pkt(struct virtio_transport *t,
+--- a/kernel/sched/idle.c
++++ b/kernel/sched/idle.c
+@@ -55,7 +55,6 @@ __setup("hlt", cpu_idle_nopoll_setup);
+ static noinline int __cpuidle cpu_idle_poll(void)
+ {
+ 	trace_cpu_idle(0, smp_processor_id());
+-	rcu_nocb_flush_deferred_wakeup();
+ 	stop_critical_timings();
+ 	rcu_idle_enter();
+ 	local_irq_enable();
+@@ -174,8 +173,6 @@ static void cpuidle_idle_call(void)
+ 	struct cpuidle_driver *drv = cpuidle_get_cpu_driver(dev);
+ 	int next_state, entered_state;
  
- 	vsk = vsock_sk(sk);
- 
--	space_available = virtio_transport_space_update(sk, pkt);
+-	rcu_nocb_flush_deferred_wakeup();
 -
- 	lock_sock(sk);
+ 	/*
+ 	 * Check if the idle task must be rescheduled. If it is the
+ 	 * case, exit the function after re-enabling the local irq.
+@@ -288,6 +285,7 @@ static void do_idle(void)
+ 		}
  
- 	/* Check if sk has been closed before lock_sock */
-@@ -1142,6 +1140,8 @@ void virtio_transport_recv_pkt(struct virtio_transport *t,
- 		goto free_pkt;
- 	}
+ 		arch_cpu_idle_enter();
++		rcu_nocb_flush_deferred_wakeup();
  
-+	space_available = virtio_transport_space_update(sk, pkt);
-+
- 	/* Update CID in case it has changed after a transport reset event */
- 	vsk->local_addr.svm_cid = dst.svm_cid;
- 
--- 
-2.29.2
-
+ 		/*
+ 		 * In poll mode we reenable interrupts and spin. Also if we
