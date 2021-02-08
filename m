@@ -2,151 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13EF73131D2
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 13:10:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E863B3131D6
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 13:10:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233559AbhBHMIg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 07:08:36 -0500
-Received: from foss.arm.com ([217.140.110.172]:33156 "EHLO foss.arm.com"
+        id S229751AbhBHMKR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 07:10:17 -0500
+Received: from mx2.suse.de ([195.135.220.15]:60666 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232976AbhBHLs5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 06:48:57 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 772A031B;
-        Mon,  8 Feb 2021 03:47:59 -0800 (PST)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5AE623F73B;
-        Mon,  8 Feb 2021 03:47:57 -0800 (PST)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     "Song Bao Hua \(Barry Song\)" <song.bao.hua@hisilicon.com>,
-        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc:     "vincent.guittot\@linaro.org" <vincent.guittot@linaro.org>,
-        "mgorman\@suse.de" <mgorman@suse.de>,
-        "mingo\@kernel.org" <mingo@kernel.org>,
-        "peterz\@infradead.org" <peterz@infradead.org>,
-        "dietmar.eggemann\@arm.com" <dietmar.eggemann@arm.com>,
-        "morten.rasmussen\@arm.com" <morten.rasmussen@arm.com>,
-        "linuxarm\@openeuler.org" <linuxarm@openeuler.org>,
-        "xuwei \(O\)" <xuwei5@huawei.com>,
-        "Liguozhu \(Kenneth\)" <liguozhu@hisilicon.com>,
-        "tiantao \(H\)" <tiantao6@hisilicon.com>,
-        wanghuiqiang <wanghuiqiang@huawei.com>,
-        "Zengtao \(B\)" <prime.zeng@hisilicon.com>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        "guodong.xu\@linaro.org" <guodong.xu@linaro.org>,
-        Meelis Roos <mroos@linux.ee>
-Subject: RE: [RFC PATCH 1/2] sched/topology: Get rid of NUMA overlapping groups
-In-Reply-To: <26e70a3275b14f248520d7a5e66e5a74@hisilicon.com>
-References: <20210203155432.10293-1-valentin.schneider@arm.com> <20210203155432.10293-2-valentin.schneider@arm.com> <26e70a3275b14f248520d7a5e66e5a74@hisilicon.com>
-User-Agent: Notmuch/0.21 (http://notmuchmail.org) Emacs/26.3 (x86_64-pc-linux-gnu)
-Date:   Mon, 08 Feb 2021 11:47:48 +0000
-Message-ID: <jhjpn1a232z.mognet@arm.com>
+        id S233386AbhBHLtj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 06:49:39 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1612784930; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=rNXEQttSljSOXQ5vUQs4GTPYC1r1hAnr6viwolFR9tc=;
+        b=r5dHf4kFkxHmbA04PtcbaZu0atntZZsdLD35oGLActq/Hd9uIGmlaQlRW9pfEuXFvBrHX5
+        pA45TfkeavAOujIRJ0MsmqAbaLd8GrbmDqnk4HxAft3rabux3DqyLXtnjfJuim2oOcFINC
+        wag2fddgjXcY/urh6k3eta9Qg6GdWD0=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id E9F48AD4E;
+        Mon,  8 Feb 2021 11:48:49 +0000 (UTC)
+Subject: Re: [PATCH 7/7] xen/evtchn: read producer index only once
+To:     Julien Grall <julien@xen.org>, xen-devel@lists.xenproject.org,
+        linux-kernel@vger.kernel.org
+Cc:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>
+References: <20210206104932.29064-1-jgross@suse.com>
+ <20210206104932.29064-8-jgross@suse.com>
+ <8032d8a9-b28f-95e1-a5a8-e955ada4dc0a@xen.org>
+From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+Message-ID: <969f1492-764b-3345-eb65-64aca554ce9e@suse.com>
+Date:   Mon, 8 Feb 2021 12:48:49 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <8032d8a9-b28f-95e1-a5a8-e955ada4dc0a@xen.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="MibTRswBhznEAVzFPSZwv0FK78kpDjPYj"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Barry,
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--MibTRswBhznEAVzFPSZwv0FK78kpDjPYj
+Content-Type: multipart/mixed; boundary="EKPtOYUKTfIooA4V1ZpTVYV16JtWuK84z";
+ protected-headers="v1"
+From: =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+To: Julien Grall <julien@xen.org>, xen-devel@lists.xenproject.org,
+ linux-kernel@vger.kernel.org
+Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+ Stefano Stabellini <sstabellini@kernel.org>
+Message-ID: <969f1492-764b-3345-eb65-64aca554ce9e@suse.com>
+Subject: Re: [PATCH 7/7] xen/evtchn: read producer index only once
+References: <20210206104932.29064-1-jgross@suse.com>
+ <20210206104932.29064-8-jgross@suse.com>
+ <8032d8a9-b28f-95e1-a5a8-e955ada4dc0a@xen.org>
+In-Reply-To: <8032d8a9-b28f-95e1-a5a8-e955ada4dc0a@xen.org>
 
-On 08/02/21 10:04, Song Bao Hua (Barry Song) wrote:
->> -----Original Message-----
->> From: Valentin Schneider [mailto:valentin.schneider@arm.com]
+--EKPtOYUKTfIooA4V1ZpTVYV16JtWuK84z
+Content-Type: multipart/mixed;
+ boundary="------------182073CD3ED7DAC9C47D0BBB"
+Content-Language: en-US
 
->
-> Hi Valentin,
->
-> While I like your approach, this will require more time
-> to evaluate possible influence as the approach also affects
-> all machines without 3-hops issue. So x86 platforms need to
-> be tested and benchmark is required.
->
-> What about we firstly finish the review of "grandchild" approach
-> v2 and have a solution for kunpeng920 and Sun Fire X4600-M2
-> while not impacting other machines which haven't 3-hops issues
-> first?
->
+This is a multi-part message in MIME format.
+--------------182073CD3ED7DAC9C47D0BBB
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
 
-I figured I'd toss this out while the iron was hot (and I had the topology
-crud paged in), but I ultimately agree that it's better to first go with
-something that fixes the diameter > 2 topologies and leaves the other ones
-untouched, which is exactly what you have.
+On 08.02.21 12:40, Julien Grall wrote:
+>=20
+>=20
+> On 06/02/2021 10:49, Juergen Gross wrote:
+>> In evtchn_read() use READ_ONCE() for reading the producer index in
+>> order to avoid the compiler generating multiple accesses.
+>>
+>> Signed-off-by: Juergen Gross <jgross@suse.com>
+>> ---
+>> =C2=A0 drivers/xen/evtchn.c | 2 +-
+>> =C2=A0 1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/xen/evtchn.c b/drivers/xen/evtchn.c
+>> index 421382c73d88..f6b199b597bf 100644
+>> --- a/drivers/xen/evtchn.c
+>> +++ b/drivers/xen/evtchn.c
+>> @@ -211,7 +211,7 @@ static ssize_t evtchn_read(struct file *file, char=
+=20
+>> __user *buf,
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 goto unlock_out;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 c =3D u->ring_c=
+ons;
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 p =3D u->ring_prod;
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 p =3D READ_ONCE(u->ring_pr=
+od);
+> For consistency, don't you also need the write side in=20
+> evtchn_interrupt() to use WRITE_ONCE()?
 
-> I would appreciate very much if you could comment on v2:
-> https://lore.kernel.org/lkml/20210203111201.20720-1-song.bao.hua@hisilicon.com/
->
-
-See my comment below on domain degeneration; with that taken care of I
-would say it's good to go. Have a look at what patch1+patch3 squashed
-together looks like, passing the right sd to init_overlap_sched_group()
-looks a bit neater IMO.
-
->> +static struct sched_domain *find_node_domain(struct sched_domain *sd)
->> +{
->> +	struct sched_domain *parent;
->> +
->> +	BUG_ON(!(sd->flags & SD_NUMA));
->> +
->> +	/* Get to the level above NODE */
->> +	while (sd && sd->child) {
->> +		parent = sd;
->> +		sd = sd->child;
->> +
->> +		if (!(sd->flags & SD_NUMA))
->> +			break;
->> +	}
->> +	/*
->> +	 * We're going to create cross topology level sched_group_capacity
->> +	 * references. This can only work if the domains resulting from said
->> +	 * levels won't be degenerated, as we need said sgc to be periodically
->> +	 * updated: it needs to be attached to the local group of a domain
->> +	 * that didn't get degenerated.
->> +	 *
->> +	 * Of course, groups aren't available yet, so we can't call the usual
->> +	 * sd_degenerate(). Checking domain spans is the closest we get.
->> +	 * Start from NODE's parent, and keep going up until we get a domain
->> +	 * we're sure won't be degenerated.
->> +	 */
->> +	while (sd->parent &&
->> +	       cpumask_equal(sched_domain_span(sd), sched_domain_span(parent))) {
->> +		sd = parent;
->> +		parent = sd->parent;
->> +	}
->
-> So this is because the sched_domain which doesn't contribute to scheduler
-> will be destroyed during cpu_attach_domain() since sd and parent span
-> the seam mask?
->
-
-Yes; let's take your topology for instance:
-
-node   0   1   2   3
-    0:  10  12  20  22
-    1:  12  10  22  24
-    2:  20  22  10  12
-    3:  22  24  12  10
-
-      2       10      2
-  0 <---> 1 <---> 2 <---> 3
+Only in case I'd consider the compiler needing multiple memory
+accesses for doing the update (see my reply to Jan's comment on this
+patch).
 
 
-Domains for node1 will look like (before any fixes are applied):
+Juergen
 
-NUMA<=10: span=1   groups=(1)
-NUMA<=12: span=0-1 groups=(1)->(0)
-NUMA<=20: span=0-1 groups=(0,1)
-NUMA<=22: span=0-2 groups=(0,1)->(0,2-3)
-NUMA<=24: span=0-3 groups=(0-2)->(0,2-3)
+--------------182073CD3ED7DAC9C47D0BBB
+Content-Type: application/pgp-keys;
+ name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment;
+ filename="OpenPGP_0xB0DE9DD628BF132F.asc"
 
-As you can see, the domain representing distance <= 20 will be degenerated
-(it has a single group). If we were to e.g. add some more nodes to the left
-of node0, then we would trigger the "grandchildren logic" for node1 and
-would end up creating a reference to node1 NUMA<=20's sgc, which is a
-mistake: that domain will be degenerated, and that sgc will never be
-updated. The right thing to do here would be reference node1 NUMA<=12's
-sgc, which the above snippet does.
+-----BEGIN PGP PUBLIC KEY BLOCK-----
 
->> +
->> +	return parent;
->> +}
->> +
+xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
+cWx
+w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
+f8Z
+d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
+9bf
+IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
+G7/
+377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
+3Jv
+c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
+QIe
+AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
+hpw
+dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
+MbD
+1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
+oPH
+Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
+5QL
++qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
+2Vu
+IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
+QoL
+BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
+Wf0
+teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
+/nu
+AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
+ITT
+d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
+XBK
+7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
+80h
+SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
+AcD
+AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
+FOX
+gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
+jnD
+kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
+N51
+N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
+otu
+fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
+tqS
+EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
+hsD
+BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
+g3O
+ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
+dM7
+wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
+D+j
+LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
+V2x
+AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
+Eaw
+QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
+nHI
+s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
+wgn
+BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
+bVF
+LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
+pEd
+IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
+QAB
+wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
+Tbe
+8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
+vJz
+Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
+VGi
+wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
+svi
+uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
+zXs
+ZDn8R38=3D
+=3D2wuH
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------182073CD3ED7DAC9C47D0BBB--
+
+--EKPtOYUKTfIooA4V1ZpTVYV16JtWuK84z--
+
+--MibTRswBhznEAVzFPSZwv0FK78kpDjPYj
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmAhJSEFAwAAAAAACgkQsN6d1ii/Ey/t
+IQgAlW5KCjM05LLQruIcKBrHgQ5NuFxq66+eb2SrqfgpvWigxbqzU0bKA3bJpvuViEdFGtIS1v75
+8hnne4C8he9/V0ZBINTvSrtoSN25SBO//r4dVZmUALU+ONiFzIgK0N6QZ/o/anU+sj3gxrFvdYez
+CatX6TQ1io16ySb0ww2r2DfE9EWMMFYs8+Ojmr5b67iBlPfKnRmSK4F9TrixDmWTmCnm716g6P5x
+uz80mZj4jRSZ4710JvTJTHepFEioW3TIpnBnrj1eaDUW3aWuMjkn25BKkHq8S/6i9OFW8Bjfifpt
+XaSEPh2/CrVpmfVYfitd99iMEK8i/4tQjsKZgx8Kjg==
+=V7sO
+-----END PGP SIGNATURE-----
+
+--MibTRswBhznEAVzFPSZwv0FK78kpDjPYj--
