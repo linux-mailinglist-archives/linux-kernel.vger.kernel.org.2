@@ -2,210 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE1263128A5
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 01:49:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3664A3128AC
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 02:14:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229626AbhBHArE convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 7 Feb 2021 19:47:04 -0500
-Received: from mga04.intel.com ([192.55.52.120]:9261 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229564AbhBHArC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Feb 2021 19:47:02 -0500
-IronPort-SDR: 97V1X4RiVu2XaC3L+XQBbx6qgsboOMSGMIf6YhDGq9QT0dPMZhn21P4zjrDYOtiT+sHlKtVldn
- 44gjOGAaTeew==
-X-IronPort-AV: E=McAfee;i="6000,8403,9888"; a="179081234"
-X-IronPort-AV: E=Sophos;i="5.81,160,1610438400"; 
-   d="scan'208";a="179081234"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Feb 2021 16:46:21 -0800
-IronPort-SDR: 970OPowdUYRFOdQD7CEPdKRfC4V/7gSGKUyl65dkCDi2S3/Obu3VKSwXqnnuVfyrctDS2ojCDb
- v+cmN//ex/0g==
-X-IronPort-AV: E=Sophos;i="5.81,160,1610438400"; 
-   d="scan'208";a="395129684"
-Received: from shao2-debian.sh.intel.com (HELO localhost) ([10.239.13.11])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Feb 2021 16:46:15 -0800
-Date:   Mon, 8 Feb 2021 08:45:44 +0800
-From:   kernel test robot <rong.a.chen@intel.com>
-To:     "Chiou, Cooper" <cooper.chiou@intel.com>
-Cc:     "Tang, Feng" <feng.tang@intel.com>,
-        "Li, Tiejun" <tiejun.li@intel.com>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        "Du, Frank" <frank.du@intel.com>,
-        "Chen, Guobing" <guobing.chen@intel.com>,
-        "Tseng, William" <william.tseng@intel.com>,
-        "Xie, Gengxin" <gengxin.xie@intel.com>,
-        "Fan, Shuhua" <shuhua.fan@intel.com>,
-        "Zhao, Fan" <fan.zhao@intel.com>,
-        "Huang, Ying" <ying.huang@intel.com>,
-        "Kang, Shan" <shan.kang@intel.com>,
-        "Xing, Zhengjun" <zhengjun.xing@intel.com>,
-        "Huang, Wenhuan" <wenhuan.huang@intel.com>,
-        "Nikula, Jani" <jani.nikula@intel.com>,
-        "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
-        "lkp@lists.01.org" <lkp@lists.01.org>,
-        "Chen, Ming A" <ming.a.chen@intel.com>, "Ma, Yu" <yu.ma@intel.com>,
-        "Ji, Jessica" <jessica.ji@intel.com>,
-        "Li, Guangli" <guangli.li@intel.com>,
-        "Guo, Wangyang" <wangyang.guo@intel.com>,
-        "Mi, Dapeng1" <dapeng1.mi@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Sun, Jiebin" <jiebin.sun@intel.com>
-Subject: Re: [Intel-gfx] [drm/i915] 04ff178484:
- phoronix-test-suite.supertuxkart.1024x768.Fullscreen.Ultimate.1.GranParadisoIsland.frames_per_second
- -30.4% regression
-Message-ID: <20210208004544.GA1712029@shao2-debian>
-References: <20200916180745.627-1-cooper.chiou@intel.com>
- <20200921092220.GH13157@shao2-debian>
- <SA2PR11MB49694B1464470425AF44AAAB9DA19@SA2PR11MB4969.namprd11.prod.outlook.com>
+        id S229621AbhBHBOL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Feb 2021 20:14:11 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:37494 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229537AbhBHBOK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Feb 2021 20:14:10 -0500
+Received: from [10.130.0.55] (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxOdUpkCBgpgUIAA--.10238S3;
+        Mon, 08 Feb 2021 09:13:14 +0800 (CST)
+Subject: Re: [PATCH v2 2/4] MIPS: microMIPS: Fix the judgment of mm_jr16_op
+ and mm_jalr_op
+To:     "Maciej W. Rozycki" <macro@orcam.me.uk>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+References: <1611207098-11381-1-git-send-email-hejinyang@loongson.cn>
+ <1611207098-11381-3-git-send-email-hejinyang@loongson.cn>
+ <alpine.DEB.2.21.2102072200300.35623@angie.orcam.me.uk>
+Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Paul Burton <paulburton@kernel.org>,
+        Jun-Ru Chang <jrjang@realtek.com>
+From:   Jinyang He <hejinyang@loongson.cn>
+Message-ID: <32bd50ed-c359-0efc-af76-4b77a3fc05ae@loongson.cn>
+Date:   Mon, 8 Feb 2021 09:13:13 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
+ Thunderbird/45.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <SA2PR11MB49694B1464470425AF44AAAB9DA19@SA2PR11MB4969.namprd11.prod.outlook.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <alpine.DEB.2.21.2102072200300.35623@angie.orcam.me.uk>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: AQAAf9AxOdUpkCBgpgUIAA--.10238S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxJrWUCF15AFWrJr4Dur1rWFg_yoW8Kr13pF
+        WYva9FyF4kJFyrA34kJayrX345Aan5Kay3GF15t345twn8Wr1avFyftw4S9wn7Gr4Yk3WI
+        qFy3XrWUuwnavaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvSb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4
+        vEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40E
+        FcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr
+        0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxv
+        r21lc2xSY4AK67AK6w4l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2
+        IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v2
+        6r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2
+        IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2
+        jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43
+        ZEXa7IU5s6pJUUUUU==
+X-CM-SenderInfo: pkhmx0p1dqwqxorr0wxvrqhubq/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
+On 02/08/2021 05:31 AM, Maciej W. Rozycki wrote:
 
-The problem can't be reproduced after test environment changed,
-there's no regression found on this patch now, we don't know yet
-why it caused a regression in September 2020, but we'll continue
-to root cause.
+> On Thu, 21 Jan 2021, Jinyang He wrote:
+>
+>> mm16_r5_format.rt is 5 bits, so directly judge the value if equal or not.
+>> mm_jalr_op requires 7th to 16th bits. These 10 which bits generated by
+>   The minor opcode extension field is comprised of bits 15:6, not 16:7 as
+> your description suggests.  Please be accurate with statements.
+>
+>> shifting u_format.uimmediate by 6 may be affected by sign extension.
+>   Why?  The `uimmediate' bit-field member is unsigned for a reason.  No
+> sign-extension is made on unsigned data with the right-shift operation.
+>
+>> Thus, take out the 10 bits for comparison.
+>>
+>> Without this patch, errors may occur, such as these bits are all ones.
+>   How did you come to this conclusion?
+>
+>> diff --git a/arch/mips/kernel/process.c b/arch/mips/kernel/process.c
+>> index d737234..74d7fd8 100644
+>> --- a/arch/mips/kernel/process.c
+>> +++ b/arch/mips/kernel/process.c
+>> @@ -292,8 +292,8 @@ static inline int is_jump_ins(union mips_instruction *ip)
+>>   	 * microMIPS is kind of more fun...
+>>   	 */
+>>   	if (mm_insn_16bit(ip->word >> 16)) {
+>> -		if ((ip->mm16_r5_format.opcode == mm_pool16c_op &&
+>> -		    (ip->mm16_r5_format.rt & mm_jr16_op) == mm_jr16_op))
+>> +		if (ip->mm16_r5_format.opcode == mm_pool16c_op &&
+>> +		    ip->mm16_r5_format.rt == mm_jr16_op)
+>>   			return 1;
+>>   		return 0;
+>>   	}
+>   Code style changes should be submitted on their own as separate patches.
+>
+>> @@ -305,7 +305,7 @@ static inline int is_jump_ins(union mips_instruction *ip)
+>>   	if (ip->r_format.opcode != mm_pool32a_op ||
+>>   			ip->r_format.func != mm_pool32axf_op)
+>>   		return 0;
+>> -	return ((ip->u_format.uimmediate >> 6) & mm_jalr_op) == mm_jalr_op;
+>> +	return ((ip->u_format.uimmediate >> 6) & GENMASK(9, 0)) == mm_jalr_op;
+>   You've now excluded JALR.HB, JALRS, and JALRS.HB instructions.  The mask
+> was there for a reason.  If you can't be bothered to verify microMIPS
+> changes say with QEMU, then at the very least please check documentation.
+> The intent of this code is clear and these instructions are even spelled
+> out explicitly in the comment at the top.
+It's my fault. :-(
 
-Best Regards,
-Rong Chen
+How amazing the opcode design is!
 
-On Thu, Jan 21, 2021 at 02:18:25PM +0000, Chiou, Cooper wrote:
-> I run “phoronix-test-suite run supertuxkart-1.5.2” on my CML Ubuntu 18.04.5 LTS device, and compared the fps between patch and original upstream, there is no any fps performance drop issue. 
-> 
->         5.10.0-rc3 upstream /  5.10.0-rc3+patch
-> fps     12.586326           /  12.687711
-> 
-> Best Regards,
-> Cooper
-> +886-2-6622-1166
-> 
-> -----Original Message-----
-> From: kernel test robot <rong.a.chen@intel.com> 
-> Sent: Monday, September 21, 2020 5:22 PM
-> To: Chiou, Cooper <cooper.chiou@intel.com>
-> Cc: intel-gfx@lists.freedesktop.org; Chiou, Cooper <cooper.chiou@intel.com>; Tseng, William <william.tseng@intel.com>; Nikula, Jani <jani.nikula@intel.com>; Chris Wilson <chris@chris-wilson.co.uk>; lkp <lkp@intel.com>; Ville Syrjälä <ville.syrjala@linux.intel.com>; Vivi, Rodrigo <rodrigo.vivi@intel.com>; Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>; Lee, Shawn C <shawn.c.lee@intel.com>; LKML <linux-kernel@vger.kernel.org>; lkp@lists.01.org; Huang, Ying <ying.huang@intel.com>; Tang, Feng <feng.tang@intel.com>; Xing, Zhengjun <zhengjun.xing@intel.com>; Chen, Guobing <guobing.chen@intel.com>; Chen, Ming A <ming.a.chen@intel.com>; Du, Frank <frank.du@intel.com>; Fan, Shuhua <shuhua.fan@intel.com>; Guo, Wangyang <wangyang.guo@intel.com>; Huang, Wenhuan <wenhuan.huang@intel.com>; Ji, Jessica <jessica.ji@intel.com>; Kang, Shan <shan.kang@intel.com>; Li, Guangli <guangli.li@intel.com>; Li, Tiejun <tiejun.li@intel.com>; Ma, Yu <yu.ma@intel.com>; Mi, Dapeng1 <dapeng1.mi@intel.com>; Sun, Jiebin <jiebin.sun@intel.com>; Xie, Gengxin <gengxin.xie@intel.com>; Zhao, Fan <fan.zhao@intel.com>
-> Subject: [drm/i915] 04ff178484: phoronix-test-suite.supertuxkart.1024x768.Fullscreen.Ultimate.1.GranParadisoIsland.frames_per_second -30.4% regression
-> 
-> Greeting,
-> 
-> FYI, we noticed a -30.4% regression of phoronix-test-suite.supertuxkart.1024x768.Fullscreen.Ultimate.1.GranParadisoIsland.frames_per_second due to commit:
-> 
-> 
-> commit: 04ff1784840f5f954a656c7e8795c76467e29128 ("[Intel-gfx] [PATCH] drm/i915: Enable WaProgramMgsrForCorrectSliceSpecificMmioReads for Gen9")
-> url: https://github.com/0day-ci/linux/commits/Cooper-Chiou/drm-i915-Enable-WaProgramMgsrForCorrectSliceSpecificMmioReads-for-Gen9/20200917-021540
-> base: git://anongit.freedesktop.org/drm-intel for-linux-next
-> 
-> in testcase: phoronix-test-suite
-> on test machine: 4 threads Intel(R) Core(TM) i7-7567U CPU @ 3.50GHz with 32G memory with following parameters:
-> 
-> 	need_x: true
-> 	test: supertuxkart-1.5.2
-> 	option_a: Fullscreen
-> 	option_b: Ultimate
-> 	option_c: 1
-> 	option_d: Gran Paradiso Island [Approximately 275k triangles; advanced graphics]
-> 	cpufreq_governor: performance
-> 	ucode: 0xd6
-> 
-> test-description: The Phoronix Test Suite is the most comprehensive testing and benchmarking platform available that provides an extensible framework for which new tests can be easily added.
-> test-url: http://www.phoronix-test-suite.com/
-> 
-> 
-> 
-> If you fix the issue, kindly add following tag
-> Reported-by: kernel test robot <rong.a.chen@intel.com>
-> 
-> 
-> Details are as below:
-> -------------------------------------------------------------------------------------------------->
-> 
-> 
-> To reproduce:
-> 
->         git clone https://github.com/intel/lkp-tests.git
->         cd lkp-tests
->         bin/lkp install job.yaml  # job file is attached in this email
->         bin/lkp run     job.yaml
-> 
-> =========================================================================================
-> compiler/cpufreq_governor/kconfig/need_x/option_a/option_b/option_c/option_d/rootfs/tbox_group/test/testcase/ucode:
->   gcc-9/performance/x86_64-rhel-8.3/true/Fullscreen/Ultimate/1/Gran Paradiso Island [Approximately 275k triangles; advanced graphics]/debian-x86_64-phoronix/lkp-kbl-nuc1/supertuxkart-1.5.2/phoronix-test-suite/0xd6
-> 
-> commit: 
->   400d4953f1 ("drm/i915/pll: Centralize PLL_ENABLE register lookup")
->   04ff178484 ("drm/i915: Enable WaProgramMgsrForCorrectSliceSpecificMmioReads for Gen9")
-> 
-> 400d4953f1f434d5 04ff1784840f5f954a656c7e879
-> ---------------- --------------------------- 
->          %stddev     %change         %stddev
->              \          |                \  
->      35.32           -30.4%      24.59        phoronix-test-suite.supertuxkart.1024x768.Fullscreen.Ultimate.1.GranParadisoIsland.frames_per_second
->       3638 ± 15%     -39.2%       2211 ±  4%  phoronix-test-suite.time.involuntary_context_switches
->      32.00           -30.5%      22.25        phoronix-test-suite.time.percent_of_cpu_this_job_got
-> 
-> 
->                                                                                 
->                                                                                 
->                                                                                 
->   36 +----------------------------------------------------------------------+   
->      |.+.+..+.+.+.+..+.+.+.+.+..+.+.+.+..+.+.+.+.+..+.+.+.+.+..+   +.+..+.+.|   
->   34 |-+                                                                    |   
->      |                                                                      |   
->      |                                                                      |   
->   32 |-+                                                                    |   
->      |                                                                      |   
->   30 |-+                                                                    |   
->      |                                                                      |   
->   28 |-+                                                                    |   
->      |                                                                      |   
->      |                                                                      |   
->   26 |-+                                                                    |   
->      | O O  O O O O  O O O O O  O O O O  O O O O O  O O                     |   
->   24 +----------------------------------------------------------------------+   
->                                                                                 
->                                                                                                                                                                 
->               phoronix-test-suite.time.percent_of_cpu_this_job_got              
->                                                                                 
->   32 +----------------------------------------------------------------------+   
->      |               +       +.              +      +   +.+.+.              |   
->   30 |-+                                                                    |   
->      |                                                                      |   
->      |                                                                      |   
->   28 |-+                                                                    |   
->      |                                                                      |   
->   26 |-+                                                                    |   
->      |                                                                      |   
->   24 |-+                                                                    |   
->      |                                   O       O                          |   
->      |                                                                      |   
->   22 |-O O  O O   O  O O O O O  O O O O    O O O    O O                     |   
->      |          O                                                           |   
->   20 +----------------------------------------------------------------------+   
->                                                                                 
->                                                                                 
-> [*] bisect-good sample
-> [O] bisect-bad  sample
-> 
-> 
-> 
-> Disclaimer:
-> Results have been estimated based on internal Intel analysis and are provided
-> for informational purposes only. Any difference in system hardware or software
-> design or configuration may affect actual performance.
-> 
-> 
-> Thanks,
-> Rong Chen
-> 
-> _______________________________________________
-> Intel-gfx mailing list
-> Intel-gfx@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/intel-gfx
+Thanks,
+Jinyang
+
+>   Thomas, please revert this change as I can see you've already taken it.
+> It's plain wrong.
+>
+>    Maciej
+
