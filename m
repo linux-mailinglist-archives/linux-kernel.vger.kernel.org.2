@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 990A231391A
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 17:18:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64C51313925
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 17:19:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234324AbhBHQRo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 11:17:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56624 "EHLO mail.kernel.org"
+        id S232762AbhBHQTI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 11:19:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56628 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232800AbhBHPMZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S230313AbhBHPMZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 8 Feb 2021 10:12:25 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 501AE64EF4;
-        Mon,  8 Feb 2021 15:09:00 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2346A64EF0;
+        Mon,  8 Feb 2021 15:09:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612796941;
-        bh=ELB1Sbc7yokRQoCpiSn++0/V8x6Q/koGk+mLf/och9M=;
+        s=korg; t=1612796943;
+        bh=BsInV7Qqjs9IreVVDcQb8FYQrXw1uxJaS1Yl21zguqE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Por5FDXpEt2LrIkV3oFKMaB4Y5uMKnH5kUQIISbEAaW0/Y/Pg9LqzhgyqwH+FKfpx
-         Px54AAmEn8Q2jYpKBC7rzRJKwk8mpHGk5cFyAr9pjNAaIW0nJKRmPSKHgyMLhh15Ly
-         5ztLERV9DNVRuuPRYL+niKNT5RK9YzfvvNjQMkNQ=
+        b=VwFIULyADyzkaIFj/3p4Y66Y20TpzAyt/E9R6EfKdLe8z1KNAH273qVllTFbe/hfP
+         ErRjAm3p127YMfWFf0O+xm15icbeaNU8n5YYW3wvJ7lFAedlUVmwFdpMX9p0wIFA9P
+         62zh0UNdnCAhM0ChB7L0Li2sd899Tu0m+oAWV8mg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nadav Amit <namit@vmware.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Joerg Roedel <jroedel@suse.de>
-Subject: [PATCH 4.19 35/38] iommu/vt-d: Do not use flush-queue when caching-mode is on
-Date:   Mon,  8 Feb 2021 16:01:22 +0100
-Message-Id: <20210208145807.569232345@linuxfoundation.org>
+        stable@vger.kernel.org, David Jeffery <djeffery@redhat.com>,
+        Xiao Ni <xni@redhat.com>, Song Liu <songliubraving@fb.com>,
+        Jack Wang <jinpu.wang@cloud.ionos.com>
+Subject: [PATCH 4.19 36/38] md: Set prev_flush_start and flush_bio in an atomic way
+Date:   Mon,  8 Feb 2021 16:01:23 +0100
+Message-Id: <20210208145807.613541970@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210208145806.141056364@linuxfoundation.org>
 References: <20210208145806.141056364@linuxfoundation.org>
@@ -42,76 +40,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nadav Amit <namit@vmware.com>
+From: Xiao Ni <xni@redhat.com>
 
-commit 29b32839725f8c89a41cb6ee054c85f3116ea8b5 upstream.
+commit dc5d17a3c39b06aef866afca19245a9cfb533a79 upstream.
 
-When an Intel IOMMU is virtualized, and a physical device is
-passed-through to the VM, changes of the virtual IOMMU need to be
-propagated to the physical IOMMU. The hypervisor therefore needs to
-monitor PTE mappings in the IOMMU page-tables. Intel specifications
-provide "caching-mode" capability that a virtual IOMMU uses to report
-that the IOMMU is virtualized and a TLB flush is needed after mapping to
-allow the hypervisor to propagate virtual IOMMU mappings to the physical
-IOMMU. To the best of my knowledge no real physical IOMMU reports
-"caching-mode" as turned on.
+One customer reports a crash problem which causes by flush request. It
+triggers a warning before crash.
 
-Synchronizing the virtual and the physical IOMMU tables is expensive if
-the hypervisor is unaware which PTEs have changed, as the hypervisor is
-required to walk all the virtualized tables and look for changes.
-Consequently, domain flushes are much more expensive than page-specific
-flushes on virtualized IOMMUs with passthrough devices. The kernel
-therefore exploited the "caching-mode" indication to avoid domain
-flushing and use page-specific flushing in virtualized environments. See
-commit 78d5f0f500e6 ("intel-iommu: Avoid global flushes with caching
-mode.")
+        /* new request after previous flush is completed */
+        if (ktime_after(req_start, mddev->prev_flush_start)) {
+                WARN_ON(mddev->flush_bio);
+                mddev->flush_bio = bio;
+                bio = NULL;
+        }
 
-This behavior changed after commit 13cf01744608 ("iommu/vt-d: Make use
-of iova deferred flushing"). Now, when batched TLB flushing is used (the
-default), full TLB domain flushes are performed frequently, requiring
-the hypervisor to perform expensive synchronization between the virtual
-TLB and the physical one.
+The WARN_ON is triggered. We use spin lock to protect prev_flush_start and
+flush_bio in md_flush_request. But there is no lock protection in
+md_submit_flush_data. It can set flush_bio to NULL first because of
+compiler reordering write instructions.
 
-Getting batched TLB flushes to use page-specific invalidations again in
-such circumstances is not easy, since the TLB invalidation scheme
-assumes that "full" domain TLB flushes are performed for scalability.
+For example, flush bio1 sets flush bio to NULL first in
+md_submit_flush_data. An interrupt or vmware causing an extended stall
+happen between updating flush_bio and prev_flush_start. Because flush_bio
+is NULL, flush bio2 can get the lock and submit to underlayer disks. Then
+flush bio1 updates prev_flush_start after the interrupt or extended stall.
 
-Disable batched TLB flushes when caching-mode is on, as the performance
-benefit from using batched TLB invalidations is likely to be much
-smaller than the overhead of the virtual-to-physical IOMMU page-tables
-synchronization.
+Then flush bio3 enters in md_flush_request. The start time req_start is
+behind prev_flush_start. The flush_bio is not NULL(flush bio2 hasn't
+finished). So it can trigger the WARN_ON now. Then it calls INIT_WORK
+again. INIT_WORK() will re-initialize the list pointers in the
+work_struct, which then can result in a corrupted work list and the
+work_struct queued a second time. With the work list corrupted, it can
+lead in invalid work items being used and cause a crash in
+process_one_work.
 
-Fixes: 13cf01744608 ("iommu/vt-d: Make use of iova deferred flushing")
-Signed-off-by: Nadav Amit <namit@vmware.com>
-Cc: David Woodhouse <dwmw2@infradead.org>
-Cc: Lu Baolu <baolu.lu@linux.intel.com>
-Cc: Joerg Roedel <joro@8bytes.org>
-Cc: Will Deacon <will@kernel.org>
-Cc: stable@vger.kernel.org
-Acked-by: Lu Baolu <baolu.lu@linux.intel.com>
-Link: https://lore.kernel.org/r/20210127175317.1600473-1-namit@vmware.com
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
-Signed-off-by: Nadav Amit <namit@vmware.com>
+We need to make sure only one flush bio can be handled at one same time.
+So add spin lock in md_submit_flush_data to protect prev_flush_start and
+flush_bio in an atomic way.
+
+Reviewed-by: David Jeffery <djeffery@redhat.com>
+Signed-off-by: Xiao Ni <xni@redhat.com>
+Signed-off-by: Song Liu <songliubraving@fb.com>
+Signed-off-by: Jack Wang <jinpu.wang@cloud.ionos.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- drivers/iommu/intel-iommu.c |    6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/md/md.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/drivers/iommu/intel-iommu.c
-+++ b/drivers/iommu/intel-iommu.c
-@@ -3364,6 +3364,12 @@ static int __init init_dmars(void)
+--- a/drivers/md/md.c
++++ b/drivers/md/md.c
+@@ -474,8 +474,10 @@ static void md_submit_flush_data(struct
+ 	 * could wait for this and below md_handle_request could wait for those
+ 	 * bios because of suspend check
+ 	 */
++	spin_lock_irq(&mddev->lock);
+ 	mddev->last_flush = mddev->start_flush;
+ 	mddev->flush_bio = NULL;
++	spin_unlock_irq(&mddev->lock);
+ 	wake_up(&mddev->sb_wait);
  
- 		if (!ecap_pass_through(iommu->ecap))
- 			hw_pass_through = 0;
-+
-+		if (!intel_iommu_strict && cap_caching_mode(iommu->cap)) {
-+			pr_info("Disable batched IOTLB flush due to virtualization");
-+			intel_iommu_strict = 1;
-+		}
-+
- #ifdef CONFIG_INTEL_IOMMU_SVM
- 		if (pasid_enabled(iommu))
- 			intel_svm_init(iommu);
+ 	if (bio->bi_iter.bi_size == 0) {
 
 
