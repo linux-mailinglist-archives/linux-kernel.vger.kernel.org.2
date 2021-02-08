@@ -2,95 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6C92312C43
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 09:52:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3876312C44
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 09:52:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230185AbhBHIvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 03:51:03 -0500
-Received: from muru.com ([72.249.23.125]:58752 "EHLO muru.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230398AbhBHImE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 03:42:04 -0500
-Received: from atomide.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTPS id E962A80A3;
-        Mon,  8 Feb 2021 08:40:45 +0000 (UTC)
-Date:   Mon, 8 Feb 2021 10:40:26 +0200
-From:   Tony Lindgren <tony@atomide.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Arnd Bergmann <arnd@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
-        arm-soc <arm@kernel.org>, SoC Team <soc@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/SAMSUNG EXYNOS ARM ARCHITECTURES" 
-        <linux-samsung-soc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Sylwester Nawrocki <snawrocki@kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Maxime Ripard <mripard@kernel.org>
-Subject: Re: [GIT PULL 2/3] ARM: dts: samsung: DTS for v5.12
-Message-ID: <YCD4+pb4MfuA1b9e@atomide.com>
-References: <20210125191240.11278-1-krzk@kernel.org>
- <20210125191240.11278-3-krzk@kernel.org>
- <20210206134531.l5vpzlmev4v3f3uo@kozik-lap>
- <CAK8P3a0Kgn9PTHjsU7MbJPC8vatvb9KYJJKWxrx7zQzTNgK10g@mail.gmail.com>
- <CAMuHMdWZ8QmiQCmiW9AvCpviNZeuaxThSo_4Xb2DGEs9hMTKMQ@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdWZ8QmiQCmiW9AvCpviNZeuaxThSo_4Xb2DGEs9hMTKMQ@mail.gmail.com>
+        id S230227AbhBHIvm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 03:51:42 -0500
+Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:56087 "EHLO
+        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230356AbhBHIq3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 03:46:29 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=19;SR=0;TI=SMTPD_---0UO9kPqv_1612773937;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0UO9kPqv_1612773937)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 08 Feb 2021 16:45:38 +0800
+From:   Yang Li <yang.lee@linux.alibaba.com>
+To:     daniel@iogearbox.net
+Cc:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        jolsa@redhat.com, namhyung@kernel.org, ast@kernel.org,
+        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Yang Li <yang.lee@linux.alibaba.com>
+Subject: [PATCH v2] perf script: Simplify bool conversion
+Date:   Mon,  8 Feb 2021 16:45:36 +0800
+Message-Id: <1612773936-98691-1-git-send-email-yang.lee@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Geert Uytterhoeven <geert@linux-m68k.org> [210206 19:48]:
-> On Sat, Feb 6, 2021 at 3:36 PM Arnd Bergmann <arnd@kernel.org> wrote:
-> > What do others think about this? Should we generally assume
-> > that breaking old kernels with new dtbs is acceptable, or should
-> > we try to avoid it if possible, the same way we try to avoid
-> > breaking new kernels with old dtbs? Should this be a platform
-> > specific policy or should we try to handle all platforms the same
-> > way?
-> 
-> For Renesas SoCs, we typically only consider compatibility of new
-> kernels with old DTBs, not the other way around.
-> However, most DTB updates are due to new hardware support, so using the
-> new DTB with an old kernel usually just means no newly documented
-> hardware, or new feature, is being used by the old kernel.
-> 
-> In case there was a real issue fixed, and using the new DTB with the old
-> kernel would cause a regression, and we're aware of it, we do make sure
-> the DTS update is postponed until the corresponding driver update has
-> hit upstream.
+Fix the following coccicheck warning:
+./tools/perf/builtin-script.c:2789:36-41: WARNING: conversion to bool
+not needed here
+./tools/perf/builtin-script.c:3237:48-53: WARNING: conversion to bool
+not needed here
 
-Yeah agreed. Adding new devicetree properties should not be a problem
-for device drivers.
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+---
 
-For renamed devicetree properties, the driver won't be aware of them
-if a newer dtb is used. The only thing the driver can possibly do at
-this point is maybe warn about some missing old property and bail out.
+Change in v2:
+-Change the subject to "perf script"
 
-Making sure the driver changes are in place first helps a bit..
-But naturally fixing the driver in advance won't help booting kernels
-before the driver changes with a newer dtb :)
+ tools/perf/builtin-script.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-What helps though is to make sure git bisect works for building and
-booting already at -rc1 kernel to make debugging the issue easy. As
--rc1 is used typically as the merge base the problem causing branches
-can be tested separately that way.
+diff --git a/tools/perf/builtin-script.c b/tools/perf/builtin-script.c
+index 42dad4a..3646a1c 100644
+--- a/tools/perf/builtin-script.c
++++ b/tools/perf/builtin-script.c
+@@ -2786,7 +2786,7 @@ static int parse_output_fields(const struct option *opt __maybe_unused,
+ 				break;
+ 		}
+ 		if (i == imax && strcmp(tok, "flags") == 0) {
+-			print_flags = change == REMOVE ? false : true;
++			print_flags = change != REMOVE;
+ 			continue;
+ 		}
+ 		if (i == imax) {
+@@ -3234,7 +3234,7 @@ static char *get_script_path(const char *script_root, const char *suffix)
+ 
+ static bool is_top_script(const char *script_path)
+ {
+-	return ends_with(script_path, "top") == NULL ? false : true;
++	return ends_with(script_path, "top") != NULL;
+ }
+ 
+ static int has_required_arg(char *script_path)
+-- 
+1.8.3.1
 
-Regards,
-
-Tony
