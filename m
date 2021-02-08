@@ -2,115 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8241931352C
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 15:30:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66F4931351E
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 15:26:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231147AbhBHO3Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 09:29:24 -0500
-Received: from mail.baikalelectronics.com ([87.245.175.226]:57456 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232377AbhBHOIE (ORCPT
+        id S233026AbhBHOZq convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 8 Feb 2021 09:25:46 -0500
+Received: from mail-ej1-f52.google.com ([209.85.218.52]:36782 "EHLO
+        mail-ej1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231400AbhBHOG3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 09:08:04 -0500
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Joao Pinto <Joao.Pinto@synopsys.com>,
-        Jose Abreu <Jose.Abreu@synopsys.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>
-CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
-        Vyacheslav Mitrofanov 
-        <Vyacheslav.Mitrofanov@baikalelectronics.ru>,
-        Russell King <linux@armlinux.org.uk>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        <netdev@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH 17/20] net: stmmac: Add 'cause' arg to the service task executioner
-Date:   Mon, 8 Feb 2021 17:03:38 +0300
-Message-ID: <20210208140341.9271-18-Sergey.Semin@baikalelectronics.ru>
-In-Reply-To: <20210208140341.9271-1-Sergey.Semin@baikalelectronics.ru>
-References: <20210208140341.9271-1-Sergey.Semin@baikalelectronics.ru>
+        Mon, 8 Feb 2021 09:06:29 -0500
+Received: by mail-ej1-f52.google.com with SMTP id lg21so24887314ejb.3;
+        Mon, 08 Feb 2021 06:06:11 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=XphVOHheHYoGHKVI4PzWTQj/Y2Cb2UP33rdxMkO7I7M=;
+        b=cH7+WaWRv+Jf/qvqsTtgPx2v0XbH9/9kcyO6mttzstO1PN92UpNXESdUElJGWxm9BZ
+         km+zIupYup6OaiXvWpu+0pHDjl5SD4xGQZXKgSJBZonwlgtLFDbndzkGRE142mEi8JJ2
+         X30QmIuivJ9E6kkLOPElfnAUJmjlXllRwo2+JSAXD+BtWYgOfcTXqSfPVADitZGC/I7P
+         gGrOsR6pI+6zYl2sbqvCWu4LpN2rtqSSeIRRkvRGC6AFKYaxwDS05KS6lQrcKpHnp3Je
+         tHCwSI3XMMv0UhexuWHOAAjThww6N9qq0cx6ZG7/X/YE23RpFDMP95MQ0ApS1sX11rFP
+         KJhg==
+X-Gm-Message-State: AOAM531S79zHUlJQInI7szzAodrHfJqWStpP2mSZwlNerw1cU00fJLAt
+        TvbnHL1oB98jDz6ac6A5QEs=
+X-Google-Smtp-Source: ABdhPJyt0nz9QpecNnWZqKbqOv1aQV6UJHItXhWO9Udd+7YtvNYJnGf8utGJfPMJ2MwPvxbiBFmUnA==
+X-Received: by 2002:a17:906:1c17:: with SMTP id k23mr8206243ejg.121.1612793145996;
+        Mon, 08 Feb 2021 06:05:45 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id h3sm9484366edw.18.2021.02.08.06.05.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Feb 2021 06:05:43 -0800 (PST)
+Date:   Mon, 8 Feb 2021 15:05:42 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Martin Kepplinger <martin.kepplinger@puri.sm>
+Cc:     robh@kernel.org, shawnguo@kernel.org, kernel@pengutronix.de,
+        festevam@gmail.com, kernel@puri.sm, linux-imx@nxp.com,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Guido =?utf-8?Q?G=C3=BCnther?= <agx@sigxcpu.org>
+Subject: Re: [PATCH 3/5] arm64: defconfig: Enable devfreq support for i.MX8MQ
+Message-ID: <20210208140542.yah354hd7tqbweud@kozik-lap>
+References: <20210208131527.24463-1-martin.kepplinger@puri.sm>
+ <20210208131527.24463-4-martin.kepplinger@puri.sm>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20210208131527.24463-4-martin.kepplinger@puri.sm>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order to have a more descriptive and coherent service task interface
-let's add the cause argument to the stmmac_service_event_schedule()
-method. It will be used to test-and-set the corresponding flag in the
-private device state variable, and execute the service handler if the flag
-hasn't been set. By doing so we'll be able to activate the service
-sub-task just by calling the stmmac_service_event_schedule() method.
+On Mon, Feb 08, 2021 at 02:15:25PM +0100, Martin Kepplinger wrote:
+> From: Guido Günther <agx@sigxcpu.org>
+> 
+> This is needed to make DRAM frequency scaling via devfreq as used
+> on the Librem 5 and Librem 5 Devkit.
+> 
+> With the interconnect support enabled we now need imx devfreq on top
+> to make this work.
+> 
+> Signed-off-by: Guido Günther <agx@sigxcpu.org>
+> Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
+> ---
+>  arch/arm64/configs/defconfig | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
 
-Note currently there is only a single user of the service tasks interface.
-It's used to handle a case of the critical device errors to cause the
-interface reset. The changes provided here will also prevent the global
-error handler from being called twice if the service task has already
-being executed while reset sub-task still isn't started.
+Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
----
- drivers/net/ethernet/stmicro/stmmac/stmmac_main.c | 15 ++++++++-------
- 1 file changed, 8 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-index 08112b6e7afd..f3ced94b3f4e 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-@@ -174,16 +174,18 @@ static void stmmac_enable_all_queues(struct stmmac_priv *priv)
- 	}
- }
- 
--static void stmmac_service_event_schedule(struct stmmac_priv *priv)
-+static void stmmac_service_event_schedule(struct stmmac_priv *priv,
-+					  unsigned long cause)
- {
--	queue_work(priv->wq, &priv->service_task);
-+	if (!test_and_set_bit(cause, &priv->state))
-+		queue_work(priv->wq, &priv->service_task);
- }
- 
- static void stmmac_global_err(struct stmmac_priv *priv)
- {
- 	netif_carrier_off(priv->dev);
--	set_bit(STMMAC_RESET_REQUESTED, &priv->state);
--	stmmac_service_event_schedule(priv);
-+
-+	stmmac_service_event_schedule(priv, STMMAC_RESET_REQUESTED);
- }
- 
- /**
-@@ -4658,8 +4660,6 @@ static const struct net_device_ops stmmac_netdev_ops = {
- 
- static void stmmac_reset_subtask(struct stmmac_priv *priv)
- {
--	if (!test_and_clear_bit(STMMAC_RESET_REQUESTED, &priv->state))
--		return;
- 	if (test_bit(STMMAC_DOWN, &priv->state))
- 		return;
- 
-@@ -4680,7 +4680,8 @@ static void stmmac_service_task(struct work_struct *work)
- 	struct stmmac_priv *priv = container_of(work, struct stmmac_priv,
- 			service_task);
- 
--	stmmac_reset_subtask(priv);
-+	if (test_and_clear_bit(STMMAC_RESET_REQUESTED, &priv->state))
-+		stmmac_reset_subtask(priv);
- }
- 
- /**
--- 
-2.29.2
-
+Best regards,
+Krzysztof
