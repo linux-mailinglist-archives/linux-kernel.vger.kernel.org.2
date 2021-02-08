@@ -2,71 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9F63312B1F
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 08:34:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A7C6B312B23
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 08:35:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229981AbhBHHeC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 02:34:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33600 "EHLO mail.kernel.org"
+        id S229996AbhBHHfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 02:35:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33632 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229751AbhBHHeA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 02:34:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8493364E76;
-        Mon,  8 Feb 2021 07:33:19 +0000 (UTC)
+        id S229751AbhBHHez (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 02:34:55 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7A22F64DDD;
+        Mon,  8 Feb 2021 07:34:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612769599;
-        bh=PLvxj8AOgyn0FB5uuxgnnw6lfnNSe9JgKHhMwnhGoBw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=b3/SzO+Q8/32GJW1IEUQ++VJaU6VoKyfD1eTtAjUiFXw0kWspldzq1/J5oqVRVkLr
-         5etolVMX/sJkYJPRn29FK6AQw4wsjPL7D+wy5/K3L7XH0/NvL+oCm4gIxRHlSrZUtU
-         xUfdL0iHQZ5EehNHyy/kDOTvfT7n+ZOZ/pCbysnrHaGLHcbXRmbTTf8LUDQ/X2Xxph
-         8NHfGgdXqahKGEDd1qP0+7o8a/o8rTg9mgIUTyDsDjpzObF3PdWnhj6MrnryMgEcHb
-         IQybQ0Trt6Gt9U+fvUZ3VspVx4uC4pLmOORIHtZM/8ZYxXh6W4GdyJbsz8g4XQmvnu
-         /9CbnSjpeEfew==
-Received: by mail-ej1-f48.google.com with SMTP id y9so22963013ejp.10;
-        Sun, 07 Feb 2021 23:33:19 -0800 (PST)
-X-Gm-Message-State: AOAM532zwjSGRzyglNCrGMgEjYODpTBgjzaFpaB34GOlqPIOaVmkRJah
-        OUMq+4jQqM+BupQlOBB874YWc1SiQ2ueQCuq1Dk=
-X-Google-Smtp-Source: ABdhPJxkd5dV108IbJ7mCIt1DofOzSEau98h9UYcjCcnmbfmquAu3yGv9xq5uFk8WLaj3yC40mjiNCMymFwRlKfbgoc=
-X-Received: by 2002:a17:906:158c:: with SMTP id k12mr15919234ejd.119.1612769597949;
- Sun, 07 Feb 2021 23:33:17 -0800 (PST)
+        s=k20201202; t=1612769653;
+        bh=7TyKKVr8AyUm1jsKCCtx7TX3UogGf1VLNtMdZYu55qE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=G7Az6K0blie4qbk6W+OmSAiRBXBb8s7jK2ZlbGUgcxaOOYHekFQSTz4Nc+kDQDyuO
+         nYA3EpuafmQgO0KeOfVCJqxEqbXbLaZTV9T+GkcOgjgKZJBZU6hdpKpPTBsY3iDP77
+         f+7IC5MVo827j341lOJ4noltUFLzjvqnmMTymdmMWDUXFALU80TQYtU/wm3rD9B4kZ
+         7nB81Wt1nVraPRFkzsXQzfF+iBsB3Dnsm58LcymzfT01DBpp8mQOth49kuge3GL9Tz
+         YheMG1xMXpA31Et5OftgIVV9o6FlZaa7PxngODydq+KBsKQHx3Eg0VMn3Kjb5P0tfH
+         X1Z30lWzamknw==
+Date:   Mon, 8 Feb 2021 09:34:08 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dmaengine@vger.kernel.org,
+        Derek Kiernan <derek.kiernan@xilinx.com>,
+        Dragan Cvetic <dragan.cvetic@xilinx.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Corbet <corbet@lwn.net>
+Subject: Re: [RESEND PATCH v3 3/5] misc: Add Synopsys DesignWare xData IP
+ driver to Kconfig
+Message-ID: <20210208073408.GC4656@unreal>
+References: <cover.1612284945.git.gustavo.pimentel@synopsys.com>
+ <850ba8b075a65f753bbb802b9af23839624908bd.1612284945.git.gustavo.pimentel@synopsys.com>
 MIME-Version: 1.0
-References: <1612684970-125948-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-In-Reply-To: <1612684970-125948-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Date:   Mon, 8 Feb 2021 08:33:06 +0100
-X-Gmail-Original-Message-ID: <CAJKOXPdCk6vE7JXC9GV6rK+n5P7VZNE5nRCTzo0VtWE_d_06Jg@mail.gmail.com>
-Message-ID: <CAJKOXPdCk6vE7JXC9GV6rK+n5P7VZNE5nRCTzo0VtWE_d_06Jg@mail.gmail.com>
-Subject: Re: [PATCH v2] memory: tegra186-emc: Replace DEFINE_SIMPLE_ATTRIBUTE
- with DEFINE_DEBUGFS_ATTRIBUTE
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc:     thierry.reding@gmail.com, jonathanh@nvidia.com,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-tegra@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <850ba8b075a65f753bbb802b9af23839624908bd.1612284945.git.gustavo.pimentel@synopsys.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 7 Feb 2021 at 09:03, Jiapeng Chong
-<jiapeng.chong@linux.alibaba.com> wrote:
+On Tue, Feb 02, 2021 at 05:56:36PM +0100, Gustavo Pimentel wrote:
+> Add Synopsys DesignWare xData IP driver to Kconfig.
 >
-> Fix the following coccicheck warning:
+> This driver enables/disables the PCIe traffic generator module
+> pertain to the Synopsys DesignWare prototype.
 >
-> drivers/memory/tegra/tegra186-emc.c:158:0-23: WARNING:
-> tegra186_emc_debug_max_rate_fops should be defined with
-> DEFINE_DEBUGFS_ATTRIBUTE.
+> Signed-off-by: Gustavo Pimentel <gustavo.pimentel@synopsys.com>
+> ---
+>  drivers/misc/Kconfig | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
 >
-> drivers/memory/tegra/tegra186-emc.c:128:0-23: WARNING:
-> tegra186_emc_debug_min_rate_fops should be defined with
-> DEFINE_DEBUGFS_ATTRIBUTE.
+> diff --git a/drivers/misc/Kconfig b/drivers/misc/Kconfig
+> index fafa8b0..6d5783f 100644
+> --- a/drivers/misc/Kconfig
+> +++ b/drivers/misc/Kconfig
+> @@ -423,6 +423,17 @@ config SRAM
+>  config SRAM_EXEC
+>  	bool
 >
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> +config DW_XDATA_PCIE
+> +	depends on PCI
+> +	tristate "Synopsys DesignWare xData PCIe driver"
+> +	default	n
 
-Hi,
+"N" is a default option and not needed to be stated explicitly.
 
-My question from v1 is still valid because I did not receive any
-coccinelle report - where can we find it?
-
-Best regards,
-Krzysztof
+Thanks
