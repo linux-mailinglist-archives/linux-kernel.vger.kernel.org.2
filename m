@@ -2,57 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1454F313323
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 14:20:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 619C9313320
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 14:19:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231194AbhBHNTa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 08:19:30 -0500
-Received: from comms.puri.sm ([159.203.221.185]:42306 "EHLO comms.puri.sm"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229822AbhBHNSE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 08:18:04 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by comms.puri.sm (Postfix) with ESMTP id 527E7DFF60;
-        Mon,  8 Feb 2021 05:16:11 -0800 (PST)
-Received: from comms.puri.sm ([127.0.0.1])
-        by localhost (comms.puri.sm [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id NtpidQDy1Ug0; Mon,  8 Feb 2021 05:16:10 -0800 (PST)
-From:   Martin Kepplinger <martin.kepplinger@puri.sm>
-To:     robh@kernel.org, shawnguo@kernel.org, kernel@pengutronix.de,
-        festevam@gmail.com
-Cc:     kernel@puri.sm, linux-imx@nxp.com, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Martin Kepplinger <martin.kepplinger@puri.sm>
-Subject: [PATCH 5/5] arm64: dts: imx8mq-librem5-r2: set nearlevel to 120
-Date:   Mon,  8 Feb 2021 14:15:27 +0100
-Message-Id: <20210208131527.24463-6-martin.kepplinger@puri.sm>
-In-Reply-To: <20210208131527.24463-1-martin.kepplinger@puri.sm>
-References: <20210208131527.24463-1-martin.kepplinger@puri.sm>
-Content-Transfer-Encoding: 8bit
+        id S231221AbhBHNSs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 08:18:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55398 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230396AbhBHNRN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 08:17:13 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03007C061788
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 05:16:32 -0800 (PST)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1l96Ow-0002GX-TM; Mon, 08 Feb 2021 14:16:26 +0100
+Received: from hardanger.blackshift.org (unknown [IPv6:2a03:f580:87bc:d400:291f:f238:66b7:a1f0])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 26D0B5D951A;
+        Mon,  8 Feb 2021 13:16:25 +0000 (UTC)
+Date:   Mon, 8 Feb 2021 14:16:24 +0100
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Wolfgang Grandegger <wg@grandegger.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+        Oliver Hartkopp <socketcan@hartkopp.net>,
+        linux-can@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] can: ucan: fix alignment constraints
+Message-ID: <20210208131624.y5ro74e4fibpg6rk@hardanger.blackshift.org>
+References: <20210204162625.3099392-1-arnd@kernel.org>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="vqkgpkmoiryi4tmg"
+Content-Disposition: inline
+In-Reply-To: <20210204162625.3099392-1-arnd@kernel.org>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Birch I can never reach 220 and hence the display would never
-turn off. Tests suggest 120 to be a good threshold value for all Birch
-devices.
 
-Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
----
- arch/arm64/boot/dts/freescale/imx8mq-librem5-r2.dts | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+--vqkgpkmoiryi4tmg
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mq-librem5-r2.dts b/arch/arm64/boot/dts/freescale/imx8mq-librem5-r2.dts
-index d77fc5df3f06..73bd431cbd6a 100644
---- a/arch/arm64/boot/dts/freescale/imx8mq-librem5-r2.dts
-+++ b/arch/arm64/boot/dts/freescale/imx8mq-librem5-r2.dts
-@@ -25,5 +25,5 @@
- };
- 
- &proximity {
--	proximity-near-level = <220>;
-+	proximity-near-level = <120>;
- };
--- 
-2.20.1
+On 04.02.2021 17:26:13, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+>=20
+> struct ucan_message_in contains member with 4-byte alignment
+> but is itself marked as unaligned, which triggers a warning:
+>=20
+> drivers/net/can/usb/ucan.c:249:1: warning: alignment 1 of 'struct ucan_me=
+ssage_in' is less than 4 [-Wpacked-not-aligned]
+>=20
+> Mark the outer structure to have the same alignment as the inner
+> one.
+>=20
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
+Applied to linux-can-next/testing.
+
+Thanks,
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+--vqkgpkmoiryi4tmg
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmAhOaUACgkQqclaivrt
+76kDsggAjBB4gmiyUKFUv3+NtVEguwHIAxA4T+/wTqPecsG+UhmBCyl6jhXUQFBM
+R0NfffCr8Z7bkj3QdERp8vRSnC2jG1+/SsmuiRFK1FSXIURdIBSn/L5XeIxtLQjZ
+J9BTdz3YzPp+gADYkX3Ao+IB/rX7Tb2maUzdX3IBwhZFU/eVmlWw2hMgXNBwMCyo
+6BvDJBpImY/iQtCixIA+ux6KBjE3QTL5Um+/X97PfuVv/d1K/u8tNEwymeAqydHo
+RmY0SK3BueFJK3vD9uqlrsX/CDvCrlSrLz8UloXmkj2Ix1QUeLnyWIqXLUtMu3aP
+Y68c49Lh/0fEXWNBh6LDUWSSBStEhA==
+=sk+n
+-----END PGP SIGNATURE-----
+
+--vqkgpkmoiryi4tmg--
