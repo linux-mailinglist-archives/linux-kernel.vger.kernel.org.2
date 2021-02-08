@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A18E6313993
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 17:36:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C69AE3139DD
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 17:43:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234388AbhBHQfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 11:35:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56398 "EHLO mail.kernel.org"
+        id S234568AbhBHQmy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 11:42:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60022 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232171AbhBHPNe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 10:13:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1934364EBC;
-        Mon,  8 Feb 2021 15:10:34 +0000 (UTC)
+        id S233395AbhBHPPF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 10:15:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E6ED864EC8;
+        Mon,  8 Feb 2021 15:10:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612797035;
-        bh=Ol5TGqL9tdYPrnU3t8SzO77dUDoR2OOxgyzlD37EV2I=;
+        s=korg; t=1612797038;
+        bh=UwPaVRVbv6dZG26qH6F9j3GJulQRYSHuQZ78BfvbFFs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uUdRyj6XcUQXd1KOYiVnqoO6MaBsfnWvGdulJZgVgLY38oW1XSEf4mTscSwqfJVvR
-         LsVsyPOw9nJxUmvPP3uFiVE3SyWl/A7/Ag2+yz/HWp+Tw4ANjdmdnsHOgLEtXYn3ff
-         EJ1VGAfgX7Zf6LwTsNTK6Ql6ZVtKspiTkRiD6m7A=
+        b=RcFdwIqRIjZAR+mMsP8lVZk5a0kne+Lu3xdnkrY29+CorCAOv/BxTJ2GQwMdWeMDE
+         lxesLpgrhqTgL74Gu9H2s5SXwNJilmec1kZmwuxgNk+66QgWL8HGaDQ0afRv5NZDH5
+         dvRTBV2SBW62YPpIhLC+lRZDkMlKg2T2bG4zgOZ0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>, Coly Li <colyli@suse.com>,
-        Richard Palethorpe <rpalethorpe@suse.com>,
-        Dan Williams <dan.j.williams@intel.com>
-Subject: [PATCH 5.4 36/65] libnvdimm/dimm: Avoid race between probe and available_slots_show()
-Date:   Mon,  8 Feb 2021 16:01:08 +0100
-Message-Id: <20210208145811.627989831@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: [PATCH 5.4 37/65] genirq/msi: Activate Multi-MSI early when MSI_FLAG_ACTIVATE_EARLY is set
+Date:   Mon,  8 Feb 2021 16:01:09 +0100
+Message-Id: <20210208145811.668666472@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210208145810.230485165@linuxfoundation.org>
 References: <20210208145810.230485165@linuxfoundation.org>
@@ -42,96 +41,123 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Williams <dan.j.williams@intel.com>
+From: Marc Zyngier <maz@kernel.org>
 
-commit 7018c897c2f243d4b5f1b94bc6b4831a7eab80fb upstream.
+commit 4c457e8cb75eda91906a4f89fc39bde3f9a43922 upstream.
 
-Richard reports that the following test:
+When MSI_FLAG_ACTIVATE_EARLY is set (which is the case for PCI),
+__msi_domain_alloc_irqs() performs the activation of the interrupt (which
+in the case of PCI results in the endpoint being programmed) as soon as the
+interrupt is allocated.
 
-(while true; do
-     cat /sys/bus/nd/devices/nmem*/available_slots 2>&1 > /dev/null
- done) &
+But it appears that this is only done for the first vector, introducing an
+inconsistent behaviour for PCI Multi-MSI.
 
-while true; do
-     for i in $(seq 0 4); do
-         echo nmem$i > /sys/bus/nd/drivers/nvdimm/bind
-     done
-     for i in $(seq 0 4); do
-         echo nmem$i > /sys/bus/nd/drivers/nvdimm/unbind
-     done
- done
+Fix it by iterating over the number of vectors allocated to each MSI
+descriptor. This is easily achieved by introducing a new
+"for_each_msi_vector" iterator, together with a tiny bit of refactoring.
 
-...fails with a crash signature like:
-
-    divide error: 0000 [#1] SMP KASAN PTI
-    RIP: 0010:nd_label_nfree+0x134/0x1a0 [libnvdimm]
-    [..]
-    Call Trace:
-     available_slots_show+0x4e/0x120 [libnvdimm]
-     dev_attr_show+0x42/0x80
-     ? memset+0x20/0x40
-     sysfs_kf_seq_show+0x218/0x410
-
-The root cause is that available_slots_show() consults driver-data, but
-fails to synchronize against device-unbind setting up a TOCTOU race to
-access uninitialized memory.
-
-Validate driver-data under the device-lock.
-
-Fixes: 4d88a97aa9e8 ("libnvdimm, nvdimm: dimm driver and base libnvdimm device-driver infrastructure")
-Cc: <stable@vger.kernel.org>
-Cc: Vishal Verma <vishal.l.verma@intel.com>
-Cc: Dave Jiang <dave.jiang@intel.com>
-Cc: Ira Weiny <ira.weiny@intel.com>
-Cc: Coly Li <colyli@suse.com>
-Reported-by: Richard Palethorpe <rpalethorpe@suse.com>
-Acked-by: Richard Palethorpe <rpalethorpe@suse.com>
-Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+Fixes: f3b0946d629c ("genirq/msi: Make sure PCI MSIs are activated early")
+Reported-by: Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Tested-by: Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20210123122759.1781359-1-maz@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/nvdimm/dimm_devs.c |   18 +++++++++++++++---
- 1 file changed, 15 insertions(+), 3 deletions(-)
+ include/linux/msi.h |    6 ++++++
+ kernel/irq/msi.c    |   44 ++++++++++++++++++++------------------------
+ 2 files changed, 26 insertions(+), 24 deletions(-)
 
---- a/drivers/nvdimm/dimm_devs.c
-+++ b/drivers/nvdimm/dimm_devs.c
-@@ -344,16 +344,16 @@ static ssize_t state_show(struct device
- }
- static DEVICE_ATTR_RO(state);
+--- a/include/linux/msi.h
++++ b/include/linux/msi.h
+@@ -139,6 +139,12 @@ struct msi_desc {
+ 	list_for_each_entry((desc), dev_to_msi_list((dev)), list)
+ #define for_each_msi_entry_safe(desc, tmp, dev)	\
+ 	list_for_each_entry_safe((desc), (tmp), dev_to_msi_list((dev)), list)
++#define for_each_msi_vector(desc, __irq, dev)				\
++	for_each_msi_entry((desc), (dev))				\
++		if ((desc)->irq)					\
++			for (__irq = (desc)->irq;			\
++			     __irq < ((desc)->irq + (desc)->nvec_used);	\
++			     __irq++)
  
--static ssize_t available_slots_show(struct device *dev,
--		struct device_attribute *attr, char *buf)
-+static ssize_t __available_slots_show(struct nvdimm_drvdata *ndd, char *buf)
- {
--	struct nvdimm_drvdata *ndd = dev_get_drvdata(dev);
-+	struct device *dev;
- 	ssize_t rc;
- 	u32 nfree;
+ #ifdef CONFIG_IRQ_MSI_IOMMU
+ static inline const void *msi_desc_get_iommu_cookie(struct msi_desc *desc)
+--- a/kernel/irq/msi.c
++++ b/kernel/irq/msi.c
+@@ -437,22 +437,22 @@ int msi_domain_alloc_irqs(struct irq_dom
  
- 	if (!ndd)
- 		return -ENXIO;
+ 	can_reserve = msi_check_reservation_mode(domain, info, dev);
  
-+	dev = ndd->dev;
- 	nvdimm_bus_lock(dev);
- 	nfree = nd_label_nfree(ndd);
- 	if (nfree - 1 > nfree) {
-@@ -365,6 +365,18 @@ static ssize_t available_slots_show(stru
- 	nvdimm_bus_unlock(dev);
- 	return rc;
- }
+-	for_each_msi_entry(desc, dev) {
+-		virq = desc->irq;
+-		if (desc->nvec_used == 1)
+-			dev_dbg(dev, "irq %d for MSI\n", virq);
+-		else
++	/*
++	 * This flag is set by the PCI layer as we need to activate
++	 * the MSI entries before the PCI layer enables MSI in the
++	 * card. Otherwise the card latches a random msi message.
++	 */
++	if (!(info->flags & MSI_FLAG_ACTIVATE_EARLY))
++		goto skip_activate;
 +
-+static ssize_t available_slots_show(struct device *dev,
-+				    struct device_attribute *attr, char *buf)
-+{
-+	ssize_t rc;
-+
-+	nd_device_lock(dev);
-+	rc = __available_slots_show(dev_get_drvdata(dev), buf);
-+	nd_device_unlock(dev);
-+
-+	return rc;
-+}
- static DEVICE_ATTR_RO(available_slots);
++	for_each_msi_vector(desc, i, dev) {
++		if (desc->irq == i) {
++			virq = desc->irq;
+ 			dev_dbg(dev, "irq [%d-%d] for MSI\n",
+ 				virq, virq + desc->nvec_used - 1);
+-		/*
+-		 * This flag is set by the PCI layer as we need to activate
+-		 * the MSI entries before the PCI layer enables MSI in the
+-		 * card. Otherwise the card latches a random msi message.
+-		 */
+-		if (!(info->flags & MSI_FLAG_ACTIVATE_EARLY))
+-			continue;
++		}
  
- __weak ssize_t security_show(struct device *dev,
+-		irq_data = irq_domain_get_irq_data(domain, desc->irq);
++		irq_data = irq_domain_get_irq_data(domain, i);
+ 		if (!can_reserve) {
+ 			irqd_clr_can_reserve(irq_data);
+ 			if (domain->flags & IRQ_DOMAIN_MSI_NOMASK_QUIRK)
+@@ -463,28 +463,24 @@ int msi_domain_alloc_irqs(struct irq_dom
+ 			goto cleanup;
+ 	}
+ 
++skip_activate:
+ 	/*
+ 	 * If these interrupts use reservation mode, clear the activated bit
+ 	 * so request_irq() will assign the final vector.
+ 	 */
+ 	if (can_reserve) {
+-		for_each_msi_entry(desc, dev) {
+-			irq_data = irq_domain_get_irq_data(domain, desc->irq);
++		for_each_msi_vector(desc, i, dev) {
++			irq_data = irq_domain_get_irq_data(domain, i);
+ 			irqd_clr_activated(irq_data);
+ 		}
+ 	}
+ 	return 0;
+ 
+ cleanup:
+-	for_each_msi_entry(desc, dev) {
+-		struct irq_data *irqd;
+-
+-		if (desc->irq == virq)
+-			break;
+-
+-		irqd = irq_domain_get_irq_data(domain, desc->irq);
+-		if (irqd_is_activated(irqd))
+-			irq_domain_deactivate_irq(irqd);
++	for_each_msi_vector(desc, i, dev) {
++		irq_data = irq_domain_get_irq_data(domain, i);
++		if (irqd_is_activated(irq_data))
++			irq_domain_deactivate_irq(irq_data);
+ 	}
+ 	msi_domain_free_irqs(domain, dev);
+ 	return ret;
 
 
