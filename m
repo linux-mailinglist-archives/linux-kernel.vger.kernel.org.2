@@ -2,54 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80418312881
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 01:05:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E5C83312888
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 01:17:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229611AbhBHAFR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Feb 2021 19:05:17 -0500
-Received: from mx2.suse.de ([195.135.220.15]:38508 "EHLO mx2.suse.de"
+        id S229615AbhBHARi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Feb 2021 19:17:38 -0500
+Received: from mx2.suse.de ([195.135.220.15]:40750 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229522AbhBHAFP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Feb 2021 19:05:15 -0500
+        id S229564AbhBHARg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Feb 2021 19:17:36 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 0996EAB98;
-        Mon,  8 Feb 2021 00:04:34 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 52512AD8C;
+        Mon,  8 Feb 2021 00:16:54 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 76B90DA80F; Mon,  8 Feb 2021 01:02:41 +0100 (CET)
-Date:   Mon, 8 Feb 2021 01:02:41 +0100
+        id A28D2DA80F; Mon,  8 Feb 2021 01:15:01 +0100 (CET)
+Date:   Mon, 8 Feb 2021 01:15:01 +0100
 From:   David Sterba <dsterba@suse.cz>
-To:     Amy Parker <enbyamy@gmail.com>
-Cc:     schnelle@linux.ibm.com, corbet@lwn.net, mchehab+huawei@kernel.org,
-        tsbogend@alpha.franken.de, linux-ia64@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ia64: Fix style guide breakage
-Message-ID: <20210208000241.GN1993@twin.jikos.cz>
+To:     Richard Weinberger <richard.weinberger@gmail.com>
+Cc:     Amy Parker <enbyamy@gmail.com>, dsterba@suse.cz,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 0/3] fs/efs: Follow kernel style guide
+Message-ID: <20210208001501.GO1993@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Amy Parker <enbyamy@gmail.com>,
-        schnelle@linux.ibm.com, corbet@lwn.net, mchehab+huawei@kernel.org,
-        tsbogend@alpha.franken.de, linux-ia64@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210205220618.611388-1-enbyamy@gmail.com>
+Mail-Followup-To: dsterba@suse.cz,
+        Richard Weinberger <richard.weinberger@gmail.com>,
+        Amy Parker <enbyamy@gmail.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <20210205045217.552927-1-enbyamy@gmail.com>
+ <20210205131910.GJ1993@twin.jikos.cz>
+ <CAE1WUT4az3ZZ8OU2AS2xxi9h1TbW958ivNXr53jinqHK5vuzMg@mail.gmail.com>
+ <CAFLxGvz0ZnTs1B7v3R+Zefd5BhE9ximFpgKL8zRmGfOdBrsVfw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210205220618.611388-1-enbyamy@gmail.com>
+In-Reply-To: <CAFLxGvz0ZnTs1B7v3R+Zefd5BhE9ximFpgKL8zRmGfOdBrsVfw@mail.gmail.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 05, 2021 at 02:06:18PM -0800, Amy Parker wrote:
-> Some statements do not have proper spacing between their C
-> keywords (commonly if and for) throughout files in the ia64 tree.
-> This patch corrects this to follow the kernel code style guide.
+On Fri, Feb 05, 2021 at 11:37:46PM +0100, Richard Weinberger wrote:
+> On Fri, Feb 5, 2021 at 11:26 PM Amy Parker <enbyamy@gmail.com> wrote:
+> >
+> > On Fri, Feb 5, 2021 at 5:1 AM David Sterba <dsterba@suse.cz> wrote:
+> > >
+> > > On Thu, Feb 04, 2021 at 08:52:14PM -0800, Amy Parker wrote:
+> > > > As the EFS driver is old and non-maintained,
+> > >
+> > > Is anybody using EFS on current kernels? There's not much point updating
+> > > it to current coding style, deleting fs/efs is probably the best option.
+> > >
+> >
+> > Wouldn't be surprised if there's a few systems out there that haven't
+> > migrated at all.
 > 
-> Signed-off-by: Amy Parker <enbyamy@gmail.com>
-> ---
->  arch/ia64/hp/common/sba_iommu.c  | 6 +++---
->  arch/ia64/kernel/machine_kexec.c | 2 +-
->  arch/ia64/kernel/palinfo.c       | 6 +++---
+> Before ripping it from the kernel source you could do a FUSE port of EFS.
+> That way old filesystems can still get used on Linux.
 
-ia64 got orphaned and not maintained in 96ec72a3425d1515b6, it's just
-not really worth the time to spend the time cleaning up the code base.
+Agreed, replacing the obsolete filesystems by FUSE implementations would
+be great. Regarding EFS I got pointed to
+https://github.com/sophaskins/efs2tar that allows to access the old IRIX
+CDs (can be found on archive.org), so there's something.
