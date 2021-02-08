@@ -2,136 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C137E312B75
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 09:06:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 185DA312B78
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 09:08:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230038AbhBHIFf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 03:05:35 -0500
-Received: from mailout4.samsung.com ([203.254.224.34]:44371 "EHLO
-        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229590AbhBHIEW (ORCPT
+        id S229618AbhBHIIz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 03:08:55 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39075 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229609AbhBHIIh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 03:04:22 -0500
-Received: from epcas2p1.samsung.com (unknown [182.195.41.53])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210208080339epoutp0408c1a230a08f4db960f284f4cef6f0f6~htw_e2ZWA2468424684epoutp04V
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 08:03:39 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210208080339epoutp0408c1a230a08f4db960f284f4cef6f0f6~htw_e2ZWA2468424684epoutp04V
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1612771419;
-        bh=+IQbcwYHHKAKbr2oo3oYjCL3PaagPDjw+o+axqX9N/w=;
-        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
-        b=tGrpubLslTtJWVydzbRsZcUQzN5Z+pzF1W0NBtJyakxdzSfQD8bDUAyc1bELpecij
-         e4WAtpFbIbcnbs+zD/eemex2utMOPEyro7TcCpESMpsG7RZ0WMoSK1opY+cVu2HONW
-         jLD+26IMnaAgj44j3Z/IRXNqAtqna+3apN27BdlY=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas2p3.samsung.com (KnoxPortal) with ESMTP id
-        20210208080337epcas2p32404be3d7313909405c470e483d47de6~htw9GbX9e2452724527epcas2p3B;
-        Mon,  8 Feb 2021 08:03:37 +0000 (GMT)
-Received: from epsmges2p2.samsung.com (unknown [182.195.40.185]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 4DYz6v08hvz4x9QG; Mon,  8 Feb
-        2021 08:03:35 +0000 (GMT)
-X-AuditID: b6c32a46-777d6a800000dbf8-ab-6020f0566e7e
-Received: from epcas2p3.samsung.com ( [182.195.41.55]) by
-        epsmges2p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        A1.4A.56312.650F0206; Mon,  8 Feb 2021 17:03:34 +0900 (KST)
-Mime-Version: 1.0
-Subject: RE: Re: [PATCH v19 2/3] scsi: ufs: L2P map management for HPB read
-Reply-To: daejun7.park@samsung.com
-Sender: Daejun Park <daejun7.park@samsung.com>
-From:   Daejun Park <daejun7.park@samsung.com>
-To:     Can Guo <cang@codeaurora.org>,
-        Daejun Park <daejun7.park@samsung.com>
-CC:     Greg KH <gregkh@linuxfoundation.org>,
-        "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "huobean@gmail.com" <huobean@gmail.com>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        BoRam Shin <boram.shin@samsung.com>,
-        SEUNGUK SHIN <seunguk.shin@samsung.com>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-In-Reply-To: <5bd43da52369a56f18867fa18efb3020@codeaurora.org>
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <20210208080333epcms2p59403f0acbc9730c9a605d265836a956d@epcms2p5>
-Date:   Mon, 08 Feb 2021 17:03:33 +0900
-X-CMS-MailID: 20210208080333epcms2p59403f0acbc9730c9a605d265836a956d
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-X-CPGSPASS: Y
-X-CPGSPASS: Y
-CMS-TYPE: 102P
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrBJsWRmVeSWpSXmKPExsWy7bCmuW7YB4UEgw+bWS0ezNvGZrG37QS7
-        xcufV9ksDt9+x24x7cNPZotP65exWrw8pGmx6kG4RfPi9WwWc842MFn09m9ls1h0YxuTxeVd
-        c9gsuq/vYLNYfvwfk8XtLVwWS7feZLTonL6GxWLRwt0sDsIel694e1zu62Xy2DnrLrvHhEUH
-        GD32z13D7tFycj+Lx8ent1g8+rasYvT4vEnOo/1AN1MAV1SOTUZqYkpqkUJqXnJ+SmZeuq2S
-        d3C8c7ypmYGhrqGlhbmSQl5ibqqtkotPgK5bZg7QX0oKZYk5pUChgMTiYiV9O5ui/NKSVIWM
-        /OISW6XUgpScAkPDAr3ixNzi0rx0veT8XCtDAwMjU6DKhJyMc7POsBSc5ah4cn0BewPjY7Yu
-        Rk4OCQETiR9nD7N2MXJxCAnsYJR4eu4JkMPBwSsgKPF3hzBIjbCAt8Sv7iYmEFtIQEli/cVZ
-        7BBxPYlbD9cwgthsAjoS00/cB4uLCHhKfJ28Gmwms0ADm0TbqeWsEMt4JWa0P2WBsKUlti/f
-        CtbMKWAn8X/eREaIuIbEj2W9zBC2qMTN1W/ZYez3x+ZD1YhItN47C1UjKPHg526ouKTEsd0f
-        mCDseomtd34xghwhIdDDKHF45y2oI/QlrnVsZIF40lfiwiURkDCLgKrE9RN9UCUuEpM+bQKb
-        zywgL7H97RxmkHJmAU2J9bv0QUwJAWWJI7dYYL5q2PibHZ3NLMAn0XH4L1x8x7wnUJepSaz7
-        uZ5pAqPyLERAz0KyaxbCrgWMzKsYxVILinPTU4uNCoyQ43YTIziJa7ntYJzy9oPeIUYmDsZD
-        jBIczEoivIGdcglCvCmJlVWpRfnxRaU5qcWHGE2BvpzILCWanA/MI3kl8YamRmZmBpamFqZm
-        RhZK4rzFBg/ihQTSE0tSs1NTC1KLYPqYODilGph2GQppzeTfv4Gj+WnZjkbv+x+tti86GNGw
-        fTLnswBne5cVPnuiJrs8nDhhWeWRsIAoDQWe7guzHki6TNcNdTLPeiD+8OR0G56TN2fpVUQv
-        O9vpN3vhk4utSdMm1TV1NCut2PGebWqPcO2ErfXs0j8tPwdsKYzIOdwYr6F+knvLDZGnRdEp
-        QmVyrR/eLQo4I7Ekt0Ni41WLnuzC6JjZaW3WE13v1edVfJuw1rowSaFwc9rdXX9PfV3JUCSo
-        +qI/ck3GD+sO5uvyand1vxzz/x/5fP3mXeZcja/0FrVdkOt5qhI64Rz/v54ZnvsPaW9cLmYj
-        YsWefziPSTt7m4PKu6zVjYWdu9Vab//s0bll36DEUpyRaKjFXFScCADcNu3dawQAAA==
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210129052848epcms2p6e5797efd94e6282b76ad9ae6c99e3ab5
-References: <5bd43da52369a56f18867fa18efb3020@codeaurora.org>
-        <20210129052848epcms2p6e5797efd94e6282b76ad9ae6c99e3ab5@epcms2p6>
-        <20210129053005epcms2p323338fbb83459d2786fc0ef92701b147@epcms2p3>
-        <CGME20210129052848epcms2p6e5797efd94e6282b76ad9ae6c99e3ab5@epcms2p5>
+        Mon, 8 Feb 2021 03:08:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612771624;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Lpxpa2kYKZq2T7KOylkeH5GurcJpKBZ4r2O2D2ivH5w=;
+        b=BE+PvLYx+uu84k4l3T2zT/NqQ+bOiIOPVRqDg2ei8UB6R5m2cndGG6djMNOyOAX2xe2KPp
+        OjoPdC0Jd5LZr4y+Jbmdyl+byviLmuCwE6abW4X9TyZaPmw2+RFAprTVvjmJO3tVHyY7Cw
+        peKd9RlZbIHqqQeKi2cXJQ2S/ok/Tzo=
+Received: from mail-pf1-f198.google.com (mail-pf1-f198.google.com
+ [209.85.210.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-579-ivZYPOf9M4Wqeir44qhxKw-1; Mon, 08 Feb 2021 03:07:00 -0500
+X-MC-Unique: ivZYPOf9M4Wqeir44qhxKw-1
+Received: by mail-pf1-f198.google.com with SMTP id j7so1825421pfa.14
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 00:07:00 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Lpxpa2kYKZq2T7KOylkeH5GurcJpKBZ4r2O2D2ivH5w=;
+        b=XImNfOi/l2nsMwk52ir5bTyBBOvbaUMs9pjHzNn77cZsDC5VCXthn5X9+8rcWKorrf
+         A9F8GKWTb8s8iLkOSsoiWa5Ipat916kyOy0enRq18hPRhxy3qyTWAS8G7WihPAoZNrFP
+         axjVId/ROmA6szzXG/9w2+/GUK/rLcqJpGyvycjCjivLPjBzJNJX7+NkqCNlYZ+re5ne
+         l8KT5a6j7ufqKD4x1B2+DT8rP6AxM8+3o/B+EsPuNI9EprPK6TSUqSEQGWdqv7q1fiCX
+         KFtcBFtyKPcw/e0EBqP08I+ln4OHrkDSx8HnI8gm1z/LJCvm5qDAX5cEYLPlSvHgf9NK
+         o6kw==
+X-Gm-Message-State: AOAM5336fEe7b0jarA7Dxsc8sPNhc9hAc2LpEjk+0y/J+v6ROAsLTbWa
+        0wADccvM5HgnCMqreOwm59pib0Dg3BiUn/MgDH06Ouoj5BebUgV3IThVyovt+XpYXbssASY85Im
+        86vb16YSTt54nHOFBCRz8eoq98bsWFFzWc6DzDvA6
+X-Received: by 2002:a62:e205:0:b029:1dd:b063:8872 with SMTP id a5-20020a62e2050000b02901ddb0638872mr3382154pfi.44.1612771619443;
+        Mon, 08 Feb 2021 00:06:59 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzAQDqeIL3uKwvgCr3sK0XFgd6KHtFGxwetDAWekwnkU31fTiEIkvaVcBGNAf2zljmwF8QuxcO0flw8wFkbWFg=
+X-Received: by 2002:a62:e205:0:b029:1dd:b063:8872 with SMTP id
+ a5-20020a62e2050000b02901ddb0638872mr3382143pfi.44.1612771619207; Mon, 08 Feb
+ 2021 00:06:59 -0800 (PST)
+MIME-Version: 1.0
+References: <20210208075205.3784059-1-nickel@altlinux.org>
+In-Reply-To: <20210208075205.3784059-1-nickel@altlinux.org>
+From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Date:   Mon, 8 Feb 2021 09:06:48 +0100
+Message-ID: <CAO-hwJJpUj=+mpqQ7eMtbtwX6CPAkt2ZpDnpmX9GUDo1EuEOiw@mail.gmail.com>
+Subject: Re: [PATCH] Input: elantech - add LEN2146 to SMBus blacklist for
+ ThinkPad L13 Gen2
+To:     Nikolai Kostrigin <nickel@altlinux.org>
+Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> @@ -342,13 +1208,14 @@ void ufshpb_suspend(struct ufs_hba *hba)
-> >  	struct scsi_device *sdev;
-> > 
-> >  	shost_for_each_device(sdev, hba->host) {
-> > -		hpb = sdev->hostdata;
-> > +		hpb = ufshpb_get_hpb_data(sdev);
-> >  		if (!hpb)
-> >  			continue;
-> > 
-> >  		if (ufshpb_get_state(hpb) != HPB_PRESENT)
-> >  			continue;
-> >  		ufshpb_set_state(hpb, HPB_SUSPEND);
-> > +		ufshpb_cancel_jobs(hpb);
-> 
-> Here may have a dead lock problem - in the case of runtime suspend,
-> when ufshpb_suspend() is invoked, all of hba's children scsi devices
-> are in RPM_SUSPENDED state. When this line tries to cancel a running
-> map work, i.e. when ufshpb_get_map_req() calls below lines, it will
-> be stuck at blk_queue_enter().
-> 
-> req = blk_get_request(hpb->sdev_ufs_lu->request_queue,
-> 		      REQ_OP_SCSI_IN, 0);
-> 
-> Please check block layer power management, and see also commit d55d15a33
-> ("scsi: block: Do not accept any requests while suspended").
+Hi Nikolai,
 
-I am agree with your comment.
-How about add BLK_MQ_REQ_NOWAIT flag on blk_get_request() to avoid hang?
+On Mon, Feb 8, 2021 at 9:01 AM Nikolai Kostrigin <nickel@altlinux.org> wrote:
+>
+> ThinkPad L13 Gen2 has both touchpad and trackpoint.
+> PNP: LEN2146 PNP0f13
+> With the default protocol (elantech-smbus) trackpoint is not operating,
+> while touchpad does. Changing to elantech renders both operational.
+>
+> Signed-off-by: Nikolai Kostrigin <nickel@altlinux.org>
 
-Thanks,
-Daejun
+Instead of downgrading the capabilities of the touchpad, couldn't we
+fix the trackpoint issues?
+
+I am surprised elantech doesn't work with the trackpoint, because I am
+pretty sure I wrote patches in that regard. Which kernel version have
+you been testing?
+
+Cheers,
+Benjamin
+
+> ---
+>  drivers/input/mouse/elantech.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/drivers/input/mouse/elantech.c b/drivers/input/mouse/elantech.c
+> index 90f8765f9efc..c4c3fa5828d8 100644
+> --- a/drivers/input/mouse/elantech.c
+> +++ b/drivers/input/mouse/elantech.c
+> @@ -1776,6 +1776,7 @@ static const char * const i2c_blacklist_pnp_ids[] = {
+>          * These are known to not be working properly as bits are missing
+>          * in elan_i2c.
+>          */
+> +       "LEN2146", /* ThinkPad L13 Gen2 */
+>         NULL
+>  };
+>
+> --
+> 2.29.2
+>
+
