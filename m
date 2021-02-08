@@ -2,224 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4145A312DB5
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 10:48:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60E6D312DFC
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 10:55:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231820AbhBHJr3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 04:47:29 -0500
-Received: from mx2.suse.de ([195.135.220.15]:55460 "EHLO mx2.suse.de"
+        id S232147AbhBHJxb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 04:53:31 -0500
+Received: from mx2.suse.de ([195.135.220.15]:57604 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231734AbhBHJl7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 04:41:59 -0500
+        id S231751AbhBHJmh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 04:42:37 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1612777262; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1612777306; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=fF169tx56y6mupjIvrPQt9dqN5xV/kHLsueKWM8xvUg=;
-        b=MoSRipFUt6ufW8TtS8lzbiX5/FVZJzmez4YJCZRHeMBFobJx4wUaMpOEY0Ksoxlj08E0EB
-        BMga+pAmqKxvJzr+h92HO0x1eYAOFojiRnJ+LvHFYMgWcOQM2yxISYYR1UJ41qM4vIXkKZ
-        9dFMw0ot34fjhu/eiJLf+M+wr0MVcMQ=
+        bh=YaeR6Sf39P/hrf0A7inZDxmPB1YsERyszTlFed0deJU=;
+        b=pWrqjYnezRo0PoPhcVw9QuSNgJifli2QlnLsEJQrCcw5HE7QUTr/5Lo1iSqjtSGGgYueXc
+        aXpT52NG9XEikW51RtksFPuwAvd1IFkQuyTzIENfyoMA1Vnrf3gDP83lABMKGDd0OrwrL+
+        tE8Elzg+YQgSJKabi8BOC4w0jTjS3jQ=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id EAB7EAE53;
-        Mon,  8 Feb 2021 09:41:01 +0000 (UTC)
-To:     Julien Grall <julien@xen.org>, xen-devel@lists.xenproject.org,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        netdev@vger.kernel.org, linux-scsi@vger.kernel.org
+        by mx2.suse.de (Postfix) with ESMTP id 711D8AC6E;
+        Mon,  8 Feb 2021 09:41:46 +0000 (UTC)
+Subject: Re: [PATCH 6/7] xen/evtch: use smp barriers for user event ring
+To:     Jan Beulich <jbeulich@suse.com>
 Cc:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
         Stefano Stabellini <sstabellini@kernel.org>,
-        stable@vger.kernel.org,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        =?UTF-8?Q?Roger_Pau_Monn=c3=a9?= <roger.pau@citrix.com>,
-        Jens Axboe <axboe@kernel.dk>, Wei Liu <wei.liu@kernel.org>,
-        Paul Durrant <paul@xen.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org
 References: <20210206104932.29064-1-jgross@suse.com>
- <bd63694e-ac0c-7954-ec00-edad05f8da1c@xen.org>
- <eeb62129-d9fc-2155-0e0f-aff1fbb33fbc@suse.com>
- <fcf3181b-3efc-55f5-687c-324937b543e6@xen.org>
+ <20210206104932.29064-7-jgross@suse.com>
+ <5cef0d0e-8f03-7cd2-4246-268a67a87dc5@suse.com>
 From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
-Subject: Re: [PATCH 0/7] xen/events: bug fixes and some diagnostic aids
-Message-ID: <7aaeeb3d-1e1b-6166-84e9-481153811b62@suse.com>
-Date:   Mon, 8 Feb 2021 10:41:00 +0100
+Message-ID: <bbe51b26-6087-efef-b8a6-1922600e67ab@suse.com>
+Date:   Mon, 8 Feb 2021 10:41:45 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.7.0
 MIME-Version: 1.0
-In-Reply-To: <fcf3181b-3efc-55f5-687c-324937b543e6@xen.org>
+In-Reply-To: <5cef0d0e-8f03-7cd2-4246-268a67a87dc5@suse.com>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="GMBB9RCSmiMsxNr0VEDv5TlmxZ6GktJjs"
+ boundary="FEcWlBCP1PpGWxpo0v5xgNDeGJK5sgUIN"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---GMBB9RCSmiMsxNr0VEDv5TlmxZ6GktJjs
-Content-Type: multipart/mixed; boundary="k4gyNUY4aI5Lw9phW38uxpSLf7g9cDz0D";
+--FEcWlBCP1PpGWxpo0v5xgNDeGJK5sgUIN
+Content-Type: multipart/mixed; boundary="ydmzFB2GhA1BIAETK1krrsw0CA38D0rEJ";
  protected-headers="v1"
 From: =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
-To: Julien Grall <julien@xen.org>, xen-devel@lists.xenproject.org,
- linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
- netdev@vger.kernel.org, linux-scsi@vger.kernel.org
+To: Jan Beulich <jbeulich@suse.com>
 Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>,
- Stefano Stabellini <sstabellini@kernel.org>, stable@vger.kernel.org,
- Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
- =?UTF-8?Q?Roger_Pau_Monn=c3=a9?= <roger.pau@citrix.com>,
- Jens Axboe <axboe@kernel.dk>, Wei Liu <wei.liu@kernel.org>,
- Paul Durrant <paul@xen.org>, "David S. Miller" <davem@davemloft.net>,
- Jakub Kicinski <kuba@kernel.org>
-Message-ID: <7aaeeb3d-1e1b-6166-84e9-481153811b62@suse.com>
-Subject: Re: [PATCH 0/7] xen/events: bug fixes and some diagnostic aids
+ Stefano Stabellini <sstabellini@kernel.org>,
+ Andrew Cooper <andrew.cooper3@citrix.com>, linux-kernel@vger.kernel.org,
+ xen-devel@lists.xenproject.org
+Message-ID: <bbe51b26-6087-efef-b8a6-1922600e67ab@suse.com>
+Subject: Re: [PATCH 6/7] xen/evtch: use smp barriers for user event ring
 References: <20210206104932.29064-1-jgross@suse.com>
- <bd63694e-ac0c-7954-ec00-edad05f8da1c@xen.org>
- <eeb62129-d9fc-2155-0e0f-aff1fbb33fbc@suse.com>
- <fcf3181b-3efc-55f5-687c-324937b543e6@xen.org>
-In-Reply-To: <fcf3181b-3efc-55f5-687c-324937b543e6@xen.org>
+ <20210206104932.29064-7-jgross@suse.com>
+ <5cef0d0e-8f03-7cd2-4246-268a67a87dc5@suse.com>
+In-Reply-To: <5cef0d0e-8f03-7cd2-4246-268a67a87dc5@suse.com>
 
---k4gyNUY4aI5Lw9phW38uxpSLf7g9cDz0D
+--ydmzFB2GhA1BIAETK1krrsw0CA38D0rEJ
 Content-Type: multipart/mixed;
- boundary="------------8545B5C2DC00D006FC21850E"
+ boundary="------------BC7EC0D4E1E8BDD8BDAD82E2"
 Content-Language: en-US
 
 This is a multi-part message in MIME format.
---------------8545B5C2DC00D006FC21850E
+--------------BC7EC0D4E1E8BDD8BDAD82E2
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
 
-On 08.02.21 10:11, Julien Grall wrote:
-> Hi Juergen,
->=20
-> On 07/02/2021 12:58, J=C3=BCrgen Gro=C3=9F wrote:
->> On 06.02.21 19:46, Julien Grall wrote:
->>> Hi Juergen,
->>>
->>> On 06/02/2021 10:49, Juergen Gross wrote:
->>>> The first three patches are fixes for XSA-332. The avoid WARN splats=
-
->>>> and a performance issue with interdomain events.
->>>
->>> Thanks for helping to figure out the problem. Unfortunately, I still =
-
->>> see reliably the WARN splat with the latest Linux master=20
->>> (1e0d27fce010) + your first 3 patches.
->>>
->>> I am using Xen 4.11 (1c7d984645f9) and dom0 is forced to use the 2L=20
->>> events ABI.
->>>
->>> After some debugging, I think I have an idea what's went wrong. The=20
->>> problem happens when the event is initially bound from vCPU0 to a=20
->>> different vCPU.
->>>
->>> =C2=A0From the comment in xen_rebind_evtchn_to_cpu(), we are masking =
-the=20
->>> event to prevent it being delivered on an unexpected vCPU. However, I=
-=20
->>> believe the following can happen:
->>>
->>> vCPU0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0 | vCPU1
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0 |
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0 | Call xen_rebind_evtchn_to_cpu()
->>> receive event X=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0 |
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0 | mask event X
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0 | bind to vCPU1
->>> <vCPU descheduled>=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | unmask=
- event X
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0 |
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0 | receive event X
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0 |
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0 | handle_edge_irq(X)
->>> handle_edge_irq(X)=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 =
--> handle_irq_event()
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0 -> set IRQD_IN_PROGRESS
->>> =C2=A0=C2=A0-> set IRQS_PENDING=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0 |
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0 -> evtchn_interrupt()
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0 -> clear IRQD_IN_PROGRESS
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 -> IRQS_PENDING is set
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 -> handle_irq_event()
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0 -> evtchn_interrupt()
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0=C2=A0 -> WARN()
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0 |
->>>
->>> All the lateeoi handlers expect a ONESHOT semantic and=20
->>> evtchn_interrupt() is doesn't tolerate any deviation.
->>>
->>> I think the problem was introduced by 7f874a0447a9 ("xen/events: fix =
-
->>> lateeoi irq acknowledgment") because the interrupt was disabled=20
->>> previously. Therefore we wouldn't do another iteration in=20
->>> handle_edge_irq().
+On 08.02.21 10:38, Jan Beulich wrote:
+> On 06.02.2021 11:49, Juergen Gross wrote:
+>> The ring buffer for user events is used in the local system only, so
+>> smp barriers are fine for ensuring consistency.
 >>
->> I think you picked the wrong commit for blaming, as this is just
->> the last patch of the three patches you were testing.
+>> Reported-by: Andrew Cooper <andrew.cooper3@citrix.com>
+>> Signed-off-by: Juergen Gross <jgross@suse.com>
 >=20
-> I actually found the right commit for blaming but I copied the=20
-> information from the wrong shell :/. The bug was introduced by:
+> Reviewed-by: Jan Beulich <jbeulich@suse.com>
 >=20
-> c44b849cee8c ("xen/events: switch user event channels to lateeoi model"=
-)
->=20
->>
->>> Aside the handlers, I think it may impact the defer EOI mitigation=20
->>> because in theory if a 3rd vCPU is joining the party (let say vCPU A =
+> Albeit I think "local system" is at least ambiguous (physical
+> machine? VM?). How about something like "is local to the given
+> kernel instance"?
 
->>> migrate the event from vCPU B to vCPU C). So info->{eoi_cpu,=20
->>> irq_epoch, eoi_time} could possibly get mangled?
->>>
->>> For a fix, we may want to consider to hold evtchn_rwlock with the=20
->>> write permission. Although, I am not 100% sure this is going to=20
->>> prevent everything.
->>
->> It will make things worse, as it would violate the locking hierarchy
->> (xen_rebind_evtchn_to_cpu() is called with the IRQ-desc lock held).
->=20
-> Ah, right.
->=20
->>
->> On a first glance I think we'll need a 3rd masking state ("temporarily=
-
->> masked") in the second patch in order to avoid a race with lateeoi.
->>
->> In order to avoid the race you outlined above we need an "event is bei=
-ng
->> handled" indicator checked via test_and_set() semantics in
->> handle_irq_for_port() and reset only when calling clear_evtchn().
->=20
-> It feels like we are trying to workaround the IRQ flow we are using=20
-> (i.e. handle_edge_irq()).
-
-I'm not really sure this is the main problem here. According to your
-analysis the main problem is occurring when handling the event, not when
-handling the IRQ: the event is being received on two vcpus.
-
-Our problem isn't due to the IRQ still being pending, but due it being
-raised again, which should happen for a one shot IRQ the same way.
-
-But maybe I'm misunderstanding your idea.
+Yes.
 
 
 Juergen
 
---------------8545B5C2DC00D006FC21850E
+
+--------------BC7EC0D4E1E8BDD8BDAD82E2
 Content-Type: application/pgp-keys;
  name="OpenPGP_0xB0DE9DD628BF132F.asc"
 Content-Transfer-Encoding: quoted-printable
@@ -310,24 +184,24 @@ ZDn8R38=3D
 =3D2wuH
 -----END PGP PUBLIC KEY BLOCK-----
 
---------------8545B5C2DC00D006FC21850E--
+--------------BC7EC0D4E1E8BDD8BDAD82E2--
 
---k4gyNUY4aI5Lw9phW38uxpSLf7g9cDz0D--
+--ydmzFB2GhA1BIAETK1krrsw0CA38D0rEJ--
 
---GMBB9RCSmiMsxNr0VEDv5TlmxZ6GktJjs
+--FEcWlBCP1PpGWxpo0v5xgNDeGJK5sgUIN
 Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="OpenPGP_signature"
 
 -----BEGIN PGP SIGNATURE-----
 
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmAhBywFAwAAAAAACgkQsN6d1ii/Ey+X
-7Qf+OnrlhZHoEZMFLJ8YuxArgwY/dc0hT9fYNejZag9l2vEAND4Z36Oqpy4lMt9l1wsocKvxEhhF
-pSpzfvQWh9qFvJbNZtU3gSfVM6z8XQ+FXWlr2vfGOqMmYTZKKcZrMtTmL0spDeb4EDwM1G86mtZ4
-88bV0RVAoliWwy5CUk5MyZyHwYOC3YeH3VP7K3kBLy4F1gopdOrTWHvI50FFrTBavw1ZnCRTzlgj
-qYWYHD2ztYmPtDEtlSsfcyxj2+xur511a16/B/RfP0f+g1maWYySmaxhVFNQa+icHKzu8VgfenHR
-sXi1Zu4uQNMf/zQXInigQg8IPawMiI2GTHjN+tovog==
-=fwXt
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmAhB1kFAwAAAAAACgkQsN6d1ii/Ey+N
+OQf+K99vfasrxwrBqPZYl5blFMkB7uu+UM297px3zQIAp6o0uI7N3x+nLkkUwt9884/bc4E40JdQ
+Oq+UKcKQ0P6dx3cm0yYOi5rr4J4cnKWTRtUaAc9jwM6PbsalHri2zIPfZg/6GsCy/2Kjtfe/W4sq
+yPUG4Wd6598DXmxXHlJlbF/pTKCXeqBEFrpNgruEaQVyv6/hcy75dEEXf2tYN/ThHarNue0Fe2ts
+DPH+dJZp5SsZeViAf3bPOz1Yi7ZAO32ZsiXbzh966q0d602BcmaoQ3SrwJ1N9nmwShSG2P5XL61B
++G/BnAz1Vy3T8ELniaarrXwwB8VQQMs2UmFqkstj5g==
+=CG/q
 -----END PGP SIGNATURE-----
 
---GMBB9RCSmiMsxNr0VEDv5TlmxZ6GktJjs--
+--FEcWlBCP1PpGWxpo0v5xgNDeGJK5sgUIN--
