@@ -2,101 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A124F3140A9
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 21:40:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C3AD23140AA
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 21:40:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231818AbhBHUjE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 15:39:04 -0500
-Received: from mga02.intel.com ([134.134.136.20]:47138 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232482AbhBHTYG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 14:24:06 -0500
-IronPort-SDR: mugynaee8hkJ81+tKn1UPz3M5Ib0ZFXm2QY3/9PVI8Po0LQ05POnKzFTH+r+WVkdfrLR3DLrmG
- 1ReXHy/cePBA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9889"; a="168890238"
-X-IronPort-AV: E=Sophos;i="5.81,163,1610438400"; 
-   d="scan'208";a="168890238"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2021 11:23:23 -0800
-IronPort-SDR: hQ7EzHLh1XjKnGXhPuD/XToDkgJwmpEbNG7R0HZcj22PJbDNwj7jCGyg5PpGndMk2uHcpLhv2w
- rrglSOj3nHFg==
-X-IronPort-AV: E=Sophos;i="5.81,163,1610438400"; 
-   d="scan'208";a="377921602"
-Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.251.11.33]) ([10.251.11.33])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2021 11:23:19 -0800
-Subject: Re: [PATCH v19 06/25] x86/cet: Add control-protection fault handler
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>
-References: <20210203225547.32221-1-yu-cheng.yu@intel.com>
- <20210203225547.32221-7-yu-cheng.yu@intel.com>
- <20210205135927.GH17488@zn.tnic>
- <2d829cba-784e-635a-e0c5-a7b334fa9b40@intel.com>
- <20210208182009.GE18227@zn.tnic>
- <690bc3b9-2890-e68d-5e4b-cda5c21b496b@intel.com>
- <20210208185341.GF18227@zn.tnic>
-From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
-Message-ID: <0e0c9e9d-aee1-ad1e-6c63-21b58a52163f@intel.com>
-Date:   Mon, 8 Feb 2021 11:23:18 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S232884AbhBHUjx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 15:39:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50438 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235256AbhBHT1A (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 14:27:00 -0500
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF909C061786
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 11:26:20 -0800 (PST)
+Received: by mail-pf1-x42a.google.com with SMTP id q131so10331803pfq.10
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 11:26:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=FdP6Qc+UPGLk3XuWMFiPn/oePnvwLyYfc8IpH3UBvCI=;
+        b=VYbHidqZwnBU4Y5Tj0h2ukU7fHKK8iI3iDjm+IlsznwU/Q6/R54rbOFkZYGbhBKSTN
+         JeJv/F72UfHX41PZTAm0fXj4+pnEnlkHrtHCJcmNEIefCLI+rFbSxnRwT6b+sX/UD4cb
+         aLrybOfIErZw+u1voydsfJOuasF6k2CmWyAEbfZuiOW3RJO3VPIEJBWg21jHkoC6afWR
+         p7KV5u8YAu1F8SLwyMkyskDJ7xAxjaVjuRilLIzdwNnwj2YQdNWu/t3/1c2xF7epQTJI
+         62bEPTtKNzVravZyZ4Za4jUTbcdmbSna9CphYAKyBFr9SWZRb+neOEuVpmNer9KNx4rG
+         FZ4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=FdP6Qc+UPGLk3XuWMFiPn/oePnvwLyYfc8IpH3UBvCI=;
+        b=cb/48Caez3OJT+Jx8TpvGrM9ENazpOipC66LIGHFKx1pABKB4QINqliPDHZ3eXTGeT
+         6OJoczuZmSy67YrAJbW3h0vo8zEnuSCus9HNY/aoDXpgbZaAJ6j3/PjX/qhdTM8zCXTL
+         FSYUJkGmQcP2zzon/iY7kw/hAqBKCnvlksR3I3P+WTwG8UusP5jcNqyYRHwaJ0sRT3PX
+         pHr4CNrSp2B0DHXIp2WAW39eI2HCiXTXWGuFL9BIL3sJ+HJnJtl0ghq59oxzCBx59FiQ
+         aLYQrymOfUmom7xZ66yFLdYeOnKbF+UUsZi9QYHb6nRoE0zVHkgbVCm21o3W93NPHS9T
+         pv0w==
+X-Gm-Message-State: AOAM532py6eN1c0To2a1ln48htmJ3vRxV/IaEpD1QBcUzI5DkxehxmNi
+        arHD3YhcOcEMkI97IDqOj5NvJADDq9Sy9g==
+X-Google-Smtp-Source: ABdhPJyOsrsg7A3oXkaPKlSsh0+Zu9q9Jvf5cpxYUkJl/WjuItJf9yRoSOiqqraM3FvYDqt0zZrHTQ==
+X-Received: by 2002:a62:8c8d:0:b029:1d8:3458:5f3b with SMTP id m135-20020a628c8d0000b02901d834585f3bmr16471791pfd.27.1612812380128;
+        Mon, 08 Feb 2021 11:26:20 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:e4db:abc1:a5c0:9dbc])
+        by smtp.gmail.com with ESMTPSA id 123sm19892245pfd.91.2021.02.08.11.26.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Feb 2021 11:26:19 -0800 (PST)
+Date:   Mon, 8 Feb 2021 11:26:13 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Subject: Re: [PATCH] KVM: x86: compile out TDP MMU on 32-bit systems
+Message-ID: <YCGQVdPio+LSNWGi@google.com>
+References: <20210206145333.47314-1-pbonzini@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20210208185341.GF18227@zn.tnic>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210206145333.47314-1-pbonzini@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/8/2021 10:53 AM, Borislav Petkov wrote:
-> On Mon, Feb 08, 2021 at 10:50:07AM -0800, Yu, Yu-cheng wrote:
->> I have not run into the situation.  Initially it was there because other
->> faults have it.
+On Sat, Feb 06, 2021, Paolo Bonzini wrote:
+> The TDP MMU assumes that it can do atomic accesses to 64-bit PTEs.
+> Rather than just disabling it, compile it out completely so that it
+> is possible to use for example 64-bit xchg.
 > 
-> Which other faults?
+> To limit the number of stubs, wrap all accesses to tdp_mmu_enabled
+> or tdp_mmu_page with a function.  Calls to all other functions in
+> tdp_mmu.c are eliminated and do not even reach the linker.
 
-exc_general_protection() and do_trap() both call show_signal(), which 
-then calls printk_ratelimit().
+Aha!  I always forget how smart the compiler can (sometimes) be.  I agree this
+isn't at all painful.
 
-> 
->> When you asked, I went through it and put out my reasoning.
-> 
-> What does that mean?
-> 
+This can/should also expand the #ifdef to the TDP-only fields in kvm_mmu_page.
+I also vote to #ifdef out all of tdp_iter.h, and probably the TDP-only fields in
+struct kvm_arch.
 
-I went through my patch and check if ratelimit is necessary, and then 
-describe the finding.
+diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+index e0171f7176c5..84499aad01a4 100644
+--- a/arch/x86/include/asm/kvm_host.h
++++ b/arch/x86/include/asm/kvm_host.h
+@@ -1033,6 +1033,7 @@ struct kvm_arch {
+        struct kvm_pmu_event_filter *pmu_event_filter;
+        struct task_struct *nx_lpage_recovery_thread;
 
->> I think it still makes sense to keep it.
-> 
-> Because you have a hunch or you actually have an objective reason why?
-> 
++#ifdef CONFIG_X86_64
+        /*
+         * Whether the TDP MMU is enabled for this VM. This contains a
+         * snapshot of the TDP MMU module parameter from when the VM was
+@@ -1071,6 +1072,7 @@ struct kvm_arch {
+         * the thread holds the MMU lock in write mode.
+         */
+        spinlock_t tdp_mmu_pages_lock;
++#endif /* CONFIG_X86_64 */
+ };
 
-For example, if a shell script, in a loop re-starts an app when it 
-exits, and the app is causing control-protection fault.  The log 
-messages should be rate limited.
+ struct kvm_vm_stat {
+diff --git a/arch/x86/kvm/mmu/mmu_internal.h b/arch/x86/kvm/mmu/mmu_internal.h
+index 98db78a26957..9e38d3c5daad 100644
+--- a/arch/x86/kvm/mmu/mmu_internal.h
++++ b/arch/x86/kvm/mmu/mmu_internal.h
+@@ -56,10 +56,12 @@ struct kvm_mmu_page {
+        /* Number of writes since the last time traversal visited this page.  */
+        atomic_t write_flooding_count;
+
++#ifdef CONFIG_X86_64
+        bool tdp_mmu_page;
+
+        /* Used for freeing the page asyncronously if it is a TDP MMU page. */
+        struct rcu_head rcu_head;
++#endif
+ };
+
+ extern struct kmem_cache *mmu_page_header_cache;
+diff --git a/arch/x86/kvm/mmu/tdp_iter.h b/arch/x86/kvm/mmu/tdp_iter.h
+index 4cc177d75c4a..5f60c1b1a1b4 100644
+--- a/arch/x86/kvm/mmu/tdp_iter.h
++++ b/arch/x86/kvm/mmu/tdp_iter.h
+@@ -7,6 +7,8 @@
+
+ #include "mmu.h"
+
++#ifdef CONFIG_X86_64
++
+ typedef u64 __rcu *tdp_ptep_t;
+
+ /*
+@@ -64,4 +66,6 @@ void tdp_iter_start(struct tdp_iter *iter, u64 *root_pt, int root_level,
+ void tdp_iter_next(struct tdp_iter *iter);
+ tdp_ptep_t tdp_iter_root_pt(struct tdp_iter *iter);
+
++#endif /* CONFIG_X86_64 */
++
+ #endif /* __KVM_X86_MMU_TDP_ITER_H */
+
+
+
+With the above:
+
+Reviewed-and-tested-by: Sean Christopherson <seanjc@google.com>
+
+> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
