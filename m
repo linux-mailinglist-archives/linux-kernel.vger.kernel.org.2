@@ -2,96 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28018313235
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 13:26:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E555F313236
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 13:26:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232363AbhBHMXu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 07:23:50 -0500
-Received: from mail.xenproject.org ([104.130.215.37]:50570 "EHLO
-        mail.xenproject.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233127AbhBHMEt (ORCPT
+        id S232502AbhBHMYA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 07:24:00 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49319 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232528AbhBHMF4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 07:04:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=xen.org;
-        s=20200302mail; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
-        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject;
-        bh=MD6Bb5sP80quPeH2zs3kTwyyq4XqIGzqFtYmOHg1498=; b=C2TcdzJzRhXqdo5vQnTzknz9uv
-        AqlQyCIi6Czc2ySaYeTorxbgl4KLAS9pghcA6ZKMr0Y/zZBz84DqLdo8Z6rYnV/2y/6s/jO68fsYM
-        RH9qzcmV9HxFJOoxtBRMMohhVDpVPokj2R4iCDMqA6SHPal+1MK/3Snr7DtWNXwLEhzA=;
-Received: from xenbits.xenproject.org ([104.239.192.120])
-        by mail.xenproject.org with esmtp (Exim 4.92)
-        (envelope-from <julien@xen.org>)
-        id 1l95Gm-000318-1S; Mon, 08 Feb 2021 12:03:56 +0000
-Received: from [54.239.6.177] (helo=a483e7b01a66.ant.amazon.com)
-        by xenbits.xenproject.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <julien@xen.org>)
-        id 1l95Gl-0002j7-O1; Mon, 08 Feb 2021 12:03:55 +0000
-Subject: Re: [PATCH 7/7] xen/evtchn: read producer index only once
-To:     =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>,
-        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
-Cc:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>
-References: <20210206104932.29064-1-jgross@suse.com>
- <20210206104932.29064-8-jgross@suse.com>
- <8032d8a9-b28f-95e1-a5a8-e955ada4dc0a@xen.org>
- <969f1492-764b-3345-eb65-64aca554ce9e@suse.com>
-From:   Julien Grall <julien@xen.org>
-Message-ID: <a3f47092-0525-4594-0421-48e83cee5045@xen.org>
-Date:   Mon, 8 Feb 2021 12:03:52 +0000
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.7.1
+        Mon, 8 Feb 2021 07:05:56 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612785868;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=3Qs++Eyz+FNoD/j1mZztLeb+tABoZMU/k2xT8BiHAls=;
+        b=HhY0QJ7N9zEd4zLSxN9Q6q6GVUPPKsd17rC+WM3HvemTvnb0NddCshroZlyg4Yodoe/8lg
+        0uJTVU6ee7379QqEsiiA2lvrBx7kfe7KKs6yNVPWRAIBpMu9tqrw2QFJNtrKPLDylX8wr7
+        mb7SkDz8Ll2ZQeeoqwNLmEhNC4MyIsg=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-159-cjkgz-2yM5q0xh_QNXTvmQ-1; Mon, 08 Feb 2021 07:04:26 -0500
+X-MC-Unique: cjkgz-2yM5q0xh_QNXTvmQ-1
+Received: by mail-ej1-f69.google.com with SMTP id gv53so4075867ejc.19
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 04:04:25 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=3Qs++Eyz+FNoD/j1mZztLeb+tABoZMU/k2xT8BiHAls=;
+        b=qSVQCBa8eogLj3ZwQX73ODYfQcWIaplulA6rtj/iaRJTFlnjPT6obL6FLpNti57VGZ
+         ikjgzovclANJK4u3hOXZpsnsH5VUCtw+B/v0dd7GDB8hixLbp5G3PtRW7kwwd4qlkr/Q
+         MjDu21e2CNp6cD0EXsMYb0G1iEMjDHNxeILYashDeqM99ZRGr9l9aaWmadnjMs2bL1wb
+         u/9TrZr52cMMXzZ9QtdZH9ZGth2tamZu3QleqTtWS9zm5g3dfl9F0L3y7KGdIc0LMNBV
+         EvsTJ/wW99Q0zWWrctCseR4GcagyQYj+jXsi9wFDAkHIyAo9PNcF6Dr8De+nTz0qXEsY
+         Ea/w==
+X-Gm-Message-State: AOAM530Va4Pxjl2A+axBgdVj4PWB+ksAilnRQKwTyJ/5HxbRetN8nJQg
+        gOUCH8mIKi3wVUUKroDX6NFewDEEDkmAVRkvwIoHX+0qitN8B53PLhiFTYLqQ4njz8rnyvWe8XA
+        YyDL/Shiw0VFtJ3e3Iu2XoTks
+X-Received: by 2002:a05:6402:2053:: with SMTP id bc19mr16399264edb.230.1612785864895;
+        Mon, 08 Feb 2021 04:04:24 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxYh81U7rVWWzDv0BWgV8P8Ma0koPf4ZMd7UjCWGCkcVoSWZ76oz/S0Urwra0A/6eX0YuanFA==
+X-Received: by 2002:a05:6402:2053:: with SMTP id bc19mr16399251edb.230.1612785864712;
+        Mon, 08 Feb 2021 04:04:24 -0800 (PST)
+Received: from redhat.com (bzq-79-180-2-31.red.bezeqint.net. [79.180.2.31])
+        by smtp.gmail.com with ESMTPSA id b2sm9191594edk.11.2021.02.08.04.04.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Feb 2021 04:04:24 -0800 (PST)
+Date:   Mon, 8 Feb 2021 07:04:21 -0500
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, shahafs@mellanox.com,
+        lulu@redhat.com, sgarzare@redhat.com, rdunlap@infradead.org
+Subject: Re: [PATCH V3 16/19] virtio-pci: introduce modern device module
+Message-ID: <20210208070253-mutt-send-email-mst@kernel.org>
+References: <20210104065503.199631-1-jasowang@redhat.com>
+ <20210104065503.199631-17-jasowang@redhat.com>
+ <20210205103214-mutt-send-email-mst@kernel.org>
+ <24cb3ebe-1248-3e31-0716-cf498cf1d728@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <969f1492-764b-3345-eb65-64aca554ce9e@suse.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <24cb3ebe-1248-3e31-0716-cf498cf1d728@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Juergen,
-
-On 08/02/2021 11:48, Jürgen Groß wrote:
-> On 08.02.21 12:40, Julien Grall wrote:
->>
->>
->> On 06/02/2021 10:49, Juergen Gross wrote:
->>> In evtchn_read() use READ_ONCE() for reading the producer index in
->>> order to avoid the compiler generating multiple accesses.
->>>
->>> Signed-off-by: Juergen Gross <jgross@suse.com>
->>> ---
->>>   drivers/xen/evtchn.c | 2 +-
->>>   1 file changed, 1 insertion(+), 1 deletion(-)
->>>
->>> diff --git a/drivers/xen/evtchn.c b/drivers/xen/evtchn.c
->>> index 421382c73d88..f6b199b597bf 100644
->>> --- a/drivers/xen/evtchn.c
->>> +++ b/drivers/xen/evtchn.c
->>> @@ -211,7 +211,7 @@ static ssize_t evtchn_read(struct file *file, 
->>> char __user *buf,
->>>               goto unlock_out;
->>>           c = u->ring_cons;
->>> -        p = u->ring_prod;
->>> +        p = READ_ONCE(u->ring_prod);
->> For consistency, don't you also need the write side in 
->> evtchn_interrupt() to use WRITE_ONCE()?
+On Mon, Feb 08, 2021 at 01:42:27PM +0800, Jason Wang wrote:
 > 
-> Only in case I'd consider the compiler needing multiple memory
-> accesses for doing the update (see my reply to Jan's comment on this
-> patch).
-
-Right, I have just answered there :). AFAICT, without using 
-WRITE_ONCE()/READ_ONCE() there is no guarantee that load/store tearing 
-will not happen.
-
-We can continue the conversation there.
-
-Cheers,
-
+> On 2021/2/5 下午11:34, Michael S. Tsirkin wrote:
+> > On Mon, Jan 04, 2021 at 02:55:00PM +0800, Jason Wang wrote:
+> > > Signed-off-by: Jason Wang<jasowang@redhat.com>
+> > I don't exactly get why we need to split the modern driver out,
+> > and it can confuse people who are used to be seeing virtio-pci.
 > 
-> Juergen
+> 
+> The virtio-pci module still there. No user visible changes. Just some codes
+> that could be shared with other driver were split out.
+> 
+
+What I am saying is this: we can have virtio-vdpa depend on
+virtio-pci without splitting the common code out to an
+extra module.
+
+> > 
+> > The vdpa thing so far looks like a development tool, why do
+> > we care that it depends on a bit of extra code?
+> 
+> 
+> If I'm not misunderstanding, trying to share codes is proposed by you here:
+> 
+> https://lkml.org/lkml/2020/6/10/232
+> 
+> We also had the plan to convert IFCVF to use this library.
+> 
+> Thanks
+
+If that happens then an extra module might become useful.
 
 -- 
-Julien Grall
+MST
+
