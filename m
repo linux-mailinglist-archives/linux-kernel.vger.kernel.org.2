@@ -2,165 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49AAF3130ED
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 12:33:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D4E7E313145
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 12:48:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233324AbhBHLcM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 06:32:12 -0500
-Received: from mx01-muc.bfs.de ([193.174.230.67]:36895 "EHLO mx01-muc.bfs.de"
+        id S231345AbhBHLqy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 06:46:54 -0500
+Received: from m12-16.163.com ([220.181.12.16]:54914 "EHLO m12-16.163.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232347AbhBHLP6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 06:15:58 -0500
-X-Greylist: delayed 583 seconds by postgrey-1.27 at vger.kernel.org; Mon, 08 Feb 2021 06:15:53 EST
-Received: from SRVEX01-SZ.bfs.intern (exchange-sz.bfs.de [10.129.90.31])
-        by mx01-muc.bfs.de (Postfix) with ESMTPS id B10F22047A;
-        Mon,  8 Feb 2021 12:05:02 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bfs.de; s=dkim201901;
-        t=1612782302;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=fxpjNCvWyShQs0o1xq2uDFgwlPhrqmfb2L5lPzxXM3M=;
-        b=OFLyk+a+Z8eVqnoDxE/QHZVfJq9ru1nkBWO4mH7cAUviwaY7WxARb/7PiqiiHpt8dAGrNz
-        xTdvNxve4nAq9UE2r0GIuhJPOZYrC3xjMuSfw7iqWuUhL2vbyQGj8+Zufk0IIg4CTXCt/c
-        B1/ab2fbTZBCl1ReXrkAi+pz7F11XsReMBD4bBq3F3JVCsszmRBbim0A7+3miEYwI+OBV+
-        SV1IIiAxpbIjjsH+WXHUxakTvlTAhWwhniOHBkxTcJEStsXRuPOL9MVGlC0k35KyN71vzU
-        3QXRVCkjE6ZiUSw0aXShWxkXUQHRig38ydperu5MYTGpitet1sJMGWyNM9vDfg==
-Received: from SRVEX01-SZ.bfs.intern (10.129.90.31) by SRVEX01-SZ.bfs.intern
- (10.129.90.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2176.2; Mon, 8 Feb 2021
- 12:05:01 +0100
-Received: from SRVEX01-SZ.bfs.intern ([fe80::7d2d:f9cb:2761:d24a]) by
- SRVEX01-SZ.bfs.intern ([fe80::7d2d:f9cb:2761:d24a%13]) with mapi id
- 15.01.2176.002; Mon, 8 Feb 2021 12:05:01 +0100
-From:   Walter Harms <wharms@bfs.de>
-To:     =?iso-8859-1?Q?Christian_K=F6nig?= <christian.koenig@amd.com>,
-        Colin King <colin.king@canonical.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        "David Airlie" <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        Huang Rui <ray.huang@amd.com>,
-        Junwei Zhang <Jerry.Zhang@amd.com>,
-        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>
-CC:     "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: AW: [PATCH] drm/amdgpu: fix potential integer overflow on shift of a
- int
-Thread-Topic: [PATCH] drm/amdgpu: fix potential integer overflow on shift of a
- int
-Thread-Index: AQHW/aZibC6c7NmnTEaIp1k5r3gR16pN6nEAgAAuR34=
-Date:   Mon, 8 Feb 2021 11:05:01 +0000
-Message-ID: <3aed86cfb8014badbcbc4ee9f007976d@bfs.de>
-References: <20210207230751.8576-1-colin.king@canonical.com>,<c6c99dba-aea9-304c-2246-e24632955479@amd.com>
-In-Reply-To: <c6c99dba-aea9-304c-2246-e24632955479@amd.com>
-Accept-Language: de-DE, en-US
-Content-Language: de-DE
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.137.16.39]
-x-tm-as-product-ver: SMEX-14.0.0.3080-8.6.1012-25960.007
-x-tm-as-result: No-10--6.720600-5.000000
-x-tmase-matchedrid: lfH7Ftdh6lTRubRCcrbc5grcxrzwsv5u3dCmvEa6IiHgYNP0+4v1nuhN
-        0jwIx2vHzn+cUF7VynIdD9u7d6Y7FKN1pQF++HP3XFf6l1YcdowBDya2JbH/+rZ52dbbIRC11t2
-        9KLWKRj6byHEAgTCz2nD4B0GOmh08ipQL3tF+LWYoSebb2328i4Y+RHPfLBFEZRL+gCLSlhcTw7
-        jCStQ0rnghiIvM4QIVF5qQsg8KVCCZQ6EsnBvpj3YZxYoZm58FnyQFaVgMM2AiB3Nk/d/KP6xIj
-        SYfsSaZpsX84hgxtppmaTFBWBkYZHYRnQp9B8yrhVNduS+1i+96i696PjRPiFjBUeMsjed6lcHM
-        CyWAI7MGOdbFG3K/Wb1Odlcux5HWv1l2Uvx6idpWdFebWIc3VsRB0bsfrpPIcSqbxBgG0w72wx8
-        FaxvvRiPj7iuobbW2LdXivd77fLD2Oot69ouQubHgvpw09rhJzph8hz1Y0dXA51S6Y1zM1eO4aG
-        TUmfUKhw0KiQrko1bn97Tpk1RUclMrCGEFu0pWavaGrHEVCAms7r0bSXKIZA==
-x-tm-as-user-approved-sender: No
-x-tm-as-user-blocked-sender: No
-x-tmase-result: 10--6.720600-5.000000
-x-tmase-version: SMEX-14.0.0.3080-8.6.1012-25960.007
-x-tm-snts-smtp: 92B2D6A4070B1EEB7945842EE8C97399B33CFA6A7FB59C2DB058153D8A2724F32000:9
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+        id S230329AbhBHLZ2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 06:25:28 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=Date:From:Subject:Message-ID:MIME-Version; bh=ZFWMb
+        A8IIRM4Y2Shp9y2AqfBxFZ/llCxBUNcYxvSxTA=; b=Pjl2oCBG+fOIGH7V7Lb92
+        4SukxyrkxChW8Z4GoKiOrNPtYqVph1cBznGFHBWqRDIelLcRjmPNewW1tKII/Jhz
+        0oojKTLMnHsWSkSVGCW/NGGuX4WKxda0oVibPFpZyOzaZ8OnxCWR5puEHwyVpR5h
+        Vv7DbQNPyF7wzfV6FOUgFM=
+Received: from localhost (unknown [119.137.53.134])
+        by smtp12 (Coremail) with SMTP id EMCowADn7VkvGyFgczS4bA--.30517S2;
+        Mon, 08 Feb 2021 19:06:24 +0800 (CST)
+Date:   Mon, 8 Feb 2021 19:06:19 +0800
+From:   wengjianfeng <samirweng1979@163.com>
+To:     Kalle Valo <kvalo@codeaurora.org>
+Cc:     davem@davemloft.net, kuba@kernel.org, lee.jones@linaro.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        wengjianfeng <wengjianfeng@yulong.com>
+Subject: Re: [PATCH RESEND] wl1251: cmd: remove redundant assignment
+Message-ID: <20210208190619.00006644@163.com>
+In-Reply-To: <20210208105954.1EAD9C433CA@smtp.codeaurora.org>
+References: <20210208022535.17672-1-samirweng1979@163.com>
+        <20210208105954.1EAD9C433CA@smtp.codeaurora.org>
+Organization: yulong
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-X-Spam-Status: No, score=0.00
-X-Spamd-Result: default: False [0.00 / 7.00];
-         ARC_NA(0.00)[];
-         TO_DN_EQ_ADDR_SOME(0.00)[];
-         HAS_XOIP(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         BAYES_SPAM(0.00)[16.99%];
-         DKIM_SIGNED(0.00)[bfs.de:s=dkim201901];
-         RCPT_COUNT_SEVEN(0.00)[11];
-         RCVD_NO_TLS_LAST(0.10)[];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         RCVD_COUNT_TWO(0.00)[2];
-         MID_RHS_MATCH_FROM(0.00)[]
-Authentication-Results: mx01-muc.bfs.de;
-        none
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: EMCowADn7VkvGyFgczS4bA--.30517S2
+X-Coremail-Antispam: 1Uf129KBjvdXoW7GryUXw4fJw4xZFy5GFW7urg_yoW3Cwc_uF
+        4fWF1ruryktF48tFs2kw43XFn5Kr1UGw4kGw1FvryfCw1YgFWj9a1kKr9ayw4xX34Igr1D
+        WFn5trWktryjgjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU0fuctUUUUU==
+X-Originating-IP: [119.137.53.134]
+X-CM-SenderInfo: pvdpx25zhqwiqzxzqiywtou0bp/1tbiqhUzsVr7sEK95gAAs1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-i am curious:
-what is the win to have a unsigned 64 bit integer in the first
-place ?
+On Mon,  8 Feb 2021 10:59:54 +0000 (UTC)
+Kalle Valo <kvalo@codeaurora.org> wrote:
 
-re,
- wh
-________________________________________
-Von: Christian K=F6nig <christian.koenig@amd.com>
-Gesendet: Montag, 8. Februar 2021 10:17:42
-An: Colin King; Alex Deucher; David Airlie; Daniel Vetter; Huang Rui; Junwe=
-i Zhang; amd-gfx@lists.freedesktop.org; dri-devel@lists.freedesktop.org
-Cc: kernel-janitors@vger.kernel.org; linux-kernel@vger.kernel.org
-Betreff: Re: [PATCH] drm/amdgpu: fix potential integer overflow on shift of=
- a int
+> samirweng1979 <samirweng1979@163.com> wrote:
+> 
+> > From: wengjianfeng <wengjianfeng@yulong.com>
+> > 
+> > -ENOMEM has been used as a return value,it is not necessary to
+> > assign it, and if kzalloc fail,not need free it,so just return
+> > -ENOMEM when kzalloc fail.
+> > 
+> > Signed-off-by: wengjianfeng <wengjianfeng@yulong.com>
+> 
+> You sent the previous version just five days ago:
+> 
+> https://patchwork.kernel.org/project/linux-wireless/patch/20210203060306.2832-1-samirweng1979@163.com/
+> 
+> We maintainers are busy and usually takes some time to review the
+> patch. So please avoid resending patches in such short intervals.
+> 
+> Patch set to Superseded.
+> 
 
-Am 08.02.21 um 00:07 schrieb Colin King:
-> From: Colin Ian King <colin.king@canonical.com>
->
-> The left shift of int 32 bit integer constant 1 is evaluated using 32
-> bit arithmetic and then assigned to an unsigned 64 bit integer. In the
-> case where *frag is 32 or more this can lead to an oveflow.  Avoid this
-> by shifting 1ULL.
-
-Well that can't happen. Take a look at the code in that function:
-
->                 max_frag =3D 31;
-...
->         if (*frag >=3D max_frag) {
->                 *frag =3D max_frag;
->                 *frag_end =3D end & ~((1ULL << max_frag) - 1);
->         } else {
->                 *frag_end =3D start + (1 << *frag);
->         }
-
-But I'm fine with applying the patch if it silences your warning.
-
-Regards,
-Christian.
-
->
-> Addresses-Coverity: ("Unintentional integer overflow")
-> Fixes: dfcd99f6273e ("drm/amdgpu: meld together VM fragment and huge page=
- handling")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
->   drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c b/drivers/gpu/drm/amd=
-/amdgpu/amdgpu_vm.c
-> index 9d19078246c8..53a925600510 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
-> @@ -1412,7 +1412,7 @@ static void amdgpu_vm_fragment(struct amdgpu_vm_upd=
-ate_params *params,
->               *frag =3D max_frag;
->               *frag_end =3D end & ~((1ULL << max_frag) - 1);
->       } else {
-> -             *frag_end =3D start + (1 << *frag);
-> +             *frag_end =3D start + (1ULL << *frag);
->       }
->   }
->
+Hi Kalle,
+  I see, thanks your reply.
 
