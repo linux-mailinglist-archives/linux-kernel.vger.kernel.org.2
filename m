@@ -2,171 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DBF5314239
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 22:49:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E02931423D
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 22:50:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236721AbhBHVtU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 16:49:20 -0500
-Received: from ssl.serverraum.org ([176.9.125.105]:44497 "EHLO
-        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236505AbhBHVgj (ORCPT
+        id S236951AbhBHVtw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 16:49:52 -0500
+Received: from relay2-d.mail.gandi.net ([217.70.183.194]:60665 "EHLO
+        relay2-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236367AbhBHVgm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 16:36:39 -0500
-Received: from mwalle01.fritz.box (unknown [IPv6:2a02:810c:c200:2e91:fa59:71ff:fe9b:b851])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 679C423E5F;
-        Mon,  8 Feb 2021 22:35:39 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1612820140;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=UfrI+GcaHGiqs+S+5NHCQt7ZC3BRv0+EfSOAV5ChAMk=;
-        b=Md1shnpXmQkSrdWpF3eY3218AkgmQKTPx49fR0WVGq4taSF0LwVknNdD6oeg5eSimhlK+i
-        BjYA0//QqtNd+ikU4ZbrtPrlIcD8MnhPzLVli63ct0B47bF5mwHCQgamxgjEfWCpHyJR4k
-        yV+NEdUMK0z26iEARjIeIgVjXwvBBZc=
-From:   Michael Walle <michael@walle.cc>
-To:     bcm-kernel-feedback-list@broadcom.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Michael Walle <michael@walle.cc>
-Subject: [PATCH] net: phy: broadcom: remove BCM5482 1000BX support
-Date:   Mon,  8 Feb 2021 22:35:29 +0100
-Message-Id: <20210208213529.28481-1-michael@walle.cc>
-X-Mailer: git-send-email 2.20.1
+        Mon, 8 Feb 2021 16:36:42 -0500
+X-Originating-IP: 86.202.109.140
+Received: from localhost (lfbn-lyo-1-13-140.w86-202.abo.wanadoo.fr [86.202.109.140])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id B154B4000A;
+        Mon,  8 Feb 2021 21:35:37 +0000 (UTC)
+Date:   Mon, 8 Feb 2021 22:35:37 +0100
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
+        arm-soc <arm@kernel.org>, SoC Team <soc@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/SAMSUNG EXYNOS ARM ARCHITECTURES" 
+        <linux-samsung-soc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Sylwester Nawrocki <snawrocki@kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Tony Lindgren <tony@atomide.com>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Maxime Ripard <mripard@kernel.org>
+Subject: Re: [GIT PULL 2/3] ARM: dts: samsung: DTS for v5.12
+Message-ID: <20210208213537.GA351084@piout.net>
+References: <20210125191240.11278-1-krzk@kernel.org>
+ <20210125191240.11278-3-krzk@kernel.org>
+ <20210206134531.l5vpzlmev4v3f3uo@kozik-lap>
+ <CAK8P3a0Kgn9PTHjsU7MbJPC8vatvb9KYJJKWxrx7zQzTNgK10g@mail.gmail.com>
+ <CAMuHMdWZ8QmiQCmiW9AvCpviNZeuaxThSo_4Xb2DGEs9hMTKMQ@mail.gmail.com>
+ <YCGBIvRfoP0BeyrP@builder.lan>
+ <20210208184230.onhlioflyylkx6xo@kozik-lap>
+ <CAK8P3a3bsw8p2Geyo-vh1AJUfMQCCf3kpa_YB+tKmcvWHqRcEw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam: Yes
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK8P3a3bsw8p2Geyo-vh1AJUfMQCCf3kpa_YB+tKmcvWHqRcEw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It is nowhere used in the kernel. It also seems to be lacking the
-proper fiber advertise flags. Remove it.
+Hello,
 
-Signed-off-by: Michael Walle <michael@walle.cc>
----
- drivers/net/phy/broadcom.c | 93 +-------------------------------------
- 1 file changed, 1 insertion(+), 92 deletions(-)
+On 08/02/2021 20:52:37+0100, Arnd Bergmann wrote:
+> On Mon, Feb 8, 2021 at 7:42 PM Krzysztof Kozlowski <krzk@kernel.org> wrote:
+> > Let me steer the discussion to original topic - it's about old kernel
+> > and new DTB, assuming that mainline kernel bisectability is not
+> > affected.
+> >
+> > Flow looks like this:
+> >
+> > 0. You have existing bidings and drivers.
+> > 1. Patch changing bindings (with new compatible) and drivers gets
+> >    accepted by maintainer.
+> > 2. Patch above (bindings+drivers) goes during merge window to v5.11-rc1.
+> > 3. Patch changing in-tree DTS to new compatible gets accepted by
+> >    maintainer and it is sent as v5.12-rc1 material to SoC maintainers.
+> >
+> > So again: old kernel, using old bindings, new DTB.
+> >
 
-diff --git a/drivers/net/phy/broadcom.c b/drivers/net/phy/broadcom.c
-index 8a4ec3222168..3142ba768313 100644
---- a/drivers/net/phy/broadcom.c
-+++ b/drivers/net/phy/broadcom.c
-@@ -361,96 +361,6 @@ static int bcm54811_config_init(struct phy_device *phydev)
- 	return err;
- }
- 
--static int bcm5482_config_init(struct phy_device *phydev)
--{
--	int err, reg;
--
--	err = bcm54xx_config_init(phydev);
--
--	if (phydev->dev_flags & PHY_BCM_FLAGS_MODE_1000BX) {
--		/*
--		 * Enable secondary SerDes and its use as an LED source
--		 */
--		reg = bcm_phy_read_shadow(phydev, BCM5482_SHD_SSD);
--		bcm_phy_write_shadow(phydev, BCM5482_SHD_SSD,
--				     reg |
--				     BCM5482_SHD_SSD_LEDM |
--				     BCM5482_SHD_SSD_EN);
--
--		/*
--		 * Enable SGMII slave mode and auto-detection
--		 */
--		reg = BCM5482_SSD_SGMII_SLAVE | MII_BCM54XX_EXP_SEL_SSD;
--		err = bcm_phy_read_exp(phydev, reg);
--		if (err < 0)
--			return err;
--		err = bcm_phy_write_exp(phydev, reg, err |
--					BCM5482_SSD_SGMII_SLAVE_EN |
--					BCM5482_SSD_SGMII_SLAVE_AD);
--		if (err < 0)
--			return err;
--
--		/*
--		 * Disable secondary SerDes powerdown
--		 */
--		reg = BCM5482_SSD_1000BX_CTL | MII_BCM54XX_EXP_SEL_SSD;
--		err = bcm_phy_read_exp(phydev, reg);
--		if (err < 0)
--			return err;
--		err = bcm_phy_write_exp(phydev, reg,
--					err & ~BCM5482_SSD_1000BX_CTL_PWRDOWN);
--		if (err < 0)
--			return err;
--
--		/*
--		 * Select 1000BASE-X register set (primary SerDes)
--		 */
--		reg = bcm_phy_read_shadow(phydev, BCM54XX_SHD_MODE);
--		bcm_phy_write_shadow(phydev, BCM54XX_SHD_MODE,
--				     reg | BCM54XX_SHD_MODE_1000BX);
--
--		/*
--		 * LED1=ACTIVITYLED, LED3=LINKSPD[2]
--		 * (Use LED1 as secondary SerDes ACTIVITY LED)
--		 */
--		bcm_phy_write_shadow(phydev, BCM5482_SHD_LEDS1,
--			BCM5482_SHD_LEDS1_LED1(BCM_LED_SRC_ACTIVITYLED) |
--			BCM5482_SHD_LEDS1_LED3(BCM_LED_SRC_LINKSPD2));
--
--		/*
--		 * Auto-negotiation doesn't seem to work quite right
--		 * in this mode, so we disable it and force it to the
--		 * right speed/duplex setting.  Only 'link status'
--		 * is important.
--		 */
--		phydev->autoneg = AUTONEG_DISABLE;
--		phydev->speed = SPEED_1000;
--		phydev->duplex = DUPLEX_FULL;
--	}
--
--	return err;
--}
--
--static int bcm5482_read_status(struct phy_device *phydev)
--{
--	int err;
--
--	err = genphy_read_status(phydev);
--
--	if (phydev->dev_flags & PHY_BCM_FLAGS_MODE_1000BX) {
--		/*
--		 * Only link status matters for 1000Base-X mode, so force
--		 * 1000 Mbit/s full-duplex status
--		 */
--		if (phydev->link) {
--			phydev->speed = SPEED_1000;
--			phydev->duplex = DUPLEX_FULL;
--		}
--	}
--
--	return err;
--}
--
- static int bcm5481_config_aneg(struct phy_device *phydev)
- {
- 	struct device_node *np = phydev->mdio.dev.of_node;
-@@ -800,8 +710,7 @@ static struct phy_driver broadcom_drivers[] = {
- 	.phy_id_mask	= 0xfffffff0,
- 	.name		= "Broadcom BCM5482",
- 	/* PHY_GBIT_FEATURES */
--	.config_init	= bcm5482_config_init,
--	.read_status	= bcm5482_read_status,
-+	.config_init	= bcm54xx_config_init,
- 	.config_intr	= bcm_phy_config_intr,
- 	.handle_interrupt = bcm_phy_handle_interrupt,
- }, {
+I don't think forward compatibility was ever considered. I've seen it
+being mentioned a few times on #armlinux but honestly this simply can't
+be achieved. This would mean being able to write complete DT bindings
+for a particular SoC at day 0 which will realistically never happen. You
+may noteven have a complete datasheet and even if you have a datasheet,
+it may not be complete or it may be missing hw errata that are
+discovered later on and need a new binding to handle.
+
+> > Another case is where out-of-tree user of bindings, e.g. FreeBSD, takes
+> > new DTS (at point of #3 above or later) but did not take the bindings.
+> > Such system would be broken but it's their fault - they took DTS without
+> > taking the bindings (which were there already for one release!).
+> 
+> The particular boot flow that I am worried about here is when the dtb and
+> kernel are not updated in sync. Traditionally this happens when the dtb
+> is contained in the firmware image or generated by the firmware, as would
+> be the case on any server class system, but also on embedded systems
+> that can run an upstream kernel but without having the dts contributed
+> into the kernel sources.
+> 
+> When you have this case, you can install a working system, and install
+> an upgraded kernel without problems. You might then want to update the
+> firmware as well, in order to take advantage of the features implemented
+> in the kernel kernel that require a DT description. Again, no problem.
+> 
+> However, once the firmware is updated, it may no longer be possible to
+> go back to the old kernel in case the new one is busted.
+> 
+
+Any serious update strategy will update both the kernel and device tree
+at the same time, exactly like you already have to update the initramfs
+with the kernel as soon as it is including kernel modules.
+I would expect any embedded platform to actually use a container format,
+like a FIT image that will ship the kernel, DT and intiramfs in a single
+image and will allow to sign all parts.
+
+> A similar problem can happen with the EBBR boot flow that relies on
+> a uefi-enabled firmware such as a u-boot, while using grub2 as the
+> actual boot loader. This is commonly supported across distros. While
+> grub2 can load a matching set of kernel+initrd+dtb from disk and run
+> that, this often fails in practice because u-boot needs to fill a
+> board specific set of DT properties (bootargs, detected memory,
+> mac address, ...). The usual way this gets handled is that u-boot loads
+> grub2 and the dtb from disk and then passes the modified dtb to grub,
+> which picks only kernel+initrd from disk and boots this with the dtb.
+> 
+> The result is similar to case with dtb built into the firmware: after
+> upgrading the dtb that gets loaded by u-boot, grub can still pick
+> old kernels but they may not work as they did in the past. There are
+> obviously ways to work around it, but it does lead to user frustration.
+> 
+
+Are there really any platforms with the dtb built into the firmware? I
+feel like this is a mythical creature used to scare people into keeping
+the DTB ABI stable. Aren't all the distribution already able to cope
+with keeping DTB and kernel in sync?
+
 -- 
-2.20.1
-
+Alexandre Belloni, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
