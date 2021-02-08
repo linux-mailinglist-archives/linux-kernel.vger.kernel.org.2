@@ -2,77 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99B9F313580
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 15:47:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F076B313577
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 15:45:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232837AbhBHOqq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 09:46:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43252 "EHLO
+        id S232982AbhBHOpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 09:45:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231983AbhBHOby (ORCPT
+        with ESMTP id S232020AbhBHO2c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 09:31:54 -0500
-Received: from andre.telenet-ops.be (andre.telenet-ops.be [IPv6:2a02:1800:120:4::f00:15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23C4EC061788
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 06:23:09 -0800 (PST)
-Received: from ramsan.of.borg ([84.195.186.194])
-        by andre.telenet-ops.be with bizsmtp
-        id SeP62400b4C55Sk01eP6KW; Mon, 08 Feb 2021 15:23:07 +0100
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1l97RS-004dqT-B5; Mon, 08 Feb 2021 15:23:06 +0100
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1l97RR-001jbR-Pc; Mon, 08 Feb 2021 15:23:05 +0100
-From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     Hou Zhiqiang <Zhiqiang.Hou@nxp.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Cc:     Andrew Murray <amurray@thegoodpenguin.co.uk>,
-        Minghuan Lian <Minghuan.Lian@nxp.com>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH] PCI: mobiveil: Improve PCIE_LAYERSCAPE_GEN4 dependencies
-Date:   Mon,  8 Feb 2021 15:23:01 +0100
-Message-Id: <20210208142301.413582-1-geert+renesas@glider.be>
-X-Mailer: git-send-email 2.25.1
+        Mon, 8 Feb 2021 09:28:32 -0500
+Received: from mail-out-4.itc.rwth-aachen.de (mail-out-4.itc.rwth-aachen.de [IPv6:2a00:8a60:1:e501::5:49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDED7C0617AA
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 06:27:48 -0800 (PST)
+X-IronPort-Anti-Spam-Filtered: true
+X-IronPort-Anti-Spam-Result: =?us-ascii?q?A2CqBwBDSSFg/5oagoZiHAEBAQEBAQcBA?=
+ =?us-ascii?q?RIBAQQEAQGCD4FTgiZplXAInG4LAQEBAQEBAQEBCAEtAgQBAYRLggQCJTgTAhA?=
+ =?us-ascii?q?BAQYBAQEBAQYEhl+GH1IbgSMBDQWDJoMHAa98M4kcgUQJAYEuiF6FC4FcP4E4D?=
+ =?us-ascii?q?AOCNS4+ijcEgkctYYJduVQHgWuBEpt3BQkgky+Pc5QynTGERQICAgIJAhaBbYF?=
+ =?us-ascii?q?6TSRcCYJTUBcCDY4tF41rATxBMjcCBgoBAQMJTy2LHAEB?=
+X-IPAS-Result: =?us-ascii?q?A2CqBwBDSSFg/5oagoZiHAEBAQEBAQcBARIBAQQEAQGCD4F?=
+ =?us-ascii?q?TgiZplXAInG4LAQEBAQEBAQEBCAEtAgQBAYRLggQCJTgTAhABAQYBAQEBAQYEh?=
+ =?us-ascii?q?l+GH1IbgSMBDQWDJoMHAa98M4kcgUQJAYEuiF6FC4FcP4E4DAOCNS4+ijcEgkc?=
+ =?us-ascii?q?tYYJduVQHgWuBEpt3BQkgky+Pc5QynTGERQICAgIJAhaBbYF6TSRcCYJTUBcCD?=
+ =?us-ascii?q?Y4tF41rATxBMjcCBgoBAQMJTy2LHAEB?=
+X-IronPort-AV: E=Sophos;i="5.81,162,1610406000"; 
+   d="scan'208";a="98043057"
+Received: from rwthex-s2-a.rwth-ad.de ([134.130.26.154])
+  by mail-in-4.itc.rwth-aachen.de with ESMTP; 08 Feb 2021 15:27:44 +0100
+Received: from io.fritz.box (2a02:908:1089:e060:794d:ff8:62d5:f86c) by
+ rwthex-s2-a.rwth-ad.de (2a00:8a60:1:e500::26:154) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2044.4; Mon, 8 Feb 2021 15:27:41 +0100
+From:   Jan Henrik Weinstock <jan.weinstock@rwth-aachen.de>
+To:     <geert@linux-m68k.org>, <jonas@southpole.se>,
+        <stefan.kristiansson@saunalahti.fi>, <shorne@gmail.com>,
+        <openrisc@lists.librecores.org>, <linux-kernel@vger.kernel.org>
+CC:     Jan Henrik Weinstock <jan.weinstock@rwth-aachen.de>
+Subject: Re: [PATCH] Use devicetree to determine present cpus
+Date:   Mon, 8 Feb 2021 15:27:16 +0100
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [2a02:908:1089:e060:794d:ff8:62d5:f86c]
+X-ClientProxiedBy: rwthex-s3-a.rwth-ad.de (2a00:8a60:1:e500::26:160) To
+ rwthex-s2-a.rwth-ad.de (2a00:8a60:1:e500::26:154)
+Message-ID: <84102952-2468-4616-b28c-cb5941de7e12@rwthex-s2-a.rwth-ad.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  - Drop the dependency on PCI, as this is implied by the dependency on
-    PCI_MSI_IRQ_DOMAIN,
-  - Drop the dependencies on OF and ARM64, as the driver compiles fine
-    without OF and/or on other architectures,
-  - The Freescale Layerscape PCIe Gen4 controller is present only on
-    Freescale Layerscape SoCs.  Hence depend on ARCH_LAYERSCAPE, to
-    prevent asking the user about this driver when configuring a kernel
-    without Freescale Layerscape support, unless compile-testing.
-
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Signed-off-by: Jan Henrik Weinstock <jan.weinstock@rwth-aachen.de>
 ---
- drivers/pci/controller/mobiveil/Kconfig | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/pci/controller/mobiveil/Kconfig b/drivers/pci/controller/mobiveil/Kconfig
-index a62d247018cf6b51..e4643fb94e78f3da 100644
---- a/drivers/pci/controller/mobiveil/Kconfig
-+++ b/drivers/pci/controller/mobiveil/Kconfig
-@@ -24,8 +24,7 @@ config PCIE_MOBIVEIL_PLAT
+Re-send patch with git sendmail
+
+ arch/openrisc/kernel/smp.c | 18 +++++++++++++++---
+ 1 file changed, 15 insertions(+), 3 deletions(-)
+
+diff --git a/arch/openrisc/kernel/smp.c b/arch/openrisc/kernel/smp.c
+index 29c82ef2e..75be7e34f 100644
+--- a/arch/openrisc/kernel/smp.c
++++ b/arch/openrisc/kernel/smp.c
+@@ -16,6 +16,7 @@
+ #include <linux/sched.h>
+ #include <linux/sched/mm.h>
+ #include <linux/irq.h>
++#include <linux/of.h>
+ #include <asm/cpuinfo.h>
+ #include <asm/mmu_context.h>
+ #include <asm/tlbflush.h>
+@@ -68,14 +69,25 @@ void __init smp_init_cpus(void)
  
- config PCIE_LAYERSCAPE_GEN4
- 	bool "Freescale Layerscape PCIe Gen4 controller"
--	depends on PCI
--	depends on OF && (ARM64 || ARCH_LAYERSCAPE)
-+	depends on ARCH_LAYERSCAPE || COMPILE_TEST
- 	depends on PCI_MSI_IRQ_DOMAIN
- 	select PCIE_MOBIVEIL_HOST
- 	help
+ void __init smp_prepare_cpus(unsigned int max_cpus)
+ {
+-	int i;
++	u32 cpu_id;
++	struct device_node *cpu, *cpus;
+ 
+ 	/*
+ 	 * Initialise the present map, which describes the set of CPUs
+ 	 * actually populated at the present time.
+ 	 */
+-	for (i = 0; i < max_cpus; i++)
+-		set_cpu_present(i, true);
++	cpus = of_find_node_by_path("/cpus");
++	for_each_child_of_node(cpus, cpu) {
++		if (of_property_read_u32(cpu, "reg", &cpu_id)) {
++			pr_warn("%s missing reg property", cpu->full_name);
++			continue;
++		}
++
++		if (cpu_id >= max_cpus)
++			continue;
++
++		set_cpu_present(cpu_id, true);
++	}
+ }
+ 
+ void __init smp_cpus_done(unsigned int max_cpus)
 -- 
-2.25.1
+2.17.1
 
