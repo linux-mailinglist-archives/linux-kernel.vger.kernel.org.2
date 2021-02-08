@@ -2,126 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9647313E75
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 20:07:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B570313E70
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 20:05:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236040AbhBHTGe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 14:06:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56178 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234958AbhBHRms (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 12:42:48 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FCABC061793;
-        Mon,  8 Feb 2021 09:40:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=rSvUqI1XpEJ7iOVNKklLJYoFPByM1N15BVSh8fTJEs4=; b=YP5IJV54bH0CVu7bFAy4QFDd6
-        L/8EWZvKtF6hlcGGoWvEfzAGpUGMm+SB7k04JMz9qOyr5Rb16758zcs5ohXwJ+ozP6oE0CXcJLeJ7
-        XVs3JVcHjgmo3we123AbijWApG4b5ndwjDtF7SP+X+lPlpLLZS5Jw00qNIF/5nENMNLJ2YwNwdMQf
-        V09DaW714TEgEmrv61HaZFGtpTlYiTR4Nf5477cKFkxJR/R8xM1zRUGa1BYMbSF+w98BDf1/0lfFw
-        Q7Xk4dbu7+49dAItkuS05nCI3PhruFP9DWviRT4Efh5JXfa5UzpHTa/PRCNayz+x8o5g13j8c03bT
-        YuyjonbeA==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:40850)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1l9AWH-0002M7-MZ; Mon, 08 Feb 2021 17:40:17 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1l9AWD-0003FA-S0; Mon, 08 Feb 2021 17:40:13 +0000
-Date:   Mon, 8 Feb 2021 17:40:13 +0000
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Calvin Johnson <calvin.johnson@oss.nxp.com>
-Cc:     Grant Likely <grant.likely@arm.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Jeremy Linton <jeremy.linton@arm.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Cristi Sovaiala <cristian.sovaiala@nxp.com>,
-        Florin Laurentiu Chiculita <florinlaurentiu.chiculita@nxp.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Madalin Bucur <madalin.bucur@oss.nxp.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Pieter Jansen Van Vuuren <pieter.jansenvv@bamboosystems.io>,
-        Jon <jon@solid-run.com>, Saravana Kannan <saravanak@google.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        devicetree@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Diana Madalina Craciun <diana.craciun@nxp.com>,
-        linux-acpi@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        linux.cj@gmail.com, Jakub Kicinski <kuba@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Frank Rowand <frowand.list@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-arm-kernel@lists.infradead.org,
-        Laurentiu Tudor <laurentiu.tudor@nxp.com>
-Subject: Re: [net-next PATCH v5 07/15] net: mdiobus: Introduce
- fwnode_mdiobus_register_phy()
-Message-ID: <20210208174013.GN1463@shell.armlinux.org.uk>
-References: <20210208151244.16338-1-calvin.johnson@oss.nxp.com>
- <20210208151244.16338-8-calvin.johnson@oss.nxp.com>
+        id S235925AbhBHTFj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 14:05:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41712 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233936AbhBHRk7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 12:40:59 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B4BE364E5D;
+        Mon,  8 Feb 2021 17:40:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612806018;
+        bh=4iDteBdt+LxfoAbchv32DupyFja6g5XYVYcXWSdw+L0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=OSQk4fIG5gUoWlw+bFgtCrMU1E7LchG1SQaXJLQD9r2sJR+gnJ7jymSL4bnU1ExQa
+         2njrjxcNpwtb+xrngh2wE7A32j3R8HDjHnGMVFhFw17E9KAF179b+Kut/95SEmpoTu
+         cSMC1pDt78PYaCJWKrZWdSJ8jm6ir4Hp4VLOUFkcsDgWhVMUkQI4n3owvmFtS22I8X
+         8oj4+MN2VBYGn/8vXyiijnXlUOqHkrYeZBjLtOgUXc8UJkEen3l9Oqty2jfy31x7dm
+         6HZnI6bgzVfwbdMx29K21wkAcZ16qBMZQBYsUFW1pebZmDyZ+SD9yt7TXRMZ99Bik6
+         YVlnlJbPADHvA==
+Date:   Mon, 8 Feb 2021 18:40:14 +0100
+From:   Mauro Carvalho Chehab <mchehab@kernel.org>
+To:     Ezequiel Garcia <ezequiel@collabora.com>
+Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build warning after merge of the v4l-dvb tree
+Message-ID: <20210208184014.55128fb5@coco.lan>
+In-Reply-To: <4af499f5931d6b04a42787ae17525c63247573e6.camel@collabora.com>
+References: <20210208233716.16d962ad@canb.auug.org.au>
+        <56cd99bbf526b43507579b5775bac5f885319866.camel@collabora.com>
+        <20210208164618.GY32460@paasikivi.fi.intel.com>
+        <4af499f5931d6b04a42787ae17525c63247573e6.camel@collabora.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210208151244.16338-8-calvin.johnson@oss.nxp.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 08, 2021 at 08:42:36PM +0530, Calvin Johnson wrote:
-> +int fwnode_mdiobus_register_phy(struct mii_bus *bus,
-> +				struct fwnode_handle *child, u32 addr)
-> +{
-> +	struct mii_timestamper *mii_ts;
+Em Mon, 08 Feb 2021 13:57:56 -0300
+Ezequiel Garcia <ezequiel@collabora.com> escreveu:
 
-If you initialise this to NULL...
+> On Mon, 2021-02-08 at 18:46 +0200, Sakari Ailus wrote:
+> > Hi Ezequiel,
+> >=20
+> > Thanks for addressing this.
+> >=20
+> > On Mon, Feb 08, 2021 at 01:42:21PM -0300, Ezequiel Garcia wrote: =20
+> > > Hi Stephen,
+> > >=20
+> > > On Mon, 2021-02-08 at 23:37 +1100, Stephen Rothwell wrote: =20
+> > > > Hi all,
+> > > >=20
+> > > > After merging the v4l-dvb tree, today's linux-next build (htmldocs)
+> > > > produced this warning:
+> > > >=20
+> > > > include/media/v4l2-async.h:178: warning: expecting prototype for v4=
+l2_async_notifier_add_fwnode_subdev(). Prototype was for
+> > > > __v4l2_async_notifier_add_fwnode_subdev() instead
+> > > > include/media/v4l2-async.h:207: warning: expecting prototype for v4=
+l2_async_notifier_add_fwnode_remote_subdev(). Prototype was for
+> > > > __v4l2_async_notifier_add_fwnode_remote_subdev() instead
+> > > > include/media/v4l2-async.h:230: warning: expecting prototype for v4=
+l2_async_notifier_add_i2c_subdev(). Prototype was for
+> > > > __v4l2_async_notifier_add_i2c_subdev() instead
+> > > >=20
+> > > > Maybe introduced by commit
+> > > >=20
+> > > > =C2=A0 c1cc23625062 ("media: v4l2-async: Discourage use of v4l2_asy=
+nc_notifier_add_subdev")
+> > > >  =20
+> > >=20
+> > > Thanks for spotting this. Should be fixed by:
+> > >=20
+> > > diff --git a/include/media/v4l2-async.h b/include/media/v4l2-async.h
+> > > index 6f22daa6f067..3785445282fc 100644
+> > > --- a/include/media/v4l2-async.h
+> > > +++ b/include/media/v4l2-async.h
+> > > @@ -157,7 +157,7 @@ int __v4l2_async_notifier_add_subdev(struct v4l2_=
+async_notifier *notifier,
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct v4l2_as=
+ync_subdev *asd);
+> > > =C2=A0
+> > > =C2=A0/**
+> > > - * v4l2_async_notifier_add_fwnode_subdev - Allocate and add a fwnode=
+ async
+> > > + * __v4l2_async_notifier_add_fwnode_subdev - Allocate and add a fwno=
+de async =20
+> >=20
+> > The problem with the approach is that this no longer documents the API =
+that
+> > drivers are intended to use, but the intermediate one.
 
-> +	struct phy_device *phy;
-> +	bool is_c45 = false;
-> +	u32 phy_id;
-> +	int rc;
-> +
-> +	if (is_of_node(child)) {
-> +		mii_ts = of_find_mii_timestamper(to_of_node(child));
-> +		if (IS_ERR(mii_ts))
-> +			return PTR_ERR(mii_ts);
-> +	}
-> +
-> +	rc = fwnode_property_match_string(child, "compatible", "ethernet-phy-ieee802.3-c45");
-> +	if (rc >= 0)
-> +		is_c45 = true;
-> +
-> +	if (is_c45 || fwnode_get_phy_id(child, &phy_id))
-> +		phy = get_phy_device(bus, addr, is_c45);
-> +	else
-> +		phy = phy_device_create(bus, addr, phy_id, 0, NULL);
-> +	if (IS_ERR(phy)) {
-> +		if (mii_ts && is_of_node(child))
+Yep. the better would be to keep documenting what will be used.
 
-Then you don't need is_of_node() here.
+> >  I guess fixing
+> > this properly could require changes to kerneldoc so I have no objection=
+s to
+> > the approach.
 
-> +		/* phy->mii_ts may already be defined by the PHY driver. A
-> +		 * mii_timestamper probed via the device tree will still have
-> +		 * precedence.
-> +		 */
-> +		if (mii_ts)
-> +			phy->mii_ts = mii_ts;
+It is not a simple kernel-doc change.=20
 
-Should this be moved out of the if() case?
+The problem is that Kernel-doc expects:
 
-I'm thinking of the future where we may end up adding mii timestamper
-support for ACPI.
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+	/**
+	 * foo - something
+	 */
+	void foo(...)
+
+As it parses the file lines sequentially, using the parameters at
+foo(...) to double-check if everything is ok.
+
+In order for it to parse things like:
+
+	/**
+	 * foo - something
+	 */
+
+	... (some other functions in the middle)
+=09
+	void foo(...)
+
+Would require kernel-doc to first parse all the file, storing markups
+on a separate struct, and then, on a second step, produce an output.
+
+Even if modified to do that, there's a question if the result would
+be what it is expected.
+
+A separate thing would be to do things like:
+
+
+	/**
+	 * foo - something
+	 */
+	void __foo(...)
+
+The problem here is that usually the arguments for __foo() are
+different than the ones for foo(). See for example the macros that
+have a __foo() functions with an owner argument, that are solved
+on a macro called foo().
+
+Thanks,
+Mauro
