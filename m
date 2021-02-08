@@ -2,102 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 207DD3131E6
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 13:13:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A86D3131E8
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 13:14:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230265AbhBHMMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 07:12:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36858 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233462AbhBHLvW (ORCPT
+        id S230122AbhBHMNd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 07:13:33 -0500
+Received: from mail.xenproject.org ([104.130.215.37]:50508 "EHLO
+        mail.xenproject.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233490AbhBHLvv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 06:51:22 -0500
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49416C06178A;
-        Mon,  8 Feb 2021 03:50:12 -0800 (PST)
-Received: by mail-ej1-x635.google.com with SMTP id bl23so24124693ejb.5;
-        Mon, 08 Feb 2021 03:50:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2hQUMprtetu+UvLxropQiA6dOXEkpGb4/+OXA3Y0o2E=;
-        b=QKMeCXB1QLNt7s9DCwOXXLyDLXDCgN2X72vq5cR34jUvunGX4bpBduSNxPcjLmejcv
-         TyToD8AWUPl5fClQUJKSlDNUKb/slnnTY8EzIMVN9ams4qqpOQS36XjPwYfq9PNPlJT9
-         /TcnA9WJKPd5fIMdbAAWXFDP9QGKpNP4HHqcJZ30ni0nkN+SYbQgkCC1lCCfvXF7RoCE
-         UVqxun7bYK26oO9LKR61Sc16rDewwgv8/l48ZH0o+sfkTrPzQaBJgreHmz6UIbXcLbTx
-         TVn/Y8GclXvtgCRwxOVRkudEpCT0pX3WysvScSzGEDSD73ymGm1ja1lnMenp3ea8QX3W
-         S6Uw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2hQUMprtetu+UvLxropQiA6dOXEkpGb4/+OXA3Y0o2E=;
-        b=gWOhF3aby/R4p6FBseJ9O3rSeZPTf94MkrcB0yM75SY0Xxay8HCQ61GiiW9hCVoCs0
-         yb6+pO1fg0hyYUrJvJDLQGbL7qveiS1/7WUC4qFomE5mFHmuLd9V/oAnGEk/sqY2MLO8
-         226G6ii477B/1vW4WHNtONQ0Qp8pPM1IDldj6CXGmxdBQ+DASXJO0viv+D2OdwJdUVKD
-         Lh4skSLrHbZUX2AUNnvKBJg/YDGVVInYL9/k4OOUwOaPYXWPjKBdQ6ytlSNKZDNsdDtc
-         +K9frtIQJocXAdd/xGu3ldP52zXnjphm+PWgaY8Uzzbc3uRdRrlQgRP+z5GzW4hUdK0o
-         +8zA==
-X-Gm-Message-State: AOAM532V2J6fAyfliuBeHBOAX/vgYNo4urdftp/fW0NU4pFe+dcaQMZr
-        bA+HbiZ45UYstPEFWeH2LQY0hp6xFZZIJ2trqfl+NmgvOECP7g==
-X-Google-Smtp-Source: ABdhPJz2U5X6jzPaCYmWdfFZMTHRwfpQcvW+bJl23QVFJ6SreRILEv5d7DOyImgDssJsPUe+ZNpM0f6I0u1JnaUkQmc=
-X-Received: by 2002:a17:906:af86:: with SMTP id mj6mr16528360ejb.509.1612785010950;
- Mon, 08 Feb 2021 03:50:10 -0800 (PST)
+        Mon, 8 Feb 2021 06:51:51 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=xen.org;
+        s=20200302mail; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
+        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject;
+        bh=Yb8hwLCySjNi2+iqUZJlgDYQEPN0SidS4NbLYbSWASA=; b=0EP9GAFGUUaHqcqmkHxhIkNS/2
+        q+12rHMTFSmo7vkP8d46/QLtWVzWHba1fqhtQm1Y2z2JOKDtsVDeBpzFAfxoAa3D6PPfX4bAD4ndV
+        7rpEDV3zOiQ3K+NGx7pWQziyno6q4hapeUafIHQy//JxAUSFNREMC7hY5efEE6w/wgmo=;
+Received: from xenbits.xenproject.org ([104.239.192.120])
+        by mail.xenproject.org with esmtp (Exim 4.92)
+        (envelope-from <julien@xen.org>)
+        id 1l954G-0002lN-Lq; Mon, 08 Feb 2021 11:51:00 +0000
+Received: from [54.239.6.177] (helo=a483e7b01a66.ant.amazon.com)
+        by xenbits.xenproject.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <julien@xen.org>)
+        id 1l954G-0001gh-EF; Mon, 08 Feb 2021 11:51:00 +0000
+Subject: Re: [PATCH 7/7] xen/evtchn: read producer index only once
+To:     =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>,
+        Jan Beulich <jbeulich@suse.com>
+Cc:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org
+References: <20210206104932.29064-1-jgross@suse.com>
+ <20210206104932.29064-8-jgross@suse.com>
+ <72334160-cffe-2d8a-23b7-2ea9ab1d803a@suse.com>
+ <626f500a-494a-0141-7bf3-94fb86b47ed4@suse.com>
+ <e88526ac-6972-fe08-c58f-ea872cbdcc14@suse.com>
+ <d0ca217c-ecc9-55f7-abb1-30a687a46b31@suse.com>
+From:   Julien Grall <julien@xen.org>
+Message-ID: <42e15cc4-56d1-b34b-d97e-d579e771788a@xen.org>
+Date:   Mon, 8 Feb 2021 11:50:58 +0000
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.7.1
 MIME-Version: 1.0
-References: <1612784101-14353-1-git-send-email-konishi.ryusuke@gmail.com>
-In-Reply-To: <1612784101-14353-1-git-send-email-konishi.ryusuke@gmail.com>
-From:   Ryusuke Konishi <konishi.ryusuke@gmail.com>
-Date:   Mon, 8 Feb 2021 20:50:01 +0900
-Message-ID: <CAKFNMok_h7pDFmy-h3DALawpUkTK=diHBUAGGP5eRhpMY2EUQA@mail.gmail.com>
-Subject: Re: [PATCH] nilfs2: make splice write available again
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-nilfs <linux-nilfs@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <d0ca217c-ecc9-55f7-abb1-30a687a46b31@suse.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andrew,
 
-Please send this to upstream.  This fixes a regression of splice() on nilfs2.
 
-Thanks,
-Ryusuke Konishi
+On 08/02/2021 10:59, Jürgen Groß wrote:
+> On 08.02.21 11:51, Jan Beulich wrote:
+> Yes, but I don't see an urgent need to fix that, as there would
+> be thousands of accesses in the kernel needing a fix. A compiler
+> tearing a naturally aligned access into multiple memory accesses
+> would be rejected as buggy from the kernel community IMO.
 
-On Mon, Feb 8, 2021 at 8:35 PM Ryusuke Konishi
-<konishi.ryusuke@gmail.com> wrote:
->
-> From: Joachim Henke <joachim.henke@t-systems.com>
->
-> Since 5.10, splice() or sendfile() to NILFS2 return EINVAL. This was
-> caused by commit 36e2c7421f02 ("fs: don't allow splice read/write
-> without explicit ops").
->
-> This patch initializes the splice_write field in file_operations, like
-> most file systems do, to restore the functionality.
->
-> Signed-off-by: Joachim Henke <joachim.henke@t-systems.com>
-> Signed-off-by: Ryusuke Konishi <konishi.ryusuke@gmail.com>
-> Tested-by: Ryusuke Konishi <konishi.ryusuke@gmail.com>
-> Cc: stable@vger.kernel.org # 5.10+
-> ---
->  fs/nilfs2/file.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/fs/nilfs2/file.c b/fs/nilfs2/file.c
-> index 64bc81363c6c..e1bd592ce700 100644
-> --- a/fs/nilfs2/file.c
-> +++ b/fs/nilfs2/file.c
-> @@ -141,6 +141,7 @@ static int nilfs_file_mmap(struct file *file, struct vm_area_struct *vma)
->         /* .release     = nilfs_release_file, */
->         .fsync          = nilfs_sync_file,
->         .splice_read    = generic_file_splice_read,
-> +       .splice_write   = iter_file_splice_write,
->  };
->
->  const struct inode_operations nilfs_file_inode_operations = {
-> --
-> 1.8.3.1
->
+I would not be so sure. From lwn [1]:
+
+"In the Linux kernel, tearing of plain C-language loads has been 
+observed even given properly aligned and machine-word-sized loads.)"
+
+And for store tearing:
+
+"Note that this tearing can happen even on properly aligned and 
+machine-word-sized accesses, and in this particular case, even for 
+volatile stores. Some might argue that this behavior constitutes a bug 
+in the compiler, but either way it illustrates the perceived value of 
+store tearing from a compiler-writer viewpoint. [...] But for properly 
+aligned machine-sized stores, WRITE_ONCE() will prevent store tearing."
+
+Cheers,
+
+[1] https://lwn.net/Articles/793253/#Load%20Tearing
+
+> 
+> 
+> Juergen
+
+-- 
+Julien Grall
