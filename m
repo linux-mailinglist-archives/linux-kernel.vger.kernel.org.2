@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DD6E31393A
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 17:23:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80506313946
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 17:25:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234358AbhBHQWo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 11:22:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55768 "EHLO mail.kernel.org"
+        id S234341AbhBHQYL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 11:24:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56398 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233346AbhBHPMl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 10:12:41 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B45E164EC2;
-        Mon,  8 Feb 2021 15:09:34 +0000 (UTC)
+        id S233364AbhBHPMx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 10:12:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 94BBF64E9A;
+        Mon,  8 Feb 2021 15:09:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612796975;
-        bh=9CJRp/u3iNzKZ/un4207h+JeV9vcFYtNX1cal+lidSw=;
+        s=korg; t=1612796978;
+        bh=YlVeiC1LHjcC8Mm2rrECUEm1K9uN1lKQbpnSMOmMS80=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TmO/Qg6R+MItF17n/1NLLSpkvC90ufH6GePpTLzfVwvYPYna32Vn9msMe6jD8JUls
-         gHA5UgDeZ1FKgpfdL7KjFtPNIqR8EZAil4JZjfHQ86z2x3/A7wOdzFICWF4Z8dcxtc
-         t0JApGvrFt9BF0PT28xIGrQ14xFPQm3rYIhqlj9I=
+        b=QKE45JvMI0YOuZR2qGE3XjuSp7DwNQ4bcS0dP1GP4J4x10s/Q3arh/WUncnT5acFy
+         +4DxaLi6YkDNk8C15ZUtBSDypl/U4Tfvzpn2KJZmT0wXyJd91SSRrUUtVTuz7VtAFh
+         xS/Q4ZVOhZ1UnAQ/la3aq5q7e21xYkgb0M8UIH5Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Kevin Hilman <khilman@baylibre.com>,
+        stable@vger.kernel.org, Sandy Huang <hjc@rock-chips.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 06/65] arm64: dts: amlogic: meson-g12: Set FL-adj property value
-Date:   Mon,  8 Feb 2021 16:00:38 +0100
-Message-Id: <20210208145810.481189521@linuxfoundation.org>
+Subject: [PATCH 5.4 07/65] arm64: dts: rockchip: fix vopl iommu irq on px30
+Date:   Mon,  8 Feb 2021 16:00:39 +0100
+Message-Id: <20210208145810.523188981@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210208145810.230485165@linuxfoundation.org>
 References: <20210208145810.230485165@linuxfoundation.org>
@@ -44,41 +42,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+From: Sandy Huang <hjc@rock-chips.com>
 
-[ Upstream commit 7386a559caa6414e74578172c2bc4e636d6bd0a0 ]
+[ Upstream commit 656c648354e1561fa4f445b0b3252ec1d24e3951 ]
 
-In accordance with the DWC USB3 bindings the property is supposed to have
-uint32 type. It's erroneous from the DT schema and driver points of view
-to declare it as boolean. As Neil suggested set it to 0x20 so not break
-the platform and to make the dtbs checker happy.
+The vop-mmu shares the irq with its matched vop but not the vpu.
 
-Link: https://lore.kernel.org/linux-usb/20201010224121.12672-16-Sergey.Semin@baikalelectronics.ru/
-Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Reviewed-by: Neil Armstrong <narmstrong@baylibre.com>
-Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
-Fixes: 9baf7d6be730 ("arm64: dts: meson: g12a: Add G12A USB nodes")
-Signed-off-by: Kevin Hilman <khilman@baylibre.com>
-Link: https://lore.kernel.org/r/20201210091756.18057-3-Sergey.Semin@baikalelectronics.ru
+Fixes: 7053e06b1422 ("arm64: dts: rockchip: add core dtsi file for PX30 SoCs")
+Signed-off-by: Sandy Huang <hjc@rock-chips.com>
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+Reviewed-by: Ezequiel Garcia <ezequiel@collabora.com>
+Reviewed-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+Tested-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+Link: https://lore.kernel.org/r/20210108110627.3231226-1-heiko@sntech.de
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/amlogic/meson-g12-common.dtsi | 2 +-
+ arch/arm64/boot/dts/rockchip/px30.dtsi | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/amlogic/meson-g12-common.dtsi b/arch/arm64/boot/dts/amlogic/meson-g12-common.dtsi
-index 354ef2f3eac67..9533c85fb0a30 100644
---- a/arch/arm64/boot/dts/amlogic/meson-g12-common.dtsi
-+++ b/arch/arm64/boot/dts/amlogic/meson-g12-common.dtsi
-@@ -2382,7 +2382,7 @@
- 				interrupts = <GIC_SPI 30 IRQ_TYPE_LEVEL_HIGH>;
- 				dr_mode = "host";
- 				snps,dis_u2_susphy_quirk;
--				snps,quirk-frame-length-adjustment;
-+				snps,quirk-frame-length-adjustment = <0x20>;
- 				snps,parkmode-disable-ss-quirk;
- 			};
- 		};
+diff --git a/arch/arm64/boot/dts/rockchip/px30.dtsi b/arch/arm64/boot/dts/rockchip/px30.dtsi
+index 9e09909a510a1..98b014a8f9165 100644
+--- a/arch/arm64/boot/dts/rockchip/px30.dtsi
++++ b/arch/arm64/boot/dts/rockchip/px30.dtsi
+@@ -860,7 +860,7 @@
+ 	vopl_mmu: iommu@ff470f00 {
+ 		compatible = "rockchip,iommu";
+ 		reg = <0x0 0xff470f00 0x0 0x100>;
+-		interrupts = <GIC_SPI 79 IRQ_TYPE_LEVEL_HIGH>;
++		interrupts = <GIC_SPI 78 IRQ_TYPE_LEVEL_HIGH>;
+ 		interrupt-names = "vopl_mmu";
+ 		clocks = <&cru ACLK_VOPL>, <&cru HCLK_VOPL>;
+ 		clock-names = "aclk", "hclk";
 -- 
 2.27.0
 
