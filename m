@@ -2,202 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A91DD313E6B
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 20:05:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AF27313E5F
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 20:03:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236079AbhBHTC5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 14:02:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39226 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233660AbhBHR3H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 12:29:07 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6034964EA1;
-        Mon,  8 Feb 2021 17:28:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612805305;
-        bh=X0a4X9Dlp9NBXxfl18ohRNsVK5iAHdJ3uGpgUQfUINQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QDc9zqf7bBKQgt8rwy8hEzicITimBG65nA1+4x4iKt6On65JKReLHnKO31sYJiAbj
-         eMNUTro2FryCLXdodMxtayxWUnCNIysolsRAt51MAslvfzfkx99dokwbISj3R67oZi
-         Ma5OXGms+HDYBOmifjzj7qV6u7qcKpgYUPuPlEXdskrsVMm7FpnqkvYNpW9EWCwd4c
-         i1QuWTLZ2P9gTqjvjOLN2xnt6zuyCOxaRL4CqPdUGkTlU0cgNeFWegwCiIpUdPqfgC
-         IVB1Jonb8d4eN6Ixj+h75aKl3/NJcylFG7urhqxllVS8PRkJNUyd440QoqGn9fKThH
-         0mZsJAYzoLm4Q==
-Date:   Mon, 8 Feb 2021 09:28:24 -0800
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Brian Foster <bfoster@redhat.com>,
-        Paul Menzel <pmenzel@molgen.mpg.de>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        linux-xfs@vger.kernel.org, Josh Triplett <josh@joshtriplett.org>,
-        rcu@vger.kernel.org, it+linux-rcu@molgen.mpg.de,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: rcu: INFO: rcu_sched self-detected stall on CPU: Workqueue:
- xfs-conv/md0 xfs_end_io
-Message-ID: <20210208172824.GA7209@magnolia>
-References: <1b07e849-cffd-db1f-f01b-2b8b45ce8c36@molgen.mpg.de>
- <20210205171240.GN2743@paulmck-ThinkPad-P72>
- <20210208140724.GA126859@bfoster>
- <20210208145723.GT2743@paulmck-ThinkPad-P72>
- <20210208154458.GB126859@bfoster>
- <20210208171140.GV2743@paulmck-ThinkPad-P72>
+        id S236092AbhBHTDA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 14:03:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53336 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234861AbhBHR3d (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 12:29:33 -0500
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55836C061786;
+        Mon,  8 Feb 2021 09:28:53 -0800 (PST)
+Received: by mail-pl1-x62c.google.com with SMTP id e12so8190684pls.4;
+        Mon, 08 Feb 2021 09:28:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:autocrypt:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=+4361NSNlFgYZUQjZIhdVzZo95GFWWRADZOU1H6lzPs=;
+        b=l0/+aWOSEwE23SJVtn1sMPlqxie02Fxh4u1vW6P17h++Ja5AeWR+y3FB+5uiJoWRHN
+         iufaFSrfGK1FS7TxGjCgqTRs4Faog8oRvYOsSyQg4gC1IVsl2HrH3Lx2VoNORgg/86Ns
+         2eIcXZFbMB4o7p4uPbqzBtLYZiJBf0X8Uhu/kPDgeazuAdeFRIQDjgkqj3c78TFkIbSg
+         g/lQhH98DIG99V/YvRvpgpbZm/nPCT3h8s68rzE6PBR/Q57U/o6ZjppwiGG2Dpfu/aHZ
+         UPsTna8XM78H5WqHAzz8F3rAR7zoUeOWvkJFFtAmuY07aJgLfZRM6chkkZFY5vHI/yE9
+         ZYhw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=+4361NSNlFgYZUQjZIhdVzZo95GFWWRADZOU1H6lzPs=;
+        b=S8jFig98HGLPe5IMf8iR1O3+K/ZS0g4tcBLH3RiS0zUBUfqZUYEFInZMN59lDbout2
+         Me0ZT0BsE7yX3h4tMe+U7+TXuMUn9r4D/qcOWyXzqK4j/AqwY68JPufpw52d3Q9AP1UO
+         EjPTYO/Rsd5iTbrR6UIWn9Q14wMxNffwxv5o/kFQq0g/7zUuvBL9YvNDdYHQpyN1Q08K
+         Q5ZZQ4k4aHfUnzgmfROsPD8Bj1fX3SgUmwW2mZ6J1KhUeVdpslv+a2vz9Qf9JOaSWKZB
+         WQOYL3gksUTy+BQ7FLrfMrHYxedaEDgsnRyRKmBa4kvnmLvYTV//fbxe1VTILVQ+Pv/X
+         l6IQ==
+X-Gm-Message-State: AOAM531gso5HvZmT50pPurP0nuSLYEAPXfOdXMLCWW8+QG3LQkJDWjvB
+        5I+N52ZkC9ptMnH4DzoNlYlzEqx2FMI=
+X-Google-Smtp-Source: ABdhPJwWOc9jFg2LrgPqBnpUgvR5xOgzby2pMyP5I+RFhODk9Z/p7R4bfaxazb4z+xHFyOZRBx7vKQ==
+X-Received: by 2002:a17:902:e5cc:b029:df:bc77:3aba with SMTP id u12-20020a170902e5ccb02900dfbc773abamr17526184plf.72.1612805332335;
+        Mon, 08 Feb 2021 09:28:52 -0800 (PST)
+Received: from [10.67.49.228] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id 30sm20228060pgl.77.2021.02.08.09.28.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 08 Feb 2021 09:28:51 -0800 (PST)
+Subject: Re: [PATCH 4.9 00/43] 4.9.257-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org
+References: <20210208145806.281758651@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Autocrypt: addr=f.fainelli@gmail.com; prefer-encrypt=mutual; keydata=
+ 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
+ M5kY0ACeNhCZJvZ5g4C2Lc9fcTHu8jxmEkI=
+Message-ID: <50e2846e-51a1-fe73-8a98-2c23d224e2d8@gmail.com>
+Date:   Mon, 8 Feb 2021 09:28:43 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <20210208145806.281758651@linuxfoundation.org>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210208171140.GV2743@paulmck-ThinkPad-P72>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 09, 2021 at 09:11:40AM -0800, Paul E. McKenney wrote:
-> On Mon, Feb 08, 2021 at 10:44:58AM -0500, Brian Foster wrote:
-> > On Mon, Feb 08, 2021 at 06:57:24AM -0800, Paul E. McKenney wrote:
-> > > On Mon, Feb 08, 2021 at 09:07:24AM -0500, Brian Foster wrote:
-> > > > On Fri, Feb 05, 2021 at 09:12:40AM -0800, Paul E. McKenney wrote:
-> > > > > On Fri, Feb 05, 2021 at 08:29:06AM +0100, Paul Menzel wrote:
-> > > > > > Dear Linux folks,
-> > > > > > 
-> > > > > > 
-> > > > > > On a Dell PowerEdge T630/0NT78X, BIOS 2.8.0 05/23/2018 with Linux 5.4.57, we
-> > > > > > twice saw a self-detected stall on a CPU (October 27th, 2020, January 18th,
-> > > > > > 2021).
-> > > > > > 
-> > > > > > Both times, the workqueue is `xfs-conv/md0 xfs_end_io`.
-> > > > > > 
-> > > > > > ```
-> > > > > > [    0.000000] Linux version 5.4.57.mx64.340
-> > > > > > (root@theinternet.molgen.mpg.de) (gcc version 7.5.0 (GCC)) #1 SMP Tue Aug 11
-> > > > > > 13:20:33 CEST 2020
-> > > > > > […]
-> > > > > > [48962.981257] rcu: INFO: rcu_sched self-detected stall on CPU
-> > > > > > [48962.987511] rcu: 	4-....: (20999 ticks this GP)
-> > > > > > idle=fe6/1/0x4000000000000002 softirq=3630188/3630188 fqs=4696
-> > > > > > [48962.998805] 	(t=21017 jiffies g=14529009 q=32263)
-> > > > > > [48963.004074] Task dump for CPU 4:
-> > > > > > [48963.007689] kworker/4:2     R  running task        0 25587      2
-> > > > > > 0x80004008
-> > > > > > [48963.015591] Workqueue: xfs-conv/md0 xfs_end_io
-> > > > > > [48963.020570] Call Trace:
-> > > > > > [48963.023311]  <IRQ>
-> > > > > > [48963.025560]  sched_show_task+0x11e/0x150
-> > > > > > [48963.029957]  rcu_dump_cpu_stacks+0x70/0xa0
-> > > > > > [48963.034545]  rcu_sched_clock_irq+0x502/0x770
-> > > > > > [48963.039322]  ? tick_sched_do_timer+0x60/0x60
-> > > > > > [48963.044106]  update_process_times+0x24/0x60
-> > > > > > [48963.048791]  tick_sched_timer+0x37/0x70
-> > > > > > [48963.053089]  __hrtimer_run_queues+0x11f/0x2b0
-> > > > > > [48963.057960]  ? recalibrate_cpu_khz+0x10/0x10
-> > > > > > [48963.062744]  hrtimer_interrupt+0xe5/0x240
-> > > > > > [48963.067235]  smp_apic_timer_interrupt+0x6f/0x130
-> > > > > > [48963.072407]  apic_timer_interrupt+0xf/0x20
-> > > > > > [48963.076994]  </IRQ>
-> > > > > > [48963.079347] RIP: 0010:_raw_spin_unlock_irqrestore+0xa/0x10
-> > > > > > [48963.085491] Code: f3 90 83 e8 01 75 e8 65 8b 3d 42 0f 56 7e e8 ed ea 5e
-> > > > > > ff 48 29 e8 4c 39 e8 76 cf 80 0b 08 eb 8c 0f 1f 44 00 00 c6 07 00 56 9d <c3>
-> > > > > > 0f 1f 44 00 00 0f 1f 44 00 00 b8 00 fe ff ff f0 0f c1 07 56 9d
-> > > > > > [48963.106524] RSP: 0018:ffffc9000738fd40 EFLAGS: 00000202 ORIG_RAX:
-> > > > > > ffffffffffffff13
-> > > > > > [48963.115003] RAX: ffffffff82407588 RBX: ffffffff82407580 RCX:
-> > > > > > ffffffff82407588
-> > > > > > [48963.122994] RDX: ffffffff82407588 RSI: 0000000000000202 RDI:
-> > > > > > ffffffff82407580
-> > > > > > [48963.130989] RBP: 0000000000000202 R08: ffffffff8203ea00 R09:
-> > > > > > 0000000000000001
-> > > > > > [48963.138982] R10: ffffc9000738fbb8 R11: 0000000000000001 R12:
-> > > > > > ffffffff82407588
-> > > > > > [48963.146976] R13: ffffea005e7ae600 R14: ffff8897b7e5a040 R15:
-> > > > > > ffffea005e7ae600
-> > > > > > [48963.154971]  wake_up_page_bit+0xe0/0x100
-> > > > > > [48963.159366]  xfs_destroy_ioend+0xce/0x1c0
-> > > > > > [48963.163857]  xfs_end_ioend+0xcf/0x1a0
-> > > > > > [48963.167958]  xfs_end_io+0xa4/0xd0
-> > > > > > [48963.171672]  process_one_work+0x1e5/0x410
-> > > > > > [48963.176163]  worker_thread+0x2d/0x3c0
-> > > > > > [48963.180265]  ? cancel_delayed_work+0x90/0x90
-> > > > > > [48963.185048]  kthread+0x117/0x130
-> > > > > > [48963.188663]  ? kthread_create_worker_on_cpu+0x70/0x70
-> > > > > > [48963.194321]  ret_from_fork+0x35/0x40
-> > > > > > ```
-> > > > > > 
-> > > > > > As it’s just log level INFO, is there anything what should be done, or was
-> > > > > > the system probably just “overloaded”?
-> > > > > 
-> > > > > I am assuming that you are building your kernel with CONFIG_PREEMPT_NONE=y
-> > > > > rather than CONFIG_PREEMPT_VOLUNTARY=y.
-> > > > > 
-> > > > > If so, and if the problem is that you are temporarily overdriving xfs I/O,
-> > > > > one approach would be as follows:
-> > > > > 
-> > > > > ------------------------------------------------------------------------
-> > > > > 
-> > > > > diff --git a/fs/xfs/xfs_aops.c b/fs/xfs/xfs_aops.c
-> > > > > index f16d5f1..06be426 100644
-> > > > > --- a/fs/xfs/xfs_aops.c
-> > > > > +++ b/fs/xfs/xfs_aops.c
-> > > > > @@ -390,6 +390,7 @@ xfs_end_io(
-> > > > >  		list_del_init(&ioend->io_list);
-> > > > >  		xfs_ioend_try_merge(ioend, &completion_list);
-> > > > >  		xfs_end_ioend(ioend);
-> > > > > +		cond_resched();
-> > > > >  	}
-> > > > >  }
-> > > > >  
-> > > > > ------------------------------------------------------------------------
-> > > > 
-> > > > FWIW, this looks quite similar to the problem I attempted to fix with
-> > > > these patches:
-> > > > 
-> > > > https://lore.kernel.org/linux-xfs/20201002153357.56409-1-bfoster@redhat.com/
-> > > 
-> > > Looks plausible to me!  Do you plan to re-post taking the feedback
-> > > into account?
-> > 
-> > There was a v2 inline that incorporated some directed feedback.
-> > Otherwise there were questions and ideas about making the whole thing
-> > faster, but I've no idea if that addresses the problem or not (if so,
-> > that would be an entirely different set of patches). I'll wait and see
-> > what Darrick thinks about this and rebase/repost if the approach is
-> > agreeable..
+On 2/8/21 7:00 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.9.257 release.
+> There are 43 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> There is always the school of thought that says that the best way to
-> get people to focus on this is to rebase and repost.  Otherwise, they
-> are all too likely to assume that you lost interest in this.
-
-I was hoping that a better solution would emerge for clearing
-PageWriteback on hundreds of thousands of pages, but nothing easy popped
-out.
-
-The hardcoded threshold in "[PATCH v2 2/2] xfs: kick extra large ioends
-to completion workqueue" gives me unease because who's to say if marking
-262,144 pages on a particular CPU will actually stall it long enough to
-trip the hangcheck?  Is the number lower on (say) some pokey NAS box
-with a lot of storage but a slow CPU?
-
-That said, /some/ threshold is probably better than no threshold.  Could
-someone try to confirm if that series of Brian's fixes this problem too?
-
---D
-
-> 							Thanx, Paul
+> Responses should be made by Wed, 10 Feb 2021 14:57:55 +0000.
+> Anything received after that time might be too late.
 > 
-> > Brian
-> > 
-> > > 							Thanx, Paul
-> > > 
-> > > > Brian
-> > > > 
-> > > > > 
-> > > > > If you have instead built with CONFIG_PREEMPT_VOLUNTARY=y, then your
-> > > > > problem is likely massive lock contention in wake_up_page_bit(), or
-> > > > > perhaps someone having failed to release that lock.  The usual way to
-> > > > > work this out is by enabling lockdep (CONFIG_PROVE_LOCKING=y), but this
-> > > > > is often not what you want enabled in production.
-> > > > > 
-> > > > > Darrick, thoughts from an xfs perspective?
-> > > > > 
-> > > > > 							Thanx, Paul
-> > > > > 
-> > > > 
-> > > 
-> > 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.9.257-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.9.y
+> and the diffstat can be found below.
+
+Tested-by: Florian Fainelli <f.fainelli@gmail.com>
+
+On ARCH_BRCMSTB using 32-bit ARM and 64-bit ARM kernels, no regressions
+observed, thanks!
+-- 
+Florian
