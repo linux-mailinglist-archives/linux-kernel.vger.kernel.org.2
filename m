@@ -2,71 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33BDD3132E5
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 14:04:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D95B43132ED
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 14:08:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230229AbhBHNEZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 08:04:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53678 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229993AbhBHNEO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 08:04:14 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7E25664DEE;
-        Mon,  8 Feb 2021 13:03:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612789410;
-        bh=bETiuTGyJzRrkPM08sFMEeeymGXeVkr5IZqwRHPvyuk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ghDqYqgIHwdgMylS8xDfalMdh0lwSDhYYj9PatglZwRF/yuzcobiCOvBvBKYi6Naz
-         ntHzmE9EewGbXLu3tb2Nyqd2eHOIkck24IhG3wl3tjW+mpfa4eeLVdYR2P8g8VKQG5
-         YmHWJtO0MNPYVCsJDM+bB2ti77mWzrsWj2wplxzc=
-Date:   Mon, 8 Feb 2021 14:03:27 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Florian Weimer <fweimer@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, stable@vger.kernel.org, lwn@lwn.net,
-        jslaby@suse.cz
-Subject: Re: Linux 4.9.256
-Message-ID: <YCE2nw66fHfk6lFt@kroah.com>
-References: <1612535085125226@kroah.com>
- <87czxa3efr.fsf@oldenburg.str.redhat.com>
+        id S230302AbhBHNIJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 08:08:09 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:11704 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229707AbhBHNIF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 08:08:05 -0500
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DZ5qP2qLFzlHfL;
+        Mon,  8 Feb 2021 21:05:37 +0800 (CST)
+Received: from localhost.localdomain (10.67.165.24) by
+ DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
+ 14.3.498.0; Mon, 8 Feb 2021 21:07:13 +0800
+From:   Qi Liu <liuqi115@huawei.com>
+To:     <john.garry@huawei.com>, <zhangshaokun@hisilicon.com>,
+        <will@kernel.org>, <mark.rutland@arm.com>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>
+Subject: [PATCH] drivers/perf: Simplify the SMMUv3 PMU event attributes
+Date:   Mon, 8 Feb 2021 21:04:58 +0800
+Message-ID: <1612789498-12957-1-git-send-email-liuqi115@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87czxa3efr.fsf@oldenburg.str.redhat.com>
+Content-Type: text/plain
+X-Originating-IP: [10.67.165.24]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 08, 2021 at 01:57:12PM +0100, Florian Weimer wrote:
-> * Greg Kroah-Hartman:
-> 
-> > I'm announcing the release of the 4.9.256 kernel.
-> >
-> > This, and the 4.4.256 release are a little bit "different" than normal.
-> >
-> > This contains only 1 patch, just the version bump from .255 to .256 which ends
-> > up causing the userspace-visable LINUX_VERSION_CODE to behave a bit differently
-> > than normal due to the "overflow".
-> >
-> > With this release, KERNEL_VERSION(4, 9, 256) is the same as KERNEL_VERSION(4, 10, 0).
-> >
-> > Nothing in the kernel build itself breaks with this change, but given
-> > that this is a userspace visible change, and some crazy tools (like
-> > glibc and gcc) have logic that checks the kernel version for different
-> > reasons, I wanted to do this release as an "empty" release to ensure
-> > that everything still works properly.
-> 
-> I'm looking at this from a glibc perspective.  glibc took the
-> KERNEL_VERSION definition and embedded the bit layout into the
-> /etc/ld.so.cache, as part of the file format.  Exact impact is still
-> unclear at this point.
+For each PMU event, there is a SMMU_EVENT_ATTR(xx, XX) and
+&smmu_event_attr_xx.attr.attr. Let's redefine the SMMU_EVENT_ATTR
+to simplify the smmu_pmu_events.
 
-If we "cap" this at 4, 9, 255 according to what userspace sees, will
-that be a problem if we increase the number reported by uname(2)?
+Signed-off-by: Qi Liu <liuqi115@huawei.com>
+---
+ drivers/perf/arm_smmuv3_pmu.c | 32 +++++++++++++-------------------
+ 1 file changed, 13 insertions(+), 19 deletions(-)
 
-And when is the ld.so.cache file "regenerated"?
+diff --git a/drivers/perf/arm_smmuv3_pmu.c b/drivers/perf/arm_smmuv3_pmu.c
+index 8ff7a67..4c8cb1b 100644
+--- a/drivers/perf/arm_smmuv3_pmu.c
++++ b/drivers/perf/arm_smmuv3_pmu.c
+@@ -509,27 +509,21 @@ static ssize_t smmu_pmu_event_show(struct device *dev,
+ 	return sprintf(page, "event=0x%02llx\n", pmu_attr->id);
+ }
 
-thanks,
+-#define SMMU_EVENT_ATTR(name, config) \
+-	PMU_EVENT_ATTR(name, smmu_event_attr_##name, \
+-		       config, smmu_pmu_event_show)
+-SMMU_EVENT_ATTR(cycles, 0);
+-SMMU_EVENT_ATTR(transaction, 1);
+-SMMU_EVENT_ATTR(tlb_miss, 2);
+-SMMU_EVENT_ATTR(config_cache_miss, 3);
+-SMMU_EVENT_ATTR(trans_table_walk_access, 4);
+-SMMU_EVENT_ATTR(config_struct_access, 5);
+-SMMU_EVENT_ATTR(pcie_ats_trans_rq, 6);
+-SMMU_EVENT_ATTR(pcie_ats_trans_passed, 7);
++#define SMMU_EVENT_ATTR(name, config)					\
++	(&((struct perf_pmu_events_attr) {				\
++		.attr = __ATTR(name, 0444, smmu_pmu_event_show, NULL),	\
++		.id = config,						\
++	}).attr.attr)
 
-greg k-h
+ static struct attribute *smmu_pmu_events[] = {
+-	&smmu_event_attr_cycles.attr.attr,
+-	&smmu_event_attr_transaction.attr.attr,
+-	&smmu_event_attr_tlb_miss.attr.attr,
+-	&smmu_event_attr_config_cache_miss.attr.attr,
+-	&smmu_event_attr_trans_table_walk_access.attr.attr,
+-	&smmu_event_attr_config_struct_access.attr.attr,
+-	&smmu_event_attr_pcie_ats_trans_rq.attr.attr,
+-	&smmu_event_attr_pcie_ats_trans_passed.attr.attr,
++	SMMU_EVENT_ATTR(cycles, 0),
++	SMMU_EVENT_ATTR(transaction, 1),
++	SMMU_EVENT_ATTR(tlb_miss, 2),
++	SMMU_EVENT_ATTR(config_cache_miss, 3),
++	SMMU_EVENT_ATTR(trans_table_walk_access, 4),
++	SMMU_EVENT_ATTR(config_struct_access, 5),
++	SMMU_EVENT_ATTR(pcie_ats_trans_rq, 6),
++	SMMU_EVENT_ATTR(pcie_ats_trans_passed, 7),
+ 	NULL
+ };
+
+--
+2.8.1
+
