@@ -2,31 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD761313816
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 16:37:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F6543137EA
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 16:33:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233993AbhBHPgh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 10:36:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51778 "EHLO mail.kernel.org"
+        id S234014AbhBHPdD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 10:33:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52454 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231273AbhBHPFq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S231239AbhBHPFq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 8 Feb 2021 10:05:46 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9989064ECD;
-        Mon,  8 Feb 2021 15:04:14 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 78F6964ECC;
+        Mon,  8 Feb 2021 15:04:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612796655;
-        bh=1Iqggc9G5mQwV+jkC6xopaFwm8dIdmlYT/CSiKci0vM=;
+        s=korg; t=1612796658;
+        bh=yUgiD7rk3GMvijhGqZGMMiHhsH3B04Vf7iuvcGLb2QE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Y/rGMYu8Xp9R8uFUDSn+wQAhO/PkQ8lmmAtgFrhNCAnroSxKBPmQWTTF1HzHZrPR8
-         glwntQ+paRN/O2PTi4nHihAwXEDMz7B72unJOUBfxmfLHpyFz/m5vEyksuyxcsfKX8
-         cbSZqrngnvM+mq2ZV9zteqCITopWdF4HZiK/wSlM=
+        b=fETxGfeTlrAq3LmeOPIhrg1muq7SGE5BSeJgiF833ozYtEoUvgbllzdW9+OidD4Js
+         wBSvl0Lp6VlctwyPJ159aTTzb++B+y5Odwnan7LEyo6SVa2QvoR6k4dsqJYTNxUmax
+         lw9o0Iq3R1rqjsYO6BbDMarHMf3AwxxlmniOp3hg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 18/43] stable: clamp SUBLEVEL in 4.4 and 4.9
-Date:   Mon,  8 Feb 2021 16:00:44 +0100
-Message-Id: <20210208145807.048896363@linuxfoundation.org>
+        stable@vger.kernel.org, Pho Tran <pho.tran@silabs.com>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 4.9 19/43] USB: serial: cp210x: add pid/vid for WSDA-200-USB
+Date:   Mon,  8 Feb 2021 16:00:45 +0100
+Message-Id: <20210208145807.096504109@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210208145806.281758651@linuxfoundation.org>
 References: <20210208145806.281758651@linuxfoundation.org>
@@ -38,42 +39,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Right now SUBLEVEL is overflowing, and some userspace may start treating
-4.9.256 as 4.10. While out of tree modules have different ways of
-  extracting the version number (and we're generally ok with breaking
-them), we do care about breaking userspace and it would appear that this
-overflow might do just that.
+From: Pho Tran <Pho.Tran@silabs.com>
 
-Our rules around userspace ABI in the stable kernel are pretty simple:
-we don't break it. Thus, while userspace may be checking major/minor, it
-shouldn't be doing anything with sublevel.
+commit 3c4f6ecd93442f4376a58b38bb40ee0b8c46e0e6 upstream.
 
-This patch applies a big band-aid to the 4.9 and 4.4 kernels in the form
-of clamping their sublevel to 255.
+Information pid/vid of WSDA-200-USB, Lord corporation company:
+vid: 199b
+pid: ba30
 
-The clamp is done for the purpose of LINUX_VERSION_CODE only, and
-extracting the version number from the Makefile or "make kernelversion"
-will continue to work as intended.
-
-We might need to do it later in newer trees, but maybe we'll have a
-better solution by then, so I'm ignoring that problem for now.
-
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Pho Tran <pho.tran@silabs.com>
+[ johan: amend comment with product name ]
+Cc: stable@vger.kernel.org
+Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- Makefile |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/usb/serial/cp210x.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/Makefile
-+++ b/Makefile
-@@ -1141,7 +1141,7 @@ endef
- 
- define filechk_version.h
- 	(echo \#define LINUX_VERSION_CODE $(shell                         \
--	expr $(VERSION) \* 65536 + 0$(PATCHLEVEL) \* 256 + 0$(SUBLEVEL)); \
-+	expr $(VERSION) \* 65536 + 0$(PATCHLEVEL) \* 256 + 255); \
- 	echo '#define KERNEL_VERSION(a,b,c) (((a) << 16) + ((b) << 8) + (c))';)
- endef
- 
+--- a/drivers/usb/serial/cp210x.c
++++ b/drivers/usb/serial/cp210x.c
+@@ -198,6 +198,7 @@ static const struct usb_device_id id_tab
+ 	{ USB_DEVICE(0x1901, 0x0194) },	/* GE Healthcare Remote Alarm Box */
+ 	{ USB_DEVICE(0x1901, 0x0195) },	/* GE B850/B650/B450 CP2104 DP UART interface */
+ 	{ USB_DEVICE(0x1901, 0x0196) },	/* GE B850 CP2105 DP UART interface */
++	{ USB_DEVICE(0x199B, 0xBA30) }, /* LORD WSDA-200-USB */
+ 	{ USB_DEVICE(0x19CF, 0x3000) }, /* Parrot NMEA GPS Flight Recorder */
+ 	{ USB_DEVICE(0x1ADB, 0x0001) }, /* Schweitzer Engineering C662 Cable */
+ 	{ USB_DEVICE(0x1B1C, 0x1C00) }, /* Corsair USB Dongle */
 
 
