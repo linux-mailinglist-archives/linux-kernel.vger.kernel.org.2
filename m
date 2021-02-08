@@ -2,215 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F5C931399A
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 17:38:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA18031399C
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 17:38:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234473AbhBHQhl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 11:37:41 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:34805 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233320AbhBHPOB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S234423AbhBHQiH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 11:38:07 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:47010 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232898AbhBHPOB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 8 Feb 2021 10:14:01 -0500
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4DZ8bd3WRJzB09ZR;
-        Mon,  8 Feb 2021 16:10:37 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id KDGn82nJR8ix; Mon,  8 Feb 2021 16:10:37 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4DZ8bd2PstzB09ZC;
-        Mon,  8 Feb 2021 16:10:37 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id A42D28B7BA;
-        Mon,  8 Feb 2021 16:10:42 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id eOMfaX9gFj5Y; Mon,  8 Feb 2021 16:10:42 +0100 (CET)
-Received: from po16121vm.idsi0.si.c-s.fr (po15451.idsi0.si.c-s.fr [172.25.230.103])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 38CF98B7B2;
-        Mon,  8 Feb 2021 16:10:42 +0100 (CET)
-Received: by po16121vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id 2DFFF6733E; Mon,  8 Feb 2021 15:10:42 +0000 (UTC)
-Message-Id: <f942059e5b0dc6366f23b7aca70dfcb29efeaf2a.1612796617.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <cover.1612796617.git.christophe.leroy@csgroup.eu>
-References: <cover.1612796617.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH v5 22/22] powerpc/32: Handle bookE debugging in C in syscall
- entry/exit
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>, npiggin@gmail.com,
-        msuchanek@suse.de
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Mon,  8 Feb 2021 15:10:42 +0000 (UTC)
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 118FAGfS068010;
+        Mon, 8 Feb 2021 15:12:31 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : from : to :
+ cc : references : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=KE1pI9BEiEgOw43MBeIIDsP1Cww7nN8D0TMKS6ehj+U=;
+ b=UCh1xYJc8yPlKJv3X9oa+uiGIOTmY4+cZ3bM4z1267kSAI46qHwDFrs7m/zjb0XM6EPY
+ RPVJ+vpWjsT+wBiviD/5U1pKFNOx/MZSoC3xyhGQbPV0Uq1M1w4q93UTRv3jzKSQM0Xt
+ ethkodgTbhm305INtJCzsGC4Or0tcFAUzf9KZZj8SENFYZKLRcR1BWMz5pyKXSmxfVCP
+ +0vItIUReHvAbu7w5gnuHyXlmbYSoBFpuNn2lEJW/QVonnPKQWy+MMiEV3L7x9vuDSfl
+ pE3arqKLn8zjSF9UUyX1y57dhQ1e7vZ7gyyuc0KD8hGBKzR8zAKvakX2urUpA44UYikR uw== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2130.oracle.com with ESMTP id 36hgmacamp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 08 Feb 2021 15:12:31 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 118F9tnO153309;
+        Mon, 8 Feb 2021 15:12:31 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3030.oracle.com with ESMTP id 36j4pmeje9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 08 Feb 2021 15:12:31 +0000
+Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 118FCThL028875;
+        Mon, 8 Feb 2021 15:12:29 GMT
+Received: from [192.168.0.190] (/68.201.65.98)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 08 Feb 2021 07:12:29 -0800
+Subject: Re: [Jfs-discussion] [PATCH v2] jfs: turn diLog(), dataLog() and
+ txLog() into void functions
+From:   Dave Kleikamp <dave.kleikamp@oracle.com>
+To:     Yang Li <yang.lee@linux.alibaba.com>
+Cc:     jfs-discussion@lists.sourceforge.net, linux-kernel@vger.kernel.org
+References: <1612686770-26163-1-git-send-email-yang.lee@linux.alibaba.com>
+ <d8c873e6-d6f5-22b2-43ac-207fb7a1fd07@oracle.com>
+Message-ID: <bc8a4bd6-110d-2ccf-709a-f230f018eca2@oracle.com>
+Date:   Mon, 8 Feb 2021 09:12:28 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
+MIME-Version: 1.0
+In-Reply-To: <d8c873e6-d6f5-22b2-43ac-207fb7a1fd07@oracle.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9888 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 adultscore=0
+ mlxlogscore=999 malwarescore=0 bulkscore=0 phishscore=0 spamscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102080104
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9888 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ spamscore=0 lowpriorityscore=0 phishscore=0 adultscore=0 impostorscore=0
+ suspectscore=0 mlxscore=0 clxscore=1015 mlxlogscore=999 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102080104
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The handling of SPRN_DBCR0 and other registers can easily
-be done in C instead of ASM.
+I just realized I mangled some whitespace trying to mail this through
+Thunderbird. I'll repost it the right way.
 
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
-v5: New
----
- arch/powerpc/include/asm/reg_booke.h |  3 +++
- arch/powerpc/kernel/entry_32.S       |  7 -------
- arch/powerpc/kernel/head_32.h        | 15 --------------
- arch/powerpc/kernel/head_booke.h     | 19 ------------------
- arch/powerpc/kernel/interrupt.c      | 29 +++++++++++++++++++++++++++-
- 5 files changed, 31 insertions(+), 42 deletions(-)
+Shaggy
 
-diff --git a/arch/powerpc/include/asm/reg_booke.h b/arch/powerpc/include/asm/reg_booke.h
-index 262782f08fd4..17b8dcd9a40d 100644
---- a/arch/powerpc/include/asm/reg_booke.h
-+++ b/arch/powerpc/include/asm/reg_booke.h
-@@ -691,6 +691,9 @@
- #define mttmr(rn, v)	asm volatile(MTTMR(rn, %0) : \
- 				     : "r" ((unsigned long)(v)) \
- 				     : "memory")
-+
-+extern unsigned long global_dbcr0[];
-+
- #endif /* !__ASSEMBLY__ */
- 
- #endif /* __ASM_POWERPC_REG_BOOKE_H__ */
-diff --git a/arch/powerpc/kernel/entry_32.S b/arch/powerpc/kernel/entry_32.S
-index a574201b0eb6..8dea4d3b1d06 100644
---- a/arch/powerpc/kernel/entry_32.S
-+++ b/arch/powerpc/kernel/entry_32.S
-@@ -342,13 +342,6 @@ transfer_to_syscall:
- ret_from_syscall:
- 	addi    r4,r1,STACK_FRAME_OVERHEAD
- 	bl	syscall_exit_prepare
--#if defined(CONFIG_4xx) || defined(CONFIG_BOOKE)
--	/* If the process has its own DBCR0 value, load it up.  The internal
--	   debug mode bit tells us that dbcr0 should be loaded. */
--	lwz	r0,THREAD+THREAD_DBCR0(r2)
--	andis.	r10,r0,DBCR0_IDM@h
--	bnel-	load_dbcr0
--#endif
- #ifdef CONFIG_PPC_47x
- 	lis	r4,icache_44x_need_flush@ha
- 	lwz	r5,icache_44x_need_flush@l(r4)
-diff --git a/arch/powerpc/kernel/head_32.h b/arch/powerpc/kernel/head_32.h
-index 5001c6ecc3ec..961b1ce3b6bf 100644
---- a/arch/powerpc/kernel/head_32.h
-+++ b/arch/powerpc/kernel/head_32.h
-@@ -153,21 +153,6 @@
- 	SAVE_4GPRS(3, r11)
- 	SAVE_2GPRS(7, r11)
- 	addi	r2,r12,-THREAD
--#if defined(CONFIG_40x)
--	/* Check to see if the dbcr0 register is set up to debug.  Use the
--	   internal debug mode bit to do this. */
--	lwz	r12,THREAD_DBCR0(r12)
--	andis.	r12,r12,DBCR0_IDM@h
--	beq+	3f
--	/* From user and task is ptraced - load up global dbcr0 */
--	li	r12,-1			/* clear all pending debug events */
--	mtspr	SPRN_DBSR,r12
--	lis	r11,global_dbcr0@ha
--	addi	r11,r11,global_dbcr0@l
--	lwz	r12,0(r11)
--	mtspr	SPRN_DBCR0,r12
--3:
--#endif
- 	b	transfer_to_syscall		/* jump to handler */
- .endm
- 
-diff --git a/arch/powerpc/kernel/head_booke.h b/arch/powerpc/kernel/head_booke.h
-index 5f565232b99d..47857795f50a 100644
---- a/arch/powerpc/kernel/head_booke.h
-+++ b/arch/powerpc/kernel/head_booke.h
-@@ -130,25 +130,6 @@ ALT_FTR_SECTION_END_IFSET(CPU_FTR_EMB_HV)
- 	SAVE_2GPRS(7, r11)
- 
- 	addi	r2,r10,-THREAD
--	/* Check to see if the dbcr0 register is set up to debug.  Use the
--	   internal debug mode bit to do this. */
--	lwz	r12,THREAD_DBCR0(r10)
--	andis.	r12,r12,DBCR0_IDM@h
--	beq+	3f
--	/* From user and task is ptraced - load up global dbcr0 */
--	li	r12,-1			/* clear all pending debug events */
--	mtspr	SPRN_DBSR,r12
--	lis	r11,global_dbcr0@ha
--	addi	r11,r11,global_dbcr0@l
--#ifdef CONFIG_SMP
--	lwz	r10, TASK_CPU(r2)
--	slwi	r10, r10, 2
--	add	r11, r11, r10
--#endif
--	lwz	r12,0(r11)
--	mtspr	SPRN_DBCR0,r12
--
--3:
- 	b	transfer_to_syscall	/* jump to handler */
- .endm
- 
-diff --git a/arch/powerpc/kernel/interrupt.c b/arch/powerpc/kernel/interrupt.c
-index c89a8eac3e24..6111acf61373 100644
---- a/arch/powerpc/kernel/interrupt.c
-+++ b/arch/powerpc/kernel/interrupt.c
-@@ -76,6 +76,13 @@ notrace long system_call_exception(long r3, long r4, long r5,
- 		kuap_check_amr();
- #endif
- 
-+#ifdef CONFIG_PPC_ADV_DEBUG_REGS
-+	if (IS_ENABLED(CONFIG_PPC32) && unlikely(current->thread.debug.dbcr0 & DBCR0_IDM)) {
-+		mtspr(SPRN_DBSR, -1);
-+		mtspr(SPRN_DBCR0, global_dbcr0[smp_processor_id()]);
-+	}
-+#endif
-+
- 	account_cpu_user_entry();
- 
- 	account_stolen_time();
-@@ -324,6 +331,22 @@ notrace unsigned long syscall_exit_prepare(unsigned long r3,
- 	local_paca->tm_scratch = regs->msr;
- #endif
- 
-+#ifdef CONFIG_PPC_ADV_DEBUG_REGS
-+	if (unlikely(current->thread.debug.dbcr0 & DBCR0_IDM)) {
-+		/*
-+		 * Check to see if the dbcr0 register is set up to debug.
-+		 * Use the internal debug mode bit to do this.
-+		 */
-+		mtmsr(mfmsr() & ~MSR_DE);
-+		if (IS_ENABLED(CONFIG_PPC32)) {
-+			isync();
-+			global_dbcr0[smp_processor_id()] = mfspr(SPRN_DBCR0);
-+		}
-+		mtspr(SPRN_DBCR0, current->thread.debug.dbcr0);
-+		mtspr(SPRN_DBSR, -1);
-+	}
-+#endif
-+
- 	account_cpu_user_exit();
- 
- #ifdef CONFIG_PPC_BOOK3S_64 /* BOOK3E and ppc32 not using this */
-@@ -401,13 +424,17 @@ notrace unsigned long interrupt_exit_user_prepare(struct pt_regs *regs, unsigned
- 		goto again;
- 	}
- 
--#ifdef CONFIG_PPC_BOOK3E
-+#ifdef CONFIG_PPC_ADV_DEBUG_REGS
- 	if (unlikely(current->thread.debug.dbcr0 & DBCR0_IDM)) {
- 		/*
- 		 * Check to see if the dbcr0 register is set up to debug.
- 		 * Use the internal debug mode bit to do this.
- 		 */
- 		mtmsr(mfmsr() & ~MSR_DE);
-+		if (IS_ENABLED(CONFIG_PPC32)) {
-+			isync();
-+			global_dbcr0[smp_processor_id()] = mfspr(SPRN_DBCR0);
-+		}
- 		mtspr(SPRN_DBCR0, current->thread.debug.dbcr0);
- 		mtspr(SPRN_DBSR, -1);
- 	}
--- 
-2.25.0
-
+On 2/8/21 9:05 AM, Dave Kleikamp wrote:
+> On 2/7/21 2:32 AM, Yang Li wrote:
+>> These functions always return '0' and no callers use the return value.
+>> So make it a void function.
+>>
+>> This eliminates the following coccicheck warning:
+>> ./fs/jfs/jfs_txnmgr.c:1365:5-7: Unneeded variable: "rc". Return "0" on
+>> line 1414
+>> ./fs/jfs/jfs_txnmgr.c:1422:5-7: Unneeded variable: "rc". Return "0" on
+>> line 1527
+>>
+>> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+>> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+>> ---
+>>
+>> Changes in v2
+>> -turn functions forward references to void type.
+>>
+>>   fs/jfs/jfs_txnmgr.c | 32 +++++++++++++++-----------------
+>>   1 file changed, 15 insertions(+), 17 deletions(-)
+> 
+> This patch missed fixing a call to txLog() which did check the return 
+> value. I took the liberty of fixing it here.
+> 
+> 
+> jfs: turn diLog(), dataLog() and txLog() into void functions
+> 
+> These functions always return '0' and no callers use the return value.
+> So make it a void function.
+> 
+> This eliminates the following coccicheck warning:
+> ./fs/jfs/jfs_txnmgr.c:1365:5-7: Unneeded variable: "rc". Return "0" on
+> line 1414
+> ./fs/jfs/jfs_txnmgr.c:1422:5-7: Unneeded variable: "rc". Return "0" on
+> line 1527
+> 
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+> Signed-off-by: Dave Kleikamp <dave.kleikamp@oracle.com>
+> ---
+>   fs/jfs/jfs_txnmgr.c | 35 ++++++++++++++++-------------------
+>   1 file changed, 16 insertions(+), 19 deletions(-)
+> 
+> diff --git a/fs/jfs/jfs_txnmgr.c b/fs/jfs/jfs_txnmgr.c
+> index dca8edd2378c..053295cd7bc6 100644
+> --- a/fs/jfs/jfs_txnmgr.c
+> +++ b/fs/jfs/jfs_txnmgr.c
+> @@ -148,10 +148,10 @@ static struct {
+>   /*
+>    * forward references
+>    */
+> -static int diLog(struct jfs_log * log, struct tblock * tblk, struct lrd 
+> * lrd,
+> -        struct tlock * tlck, struct commit * cd);
+> -static int dataLog(struct jfs_log * log, struct tblock * tblk, struct 
+> lrd * lrd,
+> -        struct tlock * tlck);
+> +static void diLog(struct jfs_log *log, struct tblock *tblk, struct lrd 
+> *lrd,
+> +        struct tlock *tlck, struct commit *cd);
+> +static void dataLog(struct jfs_log *log, struct tblock *tblk, struct 
+> lrd *lrd,
+> +        struct tlock *tlck);
+>   static void dtLog(struct jfs_log * log, struct tblock * tblk, struct 
+> lrd * lrd,
+>           struct tlock * tlck);
+>   static void mapLog(struct jfs_log * log, struct tblock * tblk, struct 
+> lrd * lrd,
+> @@ -159,8 +159,8 @@ static void mapLog(struct jfs_log * log, struct 
+> tblock * tblk, struct lrd * lrd,
+>   static void txAllocPMap(struct inode *ip, struct maplock * maplock,
+>           struct tblock * tblk);
+>   static void txForce(struct tblock * tblk);
+> -static int txLog(struct jfs_log * log, struct tblock * tblk,
+> -        struct commit * cd);
+> +static void txLog(struct jfs_log *log, struct tblock *tblk,
+> +        struct commit *cd);
+>   static void txUpdateMap(struct tblock * tblk);
+>   static void txRelease(struct tblock * tblk);
+>   static void xtLog(struct jfs_log * log, struct tblock * tblk, struct 
+> lrd * lrd,
+> @@ -1256,8 +1256,7 @@ int txCommit(tid_t tid,        /* transaction 
+> identifier */
+>        *
+>        * txUpdateMap() resets XAD_NEW in XAD.
+>        */
+> -    if ((rc = txLog(log, tblk, &cd)))
+> -        goto TheEnd;
+> +    txLog(log, tblk, &cd);
+>        /*
+>        * Ensure that inode isn't reused before
+> @@ -1365,9 +1364,8 @@ int txCommit(tid_t tid,        /* transaction 
+> identifier */
+>    *
+>    * RETURN :
+>    */
+> -static int txLog(struct jfs_log * log, struct tblock * tblk, struct 
+> commit * cd)
+> +static void txLog(struct jfs_log *log, struct tblock *tblk, struct 
+> commit *cd)
+>   {
+> -    int rc = 0;
+>       struct inode *ip;
+>       lid_t lid;
+>       struct tlock *tlck;
+> @@ -1414,7 +1412,7 @@ static int txLog(struct jfs_log * log, struct 
+> tblock * tblk, struct commit * cd)
+>           }
+>       }
+>   -    return rc;
+> +    return;
+>   }
+>    /*
+> @@ -1422,10 +1420,9 @@ static int txLog(struct jfs_log * log, struct 
+> tblock * tblk, struct commit * cd)
+>    *
+>    * function:    log inode tlock and format maplock to update bmap;
+>    */
+> -static int diLog(struct jfs_log * log, struct tblock * tblk, struct lrd 
+> * lrd,
+> -         struct tlock * tlck, struct commit * cd)
+> +static void diLog(struct jfs_log *log, struct tblock *tblk, struct lrd 
+> *lrd,
+> +         struct tlock *tlck, struct commit *cd)
+>   {
+> -    int rc = 0;
+>       struct metapage *mp;
+>       pxd_t *pxd;
+>       struct pxd_lock *pxdlock;
+> @@ -1527,7 +1524,7 @@ static int diLog(struct jfs_log * log, struct 
+> tblock * tblk, struct lrd * lrd,
+>       }
+>   #endif                /* _JFS_WIP */
+>   -    return rc;
+> +    return;
+>   }
+>    /*
+> @@ -1535,8 +1532,8 @@ static int diLog(struct jfs_log * log, struct 
+> tblock * tblk, struct lrd * lrd,
+>    *
+>    * function:    log data tlock
+>    */
+> -static int dataLog(struct jfs_log * log, struct tblock * tblk, struct 
+> lrd * lrd,
+> -        struct tlock * tlck)
+> +static void dataLog(struct jfs_log *log, struct tblock *tblk, struct 
+> lrd *lrd,
+> +        struct tlock *tlck)
+>   {
+>       struct metapage *mp;
+>       pxd_t *pxd;
+> @@ -1562,7 +1559,7 @@ static int dataLog(struct jfs_log * log, struct 
+> tblock * tblk, struct lrd * lrd,
+>           metapage_homeok(mp);
+>           discard_metapage(mp);
+>           tlck->mp = NULL;
+> -        return 0;
+> +        return;
+>       }
+>        PXDaddress(pxd, mp->index);
+> @@ -1573,7 +1570,7 @@ static int dataLog(struct jfs_log * log, struct 
+> tblock * tblk, struct lrd * lrd,
+>       /* mark page as homeward bound */
+>       tlck->flag |= tlckWRITEPAGE;
+>   -    return 0;
+> +    return;
+>   }
+>    /*
