@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2834231398D
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 17:35:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A10023139F6
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 17:46:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234487AbhBHQeY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 11:34:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58716 "EHLO mail.kernel.org"
+        id S234540AbhBHQqw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 11:46:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58890 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231380AbhBHPN1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 10:13:27 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 68B8764E37;
-        Mon,  8 Feb 2021 15:09:40 +0000 (UTC)
+        id S233560AbhBHPQJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 10:16:09 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EB38364EA6;
+        Mon,  8 Feb 2021 15:11:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612796981;
-        bh=R+xnOCzIiQN9x/XN1svdFYskdd1Vil8wXm37EY8P8tQ=;
+        s=korg; t=1612797091;
+        bh=yEHb1OBqwmoqESPRyAHtZhYAKaWaNc9KdSKLtSlhJPM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=m2chrguVOa3bzuP+umVEERD8sknFee9ewrT8Q2NLM6nonUzquIOeRPgioVfzguLL2
-         wiIABI57FrJzXHPfL7WzCuYNjrIDRlsGe1QsIk+dkegGbYOWFgLncYTrrqVQw68wat
-         WBKEyLLmkZdGUGafP+P7XX27PDbw05VXi0/yDn1k=
+        b=vimkRK8SFY5v1Icr/0ZOTncW/gFgCtB2FGLfwc5WgUOJPs5jW1KkZJzP3av0JuLTr
+         +oPAMStijY65S5ZmurhDyCPGIMZEAYYdPUZLrZQ+Okwtwo3A0boPQ5T8g8/qevbCQ8
+         3IW/vhk9ZyWmt3t/KBoXSnxEMmLbBf2iDM1YsSJo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Loris Reiff <loris.reiff@liblor.ch>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Stanislav Fomichev <sdf@google.com>,
+        stable@vger.kernel.org, Zyta Szpak <zr@semihalf.com>,
+        Shawn Guo <shawnguo@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 08/65] bpf, cgroup: Fix optlen WARN_ON_ONCE toctou
-Date:   Mon,  8 Feb 2021 16:00:40 +0100
-Message-Id: <20210208145810.561571618@linuxfoundation.org>
+Subject: [PATCH 5.4 12/65] arm64: dts: ls1046a: fix dcfg address range
+Date:   Mon,  8 Feb 2021 16:00:44 +0100
+Message-Id: <20210208145810.710979130@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210208145810.230485165@linuxfoundation.org>
 References: <20210208145810.230485165@linuxfoundation.org>
@@ -41,44 +40,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Loris Reiff <loris.reiff@liblor.ch>
+From: Zyta Szpak <zr@semihalf.com>
 
-[ Upstream commit bb8b81e396f7afbe7c50d789e2107512274d2a35 ]
+[ Upstream commit aa880c6f3ee6dbd0d5ab02026a514ff8ea0a3328 ]
 
-A toctou issue in `__cgroup_bpf_run_filter_getsockopt` can trigger a
-WARN_ON_ONCE in a check of `copy_from_user`.
+Dcfg was overlapping with clockgen address space which resulted
+in failure in memory allocation for dcfg. According regs description
+dcfg size should not be bigger than 4KB.
 
-`*optlen` is checked to be non-negative in the individual getsockopt
-functions beforehand. Changing `*optlen` in a race to a negative value
-will result in a `copy_from_user(ctx.optval, optval, ctx.optlen)` with
-`ctx.optlen` being a negative integer.
-
-Fixes: 0d01da6afc54 ("bpf: implement getsockopt and setsockopt hooks")
-Signed-off-by: Loris Reiff <loris.reiff@liblor.ch>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Reviewed-by: Stanislav Fomichev <sdf@google.com>
-Link: https://lore.kernel.org/bpf/20210122164232.61770-1-loris.reiff@liblor.ch
+Signed-off-by: Zyta Szpak <zr@semihalf.com>
+Fixes: 8126d88162a5 ("arm64: dts: add QorIQ LS1046A SoC support")
+Signed-off-by: Shawn Guo <shawnguo@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/bpf/cgroup.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ arch/arm64/boot/dts/freescale/fsl-ls1046a.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
-index 5a8b4dfdb1419..5b2413eb79db4 100644
---- a/kernel/bpf/cgroup.c
-+++ b/kernel/bpf/cgroup.c
-@@ -1109,6 +1109,11 @@ int __cgroup_bpf_run_filter_getsockopt(struct sock *sk, int level,
- 			goto out;
- 		}
+diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1046a.dtsi b/arch/arm64/boot/dts/freescale/fsl-ls1046a.dtsi
+index d4c1da3d4bde2..04d4b1b11a00a 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-ls1046a.dtsi
++++ b/arch/arm64/boot/dts/freescale/fsl-ls1046a.dtsi
+@@ -304,7 +304,7 @@
  
-+		if (ctx.optlen < 0) {
-+			ret = -EFAULT;
-+			goto out;
-+		}
-+
- 		if (copy_from_user(ctx.optval, optval,
- 				   min(ctx.optlen, max_optlen)) != 0) {
- 			ret = -EFAULT;
+ 		dcfg: dcfg@1ee0000 {
+ 			compatible = "fsl,ls1046a-dcfg", "syscon";
+-			reg = <0x0 0x1ee0000 0x0 0x10000>;
++			reg = <0x0 0x1ee0000 0x0 0x1000>;
+ 			big-endian;
+ 		};
+ 
 -- 
 2.27.0
 
