@@ -2,108 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1680A3135D5
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 15:58:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69E5D3135CF
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 15:57:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232491AbhBHO5Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 09:57:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48300 "EHLO
+        id S232841AbhBHO4h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 09:56:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233209AbhBHOzV (ORCPT
+        with ESMTP id S233120AbhBHOyo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 09:55:21 -0500
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B6EFC06178B
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 06:54:41 -0800 (PST)
-Received: by mail-pf1-x436.google.com with SMTP id t29so9842236pfg.11
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 06:54:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloud.ionos.com; s=google;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=AYRGoYePQAzJ7LEhFJURePb+3/N+X+kqoSUl81c+Xxg=;
-        b=GHHxqHgedWlJYgkjkbcDnLpb3OWbBGZgJYIvQehnw8oIk70LBueh4uMiVEo1sLLtEU
-         fegcPAvpvCFDiDd/0BLKsUE3o2GknmUFAduY92QftR4YSsvF7OEsS6do7RnGV4VecXJf
-         hw9LxEBr/FyL+gUiaIJQB/UX2Qv8rfyiOIeSAFksmiaHqJ3+H6Gk3MWt7thkNhrGRr9K
-         OYJS2RbGi+C16zSG9BVQfaXxhmRwytMichhbsXhdA58cu6335aD+Btfu9XsMsoIoPa7d
-         1FIDBGMbRTkxEfYuzlUkdwdDwmS3AvBb8+Q7Ss3Hy2h8JAYsou0Opdyjj215AKCij9qR
-         xEsg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=AYRGoYePQAzJ7LEhFJURePb+3/N+X+kqoSUl81c+Xxg=;
-        b=TvLtq2iOO5H+51PFKEvXI0A7LrtxvsjXJAjYsJC+u4mts3JQKSQmAwSSUJQkijJTVW
-         LwzliiEZX6y9WE9MhNxZmdIS0uxCdVYn4dSEqF6Xn9n17eOPTkdYC2hoARz+SR1ksi3S
-         vCJtrV3EawOz9JZAY1lSAAQ1RIVsf+3utoYjHffDSbYjSrfsA7GX/ZaFLvZgVchrL3Cl
-         RObR1/GJYZjnHIKZqOWorvoZ2cUIx1JygD41VAkrOr2N7/hqoH8bG38KzMnYpKiD+rsO
-         QbvhMG2HlX/jkO+rCFBV2m5lUL0YVHr77gvVohKPVG0iq49w/u8pqJl43CvnXPWlWCB2
-         KXcw==
-X-Gm-Message-State: AOAM532a1Wv4Wf6vA2WFB4NCCRGiPzJ486ltTm0nU7LYZND4PaaYofdj
-        EUz9kRizmMZ1ak2SLqp6C30mvQ==
-X-Google-Smtp-Source: ABdhPJxfc/2QCJTpVg4dyshnVgR559LUcvi/kuA9m/Mz0GV0CAHUPwYobHgPYSKyW/Zg6VRaLeprtA==
-X-Received: by 2002:a65:5883:: with SMTP id d3mr18264467pgu.301.1612796078639;
-        Mon, 08 Feb 2021 06:54:38 -0800 (PST)
-Received: from [0.0.0.0] ([62.217.45.26])
-        by smtp.gmail.com with ESMTPSA id m5sm19218026pgj.11.2021.02.08.06.54.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Feb 2021 06:54:37 -0800 (PST)
-Subject: Re: md_raid: mdX_raid6 looping after sync_action "check" to "idle"
- transition
-To:     Donald Buczek <buczek@molgen.mpg.de>, Song Liu <song@kernel.org>,
-        linux-raid@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        it+raid@molgen.mpg.de
-References: <aa9567fd-38e1-7b9c-b3e1-dc2fdc055da5@molgen.mpg.de>
- <7c5438c7-2324-cc50-db4d-512587cb0ec9@molgen.mpg.de>
- <b289ae15-ff82-b36e-4be4-a1c8bbdbacd7@cloud.ionos.com>
- <37c158cb-f527-34f5-2482-cae138bc8b07@molgen.mpg.de>
- <efb8d47b-ab9b-bdb9-ee2f-fb1be66343b1@molgen.mpg.de>
- <55e30408-ac63-965f-769f-18be5fd5885c@molgen.mpg.de>
- <d95aa962-9750-c27c-639a-2362bdb32f41@cloud.ionos.com>
- <30576384-682c-c021-ff16-bebed8251365@molgen.mpg.de>
- <cdc0b03c-db53-35bc-2f75-93bbca0363b5@molgen.mpg.de>
- <bc342de0-98d2-1733-39cd-cc1999777ff3@molgen.mpg.de>
- <c3390ab0-d038-f1c3-5544-67ae9c8408b1@cloud.ionos.com>
- <a27c5a64-62bf-592c-e547-1e8e904e3c97@molgen.mpg.de>
- <6c7008df-942e-13b1-2e70-a058e96ab0e9@cloud.ionos.com>
- <12f09162-c92f-8fbb-8382-cba6188bfb29@molgen.mpg.de>
- <6757d55d-ada8-9b7e-b7fd-2071fe905466@cloud.ionos.com>
- <93d8d623-8aec-ad91-490c-a414c4926fb2@molgen.mpg.de>
- <0bb7c8d8-6b96-ce70-c5ee-ba414de10561@cloud.ionos.com>
- <e271e183-20e9-8ca2-83eb-225d4d7ab5db@molgen.mpg.de>
-From:   Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
-Message-ID: <1cdfceb6-f39b-70e1-3018-ea14dbe257d9@cloud.ionos.com>
-Date:   Mon, 8 Feb 2021 15:53:40 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 8 Feb 2021 09:54:44 -0500
+Received: from mail.marcansoft.com (marcansoft.com [IPv6:2a01:298:fe:f::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A086BC061788;
+        Mon,  8 Feb 2021 06:53:58 -0800 (PST)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: marcan@marcan.st)
+        by mail.marcansoft.com (Postfix) with ESMTPSA id AB4A941F47;
+        Mon,  8 Feb 2021 14:53:54 +0000 (UTC)
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     soc@kernel.org, linux-arm-kernel@lists.infradead.org,
+        robh+dt@kernel.org, Arnd Bergmann <arnd@kernel.org>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        Olof Johansson <olof@lixom.net>
+References: <20210204203951.52105-1-marcan@marcan.st>
+ <20210204203951.52105-19-marcan@marcan.st>
+ <a2825482e2f68c2f8cad7cb564414759@kernel.org>
+From:   Hector Martin <marcan@marcan.st>
+Subject: Re: [PATCH 18/18] arm64: apple: Add initial Mac Mini 2020 (M1)
+ devicetree
+Message-ID: <8d660b1f-cb80-d16c-14e4-2a1c7f5229d1@marcan.st>
+Date:   Mon, 8 Feb 2021 23:53:52 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-In-Reply-To: <e271e183-20e9-8ca2-83eb-225d4d7ab5db@molgen.mpg.de>
+In-Reply-To: <a2825482e2f68c2f8cad7cb564414759@kernel.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Language: es-ES
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2/8/21 12:38, Donald Buczek wrote:
->> 5. maybe don't hold reconfig_mutex when try to unregister sync_thread, 
->> like this.
->>
->>          /* resync has finished, collect result */
->>          mddev_unlock(mddev);
->>          md_unregister_thread(&mddev->sync_thread);
->>          mddev_lock(mddev);
+On 08/02/2021 21.27, Marc Zyngier wrote:
+>> +	timer {
+>> +		compatible = "arm,armv8-timer";
+>> +		interrupt-parent = <&aic>;
+>> +		interrupts = <AIC_FIQ 0 IRQ_TYPE_LEVEL_HIGH>,
+>> +				<AIC_FIQ 0 IRQ_TYPE_LEVEL_HIGH>,
+>> +				<AIC_FIQ 1 IRQ_TYPE_LEVEL_HIGH>,
+>> +				<AIC_FIQ 0 IRQ_TYPE_LEVEL_HIGH>;
 > 
-> As above: While we wait for the sync thread to terminate, wouldn't it be 
-> a problem, if another user space operation takes the mutex?
+> This unfortunately doesn't match the binding, which doesn't cater
+> for systems without a secure physical timer, nor allows the description
+> of the EL2 virtual timer.
+> 
+> You should also have *different* interrupts for EL1 and EL2 timers,
+> although this is all a lie...
 
-I don't think other places can be blocked while hold mutex, otherwise 
-these places can cause potential deadlock. Please try above two lines 
-change. And perhaps others have better idea.
+Well, we do - now that I confirmed all 4 timers work properly, the AIC 
+driver should provide all 4. And ideally I find those EL1 timer mask 
+bits and implement them in the aic driver too (for only the virt timers 
+that have them and of course need them).
 
-Thanks,
-Guoqing
+I just found the code in arm_arch_timer that forwards all this stuff to 
+the kvm code, so it all makes sense now; if I can wire that up properly, 
+heck, KVM might even just work here.
+
+> 
+> Looking at the only similar case, XGene lies about the secure timer
+> (it doesn't have any), and of course doesn't have an EL2 virtual
+> timer (ARMv8.0 only).
+> 
+> A sensible course of action could be to update the binding to at least:
+> 
+> - tell the kernel that there is no secure physical timer (and that
+>     the interrupt should be ignored)
+> - introduce a 5th possible interrupt for the EL2 virtual timer.
+
+Sounds like I should be introducing interrupt-names support into this 
+driver and using that, so we can just not specify IRQs that don't exist, 
+instead of the hack with dummies. Falling back to indexes of course, to 
+keep DT compat. i.e.
+
+const char *names = {"phys-secure", "phys", "virt", "hyp-phys", "hyp-virt"};
+
+bool has_names = of_property_read_bool(..., "interrupt-names");
+
+for (each irq)
+	if (has_names) foo = of_irq_get_byname(..., names[i])
+	else foo = of_irq_get(..., i)
+
+That said, is there a use case for the EL2 virtual timer? The driver 
+always uses the EL2 physical timer with VHE right now. I guess it's 
+worth describing it in the binding and dts, even if the driver never 
+selects it...?
+
+-- 
+Hector Martin (marcan@marcan.st)
+Public Key: https://mrcn.st/pub
