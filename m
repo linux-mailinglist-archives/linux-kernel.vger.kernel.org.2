@@ -2,186 +2,363 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00D84312976
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 04:40:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D2D8C312997
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 04:56:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229691AbhBHDi4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Feb 2021 22:38:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44256 "EHLO
+        id S229631AbhBHD4U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Feb 2021 22:56:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229537AbhBHDiy (ORCPT
+        with ESMTP id S229537AbhBHD4R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Feb 2021 22:38:54 -0500
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D94AC06178A
-        for <linux-kernel@vger.kernel.org>; Sun,  7 Feb 2021 19:38:14 -0800 (PST)
-Received: by mail-pl1-x630.google.com with SMTP id u11so7058230plg.13
-        for <linux-kernel@vger.kernel.org>; Sun, 07 Feb 2021 19:38:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=hev-cc.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4C5iLZlVvdkZC9NTP4RSEn9cQKbnXPASByXOW3WHX6w=;
-        b=eVRAB6HjcS3MEfypq3MRp+KECOKyhAXle9CP+q63DdAPT3/trm41iQMYVXBR32f6qR
-         wXb3uq2y8l7ke7t/yq+9csLm4NpAQfXTUaUH7tDnlnIxu4DCItSLHJNnGqJUqdZQ29WQ
-         M+jttZaAq/MP2DtY1GzrWXotPb7rUUttgELwDsY8YBNNCLVByqLvFxhnPPvbqyRYMN6f
-         7xUXAXz2B1lRHp9MaWZwRGhhTQd8/yFEJ62BGlARwNgFd3K+j2tlrPpq6JKrxgQkn0cl
-         Oq7n23eiIA9jl6yP1g0ewMMF+OiQpFTMp8rhYi4kcmY3nFp9Otpy5RSVb70SGmETCbEI
-         YjZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4C5iLZlVvdkZC9NTP4RSEn9cQKbnXPASByXOW3WHX6w=;
-        b=kTwhyE5kG54AE1eEtOMoYvF1q51885bryFBgFDMpsRdF5u/B6EWZj0kKZHOHlPoZI4
-         pFCIOxlY7i6B9PR/JdrILhFMUuWDjgtn/jtVb679woWUOvEpng867qojt1fh6DKxEy5m
-         OUk3hj4Qrr+gbmk3qk9XU9nhQ/VuJmJ9vFnfEw0+GGp0zujzePDEvMdcNnXqG3OBDS1j
-         22PUXVHYz6RJyEejkPw91RnXuzEtIFLcnbP2LFyfwfdtyuzfe7rDqNdIRhXyYLR4pBVJ
-         XYe2FvCqhzkoUaY5crMX7JSlZhS/I4KDsk7spbisoOzcTLdjeNJvfdeFs86aMVIUvsWz
-         uAgw==
-X-Gm-Message-State: AOAM5332kbS9Mpkcu+yW0pNKL9jmpHrPGxt9qWpDFKX5t6EWIJbgml/2
-        wLvAh0/uiLtB+TvUqORlywXrDIO6I7i/eldaZsI=
-X-Google-Smtp-Source: ABdhPJzyNkSK5CkI0uUrktjXdhZGDZDMe3jbRWs7L+GVqg03fPrNRtqrEewEqJzVl/mPHrnNil6NAg==
-X-Received: by 2002:a17:90b:17c7:: with SMTP id me7mr14879930pjb.205.1612755494058;
-        Sun, 07 Feb 2021 19:38:14 -0800 (PST)
-Received: from localhost.localdomain ([2600:3c01::f03c:91ff:fe03:4f59])
-        by smtp.gmail.com with ESMTPSA id j73sm3481178pfd.170.2021.02.07.19.38.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 07 Feb 2021 19:38:13 -0800 (PST)
-From:   hev <r@hev.cc>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     Huacai Chen <chenhuacai@kernel.org>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        wangrui <wangrui@loongson.cn>, hev <r@hev.cc>
-Subject: [RFC PATCH v1] MIPS: tlbex: Avoid access invalid address when pmd is modifying
-Date:   Mon,  8 Feb 2021 11:37:43 +0800
-Message-Id: <20210208033743.1105739-1-r@hev.cc>
-X-Mailer: git-send-email 2.30.0
+        Sun, 7 Feb 2021 22:56:17 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EB11C06174A;
+        Sun,  7 Feb 2021 19:55:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=r5e0pP3lJ6oc8hBEATfesxmMHxx1NyuwyNkkdpPRZS0=; b=rpKYMsoFiCzLmEQ2Dvo4qBjVyl
+        t61Uuhp0KMj3ILsCvBeXtxoklLp7JJ2p7h6fkLvu2auv0bqoV9OnAoRK1DM74Z4vWvsLyW9c2SLwP
+        yL78Ap7DKAKUg0mtrx7ys2YbEXhuW/+C2sZ4kgbsMatwdGyXlsx2zL5kuTclcx9q4kT2pJhIOueK5
+        5lm5IGrupPAzuLcwXCNpWFZK/R5MRVZtJIZWssW5tA1DExmvMJ8VrjLCU43dGoVqD1WksAw9eVToj
+        KUxhs/ENkjJDhr6WtV7xdYt7/I2LK39hxC9RwMD1tmOZvUyGSz3jbeWZ8/RokMx6tcHNK4l1BOV6w
+        qpuezpeA==;
+Received: from [2601:1c0:6280:3f0::b879]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1l8xeA-0005yg-37; Mon, 08 Feb 2021 03:55:34 +0000
+Subject: Re: [PATCH v3 1/7] seqnum_ops: Introduce Sequence Number Ops
+To:     Shuah Khan <skhan@linuxfoundation.org>, corbet@lwn.net,
+        gregkh@linuxfoundation.org, peterz@infradead.org,
+        keescook@chromium.org, rafael@kernel.org, lenb@kernel.org,
+        james.morse@arm.com, tony.luck@intel.com, bp@alien8.de
+Cc:     devel@driverdev.osuosl.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+References: <cover.1612314468.git.skhan@linuxfoundation.org>
+ <23f6347a7bb9f902babe7351f71b23644035673d.1612314468.git.skhan@linuxfoundation.org>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <8f64e963-e0d6-e9a2-41c3-206bed440cde@infradead.org>
+Date:   Sun, 7 Feb 2021 19:55:28 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <23f6347a7bb9f902babe7351f71b23644035673d.1612314468.git.skhan@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: wangrui <wangrui@loongson.cn>
+Hi--
+Comments are inline.
 
-When modifying pmd through THP, invalid address access may occurs in the tlb
-handler. Because the tlb handler loads value of pmd twice, one is used for huge
-page testing and the other is used to load pte. So these two values may be
-different:
+On 2/3/21 10:11 AM, Shuah Khan wrote:
+> Sequence Number api provides interfaces for unsigned atomic up counters.
+> 
+> There are a number of atomic_t usages in the kernel where atomic_t api
+> is used for counting sequence numbers and other statistical counters.
+> Several of these usages, convert atomic_read() and atomic_inc_return()
+> return values to unsigned. Introducing sequence number ops supports
+> these use-cases with a standard core-api.
+> 
+> Sequence Number ops provide interfaces to initialize, increment and get
+> the sequence number. These ops also check for overflow and log message to
+> indicate when overflow occurs.
+> 
+> Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+> ---
+>  Documentation/core-api/index.rst      |   1 +
+>  Documentation/core-api/seqnum_ops.rst |  53 ++++++++++
+>  MAINTAINERS                           |   7 ++
+>  include/linux/seqnum_ops.h            | 129 +++++++++++++++++++++++++
+>  lib/Kconfig                           |   9 ++
+>  lib/Makefile                          |   1 +
+>  lib/test_seqnum_ops.c                 | 133 ++++++++++++++++++++++++++
+>  7 files changed, 333 insertions(+)
+>  create mode 100644 Documentation/core-api/seqnum_ops.rst
+>  create mode 100644 include/linux/seqnum_ops.h
+>  create mode 100644 lib/test_seqnum_ops.c
 
-   CPU 0: (app)                     CPU 1: (khugepaged)
-1:                                  scan hit: set pmd to invalid_pmd_table
-                                    (pmd_clear)
-2: tlb invalid: handle_tlbl,
-   load pmd for huge page testing,
-   is not a huge page
-3:                                  collapsed: set pmd to huge page
-4: handle_tlbl: load pmd again for
-   load pte(as base address), the
-   value of pmd is not an address,
-   access invalid address!
 
-This patch avoids the inconsistency of two memory loads by reusing the result
-of one load.
+> diff --git a/Documentation/core-api/seqnum_ops.rst b/Documentation/core-api/seqnum_ops.rst
+> new file mode 100644
+> index 000000000000..ed4eba394799
+> --- /dev/null
+> +++ b/Documentation/core-api/seqnum_ops.rst
+> @@ -0,0 +1,53 @@
+> +.. SPDX-License-Identifier: GPL-2.0
+> +
+> +.. include:: <isonum.txt>
+> +
+> +.. _seqnum_ops:
+> +
+> +==========================
+> +Sequence Number Operations
+> +==========================
+> +
+> +:Author: Shuah Khan
+> +:Copyright: |copy| 2021, The Linux Foundation
+> +:Copyright: |copy| 2021, Shuah Khan <skhan@linuxfoundation.org>
+> +
+> +Sequence Number api provides interfaces for unsigned up counters.
 
-Signed-off-by: hev <r@hev.cc>
-Signed-off-by: wangrui <wangrui@loongson.cn>
----
- arch/mips/mm/tlbex.c | 28 ++++++++++++----------------
- 1 file changed, 12 insertions(+), 16 deletions(-)
+                   API
 
-diff --git a/arch/mips/mm/tlbex.c b/arch/mips/mm/tlbex.c
-index a7521b8f7658..66ca219b4457 100644
---- a/arch/mips/mm/tlbex.c
-+++ b/arch/mips/mm/tlbex.c
-@@ -720,14 +720,14 @@ static void build_huge_tlb_write_entry(u32 **p, struct uasm_label **l,
-  * Check if Huge PTE is present, if so then jump to LABEL.
-  */
- static void
--build_is_huge_pte(u32 **p, struct uasm_reloc **r, unsigned int tmp,
--		  unsigned int pmd, int lid)
-+build_is_huge_pte(u32 **p, struct uasm_reloc **r, unsigned int out,
-+		  unsigned int tmp, unsigned int pmd, int lid)
- {
--	UASM_i_LW(p, tmp, 0, pmd);
-+	UASM_i_LW(p, out, 0, pmd);
- 	if (use_bbit_insns()) {
--		uasm_il_bbit1(p, r, tmp, ilog2(_PAGE_HUGE), lid);
-+		uasm_il_bbit1(p, r, out, ilog2(_PAGE_HUGE), lid);
- 	} else {
--		uasm_i_andi(p, tmp, tmp, _PAGE_HUGE);
-+		uasm_i_andi(p, tmp, out, _PAGE_HUGE);
- 		uasm_il_bnez(p, r, tmp, lid);
- 	}
- }
-@@ -1103,7 +1103,6 @@ EXPORT_SYMBOL_GPL(build_update_entries);
- struct mips_huge_tlb_info {
- 	int huge_pte;
- 	int restore_scratch;
--	bool need_reload_pte;
- };
- 
- static struct mips_huge_tlb_info
-@@ -1118,7 +1117,6 @@ build_fast_tlb_refill_handler (u32 **p, struct uasm_label **l,
- 
- 	rv.huge_pte = scratch;
- 	rv.restore_scratch = 0;
--	rv.need_reload_pte = false;
- 
- 	if (check_for_high_segbits) {
- 		UASM_i_MFC0(p, tmp, C0_BADVADDR);
-@@ -1323,7 +1321,6 @@ static void build_r4000_tlb_refill_handler(void)
- 	} else {
- 		htlb_info.huge_pte = K0;
- 		htlb_info.restore_scratch = 0;
--		htlb_info.need_reload_pte = true;
- 		vmalloc_mode = refill_noscratch;
- 		/*
- 		 * create the plain linear handler
-@@ -1349,19 +1346,19 @@ static void build_r4000_tlb_refill_handler(void)
- #endif
- 
- #ifdef CONFIG_MIPS_HUGE_TLB_SUPPORT
--		build_is_huge_pte(&p, &r, K0, K1, label_tlb_huge_update);
-+		build_is_huge_pte(&p, &r, K0, K1, K1, label_tlb_huge_update);
- #endif
- 
--		build_get_ptep(&p, K0, K1);
--		build_update_entries(&p, K0, K1);
-+		GET_CONTEXT(&p, K1); /* get context reg */
-+		build_adjust_context(&p, K1);
-+		UASM_i_ADDU(&p, K0, K0, K1); /* add in offset */
-+		build_update_entries(&p, K1, K0);
- 		build_tlb_write_entry(&p, &l, &r, tlb_random);
- 		uasm_l_leave(&l, p);
- 		uasm_i_eret(&p); /* return from trap */
- 	}
- #ifdef CONFIG_MIPS_HUGE_TLB_SUPPORT
- 	uasm_l_tlb_huge_update(&l, p);
--	if (htlb_info.need_reload_pte)
--		UASM_i_LW(&p, htlb_info.huge_pte, 0, K1);
- 	build_huge_update_entries(&p, htlb_info.huge_pte, K1);
- 	build_huge_tlb_write_entry(&p, &l, &r, K0, tlb_random,
- 				   htlb_info.restore_scratch);
-@@ -2065,14 +2062,13 @@ build_r4000_tlbchange_handler_head(u32 **p, struct uasm_label **l,
- 	 * instead contains the tlb pte. Check the PAGE_HUGE bit and
- 	 * see if we need to jump to huge tlb processing.
- 	 */
--	build_is_huge_pte(p, r, wr.r1, wr.r2, label_tlb_huge_update);
-+	build_is_huge_pte(p, r, wr.r3, wr.r1, wr.r2, label_tlb_huge_update);
- #endif
- 
- 	UASM_i_MFC0(p, wr.r1, C0_BADVADDR);
--	UASM_i_LW(p, wr.r2, 0, wr.r2);
- 	UASM_i_SRL(p, wr.r1, wr.r1, PAGE_SHIFT + PTE_ORDER - PTE_T_LOG2);
- 	uasm_i_andi(p, wr.r1, wr.r1, (PTRS_PER_PTE - 1) << PTE_T_LOG2);
--	UASM_i_ADDU(p, wr.r2, wr.r2, wr.r1);
-+	UASM_i_ADDU(p, wr.r2, wr.r3, wr.r1);
- 
- #ifdef CONFIG_SMP
- 	uasm_l_smp_pgtable_change(l, *p);
+> +
+> +Sequence Number Ops
+> +===================
+> +
+> +seqnum32 and seqnum64 types support implementing unsigned up counters. ::
+> +
+> +        struct seqnum32 { u32 seqnum; };
+> +        struct seqnum64 { u64 seqnum; };
+> +
+> +Initializers
+> +------------
+> +
+> +Interfaces for initializing sequence numbers. ::
+> +
+> +        #define SEQNUM_INIT(i)    { .seqnum = i }
+> +        seqnum32_init(seqnum, val)
+> +        seqnum64_init(seqnum, val)
+> +
+> +Increment interface
+> +-------------------
+> +
+> +Increments sequence number and returns the new value. Checks for overflow
+> +conditions and logs message when overflow occurs. This check is intended
+> +to help catch cases where overflow could lead to problems. ::
+> +
+> +        seqnum32_inc(seqnum): Calls atomic_inc_return(seqnum).
+> +        seqnum64_inc(seqnum): Calls atomic64_inc_return(seqnum).
+> +
+> +Return/get value interface
+> +--------------------------
+> +
+> +Returns sequence number value. ::
+> +
+> +        seqnum32_get() - return seqnum value.
+> +        seqnum64_get() - return seqnum value.
+> +
+> +.. warning::
+> +        seqnum32 wraps around to INT_MIN when it overflows.
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index cc1e6a5ee6e6..f9fe1438a8cd 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -16235,6 +16235,13 @@ S:	Maintained
+>  F:	Documentation/fb/sm712fb.rst
+>  F:	drivers/video/fbdev/sm712*
+>  
+> +SEQNUM OPS
+> +M:	Shuah Khan <skhan@linuxfoundation.org>
+> +L:	linux-kernel@vger.kernel.org
+> +S:	Maintained
+> +F:	include/linux/seqnum_ops.h
+> +F:	lib/test_seqnum_ops.c
+> +
+>  SIMPLE FIRMWARE INTERFACE (SFI)
+>  S:	Obsolete
+>  W:	http://simplefirmware.org/
+> diff --git a/include/linux/seqnum_ops.h b/include/linux/seqnum_ops.h
+> new file mode 100644
+> index 000000000000..e8d8481445d3
+> --- /dev/null
+> +++ b/include/linux/seqnum_ops.h
+> @@ -0,0 +1,129 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * seqnum_ops.h - Interfaces for unsigned atomic sequential up counters.
+> + *
+> + * Copyright (c) 2021 Shuah Khan <skhan@linuxfoundation.org>
+> + * Copyright (c) 2021 The Linux Foundation
+> + *
+> + * Sequence Number functions provide support for unsgined atomic up
+
+                                                    unsigned
+
+> + * counters.
+> + *
+> + * The interface provides:
+> + * seqnumu32 & seqnumu64 functions:
+> + *	initialization
+> + *	increment and return
+> + *
+> + * seqnumu32 and seqnumu64 functions leverage/use atomic*_t ops to
+> + * implement support for unsigned atomic up counters.
+> + *
+> + * Reference and API guide:
+> + *	Documentation/core-api/seqnum_ops.rst for more information.
+> + */
+> +
+> +#ifndef __LINUX_SEQNUM_OPS_H
+> +#define __LINUX_SEQNUM_OPS_H
+> +
+> +#include <linux/atomic.h>
+> +
+> +/**
+> + * struct seqnum32 - Sequence number atomic counter
+> + * @seqnum: atomic_t
+> + *
+> + **/
+> +struct seqnum32 {
+> +	u32 seqnum;
+> +};
+> +
+> +#define SEQNUM_INIT(i)		{ .seqnum = i }
+> +
+> +/*
+> + * seqnum32_init() - initialize seqnum value
+> + * @seq: struct seqnum32 pointer
+> + *
+> + */
+> +static inline void seqnum32_init(struct seqnum32 *seq, u32 val)
+> +{
+> +	seq->seqnum = val;
+> +}
+> +
+> +/*
+> + * seqnum32_inc() - increment seqnum value and return the new value
+> + * @seq: struct seqnum32 pointer
+> + *
+> + * Return u32
+
+It would be good to convert that to kernel-doc notation.
+
+> + */
+> +static inline u32 seqnum32_inc(struct seqnum32 *seq)
+> +{
+> +	atomic_t val = ATOMIC_INIT(seq->seqnum);
+> +
+> +	seq->seqnum = (u32) atomic_inc_return(&val);
+> +	if (seq->seqnum >= UINT_MAX)
+> +		pr_info("Sequence Number overflow %u detected\n",
+> +			seq->seqnum);
+> +	return seq->seqnum;
+> +}
+> +
+> +/*
+> + * seqnum32_get() - get seqnum value
+> + * @seq: struct seqnum32 pointer
+> + *
+> + * Return u32
+> + */
+> +static inline u32 seqnum32_get(struct seqnum32 *seq)
+> +{
+> +	return seq->seqnum;
+> +}
+> +
+> +/*
+> + * struct seqnum64 - Sequential/Statistical atomic counter
+> + * @seq: atomic64_t
+> + *
+> + */
+> +struct seqnum64 {
+> +	u64 seqnum;
+> +};
+> +
+> +/* Add to a global include/vdso/limits.h and fix all other UINT64_MAX
+> + * duplicate defines?
+> + */
+> +#define SEQ_UINT64_MAX	((u64)(~((u64) 0)))	/* 0xFFFFFFFFFFFFFFFF */
+> +
+> +/*
+> + * seqnum64_init() - initialize seqnum value
+> + * @seq: struct seqnum64 pointer
+> + *
+> + */
+
+and kernel-doc there also.
+
+> +static inline void seqnum64_init(struct seqnum64 *seq, u64 val)
+> +{
+> +	seq->seqnum = val;
+> +}
+> +
+> +/*
+> + * seqnum64_inc() - increment seqnum value and return the new value
+> + * @seq: struct seqnum64 pointer
+> + *
+> + * Return u64
+> + */
+> +static inline u64 seqnum64_inc(struct seqnum64 *seq)
+> +{
+> +	atomic64_t val = ATOMIC_INIT(seq->seqnum);
+> +
+> +	seq->seqnum = (u64) atomic64_inc_return(&val);
+> +	if (seq->seqnum >= SEQ_UINT64_MAX)
+> +		pr_info("Sequence Number overflow %llu detected\n",
+> +			seq->seqnum);
+> +	return seq->seqnum;
+> +}
+> +
+> +/*
+> + * seqnum64_get() - get seqnum value
+> + * @seq: struct seqnum64 pointer
+> + *
+> + * Return u64
+> + */
+> +static inline u64 seqnum64_get(struct seqnum64 *seq)
+> +{
+> +	return (u64) seq->seqnum;
+> +}
+> +
+> +#endif /* __LINUX_SEQNUM_OPS_H */
+
+
+> diff --git a/lib/test_seqnum_ops.c b/lib/test_seqnum_ops.c
+> new file mode 100644
+> index 000000000000..173278314f26
+> --- /dev/null
+> +++ b/lib/test_seqnum_ops.c
+> @@ -0,0 +1,133 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * test_seqnum_ops.c - Kernel module for testing Seqnum API
+> + *
+> + * Copyright (c) 2021 Shuah Khan <skhan@linuxfoundation.org>
+> + * Copyright (c) 2021 The Linux Foundation
+> + *
+> + */
+> +
+> +#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+> +
+> +#include <linux/module.h>
+> +#include <linux/seqnum_ops.h>
+> +
+>
+...
+
+> +static void test_seqnum64(void)
+> +{
+> +	u64 start_val = 0;
+> +	struct seqnum64 seq = SEQNUM_INIT(start_val);
+> +	u64 end_val;
+> +
+> +	end_val = seqnum64_inc(&seq);
+> +	test_seqnum64_result("Test increment",
+> +			     start_val, end_val, start_val+1);
+> +
+> +	/* Initialize sequence number to 0 */
+> +	seqnum64_init(&seq, start_val);
+> +	end_val = seqnum64_inc(&seq);
+> +
+> +	/* if seqnum642_init() works correctly end_val should be 1 */
+
+	      seqnum64_init()
+AFAICT.
+
+> +	test_seqnum64_result("Test init", start_val, end_val, 1);
+> +	/* seqnum64_get() test for seqnum value == 1 */
+> +	start_val = end_val = seqnum64_get(&seq);
+> +	test_seqnum64_result("Test get", start_val, end_val, 1);
+> +}
+> +
+
+
 -- 
-2.30.0
+~Randy
 
