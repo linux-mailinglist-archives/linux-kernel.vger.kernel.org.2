@@ -2,120 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55468314194
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 22:21:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0860231419A
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 22:22:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235248AbhBHVVA convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 8 Feb 2021 16:21:00 -0500
-Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:31571 "EHLO
-        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236657AbhBHULL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 15:11:11 -0500
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-439-J3dPTVKKPk-CeFKFUq0SYg-1; Mon, 08 Feb 2021 15:10:16 -0500
-X-MC-Unique: J3dPTVKKPk-CeFKFUq0SYg-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S236348AbhBHVV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 16:21:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50174 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236623AbhBHULc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 15:11:32 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 10C73801965;
-        Mon,  8 Feb 2021 20:10:15 +0000 (UTC)
-Received: from krava.redhat.com (unknown [10.40.194.115])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C71F419C59;
-        Mon,  8 Feb 2021 20:10:12 +0000 (UTC)
-From:   Jiri Olsa <jolsa@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Ian Rogers <irogers@google.com>,
-        Alexei Budankov <abudankov@huawei.com>
-Subject: [PATCH 24/24] perf tests: Add daemon lock test
-Date:   Mon,  8 Feb 2021 21:09:08 +0100
-Message-Id: <20210208200908.1019149-25-jolsa@kernel.org>
-In-Reply-To: <20210208200908.1019149-1-jolsa@kernel.org>
-References: <20210208200908.1019149-1-jolsa@kernel.org>
-MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=jolsa@kernel.org
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: kernel.org
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset=WINDOWS-1252
+        by mail.kernel.org (Postfix) with ESMTPSA id 0C09764E7A;
+        Mon,  8 Feb 2021 20:10:52 +0000 (UTC)
+Received: from rostedt by gandalf.local.home with local (Exim 4.94)
+        (envelope-from <rostedt@goodmis.org>)
+        id 1l9Cry-00AfN8-Nx; Mon, 08 Feb 2021 15:10:50 -0500
+Message-ID: <20210208200922.215867530@goodmis.org>
+User-Agent: quilt/0.66
+Date:   Mon, 08 Feb 2021 15:09:22 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Subject: [PATCH 0/2 v3] tracepoints: Stop punishing non-static call users
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adding test for perf daemon lock ensuring only
-one instance of daemon can run over one base
-directory.
+Broke this up into two patches now. See the second patch for the
+description of waht this series is doing.
 
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
----
- tools/perf/tests/shell/daemon.sh | 38 ++++++++++++++++++++++++++++++++
- 1 file changed, 38 insertions(+)
+Changes since v2:
 
-diff --git a/tools/perf/tests/shell/daemon.sh b/tools/perf/tests/shell/daemon.sh
-index 9fcb98768633..e5b824dd08d9 100755
---- a/tools/perf/tests/shell/daemon.sh
-+++ b/tools/perf/tests/shell/daemon.sh
-@@ -426,6 +426,43 @@ EOF
- 	rm -f ${config}
- }
- 
-+test_lock()
-+{
-+	echo "test daemon lock"
-+
-+	local config=$(mktemp /tmp/perf.daemon.config.XXX)
-+	local base=$(mktemp -d /tmp/perf.daemon.base.XXX)
-+
-+	# prepare config
-+	cat <<EOF > ${config}
-+[daemon]
-+base=BASE
-+
-+[session-size]
-+run = -e cpu-clock
-+EOF
-+
-+	sed -i -e "s|BASE|${base}|" ${config}
-+
-+	# start daemon
-+	daemon_start ${config} size
-+
-+	# start second daemon over the same config/base
-+	failed=`perf daemon start --config ${config} 2>&1 | awk '{ print $1 }'`
-+
-+	# check that we failed properly
-+	if [ ${failed} != "failed:" ]; then
-+		error=1
-+		echo "FAILED: daemon lock failed"
-+	fi
-+
-+	# stop daemon
-+	daemon_exit ${base} ${config}
-+
-+	rm -rf ${base}
-+	rm -f ${config}
-+}
-+
- error=0
- 
- test_list
-@@ -433,5 +470,6 @@ test_reconfig
- test_stop
- test_signal
- test_ping
-+test_lock
- 
- exit ${error}
--- 
-2.29.2
+ Added a patch to remove "data_args", as it was causing issues with
+ handling of "__data", especially when it wasn't needed.
 
+
+Steven Rostedt (VMware) (2):
+      tracepoints: Remove unnecessary "data_args" macro parameter
+      tracepoints: Do not punish non static call users
+
+----
+ include/linux/tracepoint.h | 52 ++++++++++++++++++++--------------------------
+ 1 file changed, 23 insertions(+), 29 deletions(-)
