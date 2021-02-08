@@ -2,128 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FF02312BF9
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 09:38:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D29E1312C16
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 09:45:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230448AbhBHIhs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 03:37:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50990 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230224AbhBHIep (ORCPT
+        id S230474AbhBHInM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 03:43:12 -0500
+Received: from mail29.static.mailgun.info ([104.130.122.29]:32431 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230265AbhBHIfK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 03:34:45 -0500
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76127C061756
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 00:33:54 -0800 (PST)
-Received: by mail-wr1-x433.google.com with SMTP id a1so16044189wrq.6
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 00:33:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=dzjEN7YVqtaqujbmGYSzD3fjsYLPescY0ifkDBXkqLg=;
-        b=xRoKiOu2+Jjnk8RdzCfADbsl30nmGTuZ25PnHaVNy9IPtE+SMpyLz05zta/V+TXk2L
-         3Snk9K1/beMrfzFOmEGycXni6ruIfzt2A229bO0/ZS6tQXnO/GhQSzhsdsiFJK9E2VBz
-         wQ4BCB9Y66TgNvHI+oUt+w879mPpRFGQe4RRjAwR+rrv9vUqy0VtEmRoYePZ4Xngos+D
-         oSjF9KHPmbPIIih+toMXyIPOc0eSokDNhtP45NuUJnIZc+4m61nRJSRclrxvzykvYX/n
-         F5ydFlQGMWh1pFfQSaFQy1E/hNfpsQuuMQdS66Rvu1GJQHOgz+LHcYNUmfDKCF+wjgLZ
-         zjBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=dzjEN7YVqtaqujbmGYSzD3fjsYLPescY0ifkDBXkqLg=;
-        b=oMzH/YVcCVQX6SYTXfiXHLrqSXRFDP3x/ci17NBKZqAbfNcI/ohG3hp6m1pjspx9r+
-         0K406tULh4p++XtUGE4yh17DILbEPznsT9JwOGL66JludyWmWjFNNP05mNDUsRaUjR34
-         w8m70bDmpITdCBpdiHjrEnWFTaUXTcOtnRGc0UrsO8OXCTsWT3r1VpnY8XsC1NrHHrY8
-         knrea9cfUDvjH1jL6oK3wPotOhbr5qMyne1aGnVNs4OlSjr1bl76V2XwDa3W1f5HL+Et
-         6cqLPB8UYQPAf3huTQOZTuKydBf0pVrzC+jCAT3pfeYy/8UbHUVxzqQs7pB6hvuXDYF7
-         KX+Q==
-X-Gm-Message-State: AOAM532Uix6a9t6mhrmi6nq2B+d7UfbeogBxnmc9ZHzaNWeb95+3NVgs
-        FWcsoufxLxt8DsqZ1GFCByZaOg==
-X-Google-Smtp-Source: ABdhPJwZGtkWXy3XxqyySRsvK8yAbf1VqsSaowxqAHFyvXDRFGKSdrHBj876+06i47XwvXOOK4AuXQ==
-X-Received: by 2002:adf:8b47:: with SMTP id v7mr18339833wra.133.1612773233172;
-        Mon, 08 Feb 2021 00:33:53 -0800 (PST)
-Received: from dell ([91.110.221.246])
-        by smtp.gmail.com with ESMTPSA id l11sm26193998wrt.23.2021.02.08.00.33.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Feb 2021 00:33:52 -0800 (PST)
-Date:   Mon, 8 Feb 2021 08:33:50 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        alsa-devel@alsa-project.org
-Subject: Re: [PATCH v4 4/5] ASoC: Intel: Add DMI quirk table to
- soc_intel_is_byt_cr()
-Message-ID: <20210208083350.GA4766@dell>
-References: <20210120214957.140232-1-hdegoede@redhat.com>
- <20210120214957.140232-5-hdegoede@redhat.com>
- <20210204135616.GL2789116@dell>
- <20210204140515.GC4288@sirena.org.uk>
- <20210204150456.GN2789116@dell>
- <20210204151139.GE4288@sirena.org.uk>
- <20210204154058.GP2789116@dell>
- <20210204194213.GG4288@sirena.org.uk>
- <20210205083416.GR2789116@dell>
- <20210205211101.GL4720@sirena.org.uk>
+        Mon, 8 Feb 2021 03:35:10 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1612773290; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=B9NpeYlgAht7Rfozxc2Prjjz/sdwVB6xwetFGGlZF9g=;
+ b=V0C2BVu1d71P6YZ7R9ndpCAsZ7CSh2B5JB+mvy6wTWKAuDPwYTS6JdvJIAIxZMWT3OX48ygD
+ 40z4zGs4AB7wn1QeJw4JD3U1GUiKYRRl84CT6V5H0MRJ1faLipN2hB1E18P0/U+BsaaFwES8
+ C/C7IXL7QmrY5hRVPQSaUdx2iVA=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 6020f79a8e43a988b7664bfc (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 08 Feb 2021 08:34:34
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 86747C43467; Mon,  8 Feb 2021 08:34:34 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id A2DE7C43462;
+        Mon,  8 Feb 2021 08:34:33 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210205211101.GL4720@sirena.org.uk>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 08 Feb 2021 16:34:33 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     daejun7.park@samsung.com
+Cc:     Greg KH <gregkh@linuxfoundation.org>, avri.altman@wdc.com,
+        jejb@linux.ibm.com, martin.petersen@oracle.com,
+        asutoshd@codeaurora.org, stanley.chu@mediatek.com,
+        huobean@gmail.com, bvanassche@acm.org,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>,
+        SEUNGUK SHIN <seunguk.shin@samsung.com>
+Subject: Re: [PATCH v19 2/3] scsi: ufs: L2P map management for HPB read
+In-Reply-To: <20210208080333epcms2p59403f0acbc9730c9a605d265836a956d@epcms2p5>
+References: <5bd43da52369a56f18867fa18efb3020@codeaurora.org>
+ <20210129052848epcms2p6e5797efd94e6282b76ad9ae6c99e3ab5@epcms2p6>
+ <20210129053005epcms2p323338fbb83459d2786fc0ef92701b147@epcms2p3>
+ <CGME20210129052848epcms2p6e5797efd94e6282b76ad9ae6c99e3ab5@epcms2p5>
+ <20210208080333epcms2p59403f0acbc9730c9a605d265836a956d@epcms2p5>
+Message-ID: <88b608e2e133ba7ccd5bb452898848fd@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 05 Feb 2021, Mark Brown wrote:
+On 2021-02-08 16:03, Daejun Park wrote:
+>> @@ -342,13 +1208,14 @@ void ufshpb_suspend(struct ufs_hba *hba)
+>> >  	struct scsi_device *sdev;
+>> >
+>> >  	shost_for_each_device(sdev, hba->host) {
+>> > -		hpb = sdev->hostdata;
+>> > +		hpb = ufshpb_get_hpb_data(sdev);
+>> >  		if (!hpb)
+>> >  			continue;
+>> >
+>> >  		if (ufshpb_get_state(hpb) != HPB_PRESENT)
+>> >  			continue;
+>> >  		ufshpb_set_state(hpb, HPB_SUSPEND);
+>> > +		ufshpb_cancel_jobs(hpb);
+>> 
+>> Here may have a dead lock problem - in the case of runtime suspend,
+>> when ufshpb_suspend() is invoked, all of hba's children scsi devices
+>> are in RPM_SUSPENDED state. When this line tries to cancel a running
+>> map work, i.e. when ufshpb_get_map_req() calls below lines, it will
+>> be stuck at blk_queue_enter().
+>> 
+>> req = blk_get_request(hpb->sdev_ufs_lu->request_queue,
+>> 		      REQ_OP_SCSI_IN, 0);
+>> 
+>> Please check block layer power management, and see also commit 
+>> d55d15a33
+>> ("scsi: block: Do not accept any requests while suspended").
+> 
+> I am agree with your comment.
+> How about add BLK_MQ_REQ_NOWAIT flag on blk_get_request() to avoid 
+> hang?
+> 
 
-> On Fri, Feb 05, 2021 at 08:34:16AM +0000, Lee Jones wrote:
-> > On Thu, 04 Feb 2021, Mark Brown wrote:
-> > 
-> > > On Thu, Feb 04, 2021 at 03:40:58PM +0000, Lee Jones wrote:
-> > > > On Thu, 04 Feb 2021, Mark Brown wrote:
-> > > > > On Thu, Feb 04, 2021 at 03:04:56PM +0000, Lee Jones wrote:
-> 
-> > > > > > This set has all the Acks we need to proceed.  What's blocking?
-> 
-> > > > > There's the subsystem maintainer...
-> 
-> > > > I assume that was a question and you meant "where's"?
-> 
-> > > > Pierre is listed as the Maintainer.
-> 
-> > > I'm fairly sure you can see what I meant here and why there might be a
-> > > concern.
-> 
-> > So that should be a Reviewed-by and not an Acked-by then.  That's fine.
-> 
-> No, it's that there's plenty of drivers like this that are listed in
-> MAINTAINERS but still generally go through subsystem trees - this is
-> also true of for quite a few MFD drivers, you tend to get a bit annoyed
-> (quite reasonably) whenever I mistakenly pull MFD changes for them into
-> one of my trees without syncing with you.
+That won't work - BLK_MQ_REQ_NOWAIT allows one to fast fail from 
+blk_mq_get_tag(),
+but blk_queue_enter() comes before __blk_mq_alloc_request();
 
-Driver Maintainers in MFD don't sent Acks.
+Regards,
 
-> > What do you want to happen with this set then?
-> 
-> > You want it broken up?
-> 
-> I guess, or at least a pull request so it's in my tree and I'll notice
-> any coverage issues.
+Can Guo.
 
-Okay, I'll process it.
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+> Thanks,
+> Daejun
