@@ -2,33 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 191E331370E
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 16:19:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43E4531371C
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 16:21:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232096AbhBHPTV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 10:19:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52070 "EHLO mail.kernel.org"
+        id S233691AbhBHPUN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 10:20:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52060 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232838AbhBHPD5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S232876AbhBHPD5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 8 Feb 2021 10:03:57 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 19A2764E87;
-        Mon,  8 Feb 2021 15:03:02 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 58E7F64EB7;
+        Mon,  8 Feb 2021 15:03:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612796583;
-        bh=Us5gES8gNKwpPLlRnhglkoSBD+OMQjnda/umdH3VCw0=;
+        s=korg; t=1612796606;
+        bh=5n1+5pAYKydUCiYwImBD9lr7EVtVsDVK+XpcP8nmQNU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=J1jMZhkB9fRMVKtHxhYtiRsPtkBsgYopwxxGmIUGuq631anIuiNNfuIozstBordjj
-         Mo9cF/ihX9qBfY+DdODjtWpxkCHu4atNRbXqg/rA9No6fnnnZEuNBZhVipiSjacCOa
-         kgvcpxvqxlcAEZJuQYEnB51rJ+WEZmSMPWgeL/qc=
+        b=kmvpBhnPW7osq9RSpeWmaGTnObtvBCAOAjz4Mm2tRei4w6gvevo8KXmX6EsZj75p/
+         ws1YATvSLdGKYEull7SYQBMRTyS8UdKgj9hvLwNb6o/FXBVVc12bVf2gZ8YeCCMdgD
+         Da21R9Lz1uu6YO4mZIKRDzAlg632Jbcd/VLlNqZQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Brian King <brking@linux.vnet.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 14/38] scsi: ibmvfc: Set default timeout to avoid crash during migration
-Date:   Mon,  8 Feb 2021 16:00:36 +0100
-Message-Id: <20210208145805.859376960@linuxfoundation.org>
+        stable@vger.kernel.org, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 15/38] stable: clamp SUBLEVEL in 4.4 and 4.9
+Date:   Mon,  8 Feb 2021 16:00:37 +0100
+Message-Id: <20210208145805.898658055@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210208145805.279815326@linuxfoundation.org>
 References: <20210208145805.279815326@linuxfoundation.org>
@@ -40,85 +38,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Brian King <brking@linux.vnet.ibm.com>
+Right now SUBLEVEL is overflowing, and some userspace may start treating
+4.9.256 as 4.10. While out of tree modules have different ways of
+  extracting the version number (and we're generally ok with breaking
+them), we do care about breaking userspace and it would appear that this
+overflow might do just that.
 
-[ Upstream commit 764907293edc1af7ac857389af9dc858944f53dc ]
+Our rules around userspace ABI in the stable kernel are pretty simple:
+we don't break it. Thus, while userspace may be checking major/minor, it
+shouldn't be doing anything with sublevel.
 
-While testing live partition mobility, we have observed occasional crashes
-of the Linux partition. What we've seen is that during the live migration,
-for specific configurations with large amounts of memory, slow network
-links, and workloads that are changing memory a lot, the partition can end
-up being suspended for 30 seconds or longer. This resulted in the following
-scenario:
+This patch applies a big band-aid to the 4.9 and 4.4 kernels in the form
+of clamping their sublevel to 255.
 
-CPU 0                          CPU 1
--------------------------------  ----------------------------------
-scsi_queue_rq                    migration_store
- -> blk_mq_start_request          -> rtas_ibm_suspend_me
-  -> blk_add_timer                 -> on_each_cpu(rtas_percpu_suspend_me
-              _______________________________________V
-             |
-             V
-    -> IPI from CPU 1
-     -> rtas_percpu_suspend_me
-                                     -> __rtas_suspend_last_cpu
+The clamp is done for the purpose of LINUX_VERSION_CODE only, and
+extracting the version number from the Makefile or "make kernelversion"
+will continue to work as intended.
 
--- Linux partition suspended for > 30 seconds --
-                                      -> for_each_online_cpu(cpu)
-                                           plpar_hcall_norets(H_PROD
- -> scsi_dispatch_cmd
-                                      -> scsi_times_out
-                                       -> scsi_abort_command
-                                        -> queue_delayed_work
-  -> ibmvfc_queuecommand_lck
-   -> ibmvfc_send_event
-    -> ibmvfc_send_crq
-     - returns H_CLOSED
-   <- returns SCSI_MLQUEUE_HOST_BUSY
--> __blk_mq_requeue_request
+We might need to do it later in newer trees, but maybe we'll have a
+better solution by then, so I'm ignoring that problem for now.
 
-                                      -> scmd_eh_abort_handler
-                                       -> scsi_try_to_abort_cmd
-                                         - returns SUCCESS
-                                       -> scsi_queue_insert
-
-Normally, the SCMD_STATE_COMPLETE bit would protect against the command
-completion and the timeout, but that doesn't work here, since we don't
-check that at all in the SCSI_MLQUEUE_HOST_BUSY path.
-
-In this case we end up calling scsi_queue_insert on a request that has
-already been queued, or possibly even freed, and we crash.
-
-The patch below simply increases the default I/O timeout to avoid this race
-condition. This is also the timeout value that nearly all IBM SAN storage
-recommends setting as the default value.
-
-Link: https://lore.kernel.org/r/1610463998-19791-1-git-send-email-brking@linux.vnet.ibm.com
-Signed-off-by: Brian King <brking@linux.vnet.ibm.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/scsi/ibmvscsi/ibmvfc.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ Makefile |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/ibmvscsi/ibmvfc.c b/drivers/scsi/ibmvscsi/ibmvfc.c
-index db80ab8335dfb..aa74f72e582ab 100644
---- a/drivers/scsi/ibmvscsi/ibmvfc.c
-+++ b/drivers/scsi/ibmvscsi/ibmvfc.c
-@@ -2883,8 +2883,10 @@ static int ibmvfc_slave_configure(struct scsi_device *sdev)
- 	unsigned long flags = 0;
+--- a/Makefile
++++ b/Makefile
+@@ -1068,7 +1068,7 @@ endef
  
- 	spin_lock_irqsave(shost->host_lock, flags);
--	if (sdev->type == TYPE_DISK)
-+	if (sdev->type == TYPE_DISK) {
- 		sdev->allow_restart = 1;
-+		blk_queue_rq_timeout(sdev->request_queue, 120 * HZ);
-+	}
- 	spin_unlock_irqrestore(shost->host_lock, flags);
- 	return 0;
- }
--- 
-2.27.0
-
+ define filechk_version.h
+ 	(echo \#define LINUX_VERSION_CODE $(shell                         \
+-	expr $(VERSION) \* 65536 + 0$(PATCHLEVEL) \* 256 + 0$(SUBLEVEL)); \
++	expr $(VERSION) \* 65536 + 0$(PATCHLEVEL) \* 256 + 255); \
+ 	echo '#define KERNEL_VERSION(a,b,c) (((a) << 16) + ((b) << 8) + (c))';)
+ endef
+ 
 
 
