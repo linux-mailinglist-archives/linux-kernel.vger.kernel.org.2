@@ -2,192 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DD19314377
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 00:07:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C84EA314384
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 00:12:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231518AbhBHXGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 18:06:40 -0500
-Received: from mga12.intel.com ([192.55.52.136]:42431 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229554AbhBHXG0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 18:06:26 -0500
-IronPort-SDR: Ac6srf6szgDU9urgXTO5//h7lXwB69NwEkQgauulrWi6PtfCiB9qyvjw7WP+52h+Vko7XBK6nb
- v8DwdCDaadbQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9889"; a="160949495"
-X-IronPort-AV: E=Sophos;i="5.81,163,1610438400"; 
-   d="scan'208";a="160949495"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2021 15:05:45 -0800
-IronPort-SDR: dZGsPb3PToeX1jGvq3Hjh+AuXcZBJNOGQocMMYrdNFTa2r3l93ZhZkx6Vf/2wpcBbRvauqsGhB
- 9hAmBWPuN1Fw==
-X-IronPort-AV: E=Sophos;i="5.81,163,1610438400"; 
-   d="scan'208";a="411328411"
-Received: from svetsa-mobl2.amr.corp.intel.com (HELO intel.com) ([10.252.133.103])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2021 15:05:43 -0800
-Date:   Mon, 8 Feb 2021 15:05:42 -0800
-From:   Ben Widawsky <ben.widawsky@intel.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Dan Williams <dan.j.williams@intel.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-cxl@vger.kernel.org,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Chris Browy <cbrowy@avery-design.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Jon Masters <jcm@jonmasters.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Rafael Wysocki <rafael.j.wysocki@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        daniel.lll@alibaba-inc.com,
-        "John Groves (jgroves)" <jgroves@micron.com>,
-        "Kelley, Sean V" <sean.v.kelley@intel.com>
-Subject: Re: [PATCH 08/14] taint: add taint for direct hardware access
-Message-ID: <20210208230542.6qxga32zxxtit5hk@intel.com>
-References: <20210130002438.1872527-1-ben.widawsky@intel.com>
- <20210130002438.1872527-9-ben.widawsky@intel.com>
- <CAPcyv4iPXqO5FL4_bmMQaSvmUm9FVrPv9yPJr3Q4DQWYf4t5hQ@mail.gmail.com>
- <202102081406.CDE33FB8@keescook>
+        id S229939AbhBHXLf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 18:11:35 -0500
+Received: from relay4-d.mail.gandi.net ([217.70.183.196]:39909 "EHLO
+        relay4-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229621AbhBHXLb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 18:11:31 -0500
+X-Originating-IP: 86.202.109.140
+Received: from localhost (lfbn-lyo-1-13-140.w86-202.abo.wanadoo.fr [86.202.109.140])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id 5895FE0005;
+        Mon,  8 Feb 2021 23:10:40 +0000 (UTC)
+Date:   Tue, 9 Feb 2021 00:10:40 +0100
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
+        arm-soc <arm@kernel.org>, SoC Team <soc@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/SAMSUNG EXYNOS ARM ARCHITECTURES" 
+        <linux-samsung-soc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Sylwester Nawrocki <snawrocki@kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Tony Lindgren <tony@atomide.com>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Maxime Ripard <mripard@kernel.org>
+Subject: Re: [GIT PULL 2/3] ARM: dts: samsung: DTS for v5.12
+Message-ID: <20210208231040.GF351084@piout.net>
+References: <20210125191240.11278-1-krzk@kernel.org>
+ <20210125191240.11278-3-krzk@kernel.org>
+ <20210206134531.l5vpzlmev4v3f3uo@kozik-lap>
+ <CAK8P3a0Kgn9PTHjsU7MbJPC8vatvb9KYJJKWxrx7zQzTNgK10g@mail.gmail.com>
+ <CAMuHMdWZ8QmiQCmiW9AvCpviNZeuaxThSo_4Xb2DGEs9hMTKMQ@mail.gmail.com>
+ <YCGBIvRfoP0BeyrP@builder.lan>
+ <20210208184230.onhlioflyylkx6xo@kozik-lap>
+ <CAK8P3a3bsw8p2Geyo-vh1AJUfMQCCf3kpa_YB+tKmcvWHqRcEw@mail.gmail.com>
+ <20210208213537.GA351084@piout.net>
+ <CAK8P3a0QRcQM4rH9HgVMOHa_eATXsjRbGDXuMO7FgnA8OgPk0Q@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <202102081406.CDE33FB8@keescook>
+In-Reply-To: <CAK8P3a0QRcQM4rH9HgVMOHa_eATXsjRbGDXuMO7FgnA8OgPk0Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21-02-08 14:09:19, Kees Cook wrote:
-> On Mon, Feb 08, 2021 at 02:00:33PM -0800, Dan Williams wrote:
-> > [ add Jon Corbet as I'd expect him to be Cc'd on anything that
-> > generically touches Documentation/ like this, and add Kees as the last
-> > person who added a taint (tag you're it) ]
-> > 
-> > Jon, Kees, are either of you willing to ack this concept?
-> > 
-> > Top-posting to add more context for the below:
-> > 
-> > This taint is proposed because it has implications for
-> > CONFIG_LOCK_DOWN_KERNEL among other things. These CXL devices
-> > implement memory like DDR would, but unlike DDR there are
-> > administrative / configuration commands that demand kernel
-> > coordination before they can be sent. The posture taken with this
-> > taint is "guilty until proven innocent" for commands that have yet to
-> > be explicitly allowed by the driver. This is different than NVME for
-> > example where an errant vendor-defined command could destroy data on
-> > the device, but there is no wider threat to system integrity. The
-> > taint allows a pressure release valve for any and all commands to be
-> > sent, but flagged with WARN_TAINT_ONCE if the driver has not
-> > explicitly enabled it on an allowed list of known-good / kernel
-> > coordinated commands.
-> > 
-> > On Fri, Jan 29, 2021 at 4:25 PM Ben Widawsky <ben.widawsky@intel.com> wrote:
-> > >
-> > > For drivers that moderate access to the underlying hardware it is
-> > > sometimes desirable to allow userspace to bypass restrictions. Once
-> > > userspace has done this, the driver can no longer guarantee the sanctity
-> > > of either the OS or the hardware. When in this state, it is helpful for
-> > > kernel developers to be made aware (via this taint flag) of this fact
-> > > for subsequent bug reports.
-> > >
-> > > Example usage:
-> > > - Hardware xyzzy accepts 2 commands, waldo and fred.
-> > > - The xyzzy driver provides an interface for using waldo, but not fred.
-> > > - quux is convinced they really need the fred command.
-> > > - xyzzy driver allows quux to frob hardware to initiate fred.
-> > >   - kernel gets tainted.
-> > > - turns out fred command is borked, and scribbles over memory.
-> > > - developers laugh while closing quux's subsequent bug report.
+On 08/02/2021 23:14:02+0100, Arnd Bergmann wrote:
+> On Mon, Feb 8, 2021 at 10:35 PM Alexandre Belloni
+> <alexandre.belloni@bootlin.com> wrote:
+> > On 08/02/2021 20:52:37+0100, Arnd Bergmann wrote:
+> > > On Mon, Feb 8, 2021 at 7:42 PM Krzysztof Kozlowski <krzk@kernel.org> wrote:
+> > > > Let me steer the discussion to original topic - it's about old kernel
+> > > > and new DTB, assuming that mainline kernel bisectability is not
+> > > > affected.
+> > > >
+> > > > Flow looks like this:
+> > > >
+> > > > 0. You have existing bidings and drivers.
+> > > > 1. Patch changing bindings (with new compatible) and drivers gets
+> > > >    accepted by maintainer.
+> > > > 2. Patch above (bindings+drivers) goes during merge window to v5.11-rc1.
+> > > > 3. Patch changing in-tree DTS to new compatible gets accepted by
+> > > >    maintainer and it is sent as v5.12-rc1 material to SoC maintainers.
+> > > >
+> > > > So again: old kernel, using old bindings, new DTB.
+> > > >
+> >
+> > I don't think forward compatibility was ever considered. I've seen it
+> > being mentioned a few times on #armlinux but honestly this simply can't
+> > be achieved. This would mean being able to write complete DT bindings
+> > for a particular SoC at day 0 which will realistically never happen. You
+> > may noteven have a complete datasheet and even if you have a datasheet,
+> > it may not be complete or it may be missing hw errata that are
+> > discovered later on and need a new binding to handle.
 > 
-> But a taint flag only lasts for the current boot. If this is a drive, it
-> could still be compromised after reboot. It sounds like this taint is
-> really only for ephemeral things? "vendor shenanigans" is a pretty giant
-> scope ...
+> You do not have to write the correct DT for this, the only requirement
+> is that any changes to a node are backward-compatible, which is
+> typically the case if you add properties or compatible strings without
+> removing the old one. A bugfix in this case is also backward-compatible.
 > 
-> -Kees
+> The part that can not happen instead is to write a DT that can expose
+> features that any future kernel will use.
 > 
 
-Good point. Any suggestions?
+But I think we are speaking about the other way around were you would be
+e.g. removing properties or splitting a node is multiple different
+nodes following a different understanding of the hardware.
+And in this case, any rework of the bindings will be forbidden, like
+32b7cfbd4bb2 ("ARM: dts: at91: remove deprecated ADC properties") will
+break older kernels trying to use the new dtb.
+761f6ed85417 ("ARM: dts: at91: sama5d4: use correct rtc compatible") is
+an other case.
+I'm not sure want to keep the older properties or the older compatible
+string as a fallback for this use case.
 
+> > > However, once the firmware is updated, it may no longer be possible to
+> > > go back to the old kernel in case the new one is busted.
 > > >
-> > > Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
-> > > ---
-> > >  Documentation/admin-guide/sysctl/kernel.rst   | 1 +
-> > >  Documentation/admin-guide/tainted-kernels.rst | 6 +++++-
-> > >  include/linux/kernel.h                        | 3 ++-
-> > >  kernel/panic.c                                | 1 +
-> > >  4 files changed, 9 insertions(+), 2 deletions(-)
-> > >
-> > > diff --git a/Documentation/admin-guide/sysctl/kernel.rst b/Documentation/admin-guide/sysctl/kernel.rst
-> > > index 1d56a6b73a4e..3e1eada53504 100644
-> > > --- a/Documentation/admin-guide/sysctl/kernel.rst
-> > > +++ b/Documentation/admin-guide/sysctl/kernel.rst
-> > > @@ -1352,6 +1352,7 @@ ORed together. The letters are seen in "Tainted" line of Oops reports.
-> > >   32768  `(K)`  kernel has been live patched
-> > >   65536  `(X)`  Auxiliary taint, defined and used by for distros
-> > >  131072  `(T)`  The kernel was built with the struct randomization plugin
-> > > +262144  `(H)`  The kernel has allowed vendor shenanigans
-> > >  ======  =====  ==============================================================
-> > >
-> > >  See :doc:`/admin-guide/tainted-kernels` for more information.
-> > > diff --git a/Documentation/admin-guide/tainted-kernels.rst b/Documentation/admin-guide/tainted-kernels.rst
-> > > index ceeed7b0798d..ee2913316344 100644
-> > > --- a/Documentation/admin-guide/tainted-kernels.rst
-> > > +++ b/Documentation/admin-guide/tainted-kernels.rst
-> > > @@ -74,7 +74,7 @@ a particular type of taint. It's best to leave that to the aforementioned
-> > >  script, but if you need something quick you can use this shell command to check
-> > >  which bits are set::
-> > >
-> > > -       $ for i in $(seq 18); do echo $(($i-1)) $(($(cat /proc/sys/kernel/tainted)>>($i-1)&1));done
-> > > +       $ for i in $(seq 19); do echo $(($i-1)) $(($(cat /proc/sys/kernel/tainted)>>($i-1)&1));done
-> > >
-> > >  Table for decoding tainted state
-> > >  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > > @@ -100,6 +100,7 @@ Bit  Log  Number  Reason that got the kernel tainted
-> > >   15  _/K   32768  kernel has been live patched
-> > >   16  _/X   65536  auxiliary taint, defined for and used by distros
-> > >   17  _/T  131072  kernel was built with the struct randomization plugin
-> > > + 18  _/H  262144  kernel has allowed vendor shenanigans
-> > >  ===  ===  ======  ========================================================
-> > >
-> > >  Note: The character ``_`` is representing a blank in this table to make reading
-> > > @@ -175,3 +176,6 @@ More detailed explanation for tainting
-> > >       produce extremely unusual kernel structure layouts (even performance
-> > >       pathological ones), which is important to know when debugging. Set at
-> > >       build time.
-> > > +
-> > > + 18) ``H`` Kernel has allowed direct access to hardware and can no longer make
-> > > +     any guarantees about the stability of the device or driver.
-> > > diff --git a/include/linux/kernel.h b/include/linux/kernel.h
-> > > index f7902d8c1048..bc95486f817e 100644
-> > > --- a/include/linux/kernel.h
-> > > +++ b/include/linux/kernel.h
-> > > @@ -443,7 +443,8 @@ extern enum system_states {
-> > >  #define TAINT_LIVEPATCH                        15
-> > >  #define TAINT_AUX                      16
-> > >  #define TAINT_RANDSTRUCT               17
-> > > -#define TAINT_FLAGS_COUNT              18
-> > > +#define TAINT_RAW_PASSTHROUGH          18
-> > > +#define TAINT_FLAGS_COUNT              19
-> > >  #define TAINT_FLAGS_MAX                        ((1UL << TAINT_FLAGS_COUNT) - 1)
-> > >
-> > >  struct taint_flag {
-> > > diff --git a/kernel/panic.c b/kernel/panic.c
-> > > index 332736a72a58..dff22bd80eaf 100644
-> > > --- a/kernel/panic.c
-> > > +++ b/kernel/panic.c
-> > > @@ -386,6 +386,7 @@ const struct taint_flag taint_flags[TAINT_FLAGS_COUNT] = {
-> > >         [ TAINT_LIVEPATCH ]             = { 'K', ' ', true },
-> > >         [ TAINT_AUX ]                   = { 'X', ' ', true },
-> > >         [ TAINT_RANDSTRUCT ]            = { 'T', ' ', true },
-> > > +       [ TAINT_RAW_PASSTHROUGH ]       = { 'H', ' ', true },
-> > >  };
-> > >
-> > >  /**
-> > > --
-> > > 2.30.0
-> > >
+> >
+> > Any serious update strategy will update both the kernel and device tree
+> > at the same time, exactly like you already have to update the initramfs
+> > with the kernel as soon as it is including kernel modules.
+> > I would expect any embedded platform to actually use a container format,
+> > like a FIT image that will ship the kernel, DT and intiramfs in a single
+> > image and will allow to sign all parts.
 > 
-> -- 
-> Kees Cook
+> Embedded systems that do this have no requirement for backward
+> or forward compatibility at all, the only requirement for these is bisectability
+> of git commits.
+> 
+
+Yes and I can't see any drawbacks in this approach.
+
+> > > A similar problem can happen with the EBBR boot flow that relies on
+> > > a uefi-enabled firmware such as a u-boot, while using grub2 as the
+> > > actual boot loader. This is commonly supported across distros. While
+> > > grub2 can load a matching set of kernel+initrd+dtb from disk and run
+> > > that, this often fails in practice because u-boot needs to fill a
+> > > board specific set of DT properties (bootargs, detected memory,
+> > > mac address, ...). The usual way this gets handled is that u-boot loads
+> > > grub2 and the dtb from disk and then passes the modified dtb to grub,
+> > > which picks only kernel+initrd from disk and boots this with the dtb.
+> > >
+> > > The result is similar to case with dtb built into the firmware: after
+> > > upgrading the dtb that gets loaded by u-boot, grub can still pick
+> > > old kernels but they may not work as they did in the past. There are
+> > > obviously ways to work around it, but it does lead to user frustration.
+> > >
+> >
+> > Are there really any platforms with the dtb built into the firmware?
+> > I feel like this is a mythical creature used to scare people into keeping
+> > the DTB ABI stable. Aren't all the distribution already able to cope
+> > with keeping DTB and kernel in sync?
+> 
+> I think most traditional PowerPC systems fall into this category, most
+
+My understanding was that the traditional PPC systems had a small device
+tree and usually are not affected by driver changes but I may be wrong.
+
+> systems that boot using UEFI+grub (as I explained), and anyone who
+> uses a distro kernel on custom hardware with their own dtb.
+> 
+
+Aren't the ones using a distro kernel with a custom dtb more concerned
+by backward compatibility (i.e. new kernel with old dtb) rather than old
+kernel on new dtb? If they have an old dtb, an old kernel, and update to
+a new kernel, backward compatibility will ensure this continues to work.
+If then they work on updating their dtb, they still have the old one and
+can make the distribution match dtb and kernel. This is already handled
+properly by debian and I guess the other distributions as it is anyway
+already matching kernel and initramfs.
+
+This is what I have on my NAS:
+
+$ ls /boot
+config-4.12.0-1-marvell  initrd.img-4.12.0-1-marvell  uImage.bak
+config-4.13.0-1-marvell  initrd.img-4.13.0-1-marvell  uInitrd
+dtb                      initrd.img.old               uInitrd.bak
+dtb-4.12.0-1-marvell     lost+found                   vmlinuz
+dtb-4.13.0-1-marvell     System.map-4.12.0-1-marvell  vmlinuz-4.12.0-1-marvell
+dtbs                     System.map-4.13.0-1-marvell  vmlinuz-4.13.0-1-marvell
+initrd.img               uImage                       vmlinuz.old
+
+So dtbs and kernels are already matching even when the dtbs didn't
+change between 4.9 and 4.13.
+
+I don't have any solution for the UEFI+grub use case but I will also
+question the sanity of doing that ;)
+
+-- 
+Alexandre Belloni, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
