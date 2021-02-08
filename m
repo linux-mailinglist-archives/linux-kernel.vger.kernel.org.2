@@ -2,125 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 138C1312A25
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 06:39:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20913312A2F
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 06:46:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229736AbhBHFhB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 00:37:01 -0500
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:8772 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229609AbhBHFgh (ORCPT
+        id S229621AbhBHFoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 00:44:09 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:25879 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229587AbhBHFoG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 00:36:37 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B6020cdbc0001>; Sun, 07 Feb 2021 21:35:56 -0800
-Received: from mtl-vdi-166.wap.labs.mlnx (172.20.145.6) by
- HQMAIL107.nvidia.com (172.20.187.13) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3; Mon, 8 Feb 2021 05:35:54 +0000
-Date:   Mon, 8 Feb 2021 07:35:50 +0200
-From:   Eli Cohen <elic@nvidia.com>
-To:     Si-Wei Liu <si-wei.liu@oracle.com>
-CC:     <mst@redhat.com>, <jasowang@redhat.com>,
-        <linux-kernel@vger.kernel.org>,
-        <virtualization@lists.linux-foundation.org>,
-        <netdev@vger.kernel.org>
-Subject: Re: [PATCH 1/3] mlx5_vdpa: should exclude header length and fcs from
- mtu
-Message-ID: <20210208053550.GB137517@mtl-vdi-166.wap.labs.mlnx>
-References: <1612614564-4220-1-git-send-email-si-wei.liu@oracle.com>
+        Mon, 8 Feb 2021 00:44:06 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612762960;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2rurmJQ4opTwfFXGQeyUIRfP+jPm6sD9BukDZ25cciA=;
+        b=RUJplFY/TCs/w7sN7p7B2zvoL9NTftT3eZUljOTqGGnrB7yXCogzlu4YauFqr7GdNEf782
+        LnImN8Ly3X3xRkhrHbosJCc04l8MUBvrHcE9dn68GgAKThKAqG4I1r5ieZhGpXRsGB9gCQ
+        X+w+Cpt/sjq8M3i+LGXFf7cSJ7BVaHY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-134-IDOr3tdoNKeQ4hMRY90kYw-1; Mon, 08 Feb 2021 00:42:37 -0500
+X-MC-Unique: IDOr3tdoNKeQ4hMRY90kYw-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 10C68869ECC;
+        Mon,  8 Feb 2021 05:42:36 +0000 (UTC)
+Received: from [10.72.13.185] (ovpn-13-185.pek2.redhat.com [10.72.13.185])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E66DC5D9D5;
+        Mon,  8 Feb 2021 05:42:28 +0000 (UTC)
+Subject: Re: [PATCH V3 16/19] virtio-pci: introduce modern device module
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, shahafs@mellanox.com,
+        lulu@redhat.com, sgarzare@redhat.com, rdunlap@infradead.org
+References: <20210104065503.199631-1-jasowang@redhat.com>
+ <20210104065503.199631-17-jasowang@redhat.com>
+ <20210205103214-mutt-send-email-mst@kernel.org>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <24cb3ebe-1248-3e31-0716-cf498cf1d728@redhat.com>
+Date:   Mon, 8 Feb 2021 13:42:27 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <1612614564-4220-1-git-send-email-si-wei.liu@oracle.com>
-User-Agent: Mutt/1.9.5 (bf161cf53efb) (2018-04-13)
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1612762556; bh=kJv37owGshrcok8ORA1NrOtxbQmJyzVIQ92qZvpDxbc=;
-        h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-         Content-Type:Content-Disposition:In-Reply-To:User-Agent:
-         X-Originating-IP:X-ClientProxiedBy;
-        b=ZL+RYN+qth0RK4hfvlutVouAx1iQ4udUTeAa7NcOi1MLpPTcAbMg0wPZmMQC35hDi
-         Oj/eS4gaUErkjdZ39qRhlx3GwTunaUwVpsYRO6aZnCjVyxtgE2Gqn8D3InuCJEBBHS
-         zitjPi10A6+QOG/nJ1pe5JYKvBgIwVEL5JGzzIToIvJ679MmThK46HDqMDPMQkg2UI
-         QJtjVbgmViQcg0fx+B+vbDp6Dxw1T+8lzRTlwtSAVJmJC8laTu1CREy5fZJ8rsYah3
-         rxFnUI+7TYi8TK+i5asWB/iloLQA0JndTi5pLyikwIsWHwkDO2BlMPNK9xMb2O0Zc/
-         J9yOZSIuJAerQ==
+In-Reply-To: <20210205103214-mutt-send-email-mst@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Feb 06, 2021 at 04:29:22AM -0800, Si-Wei Liu wrote:
-> When feature VIRTIO_NET_F_MTU is negotiated on mlx5_vdpa,
-> 22 extra bytes worth of MTU length is shown in guest.
-> This is because the mlx5_query_port_max_mtu API returns
-> the "hardware" MTU value, which does not just contain the
-> Ethernet payload, but includes extra lengths starting
-> from the Ethernet header up to the FCS altogether.
-> 
-> Fix the MTU so packets won't get dropped silently.
-> 
-> Signed-off-by: Si-Wei Liu <si-wei.liu@oracle.com>
 
-Acked-by: Eli Cohen <elic@nvidia.com>
+On 2021/2/5 下午11:34, Michael S. Tsirkin wrote:
+> On Mon, Jan 04, 2021 at 02:55:00PM +0800, Jason Wang wrote:
+>> Signed-off-by: Jason Wang<jasowang@redhat.com>
+> I don't exactly get why we need to split the modern driver out,
+> and it can confuse people who are used to be seeing virtio-pci.
 
-> ---
->  drivers/vdpa/mlx5/core/mlx5_vdpa.h |  4 ++++
->  drivers/vdpa/mlx5/net/mlx5_vnet.c  | 15 ++++++++++++++-
->  2 files changed, 18 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/vdpa/mlx5/core/mlx5_vdpa.h b/drivers/vdpa/mlx5/core/mlx5_vdpa.h
-> index 08f742f..b6cc53b 100644
-> --- a/drivers/vdpa/mlx5/core/mlx5_vdpa.h
-> +++ b/drivers/vdpa/mlx5/core/mlx5_vdpa.h
-> @@ -4,9 +4,13 @@
->  #ifndef __MLX5_VDPA_H__
->  #define __MLX5_VDPA_H__
->  
-> +#include <linux/etherdevice.h>
-> +#include <linux/if_vlan.h>
->  #include <linux/vdpa.h>
->  #include <linux/mlx5/driver.h>
->  
-> +#define MLX5V_ETH_HARD_MTU (ETH_HLEN + VLAN_HLEN + ETH_FCS_LEN)
-> +
->  struct mlx5_vdpa_direct_mr {
->  	u64 start;
->  	u64 end;
-> diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> index dc88559..b8416c4 100644
-> --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> @@ -1907,6 +1907,19 @@ static int mlx5_get_vq_irq(struct vdpa_device *vdv, u16 idx)
->  	.free = mlx5_vdpa_free,
->  };
->  
-> +static int query_mtu(struct mlx5_core_dev *mdev, u16 *mtu)
-> +{
-> +	u16 hw_mtu;
-> +	int err;
-> +
-> +	err = mlx5_query_nic_vport_mtu(mdev, &hw_mtu);
-> +	if (err)
-> +		return err;
-> +
-> +	*mtu = hw_mtu - MLX5V_ETH_HARD_MTU;
-> +	return 0;
-> +}
-> +
->  static int alloc_resources(struct mlx5_vdpa_net *ndev)
->  {
->  	struct mlx5_vdpa_net_resources *res = &ndev->res;
-> @@ -1992,7 +2005,7 @@ static int mlx5v_probe(struct auxiliary_device *adev,
->  	init_mvqs(ndev);
->  	mutex_init(&ndev->reslock);
->  	config = &ndev->config;
-> -	err = mlx5_query_nic_vport_mtu(mdev, &ndev->mtu);
-> +	err = query_mtu(mdev, &ndev->mtu);
->  	if (err)
->  		goto err_mtu;
->  
-> -- 
-> 1.8.3.1
-> 
+
+The virtio-pci module still there. No user visible changes. Just some 
+codes that could be shared with other driver were split out.
+
+
+>
+> The vdpa thing so far looks like a development tool, why do
+> we care that it depends on a bit of extra code?
+
+
+If I'm not misunderstanding, trying to share codes is proposed by you here:
+
+https://lkml.org/lkml/2020/6/10/232
+
+We also had the plan to convert IFCVF to use this library.
+
+Thanks
+
+>
+
