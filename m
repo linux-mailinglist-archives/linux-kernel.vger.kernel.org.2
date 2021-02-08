@@ -2,112 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4457E314050
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 21:23:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 874DA314051
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 21:23:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236804AbhBHUWl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 15:22:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44228 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235825AbhBHS6V (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 13:58:21 -0500
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25472C0617AB
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 10:57:10 -0800 (PST)
-Received: by mail-pf1-x42b.google.com with SMTP id k13so3835906pfh.13
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 10:57:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=2/gzTW7nLFsuo+IwWrIaRt+TvJX/TxBhhTnVcO/vt5w=;
-        b=lOB8zinUAvyLO85HhB6TSwBqNnQK1ljBILQkgdqwfhQOiu4unf9pzceIqrYuZ078ty
-         wGXEoy5Tx8tezMyFsu3JPxkei8ZS+/8rZR7me9KJSJQjcW5ybLZCGNnHESTPPIX6xJS+
-         Mmt59ZFieppEbkC4SulqdsBEM9V7x6RjGQu3M=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=2/gzTW7nLFsuo+IwWrIaRt+TvJX/TxBhhTnVcO/vt5w=;
-        b=hYJte+6C4pqedbyFALkjEKniWEN2IpkIeS+1c99dGfVEMXbwl8TMa6Kot+r8sK3Vnx
-         /b64Mu7/seZIZnEIjZGELCTzuDySHWeJeMu6DRfnKmr4fLEsQpAjGk48mTlr9qlQnRMe
-         hN/yojQHVVoMXMYQ2Q1X6HymxWTgsyNDDDCzct5wdBoBC3uENPNabLsYoGCbk26uBwT1
-         AadBUSeby66hJOivc3E5m4TrowqTjLVcepVMTauOoSUvTjhAM2xV2huunK7sBRv4UAnu
-         eI9oRq+LTpAaIn0A0FIeAUrGae4drDBKJZnSXzb8tDCe4QCL/zvoKydYi41QWvvl9glN
-         +rfQ==
-X-Gm-Message-State: AOAM531Jtqyj2r64f1Y8nGvIk1cLi8HWZ6TjKEmbiOBb0FJv4hFzR2Hu
-        Hb7gYkoCLIQsdNlK0MP0BIh3kmhjsStjQA==
-X-Google-Smtp-Source: ABdhPJw7v065YuC3/mbkLcjCDyAiR6tav2E1VDnkk1wO2jAZ5ggH5FG4+RFceqHEy7gfiUQeynQvcA==
-X-Received: by 2002:a05:6a00:15cc:b029:1ba:5282:3ab8 with SMTP id o12-20020a056a0015ccb02901ba52823ab8mr19019293pfu.77.1612810629426;
-        Mon, 08 Feb 2021 10:57:09 -0800 (PST)
-Received: from chromium.org ([2620:15c:202:201:751a:ba0b:8918:c305])
-        by smtp.gmail.com with ESMTPSA id r15sm20452075pgh.39.2021.02.08.10.57.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Feb 2021 10:57:08 -0800 (PST)
-Content-Type: text/plain; charset="utf-8"
+        id S236843AbhBHUW4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 15:22:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34074 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235383AbhBHS6Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 13:58:16 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2EE0264E59;
+        Mon,  8 Feb 2021 18:57:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612810655;
+        bh=a6yQPRTEk7vZQGLw53cjDyiNa69Lzt2uZX/PWzN8GVc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OJMNNgLFVhLphi5pyDhLhbl/H5pQIXD2tlLi5irAuof0c6irk1Pz5O1AF/LUhH9NU
+         QX8PstPwqJzmcal0LpgjUaZE1rrFCaEkBJeCvc1cOrllIQDjBAxySuTpkIAcYoLkAT
+         pviHhn4PGsWXj6XeDKv6iDLg3Q9rXYMXF3R9WIyntdqElwqjh8nTfpCT3F6wr4eBpa
+         dNALaBqBaDboB9aT01mxz5GeAwNrGS/VMRg9BUkJ15fOwZ5aXBDuPF7QTO2SJlPB7J
+         EEl9DRCT4MwytpV/hJm4U0SiMMX4oXt6LCfmiN1afgfX+gNMxuLfXtaG+TSkYQHQKY
+         B9SYUIluyTuuQ==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id CD9AC40513; Mon,  8 Feb 2021 15:57:32 -0300 (-03)
+Date:   Mon, 8 Feb 2021 15:57:32 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     kan.liang@linux.intel.com
+Cc:     peterz@infradead.org, mingo@kernel.org,
+        linux-kernel@vger.kernel.org, tglx@linutronix.de, bp@alien8.de,
+        namhyung@kernel.org, jolsa@redhat.com, ak@linux.intel.com,
+        yao.jin@linux.intel.com, alexander.shishkin@linux.intel.com,
+        adrian.hunter@intel.com
+Subject: Re: [PATCH 27/49] perf util: Save pmu name to struct perf_pmu_alias
+Message-ID: <20210208185732.GK920417@kernel.org>
+References: <1612797946-18784-1-git-send-email-kan.liang@linux.intel.com>
+ <1612797946-18784-28-git-send-email-kan.liang@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <8943f0acd2944144b21b5796c07e79ff5e707aaf.camel@perches.com>
-References: <20210207041858.3317171-1-swboyd@chromium.org> <8943f0acd2944144b21b5796c07e79ff5e707aaf.camel@perches.com>
-Subject: Re: [PATCH] drm/msm/dp: Add a missing semi-colon
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     linux-kernel@vger.kernel.org, Sean Paul <sean@poorly.run>,
-        Kuogee Hsieh <khsieh@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, Lee Jones <lee.jones@linaro.org>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Joe Perches <joe@perches.com>, Rob Clark <robdclark@gmail.com>
-Date:   Mon, 08 Feb 2021 10:57:07 -0800
-Message-ID: <161281062730.76967.14597290603195200219@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1612797946-18784-28-git-send-email-kan.liang@linux.intel.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Joe Perches (2021-02-06 21:06:54)
-> On Sat, 2021-02-06 at 20:18 -0800, Stephen Boyd wrote:
-> > A missing semicolon here causes my external display to stop working.
-> > Indeed, missing the semicolon on the return statement leads to
-> > dp_panel_update_tu_timings() not existing because the compiler thinks
-> > it's part of the return statement of a void function, so it must not be
-> > important.
-> >=20
-> > =C2=A0=C2=A0$ ./scripts/bloat-o-meter before.o after.o
-> > =C2=A0=C2=A0add/remove: 1/1 grow/shrink: 0/1 up/down: 7400/-7540 (-140)
-> > =C2=A0=C2=A0Function                                     old     new   =
-delta
-> > =C2=A0=C2=A0dp_panel_update_tu_timings                     -    7400   =
-+7400
-> > =C2=A0=C2=A0_dp_ctrl_calc_tu.constprop                 18024   17900   =
- -124
-> > =C2=A0=C2=A0dp_panel_update_tu_timings.constprop        7416       -   =
--7416
-> > =C2=A0=C2=A0Total: Before=3D54440, After=3D54300, chg -0.26%
-> >=20
-> > Add a semicolon so this function works like it used to.
-> []
-> > diff --git a/drivers/gpu/drm/msm/dp/dp_ctrl.c b/drivers/gpu/drm/msm/dp/=
-dp_ctrl.c
-> []
-> > @@ -631,7 +631,7 @@ static void _dp_ctrl_calc_tu(struct dp_tu_calc_inpu=
-t *in,
-> > =C2=A0
-> >=20
-> > =C2=A0     tu =3D kzalloc(sizeof(*tu), GFP_KERNEL);
-> > =C2=A0     if (!tu)
-> > -             return
-> > +             return;
-> > =C2=A0
-> >=20
-> > =C2=A0     dp_panel_update_tu_timings(in, tu);
->=20
-> Wow, that's really unfortunate that dp_panel_update_tu_timings
-> is also void.
->=20
-> Perhaps this as YA checkpatch warning:
->=20
+Em Mon, Feb 08, 2021 at 07:25:24AM -0800, kan.liang@linux.intel.com escreveu:
+> From: Jin Yao <yao.jin@linux.intel.com>
+> 
+> On hybrid platform, one event is available on one pmu
+> (such as, cpu_core or cpu_atom).
+> 
+> This patch saves the pmu name to the pmu field of struct perf_pmu_alias.
+> Then next we can know the pmu where the event can be enabled.
+> 
+> Reviewed-by: Andi Kleen <ak@linux.intel.com>
+> Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
 > ---
+>  tools/perf/util/pmu.c | 17 +++++++++++++----
+>  tools/perf/util/pmu.h |  1 +
+>  2 files changed, 14 insertions(+), 4 deletions(-)
+> 
+> diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
+> index 44ef283..0c25457 100644
+> --- a/tools/perf/util/pmu.c
+> +++ b/tools/perf/util/pmu.c
+> @@ -283,6 +283,7 @@ void perf_pmu_free_alias(struct perf_pmu_alias *newalias)
+>  	zfree(&newalias->str);
+>  	zfree(&newalias->metric_expr);
+>  	zfree(&newalias->metric_name);
+> +	zfree(&newalias->pmu);
+>  	parse_events_terms__purge(&newalias->terms);
+>  	free(newalias);
+>  }
+> @@ -297,6 +298,10 @@ static bool perf_pmu_merge_alias(struct perf_pmu_alias *newalias,
+>  
+>  	list_for_each_entry(a, alist, list) {
+>  		if (!strcasecmp(newalias->name, a->name)) {
+> +			if (newalias->pmu && a->pmu &&
+> +			    !strcasecmp(newalias->pmu, a->pmu)) {
+> +				continue;
+> +			}
+>  			perf_pmu_update_alias(a, newalias);
+>  			perf_pmu_free_alias(newalias);
+>  			return true;
+> @@ -311,7 +316,8 @@ static int __perf_pmu__new_alias(struct list_head *list, char *dir, char *name,
+>  				 char *unit, char *perpkg,
+>  				 char *metric_expr,
+>  				 char *metric_name,
+> -				 char *deprecated)
+> +				 char *deprecated,
+> +				 char *pmu)
+>  {
+>  	struct parse_events_term *term;
+>  	struct perf_pmu_alias *alias;
+> @@ -382,6 +388,7 @@ static int __perf_pmu__new_alias(struct list_head *list, char *dir, char *name,
+>  	}
+>  	alias->per_pkg = perpkg && sscanf(perpkg, "%d", &num) == 1 && num == 1;
+>  	alias->str = strdup(newval);
+> +	alias->pmu = pmu ? strdup(pmu) : NULL;
+>  
+>  	if (deprecated)
+>  		alias->deprecated = true;
+> @@ -407,7 +414,7 @@ static int perf_pmu__new_alias(struct list_head *list, char *dir, char *name, FI
+>  	strim(buf);
+>  
+>  	return __perf_pmu__new_alias(list, dir, name, NULL, buf, NULL, NULL, NULL,
+> -				     NULL, NULL, NULL, NULL);
+> +				     NULL, NULL, NULL, NULL, NULL);
+>  }
+>  
+>  static inline bool pmu_alias_info_file(char *name)
+> @@ -797,7 +804,8 @@ void pmu_add_cpu_aliases_map(struct list_head *head, struct perf_pmu *pmu,
+>  				(char *)pe->unit, (char *)pe->perpkg,
+>  				(char *)pe->metric_expr,
+>  				(char *)pe->metric_name,
+> -				(char *)pe->deprecated);
+> +				(char *)pe->deprecated,
+> +				(char *)pe->pmu);
+>  	}
+>  }
+>  
+> @@ -870,7 +878,8 @@ static int pmu_add_sys_aliases_iter_fn(struct pmu_event *pe, void *data)
+>  				      (char *)pe->perpkg,
+>  				      (char *)pe->metric_expr,
+>  				      (char *)pe->metric_name,
+> -				      (char *)pe->deprecated);
+> +				      (char *)pe->deprecated,
+> +				      NULL);
 
-Acked-by: Stephen Boyd <swboyd@chromium.org>
+At some point I think passing the whole 'struct pme_event' pointer
+should be better?
+
+>  	}
+>  
+>  	return 0;
+> diff --git a/tools/perf/util/pmu.h b/tools/perf/util/pmu.h
+> index 8164388..0e724d5 100644
+> --- a/tools/perf/util/pmu.h
+> +++ b/tools/perf/util/pmu.h
+> @@ -72,6 +72,7 @@ struct perf_pmu_alias {
+>  	bool deprecated;
+>  	char *metric_expr;
+>  	char *metric_name;
+> +	char *pmu;
+>  };
+>  
+>  struct perf_pmu *perf_pmu__find(const char *name);
+> -- 
+> 2.7.4
+> 
+
+-- 
+
+- Arnaldo
