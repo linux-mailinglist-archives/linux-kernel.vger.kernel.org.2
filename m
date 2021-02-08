@@ -2,125 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77A393129A7
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 05:14:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 555D53129B1
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 05:20:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229629AbhBHENz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 7 Feb 2021 23:13:55 -0500
-Received: from bilbo.ozlabs.org ([203.11.71.1]:41769 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229537AbhBHENv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 7 Feb 2021 23:13:51 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S229702AbhBHEPJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 7 Feb 2021 23:15:09 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:58659 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229669AbhBHEPG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 7 Feb 2021 23:15:06 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612757618;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=OwbGbSWL1LBJv8uhMlfeoPlfAVlcGee31SXrkqRKFhU=;
+        b=cv9sH2uH5lFecs9zfWEPTsU6gEbRlxhOjMvgLKkv9LX2Bd4OpPKAjqywD4oB/tnsC/WxCz
+        G6OPnMMv+sdtpmtIWtYrNXeKm76WjnOkVnMzlYMUV4FlISi12pT07oy1Qe0IiZEM4jjhKh
+        58P7LXDdGFuYtO1VfLES327ieNZs5WU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-432-Ncn5d9ULMziacd2DWrxyRg-1; Sun, 07 Feb 2021 23:13:35 -0500
+X-MC-Unique: Ncn5d9ULMziacd2DWrxyRg-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DYt0t66nsz9sVF;
-        Mon,  8 Feb 2021 15:13:02 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1612757588;
-        bh=OO7xGWmsUnuYQgc3bx44I7oadxiJ3c+qloWk8zo8s/E=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=SQsvL45jlKpqUCEP8e1n03m12ASsrcsFM4rulmGn0o0JHZVPyDkisCyaZygcFW+w/
-         o+aNZskRfsTmGwMpW337LVHKl/7fzsO7W/0NkNFfBpab7Nq/iTWuLQYB5o7WrlGlgR
-         vrm9InatVSOATOiUKFPVdFYZ1JXjJqQkTzJjF+50Dkp6/IBYDj8ZWuJoomQ79smix5
-         Jb09M2DIY7piouMND8uNftwaBdOiAx0C8HFgF5ekV/3yH2poxd2WulSITdHQwwW01E
-         tXf52460TJkHIrDDaHHGbop5tjAoaZRaWZb+tWdI8YhTvmkDE9J66esGpcdkyVyXAX
-         oUG7BiZkbIKyw==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Rob Herring <robh@kernel.org>,
-        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-Cc:     Mimi Zohar <zohar@linux.ibm.com>,
-        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
-        "AKASHI, Takahiro" <takahiro.akashi@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Will Deacon <will@kernel.org>, Joe Perches <joe@perches.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Sasha Levin <sashal@kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        vincenzo.frascino@arm.com, Mark Rutland <mark.rutland@arm.com>,
-        dmitry.kasatkin@gmail.com, James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Allison Randal <allison@lohutok.net>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Bhupesh Sharma <bhsharma@redhat.com>,
-        Matthias Brugger <mbrugger@suse.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>, tao.li@vivo.com,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        Prakhar Srivastava <prsriva@linux.microsoft.com>,
-        balajib@linux.microsoft.com, linux-integrity@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        devicetree@vger.kernel.org,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
-Subject: Re: [PATCH v16 11/12] powerpc: Use OF alloc and free for FDT
-In-Reply-To: <CAL_JsqK1Pb9nAeL84EP2U3MQgpBsm+E_0QXmzbigWXnS245WPQ@mail.gmail.com>
-References: <20210204164135.29856-1-nramas@linux.microsoft.com>
- <20210204164135.29856-12-nramas@linux.microsoft.com>
- <CAL_JsqK1Pb9nAeL84EP2U3MQgpBsm+E_0QXmzbigWXnS245WPQ@mail.gmail.com>
-Date:   Mon, 08 Feb 2021 15:12:59 +1100
-Message-ID: <87zh0fnqno.fsf@mpe.ellerman.id.au>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CC93A427C1;
+        Mon,  8 Feb 2021 04:13:33 +0000 (UTC)
+Received: from [10.72.13.185] (ovpn-13-185.pek2.redhat.com [10.72.13.185])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 97DF262A22;
+        Mon,  8 Feb 2021 04:13:24 +0000 (UTC)
+Subject: Re: [PATCH v3 09/13] vhost/vdpa: remove vhost_vdpa_config_validate()
+To:     Stefano Garzarella <sgarzare@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     virtualization@lists.linux-foundation.org,
+        Xie Yongji <xieyongji@bytedance.com>, kvm@vger.kernel.org,
+        Laurent Vivier <lvivier@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>,
+        linux-kernel@vger.kernel.org
+References: <20210204172230.85853-1-sgarzare@redhat.com>
+ <20210204172230.85853-10-sgarzare@redhat.com>
+ <6919d2d4-cc8e-2b67-2385-35803de5e38b@redhat.com>
+ <20210205091651.xfcdyuvwwzew2ufo@steredhat>
+ <20210205083108-mutt-send-email-mst@kernel.org>
+ <20210205141707.clbckauxnrzd7nmv@steredhat>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <d86393d3-67b6-6524-5f9f-8634ec4f9b8f@redhat.com>
+Date:   Mon, 8 Feb 2021 12:13:23 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20210205141707.clbckauxnrzd7nmv@steredhat>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rob Herring <robh@kernel.org> writes:
-> On Thu, Feb 4, 2021 at 10:42 AM Lakshmi Ramasubramanian
-> <nramas@linux.microsoft.com> wrote:
-...
->> diff --git a/arch/powerpc/kexec/elf_64.c b/arch/powerpc/kexec/elf_64.c
->> index d0e459bb2f05..51d2d8eb6c1b 100644
->> --- a/arch/powerpc/kexec/elf_64.c
->> +++ b/arch/powerpc/kexec/elf_64.c
->> @@ -19,6 +19,7 @@
->>  #include <linux/kexec.h>
->>  #include <linux/libfdt.h>
->>  #include <linux/module.h>
->> +#include <linux/of.h>
->>  #include <linux/of_fdt.h>
->>  #include <linux/slab.h>
->>  #include <linux/types.h>
->> @@ -32,7 +33,7 @@ static void *elf64_load(struct kimage *image, char *kernel_buf,
->>         unsigned int fdt_size;
->>         unsigned long kernel_load_addr;
->>         unsigned long initrd_load_addr = 0, fdt_load_addr;
->> -       void *fdt;
->> +       void *fdt = NULL;
->>         const void *slave_code;
->>         struct elfhdr ehdr;
->>         char *modified_cmdline = NULL;
->> @@ -103,18 +104,12 @@ static void *elf64_load(struct kimage *image, char *kernel_buf,
->>         }
+
+On 2021/2/5 下午10:17, Stefano Garzarella wrote:
+> On Fri, Feb 05, 2021 at 08:32:37AM -0500, Michael S. Tsirkin wrote:
+>> On Fri, Feb 05, 2021 at 10:16:51AM +0100, Stefano Garzarella wrote:
+>>> On Fri, Feb 05, 2021 at 11:27:32AM +0800, Jason Wang wrote:
+>>> >
+>>> > On 2021/2/5 上午1:22, Stefano Garzarella wrote:
+>>> > > get_config() and set_config() callbacks in the 'struct 
+>>> vdpa_config_ops'
+>>> > > usually already validated the inputs. Also now they can return 
+>>> an error,
+>>> > > so we don't need to validate them here anymore.
+>>> > >
+>>> > > Let's use the return value of these callbacks and return it in 
+>>> case of
+>>> > > error in vhost_vdpa_get_config() and vhost_vdpa_set_config().
+>>> > >
+>>> > > Originally-by: Xie Yongji <xieyongji@bytedance.com>
+>>> > > Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
+>>> > > ---
+>>> > >  drivers/vhost/vdpa.c | 41 
+>>> +++++++++++++----------------------------
+>>> > >  1 file changed, 13 insertions(+), 28 deletions(-)
+>>> > >
+>>> > > diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
+>>> > > index ef688c8c0e0e..d61e779000a8 100644
+>>> > > --- a/drivers/vhost/vdpa.c
+>>> > > +++ b/drivers/vhost/vdpa.c
+>>> > > @@ -185,51 +185,35 @@ static long vhost_vdpa_set_status(struct 
+>>> vhost_vdpa *v, u8 __user *statusp)
+>>> > >      return 0;
+>>> > >  }
+>>> > > -static int vhost_vdpa_config_validate(struct vhost_vdpa *v,
+>>> > > -                      struct vhost_vdpa_config *c)
+>>> > > -{
+>>> > > -    long size = 0;
+>>> > > -
+>>> > > -    switch (v->virtio_id) {
+>>> > > -    case VIRTIO_ID_NET:
+>>> > > -        size = sizeof(struct virtio_net_config);
+>>> > > -        break;
+>>> > > -    }
+>>> > > -
+>>> > > -    if (c->len == 0)
+>>> > > -        return -EINVAL;
+>>> > > -
+>>> > > -    if (c->len > size - c->off)
+>>> > > -        return -E2BIG;
+>>> > > -
+>>> > > -    return 0;
+>>> > > -}
+>>> > > -
+>>> > >  static long vhost_vdpa_get_config(struct vhost_vdpa *v,
+>>> > >                    struct vhost_vdpa_config __user *c)
+>>> > >  {
+>>> > >      struct vdpa_device *vdpa = v->vdpa;
+>>> > >      struct vhost_vdpa_config config;
+>>> > >      unsigned long size = offsetof(struct vhost_vdpa_config, buf);
+>>> > > +    long ret;
+>>> > >      u8 *buf;
+>>> > >      if (copy_from_user(&config, c, size))
+>>> > >          return -EFAULT;
+>>> > > -    if (vhost_vdpa_config_validate(v, &config))
+>>> > > +    if (config.len == 0)
+>>> > >          return -EINVAL;
+>>> > >      buf = kvzalloc(config.len, GFP_KERNEL);
+>>> >
+>>> >
+>>> > Then it means usersapce can allocate a very large memory.
+>>>
+>>> Good point.
+>>>
+>>> >
+>>> > Rethink about this, we should limit the size here (e.g PAGE_SIZE) or
+>>> > fetch the config size first (either through a config ops as you
+>>> > suggested or a variable in the vdpa device that is initialized during
+>>> > device creation).
+>>>
+>>> Maybe PAGE_SIZE is okay as a limit.
+>>>
+>>> If instead we want to fetch the config size, then better a config 
+>>> ops in my
+>>> opinion, to avoid adding a new parameter to __vdpa_alloc_device().
+>>>
+>>> I vote for PAGE_SIZE, but it isn't a strong opinion.
+>>>
+>>> What do you and @Michael suggest?
+>>>
+>>> Thanks,
+>>> Stefano
 >>
->>         fdt_size = fdt_totalsize(initial_boot_params) * 2;
->> -       fdt = kmalloc(fdt_size, GFP_KERNEL);
->> +       fdt = of_alloc_and_init_fdt(fdt_size);
->>         if (!fdt) {
->>                 pr_err("Not enough memory for the device tree.\n");
->>                 ret = -ENOMEM;
->>                 goto out;
->>         }
->> -       ret = fdt_open_into(initial_boot_params, fdt, fdt_size);
->> -       if (ret < 0) {
->> -               pr_err("Error setting up the new device tree.\n");
->> -               ret = -EINVAL;
->> -               goto out;
->> -       }
+>> Devices know what the config size is. Just have them provide it.
 >>
->>         ret = setup_new_fdt_ppc64(image, fdt, initrd_load_addr,
 >
-> The first thing this function does is call setup_new_fdt() which first
-> calls of_kexec_setup_new_fdt(). (Note, I really don't understand the
-> PPC code split. It looks like there's a 32-bit and 64-bit split, but
-> 32-bit looks broken to me. Nothing ever calls setup_new_fdt() except
-> setup_new_fdt_ppc64()).
+> Okay, I'll add get_config_size() callback in vdpa_config_ops and I'll 
+> leave vhost_vdpa_config_validate() that will use that callback instead 
+> of 'virtio_id' to get the config size from the device.
+>
+> At this point I think I can remove the "vdpa: add return value to 
+> get_config/set_config callbacks" patch and leave void return to 
+> get_config/set_config callbacks.
+>
+> Does this make sense?
+>
+> Thanks,
+> Stefano
 
-I think that's because 32-bit doesn't support kexec_file_load().
 
-cheers
+Yes I think so.
+
+Thanks
+
+
