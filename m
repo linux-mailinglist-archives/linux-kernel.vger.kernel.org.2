@@ -2,122 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 028A0313F96
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 20:52:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4993A313F3A
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 20:38:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236514AbhBHTvc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 14:51:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49424 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235430AbhBHSGU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 13:06:20 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 94B8E64E87;
-        Mon,  8 Feb 2021 18:00:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612807210;
-        bh=6W5UZo0gn3fhyaPejtSaN2jD0RlAyYYIuZAW2VcKfho=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=R/K11GjNJjP0Vp2LulkHDAXC/ZryRHcsyu1zwgMd82cf/rfp1/k6/6YGese9TsZhD
-         vsg9lUzS47WYxWXndNZCkl3AC6TeH1XMTYYm+cskDwTbX+b8pybbP3vmw9ikbTSXzU
-         9cXy0TCXDmc9PVpJEsL1Z5oZZdI5ZEqm0KYOcG4KQqu7o7NW5jnQPJSfNBWu7R4vEl
-         ddodhR1sRTqwM/nT88Q3xkMtJHZdDPx2496cHZ1sO8EDIHl/rtQ7UginmW5km3F0av
-         ARZ1ZKoFVFn3OB3zbFtUo+/xuDlGNfg05NWsBFOcThZsnkJ9uYpgKE+JD4qQT2I4Ln
-         jOfWv7A/mq2NA==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Johannes Berg <johannes.berg@intel.com>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        Arnd Bergmann <arnd@arndb.de>, Jessica Yu <jeyu@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.4 2/2] init/gcov: allow CONFIG_CONSTRUCTORS on UML to fix module gcov
-Date:   Mon,  8 Feb 2021 13:00:07 -0500
-Message-Id: <20210208180007.2092581-2-sashal@kernel.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210208180007.2092581-1-sashal@kernel.org>
-References: <20210208180007.2092581-1-sashal@kernel.org>
+        id S236427AbhBHTiK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 14:38:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60680 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235103AbhBHSDe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 13:03:34 -0500
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20197C061797
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 10:01:55 -0800 (PST)
+Received: by mail-wr1-x42a.google.com with SMTP id q7so18239453wre.13
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 10:01:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=15qU8cK0fgAua4gEd/w/zhOHPh1Gn9liZ7KcNZSIbsw=;
+        b=ZtQCs63tKC4YNjAK5YtSkl6sRGMzqMgDk9JBWfHaip5ck0jSZBxtvpIAaRPwa/4Io+
+         k4klxIU6HWNuAA8dl5xtXzodHH2zZc8AQ1ya6+D+UEWTgJ1zFvzsn0md+EIMZ2rO/bkC
+         Eb7Ec+eDvh3Kz15Q8ihsCelhajfqZzJhsaf1coknsthLTdni8EkTINxV5UQMpmoOuycS
+         Ap7BuWa6I/xJ1UrEe55XzHpbhp8AApMKsC6y05LrOwdVM6An8kCcJbIp00GVWf7tGqja
+         8o3faYsFFgVANYKB+UOdAZC54tVQWlUWy0yOZ0PHmetW5fcrfPF7sLKZZ+jpEZLaWa/k
+         lwcw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=15qU8cK0fgAua4gEd/w/zhOHPh1Gn9liZ7KcNZSIbsw=;
+        b=td9Y5TKGAFPQrQfW1RAc/rPIlSzcn+6vV4Ii/NTf4r0nBZHmVkA3RCJuoCmQu3nJdB
+         wIN0OUJNDwpC8pfafpU4LecnTvwadYR/JMEp6sAwDZ0eDbu/VFj2jF80bBdKAuoo906L
+         T8d3qVUQrZjjT77j6PPagJd3Cl8uWlVpmkPzTbdp93wRhRZRsfH4CRqJEI5pTwJAt0cx
+         EPMA5BI9NPfwM5o5g02iHkxPvDUerqOwlUCD643ALGvExwndbi+HR2/5E/WH4n7wygOC
+         DtqwOQW+gPGyL4UlhD17wKFPLHWezOBGJZ+C/mffRBP8YD2egvMQApz5d1NqMuDLfUP8
+         NzWg==
+X-Gm-Message-State: AOAM5330drB4/+Z0RINjQSyHG07WTDet5DBJrN39bKvXqxfmiQx5HEk9
+        TZwpAB2JL8wUqxPh7mX/1DU0SA==
+X-Google-Smtp-Source: ABdhPJwrqGjJeWdA+BLfOl3RPdiRzmOJ7nilmxlHvJ0QS3yn9XOx2bYatc29bZoEoaYUpqBYS3z34w==
+X-Received: by 2002:adf:bb54:: with SMTP id x20mr13257775wrg.112.1612807313722;
+        Mon, 08 Feb 2021 10:01:53 -0800 (PST)
+Received: from srini-hackbox.lan (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.gmail.com with ESMTPSA id l2sm21194937wmq.17.2021.02.08.10.01.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Feb 2021 10:01:53 -0800 (PST)
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To:     broonie@kernel.org
+Cc:     perex@perex.cz, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, lgirdwood@gmail.com,
+        devicetree@vger.kernel.org, robh+dt@kernel.org,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: [PATCH v3 0/7] ASoC: codecs: add support for LPASS Codec TX and RX macros
+Date:   Mon,  8 Feb 2021 18:01:02 +0000
+Message-Id: <20210208180109.518-1-srinivas.kandagatla@linaro.org>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+Thanks for reviewing v2, here is v3 patchset addressing comments from v2.
 
-[ Upstream commit 55b6f763d8bcb5546997933105d66d3e6b080e6a ]
+This patchset adds support for two Codec Macro blocks(TX and RX) available in
+Qualcomm LPASS (Low Power Audio SubSystem).
 
-On ARCH=um, loading a module doesn't result in its constructors getting
-called, which breaks module gcov since the debugfs files are never
-registered.  On the other hand, in-kernel constructors have already been
-called by the dynamic linker, so we can't call them again.
+There are WSA, VA, TX and RX Macros on LPASS IP, each of the Macro block
+has specific connectivity like WSA Macros are intended to connect
+to WSA Smart speaker codecs via SoundWire. VA Macro is intended for DMICs,
+and TX/RX for Analog codecs via SoundWire like other WCD938x Codecs to provide
+headphone/ear/lineout/amic/dmic etc ..
 
-Get out of this conundrum by allowing CONFIG_CONSTRUCTORS to be
-selected, but avoiding the in-kernel constructor calls.
+Most of the work is derived from downstream Qualcomm kernels.
+Credits to various Qualcomm authors from Patrick Lai's team who have
+contributed to this code.
 
-Also remove the "if !UML" from GCOV selecting CONSTRUCTORS now, since we
-really do want CONSTRUCTORS, just not kernel binary ones.
+This patchset has been tested on support to SM8250 MTP Development Board.
+This board has 2 WSA881X smart speakers with onboard DMIC connected to
+internal LPASS codec via WSA  and VA macros respectively and WCD938x
+TX and RX connected via Soundwire via TX and RX Macros reseptively.
 
-Link: https://lkml.kernel.org/r/20210120172041.c246a2cac2fb.I1358f584b76f1898373adfed77f4462c8705b736@changeid
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
-Reviewed-by: Peter Oberparleiter <oberpar@linux.ibm.com>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Jessica Yu <jeyu@kernel.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- init/Kconfig        | 1 -
- init/main.c         | 8 +++++++-
- kernel/gcov/Kconfig | 2 +-
- 3 files changed, 8 insertions(+), 3 deletions(-)
+Thanks,
+srini
 
-diff --git a/init/Kconfig b/init/Kconfig
-index 5d8ada360ca34..d66df29778fe1 100644
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -18,7 +18,6 @@ config DEFCONFIG_LIST
- 
- config CONSTRUCTORS
- 	bool
--	depends on !UML
- 
- config IRQ_WORK
- 	bool
-diff --git a/init/main.c b/init/main.c
-index 88159063baa17..dd4727c0ab0a5 100644
---- a/init/main.c
-+++ b/init/main.c
-@@ -690,7 +690,13 @@ asmlinkage __visible void __init start_kernel(void)
- /* Call all constructor functions linked into the kernel. */
- static void __init do_ctors(void)
- {
--#ifdef CONFIG_CONSTRUCTORS
-+/*
-+ * For UML, the constructors have already been called by the
-+ * normal setup code as it's just a normal ELF binary, so we
-+ * cannot do it again - but we do need CONFIG_CONSTRUCTORS
-+ * even on UML for modules.
-+ */
-+#if defined(CONFIG_CONSTRUCTORS) && !defined(CONFIG_UML)
- 	ctor_fn_t *fn = (ctor_fn_t *) __ctors_start;
- 
- 	for (; fn < (ctor_fn_t *) __ctors_end; fn++)
-diff --git a/kernel/gcov/Kconfig b/kernel/gcov/Kconfig
-index 1276aabaab550..2aef7d9e3e5c2 100644
---- a/kernel/gcov/Kconfig
-+++ b/kernel/gcov/Kconfig
-@@ -3,7 +3,7 @@ menu "GCOV-based kernel profiling"
- config GCOV_KERNEL
- 	bool "Enable gcov-based kernel profiling"
- 	depends on DEBUG_FS
--	select CONSTRUCTORS if !UML
-+	select CONSTRUCTORS
- 	default n
- 	---help---
- 	This option enables gcov-based code profiling (e.g. for code coverage
+Changes since v2:
+	- Suffix some of the simple on/off control names with "Switch"
+
+Srinivas Kandagatla (7):
+  ASoC: qcom: dt-bindings: add bindings for lpass rx macro codec
+  ASoC: codecs: lpass-rx-macro: add support for lpass rx macro
+  ASoC: codecs: lpass-rx-macro: add dapm widgets and route
+  ASoC: codecs: lpass-rx-macro: add iir widgets
+  ASoC: qcom: dt-bindings: add bindings for lpass tx macro codec
+  ASoC: codecs: lpass-tx-macro: add support for lpass tx macro
+  ASoC: codecs: lpass-tx-macro: add dapm widgets and route
+
+ .../bindings/sound/qcom,lpass-rx-macro.yaml   |   62 +
+ .../bindings/sound/qcom,lpass-tx-macro.yaml   |   67 +
+ sound/soc/codecs/Kconfig                      |   10 +
+ sound/soc/codecs/Makefile                     |    4 +
+ sound/soc/codecs/lpass-rx-macro.c             | 3604 +++++++++++++++++
+ sound/soc/codecs/lpass-tx-macro.c             | 1877 +++++++++
+ 6 files changed, 5624 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/qcom,lpass-rx-macro.yaml
+ create mode 100644 Documentation/devicetree/bindings/sound/qcom,lpass-tx-macro.yaml
+ create mode 100644 sound/soc/codecs/lpass-rx-macro.c
+ create mode 100644 sound/soc/codecs/lpass-tx-macro.c
+
 -- 
-2.27.0
+2.21.0
 
