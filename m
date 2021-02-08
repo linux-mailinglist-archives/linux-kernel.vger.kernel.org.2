@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E29D6313932
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 17:22:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E6C3313935
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 17:22:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231713AbhBHQWG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 11:22:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55764 "EHLO mail.kernel.org"
+        id S234344AbhBHQWT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 11:22:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55766 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233153AbhBHPMj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S232820AbhBHPMj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 8 Feb 2021 10:12:39 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 21E7C64EF7;
-        Mon,  8 Feb 2021 15:09:28 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D0B4664EF9;
+        Mon,  8 Feb 2021 15:09:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612796969;
-        bh=UV3Efl6CKs8qeOYnS9d6yxg4CDBBDMs3pgHOmtryJNA=;
+        s=korg; t=1612796972;
+        bh=+DAaZtytg7qok0bS2wOd/s+1Ax5St6pW1feTfj2T0OM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XdXiwgNvA/wj9PFxEh6mw37sVBgZzgcdfl+TAfmNXKMQ9QY2DTmVK24S4gblxhICu
-         vx41qET32KW+DPfQ1DHJu/kELeQrpDTlIF4zYJCOLBwXxypmqXNpABmgO9BpC18b0a
-         ZNqpXyai6eoIDUn0xRM3R43a87uRYh3hG3fpqjUY=
+        b=nGT95G9tY7hOxBtYj80gvf0e/sH8fvV3ATKNUETf1jdYooUG2eLtDufr5vasLgXrG
+         rd0tjW19GzOpO24ZjEMbQb2kX2x/5+p1Q0n5uPja6FXCVObb9CCn3G5Y0rmHUB5/J4
+         2epH2Fwp7MDfwYMLVGHSlOBzX5IY14Nb4UvUDEkM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Shawn Guo <shawn.guo@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        stable@vger.kernel.org, Alexey Dobriyan <adobriyan@gmail.com>,
+        Po-Hsu Lin <po-hsu.lin@canonical.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 04/65] arm64: dts: qcom: c630: keep both touchpad devices enabled
-Date:   Mon,  8 Feb 2021 16:00:36 +0100
-Message-Id: <20210208145810.409407829@linuxfoundation.org>
+Subject: [PATCH 5.4 05/65] Input: i8042 - unbreak Pegatron C15B
+Date:   Mon,  8 Feb 2021 16:00:37 +0100
+Message-Id: <20210208145810.445834724@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210208145810.230485165@linuxfoundation.org>
 References: <20210208145810.230485165@linuxfoundation.org>
@@ -40,71 +41,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shawn Guo <shawn.guo@linaro.org>
+From: Alexey Dobriyan <adobriyan@gmail.com>
 
-[ Upstream commit a9164910c5ceed63551280a4a0b85d37ac2b19a5 ]
+[ Upstream commit a3a9060ecad030e2c7903b2b258383d2c716b56c ]
 
-Indicated by AML code in ACPI table, the touchpad in-use could be found
-on two possible slave addresses on &i2c3, i.e. hid@15 and hid@2c.  And
-which one is in-use can be determined by reading another address on the
-I2C bus.  Unfortunately, for DT boot, there is currently no support in
-firmware to make this check and patch DT accordingly.  This results in
-a non-functional touchpad on those C630 devices with hid@2c.
+g++ reports
 
-As i2c-hid driver will stop probing the device if there is nothing on
-the slave address, we can actually keep both devices enabled in DT, and
-i2c-hid driver will only probe the existing one.  The only problem is
-that we cannot set up pinctrl in both device nodes, as two devices with
-the same pinctrl will cause pin conflict that makes the second device
-fail to probe.  Let's move the pinctrl state up to parent node to solve
-this problem.  As the pinctrl state of parent node is already defined in
-sdm845.dtsi, it ends up with overwriting pinctrl-0 with i2c3_hid_active
-state added in there.
+	drivers/input/serio/i8042-x86ia64io.h:225:3: error: ‘.matches’ designator used multiple times in the same initializer list
 
-Fixes: 11d0e4f28156 ("arm64: dts: qcom: c630: Polish i2c-hid devices")
-Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
-Link: https://lore.kernel.org/r/20210102045940.26874-1-shawn.guo@linaro.org
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+C99 semantics is that last duplicated initialiser wins,
+so DMI entry gets overwritten.
+
+Fixes: a48491c65b51 ("Input: i8042 - add ByteSpeed touchpad to noloop table")
+Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
+Acked-by: Po-Hsu Lin <po-hsu.lin@canonical.com>
+Link: https://lore.kernel.org/r/20201228072335.GA27766@localhost.localdomain
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts | 10 ++--------
- 1 file changed, 2 insertions(+), 8 deletions(-)
+ drivers/input/serio/i8042-x86ia64io.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts b/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
-index f539b3655f6b9..e638f216dbfb3 100644
---- a/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
-+++ b/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
-@@ -243,6 +243,8 @@
- &i2c3 {
- 	status = "okay";
- 	clock-frequency = <400000>;
-+	/* Overwrite pinctrl-0 from sdm845.dtsi */
-+	pinctrl-0 = <&qup_i2c3_default &i2c3_hid_active>;
- 
- 	tsel: hid@15 {
- 		compatible = "hid-over-i2c";
-@@ -250,9 +252,6 @@
- 		hid-descr-addr = <0x1>;
- 
- 		interrupts-extended = <&tlmm 37 IRQ_TYPE_LEVEL_HIGH>;
--
--		pinctrl-names = "default";
--		pinctrl-0 = <&i2c3_hid_active>;
- 	};
- 
- 	tsc2: hid@2c {
-@@ -261,11 +260,6 @@
- 		hid-descr-addr = <0x20>;
- 
- 		interrupts-extended = <&tlmm 37 IRQ_TYPE_LEVEL_HIGH>;
--
--		pinctrl-names = "default";
--		pinctrl-0 = <&i2c3_hid_active>;
--
--		status = "disabled";
- 	};
- };
- 
+diff --git a/drivers/input/serio/i8042-x86ia64io.h b/drivers/input/serio/i8042-x86ia64io.h
+index eca931da76c3a..b7dbcbac3a1a5 100644
+--- a/drivers/input/serio/i8042-x86ia64io.h
++++ b/drivers/input/serio/i8042-x86ia64io.h
+@@ -219,6 +219,8 @@ static const struct dmi_system_id __initconst i8042_dmi_noloop_table[] = {
+ 			DMI_MATCH(DMI_SYS_VENDOR, "PEGATRON CORPORATION"),
+ 			DMI_MATCH(DMI_PRODUCT_NAME, "C15B"),
+ 		},
++	},
++	{
+ 		.matches = {
+ 			DMI_MATCH(DMI_SYS_VENDOR, "ByteSpeed LLC"),
+ 			DMI_MATCH(DMI_PRODUCT_NAME, "ByteSpeed Laptop C15B"),
 -- 
 2.27.0
 
