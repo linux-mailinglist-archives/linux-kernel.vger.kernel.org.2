@@ -2,90 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA7B4312F2F
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 11:39:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87A33312F2D
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Feb 2021 11:39:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232650AbhBHKiY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 05:38:24 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:43366 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231969AbhBHK0j (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 05:26:39 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612779913;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
+        id S232591AbhBHKhy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 05:37:54 -0500
+Received: from mx2.suse.de ([195.135.220.15]:44128 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232339AbhBHK0Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 05:26:24 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1612779937; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=ZLTt/jNc10VT6gCbdoD+Af1czjbyy0IIAwPBoEn8bfI=;
-        b=RdR/5tHMGLrB9Yli9GGVEuvgADv2VM8ivNOePwn6D6Bkw1ZMiM/e1A+jb7hVKVVWveCnYD
-        L2Xecsh51Qq0V0JIyduYL1/mtdcso+FxTh1dKmaReTBhbAPCTZgIA3p+ARVrbZxeP+lIBW
-        IGnRZPMik0gzSQ7ZD/DsGTpgcdiS6PY=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-548-9GVVxEFsMxSzcwpw7rRejQ-1; Mon, 08 Feb 2021 05:25:10 -0500
-X-MC-Unique: 9GVVxEFsMxSzcwpw7rRejQ-1
-Received: by mail-wm1-f70.google.com with SMTP id u138so3331472wmu.8
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 02:25:10 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ZLTt/jNc10VT6gCbdoD+Af1czjbyy0IIAwPBoEn8bfI=;
-        b=WNw590WGs99Zw5kNSFuSe/zj5cDp/aWKhxc6fK86kbTIWeuHAgXDov33SGQ9HLCxKE
-         NgkRr98bzGnqoR0VjtPsHUQ0OV8PoQ69EYN5O6Cr9mlv5lQsjkYQYzrBG4PS4k2i0ym/
-         Lf1ON0qhUOY1VRXDjoWX6Hea0BeS0VDznr45Sn5r5r4SHcDfGck5vUigi6WpNd01eaCu
-         skw1vE2lYL2TvoXUE1Zo8IV8e+usvneISCaBTYx/T878nyVY0N9S/FZr2P5bvWT71GyX
-         yRP8c+LwQNl4rYbWU5qgyja25i2jx1YjPN0eCpLx0GLtJJpbGWsw/wqEfTBhvznrDBOx
-         5H4Q==
-X-Gm-Message-State: AOAM531kKa9zRVdqfQC3pPRnCx4kUzcMFC1/9XoTwj9MCzlBjaCqvxgQ
-        RbbQZlY2CAS48mkfQNnoaVKFzDKfyyKBtcV0633WMpPbUh7EStIfgyb7goDfxUzUp/OfM/LWHCN
-        cSrqz3a2G4Cmq+Cs3R+RiGhbT
-X-Received: by 2002:a05:600c:4a22:: with SMTP id c34mr11448628wmp.167.1612779909314;
-        Mon, 08 Feb 2021 02:25:09 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyDJbuA+bT9BWr/82QdoxgeJVD7iz8YuJ2/fpkdBD9z6cfpfXGhTBk0ggBKywLZGIhZPyDfTw==
-X-Received: by 2002:a05:600c:4a22:: with SMTP id c34mr11448613wmp.167.1612779909131;
-        Mon, 08 Feb 2021 02:25:09 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
-        by smtp.gmail.com with ESMTPSA id t2sm14392608wru.53.2021.02.08.02.25.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Feb 2021 02:25:08 -0800 (PST)
-To:     Jing Liu <jing2.liu@linux.intel.com>, seanjc@google.com,
-        kvm@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, jing2.liu@intel.com
-References: <20210207154256.52850-1-jing2.liu@linux.intel.com>
- <20210207154256.52850-4-jing2.liu@linux.intel.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH RFC 3/7] kvm: x86: XSAVE state and XFD MSRs context switch
-Message-ID: <ae5b0195-b04f-8eef-9e0d-2a46c761d2d5@redhat.com>
-Date:   Mon, 8 Feb 2021 11:25:07 +0100
+        bh=H06JaN8fug7i/Y6iWgQvk85J7AdPgKO0vB3JapM+Xzg=;
+        b=aHXkP37LPeLYPJd9d/4mnBH5UhjKIRswKzDjCda09pL7gTvBGmQlKIdnx1wGtxJXs4XPKi
+        iTSXkUxg3Ari8esrC13hc3v8V3jg/77F7y4+pC9PvSXlWOxAvyWqDU7Evwrh9Xez0KBvE0
+        wJFu2v3CJ1gkmP5IwLoiJPTU5N/ZgA8=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 2ED36AE74;
+        Mon,  8 Feb 2021 10:25:37 +0000 (UTC)
+Subject: Re: [PATCH 6/7] xen/evtch: use smp barriers for user event ring
+To:     Andrew Cooper <andrew.cooper3@citrix.com>,
+        Jan Beulich <jbeulich@suse.com>
+Cc:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org
+References: <20210206104932.29064-1-jgross@suse.com>
+ <20210206104932.29064-7-jgross@suse.com>
+ <2d354cad-3413-a416-0bc1-01d03e1f41cd@citrix.com>
+ <dfa40af0-2706-2540-c59a-6593c1c0553a@suse.com>
+ <e68f76a5-27ce-a6d8-88a3-1e8fa1c30659@citrix.com>
+From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+Message-ID: <60ca5c18-bbf5-5d3d-1af6-f4692077c44e@suse.com>
+Date:   Mon, 8 Feb 2021 11:25:36 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-In-Reply-To: <20210207154256.52850-4-jing2.liu@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <e68f76a5-27ce-a6d8-88a3-1e8fa1c30659@citrix.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="GxFWARbBMCsXSAbZH8aPotGcUQpIZmcPb"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/02/21 16:42, Jing Liu wrote:
-> |In KVM, "guest_fpu" serves for any guest task working on this vcpu 
-> during vmexit and vmenter. We provide a pre-allocated guest_fpu space 
-> and entire "guest_fpu.state_mask" to avoid each dynamic features 
-> detection on each vcpu task. Meanwhile, to ensure correctly 
-> xsaves/xrstors guest state, set IA32_XFD as zero during vmexit and vmenter.|
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--GxFWARbBMCsXSAbZH8aPotGcUQpIZmcPb
+Content-Type: multipart/mixed; boundary="84oCDWIr6PGk2QsocQ05WTzxKaZRsOV9D";
+ protected-headers="v1"
+From: =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+To: Andrew Cooper <andrew.cooper3@citrix.com>, Jan Beulich <jbeulich@suse.com>
+Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+ Stefano Stabellini <sstabellini@kernel.org>, linux-kernel@vger.kernel.org,
+ xen-devel@lists.xenproject.org
+Message-ID: <60ca5c18-bbf5-5d3d-1af6-f4692077c44e@suse.com>
+Subject: Re: [PATCH 6/7] xen/evtch: use smp barriers for user event ring
+References: <20210206104932.29064-1-jgross@suse.com>
+ <20210206104932.29064-7-jgross@suse.com>
+ <2d354cad-3413-a416-0bc1-01d03e1f41cd@citrix.com>
+ <dfa40af0-2706-2540-c59a-6593c1c0553a@suse.com>
+ <e68f76a5-27ce-a6d8-88a3-1e8fa1c30659@citrix.com>
+In-Reply-To: <e68f76a5-27ce-a6d8-88a3-1e8fa1c30659@citrix.com>
 
-Most guests will not need the whole xstate feature set.  So perhaps you 
-  could set XFD to the host value | the guest value, trap #NM if the 
-host XFD is zero, and possibly reflect the exception to the guest's XFD 
-and XFD_ERR.
+--84oCDWIr6PGk2QsocQ05WTzxKaZRsOV9D
+Content-Type: multipart/mixed;
+ boundary="------------8C6E44BB372F7E35D27C6418"
+Content-Language: en-US
 
-In addition, loading the guest XFD MSRs should use the MSR autoload 
-feature (add_atomic_switch_msr).
+This is a multi-part message in MIME format.
+--------------8C6E44BB372F7E35D27C6418
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
 
-Paolo
+On 08.02.21 11:23, Andrew Cooper wrote:
+> On 08/02/2021 09:50, Jan Beulich wrote:
+>> On 08.02.2021 10:44, Andrew Cooper wrote:
+>>> On 06/02/2021 10:49, Juergen Gross wrote:
+>>>> The ring buffer for user events is used in the local system only, so=
 
+>>>> smp barriers are fine for ensuring consistency.
+>>>>
+>>>> Reported-by: Andrew Cooper <andrew.cooper3@citrix.com>
+>>>> Signed-off-by: Juergen Gross <jgross@suse.com>
+>>> These need to be virt_* to not break in UP builds (on non-x86).
+>> Initially I though so, too, but isn't the sole vCPU of such a
+>> VM getting re-scheduled to a different pCPU in the hypervisor
+>> an implied barrier anyway?
+>=20
+> Yes, but that isn't relevant to why UP builds break.
+>=20
+> smp_*() degrade to compiler barriers in UP builds, and while that's
+> mostly fine for x86 read/write, its not fine for ARM barriers.
+>=20
+> virt_*() exist specifically to be smp_*() which don't degrade to broken=
+
+> in UP builds.
+
+But the barrier is really only necessary to serialize accesses within
+the guest against each other. There is no guest outside party involved.
+
+In case you are right this would mean that UP guests are all broken on
+Arm.
+
+
+Juergen
+
+--------------8C6E44BB372F7E35D27C6418
+Content-Type: application/pgp-keys;
+ name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment;
+ filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
+cWx
+w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
+f8Z
+d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
+9bf
+IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
+G7/
+377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
+3Jv
+c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
+QIe
+AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
+hpw
+dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
+MbD
+1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
+oPH
+Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
+5QL
++qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
+2Vu
+IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
+QoL
+BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
+Wf0
+teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
+/nu
+AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
+ITT
+d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
+XBK
+7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
+80h
+SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
+AcD
+AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
+FOX
+gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
+jnD
+kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
+N51
+N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
+otu
+fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
+tqS
+EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
+hsD
+BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
+g3O
+ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
+dM7
+wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
+D+j
+LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
+V2x
+AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
+Eaw
+QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
+nHI
+s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
+wgn
+BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
+bVF
+LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
+pEd
+IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
+QAB
+wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
+Tbe
+8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
+vJz
+Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
+VGi
+wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
+svi
+uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
+zXs
+ZDn8R38=3D
+=3D2wuH
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------8C6E44BB372F7E35D27C6418--
+
+--84oCDWIr6PGk2QsocQ05WTzxKaZRsOV9D--
+
+--GxFWARbBMCsXSAbZH8aPotGcUQpIZmcPb
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmAhEaAFAwAAAAAACgkQsN6d1ii/Ey8m
+rwf/QY6oWPIN2zwy7rjcTcX/RLM8CEBVVokOaF7ly0Ih0z+JvvD7GWv4cA14otkPnM5mcLKIomGg
+NwYjLtToNdG71AHPi3gyfjr1Fb0rhINWmutHOG2Wqit1oPLxJIZ8wEHbK09JRUknz1VYcbJvr+Oe
+liz9o0SAijEPnNQ0yRB/GTtTBRD1Pw8CiaO3vWvYxfuDuFgdnbNMq8U54SY11juBF7BdGV187VPZ
+FD5F5BrpvhfX1UqdOWz6bO9osBGcakqyUdZa+lIdHbxPlVjMBZyGS4BEiWzeOdL3RzBEX1jSB2jY
+X3fg8em6Yto5dHNZraX5h0uw5zux06hR1GBHdIiLGQ==
+=KGGX
+-----END PGP SIGNATURE-----
+
+--GxFWARbBMCsXSAbZH8aPotGcUQpIZmcPb--
