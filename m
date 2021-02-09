@@ -2,87 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04E7231573C
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 20:56:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1500B3156F0
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 20:40:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233802AbhBITyb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 14:54:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35220 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233233AbhBISWA (ORCPT
+        id S233691AbhBITiQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 14:38:16 -0500
+Received: from mail-ot1-f54.google.com ([209.85.210.54]:42000 "EHLO
+        mail-ot1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232788AbhBISRv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 13:22:00 -0500
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E21A7C061356;
-        Tue,  9 Feb 2021 10:10:45 -0800 (PST)
-Received: by mail-oi1-x22c.google.com with SMTP id l19so7902825oih.6;
-        Tue, 09 Feb 2021 10:10:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=fDl+34Ws0reoegWYcMSOTld+/zyr9JSnL2c4x6D1jmM=;
-        b=rrAEl/s+ibJpeJ39yhbxxw3u8/HsX3DZUmTocwO+f3cPD02AoNXJ5mxv1F96gIw6u6
-         KwKFu2NoEShbDA4Tg3I6jrh71RRhsKXKLoXgDfCnn4fcGuFPGfUEvM3m7vW1/S1VhpMx
-         KxalunLpOzSz5pdIZ/+XGerG/OgKgJexibCBPXZpxJ2S9ucVYB9onxrZ2aTnQhaTeZQY
-         TXGWEAUVMW8zVie0ZbIfT+nlBa+H0JsFKJTjLv+GgnnJglbrYuA27nOlPY6pAmJ1wP1i
-         6WJv+4nk7Eadjoo7OY4+iJnK8axienqCupnxXJDoNyxNJHjDU098/tnoAAFjQcK9eEEe
-         5Sbw==
+        Tue, 9 Feb 2021 13:17:51 -0500
+Received: by mail-ot1-f54.google.com with SMTP id q4so8696309otm.9;
+        Tue, 09 Feb 2021 10:15:39 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=fDl+34Ws0reoegWYcMSOTld+/zyr9JSnL2c4x6D1jmM=;
-        b=hqpqJ0G0t/vlDt3435e06zzP6P0fS7DyQE8eLAK4TfP12xbQidp7my0p77RnAh264m
-         SdS6uDKsR7/yBRbPiYIiEcbMIiFZnqUQ8m7/7q2in/4LFmy0eRxA2dxUOxxWeYoJEmxi
-         Noz1+ujtGh5T6vHSRs2SDxoU9uPQb79pk4NuXIvkDSqBy0HejMBv5eafmBwjLqQ5ZS3W
-         VG/gA5SPUJIu9fcbTrq6KUUhgZ1zllSyPbs6VOmwwSSDpxSOfPv1j833oY4g4mvpjEO2
-         uUQZTKKztGvtiRChhQuXeyYmClwlPBpTX8svhgCQDpPKLNqUmxUBhPBP3z9uCBUAgsDy
-         1P1Q==
-X-Gm-Message-State: AOAM5324KnZ+yn43geSQCYYvl2hZVkdYHF9ZXIQPR65oAM2KvnBoQnb1
-        UbMx9wCu+rxBGhHZ8y5gLl8tSntON6A=
-X-Google-Smtp-Source: ABdhPJwrladHCZioyFWnaln0oPzWpqZHS2VLcaOS8Aa/zn2A42vUPym7Aq4nkowakHBR/8Q59CwXtg==
-X-Received: by 2002:a54:410f:: with SMTP id l15mr3218375oic.149.1612894245423;
-        Tue, 09 Feb 2021 10:10:45 -0800 (PST)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id e14sm1371581otk.22.2021.02.09.10.10.44
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 09 Feb 2021 10:10:45 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Tue, 9 Feb 2021 10:10:43 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        stable@vger.kernel.org
-Subject: Re: [PATCH 4.14 00/30] 4.14.221-rc1 review
-Message-ID: <20210209181043.GC142661@roeck-us.net>
-References: <20210208145805.239714726@linuxfoundation.org>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=yvEVgFXxj42ho51jb6dVDNgFxU/choj/euDd8LGx2dg=;
+        b=me97rCxDInYiYZZC5XuYlcWX8rJmwJ6vJcr7yItwhSv7F/o4GQ25Xo+4Xm6p+x1azg
+         Wr73HkIMD0sBaoB/htir40QnoQOrW2Bp0ruDNwRghs0SweKjH4RPEAyzDmtdsajwul2b
+         8dTSD01VhqrqcYa6Sl1Bg8gEecZVJK8ggBPYN1/YONBukbCtJ0Thr9h0cSuBf5D6jmJA
+         mI5eO88qtZITL4va8bNAoUw5vu3pTWgcE/Z625UvoDQ4QGqfoqV+bArLaeyaGSHi05yC
+         oS+od2CL1fnGYxOeUxoyPWiCH3t/tnO0vCzR4hkU3GvGHpb6HDYlZrs3quMqMLLpPml7
+         Uixg==
+X-Gm-Message-State: AOAM531CXLmtIe34/adt2SltDErcGe1TWi65G41pGZTVdTB4+ozVkQqW
+        DQgYck8Vt27AkEXYarvLGw==
+X-Google-Smtp-Source: ABdhPJw4/5gXHlRhCLR6H+bmHa3XmOMLzdwLZrFeDUAOJtrrf0tETU3GzM5HQDG/rPU0Swpi08bOfg==
+X-Received: by 2002:a9d:17ed:: with SMTP id j100mr17375162otj.169.1612894513667;
+        Tue, 09 Feb 2021 10:15:13 -0800 (PST)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id k67sm3069817oia.7.2021.02.09.10.15.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Feb 2021 10:15:12 -0800 (PST)
+Received: (nullmailer pid 4073574 invoked by uid 1000);
+        Tue, 09 Feb 2021 18:15:10 -0000
+Date:   Tue, 9 Feb 2021 12:15:10 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Liu Ying <victor.liu@nxp.com>
+Cc:     dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, airlied@linux.ie, daniel@ffwll.ch,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, linux-imx@nxp.com, mchehab@kernel.org,
+        a.hajda@samsung.com, narmstrong@baylibre.com,
+        Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
+        jernej.skrabec@siol.net, kishon@ti.com, vkoul@kernel.org
+Subject: Re: [PATCH v3 09/14] drm/bridge: imx: Add i.MX8qxp pixel link to DPI
+ support
+Message-ID: <20210209181510.GA4045547@robh.at.kernel.org>
+References: <1611737488-2791-1-git-send-email-victor.liu@nxp.com>
+ <1611737488-2791-10-git-send-email-victor.liu@nxp.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210208145805.239714726@linuxfoundation.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1611737488-2791-10-git-send-email-victor.liu@nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 08, 2021 at 04:00:46PM +0100, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.14.221 release.
-> There are 30 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Wed, Jan 27, 2021 at 04:51:23PM +0800, Liu Ying wrote:
+> This patch adds a drm bridge driver for i.MX8qxp pixel link to display
+> pixel interface(PXL2DPI).  The PXL2DPI interfaces the pixel link 36-bit
+> data output and the DSI controller’s MIPI-DPI 24-bit data input, and
+> inputs of LVDS Display Bridge(LDB) module used in LVDS mode, to remap
+> the pixel color codings between those modules. The PXL2DPI is purely
+> combinatorial.
 > 
-> Responses should be made by Wed, 10 Feb 2021 14:57:55 +0000.
-> Anything received after that time might be too late.
+> Signed-off-by: Liu Ying <victor.liu@nxp.com>
+> ---
+> v2->v3:
+> * Call syscon_node_to_regmap() to get regmap instead of
+>   syscon_regmap_lookup_by_phandle().
 > 
+> v1->v2:
+> * Drop unnecessary port availability check.
+> 
+>  drivers/gpu/drm/bridge/imx/Kconfig           |   8 +
+>  drivers/gpu/drm/bridge/imx/Makefile          |   1 +
+>  drivers/gpu/drm/bridge/imx/imx8qxp-pxl2dpi.c | 488 +++++++++++++++++++++++++++
+>  3 files changed, 497 insertions(+)
+>  create mode 100644 drivers/gpu/drm/bridge/imx/imx8qxp-pxl2dpi.c
 
-Build results:
-	total: 168 pass: 168 fail: 0
-Qemu test results:
-	total: 404 pass: 404 fail: 0
+> +	p2d->regmap = syscon_node_to_regmap(np->parent);
+> +	if (IS_ERR(p2d->regmap)) {
+> +		ret = PTR_ERR(p2d->regmap);
+> +		if (ret != -EPROBE_DEFER)
+> +			DRM_DEV_ERROR(dev, "failed to get regmap: %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	p2d->id = of_alias_get_id(np, "pxl2dpi");
 
-Tested-by: Guenter Roeck <linux@roeck-us.net>
+Don't add random aliases. I'd rather see a property in this node as long 
+as it is specific to what this is used for (and not a generic index).
 
-Guenter
+Rob
