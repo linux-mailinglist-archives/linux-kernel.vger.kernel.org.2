@@ -2,73 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A639B315272
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 16:14:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E5C031526F
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 16:14:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232412AbhBIPOE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 10:14:04 -0500
-Received: from mx2.suse.de ([195.135.220.15]:41388 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231915AbhBIPN6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 10:13:58 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C7473B207;
-        Tue,  9 Feb 2021 15:13:16 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 94CEDDA7C8; Tue,  9 Feb 2021 16:11:23 +0100 (CET)
-Date:   Tue, 9 Feb 2021 16:11:23 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     ira.weiny@intel.com
-Cc:     Andrew Morton <akpm@linux-foundation.org>, clm@fb.com,
-        josef@toxicpanda.com, dsterba@suse.com,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 0/4] btrfs: Convert kmaps to core page calls
-Message-ID: <20210209151123.GT1993@suse.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, ira.weiny@intel.com,
-        Andrew Morton <akpm@linux-foundation.org>, clm@fb.com,
-        josef@toxicpanda.com, dsterba@suse.com,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-References: <20210205232304.1670522-1-ira.weiny@intel.com>
+        id S232394AbhBIPNV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 10:13:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50858 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232069AbhBIPNR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 10:13:17 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 466BDC061786
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 07:12:37 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1612883555;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=jWkC5nvDedOQcOGLRZAcnUf5BoS6QiBKxlVWMLT7CHM=;
+        b=QGqKYYWnMA3mU43y2z7xvEqbZJbKvxBwkXGsBXae4OM90NZ3eGQqXWDM+E0OMOpsEBCzlh
+        VJl5V67Wv3K8g73t9MZCDH8biIf1lXbgq3O6g6VrhR4Jr0P4kFiYOu3szJuxSb3kf9YToK
+        nz6m5DusbGscbbWu5LyFha9CC4yH1AkTfqjBW+RdGUXF0Rd6wyWQZhZ5wSAja9MokHNo5C
+        yuxYSGToLrJdbfSNLhjxEioTUe4sJsKFONt8x52y9KatkS4o37xnzSjfOKDwWrxMCOsB8I
+        i9rrkxldIw4aEl+WUtFAaHl/Bly9+OBhVLWIABEh2Kj3oEhRWH2qyJYLpbG4Kg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1612883555;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=jWkC5nvDedOQcOGLRZAcnUf5BoS6QiBKxlVWMLT7CHM=;
+        b=Cpkjvk2fNjX4Xz21a2VIDvEz8oMpKWvUynhgIyef9vNg4bOneDvTt78kMOq+YLuwL1ZwLJ
+        on4hL77BsZcwcgBQ==
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
+        Kees Cook <keescook@chromium.org>
+Subject: Re: [patch 05/12] x86/irq: Provide macro for inlining irq stack switching
+In-Reply-To: <20210208204209.yccd76j7sp2zbv37@treble>
+References: <20210204204903.350275743@linutronix.de> <20210204211154.618389756@linutronix.de> <20210208204209.yccd76j7sp2zbv37@treble>
+Date:   Tue, 09 Feb 2021 16:12:33 +0100
+Message-ID: <87zh0db7ha.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210205232304.1670522-1-ira.weiny@intel.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 05, 2021 at 03:23:00PM -0800, ira.weiny@intel.com wrote:
-> From: Ira Weiny <ira.weiny@intel.com>
-> 
-> There are many places where kmap/<operation>/kunmap patterns occur.  We lift
-> these various patterns to core common functions and use them in the btrfs file
-> system.  At the same time we convert those core functions to use
-> kmap_local_page() which is more efficient in those calls.
-> 
-> I think this is best accepted through Andrew's tree as it has the mem*_page
-> functions in it.  But I'd like to get an ack from David or one of the other
-> btrfs maintainers before the btrfs patches go through.
+On Mon, Feb 08 2021 at 14:42, Josh Poimboeuf wrote:
+> On Thu, Feb 04, 2021 at 09:49:08PM +0100, Thomas Gleixner wrote:
+>>  #ifdef CONFIG_X86_64
+>> +
+>> +#ifdef CONFIG_UNWINDER_FRAME_POINTER
+>> +# define IRQSTACK_CALL_CONSTRAINT	, ASM_CALL_CONSTRAINT
+>> +#else
+>> +# define IRQSTACK_CALL_CONSTRAINT
+>> +#endif
+>
+> Is this really needed?  i.e. does ASM_CALL_CONSTRAINT actually affect
+> code generation with !FRAME_POINTER?
 
-I'd rather take the non-mm patches through my tree so it gets tested
-the same way as other btrfs changes, straightforward cleanups or not.
+The problem is that if the asm inline is the first operation in a
+function some compilers insert the asm inline before setting up the
+frame pointer.
 
-This brings the question how to do that as the first patch should go
-through the MM tree. One option is to posptpone the actual cleanups
-after the 1st patch is merged but this could take a long delay.
+That's actualy irrelevant here as the compiler cannot reorder against
+the C code leading to the asm inline. So we can probably replace it with
+a big fat comment.
 
-I'd suggest to take the 1st patch within MM tree in the upcoming merge
-window and then I can prepare a separate pull with just the cleanups.
-Removing an inter-tree patch dependency was a sufficient reason for
-Linus in the past for such pull requests.
+Thanks,
 
-> There are a lot more kmap->kmap_local_page() conversions but kmap_local_page()
-> requires some care with the unmapping order and so I'm still reviewing those
-> changes because btrfs uses a lot of loops for it's kmaps.
+        tglx
 
-It sounds to me that converting the kmaps will take some time anyway so
-exporting the helpers first and then converting the subsystems might be
-a good option. In case you'd like to get rid of the simple cases in
-btrfs code now we can do the 2 pull requests.
+
+
+
+
+
