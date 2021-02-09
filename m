@@ -2,138 +2,268 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7505B315379
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 17:12:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9AF631537B
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 17:12:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232673AbhBIQL1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 11:11:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35110 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232541AbhBIQLM (ORCPT
+        id S232694AbhBIQLs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 11:11:48 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:42126 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232541AbhBIQLi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 11:11:12 -0500
-Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 402D1C061788
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 08:09:50 -0800 (PST)
-Received: by mail-ot1-x333.google.com with SMTP id d7so15661883otq.6
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 08:09:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=4/inwIB/bagSTME5nAGqiwX4oeNlpTqINvLjf+dIyzg=;
-        b=aTuaZb6pOYgSh7gL+OPQi1FSFbm73knDRD5yGvNdtv8Uacz+GfBTOZQ6Tn5ksK7UN3
-         b5axrpCr90QYxVSyOP4a1/eOl3Wz5Y7aLKuwF4eqwbNVcERHaIM1mhKr2HY/wGG2UAyD
-         K609NjpuCtYQmznAkIvbat5B2JVeccB7i6uC+CTWS6pOJOPBEVBKC0vZ/qj/R+TPmGGb
-         CgHyMOV6p6tAIWl8/llVLy5P0at8AacIaGShbAaKcMeffgBCiwkdBhw12NWXBMb7l5fT
-         jTRDM68XS6J0MfPge8ogaOdulB9CwCHHlBJvTfBVglCAbVJDuFNa0GXZT7C3KNSv2Uh1
-         UTQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=4/inwIB/bagSTME5nAGqiwX4oeNlpTqINvLjf+dIyzg=;
-        b=NlfVFtTbXQegoX/L7VEDsvV4T5ylXr5B796596qs4vG81TI/sX/fW1Ovs3phrHf19g
-         qkmy9s86gCeOY+tZB6rpWwUYPpBlADbUfOl4U0H0qN2LEiISoeNL78Bm8sc2HCAUnVGk
-         GSwBsOs8VmTHa2z9Lg69YshnceG4ecPd0V4ZkBKgec8elWTnoD/uP+tOxY7BVi/wuJSz
-         7isA1yTqT62GT5y494Ad0B6uVbjPEFAYszQbKYmYrbTLXtvageqnhbzHlTk0lGDP+/ss
-         tGniwhxmQzUCYlGB1rfHUpz8NbOkA/o7tdizyjhgWdIP3jAdOa6LBisJcZ5f+7WpJl6h
-         oA4w==
-X-Gm-Message-State: AOAM531aHxasEs+YCFKbzICyp/2EZR2mjEu22QdWAGPyOobFp1i5aPWw
-        bGNcdjJSOp5tnHgLu54pDd0JSQ==
-X-Google-Smtp-Source: ABdhPJyebxA3dKgogsPSJSyVMGFHA+vmYOCFxmFOhCuy1WB3Q7NjyW69ejlUEwb/5LULmlBEzcMWHw==
-X-Received: by 2002:a9d:21ca:: with SMTP id s68mr16333016otb.164.1612886989714;
-        Tue, 09 Feb 2021 08:09:49 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id k4sm2725967ots.24.2021.02.09.08.09.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Feb 2021 08:09:49 -0800 (PST)
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Doug Anderson <dianders@chromium.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] arm64: dts: qcom: sdm850-yoga: Enable IPA
-Date:   Tue,  9 Feb 2021 10:09:46 -0600
-Message-Id: <20210209160946.29382-2-bjorn.andersson@linaro.org>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210209160946.29382-1-bjorn.andersson@linaro.org>
-References: <20210209160946.29382-1-bjorn.andersson@linaro.org>
+        Tue, 9 Feb 2021 11:11:38 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612887010;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=akGVKWR6XgOFReDZRfWVmsLFvJtRrgKMTMbz030iBEY=;
+        b=ZHPVlWFy9MMW/pwt+hxCjtO26f6FTtxzif0+REmGCqF6njMUcEyMqxf/mUhP1PrVcI8vrh
+        7VWFRLXVh8Ud0Slh5RjE2qQFayyCeb5g8avMPz9W1S7sx9wd1OZQpZrHa+AkIaiI63O/HK
+        IQKb3QZ55OAmgw8C4f2zZCp6XPWhaOQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-422-D-UxzCEtMSabQA39JWulEA-1; Tue, 09 Feb 2021 11:10:08 -0500
+X-MC-Unique: D-UxzCEtMSabQA39JWulEA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 85F7980364E;
+        Tue,  9 Feb 2021 16:10:06 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-115-23.rdu2.redhat.com [10.10.115.23])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 98BD010016F6;
+        Tue,  9 Feb 2021 16:09:58 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+To:     torvalds@linux-foundation.org
+cc:     dhowells@redhat.com, Matthew Wilcox <willy@infradead.org>,
+        Jeff Layton <jlayton@redhat.com>,
+        David Wysochanski <dwysocha@redhat.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Trond Myklebust <trondmy@hammerspace.com>,
+        Steve French <sfrench@samba.org>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        ceph-devel@vger.kernel.org, linux-afs@lists.infradead.org,
+        linux-cachefs@redhat.com, linux-cifs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-nfs@vger.kernel.org,
+        v9fs-developer@lists.sourceforge.net, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] fscache: I/O API modernisation and netfs helper library
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <591236.1612886997.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date:   Tue, 09 Feb 2021 16:09:57 +0000
+Message-ID: <591237.1612886997@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The ipa_fws.elf found in the Lenovo Yoga C630 isn't packed like the one
-found in e.g. the MTP, so it doesn't fit in the "standard" ipa_fws
-memory region. Further more, authentication of ipa_fws at the usual base
-address is rejected by the Peripheral Authentication Service (in
-TrustZone), so some shuffling and trial and error was used to come up
-with acceptable regions.
+Hi Linus,
 
-With this in order, enable the IPA device.
+Can you pull this during the upcoming merge window?  It provides a more
+modern I/O API for fscache and moves some common pieces out of network
+filesystems into a common helper library.  This request only includes
+modifications for afs and ceph.
 
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Dave Wysochanski has a patch series for nfs.  Normal nfs works fine and
+passes various tests, but it turned out pnfs has a problem that wasn't
+discovered until quite late - pnfs does splitting of requests itself and
+sending them to various places, but it will need to cooperate more closely
+with the netfs lib over this.
+
+I've given Dominique Martinet a patch for 9p and Steve French a partial
+patch for cifs, but neither of those is going to be ready for this merge
+window.
+
+The main features of this request are:
+
+ (1) Institution of a helper library for network filesystems.  The first
+     phase of this handles ->readpage(), ->readahead() and part of
+     ->write_begin() on behalf of the netfs, requiring the netfs to provid=
+e
+     a common vector to perform a read to some part of a file.
+
+     This allows handling of the following to be (at least partially) move=
+d
+     out of all the network filesystems and consolidated in one place:
+
+	- changes in VM vectors (Matthew Wilcox's work)
+	  - transparent huge page support
+	- shaping of reads
+	  - readahead expansion
+	  - fs alignment/granularity (ceph, pnfs)
+	  - cache alignment/granularity
+	- slicing of reads
+	  - rsize
+	  - keeping multiple read in flight	} Steve French would like
+	  - multichannel distribution		} but for the future
+	  - multiserver distribution (ceph, pnfs)
+	  - stitching together reads from the cache and reads from the net
+	- copying data read from the server into the cache
+	- retry/reissue handling
+	  - fallback after cache failure
+     	- short reads
+	- fscrypt data crypting (Jeff Layton is considering for the future)
+
+ (2) Adding an alternate cache I/O API for use with the netfs lib that
+     makes use of kiocbs in the cache to do direct I/O between the cache
+     files and the netfs pages.
+
+     This is intended to replace the current I/O API that calls the backin=
+g
+     fs readpage op and than snooping the wait queues for completion to
+     read and using vfs_write() to write.  It wasn't possible to do
+     in-kernel DIO when I first wrote cachefiles - but using kiocbs makes
+     it a lot simpler and more robust (and it uses a lot less memory).
+
+ (3) Add an ITER_XARRAY iov_iter that allows I/O iteration to be done on a=
+n
+     xarray of pinned pages (such as inode->i_mapping->i_pages), thereby
+     avoiding the need to allocate a bvec array to represent this.
+
+     This is used to present a set of netfs pages to the cache to do DIO o=
+n
+     and is also used by afs to present netfs pages to sendmsg.  It could
+     also be used by unencrypted cifs to pass the pages to the TCP socket
+     it uses (if it's doing TCP) and my patch for 9p (which isn't included
+     here) can make use of it too.
+
+ (4) Make afs use the above.  It passes the same xfstests (and has the sam=
+e
+     failures) as the unpatched afs client.
+
+ (5) Make ceph use the above (I've merged a branch from Jeff Layton for th=
+is).
+     This also passes xfstests.
+
+David
 ---
- .../boot/dts/qcom/sdm850-lenovo-yoga-c630.dts | 26 +++++++++----------
- 1 file changed, 13 insertions(+), 13 deletions(-)
+The following changes since commit 9791581c049c10929e97098374dd1716a81fefc=
+c:
 
-diff --git a/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts b/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
-index 9c2ab377faf1..4dd5820b3b31 100644
---- a/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
-+++ b/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
-@@ -74,28 +74,23 @@ rmtfs_mem: memory@88f00000 {
- 			qcom,vmid = <15>;
- 		};
- 
--		ipa_fw_mem: memory@8c400000 {
--			reg = <0 0x8c400000 0 0x10000>;
-+		wlan_msa_mem: memory@8c400000 {
-+			reg = <0 0x8c400000 0 0x100000>;
- 			no-map;
- 		};
- 
--		ipa_gsi_mem: memory@8c410000 {
--			reg = <0 0x8c410000 0 0x5000>;
-+		gpu_mem: memory@8c515000 {
-+			reg = <0 0x8c515000 0 0x2000>;
- 			no-map;
- 		};
- 
--		gpu_mem: memory@8c415000 {
--			reg = <0 0x8c415000 0 0x2000>;
-+		ipa_fw_mem: memory@8c517000 {
-+			reg = <0 0x8c517000 0 0x5a000>;
- 			no-map;
- 		};
- 
--		adsp_mem: memory@8c500000 {
--			reg = <0 0x8c500000 0 0x1a00000>;
--			no-map;
--		};
--
--		wlan_msa_mem: memory@8df00000 {
--			reg = <0 0x8df00000 0 0x100000>;
-+		adsp_mem: memory@8c600000 {
-+			reg = <0 0x8c600000 0 0x1a00000>;
- 			no-map;
- 		};
- 
-@@ -500,6 +495,11 @@ ecsh: hid@5c {
- 	};
- };
- 
-+&ipa {
-+	status = "okay";
-+	memory-region = <&ipa_fw_mem>;
-+};
-+
- &mdss {
- 	status = "okay";
- };
--- 
-2.30.0
+  Merge tag 'for-5.11-rc4-tag' of git://git.kernel.org/pub/scm/linux/kerne=
+l/git/kdave/linux (2021-01-20 14:15:33 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git tags=
+/fscache-ioapi-20210203
+
+for you to fetch changes up to 1df6bf2cc0fad1a5b2b32b7b0066b13175ad1ce4:
+
+  netfs: Fix kerneldoc on netfs_subreq_terminated() (2021-02-03 11:17:57 +=
+0000)
+
+----------------------------------------------------------------
+fscache I/O API rework and netfs changes
+
+----------------------------------------------------------------
+David Howells (29):
+      iov_iter: Add ITER_XARRAY
+      vm: Add wait/unlock functions for PG_fscache
+      mm: Implement readahead_control pageset expansion
+      vfs: Export rw_verify_area() for use by cachefiles
+      netfs: Make a netfs helper module
+      netfs: Provide readahead and readpage netfs helpers
+      netfs: Add tracepoints
+      netfs: Gather stats
+      netfs: Add write_begin helper
+      netfs: Define an interface to talk to a cache
+      fscache, cachefiles: Add alternate API to use kiocb for read/write t=
+o cache
+      afs: Disable use of the fscache I/O routines
+      afs: Pass page into dirty region helpers to provide THP size
+      afs: Print the operation debug_id when logging an unexpected data ve=
+rsion
+      afs: Move key to afs_read struct
+      afs: Don't truncate iter during data fetch
+      afs: Log remote unmarshalling errors
+      afs: Set up the iov_iter before calling afs_extract_data()
+      afs: Use ITER_XARRAY for writing
+      afs: Wait on PG_fscache before modifying/releasing a page
+      afs: Extract writeback extension into its own function
+      afs: Prepare for use of THPs
+      afs: Use the fs operation ops to handle FetchData completion
+      afs: Use new fscache read helper API
+      Merge branch 'fscache-netfs-lib' into fscache-next
+      Merge branch 'ceph-netfs-lib' of https://git.kernel.org/pub/scm/linu=
+x/kernel/git/jlayton/linux into fscache-next
+      netfs: Fix various bits of error handling
+      afs: Fix error handling in afs_req_issue_op()
+      netfs: Fix kerneldoc on netfs_subreq_terminated()
+
+Jeff Layton (7):
+      ceph: disable old fscache readpage handling
+      ceph: rework PageFsCache handling
+      ceph: fix fscache invalidation
+      ceph: convert readpage to fscache read helper
+      ceph: plug write_begin into read helper
+      ceph: convert ceph_readpages to ceph_readahead
+      ceph: fix an oops in error handling in ceph_netfs_issue_op
+
+ fs/Kconfig                    |    1 +
+ fs/Makefile                   |    1 +
+ fs/afs/Kconfig                |    1 +
+ fs/afs/dir.c                  |  225 +++++---
+ fs/afs/file.c                 |  470 ++++-------------
+ fs/afs/fs_operation.c         |    4 +-
+ fs/afs/fsclient.c             |  108 ++--
+ fs/afs/inode.c                |    7 +-
+ fs/afs/internal.h             |   58 +-
+ fs/afs/rxrpc.c                |  150 ++----
+ fs/afs/write.c                |  610 ++++++++++++----------
+ fs/afs/yfsclient.c            |   82 +--
+ fs/cachefiles/Makefile        |    1 +
+ fs/cachefiles/interface.c     |    5 +-
+ fs/cachefiles/internal.h      |    9 +
+ fs/cachefiles/rdwr2.c         |  412 +++++++++++++++
+ fs/ceph/Kconfig               |    1 +
+ fs/ceph/addr.c                |  535 ++++++++-----------
+ fs/ceph/cache.c               |  125 -----
+ fs/ceph/cache.h               |  101 +---
+ fs/ceph/caps.c                |   10 +-
+ fs/ceph/inode.c               |    1 +
+ fs/ceph/super.h               |    1 +
+ fs/fscache/Kconfig            |    1 +
+ fs/fscache/Makefile           |    3 +-
+ fs/fscache/internal.h         |    3 +
+ fs/fscache/page.c             |    2 +-
+ fs/fscache/page2.c            |  117 +++++
+ fs/fscache/stats.c            |    1 +
+ fs/internal.h                 |    5 -
+ fs/netfs/Kconfig              |   23 +
+ fs/netfs/Makefile             |    5 +
+ fs/netfs/internal.h           |   97 ++++
+ fs/netfs/read_helper.c        | 1161 ++++++++++++++++++++++++++++++++++++=
++++++
+ fs/netfs/stats.c              |   59 +++
+ fs/read_write.c               |    1 +
+ include/linux/fs.h            |    1 +
+ include/linux/fscache-cache.h |    4 +
+ include/linux/fscache.h       |   40 +-
+ include/linux/netfs.h         |  167 ++++++
+ include/linux/pagemap.h       |   16 +
+ include/linux/uio.h           |   11 +
+ include/net/af_rxrpc.h        |    2 +-
+ include/trace/events/afs.h    |   74 ++-
+ include/trace/events/netfs.h  |  201 +++++++
+ lib/iov_iter.c                |  313 ++++++++++-
+ mm/filemap.c                  |   18 +
+ mm/readahead.c                |   70 +++
+ net/rxrpc/recvmsg.c           |    9 +-
+ 49 files changed, 3749 insertions(+), 1573 deletions(-)
+ create mode 100644 fs/cachefiles/rdwr2.c
+ create mode 100644 fs/fscache/page2.c
+ create mode 100644 fs/netfs/Kconfig
+ create mode 100644 fs/netfs/Makefile
+ create mode 100644 fs/netfs/internal.h
+ create mode 100644 fs/netfs/read_helper.c
+ create mode 100644 fs/netfs/stats.c
+ create mode 100644 include/linux/netfs.h
+ create mode 100644 include/trace/events/netfs.h
 
