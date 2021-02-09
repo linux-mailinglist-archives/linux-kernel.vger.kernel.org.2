@@ -2,73 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52BB6315AA9
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 01:10:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34775315AC8
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 01:14:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234971AbhBJAHx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 19:07:53 -0500
-Received: from mail-oi1-f175.google.com ([209.85.167.175]:33357 "EHLO
-        mail-oi1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233847AbhBIUkG (ORCPT
+        id S234177AbhBJAMt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 19:12:49 -0500
+Received: from mail-ot1-f47.google.com ([209.85.210.47]:43822 "EHLO
+        mail-ot1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233914AbhBIUml (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 15:40:06 -0500
-Received: by mail-oi1-f175.google.com with SMTP id g84so7084464oib.0;
-        Tue, 09 Feb 2021 12:39:50 -0800 (PST)
+        Tue, 9 Feb 2021 15:42:41 -0500
+Received: by mail-ot1-f47.google.com with SMTP id l23so7096045otn.10;
+        Tue, 09 Feb 2021 12:42:26 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=pQrcr7qodVD4dFMqYIjjfo+nDgak3hQS5PmI2pXPFsU=;
-        b=HvC8K356tSnNRPr2/XjSJqNX7I1WiGPOQuY3JCejxqZ+n1WMMW2wDvjWTDGTIXHuB/
-         EoadAU66O+jIpg+F2akFhxKYa7JMiZs6KE8gUsPgS4Lq7x2/XU6sEvQCgGNINDVzz7Hb
-         am9kh1x/X7RVLwyEhej6x1fqpIF620+T7zHwbilOLl6TM7iLhhPGFHJkS8kMYCNoX9Yu
-         c4F5zfafvPhX5sg2vgbOwpmI/l6X9FqMioEdg/hb7XD8TV22qCTU/+/wM9JLDbtTNqF5
-         6DWF2jydFMGE7Iz5IWTKVudiSfZfGBP7x6zSndR6VwXoh4QAjkqpeKrcnv4zS25Ja6Qm
-         I6IA==
-X-Gm-Message-State: AOAM533oL66RUIIx4gIfPA+JD8l7R+uestZTBLdktnC4/v4SzPIzhotf
-        WHkdp4ijXHG7Ps3XVcdZog==
-X-Google-Smtp-Source: ABdhPJyyV0uETGRfszmy2JoR1ifofA1BkCnLQcxp0SYCDLuFpGm9pxBDDqA1OGSQtyy0USq/IgOprQ==
-X-Received: by 2002:a54:4106:: with SMTP id l6mr3828124oic.110.1612903164902;
-        Tue, 09 Feb 2021 12:39:24 -0800 (PST)
+        bh=fZZM67EhmMbZp5VJU7IlbmetXBbcl+XmdSzt7HSdY1U=;
+        b=udX19a1tTkU1Q93yx/7H2lgDEIdSYVOyWPYiTYNizcf1sJCNMSGjZpQikTQQ2BtOyg
+         u3q93YNES0y33lWOut5NpnhzaupW8zJOsvTPiln8NjaVYBJ7cd7WB3lu+eLMs7C5QXS2
+         6Pf5Gx7fpLZ2ZxKRlwF2Eue6DmjrqUt6LidLovDSD6S24hv+ENthcpKnuUKJ59D2fFXU
+         TGz5xiiJOHwlwWGZE11Ix8GXAXLs51oXjWsep17UOwNkypeOtmn8rmgKDsPkwYq9tSuX
+         5CTZFe8nhTdxDmvX4L07x7D2mRivkQ6jxn+EpnnXptyXH6aNgNV/fgj69sAaFzrWMmls
+         sDtw==
+X-Gm-Message-State: AOAM531WRRn4Fhrv6nbPA7LIkEJcOnfDw7c7Hxd0TG5i+mbwOggAzY3O
+        yad42reV/XCQUkxIckuVvg==
+X-Google-Smtp-Source: ABdhPJxGCnWyUkTc1TkCgfXZaB6ldc17uw3AhgXdcQPL7wK34IO4FS5r2QxnYclB57pQ3y3rTJYVIQ==
+X-Received: by 2002:a9d:7dda:: with SMTP id k26mr13308366otn.284.1612903321022;
+        Tue, 09 Feb 2021 12:42:01 -0800 (PST)
 Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id i13sm2862667oth.52.2021.02.09.12.39.22
+        by smtp.gmail.com with ESMTPSA id r25sm1711758ota.42.2021.02.09.12.41.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Feb 2021 12:39:23 -0800 (PST)
-Received: (nullmailer pid 134304 invoked by uid 1000);
-        Tue, 09 Feb 2021 20:39:21 -0000
-Date:   Tue, 9 Feb 2021 14:39:21 -0600
+        Tue, 09 Feb 2021 12:41:59 -0800 (PST)
+Received: (nullmailer pid 139152 invoked by uid 1000);
+        Tue, 09 Feb 2021 20:41:57 -0000
+Date:   Tue, 9 Feb 2021 14:41:57 -0600
 From:   Rob Herring <robh@kernel.org>
-To:     Konrad Dybcio <konrad.dybcio@somainline.org>
-Cc:     phone-devel@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org,
-        Rajendra Nayak <rnayak@codeaurora.org>
-Subject: Re: [PATCH] soc: qcom: rpmpd: Add MDM9607 RPM Power Domains
-Message-ID: <20210209203921.GA134215@robh.at.kernel.org>
-References: <20210131013233.54666-1-konrad.dybcio@somainline.org>
+To:     Yz.Wu@mediatek.com
+Cc:     linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        Seiya Wang <seiya.wang@mediatek.com>,
+        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: Re: [PATCH v4 1/2] dt-bindings: nvmem: mediatek: add support for
+ MediaTek mt8192 SoC
+Message-ID: <20210209204157.GA139100@robh.at.kernel.org>
+References: <1612151986-19820-1-git-send-email-Yz.Wu@mediatek.com>
+ <1612151986-19820-2-git-send-email-Yz.Wu@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210131013233.54666-1-konrad.dybcio@somainline.org>
+In-Reply-To: <1612151986-19820-2-git-send-email-Yz.Wu@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 31 Jan 2021 02:32:32 +0100, Konrad Dybcio wrote:
-> This SoC while being from 8916 era, makes use of the
-> newer-style, floor-level management, instead of the older
-> floor-corner.
+On Mon, 01 Feb 2021 11:59:45 +0800, Yz.Wu@mediatek.com wrote:
+> From: Ryan Wu <Yz.Wu@mediatek.com>
 > 
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
+> This updates dt-binding documentation for MediaTek mt8192
+> 
+> Signed-off-by: Ryan Wu <Yz.Wu@mediatek.com>
 > ---
->  .../devicetree/bindings/power/qcom,rpmpd.yaml |  1 +
->  drivers/soc/qcom/rpmpd.c                      | 22 +++++++++++++++++++
->  include/dt-bindings/power/qcom-rpmpd.h        |  8 +++++++
->  3 files changed, 31 insertions(+)
+> This patch is based on v5.10-rc7.
+> ---
+>  Documentation/devicetree/bindings/nvmem/mtk-efuse.txt | 1 +
+>  1 file changed, 1 insertion(+)
 > 
 
 Acked-by: Rob Herring <robh@kernel.org>
