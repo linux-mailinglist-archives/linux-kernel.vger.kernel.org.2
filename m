@@ -2,122 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52132315066
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 14:38:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B059A315069
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 14:38:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231446AbhBINiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 08:38:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44652 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230080AbhBINhZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 08:37:25 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3D03C64ECC;
-        Tue,  9 Feb 2021 13:36:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612877799;
-        bh=aCMDFgriYUqM7ObWJ2eF1msupqikQ0hVEHs5rlbVExE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=f7I6F/qVo+KtBHio0909wvtJWvsN7C4SBlErYV8Om+uaN0DHuCsNb2hWwHwPrmpSO
-         xcw6CMPsFsVlyOn8d9wS8cQfrdTXdJZ+5CGAcueIKsoYOon4MKnl3Nsy9xTJu+5FtP
-         0bf08C9ZvSMibh+qcIFX+BEsIo62PYOPxUOyJ9ok=
-Date:   Tue, 9 Feb 2021 14:36:37 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Mike Ximing Chen <mike.ximing.chen@intel.com>
-Cc:     linux-kernel@vger.kernel.org, arnd@arndb.de,
-        dan.j.williams@intel.com, pierre-louis.bossart@linux.intel.com,
-        Gage Eads <gage.eads@intel.com>
-Subject: Re: [PATCH v10 01/20] dlb: add skeleton for DLB driver
-Message-ID: <YCKP5ZUL1/wMzmf4@kroah.com>
-References: <20210127225641.1342-1-mike.ximing.chen@intel.com>
- <20210127225641.1342-2-mike.ximing.chen@intel.com>
+        id S231479AbhBINiP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 08:38:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58388 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230156AbhBINhg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 08:37:36 -0500
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E235C061786
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 05:36:56 -0800 (PST)
+Received: by mail-qk1-x732.google.com with SMTP id q85so5572999qke.8
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 05:36:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=rQDN9SsYyOm1+6OzrJKfjjujxeS9Kf+poa36QyspUHo=;
+        b=S69bRY1mHQ3ZCVAh+fPnTuBsl7+eZNIht8JRwW20nRzCxS36nimK/5rd3kMxq+2pHb
+         HYLgTwbxmGuFoEWrr+ZAmtFQq2a1xkgs1UJHIqGMntO5E7iIiLAyLHN2n93bZnF6Ty+m
+         /MxYtzcA3z5JPJ5KYQAq8hNtH4LFEu4cx+E1K3uTmRwMhdIiExWgloutL2q4659LRmo3
+         9eIMozKPjtU3aQe3UcZ3QxGdbwJ0G60qISvLyNkM/NXZEgYisRGyhlOyDOUpCWy2o7Fl
+         nN7JY9LFC7D+kXbUCcEC7j5+HK2qxI2CKEM7D4b69O+whsMYQQliwa3D3yRZcGOUmx0T
+         4U2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=rQDN9SsYyOm1+6OzrJKfjjujxeS9Kf+poa36QyspUHo=;
+        b=EprXL4XAt2y1XCUsBTs97LjrZe8UINA4vPaoa+ZJvulZh+EMJuacSXvRqlLsGV+ZVb
+         2x0+UUGfaYN0+XwQJUTvzrtlPrVjUSoW2fNnVWnVRfiNTBipNz/Ashz+D8TOR80vjz4N
+         J6zB7ZdzpSh+FYf+aNUNLHT64Ec4bnRsP84jSI5pR1nO2uscOnO2UID4mvsQqSC73NuH
+         N2NC/km3FLtjWfGiAZrSYcB2qTl2N4F9OjJpD0g1uD0dkYzWFsaDzPsV7Iu6TIGou97o
+         FdVfR6wlM3shwbWQ2Xrzuuts8ds1nTiBMmCqJVymbiIff6p7deM3pSmG4wJ6og6QMPrt
+         SIGw==
+X-Gm-Message-State: AOAM530O5BOdo8IseZgssOrtemD/0ByjF9uA1fOpC2xuJ83/BPp+TZk8
+        4VXPKJCj8W8uublVivQuUfqh6A==
+X-Google-Smtp-Source: ABdhPJwQw6W1kHlfnJVOsEKJxg8Vk8eql2NS8SYRCjTHZ68Dr1qE31sHp7DvgGGwh+sr2aoUfACiUg==
+X-Received: by 2002:a37:aec5:: with SMTP id x188mr21372955qke.144.1612877815500;
+        Tue, 09 Feb 2021 05:36:55 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
+        by smtp.gmail.com with ESMTPSA id f8sm16383731qth.6.2021.02.09.05.36.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Feb 2021 05:36:54 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1l9TCH-005RIO-Tr; Tue, 09 Feb 2021 09:36:53 -0400
+Date:   Tue, 9 Feb 2021 09:36:53 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Lino Sanfilippo <l.sanfilippo@kunbus.com>
+Cc:     James Bottomley <James.Bottomley@HansenPartnership.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Lino Sanfilippo <LinoSanfilippo@gmx.de>, peterhuewe@gmx.de,
+        stefanb@linux.vnet.ibm.com, stable@vger.kernel.org,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 2/2] tpm: in tpm2_del_space check if ops pointer is
+ still valid
+Message-ID: <20210209133653.GC4718@ziepe.ca>
+References: <1612482643-11796-1-git-send-email-LinoSanfilippo@gmx.de>
+ <1612482643-11796-3-git-send-email-LinoSanfilippo@gmx.de>
+ <7308e5e9f51501bd92cced8f28ff6130c976b3ed.camel@HansenPartnership.com>
+ <YByrCnswkIlz1w1t@kernel.org>
+ <ee4adfbb99273e1bdceca210bc1fa5f16a50c415.camel@HansenPartnership.com>
+ <20210205172528.GP4718@ziepe.ca>
+ <08ce58ab-3513-5d98-16a5-b197276f6bce@kunbus.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210127225641.1342-2-mike.ximing.chen@intel.com>
+In-Reply-To: <08ce58ab-3513-5d98-16a5-b197276f6bce@kunbus.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 27, 2021 at 04:56:22PM -0600, Mike Ximing Chen wrote:
-> Add basic driver functionality (load, unload, probe, and remove callbacks)
-> for the DLB driver.
+On Tue, Feb 09, 2021 at 12:52:17PM +0100, Lino Sanfilippo wrote:
+> > @@ -640,8 +643,10 @@ void tpm_chip_unregister(struct tpm_chip *chip)
+> >  	if (IS_ENABLED(CONFIG_HW_RANDOM_TPM))
+> >  		hwrng_unregister(&chip->hwrng);
+> >  	tpm_bios_log_teardown(chip);
+> > -	if (chip->flags & TPM_CHIP_FLAG_TPM2)
+> > +	if (chip->flags & TPM_CHIP_FLAG_TPM2) {
+> >  		cdev_device_del(&chip->cdevs, &chip->devs);
+> > +		put_device(&chip->devs);
+> > +	}
+> >  	tpm_del_char_device(chip);
+> >  }
+> >  EXPORT_SYMBOL_GPL(tpm_chip_unregister);
+> > 
 > 
-> Add documentation which describes in detail the hardware, the user
-> interface, device interrupts, and the driver's power-management strategy.
-> For more details about the driver see the documentation in the patch.
-> 
-> Add a DLB entry to the MAINTAINERS file.
-> 
-> Signed-off-by: Gage Eads <gage.eads@intel.com>
-> Signed-off-by: Mike Ximing Chen <mike.ximing.chen@intel.com>
-> Reviewed-by: Magnus Karlsson <magnus.karlsson@intel.com>
-> Reviewed-by: Dan Williams <dan.j.williams@intel.com>
-> ---
->  Documentation/misc-devices/dlb.rst   | 259 +++++++++++++++++++++++++++
->  Documentation/misc-devices/index.rst |   1 +
->  MAINTAINERS                          |   8 +
->  drivers/misc/Kconfig                 |   1 +
->  drivers/misc/Makefile                |   1 +
->  drivers/misc/dlb/Kconfig             |  18 ++
->  drivers/misc/dlb/Makefile            |   9 +
->  drivers/misc/dlb/dlb_hw_types.h      |  32 ++++
->  drivers/misc/dlb/dlb_main.c          | 156 ++++++++++++++++
->  drivers/misc/dlb/dlb_main.h          |  37 ++++
->  10 files changed, 522 insertions(+)
->  create mode 100644 Documentation/misc-devices/dlb.rst
->  create mode 100644 drivers/misc/dlb/Kconfig
->  create mode 100644 drivers/misc/dlb/Makefile
->  create mode 100644 drivers/misc/dlb/dlb_hw_types.h
->  create mode 100644 drivers/misc/dlb/dlb_main.c
->  create mode 100644 drivers/misc/dlb/dlb_main.h
-> 
-> diff --git a/Documentation/misc-devices/dlb.rst b/Documentation/misc-devices/dlb.rst
-> new file mode 100644
-> index 000000000000..aa79be07ee49
-> --- /dev/null
-> +++ b/Documentation/misc-devices/dlb.rst
-> @@ -0,0 +1,259 @@
-> +.. SPDX-License-Identifier: GPL-2.0-only
-> +
-> +===========================================
-> +Intel(R) Dynamic Load Balancer Overview
-> +===========================================
-> +
-> +:Authors: Gage Eads and Mike Ximing Chen
-> +
-> +Contents
-> +========
-> +
-> +- Introduction
-> +- Scheduling
-> +- Queue Entry
-> +- Port
-> +- Queue
-> +- Credits
-> +- Scheduling Domain
-> +- Interrupts
-> +- Power Management
-> +- User Interface
-> +- Reset
-> +
-> +Introduction
-> +============
-> +
-> +The Intel(r) Dynamic Load Balancer (Intel(r) DLB) is a PCIe device that
-> +provides load-balanced, prioritized scheduling of core-to-core communication.
-> +
-> +Intel DLB is an accelerator for the event-driven programming model of
-> +DPDK's Event Device Library[2]. The library is used in packet processing
-> +pipelines that arrange for multi-core scalability, dynamic load-balancing, and
-> +variety of packet distribution and synchronization schemes.
+> I tested the solution you scetched and it fixes the issue for me. Will you send a (real) patch for this?
 
-As this is a networking related thing, I would like you to get the
-proper reviews/acks from the networking maintainers before I can take
-this.
+No, feel free to bundle this up with any fixes needed and send it with
+a Signed-off-by from both of us
 
-Or, if they think it has nothing to do with networking, that's fine too,
-but please do not try to route around them.
+I did it pretty fast so it will need a careful read that there isn't a
+typo
 
-thanks,
-
-greg k-h
+Thanks,
+Jason
