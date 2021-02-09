@@ -2,303 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52289314881
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 07:15:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14604314884
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 07:15:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229671AbhBIGN3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 01:13:29 -0500
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:11180 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229565AbhBIGNT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 01:13:19 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B602227d70000>; Mon, 08 Feb 2021 22:12:39 -0800
-Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL101.nvidia.com
- (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 9 Feb
- 2021 06:12:38 +0000
-Received: from mtl-vdi-166.wap.labs.mlnx (172.20.145.6) by
- DRHQMAIL107.nvidia.com (10.27.9.16) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3; Tue, 9 Feb 2021 06:12:36 +0000
-Date:   Tue, 9 Feb 2021 08:12:32 +0200
-From:   Eli Cohen <elic@nvidia.com>
-To:     Jason Wang <jasowang@redhat.com>
-CC:     Si-Wei Liu <si-wei.liu@oracle.com>, <mst@redhat.com>,
-        <virtualization@lists.linux-foundation.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <lulu@redhat.com>
-Subject: Re: [PATCH v1] vdpa/mlx5: Restore the hardware used index after
- change map
-Message-ID: <20210209061232.GC210455@mtl-vdi-166.wap.labs.mlnx>
-References: <20210204073618.36336-1-elic@nvidia.com>
- <81f5ce4f-cdb0-26cd-0dce-7ada824b1b86@oracle.com>
- <f2206fa2-0ddc-1858-54e7-71614b142e46@redhat.com>
- <20210208063736.GA166546@mtl-vdi-166.wap.labs.mlnx>
- <0d592ed0-3cea-cfb0-9b7b-9d2755da3f12@redhat.com>
- <20210208100445.GA173340@mtl-vdi-166.wap.labs.mlnx>
- <379d79ff-c8b4-9acb-1ee4-16573b601973@redhat.com>
+        id S230075AbhBIGOP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 01:14:15 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:41677 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229636AbhBIGOE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 01:14:04 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4DZXd82KbFz9vBmK;
+        Tue,  9 Feb 2021 07:13:16 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id lIQPK-AhnvjE; Tue,  9 Feb 2021 07:13:16 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4DZXd81MVVz9vBmJ;
+        Tue,  9 Feb 2021 07:13:16 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id DFAB88B7CA;
+        Tue,  9 Feb 2021 07:13:16 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id q0LMirB_HRbU; Tue,  9 Feb 2021 07:13:16 +0100 (CET)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 5801E8B764;
+        Tue,  9 Feb 2021 07:13:16 +0100 (CET)
+Subject: Re: [PATCH v5 17/22] powerpc/syscall: Do not check unsupported scv
+ vector on PPC32
+To:     Nicholas Piggin <npiggin@gmail.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Michael Ellerman <mpe@ellerman.id.au>, msuchanek@suse.de,
+        Paul Mackerras <paulus@samba.org>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+References: <cover.1612796617.git.christophe.leroy@csgroup.eu>
+ <fc3afe1870f943b2010805fcb045b718a638b3c6.1612796617.git.christophe.leroy@csgroup.eu>
+ <1612835741.qmlhg8iwmj.astroid@bobo.none>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <82c4abb1-cb52-e856-b2dd-d7c7d48bd292@csgroup.eu>
+Date:   Tue, 9 Feb 2021 07:13:17 +0100
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <379d79ff-c8b4-9acb-1ee4-16573b601973@redhat.com>
-User-Agent: Mutt/1.9.5 (bf161cf53efb) (2018-04-13)
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- DRHQMAIL107.nvidia.com (10.27.9.16)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1612851159; bh=IIEGkb9KfoptflBESAUG25Bwabvj9oLl1u1vLkgyIo8=;
-        h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-         Content-Type:Content-Disposition:Content-Transfer-Encoding:
-         In-Reply-To:User-Agent:X-Originating-IP:X-ClientProxiedBy;
-        b=UYIq7PHcUgtN3I2P6yFkqelH7tyYE8SyRoOWOVlxQtVoxUr7c9ERj6UceDzCP7KEX
-         ctD46+uoS+J56pEItPohG+0no+1mGQNpDRg6lGeTKQ4upNlGdDD/VnNqhv/XhPZqOs
-         xYk37cF50OcqjP4z4wao+xLfOnavoG5N15N8IGT03mDqHZ8FrBan/0QUkIoIBfSr6k
-         omz5uKwUiHeCP7iV5/LszfpjTNToM/g8isffgcACIUirudi8PTyJ6ajupiQn3RCIiJ
-         iVLcxw1cUrS0Yn07uojUTJXrqi8U762AnjXRCbV8HJSDtTHPI3iM5A1ESW+wzwslcR
-         /o4pPXZIFlY7Q==
+In-Reply-To: <1612835741.qmlhg8iwmj.astroid@bobo.none>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 09, 2021 at 11:20:14AM +0800, Jason Wang wrote:
->=20
-> On 2021/2/8 =E4=B8=8B=E5=8D=886:04, Eli Cohen wrote:
-> > On Mon, Feb 08, 2021 at 05:04:27PM +0800, Jason Wang wrote:
-> > > On 2021/2/8 =E4=B8=8B=E5=8D=882:37, Eli Cohen wrote:
-> > > > On Mon, Feb 08, 2021 at 12:27:18PM +0800, Jason Wang wrote:
-> > > > > On 2021/2/6 =E4=B8=8A=E5=8D=887:07, Si-Wei Liu wrote:
-> > > > > > On 2/3/2021 11:36 PM, Eli Cohen wrote:
-> > > > > > > When a change of memory map occurs, the hardware resources ar=
-e destroyed
-> > > > > > > and then re-created again with the new memory map. In such ca=
-se, we need
-> > > > > > > to restore the hardware available and used indices. The drive=
-r failed to
-> > > > > > > restore the used index which is added here.
-> > > > > > >=20
-> > > > > > > Also, since the driver also fails to reset the available and =
-used
-> > > > > > > indices upon device reset, fix this here to avoid regression =
-caused by
-> > > > > > > the fact that used index may not be zero upon device reset.
-> > > > > > >=20
-> > > > > > > Fixes: 1a86b377aa21 ("vdpa/mlx5: Add VDPA driver for supporte=
-d mlx5
-> > > > > > > devices")
-> > > > > > > Signed-off-by: Eli Cohen<elic@nvidia.com>
-> > > > > > > ---
-> > > > > > > v0 -> v1:
-> > > > > > > Clear indices upon device reset
-> > > > > > >=20
-> > > > > > >   =C2=A0 drivers/vdpa/mlx5/net/mlx5_vnet.c | 18 +++++++++++++=
-+++++
-> > > > > > >   =C2=A0 1 file changed, 18 insertions(+)
-> > > > > > >=20
-> > > > > > > diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> > > > > > > b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> > > > > > > index 88dde3455bfd..b5fe6d2ad22f 100644
-> > > > > > > --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> > > > > > > +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> > > > > > > @@ -87,6 +87,7 @@ struct mlx5_vq_restore_info {
-> > > > > > >   =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u64 device_addr;
-> > > > > > >   =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u64 driver_addr;
-> > > > > > >   =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u16 avail_index;
-> > > > > > > +=C2=A0=C2=A0=C2=A0 u16 used_index;
-> > > > > > >   =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 bool ready;
-> > > > > > >   =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct vdpa_callback cb;
-> > > > > > >   =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 bool restore;
-> > > > > > > @@ -121,6 +122,7 @@ struct mlx5_vdpa_virtqueue {
-> > > > > > >   =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u32 virtq_id;
-> > > > > > >   =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct mlx5_vdpa_net *ndev;
-> > > > > > >   =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u16 avail_idx;
-> > > > > > > +=C2=A0=C2=A0=C2=A0 u16 used_idx;
-> > > > > > >   =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int fw_state;
-> > > > > > >   =C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* keep last in the s=
-truct */
-> > > > > > > @@ -804,6 +806,7 @@ static int create_virtqueue(struct mlx5_v=
-dpa_net
-> > > > > > > *ndev, struct mlx5_vdpa_virtque
-> > > > > > >   =C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 obj_context =3D MLX5_=
-ADDR_OF(create_virtio_net_q_in, in,
-> > > > > > > obj_context);
-> > > > > > >   =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 MLX5_SET(virtio_net_q_object=
-, obj_context, hw_available_index,
-> > > > > > > mvq->avail_idx);
-> > > > > > > +=C2=A0=C2=A0=C2=A0 MLX5_SET(virtio_net_q_object, obj_context=
-, hw_used_index,
-> > > > > > > mvq->used_idx);
-> > > > > > >   =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 MLX5_SET(virtio_net_q_object=
-, obj_context,
-> > > > > > > queue_feature_bit_mask_12_3,
-> > > > > > >   =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0 get_features_12_3(ndev->mvdev.actual_features));
-> > > > > > >   =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 vq_ctx =3D MLX5_ADDR_OF(virt=
-io_net_q_object, obj_context,
-> > > > > > > virtio_q_context);
-> > > > > > > @@ -1022,6 +1025,7 @@ static int connect_qps(struct mlx5_vdpa=
-_net
-> > > > > > > *ndev, struct mlx5_vdpa_virtqueue *m
-> > > > > > >   =C2=A0 struct mlx5_virtq_attr {
-> > > > > > >   =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u8 state;
-> > > > > > >   =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u16 available_index;
-> > > > > > > +=C2=A0=C2=A0=C2=A0 u16 used_index;
-> > > > > > >   =C2=A0 };
-> > > > > > >   =C2=A0 =C2=A0 static int query_virtqueue(struct mlx5_vdpa_n=
-et *ndev, struct
-> > > > > > > mlx5_vdpa_virtqueue *mvq,
-> > > > > > > @@ -1052,6 +1056,7 @@ static int query_virtqueue(struct
-> > > > > > > mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtqueu
-> > > > > > >   =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 memset(attr, 0, sizeof(*attr=
-));
-> > > > > > >   =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 attr->state =3D MLX5_GET(vir=
-tio_net_q_object, obj_context, state);
-> > > > > > >   =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 attr->available_index =3D ML=
-X5_GET(virtio_net_q_object,
-> > > > > > > obj_context, hw_available_index);
-> > > > > > > +=C2=A0=C2=A0=C2=A0 attr->used_index =3D MLX5_GET(virtio_net_=
-q_object, obj_context,
-> > > > > > > hw_used_index);
-> > > > > > >   =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 kfree(out);
-> > > > > > >   =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return 0;
-> > > > > > >   =C2=A0 @@ -1535,6 +1540,16 @@ static void teardown_virtqueu=
-es(struct
-> > > > > > > mlx5_vdpa_net *ndev)
-> > > > > > >   =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
-> > > > > > >   =C2=A0 }
-> > > > > > >   =C2=A0 +static void clear_virtqueues(struct mlx5_vdpa_net *=
-ndev)
-> > > > > > > +{
-> > > > > > > +=C2=A0=C2=A0=C2=A0 int i;
-> > > > > > > +
-> > > > > > > +=C2=A0=C2=A0=C2=A0 for (i =3D ndev->mvdev.max_vqs - 1; i >=
-=3D 0; i--) {
-> > > > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ndev->vqs[i].avai=
-l_idx =3D 0;
-> > > > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ndev->vqs[i].used=
-_idx =3D 0;
-> > > > > > > +=C2=A0=C2=A0=C2=A0 }
-> > > > > > > +}
-> > > > > > > +
-> > > > > > >   =C2=A0 /* TODO: cross-endian support */
-> > > > > > >   =C2=A0 static inline bool mlx5_vdpa_is_little_endian(struct=
- mlx5_vdpa_dev
-> > > > > > > *mvdev)
-> > > > > > >   =C2=A0 {
-> > > > > > > @@ -1610,6 +1625,7 @@ static int save_channel_info(struct
-> > > > > > > mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtqu
-> > > > > > >   =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 retu=
-rn err;
-> > > > > > >   =C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ri->avail_index =3D a=
-ttr.available_index;
-> > > > > > > +=C2=A0=C2=A0=C2=A0 ri->used_index =3D attr.used_index;
-> > > > > > >   =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ri->ready =3D mvq->ready;
-> > > > > > >   =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ri->num_ent =3D mvq->num_ent=
-;
-> > > > > > >   =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ri->desc_addr =3D mvq->desc_=
-addr;
-> > > > > > > @@ -1654,6 +1670,7 @@ static void restore_channels_info(struc=
-t
-> > > > > > > mlx5_vdpa_net *ndev)
-> > > > > > >   =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 continue;
-> > > > > > >   =C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0 mvq->avail_idx =3D ri->avail_index;
-> > > > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 mvq->used_idx =3D=
- ri->used_index;
-> > > > > > >   =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 mvq-=
->ready =3D ri->ready;
-> > > > > > >   =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 mvq-=
->num_ent =3D ri->num_ent;
-> > > > > > >   =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 mvq-=
->desc_addr =3D ri->desc_addr;
-> > > > > > > @@ -1768,6 +1785,7 @@ static void mlx5_vdpa_set_status(struct
-> > > > > > > vdpa_device *vdev, u8 status)
-> > > > > > >   =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (!status) {
-> > > > > > >   =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 mlx5=
-_vdpa_info(mvdev, "performing device reset\n");
-> > > > > > >   =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 tear=
-down_driver(ndev);
-> > > > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 clear_virtqueues(=
-ndev);
-> > > > > > The clearing looks fine at the first glance, as it aligns with =
-the other
-> > > > > > state cleanups floating around at the same place. However, the =
-thing is
-> > > > > > get_vq_state() is supposed to be called right after to get sync=
-'ed with
-> > > > > > the latest internal avail_index from device while vq is stopped=
-. The
-> > > > > > index was saved in the driver software at vq suspension, but be=
-fore the
-> > > > > > virtq object is destroyed. We shouldn't clear the avail_index t=
-oo early.
-> > > > > Good point.
-> > > > >=20
-> > > > > There's a limitation on the virtio spec and vDPA framework that w=
-e can not
-> > > > > simply differ device suspending from device reset.
-> > > > >=20
-> > > > Are you talking about live migration where you reset the device but
-> > > > still want to know how far it progressed in order to continue from =
-the
-> > > > same place in the new VM?
-> > > Yes. So if we want to support live migration at we need:
-> > >=20
-> > > in src node:
-> > > 1) suspend the device
-> > > 2) get last_avail_idx via get_vq_state()
-> > >=20
-> > > in the dst node:
-> > > 3) set last_avail_idx via set_vq_state()
-> > > 4) resume the device
-> > >=20
-> > > So you can see, step 2 requires the device/driver not to forget the
-> > > last_avail_idx.
-> > >=20
-> > Just to be sure, what really matters here is the used index. Becuase th=
-e
-> > vriqtueue itself is copied from the src VM to the dest VM. The availabl=
-e
-> > index is alreay there and we know the hardware reads it from there.
->=20
->=20
-> So for "last_avail_idx" I meant the hardware internal avail index. It's n=
-ot
-> stored in the virtqueue so we must migrate it from src to dest and set th=
-em
-> through set_vq_state(). Then in the destination, the virtqueue can be
-> restarted from that index.
->=20
 
-Consider this case: driver posted buffers till avail index becomes the
-value 50. Hardware is executing but made it till 20 when virtqueue was
-suspended due to live migration - this is indicated by hardware used
-index equal 20. Now the vritqueue is copied to the new VM and the
-hardware now has to continue execution from index 20. We need to tell
-the hardware via configuring the last used_index. So why don't we
-restore the used index?
 
->=20
-> >=20
-> > So it puzzles me why is set_vq_state() we do not communicate the saved
-> > used index.
->=20
->=20
-> We don't do that since:
->=20
-> 1) if the hardware can sync its internal used index from the virtqueue
-> during device, then we don't need it
-> 2) if the hardware can not sync its internal used index, the driver (e.g =
-as
-> you did here) can do that.
->=20
-> But there's no way for the hardware to deduce the internal avail index fr=
-om
-> the virtqueue, that's why avail index is sycned.
->=20
-> Thanks
->=20
->=20
-> >=20
->=20
+Le 09/02/2021 à 03:00, Nicholas Piggin a écrit :
+> Excerpts from Christophe Leroy's message of February 9, 2021 1:10 am:
+>> Only PPC64 has scv. No need to check the 0x7ff0 trap on PPC32.
+>> For that, add a helper trap_is_unsupported_scv() similar to
+>> trap_is_scv().
+>>
+>> And ignore the scv parameter in syscall_exit_prepare (Save 14 cycles
+>> 346 => 332 cycles)
+>>
+>> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+>> ---
+>> v5: Added a helper trap_is_unsupported_scv()
+>> ---
+>>   arch/powerpc/include/asm/ptrace.h | 5 +++++
+>>   arch/powerpc/kernel/entry_32.S    | 1 -
+>>   arch/powerpc/kernel/interrupt.c   | 7 +++++--
+>>   3 files changed, 10 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/arch/powerpc/include/asm/ptrace.h b/arch/powerpc/include/asm/ptrace.h
+>> index 58f9dc060a7b..2c842b11a924 100644
+>> --- a/arch/powerpc/include/asm/ptrace.h
+>> +++ b/arch/powerpc/include/asm/ptrace.h
+>> @@ -229,6 +229,11 @@ static inline bool trap_is_scv(struct pt_regs *regs)
+>>   	return (IS_ENABLED(CONFIG_PPC_BOOK3S_64) && TRAP(regs) == 0x3000);
+>>   }
+>>   
+>> +static inline bool trap_is_unsupported_scv(struct pt_regs *regs)
+>> +{
+>> +	return (IS_ENABLED(CONFIG_PPC_BOOK3S_64) && TRAP(regs) == 0x7ff0);
+>> +}
+> 
+> This change is good.
+> 
+>> +
+>>   static inline bool trap_is_syscall(struct pt_regs *regs)
+>>   {
+>>   	return (trap_is_scv(regs) || TRAP(regs) == 0xc00);
+>> diff --git a/arch/powerpc/kernel/entry_32.S b/arch/powerpc/kernel/entry_32.S
+>> index cffe58e63356..7c824e8928d0 100644
+>> --- a/arch/powerpc/kernel/entry_32.S
+>> +++ b/arch/powerpc/kernel/entry_32.S
+>> @@ -344,7 +344,6 @@ transfer_to_syscall:
+>>   
+>>   ret_from_syscall:
+>>   	addi    r4,r1,STACK_FRAME_OVERHEAD
+>> -	li	r5,0
+>>   	bl	syscall_exit_prepare
+> 
+> For this one, I think it would be nice to do the "right" thing and make
+> the function prototypes different on !64S. They could then declare a
+> local const bool scv = 0.
+> 
+> We could have syscall_exit_prepare and syscall_exit_prepare_maybe_scv
+> or something like that, 64s can use the latter one and the former can be
+> a wrapper that passes constant 0 for scv. Then we don't have different
+> prototypes for the same function, but you just have to make the 32-bit
+> version static inline and the 64-bit version exported to asm.
+
+You can't call a static inline function from ASM, I don't understand you.
+
+What is wrong for you really here ? Is that the fact we leave scv random, or is that the below 
+IS_ENABLED() ?
+
+I don't mind keeping the 'li r5,0' before calling the function if you find it cleaner, the real 
+performance gain is with setting scv to 0 below for PPC32 (and maybe it should be set to zero for 
+book3e/64 too ?).
+
+Other solution would be to do replace (!scv) by (!scv || !IS_ENABLED(CONFIG_PPC_BOOK3S_64)) in the 
+two places it is used in syscall_exit_prepare().
+
+Any preference ?
+
+Thanks
+Christophe
+
+>> @@ -224,6 +224,9 @@ notrace unsigned long syscall_exit_prepare(unsigned long r3,
+>>   	unsigned long ti_flags;
+>>   	unsigned long ret = 0;
+>>   
+>> +	if (IS_ENABLED(CONFIG_PPC32))
+>> +		scv = 0;
+>> +
+>>   	CT_WARN_ON(ct_state() == CONTEXT_USER);
+>>   
+>>   #ifdef CONFIG_PPC64
+>> -- 
+>> 2.25.0
+>>
+>>
