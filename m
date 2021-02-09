@@ -2,270 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A94BF315155
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 15:15:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C0B8315156
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 15:15:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231459AbhBIONr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 09:13:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37960 "EHLO
+        id S231372AbhBIOOB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 09:14:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231443AbhBION3 (ORCPT
+        with ESMTP id S231496AbhBIONw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 09:13:29 -0500
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AD9BC06178A
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 06:12:48 -0800 (PST)
-Received: by mail-ej1-x630.google.com with SMTP id w2so31667156ejk.13
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 06:12:48 -0800 (PST)
+        Tue, 9 Feb 2021 09:13:52 -0500
+Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12AE2C061786
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 06:13:37 -0800 (PST)
+Received: by mail-qv1-xf2c.google.com with SMTP id l14so8707570qvp.2
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 06:13:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=semihalf-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=o7r5VTOX4WdnX/SzPWDQXdwpbigYsu03P8j3XVKX7zw=;
-        b=OZd6MNoz2jScekGV5bUxQngcHPV3hDabhbYgBggJW+T7ZMm7yS6j1IoL1hgO3saFju
-         it29wzTd/ExjNEgFQ919Ps7grKLUvfrPtY+LSBwPt7C4SnG9Ui4908RU8Wo4ljS8uK5D
-         XXtT9vv/4chxZqx3HJukMzMBwCF3KnCTm9y2lFXRP2fO5BKTB/+EknPSlvbdAwDQ64cL
-         lXlV6J2gSwg9tNMXzKU9LImBoS3KpNV5kGmhrRXQrDFbs9HQiP5f/6cl5Fdcq2mER++a
-         8vsw/1Uyj9fEwz3oDL/w3kOFgYNCBDNLbX8b482EiOw78wZ2bCUQbyzCRN0JoRyXFOUE
-         aqgg==
+        bh=qtFCK0z4ywUD3O29byIfhhkjF0iydn71SM7pfUSL7H4=;
+        b=WtRY7RyEU/fEeDDP+uiq/bRv6pcgHTWxGTWMyAxC54c4qbJhvvBbLY5sYW3D4rnTLT
+         BG1w2BP2Ya06vRcrBkFhpBboSkxgCkwCCV0SvvNbpf9WDr4F+UdZs5CBmUskr0SjMFBJ
+         h9vEG7Ixm1bGnjxKhAS3X6Os+fMDRlnfjMm040mvRVRwfITYXpDqFzgOO/1xMnloRrQA
+         l7uhG12iVnsbjb8Nvw5i9kw05AjgIECvQDQB1v7TLFLh3pBLh5B76STbszrOtS/dfX9x
+         fDtS2fX8Ldsz/uIY8ekoR6bOrmEv1ke22JrwTHZ7v7MgMYqdCmndejFycAlMaKGAJ2o3
+         eZiQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=o7r5VTOX4WdnX/SzPWDQXdwpbigYsu03P8j3XVKX7zw=;
-        b=G/xOX73EUOZ3CFfzUsP2hN81a/Xh9nbwwpZUUHjsgYKsifzdxyU2lXYAOmq/DxC+4F
-         lj0cnWVCz54fJjaILkZGaEe2SegXa2DWAqHZuJQjvXKV+RdwqHk23KYFm/lNB90oAvoV
-         kfctRNMzKETQc8mgSw7DGknBYKHrVtf/sKdpTFAcS6/aatSOSOwk8j5V8xAYKi6WLoKM
-         SoUy0kMEFeZDmypFuz5flG073Ehar4yIsXfBLDZBONO9m8V2dRVVpuZFR2FAt3y7U8Kj
-         M/HlF8BhIZLTsWxkVuvdRVf/IM1oGfJCIk9hBJuelDruQ3N6WI1qCtDG2pEmTv4QNZKJ
-         L5+g==
-X-Gm-Message-State: AOAM53200CV8U/9VOC/NjvLbu55sdrRqp4TUq5CTJH1H+RvtN5IUIB94
-        Yo9TS+DFJ1zh6J5PnNUfwOuiCAr0ZiUNqAJ5/zvqYyPyQLuOaxvT
-X-Google-Smtp-Source: ABdhPJyd72W7zAU+gYv4MhJQuAjN6uNzRBtr5oQY7NmOEhDNQffbrxx+UzXvTT8x2h50DpkR0DP05TtyrJThJO5Uwfk=
-X-Received: by 2002:a17:906:6943:: with SMTP id c3mr8088460ejs.133.1612879966954;
- Tue, 09 Feb 2021 06:12:46 -0800 (PST)
+        bh=qtFCK0z4ywUD3O29byIfhhkjF0iydn71SM7pfUSL7H4=;
+        b=TJ3G3SHSvX5iCjjCi4kltT9nvwAjpx6mbRVQmBTaqdOZ9RmtHv+nu2vijtyjcpma9N
+         fb/RLLAhDYppYZM7y0AyBDOVyOPZfAqlIIOgR5SeVDQDWi6A4G9/59p0Aohg4VxLE2x9
+         vB2D5zsEsQsV0rs/cIbceivDnfiR6fH0wKyknq5IQ4rFrEj21pAu3BbSzENNpodf+Z6G
+         jokjoVANpJhJkUrxD2Qa3mTdr1Up7HhiDwu6lE5X8HRPG349Gv8uUFdwgaq7xnWdUXvy
+         IXKNzk10UvG7Nh2QE7KfA2jVonZnZJhatQWZGAmq475ahJBDIcxSYiUWbjplPpSRh4fW
+         3vFw==
+X-Gm-Message-State: AOAM5317XgX9C1HrfYLHJnsY6Eq7btZ8LXO2kAn2Sw0b+e63MdAWWhrT
+        5M7rwScJqZEi9ohAhYagfZDpqVIeOP7+2qEF7hSrRQ==
+X-Google-Smtp-Source: ABdhPJw99RxRQ12zTjUdBvnsVRWtJIMpcSNLzhfBoDp6m7eHgSHfgaq5W4Whi7EhAn+BbgH150/nGzrtNKuw8opZ1Rk=
+X-Received: by 2002:ad4:44a9:: with SMTP id n9mr21076072qvt.10.1612880016257;
+ Tue, 09 Feb 2021 06:13:36 -0800 (PST)
 MIME-Version: 1.0
-References: <20210208145818.395353822@linuxfoundation.org>
-In-Reply-To: <20210208145818.395353822@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 9 Feb 2021 19:42:34 +0530
-Message-ID: <CA+G9fYu5OOQmbogVtH7ASif06AZdizHM_4LRRMkOGDYDg5Dnbw@mail.gmail.com>
-Subject: Re: [PATCH 5.10 000/120] 5.10.15-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
+References: <20210209134610.19904-1-kostap@marvell.com> <20210209134610.19904-5-kostap@marvell.com>
+In-Reply-To: <20210209134610.19904-5-kostap@marvell.com>
+From:   Marcin Wojtas <mw@semihalf.com>
+Date:   Tue, 9 Feb 2021 15:13:24 +0100
+Message-ID: <CAPv3WKeMgJwVjzdAHHHSG8EHB9C_Lt7hrZmdhRWp5B8q1UkxXQ@mail.gmail.com>
+Subject: Re: [PATCH v4 4/5] dts: marvell: Enable 10G interface on 9130-DB board
+To:     Kostya Porotchkin <kostap@marvell.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Vladimir Vid <vladimir.vid@sartura.hr>, tmn505@gmail.com,
+        luka.kovacic@sartura.hr,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        =?UTF-8?Q?Gr=C3=A9gory_Clement?= <gregory.clement@bootlin.com>,
+        Andrew Lunn <andrew@lunn.ch>, Rob Herring <robh+dt@kernel.org>,
+        vkoul@kernel.org, kishon@ti.com,
+        =?UTF-8?Q?Miqu=C3=A8l_Raynal?= <miquel.raynal@bootlin.com>,
+        Grzegorz Jaszczyk <jaz@semihalf.com>, nadavh@marvell.com,
+        Stefan Chulski <stefanc@marvell.com>,
+        =?UTF-8?B?QmVuIFBlbGVkICjXkdefINek15zXkyk=?= <bpeled@marvell.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 8 Feb 2021 at 20:44, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
+Hi,
+
+
+wt., 9 lut 2021 o 14:47 <kostap@marvell.com> napisa=C5=82(a):
 >
-> This is the start of the stable review cycle for the 5.10.15 release.
-> There are 120 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+> From: Stefan Chulski <stefanc@marvell.com>
 >
-> Responses should be made by Wed, 10 Feb 2021 14:57:55 +0000.
-> Anything received after that time might be too late.
+> This patch enables eth0 10G interface on CN9130-DB paltforms.
 >
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.10.15-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.10.y
-> and the diffstat can be found below.
+> Signed-off-by: Stefan Chulski <stefanc@marvell.com>
+> Signed-off-by: Konstantin Porotchkin <kostap@marvell.com>
+> ---
+>  arch/arm64/boot/dts/marvell/cn9130-db.dtsi | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> thanks,
+> diff --git a/arch/arm64/boot/dts/marvell/cn9130-db.dtsi b/arch/arm64/boot=
+/dts/marvell/cn9130-db.dtsi
+> index 8de3a552b806..97c74b81fd78 100644
+> --- a/arch/arm64/boot/dts/marvell/cn9130-db.dtsi
+> +++ b/arch/arm64/boot/dts/marvell/cn9130-db.dtsi
+> @@ -125,7 +125,7 @@
 >
-> greg k-h
+>  /* SLM-1521-V2, CON9 */
+>  &cp0_eth0 {
+> -       status =3D "disabled";
+> +       status =3D "okay";
+>         phy-mode =3D "10gbase-kr";
+>         /* Generic PHY, providing serdes lanes */
+>         phys =3D <&cp0_comphy4 0>;
+> --
+> 2.17.1
+>
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm and i386.
+You can add my:
+Tested-by: Marcin Wojtas <mw@semihalf.com>
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Please do the same for cp1_eth0?
 
-NOTE:
-When compiling under OpenEmbedded, the following error is seen
-as of recently:
-
-  /srv/oe/build/tmp/hosttools/ld: cannot find /lib/libc.so.6 inside /
-  /srv/oe/build/tmp/hosttools/ld: cannot find /usr/lib/libc_nonshared.a ins=
-ide /
-  /srv/oe/build/tmp/hosttools/ld: cannot find /lib/ld-linux-x86-64.so.2 ins=
-ide /
-  collect2: error: ld returned 1 exit status
-  make[2]: *** [scripts/Makefile.host:95: scripts/extract-cert] Error 1
-
-This is because
-2cea4a7a1885 ("scripts: use pkg-config to locate libcrypto"
-
-This patch will fix the reported problem.
-scripts: Fix linking extract-cert against libcrypto
-https://lore.kernel.org/stable/20210209050047.1958473-1-daniel.diaz@linaro.=
-org/T/#u
-
-Summary
-------------------------------------------------------------------------
-
-kernel: 5.10.15-rc1
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-5.10.y
-git commit: 21cc9754fccca82f1b3aae7baa6cddfdf4384802
-git describe: v5.10.14-121-g21cc9754fccc
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.10=
-.y/build/v5.10.14-121-g21cc9754fccc
-
-No regressions (compared to build v5.10.14)
-
-No fixes (compared to build v5.10.14)
-
-Ran 55235 total tests in the following environments and test suites.
-
-Environments
---------------
-- arc
-- arm
-- arm64
-- dragonboard-410c
-- hi6220-hikey
-- i386
-- juno-r2
-- juno-r2-compat
-- juno-r2-kasan
-- mips
-- nxp-ls2088
-- nxp-ls2088-64k_page_size
-- parisc
-- powerpc
-- qemu-arm-clang
-- qemu-arm64-clang
-- qemu-arm64-kasan
-- qemu-i386-clang
-- qemu-x86_64-clang
-- qemu-x86_64-kasan
-- qemu-x86_64-kcsan
-- qemu_arm
-- qemu_arm64
-- qemu_arm64-compat
-- qemu_i386
-- qemu_x86_64
-- qemu_x86_64-compat
-- riscv
-- s390
-- sh
-- sparc
-- x15
-- x86
-- x86-kasan
-- x86_64
-
-Test Suites
------------
-* build
-* linux-log-parser
-* install-android-platform-tools-r2600
-* kvm-unit-tests
-* libhugetlbfs
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* fwts
-* ltp-cap_bounds-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fs-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-mm-tests
-* ltp-controllers-tests
-* ltp-open-posix-tests
-* network-basic-tests
-* perf
-* v4l2-compliance
-* kunit
-* rcutorture
-* kselftest-android
-* kselftest-bpf
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-lib
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-zram
-* kselftest-
-* kselftest-intel_pstate
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-livepatch
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-vm
-* kselftest-x86
-
---=20
-Linaro LKFT
-https://lkft.linaro.org
+Best regards,
+Marcin
