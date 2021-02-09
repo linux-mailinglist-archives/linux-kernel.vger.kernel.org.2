@@ -2,97 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6D3E314D91
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 11:55:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53587314D92
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 11:55:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232148AbhBIKwq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 05:52:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49504 "EHLO
+        id S232171AbhBIKwv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 05:52:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231796AbhBIKox (ORCPT
+        with ESMTP id S231672AbhBIKrF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 05:44:53 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40E9DC06178C;
-        Tue,  9 Feb 2021 02:44:13 -0800 (PST)
-Date:   Tue, 09 Feb 2021 10:44:04 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1612867445;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Uwpeo3Pc3rJ7rsLPJvMVrXq2Xz/8Zo2qpdp9T3CjP+A=;
-        b=4lnjtjhMBByXj5Un84y0tpQPHXN1AcHBulU+B887OhzllNhTSBdQ0U+Xo2MExeX3RxNotj
-        AuRHxkBwkLuDnxLKVNeq7+zU9sGN931bVCyFuolU5uGceA76wnb00xNOJ2ScFWl0hwuZpT
-        d13viJaq1jNYHW0OA8/Zmqw15fNapzAq6GvwMjtaeulEpRN/CbebYgdEMXxDoxJtsz3nJy
-        2DCaoJ4pHsKVhSrGddvZKbJ9QJQmuj8IsDSI4lNE9C8EedEeR1sK5ir/znpeOWVktNDZUu
-        CGg8eO+/G1MDL+MtWyEcGn9BX9SZmvaDedNFqyh3onUPT80sMCkNXzNEGnyKNg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1612867445;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Uwpeo3Pc3rJ7rsLPJvMVrXq2Xz/8Zo2qpdp9T3CjP+A=;
-        b=7jDFlVdOIJGu9Ybix5yN9yNjJZwPDCZ50q7lPP/dFiI73avwDgMliEw6r1cuvBH4zdyK2f
-        wCJVdMasPDwuSxDg==
-From:   "irqchip-bot for Huacai Chen" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-kernel@vger.kernel.org
-Subject: [irqchip: irq/irqchip-next] irqchip/loongson-pch-msi: Use
- bitmap_zalloc() to allocate bitmap
-Cc:     stable@vger.kernel.org, Huacai Chen <chenhuacai@loongson.cn>,
-        Marc Zyngier <maz@kernel.org>, tglx@linutronix.de
-In-Reply-To: <20210209071051.2078435-1-chenhuacai@loongson.cn>
-References: <20210209071051.2078435-1-chenhuacai@loongson.cn>
+        Tue, 9 Feb 2021 05:47:05 -0500
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44374C061786
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 02:46:25 -0800 (PST)
+Received: from zn.tnic (p200300ec2f2f38005896b2f9ed512c58.dip0.t-ipconnect.de [IPv6:2003:ec:2f2f:3800:5896:b2f9:ed51:2c58])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 25E321EC056A;
+        Tue,  9 Feb 2021 11:46:23 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1612867583;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=Unei56clXZHQ5Xap4ehdEmREbfheuAoq1P8ROyril1Y=;
+        b=InCdq2yN+u20bpeaCJVeFYY6a633LzD+su3otU9ZIOvh/xa3MGrKlM7pnFnZq61Ag7XSPV
+        ZKvXji5ai0pp1NyriR0nRQPUCbwkl67WEfl3I2rE6+0Jl7RjZmXbMqhIEPzzJVfNibxMCA
+        2dNOFKmWt1knJdLrMzJFRpoL2Hv8ivU=
+Date:   Tue, 9 Feb 2021 11:46:19 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Rong Chen <rong.a.chen@intel.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        kernel test robot <lkp@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>, kbuild-all@lists.01.org,
+        x86@kernel.org, Kees Cook <keescook@chromium.org>
+Subject: Re: [kbuild-all] Re: [patch 06/12] x86/entry: Convert system vectors
+ to irq stack macro
+Message-ID: <20210209104619.GA15191@zn.tnic>
+References: <20210204211154.713523041@linutronix.de>
+ <202102051148.WIj5O4Ry-lkp@intel.com>
+ <YB1SdvRbHMY7IRrY@hirez.programming.kicks-ass.net>
+ <ad03c046-3249-8ac2-96af-03b2312454c0@intel.com>
+ <20210208141957.GA18227@zn.tnic>
+ <536a6b24-fadb-cb2a-8259-dadd3730c6ce@intel.com>
 MIME-Version: 1.0
-Message-ID: <161286744434.23325.15913380078296596924.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <536a6b24-fadb-cb2a-8259-dadd3730c6ce@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the irq/irqchip-next branch of irqchip:
+On Tue, Feb 09, 2021 at 04:57:09PM +0800, Rong Chen wrote:
+> Thanks for the help, how can we identify the patches for tip tree,
+> could you please guide us?
 
-Commit-ID:     c1f664d2400e73d5ca0fcd067fa5847d2c789c11
-Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms/c1f664d2400e73d5ca0fcd067fa5847d2c789c11
-Author:        Huacai Chen <chenhuacai@loongson.cn>
-AuthorDate:    Tue, 09 Feb 2021 15:10:51 +08:00
-Committer:     Marc Zyngier <maz@kernel.org>
-CommitterDate: Tue, 09 Feb 2021 10:41:40 
+I guess something like:
 
-irqchip/loongson-pch-msi: Use bitmap_zalloc() to allocate bitmap
+cat patch | ./scripts/get_maintainer.pl -m --no-r --no-l
 
-Currently we use bitmap_alloc() to allocate msi bitmap which should be
-initialized with zero. This is obviously wrong but it works because msi
-can fallback to legacy interrupt mode. So use bitmap_zalloc() instead.
+For a tip patch, it should give, among others:
 
-Fixes: 632dcc2c75ef6de3272aa ("irqchip: Add Loongson PCH MSI controller")
-Cc: stable@vger.kernel.org
-Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Link: https://lore.kernel.org/r/20210209071051.2078435-1-chenhuacai@loongson.cn
----
- drivers/irqchip/irq-loongson-pch-msi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+x86@kernel.org (maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT))
 
-diff --git a/drivers/irqchip/irq-loongson-pch-msi.c b/drivers/irqchip/irq-loongson-pch-msi.c
-index 12aeeab..32562b7 100644
---- a/drivers/irqchip/irq-loongson-pch-msi.c
-+++ b/drivers/irqchip/irq-loongson-pch-msi.c
-@@ -225,7 +225,7 @@ static int pch_msi_init(struct device_node *node,
- 		goto err_priv;
- 	}
- 
--	priv->msi_map = bitmap_alloc(priv->num_irqs, GFP_KERNEL);
-+	priv->msi_map = bitmap_zalloc(priv->num_irqs, GFP_KERNEL);
- 	if (!priv->msi_map) {
- 		ret = -ENOMEM;
- 		goto err_priv;
+which is the tip ML.
+
+You'd need to play with this a bit to see what works best.
+
+Also, I'm wondering if it would make sense to have some special syntax
+to let the 0day bot know on which tree to apply the patches after
+scraping or to even be able to say: "do not test" when sending just an
+example patch which is not supposed to be used anyway and thus you don't
+have to waste infra cycles on it.
+
+HTH.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
