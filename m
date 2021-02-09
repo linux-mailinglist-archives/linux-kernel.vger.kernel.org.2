@@ -2,151 +2,368 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBA28315A94
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 01:06:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38B2C315AA6
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 01:10:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234860AbhBJAFN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 19:05:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36188 "EHLO
+        id S234943AbhBJAHJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 19:07:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233748AbhBIUhA (ORCPT
+        with ESMTP id S233766AbhBIUib (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 15:37:00 -0500
-Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20983C0698C1
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 12:24:52 -0800 (PST)
-Received: by mail-oi1-x22d.google.com with SMTP id k204so19262282oih.3
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 12:24:52 -0800 (PST)
+        Tue, 9 Feb 2021 15:38:31 -0500
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCE0FC0698CA;
+        Tue,  9 Feb 2021 12:26:23 -0800 (PST)
+Received: by mail-pj1-x102d.google.com with SMTP id t2so2361988pjq.2;
+        Tue, 09 Feb 2021 12:26:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=omhYG+lo9klTl1GoqrXchqkTTUQQQ+tSlhhIlc+D/Po=;
-        b=VMz8+0o2dsNDrOKOBkaDXmdsFb3pKdUdrohR3sJY9GjOqGRoE4WF/VAs2TvUFchFbR
-         xKzC2SaNE5eLzsJV9m3eEBrfGn7ka0UGaHms/SODzMrHYZlSECIzmgco6cL1EXVvLEjR
-         k0HwNd+x77/jBjrD3ZDYFdj1VcnALKxkq8D8ZVdITj+E6kLudRmz2MPSH28/Es+3x8rO
-         5O/YLcubsYOiGfkTtxR/fIEEr9WLiQTQKAkF/A5CjU8bDxCAC+d31FAfjfQMNFjVN1XV
-         dw63JA4c1l1TxoeTpQ+CY1UFsHsxdBS10BqAp5W9lZE390MfJThS2Rhg8JyQn71Oc9td
-         RnoA==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2BWQkMPpxa9x04z6Kv/kh2y8uZYYBnvMqfwKV/uPs1Q=;
+        b=cFA8RWjoqk7kkQ02pGbF4qLdtij5PbiMSKE4eM5V9hsvjyi0brdSTqJGBf+lNQ92UE
+         BFEDL7Vhe36DdcsaMeawpTtN+1P1Qa9xck72PSmKv8MOMglClobCgYrnSDxSZw5mNxae
+         pq+JkZvPjOf0nb7k67wVRO9Ib6I95pKAMsnGFWEewqcVU70eaaRD+aDNT5HVlhFBA4+X
+         s0wb8jrnHXOKPemrFzOXCFJtfdM3eZrBgIwOl/Cr8DDKNxDkZFTgrmyjVaNg/SUwxFw8
+         KPsTcvEsAW3WOm+XTi6fwJYzIN1IPl00dXcjnledRIxbPWT35+97pUmQYMDI/9fvrvJI
+         rJwQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=omhYG+lo9klTl1GoqrXchqkTTUQQQ+tSlhhIlc+D/Po=;
-        b=YWpwlSrQIWbn3YQ1n7VB4Z7pU6aPcTB2FFEogDLSeQm9YNBtVQ2UBUwV2Nnr5T/kfv
-         teddBs0L05z333CqAJkHGX9A9/tjO74DHkFAXkh2Jx8TTZEtFBNDq86PdxDwjXsGwk3S
-         OdExKOX7AIYmfvDei1UdyrtFK2DObmyCayvajMKmE4tZ32JhtMgocD2yE027Zaysec71
-         Z01d4Y2/KQks2WsOp6JyFnOfL4rZi0mw6euqUksVZzCdYvVYJBscKfDs1T0TSKMshmSo
-         1CuPM2vqlwGu+Vjwg0ol38fB17pluRseU4KIhOt/l6D7ejUv0fxtJeU/vDqHZ063dQhD
-         ty8Q==
-X-Gm-Message-State: AOAM532hlSdpy4fT5SjTXdrkamT5i40tjUrvmfGMC9Spr/Qji1IbLaVX
-        8jZWlg0RvPt5cxvCbKYSqTE=
-X-Google-Smtp-Source: ABdhPJymKKc+XVUpenxf+jd1ScMukrmFbuvTNcw31j1lCdP+8lRjoLEVTS2kUqbaqB1/SFt8FBqo8w==
-X-Received: by 2002:aca:cf52:: with SMTP id f79mr3633917oig.73.1612902291411;
-        Tue, 09 Feb 2021 12:24:51 -0800 (PST)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id u126sm4659966oig.55.2021.02.09.12.24.50
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 09 Feb 2021 12:24:50 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Tue, 9 Feb 2021 12:24:49 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Will Deacon <will@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-arm-kernel@lists.infradead.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Jan Kara <jack@suse.cz>, Minchan Kim <minchan@kernel.org>,
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2BWQkMPpxa9x04z6Kv/kh2y8uZYYBnvMqfwKV/uPs1Q=;
+        b=BKuYav/Iwu3ZLlQJL4g992YyuGXjrvRhJYT4KYkckfYkud3e2VL/1arzzgI2TJtP65
+         IhCLm6SNOZ46oHp2Z5M0Zm0qGVt0TZ8zIR9H/lYYZQgbaYBcQCOdCwTFNtNH5NrXZKmK
+         N2fXqWt18fQ1Qn7YL8gL3kW5LRnFQTfx8u2x2pCBf3PeJjbKEcKXE8ByFl6bjG1QIsoW
+         BsCdLrUjNU7qwa9ZFdC/ZhVvDv8jgrTPQOpeoJ9yMYrxaL05ctsNFXNtLUw/w+R0j1JM
+         VjKrpgHSNWiPHkjGdH4EiYABl/GUajs6iN8EBLZsK/K1CBd+dt3JfLnjwpJn+PfOAyPf
+         /NfA==
+X-Gm-Message-State: AOAM532DfcMHL3D1SuH/8kV5gNeWiTZ4VvfKFeRwStGc3X4MCrutodSQ
+        6ZPF6gfhsualuq3NEOcQ18RviWM5+iM=
+X-Google-Smtp-Source: ABdhPJyHrA8X9zLu5UkIbU+Y4fJrKVBS8QJ6CQtDNoOsJAAGAWey4xftFRkfBc+6oi8RTpiQGJQkbw==
+X-Received: by 2002:a17:902:e9c4:b029:e1:805d:7965 with SMTP id 4-20020a170902e9c4b02900e1805d7965mr22630294plk.53.1612902382975;
+        Tue, 09 Feb 2021 12:26:22 -0800 (PST)
+Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id b27sm23275932pgb.82.2021.02.09.12.26.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Feb 2021 12:26:22 -0800 (PST)
+From:   Florian Fainelli <f.fainelli@gmail.com>
+To:     stable@vger.kernel.org, linux-kernel@vger.kernel.org,
+        hannes@cmpxchg.org
+Cc:     Jaegeuk Kim <jaegeuk@kernel.org>,
+        Bradley Bolen <bradleybolen@gmail.com>,
+        Vladimir Davydov <vdavydov@virtuozzo.com>,
+        Michal Hocko <mhocko@suse.cz>,
         Andrew Morton <akpm@linux-foundation.org>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
         Linus Torvalds <torvalds@linux-foundation.org>,
-        Vinayak Menon <vinmenon@codeaurora.org>,
-        Hugh Dickins <hughd@google.com>, kernel-team@android.com
-Subject: Re: [PATCH v3 1/8] mm: Cleanup faultaround and finish_fault()
- codepaths
-Message-ID: <20210209202449.GA104837@roeck-us.net>
-References: <20210114175934.13070-1-will@kernel.org>
- <20210114175934.13070-2-will@kernel.org>
+        Prakash Gupta <guptap@codeaurora.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        cgroups@vger.kernel.org (open list:CONTROL GROUP - MEMORY RESOURCE
+        CONTROLLER (MEMCG)),
+        linux-mm@kvack.org (open list:CONTROL GROUP - MEMORY RESOURCE
+        CONTROLLER (MEMCG))
+Subject: [PATCH stable 4.9] mm: memcontrol: fix NULL pointer crash in test_clear_page_writeback()
+Date:   Tue,  9 Feb 2021 12:26:15 -0800
+Message-Id: <20210209202616.2257512-1-f.fainelli@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210114175934.13070-2-will@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 14, 2021 at 05:59:27PM +0000, Will Deacon wrote:
-> From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-> 
-> alloc_set_pte() has two users with different requirements: in the
-> faultaround code, it called from an atomic context and PTE page table
-> has to be preallocated. finish_fault() can sleep and allocate page table
-> as needed.
-> 
-> PTL locking rules are also strange, hard to follow and overkill for
-> finish_fault().
-> 
-> Let's untangle the mess. alloc_set_pte() has gone now. All locking is
-> explicit.
-> 
-> The price is some code duplication to handle huge pages in faultaround
-> path, but it should be fine, having overall improvement in readability.
-> 
-> Link: https://lore.kernel.org/r/20201229132819.najtavneutnf7ajp@box
-> Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-> [will: s/from from/from/ in comment; spotted by willy]
-> Signed-off-by: Will Deacon <will@kernel.org>
-> ---
->  fs/xfs/xfs_file.c       |   6 +-
->  include/linux/mm.h      |  12 ++-
->  include/linux/pgtable.h |  11 +++
->  mm/filemap.c            | 177 ++++++++++++++++++++++++++---------
->  mm/memory.c             | 199 ++++++++++++----------------------------
->  5 files changed, 213 insertions(+), 192 deletions(-)
-> 
+From: Johannes Weiner <hannes@cmpxchg.org>
 
-When building microblaze:mmu_defconfig:
+commit 739f79fc9db1b38f96b5a5109b247a650fbebf6d upstream
 
-mm/filemap.c: In function 'filemap_map_pages':
-mm/filemap.c:3153:3: error: implicit declaration of function 'update_mmu_cache'; did you mean 'update_mmu_tlb'?
+Jaegeuk and Brad report a NULL pointer crash when writeback ending tries
+to update the memcg stats:
 
-Bisect log attached.
+    BUG: unable to handle kernel NULL pointer dereference at 00000000000003b0
+    IP: test_clear_page_writeback+0x12e/0x2c0
+    [...]
+    RIP: 0010:test_clear_page_writeback+0x12e/0x2c0
+    Call Trace:
+     <IRQ>
+     end_page_writeback+0x47/0x70
+     f2fs_write_end_io+0x76/0x180 [f2fs]
+     bio_endio+0x9f/0x120
+     blk_update_request+0xa8/0x2f0
+     scsi_end_request+0x39/0x1d0
+     scsi_io_completion+0x211/0x690
+     scsi_finish_command+0xd9/0x120
+     scsi_softirq_done+0x127/0x150
+     __blk_mq_complete_request_remote+0x13/0x20
+     flush_smp_call_function_queue+0x56/0x110
+     generic_smp_call_function_single_interrupt+0x13/0x30
+     smp_call_function_single_interrupt+0x27/0x40
+     call_function_single_interrupt+0x89/0x90
+    RIP: 0010:native_safe_halt+0x6/0x10
 
-Guenter
+    (gdb) l *(test_clear_page_writeback+0x12e)
+    0xffffffff811bae3e is in test_clear_page_writeback (./include/linux/memcontrol.h:619).
+    614		mod_node_page_state(page_pgdat(page), idx, val);
+    615		if (mem_cgroup_disabled() || !page->mem_cgroup)
+    616			return;
+    617		mod_memcg_state(page->mem_cgroup, idx, val);
+    618		pn = page->mem_cgroup->nodeinfo[page_to_nid(page)];
+    619		this_cpu_add(pn->lruvec_stat->count[idx], val);
+    620	}
+    621
+    622	unsigned long mem_cgroup_soft_limit_reclaim(pg_data_t *pgdat, int order,
+    623							gfp_t gfp_mask,
 
+The issue is that writeback doesn't hold a page reference and the page
+might get freed after PG_writeback is cleared (and the mapping is
+unlocked) in test_clear_page_writeback().  The stat functions looking up
+the page's node or zone are safe, as those attributes are static across
+allocation and free cycles.  But page->mem_cgroup is not, and it will
+get cleared if we race with truncation or migration.
+
+It appears this race window has been around for a while, but less likely
+to trigger when the memcg stats were updated first thing after
+PG_writeback is cleared.  Recent changes reshuffled this code to update
+the global node stats before the memcg ones, though, stretching the race
+window out to an extent where people can reproduce the problem.
+
+Update test_clear_page_writeback() to look up and pin page->mem_cgroup
+before clearing PG_writeback, then not use that pointer afterward.  It
+is a partial revert of 62cccb8c8e7a ("mm: simplify lock_page_memcg()")
+but leaves the pageref-holding callsites that aren't affected alone.
+
+Link: http://lkml.kernel.org/r/20170809183825.GA26387@cmpxchg.org
+Fixes: 62cccb8c8e7a ("mm: simplify lock_page_memcg()")
+Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+Reported-by: Jaegeuk Kim <jaegeuk@kernel.org>
+Tested-by: Jaegeuk Kim <jaegeuk@kernel.org>
+Reported-by: Bradley Bolen <bradleybolen@gmail.com>
+Tested-by: Brad Bolen <bradleybolen@gmail.com>
+Cc: Vladimir Davydov <vdavydov@virtuozzo.com>
+Cc: Michal Hocko <mhocko@suse.cz>
+Cc: <stable@vger.kernel.org>	[4.6+]
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+[guptap@codeaurora.org: Resolved merge conflicts]
+Signed-off-by: Prakash Gupta <guptap@codeaurora.org>
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
 ---
-# bad: [a4bfd8d46ac357c12529e4eebb6c89502b03ecc9] Add linux-next specific files for 20210209
-# good: [92bf22614b21a2706f4993b278017e437f7785b3] Linux 5.11-rc7
-git bisect start 'HEAD' 'v5.11-rc7'
-# bad: [a8eb921ba7e8e77d994a1c6c69c8ef08456ecf53] Merge remote-tracking branch 'crypto/master'
-git bisect bad a8eb921ba7e8e77d994a1c6c69c8ef08456ecf53
-# bad: [b68df186dae8ae890df08059bb068b78252b053a] Merge remote-tracking branch 'hid/for-next'
-git bisect bad b68df186dae8ae890df08059bb068b78252b053a
-# bad: [323c9f6fb99b033883b404ecbc811e7b283a60b3] Merge remote-tracking branch 'sunxi/sunxi/for-next'
-git bisect bad 323c9f6fb99b033883b404ecbc811e7b283a60b3
-# bad: [4053c8a4d3b53205272aa16b65a5b7ed1a3a5b3e] Merge remote-tracking branch 'arm-soc/for-next'
-git bisect bad 4053c8a4d3b53205272aa16b65a5b7ed1a3a5b3e
-# good: [dfb8870aed6ad71fb7e378274521bf68a7d465cb] Merge branch 'arm/dt' into for-next
-git bisect good dfb8870aed6ad71fb7e378274521bf68a7d465cb
-# good: [9ad7e5a35f96b8bf8aebedfd8f397a64eecb21bd] Merge remote-tracking branch 'arm/for-next'
-git bisect good 9ad7e5a35f96b8bf8aebedfd8f397a64eecb21bd
-# good: [edc55d8409542cd05d5c17203615a162cddbcb4c] Merge branch 'arm/drivers' into for-next
-git bisect good edc55d8409542cd05d5c17203615a162cddbcb4c
-# good: [d1bbc35fcab28668c8992c4d5777234b794d7306] arm64: hibernate: add __force attribute to gfp_t casting
-git bisect good d1bbc35fcab28668c8992c4d5777234b794d7306
-# bad: [fb01b86f47a44f0c03278a7cc78ece8415898ed0] Merge branches 'for-next/cosmetic', 'for-next/crypto', 'for-next/faultaround', 'for-next/from-tip/irq/urgent', 'for-next/kexec', 'for-next/misc', 'for-next/mm', 'for-next/perf', 'for-next/random', 'for-next/rng', 'for-next/selftests', 'for-next/stacktrace', 'for-next/topology' and 'for-next/vdso' into for-next/core
-git bisect bad fb01b86f47a44f0c03278a7cc78ece8415898ed0
-# good: [750d43b4a79e5f3767ee1db933b42abdf967ce1e] dt-bindings: arm: add Cortex-A78 binding
-git bisect good 750d43b4a79e5f3767ee1db933b42abdf967ce1e
-# good: [0188a894c390e51475274ece76b4d601782d709e] arm64: vmlinux.ld.S: add assertion for tramp_pg_dir offset
-git bisect good 0188a894c390e51475274ece76b4d601782d709e
-# bad: [3f98a28cc37253269b4104cf95a51f7716a2eb97] mm/nommu: Fix return type of filemap_map_pages()
-git bisect bad 3f98a28cc37253269b4104cf95a51f7716a2eb97
-# bad: [742d33729a0df11c9d8d4625dbf21dd20cdefd44] mm: Move immutable fields of 'struct vm_fault' into anonymous struct
-git bisect bad 742d33729a0df11c9d8d4625dbf21dd20cdefd44
-# bad: [46bdb4277f98e70d0c91f4289897ade533fe9e80] mm: Allow architectures to request 'old' entries when prefaulting
-git bisect bad 46bdb4277f98e70d0c91f4289897ade533fe9e80
-# bad: [f9ce0be71d1fbb038ada15ced83474b0e63f264d] mm: Cleanup faultaround and finish_fault() codepaths
-git bisect bad f9ce0be71d1fbb038ada15ced83474b0e63f264d
-# first bad commit: [f9ce0be71d1fbb038ada15ced83474b0e63f264d] mm: Cleanup faultaround and finish_fault() codepaths
+This patch is present in a downstream Android tree:
+
+https://source.mcwhirter.io/craige/bluecross/commit/d4a742865c6b69ef931694745ef54965d7c9966c
+
+and I happened to have stumbled across the same problem too.
+
+Johannes can you review it for correctness with respect to the 4.9
+kernel? Thanks!
+
+ include/linux/memcontrol.h | 33 ++++++++++++++++++++++++-----
+ mm/memcontrol.c            | 43 +++++++++++++++++++++++++++-----------
+ mm/page-writeback.c        | 14 ++++++++++---
+ 3 files changed, 70 insertions(+), 20 deletions(-)
+
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index 8b35bdbdc214..fd77f8303ab9 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -490,9 +490,21 @@ bool mem_cgroup_oom_synchronize(bool wait);
+ extern int do_swap_account;
+ #endif
+ 
+-void lock_page_memcg(struct page *page);
++struct mem_cgroup *lock_page_memcg(struct page *page);
++void __unlock_page_memcg(struct mem_cgroup *memcg);
+ void unlock_page_memcg(struct page *page);
+ 
++static inline void __mem_cgroup_update_page_stat(struct page *page,
++						 struct mem_cgroup *memcg,
++						 enum mem_cgroup_stat_index idx,
++						 int val)
++{
++	VM_BUG_ON(!(rcu_read_lock_held() || PageLocked(page)));
++
++	if (memcg && memcg->stat)
++		this_cpu_add(memcg->stat->count[idx], val);
++}
++
+ /**
+  * mem_cgroup_update_page_stat - update page state statistics
+  * @page: the page
+@@ -508,13 +520,12 @@ void unlock_page_memcg(struct page *page);
+  *     mem_cgroup_update_page_stat(page, state, -1);
+  *   unlock_page(page) or unlock_page_memcg(page)
+  */
++
+ static inline void mem_cgroup_update_page_stat(struct page *page,
+ 				 enum mem_cgroup_stat_index idx, int val)
+ {
+-	VM_BUG_ON(!(rcu_read_lock_held() || PageLocked(page)));
+ 
+-	if (page->mem_cgroup)
+-		this_cpu_add(page->mem_cgroup->stat->count[idx], val);
++	__mem_cgroup_update_page_stat(page, page->mem_cgroup, idx, val);
+ }
+ 
+ static inline void mem_cgroup_inc_page_stat(struct page *page,
+@@ -709,7 +720,12 @@ mem_cgroup_print_oom_info(struct mem_cgroup *memcg, struct task_struct *p)
+ {
+ }
+ 
+-static inline void lock_page_memcg(struct page *page)
++static inline struct mem_cgroup *lock_page_memcg(struct page *page)
++{
++	return NULL;
++}
++
++static inline void __unlock_page_memcg(struct mem_cgroup *memcg)
+ {
+ }
+ 
+@@ -745,6 +761,13 @@ static inline void mem_cgroup_update_page_stat(struct page *page,
+ {
+ }
+ 
++static inline void __mem_cgroup_update_page_stat(struct page *page,
++						 struct mem_cgroup *memcg,
++						 enum mem_cgroup_stat_index idx,
++						 int nr)
++{
++}
++
+ static inline void mem_cgroup_inc_page_stat(struct page *page,
+ 					    enum mem_cgroup_stat_index idx)
+ {
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index d4232744c59f..27b0b4f03fcd 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -1638,9 +1638,13 @@ bool mem_cgroup_oom_synchronize(bool handle)
+  * @page: the page
+  *
+  * This function protects unlocked LRU pages from being moved to
+- * another cgroup and stabilizes their page->mem_cgroup binding.
++ * another cgroup.
++ *
++ * It ensures lifetime of the returned memcg. Caller is responsible
++ * for the lifetime of the page; __unlock_page_memcg() is available
++ * when @page might get freed inside the locked section.
+  */
+-void lock_page_memcg(struct page *page)
++struct mem_cgroup *lock_page_memcg(struct page *page)
+ {
+ 	struct mem_cgroup *memcg;
+ 	unsigned long flags;
+@@ -1649,18 +1653,24 @@ void lock_page_memcg(struct page *page)
+ 	 * The RCU lock is held throughout the transaction.  The fast
+ 	 * path can get away without acquiring the memcg->move_lock
+ 	 * because page moving starts with an RCU grace period.
+-	 */
++	 *
++	 * The RCU lock also protects the memcg from being freed when
++	 * the page state that is going to change is the only thing
++	 * preventing the page itself from being freed. E.g. writeback
++	 * doesn't hold a page reference and relies on PG_writeback to
++	 * keep off truncation, migration and so forth.
++         */
+ 	rcu_read_lock();
+ 
+ 	if (mem_cgroup_disabled())
+-		return;
++		return NULL;
+ again:
+ 	memcg = page->mem_cgroup;
+ 	if (unlikely(!memcg))
+-		return;
++		return NULL;
+ 
+ 	if (atomic_read(&memcg->moving_account) <= 0)
+-		return;
++		return memcg;
+ 
+ 	spin_lock_irqsave(&memcg->move_lock, flags);
+ 	if (memcg != page->mem_cgroup) {
+@@ -1676,18 +1686,18 @@ void lock_page_memcg(struct page *page)
+ 	memcg->move_lock_task = current;
+ 	memcg->move_lock_flags = flags;
+ 
+-	return;
++	return memcg;
+ }
+ EXPORT_SYMBOL(lock_page_memcg);
+ 
+ /**
+- * unlock_page_memcg - unlock a page->mem_cgroup binding
+- * @page: the page
++ * __unlock_page_memcg - unlock and unpin a memcg
++ * @memcg: the memcg
++ *
++ * Unlock and unpin a memcg returned by lock_page_memcg().
+  */
+-void unlock_page_memcg(struct page *page)
++void __unlock_page_memcg(struct mem_cgroup *memcg)
+ {
+-	struct mem_cgroup *memcg = page->mem_cgroup;
+-
+ 	if (memcg && memcg->move_lock_task == current) {
+ 		unsigned long flags = memcg->move_lock_flags;
+ 
+@@ -1699,6 +1709,15 @@ void unlock_page_memcg(struct page *page)
+ 
+ 	rcu_read_unlock();
+ }
++
++/**
++ * unlock_page_memcg - unlock a page->mem_cgroup binding
++ * @page: the page
++ */
++void unlock_page_memcg(struct page *page)
++{
++	__unlock_page_memcg(page->mem_cgroup);
++}
+ EXPORT_SYMBOL(unlock_page_memcg);
+ 
+ /*
+diff --git a/mm/page-writeback.c b/mm/page-writeback.c
+index 462c778b9fb5..498c924f2fcd 100644
+--- a/mm/page-writeback.c
++++ b/mm/page-writeback.c
+@@ -2717,9 +2717,10 @@ EXPORT_SYMBOL(clear_page_dirty_for_io);
+ int test_clear_page_writeback(struct page *page)
+ {
+ 	struct address_space *mapping = page_mapping(page);
++	struct mem_cgroup *memcg;
+ 	int ret;
+ 
+-	lock_page_memcg(page);
++	memcg = lock_page_memcg(page);
+ 	if (mapping && mapping_use_writeback_tags(mapping)) {
+ 		struct inode *inode = mapping->host;
+ 		struct backing_dev_info *bdi = inode_to_bdi(inode);
+@@ -2747,13 +2748,20 @@ int test_clear_page_writeback(struct page *page)
+ 	} else {
+ 		ret = TestClearPageWriteback(page);
+ 	}
++	/*
++	 * NOTE: Page might be free now! Writeback doesn't hold a page
++	 * reference on its own, it relies on truncation to wait for
++	 * the clearing of PG_writeback. The below can only access
++	 * page state that is static across allocation cycles.
++	 */
+ 	if (ret) {
+-		mem_cgroup_dec_page_stat(page, MEM_CGROUP_STAT_WRITEBACK);
++		__mem_cgroup_update_page_stat(page, memcg,
++					      MEM_CGROUP_STAT_WRITEBACK, -1);
+ 		dec_node_page_state(page, NR_WRITEBACK);
+ 		dec_zone_page_state(page, NR_ZONE_WRITE_PENDING);
+ 		inc_node_page_state(page, NR_WRITTEN);
+ 	}
+-	unlock_page_memcg(page);
++	__unlock_page_memcg(memcg);
+ 	return ret;
+ }
+ 
+-- 
+2.25.1
 
