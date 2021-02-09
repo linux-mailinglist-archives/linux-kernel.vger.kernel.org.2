@@ -2,383 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4ED6315B8D
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 01:48:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 069A7315B89
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 01:46:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234341AbhBJAqN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 19:46:13 -0500
-Received: from mail-pl1-f172.google.com ([209.85.214.172]:42470 "EHLO
-        mail-pl1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234359AbhBIVNo (ORCPT
+        id S234511AbhBJApg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 19:45:36 -0500
+Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:48615 "EHLO
+        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233375AbhBIVOQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 16:13:44 -0500
-Received: by mail-pl1-f172.google.com with SMTP id s15so10488201plr.9
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 13:13:00 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=O7aXSJE1CFIK5AyVwPhOlcXCMOP+mflwjTwdr5k//Cw=;
-        b=s8j560AA4fKrxvgZpmMGrSsjdNhHmulUSCLLG/H9oAlJ0JJDPfEhCxQq4lEKoBolQE
-         YLm/6Bbro189jR2cXq7GJwPeehky8QlnCasuBY9KcV7xGxcZpjOA5qJu+HzymR/8vYCb
-         Jkv80rHYmtS3UIQ9GlJKvlwAH+yKBmbT+RAUD3NNcsKIx6I5gP3iqHgAlGiJzVvZfMVM
-         05spHc0Iz4SrXGfguNVZcv2U+71NCoIRm20tCGZ7wD14v6+QM50Tc+xdweqf534Y58Ay
-         X58R6+aoFABQFVPx4Ykp7/AxSUfwXRGSF5WY8m8WCIz7StGRqz6yjhymNS0TIfJ+V8m1
-         DEmA==
-X-Gm-Message-State: AOAM533qIla35GN+oINI/mZ3/4xpHWB5OupmuWrPWbP8NZx6Sz1QCsWD
-        WQ3PxvVvAwyzd3z3alZg2uE=
-X-Google-Smtp-Source: ABdhPJwZBrrVPPK/heMZOfIlJyg/vEXcNT5aN+4jV2vdZ73ld7NYl4tnl8Jod/3LK6CeFqvgFuCM2A==
-X-Received: by 2002:a17:90a:d3cc:: with SMTP id d12mr6007104pjw.202.1612905155219;
-        Tue, 09 Feb 2021 13:12:35 -0800 (PST)
-Received: from karthik-strix-linux.karthek.com ([192.140.154.47])
-        by smtp.gmail.com with ESMTPSA id 73sm5816442pfa.27.2021.02.09.13.12.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Feb 2021 13:12:34 -0800 (PST)
-Date:   Wed, 10 Feb 2021 02:42:30 +0530
-From:   karthik alapati <mail@karthek.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] staging: rtl8723bs: fix function comments to follow
- kernel-doc
-Message-ID: <YCL6vrGPQ0uDZUI8@karthik-strix-linux.karthek.com>
+        Tue, 9 Feb 2021 16:14:16 -0500
+X-IronPort-AV: E=Sophos;i="5.81,166,1610406000"; 
+   d="scan'208";a="492125955"
+Received: from palace.lip6.fr ([132.227.105.202])
+  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-SHA; 09 Feb 2021 22:13:10 +0100
+From:   Julia Lawall <Julia.Lawall@inria.fr>
+To:     David Airlie <airlied@linux.ie>
+Cc:     kernel-janitors@vger.kernel.org,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        =?UTF-8?q?Heiko=20St=C3=BCbner?= <heiko@sntech.de>,
+        Sandy Huang <hjc@rock-chips.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        linux-aspeed@lists.ozlabs.org,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Subject: [PATCH] drm: use getter/setter functions
+Date:   Tue,  9 Feb 2021 22:13:04 +0100
+Message-Id: <20210209211304.1261740-1-Julia.Lawall@inria.fr>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-fix checkpatch.pl warning for "block comments should align the
- * on each line" and make function comments follow kernel-doc
+Use getter and setter functions, for platform_device structures and a
+mipi_dsi_device structure.
 
-Signed-off-by: karthik alapati <mail@karthek.com>
+Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
+
 ---
- .../staging/rtl8723bs/hal/rtl8723b_phycfg.c   | 209 ++++++++----------
- 1 file changed, 91 insertions(+), 118 deletions(-)
+ drivers/gpu/drm/aspeed/aspeed_gfx_drv.c             |    2 +-
+ drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c |    2 +-
+ drivers/gpu/drm/panel/panel-lvds.c                  |    2 +-
+ drivers/gpu/drm/panel/panel-seiko-43wvf1g.c         |    4 ++--
+ drivers/gpu/drm/panel/panel-simple.c                |    2 +-
+ drivers/gpu/drm/rockchip/rockchip_lvds.c            |    2 +-
+ 6 files changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/staging/rtl8723bs/hal/rtl8723b_phycfg.c b/drivers/staging/rtl8723bs/hal/rtl8723b_phycfg.c
-index cf23414d7..b7fca881c 100644
---- a/drivers/staging/rtl8723bs/hal/rtl8723b_phycfg.c
-+++ b/drivers/staging/rtl8723bs/hal/rtl8723b_phycfg.c
-@@ -20,16 +20,11 @@
- #define MAX_DOZE_WAITING_TIMES_9x 64
+diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
+index 4e2dad314c79..9858079f9e14 100644
+--- a/drivers/gpu/drm/panel/panel-simple.c
++++ b/drivers/gpu/drm/panel/panel-simple.c
+@@ -4800,7 +4800,7 @@ static int panel_simple_dsi_probe(struct mipi_dsi_device *dsi)
  
- /**
--* Function:	phy_CalculateBitShift
--*
--* OverView:	Get shifted position of the BitMask
--*
--* Input:
--*		u32 	BitMask,
--*
--* Output:	none
--* Return:		u32 	Return the shift bit bit position of the mask
--*/
-+ *	phy_CalculateBitShift - Get shifted position of the BitMask.
-+ *	@BitMask: Bitmask.
-+ *
-+ *	Return:	Return the shift bit position of the mask
-+ */
- static	u32 phy_CalculateBitShift(u32 BitMask)
+ 	err = mipi_dsi_attach(dsi);
+ 	if (err) {
+-		struct panel_simple *panel = dev_get_drvdata(&dsi->dev);
++		struct panel_simple *panel = mipi_dsi_get_drvdata(dsi);
+ 
+ 		drm_panel_remove(&panel->base);
+ 	}
+diff --git a/drivers/gpu/drm/panel/panel-seiko-43wvf1g.c b/drivers/gpu/drm/panel/panel-seiko-43wvf1g.c
+index 0ee508576231..3939b25e6666 100644
+--- a/drivers/gpu/drm/panel/panel-seiko-43wvf1g.c
++++ b/drivers/gpu/drm/panel/panel-seiko-43wvf1g.c
+@@ -267,7 +267,7 @@ static int seiko_panel_probe(struct device *dev,
+ 
+ static int seiko_panel_remove(struct platform_device *pdev)
  {
- 	u32 i;
-@@ -43,19 +38,17 @@ static	u32 phy_CalculateBitShift(u32 BitMask)
+-	struct seiko_panel *panel = dev_get_drvdata(&pdev->dev);
++	struct seiko_panel *panel = platform_get_drvdata(pdev);
  
+ 	drm_panel_remove(&panel->base);
+ 	drm_panel_disable(&panel->base);
+@@ -277,7 +277,7 @@ static int seiko_panel_remove(struct platform_device *pdev)
  
- /**
--* Function:	PHY_QueryBBReg
--*
--* OverView:	Read "specific bits" from BB register
--*
--* Input:
--*		struct adapter *	Adapter,
--*		u32 		RegAddr,	The target address to be readback
--*		u32 		BitMask		The target bit position in the target address
--*							to be readback
--* Output:	None
--* Return:		u32 		Data		The readback register value
--* Note:		This function is equal to "GetRegSetting" in PHY programming guide
--*/
-+ *	PHY_QueryBBReg - Read "specific bits" from BB register.
-+ *	@Adapter:
-+ *	@RegAddr:	The target address to be readback
-+ *	@BitMask:	The target bit position in the target address
-+ *				to be readback
-+ *
-+ * Return:	The readback register value
-+ *
-+ * .. Note::	This function is equal to "GetRegSetting" in PHY programming
-+ *			guide
-+ */
- u32 PHY_QueryBBReg_8723B(struct adapter *Adapter, u32 RegAddr, u32 BitMask)
+ static void seiko_panel_shutdown(struct platform_device *pdev)
  {
- 	u32 OriginalValue, BitShift;
-@@ -64,7 +57,10 @@ u32 PHY_QueryBBReg_8723B(struct adapter *Adapter, u32 RegAddr, u32 BitMask)
- 	return 0;
- #endif
+-	struct seiko_panel *panel = dev_get_drvdata(&pdev->dev);
++	struct seiko_panel *panel = platform_get_drvdata(pdev);
  
--	/* RT_TRACE(COMP_RF, DBG_TRACE, ("--->PHY_QueryBBReg(): RegAddr(%#lx), BitMask(%#lx)\n", RegAddr, BitMask)); */
-+	/**
-+	 * RT_TRACE(COMP_RF, DBG_TRACE, ("--->PHY_QueryBBReg():
-+	 * RegAddr(%#lx), BitMask(%#lx)\n", RegAddr, BitMask));
-+	 */
- 
- 	OriginalValue = rtw_read32(Adapter, RegAddr);
- 	BitShift = phy_CalculateBitShift(BitMask);
-@@ -75,22 +71,17 @@ u32 PHY_QueryBBReg_8723B(struct adapter *Adapter, u32 RegAddr, u32 BitMask)
- 
- 
- /**
--* Function:	PHY_SetBBReg
--*
--* OverView:	Write "Specific bits" to BB register (page 8~)
--*
--* Input:
--*		struct adapter *	Adapter,
--*		u32 		RegAddr,	The target address to be modified
--*		u32 		BitMask		The target bit position in the target address
--*								to be modified
--*		u32 		Data		The new register value in the target bit position
--*								of the target address
--*
--* Output:	None
--* Return:		None
--* Note:		This function is equal to "PutRegSetting" in PHY programming guide
--*/
-+ *	PHY_SetBBReg - Write "Specific bits" to BB register (page 8~).
-+ *	@Adapter:
-+ *	@RegAddr:	The target address to be modified
-+ *	@BitMask:	The target bit position in the target address
-+ *				to be modified
-+ *	@Data:		The new register value in the target bit position
-+ *				of the target address
-+ *
-+ * .. Note::	This function is equal to "PutRegSetting" in PHY programming
-+ *			guide
-+ */
- 
- void PHY_SetBBReg_8723B(
- 	struct adapter *Adapter,
-@@ -106,7 +97,10 @@ void PHY_SetBBReg_8723B(
- 	return;
- #endif
- 
--	/* RT_TRACE(COMP_RF, DBG_TRACE, ("--->PHY_SetBBReg(): RegAddr(%#lx), BitMask(%#lx), Data(%#lx)\n", RegAddr, BitMask, Data)); */
-+	/**
-+	 * RT_TRACE(COMP_RF, DBG_TRACE, ("--->PHY_SetBBReg():
-+	 * RegAddr(%#lx), BitMask(%#lx), Data(%#lx)\n", RegAddr, BitMask, Data));
-+	 */
- 
- 	if (BitMask != bMaskDWord) { /* if not "double word" write */
- 		OriginalValue = rtw_read32(Adapter, RegAddr);
-@@ -184,27 +178,21 @@ static u32 phy_RFSerialRead_8723B(
+ 	drm_panel_disable(&panel->base);
  }
+diff --git a/drivers/gpu/drm/rockchip/rockchip_lvds.c b/drivers/gpu/drm/rockchip/rockchip_lvds.c
+index 654bc52d9ff3..bd5ba10822c2 100644
+--- a/drivers/gpu/drm/rockchip/rockchip_lvds.c
++++ b/drivers/gpu/drm/rockchip/rockchip_lvds.c
+@@ -725,7 +725,7 @@ static int rockchip_lvds_probe(struct platform_device *pdev)
  
- /**
--* Function:	phy_RFSerialWrite_8723B
--*
--* OverView:	Write data to RF register (page 8~)
--*
--* Input:
--*		struct adapter *	Adapter,
--*		RF_PATH			eRFPath,	Radio path of A/B/C/D
--*		u32 		Offset,		The target address to be read
--*		u32 		Data		The new register Data in the target bit position
--*								of the target to be read
--*
--* Output:	None
--* Return:		None
--* Note:		Threre are three types of serial operations:
--*		1. Software serial write
--*		2. Hardware LSSI-Low Speed Serial Interface
--*		3. Hardware HSSI-High speed
--*		serial write. Driver need to implement (1) and (2).
--*		This function is equal to the combination of RF_ReadReg() and  RFLSSIRead()
-+ *	phy_RFSerialWrite_8723B - Write data to RF register (page 8~).
-+ *	@Adapter:
-+ *	@eRFPath:	Radio path of A/B/C/D
-+ *	@Offset:	The target address to be read
-+ *	@Data:	The new register Data in the target bit position
-+ *			of the target to be read
-+ *
-+ * .. Note::		Threre are three types of serial operations:
-+ *		1. Software serial write
-+ *		2. Hardware LSSI-Low Speed Serial Interface
-+ *		3. Hardware HSSI-High speed
-+ *		serial write. Driver need to implement (1) and (2).
-+ *		This function is equal to the combination of RF_ReadReg() and  RFLSSIRead()
-  *
-- * Note:		  For RF8256 only
-+ * .. Note::		  For RF8256 only
-  *		 The total count of RTL8256(Zebra4) register is around 36 bit it only employs
-  *		 4-bit RF address. RTL8256 uses "register mode control bit" (Reg00[12], Reg00[10])
-  *		 to access register address bigger than 0xf. See "Appendix-4 in PHY Configuration
-@@ -225,7 +213,7 @@ static u32 phy_RFSerialRead_8723B(
-  *
-  *
-  *
--*/
-+ */
- static void phy_RFSerialWrite_8723B(
- 	struct adapter *Adapter,
- 	enum RF_PATH eRFPath,
-@@ -249,33 +237,33 @@ static void phy_RFSerialWrite_8723B(
- 	/*  Put write addr in [5:0]  and write data in [31:16] */
- 	/*  */
- 	/* DataAndAddr = (Data<<16) | (NewOffset&0x3f); */
--	DataAndAddr = ((NewOffset<<20) | (Data&0x000fffff)) & 0x0fffffff;	/*  T65 RF */
-+	DataAndAddr = ((NewOffset<<20) | (Data&0x000fffff)) & 0x0fffffff;
-+	/*T65 RF */
- 
- 	/*  */
- 	/*  Write Operation */
- 	/*  */
- 	PHY_SetBBReg(Adapter, pPhyReg->rf3wireOffset, bMaskDWord, DataAndAddr);
--	/* RTPRINT(FPHY, PHY_RFW, ("RFW-%d Addr[0x%lx]= 0x%lx\n", eRFPath, pPhyReg->rf3wireOffset, DataAndAddr)); */
-+	/**
-+	  *RTPRINT(FPHY, PHY_RFW, ("RFW-%d Addr[0x%lx]= 0x%lx\n", eRFPath,
-+	  *pPhyReg->rf3wireOffset, DataAndAddr));
-+	  */
- 
- }
- 
- 
- /**
--* Function:	PHY_QueryRFReg
--*
--* OverView:	Query "Specific bits" to RF register (page 8~)
--*
--* Input:
--*		struct adapter *	Adapter,
--*		RF_PATH			eRFPath,	Radio path of A/B/C/D
--*		u32 		RegAddr,	The target address to be read
--*		u32 		BitMask		The target bit position in the target address
--*								to be read
--*
--* Output:	None
--* Return:		u32 		Readback value
--* Note:		This function is equal to "GetRFRegSetting" in PHY programming guide
--*/
-+ *	PHY_QueryRFReg - Query "Specific bits" to RF register (page 8~).
-+ *	@Adapter:
-+ *	@eRFPath:	Radio path of A/B/C/D
-+ *	@RegAdd:	The target address to be read
-+ *	@BitMask:	The target bit position in the target address
-+ *				to be read
-+ *
-+ *	Return:	Readback value
-+ *
-+ * .. Note::		This function is equal to "GetRFRegSetting" in PHY programming guide
-+ */
- u32 PHY_QueryRFReg_8723B(
- 	struct adapter *Adapter,
- 	u8 eRFPath,
-@@ -296,23 +284,17 @@ u32 PHY_QueryRFReg_8723B(
- }
- 
- /**
--* Function:	PHY_SetRFReg
--*
--* OverView:	Write "Specific bits" to RF register (page 8~)
--*
--* Input:
--*		struct adapter *	Adapter,
--*		RF_PATH			eRFPath,	Radio path of A/B/C/D
--*		u32 		RegAddr,	The target address to be modified
--*		u32 		BitMask		The target bit position in the target address
--*								to be modified
--*		u32 		Data		The new register Data in the target bit position
--*								of the target address
--*
--* Output:	None
--* Return:		None
--* Note:		This function is equal to "PutRFRegSetting" in PHY programming guide
--*/
-+ *	PHY_SetRFReg - Write "Specific bits" to RF register (page 8~).
-+ *	@Adapter:
-+ *	@eRFPath:	Radio path of A/B/C/D
-+ *	@RegAddr:	The target address to be modified
-+ *	@BitMask:	The target bit position in the target address
-+ *				to be modified
-+ *	@Data:	The new register Data in the target bit position
-+ *								of the target address
-+ *
-+ *	.. Note::		This function is equal to "PutRFRegSetting" in PHY programming guide
-+ */
- void PHY_SetRFReg_8723B(
- 	struct adapter *Adapter,
- 	u8 eRFPath,
-@@ -344,15 +326,7 @@ void PHY_SetRFReg_8723B(
- 
- 
- /*-----------------------------------------------------------------------------
-- * Function:    PHY_MACConfig8192C
-- *
-- * Overview:	Condig MAC by header file or parameter file.
-- *
-- * Input:       NONE
-- *
-- * Output:      NONE
-- *
-- * Return:      NONE
-+ *	PHY_MACConfig8192C - Condig MAC by header file or parameter file.
-  *
-  * Revised History:
-  *  When		Who		Remark
-@@ -369,17 +343,12 @@ s32 PHY_MACConfig8723B(struct adapter *Adapter)
- }
- 
- /**
--* Function:	phy_InitBBRFRegisterDefinition
--*
--* OverView:	Initialize Register definition offset for Radio Path A/B/C/D
--*
--* Input:
--*		struct adapter *	Adapter,
--*
--* Output:	None
--* Return:		None
--* Note:		The initialization value is constant and it should never be changes
--*/
-+ *	phy_InitBBRFRegisterDefinition - Initialize Register definition offset for
-+ *									Radio Path A/B/C/D
-+ *	@Adapter:
-+ *
-+ *	.. Note::		The initialization value is constant and it should never be changes
-+ */
- static void phy_InitBBRFRegisterDefinition(struct adapter *Adapter)
+ static int rockchip_lvds_remove(struct platform_device *pdev)
  {
- 	struct hal_com_data		*pHalData = GET_HAL_DATA(Adapter);
-@@ -675,6 +644,7 @@ static void phy_SetRegBW_8723B(
- )
+-	struct rockchip_lvds *lvds = dev_get_drvdata(&pdev->dev);
++	struct rockchip_lvds *lvds = platform_get_drvdata(pdev);
+ 
+ 	component_del(&pdev->dev, &rockchip_lvds_component_ops);
+ 	clk_unprepare(lvds->pclk);
+diff --git a/drivers/gpu/drm/aspeed/aspeed_gfx_drv.c b/drivers/gpu/drm/aspeed/aspeed_gfx_drv.c
+index 457ec04950f7..c7707338bfdb 100644
+--- a/drivers/gpu/drm/aspeed/aspeed_gfx_drv.c
++++ b/drivers/gpu/drm/aspeed/aspeed_gfx_drv.c
+@@ -284,7 +284,7 @@ static int aspeed_gfx_probe(struct platform_device *pdev)
+ 	if (ret)
+ 		return ret;
+ 
+-	dev_set_drvdata(&pdev->dev, priv);
++	platform_set_drvdata(pdev, priv);
+ 
+ 	ret = sysfs_create_group(&pdev->dev.kobj, &aspeed_sysfs_attr_group);
+ 	if (ret)
+diff --git a/drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c b/drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c
+index d0c65610ebb5..989a05bc8197 100644
+--- a/drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c
++++ b/drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c
+@@ -2457,7 +2457,7 @@ static int cdns_mhdp_probe(struct platform_device *pdev)
+ 
+ static int cdns_mhdp_remove(struct platform_device *pdev)
  {
- 	u16 RegRfMod_BW, u2tmp = 0;
-+
- 	RegRfMod_BW = rtw_read16(Adapter, REG_TRXPTCL_CTL_8723B);
+-	struct cdns_mhdp_device *mhdp = dev_get_drvdata(&pdev->dev);
++	struct cdns_mhdp_device *mhdp = platform_get_drvdata(pdev);
+ 	unsigned long timeout = msecs_to_jiffies(100);
+ 	bool stop_fw = false;
+ 	int ret;
+diff --git a/drivers/gpu/drm/panel/panel-lvds.c b/drivers/gpu/drm/panel/panel-lvds.c
+index 66c7d765b8f7..59a8d99e777d 100644
+--- a/drivers/gpu/drm/panel/panel-lvds.c
++++ b/drivers/gpu/drm/panel/panel-lvds.c
+@@ -244,7 +244,7 @@ static int panel_lvds_probe(struct platform_device *pdev)
  
- 	switch (CurrentBW) {
-@@ -789,7 +759,7 @@ static void phy_PostSetBwMode8723B(struct adapter *Adapter)
+ static int panel_lvds_remove(struct platform_device *pdev)
+ {
+-	struct panel_lvds *lvds = dev_get_drvdata(&pdev->dev);
++	struct panel_lvds *lvds = platform_get_drvdata(pdev);
  
- 		PHY_SetBBReg(Adapter, rFPGA1_RFMOD, bRFMOD, 0x0);
+ 	drm_panel_remove(&lvds->panel);
  
--/* 			PHY_SetBBReg(Adapter, rFPGA0_AnalogParameter2, BIT10, 1); */
-+	/*PHY_SetBBReg(Adapter, rFPGA0_AnalogParameter2, BIT10, 1); */
- 
- 		PHY_SetBBReg(Adapter, rOFDM0_TxPseudoNoiseWgt, (BIT31|BIT30), 0x0);
- 		break;
-@@ -800,7 +770,10 @@ static void phy_PostSetBwMode8723B(struct adapter *Adapter)
- 
- 		PHY_SetBBReg(Adapter, rFPGA1_RFMOD, bRFMOD, 0x1);
- 
--		/*  Set Control channel to upper or lower. These settings are required only for 40MHz */
-+		/**
-+		 * Set Control channel to upper or lower. These settings are required
-+		 * only for 40MHz
-+		 */
- 		PHY_SetBBReg(Adapter, rCCK0_System, bCCKSideBand, (pHalData->nCur40MhzPrimeSC>>1));
- 
- 		PHY_SetBBReg(Adapter, rOFDM1_LSTF, 0xC00, pHalData->nCur40MhzPrimeSC);
--- 
-2.30.0
 
