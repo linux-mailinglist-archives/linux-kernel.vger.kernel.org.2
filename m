@@ -2,226 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 501183147F5
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 06:13:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D4E53147EF
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 06:11:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229753AbhBIFMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 00:12:51 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42777 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230030AbhBIFG7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 00:06:59 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612847131;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=wKCfxtd4SsZJ+QdMrslrtSyhcO4MGdo1sCwQZ634q6Y=;
-        b=B7K/OfPrNDohDkJmjxsnoWGlXO5INSLBYfjSjCfs6kyNF3q4PaM97n4ZYiqf4ee6Q2prDo
-        aMLPm97S1OZbdH34R1GFcd11TCosiaZJJtbzSH2Mp+rvwzMlXWwSd0cNmlUl/j96uPmE5u
-        vBIto9VfROPUiW5/VpIO/+ealIaGdkY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-391-miMwyxeoMTC75WWXuSPbqg-1; Tue, 09 Feb 2021 00:05:27 -0500
-X-MC-Unique: miMwyxeoMTC75WWXuSPbqg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AF060801965;
-        Tue,  9 Feb 2021 05:05:25 +0000 (UTC)
-Received: from gshan.redhat.com (vpn2-54-26.bne.redhat.com [10.64.54.26])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5FD515D9CD;
-        Tue,  9 Feb 2021 05:05:23 +0000 (UTC)
-From:   Gavin Shan <gshan@redhat.com>
-To:     kvmarm@lists.cs.columbia.edu
-Cc:     linux-kernel@vger.kernel.org, pbonzini@redhat.com, maz@kernel.org,
-        james.morse@arm.com, Jonathan.Cameron@huawei.com,
-        mark.rutland@arm.com, will@kernel.org, shan.gavin@gmail.com
-Subject: [PATCH v2 17/17] KVM: arm64: Add async PF document
-Date:   Tue,  9 Feb 2021 13:04:03 +0800
-Message-Id: <20210209050403.103143-18-gshan@redhat.com>
-In-Reply-To: <20210209050403.103143-1-gshan@redhat.com>
-References: <20210209050403.103143-1-gshan@redhat.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+        id S230204AbhBIFLa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 00:11:30 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:41832 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229975AbhBIFGp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 00:06:45 -0500
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx3_MVGCJghngIAA--.10677S2;
+        Tue, 09 Feb 2021 13:05:26 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>
+Subject: [PATCH v2] MIPS: Make check condition for SDBBP consistent with EJTAG spec
+Date:   Tue,  9 Feb 2021 13:05:25 +0800
+Message-Id: <1612847125-3141-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9Dx3_MVGCJghngIAA--.10677S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7trWxJry7tr17XrWfJw47Arb_yoW8Xw4fpw
+        4DC3WkGrW8WryUZay5ArZ5ur45X3s8GrWY9ayDK3yFqa4jgFWrtF4fKrW3Kry8Wa1jka10
+        ga9IgrnrXr1IyrUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkl14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26r1j6r1xM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
+        6F4UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Cr
+        1j6rxdM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
+        6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr
+        0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkIecxEwVAFwVW8
+        WwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r
+        1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij
+        64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr
+        0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1l
+        IxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUjNJ55UUUU
+        U==
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds document to explain the interface for asynchronous page
-fault and how it works in general.
+According to MIPS EJTAG Specification [1], a Debug Breakpoint
+exception occurs when an SDBBP instruction is executed, the
+CP0_DEBUG bit DBp indicates that a Debug Breakpoint exception
+occurred, just check bit DBp for SDBBP is more accurate.
 
-Signed-off-by: Gavin Shan <gshan@redhat.com>
+[1] http://www.t-es-t.hu/download/mips/md00047f.pdf
+
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
 ---
- Documentation/virt/kvm/arm/apf.rst   | 143 +++++++++++++++++++++++++++
- Documentation/virt/kvm/arm/index.rst |   1 +
- 2 files changed, 144 insertions(+)
- create mode 100644 Documentation/virt/kvm/arm/apf.rst
 
-diff --git a/Documentation/virt/kvm/arm/apf.rst b/Documentation/virt/kvm/arm/apf.rst
-new file mode 100644
-index 000000000000..4f5c01b6699f
---- /dev/null
-+++ b/Documentation/virt/kvm/arm/apf.rst
-@@ -0,0 +1,143 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+Asynchronous Page Fault Support for arm64
-+=========================================
-+
-+There are two stages of page faults when KVM module is enabled as accelerator
-+to the guest. The guest is responsible for handling the stage-1 page faults,
-+while the host handles the stage-2 page faults. During the period of handling
-+the stage-2 page faults, the guest is suspended until the requested page is
-+ready. It could take several milliseconds, even hundreds of milliseconds in
-+extreme situations because I/O might be required to move the requested page
-+from disk to DRAM. The guest does not do any work when it is suspended. The
-+feature (Asynchronous Page Fault) is introduced to take advantage of the
-+suspending period and to improve the overall performance.
-+
-+There are two paths in order to fulfil the asynchronous page fault, called
-+as control path and data path. The control path allows the VMM or guest to
-+configure the functionality, while the notifications are delivered in data
-+path. The notifications are classified into page-not-present and page-ready
-+notifications.
-+
-+Data Path
-+---------
-+
-+There are two types of notifications delivered from host to guest in the
-+data path: page-not-present and page-ready notification. They are delivered
-+through SDEI event and (PPI) interrupt separately. Besides, there is a shared
-+buffer between host and guest to indicate the reason and sequential token,
-+which is used to identify the asynchronous page fault. The reason and token
-+resident in the shared buffer is written by host, read and cleared by guest.
-+An asynchronous page fault is delivered and completed as below.
-+
-+(1) When an asynchronous page fault starts, a (workqueue) worker is created
-+    and queued to the vCPU's pending queue. The worker makes the requested
-+    page ready and resident to DRAM in the background. The shared buffer is
-+    updated with reason and sequential token. After that, SDEI event is sent
-+    to guest as page-not-present notification.
-+
-+(2) When the SDEI event is received on guest, the current process is tagged
-+    with TIF_ASYNC_PF and associated with a wait queue. The process is ready
-+    to keep rescheduling itself on switching from kernel to user mode. After
-+    that, a reschedule IPI is sent to current CPU and the received SDEI event
-+    is acknowledged. Note that the IPI is delivered when the acknowledgment
-+    on the SDEI event is received on host.
-+
-+(3) On the host, the worker is dequeued from the vCPU's pending queue and
-+    enqueued to its completion queue when the requested page becomes ready.
-+    In the mean while, KVM_REQ_ASYNC_PF request is sent the vCPU if the
-+    worker is the first element enqueued to the completion queue.
-+
-+(4) With pending KVM_REQ_ASYNC_PF request, the first worker in the completion
-+    queue is dequeued and destroyed. In the mean while, a (PPI) interrupt is
-+    sent to guest with updated reason and token in the shared buffer.
-+
-+(5) When the (PPI) interrupt is received on guest, the affected process is
-+    located using the token and waken up after its TIF_ASYNC_PF tag is cleared.
-+    After that, the interrupt is acknowledged through SMCCC interface. The
-+    workers in the completion queue is dequeued and destroyed if any workers
-+    exist, and another (PPI) interrupt is sent to the guest.
-+
-+Control Path
-+------------
-+
-+The configurations are passed through SMCCC or ioctl interface. The SDEI
-+event and (PPI) interrupt are owned by VMM, so the SDEI event and interrupt
-+numbers are configured through ioctl command on per-vCPU basis. Besides,
-+the functionality might be enabled and configured through ioctl interface
-+by VMM during migration:
-+
-+   * KVM_ARM_ASYNC_PF_CMD_GET_VERSION
-+
-+     Returns the current version of the feature, supported by the host. It is
-+     made up of major, minor and revision fields. Each field is one byte in
-+     length.
-+
-+   * KVM_ARM_ASYNC_PF_CMD_GET_SDEI:
-+
-+     Retrieve the SDEI event number, used for page-not-present notification,
-+     so that it can be configured on destination VM in the scenario of
-+     migration.
-+
-+   * KVM_ARM_ASYNC_PF_GET_IRQ:
-+
-+     Retrieve the IRQ (PPI) number, used for page-ready notification, so that
-+     it can be configured on destination VM in the scenario of migration.
-+
-+   * KVM_ARM_ASYNC_PF_CMD_GET_CONTROL
-+
-+     Retrieve the address of control block, so that it can be configured on
-+     destination VM in the scenario of migration.
-+
-+   * KVM_ARM_ASYNC_PF_CMD_SET_SDEI:
-+
-+     Used by VMM to configure number of SDEI event, which is used to deliver
-+     page-not-present notification by host. This is used when VM is started
-+     or migrated.
-+
-+   * KVM_ARM_ASYNC_PF_CMD_SET_IRQ
-+
-+     Used by VMM to configure number of (PPI) interrupt, which is used to
-+     deliver page-ready notification by host. This is used when VM is started
-+     or migrated.
-+
-+   * KVM_ARM_ASYNC_PF_CMD_SET_CONTROL
-+
-+     Set the control block on the destination VM in the scenario of migration.
-+
-+The other configurations are passed through SMCCC interface. The host exports
-+the capability through KVM vendor specific service, which is identified by
-+ARM_SMCCC_KVM_FUNC_ASYNC_PF_FUNC_ID. There are several functions defined for
-+this:
-+
-+   * ARM_SMCCC_KVM_FUNC_ASYNC_PF_VERSION
-+
-+     Returns the current version of the feature, supported by the host. It is
-+     made up of major, minor and revision fields. Each field is one byte in
-+     length.
-+
-+   * ARM_SMCCC_KVM_FUNC_ASYNC_PF_SLOTS
-+
-+     Returns the size of the hashed GFN table. It is used by guest to set up
-+     the capacity of waiting process table.
-+
-+   * ARM_SMCCC_KVM_FUNC_ASYNC_PF_SDEI
-+   * ARM_SMCCC_KVM_FUNC_ASYNC_PF_IRQ
-+
-+     Used by the guest to retrieve the SDEI event and (PPI) interrupt number
-+     that are configured by VMM.
-+
-+   * ARM_SMCCC_KVM_FUNC_ASYNC_PF_ENABLE
-+
-+     Used by the guest to enable or disable the feature on the specific vCPU.
-+     The argument is made up of shared buffer and flags. The shared buffer
-+     is written by host to indicate the reason about the delivered asynchronous
-+     page fault and token (sequence number) to identify that. There are two
-+     flags are supported: KVM_ASYNC_PF_ENABLED is used to enable or disable
-+     the feature. KVM_ASYNC_PF_SEND_ALWAYS allows to deliver page-not-present
-+     notification regardless of the guest's state. Otherwise, the notification
-+     is delivered only when the guest is in user mode.
-+
-+   * ARM_SMCCC_KVM_FUNC_ASYNC_PF_IRQ_ACK
-+
-+     Used by the guest to acknowledge the completion of page-ready notification.
-diff --git a/Documentation/virt/kvm/arm/index.rst b/Documentation/virt/kvm/arm/index.rst
-index 3e2b2aba90fc..c8e8f0929c6a 100644
---- a/Documentation/virt/kvm/arm/index.rst
-+++ b/Documentation/virt/kvm/arm/index.rst
-@@ -7,6 +7,7 @@ ARM
- .. toctree::
-    :maxdepth: 2
+v2: add MIPS_DEBUG_DBP definition
+
+ arch/mips/include/asm/mipsregs.h | 4 ++++
+ arch/mips/kernel/genex.S         | 4 ++--
+ 2 files changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/arch/mips/include/asm/mipsregs.h b/arch/mips/include/asm/mipsregs.h
+index a0e8ae5..9c8099a 100644
+--- a/arch/mips/include/asm/mipsregs.h
++++ b/arch/mips/include/asm/mipsregs.h
+@@ -1085,6 +1085,10 @@
+ #define CVMVMCONF_RMMUSIZEM1_S	0
+ #define CVMVMCONF_RMMUSIZEM1	(_U64CAST_(0xff) << CVMVMCONF_RMMUSIZEM1_S)
  
-+   apf
-    hyp-abi
-    psci
-    pvtime
++/* Debug register field definitions */
++#define MIPS_DEBUG_DBP_SHIFT	1
++#define MIPS_DEBUG_DBP		(_ULCAST_(1) << MIPS_DEBUG_DBP_SHIFT)
++
+ /*
+  * Coprocessor 1 (FPU) register names
+  */
+diff --git a/arch/mips/kernel/genex.S b/arch/mips/kernel/genex.S
+index bcce32a..743d759 100644
+--- a/arch/mips/kernel/genex.S
++++ b/arch/mips/kernel/genex.S
+@@ -349,8 +349,8 @@ NESTED(ejtag_debug_handler, PT_SIZE, sp)
+ 	MTC0	k0, CP0_DESAVE
+ 	mfc0	k0, CP0_DEBUG
+ 
+-	sll	k0, k0, 30	# Check for SDBBP.
+-	bgez	k0, ejtag_return
++	andi	k0, k0, MIPS_DEBUG_DBP	# Check for SDBBP.
++	beqz	k0, ejtag_return
+ 
+ #ifdef CONFIG_SMP
+ 1:	PTR_LA	k0, ejtag_debug_buffer_spinlock
 -- 
-2.23.0
+2.1.0
 
