@@ -2,121 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F032A314540
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 02:08:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BC8B314547
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 02:11:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229721AbhBIBHJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 20:07:09 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:12600 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229669AbhBIBHG (ORCPT
+        id S229784AbhBIBKF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 20:10:05 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:6565 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229638AbhBIBKC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 20:07:06 -0500
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DZPnP4Gggz165Y3;
-        Tue,  9 Feb 2021 09:04:57 +0800 (CST)
-Received: from [10.174.179.149] (10.174.179.149) by
- DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
- 14.3.498.0; Tue, 9 Feb 2021 09:06:18 +0800
-Subject: Re: [PATCH v3 2/3] mm, slub: don't combine pr_err with INFO
-To:     Yafang Shao <laoar.shao@gmail.com>
-CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        <andriy.shevchenko@linux.intel.com>, <david@redhat.com>,
-        <vbabka@suse.cz>, <willy@infradead.org>, <cl@linux.com>,
-        <penberg@kernel.org>, <rientjes@google.com>,
-        <iamjoonsoo.kim@lge.com>, <akpm@linux-foundation.org>,
-        <pmladek@suse.com>, <rostedt@goodmis.org>,
-        <sergey.senozhatsky@gmail.com>, <joe@perches.com>
-References: <20210208101439.55474-1-laoar.shao@gmail.com>
- <20210208101439.55474-3-laoar.shao@gmail.com>
-From:   Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <c17ff56c-fbbb-91c3-9754-fd92f744a837@huawei.com>
-Date:   Tue, 9 Feb 2021 09:06:18 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Mon, 8 Feb 2021 20:10:02 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B6021e0c10002>; Mon, 08 Feb 2021 17:09:21 -0800
+Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL111.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 9 Feb
+ 2021 01:09:21 +0000
+Received: from localhost (172.20.145.6) by DRHQMAIL107.nvidia.com (10.27.9.16)
+ with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 9 Feb 2021 01:09:20
+ +0000
+From:   Alistair Popple <apopple@nvidia.com>
+To:     <linux-mm@kvack.org>, <nouveau@lists.freedesktop.org>,
+        <bskeggs@redhat.com>, <akpm@linux-foundation.org>
+CC:     <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kvm-ppc@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
+        <jhubbard@nvidia.com>, <rcampbell@nvidia.com>,
+        <jglisse@redhat.com>, "Alistair Popple" <apopple@nvidia.com>
+Subject: [PATCH 0/9] Add support for SVM atomics in Nouveau
+Date:   Tue, 9 Feb 2021 12:07:13 +1100
+Message-ID: <20210209010722.13839-1-apopple@nvidia.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <20210208101439.55474-3-laoar.shao@gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.179.149]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ DRHQMAIL107.nvidia.com (10.27.9.16)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1612832961; bh=fHzIrA6EUkcvyYZOzc2r5U/q2OlDx68NlFICQTs7dQ8=;
+        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:MIME-Version:
+         Content-Transfer-Encoding:Content-Type:X-Originating-IP:
+         X-ClientProxiedBy;
+        b=JLn42Im7IWDEnuTDb+HAfmg21WCbnWEbIR0KYAxMkB56Xg+hXwpVMRWJJRpoQRHJa
+         huf1OdR0WZ/xbBkkJUUvfEpMrTL1a5eUkJvtZpjNYotNPcpHubOEIwYsPQWQwTlOxO
+         jybuOYXvAGRV+8LewjvSBZSReyU0Uwa0ZRMllU/kW0/RgIx1LjmT0zt3MKIYYamXOK
+         pB30alYCHMQ0EXloW6/GydUcrRRaxaCIdqaauza/x+VFBXw1WCAhGJL+cD9g6rHI7u
+         K2FsmBZ+Lca4vpaXoQR0qV/i4FwObqrVWHlQXKPTDH/AljdLXGbV8p9MZ6wUzY0KkI
+         TsL/93w80i8dw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/2/8 18:14, Yafang Shao wrote:
-> It is strange to combine "pr_err" with "INFO", so let's remove the
-> prefix completely.
-> This patch is motivated by David's comment[1].
-> 
-> - before the patch
-> [ 8846.517809] INFO: Slab 0x00000000f42a2c60 objects=33 used=3 fp=0x0000000060d32ca8 flags=0x17ffffc0010200(slab|head)
-> 
-> - after the patch
-> [ 6343.396602] Slab 0x000000004382e02b objects=33 used=3 fp=0x000000009ae06ffc flags=0x17ffffc0010200(slab|head)
-> 
-> [1]. https://lore.kernel.org/linux-mm/b9c0f2b6-e9b0-0c36-ebdd-2bc684c5a762@redhat.com/#t
-> 
-> Suggested-by: Vlastimil Babka <vbabka@suse.cz>
-> Cc: David Hildenbrand <david@redhat.com>
-> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+This series adds support to Nouveau for atomic memory operations on OpenCL
+shared virtual memory (SVM). This is achieved using the atomic PTE bits on
+the GPU to only permit atomic operations to system memory when a page is
+not mapped in userspace on the CPU.
 
-Looks good,thanks.
-Reviewed-by: Miaohe Lin <linmiaohe@huawei.com>
+This is implemented by adding a mode to migrate_vma_pages() which unmaps
+and isolates existing pages from the CPU and pins them. The original
+userspace page table entries are migrated to point to device private pages
+allocated by the driver. This allows the driver to enable GPU atomic access
+to the page as it will receive a callback when CPU userspace needs to
+access it.
 
-> ---
->  mm/slub.c | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
-> 
-> diff --git a/mm/slub.c b/mm/slub.c
-> index 87ff086e68a4..2514c37ab4e4 100644
-> --- a/mm/slub.c
-> +++ b/mm/slub.c
-> @@ -612,7 +612,7 @@ static void print_track(const char *s, struct track *t, unsigned long pr_time)
->  	if (!t->addr)
->  		return;
->  
-> -	pr_err("INFO: %s in %pS age=%lu cpu=%u pid=%d\n",
-> +	pr_err("%s in %pS age=%lu cpu=%u pid=%d\n",
->  	       s, (void *)t->addr, pr_time - t->when, t->cpu, t->pid);
->  #ifdef CONFIG_STACKTRACE
->  	{
-> @@ -638,7 +638,7 @@ void print_tracking(struct kmem_cache *s, void *object)
->  
->  static void print_page_info(struct page *page)
->  {
-> -	pr_err("INFO: Slab 0x%p objects=%u used=%u fp=0x%p flags=%#lx(%pGp)\n",
-> +	pr_err("Slab 0x%p objects=%u used=%u fp=0x%p flags=%#lx(%pGp)\n",
->  	       page, page->objects, page->inuse, page->freelist,
->  	       page->flags, &page->flags);
->  
-> @@ -695,7 +695,7 @@ static void print_trailer(struct kmem_cache *s, struct page *page, u8 *p)
->  
->  	print_page_info(page);
->  
-> -	pr_err("INFO: Object 0x%p @offset=%tu fp=0x%p\n\n",
-> +	pr_err("Object 0x%p @offset=%tu fp=0x%p\n\n",
->  	       p, p - addr, get_freepointer(s, p));
->  
->  	if (s->flags & SLAB_RED_ZONE)
-> @@ -788,7 +788,7 @@ static int check_bytes_and_report(struct kmem_cache *s, struct page *page,
->  		end--;
->  
->  	slab_bug(s, "%s overwritten", what);
-> -	pr_err("INFO: 0x%p-0x%p @offset=%tu. First byte 0x%x instead of 0x%x\n",
-> +	pr_err("0x%p-0x%p @offset=%tu. First byte 0x%x instead of 0x%x\n",
->  					fault, end - 1, fault - addr,
->  					fault[0], value);
->  	print_trailer(s, page, object);
-> @@ -3854,7 +3854,7 @@ static void list_slab_objects(struct kmem_cache *s, struct page *page,
->  	for_each_object(p, s, addr, page->objects) {
->  
->  		if (!test_bit(__obj_to_index(s, addr, p), map)) {
-> -			pr_err("INFO: Object 0x%p @offset=%tu\n", p, p - addr);
-> +			pr_err("Object 0x%p @offset=%tu\n", p, p - addr);
->  			print_tracking(s, p);
->  		}
->  	}
-> 
+In response to this callback the driver revokes the atomic access
+permission from the GPU and migrates entries to point back to the original
+page. The original page is unpinned as part of the migration operation
+which also returns it to the LRU.
+
+Patch 3 contains the bulk of the memory management changes to implement
+unmap and pin.
+
+Patches 6-9 extend Nouveau to use the new mode to allow system wide atomics
+for OpenCL SVM to be implemented on Nouveau.
+
+This has been tested using the latest upstream Mesa userspace with a simple
+OpenCL test program which checks the results of atomic GPU operations on a
+buffer whilst also writing to the same buffer from the CPU.
+
+Problems yet to be addressed:
+
+Recent changes to pin_user_pages() prevent the creation of pinned pages in
+ZONE_MOVABLE. This series allows pinned pages to be created in ZONE_MOVABLE
+as attempts to migrate may fail which would be fatal to userspace.
+
+In this case migration of the pinned page is unnecessary as the page can be
+unpinned at anytime by having the driver revoke atomic permission as it
+does for the migrate_to_ram() callback. However a method of calling this
+when memory needs to be moved has yet to be resolved so any discussion is
+welcome.
+
+Alistair Popple (9):
+  mm/migrate.c: Always allow device private pages to migrate
+  mm/migrate.c: Allow pfn flags to be passed to migrate_vma_setup()
+  mm/migrate: Add a unmap and pin migration mode
+  Documentation: Add unmap and pin to HMM
+  hmm-tests: Add test for unmap and pin
+  nouveau/dmem: Only map migrating pages
+  nouveau/svm: Refactor nouveau_range_fault
+  nouveau/dmem: Add support for multiple page types
+  nouveau/svm: Implement atomic SVM access
+
+ Documentation/vm/hmm.rst                      |  22 +-
+ arch/powerpc/kvm/book3s_hv_uvmem.c            |   4 +-
+ drivers/gpu/drm/nouveau/include/nvif/if000c.h |   1 +
+ drivers/gpu/drm/nouveau/nouveau_dmem.c        | 190 +++++++++++++++---
+ drivers/gpu/drm/nouveau/nouveau_dmem.h        |   9 +
+ drivers/gpu/drm/nouveau/nouveau_svm.c         | 148 +++++++++++---
+ drivers/gpu/drm/nouveau/nvkm/subdev/mmu/vmm.h |   1 +
+ .../drm/nouveau/nvkm/subdev/mmu/vmmgp100.c    |   6 +
+ include/linux/migrate.h                       |   2 +
+ include/linux/migrate_mode.h                  |   1 +
+ lib/test_hmm.c                                | 109 ++++++++--
+ lib/test_hmm_uapi.h                           |   1 +
+ mm/migrate.c                                  |  82 +++++---
+ tools/testing/selftests/vm/hmm-tests.c        |  49 +++++
+ 14 files changed, 524 insertions(+), 101 deletions(-)
+
+--=20
+2.20.1
 
