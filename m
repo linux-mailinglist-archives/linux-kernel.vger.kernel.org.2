@@ -2,152 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6640314591
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 02:24:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F032A314540
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 02:08:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229917AbhBIBXl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 20:23:41 -0500
-Received: from mga01.intel.com ([192.55.52.88]:45812 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229638AbhBIBXi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 20:23:38 -0500
-IronPort-SDR: YO5X3yP3RxUpHjdw0wN0K+spbNwSwmhNqmUVp1nP6v5mqcJA0r01OHbfTG2G0lBwUQ1mtsyXWg
- EXzZxE/tg3KQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9889"; a="200877484"
-X-IronPort-AV: E=Sophos;i="5.81,163,1610438400"; 
-   d="asc'?scan'208";a="200877484"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2021 17:20:49 -0800
-IronPort-SDR: xHgTaQxoX3hCq9xhgAsysDhisuAhKaBA0Jq/xrwpGKbGduBZuWoqTnJEx4QhkcIBxTPSeAHYZu
- Q8rbY5SyZ7/g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,163,1610438400"; 
-   d="asc'?scan'208";a="395838055"
-Received: from zhen-hp.sh.intel.com (HELO zhen-hp) ([10.239.160.147])
-  by orsmga008.jf.intel.com with ESMTP; 08 Feb 2021 17:20:47 -0800
-Date:   Tue, 9 Feb 2021 09:05:21 +0800
-From:   Zhenyu Wang <zhenyuw@linux.intel.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, intel-gvt-dev@lists.freedesktop.org,
-        intel-gfx@lists.freedesktop.org, Zhi Wang <zhi.a.wang@intel.com>,
-        Zhenyu Wang <zhenyuw@linux.intel.com>
-Subject: Re: [FYI PATCH] i915: kvmgt: the KVM mmu_lock is now an rwlock
-Message-ID: <20210209010521.GB2043@zhen-hp.sh.intel.com>
-Reply-To: Zhenyu Wang <zhenyuw@linux.intel.com>
-References: <20210208113437.94661-1-pbonzini@redhat.com>
+        id S229721AbhBIBHJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 20:07:09 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:12600 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229669AbhBIBHG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 20:07:06 -0500
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DZPnP4Gggz165Y3;
+        Tue,  9 Feb 2021 09:04:57 +0800 (CST)
+Received: from [10.174.179.149] (10.174.179.149) by
+ DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 9 Feb 2021 09:06:18 +0800
+Subject: Re: [PATCH v3 2/3] mm, slub: don't combine pr_err with INFO
+To:     Yafang Shao <laoar.shao@gmail.com>
+CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        <andriy.shevchenko@linux.intel.com>, <david@redhat.com>,
+        <vbabka@suse.cz>, <willy@infradead.org>, <cl@linux.com>,
+        <penberg@kernel.org>, <rientjes@google.com>,
+        <iamjoonsoo.kim@lge.com>, <akpm@linux-foundation.org>,
+        <pmladek@suse.com>, <rostedt@goodmis.org>,
+        <sergey.senozhatsky@gmail.com>, <joe@perches.com>
+References: <20210208101439.55474-1-laoar.shao@gmail.com>
+ <20210208101439.55474-3-laoar.shao@gmail.com>
+From:   Miaohe Lin <linmiaohe@huawei.com>
+Message-ID: <c17ff56c-fbbb-91c3-9754-fd92f744a837@huawei.com>
+Date:   Tue, 9 Feb 2021 09:06:18 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="7CZp05NP8/gJM8Cl"
-Content-Disposition: inline
-In-Reply-To: <20210208113437.94661-1-pbonzini@redhat.com>
+In-Reply-To: <20210208101439.55474-3-laoar.shao@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.179.149]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2021/2/8 18:14, Yafang Shao wrote:
+> It is strange to combine "pr_err" with "INFO", so let's remove the
+> prefix completely.
+> This patch is motivated by David's comment[1].
+> 
+> - before the patch
+> [ 8846.517809] INFO: Slab 0x00000000f42a2c60 objects=33 used=3 fp=0x0000000060d32ca8 flags=0x17ffffc0010200(slab|head)
+> 
+> - after the patch
+> [ 6343.396602] Slab 0x000000004382e02b objects=33 used=3 fp=0x000000009ae06ffc flags=0x17ffffc0010200(slab|head)
+> 
+> [1]. https://lore.kernel.org/linux-mm/b9c0f2b6-e9b0-0c36-ebdd-2bc684c5a762@redhat.com/#t
+> 
+> Suggested-by: Vlastimil Babka <vbabka@suse.cz>
+> Cc: David Hildenbrand <david@redhat.com>
+> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
 
---7CZp05NP8/gJM8Cl
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Looks good,thanks.
+Reviewed-by: Miaohe Lin <linmiaohe@huawei.com>
 
-On 2021.02.08 06:34:37 -0500, Paolo Bonzini wrote:
-> Adjust the KVMGT page tracking callbacks.
->=20
-> Cc: Zhenyu Wang <zhenyuw@linux.intel.com>
-> Cc: Zhi Wang <zhi.a.wang@intel.com>
-> Cc: intel-gvt-dev@lists.freedesktop.org
-> Cc: intel-gfx@lists.freedesktop.org
-> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 > ---
-
-Thanks for that!
-
-Acked-by: Zhenyu Wang <zhenyuw@linux.intel.com>
-
->  drivers/gpu/drm/i915/gvt/kvmgt.c | 12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
->=20
-> diff --git a/drivers/gpu/drm/i915/gvt/kvmgt.c b/drivers/gpu/drm/i915/gvt/=
-kvmgt.c
-> index 60f1a386dd06..b4348256ae95 100644
-> --- a/drivers/gpu/drm/i915/gvt/kvmgt.c
-> +++ b/drivers/gpu/drm/i915/gvt/kvmgt.c
-> @@ -1703,7 +1703,7 @@ static int kvmgt_page_track_add(unsigned long handl=
-e, u64 gfn)
->  		return -EINVAL;
->  	}
-> =20
-> -	spin_lock(&kvm->mmu_lock);
-> +	write_lock(&kvm->mmu_lock);
-> =20
->  	if (kvmgt_gfn_is_write_protected(info, gfn))
->  		goto out;
-> @@ -1712,7 +1712,7 @@ static int kvmgt_page_track_add(unsigned long handl=
-e, u64 gfn)
->  	kvmgt_protect_table_add(info, gfn);
-> =20
->  out:
-> -	spin_unlock(&kvm->mmu_lock);
-> +	write_unlock(&kvm->mmu_lock);
->  	srcu_read_unlock(&kvm->srcu, idx);
->  	return 0;
->  }
-> @@ -1737,7 +1737,7 @@ static int kvmgt_page_track_remove(unsigned long ha=
-ndle, u64 gfn)
->  		return -EINVAL;
->  	}
-> =20
-> -	spin_lock(&kvm->mmu_lock);
-> +	write_lock(&kvm->mmu_lock);
-> =20
->  	if (!kvmgt_gfn_is_write_protected(info, gfn))
->  		goto out;
-> @@ -1746,7 +1746,7 @@ static int kvmgt_page_track_remove(unsigned long ha=
-ndle, u64 gfn)
->  	kvmgt_protect_table_del(info, gfn);
-> =20
->  out:
-> -	spin_unlock(&kvm->mmu_lock);
-> +	write_unlock(&kvm->mmu_lock);
->  	srcu_read_unlock(&kvm->srcu, idx);
->  	return 0;
->  }
-> @@ -1772,7 +1772,7 @@ static void kvmgt_page_track_flush_slot(struct kvm =
-*kvm,
->  	struct kvmgt_guest_info *info =3D container_of(node,
->  					struct kvmgt_guest_info, track_node);
-> =20
-> -	spin_lock(&kvm->mmu_lock);
-> +	write_lock(&kvm->mmu_lock);
->  	for (i =3D 0; i < slot->npages; i++) {
->  		gfn =3D slot->base_gfn + i;
->  		if (kvmgt_gfn_is_write_protected(info, gfn)) {
-> @@ -1781,7 +1781,7 @@ static void kvmgt_page_track_flush_slot(struct kvm =
-*kvm,
->  			kvmgt_protect_table_del(info, gfn);
+>  mm/slub.c | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
+> 
+> diff --git a/mm/slub.c b/mm/slub.c
+> index 87ff086e68a4..2514c37ab4e4 100644
+> --- a/mm/slub.c
+> +++ b/mm/slub.c
+> @@ -612,7 +612,7 @@ static void print_track(const char *s, struct track *t, unsigned long pr_time)
+>  	if (!t->addr)
+>  		return;
+>  
+> -	pr_err("INFO: %s in %pS age=%lu cpu=%u pid=%d\n",
+> +	pr_err("%s in %pS age=%lu cpu=%u pid=%d\n",
+>  	       s, (void *)t->addr, pr_time - t->when, t->cpu, t->pid);
+>  #ifdef CONFIG_STACKTRACE
+>  	{
+> @@ -638,7 +638,7 @@ void print_tracking(struct kmem_cache *s, void *object)
+>  
+>  static void print_page_info(struct page *page)
+>  {
+> -	pr_err("INFO: Slab 0x%p objects=%u used=%u fp=0x%p flags=%#lx(%pGp)\n",
+> +	pr_err("Slab 0x%p objects=%u used=%u fp=0x%p flags=%#lx(%pGp)\n",
+>  	       page, page->objects, page->inuse, page->freelist,
+>  	       page->flags, &page->flags);
+>  
+> @@ -695,7 +695,7 @@ static void print_trailer(struct kmem_cache *s, struct page *page, u8 *p)
+>  
+>  	print_page_info(page);
+>  
+> -	pr_err("INFO: Object 0x%p @offset=%tu fp=0x%p\n\n",
+> +	pr_err("Object 0x%p @offset=%tu fp=0x%p\n\n",
+>  	       p, p - addr, get_freepointer(s, p));
+>  
+>  	if (s->flags & SLAB_RED_ZONE)
+> @@ -788,7 +788,7 @@ static int check_bytes_and_report(struct kmem_cache *s, struct page *page,
+>  		end--;
+>  
+>  	slab_bug(s, "%s overwritten", what);
+> -	pr_err("INFO: 0x%p-0x%p @offset=%tu. First byte 0x%x instead of 0x%x\n",
+> +	pr_err("0x%p-0x%p @offset=%tu. First byte 0x%x instead of 0x%x\n",
+>  					fault, end - 1, fault - addr,
+>  					fault[0], value);
+>  	print_trailer(s, page, object);
+> @@ -3854,7 +3854,7 @@ static void list_slab_objects(struct kmem_cache *s, struct page *page,
+>  	for_each_object(p, s, addr, page->objects) {
+>  
+>  		if (!test_bit(__obj_to_index(s, addr, p), map)) {
+> -			pr_err("INFO: Object 0x%p @offset=%tu\n", p, p - addr);
+> +			pr_err("Object 0x%p @offset=%tu\n", p, p - addr);
+>  			print_tracking(s, p);
 >  		}
 >  	}
-> -	spin_unlock(&kvm->mmu_lock);
-> +	write_unlock(&kvm->mmu_lock);
->  }
-> =20
->  static bool __kvmgt_vgpu_exist(struct intel_vgpu *vgpu, struct kvm *kvm)
-> --=20
-> 2.26.2
->=20
-> _______________________________________________
-> intel-gvt-dev mailing list
-> intel-gvt-dev@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/intel-gvt-dev
+> 
 
---7CZp05NP8/gJM8Cl
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EARECAB0WIQTXuabgHDW6LPt9CICxBBozTXgYJwUCYCHfzAAKCRCxBBozTXgY
-J3n+AJ9Pj+bM0fB2Uxzudpl3pyOKSapIIACfYnReH8KZw6239q6rLyJ7h+Qan8Q=
-=JC7t
------END PGP SIGNATURE-----
-
---7CZp05NP8/gJM8Cl--
