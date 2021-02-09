@@ -2,118 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 984E631587E
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 22:24:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90B28315828
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 22:01:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234033AbhBIVS4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 16:18:56 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:33958 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233441AbhBIS45 (ORCPT
+        id S234173AbhBIUzp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 15:55:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40894 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233326AbhBISvh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 13:56:57 -0500
-Received: from [192.168.86.31] (c-71-197-163-6.hsd1.wa.comcast.net [71.197.163.6])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 7089D2020E9E;
-        Tue,  9 Feb 2021 10:31:44 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 7089D2020E9E
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1612895504;
-        bh=wGYdUbhWR5y9KoUnFO9IRu5Hqx5/3X+QjRRHMVd3EHI=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=bBpT7yfHfMpytdV83pn28BmzOiyTLc1T0B+pzDQ3hBh0YKIATeBHVdzevnaRWHOp/
-         4LayizfSQ7VyW1d6V5S37JjCejSjQ3iyaz9oFGbNChIRMrz8ypKLiVYkU7rg7psdXs
-         8iHk8gRVIzPt36YlYxG/oGKbbj08xHP7pLqS6fl4=
-Subject: Re: [PATCH 3/3] IMA: add support to measure duplicate buffer for
- critical data hook
-To:     Mimi Zohar <zohar@linux.ibm.com>, stephen.smalley.work@gmail.com,
-        casey@schaufler-ca.com, agk@redhat.com, snitzer@redhat.com,
-        gmazyland@gmail.com, paul@paul-moore.com
-Cc:     tyhicks@linux.microsoft.com, sashal@kernel.org, jmorris@namei.org,
-        nramas@linux.microsoft.com, linux-integrity@vger.kernel.org,
-        selinux@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dm-devel@redhat.com
-References: <20210130004519.25106-1-tusharsu@linux.microsoft.com>
- <20210130004519.25106-4-tusharsu@linux.microsoft.com>
- <158dc2d3398316edefbafdb1cfea5eca840a06e6.camel@linux.ibm.com>
-From:   Tushar Sugandhi <tusharsu@linux.microsoft.com>
-Message-ID: <8af5bf67-54d3-f358-6cb6-34733fc72df2@linux.microsoft.com>
-Date:   Tue, 9 Feb 2021 10:31:43 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 9 Feb 2021 13:51:37 -0500
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5A93C0617A9
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 10:40:18 -0800 (PST)
+Received: by mail-lj1-x22f.google.com with SMTP id f2so23710824ljp.11
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 10:40:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=yrqlWhEmS7qOnCD+PpBqDD/vJX8INiaqiRYekgJQZPQ=;
+        b=Xv5BjgLYcmU0KX+yKZtjtFg1EszFEgfnsx23ypgGzZdhfjQ2uhx0rMeCFUeL5XrtRL
+         YO09vC7QZcYwTcu/8akG7OpWlzFlemPQkHkOCvwrfIRlH4mPHf1PL9T0mqlq5zyi1BdM
+         8b2RY8cyGJDx1EnZISySmVhjkPFLhbEhEex5U=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=yrqlWhEmS7qOnCD+PpBqDD/vJX8INiaqiRYekgJQZPQ=;
+        b=dyzJBayIuepVrv27I/SwTaNCgAV3L6E9wt4gHg8b5qjT13xk1UezzIsIj2iinxnY9k
+         HZQdCpNwVfoKcoHZVQX0YpdnFVkSJ+9cONierXmVUmBp7oIgeGY+kNCOZdChgODneQYC
+         dSXmqeIscYC1r/MLxYhnwG009lHMp58vBiXAb9KH5ZqIxQUe9gHBYbIt6KnVBgO9l+0F
+         OxPJP/7PvUk1HWtutTH1YLsIyIYjwkvKifg1W9NFglvyBlUwv3VH0AyQXngWYKxsHdTA
+         Ck5HORS7KwA9DlfzMot1QGendL8oqAx23dF/TL6883SbTl/K7oLhOXLYi0+Whpp81chb
+         y1Zg==
+X-Gm-Message-State: AOAM532Su6u9i0W2ZbhEGlftYul3Y5ycAudoVHVuN9yDNlyTv1f4DmCP
+        eTTccJPOMYKAvLK3pbW4IFsD2hco+YKUYw==
+X-Google-Smtp-Source: ABdhPJwJP+3y8hFX+saTf30ixefXliKSRn8XjPpbu+sczQW/1JUvBJJjGf6Wo/AnYNId2YpltLoFQQ==
+X-Received: by 2002:a2e:96c6:: with SMTP id d6mr15319654ljj.273.1612896016843;
+        Tue, 09 Feb 2021 10:40:16 -0800 (PST)
+Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com. [209.85.208.170])
+        by smtp.gmail.com with ESMTPSA id p16sm2647674lfc.97.2021.02.09.10.40.15
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 09 Feb 2021 10:40:15 -0800 (PST)
+Received: by mail-lj1-f170.google.com with SMTP id f8so14029505ljk.3
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 10:40:15 -0800 (PST)
+X-Received: by 2002:a2e:b70b:: with SMTP id j11mr14786681ljo.61.1612896014711;
+ Tue, 09 Feb 2021 10:40:14 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <158dc2d3398316edefbafdb1cfea5eca840a06e6.camel@linux.ibm.com>
-Content-Type: text/plain; charset=iso-8859-15; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <CAHk-=wgNXnmxjm+kK1ufjHfQPOBbuD5w3CTkSe0azF3NNWEHHQ@mail.gmail.com>
+ <3C17D187-8691-4521-9B64-F42A0B514F13@amacapital.net>
+In-Reply-To: <3C17D187-8691-4521-9B64-F42A0B514F13@amacapital.net>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 9 Feb 2021 10:39:58 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wg5132yO6AV=uQkNO=aGukfzE8Ji6AFuSxpdNto4ukAbw@mail.gmail.com>
+Message-ID: <CAHk-=wg5132yO6AV=uQkNO=aGukfzE8Ji6AFuSxpdNto4ukAbw@mail.gmail.com>
+Subject: Re: [GIT PULL] x86/urgent for v5.11-rc7
+To:     Andy Lutomirski <luto@amacapital.net>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Borislav Petkov <bp@suse.de>,
+        Dave Hansen <dave.hansen@intel.com>, x86-ml <x86@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        live-patching@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Feb 9, 2021 at 10:26 AM Andy Lutomirski <luto@amacapital.net> wrote=
+:
+> >
+> > Anything else would just be insanely complicated, I feel.
+>
+> The other model is =E2=80=9Cdon=E2=80=99t do that then.=E2=80=9D
 
+Hmm. I guess all the code that does int3 patching could just be taught
+to always go to the next instruction instead.
 
-On 2021-02-08 12:24 p.m., Mimi Zohar wrote:
-> Hi Tushar,
-> 
-> On Fri, 2021-01-29 at 16:45 -0800, Tushar Sugandhi wrote:
-> 
->> diff --git a/security/integrity/ima/ima_queue.c b/security/integrity/ima/ima_queue.c
->>
->> index c096ef8945c7..fbf359495fa8 100644
->> --- a/security/integrity/ima/ima_queue.c
->> +++ b/security/integrity/ima/ima_queue.c
->> @@ -158,7 +158,7 @@ static int ima_pcr_extend(struct tpm_digest *digests_arg, int pcr)
->>    */
->>   int ima_add_template_entry(struct ima_template_entry *entry, int violation,
->>   			   const char *op, struct inode *inode,
->> -			   const unsigned char *filename)
->> +			   const unsigned char *filename, bool allow_dup)
->>   {
->>   	u8 *digest = entry->digests[ima_hash_algo_idx].digest;
->>
->   	struct tpm_digestate_entry(struct ima_template_entry *entry, int violation,
-Not sure I understand this.  Maybe a typo?  Could you please explain?
+I don't think advancing the rewriting is an option for the asm
+alternative() logic or the static call infrastructure, but those
+should never be about endbr anyway, so presumably that's not an issue.
 
->>   
->>   	mutex_lock(&ima_extend_list_mutex);
->>   	if (!violation) {
->> -		if (ima_lookup_digest_entry(digest, entry->pcr)) {
->> +		if (!allow_dup &&
->> +		    ima_lookup_digest_entry(digest, entry->pcr)) {
-> 
-> Can't this change be simplified to "if (!violation && !allow_dup)"?
-> 
-Sure.  Will do.
+So if it ends up being _only_ about kprobes, then the "don't do that
+then" might work fine.
 
-Earlier I wasn't sure if 'violation' would touch any other use-cases 
-inadvertently.  That's why I localized the change as above.
-
-But now since we are supporting other scenarios as well,
-I believe "if (!violation && !allow_dup)" would be cleaner.
-
-> Also perhaps instead of passing another variable "allow_dup" to each of
-> these functions, pass a mask containing violation and allow_dup.
-> 
-There were examples of both approaches in ima_match_policy().
-  - int *pcr/ima_template_desc **template_desc as an out-param;
-  - and various actions as flags in return int.
-
-Earlier I couldn't decide one way or the other, so I picked the 
-out-param approach.
-
-But since allow_dup is just a single bit info, returning it as a bit in 
-the action flag is a cleaner solution.
-Will implement it with flag in the next iteration.
-
-Thanks again for reviewing the series.  Really appreciate it.
-
-Thanks,
-Tushar
-
->>   			audit_cause = "hash_exists";
->>   			result = -EEXIST;
->>   			goto out;
-> 
-> thanks,
-> 
-> Mimi
-> 
+                 Linus
