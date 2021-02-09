@@ -2,142 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04BF431495D
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 08:18:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0247A314960
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 08:19:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230075AbhBIHRc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 02:17:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33104 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229584AbhBIHRY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 02:17:24 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 156A9C06178A
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 23:16:44 -0800 (PST)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <jlu@pengutronix.de>)
-        id 1l9NGC-0006mV-H4; Tue, 09 Feb 2021 08:16:32 +0100
-Received: from localhost ([127.0.0.1])
-        by ptx.hi.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <jlu@pengutronix.de>)
-        id 1l9NGB-0000sq-8K; Tue, 09 Feb 2021 08:16:31 +0100
-Message-ID: <e8f149cddce55a4e4615396108e4c900cbec75a8.camel@pengutronix.de>
-Subject: Re: Migration to trusted keys: sealing user-provided key?
-From:   Jan =?ISO-8859-1?Q?L=FCbbe?= <jlu@pengutronix.de>
-To:     Mimi Zohar <zohar@linux.ibm.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        James Bottomley <jejb@linux.ibm.com>,
-        David Howells <dhowells@redhat.com>, keyrings@vger.kernel.org,
-        Sumit Garg <sumit.garg@linaro.org>
-Cc:     linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, kernel@pengutronix.de
-Date:   Tue, 09 Feb 2021 08:16:30 +0100
-In-Reply-To: <9bd1eaab236f095f1dbdc01752c3c6f487f33525.camel@linux.ibm.com>
-References: <74830d4f-5a76-8ba8-aad0-0d79f7c01af9@pengutronix.de>
-         <6dc99fd9ffbc5f405c5f64d0802d1399fc6428e4.camel@kernel.org>
-         <d1bed49f89495ceb529355cb41655a208fdb2197.camel@linux.ibm.com>
-         <8b9477e150d7c939dc0def3ebb4443efcc83cd85.camel@pengutronix.de>
-         <d4eeefa0c13395e91850630e22d0d9e3690f43ac.camel@linux.ibm.com>
-         <64472434a367060ddce6e03425156b8312a5ad6c.camel@pengutronix.de>
-         <bd3246ebb4eae526c84efe2d27c6fadff662b0c8.camel@linux.ibm.com>
-         <0be34899c9686b95cd22aa016f466523579cbeed.camel@pengutronix.de>
-         <e9e7814c35d9ce5a6351a960081bf3c6b90bdca7.camel@linux.ibm.com>
-         <b6ee219924e7195070062b6453931595faa640af.camel@pengutronix.de>
-         <9bd1eaab236f095f1dbdc01752c3c6f487f33525.camel@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.3-1 
+        id S230077AbhBIHSp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 02:18:45 -0500
+Received: from so15.mailgun.net ([198.61.254.15]:11521 "EHLO so15.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229704AbhBIHSc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 02:18:32 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1612855093; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=mK5kpgAF6AMLuw5RtubhdeZQP/uo/1+WEDAN+fkDY9I=;
+ b=lu5D8bvIIs585xcfmUYNyeb5haDXDCx+HuOgFVgtGVOhKYcTBGKIy5lRNtBTHDICHPYa+L6q
+ T2pvj7y5Gvx/SN7iXXPG+UzMzHVwkWViey+ewmEdIc/GVMJaYgFFXefJEM0rzR7blyGDd9oU
+ 02P+39VG5aNpsyE+VooSCwLYcjA=
+X-Mailgun-Sending-Ip: 198.61.254.15
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 602237168e43a988b75f0fde (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 09 Feb 2021 07:17:42
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id F35C0C43463; Tue,  9 Feb 2021 07:17:41 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        MISSING_DATE,MISSING_MID,SPF_FAIL,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id CC4ACC433CA;
+        Tue,  9 Feb 2021 07:17:38 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org CC4ACC433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: jlu@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH] ath10k: Fix suspicious RCU usage warning in
+ ath10k_wmi_tlv_parse_peer_stats_info()
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20210202134451.1.I0d2e83c42755671b7143504b62787fd06cd914ed@changeid>
+References: <20210202134451.1.I0d2e83c42755671b7143504b62787fd06cd914ed@changeid>
+To:     Anand K Mistry <amistry@google.com>
+Cc:     ath10k@lists.infradead.org, Anand K Mistry <amistry@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Wen Gong <wgong@codeaurora.org>, linux-kernel@vger.kernel.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
+Message-Id: <20210209071741.F35C0C43463@smtp.codeaurora.org>
+Date:   Tue,  9 Feb 2021 07:17:41 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-02-08 at 16:50 -0500, Mimi Zohar wrote:
-> On Mon, 2021-02-08 at 15:38 +0100, Jan Lübbe wrote:
-> 
-> > As it seems that this feature would not be appropriate for all use-cases and
-> > threat models, I wonder if making it optional would be acceptable. Something
-> > like:
-> > 
-> > config TRUSTED_KEYS_IMPORT
-> 
-> To me "IMPORT" implies from a trusted source, which this is not. 
-> Perhaps "UNSAFE_IMPORT", "DEBUGGING_IMPORT, "DEVELOPMENT_IMPORT", ...
-> 
-> Defining a Kconfig with any of these names and the other changes below,
-> makes it very clear using predefined key data is not recommended.  My
-> concern with extending trusted keys to new trust sources is the
-> implication that the security/integrity is equivalent to the existing
-> discrete TPM.
-> 
-> >         bool "Allow creating TRUSTED KEYS from existing key material"
-> >         depends on TRUSTED_KEYS
-> 
-> Missing "default n"
+Anand K Mistry <amistry@google.com> wrote:
 
-According to Documentation/kbuild/kconfig-language.rst: "The default value
-deliberately defaults to 'n' in order to avoid bloating the build.". So an
-explicit "default n" should not be needed. I'll add it though, for now.
-
-> >         help
-> >           This option adds support for creating new trusted keys from
-> > existing 
-> >           key material supplied by userspace, instead of using random
-> > numbers.
-> >           As with random trusted keys, userspace cannot extract the plain-
-> > text 
+> The ieee80211_find_sta_by_ifaddr call in
+> ath10k_wmi_tlv_parse_peer_stats_info must be called while holding the
+> RCU read lock. Otherwise, the following warning will be seen when RCU
+> usage checking is enabled:
 > 
-> Once defined, as with random trusted keys, userspace cannot ...
+> =============================
+> WARNING: suspicious RCU usage
+> 5.10.3 #8 Tainted: G        W
+> -----------------------------
+> include/linux/rhashtable.h:594 suspicious rcu_dereference_check() usage!
 > 
-> >           key material again and will only ever see encrypted blobs.
-> >           
-> > 
-> >           This option should *only* be enabled for use in a trusted
-> >           environment (such as during debugging/development or in a secured
-> >           factory). Also, consider using 'keyctl padd' instead of 'keyctl
-> > add' 
+> other info that might help us debug this:
 > 
-> Even the "secured factory" is not a good idea.  Please limit the usage
-> to debugging/development.
+> rcu_scheduler_active = 2, debug_locks = 1
+> no locks held by ksoftirqd/1/16.
 > 
-> >           to avoid exposing the plain-text key on the process command line.
-> > 
-> >           If you are unsure as to whether this is required, answer N.
+> stack backtrace:
+> CPU: 1 PID: 16 Comm: ksoftirqd/1 Tainted: G        W         5.10.3 #8
+> Hardware name: HP Grunt/Grunt, BIOS Google_Grunt.11031.104.0 09/05/2019
+> Call Trace:
+>  dump_stack+0xab/0x115
+>  sta_info_hash_lookup+0x71/0x1e9 [mac80211]
+>  ? lock_is_held_type+0xe6/0x12f
+>  ? __kasan_kmalloc+0xfb/0x112
+>  ieee80211_find_sta_by_ifaddr+0x12/0x61 [mac80211]
+>  ath10k_wmi_tlv_parse_peer_stats_info+0xbd/0x10b [ath10k_core]
+>  ath10k_wmi_tlv_iter+0x8b/0x1a1 [ath10k_core]
+>  ? ath10k_wmi_tlv_iter+0x1a1/0x1a1 [ath10k_core]
+>  ath10k_wmi_tlv_event_peer_stats_info+0x103/0x13b [ath10k_core]
+>  ath10k_wmi_tlv_op_rx+0x722/0x80d [ath10k_core]
+>  ath10k_htc_rx_completion_handler+0x16e/0x1d7 [ath10k_core]
+>  ath10k_pci_process_rx_cb+0x116/0x22c [ath10k_pci]
+>  ? ath10k_htc_process_trailer+0x332/0x332 [ath10k_core]
+>  ? _raw_spin_unlock_irqrestore+0x34/0x61
+>  ? lockdep_hardirqs_on+0x8e/0x12e
+>  ath10k_ce_per_engine_service+0x55/0x74 [ath10k_core]
+>  ath10k_ce_per_engine_service_any+0x76/0x84 [ath10k_core]
+>  ath10k_pci_napi_poll+0x49/0x141 [ath10k_pci]
+>  net_rx_action+0x11a/0x347
+>  __do_softirq+0x2d3/0x539
+>  run_ksoftirqd+0x4b/0x86
+>  smpboot_thread_fn+0x1d0/0x2ab
+>  ? cpu_report_death+0x7f/0x7f
+>  kthread+0x189/0x191
+>  ? cpu_report_death+0x7f/0x7f
+>  ? kthread_blkcg+0x31/0x31
+>  ret_from_fork+0x22/0x30
 > 
-> The above would be fine.
+> Fixes: 0f7cb26830a6e ("ath10k: add rx bitrate report for SDIO")
+> Signed-off-by: Anand K Mistry <amistry@google.com>
+> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-OK, that would result in:
+Patch applied to ath-next branch of ath.git, thanks.
 
-config TRUSTED_KEYS_DEVELOPMENT_IMPORT
-        bool "Allow creating TRUSTED KEYS from existing key material for development"
-        depends on TRUSTED_KEYS
-        default n
-        help
-          This option adds support for creating new trusted keys from
-          existing key material supplied by userspace, instead of using
-          random numbers. Once defined,  as with random trusted keys,
-          userspace cannot extract the plain-text key material again
-          and will only ever see encrypted blobs.
-          
-          This option should *only* be enabled for debugging/development.
-          Also, consider using 'keyctl padd' instead of 'keyctl add' to
-          avoid exposing the plain-text key on the process command line.
+2615e3cdbd9c ath10k: Fix suspicious RCU usage warning in ath10k_wmi_tlv_parse_peer_stats_info()
 
-          If you are unsure as to whether this is required, answer N.
-
-Thanks,
-Jan
 -- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+https://patchwork.kernel.org/project/linux-wireless/patch/20210202134451.1.I0d2e83c42755671b7143504b62787fd06cd914ed@changeid/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
