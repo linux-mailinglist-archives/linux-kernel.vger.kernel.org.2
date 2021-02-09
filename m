@@ -2,348 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3080314DD4
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 12:08:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EBDBA314DD7
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 12:08:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232279AbhBILF3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 06:05:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52406 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232133AbhBIK6y (ORCPT
+        id S232313AbhBILGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 06:06:11 -0500
+Received: from mail.baikalelectronics.com ([87.245.175.226]:59770 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232187AbhBIK7z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 05:58:54 -0500
-Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0134CC061788;
-        Tue,  9 Feb 2021 02:57:39 -0800 (PST)
-Received: by mail-qv1-xf2e.google.com with SMTP id f18so2291523qvm.9;
-        Tue, 09 Feb 2021 02:57:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=skhiqf6XHdrL85W8XLfMMk82wIY2NH/2YVOEeXuwU+Y=;
-        b=f2OpeBCHl+zFdH0iUc9cip0quELq/fMwsKCque7GtLZ86SCbDhvgt7NtMgHcTJn1cD
-         JWPSSZNaBXiVcziAw2X3vtUwR2RL18ND+Ua9ks2gN5PT97XhjprWkpkJZGVjbGx0isaS
-         9OvX9T8F53Q6I4RZU6OWRByJGL6oi9956SD4BEL9846tU6FDt7PQb2DntVZr0Qqu1TQO
-         lQdiLX2/H3VI50tRZIeNwDyBziHDqqoz/tui5MzaWTBBvTlLpgmPIH9VBA8jFaS26HDY
-         70RYPHdgWSNdZZePCR9bZurYF/iOxfl1kA9QM3v8aB+aF2lK7ObyTLAIrXWtJkm20eaG
-         BQIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=skhiqf6XHdrL85W8XLfMMk82wIY2NH/2YVOEeXuwU+Y=;
-        b=kqHzfGxAtvnOwoTSATXgaM5aSOwu6SB2kYH/DUYP4mHM36a5I+AVFdxphj9cNNcSWk
-         Sss6nItE3z6KHNeuinOaFfcsxidV/ZfrcI4p0u9N1oM3SwFxiRXHZUL1kw1ZEo3/cJPH
-         Q7fFOHzzf2JEaxVqC/BPLvMpA+cooqI/rQZE9oX8rfXBBryDliRtP2Y7OWdL51CKvR5+
-         BkEl7+Q5klfVCErwyBEByUJyWy+Gj8fgOm1JMdwG6KnG8PBA9UM5/4jkgw2cpA9m9BEk
-         0k5mxDLGh+62sJ+OzsF1FB+J3Lwys+c+pFVOFc3XHdxuoWsM4C3fY+ovIv2XOypc0K8l
-         uIVw==
-X-Gm-Message-State: AOAM530cIMyr+P9LW27rBHQAhKyjeocXp+4f8QFf7p7rosfeRrqYTMsE
-        6HkGYx+e7Yg747VikHc8MSLdRGVcqQVoWWvukQ+ttGPmqkVbVQ==
-X-Google-Smtp-Source: ABdhPJxIbKfoTixoS4iXNDPO8uY5uI5VE4CGlZN6BQyn9WcQnpIcw3CeHGojZGJ4F8+S8CuvzTw+jB8P0LX40p9ueG4=
-X-Received: by 2002:a05:6214:10e7:: with SMTP id q7mr13191326qvt.16.1612868258202;
- Tue, 09 Feb 2021 02:57:38 -0800 (PST)
+        Tue, 9 Feb 2021 05:59:55 -0500
+Date:   Tue, 9 Feb 2021 13:59:06 +0300
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Jakub Kicinski <kuba@kernel.org>
+CC:     Serge Semin <fancer.lancer@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>, Rob Herring <robh+dt@kernel.org>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Johan Hovold <johan@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Joao Pinto <jpinto@synopsys.com>,
+        Lars Persson <larper@axis.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        Vyacheslav Mitrofanov 
+        <Vyacheslav.Mitrofanov@baikalelectronics.ru>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        <netdev@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 00/24] net: stmmac: Fix clocks/reset-related procedures
+Message-ID: <20210209105906.t34g6wly3ilndkwq@mobilestation>
+References: <20210208135609.7685-1-Sergey.Semin@baikalelectronics.ru>
+ <20210208110521.59804f08@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 MIME-Version: 1.0
-References: <1612785064-3072-1-git-send-email-orsonzhai@gmail.com>
- <1612785064-3072-2-git-send-email-orsonzhai@gmail.com> <CADBw62qJRoDGdaY8jB1pppgd8S6JnJ+A5sT+c00uXDO9wXucmg@mail.gmail.com>
- <20210209040855.GA25057@lenovo>
-In-Reply-To: <20210209040855.GA25057@lenovo>
-From:   Baolin Wang <baolin.wang7@gmail.com>
-Date:   Tue, 9 Feb 2021 18:57:33 +0800
-Message-ID: <CADBw62pmsnyX9KjQyjA2_Jf-wviPJfUW6pyB-v_1L+MipJQxsA@mail.gmail.com>
-Subject: Re: [PATCH 2/3] mailbox: sprd: Add supplementary inbox support
-To:     Baolin Wang <baolin.wang7@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jassi Brar <jassisinghbrar@gmail.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Devicetree List <devicetree@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Haidong Yao <haidong.yao@unisoc.com>,
-        Orson Zhai <orson.zhai@unisoc.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20210208110521.59804f08@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 9, 2021 at 12:09 PM Orson Zhai <orsonzhai@gmail.com> wrote:
->
-> On Mon, Feb 08, 2021 at 10:27:47PM +0800, Baolin Wang wrote:
-> > On Mon, Feb 8, 2021 at 7:52 PM Orson Zhai <orsonzhai@gmail.com> wrote:
-> > >
-> > > From: Orson Zhai <orson.zhai@unisoc.com>
-> > >
-> > > Some sensors connected to Unisoc mailbox will send data very frequently.
-> > > This makes channel 0 very busy and the messages from other remote cores
-> > > not able to be handled as soon as possible.
-> > >
-> > > Then a supplementary inbox is added to the host core side for transferring
-> > > mass but not emergency messages from the remote cores, such as step
-> > > counting sensor, with an independent FIFO and interrupt.
-> >
-> > So this is another part of the mailbox hardware, containing a batch of
-> > hardware channels?
->
-> No. Actually it is an inbox assigned to one of the remote cores before but
-> being exposed to host cpu core for now.
->
-> > I did not see it before, its function is similar
-> > with inbox/outbox?
->
-> Exactly same with any other channel.
-> But only the part of outbox is exposed to host side. Inbox part of this channel
-> is still kept for original remote core to use.
->
-> It's a trick (un-documented) from our ASIC designers to resolve some special requirements.
-> I was also shocked when hearing it :)
+On Mon, Feb 08, 2021 at 11:05:21AM -0800, Jakub Kicinski wrote:
+> On Mon, 8 Feb 2021 16:55:44 +0300 Serge Semin wrote:
+> > Baikal-T1 SoC is equipped with two Synopsys DesignWare GMAC v3.73a-based
+> > ethernet interfaces with no internal Ethernet PHY attached. The IP-cores
+> > are configured as GMAC-AXI with CSR interface clocked by a dedicated
+> > signal. Each of which has got Rx/Tx FIFOs of 16KB, up to 8 MAC addresses
+> > capability, no embedded filter hash table logic, EEE enabled, IEEE 1588
+> > and 1588-2008 Advanced timestamping capabilities, power management with
+> > remote wake-up, IP CSUM hardware acceleration, a single PHY interface -
+> > RGMII with MDIO bus, 1xGPI and 1xGPO.
+> > 
+> > This is a very first series of patches with fixes we've found to be
+> > required in order to make things working well for our setup. The series
+> > has turned to be rather large, but most of the patches are trivial and
+> > some of them are just cleanups, so it shouldn't be that hard to review.
+> 
+> Hi Serge!
+> 
+> You've submitted 60 patches at once, that's a lot of patches, in netdev
+> we limit submissions to 15 patches at a time to avoid overwhelming
+> reviewers. 
+> 
+> At a glance the patches seem to mix fixes which affect existing,
+> supported systems (eg. error patch reference leaks) with extensions
+> required to support your platform. Can the two be separated?
+> The fixes for existing bugs should be targeting net (Subject: 
+> [PATCH net]) and patches to support your platform net-next (Subject:
+> [PATCH net-next]).
+> 
+> Right now the patches are not tagged so our build bot tried applying
+> them to net-next and they failed to apply, so I need to toss them away.
+> 
+> Andrew, others, please chime in if I'm misreading the contents of the
+> series or if you have additional guidance!
 
-Understood :)
+Hi Jakub,
+Of course I know about the "too-big-series-to-review" rule. That's why I've
+split all my work up into three patchsets. Actually this one is the very
+first patchset, which I've submitted over two months ago but noone except
+Rob gave me any review comment. So I've decided to post all the work,
+to so called depict a scale of the work, which needs to be reviewed.
 
->
-> I guess other vendors will add another mailbox module to resovle this, but our guys might
-> consider the hardware cost...
+Anyway I thought it would be obvious from the cover-letters which patchsets
+should be applied first, which next. This one states that it's a very
+first series. The rest of the patchsets contains a link to the
+previous one they were supposed to be applied to. Perhaps I should have
+stated that in a clearer way.
 
-OK. Thanks for your explanation. It will be helpful if you can add
-these backgroud into the comments in case someone else will be
-confusing again for the new supplementary inbox :)
+Regarding having over 15 patches in this series. Normally it's not that
+strict rule. There are even bigger series can be found submitted,
+reviewed and accepted in the kernel. Of course sometimes it's hard to
+review even 15 patches due to complexity of the changes. But most of
+the alterations posted here are trivial and shouldn't be difficult to
+review. That's why I felt free to post it as is.
 
-> > >
-> > > Signed-off-by: Orson Zhai <orson.zhai@unisoc.com>
-> > > ---
-> > >  drivers/mailbox/sprd-mailbox.c | 93 ++++++++++++++++++++++++++++++++++--------
-> > >  1 file changed, 75 insertions(+), 18 deletions(-)
-> > >
-> > > diff --git a/drivers/mailbox/sprd-mailbox.c b/drivers/mailbox/sprd-mailbox.c
-> > > index e606f52..74648db 100644
-> > > --- a/drivers/mailbox/sprd-mailbox.c
-> > > +++ b/drivers/mailbox/sprd-mailbox.c
-> > > @@ -11,6 +11,7 @@
-> > >  #include <linux/io.h>
-> > >  #include <linux/mailbox_controller.h>
-> > >  #include <linux/module.h>
-> > > +#include <linux/of_device.h>
-> > >  #include <linux/platform_device.h>
-> > >  #include <linux/clk.h>
-> > >
-> > > @@ -50,13 +51,17 @@
-> > >  #define SPRD_OUTBOX_FIFO_NOT_EMPTY_IRQ         BIT(0)
-> > >  #define SPRD_OUTBOX_FIFO_IRQ_MASK              GENMASK(4, 0)
-> > >
-> > > +#define SPRD_OUTBOX_BASE_SPAN                  0x1000
-> > >  #define SPRD_MBOX_CHAN_MAX                     8
-> > > +#define SPRD_SUPP_INBOX_ID_SC9860              6
-> > >
-> > >  struct sprd_mbox_priv {
-> > >         struct mbox_controller  mbox;
-> > >         struct device           *dev;
-> > >         void __iomem            *inbox_base;
-> > >         void __iomem            *outbox_base;
-> > > +       /*  Base register address for supplementary outbox */
-> > > +       void __iomem            *supp_base;
-> > >         struct clk              *clk;
-> > >         u32                     outbox_fifo_depth;
-> > >
-> > > @@ -96,14 +101,13 @@ static u32 sprd_mbox_get_fifo_len(struct sprd_mbox_priv *priv, u32 fifo_sts)
-> > >         return fifo_len;
-> > >  }
-> > >
-> > > -static irqreturn_t sprd_mbox_outbox_isr(int irq, void *data)
-> > > +static inline irqreturn_t do_outbox_isr(void __iomem *base, struct sprd_mbox_priv *priv)
-> >
-> > No need to add an explicit 'inline' tag, the compiler can do the smart
-> > things than us.
->
-> I thought it will help to increase perfermance of isr execution before.
->
-> Will fix at next.
->
-> >
-> > >  {
-> > > -       struct sprd_mbox_priv *priv = data;
-> > >         struct mbox_chan *chan;
-> > >         u32 fifo_sts, fifo_len, msg[2];
-> > >         int i, id;
-> > >
-> > > -       fifo_sts = readl(priv->outbox_base + SPRD_MBOX_FIFO_STS);
-> > > +       fifo_sts = readl(base + SPRD_MBOX_FIFO_STS);
-> > >
-> > >         fifo_len = sprd_mbox_get_fifo_len(priv, fifo_sts);
-> > >         if (!fifo_len) {
-> > > @@ -112,23 +116,41 @@ static irqreturn_t sprd_mbox_outbox_isr(int irq, void *data)
-> > >         }
-> > >
-> > >         for (i = 0; i < fifo_len; i++) {
-> > > -               msg[0] = readl(priv->outbox_base + SPRD_MBOX_MSG_LOW);
-> > > -               msg[1] = readl(priv->outbox_base + SPRD_MBOX_MSG_HIGH);
-> > > -               id = readl(priv->outbox_base + SPRD_MBOX_ID);
-> > > +               msg[0] = readl(base + SPRD_MBOX_MSG_LOW);
-> > > +               msg[1] = readl(base + SPRD_MBOX_MSG_HIGH);
-> > > +               id = readl(base + SPRD_MBOX_ID);
-> > >
-> > >                 chan = &priv->chan[id];
-> > > -               mbox_chan_received_data(chan, (void *)msg);
-> > > +               if (chan->cl)
-> > > +                       mbox_chan_received_data(chan, (void *)msg);
-> > > +               else
-> > > +                       dev_warn_ratelimited(priv->dev,
-> > > +                                   "message's been dropped at ch[%d]\n", id);
-> > >
-> > >                 /* Trigger to update outbox FIFO pointer */
-> > > -               writel(0x1, priv->outbox_base + SPRD_MBOX_TRIGGER);
-> > > +               writel(0x1, base + SPRD_MBOX_TRIGGER);
-> > >         }
-> > >
-> > >         /* Clear irq status after reading all message. */
-> > > -       writel(SPRD_MBOX_IRQ_CLR, priv->outbox_base + SPRD_MBOX_IRQ_STS);
-> > > +       writel(SPRD_MBOX_IRQ_CLR, base + SPRD_MBOX_IRQ_STS);
-> > >
-> > >         return IRQ_HANDLED;
-> > >  }
-> > >
-> > > +static irqreturn_t sprd_mbox_outbox_isr(int irq, void *data)
-> > > +{
-> > > +       struct sprd_mbox_priv *priv = data;
-> > > +
-> > > +       return do_outbox_isr(priv->outbox_base, priv);
-> > > +}
-> > > +
-> > > +static irqreturn_t sprd_mbox_supp_isr(int irq, void *data)
-> > > +{
-> > > +       struct sprd_mbox_priv *priv = data;
-> > > +
-> > > +       return do_outbox_isr(priv->supp_base, priv);
-> > > +}
-> > > +
-> > >  static irqreturn_t sprd_mbox_inbox_isr(int irq, void *data)
-> > >  {
-> > >         struct sprd_mbox_priv *priv = data;
-> > > @@ -231,6 +253,14 @@ static int sprd_mbox_startup(struct mbox_chan *chan)
-> > >                 val = readl(priv->outbox_base + SPRD_MBOX_IRQ_MSK);
-> > >                 val &= ~SPRD_OUTBOX_FIFO_NOT_EMPTY_IRQ;
-> > >                 writel(val, priv->outbox_base + SPRD_MBOX_IRQ_MSK);
-> > > +
-> > > +               /* Enable supplementary outbox as the fundamental one */
-> > > +               if (priv->supp_base) {
-> > > +                       writel(0x0, priv->supp_base + SPRD_MBOX_FIFO_RST);
-> > > +                       val = readl(priv->supp_base + SPRD_MBOX_IRQ_MSK);
-> > > +                       val &= ~SPRD_OUTBOX_FIFO_NOT_EMPTY_IRQ;
-> > > +                       writel(val, priv->supp_base + SPRD_MBOX_IRQ_MSK);
-> > > +               }
-> > >         }
-> > >         mutex_unlock(&priv->lock);
-> > >
-> > > @@ -246,6 +276,10 @@ static void sprd_mbox_shutdown(struct mbox_chan *chan)
-> > >                 /* Disable inbox & outbox interrupt */
-> > >                 writel(SPRD_INBOX_FIFO_IRQ_MASK, priv->inbox_base + SPRD_MBOX_IRQ_MSK);
-> > >                 writel(SPRD_OUTBOX_FIFO_IRQ_MASK, priv->outbox_base + SPRD_MBOX_IRQ_MSK);
-> > > +
-> > > +               if (priv->supp_base)
-> > > +                       writel(SPRD_OUTBOX_FIFO_IRQ_MASK,
-> > > +                              priv->supp_base + SPRD_MBOX_IRQ_MSK);
-> > >         }
-> > >         mutex_unlock(&priv->lock);
-> > >  }
-> > > @@ -268,8 +302,8 @@ static int sprd_mbox_probe(struct platform_device *pdev)
-> > >  {
-> > >         struct device *dev = &pdev->dev;
-> > >         struct sprd_mbox_priv *priv;
-> > > -       int ret, inbox_irq, outbox_irq;
-> > > -       unsigned long id;
-> > > +       int ret, inbox_irq, outbox_irq, supp_irq;
-> > > +       unsigned long id, supp;
-> > >
-> > >         priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
-> > >         if (!priv)
-> > > @@ -280,11 +314,15 @@ static int sprd_mbox_probe(struct platform_device *pdev)
-> > >         mutex_init(&priv->lock);
-> > >
-> > >         /*
-> > > -        * The Spreadtrum mailbox uses an inbox to send messages to the target
-> > > -        * core, and uses an outbox to receive messages from other cores.
-> > > +        * Unisoc mailbox uses an inbox to send messages to the target
-> > > +        * core, and uses (an) outbox(es) to receive messages from other
-> > > +        * cores.
-> > > +        *
-> > > +        * Thus in general the mailbox controller supplies 2 different
-> > > +        * register addresses and IRQ numbers for inbox and outbox.
-> > >          *
-> > > -        * Thus the mailbox controller supplies 2 different register addresses
-> > > -        * and IRQ numbers for inbox and outbox.
-> > > +        * If necessary, a supplementary inbox could be enabled optionally
-> > > +        * with an independent FIFO and an extra interrupt.
-> > >          */
-> > >         priv->inbox_base = devm_platform_ioremap_resource(pdev, 0);
-> > >         if (IS_ERR(priv->inbox_base))
-> > > @@ -310,7 +348,7 @@ static int sprd_mbox_probe(struct platform_device *pdev)
-> > >                 return ret;
-> > >         }
-> > >
-> > > -       inbox_irq = platform_get_irq(pdev, 0);
-> > > +       inbox_irq = platform_get_irq_byname(pdev, "inbox");
-> >
-> > I think you should put the dt changes before this patch.
->
-> OK.
->
-> Thanks,
-> Orson
-> >
-> > >         if (inbox_irq < 0)
-> > >                 return inbox_irq;
-> > >
-> > > @@ -321,7 +359,7 @@ static int sprd_mbox_probe(struct platform_device *pdev)
-> > >                 return ret;
-> > >         }
-> > >
-> > > -       outbox_irq = platform_get_irq(pdev, 1);
-> > > +       outbox_irq = platform_get_irq_byname(pdev, "outbox");
-> > >         if (outbox_irq < 0)
-> > >                 return outbox_irq;
-> > >
-> > > @@ -332,6 +370,24 @@ static int sprd_mbox_probe(struct platform_device *pdev)
-> > >                 return ret;
-> > >         }
-> > >
-> > > +       /* Supplementary outbox IRQ is optional */
-> > > +       supp_irq = platform_get_irq_byname(pdev, "supp-outbox");
-> > > +       if (supp_irq > 0) {
-> > > +               ret = devm_request_irq(dev, supp_irq, sprd_mbox_supp_isr,
-> > > +                                      IRQF_NO_SUSPEND, dev_name(dev), priv);
-> > > +               if (ret) {
-> > > +                       dev_err(dev, "failed to request outbox IRQ: %d\n", ret);
-> > > +                       return ret;
-> > > +               }
-> > > +
-> > > +               supp = (unsigned long) of_device_get_match_data(dev);
-> > > +               if (!supp) {
-> > > +                       dev_err(dev, "no supplementary outbox specified\n");
-> > > +                       return -ENODEV;
-> > > +               }
-> > > +               priv->supp_base = priv->outbox_base + (SPRD_OUTBOX_BASE_SPAN * supp);
-> > > +       }
-> > > +
-> > >         /* Get the default outbox FIFO depth */
-> > >         priv->outbox_fifo_depth =
-> > >                 readl(priv->outbox_base + SPRD_MBOX_FIFO_DEPTH) + 1;
-> > > @@ -354,7 +410,8 @@ static int sprd_mbox_probe(struct platform_device *pdev)
-> > >  }
-> > >
-> > >  static const struct of_device_id sprd_mbox_of_match[] = {
-> > > -       { .compatible = "sprd,sc9860-mailbox", },
-> > > +       { .compatible = "sprd,sc9860-mailbox",
-> > > +         .data = (void *)SPRD_SUPP_INBOX_ID_SC9860 },
-> > >         { },
-> > >  };
-> > >  MODULE_DEVICE_TABLE(of, sprd_mbox_of_match);
-> > > --
-> > > 2.7.4
-> > >
-> >
-> >
-> > --
-> > Baolin Wang
+Of course I agree with you. It would be too much to review over 60
+patches at once. Let's review one series at a time then. This one is
+the very first one. Please start with it.
 
+Regarding splitting this series up. Well, normally there is no such
+requirement to split the fixes and feature into different series.
+(Though I am not surprised to get such request from net-subsystem. You
+always prefer to do things in your special way. ^_^) So in this series
+the fixes have been structured together and have been submitted first
+in the order, but after DT-bindings related patches. Anyway if you
+want it, I'll split the patchset up into two. The first one will be
+targeted to "net" and will have all the fixes. The second one will
+contain the bindings-related modifications and the clocks-related feature
+implementation. It will be sent to net-next. I'll do that in v2. But
+at the current stage could you start reviewing this series the way
+it is? I'll take into account your comments and add your tags in the
+split v2 patchsets if any.
 
+Thanks
+-Sergey
 
--- 
-Baolin Wang
