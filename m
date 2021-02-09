@@ -2,143 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66066315C7F
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 02:45:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2D1F315C7D
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 02:45:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234388AbhBJBoM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 20:44:12 -0500
-Received: from mailout4.samsung.com ([203.254.224.34]:50354 "EHLO
-        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234617AbhBIXvp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 18:51:45 -0500
-Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210209235048epoutp049b8de4dd78cb10b046174c1cf0b7239d~iOVPgLk6h1807818078epoutp04n
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 23:50:48 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210209235048epoutp049b8de4dd78cb10b046174c1cf0b7239d~iOVPgLk6h1807818078epoutp04n
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1612914648;
-        bh=Yfwyv25XMm32QG1IHtSFUvcYQNNR9BBObeWhcnK1FCE=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=mBCKeIcQftIcOcMfaFYXqKRNaxVppqgWmVeNXwPiU60Nfu5vlou+TCaA2OkKvxPYW
-         kA+QhaTDHtvSxNosCSHBI8/jaH51Ar0+x1BLIax2FwiFxj3Fd1npcORUB10JeN7K1X
-         IzyY2c7y7ZGxfX/ACmSqCRMiEGB0u3xNvKif2AJI=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-        epcas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20210209235048epcas1p19b606a3e69e8905ca6a3276bcfd68f04~iOVPEr4Uw1737417374epcas1p1P;
-        Tue,  9 Feb 2021 23:50:48 +0000 (GMT)
-Received: from epsmges1p4.samsung.com (unknown [182.195.40.164]) by
-        epsnrtp2.localdomain (Postfix) with ESMTP id 4Db05M4DPSz4x9Pt; Tue,  9 Feb
-        2021 23:50:47 +0000 (GMT)
-Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
-        epsmges1p4.samsung.com (Symantec Messaging Gateway) with SMTP id
-        70.B6.10463.7DF13206; Wed, 10 Feb 2021 08:50:47 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20210209235046epcas1p1416b5b121c0d78bfcb854aab46ea35c2~iOVNn36Ao2430624306epcas1p14;
-        Tue,  9 Feb 2021 23:50:46 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20210209235046epsmtrp2f14ae2e2ca7328098069b18083a2fb3e~iOVNnAAeB1241312413epsmtrp2j;
-        Tue,  9 Feb 2021 23:50:46 +0000 (GMT)
-X-AuditID: b6c32a38-f11ff700000028df-8f-60231fd77323
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        34.12.13470.6DF13206; Wed, 10 Feb 2021 08:50:46 +0900 (KST)
-Received: from namjaejeon01 (unknown [10.88.104.63]) by epsmtip2.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20210209235046epsmtip287ac00e030c4c6178459d4aaf99f55b1~iOVNXNVy80642306423epsmtip2L;
-        Tue,  9 Feb 2021 23:50:46 +0000 (GMT)
-From:   "Namjae Jeon" <namjae.jeon@samsung.com>
-To:     "'Linux Kernel Mailing List'" <linux-kernel@vger.kernel.org>,
-        <linux-fsdevel@vger.kernel.org>
-Cc:     "'Eric Sandeen'" <sandeen@sandeen.net>,
-        "'Goldwyn Rodrigues'" <rgoldwyn@suse.com>,
-        "'Nicolas Boos'" <nicolas.boos@wanadoo.fr>,
-        <sedat.dilek@gmail.com>, "'Hyunchul Lee'" <hyc.lee@gmail.com>,
-        "'Luca Stefani'" <luca.stefani.ge1@gmail.com>,
-        "'Matthieu CASTET'" <castet.matthieu@free.fr>,
-        "'Sven Hoexter'" <sven@stormbind.net>,
-        "'Ethan Sommer'" <e5ten.arch@gmail.com>,
-        "'Ethan Sommer'" <e5ten.arch@gmail.com>,
-        "'Hyeongseok Kim'" <hyeongseok@gmail.com>
-Subject: [ANNOUNCE] exfatprogs-1.1.0 version released
-Date:   Wed, 10 Feb 2021 08:50:46 +0900
-Message-ID: <000001d6ff3e$62f336d0$28d9a470$@samsung.com>
+        id S234021AbhBJBnf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 20:43:35 -0500
+Received: from gloria.sntech.de ([185.11.138.130]:41242 "EHLO gloria.sntech.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234412AbhBIXwC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 18:52:02 -0500
+Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=diego.localnet)
+        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <heiko@sntech.de>)
+        id 1l9cmX-0001IP-F6; Wed, 10 Feb 2021 00:50:57 +0100
+From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+To:     Johan Jonker <jbx6244@gmail.com>, Arnd Bergmann <arnd@kernel.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        "open list:ARM/Rockchip SoC support" 
+        <linux-rockchip@lists.infradead.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        robin.murphy@arm.com
+Subject: Re: [PATCH 2/5] ARM: dts: rockchip: assign a fixed index to mmc devices on rv1108 boards
+Date:   Wed, 10 Feb 2021 00:50:56 +0100
+Message-ID: <6598201.ejJDZkT8p0@diego>
+In-Reply-To: <CAK8P3a3_uO23Y0tyfdh26tmCVcyp6XM+ur0WUd4khGUoBb32Hw@mail.gmail.com>
+References: <20210118155242.7172-1-jbx6244@gmail.com> <20210118155242.7172-2-jbx6244@gmail.com> <CAK8P3a3_uO23Y0tyfdh26tmCVcyp6XM+ur0WUd4khGUoBb32Hw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: Adb/Pa6th4yELZeSR5GVSDSMGqBObg==
-Content-Language: ko
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrFJsWRmVeSWpSXmKPExsWy7bCmvu51eeUEg7l/5S0+3+xlt+g88pTN
-        4tr99+wWfyd+YrLYs/cki8XlXXPYLP6tb2a3aDh2hMWi7e8uVovWK1oW66aeYLF4veEZqwOP
-        R/+6z6weO2fdZffYsvghk8fEH9PYPNZvucri8XmTnMfnu+tZA9ijcmwyUhNTUosUUvOS81My
-        89JtlbyD453jTc0MDHUNLS3MlRTyEnNTbZVcfAJ03TJzgA5VUihLzCkFCgUkFhcr6dvZFOWX
-        lqQqZOQXl9gqpRak5BQYGhToFSfmFpfmpesl5+daGRoYGJkCVSbkZHTueMRSMIetYt7Dw2wN
-        jO2sXYycHBICJhKTdj5mA7GFBHYwStxu8u5i5AKyPzFKzJr3nxnC+cYoseTkC7iOTZ9XskAk
-        9jJKdM2/zgrhvGSUmHDxIDNIFZuArsS/P/vB5ooIJEvse72fEaSIWeAcs8SeM7PAEsICphJL
-        F39jAbFZBFQlHq1/AxbnFbCUeLHyFSOELShxcuYTsBpmAXmJ7W/nMEOcoSDx8+kyVogFehLb
-        1zezQdSISMzubAO7W0JgC4fE6+ZTTBANLhK3eptYIGxhiVfHt7BD2FISn9/tBWrmALKrJT7u
-        h5rfwSjx4rsthG0scXP9BlaQEmYBTYn1u/QhwooSO3/PZYRYyyfx7msPK8QUXomONiGIElWJ
-        vkuHoQ6Qluhq/wC11EPi8sfFrBMYFWcheXIWkidnIXlmFsLiBYwsqxjFUguKc9NTiw0LTJAj
-        exMjOBFrWexgnPv2g94hRiYOxkOMEhzMSiK8zjOVEoR4UxIrq1KL8uOLSnNSiw8xmgKDfSKz
-        lGhyPjAX5JXEG5oaGRsbW5iYmZuZGiuJ8yYZPIgXEkhPLEnNTk0tSC2C6WPi4JRqYMpc9TLU
-        oLNmnnzXojRxmfqnPIwrxBIkuo29mkKYb1y7svl28y+967z1dnO9zrXmssf++ZF3+sTbTULl
-        7t8U1EvXTku4lbDxXNvaXIVKvk/aSeaZmXvLXSv6LzbE9YbNE3hnoMZgdv3NO9tjnHMDNqze
-        nb9qQWvkHXH7QMMb9+/FRi2PMLBx3299SNZsX5iP4PGIK4dvrHq1b+7G0qrwohXx/XVWPpPi
-        AtzC7L11Z39YkDqzfqvPp/u/HyhH1vfymjBvOaCzl2NJgItsjblesfrT7fZynoUcudfZJiq+
-        mWnlqSN46uj1GLZs+X3/brAvO7JW5tJUcbUNb9gkhJwu5VVJXnCZnDs1+KHsxD1GSizFGYmG
-        WsxFxYkA2Z54wU0EAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupmkeLIzCtJLcpLzFFi42LZdlhJXveavHKCwb0X+hafb/ayW3Qeecpm
-        ce3+e3aLvxM/MVns2XuSxeLyrjlsFv/WN7NbNBw7wmLR9ncXq0XrFS2LdVNPsFi83vCM1YHH
-        o3/dZ1aPnbPusntsWfyQyWPij2lsHuu3XGXx+LxJzuPz3fWsAexRXDYpqTmZZalF+nYJXBmd
-        Ox6xFMxhq5j38DBbA2M7axcjJ4eEgInEps8rWboYuTiEBHYzSly79IURIiEtcezEGeYuRg4g
-        W1ji8OFiiJrnjBIHb29nB6lhE9CV+PdnPxuILSKQLLHv9X5GkCJmgWvMEnevQiSEBUwlli7+
-        xgJiswioSjxa/wYszitgKfFi5StGCFtQ4uTMJywgy5gF9CTaNoKFmQXkJba/ncMMcY+CxM+n
-        y1ghdulJbF/fzAZRIyIxu7ONeQKj4Cwkk2YhTJqFZNIsJB0LGFlWMUqmFhTnpucWGxYY5qWW
-        6xUn5haX5qXrJefnbmIEx5eW5g7G7as+6B1iZOJgPMQowcGsJMLrPFMpQYg3JbGyKrUoP76o
-        NCe1+BCjNAeLkjjvha6T8UIC6YklqdmpqQWpRTBZJg5OqQamAvHUAmvpDYHSpWesHX2/atay
-        LHh98pHri62ONrIPpy4vmfdIK6W7/18/f+apbenikV85itOLU22n5lv6m5ouj8g7Frpu1SQr
-        Wd91n1bzWJmtrgye0Zu016nH/WfsISX2+3Kb77YnBcsKOgmslSzoO6nT+LNv0+awTTzai7UO
-        KKWvcooxnJTxSvPX0h394i955uzk77mr+07itS8z8xGDpqtb81/xTrtZkpToqGNXEMG6+3Gz
-        wjy2w+551XH3+7dryV5/fuF2UZttz8NNyrt/8cas1mthO5Zpnrx322vpjqlTPi75tvpWz6fb
-        tcX+Wpc8uBbekb711IL/+4W4mz/d756Kub3v2f4D2/tXWnAosRRnJBpqMRcVJwIAqbxScx4D
-        AAA=
-X-CMS-MailID: 20210209235046epcas1p1416b5b121c0d78bfcb854aab46ea35c2
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210209235046epcas1p1416b5b121c0d78bfcb854aab46ea35c2
-References: <CGME20210209235046epcas1p1416b5b121c0d78bfcb854aab46ea35c2@epcas1p1.samsung.com>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi folk,
+Am Dienstag, 9. Februar 2021, 23:25:40 CET schrieb Arnd Bergmann:
+> On Mon, Jan 18, 2021 at 4:52 PM Johan Jonker <jbx6244@gmail.com> wrote:
+> >
+> > Recently introduced async probe on mmc devices can shuffle block IDs.
+> > Pin them to fixed values to ease booting in environments where UUIDs are
+> > not practical. Use newly introduced aliases for mmcblk devices from [1].
+> > The sort order is based on reg address.
+> >
+> > [1] https://patchwork.kernel.org/patch/11747669/
+> 
+> I just saw this in the pull request:
+> 
+> > Signed-off-by: Johan Jonker <jbx6244@gmail.com>
+> > ---
+> >  arch/arm/boot/dts/rv1108.dtsi | 3 +++
+> >  1 file changed, 3 insertions(+)
+> >
+> > diff --git a/arch/arm/boot/dts/rv1108.dtsi b/arch/arm/boot/dts/rv1108.dtsi
+> > index bec47e0be..a754851f4 100644
+> > --- a/arch/arm/boot/dts/rv1108.dtsi
+> > +++ b/arch/arm/boot/dts/rv1108.dtsi
+> > @@ -19,6 +19,9 @@
+> >                 i2c1 = &i2c1;
+> >                 i2c2 = &i2c2;
+> >                 i2c3 = &i2c3;
+> > +               mmc0 = &emmc;
+> > +               mmc1 = &sdio;
+> > +               mmc2 = &sdmmc;
+> >                 serial0 = &uart0;
+> >                 serial1 = &uart1;
+> >                 serial2 = &uart2;
+> 
+> Please don't put these aliases into a .dtsi file, as not every board
+> will provide each instance. The entire point of the aliases is to
+> have sane enumeration, so you should start at index 0 for the
+> first one that is actually present and count up from there.
 
-We have released exfatprogs 1.1.0 version. In this release, exfatlabel
-has been added to print or re-write volume label and volume serial value.
-Also, A new dump.exfat util has been added to display statistics from
-a given device(Requested by Mike Fleetwood(GParted Developer)).
+Hmm, right now I don't see the disadvantage of missing mmc numbers.
+As similarly we count i2c and serial numbers for a long time, even though
+not all of them appear on every board.
 
-Any feedback is welcome!:)
+Especially as the main goal is to simply have stable numbers and
+not having the mmc devices swap numbers on every boot.
 
-CHANGES :
- * fsck.exfat: Recover corrupted boot region.
+So right now we're not using them from a userspace POV but
+instead agreed on following the address ordering of the soc.
+so when ordering mmc controllers by their io-address, mmc0
+is the first one, then mmc1, etc.
 
-NEW FEATURES :
- * exfatlabel: Print or set volume label and serial.
- * dump.exfat: Show the on-disk metadata information and the statistics.
+So just for my understanding, what is different for mmc?
+I guess to guarantee ongoing numbering similar to sd{a,b,c,...}
+Or should all aliases be duplicted in each board dts and not
+live in any soc dtsi?
 
-BUG FIXES :
- * Set _FILE_OFFSET_BITS=64 for Android build.
 
-The git tree is at:
-      https://github.com/exfatprogs/exfatprogs
+Heiko
 
-The tarballs can be found at:
-      https://github.com/exfatprogs/exfatprogs/releases/download/1.1.0/exfatprogs-1.1.0.tar.gz
+
+> I would suggest you move these aliases into the .dts files for
+> the existing boards for the next cycle, and then make sure
+> only the ones that are present have an alias.
+> 
+> It might actually be a good idea to have a warning in dtc when
+> there is an alias pointing to a status="disabled" device, but I
+> suspect there would be a lot of fallout from that.
+> 
+>       Arnd
+> 
+
+
+
 
