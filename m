@@ -2,96 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36F2B314FC9
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 14:08:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83DEA314FE5
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 14:14:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231308AbhBINHt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 08:07:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51912 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231233AbhBINH2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 08:07:28 -0500
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47E16C06178A
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 05:06:48 -0800 (PST)
-Received: by mail-pj1-x1033.google.com with SMTP id nm1so1528514pjb.3
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 05:06:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=yZxg6dXXFoEHvIAudV0HbB2Heq7jrncVjx+BrvchARk=;
-        b=Z/P072YoJXe1w1sSUcH7ZxBpuuwu9ACdPIfwahPk/+OFBkNAUHJYN9xkGRrheQayNU
-         LBe1U9y6YbmNjAJPFU77CvjCIY9fa3ElhjIEFmhYuHlXUowhP5zde32rJK2Mz6MV1Yjm
-         Lt4xCsghaWFMB/WeAl0F47l+Vueqb0Yt90+vTslniMQHgC4ytBavWahVEm3HOKmL3LNj
-         Y4rs/qQFRX/j6LiVqw38uGx04ynKOdTPZadtUNKcQk3y+71Dt+cO7pa8+++D0/a5TRfh
-         dmpaGbVevn6EkRs9GlTGoKzr7OHsElZNxbA/FWh+Rgnb650itwOY9Mc94SslnEBT80Dm
-         DWDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=yZxg6dXXFoEHvIAudV0HbB2Heq7jrncVjx+BrvchARk=;
-        b=dELDhwvlMFcIjrr8tbzrp+DwkjzJV0xbfz9T0wY7zjSgftQDnL1p55m+yuVUKvp38e
-         YZ1LJGkjANUEEWvP7wMwhGDRWNErgmgsLnRGkw6k+Z+pv8df+H6XvfWGlIGcZnY+A+Rv
-         /p4nFA0dNPxaV+MRQd1m505TmB6gOsbhXx8g9Pu4b/fHNdAQy8igTdpjYJsge625LKep
-         fdUeELEdTPpkrxmRkRqSvnfxhca2mNUDh7HaJfNd+wcFL57k8zAW3iPPpcpmzUMrVPTO
-         bd2r5HBaQdbyQsvaj3826phbrh7Kk2pPyh0EnxiIuVT3yAcQmiy2aXcXlacQJnw3T760
-         pJDA==
-X-Gm-Message-State: AOAM531VRw+DieBU5qbm6P4jw4enFyfYp+hc3bgT1K16FZ7oQELgq/8d
-        UOfDNqWmTKL2ThpeFCM6HqZMSEDAwMkzI9cR
-X-Google-Smtp-Source: ABdhPJxwBiUbfTgcM7M138rzeAj1HmC6j5l/qpheZ0IIsQ2eQ9ILuSeTuxtmr2elV2ujAVDXzrMz1A==
-X-Received: by 2002:a17:90a:4209:: with SMTP id o9mr4113295pjg.75.1612876007592;
-        Tue, 09 Feb 2021 05:06:47 -0800 (PST)
-Received: from localhost.localdomain ([2405:201:5c0a:f013:997:8903:ccd:f31])
-        by smtp.gmail.com with ESMTPSA id 21sm21502224pfh.56.2021.02.09.05.06.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Feb 2021 05:06:47 -0800 (PST)
-From:   Mukul Mehar <mukulmehar02@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        christian.gromm@microchip.com, Mukul Mehar <mukulmehar02@gmail.com>
-Subject: [PATCH] Drivers: staging: most: sound: Fixed styling issue.
-Date:   Tue,  9 Feb 2021 18:36:19 +0530
-Message-Id: <20210209130618.18508-1-mukulmehar02@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S230519AbhBINOD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 08:14:03 -0500
+Received: from elvis.franken.de ([193.175.24.41]:36604 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230521AbhBINNc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 08:13:32 -0500
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1l9Soz-0003io-00; Tue, 09 Feb 2021 14:12:49 +0100
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 93C26C0DBF; Tue,  9 Feb 2021 14:06:36 +0100 (CET)
+Date:   Tue, 9 Feb 2021 14:06:36 +0100
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        iommu@lists.linux-foundation.org
+Subject: Re: [PATCH 5/6] driver core: lift dma_default_coherent into common
+ code
+Message-ID: <20210209130636.GA11915@alpha.franken.de>
+References: <20210208145024.3320420-1-hch@lst.de>
+ <20210208145024.3320420-6-hch@lst.de>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210208145024.3320420-6-hch@lst.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch fixes a warning, of the line ending with a '(',
-generated by checkpatch.pl.
+On Mon, Feb 08, 2021 at 03:50:23PM +0100, Christoph Hellwig wrote:
+> Lift the dma_default_coherent variable from the mips architecture code
+> to the driver core.  This allows an architecture to sdefault all device
+> to be DMA coherent at run time, even if the kernel is build with support
+> for DMA noncoherent device.  By allowing device_initialize to ѕet the
+> ->dma_coherent field to this default the amount of arch hooks required
+> for this behavior can be greatly reduced.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+> [..]
+> @@ -143,7 +143,7 @@ static void __init plat_setup_iocoherency(void)
+>  			pr_crit("IOCU OPERATION DISABLED BY SWITCH - DEFAULTING TO SW IO COHERENCY\n");
+>  	}
+>  
+> -	if (supported)
+> +	if (supported) {
+>  		if (dma_force_noncoherent) {
+>  			pr_info("Hardware DMA cache coherency disabled\n");
+>  			return;
 
-Signed-off-by: Mukul Mehar <mukulmehar02@gmail.com>
----
- drivers/staging/most/sound/sound.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+this hunk needs to be in patch 1, otherwise it's not compilable
 
-diff --git a/drivers/staging/most/sound/sound.c b/drivers/staging/most/sound/sound.c
-index 3a1a59058042..4dd1bf95d1ce 100644
---- a/drivers/staging/most/sound/sound.c
-+++ b/drivers/staging/most/sound/sound.c
-@@ -228,12 +228,12 @@ static int playback_thread(void *data)
- 		struct mbo *mbo = NULL;
- 		bool period_elapsed = false;
- 
--		wait_event_interruptible(
--			channel->playback_waitq,
--			kthread_should_stop() ||
--			(channel->is_stream_running &&
--			 (mbo = most_get_mbo(channel->iface, channel->id,
--					     &comp))));
-+		wait_event_interruptible(channel->playback_waitq,
-+					 kthread_should_stop() ||
-+					 (channel->is_stream_running &&
-+					 (mbo = most_get_mbo(channel->iface,
-+					 channel->id,
-+					 &comp))));
- 		if (!mbo)
- 			continue;
- 
+Thomas.
+
 -- 
-2.25.1
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
