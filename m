@@ -2,159 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 033E631494E
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 08:13:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2995314954
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 08:13:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230119AbhBIHLt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 02:11:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60014 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230052AbhBIHLX (ORCPT
+        id S230245AbhBIHNV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 02:13:21 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:12500 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230222AbhBIHNH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 02:11:23 -0500
-Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF1ACC061788
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 23:10:41 -0800 (PST)
-Received: by mail-pf1-x449.google.com with SMTP id u124so12197734pfb.0
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 23:10:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=hKso1MwLRLw8n4+Grqq4tnQrzP51F50oX7aHEUrMrFI=;
-        b=Bb5HKfqMvcuXwLRKuIc/nM60N7hDs2c47YYZ6XuJx8vUW9hQmNBlsZdudbUsOmTt9W
-         25NVlfcONEgRGyjPOq7wb9lgFVq5lQ8IVBO4SrLEDCAHfnFUfJLP88AmiZ6ko4xj+zv1
-         J8NH5Z5F3fOuurrK6m9dEBIf0AE1jLI0esPgKg2+6ujWAFc/CIdL88E5zXEimKNtef48
-         FFnGOa4H0V5cULMnyJUpzW9rKH6nwmhl/g9jIn0YoW21jojQ2Nd7M7hHvMNsUKu5nbdL
-         p16B6NjKKIltD23f7gmZByI1PbrSufoLBm9z/Yt6yUeqerwNf/y1L2iPUXje+Z5DKnKr
-         sn6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=hKso1MwLRLw8n4+Grqq4tnQrzP51F50oX7aHEUrMrFI=;
-        b=m/aUIGOKJzgH/cr1MDcj8VNralhi3ro92YRRDnJA/S5bIlqXRWhearxLqWnYTIi/86
-         pKWd57BCqigyAAyFTSBhoB7XnS5SDvD7B9eD8l46rd4o930Q/pbAZnhb0sXdKRNUXhIw
-         dXjA5/4P8Netkb4D3R5sCVqF9FZBIKYpllDlLLhR9Ulv4se/OUDig8YlddZi72GJnYTf
-         ygKPVQam6xY/mGwLq7D7e3BHvIgzBZdSlPy8LsHCa2IRqXrBqxN7fvKEB3/rq0IbjDUy
-         9skBk/c+a7lU6VQkYHahKGU1PFk7LoE2P2gHaHWDwsiT4kDiycgoLxkfC3F4kN/R6FK7
-         pDQA==
-X-Gm-Message-State: AOAM531Px1k0VInH5m7wNG2A9MlgkUTfGXxCwwAKW7o3HkC/zlkKeB48
-        ma1o40o7vvzYUiLstzPERROkxXp+irTA2w==
-X-Google-Smtp-Source: ABdhPJz2uyZNOUWxCh8+bTaw0WF2AyuBjDmjriJxozzN+RmdDvksIBD9JocSbE0wQEhImCMlRxv9hoQdlniMiQ==
-Sender: "davidgow via sendgmr" <davidgow@spirogrip.svl.corp.google.com>
-X-Received: from spirogrip.svl.corp.google.com ([2620:15c:2cb:201:e4e6:62d4:a840:252a])
- (user=davidgow job=sendgmr) by 2002:aa7:98d2:0:b029:1da:3374:4777 with SMTP
- id e18-20020aa798d20000b02901da33744777mr13937516pfm.45.1612854641040; Mon,
- 08 Feb 2021 23:10:41 -0800 (PST)
-Date:   Mon,  8 Feb 2021 23:10:34 -0800
-Message-Id: <20210209071034.3268897-1-davidgow@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.30.0.478.g8a0d178c01-goog
-Subject: [PATCH] kunit: tool: Disable PAGE_POISONING under --alltests
-From:   David Gow <davidgow@google.com>
-To:     Brendan Higgins <brendanhiggins@google.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>
-Cc:     David Gow <davidgow@google.com>, kunit-dev@googlegroups.com,
-        linux-kselftest@vger.kernel.org, linux-um@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Tue, 9 Feb 2021 02:13:07 -0500
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DZYvm59vQzjLPh;
+        Tue,  9 Feb 2021 15:11:00 +0800 (CST)
+Received: from huawei.com (10.175.104.175) by DGGEMS405-HUB.china.huawei.com
+ (10.3.19.205) with Microsoft SMTP Server id 14.3.498.0; Tue, 9 Feb 2021
+ 15:12:17 +0800
+From:   Miaohe Lin <linmiaohe@huawei.com>
+To:     <akpm@linux-foundation.org>, <mike.kravetz@oracle.com>
+CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        <linmiaohe@huawei.com>
+Subject: [PATCH v2] mm/hugetlb: Remove unnecessary VM_BUG_ON_PAGE on putback_active_hugepage()
+Date:   Tue, 9 Feb 2021 02:11:51 -0500
+Message-ID: <20210209071151.44731-1-linmiaohe@huawei.com>
+X-Mailer: git-send-email 2.19.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.104.175]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-kunit_tool maintains a list of config options which are broken under
-UML, which we exclude from an otherwise 'make ARCH=um allyesconfig'
-build used to run all tests with the --alltests option.
+All callers know they are operating on a hugetlb head page. So this
+VM_BUG_ON_PAGE can not catch anything useful.
 
-Something in UML allyesconfig is causing segfaults when page poisining
-is enabled (and is poisoning with a non-zero value). Previously, this
-didn't occur, as allyesconfig enabled the CONFIG_PAGE_POISONING_ZERO
-option, which worked around the problem by zeroing memory. This option
-has since been removed, and memory is now poisoned with 0xAA, which
-triggers segfaults in many different codepaths, preventing UML from
-booting.
-
-Note that we have to disable both CONFIG_PAGE_POISONING and
-CONFIG_DEBUG_PAGEALLOC, as the latter will 'select' the former on
-architectures (such as UML) which don't implement __kernel_map_pages().
-
-Ideally, we'd fix this properly by tracking down the real root cause,
-but since this is breaking KUnit's --alltests feature, it's worth
-disabling there in the meantime so the kernel can boot to the point
-where tests can actually run.
-
-Fixes: f289041ed4 ("mm, page_poison: remove CONFIG_PAGE_POISONING_ZERO")
-Signed-off-by: David Gow <davidgow@google.com>
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
 ---
+ mm/hugetlb.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-As described above, 'make ARCH=um allyesconfig' is broken. KUnit has
-been maintaining a list of configs to force-disable for this in
-tools/testing/kunit/configs/broken_on_uml.config. The kernels we've
-built with this have broken since CONFIG_PAGE_POISONING_ZERO was
-removed, panic-ing on startup with:
-
-<0>[    0.100000][   T11] Kernel panic - not syncing: Segfault with no mm
-<4>[    0.100000][   T11] CPU: 0 PID: 11 Comm: kdevtmpfs Not tainted 5.11.0-rc7-00003-g63381dc6f5f1-dirty #4
-<4>[    0.100000][   T11] Stack:
-<4>[    0.100000][   T11]  677d3d40 677d3f10 0000000e 600c0bc0
-<4>[    0.100000][   T11]  677d3d90 603c99be 677d3d90 62529b93
-<4>[    0.100000][   T11]  603c9ac0 677d3f10 62529b00 603c98a0
-<4>[    0.100000][   T11] Call Trace:
-<4>[    0.100000][   T11]  [<600c0bc0>] ? set_signals+0x0/0x60
-<4>[    0.100000][   T11]  [<603c99be>] lookup_mnt+0x11e/0x220
-<4>[    0.100000][   T11]  [<62529b93>] ? down_write+0x93/0x180
-<4>[    0.100000][   T11]  [<603c9ac0>] ? lock_mount+0x0/0x160
-<4>[    0.100000][   T11]  [<62529b00>] ? down_write+0x0/0x180
-<4>[    0.100000][   T11]  [<603c98a0>] ? lookup_mnt+0x0/0x220
-<4>[    0.100000][   T11]  [<603c8160>] ? namespace_unlock+0x0/0x1a0
-<4>[    0.100000][   T11]  [<603c9b25>] lock_mount+0x65/0x160
-<4>[    0.100000][   T11]  [<6012f360>] ? up_write+0x0/0x40
-<4>[    0.100000][   T11]  [<603cbbd2>] do_new_mount_fc+0xd2/0x220
-<4>[    0.100000][   T11]  [<603eb560>] ? vfs_parse_fs_string+0x0/0xa0
-<4>[    0.100000][   T11]  [<603cbf04>] do_new_mount+0x1e4/0x260
-<4>[    0.100000][   T11]  [<603ccae9>] path_mount+0x1c9/0x6e0
-<4>[    0.100000][   T11]  [<603a9f4f>] ? getname_kernel+0xaf/0x1a0
-<4>[    0.100000][   T11]  [<603ab280>] ? kern_path+0x0/0x60
-<4>[    0.100000][   T11]  [<600238ee>] 0x600238ee
-<4>[    0.100000][   T11]  [<62523baa>] devtmpfsd+0x52/0xb8
-<4>[    0.100000][   T11]  [<62523b58>] ? devtmpfsd+0x0/0xb8
-<4>[    0.100000][   T11]  [<600fffd8>] kthread+0x1d8/0x200
-<4>[    0.100000][   T11]  [<600a4ea6>] new_thread_handler+0x86/0xc0
-
-Disabling PAGE_POISONING fixes this. The issue can't be repoduced with
-just PAGE_POISONING, there's clearly something (or several things) also
-enabled by allyesconfig which contribute. Ideally, we'd track these down
-and fix this at its root cause, but in the meantime it'd be nice to
-disable PAGE_POISONING so we can at least get the kernel to boot. One
-way would be to add a 'depends on !UML' or similar, but since
-PAGE_POISONING does seem to work in the non-allyesconfig case, adding it
-to our list of broken configs seemed the better choice.
-
-Thoughts?
-
-(Note that to reproduce this, you'll want to run
-./tools/testing/kunit/kunit.py run --alltests --raw_output
-It also depends on a couple of other fixes which are not upstream yet:
-https://www.spinics.net/lists/linux-rtc/msg08294.html
-https://lore.kernel.org/linux-i3c/20210127040636.1535722-1-davidgow@google.com/
-
-Cheers,
--- David
-
- tools/testing/kunit/configs/broken_on_uml.config | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/tools/testing/kunit/configs/broken_on_uml.config b/tools/testing/kunit/configs/broken_on_uml.config
-index a7f0603d33f6..690870043ac0 100644
---- a/tools/testing/kunit/configs/broken_on_uml.config
-+++ b/tools/testing/kunit/configs/broken_on_uml.config
-@@ -40,3 +40,5 @@
- # CONFIG_RESET_BRCMSTB_RESCAL is not set
- # CONFIG_RESET_INTEL_GW is not set
- # CONFIG_ADI_AXI_ADC is not set
-+# CONFIG_DEBUG_PAGEALLOC is not set
-+# CONFIG_PAGE_POISONING is not set
+diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+index 06719fdf9fd6..cfa06fd1b8d7 100644
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -5577,7 +5577,6 @@ bool isolate_huge_page(struct page *page, struct list_head *list)
+ 
+ void putback_active_hugepage(struct page *page)
+ {
+-	VM_BUG_ON_PAGE(!PageHead(page), page);
+ 	spin_lock(&hugetlb_lock);
+ 	SetHPageMigratable(page);
+ 	list_move_tail(&page->lru, &(page_hstate(page))->hugepage_activelist);
 -- 
-2.30.0.478.g8a0d178c01-goog
+2.19.1
 
