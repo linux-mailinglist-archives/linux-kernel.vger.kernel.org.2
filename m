@@ -2,262 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 755443159DF
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 00:10:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B5A43159EF
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 00:19:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234762AbhBIXHt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 18:07:49 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:39353 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233023AbhBITvf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 14:51:35 -0500
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4DZtHs2LbZz9v024;
-        Tue,  9 Feb 2021 20:29:29 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id 4ZJ02CN5yFsV; Tue,  9 Feb 2021 20:29:29 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4DZtHs1Q4sz9v021;
-        Tue,  9 Feb 2021 20:29:29 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 19BBC8B7EA;
-        Tue,  9 Feb 2021 20:29:29 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id BvQkVmX7CEoF; Tue,  9 Feb 2021 20:29:28 +0100 (CET)
-Received: from po16121vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id BCF8E8B764;
-        Tue,  9 Feb 2021 20:29:28 +0100 (CET)
-Received: by po16121vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id 97FD267382; Tue,  9 Feb 2021 19:29:28 +0000 (UTC)
-Message-Id: <1a7515f9258b27a9177de88491a8bb79b255ceb7.1612898425.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <cover.1612898425.git.christophe.leroy@csgroup.eu>
-References: <cover.1612898425.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH v6 2/2] powerpc/32: Handle bookE debugging in C in syscall
- entry/exit
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>, npiggin@gmail.com,
-        msuchanek@suse.de
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Tue,  9 Feb 2021 19:29:28 +0000 (UTC)
+        id S234882AbhBIXRJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 18:17:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53562 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233454AbhBITq6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 14:46:58 -0500
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F479C061A30
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 11:36:06 -0800 (PST)
+Received: by mail-pf1-x42f.google.com with SMTP id j12so12522419pfj.12
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 11:36:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=XjEcIQFFk/DsYt3Z7ezRvXcADPPGVZJbm6+98Oh58aM=;
+        b=ZinSA+0OpNXz9XeLKj8gV9wRbCXFqTQ7PLNK6gbHycJhhx0vHnjxuTcKTLNJJIICIc
+         bfiTf801xPiH4ivaBBoN0GokTKt18JfLP2gg1FV4xcv4wghUFHo4dp1k5buXHYTQzoZY
+         mlYEq2dW0PuYUeiTay0h8fsNEP2r6o1I+xdEpRxQimu9cKbCpFyuzeH5tvqlCudgvmxJ
+         bfSVovZghJcAQH1+gXWuxdPmlPAldrhYL3eRTVlgktFiyCtgtyrawds2k72o9CCdNoaZ
+         G0IRyfKgyA9wmwJxfKh5JbkKPplPgOWUPk2F9LRh/neMfBvzVB2tzCYrPLMwr52ei5f2
+         dbpQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=XjEcIQFFk/DsYt3Z7ezRvXcADPPGVZJbm6+98Oh58aM=;
+        b=grZtjAV2Z6OqCD9w6/73dZoNCSj3P3+pUBDUuWT27Vct9WNwVLrGyplMWivBkTv+UY
+         CdlySZa7lDgENQLS96PUwjdjSBOjp+D3p/PdeN5mBIZy44DigR423IusShwwWtJKXuZk
+         843pA7x2fn9xaP0MKQTDz7bZYR82+8rdPSv/Bi8F1PS9ubBJGo+jpKnyoo+tZXAcIYhO
+         4hWvNtdG9b7Db6h7eLoBjPkwFZLoSjThMR7Hv69HfjAQ0yQHrti/ii/zMGkelYalzrIw
+         P/CCbDJ4IatunGvKz9wRQ44LkUUBASDSvjSO8vrkUYZOc255niCA/e7aCrWQ0aLMkGI0
+         zfgw==
+X-Gm-Message-State: AOAM5330/WPXlnK/BV3UctZf0XpW4wIyWpiiw8Walu+k3BM8nFRkQh0i
+        nyXj/UYcBKD2wdFXVHqMKyA=
+X-Google-Smtp-Source: ABdhPJw22DOE1L6KGpNIvwuEFjs8f7KzCZ8FBLWo1V/U3uWxQA4vIE2ALXCmdUO284Ddvcrgt5F6cQ==
+X-Received: by 2002:a62:ce82:0:b029:1d9:1872:294b with SMTP id y124-20020a62ce820000b02901d91872294bmr19233956pfg.36.1612899366224;
+        Tue, 09 Feb 2021 11:36:06 -0800 (PST)
+Received: from localhost ([103.200.106.135])
+        by smtp.gmail.com with ESMTPSA id 194sm20446771pfu.165.2021.02.09.11.36.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Feb 2021 11:36:05 -0800 (PST)
+Date:   Wed, 10 Feb 2021 01:05:52 +0530
+From:   Amey Narkhede <ameynarkhede03@gmail.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: gdm724x: Fix DMA from stack
+Message-ID: <20210209193552.bj343ls6t7r3xxei@archlinux>
+References: <20210209145415.29609-1-ameynarkhede03@gmail.com>
+ <YCLJHNvKhiMJmTP8@kroah.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="3nrjkvplolsm5uhf"
+Content-Disposition: inline
+In-Reply-To: <YCLJHNvKhiMJmTP8@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The handling of SPRN_DBCR0 and other registers can easily
-be done in C instead of ASM.
 
-For that, create booke_load_dbcr0() and booke_restore_dbcr0().
+--3nrjkvplolsm5uhf
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
-v5: New
-v6: Refactor into helpers
----
- arch/powerpc/include/asm/interrupt.h | 12 ++++++++
- arch/powerpc/include/asm/reg_booke.h |  3 ++
- arch/powerpc/kernel/entry_32.S       |  7 -----
- arch/powerpc/kernel/head_32.h        | 15 ----------
- arch/powerpc/kernel/head_booke.h     | 19 -------------
- arch/powerpc/kernel/interrupt.c      | 41 ++++++++++++++++++----------
- 6 files changed, 42 insertions(+), 55 deletions(-)
+On 21/02/09 06:40PM, Greg KH wrote:
+> On Tue, Feb 09, 2021 at 08:24:15PM +0530, ameynarkhede03@gmail.com wrote:
+> > From: Amey Narkhede <ameynarkhede03@gmail.com>
+> >
+> > Stack allocated buffers cannot be used for DMA
+> > on all architectures so allocate usbdev buffer
+> > using kmalloc().
+> >
+> > Signed-off-by: Amey Narkhede <ameynarkhede03@gmail.com>
+> > ---
+> >  drivers/staging/gdm724x/gdm_usb.c | 6 +++++-
+> >  1 file changed, 5 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/staging/gdm724x/gdm_usb.c b/drivers/staging/gdm724x/gdm_usb.c
+> > index dc4da66c3..50dc463d4 100644
+> > --- a/drivers/staging/gdm724x/gdm_usb.c
+> > +++ b/drivers/staging/gdm724x/gdm_usb.c
+> > @@ -56,7 +56,7 @@ static int gdm_usb_recv(void *priv_dev,
+> >
+> >  static int request_mac_address(struct lte_udev *udev)
+> >  {
+> > -	u8 buf[16] = {0,};
+> > +	u8 *buf;
+> >  	struct hci_packet *hci = (struct hci_packet *)buf;
+> >  	struct usb_device *usbdev = udev->usbdev;
+> >  	int actual;
+> > @@ -66,6 +66,10 @@ static int request_mac_address(struct lte_udev *udev)
+> >  	hci->len = gdm_cpu_to_dev16(udev->gdm_ed, 1);
+> >  	hci->data[0] = MAC_ADDRESS;
+> >
+> > +	buf = kmalloc(16, GFP_KERNEL);
+> > +	if (!buf)
+> > +		return -ENOMEM;
+> > +
+>
+> This is great, but you just added a build warning, which implies that
+> the patch is incorrect.
+>
+> You also have a memory leak here, which is not acceptable :(
+>
+> thanks,
+>
+> greg k-h
+Apologoes. I'll send v2.
 
-diff --git a/arch/powerpc/include/asm/interrupt.h b/arch/powerpc/include/asm/interrupt.h
-index 4badb3e51c19..e62c37915bbe 100644
---- a/arch/powerpc/include/asm/interrupt.h
-+++ b/arch/powerpc/include/asm/interrupt.h
-@@ -14,6 +14,18 @@ struct interrupt_state {
- #endif
- };
- 
-+static inline void booke_restore_dbcr0(void)
-+{
-+#ifdef CONFIG_PPC_ADV_DEBUG_REGS
-+	unsigned long dbcr0 = current->thread.debug.dbcr0;
-+
-+	if (IS_ENABLED(CONFIG_PPC32) && unlikely(dbcr0 & DBCR0_IDM)) {
-+		mtspr(SPRN_DBSR, -1);
-+		mtspr(SPRN_DBCR0, global_dbcr0[smp_processor_id()]);
-+	}
-+#endif
-+}
-+
- static inline void interrupt_enter_prepare(struct pt_regs *regs, struct interrupt_state *state)
- {
- 	/*
-diff --git a/arch/powerpc/include/asm/reg_booke.h b/arch/powerpc/include/asm/reg_booke.h
-index 262782f08fd4..17b8dcd9a40d 100644
---- a/arch/powerpc/include/asm/reg_booke.h
-+++ b/arch/powerpc/include/asm/reg_booke.h
-@@ -691,6 +691,9 @@
- #define mttmr(rn, v)	asm volatile(MTTMR(rn, %0) : \
- 				     : "r" ((unsigned long)(v)) \
- 				     : "memory")
-+
-+extern unsigned long global_dbcr0[];
-+
- #endif /* !__ASSEMBLY__ */
- 
- #endif /* __ASM_POWERPC_REG_BOOKE_H__ */
-diff --git a/arch/powerpc/kernel/entry_32.S b/arch/powerpc/kernel/entry_32.S
-index 9dd90be9f8a5..78c430b7f9d9 100644
---- a/arch/powerpc/kernel/entry_32.S
-+++ b/arch/powerpc/kernel/entry_32.S
-@@ -343,13 +343,6 @@ ret_from_syscall:
- 	addi    r4,r1,STACK_FRAME_OVERHEAD
- 	li	r5,0
- 	bl	syscall_exit_prepare
--#if defined(CONFIG_4xx) || defined(CONFIG_BOOKE)
--	/* If the process has its own DBCR0 value, load it up.  The internal
--	   debug mode bit tells us that dbcr0 should be loaded. */
--	lwz	r0,THREAD+THREAD_DBCR0(r2)
--	andis.	r10,r0,DBCR0_IDM@h
--	bnel-	load_dbcr0
--#endif
- #ifdef CONFIG_PPC_47x
- 	lis	r4,icache_44x_need_flush@ha
- 	lwz	r5,icache_44x_need_flush@l(r4)
-diff --git a/arch/powerpc/kernel/head_32.h b/arch/powerpc/kernel/head_32.h
-index 1afad7bc3395..5d4706c14572 100644
---- a/arch/powerpc/kernel/head_32.h
-+++ b/arch/powerpc/kernel/head_32.h
-@@ -153,21 +153,6 @@
- 	SAVE_4GPRS(3, r11)
- 	SAVE_2GPRS(7, r11)
- 	addi	r2,r12,-THREAD
--#if defined(CONFIG_40x)
--	/* Check to see if the dbcr0 register is set up to debug.  Use the
--	   internal debug mode bit to do this. */
--	lwz	r12,THREAD_DBCR0(r12)
--	andis.	r12,r12,DBCR0_IDM@h
--	beq+	3f
--	/* From user and task is ptraced - load up global dbcr0 */
--	li	r12,-1			/* clear all pending debug events */
--	mtspr	SPRN_DBSR,r12
--	lis	r11,global_dbcr0@ha
--	addi	r11,r11,global_dbcr0@l
--	lwz	r12,0(r11)
--	mtspr	SPRN_DBCR0,r12
--3:
--#endif
- 	b	transfer_to_syscall		/* jump to handler */
- .endm
- 
-diff --git a/arch/powerpc/kernel/head_booke.h b/arch/powerpc/kernel/head_booke.h
-index 5f565232b99d..47857795f50a 100644
---- a/arch/powerpc/kernel/head_booke.h
-+++ b/arch/powerpc/kernel/head_booke.h
-@@ -130,25 +130,6 @@ ALT_FTR_SECTION_END_IFSET(CPU_FTR_EMB_HV)
- 	SAVE_2GPRS(7, r11)
- 
- 	addi	r2,r10,-THREAD
--	/* Check to see if the dbcr0 register is set up to debug.  Use the
--	   internal debug mode bit to do this. */
--	lwz	r12,THREAD_DBCR0(r10)
--	andis.	r12,r12,DBCR0_IDM@h
--	beq+	3f
--	/* From user and task is ptraced - load up global dbcr0 */
--	li	r12,-1			/* clear all pending debug events */
--	mtspr	SPRN_DBSR,r12
--	lis	r11,global_dbcr0@ha
--	addi	r11,r11,global_dbcr0@l
--#ifdef CONFIG_SMP
--	lwz	r10, TASK_CPU(r2)
--	slwi	r10, r10, 2
--	add	r11, r11, r10
--#endif
--	lwz	r12,0(r11)
--	mtspr	SPRN_DBCR0,r12
--
--3:
- 	b	transfer_to_syscall	/* jump to handler */
- .endm
- 
-diff --git a/arch/powerpc/kernel/interrupt.c b/arch/powerpc/kernel/interrupt.c
-index 75d657b63332..f93664ad4a5e 100644
---- a/arch/powerpc/kernel/interrupt.c
-+++ b/arch/powerpc/kernel/interrupt.c
-@@ -73,6 +73,8 @@ notrace long system_call_exception(long r3, long r4, long r5,
- 		kuap_check_amr();
- #endif
- 
-+	booke_restore_dbcr0();
-+
- 	account_cpu_user_entry();
- 
- 	account_stolen_time();
-@@ -204,6 +206,28 @@ static notrace inline bool prep_irq_for_enabled_exit(bool clear_ri, bool irqs_en
- 	return false;
- }
- 
-+static notrace void booke_load_dbcr0(void)
-+{
-+#ifdef CONFIG_PPC_ADV_DEBUG_REGS
-+	unsigned long dbcr0 = current->thread.debug.dbcr0;
-+
-+	if (likely(!(dbcr0 & DBCR0_IDM)))
-+		return;
-+
-+	/*
-+	 * Check to see if the dbcr0 register is set up to debug.
-+	 * Use the internal debug mode bit to do this.
-+	 */
-+	mtmsr(mfmsr() & ~MSR_DE);
-+	if (IS_ENABLED(CONFIG_PPC32)) {
-+		isync();
-+		global_dbcr0[smp_processor_id()] = mfspr(SPRN_DBCR0);
-+	}
-+	mtspr(SPRN_DBCR0, dbcr0);
-+	mtspr(SPRN_DBSR, -1);
-+#endif
-+}
-+
- /*
-  * This should be called after a syscall returns, with r3 the return value
-  * from the syscall. If this function returns non-zero, the system call
-@@ -317,6 +341,8 @@ notrace unsigned long syscall_exit_prepare(unsigned long r3,
- 	local_paca->tm_scratch = regs->msr;
- #endif
- 
-+	booke_load_dbcr0();
-+
- 	account_cpu_user_exit();
- 
- #ifdef CONFIG_PPC_BOOK3S_64 /* BOOK3E and ppc32 not using this */
-@@ -331,9 +357,6 @@ notrace unsigned long syscall_exit_prepare(unsigned long r3,
- #ifndef CONFIG_PPC_BOOK3E_64 /* BOOK3E not yet using this */
- notrace unsigned long interrupt_exit_user_prepare(struct pt_regs *regs, unsigned long msr)
- {
--#ifdef CONFIG_PPC_BOOK3E
--	struct thread_struct *ts = &current->thread;
--#endif
- 	unsigned long *ti_flagsp = &current_thread_info()->flags;
- 	unsigned long ti_flags;
- 	unsigned long flags;
-@@ -398,17 +421,7 @@ notrace unsigned long interrupt_exit_user_prepare(struct pt_regs *regs, unsigned
- 		goto again;
- 	}
- 
--#ifdef CONFIG_PPC_BOOK3E
--	if (unlikely(ts->debug.dbcr0 & DBCR0_IDM)) {
--		/*
--		 * Check to see if the dbcr0 register is set up to debug.
--		 * Use the internal debug mode bit to do this.
--		 */
--		mtmsr(mfmsr() & ~MSR_DE);
--		mtspr(SPRN_DBCR0, ts->debug.dbcr0);
--		mtspr(SPRN_DBSR, -1);
--	}
--#endif
-+	booke_load_dbcr0();
- 
- #ifdef CONFIG_PPC_TRANSACTIONAL_MEM
- 	local_paca->tm_scratch = regs->msr;
--- 
-2.25.0
+Thanks,
+Amey
 
+--3nrjkvplolsm5uhf
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEb5tNK+B4oWmn+0Z9BBTsy/Z3yzYFAmAi5BgACgkQBBTsy/Z3
+yzbR6wf8CE2iLWxMDz7+ihnsHFdLlTi+mSjNVW6Yqk3xMxNYVwY6nv5EiViy1Eus
+AwBUPcoecH9RZDZMjwCAlevr8x+kw7YDiDAxbab78OW8Feyl5cRJiyVvWPcm9m2t
+Xy8VSfZd9iSTdmyziPwe6njtt0kVd1e0+JB0HEOCsY2gWzqGTAEnotSW/wb2sepZ
+U84IRZJceRoppXIaKFJEMLk4XO2ZXHyKGs/ElwA1T57otfHrq7lajKmKYgtaaBUU
+0e1NOmcESAVwnOp8PdI2UfAY5Y8XZSONkjncfNOo/Wdx9BIYMI56EU48ka7+GSB0
+ysT7+tg4zPIHLkXr6qoyb6095JqJ7w==
+=76Pr
+-----END PGP SIGNATURE-----
+
+--3nrjkvplolsm5uhf--
