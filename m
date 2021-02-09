@@ -2,110 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B767314E08
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 12:14:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EF52314E19
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 12:18:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230071AbhBILOP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 06:14:15 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:12902 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232367AbhBILLz (ORCPT
+        id S230251AbhBILRs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 06:17:48 -0500
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:24071 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230398AbhBILM0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 06:11:55 -0500
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4DZgCX5gBPzjKK8;
-        Tue,  9 Feb 2021 19:10:00 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.24) by
- DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
- 14.3.498.0; Tue, 9 Feb 2021 19:10:58 +0800
-From:   Yicong Yang <yangyicong@hisilicon.com>
-To:     <gregkh@linuxfoundation.org>, <jdelvare@suse.com>,
-        <linux@roeck-us.net>, <giometti@enneenne.com>, <abbotti@mev.co.uk>,
-        <hsweeten@visionengravers.com>, <kw@linux.com>,
-        <helgaas@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-pm@vger.kernel.org>, <linux-hwmon@vger.kernel.org>,
-        <devel@driverdev.osuosl.org>, <linux-kbuild@vger.kernel.org>,
-        <masahiroy@kernel.org>, <michal.lkml@markovi.net>
-CC:     <prime.zeng@huawei.com>, <yangyicong@hisilicon.com>,
-        <linuxarm@openeuler.org>
-Subject: [PATCH v2 4/4] staging: comedi: Use subdir-ccflags-* to inherit debug flag
-Date:   Tue, 9 Feb 2021 19:08:19 +0800
-Message-ID: <1612868899-9185-5-git-send-email-yangyicong@hisilicon.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1612868899-9185-1-git-send-email-yangyicong@hisilicon.com>
-References: <1612868899-9185-1-git-send-email-yangyicong@hisilicon.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+        Tue, 9 Feb 2021 06:12:26 -0500
+Received: from ironmsg09-lv.qualcomm.com ([10.47.202.153])
+  by alexa-out.qualcomm.com with ESMTP; 09 Feb 2021 03:11:42 -0800
+X-QCInternal: smtphost
+Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
+  by ironmsg09-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 09 Feb 2021 03:11:40 -0800
+X-QCInternal: smtphost
+Received: from mdalam-linux.qualcomm.com ([10.201.2.71])
+  by ironmsg01-blr.qualcomm.com with ESMTP; 09 Feb 2021 16:41:23 +0530
+Received: by mdalam-linux.qualcomm.com (Postfix, from userid 466583)
+        id 85D0E211AC; Tue,  9 Feb 2021 16:41:22 +0530 (IST)
+From:   Md Sadre Alam <mdalam@codeaurora.org>
+To:     tudor.ambarus@microchip.com, miquel.raynal@bootlin.com,
+        richard@nod.at, vigneshr@ti.com, linux-mtd@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Cc:     mdalam@codeaurora.org, sricharan@codeaurora.org
+Subject: [PATCH] mtd: spi-nor: gigadevice: Add support for gd25lb256e
+Date:   Tue,  9 Feb 2021 16:41:19 +0530
+Message-Id: <1612869079-19593-1-git-send-email-mdalam@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Junhao He <hejunhao2@hisilicon.com>
+Add support for gd25lb256e. This device tested on IPQ5018
+platform with dd from/to the flash for read/write respectly,
+and mtd erase for erasing the flash.
 
-As CONFIG_COMEDI_DEBUG intends to have the DEBUG flag
-recursively under drivers/staging/comedi, use
-subdir-ccflags-* instead of ccflags-* will make it
-clearer as the DEBUG flag will be inherited when
-traversing subdirectories.
-
-Suggested-by: Bjorn Helgaas <bhelgaas@google.com>
-Signed-off-by: Junhao He <hejunhao2@hisilicon.com>
-Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
+Signed-off-by: Md Sadre Alam <mdalam@codeaurora.org>
 ---
- drivers/staging/comedi/Makefile               | 2 +-
- drivers/staging/comedi/drivers/Makefile       | 1 -
- drivers/staging/comedi/drivers/tests/Makefile | 2 --
- drivers/staging/comedi/kcomedilib/Makefile    | 2 --
- 4 files changed, 1 insertion(+), 6 deletions(-)
+ drivers/mtd/spi-nor/gigadevice.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/staging/comedi/Makefile b/drivers/staging/comedi/Makefile
-index 072ed83..f51cc14 100644
---- a/drivers/staging/comedi/Makefile
-+++ b/drivers/staging/comedi/Makefile
-@@ -1,5 +1,5 @@
- # SPDX-License-Identifier: GPL-2.0
--ccflags-$(CONFIG_COMEDI_DEBUG)		:= -DDEBUG
-+subdir-ccflags-$(CONFIG_COMEDI_DEBUG)	:= -DDEBUG
+diff --git a/drivers/mtd/spi-nor/gigadevice.c b/drivers/mtd/spi-nor/gigadevice.c
+index 447d84b..8f1e7ec 100644
+--- a/drivers/mtd/spi-nor/gigadevice.c
++++ b/drivers/mtd/spi-nor/gigadevice.c
+@@ -50,6 +50,9 @@ static const struct flash_info gigadevice_parts[] = {
+ 			   SPI_NOR_4B_OPCODES | SPI_NOR_HAS_LOCK |
+ 			   SPI_NOR_HAS_TB | SPI_NOR_TB_SR_BIT6)
+ 		.fixups = &gd25q256_fixups },
++	{ "gd25lb256e", INFO(0xc86719, 0, 64 * 1024, 512,
++			  SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
++			  SPI_NOR_4B_OPCODES) },
+ };
  
- comedi-y				:= comedi_fops.o range.o drivers.o \
- 					   comedi_buf.o
-diff --git a/drivers/staging/comedi/drivers/Makefile b/drivers/staging/comedi/drivers/Makefile
-index b24ac00..7cafc36 100644
---- a/drivers/staging/comedi/drivers/Makefile
-+++ b/drivers/staging/comedi/drivers/Makefile
-@@ -1,7 +1,6 @@
- # SPDX-License-Identifier: GPL-2.0
- # Makefile for individual comedi drivers
- #
--ccflags-$(CONFIG_COMEDI_DEBUG)		:= -DDEBUG
- 
- # Comedi "helper" modules
- obj-$(CONFIG_COMEDI_8254)		+= comedi_8254.o
-diff --git a/drivers/staging/comedi/drivers/tests/Makefile b/drivers/staging/comedi/drivers/tests/Makefile
-index b5d8e13..44ac13d 100644
---- a/drivers/staging/comedi/drivers/tests/Makefile
-+++ b/drivers/staging/comedi/drivers/tests/Makefile
-@@ -1,7 +1,5 @@
- # SPDX-License-Identifier: GPL-2.0
- # Makefile for comedi drivers unit tests
- #
--ccflags-$(CONFIG_COMEDI_DEBUG)		:= -DDEBUG
--
- obj-$(CONFIG_COMEDI_TESTS)		+= example_test.o ni_routes_test.o
- CFLAGS_ni_routes_test.o			:= -DDEBUG
-diff --git a/drivers/staging/comedi/kcomedilib/Makefile b/drivers/staging/comedi/kcomedilib/Makefile
-index 8031142..9f20318 100644
---- a/drivers/staging/comedi/kcomedilib/Makefile
-+++ b/drivers/staging/comedi/kcomedilib/Makefile
-@@ -1,6 +1,4 @@
- # SPDX-License-Identifier: GPL-2.0
--ccflags-$(CONFIG_COMEDI_DEBUG)		:= -DDEBUG
--
- obj-$(CONFIG_COMEDI_KCOMEDILIB)	+= kcomedilib.o
- 
- kcomedilib-objs := kcomedilib_main.o
+ const struct spi_nor_manufacturer spi_nor_gigadevice = {
 -- 
-2.8.1
+2.7.4
 
