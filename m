@@ -2,64 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 555C4315BA9
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 01:54:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6195F315B8E
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 01:48:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234885AbhBJAwx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 19:52:53 -0500
-Received: from [20.39.40.203] ([20.39.40.203]:50631 "EHLO optinix.in"
-        rhost-flags-FAIL-FAIL-OK-OK) by vger.kernel.org with ESMTP
-        id S233932AbhBIWKw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 17:10:52 -0500
-dkim-signature: v=1; a=rsa-sha256; d=digitalsol.in; s=dkim;
-        c=relaxed/relaxed; q=dns/txt; h=From:Reply-To:Subject:Date:Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding;
-        bh=wK2neTcOXNiSQ+RBxrnFed+mRrGUU/ndLGEgvo8IMCc=;
-        b=JFt3cjfr2gf0oZFNAIkKMxcz4dJD/YGkc0fGvOoSd3DydZ6om7JzTU837vBFVq1NIPU0D2QA5BLHZXE1+7cBmkJlbZjYCUFmJkkaBVbP88e4KHnDVRcctmBLIZ1pL5VerRqjcciKkL4DSuyXFJlGk3Z0CRoskvUoLBM7ZhpxLeqIU2BKsbHQXJZ1h2qHQhaHiD+VrGx+bGKjZzbhmRvwLDQIByq6jRcjht5MzYCcxpzOzp/k+Dev9dQj7B
-        WId68CyP4XonlI4wIMRo1xiGfUtKZ+P3cZo2ejPWBjr+ynq3dK3OxibTTEKfmOc5W1zmJFMAPQ+ZKxsa3M4d1PiYxHmg==
-Received: from User (Unknown [52.231.31.5])
-        by optinix.in with ESMTP
-        ; Mon, 1 Feb 2021 08:50:14 +0000
-Message-ID: <D474448D-A325-42CC-A881-8334C6C84BA7@optinix.in>
-Reply-To: <ms.reem@yandex.com>
-From:   "Ms. Reem" <support@digitalsol.in>
-Subject: Re:read
-Date:   Mon, 1 Feb 2021 08:50:13 -0000
+        id S234635AbhBJAq0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 19:46:26 -0500
+Received: from smtprelay0161.hostedemail.com ([216.40.44.161]:40710 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S234337AbhBIVNo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 16:13:44 -0500
+Received: from smtprelay.hostedemail.com (10.5.19.251.rfc1918.com [10.5.19.251])
+        by smtpgrave08.hostedemail.com (Postfix) with ESMTP id 306B8182D512B;
+        Tue,  9 Feb 2021 19:02:15 +0000 (UTC)
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay08.hostedemail.com (Postfix) with ESMTP id D26D7182CCCB9;
+        Tue,  9 Feb 2021 18:59:32 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 90,9,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:982:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1431:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2691:2828:3138:3139:3140:3141:3142:3353:3622:3653:3865:3867:3868:3870:3871:3872:3873:4250:4321:5007:6119:6120:6248:7652:7901:7903:7904:10004:10400:10848:11026:11232:11658:11783:11914:12043:12297:12438:12740:12895:13069:13255:13311:13357:13439:13894:14093:14097:14181:14659:14721:14777:21080:21433:21451:21611:21627:21740:21741:21990:30012:30054:30056:30064:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: road65_270c81827609
+X-Filterd-Recvd-Size: 2565
+Received: from [192.168.1.159] (unknown [47.151.137.21])
+        (Authenticated sender: joe@perches.com)
+        by omf11.hostedemail.com (Postfix) with ESMTPA;
+        Tue,  9 Feb 2021 18:59:31 +0000 (UTC)
+Message-ID: <2b41e46fcf909bd67a578524107214fe4b1eeede.camel@perches.com>
+Subject: Re: [PATCH v3] checkpatch: do not apply "initialise globals to 0"
+ check to BPF progs
+From:   Joe Perches <joe@perches.com>
+To:     Song Liu <songliubraving@fb.com>, linux-kernel@vger.kernel.org
+Cc:     bpf@vger.kernel.org, Andy Whitcroft <apw@canonical.com>
+Date:   Tue, 09 Feb 2021 10:59:30 -0800
+In-Reply-To: <20210209183343.3929160-1-songliubraving@fb.com>
+References: <20210209183343.3929160-1-songliubraving@fb.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="Windows-1251"
-Content-Transfer-Encoding: 7bit
-X-Priority: 3
-X-MSMail-Priority: Normal
-X-Mailer: Microsoft Outlook Express 6.00.2600.0000
-X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
-To:     unlisted-recipients:; (no To-header on input)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Tue, 2021-02-09 at 10:33 -0800, Song Liu wrote:
+> BPF programs explicitly initialise global variables to 0 to make sure
+> clang (v10 or older) do not put the variables in the common section.
+> Skip "initialise globals to 0" check for BPF programs to elimiate error
+> messages like:
+> 
+>     ERROR: do not initialise globals to 0
+>     #19: FILE: samples/bpf/tracex1_kern.c:21:
+> 
+> Cc: Andy Whitcroft <apw@canonical.com>
+> Cc: Joe Perches <joe@perches.com>
+> Signed-off-by: Song Liu <songliubraving@fb.com>
+> 
+> ---
+> Changes v2 => v3:
+>   1. Fix regex.
 
-My name is Ms. Reem Ebrahim Al-Hashimi, I am the "Minister of state
-and Petroleum" also "Minister of State for International Cooperation"
-in UAE. I write to you on behalf of my other "three (3) colleagues"
-who has approved me to solicit for your "partnership in claiming of
-{us$47=Million}" from a Financial Home in Cambodia on their behalf and
-for our "Mutual Benefits".
+Unfortunately, this has broken regexes...
 
-The Fund {us$47=Million} is our share from the (over-invoiced) Oil/Gas
-deal with Cambodian/Vietnam Government within 2013/2014, however, we
-don't want our government to know about the fund. If this proposal
-interests you, let me know, by sending me an email and I will send to
-you detailed information on how this business would be successfully
-transacted. Be informed that nobody knows about the secret of this
-fund except us, and we know how to carry out the entire transaction.
-So I am compelled to ask, that you will stand on our behalf and
-receive this fund into any account that is solely controlled by you.
+> Changes v1 => v2:
+>   1. Add function exclude_global_initialisers() to keep the code clean.
+> ---
+>  scripts/checkpatch.pl | 12 +++++++++++-
+>  1 file changed, 11 insertions(+), 1 deletion(-)
+> 
+> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+[]
+> @@ -2428,6 +2428,15 @@ sub get_raw_comment {
+>  	return $comment;
+>  }
+>  
+> +sub exclude_global_initialisers {
+> +	my ($realfile) = @_;
+> +
+> +	# Do not check for BPF programs (tools/testing/selftests/bpf/progs/*.c, samples/bpf/*_kern.c, *.bpf.c).
+> +	return $realfile =~ m@/^tools\/testing\/selftests\/bpf\/progs\/.*\.c@ ||
 
-We will compensate you with 15% of the total amount involved as
-gratification for being our partner in this transaction. Reply to:
-ms.reem@yandex.com
+You don't need to escape the / when using m@@, and this doesn't work
+given the leading / after @, and it should use a trailing $
 
-Regards,
-Ms. Reem.
+	return $realfile =~ m@^tools/testing/selftests/bpf/progs/.*\.c$@ ||
+
+> +		$realfile =~ m@^samples\/bpf\/.*_kern.c@ ||
+
+This is still missing an escape on the . before c@, and there's no
+trailing $ between c and @
+
+		$realfile =~ m@^samples/bpf/.*_kern\.c$@ ||
+
+> +		$realfile =~ m@/bpf/.*\.bpf\.c$@;
+
+I believe I showed the correct regexes in my earlier reply.
+
 
