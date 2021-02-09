@@ -2,73 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA993315ADD
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 01:18:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A7E05315AD1
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 01:16:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234282AbhBJAR3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 19:17:29 -0500
-Received: from mail29.static.mailgun.info ([104.130.122.29]:39412 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233992AbhBIUsS (ORCPT
+        id S234545AbhBJAPj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 19:15:39 -0500
+Received: from mail-oi1-f172.google.com ([209.85.167.172]:46827 "EHLO
+        mail-oi1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233826AbhBIUq5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 15:48:18 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1612903639; h=Content-Transfer-Encoding: Content-Type:
- MIME-Version: Date: Message-ID: Cc: To: Subject: From: Sender;
- bh=tRp7lRzu7apqQnGrN4xD/Ckoz8eu1Epqqju1tUhZkAA=; b=uyI05LYnqzN4Hj/vqaMFjHU2j1sze6Ocdm8BvdqjofuTZNQqy0FZVBhqpogfVtM9v8MqAM/O
- sZjrpHQjBbcCI1naruWNdjRxSehsASm1hvfr1et0Thj/8jum20uCVYulwgf2WUfppaWVJzXk
- t0o5MIPsL/GdNpyXoetZ1dHA0gM=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 6022f4be81f6c45dce7be36c (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 09 Feb 2021 20:46:54
- GMT
-Sender: mojha=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id C454CC43464; Tue,  9 Feb 2021 20:46:53 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from [192.168.29.2] (unknown [49.37.87.15])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: mojha)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id E25EBC433CA;
-        Tue,  9 Feb 2021 20:46:32 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org E25EBC433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=mojha@codeaurora.org
-From:   Mukesh Ojha <mojha@codeaurora.org>
-Subject: Pstore : Query on using ramoops driver for DDR
-To:     lkml <linux-kernel@vger.kernel.org>
-Cc:     keescook@chromium.org, Anton Vorontsov <anton@enomsg.org>,
-        tony.luck@intel.com, ccross@android.com
-Message-ID: <f71919bd-acd1-843c-3c9b-1d518f0d7b88@codeaurora.org>
-Date:   Wed, 10 Feb 2021 02:16:08 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Tue, 9 Feb 2021 15:46:57 -0500
+Received: by mail-oi1-f172.google.com with SMTP id k25so20881927oik.13;
+        Tue, 09 Feb 2021 12:46:41 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=2s5+gI5RkcmBiEkvRs0kblor0zn4pUAbODGQq2QGc9Y=;
+        b=ZIDgEFpQhkd71A2e27EuAc9lM1c4bodiJQRKN7vucGRyw2NEVkKa/DAH7tqex8kdw4
+         NbacxMeaizZdLm7asrMkA7B9n3TJGRf7u+mb73moZM5zJgBvcbwa4YZzsvdIzLNv5qa8
+         dVvIU79cyPHMunWR2LgS8AjUrGuJb0HARUHZUoaaZGYACok2KXoANl7hY1iCIcXgPQTq
+         M4gky4n4j9jWshuasrbSG4AXDyBTjs6CqCihbHoAnn1qwmQlsfbACUwyUJE5RDpZMA20
+         0vLmabviV9vw6Lnqk315/jBu/yfzfByzkqDMW0mNC488IUeu8/EUydJrPKYB18w4XBas
+         RlOA==
+X-Gm-Message-State: AOAM531bOoSrHjAF8CGrr0dzACs6UCyLU7GBX45rTZeSyeDaIvxMWrpE
+        eKi3e9QnkF6ASjOZ5VZn4Q==
+X-Google-Smtp-Source: ABdhPJxcbTWoPyqVdl4qZFD5NZhVbO2hWAT36p59UdrslscD+BpxXnlxEZlbWI5rCtc/8MHFmM/O3A==
+X-Received: by 2002:aca:2102:: with SMTP id 2mr3811202oiz.80.1612903574974;
+        Tue, 09 Feb 2021 12:46:14 -0800 (PST)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id j5sm795351oij.48.2021.02.09.12.46.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Feb 2021 12:46:13 -0800 (PST)
+Received: (nullmailer pid 146771 invoked by uid 1000);
+        Tue, 09 Feb 2021 20:46:11 -0000
+Date:   Tue, 9 Feb 2021 14:46:11 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
+Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Min Guo <min.guo@mediatek.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-usb@vger.kernel.org
+Subject: Re: [PATCH next v3 02/16] dt-bindings: usb: mediatek: fix yamllint
+ check warning
+Message-ID: <20210209204611.GA143456@robh.at.kernel.org>
+References: <20210201070016.41721-1-chunfeng.yun@mediatek.com>
+ <20210201070016.41721-2-chunfeng.yun@mediatek.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210201070016.41721-2-chunfeng.yun@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi All,
+On Mon, Feb 01, 2021 at 03:00:02PM +0800, Chunfeng Yun wrote:
+> Fix warning: "too many spaces inside brackets"
+> 
+> Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
+> ---
+> v2~v3: no changes
+> ---
+>  .../devicetree/bindings/usb/mediatek,mtk-xhci.yaml          | 2 +-
+>  Documentation/devicetree/bindings/usb/mediatek,mtu3.yaml    | 6 +++---
+>  Documentation/devicetree/bindings/usb/mediatek,musb.yaml    | 4 ++--
+>  3 files changed, 6 insertions(+), 6 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/usb/mediatek,mtk-xhci.yaml b/Documentation/devicetree/bindings/usb/mediatek,mtk-xhci.yaml
+> index 38b1fe18aa79..a3817f3af59d 100644
+> --- a/Documentation/devicetree/bindings/usb/mediatek,mtk-xhci.yaml
+> +++ b/Documentation/devicetree/bindings/usb/mediatek,mtk-xhci.yaml
+> @@ -139,7 +139,7 @@ patternProperties:
+>      description: The hard wired USB devices.
+>  
+>  dependencies:
+> -  wakeup-source: [ 'mediatek,syscon-wakeup' ]
+> +  wakeup-source: ['mediatek,syscon-wakeup']
 
-Can we use existing backend pstore ram driver (fs/pstore/ram.c) for DDR 
-instead of SRAM ?
-Was the current driver written only to support persistant RAM like SRAM 
-or it can accept further change
-to support DDR, If we have a mechanism to copy stored data from DDR to 
-external device after the crash.
+We allow either 0 or 1 space, so this should be fine. Confused...
 
-Thanks,
-Mukesh
-
+>  
+>  required:
+>    - compatible
+> diff --git a/Documentation/devicetree/bindings/usb/mediatek,mtu3.yaml b/Documentation/devicetree/bindings/usb/mediatek,mtu3.yaml
+> index f5c04b9d2de9..66d78f534722 100644
+> --- a/Documentation/devicetree/bindings/usb/mediatek,mtu3.yaml
+> +++ b/Documentation/devicetree/bindings/usb/mediatek,mtu3.yaml
+> @@ -172,9 +172,9 @@ patternProperties:
+>        example if the host mode is enabled.
+>  
+>  dependencies:
+> -  connector: [ 'usb-role-switch' ]
+> -  port: [ 'usb-role-switch' ]
+> -  wakeup-source: [ 'mediatek,syscon-wakeup' ]
+> +  connector: ['usb-role-switch']
+> +  port: ['usb-role-switch']
+> +  wakeup-source: ['mediatek,syscon-wakeup']
+>  
+>  required:
+>    - compatible
+> diff --git a/Documentation/devicetree/bindings/usb/mediatek,musb.yaml b/Documentation/devicetree/bindings/usb/mediatek,musb.yaml
+> index 790efe8b6274..a515c9f30b96 100644
+> --- a/Documentation/devicetree/bindings/usb/mediatek,musb.yaml
+> +++ b/Documentation/devicetree/bindings/usb/mediatek,musb.yaml
+> @@ -66,8 +66,8 @@ properties:
+>      type: object
+>  
+>  dependencies:
+> -  usb-role-switch: [ 'connector' ]
+> -  connector: [ 'usb-role-switch' ]
+> +  usb-role-switch: ['connector']
+> +  connector: ['usb-role-switch']
+>  
+>  required:
+>    - compatible
+> -- 
+> 2.18.0
