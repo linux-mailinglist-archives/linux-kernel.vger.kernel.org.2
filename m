@@ -2,116 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A75FF315A0F
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 00:35:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B991315A4C
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 00:52:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234103AbhBIXaf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 18:30:35 -0500
-Received: from new3-smtp.messagingengine.com ([66.111.4.229]:49983 "EHLO
-        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233695AbhBITxF (ORCPT
+        id S234531AbhBIXvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 18:51:37 -0500
+Received: from mail-yb1-f182.google.com ([209.85.219.182]:44046 "EHLO
+        mail-yb1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233516AbhBIUfH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 14:53:05 -0500
-Received: from compute7.internal (compute7.nyi.internal [10.202.2.47])
-        by mailnew.nyi.internal (Postfix) with ESMTP id C2BC9580171;
-        Tue,  9 Feb 2021 13:26:24 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute7.internal (MEProxy); Tue, 09 Feb 2021 13:26:24 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=jbTXSE
-        kHbtCMu+f135EDu0ufO51m7hO7fIyJQPnw2cM=; b=Av5rWJhyVsredRqpbe+/Uz
-        F6LRuAWYNgnYiqjcioKGv21NJd19zUqh8Yz62DRSZbvWqOEATjoeCug2VAQND4o3
-        rSu7q7pXakLyzIaBI89YmdmqqKNzd9PhP4WqX04efbSc5lGj193sXRzM2g4Gd6/z
-        pwrWh8hiX4DvPGJat9nzP4a2GPMF5KgWu3vYqg0IW/xV6cKuPD50OP2+FSJIMK3x
-        G7lOEM4+dZWPDWW0F69f1QqzHpN0r+mvCTEHNUAjFT6lJdiOqr7wyCC/VrXdbKJ9
-        L9y+7Q7imyAVmXrCRAw42xW2hVQWj9u4dYh6Q/QxgFHcLo5YGsB1PLeUb6e2ee+Q
-        ==
-X-ME-Sender: <xms:zNMiYP3haaEoL0jF1iJoVGmPbWsCguNeDd3w4o9KskECGTpZpLSPHA>
-    <xme:zNMiYAHyfBICO7zxoJq3Neb4Iesy3u5ZBbegiXQngD2R7g2SUZF_cXccjZ77viGHQ
-    sinNXDrmuG1Kp8>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrheehgdduudegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefkughoucfu
-    tghhihhmmhgvlhcuoehiughoshgthhesihguohhstghhrdhorhhgqeenucggtffrrghtth
-    gvrhhnpefgvefgveeuudeuffeiffehieffgfejleevtdetueetueffkeevgffgtddugfek
-    veenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecukfhppeekgedrvddvledrudehfe
-    drgeegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhep
-    ihguohhstghhsehiughoshgthhdrohhrgh
-X-ME-Proxy: <xmx:zNMiYJRxAYDMnRHOHA0WoUtVVEdSj4mQobBjnoJDI802tand7mi_ig>
-    <xmx:zNMiYHBJPXqqxcD7RB1HHiMbeQ_FD8QPLOIR4h0qr45TGGM98Zcx0g>
-    <xmx:zNMiYJ3R_bCNPZscbk0g_qj79gAW3SkLz16iJu5fXQJgffjtxFYFeQ>
-    <xmx:0NMiYMg3AiQ6JXmNSLpUYMQXU4uLmtnHQHR6f5u-HFBvBDdB-sXH9w>
-Received: from localhost (igld-84-229-153-44.inter.net.il [84.229.153.44])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 7364424005D;
-        Tue,  9 Feb 2021 13:26:20 -0500 (EST)
-Date:   Tue, 9 Feb 2021 20:26:17 +0200
-From:   Ido Schimmel <idosch@idosch.org>
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bridge@lists.linux-foundation.org, Roopa Prabhu <roopa@nvidia.com>,
-        Nikolay Aleksandrov <nikolay@nvidia.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        UNGLinuxDriver@microchip.com, Vadym Kochan <vkochan@marvell.com>,
-        Taras Chornyi <tchornyi@marvell.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Ivan Vecera <ivecera@redhat.com>, linux-omap@vger.kernel.org
-Subject: Re: [PATCH v2 net-next 03/11] net: bridge: don't print in
- br_switchdev_set_port_flag
-Message-ID: <20210209182617.GB262892@shredder.lan>
-References: <20210209151936.97382-1-olteanv@gmail.com>
- <20210209151936.97382-4-olteanv@gmail.com>
- <20210209173631.c75cdjxphwzipeg5@skbuf>
+        Tue, 9 Feb 2021 15:35:07 -0500
+Received: by mail-yb1-f182.google.com with SMTP id r2so19470530ybk.11;
+        Tue, 09 Feb 2021 12:34:46 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Pnwa1q8bFk63V9muXgLO+kHUE83gy7ik9WU+PQH47No=;
+        b=kNWURceCkbZ3ZXZQA6yhpVV6riQ56iv4qUkYz4B3Os06N0TYVlHJ7PeHcrax1lXRSB
+         zahHRy9gATh/2GhJoqV8gq/cia7Rqz6e4jlnHRNRM2lRpdq2qA0mh6+7q4+jKbYA87wu
+         oLp1jatQXOjTCD73gO2ZWCfMDyuikx69Wx5m+JkRXWWsZhLd3TmQUIskKNKPLee674oD
+         TJy3HcDM5xC9WOicLW0QxXBu6iY1u6KCBg9JxobXuzGmdkj43uMODmEse3MUcMxafBNx
+         Mdv213WCA5cwhCaf8uRvAt4oEaTS6fHgpanp1sh1Nn1+tAoCaeLUIVfUb9Ohl7dpxoSk
+         /JpA==
+X-Gm-Message-State: AOAM532PH5my11UluqdsfONx8nPxV7wU1rSTtCRMYhxkzYgKJ7soFPHX
+        wtT86dUKSGNkxZr9lGnfSVi05ALT0A==
+X-Google-Smtp-Source: ABdhPJwxTB/2hrPg4OkzTE0+aenHe4L34frxHXvPTssN3E4WXZROXrV5AQgadKwpCLYJzpKsYQcggA==
+X-Received: by 2002:a9d:398a:: with SMTP id y10mr8209412otb.68.1612900910464;
+        Tue, 09 Feb 2021 12:01:50 -0800 (PST)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id 33sm4397956ota.69.2021.02.09.12.01.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Feb 2021 12:01:49 -0800 (PST)
+Received: (nullmailer pid 69000 invoked by uid 1000);
+        Tue, 09 Feb 2021 20:01:48 -0000
+Date:   Tue, 9 Feb 2021 14:01:48 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Adrien Grassein <adrien.grassein@gmail.com>
+Cc:     kishon@ti.com, vkoul@kernel.org, shawnguo@kernel.org,
+        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
+        linux-imx@nxp.com, rikard.falkeborn@gmail.com, peter.chen@nxp.com,
+        jun.li@nxp.com, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 1/2] dt-bindings: phy-imx8mq-usb: add reset-gpios property
+Message-ID: <20210209200148.GA31636@robh.at.kernel.org>
+References: <20210128221255.2673992-1-adrien.grassein@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210209173631.c75cdjxphwzipeg5@skbuf>
+In-Reply-To: <20210128221255.2673992-1-adrien.grassein@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 09, 2021 at 07:36:31PM +0200, Vladimir Oltean wrote:
-> On Tue, Feb 09, 2021 at 05:19:28PM +0200, Vladimir Oltean wrote:
-> > From: Vladimir Oltean <vladimir.oltean@nxp.com>
-> >
-> > Currently br_switchdev_set_port_flag has two options for error handling
-> > and neither is good:
-> > - The driver returns -EOPNOTSUPP in PRE_BRIDGE_FLAGS if it doesn't
-> >   support offloading that flag, and this gets silently ignored and
-> >   converted to an errno of 0. Nobody does this.
-> > - The driver returns some other error code, like -EINVAL, in
-> >   PRE_BRIDGE_FLAGS, and br_switchdev_set_port_flag shouts loudly.
-> >
-> > The problem is that we'd like to offload some port flags during bridge
-> > join and leave, but also not have the bridge shout at us if those fail.
-> > But on the other hand we'd like the user to know that we can't offload
-> > something when they set that through netlink. And since we can't have
-> > the driver return -EOPNOTSUPP or -EINVAL depending on whether it's
-> > called by the user or internally by the bridge, let's just add an extack
-> > argument to br_switchdev_set_port_flag and propagate it to its callers.
-> > Then, when we need offloading to really fail silently, this can simply
-> > be passed a NULL argument.
-> >
-> > Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-> > ---
+On Thu, Jan 28, 2021 at 11:12:54PM +0100, Adrien Grassein wrote:
+> Add an optional GPIO in the dtb description that will
+> be used to reset the connected hub (if any).
 > 
-> The build fails because since I started working on v2 and until I sent
-> it, Jakub merged net into net-next which contained this fix:
-> https://patchwork.kernel.org/project/netdevbpf/patch/20210207194733.1811529-1-olteanv@gmail.com/
-> for which I couldn't change prototype due to it missing in net-next.
-> I think I would like to rather wait to gather some feedback first before
-> respinning v3, if possible.
+> Signed-off-by: Adrien Grassein <adrien.grassein@gmail.com>
+> ---
+>  Documentation/devicetree/bindings/phy/fsl,imx8mq-usb-phy.txt | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/phy/fsl,imx8mq-usb-phy.txt b/Documentation/devicetree/bindings/phy/fsl,imx8mq-usb-phy.txt
+> index 7c70f2ad9942..6ee2b42e0f22 100644
+> --- a/Documentation/devicetree/bindings/phy/fsl,imx8mq-usb-phy.txt
+> +++ b/Documentation/devicetree/bindings/phy/fsl,imx8mq-usb-phy.txt
+> @@ -9,6 +9,7 @@ Required properties:
+>  
+>  Optional properties:
+>  - vbus-supply: A phandle to the regulator for USB VBUS.
+> +- reset-gpios: A phandle to the reset signal of the connected hub (if any).
 
-It seems that in the sysfs call path br_switchdev_set_port_flag() will
-be called with the bridge lock held, which is going to be a problem
-given that patch #8 allows this function to block.
+This should go in a hub node (or whatever device has a reset line).
+
+>  
+>  Example:
+>  	usb3_phy0: phy@381f0040 {
+> -- 
+> 2.25.1
+> 
