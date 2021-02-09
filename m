@@ -2,121 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FA1D315ACE
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 01:16:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 080AB315AB6
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 01:10:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233884AbhBJAPT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 19:15:19 -0500
-Received: from mx2.suse.de ([195.135.220.15]:47834 "EHLO mx2.suse.de"
+        id S234289AbhBJAJp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 19:09:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41378 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233733AbhBIUqB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 15:46:01 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1612901312; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=utBmzEHnMldk+xybu3FUHQ/4GijdaViYwt5S9/fMX5g=;
-        b=TjFv3w1m/0Glle7o/mpLcPWsTy958OLjFP0MF4y2grgkrogeIq5dCnnfB5BszcW5ggUnqY
-        LL4MV1a1lL2B5WOEu6FaOYZ3DET/TzX9b1n3q4/VP0Y/08QiHTyolRop/Pd6AqhLXBScSy
-        PBnAIDa+ir2IADhVPtKtqxwjkXo403U=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id AC40AADF0;
-        Tue,  9 Feb 2021 20:08:32 +0000 (UTC)
-Date:   Tue, 9 Feb 2021 21:08:31 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org
-Subject: Re: [PATCH v17 00/10] mm: introduce memfd_secret system call to
- create "secret" memory areas
-Message-ID: <YCLrv86O0ZoKhfN0@dhcp22.suse.cz>
-References: <20210208211326.GV242749@kernel.org>
- <1F6A73CF-158A-4261-AA6C-1F5C77F4F326@redhat.com>
- <YCJO8zLq8YkXGy8B@dhcp22.suse.cz>
- <662b5871-b461-0896-697f-5e903c23d7b9@redhat.com>
- <YCJbmR11ikrWKaU8@dhcp22.suse.cz>
- <c1e5e7b6-3360-ddc4-2ff5-0e79515ee23a@redhat.com>
- <YCKNMqu8/g0OofqU@dhcp22.suse.cz>
- <8cbfe2c3-cfc6-72e0-bab1-852f80e20684@redhat.com>
+        id S233899AbhBIUl5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 15:41:57 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F325B64EAC
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 20:10:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612901401;
+        bh=xHJDr/1nD89ckeRCIpjTV/NH06t3sFAkrRdc0f9MThY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=qV8BV13PVpX+G8rd1T5rWrQymjsvQtZt0FpMgDnqj4rOsZl2FtRtxumMeoojFPRBn
+         Zmcx6TqO2ElgeHLZAq8Biet2W4BXGWxA/qQnZLXZaT7D13JRVk8xLI285nIP7q50Mm
+         Hfz/ehrUWrFinSipTQkt+JxMzvbzDFzuCTzfmjdgWWYxpcZ7jXGv/B1CWwY7mjcE6w
+         TsVe37lLSFd6A3aPzEiEhc28EjGn7amOONfRAnwt7iGd1OXq1fjnwRShWKGGtvtnM2
+         nOtytLjIxmrFHlnqdls9u0QHS3ucdo6nq1IufYq9O+DG/7TN7wm0dfq0bQhmP6fQfA
+         4Nk+Q145XAmMQ==
+Received: by mail-ed1-f53.google.com with SMTP id y8so25565004ede.6
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 12:10:00 -0800 (PST)
+X-Gm-Message-State: AOAM531S7eq3QtswUR0FX+LaXXkEcDRYeOKSPQDN8O2AtnJJqMClEOWi
+        f1RyWor1WJa0NJIL8dJZlTfYRwiCDbavwLSht8ZwMQ==
+X-Google-Smtp-Source: ABdhPJwptoAG+zSZ8w6RQ0cdk5e5yV6WHEHso2hROrAGsvahllfnPmpRo98ewwya/3n4xuv8Aa5J4uIw3tTay4pM8dI=
+X-Received: by 2002:a05:6402:31a3:: with SMTP id dj3mr24435566edb.172.1612901399469;
+ Tue, 09 Feb 2021 12:09:59 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8cbfe2c3-cfc6-72e0-bab1-852f80e20684@redhat.com>
+References: <cover.1612113550.git.luto@kernel.org> <c5f715daf95fc7e94e279f0486908b53e1cdba3c.1612113550.git.luto@kernel.org>
+ <20210203185517.GH13819@zn.tnic>
+In-Reply-To: <20210203185517.GH13819@zn.tnic>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Tue, 9 Feb 2021 12:09:48 -0800
+X-Gmail-Original-Message-ID: <CALCETrXUOJ1RNHCGZjp_Xk0DTvXaGXKy6t1b5vFHa3CqDenoRw@mail.gmail.com>
+Message-ID: <CALCETrXUOJ1RNHCGZjp_Xk0DTvXaGXKy6t1b5vFHa3CqDenoRw@mail.gmail.com>
+Subject: Re: [PATCH 07/11] x86/fault: Split the OOPS code out from no_context()
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Andy Lutomirski <luto@kernel.org>, X86 ML <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Yonghong Song <yhs@fb.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 09-02-21 17:17:22, David Hildenbrand wrote:
-> On 09.02.21 14:25, Michal Hocko wrote:
-> > On Tue 09-02-21 11:23:35, David Hildenbrand wrote:
-> > [...]
-> > > I am constantly trying to fight for making more stuff MOVABLE instead of
-> > > going into the other direction (e.g., because it's easier to implement,
-> > > which feels like the wrong direction).
-> > > 
-> > > Maybe I am the only person that really cares about ZONE_MOVABLE these days
-> > > :) I can't stop such new stuff from popping up, so at least I want it to be
-> > > documented.
-> > 
-> > MOVABLE zone is certainly an important thing to keep working. And there
-> > is still quite a lot of work on the way. But as I've said this is more
-> > of a outlier than a norm. On the other hand movable zone is kinda hard
-> > requirement for a lot of application and it is to be expected that
-> > many features will be less than 100% compatible.  Some usecases even
-> > impossible. That's why I am arguing that we should have a central
-> > document where the movable zone is documented with all the potential
-> > problems we have encountered over time and explicitly state which
-> > features are fully/partially incompatible.
-> > 
-> 
-> I'll send a mail during the next weeks to gather current restrictions to
-> document them (and include my brain dump). We might see more excessive use
-> of ZONE_MOVABLE in the future and as history told us, of CMA as well. We
-> really should start documenting/caring.
+On Wed, Feb 3, 2021 at 10:56 AM Borislav Petkov <bp@alien8.de> wrote:
+>
+> On Sun, Jan 31, 2021 at 09:24:38AM -0800, Andy Lutomirski wrote:
+> > Not all callers of no_context() want to run exception fixups.
+> > Separate the OOPS code out from the fixup code in no_context().
+> >
+> > Cc: Dave Hansen <dave.hansen@linux.intel.com>
+> > Cc: Peter Zijlstra <peterz@infradead.org>
+> > Signed-off-by: Andy Lutomirski <luto@kernel.org>
+> > ---
+> >  arch/x86/mm/fault.c | 116 +++++++++++++++++++++++---------------------
+> >  1 file changed, 62 insertions(+), 54 deletions(-)
+> >
+> > diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
+> > index 1939e546beae..6f43d080e1e8 100644
+> > --- a/arch/x86/mm/fault.c
+> > +++ b/arch/x86/mm/fault.c
+> > @@ -618,53 +618,20 @@ static void set_signal_archinfo(unsigned long address,
+> >  }
+> >
+> >  static noinline void
+> > -no_context(struct pt_regs *regs, unsigned long error_code,
+> > -        unsigned long address, int signal, int si_code)
+> > +page_fault_oops(struct pt_regs *regs, unsigned long error_code,
+>
+> Not sure about this name - it still tries to recover:
+> efi_recover_from_page_fault().
+>
+> Judging by where it is called, maybe no_context_tail() or
+> no_context_oops() or no_context_finish_me_already()...
+>
+> Yah, I haz no better idea. :-\
+>
+> ...
+>
+> > @@ -739,6 +692,61 @@ no_context(struct pt_regs *regs, unsigned long error_code,
+> >       oops_end(flags, regs, sig);
+> >  }
+> >
+> > +static noinline void
+> > +no_context(struct pt_regs *regs, unsigned long error_code,
+> > +        unsigned long address, int signal, int si_code)
+> > +{
+> > +     if (user_mode(regs)) {
+> > +             /*
+> > +              * This is an implicit supervisor-mode access from user
+> > +              * mode.  Bypass all the kernel-mode recovery code and just
+> > +              * OOPS.
+> > +              */
+> > +             goto oops;
+>
+> Just do
+>
+>                 return page_fault_oops(...);
+>
+> here and get rid of the label.
 
-Excellent! Thanks a lot. I will do my best to help reviewing that.
-
-> @Mike, it would be sufficient for me if one of your patches at least mention
-> the situation in the description like
-> 
-> "Please note that secretmem currently behaves much more like long-term GUP
-> instead of mlocked memory; secretmem is unmovable memory directly
-> consumed/controlled by user space. secretmem cannot be placed onto
-> ZONE_MOVABLE/CMA.
-
-Sounds good to me.
-
--- 
-Michal Hocko
-SUSE Labs
+I'm going to skip this one, because that code is deleted later in the
+series, and fixing it here just adds more churn.
