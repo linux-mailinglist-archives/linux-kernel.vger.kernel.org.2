@@ -2,143 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F9F331595E
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 23:24:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E48D8315937
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 23:15:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234361AbhBIWXs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 17:23:48 -0500
-Received: from mga18.intel.com ([134.134.136.126]:11939 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233509AbhBITmZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 14:42:25 -0500
-IronPort-SDR: s2T8tgh7OK1g4LI0K8OSjVVaSe41HBozbc5Q2FlYy32JQ6QQQCUbWupgIU4rxoQ6lFfZOOukX1
- BNqbvsziiHnw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9890"; a="169626612"
-X-IronPort-AV: E=Sophos;i="5.81,166,1610438400"; 
-   d="scan'208";a="169626612"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2021 11:38:08 -0800
-IronPort-SDR: HwhPdUv0eiEltXSGpS7CnWCYGd4ajZclVv0MJCTCVrSyv4Ouym4YSWbAdVhVBCorJwrLYhQ83H
- niAYB86Dy68A==
-X-IronPort-AV: E=Sophos;i="5.81,166,1610438400"; 
-   d="scan'208";a="396365865"
-Received: from djiang5-mobl1.amr.corp.intel.com (HELO [10.212.123.115]) ([10.212.123.115])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2021 11:38:08 -0800
-Subject: Re: [PATCH] driver core: auxiliary bus: Fix calling stage for
- auxiliary bus init
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Jacob Pan <jacob.jun.pan@intel.com>,
-        Dave Ertman <david.m.ertman@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>, rafael@kernel.org,
-        linux-kernel@vger.kernel.org
-References: <161289750572.1086235.9903492973331406876.stgit@djiang5-desk3.ch.intel.com>
- <YCLfETxDjOUPISpw@kroah.com>
-From:   Dave Jiang <dave.jiang@intel.com>
-Message-ID: <8ac05dcb-398c-a357-d6e5-48f45e4c6b12@intel.com>
-Date:   Tue, 9 Feb 2021 12:38:06 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S234101AbhBIWOR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 17:14:17 -0500
+Received: from mail-wm1-f48.google.com ([209.85.128.48]:37483 "EHLO
+        mail-wm1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233463AbhBITkr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 14:40:47 -0500
+Received: by mail-wm1-f48.google.com with SMTP id m1so4649799wml.2;
+        Tue, 09 Feb 2021 11:40:31 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=c6vCaI1Ot4rIOLJkm4PsY67pG5cYnNtElevzVRC/8jc=;
+        b=HEZWULPJ+zz9Zw7W3W/pwWRa85Feels4tRl3vzTw9uUorgAhvnmwLkj1EJIKmJ+5du
+         97HyEp6ZmNBr4cknN6LcKiXjMUFS/c3VURmBlbvSdHTZGUb4xasUdMeP/jj7MIfeZTR3
+         stIQ1SHkDEq94qRdaFE6CCAHYA/NJtKtmEZJuX258NLQWB6bPjTsqBpOWl1GBZgc//kD
+         iKp8EZ58l3pdnbgu2C/tFyt1drgf5gRvdQCdD9f2Dg4pa9Oy7ReE0Ht3NDFfIqRG11Eq
+         Rmqcdz/J7DUC7frhl2id8lPzYUc3jc27Jl9zd2vImb8Dv+niOaBIi/0bzXn02vj+avAe
+         clBw==
+X-Gm-Message-State: AOAM5314CXwB3RD5Xe11dG7KecZxyU2aNrreBg50CG3dVGNyc5LbNPV9
+        BCOj60zV4NBmz9C1+IBtWho=
+X-Google-Smtp-Source: ABdhPJw7FD2tJaT20PTfXYsdZ/lAuCGttMIMQRbkmPz7RXBi0JFHhR8pII9knECGQDnDCrCFoWqmrg==
+X-Received: by 2002:a1c:b087:: with SMTP id z129mr5003988wme.147.1612899605420;
+        Tue, 09 Feb 2021 11:40:05 -0800 (PST)
+Received: from rocinante ([95.155.85.46])
+        by smtp.gmail.com with ESMTPSA id r16sm36117272wrt.68.2021.02.09.11.40.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Feb 2021 11:40:04 -0800 (PST)
+Date:   Tue, 9 Feb 2021 20:40:03 +0100
+From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
+To:     Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Subject: Re: [PATCH v4 15/15] dmaengine: dw-edma: Add pcim_iomap_table return
+ checker
+Message-ID: <YCLlE+StUVWjfxqf@rocinante>
+References: <ceb5eb396e417f9e45d39fd5ef565ba77aae6a63.1612389406.git.gustavo.pimentel@synopsys.com>
+ <20210208193516.GA406304@bjorn-Precision-5520>
+ <DM5PR12MB1835A960892E401D50DEBB9DDA8E9@DM5PR12MB1835.namprd12.prod.outlook.com>
+ <YCLR3uB5+GELTXSk@rocinante>
 MIME-Version: 1.0
-In-Reply-To: <YCLfETxDjOUPISpw@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <YCLR3uB5+GELTXSk@rocinante>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Gustavo,
 
-On 2/9/2021 12:14 PM, Greg KH wrote:
-> On Tue, Feb 09, 2021 at 12:05:05PM -0700, Dave Jiang wrote:
->> When the auxiliary device code is built into the kernel, it can be executed
->> before the auxiliary bus is registered. This causes bus->p to be not
->> allocated and triggers a NULL pointer dereference when the auxiliary bus
->> device gets added with bus_add_device(). Change the init of auxiliary bus
->> to subsys_initcall() from module_init() to ensure the bus is registered
->> before devices.
->>
->> Below is the kernel splat for the bug:
->> [ 1.948215] BUG: kernel NULL pointer dereference, address: 0000000000000060
->> [ 1.950670] #PF: supervisor read access in kernel mode
->> [ 1.950670] #PF: error_code(0x0000) - not-present page
->> [ 1.950670] PGD 0
->> [ 1.950670] Oops: 0000 1 SMP NOPTI
->> [ 1.950670] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.10.0-intel-nextsvmtest+ #2205
->> [ 1.950670] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
->> [ 1.950670] RIP: 0010:bus_add_device+0x64/0x140
->> [ 1.950670] Code: 00 49 8b 75 20 48 89 df e8 59 a1 ff ff 41 89 c4 85 c0 75 7b 48 8b 53 50 48 85 d2 75 03 48 8b 13 49 8b 85 a0 00 00 00 48 89 de <48> 8
->> 78 60 48 83 c7 18 e8 ef d9 a9 ff 41 89 c4 85 c0 75 45 48 8b
->> [ 1.950670] RSP: 0000:ff46032ac001baf8 EFLAGS: 00010246
->> [ 1.950670] RAX: 0000000000000000 RBX: ff4597f7414aa680 RCX: 0000000000000000
->> [ 1.950670] RDX: ff4597f74142bbc0 RSI: ff4597f7414aa680 RDI: ff4597f7414aa680
->> [ 1.950670] RBP: ff46032ac001bb10 R08: 0000000000000044 R09: 0000000000000228
->> [ 1.950670] R10: ff4597f741141b30 R11: ff4597f740182a90 R12: 0000000000000000
->> [ 1.950670] R13: ffffffffa5e936c0 R14: 0000000000000000 R15: 0000000000000000
->> [ 1.950670] FS: 0000000000000000(0000) GS:ff4597f7bba00000(0000) knlGS:0000000000000000
->> [ 1.950670] CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->> [ 1.950670] CR2: 0000000000000060 CR3: 000000002140c001 CR4: 0000000000f71ef0
->> [ 1.950670] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
->> [ 1.950670] DR3: 0000000000000000 DR6: 00000000fffe07f0 DR7: 0000000000000400
->> [ 1.950670] PKRU: 55555554
->> [ 1.950670] Call Trace:
->> [ 1.950670] device_add+0x3ee/0x850
->> [ 1.950670] __auxiliary_device_add+0x47/0x60
->> [ 1.950670] idxd_pci_probe+0xf77/0x1180
->> [ 1.950670] local_pci_probe+0x4a/0x90
->> [ 1.950670] pci_device_probe+0xff/0x1b0
->> [ 1.950670] really_probe+0x1cf/0x440
->> [ 1.950670] ? rdinit_setup+0x31/0x31
->> [ 1.950670] driver_probe_device+0xe8/0x150
->> [ 1.950670] device_driver_attach+0x58/0x60
->> [ 1.950670] __driver_attach+0x8f/0x150
->> [ 1.950670] ? device_driver_attach+0x60/0x60
->> [ 1.950670] ? device_driver_attach+0x60/0x60
->> [ 1.950670] bus_for_each_dev+0x79/0xc0
->> [ 1.950670] ? kmem_cache_alloc_trace+0x323/0x430
->> [ 1.950670] driver_attach+0x1e/0x20
->> [ 1.950670] bus_add_driver+0x154/0x1f0
->> [ 1.950670] driver_register+0x70/0xc0
->> [ 1.950670] __pci_register_driver+0x54/0x60
->> [ 1.950670] idxd_init_module+0xe2/0xfc
->> [ 1.950670] ? idma64_platform_driver_init+0x19/0x19
->> [ 1.950670] do_one_initcall+0x4a/0x1e0
->> [ 1.950670] kernel_init_freeable+0x1fc/0x25c
->> [ 1.950670] ? rest_init+0xba/0xba
->> [ 1.950670] kernel_init+0xe/0x116
->> [ 1.950670] ret_from_fork+0x1f/0x30
->> [ 1.950670] Modules linked in:
->> [ 1.950670] CR2: 0000000000000060
->> [ 1.950670] --[ end trace cd7d1b226d3ca901 ]--
->>
->> Fixes: 7de3697e9cbd ("Add auxiliary bus support")
->> Reported-by: Jacob Pan <jacob.jun.pan@intel.com>
->> Acked-by: Dave Ertman <david.m.ertman@intel.com>
->> Reviewed-by: Dan Williams <dan.j.williams@intel.com>
->> Signed-off-by: Dave Jiang <dave.jiang@intel.com>
->> ---
->>   drivers/base/auxiliary.c |    2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/base/auxiliary.c b/drivers/base/auxiliary.c
->> index 8336535f1e11..53f93a506626 100644
->> --- a/drivers/base/auxiliary.c
->> +++ b/drivers/base/auxiliary.c
->> @@ -270,7 +270,7 @@ static void __exit auxiliary_bus_exit(void)
->>   	bus_unregister(&auxiliary_bus_type);
->>   }
->>   
->> -module_init(auxiliary_bus_init);
->> +subsys_initcall(auxiliary_bus_init);
-> Ah, the linker priority dance.  Are you _SURE_ this will solve this?
->
-> Why not just call this explicitly in driver_init() so that you know it
-> will be ok?  Just like we do for the platform bus?
+[...]
+> > That's true, there are a lot of drivers that don't verify that pointer. 
+> > What do you suggest?
+> > 1) To remove the verification so that is aligned with the other drivers
+> > 2) Leave it as is. Or even to add this verification to the other drivers?
+> > 
+> > Either way, I will add the pcim_iomap_table(pdev) before this 
+> > instruction.
+> [...]
+> 
+> A lot of the drivers consume the value from pcim_iomap_table() at
+> a given BAR index directly as-is, some check if the pointer they got
+> back is not NULL, a very few also check if the address at a given index
+> is not NULL.
+> 
+> Given that the memory allocation for the table can fail, we ought to
+> check for a NULL pointer.  It's a bit worrying that people decided to
+> consume the value it returns directly without any verification.
+> 
+> I only found two drivers that perform this additional verification of
+> checking whether the address at a given index is valid, as per:
+> 
+>   https://lore.kernel.org/linux-pci/YCLFTjZQ2bCfGC+J@rocinante/
+> 
+> Personally, I would opt for (2), and then like you suggested send
+> a separate series to update other drivers so that they also include the
+> this NULL pointer check.
+> 
+> But let's wait for Bjorn's take on this, though.
 
-It would require making auxiliary_bus part of the base just like 
-platform instead of a module. Is that ok?
+As per Bjorn's reply:
 
+  https://lore.kernel.org/linux-pci/20210209185246.GA494880@bjorn-Precision-5520/
 
->
-> thanks,
->
-> greg k-h
+These extra checks I proposed would be definitely too much, especially
+since almost everyone who uses pcim_iomap_table() also calls either
+pcim_iomap_regions() or pcim_iomap_regions_request_all() before
+accessing the table.
+
+There probably is also an opportunity to simplify some of the other
+drivers in the future, especially if do some API changes as per what
+Bjorn suggested.
+
+Sorry for taking your time, and thank you again!
+
+Krzysztof
