@@ -2,126 +2,869 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39FBF314D0B
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 11:32:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5027B314D0F
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 11:32:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231470AbhBIK3m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 05:29:42 -0500
-Received: from mail-dm6nam12on2084.outbound.protection.outlook.com ([40.107.243.84]:2784
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231274AbhBIKVD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 05:21:03 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CZeD4T8ARZrzJRtX6LslvkQP3bO+4X8cnxfMQkERkol4QxJ4srBgxvb+XO+0LOdLMe8DDD/Qi0wDGCccZswdX4qxN6XsUAHt+gfq0/ms5qz1zlXDmYCIbWJ3cA07bnOvx8FCpHsOnYwjnjJb32LInR5xMvsi6LjvID1GP3vxpNm2kKhxRDVlSMkT4rjcXN8DwZFeip4WfkntBWXryN+Kue7B5cuo70OXZPDGeJMO94C/zJL4eAX8J44ncLqfukt3TsS08YmU8dNf995FtiO0yrgZVMU+2X0MTAPilXonfvO9X4/0WzvOdED4clmYpN0gxg2pU61NpKN97s7dBcRjnw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=j8+mSReKVu5/l/FJ8ALBYjnmeqXn2KGoeugFYsbdO3o=;
- b=n9rgI1wcuSeogkR2ilpfjuGwjKpThzmCxQWJB4QRx9stmQYP78hDz9qdVEFuzMDERHl8QdMC1Nw6d6kgMgEtRmyRCPm9DJD+BQXPPdySzu018yp4uR2ZE04nPwmbwa4uxSSCF31ADHII007ijI0Dt30Yk/UB80cf64c1jawQh4n27qNehXG7Sp8YHBefQFpD6bWSzcQoJZCXoD+TLqk6RWN5XMn9n3pLGSAwzi48Zjvxo0A+b+0DPgAmQuM6M3POs1jjKPVS7fjvSyUzCCaxxKODgPYn6TEBKRmUhKdYjsq0CcIa7xhxDzJYhk3upIWtEJ2aJ6Nut2BGxA8yYUIQQg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 149.199.62.198) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=xilinx.com;
- dmarc=bestguesspass action=none header.from=xilinx.com; dkim=none (message
- not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=j8+mSReKVu5/l/FJ8ALBYjnmeqXn2KGoeugFYsbdO3o=;
- b=TKVEodIFumr+UonP3YxRdBD2q09/TC/g7Ewtipo1IzNPU5qKQNztiyWHvQdvbqOGA7lbr/ojfjF/f3Ums3JLcvyr3eW/NT9Prxt/ucnM2bxmwl5LqH+xtDWyGGFKJAEsNenEmp2Rg+UTah8cat6NkivgelR00a/ezW1Qcl42vdU=
-Received: from SN7PR04CA0254.namprd04.prod.outlook.com (2603:10b6:806:f3::19)
- by BY5PR02MB6898.namprd02.prod.outlook.com (2603:10b6:a03:23c::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.19; Tue, 9 Feb
- 2021 10:20:11 +0000
-Received: from SN1NAM02FT057.eop-nam02.prod.protection.outlook.com
- (2603:10b6:806:f3:cafe::7c) by SN7PR04CA0254.outlook.office365.com
- (2603:10b6:806:f3::19) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.25 via Frontend
- Transport; Tue, 9 Feb 2021 10:20:11 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
- smtp.mailfrom=xilinx.com; vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=bestguesspass action=none
- header.from=xilinx.com;
-Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
- 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
- client-ip=149.199.62.198; helo=xsj-pvapexch02.xlnx.xilinx.com;
-Received: from xsj-pvapexch02.xlnx.xilinx.com (149.199.62.198) by
- SN1NAM02FT057.mail.protection.outlook.com (10.152.73.105) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.3784.12 via Frontend Transport; Tue, 9 Feb 2021 10:20:11 +0000
-Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
- xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1913.5; Tue, 9 Feb 2021 02:20:06 -0800
-Received: from smtp.xilinx.com (172.19.127.96) by
- xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
- 15.1.1913.5 via Frontend Transport; Tue, 9 Feb 2021 02:20:06 -0800
-Envelope-to: bharat.kumar.gogada@xilinx.com,
- linux-pci@vger.kernel.org,
- linux-kernel@vger.kernel.org,
- bhelgaas@google.com
-Received: from [10.140.9.2] (port=53404 helo=xhdbharatku40.xilinx.com)
-        by smtp.xilinx.com with esmtp (Exim 4.90)
-        (envelope-from <bharat.kumar.gogada@xilinx.com>)
-        id 1l9Q7p-00007p-QG; Tue, 09 Feb 2021 02:20:06 -0800
-From:   Bharat Kumar Gogada <bharat.kumar.gogada@xilinx.com>
-To:     <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <bhelgaas@google.com>,
-        Bharat Kumar Gogada <bharat.kumar.gogada@xilinx.com>
-Subject: [PATCH 2/2] PCI: xilinx-nwl: Add optional "dma-coherent" property
-Date:   Tue, 9 Feb 2021 15:49:55 +0530
-Message-ID: <20210209101955.8836-2-bharat.kumar.gogada@xilinx.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210209101955.8836-1-bharat.kumar.gogada@xilinx.com>
-References: <20210209101955.8836-1-bharat.kumar.gogada@xilinx.com>
+        id S231582AbhBIKax (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 05:30:53 -0500
+Received: from lizzard.sbs.de ([194.138.37.39]:54882 "EHLO lizzard.sbs.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230481AbhBIKWZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 05:22:25 -0500
+Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
+        by lizzard.sbs.de (8.15.2/8.15.2) with ESMTPS id 119ALJfY004300
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 9 Feb 2021 11:21:19 +0100
+Received: from [167.87.34.114] ([167.87.34.114])
+        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 119ALIxL006083;
+        Tue, 9 Feb 2021 11:21:18 +0100
+From:   Jan Kiszka <jan.kiszka@siemens.com>
+Subject: [PATCH] arm64: dts: ti: Add support for Siemens IOT2050 boards
+To:     Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Le Jin <le.jin@siemens.com>,
+        Bao Cheng Su <baocheng.su@siemens.com>
+Message-ID: <367f1249-700e-38f2-36de-46fb0be61c5b@siemens.com>
+Date:   Tue, 9 Feb 2021 11:21:18 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 62348d22-ab17-4737-8520-08d8cce44861
-X-MS-TrafficTypeDiagnostic: BY5PR02MB6898:
-X-Microsoft-Antispam-PRVS: <BY5PR02MB68982735191252BBBCAEABBBA58E9@BY5PR02MB6898.namprd02.prod.outlook.com>
-X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-Oob-TLC-OOBClassifiers: OLM:1775;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: XqtpnInFK5U7RjGt5tzuUG1+3nPf/cFMO0t7KWy2pXWdjgw2Jiux7QBv89n0wr0k1zikydqAlWPRkszr9tNSldNcg8g2GnW4RaZaZAyM6Aq9/QhhYRyRmvMeE0nIciC+ZcmcXn00+4vE5xlUzbtCKvuLIIok9LbmSdWhDiHYLuLDYi9OFmUFhBLq6lmkN+ImPWCQHks1Alire8iiCBdLQNi4C3wlB6hHNIrhy9vH3zmSaAZhcEVDZ5S534Ahn5ZJ91Watv525lH6Zx0q4uLh53lyoqJC5SUrTg1BwLT22Fxy2uR3q03fH/kLJlUlhCV6OHswdRtoLuoiZL++1oM5I0DntP2EFnE4lQlF/uEdwJZgOr2ZfWnizPtg/qCLNavUbyBlgGXFbqsws7DJ6k70F1zs4MmVwCiDk4dPCCP64WJOLLM/cHuK9c4cIRWWS8YvlwxmnwvSvE9XuCqjW1dPCvEfFANURtIs8Es6iOXfpl/B5cNskgwuOAzPtNJLOWUETWtupbUMSMQdf0TmC9P9rTzq3rLw9Vo6ZRpGscQgyucWDAOsBZ8gXEoo32o8vtoJC90vJLMNMioepqnHnF66Bg7Ev/1trceDXKkQjysEJ7IxqXGFnQnwIlBeMj1epZLfZLFkpz6KYDXpzUrUJ7yhg20gDgmgx7YIja8h7ZKOveQ9PESeDTUKPeVV3QDxmIl2
-X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch02.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(346002)(39860400002)(396003)(376002)(136003)(46966006)(36840700001)(103116003)(478600001)(107886003)(26005)(186003)(36906005)(6666004)(36756003)(9786002)(8676002)(70206006)(82740400003)(7636003)(70586007)(82310400003)(5660300002)(426003)(110136005)(336012)(316002)(7696005)(2906002)(54906003)(4326008)(4744005)(8936002)(36860700001)(356005)(2616005)(47076005)(1076003)(102446001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Feb 2021 10:20:11.1035
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 62348d22-ab17-4737-8520-08d8cce44861
-X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch02.xlnx.xilinx.com]
-X-MS-Exchange-CrossTenant-AuthSource: SN1NAM02FT057.eop-nam02.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR02MB6898
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add optional dma-coherent property to support coherent PCIe DMA traffic.
+From: Jan Kiszka <jan.kiszka@siemens.com>
 
-Signed-off-by: Bharat Kumar Gogada <bharat.kumar.gogada@xilinx.com>
+Add support for two Siemens SIMATIC IOT2050 variants, Basic and
+Advanced. They are based on the TI AM6528 and AM6548 SOCs.
+
+Based on original version by Le Jin.
+
+Signed-off-by: Jan Kiszka <jan.kiszka@siemens.com>
 ---
- Documentation/devicetree/bindings/pci/xilinx-nwl-pcie.txt | 2 ++
- 1 file changed, 2 insertions(+)
+ .../devicetree/bindings/arm/ti/k3.yaml        |   2 +
+ arch/arm64/boot/dts/ti/Makefile               |   4 +
+ .../boot/dts/ti/k3-am65-iot2050-common.dtsi   | 649 ++++++++++++++++++
+ .../boot/dts/ti/k3-am6528-iot2050-basic.dts   |  56 ++
+ .../dts/ti/k3-am6548-iot2050-advanced.dts     |  57 ++
+ 5 files changed, 768 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi
+ create mode 100644 arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic.dts
+ create mode 100644 arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced.dts
 
-diff --git a/Documentation/devicetree/bindings/pci/xilinx-nwl-pcie.txt b/Documentation/devicetree/bindings/pci/xilinx-nwl-pcie.txt
-index 01bf7fdf4c19..2d677e90a7e2 100644
---- a/Documentation/devicetree/bindings/pci/xilinx-nwl-pcie.txt
-+++ b/Documentation/devicetree/bindings/pci/xilinx-nwl-pcie.txt
-@@ -33,6 +33,8 @@ Required properties:
- 	- #address-cells: specifies the number of cells needed to encode an
- 		address. The value must be 0.
+diff --git a/Documentation/devicetree/bindings/arm/ti/k3.yaml b/Documentation/devicetree/bindings/arm/ti/k3.yaml
+index c6e1c1e63e43..b1ab0cf4a2d6 100644
+--- a/Documentation/devicetree/bindings/arm/ti/k3.yaml
++++ b/Documentation/devicetree/bindings/arm/ti/k3.yaml
+@@ -23,6 +23,8 @@ properties:
+         items:
+           - enum:
+               - ti,am654-evm
++              - siemens,iot2050-basic
++              - siemens,iot2050-advanced
+           - const: ti,am654
  
-+Optional properties:
-+- dma-coherent: present if DMA operations are coherent
+       - description: K3 J721E SoC
+diff --git a/arch/arm64/boot/dts/ti/Makefile b/arch/arm64/boot/dts/ti/Makefile
+index 65506f21ba30..928ea26ce250 100644
+--- a/arch/arm64/boot/dts/ti/Makefile
++++ b/arch/arm64/boot/dts/ti/Makefile
+@@ -8,6 +8,10 @@
  
- Example:
- ++++++++
+ dtb-$(CONFIG_ARCH_K3) += k3-am654-base-board.dtb
+ 
++dtb-$(CONFIG_ARCH_K3) += k3-am6528-iot2050-basic.dtb
++
++dtb-$(CONFIG_ARCH_K3) += k3-am6548-iot2050-advanced.dtb
++
+ dtb-$(CONFIG_ARCH_K3) += k3-j721e-common-proc-board.dtb
+ 
+ dtb-$(CONFIG_ARCH_K3) += k3-j7200-common-proc-board.dtb
+diff --git a/arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi b/arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi
+new file mode 100644
+index 000000000000..de05937dbb60
+--- /dev/null
++++ b/arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi
+@@ -0,0 +1,649 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (c) Siemens AG, 2018-2021
++ *
++ * Authors:
++ *   Le Jin <le.jin@siemens.com>
++ *   Jan Kiszka <jan.kiszk@siemens.com>
++ */
++
++/dts-v1/;
++
++#include "k3-am654.dtsi"
++#include <dt-bindings/phy/phy.h>
++
++/ {
++	aliases {
++		spi0 = &mcu_spi0;
++	};
++
++	chosen {
++		stdout-path = "serial3:115200n8";
++		bootargs = "earlycon=ns16550a,mmio32,0x02800000";
++	};
++
++	reserved-memory {
++		#address-cells = <2>;
++		#size-cells = <2>;
++		ranges;
++
++		secure_ddr: secure_ddr@9e800000 {
++			reg = <0 0x9e800000 0 0x01800000>; /* for OP-TEE */
++			alignment = <0x1000>;
++			no-map;
++		};
++
++		mcu_r5fss0_core0_dma_memory_region: r5f-dma-memory@a0000000 {
++			compatible = "shared-dma-pool";
++			reg = <0 0xa0000000 0 0x100000>;
++			no-map;
++		};
++
++		mcu_r5fss0_core0_memory_region: r5f-memory@a0100000 {
++			compatible = "shared-dma-pool";
++			reg = <0 0xa0100000 0 0xf00000>;
++			no-map;
++		};
++
++		mcu_r5fss0_core1_dma_memory_region: r5f-dma-memory@a1000000 {
++			compatible = "shared-dma-pool";
++			reg = <0 0xa1000000 0 0x100000>;
++			no-map;
++		};
++
++		mcu_r5fss0_core1_memory_region: r5f-memory@a1100000 {
++			compatible = "shared-dma-pool";
++			reg = <0 0xa1100000 0 0xf00000>;
++			no-map;
++		};
++
++		rtos_ipc_memory_region: ipc-memories@a2000000 {
++			reg = <0x00 0xa2000000 0x00 0x00200000>;
++			alignment = <0x1000>;
++			no-map;
++		};
++	};
++
++	gpio_leds {
++		compatible = "gpio-leds";
++		pinctrl-names = "default";
++		pinctrl-0 = <&leds_pins_default>;
++
++		status-led-red {
++			gpios = <&wkup_gpio0 32 GPIO_ACTIVE_HIGH>;
++			panic-indicator;
++			linux,default-trigger = "gpio";
++		};
++
++		status-led-green {
++			gpios = <&wkup_gpio0 24 GPIO_ACTIVE_HIGH>;
++			linux,default-trigger = "gpio";
++		};
++
++		user-led1-red {
++			gpios = <&pcal9535_3 14 GPIO_ACTIVE_HIGH>;
++			linux,default-trigger = "gpio";
++		};
++
++		user-led1-green {
++			gpios = <&pcal9535_2 15 GPIO_ACTIVE_HIGH>;
++			linux,default-trigger = "gpio";
++		};
++
++		user-led2-red {
++			gpios = <&wkup_gpio0 17 GPIO_ACTIVE_HIGH>;
++			linux,default-trigger = "gpio";
++		};
++
++		user-led2-green {
++			gpios = <&wkup_gpio0 22 GPIO_ACTIVE_HIGH>;
++			linux,default-trigger = "gpio";
++		};
++	};
++
++	dp_refclk: clock {
++		compatible = "fixed-clock";
++		#clock-cells = <0>;
++		clock-frequency = <19200000>;
++	};
++};
++
++&wkup_pmx0 {
++	wkup_i2c0_pins_default: wkup_i2c0_pins_default {
++		pinctrl-single,pins = <
++			AM65X_WKUP_IOPAD(0x00e0, PIN_INPUT,  0)  /* (AC7) WKUP_I2C0_SCL */
++			AM65X_WKUP_IOPAD(0x00e4, PIN_INPUT,  0)  /* (AD6) WKUP_I2C0_SDA */
++		>;
++	};
++
++	mcu_i2c0_pins_default: mcu_i2c0_pins_default {
++		pinctrl-single,pins = <
++			AM65X_WKUP_IOPAD(0x00e8, PIN_INPUT,  0)  /* (AD8) MCU_I2C0_SCL */
++			AM65X_WKUP_IOPAD(0x00ec, PIN_INPUT,  0)  /* (AD7) MCU_I2C0_SDA */
++		>;
++	};
++
++	arduino_i2c_aio_switch_pins_default: arduino_i2c_aio_switch_pins_default {
++		pinctrl-single,pins = <
++			AM65X_WKUP_IOPAD(0x0024, PIN_OUTPUT, 7)  /* (R2) WKUP_GPIO0_21 */
++		>;
++	};
++
++	push_button_pins_default: push_button_pins_default {
++		pinctrl-single,pins = <
++			AM65X_WKUP_IOPAD(0x0034, PIN_INPUT,  7)  /* (T1) MCU_OSPI1_CLK.WKUP_GPIO0_25 */
++		>;
++	};
++
++	arduino_uart_pins_default: arduino_uart_pins_default {
++		pinctrl-single,pins = <
++			AM65X_WKUP_IOPAD(0x0044, PIN_INPUT,  4)  /* (P4) MCU_UART0_RXD */
++			AM65X_WKUP_IOPAD(0x0048, PIN_OUTPUT, 4)  /* (P5) MCU_UART0_TXD */
++		>;
++	};
++
++	arduino_io_d2_to_d3_pins_default: arduino_io_d2_to_d3_pins_default {
++		pinctrl-single,pins = <
++			AM65X_WKUP_IOPAD(0x004C, PIN_OUTPUT, 7)  /* (P1) WKUP_GPIO0_31 */
++			AM65X_WKUP_IOPAD(0x0054, PIN_OUTPUT, 7)  /* (N3) WKUP_GPIO0_33 */
++		>;
++	};
++
++	arduino_io_oe_pins_default: arduino_io_oe_pins_default {
++		pinctrl-single,pins = <
++			AM65X_WKUP_IOPAD(0x0058, PIN_OUTPUT, 7)  /* (N4) WKUP_GPIO0_34 */
++			AM65X_WKUP_IOPAD(0x0060, PIN_OUTPUT, 7)  /* (M2) WKUP_GPIO0_36 */
++			AM65X_WKUP_IOPAD(0x0064, PIN_OUTPUT, 7)  /* (M3) WKUP_GPIO0_37 */
++			AM65X_WKUP_IOPAD(0x0068, PIN_OUTPUT, 7)  /* (M4) WKUP_GPIO0_38 */
++			AM65X_WKUP_IOPAD(0x0074, PIN_OUTPUT, 7)  /* (M1) WKUP_GPIO0_41 */
++		>;
++	};
++
++	mcu_fss0_ospi0_pins_default: mcu_fss0_ospi0_pins_default {
++		pinctrl-single,pins = <
++			AM65X_WKUP_IOPAD(0x0000, PIN_OUTPUT, 0)  /* (V1) MCU_OSPI0_CLK */
++			AM65X_WKUP_IOPAD(0x0008, PIN_INPUT,  0)  /* (U2) MCU_OSPI0_DQS */
++			AM65X_WKUP_IOPAD(0x000c, PIN_INPUT,  0)  /* (U4) MCU_OSPI0_D0 */
++			AM65X_WKUP_IOPAD(0x0010, PIN_INPUT,  0)  /* (U5) MCU_OSPI0_D1 */
++			AM65X_WKUP_IOPAD(0x002c, PIN_OUTPUT, 0)  /* (R4) MCU_OSPI0_CSn0 */
++		>;
++	};
++
++	db9_com_mode_pins_default: db9_com_mode_pins_default {
++		pinctrl-single,pins = <
++			AM65X_WKUP_IOPAD(0x00c4, PIN_OUTPUT, 7)  /* (AD3) WKUP_GPIO0_5, used as uart0 mode 0 */
++			AM65X_WKUP_IOPAD(0x00c0, PIN_OUTPUT, 7)  /* (AC3) WKUP_GPIO0_4, used as uart0 mode 1 */
++			AM65X_WKUP_IOPAD(0x00cc, PIN_OUTPUT, 7)  /* (AC1) WKUP_GPIO0_7, used as uart0 term */
++			AM65X_WKUP_IOPAD(0x00c8, PIN_OUTPUT, 7)  /* (AC2) WKUP_GPIO0_6, used as uart0 en */
++		>;
++	};
++
++	leds_pins_default: leds_pins_default {
++		pinctrl-single,pins = <
++			AM65X_WKUP_IOPAD(0x0014, PIN_OUTPUT, 7)  /* (T2) WKUP_GPIO0_17, used as user led1 red */
++			AM65X_WKUP_IOPAD(0x0028, PIN_OUTPUT, 7)  /* (R3) WKUP_GPIO0_22, used as user led1 green */
++			AM65X_WKUP_IOPAD(0x0030, PIN_OUTPUT, 7)  /* (R5) WKUP_GPIO0_24, used as status led red */
++			AM65X_WKUP_IOPAD(0x0050, PIN_OUTPUT, 7)  /* (N2) WKUP_GPIO0_32, used as status led green */
++		>;
++	};
++
++	mcu_spi0_pins_default: mcu_spi0_pins_default {
++		pinctrl-single,pins = <
++			AM65X_WKUP_IOPAD(0x0090, PIN_INPUT,  0)  /* (Y1) MCU_SPI0_CLK */
++			AM65X_WKUP_IOPAD(0x0094, PIN_INPUT,  0)  /* (Y3) MCU_SPI0_D0 */
++			AM65X_WKUP_IOPAD(0x0098, PIN_INPUT,  0)  /* (Y2) MCU_SPI0_D1 */
++			AM65X_WKUP_IOPAD(0x009c, PIN_OUTPUT, 0)  /* (Y4) MCU_SPI0_CS0 */
++		>;
++	};
++
++	minipcie_pins_default: minipcie_pins_default {
++		pinctrl-single,pins = <
++			AM65X_WKUP_IOPAD(0x003C, PIN_OUTPUT, 7)  /* (P2) MCU_OSPI1_DQS.WKUP_GPIO0_27 */
++		>;
++	};
++};
++
++&main_pmx0 {
++	main_uart1_pins_default: main_uart1_pins_default {
++		pinctrl-single,pins = <
++			AM65X_IOPAD(0x0174, PIN_INPUT,  6)  /* (AE23) UART1_RXD */
++			AM65X_IOPAD(0x014c, PIN_OUTPUT, 6)  /* (AD23) UART1_TXD */
++			AM65X_IOPAD(0x0178, PIN_INPUT,  6)  /* (AD22) UART1_CTSn */
++			AM65X_IOPAD(0x017c, PIN_OUTPUT, 6)  /* (AC21) UART1_RTSn */
++		>;
++	};
++
++	main_i2c3_pins_default: main_i2c3_pins_default {
++		pinctrl-single,pins = <
++			AM65X_IOPAD(0x01c0, PIN_INPUT,  2)  /* (AF13) I2C3_SCL */
++			AM65X_IOPAD(0x01d4, PIN_INPUT,  2)  /* (AG12) I2C3_SDA */
++		>;
++	};
++
++	main_mmc1_pins_default: main_mmc1_pins_default {
++		pinctrl-single,pins = <
++			AM65X_IOPAD(0x02d4, PIN_INPUT_PULLDOWN, 0)  /* (C27) MMC1_CLK */
++			AM65X_IOPAD(0x02d8, PIN_INPUT_PULLUP,   0)  /* (C28) MMC1_CMD */
++			AM65X_IOPAD(0x02d0, PIN_INPUT_PULLUP,   0)  /* (D28) MMC1_DAT0 */
++			AM65X_IOPAD(0x02cc, PIN_INPUT_PULLUP,   0)  /* (E27) MMC1_DAT1 */
++			AM65X_IOPAD(0x02c8, PIN_INPUT_PULLUP,   0)  /* (D26) MMC1_DAT2 */
++			AM65X_IOPAD(0x02c4, PIN_INPUT_PULLUP,   0)  /* (D27) MMC1_DAT3 */
++			AM65X_IOPAD(0x02dc, PIN_INPUT_PULLUP,   0)  /* (B24) MMC1_SDCD */
++			AM65X_IOPAD(0x02e0, PIN_INPUT_PULLUP,   0)  /* (C24) MMC1_SDWP */
++		>;
++	};
++
++	usb0_pins_default: usb0_pins_default {
++		pinctrl-single,pins = <
++			AM65X_IOPAD(0x02bc, PIN_OUTPUT, 0)  /* (AD9) USB0_DRVVBUS */
++		>;
++	};
++
++	usb1_pins_default: usb1_pins_default {
++		pinctrl-single,pins = <
++			AM65X_IOPAD(0x02c0, PIN_OUTPUT, 0)  /* (AC8) USB1_DRVVBUS */
++		>;
++	};
++
++	arduino_io_d4_to_d9_pins_default: arduino_io_d4_to_d9_pins_default {
++		pinctrl-single,pins = <
++			AM65X_IOPAD(0x0084, PIN_OUTPUT, 7)  /* (AG18) GPIO0_33 */
++			AM65X_IOPAD(0x008C, PIN_OUTPUT, 7)  /* (AF17) GPIO0_35 */
++			AM65X_IOPAD(0x0098, PIN_OUTPUT, 7)  /* (AH16) GPIO0_38 */
++			AM65X_IOPAD(0x00AC, PIN_OUTPUT, 7)  /* (AH15) GPIO0_43 */
++			AM65X_IOPAD(0x00C0, PIN_OUTPUT, 7)  /* (AG15) GPIO0_48 */
++			AM65X_IOPAD(0x00CC, PIN_OUTPUT, 7)  /* (AD15) GPIO0_51 */
++		>;
++	};
++
++	dss_vout1_pins_default: dss_vout1_pins_default {
++		pinctrl-single,pins = <
++			AM65X_IOPAD(0x0000, PIN_OUTPUT, 1)  /* VOUT1_DATA0 */
++			AM65X_IOPAD(0x0004, PIN_OUTPUT, 1)  /* VOUT1_DATA1 */
++			AM65X_IOPAD(0x0008, PIN_OUTPUT, 1)  /* VOUT1_DATA2 */
++			AM65X_IOPAD(0x000c, PIN_OUTPUT, 1)  /* VOUT1_DATA3 */
++			AM65X_IOPAD(0x0010, PIN_OUTPUT, 1)  /* VOUT1_DATA4 */
++			AM65X_IOPAD(0x0014, PIN_OUTPUT, 1)  /* VOUT1_DATA5 */
++			AM65X_IOPAD(0x0018, PIN_OUTPUT, 1)  /* VOUT1_DATA6 */
++			AM65X_IOPAD(0x001c, PIN_OUTPUT, 1)  /* VOUT1_DATA7 */
++			AM65X_IOPAD(0x0020, PIN_OUTPUT, 1)  /* VOUT1_DATA8 */
++			AM65X_IOPAD(0x0024, PIN_OUTPUT, 1)  /* VOUT1_DATA9 */
++			AM65X_IOPAD(0x0028, PIN_OUTPUT, 1)  /* VOUT1_DATA10 */
++			AM65X_IOPAD(0x002c, PIN_OUTPUT, 1)  /* VOUT1_DATA11 */
++			AM65X_IOPAD(0x0030, PIN_OUTPUT, 1)  /* VOUT1_DATA12 */
++			AM65X_IOPAD(0x0034, PIN_OUTPUT, 1)  /* VOUT1_DATA13 */
++			AM65X_IOPAD(0x0038, PIN_OUTPUT, 1)  /* VOUT1_DATA14 */
++			AM65X_IOPAD(0x003c, PIN_OUTPUT, 1)  /* VOUT1_DATA15 */
++			AM65X_IOPAD(0x0040, PIN_OUTPUT, 1)  /* VOUT1_DATA16 */
++			AM65X_IOPAD(0x0044, PIN_OUTPUT, 1)  /* VOUT1_DATA17 */
++			AM65X_IOPAD(0x0048, PIN_OUTPUT, 1)  /* VOUT1_DATA18 */
++			AM65X_IOPAD(0x004c, PIN_OUTPUT, 1)  /* VOUT1_DATA19 */
++			AM65X_IOPAD(0x0050, PIN_OUTPUT, 1)  /* VOUT1_DATA20 */
++			AM65X_IOPAD(0x0054, PIN_OUTPUT, 1)  /* VOUT1_DATA21 */
++			AM65X_IOPAD(0x0058, PIN_OUTPUT, 1)  /* VOUT1_DATA22 */
++			AM65X_IOPAD(0x005c, PIN_OUTPUT, 1)  /* VOUT1_DATA23 */
++			AM65X_IOPAD(0x0060, PIN_OUTPUT, 1)  /* VOUT1_VSYNC */
++			AM65X_IOPAD(0x0064, PIN_OUTPUT, 1)  /* VOUT1_HSYNC */
++			AM65X_IOPAD(0x0068, PIN_OUTPUT, 1)  /* VOUT1_PCLK */
++			AM65X_IOPAD(0x006c, PIN_OUTPUT, 1)  /* VOUT1_DE */
++		>;
++	};
++
++	dp_pins_default: dp_pins_default {
++		pinctrl-single,pins = <
++			AM65X_IOPAD(0x0078, PIN_OUTPUT, 7)  /* (AF18) DP rst_n */
++		>;
++	};
++
++	main_i2c2_pins_default: main_i2c2_pins_default {
++		pinctrl-single,pins = <
++			AM65X_IOPAD(0x0074, PIN_INPUT,  5)  /* (T27) I2C2_SCL */
++			AM65X_IOPAD(0x0070, PIN_INPUT,  5)  /* (R25) I2C2_SDA */
++		>;
++	};
++};
++
++&main_pmx1 {
++	main_i2c0_pins_default: main-i2c0-pins-default {
++		pinctrl-single,pins = <
++			AM65X_IOPAD(0x0000, PIN_INPUT,  0)  /* (D20) I2C0_SCL */
++			AM65X_IOPAD(0x0004, PIN_INPUT,  0)  /* (C21) I2C0_SDA */
++		>;
++	};
++
++	main_i2c1_pins_default: main-i2c1-pins-default {
++		pinctrl-single,pins = <
++			AM65X_IOPAD(0x0008, PIN_INPUT,  0)  /* (B21) I2C1_SCL */
++			AM65X_IOPAD(0x000c, PIN_INPUT,  0)  /* (E21) I2C1_SDA */
++		>;
++	};
++
++	ecap0_pins_default: ecap0-pins-default {
++		pinctrl-single,pins = <
++			AM65X_IOPAD(0x0010, PIN_INPUT,  0)  /* (D21) ECAP0_IN_APWM_OUT */
++		>;
++	};
++};
++
++&wkup_uart0 {
++	/* Wakeup UART is used by System firmware */
++	status = "disabled";
++};
++
++&main_uart1 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&main_uart1_pins_default>;
++};
++
++&main_uart2 {
++	status = "disabled";
++};
++
++&mcu_uart0 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&arduino_uart_pins_default>;
++};
++
++&main_gpio0 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&arduino_io_d4_to_d9_pins_default>;
++	gpio-line-names =
++		"main_gpio0-base", "", "", "", "", "", "", "", "", "",
++		"", "", "", "", "", "", "", "", "", "",
++		"", "", "", "", "", "", "", "", "", "",
++		"", "", "", "IO4", "", "IO5", "", "", "IO6", "",
++		"", "", "", "IO7", "", "", "", "", "IO8", "",
++		"", "IO9";
++};
++
++&wkup_gpio0 {
++	pinctrl-names = "default";
++	pinctrl-0 = <
++		&arduino_io_d2_to_d3_pins_default
++		&arduino_i2c_aio_switch_pins_default
++		&arduino_io_oe_pins_default
++		&push_button_pins_default
++		&db9_com_mode_pins_default
++	>;
++	gpio-line-names =
++		"wkup_gpio0-base", "", "", "", "UART0-mode1", "UART0-mode0",
++			"UART0-enable", "UART0-terminate", "", "WIFI-disable",
++		"", "", "", "", "", "", "", "", "", "",
++		"", "A4A5-I2C-mux", "", "", "", "USER-button", "", "", "","IO0",
++		"IO1", "IO2", "", "IO3", "IO17-direction",
++			"A5", "IO16-direction", "IO15-direction",
++			"IO14-direction", "A3",
++		"", "IO18-direction", "A4", "A2", "A1",
++			"A0", "", "", "IO13", "IO11",
++		"IO12", "IO10";
++};
++
++&wkup_i2c0 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&wkup_i2c0_pins_default>;
++	clock-frequency = <400000>;
++};
++
++&mcu_i2c0 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&mcu_i2c0_pins_default>;
++	clock-frequency = <400000>;
++
++	psu: tps62363@60 {
++		compatible = "ti,tps62363";
++		reg =  <0x60>;
++		regulator-name = "tps62363-vout";
++		regulator-min-microvolt = <500000>;
++		regulator-max-microvolt = <1500000>;
++		regulator-boot-on;
++		/* ti,vsel0-gpio = <&gpio1 16 0>; */
++		/* ti,vsel1-gpio = <&gpio1 17 0>; */
++		ti,vsel0-state-high;
++		ti,vsel1-state-high;
++		/* ti,enable-pull-down; */
++		/* ti,enable-force-pwm; */
++		ti,enable-vout-discharge;
++	};
++
++	/*D4200*/
++	pcal9535_1: gpio@20 {
++		compatible = "nxp,pcal9535";
++		reg = <0x20>;
++		#gpio-cells = <2>;
++		gpio-controller;
++		gpio-line-names =
++			"A0-pull", "A1-pull", "A2-pull", "A3-pull", "A4-pull",
++			"A5-pull", "", "",
++			"IO14-enable", "IO15-enable", "IO16-enable",
++			"IO17-enable", "IO18-enable", "IO19-enable";
++	};
++
++	/*D4201*/
++	pcal9535_2: gpio@21 {
++		compatible = "nxp,pcal9535";
++		reg = <0x21>;
++		#gpio-cells = <2>;
++		gpio-controller;
++		gpio-line-names =
++			"IO0-direction", "IO1-direction", "IO2-direction",
++			"IO3-direction", "IO4-direction", "IO5-direction",
++			"IO6-direction", "IO7-direction",
++			"IO8-direction", "IO9-direction", "IO10-direction",
++			"IO11-direction", "IO12-direction", "IO13-direction",
++			"IO19-direction";
++	};
++
++	/*D4202*/
++	pcal9535_3: gpio@25 {
++		compatible = "nxp,pcal9535";
++		reg = <0x25>;
++		#gpio-cells = <2>;
++		gpio-controller;
++		gpio-line-names =
++			"IO0-pull", "IO1-pull", "IO2-pull", "IO3-pull",
++			"IO4-pull", "IO5-pull", "IO6-pull", "IO7-pull",
++			"IO8-pull", "IO9-pull", "IO10-pull", "IO11-pull",
++			"IO12-pull", "IO13-pull";
++	};
++};
++
++&main_i2c0 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&main_i2c0_pins_default>;
++	clock-frequency = <400000>;
++
++	rtc:rtc8564@51 {
++		compatible = "nxp,pcf8563";
++		reg = <0x51>;
++	};
++
++	eeprom: eeprom@54 {
++		compatible = "atmel,24c08";
++		reg = <0x54>;
++		pagesize = <16>;
++	};
++};
++
++&main_i2c1 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&main_i2c1_pins_default>;
++	clock-frequency = <400000>;
++};
++
++&main_i2c2 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&main_i2c2_pins_default>;
++	clock-frequency = <400000>;
++};
++
++&main_i2c3 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&main_i2c3_pins_default>;
++	clock-frequency = <400000>;
++
++	#address-cells = <1>;
++	#size-cells = <0>;
++
++	edp-bridge@f {
++		compatible = "toshiba,tc358867", "toshiba,tc358767";
++		reg = <0x0f>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&dp_pins_default>;
++		reset-gpios = <&main_gpio0 30 GPIO_ACTIVE_HIGH>;
++
++		clock-names = "ref";
++		clocks = <&dp_refclk>;
++
++		toshiba,hpd-pin = <0>;
++
++		ports {
++			#address-cells = <1>;
++			#size-cells = <0>;
++
++			port@1 {
++				reg = <1>;
++
++				bridge_in: endpoint {
++					remote-endpoint = <&dpi_out>;
++				};
++			};
++		};
++	};
++};
++
++&mcu_cpsw {
++	status = "disabled";
++};
++
++&ecap0 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&ecap0_pins_default>;
++};
++
++&sdhci1 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&main_mmc1_pins_default>;
++	ti,driver-strength-ohm = <50>;
++	disable-wp;
++};
++
++&dwc3_0 {
++	status = "okay";
++};
++
++&usb0_phy {
++	status = "okay";
++};
++
++&usb0 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&usb0_pins_default>;
++	dr_mode = "host";
++};
++
++&dwc3_1 {
++	status = "okay";
++};
++
++&usb1_phy {
++	status = "okay";
++};
++
++&usb1 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&usb1_pins_default>;
++	dr_mode = "host";
++};
++
++&mcu_spi0 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&mcu_spi0_pins_default>;
++
++	#address-cells = <1>;
++	#size-cells= <0>;
++	ti,pindir-d0-out-d1-in = <1>;
++
++	spidev@0 {
++		compatible = "rohm,dh2228fv";
++		spi-max-frequency = <20000000>;
++		reg = <0>;
++	};
++};
++
++&tscadc0 {
++	status = "disabled";
++};
++
++&tscadc1 {
++	adc {
++		ti,adc-channels = <0 1 2 3 4 5>;
++	};
++};
++
++&ospi0 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&mcu_fss0_ospi0_pins_default>;
++
++	flash@0 {
++		compatible = "jedec,spi-nor";
++		reg = <0x0>;
++		spi-tx-bus-width = <1>;
++		spi-rx-bus-width = <1>;
++		spi-max-frequency = <50000000>;
++		cdns,tshsl-ns = <60>;
++		cdns,tsd2d-ns = <60>;
++		cdns,tchsh-ns = <60>;
++		cdns,tslch-ns = <60>;
++		cdns,read-delay = <2>;
++		#address-cells = <1>;
++		#size-cells = <1>;
++	};
++};
++
++&dss {
++	status = "okay";
++
++	pinctrl-names = "default";
++	pinctrl-0 = <&dss_vout1_pins_default>;
++
++	assigned-clocks = <&k3_clks 67 2>;
++	assigned-clock-parents = <&k3_clks 67 5>;
++};
++
++&dss_ports {
++	#address-cells = <1>;
++	#size-cells = <0>;
++	port@1 {
++		reg = <1>;
++
++		dpi_out: endpoint {
++			remote-endpoint = <&bridge_in>;
++		};
++	};
++};
++
++&serdes0 {
++	status = "disabled";
++};
++
++&pcie0_rc {
++	status = "disabled";
++};
++
++&pcie0_ep {
++	status = "disabled";
++};
++
++&pcie1_rc {
++	pinctrl-names = "default";
++	pinctrl-0 = <&minipcie_pins_default>;
++
++	num-lanes = <1>;
++	phys = <&serdes1 PHY_TYPE_PCIE 0>;
++	phy-names = "pcie-phy0";
++	reset-gpios = <&wkup_gpio0 27 GPIO_ACTIVE_HIGH>;
++};
++
++&pcie1_ep {
++	status = "disabled";
++};
+diff --git a/arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic.dts b/arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic.dts
+new file mode 100644
+index 000000000000..bb9ab4fdd74e
+--- /dev/null
++++ b/arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic.dts
+@@ -0,0 +1,56 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (c) Siemens AG, 2018-2021
++ *
++ * Authors:
++ *   Le Jin <le.jin@siemens.com>
++ *   Jan Kiszka <jan.kiszk@siemens.com>
++ */
++
++/dts-v1/;
++
++#include "k3-am65-iot2050-common.dtsi"
++
++/ {
++	compatible = "siemens,iot2050-basic", "ti,am654";
++	model = "SIMATIC IOT2050 Basic";
++
++	memory@80000000 {
++		device_type = "memory";
++		/* 1G RAM */
++		reg = <0x00000000 0x80000000 0x00000000 0x40000000>;
++	};
++
++	cpus {
++		cpu-map {
++			/delete-node/ cluster1;
++		};
++		/delete-node/ cpu@100;
++		/delete-node/ cpu@101;
++	};
++};
++
++/* eMMC */
++&sdhci0 {
++	status = "disabled";
++};
++
++&main_pmx0 {
++	main_uart0_pins_default: main_uart0_pins_default {
++		pinctrl-single,pins = <
++			AM65X_IOPAD(0x01e4, PIN_INPUT,  0)  /* (AF11) UART0_RXD */
++			AM65X_IOPAD(0x01e8, PIN_OUTPUT, 0)  /* (AE11) UART0_TXD */
++			AM65X_IOPAD(0x01ec, PIN_INPUT,  0)  /* (AG11) UART0_CTSn */
++			AM65X_IOPAD(0x01f0, PIN_OUTPUT, 0)  /* (AD11) UART0_RTSn */
++			AM65X_IOPAD(0x0188, PIN_INPUT,  1)  /* (D25) UART0_DCDn */
++			AM65X_IOPAD(0x018c, PIN_INPUT,  1)  /* (B26) UART0_DSRn */
++			AM65X_IOPAD(0x0190, PIN_OUTPUT, 1)  /* (A24) UART0_DTRn */
++			AM65X_IOPAD(0x0194, PIN_INPUT,  1)  /* (E24) UART0_RIN */
++		>;
++	};
++};
++
++&main_uart0 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&main_uart0_pins_default>;
++};
+diff --git a/arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced.dts b/arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced.dts
+new file mode 100644
+index 000000000000..aa1ef081ef22
+--- /dev/null
++++ b/arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced.dts
+@@ -0,0 +1,57 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (c) Siemens AG, 2018-2021
++ *
++ * Authors:
++ *   Le Jin <le.jin@siemens.com>
++ *   Jan Kiszka <jan.kiszk@siemens.com>
++ */
++
++/dts-v1/;
++
++#include "k3-am65-iot2050-common.dtsi"
++
++/ {
++	compatible = "siemens,iot2050-advanced", "ti,am654";
++	model = "SIMATIC IOT2050 Advanced";
++
++	memory@80000000 {
++		device_type = "memory";
++		/* 2G RAM */
++		reg = <0x00000000 0x80000000 0x00000000 0x80000000>;
++	};
++};
++
++&main_pmx0 {
++	main_mmc0_pins_default: main_mmc0_pins_default {
++		pinctrl-single,pins = <
++			AM65X_IOPAD(0x01a8, PIN_INPUT_PULLDOWN, 0)  /* (B25) MMC0_CLK */
++			AM65X_IOPAD(0x01ac, PIN_INPUT_PULLUP,   0)  /* (B27) MMC0_CMD */
++			AM65X_IOPAD(0x01a4, PIN_INPUT_PULLUP,   0)  /* (A26) MMC0_DAT0 */
++			AM65X_IOPAD(0x01a0, PIN_INPUT_PULLUP,   0)  /* (E25) MMC0_DAT1 */
++			AM65X_IOPAD(0x019c, PIN_INPUT_PULLUP,   0)  /* (C26) MMC0_DAT2 */
++			AM65X_IOPAD(0x0198, PIN_INPUT_PULLUP,   0)  /* (A25) MMC0_DAT3 */
++			AM65X_IOPAD(0x0194, PIN_INPUT_PULLUP,   0)  /* (E24) MMC0_DAT4 */
++			AM65X_IOPAD(0x0190, PIN_INPUT_PULLUP,   0)  /* (A24) MMC0_DAT5 */
++			AM65X_IOPAD(0x018c, PIN_INPUT_PULLUP,   0)  /* (B26) MMC0_DAT6 */
++			AM65X_IOPAD(0x0188, PIN_INPUT_PULLUP,   0)  /* (D25) MMC0_DAT7 */
++			AM65X_IOPAD(0x01b8, PIN_OUTPUT_PULLUP,  7)  /* (B23) MMC0_SDWP */
++			AM65X_IOPAD(0x01b4, PIN_INPUT_PULLUP,   0)  /* (A23) MMC0_SDCD */
++			AM65X_IOPAD(0x01b0, PIN_INPUT,          0)  /* (C25) MMC0_DS */
++		>;
++	};
++};
++
++/* eMMC */
++&sdhci0 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&main_mmc0_pins_default>;
++	bus-width = <8>;
++	non-removable;
++	ti,driver-strength-ohm = <50>;
++	disable-wp;
++};
++
++&main_uart0 {
++	status = "disabled";
++};
 -- 
-2.17.1
-
+2.26.2
