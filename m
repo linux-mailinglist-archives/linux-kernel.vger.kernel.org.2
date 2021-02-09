@@ -2,81 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C103E315BC1
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 01:58:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4936E315BC4
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 01:59:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235013AbhBJA54 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 19:57:56 -0500
-Received: from mail-yb1-f181.google.com ([209.85.219.181]:44812 "EHLO
-        mail-yb1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234096AbhBIWOD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 17:14:03 -0500
-Received: by mail-yb1-f181.google.com with SMTP id r2so19723786ybk.11;
-        Tue, 09 Feb 2021 14:13:47 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=VE2EhdIByMacgmRTG1LkrJDJV8t/c6l+WLOiRcExhRk=;
-        b=P8wXqjrDeDo/u+ocFH/ssSayb70LQqtWWOspBYXQcaYmbmToZopaTHf8UltF/wEHPx
-         DL2lNeFGqzjMc+Gqz2VF/aSqGSUHF7Wqk0Nr0nI9li6PWLZQmI0DSmtYsjrP5gAHcUxt
-         cLC4CZbFd8Gatcp+hLpjoCEuRAJP9hK/FjhbCqD+oYWvE8eKcXvK1epCISkmazqDSjNO
-         wUv5dwqLgQvN8u9hrpIBFb5tPYyDAl0gOm+gz/V9JlI4pObgG8jR3Z/hqnFNBe3Z3hTd
-         10pnw5HwixOYTBw8JzPOKD7ANXbB5vXdeKPo2kAhYWxAIS1oN8zNIJB1NyU/2eWveUXk
-         doUg==
-X-Gm-Message-State: AOAM533ZyantgnKemp3v8sxPgizl4fdrveWTuoBCxsdga4CNEHXGCrkO
-        BjSYpLKiwpgjEYS2VGJsNcVgwD3T5A==
-X-Google-Smtp-Source: ABdhPJwOKR7aLyRiaGSdsTsdDouEbfAmDLNj7QHCR08u3CsoA27ruITo6RAAWtqCOIVCqMufvZQOmg==
-X-Received: by 2002:a9d:32f4:: with SMTP id u107mr11203135otb.308.1612905924777;
-        Tue, 09 Feb 2021 13:25:24 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id c2sm4302590ooo.17.2021.02.09.13.25.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Feb 2021 13:25:23 -0800 (PST)
-Received: (nullmailer pid 218136 invoked by uid 1000);
-        Tue, 09 Feb 2021 21:25:21 -0000
-Date:   Tue, 9 Feb 2021 15:25:21 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     linux-clk@vger.kernel.org, Kevin Hilman <khilman@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>, linux-acpi@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>, kernel-team@android.com,
-        Michael Turquette <mturquette@baylibre.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>, linux-doc@vger.kernel.org,
-        Len Brown <lenb@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Pavel Machek <pavel@ucw.cz>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-kernel@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
-        linux-pm@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>,
-        Len Brown <len.brown@intel.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>
-Subject: Re: [PATCH v4 2/8] of: property: Don't add links to absent suppliers
-Message-ID: <20210209212521.GA218083@robh.at.kernel.org>
-References: <20210205222644.2357303-1-saravanak@google.com>
- <20210205222644.2357303-3-saravanak@google.com>
+        id S234609AbhBJA7B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 19:59:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55572 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234150AbhBIWO6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 17:14:58 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A8E0064E8C;
+        Tue,  9 Feb 2021 21:33:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612906412;
+        bh=m8k7mmXys1RUFq6qujjO66b+EdVXFLMSPJNPdVyXlNs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lVrhhBDak5uhy5UZ8ZvxFiYSdBpuNImA3x0LnWQvRp1gshgIEHXkgzdnQTXfkpp/i
+         zUmiDyno2aUwVW4itQ8jwaqqlieT7UKM3MJpOVL2yzsn+FCC50YxTZa89qLmwRyFxz
+         rqfKT4MrLgjO/+JUo8d15ZY6s/QADeIA6WbT+m3ktxSMOdq2WCCXT/FXAcgqpXjvnZ
+         ZNITkjSwKjU/DWql4cHSkWp6a+GM6OrXPzAkKJ+ZWh6Xws4brRVvjKhLqbVlNSuGik
+         Jh3iHMlxfs7vTFiR0Nqo+IJktlwzb9VdgevjTwh7w156z/arw+N8CtOuazV3B0uwJx
+         v6p2QrMF/fe5A==
+Received: by pali.im (Postfix)
+        id 61346F9A; Tue,  9 Feb 2021 22:33:30 +0100 (CET)
+Date:   Tue, 9 Feb 2021 22:33:30 +0100
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     nnet <nnet@fastmail.fm>
+Cc:     a.heider@gmail.com, andrew@lunn.ch, gerald@gk2.net,
+        gregory.clement@bootlin.com, kabel@kernel.org, kostap@marvell.com,
+        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, luka.perkov@sartura.hr,
+        miquel.raynal@bootlin.com, mturquette@baylibre.com,
+        rmk+kernel@armlinux.org.uk, sboyd@kernel.org, tmn505@gmail.com,
+        vladimir.vid@sartura.hr
+Subject: Re: [PATCH mvebu v2 00/10] Armada 37xx: Fix cpufreq changing base
+ CPU speed to 800 MHz from 1000 MHz
+Message-ID: <20210209213330.hnc7op72zoj24mgz@pali>
+References: <d59ba191-43db-4b7b-b201-62a60ca752c0@www.fastmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210205222644.2357303-3-saravanak@google.com>
+In-Reply-To: <d59ba191-43db-4b7b-b201-62a60ca752c0@www.fastmail.com>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 05 Feb 2021 14:26:38 -0800, Saravana Kannan wrote:
-> If driver core marks a firmware node as not a device, don't add fwnode
-> links where it's a supplier.
+On Tuesday 09 February 2021 13:00:26 nnet wrote:
+> > If you have other Armada 3720 boards (Espressobin v5/v7, uDPU, Devel Board, ...) then it will be nice to do an additional tests and check if instability issues are finally fixed.
 > 
-> Fixes: e590474768f1 ("driver core: Set fw_devlink=on by default")
-> Signed-off-by: Saravana Kannan <saravanak@google.com>
-> ---
->  drivers/of/property.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
+> These patches applied to the 5.4.96 in OpenWrt (98d61b5) work fine so far on an Espressobin v7 AFAICT per changing values in /sys/devices/system/cpu/cpufreq/policy0.
 > 
+> Are these changes intended to work @1.2 GHz on the v7?
 
-Acked-by: Rob Herring <robh@kernel.org>
+Hello! Do you have 1.2 GHz A3720 SoC?
