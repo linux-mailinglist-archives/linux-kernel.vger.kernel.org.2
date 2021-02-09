@@ -2,107 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B5F5314976
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 08:26:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4902831497D
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 08:29:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230268AbhBIHZi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 02:25:38 -0500
-Received: from mail29.static.mailgun.info ([104.130.122.29]:61330 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230286AbhBIHZM (ORCPT
+        id S230288AbhBIH0x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 02:26:53 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:12501 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230329AbhBIH0O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 02:25:12 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1612855494; h=Date: Message-Id: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=qA7gLOs+c3RyRz/nEUpO8aS+X2snIkrbfEwG0oacl2A=;
- b=aVm/nVom7qpgOqp4t01ebCfNwA+dk9AsU5XIFNiiZ84ZWl4LuFkllzsf3Tw5OR6Y8zL9f21a
- yRGXevembID3AVKDuo2q+bGQ5zk+/1LD/1ADDtxj7AhCcNBVkXrKNtPBsq1guYIywv9q/iOk
- mohVQ1w/DxRYhG3Ye1tNNSBoxm4=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 602238b434db06ef79172c5e (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 09 Feb 2021 07:24:36
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 2409CC43461; Tue,  9 Feb 2021 07:24:36 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        MISSING_DATE,MISSING_MID,SPF_FAIL,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 40AD8C433CA;
-        Tue,  9 Feb 2021 07:24:33 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 40AD8C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-Content-Type: text/plain; charset="utf-8"
+        Tue, 9 Feb 2021 02:26:14 -0500
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DZZBn4XhfzjLHC;
+        Tue,  9 Feb 2021 15:24:01 +0800 (CST)
+Received: from [127.0.0.1] (10.40.192.131) by DGGEMS411-HUB.china.huawei.com
+ (10.3.19.211) with Microsoft SMTP Server id 14.3.498.0; Tue, 9 Feb 2021
+ 15:25:22 +0800
+Subject: Re: [PATCH v1 1/2] irqchip/gic-v3-its: don't set bitmap for LPI which
+ user didn't allocate
+To:     Marc Zyngier <maz@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <linux-pci@vger.kernel.org>,
+        <linuxarm@openeuler.org>
+References: <1612781926-56206-1-git-send-email-luojiaxing@huawei.com>
+ <1612781926-56206-2-git-send-email-luojiaxing@huawei.com>
+ <508c6c07a2c599ae1fc8b726fda69b44@kernel.org>
+From:   luojiaxing <luojiaxing@huawei.com>
+Message-ID: <bfe5e98a-52a6-636b-6b61-45482c07e2ec@huawei.com>
+Date:   Tue, 9 Feb 2021 15:25:22 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.2.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH] carl9170: fix struct alignment conflict
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20210204162926.3262598-1-arnd@kernel.org>
-References: <20210204162926.3262598-1-arnd@kernel.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Christian Lamparter <chunkeey@googlemail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
-Message-Id: <20210209072436.2409CC43461@smtp.codeaurora.org>
-Date:   Tue,  9 Feb 2021 07:24:36 +0000 (UTC)
+In-Reply-To: <508c6c07a2c599ae1fc8b726fda69b44@kernel.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [10.40.192.131]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Arnd Bergmann <arnd@kernel.org> wrote:
 
-> Multiple structures in the carl9170 driver have alignment
-> impossible alignment constraints that gcc warns about when
-> building with 'make W=1':
-> 
-> drivers/net/wireless/ath/carl9170/fwcmd.h:243:2: warning: alignment 1 of 'union <anonymous>' is less than 4 [-Wpacked-not-aligned]
-> drivers/net/wireless/ath/carl9170/wlan.h:373:1: warning: alignment 1 of 'struct ar9170_rx_frame_single' is less than 2 [-Wpacked-not-aligned]
-> 
-> In the carl9170_cmd structure, multiple members that have an explicit
-> alignment requirement of four bytes are added into a union with explicit
-> byte alignment, but this in turn is part of a structure that also has
-> four-byte alignment.
-> 
-> In the wlan.h header, multiple structures contain a ieee80211_hdr member
-> that is required to be two-byte aligned to avoid alignmnet faults when
-> processing network headers, but all members are forced to be byte-aligned
-> using the __packed tag at the end of the struct definition.
-> 
-> In both cases, leaving out the packing does not change the internal
-> layout of the structure but changes the alignment constraint of the
-> structure itself.
-> 
-> Change all affected structures to only apply packing where it does
-> not violate the alignment requirement of the contained structure.
-> 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> Acked-by: Christian Lamparter <chunkeey@gmail.com>
-> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+On 2021/2/8 19:59, Marc Zyngier wrote:
+> On 2021-02-08 10:58, Luo Jiaxing wrote:
+>> The driver sets the LPI bitmap of device based on 
+>> get_count_order(nvecs).
+>> This means that when the number of LPI interrupts does not meet the 
+>> power
+>> of two, redundant bits are set in the LPI bitmap. However, when free
+>> interrupt, these redundant bits is not cleared. As a result, device will
+>> fails to allocate the same numbers of interrupts next time.
+>>
+>> Therefore, clear the redundant bits set in LPI bitmap.
+>>
+>> Fixes: 4615fbc3788d ("genirq/irqdomain: Don't try to free an interrupt
+>> that has no mapping")
+>>
+>> Signed-off-by: Luo Jiaxing <luojiaxing@huawei.com>
+>> ---
+>>  drivers/irqchip/irq-gic-v3-its.c | 4 ++++
+>>  1 file changed, 4 insertions(+)
+>>
+>> diff --git a/drivers/irqchip/irq-gic-v3-its.c 
+>> b/drivers/irqchip/irq-gic-v3-its.c
+>> index ed46e60..027f7ef 100644
+>> --- a/drivers/irqchip/irq-gic-v3-its.c
+>> +++ b/drivers/irqchip/irq-gic-v3-its.c
+>> @@ -3435,6 +3435,10 @@ static int its_alloc_device_irq(struct
+>> its_device *dev, int nvecs, irq_hw_number
+>>
+>>      *hwirq = dev->event_map.lpi_base + idx;
+>>
+>> +    bitmap_clear(dev->event_map.lpi_map,
+>> +             idx + nvecs,
+>> +             roundup_pow_of_two(nvecs) - nvecs);
+>> +
+>>      return 0;
+>>  }
+>
+> What makes you think that the remaining LPIs are free to be released?
 
-Patch applied to ath-next branch of ath.git, thanks.
 
-ca9ad549e404 carl9170: fix struct alignment conflict
+I think that the LPI bitmap is used to mark the valid LPI interrupts 
+allocated to the PCIe device.
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/patch/20210204162926.3262598-1-arnd@kernel.org/
+Therefore, for the remaining LPIs, the ITS can reserve entries in the 
+ITT table, but the bitmap does not need to be set.
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
+Maybe my understanding is wrong, and I'm a little confused about the 
+function of this bitmap.
+
+
+> Even if the end-point has request a non-po2 number of MSIs, it could
+> very well rely on the the rest of it to be available (specially in the
+> case of PCI Multi-MSI).
+
+
+yes, you are right. But for Multi-MSI, does it mean that one PCIE device 
+can own several MSI interrupts?
+
+
+Another question, is it possible for module driver to use these 
+remaining LPIs?
+
+For example, in my case
+
+
+I allcoate 32 MSI with 16 affi-IRQ in it.
+
+MSI can only offer 20 MSIs because online CPU number is 4 and it create 
+20 msi desc then.
+
+ITS create a its device for this PCIe device and generate a ITT tabel 
+for 32 MSIs.
+
+
+so in MSI, it provide 20 valid MSIs, but in ITS, lpi bitmap show that 32 
+MSI is allocated.
+
+This logic is a bit strange and a little incomprehensible.
+
+
+>
+> Have a look at the thread pointed out by John for a potential fix.
+
+
+Sorry for missing that, I think it can fix my issue too, let me test it 
+later.
+
+
+Thanks
+
+jiaxing
+
+
+>
+> Thanks,
+>
+>         M.
 
