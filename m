@@ -2,226 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89F4A314F62
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 13:46:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 769CC314F63
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 13:46:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230194AbhBIMpf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 07:45:35 -0500
-Received: from mx1.opensynergy.com ([217.66.60.4]:47974 "EHLO
-        mx1.opensynergy.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230362AbhBIMmu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 07:42:50 -0500
-Received: from SR-MAILGATE-02.opensynergy.com (localhost.localdomain [127.0.0.1])
-        by mx1.opensynergy.com (Proxmox) with ESMTP id E2B93A15F7;
-        Tue,  9 Feb 2021 13:41:09 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=opensynergy.com;
-         h=cc:cc:content-transfer-encoding:content-type:content-type
-        :date:from:from:in-reply-to:message-id:mime-version:references
-        :reply-to:subject:subject:to:to; s=srmailgate02; bh=Kf3NoYTKMR9c
-        KxKhivPIKRwuTjyeEW86UKMD9wJXhYg=; b=SXWaVvwzKI9BNgLAL1EQJKR211hc
-        WyuKWuvWAt8HwBQixKM8+xr3ts9WmVli/4LZxvHOzxHlTRFoOt3K4Pz7fMauc3AN
-        0s3OXtUGmp66Bw95Q23lLFt17F1WzD+RgA9IAohvA9TiW5kwZDglCiYFCBOspHnU
-        9t31Z9QwKJBnM2ANTtckNlk/3PahJLCErR0mxe+IyzGvTvSgegZgtH762bqw950d
-        XOD1aQn7vHzyXQyCcd10Ey2+hJn4+0YBqqQZ/J5h5Y2haL8Og+azF+aDIo+MsrOV
-        GmjrRJ09V/vAVC+CfC5ni4+EAS5CeJT/A4ukHDLAmFLUH0T4eJ4QHSJM9A==
-From:   Anton Yakovlev <anton.yakovlev@opensynergy.com>
-To:     <virtualization@lists.linux-foundation.org>,
-        <alsa-devel@alsa-project.org>, <virtio-dev@lists.oasis-open.org>
-CC:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v3 9/9] ALSA: virtio: introduce device suspend/resume support
-Date:   Tue, 9 Feb 2021 13:40:10 +0100
-Message-ID: <20210209124011.1224628-10-anton.yakovlev@opensynergy.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210209124011.1224628-1-anton.yakovlev@opensynergy.com>
-References: <20210209124011.1224628-1-anton.yakovlev@opensynergy.com>
+        id S230265AbhBIMpt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 07:45:49 -0500
+Received: from mga11.intel.com ([192.55.52.93]:15596 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230412AbhBIMnB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 07:43:01 -0500
+IronPort-SDR: wyMpPCyYtzIAvkBtLuKC1RRGYHs6TwB3gIoozCI8TPxITky6Kk7x9WlNeYz8bfjGqAWMXdAWKS
+ 0zepbT7RYdmg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9889"; a="178362269"
+X-IronPort-AV: E=Sophos;i="5.81,164,1610438400"; 
+   d="scan'208";a="178362269"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2021 04:41:08 -0800
+IronPort-SDR: 6KPKfSvEZSTkUrzHjcp/yuliol8zzke1i7JlRE/MWmabiN1Rfs7TsNnoJ4kMBS/hCoUtpjfX8N
+ Kp/n0M/KEWgQ==
+X-IronPort-AV: E=Sophos;i="5.81,164,1610438400"; 
+   d="scan'208";a="398768358"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2021 04:41:04 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1l9SKD-003DWG-9k; Tue, 09 Feb 2021 14:41:01 +0200
+Date:   Tue, 9 Feb 2021 14:41:01 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Yafang Shao <laoar.shao@gmail.com>
+Cc:     willy@infradead.org, david@redhat.com, linmiaohe@huawei.com,
+        vbabka@suse.cz, cl@linux.com, penberg@kernel.org,
+        rientjes@google.com, iamjoonsoo.kim@lge.com,
+        akpm@linux-foundation.org, pmladek@suse.com, rostedt@goodmis.org,
+        sergey.senozhatsky@gmail.com, joe@perches.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 0/3] mm, vsprintf: dump full information of page flags
+ in pGp
+Message-ID: <YCKC3fkbOjJsem+E@smile.fi.intel.com>
+References: <20210209105613.42747-1-laoar.shao@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SR-MAIL-02.open-synergy.com (10.26.10.22) To
- SR-MAIL-01.open-synergy.com (10.26.10.21)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210209105613.42747-1-laoar.shao@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-All running PCM substreams are stopped on device suspend and restarted
-on device resume.
+On Tue, Feb 09, 2021 at 06:56:10PM +0800, Yafang Shao wrote:
+> The existed pGp shows the names of page flags only, rather than the full
+> information including section, node, zone, last cpuipid and kasan tag.
+> While it is not easy to parse these information manually because there
+> are so many flavors. We'd better interpret them in printf.
+> 
+> To be compitable with the existed format of pGp, the new introduced ones
+> also use '|' as the separator, then the user tools parsing pGp won't
+> need to make change, suggested by Matthew. The new added information is
+> tracked onto the end of the existed one, e.g.
+> [ 8838.835456] Slab 0x000000002828b78a objects=33 used=3 fp=0x00000000d04efc88 flags=0x17ffffc0010200(slab|head|node=0|zone=2|lastcpupid=0x1fffff)
+> 
+> The documentation and test cases are also updated. The result of the
+> test cases as follows,
+> [  501.485081] test_printf: loaded.
+> [  501.485768] test_printf: all 388 tests passed
+> [  501.488762] test_printf: unloaded.
+> 
+> This patchset also includes some code cleanup in mm/slub.c.
 
-Signed-off-by: Anton Yakovlev <anton.yakovlev@opensynergy.com>
----
- sound/virtio/virtio_card.c    | 57 +++++++++++++++++++++++++++++++++++
- sound/virtio/virtio_pcm.c     |  1 +
- sound/virtio/virtio_pcm_ops.c | 44 ++++++++++++++++++++-------
- 3 files changed, 91 insertions(+), 11 deletions(-)
+FWIW,
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-diff --git a/sound/virtio/virtio_card.c b/sound/virtio/virtio_card.c
-index 787a4dec1da8..1f0a0fa7bbc0 100644
---- a/sound/virtio/virtio_card.c
-+++ b/sound/virtio/virtio_card.c
-@@ -373,6 +373,59 @@ static void virtsnd_config_changed(struct virtio_device *vdev)
- 			 "sound device configuration was changed\n");
- }
- 
-+#ifdef CONFIG_PM_SLEEP
-+/**
-+ * virtsnd_freeze() - Suspend device.
-+ * @vdev: VirtIO parent device.
-+ *
-+ * Context: Any context.
-+ * Return: 0 on success, -errno on failure.
-+ */
-+static int virtsnd_freeze(struct virtio_device *vdev)
-+{
-+	struct virtio_snd *snd = vdev->priv;
-+
-+	/* Stop all the virtqueues. */
-+	vdev->config->reset(vdev);
-+	vdev->config->del_vqs(vdev);
-+
-+	virtsnd_ctl_msg_cancel_all(snd);
-+
-+	kfree(snd->event_msgs);
-+
-+	/*
-+	 * If the virtsnd_restore() fails before re-allocating events, then we
-+	 * get a dangling pointer here.
-+	 */
-+	snd->event_msgs = NULL;
-+
-+	return 0;
-+}
-+
-+/**
-+ * virtsnd_restore() - Resume device.
-+ * @vdev: VirtIO parent device.
-+ *
-+ * Context: Any context.
-+ * Return: 0 on success, -errno on failure.
-+ */
-+static int virtsnd_restore(struct virtio_device *vdev)
-+{
-+	struct virtio_snd *snd = vdev->priv;
-+	int rc;
-+
-+	rc = virtsnd_find_vqs(snd);
-+	if (rc)
-+		return rc;
-+
-+	virtio_device_ready(vdev);
-+
-+	virtsnd_enable_event_vq(snd);
-+
-+	return 0;
-+}
-+#endif /* CONFIG_PM_SLEEP */
-+
- static const struct virtio_device_id id_table[] = {
- 	{ VIRTIO_ID_SOUND, VIRTIO_DEV_ANY_ID },
- 	{ 0 },
-@@ -386,6 +439,10 @@ static struct virtio_driver virtsnd_driver = {
- 	.probe = virtsnd_probe,
- 	.remove = virtsnd_remove,
- 	.config_changed = virtsnd_config_changed,
-+#ifdef CONFIG_PM_SLEEP
-+	.freeze = virtsnd_freeze,
-+	.restore = virtsnd_restore,
-+#endif
- };
- 
- static int __init init(void)
-diff --git a/sound/virtio/virtio_pcm.c b/sound/virtio/virtio_pcm.c
-index 1d98de878385..401d4c975d2b 100644
---- a/sound/virtio/virtio_pcm.c
-+++ b/sound/virtio/virtio_pcm.c
-@@ -109,6 +109,7 @@ static int virtsnd_pcm_build_hw(struct virtio_pcm_substream *vss,
- 		SNDRV_PCM_INFO_BATCH |
- 		SNDRV_PCM_INFO_BLOCK_TRANSFER |
- 		SNDRV_PCM_INFO_INTERLEAVED |
-+		SNDRV_PCM_INFO_RESUME |
- 		SNDRV_PCM_INFO_PAUSE;
- 
- 	if (!info->channels_min || info->channels_min > info->channels_max) {
-diff --git a/sound/virtio/virtio_pcm_ops.c b/sound/virtio/virtio_pcm_ops.c
-index c2224f5461c4..207f4877a5ec 100644
---- a/sound/virtio/virtio_pcm_ops.c
-+++ b/sound/virtio/virtio_pcm_ops.c
-@@ -220,6 +220,10 @@ static int virtsnd_pcm_hw_params(struct snd_pcm_substream *substream,
- 	if (rc)
- 		return rc;
- 
-+	/* If messages have already been allocated before, do nothing. */
-+	if (runtime->status->state == SNDRV_PCM_STATE_SUSPENDED)
-+		return 0;
-+
- 	return virtsnd_pcm_msg_alloc(vss, periods, period_bytes);
- }
- 
-@@ -260,19 +264,21 @@ static int virtsnd_pcm_prepare(struct snd_pcm_substream *substream)
- 	}
- 
- 	spin_lock_irqsave(&vss->lock, flags);
--	/*
--	 * Since I/O messages are asynchronous, they can be completed
--	 * when the runtime structure no longer exists. Since each
--	 * completion implies incrementing the hw_ptr, we cache all the
--	 * current values needed to compute the new hw_ptr value.
--	 */
--	vss->frame_bytes = runtime->frame_bits >> 3;
--	vss->period_size = runtime->period_size;
--	vss->buffer_size = runtime->buffer_size;
-+	if (runtime->status->state != SNDRV_PCM_STATE_SUSPENDED) {
-+		/*
-+		 * Since I/O messages are asynchronous, they can be completed
-+		 * when the runtime structure no longer exists. Since each
-+		 * completion implies incrementing the hw_ptr, we cache all the
-+		 * current values needed to compute the new hw_ptr value.
-+		 */
-+		vss->frame_bytes = runtime->frame_bits >> 3;
-+		vss->period_size = runtime->period_size;
-+		vss->buffer_size = runtime->buffer_size;
- 
--	vss->hw_ptr = 0;
-+		vss->hw_ptr = 0;
-+		vss->msg_last_enqueued = -1;
-+	}
- 	vss->xfer_xrun = false;
--	vss->msg_last_enqueued = -1;
- 	vss->msg_count = 0;
- 	spin_unlock_irqrestore(&vss->lock, flags);
- 
-@@ -302,6 +308,21 @@ static int virtsnd_pcm_trigger(struct snd_pcm_substream *substream, int command)
- 	int rc;
- 
- 	switch (command) {
-+	case SNDRV_PCM_TRIGGER_RESUME: {
-+		/*
-+		 * We restart the substream by executing the standard command
-+		 * sequence.
-+		 */
-+		rc = virtsnd_pcm_hw_params(substream, NULL);
-+		if (rc)
-+			return rc;
-+
-+		rc = virtsnd_pcm_prepare(substream);
-+		if (rc)
-+			return rc;
-+
-+		fallthrough;
-+	}
- 	case SNDRV_PCM_TRIGGER_START:
- 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE: {
- 		struct virtio_snd_queue *queue = virtsnd_pcm_queue(vss);
-@@ -328,6 +349,7 @@ static int virtsnd_pcm_trigger(struct snd_pcm_substream *substream, int command)
- 
- 		return virtsnd_ctl_msg_send_sync(snd, msg);
- 	}
-+	case SNDRV_PCM_TRIGGER_SUSPEND:
- 	case SNDRV_PCM_TRIGGER_STOP:
- 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH: {
- 		spin_lock_irqsave(&vss->lock, flags);
+> v4:
+> - extend %pGp instead of introducing new format, per Matthew
+> 
+> v3:
+> - coding improvement, per Joe and Andy
+> - the possible impact on debugfs and the fix of it, per Joe and Matthew
+> - introduce new format instead of changing pGp, per Andy
+> 
+> v2:
+> - various coding improvement, per Joe, Miaohe, Vlastimil and Andy
+> - remove the prefix completely in patch #2, per Vlastimil
+> - Update the test cases, per Andy
+> 
+> Yafang Shao (3):
+>   mm, slub: use pGp to print page flags
+>   mm, slub: don't combine pr_err with INFO
+>   vsprintf: dump full information of page flags in pGp
+> 
+>  Documentation/core-api/printk-formats.rst |  2 +-
+>  lib/test_printf.c                         | 60 +++++++++++++++++----
+>  lib/vsprintf.c                            | 66 +++++++++++++++++++++--
+>  mm/slub.c                                 | 13 ++---
+>  4 files changed, 121 insertions(+), 20 deletions(-)
+> 
+> -- 
+> 2.17.1
+> 
+
 -- 
-2.30.0
+With Best Regards,
+Andy Shevchenko
 
 
