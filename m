@@ -2,90 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 364B6315BA5
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 01:53:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 987F8315B9D
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 01:51:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233958AbhBJAv6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 19:51:58 -0500
-Received: from mga18.intel.com ([134.134.136.126]:23099 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232991AbhBIWJ6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 17:09:58 -0500
-IronPort-SDR: qm3QDZKXVvUz7zK36R1cBmtYWTMjh9MmHmrEqnEf/VtC/ag/YXR087xiBAeOSqr2pPhsBdR/hE
- d16Vo7P0q9cA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9890"; a="169646391"
-X-IronPort-AV: E=Sophos;i="5.81,166,1610438400"; 
-   d="scan'208";a="169646391"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2021 13:52:30 -0800
-IronPort-SDR: KMBExiMqHPbOmuFWjVF8uvMMKlFrOnZlogo2zHUcOm/4gLUvrr15QrFYyuMFho/oWotwP63h6j
- qaE46oV2PR+w==
-X-IronPort-AV: E=Sophos;i="5.81,166,1610438400"; 
-   d="scan'208";a="578192087"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2021 13:52:30 -0800
-Date:   Tue, 9 Feb 2021 13:52:29 -0800
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     dsterba@suse.cz, clm@fb.com, josef@toxicpanda.com,
-        dsterba@suse.com, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, Matthew Wilcox <willy@infradead.org>
-Subject: Re: [PATCH 0/4] btrfs: Convert kmaps to core page calls
-Message-ID: <20210209215229.GC2975576@iweiny-DESK2.sc.intel.com>
-References: <20210205232304.1670522-1-ira.weiny@intel.com>
- <20210209151123.GT1993@suse.cz>
- <20210209110931.00f00e47d9a0529fcee2ff01@linux-foundation.org>
- <20210209205249.GB2975576@iweiny-DESK2.sc.intel.com>
- <20210209131103.b46e80db675fec8bec8d2ad1@linux-foundation.org>
+        id S234294AbhBJAtP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 19:49:15 -0500
+Received: from mail-oi1-f182.google.com ([209.85.167.182]:44956 "EHLO
+        mail-oi1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232975AbhBIWFk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 17:05:40 -0500
+Received: by mail-oi1-f182.google.com with SMTP id r75so7522076oie.11;
+        Tue, 09 Feb 2021 14:04:29 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=bOiEgQJc9F4c/q7bHFCKm4lcHmd+4+4DEwd4LTgy3IY=;
+        b=LrOBmEHzUSCvqN/HFKohTnVg+lR9vlyce1MqNEK2vRxDGgCLbnzz9zl4owonoTt/uk
+         2EZyYM0hba2EGyohR1s1728+4oJOTaVW7KSJaAwtGm+dFkZo2URCC0zoDE9agOPdZ9/9
+         8X5/g0BmY6x60J1vrPrP8S+bHgYjhcIZttGUQPIumVN9I8IZuPmgFd3AMyQjEAYtIvuX
+         DjPz7GSWIUub/5X8fQT2iDqMkDVxqP3DwMvfFcROjlnJ3jt5E8HSvC84HCzNNjs5gc/M
+         D2fQ6O69G0qU/f+928YCmi+gD1lDyOkGh900fzyip0jBL2Cce1e7Z6DbMzwJz45lKsam
+         mQeg==
+X-Gm-Message-State: AOAM532rmihfTiTO9uzzN12RngIYrwELSo7A7DzgHj7K4Q2YEtUH8z3j
+        8qp/wELt6XtXtA15lH0J7EfxpA8DWw==
+X-Google-Smtp-Source: ABdhPJx4uyiqqNf8J2Db0GfnFr86BDYIdEH1ii5Rx3XOwGmxWp5YiGpid9GYa8CRIZoTR6fO/8pZuw==
+X-Received: by 2002:a05:6808:a01:: with SMTP id n1mr3914674oij.19.1612907644210;
+        Tue, 09 Feb 2021 13:54:04 -0800 (PST)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id a18sm4791oia.0.2021.02.09.13.54.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Feb 2021 13:54:02 -0800 (PST)
+Received: (nullmailer pid 268551 invoked by uid 1000);
+        Tue, 09 Feb 2021 21:54:00 -0000
+Date:   Tue, 9 Feb 2021 15:54:00 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc:     Jakub Kicinski <kuba@kernel.org>, Lars Persson <larper@axis.com>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        Johan Hovold <johan@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rob Herring <robh+dt@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Maxime Ripard <mripard@kernel.org>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        devicetree@vger.kernel.org,
+        Vyacheslav Mitrofanov 
+        <Vyacheslav.Mitrofanov@baikalelectronics.ru>,
+        Joao Pinto <jpinto@synopsys.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>
+Subject: Re: [PATCH v2 03/24] dt-bindings: net: dwmac: Fix the TSO property
+ declaration
+Message-ID: <20210209215400.GA268498@robh.at.kernel.org>
+References: <20210208135609.7685-1-Sergey.Semin@baikalelectronics.ru>
+ <20210208135609.7685-4-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210209131103.b46e80db675fec8bec8d2ad1@linux-foundation.org>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+In-Reply-To: <20210208135609.7685-4-Sergey.Semin@baikalelectronics.ru>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 09, 2021 at 01:11:03PM -0800, Andrew Morton wrote:
-> > > 
-> > > It would be best to merge [1/4] via the btrfs tree.  Please add my
-> > > 
-> > > Acked-by: Andrew Morton <akpm@linux-foundation.org>
-> > > 
-> > > 
-> > > Although I think it would be better if [1/4] merely did the code
-> > > movement.  Adding those BUG_ON()s is a semantic/functional change and
-> > > really shouldn't be bound up with the other things this patch series
-> > > does.
-> > 
-> > I proposed this too and was told 'no'...
-> > 
-> > <quote>
-> > If we put in into a separate patch, someone will suggest backing out the
-> > patch which tells us that there's a problem.
-> > </quote>
-> > 	-- https://lore.kernel.org/lkml/20201209201415.GT7338@casper.infradead.org/
+On Mon, 08 Feb 2021 16:55:47 +0300, Serge Semin wrote:
+> Indeed the STMMAC driver doesn't take the vendor-specific compatible
+> string into account to parse the "snps,tso" boolean property. It just
+> makes sure the node is compatible with DW MAC 4.x, 5.x and DW xGMAC
+> IP-cores. The original allwinner sunXi bindings file also didn't have the
+> TSO-related property declared. Taking all of that into account fix the
+> conditional statement so the TSO-property would be evaluated for the
+> compatibles having the corresponding IP-core version.
 > 
-> Yeah, no, please let's not do this.  Bundling an offtopic change into
-> [1/4] then making three more patches dependent on the ontopic parts of
-> [1/4] is just rude.
+> While at it move the whole allOf-block from the tail of the binding file
+> to the head of it, as it's normally done in the most of the DT schemas.
 > 
-> I think the case for adding the BUG_ONs can be clearly made.  And that
-> case should at least have been clearly made in the [1/4] changelog!
+> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
 > 
-> (Although I expect VM_BUG_ON() would be better - will give us sufficient
-> coverage without the overall impact.)
-
-I'm ok with VM_BUG_ON()
-
+> ---
 > 
-> Let's please queue this up separately.
+> Note this won't break the bindings description, since the "snps,tso"
+> property isn't parsed by the Allwinner SunX GMAC glue driver, but only
+> by the generic platform DT-parser.
+> 
+> Changelog v2:
+> - Use correct syntax of the JSON pointers, so the later would begin
+>   with a '/' after the '#'.
+> ---
+>  .../devicetree/bindings/net/snps,dwmac.yaml   | 52 +++++++++----------
+>  1 file changed, 24 insertions(+), 28 deletions(-)
+> 
 
-Ok can I retain your Ack on the move part of the patch?  Note that it does
-change kmap_atomic() to kmap_local_page() currently.
-
-Would you prefer a separate change for that as well?
-
-Ira
-
-PS really CC'ing Matthew now...
+Reviewed-by: Rob Herring <robh@kernel.org>
